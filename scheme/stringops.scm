@@ -6,6 +6,7 @@
 
 (define-module (app scwm stringops)
   :use-module (ice-9 regex)
+  :use-module (app scwm base)
   :use-module (app scwm optargs))
 
 (define-public (make-string-usable-for-resource-key string)

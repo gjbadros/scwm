@@ -109,6 +109,7 @@ the same position as before the call."
   "Whether to use animation when maximizing and unmaximizing."
   #:type 'boolean
   #:group 'winops)
+;;(set! *maximize-animatedly* #f)
 
 ;;; Maximization
 (define*-public (maximize nw nh #&optional (win (get-window)))
@@ -132,13 +133,15 @@ If NW or NH is 0, that dimension is not changed."
 		      ((> display-height (+ y nh)) y)
 		      ((> display-height nh) (- display-height nh))
 		      (#t 0))))
-	    ((if *maximize-animatedly* 
-		 animated-resize-frame resize-frame)
-	     (if (> nw 0) nw pix-width)
-	     (if (> nh 0) nh pix-height) win (vpx->vx nx) (vpy->vy ny))
+	    (let ((args (list
+			 (if (> nw 0) nw pix-width)
+			 (if (> nh 0) nh pix-height) win (vpx->vx nx) (vpy->vy ny))))
+;;	      (write args) (newline)  ;; debugging
+	      (apply (if *maximize-animatedly* 
+			 animated-resize-frame resize-frame) args))
 	    (if (not (maximized? win))
 		(begin
-		  (set-window-gravity! 'northwest win)
+;;		  (set-window-gravity! 'northwest win)
 		  (set-window-property!
 		   win 'maximized (list virt-pos cli-size frame-size)))))))
 

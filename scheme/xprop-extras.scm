@@ -37,6 +37,33 @@ Do nothing if the cut buffer does not contain a string."
   (let ((t (X-cut-buffer-string)))
     (if t (set-window-title! window t))))
 
+(define*-public (X-handle-selection-string selection value-handler)
+  "Run VALUE-HANDLER on the selection SELECTION after retrieving it.
+The VALUE-HANDLER should take a single argument, the string value
+of the selection retrieved.  The X11 protocol for selections is
+asynchronous, so so must this procedure be."
+  (let ((atom-name (string-append "RW_SELECT_" 
+				  (if (string? selection) selection (X-atom->string selection)))))
+    (define (X-handle-root-property-selection prop-atom deleted?)
+      (if (eqv? prop-atom (string->X-atom atom-name))
+	  (let* ((val (X-property-get 'root-window prop-atom))
+		 (str (and (pair? val) (car val))))
+	    (remove-hook! X-root-PropertyNotify-hook X-handle-root-property-selection)
+	    (remove-hook! X-SelectionNotify-hook X-handle-no-selection)
+	    ;; (display "got value = ") (write val) (newline)
+	    (X-property-delete! 'root-window prop-atom)
+	    (value-handler str))))
+    (define (X-handle-no-selection)
+      (remove-hook! X-root-PropertyNotify-hook X-handle-root-property-selection)
+      (remove-hook! X-SelectionNotify-hook X-handle-no-selection)
+      (value-handler #f))
+    (add-hook! X-root-PropertyNotify-hook X-handle-root-property-selection)
+    (add-hook! X-SelectionNotify-hook X-handle-no-selection)
+    (X-convert-selection selection "STRING" atom-name 'root-window)))
+
+;; (X-handle-selection-string "PRIMARY" (lambda (value) (display value) (newline)))
+;; (define-public (debug-property-notify prop win) (display prop) (display " for ") (write win) (newline))
+
 (define-public (get-wm-command win)
   "Get the \"WM_COMMAND\" X-Property of WIN and return that string.
 WIN is a Scwm window object. The \"WM_COMMAND\" X-Property is the application's

@@ -28,6 +28,14 @@
 ;; 32-bit and 64-bit systems, both big and little endian, but have
 ;; only been tested on i386-*-linux so far.
 
+#!
+(define old-integer->char integer->char)
+
+(define (integer->char i)
+  (if (< i 0) (set! i 0))
+  (old-integer->char i))
+!#
+
 (define (test-bitness-and-endianness)
   (let* ((p (pipe))
 	 (read-pipe (car p))

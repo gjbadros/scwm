@@ -124,6 +124,18 @@ It defaults to `*netscape-new-window*'."
 		 (display "scwm: netscape-goto-url: starting netscape process\n")
 		 (execute (string-append "netscape " (uri-escapify-comma url))))))))
 
+(define*-public (netscape-goto-selection-url 
+		 #&optional (new *netscape-new-window*))
+  "Goto the url that is held in the X11 PRIMARY selection.
+Uses the cut buffer instead if no selection exists.
+See `X-handle-selection-string' and `netscape-goto-url'.  NEW can be #f to
+not open a new netscape frame."
+  (interactive)
+  (X-handle-selection-string "PRIMARY" 
+			     (lambda (str)
+			       (netscape-goto-url 
+				(if str str (X-cut-buffer-string)) display-message-briefly new))))
+
 (define*-public (netscape-goto-cut-buffer-url 
 		 #&optional (new *netscape-new-window*))
   "Goto the url that is held in the X11 cut buffer.
