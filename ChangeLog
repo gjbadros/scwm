@@ -1,3 +1,8 @@
+Mon Sep  7 11:15:05 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Added some debug code, and fix bug
+	that resulted in the last proc of a .scm file being missed.
+
 Sun Sep  6 16:17:42 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Added -V option to write a
