@@ -22,6 +22,7 @@
 #include "decor.h"
 #include "font.h"
 #include "xmisc.h"
+#include "scwmpaths.h"
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
 extern Bool Restarting, PPosOverride;
@@ -450,6 +451,26 @@ SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
   return gh_str02scm(VERSION);
 }
 #undef FUNC_NAME
+
+SCWM_PROC(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
+          ())
+     /** Return the <envar>$PREFIX</envar> directory path that scwm was installed with. */
+#define FUNC_NAME s_scwm_path_prefix
+{
+  return gh_str02scm(SCWM_PREFIX);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
+          ())
+     /** Return the <envar>$EXECPREFIX</envar> directory path that scwm was installed with. */
+#define FUNC_NAME s_scwm_path_exec_prefix
+{
+  return gh_str02scm(SCWM_PREFIX);
+}
+#undef FUNC_NAME
+
+
 
 /* FIXMS: this should probably be split into multiple procs. */
 SCWM_PROC(X_version_information, "X-version-information", 0, 0, 0,
