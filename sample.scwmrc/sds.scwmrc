@@ -1,8 +1,9 @@
-;;; File: <sds.scwmrc - 1999-02-09 Tue 16:29:49 EST sds@eho.eaglets.com>
+;;; File: <sds.scwmrc - 1999-04-07 Wed 18:51:41 EDT sds@eho.eaglets.com>
+;;; $Id$
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Goal: to attract users.
-;;; IMHO, this should be the system.scwmrc.
+;;; IMO, this should be the system.scwmrc.
 
 ;;; Main ideas:
 ;;; 1. look as nice as possible (e.g., if one item in the menu has
@@ -38,12 +39,13 @@
  (app scwm optargs) (app scwm std-menus) (app scwm wmconfig-menu)
  (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module)
  (app scwm animation) (app scwm placement) (app scwm virtual)
- ;; (app scwm animate-iconify-window)
- (app scwm message-window) (app scwm gnome-hints))
+ (app scwm shutdown-opts) ;; (app scwm themes)
+ (app scwm animated-iconify) (app scwm message-window) (app scwm gnome-hints))
 
 ;; communicate with GNOME
-(set! gnome-desktop-number 1)
-(set! gnome-shade-animated #t)
+;; (set! *debug-gnome-hints* #t)
+(set! *gnome-desktop-number* 1)
+(set! *gnome-shade-animated* #t)
 (enable-gnome-hints)
 
 ;; user settable!
@@ -63,7 +65,8 @@
                        (list-all-windows))))
 ;; (load user-init-file)
 ;;(set! xterm-command "rxvt ")
-;(set! scwm-no-move-windows-on-exit #t)
+;;(set! xterm-command "gnome-terminal ")
+;;(set! scwm-no-move-windows-on-exit #t)
 ;;(define mail-spool-dir (or (getenv "MAIL")
 ;;			   (string-append "/var/spool/mail/" (user-name))))
 
@@ -71,7 +74,7 @@
 ;;; set some basic styles info
 ;;; --------------------------
 
-(define animation-delay 50)
+;;(define animation-delay 50)
 (define font12 (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 ;;(define font14 (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 ;;(define window-font (make-font "*helvetica*bold-r*12*"))
@@ -96,23 +99,29 @@
 (set-edge-y-scroll! 0)
 (set-edge-x-wrap! #f)
 (set-edge-y-wrap! #f)
+(shutdown-options #:switch-to-home-viewport 'shutdown-only
+                  #:move-windows-to-current-viewport 'shutdown-only)
+;; (use-theme "woven")
+
 ;;(set! opaque-move-percent 100)
 ;;(set! opaque-resize-percent 100)
-(define (resize-opaquely? win) #t)
-(define (move-opaquely? win) #t)
+(set! resize-opaquely? (lambda (w) #t))
+(set! move-opaquely? (lambda (w) #t))
 
 ;;; ----------------
 ;;; paths and images
 ;;; ----------------
 
-;(set! image-load-path
-;      (append! image-load-path
-;              (list            ; "/usr/share/icons/" "/usr/share/icons/mini/"
-;                    "/opt/kde/share/icons")))
-;; "/usr/local/lib/X11/mini-icons" "/usr/local/include/X11/pixmaps"
-;; "/usr/X11/include/X11/bitmaps" "/usr/X11/include/X11/pixmaps"
-;; "/usr/local/X11/include/X11/pixmaps" "/usr/local/lib/icons"
-;; "/uns/include/X11/pixmaps" "/usr/lib/icons" "/usr/X11/lib/X11/mini-icons"
+(set! image-load-path
+      (append! image-load-path (list "/usr/local/lib/X11/mini-icons/"
+                                     "/usr/local/include/X11/pixmaps/")))
+; "/usr/X11R6/include/X11/bitmaps"
+; "/usr/X11R6/include/X11/pixmaps"
+; "/usr/share/pixmaps"
+; "/usr/share/icons"
+; "/usr/share/icons/mini"
+; "/usr/local/lib/X11/mini-icons/"
+; "/usr/local/include/X11/pixmaps/"
 
 (define audio-i   (make-image "mini-audiovol.xpm"))
 (define biff-i    (make-image "mini-xbiff.xpm"))
@@ -133,8 +142,10 @@
 (define eye-i     (make-image "mini-eye.xpm"))
 (define eyes-i    (make-image "mini-eyes.xpm"))
 (define fig-i     (make-image "mini-paint.xpm"))
+(define fm-i      (make-image "mini-filemgr.xpm"))
 (define fresh-i   (make-image "mini-refresh.xpm"))
 (define games-i   (make-image "mini-happy.xpm"))
+(define ghost-i   (make-image "mini-gv.xpm"))
 (define gimp-i    (make-image "mini-wilbur.xpm"))
 (define hamm-i    (make-image "mini-hammer.xpm"))
 (define icon-i    (make-image "mini-iconify.xpm"))
@@ -213,20 +224,23 @@
                          (cons "Gradient" grad-d)))
 
 (define std-style
-  (make-style #:fg "black" #:bg "grey76" #:sticky-icon #t
+  (make-style #:fg "black" #:bg "grey76"
+              #:sticky-icon #f ; not needed with Gnome
               #:icon (if want-pictures? unknown-i #f) ; #f: no pics, just text
-              #:icon-box (list 500 1 (x- 500) 200) ; (x- 70) 1 69 (y- 141))
+              #:icon-box (list 520 1 (x- 520) 200) ; (x- 70) 1 69 (y- 141))
               #:border-width 3 #:mwm-border #t #:focus 'sloppy ; mouse
               #:random-placement #t #:smart-placement #t #:use-decor std-d
 	      #:mwm-func-hint #t #:mwm-decor-hint #t #:hint-override #t
               #:decorate-transient #t #:PPosition-hint #f #:mini-icon term-i
-              ;; #:squashed-titlebar #t
+              #:squashed-titlebar #f
               #:transient-placement-proc place-at-point))
 
+(define no-decor-style
+  (make-style #:use-style std-style #:plain-border #t
+              #:border-width 1 #:no-titlebar #t))
 (define desk-widget
-  (make-style #:focus 'none #:use-style std-style #:plain-border #t
-              #:sticky #t #:winlist-skip #t #:border-width 1
-              #:circulate-skip #t #:no-titlebar #t))
+  (make-style #:use-style no-decor-style #:focus 'none
+              #:sticky #t #:winlist-skip #t #:circulate-skip #t))
 (define desk-widget-on-top
   (make-style #:use-style desk-widget #:kept-on-top #t))
 
@@ -236,6 +250,7 @@
 (window-style "lock" #:use-style desk-widget)
 (window-style "xload" #:use-style desk-widget)
 (window-style "osview" #:use-style desk-widget)
+(window-style "panel" #:use-style desk-widget #:focus 'sloppy)
 (window-style "xscreensaver" #:use-style desk-widget)
 (window-style "FvwmPager" #:use-style desk-widget-on-top)
 (window-style "xmailbox" #:use-style desk-widget-on-top #:mini-icon biff-i)
@@ -245,25 +260,38 @@
 (window-style "xman" #:icon "xman.xpm" #:mini-icon manx-i)
 (window-style "xmag" #:icon "mag_glass.xpm" #:mini-icon mag-i)
 (window-style "xplaycd" #:icon "CompactDisk.xpm" #:mini-icon cd-i) ; Music.xpm
-(window-style "replay" #:icon "Music.xpm" #:mini-icon audio-i) ; xamp
+(window-style "replay" #:icon "Music.xpm" #:mini-icon audio-i) ; xamp, mpeg
+(window-style "gqmpeg" #:icon "Music.xpm" #:mini-icon audio-i
+              #:use-style no-decor-style)
+(window-style "xmixer" #:icon "Music.xpm" #:mini-icon audio-i)
 (window-style "xv" #:icon "xv.color.xpm" #:mini-icon xv-i)
 (window-style "Netscape" #:icon "nscape.xpm" #:mini-icon nscape-i
               #:placement-proc (in-viewport-placement 1 1))
 (window-style "gnuplot" #:icon "math4.xpm" #:mini-icon plot-i)
 (window-style "gimp" #:icon "wilbur.xpm" #:mini-icon gimp-i)
 (window-style "XDosEmu" #:icon "dosemu.xpm" #:mini-icon dos-i)
+(window-style "gmc" #:icon "FileManager.xpm" #:mini-icon fm-i)
 (window-style "xfig" #:icon "xpaint.xpm" #:mini-icon fig-i) ; Paint[1234]?.xpm
 (window-style "xterm" #:icon (if want-pictures? "xterm.xpm" #f)
+              #:mini-icon term-i #:use-decor grad-d)
+(window-style "Terminal" #:icon (if want-pictures? "xterm.xpm" #f)
               #:mini-icon term-i #:use-decor grad-d)
 (window-style "rxvt" #:mini-icon rxvt-i)
 (window-style "xxgdb" #:mini-icon xxgdb-i)
 ;(window-style "Toplevel" #:icon "toolbox.xpm")
-(window-style "Ace*" #:mini-icon games-i)
+(window-style "gv" #:mini-icon ghost-i)
 (window-style "xpat2" #:mini-icon games-i)
-(window-style "gnothello" #:mini-icon games-i)
+(window-style "iagno" #:mini-icon games-i #:icon "iagno.png")
 (window-style "freecell" #:mini-icon games-i)
+(window-style "gnomine" #:mini-icon games-i)
+(window-style "sol" #:mini-icon games-i)
+(window-style "gnotravex" #:mini-icon games-i)
+(window-style "gnome-stones" #:mini-icon games-i)
+(window-style "same-gnome" #:mini-icon games-i)
 (window-style "xmessage" #:mini-icon quest-i)
-(window-style "conf" #:icon "settings.xpm" #:mini-icon "mini-penguin.xpm")
+(window-style "about" #:mini-icon quest-i)
+(window-style "gnomecc" #:mini-icon pref-i #:icon "control-center.png")
+(window-style "Config" #:icon "settings.xpm" #:mini-icon "mini-penguin.xpm")
 (window-style "gtkfind" #:mini-icon mag-i #:icon "find1.xpm")
 (window-style "ee" #:mini-icon eyes-i)
 (window-style "top" #:mini-icon eye-i)
@@ -271,10 +299,11 @@
 (window-style "helptool" #:mini-icon book2-i)
 (window-style "siag" #:mini-icon siag-i)
 (window-style "xpdf" #:mini-icon pdf-i)
+(window-style "telnet" #:mini-icon ctd-i)
 (window-style "acroread" #:mini-icon pdf-i)
 (window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
               #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
-(window-style "emacs*mbf" #:focus 'sloppy #:use-style desk-widget-on-top)
+(window-style "emacs*mbf" #:use-style desk-widget-on-top #:focus 'sloppy)
 
 ;TextEditor.xpm ; emacs.xbm
 ;(window-style "emacs: *Minibuf" #:use-style desk-widget-on-top)
@@ -284,7 +313,8 @@
 ;;; -------------
 
 (define menu-lisps
-  (menu (list (menuitem "Lisps" #f) menu-title menu-separator
+  (menu (list (menuitem "Lisps" #:extra-label "(H-f12)")
+              menu-title menu-separator
               (menuitem "ACL" #:action (run-in-xterm "/home/sds/bin/acl"))
               (menuitem "CLISP" #:action (run-in-xterm "/home/sds/bin/cli"))
               (menuitem "CMUCL" #:action (run-in-xterm "/home/sds/bin/cmu"))
@@ -330,10 +360,13 @@
                         #:action (lambda () (restart "fvwm"))))))
 
 (define menu-util
-  (menu (list (menuitem "Utilities" #:image-left hamm-i #f)
+  (menu (list (menuitem "Utilities" #:image-left hamm-i
+                        #:extra-label "(H-f11)" #f)
               menu-title menu-separator
-              (menuitem "&xterm" #:image-left term-i #:action start-xterm)
+              (menuitem "&xterm" #:image-left term-i
+                        #:extra-label "(H-x)" #:action start-xterm)
               (menuitem "rx&vt" #:image-left rxvt-i #:action "rxvt")
+              (menuitem "g&mc" #:image-left fm-i #:action "gmc")
               (menuitem "&root" #:image-left "mini-excl.xpm"
                         #:action (run-in-xterm "su" "-T ROOT"))
               (menuitem "&emacs" #:image-left edit-i #:action "emacs")
@@ -341,10 +374,12 @@
                         (run-in-xterm "gnuplot"))
               (menuitem "Play &CD" #:image-left cd-i #:action "xplaycd")
               (menuitem "Play MP&3" #:image-left audio-i #:action "replay")
+              (menuitem "MP&3 (gtk)" #:image-left audio-i #:action "gqmpeg")
               (menuitem "X &dos" #:image-left dos-i #:action "/usr/bin/dos -X")
               (menuitem "GTKFind" #:image-left mag-i #:action "gtkfind")
               menu-separator
-              (menuitem "&Lisps" #:image-left bolt-i #:action menu-lisps)
+              (menuitem "&Lisps" #:image-left bolt-i
+                        #:extra-label "(H-f12)" #:action menu-lisps)
               (menuitem "&Misc" #:image-left "mini-maze.xpm" #:action
                         (menu (list
                                (menuitem
@@ -380,13 +415,12 @@
                         "/usr/bin/netscape")
               ;; (menuitem "Mozilla" #:image-left nscape-i #:action
               ;;           "/usr/bin/mozilla")
-              (menuitem "GhostView" #:image-left "mini-gv.xpm"
-                        #:action "ghostview")
+              (menuitem "GhostView" #:image-left ghost-i #:action "ghostview")
               (menuitem "GNU Emacs" #:image-left edit-i #:action "emacs")
               (menuitem "xxgdb/Emacs" #:image-left edit-i #:action
                         "xxgdb -i /usr/src/emacs/src/.gdbinit -cd=/usr/src/emacs/src emacs")
               (menuitem "gdb/Emacs" #:image-left edit-i #:action
-                        "xterm -e gdb -cd=/usr/src/emacs/src emacs")
+                        "xterm -e gdb -cd=/usr/src/emacs/src -command=.gdbinit emacs")
               (menuitem "vim 5" #:image-left edit-i #:action "gvim")
               (menuitem "Siag Office" #:image-left siag-i #:action
                         (menu (list (menuitem "siag" #:action "siag")
@@ -409,40 +443,23 @@
               (menuitem "misc" #:action
                         (menu (list (menuitem "XJewel" #:action "xjewel")
                                     (menuitem "XPat2" #:action "xpat2")
+                                    (menuitem "Bogged" #:action
+                                              "/home/sds/bin/bog")
                                     (menuitem "Nethack" #:action "nethack")
                                     (menuitem "XBill" #:action "xbill")
                                     (menuitem "XBL" #:action "xbl")
+                                    (menuitem "Gagaga" #:action "xgal")
                                     (menuitem "Snow" #:action "xsnow")
-                                    (menuitem "Gagaga" #:action "xgal"))))
+                                    (menuitem "Fish" #:action "xfishtank"))))
               menu-separator
               (menuitem "Gnome" #:action
-                        (menu (list (menuitem "freecell" #:action
-                                              "/usr/bin/freecell")
-                                    (menuitem "othello" #:action "gnothello")
+                        (menu (list (menuitem "freecell" #:action "freecell")
+                                    (menuitem "reversi" #:action "iagno")
                                     (menuitem "minesweeper" #:action "gnomine")
                                     (menuitem "robots" #:action "gnobots")
                                     (menuitem "mahjongg" #:action "mahjongg")
-                                    (menuitem "same" #:action "same-gnome"))))
-              menu-separator
-              (menuitem
-               "Ace" #:action
-               (menu (list
-                      (menuitem "Bogged" #:action "/home/sds/bin/bog")
-                      (menuitem "freecell" #:action "/home/sds/bin/freecell")
-                      (menuitem "golf" #:action "/home/sds/bin/golf")
-                      (menuitem "minesweeper" #:action
-                                "/home/sds/bin/minesweeper")
-                      (menuitem "pegged" #:action "/home/sds/bin/pegged")
-                      (menuitem "solitaire" #:action "/home/sds/bin/solitaire")
-                      (menuitem "taipedit" #:action "/home/sds/bin/taipedit")
-                      (menuitem "taipei" #:action "/home/sds/bin/taipei")))))))
-
-;;(define menu-desk
-;;  (menu (list (menuitem "Desks" #f) menu-title menu-separator
-;;            (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
-;;            (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
-;;            (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
-;;            (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
+                                    (menuitem "same" #:action "same-gnome")
+                                    (menuitem "solitaire" #:action "sol")))))))
 
 ;;; ------------
 ;;; Window menus
@@ -453,23 +470,30 @@
 
 (define menu-window-ops
   (menu (list
-         (menuitem "Window Operations" #:image-left windows-i)
+         (menuitem "Window Operations" #:image-left windows-i
+                   #:extra-label "(H-f2)")
          menu-title menu-separator
-	 (menuitem "&Move" #:image-left move-i #:action interactive-move)
-	 (menuitem "&Resize" #:image-left resize-i #:action interactive-resize)
-         (menuitem "R&aise" #:image-left raise-i #:action raise-window)
-         (menuitem "&Lower" #:image-left lower-i #:action lower-window)
-         (menuitem "&Iconify" #:image-left icon-i #:action toggle-iconify)
+	 (menuitem "&Move" #:image-left move-i
+                   #:extra-label "(H-f7)" #:action interactive-move)
+	 (menuitem "Re&size" #:image-left resize-i
+                   #:extra-label "(H-f8)" #:action interactive-resize)
+         (menuitem "R&aise" #:image-left raise-i
+                   #:extra-label "(H-RET)" #:action raise-window)
+         (menuitem "&Lower" #:image-left lower-i
+                   #:extra-label "(H-RET)" #:action lower-window)
+         (menuitem "&Iconify" #:image-left icon-i
+                   #:extra-label "(H-m)" #:action animated-toggle-iconify)
          (menuitem "&Sticky" #:image-left stick-i #:action toggle-stick)
          (menuitem "Ma&ximize" #:image-left max1-i #:action toggle-max-both)
          (menuitem "&Tall" #:image-left maxt-i #:action toggle-max-vert)
          (menuitem "&Wide" #:image-left maxw-i #:action toggle-max-horz)
          (menuitem "S&hade" #:image-left bolt-i #:action
-                   anoimated-toggle-window-shade)
+                   animated-toggle-window-shade)
          menu-separator
          (menuitem "&On-top" #:image-left eyes-i #:action toggle-on-top)
          (menuitem "&Print" #:image-left run-i #:action print-window)
-         (menuitem "In&fo" #:image-left quest-i #:action window-info)
+         (menuitem "In&fo" #:image-left quest-i
+                   #:extra-label "(H-i)" #:action window-info)
          (menuitem "Decorations" #:image-left decor-i #:action
                    (menu (map (lambda (dec)
                                 (menuitem
@@ -478,30 +502,40 @@
                                                           (cdr dec)))))
                               decor-list)))
          menu-separator
-         (menuitem "&Close" #:image-left bomb2-i #:action close-window)
-         (menuitem "&Delete" #:image-left cross-i #:action delete-window)
+         (menuitem "&Close" #:image-left cross-i
+                   #:extra-label "(H-f4)" #:action close-window)
+         (menuitem "&Delete" #:image-left bomb2-i #:action delete-window)
          (menuitem "&Destroy" #:image-left bomb-i #:action destroy-window)
          menu-separator
-         (menuitem "Switch to..." #:image-left turn-i #:action winlist)
-         (menuitem "Re&fresh" #:image-left fresh-i #:action refresh))))
+         (menuitem "Switch to..." #:image-left turn-i
+                   #:extra-label "(H-f3)" #:action winlist)
+         (menuitem "Re&fresh" #:image-left fresh-i
+                   #:extra-label "(H-r)" #:action refresh)
+         (menuitem "Reca&pture" #:image-left fresh-i
+                   #:extra-label "(H-5)" #:action recapture))))
 
 (define (make-small-window-ops-menu ww)
   (menu (list
          (menuitem "Small Ops" #:image-left windows-i)
          menu-title menu-separator
-	 (menuitem "&Move" #:image-left move-i #:action interactive-move)
-	 (menuitem "Re&size" #:image-left resize-i #:action interactive-resize)
+	 (menuitem "&Move" #:image-left move-i
+                   #:extra-label "(H-f7)" #:action interactive-move)
+	 (menuitem "Re&size" #:image-left resize-i
+                   #:extra-label "(H-f8)" #:action interactive-resize)
          (menuitem (if (iconified? ww) "Unmi&nimize" "Mi&nimize")
-                   #:image-left icon-i #:action toggle-iconify)
+                   #:extra-label "(H-m)"
+                   #:image-left icon-i #:action animated-toggle-iconify)
          (menuitem (if (maximized? ww) "Unma&ximize" "Ma&ximize")
                    #:image-left max1-i #:action toggle-max-both)
          menu-separator
-         (menuitem "Info" #:image-left quest-i #:action
-                   (lambda () (window-info ww)))
+         (menuitem "Info" #:image-left quest-i #:extra-label "(H-i)"
+                   #:action (lambda () (window-info ww)))
          (menuitem "More" #:image-left max-i #:action
                    (menu (list
-                          (menuitem "&Raise" #:action raise-window)
-                          (menuitem "&Lower" #:action lower-window)
+                          (menuitem "&Raise" #:extra-label "(H-RET)"
+                                    #:action raise-window)
+                          (menuitem "&Lower" #:extra-label "(H-RET)"
+                                    #:action lower-window)
                           (menuitem (if (sticky? ww) "Un&stick" "&Stick")
                                     #:action toggle-stick)
                           (menuitem (if (window-shaded? ww)
@@ -518,9 +552,10 @@
                                                               (cdr dec)))))
                               decor-list)))
          menu-separator
-         (menuitem "&Close" #:image-left cross-i #:action close-window)
+         (menuitem "&Close" #:image-left cross-i
+                   #:extra-label "(H-f4)" #:action close-window)
          (menuitem "&Delete" #:image-left bomb2-i #:action delete-window)
-         (menuitem "&Kill" #:image-left bomb-i #:action destroy-window))))
+         (menuitem "&Destroy" #:image-left bomb-i #:action destroy-window))))
 
 (define menu-help
   (menu (list (menuitem "&About scwm" #:image-left excl-i #:action
@@ -536,9 +571,11 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
                         #:action "helptool"))))
 
 (define menu-root-start
-  (menu (list (menuitem "Start" #:image-left "mini-start.xpm")
+  (menu (list (menuitem "Start" #:image-left "mini-start.xpm"
+                        #:extra-label "(H-z)")
               menu-title menu-separator
-              (menuitem "&New shell" #:image-left term-i #:action start-xterm)
+              (menuitem "&New shell" #:image-left term-i
+                        #:extra-label "(H-x)" #:action start-xterm)
               (menuitem "Midnight &Commander" #:image-left "mini-display.xpm"
                         #:action "rxvt +scrollBar -color11 coral -e mc")
               (menuitem "&Applications" #:image-left x2-i #:action menu-apps)
@@ -546,19 +583,18 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
               (menuitem "H&osts" #:image-left ctd-i #:action
                         (make-hosts-menu ; "stormbringer" "right.ml.org"
                          '(("mute" . "rlogin") ("eho" . "rlogin")
-                           ("delysid.gnu.org" . "rlogin")
-                           ("mescaline.gnu.org" . "rlogin")
+                           "delysid.gnu.org" "mescaline.gnu.org"
                            ("melange.gnu.org" . "rlogin")
-                           ("vicarious-existence.mit.edu" . "ssh")
+                           ("huis-clos.mit.edu" . "ssh")
                            ("cellar.goems.com" . "ssh -P")
                            ("fatty.goems.com" . "ssh -P")
-                           "central1" "eagle_one" "gandalf" "phish")))
+                           "central1" "eagle_one" "gandalf" "nether.net")))
               ;; (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm"
               ;;                #:action menu-multimedia)
               (menuitem "&Games" #:image-left games-i #:action menu-games)
               menu-separator
               (menuitem "&Window Operations" #:image-left windows-i
-                        #:action menu-window-ops)
+                        #:extra-label "(H-f2)" #:action menu-window-ops)
               (menuitem "&Preferences" #:image-left pref-i #:action
                         (menu-prefs))
               (menuitem "WM Conf&ig (RH5)" #:image-left xx-i ; #:extra-label
@@ -608,10 +644,10 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (define (move-or-deiconify)
   (case (mouse-event-type)
     ((motion) (interactive-move))
-    ((double-click) (deiconify)))) ; animate-
+    ((double-click) (animated-deiconify))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
-(bind-mouse 'icon 2 deiconify)
+(bind-mouse 'icon 2 animated-deiconify)
 (bind-mouse 'icon 3 popup-small-ops)
 
 (bind-mouse 'all "H-1" toggle-raise)
@@ -817,7 +853,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (add-button big-lightning-face animated-toggle-window-shade #t)
 (add-button stylized-X-face close-window #f)
 (add-button up-down-arrow-face toggle-max-vert #f)
-(add-button small-box-face iconify #f) ; animate-
+(add-button small-box-face animated-iconify #f)
 
 ;; should be after the buttons
 ;(with-decor lizard-d (set-button-face! 1 edit-face)) ; emacs
@@ -857,7 +893,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (bind-key 'all "H-r" refresh)
 (bind-key 'all "H-5" recapture)
 (bind-key 'all "H-x" start-xterm)
-(set! netscape-new-window #t)
+(set! *netscape-new-window* #t)
 (bind-key 'all "H-w" netscape-goto-cut-buffer-url)
 
 ;;(define root-size-x (car (display-size)))
@@ -866,11 +902,12 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;;(putenv (string-append "width=" (number->string root-size-x)))
 ;; (define (percent-display x y) (list (%x x) (%y y)))
 
-(bind-key 'all "H-m" toggle-iconify)
+(bind-key 'all "H-m" animated-toggle-iconify)
 (bind-key 'all "H-Return" toggle-raise)
 (bind-key 'all "H-p" toggle-max-vert-part)
 (bind-key 'all "H-S-Right" toggle-max-horz)
 (bind-key 'all "H-S-Left" toggle-max-both)
+(bind-key 'all "H-i" (lambda () (window-info (current-window-with-pointer))))
 
 ;(define (message-show-error . args)
 ;  (message "scwm error:"
