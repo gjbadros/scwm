@@ -306,15 +306,6 @@ AddWindow(Window w)
   psw->HiShadowColor = SCM_BOOL_F;
   psw->HiBackColor = SCM_BOOL_F;
 
-  gh_defer_ints();
-  /* create the scheme-level window */
-  psw->schwin = schwin = make_window(psw);
-  /* and initialize constraint structure hanging off of psw
-     (uses the scheme window so must come after the make_window assignment
-     above) */
-  CassowaryInitClVarsInPsw(psw);
-  gh_allow_ints();
-
   psw->fl = &Scr.DefaultDecor;
   psw->buttons = 0;
 
@@ -322,6 +313,16 @@ AddWindow(Window w)
   GetOlHints(psw);
 
   GetWindowSizeHints(psw);
+
+  gh_defer_ints();
+  /* create the scheme-level window */
+  psw->schwin = schwin = make_window(psw);
+  /* and initialize constraint structure hanging off of psw
+     (uses the scheme window so must come after the make_window assignment
+     above) */
+  CassowaryInitClVarsInPsw(psw);
+
+  gh_allow_ints();
 
   call1_hooks(before_new_window_hook, psw->schwin);
 

@@ -602,6 +602,7 @@ called with no arguments. A handle suitable for passing to
   for (p = th_list, last = timer_hooks; p != SCM_EOL; 
        last = p, p = gh_cdr(p)) {
     SCM cur = gh_car(p);
+    /* scm_gr_p is ">" */
     if (SCM_FALSEP(scm_gr_p(usec, gh_car(cur)))) {
       break;
     }
@@ -624,6 +625,15 @@ timer hook that has already been triggered. */
   gh_set_cdr_x(timer_hooks,scm_delq_x (handle, gh_cdr(timer_hooks)));
 
   return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(get_timer_hooks_list, "get-timer-hooks-list", 0, 0, 0,
+          ())
+     /** Return the timer-hooks list. */
+#define FUNC_NAME s_get_timer_hooks_list
+{
+  return timer_hooks;
 }
 #undef FUNC_NAME
 
@@ -751,6 +761,15 @@ input hook may safely remove itself. */
 }
 #undef FUNC_NAME
 
+
+SCWM_PROC(get_input_hooks_list, "get-input-hooks-list", 0, 0, 0,
+          ())
+     /** Return the input-hooks list. */
+#define FUNC_NAME s_get_input_hooks_list
+{
+  return input_hooks;
+}
+#undef FUNC_NAME
 
 void 
 add_hook_fds_to_set(fd_set *in_fdset, int *fd_width)
