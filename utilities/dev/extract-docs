@@ -46,8 +46,8 @@ use constant TRUE => (1==1);
 use constant FALSE => (1==0);
 use File::Basename;
 
-my $getopts_option_letters = 'hqQDo:';
-use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o);
+my $getopts_option_letters = 'hqQDo:s';
+use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s);
 
 sub script_usage ( ) {
   print "@_\nUsage: $0 [-$getopts_option_letters]
@@ -55,10 +55,20 @@ sub script_usage ( ) {
 -Q       Be completely QUIET-- no warnings (still prints errors)
 -D       Debugging output on
 -o file  Send sgml output to file -- no sgml output unless this is given
+-s       Run ispell on the comments and reports warnings for its responses
 ";
   exit 0;
 }
 
+my @okay_words = qw(fvwm2 fvwm hilight viewport scwmexec scwmrepl menuitem
+		    menuitems hotkey submenu colormap 
+		    PseudoColor StaticGray StaticColor GrayScale DirectColor TrueColor
+		    scwmrc ReallySmart SmartPlacement PPosition Mwm mwm Alt Meta Hyper
+		    BroadcastInfo SmartPlacementIsReallySmart RandomPlacement
+		    Super car cdr cadr titlebar unhover bg fg Popup Iconify
+		    Iconifying Deiconify Deiconifying Unmap iconified desktop desktops
+		    honoured lenience xproperty XORed
+		   );
 
 my $pkg_name = basename($ENV{PWD});
 my $fDebug = FALSE;
@@ -81,6 +91,14 @@ my %procedure = ();
 # maps from a filename to a list reference containing the names of 
 # primitives defined in that file
 my %file_funcs = ();
+
+
+use FileHandle;
+use IPC::Open2;
+
+my $pid = open2( \*ISPELL_RESPONSE,
+		 \*ISPELL, "ispell -a") or die "Could not open \'ispell -a\' pipe: $!";
+ISPELL->autoflush();
 
 my $header = "";
 while (<>) {
@@ -225,8 +243,10 @@ sub ProcessHeader( $ ) {
   my ($header) = @_;
   my ($cprimname, $primname, $req, $opt, $var, $argslist) =
     $header =~ m%^SCWM_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^\)]*)\)%;
+  my $filename = $ARGV;
+  my $line = $.;
   if (!defined($cprimname)) {
-    print STDERR "$ARGV:$.:****ERROR:could not parse argument list\n";
+    print STDERR "$filename:$.:****ERROR:could not parse argument list\n";
     return FALSE;
   }
   my ($comment) = $header =~ m%/\*\*\s*(.*)\s*\*/%s;
@@ -257,33 +277,33 @@ sub ProcessHeader( $ ) {
 
   if ($primname ne $expected_primname && $primname ne $expected_primname2) {
     if (!$fReallyQuiet) {
-      print STDERR "$ARGV:$.:****$cprimname: expected scheme primitive named \`$expected_primname\'\n";
+      print STDERR "$filename:$line:****$cprimname: expected scheme primitive named \`$expected_primname\'\n";
     }
   }
 
   if ($cremovals != scalar(@args) ) {
-    print STDERR "$ARGV:$.:****$cprimname: types inconsistency (all args should be type SCM)\n";
+    print STDERR "$filename:$line:****$cprimname: types inconsistency (all args should be type SCM)\n";
   }
 
   if (($req + $opt + $var) != scalar(@args)  ) {
-    print STDERR "$ARGV:$.:****$cprimname: argument inconsistency -- check #s of arguments\n";
+    print STDERR "$filename:$line:****$cprimname: argument inconsistency -- check #s of arguments\n";
   }
 
   if ($var != 0 && $var != 1) {
-    print STDERR "$ARGV:$.:****$cprimname: number of variable arguments == $var -- why?\n";
+    print STDERR "$filename:$line:****$cprimname: number of variable arguments == $var -- why?\n";
   }
 
   if (!defined($comment) || $comment eq "") {
     if (!$fReallyQuiet) {
-      print STDERR "$ARGV:$.:****$cprimname: comment missing\n";
+      print STDERR "$filename:$line:****$cprimname: comment missing\n";
     }
     $comment = "";
   }
 
   if (!defined($fname_define)) {
-    print STDERR "$ARGV:$.:****$cprimname: \`#define FUNC_NAME s_$cprimname\' is missing\n";
+    print STDERR "$filename:$line:****$cprimname: \`#define FUNC_NAME s_$cprimname\' is missing\n";
   } elsif ($fname_define ne "s_".$cprimname) {
-    print STDERR "$ARGV:$.:****$cprimname: \`#define FUNC_NAME s_$cprimname\' does not match function name \`$fname_define\'\n";
+    print STDERR "$filename:$line:****$cprimname: \`#define FUNC_NAME s_$cprimname\' does not match function name \`$fname_define\'\n";
   }
 
   my @required_args = @args[0..($req-1)];
@@ -311,7 +331,7 @@ sub ProcessHeader( $ ) {
     if ($word =~ /^[A-Z][-%A-Z0-9_+?!]+$/) {
       if (!defined($argnames{$word})) {
 	if (!$fReallyQuiet) {
-	  print STDERR "$ARGV:$.:****$cprimname: all-uppercase word \`$word\' does not match an argument\n";
+	  print STDERR "$filename:$line:****$cprimname: all-uppercase word \`$word\' does not match an argument\n";
 	}
       }
     }
@@ -321,7 +341,7 @@ sub ProcessHeader( $ ) {
   foreach my $formal (keys %argnames) {
     if ($comment !~ /\Q$formal\E/) {
       if (!$fReallyQuiet) {
-	print STDERR "$ARGV:$.:****$cprimname: formal $formal not mentioned in comment\n";
+	print STDERR "$filename:$line:****$cprimname: formal $formal not mentioned in comment\n";
       }
     }
   }
@@ -334,7 +354,7 @@ sub ProcessHeader( $ ) {
   chomp ($purpose); # in case it matched the newline
   if (!defined($purpose) || $purpose !~ /\.\s*$/) {
     if (!$fQuiet) {
-      print STDERR "$ARGV:$.:****$cprimname: first line of comment should be a purpose sentence\n";
+      print STDERR "$filename:$line:****$cprimname: first line of comment should be a purpose sentence\n";
     }
   }
 
@@ -343,12 +363,32 @@ sub ProcessHeader( $ ) {
   $comment =~ s/^\s+//mg;
   if ($comment ne $old_comment) {
     if (!$fQuiet) {
-      print STDERR "$ARGV:$.:****$cprimname: leading spaces (indentation) is being omitted\n";
+      print STDERR "$filename:$line:****$cprimname: leading spaces (indentation) is being omitted\n";
     }
   }
 
   # Clean up trailing space, but don't warn about it
   $comment =~ s/\s+$//mg;
+
+  if ($opt_s) {
+    foreach my $word (split /\W+/, $comment) {
+      # ispell is picky about lots of stuff, so ignore them
+      next if $word =~ /^[-\#]/;
+      next if $word !~ /^\w\w+/;
+      next if $word eq uc($word);
+      next if KnownWord($word);
+      my $junk = <ISPELL_RESPONSE>; # read the blank
+      print ISPELL $word, "\n";
+      chomp (my $response = <ISPELL_RESPONSE>);
+      if ($response eq "") {
+	print STDERR "ISPELL is out of sync -- aborting its use!";
+	last;
+      }
+      if ($response !~ m/^[+\*]/) {
+	print STDERR "$filename:$line:****$cprimname: possible misspelling: $word -> $response\n";
+      }
+    }
+  }
 
   # Now want to do the markup of $comment, and set $markup_comment
   # FIXGJB: fold into testing, above
@@ -382,8 +422,6 @@ sub ProcessHeader( $ ) {
   # FIXGJB: use some sgml perl library!
 
   # Use <refentry>, <refname>, <refpurpose>, <synopsis>
-  my $filename = $ARGV;
-  my $linenum = $.;
   
   my $markup = 
 "<refentry>
@@ -402,7 +440,7 @@ sub ProcessHeader( $ ) {
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>$ARGV</filename> at line $. </para> </refsect1>
+  <para> Defined in <filename>$filename</filename> at line $line </para> </refsect1>
 </refentry>
 ";
 
@@ -423,10 +461,18 @@ EOC
 			    purpose => $purpose,
 			    markup_usage => $markup_usage,
 			    markup => $markup,
-			    file => $ARGV,
-			    line => $.,
+			    file => $filename,
+			    line => $line,
 			  };
-  push @{$file_funcs{$ARGV}}, $primname;
+  push @{$file_funcs{$filename}}, $primname;
 
   return TRUE;
+}
+
+sub KnownWord ( $ ) {
+  my ($w) = @_;
+  foreach my $ok ( @okay_words ) {
+    return TRUE if $w eq $ok;
+  }
+  return FALSE;
 }
