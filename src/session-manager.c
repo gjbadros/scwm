@@ -58,6 +58,7 @@ typedef struct SMWindowData_ {
 
 static SMWindowData *SMData;	/* the head of a list of SMWindowData el's */
 static char SMerror[256];
+static int SavePhase = 0;
 
 /* write a 32-bit quantity in network byte order */
 static void writeI32(FILE *fd, CARD32 x)
@@ -247,6 +248,9 @@ static void saveYourself2(SmcConn conn, SmPointer client_data)
   FILE *save;
   int successful = True;
 
+  if (SavePhase != 1)
+    return;
+  SavePhase = 2;
   if ((save = fopen(savename, "w")) != NULL) {
     writeI32(save, STATE_FILE_SERIAL);
     for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
@@ -264,6 +268,7 @@ static void saveYourself2(SmcConn conn, SmPointer client_data)
   }
   SmcSaveYourselfDone(conn, successful);
   FREE(savename);
+  SavePhase = 0;
 }
 #undef FUNC_NAME
 
@@ -295,12 +300,15 @@ static
 void saveYourself(SmcConn conn, SmPointer client_data, int save_type,
 		  Bool shutdown, int interact_style, Bool fast)
 {
+  SavePhase = 1;
   SmcRequestSaveYourselfPhase2(conn, &saveYourself2, NULL);
 }
 
 static
 void shutdownCancelled(SmcConn conn, SmPointer client_data)
 {
+  if (SavePhase == 1)		/* still waiting for Phase2? */
+    SmcSaveYourselfDone(conn, False);
 }
 
 static
