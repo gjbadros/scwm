@@ -1,5 +1,7 @@
 Sat Oct 24 17:08:18 1998  Robert Bihlmeyer <e9426626@stud2.tuwien.ac.at>
 
+	* configure.in: Spurious -L removed from $guile_lib_path.
+
 	* acconfig.h: Cut&Paste error fixed.
 
 Thu Oct 22 14:25:30 1998  Maciej Stachowiak  <mstachow@mit.edu>
