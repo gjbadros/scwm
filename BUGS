@@ -1,6 +1,4 @@
 
-select-window is unimplemented
-
 ! functions should be renamed to end with _x
 
 start interactive moves and resizes right, so that initial mouse motion is not
@@ -8,7 +6,5 @@ lost.
 
 Possibly stop making resizes account for decorations, so that maximize
 is happier.
-
-procedures that start with get- probably should not.
 
 there needs to be a way to remove bindings.
