@@ -1,3 +1,12 @@
+after-change-desk-hook (2 args)
+- 
+This hook is invoked whenever the current desktop is changed.
+It is called with two argument, both integers.  The first is the
+new desktop number, the second is the old desktop number.  It
+is called after the desk is changed. See also `change-desk-hook'. 
+[From scwm/virtual.c:51]
+
+
 after-new-window-hook (1 args)
 - 
 This hook is invoked after a window is created and placed.
@@ -95,7 +104,8 @@ change-desk-hook (2 args)
 - 
 This hook is invoked whenever the current desktop is changed.
 It is called with two argument, both integers.  The first is the
-new desktop number, the second is the old desktop number. 
+new desktop number, the second is the old desktop number. It is
+called before the desk is changed.  See also `after-change-desk-hook'. 
 [From scwm/virtual.c:45]
 
 
@@ -104,7 +114,7 @@ client-message-hook (3 args)
 This hook is invoked whenever Scwm receives an X/11 client message.
 It is called with three arguments: the message-type atom, the format (8, 16, or 32), 
 and the vector of data. 
-[From scwm/events.c:173]
+[From scwm/events.c:190]
 
 
 deiconify-hook (2 args)
@@ -130,7 +140,7 @@ This hook is invoked whenever the mouse pointer enters a screen edge.
 Procedures in the hook are called with one argument, one of the
 symbols 'north, 'south, 'east or 'west indicating which edge was
 entered. 
-[From scwm/virtual.c:55]
+[From scwm/virtual.c:63]
 
 
 edge-leave-hook (1 args)
@@ -139,14 +149,14 @@ This hook is invoked whenever the mouse pointer leaves a screen edge.
 Procedures in the hook are called with one argument, one of the
 symbols 'north, 'south, 'east or 'west indicating which edge was
 entered. 
-[From scwm/virtual.c:61]
+[From scwm/virtual.c:69]
 
 
 edge-scroll-hook (0 args)
 - 
 This hook is invoked whenever an edge scroll takes place.
 Procedures in the hook are called with no arguments. 
-[From scwm/virtual.c:67]
+[From scwm/virtual.c:75]
 
 
 error-hook (1 args)
@@ -242,9 +252,9 @@ one example of a procedure to use here.
 
 load-processing-hook (1 args)
 - 
-This hook is invoked for every five top-level s-exps in the startup file.
+This hook is invoked for every several top-level s-exps in the startup file.
 The hook procedures are invoked with one argument, the count of the
-s-expressions evaluated thus far. 
+s-expressions evaluated thus far. See also `set-load-processing-hook-frequency!'. 
 [From scwm/callbacks.c:51]
 
 
@@ -289,12 +299,13 @@ window, this hook should be used instead.
 [From scwm/shutdown.c:36]
 
 
-viewport-position-change-hook (2 args)
+viewport-position-change-hook (4 args)
 - 
 This hook is invoked whenever the viewport position is changed.
-It is called with two arguments, both integers, which are the x and y
-coordinates of the new viewport position in pixels. 
-[From scwm/virtual.c:50]
+It is called with four arguments, all integers.  The first two are 
+the x and y coordinates of the new viewport position in pixels and
+the second two are the change in x and y from the previous position. 
+[From scwm/virtual.c:57]
 
 
 window-close-hook (1 args)
@@ -312,7 +323,7 @@ window-enter-hook (1 args)
 This hook is invoked whenever the mouse pointer enters a top-level window.
 It is called with one argument, the window object of the window just
 entered. 
-[From scwm/events.c:163]
+[From scwm/events.c:159]
 
 
 window-focus-change-hook (1 args)
@@ -320,7 +331,15 @@ window-focus-change-hook (1 args)
 This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
 that now has the focus, or #f if no window now has the focus. 
-[From scwm/events.c:158]
+[From scwm/events.c:154]
+
+
+window-fully-obscured-hook (1 args)
+- 
+Invoked when window receives a VisibilityFullyObscured event.
+The hook procedures are invoked with one argument, the window object
+of the window that is now fully obscured. 
+[From scwm/events.c:169]
 
 
 window-leave-hook (1 args)
@@ -328,7 +347,18 @@ window-leave-hook (1 args)
 This hook is invoked whenever the mouse pointer leaves a top-level window.
 The hook procedures are invoked with one argument, the window object
 of the window just left. 
-[From scwm/events.c:168]
+[From scwm/events.c:164]
+
+
+window-partially-obscured-hook (1 args)
+- 
+Invoked when window receives a VisibilityPartiallyObscured
+event.  The hook procedures are invoked with one argument, the window
+object of the window that is now partially obscured.  Beware that this
+event happens more often than you might expect and an action procedure
+attached here should be very careful about manipulating windows in a way
+that might cause more Visibility events. 
+[From scwm/events.c:174]
 
 
 window-property-change-hook (4 args)
@@ -340,13 +370,24 @@ the old value.
 [From scwm/winprop.c:37]
 
 
+window-unobscured-hook (1 args)
+- 
+Invoked when window receives a VisibilityUnobscured event.
+The hook procedures are invoked with one argument, the window object
+of the window that is now fully visible. Beware that this
+event happens more often than you might expect and an action procedure
+attached here should be very careful about manipulating windows in a way
+that might cause more Visibility events. 
+[From scwm/events.c:182]
+
+
 X-DestroyNotify-hook (1 args)
 - 
 This hook is invoked upon DestroyNotify X events.
 It indicates a window is being destroyed.  The hook procedures are
 invoked with one argument, WIN, the window being destroyed.
 The WIN is still valid during the hook procedures. 
-[From scwm/events.c:140]
+[From scwm/events.c:136]
 
 
 X-MappingNotify-hook (0 args)
@@ -355,7 +396,7 @@ This hook is invoked whenever a MappingNotify X event is
 received. A MappingNotify event indicates a change of keymapping - in
 particular, it may indicate a change of available modifiers or mouse
 buttons. The hook procedures are invoked with no arguments. 
-[From scwm/events.c:134]
+[From scwm/events.c:130]
 
 
 X-MapRequest-hook (1 args)
@@ -364,7 +405,7 @@ This hook is invoked upon MapRequest X events.  It indicates a
 window is trying to map itself (add itself to the display).  The hook 
 procedures are invoked with one argument, WIN, the window being mapped.  
 The WIN is valid during the hook procedures. 
-[From scwm/events.c:152]
+[From scwm/events.c:148]
 
 
 X-PropertyNotify-hook (2 args)
@@ -375,7 +416,7 @@ property has changed. Watching for window property changes can be used
 to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
 that changed (as a string) and the window that it changed for. 
-[From scwm/events.c:115]
+[From scwm/events.c:111]
 
 
 X-root-PropertyNotify-hook (2 args)
@@ -389,7 +430,7 @@ procedures are invoked with two arguments: the atom for the changed
 property and a boolean telling whether the property was deleted. 
 These arguments are different from those passed to
 X-PropertyNotify-hook's procedures. 
-[From scwm/events.c:123]
+[From scwm/events.c:119]
 
 
 X-UnmapNotify-hook (1 args)
@@ -398,6 +439,6 @@ This hook is invoked upon UnmapNotify X events.  It indicates a
 window is being unmapped (removed from display).  The hook procedures
 are invoked with one argument, WIN, the window being destroyed.  The
 WIN is still valid during the hook procedures. 
-[From scwm/events.c:146]
+[From scwm/events.c:142]
 
 
