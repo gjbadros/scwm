@@ -50,6 +50,7 @@ install:
 	${INSTALL_DATA} wmconfig-menu.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} image-loaders.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} bincomm.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} flux.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} fvwm-eval.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} fvwm-module.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} module-types.scm ${scwm_scheme_dir} 
