@@ -39,6 +39,15 @@
  code, trying to keep indexes in sync with this array is
  a maintenance headache, and debugging w/ broken error messages
  is an utterly depressing notion */
+
+/* MS: the eventual intention is to use preprocessor symbols instead
+   of explicit constants to represent different errors. I've just been
+   too lazy to put them in the header. Also, it is possible to give
+   scheme objects as parameters to erros, I just haven't examined the
+   guile error system in sufficient depth to figure out the best way
+   to do it yet. Localization should be doable by initialzing this
+   array in a slightly smarter way, */
+
 static char *scwm_errors[] =
 {
   "",
@@ -73,5 +82,17 @@ scwm_error_imm(char *subr, const char *szErrMsg)
 {
   scm_error(gh_symbol2scm("scwm-error"), subr, "%s",
 	    gh_list(gh_str02scm((char *)szErrMsg), SCM_UNDEFINED),
+
+	    /* MS: this doesn't work because gh_list will return the
+	       empty list for the following call; it needs to be a
+	       list of a number, errors get a numerical index in
+	       addition to error type and parameters. */
+
 	    gh_list(SCM_UNDEFINED, SCM_UNDEFINED));
 }
+
+
+
+
+
+
