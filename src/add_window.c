@@ -484,6 +484,9 @@ AddWindow(Window w)
 	tmp_win->right_w[i] = None;
     }
 
+    /* This is redundant with what set-mini-icon! now does, should
+       probably go away. */
+#if MS_DELETION_COMMENT
     if (tmp_win->szMiniIconFile) {
       tmp_win->picMiniIcon = CachePicture(dpy, Scr.Root,
 					  szPicturePath,
@@ -491,6 +494,8 @@ AddWindow(Window w)
     } else {
       tmp_win->picMiniIcon = NULL;
     }
+#endif
+
   }
   if (tmp_win->flags & BORDER) {
     if (TexturePixmap) {
