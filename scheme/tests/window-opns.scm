@@ -48,3 +48,10 @@
    'post))
 
 
+(window-size-hints (current-window-with-focus))
+(window-size-hints (select-window-interactively))
+
+(resize-frame-to 400 400)
+(resize-to 400 400)
+(window-size)
+(window-frame-size)
