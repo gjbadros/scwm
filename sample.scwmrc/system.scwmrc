@@ -1263,8 +1263,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 (logo-remove)
 
-(use-scwm-modules gtk (gtk gtk))
-(add-hook! error-hook gtk-show-error)
+(use-gtk-error-window-for-scwm)
 ;; This is a bug binding for demonstrating above
 ;; (bind-key 'all (hyper "o") (lambda () (function-with-stupid-name)))
 
