@@ -301,10 +301,8 @@ GrabEm(enum cursor cursor)
   /* If we fall out of the loop without grabbing the pointer, its
      time to give up */
   XSync(dpy, 0);
-  if (val != GrabSuccess) {
-    return False;
-  }
-  return True;
+
+  return (val == GrabSuccess);
 }
 
 
