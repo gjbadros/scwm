@@ -18,6 +18,7 @@ AM_CONFIG_HEADER(include/config.h)
 dnl ## Checks for programs ##
 
 AC_PROG_CC
+AC_PROG_CXX
 dnl Ensure compiler sanity on pathological platforms
 AC_ISC_POSIX
 AC_AIX
@@ -58,6 +59,7 @@ AC_ARG_WITH(lispdir,
 
 CASSOWARY_INCLUDES=""
 CASSOWARY_LIBS=""
+CASSOWARY_OBJECTS=""
 
 AC_ARG_WITH(cassowary,
 [  --with-cassowary=DIR   Use Cassowary constraint solver from DIR ],
@@ -75,12 +77,14 @@ AC_ARG_WITH(cassowary,
 		*)     cas_lib_path="-L${withval}" ;;
 		esac
 		CASSOWARY_LIBS="$cas_lib_path ${withval}/../guile/cassowary_scm.o -lcassowary-scwm"
+		CASSOWARY_OBJECTS='$(cassowary_objs)'
 		AC_MSG_RESULT("${withval}")
 	fi
 ])
 
 AC_SUBST(CASSOWARY_INCLUDES)
 AC_SUBST(CASSOWARY_LIBS)
+AC_SUBST(CASSOWARY_OBJECTS)
 
 
 dnl ## Checks for libraries ##

@@ -50,6 +50,12 @@ scwm_SOURCES =  Grab.c \
                 xproperty.c \
 		xrm.c
 
+cassowary_srcs = constraint-primitives.cc scwm-constraints.cc 
+
+cassowary_objs = $(cassowary_srcs:.cc=.o)
+
+EXTRA_scwm_SOURCES = $(cassowary_srcs)
+
 noinst_HEADERS = Grab.h ICCCM.h add_window.h binding.h borders.h \
 callbacks.h color.h colormaps.h colors.h complex.h decor.h \
 decorations.h deskpage.h drawmenu.h errors.h events.h face.h focus.h \
@@ -61,16 +67,18 @@ menu.h shutdown.h string_token.h syscompat.h system.h \
 util.h virtual.h window.h xmisc.h
 
 
-scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
+scwm_LDADD = @CASSOWARY_OBJECTS@ @x_ldflags@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
 	      @x_libs@ @GUILE_LIBS@ @CASSOWARY_LIBS@
+
+scwm_DEPENDENCIES = @CASSOWARY_OBJECTS@
 
 INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 
 guile_snarfs = add_window.x binding.x callbacks.x color.x \
 decor.x deskpage.x events.x face.x font.x image.x menu.x menuitem.x \
 miscprocs.x module-interface.x move.x placement.x resize.x \
-screen.x shutdown.x window.x xproperty.x xrm.x
-
+screen.x shutdown.x window.x xproperty.x xrm.x constraint-primitives.x
+# FIXME:casso
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
 	$(guile_snarfs)
@@ -89,6 +97,10 @@ SUFFIXES = .x
 # for C++ prototype extraction
 %.x: %.c
 	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
+
+%.x: %.cc
+	CC=$(CXX) \
+	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CXXFLAGS) $< > $@
 
 ## FIXMS: This really sucks, but it's the best we can do until
 ## Automake gets a way to compute dependencies with -MG
