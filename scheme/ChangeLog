@@ -1,3 +1,11 @@
+Fri Aug 21 15:59:15 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* ALL: Added $Id$ as first line, canonicalize copyrights (add
+	1998, me where appropriate)
+
+	* flux.scm, face.scm, bincomm.scm, base.scm, auto-raise.scm: Added
+ 	some documentation, changed formal param "w" to "win" as useful.
+
 Fri Aug 14 19:24:34 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* wininfo.scm, wmconfig-menu.scm: Document a proc in each.
