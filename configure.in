@@ -247,7 +247,7 @@ SCWM_ARG_PATH_MAYBE_EMPTY(cassowary,
 	"no")  cas_lib_path="-L${cassolibdir} -R ${cassolibdir}" ;;
 	*)     cas_lib_path="-L${cassolibdir}" ;;
 	esac
-	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++"
+	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++ -lGTL"
 	CASSOWARY_OBJECTS='$(cassowary_objs)'
 ])
 
@@ -625,6 +625,7 @@ AC_OUTPUT(Makefile \
           sample.scwmrc/Makefile \
           scwm/Makefile \
           scheme/Makefile \
+          pixmaps/Makefile \
           app/Makefile \
 	  modules/Makefile \
 	  modules/background/Makefile \

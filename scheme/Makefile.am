@@ -16,6 +16,7 @@ shutdown-opts.scm simplebiff.scm simple-constraints.scm snap.scm sort.scm stacki
 std-menus.scm stringops.scm style-options.scm style.scm \
 theme-impl.scm themes.scm tile.scm time-convert.scm ui-constraints-buttons.scm \
 ui-constraints-classes.scm ui-constraints-toggle-menu.scm \
+ui-constraints-gtk-toggle-menu.scm \
 ui-constraints.scm virtual.scm window-locations.scm window-selection.scm \
 wininfo.scm winlist.scm winops.scm wmconfig-menu.scm xprop-extras.scm
 
