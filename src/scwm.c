@@ -1411,7 +1411,7 @@ Done(int restart, char *command)
       j = 0;
       done = 0;
       while ((g_argv[j] != NULL) && (i < 8)) {
-	if (STREQ(g_argv[j], "-s")) {
+	if (!STREQ(g_argv[j], "-s")) {
 	  my_argv[i] = g_argv[j];
 	  i++;
 	  j++;
