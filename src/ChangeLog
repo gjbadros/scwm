@@ -1,3 +1,25 @@
+Sat Jul 17 03:09:33 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* virtual.c (MoveViewport_internal): Added comment.
+
+	* placement.c: Fix off-by-one bug in CleverPlacement -- was
+	correcting for bw differences, but that seems wrong given that the 
+	algorithm's job is to figure out where the *frame* goes.
+
+	* window.c (s_get_window): Fix bug -- was using select_p after
+	copying the bool into a C boolean.  Also was assumming that
+	select_viewport_position() puts SCM_BOOL_F in car if a scheme
+	window object was not selected -- now test the car with WINDOWP
+	since a window id can be returned.
+
+	* binding.c: Added `set-mod-mask-numlock!',
+	`set-mod-mask-scrolllock!' for overriding the C algorithm, if
+	necessary. 
+
+	* add_window.c: Fix off-by-one bug in setting frame_height that
+	was resulting in un-titled windows shrinking by 1 pixel vertically 
+	at each restart.
+
 Sat Jul 17 02:08:08 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* binding.c: Only grab buttons when context is C_WINDOW.  Ignore
