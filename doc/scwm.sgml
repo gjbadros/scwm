@@ -27,7 +27,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release pre-1.0</releaseinfo>
-    <pubdate>05 December 1999</pubdate>
+    <pubdate>07 December 1999</pubdate>
     <copyright>
       <year>1997-1999</year>
       <holder>Greg J. Badros and Maciej Stachowiak</holder>
@@ -1375,7 +1375,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="flash-window"><function>flash-window</function></link> -- Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.</para></listitem>
       <listitem><para><link linkend="window-flashing-p"><function>window-flashing?</function></link> -- Return <literal>#t</literal> iff WIN is currently flashing, <literal>#f</literal> otherwise.</para></listitem>
       <listitem><para><link linkend="unflash-window"><function>unflash-window</function></link> -- Revert WIN's titlebar and boundary color to state before a <link linkend="flash-window"><function>flash-window</function></link>.</para></listitem>
-      <listitem><para><link linkend="stop-flashing-window"><function>stop-flashing-window</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="stop-flashing-window"><function>stop-flashing-window</function></link> -- Turn off window flashing of WIN.</para></listitem>
       <listitem><para><link linkend="raise-and-stop-flashing"><function>raise-and-stop-flashing</function></link> -- Turn off window flashing of WIN and raise it.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/flux-gtk.scm</title> <itemizedlist>
@@ -1461,6 +1461,9 @@ The shaped XPM menu look.
       <listitem><para><link linkend="gnome-install-window-styles"><function>gnome-install-window-styles</function></link> -- Initialize various window styles for GNOME support.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/gnome-panel-menus.scm</title> <itemizedlist>
+      <listitem><para><link linkend="make-all-submenus"><function>make-all-submenus</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="make-menu-from-structured-directory"><function>make-menu-from-structured-directory</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="make-menu-from-list-of-structured-directories"><function>make-menu-from-list-of-structured-directories</function></link> -- No documentation supplied.</para></listitem>
       <listitem><para><link linkend="make-menu-gnome-system"><function>make-menu-gnome-system</function></link> -- No documentation supplied.</para></listitem>
       <listitem><para><link linkend="make-menu-another-level"><function>make-menu-another-level</function></link> -- No documentation supplied.</para></listitem>
       <listitem><para><link linkend="make-menu-gnome-user"><function>make-menu-gnome-user</function></link> -- No documentation supplied.</para></listitem>
@@ -2962,7 +2965,7 @@ returned.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/callbacks.c"><filename>src/callbacks.c</filename></ulink>
-  at line 921 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
+  at line 927 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3073,7 +3076,7 @@ called with no arguments. A handle suitable for passing to
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/callbacks.c"><filename>src/callbacks.c</filename></ulink>
-  at line 772 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
+  at line 778 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4386,12 +4389,13 @@ it reverts to the (inefficient) implementation of <link linkend="program-exists-
     <refpurpose>Invoke THUNK interactively.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(call-interactively thunk)</synopsis>
+    <synopsis>(call-interactively thunk #&amp;optional debug)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
   Invoke <parameter>thunk</parameter> interactively.
+Write a debug message if <parameter>debug</parameter> is <literal>#t</literal>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -4585,7 +4589,7 @@ separators, so the url gets chopped off at the first literal comma.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints-buttons)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-buttons.scm"><filename>scheme/ui-constraints-buttons.scm</filename></ulink>
-  at line 191 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-buttons.scm">CVS log</ulink>)</para> </refsect2>
+  at line 188 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-buttons.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5268,7 +5272,7 @@ SB should be a handle returned from <link linkend="run-ScwmButtons"><function>ru
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-buttons.scm"><filename>scheme/ui-constraints-buttons.scm</filename></ulink>
-  at line 204 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-buttons.scm">CVS log</ulink>)</para> </refsect2>
+  at line 201 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-buttons.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8344,7 +8348,7 @@ made visible, otherwise initialization will not occur.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/callbacks.c"><filename>src/callbacks.c</filename></ulink>
-  at line 981 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
+  at line 987 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8505,7 +8509,7 @@ button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/callbacks.c"><filename>src/callbacks.c</filename></ulink>
-  at line 831 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
+  at line 837 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10326,7 +10330,7 @@ spawns a zsh process to get the list of files in the $PATH very quickly.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints-buttons)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-buttons.scm"><filename>scheme/ui-constraints-buttons.scm</filename></ulink>
-  at line 141 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-buttons.scm">CVS log</ulink>)</para> </refsect2>
+  at line 138 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-buttons.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11264,7 +11268,7 @@ of the directions.
   <title>Implementation Notes</title>
   <para> Module: (app scwm key-mover)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/key-mover.scm"><filename>scheme/key-mover.scm</filename></ulink>
-  at line 13 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/key-mover.scm">CVS log</ulink>)</para> </refsect2>
+  at line 14 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/key-mover.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11289,7 +11293,7 @@ of the directions.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/key-mover.scm"><filename>scheme/key-mover.scm</filename></ulink>
-  at line 28 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/key-mover.scm">CVS log</ulink>)</para> </refsect2>
+  at line 29 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/key-mover.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12178,6 +12182,27 @@ the window context in the usual way if not specified.
   </refsect1>
 </refentry>
 
+<refentry id="make-all-submenus">
+  <refnamediv>
+    <refname>make-all-submenus</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-all-submenus structured-list #&amp;optional title)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm gnome-panel-menus)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
+  at line 542 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="make-color">
   <refnamediv>
     <refname>make-color</refname>
@@ -12510,7 +12535,51 @@ use the empty list as the element.
   <title>Implementation Notes</title>
   <para> Module: (app scwm gnome-panel-menus)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
-  at line 361 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  at line 608 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="make-menu-from-list-of-structured-directories">
+  <refnamediv>
+    <refname>make-menu-from-list-of-structured-directories</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-menu-from-list-of-structured-directories directory-list
+							       title
+							       #&amp;optional title-list)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm gnome-panel-menus)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
+  at line 577 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="make-menu-from-structured-directory">
+  <refnamediv>
+    <refname>make-menu-from-structured-directory</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-menu-from-structured-directory directory #&amp;optional title)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm gnome-panel-menus)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
+  at line 564 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12555,7 +12624,7 @@ If FORCE? is <literal>#t</literal>, then the cached theme file is reloaded.
   <title>Implementation Notes</title>
   <para> Module: (app scwm gnome-panel-menus)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
-  at line 353 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  at line 601 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12578,7 +12647,7 @@ If FORCE? is <literal>#t</literal>, then the cached theme file is reloaded.
   <title>Implementation Notes</title>
   <para> Module: (app scwm gnome-panel-menus)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
-  at line 369 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  at line 615 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12601,7 +12670,7 @@ If FORCE? is <literal>#t</literal>, then the cached theme file is reloaded.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
-  at line 377 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  at line 622 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15581,7 +15650,7 @@ See also <link linkend="prev-window"><function>prev-window</function></link>.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints-classes)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-classes.scm"><filename>scheme/ui-constraints-classes.scm</filename></ulink>
-  at line 209 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-classes.scm">CVS log</ulink>)</para> </refsect2>
+  at line 217 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-classes.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19246,7 +19315,7 @@ input hook may safely remove itself.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/callbacks.c"><filename>src/callbacks.c</filename></ulink>
-  at line 949 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
+  at line 955 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19335,7 +19404,7 @@ timer hook that has already been triggered.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/callbacks.c"><filename>src/callbacks.c</filename></ulink>
-  at line 806 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
+  at line 812 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19493,7 +19562,7 @@ constraints is reset to empty).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/callbacks.c"><filename>src/callbacks.c</filename></ulink>
-  at line 966 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
+  at line 972 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19585,7 +19654,7 @@ if your Emacs hangs when you try evaluating a scwm expression).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/callbacks.c"><filename>src/callbacks.c</filename></ulink>
-  at line 820 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
+  at line 826 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20238,7 +20307,7 @@ errors.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/callbacks.c"><filename>src/callbacks.c</filename></ulink>
-  at line 719 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
+  at line 725 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23089,7 +23158,7 @@ Returns the old value.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/callbacks.c"><filename>src/callbacks.c</filename></ulink>
-  at line 749 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
+  at line 755 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/callbacks.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -25646,7 +25715,7 @@ See <link linkend="property-changed-respond"><function>property-changed-respond<
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints-buttons)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-buttons.scm"><filename>scheme/ui-constraints-buttons.scm</filename></ulink>
-  at line 196 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-buttons.scm">CVS log</ulink>)</para> </refsect2>
+  at line 193 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-buttons.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -25787,7 +25856,7 @@ window context in the usual way if not specified.
 <refentry id="stop-flashing-window">
   <refnamediv>
     <refname>stop-flashing-window</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Turn off window flashing of WIN.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(stop-flashing-window #&amp;optional (win (get-window)))</synopsis>
@@ -25795,7 +25864,11 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Turn off window flashing of WIN.
+Has no effect if WIN is not flashing.
+N.B. flashing and highlight-selection of windows currently use the
+same mechanism, so turning off flashing will also visually un-select
+WIN.
   </para>
   <refsect2>
   <title>Implementation Notes</title>

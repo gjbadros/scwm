@@ -266,7 +266,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 `reset-hook!', and `run-hook'. 
 
-[From src/callbacks.c:322]
+[From src/callbacks.c:328]
 
 
 Image Loaders
@@ -306,7 +306,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From src/callbacks.c:907]
+[From src/callbacks.c:913]
 
 
 Interactive specifications
@@ -521,7 +521,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From src/callbacks.c:763]
+[From src/callbacks.c:769]
 
 
 Viewports

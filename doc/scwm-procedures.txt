@@ -69,7 +69,7 @@ PORT. PORT must be open, it must be an input port, and it must be a
 file port (this includes pipes and sockets, but not string ports or
 soft ports). A handle suitable for passing to `remove-input-hook!' is
 returned.
-[From src/callbacks.c:921]
+[From src/callbacks.c:927]
 
 (add-left-button button-face hook #&optional (immed-hook #f))
 - (app scwm titlebar-buttons)
@@ -100,7 +100,7 @@ Add a timer hook to call PROC once sometime after MSEC milliseconds.
 When at least MSEC milliseconds have passed, procedure PROC will be
 called with no arguments. A handle suitable for passing to
 `remove-timer-hook!' is returned.
-[From src/callbacks.c:772]
+[From src/callbacks.c:778]
 
 (add-window-both-option key handler #&optional (cumulative? #f))
 - (app scwm style-options)
@@ -525,9 +525,10 @@ print to stdout on hits and misses.  You must call
 it reverts to the (inefficient) implementation of `program-exists?'.
 [From scheme/path-cache.scm:41]
 
-(call-interactively thunk)
+(call-interactively thunk #&optional debug)
 - Built-in Primitive
 Invoke THUNK interactively.
+Write a debug message if DEBUG is #t.
 [From src/callbacks.c:228]
 
 (call-with-decor decor thunk)
@@ -620,7 +621,7 @@ separators, so the url gets chopped off at the first literal comma.
 (change-ui-constraints-buttons #&key (vertical toggle-vertical) (pixmap toggle-pixmap))
 - (app scwm ui-constraints-buttons)
 No documentation supplied.
-[From scheme/ui-constraints-buttons.scm:191]
+[From scheme/ui-constraints-buttons.scm:188]
 
 (char-value ch)
 - (app scwm number-convert)
@@ -823,7 +824,7 @@ Close a ScwmDeskButtons object that was returned from `run-ScwmDeskButtons'.
 (close-ui-constraints-buttons)
 - 
 No documentation supplied.
-[From scheme/ui-constraints-buttons.scm:204]
+[From scheme/ui-constraints-buttons.scm:201]
 
 (close-window #&optional (win (get-window #t #t #t)))
 - (app scwm winops)
@@ -1707,7 +1708,7 @@ No documentation supplied.
 (get-input-hooks-list)
 - Built-in Primitive
 Return the input-hooks list.
-[From src/callbacks.c:981]
+[From src/callbacks.c:987]
 
 (get-key-event)
 - Built-in Primitive
@@ -1756,7 +1757,7 @@ Prompt for a register name and return a corresponding symbol.
 (get-timer-hooks-list)
 - Built-in Primitive
 Return the timer-hooks list.
-[From src/callbacks.c:831]
+[From src/callbacks.c:837]
 
 (get-ui-constraint-class-by-name name)
 - (app scwm ui-constraints)
@@ -2265,7 +2266,7 @@ spawns a zsh process to get the list of files in the $PATH very quickly.
 (initialize-ui-constraints-buttons #&key (vertical #f) (pixmap #t) (show #f))
 - (app scwm ui-constraints-buttons)
 No documentation supplied.
-[From scheme/ui-constraints-buttons.scm:141]
+[From scheme/ui-constraints-buttons.scm:138]
 
 (insert-undo-global)
 - (app scwm undo)
@@ -2531,7 +2532,7 @@ MODIFIERS specifies which modifiers must be depressed for the bindings
 to be active.
 LEFT, DOWN, UP, and RIGHT are the four keysym names to use for each
 of the directions.
-[From scheme/key-mover.scm:13]
+[From scheme/key-mover.scm:14]
 
 (key-viewport-moves modifiers pct-of-screen left down up right)
 - 
@@ -2540,7 +2541,7 @@ MODIFIERS specifies which modifiers must be depressed for the bindings
 to be active.
 LEFT, DOWN, UP, and RIGHT are the four keysym names to use for each
 of the directions.
-[From scheme/key-mover.scm:28]
+[From scheme/key-mover.scm:29]
 
 (keycode->keysym keycode)
 - (app scwm base)
@@ -2803,6 +2804,11 @@ the window context in the usual way if not specified.
 Restack window W immediately below W2.
 [From scheme/stacking.scm:58]
 
+(make-all-submenus structured-list #&optional title)
+- (app scwm gnome-panel-menus)
+No documentation supplied.
+[From scheme/gnome-panel-menus.scm:542]
+
 (make-color cname)
 - Built-in Primitive
 Return the color object corresponding to the X color specifier CNAME.
@@ -2913,7 +2919,19 @@ EXTRA-OPTIONS can be anything understood by the menu-look
 					 (title "AnotherLevel Menus"))
 - (app scwm gnome-panel-menus)
 No documentation supplied.
-[From scheme/gnome-panel-menus.scm:361]
+[From scheme/gnome-panel-menus.scm:608]
+
+(make-menu-from-list-of-structured-directories directory-list
+							       title
+							       #&optional title-list)
+- (app scwm gnome-panel-menus)
+No documentation supplied.
+[From scheme/gnome-panel-menus.scm:577]
+
+(make-menu-from-structured-directory directory #&optional title)
+- (app scwm gnome-panel-menus)
+No documentation supplied.
+[From scheme/gnome-panel-menus.scm:564]
 
 (make-menu-global-theme #&optional force?)
 - (app scwm std-menus)
@@ -2926,21 +2944,21 @@ If FORCE? is #t, then the cached theme file is reloaded.
 					(title "System Menus"))
 - (app scwm gnome-panel-menus)
 No documentation supplied.
-[From scheme/gnome-panel-menus.scm:353]
+[From scheme/gnome-panel-menus.scm:601]
 
 (make-menu-gnome-user #&optional
 				      (path (string-append (getenv "HOME") "/.gnome/apps"))
 				      (title "User Menus"))
 - (app scwm gnome-panel-menus)
 No documentation supplied.
-[From scheme/gnome-panel-menus.scm:369]
+[From scheme/gnome-panel-menus.scm:615]
 
 (make-menu-kde #&optional
 			       (path "/usr/share/applnk")
 			       (title "KDE Menus"))
 - 
 No documentation supplied.
-[From scheme/gnome-panel-menus.scm:377]
+[From scheme/gnome-panel-menus.scm:622]
 
 (make-menu-window-theme #&optional force?)
 - (app scwm std-menus)
@@ -3920,7 +3938,7 @@ See also `prev-window'.
 (nonant->dirvector nonant)
 - (app scwm ui-constraints-classes)
 No documentation supplied.
-[From scheme/ui-constraints-classes.scm:209]
+[From scheme/ui-constraints-classes.scm:217]
 
 (nonant->gravity nonant)
 - (app scwm winops)
@@ -4977,7 +4995,7 @@ image object, or #f if it succeeds.
 Remove an input hook identified by HANDLE.
 HANDLE should be an object that was returned by `add-input-hook!'. An
 input hook may safely remove itself.
-[From src/callbacks.c:949]
+[From src/callbacks.c:955]
 
 (remove-motion-handler! proc)
 - Built-in Primitive
@@ -5002,7 +5020,7 @@ Remove a timer hook identified by HANDLE.
 The HANDLE should be an object that was returned by
 `add-timer-hook!'. No warning or error will occur if HANDLE is for a
 timer hook that has already been triggered.
-[From src/callbacks.c:806]
+[From src/callbacks.c:812]
 
 (rename-window-interactively #&optional (win (get-window)))
 - (app scwm flux-gtk)
@@ -5048,7 +5066,7 @@ constraints is reset to empty).
 (reset-input-hook!)
 - Built-in Primitive
 Remove all procedures from the input hook.
-[From src/callbacks.c:966]
+[From src/callbacks.c:972]
 
 (reset-motion-handlers!)
 - Built-in Primitive
@@ -5076,7 +5094,7 @@ if your Emacs hangs when you try evaluating a scwm expression).
 (reset-timer-hook!)
 - Built-in Primitive
 Remove all timer-hook procedures.
-[From src/callbacks.c:820]
+[From src/callbacks.c:826]
 
 (reset-ui-constraint-classes!)
 - (app scwm ui-constraints)
@@ -5281,7 +5299,7 @@ Each individual top-level-expression is evaluated separately and all
 errors are trapped and displayed.  You should use this procedure if
 you need to make sure most of a file loads, even if it may contain
 errors.
-[From src/callbacks.c:719]
+[From src/callbacks.c:725]
 
 (save-preferences #&optional 
 				 (filename (string-append (getenv "HOME") "/.scwm-options")))
@@ -6148,7 +6166,7 @@ specified.
 - Built-in Primitive
 Invoke hooks on `load-processing-hook' every NUM-LINES lines.
 Returns the old value.
-[From src/callbacks.c:749]
+[From src/callbacks.c:755]
 
 (set-markwin-offset! win nonant markwin)
 - (app scwm window-selection)
@@ -6929,7 +6947,7 @@ See `property-changed-respond' and `X-PropertyNotify-hook'.
 (start-ui-constraints-buttons)
 - (app scwm ui-constraints-buttons)
 No documentation supplied.
-[From scheme/ui-constraints-buttons.scm:196]
+[From scheme/ui-constraints-buttons.scm:193]
 
 (start-xlogo)
 - (app scwm flux)
@@ -6971,7 +6989,11 @@ Turn off animating windows to new positions following re-solves.
 
 (stop-flashing-window #&optional (win (get-window)))
 - (app scwm flash-window)
-No documentation supplied.
+Turn off window flashing of WIN.
+Has no effect if WIN is not flashing.
+N.B. flashing and highlight-selection of windows currently use the
+same mechanism, so turning off flashing will also visually un-select
+WIN.
 [From scheme/flash-window.scm:71]
 
 (stop-property-respond)
