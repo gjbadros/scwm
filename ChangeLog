@@ -1,3 +1,17 @@
+Fri Aug 14 10:19:42 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* INSTALL: Added note about using ./configure --help for list of
+	  configuration options
+
+	* THANKS: Move Francesco Tapparo to top group of people since he
+	  maintains the Debian scwm package in addition to providing bug
+	  reports and patches
+
+	* configure.in: Lots of bug fixes -- no more use of
+	  ac_prev... what was that var?  Ensure directory parameters are
+	  not just "yes" or "no" (i.e., omitted dir arg), and add
+	  --with-scwmrcdir option (Thanks Francesco Tapparo)
+
 Wed Aug 12 09:36:21 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract.scm:  Added, and updated with newest
