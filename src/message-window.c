@@ -43,13 +43,31 @@ mark_msgwindow(SCM obj)
   return SCM_BOOL_F;
 }
 
-SCM message_window_hide_x(SCM mwn);
+/* UnmapMessageWindow
+   Unmap a message window.
+*/
+void
+UnmapMessageWindow(scwm_msgwindow* msg)
+{
+  XUnmapWindow(dpy, msg->win);
+}
+
 
 size_t 
 free_msgwindow(SCM obj)
 {
   scwm_msgwindow *msg = MSGWINDOW(obj);
-  message_window_hide_x(obj);
+#ifndef NDEBUG
+  Window w = msg->win;
+  if (FXIsWindowMapped(dpy,w)) {
+    char *sz = gh_scm2newstr(msg->message,NULL);
+    scwm_msg(WARN,"free_msgwindow","Message window %s is visible when freeing.",
+             sz);
+    gh_free(sz);
+    UnmapMessageWindow(msg);
+    XFlush(dpy);
+  }
+#endif
 
   FREE(msg);
 
@@ -224,16 +242,6 @@ MapMessageWindow(scwm_msgwindow* msg)
   XMapRaised(dpy, msg->win);
 }
 
-
-/* UnmapMessageWindow
-
-   Unmap a message window.
-*/
-void
-UnmapMessageWindow(scwm_msgwindow* msg)
-{
-  XUnmapWindow(dpy, msg->win);
-}
 
 /*  GJB:FIXME:: below should get defaults from a prototype object, not
     the ScreenInfo struct */

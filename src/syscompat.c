@@ -23,6 +23,7 @@
 #include <config.h>
 #endif
 
+#include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -67,6 +68,21 @@ usleep(unsigned long n)
   (void) select(1, 0, 0, 0, &value);
 }
 #endif /* !HAVE_USLEEP */
+
+#ifndef HAVE_SETENV
+int
+setenv(const char *name, const char *value, int overwrite)
+{
+  int cch = strlen(name)+strlen(value)+2;
+  int answer;
+  char *szEval = malloc(cch*sizeof(char));
+  sprintf(szEval,"%s=%s",name,value);
+  answer = putenv(szEval);
+  free(szEval);
+  return answer;
+}
+#endif
+
 
 #ifndef HAVE_STRCASECMP
 int 
