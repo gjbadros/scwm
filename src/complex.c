@@ -29,6 +29,8 @@
  * clicking, but is moving the cursor
  *
  ****************************************************************************/
+/* FIXGJB: a single, slow click with no movement should
+   still cound as a single click */
 Bool 
 IsClick(int x, int y, unsigned EndMask, XEvent * d)
 {
@@ -44,7 +46,7 @@ IsClick(int x, int y, unsigned EndMask, XEvent * d)
 	 (x - xcurrent < 3) && (x - xcurrent > -3) &&
 	 (y - ycurrent < 3) && (y - ycurrent > -3) &&
 	 ((lastTimestamp - t0) < Scr.ClickTime)) {
-    sleep_a_little(20000);
+    sleep_ms(20);
     total += 20;
     if (XCheckMaskEvent(dpy, EndMask, d)) {
       StashEventTime(d);

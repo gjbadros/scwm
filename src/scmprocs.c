@@ -59,6 +59,7 @@ init_scwm_procs(void)
   gh_new_procedure0_1("set-menu-mwm-style!", set_menu_mwm_style);
   /* FIXGJB: rubber-band-mask is a better name */
   gh_new_procedure1_0("set-xor-value!", set_xor_value);
+  gh_new_procedure("set-animation!", set_animation_x, 1,1,0);
   gh_new_procedure3_0("bind-key", bind_key);
   gh_new_procedure2_0("unbind-key", unbind_key);
   gh_new_procedure3_0("bind-mouse", bind_mouse);
@@ -88,7 +89,7 @@ init_scwm_procs(void)
   gh_new_procedure0_1("un-window-shade", un_window_shade);
   gh_new_procedure0_1("window-shaded?", window_shaded_p);
 #endif /* WINDOWSHADE */
-  gh_new_procedure2_1("move-to", move_to);
+  gh_new_procedure("move-to", move_to,2,3,0);
   gh_new_procedure0_1("interactive-move", interactive_move);
   gh_new_procedure2_1("resize-to", resize_to);
   gh_new_procedure0_1("interactive-resize", interactive_resize);

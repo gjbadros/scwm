@@ -354,10 +354,29 @@ extern Atom XA_SCWM_EXECUTE;
    ** purposes, uncomment the next line
  */
 /* #define SCWM_DEBUG_MSGS */
-#ifdef SCWM_DEBUG_MSGS
-#define DBUG(x,y) scwm_msg(DBG,x,y)
+#ifdef __GNUC__
+#  ifdef SCWM_DEBUG_MSGS
+#    define DBUG(x,y..) scwm_msg(DBG,x,## y)
+#  else
+#    define DBUG(x,y)		/* no messages */
+#  endif
 #else
-#define DBUG(x,y)		/* no messages */
+/* Not GNUC, so no varargs macros */
+#  ifdef SCWM_DEBUG_MSGS
+#    define DBUG(x,y) scwm_msg(DBG,x,y)
+#    define DBUG(x,y,a) scwm_msg(DBG,x,y,a)
+#    define DBUG(x,y,a,b) scwm_msg(DBG,x,y,a,b)
+#    define DBUG(x,y,a,b,c) scwm_msg(DBG,x,y,a,b,c)
+#    define DBUG(x,y,a,b,c,d) scwm_msg(DBG,x,y,a,b,c,d)
+#    define DBUG(x,y,a,b,c,d,e) scwm_msg(DBG,x,y,a,b,c,d,e)
+#  else
+#    define DBUG(x,y)
+#    define DBUG(x,y,a)
+#    define DBUG(x,y,a,b)
+#    define DBUG(x,y,a,b,c)
+#    define DBUG(x,y,a,b,c,d)
+#    define DBUG(x,y,a,b,c,d,e)
+#  endif
 #endif
 
 /* end of configure.h */

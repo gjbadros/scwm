@@ -18,6 +18,7 @@
 #include <config.h>
 
 #include <stdio.h>
+#include <unistd.h>
 #include <signal.h>
 #include <string.h>
 #include <X11/keysym.h>
@@ -34,6 +35,74 @@ extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;
 Bool NeedToResizeToo;
 
+float rgpctMovementDefault[32] = {
+    -.01, 0, .01, .03,.08,.18,.3,.45,.60,.75,.85,.90,.94,.97,.99,1.0 
+    /* must end in 1.0 */
+  };
+
+int cmsDelayDefault = 10; /* milliseconds */
+
+/* Perform the movement of the window. ppctMovement *must* have a 1.0 entry
+   somewhere in ins list of floats, and movement will stop when it hits a 1.0 entry */
+void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
+			Bool fWarpPointerToo, int cmsDelay, float *ppctMovement )
+{
+  int pointerX, pointerY;
+  int currentX, currentY;
+  int lastX, lastY;
+  int deltaX, deltaY;
+
+  /* set our defaults */
+  if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
+  if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
+
+  if (startX < 0 || startY < 0) 
+    {
+    XGetGeometry(dpy, w, &JunkRoot, &currentX, &currentY, 
+		 &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
+    if (startX < 0) startX = currentX;
+    if (startY < 0) startY = currentY;
+    }
+
+  deltaX = endX - startX;
+  deltaY = endY - startY;
+  lastX = startX;
+  lastY = startY;
+
+  do {
+    currentX = startX + deltaX * (*ppctMovement);
+    currentY = startY + deltaY * (*ppctMovement);
+    XMoveWindow(dpy,w,currentX,currentY);
+    if (fWarpPointerToo) {
+      XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
+		    &JunkX,&JunkY,&pointerX,&pointerY,&JunkMask);
+      pointerX += currentX - lastX;
+      pointerY += currentY - lastY;
+      XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
+		   pointerX,pointerY);
+    }
+    XFlush(dpy);
+    sleep_ms(cmsDelay);
+#ifdef GJB_ALLOW_ABORTING_ANIMATED_MOVES
+    /* this didn't work for me -- maybe no longer necessary since
+       we warn the user when they use > .5 seconds as a between-frame delay
+       time */
+    if (XCheckMaskEvent(dpy, 
+			ButtonPressMask|ButtonReleaseMask|
+			KeyPressMask,
+			&Event)) {
+      /* finish the move immediately */
+      XMoveWindow(dpy,w,endX,endY);
+      XFlush(dpy);
+      return;
+    }
+#endif
+    lastX = currentX;
+    lastY = currentY;
+    }
+  while (*ppctMovement != 1.0 && ppctMovement++);
+ 
+}
 #if MS_DELETION_COMMENT
 /****************************************************************************
  *

@@ -1,6 +1,4 @@
 
-
-
 /****************************************************************************
  * This module has been significantly modified by Maciej Stachowiak.
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
@@ -178,15 +176,12 @@ select_window(SCM kill_p)
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("select-window", 1, kill_p);
   }
-  if (DeferExecution(&ev,
-		     &w,
-		     &tmp_win,
-		     &context,
-		     (kill_p != SCM_BOOL_F ? DESTROY : SELECT)
-		     ,ButtonRelease)) {
+  if (DeferExecution(&ev, &w, &tmp_win, &context,
+		     (kill_p != SCM_BOOL_F ? DESTROY : SELECT),
+		     ButtonRelease)) {
   }
   /* XXX - this needs to done right.  (Was != NULL before --10/24/97 gjb ) */
-  if (tmp_win->schwin != SCM_UNDEFINED) {
+  if (tmp_win && tmp_win->schwin != SCM_UNDEFINED) {
     SCM_REALLOW_INTS;
     return (tmp_win->schwin);
   } else {
@@ -501,11 +496,62 @@ move_finalize(Window w, ScwmWindow * tmp_win, int x, int y)
   }
 }
 
+
+
+extern float rgpctMovementDefault[32];
+extern int cpctMovementDefault;
+extern int cmsDelayDefault;
+extern int c10msDelaysBeforePopup;
+
+
+/* set animation parameters */
+SCM
+set_animation_x(SCM vector)
+{
+  int citems;
+  int i;
+  int iarg = 1;
+/*
+  FIXGJB: make a scheme-variable move-animation-delay get used instead
+  if (!gh_int_p(delay) && !gh_boolean_p(delay)) {
+    scm_wrong_type_arg(__FUNCTION__,iarg++,delay);
+  }
+  */
+  if (!gh_vector_p(vector)) {
+    scm_wrong_type_arg(__FUNCTION__,iarg++,vector);
+  }
+/*
+  if (gh_int_p(delay)) {
+    cmsDelayDefault = gh_scm2int(delay);
+  }
+  */
+  citems = gh_vector_length(vector);
+  for (i=0; i<citems; i++) {
+    SCM val = gh_vref(vector,gh_int2scm(i));
+    if (!gh_number_p(val)) {
+      scm_wrong_type_arg(__FUNCTION__,iarg-1,vector);
+    }
+    /* FIXGJB: also check < 2, perhaps (don't want to
+      check < 1, since we might want to overshoot and then come back */
+    rgpctMovementDefault[i] = (float) gh_scm2double(val);
+  }
+  /* Ensure that we end up 100% of the way to our destination */
+  if (i>0 && rgpctMovementDefault[i-1] != 1.0) {
+    rgpctMovementDefault[i++] = 1.0;
+  }
+  return SCM_UNDEFINED;
+}
+ 
+
 SCM 
-move_to(SCM x, SCM y, SCM win)
+move_to(SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p)
 {
   ScwmWindow *tmp_win;
   Window w;
+  Bool fMovePointer = False;
+  Bool fAnimated = False;
+  int startX, startY;
+  int destX, destY;
 
   SCM_REDEFER_INTS;
   VALIDATEN(win, 3, "move-to");
@@ -517,6 +563,27 @@ move_to(SCM x, SCM y, SCM win)
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("move-to", 2, y);
   }
+#ifdef GJB_BE_ANAL_ABOUT_BOOLS
+  /* FIXGJB: I took this code out so I can say:
+     (move-to x y (get-window) 'animated 'move-pointer)
+     Is there a better way? */
+  if (!gh_boolean_p(animated_p)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg("move-to", 4, animated_p);
+  }
+  if (!gh_boolean_p(move_pointer_too_p)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg("move-to", 5, move_pointer_too_p);
+  }
+#endif
+  if (animated_p == SCM_UNDEFINED) {
+    /* FIXGJB: make an option for allowing the default to be animated */
+    animated_p = SCM_BOOL_F;
+  }
+  if (move_pointer_too_p == SCM_UNDEFINED) {
+    /* This is the only sensible default */
+    move_pointer_too_p = SCM_BOOL_F;
+  }
   tmp_win = SCWMWINDOW(win);
   w = tmp_win->frame;
   if (tmp_win->flags & ICONIFIED) {
@@ -526,7 +593,33 @@ move_to(SCM x, SCM y, SCM win)
     } else
       w = tmp_win->icon_w;
   }
-  move_finalize(w, tmp_win, gh_scm2int(x), gh_scm2int(y));
+  destX = gh_scm2int(x);
+  destY = gh_scm2int(y);
+  fMovePointer = gh_scm2bool(move_pointer_too_p);
+  fAnimated = gh_scm2bool(animated_p);
+  if (fMovePointer || fAnimated) {
+    XGetGeometry(dpy,w,&JunkRoot,
+		 &startX, &startY,
+		 &JunkX,&JunkY,&JunkX,&JunkY);
+  }
+  if (fAnimated) {
+    SCM animation_ms_delay = gh_lookup("animation-ms-delay");
+    int cmsDelay = -1;
+    if (animation_ms_delay != SCM_UNDEFINED &&
+	gh_number_p(animation_ms_delay)) {
+      cmsDelay = gh_scm2int(animation_ms_delay);
+    }
+    AnimatedMoveWindow(w,startX,startY,destX,destY,
+		       fMovePointer,cmsDelay,NULL);
+  } else if (fMovePointer) {
+    int x, y;
+    XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
+		  &x, &y, &JunkX, &JunkY, &JunkMask);
+    XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
+		 Scr.MyDisplayHeight, x + destX - startX, y + destY - startY);
+  }
+
+  move_finalize(w, tmp_win, destX, destY);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
@@ -1365,13 +1458,13 @@ set_smart_placement_x(SCM val, SCM win)
 SCM 
 set_window_button_x(SCM butt, SCM val, SCM win)
 {
-  VALIDATEN(win, 2, "set-smart-pacement!");
+  VALIDATEN(win, 2, "set-window-button!");
   if (val == SCM_BOOL_T) {
     SCWMWINDOW(win)->buttons &= ~(1 << (butt - 1));
   } else if (val == SCM_BOOL_F) {
     SCWMWINDOW(win)->buttons |= (1 << (butt - 1));
   } else {
-    scm_wrong_type_arg("set-smart-placment!", 1, val);
+    scm_wrong_type_arg("set-window-button!", 1, val);
   }
   /* XXX - This won't really work for any case unless it is a hint.
      Handling of the number of buttons is kind of broken in

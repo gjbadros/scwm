@@ -454,7 +454,7 @@ GrabEm(int cursor)
     i++;
     /* If you go too fast, other windows may not get a change to release
      * any grab that they have. */
-    sleep_a_little(1000);
+    sleep_ms(1);
   }
 
   /* If we fall out of the loop without grabbing the pointer, its

@@ -194,6 +194,10 @@ extern void SwitchPages(Bool, Bool);
 extern void NextPage(void);
 extern void PrevPage(void);
 extern void moveLoop(ScwmWindow *, int, int, int, int, int *, int *, Bool, Bool);
+extern void AnimatedMoveWindow(Window w,int startX,int startY,
+			       int endX, int endY,
+			       Bool fWarpPointerToo, int cmsDelay, 
+			       float *ppctMovement );
 
 extern void Keyboard_shortcuts(XEvent *, int);
 extern void RedoIconName(ScwmWindow *);
@@ -215,7 +219,7 @@ void RelieveParts(ScwmWindow * t, int i, GC hor, GC vert);
 #define FULL_HILITE   0x000F
 #define HH_HILITE     0x0010
 
-extern void sleep_a_little(int);
+void sleep_ms(int);
 void Maximize(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 	      unsigned long context, char *action, int *Module);
 

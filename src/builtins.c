@@ -76,8 +76,8 @@ int
 DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
 	       unsigned long *context, int cursor, int FinishEvent)
 {
-  int done;
-  int finished = 0;
+  Bool fDone = False;
+  Bool fFinished = False;
   Window dummy;
   Window original_w;
 
@@ -86,36 +86,43 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
   if ((*context != C_ROOT) && (*context != C_NO_CONTEXT)) {
     if ((FinishEvent == ButtonPress) || ((FinishEvent == ButtonRelease) &&
 					 (eventp->type != ButtonPress))) {
-      return FALSE;
+      return False;
     }
   }
+
   if (!GrabEm(cursor)) {
+    /* FIXGJB: call a scheme hook, not XBell */
     XBell(dpy, Scr.screen);
     return True;
   }
-  while (!finished) {
-    done = 0;
+
+  while (!fFinished) {
+    fDone = False;
     /* block until there is an event */
+/* FIXGJB: hard to know why this was looking for so many different
+   events; I think we just need those in the new call below --10/25/97 gjb
     XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
 	       ExposureMask | KeyPressMask | VisibilityChangeMask |
-	       ButtonMotionMask | PointerMotionMask	/* | EnterWindowMask | 
-							   LeaveWindowMask */ , eventp);
+	       ButtonMotionMask | PointerMotionMask, eventp); */
+    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
+	       ExposureMask | KeyPressMask | VisibilityChangeMask, eventp);
     StashEventTime(eventp);
 
     if (eventp->type == KeyPress)
       Keyboard_shortcuts(eventp, FinishEvent);
     if (eventp->type == FinishEvent)
-      finished = 1;
+      fFinished = True;
     if (eventp->type == ButtonPress) {
+      XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
+		 ExposureMask | KeyPressMask | VisibilityChangeMask |
+		 ButtonMotionMask | PointerMotionMask, eventp);
       XAllowEvents(dpy, ReplayPointer, CurrentTime);
-      done = 1;
+      fDone = True;
     }
-    if (eventp->type == ButtonRelease)
-      done = 1;
-    if (eventp->type == KeyPress)
-      done = 1;
-
-    if (!done) {
+    if (eventp->type == ButtonRelease || eventp->type == KeyPress) {
+      fDone = True;
+    }
+    if (!fDone) {
       DispatchEvent();
     }
   }

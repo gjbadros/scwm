@@ -40,7 +40,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 
   total = 0;
   while (total < Scr.ScrollResistance) {
-    sleep_a_little(10000);
+    sleep_ms(10);
     total += 10;
 
     XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,

@@ -542,6 +542,8 @@ SCM mouse_ev_type = SCM_BOOL_F;
 int have_orig_position = 0;
 int orig_x, orig_y;
 
+/* FIXGJB: a single, slow click with no movement should
+   still count as a single click, see IsClick(), too */
 void 
 find_mouse_event_type()
 {
