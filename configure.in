@@ -627,6 +627,7 @@ SCWM_ARG_PATH(scwmrcdir,
 scwm_image_load_path="(\\\"${scwm_pixmapdir}\\\" ";
 
 for i in \
+   /usr/share/pixmaps/scwm \
    ${x_includes}/X11/bitmaps \
    ${x_includes}/X11/pixmaps \
    ${orig_x_libs}/X11/mini-icons \
