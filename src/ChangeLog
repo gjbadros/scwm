@@ -1,3 +1,20 @@
+Thu Mar 26 07:41:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwm.c, events.c, module-interface.c, image.c: Replace
+ 	gh_eval_str, load, gh_apply and gh_call1 with new safe
+ 	versions. Calls to call_thunk_with_message_handler not replaced
+ 	until I make sure the calls in question are not relying on it's
+ 	ability to dereference symbols.
+
+	* callbacks.c, callbacks.h: New support for all kinds of callbacks
+ 	that scwm needs (calling procedures, loading a file, evaluating a
+ 	string) with proper error handling. The new scwm_safe_apply,
+ 	scwm_safe_call0, scwm_safe_call1, scwm_safe_load and
+ 	scwm_safe_eval_str should be better than previous solutions and
+ 	will be used throughout soon.
+
+	Makefile.in: compile callbacks.c, build callbacks.x.
+	
 Wed Mar 25 18:29:12 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* system.c: Remove unused findFile function.

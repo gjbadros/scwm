@@ -47,6 +47,7 @@
 #include "scwm.h"
 #include "screen.h"
 #include "system.h"
+#include "callbacks.h"
 
 #define IMAGE_IMPLEMENTATION
 
@@ -313,7 +314,7 @@ SCM
 InvokeHook1(SCM proc, SCM arg1)
 {
   if (proc != SCM_BOOL_F && gh_procedure_p(proc)) {
-    return gh_call1(proc, arg1);
+    return scwm_safe_call1(proc, arg1);
   }
   return SCM_BOOL_F;
 }
@@ -475,14 +476,14 @@ make_image(SCM name)
   /* still not there, find the right loader, and load it up. */
   loader = get_image_loader(name);
   if (loader != SCM_BOOL_F) {
-    result = gh_call1(loader, full_path);
+    result = scwm_safe_call1(loader, full_path);
   }
 
   if (result == SCM_BOOL_F) {
     /* the load failed; try the default loader */
     loader = scm_hash_ref(image_loader_hash_table, str_default, SCM_BOOL_F);
     if (loader != SCM_BOOL_F) {
-      result = gh_call1(loader, full_path);
+      result = scwm_safe_call1(loader, full_path);
     }
     if (result == SCM_BOOL_F) {
       /* Still failed, return #f and possibly warn. */

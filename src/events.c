@@ -410,22 +410,6 @@ scwm_error_handler (void *data, SCM tag, SCM throw_args)
 }
 
 
-/* FIXGJB: the above scwm_error_handler doesn't get used properly
-   by gh_eval_str_with_catch, so replace the standard handler
-   so we can get the throw arguments! This might be sensitive
-   to guile versions */
-SCM 
-gh_standard_handler (void *data, SCM tag, SCM throw_args)
-{
-  scm_display (gh_str02scm("\nScwm got an error; tag is\n        "),
-	       scm_current_error_port());
-  scm_display (tag, scm_current_error_port ());
-  scm_newline (scm_current_error_port ());
-  scm_display (throw_args,scm_current_error_port ());
-  scm_newline (scm_current_error_port ());
-
-  return SCM_BOOL_F;
-}
 
 
 static SCM make_output_strport(char *fname)
@@ -500,7 +484,7 @@ HandleScwmExec()
 	o_port=scm_set_current_output_port(make_output_strport(__FUNCTION__));
 	e_port=scm_set_current_error_port(make_output_strport(__FUNCTION__));
 
-	val = gh_eval_str_with_catch(req,scwm_error_handler);
+	val = scwm_safe_eval_str(req);
 	XFree(req); 
 	str_val=scm_strprint_obj(val);
 	ret=gh_scm2newstr(str_val, &rlen);

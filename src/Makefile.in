@@ -109,14 +109,16 @@ SRCS = \
 	decor.c \
 	face.c \
 	module-interface.c \
-	image.c
+	image.c \
+	callbacks.c \
 
 SNARFED_FILES = font.x \
 	image.x \
 	menuitem.x \
 	module-interface.x \
 	scwmmenu.x \
-	color.x
+	color.x \
+	callbacks.x
 
 LOADABLE_PRIMITIVE_SOURCES = draw-pie-menu.c
 
@@ -124,8 +126,7 @@ LOADABLE_PRIMITIVES = draw-pie-menu.so
 
 OBJS := $(SRCS:.c=.o) init_scheme_string.o
 
-BUILT_SOURCES = font.x image.x menuitem.x scwmmenu.x module-interface.x\
-	color.x init_scheme_string.c
+BUILT_SOURCES = $(SNARFED_FILES) init_scheme_string.c
 
 all: $(SNARFED_FILES) $(PROG) $(LOADABLE_PRIMITIVES)
 

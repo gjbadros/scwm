@@ -10,6 +10,7 @@
 #include <stdarg.h>
 #include "scwm.h"
 #include "misc.h"
+#include "callbacks.h"
 
 /* FIXGJB: use call_thunk_with_message_handler, or some 
    variety thereof to keep bad broadcast handlers
@@ -33,7 +34,7 @@ Broadcast(unsigned long event_type, unsigned long num_datum,
   SCM proc = *loc_broadcast_hook;
   if (proc != SCM_BOOL_F) {
     if (gh_procedure_p(proc)) {
-      gh_apply(proc, gh_list(
+      scwm_safe_apply(proc, gh_list(
 	gh_ulong2scm(event_type), 
 	gh_ulong2scm(num_datum),
 	gh_ulong2scm(data1),
@@ -59,10 +60,10 @@ BroadcastConfig(unsigned long event_type, ScwmWindow *sw)
   SCM proc = *loc_broadcast_config_hook;
   if (proc != SCM_BOOL_F) {
     if (gh_procedure_p(proc)) {
-      gh_apply(proc, gh_list(
-	gh_ulong2scm(event_type), 
-	sw->schwin,
-	SCM_UNDEFINED
+      scwm_safe_apply(proc, gh_list(
+				    gh_ulong2scm(event_type), 
+				    sw->schwin,
+				    SCM_UNDEFINED
 	));
     } else {
       scwm_msg(ERR,__FUNCTION__,"broadcast-config-hook is not a procedure -- unsetting it");
@@ -78,14 +79,14 @@ void BroadcastName(unsigned long event_type, unsigned long data1,
   if (proc != SCM_BOOL_F) {
     if (gh_procedure_p(proc)) {
       SCM name = gh_str02scm(szName);
-      gh_apply(proc, gh_list(
-	gh_ulong2scm(event_type), 
-	gh_ulong2scm(data1),
-	gh_ulong2scm(data2),
-	gh_ulong2scm(data3),
-	name,
-	SCM_UNDEFINED
-	));
+      scwm_safe_apply(proc, gh_list(
+				    gh_ulong2scm(event_type), 
+				    gh_ulong2scm(data1),
+				    gh_ulong2scm(data2),
+				    gh_ulong2scm(data3),
+				    name,
+				    SCM_UNDEFINED
+				    ));
     } else {
       scwm_msg(ERR,__FUNCTION__,"broadcast-name-hook is not a procedure -- unsetting it");
       gh_define("broadcast-name-hook",SCM_BOOL_F);

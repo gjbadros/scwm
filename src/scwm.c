@@ -77,6 +77,7 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #include "face.h"
 #include "colormaps.h"
 #include "image.h"
+#include "callbacks.h"
 
 #define MAXHOSTNAME 255
 
@@ -93,7 +94,7 @@ Window BlackoutWin = None;	/* window to hide window captures */
 
 char *szCmdConfig;
 
-static char *szLoad_pre = "(primitive-load \"";
+static char *szLoad_pre = "(safe-load \"";
 static char *szLoad_post = "\")";
 
 
@@ -234,6 +235,7 @@ scwm_main(int argc, char **argv)
   setlinebuf(stdout);
   
   init_scwm_types();
+  init_callbacks();
   init_image();
   init_font();
   init_color();
@@ -569,15 +571,15 @@ scwm_main(int argc, char **argv)
 #endif
   
   if (strlen(szCmdConfig) == 0) {
-    gh_eval_str("(let ((home-scwmrc"
-		"       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
-		"      (system-scwmrc \"" SCWMDIR "/system" SCWMRC "\"))"
-		" (if (access? home-scwmrc R_OK)"
-		"     (primitive-load home-scwmrc)"
-		"     (if (access? system-scwmrc R_OK)"
-		"         (primitive-load system-scwmrc))))");
+    scwm_safe_eval_str("(let ((home-scwmrc"
+		       "       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
+		       "      (system-scwmrc \"" SCWMDIR "/system" SCWMRC "\"))"
+		       " (if (access? home-scwmrc R_OK)"
+		       "     (safe-load home-scwmrc)"
+		       "     (if (access? system-scwmrc R_OK)"
+		       "         (safe-load system-scwmrc))))");
   } else {
-    gh_eval_str(szCmdConfig);
+    scwm_safe_eval_str(szCmdConfig);
   }
   
   free(szCmdConfig);
@@ -790,7 +792,7 @@ SetRCDefaults()
   /* the compiled-in .scwmrc comes from minimal.scm,
      built into init_scheme_string.c by the make file */
   extern char *init_scheme_string;
-  gh_eval_str(init_scheme_string);
+  scwm_safe_eval_str(init_scheme_string);
 }
 
 /***********************************************************************
