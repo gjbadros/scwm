@@ -222,6 +222,10 @@ All evaluation goes through this procedure."
     (setq scwm-obarray nil))
   (call-process scwm-exec nil out nil sexp))
 
+;; for GNU Emacs
+(unless (fboundp 'frame-property)
+  (defalias 'frame-property 'frame-parameter))
+
 (defun selected-frame-id-string ()
   "Return the X11 window id of the selected Emacs frame as a string."
   (frame-property (selected-frame) 'window-id))
