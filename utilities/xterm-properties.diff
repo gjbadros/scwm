@@ -1,0 +1,67 @@
+diff -u -r xterm-96/ctlseqs.ms xterm-96-gjb/ctlseqs.ms
+--- xterm-96/ctlseqs.ms	Mon Apr 12 06:38:14 1999
++++ xterm-96-gjb/ctlseqs.ms	Sun May  9 13:06:02 1999
+@@ -951,6 +951,8 @@
+   \*(Ps = \*0 \(-> Change Icon Name and Window Title to \*(Pt
+   \*(Ps = \*1 \(-> Change Icon Name to \*(Pt
+   \*(Ps = \*2 \(-> Change Window Title to \*(Pt
++  \*(Ps = \*3 \(-> Set X property on top-level window. \*(Pt should be in the form 
++"prop=value", or just "prop" to delete the property
+   \*(Ps = \*1\*0 \(-> Change color names starting with text foreground to \*(Pt
+ (a list of one or more color names or RGB specifications, separated by
+ semicolon, up to eight, as per \fIXParseColor\fP).
+diff -u -r xterm-96/misc.c xterm-96-gjb/misc.c
+--- xterm-96/misc.c	Mon Apr 12 06:38:14 1999
++++ xterm-96-gjb/misc.c	Sun May  9 12:52:25 1999
+@@ -999,6 +999,10 @@
+ 	case 2:	/* new title only */
+ 		Changetitle(buf);
+ 		break;
++                
++        case 3: /* change X property */
++                ChangeXprop(buf);
++                break;
+ 
+ 	case 10:	case 11:	case 12:
+ 	case 13:	case 14:	case 15:
+@@ -1306,6 +1310,29 @@
+ Changetitle(register char *name)
+ {
+     ChangeGroup( XtNtitle, (XtArgVal)name );
++}
++
++void
++ChangeXprop(register char *buf)
++{
++  Display *dpy = XtDisplay(toplevel);
++  Window w = XtWindow(toplevel);
++  XTextProperty text_prop;
++  Atom aprop;
++  char *pchEndPropName = strchr(buf,'=');
++  if (pchEndPropName)
++    *pchEndPropName = '\0';
++  aprop = XInternAtom(dpy, buf, False);
++  if (pchEndPropName == NULL) {
++    /* no "=value" given, so delete the property */
++    XDeleteProperty(dpy, w, aprop);
++  } else {
++    text_prop.value = pchEndPropName+1;
++    text_prop.encoding = XA_STRING;
++    text_prop.format = 8;
++    text_prop.nitems = strlen(text_prop.value);
++    XSetTextProperty(dpy,w,&text_prop,aprop);
++  }
+ }
+ 
+ /***====================================================================***/
+diff -u -r xterm-96/xterm.h xterm-96-gjb/xterm.h
+--- xterm-96/xterm.h	Mon Apr 12 06:38:14 1999
++++ xterm-96-gjb/xterm.h	Sun May  9 12:27:50 1999
+@@ -252,6 +252,7 @@
+ extern void Bell (int which, int percent);
+ extern void Changename (char *name);
+ extern void Changetitle (char *name);
++extern void ChangeXprop (char *name);
+ extern void Cleanup (int code);
+ extern void Error (int i);
+ extern void HandleBellPropertyChange PROTO_XT_EV_HANDLER_ARGS;
