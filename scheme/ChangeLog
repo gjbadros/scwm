@@ -1,3 +1,14 @@
+Tue Dec  7 14:52:50 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm:  Added `ui-constraint-class-creator' to
+	return a list to eval to re-create a recorded constraint-class.
+
+	* ui-constraints-composition.scm: Make the ui-cnctr lambda of a
+	recorded macro be swizzlable-to-disk by use quasiquote and unquote 
+	to make explicit the lexical bindings that were previously only
+	implicit.   Expose a couple of functions publicly that are needed
+	by the lambda.
+
 Tue Dec  7 13:33:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Error in cnctr-anchor if window is

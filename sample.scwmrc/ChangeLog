@@ -1,3 +1,8 @@
+Tue Dec  7 13:35:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Decorate transients since otherwise they are hard 
+	to move without knowing magic keybindings.
+
 Sun Dec  5 17:30:28 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Needed gtk-about module.
