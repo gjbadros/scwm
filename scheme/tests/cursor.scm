@@ -83,3 +83,12 @@ xterm
 
 (set! cursor-menu (get-x-cursor "right_ptr"))
 (set! cursor-kill (get-x-cursor "spider"))
+
+(define img (load-imlib-image "/scratch/gjb/scwm/pixmaps/cursor.xpm"))
+
+(define crsr (create-pixmap-cursor img))
+(set-window-cursor! 'root-window crsr)
+
+(set! cursor-select crsr)
+
+(get-window)
