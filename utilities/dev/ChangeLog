@@ -1,3 +1,8 @@
+Sat Sep 25 15:19:09 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Drop an extraneous newline from the
+	scwm-procedures.txt output. 
+
 Wed Sep 15 14:00:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Convert #&rest into #&amp;rest.

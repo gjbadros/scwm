@@ -1,3 +1,20 @@
+Sat Sep 25 15:16:52 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* stringops.scm, flux.scm: Added `string-has-prefix',
+	`string-ci-has-prefix';  move `remove-suffix' here from flux.
+
+	* reflection.scm: Added `procedure-string->procedure'
+
+	* prompt-proc.scm: Move gtk-clist-get-row-values to front.  Use
+	procedure-string->procedure.  Put widgets in a frame and use some
+	more reasonable spacing (inspired by prompt-binding.scm).
+
+	* prompt-binding.scm: Hook the things together.  Now its a really
+	nice browsing interface, but doesn't yet let you change anything.
+
+	* flux.scm: Added `proc-doc' that caches the documentation as it
+	reads it from file, if necessary.
+
 Sat Sep 25 13:11:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* prompt-binding.scm: Make insert/delete buttons insensitive until 
