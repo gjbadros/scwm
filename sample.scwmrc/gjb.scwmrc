@@ -8,6 +8,15 @@
              (app scwm style)
 	     (app scwm face))
 
+(define (suggest-image-path-for name)
+  (let ((found-if-0 (system (string-append "locate " name))))
+    (if (= 0 found-if-0)
+	(display (string-append "Perhaps try adding above path to image-load-path\n")))))
+
+(define (image-not-found-hook name)
+  (display (string-append "Could not find image: " name "\n"))
+  (suggest-image-path-for name))
+
 ;; Need M_FOCUS_CHANGE for auto-raise
 (use-modules (app scwm module-types))
 
