@@ -2792,8 +2792,13 @@ fi
 #
 #-------------------------------------------------------------------
 
+
 scwm_name="scwm"
 scwm_rc=".scwmrc"
+
+
+scwm_image_load_path="(\\\\\\\"$x_includes/X11/bitmaps\\\\\\\" \\\\\\\"$x_includes/X11/pixmaps\\\\\\\" \\\\\\\"$x_libs/X11/mini-icons\\\\\\\" \\\\\\\"\${prefix}/include/X11/pixmaps\\\\\\\" \\\\\\\"\${prefix}/include/X11/bitmaps\\\\\\\" \\\\\\\"\${prefix}/lib/X11/mini-icons\\\\\\\")"
+
 scwm_icons="$x_includes/X11/bitmaps:$x_includes/X11/pixmaps:\${prefix}/icons"
 scwm_dir="\${prefix}/lib/X11/$scwm_name"
 
@@ -2810,6 +2815,7 @@ fi
 # export variables
 #
 #-------------------------------------------------------------------
+
 
 
 
@@ -2980,6 +2986,7 @@ s%@INSTALL_DATA@%$INSTALL_DATA%g
 s%@LN_S@%$LN_S%g
 s%@x_libraries@%$x_libraries%g
 s%@x_includes@%$x_includes%g
+s%@scwm_image_load_path@%$scwm_image_load_path%g
 s%@scwm_icons@%$scwm_icons%g
 s%@scwm_name@%$scwm_name%g
 s%@scwm_rc@%$scwm_rc%g

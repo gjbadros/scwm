@@ -219,8 +219,16 @@ AC_PATH_X
 #
 #-------------------------------------------------------------------
 
+dnl These defines really should be going into config.h, rather than
+dnl being passed by the makefile.
+
 scwm_name="scwm"
 scwm_rc=".scwmrc"
+
+dnl The shell quoting game sure is fun...
+
+scwm_image_load_path="(\\\\\\\"$x_includes/X11/bitmaps\\\\\\\" \\\\\\\"$x_includes/X11/pixmaps\\\\\\\" \\\\\\\"$x_libs/X11/mini-icons\\\\\\\" \\\\\\\"\${prefix}/include/X11/pixmaps\\\\\\\" \\\\\\\"\${prefix}/include/X11/bitmaps\\\\\\\" \\\\\\\"\${prefix}/lib/X11/mini-icons\\\\\\\")"
+
 scwm_icons="$x_includes/X11/bitmaps:$x_includes/X11/pixmaps:\${prefix}/icons"
 scwm_dir="\${prefix}/lib/X11/$scwm_name"
 
@@ -241,6 +249,7 @@ fi
 AC_SUBST(LIBS)
 AC_SUBST(x_libraries)
 AC_SUBST(x_includes)
+AC_SUBST(scwm_image_load_path)
 AC_SUBST(scwm_icons)
 AC_SUBST(scwm_name)
 AC_SUBST(scwm_rc)
