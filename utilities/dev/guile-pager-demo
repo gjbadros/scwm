@@ -90,8 +90,6 @@
 (close-port to-module-read)
 (close-port from-module-write)
 
-(define test-port (open-output-file "modtest"))
-
 
 ;; FIXGJB: mark fd-s close-on-exec so other processes won't inherit them
 ;; FIXGJB: set o_nonblock for TO_MODULE_WR
@@ -158,23 +156,10 @@
   (write-int #xffffffff to-module-write)
   (write-int id to-module-write)
   (write-int (+ body-length 4) to-module-write)
-  (write-int (current-time) to-module-write)
-  (display "Done sending packet.\n" test-port)
-  (force-output test-port))
+  (write-int (current-time) to-module-write))
 
 
 (define (send-packet id body)
-  (with-output-to-port test-port 
-      (lambda ()
-	(display "Sending packet (type " )
-	(display id)
-	(display ")\n")
-	(write body)
-	(newline)
-	(write (string-length body))
-	(newline)
-	(force-output)))
-
   (if (not (= (modulo (string-length body)  4) 0))
       (error "Bad packet length"))
 
