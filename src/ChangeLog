@@ -1,3 +1,10 @@
+Sat Sep 12 13:45:27 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* virtual.c (changeDesks): Call MovePsw*ToCurrentPosition on
+	change of desks before mapping. (MoveViewport_internal) only call
+	one of MovePswIconToCurrentPosition or MovePswToCurrentPosition
+	depending on whether psw->fIconified
+
 Fri Sep 11 15:43:46 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* resize.c (hide_message): XFlush after unmapping

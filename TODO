@@ -72,6 +72,7 @@ Other Stuff
 ** can we use xlab? http://www.alphalink.com.au/~mvertes/xlab.html
 
 * Constraint embedding
+** animated windows to new position when resolve
 ** make ClVariables always connect to a scheme level object --done 09/05/98 gjb
 *** Screen (for clv-s part of the pssci)
 *** window (for clv-s part of the Psw-s)
@@ -86,6 +87,8 @@ Other Stuff
  that a client receives when being resized opaquely
 
 * WM_ATTENTION patch for xterms (from Robert Bihlmeyer), integration with zsh instead?
+
+* Gnome clue proposal support
 
 * General cleanup
 ** more static function hidden behind modules
@@ -129,7 +132,7 @@ isn't now).
 ** (set-mouse-acceleration! ACCEL), (set-mouse-acceleration-threshold! PIXELS)
 ** (set-colormap-focus! WINDOW) -- rename set-colormap-focus! and colormap-focus to [set-]colormap-focus-policy
 ** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive 
-  - Maybe should have set-window-context! and get-window-context routines
+  - Maybe should have set-window-context! and window-context routines
     that with-window is just a syntax around --09/02/98 gjb
 ** (window-client-size) (window-client-position) (window-client-borderwidth) ;dimensions for the client (application top-level window, not the wm frame) 
 ** (window-user-set-position? WIN), (window-user-set-size? WIN) ; tell if user specified position/size on command line
@@ -153,6 +156,9 @@ isn't now).
 *** (get-wm-command WIN) ; get WM_COMMAND property (in terms of window-xproperty) -- done [in flux] 08/05/98 gjb
 
 * Message (size/position) window needs to be more dynamic, customizable
+** permit control of its position
+** nestable stack of these for displaying messages
+
 
 * administrative b.s.
 ** cvsweb

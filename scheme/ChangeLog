@@ -1,3 +1,19 @@
+Fri Sep 11 17:08:01 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm: Added {un,}flash-window-proc to
+	show-window-list-menu so that we can do stuff like this:
+
+ 	(define (show-xterm-window-list-menu)
+            (show-window-list-menu #:only 
+	        (lambda (w) (string=? (window-class w) "XTerm")) 
+			 #:warp-to-first #t
+			 #:flash-window-proc flash-window
+			 #:unflash-window-proc unflash-window))
+
+	  to flash windows that are currently highlighted.  Needs better
+	  configurability for hover timeouts, but that'll wait until after 
+	  the event rewrite, as menus may change a bit then.
+
 Fri Sep 11 15:49:33 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `unflash-window', and make `flash-window' store
