@@ -1,3 +1,8 @@
+Wed Mar 17 19:19:55 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* menus-extras.scm, Makefile.am: Fixed missing dependence on (app
+ 	scwm base), and install this file.
+
 Wed Mar 17 18:32:13 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints.scm, simple-constraints.scm,
