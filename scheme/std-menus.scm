@@ -19,7 +19,7 @@
 
 
 
-(if (> (string->number (minor-version)) 3)
+(if (> guile-version 1.3)
     (define-module (app scwm std-menus)
       :use-module (ice-9 popen)
       :use-module (app scwm base)

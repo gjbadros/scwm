@@ -2,7 +2,7 @@
 ;; Copyright (C) 1998-1999 Greg J. Badros
 ;; 4-October-1998
 
-(if (> (string->number (minor-version)) 3)
+(if (> guile-version 1.3)
     (define-module (app scwm path-cache)
       :use-module (ice-9 popen)
       :use-module (ice-9 string-fun))

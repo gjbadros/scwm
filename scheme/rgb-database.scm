@@ -17,7 +17,7 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;;
 
-(if (> (string->number (minor-version)) 3)
+(if (> guile-version 1.3)
     (define-module (app scwm rgb-database)
       :use-module (ice-9 popen)
       :use-module (app scwm base))

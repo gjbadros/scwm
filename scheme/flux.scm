@@ -12,7 +12,7 @@
 
 ;;; GJB:FIXME:: Better way to test for popen module?
 ;;; better way to factor out this?
-(if (> (string->number (minor-version)) 3)
+(if (> guile-version 1.3)
     (define-module (app scwm flux)
       :use-module (ice-9 popen)
       :use-module (ice-9 regex)
