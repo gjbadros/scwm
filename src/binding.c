@@ -71,7 +71,7 @@ for shift, control meta, alt, hyper, and super, respectively.  They
 can be combined arbitrarily, and in any order, but should precide the 
 */
 
-static char *
+static const char *
 PchModifiersToModmask(const char *pch, int *pmodifier)
 {
   int modmask = 0;
@@ -138,7 +138,7 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
   Bool fOk = True;
   int len;
   char *keyname = gh_scm2newstr(key,&len);
-  char *pch = PchModifiersToModmask(keyname,pmodifier);
+  char *pch = (char *) PchModifiersToModmask(keyname,pmodifier);
 
   if (pch == 0 || *pmodifier < 0) {
     FREE(keyname);
