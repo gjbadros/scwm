@@ -1,0 +1,94 @@
+#!/bin/bash -login
+# (c) 1999 Red Hat Software, Inc.
+# Modifications to use ssh-agent
+# are by Greg J. Badros, <gjb@cs.washington.edu>
+# August 1999
+
+if [ ! "$2" = "restarted" ] ; then
+  # Check if we have secure shell capabilities
+  # string them together if necessary!
+  SSA=""
+  which ssh-agent2 >/dev/null && SSA="ssh-agent2 $SSA"
+  which ssh-agent1 >/dev/null && SSA="ssh-agent1 $SSA"
+  exec $SSA $0 $1 restarted
+fi
+
+xsetroot -solid '#356390'
+
+# redirect errors to a file in user's home directory if we can
+for errfile in "$HOME/.xsession-errors" "${TMPDIR-/tmp}/xses-$USER" "/tmp/xses-$USER"
+do
+    if ( cp /dev/null "$errfile" 2> /dev/null )
+    then
+	chmod 600 "$errfile"
+	exec > "$errfile" 2>&1
+	break
+    fi
+done
+
+# clean up after xbanner
+if [ -f /usr/X11R6/bin/freetemp ]; then
+    freetemp
+fi
+
+userresources=$HOME/.Xresources 
+usermodmap=$HOME/.Xmodmap 
+sysresources=/usr/X11R6/lib/X11/xinit/.Xresources 
+sysmodmap=/usr/X11R6/lib/X11/xinit/.Xmodmap 
+
+# merge in defaults and keymaps 
+if [ -f $sysresources ]; then 
+    xrdb -merge $sysresources 
+fi 
+ 
+if [ -f $sysmodmap ]; then 
+    xmodmap $sysmodmap 
+fi 
+ 
+if [ -f $userresources ]; then 
+    xrdb -merge $userresources 
+fi 
+ 
+if [ -f $usermodmap ]; then 
+    xmodmap $usermodmap 
+fi 
+
+# now, we see if xdm/gdm/kdm has asked for a specific environment
+case $# in
+1|2)
+    case $1 in
+    failsafe)
+	exec xterm -geometry 80x24-0-0
+	;;
+    gnome)
+	exec gnome-session
+	;;
+    kde)
+	exec startkde
+	;;
+    anotherlevel)
+        # we assume that switchdesk is installed.
+	exec /usr/share/apps/switchdesk/Xclients.anotherlevel
+	;;
+    scwmbare)
+	exec scwm
+	;;
+    scwmnull)
+	exec scwm -f /dev/null
+	;;
+    scwm)
+	exec startscwm
+	;;
+    esac
+esac
+
+# otherwise, take default action
+if [ -x "$HOME/.xsession" ]; then
+    exec "$HOME/.xsession"
+elif [ -x "$HOME/.Xclients" ]; then
+    exec "$HOME/.Xclients"
+elif [ -x /etc/X11/xinit/Xclients ]; then
+    exec /etc/X11/xinit/Xclients
+else
+    exec xsm
+fi
