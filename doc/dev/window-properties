@@ -1,0 +1,109 @@
+From: Maciej Stachowiak <mstachow@alum.mit.edu>
+Subject: window-properties
+To: scwm-discuss@mit.edu
+Date: Fri, 26 Mar 1999 08:46:48 -0500
+X-From-Line: owner-scwm-discuss@mit.edu  Fri Mar 26 05:52:33 1999
+Received: from VICARIOUS-EXISTENCE.MIT.EDU (VICARIOUS-EXISTENCE.MIT.EDU [18.244.0.161]) by june.cs.washington.edu (8.8.7+CS/7.2ju) with ESMTP id FAA19743; Fri, 26 Mar 1999 05:52:32 -0800
+Received: (from mjrdmo@localhost)
+	by VICARIOUS-EXISTENCE.MIT.EDU (8.8.5/8.8.5) id IAA24087
+	for scwm-discuss-outgoing; Fri, 26 Mar 1999 08:49:38 -0500
+X-Authentication-Warning: VICARIOUS-EXISTENCE.MIT.EDU: mjrdmo set sender to owner-scwm-discuss@vicarious-existence.mit.edu using -f
+Received: from intermailhost.viewlogic.com (intermailhost.viewlogic.com [139.181.6.17])
+	by VICARIOUS-EXISTENCE.MIT.EDU (8.8.5/8.8.5) with ESMTP id IAA24084
+	for <scwm-discuss@VICARIOUS-EXISTENCE.MIT.EDU>; Fri, 26 Mar 1999 08:49:34 -0500
+Received: from mailhost.viewlogic.com (mailhost.viewlogic.com [139.181.3.35])
+	by intermailhost.viewlogic.com (8.8.8/8.8.7) with ESMTP id IAA02784
+	for <scwm-discuss@ph.mit.edu>; Fri, 26 Mar 1999 08:39:13 -0500 (EST)
+Received: from alum.mit.edu (racerx [139.181.3.11])
+	by mailhost.viewlogic.com (8.8.6/8.8.7) with ESMTP id IAA24083
+	for <scwm-discuss@ph.mit.edu>; Fri, 26 Mar 1999 08:49:26 -0500 (EST)
+Message-ID: <36FB8FC8.B4C9DB76@alum.mit.edu>
+X-Mailer: Mozilla 4.02 [en] (X11; I; SunOS 5.5.1 sun4u)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: owner-scwm-discuss@mit.edu
+Precedence: bulk
+Lines: 80
+Xref: elwha.cs.washington.edu scwm-discuss:2625
+
+I've done some work on window-properties recently which I'd like to
+describe because I think it provides some nice abstractions which 
+should be used pervasively in a lot of places in scwm.
+
+Scheme interface:
+
+Scheme code can use `(set-window-property! WIN SYM VAL)' to set and 
+`(window-property WIN SYM)' to read window properties. It can also
+connect to `window-property-notify-hook' (args: WIN SYM NEW-VAL OLD-VAL)
+to receive notification on property changes.
+
+Window properties are named by symbols. Most properties are just 
+stored in an association list attached to the window object and only
+really managed by Scheme code. Even at this level, they are very useful
+for different pieces of Scheme code to talk to each other. For instance,
+the gnome-hints module uses notification on the 'maximized property to
+keep the appropriate gnome hint information in sync with the maximization
+state.
+
+However, some window properties have special semantics and represent 
+internal state managed by C code. So far this has only fully been done for 
+the 'sticky and 'squashed-titlebar properties. 
+
+
+C interface:
+
+C code that wants to manage a particular property should do two things:
+
+* Every time the data the property represents changes, use 
+signal_window_property_change
+
+* Use set_property_handler to register getters and setters for the 
+property.
+
+Note that set_property_handler does not _necessarily_ have to be called
+on startup. This means that dynamically laoded modules can decide to
+specially handle particular properties, just as the code C code does.
+
+
+
+Note that window-properties can replace many formerly rather ad-hoc things
+with a cleaner interface. For instance, `iconify-hook' and `deiconify-hook' 
+can be replaced with appropriate code for handling the 'iconified property.
+As another example, the need to specially reset the frame after setting the
+'squashed-titlebar property has been removed through the use of C-level
+property handlers for it.
+
+If we decide this approach is a good way to go, we could even remove
+a large number of the setters and predicates now defined in C, and
+just use Scheme wrappers for properties where this is particularly 
+interesting.
+
+Another benefit this approach can have is in implementing dynamic styles,
+i.e. styles that change in response to changes in various bits of window
+state. Recent requests along these lines include a request for the ability
+to color sticky windows differently and the ability to style windows
+differently based on title changes. Other interesting uses for such a
+capability would be buttons that appear "pressed in" or otherwise altered
+when some piece of window state changes. This is particularly interesting
+with maximize buttons though it could be useful for others also.
+
+By adding a dynamic-style module that watches particular window properties
+and takes different style actions based on the value changes, all of these
+problems could be solved in a uniform and convenient way.
+
+For this to be maximally useful, we need to make sure all interesting pieces
+of window state managed by C code are appropriately handled as window 
+properties. We also need to make sure that Scheme code storing auxiliary
+data about a window uses window-properties rather than obkect-properties
+so all the wonderful notification stuff can happen.
+
+I'd appreciate any comments on this.
+
+ - Maciej Stachowiak
+
+PS I know we'd like to get to 1.0 and here I am messing around with this random
+other stuff, but I really needed this to properly handle some of the Gnome hints
+(it's probably useful for KDE stuff as well) which I think is an important 1.0
+goal.
+
