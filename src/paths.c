@@ -61,7 +61,7 @@ set_icon_path_x(SCM newpath)
   if ((IconPath != ptemp) && (IconPath != NULL))
     free(IconPath);
   tmp = gh_scm2newstr(newpath, &dummy);
-  IconPath = /* envDupExpand( */ tmp /* , 0) */;
+  IconPath = tmp;
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }

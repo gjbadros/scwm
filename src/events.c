@@ -227,7 +227,7 @@ HandleEvents()
 
   while (TRUE) {
     last_event_type = 0;
-    switch (My_XNextEvent(dpy, &Event)) {
+    switch (XNextEvent_orTimeout(dpy, &Event)) {
     case 0:
       DispatchEvent();
       break;
@@ -1399,26 +1399,26 @@ HandleVisibilityNotify()
  *
  ****************************************************************************/
 int 
-My_XNextEvent(Display * dpy, XEvent * event)
+XNextEvent_orTimeout(Display * dpy, XEvent * event)
 {
   extern int fd_width, x_fd;
   fd_set in_fdset, out_fdset;
   int retval;
   struct timeval timeout;
 
-  DBUG("My_XNextEvent", "Routine Entered");
+  DBUG(__FUNCTION__, "Entered");
 
   /* Do this IMMEDIATELY prior to select, to prevent any nasty
    * queued up X events from just hanging around waiting to be
    * flushed */
   XFlush(dpy);
   if (XPending(dpy)) {
-    DBUG("My_XNextEvent", "taking care of queued up events & returning");
+    DBUG(__FUNCTION__, "taking care of queued up events & returning");
     XNextEvent(dpy, event);
     StashEventTime(event);
     return 0;
   }
-  DBUG("My_XNextEvent", "no X events waiting - about to reap children");
+  DBUG(__FUNCTION__, "no X events waiting - about to reap children");
   /* Zap all those zombies! */
   /* If we get to here, then there are no X events waiting to be processed.
    * Just take a moment to check for dead children. */
@@ -1434,21 +1434,6 @@ My_XNextEvent(Display * dpy, XEvent * event)
 
   FD_ZERO(&out_fdset);
 
-#ifdef OLD_MODULE_CODE
-  for (i=0; i<npipes; i++) {
-    if (readPipes[i]>=0) {
-      FD_SET(readPipes[i], &in_fdset);
-    }
-  }
-  
-  for (i=0; i<npipes; i++) {
-    if (pipeQueue[i]!= NULL) {
-      FD_SET(writePipes[i], &out_fdset);
-    }
-  }
-#endif
-
-  DBUG("My_XNextEvent", "waiting for module input/output");
   XFlush(dpy);
   timerclear(&timeout);
 #ifdef __hpux
@@ -1460,7 +1445,7 @@ My_XNextEvent(Display * dpy, XEvent * event)
   if (interactive && FD_ISSET(repl_fd, &in_fdset)) {
     return 1;
   }
-  DBUG("My_XNextEvent", "leaving My_XNextEvent");
+  DBUG(__FUNCTION__, "leaving");
   return 2;
 }
 

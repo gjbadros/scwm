@@ -1,8 +1,17 @@
-
-
+/* $Id$ */
 
 #ifndef WINDOW_H
 #define WINDOW_H
+
+#undef EXTERN
+#undef EXTERN_SET
+#ifdef WINDOW_IMPLEMENTATION
+#define EXTERN
+#define EXTERN_SET(x,y) x = y
+#else
+#define EXTERN extern
+#define EXTERN_SET(x,y) extern x
+#endif
 
 #include <libguile.h>
 #include "scwm.h"
@@ -20,14 +29,14 @@ typedef struct {
   int valid;
 } scwm_window;
 
-extern long scm_tc16_scwm_window;
+EXTERN long scm_tc16_scwm_window;
+EXTERN_SET(SCM window_context,SCM_UNDEFINED);
 
 #define WINDOWP(X) ((X) && (SCM_CAR(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)SCM_CDR(X))
 #define SCWMWINDOW(X) (((scwm_window *)SCM_CDR(X))->sw)
 #define VALIDWINP(X) (((scwm_window *)SCM_CDR(X))->valid)
 
-extern SCM window_context;
 
 #define set_window_context(X) window_context=X;
 #define unset_window_context() window_context=SCM_UNDEFINED;

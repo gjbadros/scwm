@@ -30,6 +30,7 @@
 #include "parse.h"
 #include "screen.h"
 #include "module.h"
+#include "Picture.h"
 
 #include <X11/extensions/shape.h>
 

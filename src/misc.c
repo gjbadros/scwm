@@ -356,70 +356,6 @@ StashEventTime(XEvent * ev)
   return True;
 }
 
-
-
-#ifdef GJB_DELETE_ME
-
-int 
-GetTwoArguments(char *action, int *val1, int *val2, int *val1_unit, int *val2_unit)
-{
-  char c1, c2;
-  int n;
-
-  *val1 = 0;
-  *val2 = 0;
-  *val1_unit = Scr.MyDisplayWidth;
-  *val2_unit = Scr.MyDisplayHeight;
-
-  n = sscanf(action, "%d %d", val1, val2);
-  if (n == 2)
-    return 2;
-
-  c1 = 's';
-  c2 = 's';
-  n = sscanf(action, "%d%c %d%c", val1, &c1, val2, &c2);
-
-  if (n != 4)
-    return 0;
-
-  if ((c1 == 'p') || (c1 == 'P'))
-    *val1_unit = 100;
-
-  if ((c2 == 'p') || (c2 == 'P'))
-    *val2_unit = 100;
-
-  return 2;
-}
-
-
-int 
-GetOneArgument(char *action, long *val1, int *val1_unit)
-{
-  char c1;
-  int n;
-
-  *val1 = 0;
-  *val1_unit = Scr.MyDisplayWidth;
-
-  n = sscanf(action, "%ld", val1);
-  if (n == 1)
-    return 1;
-
-  c1 = '%';
-  n = sscanf(action, "%ld%c", val1, &c1);
-
-  if (n != 2)
-    return 0;
-
-  if ((c1 == 'p') || (c1 == 'P'))
-    *val1_unit = 100;
-
-  return 1;
-}
-
-#endif
-
-
 /*****************************************************************************
  *
  * Grab the pointer and keyboard
@@ -684,7 +620,7 @@ HandleHardFocus(ScwmWindow * t)
    ** id -> name of function, or other identifier
  */
 void 
-scwm_msg(int type, char *id, char *msg,...)
+scwm_msg(scwm_msg_levels type, char *id, char *msg,...)
 {
   char *typestr;
   va_list args;

@@ -38,6 +38,7 @@
 #include "menu.h"
 #include "decor.h"
 #include "face.h"
+#include "pixmap.h"
 
 static scm_smobfuns font_smobfuns =
 {
@@ -87,6 +88,15 @@ static scm_smobfuns face_smobfuns =
   0
 };
 
+static scm_smobfuns pixmap_smobfuns =
+{
+  &mark_pixmap,
+  &free_pixmap,
+  &print_pixmap,
+  0
+};
+
+/* add new scwm object types here */
 void 
 init_scwm_types(void)
 {
@@ -96,4 +106,5 @@ init_scwm_types(void)
   scm_tc16_scwm_menu = scm_newsmob(&menu_smobfuns);
   scm_tc16_scwm_decor = scm_newsmob(&decor_smobfuns);
   scm_tc16_scwm_face = scm_newsmob(&face_smobfuns);
+  scm_tc16_scwm_pixmap = scm_newsmob(&pixmap_smobfuns);
 }

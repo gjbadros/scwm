@@ -1168,6 +1168,7 @@ InitVariables(void)
   Scr.MouseFocusClickRaises = False;
 
   /* Not the right place for this, should only be called once somewhere .. */
+  /* FIXGJB: why not the right place? */
   InitPictureCMap(dpy, Scr.Root);
 
   return;

@@ -1,6 +1,6 @@
+/* $Id$ */
 
-
-
+#define DECOR_IMPLEMENTATION
 #include <config.h>
 #include <guile/gh.h>
 #include "scwm.h"
@@ -11,7 +11,8 @@
 #include "font.h"
 #include "face.h"
 
-long scm_tc16_scwm_decor;
+ScwmDecor *last_decor = NULL;
+ScwmDecor *cur_decor = NULL;
 
 size_t 
 free_decor(SCM obj)
@@ -27,8 +28,8 @@ print_decor(SCM obj, SCM port, scm_print_state * pstate)
 {
   char *name;
 
-#ifdef HAVE_SCM_PUTS
   name = SCWMDECOR(obj)->tag;
+#ifdef HAVE_SCM_PUTS
   scm_puts("#<decor ", port);
   if (NULL == name) {
     scm_write(gh_int2scm((int) DECOR(obj)), port);
@@ -37,7 +38,6 @@ print_decor(SCM obj, SCM port, scm_print_state * pstate)
   }
   scm_putc('>', port);
 #else /* !HAVE_SCM_PUTS */
-  name = SCWMDECOR(obj)->tag;
   scm_gen_puts(scm_regular_port, "#<decor ", port);
   if (NULL == name) {
     scm_write(gh_int2scm((int) DECOR(obj)), port);
@@ -216,11 +216,6 @@ current_decor()
 }
 
 
-SCM ensure_valid(SCM win, int n, char *subr, SCM kill_p);
-
-#define VALIDATEN(win,n,subr)  if(((win=ensure_valid(win,n,subr,SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
-
-
 SCM 
 set_window_decor_x(SCM decor, SCM win)
 {
@@ -256,5 +251,3 @@ set_window_decor_x(SCM decor, SCM win)
 
   return SCM_UNSPECIFIED;
 }
-
-

@@ -1,5 +1,14 @@
+/* $Id$ */
+
 #ifndef DECOR_H
 #define DECOR_H
+
+#undef EXTERN
+#ifdef DECOR_IMPLEMENTATION
+#define EXTERN
+#else
+#define EXTERN extern
+#endif
 
 #include <libguile.h>
 #include "scwm.h"
@@ -10,7 +19,7 @@ typedef struct {
   int refcnt;
 } scwm_decor;
 
-extern long scm_tc16_scwm_decor;
+EXTERN long scm_tc16_scwm_decor;
 
 #define DECORP(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_decor)
 #define DECOR(X)  ((scwm_decor *)SCM_CDR(X))

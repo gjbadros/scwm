@@ -294,7 +294,7 @@ wait_for_window(SCM predicate)
     scm_wrong_type_arg("wait-for-window", 1, predicate);
   }
   while (!done) {
-    if (My_XNextEvent(dpy, &Event)) {
+    if (XNextEvent_orTimeout(dpy, &Event)) {
       SCM_DEFER_INTS;
       DispatchEvent();
       SCM_ALLOW_INTS;

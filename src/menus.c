@@ -423,6 +423,33 @@ MenuItem *PrevItem = NULL;
 int PrevY = 0;
 
 
+
+static
+MenuRoot *
+FindPopup(char *action)
+{
+  char *tmp;
+  MenuRoot *mr;
+
+  GetNextToken(action, &tmp);
+
+  if (tmp == NULL)
+    return NULL;
+
+  mr = Scr.AllMenus;
+  while (mr != NULL) {
+    if (mr->name != NULL)
+      if (strcasecmp(tmp, mr->name) == 0) {
+	free(tmp);
+	return mr;
+      }
+    mr = mr->next;
+  }
+  free(tmp);
+  return NULL;
+
+}
+
 /***********************************************************************
  *
  *  Procedure:
@@ -1178,7 +1205,7 @@ AddToMenu(MenuRoot * menu, char *item, char *action)
   tmp->action = stripcpy(action);
   tmp->next = NULL;
   tmp->state = 0;
-#ifdef GJB_DELETION_COMMENT
+#ifdef GJB_FIXME_COMMENT
   tmp->func_type = find_func_type(tmp->action);
 #endif
   tmp->func_type = F_BEEP; /*FIXGJB: just cannot be F_NOP */

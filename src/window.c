@@ -1,3 +1,5 @@
+/* $Id */
+#define WINDOW_IMPLEMENTATION
 
 /****************************************************************************
  * This module has been significantly modified by Maciej Stachowiak.
@@ -21,12 +23,6 @@
 #include "Grab.h"
 
 extern ScwmDecor *last_decor, *cur_decor;
-
-
-
-long scm_tc16_scwm_window;
-
-SCM window_context = SCM_UNDEFINED;
 
 size_t 
 free_window(SCM obj)
@@ -158,7 +154,242 @@ get_window(SCM kill_p, SCM select_p)
 }
 
 
+/**************************************************************************
+ *
+ * Moves focus to specified window 
+ *
+ *************************************************************************/
+void 
+FocusOn(ScwmWindow * t, int DeIconifyOnly)
+{
+#ifndef NON_VIRTUAL
+  int dx, dy;
+  int cx, cy;
 
+#endif
+  int x, y;
+
+  if (t == (ScwmWindow *) 0)
+    return;
+
+  if (t->Desk != Scr.CurrentDesk) {
+    changeDesks(0, t->Desk);
+  }
+#ifndef NON_VIRTUAL
+  if (t->flags & ICONIFIED) {
+    cx = t->icon_xl_loc + t->icon_w_width / 2;
+    cy = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
+  } else {
+    cx = t->frame_x + t->frame_width / 2;
+    cy = t->frame_y + t->frame_height / 2;
+  }
+
+  dx = (cx + Scr.Vx) / Scr.MyDisplayWidth * Scr.MyDisplayWidth;
+  dy = (cy + Scr.Vy) / Scr.MyDisplayHeight * Scr.MyDisplayHeight;
+
+  MoveViewport(dx, dy, True);
+#endif
+
+  if (t->flags & ICONIFIED) {
+    x = t->icon_xl_loc + t->icon_w_width / 2;
+    y = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
+  } else {
+    x = t->frame_x;
+    y = t->frame_y;
+  }
+  RaiseWindow(t);
+  KeepOnTop();
+
+  /* If the window is still not visible, make it visible! */
+  if (((t->frame_x + t->frame_height) < 0) || (t->frame_y + t->frame_width < 0) ||
+  (t->frame_x > Scr.MyDisplayWidth) || (t->frame_y > Scr.MyDisplayHeight)) {
+    SetupFrame(t, 0, 0, t->frame_width, t->frame_height, False);
+    if (!(t->flags & ClickToFocus))
+      XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
+  }
+  UngrabEm();
+  SetFocus(t->w, t, 0);
+}
+
+
+
+/**************************************************************************
+ *
+ * Moves pointer to specified window 
+ *
+ *************************************************************************/
+void 
+WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
+{
+#ifndef NON_VIRTUAL
+  int dx, dy;
+  int cx, cy;
+
+#endif
+  int x, y;
+
+  if (t == (ScwmWindow *) 0 || (t->flags & ICONIFIED && t->icon_w == None))
+    return;
+
+  if (t->Desk != Scr.CurrentDesk) {
+    changeDesks(0, t->Desk);
+  }
+#ifndef NON_VIRTUAL
+  if (t->flags & ICONIFIED) {
+    cx = t->icon_xl_loc + t->icon_w_width / 2;
+    cy = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
+  } else {
+    cx = t->frame_x + t->frame_width / 2;
+    cy = t->frame_y + t->frame_height / 2;
+  }
+
+  dx = (cx + Scr.Vx) / Scr.MyDisplayWidth * Scr.MyDisplayWidth;
+  dy = (cy + Scr.Vy) / Scr.MyDisplayHeight * Scr.MyDisplayHeight;
+
+  MoveViewport(dx, dy, True);
+#endif
+
+  if (t->flags & ICONIFIED) {
+    x = t->icon_xl_loc + t->icon_w_width / 2 + 2;
+    y = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2 + 2;
+  } else {
+    if (x_unit != Scr.MyDisplayWidth)
+      x = t->frame_x + 2 + warp_x;
+    else
+      x = t->frame_x + 2 + (t->frame_width - 4) * warp_x / 100;
+    if (y_unit != Scr.MyDisplayHeight)
+      y = t->frame_y + 2 + warp_y;
+    else
+      y = t->frame_y + 2 + (t->frame_height - 4) * warp_y / 100;
+  }
+  if (warp_x >= 0 && warp_y >= 0) {
+    XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, x, y);
+  }
+  RaiseWindow(t);
+  KeepOnTop();
+
+  /* If the window is still not visible, make it visible! */
+  if (((t->frame_x + t->frame_height) < 0) || (t->frame_y + t->frame_width < 0) ||
+  (t->frame_x > Scr.MyDisplayWidth) || (t->frame_y > Scr.MyDisplayHeight)) {
+    SetupFrame(t, 0, 0, t->frame_width, t->frame_height, False);
+    XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
+  }
+  UngrabEm();
+}
+
+/***********************************************************************
+ *
+ *  Procedure:
+ *	DeferExecution - defer the execution of a function to the
+ *	    next button press if the context is C_ROOT
+ *
+ *  Inputs:
+ *      eventp  - pointer to XEvent to patch up
+ *      w       - pointer to Window to patch up
+ *      tmp_win - pointer to ScwmWindow Structure to patch up
+ *	context	- the context in which the mouse button was pressed
+ *	func	- the function to defer
+ *	cursor	- the cursor to display while waiting
+ *      finishEvent - ButtonRelease or ButtonPress; tells what kind of event to
+ *                    terminate on.
+ *
+ ***********************************************************************/
+int 
+DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
+	       unsigned long *context, int cursor, int FinishEvent)
+{
+  Bool fDone = False;
+  Bool fFinished = False;
+  Window dummy;
+  Window original_w;
+
+  original_w = *w;
+
+  if ((*context != C_ROOT) && (*context != C_NO_CONTEXT)) {
+    if ((FinishEvent == ButtonPress) || ((FinishEvent == ButtonRelease) &&
+					 (eventp->type != ButtonPress))) {
+      return False;
+    }
+  }
+
+  if (!GrabEm(cursor)) {
+    /* FIXGJB: call a scheme hook, not XBell */
+    XBell(dpy, Scr.screen);
+    return True;
+  }
+
+  while (!fFinished) {
+    fDone = False;
+    /* block until there is an event */
+/* FIXGJB: hard to know why this was looking for so many different
+   events; I think we just need those in the new call below --10/25/97 gjb
+    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
+	       ExposureMask | KeyPressMask | VisibilityChangeMask |
+	       ButtonMotionMask | PointerMotionMask, eventp); */
+    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
+	       ExposureMask | KeyPressMask | VisibilityChangeMask, eventp);
+    StashEventTime(eventp);
+
+    if (eventp->type == KeyPress)
+      Keyboard_shortcuts(eventp, FinishEvent);
+    if (eventp->type == FinishEvent)
+      fFinished = True;
+    if (eventp->type == ButtonPress) {
+      XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
+		 ExposureMask | KeyPressMask | VisibilityChangeMask |
+		 ButtonMotionMask | PointerMotionMask, eventp);
+      XAllowEvents(dpy, ReplayPointer, CurrentTime);
+      fDone = True;
+    }
+    if (eventp->type == ButtonRelease || eventp->type == KeyPress) {
+      fDone = True;
+    }
+    if (!fDone) {
+      DispatchEvent();
+    }
+  }
+
+
+  *w = eventp->xany.window;
+  if (((*w == Scr.Root) || (*w == Scr.NoFocusWin))
+      && (eventp->xbutton.subwindow != (Window) 0)) {
+    *w = eventp->xbutton.subwindow;
+    eventp->xany.window = *w;
+  }
+  if (*w == Scr.Root) {
+    *context = C_ROOT;
+    XBell(dpy, Scr.screen);
+    UngrabEm();
+    return TRUE;
+  }
+  if (XFindContext(dpy, *w, ScwmContext, (caddr_t *) tmp_win) == XCNOENT) {
+    *tmp_win = NULL;
+    XBell(dpy, Scr.screen);
+    UngrabEm();
+    return (TRUE);
+  }
+  if (*w == (*tmp_win)->Parent)
+    *w = (*tmp_win)->w;
+
+  if (original_w == (*tmp_win)->Parent)
+    original_w = (*tmp_win)->w;
+
+  /* this ugly mess attempts to ensure that the release and press
+   * are in the same window. */
+  if ((*w != original_w) && (original_w != Scr.Root) &&
+      (original_w != None) && (original_w != Scr.NoFocusWin))
+    if (!((*w == (*tmp_win)->frame) &&
+	  (original_w == (*tmp_win)->w))) {
+      *context = C_ROOT;
+      XBell(dpy, Scr.screen);
+      UngrabEm();
+      return TRUE;
+    }
+  *context = GetContext(*tmp_win, eventp, &dummy);
+
+  UngrabEm();
+  return FALSE;
+}
 
 SCM 
 select_window(SCM kill_p)
@@ -282,9 +513,12 @@ SCM
 raise_window(SCM win)
 {
   ScwmWindow *tmp_win;
-  char *junk, *junkC;
+#ifdef FIXGJB_UNUSED_VARIABLES
+  char *junk;
+  char *junkC;
   unsigned long junkN;
   int junkD, method, BoxJunk[4];
+#endif
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "raise-window");
@@ -1169,12 +1403,14 @@ SCM
 plain_border(SCM win)
 {
   ScwmWindow *tmp_win;
+#ifdef FIXGJB_UNUSED_VARIABLES
   ScwmDecor *fl;
+#endif
   int i;
 
   SCM_REDEFER_INTS;
   /* FIXGJB: what the heck does fl get used for?? */
-#if 0
+#ifdef FIXGJB_UNUSED_VARIABLES
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 #endif
 

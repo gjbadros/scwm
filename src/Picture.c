@@ -64,6 +64,7 @@ LoadPicture(Display * dpy, Window Root, char *path)
 
   /* Try to load it as an X Pixmap first */
   xpm_attributes.colormap = PictureCMap;
+  /* FIXGJB: the closeness should be configurable */
   xpm_attributes.closeness = 40000;	/* Allow for "similar" colors */
   xpm_attributes.valuemask =
     XpmSize | XpmReturnPixels | XpmColormap | XpmCloseness;
@@ -88,20 +89,8 @@ LoadPicture(Display * dpy, Window Root, char *path)
   return NULL;
 }
 
-
-Picture *
-GetPicture(Display * dpy, Window Root, char *IconPath, char *PixmapPath,
-	   char *name)
-{
-  char *path;
-
-  if (!(path = findIconFile(name, PixmapPath, R_OK)))
-    if (!(path = findIconFile(name, IconPath, R_OK)))
-      return NULL;
-  return LoadPicture(dpy, Root, path);
-}
-
-
+/* This is the fvwm2 (old code's) main interface to getting a pixmap or 
+   bitmap */
 Picture *
 CachePicture(Display * dpy, Window Root, char *IconPath, char *PixmapPath,
 	     char *name)
@@ -119,10 +108,11 @@ CachePicture(Display * dpy, Window Root, char *IconPath, char *PixmapPath,
 
   /* See if the picture is already cached */
   while (p) {
-    i = l;			/* Check for matching name; backwards compare will probably find
-				   differences fastest, but is a little 'unclean' (Doesn't check
-				   length of pl->name, compares beyond end, should do no harm... */
-
+    i = l;
+    /* Check for matching name; backwards compare will probably find
+       differences fastest, but is a little 'unclean' (Doesn't check
+       length of pl->name, compares beyond end, should do no harm...)
+       FIXGJB: this could be a bug */
     while (i >= 0 && path[i] == p->name[i])
       i--;
     if (i < 0) {		/* We have found a picture with the wanted name */
@@ -179,6 +169,7 @@ DestroyPicture(Display * dpy, Picture * p)
  * There is a possible race condition here:  We check the file and later
  * do something with it.  By then, the file might not be accessible.
  * Oh well.
+ * FIXGJB: race conditions here!
  *
  ****************************************************************************/
 char *

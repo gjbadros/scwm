@@ -1,6 +1,14 @@
+/* $Id$ */
 
 #ifndef MENU_H
 #define MENU_H
+
+#undef EXTERN
+#ifdef MENU_IMPLEMENTATION
+#define EXTERN
+#else
+#define EXTERN extern
+#endif
 
 #include <libguile.h>
 
@@ -11,7 +19,7 @@ typedef struct {
   MenuRoot *mr;
 } scwm_menu;
 
-extern long scm_tc16_scwm_menu;
+EXTERN long scm_tc16_scwm_menu;
 
 #define MENUP(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_menu)
 #define SCWMMENU(X)  ((scwm_menu *)SCM_CDR(X))

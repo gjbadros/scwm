@@ -937,7 +937,9 @@ LookInList(name_list * list, char *name, XClassHint * class,
 	   unsigned long *buttons, int *IconBox,
 	   int *BoxFillMethod)
 {
+#ifdef MS_DELETION_COMMENT
   name_list *nptr;
+#endif
   unsigned long retval = 0;
 
   *value = NULL;

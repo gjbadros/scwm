@@ -30,14 +30,14 @@
  *
  */
 
+#define MENU_IMPLEMENTATION
+
 #include <guile/gh.h>
 #include <config.h>
 #include "scwm.h"
 #include "menu.h"
 #include "screen.h"
 #include "errors.h"
-
-long scm_tc16_scwm_menu;
 
 extern XContext MenuContext;
 
