@@ -21,7 +21,8 @@ window to its normal colors."
   "Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.
 UNFLASH-DELAY may be #f to not automatically revert back to the original
 color.  See `unflash-window'."
-  (if (and (eq? (object-property win 'old-bg) #f)
+  (if (and (window-valid? win)
+	   (eq? (object-property win 'old-bg) #f)
 	   (eq? (object-property win 'old-hi-bg) #f))
       (begin
 	(if (string? color) (set! color (make-color color)))
@@ -36,11 +37,13 @@ color.  See `unflash-window'."
 			     (lambda ()
 			       (unflash-window win)
 			       (if (object-property win 'flashing)
-				   (add-timer-hook! (sec->usec unflash-delay)
-						    (lambda ()
-						      (flash-window win #:color color
-								    #:unflash-delay unflash-delay
-								    #:continually #f))))))))))
+				   (add-timer-hook! 
+				    (sec->usec unflash-delay)
+				    (lambda ()
+				      (flash-window win
+						    #:color color
+						    #:unflash-delay unflash-delay
+						    #:continually #f))))))))))
 ;; (flash-window (get-window) #:continually #t)
 ;; (stop-flashing-window)
 

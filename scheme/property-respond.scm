@@ -39,6 +39,9 @@
 ;; (define w (select-window-interactively))
 ;; (X-property-get w "flash")
 
+(define-public window-flashing-start-hook (make-hook 1))
+(define-public window-flashing-stop-hook (make-hook 1))
+
 (define-public (property-changed-debug prop win)
   "Print debugging information about the property change of PROP on WIN.
 See also `X-PropertyNotify-hook'."
@@ -58,8 +61,12 @@ See also `X-PropertyNotify-hook'.  Currently handles
     (case (string->symbol prop)
       ('flashing
        (if value
-	   (flash-window win #:continually #t #:color color)
-	   (stop-flashing-window win)))
+	   (begin
+	     (flash-window win #:continually #t #:color color)
+	     (run-hook window-flashing-start-hook win))
+	   (begin
+	     (stop-flashing-window win)
+	     (run-hook window-flashing-stop-hook win))))
       ('flash
        (if value
 	   (flash-window win #:color color)))

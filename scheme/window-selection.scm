@@ -56,11 +56,11 @@ accessed via `selected-windows-list'."
       (begin
 	(unflash-window w)
 	(remove-nonant-marker w)
-	(call-hook-procedures window-selection-remove-hook (list w))
+	(run-hook window-selection-remove-hook w)
 	(set! selected-windows (list-without-elem selected-windows w)))
       (begin
 	(flash-window w #:unflash-delay #f)
-	(call-hook-procedures window-selection-add-hook (list w))
+	(run-hook window-selection-add-hook w)
 	(if show-nonant-flag (place-nonant-marker w))
 	(set! selected-windows (cons w selected-windows))
 	w)))
@@ -78,7 +78,7 @@ accessed via `selected-windows-list'."
 	 (lambda ()
 	   (for-each (lambda (w) 
 		       (remove-nonant-marker w)
-		       (call-hook-procedures window-selection-remove-hook (list w)))
+		       (run-hook window-selection-remove-hook w))
 		     selected-windows))
 	 (lambda args noop))
   (set! selected-windows '()))

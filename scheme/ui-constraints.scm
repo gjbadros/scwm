@@ -82,7 +82,7 @@ SIDE-EFFECT: addes new class obj to the global class list."
     (if (ui-constraint-class? old)
 	(delete-ui-constraint-class! old))
     (set! global-constraint-class-list (cons obj global-constraint-class-list))
-    (call-hook-procedures constraint-class-add-hook (list obj))
+    (run-hook constraint-class-add-hook obj)
     obj))
 
 
@@ -96,14 +96,14 @@ SIDE-EFFECT: addes new class obj to the global class list."
 SIDE-EFFECT: removes class object from the global class list."
   (begin
     (set! global-constraint-class-list (delq ui-constraint-class global-constraint-class-list))
-    (call-hook-procedures constraint-class-delete-hook (list ui-constraint-class))))
+    (run-hook constraint-class-delete-hook ui-constraint-class)))
 
 
 (define-public (reset-ui-constraint-classes!)
   "Empty the global list of ui-constraint-classes."
   (begin
     (for-each (lambda (class) 
-		(call-hook-procedures constraint-class-delete-hook (list class))) 
+		(run-hook constraint-class-delete-hook class))
 	      global-constraint-class-list)
     (set! global-constraint-class-list ())))
 
@@ -274,8 +274,8 @@ SIDE-EFFECT: adds new instance object to the global list."
 	(if visible?
 	    (begin
 	      (set! global-constraint-instance-list (cons uc global-constraint-instance-list))
-	      (call-hook-procedures constraint-add-hook (list uc))
-	      (call-hook-procedures constraint-composition-record-hook (list uc arg-list))))
+	      (run-hook constraint-add-hook uc)
+	      (run-hook constraint-composition-record-hook uc arg-list)))
 	uc)
       (error "make-ui-constraint first argument must be UI-CONSTRAINT-CLASS object")))
 
@@ -314,7 +314,7 @@ not a ui-constraint-class.  Calls make-ui-constraint (see above)."
 SIDE-EFFECT: removes instance object from the global list"
   (set! global-constraint-instance-list (delq ui-constraint global-constraint-instance-list))
   (disable-ui-constraint ui-constraint)
-  (call-hook-procedures constraint-delete-hook (list ui-constraint)))
+  (run-hook constraint-delete-hook ui-constraint))
 
 
 ;; ui-constraint?
@@ -436,10 +436,10 @@ errors if UI-CONSTRAINT is not a ui-constraint.
 returns the constraint."
   (if (ui-constraint? ui-constraint)
       (let ((cn (ui-constraint-cn ui-constraint))
-	    (hooks (ui-constraint-enable-hooks ui-constraint)))
+	    (hook (ui-constraint-enable-hooks ui-constraint)))
 	(map (lambda (c) (cl-add-constraint (scwm-master-solver) c)) cn)
 	(set-enable! ui-constraint #t)
-	(call-hook-procedures hooks '(#t)))
+	(run-hook hook #t))
       (error "enable-ui-constraint argument must be a UI-CONSTRAINT object")))
 
 
@@ -455,10 +455,10 @@ errors if UI-CONSTRAINT is not a ui-constraint
 returns the constraint"
   (if (ui-constraint? ui-constraint)
       (let ((cn (ui-constraint-cn ui-constraint))
-	    (hooks (ui-constraint-enable-hooks ui-constraint)))
+	    (hook (ui-constraint-enable-hooks ui-constraint)))
 	(map (lambda (c) (cl-remove-constraint (scwm-master-solver) c)) cn)
 	(set-enable! ui-constraint #f)
-	(call-hook-procedures hooks '(#f)))
+	(run-hook hook #f))
       (error "disable-ui-constraint argument must be a UI-CONSTRAINT object")))
 
 
