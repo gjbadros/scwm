@@ -1381,20 +1381,8 @@ union of all other window managers!
 (bind-key 'all "C-M-S-e" resize-halfscreen)
 (bind-key 'all "C-M-S-f" resize-fullscreen)
 
-(define (window-task-switcher-menu)
-  (show-window-list-menu #t #:by-focus #t #:show-last-focus-time #t
-			 #:show-geometry #t))
-  
-
 ;; I reserve M-Tab for emacs, but Alt-Tab is fine
 (bind-key 'all "A-Tab" window-task-switcher-menu)
-
-
-(define (next-visible-non-iconified-window)
-	 (next-window #:only visible? #:except iconified?))
-
-(define (prev-visible-non-iconified-window)
-	 (prev-window #:only visible? #:except iconified?))
 
 ;; rotate the current window with the keyboard
 (bind-key 'all "M-S-Tab" next-visible-non-iconified-window)
@@ -1554,11 +1542,6 @@ union of all other window managers!
 ;; (bind-mouse 'window 1 raise-window)
 ;; (set-window-focus! 'click (get-window))
 
-
-(define (send-key-press-up) (send-key-press "Up"))
-(define (send-key-press-down) (send-key-press "Down"))
-(define (send-key-press-prior) (send-key-press "Prior"))
-(define (send-key-press-next) (send-key-press "Next"))
 ;; These would be better if they repeated, but they are useful, e.g.,
 ;; in a netscape window
 (bind-mouse 'window "C-A-S-1" #f send-key-press-up)
@@ -1566,27 +1549,6 @@ union of all other window managers!
 (bind-mouse 'window "C-A-H-1" #f send-key-press-prior)
 (bind-mouse 'window "C-A-H-3" #f send-key-press-next)
 
-;; From Bruno Daniel
-;; GJB:FIXME:: proof that we need per-window event mappings
-;; since it is unfortunate we have to do things this way..
-;(bind-mouse 'window 4
-;            (lambda ()
-;              (if (wildcard-match? "XMathematica"
-;                                   (current-window-with-pointer))
-;                  (send-key-press "Prior"
-;                    (current-window-with-pointer) #t #t #t))
-;                  (send-button-press "4" #f #t #t)))
-
-;(bind-mouse 'window 5
-;            (lambda ()
-;              (if (wildcard-match? "XMathematica"
-;                                   (current-window-with-pointer))
-;                  (send-key-press "Next"
-;                     (current-window-with-pointer) #t #t #t)
-;                  (send-button-press "5" #f #t #t))))
-
-;; (unbind-mouse 'window 4)
-;; (unbind-mouse 'window 5)
 
 ;; Permit vertical movement of windows via wheel mouse.
 ;; kinda silly, but kinda cute, too!
