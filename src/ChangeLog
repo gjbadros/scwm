@@ -1,3 +1,17 @@
+Wed Sep  2 09:53:29 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Use FRAME_[XY]_VP in SetScwmWindowGeometry,
+ 	SetScwmWindowPosition; also for calls to SetupFrame,
+ 	RedrawOutlineAtNewPosition.  Fixed comment of resize-to (does
+ 	*not* include window decoration size).  Added comments re:
+	viewport vs. virtual positionness
+
+	* scwm-constraints.cc, borders.c, add_window.c: Added comments re:
+ 	viewport vs. virtual positionness
+
+	* resize.c: Add Scr.V[xy] to drag positions in resizing, add
+	comments re: viewport vs. virtual positionness
+
 Tue Sep  1 16:28:49 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* move.c: Updated docs to clarify virtual positionness

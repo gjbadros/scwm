@@ -1,3 +1,8 @@
+Wed Sep  2 09:58:52 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Use window-viewport-position in
+	popup-menu-from-decoration choosing where to put the menu on screen.
+
 Tue Sep  1 16:31:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added move-to, since move-window is the primitive that 
