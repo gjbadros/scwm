@@ -13,7 +13,11 @@
 void DoResize(int x_root, int y_root, ScwmWindow *psw);
 void DisplaySize(ScwmWindow *psw, int width, int height, Bool Init);
 void ConstrainSize(ScwmWindow *psw, int *widthp, int *heightp);
-void MoveOutline(Window root, int x, int y, int width, int height);
+void RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height);
+#define RemoveRubberbandOutline(root) do { RedrawOutlineAtNewPosition((root), 0,0,0,0); } while (0)
+
+/* used by add_window */
+SCM interactive_resize(SCM win);
 
 #endif
 

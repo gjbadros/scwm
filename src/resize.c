@@ -2,12 +2,12 @@
  * (C) 1998 Maciej Stachowiak and Greg J. Badros
  */ 
 
-/****************************************************************************
+/*
  * This module is derived from code by Rob Nation 
  * Copyright 1993, Robert Nation
  *     You may use this code for any purpose, as long as the original
  *     copyright remains in the source code and all documentation
- ****************************************************************************/
+ */
 
 /*
  * some window resizing code borrowed from the "wm" window manager
@@ -23,21 +23,28 @@
 #include "resize.h"
 #include "borders.h"
 #include "font.h"
+#include "decorations.h"
+#include "colormaps.h"
+#include "callbacks.h"
+#include "Grab.h"
+#include "focus.h"
+#include "move.h"
+#include "virtual.h"
+#include "events.h"
 
-int dragx;			/* all these variables are used */
-int dragy;			/* in resize operations */
-int dragWidth;
-int dragHeight;
+static int dragx;			/* all these variables are used */
+static int dragy;			/* in resize operations */
+static int dragWidth;
+static int dragHeight;
 
-int origx;
-int origy;
-int origWidth;
-int origHeight;
+static int origx;
+static int origy;
+static int origWidth;
+static int origHeight;
 
-int ymotion = 0, xmotion = 0;
-int last_width, last_height;
-extern int menuFromFrameOrWindowOrTitlebar;
-extern Window PressedW;
+static int ymotion = 0, xmotion = 0;
+static int last_width, last_height;
+
 
 
 /*
@@ -88,12 +95,81 @@ DoResize(int x_root, int y_root, ScwmWindow * psw)
     if (ymotion == 1)
       dragy = origy + origHeight - dragHeight;
 
-    MoveOutline(Scr.Root, dragx - psw->bw, dragy - psw->bw,
-		dragWidth + 2 * psw->bw, dragHeight + 2 * psw->bw);
+    RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
+                               dragWidth + 2 * psw->bw, dragHeight + 2 * psw->bw);
   }
   DisplaySize(psw, dragWidth, dragHeight, False);
 }
 
+
+/* Create the small window to show the interactively-moved/resized window's
+   size/position */
+Window
+CreateSizeDisplayWindow(Pixel fg, Pixel bg, Bool fMWMLike) {
+  Window w;
+  XSetWindowAttributes attributes;
+  unsigned long valuemask = (CWBorderPixel | CWBackPixel | CWBitGravity);
+#ifdef I18N
+  XRectangle dummy,log_ret;
+
+  XmbTextExtents(XFONT(Scr.size_window_font)," +999999x999999", 15,&dummy,&log_ret);
+  Scr.EntryHeight = log_ret.height + HEIGHT_EXTRA;
+  Scr.SizeStringWidth = log_ret.width;
+#else
+  Scr.EntryHeight = FONTHEIGHT(Scr.size_window_font) + HEIGHT_EXTRA;
+  Scr.SizeStringWidth = XTextWidth(XFONT(Scr.size_window_font),
+					 " +999999x999999", 15);
+#endif
+  attributes.border_pixel = fg;
+  attributes.background_pixel = bg;
+  attributes.bit_gravity = NorthWestGravity;
+
+  if (!fMWMLike) {
+    w = XCreateWindow(dpy, Scr.Root,
+                      0, 0, (Scr.SizeStringWidth + SIZE_HINDENT * 2),
+                      (FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2),
+                      0, 0, CopyFromParent, (Visual *) CopyFromParent,
+                      valuemask, &attributes);
+  } else {
+    w = XCreateWindow(dpy, Scr.Root,
+                      Scr.MyDisplayWidth / 2 - 
+                      (Scr.SizeStringWidth + SIZE_HINDENT * 2) / 2,
+                      Scr.MyDisplayHeight / 2 -
+                      (FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2) / 2,
+                      (Scr.SizeStringWidth + SIZE_HINDENT * 2),
+                      (FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2),
+                      0, 0, CopyFromParent, (Visual *) CopyFromParent,
+                      valuemask, &attributes);
+  }
+  return w;
+}
+
+SCWM_PROC(set_size_and_pos_window_attributes_x, "set-size-and-pos-window-attributes!", 3, 0, 0,
+          (SCM font, SCM fg_color, SCM bg_color))
+    /** Set the attributes to be used for the size and position window.
+The font will be FONT, foreground color FG-COLOR, and background color BG-COLOR.
+This the window displaying the current size or position of the window
+being moved or resized interactively. */
+#define FUNC_NAME s_set_size_and_pos_window_attributes_x
+{
+  int iarg = 1;
+  if (gh_string_p(font)) {
+    font = make_font(font);
+  }
+  if (!FONT_P(font)) {
+    scm_wrong_type_arg(FUNC_NAME, iarg++, font);
+  }
+  VALIDATE_COLOR (fg_color, FUNC_NAME, iarg++);
+  VALIDATE_COLOR (bg_color, FUNC_NAME, iarg++);
+  Scr.size_window_font=font;
+  Scr.size_window_fg = fg_color;
+  Scr.size_window_bg = bg_color;
+  XDestroyWindow(dpy,Scr.SizeWindow);
+  Scr.SizeWindow = CreateSizeDisplayWindow( XCOLOR(Scr.size_window_fg), 
+                                            XCOLOR(Scr.size_window_bg), Scr.flags & MWMMenus);
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
 
 
 /*
@@ -106,7 +182,7 @@ DoResize(int x_root, int y_root, ScwmWindow * psw)
  *      height  - the height of the rubber band
  */
 void 
-DisplaySize(ScwmWindow * psw, int width, int height, Bool Init)
+DisplaySize(ScwmWindow *psw, int width, int height, Bool Init)
 {
   char str[100];
   int dwidth, dheight, offset;
@@ -130,7 +206,7 @@ DisplaySize(ScwmWindow * psw, int width, int height, Bool Init)
 
   (void) sprintf(str, " %4d x %-4d ", dwidth, dheight);
 #ifdef I18N
-  XmbTextExtents(XFONT(Scr.menu_font),"WWWWWWWWWWWWWWW",15,&dummy,&log_ret);
+  XmbTextExtents(XFONT(Scr.size_window_font),"WWWWWWWWWWWWWWW",15,&dummy,&log_ret);
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2 - log_ret.width) / 2;
   if (Init) {
     XClearWindow(dpy, Scr.SizeWindow);
@@ -144,25 +220,25 @@ DisplaySize(ScwmWindow * psw, int width, int height, Bool Init)
 	       log_ret.height, False);
   }
 
-  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.menu_font), Scr.MenuGC,
-	      offset, FONTY(Scr.menu_font) + SIZE_VINDENT, str, 13);
+  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.size_window_font), Scr.MenuGC,
+	      offset, FONTY(Scr.size_window_font) + SIZE_VINDENT, str, 13);
 #else
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
-	    - XTextWidth(XFONT(Scr.menu_font), str, strlen(str))) / 2;
+	    - XTextWidth(XFONT(Scr.size_window_font), str, strlen(str))) / 2;
   if (Init) {
     XClearWindow(dpy, Scr.SizeWindow);
     if (Scr.d_depth >= 2)
       RelieveWindow(psw,
 	       Scr.SizeWindow, 0, 0, Scr.SizeStringWidth + SIZE_HINDENT * 2,
-		    FONTHEIGHT(Scr.menu_font) + SIZE_VINDENT * 2,
+		    FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2,
 		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
   } else {
     XClearArea(dpy, Scr.SizeWindow, SIZE_HINDENT, SIZE_VINDENT, Scr.SizeStringWidth,
-	       FONTHEIGHT(Scr.menu_font), False);
+	       FONTHEIGHT(Scr.size_window_font), False);
   }
 
   XDrawString(dpy, Scr.SizeWindow, Scr.MenuGC,
-	      offset, FONTY(Scr.menu_font) + SIZE_VINDENT, str, 13);
+	      offset, FONTY(Scr.size_window_font) + SIZE_VINDENT, str, 13);
 #endif
 
 }
@@ -294,9 +370,33 @@ ConstrainSize(ScwmWindow *psw, int *widthp, int *heightp)
 #undef makemult
 
 
+static void
+InitializeOutlineRects(XRectangle rects[], int lastx, int lasty, int lastWidth, int lastHeight)
+{
+  rects[0].x = lastx;
+  rects[0].y = lasty;
+  rects[0].width = lastWidth;
+  rects[0].height = lastHeight;
+  rects[1].x = lastx + 1;
+  rects[1].y = lasty + 1;
+  rects[1].width = lastWidth - 2;
+  rects[1].height = lastHeight - 2;
+  rects[2].x = lastx + 2;
+  rects[2].y = lasty + 2;
+  rects[2].width = lastWidth - 4;
+  rects[2].height = lastHeight - 4;
+  rects[3].x = lastx + 3;
+  rects[3].y = lasty + 3 + (lastHeight - 6) / 3;
+  rects[3].width = lastWidth - 6;
+  rects[3].height = (lastHeight - 6) / 3;
+  rects[4].x = lastx + 3 + (lastWidth - 6) / 3;
+  rects[4].y = lasty + 3;
+  rects[4].width = (lastWidth - 6) / 3;
+  rects[4].height = (lastHeight - 6);
+}
+
 /*
- *  Procedure:
- *	MoveOutline - move a window outline
+ * RedrawOutlineAtNewPosition
  *
  *  Inputs:
  *	root	    - the window we are outlining
@@ -306,8 +406,9 @@ ConstrainSize(ScwmWindow *psw, int *widthp, int *heightp)
  *	height	    - the height of the rectangle
  */
 void 
-MoveOutline(Window root, int x, int y, int width, int height)
+RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height)
 {
+  /* Ugh. no statics! FIXGJB */
   static int lastx = 0;
   static int lasty = 0;
   static int lastWidth = 0;
@@ -319,28 +420,11 @@ MoveOutline(Window root, int x, int y, int width, int height)
 
   /* undraw the old one, if any */
   if (lastWidth || lastHeight) {
-    rects[0].x = lastx;
-    rects[0].y = lasty;
-    rects[0].width = lastWidth;
-    rects[0].height = lastHeight;
-    rects[1].x = lastx + 1;
-    rects[1].y = lasty + 1;
-    rects[1].width = lastWidth - 2;
-    rects[1].height = lastHeight - 2;
-    rects[2].x = lastx + 2;
-    rects[2].y = lasty + 2;
-    rects[2].width = lastWidth - 4;
-    rects[2].height = lastHeight - 4;
-    rects[3].x = lastx + 3;
-    rects[3].y = lasty + 3 + (lastHeight - 6) / 3;
-    rects[3].width = lastWidth - 6;
-    rects[3].height = (lastHeight - 6) / 3;
-    rects[4].x = lastx + 3 + (lastWidth - 6) / 3;
-    rects[4].y = lasty + 3;
-    rects[4].width = (lastWidth - 6) / 3;
-    rects[4].height = (lastHeight - 6);
+    InitializeOutlineRects(rects,lastx,lasty,lastWidth,lastHeight);
     XDrawRectangles(dpy, Scr.Root, Scr.DrawGC, rects, 5);
   }
+
+  /* save the new position in the static variables */
   lastx = x;
   lasty = y;
   lastWidth = width;
@@ -348,29 +432,211 @@ MoveOutline(Window root, int x, int y, int width, int height)
 
   /* draw the new one, if any */
   if (lastWidth || lastHeight) {
-    rects[0].x = lastx;
-    rects[0].y = lasty;
-    rects[0].width = lastWidth;
-    rects[0].height = lastHeight;
-    rects[1].x = lastx + 1;
-    rects[1].y = lasty + 1;
-    rects[1].width = lastWidth - 2;
-    rects[1].height = lastHeight - 2;
-    rects[2].x = lastx + 2;
-    rects[2].y = lasty + 2;
-    rects[2].width = lastWidth - 4;
-    rects[2].height = lastHeight - 4;
-    rects[3].x = lastx + 3;
-    rects[3].y = lasty + 3 + (lastHeight - 6) / 3;
-    rects[3].width = lastWidth - 6;
-    rects[3].height = (lastHeight - 6) / 3;
-    rects[4].x = lastx + 3 + (lastWidth - 6) / 3;
-    rects[4].y = lasty + 3;
-    rects[4].width = (lastWidth - 6) / 3;
-    rects[4].height = (lastHeight - 6);
+    InitializeOutlineRects(rects,lastx,lasty,lastWidth,lastHeight);
     XDrawRectangles(dpy, Scr.Root, Scr.DrawGC, rects, 5);
   }
 }
+
+
+SCWM_PROC(interactive_resize, "interactive-resize", 0, 1, 0,
+          (SCM win))
+     /** Resize WIN interactively.
+This allows the user to drag a rubber band frame to set the size of
+the window. WIN defaults to the window context in the usual way if not
+specified. */
+#define FUNC_NAME s_interactive_resize
+{
+  extern Window PressedW;
+  ScwmWindow *psw;
+  Bool finished = False, done = False, abort = False;
+  int x, y, delta_x, delta_y;
+  Window ResizeWindow;
+  Bool flags;
+
+  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+
+  if (check_allowed_function(F_RESIZE, psw) == 0
+      || SHADED_P(psw)) {
+    SCM_REALLOW_INTS;
+    return SCM_BOOL_F;
+  }
+  psw->fMaximized = False;
+
+  if (psw->fIconified) {
+    SCM_REALLOW_INTS;
+    return SCM_BOOL_F;
+  }
+  ResizeWindow = psw->frame;
+
+
+  InstallRootColormap();
+  if (!GrabEm(CURSOR_MOVE)) {
+    call0_hooks(cannot_grab_hook);
+    SCM_REALLOW_INTS;
+    return SCM_BOOL_F;
+  }
+  XGrabServer_withSemaphore(dpy);
+
+  /* handle problems with edge-wrapping while resizing */
+  flags = Scr.flags;
+  Scr.flags &= ~(EdgeWrapX | EdgeWrapY);
+
+  XGetGeometry(dpy, (Drawable) ResizeWindow, &JunkRoot,
+	       &dragx, &dragy, (unsigned int *) &dragWidth,
+	       (unsigned int *) &dragHeight, &JunkBW, &JunkDepth);
+
+  dragx += psw->bw;
+  dragy += psw->bw;
+  origx = dragx;
+  origy = dragy;
+  origWidth = dragWidth;
+  origHeight = dragHeight;
+  ymotion = xmotion = 0;
+
+  /* pop up a resize dimensions window */
+  MapSizePositionWindow();
+  last_width = 0;
+  last_height = 0;
+  DisplaySize(psw, origWidth, origHeight, True);
+
+  /* Get the current position to determine which border to resize */
+  if ((PressedW != Scr.Root) && (PressedW != None)) {
+    if (PressedW == psw->sides[0])	/* top */
+      ymotion = 1;
+    if (PressedW == psw->sides[1])	/* right */
+      xmotion = -1;
+    if (PressedW == psw->sides[2])	/* bottom */
+      ymotion = -1;
+    if (PressedW == psw->sides[3])	/* left */
+      xmotion = 1;
+    if (PressedW == psw->corners[0]) {	/* upper-left */
+      ymotion = 1;
+      xmotion = 1;
+    }
+    if (PressedW == psw->corners[1]) {	/* upper-right */
+      xmotion = -1;
+      ymotion = 1;
+    }
+    if (PressedW == psw->corners[2]) {	/* lower left */
+      ymotion = -1;
+      xmotion = 1;
+    }
+    if (PressedW == psw->corners[3]) {	/* lower right */
+      ymotion = -1;
+      xmotion = -1;
+    }
+  }
+  /* draw the rubber-band window */
+  RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
+                             dragWidth + 2 * psw->bw,
+                             dragHeight + 2 * psw->bw);
+
+  /* loop to resize */
+  while (!finished) {
+    XEvent ResizeEvent;
+    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask | KeyPressMask |
+	       ButtonMotionMask | PointerMotionMask | ExposureMask, &ResizeEvent);
+    StashEventTime(&ResizeEvent);
+
+    if (ResizeEvent.type == MotionNotify)
+      /* discard any extra motion events before a release */
+      while (XCheckMaskEvent(dpy, ButtonMotionMask | ButtonReleaseMask |
+			     PointerMotionMask, &ResizeEvent)) {
+	StashEventTime(&ResizeEvent);
+	if (ResizeEvent.type == ButtonRelease)
+	  break;
+      }
+    done = False;
+    /* Handle a limited number of key press events to allow mouseless
+     * operation */
+    if (ResizeEvent.type == KeyPress)
+      Keyboard_shortcuts(&ResizeEvent, ButtonRelease);
+    switch (ResizeEvent.type) {
+    case ButtonPress:
+      XAllowEvents(dpy, ReplayPointer, CurrentTime);
+    case KeyPress:
+      /* simple code to bag out of move - CKH */
+      if (XLookupKeysym(&(ResizeEvent.xkey), 0) == XK_Escape) {
+	abort = True;
+	finished = True;
+      }
+      done = True;
+      break;
+
+    case ButtonRelease:
+      finished = True;
+      done = True;
+      break;
+
+    case MotionNotify:
+      x = ResizeEvent.xmotion.x_root;
+      y = ResizeEvent.xmotion.y_root;
+      /* resize before paging request to prevent resize from lagging mouse - mab */
+      DoResize(x, y, psw);
+      /* need to move the viewport */
+      HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY, &x, &y,
+		   &delta_x, &delta_y, False);
+      /* redraw outline if we paged - mab */
+      if ((delta_x != 0) || (delta_y != 0)) {
+	origx -= delta_x;
+	origy -= delta_y;
+	dragx -= delta_x;
+	dragy -= delta_y;
+
+	DoResize(x, y, psw);
+      }
+      done = True;
+    default:
+      break;
+    }
+    if (!done) {
+      extern XEvent Event;
+      RemoveRubberbandOutline(Scr.Root);
+      Event = ResizeEvent;
+      DispatchEvent();
+
+      RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
+                                 dragWidth + 2 * psw->bw, dragHeight + 2 * psw->bw);
+
+    }
+  }
+
+  RemoveRubberbandOutline(Scr.Root);
+
+  /* pop down the size window */
+  XUnmapWindow(dpy, Scr.SizeWindow);
+
+  if (!abort) {
+    ConstrainSize(psw, &dragWidth, &dragHeight);
+    SetupFrame(psw, dragx - psw->bw,
+	       dragy - psw->bw, dragWidth, dragHeight, False,
+               NOT_MOVED, WAS_RESIZED);
+  }
+  UninstallRootColormap();
+  ResizeWindow = None;
+  XUngrabServer_withSemaphore(dpy);
+  UngrabEm();
+  xmotion = 0;
+  ymotion = 0;
+
+  Scr.flags |= flags & (EdgeWrapX | EdgeWrapY);
+  SCM_REALLOW_INTS;
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+void 
+init_resize()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "resize.x"
+#endif
+}
+
+
 
 /* Local Variables: */
 /* tab-width: 8 */
