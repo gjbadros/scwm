@@ -1,3 +1,12 @@
+Tue Oct  5 18:22:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* binding.c (IsClick): Make this grab the pointer so we actually
+	see the motion events.  This lets motion events fall out before
+	waiting for the click timeout, and makes a noticeable nice
+	improvement in the responsiveness of titlebar drags on motion
+	events.   Also reduce to sleep only 5ms (instead of 20ms) so
+	shorter double-click intervals are handled more accurately.
+
 Mon Oct  4 23:05:19 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.h: Added fBorderWidthSet field

@@ -12,6 +12,10 @@ Changes for scwm-0.99.4 (released )
 * system.scwmrc by default now uses the guile-gtk error message window in addition to
   writing errors to stderr (uses changed error-hook)
 
+* Motion events were only dispatching after the double-click timeout;  now they dispatch
+  as soon as the motion is greater than a threshold.  Result is more responsive feel on, e.g.,
+  titlebar-based window dragging.
+
 * New modules
 ** last-mapped-window.scm for remembering the last window that got mapped
 
