@@ -47,7 +47,6 @@ PROG=${scwm_name}
 
 SRCS = \
 	add_window.c \
-	bindings.c \
 	borders.c \
 	builtins.c \
 	colormaps.c \
@@ -80,7 +79,6 @@ SRCS = \
  
 OBJS = \
 	add_window.o \
-	bindings.o \
 	borders.o \
 	builtins.o \
 	colormaps.o \
