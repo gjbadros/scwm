@@ -71,8 +71,7 @@
 ;;; set some basic styles info
 ;;; --------------------------
 
-;; FIXGJB: I don't think this gets used right yet
-(define animation-ms-delay 50)
+(define animation-delay 50)
 (define font12 (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 ;;(define font14 (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 ;;(define window-font (make-font "*helvetica*bold-r*12*"))
@@ -904,8 +903,6 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
  	  (lambda () (with-window (get-window)
 		       (animated-move-to (x- (w%x 100)) 0))))
 
-;; FIXGJB: modifiers interface could be better... mimic off Emacs?
-;; FIXGJB: keys should be first class
 ;;(bind-key 'all "C-M-S-7" (lambda () (send-button-press 1)))
 ;;(bind-key 'all "C-M-S-8" (lambda () (send-button-press 2)))
 ;;(bind-key 'all "C-M-S-9" (lambda () (send-button-press 3)))

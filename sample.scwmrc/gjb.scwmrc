@@ -451,24 +451,30 @@
 ;;(window-title (select-window-interactively))
 ;;(move-next-to-netscape-win (select-window-interactively))
 
-;; FIXGJB: this is a bit unintuitive-- must use transient-placement-proc
+;; GJB:FIXME:: this is a bit unintuitive-- must use transient-placement-proc
 ;; instead of just placement-proc, even though I've explicitly
 ;; named the window
 (window-style "Netscape: Find" #:transient-placement-proc (thunk move-next-to-netscape-win))
 ;; (window-style "Reminder" #:placement-proc (lambda () (system "ring-bells")))
 
+(define (netscape-download-closed-action win)
+  (message "Download finished")) ;; probably better to play a sound, but you get the point
 
-;;; FIXGJB: add a download remove window hook that notifies user that a download
-;;; has completed
+(define (call-netscape-download-closed-action win)
+  (if (and (string=? (window-class win) "Netscape")
+	   (string=? (window-resource win) "Download"))
+      (netscape-download-closed-action win)))
+
+(add-hook! window-close-hook call-netscape-download-closed-action)
 
 ;;(window-style "Netscape: Find" #:no-titlebar #t) ;; not needed -- it's a transient
 ;;(window-style "findDialog_popup" #:placement-proc (thunk move-next-to-netscape-win))
 ;; (move-next-to-netscape-win (select-window-interactively))
 
 
-;; FIXGJB: make-face's style of argument passing
+;; GJB:FIXME:MS: make-face's style of argument passing
 ;; is different from the window-style method; I imagine
-;; MS has a wrapper planned for this (MSFIX)
+;; MS has a wrapper planned for this
 (border-style #:hidden-handles #t #:no-inset #t)
 
 ;; Some wrappers for button functions
@@ -604,7 +610,7 @@
 	    (popup-menu-from-decoration 
 	     (make-small-window-ops-menu w) w 1)))))
 ;; the "1" at the end of the prior line is the button number from which 
-;; this is popped. FIXGJB return lambda
+;; this is popped.
 
 (add-left-button mini-icon-button-face popup-small-ops-or-close)
 ;;(show-titlebar (select-window-interactively))
@@ -728,13 +734,16 @@
     (window-shade w #t)
     (un-window-shade w #t)))
 
-;;FIXGJB:
 (define (scwm-help)
-  (display "Need to write scwm-help\n"))
+  (netscape-goto-url "http://vicarious-existence.mit.edu/scwm" #f 'netscape-new-windwo))
 
-;;FIXGJB:
 (define (scwm-about-message)
-  (display "Need to write scwm-about-message\n"))
+  (message "Scwm TheNextLevel
+(C) 1999 Greg J. Badros
+
+This is a re-work of the fvwm2 TheNextLevel and its successor
+AnotherLevel.
+"))
 
 (define (start-xterm)
   (execute (string-append xterm-program-name " " xterm-user-shell-options)))
@@ -920,8 +929,6 @@
 
 
 
-;;; FIXGJB introduce syntax which gives the popup-menu-root-start closure after
-;;; defining a menu
 (define menu-root-start
   ;;  (menu "RootStart" "Start %mini-exp.xpm%"
   (menu
@@ -1170,11 +1177,10 @@
 (define root-size-x (car (display-size)))
 (define root-size-y (cadr (display-size)))
 
-;; FIXGJB: where is setenv?
-;;(setenv "height" (number->string root-size-x))
-(putenv (string-append "height=" (number->string root-size-y)))
-(putenv (string-append "width=" (number->string root-size-x)))
-;; FIXGJB: PLANES? SCWM_DIR? SCWM_VERSION?  want these exported too
+(setenv "DISPLAY_HEIGHT" (number->string root-size-y))
+(setenv "DISPLAY_WIDTH" (number->string root-size-x))
+
+;; GJB:FIXME:: PLANES? SCWM_DIR? SCWM_VERSION?  want these exported too
 
 (define (percent-display x y)
   (list (%x x) (%y y)))
@@ -1196,7 +1202,7 @@
 
 (set-click-delay! 150)
 
-;;(define animation-ms-delay 100)
+;;(define animation-delay 5)
 
 ;; Fluid, cartoon-like
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.0))
@@ -1246,8 +1252,9 @@
   (bind-key 'all "C-M-KP_Left" p))
 
 
-;; FIXGJB: modifiers interface could be better... mimic off Emacs?
-;; FIXGJB: keys should be first class
+;; GJB:FIXME:: modifiers interface could be better... mimic off Emacs?
+;; GJB:FIXME:: keys should be first class
+;; GJB:FIXME:: bindings and menus should perhaps have a syntax that makes the lambda implicit
 (bind-key 'all "C-M-S-7" (lambda () (send-button-press 1)))
 (bind-key 'all "C-M-S-8" (lambda () (send-button-press 2)))
 (bind-key 'all "C-M-S-9" (lambda () (send-button-press 3)))
@@ -1268,7 +1275,7 @@
 (bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
 ;; Handle Gale popup windows--
-;; close them after 1 hour (FIXGJB should only do so if not directed to user)
+;; close them after 1 hour (GJB:FIXME:: should only do so if not directed to user)
 ;; (add-hook! after-new-window-hook
 ;;	   (lambda (w) (if (string=? (window-class w) "Gsubrc")
 ;;			   (add-timer-hook! (sec->usec (* 60 60) (thunk (close-window w)))))))
