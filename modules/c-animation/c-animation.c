@@ -286,14 +286,14 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
 
 /* set animation parameters */
 SCWM_PROC(set_animation_x, "set-animation!", 1,0,0,
-          (SCM vector))
-     /** Set the animation parameters to VECTOR. VECTOR is a vector of
+          (SCM vector),
+"Set the animation parameters to VECTOR. VECTOR is a vector of
 floats which give the fractions of the final position that the window
 should appear at. For instance, #(0.0 0.25 0.5 0.75 1.0 1.1 1.0) would
 make the window appear at the initial position, 1/4 of the way, 1/2 of
 the way, 3/4 of the way, overshoot the final position slightly, and
 finally slide back into place. This parameter is used for both
-animated window shades and animated moves. */
+animated window shades and animated moves.")
 #define FUNC_NAME s_set_animation_x
 {
   int citems;
@@ -323,11 +323,11 @@ animated window shades and animated moves. */
 
 
 SCWM_PROC(animated_window_shade, "animated-window-shade", 0, 1, 0,
-          (SCM win))
-     /** Cause WIN to become "window-shaded".
+          (SCM win),
+"Cause WIN to become "window-shaded".
 That is, to roll up into just a titlebar.  The window will be animated
 as it rolls up, producing a pleasing visual effect. WIN defaults to
-the window context in the usual way if not specified. */
+the window context in the usual way if not specified.")
 #define FUNC_NAME s_animated_window_shade
 {
   ScwmWindow *psw;
@@ -382,11 +382,11 @@ the window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 SCWM_PROC(animated_window_unshade, "animated-window-unshade", 0, 1, 0,
-          (SCM win))
-    /** Reverse the effect of `window-shade' on WIN.
+          (SCM win),
+"Reverse the effect of `window-shade' on WIN.
 The window will be animated as it rolls down, producing a pleasing
 visual effect. WIN defaults to the window context in the usual way if
-not specified. See also `window-unshade', `animated-window-shade'. */
+not specified. See also `window-unshade', `animated-window-shade'.")
 #define FUNC_NAME s_animated_window_unshade
 {
   ScwmWindow *psw;
@@ -421,15 +421,15 @@ not specified. See also `window-unshade', `animated-window-shade'. */
 extern Bool fInResolveHook;
 
 SCWM_PROC(animate_windows, "animate-windows", 1, 1, 0,
-          (SCM xforms, SCM move_pointer_too_p))
-     /** Animate multiple windows. 
+          (SCM xforms, SCM move_pointer_too_p),
+"Animate multiple windows. 
 XFORMS is a list of transform operations where each xform operation
 describes how a single window should move and resize by giving its
 old and new configuration.  Each xfrom element of the XFORMS list
 should look like:
 (window frame? (start-width . start-height) (end-width . end-height) (start-x . start-y) (end-x . end-y) (set-end-x? . set-end-y?))
 If MOVE-POINTER-TOO? is #t, then the X11 pointer will move in
-conjunction with the first window in the XFORMS list;  defaults to #f. */
+conjunction with the first window in the XFORMS list;  defaults to #f.")
 #define FUNC_NAME s_animate_windows
 {
   Bool fMovePointer;
@@ -459,13 +459,13 @@ conjunction with the first window in the XFORMS list;  defaults to #f. */
 
 
 SCWM_PROC(animated_move_window, "animated-move-window", 2, 2, 0,
-          (SCM x, SCM y, SCM win, SCM move_pointer_too_p))
-     /** Move WIN to virtual coordinates X, Y with animation.  
+          (SCM x, SCM y, SCM win, SCM move_pointer_too_p),
+"Move WIN to virtual coordinates X, Y with animation.  
 If X or Y is #f, then do not change that coordinate during the move. 
 If MOVE-POINTER-TOO? is specified and true, move the mouse pointer by
 the same amount as the window, animating the motion of the pointer
 along with the window. WIN defaults to the window context in the usual
-way if not specified. */
+way if not specified.")
 #define FUNC_NAME s_animated_move_window
 {
   ScwmWindow *psw;
@@ -571,13 +571,13 @@ animated_resize_common(SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too
 }
 
 SCWM_PROC(animated_resize_window, "animated-resize-window", 2, 4, 0,
-          (SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too_p))
-     /** Resize the client area of WIN to size W, H (pixels) with animation.  
+          (SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too_p),
+"Resize the client area of WIN to size W, H (pixels) with animation.  
 WIN defaults to the window context in the usual way if not
 specified.  If X and Y are given, they are a new virtual position for the northwest
 corder of the window. If MOVE-POINTER-TOO? is specified and true, move the mouse pointer by
 the same amount as the window, animating the motion of the pointer
-along with the window. */
+along with the window.")
 #define FUNC_NAME s_animated_resize_window
 {
   return animated_resize_common(w, h, win, x, y, move_pointer_too_p, FUNC_NAME, False);
@@ -586,13 +586,13 @@ along with the window. */
 
 
 SCWM_PROC(animated_resize_frame, "animated-resize-frame", 2, 4, 0,
-          (SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too_p))
-     /** Resize the frame of WIN to size W, H (pixels) with animation.  
+          (SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too_p),
+"Resize the frame of WIN to size W, H (pixels) with animation.  
 WIN defaults to the window context in the usual way if not
 specified.  If X and Y are given, they are a new virtual position for the northwest
 corder of the window. If MOVE-POINTER-TOO? is specified and true, move the mouse pointer by
 the same amount as the window, animating the motion of the pointer
-along with the window. */
+along with the window.")
 #define FUNC_NAME s_animated_resize_frame
 {
   return animated_resize_common(w, h, win, x, y, move_pointer_too_p, FUNC_NAME, True);

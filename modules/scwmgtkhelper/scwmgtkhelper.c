@@ -33,9 +33,9 @@
 #include "scwm_msg.h"
 
 SCWM_PROC(scwm_gdk_X_fdes, "scwm-gdk-X-fdes", 0, 0, 0,
-	  ())
-     /** Return the integer connection number of the gdk_display.
-Returns -1 if gdk_display is not initialized. */
+	  (),
+"Return the integer connection number of the gdk_display.
+Returns -1 if gdk_display is not initialized.")
 #define FUNC_NAME s_scwm_gdk_X_fdes
 {
   return gh_int2scm(gdk_display?
@@ -69,12 +69,13 @@ ScwmGdkErrorHandler(Display * dpy, XErrorEvent *error)
     return 0;
 }
 
+/* extern void DeadPipe(int nonsense); */
 
 SCWM_PROC(restore_scwm_handlers, "restore-scwm-handlers", 0, 0, 0,
-	  ())
-     /** Restore the scwm behavior for signals and for X errors.
+	  (),
+"Restore the scwm behavior for signals and for X errors.
 This is automatically called when (app scwm gtk) is loaded, to clean up
-after the (gtk gtk) module. */
+after the (gtk gtk) module.")
 #define FUNC_NAME s_restore_scwm_handlers
 {
   extern Bool fHandleSegv;
@@ -88,6 +89,7 @@ after the (gtk gtk) module. */
 #endif
   newhandler_doreset(SIGHUP);
   newhandler_doreset(SIGFPE);
+/*  signal(SIGPIPE,DeadPipe); */
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
   if (fHandleSegv)

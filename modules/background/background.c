@@ -47,8 +47,8 @@ static SCM root_image = SCM_BOOL_F;
 /* MS:FIXME:MS: Add docs! */
 
 SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
-	  (SCM color))
-     /** Sets the color of the root window to COLOR. */
+	  (SCM color),
+"Sets the color of the root window to COLOR.")
 #define FUNC_NAME s_set_background_color_x
 {
   Pixmap dummy = None;
@@ -74,11 +74,11 @@ SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
 #undef FUNC_NAME 
 
 SCWM_PROC(clone_resized_image, "clone-resized-image", 3, 1, 0,
-	  (SCM image, SCM width, SCM height, SCM bgcolor))
-     /** Makes a new image from IMAGE of the given WIDTH and HEIGHT.
+	  (SCM image, SCM width, SCM height, SCM bgcolor),
+"Makes a new image from IMAGE of the given WIDTH and HEIGHT.
 It does not scale IMAGE.  If the resized image is smaller than the
 original, it is cropped; if larger, the extra space in the new image
-is filled with BGCOLOR. See also `clone-scaled-image'.*/
+is filled with BGCOLOR. See also `clone-scaled-image'")
 #define FUNC_NAME s_clone_resized_image
 {
   int nw;
@@ -154,9 +154,9 @@ is filled with BGCOLOR. See also `clone-scaled-image'.*/
 
 
 SCWM_PROC(set_background_image_x, "set-background-image!", 1, 1, 0,
-	  (SCM image, SCM style))
-     /** Sets the background of the root window to be IMAGE.
-STYLE can be either 'centered or 'tiled. */
+	  (SCM image, SCM style),
+"Sets the background of the root window to be IMAGE.
+STYLE can be either 'centered or 'tiled.")
 #define FUNC_NAME s_set_background_image_x
 {
   int dummy = 0;
@@ -196,8 +196,8 @@ STYLE can be either 'centered or 'tiled. */
 
 
 SCWM_PROC(reset_background_x, "reset-background!", 0, 0, 0,
-	  ())
-     /** Resets the root window to the default "weave". */
+	  (),
+"Resets the root window to the default \"weave\".")
 #define FUNC_NAME s_reset_background_x
 {
   XSetWindowBackgroundPixmap(dpy, Scr.Root, (Pixmap) None);
