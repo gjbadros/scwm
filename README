@@ -29,8 +29,10 @@ Other additional features scwm provides are:
  o animated window movements, and shading
  o synthetic key press events (no more mouse needed to click on
    URLs in netscape!)
- o alpha-quality optional constraint-based window layout
-   see http://www.cs.washington.edu/research/constraints/cassowary/
+ o beta-quality optional constraint-based window layout
+   (see README-constraints for more details and
+    see http://www.cs.washington.edu/research/constraints/cassowary/
+    for information about the solver)
 
 This release, although labeled beta, is reasonably stable and
 exceedingly useful.  Many individuals, including the developers, have
@@ -47,7 +49,9 @@ There's various kinds of documentation and random info in the doc
 directory, and you can see some examples of what might be done in the
 startup files included in the sample.scwmrc/ directory.  Also consider
 browsing the Scwm modules in the scheme/ and the example/test code in
-the scheme/tests/ directory, 
+the scheme/tests/ directory.  See doc/scwm-intro-tutorial.scm for 
+a basic introduction to Scwm, Scheme, and means for interacting with
+and customizing your Scwm environment.
 
 Things to look for in the near future include: an event-binding system
 rewrite, better support for the Cassowary constraint solving toolkit,
