@@ -1246,6 +1246,7 @@ from other processes.
 
 (system "xsetroot -solid lightgreen &")
 
+(set! window-list-proc focus-change-warp-pointer)
 
 (wavplay "scwm-startup.wav")
 
