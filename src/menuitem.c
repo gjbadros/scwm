@@ -90,6 +90,13 @@ menuitem_p(SCM obj)
 
 SCWM_PROC(menuitem_properties, "menuitem-properties", 1, 0, 0,
           (SCM menu_item))
+     /** Return a list of the properties of the given MENU-ITEM.
+MENU-ITEM is a menuitem object, created by `make-menuitem'.  The
+returned list contains the following, in this order:
+'(label action extra-label picture-above picture-left hover-action
+  unhover-action hotkey-prefs)
+Note that this is the same as the arguments to the `make-menuitem'
+primitive */
 {
   MenuItem *pmi = SAFE_MENUITEM(menu_item);
   if (!pmi) {
@@ -103,7 +110,7 @@ SCWM_PROC(menuitem_properties, "menuitem-properties", 1, 0, 0,
 		 pmi->scmHover,
 		 pmi->scmUnhover,
 		 gh_str02scm(pmi->pchHotkeyPreferences),
-		 SCM_UNDEFINED);
+		 SCM_EOL);
 }
 
 
@@ -111,6 +118,22 @@ SCWM_PROC(make_menuitem, "make-menuitem", 2,6,0,
           (SCM label, SCM action, SCM extra_label, SCM picture_above,
            SCM picture_left, SCM hover_action, SCM unhover_action,
            SCM hotkey_prefs))
+     /** Return a newly created menuitem object using the given arguments.
+LABEL is a string giving the main text label of the menu item;
+ACTION is a procedure or menu object -- if it is a procedure, it gets
+invoked when the menuitem is selected, if it is a menu object, that
+menu is attached as a submenu from the enclosing menu that the created 
+menuitem is put in.
+EXTRA-LABEL is extra text describing the menu item -- often this
+contains a shortcut key description, or some other descriptive text.
+PICTURE-ABOVE and PICTURE-LEFT are picture objects which correspond to 
+images to display within the bounding region of the menuitem.
+HOVER-ACTION and UNHOVER-ACTION are procedures to be invoked when the
+mouse pointer hovers over the item and is moved away after hovering
+over the item, respectively.
+HOTKEY-PREFS is a string listing preferred alphanumeric shortcut-keys
+for the given menu-item; the menu creation routine uses these as hints 
+for assigning shortcut keys to the various menuitems. */
 {
   MenuItem *pmi = (MenuItem *) safemalloc(sizeof(MenuItem));
   SCM answer;

@@ -6,6 +6,8 @@
  * dynamically loaded functions
  */
 
+#include <config.h>
+
 #include "scwm.h"
 #include "scwmmenu.h"
 #include "drawmenu.h"
@@ -348,6 +350,9 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     int max_above_image_width = 0;
     int label_font_height = 0;
     int max_item_width = 0;
+#ifdef I18N
+    XRectangle dummy,log_ret;
+#endif
 
     MenuDrawingInfo *pmdi = pmd->pmdi =
       (MenuDrawingInfo *) safemalloc(sizeof(MenuDrawingInfo));

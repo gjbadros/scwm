@@ -2,6 +2,8 @@
  * (C) 1998 Maciej Stachowiak and Greg J. Badros
  */
 
+#include <config.h>
+
 #include <unistd.h>
 #include <signal.h>
 #include <X11/Xproto.h>

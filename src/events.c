@@ -210,7 +210,7 @@ HandleEvents(void)
 void
 HandleMappingNotify()
 {
-  scwm_msg(WARN,__FUNCTION__,"Calling mapping notify hook (maybe empty)");
+  DBUG(__FUNCTION__,"Calling mapping notify hook (maybe empty)");
   init_modifiers();
   init_pointer_mapping();
   call0_hooks(x_mappingnotify_hook);
@@ -711,7 +711,7 @@ HandlePropertyNotify()
       if (NULL != swCurrent) {
 	set_window_context(swCurrent->schwin);
       }
-      scwm_msg(WARN,__FUNCTION__,"Calling hook (maybe empty)");
+      DBUG(__FUNCTION__,"Calling hook (maybe empty)");
       call2_hooks(x_propertynotify_hook, gh_str02scm(szName), window_context);
       if (NULL != swCurrent) {
 	unset_window_context();

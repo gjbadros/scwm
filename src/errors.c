@@ -19,6 +19,8 @@
  *
  */
 
+#include <config.h>
+
 #include <guile/gh.h>
 #include "errors.h"
 
