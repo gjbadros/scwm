@@ -22,6 +22,8 @@
 #include "screen.h"
 #include "parse.h"
 
+#undef MS_DEFINE_COMMENT
+
 int dragx;       /* all these variables are used */
 int dragy;       /* in resize operations */
 int dragWidth;
@@ -37,6 +39,7 @@ int last_width,last_height;
 extern int menuFromFrameOrWindowOrTitlebar;
 extern Window PressedW;
 
+#if MS_DEFINE_COMMENT
 /****************************************************************************
  *
  * Starts a window resize operation
@@ -271,7 +274,7 @@ void resize_window(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   Scr.flags |= flags & (EdgeWrapX|EdgeWrapY);
   return;
 }
-
+#endif /* MS_DEFINE_COMMENT */
 
 
 /***********************************************************************
