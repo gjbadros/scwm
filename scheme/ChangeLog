@@ -1,3 +1,9 @@
+Tue Nov 10 10:02:02 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Fix netscape-new-window variable to use comment-based
+	docstring, and added the closing paren that was missing (as
+	noticed by Ken Pizzini)
+
 1998-10-23  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* flux.scm, prefs-menu.scm, std-menus.scm: Use `user-name' instead

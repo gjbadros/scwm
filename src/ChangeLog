@@ -1,3 +1,11 @@
+Tue Nov 10 10:16:05 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandleMapRequestKeepRaised): Call raisePanFrames to
+	try to fix the long-standing fvwm2 bug regarding the virtual
+	panning windows at screen edges sporadically not working when a
+	netscape communicator window is at the edge of the screen.  Thanks 
+	Hideki Sakurada.
+
 1998-11-09  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* session-manager.c (STATE_FILE_SERIAL): New macro.
