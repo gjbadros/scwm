@@ -336,6 +336,7 @@ SCM remove_timer_hook_x(SCM handle)
   return SCM_UNSPECIFIED;
 }
 
+
 long shortest_timer_timeout()
 {
   if (SCM_CDR(timer_hooks)==SCM_EOL) {
@@ -394,6 +395,8 @@ void run_timed_out_timers()
       p = SCM_CDR(p);
       SCM_SETCDR(timer_hooks, p);
       scwm_safe_call0(SCM_CDR(cur));
+    } else {
+      break;
     }
   }
 }
