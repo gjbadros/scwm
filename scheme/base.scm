@@ -59,10 +59,15 @@
 (define-public (maybe-make-color obj)
   "Try to make OBJ into a color and return that color object.
 Returns #f if OBJ is not a color object or a string."
-  (cond
-   ((color? obj) obj)
-   ((string? obj) (if (or (string=? "inherit" obj) (string=? "#f" obj)) #f (make-color obj)))
-   (else #f)))
+  (catch #t
+	 (lambda ()
+	   (cond
+	    ((color? obj) obj)
+	    ((string? obj) (if (or (string=? "inherit" obj) 
+				   (string=? "#f" obj)) #f (make-color obj)))
+	    (else #f)))
+	 (lambda (key . args)
+	   #f)))
 
 (define-scwm-option *use-scwm-system-proc* #f
   "If #t, `execute' will use `scwm-system' instead of guile's `system'.

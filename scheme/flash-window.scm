@@ -7,11 +7,11 @@
   :use-module (app scwm time-convert))
 
 (define*-public (flash-window-on #&optional (win (get-window))
-				 (color (make-color "red")))
+				 (color "red"))
   (flash-window win #:color color #:unflash-delay #f))
 
 (define*-public (flash-window #&optional (win (get-window)) #&key
-			      (color (make-color "red"))
+			      (color "red")
 			      (unflash-delay .5)
 			      (continually #f))
   "Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.
@@ -21,6 +21,7 @@ color.  See `unflash-window'."
 	   (eq? (object-property win 'old-hi-bg) #f))
       (begin
 	(if (string? color) (set! color (make-color color)))
+	(if (not (color? color)) (set! color (make-color "red")))
 	(set-object-property! win 'old-bg (cadr (get-window-colors win)))
 	(set-object-property! win 'old-hi-bg (cadr (get-window-highlight-colors win)))
 	(if continually (set-object-property! win 'flashing #t))
