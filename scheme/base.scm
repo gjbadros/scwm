@@ -54,12 +54,28 @@
   (inexact->exact (truncate (/ (* y display-height) 100))))
 
 (define-public (x- x)
-  "Return the pixel coordinate that is X pixels left from the right display edge."
+  "Return the viewport pixel coordinate X pixels left of the right display edge."
   (- display-width x))
 
+(define-public (viewport-x-position)
+  "Return the x coordinate of the current viewport."
+  (car (viewport-position)))
+
+(define-public (vx- x)
+  "Return the virtual pixel coordinate X pixels left of the right display edge."
+  (- (+ (viewport-x-position) display-width) x))
+
 (define-public (y- y)
-  "Return the pixel coordinate that is Y pixels up from the bottom display edge."
+  "Return the viewport pixel coordinate Y pixels up from the bottom display edge."
   (- display-height y))
+
+(define-public (viewport-y-position)
+  "Return the y coordinate of the current viewport"
+  (cadr (viewport-position)))
+
+(define-public (vy- y)
+  "Return the virtual pixel coordinate Y pixels up from the bottom display edge."
+  (- (+ (viewport-y-position) display-width) y))
 
 (define-public (%x- x)
   "Return the pixel coordinate X percent of the width away from the right edge."
@@ -408,16 +424,14 @@ Currently, this means in the-root-module."
   "Return #t if scwm has the constraint solver primitives, #f otherwise."
   (bound? scwm-set-master-solver))
 
-;; FIXGJB: guile/linux should be fixed
 (define-public (scwm-system cmd)
   "Run CMD using /bin/sh -c CMD and return the exit status.
 The CMD is run synchronously, and Bourne-shell meta characters
 are interpreted by /bin/sh.  E.g., to start CMD in the background,
 use a trailing \"&\" character.  See also guile's `system', but note
-that it may permit signals to propagate to the child processes
-possibly incorrectly.  This may be a bug, or perhaps just an unfortunate
-system-specific behaviour on some Linux systems (observed with libc.so.5.3.12
-on an i386 Linux 2.0.34 machine)."
+that it may permit signals on the controlling tty to be seen
+by children (observed on Linux, Free/NetBSD, but not on Solaris or HP/UX.
+This may be a bug (not meeting POSIX.2 specifications)."
   (let ((child-pid (primitive-fork)))
     (cond
      ((< child-pid 0) (error "bad fork"))
@@ -427,7 +441,7 @@ on an i386 Linux 2.0.34 machine)."
      (else ;; child
       (begin
 	(setpgid 0 0)
-	(apply execlp (list "/bin/sh" "sh" "-c" cmd)))
+	(execlp "/bin/sh" "sh" "-c" cmd))
       ))))
 
 (define-public (execute command)
