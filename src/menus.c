@@ -30,6 +30,7 @@
 #include "parse.h"
 #include "screen.h"
 #include "menu.h"
+#include "util.h"
 
 int menu_on=0;
 
@@ -494,7 +495,11 @@ int FindEntry(void)
 	  PrevMenu = ActiveMenu;
 	  PrevItem = ActiveItem;
 	  /*******************************************/
-	  menu = FindPopup(&ActiveItem->action[5]);
+	  if (!strcmp(ActiveItem->action,"SchemeMenu")) {
+	    menu = MENUROOT(ActiveItem->thunk);
+	  } else {
+	    menu = FindPopup(&ActiveItem->action[5]);
+	  }
 	  if(menu != NULL)
 	    {
 	      retval = do_menu(menu,0);
@@ -664,7 +669,7 @@ int UpdateMenu(int sticks)
 	      if (!strcmp(ActiveItem->action,"Scheme")) {
 		call_thunk_with_message_handler(ActiveItem->thunk);
 	      } else if (!strcmp(ActiveItem->action,"SchemeMenu")) {
-		popup(ActiveItem->thunk);
+		popup(ActiveItem->thunk,SCM_UNDEFINED);
 	      } else {
 		ExecuteFunction(ActiveItem->action,
 				ButtonWindow, &Event, Context,-1);
