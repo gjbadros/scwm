@@ -107,7 +107,9 @@ FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
 VALUE may be a string, if FORMAT is 8, and may always be a vector
 of FORMAT-bit integers.
-ACTION - FIXME */
+ACTION - one of the symbols 'replace, 'prepend, or 'append signifying
+how the new VALUE should be merged (if at all) with the existing
+value. */
 #define FUNC_NAME s_X_property_set_x
 {
   int fmt, len, mode;
@@ -201,15 +203,15 @@ ACTION - FIXME */
 SCWM_PROC(X_property_get, "X-property-get", 2, 1, 0,
 	  (SCM win, SCM name, SCM consume))
      /** Get X property NAME of window WIN.
-WIN is the window to check.
+WIN is the window to check, or 'root-window.
 NAME is a string.
 If CONSUME is #t, the X property is deleted after getting it. Default is
 not to delete.
 If the X property could not be found, #f is returned.
-If the X property could be found, a list (VALUE TYPE FORMAT) is returned.
-TYPE is a string.
-FORMAT is either 8, 16, or 32, giving the size of the elements of VALUE.
-VALUE is a string, if FORMAT is 8, or a vector of integers otherwise. */
+If the X property could be found, a list "(value type format)" is returned.
+"type" is a string.
+"format" is either 8, 16, or 32, giving the size of the elements of "value".
+"value" is a string, if "format" is 8, or a vector of integers otherwise. */
 #define FUNC_NAME s_X_property_get
 {
   Boolean del;
