@@ -233,17 +233,19 @@ Returns #f if one does not exist."
   "UI-CONSTRAINT-CLASS specified the type of constraint to be created.
 WIN-LIST specifies the windows to be constrained.  Returns a new constraint
 object that is NOT enabled.  errors if UI-CONSTRAINT-CLASS is not valid.
-Returned objects are #(obid-ui-constraint CLASS CN ENABLED? LIST-OF-WINDOWS OPTS)
+Returned objects are #(obid-ui-constraint CLASS CN ENABLED? LIST-OF-WINDOWS OPTS BUT)
 The OPTS param is a spot for optional data to be specified by the ui-constraint-class 
 constructor.  If data returns from that constructor in list form, the first element of
 the list is assumed to be the CN and the cdr is stuck in OPTS.
+BUT may contain a reference to the gtk button for the constraint instance in the 
+toggle menu if that feature is in use.
 SIDE-EFFECT: adds new instance object to the global list."
   (if (ui-constraint-class? ui-constraint-class)
       (let* ((vars (apply (ui-constraint-class-ctr ui-constraint-class) arg-list))
 	     (cn (car vars))
 	     (win-list (cadr vars))
 	     (opts (cddr vars))
-	     (uc (vector obid-ui-constraint ui-constraint-class cn #f win-list opts)))
+	     (uc (vector obid-ui-constraint ui-constraint-class cn #f win-list opts #f)))
 	(set! global-constraint-instance-list (cons uc global-constraint-instance-list))
 	(call-hook-procedures constraint-add-hook-list (list uc))
 	uc)
@@ -278,6 +280,7 @@ not a ui-constraint-class.  Calls make-ui-constraint (see above)."
   "Removes the UI-CONSTRAINT permanently.
 SIDE-EFFECT: removes instance object from the global list"
   (set! global-constraint-instance-list (delq ui-constraint global-constraint-instance-list))
+  (disable-ui-constraint ui-constraint)
   (call-hook-procedures constraint-delete-hook-list (list ui-constraint)))
 
 
@@ -353,6 +356,26 @@ Returns #f if no such data exists.  errors if UI-CONSTRAINT is not a ui-constrai
   (if (ui-constraint? ui-constraint)
       (vector-ref ui-constraint 5)
       (error "Argument must be a UI-CONSTRAINT object")))
+
+
+;; ui-constraint-button
+
+(define-public (ui-constraint-button ui-constraint)
+  "Returns the a reference to panel representing the instance in the toggle menu.
+Returns #f if the gtk toggle menu feature is not in use."
+  (if (ui-constraint? ui-constraint)
+      (vector-ref ui-constraint 6)
+      (error "Argument must be a UI-CONSTRAINT object")))
+
+
+;; ui-constraint-set-button!
+
+(define-public (ui-constraint-set-button! ui-constraint button)
+  "Sets the reference to the gtk button for this instance in the toggle menu."
+  (if (ui-constraint? ui-constraint)
+      (vector-set! ui-constraint 6 button)
+      (error "Argument must be a UI-CONSTRAINT object")))
+
 
 ;; set-enable!
 

@@ -44,10 +44,10 @@
 
 (define debug-msgwin (make-message-window "Debug Message Window"))
 
-(define gtk-toggle-window (gtk-window-new 'toplevel))
-(define gtk-instance-box (gtk-vbutton-box-new))
+(define-public gtk-toggle-window (gtk-window-new 'toplevel))
+(define-public gtk-instance-box (gtk-vbutton-box-new))
 
-(define gtk-toggle-close? #f)
+(define-public gtk-toggle-close? #f)
 
 
 ;; window flashing code from ui-constraints-toggle-menu
@@ -92,8 +92,17 @@
 			  (map (lambda (c) (unflash-windows-of-constraint c)) cn)))
     (gtk-container-add box but)
     (gtk-widget-show but)
+    (ui-constraint-set-button! n but)
     but))
 
+
+;; remove a button from the screen (when the constraint is deleted)
+
+(define (remove-cn-button cn)
+  (let ((but (ui-constraint-button cn)))
+    (gtk-widget-hide but)
+    (gtk-container-remove gtk-instance-box but)
+    (ui-constraint-set-button! cn #f)))
 
 
 ;; sets up the toggle menu for use
@@ -106,13 +115,15 @@ To display the toggle menu, call ui-constraint-gtk-toggle-menu."
 	 (vboxen (gtk-vbutton-box-new))
 	 (vboxcn gtk-instance-box)
 	 (vbox (gtk-vbox-new #f 3))
-	 (cn-buttons (map (lambda (n) (make-cn-button n vbox close-window)) 
+	 (cn-buttons (map (lambda (n) (make-cn-button n)) 
 			  global-constraint-instance-list))
 	 (disable (gtk-button-new-with-label "Disable All"))
 	 (enable (gtk-button-new-with-label "Enable All"))
 	 (close (gtk-button-new-with-label "Close")))
     (add-constraint-add-hook! 
      (lambda (cn) (make-cn-button cn)))
+    (add-constraint-delete-hook!
+     (lambda (cn) (remove-cn-button cn)))
     (set! gtk-toggle-close? close?)
     (gtk-button-box-set-spacing vboxcn 0)
     (gtk-button-box-set-child-ipadding vboxcn 0 0)
@@ -140,9 +151,11 @@ To display the toggle menu, call ui-constraint-gtk-toggle-menu."
     (gtk-container-add toplevel vbox)
     (gtk-widget-show vbox)
     (gtk-window-position toplevel 'mouse)
+    (gtk-window-set-policy toplevel #t #t #t)
     (gtk-signal-connect toplevel "delete_event" (lambda (args) (gtk-widget-hide toplevel)))
 ;;    (gtk-widget-show toplevel)
     ))
+
 
 ;; (initialize-gtk-toggle-menu)
 
