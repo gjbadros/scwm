@@ -53,6 +53,8 @@ SCM set_current_decor_x(SCM decor);
 SCM current_decor();
 SCM set_window_decor_x(SCM decor, SCM win);
 
+void init_decor();
+
 #endif /* DECOR_H */
 
 /* Local Variables: */

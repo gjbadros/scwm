@@ -29,6 +29,7 @@
 #include "Grab.h"
 #include "icons.h"
 #include "virtual.h"
+#include "callbacks.h"
 
 int get_next_x(ScwmWindow * t, int x, int y);
 int get_next_y(ScwmWindow * t, int y);

@@ -38,7 +38,7 @@
 #include "syscompat.h"
 #include "virtual.h"
 #include "xmisc.h"
-
+#include "callbacks.h"
 
 extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;

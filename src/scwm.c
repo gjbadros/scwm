@@ -50,6 +50,7 @@
 #include "deskpage.h"
 #include "module-interface.h"
 #include "syscompat.h"
+#include "xproperty.h"
 
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
