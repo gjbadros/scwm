@@ -1,3 +1,19 @@
+Fri Oct 24 23:31:54 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Added (unbind-key), (unbind-mouse)
+
+	* Reindent all of the source using indent
+
+	* Clean up all the code so it builds with -Wall, make that the
+	default.
+
+	* Fix bugs in key handling -- required a recapture for
+	new bindings to be noticed
+
+	* Added gjb.scwmrc, a more full-featured configuration
+
+	* Updated BUGS, added NEEDED (list of features missing)
+
 1997-10-24  Jens-Ulrik Holger Petersen  <petersen@kurims.kyoto-u.ac.jp>
 
 	* Makefile.in (mostlyclean): New target.
