@@ -1,3 +1,11 @@
+Wed Sep 16 15:54:33 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.h: Move struct ScwmWindow up before
+	RestoreWithdrawnLocation prototype
+
+	* scwm.c (scwm_main): Make --version print the szRepoLastChanged
+	string, too.
+
 Wed Sep 16 15:30:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* xmisc.h, xmisc.c: Move RestoreWithdrawnLocation into scwm.c
