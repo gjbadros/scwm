@@ -641,7 +641,8 @@ DeIconify(ScwmWindow *psw)
   /* GJB:FIXME:: maybe comment this line out? */
   MovePswToCurrentPosition(psw);
   RaiseWindow(psw);
-  /* now de-iconify transients */
+
+  /* now de-iconify the window and its transients */
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
     if ((t == psw) ||
 	(t->fTransient && (t->transientfor == psw->w))) {
@@ -834,7 +835,7 @@ a boolean telling whether the window was iconified previously.
 
   SCWM_HOOK(deiconify_hook, "deiconify-hook");
   /** This hook is invoked when a window is deiconified.
-It is called with one argument, WINDOW, WAS-ICONIFIED?.
+It is called with two arguments: WINDOW, WAS-ICONIFIED?.
 WINDOW is the window iconfied, and WAS-ICONIFIED? is
 a boolean telling whether the window was iconified previously. */
 
