@@ -26,18 +26,19 @@
 
 
 ;; (use-modules (app scwm string-prompt))
+;; (use-modules (gtk gtk))
 ;;(define e (string-prompt "Enter: " (lambda (txt) (display (string-append "Got: " txt "\n")))))
 
 
 
-(define-public (string-prompt prompt proc)
+(define*-public (string-prompt prompt proc #&optional (title "string-prompt"))
   "Use PROMPT as prompt in text entry widget and call PROC with the entered string.
 E.g., (string-prompt \"Enter new name\" (lambda (nm) (set-window-title! w nm)))"
-  (let* ((toplevel (gtk-window-new 'toplevel))
+  (let* ((toplevel (gtk-window-new 'dialog))
 	 (hbox (gtk-hbox-new 0 0))
 	 (entry (gtk-entry-new))
 	 (label (gtk-label-new prompt)))
-    (gtk-window-set-title toplevel "string-prompt")
+    (gtk-window-set-title toplevel title)
     (gtk-window-set-wmclass toplevel "string-prompt" "Scwm")
     (gtk-container-add toplevel hbox)
     (gtk-widget-show entry)
@@ -48,6 +49,8 @@ E.g., (string-prompt \"Enter new name\" (lambda (nm) (set-window-title! w nm)))"
 			(lambda () (gtk-widget-destroy toplevel) 
 				(proc (gtk-entry-get-text entry))))
     (gtk-widget-show hbox)
+    (let ((pp (pointer-position)))
+      (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
     (gtk-widget-show toplevel)
     (lambda ()
       (if (not (gtk-widget-destroyed toplevel))

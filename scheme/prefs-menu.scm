@@ -63,7 +63,8 @@
     (set-desk-size! (+ xx dx) (+ yy dx))))
 
 (define-public (help-mesg . funcs) ; return lambda
-  "Displays help for each element of FUNCS, which should be a list of strings."
+  "Returns lambda that displays help for each element of FUNCS.
+FUNCS should be a list of strings."
   (lambda ()
     (message (with-output-to-string (lambda () (for-each help funcs))))))
 
@@ -191,16 +192,15 @@ All the arguments are passed directly to the `menu' function."
                         (apply string-append "xv "
                                (map (lambda (st) (string-append st "/* "))
                                     image-load-path)))
-              (menuitem "Select Font" #:action "xfontsel")
+              (menuitem "Select Font" #:action "xfontsel -print")
               (menuitem "View All Fonts" #:action (show-com "xlsfonts"))
               menu-separator
               (menuitem "Info on a Window" #:action window-info)
               (menuitem "Window Properties" #:action (show-com "xprop"))
               (menuitem "General Info" #:action show-system-info)
               menu-separator
-	      ;; CRW:FIXME:: This shouldn't be hardcoded to /usr/local/bin
               (menuitem "SCWM interaction" #:action
-                        (run-in-xterm "/usr/local/bin/scwmrepl"))
+                        (run-in-xterm "scwmrepl"))
               (menuitem "Specific parameters" #:action
                         (menu (append!
                                (list
