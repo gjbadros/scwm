@@ -1,12 +1,11 @@
-;;; -*- scheme -*-
-;;; File: <.scwmrc - 1998-04-14 Tue 17:48:01 EDT sds@mute.eaglets.com>
+;;; File: <.scwmrc - 1998-06-26 Fri 09:21:43 EDT sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Purpose: to attract users.
 ;;; IMHO, this should be the system.scwmrc.
 
 ;;; Major ideas:
-;;; 1. look as nice as possible (e.g., if an item in the menu has
+;;; 1. look as nice as possible (e.g., if one item in the menu has
 ;;;    mini-icon, all items will have one)
 ;;; 2. use as many features as possible (e.g., multiple decors etc), so
 ;;;    that the users will be able to customize this thing easily.
@@ -19,6 +18,9 @@
 ;;; keycode 115 = Hyper_L
 ;;; keycode 116 = Hyper_R
 ;;; add mod4 = Hyper_L Hyper_R
+
+;;; Also, you probably want to add the following to your .emacs:
+;;; (setq auto-mode-alist (cons ("\\.scwmrc\\'" . scwm-mode) auto-mode-alist))
 
 ;;; -----------------------
 ;;; import the scwm modules
@@ -112,6 +114,7 @@
 (define eyes-i (make-image "mini-eyes.xpm"))
 (define fig-i (make-image "mini-paint.xpm"))
 (define fresh-i (make-image "mini-refresh.xpm"))
+(define games-i (make-image "mini-happy.xpm"))
 (define gimp-i (make-image "mini-wilbur.xpm"))
 (define hamm-i (make-image "mini-hammer.xpm"))
 (define icon-i (make-image "mini-iconify.xpm"))
@@ -238,14 +241,9 @@
 
 (define menu-lisps
   (menu (list (menuitem "Lisps" #f) menu-title menu-separator
-	      (menuitem "ACL" #:action
-			(run-in-xterm "-e /usr/local/acl4.3/bin/pb_cl"))
-	      (menuitem
-	       "CLISP" #:action
-	       (run-in-xterm
-		"-e /usr/local/bin/clisp -q -p CL-USER -i ~/eagle/base"))
-	      (menuitem "CMU CL" #:action
-			(run-in-xterm "-e /usr/bin/lisp -load ~/eagle/base"))
+	      (menuitem "ACL" #:action (run-in-xterm "-e /home/sds/bin/acl"))
+	      (menuitem "CLISP" #:action (run-in-xterm "-e /home/sds/bin/cli"))
+	      (menuitem "CMUCL" #:action (run-in-xterm "-e /home/sds/bin/cmu"))
 	      (menuitem "GCL" #:action (run-in-xterm "-e /usr/local/bin/gcl"))
 	      menu-separator
 	      (menuitem "Guile" #:action
@@ -286,7 +284,7 @@
 			#:action (lambda () (restart "scwm")))
 	      menu-separator
 	      ;;(menuitem "Start KDE" #:image-left xx-i #:action
-		;;	(lambda () (restart "/opt/kde/bin/startkde")))
+	      ;;	(lambda () (restart "/opt/kde/bin/startkde")))
 	      (menuitem "Start fvwm2" #:image-left "mini-fvwm.xpm"
 			#:action (lambda () (restart "fvwm2")))
 	      (menuitem "Start fvwm" #:image-left "mini-fvwm.xpm"
@@ -336,26 +334,37 @@
 (define menu-apps
   (menu (list (menuitem "Applications" #:image-left x2-i #f)
 	      menu-title menu-separator
-	      (menuitem "Acroread" #:image-left pdf-i #:action
-			"/usr/local/Acrobat3/bin/acroread")
+	      ;; (menuitem "Acroread" #:image-left pdf-i #:action
+		;;	"/usr/local/Acrobat3/bin/acroread")
 	      (menuitem "Netscape" #:image-left nscape-i #:action
-			"/usr/local/netscape/netscape")
+			"/usr/bin/netscape")
 	      (menuitem "Mozilla" #:image-left nscape-i #:action
 			"/usr/bin/mozilla")
 	      (menuitem "GhostView" #:image-left "mini-gv.xpm"
 			#:action "ghostview")
-	      (menuitem "VIM 5.0" #:image-left edit-i #:action "/usr/bin/gvim")
 	      (menuitem "GNU Emacs" #:image-left edit-i #:action "emacs")
+	      (menuitem "VIM 5.0" #:image-left edit-i #:action "/usr/bin/gvim")
 	      (menuitem "Xfig" #:image-left fig-i #:action "xfig")
+	      (menuitem "XPaint" #:image-left fig-i #:action "xpaint")
 	      (menuitem "The GIMP" #:image-left gimp-i #:action "gimp")
 	      (menuitem "XPDF" #:image-left pdf-i #:action "xpdf")
 	      (menuitem "XV" #:image-left xv-i #:action "xv"))))
 
 ;;(define menu-multimedia
 ;;  (menu (list (menuitem "Multimedia" #f) menu-title menu-separator)))
-;;(define menu-games
-;;  (menu (list (menuitem "Games" #f) menu-title menu-separator
-;;	     (menuitem "XJewel" #:action "xjewel"))))
+(define menu-games
+  (menu (list (menuitem "Games" #f) ; #:image-left games-i
+              menu-title menu-separator
+              (menuitem "XJewel" #:action "xjewel")
+              (menuitem "Bogged" #:action "/home/sds/bin/bog")
+              ;; (menuitem "Nethack" #:action "/usr/games/nethack")
+              (menuitem "freecell" #:action "/home/sds/bin/freecell")
+              (menuitem "golf" #:action "/home/sds/bin/golf")
+              (menuitem "minesweeper" #:action "/home/sds/bin/minesweeper")
+              (menuitem "pegged" #:action "/home/sds/bin/pegged")
+              (menuitem "solitaire" #:action "/home/sds/bin/solitaire")
+              (menuitem "taipedit" #:action "/home/sds/bin/taipedit")
+              (menuitem "taipei" #:action "/home/sds/bin/taipei"))))
 ;;(define menu-desk
 ;;  (menu (list (menuitem "Desks" #f) menu-title menu-separator
 ;;	      (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
@@ -366,82 +375,79 @@
 ;;; ------------
 ;;; Window menus
 ;;; ------------
+(define (icon-list)
+  (show-window-list-menu #:only iconified? #:show-geometry #t))
+(define (winlist) (show-window-list-menu #:show-geometry #t))
 
 (define menu-window-ops
-  (menu (list (menuitem "Window Operations" #:image-left windows-i)
-	      menu-title menu-separator
-	      (menuitem "&Move" #:image-left move-i #:action interactive-move)
-	      (menuitem "&Resize" #:image-left resize-i
-			#:action interactive-resize)
-	      (menuitem "R&aise" #:image-left raise-i #:action raise-window)
-	      (menuitem "&Lower" #:image-left lower-i #:action lower-window)
-	      (menuitem "&Iconify" #:image-left icon-i #:action toggle-iconify)
-	      (menuitem "&Sticky" #:image-left stick-i #:action toggle-stick)
-	      (menuitem "Ma&ximize" #:image-left max1-i
-			#:action toggle-max-both)
-	      (menuitem "&Tall" #:image-left maxt-i #:action toggle-max-vert)
-	      (menuitem "&Wide" #:image-left maxw-i #:action toggle-max-horz)
-	      (menuitem "S&hade" #:image-left bolt-i
-			#:action toggle-window-shade)
-	      menu-separator
-	      (menuitem "&On-top" #:image-left eyes-i #:action toggle-on-top)
-	      (menuitem "&Print" #:image-left run-i #:action print-window)
-	      (menuitem "In&fo" #:image-left quest-i #:action window-info)
-	      (menuitem "Decorations" #:image-left decor-i #:action
-			(menu (map (lambda (dec)
-				     (menuitem
-				      (car dec) #:action
-				      (lambda ()
-					(window-style "*" #:use-decor
-						      (cdr dec)))))
-				   decor-list)))
-	      menu-separator
-	      (menuitem "&Close" #:image-left bomb2-i #:action close-window)
-	      (menuitem "&Delete" #:image-left cross-i #:action delete-window)
-	      (menuitem "&Destroy" #:image-left bomb-i #:action destroy-window)
-	      menu-separator
-	      (menuitem "Switch to..." #:image-left turn-i #:action
-			(lambda () (show-window-list-menu #:show-geometry #t)))
-	      (menuitem "Re&fresh" #:image-left fresh-i #:action refresh))))
+  (menu (list
+	 (menuitem "Window Operations" #:image-left windows-i)
+	 menu-title menu-separator
+	 (menuitem "&Move" #:image-left move-i #:action interactive-move)
+	 (menuitem "&Resize" #:image-left resize-i #:action interactive-resize)
+	 (menuitem "R&aise" #:image-left raise-i #:action raise-window)
+	 (menuitem "&Lower" #:image-left lower-i #:action lower-window)
+	 (menuitem "&Iconify" #:image-left icon-i #:action toggle-iconify)
+	 (menuitem "&Sticky" #:image-left stick-i #:action toggle-stick)
+	 (menuitem "Ma&ximize" #:image-left max1-i #:action toggle-max-both)
+	 (menuitem "&Tall" #:image-left maxt-i #:action toggle-max-vert)
+	 (menuitem "&Wide" #:image-left maxw-i #:action toggle-max-horz)
+	 (menuitem "S&hade" #:image-left bolt-i #:action toggle-window-shade)
+	 menu-separator
+	 (menuitem "&On-top" #:image-left eyes-i #:action toggle-on-top)
+	 (menuitem "&Print" #:image-left run-i #:action print-window)
+	 (menuitem "In&fo" #:image-left quest-i #:action window-info)
+	 (menuitem "Decorations" #:image-left decor-i #:action
+		   (menu (map (lambda (dec)
+				(menuitem
+				 (car dec) #:action
+				 (lambda () (window-style "*" #:use-decor
+							  (cdr dec)))))
+			      decor-list)))
+	 menu-separator
+	 (menuitem "&Close" #:image-left bomb2-i #:action close-window)
+	 (menuitem "&Delete" #:image-left cross-i #:action delete-window)
+	 (menuitem "&Destroy" #:image-left bomb-i #:action destroy-window)
+	 menu-separator
+	 (menuitem "Switch to..." #:image-left turn-i #:action winlist)
+	 (menuitem "Re&fresh" #:image-left fresh-i #:action refresh))))
 
-(define (make-small-window-ops-menu w)
-  (menu (list (menuitem "Small Ops" #:image-left windows-i)
-	      menu-title menu-separator
-	      (menuitem "&Move" #:image-left move-i #:action interactive-move)
-	      (menuitem "Re&size" #:image-left resize-i
-			#:action interactive-resize)
-	      (menuitem (if (iconified? w) "Unmi&nimize" "Mi&nimize")
-			#:image-left icon-i #:action iconify)
-	      (menuitem (if (maximized? w) "Unma&ximize" "Ma&ximize")
-			#:image-left max1-i #:action toggle-max-both)
-	      menu-separator
-	      (menuitem "Info" #:image-left quest-i #:action
-			(lambda () (window-info w)))
-	      (menuitem "More" #:image-left max-i #:action
-			(menu
-			 (list
+(define (make-small-window-ops-menu ww)
+  (menu (list
+	 (menuitem "Small Ops" #:image-left windows-i)
+	 menu-title menu-separator
+	 (menuitem "&Move" #:image-left move-i #:action interactive-move)
+	 (menuitem "Re&size" #:image-left resize-i #:action interactive-resize)
+	 (menuitem (if (iconified? ww) "Unmi&nimize" "Mi&nimize")
+		   #:image-left icon-i #:action toggle-iconify)
+	 (menuitem (if (maximized? ww) "Unma&ximize" "Ma&ximize")
+		   #:image-left max1-i #:action toggle-max-both)
+	 menu-separator
+	 (menuitem "Info" #:image-left quest-i #:action
+		   (lambda () (window-info ww)))
+	 (menuitem "More" #:image-left max-i #:action
+		   (menu (list
 			  (menuitem "&Raise" #:action raise-window)
 			  (menuitem "&Lower" #:action lower-window)
-			  (menuitem (if (sticky? w) "Un&stick" "&Stick")
+			  (menuitem (if (sticky? ww) "Un&stick" "&Stick")
 				    #:action toggle-stick)
-			  (menuitem (if (window-shaded? w)
+			  (menuitem (if (window-shaded? ww)
 					"Unwindow-S&hade" "Window-S&hade")
 				    #:action toggle-window-shade)
-			  (menuitem (if (kept-on-top? w)
+			  (menuitem (if (kept-on-top? ww)
 					"UnKeep On Top" "Keep On Top")
 				    #:action toggle-on-top))))
-	      (menuitem "Decorations" #:image-left decor-i #:action
-			(menu (map (lambda (dec)
-				     (menuitem
-				      (car dec) #:action
-				      (lambda ()
-					(style-one-window w #:use-decor
-							  (cdr dec)))))
-				   decor-list)))
-	      menu-separator
-	      (menuitem "&Close" #:image-left cross-i #:action close-window)
-	      (menuitem "&Delete" #:image-left bomb2-i #:action delete-window)
-	      (menuitem "&Kill" #:image-left bomb-i #:action destroy-window))))
+	 (menuitem "Decorations" #:image-left decor-i #:action
+		   (menu (map (lambda (dec)
+				(menuitem
+				 (car dec) #:action
+				 (lambda () (style-one-window ww #:use-decor
+							      (cdr dec)))))
+			      decor-list)))
+	 menu-separator
+	 (menuitem "&Close" #:image-left cross-i #:action close-window)
+	 (menuitem "&Delete" #:image-left bomb2-i #:action delete-window)
+	 (menuitem "&Kill" #:image-left bomb-i #:action destroy-window))))
 
 (define menu-help
   (menu (list (menuitem "&About scwm" #:image-left excl-i #:action
@@ -468,14 +474,13 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 			   "right.ml.org" "stormbringer")))
 	      ;; (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm"
 	      ;;		#:action menu-multimedia)
-	      ;; (menuitem "&Games" #:image-left "mini-happy.xpm"
-	      ;;		#:action menu-games)
+	      (menuitem "&Games" #:image-left games-i #:action menu-games)
 	      menu-separator
 	      (menuitem "&Window Operations" #:image-left windows-i
 			#:action menu-window-ops)
 	      (menuitem "&Preferences" #:image-left pref-i #:action
 			(menu-prefs))
-	      (menuitem "WM Conf&ig" #:image-left xx-i ; #:extra-label "(RH5)"
+	      (menuitem "WM Conf&ig (RH5)" #:image-left xx-i ; #:extra-label
 			#:action (make-wmconfig-menu))
 	      menu-separator
 	      (menuitem "&Screensaver" #:image-left save-i #:action
@@ -495,13 +500,11 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
   (popup-menu (make-small-window-ops-menu (get-window))))
 
 ;; now set some mouse and key bindings
-(define (show-icon-list-menu)
-  (show-window-list-menu #:only iconified?))
 
 ;; first our root menus
 (bind-mouse 'root 1 popup-root-start)
 (bind-mouse 'root 2 popup-ops)
-(bind-mouse 'root 3 (lambda () (show-window-list-menu #:show-geometry #t)))
+(bind-mouse 'root 3 winlist)
 ;;(bind-mouse 'root 3 popup-applications)
 ;;(bind-mouse 'root "M-3" (lambda () (popup-menu menu-desk)))
 
@@ -523,6 +526,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 
 (bind-mouse 'icon 1 move-or-deiconify)
 (bind-mouse 'icon 2 deiconify)
+(bind-mouse 'icon 3 popup-small-ops)
 
 (bind-mouse 'all "H-1" toggle-raise)
 (bind-mouse 'all "H-2" interactive-move)
@@ -730,9 +734,9 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 
 (bind-key 'all "H-F1" popup-util)
 (bind-key 'all "H-F2" popup-ops)
-(bind-key 'all "H-F3" show-window-list-menu)
+(bind-key 'all "H-F3" winlist)
 (bind-key 'all "H-F4" (lambda () (close-window (get-window))))
-(bind-key 'all "H-F5" show-icon-list-menu)
+(bind-key 'all "H-F5" icon-list)
 (bind-key 'all "H-F6" popup-small-ops)
 (bind-key 'all "H-F7" interactive-move-window-with-pointer)
 (bind-key 'all "H-F8" interactive-resize-window-with-pointer)
@@ -828,7 +832,3 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 
 (display " *** `scwmrc' processed.\n")
 
-
-;;; Local Variables:
-;;; eval: (require 'scwm)
-;;; End:
