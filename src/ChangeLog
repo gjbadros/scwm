@@ -1,3 +1,12 @@
+Mon Jul  5 18:50:31 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Removed mention of complex.[ch]
+
+	* binding.c: Moved IsClick() from obsoleted complex.c into here.
+
+	* complex.c, complex.h: Removed -- moved their only function,
+	IsClick(), into binding.c
+
 Mon Jul  5 17:24:51 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c: Remove spurious unmatched SCM_REDEFER_INTS.  These all 
