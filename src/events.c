@@ -1891,21 +1891,22 @@ this unless you know what it means. */
 void 
 init_events()
 {
-  /**HOOK: X-PropertyNotify-hook 
-  This hook is invoked whenever a PropertyNotify event is received for
-a window scwm is managing. This indicates that an X window property
-has changed. Watching for window property changes can be used to
-construct your own custom window manager protocols. The hook
+
+  SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook");
+  /** This hook is invoked whenever a PropertyNotify event is received
+for a window scwm is managing. This indicates that an X window
+property has changed. Watching for window property changes can be used
+to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
-that changed (as a string) and the window that it changed for.
-*/
-  SCWM_DEFINE_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook");
-/**HOOK: X-MappingNotify-hook 
-  This hook is invoked whenever a MappingNotify X even is received. A
-MappingNotify event indicates a change of keymapping - in particular,
-it may indicate a change of available modifiers or mouse buttons. The hook procedures are invoked with no arguments.
-*/
-  SCWM_DEFINE_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook");
+that changed (as a string) and the window that it changed for. */
+
+
+  SCWM_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook");
+  /** This hook is invoked whenever a MappingNotify X even is
+received. A MappingNotify event indicates a change of keymapping - in
+particular, it may indicate a change of available modifiers or mouse
+buttons. The hook procedures are invoked with no arguments. */
+
 #ifndef SCM_MAGIC_SNARFER
 #include "events.x"
 #endif

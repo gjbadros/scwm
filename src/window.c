@@ -3803,18 +3803,16 @@ init_window()
 {
   REGISTER_SCWMSMOBFUNS(window);
 
-  /**HOOK: invalid-interaction-hook 
-This hook is invoked with no arguments when the user hits an invalid
+  SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook");
+  /** This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
 operation like `interactive-resize' or `interactive-move'. `beep' is
-one example of a procedure to use here.
-  */
-  SCWM_DEFINE_HOOK(invalid_interaction_hook,"invalid-interaction-hook");
-  /**HOOK: cannot-grab-hook 
-  This hook is invoked with no arguments whenever scwm cannot
+one example of a procedure to use here. */
+
+  SCWM_HOOK(cannot_grab_hook,"cannot-grab-hook");
+  /** This hook is invoked with no arguments whenever scwm cannot
 successfully grab the X server. `beep' is one example of a procedure
 to use here.  */
-  SCWM_DEFINE_HOOK(cannot_grab_hook,"cannot-grab-hook");
 
 #ifndef SCM_MAGIC_SNARFER
 #include "window.x"

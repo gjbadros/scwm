@@ -484,7 +484,9 @@ scwm_main(int argc, char **argv)
   } else {
       territory = Lang;
   }
+  /**RO-VAR */
   scm_sysintern("locale-fullname",gh_str02scm(Lang));
+  /**RO-VAR */
   scm_sysintern("locale-language-territory",gh_str02scm(territory));
 #endif
 
@@ -1289,7 +1291,9 @@ void init_scwm_load_path()
   SCM *loc_load_path;
   SCM path;
 
+  /**VAR */
   loc_load_path = SCM_CDRLOC(scm_sysintern0("%load-path"));
+
   path=*loc_load_path;
   path=gh_cons(gh_str02scm(SCWM_LOAD_PATH),path);
   path=scm_internal_parse_path(getenv("SCWM_LOAD_PATH"), path);

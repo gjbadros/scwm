@@ -795,8 +795,8 @@ GetWindowSizeHints(ScwmWindow * psw)
 
 void init_add_window()
 {
-  /**HOOK: before-new-window-hook 
-  This hook is invoked when a new window structure is first starting
+  SCWM_HOOK(before_new_window_hook, "before-new-window-hook");
+  /** This hook is invoked when a new window structure is first starting
 to be created. Only a subset of the usual window parameters should be
 set here, in particular, those that control what hints will be
 respected for this window, and those that control how the window will
@@ -806,10 +806,9 @@ This hook does not typically need to be used directly by the user;
 `window-style' from the "(app scwm style)" module provides a convenient
 interface to setting the relevant parameters when a new window is
 created. */
-  SCWM_DEFINE_HOOK(before_new_window_hook, "before-new-window-hook");
 
-  /**HOOK: after-new-window-hook
-  This hook is invoked when a new window has been completely created
+  SCWM_HOOK(after_new_window_hook, "after-new-window-hook");
+  /** This hook is invoked when a new window has been completely created
 and placed on the screen. Any window operations may be performed at
 this time. However, it is recommended that placement-related
 operations, such as setting the position, desk, viewport location and
@@ -819,7 +818,6 @@ This hook does not typically need to be used directly by the user;
 `window-style' from the (app scwm style) module provides a convenient
 interface to setting the relevant parameters when a new window is
 created. */
-  SCWM_DEFINE_HOOK(after_new_window_hook, "after-new-window-hook");
 
 #ifndef SCM_MAGIC_SNARFER
 #include "add_window.x"

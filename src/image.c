@@ -626,12 +626,13 @@ void init_image()
      and load it with a nice default value. */
   
 /**VAR: image-load-path
-  Contains a list of strings indicating the directories in which to look for image files. 
+  List of strings indicating the directories in which to look for image files. 
 */
-
   loc_image_load_path = SCM_CDRLOC
     (scm_sysintern("image-load-path", 
 		   gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH)));
+
+  /**VAR: */
   loc_image_not_found_hook = SCM_CDRLOC
     (scm_sysintern("image-not-found-hook", SCM_BOOL_F));
 }

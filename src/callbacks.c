@@ -662,14 +662,15 @@ run_input_hooks(fd_set *in_fdset)
 
 void init_callbacks()
 {
-  /**HOOK: error-hook
-  Whenever an error or other uncaught throw occurs on any callback,
+  SCWM_HOOK(error_hook, "error-hook");
+  /** Called on all kinds of errors and exceptions.
+Whenever an error or other uncaught throw occurs on any callback,
 whether a hook, a mouse binding, a key binding, a menu entry, a file
 being processed, or anything else, error-hook will be invoked. Each
 procedure in the hook will be called with the throw arguments; these
 will generally include information about the nature of the error. 
 */
-  SCWM_DEFINE_HOOK(error_hook, "error-hook");
+
   gettimeofday(&last_timeval, NULL);
 
   timer_hooks = scm_permanent_object(gh_cons(SCM_EOL, SCM_EOL));

@@ -311,15 +311,14 @@ init_constraint_primitives()
 {
   init_cassowary_scm();
 
-  /**HOOK: scwm_resolve-hook
-  Called upon completion of each constraint re-solve.
+  SCWM_HOOK(scwm_resolve_hook, "scwm-resolve-hook");
+  /** Called upon completion of each constraint re-solve.
 The hook is passed a single argument, the solver object that just re-solved.
 The various 'changed-proc hooks on cl-variable objects are called as the solver
 changes variables.  Often, those callbacks should just remember what
 has changed and then act on all the changes at once using this
 callback.  The alternative--acting on all variable changes as they
 occur--can be inefficent and visually distracting. */
-  SCWM_DEFINE_HOOK(scwm_resolve_hook, "scwm-resolve-hook");
 
 #ifndef SCM_MAGIC_SNARFER
 #include "constraint-primitives.x"

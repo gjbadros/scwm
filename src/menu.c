@@ -1331,6 +1331,7 @@ init_menu()
 {
   REGISTER_SCWMSMOBFUNS(menu);
 
+  /**VAR: */
   pscm_construct_menu_primitive = SCM_CDRLOC
     (scm_sysintern("construct-menu-primitive", SCM_BOOL_F));
 
