@@ -1,3 +1,7 @@
+Sun Feb 17 05:42:42 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* easyraise.scm: Added FIXME for very slow memory leak potential.
+
 Sun Feb 17 05:01:09 2002  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* base.scm: Moved doc and implementation to

@@ -14,6 +14,10 @@
 (define-public easyraise-windows #f)
 (define-public easyraise-last-was-raise #f)
 
+;; SRL:FIXME::The caching of easyraise windows in easyraise-windows can end up
+;;   with invalid windows which never get removed from easyraise-windows.  This
+;;   wastes memory with all of these invalid windows.
+
 (define*-public (set-easyraise-window! easyraise? #&optional (win (get-window)))
   ""
   (if win 
