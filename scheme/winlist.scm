@@ -33,7 +33,7 @@
 
 (define-public window-list-proc focus-window)
   
-(define (listify-if-atom l)
+(define-public (listify-if-atom l)
   (if (or (pair? l) (null? l)) l (list l)))
 
 (define-public (filter-only-except l only except)

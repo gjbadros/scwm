@@ -94,7 +94,7 @@ is non-empty."
 ;;; have optional arguments.
 
 ;;; The main point is the currying, not the optional arguments. - MS 10/7/98
-(define*-public ((window-overlaps-window? #&optional (win (get-window))) 
+(define*-public ((window-overlaps-window? #&optional (win (get-window)))
 		 #&optional (win2 (get-window)))
   "Return a function which takes WIN2 and returns #t if it overlaps WIN."
   (windows-overlap? win win2))

@@ -24,6 +24,7 @@
   :use-module (app scwm defoption)
   :use-module (app scwm c-animation)
   :use-module (app scwm base)
+  :use-module (app scwm nonants)
   :use-module (app scwm path-cache)
   :use-module (app scwm style-options)
   :use-module (app scwm window-selection)
@@ -41,6 +42,8 @@ PRED, NEG, and POS should be functions which take a window and
 check whether the property holds for the window, reset the property
 on the window, and set the property on the window, respectively."
   (lambda* (#&optional (win (get-window)))
+	   "A toggling window operation.
+See `make-toggling-winop'."
     (interactive)
     (if win (if (pred win)
 		(neg win)
