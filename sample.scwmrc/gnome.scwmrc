@@ -253,7 +253,9 @@
 )
 
 
-(define (popup-small-ops-or-close)
+(define* (popup-small-ops-or-close)
+  ""
+  (interactive)
   (case (mouse-event-type)
     ((double-click) (close-window))
     (else (let ((w (get-window)))
@@ -261,17 +263,23 @@
 	     (make-small-window-ops-menu w) w 1)
 	    #f))))
 
-(define (close-on-double-click)
+(define* (close-on-double-click)
+  ""
+  (interactive)
   (case (mouse-event-type)
     ((double-click one-and-a-half-clicks) (close-window))))
 
-(define (popup-small-ops-from-decoration)
+(define* (popup-small-ops-from-decoration)
+  ""
+  (interactive)
   (let ((w (get-window)))
     (popup-menu-from-decoration 
      (make-small-window-ops-menu w) w 1))
   #f)
 
-(define (popup-style-menu)
+(define* (popup-style-menu)
+  ""
+  (interactive)
   (let ((w (get-window)))
     (popup-menu-from-decoration 
      (make-window-style-menu w) w 1))
