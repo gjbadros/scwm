@@ -1,3 +1,13 @@
+1998-07-06  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added decor.x to $(BUILT_SOURCES)
+
+	* scwm.c decor.c: #include decor.x, and call init_decor()
+
+	* scwm.h: #include "scwm-snarf.h"
+
+	* *.c: Use SCWM_PROC instead of SCM_PROC
+
 Mon Jul  6 02:49:08 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c (HandleButtonPress, HandleKeyPress): replace
