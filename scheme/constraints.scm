@@ -25,7 +25,14 @@ constraints is reset to empty)."
 
 (reset-scwm-constraints)
 
-(start-ui-constraints-buttons) 
+(define ui-constraints-window
+  (start-ui-constraints-buttons))
+
+(define-public (end-constraints)
+  "Terminate using the constraint solver.  Can restart with a fresh
+solver by using `reset-scwm-constraints'."
+  (close-ui-constraints-buttons ui-constraints-window)
+  (reset-scwm-constraints))
 
 (bind-three-modifier-key-events 
  XKM_CONTROL_L  XKM_ALT_L  XKM_SHIFT_L
