@@ -1,3 +1,9 @@
+1998-09-01  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* tests/test.scm: New file containing testing facilities.
+
+	* tests/properties.scm: Use them.
+
 1998-08-31  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* flux.scm, wininfo.scm: Scheme sources adapted to new X property
