@@ -1,12 +1,39 @@
+Thu Sep  3 10:59:46 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Lots of changes mostly from Dirk Herrmann.  He
+	writes:
+
+	The patch does basically a reordering: First check for
+ 	--with-guile-prefix and --with-guile-exec-prefix and use the
+ 	resulting paths when searching for build-guile. 
+
+	I also changed the meaning of --with-guile-exec-prefix to really
+	point to the guile binaries directory and added options
+	--with-guile-include-prefix and --with-guile-lib-prefix.
+
+	I tried to somehow keep the original structure, though: first test
+	for  programs, later test for libraries. However, this looks a
+	little bit unnatural for the guile tests, since the tests for
+	--with-guile-prefix and --with-guile-exec-prefix are performed
+	with the program checks, while --with-guile-include-prefix and
+	--with-guile-lib-prefix are performed later with the library
+	checks. Maybe the checks for the guile related command line
+	options should be moved together, still keeping the checks for
+	programs and libraries themselves separate.
+
+	Also, he added the m4 macro abstraction SCWM_ARG_PATH, and cleaned 
+	up various uses of "test" as suggested for portability by the
+	Solaris test man page
+
 1998-08-31  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
-	* configure.in, scwm/Makefile.am: If --with-cassowary was given to 
-	configure, build a cassowary scwm from the standard Makefile.
+	* configure.in, scwm/Makefile.am: If --with-cassowary was given to
+ 	configure, build a cassowary scwm from the standard Makefile.
 
 Fri Aug 28 17:03:57 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* configure.in: S. Inverted sense of ac_R_nospace (from S.Senda -- 
-	fix to earlier change)
+	* configure.in: S. Inverted sense of ac_R_nospace (from S.Senda --
+ 	fix to earlier change)
 
 Fri Aug 21 18:05:10 1998  Greg Badros  <gjb@cs.washington.edu>
 
