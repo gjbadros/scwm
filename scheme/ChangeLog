@@ -1,3 +1,15 @@
+Fri Jul 30 16:12:08 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm: Need listops module for filter-map proc.
+
+	* winops.scm: Switch to 'northwest gravity on maximization to work 
+	around a bug.  
+
+Tue Jul 27 13:32:56 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Initialize the vector to return with 
+	#f, not 0, in nonant->dirvector.
+
 1999-07-29  Jeff W. Nichols  <jwnichls@cs.washington.edu>
 
 	* winops.scm: Added a method to sort a list of 
