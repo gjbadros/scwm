@@ -1,3 +1,14 @@
+1998-10-16  Todd Larason  <jtl@teeny.molehill.org>
+
+	* menu.h: remove unused PfnConstructDynamicMenu typedef
+
+	* drawmenu.c (ConstructDynamicMenu): remove pmd->{x,y}
+	initialization; neither needed nor appropriate here
+
+	* draw-pie-menu.c: removed; moved to modules/pie-menu
+
+	* Makefile.am: remove commented-out pie-menu references
+
 Thu Oct 15 08:04:47 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* add_window.c (AddWindow): Set psw->fl before calling

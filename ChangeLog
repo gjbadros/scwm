@@ -1,3 +1,8 @@
+1998-10-16  Todd Larason  <jtl@teeny.molehill.org>
+
+	* configure.in (scwm_image_load_path): modules/pie-menus/Makefile
+	added
+
 Sun Oct 11 15:18:01 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added modules/overlay-plane/Makefile

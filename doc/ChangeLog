@@ -1,3 +1,8 @@
+1998-10-16  Todd Larason  <jtl@teeny.molehill.org>
+
+	* dev/dynamic-modules: add note about updating AC_OUTPUT list in
+	configure.in
+
 1998-10-10  Todd Larason  <jtl@teeny.molehill.org>
 
 	* Makefile.am (scwm.sgml): get documentation strings from module

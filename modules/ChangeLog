@@ -1,3 +1,13 @@
+1998-10-16  Todd Larason  <jtl@teeny.molehill.org>
+
+	* pie-menus/draw-pie-menu.c: moved from scwm.  First real
+	implementation of pie menus.  The layout is still somewhat buggy,
+	and several features are missing, but it basically works
+
+	* pie-menus/Makefile.am: added file
+
+	* Makefile.am (SUBDIRS): added pie-menus
+
 Thu Oct 15 08:01:57 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* overlay-plane/overlay-plane.c: Use GXcopy, not GXset for the GC
