@@ -1,3 +1,17 @@
+Wed Feb 16 19:20:10 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops-menu.scm: Added `window-applications-menu' and
+	`set-window-applications-menu!' and added #:application-menu
+	window style (now depends on style-options module).  Use the
+	window-application-menu in the window ops menu, so use filter-list 
+	to remove it if there is no application menu.
+
+	* winops-menu.scm: Added `netscape-application-menu', and use it
+	as an #:application-menu
+
+	* winops-menu.scm: Make `filter-map' skip unspecified values,
+	too (not just #f values).  Added `filter-list'.
+
 Wed Feb 16 18:28:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm_common_scheme): Added easyraise.scm
