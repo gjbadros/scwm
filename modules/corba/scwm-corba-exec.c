@@ -10,21 +10,21 @@
 
 #include "scwm_scheme_evaluator.h"
 
-scwm_scheme_evaluator_object client;
+scwm_scheme_evaluator client;
 CORBA_Environment ev;
 
-#define NAME "scwm-corba-exec"
-#define VERSION "v1.0"
+#define CORBA_NAME "scwm-corba-exec"
+#define CORBA_EXEC_VERSION "v1.0"
 
 void Exception( CORBA_Environment* ev )
 {
   switch( ev->_major ) {
   case CORBA_SYSTEM_EXCEPTION:
-    g_log(NAME, G_LOG_LEVEL_DEBUG, "CORBA system exception %s.\n",
+    g_log(CORBA_NAME, G_LOG_LEVEL_DEBUG, "CORBA system exception %s.\n",
           CORBA_exception_id(ev));
     exit ( 1 );
   case CORBA_USER_EXCEPTION:
-    g_log(NAME, G_LOG_LEVEL_DEBUG, "CORBA user exception: %s.\n",
+    g_log(CORBA_NAME, G_LOG_LEVEL_DEBUG, "CORBA user exception: %s.\n",
           CORBA_exception_id( ev ) );
     exit ( 1 );
   default:
@@ -41,7 +41,7 @@ main (int argc, char *argv[])
   CORBA_exception_init(&ev);
   Exception(&ev);
 
-  orb = gnome_CORBA_init(NAME,VERSION,&argc, argv, 0, &ev);
+  orb = gnome_CORBA_init(CORBA_NAME,CORBA_EXEC_VERSION,&argc, argv, 0, &ev);
   Exception(&ev);
 
   if (argc < 2) {
@@ -69,9 +69,9 @@ main (int argc, char *argv[])
     char *szAnswer;
     char *szOut;
     char *szError;
-    scwm_scheme_evaluator_object_evaluate_sexp(client, 
-                                               argv[2],&szAnswer,&szOut,&szError,
-                                               &ev);
+    scwm_scheme_evaluator_evaluate_sexp(client, 
+                                        argv[2],&szAnswer,&szOut,&szError,
+                                        &ev);
     Exception(&ev);
     printf("szAnswer = %s\nszOut=%s\nszError=%s\n",
            szAnswer,szOut,szError);
