@@ -1,3 +1,7 @@
+Mon Sep  7 09:56:45 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Fix my typo in calling set-edge-resistance!
+
 1998-09-07  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* robbe.scwmrc: `thank-scwm-authors-with-usage-note' moved to

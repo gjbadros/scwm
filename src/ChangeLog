@@ -1,3 +1,18 @@
+Mon Sep  7 10:21:19 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.h: Added SCWM_VAR_INIT macro for when vars have values to
+	initialize to -- SCWM_VAR now only takes two arguments, the c name 
+	and the scheme name
+
+	* scwm.c: Fix init_scwm_load_path to use new SCWM_VAR so it works
+	-- caused %load-path to be broken before which resulted in not
+	finding scwm modules
+
+	* menu.c, image.c: Use SCWM_VAR_INIT appropriately.
+
+	* image.c: Fix multiple free of c_fname/c_name in
+	path_expand_image_fname (thanks for report, Carl Witty!)
+
 Sun Sep  6 15:36:11 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Clean up init_scwm_load_path, fix /* to /** comments
