@@ -1,0 +1,52 @@
+Session management - a question and answer dialogue
+
+
+Q: What is a session?
+A: A session is a set of programs. The set of programs that normally run while
+   you're working could be called your "working session". Analogously, there
+   may be a "hacking-on-scwm session", etc.
+
+Q: What is session management?
+A: Session management tries to preserve the state of your sessions while they
+   are not active. That means that the state of all programs belonging to a
+   session is saved when you suspend the session, and restored when you
+   reactivate it. These actions normally happen on logout/login, but the same
+   holds if you want to directly switch from one session A to session B: A is
+   suspended, B is reactivated. The net effect is that, whenever you
+   reactivate a session, you are in exactly the same environment as when you
+   suspended it - the same files are loaded in the editor, the current
+   directory in your terminal windows is the same, etc.
+
+Q: But I want my session to on every restart!
+A: That was not exactly a question, was it?
+
+Q: Can I reset the session to some sane state?
+A: Yes. Since you can save anytime, and to arbitrary session names, the way to 
+   go is to checkpoint to another name when your session is in the desired
+   "default state", and never write that session again. Whenever you feel the
+   need, you can go back to this state of your session and start again from
+   there. There is also the possibility not to save on session suspension.
+   This gives you back the last saved state on reactivation. So session
+   management offers additional options while not taking away behaviour that
+   you have get used to.
+
+Q: How does it work?
+A: Programs supporting session management are instructed by the session
+   manager to load or save their state. Unique IDs are used, so that you can
+   have the same program running multiple times in the same or different
+   sessions without clashing of save files.
+
+Q: So what programs support this?
+A: All Gnome applications should support this. A few programs from the X
+   distribution do, too. Unfortunately there are a lot of programs anaware of
+   session management. A proxy program is normally used to stand in for these
+   applications, so that they can at least be restarted correctly. Internal
+   state is not normally preserved by them.
+
+
+Q: What should emacs do with this file?
+A: Information for Emacs follows:
+   Local Variables:
+   mode: indented-text
+   fill-column: 78
+   End:
