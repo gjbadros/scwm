@@ -357,7 +357,7 @@ the window context in the usual way if not specified. */
      animated/unanimated shading do the right thing */
   
   SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), FRAME_WIDTH(psw),
-	     psw->title_height + psw->boundary_width, 
+	     psw->title_height + (psw->fSquashedTitlebar? 2:1) * psw->boundary_width,
 	     NOT_MOVED, WAS_RESIZED);
 
   CoerceEnterNotifyOnCurrentWindow();
@@ -386,6 +386,12 @@ not specified. See also `window-unshade', `animated-window-shade'. */
   old = psw->fWindowShaded;
 
   SET_UNSHADED(psw);
+
+  if (ShapesSupported) {
+    if (psw->fSquashedTitlebar) {
+      SetShapedTitlebar(psw, psw->tbar_right - psw->xboundary_width);
+    }
+  }
 
   AnimatedShadeWindow(psw,False /* !roll up */, -1, NULL);
   SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), 
