@@ -1,3 +1,10 @@
+Mon May  3 21:23:56 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Added selected-frame-id-string,
+ 	scwm-eval-with-selected-frame, scwm-start-emacs-flashing,
+ 	scwm-stop-emacs-flashing.  selected-frame-id-string requires
+ 	new `any-id->window' Scwm primitive.  Added gjb to author list.
+
 1999-04-22  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* scwm.el (scwm-use-session): (app scwm doc) was misspelled.

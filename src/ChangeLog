@@ -1,3 +1,9 @@
+Mon May  3 21:04:59 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added `any-id->window' for getting the window from any 
+	window id of an application.  Especially useful for mapping from
+	emacs frame id-s to the scwm window object.
+
 Mon May  3 19:51:53 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c: Fix order of arguments in typechecking macros (thanks
