@@ -90,7 +90,7 @@ isn't now).
 
 * only move mouse with moving window if a keyboard command, or forced to -- allow user to control this + update man page for menustyle animated
 
-* accelerated mouse movements w/ keyboard shortcuts
+* accelerating mouse movements w/ keyboard shortcuts
 
 * StayOnBottom style
 ** constraints will do this really cleanly
@@ -108,7 +108,7 @@ isn't now).
 ** window-group feature (at scheme level)
 ** (save-yourself WINDOW) ; send ICCCM WM_SAVE_YOURSELF to window to update WM_COMMAND X property -- maybe in terms of a send-client-message primitive?
  - We should add proper X Session Management support instead of these, IMO
- - (needed for Hnome compliance anyway)
+ - (needed for Gnome compliance anyway)
 ** (set-mouse-acceleration! ACCEL), (set-mouse-acceleration-threshold! PIXELS)
 ** (set-colormap-focus! WINDOW) -- rename set-colormap-focus! and colormap-focus to [set-]colormap-focus-policy
 ** (window-shaped? WINDOW)
@@ -130,7 +130,7 @@ isn't now).
 *** (color->string COLOR) ; return an X11 string representation for COLOR (e.g., #cc88cc) done --08/02/98 gjb
 *** (get-wm-command WIN) ; get WM_COMMAND property (in terms of window-xproperty) -- done [in flux] 08/05/98 gjb
 
-* Size/position window needs to be more dynamic, customizable
+* Message (size/position) window needs to be more dynamic, customizable
 
 * administrative b.s.
 ** cvsweb
@@ -141,7 +141,7 @@ alloc/dealloc to see where the memory is going... guile support for this?
 
 * getters for setter functions
 
-* Better error handling system -- don't call scwm_error w/ a number!
+* Better error handling system -- gettext?
 
 
 * color scheme wrappers need reference counting; whole rewrite like image?
@@ -195,7 +195,7 @@ alloc/dealloc to see where the memory is going... guile support for this?
 
 * Write some graphical reconfiguration tools.
 
-* Interactive move/resize should permit using a real color, not justan xor-value, as an option (hard w/o an overlay plane)
+* Interactive move/resize should permit using a real color, not just an xor-value, as an option (hard w/o an overlay plane)
 
 * Rename scwm/scwm directory to scwm/src
 

@@ -1,3 +1,15 @@
+Tue Sep  1 16:28:49 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* move.c: Updated docs to clarify virtual positionness
+
+	* scwm-constraints.h: Added FRAME_[XY]_VIRT, document _VP suffix
+	to mean viewport position (since it's a bit ambiguous, unfortunately)
+	
+	* window.c: Rename move_to to move_window, and make it use virtual 
+	coords.  Fix animated moves to use virtual coords.  Fix
+	ResizePswToCurrentSize to use FRAME_[XY]_VP.  Updated some docs.
+	
+
 Tue Sep  1 14:26:53 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added cassowary_headers, and use it to add to
