@@ -408,10 +408,14 @@ exec guile -l $0 -- --run-from-shell "$@"
     (read-line ispell-out)
     (cons ispell-in ispell-out)))
 
+(define (ispell-ignore words ports)
+  (for-each (lambda (word)
+	      (display "@" (car ports))
+	      (display word (car ports))
+	      (newline (car ports)))
+	    words))
+
 (define (ispell-send line ports)
-;;  (display "ispell-send : Sending ")
-;;  (write line)
-;;  (newline)
   (display (ispell-escape line) (car ports))
   (newline (car ports))
   (flush-all-ports)
@@ -421,7 +425,7 @@ exec guile -l $0 -- --run-from-shell "$@"
 	  (else (cons resp (loop (read-line (cdr ports))))))))
 
 (define *scwm-ok-words*
-  '(scwm fvwm2 fvwm hilight viewport scwmexec scwmrepl menuitem
+  '(scwm fvwm hilight viewport scwmexec scwmrepl menuitem
 	  menuitems hotkey submenu colormap 
 	  pseudocolor staticgray staticcolor grayscale directcolor truecolor
 	  scwmrc reallysmart smartplacement pposition mwm mwm alt meta hyper
@@ -430,14 +434,6 @@ exec guile -l $0 -- --run-from-shell "$@"
 	  iconifying deiconify deiconifying unmap iconified desktop desktops
 	  honoured lenience xproperty xored
 	  shift control meta alt hyper super callbacks decors viewports))
-
-(define (ispell-scwm-report io)
-  (let loop ((r (ispell-report io)))
-    (if (null? r) '()
-	(if (memq (string->symbol (string-downcase! (cdar r)))
-		  *scwm-ok-words*)
-	    (loop (cdr r))
-	    (cons (car r) (loop (cdr r)))))))
 
 (define (ispell-report io)
   (cond ((null? io) '())
@@ -469,7 +465,9 @@ exec guile -l $0 -- --run-from-shell "$@"
 (define (ispell-docs docs)
   (let ((p '()))
     (dynamic-wind
-     (lambda () (set! p (ispell-start)))
+     (lambda ()
+       (set! p (ispell-start))
+       (ispell-ignore *scwm-ok-words* p))
      (lambda () (for-each (lambda (rec)
 			    (ispell-complain rec p))
 			  docs))
@@ -477,11 +475,14 @@ exec guile -l $0 -- --run-from-shell "$@"
 
 (define (ispell-complain rec p)
   (for-each (lambda (complaint)
-	      (complain (docitem:file rec) (docitem:line rec) (car complaint) (cdr complaint)))
+	      (complain (docitem:file rec) (docitem:line rec)
+			(car complaint) (cdr complaint)))
 	    (apply append (map (lambda (line)
-				 (ispell-scwm-report (ispell-send line p)))
+				 (ispell-report (ispell-send line p)))
 			       (docitem->plaintextlist rec)))))
 
+(define (ispell-escape s)
+  (string-append "^" s))
 
 ;;; Outputs procdocrec in format suitable for a procedures-list document.
 (define (proc->list procdocrec)
@@ -863,15 +864,6 @@ exec guile -l $0 -- --run-from-shell "$@"
 				  (loop (cdr s))))
 		   ((#\&) (append '(#\& #\a #\m #\p #\;)
 				  (loop (cdr s))))
-		   (else (cons (car s) (loop (cdr s))))))))))
-
-(define (ispell-escape s)
-  (list->string
-   (let loop ((s (string->list s)))
-     (cond ((null? s) '())
-	   (else (case (car s)
-		   ((#\# #\-) (append (list #\\ (car s))
-				      (loop (cdr s))))
 		   (else (cons (car s) (loop (cdr s))))))))))
 
 ;;; Convert ssgml to sgml:
