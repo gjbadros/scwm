@@ -1,3 +1,17 @@
+Tue Mar 30 18:44:03 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Test for imlib, added --disable-imlib option to
+	turn it off even when found.  Update --enable-warnings to use
+	-Wno-sign-compare which turns off warnings about signedness.  Add
+	a note about it using gcc-specific flags.
+
+	* imlib.m4: Added, but also appended to acinclude.m4 since that's
+	where it gets looked for by default.
+
+	* acinclude.m4: Appended esd.m4 and imlib.m4 to this file.
+	Perhaps we should split them (and gtk.m4) back out and include
+	them somehow instead.  I don't have time to debug that now, though.
+
 Mon Mar 29 15:24:57 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* configure.imlib.in: Drop some redundancy, propagate some

@@ -1,3 +1,15 @@
+Tue Mar 30 20:12:19 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Handle SCWM_VALIDATE-- it is used in code that does
+	argument validation but is not an exported primitive (i.e., it
+	does not use SCWM_PROC).  It's not perfect, as the list of
+	arguments is redundant with the prototype list, but it's better
+	than nothing. Also handle ARG_UNUSED(var) and ARG_IGNORE(var) in
+	the prototypes -- this changed the matching regex.  And abstract
+	out check_arg_name_number_match.  And check arg num/name match for 
+	all VALIDATE_* macro invocations, SCWM_WRONG_TYPE_ARG, and
+	scm_wrong_type_arg.
+
 Mon Mar 29 15:31:17 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Permit X_\S+_hook ids to match the C identifier w/o

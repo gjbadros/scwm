@@ -1,3 +1,11 @@
+Tue Mar 30 20:23:37 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added edge-ops.scm
+
+	* edge-ops.scm: Contributed by Sam Falkner;  I fixed his 'east <-> 
+	'west hack since that bug has been corrected in the C code. Thanks 
+	Sam!
+
 Tue Mar 30 19:02:20 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added hash-table->alist (should be a guile proc, so I

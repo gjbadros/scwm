@@ -1,3 +1,55 @@
+Tue Mar 30 20:09:59 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* events.c: Fix bug that scwmdoc caught in argnumber on a VALIDATE 
+	call.
+
+	* window.c, face.c: Added use of new scwmdoc-understood /*SCWM_VALIDATE*/
+	comment pointing out what the argument list is.  This isn't
+	perfect as it's redundant with the prototype, but it's a quick fix 
+	(and already helped me catch one bug in face.c.  Also start using
+	SCWM_WRONG_TYPE_ARG, instead of scm_wrong_type_arg when the
+	function is FUNC_NAME.
+
+Tue Mar 30 19:35:06 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* validate.h: Added -- contains VALIDATE macros for built-in
+	types.
+
+	* scwm.h: Remove COPY_* macros-- changed to VALIDATE_* macros and
+	move to validate.h.  Added ARG_IGNORE, ARG_UNUSED macros
+
+	* window.h: Move VALIDATE_* macros to top, and comment them;
+	added some new ones, remove old stuff.
+
+	* color.h: Move VALIDATE_* macros to top, added
+	VALIDATE_ARG_COLOR_COPY_USE_BLACK macro.
+
+	* window.c: Use VALIDATE_* instead of COPY_*.  Fix bugs in
+ 	set_squashed_titlebar_x (psw was never set), squashed-titlebar
+	(validate arg, just in case). Annotated unused formals with new
+ 	ARG_UNUSED or ARG_IGNORE macro.
+
+	* scwm-constraints.cc: Drop formal names when arg is unused (this
+	is C++ so that's the right fix here)
+
+	* winprop.c, shutdown.c, session-manager.c, scwm.c, screen.c,
+ 	message-window.c, menulook.c, image.c, icons.c, font.c, face.c,
+	drawmenu.c, decor.c, color.c, callbacks.c, borders.c, : Annotated unused
+ 	formals with new ARG_UNUSED or ARG_IGNORE macro.
+
+	* binding.c: Annotated unused formals with new ARG_UNUSED or
+ 	ARG_IGNORE macro.  (keysym_to_keycode) return #f for bad keysym.
+	#ifdef out some unused functions.
+
+	* Grab.c: use scwm_msg, not fprintf.
+
+	* miscprocs.c, menuitem.c, menu.c, deskpage.c,: Annotated unused formals with new ARG_UNUSED or
+ 	ARG_IGNORE macro. Use VALIDATE_*, not COPY_*.
+	
+
+	* winprop.h: ws change.
+
+
 Mon Mar 29 20:38:02 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.h: Define and use VALIDATE_WIN_USE_CONTEXT,
