@@ -31,7 +31,7 @@
 
 (use-scwm-modules base defoption optargs primopts 
 		  winops winlist wininfo
-		  style face time-convertmenus-extras
+		  style face time-convert menus-extras
 		  std-menus doc virtual
 		  flux flux-gtk flash-window key-mover
 		  fvwm-module path-cache animation themes netscape
@@ -47,6 +47,7 @@
 
 ;;(use-scwm-modules gtk)
 ;;(use-scwm-modules send-string)
+;;(use-scwm-modules std-menus)
 
 ;;(load "/home/gjb/scwm/scheme/constraints.scm")
 ;;(load "/home/gjb/scwm/scheme/ui-constraints-buttons.scm")
