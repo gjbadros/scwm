@@ -1,3 +1,12 @@
+Hooks which take wrong number of params cause seg faults!
+--07/04/98 gjb
+-------------
+wildcard-matcher in wininfo doesn't permit distinguishing based on title,
+class, and resource name separately.  This is essential for window styles
+to do the right thing (a misfeature compared to fvwm2)
+-------------
+Incorrect usage of keyword arguments by a scheme function fails silently.
+-------------
 Some error messages are looked up in a table that is distant from the error.
 ---------------
 popup-menus attached to decorations come up centered over the click, instead of 
@@ -6,22 +15,14 @@ flush with the window edge
 xdvorak's change mapping should cause all keybindings to be reset and
 new keycodes to be gotten
 ---------------
-
-Hooks which take wrong number of params cause seg faults!
---07/04/98 gjb
-
--------------
-Size/position window needs to be more dynamic, customizable
--------------
-
-> > > I've noticed this off-and-on with 0.6, and just noticed again with
-> > > 0.7: My xterms have #:focus 'sloppy set; sometimes (probably about
-> > > one time in 25), when I have a pair of partially overlapping
-> > > windows and I move the cursor quickly from the root window,
-> > > crossing one of the xterms (which held the sloppy focus), and
-> > > landing in the other xterm, the new window does not gain focus.
-> > > I have to take the cursor off of the window in which I desire
-> > > focus and bring it back in, crossing the border slowly.
+I've noticed this off-and-on with 0.6, and just noticed again with
+0.7: My xterms have #:focus 'sloppy set; sometimes (probably about
+one time in 25), when I have a pair of partially overlapping
+windows and I move the cursor quickly from the root window,
+crossing one of the xterms (which held the sloppy focus), and
+landing in the other xterm, the new window does not gain focus.
+I have to take the cursor off of the window in which I desire
+focus and bring it back in, crossing the border slowly.
 
 Ken Pizzini
 
@@ -39,12 +40,9 @@ this could break.
 
 	Robert Bihlmeyer
 ------------
-
-
-
 - Another window shade problem: clients that resize themsleves while
 shaded make the wm lose. [ reported by Oleg Tihnov ]
-
+------------
 - Click to focus bugs
 
 1a. At startup usually a window, which I don't want given focus,
