@@ -421,7 +421,7 @@ static void
 InitUserData()
 {
   struct passwd *pw;
-  char *user, *home;
+  char *user = NULL, *home = NULL;
 
   if (!(home = getenv("HOME"))
       || (!(user = getenv("USER")) && !(user = getenv("LOGNAME")))) {
