@@ -23,7 +23,7 @@
 #define ICCCM_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 void  send_clientmessage(Display * disp, Window w, Atom a, Time timestamp);

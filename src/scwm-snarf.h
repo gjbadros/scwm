@@ -7,7 +7,7 @@
 #define SCWM_SNARF_H__
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <libguile/snarf.h>

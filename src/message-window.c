@@ -5,7 +5,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #define MESSAGE_WINDOW_IMPLEMENTATION

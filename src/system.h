@@ -26,7 +26,7 @@
 #define SYSTEM_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 void *safemalloc(int length);

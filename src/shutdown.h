@@ -6,7 +6,7 @@
 #define SHUTDOWN_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 void Done(int restart, char *command);

@@ -27,7 +27,7 @@
 #define STRING_TOKEN_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 int IchIgnoreCaseInSz(const char *sz, char ch);

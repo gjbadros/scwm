@@ -6,7 +6,7 @@
 /* #define SCWM_DEBUG_MSGS */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <stdio.h>

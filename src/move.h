@@ -7,7 +7,7 @@
 #define MOVE_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <X11/X.h>

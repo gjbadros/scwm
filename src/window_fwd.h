@@ -11,7 +11,7 @@
 #define WINDOW_FWD_H__
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #define Bool int /* from Xlib.h */

@@ -25,8 +25,10 @@
 /* #define SCWM_DEBUG_MALLOC */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
+
+#include "scwm-versiondat.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -542,7 +544,7 @@ scwm_maybe_send_thankyou_packet()
   if (log_usage != SCM_BOOL_T)
     return;
   
-  sprintf(buf, "%s, %s: STARTED", VERSION, szRepoLastChanged);
+  sprintf(buf, "%s, %s: STARTED", SCWM_VERSION, szRepoLastChanged);
   SendUsagePacket(0, 0, "scwm", 0, buf);
 }
 
@@ -920,7 +922,7 @@ is probably of no use to you unless you're a session manager or debbuging.
     case 'V':
       printf("Scwm Version %s compiled on %s at %s\nRCS_ID=%s\n\
 Repository Timestamp: %s\n",
-             VERSION, __DATE__, __TIME__, rcsid, szRepoLastChanged);
+             SCWM_VERSION, __DATE__, __TIME__, rcsid, szRepoLastChanged);
       exit(0);
     case CLIENT_ID:
 #ifdef HAVE_LIBSM_LIBICE
@@ -1692,7 +1694,7 @@ ScwmErrorHandler(Display * dpy, XErrorEvent * event)
 void 
 usage(void)
 {
-  fprintf(stderr, "\nScwm Version %s\n", VERSION);
+  fprintf(stderr, "\nScwm Version %s\n", SCWM_VERSION);
   fprintf(stderr, "Usage: %s [--display|-d dpy]\n"
 	  "      [--expression|-e expression]\n"
 	  "      [--file|-f rc_file] [--single-screen|-s]\n"

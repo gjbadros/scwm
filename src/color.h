@@ -8,7 +8,7 @@
 #define COLOR_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <X11/Xlib.h>
@@ -153,6 +153,9 @@ SCM set_menu_background_x(SCM bg);
 SCM set_menu_stipple_x(SCM st);
 
 Pixel adjust_pixel_brightness(Pixel pixel, double factor);
+Pixel *AllocNonlinearGradient(char *s_colors[], int clen[], 
+			      int nsegs, int npixels);
+
  
 #endif /* COLOR_H */
 

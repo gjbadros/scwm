@@ -7,7 +7,7 @@
 #define VIRTUAL_H_
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <X11/Intrinsic.h>

@@ -19,7 +19,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <sys/time.h>
@@ -307,7 +307,7 @@ WarnBadHook(SCM hook)
   assert(!gh_list_p(gh_cdr(hook)));
   { /* scope */ 
     /* Warn that hook list is not a list. */
-    char *szHookName = gh_scm2newstr(hook_name, NULL);
+    char *szHookName = gh_scm2newstr(hook, NULL);
     scwm_message(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", hook_name);
     gh_set_cdr_x(hook, SCM_EOL);
   }

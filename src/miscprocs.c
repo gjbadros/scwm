@@ -7,8 +7,10 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
+
+#include "scwm-versiondat.h"
 
 #include <unistd.h>
 #include <signal.h>
@@ -469,7 +471,7 @@ SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
 "Return the version of scwm running.")
 #define FUNC_NAME s_scwm_version
 {
-  return gh_str02scm(VERSION);
+  return gh_str02scm(SCWM_VERSION);
 }
 #undef FUNC_NAME
 

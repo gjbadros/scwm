@@ -7,7 +7,7 @@
 #define COLORMAPS_H__
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include "window_fwd.h"

@@ -13,7 +13,7 @@
 /* #define SCWM_NO_DEBUG_BAD_MARKWIN */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <assert.h>

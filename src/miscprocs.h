@@ -7,7 +7,7 @@
 #define MISCPROCS_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <guile/gh.h>

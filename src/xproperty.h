@@ -35,7 +35,7 @@
 #define XPROPERTY_H__
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <X11/Xlib.h>

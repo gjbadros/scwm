@@ -18,7 +18,7 @@ Later, hand edited the script to get the alist mapping numbers to names
 #define MODULE_TYPES_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #define M_NEW_PAGE           (1)

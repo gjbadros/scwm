@@ -23,7 +23,7 @@
 #define ERRORS_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 void scwm_error(const char *subr, const char *szErr);

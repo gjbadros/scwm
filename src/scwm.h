@@ -37,7 +37,7 @@
 #define SCWM_H__
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #ifndef __GNUC__

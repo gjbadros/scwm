@@ -8,7 +8,7 @@
 #define CONSTRAINT_PRIMITIVES_H__
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #ifdef __cplusplus
