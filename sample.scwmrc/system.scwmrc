@@ -1659,7 +1659,7 @@ union of all other window managers!
 ;; Alt-w
 ;;(bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
-(highlight-current-window XKM_HYPER_L XKM_SHIFT_L)
+;;(highlight-current-window XKM_HYPER_L XKM_SHIFT_L)
 
 ;; Handle Gale popup windows--
 ;; close them after 1 hour (GJB:FIXME:: should only do so if not directed to user)
