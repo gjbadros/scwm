@@ -170,6 +170,11 @@
 (cl-remove-constraint solver cn)
 
 (define cn-a-l-e (keep-at-left-edge wA))
+(cl-add-constraint solver cn-a-l-e)
+(cl-constraint? cn-a-l-e)
+(eq? (cl-constraint-strength cn-a-l-e) cls-strong)
+(eq? (cl-constraint-strength cn-a-l-e) cls-medium)
+(cl-constraint-weight cn-a-l-e)
 (define cnl (keep-to-left-of wA wB))
 (define cnlt (keep-above wA wB))
 (define cnlt (keep-above wB wC))
