@@ -1,0 +1,646 @@
+;;; robbe's scwmrc						-*- scwm -*-
+;;; Written by Robert Bihlmeyer <robbe@orcus.priv.at>
+;;; Snippets were copied from other scwmrcs.
+
+;;; Please look under "Expected Variables" for things you can override.
+
+;;; Key bindings can be found under the heading "Key Bindings". All must be
+;;; prefixed by the super modifier. This can be changed by overriding `super'.
+
+;;; 
+
+(use-modules (app scwm base)
+	     (app scwm winops)
+	     (app scwm winlist)
+	     (app scwm wininfo)
+             (app scwm style)
+	     (app scwm face)
+	     (app scwm flux)
+	     (app scwm optargs)
+	     (ice-9 string-fun))
+
+;; random niceties
+; defines SYM to DEFAULT, unless it is already bound.
+(defmacro defvar (sym default)
+  `(if (not (symbol-bound? #f (quote ,sym)))
+	(define ,sym ,default)))
+
+; Returns whether FILE is an executable and may be executed.
+(define (executable? file)
+  (and (access? file X_OK)
+       (eq? (stat:type (stat file)) 'regular)))
+
+; guile 1.2's separate-fields-discarding-char is broken. Redefine it.
+(if (equal? (version) "1.2")
+    (define-public (separate-fields-discarding-char ch str ret)
+      (let loop ((fields '())
+		 (str str))
+	(cond
+	 ((string-rindex str ch)
+	  => (lambda (w) (loop (cons (make-shared-substring str (+ 1 w)) fields)
+			       (make-shared-substring str 0 w))))
+	 (else (apply ret str fields))))))
+
+; searches PROGRAMS in the PATH, and returns the full location of the first
+; found, or #f if none was found.
+(define (which . programs)
+  (call-with-current-continuation
+   (lambda (return)
+     (separate-fields-discarding-char
+      #\: (getenv "PATH")
+      (lambda path
+	(do ((progs programs (cdr progs)))
+	    ((null? progs) #f)
+	  (if (equal? (string-ref (car progs) 0) #\/)
+	      (if (executable? (car progs))
+		  (return (car progs)))
+	      (do ((dirs path (cdr dirs)))
+		  ((null? dirs))
+		(let ((loc (string-append (car dirs) "/" (car progs))))
+		  (if (executable? loc)
+		      (return loc)))))))))))
+
+; returns a list of mode names queried from the given XLOCK program.
+(define (xlock-query-modes xlock)
+  (let ((pipe (open-input-pipe (string-append xlock " -help")))
+	(start-re (make-regexp "where mode is one of:" regexp/icase))
+	(mode-re (make-regexp "^[ 	]*([a-zA-Z0-9]+)"))
+	(modes-p #f)
+	(modelist '()))
+    (do ((line (read-line pipe) (read-line pipe)))
+	((eof-object? line) (close-pipe pipe))
+      (cond
+       (modes-p
+	(let ((match (regexp-exec mode-re line)))
+	  (if match
+	      (set! modelist (cons (match:substring match 1) modelist)))))
+       ((regexp-exec start-re line) (set! modes-p #t))))
+    (reverse modelist)))
+
+;; Expected Variables & their defaults
+;; Can be overridden by defining them before this point.
+
+; prepend the proper super modifier (or whatever modifier(s) you want to use)
+(defvar super
+  (lambda (key) (string-append "s-" key))) ; default is super ("s-")
+
+; prepend super and probably "KP_" - necessary for some keys on sun boxen
+(defvar super-kp super)			; default just prepends super
+
+; called upon first entry
+(defvar initialize (lambda () #f))	; default does nothing
+
+;; init functions
+(execute "xsetroot")
+(if (not (restarted?))
+    (initialize))
+
+;; general settings
+
+(define HOME (getenv "HOME"))
+(define USER (getenv "USER"))
+
+; paths
+(define user-image-load-path 
+  (list (string-append HOME "/pixmaps")
+	(string-append HOME "/bitmaps")))
+(set! image-load-path 
+      (append 
+       user-image-load-path 
+       '("/usr/X11R6/lib/X11/mini-icons"
+	 "/usr/X11R6/include/X11/pixmaps" 
+	 "/uns/X11R6/include/X11/bitmaps")
+       image-load-path))
+
+; misc
+(set-desk-size! 1 1)			; desktops are good, paging is evil
+(set-colormap-focus! 'focus)
+(set-edge-resistance! 0 5)
+(set-rubber-band-mask! 255)
+(set-animation!
+ '#(0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1))
+
+;; style
+(define font12
+  (make-font "-adobe-times-bold-r-*-*-12-*-*-*-*-*-*-*"))
+(define font14 
+  (make-font "-adobe-times-bold-r-*-*-14-*-*-*-*-*-*-*"))
+
+(set-icon-font! font12)
+(set-hilight-foreground! "white")
+(set-hilight-background! "blueviolet")
+
+(menu-style #:fg "grey30" #:bg "#a3a3c4" #:stipple "maroon"
+	    #:font font14 #:mwm #f)
+(title-style #:font font12 #:justify 'left)
+
+(button-style 3 #:relief-pattern	; an X
+	      '((26 29 #t) (34 21 #t) (50 35 #t) (68 21 #t) (78 29 #t)
+			   (64 48 #f) (78 69 #t) (68 79 #f) (50 64 #f)
+			   (34 79 #f) (26 69 #f) (44 48 #t) (26 29 #f)))
+
+					; dot
+(button-style 6 #:relief-pattern '((45 45 #t) (55 45 #t) (55 55 #f)
+					      (45 55 #f) (45 45 #t)))
+					; small down triangle
+(button-style 4 #:relief-pattern '((50 65 #t) (35 35 #t) (65 35 #t)
+					      (50 65 #f)))
+					; small up triangle
+(button-style 2 #:relief-pattern '((50 35 #t) (65 65 #f) (35 65 #f)
+					      (50 35 #t)))
+
+(window-style "*" 
+	      #:fg "white" #:bg "navy" 
+	      #:icon-box (list (x- 70) 1 69 (y- 141))
+	      #:focus 'sloppy
+	      #:random-placement #f #:smart-placement #t
+	      #:mwm-func-hint #t #:mwm-decor-hint #t
+	      #:int-override #t #:decroate-transient #f
+	      #:PPosition-hint #f
+	      #:lenience #t
+	      #:border-width 0
+	      #:no-titlebar #t
+	      )
+
+(define wm-style 'barebones)
+
+(define (set-wm-style! style)
+  (set! wm-style style)
+  (case style
+    ((barebones) (window-style "*" #:border-width 0 #:no-titlebar #t))
+    ((decorated) (window-style "*" #:border-width 4 #:no-titlebar #f))))
+
+(define (toggle-wm-style)
+  (set-wm-style! (cadr (memq wm-style '(barebones decorated barebones)))))
+
+;; utility functions
+(define (vertical-toggle-maximize)
+  (toggle-maximize 0 (%y 90)))
+
+(define (horizontal-toggle-maximize)
+  (toggle-maximize (%x 100) 0))
+
+(define (toggle-circulate-skip)
+  (if (circulate-skip?)
+      (circulate-hit)
+      (circulate-skip)))
+
+;; menus
+(if (which "xcmd")
+    (begin
+      ; Returns an action that starts X-app COMMAND,
+      ; unless a window with resourcename RES is already present.
+      (define (xcmd-action name command res)
+	(lambda () (execute (string-append "xcmd -fr " res
+					   " -x '" command "'"))))
+
+      ; Returns an action that starts a terminal app
+      ; COMMAND, unless a window titled NAME is already present.
+      (define (xtcmd-action name command)
+	(lambda ()
+	  (let ((title (regexp-substitute/global #f "&" name 'pre 'post)))
+	    (execute (string-append "xcmd -ft " title " -t " title
+				    " -c '" command "'"))))))
+
+    (begin
+      ; Returns an action that starts X-app COMMAND.
+      (define (xcmd-action name command res)
+	(lambda () (execute command)))
+
+      ; Returns an action that starts a terminal app COMMAND.
+      (define (xtcmd-action name command)
+	(lambda () (execute (string-append "xterm -e " command))))))
+
+; Returns a menuitem, titled NAME, that starts X-app COMMAND.
+(define (xcmd-menuitem name command res)
+  (menuitem name #:action (xcmd-action name command res)))
+
+; Returns a menuitem, titled NAME, that starts a terminal app COMMAND.
+(define (xtcmd-menuitem name command)
+  (menuitem name #:action (xtcmd-action name command)))
+
+; Returns a menuitem titled "Start WM", that starts that WM instead of scwm.
+(define (wm-menuitem wm)
+  (menuitem (string-append "Start " wm) #:action (lambda () (restart wm))))
+
+
+(define xlock-modelist
+  (delete "random" (delete "bomb" (delete "blank"
+					  (xlock-query-modes "xlock")))))
+
+(define screen-rows 35)			; this many menuitems fit on the screen
+
+; Returns a menuitem titled MODE that starts xlock in that MODE, adding
+; "-nolock" if LOCK is #f.
+(define (make-xlock-item lock mode)
+  (menuitem mode #:action (lambda () (execute (string-append
+						"xlock "
+						(if (not lock) "-nolock " "")
+						"-nice 5 -mode "
+						mode)))))
+
+; Returns a submenu containing xlock calls for MODES. LOCK tells whether the
+; screen is really locked. TAG is appended to the menu title.
+(define (make-xlock-submenu tag lock modes)
+  (menu
+   (append
+    (list
+     (menuitem (string-append (if lock "Lock" "Save") " Screen" tag) #f)
+     menu-title)
+    (map (lambda (mode) (make-xlock-item lock mode)) modes))))
+
+; Returns MENULIST augmented with a menuitem, that calls a submenu containing
+; MODES (where the last mode beginns with character LAST). LOCK controls,
+; whether the screen is really locked.
+(define (append-xlock-submenu menulist lock last modes)
+  (let ((tag (string #\space (string-ref (car modes) 0) #\- last)))
+    (append menulist
+	    (list (menuitem (substring tag 1 4) #:action
+			    (make-xlock-submenu tag lock modes))))))
+
+; Returns a menu providing access to xlock MODES. If this menu would be longer
+; than the screen height, the MODES are split among several submenus instead.
+; LOCK chooses between screen-locking and -saving.
+(define (make-xlock-menu lock modes)
+  (if (> (length modes) screen-rows)
+      (do ((current ())
+	   (potential () (cons (car rest) potential))
+	   (omega #\z)
+	   (rest modes (cdr rest))
+	   (template (list (menuitem (if lock "Lock Screen" "Save Screen") #f)
+			   menu-title)))
+	  ((null? rest) (menu (append-xlock-submenu
+			       template lock
+			       (string-ref (car potential) 0)
+			       (append current (reverse potential)))))
+	(if (> (+ (length current) (length potential)) screen-rows)
+	    (begin
+	      (set! template (append-xlock-submenu template lock
+						   omega current))
+	      (set! current '())))
+	(if (and (pair? potential)
+		 (not (char-ci=? (string-ref (car potential) 0)
+				 (string-ref (car rest) 0))))
+	    (begin
+	      (set! omega (string-ref (car potential)))
+	      (set! current (append current (reverse potential)))
+	      (set! potential '()))))
+      (make-xlock-submenu "" lock modes)))
+
+
+; Returns the full path of (car ARGS), concatenated with (cdr ARGS).
+(define (which-1 args)
+  (let ((prog (which (car args))))
+    (and prog
+	 (apply string-append prog (cdr args)))))
+
+; FIXME: docs.
+(define (build-menu title template)
+  (menu
+   (append
+    (list
+     (menuitem title #f)
+     menu-title)
+    (delete #f (map
+		(lambda (item)
+		  (if (list? item)
+		      (let* ((action (cadr item))
+			     (cmd (cond ((list? action) (apply which action))
+					((string? action)
+					 (which-1 (split-before-char
+						   #\  action list)))
+					(else #t))))
+			(if cmd
+			    (menuitem (car item) #:action
+				      (cond ((menu? action) action)
+					    ((not (null? (cddr item)))
+					     (if (eq? (caddr item) 'term)
+						 (xtcmd-action (car item)
+							       action)
+						 (xcmd-action (car item)
+							      action
+							      (caddr item))))
+					    (else (lambda () (execute cmd)))))
+			    #f))
+		      item))
+		template)))))
+
+(define softs-menu
+  (build-menu "Softs" `(("X&Term" "xterm")
+		       ("&Rxvt" "rxvt")
+		       ,(if (which "xemacs")
+			    '("X&Emacs" "xem" "emacs")
+			    '("&Emacs" "emacs" "emacs"))
+		       ("&Netscape" ("netscape4.04s" "netscpape404" "netscape")
+				    "Netscape")
+		       ,menu-separator
+		       ("&Aural Stims"
+			,(build-menu "Aural Stims"
+				     '(("X&Cd" "xcd")
+				       ("X&Synaesthesia" "xsynaesthesia cd"
+							 "xsynaesthesia")
+				       ("G&mp3" "gmp3" "gmp3"))))
+		       ("&Visual Stims"
+			,(build-menu "Visual Stims"
+				     '(("X&colmix" "xcolmix" "colorMixer")
+				       ("X&Mag" "xmag" "xmag")
+				       ("&Gimp"
+			"xterm -g 80x5+0-0 -T GimpConsole -e gimp" "gimp")
+				       ("X&Paint" "xpaint" "xpaint")
+				       ("X&Fig" "xfig" "xfig"))))
+		       ("&State Info"
+			,(build-menu "State Info"
+				     '(("&Top" "top" 'term)
+				       ("&Procinfo" "procinfo -f" 'term)
+				       ("X&Load" "xload" "xload")
+				       ("X&Idle" "xidle" "xidle")
+				       ("X&Mem" "xmem" "xmem"))))
+		       ,menu-separator
+		       ("Save S&creen" ,(make-xlock-menu #f xlock-modelist))
+		       ("&Lock Screen" ,(make-xlock-menu #t xlock-modelist))
+		       ,menu-separator
+		       ("E&xit scwm"
+			,(build-menu "Really quit scwm?"
+				     (list
+				      (menuitem "&Restart scwm"
+						#:extra-label "r"
+						#:action (lambda ()
+							   (restart "scwm")))
+				      (wm-menuitem "fvwm")
+				      (wm-menuitem "enlightenment")
+				      (wm-menuitem "twm")
+				      (menuitem "Start &no wm"
+						#:action (lambda ()
+							   (restart "xterm")))
+				      (menuitem "&Quit" #:extra-label "S-q"
+						#:action quit)
+				      menu-separator
+				      (menuitem "&Shutdown!" #:action #f)))))))
+
+(define (popup-softs)
+  (popup-menu softs-menu))
+
+(define window-ops-menu
+  (menu
+   (list
+    (menuitem "Window Ops" #f)
+    menu-title
+    (menuitem "&Move" #:extra-label "F5" #:action interactive-move)
+    (menuitem "Re&size" #:extra-label "F6" #:action interactive-resize)
+    (menuitem "&Raise" #:action raise-window)
+    (menuitem "&Lower" #:action lower-window)
+    (menuitem "&Print" #:action print-window)
+    (menuitem "(Un)&Window-Shade" #:action toggle-window-shade)
+    (menuitem "(De)&Iconify" #:extra-label "F4" #:action toggle-iconify)
+    (menuitem "(Un)&Maximize" #:extra-label "F8"
+	      #:action vertical-toggle-maximize)
+    (menuitem "(Un)&Stick" #:extra-label "Return" #:action toggle-stick)
+    (menuitem "(Un)Keep On &Top" #:extra-label "Home" #:action toggle-on-top)
+    (menuitem "(Un)S&kip" #:extra-label "Ins" #:action toggle-circulate-skip)
+    menu-separator
+    (menuitem "&Close" #:extra-label "Del" #:action close-window)
+    (menuitem "&Delete" #:action delete-window)
+    (menuitem "Destroy" #:action destroy-window)
+    menu-separator
+    (menuitem "Refresh Screen" #:action refresh))))
+
+(define (popup-window-ops)
+  (popup-menu window-ops-menu))
+
+(define (make-small-window-ops-menu w)
+  (menu 
+   (list
+    (menuitem "Move" #:extra-label "F5" #:action interactive-move)
+    (menuitem "Resize" #:extra-label "F6" #:action interactive-resize)
+    (menuitem "Raise" #:action raise-window)
+    (menuitem "Lower" #:action lower-window)
+    (menuitem "Iconify" #:extra-label "F4" #:action iconify)
+    menu-separator
+    (menuitem "More..." #:action 
+	      (menu 
+	       (list
+		(menuitem (if (maximized? w)
+			      "Restore Size"
+			      "Maximize") #:extra-label "F8"
+			      #:action vertical-toggle-maximize)
+		(menuitem (if (sticky? w)
+			      "Pull Off"
+			      "Stick") #:extra-label "Return"
+			      #:action toggle-stick)
+		(menuitem (if (window-shaded? w)
+			      "Roll Down"
+			      "Roll Up") #:action toggle-window-shade)
+		(menuitem (if (kept-on-top? w)
+			      "UnKeep On Top"
+			      "Keep On Top") #:extra-label "Home"
+			      #:action toggle-on-top)
+		(menuitem (if (circulate-skip? w)
+			      "Hit"
+			      "Skip") #:extra-label "Ins"
+			      #:action toggle-circulate-skip))))
+    menu-separator
+    (menuitem "Close" #:extra-label "Del" #:action close-window)
+    (menuitem "Destroy" #:action destroy-window))))	
+
+(define (popup-small-ops)
+  (popup-menu (make-small-window-ops-menu (get-window))))
+
+(define (popup-winlist)
+  (show-window-list-menu #:show-geometry #t))
+
+;; Key Bindings
+; mouse emulation
+(bind-key 'all (super "KP_Left")	(lambda () (move-pointer -1 0)))
+(bind-key 'all (super "KP_Right")	(lambda () (move-pointer +1 0)))
+(bind-key 'all (super "KP_Up")	(lambda () (move-pointer 0 -1)))
+(bind-key 'all (super "KP_Down")	(lambda () (move-pointer 0 +1)))
+(bind-key 'all (super "S-KP_Left")	(lambda () (move-pointer -10 0)))
+(bind-key 'all (super "S-KP_Right")	(lambda () (move-pointer +10 0)))
+(bind-key 'all (super "S-KP_Up")	(lambda () (move-pointer 0 -10)))
+(bind-key 'all (super "S-KP_Down")	(lambda () (move-pointer 0 +10)))
+; backdrop action
+(bind-key 'all (super "F1") popup-softs)
+(bind-key 'all (super "F2") popup-window-ops)
+(bind-key 'all (super "F3") popup-winlist)
+; window manipulation
+(bind-key 'all (super "F4") toggle-iconify)
+(bind-key 'all (super "F5") interactive-move)
+(bind-key 'all (super "F6") interactive-resize)
+(bind-key 'all (super "F7") horizontal-toggle-maximize)
+(bind-key 'all (super "F8") vertical-toggle-maximize)
+(bind-key 'all (super "Return") toggle-stick)
+(bind-key 'all (super-kp "Home") toggle-on-top)
+(bind-key 'all (super-kp "Insert") toggle-circulate-skip)
+(bind-key 'all (super "Delete") close-window)
+; window selection
+(define (xterm? w)
+  (wildcard-match? "xterm" w))
+(define (visible-xterm? w)
+  (and (visible? w)
+       (wildcard-match? "xterm" w)))
+(bind-key 'all (super "F9") (lambda () (next-window #:only visible-xterm?
+					       #:except iconified?)))
+(bind-key 'all (super "F10") (lambda () (prev-window #:only visible-xterm?
+						#:except iconified?)))
+(bind-key 'all (super "S-F9") (lambda () (next-window #:only xterm?
+						 #:except iconified?)))
+(bind-key 'all (super "S-F10") (lambda () (prev-window #:only xterm?
+						  #:except iconified?)))
+(bind-key 'all (super-kp "Left")
+	  (lambda () (prev-window #:only visible? #:except iconified?
+				  #:proc warp-to-window)))
+(bind-key 'all (super-kp "Right")
+	  (lambda () (next-window #:only visible? #:except iconified?
+				  #:proc warp-to-window)))
+(bind-key 'all (super-kp "Up")
+	  (lambda () (prev-window #:only visible? #:proc focus)))
+(bind-key 'all (super-kp "Down")
+	  (lambda () (next-window #:only visible? #:proc focus)))
+; desk switching
+(define focused-windows ())
+
+(define (change-desk inc)
+  (set-current-desk! (+ (current-desk) inc))
+  '(let* ((desk (current-desk))
+	 (ref (assoc desk focused-windows))
+	 (win (current-window-with-focus)))
+    (if win
+	(if ref
+	    (set-cdr! ref win)
+	    (set! focused-windows (append focused-windows
+					  (list (cons desk win))))))
+    (set! desk (+ desk inc))
+    (set-current-desk! desk)
+    (for-each display (list "desk: " desk " focus: "
+			    (window-title (current-window-with-focus)) "\n"))
+    (set! ref (assoc desk focused-windows))
+    (set! win (and ref (cdr ref)))
+    (if (and win
+	     (or (sticky? win)
+		 (on-desk? desk win)))
+	(begin
+	  (for-each display (list "refocus: " (window-title win) "\n"))
+	  (focus win)
+	  )
+	(if (not (current-window-with-focus))
+	    (begin
+	      (display "no focus, fixing it.\n")
+	      (next-window #:only visible? #:except iconified?
+				  #:proc warp-to-window)))))
+  )
+
+(bind-key 'all (super-kp "Page_Up")
+	  (lambda () (change-desk -1)))
+(bind-key 'all (super-kp "Page_Down")
+	  (lambda () (change-desk +1)))
+; misc
+(bind-key 'all (super "r") (lambda () (restart "scwm")))
+(bind-key 'all (super "d") toggle-wm-style)
+(bind-key 'all (super "S-q") quit)
+
+
+;; Mouse Bindings
+(bind-mouse 'root 1 popup-softs)
+(bind-mouse 'root 2 popup-window-ops)
+(bind-mouse 'root 3 popup-winlist)
+(bind-mouse 'button-1 1 (lambda () (popup-small-ops)))
+(bind-mouse 'button-3 1 close-window)
+(bind-mouse 'button-6 1 toggle-stick)
+(bind-mouse 'button-4 1 iconify)
+(bind-mouse 'button-2 1
+	    (lambda () (case (mouse-event-type)
+			 ('click (vertical-toggle-maximize))
+			 ('double-click (toggle-maximize (%x 100) (%y 100))))))
+(bind-mouse 'frame 1 resize-or-raise)
+(bind-mouse 'sidebar 1 move-or-raise)
+(define (move-or-shade)
+  (case (mouse-event-type)
+    ((double-click) (toggle-window-shade-animated))
+    (else (move-or-raise))))
+(bind-mouse 'title 1 move-or-shade)
+(bind-mouse 'sidebar (super "1") interactive-resize)
+(define (move-or-deiconify)
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((double-click) (deiconify))))
+(bind-mouse 'icon 1 move-or-deiconify)
+(bind-mouse 'icon 2 deiconify)
+(bind-mouse '(title sidebar frame) 2 (lambda () (popup-small-ops)))
+(bind-mouse '(title sidebar frame) 3 toggle-raise)
+(bind-mouse 'all (super "1") move-or-raise)
+(bind-mouse 'all (super "2") popup-small-ops)
+(bind-mouse 'all (super "3") resize-or-raise)
+
+;; Styles for various apps
+(define Terminal
+  (make-style #:fg "black" #:bg "#a3a3c4"))	; FIXME: UseDecor XTerm
+(define FixedSize
+  (make-style #:border-width 0 #:no-button 2))
+(define NoFocus
+  (make-style #:focus 'click #:circulate-skip #t))
+(define Widget
+  (make-style #:no-titlebar #t #:plain-border #t #:sticky #t
+	      #:winlist-skip #t #:border-width 3 #:use-style NoFocus))
+
+(window-style "Color Mixer"	#:icon "colormap_3d.xpm.gz"
+	      #:use-style FixedSize #:use-style NoFocus)
+(window-style "Control"		#:icon "amiga.xpm.gz" #:use-style FixedSize)
+(window-style "UAE - Debuger"	#:icon "amiga.xpm.gz" #:use-style FixedSize)
+(window-style "UAE"		#:icon "amiga.xpm.gz")
+(window-style "XCd"		#:icon "CompactDisc.xpm.gz"
+	      #:random-placement #t #:use-style FixedSize)
+(window-style "XZip Status"	#:random-placement #t #:use-style FixedSize)
+(window-style "povray"		#:icon "xpovicon.xpm.gz"
+	      #:random-placement #t #:use-style FixedSize)
+(window-style "rxvt*"		#:icon "term.xpm.gz"  #:use-style Terminal)
+(window-style "xcalc"		#:icon "Calculator.xpm.gz"
+	      #:random-placement #t)
+(window-style "xclock"		#:use-style Widget)
+(window-style "xconsole"	#:icon "rterm.xpm.gz" #:use-style NoFocus)
+(window-style "xmag"		#:icon "view_3d.xpm.gz" #:random-placement #t
+	      #:use-style NoFocus)
+(window-style "xman"		#:icon "xman.xpm.gz" #:random-placement #t
+	      #:use-style NoFocus)
+(window-style "xterm*"		#:icon "xterm-linux.xpm.gz"
+	      #:use-style Terminal)
+(window-style "xv controls"	#:icon "xv.color.xpm.gz" #:use-style FixedSize
+	      #:use-style NoFocus)
+(window-style "xv load"		#:icon "xv.color.xpm.gz" #:use-style FixedSize
+	      #:use-style NoFocus)
+(window-style "xterm root*"	#:start-on-desk 1)
+
+(window-style "bitmap"		#:icon "draw3_3d.xpm.gz")
+(window-style "editres"		#:icon "editres_3d.xpm.gz")
+(window-style "ghostview"	#:icon "ghostbuster.xpm.gz")
+(window-style "lyx"		#:icon "WordProcessing.xpm.gz")
+(window-style "minicom"		#:icon "DFUe.xpm.gz")
+(window-style "mpeg_*"		#:icon "Animator.xpm.gz")
+(window-style "oclock"		#:icon "clock4_3d.xpm.gz")
+(window-style "viewres"		#:icon "flowchart_3d.xpm.gz")
+(window-style "x*perf*"		#:icon "meter_3d.xpm.gz")
+(window-style "xbiff"		#:icon "Mail.xpm.gz")
+(window-style "xclipboard"	#:icon "data_3d.xpm.gz")
+(window-style "xcmap"		#:icon "colormap_3d.xpm.gz")
+(window-style "xcutsel"		#:icon "data_3d.xpm.gz")
+(window-style "xditview"	#:icon "cadview.next.xpm.gz")
+(window-style "xdos"		#:icon "win31_msdos.xpm.gz")
+(window-style "xdvi"		#:icon "xdvi.next.xpm.gz")
+(window-style "xfig"		#:icon "Drawing2.xpm.gz")
+(window-style "xfontsel"	#:icon "fonts_3d.xpm.gz")
+(window-style "xfractint"	#:icon "Fractal.xpm.gz")
+(window-style "xgc"		#:icon "xdesigner_3d.xpm.gz")
+(window-style "xhextris"	#:icon "Tetris.xpm.gz")
+(window-style "xpcd"		#:icon "gold_cone_3d.xpm.gz")
+(window-style "xvidtune"	#:icon "window3d.xpm.gz")
+(window-style "xwud"		#:icon "Viewer.xpm.gz")
+
+;; some complete junk - you may want to ignore this
+(define* (flash-window #&optional (win (get-window)))
+  (do ((start 0 (- 100 start))
+       (step 10 (- 0 step))
+       (n 0 (+ n 1)))
+      ((>= n 10))
+    (do ((color start (+ color step)))
+	((not (<= 0 color 100)))
+      (style-one-window win #:fg (string-append "grey" (number->string color)))
+      (sleep-ms 100))))
