@@ -3,10 +3,13 @@
 #define STRING_TOKEN_H
 char *stripcpy(char *source);
 
-#ifdef MISSING_STRCASECMP
+#ifndef HAVE_STRCASECMP
 int strcasecmp(char *s1, char *s2);
+#endif /* !HAVE_STRCASECMP */
+
+#ifndef HAVE_STRNCASECMP
 int strncasecmp(char *s1, char *s2, int n);
-#endif
+#endif /* !HAVE_STRNCASECMP */
 
 #endif
 
