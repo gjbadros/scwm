@@ -1,3 +1,13 @@
+1999-05-01  Jeff W Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-gtk-toggle-menu.scm: Created a new constraint
+	instance widget.  Allows enabling/disabling and removal of constraints
+	from the toggle menu.  Enabling/disabling currently does not work.
+
+	* ui-constraints.scm: Removed the disable-hook from the 
+	ui-constraint-class in favor of allowing a similar hook for
+	each ui-constraint instance.
+
 Sat May  1 18:03:40 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* ScwmButtons.scm: Turn on auto-orient in example.
