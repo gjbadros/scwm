@@ -1,0 +1,40 @@
+The Scheme Constraints Window Manager v0.99.2 was released late Tuesday
+afternoon, 14-September-1999.  Scwm is free X11 window manager developed
+using GNU/Linux for it and other Unix-like platforms.  The 0.99.2
+release is the first release from the authors, Greg J. Badros and Maciej
+Stachowiak, since January 1999, and improvements abound!
+
+Scwm uses GNU Guile Scheme as its configuration and scripting language.
+This makes Scwm incredibly programmable---truly the Emacs of Window
+Managers... the ultimate window manager for the hacker and wannabe hacker!
+
+In addition to the fantastic extension language, Scwm provides nearly
+all the features of all other window managers combined.  Included in
+this impressive list are Gnome-compliance, KDE compliance, per-window
+decoration themes, completely configurable window behaviour, extensible
+GUI configuration (via embedded GTk+) of user parameters,
+highly-integrated and complete reference documentation, an Emacs
+scwm-mode for interactive configuration and programming, window
+movement/resizing/shading animations, an XTest extension, an interface
+to esound, integration with fvwm2 modules, a Corba server, access to
+libproplist databases, and much more!
+
+Most notable in Scwm is its constraint solver to permit sophisticated
+desires regarding window layout to be specified interactively, then
+maintained by the window manager.  Scwm embeds Cassowary, a constraint
+solver developed at the University of Washington by Badros and his
+advisor, long-time constraints researcher Dr. Alan Borning.  Cassowary
+enables Scwm to maintain arbitrary linear constraint relationships among
+the windows.  For example, it can keep an Emacs window and an XTerm
+window tiled along the left edge of the screen, can ensure a block of
+windows move around together, can keep a mail window always on top of a
+news reading window, and much more.  The possibilities are endless, and
+an abstraction capability allows the end user to define new kinds of
+constraint relationships and add them with a few simple mouse clicks.
+
+This release of Scwm demonstrates how much extra productivity is
+possible when there are no limits to how windows can be arranged and
+manipulated.  See http://scwm.mit.edu/scwm/ for more information about
+Scwm, and http://www.cs.washington.edu/research/constraints/cassowary/
+for more information about the Cassowary constraint solver.
+
