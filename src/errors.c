@@ -29,7 +29,7 @@
 void 
 scwm_error(const char *subr, const char *szErr)
 {
-  scm_error(gh_symbol2scm("scwm-error"), subr, "%s",
+  scm_error(gh_symbol2scm("scwm-error"), (char *) subr, "%s",
 	    gh_list(gh_str02scm((char *)szErr), SCM_UNDEFINED),
 	    gh_list(gh_str02scm((char *)szErr), SCM_UNDEFINED));
 }
