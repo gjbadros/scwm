@@ -229,3 +229,5 @@
 		  (set! ,hook
 			(delq! ,proc ,hook)))))
 
+(defmacro-public thunk (proc)
+  `(lambda args (apply ,proc args)))
