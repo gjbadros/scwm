@@ -1345,6 +1345,9 @@ HandleUnmapNotify()
   if (pswCurrent == Scr.PreviousFocus)
     Scr.PreviousFocus = NULL;
 
+  if (pswCurrent == Scr.Focus)
+    Scr.Focus = NULL;
+
   if (pswCurrent == FocusOnNextTimeStamp)
     FocusOnNextTimeStamp = NULL;
 
