@@ -114,7 +114,7 @@
 		(long->string 0)
 		(long->string 0)
 		(long->string 0)
-		(pad-string-to-long str))))
+		(pad-string-to-long (string-append str "\n")))))
     (fvwm2-module-send-packet M_CONFIG_INFO data port)))
 
 (define (fvwm2-module-send-window-list port)
