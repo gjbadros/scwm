@@ -31,8 +31,8 @@
 
 
 ;; see note above
-(if (and (bound? gdk-lead-window) (procedure? gdk-lead-window))
-    (set! gdk-leader-window (gdk-lead-window)))
+(if (and (bound? gdk-get-leader-window-id) (procedure? gdk-get-leader-window-id))
+    (set! gdk-leader-window (gdk-get-leader-window-id)))
 
 (define-public (scwm-gtk-sync)
   "Dispatch all pending gtk-events.
