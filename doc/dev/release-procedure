@@ -16,13 +16,17 @@ vaguely up to date.  Also update `scwm.lsm' file.
 4) Grab hypothetical distribution directories by `cvs export'ing both
 the scwm and scwm-icons modules, and running `./autogen.sh'
 
+   cvs -d huis-clos.mit.edu:/usr/local/repository export -D today scwm
+   cd scwm; sh ./autogen.sh
+
 5) Make sure the sources configure, make, make install, run, and make
 uninstall with both the latest Guile snapshot and the most recent
 stable release. If this step fails, correct the problems and check in
 the results, then go back to step 4.
 
-6) Update the version number in configure.in, and make an appropriate
-ChangeLog entry for the release.
+6) Update the version number in configure.in, make an appropriate
+ChangeLog entry for the release, and update scwm.lsm to have the
+correct file size and version number
 
 7) Tag the repository using the convention of using "v" followed by the
    version number with all periods replaced by dashes, e.g. v0-7).
@@ -32,7 +36,10 @@ ChangeLog entry for the release.
 8) Export modules to tar up, creating directories that contain the
 version number (e.g. scwm-0.8/). 
 
-   cvs -d huis-clos.mit.edu:/usr/local/repository export v0-8 scwm
+   cvs -d huis-clos.mit.edu:/usr/local/repository export -r v0-8 scwm
+   mv scwm scwm-0.8
+   cd scwm-0.8; sh ./autogen.sh
+
 
 9) Make the tarballs.
 
