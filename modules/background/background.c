@@ -82,14 +82,13 @@ is filled with BGCOLOR. See also `clone-scaled-image'.*/
 {
   int nw;
   int nh;
-  SCM img;
 
   VALIDATE_ARG_IMAGE_OR_STRING(1,image);
   VALIDATE_ARG_INT_MIN_COPY(2,width,1,nw);
   VALIDATE_ARG_INT_MIN_COPY(3,height,1,nh);
 
-  if (IMAGE(img)->width==nw && IMAGE(img)->height==nh) {
-    return img;
+  if (IMAGE(image)->width==nw && IMAGE(image)->height==nh) {
+    return image;
   }
   
   { /* scope */
@@ -97,27 +96,27 @@ is filled with BGCOLOR. See also `clone-scaled-image'.*/
     int ox, oy, nx, ny, nnw, nnh;
     XGCValues gcv;
     GC gc;
-    Pixmap pix = IMAGE(img)->image;
-    Pixmap bit = IMAGE(img)->mask;
+    Pixmap pix = IMAGE(image)->image;
+    Pixmap bit = IMAGE(image)->mask;
     
     Pixmap npix = XCreatePixmap(dpy, Scr.Root, nw, nh, Scr.d_depth);
 
-    if (IMAGE(img)->height <= nh) {
+    if (IMAGE(image)->height <= nh) {
       oy = 0;
-      ny = (nh - IMAGE(img)->height)/2;
-      nnh = IMAGE(img)->height;
+      ny = (nh - IMAGE(image)->height)/2;
+      nnh = IMAGE(image)->height;
     } else {
-      oy = (IMAGE(img)->height - nh)/2;
+      oy = (IMAGE(image)->height - nh)/2;
       ny = 0;
       nnh = nh;   
     }
 
-    if (IMAGE(img)->width <= nw) {
+    if (IMAGE(image)->width <= nw) {
       ox = 0;
-      nx = (nw - IMAGE(img)->width)/2;
-      nnw = IMAGE(img)->width;
+      nx = (nw - IMAGE(image)->width)/2;
+      nnw = IMAGE(image)->width;
     } else {
-      ox = (IMAGE(img)->width - nw)/2;
+      ox = (IMAGE(image)->width - nw)/2;
       nx = 0;
       nnw = nw;   
     }
