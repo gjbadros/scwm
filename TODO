@@ -14,7 +14,10 @@ still use the MyFont garbage; clean this up
 - legacy module interface -- see utilities/dev/fvwm2-pager-demo
 
 - improve new menus
- - cascading popups using the hover hooks
+ - cascading popups -- done!
+ - reverting mouse position when only keyboard used
+ - extra-information list of properties (e.g, options for drawing, behaviour)
+ - animation
  - keyboard short cuts using the new event model
  - smarter placement of menus that is aware of the context of the
    popup-menu (or give args to popup-menu so button decorations can
