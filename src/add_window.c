@@ -410,6 +410,11 @@ AddWindow(Window w)
   psw->frame_y.set_value(frame_y);
   psw->frame_width.set_value(frame_width);
   psw->frame_height.set_value(frame_height);
+
+  psw->frame_x.set_psw(psw);
+  psw->frame_y.set_psw(psw);
+  psw->frame_width.set_psw(psw);
+  psw->frame_height.set_psw(psw);
 #else
   FRAME_X(psw) = frame_x;
   FRAME_Y(psw) = frame_y;
