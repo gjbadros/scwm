@@ -281,12 +281,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   pmenu->cmsHoverDelay = 500;
 
   /* LIST-OF-MENUITEMS: Required */
-  if (!gh_list_p(list_of_menuitems)) {
-    SCWM_WRONG_TYPE_ARG(1,list_of_menuitems);
-  }
-  if (SCM_IMP(list_of_menuitems) || (gh_car(list_of_menuitems) == SCM_EOL)) {
-    scm_misc_error(FUNC_NAME,"LIST-OF-MENUITEMS cannot be empty",SCM_EOL);
-  }
+  VALIDATE_ARG_LISTNONEMPTY(1,list_of_menuitems);
   pmenu->scmMenuItems = list_of_menuitems;
 
   pmenu->fHighlightRelief = True;

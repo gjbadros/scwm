@@ -73,37 +73,26 @@ Useful for supporting other WMs module communication protocols.
 ATOM and X are both 32-bit integers. */
 #define FUNC_NAME s_send_client_message
 {
-  XClientMessageEvent ev;
-  long mask = 0L;
   Window w;
+  long at;
+  long msg;
+  long mask = 0L;
+  XClientMessageEvent ev;
 
   memset(&ev, 0, sizeof(ev));
 
-  if (win == sym_root_window) {
-    w = Scr.Root;
-    /* use SubstructureRedirectMask if sending to root window */
-    mask = SubstructureRedirectMask;
-  } else if (WINDOWP(win)) {
-    w = PSWFROMSCMWIN(win)->w;
-  } else if (gh_number_p(win)) {
-    w = gh_scm2long(win);
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  if (!gh_number_p(atom)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  if (!gh_number_p(x)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
+  VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
+  VALIDATE_ARG_INT_COPY(2,atom,at);
+  VALIDATE_ARG_INT_COPY(3,x,msg);
+  
+  /* Use SubstructureRedirectMask for root window messages */
+  if (w == Scr.Root) mask = SubstructureRedirectMask;
 
   ev.type = ClientMessage;
   ev.window = w;
-  ev.message_type = gh_scm2long(atom);
+  ev.message_type = at;
   ev.format = 32;
-  ev.data.l[0] = gh_scm2long(x);
+  ev.data.l[0] = msg;
   ev.data.l[1] = lastTimestamp;
   XSendEvent(dpy, w, False, mask, (XEvent *) &ev);
   return SCM_UNSPECIFIED;

@@ -51,6 +51,19 @@ EXTERN long scm_tc16_scwm_decor;
 
 SCM decor2scm(ScwmDecor * fl);
 
+#define VALIDATE_ARG_DECOR(pos,arg,cvar) \
+  do { if (!DECORP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); } while (0)
+
+#define VALIDATE_ARG_DECOR_COPY(pos,arg,cvar) \
+  do { if (!DECORP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
+       else cvar = SCWMDECOR(arg); } while (0)
+
+#define VALIDATE_ARG_DECOR_COPY_USE_NULL(pos,arg,cvar) \
+  do { if (UNSET_SCM(arg)) cvar = NULL; \
+       else if (!DECORP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
+       else cvar = SCWMDECOR(arg); } while (0)
+
+
 #endif /* DECOR_H */
 
 /* Local Variables: */

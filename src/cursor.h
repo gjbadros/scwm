@@ -48,6 +48,8 @@ EXTERN long scm_tc16_scwm_cursor;
 typedef struct {
   Cursor cursor;
   PackedBool(is_x_cursor);
+  const char *szName; /* pointer to static if is_x_cursor, 
+                         must be FREEd otherwise */
 } scwm_cursor;
 
 
@@ -60,6 +62,15 @@ void CreateScmGlobalCursors();
 
 #define VALIDATE_ARG_CURSOR(pos,arg) \
   do { if (!IS_CURSOR(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); } while (0)
+
+#define VALIDATE_ARG_CURSOR_USE_F(pos,arg) \
+  do { if (UNSET_SCM(arg)) arg = SCM_BOOL_F; \
+       else if (!IS_CURSOR(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); } while (0)
+
+#define VALIDATE_ARG_CURSOR_COPY_USE_NONE(pos,arg,cvar) \
+  do { if (UNSET_SCM(arg)) { arg = SCM_BOOL_F; cvar = None; } \
+       else if (!IS_CURSOR(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
+       else cvar = XCURSOR(arg); } while (0)
 
 
 #endif

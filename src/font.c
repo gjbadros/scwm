@@ -117,17 +117,13 @@ allocated, an error results. */
   char *fn;
   int len;
 
-  if (!gh_string_p(fname)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(1, fname);
-  }
+  VALIDATE_ARG_STR_NEWCOPY(1,fname,fn);
   
   answer=scm_hash_ref(font_hash_table, fname, SCM_BOOL_F);
   if (answer!=SCM_BOOL_F) {
     return answer;
   }
 
-  fn = gh_scm2newstr(fname, &len);
   if (NULL == fn) {
   allocation:
     scm_memory_error(FUNC_NAME);
@@ -241,10 +237,7 @@ Currently defined properties are 'name, the string name of the
 color, and 'height, its total height in pixels. */
 #define FUNC_NAME s_font_properties
 {
-  scwm_font *psfont = SAFE_FONT(font);
-  if (!psfont) {
-    SCWM_WRONG_TYPE_ARG(1, font);
-  } 
+  VALIDATE_ARG_FONT(1,font);
   return gh_list(gh_cons(sym_name, FONTNAME(font)),
 		 gh_cons(sym_height, gh_int2scm(FONTHEIGHT(font))),
 		 SCM_UNDEFINED);
@@ -256,13 +249,7 @@ SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
      /** Set the font used for drawing icon titles to FONT. */
 #define FUNC_NAME s_set_icon_font_x
 {
-  if (gh_string_p(font)) {
-    font = make_font(font);
-  }
-  if (!FONT_P(font)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(1, font);
-  }
+  VALIDATE_ARG_FONT_OR_STRING(1,font);
 
   Scr.icon_font = font;
 
@@ -292,14 +279,7 @@ SCWM_PROC(set_title_font_x, "set-title-font!", 1, 0, 0,
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (gh_string_p(font)) {
-    font = make_font(font);
-  }
-
-  if (!FONT_P(font)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(1, font);
-  }
+  VALIDATE_ARG_FONT_OR_STRING(1,font);
 
   fl->window_font = font;
   fl->window_font_y = FONTY(font);

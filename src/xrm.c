@@ -44,18 +44,14 @@ SCWM_PROC (X_resource_put, "X-resource-put", 2, 0, 0,
 Later, the value can be retrieved using `X-resource-get'. */
 #define FUNC_NAME s_X_resource_put
 {
-  if (!gh_string_p(resource))
-    SCWM_WRONG_TYPE_ARG(1, resource);
-  if (!gh_string_p(value))
-    SCWM_WRONG_TYPE_ARG(2, value);
+  char *szSpecifier;
+  char *szValue;
+  VALIDATE_ARG_STR_NEWCOPY(1,resource,szSpecifier);
+  VALIDATE_ARG_STR_NEWCOPY(2,value,szValue);
 
-  { /* scope */
-    char *szSpecifier = gh_scm2newstr(resource,NULL);
-    char *szValue = gh_scm2newstr(value,NULL);
-    XrmPutStringResource(&db,szSpecifier,szValue);
-    gh_free(szSpecifier);
-    gh_free(szValue);
-  }
+  XrmPutStringResource(&db,szSpecifier,szValue);
+  gh_free(szSpecifier);
+  gh_free(szValue);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -70,25 +66,21 @@ If there is no resource under the given key, #f is returned. */
 #define FUNC_NAME s_X_resource_get
 {
   SCM answer = SCM_BOOL_F;
+  char *szName;
+  char *szClass;
+  char *szType;
+  XrmValue ret;
 
-  if (!gh_string_p(name))
-    SCWM_WRONG_TYPE_ARG(1, name);
-  if (!UNSET_SCM(xclass) && !gh_string_p(xclass))
-    SCWM_WRONG_TYPE_ARG(2, xclass);
+  VALIDATE_ARG_STR_NEWCOPY(1,name,szName);
+  VALIDATE_ARG_STR_NEWCOPY_USE_NULL(2,xclass,szClass);
+  if (!szClass) szClass = szName;
 
-  { /* scope */
-    char *szName = gh_scm2newstr(name,NULL);
-    char *szClass = !UNSET_SCM(xclass)?gh_scm2newstr(xclass,NULL):szName;
-    char *szType;
-    XrmValue ret;
-    if (XrmGetResource(db,szName,szClass,&szType,&ret) ||
-        XrmGetResource(dbSystem,szName,szClass,&szType,&ret)) {
-      answer = gh_str02scm(ret.addr);
-    }
-    gh_free(szName);
-    if (szClass != szName)
-      gh_free(szClass);
+  if (XrmGetResource(db,szName,szClass,&szType,&ret) ||
+      XrmGetResource(dbSystem,szName,szClass,&szType,&ret)) {
+    answer = gh_str02scm(ret.addr);
   }
+  gh_free(szName);
+  if (szClass != szName) gh_free(szClass);
   return answer;
 }
 #undef FUNC_NAME
@@ -101,10 +93,8 @@ Only the settings set or changed via `X-resource-put' go into
 the file. */
 #define FUNC_NAME s_X_resource_database_save
 {
-  char *szFilename = NULL;
-  if (!gh_string_p(filename))
-    SCWM_WRONG_TYPE_ARG(1, filename);
-  szFilename = gh_scm2newstr(filename,NULL);
+  char *szFilename;
+  VALIDATE_ARG_STR_NEWCOPY(1,filename,szFilename);
   XrmPutFileDatabase(db, szFilename);
   gh_free(szFilename);
   return SCM_UNSPECIFIED;

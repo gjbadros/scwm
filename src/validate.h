@@ -80,12 +80,33 @@ VALIDATE_...
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
+/* range is [low,high]; i.e., low and high are both okay values */
 #define VALIDATE_ARG_INT_RANGE_COPY(pos,scm,low,high,cvar) \
   do { \
   if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   cvar = gh_scm2long(scm); \
-  if (cvar < low || cvar > high) scm_misc_error(FUNC_NAME,"Argument out of range.",SCM_EOL); \
+  if (cvar < low || cvar > high) \
+     scm_misc_error(FUNC_NAME,"Argument %S must be in [%S,%S]", \
+                    gh_list(gh_int2scm(pos),gh_int2scm(low),gh_int2scm(high),SCM_EOL)); \
   } while (0)
+
+#define VALIDATE_ARG_INT_MIN_COPY(pos,scm,low,cvar) \
+  do { \
+  if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  cvar = gh_scm2long(scm); \
+  if (cvar < low) scm_misc_error(FUNC_NAME,"Argument %S must be greater than %S", \
+                                 gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_EOL)); \
+  } while (0)
+
+#define VALIDATE_ARG_INT_MAX_COPY(pos,scm,high,cvar) \
+  do { \
+  if (!gh_number_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  cvar = gh_scm2long(scm); \
+  if (cvar > high) scm_misc_error(FUNC_NAME,"Argument %S must be less than %S", \
+                                  gh_list(gh_int2scm(pos),gh_int2scm(high))); \
+  } while (0)
+
+
 
 /* Sample Usage:
   VALIDATE_ARG_INT_COPY_USE_DEF(1,pixels,cpixMoveAmount,10);
@@ -104,6 +125,21 @@ VALIDATE_...
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
+#define VALIDATE_ARG_WINID_COPY(pos,scm,cvar) \
+  do { \
+  if (gh_number_p(scm)) cvar = (Window) gh_scm2ulong(scm); \
+  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+
+#define VALIDATE_ARG_DBL_MIN_COPY(pos,scm,low,cvar) \
+  do { \
+  if (gh_number_p(scm)) cvar = gh_scm2double(scm); \
+  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  if (cvar < low) scm_misc_error(FUNC_NAME,"Argument %S must be greater than %S", \
+                                 gh_list(gh_int2scm(pos),gh_int2scm(low),SCM_EOL)); \
+  } while (0)
+
 
 #define VALIDATE_ARG_DBL_COPY(pos,scm,cvar) \
   do { \
@@ -118,6 +154,16 @@ VALIDATE_...
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
+#define VALIDATE_ARG_LIST(pos,scm) \
+  do { \
+  if (!gh_list_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_LISTNONEMPTY(pos,scm) \
+  do { \
+  if (!gh_list_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else if (gh_car(scm) == SCM_EOL) scm_misc_error(FUNC_NAME,"List must be non-empty.",SCM_EOL); \
+  } while (0)
 
 #define VALIDATE_ARG_SYM(pos,scm) \
   do { \
@@ -141,11 +187,24 @@ VALIDATE_...
   else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
+#define VALIDATE_ARG_STR_NEWCOPY_USE_NULL(pos,scm,pch) \
+  do { \
+  if (UNSET_SCM(scm)) pch = NULL; \
+  else if (gh_string_p(scm)) pch = gh_scm2newstr(scm,NULL); \
+  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+
+#define VALIDATE_ARG_PROC(pos,scm) \
+  do { \
+  if (!gh_procedure_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
 /* we use UNSET_SCM instead of just testing for == SCM_UNDEFINED
    so SCM_BOOL_F is okay -- this does do an extra assignment, though */
 #define VALIDATE_ARG_PROC_USE_F(pos,scm) \
   do { \
-  if (UNSET_SCM(scm) scm = SCM_BOOL_F; \
+  if (UNSET_SCM(scm)) scm = SCM_BOOL_F; \
   else if (!gh_procedure_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 

@@ -34,6 +34,9 @@ free_cursor(SCM obj)
 {
   scwm_cursor *xp=CURSOR(obj);
   XFreeCursor(dpy,xp->cursor);
+  /* we only free strings from non x cursors */
+  if (xp->szName && xp->is_x_cursor)
+    FREE((char *)xp->szName);
   FREE(xp);
   return sizeof(*xp);
 }
@@ -44,7 +47,10 @@ print_cursor(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scwm_cursor *xp=CURSOR(obj);
   scm_puts("#<cursor ", port);
-  scm_write(gh_ulong2scm((unsigned long)xp->cursor), port);
+  if (xp->szName)
+    scm_puts(xp->szName, port);
+  else
+    scm_write(gh_ulong2scm((unsigned long)xp->cursor), port);
   scm_putc('>', port);
   return 1;
 }
@@ -146,16 +152,21 @@ static CursorNameMap map[] = {
 static SCM preloaded_x_cursors[XC_num_glyphs];
 
 /* ========================================================================== */
+
 static
 SCM
-x_cursor_to_scm(Cursor xc,int is_x_cursor) 
+x_cursor_to_scm(Cursor xc,Bool is_x_cursor, const char *szName) 
 {
   scwm_cursor *sxp;
   SCM result;
 
   sxp=NEW(scwm_cursor);
   sxp->cursor=xc;
-  sxp->is_x_cursor=is_x_cursor?1:0;
+  sxp->is_x_cursor = is_x_cursor;
+  if (szName)
+    sxp->szName = szName;
+  else
+    sxp->szName = NULL;
   gh_defer_ints();
   SCWM_NEWCELL_SMOB(result,scm_tc16_scwm_cursor,sxp);
   scm_permanent_object(result);
@@ -175,7 +186,7 @@ get_scm_cursor_by_number(int cursor_num)
       return preloaded_x_cursors[cursor_num];
     }
     c = XCursorByNumber(cursor_num);
-    sc=x_cursor_to_scm(c,1);
+    sc = x_cursor_to_scm(c,True,map[cursor_num].name);
     return sc;
   }
   return SCM_BOOL_F;
@@ -304,7 +315,7 @@ cursor's hot spot (from the top-left of the cursor). */
     XFreePixmap(dpy,source);
     XFreePixmap(dpy,mask);
 
-    return x_cursor_to_scm(crsr,FALSE);
+    return x_cursor_to_scm(crsr,False,SzNewImageShortName(pimg));
   }
 }
 #undef FUNC_NAME

@@ -303,23 +303,18 @@ resize frames. VALUE should be an integer. */
 {
   XGCValues gcv;
   unsigned long gcm;
+  int v;
 
-  SCM_REDEFER_INTS;
-
-  if (!gh_number_p(value)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(1, value);
-  }
+  VALIDATE_ARG_INT_RANGE_COPY(1,value,0,255,v);
   gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
   gcv.function = GXxor;
   gcv.line_width = 0;
-  gcv.foreground = gh_scm2long(value);
+  gcv.foreground = v;
   gcv.subwindow_mode = IncludeInferiors;
   if (NULL != DrawRubberBandGC) {
     XFreeGC(dpy, DrawRubberBandGC);
   }
   DrawRubberBandGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-  SCM_REALLOW_INTS;
   return (value);
 }
 #undef FUNC_NAME

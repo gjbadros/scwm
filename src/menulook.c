@@ -107,9 +107,7 @@ only the Xpm menu look uses the EXTRA information. */
   }
   pmlOrig = DYNAMIC_SAFE_MENULOOK(original_menu_look);
 
-  if (!gh_string_p(name)) {
-    SCWM_WRONG_TYPE_ARG(2,name);
-  }
+  VALIDATE_ARG_STR(2,name);
   
   if (UNSET_SCM(extra)) {
     extra = pmlOrig->extra;

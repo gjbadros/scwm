@@ -126,9 +126,9 @@ char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
 char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
 char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
 
-static int DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
-                          Cursor cursor, int FinishEvent,
-                          int *px, int *py);
+static Bool DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
+                           Cursor cursor, int FinishEvent,
+                           int *px, int *py);
 
 unsigned long
 FlagsBitsFromSw(ScwmWindow *psw)
@@ -892,7 +892,7 @@ map is actually performed.
 
 
 SCWM_PROC(select_viewport_position, "select-viewport-position", 0, 2, 0,
-          (SCM release_p, SCM cursor))
+          (SCM cursor, SCM release_p))
      /** Select a viewport position and return the window there.  
 Use a special cursor and let the user click to select a viewport
 position Returns a list of three items: (selected-window viewport-x
@@ -912,48 +912,27 @@ destroy-window), or #f or omitted for the standard circle cursor. */
   ScwmWindow *psw;
   SCM win = SCM_BOOL_F;
   int x = 0, y = 0;
-
+  Bool fRelease;
   Cursor x_cursor;
 
-  SCM_REDEFER_INTS;
-  w = Scr.Root;
+  VALIDATE_ARG_CURSOR_COPY_USE_NONE(1,cursor,x_cursor);
+  VALIDATE_ARG_BOOL_COPY_USE_T(2,release_p,fRelease);
 
-  psw = &Scr.ScwmRoot;
-
-  if (release_p == SCM_UNDEFINED) {
-    release_p = SCM_BOOL_T;
-  } else if (!gh_boolean_p(release_p)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(1, release_p);
+  if (SCM_BOOL_F == cursor || x_cursor == None) {
+    x_cursor = XCURSOR_SELECT;
+  } if (SCM_BOOL_T == cursor) {
+    x_cursor = XCURSOR_KILL;
   }
 
-  x_cursor=XCURSOR(cursor);
-  if (x_cursor==None) {
-    if (cursor == SCM_UNDEFINED) {
-      cursor = SCM_BOOL_F;
-    } else if (!gh_boolean_p(cursor)) {
-      gh_allow_ints();
-      SCWM_WRONG_TYPE_ARG(2, cursor);
+  if (DeferExecution(&ev, &w, &psw, x_cursor,
+		     (fRelease? ButtonRelease : ButtonPress),
+                     &x, &y)) {
+    /* success */
+    if (psw && !UNSET_SCM(psw->schwin)) {
+      win = psw->schwin;
     }
   }
 
-  if (DeferExecution(&ev, &w, &psw,
-		     (x_cursor==None)?(
-		       (cursor != SCM_BOOL_F ?
-                        XCURSOR_KILL:XCURSOR_SELECT)
-		       ):(
-		         x_cursor
-		       ),
-		     (release_p != SCM_BOOL_F ? ButtonRelease :
-		      ButtonPress),
-                     &x, &y)) {
-    win = SCM_BOOL_F;
-  }
-  else if (psw && psw->schwin != SCM_UNDEFINED) {
-    win = psw->schwin;
-  }
-
-  SCM_REALLOW_INTS;
   return gh_list(win,gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
@@ -987,21 +966,12 @@ the "skull and crossbones" cursor, or #f to use the standard
 circle cursor. */
 #define FUNC_NAME s_get_window
 {
-  if (select_p == SCM_UNDEFINED) {
-    select_p = SCM_BOOL_T;
-  } else if (!gh_boolean_p(select_p)) {
-    SCWM_WRONG_TYPE_ARG(1, select_p);
-  }
-  if (release_p == SCM_UNDEFINED) {
-    release_p = SCM_BOOL_T;
-  } else if (!gh_boolean_p(release_p)) {
-    SCWM_WRONG_TYPE_ARG(2, release_p);
-  }
-  if (cursor == SCM_UNDEFINED) {
-    cursor = SCM_BOOL_F;
-  } else if (!gh_boolean_p(cursor) && !IS_CURSOR(cursor)) {
-    SCWM_WRONG_TYPE_ARG(3, cursor);
-  }
+  Bool fSelect, fRelease;
+  Cursor xcursor;
+  VALIDATE_ARG_BOOL_COPY_USE_T(1,select_p,fSelect);
+  VALIDATE_ARG_BOOL_COPY_USE_T(2,release_p,fRelease);
+  VALIDATE_ARG_CURSOR_COPY_USE_NONE(3,cursor,xcursor);
+
   if (UNSET_SCM(scm_window_context)) {
     if (select_p == SCM_BOOL_T) {
       SCM win = gh_car(select_viewport_position(release_p,cursor));
@@ -1041,9 +1011,7 @@ See also `with-window' and `get-window'. */
 #define FUNC_NAME s_set_window_context_x
 {
   SCM answer = scm_window_context;
-  if (win != SCM_BOOL_F && !WINDOWP(win)) {
-    SCWM_WRONG_TYPE_ARG(1,win);
-  }
+  VALIDATE_ARG_WIN_USE_F(1,win);
   scm_window_context = win;
   if (answer == SCM_UNDEFINED)
     answer = SCM_BOOL_F;
@@ -1081,23 +1049,6 @@ SCWM_PROC(current_window_with_pointer, "current-window-with-pointer", 0, 0, 0,
 #define FUNC_NAME s_current_window_with_pointer
 {
   ScwmWindow *psw = PswFromPointerLocation(dpy);
-  return psw? psw->schwin: SCM_BOOL_F;
-}
-#undef FUNC_NAME
-
-
-SCWM_PROC(select_window_interactively_no_message,
-          "select-window-interactively-no-message", 0, 0, 0,
-          ())
-     /** Returns a window selected interactively.
-Returns #f if no window was selected.  Use `select-window-interactively' if you would
-like to display a message while the user selects a window. */
-#define FUNC_NAME s_select_window_interactively_no_message
-{
-  ScwmWindow *psw = NULL;
-
-  psw = PswSelectInteractively(dpy);
-
   return psw? psw->schwin: SCM_BOOL_F;
 }
 #undef FUNC_NAME
@@ -1353,8 +1304,6 @@ PswFromPointerLocation(Display *dpy)
 ScwmWindow *
 PswSelectInteractively(Display *ARG_UNUSED(dpy))
 {
-  /* GJB:FIXME:: this should be the primitive that select_window calls,
-     and this should replace DeferExecution. --07/25/98 gjb */
   SCM result = gh_car(select_viewport_position(SCM_BOOL_T, SCM_BOOL_F));
   if (result == SCM_BOOL_F)
     return NULL;
@@ -1366,9 +1315,7 @@ PswSelectInteractively(Display *ARG_UNUSED(dpy))
 extern Bool have_orig_position;
 
 /*
- *
- *  Procedure:
- *	DeferExecution - return the interactively-selected window in *ppsw
+ * DeferExecution - return the interactively-selected window in *ppsw
  *
  *  Inputs:
  *      eventp  - pointer to XEvent to patch up
@@ -1380,8 +1327,11 @@ extern Bool have_orig_position;
  * Also, the viewport position of the cursor at finalization time is returned:
  *      px,py    - pointers to ints to store viewport position of the cursor in
  *
+ * Returns True if a window was selected, False otherwise
+ *
+ * side effects the "have_orig_position" global -- resets to False
  */
-static int
+static Bool
 DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
 	       Cursor cursor, int FinishEvent,
                int *px, int *py)
@@ -1397,8 +1347,12 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
 
   if (!GrabEm(cursor)) {
     call0_hooks(cannot_grab_hook);
-    return True;
+    return False;
   }
+
+  /* interactive operations should not use the stashed mouse position
+     if we just selected the window. */
+  have_orig_position = False;
 
   /* The grab from above generates an EnterNotify on the root window
      that we need to throw away, otherwise the window that has
@@ -1481,34 +1435,35 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
     eventp->xany.window = *w;
   }
   if (*w == Scr.Root) {
-    UngrabEm();
-    return True;
+    goto defer_no_select;
   }
   *ppsw = PswFromWindow(dpy,*w);
   if (*ppsw == NULL) {
-    UngrabEm();
-    return True;
+    goto defer_no_select;
   }
+
+  /* this ugly mess attempts to ensure that the release and press
+   * are in the same window. */
+
   if (*w == (*ppsw)->Parent)
     *w = (*ppsw)->w;
 
   if (original_w == (*ppsw)->Parent)
     original_w = (*ppsw)->w;
 
-  /* this ugly mess attempts to ensure that the release and press
-   * are in the same window. */
   if ((*w != original_w) && (original_w != Scr.Root) &&
-      (original_w != None) && (original_w != Scr.NoFocusWin))
+      (original_w != None) && (original_w != Scr.NoFocusWin)) {
     if (!((*w == (*ppsw)->frame) &&
 	  (original_w == (*ppsw)->w))) {
+      /* Success!! */
       UngrabEm();
       return True;
     }
+  }
 
+ defer_no_select:
   UngrabEm();
-  /* interactive operations should not use the stashed mouse position
-     if we just selected the window. */
-  have_orig_position = False;
+  *ppsw = NULL;
   return False;
 }
 
@@ -1901,9 +1856,7 @@ and possibly other legacy fvwm2 modules). */
   SCM p;
   int i, cnt;
 
-  if (!gh_list_p(winlist)) {
-    SCWM_WRONG_TYPE_ARG(1, winlist);
-  }
+  VALIDATE_ARG_LIST(1,winlist);
 
   /* FIXMS: Hmmm, do we really want to restack the icons of iconified
      windows? */
@@ -2084,22 +2037,14 @@ cannot, e.g., cleanly be brought back onto the current viewport.
 */
 #define FUNC_NAME s_deiconify
 {
-  SCM_REDEFER_INTS;
   VALIDATE_WIN_USE_CONTEXT(win);
   if (!UNSET_SCM(x)) {
     int x_virt, y_virt;
-    if (!gh_number_p(x)) {
-      SCWM_WRONG_TYPE_ARG(2,x);
-    }
-    if (!gh_number_p(y)) {
-      SCWM_WRONG_TYPE_ARG(3,y);
-    }
-    x_virt = gh_scm2int(x);
-    y_virt = gh_scm2int(y);
+    VALIDATE_ARG_INT_COPY(2,x,x_virt);
+    VALIDATE_ARG_INT_COPY(3,y,y_virt);
     MoveTo(PSWFROMSCMWIN(win),x_virt,y_virt);
   }
   DeIconify(PSWFROMSCMWIN(win));
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2494,11 +2439,8 @@ The list returned contains 4 cons pairs containing:
 #define FUNC_NAME s_window_size_hints
 {
   SCM answer = SCM_EOL;
-  ScwmWindow *psw = NULL;
-  if (!WINDOWP(win)) {
-    SCWM_WRONG_TYPE_ARG(1,win);
-  }
-  psw = PSWFROMSCMWIN(win);
+  ScwmWindow *psw;
+  VALIDATE_WIN_COPY(win,psw);
 
   answer = gh_cons(gh_cons(gh_int2scm(psw->hints.base_width),
                            gh_int2scm(psw->hints.base_height)),answer);
@@ -2557,19 +2499,13 @@ defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_move_window_to_desk
 {
   ScwmWindow *psw;
-  int val1;
-  int old;
+  int newdesk;
+  int olddesk;
 
-  if (!gh_number_p(desk) && desk != SCM_BOOL_F) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(1, desk);
-  }
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
+  VALIDATE_ARG_INT_COPY(1,desk,newdesk);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
 
-  psw = PSWFROMSCMWIN(win);
-  old = psw->Desk;
-
-  val1 = gh_scm2int(desk);
+  olddesk = psw->Desk;
 
   /* Mapping window on its new Desk,
      unmapping it from the old Desk */
@@ -2577,22 +2513,22 @@ defaults to the window context in the usual way if not specified. */
   if (!(psw->fIconified && psw->fStickyIcon) &&
       !psw->fSticky && !psw->fIconUnmapped) {
     if (psw->Desk == Scr.CurrentDesk) {
-      psw->Desk = val1;
-      if (val1 != Scr.CurrentDesk) {
+      psw->Desk = newdesk;
+      if (newdesk != Scr.CurrentDesk) {
 	UnmapScwmWindow(psw);
       }
-    } else if (val1 == Scr.CurrentDesk) {
-      psw->Desk = val1;
+    } else if (newdesk == Scr.CurrentDesk) {
+      psw->Desk = newdesk;
       /* If its an icon, auto-place it */
       if (psw->fIconified)
 	AutoPlace(psw);
       MapIt(psw);
     } else {
-      psw->Desk = val1;
+      psw->Desk = newdesk;
     }
   }
 
-  notify_new_desk(psw, val1, old);
+  notify_new_desk(psw, newdesk, olddesk);
 
   return SCM_UNSPECIFIED;;
 }
@@ -2836,14 +2772,10 @@ WINDOW-ID should be the X id of the application window. If there is no
 such window object, return #f. */
 #define FUNC_NAME s_id_to_window
 {
-  ScwmWindow *psw = NULL;
+  ScwmWindow *psw;
   Window w;
 
-  if (!gh_number_p(window_id)) {
-    SCWM_WRONG_TYPE_ARG(1, window_id);
-  }
-
-  w =(Window) gh_scm2int(window_id);
+  VALIDATE_ARG_WINID_COPY(1,window_id,w);
   psw = PswFromWindow(dpy, w);
 
   return ((psw && psw->w==w) ? psw->schwin : SCM_BOOL_F);
@@ -2857,14 +2789,10 @@ WINDOW-ID should be the X id of a scwm frame window. If there is no
 such window object, return #f. */
 #define FUNC_NAME s_frame_id_to_window
 {
-  ScwmWindow *psw = NULL;
+  ScwmWindow *psw;
   Window w;
 
-  if (!gh_number_p(window_id)) {
-    SCWM_WRONG_TYPE_ARG(1, window_id);
-  }
-
-  w =(Window) gh_scm2int(window_id);
+  VALIDATE_ARG_WINID_COPY(1,window_id,w);
   psw = PswFromWindow(dpy, w);
 
   return ((psw && psw->frame==w) ? psw->schwin : SCM_BOOL_F);
@@ -2878,14 +2806,11 @@ WINDOW-ID can be the X id of any child window in the application. If there is no
 such window object, return #f. */
 #define FUNC_NAME s_any_id_to_window
 {
-  ScwmWindow *psw = NULL;
+  ScwmWindow *psw;
   Window w;
 
-  if (!gh_number_p(window_id)) {
-    SCWM_WRONG_TYPE_ARG(1, window_id);
-  }
+  VALIDATE_ARG_WINID_COPY(1,window_id,w);
 
-  w =(Window) gh_scm2int(window_id);
   psw = PswFromAnyWindow(dpy, w);
 
   return psw? psw->schwin : SCM_BOOL_F;
@@ -3306,16 +3231,10 @@ WIN defaults to the window context in the usual way if not specified. */
   int cpix, oldw, oldxw;
   int oldxadj, oldyadj;
 
-  SCM_REDEFER_INTS;
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (!gh_number_p(width)) {
-    SCWM_WRONG_TYPE_ARG(1, width);
-  }
-  cpix = gh_scm2int(width);
-
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_INT_MIN_COPY(1,width,0,cpix);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
 
   oldw = psw->boundary_width;
   oldxw = psw->xboundary_width;
@@ -3349,12 +3268,10 @@ defaults to the window context in the usual way if not specified. */
 {
   ScwmWindow *psw;
 
-  SCM_REDEFER_INTS;
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
   psw->fStickyIcon = True;
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3401,28 +3318,16 @@ height H. WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_set_icon_box_x
 {
-  /* FIXMS - should probably move existing window icons */
   int cx, cy, cw, ch;
   ScwmWindow *psw;
 
-  if (!gh_number_p(x)) {
-    SCWM_WRONG_TYPE_ARG(1, x);
-  }
-  if (!gh_number_p(y)) {
-    SCWM_WRONG_TYPE_ARG(2, y);
-  }
-  if (!gh_number_p(w)) {
-    SCWM_WRONG_TYPE_ARG(3, w);
-  }
-  if (!gh_number_p(h)) {
-    SCWM_WRONG_TYPE_ARG(4, h);
-  }
-  VALIDATE_ARG_WIN_USE_CONTEXT(5, win);
-  psw = PSWFROMSCMWIN(win);
-  cx = gh_scm2int(x);
-  cy = gh_scm2int(y);
-  cw = gh_scm2int(w);
-  ch = gh_scm2int(h);
+  VALIDATE_ARG_INT_COPY(1,x,cx);
+  VALIDATE_ARG_INT_COPY(2,y,cy);
+  VALIDATE_ARG_INT_MIN_COPY(3,w,0,cw);
+  VALIDATE_ARG_INT_MIN_COPY(4,h,0,ch);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(5, win, psw);
+
+  /* MS:FIXME:: - should probably move existing window icons */
   psw->IconBox[0] = cx;
   psw->IconBox[1] = cy;
   psw->IconBox[2] = cx + cw;
@@ -3462,9 +3367,7 @@ if not specified. */
 {
   ScwmWindow *psw;
 
-  if (!gh_symbol_p(sym)) {
-    SCWM_WRONG_TYPE_ARG(1, sym);
-  }
+  VALIDATE_ARG_SYM(1,sym);
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
 
@@ -3481,7 +3384,8 @@ if not specified. */
     psw->fClickToFocus = True;
     psw->fSloppyFocus = True;
   } else {
-    scwm_error(FUNC_NAME, "Window focus must be \'click, \'mouse, \'sloppy or \'none.");
+    scm_misc_error(FUNC_NAME, "Window focus must be \'click, \'mouse, \'sloppy or \'none.",
+                   SCM_EOL);
   }
   return sym;
 }
@@ -3701,25 +3605,21 @@ far from perfect.) */
 #define FUNC_NAME s_set_window_button_x
 {
   ScwmWindow *psw;
+  int butnum;
+  Bool f;
 
-  VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
-  if (!gh_number_p(n)) {
-    SCWM_WRONG_TYPE_ARG(1, n);
-  }
+  VALIDATE_ARG_INT_RANGE_COPY(1,n,0,10,butnum);
+  VALIDATE_ARG_BOOL_COPY(2,flag,f);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(3, win,psw);
 
-  psw = PSWFROMSCMWIN(win);
+  if (f)
+    psw->buttons &= ~(1 << (butnum - 1));
+  else
+    psw->buttons |= (1 << (butnum - 1));
 
-  if (flag == SCM_BOOL_T) {
-    psw->buttons &= ~(1 << (gh_scm2int(n) - 1));
-  } else if (flag == SCM_BOOL_F) {
-    psw->buttons |= (1 << (gh_scm2int(n) - 1));
-  } else {
-    SCWM_WRONG_TYPE_ARG(2, flag);
-  }
-  /* XXX - This won't really work for any case unless it is a hint.
+  /* MS:FIXME:: - This won't really work for any case unless it is a hint.
      Handling of the number of buttons is kind of broken in
      general for now, but will be fixed. */
-
 #if 0
   /* Force a redraw */
   /* GJB:FIXME:: this is overkill */
@@ -3818,17 +3718,8 @@ way if not specified. */
 #define FUNC_NAME s_set_force_icon_x
 {
   ScwmWindow *psw;
-
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
-
-  if (flag== SCM_BOOL_F) {
-    psw->fForceIcon=False;
-  } else if (flag== SCM_BOOL_T) {
-    psw->fForceIcon=True;
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, flag);
-  }
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
+  VALIDATE_ARG_BOOL_COPY(1,flag,psw->fForceIcon);
 
   force_icon_redraw (psw);
   return SCM_UNSPECIFIED;
@@ -3846,9 +3737,9 @@ specified. */
 #define FUNC_NAME s_set_show_icon_x
 {
   ScwmWindow *psw;
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win,psw);
   VALIDATE_ARG_BOOL_INVERT(1,flag,psw->fSuppressIcon);
+
   force_icon_redraw (psw);
   return SCM_UNSPECIFIED;
 }
@@ -3867,18 +3758,12 @@ context in the usual way if not specified. */
   char *icon_name;
   int length;
 
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
-  if (gh_string_p(image)) {
-    psw->icon_req_image = make_image(image);
-  } else if (IMAGE_P(image) || image == SCM_BOOL_F) {
-    psw->icon_req_image = image;
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, image);
-  }
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
+  VALIDATE_ARG_IMAGE_OR_STRING_OR_F(1,image);
 
   if (IMAGE_P(image)) {
-    icon_name = gh_scm2newstr(IMAGE(psw->icon_req_image)->full_name, &length);
+    psw->icon_req_image = image;
+    icon_name = gh_scm2newstr(IMAGE(image)->full_name, &length);
     /* FIXMS: This can't deal properly with app-specified icons! */
     BroadcastName(M_ICON_FILE, psw->w, psw->frame,
 		  (unsigned long) psw, icon_name);
@@ -3917,19 +3802,12 @@ to the window context in the usual way if not specified. */
 {
   ScwmWindow *psw;
 
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
-  if (image == SCM_BOOL_F) {
-    psw->mini_icon_image = SCM_BOOL_F;
-  } else if (gh_string_p(image)) {
-    psw->mini_icon_image = make_image(image);
-  } else if (IMAGE_P(image)) {
-    psw->mini_icon_image = image;
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, image);
-  }
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
+  VALIDATE_ARG_IMAGE_OR_STRING_OR_F(1, image);
 
-  /* FIXMS: this isn't right, fvwm2 has a separate SendMiniIcon which
+  psw->mini_icon_image = image;
+
+  /* MS:FIXME:: this isn't right, fvwm2 has a separate SendMiniIcon which
      sends more info than that! */
 
   /* Broadcast the new mini-icon or something? */
@@ -4094,16 +3972,14 @@ window context in the usual way if not specified. */
 {
   ScwmWindow *psw;
 
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
   if (desk == SCM_BOOL_F) {
     psw->fStartsOnDesk = False;
-  } else if (gh_number_p(desk)) {
-    DBUG((DBG,FUNC_NAME,"setting fStartsOnDesk"));
-    psw->fStartsOnDesk = True;
-    psw->StartDesk = gh_scm2int(desk);
   } else {
-    SCWM_WRONG_TYPE_ARG(1, desk);
+    int d;
+    VALIDATE_ARG_INT_MIN_COPY(1,desk,0,d);
+    psw->fStartsOnDesk = True;
+    psw->StartDesk = d;
   }
   return SCM_UNSPECIFIED;
 }

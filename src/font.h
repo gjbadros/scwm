@@ -117,6 +117,22 @@ extern SCM scmFixedFont;
   if (!FONT_OR_SYMBOL_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
 
+
+#define VALIDATE_ARG_FONT_COPY(pos,scm,cvar) \
+  do { \
+  if (!FONT_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else cvar = FONT(scm); \
+  } while (0)
+
+
+#define VALIDATE_ARG_FONT_OR_STRING(pos,scm) \
+  do { \
+  if (gh_string_p(scm)) scm = make_font(scm); \
+  if (!FONT_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+
+
 #endif /* FONT_H */
 
 /* Local Variables: */

@@ -1,3 +1,30 @@
+Mon Jul  5 16:55:25 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Clean up DeferExecution a bit -- fix its return
+	value.  Simplify some of it.  Still a mess, but not as bad,
+	perhaps.
+
+	* xrm.c, xproperty.c, window.c, shutdown.c, resize.c, placement.c, 
+	module-interface.c, miscprocs.c, message-window.c, menulook.c,
+	menu.c, image.c, font.c, face.c, deskpage.c, decor.c, color.c,
+	callbacks.c, binding.c, ICCCM.c: Updated to use VALIDATE_XXXX
+	macros more consistently.
+
+	* image.c: Added `image-short-name' calling new SzNewImageShortName().
+
+	* cursor.h, decor.h, face.h, font.h, window.h, image.h: Added some
+ 	VALIDATE macros
+
+	* cursor.h, cursor.c: Added szName to scwm_cursor struct, and get
+	it from the image object's SzNewImageShortName() fn.  Update the
+	print procedure to display a name if the cursor has one.
+
+	* validate.h: Added more VALIDATE_XXX macros for procs, lists,
+	half-ranges, etc. o
+
+	* xproperty.h: Added VALIDATE_ARG_ATOM_COPY (now needs assert.h,
+	too).
+
 Mon Jul  5 00:02:57 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* binding.c (s_keymask_keycode_to_string): Handle bad keycodes w/o 

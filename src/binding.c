@@ -814,7 +814,7 @@ PBindingFromMouse(int button,
 
 SCWM_PROC(set_quote_key_events_x, "set-quote-key-events!", 1, 0, 0,
           (SCM quoting_on_p))
-     /** Set key event quoting to QUOTING-ON? */
+     /** Set key event quoting to QUOTING-ON?. */
 #define FUNC_NAME s_set_quote_key_events_x
 {
   VALIDATE_ARG_BOOL_COPY(1,quoting_on_p,fQuotingKeystrokes);
@@ -989,16 +989,16 @@ specified key is pressed in the specified context. The optional
 argument RELEASE-PROC, if specified, is a procedure that will be
 invoked when the key is released.  The contexts include:
 
-  'window
-  'titlebar (or 'title)
-  'icon
-  'root
-  'frame-corners (or 'frame)
-  'frame-sides (or 'sidebar)
-  'client-window
-  'root-window
-  'left-button-N  (N=1-5)
-  'right-button-N (N=1-5)
+'window
+'titlebar (or 'title)
+'icon
+'root
+'frame-corners (or 'frame)
+'frame-sides (or 'sidebar)
+'client-window
+'root-window
+'left-button-N  (N=1-5)
+'right-button-N (N=1-5)
 
 */
 #define FUNC_NAME s_bind_key
@@ -1011,17 +1011,8 @@ invoked when the key is released.  The contexts include:
   int modmask = 0;
   int context = 0;
 
-  if (!gh_procedure_p(proc)) {
-    SCWM_WRONG_TYPE_ARG(3, proc);
-  }
-
-  if (!UNSET_SCM(release_proc) && !gh_procedure_p(release_proc)) {
-    SCWM_WRONG_TYPE_ARG(4, release_proc);
-  }
-
-  if (release_proc == SCM_UNDEFINED) {
-    release_proc = SCM_BOOL_F;
-  }
+  VALIDATE_ARG_PROC(3,proc);
+  VALIDATE_ARG_PROC_USE_F(4,release_proc);
 
   context = compute_contexts(contexts, FUNC_NAME);
 
@@ -1074,40 +1065,17 @@ nothing should be done on key release.
 #define FUNC_NAME s_bind_keycode
 {
   int min, max;
-  int keycd = 0;
-  int modmask = 0;
-  int context = 0;
-
-  if (!gh_number_p(keycode)) {
-    SCWM_WRONG_TYPE_ARG(2, keycode);
-  }
-
-  if (!gh_number_p(modifier_mask)) {
-    SCWM_WRONG_TYPE_ARG(3, modifier_mask);
-  }
-
-  if (!UNSET_SCM(proc) && !gh_procedure_p(proc)) {
-    SCWM_WRONG_TYPE_ARG(4, proc);
-  }
-
-  if (!UNSET_SCM(release_proc) && !gh_procedure_p(release_proc)) {
-    SCWM_WRONG_TYPE_ARG(5, release_proc);
-  }
-
-  context = compute_contexts(contexts, FUNC_NAME);
-  keycd = gh_scm2int(keycode);
-  modmask = gh_scm2int(modifier_mask);
+  int context, keycd, modmask;
 
   XDisplayKeycodes(dpy, &min, &max);
 
-  if (keycd < min || keycd > max) {
-    scm_misc_error(FUNC_NAME,"Keycode is out of range.",SCM_EOL);
-  }
+  VALIDATE_ARG_INT_RANGE_COPY(2,keycode,min,max,keycd);
+  VALIDATE_ARG_INT_RANGE_COPY(3,modifier_mask,0,255,modmask);
 
-  if (modmask < 0 || modmask > 255) {
-    scm_misc_error(FUNC_NAME,"Modifier mask is out of range.",SCM_EOL);
-  }
+  VALIDATE_ARG_PROC_USE_F(4,proc);
+  VALIDATE_ARG_PROC_USE_F(5,release_proc);
 
+  context = compute_contexts(contexts, FUNC_NAME);
   add_binding(context, modmask, keycd, 0, proc, release_proc, NULL);
   return SCM_UNSPECIFIED;
 }
@@ -1133,9 +1101,7 @@ for a list of the contexts. */
 
   int fButtonOK = True;
 
-  if (!gh_procedure_p(proc)) {
-    SCWM_WRONG_TYPE_ARG(3, proc);
-  }
+  VALIDATE_ARG_PROC(3,proc);
 
   context = compute_contexts(contexts, FUNC_NAME);
   fButtonOK = FButtonToBnumModifiers(button, &bnum, &modmask, FUNC_NAME, True);

@@ -69,12 +69,10 @@ SCWM_PROC(set_current_desk_x, "set-current-desk!", 1, 0, 0,
 small enough to fit in one machine word. */
 #define FUNC_NAME s_set_current_desk_x
 {
-  if (!gh_number_p(desk)) {
-    SCWM_WRONG_TYPE_ARG(1, desk);
-  }
-  /* XXX - should do something useful if desk is out of range. */
-  changeDesks(0, gh_scm2int(desk));
+  int d;
+  VALIDATE_ARG_INT_MIN_COPY(1,desk,0,d);
 
+  changeDesks(0, d);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -106,14 +104,11 @@ SCWM_PROC(set_viewport_position_x, "set-viewport-position!", 2, 0, 0,
 X and Y are given in pixels.  Does not affect the current desk. */
 #define FUNC_NAME s_set_viewport_position_x
 {
-  if (!gh_number_p(x)) {
-    SCWM_WRONG_TYPE_ARG(1, x);
-  }
-  if (!gh_number_p(y)) {
-    SCWM_WRONG_TYPE_ARG(2, y);
-  }
-  MoveViewport(gh_scm2int(x), gh_scm2int(y));
+  int cx, cy;
+  VALIDATE_ARG_INT_COPY(1,x,cx);
+  VALIDATE_ARG_INT_COPY(2,y,cy);
 
+  MoveViewport(cx,cy);
   return (SCM_UNSPECIFIED);
 }
 #undef FUNC_NAME
@@ -139,13 +134,11 @@ will scroll when the mouse hits the left or right edge. Use `%x' to
 convert from a percent of screen size to pixels. */
 #define FUNC_NAME s_set_edge_x_scroll_x
 {
-  if (!gh_number_p(pixels)) {
-    SCWM_WRONG_TYPE_ARG(1, pixels);
-  }
+  int pix;
+  VALIDATE_ARG_INT_MIN_COPY(1,pixels,0,pix);
 
-  Scr.EdgeScrollX = gh_scm2int(pixels);
+  Scr.EdgeScrollX = pix;
   checkPanFrames();
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -168,11 +161,10 @@ will scroll when the mouse hits the top or bottom edge. Use `%y' to
 convert from a percent of screen size to pixels. */
 #define FUNC_NAME s_set_edge_y_scroll_x
 {
-  if (!gh_number_p(pixels)) {
-    SCWM_WRONG_TYPE_ARG(1, pixels);
-  }
+  int pix;
+  VALIDATE_ARG_INT_MIN_COPY(1,pixels,0,pix);
 
-  Scr.EdgeScrollY = gh_scm2int(pixels);
+  Scr.EdgeScrollY = pix;
   checkPanFrames();
 
   return SCM_UNSPECIFIED;
@@ -278,13 +270,10 @@ Attempts to move a window so that it is off the edge of the screen by
 fewer than PIXELS pixels will leave the window entirely onscreen. */
 #define FUNC_NAME s_set_edge_move_threshold_x
 {
-  if (!gh_number_p(pixels)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(1, pixels);
-  }
+  int pix;
+  VALIDATE_ARG_INT_MIN_COPY(1,pixels,0,pix);
 
-  Scr.MoveResistance = gh_scm2int(pixels);
-
+  Scr.MoveResistance = pix;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -310,17 +299,11 @@ example <informalexample><programlisting>(set-desk-size! 3 3)
 size of the physical display. */
 #define FUNC_NAME s_set_desk_size_x
 {
-
-  if (!gh_number_p(width)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(1, width);
-  }
-  if (!gh_number_p(height)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(2, height);
-  }
-  Scr.VxMax = gh_scm2int(width);
-  Scr.VyMax = gh_scm2int(height);
+  int w, h;
+  VALIDATE_ARG_INT_MIN_COPY(1,width,1,w);
+  VALIDATE_ARG_INT_MIN_COPY(2,height,2,h);
+  Scr.VxMax = w;
+  Scr.VyMax = h;
   Scr.VxMax = Scr.VxMax * Scr.DisplayWidth - Scr.DisplayWidth;
   Scr.VyMax = Scr.VyMax * Scr.DisplayHeight - Scr.DisplayHeight;
   if (Scr.VxMax < 0)

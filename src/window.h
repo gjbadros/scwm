@@ -52,6 +52,15 @@ extern SCM sym_click, sym_root_window;
           return SCM_BOOL_F; \
        else psw = PSWFROMSCMWIN(win); } while (0)
 
+#define VALIDATE_ARG_WIN_COPY_USE_CONTEXT(pos,win,psw) \
+  do { if ((win = ensure_valid(win,pos,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_F)) == SCM_BOOL_F) \
+          return SCM_BOOL_F; \
+       else psw = PSWFROMSCMWIN(win); } while (0)
+
+#define VALIDATE_WIN_COPY(arg,psw) \
+  do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,1,arg); \
+       else psw = PSWFROMSCMWIN(arg); } while (0)
+
 #define VALIDATEKILL(win) \
   do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_T)) == SCM_BOOL_F) \
           return SCM_BOOL_F; } while (0)
@@ -73,6 +82,20 @@ extern SCM sym_click, sym_root_window;
    like VALIDATE_ARG_COLOR */
 #define VALIDATE_ARG_WIN(pos,arg) \
   do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); } while (0)
+
+#define VALIDATE_ARG_WIN_USE_F(pos,arg) \
+  do { if (UNSET_SCM(arg)) arg = SCM_BOOL_F; \
+       else if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); } while (0)
+
+#define VALIDATE_ARG_WINVALID(pos,arg) \
+  do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
+       else if (!VALIDWINP(arg)) scm_misc_error(FUNC_NAME,"Window is not valid",SCM_EOL); } while (0)
+
+#define VALIDATE_ARG_WINVALID_COPY(pos,arg,psw) \
+  do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
+       else if (!VALIDWINP(arg)) scm_misc_error(FUNC_NAME,"Window is not valid",SCM_EOL); \
+       else psw = PSWFROMSCMWIN(arg); } while (0)
+
 
 #define VALIDATE_ARG_WIN_COPY(pos,arg,psw) \
   do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \

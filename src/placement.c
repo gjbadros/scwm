@@ -435,11 +435,9 @@ used in user-defined placement procedures (see
 `set-window-placement-proc!'). */
 #define FUNC_NAME s_place_on_default_desk
 {
-  if (!WINDOWP(win)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  default_select_desk(PSWFROMSCMWIN(win));
+  ScwmWindow *psw;
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
+  default_select_desk(psw);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -461,11 +459,7 @@ used in user-defined placement procedures (see
   ScwmWindow *psw;
   int x, y;
 
-  if (!WINDOWP(win)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  psw=PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
 
   /* FIXMS: hackish workaround for now to not mess with the smart
      placement function itself, but make it not call CleverPlacement
@@ -511,11 +505,7 @@ used in user-defined placement procedures (see
   ScwmWindow *psw;
   int x, y;
 
-  if (!WINDOWP(win)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  psw=PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
 
   CleverPlacement(psw, &x, &y);
 
@@ -548,11 +538,7 @@ used in user-defined placement procedures (see
 {
   ScwmWindow *psw;
 
-  if (!WINDOWP(win)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  psw=PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
   
   /* place window in a random location */
   if ((Scr.randomx += GET_DECOR(psw, TitleHeight)) > Scr.DisplayWidth / 2) {
@@ -588,12 +574,7 @@ is not set, or the window starts iconic. */
 #define FUNC_NAME s_default_placement_proc
 { 
   ScwmWindow *psw;
-
-  if (!WINDOWP(win)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  psw=PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
 
   if ((!PPosOverride) && (!(psw->fShowOnMap)))
     changeDesks(0, psw->Desk);
@@ -644,12 +625,7 @@ It simply leaves the window WIN in place, exactly as requested. */
 #define FUNC_NAME s_default_transient_placement_proc
 {
   ScwmWindow *psw;
-
-  if (!WINDOWP(win)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  psw=PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
 
   if ((!PPosOverride) && (!(psw->fShowOnMap)))
     changeDesks(0, psw->Desk);

@@ -244,17 +244,14 @@ allocated, an error results. */
   char *cn;
   int error_status;
 
-  if (!gh_string_p(cname)) {
-    SCWM_WRONG_TYPE_ARG(1, cname);
-  }
+  VALIDATE_ARG_STR_NEWCOPY(1,cname,cn);
 
-  answer=scm_hash_ref(color_hash_table, cname, SCM_BOOL_F);
+  answer = scm_hash_ref(color_hash_table, cname, SCM_BOOL_F);
 
   if (answer!=SCM_BOOL_F) {
     return answer;
   }
 
-  cn = gh_scm2newstr(cname, NULL);
   answer = ScmMakeColor(cn,&error_status);
   switch (error_status) {
   case 1:
@@ -499,10 +496,7 @@ which is suitable for use as a highlight. */
   double f;
 
   VALIDATE_ARG_COLOR(1,color);
-
-  if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    SCWM_WRONG_TYPE_ARG(2, factor);
-  }
+  VALIDATE_ARG_DBL_MIN_COPY(2,factor,0.0,f);
 
   return adjust_brightness(color, f);
 }
@@ -568,9 +562,7 @@ FACTOR is a positive floating point number. */
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    SCWM_WRONG_TYPE_ARG(1, factor);
-  }
+  VALIDATE_ARG_DBL_MIN_COPY(1,factor,0.0,f);
 
   fl->highlight_factor = f;
 
@@ -606,9 +598,7 @@ FACTOR is a positive floating point number */
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    SCWM_WRONG_TYPE_ARG(1, factor);
-  }
+  VALIDATE_ARG_DBL_MIN_COPY(1,factor,0.0,f);
 
   fl->shadow_factor = f;
 
@@ -640,12 +630,8 @@ FACTOR is a positive floating point number */
 #define FUNC_NAME s_set_menu_highlight_factor_x
 {
   double f;
-  if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    SCWM_WRONG_TYPE_ARG(1, factor);
-  }
-
+  VALIDATE_ARG_DBL_MIN_COPY(1,factor,0.0,f);
   menu_highlight_factor_val = f;
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -667,12 +653,8 @@ FACTOR is a positive floating point number */
 #define FUNC_NAME s_set_menu_shadow_factor_x
 {
   double f;
-  if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    SCWM_WRONG_TYPE_ARG(1, factor);
-  }
-
+  VALIDATE_ARG_DBL_MIN_COPY(1,factor,0.0,f);
   menu_shadow_factor_val = f;
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

@@ -184,18 +184,13 @@ arguments as given previously. */
   int dummy;
   char *sz;
 
-  if (gh_string_p(command)) {
-    sz = gh_scm2newstr(command, &dummy);
-  } else if (command == SCM_UNDEFINED) {
-    sz = "scwm";
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, command);
-  }
+  VALIDATE_ARG_STR_NEWCOPY_USE_NULL(1,command,sz);
+  if (!sz) sz = strdup("scwm");
 
   Done(1, sz);  /* 1 == restart */
-  /* Done shouldn't return, so let sz leak;
-     if we really want to free it, we can do sz = strdup("scwm")
-     above and then FREE(sz) here, but won't matter */
+
+  /* should not ever get here */
+  FREE(sz);
   return SCM_UNSPECIFIED;	
 }
 #undef FUNC_NAME

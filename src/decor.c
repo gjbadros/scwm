@@ -218,13 +218,7 @@ printed. */
   int dummy;
   ScwmDecor *newdec;
 
-  if (gh_string_p(name)) {
-    tag = gh_scm2newstr(name, &dummy);
-  } else if (UNSET_SCM(name)) {
-    tag = NULL;
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, name);
-  }
+  VALIDATE_ARG_STR_NEWCOPY_USE_NULL(1,name,tag);
 
   /* make the decor */
   newdec = NEW(ScwmDecor);
@@ -253,21 +247,10 @@ one. */
 #define FUNC_NAME s_set_current_decor_x
 {
   ScwmDecor *new_cur;
+  VALIDATE_ARG_DECOR_COPY_USE_NULL(1,decor,new_cur);
 
-  if (decor == SCM_BOOL_F) {
-    new_cur = NULL;
-  } else if (DECORP(decor)) {
-    new_cur = SCWMDECOR(decor);
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, decor);
-  }
-
-  if (cur_decor != NULL) {
-    DECORUNREF(cur_decor->scmdecor);
-  }
-  if (new_cur != NULL) {
-    DECORREF(decor);
-  }
+  if (cur_decor != NULL) DECORUNREF(cur_decor->scmdecor);
+  if (new_cur != NULL) DECORREF(decor);
   cur_decor = new_cur;
 
   return SCM_UNSPECIFIED;
@@ -298,16 +281,8 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
   ScwmDecor *fl;
   ScwmWindow *psw;
 
-  if (!WINDOWP(win) || !VALIDWINP(win)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-  psw = PSWFROMSCMWIN(win);
-
-  if (DECORP(decor)) {
-    fl = SCWMDECOR(decor);
-  } else {
-    SCWM_WRONG_TYPE_ARG(2, decor);
-  }
+  VALIDATE_ARG_WINVALID_COPY(1,win,psw);
+  VALIDATE_ARG_DECOR_COPY(2,decor,fl);
 
   old_height = psw->fl->TitleHeight;
 
@@ -329,11 +304,7 @@ SCWM_PROC(window_decor, "window-decor", 1, 0, 0,
 #define FUNC_NAME s_window_decor
 {
   ScwmWindow *psw;
-
-  if (!WINDOWP(win) || !VALIDWINP(win)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WINVALID_COPY(1,win,psw);
 
   return (psw->fl->scmdecor);
 }

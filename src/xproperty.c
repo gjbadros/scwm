@@ -327,27 +327,15 @@ WIN is the window to check, an X window id, or 'root-window.
 NAME is a string. The return value is unspecified. */
 #define FUNC_NAME s_X_property_delete_x
 {
-  char *str;
+  char *sz;
   Atom aprop;
   Window w;
 
-  if (win == sym_root_window) {
-    w = Scr.Root;
-  } else if (gh_number_p(win)) {
-    assert(sizeof(Window) == sizeof(unsigned long));
-    w = gh_scm2ulong(win);
-  } else if (WINDOWP(win)) {
-    w = PSWFROMSCMWIN(win)->w;
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-  if (!gh_string_p(name)) {
-    SCWM_WRONG_TYPE_ARG(2, name);
-  }
+  VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
+  VALIDATE_ARG_STR_NEWCOPY(2,name,sz);
 
-  str=gh_scm2newstr(name, NULL);
-  aprop=XInternAtom(dpy, str, False);
-  gh_free(str);
+  aprop=XInternAtom(dpy, sz, False);
+  gh_free(sz);
 
   XDeleteProperty(dpy, w, aprop);
 
@@ -367,16 +355,8 @@ WIN is the window to query, an X window id, or 'root-window. */
   char *name;
   SCM properties = SCM_EOL;
 
-  if (win == sym_root_window) {
-    w = Scr.Root;
-  } else if (gh_number_p(win)) {
-    assert(sizeof(Window) == sizeof(unsigned long));
-    w = gh_scm2ulong(win);
-  } else if (WINDOWP(win)) {
-    w = PSWFROMSCMWIN(win)->w;
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
+  VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
+
   props = XListProperties(dpy, w, &n);
   if (props) {
     for (i=n; i--; ) {
@@ -405,15 +385,13 @@ SCWM_PROC(string_to_X_atom, "string->X-atom", 1, 0, 0,
 If STRING contains NULL-characters, the behaviour is undefined. */
 #define FUNC_NAME s_string_to_X_atom
 {
-  char *str;
+  char *sz;
   Atom a;
 
-  if (!gh_string_p(string)) {
-    SCWM_WRONG_TYPE_ARG(1, string);
-  }
-  str=gh_scm2newstr(string, NULL);
-  a=XInternAtom(dpy, str, False);
-  gh_free(str);
+  VALIDATE_ARG_STR_NEWCOPY(1,string,sz);
+  sz=gh_scm2newstr(string, NULL);
+  a=XInternAtom(dpy, sz, False);
+  gh_free(sz);
   assert(sizeof(Atom) == sizeof(unsigned long));
   return gh_ulong2scm((unsigned long)a);
 }
@@ -425,20 +403,16 @@ SCWM_PROC(X_atom_to_string, "X-atom->string", 1, 0, 0,
 Returns #f, if the X atom was not known. */
 #define FUNC_NAME s_X_atom_to_string
 {
-  char *str;
-  SCM ret;
+  char *sz;
+  SCM answer;
+  Atom at;
 
-  if (!gh_number_p(atom)) {
-    SCWM_WRONG_TYPE_ARG(1, atom);
-  }
-  assert(sizeof(Atom) == sizeof(unsigned long));
-  str=XGetAtomName(dpy, gh_scm2ulong(atom));
-  if (str == NULL) {
-    return SCM_BOOL_F;
-  }
-  ret=gh_str02scm(str);
-  XFree(str);
-  return ret;
+  VALIDATE_ARG_ATOM_COPY(1,atom,at);
+  sz = XGetAtomName(dpy, at);
+  if (!sz) return SCM_BOOL_F;
+  answer = gh_str02scm(sz);
+  XFree(sz);
+  return answer;
 }
 #undef FUNC_NAME
 

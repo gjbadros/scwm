@@ -81,12 +81,19 @@ SCM make_image_from_pixmap(char *szDescription,
 			   Pixmap image, Pixmap mask, 
 			   int width, int height, int depth);
 SCM make_image(SCM name);
+char *SzNewImageShortName(scwm_image *psimg);
 
 void init_image_colormap();
 
 #define VALIDATE_ARG_IMAGE(pos,scm) \
   do { \
   if (!IMAGE_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_IMAGE_COPY(pos,scm,cvar) \
+  do { \
+  if (!IMAGE_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else cvar = IMAGE(scm); \
   } while (0)
 
 
@@ -108,6 +115,19 @@ void init_image_colormap();
   do { \
   if (!IMAGE_OR_SYMBOL_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
   } while (0)
+
+#define VALIDATE_ARG_IMAGE_OR_STRING(pos,scm) \
+  do { \
+  if (gh_string_p(scm)) scm = make_image(scm); \
+  if (!IMAGE_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_IMAGE_OR_STRING_OR_F(pos,scm) \
+  do { \
+  if (gh_string_p(scm)) scm = make_image(scm); \
+  if (!IMAGE_P(scm) && SCM_BOOL_F != scm) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
 
 #endif /* IMAGE_H */
 

@@ -139,10 +139,7 @@ module packet for WIN as a Scheme string. */
   unsigned long info[24];
   int i;
 
-  if (!WINDOWP(win)) {
-    SCWM_WRONG_TYPE_ARG(1,win);
-  }
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
 
   info[i=0] = psw->w;
   info[++i] = psw->frame;
@@ -184,10 +181,7 @@ module packet for WIN as a Scheme string. */
   ScwmWindow *psw;
   unsigned long info[8];
 
-  if (!WINDOWP(win)) {
-    SCWM_WRONG_TYPE_ARG(1,win);
-  }
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
 
   info[0] = 7;
   info[1] = psw->w;

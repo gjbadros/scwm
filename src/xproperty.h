@@ -39,9 +39,17 @@
 #endif
 
 #include <X11/Xlib.h>
+#include <assert.h>
 
 unsigned char *GetXProperty(Window, Atom, Bool, Atom *,
 			    int *, unsigned long *);
+
+#define VALIDATE_ARG_ATOM_COPY(pos,scm,cvar) \
+  do { \
+  assert(sizeof(Atom) == sizeof(unsigned long)); \
+  if (gh_number_p(scm)) cvar = (Atom) gh_scm2ulong(scm); \
+  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
 
 #endif /* XPROPERTY_H__ */
 

@@ -30,6 +30,31 @@ extern SCM default_border_face;
 extern SCM default_lbutton_face[5];
 extern SCM default_rbutton_face[5];
 
+#define VALIDATE_ARG_FACE(pos,scm) \
+  do { \
+  if (!FACEP(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_FACE_COPY(pos,scm,cvar) \
+  do { \
+  if (!FACEP(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else cvar = FACE(scm); \
+  } while (0)
+
+#define VALIDATE_ARG_FACE_USE_DEF(pos,scm,val) \
+  do { \
+  if (UNSET_SCM(scm)) scm = val; \
+  else if (!FACEP(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+
+#define VALIDATE_ARG_BUTTONFACE_COPY(pos,scm,cvar) \
+  do { \
+  if (!FACEP(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else cvar = BUTTONFACE(scm); \
+  } while (0)
+
+
 #endif /* FACE_H */
 
 /* Local Variables: */

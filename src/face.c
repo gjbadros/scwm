@@ -351,11 +351,7 @@ See the section on the `Face Flags' concept. */
 {
   ButtonFace *bf;
 
-  if (!FACEP(face)) {
-    SCWM_WRONG_TYPE_ARG(1,face);
-  }
-
-  bf=BUTTONFACE(face);
+  VALIDATE_ARG_BUTTONFACE_COPY(1,face,bf);
 
   if (flag==sym_justify) {
     if (flagval==sym_left) {
@@ -456,13 +452,8 @@ SPECS is a list of face specifiers. */
   ButtonFace *bf;
   SCM p,flag,spec;
 
-  if (!gh_list_p(flags)) {
-    SCWM_WRONG_TYPE_ARG(1,flags);
-  }
-
-  if (!gh_list_p(specs)) {
-    SCWM_WRONG_TYPE_ARG(2,specs);
-  }
+  VALIDATE_ARG_LIST(1,flags);
+  VALIDATE_ARG_LIST(2,specs);
 
   sf = NEW(scwm_face);
   sf->bf = bf = NEW(ButtonFace);
@@ -877,21 +868,9 @@ state, it will be sunk in the ACTIVE-DOWN state by default.  */
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (!FACEP(active_up)) {
-    SCWM_WRONG_TYPE_ARG(1,active_up);
-  }
-
-  if (active_down==SCM_UNDEFINED) {
-    active_down=active_up;
-  } else if (!FACEP(active_down)) {
-    SCWM_WRONG_TYPE_ARG(2,active_down);
-  }
-
-  if (inactive==SCM_UNDEFINED) {
-    inactive=active_up;
-  } else if (!FACEP(inactive)) {
-    SCWM_WRONG_TYPE_ARG(3,inactive);
-  }
+  VALIDATE_ARG_FACE(1,active_up);
+  VALIDATE_ARG_FACE_USE_DEF(2,active_down,active_up);
+  VALIDATE_ARG_FACE_USE_DEF(3,inactive,active_up);
 
   fl->titlebar.state[ActiveUp]=BUTTONFACE(active_up);
   fl->titlebar.state[ActiveDown]=BUTTONFACE(active_down);
@@ -921,27 +900,10 @@ default.  */
 
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  n=0;
-
-  if (!gh_number_p(button) || (n=gh_scm2int(button)) < 1 || n > 10) {
-    SCWM_WRONG_TYPE_ARG(1,button);
-  }
-
-  if (!FACEP(active_up)) {
-    SCWM_WRONG_TYPE_ARG(2,active_up);
-  }
-
-  if (active_down==SCM_UNDEFINED) {
-    active_down=active_up;
-  } else if (!FACEP(active_down)) {
-    SCWM_WRONG_TYPE_ARG(3,active_down);
-  }
-
-  if (inactive==SCM_UNDEFINED) {
-    inactive=active_up;
-  } else if (!FACEP(inactive)) {
-    SCWM_WRONG_TYPE_ARG(4,inactive);
-  }
+  VALIDATE_ARG_INT_RANGE_COPY(1,button,1,10,n);
+  VALIDATE_ARG_FACE(2,active_up);
+  VALIDATE_ARG_FACE_USE_DEF(3,active_down,active_up);
+  VALIDATE_ARG_FACE_USE_DEF(4,inactive,active_up);
 
   left_p = n % 2;
   n = n / 2;
@@ -974,23 +936,16 @@ property). */
 #define FUNC_NAME s_set_button_mwm_flag_x
 {
   int n;
+  Bool f;
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  n=0;
+  VALIDATE_ARG_INT_RANGE_COPY(1,button,1,10,n);
+  VALIDATE_ARG_BOOL_COPY(2,flag,f);
 
-  if (!gh_number_p(button) || (n=gh_scm2int(button)) < 1 ||
-      n > 10) {
-    SCWM_WRONG_TYPE_ARG(1,button);
-  }
-
-  if(flag==SCM_BOOL_T) {
+  if (f)
     fl->left_buttons[n].flags |= MWMButton;    
-  } else if (flag==SCM_BOOL_F) {
+  else 
     fl->left_buttons[n].flags &= ~MWMButton;    
-  } else {
-    SCWM_WRONG_TYPE_ARG(2,flag);
-  }
-
   redraw_borders(fl);
 
   return SCM_UNSPECIFIED;
@@ -1008,15 +963,8 @@ ACTIVE when not specified. */
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (!FACEP(active)) {
-    SCWM_WRONG_TYPE_ARG(1,active);
-  }
-
-  if (inactive==SCM_UNDEFINED) {
-    inactive=active;
-  } else if (!FACEP(inactive)) {
-    SCWM_WRONG_TYPE_ARG(2,inactive);
-  }
+  VALIDATE_ARG_FACE(1,active);
+  VALIDATE_ARG_FACE_USE_DEF(2,inactive,active);
 
   fl->BorderStyle.active=BUTTONFACE(active);
   fl->BorderStyle.inactive=BUTTONFACE(inactive);

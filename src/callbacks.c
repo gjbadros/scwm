@@ -321,10 +321,7 @@ errors. */
 #define FUNC_NAME s_safe_load
 {
   SCM_STACKITEM stack_item;
-  if (!gh_string_p(fname)) {
-    SCWM_WRONG_TYPE_ARG(1, fname);
-  }
-
+  VALIDATE_ARG_STR(1,fname);
   return scm_internal_cwdr_no_unwind(scwm_body_load, &fname,
 				     scm_handle_by_message_noexit, "scwm", 
 				     &stack_item);
@@ -603,20 +600,13 @@ called with no arguments. A handle suitable for passing to
   SCM newcell;
   SCM p, last;
   SCM th_list;
+  int c_usec; /* unusued */
 
-  if (!gh_number_p(usec) || 
-      (gh_scm2long(usec) < 0)) {
-    SCWM_WRONG_TYPE_ARG(1, usec);
-  }
-
-  if (!gh_procedure_p(proc)) {
-    SCWM_WRONG_TYPE_ARG(2, proc);
-  }
+  VALIDATE_ARG_INT_MIN_COPY(1,usec,0,c_usec);
+  VALIDATE_ARG_PROC(2,proc);
 
   th_list=gh_cdr(timer_hooks);
-  
   newcell=gh_cons(usec, proc);
-
   update_timer_hooks ();
 
   for (p = th_list, last = timer_hooks; p != SCM_EOL; 
@@ -766,9 +756,7 @@ returned. */
     SCWM_WRONG_TYPE_ARG(1, port);
   }
 
-  if (!gh_procedure_p(proc)) {
-    SCWM_WRONG_TYPE_ARG(2, proc);
-  }
+  VALIDATE_ARG_PROC(2,proc);
 
   newcell=gh_cons(port, proc);
 

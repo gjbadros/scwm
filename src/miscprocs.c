@@ -41,10 +41,7 @@ current decor. */
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (!gh_symbol_p(just)) {
-    gh_allow_ints();
-    SCWM_WRONG_TYPE_ARG(1, just);
-  }
+  VALIDATE_ARG_SYM(1,just);
   if (gh_eq_p(just, sym_center)) {
     fl->titlebar.flags &= ~HOffCenter;
   } else if (gh_eq_p(just, sym_left)) {
@@ -95,13 +92,7 @@ Applies to the current decor. */
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (!gh_number_p(height)) {
-    SCWM_WRONG_TYPE_ARG(1, height);
-  }
-  th = gh_scm2int(height);
-  if (th <= 4 || th > 256) {
-    scwm_error(FUNC_NAME, "Bad height argument; must be from 5 to 256.");
-  }
+  VALIDATE_ARG_INT_RANGE_COPY(1,height,5,256,th);
   extra_height = th - fl->TitleHeight;
   fl->TitleHeight = th;
 
@@ -175,11 +166,9 @@ without a mouse-up is considered a drag.  Also, after MSEC milliseconds, a
 single click is definitively identified as not a double click. */
 #define FUNC_NAME s_set_click_delay_x
 {
-  if (!gh_number_p(msec)) {
-    SCWM_WRONG_TYPE_ARG(1, msec);
-  }
-
-  Scr.ClickTime = gh_scm2long(msec);
+  int ms;
+  VALIDATE_ARG_INT_COPY(1,msec,ms);
+  Scr.ClickTime = ms;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -204,9 +193,8 @@ colormap focus. This makes a difference only when using focus policies
 other than 'mouse. */
 #define FUNC_NAME s_set_colormap_focus_x
 {
-  if (!gh_symbol_p(ftype)) {
-    SCWM_WRONG_TYPE_ARG(1, ftype);
-  }
+  VALIDATE_ARG_SYM(1,ftype);
+
   if (gh_eq_p(ftype, sym_focus)) {
     Scr.fColormapFollowsMouse = False;
   } else if (gh_eq_p(ftype, sym_mouse)) {
@@ -253,18 +241,11 @@ SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
 #define FUNC_NAME s_move_pointer_to
 {
   int x, y;
+  VALIDATE_ARG_INT_COPY(1,sx,x);
+  VALIDATE_ARG_INT_COPY(2,sy,y);
 
-  if (!gh_number_p(sx)) {
-    SCWM_WRONG_TYPE_ARG(1, sx);
-  }
-  if (!gh_number_p(sy)) {
-    SCWM_WRONG_TYPE_ARG(2, sy);
-  }
-  x = gh_scm2int(sx);
-  y = gh_scm2int(sy);
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
 	       Scr.DisplayHeight, x, y);
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -416,13 +397,9 @@ This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,
 and so on.  This cut buffer numbering is global to the display. */
 #define FUNC_NAME s_X_rotate_cut_buffers
 {
-  if (!gh_number_p(n)) {
-    SCWM_WRONG_TYPE_ARG(1, n);
-  }
-  { /* scope */
-    int num_to_rotate = gh_scm2int(n);
-    XRotateBuffers(dpy,num_to_rotate);
-  }
+  int num_to_rotate;
+  VALIDATE_ARG_INT_COPY(1,n,num_to_rotate);
+  XRotateBuffers(dpy,num_to_rotate);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

@@ -534,10 +534,7 @@ SCWM_PROC (message_window_hide_x, "message-window-hide!", 1, 0, 0,
 See also `message-window-show'. */
 #define FUNC_NAME s_message_window_hide_x
 {
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
-
+  VALIDATE_ARG_MSGWINDOW(1,mwn);
   UnmapMessageWindow(MSGWINDOW(mwn));
   XFlush(dpy);
 
@@ -604,7 +601,6 @@ Returns as a two element list: (width height). */
 {
   scwm_msgwindow* msg;
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
-
   return gh_list(msg->width, msg->height, SCM_UNDEFINED);
 }
 #undef FUNC_NAME
@@ -615,10 +611,7 @@ SCWM_PROC (message_window_font, "message-window-font", 1, 0, 0,
      /** Returns the font that the message window MWN uses for displaying text. */
 #define FUNC_NAME s_message_window_font
 {
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
-
+  VALIDATE_ARG_MSGWINDOW(1,mwn);
   return MSGWINDOW(mwn)->font;
 }
 #undef FUNC_NAME

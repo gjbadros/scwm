@@ -177,10 +177,8 @@ depth, its color depth.
 */
 #define FUNC_NAME s_image_properties
 {
-  scwm_image *psimg = SAFE_IMAGE(image);
-  if (!psimg) {
-    SCWM_WRONG_TYPE_ARG(1, image);
-  } 
+  scwm_image *psimg;
+  VALIDATE_ARG_IMAGE_COPY(1,image,psimg);
   return gh_list(gh_cons(sym_filename,psimg->full_name),
 		 gh_cons(sym_width,gh_int2scm(psimg->width)),
 		 gh_cons(sym_height,gh_int2scm(psimg->height)),
@@ -191,15 +189,47 @@ depth, its color depth.
 }
 #undef FUNC_NAME
 
+/* Free returned value using FREE */
+char *
+SzNewImageShortName(scwm_image *psimg)
+{
+  char *sz = gh_scm2newstr(psimg->full_name,NULL);
+  char *pch = strrchr(sz,'/');
+  char *szAnswer;
+  if (!pch) pch = sz;
+  else pch++;
+  szAnswer = strdup(pch);
+  gh_free(sz);
+  return szAnswer;
+}
+
+SCWM_PROC(image_short_name, "image-short-name", 1, 0, 0,
+           (SCM image))
+     /** Return the short name of IMAGE. 
+Use `image-properties' to access other properties of IMAGE
+including its full name. */
+#define FUNC_NAME s_image_short_name
+{
+  scwm_image *psimg;
+  SCM answer;
+  char *sz;
+  VALIDATE_ARG_IMAGE_COPY(1,image,psimg);
+  sz = SzNewImageShortName(psimg);
+  answer = gh_str02scm(sz);
+  gh_free(sz);
+  return answer;
+}  
+#undef FUNC_NAME
+
+
+
 SCWM_PROC(image_size, "image-size", 1, 0, 0,
            (SCM image))
      /** Return the size of IMAGE as a list (width height). */
 #define FUNC_NAME s_image_size
 {
-  scwm_image *psimg = SAFE_IMAGE(image);
-  if (!psimg) {
-    SCWM_WRONG_TYPE_ARG(1, image);
-  } 
+  scwm_image *psimg;
+  VALIDATE_ARG_IMAGE_COPY(1,image,psimg);
   return gh_list(gh_int2scm(psimg->width),gh_int2scm(psimg->height),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
@@ -385,15 +415,10 @@ be called with the full pathname of the image and should return an
 image object, or #f if it succeeds. */
 #define FUNC_NAME s_register_image_loader
 {
-  if (!gh_string_p(extension)) {
-    SCWM_WRONG_TYPE_ARG(1, extension);
-  }
+  VALIDATE_ARG_STR(1,extension);
   
-  /* Sadly, there is no way to test the arity of a procedure. */
-  /* MSFIX: Yes there is, but let's not use it yet. */
-  if (!gh_procedure_p(proc)) {
-    SCWM_WRONG_TYPE_ARG(2, proc);
-  }
+  /* GJB:FIXME:MS: Why not check arity of procedure? */
+  VALIDATE_ARG_PROC(2,proc);
 
   scm_hash_set_x(image_loader_hash_table, extension, proc);
 
@@ -409,9 +434,7 @@ empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading). */
 #define FUNC_NAME s_unregister_image_loader
 {
-  if (!gh_string_p(extension)) {
-    SCWM_WRONG_TYPE_ARG(1, extension);
-  }
+  VALIDATE_ARG_STR(1,extension);
 
   scm_hash_remove_x(image_loader_hash_table, extension);
 
@@ -554,9 +577,7 @@ appropriate file. */
   SCM full_path;
   SCM loader;
 
-  if (!gh_string_p(name)) {
-    SCWM_WRONG_TYPE_ARG(1,name);
-  }
+  VALIDATE_ARG_STR(1,name);
 
   /* First check the hash table for this image.  */
   result=scm_hash_ref(image_hash_table, name, SCM_BOOL_F);
