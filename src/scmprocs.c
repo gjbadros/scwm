@@ -57,10 +57,12 @@ init_scwm_procs(void)
   gh_new_procedure2_0("set-hilight-colors!", set_hilight_colors);
   gh_new_procedure("set-menu-colors!", set_menu_colors, 0, 3, 0);
   gh_new_procedure0_1("set-menu-mwm-style!", set_menu_mwm_style);
+  /* FIXGJB: rubber-band-mask is a better name */
   gh_new_procedure1_0("set-xor-value!", set_xor_value);
   gh_new_procedure3_0("bind-key", bind_key);
   gh_new_procedure2_0("unbind-key", unbind_key);
   gh_new_procedure3_0("bind-mouse", bind_mouse);
+  gh_new_procedure2_0("unbind-mouse", unbind_mouse);
   gh_new_procedure0_0("mouse-event-type", mouse_event_type);
   gh_new_procedure1_0("set-title-justify!", set_title_justify);
   gh_new_procedure1_0("set-title-height!", set_title_height);
