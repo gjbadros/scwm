@@ -126,7 +126,7 @@ SetShapedTitlebar(ScwmWindow *psw, int w)
     XShapeCombineRectangles(dpy, psw->frame, ShapeBounding,
                             0, psw->title_height + psw->boundary_width,
                             &rect, 1, ShapeSet, Unsorted);
-    if (psw->title_w) {
+    if (SHOW_TITLE_P(psw)) {
       /* windows w/ titles */
       rect.x = 0;
       rect.y = 0;
