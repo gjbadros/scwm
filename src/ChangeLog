@@ -1,3 +1,13 @@
+Tue Nov 23 15:08:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c (mark_window): Use GC_MARK_SCM_IF_SET, and do not mark
+	the mini_icon_image twice.
+
+	* screen.h: ws change.
+
+	* decor.c (mark_decor): Assert that fl->scmdecor is a back-pointer
+ 	to the object being marked.
+
 Tue Nov 23 14:16:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menu.c (SetPopupMenuPositionFromDecoration): Be sure that
