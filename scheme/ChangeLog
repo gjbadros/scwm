@@ -1,3 +1,28 @@
+1999-07-22  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints.scm: Updated comments on structure of
+	a UI-CONSTRAINT-CLASS pseudo-object.
+
+	* ui-constraints-toggle-menu.scm: Added menu items for 
+	starting and stopping the recording of a composition per
+	request of Greg Badros.
+
+	* ui-constraints-classes.scm: Added support for the window
+	selection utility to several of the constraint classes. 
+	With the supported classes, it is now possible to select 
+	windows using the window-selection module and then click 
+	the button in the button bar to constrain those windows.
+	In some cases, support has been added for constraining an
+	arbitrary number of windows.
+
+1999-07-21  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-buttons.scm: Modified and updated the
+	standard ui-constraints button panel to be more configurable
+	(pixmaps and layout are settable) and support the dynamic 
+	addition of constraint classes (necessary for dealing with
+	ui-constraint-compositions).
+
 Tue Jul 20 11:17:04 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Needed highlight-current-window module.
