@@ -125,7 +125,7 @@
 		  modifier-key-bindings window-selection
 		  group preferences
 		  send-string quote background
-		  property-respond
+		  property-respond xprop-extras
 		  esdsound dir-focus tile undo
 		  )
 
@@ -1309,8 +1309,19 @@ union of all other window managers!
 (bind-key 'all "M-S-F1" popup-utilities)
 (bind-key 'all "M-S-F2" popup-window-ops)
 
+(define url-google "http://www.google.com/search?q=")
+
+;; (netscape-google-search "glade")
+;; (netscape-google-search "gtk")
+(define (netscape-google-search word)n
+  (netscape-goto-url (string-append url-google word)))
+
+(define (netscape-google-search-cut-buffer)
+  (netscape-google-search (X-cut-buffer-string)))
+
 ;; C-S-M-t makes netscape go to the url specified by cut buffer 0
 (bind-key 'all "C-S-M-t" netscape-goto-cut-buffer-url)
+(bind-key 'all "A-s" netscape-google-search-cut-buffer)
 ;; http://scwm.mit.edu/scwm    ;; highlight w/ mouse and try it!
 
 ;; in case of emergency, hit Control-Meta-Q
