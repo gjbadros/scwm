@@ -245,8 +245,12 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name,
 
   if ((*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
 	   (XKeysymToKeycode(dpy, *pkeysym)) == 0) { 
-    if (fShowError)
-      scwm_msg(WARN,func_name,"No symbol `%s'",keyname);
+    if (fShowError) {
+      if (ispunct(pch[0]))
+        scwm_msg(WARN,func_name,"No symbol `%s' -- punctuation must be spelled out as a keysym",pch);
+      else
+        scwm_msg(WARN,func_name,"No symbol `%s'",pch);
+    }
     fOk = False; 
   }
   FREE(keyname);

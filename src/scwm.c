@@ -1272,6 +1272,9 @@ SigResetLoop(int ARG_IGNORE(ignored))
   newhandler_doreset(SIGHUP);
   if (envHandleEventsLoop) {
     scwm_msg(INFO,"SigResetLoop","Got a reset signal, so longjmp-ing to event handler");
+    XUngrabServer_withSemaphore(dpy);
+    XUngrabPointer(dpy,CurrentTime);
+    XUngrabKeyboard(dpy,CurrentTime);
     siglongjmp(envHandleEventsLoop,1 /* ret. val for setjmp */);
   }
   SIGNAL_RETURN;
