@@ -1,3 +1,16 @@
+Wed Feb 23 18:23:14 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.h: Drop WarpOn prototype.
+
+	* window.c: Fix FIsPartiallyInViewport() to use <=, >= boundary
+	conditions so right on the edge does not count for in the
+	viewport.  Make WarpOn() static, and drop the x_unit, y_unit --
+	push all that functionality out to scheme.  Make `warp-to-window'
+	take two new optional arguments X-OFFSET and Y-OFFSET.
+
+	* virtual.c: Set fInMoveViewport_internal to True after the
+	short-circuit out case.
+
 Mon Feb 21 18:12:11 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c (s_restack_windows): Fix bugs in this function.

@@ -1,3 +1,9 @@
+Wed Feb 23 18:29:38 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added menu-springy-constraints, default to
+	springy constraints.  Drop constraint solver menu if not
+	constraint enabled.
+
 Sun Feb 20 18:48:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use where-is, focus-stack modules.  Make "scwm"

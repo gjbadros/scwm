@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From src/window.c:3437]
+[From src/window.c:3428]
 
 
 Fonts
@@ -351,7 +351,7 @@ Interactive specifications
 </tgroup>
 </table>
 
-[From src/window.c:4230]
+[From src/window.c:4221]
 
 
 Key Specifier
@@ -498,7 +498,7 @@ Sticky
   A "sticky" window will appear on all desktops, and will remain at the
 same screen position regardless of scrolling within the current
 desktop.
-[From src/window.c:2125]
+[From src/window.c:2116]
 
 
 Themes

@@ -1,3 +1,13 @@
+Wed Feb 23 18:26:19 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* tests/demo.scm: Fix iconified? to iconified-window?
+
+	* ui-constraints-toggle-menu.scm: Make
+	popup-ui-constraints-toggle-menu interactive.
+
+	* register.scm: Added optional DESCIPTOR argument to
+	get-register-name, and use it to make the prompts better.
+
 Mon Feb 21 18:12:28 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* tile.scm: Call `insert-undo-global' before tiling in
