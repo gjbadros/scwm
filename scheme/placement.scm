@@ -86,6 +86,13 @@ centered at the mouse pointer position."
 ;;; -placement versions
 ;;;
 
+(define-public (at-vp-offset-placement x y)
+  "Return a procedure that takes a window and places it at viewport offset X, Y.
+The procedure will act just like calling `move-window-viewport-position' on the
+window with the same X and Y arguments."
+  (lambda (win) (move-window-viewport-position x y win)))
+;; (move-window-viewport-position 50 50 (get-window))
+
 (define-public (in-viewport-placement xx yy)
   "Return a procedure that takes a window and places it in viewport (XX, YY).
 The procedure will act just like calling `place-in-viewport' on the
