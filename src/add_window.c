@@ -82,8 +82,11 @@
 SCM before_new_window_hook;
 SCM before_place_new_window_hook;
 SCM after_new_window_hook;
+SCM window_close_hook;
 
-/* FIXGJB: instead of placeholder empty functions,
+
+
+/* GJB:FIXME:: instead of placeholder empty functions,
    pointers to functions should be used, and init_constraint_primitives should
    set the pointers to point to functions that it dynamically loads */
 #ifndef USE_CASSOWARY
@@ -91,6 +94,7 @@ void CassowarySetCValuesAndSolve(ScwmWindow *psw, int fSolve)  { /* empty */ }
 void CassowaryInitClVarsInPsw(ScwmWindow *psw) { /* empty */ }
 void CassowaryInitClVarsInPscreen(ScreenInfo *pscreen) { /* empty */ }
 void CassowaryNewWindow(ScwmWindow *psw) { /* empty */ }
+void CassowaryCloseWindow(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditPosition(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditSize(ScwmWindow *psw) { /* empty */ }
 /* x,y are virtual positions */
@@ -143,6 +147,8 @@ static XrmOptionDescRec table[] =
  *
  *  Inputs:
  *	w	- the window id of the window to add
+ *
+ * N.B. This code is pretty tightly coupled to DestroyScwmWindow, below
  */
 ScwmWindow *
 AddWindow(Window w)
@@ -285,7 +291,7 @@ AddWindow(Window w)
     DBUG((DBG,FUNC_NAME,"fStartsOnDesk is true"));
   }
 
-  /* FIXGJB: need to provide more flexibility in how the
+  /* GJB:FIXME:: need to provide more flexibility in how the
      icon gets selected */
   /* find a suitable icon pixmap */
 
@@ -661,7 +667,7 @@ AddWindow(Window w)
 		(unsigned long) psw, psw->name);
   BroadcastName(M_ICON_NAME, psw->w, psw->frame,
 		(unsigned long) psw, psw->icon_name);
-  /* MSFIX: FIXGJB: It'd be really nice to get full pathname of
+  /* GJB:FIXME: It'd be really nice to get full pathname of
      the picture into the image object for debugging of scwmrc-s;
      then this could go back in, too, though I imagine it's
      rarely used --gjb 11/28/97  */
@@ -696,6 +702,137 @@ AddWindow(Window w)
 }
 #undef FUNC_NAME 
  
+
+/*
+ * Handles destruction of a window 
+ * pretty tightly coupled to AddWindow, above.
+ */
+void 
+DestroyScwmWindow(ScwmWindow *psw)
+{
+  int i;
+  extern ScwmWindow *ButtonWindow;
+  extern ScwmWindow *colormap_win;
+  extern Bool PPosOverride;
+
+  /*
+   * Warning, this is also called by HandleUnmapNotify; if it ever needs to
+   * look at the event, HandleUnmapNotify will have to mash the UnmapNotify
+   * into a DestroyNotify.
+   */
+  if (!psw)
+    return;
+
+  call1_hooks(window_close_hook, psw->schwin);
+
+  CassowaryCloseWindow(psw);
+
+  XUnmapWindow(dpy, psw->frame);
+
+  if (!PPosOverride)
+    XSync(dpy, 0);
+
+  if (psw == Scr.Hilite)
+    Scr.Hilite = NULL;
+
+  Broadcast(M_DESTROY_WINDOW, 3, psw->w, psw->frame,
+	    (unsigned long) psw, 0, 0, 0, 0);
+
+  if (Scr.PreviousFocus == psw)
+    Scr.PreviousFocus = NULL;
+
+  if (ButtonWindow == psw)
+    ButtonWindow = NULL;
+
+  if ((psw == Scr.Focus) && psw->fClickToFocus) {
+    if (psw->next) {
+      HandleHardFocus(psw->next);
+    } else {
+      SetFocus(Scr.NoFocusWin, NULL, 1);
+    }
+  } else if (Scr.Focus == psw) {
+    SetFocus(Scr.NoFocusWin, NULL, 1);
+  }
+
+  if (psw == FocusOnNextTimeStamp)
+    FocusOnNextTimeStamp = NULL;
+
+  if (psw == Scr.Ungrabbed)
+    Scr.Ungrabbed = NULL;
+
+  if (psw == Scr.pushed_window)
+    Scr.pushed_window = NULL;
+
+  if (psw == colormap_win)
+    colormap_win = NULL;
+
+  XDestroyWindow(dpy, psw->frame);
+  XDeleteContext(dpy, psw->frame, ScwmContext);
+
+  XDestroyWindow(dpy, psw->Parent);
+
+  XDeleteContext(dpy, psw->Parent, ScwmContext);
+
+  XDeleteContext(dpy, psw->w, ScwmContext);
+
+  if (psw->icon_w && psw->fPixmapOurs &&
+      psw->icon_image != SCM_BOOL_F) {
+    XFreePixmap(dpy, IMAGE(psw->icon_image)->image);
+  }
+
+  /* GJB:FIXME:: these should check if the windows were created,
+     not if the feature is currently turned on */
+  if (psw->icon_w) {
+    XDestroyWindow(dpy, psw->icon_w);
+    XDeleteContext(dpy, psw->icon_w, ScwmContext);
+  }
+  if (psw->fIconOurs && (psw->icon_pixmap_w != None))
+    XDestroyWindow(dpy, psw->icon_pixmap_w);
+  if (psw->icon_pixmap_w != None)
+    XDeleteContext(dpy, psw->icon_pixmap_w, ScwmContext);
+
+  if (psw->fTitle) {
+    XDeleteContext(dpy, psw->title_w, ScwmContext);
+    for (i = 0; i < Scr.nr_left_buttons; i++)
+      XDeleteContext(dpy, psw->left_w[i], ScwmContext);
+    for (i = 0; i < Scr.nr_right_buttons; i++)
+      if (psw->right_w[i] != None)
+	XDeleteContext(dpy, psw->right_w[i], ScwmContext);
+  }
+  if (psw->fBorder) {
+    for (i = 0; i < 4; i++)
+      XDeleteContext(dpy, psw->sides[i], ScwmContext);
+    for (i = 0; i < 4; i++)
+      XDeleteContext(dpy, psw->corners[i], ScwmContext);
+  }
+  psw->prev->next = psw->next;
+  if (psw->next != NULL)
+    psw->next->prev = psw->prev;
+  free_window_names(psw, True, True);
+  if (psw->wmhints)
+    XFree(psw->wmhints);
+  /* removing NoClass change for now... */
+  if (psw->classhint.res_name && psw->classhint.res_name != NoResource)
+    XFree(psw->classhint.res_name);
+  if (psw->classhint.res_class && psw->classhint.res_class != NoClass)
+    XFree(psw->classhint.res_class);
+  if (psw->mwm_hints)
+    XFree(psw->mwm_hints);
+
+  if (psw->cmap_windows != (Window *) NULL)
+    XFree(psw->cmap_windows);
+
+  /* XSCM */
+  invalidate_window(psw->schwin);
+  XFree(psw->name);
+  FREE(psw);
+
+  if (!PPosOverride)
+    XSync(dpy, 0);
+  return;
+}
+
+
 /*
  *  Procedure:
  *	FetchWMProtocols - finds out which protocols the window supports
@@ -850,6 +987,14 @@ setting the relevant parameters when a new window is created.
 
 See also `before-new-window-hook' and `before-place-new-window-hook'.
 */
+       
+  SCWM_HOOK(window_close_hook,"window-close-hook",1);
+  /** This hook is invoked whenever a scwm-managed window is closed.
+It is invoked on deletes, destroys, or for any reason that a window
+is closed. The hook procedures are invoked with one argument,
+WIN, the window being closed.  The WIN is still valid during the hook
+procedures. */
+
 
 #ifndef SCM_MAGIC_SNARFER
 #include "add_window.x"

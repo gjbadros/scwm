@@ -64,7 +64,7 @@ extern SCM sym_maximized, sym_no_side_decorations;
 
 
 /* macro rules to get button state */
-/* FIXGJB: ugh! dynamic scoping in a macro! --07/26/98 gjb */
+/* GJB:FIXME:: ugh! dynamic scoping in a macro! --07/26/98 gjb */
 #define GetButtonState(window)						\
         (fHighlightOn ? ((PressedW == (window)) ? ActiveDown : ActiveUp) \
         : Inactive)
@@ -134,7 +134,7 @@ SetShapedTitlebar(ScwmWindow *psw, int w)
 }
 
 
-/* FIXGJB: Where are good docs about the XShape extension?
+/* GJB:FIXME:: Where are good docs about the XShape extension?
    this cannot be right! */
 static void 
 UnsetShapedTitlebar(ScwmWindow *psw)
@@ -203,7 +203,7 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
     break;
 
 
-    /* FIXGJB: using an object property below */
+    /* GJB:FIXME: using an object property below -- would prefer not doing that */
   case VectorButton:
     if ((psw->fMWMButtons)
 	&& (stateflags & MWMButton)
@@ -1369,7 +1369,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
   /* if windows is not shaded, save size for when unshaded
      This used to apply for maximization, too, but Maciej
      made those window properties --07/26/98 gjb */
-  if (/* !psw->fMaximized && FIXGJB */ !shaded) {
+  if (/* !psw->fMaximized && GJB:FIXME:: */ !shaded) {
     psw->orig_width = w;
     psw->orig_height = h;
   }
@@ -1485,7 +1485,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       DBUG((DBG,FUNC_NAME,"Has border!"));
       psw->corner_width = psw->title_height + psw->bw + psw->boundary_width;
 
-      /* FIXGJB: pretty arbitrary minimum size */
+      /* GJB:FIXME: pretty arbitrary minimum size */
       if (psw->corner_width < 12)
         psw->corner_width = 12;
 
@@ -1515,7 +1515,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
           } else if (i == 2) { /* bottom side */
             xwc.x = psw->corner_width;
             xwc.y = h - psw->boundary_width + psw->bw;
-            xwc.height = psw->boundary_width; /* FIXGJB: + psw->bw; */
+            xwc.height = psw->boundary_width; /* GJB:FIXME:: + psw->bw; */
             xwc.width = w - 2 * psw->corner_width + psw->bw;
           } else { /* left side */
             xwc.x = 0;

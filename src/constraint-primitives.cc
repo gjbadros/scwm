@@ -17,7 +17,6 @@ extern "C" {
 #include "callbacks.h"
 }
 
-#include "constraint-primitives.h"
 #include "scwm-constraints.h"
 #include "scwm-constraints.hpp"
 #include "scwm-screen-ci.hpp"
@@ -127,7 +126,7 @@ windows.   Occasions for using this primitive are rare. */
   pswci->AddStays(psolver);
   pswci->AddSizeConstraints(psolver);
 
-  /* FIXGJB: need to add hook to remove the stays if win disappears */
+  /* The constraints are removed by CassowaryCloseWindow. */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -150,6 +149,7 @@ SCWM_PROC (scwm_set_master_solver_x, "scwm-set-master-solver!", 1, 0, 0,
     CassowarySetCValuesAndSolve(psw,False);
     psw->pswci->AddStays(psolver);
     psw->pswci->AddSizeConstraints(psolver);
+    /* The constraints are removed by CassowaryCloseWindow. */
   }
 
   Scr.pssci->AddStays(psolver);

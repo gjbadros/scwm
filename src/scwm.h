@@ -104,7 +104,7 @@ static scm_smobfuns T ## _smobfuns = { \
       scm_sysintern0(name) ); } while (0)
 
 
-/* FIXGJB: Note that cvar is ignored for now */
+/* GJB:FIXME:: Note that cvar is ignored for now */
 #define SCWM_VAR_READ_ONLY(cvar, name,val) \
   do { scm_sysintern(name,val); \
      } while (0)

@@ -29,7 +29,7 @@ static SCM drawmenu_menu_look = SCM_UNDEFINED;
 
 extern SCM sym_top, sym_center, sym_bottom;
 
-/* FIXGJB: comment these! */
+/* GJB:FIXME:: comment these! */
 #define MENU_EDGE_VERT_SPACING 2
 #define MENU_EDGE_HORIZ_SPACING 2
 #define MENU_TEXT_SPACING 4
@@ -420,7 +420,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
     x_offset += pmdi->cpixExtraTextWidth;
 
     if (pmiim->fShowPopupArrow) {
-      int d = (item_height-7)/2; /* FIXGJB: magic numbers! */
+      int d = (item_height-7)/2; /* GJB:FIXME:: magic numbers! */
       if (mis != MIS_Enabled) {
 	DrawTrianglePattern(w, ShadowGC, ReliefGC, ShadowGC, /* ReliefGC, */
 			    width-d-8, y_offset+d-1, width-d-1, y_offset+d+7);
@@ -509,7 +509,7 @@ WarpPointerToPmiim(MenuItemInMenu *pmiim)
   pmd = pmiim->pmd;
   pmdi = pmd->pmdi;
 
-  /* FIXGJB: make fraction of menu that pointer goes to configurable */
+  /* GJB:FIXME:: make fraction of menu that pointer goes to configurable */
   x = pmdi->cpixItemOffset + 2*(pmd->cpixWidth - pmdi->cpixItemOffset)/3;
   y = pmiim->pmidi->cpixOffsetY + pmiim->pmidi->cpixItemHeight/2;
   XWarpPointer(dpy, 0, pmd->w, 0, 0, 0, 0, x, y);
@@ -616,10 +616,6 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     
     scfont = pmdi->scfont = PscwmFontForMenuItem(pmenu->scmFont);
  
-    /* FIXGJB:    MakeGcsForDynamicMenu(pmenu);
-       FIXJTL: this is done in PaintMenuItem now; more effecient to do
-       it here, but I don't think it's safe.  See comment there. */
-
     label_font_height = scfont->height;
     
     pmdi->ccol = 1;

@@ -100,7 +100,8 @@ typedef struct {
 
 SCM make_font(SCM fname);
 
-/* FIXGJB: this primitive should not be exposed */
+/* GJB:FIXME:: this primitive should not be exposed
+   it is used by decor.c now --03/22/99 gjb */
 SCM set_title_font_x(SCM font);
 
 extern SCM scmFixedFont;

@@ -54,23 +54,6 @@ static SCM interactive_move_new_position_hook;
 static SCM interactive_move_finish_hook;
 
 
-#if 0 /* FIXGJB: remove old version */
-static void
-SnapCoordsToEdges(int *px, int *py, int width, int height, int bw, int resistance)
-{
-  int xr = *px + width + 2*bw;
-  int yb = *py + height + 2*bw;
-  /* Resist moving windows over the edge of the screen! */
-  if ((xr >= Scr.DisplayWidth) && (xr < Scr.DisplayWidth + resistance))
-    *px = Scr.DisplayWidth - width - bw*2;
-  if ((*px < 0) && (*px > -resistance))
-    *px = 0;
-  if ((yb >= Scr.DisplayHeight) && (yb < Scr.DisplayHeight + resistance))
-    *py = Scr.DisplayHeight - height - bw*2;
-  if ((*py < 0) && (*py > -resistance))
-    *py = 0;
-}
-#else
 /* New version from Todd Larson */
 static void
 SnapCoordsToEdges(int *px, int *py, int width, int height, int bw, int resistance)
@@ -106,7 +89,6 @@ SnapCoordsToEdges(int *px, int *py, int width, int height, int bw, int resistanc
   if ((*py < 0) && (*py > -resistance))
     *py = 0;
 }
-#endif
 
 /*
   Move the window around, return with the new window location in
@@ -200,7 +182,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
       XAllowEvents(dpy, ReplayPointer, CurrentTime);
       if (Event.xbutton.button == 2 ||
           (Event.xbutton.button == 1 && (Event.xbutton.state & ShiftMask))) {
-	/* FIXGJB: this hack removed: NeedToResizeToo = True; */
+	/* GJB:FIXME:: this hack removed: NeedToResizeToo = True; */
 	/* Fallthrough to button-release */
       } else {
 	done = True;
@@ -463,7 +445,7 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   unsigned int border_width;
   int XOffset, YOffset;
   Window w = psw->frame;
-  /* FIXGJB: pass these in instead */
+  /* GJB:FIXME:: pass these in instead of them being globals! */
   extern Bool have_orig_position;
   extern int orig_x, orig_y;
 
@@ -482,12 +464,12 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   }
 
   /* reset the global so it only is set if explicitly
-     set before calling -- still a hack! FIXGJB --09/24/98 gjb */
+     set before calling -- still a hack! GJB:FIXME:: --09/24/98 gjb */
   have_orig_position = False;
   InstallRootColormap();
 
   if (!GrabEm(CURSOR_MOVE)) {
-    /* FIXGJB: xmag caused this to run
+    /* GJB:FIXME:: xmag caused this to run
        when click-to place (no auto/smart placement)
        and it should not, IMO --09/22/98 gjb
        call0_hooks(invalid_interaction_hook);
@@ -535,6 +517,7 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
 SCWM_PROC(rubber_band_move, "rubber-band-move", 0, 1, 0,
           (SCM win))
      /** Move WIN interactively, using a rubber band frame.
+Returns a list '(X Y) which is the new viewport position of WIN.
 This allows the user to drag a rubber band frame around the
 screen. WIN defaults to the window context in the usual way if not
 specified. */
@@ -545,7 +528,7 @@ specified. */
   VALIDATE_PRESS_ONLY(win, FUNC_NAME);
   InteractiveMove(PSWFROMSCMWIN(win), False, &x, &y);
 
-  return SCM_UNSPECIFIED;
+  return gh_list(gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -553,6 +536,7 @@ specified. */
 SCWM_PROC(opaque_move, "opaque-move", 0, 1, 0,
           (SCM win))
      /** Move WIN interactively, opaquely.
+Returns a list '(X Y) which is the new viewport position of WIN.
 This allows the user to drag the window itself around the screen. WIN
 defaults to the window context in the usual way if not specified.  
 */
@@ -563,7 +547,7 @@ defaults to the window context in the usual way if not specified.
   VALIDATE_PRESS_ONLY(win, FUNC_NAME);
   InteractiveMove(PSWFROMSCMWIN(win), True, &x, &y);
 
-  return SCM_UNSPECIFIED;
+  return gh_list(gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 

@@ -373,6 +373,11 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR.
 }
 #undef FUNC_NAME
 
+/* GJB:FIXME:: it'd be nice to add an option to have the message window follow
+   the pointer around! --07/25/98 gjb
+   This might best be done in the message-window code, as a special option
+   to a message-window's position (it'd have to track pointer movement events
+ */
 SCWM_PROC(message_window_set_position_x, "message-window-set-position!", 3, 2, 0,
           (SCM mwn, SCM x, SCM y, SCM x_align, SCM y_align))
     /** Set the position to be used for the message window MWN.

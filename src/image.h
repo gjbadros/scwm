@@ -42,7 +42,7 @@
 #endif
 
 
-/* MSFIX: FIXGJB: It'd be really nice to get full pathname of
+/* GJB:FIXME:MS:: It'd be really nice to get full pathname of
    the picture into the image object for debugging of scwmrc-s;
    then this could go back in, too, though I imagine it's
    rarely used --gjb 11/28/97  */

@@ -88,12 +88,13 @@ public:
   AddStays(ClSimplexSolver *psolver)
 #define FUNC_NAME "ScwmWindowConstraintInfo::AddStays"
     {
+      static int last_weight = 1;
       DBUG((DBG,FUNC_NAME,"Adding stays for window %s: (%d,%d) %d x %d",
             Psw()->name, _frame_x.IntValue(), _frame_y.IntValue(),
             _frame_width.IntValue(), _frame_height.IntValue()));
-      // FIXGJB: these weights should increase each time this is called
-      psolver->AddPointStay(_frame_width,_frame_height,100);
-      psolver->AddPointStay(_frame_x,_frame_y,1);
+      psolver->AddPointStay(_frame_width,_frame_height,last_weight+40);
+      psolver->AddPointStay(_frame_x,_frame_y,last_weight);
+      last_weight += 50;
     }
 #undef FUNC_NAME
 
@@ -113,9 +114,11 @@ public:
       maxHeight = psw->hints.max_height;
       
       // now correct for decorations
-      // FIXGJB: these constraints need to be affected by
+      // GJB:FIXME:: these constraints need to be affected by
       // later changes in the variables -- the decoration
-      // geometry variables need to be ClVariables ultimately
+      // geometry variables need to be ClVariables ultimately,
+      // or the constraints need to be about client sizes instead
+      // of frame sizes.
       minWidth += 2*psw->xboundary_width;
       maxWidth += 2*psw->xboundary_width;
 

@@ -31,8 +31,10 @@ extern "C" {
 void
 CassowaryInitClVarsInPsw(ScwmWindow *psw)
 {
-  /* FIXGJB: this is intentionally not freed for now
-     since the ClVs are still in a solver, perhaps */
+  /* GJB:FIXME:: these allocations need to 
+     be freed when the solver is turned off or reset,
+     but not when psw disappears, as other windows
+     could be constrained through this window */
   psw->pswci = new ScwmWindowConstraintInfo(psw);
 }
 
@@ -40,6 +42,8 @@ CassowaryInitClVarsInPsw(ScwmWindow *psw)
 void
 CassowaryInitClVarsInPscreen(ScreenInfo *pscreen)
 {
+  /* GJB:FIXME:: these allocations need to 
+     be freed when the solver is turned off or reset */
   pscreen->pssci = new ScwmScreenConstraintInfo(pscreen);
 }
 
@@ -51,6 +55,17 @@ CassowaryNewWindow(ScwmWindow *psw)
     psw->pswci->AddStays(psolver);
     psw->pswci->AddSizeConstraints(psolver);
   }
+}
+
+void
+CassowaryCloseWindow(ScwmWindow *psw)
+{
+#if 0 // GJB:FIXME:: need to write these after I decide if it's the right thing
+  if (psolver) {
+    psw->pswci->RemoveStays(psolver);
+    psw->pswci->RemoveSizeConstraints(psolver);
+  }
+#endif
 }
 
 

@@ -47,7 +47,7 @@ public:
     }
 
 #if 0
-  /* FIXGJB: will need to do something with this when supporting
+  /* GJB:FIXME:: will need to do something with this when supporting
      multiple screens better */
   ScreenInfo *Pscreen() const
     {

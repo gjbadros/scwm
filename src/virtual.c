@@ -547,14 +547,14 @@ changeDesks(int val1, int val2)
   }
 
   if (FocusWin && FocusWin->fClickToFocus) {
-    /* FIXGJB: this should be a runtime option */
+    /* GJB:FIXME:: this should be a runtime option */
 #ifndef NO_REMEMBER_FOCUS
     SetFocus(FocusWin->w, FocusWin, 0);
   /* OK, someone beat me up, but I don't like this. If you are a predominantly
    * focus-follows-mouse person, but put in one sticky click-to-focus window
    * (typically because you don't really want to give focus to this window),
    * then the following lines are screwed up. */
-  /* FIXGJB: what's going on here? --03/25/98 gjb */
+  /* GJB:FIXME:: what's going on here? --03/25/98 gjb */
 /*  else if (StickyWin && StickyWin->fSticky)
    SetFocus(StickyWin->w, StickyWin,1); */
   } else {

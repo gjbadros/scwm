@@ -22,7 +22,6 @@
 #include "errors.h"
 #include "complex.h"
 #include "util.h"
-#include "miscprocs.h"
 #include "add_window.h"
 #include "xmisc.h"
 #include "syscompat.h"
@@ -91,9 +90,7 @@ struct symnum binding_contexts[] =
   {SCM_UNDEFINED, 0}
 };
 
-/* FIXGJB: buttons should have symbolic names, not numbered
-   physically;
-   this array is parallel to the above binding_contexts array.
+/* this array is parallel to the above binding_contexts array.
 */
 static char *context_strings[] =
 {
@@ -218,11 +215,6 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool all
 	modmask |= AnyModifier;
       }
       break;
-    case 'P':
-      /* FIXGJB this can get pulled out later-- I used 'P' at first to avoid
-         confusion between 's-' and 'S-' (shift), but people didn't like it */
-      scwm_msg(WARN,func_name,"Unrecognized modifier P- (super is now 's-')");
-      return NULL;
     default:
       scwm_msg(WARN,func_name,"Unrecognized modifier %c-",pch[0]);
       return NULL;
@@ -419,7 +411,7 @@ UngrabButtonWithModifiers(int button, int modifier,
  * 	psw - the scwm window structure to use
  */
 
-/* FIXGJB: rewrite to use GrabButtonWithModifiers, above */
+/* GJB:FIXME:: rewrite to use GrabButtonWithModifiers, above */
 void 
 GrabButtons(ScwmWindow * psw)
 {
@@ -715,8 +707,6 @@ compute_contexts(SCM contexts, char *func_name)
 }
 
 
-/* FIXGJB: abstract out stuff-- lots of duplication
-   between this and unbind_mouse */
 SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
           (SCM contexts, SCM key))
      /** Remove any bindings attached to KEY in given CONTEXTS.
@@ -991,9 +981,7 @@ specified button is pressed in the specified context. */
   add_binding(context, modmask, bnum, 1, proc, SCM_UNDEFINED, NULL);
 
   if (fChangedNumButtons && Scr.fWindowsCaptured) {
-  /* FIXGJB - we should redraw the titlebars if necessary to reflect the new
-     buttons */
-#if 1 /* FIXGJB this doesn't work, just want to redraw buttons on all windows */
+#if 1 /* GJB:FIXME:: does this work? just want to redraw buttons on all windows */
     ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
     redraw_borders(fl);
 #else
@@ -1047,8 +1035,6 @@ clear_mouse_event_type()
   mouse_ev_type = SCM_BOOL_F;
 }
 
-/* FIXGJB: a single, slow click with no movement should
-   still count as a single click, see IsClick(), too */
 SCWM_PROC(mouse_event_type, "mouse-event-type", 0, 0, 0,
           ())
      /** Return a symbol corresponding to the type of the most recent mouse event.

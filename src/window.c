@@ -78,8 +78,6 @@ SCWM_GLOBAL_SYMBOL(sym_maximized, "maximized");
 SCWM_GLOBAL_SYMBOL(sym_no_side_decorations, "no-side-decorations");
 
 
-SCM window_close_hook;
-
 char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
 char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
 char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
@@ -198,13 +196,10 @@ ResetCommonFlags(ScwmWindow *psw)
   psw->fStartIconic =
     psw->fOnTop = 
     psw->fSticky = 
-    psw->fWindowListSkip =
     psw->fSuppressIcon =
     psw->fNoIconTitle =
     psw->fLenience =
     psw->fStickyIcon =
-    psw->fCirculateSkip =
-    psw->fCirculateSkipIcon =
     psw->fClickToFocus =
     psw->fSloppyFocus =
     psw->fShowOnMap = False;
@@ -249,13 +244,10 @@ CopyCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
   psw->fStartIconic = pswSrc->fStartIconic;
   psw->fOnTop = pswSrc->fOnTop;
   psw->fSticky = pswSrc->fSticky;
-  psw->fWindowListSkip = pswSrc->fWindowListSkip;
   psw->fSuppressIcon = pswSrc->fSuppressIcon;
   psw->fNoIconTitle = pswSrc->fNoIconTitle;
   psw->fLenience = pswSrc->fLenience;
   psw->fStickyIcon = pswSrc->fStickyIcon;
-  psw->fCirculateSkip = pswSrc->fCirculateSkip;
-  psw->fCirculateSkipIcon = pswSrc->fCirculateSkipIcon;
   psw->fClickToFocus = pswSrc->fClickToFocus;
   psw->fSloppyFocus = pswSrc->fSloppyFocus;
   psw->fShowOnMap = pswSrc->fShowOnMap;
@@ -273,8 +265,6 @@ CopySetCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
     psw->fOnTop = True;
   if (pswSrc->fSticky)
     psw->fSticky = True;
-  if (pswSrc->fWindowListSkip)
-    psw->fWindowListSkip = True;
   if (pswSrc->fSuppressIcon)
     psw->fSuppressIcon = True;
   if (pswSrc->fNoIconTitle)
@@ -283,10 +273,6 @@ CopySetCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
     psw->fLenience = True;
   if (pswSrc->fStickyIcon)
     psw->fStickyIcon = True;
-  if (pswSrc->fCirculateSkip)
-    psw->fCirculateSkip = True;
-  if (pswSrc->fCirculateSkipIcon)
-    psw->fCirculateSkipIcon = True;
   if (pswSrc->fClickToFocus)
     psw->fClickToFocus = True;
   if (pswSrc->fSloppyFocus)
@@ -779,7 +765,7 @@ move_finalize_virt(Window w, ScwmWindow * psw, int x, int y)
     psw->icon_xl_loc = y - (psw->icon_w_width - psw->icon_p_width) / 2;
     psw->icon_y_loc = y;
     MovePswIconToCurrentPosition(psw);
-#if 0 /* FIXGJB */
+#if 0 /* GJB:FIXME:: Do we need this? */
     if (psw->icon_pixmap_w != None) {
       XMapWindow(dpy, psw->icon_w);
       XMapWindow(dpy, w);
@@ -973,8 +959,6 @@ SCWM_PROC(current_window_with_pointer, "current-window-with-pointer", 0, 0, 0,
 #undef FUNC_NAME
 
 
-/* FIXGJB: it'd be nice to add an option to have the message window follow
-   the pointer around! --07/25/98 gjb */
 SCWM_PROC(select_window_interactively_no_message,
           "select-window-interactively-no-message", 0, 0, 0,
           ())
@@ -1123,7 +1107,7 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
     move_finalize(psw->frame,psw,0,0);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
-#if 0 /* FIXGJB --09/13/98 gjb */
+#if 0 /* GJB:FIXME:: --09/13/98 gjb */
   UngrabEm();
 #endif
 }
@@ -1147,7 +1131,7 @@ GrabEm(enum cursor cursor)
   SetFocus(Scr.NoFocusWin, NULL, 0);
   mask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask
     | EnterWindowMask | LeaveWindowMask;
-  /*  FIXGJB: while ((i < 1000) &&  */
+  /*  GJB:FIXME:: while ((i < 1000) &&  (why must try this hard?) */
   while ((i < 5) && 
          (val = XGrabPointer(dpy, Scr.Root, True, mask,
                              GrabModeAsync, GrabModeAsync, Scr.Root,
@@ -1156,7 +1140,7 @@ GrabEm(enum cursor cursor)
     i++;
     /* If you go too fast, other windows may not get a change to release
      * any grab that they have. */
-    /* FIXGJB: fvwm2 must be doing the wrong thing here! --08/28/98 gjb */
+    /* GJB:FIXME:: fvwm2 must be doing the wrong thing here! --08/28/98 gjb */
     ms_sleep(1);
   }
 
@@ -1215,7 +1199,7 @@ PswFromPointerLocation(Display *dpy)
 ScwmWindow *
 PswSelectInteractively(Display *dpy)
 {
-  /* FIXGJB: this should be the primitive that select_window calls,
+  /* GJB:FIXME:: this should be the primitive that select_window calls,
      and this should replace DeferExecution. --07/25/98 gjb */
   SCM result = gh_car(select_viewport_position(SCM_BOOL_F, SCM_BOOL_T));
   if (result == SCM_BOOL_F)
@@ -1418,7 +1402,7 @@ RaiseWindow(ScwmWindow *psw)
   }
 
   /* now raise transients */
-  /* FIXGJB: this should be a runtime option */
+  /* GJB:FIXME:: this should be a runtime option */
 #ifndef DONT_RAISE_TRANSIENTS
   for (t2 = Scr.ScwmRoot.next; t2 != NULL; t2 = t2->next) {
     if (t2->fTransient &&
@@ -1506,135 +1490,6 @@ free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
     psw->icon_name = NULL;
   }
 
-  return;
-}
-
-
-/*
- * Handles destruction of a window 
- * FIXGJB: maybe this should go right after AddWindow, in add_window.c
- * since it is most tightly couple to that code
- */
-void 
-DestroyScwmWindow(ScwmWindow *psw)
-{
-  int i;
-  extern ScwmWindow *ButtonWindow;
-  extern ScwmWindow *colormap_win;
-  extern Bool PPosOverride;
-
-  call1_hooks(window_close_hook, psw->schwin);
-
-  /*
-   * Warning, this is also called by HandleUnmapNotify; if it ever needs to
-   * look at the event, HandleUnmapNotify will have to mash the UnmapNotify
-   * into a DestroyNotify.
-   */
-  if (!psw)
-    return;
-
-  XUnmapWindow(dpy, psw->frame);
-
-  if (!PPosOverride)
-    XSync(dpy, 0);
-
-  if (psw == Scr.Hilite)
-    Scr.Hilite = NULL;
-
-  Broadcast(M_DESTROY_WINDOW, 3, psw->w, psw->frame,
-	    (unsigned long) psw, 0, 0, 0, 0);
-
-  if (Scr.PreviousFocus == psw)
-    Scr.PreviousFocus = NULL;
-
-  if (ButtonWindow == psw)
-    ButtonWindow = NULL;
-
-  if ((psw == Scr.Focus) && psw->fClickToFocus) {
-    if (psw->next) {
-      HandleHardFocus(psw->next);
-    } else {
-      SetFocus(Scr.NoFocusWin, NULL, 1);
-    }
-  } else if (Scr.Focus == psw) {
-    SetFocus(Scr.NoFocusWin, NULL, 1);
-  }
-
-  if (psw == FocusOnNextTimeStamp)
-    FocusOnNextTimeStamp = NULL;
-
-  if (psw == Scr.Ungrabbed)
-    Scr.Ungrabbed = NULL;
-
-  if (psw == Scr.pushed_window)
-    Scr.pushed_window = NULL;
-
-  if (psw == colormap_win)
-    colormap_win = NULL;
-
-  XDestroyWindow(dpy, psw->frame);
-  XDeleteContext(dpy, psw->frame, ScwmContext);
-
-  XDestroyWindow(dpy, psw->Parent);
-
-  XDeleteContext(dpy, psw->Parent, ScwmContext);
-
-  XDeleteContext(dpy, psw->w, ScwmContext);
-
-  if (psw->icon_w && psw->fPixmapOurs &&
-      psw->icon_image != SCM_BOOL_F) {
-    XFreePixmap(dpy, IMAGE(psw->icon_image)->image);
-  }
-
-  /* FIXGJB: these should check if the windows were created,
-     not if the feature is currently turned on */
-  if (psw->icon_w) {
-    XDestroyWindow(dpy, psw->icon_w);
-    XDeleteContext(dpy, psw->icon_w, ScwmContext);
-  }
-  if (psw->fIconOurs && (psw->icon_pixmap_w != None))
-    XDestroyWindow(dpy, psw->icon_pixmap_w);
-  if (psw->icon_pixmap_w != None)
-    XDeleteContext(dpy, psw->icon_pixmap_w, ScwmContext);
-
-  if (psw->fTitle) {
-    XDeleteContext(dpy, psw->title_w, ScwmContext);
-    for (i = 0; i < Scr.nr_left_buttons; i++)
-      XDeleteContext(dpy, psw->left_w[i], ScwmContext);
-    for (i = 0; i < Scr.nr_right_buttons; i++)
-      if (psw->right_w[i] != None)
-	XDeleteContext(dpy, psw->right_w[i], ScwmContext);
-  }
-  if (psw->fBorder) {
-    for (i = 0; i < 4; i++)
-      XDeleteContext(dpy, psw->sides[i], ScwmContext);
-    for (i = 0; i < 4; i++)
-      XDeleteContext(dpy, psw->corners[i], ScwmContext);
-  }
-  psw->prev->next = psw->next;
-  if (psw->next != NULL)
-    psw->next->prev = psw->prev;
-  free_window_names(psw, True, True);
-  if (psw->wmhints)
-    XFree(psw->wmhints);
-  /* removing NoClass change for now... */
-  if (psw->classhint.res_name && psw->classhint.res_name != NoResource)
-    XFree(psw->classhint.res_name);
-  if (psw->classhint.res_class && psw->classhint.res_class != NoClass)
-    XFree(psw->classhint.res_class);
-  if (psw->mwm_hints)
-    XFree(psw->mwm_hints);
-
-  if (psw->cmap_windows != (Window *) NULL)
-    XFree(psw->cmap_windows);
-
-  /* XSCM */
-  invalidate_window(psw->schwin);
-  XFree(psw->name);
-  FREE(psw);
-
-  if (!PPosOverride)
-    XSync(dpy, 0);
   return;
 }
 
@@ -2030,8 +1885,7 @@ cannot, e.g., cleanly be brought back onto the current viewport.
 #undef FUNC_NAME
 
 
-/* FIXGJB: rename to window-iconified? */
-
+/* GJB:FIXME:MS: rename to window-iconified? */
 SCWM_PROC(iconified_p, "iconified?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is iconified, otherwise return #f.
@@ -2051,8 +1905,7 @@ same screen position regardless of scrolling within the current
 desktop.
 */
 
-/* FIXGJB: rename to window-stick */
-
+/* GJB:FIXME:MS: rename to window-stick */
 SCWM_PROC(stick, "stick", 0, 1, 0,
           (SCM win))
      /** Make WIN "sticky" so that it stays stationary in the viewport.
@@ -2088,8 +1941,7 @@ specified. */
 #undef FUNC_NAME
 
 
-/* FIXGJB: rename to window-unstick */
-
+/* GJB:FIXME:MS: rename to window-unstick */
 SCWM_PROC(unstick, "unstick", 0, 1, 0,
           (SCM win))
      /** Cause a window to no longer be "sticky", if it is.
@@ -2124,8 +1976,7 @@ the usual way if not specified. */
 #undef FUNC_NAME
 
 
-/* FIXGJB: rename to window-sticky? */
-
+/* GJB:FIXME:MS: rename to window-sticky? */
 SCWM_PROC(sticky_p, "sticky?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is "sticky", #f otherwise.
@@ -2192,11 +2043,7 @@ way if not specified. See also `window-unshade'.*/
 #undef FUNC_NAME
 
 
-/* FIXGJB: rename to window-unshade */
-
-
-
-
+/* GJB:FIXME:MS: rename to window-unshade */
 SCWM_PROC(window_unshade, "window-unshade", 0, 1, 0,
           (SCM win))
     /** Reverse the effect of `window-shade' on WIN.
@@ -2313,10 +2160,9 @@ specified. */
 #undef FUNC_NAME
 
 
-/* FIXMS: would animated resizes be a good idea? */
-/* FIXGJB: either resize-to or resize-frame-to should be written
+/* GJB:FIXME:: either resize-to or resize-frame-to should be written
    in scheme using the other */
-/* FIXGJB: See resize-window  -- this primitive should be renamed to that */
+/* GJB:FIXME:: See resize-window  -- this primitive should be renamed to that */
 
 SCWM_PROC(resize_to, "resize-to", 2, 1, 0,
           (SCM w, SCM h, SCM win))
@@ -3475,7 +3321,7 @@ for WIN).   */
 
 
   psw->HiBackColor = bg;
-#if 0 /* FIXGJB: these aren't used yet, and bg might be #f */
+#if 0 /* GJB:FIXME:: these aren't used yet, and bg might be #f */
   psw->HiShadowColor = adjust_brightness(bg, fl->shadow_factor);
   psw->HiReliefColor = adjust_brightness(bg, fl->hilight_factor);
 #endif
@@ -3555,7 +3401,7 @@ to the window context in the usual way if not specified. */
 {
   VALIDATEN(win, 2, FUNC_NAME);
   COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fMWMButtons,flag,1,FUNC_NAME);
-  /* FIXGJB: why here? SetBorder(psw,(Scr.Hilite==psw),True,True,None); */
+  /* GJB:FIXME:: why here? SetBorder(psw,(Scr.Hilite==psw),True,True,None); */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3985,12 +3831,6 @@ void
 init_window()
 {
   REGISTER_SCWMSMOBFUNS(window);
-
-  SCWM_HOOK(window_close_hook,"window-close-hook",1);
-  /** This hook is invoked whenever a scwm-managed window is closed
-for any reason. The hook procedures are invoked with one argument,
-WIN, the window being closed.  The WIN is still valid during the hook
-procedures. */
 
   SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0);
   /** This hook is invoked with no arguments when the user hits an invalid

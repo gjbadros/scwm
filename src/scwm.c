@@ -558,7 +558,7 @@ scwm_main(int argc, char **argv)
   
   /* Avoid block buffering on stderr, stdout even if it's piped somewhere;
      it's useful to pipe through to grep -v or X-error-describe
-     while debugging: FIXGJB: make these runtime options -- also,
+     while debugging: GJB:FIXME:MS: make these runtime options -- also,
      isn't stderr never block bufferred?? */
   setlinebuf(stderr);
   setlinebuf(stdout);
@@ -759,7 +759,7 @@ Repository Timestamp: %s\n",
   newhandler(SIGINT);
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
-  /* FIXGJB: I seem to lose the last stack frame in my backtrace if this is
+  /* GJB:FIXME:: I seem to lose the last stack frame in my backtrace if this is
      set... do others not see this? --07/24/98 gjb */
   newsegvhandler(SIGSEGV);
 
@@ -1344,7 +1344,7 @@ Reborder(Bool fRestart)
 /*
  * SigDone - the signal handler installed by newhandler
  *
- * FIXGJB: I don't think this is legit to call a function
+ * GJB:FIXME:MS: I do not think it is portable to call a function
  * that uses libraries in a signal handler!
  */
 SIGNAL_T
@@ -1435,7 +1435,7 @@ usage(void)
 void 
 SetMWM_INFO(Window window)
 {
-/* FIXGJB: make this a per-window runtime option */
+/* GJB:FIXME:: make this a per-window runtime option */
 #ifdef MODALITY_IS_EVIL
   struct mwminfo {
     long flags;
@@ -1520,6 +1520,7 @@ scwm_msg(scwm_msg_levels type, char *id, char *msg,...)
 {
   char *typestr;
   va_list args;
+  int length_printed = 0;
 
   switch (type) {
   case DBG:
@@ -1539,18 +1540,18 @@ scwm_msg(scwm_msg_levels type, char *id, char *msg,...)
 
   va_start(args, msg);
 
-  fprintf(stderr, "[Scwm][%s]: %s ", id, typestr);
-  vfprintf(stderr, msg, args);
-  fprintf(stderr, "\n");
+  length_printed += fprintf(stderr, "[Scwm][%s]: %s ", id, typestr);
+  length_printed += vfprintf(stderr, msg, args);
+  length_printed += fprintf(stderr, "\n");
 
   if (type == ERR) {
-    char tmp[1024];		/* FIXGJB: bad fixed length */
-
-    sprintf(tmp, "[Scwm][%s]: %s ", id, typestr);
-    vsprintf(tmp + strlen(tmp), msg, args);
-    tmp[strlen(tmp) + 1] = '\0';
-    tmp[strlen(tmp)] = '\n';
-    BroadcastName(M_FVWM_ERROR, 0, 0, 0, tmp);
+    char *sz = malloc( (length_printed+2) * sizeof(char));
+    int ich = 0;
+    sprintf(sz, "[Scwm][%s]: %s ", id, typestr);
+    vsprintf(sz + strlen(sz), msg, args);
+    strcat(sz,"\n");
+    BroadcastName(M_FVWM_ERROR, 0, 0, 0, sz);
+    FREE(sz);
   }
   va_end(args);
 }				/* Scwm_msg */

@@ -83,7 +83,7 @@ Done(int restart_or_dump, char *command)
     /* Pretty sure this should be done... */
     XDeleteProperty(dpy, Scr.Root, XA_MOTIF_WM);
 
-    /* FIXGJB: this used to be done only on restart -- why? --07/31/98 gjb */
+    /* GJB:FIXME:: this used to be done only on restart -- why? --07/31/98 gjb */
     SaveDesktopState();
 
     if (None != w_for_scwmexec_response) {
@@ -120,7 +120,7 @@ Done(int restart_or_dump, char *command)
 
     XCloseDisplay(dpy);
   }
-  /* FIXGJB: Should restore cursor to original cursor before scwm started */
+  /* GJB:FIXME:: Should restore cursor to original cursor before scwm started */
 
   if (restart_or_dump < 0) {
     /* force seg fault -- need to use as an argument to a function
@@ -187,7 +187,7 @@ arguments as given previously. */
 }
 #undef FUNC_NAME
 
-/* FIXGJB: what is args for, and why does this have it */
+/* GJB:FIXME:MS: what is args for, and why does this have it */
 SCWM_PROC(scwm_quit, "scwm-quit", 0, 0, 1,
           (SCM args))
      /** Exit scwm cleanly. `quit' is redefined as this within

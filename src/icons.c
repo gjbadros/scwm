@@ -538,12 +538,12 @@ AutoPlace(ScwmWindow *psw)
 
   if (psw->fIconMoved) {
     if (psw->fStickyIcon) {
-      /* FIXGJB: may not want this -- icons should be able to iconify
+      /* GJB:FIXME:: may not want this -- icons should be able to iconify
          to anywhere */
       /* just make sure the icon is on this screen */
       psw->icon_x_loc = ICON_X_VIRT(psw) % Scr.DisplayWidth + base_x;
       psw->icon_y_loc = ICON_Y_VIRT(psw) % Scr.DisplayHeight + base_y;
-#if 0 /* FIXGJB */
+#if 0 /* GJB:FIXME:: can we kill this now? */
       if (psw->icon_x_loc < ICON_VP_OFFSET_X(psw))
         psw->icon_x_loc += Scr.DisplayWidth;
       if (psw->icon_y_loc < ICON_VP_OFFSET_Y(psw))

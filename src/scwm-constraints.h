@@ -54,6 +54,7 @@ extern "C" {
 void CassowaryInitClVarsInPsw(PScwmWindow psw);
 void CassowaryInitClVarsInPscreen(struct ScreenInfo *pscreen);
 void CassowaryNewWindow(PScwmWindow psw);
+void CassowaryCloseWindow(PScwmWindow psw);
 void CassowarySetCValuesAndSolve(PScwmWindow psw, int fSolve);
 void CassowaryEditPosition(PScwmWindow psw);
 void CassowaryEditSize(PScwmWindow psw);

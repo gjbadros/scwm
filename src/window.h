@@ -145,13 +145,10 @@ struct ScwmWindow {
   PackedBool(fStartIconic);
   PackedBool(fOnTop);
   PackedBool(fSticky);
-  PackedBool(fWindowListSkip);
   PackedBool(fSuppressIcon);
   PackedBool(fNoIconTitle);
   PackedBool(fLenience);
   PackedBool(fStickyIcon);
-  PackedBool(fCirculateSkip);
-  PackedBool(fCirculateSkipIcon);
   PackedBool(fClickToFocus);
   PackedBool(fSloppyFocus);
   PackedBool(fShowOnMap);
@@ -231,9 +228,6 @@ struct ScwmWindow {
 typedef struct ScwmWindow ScwmWindow;
 #endif
 
-/* FIXGJB: fWindowListSkip, fCirculateSkipIcon, fCirculateSkip are unused */
-
-
 /* Window viewport offsets to correct for the viewport
    position only if not a sticky window */
 #define WIN_VP_OFFSET_X(psw) ((psw)->fSticky? 0: Scr.Vx)
@@ -295,7 +289,8 @@ EXTERN SCM cannot_grab_hook;
 /* SCWMWINDOW should disappear-- PSWFROMSCMWIN is a better name, IMO--07/17/98 gjb*/
 
 /* MS:FIXME:GJB: I disagree, functions and especially macros with FROM
-   in the name rather than TO are unintuitive. */
+   in the name rather than TO are unintuitive.
+   GJB:FIXME:MS: can we close this? SCWMWINDOW has been commented out for a while now --03/22/99 gjb */
 
 /* #define SCWMWINDOW(X) (((scwm_window *)gh_cdr(X))->psw) */
 #define PSWFROMSCMWIN(X) (((scwm_window *)gh_cdr(X))->psw)
@@ -312,7 +307,6 @@ void MapIt(ScwmWindow *psw);
 
 void free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon);
 
-void DestroyScwmWindow(ScwmWindow *psw);
 void UnmapScwmWindow(ScwmWindow * psw);
 void RaiseWindow(ScwmWindow *psw);
 void LowerWindow(ScwmWindow *psw);
@@ -353,7 +347,7 @@ SCM list_stacking_order();
 
 void set_window_internal_title_height(ScwmWindow *psw, int nh);
 
-/* FIXGJB: this primitive should not be exposed in the interface, 
+/* GJB:FIXME:: this primitive should not be exposed in the interface, 
    but needs to be for resetting the relief decor, color.c */
 SCM set_window_background_x(SCM bg, SCM win);
 

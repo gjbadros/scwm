@@ -63,8 +63,8 @@ SendUsagePacket(char *host, /* 0 -> REPORT_USAGE_HOST */
     return 0;
   }
 
-  /* FIXGJB: this is here for now just so people
-     know what's hanging in case things hang for them */
+  /* This is here for now just so people
+     know what is hanging in case things hang for them */
   scwm_msg(INFO,FUNC_NAME,"Opening socket for usage log...");
 
   /* getting hostname */

@@ -84,20 +84,6 @@ refresh_common(Window win_or_root)
 
 }
 
-#if 0 /* FIXGJB: removed when menus reworked to use call*_hooks */
-SCM 
-call_thunk_with_message_handler(SCM thunk)
-{
-  struct scm_body_thunk_data thunk_data;
-
-  DEREF_IF_SYMBOL(thunk);
-  thunk_data.tag = SCM_BOOL_T;
-  thunk_data.body_proc = thunk;
-  return scm_internal_catch(SCM_BOOL_T, scm_body_thunk, &thunk_data,
-			    scm_handle_by_message_noexit, "scwm");
-}
-#endif
-
 void
 ms_sleep(unsigned long ms)
 {

@@ -46,8 +46,8 @@
 #define C_ALL   (C_WINDOW|C_TITLE|C_ICON|C_ROOT|C_FRAME|C_SIDEBAR|\
                  C_L1|C_L2|C_L3|C_L4|C_L5|C_R1|C_R2|C_R3|C_R4|C_R5)
 
-/* FIXGJB: this should be redone -- minimally
-   a union and better names */
+/* GJB:FIXME:: this should be redone -- minimally
+   a union and better names; part of the event rewrite, I'd guess */
 typedef struct Binding_tag {
   char IsMouse;			/* Is it a mouse or key binding 1= mouse; */
   int Button_Key;		/* Mouse Button number or Keycode */

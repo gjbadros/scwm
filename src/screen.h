@@ -219,10 +219,8 @@ typedef struct ScreenInfo {
                                 /* NULL if built w/o cassowary support */
 
 
-  /* FIXGJB: These are no longer used by the menuing code, but MenuColors
-     are used elsewhere for colors */
-  /* FIXJTL: Renamed to reduce confusion and to try to encourage better
-     separation */
+  /* GJB:FIXME:: these should be renamed, or separated out
+     -- they are the colors used for various things throughout the code */
   ColorPair NotMenuColors;
   ColorPair NotMenuRelief;
 

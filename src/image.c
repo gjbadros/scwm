@@ -176,10 +176,6 @@ depth, its color depth.
 		 gh_cons(sym_pixmap,gh_int2scm(psimg->image)),
 		 gh_cons(sym_mask,gh_int2scm(psimg->mask)),
 		 SCM_UNDEFINED);
-  /* FIXGJB: why SCM_UNDEFINED -- GH_EOL? SCM_EOL does not work! */
-  /* MS: because SCM_EOL is the empty list, which is a valid list item
-     - you can have '() as a member of a list. However, SCM_UNDEFINED
-     should never be part of a valid Scheme object. */
 }
 #undef FUNC_NAME
 
@@ -349,7 +345,7 @@ path_expand_image_fname(SCM name, const char *func_name)
   SCM result;
 
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg((char *) func_name, 1, name); /* FIXGJB guile const-ness bug */
+    scm_wrong_type_arg((char *) func_name, 1, name); /* GJB:FIXME:: guile const-ness bug */
   }
 
   c_name = gh_scm2newstr(name, &length);
@@ -378,7 +374,7 @@ path_expand_image_fname(SCM name, const char *func_name)
     
     /* traverse the path list to compute the max buffer size we will
        need. */
-    /* FIXGJB: ideally, we'd like to do this only after 
+    /* GJB:FIXME:: ideally, we'd like to do this only after 
      *pscm_image_load_path changes -- maybe we could compare
      against a hash of the old value before redoing this work */
 

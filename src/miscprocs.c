@@ -17,8 +17,6 @@
 
 #include <guile/gh.h>
 
-#include "miscprocs.h"
-
 #include "scwm.h"
 #include "screen.h"
 #include "errors.h"
@@ -283,41 +281,6 @@ scratch. This is hopefully not necessary during normal operation. */
   CaptureAllWindows();
   UnBlackoutScreen();
 
-  return SCM_UNSPECIFIED;
-}
-#undef FUNC_NAME
-
-/* FIXGJB: should we dump wait-for-window? */
-/* CRW:FIXME:: I think it should go; as far as I can tell, it's at least
-as dangerous as locking the server. */
-
-SCWM_PROC(wait_for_window, "wait-for-window", 1, 0, 0,
-          (SCM predicate))
-     /** Wait until a window appears which satisfies PREDICATE. 
-Given the existence of before-new-window-hook, this is of questionable
-usefulness and may be removed. Note that if no window satisfying PREDICATE
-ever appears, this will block scwm forever. */
-#define FUNC_NAME s_wait_for_window
-{
-  Bool done = False;
-  extern ScwmWindow *pswCurrent;
-
-  if (!gh_procedure_p(predicate)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, predicate);
-  }
-  while (!done) {
-    if (NextScwmEvent(dpy, &Event)) {
-      gh_defer_ints();
-      DispatchEvent();
-      gh_allow_ints();
-      if (Event.type == MapNotify) {
-	if (gh_call1(predicate, pswCurrent->schwin) == SCM_BOOL_T) {
-	  done = True;
-	}
-      }
-    }
-  }
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

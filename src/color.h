@@ -83,7 +83,7 @@ typedef struct {
 			       SAFE_COLOR((X)))
 
 
-/* FIXGJB: colors have an especially poor interfaces --
+/* GJB:FIXME:: colors have an especially poor interfaces --
    C code should use lower level primitives that
    these primitives just wrap */
 SCM make_color (SCM cname);

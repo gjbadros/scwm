@@ -35,7 +35,7 @@
 
 
 /*
- * SCWM event handling
+ * Scwm event handling
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1024,7 +1024,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
 	pswCurrent->fMapPending = True;
 	SetMapStateProp(pswCurrent, NormalState);
 	if (pswCurrent->fClickToFocus &&
-	/* FIXGJB: !(pswCurrent->fSloppyFocus) && */
+	/* GJB:FIXME:: !(pswCurrent->fSloppyFocus) && */
 	    (!Scr.Focus || Scr.Focus->fClickToFocus)) {
 	  SetFocus(pswCurrent->w, pswCurrent, 1);
 	}
@@ -1111,7 +1111,7 @@ HandleMapNotify()
       ((!Scr.Focus) || Scr.Focus->fClickToFocus)) {
     SetFocus(pswCurrent->w, pswCurrent, 1);
   }
-  /* FIXGJB: what is this all about? */
+  /* GJB:FIXME:: what is this all about? */
   if (!(pswCurrent->fBorder || pswCurrent->fTitle)
       && (pswCurrent->boundary_width < 2)) {
     SetBorder(pswCurrent, False, True, True, pswCurrent->frame);
@@ -1294,7 +1294,7 @@ HandleButtonPress()
     if (!pswCurrent->fIconified) {
       Bool fSendClick = Scr.fClickToFocusPassesClick;
 #if 0
-      /* FIXGJB */
+      /* GJB:FIXME:: can we remove this? */
       if ( /* click was in a border, titlebar, or decoration */ )
         fSendClick = True;
 #endif
@@ -1527,7 +1527,7 @@ HandleConfigureRequest()
 #ifdef SCWM_DEBUG_RESIZE_MSGS
     scwm_msg(DBG,FUNC_NAME,"!pswCurrent && configure to %d,%d", xwc.x, xwc.y);
 #endif
-    /* FIXGJB: this is just moving the icon, but when
+    /* GJB:FIXME:: this is just moving the icon, but when
        icon positions are exposed to cassowary, it'll need fixing */
     XConfigureWindow(dpy, Event.xany.window, xwcm, &xwc);
 

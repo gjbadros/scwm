@@ -17,7 +17,7 @@
 extern "C" {
 #endif
 
-/* FIXGJB: this should get into scm_init_funcs conditionally,
+/* GJB:FIXME:: this should get into scm_init_funcs conditionally,
    and shouldn't need to be here */
 void init_constraint_primitives();
 

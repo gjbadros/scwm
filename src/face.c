@@ -783,7 +783,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	arg=gh_cadr(arg);
       }
 
-      /* FIXGJB: I think this should only take pixmap objects;
+      /* GJB:FIXME:MS: I think this should only take pixmap objects;
 	 if we want scheme sugar for converting strings into
 	 pixmaps, that's fine, too;  this works well now, though,
 	 so maybe it's only worth changing when make-face is

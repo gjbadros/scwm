@@ -238,7 +238,7 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
   int decor, i;
   PropMwmHints *prop;
 
-  /* FIXGJB: this was testing !BW_FLAG for setting border_width,
+  /* GJB:FIXME:: this was testing !BW_FLAG for setting border_width,
      testing !NO_BW_FLAG for setting resize_width --03/25/98 gjb */
 
   if (!t->fBorder)
@@ -333,7 +333,7 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     }
   }
   /* Assume no decorations, and build up */
-  /* FIXGJB: should these get reset */
+  /* GJB:FIXME:: should these get reset? */
   t->fBorder = False;
 
   t->boundary_width = 0;
@@ -421,7 +421,7 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
   if (t->title_height > 0)
     t->title_height += t->bw;
 
-#if 1 /* FIXGJB: I think we should keep these orthogonal --07/29/98 gjb 
+#if 1 /* GJB:FIXME:: I think we should keep these orthogonal --07/29/98 gjb 
        but it's buggy if we do for now */
   if (t->boundary_width == 0)
     t->fBorder = False;

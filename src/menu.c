@@ -216,9 +216,8 @@ NewPchKeysUsed(DynamicMenu *pmd)
 }
 #undef FUNC_NAME
 
-/* FIXGJB: better as an assoc list, probably: we'd have to invent a name for
+/* GJB:FIXME:: better as an assoc list, probably: we'd have to invent a name for
    menu-items if we did */
-/* FIXJTL: this gets worse and worse */
 
 SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
           (SCM menu))
@@ -357,7 +356,9 @@ EXTRA-OPTIONS can be anything understood by the menu-look
 
   pmenu->pchUsedShortcutKeys = NULL;
 
-#ifdef FIXGJB_SHOULD_WE_TEST_ITEMS_HERE_OR_DEFER_TO_LATER
+#if 0
+  /* GJB:FIXME:: we currently defer testing of menuitems
+     until later so that the menus can be more dynamic */
   rest = pmenu->scmMenuItems;
 
   while (True) {
@@ -498,7 +499,7 @@ PmdFromWindow(Display *dpy, Window w)
 #undef FUNC_NAME
 
 
-#ifdef FIXGJB_UNUSED
+#ifdef BUILD_UNUSED_FUNCTIONS /* GJB:FIXME:: UNUSED */
 static
 DynamicMenu *
 PmdFromPointerLocation(Display *dpy)
@@ -649,14 +650,16 @@ SelectAndRepaintPmiim(MenuItemInMenu *pmiim)
 }
 #undef FUNC_NAME
 
-/* FIXGJB : Need EnterWindowMask? */
+/* GJB:FIXME:: Need EnterWindowMask? */
 static const long menu_event_mask = (ButtonPressMask | ButtonReleaseMask | 
 				     ExposureMask | KeyPressMask | KeyReleaseMask |
 				     VisibilityChangeMask | ButtonMotionMask |
 				     PointerMotionMask );
 
-static int HOVER_DELAY_MS = 500;  /* FIXGJB: make configurable */
-static int MENU_POPUP_DELAY_MS = 900;  /* FIXGJB: make configurable */
+
+/* GJB:FIXME:: make these configurable */
+static int HOVER_DELAY_MS = 500;
+static int MENU_POPUP_DELAY_MS = 900;
 
 static
 SCM
@@ -833,7 +836,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
       return pmiimSelected;
       break;
 
-      /* FIXGJB: Don't let keyboard movements go to
+      /* GJB:FIXME:: Don't let keyboard movements go to
 	 unenabled items */
       
     case XK_Up:
@@ -972,7 +975,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
   /* Don't assume all menu types pop up with the pointer on the first
      item; pie menus for instance will pop up with nothing selected */
   UnselectAndRepaintSelectionForPmd(pmd);
-  /* FIXGJB: need to make initial item selection */
+  /* GJB:FIXME:: need to make initial item selection */
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
       ms_sleep(10);
@@ -1020,7 +1023,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
       if (pmiim) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	if (pmiim != pmiimSelected) {
-	  /* FIXGJB: this spews a lot if you pop up a menu, don't move
+	  /* GJB:FIXME:: this spews a lot if you pop up a menu, don't move
 	     the mouse, and release. Commenting out for now. */
 	  DBUG((DBG,FUNC_NAME,"Pointer not in selected item -- weird!"));
 	} else {
@@ -1065,7 +1068,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
                                             ms == MENUSTATUS_NEWITEM_HOTKEY)) {
             pmd->ipmiimSelected = pmiim->ipmiim;
           }
-	  /* FIXGJB: duplicated above */
+	  /* GJB:FIXME:: duplicated above */
 	  pmiimSelected = PmiimSelectedFromPmd(pmd);
 	  if (pmiim != pmiimSelected) {
 	    scwm_msg(WARN,FUNC_NAME,"Pointer not in selected item -- weird!");
@@ -1103,7 +1106,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
       
     case MotionNotify:
       /* BEWARE: fall through case above */
-      /* FIXGJB: update selected item, mark mouse_moved boolean if
+      /* GJB:FIXME:: update selected item, mark mouse_moved boolean if
 	 it's moved enough, reset action hook timer, etc. */
     { /* scope */
       if (pmiim == NULL) {
@@ -1194,16 +1197,16 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
     continue;
     
     default:
-      /* FIXGJB: do other event handling */
+      /* do other event handling */
       DispatchEvent();
       break;
     } /* switch */
     
-    /* FIXGJB: Now handle newly selected menu items, whether it is from a keypress or
+    /* GJB:FIXME:: Now handle newly selected menu items, whether it is from a keypress or
 	 a pointer motion event */
     XFlush(dpy);
 
-    /* FIXGJB this doesn't work -- we'd like to be able to jump to
+    /* GJB:FIXME:: this doesn't work -- we'd like to be able to jump to
        the first item of the next menu if a shortcut key was used to popup a new menu */
     if (fHotkeyUsed)
       XPutBackKeystrokeEvent(dpy,pmiim->pmd->w,XK_Right);
@@ -1235,7 +1238,7 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
   MenuItem * pmi;
   MenuItemInMenu * pmiim;
 
-  /* FIXGJB: strip #f-s in make-menu!
+  /* GJB:FIXME:: strip #f-s in make-menu!
      allow #f-s to be embed and just skip them */
   if (item == SCM_BOOL_F) {
     return NULL;
@@ -1261,7 +1264,7 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
   if (pmiim->pmi->scmAction == SCM_BOOL_F)
     pmiim->mis = MIS_Grayed;
   else
-    pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
+    pmiim->mis = MIS_Enabled;	/* GJB:FIXME:: set using hook info? */
   return pmiim;
 }
 
@@ -1285,7 +1288,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     if (rgpmiim[ipmiim]) {
       ipmiim++;
     } else {
-      /* FIXGJB: permit #f menuitems and don't give warning message */
+      /* permit #f menuitems without giving warning message */
       if (item != SCM_BOOL_F) {
         scwm_msg(WARN,FUNC_NAME,"Bad menu item number %d",ipmiim);
       }
@@ -1418,7 +1421,6 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
   if (DYNAMIC_PROCEDURE_P(scmAction)) {
     return scwm_safe_call0_sym(scmAction);
   } else if (DYNAMIC_MENU_P(scmAction)) {
-    /* FIXGJB: is this recursion  bad? */
     return popup_menu(scmAction, SCM_BOOL_FromBool(fWarpToFirst), 
                       SCM_BOOL_F, SCM_BOOL_F, SCM_BOOL_F);
   }
@@ -1458,7 +1460,8 @@ right justified against X-POS. */
   Bool fWarpToFirst = False;
   Bool fLeftSide = True;
   Bool fPermitAltReleaseToSelect = False;
-  /* FIXGJB: above needs to be true if we're doing the window list */
+  /* GJB:FIXME:: above needs to be true if we're doing the window list
+     (But this works now.... how? --03/22/99 gjb */
   int x = -1, y = -1;
   /* permit 'menu to be used, and look up dynamically */
   DEREF_IF_SYMBOL(menu);

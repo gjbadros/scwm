@@ -28,7 +28,7 @@
  * This function is derived from code by Robert Nation
  */
 
-/* FIXGJB: a single, slow click with no movement should
+/* GJB:FIXME:: a single, slow click with no movement should
    still count as a single click */
 Bool 
 IsClick(int x, int y, unsigned EndMask, XEvent * d)

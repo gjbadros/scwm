@@ -310,7 +310,7 @@ resize frames. VALUE should be an integer. */
 void 
 RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height)
 {
-  /* Ugh. no statics! FIXGJB */
+  /* GJB:FIXME:: Ugh. no statics! */
   static int lastx = 0;
   static int lasty = 0;
   static int lastWidth = 0;
@@ -340,12 +340,12 @@ RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height)
 }
 
 
-/* FIXGJB: InteractiveResize uses the global var PressedW 
+/* GJB:FIXME:: InteractiveResize uses the global var PressedW 
    to figure out how the resize should work. This is bad! */
 Bool
 InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheightReturn)
 {
-  extern Window PressedW;       /* FIXGJB: ugly! */
+  extern Window PressedW;       /* GJB:FIXME:: ugly! */
 
   int dragx;			/* all these variables are used */
   int dragy;			/* in resize operations */
@@ -389,9 +389,13 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   origHeight = dragHeight;
   ymotion = xmotion = 0;
 
-  /* Get the current position to determine which border to resize 
-     FIXGJB: this is ugly -- perhaps should pass in
-     resize directions? */
+  /* Get the current position to determine which border to resize
+     GJB:FIXME:: this is ugly -- perhaps should pass in resize
+     directions?  Could use new scheme level functionality to find
+     position of a click and pick to resize the appropriate direction(s)
+     initially, using the current pointer position as the anchor
+     (instead of waiting until the pointer leaves the window)
+  */
   if ((PressedW != Scr.Root) && (PressedW != None)) {
     if (PressedW == psw->sides[0])	/* top */
       ymotion = 1;
@@ -581,9 +585,10 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
 SCWM_PROC(rubber_band_resize, "rubber-band-resize", 0, 1, 0,
           (SCM win))
      /** Resize WIN interactively, using a rubber band frame.
+Returns a list '(WIDTH HEIGHT) that is the new size of WIN.
 This allows the user to drag a rubber band frame to set the size of
 the window. WIN defaults to the window context in the usual way if not
-specified. */
+specified.  */
 #define FUNC_NAME s_rubber_band_resize
 {
   ScwmWindow *psw;
@@ -602,8 +607,8 @@ specified. */
   }
 
   InteractiveResize(psw, False, &width, &height);
-  /* FIXGJB: return the new size */
-  return SCM_UNSPECIFIED;
+
+  return gh_list(gh_int2scm(width),gh_int2scm(height),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -612,6 +617,7 @@ specified. */
 SCWM_PROC(opaque_resize, "opaque-resize", 0, 1, 0,
           (SCM win))
      /** Resize WIN interactively, opaquely.
+Returns a list '(WIDTH HEIGHT) that is the new size of WIN.
 This allows the user to drag the boundaries of the window to set its
 size. WIN defaults to the window context in the usual way if not
 specified. The window is updated immediately as the size changes take
@@ -635,8 +641,8 @@ place. */
   }
 
   InteractiveResize(psw, True, &width, &height);
-  /* FIXGJB: return the new size */
-  return SCM_UNSPECIFIED;
+
+  return gh_list(gh_int2scm(width),gh_int2scm(height),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 

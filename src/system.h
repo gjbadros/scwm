@@ -32,7 +32,7 @@
 void *safemalloc(int length);
 char *xgetcwd(char *, int);
 
-/* FIXGJB: must handle a couple realloc-s too */
+/* GJB:FIXME:: must handle a couple realloc-s too */
 
 #if defined(USE_CASSOWARY) && defined(__cplusplus)
 #define NEWCPP(x) (new x)

@@ -12,9 +12,6 @@
 
 #include <guile/gh.h>
 
-/* FIXGJB: this primitive should not be exposed --07/26/98 gjb */
-SCM recapture();
-
 #endif	/* MISCPROCS_H */
 
 /* Local Variables: */

@@ -592,7 +592,7 @@ is not set, or the window starts iconic. */
         int finalx, finaly;     /* unused for now */
         extern Bool have_orig_position;
         extern int orig_x, orig_y;
-        /* FIXGJB: passing thru globals */
+        /* GJB:FIXME:: ugh! passing args thru globals */
         have_orig_position = True;
         FXGetWindowTopLeft(WFrameOrIcon(psw), &orig_x, &orig_y);
 	InteractiveMove(psw, False, &finalx, &finaly);

@@ -134,7 +134,7 @@ allocated, an error results. */
     scm_memory_error(FUNC_NAME);
   }
 
-/* FIXGJB: merge these two paths */
+/* GJB:FIXME:: merge these two paths */
 #ifdef I18N
   fontset = XCreateFontSet(dpy,fn,&list_names,&missings,&defstrreturn);
   if (NULL == fontset) {
@@ -348,6 +348,9 @@ void init_font()
 {
   REGISTER_SCWMSMOBFUNS(font);
 
+  /* GJB:FIXME:: should make the font object containing
+     the fixed font used throughout and made permanent.
+     The string should not be used in C code --03/22/99 gjb */
   gh_defer_ints();
   str_fixed=gh_str02scm(XFIXEDFONTNAME);
   scm_permanent_object(str_fixed);

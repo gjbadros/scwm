@@ -68,7 +68,7 @@ typedef struct MenuItemInMenu_tag
   int ipmiim;			/* the item number in the dynamic menu */
   menu_item_state mis;		/* current state of item */
   Bool fShowPopupArrow;		/* should we show a popup arrow */
-  char chShortcut;		/* FIXGJB: make this a key event */
+  char chShortcut;		/* GJB:FIXME:: make this a key event */
   int ichShortcutOffset;	/* For drawing */
 } MenuItemInMenu;
 

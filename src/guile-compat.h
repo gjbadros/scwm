@@ -102,12 +102,6 @@ extern SCM scm_internal_stack_catch (SCM tag,
 #define gh_memq scm_memq
 #endif
 
-/* FIXGJB: unneeded now that we use gh_make_vector --10/05/98 gjb */
-/* Evil, but ANSI standard to redefine macro in terms of itself. - MS */
-#ifdef HAVE_SCM_MAKE_VECTOR_3_ARGS
-#define scm_make_vector(X, Y) (scm_make_vector((X), (Y), SCM_BOOL_F))
-#endif
-
 typedef void (*main_prog_t) (int argc, char **argv);
 
 #ifdef HAVE_SCM_LOAD_STARTUP_FILES

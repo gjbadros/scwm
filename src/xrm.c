@@ -198,7 +198,7 @@ MergeResourceDatabases()
   
   /* command line takes precedence over everything */
   /*  XrmMergeDatabases(commandlineDB, &db); 
-      FIXGJB: some command line resource processing is
+      GJB:FIXME:: some command line resource processing is
       done in AddWindow() */
 }  
 
