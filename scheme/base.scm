@@ -51,6 +51,9 @@
 (define-public (execute command) 
   (system (string-append "exec " command " &")))
 
+(define-public (program-exists? program-name)
+  (= 0 (system (string-append "which " program-name " >/dev/null" ))))
+
 (define-public (set-menu-foreground! fg) (set-menu-colors! fg))
 (define-public (set-menu-background! bg) (set-menu-colors! #f bg))
 (define-public (set-menu-stipple! st) (set-menu-colors! #f #f st))

@@ -74,17 +74,15 @@
   (popup-menu (menu
 	       (append 
 		(list 
-		 (menuitem (if show-geometry "Window:\tGeometry:"
-			       "Window List") #f)
+		 (make-menuitem "Window list" #f (if show-geometry "Geometry" #f)
+				#f #f #f #f #f)
 		 menu-title)
 		(map (lambda (x)
-		       (menuitem
-			(if show-geometry
-			    (string-append
-			     (window-title x) "\t"
-			     (window-geometry-string x))
-			    (window-title x))
-			#:action (lambda () (proc x))))
+		       (make-menuitem (window-title x)
+				      (lambda () (proc x))
+				      (if show-geometry
+					  (window-geometry-string x) #f)
+				      #f #f #f #f #f))
 		     (list-windows #:only only #:except 
 				   (cons 
 				    winlist-skip?
