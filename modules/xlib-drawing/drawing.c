@@ -25,6 +25,23 @@
 
 static GC DrawingGC;
 
+static 
+Bool xlib_point_pair_p(SCM point)
+{
+  if (!gh_pair_p(point))
+    return False;
+  return (gh_number_p(gh_car(point)) && gh_number_p(gh_cdr(point)));
+}
+
+/* assumes top_left is an xlib_point_pair */
+static
+void xlib_point_pair_get_values(SCM p, int *piX, int *piY)
+{
+  *piX = gh_scm2int(gh_car(p));
+  *piY = gh_scm2int(gh_cdr(p));
+}
+
+
 /* MSFIX: Can't easily be a color w/o overlay planes-- needs to be really 
    fast to erase */
 SCWM_PROC(xlib_set_drawing_mask_x, "xlib-set-drawing-mask!", 1, 0, 0,
@@ -58,49 +75,43 @@ resize frames. VALUE should be an integer. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(xlib_draw_rectangle_x, "xlib-draw-rectangle!", 4, 0, 0,
-	  (SCM x, SCM y, SCM width, SCM height))
+SCWM_PROC(xlib_draw_rectangle_x, "xlib-draw-rectangle!", 3, 0, 0,
+	  (SCM top_left, SCM width, SCM height))
      /** Draws a rectangle to the screen using the Xlib call XDrawRectangle.
-( X, Y ) is the upper left point of the rectangle.  The rectangle is of size
-WIDTH by HEIGHT. */
+TOP-LEFT is the upper left point of the rectangle.  The rectangle is of size
+WIDTH by HEIGHT.
+TOP-LEFT is a point pair: (X . Y). */
 #define FUNC_NAME s_xlib_draw_rectangle_x
 {
   int iX, iY, iWidth, iHeight;
 
   SCM_REDEFER_INTS;
 
-  if (!gh_number_p(x)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, x);
+  if (!xlib_point_pair_p(top_left)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, top_left);
   }
-  iX = gh_scm2int(x);
-
-  if (!gh_number_p(y)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, y);
-  }
-  iY = gh_scm2int(y);
+  xlib_point_pair_get_values(top_left, &iX, &iY);
 
   if (!gh_number_p(width)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 3, width);
+    scm_wrong_type_arg(FUNC_NAME, 2, width);
   }
   iWidth = gh_scm2int(width);
 
   if (iWidth < 0) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 3, width);
+    scm_wrong_type_arg(FUNC_NAME, 2, width);
   }
 
   if (!gh_number_p(height)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 4, height);
+    scm_wrong_type_arg(FUNC_NAME, 3, height);
   }
   iHeight = gh_scm2int(height);
 
   if (iHeight < 0) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 4, height);
+    scm_wrong_type_arg(FUNC_NAME, 3, height);
   }
 
   SCM_REALLOW_INTS;
@@ -112,41 +123,24 @@ WIDTH by HEIGHT. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(xlib_draw_line_x, "xlib-draw-line!", 4, 0, 0,
-	  (SCM x1, SCM y1, SCM x2, SCM y2))
+SCWM_PROC(xlib_draw_line_x, "xlib-draw-line!", 2, 0, 0,
+	  (SCM p1, SCM p2))
      /** Draws a line using the Xlib call XDrawLine.
-The line is drawn from ( X1, Y1 ) to ( X2, Y2 ).  */
+The line is drawn from P1 to P2.
+Both P1 and P2 are pairs (X . Y) representing a point*/
 #define FUNC_NAME s_xlib_draw_line_x
 {
   int iX1, iY1, iX2, iY2;
 
-  SCM_REDEFER_INTS;
-
-  if (!gh_number_p(x1)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, x1);
+  if (!xlib_point_pair_p(p1)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, p1);
   }
-  iX1 = gh_scm2int(x1);
+  xlib_point_pair_get_values(p1, &iX1, &iY1);
 
-  if (!gh_number_p(y1)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, y1);
+  if (!xlib_point_pair_p(p2)) {
+    scm_wrong_type_arg(FUNC_NAME, 2, p2);
   }
-  iY1 = gh_scm2int(y1);
-
-  if (!gh_number_p(x2)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 3, x2);
-  }
-  iX2 = gh_scm2int(x2);
-
-  if (!gh_number_p(y2)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 4, y2);
-  }
-  iY2 = gh_scm2int(y2);
-
-  SCM_REALLOW_INTS;
+  xlib_point_pair_get_values(p2, &iX2, &iY2);
 
   XDrawLine(dpy, Scr.Root, DrawingGC, iX1, iY1, iX2, iY2);
 
@@ -155,35 +149,31 @@ The line is drawn from ( X1, Y1 ) to ( X2, Y2 ).  */
 #undef FUNC_NAME
 
 
-SCWM_PROC(xlib_draw_arc_x, "xlib-draw-arc!", 6, 0, 0,
-	  (SCM x, SCM y, SCM width, SCM height, SCM angle1, SCM angle2))
+SCWM_PROC(xlib_draw_arc_x, "xlib-draw-arc!", 5, 0, 0,
+	  (SCM top_left, SCM width, SCM height, SCM angle1, SCM angle2))
      /** Draws a arc to the screen using the Xlib call XDrawArc.  
 The arc is specified in terms of a rectangle, in which it is wholly
-enclosed.  ( X, Y ) is at the upper left corner of the rectangle.  The
+enclosed.  TOP-LEFT is a point pair for the upper left corner of the rectangle.  The
 rectangle is of size WIDTH by HEIGHT.  The arc is drawn from ANGLE1 to
 ANGLE2. Angles are specified in degrees (0.0 to 360.0).*/
 #define FUNC_NAME s_xlib_draw_arc_x
 {
   int iX, iY, iWidth, iHeight;
   double nAngle1, nAngle2;
+  
 
   SCM_REDEFER_INTS;
   
-  if (!gh_number_p(x)) {
+  if (!xlib_point_pair_p(top_left)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, x);
+    scm_wrong_type_arg(FUNC_NAME, 1, top_left);
   }
-  iX = gh_scm2int(x);
-
-  if (!gh_number_p(y)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, y);
-  }
-  iY = gh_scm2int(y);
+  
+  xlib_point_pair_get_values(top_left, &iX, &iY);
 
   if (!gh_number_p(width)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 3, width);
+    scm_wrong_type_arg(FUNC_NAME, 2, width);
   }
   iWidth = gh_scm2int(width);
   if (iWidth < 0) {
@@ -193,7 +183,7 @@ ANGLE2. Angles are specified in degrees (0.0 to 360.0).*/
 
   if (!gh_number_p(height)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 4, height);
+    scm_wrong_type_arg(FUNC_NAME, 3, height);
   }
   iHeight = gh_scm2int(height);
   if (iHeight < 0) {
@@ -203,7 +193,7 @@ ANGLE2. Angles are specified in degrees (0.0 to 360.0).*/
 
   if (!gh_number_p(angle1)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 5, angle1);
+    scm_wrong_type_arg(FUNC_NAME, 4, angle1);
   }
   nAngle1 = gh_scm2double(angle1);
 
