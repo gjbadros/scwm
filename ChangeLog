@@ -1,8 +1,19 @@
+Thu Mar 12 20:28:57 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* utilities/*/Makefile.in: Move -lscwmexec to directly after
+ 	-L../libscwmexec, instead of after the X libraries -- was causing
+ 	problems with `cc' on Irix 6.2 for Jesse Glick.
+
 Thu Mar 12 09:20:49 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/emacs/scwm.el: Added scwm-procedure-documentation, and
  	some support functions; Fixed scwm-complete to go back an sexp,
  	not just a word
+
+Wed Mar 11 22:56:28 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* utilities/emacs/scwm.el: Added rudimentary completion support -- 
+	mostly proof of concept that an elisp guru should look at.
 
 Wed Mar 11 21:57:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
 

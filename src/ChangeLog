@@ -1,3 +1,14 @@
+Thu Mar 12 20:35:02 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.in: Build init_scheme_string.c use \n\ at ends of
+	lines, instead of using a multiline string constant (which vendor
+	cc-s don't necessarily support and is not standard C).
+
+	* scwmmenu.c (PmiimFromPmdShortcutKeypress): Remove inline
+ 	specifier.
+
+	* binding.c (BnumFromSz): Remove inline specifier
+
 Thu Mar 12 00:27:24 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c: Delete the SCWMEXEC_REQUEST property after reading it.
