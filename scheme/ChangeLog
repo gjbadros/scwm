@@ -1,3 +1,7 @@
+Mon May  3 11:38:41 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* ScwmBiff.scm: Patch from Glenn Trigg to fix some X warnings.
+
 Sun May  2 18:03:07 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* flash-window.scm: Added #:continually option to flash-window,

@@ -1,3 +1,8 @@
+Mon May  3 15:14:00 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* miscprocs.c: #ifdef out `get-key-event' since I never finished
+ 	getting it working and it does not work yet.
+
 Sun May  2 18:22:37 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c: Added missing BroadcastConfig calls to
