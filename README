@@ -1,43 +1,43 @@
 
-SCWM 0.2
+SCWM 0.4
 
-This is an alpha release of scwm, the Scheme Configurable Window
+This is a beta release of scwm, the Scheme Configurable Window
 Manager. SCWM is (currently) a hack of FVWM 2 with the fvwm
 configuration language replaced with Guile Scheme. Eventually, it will
 support many new features enabled by the powerful configuration
-language, including a GUI on-the-fly setup. I also think I can
-eventually get the base binary smaller than fvwm2's, by removing the
-redundant functionality and replacing it with simpler primitives, and
-also by placing some features in dynamically loadable shared libraries.
+language, including a GUI on-the-fly setup. Already many cool features
+have been added. The base binary is now smaller than fvwm2's, though
+memory usage is still higher. Placing some features in dynamically
+loadable shared libraries should help with this even more.
 
-This third alpha release implements nearly all useful fvwm2 functions,
-and fixes some of the bugs from the last release. The only major
-functionality still missing is: the button, title and border style
-commands, all of the decor commands, and everything related to
-modules. FVWM Modules will probably never be implemented, because I
-have better ways to provide similar functionality. The other style
-stuff and Decors will be supported in the near future. An interactive
-repl is available through the -i command-line option. This release,
-although labelled alpha, should be pretty stable and moderately
-useful. I've regularly used scwm as my window manager for about a
-month now.
+This fifth release implements nearly all useful fvwm2 functions, and
+fixes some of the bugs from the last release. The only functionality
+still missing is: everything related to modules. FVWM Modules will
+probably never be implemented, because I have better ways to provide
+similar functionality.  An interactive repl is available through the
+-i command-line option. This release, although labelled beta, should
+be pretty stable and moderately useful. I've regularly used scwm as my
+window manager for about four months now.
 
 I've only tried compiling it on i386-unknown-linux, but any platform
-that both fvwm2 and guile will build on should work. You need to have
+that both fvwm2 and guile will build on should work. I've heard
+success reports on sparc-sun-solaris. You need to have
 guile installed to do the build. See the file INSTALL for further
 instructions.
 
 There's various kinds of documentation and random info in the doc
 directory, and you can see some examples of what might be done in the
-system.scwmrc, and also looking at the modules in the scheme directory.
+system.scwmrc, the gjb.scwwmrc and decor.scwmrc, and also looking at
+the modules in the scheme directory.
 
 However, the system.scwmrc is not very interesting right now. If you
 think of neat hacks for it, pass them along to me. If people even want
 to work on the windowmanager itself, that's cool too.
 
-Things to look for in the near future include: a start on cleaning up
-the many leftover fvwm-isms in the code, more style and decor stuff,
-and a start on integrating guile-gtk so that you can create your own
+Things to look for in the near future include: more cleaning up of the
+leftover fvwm-isms in the code, restruccturing of the internal data
+structures, a more complete external interface, and a start on
+integrating guile-gtk and/or guile-tk so that you can create your own
 arbitrary gui elements.
 
 The copyright for the code in the scwm and libs subdirectories is the
