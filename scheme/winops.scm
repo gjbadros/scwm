@@ -45,9 +45,9 @@ on the window, and set the property on the window, respectively."
   "Close WIN either by deleting it or destroying it.
 WIN is only destroyed if it is not deleteable."
   (if win (if (window-deletable? win)
-	    (delete-window win)
-	    (destroy-window win))))
- 
+	      (delete-window win)
+	      (destroy-window win))))
+
 (define-public toggle-raise
   (make-toggling-winop raised? lower-window raise-window))
 
