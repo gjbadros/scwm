@@ -12,11 +12,12 @@ Fri Aug  7 20:04:44 1998  Greg Badros  <gjb@cs.washington.edu>
 	* miscprocs.c: Added scwm-version-date primitive to give the
 	  string in changed.c.
 
-	* scwm.c (scwm_log_usage): Add this function, have it call
-	  SendUsagePacket() from log-usage.c, and call the function after
-	  run_startup_hook() is invoked.  Can set SCWM_DO_NOT_LOG_USAGE
-	  environment variable, or scwm-do-not-log-usage scheme variable
-	  to turn off this functionality.
+	* scwm.c (scwm_maybe_send_thankyou_packet): Add this function,
+ 	have it call SendUsagePacket() from log-usage.c, and call the
+ 	function after run_startup_hook() is invoked.  Can set
+ 	SCWM_DO_NOT_LOG_USAGE environment variable to turn off, and must
+ 	set thank-scwm-authors-with-usage-note to #t for any packets to
+ 	leave user's machine
 
 Fri Aug  7 18:03:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
