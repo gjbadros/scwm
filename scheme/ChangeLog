@@ -1,3 +1,7 @@
+Tue May 11 15:06:11 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added some missing files.
+
 Sun May  9 14:44:11 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* property-respond.scm: Added; handles flash, flashing property
