@@ -101,7 +101,7 @@ SCM make_menu(SCM list_of_menuitems,
 	      SCM bg_color, SCM text_color,
 	      SCM picture_bg, SCM font, SCM extra_options);
 
-void init_scwm_menu();
+void init_menu();
 void menu_init_gcs();
 
 SCM popup_menu(SCM menu);

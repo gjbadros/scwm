@@ -17,6 +17,7 @@
 #include "screen.h"
 #include "deskpage.h"
 #include "module-interface.h"
+#include "virtual.h"
 
 SCM 
 set_current_desk_x(SCM sx)

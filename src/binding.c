@@ -289,6 +289,7 @@ unbind_key(SCM contexts, SCM key)
     scm_wrong_type_arg(__FUNCTION__, 1, contexts);
     break;
   default:
+    break;
   }
 
   fOkayKey = FKeyToKeysymModifiers(key, &keysym, &modmask);
@@ -351,6 +352,7 @@ unbind_mouse(SCM contexts, SCM button)
     scm_wrong_type_arg(__FUNCTION__, 1, contexts);
     break;
   default:
+    break;
   }
 
   if (szButton) {
@@ -407,6 +409,7 @@ bind_key(SCM contexts, SCM key, SCM proc)
     
     break;
   default:
+    break;
   }
 
   fOkayKey = FKeyToKeysymModifiers(key,&keysym,&modmask);
@@ -513,6 +516,7 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
     scm_wrong_type_arg("bind-mouse", 1, contexts);
     break;
   default:
+    break;
   }
   
   if (szButton) {

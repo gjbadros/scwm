@@ -184,7 +184,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
  * (A special cursor for the EdgeWrap border could be nice) HEDU
  ****************************************************************************/
 void 
-checkPanFrames(void)
+checkPanFrames()
 {
   int wrapX = (Scr.flags & EdgeWrapX);
   int wrapY = (Scr.flags & EdgeWrapY);
@@ -252,7 +252,7 @@ checkPanFrames(void)
  *
  ***************************************************************************/
 void 
-raisePanFrames(void)
+raisePanFrames()
 {
   if (Scr.PanFrameTop.isMapped)
     XRaiseWindow(dpy, Scr.PanFrameTop.win);

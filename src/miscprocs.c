@@ -15,6 +15,8 @@
 #include "decor.h"
 #include "font.h"
 
+extern SCM sym_center, sym_left, sym_right, sym_mouse;
+
 SCM 
 set_menu_mwm_style(SCM should)
 {
@@ -58,11 +60,6 @@ set_rubber_band_mask_x(SCM value)
   SCM_REALLOW_INTS;
   return (value);
 }
-
-SCM sym_left;
-SCM sym_right;
-SCM sym_center;
-
 
 SCM 
 set_title_justify(SCM just)
@@ -133,21 +130,13 @@ set_title_height(SCM height)
 
 
 
-SCM sym_focus, sym_mouse;
+SCM sym_focus;
 
 void 
 init_miscprocs()
 {
-  sym_left = gh_symbol2scm("left");
-  scm_protect_object(sym_left);
-  sym_right = gh_symbol2scm("right");
-  scm_protect_object(sym_right);
-  sym_center = gh_symbol2scm("center");
-  scm_protect_object(sym_center);
   sym_focus = gh_symbol2scm("focus");
   scm_protect_object(sym_focus);
-  sym_mouse = gh_symbol2scm("mouse");
-  scm_protect_object(sym_mouse);
 }
 
 SCM 

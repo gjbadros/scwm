@@ -7,7 +7,7 @@
 #define VIRTUAL_H_
 
 
-#ifdef PAN_FRAMES
+#ifndef NON_VIRTUAL
 void checkPanFrames();
 void raisePanFrames();
 #endif

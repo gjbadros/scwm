@@ -97,6 +97,12 @@ enum {
   NoInset = (1 << 9)
 };
 
+struct vector_coords {
+  int num;
+  int x[20];
+  int y[20];
+  int line_style[20];
+};
 
 typedef struct ButtonFace {
   ButtonFaceStyle style;
@@ -109,12 +115,7 @@ typedef struct ButtonFace {
     } grad;
   } u;
 
-  struct vector_coords {
-    int num;
-    int x[20];
-    int y[20];
-    int line_style[20];
-  } vector;
+ struct vector_coords vector;
 
   struct ButtonFace *next;
   SCM sface;

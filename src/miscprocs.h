@@ -13,7 +13,7 @@ SCM set_click_time_x(SCM ctime);
 SCM set_colormap_focus_x(SCM ftype);
 SCM set_opaque_move_size_x(SCM size);
 
-SCM scwm_quit();
+SCM scwm_quit(SCM args);
 
 SCM pointer_position();
 SCM move_pointer_to(SCM sx, SCM sy);

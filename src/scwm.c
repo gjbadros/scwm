@@ -51,6 +51,9 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #include "Grab.h"
 #include "system.h"
 #include "colors.h"
+#include "events.h"
+#include "virtual.h"
+#include "miscprocs.h"
 #include "font.h"
 
 
@@ -109,7 +112,6 @@ void SetRCDefaults(void);
 void StartupStuff(void);
 
 XContext ScwmContext;		/* context for scwm windows */
-XContext MenuContext;		/* context for scwm menus */
 
 int JunkX = 0, JunkY = 0;
 Window JunkRoot, JunkChild;	/* junk window */
@@ -191,6 +193,10 @@ main(int argc, char **argv)
   return 0;
 }
 
+#ifdef USE_CASSOWARY
+extern "C" { void cassowary(); }
+#endif
+
 /***********************************************************************
  *
  *  Procedure:
@@ -238,7 +244,9 @@ scwm_main(int argc, char **argv)
   init_face();
   init_input_hooks();
   init_scwm_procs();
-
+#ifdef USE_CASSOWARY
+  cassowary();
+#endif
   szCmdConfig = safemalloc(1 * sizeof(char));
 
   szCmdConfig[0] = '\0';

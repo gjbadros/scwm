@@ -69,7 +69,7 @@ typedef struct ScwmWindow {
   XWindowAttributes attr;	/* the child window attributes */
   XSizeHints hints;		/* normal hints */
   XWMHints *wmhints;		/* WM hints */
-  XClassHint class;
+  XClassHint classhint;
   int Desk;			/* Tells which desktop this window is on */
   int StartDesk;		/* Tells which desktop this window is on */
   int FocusDesk;		/* Where (if at all) was it focussed */

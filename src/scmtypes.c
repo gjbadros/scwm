@@ -27,10 +27,17 @@
  * the fvwm license (see COPYING.FVWM).
  *
  */
+#ifdef __cplusplus
+extern "C" {
+#endif
 #include <libguile.h>
+#ifdef __cplusplus
+}
+#endif
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <stdio.h>
+#include <guile/gh.h>
 #include "scwm.h"
 #include "font.h"
 #include "color.h"

@@ -210,12 +210,12 @@ AddWindow(Window w)
   XSetWindowAttributes attributes;	/* attributes for create windows */
   int i, width, height;
   int a, b;
-  char *value;
+  char *value = NULL;
 
   char *decor = NULL;
 
   unsigned long tflag, saved_flags;
-  int Desk, border_width, resize_width;
+  int Desk = 0, border_width = 0, resize_width = 0;
   extern Bool NeedToResizeToo;
   extern ScwmWindow *colormap_win;
   char *forecolor = NULL, *backcolor = NULL;
@@ -249,13 +249,13 @@ AddWindow(Window w)
     tmp_win->name = NoName;
 
   /* removing NoClass change for now... */
-  tmp_win->class.res_name = NoResource;
-  tmp_win->class.res_class = NoClass;
-  XGetClassHint(dpy, tmp_win->w, &tmp_win->class);
-  if (tmp_win->class.res_name == NULL)
-    tmp_win->class.res_name = NoResource;
-  if (tmp_win->class.res_class == NULL)
-    tmp_win->class.res_class = NoClass;
+  tmp_win->classhint.res_name = NoResource;
+  tmp_win->classhint.res_class = NoClass;
+  XGetClassHint(dpy, tmp_win->w, &tmp_win->classhint);
+  if (tmp_win->classhint.res_name == NULL)
+    tmp_win->classhint.res_name = NoResource;
+  if (tmp_win->classhint.res_class == NULL)
+    tmp_win->classhint.res_class = NoClass;
 
   FetchWmProtocols(tmp_win);
   FetchWmColormapWindows(tmp_win);
@@ -700,9 +700,9 @@ AddWindow(Window w)
     BroadcastName(M_ICON_FILE, tmp_win->w, tmp_win->frame,
     (unsigned long) tmp_win, tmp_win->szIconFile); */
   BroadcastName(M_RES_CLASS, tmp_win->w, tmp_win->frame,
-		(unsigned long) tmp_win, tmp_win->class.res_class);
+		(unsigned long) tmp_win, tmp_win->classhint.res_class);
   BroadcastName(M_RES_NAME, tmp_win->w, tmp_win->frame,
-		(unsigned long) tmp_win, tmp_win->class.res_name);
+		(unsigned long) tmp_win, tmp_win->classhint.res_name);
   if (tmp_win->mini_icon_image != SCM_BOOL_F) {
     Broadcast(M_MINI_ICON, 6,
 	      tmp_win->w,	/* Watch Out ! : I reduced the set of infos... */

@@ -28,10 +28,13 @@
 #include "resize.h"
 #include "borders.h"
 #include "decor.h"
+#include "decorations.h"
 #include "colors.h"
 #include "colormaps.h"
 #include "image.h"
+#include "events.h"
 #include "module-interface.h"
+#include "virtual.h"
 #include "font.h"
 
 size_t 
@@ -762,10 +765,10 @@ DestroyScwmWindow(ScwmWindow * sw)
   if (sw->wmhints)
     XFree((char *) sw->wmhints);
   /* removing NoClass change for now... */
-  if (sw->class.res_name && sw->class.res_name != NoResource)
-    XFree((char *) sw->class.res_name);
-  if (sw->class.res_class && sw->class.res_class != NoClass)
-    XFree((char *) sw->class.res_class);
+  if (sw->classhint.res_name && sw->classhint.res_name != NoResource)
+    XFree((char *) sw->classhint.res_name);
+  if (sw->classhint.res_class && sw->classhint.res_class != NoClass)
+    XFree((char *) sw->classhint.res_class);
   if (sw->mwm_hints)
     XFree((char *) sw->mwm_hints);
 
@@ -1655,14 +1658,14 @@ SCM
 window_class(SCM win)
 {
   VALIDATE(win, "window-class");
-  return gh_str02scm(SCWMWINDOW(win)->class.res_class);
+  return gh_str02scm(SCWMWINDOW(win)->classhint.res_class);
 }
 
 SCM 
 window_resource(SCM win)
 {
   VALIDATE(win, "window-resource");
-  return gh_str02scm(SCWMWINDOW(win)->class.res_name);
+  return gh_str02scm(SCWMWINDOW(win)->classhint.res_name);
 }
 
 
@@ -1933,15 +1936,14 @@ set_icon_box_x(SCM sx, SCM sy, SCM sw, SCM sh, SCM win)
 }
 
 
-SCM sym_mouse, sym_click, sym_sloppy, sym_none;
+SCM sym_mouse, sym_sloppy, sym_none;
+extern SCM sym_click;
 
 void 
 init_window()
 {
   sym_mouse = gh_symbol2scm("mouse");
   scm_protect_object(sym_mouse);
-  sym_click = gh_symbol2scm("click");
-  scm_protect_object(sym_click);
   sym_sloppy = gh_symbol2scm("sloppy");
   scm_protect_object(sym_sloppy);
   sym_none = gh_symbol2scm("none");

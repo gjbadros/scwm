@@ -33,6 +33,7 @@
 #include "color.h"
 #include "util.h"
 #include "misc.h"
+#include "string_token.h"
 
 #define scmBLACK load_color(gh_str02scm("black"))
 #define scmWHITE load_color(gh_str02scm("white"))
@@ -525,10 +526,11 @@ InvokeUnhoverAction(DynamicMenu *pmd)
   MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
   /* invoke the un-hover action */
   if (pmiimSelected && !UNSET_SCM(pmiimSelected->pmi->scmUnhover)) {
-    call_thunk_with_message_handler(pmiimSelected->pmi->scmUnhover);
+    return call_thunk_with_message_handler(pmiimSelected->pmi->scmUnhover);
   } else {
     DBUG(__FUNCTION__,"No unhover hook, %ld",pmiimSelected);
   }
+  return SCM_UNDEFINED;
 }
 
 

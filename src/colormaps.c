@@ -43,11 +43,17 @@ HandleColormapNotify(void)
   XColormapEvent *cevent = (XColormapEvent *) & Event;
   Bool ReInstall = False;
 
+  Bool fCeventNew;
+#if defined(__cplusplus) || defined(c_plusplus)
+  fCeventNew = cevent->c_new;
+#else
+  fCeventNew = cevent->new;
+#endif
 
   if (!swCurrent) {
     return;
   }
-  if (cevent->new) {
+  if (fCeventNew) {
     XGetWindowAttributes(dpy, swCurrent->w, &(swCurrent->attr));
     if ((swCurrent == colormap_win) && (swCurrent->number_cmap_windows == 0))
       last_cmap = swCurrent->attr.colormap;
@@ -59,7 +65,7 @@ HandleColormapNotify(void)
   }
   while (XCheckTypedEvent(dpy, ColormapNotify, &Event)) {
     swCurrent = SwFromWindow(dpy,cevent->window);
-    if ((swCurrent) && (cevent->new)) {
+    if ((swCurrent) && (fCeventNew)) {
       XGetWindowAttributes(dpy, swCurrent->w, &(swCurrent->attr));
       if ((swCurrent == colormap_win) && (swCurrent->number_cmap_windows == 0))
 	last_cmap = swCurrent->attr.colormap;
