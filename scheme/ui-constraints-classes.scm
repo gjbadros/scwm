@@ -159,7 +159,15 @@ drawn.  POINT is of the form (X . Y)."
 	   (set! win2 (get-window-with-nonant-interactively))
 	   (set! nonant2 (object-property win2 'nonant))
 	   (list (list win1 win2) (list nonant1 nonant2)))))))
-
+;; (define-public ui-constraint-prompter-msgwin (make-message-window ""))
+;; (define msgwin ui-constraint-prompter-msgwin)
+;; (define name "foo")
+;; (define p1 "p1")
+;; (define p2 "p2")
+;; nonants
+;; (get-window-with-nonant-interactively)
+;; ui-constraints-classes
+;; (two-window-or-more-nonant-prompter "foo")
 
 ;; Perhaps should move this elsewhere
 ;; Useful drawing utilities function

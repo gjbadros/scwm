@@ -58,11 +58,8 @@
 (define animate-pixmaps-delay 1000)  ;; in ms
 (define animating? #f)
 
-;; GJB:FIXME:: something is screwey w.r.t the timer hooks
-;; during animation... I'm not sure what's going wrong exactly,
-;; but for now I need to leave this off to get reliable behaviour
-;; of the toolbar
-(define-public ui-constraints-buttons-animate-pixmaps #f)
+(define-public ui-constraints-buttons-animate-pixmaps #t)
+;; (set! ui-constraints-buttons-animate-pixmaps #t)
 
 (define (animate-pixmaps button pixmap1 pixmap2)
   (define (show1) 
@@ -157,7 +154,6 @@
     (gtk-button-box-set-child-ipadding box 0 0)
     (gtk-button-box-set-child-size box 32 32)
     (gtk-box-set-homogeneous box #f)
-    (for-each (lambda (class) (make-class-button class pixmap)) ui-constraint-classes)
     (let ((stop-composition-button
 	   (add-extra-button "Stop composition" "stop-composition.xpm" 
 			     "Stop recording composition of constraints."
@@ -176,6 +172,7 @@
 			    (ui-constraints-composition-end)
 			    (gtk-widget-show-all start-composition-button)
 			    (gtk-widget-hide stop-composition-button))))
+    (for-each (lambda (class) (make-class-button class pixmap)) ui-constraint-classes)
     (gtk-container-add toplevel box)
     (gtk-widget-show box)
     (gtk-signal-connect toplevel "delete_event" (lambda (args) (gtk-widget-hide toplevel)))
