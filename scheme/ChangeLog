@@ -1,3 +1,17 @@
+1999-05-03  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* stylist.scm: New file, GTK interface to the window-style system.
+
+	* stringops.scm (string-join): Return null string instead of #f.
+
+	* xprop-extras.scm (MWH-*, MWF-*, MWD-*): New flag constants for
+	_MOTIF_WM_HINTS. 
+	(mwm-functions->string, mwm-decorations->string): New functions
+	decoding parts of _MOTIF_WM_HINTS.
+	(X-properties->string): Handle _MOTIF_WM_HINTS.
+	Represent unknown types as a list of hex values - these were lumped
+	together with CARDINAL/INTEGER and in decimal.
+
 Mon May  3 11:38:41 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* ScwmBiff.scm: Patch from Glenn Trigg to fix some X warnings.
