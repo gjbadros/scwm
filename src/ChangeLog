@@ -1,3 +1,75 @@
+Fri Nov 28 23:58:30 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* image.c: Added full_name scm string to track where the image
+	actually got loaded from.  Use that as it's print string, as I
+	think a unique identifier makes more sense than just what the user
+	gave to make-image.  image-properties still returns the "name" as
+	the car of the list it returns.
+
+	* Move GC_MARK_SCM_IF_SET into scwm.h, and use in image.c.
+
+Fri Nov 28 23:32:18 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* image.c: Adding warnings throughout the imaging code.  I know
+ 	we've not decided how best to handle warnings, but that doesn't
+ 	mean that they shouldn't go in the code.
+  	scwm_msg(WARN,__FUNCTION__, <msg>) works great, and will be easy
+ 	to find later when we do something different; Added a note about
+ 	not finding the max path length every time through... can we do
+ 	stuff when image-load-path changes? Added a .xpm.gz loader -- does
+ 	this work?
+
+	* image.h: Added SAFE_IMAGE(x)
+
+	* Makefile.in: Generalize the .x building better; not just for
+	image.x any longer
+
+	* Use image.h, not Picture.h for almost everything (except old menu
+	code)
+
+	* Use STREQ throughout instead of !strcmp -- I've never liked the
+ 	latter idiom because of the "!" seems to say not equal
+
+	* Picture.c,Picture.h,paths.c,paths.h: Move szPicturePath into
+ 	paths.c as szImagePath, though it'll go away real soon now.
+
+	* drawmenu.c: tweak up some of the spacing constants, use images,
+ 	not pictures. Adding underlining of shortcut keys.  Made
+ 	PaintMenuItem be external, so that scwmmenu can use it on expose
+ 	events.
+
+	* icons.c: Removed some legacy code hidden in comments
+
+	* menuitem.c, menuitem.h: Use new GC_MARK_SCM_IF_SET abstraction;
+	use images, not pictures. Added menuitem-properties primitive,
+	added init_menuitem, use guile-snarf. Added chShortcut,
+	ichShortcutOffset, imiim, pmd to MenuItemInMenu objects.  Added
+	SAFE_SCWM_MENUITEM caster 
+
+	* smprocs.c: update set-image-path!, make-menu-item
+
+	* scwm.c: Added setlinebuf calls for stderr and stdout to ease
+ 	debugging -- perhaps this is a portability problem.  Also may be
+ 	an efficiency problem later on, but for now it's the right
+	thing. Added new init_... calls
+
+	* scwm.h: Added UNSET_SCM(x) abstraction for variable type checking
+
+	* scwmmenu.c: Use GC_MARK_SCM_IF_SET; use images, not pictures;
+	make NewPchKeysUsed store state in the MenuItemInMenu-s; added
+	menu-properties primitive; use UNSET_SCM throughout; Got
+	hover/unhover hooks working, got popup window behaviour working;
+	added numerous menu utility functions; Do highlighting of current
+	item properly; use guile-snarf
+
+	* scwmmenu.h: Added SAFE_SCWMMENU; use images, not pictures
+
+	* string_token.c: Added IchIgnoreCaseInSz, and noted that stripcpy
+ 	can go away when old menuing code goes away
+
+	* xmisc.c: DrawImage now takes a scwm_image * instead of a Picture *
+
+
 Thu Nov 27 23:37:33 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Augment all OBJECT_P-s with SCM_NIMP(X) test to make sure they
