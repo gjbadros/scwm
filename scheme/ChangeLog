@@ -1,5 +1,10 @@
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* virtual.scm (move-to-viewport): Typo fixed. Patch from Sam
+	Falkner <samf@Central.Sun.COM>.
+
+	* gnome-hints.scm: Fully support _WIN_AREA and _WIN_AREA_COUNT.
+
 	* flux.scm: Account for module name changes.
 
 	* Makefile.am (scwm_common_scheme): Update file list.

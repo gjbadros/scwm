@@ -137,7 +137,7 @@ The viewport selected will be an integral multiple of the desk size."
 The (0,0) viewport is the starting viewport.  XX and YY are
 full display-size increments (e.g., (1,0) is the viewport
 just to the right of the home (0,0) viewport)."
-    (apply set-viewport-position! (map * (list xx yy) display-size)))
+    (apply set-viewport-position! (map * (list xx yy) (display-size))))
 
 (define-public (align-viewport)
   "Set the viewport position to the nearest multiple of the desk size."
