@@ -20,7 +20,9 @@
 (define mail-spool-dir (string-append "/var/spool/mail/" USER))
 
 
-(define user-image-path (string-append HOME "/pixmaps:" HOME "/bitmaps"))
+(define user-image-load-list 
+  (list (string-append HOME "/pixmaps")
+	(string-append HOME "/bitmaps")))
 
 (define want-close-button #t) ;; was #f
 
@@ -50,11 +52,6 @@
 (define icon-font
   (load-font "fixed"))
 
-;(define (menu-item name pixmap action)
-;  (list (if pixmap (string-append name "%mini-" pixmap ".xpm%") name) action))
-
-;;(menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue" 
-;;	    #:font font14 #:mwm #f)
 (menu-style #:fg "black" #:bg "grey76" #:stipple "grey35" 
 	    #:font menu-font #:mwm #f)
 
@@ -65,8 +62,8 @@
 ;;; FIXGJB: should be a function returning whether it should do opaque
 ;;; move or an integer for the percent (server/net/cpu load might
 ;;; influence whether you want to do an opaque move, e.g.)
-
 ;;(set-opaque-move-size! 30) 
+
 ;;(set-edge-resistance! 500 10)
 ;;(set-edge-scroll! 100 100)
 
@@ -76,20 +73,16 @@
 (set-icon-font! font12)
 (set-rubber-band-mask! 255)  
 
-;;-------------------------------;;
-;; set some paths                ;;
-;;
-
-(set-image-path! (string-append user-image-path 
-				 ":/usr/X11/include/X11/bitmaps:\
-/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
-/usr/local/icons:\
-/uns/share/include/X11/pixmaps:/uns/share/include/X11/bitmaps:\
-/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons:."))
-
+;;; set path to use for image searches
+(set! image-load-path (cons "/usr/X11/lib/X11/mini-icons" image-load-path))
+(set! image-load-path (cons "/usr/X11/include/X11/pixmaps" image-load-path))
+(set! image-load-path (cons "/usr/lib/icons" image-load-path))
+(set! image-load-path (cons "/usr/local/X11/include/X11/pixmaps" image-load-path))
+(set! image-load-path (cons "/usr/local/lib/icons" image-load-path))
 (set! image-load-path (cons "/usr/local/icons" image-load-path))
 (set! image-load-path (cons "/uns/share/include/X11/pixmaps" image-load-path))
 (set! image-load-path (cons "/uns/share/include/X11/bitmaps" image-load-path))
+(set! image-load-path (append user-image-load-list image-load-path))
 
 (define pic-system-button
   (make-image "mini-sys3d-full.xpm"))
@@ -130,7 +123,6 @@
 ;; FIXGJB: make-face's style of argument passing
 ;; is different from the window-style method; I imagine
 ;; MS has a wrapper planned for this (MSFIX)
-
 (border-style #:hidden-handles #t #:no-inset #t)
 
 ;;; I'm not changing these for now to use the new style
@@ -201,12 +193,16 @@
 	      1 hook)
   (set! right-button-number (+ 2 right-button-number)))
 
-;; window buttons
-;;(bind-mouse 'button-1 1 popup-small-ops)
-;;(bind-mouse 'button-2 1 vertical-toggle-maximize)
-;;(bind-mouse 'button-4 1 iconify)
+;;; window buttons
+;(bind-mouse 'button-1 1 popup-small-ops)
+;(bind-mouse 'button-2 1 vertical-toggle-maximize)
+;(bind-mouse 'button-4 1 iconify)
 
-;;(add-left-button system-button-face (lambda () (popup-small-ops)))
+;;(set-button-face! 1 mini-icon-button-face)
+;;(set-button-face! 1 tall-maximize-button-face)
+
+
+;;;(add-left-button system-button-face (lambda () (popup-small-ops)))
 (add-left-button mini-icon-button-face (lambda () (popup-small-ops)))
 
 ;; MS: I presume this is the desired efffect.
@@ -226,9 +222,6 @@
 		  (lambda () (vertical-toggle-maximize)))
 (add-right-button iconify-button-face
 		  (lambda () (iconify)))
-
-;;(set-button-face! 1 mini-icon-button-face)
-;;(set-button-face! 1 tall-maximize-button-face)
 
 ;; (plain-border (get-window)) fixes the display problem for the selected window
 ;; something must not be initialized correctly
@@ -261,45 +254,49 @@
 (window-style "Emacs" #:mini-icon "mini-edit.xpm"
 	              #:icon "TextEditor.xpm")
 
-;;-------------------------------;;
-;; define some useful menus      ;;
-
+;;; define some useful menus
 (define menu-window-ops
-  (make-menu "Window Ops"
-	     (menu-title)
-	     (menu-item "&Move" #:left-pixmap "mini-move.xpm" 
-			#:action interactive-move)
-	     (menu-item "&Resize" #:left-pixmap "mini-resize.xpm" 
-			#:action interactive-resize)
-	     (menu-item "R&aise" #:left-pixmap "mini-raise.xpm" 
-			#:action raise-window)
-	     (menu-item "&Lower" #:left-pixmap "mini-lower.xpm" 
-			#:action lower-window)
-	     (menu-item "&Iconify/Restore" #:left-pixmap "mini-iconify.xpm" 
-			#:action toggle-iconify)
-	     (menu-item "&Stick/Unstick" #:left-pixmap "mini-stick.xpm" 
-			#:action toggle-stick)
-	     (menu-item "Ma&ximize/Reset" #:action both-toggle-maximize)
-	     (menu-item "Ma&ximize &Tall/Reset"
-			"maxtall" #:action vertical-toggle-maximize)
-	     (menu-item "Maximize &Wide/Reset"
-			"maxwide" #:action horizontal-toggle-maximize)
-	     (menu-item "S&hade/Reset" #:action toggle-window-shade)
-	     (menu-separator)
-	     (menu-item "Keep-&on-top/Reset" #:action toggle-on-top)
-	     (menu-item "&Print" #:action print-window)
-	     (menu-separator)
-	     (menu-item "&Delete" #:action delete-window)
-	     (menu-item "&Close" #:left-pixmap "mini-cross.xpm" 
-			#:action close-window)
-	     (menu-item "&Kill" #:left-pixmap "mini-bomb.xpm" 
-			#:action destroy-window)
-	     (menu-separator)
-	     (menu-item "Switch to..." #:action
-			(lambda () 
-			  (show-window-list-menu #:show-geometry #t)))
-	     (menu-item "Re&fresh Screen" #:left-pixmap "mini-ray.xpm" 
-			#:action refresh)))
+  (menu
+   (list
+    (menuitem "Window Ops" #f)
+    (menuitem "&Move" #:image-left "mini-move.xpm" 
+	       #:action interactive-move)
+    (menuitem "&Resize" #:image-left "mini-resize.xpm" 
+	       #:action interactive-resize)
+    (menuitem "R&aise" #:image-left "mini-raise.xpm" 
+	       #:action raise-window)
+    (menuitem "&Lower" #:image-left "mini-lower.xpm" 
+	       #:action lower-window)
+    (menuitem "&Iconify/Restore" #:image-left "mini-iconify.xpm" 
+	       #:action toggle-iconify)
+    (menuitem "&Stick/Unstick" #:image-left "mini-stick.xpm" 
+	       #:action toggle-stick)
+    (menuitem "Ma&ximize/Reset" #:action both-toggle-maximize)
+    (menuitem "Ma&ximize &Tall/Reset" #:image-left "maxtall" 
+	       #:action vertical-toggle-maximize)
+    (menuitem "Maximize &Wide/Reset" #:image-left "maxwide"
+	       #:action horizontal-toggle-maximize)
+    (menuitem "S&hade/Reset" 
+	       #:action toggle-window-shade)
+    menu-separator
+    (menuitem "Keep-&on-top/Reset" #:action toggle-on-top)
+    (menuitem "&Print" #:action print-window)
+    menu-separator
+    (menuitem "&Delete" #:action delete-window)
+    (menuitem "&Close" #:image-left "mini-cross.xpm" 
+	       #:action close-window)
+    (menuitem "&Kill" #:image-left "mini-bomb.xpm" 
+	       #:action destroy-window)
+    menu-separator
+    (menuitem "Switch to..." #:action
+	       (lambda () 
+		 (show-window-list-menu #:show-geometry #t)))
+    (menuitem "Re&fresh Screen" #:image-left "mini-ray.xpm" 
+	       #:action refresh))))
+
+;;(popup-menu menu-window-ops)
+;;(menu-properties menu-window-ops)
+
 
 ;;(window-shade (get-window) #t)
 ;;(un-window-shade (get-window) #t)
@@ -317,7 +314,6 @@
 (define (scwm-about-message)
   (display "Need to write scwm-about-message\n"))
 
-
 (define (start-xterm)
   (execute (string-append "color-xterm " xterm-user-shell-options)))
 
@@ -328,13 +324,15 @@
   (execute (string-append "workman -s " command)))
 
 (define quit-verify
-  (make-menu "Really quit scwm?"
-	     (menu-title)
-	     (menu-item "Yes" #:action quit)
-	     (menu-item "No" #:action noop)
-	     (menu-separator)
-	     (menu-item "Restart scwm" #:action
-			(lambda () (restart "scwm")))))
+  (menu 
+   (list
+    (menuitem "Really quit scwm?" #f)
+    menu-title
+    (menuitem "Yes" #:action quit)
+    (menuitem "No" #:action noop)
+    menu-separator
+    (menuitem "Restart scwm" 
+	       #:action (lambda () (restart "scwm"))))))
 
 
 (define use-complete-host-menu #t)
@@ -342,154 +340,167 @@
 ;;; FIXGJB introduce syntax which gives the popup-menu-root-start closure after
 ;;; defining a menu
 (define menu-root-start
-;  (make-menu "RootStart%linux-menu.xpm@^blue^" "Start %mini-exp.xpm%"
-  (make-menu "Start %mini-exp.xpm%"
-	     (menu-title)
-	     (menu-item "&New shell" #:left-pixmap "mini-sh1.xpm" 
-			#:action start-xterm)
-	     (menu-item "&Applications" #:left-pixmap "mini-x2.xpm" 
-			#:action (lambda () 
-					       (popup menu-applications)))
-	     (menu-item "&Utilities" #:left-pixmap "mini-hammer.xpm" 
-			#:action (lambda ()
-						(popup menu-utilities)))
-	     (menu-item "&Multimedia" #:left-pixmap "mini-audiovol.xpm" 
-			#:action (lambda ()
-						   (popup menu-multimedia)))
-	     (menu-item "&Games" #:left-pixmap "mini-happy.xpm" 
-			#:action (lambda ()
-					   (popup menu-games)))
-	     (menu-separator)
-	     (menu-item "H&osts" #:left-pixmap "mini-windows.xpm" 
-			#:action (lambda ()
-					     (popup menu-hosts)))
-	     (if use-complete-host-menu
-		 (menu-item "O&ther Hosts" #:action 
-			    (lambda ()
-			      (popup menu-otherhosts))))
-	     (menu-item "&System Utilities" #:left-pixmap "mini-connect.xpm" 
-			#:action (lambda ()
-				   (popup menu-system-utilities)))
-	     
-	     ;; MS - use the menu object rather than a popup closure when 
-	     ;; possible to get correct submenu semantics
-	     (menu-item "&Window Operations" #:left-pixmap "mini-windows.xpm" 
-			#:action menu-window-ops)
-	     (menu-item "&Preferences" #:left-pixmap "mini-prefs.xpm" 
-			#:action (lambda ()
-				   (popup menu-preferences)))
-	     (menu-separator)
-	     (menu-item "S&creensaver" #:left-pixmap "mini-display.xpm" 
-			#:action (lambda ()
-				   (popup menu-screensaver)))
-	     (menu-item "&Lock Screen" #:left-pixmap "mini-lock.xpm" 
-			#:action (lambda ()
-				   (exec-xlock)))
-	     (menu-separator)
-	     (menu-item "A&bout ScwmTNL" #:left-pixmap "mini-exclam.xpm" 
-			#:action (lambda ()
-				   (scwm-about-message)))
-	     (menu-item "&Help ScwmTNL" #:left-pixmap "mini-question.xpm" 
-			#:action (lambda ()
-				   (scwm-help)))
-	     (menu-item "E&xit Scwm" #:left-pixmap "mini-stop.xpm" 
-			#:action quit-verify)))
-
+  ;;  (menu "RootStart" "Start %mini-exp.xpm%"
+  (menu
+   (list 
+    (menuitem "Start" #:image-left "mini-exp.xpm")
+    menu-title
+    (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
+	       #:action start-xterm)
+    (menuitem "&Applications" #:image-left "mini-x2.xpm" 
+	       #:action (lambda () 
+			  (popup-menu menu-applications)))
+    (menuitem "&Utilities" #:image-left "mini-hammer.xpm" 
+	       #:action (lambda ()
+			  (popup-menu menu-utilities)))
+    (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm" 
+	       #:action (lambda ()
+			  (popup-menu menu-multimedia)))
+    (menuitem "&Games" #:image-left "mini-happy.xpm" 
+	       #:action (lambda ()
+			  (popup-menu menu-games)))
+    menu-separator
+    (menuitem "H&osts" #:image-left "mini-windows.xpm" 
+	       #:action (lambda ()
+			  (popup-menu menu-hosts)))
+    (if use-complete-host-menu
+	(menuitem "O&ther Hosts" #:action 
+		   (lambda ()
+		     (popup-menu menu-otherhosts))))
+    (menuitem "&System Utilities" #:image-left "mini-connect.xpm" 
+	       #:action (lambda ()
+			  (popup-menu menu-system-utilities)))
+    
+    ;; MS - use the menu object rather than a popup closure when 
+    ;; possible to get correct submenu semantics
+    (menuitem "&Window Operations" #:image-left "mini-windows.xpm" 
+	       #:action (lambda ()
+			  (popup-menu menu-window-ops)))
+    (menuitem "&Preferences" #:image-left "mini-prefs.xpm" 
+	       #:action (lambda ()
+			  (popup-menu menu-preferences)))
+    menu-separator
+    (menuitem "S&creensaver" #:image-left "mini-display.xpm" 
+	       #:action (lambda ()
+			  (popup-menu menu-screensaver)))
+    (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
+	       #:action (lambda ()
+			  (exec-xlock)))
+    menu-separator
+    (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
+	       #:action (lambda ()
+			  (scwm-about-message)))
+    (menuitem "&Help ScwmTNL" #:image-left "mini-question.xpm" 
+	       #:action (lambda ()
+			  (scwm-help)))
+    (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
+	       #:action (lambda ()
+			  (popup-menu quit-verify))))
+      #:image-side "linux-menu.xpm"
+      #:color-bg-image-side "blue"))
 
 (define (popup-menu-root-start)
-  (popup menu-root-start))
+  (popup-menu menu-root-start))
 
 
-(define (popup-ops)
-  (popup menu-window-ops))
+(define (popup-window-ops)
+  (popup-menu menu-window-ops))
 
 (define menu-desk 
-  (make-menu "Desks"
-	     (menu-title)
-	     (menu-item "Desk 1" #:action (lambda () (set-current-desk! 0)))
-	     (menu-item "Desk 2" #:action (lambda () (set-current-desk! 1)))
-	     (menu-item "Desk 3" #:action (lambda () (set-current-desk! 2)))
-	     (menu-item "Desk 4" #:action (lambda () (set-current-desk! 3)))))
+  (menu 
+   (list (menuitem "Desks" #f)
+	 menu-title
+	 (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
+	 (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
+	 (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
+	 (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
 
 (define menu-util 
-  (make-menu "Utilities"
-	     (menu-title)
-	     (menu-item "xterm" #:left-pixmap "mini-term.xpm" 
-			#:action (lambda () (execute "xterm")))
-	     (menu-item "rxvt"
-			#:action (lambda () (execute "rxvt")))
-	     (menu-item "emacs" #:left-pixmap "mini-edit.xpm" 
-			#:action (lambda () (execute "emacs")))
-	     (menu-item "top" #:action (lambda () (execute "rxvt -T Top -n Top -e top")))
-	     (menu-item "xcalc" #:action (lambda () (execute "xcalc")))
-	     (menu-item "xmag" #:action (lambda () (execute "xmag")))
-	     (menu-separator)
-	     (menu-item "Desks" #:action menu-desk)
-	     (menu-separator)
-	     (menu-item "Exit scwm" #:action quit-verify)))
+  (menu 
+   (list
+    (menuitem "Utilities" #f)
+    menu-title
+    (menuitem "xterm" #:image-left "mini-term.xpm" 
+	       #:action (lambda () (execute "xterm")))
+    (menuitem "rxvt"
+	       #:action (lambda () (execute "rxvt")))
+    (menuitem "emacs" #:image-left "mini-edit.xpm" 
+	       #:action (lambda () (execute "emacs")))
+    (menuitem "top" #:action (lambda () (execute "rxvt -T Top -n Top -e top")))
+    (menuitem "xcalc" #:action (lambda () (execute "xcalc")))
+    (menuitem "xmag" #:action (lambda () (execute "xmag")))
+    menu-separator
+    (menuitem "Desks" #:action (lambda () (popup-menu menu-desk)))
+    menu-separator
+    (menuitem "Exit scwm" (lambda () (popup-menu quit-verify))))))
 
 (define (popup-util)
-  (popup menu-util))
+  (popup-menu menu-util))
 
 (define (popup-root-start)
-  (popup menu-root-start))
+  (popup-menu menu-root-start))
 
 (define (make-small-window-ops-menu w)
-  (make-menu "Window Ops Small"
-	     (menu-item "&Move" #:left-pixmap "mini-move.xpm" 
-			#:action interactive-move)
-	     (menu-item "Re&size" #:left-pixmap "mini-resize.xpm" 
-			#:action interactive-resize)
-	     (menu-item (if (iconified? w)
-			    "Unmi&nimize"
-			    "Mi&nimize") #:left-pixmap "mini-iconify.xpm" 
-			    #:action iconify)
-	     (menu-item (if (maximized? w) 
+  (menu
+   (list
+    (menuitem "Window Ops Small" #f)
+    (menuitem "&Move" #:image-left "mini-move.xpm" 
+	       #:action interactive-move)
+    (menuitem "Re&size" #:image-left "mini-resize.xpm" 
+	       #:action interactive-resize)
+    (menuitem (if (iconified? w)
+		   "Unmi&nimize"
+		   "Mi&nimize") #:image-left "mini-iconify.xpm" 
+		   #:action iconify)
+    (menuitem (if (maximized? w) 
 			    "Unma&ximize" 
 			    "Ma&ximize") #:action both-toggle-maximize)
-	     (menu-separator)
-	     (menu-item "More" 
-			#:action 
-			(make-menu 
-			 "More"
-			 (menu-item "&Raise" #:action raise-window)
-			 (menu-item "&Lower" #:action lower-window)
-			 (menu-item (if (sticky? w)
-					"Un&stick"
-					"&Stick") 
-				    #:action toggle-stick)
-			 (menu-item (if (window-shaded? w)
-					"Unwindow-S&hade"
-					"Window-S&hade")
-				    #:action toggle-window-shade)
-			 (menu-item (if (kept-on-top? w)
-					"UnKeep On Top"
-					"Keep On Top") 
-				    #:action toggle-on-top)))
-             (menu-separator)
-	     (menu-item "Close" #:left-pixmap "mini-cross.xpm" 
-			#:action close-window)
-	     (menu-item "Destroy" #:left-pixmap "mini-bomb.xpm" 
-			#:action destroy-window)))
-
+    menu-separator
+    (menuitem "More" 
+	       #:action 
+	       (lambda ()
+		 (popup-menu
+		  (menu 
+		   (list
+		    (menuitem "More" #f)
+		    (menuitem "&Raise" #:action raise-window)
+		    (menuitem "&Lower" #:action lower-window)
+		    (menuitem (if (sticky? w)
+				   "Un&stick"
+				   "&Stick") 
+			       #:action toggle-stick)
+		    (menuitem (if (window-shaded? w)
+				   "Unwindow-S&hade"
+				   "Window-S&hade")
+			       #:action toggle-window-shade)
+		    (menuitem (if (kept-on-top? w)
+				   "UnKeep On Top"
+				   "Keep On Top") 
+			       #:action toggle-on-top))))))
+    menu-separator
+    (menuitem "Close" #:image-left "mini-cross.xpm" 
+	       #:action close-window)
+    (menuitem "Destroy" #:image-left "mini-bomb.xpm" 
+	       #:action destroy-window))))
+  
 (define (popup-small-ops)
-  (popup (make-small-window-ops-menu (get-window))))
+  (popup-menu (make-small-window-ops-menu (get-window))))
 
 
-;; now set some mouse and key bindings ;;
+;;; now set some mouse and key bindings ;;
 
 (define (show-icon-list-menu)
   (show-window-list-menu #:only iconified?))
 
 
-;; first our root menus
+;;; first our root menus
 (bind-mouse 'root 1 popup-root-start)
 (bind-mouse 'root 2 (lambda () 
 		      (show-window-list-menu #:show-geometry #t)))
-;;(bind-mouse 'root 3 popup-applications)
-(bind-mouse 'root "M-3" (lambda () (popup menu-desk)))
+(bind-mouse 'root "M-3" (lambda () (popup-menu menu-desk)))
+;;;(bind-mouse 'root 3 popup-applications)
 
-;; operations on parts of the window
+;;; operations on parts of the window
 (bind-mouse '(frame sidebar) 2 popup-small-ops)
 (bind-mouse 'frame 1 resize-or-raise)
 (bind-mouse 'sidebar 1 move-or-raise)
@@ -503,7 +514,7 @@
 
 ;; key bindings for the menus
 (bind-key 'all "M-S-F1" popup-util)
-(bind-key 'all "M-S-F2" popup-ops)
+(bind-key 'all "M-S-F2" popup-window-ops)
 
 ;; in case of emergency, hit Control-Meta-Q
 (bind-key 'all "C-M-S-q" quit)
@@ -583,7 +594,7 @@
 (bind-key 'all "C-M-S-5" recapture)
 (bind-key 'all "C-M-S-x" (lambda () (start-xterm)))
 
-(bind-key 'all "C-S-F1" popup-small-ops)
+;(bind-key 'all "C-S-F1" popup-small-ops)
 (bind-key 'all "C-S-F2" show-window-list-menu)
 
 (define (float->integer x)
@@ -618,7 +629,7 @@
 ;; to add geometry strings to this as well.
 (bind-key 'all "C-S-Return" show-icon-list-menu)
 
-(bind-key 'all "C-S-M-z" (lambda () (popup menu-root-start)))
+(bind-key 'all "C-S-M-z" (lambda () (popup-menu menu-root-start)))
 
 (set-click-time! 150)
 
@@ -702,14 +713,6 @@
 	(if (= event M_FOCUS_CHANGE)
 	    (let ((window (window-from-window-id a1)))
 	      (if window (raise-window window)))))))
-
-
-;;; menu-item test cases
-;(define sticky-menu-item (make-menu-item "Sticky" toggle-stick "C-S-F8" (make-image "mini-unkno.xpm") #f #f "sticky"))
-;(define move-menu-item (make-menu-item "Move" interactive-move "C-S-F7" (make-image "mini-move.xpm") #f #f "move"))
-;(define resize-menu-item (make-menu-item "Resize" interactive-resize "C-S-F8" (make-image "mini-resize.xpm") #f #f "resize"))
-;(define a-menu (make-scwm-menu (list sticky-menu-item move-menu-item resize-menu-item)))
-
 
 ;;; Local Variables:
 ;;; eval: (load "scwm-buffer")
