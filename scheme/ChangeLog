@@ -1,3 +1,21 @@
+Tue Jul 20 11:17:04 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Needed highlight-current-window module.
+
+Tue Jul 20 11:16:40 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* path-cache.scm: Added `program-exists?' using search-path
+	(thanks Bernard Urban!), and use it instead of which when zsh does 
+	not exist.
+
+Mon Jul 19 16:54:55 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* group.scm: ws change.
+
+	* flux.scm: Added interactive-move-selected-group-or-window
+
+	* highlight-current-window.scm:  Added (moved from gjb.scwmrc).
+
 Mon Jul 19 15:17:01 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* minimal.scm: Do not invoke set-rubber-band-mask! -- that gets

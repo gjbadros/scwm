@@ -142,6 +142,7 @@ deprecated `SM-client-id'.
 ** --segv-just-stop [-P]  (also `set-handle-segv!')
 
 * Misc. new primitives not discussed above
+** `resent-input-hook!'
 ** `window-creation-time' returns the time that a window was created
 ** `get-key-event' returns the next arbitrary key w/ modifiers that the user hits
 ** `get-mouse-event' returns the next arbitrary mouse button w/ modifiers that the user hits
@@ -198,6 +199,8 @@ deprecated `SM-client-id'.
 ** `flash-window', `unflash-window', `stop-flashing-window'
 
 * New hooks
+** `load-processing-hook'
+** `window-unobscured-hook', `window-partially-obscured-hook', `window-unobscured-hook'
 ** `window-enter-hook', `window-leave-hook'
 ** `select-window-enter-hook', `select-window-leave-hook'
 ** `edge-enter-hook', `edge-leave-hook', `edge-scroll-hook'

@@ -4,6 +4,8 @@ See also doc/dev/scwm-1.0-release-todo
 
 * Error messages in a text window
 
+* path-cache.scm -- test w/o zsh
+
 * Revisit all FIXME lines
 
 * Multi-line message windows

@@ -1,3 +1,14 @@
+Tue Jul 20 08:23:24 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* callbacks.c (s_set_load_processing_frequency_x): Added
+	`set-load-processing-frequency!' to control how many s-exps are
+	read between load-processing-hook invocations.
+
+Tue Jul 20 08:21:19 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* validate.h: Duh.  Use SCM_UNDEFINED to terminate a gh_list, not
+	SCM_EOL.  Fixes nasty-looking seg faults when errors are thrown.
+
 Mon Jul 19 15:25:07 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* binding.c: Only display warning message about unbound modifiers
