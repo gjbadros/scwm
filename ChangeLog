@@ -1,5 +1,8 @@
 Tue Nov 17 01:56:17 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* HACKING: Remove note about automake bug, since we decided to
+ 	work around it after all.
+
 	* THANKS: Added new contributors since 0.8; corrected some details
  	on Rebecca Schulman's entry; removed Todd Larason since he has
  	been promoted to AUTHORS.
