@@ -155,7 +155,7 @@
 		  (null? active-down-specs) (null? active-down-flags)
 		  (null? inactive-flags) (null? inactive-specs)))
 	(if (and (null? active-up) (null? active-down) (null? inactive))
-	    (setter-proc (peek 'face (make-face all-flags all-specs)))
+	    (setter-proc (make-face all-flags all-specs))
 	    (setter-proc (make-face active-up-flags active-up-specs)
 			 (make-face active-down-flags active-down-specs)
 			 (make-face inactive-flags inactive-specs))))))
