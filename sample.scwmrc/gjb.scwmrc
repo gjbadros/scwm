@@ -307,6 +307,14 @@
 	     (menu-item "Re&fresh Screen" #:left-pixmap "mini-ray.xpm" 
 			#:action refresh)))
 
+;;(window-shade (get-window) #t)
+;;(un-window-shade (get-window) #t)
+
+(define (wiggle-window)
+  (let ((w (get-window)))
+    (window-shade w #t)
+    (un-window-shade w #t)))
+
 ;;FIXGJB:
 (define (scwm-help)
   (display "Need to write scwm-help\n"))
@@ -493,7 +501,7 @@
 (bind-mouse 'sidebar 1 move-or-raise)
 (define (move-or-shade)
   (case (mouse-event-type)
-    ((double-click) (toggle-window-shade))
+    ((double-click) (toggle-window-shade-animated))
     (else (move-or-raise))))
 (bind-mouse 'title 1 move-or-shade)
 (bind-mouse 'title 2 lower-window)
