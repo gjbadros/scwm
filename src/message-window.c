@@ -1,5 +1,5 @@
 /* $Id$
- * Copyright (C) 1997-1999 Jeffrey Nichols, Greg J. Badros, and Maciej Stachowiak
+ * Copyright (C) 1997, 1998, 1999, 2000 Jeffrey Nichols, Greg J. Badros, and Maciej Stachowiak
  *
  * Background image extension added --07/01/99 gjb
  */

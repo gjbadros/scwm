@@ -1,7 +1,7 @@
 ;;; $Id$
 ;;; message-window.scm
 ;;;
-;;; (C) 1999 Greg J. Badros and Jeffrey Nichols
+;;; Copyright (C) 1999, 2000 Greg J. Badros and Jeffrey Nichols
 ;;;
 ;;; Scheme extensions of the message window feature. 
 ;;; Message windows are a generalization of the little

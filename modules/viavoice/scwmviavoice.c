@@ -1,5 +1,5 @@
 /* $Id$
- * (C) 1999 Greg J. Badros
+ * (C) 1999, 2000 Greg J. Badros
  * Derived from gramsam.c, (C)1999 IBM
  */
 

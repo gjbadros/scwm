@@ -2,7 +2,7 @@
 ;;;; system.scwmrc -- Scwm System Default initialization file
 ;;;; (from gjb.scwmrc, at release of Scwm-0.99.2)
 ;;;;
-;;;; Copyright (C) 1997-1999 Greg J. Badros
+;;;; Copyright (C) 1997, 1998, 1999, 2000 Greg J. Badros
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by

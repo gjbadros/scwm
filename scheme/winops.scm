@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;;; Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros and Jeff W. Nichols
+;;;; Copyright (C) 1997, 1998, 1999, 2000 Greg J. Badros, Maciej Stachowiak, and Jeff W. Nichols
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by

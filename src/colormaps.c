@@ -1,5 +1,5 @@
 /* $Id$
- * Copyright (C) 1998-1999 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1998, 1999, 2000  Greg J. Badros and Maciej Stachowiak 
  * Modified from code by Rob Nation
  *
  * Copyright 1994 Robert Nation. No restrictions are placed on this code,

@@ -1,7 +1,7 @@
 ;;;; $Id$
 ;;;; Copyright (C) 1999 John Kodis, kodis@jagunet.com
 ;;;; The hover-focus module is based on auto-raise.scm, which is
-;;;; Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
+;;;; Copyright (C) 1997, 1998, 1999, 2000 Maciej Stachowiak and Greg J. Badros
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or
 ;;;; modify it under the terms of the GNU General Public License as

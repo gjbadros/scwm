@@ -1,5 +1,5 @@
 ;;; $Id$
-;;; (C) 1999 Greg J. Badros
+;;; Copyright (C) 1999, 2000 Greg J. Badros
 
 (define-module (app scwm wavplay)
   :use-module (app scwm esdsound)

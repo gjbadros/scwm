@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- * Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1998, 1999, 2000  Greg J. Badros and Maciej Stachowiak 
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

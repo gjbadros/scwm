@@ -1,5 +1,5 @@
 /* $Id$
- * (C) 1999 By Greg J. Badros
+ * (C) 1999, 2000 By Greg J. Badros
  * This is just a dummy, but the CORBA bit seems to be working --09/05/99 gjb
  */
 

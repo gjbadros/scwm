@@ -1,6 +1,6 @@
 ;;; $Id$
 ;;; session.scm
-;;; (C) 1999 Greg J. Badros
+;;; Copyright (C) 1999, 2000 Greg J. Badros
 ;;;
 
 (define-module (app scwm sesssion)

@@ -1,5 +1,6 @@
-;; $Id$
-;; Copyright (C) 1999 Greg J. Badros
+;;; $Id$
+;;; constraints.scm
+;;; Copyright (C) 1999, 2000 Greg J. Badros
 
 (define-module (app scwm constraints)
   :use-module (app scwm optargs)

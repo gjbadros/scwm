@@ -1,6 +1,6 @@
 ;;; $Id$
 ;;; key-mover.scm
-;;; Copyright (C) 1999 Greg J. Badros
+;;; Copyright (C) 1999, 2000 Greg J. Badros
 ;;;
 ;;; Permit easy binding of keystrokes to pointer and viewport
 ;;; movement commands.

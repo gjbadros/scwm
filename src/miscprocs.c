@@ -1,6 +1,6 @@
 /* $Id$
  * miscprocs.c
- * Copyright (C) 1998-1999 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1998, 1999, 2000  Greg J. Badros and Maciej Stachowiak 
  *
  * This module has been significantly modified from fvwm2
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).

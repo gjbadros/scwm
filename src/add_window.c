@@ -1,6 +1,6 @@
 /* $Id$
  * add_window.c
- * (C) 1999 Greg J. Badros and Maciej Stachowiak
+ * Copyright (C) 1999, 2000 Greg J. Badros and Maciej Stachowiak
  */
 
 /* This module is derived from code based on fvwm2 which was in turn

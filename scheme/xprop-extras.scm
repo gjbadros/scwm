@@ -1,6 +1,6 @@
 ;;; $Id$
 ;;; xprop-extras.scm
-;;; Copyright (C) 1999 Greg J. Badros
+;;; Copyright (C) 1999, 2000 Greg J. Badros
 
 
 ;; (use-modules (app scwm xprop-extras))

@@ -1,6 +1,6 @@
 /* $Id$
  * scwm-guile.h
- * (C) 1999 Greg J. Badros <gjb@cs.washington.edu>
+ * Copyright (C) 1999, 2000 Greg J. Badros <gjb@cs.washington.edu>
  */
 
 #ifndef SCWM_GUILE_H__

@@ -1,5 +1,5 @@
 /* $Id$
- * (C) 1999, Greg J. Badros
+ * (C) 1999, 2000 Greg J. Badros
  */
 
 #ifndef ARG_UNUSED_H__

@@ -1,6 +1,6 @@
 #!/bin/sh -
 # scwm-doc-snarf
-# (C) 1999 Ken Pizzini and Greg J. Badros
+# Copyright (C) 1999, 2000 Ken Pizzini and Greg J. Badros
 # Handle snarfs with embedded %/%/ separating the arglist of procedures
 # from the rest.
 # See scwm-snarf.h for what expands SCWM_PROC macros to what we process here.

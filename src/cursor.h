@@ -1,5 +1,5 @@
 /* $Id$
- * (C) 1999 Toby Sargeant and Greg J. Badros
+ * Copyright (C) 1999, 2000 Toby Sargeant and Greg J. Badros
  */
 
 #ifndef CURSOR_H__

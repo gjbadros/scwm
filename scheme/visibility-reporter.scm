@@ -1,5 +1,5 @@
 ;;; $Id$
-;;; (C) 1999 Greg J. Badros
+;;; Copyright (C) 1999, 2000 Greg J. Badros
 ;;; See also the `window-visibility' primitive
 
 (define-module (app scwm visibility-reporter))

@@ -1,6 +1,6 @@
 ;;; $Id$
 ;;; window-selection.scm
-;;; Copyright (C) 1999 Greg J. Badros, Jeff W. Nichols
+;;; Copyright (C) 1999, 2000 Greg J. Badros, Jeff W. Nichols
 ;;;
 ;;; Functions for extended window selction capabilities
 ;;;

@@ -1,6 +1,6 @@
 ;;;; $Id$
 ;;;; debianapps-menu.scm
-;;;; (C) 1999 Francesco Tapparo and Greg J. Badros
+;;;; Copyright (C) 1999, 2000 Francesco Tapparo and Greg J. Badros
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by

@@ -1,5 +1,5 @@
 ;; $Id$
-;; Copyright (C) 1999 Greg J. Badros
+;; Copyright (C) 1999, 2000 Greg J. Badros
 ;; GJB:FIXME:: need to add unbind-N-modifer-key-events procedures
 ;; Should do it nicely w/o duplicating all code
 

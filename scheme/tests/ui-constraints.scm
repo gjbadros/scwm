@@ -1,5 +1,5 @@
 ;; $Id$
-;; Copyright (C) 1999 Greg J. Badros and Jeff Nichols
+;; Copyright (C) 1999, 2000 Greg J. Badros and Jeff Nichols
 
 (use-modules (app scwm ui-constraints)
 	     (app scwm xlib-drawing))

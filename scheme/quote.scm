@@ -1,6 +1,6 @@
 ;;;; $Id$
 ;;;; quote.scm
-;;;; Copyright (C) 1999 Greg J. Badros
+;;;; Copyright (C) 1999, 2000 Greg J. Badros
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by

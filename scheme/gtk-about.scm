@@ -1,6 +1,6 @@
 ;;;; $Id$
 ;;;; gtk-about.scm
-;;;; (C) 1999 Greg J. Badros
+;;;; Copyright (C) 1999, 2000 Greg J. Badros
 ;;;;
 
 (define-module (app scwm gtk-about)
@@ -40,7 +40,7 @@
    "About Scwm"
    "Scwm:
 The Scheme Constraints Window Manager
-(C) 1999 Greg J. Badros and Maciej Stachowiak
+(C) 1999, 2000 Greg J. Badros and Maciej Stachowiak
 
 See: http://scwm.mit.edu
 

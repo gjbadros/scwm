@@ -1,6 +1,6 @@
 /* $Id$
  * scwm-screen-ci.hpp
- * Copyright (C) 1998-1999 Greg J. Badros
+ * Copyright (C) 1998, 1999, 2000 Greg J. Badros
  *
  * This header file contains the definition of the ScwmScreenConstraintInfo class
  * A SSCI is stored with each screen to hold the ClVariables associated with it.

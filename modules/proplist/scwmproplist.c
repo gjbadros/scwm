@@ -1,6 +1,6 @@
 /* $Id$
  * scwmproplist.c
- * (C) 1999 Toby Sargeant and Greg J. Badros
+ * (C) 1999, 2000 Toby Sargeant and Greg J. Badros
  */
 
 #ifdef HAVE_CONFIG_H

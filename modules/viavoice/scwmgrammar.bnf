@@ -1,5 +1,5 @@
 // $Id$
-// (C) 1999 Greg J. Badros
+// (C) 1999, 2000 Greg J. Badros
 // Modified from gramsam.bnf, (C) 1999 IBM
 // Use: fsgenum -f scwmgrammar.fsg
 // To list all possible productions from this grammar

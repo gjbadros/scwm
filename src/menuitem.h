@@ -1,6 +1,6 @@
 /* $Id$
  * menuitem.h
- * Copyright (C) 1998-1999 Greg J. Badros
+ * Copyright (C) 1998, 1999, 2000  Greg J. Badros
  */
 
 #ifndef MENUITEM_H

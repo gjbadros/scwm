@@ -1,5 +1,5 @@
 ;;; $Id$
-;;; Copyright (C) 1998-1999 Greg J. Badros, Todd Larason
+;;; Copyright (C) 1998, 1999, 2000 Greg J. Badros, Todd Larason
 ;;;
 ;;; Various procedures for managing netscape windows
 ;;;

@@ -1,6 +1,6 @@
 /* $Id$
  * drawing.h 
- * Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997, 1998, 1999, 2000 Maciej Stachowiak and Greg J. Badros
  */
 
 #ifndef DRAWING_H

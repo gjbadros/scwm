@@ -1,6 +1,6 @@
 /* $Id$
  * scwm-constraints.hpp
- * Copyright (C) 1998-1999 Greg J. Badros
+ * Copyright (C) 1998, 1999, 2000 Greg J. Badros
  *
  * This header file contains the definition of the ScwmWindowConstraintInfo class
  * A SWCI is stored with each ClVariable so that when the ClVariable is changed,

@@ -1,5 +1,5 @@
 /* $Id$
- * (C) 1999 By Greg J. Badros
+ * (C) 1999, 2000 By Greg J. Badros
  * scwm-corba-exec.c
  */
 

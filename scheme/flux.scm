@@ -1,6 +1,6 @@
 ;;; $Id$
 ;;; flux.scm
-;;; Copyright (C) 1998-1999 Sam Steingold, Greg J. Badros, and Maciej Stachowiak
+;;; Copyright (C) 1998, 1999, 2000 Greg J. Badros, Sam Steingold, and Maciej Stachowiak
 ;;;
 ;;; This are functions used by various sample .scwmrc, but not necessarily
 ;;; stabilized even as well as the other files in scheme/*.scm

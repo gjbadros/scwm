@@ -1,5 +1,5 @@
-;; $Id$
-;; Copyright (C) 1999 Greg J. Badros
+;;; $Id$
+;;; Copyright (C) 1999, 2000 Greg J. Badros
 
 (define-module (app scwm animated-iconify)
   :use-module (app scwm base)

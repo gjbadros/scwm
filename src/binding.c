@@ -1,6 +1,6 @@
 /* $Id$
  * binding.c
- * Copyright (C) 1997-1999 By Greg J. Badros and Maciej Stachowiak
+ * Copyright (C) 1997, 1998, 1999, 2000 By Greg J. Badros and Maciej Stachowiak
  */
 
 #ifdef HAVE_CONFIG_H

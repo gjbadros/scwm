@@ -1,6 +1,6 @@
 ;;;; $Id$
 ;;; File: <prefs-menu.scm - 1998-09-09 Wed 16:30:39 EDT sds@eho.eaglets.com>
-;;; Copyright (C) 1998-1999 Sam Steingold and Greg J. Badros
+;;; Copyright (C) 1998, 1999, 2000 Sam Steingold and Greg J. Badros
 
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by

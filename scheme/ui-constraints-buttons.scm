@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;;; Copyright (C) 1999 Greg J. Badros, Jeff W. Nichols
+;;;; Copyright (C) 1999, 2000 Greg J. Badros, Jeff W. Nichols
 ;;;; Modified from ScwmButtons.scm, Copyright (C) 1998 Maciej Stachowiak
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify

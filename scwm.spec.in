@@ -10,7 +10,7 @@ Release: %rel
 Source: ftp://scwm.mit.edu/pub/scwm/scwm-%ver.tar.gz
 Group: X11/Window Managers
 BuildRoot: /tmp/scwm-%ver-build
-Copyright: Copyright (C) 1997,1998,1999 Greg J. Badros, Maciej Stachowiak, et al.
+Copyright: Copyright (C) 1997,1998,1999,2000 Greg J. Badros, Maciej Stachowiak, et al.
 Packager: Greg J. Badros <gjb@cs.washington.edu> and Maciej Stachowiak <mstachow@alum.mit.edu>
 URL: http://scwm.mit.edu
 Distribution: scwm

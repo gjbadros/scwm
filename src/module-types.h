@@ -1,6 +1,6 @@
 /* $Id$
  * module-types.h
- * Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997, 1998, 1999, 2000 Greg J. Badros and Maciej Stachowiak
  */
 
 /* Used this perl initially script to create ../scheme/module-types.scm

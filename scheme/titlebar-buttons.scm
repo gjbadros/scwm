@@ -1,6 +1,6 @@
 ;;; $Id$
 ;;; titlebar-buttons
-;;; (C) 1999 Greg J. Badros
+;;; (C) 1999, 2000 Greg J. Badros
 ;;; 
 
 ;;; I'm not changing these for now to use the new style

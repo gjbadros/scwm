@@ -1,5 +1,5 @@
 ;;; $Id$
-;;; (C) 1999 Greg J. Badros <gjb@cs.washington.edu>
+;;; Copyright (C) 1999, 2000 Greg J. Badros <gjb@cs.washington.edu>
 
 (define-module (app scwm animated-edge-moves)
   :use-module (app scwm optargs)

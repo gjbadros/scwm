@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;;; Copyright (C) 1998-1999 Sam Steingold, Greg J. Badros, and Maciej Stachowiak
+;;;; Copyright (C) 1998, 1999, 2000 Sam Steingold, Greg J. Badros, and Maciej Stachowiak
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by

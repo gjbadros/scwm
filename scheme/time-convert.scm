@@ -1,6 +1,6 @@
 ;;;; $Id$
 ;;;; time-convert.scm
-;;;; Copyright (C) 1999 Greg J. Badros and Maciej Stachowiak
+;;;; Copyright (C) 1999, 2000 Greg J. Badros and Maciej Stachowiak
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by

@@ -1,6 +1,6 @@
 /* $Id$
  * scwm.c
- * Copyright (C) 1997-1999 Greg J. Badros and Maciej Stachowiak
+ * Copyright (C) 1998, 1999, 2000  Greg J. Badros and Maciej Stachowiak 
  *
  * This module has been significantly modified from fvwm2
  * It may be used under the terms indicated by the copyright below.

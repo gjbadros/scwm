@@ -1,8 +1,8 @@
 ;;;; $Id$
-;;;; Copyright (C) 1999 Greg J. Badros and Jeff W. Nichols
-;;;; Based on ui-constraints-buttons.scm, Copyright (C) 1999 Greg J. Badros
+;;;; Copyright (C) 1999, 2000 Greg J. Badros and Jeff W. Nichols
+;;;; Based on ui-constraints-buttons.scm, Copyright (C) 1999, 2000 Greg J. Badros
 ;;;; Some elements copied from ui-constraints-toggle-menu.scm,
-;;;;                                 also Copyright (C) 1999 Greg J. Badros
+;;;;                                 also Copyright (C) 1999, 2000 Greg J. Badros
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by

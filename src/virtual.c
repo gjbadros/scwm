@@ -1,7 +1,7 @@
 /* $Id$ 
  * virtual.c
  *
- * Copyright (C) 1998-1999 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997, 1998, 1999, 2000 Greg J. Badros and Maciej Stachowiak
  *
  * Code is derived from Robert Nation's fvwm2 (twm, ctwm derivative)
  */
