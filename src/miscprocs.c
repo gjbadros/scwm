@@ -36,7 +36,7 @@ set_menu_mwm_style(SCM should)
 }
 
 SCM 
-set_xor_value(SCM value)
+set_rubber_band_mask_x(SCM value)
 {
   XGCValues gcv;
   unsigned long gcm;
@@ -45,7 +45,7 @@ set_xor_value(SCM value)
 
   if (!gh_number_p(value)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set_xor_value", 1, value);
+    scm_wrong_type_arg("set-rubber-band-mask!", 1, value);
   }
   gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
   gcv.function = GXxor;

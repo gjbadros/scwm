@@ -59,7 +59,7 @@ init_scwm_procs(void)
   gh_new_procedure("set-menu-colors!", set_menu_colors, 0, 3, 0);
   gh_new_procedure("set-menu-mwm-style!", set_menu_mwm_style, 0, 1, 0);
   /* FIXGJB: rubber-band-mask is a better name */
-  gh_new_procedure("set-xor-value!", set_xor_value, 1, 0, 0);
+  gh_new_procedure("set-rubber-band-mask!", set_rubber_band_mask_x, 1, 0, 0);
   gh_new_procedure("set-animation!", set_animation_x, 1,1,0);
   gh_new_procedure("send-button-press", send_button_press, 2,4,0);
   gh_new_procedure("send-key-press", send_key_press, 1,4,0);
