@@ -1,8 +1,5 @@
 Fri Feb 20 03:22:23 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
-	* module-interface.c: Broadcast: Provide the num_datum parameter
- 	to broadcast hooks.
-
 	* image.c, image.h: Syndry improvements:
 	
 	Reorganized image loading - loaders can now be specified by a
