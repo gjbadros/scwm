@@ -25,6 +25,9 @@ provide some example uses of guile-gtk for scwm.
 
 * Do some more work on the window struct rewrite.
 
+* Advice (like emacs) mechanism for augmenting procedures 
+** (Robert has done some work on this)
+
 * Improve the gravity handling stuff.
 ** Respect gravity on program resize
 ** Respect gravity on resize-to
@@ -36,7 +39,9 @@ and add convenient ways to match on certain other things.
 
 * Promote generally useful things from flux.scm to somewhere supported
 
-* add and use real hook for auto-raise module
+* use real hook for auto-raise module (window-focus-change-hook)
+
+* window-group feature (at scheme level) for applying operations to multiple windows
 
 * bug fixes
 
@@ -130,7 +135,6 @@ isn't now).
 ** (list-of-screens) ; list of managed screens (multi-screen support is iffy?)
 ** (last-key) ; return last key pressed
 ** (keycode->keysym KEYCODE), (keysym->keycode KEYSYM)
-** window-group feature (at scheme level)
 ** (set-mouse-acceleration! ACCEL), (set-mouse-acceleration-threshold! PIXELS)
 ** (set-colormap-focus! WINDOW) -- rename set-colormap-focus! and colormap-focus to [set-]colormap-focus-policy
 ** (window-client-size) (window-client-position) (window-client-borderwidth) ;dimensions for the client (application top-level window, not the wm frame) 
