@@ -1,3 +1,14 @@
+Mon Sep 20 22:44:58 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added a missing ConstraintSize() call in
+	SetScwmWindowGeometry to ensure that we do not ever resize a
+	window to an incorrect size.  E.g., when this happens to XEmacs,
+	it immediately requests a proper size, and that gets ugly.
+
+	* resize.c: Drop some extraneous code that called
+	SuggestSizeWindowTo a second time in the interactive resizing main 
+	loop.  Drop erroneous comment.
+
 Sun Sep 19 18:39:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.h: Added highlighted_nonant to ScwmWindow struct.

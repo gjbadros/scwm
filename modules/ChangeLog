@@ -1,3 +1,9 @@
+Mon Sep 20 22:44:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* c-animation/c-animation.c (AnimatedResizeWindow): Make it use
+	Cassowary throughout so the constraints are maintained during the
+	move and resize.
+
 Mon Sep 20 22:02:57 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c: Lots of cleanup.  Drop

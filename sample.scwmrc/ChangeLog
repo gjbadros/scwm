@@ -1,3 +1,9 @@
+Mon Sep 20 22:47:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use ui-constraints-{gtk-,}toggle-menu.  Make
+	constraints a submenu off of the root menu.  Use animated resizes
+	in resize-{half,full}screen functions.
+
 Sat Sep 18 14:10:45 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Move some stuff into flux.  Drop

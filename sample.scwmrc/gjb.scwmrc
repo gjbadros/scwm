@@ -1333,11 +1333,11 @@ union of all other window managers!
 
 (define (resize-halfscreen)
   (let ((w (current-window-with-pointer)))
-    (resize-to (%x 49) (%y 90))))
+    (animated-resize-window (%x 49) (%y 90))))
 
 (define (resize-fullscreen)
   (let ((w (current-window-with-pointer)))
-    (resize-to (%x 90) (%y 90))))
+    (animated-resize-window (%x 90) (%y 90))))
 
 (bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
 (bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)

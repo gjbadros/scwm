@@ -6,7 +6,12 @@ Changes for scwm-0.99.3 (not yet released)
 
 * ViaVoice (IBM TM) module for permitting speech recognition actions
 
-* Improved visual constraint representations
+* Constraint features
+** Make animated moves and resizes resolve the system throughout the move/resize
+   so the constraints are always maintained
+** Improved visual constraint representations
+** Make constraints submenu to root menu
+** Bug fixes in the gtk-toggle-menu
 
 * Improved preferences dialog support, cleaner internally, too.
 
