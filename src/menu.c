@@ -96,7 +96,9 @@ print_menu(SCM obj, SCM port, scm_print_state * pstate)
   scm_puts("#<menu ", port);
   if (MENU_P(obj)) {
     Menu *pmenu = MENU(obj);
-    scm_write(gh_car(pmenu->scmMenuItems), port);
+    if (SCM_NIMP(pmenu->scmMenuItems)) {
+      scm_write(gh_car(pmenu->scmMenuItems), port);
+    }
     if (pmenu->pchUsedShortcutKeys) {
       scm_puts(", hotkeys: ",port);
       scm_puts(pmenu->pchUsedShortcutKeys,port);
@@ -199,7 +201,7 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
            SCM bg_color, SCM text_color,
            SCM picture_bg, SCM font, SCM extra_options))
 /** Make and return a menu object from the given arguments.
-LIST-OF-MENUITEMS is a scheme list of menu items -- see `make-menuitem';
+LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
 PICTURE-SIDE is an image object;
 SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR, PICTURE-BG are color objects;
 FONT is a font object;
@@ -212,7 +214,7 @@ drawing code (not used currently).
   SCM answer;
   int iarg = 1;
 
-  if (!gh_list_p(list_of_menuitems)) {
+  if (!gh_list_p(list_of_menuitems) || gh_length(list_of_menuitems) < 1) {
     scm_wrong_type_arg(FUNC_NAME,iarg,list_of_menuitems);
   }
   pmenu->scmMenuItems = list_of_menuitems;
