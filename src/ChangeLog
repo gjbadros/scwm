@@ -1,3 +1,26 @@
+Sun Oct 17 10:51:49 1999    <gjb@cs.washington.edu>
+
+	* window.c: Use SCWM_IPROC for interactive procedures. Rename
+	focus to `focus-window', iconify to `iconify-window', deiconify to 
+	`deiconify-window', iconified? to `iconified-window?', stick to
+	`stick-window', unstick to `unstick-window', sticky? to
+	`sticky-window?', window-shade to `shade-window', window-unshade
+	to `unshade-window', window-shaded? to `shaded-window?'
+
+	* scwm.c: Initialize scm_init_heap_size_factor if it is available
+	(from my Guile patches, uncommitted still).  Added
+	scwm_make_igsubr for SCWM_IPROC.
+
+	* scwm-snarf.h: Added SCWM_IPROC.
+
+	* miscprocs.c: Use SCWM_IPROC for interactive procs.
+
+	* cursor.c: Use XC_sb_right_arrow by default for the cursor in
+	menus. 
+
+	* binding.c: Fix improper validation of args in
+	set-mod-mask-numlock! and set-mod-mask-scrollock!
+
 Wed Oct  6 17:40:09 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* miscprocs.c (s_X_get_primary_selection): Fix some doc comment

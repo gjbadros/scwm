@@ -1,3 +1,8 @@
+Sun Oct 17 11:04:45 1999    <gjb@cs.washington.edu>
+
+	* scwm.el: Added experimental `scwm-set-module', use session and
+	reflection modules, not flux.
+
 Wed Oct  6 17:20:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.el: Use scwm-bugs for bug reports

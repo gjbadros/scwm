@@ -1,3 +1,8 @@
+Sun Oct 17 11:37:02 1999    <gjb@cs.washington.edu>
+
+	* Makefile.common (ETAGS_ARGS): Fix to allow SCWM_[IW]?PROC, not
+	just SCWM_PROC.
+
 Wed Oct  6 17:45:40 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* NEWS: Release 0.99.4.

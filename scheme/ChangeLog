@@ -1,3 +1,142 @@
+Sun Oct 17 12:00:14 1999    <gjb@cs.washington.edu>
+
+	* basic-styles.scm: Use #:use-style to express inheritance instead 
+	of duplicating code.
+
+Sun Oct 17 10:20:17 1999    <gjb@cs.washington.edu>
+
+	* winops.scm: Added a bunch of procs from flux.scm including
+	toggle-maximize-{vertical,horizontal,both}, nonant->gravity.
+	Rename window-unshade, window-shade, window-shaded? to
+	unshade-window shade-window and shaded-window? Use interactive
+	spec appropriately.
+
+	* winlist.scm: Added `show-icon-list-menu',
+	`show-xterm-window-list-menu' from system.scwmrc.
+
+	* wininfo.scm: Update for iconified-window? name change.
+
+	* window-selection.scm: Added interactive specs.
+
+	* virtual.scm: Added `switch-to-{first,second}-desk' procs,
+	updated for deiconify-window name change.
+
+	* viavoice.scm: Updated for name change to
+	toggle-maximize-vertical.  Drop dependence on flux.
+
+	* undo.scm: Added interactive specs (switch to define*-public form 
+	in many cases to support the declaration).
+
+	* ui-constraints.scm: Updated for focus-window name change.
+
+	* ui-constraints-composition.scm: Reindented, new line breaks.
+	Fixed a bug in missing `list' application, too.
+
+	* ui-constraints-classes.scm: Use ui-constraint-out-focus-width of 
+	2, not 1, as the lines were hard to see.  Fixed a bug in wrong
+	number of args to translate-point.
+
+	* time-convert.scm, stringops.scm: Fix typo in name of file after
+	#Id# line.
+
+	* tile.scm: Use window-selection and rectangle modules, and added
+	`tile-windows-interactively' from flux
+
+	* stylist.scm: updated for name chnages: sticky-window? and
+	iconified-window?
+
+	* style.scm: Updated for name changes, (un)shade-window,
+	(de)iconify-window, (un)stick-window.  Added use of experimental
+	add-boolean-both-option.
+
+	* style-options.scm: Added `add-boolean-both-option'
+	(experimental)
+
+	* std-menus.scm: Drop dependence on flux, break out
+	xlock-menus.scm. 
+
+	* register.scm: Added docs and interactive specs.  Updated for
+	name change: focus-window.
+
+	* reflection.scm: Use "<anonymous-procedure>" for them (added the
+	brockets).  Update procedure-is-interactive? to check for the
+	interactive property.  Added various procs from flux.
+
+	* quote.scm: Added interactive specs and docs.
+
+	* prompt-binding.scm: Separate out the two procs for each binding
+	into separate lines.  Much more useful now.  Added some extra
+	(still non-functioning) buttons.
+
+	* primopts.scm: Added *highlight-foreground*,
+	*highlight-background*
+
+	* prefs-menu.scm: Drop dependence on flux.scm
+
+	* optargs.scm: Added support for interactive specifications as the 
+	form right after the docstring.  Must use define* forms to permit
+	interactive specs.
+
+	* netscape.scm: Added interactive specs, docs.
+
+	* minimal.scm: Update for deiconify-window name change.
+
+	* last-mapped-window.scm: Added interactive specs and use winops
+	to get focus-change-warp-pointer.
+
+	* kde-hints.scm: Updated for focus-window, (de)iconify-window name
+	change.
+
+	* hover-focus.scm: Drop dependence on flux, update for
+	iconified-window? and focus-window name changes.
+
+	* group.scm: Added `make-window-group-menu' and other procs from
+ 	flux, updated for (de)iconify-window name change.
+
+	* gnome-hints.scm: Added `gnome-install-window-styles', Added
+	interactive specs, updated for name changes.
+
+	* fvwm-module.scm: Updated for iconified-window? name change.
+
+	* fvwm-eval.scm: Updated for focus-window, (un)shade-window,
+	(de)iconfiy-window, iconified-window? sticky-window? name changes.
+
+	* focus-titlebar.scm: Reformatted.
+
+	* flux.scm: Moved lots of code out to new modules.
+
+	* flux-gtk.scm: Added interactive specs.
+
+	* face.scm: ws change.
+
+	* dir-focus.scm: Added `dir-focus-*' procs from system.scwmrc with 
+	interactive specs and docs added.
+
+	* decor.scm: Try to make decor a "both" option (theme changing was 
+	not working with it as a hint, so it needs to also be a style
+	option).
+
+	* cascade.scm: Updated for name changes.
+
+	* base.scm: Updated for name changes, added
+	*xterm-user-shell-options*, `start-xterm', `xterm-other-host'
+
+	* animation.scm: Updated for name changes: stick-window? and
+	shaded-window?
+
+	* animated-iconify.scm: Added interactive specs, updated for name
+	changes, added `animated-deiconify-to-vp-focus'
+
+	* animated-edge-moves.scm: Added docs and interactive specs.
+
+	* Makefile.am: Added all the new .scm files.
+
+	* winops-menu.scm, xlock-menus.scm, titlebar-buttons.scm,
+	task-switcher.scm, synth-events.scm, shove-window.scm,
+	session.scm, rectangle.scm, lambda-startup-logo.scm, describe.scm, 
+	basic-styles.scm: Added (mostly code ripped out of flux.scm or
+	system.scwmrc to factor it out better).
+
 Wed Oct  6 17:30:34 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added corba.scm and viavoice-smrc.scm (make check

@@ -2,6 +2,43 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997, 1998, 1999 Greg J. Badros and Maciej Stachowiak
 See the end for copying conditions.
 
+Changes for scwm-0.99.5 (not yet released)
+
+* Added interactive procedure specifications
+
+Used to make clear which procedures should be called interactively
+via menus or bindings.  Right now just used by prompt-binding, but
+will be required of menuitem actions and binding actions in the next
+version.
+
+* New preferences options
+** *highlight-foreground*, *highlight-background*
+
+* New modules (largely from breaking up flux.scm, factoring system.scwmrc)
+** winops-menu.scm
+** xlock-menus.scm
+** titlebar-buttons.scm
+** task-switcher.scm
+** synth-events.scm
+** shove-window.scm
+** session.scm
+** rectangle.scm
+** lambda-startup-logo.scm
+** describe.scm
+** basic-styles.scm
+
+* Renamed numerous primitives
+** Now (un)shade-window, shaded-window? 
+-> was window-(un)shade, window-shaded?
+** Standardize on toggle-maximize-{vertical,horizontal,both} instead of random other names
+** (de)iconify-window, iconified-window?
+-> was (de)iconify, iconified?
+** focus-window
+-> was focus
+** sticky-window?, (un)stick-window
+-> was sticky?, (un)stick
+
+
 Changes for scwm-0.99.4 (released 6-October-1999)
 
 * scwm/ subdirectory has been renamed to src/.

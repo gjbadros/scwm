@@ -1,3 +1,24 @@
+Sun Oct 17 11:30:35 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use new lambda-startup-logo module, move that
+ 	code into that module.  Clean up a lot of legacy garbage.  Added
+ 	interactive specs throughout.  Move some of the gnome-hints stuff
+	into gnome-hints.  Move the style definitions into
+	basic-styles.scm, and use it.  Move window-ops menu into
+	winops-menu.scm and use it. Move more random procedures out into
+	modules so that they can be used by others.
+
+	* simple.scwmrc, sds.scwmrc, robbe.scwmrc, mstachow.scwmrc,
+ 	juhp.scwmrc, decor.scwmrc: Fix for renamed procedures (e.g.,
+ 	iconified-window?).  Drop *-toggle-maximize; use the
+ 	toggle-maximize-* from winops.scm.
+
+oSun Oct 17 11:11:10 1999    <gjb@cs.washington.edu>
+
+	* gnome.scwmrc: Added -- first attempt at a more minimal scwmrc
+	specially targeting gnome.  Startup time is still pretty bad
+	(I blame this largely on guile).
+
 Wed Oct  6 17:23:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use nonant-keys-mwin (nonant-keys.xpm) image when 

@@ -1,3 +1,8 @@
+Sun Oct 17 11:00:34 1999    <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Permit SCWM_[IW]?PROC, not just SCWM_PROC.
+	(SCWM_WPROC is not in use yet, but will be soon, probably).
+
 Sat Sep 25 15:19:09 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Drop an extraneous newline from the
