@@ -1,3 +1,20 @@
+Fri Aug  6 17:03:29 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): Added register.scm
+
+Fri Aug  6 17:00:00 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Fix `with-message-window-shown' -- do not evaluate the 
+	message window argument multiple times -- just do so once and use
+	that value repeatedly.
+
+	* modifier-key-bindings.scm: Added `mod-mask-XXXX?' procs for
+	testing if a modmask has a modifier set.
+
+	* window-configuration.scm: Added `window-configuration?'
+
+	* register.scm: Added -- similar to registers in GNU Emacs.
+
 Fri Aug  6 12:24:17 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* winlist.scm: Make hover-delay default to 0, not #f, in
