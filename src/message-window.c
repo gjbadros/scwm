@@ -645,6 +645,17 @@ SCWM_PROC (message_window_font, "message-window-font", 1, 0, 0,
 #undef FUNC_NAME
 
 
+SCWM_PROC (message_window_id, "message-window-id", 1, 0, 0,
+           (SCM mwn))
+     /** Returns the X11 id of message window MWN. */
+#define FUNC_NAME s_message_window_id
+{
+  VALIDATE_ARG_MSGWINDOW(1,mwn);
+  return gh_long2scm(MSGWINDOW(mwn)->win);
+}
+#undef FUNC_NAME
+
+
 SCWM_PROC (message_window_colors, "message-window-colors", 1, 0, 0,
            (SCM mwn))
      /** Returns the colors that the message window MWN is displayed with.  

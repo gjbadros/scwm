@@ -110,6 +110,13 @@ extern Bool fQuotingKeystrokes;
 
 static SCM x_motionnotify_hook;
 
+SCWM_SYMBOL(sym_press,"press");
+SCWM_SYMBOL(sym_release,"release");
+SCWM_SYMBOL(sym_desk_press,"desk-press");
+SCWM_SYMBOL(sym_desk_release,"desk-release");
+SCWM_SYMBOL(sym_desk_click,"desk-click");
+
+
 SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook", 2);
   /** This hook is invoked whenever a PropertyNotify event is received
 for a window scwm is managing. This indicates that an X window
@@ -2055,7 +2062,7 @@ necessary.  See `remove-motion-handler' and `reset-motion-handlers'. */
 {
   VALIDATE_ARG_PROC(1,proc);
   if (cMotionHandlers++ == 0)
-    XSelectInput(dpy, Scr.Root,basic_event_mask | PointerMotionMask);
+    XSelectInput(dpy, Scr.Root,(basic_event_mask | PointerMotionMask | ButtonMotionMask));
   return scm_add_hook_x(x_motionnotify_hook,proc,SCM_BOOL_F);
 }
 #undef FUNC_NAME
@@ -2114,22 +2121,12 @@ should not have to worry about this unless you know what it means. */
   Bool fPress = True;
   Bool fRelease = True;
   XKeyEvent event;
-  ScwmWindow *psw;
   Window w;
 
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
-  w = psw->w;
-
-  if (key_press_p != SCM_UNDEFINED) {
-    fPress = gh_scm2bool(key_press_p);
-  }
-  if (key_release_p != SCM_UNDEFINED) {
-    fRelease = gh_scm2bool(key_release_p);
-  }
-  if (propagate_p != SCM_UNDEFINED) {
-    fPropagate = gh_scm2bool(propagate_p);
-  }
+  VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY_USE_CONTEXT(2, win, w);
+  VALIDATE_ARG_BOOL_COPY_USE_T(3, key_press_p, fPress);
+  VALIDATE_ARG_BOOL_COPY_USE_T(4, key_release_p, fRelease);
+  VALIDATE_ARG_BOOL_COPY_USE_T(5, propagate_p, fPropagate);
 
   fOkay = FKeyToKeysymModifiers(key,&keysym,&mod_mask, FUNC_NAME, False, True);
 
@@ -2154,17 +2151,16 @@ should not have to worry about this unless you know what it means. */
 }
 #undef FUNC_NAME
 
-SCWM_PROC(send_button_press, "send-button-press", 1, 4, 0,
-          (SCM button, SCM win, 
-           SCM button_press_p, SCM button_release_p, SCM propagate_p))
+SCWM_PROC(send_button_press, "send-button-press", 1, 3, 0,
+          (SCM button, SCM win, SCM kind, SCM propagate_p))
      /** Send a synthetic mouse press event.
 Create a synthetic event of a press of mouse button BUTTON. The usual
 mouse button specification format (with modifiers) is used. Send the
 event to window WIN if specified; otherwise the window to be used
 defaults to the window context in the usual way. By default, both a
-press and a release are sent. However, the boolean parameters
-BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify which are sent
-individually. PROPAGATE? indicates whether the propagate flag is set
+press and a release are sent---a click. KIND can be one of 'press, 'release,
+'click, 'desk-press, 'desk-release, or 'desk-click,
+PROPAGATE? indicates whether the propagate flag is set
 on the event; the default is #f. You should not have to worry about
 this unless you know what it means. */
 #define FUNC_NAME s_send_button_press
@@ -2173,29 +2169,16 @@ this unless you know what it means. */
   int mod_mask;
   Bool fButtonOK = True;
   Bool fPropagate = False;
-  Bool fPress = True;
-  Bool fRelease = True;
   Window child;
   XButtonEvent event;
   int x = 0, y = 0, x_root = 0 , y_root = 0;
   int x2 = 0, y2 = 0;
-  ScwmWindow *psw;
   Window w;
   Window pointer_win;
 
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  psw = PSWFROMSCMWIN(win);
-  w = psw->w;
-
-  if (button_press_p != SCM_UNDEFINED) {
-    fPress = gh_scm2bool(button_press_p);
-  }
-  if (button_release_p != SCM_UNDEFINED) {
-    fRelease = gh_scm2bool(button_release_p);
-  }
-  if (propagate_p != SCM_UNDEFINED) {
-    fPropagate = gh_scm2bool(propagate_p);
-  }
+  VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY_USE_CONTEXT(2, win,w);
+  VALIDATE_ARG_SYM(3,kind);
+  VALIDATE_ARG_BOOL_COPY_USE_T(4, propagate_p, fPropagate);
 
   fButtonOK = FButtonToBnumModifiers(button, &bnum, &mod_mask, FUNC_NAME, False);
 
@@ -2214,7 +2197,7 @@ this unless you know what it means. */
   XTranslateCoordinates(dpy, pointer_win, child, x2, y2,
 			&x, &y, &JunkChild);
 
-  if (fPress) {
+  if (kind == sym_click || kind == sym_press ) {
     fill_x_button_event(&event, ButtonPress, bnum, mod_mask, 
 			x, y, x_root, y_root, child, 0);
     XSendEvent(dpy, child, fPropagate, ButtonPressMask, 
@@ -2222,7 +2205,7 @@ this unless you know what it means. */
     DBUG((DBG,FUNC_NAME,"New Sent button press of %d at %d, %d; time = %ld\n",
           bnum,x,y,lastTimestamp));
   }
-  if (fRelease) {
+  if (kind == sym_click || kind == sym_release) {
     fill_x_button_event(&event, ButtonRelease, bnum, mod_mask | (1 << (bnum+7)),
 			x, y, x_root, y_root, child, 0);
     XSendEvent(dpy, child, fPropagate, ButtonReleaseMask, 
@@ -2230,7 +2213,22 @@ this unless you know what it means. */
     DBUG((DBG,FUNC_NAME,"New Sent button release of %d at %d, %d; time = %ld\n",
           bnum,x,y,lastTimestamp));
   }
+    
+  /* desk events use w, not child, as the window to receive the event */
+  if (kind == sym_desk_click || kind == sym_desk_press) {
+    XUngrabPointer(dpy,CurrentTime);
+    fill_x_button_event(&event, ButtonPress, bnum, mod_mask, 
+			x, y, x_root, y_root, w, 0);
+    XSendEvent(dpy, w, fPropagate, SubstructureNotifyMask, 
+	       (XEvent *) &event);
+  }
 
+  if (kind == sym_desk_click || kind == sym_desk_release) {
+    fill_x_button_event(&event, ButtonRelease, bnum, mod_mask | (1 << (bnum+7)), 
+			x, y, x_root, y_root, w, 0);
+    XSendEvent(dpy, w, fPropagate, SubstructureNotifyMask, 
+	       (XEvent *) &event);
+  }
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

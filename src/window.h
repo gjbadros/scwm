@@ -115,6 +115,20 @@ extern SCM sym_click, sym_root_window;
   } while (0)
 
 
+#define VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY_USE_CONTEXT(pos,arg,w) \
+  do {  if (arg == sym_root_window) w = Scr.Root;                 \
+        else if (gh_number_p(arg)) {                              \
+          assert(sizeof(Window) == sizeof(unsigned long));        \
+          w = gh_scm2ulong(arg);                                  \
+        } else {                                                  \
+          if ((arg = ensure_valid(win,pos,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_F)) == SCM_BOOL_F) { \
+            w = None;                                             \
+            SCWM_WRONG_TYPE_ARG(pos, arg);                        \
+          }                                                       \
+          w = PSWFROMSCMWIN(arg)->w;                              \
+        }                                                         \
+  } while (0)
+
 
 struct ScwmDecor;		/* definition in screen.h */
 

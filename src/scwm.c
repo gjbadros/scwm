@@ -245,6 +245,8 @@ Atom XA_WIN_SUPPORTING_WM_CHECK;
 
 static Window BlackoutWin = None; /* window to hide window captures */
 
+
+/* GJB:FIXME:: E does ResizeRedirectMask and PointerMotionMask/ButtonMotionMask, too */
 long basic_event_mask = (LeaveWindowMask | EnterWindowMask | PropertyChangeMask |
                          SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
                          SubstructureNotifyMask |

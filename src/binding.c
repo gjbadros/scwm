@@ -33,7 +33,7 @@
 
 Bool fQuotingKeystrokes = False;
 
-/* also used by window.c's set-window-focus! */
+/* also used by window.c's set-window-focus!, event.c's send-button-press */
 SCWM_GLOBAL_SYMBOL(sym_click,"click");
 
 SCWM_SYMBOL(sym_motion,"motion");
@@ -353,6 +353,7 @@ FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, const char *func_
   Bool fOk = True;
   int len;
   char *button_name = NULL;
+  *pmodifier = 0;
 
   if (!gh_string_p(button)) {
     if (gh_number_p(button)) {
