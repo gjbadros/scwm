@@ -71,6 +71,18 @@ End this recording by calling 'ui-constraints-composition-end'."
 	(- (length lst) (length sublst))
 	#f)))
 	 
+;; replace all windows in argument list with '('win <num>)
+(define (replace-windows-with-proxy alist wlist)
+  (if (null? alist) 
+      '()
+      (let ((elem (car alist))
+	    (rlist (replace-windows-with-proxy (cdr alist) wlist)))
+	(cons (cond
+	       ((pair? elem) (replace-windows-with-proxy elem wlist))
+	       ((window? elem) (list 'win (pos-in-list elem wlist)))
+	       (else elem))
+	      rlist))))
+
 
 (define*-public (ui-constraints-composition-end #&optional (cancel? #f))
   "End the recording of a constraint composition.  NAME is the name to be 
@@ -84,7 +96,7 @@ the construction of a composition."
 				      (args (cadr l))
 				      (class (ui-constraint-class cn))
 				      (classname (ui-constraint-class-name class))
-				      (winnumlist (map (lambda (w) (if (window? w) (list 'win (pos-in-list w winlist)) w)) args)))
+				      (winnumlist (replace-windows-with-proxy args winlist)))
 				 (cons classname winnumlist)))
 			     cnlist))
 	     (msgwin ui-constraint-prompter-msgwin))
@@ -135,13 +147,23 @@ the construction of a composition."
       '()
       (append (ui-constraint-cn (car list)) (cncat (cdr list)))))
 
+;; replace all windows in argument list with '('win <num>)
+(define (replace-proxies-with-windows alist wlist)
+  (if (null? alist) 
+      '()
+      (let ((elem (car alist))
+	    (rlist (replace-proxies-with-windows (cdr alist) wlist)))
+	(cons (cond
+	       ((pair? elem) 
+		(if (eq? (car elem) 'win)
+		    (list-ref wlist (cadr elem))
+		    (replace-proxies-with-windows elem wlist)))
+	       (else elem))
+	      rlist))))
+
 (define* (composition-ctr winlist arg-list #&optional (enable? #f))
   (let* ((ui-cns (map (lambda (ctrdef) 
-			(let ((arglst (map (lambda (arg)
-					     (if (and (pair? arg) (eq? 'win (car arg)))
-						 (list-ref winlist (cadr arg))
-						 arg))
-					   (cdr ctrdef)))
+			(let ((arglst (replace-proxies-with-windows (cdr ctrdef) winlist))
 			      (class (get-ui-constraint-class-by-name (car ctrdef))))
 			  (make-ui-constraint class arglst #:visible? #f)))
 		      arg-list))
