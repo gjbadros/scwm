@@ -1,6 +1,6 @@
 ;;;; $Id$
 
-(use-scwm-modules test-case)
+(use-scwm-modules test-case group flash-window)
 
 (set! display-test-case-errors #t)
 
@@ -8,7 +8,7 @@
 (test-case 
  ""
  (procedure-required-formals move-group-relative)
- => '(dz dy))
+ => '(dx dy))
 
 (test-case
  ""
@@ -34,7 +34,7 @@
 (test-case
  ""
  (procedure-optional-formals round/)
- => #f)
+ => '())
 
 ;; set-window-foreground! is a C primitive w/ required and optional arguments
 (test-case 
