@@ -278,6 +278,7 @@ dnl          icons/Makefile \
 	  utilities/scwmsend/Makefile \
 	  utilities/libscwmexec/Makefile \
 	  utilities/scwmexec/Makefile \
+	  utilities/scwmrepl/Makefile \
 dnl          mini-icons/Makefile \
           sample.scwmrc/Makefile \
           scheme/Makefile \

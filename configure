@@ -2983,6 +2983,7 @@ trap 'rm -fr `echo "Makefile \
 	  utilities/scwmsend/Makefile \
 	  utilities/libscwmexec/Makefile \
 	  utilities/scwmexec/Makefile \
+	  utilities/scwmrepl/Makefile \
           sample.scwmrc/Makefile \
           scheme/Makefile \
           app/Makefile \
@@ -3082,6 +3083,7 @@ CONFIG_FILES=\${CONFIG_FILES-"Makefile \
 	  utilities/scwmsend/Makefile \
 	  utilities/libscwmexec/Makefile \
 	  utilities/scwmexec/Makefile \
+	  utilities/scwmrepl/Makefile \
           sample.scwmrc/Makefile \
           scheme/Makefile \
           app/Makefile \
