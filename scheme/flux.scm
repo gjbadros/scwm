@@ -325,7 +325,7 @@ that take microseconds."
 (define-public (popup-menu-from-decoration menu win button-number)
   "Popup MENU from WIN's decoration numbered BUTTON-NUMBER.
 This positions the popup menu appropriately."
-  (let* ((pos (window-position win))
+  (let* ((pos (window-viewport-position win))
 	 (x-ne (car pos))
 	 (y (+ (cadr pos) (+ 1 (* 2 (window-border-width win)) (window-title-height win))))
 	 (x (if (odd? button-number) x-ne (+ 1 x-ne (car (window-frame-size))))))
