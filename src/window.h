@@ -105,7 +105,7 @@ extern SCM sym_click, sym_root_window;
         else if (gh_number_p(arg)) {                              \
           assert(sizeof(Window) == sizeof(unsigned long));        \
           w = gh_scm2ulong(arg);                                  \
-        } else if (VALIDWINP(arg)) {                              \
+        } else if (WINDOWP(arg) && VALIDWINP(arg)) {              \
           w = PSWFROMSCMWIN(arg)->w;                              \
         } else {                                                  \
           w = None;                                               \
