@@ -222,8 +222,10 @@
   `(if (memq ,proc ,var)
        (set! ,var (delq! proc var))))
 
-(defmacro-public remove-hook! (hook proc)
-  `(if (memq ,proc ,hook)
-       (set! ,hook
-	     (delq! ,proc ,hook))))
+;; Only define if not already defined by Guile
+(if (not (defined? 'remove-hook!))
+	   (defmacro-public remove-hook! (hook proc)
+	     `(if (memq ,proc ,hook)
+		  (set! ,hook
+			(delq! ,proc ,hook)))))
 
