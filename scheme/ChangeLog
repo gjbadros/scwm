@@ -1,10 +1,19 @@
+Fri Sep 11 13:41:03 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Added animated-move-window (taking virtual coords).  
+
+	* base.scm: Added a bunch of utility functions to the base
+	module: viewport->virtual, virtual->viewport, viewport-size,
+	viewport-{x,y}-position, vx-, vy-
+
+
 Fri Sep 11 11:49:55 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Clean up comment for scwm-system, drop apply from
-	execlp call;  Improve docs for x-, y-, and add
-	viewport-[xy]-position and vx-, vy- for virtual-coordinate
-	analogues of x- and y- (e.g., for move-window, which takes virtual 
-	coordinates)
+ 	execlp call; Improve docs for x-, y-, and add
+ 	viewport-[xy]-position and vx-, vy- for virtual-coordinate
+ 	analogues of x- and y- (e.g., for move-window, which takes virtual
+ 	coordinates)
 
 Thu Sep 10 14:39:46 1998  Greg Badros  <gjb@cs.washington.edu>
 
