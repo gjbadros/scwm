@@ -44,7 +44,8 @@ int
 main(int argc, char **argv)
 {
   Window w;
-  char *result, *output, *error;
+  char *result;
+  unsigned char *output, *error;
 
   if (argc != 2)
     die("Usage: scwmexec EXPRESSION\n");
