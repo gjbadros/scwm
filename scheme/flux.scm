@@ -62,26 +62,26 @@ outline or the window itself is moved."
 outline or the window itself is resized."
   (let ((w (current-window-with-pointer))) (and w (interactive-resize w))))
 
-(define-public (toggle-max-vert)
+(define*-public (toggle-max-vert #&optional (win (get-window)))
   "Toggle the current window's maximized-vertically state."
-  (toggle-maximize 0 (%y 100)))
+  (toggle-maximize 0 (%y 100) win))
 
-(define-public (toggle-max-horz)
-  "Toggle the current window's maximized-horizontally state."
-  (toggle-maximize (%x 100) 0))
+(define*-public (toggle-max-horz #&optional (win (get-window)))
+  "Toggle the WIN's maximized-horizontally state."
+  (toggle-maximize (%x 100) 0 win))
 
-(define-public (toggle-max-both)
-  "Toggle the current window's maximization (both vertically and horizontally)."
-  (toggle-maximize (%x 100) (%y 100)))
+(define*-public (toggle-max-both #&optional (win (get-window)))
+  "Toggle the WIN's maximization (both vertically and horizontally)."
+  (toggle-maximize (%x 100) (%y 100) win))
 
-(define-public (toggle-max-vert-part)
-  "Toggle the current window's maximization-vertically to 95% of the screen height."
-  (toggle-maximize 0 (%y 95)))
+(define*-public (toggle-max-vert-part #&optional (win (get-window)))
+  "Toggle the WIN's maximization-vertically to 95% of the screen height."
+  (toggle-maximize 0 (%y 95) win))
 
-(define-public (wiggle-window)
-  "Animatedly window shade and then unshade the current window.
+(define*-public (wiggle-window #&optional (win (get-window)))
+  "Animatedly window shade and then unshade WIN.
 Just a toy--- perhaps could be useful to call attention to a window."
-  (let ((w (get-window))) (window-shade w #t) (un-window-shade w #t)))
+  (window-shade win #t) (un-window-shade win #t))
 
 (define-public (system-info-string)
   "Return a string with various system information.
