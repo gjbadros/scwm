@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-11 Tue 11:56:43 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-08-14 Fri 17:49:02 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -88,6 +88,7 @@
  (defvar scheme-buffer)         ; defined in cmuscheme.el
  (defvar inferior-scheme-mode-map) ; defined in cmuscheme.el
  (defvar scwm-mode-map)         ; kill warnings
+ (defvar scwm-mode-syntax-table) ; kill warnings
  ;; these three are dumped with e20.3
  (unless (fboundp 'quit-window) (defalias 'quit-window 'ignore))
  (unless (fboundp 'help-xref-button) (defalias 'help-xref-button 'ignore))
@@ -118,11 +119,20 @@ See also `with-temp-buffer'."
            (kill-buffer standard-output))))))
  (unless (fboundp 'with-temp-buffer)
    (defmacro with-temp-buffer (&rest body)
+     "Execute BODY, with current buffer being a temporary one."
      `(let ((standard-output (get-buffer-create (generate-new-buffer-name
                                                  " *temp-buffer*"))))
        (save-excursion (set-buffer standard-output)
                        (unwind-protect (progn ,@body)
-                         (kill-buffer standard-output)))))))
+                         (kill-buffer standard-output))))))
+ (unless (fboundp 'with-face)
+   (defmacro with-face (face &rest body)
+     "Execute body, which prints to `standard-output', then highlight the output."
+     (let ((pp (gensym "wf")))
+       `(let ((,pp (with-current-buffer standard-output (point))))
+         ,@body
+         (put-text-property ,pp (with-current-buffer standard-output (point))
+          'face ,face standard-output))))))
 
 ;;; Code:
 
@@ -294,13 +304,6 @@ Returns a string which is present in the `scwm-obarray'."
       (scwm-eval "(system-info-string)" t)
       (delete-char -1) (goto-char pos) (delete-char 1))))
 
-(defmacro with-face (face &rest body)
-  "Execute body, which prints to `standard-output', then highlight the output."
-  (let ((pp (gensym "wh")))
-    `(let ((,pp (point)))
-      ,@body
-      (put-text-property ,pp (point) 'face ,face standard-output))))
-
 ;;;###autoload
 (defun scwm-documentation (pat)
   "Query scwm for documentation for the symbol PAT."
@@ -335,8 +338,14 @@ Returns a string which is present in the `scwm-obarray'."
       (let ((st (syntax-table)))
         (set-syntax-table scwm-mode-syntax-table)
         (goto-char 1) (forward-line 8) ; skip the header and value
-        (while (re-search-forward "`\\(\\sw\\(\\sw\\|\\s_\\)+\\)'" nil t)
-          (help-xref-button 1 #'scwm-documentation (match-string 1)))
+        (while (looking-at "trying `") (forward-line 1))
+        (let ((pt (point)))
+          (while (re-search-forward "`\\(\\(\\sw\\|\\s_\\)+\\)'" nil t)
+            (help-xref-button 1 #'scwm-documentation (match-string 1)))
+          (goto-char pt)
+          (when (re-search-forward (concat "^(" pat " .*)$") nil t)
+            (put-text-property (match-beginning 0) (match-end 0)
+                               'face 'highlight)))
         (set-syntax-table st))
       (help-mode) (goto-char 1) (print-help-return-message))))
 
