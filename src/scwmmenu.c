@@ -1,5 +1,5 @@
 /* $Id$
- * menuitem.c
+ * scwmmenu.c
  * By Greg J. Badros -- Nov. 14, 1997
  *
  */
