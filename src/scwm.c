@@ -367,7 +367,7 @@ InitVariables(void)
   decor2scm(&Scr.DefaultDecor);
   DECORREF(Scr.DefaultDecor.scmdecor);
 
-  Scr.DefaultDecor.tag = "default";
+  Scr.DefaultDecor.tag = strdup("default");
 
   Scr.fSmartPlacementIsClever = False;
   Scr.fClickToFocusPassesClick = True;
