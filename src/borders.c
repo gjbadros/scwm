@@ -141,9 +141,9 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 
 #if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
     /* are we using textured borders? */
-    if ((GetDecor(t, BorderStyle.active.style)
+    if ((GetDecor(t, BorderStyle.active->style)
 	 & ButtonFaceTypeMask) == TiledPixmapButton)
-      TexturePixmap = GetDecor(t, BorderStyle.active.u.p->picture);
+      TexturePixmap = GetDecor(t, BorderStyle.active->u.p->picture);
 #endif
 
     /* set the keyboard focus */
@@ -173,9 +173,9 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
       NewColor = True;
     }
 #if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-    if ((GetDecor(t, BorderStyle.inactive.style)
+    if ((GetDecor(t, BorderStyle.inactive->style)
 	 & ButtonFaceTypeMask) == TiledPixmapButton)
-      TexturePixmap = GetDecor(t, BorderStyle.inactive.u.p->picture);
+      TexturePixmap = GetDecor(t, BorderStyle.inactive->u.p->picture);
 #endif
 
     TextColor = t->TextPixel;
@@ -248,7 +248,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
     for (i = 0; i < Scr.nr_left_buttons; ++i) {
       if (t->left_w[i] != None) {
 	enum ButtonState bs = GetButtonState(t->left_w[i]);
-	ButtonFace *bf = &GetDecor(t, left_buttons[i].state[bs]);
+	ButtonFace *bf = GetDecor(t, left_buttons[i].state[bs]);
 
 #if !(defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE))
 	ChangeWindowColor(t->left_w[i], valuemask);
@@ -272,7 +272,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 #endif
 #ifdef EXTENDED_TITLESTYLE
 	  if (bf->style & UseTitleStyle) {
-	    ButtonFace *tsbf = &GetDecor(t, titlebar.state[bs]);
+	    ButtonFace *tsbf = GetDecor(t, titlebar.state[bs]);
 
 #ifdef MULTISTYLE
 	    for (; tsbf; tsbf = tsbf->next)
@@ -291,8 +291,8 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 		       bf, ReliefGC, ShadowGC,
 		       inverted, GetDecor(t, left_buttons[i].flags));
 
-	  if (!(GetDecor(t, left_buttons[i].state[bs].style) & FlatButton)) {
-	    if (GetDecor(t, left_buttons[i].state[bs].style) & SunkButton)
+	  if (!(GetDecor(t, left_buttons[i].state[bs]->style) & FlatButton)) {
+	    if (GetDecor(t, left_buttons[i].state[bs]->style) & SunkButton)
 	      RelieveWindow(t, t->left_w[i], 0, 0,
 			    t->title_height, t->title_height,
 			    (inverted ? ReliefGC : ShadowGC),
@@ -311,7 +311,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
     for (i = 0; i < Scr.nr_right_buttons; ++i) {
       if (t->right_w[i] != None) {
 	enum ButtonState bs = GetButtonState(t->right_w[i]);
-	ButtonFace *bf = &GetDecor(t, right_buttons[i].state[bs]);
+	ButtonFace *bf = GetDecor(t, right_buttons[i].state[bs]);
 
 #if !(defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE))
 	ChangeWindowColor(t->right_w[i], valuemask);
@@ -335,7 +335,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 #endif
 #ifdef EXTENDED_TITLESTYLE
 	  if (bf->style & UseTitleStyle) {
-	    ButtonFace *tsbf = &GetDecor(t, titlebar.state[bs]);
+	    ButtonFace *tsbf = GetDecor(t, titlebar.state[bs]);
 
 #ifdef MULTISTYLE
 	    for (; tsbf; tsbf = tsbf->next)
@@ -354,8 +354,8 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 		       bf, ReliefGC, ShadowGC,
 		       inverted, GetDecor(t, right_buttons[i].flags));
 
-	  if (!(GetDecor(t, right_buttons[i].state[bs].style) & FlatButton)) {
-	    if (GetDecor(t, right_buttons[i].state[bs].style) & SunkButton)
+	  if (!(GetDecor(t, right_buttons[i].state[bs]->style) & FlatButton)) {
+	    if (GetDecor(t, right_buttons[i].state[bs]->style) & SunkButton)
 	      RelieveWindow(t, t->right_w[i], 0, 0,
 			    t->title_height, t->title_height,
 			    (inverted ? ReliefGC : ShadowGC),
@@ -384,8 +384,8 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 
 #ifdef BORDERSTYLE
       int flags = onoroff
-      ? GetDecor(t, BorderStyle.active.style)
-      : GetDecor(t, BorderStyle.inactive.style);
+      ? GetDecor(t, BorderStyle.active->style)
+      : GetDecor(t, BorderStyle.inactive->style);
 
 #endif /* BORDERSTYLE */
 
@@ -756,7 +756,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
     w = 0;
 
   title_state = GetButtonState(t->title_w);
-  tb_style = GetDecor(t, titlebar.state[title_state].style);
+  tb_style = GetDecor(t, titlebar.state[title_state]->style);
   tb_flags = GetDecor(t, titlebar.flags);
   if (tb_flags & HOffCenter) {
     if (tb_flags & HRight)
@@ -774,8 +774,8 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
   /* we need to check for UseBorderStyle for the titlebar */
   {
     ButtonFace *bf = onoroff
-    ? &GetDecor(t, BorderStyle.active)
-    : &GetDecor(t, BorderStyle.inactive);
+      ? GetDecor(t, BorderStyle.active)
+      : GetDecor(t, BorderStyle.inactive);
 
     if ((tb_style & UseBorderStyle)
 	&& ((bf->style & ButtonFaceTypeMask) == TiledPixmapButton))
@@ -809,7 +809,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
 		  t->name, strlen(t->name));
   } else {
 #ifdef EXTENDED_TITLESTYLE
-    ButtonFace *bf = &GetDecor(t, titlebar.state[title_state]);
+    ButtonFace *bf = GetDecor(t, titlebar.state[title_state]);
 
     /* draw compound titlebar (veliaa@rpi.edu) */
     if (PressedW == t->title_w) {

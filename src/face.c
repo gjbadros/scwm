@@ -28,7 +28,7 @@ print_face(SCM obj, SCM port, scm_print_state * pstate)
   return 1;
 }
 
-static void FreeButtonFace(Display * dpy, ButtonFace * bf);
+void FreeButtonFace(Display * dpy, ButtonFace * bf);
 
 
 size_t
@@ -522,7 +522,7 @@ init_face()
 
 /* fvwm's FreeButton face was buggy and breaks with garbage collection
    and other stuff */
-static void 
+void 
 FreeButtonFace(Display * dpy, ButtonFace * bf)
 {
   switch (bf->style & ButtonFaceTypeMask) {

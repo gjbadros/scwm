@@ -184,7 +184,7 @@ enum ButtonState {
 
 typedef struct {
   int flags;
-  ButtonFace state[MaxButtonState];
+  ButtonFace *state[MaxButtonState];
 } TitleButton;
 
 typedef struct ScwmDecor {
@@ -205,7 +205,7 @@ typedef struct ScwmDecor {
   TitleButton titlebar;
 #ifdef BORDERSTYLE
   struct BorderStyle {
-    ButtonFace active, inactive;
+    ButtonFace *active, *inactive;
   } BorderStyle;
 #endif
 #ifdef USEDECOR

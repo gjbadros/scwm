@@ -1630,9 +1630,14 @@ SetMenuStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 }
 #endif /* MS_DELETION_COMMENT */
 
+#ifdef MS_DELETION_COMMENT 
+
 Boolean ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose);
 void FreeButtonFace(Display * dpy, ButtonFace * bf);
 
+#endif /* MS_DELETION_COMMENT */
+
+#ifdef MS_DELETION_COMMENT 
 #ifdef BORDERSTYLE
 /****************************************************************************
  *
@@ -1725,9 +1730,13 @@ SetBorderStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
   }
 }
 #endif
+#endif /* MS_DELETION_COMMENT */
 
+#ifdef MS_DELETION_COMMENT 
 char *ReadTitleButton(char *s, TitleButton * tb, Boolean append, int button);
+#endif /* MS_DELETION_COMMENT */
 
+#ifdef MS_DELETION_COMMENT
 #if defined(MULTISTYLE) && defined(EXTENDED_TITLESTYLE)
 /*****************************************************************************
  * 
@@ -1759,7 +1768,9 @@ AddTitleStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
   }
 }
 #endif /* MULTISTYLE && EXTENDED_TITLESTYLE */
+#endif /* MS_DELETION_COMMENT */
 
+#ifdef MS_DELETION_COMMENT
 void 
 SetTitleStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 	      unsigned long context, char *action, int *Module)
@@ -1852,6 +1863,7 @@ SetTitleStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
     action = GetNextToken(action, &parm);
   }
 }				/* SetTitleStyle */
+#endif /* MS_DELETION_COMMENT */
 
 #if MS_DELETION_COMMENT
 void 
@@ -1949,6 +1961,7 @@ LoadWindowFont(XEvent * eventp, Window win, ScwmWindow * tmp_win,
 }
 #endif /* MS_DELETION_COMMENT */
 
+#ifdef MS_DELETION_COMMENT
 void 
 FreeButtonFace(Display * dpy, ButtonFace * bf)
 {
@@ -1987,7 +2000,10 @@ FreeButtonFace(Display * dpy, ButtonFace * bf)
 #endif
   bf->style = SimpleButton;
 }
+#endif /* MS_DELETION_COMMENT */
 
+
+#ifdef MS_DELETION_COMMENT
 /*****************************************************************************
  * 
  * Reads a button face line into a structure (veliaa@rpi.edu)
@@ -2333,8 +2349,9 @@ ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose)
   }
   return True;
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#ifdef MS_DELETION_COMMENT
 /*****************************************************************************
  * 
  * Reads a title button description (veliaa@rpi.edu)
@@ -2433,7 +2450,7 @@ ReadTitleButton(char *s, TitleButton * tb, Boolean append, int button)
   }
   return end;
 }
-
+#endif /* MS_DELETION_COMMENT */
 
 #ifdef USEDECOR
 /*****************************************************************************
@@ -2635,7 +2652,7 @@ UpdateDecor(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
   SetBorder(Scr.Hilite, True, True, True, None);
 }
 
-
+#ifdef MS_DELETION_COMMENT
 /*****************************************************************************
  * 
  * Changes a button decoration style (changes by veliaa@rpi.edu)
@@ -2775,7 +2792,10 @@ ButtonStyle(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
     text = GetNextToken(text, &parm);
   }
 }
+#endif /* MS_DELETION_COMMENT */
 
+
+#ifdef MS_DELETION_COMMENT
 #ifdef MULTISTYLE
 /*****************************************************************************
  * 
@@ -2867,6 +2887,9 @@ AddButtonStyle(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
   }
 }
 #endif /* MULTISTYLE */
+#endif /* MS_DELETION_COMMENT */
+
+
 
 #if MS_DELETION_COMMENT
 /**************************************************************************

@@ -387,9 +387,9 @@ AddWindow(Window w)
 			   LeaveWindowMask | ExposureMask);
 
 #if defined(PIXMAP_BUTTONS) && defined(BORDERSTYLE)
-  if ((GetDecor(tmp_win, BorderStyle.inactive.style) & ButtonFaceTypeMask)
+  if ((GetDecor(tmp_win, BorderStyle.inactive->style) & ButtonFaceTypeMask)
       == TiledPixmapButton)
-    TexturePixmap = GetDecor(tmp_win, BorderStyle.inactive.u.p->picture);
+    TexturePixmap = GetDecor(tmp_win, BorderStyle.inactive->u.p->picture);
 
   if (TexturePixmap) {
     TexturePixmapSave = attributes.background_pixmap;

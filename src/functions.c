@@ -37,12 +37,14 @@ Bool desperate;
 
 struct functions func_config[] =
 {
+#if MS_DELETION_COMMENT
 #ifdef MULTISTYLE
   {"AddButtonStyle", AddButtonStyle, F_ADD_BUTTON_STYLE, FUNC_NO_WINDOW},
 #ifdef EXTENDED_TITLESTYLE
   {"AddTitleStyle", AddTitleStyle, F_ADD_TITLE_STYLE, FUNC_NO_WINDOW},
 #endif
 #endif
+#endif				/* MS_DELETION_COMMENT */
 #ifdef USEDECOR
   {"AddToDecor", add_item_to_decor, F_ADD_DECOR, FUNC_NO_WINDOW},
 #endif
@@ -54,10 +56,12 @@ struct functions func_config[] =
   {"Beep", Bell, F_BEEP, FUNC_NO_WINDOW},
 #endif				/* MS_DELETION_COMMENT */
 
+#if MS_DELETION_COMMENT
 #ifdef BORDERSTYLE
   {"BorderStyle", SetBorderStyle, F_BORDERSTYLE, FUNC_NO_WINDOW},
 #endif
   {"ButtonStyle", ButtonStyle, F_BUTTON_STYLE, FUNC_NO_WINDOW},
+#endif				/* MS_DELETION_COMMENT */
 #ifdef USEDECOR
   {"ChangeDecor", ChangeDecor, F_CHANGE_DECOR, FUNC_NEEDS_WINDOW},
 #endif				/* MS_DELETION_COMMENT */
@@ -160,8 +164,10 @@ struct functions func_config[] =
 #endif				/* MS_DELETION_COMMENT */
 
   {"Title", Nop_func, F_TITLE, FUNC_TITLE},
+#if MS_DELETION_COMMENT
   {"Titlestyle", SetTitleStyle, F_TITLESTYLE, FUNC_NO_WINDOW},
   {"UpdateDecor", UpdateDecor, F_UPDATE_DECOR, FUNC_NO_WINDOW},
+#endif				/* MS_DELETION_COMMENT */
 
 #if MS_DELETION_COMMENT
   {"Wait", wait_func, F_WAIT, FUNC_NO_WINDOW},

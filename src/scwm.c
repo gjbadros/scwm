@@ -1082,15 +1082,15 @@ ResetAllButtons(ScwmDecor * fl)
   for (; i < 5; ++i) {
     int j;
 
-    FreeButtonFace(dpy, &fl->left_buttons[i].state[0]);
-    FreeButtonFace(dpy, &fl->right_buttons[i].state[0]);
+    FreeButtonFace(dpy, fl->left_buttons[i].state[0]);
+    FreeButtonFace(dpy, fl->right_buttons[i].state[0]);
 
-    LoadDefaultLeftButton(&fl->left_buttons[i].state[0], i);
-    LoadDefaultRightButton(&fl->right_buttons[i].state[0], i);
+    LoadDefaultLeftButton(fl->left_buttons[i].state[0], i);
+    LoadDefaultRightButton(fl->right_buttons[i].state[0], i);
 
     for (j = 1; j < MaxButtonState; ++j) {
-      FreeButtonFace(dpy, &fl->left_buttons[i].state[j]);
-      FreeButtonFace(dpy, &fl->right_buttons[i].state[j]);
+      /* FreeButtonFace(dpy, fl->left_buttons[i].state[j]); */
+      /* FreeButtonFace(dpy, fl->right_buttons[i].state[j]); */
 
       fl->left_buttons[i].state[j] = fl->left_buttons[i].state[0];
       fl->right_buttons[i].state[j] = fl->right_buttons[i].state[0];
@@ -1116,11 +1116,11 @@ DestroyScwmDecor(ScwmDecor * fl)
     int j = 0;
 
     for (; j < MaxButtonState; ++j)
-      FreeButtonFace(dpy, &fl->titlebar.state[i]);
+      FreeButtonFace(dpy, fl->titlebar.state[i]);
   }
 #ifdef BORDERSTYLE
-  FreeButtonFace(dpy, &fl->BorderStyle.active);
-  FreeButtonFace(dpy, &fl->BorderStyle.inactive);
+  FreeButtonFace(dpy, fl->BorderStyle.active);
+  FreeButtonFace(dpy, fl->BorderStyle.inactive);
 #endif
 #ifdef USEDECOR
   if (fl->tag) {
@@ -1147,7 +1147,10 @@ void
 InitScwmDecor(ScwmDecor * fl)
 {
   int i;
-  ButtonFace tmpbf;
+  ButtonFace *tmpbf;
+
+  /* FIXMS in all of these, we need to use make_face instead, so
+     relevant scheme objects get created. */
 
   fl->HiReliefGC = NULL;
   fl->HiShadowGC = NULL;
@@ -1168,16 +1171,30 @@ InitScwmDecor(ScwmDecor * fl)
 #endif
 
   /* initialize title-bar button styles */
-  tmpbf.style = SimpleButton;
-#ifdef MULTISTYLE
-  tmpbf.next = NULL;
-#endif
   for (i = 0; i < 5; ++i) {
     int j = 0;
 
+    /* This allocation is not as wasteful as it looks, it is only
+       per-decor, but must be reconsidered when these settings are
+       per-window. */
+
+    tmpbf=calloc(1,sizeof(ButtonFace));
+    tmpbf->style = SimpleButton;
+#ifdef MULTISTYLE
+    tmpbf->next = NULL;
+#endif
+
     for (; j < MaxButtonState; ++j) {
-      fl->left_buttons[i].state[j] =
-	fl->right_buttons[i].state[j] = tmpbf;
+      fl->right_buttons[i].state[j] = tmpbf;
+    }
+
+    tmpbf=calloc(1,sizeof(ButtonFace));
+    tmpbf->style = SimpleButton;
+#ifdef MULTISTYLE
+    tmpbf->next = NULL;
+#endif
+    for (j=0; j < MaxButtonState; ++j) {
+      fl->left_buttons[i].state[j] = tmpbf;
     }
   }
 
@@ -1188,19 +1205,23 @@ InitScwmDecor(ScwmDecor * fl)
   fl->titlebar.flags = 0;
 
   for (i = 0; i < MaxButtonState; ++i) {
-    fl->titlebar.state[i].style = SimpleButton;
+    fl->titlebar.state[i]=calloc(1,sizeof(ButtonFace));
+    fl->titlebar.state[i]->style = SimpleButton;
 #ifdef MULTISTYLE
-    fl->titlebar.state[i].next = NULL;
+    fl->titlebar.state[i]->next = NULL;
 #endif
   }
 
 #ifdef BORDERSTYLE
   /* initialize border texture styles */
-  fl->BorderStyle.active.style = SimpleButton;
-  fl->BorderStyle.inactive.style = SimpleButton;
+  fl->BorderStyle.active=calloc(1,sizeof(ButtonFace));
+  fl->BorderStyle.inactive=calloc(1,sizeof(ButtonFace));
+
+  fl->BorderStyle.active->style = SimpleButton;
+  fl->BorderStyle.inactive->style = SimpleButton;
 #ifdef MULTISTYLE
-  fl->BorderStyle.active.next = NULL;
-  fl->BorderStyle.inactive.next = NULL;
+  fl->BorderStyle.active->next = NULL;
+  fl->BorderStyle.inactive->next = NULL;
 #endif
 #endif
 }
