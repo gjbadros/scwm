@@ -279,7 +279,8 @@ SCM window_position(SCM win);
 SCM window_size(SCM win);
 SCM window_id(SCM win);
 SCM window_frame_id(SCM win);
-SCM window_from_window_id(SCM window_id);
+SCM id_to_window(SCM window_id);
+SCM frame_id_to_window(SCM window_id);
 
 SCM window_desk(SCM win);
 SCM window_title(SCM win);
@@ -334,6 +335,8 @@ SCM set_OL_decor_hint_x(SCM val, SCM w);
 SCM set_start_on_desk_x(SCM desk, SCM w);
 SCM set_skip_mapping_x(SCM val, SCM w);
 SCM set_lenience_x(SCM val, SCM win);
+
+
 
 #endif /* WINDOW_H */
 

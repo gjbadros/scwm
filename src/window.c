@@ -48,7 +48,6 @@
 SCM sym_mouse, sym_sloppy, sym_none;
 extern SCM sym_click;
 
-
 unsigned long 
 FlagsBitsFromSw(ScwmWindow *psw)
 {
@@ -1189,6 +1188,90 @@ lower_window(SCM win)
 }
 
 
+
+SCM_PROC(s_restack_windows, "restack-windows", 1, 0, 0, restack_windows);
+
+SCM
+restack_windows(SCM winlist)
+{
+  Window *windows;
+  SCM p;
+  int i, cnt;
+
+  if (!gh_list_p(winlist)) {
+    scm_wrong_type_arg(s_restack_windows, 1, winlist);
+  }
+
+  /* FIXMS: Hmmm, do we really want to restack the icons of iconified
+     windows? */
+
+  for (p=winlist, cnt=0; SCM_EOL!=p; p=SCM_CDR(p)) {
+    ScwmWindow *psw;
+    SCM cur=SCM_CAR(p);
+
+    if (!WINDOWP(cur)) {
+      scm_wrong_type_arg(s_restack_windows, 1, winlist);      
+    }
+
+    psw=SCWMWINDOW(cur);
+
+    cnt++;
+
+    if (psw->fIconified && !psw->fSuppressIcon) {
+      if (!psw->fNoIconTitle) {
+	cnt++;
+      }
+      if (!(psw->icon_pixmap_w)) {
+	cnt++;
+      }
+    }
+  }
+
+  windows = safemalloc(sizeof(Window) * cnt);
+  
+  /* FIXMS: This doesn't properly handle transient windows (the way
+     raise does), but I am unsure what the really right way to handle
+     those is. Need to see if ICCCM really requires them to always be
+     in front of the app. In fact, ICCCM says no such thing about
+     transients, so we should probably implement the RaiseTransients
+     functionality using a more general hook of some kind,
+     ultimately. */
+
+  for (p=winlist, i=0; SCM_EOL!=p; p=SCM_CDR(p)) {
+    SCM cur=SCM_CAR(p);
+    ScwmWindow *psw=SCWMWINDOW(cur);
+
+    if (!WINDOWP(cur)) {
+      free (windows);
+      scm_wrong_type_arg(s_restack_windows, 1, winlist);      
+    }
+
+    windows[i++]=SCWMWINDOW(cur)->frame;    
+
+    if (psw->fIconified && !psw->fSuppressIcon) {
+      if (!psw->fNoIconTitle) {
+	windows[i++]=psw->icon_w;
+      }
+      if (!(psw->icon_pixmap_w)) {
+	windows[i++]=psw->icon_pixmap_w;
+      }
+    }
+  }
+  
+  /* This will interact badly with the fvwm pager, ultimately, we will
+     want to fake an appropriate set of M_RAISE_WINDOW and
+     M_LOWER_WINDOW broadcasts. */
+
+
+  XRestackWindows(dpy, windows, cnt);
+
+  KeepOnTop();
+
+  return SCM_UNSPECIFIED;
+}
+
+
+
 SCM_PROC(s_raised_p, "raised?", 0, 1, 0,  raised_p);
 
 SCM 
@@ -1976,21 +2059,42 @@ window_frame_id(SCM win)
 }
 
 
-SCM_PROC(s_window_from_window_id, "window-from-window-id", 0, 1, 0,  window_from_window_id);
+SCM_PROC(s_id_to_window, "id->window", 0, 1, 0,  id_to_window);
 
 SCM
-window_from_window_id(SCM window_id)
+id_to_window(SCM window_id)
 {
+  ScwmWindow *psw;
   Window w;
-  ScwmWindow *psw = NULL;
+
   if (!gh_number_p(window_id)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(__FUNCTION__, 1, window_id);
-  }
-  w = gh_scm2int(window_id);
-  psw = SwFromWindow(dpy, (Window) w);
-  return (psw?psw->schwin : SCM_BOOL_F);
+    scm_wrong_type_arg(s_id_to_window, 1, window_id);
+  }		   
+
+  w =(Window) gh_scm2int(window_id);
+  SwFromWindow(dpy, w);
+
+  return ((psw&& psw->w==w) ? psw->schwin : SCM_BOOL_F);
 }
+
+SCM_PROC(s_frame_id_to_window, "frame-id->window", 0, 1, 0,  frame_id_to_window);
+
+SCM
+frame_id_to_window(SCM window_id)
+{
+  ScwmWindow *psw;
+  Window w;
+
+  if (!gh_number_p(window_id)) {
+    scm_wrong_type_arg(s_frame_id_to_window, 1, window_id);
+  }
+
+  w =(Window) gh_scm2int(window_id);
+  SwFromWindow(dpy, w);
+
+  return ((psw && psw->frame==w) ? psw->schwin : SCM_BOOL_F);
+}
+
 
 
 SCM_PROC(s_window_desk, "window-desk", 0, 1, 0,  window_desk);
@@ -2041,11 +2145,12 @@ list_all_windows()
   ScwmWindow *t;
   SCM result = SCM_EOL;
 
-  SCM_REDEFER_INTS;
   for (t = Scr.ScwmRoot.next; NULL != t; t = t->next) {
     result = scm_cons(t->schwin, result);
   }
-  SCM_REALLOW_INTS;
+
+  
+
   return result;
 }
 
@@ -2822,6 +2927,7 @@ set_lenience_x(SCM val, SCM win)
   }
   return SCM_UNSPECIFIED;
 }
+
 
 
 void 

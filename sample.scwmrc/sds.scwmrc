@@ -821,7 +821,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;;(define broadcast-hook
 ;;  (lambda (event a1 a2 a3 a4 a5 a6 a7)
 ;;    (if (= event M_FOCUS_CHANGE)
-;;	(let ((window (window-from-window-id a1)))
+;;	(let ((window (id->window a1)))
 ;;	  (if window (raise-window window))))))
 
 ;;; menu-item test cases

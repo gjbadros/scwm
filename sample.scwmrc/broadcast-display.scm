@@ -10,7 +10,7 @@
 		   a1 a2 a3 a4 a5 a6 a7))
     (display "\n")
     (if (= event-type M_FOCUS_CHANGE)
-	(let ((window (window-from-window-id a1)))
+	(let ((window (id->window a1)))
 	  (if window (raise-window window))))))
 
 (define broadcast-config-hook 

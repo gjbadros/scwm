@@ -154,14 +154,6 @@
   (map (lambda (w) (add-window w port)) (list-all-windows))
   (end-window-list port))
 
-;; FIXMS: useful enough to move somewhere public?
-(define (id->window id)
-  (let ((candidates (list-windows 
-		     #:only (lambda (w) (= (window-id w) id)))))
-    (if (not (null? candidates))
-	(car candidates)
-	#f)))
-
 
 (define (add-window win port)
   (let* ((id (window-id win))

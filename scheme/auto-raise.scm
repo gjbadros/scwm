@@ -124,7 +124,7 @@
   (cond
    ((= event M_FOCUS_CHANGE)
     (remove-timer-hook! last-focus-handle)
-    (let ((window (window-from-window-id a1)))
+    (let ((window (id->window a1)))
       (cond
        (window 
 	(remove-timer-hook! 

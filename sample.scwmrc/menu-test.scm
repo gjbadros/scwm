@@ -95,7 +95,7 @@
 ;;(unbind-mouse 'root 1)
 
 ;;(window-id)
-;;(raise-window (window-from-window-id 16777234))
+;;(raise-window (id->window 16777234))
 
 (define broadcast-hook (lambda (d1 d2 d3 d4 d5 d6 d7) (display "hook\n")))
 (define pic-unknown (make-image "unknown1.xpm"))

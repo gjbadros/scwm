@@ -1,3 +1,8 @@
+Mon Jul  6 01:53:41 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* broadcast-display.scm, menu-test.scm, sds.scwmrc, gjb.scwmrc:
+ 	Rreplace occurences of window-from-window-id with id->window.
+
 1998-07-04  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added xlock-query-program set to xlock-stdout, so
