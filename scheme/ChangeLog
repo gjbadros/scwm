@@ -1,3 +1,12 @@
+Thu Sep 16 13:10:45 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice.scm: Clean up a bit, make easier to start up, added use 
+	of animated-edge-moves module for "move window north west", etc.
+
+	* animated-edge-moves.scm: Added.
+
+	* Makefile.am: Added animated-edge-moves.scm
+
 Thu Sep 16 11:54:45 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added prompting-shell.scm, viavoice.scm

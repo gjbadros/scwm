@@ -1,3 +1,7 @@
+Thu Sep 16 13:12:34 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use new animated-edge-moves module.
+
 Tue Sep 14 08:59:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added a Change Background color menu item in the
