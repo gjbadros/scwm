@@ -4,7 +4,10 @@
 
 
 (define-module (app scwm xprop-extras)
-  :use-module (app scwm optargs))
+  :use-module (app scwm optargs)
+  :use-module (app scwm stringops)
+  :use-module (app scwm listops)
+  :use-module (ice-9 string-fun))
 
 (define-public (set-window-title! win title)
   "Change the window title X-Property of WIN to TITLE.
@@ -77,3 +80,222 @@ name, and `window-pid' to get the process id.
 "
   (let ((prop (X-property-get win "SCWM_OTHER_ID")))
     (and (list? prop) (car prop))))
+
+; define the WM_HINTS flags WH-*
+(do ((n 1 (* 2 n))
+     (sym '(WH-Input WH-State WH-IconPixmap WH-IconWindow
+	    WH-IconPosition WH-IconMask WH-WindowGroup WH-reserved WH-Urgency)
+	  (cdr sym)))
+    ((null? sym))
+  (eval `(define ,(car sym) ,n)))
+
+; define the WM_SIZE_HINTS flags WSH-*
+(do ((n 1 (* 2 n))
+     (sym '(WSH-USPosition WSH-USSize WSH-PPosition WSH-PSize
+	    WSH-PMinSize WSH-PMaxSize WSH-PResizeInc WSH-PAspect
+	    WSH-PBaseSize WSH-PWinGravity)
+	  (cdr sym)))
+    ((null? sym))
+  (eval `(define ,(car sym) ,n)))
+
+(define*-public (X-properties->string #&optional (win (get-window))
+				      (recurse #t))
+  "Prints the X properties of WIN into a string.
+WIN is a window object, an X window id, or 'root-window.
+If RECURSE is non-#f, also list properties of referenced windows."
+  (let ((win (if (number? win) win (window-id win)))
+	(todo ()))
+    (apply
+     string-append
+     (append!
+      (map (lambda (prop)
+		(let* ((res (X-property-get win prop))
+		       (val (car res))
+		       (type (cadr res)))
+		  (string-append
+		   prop "(" type ") = "
+		   (cond
+		    ((equal? prop "WM_CLIENT_LEADER")
+		     (let ((leader (array-ref val 0)))
+		       (if (not (or (equal? leader win) (assoc leader todo)))
+			   (set! todo (append! todo
+					       (cons (cons leader
+							   "client leader")
+						     ()))))
+		       (string-append "# 0x" (number->hex-string leader))))
+		    ((equal? type "STRING")
+		     (string-join
+		      ", "
+		      (map
+		       (lambda (s)
+			 (if (not (equal? s ""))
+			     (string-append "\"" s "\"")
+			     ""))
+		       (separate-fields-discarding-char #\null val list))))
+		    ((equal? type "ATOM")
+		     (string-join
+		      ", "
+		      (map (lambda (atom) (or (X-atom->string atom) "<undef>"))
+			   (array->list val))))
+		    ((member type
+			     '("WINDOW" "VISUALID" "WM_COLORMAP_WINDOWS"
+					"FONT" "BITMAP" "PIXMAP" "DRAWABLE"
+					"CURSOR" "COLORMAP"))
+		     (string-join ", "
+				  (map
+				   (lambda (id)
+				     (string-append "# 0x"
+						    (number->string id 16)))
+				   (array->list val))))
+		    ((equal? type "WM_ICON_SIZE")
+		     (apply string-append
+			    (map (lambda (name value)
+				   (string-append name
+						  (number->string value)))
+				 '("\n\t\tminimum icon size: " " by "
+				   "\n\t\tmaximum icon size: " " by "
+				   "\n\t\tincremental size change: " " by ")
+				 (array->list val))))
+		    ((equal? type "WM_STATE")
+		     (string-append "\n\t\tWindow state: "
+				    (window-state->string (array-ref val 0))
+				    "\n\t\tIcon window: # 0x"
+				    (number->string (array-ref val 1) 16)))
+		    ((equal? type "WM_HINTS")
+		     (let ((leader (if (positive? (logand WH-WindowGroup
+							   (array-ref val 0)))
+				       (array-ref val 8)
+				       #f)))
+		       (if (and leader (not (equal? leader win))
+				(not (assoc leader todo)))
+			   (set! todo (append! todo (cons (cons leader
+								"group leader")
+							  ())))))
+		     (apply
+		      string-append
+		      (map
+		       (lambda (name flag converter value)
+			 (if (not (zero? (logand flag (array-ref val 0))))
+			     (string-append name (converter value))
+			     ""))
+		       '("\n\t\tClient accepts input or input focus: "
+			 "\n\t\tInitial state: "
+			 "\n\t\tIcon pixmap: 0x"
+			 "\n\t\tIcon window: # 0x"
+			 "\n\t\tIcon location: " ", "
+			 "\n\t\tIcon mask: 0x"
+			 "\n\t\tGroup leader window: # 0x")
+		       (list WH-Input
+			     WH-State
+			     WH-IconPixmap
+			     WH-IconWindow
+			     WH-IconPosition WH-IconPosition
+			     WH-IconMask
+			     WH-WindowGroup)
+		       (list (lambda (v) (if (zero? v) "False" "True"))
+			     window-state->string
+			     number->hex-string
+			     number->hex-string
+			     number->string number->string
+			     number->hex-string
+			     number->hex-string)
+		       ; throw away flags
+		       (cdr (array->list val)))))
+		    ((equal? type "WM_SIZE_HINTS")
+		     (apply
+		      string-append
+		      (map
+		       (lambda (name flag converter value)
+			 (if (not (zero? (logand flag (array-ref val 0))))
+			     (string-append name (converter value))
+			     ""))
+		       '("\n\t\tuser specified location: " ", "
+			 "\n\t\tuser specified size: " " by "
+			 "\n\t\tprogram specified location: " ", "
+			 "\n\t\tprogram specified size: " " by "
+			 "\n\t\tprogram specified minimum size: " " by "
+			 "\n\t\tprogram specified maximum size: " " by "
+			 "\n\t\tprogram specified resize increment: " " by "
+			 "\n\t\tprogram specified minimum aspect ratio: " "/"
+			 "\n\t\tprogram specified maximum aspect ratio: " "/"
+			 "\n\t\tmax_aspect: " " by "
+			 "\n\t\tprogram specified base size: " " by "
+			 "\n\t\twindow gravity: ")
+		       (list WSH-USPosition WSH-USPosition
+			     WSH-USSize WSH-USSize
+			     WSH-PPosition WSH-PPosition
+			     WSH-PSize WSH-PSize
+			     WSH-PMinSize WSH-PMinSize
+			     WSH-PMaxSize WSH-PMaxSize
+			     WSH-PResizeInc WSH-PResizeInc
+			     WSH-PAspect WSH-PAspect
+			     WSH-PAspect WSH-PAspect
+			     WSH-PBaseSize WSH-PBaseSize
+			     WSH-PWinGravity)
+		       (list number->string number->string
+			     number->string number->string
+			     number->string number->string
+			     number->string number->string
+			     number->string number->string
+			     number->string number->string
+			     number->string number->string
+			     number->string number->string
+			     number->string number->string
+			     number->string number->string
+			     gravity->string)
+		       ; throw away flags and duplicate x, y, w, h
+		       (let ((vals (cdr (array->list val))))
+			 (append! (list-head vals 4) vals)))))
+		    ((equal? type "RGB_COLOR_MAP")
+		     (apply
+		      string-append
+		      (map (lambda (name converter value)
+			     (string-append name (converter value)))
+			   '("\n\t\tcolormap id: # 0x"
+			     "\n\t\tred-max: "
+			     "\n\t\tred-mult: "
+			     "\n\t\tgreen-max: "
+			     "\n\t\tgreen-mult: "
+			     "\n\t\tblue-max: "
+			     "\n\t\tblue-mult: "
+			     "\n\t\tbase-pixel: "
+			     "\n\t\tvisual id: # 0x"
+			     "\n\t\tkill id: # 0x")
+			   (repeat 1 number->hex-string
+				   7 number->string
+				   2 number->hex-string)
+			   (array->list val))))
+		    ((equal? type "RECTANGLE")
+		     (apply
+		      string-append
+		      (map (lambda (name converter value)
+			     (string-append name (converter value)))
+			   '("\n\t\tupper left corner: " ", "
+			     "\n\t\tsize: " " by ")
+			   (repeat 4 number->string)
+			   (array->list val))))
+		    ((equal? type "POINT")
+		     (string-append (number->string (array-ref val 0))
+				    ", "
+				    (number->string (array-ref val 1))))
+		    ((equal? type "ARC")
+		     (apply
+		      string-append
+		      (map (lambda (name converter value)
+			     (string-append name (converter value)))
+			   '("\n\t\tarc at " ", "
+			     "\n\t\tsize: " " by "
+			     "\n\t\tfrom angle " " to angle ")
+			   (repeat 6 number->string)
+			   (array->list val))))
+		    (else ; INTEGER, CARDINAL also handeled here
+		     (string-join ", "
+				  (map number->string (array->list val)))))
+		   "\n")))
+	      (X-properties win))
+      (if recurse
+	  (map (lambda (w)
+		 (string-append "\n--- " (cdr w) " ---\n"
+				(X-properties->string (car w) #f)))
+	       todo)
+	  ())))))
