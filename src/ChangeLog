@@ -1,3 +1,20 @@
+Fri Aug 27 09:26:49 1999    <gjb@cs.washington.edu>
+
+	* xmisc.c: Remove duplicate JunkChild, JunkRoot vars.
+
+	* window.h: assign to cvar in macro (avoids compiler warning)
+
+	* validate.h: Assign to pch in all paths of macro (avoid compiler
+	warning)
+
+	* scwm.c: comment out some unused variables (avoid warning)
+
+	* cursor.h: Use EXTERN on *pscm_cursor... variables (avoid
+	duplicate definitions).
+
+	* callbacks.c: Reorder a bit to make calln_hooks all inline, and
+	have them return values.
+
 Wed Aug 25 16:25:39 1999    <gjb@cs.washington.edu>
 
 	* events.c (HandleScwmExec): Use initial length of 0 in

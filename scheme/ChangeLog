@@ -1,3 +1,9 @@
+Fri Aug 27 02:12:34 1999    <gjb@cs.washington.edu>
+
+	* modifier-key-bindings.scm: Use #f for XKM_* variables if the
+	modifier doesn't exist (instead of (cons 255 #f)).  This makes the 
+	previous change effective.
+
 Fri Aug 27 01:50:12 1999    <gjb@cs.washington.edu>
 
 	* constraints.scm: Only bind modifier keys if all are non-#f.

@@ -1,3 +1,8 @@
+Fri Aug 27 12:33:25 1999    <gjb@cs.washington.edu>
+
+	* background/background.c (s_clone_resized_image): Use image, not
+	uninitialized img.
+
 Sat Jul 31 19:29:59 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xtest/scwmxtest.c: #include XTest.h.  Remove unused local variable.
