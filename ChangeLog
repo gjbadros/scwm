@@ -1,3 +1,9 @@
+Thu Mar 19 19:12:27 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* configure.in: Don't try to generate a Makefile for scwmsend.
+
+	configure: Regenerated from configure.in
+
 1998-03-19 Thu 16:08:43 EST Sam Steingold <sds@usa.net>
 
 	* utilities/emacs/scwm.el: fixed completion, documentation and
