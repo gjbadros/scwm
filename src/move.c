@@ -202,6 +202,7 @@ DisplayPosition(ScwmWindow *psw, int x, int y, Bool fRelief)
 }
 
 
+#if 0 /* FIXGJB: remove old version */
 static void
 SnapCoordsToEdges(int *px, int *py, int width, int height, int bw, int resistance)
 {
@@ -217,6 +218,43 @@ SnapCoordsToEdges(int *px, int *py, int width, int height, int bw, int resistanc
   if ((*py < 0) && (*py > -resistance))
     *py = 0;
 }
+#else
+/* New version from Todd Larson */
+static void
+SnapCoordsToEdges(int *px, int *py, int width, int height, int bw, int resistance)
+{
+  int pixel_past_last, last_pixel, last_pixel_on_screen;
+ 
+  /* Resist moving windows over the edge of the screen! */
+  pixel_past_last = *px + bw + width + bw;
+  last_pixel = pixel_past_last - 1;
+  last_pixel_on_screen = Scr.DisplayWidth - 1;
+ 
+  /* *px + width + 2*bw > Scr.DisplayWidth */
+  if (last_pixel > last_pixel_on_screen &&
+      last_pixel < last_pixel_on_screen + resistance) {
+    /* last_pixel = last_pixel_on_screen */
+    /* pixel_past_last - 1 = Scr.DisplayWidth - 1 */
+    /* *px + bw + width + bw = Scr.DisplayWidth; */
+    *px = Scr.DisplayWidth - width - bw*2;
+  }
+ 
+  if ((*px < 0) && (*px > -resistance))
+    *px = 0;
+ 
+  pixel_past_last = *py + bw + height + bw;
+  last_pixel = pixel_past_last - 1;
+  last_pixel_on_screen = Scr.DisplayHeight - 1;
+ 
+  if (last_pixel > last_pixel_on_screen &&
+      last_pixel < last_pixel_on_screen + resistance) {
+    *py = Scr.DisplayHeight - height - bw*2;
+  }
+ 
+  if ((*py < 0) && (*py > -resistance))
+    *py = 0;
+}
+#endif
 
 /*
   Move the window around, return with the new window location in
@@ -236,8 +274,8 @@ SnapCoordsToEdges(int *px, int *py, int width, int height, int bw, int resistanc
 
  */
 void 
-moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
-	 int Height, int *FinalX, int *FinalY, Bool opaque_move)
+moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
+	 int OutlineHeight, int *FinalX, int *FinalY, Bool opaque_move)
 {
   Bool finished = False;
   Bool done;
@@ -252,7 +290,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 
 
   if (!opaque_move) {
-    RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
+    RedrawOutlineAtNewPosition(Scr.Root, xl, yt, OutlineWidth, OutlineHeight);
   }
 
   DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
@@ -286,7 +324,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       if (XLookupKeysym(&(Event.xkey), 0) == XK_Escape) {
 	finished = True;
       }
-      SnapCoordsToEdges(&xl, &yt, Width, Height, psw->bw, Scr.MoveResistance);
+      SnapCoordsToEdges(&xl, &yt, psw->frame_width, psw->frame_height,
+			psw->bw, Scr.MoveResistance);
       done = True;
       break;
     case ButtonPress:
@@ -316,7 +355,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       yt += YOffset;
 
       /* Resist moving windows over the edge of the screen! */
-      SnapCoordsToEdges(&xl, &yt, Width, Height, psw->bw, Scr.MoveResistance);
+      SnapCoordsToEdges(&xl, &yt, psw->frame_width, psw->frame_height,
+			psw->bw, Scr.MoveResistance);
 
       /* check Paging request once and only once after outline redrawn */
       /* redraw after paging if needed - mab */
@@ -335,7 +375,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
                           yt + psw->icon_p_height);
           } else {
             RedrawOutlineAtNewPosition(Scr.Root, psw->icon_x_loc, psw->icon_y_loc,
-                                       Width, Height);
+                                       OutlineWidth, OutlineHeight);
           }
         } else {
           /* the solver's resolve does the move window */
@@ -373,7 +413,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
   if (!opaque_move)
     RemoveRubberbandOutline(Scr.Root);
 
-  SnapCoordsToEdges(&xl, &yt, Width, Height, psw->bw, Scr.MoveResistance);
+  SnapCoordsToEdges(&xl, &yt, psw->frame_width, psw->frame_height,
+		    psw->bw, Scr.MoveResistance);
   if (!psw->fIconified) {
     SuggestMoveWindowTo(psw,xl,yt,True);
     CassowaryEndEdit(psw);

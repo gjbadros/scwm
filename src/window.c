@@ -2060,6 +2060,8 @@ animated window shades and animated moves. */
 SCWM_PROC(move_to, "move-to", 2, 3, 0,
           (SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p))
      /** Move WIN to coordinates X, Y.
+If X is #f, then X defaults to the current X position of WIN.
+If Y is #f, then Y defaults to the current Y position of WIN.
 If ANIMATED? is specified and true, animate the motion of the window,
 otherwise the move is instantaneous. If MOVE-POINTER-TOO? is specified
 and true, move the mouse pointer by the same amount as the window,
@@ -2077,13 +2079,17 @@ specified. */
 
   SCM_REDEFER_INTS;
   VALIDATEN(win, 3, FUNC_NAME);
-  if (!gh_number_p(x)) {
+  if (x != SCM_BOOL_F && !gh_number_p(x)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg(FUNC_NAME, 1, x);
   }
-  if (!gh_number_p(y)) {
+  if (y != SCM_BOOL_F && !gh_number_p(y)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg(FUNC_NAME, 2, y);
+  }
+  if (x == SCM_BOOL_F && y == SCM_BOOL_F) {
+    SCM_ALLOW_INTS;
+    scm_misc_error(FUNC_NAME,"Either X or Y must be a number",SCM_EOL);
   }
 #ifdef GJB_BE_ANAL_ABOUT_BOOLS
   /* FIXGJB: I took this code out so I can say:
@@ -2115,13 +2121,22 @@ specified. */
     } else
       w = psw->icon_w;
   }
-  destX = gh_scm2int(x);
-  destY = gh_scm2int(y);
   fMovePointer = gh_scm2bool(move_pointer_too_p);
   fAnimated = gh_scm2bool(animated_p);
-  if (fMovePointer || fAnimated) {
+  if (fMovePointer || fAnimated ||
+      x == SCM_BOOL_F || y == SCM_BOOL_F) {
     FXGetWindowTopLeft(w,&startX, &startY);
   }
+  if (x == SCM_BOOL_F)
+    destX = startX;
+  else 
+    destX = gh_scm2int(x);
+
+  if (y == SCM_BOOL_F)
+    destY = startY;
+  else 
+    destY = gh_scm2int(y);
+
   if (fAnimated) {
     SCM animation_ms_delay = gh_lookup("animation-ms-delay");
     int cmsDelay = -1;
