@@ -73,6 +73,7 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
   int currentX, currentY;
   int lastX, lastY;
   int deltaX, deltaY;
+  int grav_dx, grav_dy;
 
   /* set our defaults */
   if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
@@ -89,8 +90,10 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
   lastW = startW;
   lastH = startH;
 
-  deltaX = endX - startX;
-  deltaY = endY - startY;
+  ComputeDeltaForResize(psw,&grav_dx,&grav_dy,endW,endH);
+
+  deltaX = endX - startX + grav_dx;
+  deltaY = endY - startY + grav_dy;
   lastX = startX;
   lastY = startY;
 
@@ -390,7 +393,6 @@ way if not specified. */
                          destY - WIN_VP_OFFSET_Y(psw),
                          fMovePointer,cmsDelay,NULL);
   } /* scope */
-  move_finalize_virt(w, psw, destX, destY);
 
   return SCM_UNSPECIFIED;
 }
@@ -434,7 +436,6 @@ animated_resize_common(SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too
     SCM animation_ms_delay = SCM_CDR(animation_delay);
     int cmsDelay = -1;
     Window x_win;
-    
     if (animation_ms_delay != SCM_BOOL_F &&
 	gh_number_p(animation_ms_delay)) {
       cmsDelay = gh_scm2int(animation_ms_delay);
@@ -460,9 +461,6 @@ animated_resize_common(SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too
                          destY - WIN_VP_OFFSET_Y(psw),
 			 fWarpPointerToo,cmsDelay,NULL);
   } /* scope */
-
-  /* endX, endY are virtual */
-  MoveResizeTo(psw,destX,destY,width,height);
 
   return SCM_UNSPECIFIED;
 }
