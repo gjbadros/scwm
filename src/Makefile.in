@@ -1,4 +1,7 @@
-#
+# $Id$
+# Makefile for SCWM
+# (C) 1998 Maciej Stachowiak and Greg J. Badros
+
 SHELL=/bin/sh
 
 @SET_MAKE@
@@ -18,36 +21,52 @@ scwm_image_load_path=@scwm_image_load_path@
 scwm_dir=@scwm_dir@
 mkinstalldirs=$(SHELL) $(top_srcdir)/mkinstalldirs
 LDFLAGS=@LDFLAGS@
-#
-# This is where the modules will be installed
-
 
 #
-# Libs
+# Libraries
+#
+
 X_LIBRARY=-lX11 @LIBS@
 XEXT_LIBRARY=-lXext
 XPM_LIBRARY=-lXpm
-#SCWM_LIBRARY=-l${scwm_name} # removed from below line, too
-LIBS=-L../libs ${x_libraries} ${XPM_LIBRARY} ${XEXT_LIBRARY} ${X_LIBRARY} ${LDFLAGS}
 
-PATH_DEFINES=-DSCWM_ICONDIR=\"${scwm_icons}\" \
-               -DSCWMDIR=\"${scwm_dir}\" \
-               -DSCWMRC=\"${scwm_rc}\" \
-               -DSCWM_IMAGE_LOAD_PATH="\"${scwm_image_load_path}\""
+LIBS=-L../libs $(x_libraries) $(XPM_LIBRARY) $(XEXT_LIBRARY) $(X_LIBRARY) $(LDFLAGS) $(CASSOWARY_LIBS)
 
-# All these compile time options are now gone! --gjb
-#EXTRA_DEFINES=${PATH_DEFINES} -DXPM -DSHAPE -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -DMINI_ICONS -DVECTOR_BUTTONS -DPIXMAP_BUTTONS -DGRADIENT_BUTTONS -DMULTISTYLE -DEXTENDED_TITLESTYLE -DBORDERSTYLE -DUSEDECOR -DWINDOWSHADE
-EXTRA_DEFINES=${PATH_DEFINES}
+PATH_DEFINES=-DSCWM_ICONDIR=\"$(scwm_icons)\" \
+               -DSCWMDIR=\"$(scwm_dir)\" \
+               -DSCWMRC=\"$(scwm_rc)\" \
+               -DSCWM_IMAGE_LOAD_PATH="\"$(scwm_image_load_path)\""
+
+EXTRA_DEFINES=$(PATH_DEFINES)
+
+#USE_CASSOWARY=true
+# Cassowary is a developer-only constraint solving extension to SCWM
+ifdef USE_CASSOWARY
+	CASSOWARY_DIR=../../cassowary/wrappers
+	CASSOWARY_LIBS=-L$(CASSOWARY_DIR) $(CASSOWARY_DIR)/cassowary_wrap.o -lcassowary
+	EXTRA_DEFINES+=-DUSE_CASSOWARY
+endif
+
 
 CC=@CC@
-INCLUDES=-I../include -I${top_srcdir}/include -I. ${x_includes} -I${prefix}/include
-CFLAGS=${INCLUDES} @CFLAGS@ ${EXTRA_DEFINES}
-MAKEDEPEND=@MAKEDEPEND@
+INCLUDES=-I../include -I$(top_srcdir)/include -I. $(x_includes) -I$(prefix)/include
+CFLAGS=$(INCLUDES) @CFLAGS@ $(EXTRA_DEFINES)
+
+ifeq ($(CC),gcc)
+    MAKEDEPEND=$(CC) -M
+else
+ifeq ($(CC),g++)
+    MAKEDEPEND=$(CC) -M
+else
+    MAKEDEPEND=@MAKEDEPEND@
+endif
+endif
+
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
 RM=@RM@
 
-PROG=${scwm_name}
+PROG=$(scwm_name)
 
 HEADERS = $(wildcard *.h)
 
@@ -91,34 +110,32 @@ SRCS = \
 	image.c
 
 OBJS := $(SRCS:.c=.o) init_scheme_string.o
-DEPS := $(SRCS:.c=.d)
-
 
 BUILT_SOURCES = font.x image.x menuitem.x scwmmenu.x init_scheme_string.c
 
-all: ${PROG}
+all: $(PROG)
 
 tags: $(SRCS) $(BUILT_SOURCES) $(HEADERS)
 	etags $^
 
-depend:
-	${MAKEDEPEND} ${CFLAGS} ${SRCS}
+depend: $(BUILT_SOURCES)
+	$(MAKEDEPEND) $(CFLAGS) $(SRCS) > makefile.depend
 
 install: all
-	$(mkinstalldirs) ${bin_dir}
-	${INSTALL_PROGRAM} ${PROG} ${bin_dir}
+	$(mkinstalldirs) $(bin_dir)
+	$(INSTALL_PROGRAM) $(PROG) $(bin_dir)
 
 mostlyclean:
-	${RM} ${OBJS} ${DEPS} *~ core *.bak *.x
+	$(RM) $(OBJS) *~ core *.bak *.x
 
 clean: mostlyclean
-	${RM} ${PROG}
+	$(RM) $(PROG)
 
 distclean: clean
 
-${PROG}: ${OBJS}
-	rm -f ${PROG}
-	${CC} -o ${PROG} ${OBJS} ${LIBS}
+$(PROG): $(OBJS)
+	rm -f $(PROG)
+	$(CC) -o $(PROG) $(OBJS) $(LIBS)
 
 # Build the scheme string to include in the executable
 init_scheme_string.c: ../scheme/minimal.scm
@@ -130,24 +147,11 @@ init_scheme_string.c: ../scheme/minimal.scm
 # file.  It is needed to create the dependencies, and to compile
 # the .c file into the .o file
 %.o : %.x
-${DEPS}: ${BUILT_SOURCES}
 
 # Grab the SCM_PROC-s from the C source code
 %.x : %.c
+	touch $@
 	guile-snarf $(CFLAGS) $< >tmp.$@ && mv tmp.$@ $@
 
-#
-#%.d: %.c
-#	$(CC) -M $(CFLAGS) $< \
-#		| sed 's/$*\.o[ :]*/& $@/g' > $@
-
-%.d: %.c
-	$(CC) -M $(CFLAGS) $< > $@
-
-
-# FIXGJB: how do we not remake the .d files for a clean build?
-# The leading - means do not error, but still creates the .d file
--include ${DEPS}
-
-
-
+# The leading - means do not error
+-include makefile.depend
