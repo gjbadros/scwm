@@ -1,3 +1,49 @@
+Tue Apr 13 19:08:12 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Moved lots of functionality out into other/new modules 
+	(the additions below are from flux.scm);  some re-arrangement.
+
+	* file.scm: Added `write-all', `read-until-eof',
+	`output-of-system-cmd'
+
+	* base.scm: Use hash-fold for hash-table->alist if it is available 
+	(it is in newer guiles).  Rewrote move-window-relative using
+	delta-position, and added `delta-position'.  Added
+	`run-dot-xclients-at-startup' and `run-dot-xclients-script'.
+
+	* winlist.scm: Turn off enumerate-hotkeys option if by-resource
+	option is on.  Added `select-window-from-window-list'.
+
+	* wininfo.scm: Added from flux.scm: `find-window-by',
+	`find-window-by-name', `find-window-by-class-resource'.  Rewrote
+	the latter two to use the ?? matcher procedures.
+
+	* prefs-menu.scm: New use-modules for possible new dependencies.
+	Is there any good way to check for dependencies?  
+
+	* message-window.scm: Added `display-message-briefly!'
+
+	* listops.scm: Added `list-without-elem'.
+
+	* flash-window.scm: New module with `flash-window',
+	`unflash-window'
+
+	* key-mover.scm: New module with `key-mouse-moves' and
+	`key-viewport-moves'
+
+	* netscape.scm: New module with various netscape functionality
+	enhancements. 
+
+	* send-string.scm: New module with synthetic events code.
+
+	* stringops.scm: New module with
+	`make-string-usable-for-resource-key', `bool->string',
+	`color->string', `size->string', `chop-newline', `to-string'
+
+	* xprop-extras.scm: New module with `set-window-title!',
+	`X-cut-buffer-string', `get-wm-command',
+	`X-atomic-property-set-if-unset!'
+
 Mon Apr 12 19:12:56 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-buttons.scm: Call gtk-widget-show on the buttons
