@@ -82,17 +82,19 @@ The rectangle grows outwards from the icon, if there is one."
 (define*-public (animated-deiconify-to-last-viewport-position #&optional (win (get-window)))
   "Deiconify WIN with an animation to the same viewport position as it was iconified from."
   (if (iconified? win)
-    (animate-iconify-or-deiconify (icon-viewport-position win)
-				  (or (window-property win 'last-viewport-position)
-				      (apply virtual->viewport
-					     (window-position-in-viewport
-					      (current-viewport-offset-xx)
-					      (current-viewport-offset-yy)
-					      win)))
-                                  (icon-size win)
-                                  (window-frame-size win)
-                                  20 #f (lambda () (deiconify-to-current-viewport win))
-                                  '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0))))
+      (let ((pos (or (window-property win 'last-viewport-position)
+		     (apply virtual->viewport
+			    (window-position-in-viewport
+			     (current-viewport-offset-xx)
+			     (current-viewport-offset-yy)
+			     win)))))
+	(animate-iconify-or-deiconify (icon-viewport-position win)
+				      pos
+				      (icon-size win)
+				      (window-frame-size win)
+				      20 #f (lambda () (apply deiconify 
+							      (cons win (apply viewport->virtual pos))))
+						    '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0)))))
 
 
 (define*-public (animated-deiconify-to-current-viewport #&optional (win (get-window)))
@@ -121,4 +123,9 @@ Uses animation, in either case."
 ;; (begin (animate-iconify w) (sleep 1) (animate-deiconify w))
 
 ;;(window-frame-size (select-window-interactively))
+;; (window-property w 'last-viewport-position)
 
+;; (animated-iconify w)
+;; (animated-deiconify w)
+;; (animated-deiconify-to-current-viewport w)
+;; (animated-deiconify-to-last-viewport-position w)
