@@ -1,3 +1,12 @@
+Fri Sep 17 12:21:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Added --enable-gnome-corba option (instead of
+	having to use an environment variable to turn it on)
+
+Thu Sep 16 16:14:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Added --disable-viavoice flag
+
 Thu Sep 16 12:12:20 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Bump to 0.99.2post.  Test for viavoice. Drop

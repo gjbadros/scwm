@@ -1,3 +1,12 @@
+Thu Sep 16 16:15:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice/README: Added note re: .fsg file.
+
+	* viavoice/scwmviavoice.c: Added comments for primitives.
+
+	* viavoice/scwmgrammar.bnf: Added focus switching, and random joke 
+	text.
+
 Thu Sep 16 13:09:32 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* viavoice/scwmgrammar.bnf: Added absolute movements, too, like
