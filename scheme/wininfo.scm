@@ -52,7 +52,7 @@
 	       (append
 		(window-position w)
 		(window-size w)
-		(viewport-position)
+		(list 0 0)
 		(display-size)))))
 
 (define*-public (visible? #&optional (w (get-window)))
