@@ -10,14 +10,16 @@ fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm gnome-hints.scm \
 group.scm image-loaders.scm kde-hints.scm key-mover.scm listops.scm message-window.scm \
 minimal.scm modifier-key-bindings.scm module-types.scm menus-extras.scm \
 netscape.scm optargs.scm \
-path-cache.scm placement.scm preferences.scm prefs-menu.scm primopts.scm report-usage.scm \
+path-cache.scm placement.scm preferences.scm prefs-menu.scm primopts.scm \
+property-respond.scm report-usage.scm \
 rgb-database.scm send-string.scm \
 shutdown-opts.scm simplebiff.scm simple-constraints.scm snap.scm sort.scm stacking.scm \
-std-menus.scm stringops.scm style-options.scm style.scm \
-theme-impl.scm themes.scm tile.scm time-convert.scm ui-constraints-buttons.scm \
+std-menus.scm stringops.scm style-options.scm style.scm stylist.scm \
+theme-impl.scm themes.scm test-case.scm tile.scm time-convert.scm ui-constraints-buttons.scm \
 ui-constraints-classes.scm ui-constraints-toggle-menu.scm \
 ui-constraints-gtk-toggle-menu.scm \
-ui-constraints.scm virtual.scm window-locations.scm window-selection.scm \
+ui-constraints.scm undo.scm virtual.scm window-locations.scm window-selection.scm \
+window-configuration.scm \
 wininfo.scm winlist.scm winops.scm wmconfig-menu.scm xprop-extras.scm
 
 scwm_gtk_scheme = gtk.scm ScwmButtons.scm ScwmBiff.scm ScwmClock.scm ScwmDeskButtons.scm \
