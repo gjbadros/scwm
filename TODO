@@ -1,3 +1,14 @@
+- Make scwm work with automake, and libtool where appropriate; this
+should make setting up loadable modules much easier.
+
+- Implement error reporting and output redirection for the scwmexec
+protocol, and make setting the SCWMEXEC_REQWIN property safe against
+race conditions; with these, scwmrepl should be a total replacement of
+the --interactive option.
+
+- all (or at least nearly all) setters should have corresponding
+getters
+
 - Use guile-snarf pervasively
 
 - Better system than calling scwm_error with a number?
@@ -10,17 +21,13 @@
 
 - replace ColorPair struct w/ scheme-object based
 
-- replace MyFont struct w/ scheme-object based -- font scheme wrappers
-still use the MyFont garbage; clean this up
-
 - New event handling mechanism
  - event objects?
  - event binding objects?
 
 - stay on bottom window style? Sam Steingold <sds@usa.net>
-- use placement function for window placement Sam Steingold <sds@usa.net>
 
-- legacy module interface -- see utilities/dev/fvwm2-pager-demo
+- use placement function for window placement Sam Steingold <sds@usa.net>
 
 - improve new menus
  - cascading popups -- done!
@@ -41,15 +48,9 @@ still use the MyFont garbage; clean this up
   - keep trying on .scwmrc especially!
   - more consistent use, especially abstractions for argument type checking
 
-- Respond to scwmsend-s via some reasonable iccm
-  - libICE?
-  - ToolTalk?
-
 - New threads stuff & widget embedding -- GTk?
 
 - Add a hook to the scwm_error handler routine passing the request error and event type; provide a module to make these human readable -- see X-error-describe
-
-- Clean out all of the artifacts of the FVWM function system.
 
 - scwm.h has some stuff that belongs in window.h; separate these out better
 
@@ -80,6 +81,22 @@ under GPL and reorganize years of layered cruft.
 - Undo feature?
 
 Done:
+
+- Clean out all of the artifacts of the FVWM function system.
+  [ I think that stuff is all gone now - MS ]
+
+- Respond to scwmsend-s via some reasonable iccm
+  - libICE?
+  - ToolTalk?
+   [ both of these are way too complicated, the new X properties
+     method is lightweight but should be able to support what
+     we need - MS]
+
+- legacy module interface -- see utilities/dev/fvwm2-pager-demo
+   [ done, see the fvwm-module module - MS ]
+
+- replace MyFont struct w/ scheme-object based -- font scheme wrappers
+still use the MyFont garbage; clean this up [ done - MS ]
 
 - Finish implementing (useful) Fvwm functions as Scheme procedures. 
 [this is mostly the style, decor, desk and path stuff,
