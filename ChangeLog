@@ -1,3 +1,8 @@
+Fri Aug 21 18:05:10 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Track the current_module, and output 
+	that information to both scwm-procedures.txt and scwm.sgml
+
 Fri Aug 21 15:43:37 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Use Damian Conway's Text::Balanced
