@@ -956,6 +956,8 @@ HandleMapRequestKeepRaised(Window KeepRaised)
   }
   if (!PPosOverride)
     KeepOnTop();
+
+  raisePanFrames();
 }
 
 
