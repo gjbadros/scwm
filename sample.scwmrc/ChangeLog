@@ -1,3 +1,8 @@
+Sun Jul 25 13:36:07 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Fix and extend `make-window-group-menu'. It's pretty 
+	useful now.
+
 Sat Jul 24 22:10:25 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use listops. Added

@@ -1,3 +1,17 @@
+Sun Jul 25 15:40:00 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added a bunch of files that were missing.  Used
+	"make check";  thanks Stephen Tell for noticing I needed the new
+	files listed.
+
+Sun Jul 25 13:21:05 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window-selection.scm: Be sure unselect-all-windows succeeds--
+	use a catch and check for window-valid? before trying to unflash
+	the windows in the list.
+
+	* group.scm: Remove extraneous top-level expression.
+
 Sat Jul 24 22:14:23 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints.scm, window-selection.scm: s/-hook-list/-hook/g;
