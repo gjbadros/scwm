@@ -10,15 +10,21 @@
 
 #include <assert.h>
 #include <vector.h>
+
+extern "C" {
 #include "scwm-constraints.h"
-#include "scwm-constraints.hpp"
 #include "window.h"
 #include "xmisc.h"
+}
+
+#include "scwm-constraints.hpp"
 #include <strstream.h>
 #include "ClVariable.h"
 #include "ClSimplexSolver.h"
 
 extern ClSimplexSolver *psolver;
+
+extern "C" {
 
 void
 CassowaryInitClVarsInPsw(ScwmWindow *psw)
@@ -30,6 +36,16 @@ void
 CassowarySetCValuesAndSolve(ScwmWindow *psw)
 {
   ScwmWindowConstraintInfo *pswci = psw->pswci;
+
+  if (!psolver) {
+    // no solver attached, so just copy the values over
+    pswci->_frame_x.set_value(psw->frame_x);
+    pswci->_frame_y.set_value(psw->frame_y);
+    pswci->_frame_width.set_value(psw->frame_width);
+    pswci->_frame_height.set_value(psw->frame_height);
+    return;
+  }
+    
   vector<double> v;
   if (psw->frame_x != pswci->_frame_x.intValue()) {
     psolver->addEditVar(pswci->_frame_x);
@@ -74,7 +90,9 @@ SuggestMoveWindowTo(PScwmWindow psw, int x, int y)
 }
 
 void 
-EndEditPosition(PScwmWindow psw)
+CassowaryEndEditPosition(PScwmWindow psw)
 {
   psolver->endEdit();
 }
+
+} // extern "C"
