@@ -37,7 +37,7 @@
 (define default-wmconfig-title "System WM Config")
 
 (define (wmc-fix str)		; kill the ampersand in the string
-  (do ((ll (length str))
+  (do ((ll (string-length str))
        (ix (string-index str #\& 0) (string-index str #\& ix)))
       ((not ix) str) (string-set! str ix #\ )))
 
@@ -81,7 +81,7 @@
     (for-each (lambda (me)
 		(let* ((pos (string-index (car me) #\/))
 		       (ww (substring (car me) 0 pos))
-		       (nn (substring (car me) (+ 1 pos) (length (car me))))
+		       (nn (substring (car me) (+ 1 pos) (string-length (car me))))
 		       (tt (assoc ww main)))
 		  (set! me (menuitem nn #:action (menu (cdr me))))
 		  (if tt (set-cdr! tt (cons me (cdr tt)))
