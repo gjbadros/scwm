@@ -2,7 +2,6 @@
 <!DOCTYPE Book PUBLIC "-//Davenport//DTD DocBook V3.0//EN">
 <book>
   <bookinfo>
-    <bookbiblio>
     <title>Scwm Reference Manual</title>
     <subtitle>The Authoritative Guide to the Emacs of Window Managers</subtitle>
     <authorgroup>
@@ -32,5 +31,4 @@
       <year>1997-@YEAR@</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
     </copyright>
-    </bookbiblio>
   </bookinfo>
