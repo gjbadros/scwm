@@ -27,6 +27,7 @@ Broadcast(unsigned long event_type, unsigned long num_datum,
     if (gh_procedure_p(proc)) {
       gh_apply(proc, gh_list(
 	gh_ulong2scm(event_type), 
+	gh_ulong2scm(num_datum),
 	gh_ulong2scm(data1),
 	gh_ulong2scm(data2),
 	gh_ulong2scm(data3),
