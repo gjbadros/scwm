@@ -84,6 +84,7 @@ Bool StashEventTime(XEvent * ev);
 Bool GrabEm(enum cursor);
 void UngrabEm(void);
 void KeepOnTop(void);
+Bool FXWindowAccessible(Display *dpy, Window w);
 
 /* FIXGJB: BELOW ARE NOT DEFINED IN misc.h */
 
