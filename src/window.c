@@ -1530,6 +1530,8 @@ set_icon_x(SCM val, SCM win)
   return SCM_BOOL_T;
 }
 
+extern char *PixmapPath, *IconPath;
+
 SCM 
 set_mini_icon_x(SCM val, SCM win)
 {
@@ -1544,6 +1546,15 @@ set_mini_icon_x(SCM val, SCM win)
     tmp_win->mini_pixmap_file = gh_scm2newstr(val, &dummy);
   } else {
     scm_wrong_type_arg("set-mini-icon!", 1, val);
+  }
+
+  if (tmp_win->mini_pixmap_file!=NULL) {
+    tmp_win->mini_icon = CachePicture(dpy, Scr.Root,
+				      IconPath,
+				      PixmapPath,
+				      tmp_win->mini_pixmap_file);
+  } else {
+    tmp_win->mini_icon = NULL;
   }
 
   /* also it should redraw automatically */
