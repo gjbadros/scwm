@@ -1334,7 +1334,7 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
      for it right away when it appears that the root window has been
      entered */
   if (XCheckMaskEvent(dpy, EnterWindowMask, &event_junk))
-    scwm_msg(DBG,"DeferExecution","Removed EnterNotify event");
+    DBUG((DBG,"DeferExecution","Removed EnterNotify event"));
 
   if (pswInitialWin) {
     lastwin_entered = pswInitialWin->schwin;
