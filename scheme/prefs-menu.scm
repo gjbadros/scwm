@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;; File: <prefs-menu.scm - 1998-09-09 Wed 12:36:46 EDT sds@eho.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-09-09 Wed 13:04:22 EDT sds@eho.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 
 ;;; This program is free software; you can redistribute it and/or modify
@@ -19,7 +19,9 @@
 
 ;; The purpose of this file is to define function prefs-menu, which
 ;; returns a menu object.  Use it like this:
-;; (prefs-menu . #:image-side img #:color-bg-image-side color etc)
+;; (use-modules (app scwm prefs-menu))
+;; (menuitem "Preferences" #:action
+;;           (menu-prefs #:image-side img #:color-bg-image-side color etc))
 
 (define-module (app scwm prefs-menu)
   :use-module (app scwm base)
@@ -179,6 +181,8 @@
   (menuitem (symbol->string symbol) #:action (reset-user-variable symbol)))
 
 (define-public (menu-prefs . opts)
+  "Generate the `Preferences' menu.
+All the arguments are passed directly to the `menu' function."
   (apply
    menu (list (menuitem "Preferences" #f) menu-title menu-separator
               (menuitem "View All Icons" #:action
