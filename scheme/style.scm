@@ -218,7 +218,7 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 				      (apply set-icon-box! (append args 
 								   (list w)))))
 (add-boolean-style-option #:sticky-icon stick-icon unstick-icon)
-(add-boolean-style-option #:start-iconified iconify-window deiconify-window)
+(add-boolean-style-option #:start-iconified iconify-window noop)
 (add-boolean-style-option #:kept-on-top keep-on-top un-keep-on-top)
 (add-boolean-style-option #:sticky stick-window unstick-window)
 
