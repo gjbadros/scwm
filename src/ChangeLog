@@ -1,3 +1,16 @@
+Wed Aug 25 00:13:26 1999    <gjb@cs.washington.edu>
+
+	* scwm-snarf.h: Use HAVE_SCM_MAKE_HOOK to test for whether to use
+	scm_make_named_hook()
+
+	* module-interface.c, events.c: Fix number of arguments for
+ 	various hooks (guile-1.3.2 hooks check these).  Updated docs for
+ 	those hooks.
+
+	* callbacks.c: Use new run-hook if HAVE_SCM_MAKE_HOOK;  leave old
+	code in otherwise.
+	
+
 Tue Aug 24 23:40:37 1999    <gjb@cs.washington.edu>
 
 	* binding.h, binding.c: Added const modifiers to func_name parameter
