@@ -419,8 +419,8 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
     int mini_p=0;
     
     tiled_p=(gh_list_p(arg) && gh_length(arg) == 2 &&
-	     gh_car(arg)==sym_tiled && gh_string_p(gh_cadr(arg))
-	     || IMAGE_P(gh_cadr(arg));
+	     gh_car(arg)==sym_tiled &&
+	     (gh_string_p(gh_cadr(arg)) || IMAGE_P(gh_cadr(arg))));
     if (tiled_p || gh_string_p(arg) || (mini_p=(arg==sym_mini_program_icon)) ||
 	IMAGE_P(arg)) {
       SCM image = SCM_BOOL_F;
