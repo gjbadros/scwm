@@ -257,7 +257,7 @@ See also `prompt-string'."
 
 (define-scwm-group preferences "Preferences")
 
-(define-scwm-option *preferences-use-notebook* #f
+(define-scwm-option *preferences-use-notebook* #t
   "If #t, use a notebook GUI for the Scwm options dialog, else use a listbox format."
   #:type 'boolean
   #:group 'preferences)
