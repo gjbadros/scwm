@@ -667,7 +667,7 @@ the first element for changes to desk 1, etc."
 	       )))
 
 (define*-public (position-message-window! x y gravity)
-  "Move the message window's GRAVITY point to (X,Y)"
+  "Move the message window's GRAVITY point to (X,Y)."
   (apply
    (lambda (xa ya)
      (set-message-window-position! x y xa ya))

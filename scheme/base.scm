@@ -110,14 +110,19 @@ Returns #f otherwise."
 
 
 (define-public (set-menu-foreground! fg)
+  "Set the default color for menu text to FG."
   (set! menu-text-color (if (color? fg) fg (make-color fg))))
 (define-public (set-menu-background! bg)
+  "Set the default background for menus to BG."
   (set! menu-bg-color (if (color? bg) bg (make-color bg))))
 (define-public (set-menu-stipple! stipple)
+  "Set the default color for stippled (inactive) menu text to STIPPLE."
   (set! menu-stipple-color (if (color? stipple) stipple (make-color stipple))))
 (define-public (set-menu-font! font)
+  "Set the default font for menu text to FONT."
   (set! menu-font (if (font? font) font (make-font font))))
 (define-public (set-menu-look! look)
+  "Set the default menu look to LOOK."
   (if (menulook? look) (set! menu-look look) (error "bad look")))
 
 ;;(define*-public (set-window-foreground! fg #&optional (w (get-window)))
@@ -487,7 +492,7 @@ dimension to a number of pixels."
   (set-edge-y-scroll! y))
 
 (define-public (unset-message-window-position!)
-  "Move the message window back to the default screen-center position"
+  "Move the message window back to the default screen-center position."
   (apply set-message-window-position!
 	 (append (map (lambda (x) (/ x 2)) (display-size)) (list -.5 -.5))))
 
