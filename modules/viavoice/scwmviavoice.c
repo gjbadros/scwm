@@ -534,8 +534,7 @@ SmHandler FocusGrantedCB( SM_MSG reply,
 SCWM_PROC(vv_connect,"vv-connect",0,1,0,
           (SCM proc))
      /** Connect to the ViaVoice speech recognizer, calling PROC after connected.
-See "modules/viavoice/README" for details. See also
-`vv-initialize'. */
+See "modules/viavoice/README" for details. See also `vv-initialize'. */
 #define FUNC_NAME s_vv_connect 
 {
   VALIDATE_ARG_PROC_USE_F(1,proc);
@@ -583,9 +582,10 @@ Returns #f if we are not connected. */
 
 SCWM_PROC(vv_define_grammar,"vv-define-grammar",2,1,0,
           (SCM name, SCM grammar_file, SCM proc))
-     /** Use GRAMMAR-FILE as the ViaVoice grammar. 
+     /** Use GRAMMAR-FILE as the ViaVoice grammar and give it name NAME. 
 Returns #f if not connected, otherwise returns the return
-code from DoSimpleGrammar. */
+code from DoSimpleGrammar. PROC is invoked with the response
+code when the asynchronous procedure completes. */
 #define FUNC_NAME s_vv_define_grammar
 {
   VALIDATE_ARG_STR(1,name);
@@ -611,7 +611,8 @@ code from DoSimpleGrammar. */
 
 SCWM_PROC(vv_enable_vocab,"vv-enable-vocab",1,1,0,
           (SCM name, SCM proc))
-     /** Enable vocabulary/grammar NAME. */
+     /** Enable vocabulary/grammar NAME. 
+PROC is invoked with the response code when the asynchronous procedure completes. */
 #define FUNC_NAME s_vv_enable_vocab
 {
   VALIDATE_ARG_STR(1,name);
@@ -627,7 +628,8 @@ SCWM_PROC(vv_enable_vocab,"vv-enable-vocab",1,1,0,
 SCWM_PROC(vv_turn_microphone_on,"vv-turn-microphone-on",0,1,0,
           (SCM proc))
      /** Turn the microphone on to start recognizing commands. 
-See also `vv-initialize'. */
+See also `vv-initialize'. 
+PROC is invoked with the response code when the asynchronous procedure completes. */
 #define FUNC_NAME s_vv_turn_microphone_on
 {
   VALIDATE_ARG_PROC_USE_F(1,proc);
@@ -643,7 +645,7 @@ See also `vv-initialize'. */
 SCWM_PROC(vv_turn_microphone_off,"vv-turn-microphone-off",0,1,0,
           (SCM proc))
      /** Turn the microphone off to stop recognizing commands. 
-See also `vv-initialize'. */
+PROC is invoked with the response code when the asynchronous procedure completes. */
 #define FUNC_NAME s_vv_turn_microphone_off
 {
   VALIDATE_ARG_PROC_USE_F(1,proc);
