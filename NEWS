@@ -2,6 +2,17 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997, 1998, 1999 Greg J. Badros and Maciej Stachowiak
 See the end for copying conditions.
 
+Changes for scwm-0.99.4 (released )
+
+* Bug fixes
+
+* Minor overhaul of system.scwmrc, rearranged menus, eliminated half-working features, etc.
+
+* Changed primitives
+** `animated-deiconify-to-last-viewport-position' to `animated-deiconify-to-viewport'
+** Drop `animated-deiconify-to-current-viewport'
+
+
 Changes for scwm-0.99.3 (released 25-September-1999)
 
 * ViaVoice (IBM TM) module for permitting speech recognition actions

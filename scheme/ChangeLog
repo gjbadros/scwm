@@ -1,3 +1,12 @@
+Wed Sep 29 11:43:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Use animated-deiconify-to-vp-focus.
+
+	* animated-iconify.scm: Added iconify-animation-offsets and use
+	it. Rename `animated-deiconify-to-last-viewport-position' to
+	`animated-deiconify-to-viewport'.  Drop
+	`animated-deiconify-to-current-viewport'.
+
 Wed Sep 29 10:04:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* decor.scm: Make use-decor a window-hint option, not a

@@ -1,3 +1,13 @@
+Wed Sep 29 11:47:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use `animated-deiconify-to-vp-focus', not
+	`animated-deiconify-to-current-viewport'
+
+Wed Sep 29 10:58:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Try again to fix bug in warnings -- verify that
+	keysym->keycode returns non-#f and non-null.
+
 Tue Sep 28 23:12:35 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: (C) change.  Added xlock-command variable, move
