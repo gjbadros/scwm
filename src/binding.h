@@ -74,6 +74,10 @@ Bool FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_n
 const char *SzKeysymForKeyCode(KeyCode code, int index);
 char *SzNewModifierStringForModMask(int modmask);
 char *SzNewForModMaskKeyCode(int modmask, KeyCode code);
+Binding *PBindingFromMouse(int button,
+                           unsigned int modifier, int context);
+Binding *PBindingFromKey(KeyCode keycode,
+                         unsigned int modifier, int context);
 
 
 void GrabKeys(ScwmWindow *psw);

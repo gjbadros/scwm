@@ -772,6 +772,93 @@ compute_contexts(SCM contexts, char *func_name)
   return retval;
 }
 
+/* Return NULL if no binding is applicable */
+Binding *
+PBindingFromKey(KeyCode keycode,
+                unsigned int modifier, int context)
+{
+  Binding *pbnd;
+  for (pbnd = Scr.AllBindings; pbnd != NULL; pbnd = pbnd->NextBinding) {
+    if (!pbnd->IsMouse &&
+        (pbnd->Button_Key == keycode) &&
+	((pbnd->Modifier == (modifier & (~LockMask))) ||
+	 (pbnd->Modifier == AnyModifier)) &&
+	(pbnd->Context & context)) {
+      return pbnd;
+    }
+  }
+  return NULL;
+}
+
+/* Return NULL if no binding is applicable */
+Binding *
+PBindingFromMouse(int button,
+                  unsigned int modifier, int context)
+{
+  Binding *pbnd;
+  for (pbnd = Scr.AllBindings; pbnd != NULL; pbnd = pbnd->NextBinding) {
+    if (pbnd->IsMouse &&
+        ((pbnd->Button_Key == button) ||
+         (pbnd->Button_Key == 0)) &&
+	((pbnd->Modifier == (modifier & (~LockMask))) ||
+	 (pbnd->Modifier == AnyModifier)) &&
+	(pbnd->Context & context)) {
+      return pbnd;
+    }
+  }
+  return NULL;
+}
+
+SCWM_PROC(lookup_key, "lookup-key", 2, 0, 0,
+          (SCM contexts, SCM key))
+     /** Return the procedures bound to KEY within the CONTEXTS.
+KEY is a modifiers and keysym string.
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+The return value is a list: (press-proc release-proc), or #f
+if there is no matching binding. */
+#define FUNC_NAME s_lookup_key
+{
+  KeySym keysym;
+  int len = 0;
+  Bool fOkayKey = False;
+  Bool fBoundKey = False;	/* for error checking */
+  int i, min, max;
+  int modmask = 0;
+  int context = 0;
+  Binding *pbnd = NULL;
+
+  context = compute_contexts(contexts, FUNC_NAME);
+  fOkayKey = FKeyToKeysymModifiers(key,&keysym,&modmask, FUNC_NAME, True, True);
+
+  /*
+   * Don't let a 0 keycode go through, since that means AnyKey to the
+   * XGrabKey call in GrabKeys().
+   */
+  if (keysym ==  NoSymbol || !fOkayKey) {
+    return SCM_BOOL_F;
+  }
+
+  /* 
+   * More than one keycode might map to the same keysym -MS
+   */
+  
+  XDisplayKeycodes(dpy, &min, &max);
+  for (i = min; i <= max; i++) {
+    if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
+      pbnd = PBindingFromKey(i,modmask,context);
+      break;
+    }
+  }
+
+  if (pbnd) {
+    return gh_list(pbnd->Thunk,pbnd->ReleaseThunk,SCM_UNDEFINED);
+  }
+
+  return SCM_BOOL_F;
+}
+#undef FUNC_NAME
+
+
 
 SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
           (SCM contexts, SCM key))
@@ -1063,7 +1150,35 @@ specified button is pressed in the specified context. */
 
 
 
+SCWM_PROC(lookup_mouse, "lookup-mouse", 2, 0, 0,
+          (SCM contexts, SCM button))
+     /** Return the procedure bound to mouse BUTTON within the CONTEXTS.
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+BUTTON is a string or integer giving the mouse button number and any
+modifiers as a prefix.
+The return values is the procedure object, or #f if there is no
+matching binding. */
+#define FUNC_NAME s_lookup_mouse
+{
+  int bnum = 0;
+  int modmask = 0;
+  int context = 0;
+  Binding *pbnd = NULL;
 
+  int fButtonOK = True;
+
+  context = compute_contexts(contexts, FUNC_NAME);
+  fButtonOK = FButtonToBnumModifiers(button, &bnum, &modmask, FUNC_NAME, True);
+
+  pbnd = PBindingFromMouse(bnum, modmask, context);
+
+  if (pbnd) {
+    return pbnd->Thunk;
+  }
+
+  return SCM_BOOL_F;
+}
+#undef FUNC_NAME
 
 
 

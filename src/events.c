@@ -459,7 +459,7 @@ HandleFocusIn()
 static void 
 HandleKeyEvent(Bool fPress)
 {
-  Binding *key;
+  Binding *pbnd;
   unsigned int modifier;
 
   modifier = (Event.xkey.state & mods_used);
@@ -476,36 +476,32 @@ HandleKeyEvent(Bool fPress)
   Event.xkey.keycode =
     XKeysymToKeycode(dpy, XKeycodeToKeysym(dpy, Event.xkey.keycode, 0));
 
-  for (key = Scr.AllBindings; key != NULL; key = key->NextBinding) {
-    if ((key->Button_Key == Event.xkey.keycode) &&
-	((key->Modifier == (modifier & (~LockMask))) ||
-	 (key->Modifier == AnyModifier)) &&
-	(key->Context & Context) &&
-	(key->IsMouse == 0)) {
-      if (NULL != pswCurrent) {
-        set_window_context(pswCurrent->schwin);
-      }
-      if (fPress) {
-        if (!UNSET_SCM(key->Thunk))
-          scwm_safe_call0(key->Thunk);
-      } else if (!UNSET_SCM(key->ReleaseThunk)) {
-	scwm_safe_call0(key->ReleaseThunk);
-      }
-      
-      if (NULL != pswCurrent) {
-        unset_window_context();
-      }
-      return;
-    }
-  }
+  pbnd = PBindingFromKey(Event.xkey.keycode, modifier, Context);
 
-  /* if we get here, no function key was bound to the key.  Send it
-   * to the client if it was in a window we know about.
-   */
-  if (pswCurrent) {
-    if (Event.xkey.window != pswCurrent->w) {
-      Event.xkey.window = pswCurrent->w;
-      XSendEvent(dpy, pswCurrent->w, False, KeyPressMask, &Event);
+  if (pbnd) {
+    if (NULL != pswCurrent) {
+      set_window_context(pswCurrent->schwin);
+    }
+    if (fPress) {
+      if (!UNSET_SCM(pbnd->Thunk)) {
+        scwm_safe_call0(pbnd->Thunk);
+      }
+    } else if (!UNSET_SCM(pbnd->ReleaseThunk)) {
+      scwm_safe_call0(pbnd->ReleaseThunk);
+    }
+    
+    if (NULL != pswCurrent) {
+      unset_window_context();
+    }
+  } else {
+    /* if we get here, no function key was bound to the key.  Send it
+     * to the client if it was in a window we know about.
+     */
+    if (pswCurrent) {
+      if (Event.xkey.window != pswCurrent->w) {
+        Event.xkey.window = pswCurrent->w;
+        XSendEvent(dpy, pswCurrent->w, False, KeyPressMask, &Event);
+      }
     }
   }
   ButtonWindow = NULL;
@@ -1346,7 +1342,7 @@ HandleButtonPress()
 {
 #define FUNC_NAME "HandleButtonPress"
   unsigned int modifier;
-  Binding *MouseEntry;
+  Binding *pbnd;
   Window x;
   int LocalContext;
 
@@ -1421,28 +1417,21 @@ HandleButtonPress()
    */
 
   modifier = (Event.xbutton.state & mods_used);
-  /* need to search for an appropriate mouse binding */
-  for (MouseEntry = Scr.AllBindings; MouseEntry != NULL;
-       MouseEntry = MouseEntry->NextBinding) {
-    if (((MouseEntry->Button_Key == Event.xbutton.button) ||
-	 (MouseEntry->Button_Key == 0)) &&
-	(MouseEntry->Context & Context) &&
-	((MouseEntry->Modifier == AnyModifier) ||
-	 (MouseEntry->Modifier == (modifier & (~LockMask)))) &&
-	(MouseEntry->IsMouse == 1)) {
-      /* got a match, now process it */
-      if (NULL != pswCurrent) {
-        set_window_context(pswCurrent->schwin);
-      }
-      find_mouse_event_type();
-      scwm_safe_call0(MouseEntry->Thunk);
-      clear_mouse_event_type();
-      if (NULL != pswCurrent) {
-        unset_window_context();
-      }
-      break;
+
+  pbnd = PBindingFromMouse(Event.xbutton.button,modifier,Context);
+
+  if (pbnd) {
+    if (NULL != pswCurrent) {
+      set_window_context(pswCurrent->schwin);
+    }
+    find_mouse_event_type();
+    scwm_safe_call0(pbnd->Thunk);
+    clear_mouse_event_type();
+    if (NULL != pswCurrent) {
+      unset_window_context();
     }
   }
+
   PressedW = None;
   if (LocalContext != C_TITLE)
     SetBorder(ButtonWindow, (Scr.Hilite == ButtonWindow), True, True, x);
