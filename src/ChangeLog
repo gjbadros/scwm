@@ -1,3 +1,7 @@
+Sat Oct  2 11:09:50 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c: Updated documentation for X-DestroyNotify-hook.
+
 Sat Oct  2 10:44:06 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleUnmapNotify): Move g_lastwin_entered variable
