@@ -54,7 +54,6 @@
 #include "window.h"
 #include "decorations.h"
 #include "Grab.h"
-#include "wildcard.h"
 
 
 #undef MS_DELETION_COMMENT

@@ -12,7 +12,6 @@
 #include "screen.h"
 #include "errors.h"
 #include "util.h"
-#include "wildcard.h"
 
 #ifdef USEDECOR
 extern ScwmDecor *last_decor, *cur_decor;
