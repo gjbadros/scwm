@@ -1,1 +1,5 @@
+.deps
+.libs
 Makefile
+libmain.lo
+libscwmexec.la
