@@ -23,4 +23,8 @@
    true of snapshots newer than 971023.  */
 #undef HAVE_SCM_READLINE
 
+/* Define this if your libguile has gh_length and not
+   gh_list_length. This should be true of snapshots newer than 970915.  */
+#undef HAVE_GH_LENGTH
+
 

@@ -157,6 +157,9 @@ AC_CHECK_LIB(guile, gh_vector_ref,AC_DEFINE(HAVE_GH_VECTOR_REF))
 dnl This checks if we have a guile with readline support
 AC_CHECK_LIB(guile, scm_readline,AC_DEFINE(HAVE_SCM_READLINE))
 
+dnl This checks if we have a guile with gh_length, not gh_list_length
+AC_CHECK_LIB(guile, gh_length,AC_DEFINE(HAVE_GH_LENGTH))
+
 
 # AC_CHECK_LIB(Xpm,XpmFree); /* ?? */
 
