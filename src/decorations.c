@@ -188,7 +188,8 @@ GetOlHints(ScwmWindow * t)
       if (nitems == 3)
 	t->ol_hints &= ~OL_DECOR_ICON_NAME;
     }
-    XFree(hints);
+    if (hints) 
+      XFree(hints);
   }
   if (XGetWindowProperty(dpy, t->w, XA_OL_DECOR_ADD, 0L, 20L, False,
 			 XA_ATOM, &actual_type, &actual_format, &nitems,

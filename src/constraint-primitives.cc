@@ -68,8 +68,9 @@ ScwmResolve(ClSimplexSolver *psolver)
       DBUG(__FUNCTION__,"Resize of %s",psw->name);
     }
 #endif
-    if (fMoved) MovePswToCurrentPosition(psw);
+    /* resize subsumes a move, so check for it first */
     if (fResized) ResizePswToCurrentSize(psw);
+    else if (fMoved) MovePswToCurrentPosition(psw);
   }
   setpswDirty.clear();
 }

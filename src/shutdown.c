@@ -77,17 +77,19 @@ Done(int restart_or_dump, char *command)
     /* Pretty sure this should be done... */
     XDeleteProperty(dpy, Scr.Root, XA_MOTIF_WM);
 
-  }
-  /* FIXGJB: Should restore cursor to original cursor before scwm started */
-
-  if (restart_or_dump > 0) {
-    SaveDesktopState();		/* I wonder why ... */
+    if (restart_or_dump > 0) {
+      SaveDesktopState();		/* I wonder why ... */
+    }
 
     /* Really make sure that the connection is closed and cleared! */
     XSelectInput(dpy, Scr.Root, 0);
     XSync(dpy, 0);
     XCloseDisplay(dpy);
 
+  }
+  /* FIXGJB: Should restore cursor to original cursor before scwm started */
+
+  if (restart_or_dump > 0) {
     sleep(1);
     ReapChildren();
     run_restart_command(command);
@@ -97,7 +99,6 @@ Done(int restart_or_dump, char *command)
        we're sure exists -- this same function! --07/23/98 gjb */
     Done(*((int *)0),NULL); /* Force seg fault */
   } else {
-    XCloseDisplay(dpy);
     exit(0);
   }
 }

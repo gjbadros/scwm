@@ -32,6 +32,8 @@ extern "C" {
 void
 CassowaryInitClVarsInPsw(ScwmWindow *psw)
 {
+  /* FIXGJB: this is intentionally not freed for now
+     since the ClVs are still in a solver, perhaps */
   psw->pswci = new ScwmWindowConstraintInfo(psw);
 }
 
