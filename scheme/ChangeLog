@@ -1,3 +1,11 @@
+Mon Jul 27 20:07:17 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: use opaque moves by default, for
+	  interactive-move-window-with-pointer, etc.
+
+	* Added opaque-interactive-move, opaque-interactive-resize;
+	improve messages on warning callbacks
+
 1998-07-24  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Use string-append, duh.
