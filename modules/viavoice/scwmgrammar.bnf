@@ -4,16 +4,24 @@
 //
 
 //--------------------------------------------------------------------
-// A simple grammar for manipulating the focus window
+// A simple grammar for manipulating/changing the focus window
 //
 //  move window up <amount>
 //  move window down <amount>
 //  move window left <amount>
 //  move window right <amount>
 //
+//  move window north east 
+//
+//  next window
+//  previous window
+//
+//
 //--------------------------------------------------------------------
 
-<sample> = move window <rel_or_absolute> .
+<command> = <move_window> | <focus_switch> | <misc> | <joke>.
+
+<move_window> = move window <rel_or_absolute> .
 
 <rel_or_absolute> = <relative> | <absolute> .
 
@@ -27,3 +35,16 @@
 
 <absolute> = north | south | east | west | "north east" | "north west" | "south east" | "south west" .
 
+
+<focus_switch> = "focus" <next_prev> .
+
+<next_prev> = <next> | <prev> .
+
+<next> = "next" . // | "forward" .
+
+<prev> = "previous" . // | "prior" | "back" .
+
+
+<misc> = "window"  "list" .
+
+<joke> = "jump" "down" "turn" "around" "pick" "a" "bale" "of" "cotton" .

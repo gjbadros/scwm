@@ -474,8 +474,7 @@ SmHandler RecoPhraseCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), caddr_t ARG_U
   /* by looking at the 1st character of the 3rd word of the phrase,   */
   /* the amount is determined by the annotation on the last word of   */
   /* the phrase (if it exists; if it doesn't, the default us used)    */
-  if ( flags & SM_PHRASE_ACCEPTED )
-  {
+  if ( flags & SM_PHRASE_ACCEPTED ) {
     /* Get the annotation that's tied to the last part of the phrase  */
     /* (it contains the amount we want to move the window)..  If it's */
     /* not there or is the wrong type, then the grammar has probably  */
@@ -493,7 +492,7 @@ SmHandler RecoPhraseCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), caddr_t ARG_U
     }
 
     scwm_run_hook(vv_recognition_hook,
-                  gh_list(gh_str02scm(firm[2].spelling),
+                  gh_list(gh_str02scm(firm[num_firm-1].spelling),
                           gh_int2scm(increment),
                           SCM_UNDEFINED));
   }
@@ -518,9 +517,12 @@ SmHandler UtteranceCB ( SM_MSG ARG_UNUSED(reply),
 
 SCWM_PROC(vv_connect,"vv-connect",0,0,0,
           ())
+     /** Connect to the ViaVoice speech recognizer.
+See "modules/viavoice/README" for details. See also
+`vv-initialize'. */
 #define FUNC_NAME s_vv_connect 
 {
-  /* Connect to the speech recognizer                       */
+  /* Connect to the speech recognizer */
   ConnectStuff ( NULL );
   return SCM_UNDEFINED;
 }
@@ -529,6 +531,8 @@ SCWM_PROC(vv_connect,"vv-connect",0,0,0,
 
 SCWM_PROC(vv_turn_microphone_on,"vv-turn-microphone-on",0,0,0,
           ())
+     /** Turn the microphone on to start recognizing commands. 
+See also `vv-initialize'. */
 #define FUNC_NAME s_vv_turn_microphone_on
 {
   TurnMicOn();
@@ -539,6 +543,8 @@ SCWM_PROC(vv_turn_microphone_on,"vv-turn-microphone-on",0,0,0,
 
 SCWM_PROC(vv_turn_microphone_off,"vv-turn-microphone-off",0,0,0,
           ())
+     /** Turn the microphone off to stop recognizing commands. 
+See also `vv-initialize'. */
 #define FUNC_NAME s_vv_turn_microphone_off
 {
   TurnMicOff();
@@ -560,6 +566,7 @@ void scm_init_app_scwm_scwmviavoice_module()
 {
   scm_register_module_xxx("app scwm scwmviavoice", init_scwmviavoice);
 }
+
 
 /* Local Variables: */
 /* tab-width: 8 */
