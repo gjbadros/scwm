@@ -519,11 +519,11 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                                       dragHeight - DecorationHeight(psw),
                                       &x_units, &y_units);
 
-    call3_hooks(interactive_resize_start_hook, psw->schwin,
+    call3_hooks(interactive_resize_start_hook, SCM_FROM_PSW(psw),
                 gh_int2scm(xmotion), gh_int2scm(ymotion));
 
     /* same hook is called identically on each iteration; see below */
-    call7_hooks(interactive_resize_new_size_hook, psw->schwin,
+    call7_hooks(interactive_resize_new_size_hook, SCM_FROM_PSW(psw),
                 gh_int2scm(dragx), gh_int2scm(dragy),
                 gh_int2scm(dragWidth), gh_int2scm(dragHeight),
                 gh_int2scm(x_units), gh_int2scm(y_units));
@@ -608,7 +608,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                                           &x_units, &y_units);
         /* two calls to this hook exist.
            see the other above */
-        call7_hooks(interactive_resize_new_size_hook, psw->schwin,
+        call7_hooks(interactive_resize_new_size_hook, SCM_FROM_PSW(psw),
                     gh_int2scm(dragx), gh_int2scm(dragy),
                     gh_int2scm(dragWidth), gh_int2scm(dragHeight),
                     gh_int2scm(x_units), gh_int2scm(y_units));
@@ -652,7 +652,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   SuggestSizeWindowTo(psw,WIN_VP_OFFSET_X(psw)+dragx,WIN_VP_OFFSET_Y(psw)+dragy,
                       dragWidth,dragHeight, True);
   CassowaryEndEdit(psw);
-  call1_hooks(interactive_resize_finish_hook, psw->schwin);
+  call1_hooks(interactive_resize_finish_hook, SCM_FROM_PSW(psw));
   
   UninstallRootColormap();
 

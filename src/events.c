@@ -522,7 +522,7 @@ HandleFocusIn()
       Scr.ScwmRoot.next = psw;
       psw->prev = &Scr.ScwmRoot;
     }
-    call1_hooks(window_focus_change_hook,pswCurrent->schwin);
+    call1_hooks(window_focus_change_hook,SCM_FROM_PSW(pswCurrent));
     SetBorder(pswCurrent, True, True, True, None);
     Broadcast(M_FOCUS_CHANGE, 5, pswCurrent->w,
               pswCurrent->frame, (unsigned long) pswCurrent,
@@ -574,7 +574,7 @@ HandleKeyEvent(Bool fPress)
   if (pbnd) {
     XUngrabKeyboard(dpy, CurrentTime);
     if (NULL != pswCurrent) {
-      set_window_context(pswCurrent->schwin);
+      set_window_context(SCM_FROM_PSW(pswCurrent));
     }
     if (fPress) {
       if (!UNSET_SCM(pbnd->Thunk)) {
@@ -959,7 +959,7 @@ HandlePropertyNotify()
     char *szName = XGetAtomName(dpy,Event.xproperty.atom);
     
     call2_hooks(x_propertynotify_hook, gh_str02scm(szName),
-		pswCurrent->schwin);
+		SCM_FROM_PSW(pswCurrent));
     XFree(szName);
   }
 }
@@ -1032,7 +1032,7 @@ HandleClientMessage()
     if (Event.xclient.window == Scr.Root) {
       win = sym_root_window;
     } else if (NULL != (psw = PswFromAnyWindow(dpy,Event.xclient.window))) {
-      win = psw->schwin;
+      win = SCM_FROM_PSW(psw);
     } else {
       win = SCM_BOOL_F;
     }
@@ -1155,7 +1155,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
        scwm_run_hook manages the complexity */
     ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
 
-    call1_hooks(x_maprequest_hook, pswCurrent->schwin);
+    call1_hooks(x_maprequest_hook, SCM_FROM_PSW(pswCurrent));
 
     pswCurrent = psw; /* restore from value before hooks were invoked */
 
@@ -1330,11 +1330,11 @@ HandleUnmapNotify()
   if (!pswCurrent)
     goto HUN_return;
   
-  if (pswCurrent->schwin == g_lastwin_entered) {
+  if (SCM_FROM_PSW(pswCurrent) == g_lastwin_entered) {
     call1_hooks(window_leave_hook, g_lastwin_entered);
     g_lastwin_entered = SCM_BOOL_F;
   }
-  call1_hooks(x_unmapnotify_hook,pswCurrent->schwin);
+  call1_hooks(x_unmapnotify_hook,SCM_FROM_PSW(pswCurrent));
 
   if (fWeMustUnmap)
     XUnmapWindow(dpy, Event.xunmap.window);
@@ -1442,7 +1442,7 @@ HandleMotionNotify()
   ScwmWindow *psw = PswFromPointerLocation(dpy);
   DBUG_EVENT((DBG,"HandleMotionNotify","Entered"));
   if (psw) {
-    win = psw->schwin;
+    win = SCM_FROM_PSW(psw);
     x = gh_int2scm(pev->x_root - FRAME_X_VP(psw));
     y = gh_int2scm(pev->y_root - FRAME_Y_VP(psw));
   }
@@ -1543,7 +1543,7 @@ HandleButtonPress()
   if (pbnd) {
     SCM done = SCM_BOOL_F;
     if (NULL != pswCurrent) {
-      set_window_context(pswCurrent->schwin);
+      set_window_context(SCM_FROM_PSW(pswCurrent));
     }
     /* First call the immediate proc */
     if (gh_procedure_p(pbnd->ReleaseThunk)) {
@@ -1632,10 +1632,10 @@ HandleEnterNotify()
   if (!pswCurrent)
     goto HEN_return;
 
-  if (pswCurrent->schwin != g_lastwin_entered) {
+  if (SCM_FROM_PSW(pswCurrent) != g_lastwin_entered) {
     if (SCM_BOOL_F != g_lastwin_entered)
       call1_hooks(window_leave_hook, g_lastwin_entered);
-    g_lastwin_entered = pswCurrent->schwin;
+    g_lastwin_entered = SCM_FROM_PSW(pswCurrent);
     call1_hooks(window_enter_hook, g_lastwin_entered);
   }
 
@@ -1725,7 +1725,7 @@ HandleConfigureRequest()
   *pscm_configure_request_handled = SCM_BOOL_F;
 
   scwm_run_hook(x_configurerequest_hook,
-                gh_list(pswCurrent?pswCurrent->schwin:SCM_BOOL_F,
+                gh_list(pswCurrent?SCM_FROM_PSW(pswCurrent):SCM_BOOL_F,
                         gh_bool2scm(fIconConfigure),
                         fX_spec? gh_int2scm(cre->x): SCM_BOOL_F,
                         fY_spec? gh_int2scm(cre->y): SCM_BOOL_F,
@@ -1923,13 +1923,13 @@ HandleVisibilityNotify()
     }
     switch (vevent->state) {
     case VisibilityFullyObscured:
-      call1_hooks(window_fully_obscured_hook,pswCurrent->schwin);
+      call1_hooks(window_fully_obscured_hook,SCM_FROM_PSW(pswCurrent));
       break;
     case VisibilityUnobscured:
-      call1_hooks(window_unobscured_hook,pswCurrent->schwin);
+      call1_hooks(window_unobscured_hook,SCM_FROM_PSW(pswCurrent));
       break;
     case VisibilityPartiallyObscured:
-      call1_hooks(window_partially_obscured_hook,pswCurrent->schwin);
+      call1_hooks(window_partially_obscured_hook,SCM_FROM_PSW(pswCurrent));
       break;
     }
     pswCurrent->visibility = vevent->state;
@@ -2370,7 +2370,7 @@ void
 init_events()
 {
   /* do not permit add-hook!, remove-hook! access to this */
-  x_motionnotify_hook = SCWM_MAKE_HOOK(6 /* numargs */);
+  x_motionnotify_hook = SCWM_MAKE_HOOK("%X-MotionNotify-hook", 6);
 
   SCWM_VAR_INIT(configure_request_handled,"configure-request-handled",SCM_BOOL_F);
   /** Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.

@@ -57,7 +57,7 @@ static __inline__ void
 call_lost_focus_hook(ScwmWindow *psw)
 {
   if (Scr.Focus && Scr.Focus != psw && NULL == Scr.PreviousFocus) {
-    call1_hooks(window_focus_lost_hook,Scr.Focus->schwin);
+    call1_hooks(window_focus_lost_hook,SCM_FROM_PSW(Scr.Focus));
   }
 }
   

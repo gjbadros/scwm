@@ -698,7 +698,7 @@ PlaceWindow(ScwmWindow *psw)
                   psw->attr.y + cpixY);
   }
 
-  win=psw->schwin;
+  win = SCM_FROM_PSW(psw);
 
   if (psw->fTransient) {
 #ifdef DEBUG_PLACE_WINDOW

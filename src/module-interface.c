@@ -100,7 +100,7 @@ BroadcastConfig(unsigned long event_type, const ScwmWindow *psw)
 {
   scwm_run_hook(broadcast_config_hook, 
                 gh_list(gh_ulong2scm(event_type), 
-                        psw->schwin,
+                        SCM_FROM_PSW(psw),
                         SCM_UNDEFINED));
 }
 
@@ -121,7 +121,7 @@ void BroadcastMiniIcon(unsigned long event_type, ScwmWindow *psw)
 {
   scwm_run_hook(broadcast_mini_icon_hook, 
                 gh_list(gh_ulong2scm(event_type), 
-                        psw->schwin,
+                        SCM_FROM_PSW(psw),
                         SCM_UNDEFINED));
 }
 

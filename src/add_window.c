@@ -355,7 +355,7 @@ AddWindow(Window w)
   GetWindowSizeHints(psw);
 
   /* create the scheme-level window */
-  psw->schwin = schwin = make_window(psw);
+  psw->_schwin = schwin = make_window(psw);
 
   /* and initialize constraint structure hanging off of psw
      (uses the scheme window so must come after the make_window assignment
@@ -363,7 +363,7 @@ AddWindow(Window w)
   CassowaryInitClVarsInPsw(psw);
 
 
-  call1_hooks(before_new_window_hook, psw->schwin);
+  call1_hooks(before_new_window_hook, SCM_FROM_PSW(psw));
 
   SelectDecor(psw, border_width, resize_width);
 
@@ -417,7 +417,7 @@ AddWindow(Window w)
    */
   XGrabServer_withSemaphore(dpy); 
   if (!FXWindowAccessible(dpy,w)) {
-    invalidate_window(psw->schwin);
+    invalidate_window(SCM_FROM_PSW(psw));
     FREE(psw);
     XUngrabServer_withSemaphore(dpy);
     return (NULL);
@@ -728,7 +728,7 @@ AddWindow(Window w)
      returns a Bool that's always just True... --07/27/98 gjb
   */
 
-  call1_hooks(before_place_new_window_hook, psw->schwin);
+  call1_hooks(before_place_new_window_hook, SCM_FROM_PSW(psw));
 
   if (!PlaceWindow(psw)) {
     scwm_msg(ERR,FUNC_NAME,"PlaceWindow failed for %s -- resources leaked!",psw->name);
@@ -794,7 +794,7 @@ AddWindow(Window w)
 
   InstallWindowColormaps(colormap_win);
 
-  call1_hooks(after_new_window_hook, psw->schwin);
+  call1_hooks(after_new_window_hook, SCM_FROM_PSW(psw));
 
 
   if (!psw->fSticky) {
@@ -837,7 +837,7 @@ DestroyScwmWindow(ScwmWindow *psw)
     Scr.Hilite=NULL;
   }
 
-  call1_hooks(window_close_hook, psw->schwin);
+  call1_hooks(window_close_hook, SCM_FROM_PSW(psw));
 
   CassowaryCloseWindow(psw);
 
@@ -907,7 +907,7 @@ DestroyScwmWindow(ScwmWindow *psw)
     XFree(psw->cmap_windows);
 
   /* XSCM */
-  invalidate_window(psw->schwin);
+  invalidate_window(SCM_FROM_PSW(psw));
   XFree(psw->name);
   FREE(psw);
 

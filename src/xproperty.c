@@ -421,7 +421,7 @@ object, 'root-window, or an integer window Id.")
   } else {
     ScwmWindow *psw = PswFromWindow(dpy, w);
     if (psw)
-      return psw->schwin;
+      return SCM_FROM_PSW(psw);
     else
       return gh_long2scm(w);
   }

@@ -39,8 +39,9 @@
 #include "dmalloc.h"
 #endif
 
-#undef SCWM_DEBUG_SAFE_APPLY
-#undef SCWM_DEBUG_RUN_HOOK
+/* #define SCWM_DEBUG_SAFE_APPLY */
+/* #define SCWM_DEBUG_RUN_HOOK */
+/* #define SCWM_DEBUG_CALL_INTERACTIVELY */
 
 SCWM_HOOK(error_hook, "error-hook", 1,
 "Called on all kinds of errors and exceptions.
@@ -319,8 +320,10 @@ __inline__ SCM scwm_run_hook(SCM hook, SCM args)
   ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
   SCM answer;
 #ifdef SCWM_DEBUG_RUN_HOOK
-  scwm_msg(DBG,"scwm_run_hook","Calling:");
+  scm_puts("scwm_run_hook: Calling: ", scm_current_error_port());
   scm_write(hook,scm_current_error_port());
+  scm_puts(" args = ", scm_current_error_port());
+  scm_write(args,scm_current_error_port());
   scm_newline(scm_current_error_port());
 #endif
   if (scwm_gc_often) scm_gc();
@@ -674,8 +677,8 @@ scwm_body_load (void *body_data)
 static SCM
 scwm_body_eval_str (void *body_data)
 {
-  char *string = (char *) body_data;
-  SCM port = scm_mkstrport (SCM_INUM0, gh_str02scm(string), 
+  char *sz = (char *) body_data;
+  SCM port = scm_mkstrport (SCM_INUM0, gh_str02scm(sz), 
 			    SCM_OPN | SCM_RDNG, "scwm_safe_eval_str");
   return scwm_catching_load_from_port (port);
 }
@@ -1081,8 +1084,14 @@ Write a debug message if DEBUG is #t.")
     if (gh_string_p(interactive_spec)) {
       args = ScmArgsFromInteractiveSpec(interactive_spec,thunk);
     }
+#ifndef SCWM_DEBUG_CALL_INTERACTIVELY
     if (fDebugThisCommand) {
+#else
+    { /* scope */
+#endif
+      scm_puts("call-interactively: ", scm_current_error_port());
       scm_write(gh_list(thunk,interactive_spec,args,SCM_UNDEFINED),scm_current_output_port());
+      scm_newline(scm_current_output_port());
     }
     *pscm_this_command = thunk;
     *pscm_this_command_args = args;

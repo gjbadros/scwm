@@ -209,7 +209,7 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
 	&& (stateflags & MWMButton)
 	&& (SCM_NFALSEP
 	    (scm_object_property
-	     (psw->schwin, sym_maximized))))
+	     (SCM_FROM_PSW(psw), sym_maximized))))
       DrawLinePattern(win,
 		      ShadowGC, ReliefGC,
 		      &bf->vector,

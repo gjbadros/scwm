@@ -22,6 +22,8 @@
 
 #define SCWM_IMPLEMENTATION
 
+/* #define SCWM_DEBUG_MALLOC */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -592,6 +594,54 @@ main(int argc, char **argv)
   return 0;
 }
 
+#ifdef SCWM_DEBUG_MALLOC
+
+#if defined (__STDC__) && __STDC__
+#include <stddef.h>
+#define	__malloc_size_t		size_t
+#define	__malloc_ptrdiff_t	ptrdiff_t
+#else
+#define	__malloc_size_t		unsigned int
+#define	__malloc_ptrdiff_t	int
+#endif
+
+extern __ptr_t _malloc_internal __P ((__malloc_size_t __size));
+extern __ptr_t _realloc_internal __P ((__ptr_t __ptr, __malloc_size_t __size));
+extern void _free_internal __P ((__ptr_t __ptr));
+
+extern void (*__free_hook) __P ((__ptr_t __ptr));
+extern __ptr_t (*__malloc_hook) __P ((__malloc_size_t __size));
+extern __ptr_t (*__realloc_hook) __P ((__ptr_t __ptr, __malloc_size_t __size));
+extern __ptr_t (*__memalign_hook) __P ((__malloc_size_t __size,
+					__malloc_size_t __alignment));
+
+__ptr_t scwm_malloc_debug(__malloc_size_t size)
+{
+  assert(size > 0);
+  {
+  __ptr_t answer = _malloc_internal(size); /* 2*size + 3 to check for overflow errors */
+  fprintf(stderr,"%%@! malloc %d @ %p\n",size,answer);
+  return answer;
+  }
+}
+
+void scwm_free_debug(__ptr_t ptr)
+{
+  fprintf(stderr,"%%@! free @ %p\n",ptr);
+  _free_internal(ptr);
+}
+
+__ptr_t scwm_realloc_debug(__ptr_t ptr, __malloc_size_t size)
+{
+  assert(size > 0);
+  {
+  __ptr_t answer = _realloc_internal(ptr,2*size+3);
+  fprintf(stderr,"%%@! realloc %d @ %p now %p\n",size,ptr,answer);
+  return answer;
+  }
+}
+
+#endif
 
 /*
  * scwm_main - main routine for scwm
@@ -619,6 +669,12 @@ scwm_main(int argc, char **argv)
 
 #ifdef I18N
   char *Lang,*territory,*tmp;
+#endif
+
+#ifdef SCWM_DEBUG_MALLOC
+  __malloc_hook = scwm_malloc_debug;
+  __free_hook = scwm_free_debug;
+  __realloc_hook = scwm_realloc_debug;
 #endif
 
   gh_eval_str ("(define-module (guile))");  

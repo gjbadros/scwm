@@ -104,6 +104,8 @@ SCWM_SYMBOL(sym_fully_obscured , "fully-obscured");
 SCWM_GLOBAL_SYMBOL(sym_shaded , "shaded");
 
 
+SCWM_SYMBOL(sym_bad_interactive_spec, "bad-interactive-spec");
+
 SCWM_SYMBOL(sym_winlist_skip, "winlist-skip");
 SCWM_SYMBOL(sym_circulate_skip_icon, "circulate-skip-icon");
 SCWM_SYMBOL(sym_circulate_skip, "circulate-skip");
@@ -158,7 +160,7 @@ FlagsBitsFromSw(ScwmWindow *psw)
 
 #define SET_BIT_FOR_OBJ_PROP(s) \
 do { \
-  if (SCM_NFALSEP(scm_object_property(psw->schwin, \
+  if (SCM_NFALSEP(scm_object_property(SCM_FROM_PSW(psw), \
                                       s))) { \
 /*    scwm_msg(DBG,FUNC_NAME,"fWinListSkip for %s",psw->name); */ \
     flags |= (1 << i); \
@@ -210,7 +212,7 @@ void PswUpdateFlags(ScwmWindow *psw, unsigned long flags)
 {
 #define UPDATE_FLAG(f) do { psw->f = flags & 1; flags>>=1; } while(0)
 #define UPDATE_OBJ_PROP(p) \
-	do { scm_set_object_property_x(psw->schwin, p, \
+	do { scm_set_object_property_x(SCM_FROM_PSW(psw), p, \
 				       gh_bool2scm(flags & 1)); \
 	     flags>>=1; } while(0)
 
@@ -440,7 +442,7 @@ ScmWindowDelta(ScwmWindow *psw, Window w, int startW,int startH,int endW, int en
                int startX, int startY, int endX, int endY, 
                Bool fSetEndX, Bool fSetEndY)
 {
-  return gh_list(psw->schwin,
+  return gh_list(SCM_FROM_PSW(psw),
                  (psw->frame == w)?SCM_BOOL_T:SCM_BOOL_F,
                  gh_cons(gh_int2scm(startW),gh_int2scm(startH)),
                  gh_cons(gh_int2scm(endW),gh_int2scm(endH)),
@@ -461,7 +463,7 @@ ScmWindowDeltaVP(ScwmWindow *psw, Window w, int startW,int startH,int endW, int 
     dx = WIN_VP_OFFSET_X(psw),
     dy = WIN_VP_OFFSET_Y(psw);
 
-  return gh_list(psw->schwin,
+  return gh_list(SCM_FROM_PSW(psw),
                  (psw->frame == w)?SCM_BOOL_T:SCM_BOOL_F,
                  gh_cons(gh_int2scm(startW),gh_int2scm(startH)),
                  gh_cons(gh_int2scm(endW),gh_int2scm(endH)),
@@ -555,20 +557,20 @@ mark_window(SCM obj)
     GC_MARK_SCM_IF_SET(psw->other_properties);
 
 #ifndef SCWM_NO_DEBUG_BAD_MARKWIN
-    if (obj != psw->schwin) {
+    if (obj != SCM_FROM_PSW(psw)) {
       char szPtr[32];
-      sprintf(szPtr,"%ld vs %ld\n",obj,psw->schwin);
-      scm_puts("obj != psw->schwin: obj = ", scm_current_output_port());
+      sprintf(szPtr,"%ld vs %ld\n",obj,SCM_FROM_PSW(psw));
+      scm_puts("obj != SCM_FROM_PSW(psw): obj = ", scm_current_output_port());
       scm_write(obj,scm_current_output_port());
       scm_newline(scm_current_output_port());
-      scm_puts("psw->schwin = ", scm_current_output_port());
-      scm_write(psw->schwin,scm_current_output_port());
+      scm_puts("SCM_FROM_PSW(psw) = ", scm_current_output_port());
+      scm_write(SCM_FROM_PSW(psw),scm_current_output_port());
       scm_newline(scm_current_output_port());
       scm_puts(szPtr, scm_current_output_port());
     }
 #endif
       
-    assert (obj == psw->schwin);
+    assert (obj == SCM_FROM_PSW(psw));
   }
 
   return SCM_BOOL_F;
@@ -610,7 +612,7 @@ make_window(ScwmWindow * win)
 
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_window, schwin);
   SCWMWINDOW(answer) = win;
-  win->schwin = answer;
+  win->_schwin = answer;
 
   /* MS:FIXME:: 
      Warning, arbitrary constant, we really need growable hash
@@ -1046,8 +1048,8 @@ destroy-window), or #f or omitted for the standard circle cursor.")
 		     (fRelease? ButtonRelease : ButtonPress),
                      &x, &y)) {
     /* success */
-    if (psw && !UNSET_SCM(psw->schwin)) {
-      win = psw->schwin;
+    if (psw) { /*  && !UNSET_SCM(SCM_FROM_PSW(psw))) { */
+      win = SCM_FROM_PSW(psw);
     }
   }
   
@@ -1163,7 +1165,7 @@ SCWM_PROC(window_with_focus, "window-with-focus", 0, 0, 0,
 "Return the window that currently has the input focus.")
 #define FUNC_NAME s_window_with_focus
 {
-  return Scr.Hilite? Scr.Hilite->schwin : SCM_BOOL_F;
+  return Scr.Hilite? SCM_FROM_PSW(Scr.Hilite) : SCM_BOOL_F;
 }
 #undef FUNC_NAME
 
@@ -1174,7 +1176,7 @@ SCWM_PROC(window_with_pointer, "window-with-pointer", 0, 0, 0,
 #define FUNC_NAME s_window_with_pointer
 {
   ScwmWindow *psw = PswFromPointerLocation(dpy);
-  return psw? psw->schwin: SCM_BOOL_F;
+  return psw? SCM_FROM_PSW(psw): SCM_BOOL_F;
 }
 #undef FUNC_NAME
 
@@ -1490,7 +1492,7 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
   }
 
   if (pswInitialWin) {
-    lastwin_entered = pswInitialWin->schwin;
+    lastwin_entered = SCM_FROM_PSW(pswInitialWin);
     call1_hooks(select_window_enter_hook, lastwin_entered);
   }
 
@@ -1533,8 +1535,8 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
            root window that we throw away when first entering this function */
         call1_hooks(select_window_leave_hook, lastwin_entered);
         lastwin_entered = SCM_BOOL_F;
-      } else if (psw && psw->schwin && VALIDWINP(psw->schwin)) {
-        SCM win = psw->schwin;
+      } else if (psw && SCM_FROM_PSW(psw) && VALIDWINP(SCM_FROM_PSW(psw))) {
+        SCM win = SCM_FROM_PSW(psw);
         if (win != lastwin_entered) {
           if (SCM_BOOL_F != lastwin_entered)
             call1_hooks(select_window_leave_hook, lastwin_entered);
@@ -1572,7 +1574,7 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
   if (*w == (*ppsw)->Parent)
     *w = (*ppsw)->w;
 
-  call1_hooks(select_window_done_hook, (*ppsw)->schwin);
+  call1_hooks(select_window_done_hook, SCM_FROM_PSW(*ppsw));
 
   UngrabEm();
   return True;
@@ -2074,7 +2076,7 @@ specified.")
       && (psw->transientfor != None) &&
       (psw->transientfor != Scr.Root) &&
       ((tpsw=PswFromWindow (dpy, psw->transientfor)) !=NULL)) {
-    return tpsw->schwin;
+    return SCM_FROM_PSW(tpsw);
   } else {
     return SCM_BOOL_F;
   }
@@ -2525,7 +2527,7 @@ notify_new_desk(ScwmWindow *psw, int desk, int old)
 {
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 
-  signal_window_property_change(psw->schwin, sym_desk,
+  signal_window_property_change(SCM_FROM_PSW(psw), sym_desk,
                                 gh_int2scm(desk), gh_int2scm(old));
 }
 
@@ -2827,7 +2829,7 @@ such window object, return #f.")
   VALIDATE_ARG_WINID_COPY(1,window_id,w);
   psw = PswFromWindow(dpy, w);
 
-  return ((psw && psw->w==w) ? psw->schwin : SCM_BOOL_F);
+  return ((psw && psw->w==w) ? SCM_FROM_PSW(psw) : SCM_BOOL_F);
 }
 #undef FUNC_NAME
 
@@ -2844,7 +2846,7 @@ such window object, return #f.")
   VALIDATE_ARG_WINID_COPY(1,window_id,w);
   psw = PswFromWindow(dpy, w);
 
-  return ((psw && psw->frame==w) ? psw->schwin : SCM_BOOL_F);
+  return ((psw && psw->frame==w) ? SCM_FROM_PSW(psw) : SCM_BOOL_F);
 }
 #undef FUNC_NAME
 
@@ -2862,7 +2864,7 @@ such window object, return #f.")
 
   psw = PswFromAnyWindow(dpy, w);
 
-  return psw? psw->schwin : SCM_BOOL_F;
+  return psw? SCM_FROM_PSW(psw) : SCM_BOOL_F;
 }
 #undef FUNC_NAME
 
@@ -2999,7 +3001,7 @@ of circulation")
   ScwmWindow *psw; SCM result = SCM_EOL;
 
   for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
-    result = gh_cons(psw->schwin, result);
+    result = gh_cons(SCM_FROM_PSW(psw), result);
   }
 
   return result;
@@ -3027,7 +3029,7 @@ the topmost window, the last is the bottommost")
     ScwmWindow *psw = PswFromWindow(dpy,rgw[iw]);
     if (psw && ((psw->fIconified && psw->icon_w == rgw[iw]) ||
 		(!psw->fIconified && psw->frame == rgw[iw]))) {
-      result = gh_cons(psw->schwin,result);
+      result = gh_cons(SCM_FROM_PSW(psw),result);
     }
   }
 
@@ -3073,7 +3075,7 @@ The order is from most recently focussed to least recently focussed.")
     qsort(rgpsw, cwin, sizeof(rgpsw[0]),
 	  (int (*)(const void *, const void *))compare_focus_time);
     for (i = 0; i < cwin; i++) {
-      result = scm_cons(rgpsw[i]->schwin, result);
+      result = scm_cons(SCM_FROM_PSW(rgpsw[i]), result);
     }
     FREEC(rgpsw);
   }
@@ -4320,12 +4322,13 @@ SCM
 ScmArgsFromInteractiveSpec(SCM spec, SCM proc)
 {
   char *sz = gh_scm2newstr(spec,NULL);
+  char *pch = sz;
   SCM args = SCM_EOL;
   int num_args = 0;
-  while (*sz) {
+  while (*pch) {
     SCM arg = SCM_UNDEFINED;
-    if (*sz == '%') ++sz;
-    switch (*sz) {
+    if (*pch == '%') ++pch;
+    switch (*pch) {
     case 'W':
       arg = get_window(SCM_BOOL_T, SCM_BOOL_F, SCM_BOOL_F);
       break;
@@ -4335,14 +4338,13 @@ ScmArgsFromInteractiveSpec(SCM spec, SCM proc)
     default:
       { /* scope */
         SCM procname = scm_procedure_name(proc);
-        char *szProcname = "<anonymous procedure>";
-        if (gh_string_p(procname))
-          szProcname = gh_scm2newstr(procname, NULL);
-        scwm_msg(WARN,szProcname,"Bad interactive spec: %s", sz);
-        gh_free(szProcname);
+        scm_error(sym_bad_interactive_spec, "ScmArgsFromInteractiveSpec",
+                  "Bad interactive spec for %s: %s", 
+                  gh_list(procname,spec,SCM_UNDEFINED),
+                  SCM_BOOL_F);
       }
     }
-    ++sz;
+    ++pch;
     if (SCM_UNDEFINED != arg) {
       ++num_args;
       /* this builds the list of arguments up in reverse order */

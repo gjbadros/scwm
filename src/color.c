@@ -544,7 +544,7 @@ static void reset_decor_relief()
 
   for (psw=Scr.ScwmRoot.next; psw != NULL; psw=psw->next) {
     if (psw->fl == fl) {
-      set_window_background_x(psw->BackColor, psw->schwin);
+      set_window_background_x(psw->BackColor, SCM_FROM_PSW(psw));
     }
   }
 }

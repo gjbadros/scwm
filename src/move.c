@@ -145,7 +145,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
   }
 
   /* same hook is called identically before the iterations; see above */
-  call3_hooks(interactive_move_new_position_hook, psw->schwin,
+  call3_hooks(interactive_move_new_position_hook, SCM_FROM_PSW(psw),
 	      gh_int2scm(saved_x), gh_int2scm(saved_y));
 
   while (!finished) {
@@ -264,7 +264,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
                 real_x,real_y,
                 WIN_VP_OFFSET_X(psw)+xl,WIN_VP_OFFSET_Y(psw)+yt);
 #endif
-	call3_hooks(interactive_move_new_position_hook, psw->schwin,
+	call3_hooks(interactive_move_new_position_hook, SCM_FROM_PSW(psw),
 		    gh_int2scm(real_x), gh_int2scm(real_y));
 
 	/*DisplayPosition(psw, real_x, real_y, True);*/
@@ -527,12 +527,12 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   XOffset = origDragX - DragX;
   YOffset = origDragY - DragY;
 
-  call1_hooks(interactive_move_start_hook, psw->schwin);
+  call1_hooks(interactive_move_start_hook, SCM_FROM_PSW(psw));
   moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY, fOpaque);
   /* same hook is called above, before the iterations begin, and during the iterations */
-  call3_hooks(interactive_move_new_position_hook, psw->schwin,
+  call3_hooks(interactive_move_new_position_hook, SCM_FROM_PSW(psw),
               gh_int2scm(FRAME_X_VP(psw)), gh_int2scm(FRAME_Y_VP(psw)));
-  call1_hooks(interactive_move_finish_hook, psw->schwin);
+  call1_hooks(interactive_move_finish_hook, SCM_FROM_PSW(psw));
 
   if (psw->fIconified) {
     psw->fIconMoved = True;

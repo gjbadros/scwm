@@ -324,7 +324,7 @@ SCWM_PROC(cl_windows_of_constraint, "cl-windows-of-constraint", 1, 0, 0,
   set<ScwmWindow *>::const_iterator itw = setpsw.begin();
   for ( ; itw != setpsw.end(); ++itw ) {
     ScwmWindow *psw = *itw;
-    answer = gh_cons(psw->schwin,answer);
+    answer = gh_cons(SCM_FROM_PSW(psw),answer);
   }
 
   return answer;

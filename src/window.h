@@ -312,7 +312,7 @@ struct ScwmWindow {
 
   SCM other_properties;
 
-  SCM schwin;
+  SCM _schwin;
   int highlighted_nonant;       /* is 0-8, or SCWM_NONANT_NONE if not highlighted */
   int visibility;               /* One of VisibilityFullyObscured, 
                                    VisibilityPartiallyObscured, VisibilityUnobscured;
@@ -382,7 +382,23 @@ EXTERN_SET(SCM scm_window_context,SCM_UNDEFINED);
 #define WINDOWP(X) (SCM_NIMP(X) && (gh_car(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)gh_cdr(X))
 
-#define SCWMWINDOW_FROM_PSW(X) WINDOW(((X)->schwin))
+#ifndef UNSET_SCM
+#define UNSET_SCM(x) (((x) == SCM_UNDEFINED) || ((x) == SCM_BOOL_F))
+#endif
+
+
+#if 0
+#define SCM_FROM_PSW(X) ((X)->_schwin)
+#else
+static __inline__ 
+SCM SCM_FROM_PSW(const ScwmWindow *psw) {
+  assert(psw);
+  assert(!UNSET_SCM(psw->_schwin));
+  return psw->_schwin;
+}
+#endif
+
+#define SCWMWINDOW_FROM_PSW(X) WINDOW((SCM_FROM_PSW(X)))
 
 /* SCWMWINDOW is just an accessor for setting/getting
    PSWFROMSCMWIN returns NULL for invalid windows

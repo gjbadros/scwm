@@ -49,7 +49,7 @@ class ScwmWindowConstraintInfo {
 public:
   ScwmWindowConstraintInfo(ScwmWindow *psw)
     {
-      void *pvWin = PvFromScm(psw->schwin);
+      void *pvWin = PvFromScm(SCM_FROM_PSW(psw));
       if (psw->name != NoName) {
         int ich = strlen(psw->name);
         char *szNm = NEWC(ich+3,char);

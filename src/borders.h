@@ -62,10 +62,10 @@ int CRightButtons(const ScwmWindow *psw);
 
 
 #define NO_SIDE_DECORATIONS_P(psw) \
-  SCM_NFALSEP( scm_object_property((psw)->schwin, sym_no_side_decorations))
+  SCM_NFALSEP( scm_object_property(SCM_FROM_PSW(psw), sym_no_side_decorations))
 
 #define NO_TOP_BORDER_DECORATION_P(psw) \
-  SCM_NFALSEP( scm_object_property((psw)->schwin, sym_no_top_border_decoration))
+  SCM_NFALSEP( scm_object_property(SCM_FROM_PSW(psw), sym_no_top_border_decoration))
 
 #endif
 

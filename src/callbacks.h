@@ -32,9 +32,9 @@
 #endif
 
 #ifdef HAVE_SCM_MAKE_HOOK
-#define SCWM_MAKE_HOOK(args) scm_permanent_object(scm_make_hook(gh_int2scm(args)))
+#define SCWM_MAKE_HOOK(name,args) scm_permanent_object(scm_make_named_hook((name),(args)))
 #else
-#define SCWM_MAKE_HOOK(args) SCM_EOL
+#define SCWM_MAKE_HOOK(name,args) SCM_EOL
 #endif
 
 SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args);

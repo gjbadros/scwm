@@ -644,7 +644,7 @@ DeIconify(ScwmWindow *psw)
       if (t->icon_pixmap_w)
 	XUnmapWindow(dpy, t->icon_pixmap_w);
       Broadcast(M_DEICONIFY, 3, t->w, t->frame, (unsigned long) t, 0, 0, 0, 0);
-      call2_hooks(deiconify_hook, t->schwin, was_iconified_p);
+      call2_hooks(deiconify_hook, SCM_FROM_PSW(t), was_iconified_p);
     }
   }
 
@@ -705,7 +705,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
 
         BroadcastIconInfo(M_ICONIFY,t);
 	BroadcastConfig(M_CONFIGURE_WINDOW, t);
-        call2_hooks(iconify_hook, psw->schwin, was_iconified_p);
+        call2_hooks(iconify_hook, SCM_FROM_PSW(psw), was_iconified_p);
       }
     }
   }
@@ -730,7 +730,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
     psw->fIconUnmapped = False;
     BroadcastIconInfo(M_ICONIFY, psw);
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-    call2_hooks(iconify_hook, psw->schwin, was_iconified_p);
+    call2_hooks(iconify_hook, SCM_FROM_PSW(psw), was_iconified_p);
   }
 
   LowerWindow(psw);
