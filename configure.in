@@ -175,6 +175,7 @@ AC_PATH_X
 scwm_name="scwm"
 scwm_rc=".scwmrc"
 scwm_icons="$x_includes/X11/bitmaps:$x_includes/X11/pixmaps:$prefix/icons"
+scwm_dir=$prefix/lib/X11/${scwm_name}
 
 if test "x$x_libraries" != x ; then
   x_libraries="-L$x_libraries"

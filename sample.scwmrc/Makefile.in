@@ -10,7 +10,7 @@ exec_prefix=@exec_prefix@
 bin_dir=@exec_prefix@/bin
 scwm_rc=@scwm_rc@
 scwm_name=@scwm_name@
-scwm_dir=${prefix}/lib/X11/${scwm_name}
+scwm_dir=@scwm_dir@
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -23,6 +23,9 @@ all:
 depend:
 
 install: 
+	if [ ! -e ${scwm_dir} ]; then
+	mkdir -p ${scwm_dir}
+	fi
 	${INSTALL_DATA} ${RC} ${scwm_dir} 
 
 clean:
