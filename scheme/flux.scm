@@ -25,6 +25,7 @@
   :use-module (app scwm stringops)
   :use-module (app scwm group)
   :use-module (app scwm path-cache)
+  :use-module (app scwm window-selection)
   :use-module (app scwm optargs))
 
 

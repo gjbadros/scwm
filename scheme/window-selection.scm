@@ -80,7 +80,9 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
       ((or (not w) (>= i max))
        (if w wlist
 	   (cdr wlist)))
+    (handle-pending-events)
     (set! w (select-window-interactively (string-append "select #" (number->string i))))
+    (handle-pending-events)
     (if (and proc-when-selected w)
 	(proc-when-selected w))))
 
