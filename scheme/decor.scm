@@ -35,6 +35,7 @@
     (dynamic-wind swap-in-decor thunk swap-out-decor)))
 
 (defmacro-public with-decor (decor . body)
+  "Evaluate BODY with DECOR set as the current decor."
   `(call-with-decor ,decor (lambda () ,@body)))
 
 (add-window-both-option #:use-decor (lambda (d w) (set-window-decor! w d)))

@@ -1,3 +1,7 @@
+Mon Apr  1 03:06:41 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* decor.scm: Added doc string to 'with-decor'.
+
 Mon Apr  1 02:50:45 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* cursor.scm: Added some comments.
