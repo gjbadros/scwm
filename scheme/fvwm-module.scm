@@ -20,7 +20,9 @@
 
 
 ;; FIXGJB: hack to get debug-fvwm-module in root environment
-(define debug-fvwm-module #t)
+(define debug-fvwm-module #f)
+;; Use (set! debug-fvwm-module #t) in your .scwmrc 
+;; after importing this module if you want to see the debug code
 
 (define-module (app scwm fvwm-module)
   :use-module (app scwm winlist)
