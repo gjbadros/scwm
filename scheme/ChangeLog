@@ -1,3 +1,21 @@
+Mon Jan  3 09:25:33 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Set the window-list-proc to
+	`focus-change-warp-pointer'. 
+
+	* winlist.scm: Improve docs of `next-window'
+
+Mon Jan  3 08:51:26 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Highlight the current selected
+	window.  GJB:FIXME:: this is a hack -- shouldn't effect
+	*everything* like it currently does.
+
+	* task-switcher.scm: Fix typo bug.
+
+	* netscape.scm (netscape-google-search): Bug fix from Alexandre
+	Duret-Lutz.  Thanks!
+
 Wed Dec  8 11:05:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Fix some of the descriptions for the 
