@@ -186,6 +186,8 @@ order in which they appear in the lists."
 	    (reverse accum)
 	    (loop (cons (apply proc (map car lists)) accum) (map cdr lists))))))
 
+;; GJB:FIXME:MS: it'd be nice if this ignored unspecified values
+;; too so that if's don't need the gratuitous #f third clause (e.g., in menus)
 (define-public (filter-map proc first . rest)
   "Process FIRST and the lists comprising REST as `map' would.
 However, do not include any false returns from PROC in the result

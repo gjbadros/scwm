@@ -101,7 +101,7 @@ respectively. The default is 'restack-only."
 				 (else fs))))
 		(if (not (equal? new-size fs))
 		    (resize-frame-to (car new-size) (cadr new-size) win))
-		(move-to cur-x cur-y win))
+		(move-window cur-x cur-y win))
 	      (cond
 	       ((and (eq? order 'horizontal) (= column (- num-per-row 1)))
 		(loop (cdr windows) (+ row 1) 0 start-x next-y
