@@ -23,4 +23,9 @@ SCM wait_for_window(SCM name);
 
 SCM beep();
 
+SCM set_smart_placement_is_really_smart_x(SCM val);
+SCM set_click_to_focus_passes_click_x(SCM val);
+SCM set_click_to_focus_raises_x(SCM val);
+SCM set_mouse_focus_click_raises_x(SCM val);
+
 #endif	/* MISCPROCS_H */

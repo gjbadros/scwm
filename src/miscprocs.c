@@ -428,3 +428,52 @@ beep()
   XBell(dpy, 0);
   return SCM_UNSPECIFIED;
 }
+
+SCM
+set_smart_placement_is_really_smart_x(SCM val)
+{
+  if (!gh_boolean_p(val)) {
+    scm_wrong_type_arg("set-smart-placement-is-really-smart!",1,val);
+  }
+  Scr.SmartPlacementIsClever= SCM_NFALSEP(val) ? True : False;
+  return SCM_UNSPECIFIED;
+}
+
+/* FIXMS - the functionality related to the next three procedures
+   should be implemented by adding new event bindings eventually */
+
+SCM
+set_click_to_focus_passes_click_x(SCM val)
+{
+  if (!gh_boolean_p(val)) {
+    scm_wrong_type_arg("set-click-to-focus-passes-click!",1,val);
+  }
+  Scr.ClickToFocusPassesClick= SCM_NFALSEP(val) ? True : False;
+  return SCM_UNSPECIFIED;
+}
+
+SCM
+set_click_to_focus_raises_x(SCM val)
+{
+  if (!gh_boolean_p(val)) {
+    scm_wrong_type_arg("set-click-to-focus-raises!",1,val);
+  }
+  Scr.ClickToFocusRaises= SCM_NFALSEP(val) ? True : False;
+  return SCM_UNSPECIFIED;
+}
+
+/* FIXMS - this seems to be a pretty useless idea, or at least there
+   must be a better way of implementing it. */
+SCM
+set_mouse_focus_click_raises_x(SCM val)
+{
+  if (!gh_boolean_p(val)) {
+    scm_wrong_type_arg("set-mouse-focus-click-raises!",1,val);
+  }
+  Scr.MouseFocusClickRaises= SCM_NFALSEP(val) ? True : False;
+  return SCM_UNSPECIFIED;  
+}
+
+
+
+

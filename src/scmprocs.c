@@ -173,4 +173,13 @@ init_scwm_procs(void)
   gh_new_procedure("set-current-decor!", set_current_decor_x, 1, 0, 0);
   gh_new_procedure("current-decor", current_decor, 0, 0, 0);
   gh_new_procedure("set-window-decor!", set_window_decor_x, 1, 1, 0);
+  gh_new_procedure("set-smart-placement-is-really-smart!",
+		   set_smart_placement_is_really_smart_x, 1, 0, 0);
+  gh_new_procedure("set-click-to-focus-passes-click!", 
+		   set_click_to_focus_passes_click_x, 1, 0, 0);
+  gh_new_procedure("set-click-to-focus-raises!", 
+		   set_click_to_focus_raises_x, 1, 0, 0);
+  gh_new_procedure("set-mouse-focus-click-raises!", 
+		   set_mouse_focus_click_raises_x, 1, 0, 0);
+
 }
