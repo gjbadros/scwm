@@ -154,6 +154,8 @@ init_scwm_procs(void)
   gh_new_procedure("set-window-button!", set_window_button_x, 2, 1, 0);
   gh_new_procedure("set-mwm-buttons!", set_mwm_buttons_x, 1, 1, 0);
   gh_new_procedure("set-mwm-border!", set_mwm_border_x, 1, 1, 0);
+  gh_new_procedure("set-force-icon!", set_force_icon_x, 1, 1, 0);
+  gh_new_procedure("set-show-icon!", set_show_icon_x, 1, 1, 0); 
   gh_new_procedure("set-icon!", set_icon_x, 1, 1, 0);
   gh_new_procedure("set-mini-icon!", set_mini_icon_x, 1, 1, 0);
   gh_new_procedure("set-hint-override!", set_hint_override_x, 1, 1, 0);

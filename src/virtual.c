@@ -365,13 +365,13 @@ MoveViewport(int newx, int newy, Bool grab)
 			t->icon_y_loc);
 	  if (t->icon_w != None)
 	    XMoveWindow(dpy, t->icon_w, t->icon_x_loc,
-			t->icon_y_loc + ICON_P_HEIGHT(t));
+			t->icon_y_loc + t->icon_p_height);
 	  if (!(t->flags & ICON_UNMAPPED))
 	    Broadcast(M_ICON_LOCATION, 7, t->w, t->frame,
 		      (unsigned long) t,
 		      t->icon_x_loc, t->icon_y_loc,
 		      t->icon_w_width,
-		      t->icon_w_height + ICON_P_HEIGHT(t));
+		      t->icon_w_height + t->icon_p_width);
 	}
 	SetupFrame(t, t->frame_x + deltax, t->frame_y + deltay,
 		   t->frame_width, t->frame_height, False);

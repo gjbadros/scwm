@@ -293,6 +293,7 @@ AddWindow(Window w)
   tmp_win->flags |= BORDER;
   tmp_win->flags |= TITLE;
   tmp_win->icon_image = SCM_BOOL_F;
+  tmp_win->icon_req_image = SCM_BOOL_F;
   tmp_win->mini_icon_image = SCM_BOOL_F;
 
   /* This is from the old LookInList garbage --gjb 11/30/97 */
@@ -341,15 +342,6 @@ AddWindow(Window w)
   /* FIXGJB: need to provide more flexibility in how the
      icon gets selected */
   /* find a suitable icon pixmap */
-  if (tflag & ICON_FLAG) {
-    /* an icon was specified */
-    tmp_win->icon_image = make_image(gh_str02scm(value));
-  } else if ((tmp_win->wmhints)
-	 && (tmp_win->wmhints->flags & (IconWindowHint | IconPixmapHint))) {
-    /* window has its own icon */
-  } else {
-    /* use default icon */
-  }
 
   GetWindowSizeHints(tmp_win);
 

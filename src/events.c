@@ -1321,14 +1321,14 @@ HandleConfigureRequest()
     if ((swCurrent) && ((swCurrent->icon_w == cre->window))) {
       swCurrent->icon_xl_loc = cre->x;
       swCurrent->icon_x_loc = cre->x +
-	(swCurrent->icon_w_width - ICON_P_WIDTH(swCurrent) / 2);
-      swCurrent->icon_y_loc = cre->y - ICON_P_HEIGHT(swCurrent);
+	((swCurrent->icon_w_width - swCurrent->icon_p_width) / 2);
+      swCurrent->icon_y_loc = cre->y - swCurrent->icon_p_height ;
       if (!(swCurrent->flags & ICON_UNMAPPED))
 	Broadcast(M_ICON_LOCATION, 7, swCurrent->w, swCurrent->frame,
 		  (unsigned long) swCurrent,
 		  swCurrent->icon_x_loc, swCurrent->icon_y_loc,
 		  swCurrent->icon_w_width,
-		  swCurrent->icon_w_height + ICON_P_HEIGHT(swCurrent));
+		  swCurrent->icon_w_height + swCurrent->icon_p_height);
     }
     xwc.width = cre->width;
     xwc.height = cre->height;
@@ -1337,7 +1337,7 @@ HandleConfigureRequest()
 
     if (swCurrent) {
       xwc.x = swCurrent->icon_x_loc;
-      xwc.y = swCurrent->icon_y_loc - ICON_P_HEIGHT(swCurrent);
+      xwc.y = swCurrent->icon_y_loc - swCurrent->icon_p_height;
       xwcm = cre->value_mask & (CWX | CWY);
       if (swCurrent->icon_pixmap_w != None)
 	XConfigureWindow(dpy, swCurrent->icon_pixmap_w, xwcm, &xwc);

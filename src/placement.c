@@ -73,8 +73,8 @@ SmartPlacement(ScwmWindow * t, int width, int height, int *x, int *y)
 	      (!(test_window->flags & ICON_UNMAPPED)) &&
 	      (test_window->icon_w) &&
 	      (test_window != t)) {
-	    tw = ICON_P_WIDTH(test_window);
-	    th = ICON_P_HEIGHT(test_window) + test_window->icon_w_height;
+	    tw = test_window->icon_p_width;
+	    th = test_window->icon_p_height + test_window->icon_w_height;
 	    tx = test_window->icon_x_loc;
 	    ty = test_window->icon_y_loc;
 
@@ -164,9 +164,9 @@ get_next_x(ScwmWindow * t, int x, int y)
     if ((testw->Desk != Scr.CurrentDesk) || (testw == t))
       continue;
     if (testw->flags & ICONIFIED) {
-      if ((y < (ICON_P_HEIGHT(testw) + testw->icon_w_height + testw->icon_y_loc)) &&
+      if ((y < testw->icon_p_height + testw->icon_w_height + testw->icon_y_loc) &&
 	  (testw->icon_y_loc < (t->frame_height + 2 * t->bw + y))) {
-	xtest = ICON_P_WIDTH(testw) + testw->icon_x_loc;
+	xtest = testw->icon_p_width + testw->icon_x_loc;
 	if (xtest > x)
 	  xnew = min(xnew, xtest);
 	xtest = testw->icon_x_loc - (t->frame_width + 2 * t->bw);
@@ -202,7 +202,7 @@ get_next_y(ScwmWindow * t, int y)
     if ((testw->Desk != Scr.CurrentDesk) || (testw == t))
       continue;
     if (testw->flags & ICONIFIED) {
-      ytest = ICON_P_HEIGHT(testw) + testw->icon_w_height + testw->icon_y_loc;
+      ytest = testw->icon_p_height + testw->icon_w_height + testw->icon_y_loc;
       if (ytest > y)
 	ynew = min(ynew, ytest);
       ytest = testw->icon_y_loc - (t->frame_height + 2 * t->bw);
@@ -247,8 +247,8 @@ test_fit(ScwmWindow * t, int x11, int y11, int aoimin)
 	continue;
       x21 = testw->icon_x_loc;
       y21 = testw->icon_y_loc;
-      x22 = x21 + ICON_P_WIDTH(testw);
-      y22 = y21 + ICON_P_HEIGHT(testw) + testw->icon_w_height;
+      x22 = x21 + testw->icon_p_width;
+      y22 = y21 + testw->icon_p_height + testw->icon_w_height;
     } else {
       x21 = testw->frame_x;
       y21 = testw->frame_y;

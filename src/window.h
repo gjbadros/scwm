@@ -62,6 +62,8 @@ typedef struct ScwmWindow {
   int icon_w_width;		/* width of the icon window */
   int icon_w_height;		/* height of the icon window */
   int icon_t_width;		/* width of the icon title window */
+  int icon_p_height;            /* height of the icon pixmap window */
+  int icon_p_width;             /* width of the icon pixmap window */
   char *name;			/* name of the window */
   char *icon_name;		/* name of the icon */
   XWindowAttributes attr;	/* the child window attributes */
@@ -108,6 +110,9 @@ typedef struct ScwmWindow {
   PackedBool(fMWMBorders);
   PackedBool(fWindowShaded);
 #endif
+  /* Might as well add new flags the right way staright off - MS 2-20-98 */
+
+  PackedBool(fForceIcon);       
 
   unsigned long flags;
   SCM mini_icon_image;          /* A Scheme image object to use for the 
@@ -115,7 +120,8 @@ typedef struct ScwmWindow {
   char *szIconSavedFile;        /* save the filename here when we change
 				   to no icon, so it can be restored 
 				   properly */
-  SCM icon_image;		/* the icon picture */
+  SCM icon_req_image;		/* the icon picture requested */
+  SCM icon_image;               /* the icon picture used */
 
   int orig_x;			/* unmaximized x coordinate */
   int orig_y;			/* unmaximized y coordinate */
@@ -331,6 +337,9 @@ SCM set_icon_title_x(SCM title, SCM win);
 
 SCM set_mwm_buttons_x(SCM val, SCM win);
 SCM set_mwm_border_x(SCM val, SCM win);
+
+SCM set_show_icon_x (SCM flag, SCM win);
+SCM set_force_icon_x (SCM flag, SCM win);
 SCM set_icon_x(SCM val, SCM win);
 SCM set_mini_icon_x(SCM val, SCM win);
 SCM set_hint_override_x(SCM val, SCM w);

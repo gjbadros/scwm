@@ -149,6 +149,7 @@ GetIconWindow(ScwmWindow * sw)
 
   /* and finally add this picture to the ScwmWindow */
   sw->icon_image = make_image_from_pixmap("FromApp",picture,mask,width,height,depth);
+  IMAGE(sw->icon_image)->foreign=1;
 }
 
 
@@ -186,6 +187,7 @@ GetIconBitmap(ScwmWindow *sw)
   sw->icon_image = make_image_from_pixmap("FromAppBitmap",
 					  picture,mask,
 					  width,height,depth);
+  IMAGE(sw->icon_image)->foreign=1;
 }
 
 /************************************************************************
@@ -213,24 +215,28 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
   sw->icon_pixmap_w = None;
 
   if (sw->flags & SUPPRESSICON)
-    return;
+     return;
 
-  /* FIXMS: it seems to me that we should let the app icon override until
-     we implement forced-icon, since then the semantics of #:icon will
-     not be changing suddenly. It also seems more reasonable to try
-     the app icon first for now. Must implement forced-icon RSN... */
-  
-  /* Would check for forced icon here... */
 
-  /* Next, See if the app supplies its own icon window */
-  if (/* sw->icon_image == SCM_BOOL_F && */
-      (sw->wmhints) && (sw->wmhints->flags & IconWindowHint))
+  /* If the icon is forced, use the requested icon no matter what. */
+
+  if (sw->fForceIcon) {
+    sw->icon_image=sw->icon_req_image;
+  } else if ((sw->wmhints) && (sw->wmhints->flags & IconWindowHint)) {
+    /* Next, See if the app supplies its own icon window */
     GetIconWindow(sw);
-
-  /* Finally, try to get icon bitmap from the application */
-  if (sw->icon_image == SCM_BOOL_F &&
-      (sw->wmhints) && (sw->wmhints->flags & IconPixmapHint))
+  } else if ((sw->wmhints) && (sw->wmhints->flags & IconPixmapHint)) {
+    /* Next, try to get icon bitmap from the application */
     GetIconBitmap(sw);
+  } else {
+    /* If all else fails, use the requested icon anyway. */
+    sw->icon_image=sw->icon_req_image;
+  }
+
+  if (ShapesSupported && sw->icon_image != SCM_BOOL_F && 
+      IMAGE(sw->icon_image)->mask!=None) {
+    sw->flags |= SHAPED_ICON;
+  }
 
   /* FIXGJB: we need a way of setting an icon here if we've not got
      one already; e.g., a user should be able to specify a default
@@ -247,7 +253,7 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
      titles or icon images or both. */
 
   /* figure out the icon window size */
-  if (!(sw->flags & NOICON_TITLE) ||  ICON_P_HEIGHT(sw) == 0) {
+  if (!(sw->flags & NOICON_TITLE) ||  sw->icon_p_height == 0) {
     sw->icon_t_width = XTextWidth(Scr.IconFont.font,
 				       sw->icon_name,
 				       strlen(sw->icon_name));
@@ -256,16 +262,20 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
     sw->icon_t_width = 0;
     sw->icon_w_height = 0;
   }
+
   if (sw->icon_image != SCM_BOOL_F) {
-    if ((sw->flags & ICON_OURS) && (IMAGE(sw->icon_image)->height > 0)) {
-      sw->icon_w_width = IMAGE(sw->icon_image)->width + 4;
-      sw->icon_w_height = IMAGE(sw->icon_image)->height + 4;
-    }
-    if (IMAGE(sw->icon_image)->width == 0) {
-      sw->icon_w_width = IMAGE(sw->icon_image)->width + 6;
-    }
-    sw->icon_w_width = IMAGE(sw->icon_image)->width;
+    sw->icon_p_height = IMAGE(sw->icon_image)->height + 
+      (sw->flags & ICON_OURS ? 4 : 0);
+    sw->icon_p_width = IMAGE(sw->icon_image)->width + 
+      (sw->flags & ICON_OURS ? 4 : 0);  
+  } else {
+    sw->icon_p_height = 0;
+    sw->icon_p_width = sw->icon_t_width + 6;
   }
+
+  sw->icon_w_width = sw->icon_p_width;
+
+
   /* Not having an icon picture should not throw an error,
      it is a valid state! All it means is that we don't want an icon
      picture at all, just the icon title. - MS 11/19/97 */
@@ -295,25 +305,26 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
 			   VisibilityChangeMask |
 			   ExposureMask | KeyPressMask | EnterWindowMask |
 			   FocusChangeMask);
-  if (!(sw->flags & NOICON_TITLE) || (ICON_P_HEIGHT(sw) == 0))
+  if (!(sw->flags & NOICON_TITLE) || (sw->icon_p_height == 0))
     sw->icon_w =
-      XCreateWindow(dpy, Scr.Root, final_x, final_y + ICON_P_HEIGHT(sw),
+      XCreateWindow(dpy, Scr.Root, final_x, final_y + sw->icon_p_height,
 		    sw->icon_w_width, sw->icon_w_height, 0,
 		    CopyFromParent,
 		    CopyFromParent, CopyFromParent, valuemask, &attributes);
-
-  if ((sw->flags & ICON_OURS) && (ICON_P_WIDTH(sw) > 0) &&
-      (ICON_P_HEIGHT(sw) > 0)) {
+  
+  /* sw->icon_p_width should always be > 0 here - MS 2-19-98 */
+  if ((sw->flags & ICON_OURS) /* && sw->icon_p_width > 0 */ 
+      && sw->icon_p_height > 0) {
     sw->icon_pixmap_w =
-      XCreateWindow(dpy, Scr.Root, final_x, final_y, ICON_P_WIDTH(sw),
-		    ICON_P_HEIGHT(sw), 0, CopyFromParent,
+      XCreateWindow(dpy, Scr.Root, final_x, final_y, sw->icon_p_width,
+		    sw->icon_p_height, 0, CopyFromParent,
 		    CopyFromParent, CopyFromParent, valuemask, &attributes);
   } else {
     attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
 			     VisibilityChangeMask |
 			     KeyPressMask | EnterWindowMask |
 			     FocusChangeMask | LeaveWindowMask);
-
+    
     valuemask = CWEventMask;
     XChangeWindowAttributes(dpy, sw->icon_pixmap_w,
 			    valuemask, &attributes);
@@ -338,6 +349,7 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
     GrabIconButtons(sw, sw->icon_pixmap_w);
     GrabIconKeys(sw, sw->icon_pixmap_w);
   }
+
   return;
 }
 
@@ -376,10 +388,10 @@ DrawIconWindow(ScwmWindow * sw)
     /* resize the icon name window */
     if (sw->icon_w != None) {
       sw->icon_w_width = sw->icon_t_width + 6;
-      if (sw->icon_w_width < ICON_P_WIDTH(sw))
-	sw->icon_w_width = ICON_P_WIDTH(sw);
+      if (sw->icon_w_width < sw->icon_p_width)
+	sw->icon_w_width = sw->icon_p_width;
       sw->icon_xl_loc = sw->icon_x_loc -
-	(sw->icon_w_width - ICON_P_WIDTH(sw)) / 2;
+	(sw->icon_w_width - sw->icon_p_width) / 2;
     }
   } else {
     if (Scr.d_depth < 2) {
@@ -397,16 +409,17 @@ DrawIconWindow(ScwmWindow * sw)
     }
     /* resize the icon name window */
     if (sw->icon_w != None) {
-      sw->icon_w_width = ICON_P_WIDTH(sw);
+      sw->icon_w_width = sw->icon_p_width;
       sw->icon_xl_loc = sw->icon_x_loc;
     }
     TextColor = sw->TextPixel;
     BackColor = sw->BackPixel;
 
   }
-  if ((sw->flags & ICON_OURS) && (sw->icon_pixmap_w != None))
+  if ((sw->flags & ICON_OURS) && (sw->icon_pixmap_w != None)) {
     XSetWindowBackground(dpy, sw->icon_pixmap_w,
 			 BackColor);
+  }
   if (sw->icon_w != None)
     XSetWindowBackground(dpy, sw->icon_w, BackColor);
 
@@ -416,34 +429,41 @@ DrawIconWindow(ScwmWindow * sw)
   if (sw->icon_pixmap_w != None)
     XMoveWindow(dpy, sw->icon_pixmap_w, sw->icon_x_loc,
 		sw->icon_y_loc);
+
   if (sw->icon_w != None) {
     sw->icon_w_height = ICON_HEIGHT;
     XMoveResizeWindow(dpy, sw->icon_w, sw->icon_xl_loc,
-		      sw->icon_y_loc + ICON_P_HEIGHT(sw),
+		      sw->icon_y_loc + sw->icon_p_height,
 		      sw->icon_w_width, ICON_HEIGHT);
 
     XClearWindow(dpy, sw->icon_w);
   }
-  if ((sw->icon_image != SCM_BOOL_F) &&
-      (!(sw->flags & SHAPED_ICON)))
-    RelieveWindow(sw, sw->icon_pixmap_w, 0, 0,
-		  ICON_P_WIDTH(sw), ICON_P_HEIGHT(sw),
-		  Relief, Shadow, FULL_HILITE);
+
+
+  if (sw->flags &ICON_OURS) {
+    if ((sw->icon_image != SCM_BOOL_F) &&
+	(!(sw->flags & SHAPED_ICON))) {
+      RelieveWindow(sw, sw->icon_pixmap_w, 0, 0,
+		    sw->icon_p_width, sw->icon_p_height,
+		    Relief, Shadow, FULL_HILITE);
+    }
 
   /* need to locate the icon pixmap */
-  if (sw->icon_image != SCM_BOOL_F) {
-    if (IMAGE(sw->icon_image)->depth == Scr.d_depth) {
-      XCopyArea(dpy, IMAGE(sw->icon_image)->image, 
-		sw->icon_pixmap_w, Scr.ScratchGC3,
-		0, 0, ICON_P_WIDTH(sw)-4,
-		ICON_P_HEIGHT(sw)-4, 2, 2);
-    } else {
-      XCopyPlane(dpy, IMAGE(sw->icon_image)->image, 
-		 sw->icon_pixmap_w, Scr.ScratchGC3, 0,
-		 0, ICON_P_WIDTH(sw)-4, ICON_P_HEIGHT(sw)-4,
-		 2, 2, 1);
+    if (sw->icon_image != SCM_BOOL_F) {
+      if (IMAGE(sw->icon_image)->depth == Scr.d_depth) {
+	XCopyArea(dpy, IMAGE(sw->icon_image)->image, 
+		  sw->icon_pixmap_w, Scr.ScratchGC3,
+		  0, 0, sw->icon_p_width-4,
+		  sw->icon_p_height-4, 2, 2);
+      } else {
+	XCopyPlane(dpy, IMAGE(sw->icon_image)->image, 
+		   sw->icon_pixmap_w, Scr.ScratchGC3, 0,
+		   0, sw->icon_p_width-4, sw->icon_p_height-4,
+		   2, 2, 1);
+      }
     }
   }
+
   if (sw->icon_w != None) {
     /* text position */
     x = (sw->icon_w_width - sw->icon_t_width) / 2;
@@ -536,8 +556,8 @@ AutoPlace(ScwmWindow * t)
     t->icon_x_loc = t->wmhints->icon_x;
     t->icon_y_loc = t->wmhints->icon_y;
   } else if (t->IconBox[0] >= 0) {
-    width = ICON_P_WIDTH(t);
-    height = ICON_P_HEIGHT(t) + t->icon_w_height;
+    width = t->icon_p_width;
+    height = t->icon_p_height + t->icon_w_height;
     loc_ok = False;
 
     /* check all boxes in order */
@@ -579,8 +599,8 @@ AutoPlace(ScwmWindow * t)
 	    if ((test_window->flags & ICONIFIED) &&
 		(test_window->icon_w || test_window->icon_pixmap_w) &&
 		(test_window != t)) {
-	      tw = ICON_P_WIDTH(test_window);
-	      th = ICON_P_HEIGHT(test_window) + test_window->icon_w_height;
+	      tw = test_window->icon_p_width;
+	      th = test_window->icon_p_height + test_window->icon_w_height;
 	      tx = test_window->icon_x_loc;
 	      ty = test_window->icon_y_loc;
 
@@ -604,17 +624,17 @@ AutoPlace(ScwmWindow * t)
     if (t->icon_pixmap_w)
       XMoveWindow(dpy, t->icon_pixmap_w, t->icon_x_loc, t->icon_y_loc);
 
-    t->icon_w_width = ICON_P_WIDTH(t);
+    t->icon_w_width = t->icon_p_width;
     t->icon_xl_loc = t->icon_x_loc;
 
     if (t->icon_w != None)
       XMoveResizeWindow(dpy, t->icon_w, t->icon_xl_loc,
-			t->icon_y_loc + ICON_P_HEIGHT(t),
+			t->icon_y_loc + t->icon_p_height,
 			t->icon_w_width, ICON_HEIGHT);
     Broadcast(M_ICON_LOCATION, 7, t->w, t->frame,
 	      (unsigned long) t,
 	      t->icon_x_loc, t->icon_y_loc,
-	      t->icon_w_width, t->icon_w_height + ICON_P_HEIGHT(t));
+	      t->icon_w_width, t->icon_w_height + t->icon_p_height);
   }
 }
 
@@ -723,7 +743,7 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
 		  (unsigned long) t,
 		  -10000, -10000,
 		  t->icon_w_width,
-		  t->icon_w_height + ICON_P_HEIGHT(t));
+		  t->icon_w_height + t->icon_p_height);
 	BroadcastConfig(M_CONFIGURE_WINDOW, t);
       }
     }
@@ -748,7 +768,7 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
 	    (unsigned long) tmp_win,
 	    tmp_win->icon_x_loc, tmp_win->icon_y_loc,
 	    tmp_win->icon_w_width,
-	    tmp_win->icon_w_height + ICON_P_HEIGHT(tmp_win));
+	    tmp_win->icon_w_height + tmp_win->icon_p_height);
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
 
   LowerWindow(tmp_win);
