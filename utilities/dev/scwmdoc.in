@@ -776,6 +776,13 @@ sub ProcessHeader( $$$ ) {
   }
   my ($comment) = $comment_maybe =~ m%^\"(.*)\"\s*\)\s*\#define%s;
   my ($fname_define) = $header =~ m%^\s*\#\s*define\s+FUNC_NAME\s+(.*?)\s*$%m;
+
+  if ($comment =~ m/[^\\]\"/) {
+    print STDERR "$filename:$line:****ERROR:comment includes an un-escaped double-quote\n";
+  }
+  # Unquote quoted quotes (CRW:FIXME:GJB: are there other things we
+  # may need to unquote here?)
+  $comment =~ s/\\"/"/g;
   
   my $clean_argslist = $argslist;
   $clean_argslist =~ s/\bARG_UNUSED\s*\(\s*([^\)]*)\s*\)/$1/g;
