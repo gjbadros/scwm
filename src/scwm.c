@@ -1442,8 +1442,7 @@ ScwmErrorHandler(Display * dpy, XErrorEvent * event)
 #else
   { /* scope */
     extern int last_event_type;
-    scwm_msg(ERR, "ScwmErrorHandler", "*** internal error ***");
-    scwm_msg(ERR, "ScwmErrorHandler", "Request %d, Error %d, EventType: %d",
+    scwm_msg(ERR, "ScwmErrorHandler", "*** X11 error ***\nRequest %d, Error %d, EventType: %d",
              event->request_code,
              event->error_code,
              last_event_type);

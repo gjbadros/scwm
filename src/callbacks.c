@@ -58,8 +58,17 @@ struct scwm_body_apply_data {
 SCM 
 scwm_handle_error (void *ARG_IGNORE(data), SCM tag, SCM throw_args)
 {
+#if 0 /* GJB:FIXME:: */
+  SCM port = scm_mkstrport(SCM_INUM0, 
+			   scm_make_string(SCM_MAKINUM(200), SCM_UNDEFINED),
+			   SCM_OPN | SCM_WRTNG,
+			   "error-handler");
+#else
   SCM port = scm_def_errp;
+#endif
 
+  /* GJB:FIXME:MS: is this a guile compatibility test that can be dropped
+     now?  */
   if (scm_ilength (throw_args) >= 3)
     {
       SCM stack = DEREF_LAST_STACK;
@@ -71,7 +80,6 @@ scwm_handle_error (void *ARG_IGNORE(data), SCM tag, SCM throw_args)
       scm_display_backtrace (stack, port, SCM_UNDEFINED, SCM_UNDEFINED);
       scm_newline(port);
       scm_display_error (stack, port, subr, message, args, SCM_EOL);
-      return SCM_BOOL_F;
     }
   else
     {
@@ -82,6 +90,8 @@ scwm_handle_error (void *ARG_IGNORE(data), SCM tag, SCM throw_args)
       scm_putc ('\n', port);
       exit (2);
     }
+  /* GJB:FIXME:MS: can the scheme code display a backtrace without the
+     stack argument? */
   return apply_hooks_message_only(error_hook, gh_cons(tag, throw_args));
 }
 
