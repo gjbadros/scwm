@@ -1,3 +1,19 @@
+Fri Jan 22 08:52:07 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* constraint-primitives.cc (s_scwm_set_master_solver_x): Added
+	trailing "!" to scwm-set-master-solver!.  Added
+	`scwm-master-solver' procedure to avoid requiring access to a
+	global variable from the simple-constraints module
+
+Thu Jan 21 12:06:19 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* icons.c: Added second arg (was-iconified?) to handlers called by
+ 	iconify-hook and deiconify-hook.  This lets the hook act only on
+	changes in iconification state (avoids an infinite loop in
+	kwm-emulation by setting an iconified X property which causes
+	iconification, which causes the re-setting of the property, and so 
+	on. 
+
 Wed Jan 20 10:45:49 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* message-window.c (s_make_message_window): Move FIXME comment out 

@@ -1,3 +1,29 @@
+Fri Jan 22 08:49:05 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm: Use simple-constraints module, and refer to
+	the solver using the new `scwm-master-solver' accessor instead of
+	the variable `solver' from simple-constraints.scm
+
+Fri Jan 22 08:43:51 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window-locations.scm, ui-constraints-classes.scm,
+	ui-constraints-buttons.scm, simple-constraints.scm: Added
+
+Thu Jan 21 12:05:10 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm (default-resize-opaquely, default-move-opaquely): Use
+	<= for the test so 100% means full-size windows will work
+	opaquely. Thanks Eli Barzilay!
+
+Thu Jan 21 12:02:28 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* kwm-emulation.scm: Use X-PropertyNotify-hook to catch changes in 
+	KWM_WIN_ICONIFIED and honour them -- this makes the middle-button
+	clicking on the task bar work.  Fix bug in initialization in
+	SETTING of CURRENT_DESKTOP.  Remove kwm-kpanel-winid var, and
+	rename kwm-module-windows to kwm-module-winids.  Fix -reset
+	routine to remove the property hook handlers.
+
 Wed Jan 20 16:53:01 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints.scm: Use error more pervasively.  Rename
