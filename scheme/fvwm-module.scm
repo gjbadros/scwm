@@ -323,17 +323,17 @@
 ;; 1) Shouldn't it be some sort of "and" instead of "or"?
 ;; 2) logior will never return #f, so the "true" branch will always be taken...
 ;; (There are several other functions in this file with the same problem.)
-(define (module-broadcast type num-data . args)
+(define (module-broadcast type num-data arg1 arg2 arg3 arg4 arg5 arg6 arg7)
   (map (lambda (fmod)
 	 (let ((to-module-write (car fmod))
-	       (mask (cadr fmod)))
+	       (mask (cadr fmod))
+	       (args (list arg1 arg2 arg3 arg4 arg5 arg6 arg7)))
+	   (set-cdr! (list-tail args (- num-data 1)) '())
 	   (if (logior type mask)
 	       (fvwm2-module-send-packet 
 		type
 		(apply string-append
-		       (map (lambda (x y) 
-			      (long->string x)) 
-			    args (iota num-data))) 
+		       (map long->string args))
 		to-module-write))))
        active-modules))
 

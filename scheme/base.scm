@@ -31,10 +31,15 @@
 (define menu-hl-bg-color #f) ;; (make-color "black"))
 
 
-;; HACK: GJB:FIXME:: This needs to be done in the root module
-;; to replace the primitive in more recent guile snapshots
-(defmacro-public reset-hook! (hook)
-  `(set! ,hook ()))
+
+(if (<= (string->number (minor-version)) 3)
+    (begin
+      ;; HACK: GJB:FIXME:: This needs to be done in the root module
+      ;; to replace the primitive in more recent guile snapshots
+      (defmacro-public reset-hook! (hook)
+	`(set! ,hook ()))
+      (define-public (make-hook . n) ())))
+    
 
 
 
@@ -603,14 +608,6 @@ The rest of the arguments are passed as options to the xterm command."
       (lambda () ,@body)
       (lambda () (and (message-window? msgwin) (message-window-hide! msgwin))))))
   
-;; add-hook! and remove-hook! are defined in guile's boot-9.scm
-;; we still need a reset-hook! though, but only if HAVE_SCM_MAKE_HOOK is 1
-;; (otherwise, in post guile-1.3, it's already a primitive)
-;; GJB:FIXME:: we can use this code once we support new-style hooks
-;(if (not (defined? 'reset-hook!))
-;    (defmacro-public reset-hook! (hook)
-;      `(set! ,hook ())))
-
 (define-public bell beep)
 
 (add-hook! invalid-interaction-hook
@@ -757,12 +754,6 @@ a new message window."
   "After done reading your startup file, run your ~/.xclients script.
 Uses the `startup-hook' and `run-dot-xclients-script' to do so."
   (add-hook! startup-hook (lambda () (if (not (restarted?)) (run-dot-xclients-script)))))
-
-
-;; (call-hook-procedures (list 'bong display write 'baz) '("foo\n"))
-;; (define-public foo-hook '())
-;; (add-hook! foo-hook write)
-;; (add-hook! foo-hook display)
 
 (define-public (keycode->keysym keycode)
   "Return a string containing the X11 keysym for key with code KEYCODE."

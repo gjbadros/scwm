@@ -184,9 +184,9 @@ To display the toggle menu, call ui-constraint-gtk-toggle-menu."
 	 (enable (gtk-button-new-with-label "Enable All"))
 	 (close (gtk-button-new-with-label "Close")))
     (gtk-window-set-title toplevel "ScwmUIConstraintsList")
-    (add-constraint-add-hook! 
+    (add-hook! constraint-add-hook
      (lambda (cn) (make-cn-widget cn)))
-    (add-constraint-delete-hook!
+    (add-hook! constraint-delete-hook
      (lambda (cn) (remove-cn-button cn)))
     (set! gtk-toggle-close? close?)
 ;;    (gtk-button-box-set-spacing vboxcn 0)

@@ -19,8 +19,12 @@
 
 
 
-(define-module (app scwm file)
-  :use-module (ice-9 string-fun))
+(if (> (string->number (minor-version)) 3)
+    (define-module (app scwm file)
+      :use-module (ice-9 string-fun)
+      :use-module (ice-9 popen))
+    (define-module (app scwm file)
+      :use-module (ice-9 string-fun)))
 
 
 ;;;;

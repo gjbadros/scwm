@@ -135,15 +135,13 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 	  (stype se))))
    (style:style-entries style)))
 
-(add-hook!  after-new-window-hook
-	    (lambda (win)
-	      (apply-style global-conditional-style win)))
+(add-hook! after-new-window-hook
+	   (lambda (win)
+	     (apply-style global-conditional-style win)))
 
-(add-hook!  before-new-window-hook
-	    (lambda (win)
-	      (apply-hint-style global-conditional-style win)))
-
-
+(add-hook! before-new-window-hook
+	   (lambda (win)
+	     (apply-hint-style global-conditional-style win)))
 
 (define (make-style-entry condition window-options hint-options)
   (vector condition window-options hint-options))

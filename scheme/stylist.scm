@@ -42,7 +42,7 @@ random window that matches PREDICATE."
     (for-each flash-window-on windows)
     (let* ((top (gtk-window-new 'toplevel))
 	   (tt (gtk-tooltips-new))
-	   (apply-hook ())
+	   (apply-hook (make-hook))
 	   (Cancel (lambda ignored-args
 		     (for-each unflash-window flashed-windows)
 		     (gtk-widget-destroy top)))

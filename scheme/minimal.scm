@@ -88,19 +88,23 @@ motion does `interactive-move', and double-click does
 
 ;; END gross hack
 
-;; GJB:FIXME:MS: I'd like a backtrace when a hook fails
-(define-public (call-hook-procedures hook-list args)
-  "Runs the procedures in HOOK-LIST, each getting ARGS as their arguments.
+(if (not (defined? 'run-hook))
+    ;; GJB:FIXME:MS: I'd like a backtrace when a hook fails
+    (define-public (call-hook-procedures hook-list args)
+      "Runs the procedures in HOOK-LIST, each getting ARGS as their arguments.
 If any error, the others still run.  The procedures are executed in the
 order in which they appear in HOOK-LIST"
-  (for-each (lambda (p) 
-	      (catch #t
-		     (lambda () (apply p args))
-		     (lambda args
-		       (display "Error running hook: ")
-		       (write p)
-		       (newline))))
-	    hook-list))
+      (for-each (lambda (p) 
+		  (catch #t
+			 (lambda () (apply p args))
+			 (lambda args
+			   (display "Error running hook: ")
+			   (write p)
+			   (newline))))
+		hook-list))
+    ;; For guile's with run-hook (it was added after guile-1.3)
+    (define-public (call-hook-procedures hook args)
+      (apply run-hook (cons hook args))))
 
 ;; GJB:FIXME:: this should not be public,
 ;; but I leave it public for now for easier debugging --07/03/99 gjb

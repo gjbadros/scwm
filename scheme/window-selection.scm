@@ -24,8 +24,8 @@
 
 ;; hook procedures
 
-(define window-selection-add-hook '())
-(define window-selection-remove-hook '())
+(define window-selection-add-hook (make-hook 1))
+(define window-selection-remove-hook (make-hook 1))
 
 (define-public selected-windows '())
 ;;(set! selected-windows '())

@@ -17,8 +17,12 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;;
 
-(define-module (app scwm rgb-database)
-  :use-module (app scwm base))
+(if (> (string->number (minor-version)) 3)
+    (define-module (app scwm rgb-database)
+      :use-module (ice-9 popen)
+      :use-module (app scwm base))
+    (define-module (app scwm rgb-database)
+      :use-module (app scwm base)))
 
 (define*-public (read-and-append-to p #&optional (l '()))
   "Read in the lines from port P and return them.

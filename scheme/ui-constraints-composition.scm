@@ -46,10 +46,9 @@
 (define-public (ui-constraints-composition-begin) 
   "Begin recording the constraints used for the creation of a composition.
 End this recording by calling 'ui-constraints-composition-end'."
-  (begin
-    (set! ui-constraints-composition-constraint-list '())
-    (add-constraint-composition-record-hook! add-constraint-to-composition)
-    (add-constraint-delete-hook! remove-constraint-from-composition)))
+  (set! ui-constraints-composition-constraint-list '())
+  (add-hook! constraint-composition-record-hook add-constraint-to-composition)
+  (add-hook! constraint-delete-hook remove-constraint-from-composition))
 
 
 ;; PRIVATE HELPERS
@@ -101,8 +100,8 @@ the construction of a composition."
 			     cnlist))
 	     (msgwin ui-constraint-prompter-msgwin))
 
-	(remove-constraint-composition-record-hook! add-constraint-to-composition)
-	(remove-constraint-delete-hook! remove-constraint-from-composition)
+	(remove-hook! constraint-composition-record-hook add-constraint-to-composition)
+	(remove-hook! constraint-delete-hook remove-constraint-from-composition)
 
 	;; determine windows within constraint (in order they were chosen by the user)
 
