@@ -30,6 +30,7 @@
  (app scwm base) (app scwm face) (app scwm decor) (app scwm style)
  (app scwm winops) (app scwm winlist) (app scwm wininfo)
  (app scwm optargs) (app scwm std-menus) (app scwm wmconfig-menu)
+ (app scwm doc)
  (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module))
 
 ;; user settable!

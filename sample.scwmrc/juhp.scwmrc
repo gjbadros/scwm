@@ -9,6 +9,7 @@
 	     (app scwm wininfo)
 	     (app scwm optargs)
              (app scwm style)
+	     (app scwm doc)
 	     (app scwm face)
 	     (app scwm decor)
 	     )
