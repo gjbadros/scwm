@@ -22,7 +22,13 @@
 # This should probably be written in guile-scheme instead of perl
 #
 
+use strict;
+use constant TRUE => (1==1);
+use constant FALSE => (1==0);
+
 my $header = "";
+#my $fDebug = FALSE;
+my $fDebug = TRUE;
 
 while (<>) {
   if (m/^SCWM_PROC/) {
@@ -48,6 +54,7 @@ sub ProcessHeader( $ ) {
   my $cremovals = ($clean_argslist =~ s/\bSCM\b//g);
   $clean_argslist =~ s/\n/ /g;
   $clean_argslist =~ s/[ \t]+//g;
+  $clean_argslist =~ s/_/-/g;
   my @args = split(/,/, $clean_argslist);
 
   # now create a hash of the names for testing words in the comment
@@ -89,12 +96,17 @@ sub ProcessHeader( $ ) {
   my $usage = sprintf "($primname%s$arg_listing)", ($arg_listing ne ""? " ":"");
 
 
-  print <<EOC
+  if ($fDebug) {
+    print <<EOC
 scheme-primitive-name:	$primname
 C-primitive-name:	$cprimname
 arg kinds:		$req, $opt, $var
 args:			@args
 arg listing:		$arg_listing
+EOC
+;
+  }
+  print <<EOC
 usage:			$usage
 comment:		$comment
 EOC
