@@ -60,7 +60,8 @@ session_manager_objs = $(session_manager_srcs:.c=.o)
 
 
 cassowary_srcs = constraint-primitives.cc scwm-constraints.cc
-cassowary_headers = constraint-primitives.h scwm-constraints.h scwm-constraints.hpp
+cassowary_headers = constraint-primitives.h scwm-constraints.h \
+                    scwm-constraints.hpp scwm-screen-ci.hpp
 
 cassowary_objs = $(cassowary_srcs:.cc=.o)
 
@@ -75,7 +76,7 @@ constraint-primitives.h menuitem.h system.h decor.h menulook.h util.h \
 decorations.h miscprocs.h virtual.h deskpage.h module-interface.h window.h \
 drawmenu.h module-types.h xmisc.h errors.h move.h window_fwd.h deskpage.h \
 move.h xmisc.h drawmenu.h placement.h xproperty.h errors.h resize.h xrm.h \
-events.h scm_init_funcs.h dbug_resize.h message-window.h winprop.h\
+events.h scm_init_funcs.h dbug_resize.h message-window.h validate.h winprop.h\
 $(cassowary_headers) $(session_manager_headers)
 
 scwm_LDADD = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@ \
