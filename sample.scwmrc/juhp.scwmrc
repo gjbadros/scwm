@@ -335,7 +335,7 @@
 
 (define* (move-window x y #&optional (w (current-window-with-focus)))
   (let* ((amount 50)
-	 (position (window-position w))
+	 (position (window-viewport-position w))
 	 (oldx (car position))
 	 (oldy (cadr position)))
     (move-to (+ oldx (* x amount))

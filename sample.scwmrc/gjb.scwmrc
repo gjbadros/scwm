@@ -342,6 +342,16 @@
 ;; (window-style "*" #:sticky-icon #t)
 ;; (window-style "*" #:random-placement #f #:smart-placement #f)
 
+(define* (deiconify-to-current-viewport #&optional (win (get-window)))
+  (let ((vpx (/ (viewport-x-position) display-width))
+	(vpy (/ (viewport-y-position) display-height)))
+    (deiconify win)
+    (move-window-to-viewport vpx vpy win)))
+
+;; (deiconify-to-current-viewport (select-window-interactively))
+
+;; (move-window-to-viewport 1 1 (select-window-from-window-list))
+
 ;;(window-style "*" #:border-width 5 #:mwm-border #t)
 
 (window-style "xlogo" #:no-titlebar #t #:normal-border #t)
@@ -349,6 +359,8 @@
 ;;(resize-to 200 200)
 
 ;;(window-style "*" #:squashed-titlebar #t)
+;;(window-style "xterm" #:squashed-titlebar #t)
+
 ;;(window-style "*" #:bg "purple")
 ;; (border-style #:hidden-handles #f #:no-inset #f)
 
@@ -388,24 +400,16 @@
     ;; not mapped before the placement-proc gets called
     (interactive-move win #f)))
 
-(define (netscape-win)
-  (car 
-   (list-windows #:only 
-		 (lambda (w) 
-		   (and (string=? (window-class w) "Netscape")
-			(string=? (window-resource w) "Navigator"))))))
-
-
 ;;(define ns-win (select-window-interactively))
 ;;(define (netscape-win) ns-win)
 
 (define (move-next-to-netscape-win w)
-  (let* ((ns-pos (window-position (netscape-win)))
+  (let* ((ns-pos (window-viewport-position (netscape-win)))
 	 (x (+ (car ns-pos) 300))
 	 (y (- (cadr ns-pos) 30)))
     (move-to x y w #f #f)
     (move-pointer-to (+ x 30) (+ y 55))
-    (write-all #t "moving next to netscape window " x y "\n")))
+    (write-all #t "moving next to netscape window " x ", " y "\n")))
 
 ;;(window-title (select-window-interactively))
 ;;(move-next-to-netscape-win (select-window-interactively))
@@ -1037,6 +1041,10 @@
 ;; key bindings for the menus
 (bind-key 'all "M-S-F1" popup-util)
 (bind-key 'all "M-S-F2" popup-window-ops)
+
+;; C-S-M-t makes netscape go to the url specified by cut buffer 0
+(bind-key 'all "C-S-M-t" (thunk netscape-goto-cut-buffer-url))
+;; http://huis-clos.mit.edu/scwm    ;; highlight w/ mouse and try it!
 
 ;; in case of emergency, hit Control-Meta-Q
 (bind-key 'all "C-M-S-q" quit-verify)
