@@ -2,6 +2,15 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997 Maciej Stachowiak.
 See the end for copying conditions.
 
+Changes to scwm-0.5
+
+Many bug fixes to the build process and the program itself.
+
+Integrated the icon distribution.
+
+The documentation ahs been updaed to roughly reflect current reality.
+
+
 Changes to scwm-0.4
 
 set-xor-value! has been renamed to set-rubber-band-mask!.
