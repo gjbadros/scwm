@@ -2396,6 +2396,7 @@ beyond that of the client window width/height.")
 SCM_DEFINE(move_window, "move-window", 2, 1, 0,
           (SCM x, SCM y, SCM win),
 "Move WIN to virtual coordinates X, Y.\n\
+Moves the icon if WIN is iconified, the frame otherwise.\n\
 If X is #f, then X defaults to the current X position of WIN.\n\
 If Y is #f, then Y defaults to the current Y position of WIN.\n\
 WIN defaults to the window context in the usual way if not\n\
@@ -3897,7 +3898,7 @@ force_icon_redraw (ScwmWindow *psw)
 
 SCM_DEFINE(set_icon_title_x, "set-icon-title!", 1, 1, 0,
           (SCM flag, SCM win),
-"Set the visibility of WIN's icon title according to FLAG. WIN\n\
+"BROKEN: Set the visibility of WIN's icon title according to FLAG. WIN\n\
 defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_set_icon_title_x
 {
@@ -3928,10 +3929,10 @@ way if not specified.")
 }
 #undef FUNC_NAME
 
-
+/* SRL:FIXME:: Very broken.  Destroys any window it is applied to. */
 SCM_DEFINE(set_show_icon_x, "set-show-icon!", 1, 1, 0,
           (SCM flag, SCM win),
-"Set whether or not the icon of WIN will be visible.  If FLAG\n\
+"BROKEN: Set whether or not the icon of WIN will be visible.  If FLAG\n\
 is #t, the icon will be displayed, if #f, it will not appear when the\n\
 window is iconified (it will still be in the window list, of course).\n\
 WIN defaults to the window context in the usual way if not\n\
@@ -4060,10 +4061,11 @@ WIN defaults to the window context in the usual way if not specified.")
 #undef FUNC_NAME
 
 
-
+/* SRL:FIXME:: Fix override of border visibility hint. */
 SCM_DEFINE(set_hint_override_x, "set-hint-override!", 1, 1, 0,
           (SCM flag, SCM win),
 "Set whether or not Mwm and Open Look function hints are used.\n\
+Currently BROKEN with respect to border hints (i.e. will not override these.\n\
 If FLAG is #t, the hints, which indicate what operations should be\n\
 allowed on a window, will be ignored for WIN.  If FLAG is #f, the hints will\n\
 be honoured. WIN defaults to the window context in the usual way if\n\
@@ -4215,10 +4217,14 @@ MAKE_SMOBFUNS(window);
 /* this function is part of the implementation of
    VALIDATE_WIN_USE_CONTEXT, so do not have it use
    that for argument checking --03/31/99 gjb */
+/* release_p - if true select on mouse release for interactive selection
+   cursor - #t means use skull & cross-bones, #f means use circle for 
+            interactive selection */
 SCM
 ensure_valid(SCM win, int n, const char *func_name, SCM release_p, SCM cursor)
 {
   if (UNSET_SCM(win)) {
+    /* Select interactive if win is not set */
     win = get_window(SCM_BOOL_T, release_p, cursor);
     if (win == SCM_BOOL_F || win == SCM_UNDEFINED) {
       return SCM_BOOL_F;

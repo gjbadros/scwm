@@ -1,3 +1,13 @@
+Tue Apr  9 22:10:59 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* window.c: Added FIXME for border override in 'set-hint-override!'.
+	Added BROKEN to doc string about this problem.
+	Improved doc for 'move-window'.
+	Added BROKEN doc to 'set-icon-title!'.
+	Added BROKEN doc to 'set-show-icon!'.
+	Added comment header to ensure_valid function.
+	Added comment in ensure_valid function.
+	
 Thu Apr  4 02:41:36 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* face.c:

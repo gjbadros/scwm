@@ -1,3 +1,12 @@
+Tue Apr  9 22:06:59 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* style.scm: 
+	Added missing :use-module for listops.
+	Tested #:hint-override, #:mwm-decor-hint, #:lenience and thus remove
+	  FIXMEs asking for testing.
+	Added FIXME about #:hint-override being broken for overriding border
+	  hint.
+
 Tue Apr  9 02:18:16 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* focus-titlebar.scm: Fixed typo.

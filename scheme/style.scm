@@ -21,6 +21,7 @@
 
 (define-module (app scwm style)
   :use-module (app scwm base)
+  :use-module (app scwm listops)
   :use-module (app scwm style-options)
   :use-module (app scwm winops)
   :use-module (app scwm wininfo))
@@ -292,12 +293,12 @@ Hint styles are not applied."
 (add-window-hint-option #:no-button (lambda (n w) (set-window-button! n #f w))
 			#t) ; cumulative
 
-;;; SRL:FIXME:: NOT TESTED YET
+;;; SRL:FIXME:: Does not override border visibility hint.  Partially BROKEN.
+;;;   Test with OL hints.
 (add-window-hint-option #:hint-override set-hint-override!)
 ;;; SRL:FIXME:: Broken.  Propagated to C code but C code displays
 ;;;   incorrectly.
 (add-window-hint-option #:decorate-transient set-decorate-transient!)
-;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:mwm-decor-hint set-mwm-decor-hint!)
 ;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:mwm-func-hint set-mwm-func-hint!)
@@ -308,7 +309,6 @@ Hint styles are not applied."
 
 (add-window-hint-option #:start-on-desk set-start-on-desk!)
 (add-window-hint-option #:skip-mapping set-skip-mapping!)
-;;; SRL:FIXME:: NOT TESTED YET
 (add-window-hint-option #:lenience set-lenience!)
 
 
