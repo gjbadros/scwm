@@ -110,23 +110,17 @@
 (define window-hint-hooks '())
 
 
-(set! old-new-window-handler 
-      (bind-event 'new-window
-		  (lambda ()
-		    (if old-new-window-handler
-			(old-new-window-handler))
-		    (for-each (lambda (hook) 
-				(hook (get-window)))
-			      window-style-hooks))))
+(add-hook! after-new-window-hook
+	   (lambda (win)
+	     (for-each (lambda (hook) 
+			 (hook win))
+		       window-style-hooks)))
 
-(set! old-new-window-hint-handler 
-      (bind-event 'new-window-hint
-		  (lambda ()
-		    (if old-new-window-hint-handler
-			(old-new-window-hint-handler))
-		    (for-each (lambda (hook) 
-				(hook (get-window))) 
-			      window-hint-hooks))))
+(add-hook! before-new-window-hook
+	   (lambda (win)
+	     (for-each (lambda (hook) 
+			 (hook win)) 
+		       window-hint-hooks)))
 
 
 ;; some useful style options
@@ -192,9 +186,6 @@
 (add-boolean-style-option #:start-window-shaded window-shade un-window-shade)
 (add-window-style-option #:other-proc (lambda (val w) (val w)))
 (add-window-hint-option #:other-hint-proc (lambda (val w) (val w)))
-
-
-
 
 
 

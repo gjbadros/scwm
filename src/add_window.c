@@ -69,6 +69,11 @@
 #include "module-interface.h"
 #include "icons.h"
 #include "placement.h"
+#include "callbacks.h"
+
+
+SCM before_new_window_hook;
+SCM after_new_window_hook;
 
 /* Used to parse command line of clients for specific desk requests. */
 /* Todo: check for multiple desks. */
@@ -318,7 +323,7 @@ AddWindow(Window w)
 
   tmp_win->schwin = schwin = make_window(tmp_win);
 
-  run_new_window_hint_hook(tmp_win->schwin);
+  call1_hooks(before_new_window_hook, tmp_win->schwin);
 
   if (tmp_win->fStartsOnDesk) {
     DBUG(__FUNCTION__,"fStartsOnDesk is true");
@@ -747,7 +752,7 @@ AddWindow(Window w)
   }
   InstallWindowColormaps(colormap_win);
 
-  run_new_window_hook(tmp_win->schwin);
+  call1_hooks(after_new_window_hook, tmp_win->schwin);
   CreateIconWindow(tmp_win,tmp_win->icon_x_loc,tmp_win->icon_y_loc);
 
   return (tmp_win);
@@ -909,6 +914,12 @@ GetWindowSizeHints(ScwmWindow * tmp)
     tmp->hints.win_gravity = NorthWestGravity;
     tmp->hints.flags |= PWinGravity;
   }
+}
+
+void init_add_window()
+{
+  DEFINE_HOOK(before_new_window_hook, "before-new-window-hook");
+  DEFINE_HOOK(after_new_window_hook, "after-new-window-hook");
 }
 
 

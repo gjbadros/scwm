@@ -18,6 +18,8 @@ void FetchWmProtocols(ScwmWindow * tmp);
 
 void GrabKeys(ScwmWindow * tmp_win);
 
+void init_add_window();
+
 #endif
 
 /* Local Variables: */

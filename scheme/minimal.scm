@@ -13,8 +13,6 @@
 (define BLACK (make-color "black"))
 (define GRAY (make-color "gray"))
 (define SLATEGRAY (make-color "slategray"))
-(define LIGHTGRAY (make-color "lightgray"))
-(define DIMGRAY (make-color "dimgray"))
 
 ;;; Set some global options
 (set-rubber-band-mask! 1)
@@ -54,13 +52,6 @@
 
 (bind-mouse '(title sidebar) 1 move-or-raise)
 
-(bind-event 'new-window (lambda () 
-			  (set-window-foreground! LIGHTGRAY)
-			  (set-window-background! DIMGRAY)
-			  (show-titlebar)))
-(bind-event 'new-window-hint (lambda () 
-			       (set-random-placement! #t)
-			       (set-smart-placement! #t)))
 (bind-mouse 'root 1 (lambda () (popup-menu default-menu)))
 
 

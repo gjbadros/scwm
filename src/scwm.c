@@ -237,6 +237,7 @@ scwm_main(int argc, char **argv)
   
   init_scwm_types();
   init_callbacks();
+  init_add_window();
   init_image();
   init_font();
   init_color();

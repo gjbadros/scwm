@@ -1,3 +1,11 @@
+Sun Mar 29 18:19:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* style.scm: Use new-style new-window hooks.
+
+	* minimal.scm: Remove reliance on old-style new-window hooks;
+ 	they're not really needed anymore anyway, AddWindow should set
+ 	default colors of some sort.
+
 Sun Mar 29 10:47:24 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Add transient? to window-info
