@@ -101,7 +101,7 @@ GrabIconKeys(ScwmWindow *ARG_UNUSED(psw), Window w)
 
   for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
     if ((pbnd->Context & C_ICON) && 
-        !pbnd->IsMouse == 0) {
+        !pbnd->IsMouse) {
       GrabKeyWithModifiersWin(pbnd->Button_Key,pbnd->Modifier,w);
     }
   }
