@@ -386,7 +386,7 @@ that take microseconds."
 This positions the popup menu appropriately."
   (let* ((pos (window-viewport-position win))
 	 (x-ne (car pos))
-	 (y (+ (cadr pos) (+ 1 (* 2 (window-frame-border-width win))
+	 (y (+ (cadr pos) (+ 1 (window-frame-border-width win)
 			     (window-title-height win))))
 	 (x (if (odd? button-number) x-ne (+ 1 x-ne (car (window-frame-size))))))
     (popup-menu menu #f x y (odd? button-number))))
