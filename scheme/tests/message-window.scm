@@ -22,6 +22,10 @@
 ;; images stuff
 
 (define i (window->image (get-window)))
+(define i2 (clone-scaled-image i 50 50))
+
+(image-properties i2)
+
 (define root (window->image 'root-window))
 
 (image-properties i)
@@ -35,12 +39,14 @@
 (message-window-message m)
 
 (message-window-set-image! m i)
+(message-window-set-image! m i2)
 (message-window-set-image! m root)
 
 (message-window-show! m)
 (message-window-hide! m)
 
 (message-window-set-size! m 100 100)
+(message-window-set-size! m 50 50)
 (message-window-set-size! m #f #f)
 
 (message-window-set-relief! m #f)
