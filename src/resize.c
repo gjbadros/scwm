@@ -71,18 +71,28 @@ makemult(int a, int b)
   }
 }
 
+void
+ComputeDeltaForResize(ScwmWindow *psw, int *pdx, int *pdy, int width, int height)
+{
+  int grav_x = psw->grav.x;
+  int grav_y = psw->grav.y;
+  int dx = width - FRAME_WIDTH(psw);   /* wider => positive */
+  int dy = height - FRAME_HEIGHT(psw); /* taller => positive */
+  *pdx = dx * (double) grav_x/2.0;
+  *pdy = dy * (double) grav_y/2.0;
+}
+
 /* *px and *py and in/out parameters
    Correct the position of psw for being resized to width/height
    while honouring its gravity setting */
 void
 ComputePositionForResize(ScwmWindow *psw, int *px, int *py, int width, int height)
 {
-  int grav_x = psw->grav.x;
-  int grav_y = psw->grav.y;
-  int dx = width - FRAME_WIDTH(psw);   /* wider => positive */
-  int dy = height - FRAME_HEIGHT(psw); /* taller => positive */
-  *px -= dx * (double) grav_x/2.0;
-  *py -= dy * (double) grav_y/2.0;
+  int dx = 0;
+  int dy = 0;
+  ComputeDeltaForResize(psw,&dx,&dy,width,height);
+  *px -= dx;
+  *py -= dy;
 }
 
 

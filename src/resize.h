@@ -15,6 +15,8 @@
 
 #include "window_fwd.h"
 
+void ComputeDeltaForResize(ScwmWindow *psw, int *pdx, int *pdy, int width, int height);
+
 void ComputePositionForResize(ScwmWindow *psw, int *px, int *py, int width, int height);
 
 void ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, 
