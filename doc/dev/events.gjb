@@ -97,12 +97,16 @@ are not specifiable directly -- the attached proc will have to check the
 event if they are desired (their complexity for user interaction is
 worth discouraging).
 
-X-EVENT-SPECIFIER is one of 'motion, 'press, 'release, 'click, or
-'double-click.  ('click and 'double-click get manufactured by scwm -- a
-'click is a press followed by a release w/o intervening motion or too
-much intervening time.  A 'double-click is two clicks w/o intervening
-motion or too much intervening time).  E.g., the below are valid
-MOUSE_SPECIFIERs
+X-EVENT-SPECIFIER is one of 'motion, 'press, 'release, 'click,
+'single-click or 'double-click.  ('click, 'single-click and
+'double-click get manufactured by scwm -- a 'click is a press followed
+by a release w/o intervening motion or too much intervening time.  A
+'double-click is two clicks w/o intervening motion or too much
+intervening time, and a 'single-click is a 'click that is not followed
+by a second click; note that a 'click will always precede a
+'double-click, and the second click of a 'double-click will not generate
+another 'click.  A 'single-click is generated after the double-click
+timeout after a 'click).  E.g., the below are valid MOUSE_SPECIFIERs
 
 MODIFIER-SPECIFIER is as described above.
 
