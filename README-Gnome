@@ -12,7 +12,7 @@ Scwm works great with Gnome!
 5) Enter (type what's in quotes below, omitting the quotes):
 
 Name: "Scwm"
-Command: "scwm"
+Command: "startscwm"
 Configuration command: "scwm-conf"
 
 And click "Window manager is session managed" -- the default
