@@ -18,15 +18,14 @@
 # Right now, it just does the extraction into high-level elements w/o
 # adding the logical tags
 #
-# Note that it does some error checking, and produces error and warning
+# Note that it does lots of important error checking, and produces error and warning
 # messages that look like grep, so emacs' compile-mode (and probably grep-mode)
 # can be used to find problems with the documentation using M-x compile (C-x c)
-#   extract-docs *.c
+#   extract-docs *.c > /dev/null
 # then M-x next-error (C-x `)
 #
 # TODO:
-#  * ensure that #define FUNC_NAME, #undef FUNC_NAME appear as appropriate (when used pervasively)
-#  * better abstractions for argument checking
+# Generate DocBook output!
 #
 # BUGS:
 # This should probably be written in guile-scheme instead of perl
@@ -67,11 +66,12 @@ sub ProcessHeader( $ ) {
   $clean_argslist =~ s/\n/ /g;
   $clean_argslist =~ s/[ \t]+//g;
   $clean_argslist =~ s/_/-/g;
+  $clean_argslist =~ s/_[pP]\b/?/g;
   my @args = split(/,/, $clean_argslist);
 
   # now create a hash of the names for testing words in the comment
   # whether they are referring to formal parameters
-  my %argnames = map {uc($_) => 1} @args;
+  my %argnames = map { uc($_) => 1} @args;
 
   if ($cremovals != scalar(@args) ) {
     print STDERR "$ARGV:$.:****$cprimname: types inconsistency (all args should be type SCM)\n";
@@ -113,6 +113,15 @@ sub ProcessHeader( $ ) {
 
   my $usage = sprintf "($primname%s$arg_listing)", ($arg_listing ne ""? " ":"");
 
+  my %upcase_words = ();
+
+  foreach my $word (split /[^\w-?!"]+/, $comment) {
+    if ($word =~ /^[A-Z][-A-Z0-9_]+$/) {
+      if (!defined($argnames{$word})) {
+	print STDERR "$ARGV:$.:****$cprimname: all-uppercase word \`$word\' does not match an argument\n";
+      }
+    }
+  }
 
   if ($fDebug) {
     print <<EOC
