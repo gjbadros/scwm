@@ -107,12 +107,12 @@ install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/
 %{prefix}/share/scwm/themes/
 %{prefix}/share/scwm/modules/
 %{prefix}/share/scwm/pixmaps/
-%{prefix}/share/scwm/Xmodmap-win95keyboard
-%{prefix}/share/scwm/Xresources-cpp
-%{prefix}/share/scwm/Xsession
 %{prefix}/share/scwm/Xsession.patch
 %{prefix}/share/scwm/gnome-session-Scwm
 %{prefix}/include/
+@examplesdir@/Xmodmap-win95keyboard
+@examplesdir@/Xresources-cpp
+@examplesdir@/Xsession
 
 %doc ANNOUNCE AUTHORS BUG-REPORTING BUGS COPYING.FVWM COPYING.GPL ChangeLog
 %doc INSTALL NEWS README RH6-notes README-Gnome README-constraints THANKS TODO 

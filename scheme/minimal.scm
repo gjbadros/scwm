@@ -70,7 +70,7 @@ motion does `interactive-move', and double-click does
 
 (bind-mouse '(title frame-sides) 1 move-or-raise)
 
-(bind-mouse 'icon 1 deiconify-window)
+(bind-mouse 'icon 1 #f deiconify-window)
 
 (let ((default-menu (make-menu 
 		     (list
@@ -78,7 +78,7 @@ motion does `interactive-move', and double-click does
 		      (make-menuitem "Exit SCWM" quit))
 		     (make-color "gray") (make-color "black")
 		     (make-color "slate gray") FIXED-FONT)))
-  (bind-mouse 'root 1 (lambda () (popup-menu default-menu))))
+  (bind-mouse 'root 1 #f (lambda () (popup-menu default-menu))))
 
 ;; GJB:FIXME:: Here I trade flexibility
 ;; for safety.  If this ever becomes an issue

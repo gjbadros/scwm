@@ -706,6 +706,18 @@ SCWM_ARG_PATH(docdir,
 ])
 
 
+SCWM_ARG_PATH(examplesdir,
+[  --with-examplesdir=DIR      Install examples in DIR 
+                               [${scwm_docdir}/examples]],
+[
+       AC_MSG_CHECKING(where examples should go)
+       scwm_examplesdir="${withval}"
+       AC_MSG_RESULT("${scwm_examplesdir}")
+],
+[
+       scwm_examplesdir="${scwm_docdir}/examples"
+])
+
 
 # open the parentheses
 scwm_image_load_path="(\\\"${scwm_pixmapdir}\\\" ";
@@ -742,6 +754,7 @@ AC_SUBST(scwm_image_load_path)
 AC_SUBST(scwm_utildir)
 AC_SUBST(scwm_viavoice_grammardir)
 AC_SUBST(scwm_docdir)
+AC_SUBST(scwm_examplesdir)
 
 AC_SUBST(SCWM_MAJOR_VERSION)
 AC_SUBST(SCWM_MINOR_VERSION)
