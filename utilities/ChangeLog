@@ -1,3 +1,8 @@
+Fri Jul 23 17:53:36 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (SUBDIRS): Only build pidproperty subdir if
+	DL_SUPPORT. 
+
 Tue Jul  6 08:49:22 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* run-renamed/Makefile.am: Link w/ ../../scwm/syscompat.o for
