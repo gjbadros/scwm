@@ -12,14 +12,17 @@ Greg J. Badros, 11/11/97
 We want these:
 o guile -v output
 o scwm -v output
+o the file: scwm/scwm/changed.c
+o the file: scwm/scwm/scwmpaths.h
+o scheme backtrace
 o backtrace from gdb or another debugger if scwm dumped core
    (save the core file in case we can't reproduce it) --07/21/98 gjb
 
 And any of these you think might be relevant:
 
-o ldd scwm output
-o config.h file
-o copy of the .scwmrc being used
-o env output
+o 'ldd scwm' output
+o the file: scwm/include/config.h
+o copy of the .scwmrc being used, or portion thereof
+o 'env' output
 o any local changes to the libraries?
 o ls -l of pixmap directories
