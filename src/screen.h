@@ -352,3 +352,4 @@ extern ScreenInfo Scr;
 #define EdgeWrapY                (128) 
 #define MWMMenus                (1024)
 #endif /* _SCREEN_ */
+
