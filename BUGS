@@ -1,3 +1,58 @@
+Backtrace:
+ 0* [#<procedure (win)> #<window 109051918: "img2.gif (/home/wharvey/tmp)">]
+ 1* [apply-hint-style (#(#<procedure always? #> # #) #(#<procedure always? #> # 
+()) #(#<procedure #> # ()) ...) #<window 109051918: "img2.gif (/home/wharvey/tmp
+)">]
+ 2  [apply-style-internal (#(#<procedure always? #> # #) #(#<procedure always? #
+> # ()) #(#<procedure #> # ()) ...) #<window 109051918: "img2.gif (/home/wharvey
+/tmp)"> ...]
+ 3  [for-each #<procedure (se)> (#(#<procedure always? #> # #) #(#<procedure alw
+ays? #> # ()) #(#<procedure #> # ()) ...)]
+ 4* [#<procedure (se)> #(#<procedure (w)> () ())]
+ 5* (if ((style-entry:condition se) win) (for-each (lambda # #) (stype se)))
+ 6* [#<procedure (w)> #<window 109051918: "img2.gif (/home/wharvey/tmp)">]
+ 7  [or-map #<procedure (p)> (#<procedure (win)> #<procedure (win)> #<procedure 
+(win)>)]
+    ...
+ 8  (or (proc (car first)) (loop (cdr first)))
+ 9* [#<procedure (p)> #<procedure (win)>]
+10  [#<procedure (win)> #<window 109051918: "img2.gif (/home/wharvey/tmp)">]
+11  (let* ((target #) (result #)) (and result (= # #)))
+12* [window-title #<window 109051918: "img2.gif (/home/wharvey/tmp)">]
+
+ERROR: In procedure window-title in expression (window-title win):
+ERROR: need larger initial
+
+Backtrace:
+0* [#<procedure (win)> #<window 109051918: "img2.gif (/home/wharvey/tmp)">]
+1* [apply-style (#(#<procedure always? #> # #) #(#<procedure always? #> # ()) #(
+#<procedure #> # ()) ...) #<window 109051918: "img2.gif (/home/wharvey/tmp)">]
+2  [apply-style-internal (#(#<procedure always? #> # #) #(#<procedure always? #>
+ # ()) #(#<procedure #> # ()) ...) #<window 109051918: "img2.gif (/home/wharvey/
+tmp)"> ...]
+3  [for-each #<procedure (se)> (#(#<procedure always? #> # #) #(#<procedure alwa
+ys? #> # ()) #(#<procedure #> # ()) ...)]
+4* [#<procedure (se)> #(#<procedure always? (w)> (# # # ...) (# # # ...))]
+5* (if ((style-entry:condition se) win) (for-each (lambda # #) (stype se)))
+6  [for-each #<procedure (o)> ((fg . "black") (bg . "grey76") (icon . #f) ...)]
+7* [#<procedure (o)> (fg . "black")]
+8* [set-window-foreground! "black" #<window 109051918: "img2.gif (/home/wharvey/
+tmp)">]
+
+ERROR: In procedure set-window-foreground! in expression ((style-option:handler 
+#) (cdr o) win):
+ERROR: Wrong type argument in position 1: ((((((((((#-1# (((#-1# ((#0#)) #-11# #
+-8# (#-13# #-16# ((#0#)) #-6# (#-19# (#-24# #-18# #-19# #-14# #-17# (#-22# (#-32
+# #-26# #-27# #-22# #-25# #-2# (#-9# #0# ((((#-42# #0# #-1# #-33# #-45# #-39# #-
+40# #-35# #-38# #-15# #-6# #-3# (#-57# #-54# #-41# ((#0#)) (#-56# #-53# #-58# #-
+57# #-63# #-51# #-19# #-18# #-60# #-39# #0# ((#0#)) #-46# #-59# #-62# ((#0#)) #-
+52# #-41# #-61# (((#0#)) #-20# #-59# #-80# #-38# #-39# #-71# #-83# #-77# #-78# #
+-73# #-76# #-53# #-44# #-41# #-25# (#0#)) #-55# #-31# #-20#) #-34# #-55# #-13# #
+--------
+By-window-resource group menus should auto-select the first window in
+the sub-menus (they currently require a motion event for the menu item to
+get highlighted).
+--------
 kept-on-top windows cannot be restacked relative to each other. I
 tried finding some quick fixes but they cause segfaults, thus this is
 something to fix by reconsidering all this code and implementing true
