@@ -319,11 +319,9 @@ initPanFrames()
 }
 
 
-/***************************************************************************
- *
- *  Moves the viewport within thwe virtual desktop
- *
- ***************************************************************************/
+/*
+ *  Moves the viewport within the virtual desktop
+ */
 void 
 MoveViewport(int newx, int newy, Bool grab)
 {

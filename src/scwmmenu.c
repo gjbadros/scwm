@@ -153,7 +153,6 @@ SCM
 menu_properties(SCM scmMenu)
 {
   Menu *pmenu = SAFE_MENU(scmMenu);
-  SCM rest;
   if (!pmenu) {
     scm_wrong_type_arg(s_menu_properties,1,scmMenu);
   }
@@ -347,7 +346,7 @@ SetPopupMenuPositionFromMenuItem(DynamicMenu *pmd,
     pmd->pmdi->x = cpixXmenu + cpixWidthMenu - 2;
   } else {
     /* pop to the left */
-    pmd->pmdi->x = cpixXmenu - cpixWidthNewMenu;
+    pmd->pmdi->x = cpixXmenu - cpixWidthNewMenu + pmdi->cpixSideImage;
   }
   pmd->pmdi->y = cpixYmenu + pmiimSelected->cpixOffsetY - 2;
   if (pmd->pmdi->y + pmdiNew->cpixHeight > Scr.MyDisplayHeight) {
@@ -615,8 +614,6 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   int fControlKey = Event->xkey.state & ControlMask? True : False;
   int fShiftedKey = Event->xkey.state & ShiftMask? True: False;
   KeySym keysym = XLookupKeysym(&Event->xkey,0);
-  int index = -1;
-  Menu *pmenu = pmd->pmenu;
   MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
   MenuItemInMenu *pmiimNewItem = NULL;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim;
@@ -628,7 +625,6 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   if (isascii(keysym) && isgraph(keysym) && fControlKey == False) { 
     /* allow any printable character to be a keysym, but be sure control
        isn't pressed */
-    MenuItemInMenu *pmiim;
     int ipmiim = 0;
     keysym = tolower(keysym);
     /* Search menu for matching hotkey */
@@ -752,23 +748,37 @@ static
 void
 WarpPointerToPmiim(MenuItemInMenu *pmiim)
 {
-  DynamicMenu *pmd = pmiim->pmd;
-  MenuDrawingInfo *pmdi = pmd->pmdi;
+  DynamicMenu *pmd; 
+  MenuDrawingInfo *pmdi;
+  int x, y;
+
+  if (!pmiim)
+    return;
+
+  pmd = pmiim->pmd;
+  pmdi = pmd->pmdi;
+
   /* FIXGJB: make fraction of menu that pointer goes to configurable */
-  int x = 2*(pmdi->cpixWidth - pmdi->cpixItemOffset)/3;
-  int y = pmiim->cpixOffsetY + pmiim->cpixItemHeight/2;
+  x = 2*(pmdi->cpixWidth - pmdi->cpixItemOffset)/3;
+  y = pmiim->cpixOffsetY + pmiim->cpixItemHeight/2;
   XWarpPointer(dpy, 0, pmdi->w, 0, 0, 0, 0, x, y);
 }
 
 static
 SCM
-MenuInteraction(DynamicMenu *pmd)
+MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 {
   int c10ms_delays = 0;
   SCM scmAction = SCM_UNDEFINED;
   MenuItemInMenu *pmiim = NULL;
   int cpixXoffsetInMenu = 0;
   Bool fGotMouseMove = False;
+
+  /* Warp the pointer to the first menu item
+     (perhaps selected if the keyboard was used to pop up this menu) */
+  if (fWarpToFirst)
+    WarpPointerToPmiim(PmiimStepItems(pmd->rgpmiim[0],0,+1));
+
   /* FIXGJB: need to make initial item selection */
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
@@ -819,7 +829,7 @@ MenuInteraction(DynamicMenu *pmd)
 	  /* GJBFIX: this spews a lot if you pop up a menu, don't move
 	     the mouse, and release. Commenting out for now. */
 #if 0
-	  scwm_msg(WARN,__FUNCTION__,"Pointer not in selected item -- wierd!");
+	  scwm_msg(WARN,__FUNCTION__,"Pointer not in selected item -- weird!");
 #endif
 	} else {
 	  scmAction = pmiim->pmi->scmAction;
@@ -1034,13 +1044,12 @@ InitializeDynamicMenu(DynamicMenu *pmd)
   pmd->cmiim = ipmiim;
   pmd->ipmiimSelected = -1;
 
+  /*
   if (!pmd->pmenu->pchUsedShortcutKeys) {
-    /* we might not want this optimization, and instead should 
-       if non-null,
-       free(pmd->pmenu->pchUsedShortcutKeys); 
-       and then reassign as below --12/12/97 gjb */
-    pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
-  }
+  */
+  /* we choose to not use this optimization for now */
+  free(pmd->pmenu->pchUsedShortcutKeys); 
+  pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
 }
 
 static
@@ -1087,7 +1096,7 @@ PopdownAllPriorMenus(DynamicMenu *pmd)
 
 static 
 void
-PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom)
+PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
 {
   DynamicMenu *pmd = NewDynamicMenu(pmenu,pmdPoppedFrom);
   int cpixX_startpointer;
@@ -1100,7 +1109,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom)
   
   PopupMenu(pmd);
   GrabEm(CURSOR_MENU);
-  scmAction = MenuInteraction(pmd);
+  scmAction = MenuInteraction(pmd, fWarpToFirst);
   UngrabEm();
   PopdownMenu(pmd);
   PopdownAllPriorMenus(pmd);
@@ -1110,21 +1119,25 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom)
     call_thunk_with_message_handler(scmAction);
   } else if (DYNAMIC_MENU_P(scmAction)) {
     /* FIXGJB: is this recursion  bad? */
-    popup_menu(scmAction);
+    popup_menu(scmAction, fWarpToFirst?SCM_BOOL_T:SCM_BOOL_F);
   }
 }
 
-SCM_PROC(s_popup_menu,"popup-menu", 1,0,0, popup_menu);
+SCM_PROC(s_popup_menu,"popup-menu", 1,1,0, popup_menu);
 
 SCM 
-popup_menu(SCM menu)
+popup_menu(SCM menu, SCM warp_to_first)
 {
+  Bool fWarpToFirst = False;
   /* permit 'menu to be used, and look up dynamically */
   DEREF_IF_SYMBOL(menu);
   if (!MENU_P(menu)) {
     scm_wrong_type_arg("popup-menu", 1, menu);
   }
-  PopupGrabMenu(MENU(menu),NULL);
+  if (warp_to_first == SCM_BOOL_T)
+    fWarpToFirst = True;
+  /* FIXGJB: how can we tell if keybd was used to invoke this command? */
+  PopupGrabMenu(MENU(menu),NULL,fWarpToFirst);
   return SCM_UNSPECIFIED;
 }
 

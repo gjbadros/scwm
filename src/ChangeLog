@@ -1,3 +1,30 @@
+Sat Mar 21 16:50:57 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* drawmenu.c (ConstructDynamicMenu): Save the side image width in
+	pmdi->cpixSideImage
+
+	* scwmmenu.c (popup_menu): Added an optional second argument
+	"warp-to-first" that says whether we want to warp to the first
+	menu item on popup
+
+	* scwmmenu.c (InitializeDynamicMenu): Fixed bug where keyboard
+	shortcuts only worked the first time the menu was popped up
+
+	* scwmmenu.c (MenuInteraction): Added fWarpToFirst argument,
+	intended to be passed True from popup-menu (as second arg) when
+	bound to a keyboard shortcut;  makes the popped-up menu's first
+	item get selected initially
+
+	* scwmmenu.c (WarpPointerToPmiim): Check for null pmiim, and do
+	not core dump if is null.
+
+	* scwmmenu.c (SetPopupMenuPositionFromMenuItem): Make left-side
+ 	menu popups overlap with the side image, if any (instead of being
+ 	completely to the left of the current menu).
+
+	* drawmenu.c (ConstructDynamicMenu): Save the size of the side
+ 	image in the MenuDrawingInfo struct. 
+
 Fri Mar 20 21:05:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.in: Do not use touch to create the .x files before

@@ -36,6 +36,7 @@ typedef struct MenuDrawingInfo_tag
   int cpixLeftPicWidth;		/* how wide are the left images */
   int cpixTextWidth;		/* how wide are the text items */
   int cpixExtraTextWidth;	/* how wide are the text items */
+  int cpixSideImage;		/* how wide is the side image */
   /* cpixItemOffset + ccol * cpixItemWidth == cpixWidth */
   Pixel BGColor;		/* the background color */
   Pixel SideBGColor;		/* the side image bg color */
@@ -104,6 +105,6 @@ SCM make_menu(SCM list_of_menuitems,
 void init_menu();
 void menu_init_gcs();
 
-SCM popup_menu(SCM menu);
+SCM popup_menu(SCM menu, SCM warp_to_first);
 
 #endif

@@ -56,7 +56,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
   { /* scope */
     Menu *pmenu = pmd->pmenu;
     scwm_image *psimgSide = SAFE_IMAGE(pmenu->scmImgSide);
-    scwm_image *psimgBackground = SAFE_IMAGE(pmenu->scmImgBackground); 
+    /*    scwm_image *psimgBackground = SAFE_IMAGE(pmenu->scmImgBackground);  */
     XFontStruct *pxfont;
     MenuItemInMenu **rgpmiim = pmd->rgpmiim;
 
@@ -141,7 +141,8 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     /* Handle the side image, if any */
     pmdi->cpixItemOffset = MENU_ITEM_RR_SPACE + MENU_EDGE_HORIZ_SPACING;
     if (psimgSide) {
-      pmdi->cpixItemOffset += psimgSide->width + MENU_SIDE_IMAGE_SPACING;
+      pmdi->cpixSideImage = psimgSide->width + MENU_SIDE_IMAGE_SPACING;
+      pmdi->cpixItemOffset += pmdi->cpixSideImage;
     }
 
     total_height += MENU_EDGE_VERT_SPACING;
@@ -274,7 +275,7 @@ DrawUnderline(Window w, XFontStruct *pxfont, GC gc, char *sz, int x, int y, int 
 void
 PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 {
-  Menu *pmenu = pmd->pmenu;
+  /*  Menu *pmenu = pmd->pmenu; */
   MenuDrawingInfo *pmdi = pmd->pmdi;
   XFontStruct *pxfont = pmdi->pxfont;
   MenuItem *pmi = pmiim->pmi;
