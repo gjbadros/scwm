@@ -10,19 +10,9 @@
 #include <config.h>
 #endif
 
-#include <X11/X.h>
-#include <X11/Intrinsic.h>
-/*
-SCM set_drawing_mask_x( SCM value );
-
-SCM xlib_draw_rectangle_x( SCM x, SCM y, SCM width, SCM height );
-SCM xlib_draw_line_x( SCM x1, SCM y1, SCM x2, SCM y2 );
-SCM xlib_draw_arc_x( SCM x, SCM y, SCM width, SCM height, SCM angle1, SCM angle2 );
-SCM xlib_set_line_width_x( SCM width );
-SCM xlib_set_fill_style_x( SCM style );
-*/
-void init_drawing_gcs();
-void init_drawing();
+/* No externally exported functions-- just relies
+   on the guile magic to call scm_init_app_scwm_xlib_drawing_module 
+   from drawing.c */
 
 #endif
 

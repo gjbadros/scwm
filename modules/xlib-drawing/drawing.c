@@ -14,10 +14,11 @@
 #endif
 
 #include <stdio.h>
+#include <X11/X.h>
+#include <X11/Intrinsic.h>
 #include <X11/keysym.h>
 
 #include "drawing.h"
-
 #include "scwm.h"
 #include "screen.h"
 #include "xmisc.h"
