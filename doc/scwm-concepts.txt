@@ -86,7 +86,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From scwm/binding.c:658]
+[From scwm/binding.c:704]
 
 
 Face Flags
@@ -279,7 +279,7 @@ register other image loaders using the extension or the special string
 "default" for the loader to be tried for an image that cannot be
 loaded any other way.
 
-[From scwm/image.c:220]
+[From scwm/image.c:233]
 
 
 Images

@@ -335,7 +335,7 @@ PROC is a procedure that will be invoked (with no arguments) when the
 specified key is pressed in the specified context. The optional
 argument RELEASE-PROC, if specified, is a procedure that will be
 invoked when the key is released.
-[From scwm/binding.c:824]
+[From scwm/binding.c:870]
 
 
 (bind-keycode contexts keycode modifier-mask proc #&optional release-proc)
@@ -348,7 +348,7 @@ specified key is pressed in the specified context.
 RELEASE-PROC is a procedure that will be invoked (with no arguments) when the
 specified key is released in the specified context, or #f or omitted if
 nothing should be done on key release.
-[From scwm/binding.c:893]
+[From scwm/binding.c:939]
 
 
 (bind-mouse contexts button proc)
@@ -358,7 +358,7 @@ CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
 PROC is a procedure that will be invoked (with no arguments) when the
 specified button is pressed in the specified context.
-[From scwm/binding.c:947]
+[From scwm/binding.c:993]
 
 
 (bind-three-modifier-key-events 
@@ -640,7 +640,7 @@ name will change, for example if you alter the image file or change
 your image path. For this unlikely eventuality,
 `clear-image-cache-entry' is provided - it removes the image
 associated with NAME from the image cache.
-[From scwm/image.c:601]
+[From scwm/image.c:614]
 
 
 (clear-window-style)
@@ -698,7 +698,7 @@ case-sensitive or not.
 (clone-scaled-image image width height)
 - Built-in Primitive
 Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT.
-[From scwm/image.c:651]
+[From scwm/image.c:664]
 
 
 (close-all-xlogo-windows)
@@ -961,7 +961,7 @@ The default behaviour when WIN is selected from the window list.
 - (app scwm defoption)
 Helper procedure for `define-scwm-option'.
 See `define-scwm-option'.
-[From scheme/defoption.scm:99]
+[From scheme/defoption.scm:100]
 
 
 (deiconify  #&optional win x y)
@@ -1100,7 +1100,7 @@ returns the constraint
 
 
 (display-message-briefly msg #&optional (sec-timeout 3))
-- 
+- (app scwm message-window)
 Display MSG in the message window for SEC-TIMEOUT seconds.
 See `display-message' for details about MSG.
 [From scheme/message-window.scm:261]
@@ -1141,6 +1141,15 @@ an ui-constraint.
 Draw a box in the overlay plane.
 This is just for demonstration and testing purposes for now.
 [From modules/overlay-plane/overlay-plane.c:99]
+
+
+(dummy-prompt-hbox prompt initval)
+- (app scwm preferences)
+Create and return a dummy-prompting hbox and entry.
+PROMPT is the prompt, and INITVAL is the initial string.
+The returned value is a list: (hbox getter entry).
+See also `prompt-string'.
+[From scheme/preferences.scm:128]
 
 
 (edge-move-threshold)
@@ -1226,6 +1235,13 @@ unknown.
 [From modules/esdsound/sound.c:118]
 
 
+(eval-after-load module proc)
+- 
+Run PROC after MODULE is loaded.
+Run PROC immediately if MODULE has already been loaded.
+[From scheme/minimal.scm:110]
+
+
 (eval-fvwm-command command #&optional (fmod #f) 
 				   (window #f))
 - 
@@ -1246,7 +1262,7 @@ Return a procedure that, when invoked, executes COMMAND in the background.
 (exe-on-selection command)
 - (app scwm std-menus)
 Return a procedure that runs COMMAND in the background on the X selection.
-[From scheme/std-menus.scm:37]
+[From scheme/std-menus.scm:38]
 
 
 (execute command)
@@ -1262,7 +1278,7 @@ to the process id.
 (execute-on-selection command)
 - (app scwm std-menus)
 Run COMMAND in the background, with arguments supplied by the X selection.
-[From scheme/std-menus.scm:33]
+[From scheme/std-menus.scm:34]
 
 
 (execute-with-pidprop command)
@@ -1384,12 +1400,12 @@ specified. Note that WIN is not raised by giving it the focus;  see
 
 
 (fold-menu-list
-		ml #&optional (max-lines default-menu-max-fold-lines))
+		ml #&optional (max-lines (scwm-option-get *menu-max-fold-lines*)))
 - (app scwm menus-extras)
 Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
 defaults to `default-menu-max-fold-lines'.
-[From scheme/menus-extras.scm:55]
+[From scheme/menus-extras.scm:58]
 
 
 (fold-menu-list-by-group ml-cons)
@@ -1399,7 +1415,7 @@ ML-CONS is a list of lists. Each sublist's car is the name of the
 group, and the cdr is a list of the menuitems for that group.
 The list must be sorted by GROUP.  Returns a list of menu items
 for each group, popping up the group's MENUITEMs.
-[From scheme/menus-extras.scm:80]
+[From scheme/menus-extras.scm:83]
 
 
 (font-properties font)
@@ -1544,26 +1560,27 @@ Return the input-hooks list.
 [From scwm/callbacks.c:814]
 
 
-(get-key-event  #&optional async-mouse async-keyboard)
+(get-key-event)
 - Built-in Primitive
 Return a string representing the next key event.
-If ASYNC-MOUSE is #t, mouse events are treated asynchronously.
-If ASYNC-KEYBOARD is #t, keyboard events are treated asynchronously.
-A non-modifier key must be pressed before it is considered an event.
-This has never been functioning and needs work to make right.
-[From scwm/miscprocs.c:725]
+The string is usable as a key binding string.  Modifiers
+are listed first, separated by "-" followed by a "-" and the
+keysym name.  E.g., "S-C-M-z" is Shift+Control+Meta + 'z' key.
+If the event is only modifier keys, then the string will
+end in a "-"; e.g., "S-C-M-"
+[From scwm/miscprocs.c:724]
 
 
 (get-proplist-with-description desc)
 - Primitive from (app scwm proplist)
 Return a property list by parsing DESC in GNUstep proplist format.
-[From modules/proplist/scwmproplist.c:890]
+[From modules/proplist/scwmproplist.c:889]
 
 
 (get-proplist-with-path filename)
 - Primitive from (app scwm proplist)
 Return the proplist from path FILENAME.
-[From modules/proplist/scwmproplist.c:872]
+[From modules/proplist/scwmproplist.c:871]
 
 
 (get-timer-hooks-list)
@@ -1929,6 +1946,12 @@ See `image-properties' for a list of the keys.
 [From scheme/base.scm:530]
 
 
+(image-size image)
+- Built-in Primitive
+Return the size of IMAGE as a list (width height).
+[From scwm/image.c:194]
+
+
 (image? obj)
 - Built-in Primitive
 Returns #t if OBJ is an image object, otherwise #f.
@@ -2000,12 +2023,12 @@ Insert STATE into the undo list at undo-index.
 
 (interactive-move 
 		 #&optional (win (get-window #t #f #f))
-		 (opaquely? (if win (move-opaquely? win))))
+		 (opaquely? (if win ((scwm-option-get *move-opaquely-proc*) win))))
 - (app scwm winops)
 Move WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
 should be moved opaquely, or using a rubber-band. If it is not
-spcified, `interactive-move' calls `move-opaquely?' on WIN and moves
+spcified, `interactive-move' calls `*move-opaquely-proc*' on WIN and moves
 opaquely if that returns #t and uses a rubber-band if it returns #f.
 [From scheme/winops.scm:228]
 
@@ -2021,7 +2044,7 @@ will move along.
 (interactive-move-window-with-focus)
 - (app scwm flux)
 Interactively move the window which currently has the focus.
-`move-opaquely?' is used to control whether a rubberband
+`*move-opaquely-proc*' is used to control whether a rubberband
 outline or the window itself is moved.
 [From scheme/flux.scm:39]
 
@@ -2070,12 +2093,12 @@ No documentation supplied.
 
 (interactive-resize 
 		 #&optional (win (get-window #t #f #f))
-		 (opaquely? (if win (resize-opaquely? win))))
+		 (opaquely? (if win ((scwm-option-get *resize-opaquely-proc*) win))))
 - (app scwm winops)
 Resize WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
 should be resized opaquely, or using a rubber-band. If it is not
-spcified, `interactive-resize' calls `resize-opaquely?' on WIN and
+spcified, `interactive-resize' calls `*resize-opaquely-proc*' on WIN and
 moves opaquely if that returns #t and uses a rubber-band if it returns
 #f.
 [From scheme/winops.scm:238]
@@ -2084,7 +2107,7 @@ moves opaquely if that returns #t and uses a rubber-band if it returns
 (interactive-resize-window-with-focus)
 - (app scwm flux)
 Interactively resize the window which currently has the focus.
-`resize-opaquely?' is used to control whether a rubberband
+`*resize-opaquely-proc*' is used to control whether a rubberband
 outline or the window itself is resized.
 [From scheme/flux.scm:45]
 
@@ -2256,12 +2279,19 @@ of the directions.
 [From scheme/key-mover.scm:28]
 
 
+(keymask-keycode->string keymask keycode)
+- Built-in Primitive
+Return a string representing the key press with mask KEYMASK, code KEYCODE.
+E.g., (keymask-keycode->string 4 44) => "C-j".
+[From scwm/binding.c:1189]
+
+
 (keysym->keycode keysym-name)
 - Built-in Primitive
 Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
 KEYSYM-NAME should be a string.  E.g., "Control_L".  Return #f if KEYSYM-NAME
 is not a valid keysym.
-[From scwm/binding.c:762]
+[From scwm/binding.c:808]
 
 
 (kill-all-fvwm2-modules)
@@ -2381,7 +2411,7 @@ No documentation supplied.
 (load-imlib-image full-path)
 - Built-in Primitive
 Load an image file using imlib identified by the pathname FULL-PATH.
-[From scwm/image.c:330]
+[From scwm/image.c:343]
 
 
 (load-preferences #&optional 
@@ -2391,7 +2421,7 @@ Load FILENAME to restore the Scwm preferences.
 Since the options file is just a bunch of S-expressions,
 this currently just `load's the file to evaluate it.
 Returns #t iff the load was successful, false otherwise.
-[From scheme/preferences.scm:434]
+[From scheme/preferences.scm:466]
 
 
 (load-theme fname)
@@ -2411,13 +2441,13 @@ No documentation supplied.
 (load-xbm full-path)
 - Built-in Primitive
 Load an X Bitmap file identified by the pathname FULL-PATH.
-[From scwm/image.c:229]
+[From scwm/image.c:242]
 
 
 (load-xpm full-path)
 - Built-in Primitive
 Load an X Pixmap file identified by the pathname FULL-PATH.
-[From scwm/image.c:263]
+[From scwm/image.c:276]
 
 
 (lower-by-one #&optional (w (get-window)))
@@ -2465,7 +2495,7 @@ No documentation supplied.
 - (app scwm std-menus)
 Create a menu of actions applicable to the filename in the X selection.
 The selection must contain a single full pathname.
-[From scheme/std-menus.scm:124]
+[From scheme/std-menus.scm:135]
 
 
 (make-decor  #&optional name)
@@ -2507,7 +2537,7 @@ To use this, add the following to the menu of your choice:
 An optional USER argument specifies the user to telnet as.
 The element of the list of hosts can be a host (in which case telnet is
 used) or a cons of (host . command).
-[From scheme/std-menus.scm:88]
+[From scheme/std-menus.scm:89]
 
 
 (make-image name)
@@ -2517,7 +2547,7 @@ To load the image, the appropriate image loaders will be invoked as
 needed. If NAME starts with "/", "./" or "../", it is treated as a
 fully qualified pathname; otherwise, the image path is searched for an
 appropriate file.
-[From scwm/image.c:531]
+[From scwm/image.c:544]
 
 
 (make-list n . init)
@@ -2587,6 +2617,14 @@ Return a new message window that has the default style.
 This is done by cloning the style (see `message-window-style') of
 the variable `default-message-window'.
 [From scheme/message-window.scm:237]
+
+
+(make-message-window-win-copy #&optional (win 'root-window))
+- (app scwm message-window)
+Return a message window with a background that is a copy of the image in WIN.
+The message-window will have no text and no relief, and be the same size
+as WIN.
+[From scheme/message-window.scm:269]
 
 
 (make-relief-color color factor)
@@ -2700,7 +2738,7 @@ not a ui-constraint-class.  Calls make-ui-constraint (see above).
 		 (wmconfig-dir default-wmconfig-dir))
 - 
 Return a menu object for the window-manager configuration menu.
-[From scheme/wmconfig-menu.scm:93]
+[From scheme/wmconfig-menu.scm:95]
 
 
 (make-xlock-menu #&optional (lock? #f))
@@ -2709,7 +2747,7 @@ Create an xlock menu.
 To use this, add the following to the menu of your choice:
    (menuitem "Screensaver" #:action (make-xlock-menu #f))
 or (menuitem "Lock Screen" #:action (make-xlock-menu #t))
-[From scheme/std-menus.scm:74]
+[From scheme/std-menus.scm:75]
 
 
 (map-in-order proc first . rest)
@@ -2790,7 +2828,7 @@ specific to the menu look used for this menu.
 (menu-global-theme #&optional force?)
 - 
 No documentation supplied.
-[From scheme/std-menus.scm:156]
+[From scheme/std-menus.scm:167]
 
 
 (menu-highlight-colors menu)
@@ -2833,7 +2871,7 @@ Return #t if OBJ is a menulook object, #f otherwise.
 (menu-max-fold-lines)
 - (app scwm menus-extras)
 Return an approximation of the number of menuitems that will fit vertically on screen.
-[From scheme/menus-extras.scm:30]
+[From scheme/menus-extras.scm:31]
 
 
 (menu-popup-delay menu)
@@ -2894,7 +2932,7 @@ except the font defaults to `*menu-title-font*' instead of
 (menu-window-theme #&optional force?)
 - (app scwm std-menus)
 No documentation supplied.
-[From scheme/std-menus.scm:145]
+[From scheme/std-menus.scm:156]
 
 
 (menu? obj)
@@ -3155,7 +3193,7 @@ Modify the current desktop size by the given parameter.
 Return the bit-mask for the Alt modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Alt, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1098]
+[From scwm/binding.c:1144]
 
 
 (mod-mask-control)
@@ -3163,7 +3201,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Control modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Control, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1082]
+[From scwm/binding.c:1128]
 
 
 (mod-mask-hyper)
@@ -3171,7 +3209,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Hyper modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Hyper, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1106]
+[From scwm/binding.c:1152]
 
 
 (mod-mask-meta)
@@ -3179,7 +3217,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Meta modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Meta, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1090]
+[From scwm/binding.c:1136]
 
 
 (mod-mask-shift)
@@ -3187,7 +3225,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Shift modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Shift, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1074]
+[From scwm/binding.c:1120]
 
 
 (mod-mask-super)
@@ -3195,7 +3233,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Super modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Super, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1115]
+[From scwm/binding.c:1161]
 
 
 (module-and-proc-names->proc module-name proc-name)
@@ -3218,7 +3256,7 @@ Return a symbol corresponding to the type of the most recent mouse event.
 Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.
 You can `case' on this symbol in a procedure bound to a mouse event
 to determine, e.g., whether the user single clicked or double clicked.
-[From scwm/binding.c:1061]
+[From scwm/binding.c:1107]
 
 
 (mouse-focus-click-raises?)
@@ -3523,13 +3561,13 @@ place.
 (option-menu sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:166]
+[From scheme/preferences.scm:188]
 
 
 (option-widget-and-getter sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:128]
+[From scheme/preferences.scm:147]
 
 
 (or-map proc first . rest)
@@ -3672,7 +3710,7 @@ This positions the popup menu appropriately.
 (popup-option-menu sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:193]
+[From scheme/preferences.scm:215]
 
 
 (popup-ui-constraints-gtk-toggle-menu)
@@ -3711,7 +3749,7 @@ See also `next-window'.
 (print-window #&optional (win (get-window)))
 - (app scwm winops)
 Print WIN using xpr and lpr.
-[From scheme/winops.scm:261]
+[From scheme/winops.scm:255]
 
 
 (printable-char->keysym-string char)
@@ -3725,13 +3763,15 @@ use by `send-key-press'.  See also `X-synthetic-send-string'.
 (process-use-scwm-module module)
 - 
 No documentation supplied.
-[From scheme/minimal.scm:91]
+[From scheme/minimal.scm:117]
 
 
 (process-use-scwm-modules module-list)
 - 
-No documentation supplied.
-[From scheme/minimal.scm:104]
+Returns a list of all the modules loaded in successfully.
+Modules that failed to load have #f in their place in the
+list instead of the module.
+[From scheme/minimal.scm:133]
 
 
 (program-exists? program-name)
@@ -3930,75 +3970,75 @@ See also `X-PropertyNotify-hook'.  Currently handles
 (proplist-append-array-element pl-array item)
 - Primitive from (app scwm proplist)
 Return the PL-ARRAY after appending ITEM to the end.
-[From modules/proplist/scwmproplist.c:300]
+[From modules/proplist/scwmproplist.c:299]
 
 
 (proplist-deep-copy pl)
 - Primitive from (app scwm proplist)
 Return a deep copy of property list PL.
-[From modules/proplist/scwmproplist.c:376]
+[From modules/proplist/scwmproplist.c:375]
 
 
 (proplist-delete-domain pl-domain-name kick-me?)
 - Primitive from (app scwm proplist)
 Delete domain PL-DOMAIN-NAME.
 If KICK-ME? is #f, any callback registered for the domain will not be called.
-[From modules/proplist/scwmproplist.c:758]
+[From modules/proplist/scwmproplist.c:757]
 
 
 (proplist-get-all-dictionary-keys pl-dict)
 - Primitive from (app scwm proplist)
 Return a proplist array object that contains all the keys of PL-DICT.
-[From modules/proplist/scwmproplist.c:509]
+[From modules/proplist/scwmproplist.c:508]
 
 
 (proplist-get-array-element pl index)
 - Primitive from (app scwm proplist)
 Return the element at INDEX offset of PL.
-[From modules/proplist/scwmproplist.c:478]
+[From modules/proplist/scwmproplist.c:477]
 
 
 (proplist-get-container pl)
 - Primitive from (app scwm proplist)
 Return the array or dictionary of which PL is an element.
-[From modules/proplist/scwmproplist.c:465]
+[From modules/proplist/scwmproplist.c:464]
 
 
 (proplist-get-data pl)
 - Primitive from (app scwm proplist)
 Returns the raw data from PL (a data proplist object) as a string.
-[From modules/proplist/scwmproplist.c:586]
+[From modules/proplist/scwmproplist.c:585]
 
 
 (proplist-get-data-description pl)
 - Primitive from (app scwm proplist)
 Returns a description of PL (a data proplist object) in GNUstep format.
-[From modules/proplist/scwmproplist.c:563]
+[From modules/proplist/scwmproplist.c:562]
 
 
 (proplist-get-dictionary-entry pl-dict key)
 - Primitive from (app scwm proplist)
 Return the proplist dictionary entry associated with entry KEY in PL-DICT.
 Returns #f if KEY is not in PL-DICT.
-[From modules/proplist/scwmproplist.c:523]
+[From modules/proplist/scwmproplist.c:522]
 
 
 (proplist-get-domain pl-domain-name)
 - Primitive from (app scwm proplist)
 Return a property list represeting the domain PL-DOMAIN-NAME.
-[From modules/proplist/scwmproplist.c:775]
+[From modules/proplist/scwmproplist.c:774]
 
 
 (proplist-get-domainnames)
 - Primitive from (app scwm proplist)
 Return a array proplist containing all registered domain names.
-[From modules/proplist/scwmproplist.c:788]
+[From modules/proplist/scwmproplist.c:787]
 
 
 (proplist-get-filename pl)
 - Primitive from (app scwm proplist)
 Return the filename of PL.
-[From modules/proplist/scwmproplist.c:800]
+[From modules/proplist/scwmproplist.c:799]
 
 
 (proplist-get-number-of-elements pl)
@@ -4007,7 +4047,7 @@ Return the number of elements in PL.
 If PL is a string or data objects, this returns 0.  If it
 is an array or dictionary, it is the number of elements
 or pairs.
-[From modules/proplist/scwmproplist.c:494]
+[From modules/proplist/scwmproplist.c:493]
 
 
 (proplist-get-string pl)
@@ -4015,7 +4055,7 @@ or pairs.
 Returns the string from PL (a string proplist object).
 Note that numerous procedures automatically convert string
 proplist objects into Guile strings, so this may not often be necessary.
-[From modules/proplist/scwmproplist.c:612]
+[From modules/proplist/scwmproplist.c:611]
 
 
 (proplist-get-string-description pl)
@@ -4023,43 +4063,43 @@ proplist objects into Guile strings, so this may not often be necessary.
 Retuns a description of PL (a string proplist object) in GNUstep format.
 If the string contains whitespace or special characters, the string returned will
 be enclosed in quotes.
-[From modules/proplist/scwmproplist.c:539]
+[From modules/proplist/scwmproplist.c:538]
 
 
 (proplist-insert-array-element pl-array item index)
 - Primitive from (app scwm proplist)
 Return the PL-ARRAY after inserting ITEM at offset INDEX.
-[From modules/proplist/scwmproplist.c:282]
+[From modules/proplist/scwmproplist.c:281]
 
 
 (proplist-insert-dictionary-entry pl-dict key Value)
 - Primitive from (app scwm proplist)
 Return PL-DICT after inserting (KEY,VALUE) into it.
-[From modules/proplist/scwmproplist.c:316]
+[From modules/proplist/scwmproplist.c:315]
 
 
 (proplist-is-array pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is an array proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:658]
+[From modules/proplist/scwmproplist.c:657]
 
 
 (proplist-is-compound pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is a dictionary or array proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:694]
+[From modules/proplist/scwmproplist.c:693]
 
 
 (proplist-is-data pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is a data proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:646]
+[From modules/proplist/scwmproplist.c:645]
 
 
 (proplist-is-dictionary pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is a dictionary proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:670]
+[From modules/proplist/scwmproplist.c:669]
 
 
 (proplist-is-equal plA plB)
@@ -4067,19 +4107,19 @@ Return #t iff PL is a dictionary proplist object, #f otherwise.
 Return #t iff PLA is equal to PLB.
 This does a case sensitive comparison by default.
 See `proplist-set-string-cmp-hook' for changing the behaviour.
-[From modules/proplist/scwmproplist.c:389]
+[From modules/proplist/scwmproplist.c:388]
 
 
 (proplist-is-simple pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is a string or data proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:682]
+[From modules/proplist/scwmproplist.c:681]
 
 
 (proplist-is-string pl)
 - Primitive from (app scwm proplist)
 Return #t iff PL is a string proplist object, #f otherwise.
-[From modules/proplist/scwmproplist.c:634]
+[From modules/proplist/scwmproplist.c:633]
 
 
 (proplist-make-array-from-elements  . items)
@@ -4093,57 +4133,57 @@ Return a newly created array object populated with elements ITEMS.
 Return a proplist argument containing arbitrary data from DATA.
 This is often unnecessary as the proplist procedures will
 permit Guile strings to be used anywhere a string proplist object is expected.
-[From modules/proplist/scwmproplist.c:444]
+[From modules/proplist/scwmproplist.c:443]
 
 
 (proplist-make-dictionary-from-entries  . items)
 - Primitive from (app scwm proplist)
 Return a newly created dictionary object with elements ITEMS.
 The elements in ITEMS should be a flat list (key1 value1 key2 value2 ...).
-[From modules/proplist/scwmproplist.c:222]
+[From modules/proplist/scwmproplist.c:221]
 
 
 (proplist-merge-dictionaries pl-dict-dest pl-dict-source)
 - Primitive from (app scwm proplist)
 Return PL-DICT-DEST after merging in all entries from PL-DICT-SOURCE.
-[From modules/proplist/scwmproplist.c:348]
+[From modules/proplist/scwmproplist.c:347]
 
 
 (proplist-register pl-domain-name callback)
 - Primitive from (app scwm proplist)
 Register thunk CALLBACK to be called when PL-DOMAIN-NAME changes.
-[From modules/proplist/scwmproplist.c:719]
+[From modules/proplist/scwmproplist.c:718]
 
 
 (proplist-remove-array-element pl-array index)
 - Primitive from (app scwm proplist)
 Return PL-ARRAY after deleting the element at position INDEX.
-[From modules/proplist/scwmproplist.c:266]
+[From modules/proplist/scwmproplist.c:265]
 
 
 (proplist-remove-dictionary-entry pl-dict key)
 - Primitive from (app scwm proplist)
-Return PL-DICT after removing (KEY,VALUE) from it.
-[From modules/proplist/scwmproplist.c:333]
+Return PL-DICT after removing KEY and its corresponding value from it.
+[From modules/proplist/scwmproplist.c:332]
 
 
 (proplist-save pl atomically?)
 - Primitive from (app scwm proplist)
 Save PL, atomically if ATOMICALLY? is #t.
-[From modules/proplist/scwmproplist.c:844]
+[From modules/proplist/scwmproplist.c:843]
 
 
 (proplist-set-domain pl-domain-name value kick-me?)
 - Primitive from (app scwm proplist)
 Set PL-DOMAIN-NAME to have VALUE.
 If KICK-ME? is #f, any callback registered for the domain will not be called.
-[From modules/proplist/scwmproplist.c:739]
+[From modules/proplist/scwmproplist.c:738]
 
 
 (proplist-set-filename! pl filename)
 - Primitive from (app scwm proplist)
 Set the filename for PL to be FILENAME.
-[From modules/proplist/scwmproplist.c:813]
+[From modules/proplist/scwmproplist.c:812]
 
 
 (proplist-set-string-cmp-hook pred)
@@ -4151,25 +4191,25 @@ Set the filename for PL to be FILENAME.
 Use PRED as a predicate for doing proplist string comparisons.
 PRED should take two proplist objects and return #t or #f to answer
 whether they are equal in whatever sense it chooses.
-[From modules/proplist/scwmproplist.c:405]
+[From modules/proplist/scwmproplist.c:404]
 
 
 (proplist-shallow-copy pl)
 - Primitive from (app scwm proplist)
 Return a shallow copy of property list PL.
-[From modules/proplist/scwmproplist.c:363]
+[From modules/proplist/scwmproplist.c:362]
 
 
 (proplist-synchronize pl)
 - Primitive from (app scwm proplist)
-Synchronize the in-memory proplist PL with the disk contents
-[From modules/proplist/scwmproplist.c:859]
+Synchronize the in-memory proplist PL with the disk contents.
+[From modules/proplist/scwmproplist.c:858]
 
 
 (proplist-unregister pl-domain-name)
 - Primitive from (app scwm proplist)
 No longer invoke callback when domain associated with PL-DOMAIN-NAME is changed.
-[From modules/proplist/scwmproplist.c:706]
+[From modules/proplist/scwmproplist.c:705]
 
 
 (push-undo-global)
@@ -4333,7 +4373,7 @@ empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading). PROC will
 be called with the full pathname of the image and should return an
 image object, or #f if it succeeds.
-[From scwm/image.c:365]
+[From scwm/image.c:378]
 
 
 (remove-constraint-add-hook! hook)
@@ -4473,7 +4513,7 @@ Resize WIN's client area to a size of W by H in pixels.
 The size does not include the window decorations -- only the client
 application size. WIN defaults to the window context in the usual way
 if not specified.
-[From scheme/winops.scm:271]
+[From scheme/winops.scm:265]
 
 
 (resource-match?? STRING TYPE CASE-SENSITIVE?)
@@ -4642,7 +4682,7 @@ errors.
 Save the current Scwm preferences to FILENAME.
 FILENAME defaults to $HOME/.scwm-options if not specified.
 The string written is generated by `scwm-options-string'.
-[From scheme/preferences.scm:423]
+[From scheme/preferences.scm:455]
 
 
 (save-settings)
@@ -4678,58 +4718,70 @@ Return the timestamp of the last event Scwm handled.
 [From scwm/miscprocs.c:466]
 
 
+(scwm-module-loaded? module)
+- 
+Return #t iff MODULE has been loaded.
+[From scheme/minimal.scm:95]
+
+
 (scwm-option-documentation sym)
 - (app scwm defoption)
 Return the documentation for SYM.
-[From scheme/defoption.scm:134]
+[From scheme/defoption.scm:141]
 
 
 (scwm-option-favorites sym)
 - (app scwm defoption)
 Return the favorites for SYM.
-[From scheme/defoption.scm:154]
+[From scheme/defoption.scm:161]
 
 
 (scwm-option-getter sym)
 - (app scwm defoption)
 Return the getter for SYM.
-[From scheme/defoption.scm:144]
+[From scheme/defoption.scm:151]
 
 
 (scwm-option-group sym)
 - (app scwm defoption)
 Return the group for SYM.
-[From scheme/defoption.scm:159]
+[From scheme/defoption.scm:166]
 
 
 (scwm-option-layout-hint sym)
 - (app scwm defoption)
 Return the permit-disable flag for SYM.
-[From scheme/defoption.scm:169]
+[From scheme/defoption.scm:176]
+
+
+(scwm-option-module sym)
+- (app scwm defoption)
+Return the module in which option SYM was defined.
+[From scheme/defoption.scm:131]
 
 
 (scwm-option-name sym)
 - (app scwm defoption)
 Return the name of SYM.
-[From scheme/defoption.scm:129]
+[From scheme/defoption.scm:136]
 
 
 (scwm-option-permit-disable sym)
 - (app scwm defoption)
 Return the permit-disable flag for SYM.
-[From scheme/defoption.scm:164]
+[From scheme/defoption.scm:171]
 
 
 (scwm-option-range sym)
 - (app scwm defoption)
 Return the range for SYM.
-[From scheme/defoption.scm:149]
+[From scheme/defoption.scm:156]
 
 
 (scwm-option-setter sym)
 - (app scwm defoption)
 Return the setter for SYM.
-[From scheme/defoption.scm:139]
+[From scheme/defoption.scm:146]
 
 
 (scwm-option-short-documentation sym)
@@ -4741,19 +4793,19 @@ No documentation supplied.
 (scwm-option-symget sym)
 - 
 Get option SYM's value.
-[From scheme/defoption.scm:208]
+[From scheme/defoption.scm:215]
 
 
 (scwm-option-symset! sym value)
 - (app scwm defoption)
 Set option SYM to VALUE.
-[From scheme/defoption.scm:199]
+[From scheme/defoption.scm:206]
 
 
 (scwm-option-type sym)
 - (app scwm defoption)
 Return the type for SYM.
-[From scheme/defoption.scm:174]
+[From scheme/defoption.scm:181]
 
 
 (scwm-options-dialog)
@@ -4763,19 +4815,19 @@ You may need to use-modules all the modules that contain
 scwm-options to have this work for now.
 Put "(load-preferences)" in your .scwmrc where you
 want the saved preferences to take effect.
-[From scheme/preferences.scm:231]
+[From scheme/preferences.scm:253]
 
 
 (scwm-options-menu)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:210]
+[From scheme/preferences.scm:232]
 
 
 (scwm-options-notebook)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:272]
+[From scheme/preferences.scm:294]
 
 
 (scwm-options-notebook-page nb title syms)
@@ -4783,7 +4835,7 @@ No documentation supplied.
 Popup a scwm options dialog box.
 NOTE: Not quite functional, but I'm outta time!
 GJB:FIXME::.
-[From scheme/preferences.scm:285]
+[From scheme/preferences.scm:307]
 
 
 (scwm-options-string #&optional (syms scwm-options))
@@ -4795,7 +4847,7 @@ the options in the current session.  At present this means that if some
 modules are not loaded, those options will not be included.
 The returned string will contain multiple S-expressions, one for each Scwm preference
 value.
-[From scheme/preferences.scm:399]
+[From scheme/preferences.scm:426]
 
 
 (scwm-path-exec-prefix)
@@ -5247,13 +5299,6 @@ moves when the pointer hits the edge of the screen.  Use
 `%x' and `%y' to convert from a percentage of a screen
 dimension to a number of pixels.
 [From scheme/base.scm:632]
-
-
-(set-edge-scroll-delay val)
-- (app scwm edge-ops)
-Set edge-scroll-delay.  Overrides any temporary value due to
-edge-ops-scroll-backoff.
-[From scheme/edge-ops.scm:38]
 
 
 (set-edge-scroll-delay! ms)
@@ -5999,7 +6044,7 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
 - 
 Displays the X properties of WIN in a message window.
 WIN is a window object, an X window id, or 'root-window.
-[From scheme/flux.scm:397]
+[From scheme/flux.scm:398]
 
 
 (shutdown-options #&key switch-to-home-viewport
@@ -6121,13 +6166,13 @@ Returned LS sorted according to COMPARE (defaults to ascending numerical order).
 (sort-options-by-type symlist)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:265]
+[From scheme/preferences.scm:287]
 
 
 (sorted-by-car-string l)
 - (app scwm menus-extras)
 No documentation supplied.
-[From scheme/menus-extras.scm:37]
+[From scheme/menus-extras.scm:38]
 
 
 (sound-load file #&optional name)
@@ -6155,7 +6200,7 @@ SOUND must be an object returned by `sound-load'.
 (split-list-by-group ls #&optional (rest #f))
 - (app scwm menus-extras)
 No documentation supplied.
-[From scheme/menus-extras.scm:64]
+[From scheme/menus-extras.scm:67]
 
 
 (start-constraints)
@@ -6230,7 +6275,7 @@ No documentation supplied.
 Return a proplist object containing STRING.
 This is often unnecessary as the proplist procedures will
 permit Guile strings to be used anywhere a string proplist object is expected.
-[From modules/proplist/scwmproplist.c:425]
+[From modules/proplist/scwmproplist.c:424]
 
 
 (string->X-atom string)
@@ -6695,7 +6740,7 @@ way if not specified.
 Remove any bindings attached to KEY in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
-[From scwm/binding.c:730]
+[From scwm/binding.c:776]
 
 
 (unbind-mouse contexts button)
@@ -6703,7 +6748,7 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 Remove any bindings attached to mouse BUTTON in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
-[From scwm/binding.c:797]
+[From scwm/binding.c:843]
 
 
 (undo)
@@ -6771,7 +6816,7 @@ Unregister the loader, if any, for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
 empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading).
-[From scwm/image.c:391]
+[From scwm/image.c:404]
 
 
 (unselect-all-windows)
@@ -7027,7 +7072,7 @@ Return an image with the contents of window WIN.
 WIN can be a window id (as a long), a window object, or
 the symbol 'root-window. Captures the rectangle of the window
 at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT.
-[From scwm/image.c:618]
+[From scwm/image.c:631]
 
 
 (window-aligned-viewport win)
@@ -7530,6 +7575,15 @@ Return #t if WIN is skipped in the window list, #f otherwise.
 [From scheme/winlist.scm:107]
 
 
+(with-frozen-root-window thunk)
+- 
+Execute THUNK with a frozen root window.
+Creates an image containing the root window, and displays that
+image in a message window covering the entire screen.  Executes
+THUNK, then removes the message window.
+[From scheme/message-window.scm:280]
+
+
 (write-all port . lst)
 - (app scwm stringops)
 Write all arguments into the port. #t means `current-output-port'.
@@ -7610,7 +7664,7 @@ The length of the returned list is the number of buttons available.  Each
 element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
 3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
 physical button acts as logical button 1, and the leftmost acts as button 3.
-[From scwm/binding.c:1124]
+[From scwm/binding.c:1170]
 
 
 (X-properties win)

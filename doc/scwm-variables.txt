@@ -4,15 +4,6 @@ A menu-look that gives pie menus in a circular window.
 [From modules/pie-menus/draw-pie-menu.c:1356]
 
 
-context-map
-- (app scwm std-menus)
-An alist mapping filename patterns to applicable menu entries.
-Whenever the car (a regexp) matches a filename, the cdr is used to
-build a menuitem which is then added to the context menu.
-
-[From scheme/std-menus.scm:110]
-
-
 cursor-icon
 - 
 The cursor to use for icon windows, defaults to top_left_arrow. 
@@ -49,17 +40,10 @@ The cursor to use for set focus actions, defaults to hand2.
 [From scwm/cursor.c:316]
 
 
-default-menu-max-fold-lines
-- (app scwm menus-extras)
-The default number of items that menus are split into by `fold-menu-list'.
-
-[From scheme/menus-extras.scm:45]
-
-
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
-[From scwm/image.c:775]
+[From scwm/image.c:788]
 
 
 locale-fullname
@@ -74,36 +58,10 @@ The language territory name, as a string
 [From scwm/scwm.c:580]
 
 
-move-opaquely?
-- (app scwm winops)
-User-settable predicate to determine if windows should be moved opaquely.
-The procedure should take a single argument, the window.
-
-[From scheme/winops.scm:216]
-
-
 pie-menu-look
 - 
 A menu-look that gives pie menus in a rectangular window 
 [From modules/pie-menus/draw-pie-menu.c:1347]
-
-
-resize-opaquely?
-- (app scwm winops)
-User-settable predicate to determine if windows should be resized opaquely.
-The procedure should take a single argument, the window.
-
-[From scheme/winops.scm:222]
-
-
-samf-edge-scroll-delay
-- (app scwm edge-ops)
-Allow edge scrolling with no delay, after an initial scroll.  If
-#f, then this never happens.  If #t, then this always happens.  If
-#a number, then it's the time in milliseconds which, after no
-#scrolling has occured, the delay goes back to its original value.
-
-[From scheme/edge-ops.scm:32]
 
 
 scroll-region
