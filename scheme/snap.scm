@@ -35,15 +35,16 @@
 (define last-y -1)
 
 (define (wininfo win)
+  "Returns list (north-y east-x south-y west-x) for WIN."
   (let ((pos (window-viewport-position win))
         (size (window-frame-size win)))
     (list (cadr pos) (+ (car pos) (car size))
           (+ (cadr pos) (cadr size)) (car pos))))
 
-(define (wininfo-n wi) (car wi))
-(define (wininfo-e wi) (cadr wi))
-(define (wininfo-s wi) (caddr wi))
-(define (wininfo-w wi) (cadddr wi))
+(define wininfo-n car)
+(define wininfo-e cadr)
+(define wininfo-s caddr)
+(define wininfo-w cadddr)
 
 (define wininfo-x wininfo-w)
 (define wininfo-y wininfo-n)

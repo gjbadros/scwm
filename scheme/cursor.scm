@@ -4,6 +4,7 @@
 
 (define-module (app scwm cursor)
   :use-module (app scwm optargs)
+  :use-module (app scwm nonants)
   :use-module (app scwm defoption)
   )
 
@@ -33,4 +34,7 @@ X-HOTSPOT and Y-HOTSPOT can specify the hotspot coordinates for the cursor."
 	 (west . ,resize-h))))
 
 ;;; GJB:FIXME:: It'd be nice if this were a window-style
-(add-hook! after-new-window-hook apply-fancy-resize-cursors)
+(add-hook! startup-hook
+	   (lambda () 
+	     (add-hook! after-new-window-hook apply-fancy-resize-cursors)
+	     (for-each apply-fancy-resize-cursors (list-all-windows))))
