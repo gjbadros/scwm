@@ -48,6 +48,7 @@
 
 static SCM pie_menu_look = SCM_UNDEFINED;
 static SCM circle_pie_menu_look = SCM_UNDEFINED;
+static SCM shaped_pie_menu_look = SCM_UNDEFINED;
 extern SCM sym_top, sym_center, sym_bottom;
 
 /* FIXGJB: comment these! */
@@ -578,6 +579,7 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
 #endif
 
   if (pmd->pmdi->menu_look == circle_pie_menu_look) {
+    /* XXX this for shaped_pie_menu_look also? */
     XDrawArc(dpy, pmd->w, MenuReliefGC, 0, 0,
 	     pmd->cpixWidth, pmd->cpixHeight,
 	     45 * 64, (45 + 180) * 64);
@@ -590,7 +592,7 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
     XDrawArc(dpy, pmd->w, MenuReliefGC, 1, 1,
 	     pmd->cpixWidth-2, pmd->cpixHeight-2,
 	     (-135 * 64), 45 * 64);
-  } else {
+  } else if (pmd->pmdi->menu_look == pie_menu_look) {
     RelieveRectangle(pmd->w, 0, 0,
 		     pmd->cpixWidth, pmd->cpixHeight,
 		     MenuReliefGC, MenuShadowGC);
@@ -1128,7 +1130,8 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
       INCREASE_MAYBE(cpixOuterRadius, RADIUS_SQ(cpixX + cpixWidth, cpixY));
       INCREASE_MAYBE(cpixOuterRadius, RADIUS_SQ(cpixX, cpixY + cpixHeight));
       INCREASE_MAYBE(cpixOuterRadius, RADIUS_SQ(cpixX + cpixWidth, cpixY + cpixHeight));
-    } else {
+    } else if (menu_look == pie_menu_look ||
+	       menu_look == shaped_pie_menu_look) {
       DECREASE_MAYBE(cpixXMin, cpixX);
       INCREASE_MAYBE(cpixXMax, cpixX + cpixWidth);
       DECREASE_MAYBE(cpixYMin, cpixY);
@@ -1141,11 +1144,12 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
   cpixSideImage = 0;
 
   if (menu_look == circle_pie_menu_look) {
+    /* XXX for shaped_pie_menu_look too? */
     cpixOuterRadius = (int) (sqrt(cpixOuterRadius) + .5);
     cpixOuterRadius += MENU_PIE_BORDER;
     cpixXCenter = cpixOuterRadius;
     cpixYCenter = cpixOuterRadius;
-  } else {
+  } else if (menu_look == pie_menu_look) {
     psimgSide = DYNAMIC_SAFE_IMAGE(pmd->pmenu->scmImgSide);
     if (psimgSide) {
       cpixSideImage = psimgSide->width;
@@ -1159,6 +1163,9 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
 
     cpixXCenter = -cpixXMin;
     cpixYCenter = cpixYMax; /* Y is flipped */
+  } else if (menu_look == shaped_pie_menu_look) {
+    cpixXCenter = -cpixXMin;
+    cpixYCenter = cpixYMax;
   }
 
   /* And ONE MORE TIME, with emphasis - rearrange coordinates, in
@@ -1194,7 +1201,8 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
   if (menu_look == circle_pie_menu_look) {
     pmd->cpixWidth = 2 * cpixOuterRadius;
     pmd->cpixHeight = 2 * cpixOuterRadius;
-  } else {
+  } else if (menu_look == pie_menu_look ||
+	     menu_look == shaped_pie_menu_look) {
     pmd->cpixWidth = cpixXMax - cpixXMin;
     pmd->cpixHeight = cpixYMax - cpixYMin;
   }
@@ -1230,6 +1238,40 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
 	     0, 0, pmd->cpixWidth, pmd->cpixHeight, 0, 360*64);
     XShapeCombineMask(dpy, pmd->w, ShapeBounding, 0, 0, mask, ShapeSet);
     XFreePixmap(dpy, mask);
+  } else if (menu_look == shaped_pie_menu_look) {
+    Pixmap mask;
+    int cpixTop, cpixLeft, cpixBottom, cpixRight;
+    
+    mask = XCreatePixmap(dpy, Scr.Root, pmd->cpixWidth, pmd->cpixHeight, 1);
+    
+    XSetForeground(dpy, MaskGC, 0);
+    XFillRectangle(dpy, mask, MaskGC, 0, 0, pmd->cpixWidth, pmd->cpixHeight);
+    
+    XSetForeground(dpy, MaskGC, 1);
+    
+    for (imiim = 0; imiim < cmiim; imiim++) {
+      int label_y_offset;
+      int label_x_offset;
+      int label_width;
+      int label_height;
+      
+      pmiim = rgpmiim[imiim];
+      pmidi = pmiim->pmidi;
+      
+      label_y_offset = pmidi->cpixLabelYOffset;
+      label_x_offset = pmidi->cpixLabelXOffset;
+      label_width = pmidi->cpixLabelWidth;
+      label_height = pmidi->cpixLabelHeight;
+      
+      XFillRectangle(dpy, mask, MaskGC,
+		     label_x_offset-MENU_ITEM_RR_SPACE,
+		     label_y_offset,
+		     label_width+MENU_ITEM_RR_SPACE,
+		     label_height+MENU_ITEM_RR_SPACE);
+    }
+    
+    XShapeCombineMask(dpy, pmd->w, ShapeBounding, 0, 0, mask, ShapeSet);
+    XFreePixmap(dpy, mask);
   }
 }
 #undef FUNC_NAME
@@ -1250,6 +1292,13 @@ void
 ConstructDynamicPieMenuShapeCircle(DynamicMenu *pmd)
 {
   ConstructDynamicPieMenuInternal(pmd, circle_pie_menu_look);
+}
+
+static
+void
+ConstructDynamicPieMenuShaped(DynamicMenu *pmd)
+{
+  ConstructDynamicPieMenuInternal(pmd, shaped_pie_menu_look);
 }
 
 void 
@@ -1275,6 +1324,8 @@ void
 init_draw_pie_menu()
 {
   MenuDrawingVtable * pmdvt;
+  MenuDrawingVtable * pmdvtCircle;
+  MenuDrawingVtable * pmdvtShaped;
   
   pmdvt = NEW(MenuDrawingVtable);
   memset(pmdvt, 0, sizeof *pmdvt);
@@ -1294,24 +1345,23 @@ init_draw_pie_menu()
   pie_menu_look = make_menulook("pie-menu-look", SCM_BOOL_T, pmdvt);
   SCWM_VAR_READ_ONLY(NULL,"pie-menu-look",pie_menu_look);
   /** A menu-look that gives pie menus in a rectangular window */
-  pmdvt = NEW(MenuDrawingVtable);
-  memset(pmdvt, 0, sizeof *pmdvt);
+
+  pmdvtCircle = NEW(MenuDrawingVtable);
+  memcpy(pmdvtCircle, pmdvt, sizeof *pmdvt);
   
-  pmdvt->fnConstructDynamicMenu = ConstructDynamicPieMenuShapeCircle;
-  pmdvt->fnPaintDynamicMenu = PaintDynamicMenu;
-  pmdvt->fnPaintMenuItem = PaintMenuItemLabel;
-  pmdvt->fnSetPopupMenuPositionFromMenuItem = SetPopupMenuPositionFromMenuItem;
-  pmdvt->fnGetChildPopupPosition = GetChildPopupPosition;
-  pmdvt->fnGetPreferredPopupPosition = GetPreferredPopupPosition;
-  pmdvt->fnWarpPointerToPmiim = WarpPointerToPmiim;
-  pmdvt->fnPmiimFromPmdXY = PmiimFromPmdXY;
-  pmdvt->fnInPopupZone = InPopupZone;
-  pmdvt->fnFreePmdi = FreePmdi;
-  pmdvt->fnFreePmidi = FreePmidi;
-  
-  circle_pie_menu_look = make_menulook("circle-pie-menu-look", SCM_BOOL_T, pmdvt);
+  pmdvtCircle->fnConstructDynamicMenu = ConstructDynamicPieMenuShapeCircle;
+  circle_pie_menu_look = make_menulook("circle-pie-menu-look", SCM_BOOL_T,
+				       pmdvtCircle);
   SCWM_VAR_READ_ONLY(NULL,"circle-pie-menu-look",circle_pie_menu_look);
   /** A menu-look that gives pie menus in a circular window. */
+
+  pmdvtShaped = NEW(MenuDrawingVtable);
+  memcpy(pmdvtShaped, pmdvt, sizeof *pmdvt);
+  pmdvtShaped->fnConstructDynamicMenu = ConstructDynamicPieMenuShaped;
+  shaped_pie_menu_look = make_menulook("shaped-pie-menu-look", SCM_BOOL_T,
+				       pmdvtShaped);
+  SCWM_VAR_READ_ONLY(NULL,"shaped-pie-menu-look", shaped_pie_menu_look);
+  /** A menu-look that gives pie menus with only the labels visible */
 #ifndef SCM_MAGIC_SNARFER
 #include "draw-pie-menu.x"
 #endif
