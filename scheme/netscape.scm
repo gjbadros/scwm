@@ -17,6 +17,7 @@
   :use-module (app scwm xprop-extras)
   :use-module (app scwm message-window)
   :use-module (app scwm winops)
+  :use-module (app scwm winops-menu)
   :use-module (app scwm optargs))
 
 
@@ -158,21 +159,25 @@ up from at least `*netscape-download-closed-threshold-seconds*'."
 	   (string=? (window-resource win) "Download"))
       (netscape-download-closed-action win)))
 
-(define-public (enable-autosave-netscape-dialog)
+(define*-public (enable-autosave-netscape-dialog)
   "Enable the netscape autosaving \"Save as...\" dialog."
+  (interactive)
   (window-style '("Netscape" "fileSelector_popup") #:transient-placement-proc 
 		(auto-accept-dialog-placement)))
 
-(define-public (disable-autosave-netscape-dialog)
+(define*-public (disable-autosave-netscape-dialog)
   "Disable the netscape autosaving \"Save as...\" dialog."
+  (interactive)
   (window-style '("Netscape" "fileSelector_popup") #:transient-placement-proc 
 		(near-window-placement netscape-win)))
 
 (define-public (enable-dynamic-netscape-actions)
   "Enable the netscape download-closed action.
 See `netscape-download-closed-action'."
-  (window-style '("Netscape" "findDialog_popup") #:transient-placement-proc 
+  (window-style '("Netscape" "findDialog_popup") 
+		#:transient-placement-proc 
 		(near-window-placement netscape-win #:proportional-offset '(-1 0) #:relative-to 'northeast))
+  (window-style (class-match?? "Netscape") #:application-menu (netscape-application-menu #f))
   (disable-autosave-netscape-dialog)
   (add-hook! window-close-hook call-netscape-download-closed-action))
 
@@ -221,3 +226,14 @@ SELECTION defaults to \"PRIMARY\" if not specified."
   (X-handle-selection-string selection
 			     (lambda (str)
 			       (netscape-av-search str))))
+
+;; GJB:FIXME:: win is a dummy for now
+(define*-public (netscape-application-menu win)
+  (menu
+   (list
+    (menu-title "Netscape WM commands") menu-separator
+    (menuitem "&Enable Autosave dialog" #:action enable-autosave-netscape-dialog)
+    (menuitem "&Disable Autosave dialog" #:action disable-autosave-netscape-dialog))))
+
+;; (set-window-application-menu! (get-window) (netscape-application-menu #f))
+;; (window-application-menu (get-window))

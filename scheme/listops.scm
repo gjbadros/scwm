@@ -186,19 +186,18 @@ order in which they appear in the lists."
 	    (reverse accum)
 	    (loop (cons (apply proc (map car lists)) accum) (map cdr lists))))))
 
-;; GJB:FIXME:MS: it'd be nice if this ignored unspecified values
-;; too so that if's don't need the gratuitous #f third clause (e.g., in menus)
 ;; e.g., (filter-map id (list 1 2 3 #f 5 (if #f 0))) => (1 2 3 5)
 (define-public (filter-map proc first . rest)
   "Process FIRST and the lists comprising REST as `map' would.
-However, do not include any false returns from PROC in the result
+However, do not include any false or unspecified returns from PROC in the result
 list."
   (if (null? rest)
       (let loop ((accum ())
 		 (l first))
 	(cond
 	 ((null? l) (reverse accum))
-	 ((proc (car l)) 
+	 ((let ((v (proc (car l))))
+	    (and (not (eq? v (if #f #f))) v))
 	  => (lambda (x)
 	       (loop (cons x accum) (cdr l))))
 	 (else (loop accum (cdr l)))))
@@ -206,11 +205,17 @@ list."
 		 (lists (cons first rest)))
 	(cond
 	 ((there-exists? lists null?) (reverse accum))
-	 ((apply proc (map car lists)) 
+	 ((let ((v (apply proc (map car lists)) ))
+	    (and (not (eq? v (if #f #f))) v))
 	  => (lambda (x)	     
 	       (loop (cons x accum) (map cdr lists))))
 	 (else (loop accum (map cdr lists)))))))
 
+;; (filter-list 1 2 3 #f 5 (if #f 0))
+(define-public (filter-list . args)
+  "Like `list', but ignore #f and unspecified values.
+See also `filter-map'."
+  (filter-map id args))
 
 (define-public (delete-duplicates l)
   "Return a list that has the elements of L with duplicates omitted.

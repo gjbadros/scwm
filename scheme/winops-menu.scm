@@ -8,6 +8,7 @@
   :use-module (app scwm std-menus)
   :use-module (app scwm animation)
   :use-module (app scwm stylist)
+  :use-module (app scwm style-options)
   :use-module (app scwm winlist-menu)
   :use-module (app scwm window-selection)
   :use-module (app scwm wininfo)
@@ -20,12 +21,25 @@
   :use-module (app scwm animated-iconify)
   )
 
+;; (window-application-menu (get-window))
+(define-public (window-application-menu win)
+  "Return the application menu for WIN, or #f if there is none."
+  (window-property win 'application-menu))
+
+(define*-public (set-window-application-menu! menu #&optional (win (get-window)))
+  "Set the application menu for WIN to MENU."
+  (set-window-property! win 'application-menu menu))
+
+(add-window-style-option #:application-menu set-window-application-menu!)
+
+;; (define w (get-window))
+;; (make-small-window-ops-menu w)
 (define-public (make-small-window-ops-menu w)
   "Return a short menu of window operations for window W.
 The menu lets you move, resize, maximize, minimize, set gravity,
 stick, shove, set the style, group, etc."
   (menu
-   (list
+   (filter-list
     (menuitem "&Move" #:image-left "mini-move.xpm" 
 	      #:action interactive-move)
     (menuitem "Re&size" #:image-left "mini-resize.xpm" 
@@ -40,6 +54,9 @@ stick, shove, set the style, group, etc."
     (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
 	      #:action interactive-set-window-gravity!)
     menu-separator
+    (let ((app-submenu (window-application-menu w)))
+      (and app-submenu
+	 (menuitem "Application options" #:submenu app-submenu)))
     (menuitem "&Other" 
 	      #:submenu
 	      (menu 
