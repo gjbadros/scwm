@@ -172,12 +172,13 @@ PscwmFontForMenuItem(SCM scmFont)
 static void
 PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg,
 	       SCM align)
+#define FUNC_NAME "PaintSideImage"
 {
   int cpixDstYoffset, cpixSrcYoffset;
   int height;
   
   if (!psimg) {
-    scwm_msg(ERR,__FUNCTION__,"psimg is NULL");
+    scwm_msg(ERR,FUNC_NAME,"psimg is NULL");
     return;
   }
   SetGCFg(Scr.ScratchGC1,bg);
@@ -216,6 +217,7 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg,
 	       psimg->width, height,
 	       NULL);
 }
+#undef FUNC_NAME
 
 /*
  * RelieveHalfRectangle - add relief lines to the sides only of a
@@ -282,6 +284,7 @@ DrawUnderline(Window w, scwm_font *scfont, GC gc, char *sz, int x, int y, int po
 static
 void
 PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
+#define FUNC_NAME "PaintMenuItem"
 {
   /*  Menu *pmenu = pmd->pmenu; */
   MenuDrawingInfo *pmdi = pmd->pmdi;
@@ -357,7 +360,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 	/* center psimgAbove vertically in the item_height */
 	y_offset += (item_height - psimgAbove->height)/2;
       }
-      DBUG((DBG,__FUNCTION__,"Drawing psimgAbove"));
+      DBUG((DBG,FUNC_NAME,"Drawing psimgAbove"));
       DrawImage(w, psimgAbove, x, y_offset, MenuGC);
       y_offset += psimgAbove->height;
     }
@@ -429,10 +432,12 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   }
   return;
 }
+#undef FUNC_NAME
 
 static
 void 
 PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
+#define FUNC_NAME "PaintDynamicMenu"
 {
   Window w = pmd->w;
   MenuDrawingInfo *pmdi = pmd->pmdi;
@@ -440,13 +445,13 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
   int cmiim = pmd->cmiim;
   int imiim = 0;
 
-  DBUG((DBG,__FUNCTION__,"Painting menu"));
+  DBUG((DBG,FUNC_NAME,"Painting menu"));
   for (imiim = 0; imiim < cmiim; imiim++) {
     MenuItemInMenu *pmiim = rgpmiim[imiim];
     if (pxe->xexpose.y < (pmiim->pmidi->cpixOffsetY +
 			  pmiim->pmidi->cpixItemHeight) &&
 	(pxe->xexpose.y + pxe->xexpose.height) > pmiim->pmidi->cpixOffsetY) {
-      DBUG((DBG,__FUNCTION__,"Painting menu item"));
+      DBUG((DBG,FUNC_NAME,"Painting menu item"));
       PaintMenuItem(w,pmd,pmiim);
     }
   }
@@ -454,13 +459,14 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
   { /* scope */
     scwm_image *psimgSide = DYNAMIC_SAFE_IMAGE(pmd->pmenu->scmImgSide);
     if (psimgSide) {
-      DBUG((DBG,__FUNCTION__,"Painting side image"));
+      DBUG((DBG,FUNC_NAME,"Painting side image"));
       PaintSideImage(w,pmdi->SideBGColor,pmd->cpixHeight,psimgSide,
 		     pmd->pmenu->scmSideAlign);
     }
   }
   XSync(dpy,0);
 }
+#undef FUNC_NAME
 
 static
 void
@@ -512,18 +518,20 @@ WarpPointerToPmiim(MenuItemInMenu *pmiim)
 static
 MenuItemInMenu *
 PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
+#define FUNC_NAME "PmiimFromPmdXY"
 {
   int ipmiim;
   for (ipmiim = 0; ipmiim < pmd->cmiim; ipmiim++) {
     MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim];
     int item_y_offset = pmiim->pmidi->cpixOffsetY;
     if (y > item_y_offset && y <= item_y_offset + pmiim->pmidi->cpixItemHeight) {
-      DBUG((DBG,__FUNCTION__,"pmiim->pmi->szLabel = %s @ %d,%d", pmiim->pmi->szLabel,x,y));
+      DBUG((DBG,FUNC_NAME,"pmiim->pmi->szLabel = %s @ %d,%d", pmiim->pmi->szLabel,x,y));
       return pmiim;
     }
   }
   return NULL;
 }
+#undef FUNC_NAME
 
 static int
 InPopupZone(MenuItemInMenu *pmiim, int cpixXoffset, int cpixYoffset)
@@ -572,6 +580,7 @@ FreePmidi(MenuItemDrawingInfo * pmidi)
    response to expose events */
 void
 ConstructDynamicMenu(DynamicMenu *pmd)
+#define FUNC_NAME "ConstructDynamicMenu"
 {
   if (pmd->pmdi != NULL)
     return;
@@ -630,7 +639,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 
       text_width = ComputeXTextWidth(XFONT_FONTTYPE(scfont), pmi->szLabel, pmi->cchLabel);
 
-      DBUG((DBG,__FUNCTION__,"`%s' has width %d (%d chars)\n",
+      DBUG((DBG,FUNC_NAME,"`%s' has width %d (%d chars)\n",
 	   pmi->szLabel,text_width,pmi->cchLabel));
 
       if (pmi->fIsSeparator) {
@@ -701,7 +710,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     pmd->cpixWidth = pmdi->cpixItemOffset + max_item_width +  
       MENU_ITEM_RR_SPACE + MENU_EDGE_HORIZ_SPACING*2;
 
-    DBUG((DBG,__FUNCTION__,"LeftPic = %d, Text = %d, ExtraText = %d, RightImage = %d; above = %d\n",
+    DBUG((DBG,FUNC_NAME,"LeftPic = %d, Text = %d, ExtraText = %d, RightImage = %d; above = %d\n",
 	 pmdi->cpixLeftPicWidth,pmdi->cpixTextWidth,pmdi->cpixExtraTextWidth,
 	 max_right_image_width,max_above_image_width));
 
@@ -723,6 +732,8 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     }
   }
 }
+#undef FUNC_NAME
+
 #undef INCREASE_MAYBE
 
 void

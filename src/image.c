@@ -342,6 +342,7 @@ empty string (for files with no extension), or the string "default"
 
 SCM
 path_expand_image_fname(SCM name, const char *func_name)
+#define FUNC_NAME "path_expand_image_fname"
 {
   char *c_name, *c_fname;
   int length;
@@ -385,7 +386,7 @@ path_expand_image_fname(SCM name, const char *func_name)
       SCM elt = gh_car(p);
       if (!gh_string_p(elt)) {
 	/* Warning, non-string in image-load-path */
-	scwm_msg(WARN,__FUNCTION__,"Non-string in image-load-path");
+	scwm_msg(WARN,FUNC_NAME,"Non-string in image-load-path");
  	return SCM_BOOL_F; /* Why bail? just skip it--gjb 11/28/97  */
 	/* Assuming path is list of strings simplifies code below. */
       } else {
@@ -412,7 +413,7 @@ path_expand_image_fname(SCM name, const char *func_name)
     
     if (p==SCM_EOL) {
       /* warn that the file is not found. */
-      scwm_msg(WARN,__FUNCTION__,"Image file was not found: `%s'",c_name);
+      scwm_msg(WARN,FUNC_NAME,"Image file was not found: `%s'",c_name);
 
       call1_hooks(image_not_found_hook,gh_str02scm(c_name));
       FREE(c_name);
@@ -429,7 +430,7 @@ path_expand_image_fname(SCM name, const char *func_name)
   FREE(c_name);
   return result;
 }
-
+#undef FUNC_NAME
 
 SCM
 get_image_loader(SCM name)

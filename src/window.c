@@ -65,6 +65,7 @@ char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
 
 unsigned long 
 FlagsBitsFromSw(ScwmWindow *psw)
+#define FUNC_NAME FlagsBitsFromSw
 {
   unsigned long flags = 0;
   int i = 0;
@@ -75,7 +76,7 @@ FlagsBitsFromSw(ScwmWindow *psw)
 do { \
   if (SCM_NFALSEP(scm_object_property(psw->schwin, \
                                      gh_symbol2scm(s)))) { \
-/*    scwm_msg(DBG,__FUNCTION__,"fWinListSkip for %s",psw->name); */ \
+/*    scwm_msg(DBG,FUNC_NAME,"fWinListSkip for %s",psw->name); */ \
     flags |= (1 << i); \
   } \
   i++; \
@@ -119,6 +120,7 @@ do { \
   assert(i == 32);
   return flags;
 }
+#undef FUNC_NAME
 
 void PswUpdateFlags(ScwmWindow *psw, unsigned long flags)
 {
@@ -520,6 +522,7 @@ MoveTo(ScwmWindow *psw, int x, int y)
 static
 void
 SendClientConfigureNotify(const ScwmWindow *psw)
+#define FUNC_NAME "SendClientConfigureNotify"
 {
   XEvent client_event;
 
@@ -538,9 +541,10 @@ SendClientConfigureNotify(const ScwmWindow *psw)
   /* what if we don't have a title ????? */
   client_event.xconfigure.above = psw->frame;
   client_event.xconfigure.override_redirect = False;
-  DBUG_RESIZE((DBG,__FUNCTION__, "Sending configure event to %s",psw->name));
+  DBUG_RESIZE((DBG,FUNC_NAME, "Sending configure event to %s",psw->name));
   XSendEvent(dpy, psw->w, False, StructureNotifyMask, &client_event);
 }
+#undef FUNC_NAME
 
 
 /* Note that this will Broadcast the window information
@@ -549,11 +553,12 @@ SendClientConfigureNotify(const ScwmWindow *psw)
    be called only if !psw->fIconified */
 void 
 MovePswToCurrentPosition(const ScwmWindow *psw)
+#define FUNC_NAME "MovePswToCurrentPosition"
 {
   int x = FRAME_X_VP(psw), y = FRAME_Y_VP(psw);
 #ifndef NDEBUG
   if (psw->fSticky && !FIsPartiallyInViewport(psw)) {
-    scwm_msg(ERR,__FUNCTION__,"Window %s is sticky but not on screen --\n\
+    scwm_msg(ERR,FUNC_NAME,"Window %s is sticky but not on screen --\n\
 correcting from %d,%d",
              psw->name,x,y);
     MoveTo((ScwmWindow *)psw,0,0);
@@ -564,6 +569,7 @@ correcting from %d,%d",
   SendClientConfigureNotify(psw);
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 }
+#undef FUNC_NAME
 
 
 /* Note that this will Broadcast the icon information
@@ -672,8 +678,9 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
 */
 void 
 move_finalize(Window w, ScwmWindow * psw, int x, int y)
+#define FUNC_NAME "move_finalize"
 {
-  DBUG((DBG,__FUNCTION__,"%d,%s, %d,%d",
+  DBUG((DBG,FUNC_NAME,"%d,%s, %d,%d",
         (w==psw->frame), psw->name, x,y));
   if (w == psw->frame) {
     x += WIN_VP_OFFSET_X(psw);
@@ -682,10 +689,10 @@ move_finalize(Window w, ScwmWindow * psw, int x, int y)
     x += ICON_VP_OFFSET_X(psw);
     y += ICON_VP_OFFSET_Y(psw);
   }
-  DBUG((DBG,__FUNCTION__,"adjusted to %d,%d", x,y));
+  DBUG((DBG,FUNC_NAME,"adjusted to %d,%d", x,y));
   move_finalize_virt(w,psw,x,y);
 }
-
+#undef FUNC_NAME
 
 
 /* This will involve cassowary as needed, through
@@ -3766,7 +3773,7 @@ window context in the usual way if not specified. */
   if (desk == SCM_BOOL_F) {
     psw->fStartsOnDesk = False;
   } else if (gh_number_p(desk)) {
-    DBUG((DBG,__FUNCTION__,"setting fStartsOnDesk"));
+    DBUG((DBG,FUNC_NAME,"setting fStartsOnDesk"));
     psw->fStartsOnDesk = True;
     psw->StartDesk = gh_scm2int(desk);
   } else {

@@ -87,14 +87,16 @@ public:
 
   void
   AddStays(ClSimplexSolver *psolver)
+#define FUNC_NAME "ScwmWindowConstraintInfo::AddStays"
     {
-      DBUG((DBG,__FUNCTION__,"Adding stays for window %s: (%d,%d) %d x %d",
+      DBUG((DBG,FUNC_NAME,"Adding stays for window %s: (%d,%d) %d x %d",
             Psw()->name, _frame_x.intValue(), _frame_y.intValue(),
             _frame_width.intValue(), _frame_height.intValue()));
       // FIXGJB: these weights should increase each time this is called
       psolver->addPointStay(_frame_width,_frame_height,100);
       psolver->addPointStay(_frame_x,_frame_y,1);
     }
+#undef FUNC_NAME
 
   void
   AddSizeConstraints(ClSimplexSolver *psolver)
@@ -134,6 +136,7 @@ public:
     }
 
   ScwmWindow *Psw() const
+#define FUNC_NAME "ScwmWindowConstraintInfo::Psw"
     {
 #ifndef NDEBUG
       if (_frame_x.Pv() != _frame_y.Pv() ||
@@ -143,14 +146,16 @@ public:
         ss << "Bad Pv in variable of SWCI for window named " << _name << "; "
            << &_frame_x << ", " << &_frame_y << ", "
            << &_frame_width << ", " << &_frame_height << ends;
-        scwm_msg(ERR,__FUNCTION__,ss.str());
+        scwm_msg(ERR,FUNC_NAME,ss.str());
         assert(False);
       }
 #endif
       return PswFromClvPv(_frame_x.Pv());
     }
+#undef FUNC_NAME
 
   void CopyStateToPswVars(bool *pfMoved, bool *pfResized) const
+#define FUNC_NAME "ScwmWindowConstraintInfo::CopyStateToPswVars"
     {
       ScwmWindow *psw = Psw();
       assert(psw);
@@ -170,7 +175,7 @@ public:
         int w = _frame_width.intValue();
         int h = _frame_height.intValue();
         if (psw->frame_width != w || psw->frame_height != h) {
-          DBUG((DBG,__FUNCTION__,"Resized from (%d x %d) to (%d x %d)",
+          DBUG((DBG,FUNC_NAME,"Resized from (%d x %d) to (%d x %d)",
                 psw->frame_width,psw->frame_height, w,h));
           psw->frame_width = w,
           psw->frame_height = h;
@@ -178,6 +183,7 @@ public:
         }
       }
     }
+#undef FUNC_NAME
 
   string _name;
   ClVariable _frame_x;

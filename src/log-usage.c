@@ -45,6 +45,7 @@ SendUsagePacket(char *host, /* 0 -> REPORT_USAGE_HOST */
                 char *progName,   /* defines the log file */
                 char *origin,    /* 0 -> hostname */
                 char *msg)
+#define FUNC_NAME "SendUsagePacket"
 {
 #ifndef NO_REPORT_USAGE
   int rc;
@@ -60,7 +61,7 @@ SendUsagePacket(char *host, /* 0 -> REPORT_USAGE_HOST */
 
   /* FIXGJB: this is here for now just so people
      know what's hanging in case things hang for them */
-  scwm_msg(INFO,__FUNCTION__,"Opening socket for usage log...");
+  scwm_msg(INFO,FUNC_NAME,"Opening socket for usage log...");
 
   /* getting hostname */
   if (!(h = gethostbyname(host ? host : REPORT_USAGE_HOST))) {
@@ -144,13 +145,15 @@ SendUsagePacket(char *host, /* 0 -> REPORT_USAGE_HOST */
     close(sock);
   }
 
-  scwm_msg(INFO,__FUNCTION__,"Sent usage note with your hostname and version number-- thank you!");
+  scwm_msg(INFO,FUNC_NAME,"Sent usage note with your hostname and version number-- thank you!");
 
 #endif /* !NO_REPORT_USAGE */
 
   return 0;
 
 }
+#undef FUNC_NAME
+
 
 /* Local Variables: */
 /* tab-width: 8 */

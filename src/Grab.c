@@ -43,15 +43,17 @@ XGrabServer_withSemaphore(Display * disp)
 
 void 
 XUngrabServer_withSemaphore(Display * disp)
+#define FUNC_NAME "XUngrabServer_withSemaphore"
 {
   if (--xgrabcount < 0) {	/* should never happen */
-    fprintf(stderr,"%s: too many ungrabs!\n",__FUNCTION__);
+    fprintf(stderr,"%s: too many ungrabs!\n",FUNC_NAME);
     xgrabcount = 0;
   }
   if (xgrabcount == 0) {
     XUngrabServer(disp);
   }
 }
+#undef FUNC_NAME
 
 SCWM_PROC(X_grab_server, "X-grab-server", 0, 0, 0,
 	  ())

@@ -237,6 +237,7 @@ static char *statefile()
 
 /* save the state of all windows */
 static void saveYourself2(SmcConn conn, SmPointer client_data)
+#define FUNC_NAME "saveYourself2"
 {
   ScwmWindow *psw;
   char *savename = statefile();
@@ -249,21 +250,23 @@ static void saveYourself2(SmcConn conn, SmPointer client_data)
       writeWindow(save, psw);
     }
     if (fclose(save) < 0) { 
-      scwm_msg(WARN, __FUNCTION__, "Could not finish writing `%s' (%s)",
+      scwm_msg(WARN, FUNC_NAME, "Could not finish writing `%s' (%s)",
 	       savename, strerror(errno));
       successful = False;
     }
   } else {
-    scwm_msg(WARN, __FUNCTION__, "Could not write `%s' (%s)",
+    scwm_msg(WARN, FUNC_NAME, "Could not write `%s' (%s)",
 	     savename, strerror(errno));
     successful = False;
   }
   SmcSaveYourselfDone(conn, successful);
   FREE(savename);
 }
+#undef FUNC_NAME
 
 /* load a number of window states to be used for restarted clients */
 static void loadMyself()
+#define FUNC_NAME "loadMyself"
 {
   SMWindowData *d;
   char *loadname = statefile();
@@ -278,11 +281,12 @@ static void loadMyself()
       }
     fclose(load);
   } else {
-    scwm_msg(WARN, __FUNCTION__, "Could not read `%s' (%s)",
+    scwm_msg(WARN, FUNC_NAME, "Could not read `%s' (%s)",
 	     loadname, strerror(errno));
   }
   FREE(loadname);
 }
+#undef FUNC_NAME
 
 static
 void saveYourself(SmcConn conn, SmPointer client_data, int save_type,
@@ -366,10 +370,11 @@ static void setSMProperties()
 
 static void iceWatchFD(IceConn conn, IcePointer client_data,
 		       Bool opening, IcePointer *watch_data)
+#define FUNC_NAME "iceWatchFD"
 {
   if (opening) {
     if (IceSMfd != -1) { /* shouldn't happen */
-      scwm_msg(WARN, __FUNCTION__,
+      scwm_msg(WARN, FUNC_NAME,
 	       "TOO MANY ICE CONNECTIONS -- not supported\n");
     } else {
       IceSMfd = IceConnectionNumber(conn);
@@ -379,8 +384,10 @@ static void iceWatchFD(IceConn conn, IcePointer client_data,
       IceSMfd = -1;
   }
 }
+#undef FUNC_NAME
 
 void initSM()
+#define FUNC_NAME "initSM"
 {
   char error_str[256];
   SmcCallbacks smcall;
@@ -393,7 +400,7 @@ void initSM()
     loadMyself();
 
   if (IceAddConnectionWatch(&iceWatchFD, NULL) == 0) {
-    scwm_msg(WARN, __FUNCTION__ ,"IceAddConnectionWatch failed.");
+    scwm_msg(WARN, FUNC_NAME ,"IceAddConnectionWatch failed.");
     return ;
   }
 
@@ -417,7 +424,7 @@ void initSM()
                                   SmcId, &SmcNewId,
                                   sizeof(error_str), error_str)) == NULL)
     {
-      scwm_msg(WARN, __FUNCTION__,
+      scwm_msg(WARN, FUNC_NAME,
 	       "session manager initialization failed: %s\n", error_str);
       return ;
     } 
@@ -425,6 +432,7 @@ void initSM()
   IceSMconn = SmcGetIceConnection(SMconn);
   setSMProperties();
 }
+#undef FUNC_NAME
 
 /* cleanly exit the session.
    Don't let the SM restart us if automatic_restart is 0. */

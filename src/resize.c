@@ -232,11 +232,12 @@ makemult(int a, int b)
 void 
 ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, 
               /* input and output to/from: */ int *widthp, int *heightp)
+#define FUNC_NAME "ConstrainSize"
 {
   int minWidth, minHeight, maxWidth, maxHeight, xinc, yinc, delta;
   int baseWidth, baseHeight;
   int dwidth = *widthp, dheight = *heightp;
-  DBUG((DBG,__FUNCTION__,"initially %d x %d",dwidth,dheight));
+  DBUG((DBG,FUNC_NAME,"initially %d x %d",dwidth,dheight));
 
   dwidth -= 2 * psw->xboundary_width;
   dheight -= (psw->title_height + 2 * psw->boundary_width);
@@ -344,9 +345,10 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
   *widthp = dwidth + 2 * psw->xboundary_width;
   *heightp = dheight + psw->title_height + 2 * psw->boundary_width;
 
-  DBUG((DBG,__FUNCTION__,"constrained to %d x %d",*widthp,*heightp));
+  DBUG((DBG,FUNC_NAME,"constrained to %d x %d",*widthp,*heightp));
   return;
 }
+#undef FUNC_NAME
 
 void
 ComputeNewGeometryOnResize(ScwmWindow *psw, 

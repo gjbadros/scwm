@@ -176,6 +176,7 @@ static void
 DrawButton(ScwmWindow *psw, Window win, int w, int h,
 	   ButtonFace * bf, GC ReliefGC, GC ShadowGC,
 	   Boolean inverted, int stateflags)
+#define FUNC_NAME "DrawButton"
 {
   register int type = bf->style & ButtonFaceTypeMask;
 
@@ -224,7 +225,7 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
       image = SAFE_IMAGE(psw->mini_icon_image);
     }
     if (image == NULL) {
-      scwm_msg(WARN,__FUNCTION__,"image is NULL");
+      scwm_msg(WARN,FUNC_NAME,"image is NULL");
       return;
     }
     if (bf->style & FlatButton)
@@ -317,6 +318,7 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
     break;
   }
 }
+#undef FUNC_NAME
 
 /****************************************************************************
  *
@@ -330,6 +332,7 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
 		int x, int y, int w, int h,
 		GC ReliefGC, GC ShadowGC,
 		int draw, int hilite)
+#define FUNC_NAME "RelieveWindowHH"
 {
   XSegment seg[4];
   int i = 0;
@@ -356,7 +359,7 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
   else if (win == psw->corners[3])
     edge = 4;
 
-  DBUG((DBG,__FUNCTION__,"edge = %d",edge));
+  DBUG((DBG,FUNC_NAME,"edge = %d",edge));
 
   if (draw & TOP_HILITE) {
     seg[i].x1 = x;
@@ -391,7 +394,7 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
       seg[i++].y2 = y + h - 1 - ((edge == 1) || a ? 0 : 1);
     }
   }
-  DBUG((DBG,__FUNCTION__,"i = %d",i));
+  DBUG((DBG,FUNC_NAME,"i = %d",i));
   XDrawSegments(dpy, win, ReliefGC, seg, i);
 
   i = 0;
@@ -426,9 +429,10 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
       seg[i++].y2 = y + h - 1 - ((edge == 2) || a ? 0 : 1);
     }
   }
-  DBUG((DBG,__FUNCTION__,"i = %d",i));
+  DBUG((DBG,FUNC_NAME,"i = %d",i));
   XDrawSegments(dpy, win, ShadowGC, seg, i);
 }
+#undef FUNC_NAME
 
 static void 
 RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
@@ -1210,12 +1214,13 @@ void
 RelieveWindow(ScwmWindow *psw, Window win,
 	      int x, int y, int w, int h,
 	      GC ReliefGC, GC ShadowGC, int hilite)
+#define FUNC_NAME "RelieveWindow"
 {
   XSegment seg[4];
   int i = 0;
   int edge = 0;
 
-  DBUG((DBG,__FUNCTION__,"x = %d, y = %d;   w = %d, h = %d",x,y,w,h));
+  DBUG((DBG,FUNC_NAME,"x = %d, y = %d;   w = %d, h = %d",x,y,w,h));
 
   if ((win == psw->sides[0]) || (win == psw->sides[1]) ||
       (win == psw->sides[2]) || (win == psw->sides[3]))
@@ -1230,7 +1235,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
     edge = 4;
 
 
-  DBUG((DBG,__FUNCTION__,"edge = %d",edge));
+  DBUG((DBG,FUNC_NAME,"edge = %d",edge));
 
   seg[i].x1 = x;
   seg[i].y1 = y;
@@ -1260,7 +1265,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
     seg[i].x2 = x + 1;
     seg[i++].y2 = y + h - 2;
   }
-  DBUG((DBG,__FUNCTION__,"i = %d",i));
+  DBUG((DBG,FUNC_NAME,"i = %d",i));
   XDrawSegments(dpy, win, ReliefGC, seg, i);
 
   i = 0;
@@ -1292,9 +1297,10 @@ RelieveWindow(ScwmWindow *psw, Window win,
     seg[i].x2 = x + w - 2;
     seg[i++].y2 = y + h - 2;
   }
-  DBUG((DBG,__FUNCTION__,"i = %d",i));
+  DBUG((DBG,FUNC_NAME,"i = %d",i));
   XDrawSegments(dpy, win, ShadowGC, seg, i);
 }
+#undef FUNC_NAME
 
 
 /*
@@ -1332,6 +1338,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
 void 
 SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
            Bool fMoved, Bool fResized)
+#define FUNC_NAME "SetupFrame"
 {
   XWindowChanges xwc;
   unsigned long xwcm;
@@ -1371,10 +1378,10 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
 
 #ifndef NDEBUG
   if ((w != FRAME_WIDTH(psw)) || ((h != FRAME_HEIGHT(psw)) && !fResized))
-    DBUG((DBG,__FUNCTION__,"Width/height changed but not fResized"));
+    DBUG((DBG,FUNC_NAME,"Width/height changed but not fResized"));
 
   if ((x != FRAME_X(psw) || y != FRAME_Y(psw)) && !fMoved)
-    DBUG((DBG,__FUNCTION__,"Coords changed but not fMoved"));
+    DBUG((DBG,FUNC_NAME,"Coords changed but not fMoved"));
 #endif
 
   if (fResized) {
@@ -1384,7 +1391,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     int left = psw->nr_left_buttons;
     int right = psw->nr_right_buttons;
 
-    DBUG((DBG,__FUNCTION__,"Resized to x=%d, y=%d;  w=%d,h=%d",x,y,w,h));
+    DBUG((DBG,FUNC_NAME,"Resized to x=%d, y=%d;  w=%d,h=%d",x,y,w,h));
 
     psw->title_width = (w - (left + right) * button_width
                         - 2 * psw->boundary_width + psw->bw);
@@ -1463,7 +1470,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     }
 
     if (psw->fBorder) {
-      DBUG((DBG,__FUNCTION__,"Has border!"));
+      DBUG((DBG,FUNC_NAME,"Has border!"));
       psw->corner_width = psw->title_height + psw->bw + psw->boundary_width;
 
       /* FIXGJB: pretty arbitrary minimum size */
@@ -1568,7 +1575,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
   }
 
   /* fix up frame and assign size/location values in psw */
-  DBUG_RESIZE((DBG,__FUNCTION__,"w = %d, h = %d", w, h));
+  DBUG_RESIZE((DBG,FUNC_NAME,"w = %d, h = %d", w, h));
 
   XMoveResizeWindow(dpy, psw->frame, x, y, w, h);
 
@@ -1593,6 +1600,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
 
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 }
+#undef FUNC_NAME
 
 
 /* no primitives here, no .x file */

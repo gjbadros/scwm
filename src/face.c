@@ -369,7 +369,7 @@ See the section on the face-specification-flags concept. */
     } 
     else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
     }
 
   } else if (flag==sym_vertical_justify) {
@@ -384,7 +384,7 @@ See the section on the face-specification-flags concept. */
     } 
     else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
     }
 
   } else if (flag==sym_relief) {
@@ -399,7 +399,7 @@ See the section on the face-specification-flags concept. */
       bf->style |= FlatButton;
     } else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
     }
 
   } else if (flag==sym_use_style_of) {
@@ -414,7 +414,7 @@ See the section on the face-specification-flags concept. */
     } 
     else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
     }
 
   } else if (flag==sym_hidden_handles) {
@@ -424,7 +424,7 @@ See the section on the face-specification-flags concept. */
       bf->style &= ~HiddenHandles;
     } else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
     }
 
   } else if (flag==sym_no_inset) {
@@ -434,12 +434,12 @@ See the section on the face-specification-flags concept. */
       bf->style &= ~NoInset;
     } else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
     }
 
   } else {
     /* FIXMS: use something more accurate. */
-    scm_wrong_type_arg(__FUNCTION__,2,flagval);    
+    scm_wrong_type_arg(FUNC_NAME,2,flagval);    
   }
   return SCM_UNSPECIFIED;
 }
@@ -640,6 +640,7 @@ SCWM_SYMBOL(sym_tiled , "tiled");
    huge, but I did not see an easier way to translate it. */
 
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
+#define FUNC_NAME "add_spec_to_face_x"
 {
   ButtonFace *bf;
 
@@ -675,12 +676,12 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       bf->style |= VectorButton;
     } else {
       /* FIXMS give a better error message */
-      scm_wrong_type_arg(__FUNCTION__,3,arg);
+      scm_wrong_type_arg(FUNC_NAME,3,arg);
     }
 
   } else if (spec==sym_solid) {
     /* FIXMS give a better error message */
-    VALIDATE_COLOR(arg, __FUNCTION__, arg);
+    VALIDATE_COLOR(arg, FUNC_NAME, arg);
 
     /* fully destructive, so free the face and 
        mutate it */
@@ -706,7 +707,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
       if (nsegs < 1 || nsegs > 128) {
 	/* FIXMS give a better error message */
-	scm_wrong_type_arg(__FUNCTION__,3,arg);
+	scm_wrong_type_arg(FUNC_NAME,3,arg);
       }
       perc = NEWC(nsegs,int);
       s_colors = NEWC(nsegs+1,char *);
@@ -734,7 +735,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	FREEC(s_colors);
 	FREEC(perc);
 	/* FIXMS give a better error message */
-	scm_wrong_type_arg(__FUNCTION__,3,arg);
+	scm_wrong_type_arg(FUNC_NAME,3,arg);
       }
 
       pixels = AllocNonlinearGradient(s_colors, perc, nsegs, npixels);
@@ -747,7 +748,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       if (!pixels) {
 	/* error: couldn't allocate gradient */
 	/* FIXMS give a better error message */
-	scm_wrong_type_arg(__FUNCTION__,3,arg);
+	scm_wrong_type_arg(FUNC_NAME,3,arg);
       }
 
       /* fully destructive, so free the face and 
@@ -765,7 +766,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       }
     } else {
       /* FIXMS give a better error message */
-      scm_wrong_type_arg(__FUNCTION__,3,arg);
+      scm_wrong_type_arg(FUNC_NAME,3,arg);
     }
   } else if (spec==sym_pixmap) {
     int tiled_p;
@@ -796,7 +797,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	if (image==SCM_BOOL_F) {
 	  /* signal an error: couldn't load picture */
 	  /* FIXMS give a better error message */
-	  scwm_msg(WARN,__FUNCTION__, "Image not found for argument #%d",3);
+	  scwm_msg(WARN,FUNC_NAME, "Image not found for argument #%d",3);
 	}
       }
       
@@ -820,14 +821,15 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       }
     } else {
       /* FIXMS give a better error message */
-      scwm_msg(WARN,__FUNCTION__, "Image not found for argument #%d",3);
+      scwm_msg(WARN,FUNC_NAME, "Image not found for argument #%d",3);
     }
   } else {
     /* FIXMS give a better error message */
-    scm_wrong_type_arg(__FUNCTION__,2,arg);
+    scm_wrong_type_arg(FUNC_NAME,2,arg);
   }
 
 }
+#undef FUNC_NAME
 
 
 ButtonFace *append_new_face(ButtonFace *bf) {

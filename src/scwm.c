@@ -760,7 +760,7 @@ Repository Timestamp: %s\n",
 	sprintf(message + strlen(message), ".%d", myscreen);
 	dpy = XOpenDisplay(message);
         if (!dpy) {
-          scwm_msg(ERR,__FUNCTION__,
+          scwm_msg(ERR,"main",
                    "Could not open display %s",message);
         }
 	Scr.screen = myscreen;
@@ -1208,6 +1208,7 @@ CreateCursors(void)
  */
 void 
 RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
+#define FUNC_NAME "RestoreWithdrawnLocation"
 {
   XWindowChanges xwc;
 
@@ -1224,7 +1225,7 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
     mask = (CWX | CWY | CWBorderWidth);
 
 #ifdef DEBUG_RESTORE
-    scwm_msg(DBG,__FUNCTION__,"Reparenting %s to %d,%d",
+    scwm_msg(DBG,FUNC_NAME,"Reparenting %s to %d,%d",
              psw->name, xwc.x, xwc.y);
 #endif
     XReparentWindow(dpy, psw->w, Scr.Root, xwc.x, xwc.y);
@@ -1240,6 +1241,7 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
       XSync(dpy, 0);
   }
 }
+#undef FUNC_NAME
 
 
 /*

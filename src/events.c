@@ -222,12 +222,14 @@ HandleEvents(void)
 /* keyboard remapping has occurred */
 void
 HandleMappingNotify()
+#define FUNC_NAME "HandleMAppingNotify"
 {
-  DBUG((DBG,__FUNCTION__,"Calling mapping notify hook (maybe empty)"));
+  DBUG((DBG,FUNC_NAME,"Calling mapping notify hook (maybe empty)"));
   init_modifiers();
   init_pointer_mapping();
   call0_hooks(x_mappingnotify_hook);
 }
+#undef FUNC_NAME
 
 /***********************************************************************
  *
@@ -493,6 +495,7 @@ Window w_for_scwmexec_response;
 
 void
 HandleScwmExec()
+#define FUNC_NAME "HandleScwmExec"
 {
   Window w;
   Window *pw;
@@ -529,7 +532,7 @@ HandleScwmExec()
       /* Save an indication of whether we need to read more or not. */
       saved_bytes_after=bytes_after;
       
-      DBUG((DBG,__FUNCTION__,"Trying to get request from %ld",w));
+      DBUG((DBG,FUNC_NAME,"Trying to get request from %ld",w));
 
       /* Get and delete its SCWMEXEC_REQUEST property. We do
          XGetWindowProperty twice, once to get the length, and again
@@ -554,8 +557,8 @@ HandleScwmExec()
 	/* Temporarily redirect output and error to string ports. 
 	   Note that the port setting functions return the current previous
 	   port. */
-	o_port=scm_set_current_output_port(make_output_strport(__FUNCTION__));
-	e_port=scm_set_current_error_port(make_output_strport(__FUNCTION__));
+	o_port=scm_set_current_output_port(make_output_strport(FUNC_NAME));
+	e_port=scm_set_current_error_port(make_output_strport(FUNC_NAME));
 
 	/* Workaround for a problem with older Guiles */
 	saved_def_e_port = scm_def_errp;
@@ -602,7 +605,7 @@ HandleScwmExec()
 	FREE(output);
 	FREE(error);
       } else {
-        scwm_msg(WARN,__FUNCTION__,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
+        scwm_msg(WARN,FUNC_NAME,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
                  w_for_scwmexec_response);
       }
     }
@@ -615,6 +618,7 @@ HandleScwmExec()
 
   return;
 }
+#undef FUNC_NAME
 
 /***********************************************************************
  *
@@ -625,6 +629,7 @@ HandleScwmExec()
 
 void 
 HandlePropertyNotify()
+#define FUNC_NAME "HandlePropertyNotify"
 {
   XTextProperty text_prop;
 
@@ -772,7 +777,7 @@ HandlePropertyNotify()
       if (NULL != pswCurrent) {
 	set_window_context(pswCurrent->schwin);
       }
-      DBUG((DBG,__FUNCTION__,"Calling hook (maybe empty)"));
+      DBUG((DBG,FUNC_NAME,"Calling hook (maybe empty)"));
       call2_hooks(x_propertynotify_hook, gh_str02scm(szName), window_context);
       if (NULL != pswCurrent) {
 	unset_window_context();
@@ -782,6 +787,7 @@ HandlePropertyNotify()
     break;
   }
 }
+#undef FUNC_NAME
 
 
 /***********************************************************************
@@ -1163,6 +1169,7 @@ HandleUnmapNotify()
  ***********************************************************************/
 void 
 HandleButtonPress()
+#define FUNC_NAME "HandleButtonPress"
 {
   unsigned int modifier;
   Binding *MouseEntry;
@@ -1184,7 +1191,7 @@ HandleButtonPress()
                (Event.xbutton.subwindow != pswCurrent->w) &&
                (Event.xany.window != pswCurrent->Parent) &&
                (Event.xbutton.subwindow != pswCurrent->Parent)) {
-      scwm_msg(DBG,__FUNCTION__,"Would have raised window %s, but commented out -- did you want it to raise?  Tell Greg!",
+      scwm_msg(DBG,FUNC_NAME,"Would have raised window %s, but commented out -- did you want it to raise?  Tell Greg!",
                pswCurrent->name);
       /* RaiseWindow(pswCurrent);  -- above condition was an || of the fClickToFocusRaises
          cond'n above --07/26/98 gjb */
@@ -1271,6 +1278,7 @@ HandleButtonPress()
     SetTitleBar(ButtonWindow, (Scr.Hilite == ButtonWindow), False);
   ButtonWindow = NULL;
 }
+#undef FUNC_NAME
 
 /***********************************************************************
  *
@@ -1373,6 +1381,7 @@ HandleLeaveNotify()
  */
 void 
 HandleConfigureRequest()
+#define FUNC_NAME "HandleConfigureRequest"
 {
   XWindowChanges xwc;
   unsigned long xwcm;
@@ -1380,7 +1389,7 @@ HandleConfigureRequest()
   XConfigureRequestEvent *cre = &Event.xconfigurerequest;
   Bool sendEvent = False;
 
-  DBUG_RESIZE((DBG,__FUNCTION__, "Routine Entered"));
+  DBUG_RESIZE((DBG,FUNC_NAME, "Routine Entered"));
 
   /*
    * Event.xany.window is Event.xconfigurerequest.parent, so pswCurrent will
@@ -1413,7 +1422,7 @@ HandleConfigureRequest()
     xwc.height = cre->height;
     xwc.border_width = cre->border_width;
 #ifdef SCWM_DEBUG_RESIZE_MSGS
-    scwm_msg(DBG,__FUNCTION__,"!pswCurrent && configure to %d,%d", xwc.x, xwc.y);
+    scwm_msg(DBG,FUNC_NAME,"!pswCurrent && configure to %d,%d", xwc.x, xwc.y);
 #endif
     /* FIXGJB: this is just moving the icon, but when
        icon positions are exposed to cassowary, it'll need fixing */
@@ -1504,7 +1513,7 @@ HandleConfigureRequest()
   }
 
 #ifdef SCWM_DEBUG_RESIZE_MSGS
-  scwm_msg(DBG,__FUNCTION__,"MoveResize to %d,%d %dx%d", 
+  scwm_msg(DBG,FUNC_NAME,"MoveResize to %d,%d %dx%d", 
            x, y, width, height);
 #endif
   MoveResizeTo(pswCurrent, 
@@ -1512,6 +1521,7 @@ HandleConfigureRequest()
                y + WIN_VP_OFFSET_Y(pswCurrent), width, height);
   KeepOnTop();
 }
+#undef FUNC_NAME
 
 /***********************************************************************
  *
@@ -1600,6 +1610,7 @@ CoerceEnterNotifyOnCurrentWindow()
  */
 int 
 NextScwmEvent(Display * dpy, XEvent * event)
+#define FUNC_NAME "NextScwmEvent"
 {
   extern int fd_width, x_fd;
   fd_set in_fdset, out_fdset;
@@ -1608,19 +1619,19 @@ NextScwmEvent(Display * dpy, XEvent * event)
   struct timeval *tp;
   int usec;
 
-  DBUG((DBG,__FUNCTION__, "Entered"));
+  DBUG((DBG,FUNC_NAME, "Entered"));
 
   /* Do this IMMEDIATELY prior to select, to prevent any nasty
    * queued up X events from just hanging around waiting to be
    * flushed */
   XFlush(dpy);
   if (XPending(dpy)) {
-    DBUG((DBG,__FUNCTION__, "taking care of queued up events & returning"));
+    DBUG((DBG,FUNC_NAME, "taking care of queued up events & returning"));
     XNextEvent(dpy, event);
     StashEventTime(event);
     return 0;
   }
-  DBUG((DBG,__FUNCTION__, "no X events waiting - about to reap children"));
+  DBUG((DBG,FUNC_NAME, "no X events waiting - about to reap children"));
   /* Zap all those zombies! */
   /* If we get to here, then there are no X events waiting to be processed.
    * Just take a moment to check for dead children. */
@@ -1693,9 +1704,10 @@ NextScwmEvent(Display * dpy, XEvent * event)
       }
   }
 
-  DBUG((DBG,__FUNCTION__, "leaving"));
+  DBUG((DBG,FUNC_NAME, "leaving"));
   return 1;
 }
+#undef FUNC_NAME
 
 
 /* Stolen from GWM 1.8c --gjb */
@@ -1740,6 +1752,7 @@ fill_x_keypress_event(XKeyEvent *evt, int type, KeySym keysym, int modifier,
 static
 Window
 WindowGettingButtonEvent(Window w, int x, int y)
+#define FUNC_NAME "WindowGettingButtonEvent"
 {
   int x2, y2;
   Window child, w2 = w;
@@ -1755,7 +1768,7 @@ WindowGettingButtonEvent(Window w, int x, int y)
     w2 = child;
     c++;
     if (c>1000) {
-      scwm_msg(ERR,__FUNCTION__,"Infinite loop");
+      scwm_msg(ERR,FUNC_NAME,"Infinite loop");
       goto find_listener;
     }
     goto find_window;
@@ -1777,6 +1790,7 @@ WindowGettingButtonEvent(Window w, int x, int y)
   }
   return w;
 }
+#undef FUNC_NAME
 
 
 /* Inspired by GWM 1.8c --gjb */

@@ -144,6 +144,7 @@ static XrmOptionDescRec table[] =
  */
 ScwmWindow *
 AddWindow(Window w)
+#define FUNC_NAME "AddWindow"
 {
   ScwmWindow *psw;		/* new scwm window structure */
   unsigned long valuemask;	/* mask for create windows */
@@ -272,14 +273,14 @@ AddWindow(Window w)
 
   SelectDecor(psw, border_width, resize_width);
 
-  DBUG((DBG,__FUNCTION__,"fTitle = %d, th = %d", psw->fTitle, psw->title_height));
+  DBUG((DBG,FUNC_NAME,"fTitle = %d, th = %d", psw->fTitle, psw->title_height));
 
 #ifdef HAVE_LIBSM_LIBICE
   restoreWindowState(psw);
 #endif
 
   if (psw->fStartsOnDesk) {
-    DBUG((DBG,__FUNCTION__,"fStartsOnDesk is true"));
+    DBUG((DBG,FUNC_NAME,"fStartsOnDesk is true"));
     Desk = psw->StartDesk;
   }
 
@@ -380,10 +381,10 @@ AddWindow(Window w)
     valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
   }
 
-  DBUG((DBG,__FUNCTION__,"Now fTitle = %d, th = %d", psw->fTitle, psw->title_height));
+  DBUG((DBG,FUNC_NAME,"Now fTitle = %d, th = %d", psw->fTitle, psw->title_height));
 
   /* What the heck, we'll always reparent everything from now on! */
-  DBUG((DBG,__FUNCTION__,"Creating child of root window: %d %d, %d x %d, %d",
+  DBUG((DBG,FUNC_NAME,"Creating child of root window: %d %d, %d x %d, %d",
        frame_x,frame_y,frame_width,frame_height,psw->bw));
 
   psw->frame =
@@ -408,7 +409,7 @@ AddWindow(Window w)
      happy).  This Parent window is the child of the frame window, and
      holds the client window. --07/27/98 gjb */
   attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
-  DBUG((DBG,__FUNCTION__,"Creating child of frame: %d %d, %d x %d, %d",
+  DBUG((DBG,FUNC_NAME,"Creating child of frame: %d %d, %d x %d, %d",
        psw->boundary_width, psw->boundary_width + psw->title_height,
        psw->attr.width, psw->attr.height, psw->bw));
   psw->Parent =
@@ -432,13 +433,13 @@ AddWindow(Window w)
   psw->title_height = 1;
   if (SHOW_TITLE_P(psw)) {
     psw->title_height = GET_DECOR(psw, TitleHeight) + psw->bw;
-    DBUG((DBG,__FUNCTION__,"Set height to %d",psw->title_height));
+    DBUG((DBG,FUNC_NAME,"Set height to %d",psw->title_height));
     if (psw->title_height < 1)
       psw->title_height = 1;
   }
 
   if (psw->fBorder) {
-    DBUG((DBG,__FUNCTION__,"Has border"));
+    DBUG((DBG,FUNC_NAME,"Has border"));
 
     if (TexturePixmap) {
       TexturePixmapSave = attributes.background_pixmap;
@@ -469,7 +470,7 @@ AddWindow(Window w)
   psw->title_x = psw->boundary_width + psw->title_height + 1;
   psw->title_y = psw->boundary_width;
   attributes.cursor = Scr.ScwmCursors[CURSOR_TITLE];
-  DBUG((DBG,__FUNCTION__,"Creating title window: %d %d, %d x %d",
+  DBUG((DBG,FUNC_NAME,"Creating title window: %d %d, %d x %d",
        psw->title_x, psw->title_y,
        psw->title_width, psw->title_height));
   psw->title_w =
@@ -489,7 +490,7 @@ AddWindow(Window w)
         valuemask_save = valuemask;
         valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
       }
-      DBUG((DBG,__FUNCTION__,"Creating left button %d",i));
+      DBUG((DBG,FUNC_NAME,"Creating left button %d",i));
       psw->left_w[i] =
         XCreateWindow(dpy, psw->frame, psw->title_height * i, 0,
                       psw->title_height, psw->title_height, 0,
@@ -514,7 +515,7 @@ AddWindow(Window w)
         valuemask_save = valuemask;
         valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
       }
-      DBUG((DBG,__FUNCTION__,"Creating right button %d",i));
+      DBUG((DBG,FUNC_NAME,"Creating right button %d",i));
       psw->right_w[i] =
         XCreateWindow(dpy, psw->frame,
                       psw->title_width -
@@ -544,7 +545,7 @@ AddWindow(Window w)
     }
     for (i = 0; i < 4; i++) {
       attributes.cursor = Scr.ScwmCursors[CURSOR_TOP + i];
-      DBUG((DBG,__FUNCTION__,"Creating side %d",i));
+      DBUG((DBG,FUNC_NAME,"Creating side %d",i));
       psw->sides[i] =
 	XCreateWindow(dpy, psw->frame, 0, 0, psw->boundary_width,
 		      psw->boundary_width, 0, CopyFromParent,
@@ -620,7 +621,7 @@ AddWindow(Window w)
   call1_hooks(before_place_new_window_hook, psw->schwin);
 
   if (!PlaceWindow(psw, Desk)) {
-    scwm_msg(ERR,__FUNCTION__,"PlaceWindow failed for %s -- resources leaked!",psw->name);
+    scwm_msg(ERR,FUNC_NAME,"PlaceWindow failed for %s -- resources leaked!",psw->name);
     /* there is cleanup we would need to do (but what is the 
        meaning of a failed PlaceWindow?) --07/27/98 gjb */
     return NULL;
@@ -692,7 +693,8 @@ AddWindow(Window w)
 
   return (psw);
 }
-  
+#undef FUNC_NAME 
+ 
 /*
  *  Procedure:
  *	FetchWMProtocols - finds out which protocols the window supports

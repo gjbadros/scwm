@@ -41,6 +41,7 @@ SCM scwm_resolve_hook;
 
 static void
 ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
+#define FUNC_NAME "ScwmClvChanged"
 {
   SCM obj = ScmFromPv(pclv->Pv());
   if (obj && obj != SCM_UNDEFINED) {
@@ -52,7 +53,7 @@ ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
   }
   ScwmWindow *psw = PswFromClvPv(pclv->Pv());
   if (!psw) {
-    DBUG((DBG,__FUNCTION__,"No struct ScwmWindow attached to var: %s", pclv->name().data()));
+    DBUG((DBG,FUNC_NAME,"No struct ScwmWindow attached to var: %s", pclv->name().data()));
     return;
   }
   if (!psolver) {
@@ -61,9 +62,11 @@ ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
   /* only gets inserted if not NULL */
   setpswDirty.insert(psw);
 }
+#undef FUNC_NAME
 
 static void
 ScwmResolve(ClSimplexSolver *psolver)
+#define FUNC_NAME "ScwmResolve"
 {
   SCM solver = ScmFromPv(psolver->Pv());
   call1_hooks(scwm_resolve_hook,solver);
@@ -76,11 +79,11 @@ ScwmResolve(ClSimplexSolver *psolver)
     psw->pswci->CopyStateToPswVars(&fMoved, &fResized);
 #ifndef SCWM_DEBUG_RESIZE_MSGS
     if (fMoved && fResized) {
-      DBUG((DBG,__FUNCTION__,"Move and resize of %s",psw->name));
+      DBUG((DBG,FUNC_NAME,"Move and resize of %s",psw->name));
     } else if (fMoved) {
-      DBUG((DBG,__FUNCTION__,"Move of %s",psw->name));
+      DBUG((DBG,FUNC_NAME,"Move of %s",psw->name));
     } else if (fResized) {
-      DBUG((DBG,__FUNCTION__,"Resize of %s",psw->name));
+      DBUG((DBG,FUNC_NAME,"Resize of %s",psw->name));
     }
 #endif
     /* resize subsumes a move, so check for it first */
@@ -93,7 +96,7 @@ ScwmResolve(ClSimplexSolver *psolver)
          cannot handle directly, so we force it here, just
          before doing the actual resize */
 #ifdef SCWM_DEBUG_RESIZE_MSGS
-      scwm_msg(DBG,__FUNCTION__,"was %d x %d now %d x %d",
+      scwm_msg(DBG,FUNC_NAME,"was %d x %d now %d x %d",
                FRAME_WIDTH(psw),FRAME_HEIGHT(psw),
                width, height);
 #endif
@@ -106,6 +109,7 @@ ScwmResolve(ClSimplexSolver *psolver)
   }
   setpswDirty.clear();
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(add_stays_on_window, "add-stays-on-window", 1, 0, 0,

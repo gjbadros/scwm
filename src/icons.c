@@ -169,6 +169,7 @@ GetIconWindow(ScwmWindow * psw)
  ****************************************************************************/
 static void 
 GetIconBitmap(ScwmWindow *psw)
+#define FUNC_NAME "GetIconBitmap"
 {
   Pixmap picture;
   Pixmap mask = None;
@@ -181,7 +182,7 @@ GetIconBitmap(ScwmWindow *psw)
   if (XGetGeometry(dpy, psw->wmhints->icon_pixmap, &JunkRoot, &JunkX, &JunkY,
 		   &width, &height,
 		   &JunkBW, &depth) == 0) {
-    scwm_msg(ERR, __FUNCTION__, "Help! Bad Icon bitmap!");
+    scwm_msg(ERR, FUNC_NAME, "Help! Bad Icon bitmap!");
     return;
   }
   picture = psw->wmhints->icon_pixmap;
@@ -198,6 +199,7 @@ GetIconBitmap(ScwmWindow *psw)
 					  width,height,depth);
   IMAGE(psw->icon_image)->foreign=1;
 }
+#undef FUNC_NAME
 
 /************************************************************************
  ************************************************************************

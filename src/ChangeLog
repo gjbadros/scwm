@@ -1,3 +1,11 @@
+Tue Nov 17 18:03:44 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Grab.c, add_window.c, borders.c, constraint-primitives.cc,
+ 	drawmenu.c, events.c, face.c, icons.c, image.c, log-usage.c,
+ 	menu.c, resize.c, scwm-constraints.cc, scwm-constraints.hpp,
+ 	scwm.c, session-manager.c, window.c: Eliminate use of the
+ 	gcc-specific __FUNCTION__ construct.
+
 Mon Nov 16 17:41:54 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* resize.c (set_message_window_attributes_x): Allocate shadow and

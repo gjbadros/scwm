@@ -148,6 +148,7 @@ SuggestMoveWindowTo(PScwmWindow psw, int x, int y, Bool fOpaque)
 /* x,y are virtual positions */
 void 
 SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
+#define FUNC_NAME "SuggestSizeWindowTo"
 {
   if (!psolver) {
     SetScwmWindowGeometry(psw,x,y,w,h,fOpaque);
@@ -169,11 +170,12 @@ SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
     .suggestValue(pswci->_frame_height,h)
     .resolve();
 
-  DBUG((DBG,__FUNCTION__,
+  DBUG((DBG,FUNC_NAME,
         "Now clv-width,height are %d x %d",
         pswci->_frame_width.intValue(),
         pswci->_frame_height.intValue()));
 }
+#undef FUNC_NAME
 
 void
 CassowaryModifyOpaqueFlag(Bool *pfOpaque)
