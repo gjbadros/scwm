@@ -238,11 +238,14 @@ Write a debug message if DEBUG is #t.")
   interactive_spec = scm_procedure_property(thunk,sym_interactive);
   if (UNSET_SCM(interactive_spec)) {
     SCM procname = scm_procedure_name(thunk);
-    char *szProcname = strdup("<anonymous procedure>");
-    if (gh_string_p(procname))
-      szProcname = gh_scm2newstr(procname, NULL);
-    scwm_msg(WARN,FUNC_NAME,"Procedure %s is not interactive.", szProcname);
-    gh_free(szProcname);
+    /* char *szProcname = strdup("<anonymous procedure>"); 
+       only warn about non-anonymous non-interactive procedures;
+       it's a pain to use (lambda* "" () ..) to create procs for bindings */
+    if (gh_string_p(procname)) {
+      char *szProcname = gh_scm2newstr(procname, NULL);
+      scwm_msg(WARN,FUNC_NAME,"Procedure %s is not interactive.", szProcname);
+      gh_free(szProcname);
+    }
   }
   { /* scope */
     SCM args = SCM_EOL;

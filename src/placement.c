@@ -701,7 +701,11 @@ PlaceWindow(ScwmWindow *psw)
     scwm_msg(DBG,"PlaceWindow","%s is a transient window",psw->name);
 #endif
     place_proc=scm_object_property(win,sym_transient_placement_proc);
-    if (SCM_BOOL_F == place_proc || 
+    /* we need to use the default placement procedure 
+       if we're doing the initial window capture, otherwise we get into
+       a deadlock --12/07/99 gjb */
+    if (!Scr.fWindowsCaptured ||
+        SCM_BOOL_F == place_proc || 
 	SCM_BOOL_F == scwm_safe_call1(place_proc, win)) {
 #ifdef DEBUG_PLACE_WINDOW
     scwm_msg(DBG,"PlaceWindow","using default_transient_placement_proc");
