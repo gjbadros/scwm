@@ -1,5 +1,8 @@
 1998-10-10  Todd Larason  <jtl@teeny.molehill.org>
 
+	* Makefile.am (scwm.sgml): get documentation strings from module
+	.c files
+
 	* dev/dynamic-modules: first draft of some dynamic module notes;
 	both how-to and some pointers to theory
 
