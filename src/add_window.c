@@ -43,6 +43,8 @@
  **********************************************************************/
 #include <config.h>
 
+/* #define SCWM_DEBUG_MSGS */
+
 #define ADD_WINDOW_IMPLEMENTATION
 #include <stdio.h>
 #include <string.h>
@@ -243,9 +245,9 @@ AddWindow(Window w)
   tmp_win->w = w;
   ResetAllFlags(tmp_win);
 
-  tmp_win->cmap_windows = (Window *) NULL;
+  tmp_win->cmap_windows = NULL;
 
-  if (!PPosOverride)
+  if (!PPosOverride) /* FIXGJBNOW: Use FXWindowExists() */
     if (XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
 		     &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth) == 0) {
       free((char *) tmp_win);
@@ -349,7 +351,9 @@ AddWindow(Window w)
 
   SelectDecor(tmp_win, border_width, resize_width);
 
-  CopyCommonFlags(tmp_win, &sw_saved_flags);
+  CopySetCommonFlags(tmp_win, &sw_saved_flags);
+
+  DBUG(__FUNCTION__,"fTitle = %d, th = %d", tmp_win->fTitle, tmp_win->title_height);
 
   /* FIXGJB: need to provide more flexibility in how the
      icon gets selected */
@@ -385,7 +389,9 @@ AddWindow(Window w)
    * reparented, so we'll get a DestroyNotify for it.  We won't have
    * gotten one for anything up to here, however.
    */
-  XGrabServer_withSemaphore(dpy);
+  XGrabServer_withSemaphore(dpy); 
+  /* FIXGJB: what's up with these XGetGeometry calls that don't care
+     about anything but the return value */
   if (XGetGeometry(dpy, w, &JunkRoot, &JunkX, &JunkY,
 		   &JunkWidth, &JunkHeight,
 		   &JunkBW, &JunkDepth) == 0) {
@@ -449,7 +455,14 @@ AddWindow(Window w)
     valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
   }
 
+  DBUG(__FUNCTION__,"Now fTitle = %d, th = %d", tmp_win->fTitle, tmp_win->title_height);
+
   /* What the heck, we'll always reparent everything from now on! */
+  DBUG(__FUNCTION__,"Creating child of root window: %d %d, %d x %d, %d",
+       tmp_win->frame_x, tmp_win->frame_y,
+       tmp_win->frame_width, tmp_win->frame_height,
+       tmp_win->bw);
+
   tmp_win->frame =
     XCreateWindow(dpy, Scr.Root, tmp_win->frame_x, tmp_win->frame_y,
 		  tmp_win->frame_width, tmp_win->frame_height,
@@ -467,6 +480,11 @@ AddWindow(Window w)
 
   /* Thats not all, we'll double-reparent the window ! */
   attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
+  DBUG(__FUNCTION__,"Creating child of frame: %d %d, %d x %d, %d",
+       tmp_win->boundary_width, tmp_win->boundary_width + tmp_win->title_height,
+       tmp_win->frame_width - 2 * tmp_win->boundary_width,
+       tmp_win->frame_height - 2 * tmp_win->boundary_width - tmp_win->title_height,
+       tmp_win->bw);
   tmp_win->Parent =
     XCreateWindow(dpy, tmp_win->frame,
 		  tmp_win->boundary_width,
@@ -485,6 +503,8 @@ AddWindow(Window w)
   if (tmp_win->title_width < 1)
     tmp_win->title_width = 1;
   if (tmp_win->fBorder) {
+    DBUG(__FUNCTION__,"Has border");
+
     if (TexturePixmap) {
       TexturePixmapSave = attributes.background_pixmap;
       attributes.background_pixmap = TexturePixmap;
@@ -512,6 +532,9 @@ AddWindow(Window w)
     tmp_win->title_x = tmp_win->boundary_width + tmp_win->title_height + 1;
     tmp_win->title_y = tmp_win->boundary_width;
     attributes.cursor = Scr.ScwmCursors[CURSOR_TITLE];
+    DBUG(__FUNCTION__,"Creating title window: %d %d, %d x %d",
+	 tmp_win->title_x, tmp_win->title_y,
+	 tmp_win->title_width, tmp_win->title_height);
     tmp_win->title_w =
       XCreateWindow(dpy, tmp_win->frame, tmp_win->title_x, tmp_win->title_y,
 		    tmp_win->title_width, tmp_win->title_height, 0,
@@ -527,6 +550,7 @@ AddWindow(Window w)
 	  valuemask_save = valuemask;
 	  valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
 	}
+	DBUG(__FUNCTION__,"Creating left button %d",i);
 	tmp_win->left_w[i] =
 	  XCreateWindow(dpy, tmp_win->frame, tmp_win->title_height * i, 0,
 			tmp_win->title_height, tmp_win->title_height, 0,
@@ -550,6 +574,7 @@ AddWindow(Window w)
 	  valuemask_save = valuemask;
 	  valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
 	}
+	DBUG(__FUNCTION__,"Creating right button %d",i);
 	tmp_win->right_w[i] =
 	  XCreateWindow(dpy, tmp_win->frame,
 			tmp_win->title_width -
@@ -579,6 +604,7 @@ AddWindow(Window w)
     }
     for (i = 0; i < 4; i++) {
       attributes.cursor = Scr.ScwmCursors[CURSOR_TOP + i];
+      DBUG(__FUNCTION__,"Creating side %d",i);
       tmp_win->sides[i] =
 	XCreateWindow(dpy, tmp_win->frame, 0, 0, tmp_win->boundary_width,
 		      tmp_win->boundary_width, 0, CopyFromParent,
@@ -654,7 +680,7 @@ AddWindow(Window w)
   KeepOnTop();
   XUngrabServer_withSemaphore(dpy);
 
-  XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
+  XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,  /* FIXGJB : does nothing? */
 	       &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
   XTranslateCoordinates(dpy, tmp_win->frame, Scr.Root, JunkX, JunkY,
 			&a, &b, &JunkChild);
