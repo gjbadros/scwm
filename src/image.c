@@ -57,7 +57,7 @@ ImlibData *imlib_data;
 
 static Colormap ImageColorMap;
 
-/* FIXMS: arbitrary choices for these sizes - I need to check out if
+/* MS:FIXME:: arbitrary choices for these sizes - I need to check out if
  * there is a good way to have hash tables grow automatically. 
  */
 
@@ -73,7 +73,7 @@ static Colormap ImageColorMap;
  */
 
 /*
- * FIXMS: This architecture prevents new images from shadowing old
+ * MS:FIXME:: This architecture prevents new images from shadowing old
  * ones during a single invocation if the old image is currently in
  * core, but this can be fixed by adding some of the info from stat()
  * on the image file to the image struct.  
@@ -323,7 +323,7 @@ SCWM_PROC(load_xpm, "load-xpm", 1, 0, 0,
 
   xpm_attributes.colormap = ImageColorMap;
 
-  /* FIXMS: the Xpm manual suggests that a closeness of 40000 is
+  /* MS:FIXME:: the Xpm manual suggests that a closeness of 40000 is
      usually best. 655535 will allow any color to match, thus
      preventing failure solely due to color allocation problems. 0
      presumably requires an exact match. This should be configurable
@@ -583,7 +583,7 @@ appropriate file. */
   /* First check the hash table for this image.  */
   result=scm_hash_ref(image_hash_table, name, SCM_BOOL_F);
   if (result != SCM_BOOL_F) {
-    /* FIXMS: should really check for up-to-date-ness here */
+    /* MS:FIXME:: should really check for up-to-date-ness here */
     /* Never mind, let's just rely on the cache clear stuff */
     return(result);
   }

@@ -293,7 +293,7 @@ the window's smart-placement flag is on. */
 }
 #undef FUNC_NAME
 
-/* FIXMS: this returns true or false always, give it a predicate name? */
+/* MS:FIXME:: this returns true or false always, give it a predicate name? */
 
 SCWM_PROC(smart_placement_is_really_smart_p, "smart-placement-is-really-smart?", 0, 0, 0,
           ())
@@ -309,7 +309,7 @@ the window's smart-placement flag is on. */
 
 
 
-/* FIXMS - the functionality related to the next six procedures
+/* MS:FIXME:: - the functionality related to the next six procedures
    should be implemented by adding new event bindings eventually */
 
 SCWM_PROC(set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0,
@@ -334,7 +334,7 @@ SCWM_PROC(click_to_focus_passes_click_p, "click-to-focus-passes-click?", 0, 0, 0
 #undef FUNC_NAME
 
 
-/* FIXMS: remove this one in particular once window-focus-hook exists. */
+/* MS:FIXME:: remove this one in particular once window-focus-hook exists. */
 
 SCWM_PROC(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
           (SCM flag))
@@ -349,7 +349,7 @@ window */
 #undef FUNC_NAME
 
 
-/* FIXMS - this seems to be redundant with auto-raise to some degree... */
+/* MS:FIXME:: - this seems to be redundant with auto-raise to some degree... */
 
 SCWM_PROC(click_to_focus_raises_p, "click-to-focus-raises?", 0, 0, 0,
           ())
@@ -361,10 +361,10 @@ SCWM_PROC(click_to_focus_raises_p, "click-to-focus-raises?", 0, 0, 0,
 #undef FUNC_NAME
 
 
-/* FIXMS - this seems to be a pretty useless idea, or at least there
+/* MS:FIXME:: - this seems to be a pretty useless idea, or at least there
    must be a better way of implementing it. */
 
-/* FIXMS - looking at it again, this idea seems utterly
+/* MS:FIXME:: - looking at it again, this idea seems utterly
    bogus. Couldn't you just (bind-mouse 'all 1 raise-window) and get
    the exact same effect?  Examine further... */
 
@@ -510,7 +510,7 @@ synchronous mode, but can be easier to debug. */
 #undef FUNC_NAME
 
 
-/* FIXMS: this should probably be split into multiple procs. */
+/* MS:FIXME:: this should probably be split into multiple procs. */
 SCWM_PROC(X_version_information, "X-version-information", 0, 0, 0,
           ())
      /** Return some information about the version of the running X server.
@@ -527,7 +527,7 @@ revision, the X server vendor, and the vendor release number. */
 #undef FUNC_NAME
 
 
-/* FIXMS: this should probably be split into multiple procs. Also, the
+/* MS:FIXME:: this should probably be split into multiple procs. Also, the
    visual type should probably be returned as a symbol, not a
    string.*/
 

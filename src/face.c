@@ -339,7 +339,7 @@ SCWM_SYMBOL(sym_title , "title");
 SCWM_SYMBOL(sym_border , "border");
 
 
-/* FIXMS Probably the right way to do this is to keep a hash table of
+/* MS:FIXME:: Probably the right way to do this is to keep a hash table of
 pointers to functions that know how to set each individual flag, but
 this ugly code is almost certainly more compact and quite possibly
 faster. If only C had closures... */
@@ -363,7 +363,7 @@ See the section on the `Face Flags' concept. */
       bf->style &= ~HOffCenter;
     } 
     else {
-      /* FIXMS: use something more accurate. */
+      /* MS:FIXME:: use something more accurate. */
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
@@ -378,7 +378,7 @@ See the section on the `Face Flags' concept. */
       bf->style &= ~VOffCenter;
     } 
     else {
-      /* FIXMS: use something more accurate. */
+      /* MS:FIXME:: use something more accurate. */
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
@@ -393,7 +393,7 @@ See the section on the `Face Flags' concept. */
       bf->style &= ~SunkButton;
       bf->style |= FlatButton;
     } else {
-      /* FIXMS: use something more accurate. */
+      /* MS:FIXME:: use something more accurate. */
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
@@ -408,7 +408,7 @@ See the section on the `Face Flags' concept. */
       bf->style &= ~UseBorderStyle & ~UseTitleStyle;
     } 
     else {
-      /* FIXMS: use something more accurate. */
+      /* MS:FIXME:: use something more accurate. */
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
@@ -418,7 +418,7 @@ See the section on the `Face Flags' concept. */
     } else if (flagval==SCM_BOOL_F) {
       bf->style &= ~HiddenHandles;
     } else {
-      /* FIXMS: use something more accurate. */
+      /* MS:FIXME:: use something more accurate. */
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
@@ -428,12 +428,12 @@ See the section on the `Face Flags' concept. */
     } else if (flagval==SCM_BOOL_F) {
       bf->style &= ~NoInset;
     } else {
-      /* FIXMS: use something more accurate. */
+      /* MS:FIXME:: use something more accurate. */
       SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
   } else {
-    /* FIXMS: use something more accurate. */
+    /* MS:FIXME:: use something more accurate. */
     SCWM_WRONG_TYPE_ARG(3,flagval);    
   }
   return SCM_UNSPECIFIED;
@@ -619,7 +619,7 @@ when tiled, which makes it fully destructive.
  */
 
 /*
- * FIXMS gradients should be exposed as scheme types, that would eliminate 
+ * MS:FIXME:: gradients should be exposed as scheme types, that would eliminate 
  * a lot of the hackery here. Not sure if relief patterns
  * are fundamental enough to be a type...
  */
@@ -651,7 +651,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
   if (spec==sym_relief_pattern) {
     int l;
-    /* FIXMS arbitrary limit of 20 points in relief patterns is silly */
+    /* MS:FIXME:: arbitrary limit of 20 points in relief patterns is silly */
     if (gh_list_p(arg) &&((l=gh_length(arg)) >= 2)
 	&& (l <= 20)) {
       struct vector_coords vc;
@@ -672,18 +672,18 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	 append (or mutate if its style is SimpleButton) */
       bf = append_new_face(bf);
       /* copy the vector to bf */
-      /* FIXMS stylistically poor to memcpy structs, but should DTRT,
+      /* MS:FIXME:: stylistically poor to memcpy structs, but should DTRT,
        redo this correctly later. */
       memcpy(&(bf->vector), &vc, sizeof(struct vector_coords));
       bf->style &= ~ButtonFaceTypeMask;
       bf->style |= VectorButton;
     } else {
-      /* FIXMS give a better error message */
+      /* MS:FIXME:: give a better error message */
       SCWM_WRONG_TYPE_ARG(3,arg);
     }
 
   } else if (spec==sym_solid) {
-    /* FIXMS give a better error message */
+    /* MS:FIXME:: give a better error message */
     VALIDATE_ARG_COLOR(3,arg);
 
     /* fully destructive, so free the face and 
@@ -709,7 +709,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       nsegs=gh_length(arg)-1;
 
       if (nsegs < 1 || nsegs > 128) {
-	/* FIXMS give a better error message */
+	/* MS:FIXME:: give a better error message */
 	SCWM_WRONG_TYPE_ARG(3,arg);
       }
       perc = NEWC(nsegs,int);
@@ -737,7 +737,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	}
 	FREEC(s_colors);
 	FREEC(perc);
-	/* FIXMS give a better error message */
+	/* MS:FIXME:: give a better error message */
 	SCWM_WRONG_TYPE_ARG(3,arg);
       }
 
@@ -750,7 +750,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
       if (!pixels) {
 	/* error: couldn't allocate gradient */
-	/* FIXMS give a better error message */
+	/* MS:FIXME:: give a better error message */
 	SCWM_WRONG_TYPE_ARG(3,arg);
       }
 
@@ -768,7 +768,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	bf->style |= HGradButton;
       }
     } else {
-      /* FIXMS give a better error message */
+      /* MS:FIXME:: give a better error message */
       SCWM_WRONG_TYPE_ARG(3,arg);
     }
   } else if (spec==sym_pixmap) {
@@ -800,7 +800,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	}
 	if (image==SCM_BOOL_F) {
 	  /* signal an error: couldn't load picture */
-	  /* FIXMS give a better error message */
+	  /* MS:FIXME:: give a better error message */
 	  scwm_msg(WARN,FUNC_NAME, "Image not found for argument #%d",3);
 	}
       }
@@ -824,11 +824,11 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	bf->style |= PixmapButton;
       }
     } else {
-      /* FIXMS give a better error message */
+      /* MS:FIXME:: give a better error message */
       scwm_msg(WARN,FUNC_NAME, "Image not found for argument #%d",3);
     }
   } else {
-    /* FIXMS give a better error message */
+    /* MS:FIXME:: give a better error message */
     SCWM_WRONG_TYPE_ARG(3,arg);
   }
 

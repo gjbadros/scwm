@@ -114,7 +114,7 @@ SCWM_PROC(color_p, "color?", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-/* FIXMS: Should we extend this to return r, g and b values? Should we
+/* MS:FIXME:: Should we extend this to return r, g and b values? Should we
    perhaps even store those in the color structure? */
 
 SCWM_PROC(color_properties, "color-properties", 1, 0, 0,
@@ -204,7 +204,7 @@ ScmMakeColor(const char *cn, int *perror_status)
     if (perror_status)
       *perror_status = 2; /* cannot alloc */
     if (ClosestColor(&color)) {
-#ifdef WARN_CLOSE_MATCH /* FIXGJB: need warnings to be run-time configurable */
+#ifdef WARN_CLOSE_MATCH /* GJB:FIXME:: need warnings to be run-time configurable */
       scwm_msg(WARN,"ScmMakeColor","Allocated a close match for: %s",cn);
 #endif
       if (perror_status)
@@ -301,7 +301,7 @@ typedef enum {
    coded. Should give better relief colors for many cases than the old
    fvwm algorithm. */
 
-/* FIXMS: This can probably be optimized more, examine later. */
+/* MS:FIXME:: This can probably be optimized more, examine later. */
 
 void 
 color_mult (unsigned short *red, 
@@ -678,7 +678,7 @@ redraw_highlight_window()
   }
 }
 
-/* FIXMS: Need to protect color objects in the below! */
+/* MS:FIXME:: Need to protect color objects in the below! */
 
 SCWM_PROC(set_highlight_foreground_x, "set-highlight-foreground!", 1, 0, 0,
            (SCM fg))
@@ -720,9 +720,9 @@ have their own foreground color. */
 #undef FUNC_NAME
 
 
-/* FIXMS: eventually add option to pass background relief, shadow? */
+/* MS:FIXME:: eventually add option to pass background relief, shadow? */
 
-/* FIXMS: the more I do this, the more I wish we had a nice GC
+/* MS:FIXME:: the more I do this, the more I wish we had a nice GC
    abstraction. */
 
 SCWM_PROC(set_highlight_background_x, "set-highlight-background!", 1, 0, 0,

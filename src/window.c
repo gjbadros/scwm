@@ -1816,7 +1816,7 @@ context in the usual way if not specified. */
   psw = PSWFROMSCMWIN(win);
 
   RaiseWindow(psw);
-  /* FIXMS darn, this is not going to do what we want it to -- must
+  /* MS:FIXME:: darn, this is not going to do what we want it to -- must
      start keeping a general stays on top flag as well a currently on
      top flag in the window struct, only the latter of which is
      changed by raises and lowers. */
@@ -1859,7 +1859,7 @@ and possibly other legacy fvwm2 modules). */
 
   VALIDATE_ARG_LIST(1,winlist);
 
-  /* FIXMS: Hmmm, do we really want to restack the icons of iconified
+  /* MS:FIXME:: Hmmm, do we really want to restack the icons of iconified
      windows? */
 
   for (p=winlist, cnt=0; SCM_EOL!=p; p=gh_cdr(p)) {
@@ -1887,7 +1887,7 @@ and possibly other legacy fvwm2 modules). */
   if (cnt!=0) {
     windows = NEWC(cnt,Window);
 
-    /* FIXMS: This doesn't properly handle transient windows (the way
+    /* MS:FIXME:: This doesn't properly handle transient windows (the way
        raise does), but I am unsure what the really right way to handle
        those is. Need to see if ICCCM really requires them to always be
        in front of the app. In fact, ICCCM says no such thing about
@@ -3796,7 +3796,7 @@ context in the usual way if not specified. */
   if (IMAGE_P(image)) {
     psw->icon_req_image = image;
     icon_name = gh_scm2newstr(IMAGE(image)->full_name, &length);
-    /* FIXMS: This can't deal properly with app-specified icons! */
+    /* MS:FIXME:: This can't deal properly with app-specified icons! */
     BroadcastName(M_ICON_FILE, psw->w, psw->frame,
 		  (unsigned long) psw, icon_name);
     gh_free(icon_name);
@@ -3918,7 +3918,7 @@ not specified. */
 }
 #undef FUNC_NAME
 
-/* FIXMS: seems silly in current framework. */
+/* MS:FIXME:: seems silly in current framework. */
 
 SCWM_PROC(set_decorate_transient_x, "set-decorate-transient!", 1, 1, 0,
           (SCM flag, SCM win))

@@ -1038,7 +1038,7 @@ Repository Timestamp: %s\n",
 #define SCWMRC ".scwmrc"
 #endif
   
-  /* FIXMS: clean this ugly mess up. */
+  /* MS:FIXME:: clean this ugly mess up. */
   if (strlen(szCmdConfig) == 0) {
 #ifdef I18N
       scwm_safe_eval_str(

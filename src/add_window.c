@@ -295,7 +295,7 @@ AddWindow(Window w)
   psw->icon_req_image = SCM_BOOL_F;
   psw->mini_icon_image = SCM_BOOL_F;
 
-  /* FIXMS - bletcherous... we process the hint properties separately,
+  /* MS:FIXME:: bletcherous... we process the hint properties separately,
      since hints need to be processed early, but some procs we may
      want to pass alter the size of the window &c. Will find a better
      way to deal with this - probably a reprocesshints function of
@@ -305,7 +305,7 @@ AddWindow(Window w)
   psw->fTitle = True;
   psw->fBorder = True;
 
-  /* FIXMS: need to find better way to ensure colors are valid before
+  /* MS:FIXME: need to find better way to ensure colors are valid before
      window comes under GC control. */
 
   psw->TextColor = Scr.NotMenuColors.fg;
@@ -690,7 +690,7 @@ AddWindow(Window w)
      move_finalize, which PlaceWindow, e.g., does */
   CassowaryNewWindow(psw);      /* add the stay constraints in */
 
-  /* FIXMS: Hmm, do we need to do any real cleanup if this fails?
+  /* MS:FIXME:: Hmm, do we need to do any real cleanup if this fails?
      _Can_ it fail, in its new location?
      -- I think we just have to make PlaceWindow put it somewhere
      and never fail - that's its current behaviour, but it still

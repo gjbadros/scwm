@@ -247,7 +247,7 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
   }
 
   
-  /* FIXMS: You should be able to set separately whether you want icon
+  /* MS:FIXME:: You should be able to set separately whether you want icon
      titles or icon images or both. */
   /* CRW:FIXME:MS: Has the above already been implemented?  If so,
      the comment should be deleted... */
@@ -375,7 +375,7 @@ DrawIconWindow(ScwmWindow * psw)
     flush_expose(psw->icon_pixmap_w);
 
   if (Scr.Hilite == psw) {
-    /* FIXMS: This can't poossibly be right. */
+    /* MS:FIXME:: This can't poossibly be right. */
     if (Scr.d_depth < 2) {
       Relief =
 	Shadow = Scr.DefaultDecor.HiShadowGC;

@@ -971,7 +971,7 @@ run_input_hooks(fd_set *in_fdset)
       scwm_safe_call0(proc);
       while(SCM_OPINFPORTP(port) &&
 	    SCM_BOOL_T==scm_char_ready_p(port) 
-	    /* FIXMS: Is this safe enough? */
+	    /* MS:FIXME:: Is this safe enough? */
 	    && gh_cdr(prev)==cur) {
 	scwm_safe_call0(proc);
       }

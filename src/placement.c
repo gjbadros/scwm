@@ -461,7 +461,7 @@ used in user-defined placement procedures (see
 
   VALIDATE_ARG_WIN_COPY(1,win,psw);
 
-  /* FIXMS: hackish workaround for now to not mess with the smart
+  /* MS:FIXME:: hackish workaround for now to not mess with the smart
      placement function itself, but make it not call CleverPlacement
      when called from here.. */
 
@@ -655,7 +655,7 @@ PlaceWindow(ScwmWindow *psw)
   GetGravityOffsets(psw);
 
   
-  /* FIXMS: The desk selection stuff should be folded into the
+  /* MS:FIXME:: The desk selection stuff should be folded into the
      placement-procs, but let's leave it as it is for now. */
 
   default_select_desk(psw);
