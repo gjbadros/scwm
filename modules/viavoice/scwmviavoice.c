@@ -535,7 +535,7 @@ SmHandler FocusGrantedCB( SM_MSG reply,
 SCWM_PROC(vv_connect,"vv-connect",0,1,0,
           (SCM proc),
 "Connect to the ViaVoice speech recognizer, calling PROC after connected.
-See "modules/viavoice/README" for details. See also `vv-initialize'.")
+See <filename>modules/viavoice/README</filename> for details. See also `vv-initialize'.")
 #define FUNC_NAME s_vv_connect 
 {
   VALIDATE_ARG_PROC_USE_F(1,proc);

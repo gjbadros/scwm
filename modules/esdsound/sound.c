@@ -34,7 +34,7 @@ static int esd;
 SCWM_PROC(sound_load, "sound-load", 1, 1, 0,
 	  (SCM file, SCM name),
 "Load sound from FILE, tagging it with NAME.
-If NAME is not given, "scwm" is used.
+If NAME is not given, \"scwm\" is used.
 Returns a sound object usable with the other sound functions.")
 #define FUNC_NAME s_sound_load
 {

@@ -324,7 +324,7 @@ animated window shades and animated moves.")
 
 SCWM_PROC(animated_window_shade, "animated-window-shade", 0, 1, 0,
           (SCM win),
-"Cause WIN to become "window-shaded".
+"Cause WIN to become \"window-shaded\".
 That is, to roll up into just a titlebar.  The window will be animated
 as it rolls up, producing a pleasing visual effect. WIN defaults to
 the window context in the usual way if not specified.")
