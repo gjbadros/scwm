@@ -1,3 +1,8 @@
+Mon Mar  9 09:12:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* utilities/scwmexec/scwmexec.c: Use scwmexec_exec_full and
+ 	display output and errors, if any, resulting from the evaluation.
+
 Sun Mar  8 22:25:25 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* version.h: Bumped to version 0.6b.

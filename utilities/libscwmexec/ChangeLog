@@ -1,5 +1,15 @@
 Mon Mar  9 00:45:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* libmain.c: Slight change to the event waiting - get all
+ 	PropertyNotify events for the relevant window, only drop out of
+ 	the loop when we get the one we care about.
+
+	* libmain.c: Add a new call scwmexec_exec_full which gets the
+ 	redirected error and output as well as the result. Also, change
+ 	the way the pproperties are waited for to use XIfEvent; this
+ 	should prevent other PropertyNotify's from being eaten if this
+ 	library is used from an X app.
+
 	* libmain.c: Use PropModeAppend when setting SCWMEXEC_REQWIN
  	property; this should make the scwmexec protocol safe against
  	races between multiple clients.

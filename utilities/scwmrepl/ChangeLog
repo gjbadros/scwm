@@ -1,3 +1,8 @@
+Mon Mar  9 09:13:12 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwmrepl.c: Report errors and output, if any; also, stop
+ 	printing "; Value: " before printing the value.
+
 Sun Mar  8 23:56:55 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* scwmrepl.c: Coreected check_balance to correctly detect
