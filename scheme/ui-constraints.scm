@@ -31,16 +31,6 @@
 (define-public global-constraint-instance-list ())
 
 
-;; remove-from-list
-
-;; removes an element corresponding to ELEM from list LIST
-
-(define (remove-from-list LIST ELEM)
-  (if (eq? (car LIST) ELEM) 
-      (cdr LIST) 
-      (cons (car LIST) (remove-from-list (cdr LIST)))))
-
-
 ;; UI-CONSTRAINT-CLASS
 
 ;; The UI-CONSTRAINT-CLASS specifies a type of constraint.
@@ -51,15 +41,17 @@
 ;; specify a UI for creating the constraint.
 ;;
 ;; The format for an UI-CONSTRAINT-CLASS object is:
-;; (obid-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC)
+;; (obid-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC)
 
 ;; make-ui-constraint-class
 
 ;; returns a new constraint class object based on the parameters
 ;; SIDE-EFFECT: adds new class obj to the global list
 
-(define-public (make-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED)
-  (let* ((lst (list NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED))
+(define-public (make-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC)
+  "CTR takes NUM-WINDOWS windows and creates a constraint of this type.
+SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if it is satisfied"
+  (let* ((lst (list NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC))
          (obj (cons obid-ui-constraint-class lst)))
     (set! global-constraint-class-list (cons obj global-constraint-class-list))
     obj))
@@ -71,7 +63,7 @@
 ;; SIDE-EFFECT: removes class object from the global list
 
 (define-public (delete-ui-constraint-class! UI-CONSTRAINT-CLASS)
-  (set! global-constraint-class-list (remove-from-list UI-CONSTRAINT-CLASS global-constraint-class-list)))
+  (set! global-constraint-class-list (delq UI-CONSTRAINT-CLASS global-constraint-class-list)))
 
 
 ;; ui-constraint-class?
@@ -138,7 +130,7 @@
 (define-public (ui-constraint-class-draw-proc UI-CONSTRAINT-CLASS)
   (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
       (cadddr (cddr UI-CONSTRAINT-CLASS))
-      #f))
+      (error "Must pass UI-CONSTRAINT-CLASS-ARGUMENT")))
 
 
 ;; ui-constraint-class-satisfied
@@ -147,7 +139,7 @@
 ;;   the constraint class.
 ;; returns #f if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 
-(define-public (ui-constraint-class-satisfied UI-CONSTRAINT-CLASS)
+(define-public (ui-constraint-class-satisfied-proc UI-CONSTRAINT-CLASS)
   (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
       (cadddr (cdddr UI-CONSTRAINT-CLASS))
       #f))
@@ -175,8 +167,8 @@
 
 (define-public (make-ui-constraint UI-CONSTRAINT-CLASS WIN-LIST)
   (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
-      (let ((uc (cons obid-ui-constraint ((ui-constraint-class-ctr UI-CONSTRAINT-CLASS WIN-LIST)))))
-	(cons uc global-constraint-instance-list)
+      (let ((uc (cons obid-ui-constraint ((ui-constraint-class-ctr UI-CONSTRAINT-CLASS) WIN-LIST))))
+	(set! global-constraint-instance-list (cons uc global-constraint-instance-list))
 	uc)
       #f))
 
@@ -203,7 +195,7 @@
 ;; SIDE-EFFECT: removes instance object from the global list
 
 (define-public (delete-ui-constraint! UI-CONSTRAINT)
-  (set! global-constraint-instance-list (remove-from-list UI-CONSTRAINT global-constraint-instance-list)))
+  (set! global-constraint-instance-list (delq UI-CONSTRAINT global-constraint-instance-list)))
 
 
 ;; ui-constraint?
