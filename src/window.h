@@ -2,8 +2,8 @@
  * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  */
 
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef WINDOW_H__
+#define WINDOW_H__
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -225,7 +225,7 @@ unsigned long FlagsBitsFromSw(ScwmWindow *psw);
 #define BUTTON9     (1<<8)
 #define BUTTON10    (1<<9)
 
-SCM  ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p);
+SCM ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p);
 
 #define VALIDATE(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F, SCM_BOOL_T)))==SCM_BOOL_F) return SCM_BOOL_F
 
@@ -260,8 +260,6 @@ size_t free_window(SCM obj);
 SCM mark_window(SCM obj);
 int print_window(SCM obj, SCM port, scm_print_state * pstate);
 
-void init_window();
-
 ScwmWindow *PswFromWindow(Display *dpy, Window w);
 ScwmWindow *PswFromPointerLocation(Display *dpy);
 ScwmWindow *PswSelectInteractively(Display *dpy);
@@ -286,109 +284,16 @@ void WarpOn(ScwmWindow *psw, int warp_x, int x_unit, int warp_y, int y_unit);
 Bool GrabEm(enum cursor);
 void UngrabEm(void);
 
-SCM make_window(ScwmWindow *psw);
 void invalidate_window(SCM schwin);
-SCM window_p(SCM obj);
+SCM make_window(ScwmWindow *psw);
+void move_finalize(Window w, ScwmWindow * psw, int x, int y);
 
-SCM get_window(SCM kill_p, SCM select_p, SCM release_p);
-SCM current_window_with_focus();
-SCM current_window_with_pointer();
-SCM select_window_interactively();
-
-SCM select_window(SCM kill_p, SCM release_p);
-SCM delete_window(SCM win);
-SCM destroy_window(SCM win);
-SCM window_deletable_p(SCM win);
-SCM focus(SCM win);
-SCM unfocus();
-SCM warp_to_window(SCM win);
-SCM raise_window(SCM win);
-SCM lower_window(SCM win);
-SCM raised_p(SCM win);
-SCM transient_p(SCM win);
-SCM deiconify(SCM win);
-SCM iconify(SCM win);
-SCM iconified_p(SCM win);
-SCM stick(SCM win);
-SCM unstick(SCM win);
-SCM sticky_p(SCM win);
-
-SCM window_shade(SCM win, SCM animated_p);
-SCM un_window_shade(SCM win, SCM animated_p);
-SCM window_shaded_p(SCM win);
-
-
-SCM set_animation_x(SCM vector);
-SCM move_to(SCM x, SCM y, SCM win, SCM animated, SCM move_pointer_too);
-SCM interactive_move(SCM win);
-SCM resize_to(SCM w, SCM h, SCM win);
-SCM refresh_window(SCM win);
-
-SCM move_window_to_desk(SCM which, SCM win);
-SCM window_position(SCM win);
-SCM window_size(SCM win);
-SCM window_id(SCM win);
-SCM window_frame_id(SCM win);
-SCM id_to_window(SCM window_id);
-SCM frame_id_to_window(SCM window_id);
-
-SCM window_desk(SCM win);
-SCM window_title(SCM win);
-
-SCM window_class(SCM win);
-SCM window_resource(SCM win);
-
-SCM list_all_windows();
-
-SCM keep_on_top(SCM win);
-SCM un_keep_on_top(SCM win);
-SCM kept_on_top_p(SCM win);
-
-SCM show_titlebar(SCM win);
-SCM hide_titlebar(SCM win);
-SCM titlebar_shown_p(SCM win);
-
-SCM normal_border(SCM win);
-SCM plain_border(SCM win);
-SCM border_normal_p(SCM win);
-
-SCM set_border_width_x(SCM width, SCM win);
-SCM stick_icon(SCM win);
-SCM unstick_icon(SCM win);
-SCM icon_sticky_p(SCM win);
-
-SCM set_random_placement_x(SCM val, SCM win);
-SCM set_smart_placement_x(SCM val, SCM win);
-SCM set_window_button_x(SCM butt, SCM val, SCM win);
-
-SCM set_icon_box_x(SCM sx, SCM sy, SCM sw, SCM sh, SCM win);
-SCM set_window_focus_x(SCM sym, SCM win);
-
-SCM set_window_foreground_x(SCM fg, SCM win);
+/* FIXGJB: this primitive should not be exposed in the interface, 
+   but needs to be for resetting the relief decor, color.c */
 SCM set_window_background_x(SCM bg, SCM win);
 
-SCM set_icon_title_x(SCM title, SCM win);
 
-SCM set_mwm_buttons_x(SCM val, SCM win);
-SCM set_mwm_border_x(SCM val, SCM win);
-
-SCM set_show_icon_x (SCM flag, SCM win);
-SCM set_force_icon_x (SCM flag, SCM win);
-SCM set_icon_x(SCM val, SCM win);
-SCM set_mini_icon_x(SCM val, SCM win);
-SCM set_hint_override_x(SCM val, SCM w);
-SCM set_decorate_transient_x(SCM val, SCM w);
-SCM set_mwm_decor_hint_x(SCM val, SCM w);
-SCM set_mwm_func_hint_x(SCM val, SCM w);
-SCM set_PPosition_hint_x(SCM val, SCM w);
-SCM set_OL_decor_hint_x(SCM val, SCM w);
-SCM set_start_on_desk_x(SCM desk, SCM w);
-SCM set_skip_mapping_x(SCM val, SCM w);
-SCM set_lenience_x(SCM val, SCM win);
-
-
-
-#endif /* WINDOW_H */
+#endif /* WINDOW_H__ */
 
 /* Local Variables: */
 /* tab-width: 8 */

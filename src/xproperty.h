@@ -37,43 +37,7 @@
 #include <config.h>
 #endif
 
-#include <guile/gh.h>
-
-#undef EXTERN
-#undef EXTERN_SET
-#ifdef XPROPERTY_IMPLEMENTATION
-#define EXTERN
-#define EXTERN_SET(x,y) x = y
-#else
-#define EXTERN extern
-#define EXTERN_SET(x,y) extern x
-#endif
-
-EXTERN long scm_tc16_scwm_xproperty;
-
-typedef struct {
-  SCM type;			/* property type as scheme string */
-  unsigned len;			/* length of data */
-  void *data;			/* points to the property's value */
-} scwm_xproperty;
-
-#define XPROPERTY_P(X) (SCM_NIMP((X)) && \
-			SCM_CAR((X)) == (SCM)scm_tc16_scwm_xproperty)
-#define XPROPERTY(X)  ((scwm_xproperty *)SCM_CDR((X)))
-#define XPROPERTYTYPE(X) (((scwm_xproperty *)SCM_CDR(X))->type)
-#define XPROPERTYLEN(X) (((scwm_xproperty *)SCM_CDR(X))->len)
-#define XPROPERTYDATA(X) (((scwm_xproperty *)SCM_CDR(X))->data)
-
-SCM mark_xproperty(SCM obj);
-size_t free_xproperty(SCM obj);
-int print_xproperty(SCM obj, SCM port, scm_print_state * pstate);
-
-SCM xproperty_p (SCM obj);
-SCM window_xproperty (SCM win, SCM name, SCM consume);
-SCM xproperty_to_string(SCM prop);
-SCM string_to_xproperty(SCM str);
-
-void init_xproperty(void);
+/* No C-level interface */
 
 #endif /* XPROPERTY_H__ */
 

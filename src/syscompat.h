@@ -60,4 +60,8 @@ int  strncasecmp(char *s1, char *s2, int n);
 #endif /* HAVE_SETLINEBUF */
 
 #endif /* SYSCOMPAT_H */
-
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -763,7 +763,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	if (IMAGE_P(arg)) {
 	  image = arg;
 	} else {
-	  image = make_image (arg);
+	  image = make_image(arg);
 	}
 	if (image==SCM_BOOL_F) {
 	  /* signal an error: couldn't load picture */

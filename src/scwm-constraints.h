@@ -40,3 +40,8 @@ void CassowaryEndEdit(PScwmWindow psw);
 #endif
 
 #endif /* SCWM_CONSTRAINTS_H__ */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

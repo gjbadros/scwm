@@ -77,15 +77,9 @@ typedef struct MenuItemInMenu_tag
 #define MENUITEM(X)  ((MenuItem *)SCM_CDR(X))
 #define SAFE_MENUITEM(X)  (MENUITEM_P((X))? MENUITEM((X)) : NULL)
 
-SCM mark_menuitem(SCM obj);
-size_t free_menuitem(SCM obj);
-int print_menuitem(SCM obj, SCM port, scm_print_state * pstate);
-SCM menuitem_p(SCM obj);
-
-SCM make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
-		  SCM picture_left, SCM hover_action, SCM unhover_action,
-		  SCM hotkey_prefs);
-
-void init_menuitem();
-
 #endif
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

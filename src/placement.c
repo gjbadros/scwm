@@ -459,8 +459,7 @@ returns #t. */
 
     keep_on_screen(psw);
 
-    move_to (gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win,  
-	     SCM_BOOL_F, SCM_BOOL_F);
+    move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
     return SCM_BOOL_T;
   }
 }
@@ -496,8 +495,7 @@ returns #f; otherwise it returns #t. */
     psw->attr.y = y = y - psw->old_bw + psw->bw;
     keep_on_screen(psw);
 
-    move_to(gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win,  
-            SCM_BOOL_F, SCM_BOOL_F);
+    move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
     return SCM_BOOL_T;
   }
 }
@@ -534,8 +532,7 @@ interaction. #t is always returned. */
   psw->attr.x = Scr.randomx - psw->old_bw;
   psw->attr.y = Scr.randomy - psw->old_bw;
 
-  move_to(gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win, 
-          SCM_BOOL_F, SCM_BOOL_F);
+  move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
   return SCM_BOOL_T; 
 }
 #undef FUNC_NAME
@@ -568,8 +565,7 @@ by the user, the position was specified by the program, and
       ((psw->wmhints) &&
        (psw->wmhints->flags & StateHint) &&
        (psw->wmhints->initial_state == IconicState))) {
-    move_to(gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win, 
-            SCM_BOOL_F, SCM_BOOL_F);    
+    move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
   } else {
     SCM result=SCM_BOOL_F;
 
@@ -585,7 +581,8 @@ by the user, the position was specified by the program, and
       if (psw->fRandomPlace) {
 	random_place_window(win);
       } else {
-	interactive_move(win);
+        int finalx, finaly;     /* unused for now */
+	InteractiveMove(psw, &finalx, &finaly);
       }
     }
   }
@@ -620,9 +617,7 @@ It simply leaves the window WIN in place, exactly as requested. */
     psw->attr.x -= 2 * psw->boundary_width;
 #endif
 
-  move_to (gh_int2scm(psw->attr.x), gh_int2scm(psw->attr.y), win, 
-	   SCM_BOOL_F, SCM_BOOL_F);  
-
+  move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
   return SCM_BOOL_T;
 }
 #undef FUNC_NAME

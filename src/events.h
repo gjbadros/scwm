@@ -49,8 +49,6 @@ void HandleKeyPress(void);
 void HandleVisibilityNotify(void);
 void CoerceEnterNotifyOnCurrentWindow();
 
-void init_events();
-
 #endif
 
 /* Local Variables: */

@@ -70,8 +70,9 @@ void add_hook_fds_to_set(fd_set *in_fdset, int *fd_width);
 void force_new_input_hooks();
 void run_input_hooks(fd_set *in_fdset);
 
-/* Initialization. */
-
-void init_callbacks();
-
 #endif /* CALLBACKS_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

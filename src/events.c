@@ -793,7 +793,7 @@ HandleClientMessage()
       pswCurrent && !pswCurrent->fIconified) {
     FXGetPointerWindowOffsets(Scr.Root, &(button.xmotion.x_root), &(button.xmotion.y_root));
     button.type = 0;
-    iconify(pswCurrent->schwin);
+    Iconify(pswCurrent,0,0);
     return;
   }
   /*

@@ -17,6 +17,8 @@
 extern "C" {
 #endif
 
+/* FIXGJB: this should get into scm_init_funcs conditionally,
+   and shouldn't need to be here */
 void init_constraint_primitives();
 
 #ifdef __cplusplus
@@ -24,3 +26,8 @@ void init_constraint_primitives();
 #endif
 
 #endif /* CONSTRAINT_PRIMITIVES_H__ */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

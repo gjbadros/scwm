@@ -10,7 +10,9 @@
 #include <config.h>
 #endif
 
-#include "window.h"
+#include "window_fwd.h"
+
+#define ScwmWindow   struct ScwmWindow
 
 void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
 			Bool fWarpPointerToo, int cmsDelay, float *ppctMovement);
@@ -24,12 +26,13 @@ void moveLoop(ScwmWindow *psw, int XOffset, int YOffset, int Width,
 
 void Keyboard_shortcuts(XEvent * Event, int ReturnEvent);
 
-void InteractiveMove(Window w, ScwmWindow *psw, 
-		     int *FinalX, int *FinalY, XEvent *eventp);
+void InteractiveMove(ScwmWindow *psw, int *FinalX, int *FinalY);
 
 void DisplayMessage(const char *sz, Bool fRelief);
 void MapMessageWindow();
 void UnmapMessageWindow();
+
+#undef ScwmWindow
 
 #endif MOVE_H
 

@@ -12,11 +12,11 @@
 
 void Done(int restart, char *command);
 void SaveDesktopState(void);
-
-SCM restart(SCM command);
-SCM scwm_quit(SCM args);
-
-void init_shutdown();
 void run_startup_hook();
 
 #endif /* SHUTDOWN_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

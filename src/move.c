@@ -543,28 +543,41 @@ Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
 
 
 /* InteractiveMove
-    w is psw->frame, the X window we must move
     psw is the ScwmWindow to move
-    FinalX, FinalY are used to return the final position
-    eventp is the event that initiated the move -- in particular
-       it contains the coordinates of the button press */
+    FinalX, FinalY are used to return the final position */
 void 
-InteractiveMove(Window w, ScwmWindow * psw, 
-		int *FinalX, int *FinalY, XEvent *eventp)
+InteractiveMove(ScwmWindow *psw, 
+		int *FinalX, int *FinalY)
 {
   int origDragX, origDragY, DragX, DragY;
   unsigned int DragWidth, DragHeight;
   int border_width;
   int XOffset, YOffset;
   Bool opaque_move = False;
-  assert(w == psw->frame || w == psw->icon_w || w == psw->icon_pixmap_w);
+  Window w = psw->frame;
+  /* FIXGJB: pass these in instead */
+  extern Bool have_orig_position;
+  extern int orig_x, orig_y;
+
+  if (psw->fIconified) {
+    if (psw->icon_pixmap_w != None) {
+      XUnmapWindow(dpy, psw->icon_w);
+      w = psw->icon_pixmap_w;
+    } else {
+      w = psw->icon_w;
+    }
+  }
+
+  /* find out from where we should start the move */
+  if (have_orig_position) {
+    DragX = orig_x;
+    DragY = orig_y;
+  } else {
+    /* just use current position */
+    FXGetPointerWindowOffsets(Scr.Root, &DragX, &DragY);
+  }
 
   InstallRootColormap();
-
-  /* the move starts from the button press location, not from
-     the current location */
-  DragX = eventp->xbutton.x_root;
-  DragY = eventp->xbutton.y_root;
 
   if (!GrabEm(CURSOR_MOVE)) {
     call0_hooks(invalid_interaction_hook);

@@ -87,23 +87,16 @@ typedef struct {
 #define XFONT(X) (((scwm_font *)SCM_CDR((X)))->xfs)
 #define FONTY(X) ((XFONT(X))->ascent)
 #endif
+
 #define SAFE_XFONT(X) (FONT_P((X))?XFONT((X)):NULL)
 #define FONTNAME(X) (((scwm_font *)SCM_CDR(X))->name)
 #define SAFE_FONTNAME(X) (FONT_P((X))?FONTNAME((X)):NULL)
 #define FONTHEIGHT(X) (((scwm_font *)SCM_CDR(X))->height)
 
-size_t free_font(SCM obj);
-int print_font(SCM obj, SCM port, scm_print_state * pstate);
-SCM mark_font(SCM obj);
-
 SCM make_font(SCM fname);
-SCM font_p(SCM obj);
-SCM font_properties(SCM font);
-SCM set_icon_font_x(SCM font);
-SCM set_window_font_x(SCM font);
-SCM set_menu_font_x(SCM font);
 
-void init_font();
+/* FIXGJB: this primitive should not be exposed */
+SCM set_window_font_x(SCM font);
 
 #endif /* FONT_H */
 

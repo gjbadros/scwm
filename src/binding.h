@@ -54,12 +54,6 @@ typedef struct Binding_tag {
   struct Binding_tag *NextBinding;
 } Binding;
 
-SCM bind_key(SCM contexts, SCM key, SCM proc);
-SCM unbind_key(SCM contexts, SCM key);
-SCM bind_mouse(SCM contexts, SCM button, SCM proc);
-SCM unbind_mouse(SCM contexts, SCM button);
-
-void init_binding();
 void init_modifiers();
 void init_pointer_mapping(void);
 void find_mouse_event_type();

@@ -1,5 +1,6 @@
 /* $Id$
  * add_window.h
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  */
 
 
@@ -9,6 +10,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "window_fwd.h"
+
+#define ScwmWindow    struct ScwmWindow
 
 void SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h);
 
@@ -24,8 +29,7 @@ void FetchWmProtocols(ScwmWindow *psw);
 
 void GrabKeys(ScwmWindow *psw);
 
-
-void init_add_window();
+#undef ScwmWindow
 
 #endif
 

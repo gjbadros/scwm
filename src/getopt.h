@@ -135,3 +135,8 @@ extern int _getopt_internal ();
 #endif
 
 #endif /* _GETOPT_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

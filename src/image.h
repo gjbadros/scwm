@@ -62,36 +62,16 @@ typedef struct
 
 EXTERN long scm_tc16_scwm_image;
 
-/* Scheme object interface to images */
-
-size_t free_image(SCM obj);
-int print_image(SCM obj, SCM port, scm_print_state * pstate);
-SCM mark_image(SCM obj);
-
-SCM image_p (SCM obj);
-SCM image_properties (SCM image);
-
-
-SCM make_empty_image(SCM name);
-SCM load_bitmap(SCM full_path);
-SCM load_pixmap(SCM full_path);
-SCM register_image_loader(SCM extension, SCM proc);
-SCM unregister_image_loader(SCM extension);
-
-SCM path_expand_image_fname(SCM name, const char *func_name);
-SCM get_image_loader(SCM name);
-SCM make_image(SCM name);
-
-SCM clear_image_cache_entry(SCM name);
-
 SCM make_image_from_pixmap(char *szDescription,
 			   Pixmap image, Pixmap mask, 
 			   int width, int height, int depth);
+SCM make_image(SCM name);
 
 void init_image_colormap();
-void init_image();
 
 #endif /* IMAGE_H */
-
-
-
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -3,16 +3,18 @@
  * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  */
 
-#ifndef XMISC_H
-#define XMISC_H
+#ifndef XMISC_H__
+#define XMISC_H__
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
 #include "image.h"
-#include "window.h"
+#include "window_fwd.h"
 #include <X11/Xlib.h>
+
+#define ScwmWindow   struct ScwmWindow
 
 extern XGCValues Globalgcv;
 extern unsigned long Globalgcm;
@@ -32,4 +34,12 @@ void SetGCFg(GC gc, Pixel pix);
 void SetGCFb(GC gc, Pixel pix);
 void RelieveRectangle(Window win,int x,int y,int w, int h,GC Hilite,GC Shadow);
 
-#endif
+
+#undef ScwmWindow
+
+#endif /* XMISC_H__ */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

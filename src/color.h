@@ -76,13 +76,9 @@ typedef struct {
 			       SAFE_COLOR((X)))
 
 
-
-SCM mark_color(SCM obj);
-size_t free_color(SCM obj);
-int print_color(SCM obj, SCM port, scm_print_state * pstate);
-
-SCM color_p (SCM obj);
-SCM color_properties (SCM color);
+/* FIXGJB: colors have an especially poor interfaces --
+   C code should use lower level primitives that
+   these primitives just wrap */
 SCM make_color (SCM cname);
 SCM clear_color_cache_entry(SCM name);
 
@@ -105,8 +101,6 @@ SCM set_hilight_background_x(SCM bg);
 SCM set_menu_foreground_x(SCM fg);
 SCM set_menu_background_x(SCM bg);
 SCM set_menu_stipple_x(SCM st);
-
-void init_color();
 
 #endif /* COLOR_H */
 

@@ -105,23 +105,14 @@ struct DynamicMenu_tag
 			       SAFE_MENU(scm_symbol_binding(SCM_BOOL_F,(X))) : \
 			       SAFE_MENU((X)))
 
-SCM mark_menu(SCM obj);
-
-size_t free_menu(SCM obj);
-
-int print_menu(SCM obj, SCM port, scm_print_state * pstate);
-
-SCM menu_p(SCM obj);
-
-SCM make_menu(SCM list_of_menuitems,
-	      SCM picture_side, SCM side_bg_color,
-	      SCM bg_color, SCM text_color,
-	      SCM picture_bg, SCM font, SCM extra_options);
-
-void init_menu();
 void menu_init_gcs();
 
 SCM popup_menu(SCM menu, SCM warp_to_first);
 
 
 #endif
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

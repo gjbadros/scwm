@@ -44,6 +44,22 @@
 #include "xproperty.h"
 #include "xmisc.h"
 
+static long scm_tc16_scwm_xproperty;
+
+typedef struct {
+  SCM type;			/* property type as scheme string */
+  unsigned len;			/* length of data */
+  void *data;			/* points to the property's value */
+} scwm_xproperty;
+
+#define XPROPERTY_P(X) (SCM_NIMP((X)) && \
+			SCM_CAR((X)) == (SCM)scm_tc16_scwm_xproperty)
+#define XPROPERTY(X)  ((scwm_xproperty *)SCM_CDR((X)))
+#define XPROPERTYTYPE(X) (((scwm_xproperty *)SCM_CDR(X))->type)
+#define XPROPERTYLEN(X) (((scwm_xproperty *)SCM_CDR(X))->len)
+#define XPROPERTYDATA(X) (((scwm_xproperty *)SCM_CDR(X))->data)
+
+
 /**CONCEPT: X Properties
    X windows has a notion of window properties, which live in the X
 server. X window properties are often used to implement protocols

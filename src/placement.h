@@ -10,11 +10,9 @@
 #include <config.h>
 #endif
 
-#include "window.h"
+#include "window_fwd.h"
 
-Bool PlaceWindow(ScwmWindow *psw, int Desk);
-
-void init_placement();
+Bool PlaceWindow(struct ScwmWindow *psw, int Desk);
 
 #endif
 

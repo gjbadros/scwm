@@ -29,6 +29,9 @@
 #include "dmalloc.h"
 #endif
 
+SCM set_current_decor_x(SCM decor);
+SCM current_decor();
+
 /*
  *  DestroyScwmDecor -- frees all memory assocated with an ScwmDecor
  *	structure, but does not free the ScwmDecor itself

@@ -49,19 +49,7 @@ EXTERN long scm_tc16_scwm_decor;
 #define DECORREF(X) do {if (DECOR(X)->refcnt == 0) {DECOR(X)->refcnt++; scm_protect_object(X);}} while (0)
 #define DECORUNREF(X) do {int x = --DECOR(X)->refcnt; if (x == 0) scm_unprotect_object(X); else if (x < 0) DECOR(X)->refcnt = 0; } while (0)
 
-
-size_t free_decor(SCM obj);
-int print_decor(SCM obj, SCM port, scm_print_state * pstate);
-SCM mark_decor(SCM obj);
-
 SCM decor2scm(ScwmDecor * fl);
-SCM make_decor(SCM name);
-SCM default_decor();
-SCM set_current_decor_x(SCM decor);
-SCM current_decor();
-SCM set_window_decor_x(SCM decor, SCM win);
-
-void init_decor();
 
 #endif /* DECOR_H */
 

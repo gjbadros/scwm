@@ -22,3 +22,8 @@ void Unfocus();
 Bool StashEventTime(XEvent * ev);
 
 #endif
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

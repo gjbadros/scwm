@@ -1,0 +1,30 @@
+/* $Id$
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ *
+ * #include "window_fwd.h" when you just need to
+ * be able to talk about struct ScwmWindow *'s, and not
+ * see their insides.
+ */
+
+#ifndef WINDOW_H__
+#ifndef WINDOW_FWD_H__
+#define WINDOW_FWD_H__
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#define Bool int /* from Xlib.h */
+
+struct ScwmWindow;
+/* Bit tricky because we need to avoid a redef error if window.h
+   (the real thing) actually gets included after this file */
+/* typedef struct ScwmWindow ScwmWindow; */
+
+#endif /* WINDOW_FWD_H__ */
+#endif /* WINDOW_H__ */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -693,8 +693,9 @@ PROC is a procedure (possibly a thunk) that should be invoked */
 #ifdef FIXGJB /* this doesn't work, just want to redraw buttons on all windows */
     ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
     redraw_borders(fl);
-#endif
+#else
     recapture(); /* this stinks, but'll have to do for now --11/11/97 gjb */
+#endif
   }
   return SCM_UNSPECIFIED;
 }
@@ -707,7 +708,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
 
 SCM mouse_ev_type = SCM_BOOL_F;
 
-int have_orig_position = 0;
+Bool have_orig_position = False;
 int orig_x, orig_y;
 
 void 
@@ -717,7 +718,7 @@ find_mouse_event_type()
 
   gh_defer_ints();
   FXGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y);
-  have_orig_position = 1;
+  have_orig_position = True;
 
   mouse_ev_type = sym_motion;
   if (IsClick(orig_x, orig_y, ButtonReleaseMask, &d)) {
@@ -736,7 +737,7 @@ find_mouse_event_type()
 void 
 clear_mouse_event_type()
 {
-  have_orig_position = 0;
+  have_orig_position = False;
   mouse_ev_type = SCM_BOOL_F;
 }
 

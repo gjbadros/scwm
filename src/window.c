@@ -396,26 +396,8 @@ invalidate_window(SCM schwin)
 }
 
 
-SCM 
-ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
-{
-  if (win == SCM_UNDEFINED) {
-    win = get_window(kill_p, SCM_BOOL_T, release_p);
-    if (win == SCM_BOOL_F || win == SCM_UNDEFINED) {
-      return SCM_BOOL_F;
-    }
-  }
-  if (!WINDOWP(win)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(subr, n, win);
-  }
-  if (!VALIDWINP(win)) {
-    SCM_ALLOW_INTS;
-    scwm_error(subr, 6);
-    /* maybe should just return SCM_BOOL_F; */
-  }
-  return (win);
-}
+static int DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
+                          enum cursor cursor, int FinishEvent);
 
 
 SCWM_PROC(window_p, "window?", 1, 0, 0,
@@ -426,6 +408,60 @@ SCWM_PROC(window_p, "window?", 1, 0, 0,
   return SCM_BOOL_FromBool(WINDOWP(obj));
 }
 #undef FUNC_NAME
+
+SCWM_PROC(select_window, "select-window", 0, 2, 0,
+          (SCM kill_p, SCM release_p))
+     /** Select a window interactively.
+Use a special cursor and let the user click to select the window. The
+optional arguments KILL? and RELEASE? indicate whether to use the
+"skull and cross-bones" kill cursor (recommended for destructive
+operations like delete-window and destroy-window), and whether to wait
+for a mouse release or act immediately on the click. The former is a
+place-holder until we have proper cursor support in scwm. */
+#define FUNC_NAME s_select_window
+{
+  XEvent ev;
+  Window w;
+  ScwmWindow *psw;
+
+  SCM_REDEFER_INTS;
+  w = Scr.Root;
+
+  psw = &Scr.ScwmRoot;
+
+  if (kill_p == SCM_UNDEFINED) {
+    kill_p = SCM_BOOL_F;
+  } else if (!gh_boolean_p(kill_p)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(FUNC_NAME, 1, kill_p);
+  }
+
+  if (release_p == SCM_UNDEFINED) {
+    release_p = SCM_BOOL_T;
+  } else if (!gh_boolean_p(release_p)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(FUNC_NAME, 2, release_p);
+  }
+
+
+  if (DeferExecution(&ev, &w, &psw,
+		     (kill_p != SCM_BOOL_F ? CURSOR_DESTROY : CURSOR_SELECT),
+		     (release_p != SCM_BOOL_F ? ButtonRelease :
+		      ButtonPress))) {
+    SCM_REALLOW_INTS;
+    return SCM_BOOL_F;
+  }
+  /* XXX - this needs to done right.  (Was != NULL before --10/24/97 gjb ) */
+  if (psw && psw->schwin != SCM_UNDEFINED) {
+    SCM_REALLOW_INTS;
+    return (psw->schwin);
+  } else {
+    SCM_REALLOW_INTS;
+    return SCM_BOOL_F;
+  }
+}
+#undef FUNC_NAME
+
 
 /**CONCEPT: The Window Context
 
@@ -782,7 +818,7 @@ PswSelectInteractively(Display *dpy)
   
 
 
-extern int orig_x, orig_y, have_orig_position;
+extern Bool have_orig_position;
 
 /*
  *
@@ -798,8 +834,7 @@ extern int orig_x, orig_y, have_orig_position;
  *                    terminate on.
  *
  */
-static
-int 
+static int 
 DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
 	       enum cursor cursor, int FinishEvent)
 {
@@ -880,63 +915,9 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
   UngrabEm();
   /* interactive operations should not use the stashed mouse position
      if we just selected the window. */
-  have_orig_position = 0; 
+  have_orig_position = False; 
   return False; 
 }
-
-
-SCWM_PROC(select_window, "select-window", 0, 2, 0,
-          (SCM kill_p, SCM release_p))
-     /** Select a window interactively.
-Use a special cursor and let the user click to select the window. The
-optional arguments KILL? and RELEASE? indicate whether to use the
-"skull and cross-bones" kill cursor (recommended for destructive
-operations like delete-window and destroy-window), and whether to wait
-for a mouse release or act immediately on the click. The former is a
-place-holder until we have proper cursor support in scwm. */
-#define FUNC_NAME s_select_window
-{
-  XEvent ev;
-  Window w;
-  ScwmWindow *psw;
-
-  SCM_REDEFER_INTS;
-  w = Scr.Root;
-
-  psw = &Scr.ScwmRoot;
-
-  if (kill_p == SCM_UNDEFINED) {
-    kill_p = SCM_BOOL_F;
-  } else if (!gh_boolean_p(kill_p)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 1, kill_p);
-  }
-
-  if (release_p == SCM_UNDEFINED) {
-    release_p = SCM_BOOL_T;
-  } else if (!gh_boolean_p(release_p)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 2, release_p);
-  }
-
-
-  if (DeferExecution(&ev, &w, &psw,
-		     (kill_p != SCM_BOOL_F ? CURSOR_DESTROY : CURSOR_SELECT),
-		     (release_p != SCM_BOOL_F ? ButtonRelease :
-		      ButtonPress))) {
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
-  }
-  /* XXX - this needs to done right.  (Was != NULL before --10/24/97 gjb ) */
-  if (psw && psw->schwin != SCM_UNDEFINED) {
-    SCM_REALLOW_INTS;
-    return (psw->schwin);
-  } else {
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
-  }
-}
-#undef FUNC_NAME
 
 
 /*
@@ -1812,7 +1793,7 @@ specified. */
 #undef FUNC_NAME
 
 
-static void 
+void 
 move_finalize(Window w, ScwmWindow * psw, int x, int y)
 {
   if (w == psw->frame) {
@@ -2062,29 +2043,12 @@ usual way if not specified. */
 #define FUNC_NAME s_interactive_move
 {
   ScwmWindow *psw;
-  Window w;
-  XEvent event;
-  int x, y;
+  int x, y;                     /* not used now */
 
   SCM_REDEFER_INTS;
   VALIDATE_PRESS_ONLY(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
-  w = psw->frame;
-  if (psw->fIconified) {
-    if (psw->icon_pixmap_w != None) {
-      XUnmapWindow(dpy, psw->icon_w);
-      w = psw->icon_pixmap_w;
-    } else {
-      w = psw->icon_w;
-    }
-  }
-  if (have_orig_position) {
-    event.xbutton.x_root = orig_x;
-    event.xbutton.y_root = orig_y;
-  } else {
-    FXGetPointerWindowOffsets(Scr.Root, &event.xbutton.x_root, &event.xbutton.y_root);
-  }
-  InteractiveMove(w, psw, &x, &y, &event);
+  InteractiveMove(psw, &x, &y);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -3258,6 +3222,29 @@ specified. */
 
 
 MAKE_SMOBFUNS(window);
+
+
+SCM 
+ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
+{
+  if (win == SCM_UNDEFINED) {
+    win = get_window(kill_p, SCM_BOOL_T, release_p);
+    if (win == SCM_BOOL_F || win == SCM_UNDEFINED) {
+      return SCM_BOOL_F;
+    }
+  }
+  if (!WINDOWP(win)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(subr, n, win);
+  }
+  if (!VALIDWINP(win)) {
+    SCM_ALLOW_INTS;
+    scwm_error(subr, 6);
+    /* maybe should just return SCM_BOOL_F; */
+  }
+  return (win);
+}
+
 
 void 
 init_window()

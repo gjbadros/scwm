@@ -21,3 +21,8 @@ void HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 #endif
 
 #endif
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */
