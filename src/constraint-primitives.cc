@@ -20,6 +20,7 @@ extern "C" {
 #include "constraint-primitives.h"
 #include "scwm-constraints.h"
 #include "scwm-constraints.hpp"
+#include "scwm-screen-ci.hpp"
 #include "ClLinearEquation.h"
 #include "ClLinearInequality.h"
 #include "ClSimplexSolver.h"
@@ -60,11 +61,11 @@ ScwmResolve(ClSimplexSolver *psolver)
     psw->pswci->CopyStateToPswVars(&fMoved, &fResized);
 #ifndef NDEBUG
     if (fMoved && fResized) {
-      scwm_msg(DBG,__FUNCTION__,"Move and resize of %s",psw->name);
+      DBUG(__FUNCTION__,"Move and resize of %s",psw->name);
     } else if (fMoved) {
-      scwm_msg(DBG,__FUNCTION__,"Move of %s",psw->name);
+      DBUG(__FUNCTION__,"Move of %s",psw->name);
     } else if (fResized) {
-      scwm_msg(DBG,__FUNCTION__,"Resize of %s",psw->name);
+      DBUG(__FUNCTION__,"Resize of %s",psw->name);
     }
 #endif
     if (fMoved) MovePswToCurrentPosition(psw);
@@ -113,6 +114,7 @@ SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
 
   /* now add stay constriants on all existing windows */
   for (ScwmWindow *psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
+    CassowarySetCValuesAndSolve(psw,False);
     psw->pswci->AddStays(psolver);
     psw->pswci->AddSizeConstraints(psolver);
   }
@@ -175,6 +177,54 @@ SCWM_PROC (window_clv_height, "window-clv-height", 1, 0, 0,
   return pswci->_scmHeight;
 }
 #undef FUNC_NAME
+
+
+/*** Now the wrappers for the screen ClVariables */
+
+SCWM_PROC (screen_clv_vx, "screen-clv-vx", 0, 0, 0,
+           ())
+     /** Return the cl-variable object for the virtual screen X coordinate.
+*/
+#define FUNC_NAME s_screen_clv_vx
+{
+  return Scr.pssci->_scmVx;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC (screen_clv_vy, "screen-clv-vy", 0, 0, 0,
+           ())
+     /** Return the cl-variable object for the virtual screen Y coordinate.
+*/
+#define FUNC_NAME s_screen_clv_vy
+{
+  return Scr.pssci->_scmVx;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC (screen_clv_pointerx, "screen-clv-pointerx", 0, 0, 0,
+           ())
+     /** Return the cl-variable object for the virtual screen X coordinate.
+*/
+#define FUNC_NAME s_screen_clv_pointerx
+{
+  return Scr.pssci->_scmVx;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC (screen_clv_pointery, "screen-clv-pointery", 0, 0, 0,
+           ())
+     /** Return the cl-variable object for the virtual screen Y coordinate.
+*/
+#define FUNC_NAME s_screen_clv_pointery
+{
+  return Scr.pssci->_scmVx;
+}
+#undef FUNC_NAME
+
+
 
 
 extern "C" {

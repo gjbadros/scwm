@@ -180,6 +180,8 @@ typedef struct ScwmDecor {
 
 EXTERN long scm_tc16_scwm_screen;
 
+struct ScwmScreenConstraintInfo;
+
 /* Holds all the per-screen information;
    these are the global variables and options */
 typedef struct ScreenInfo {
@@ -213,6 +215,10 @@ typedef struct ScreenInfo {
   Cursor ScwmCursors[CURSOR_MAX_CURSORS];
 
   char *DefaultIcon;		/* Icon to use when no other icons are found */
+
+  struct ScwmScreenConstraintInfo *pssci; /* Constraint information for this screen */
+                                /* NULL if built w/o cassowary support */
+
 
   /* FIXGJB: These are no longer used by the menuing code, but MenuColors
      are used elsewhere for colors */

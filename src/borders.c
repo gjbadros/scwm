@@ -1267,12 +1267,6 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     DBUG(__FUNCTION__,"Resized!");
     left = psw->nr_left_buttons;
     right = psw->nr_right_buttons;
-
-    if (SHOW_TITLE_P(psw)) {
-      DBUG(__FUNCTION__,"Has title!");
-      psw->title_height = GET_DECOR(psw, TitleHeight) + psw->bw;
-      DBUG(__FUNCTION__,"Reset height to %d",psw->title_height);
-    }
     /* make the decoration buttons square */
     button_width = psw->title_height;
 

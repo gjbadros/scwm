@@ -273,6 +273,7 @@ InitVariables(void)
   /* create graphics contexts */
   CreateGCs();
 
+  Scr.pssci = NULL;
   Scr.d_depth = DefaultDepth(dpy, Scr.screen);
   Scr.ScwmRoot.w = Scr.Root;
   Scr.ScwmRoot.next = 0;

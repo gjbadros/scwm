@@ -36,6 +36,10 @@ scwm_cl: $(OBJS) $(scwm_OBJECTS) $(scwm_DEPENDENCIES)
 	@rm -f $@
 	$(CPPLINK) $(scwm_LDFLAGS) $(scwm_OBJECTS) $(OBJS) $(scwm_LDADD) $(LIBS)
 
+scwm_cl.static:  $(OBJS) $(scwm_OBJECTS) $(scwm_DEPENDENCIES)
+	@rm -f $@
+	$(CPPLINK) -all-static $(scwm_LDFLAGS) $(scwm_OBJECTS) $(OBJS) $(scwm_LDADD) $(LIBS)
+
 constraint-primitives.x: constraint-primitives.cc
 	CC=$(CPP) guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
 

@@ -391,6 +391,15 @@ AddWindow(Window w)
   psw->title_width = frame_width - 2 * psw->corner_width - 3 + psw->bw;
   if (psw->title_width < 1)
     psw->title_width = 1;
+
+  psw->title_height = 1;
+  if (SHOW_TITLE_P(psw)) {
+    psw->title_height = GET_DECOR(psw, TitleHeight) + psw->bw;
+    DBUG(__FUNCTION__,"Set height to %d",psw->title_height);
+    if (psw->title_height < 1)
+      psw->title_height = 1;
+  }
+
   if (psw->fBorder) {
     DBUG(__FUNCTION__,"Has border");
 

@@ -14,10 +14,12 @@
 extern "C" {
 #include "scwm-constraints.h"
 #include "window.h"
+#include "screen.h"
 #include "xmisc.h"
 }
 
 #include "scwm-constraints.hpp"
+#include "scwm-screen-ci.hpp"
 #include <strstream.h>
 #include "ClVariable.h"
 #include "ClSimplexSolver.h"
@@ -31,6 +33,14 @@ CassowaryInitClVarsInPsw(ScwmWindow *psw)
 {
   psw->pswci = new ScwmWindowConstraintInfo(psw);
 }
+
+
+void
+CassowaryInitClVarsInPscreen(ScreenInfo *pscreen)
+{
+  pscreen->pssci = new ScwmScreenConstraintInfo(pscreen);
+}
+
 
 void
 CassowaryNewWindow(ScwmWindow *psw)
