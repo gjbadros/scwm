@@ -1,4 +1,4 @@
-;;; File: <std-menus.scm - 1998-03-20 Fri 10:46:33 EST sds@mute.eaglets.com>
+;;; File: <std-menus.scm - 1998-05-27 Wed 12:08:16 EDT sds@mute.eaglets.com>
 ;;;; 	Copyright (C) 1998 Sam Steingold and Maciej Stachowiak
 
 ;;;	$Id$
@@ -23,6 +23,7 @@
 
 (define-module (app scwm std-menus)
   :use-module (app scwm base)
+  :use-module (app scwm flux)
   :use-module (app scwm optargs))
 
 
@@ -30,19 +31,23 @@
 ;;; --------------------------------------
 ;;; The screen saver and screen lock menus
 ;;; --------------------------------------
-(define screensaver-modes
-  '("ant" "ball" "bat" "blot" "bouboule" "bounce" "braid" "bug"
-    "cartoon" "clock" "crystal" "daisy" "dclock" "demon" "drift" "eyes"
-    "fadeplot" "flag" "flame" "forest" "galaxy" "geometry" "grav" "helix"
-    "hop" "hyper" "ico" "ifs" "image" "julia" "kaleid" "laser" "life"
-    "life1d" "life3d" "lightning" "lisa" "lissie" "loop" "marquee" "maze"
-    "mountain" "munch" "nose" "pacman" "penrose" "petal" "puzzle" "pyro"
-    "qix" "roll" "rotor" "shape" "sierpinski" "slip" "sphere" "spiral"
-    "spline" "star" "strange" "swarm" "swirl" "triangle" "tube" "turtle"
-    "vines" "voters" "wator" "wire" "world" "worm"))
+(define-public screensaver-modes
+  '("ant" "ball" "bat" "blot" "bouboule" "bounce" "braid" "bug" "bubble"
+    "cartoon" "clock" "coral" "crystal" "daisy" "dclock" "deco" "demon"
+    "dilemma" "drift" "eyes" "fadeplot" "flag" "flame" "forest" "galaxy"
+    "grav" "helix" "hop" "hyper" "ico" "ifs" "image" "julia" "kaleid"
+    "laser" "life" "life1d" "life3d" "lightning" "lisa" "lissie" "loop"
+    "mandelbrot" "marquee" "maze" "mountain" "munch" "nose" "pacman"
+    "penrose" "petal" "puzzle" "pyro" "qix" "roll" "rotor" "shape"
+    "sierpinski" "slip" "sphere" "spiral" "spline" "star" "strange" "swarm"
+    "swirl" "triangle" "tube" "turtle" "vines" "voters" "wator" "wire"
+    "world" "worm"))
 
+(define-public xlock-options
+  "-nice -19 +mousemotion +timeelapsed -lockdelay 600 -timeout 30")
 (define (run-xlock mode lock)	; returns a lambda!
-  (exe (string-append "xlock -nice -19 -mode " mode (if lock "" " -nolock"))))
+  (exe (string-append "xlock " xlock-options " -mode " mode
+                      (if lock "" " -nolock"))))
 
 ;;; to use this, add the following to the menu of your choice:
 ;;;   (menuitem "Screensaver" #:action (make-xlock-menu #f))
@@ -60,7 +65,7 @@
 
 ;;; to use this, add the following to the menu of your choice:
 ;;; (menuitem "telnet" #:action (menu-hosts '("host1" "host2" ...)))
-(define*-public (make-hosts-menu host-list #&optional (user (getenv "USER")))
+(define*-public (make-hosts-menu host-list #&optional (user USER))
   (menu (fold-menu-list
          (map (lambda (hh)
                (menuitem hh #:action
