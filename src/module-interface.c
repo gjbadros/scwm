@@ -16,14 +16,22 @@
    from crashing scwm.  MSFIX: do you know how to do this?
    --gjb 11/27/97 */
 
+/* FIXMS: these should really be lists of procedures, or something
+   higher level should provide proper hook add/remove functionality,
+   otherwise it is kind of a pain to use them. */
+
+SCM *loc_broadcast_hook;
+SCM *loc_broadcast_config_hook;
+SCM *loc_broadcast_name_hook;
+
 void
 Broadcast(unsigned long event_type, unsigned long num_datum,
 	  unsigned long data1, unsigned long data2, unsigned long data3, 
 	  unsigned long data4, unsigned long data5, unsigned long data6,
 	  unsigned long data7)
 {
-  SCM proc = gh_lookup("broadcast-hook");
-  if (proc != SCM_UNDEFINED) {
+  SCM proc = *loc_broadcast_hook;
+  if (proc != SCM_BOOL_F) {
     if (gh_procedure_p(proc)) {
       gh_apply(proc, gh_list(
 	gh_ulong2scm(event_type), 
@@ -38,8 +46,8 @@ Broadcast(unsigned long event_type, unsigned long num_datum,
 	SCM_UNDEFINED
 	));
     } else {
-      scwm_msg(ERR,__FUNCTION__,"broadcast-hook is not a procedure -- undefined it");
-      gh_define("broadcast-hook",SCM_UNDEFINED);
+      scwm_msg(ERR,__FUNCTION__,"broadcast-hook is not a procedure -- unsetting it");
+      *loc_broadcast_hook = SCM_BOOL_F;
     }
   }
 }
@@ -48,8 +56,8 @@ Broadcast(unsigned long event_type, unsigned long num_datum,
 void
 BroadcastConfig(unsigned long event_type, ScwmWindow *sw)
 {
-  SCM proc = gh_lookup("broadcast-config-hook");
-  if (proc != SCM_UNDEFINED) {
+  SCM proc = *loc_broadcast_config_hook;
+  if (proc != SCM_BOOL_F) {
     if (gh_procedure_p(proc)) {
       gh_apply(proc, gh_list(
 	gh_ulong2scm(event_type), 
@@ -57,8 +65,8 @@ BroadcastConfig(unsigned long event_type, ScwmWindow *sw)
 	SCM_UNDEFINED
 	));
     } else {
-      scwm_msg(ERR,__FUNCTION__,"broadcast-config-hook is not a procedure -- undefined it");
-      gh_define("broadcast-config-hook",SCM_UNDEFINED);
+      scwm_msg(ERR,__FUNCTION__,"broadcast-config-hook is not a procedure -- unsetting it");
+      *loc_broadcast_config_hook = SCM_BOOL_F;
     }
   }
 }
@@ -66,8 +74,8 @@ BroadcastConfig(unsigned long event_type, ScwmWindow *sw)
 void BroadcastName(unsigned long event_type, unsigned long data1,
 		   unsigned long data2, unsigned long data3, char *szName)
 {
-  SCM proc = gh_lookup("broadcast-name-hook");
-  if (proc != SCM_UNDEFINED) {
+  SCM proc = *loc_broadcast_name_hook;
+  if (proc != SCM_BOOL_F) {
     if (gh_procedure_p(proc)) {
       SCM name = gh_str02scm(szName);
       gh_apply(proc, gh_list(
@@ -79,8 +87,8 @@ void BroadcastName(unsigned long event_type, unsigned long data1,
 	SCM_UNDEFINED
 	));
     } else {
-      scwm_msg(ERR,__FUNCTION__,"broadcast-name-hook is not a procedure -- undefined it");
-      gh_define("broadcast-name-hook",SCM_UNDEFINED);
+      scwm_msg(ERR,__FUNCTION__,"broadcast-name-hook is not a procedure -- unsetting it");
+      gh_define("broadcast-name-hook",SCM_BOOL_F);
     }
   }
 }
@@ -133,5 +141,13 @@ SCM marshal_fvwm2_config_info (SCM win)
 void init_module_interface()
 {
 #include "module-interface.x"
+  /* This will ensure that these are defined in the root module. */
+  loc_broadcast_hook = SCM_CDRLOC
+    (scm_sysintern("broadcast-hook", SCM_BOOL_F));
+  loc_broadcast_config_hook = SCM_CDRLOC
+    (scm_sysintern("broadcast-config-hook", SCM_BOOL_F));
+  loc_broadcast_name_hook = SCM_CDRLOC
+    (scm_sysintern("broadcast-name-hook", SCM_BOOL_F));  
 }
+
 
