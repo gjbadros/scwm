@@ -1,3 +1,11 @@
+1998-07-06  Greg Badros  <gjb@cs.washington.edu>
+
+	* prefs-menu.scm: Added animation-ms-delay define, since it must
+	be known before the prefs-menu definition.
+
+	* flux.scm: add an extra menu-separator after menu-title, to make
+	look more like the prefs-menu and xlock-menu
+
 1998-07-04  Greg Badros  <gjb@cs.washington.edu>
 
 	* std-menus.scm: Use xlock-query-program to decide what to run to

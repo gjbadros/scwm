@@ -1,3 +1,11 @@
+1998-07-06  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Fix hosts menus, add debug-display, use
+ 	double-separator titles like Sam does, use the preferences menu
+ 	from the library, commen out the Tracker and Playmidi multimedia
+ 	targets, remove animation-ms-delay since that needs to be define-d
+ 	in prefs-menu
+
 Mon Jul  6 01:53:41 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* broadcast-display.scm, menu-test.scm, sds.scwmrc, gjb.scwmrc:
