@@ -759,11 +759,6 @@ end in a "-"; e.g., "S-C-M-"
 
   XSync(dpy,True);
 
-#if 0  
-  /* discard events on the no focus win */
-  while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyPress | KeyReleaseMask, &evDiscard));
-#endif
-
   if (XGrabKeyboard(dpy, Scr.NoFocusWin, False /* no owner events */, 
                     fAsyncMouse? GrabModeAsync: GrabModeSync, 
                     fAsyncKeyboard? GrabModeAsync: GrabModeSync,
@@ -779,7 +774,7 @@ end in a "-"; e.g., "S-C-M-"
       fGotPress = True;
       continue;
     }
-#if 0
+#ifdef DEBUG_GET_KEY_EVENT
     scwm_msg(WARN,FUNC_NAME,"Got keycode = %d, keysym = %d",
              ev.xkey.keycode,keysym);
 #endif
