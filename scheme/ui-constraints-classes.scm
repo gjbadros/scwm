@@ -765,14 +765,22 @@
 		  (draw-window-line-anchor wt 5))
 		wtlist wblist))))
 
+
+(define (drop-last-element! items)
+  (let ((n (length items)))
+    (if (< n 2)
+	(error "drop-last-element! cannot shrink a list with fewer than 2 elements"))
+    (set-cdr! (list-tail items (- n 2)) ())))
+  
 ;; constructor
 (define* (cnctr-keep-above winlist #&optional (enable? #f))
   (let* ((sortedwl (sort-windows-by-middle-pos winlist #:horiz #f))
 	 (clvtlist (map (lambda (w) (window-clv-yt w)) (cdr sortedwl)))
-	 (clvblist (map (lambda (w) (window-clv-yb w)) sortedwl))
-	 (cnlist (map (lambda (ct cb) (make-cl-constraint cb <= ct)) clvtlist clvblist)))
-    (and enable? (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist))
-    (list cnlist sortedwl)))
+	 (clvblist (map (lambda (w) (window-clv-yb w)) sortedwl)))
+    (drop-last-element! clvblist)
+    (let ((cnlist (map (lambda (ct cb) (make-cl-constraint cb <= ct)) clvtlist clvblist)))
+      (and enable? (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist))
+      (list cnlist sortedwl))))
 
 ;; declare the keep-above constraint
 (define-public uicc-ka
