@@ -73,6 +73,7 @@ init_scwm_procs(void)
   gh_new_procedure("destroy-window", destroy_window, 0, 1, 0);
   gh_new_procedure("window-deletable?", window_deletable_p, 0, 1, 0);
   gh_new_procedure("focus", focus, 0, 1, 0);
+  gh_new_procedure("unfocus", unfocus, 0, 0, 0);
   gh_new_procedure("warp-to-window", warp_to_window, 0, 1, 0);
   gh_new_procedure("raise-window", raise_window, 0, 1, 0);
   gh_new_procedure("lower-window", lower_window, 0, 1, 0);
