@@ -1,3 +1,8 @@
+Sun Oct 26 03:23:52 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* configure.in, configure, acconfig.h, include/config.h.in: work
+ 	with both older and newer Guile snapshots.
+
 1997-10-24  Jens-Ulrik Holger Petersen  <petersen@kurims.kyoto-u.ac.jp>
 
 	* utilities/Makefile.in (mostlyclean): New target.
