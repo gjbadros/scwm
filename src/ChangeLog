@@ -1,3 +1,12 @@
+Thu Aug 13 11:56:46 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* resize.c: Added DBUG code for ConstrainSize
+
+	* add_window.c: Do not add in psw->bw to frame_width, frame_height 
+	  (was causing windows to grow in size on decorating).  This
+	  reverts an earlier change which was thought to be necessary but
+	  was fixed by making ConstrainSize round instead of truncate.
+
 Thu Aug 13 11:17:12 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* placement.c: Fix bug reported by <forcer@mindless.com> re:
