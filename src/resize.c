@@ -421,7 +421,10 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
 
   { /* scope */
     int x_units, y_units;
-    window_pixel_size_to_client_units(psw,dragWidth, dragHeight, &x_units, &y_units);
+    window_pixel_size_to_client_units(psw,
+                                      dragWidth - DecorationWidth(psw),
+                                      dragHeight - DecorationHeight(psw),
+                                      &x_units, &y_units);
 
     call3_hooks(interactive_resize_start_hook, psw->schwin,
                 gh_int2scm(xmotion), gh_int2scm(ymotion));
@@ -499,7 +502,10 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                           dragWidth,dragHeight, fOpaque);
       { /* scope */
         int x_units, y_units;
-        window_pixel_size_to_client_units(psw, dragWidth, dragHeight, &x_units, &y_units);
+        window_pixel_size_to_client_units(psw, 
+                                          dragWidth - DecorationWidth(psw),
+                                          dragHeight - DecorationHeight(psw),
+                                          &x_units, &y_units);
         /* two calls to this hook exist.
            see the other above */
         call7_hooks(interactive_resize_new_size_hook, psw->schwin,
@@ -658,12 +664,14 @@ can happen on the right/bottom side, not at all, or the top/left side,
 respectively. */
 
   SCWM_HOOK(interactive_resize_new_size_hook,"interactive-resize-new-size-hook");
-  /** This hook is invoked during an interactive resize.  It is called
-with seven arguments, WINDOW, X-POSITION, Y-POSITION,
-NEW-X-SIZE-PIXELS, NEW-Y-SIZE-PIXELS, NEW-X-SIZE-UNITS, and
-NEW-Y-SIZE-UNITS whenever the window is changed to a new size.  The
--SIZE-UNITS arguments are in client units (e.g., characters for
-Emacsen and XTerms.  */
+  /** This hook is invoked during an interactive resize.  
+It is called with seven arguments, WINDOW, X-POSITION, Y-POSITION,
+NEW-WIDTH-PIXELS, NEW-HEIGHT-PIXELS, NEW-WIDTH-UNITS, and
+NEW-HEIGHT-UNITS whenever the window is changed to a new size.  The
+first five arguments refer to the size and position of the frame
+window (not the client window). The -UNITS arguments refer to the size
+of the client window and are in client units (e.g., characters for
+Emacsen and XTerms).  */
 
 SCWM_HOOK(interactive_resize_finish_hook,"interactive-resize-finish-hook");
   /** This hook is invoked at the end of an interactive resize.

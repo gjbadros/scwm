@@ -40,6 +40,10 @@
 #include <config.h>
 #endif
 
+#ifndef __GNUC__
+#define __inline__ 
+#endif
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
@@ -309,10 +313,14 @@ extern Atom XA_OL_DECOR_CLOSE;
 extern Atom XA_OL_DECOR_RESIZE;
 extern Atom XA_OL_DECOR_HEADER;
 extern Atom XA_OL_DECOR_ICON_NAME;
+
+extern Atom XA_SCWM_RESTARTING;
+
 extern Atom XA_SCWM_EXECUTE;
+extern Atom XA_SCWM_RESULT;
 extern Atom XA_SCWMEXEC_LISTENER;
-extern Atom XA_SCWMEXEC_REQUEST;
 extern Atom XA_SCWMEXEC_REQWIN;
+extern Atom XA_SCWMEXEC_REQUEST;
 extern Atom XA_SCWMEXEC_REPLY;
 extern Atom XA_SCWMEXEC_NOTIFY;
 extern Atom XA_SCWMEXEC_OUTPUT;

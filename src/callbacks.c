@@ -246,13 +246,13 @@ scwm_body_eval_x (void *body_data)
 }
 
 
-inline static SCM 
+__inline__ static SCM 
 scwm_catching_eval_x (SCM expr) {
   return scm_internal_stack_catch (SCM_BOOL_T, scwm_body_eval_x, &expr,
 			  scwm_handle_error, "scwm");
 }
 
-inline static SCM 
+__inline__ static SCM 
 scwm_catching_load_from_port (SCM port)
 {
   SCM expr;

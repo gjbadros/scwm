@@ -575,8 +575,9 @@ It is called with one argument, WINDOW. */
 
   SCWM_HOOK(interactive_move_new_position_hook,"interactive-move-new-position-hook");
   /** This hook is invoked during an interactive move.
-It is called with three arguments, WINDOW, NEW_X, and NEW_Y,
-whenever the window is moved to a new location. */
+It is called with three arguments, WINDOW, NEW-X, and NEW-Y,
+whenever the window is moved to a new location. The position refers
+to the position of the frame window (not the client window). */
 
   SCWM_HOOK(interactive_move_finish_hook,"interactive-move-finish-hook");
   /** This hook is invoked at the end of an interactive move.

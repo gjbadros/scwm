@@ -56,9 +56,6 @@ send_clientmessage(Display * disp, Window w, Atom a, Time timestamp)
 {
   XClientMessageEvent ev;
 
-  if (XA_WM_PROTOCOLS == None)
-    XA_WM_PROTOCOLS = XInternAtom(disp, "WM_PROTOCOLS", False);
-
   ev.type = ClientMessage;
   ev.window = w;
   ev.message_type = XA_WM_PROTOCOLS;

@@ -190,7 +190,6 @@ Atom XA_MIT_PRIORITY_COLORS;
 Atom XA_WM_CHANGE_STATE;
 Atom XA_WM_STATE;
 Atom XA_WM_COLORMAP_WINDOWS;
-extern Atom XA_WM_PROTOCOLS;
 Atom XA_WM_TAKE_FOCUS;
 Atom XA_WM_DELETE_WINDOW;
 Atom XA_WM_DESKTOP;
@@ -209,6 +208,9 @@ Atom XA_OL_DECOR_CLOSE;
 Atom XA_OL_DECOR_RESIZE;
 Atom XA_OL_DECOR_HEADER;
 Atom XA_OL_DECOR_ICON_NAME;
+
+Atom XA_SCWM_RESTARTING;
+
 Atom XA_SCWM_EXECUTE;
 Atom XA_SCWM_RESULT;
 Atom XA_SCWMEXEC_LISTENER;
@@ -251,6 +253,9 @@ InternUsefulAtoms(void)
   XA_OL_DECOR_RESIZE = XInternAtom(dpy, "_OL_DECOR_RESIZE", False);
   XA_OL_DECOR_HEADER = XInternAtom(dpy, "_OL_DECOR_HEADER", False);
   XA_OL_DECOR_ICON_NAME = XInternAtom(dpy, "_OL_DECOR_ICON_NAME", False);
+
+  XA_SCWM_RESTARTING = XInternAtom(dpy, "SCWM_RESTARTING", False);
+
   XA_SCWM_EXECUTE = XInternAtom(dpy, "SCWM_EXECUTE", False);
   XA_SCWM_RESULT = XInternAtom(dpy, "SCWM_RESULT", False);
   XA_SCWMEXEC_LISTENER=XInternAtom(dpy,"SCWMEXEC_LISTENER", False);
@@ -263,6 +268,8 @@ InternUsefulAtoms(void)
 
   return;
 }
+
+
 
 /* if the XA_SCWMEXEC_REQWIN window is already set at 
    startup, the first scwm-exec protocol request will cause
@@ -294,6 +301,25 @@ CreateGCs(void)
   Scr.ScratchGC2 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   Scr.ScratchGC3 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
+
+static void
+SetRestartingGlobal()
+{ /* scope */
+  Atom atype;
+  int aformat;
+  unsigned long nitems, bytes_remain;
+  unsigned char *prop;
+  
+  if ((XGetWindowProperty(dpy, Scr.Root, XA_SCWM_RESTARTING, 0L, 1L, True,
+                          AnyPropertyType, &atype, &aformat, &nitems,
+                          &bytes_remain, &prop)) == Success) {
+    if (prop != NULL) {
+      Restarting = True;
+      XDeleteProperty(dpy, Scr.Root, XA_SCWM_RESTARTING);
+    }
+  }
+}
+
 
 
 /*
@@ -367,7 +393,7 @@ InitVariables(void)
   Scr.schscreen = scmScreen;
   gh_allow_ints();
 
-  /* Sets the current desktop number to zero */
+  /* Sets the current desktop number from prior Scwm running */
   /* Multiple desks are available even in non-virtual
    * compilations */
   { /* scope */
@@ -381,7 +407,6 @@ InitVariables(void)
 			    XA_WM_DESKTOP, &atype, &aformat, &nitems,
 			    &bytes_remain, &prop)) == Success) {
       if (prop != NULL) {
-	Restarting = True;
 	Scr.CurrentDesk = *(unsigned long *) prop;
       }
     }
@@ -844,6 +869,7 @@ Repository Timestamp: %s\n",
   
   /* Need to do this after Scr.Root gets set */
   InternUsefulAtoms();
+  SetRestartingGlobal();
   ResetScwmexecProtocol();
   init_modifiers();
   init_pointer_mapping();
@@ -994,6 +1020,7 @@ Repository Timestamp: %s\n",
   UnBlackoutScreen();         /* if we need to remove blackout window */
   /* set the focus to the current window if appropriate */
   CoerceEnterNotifyOnCurrentWindow();
+
   run_startup_hook();
 
   scwm_maybe_send_thankyou_packet();

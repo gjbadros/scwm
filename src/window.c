@@ -538,6 +538,48 @@ MoveTo(ScwmWindow *psw, int x, int y)
   CassowaryEndEdit(psw);
 }
 
+__inline__
+int
+DecorationWidth(const ScwmWindow *psw)
+{
+  return 2 * psw->xboundary_width;
+}
+
+__inline__
+int
+DecorationXOffset(const ScwmWindow *psw)
+{
+  return psw->xboundary_width;
+}
+
+__inline__
+int
+DecorationHeight(const ScwmWindow *psw)
+{
+  return 2 * psw->boundary_width + psw->title_height;
+}
+
+__inline__
+int
+DecorationYOffset(const ScwmWindow *psw)
+{
+  return psw->title_height + psw->boundary_width;
+}
+
+
+__inline__
+int
+ClientWidth(const ScwmWindow *psw)
+{
+  return FRAME_WIDTH(psw) - DecorationWidth(psw);
+}
+
+__inline__
+int
+ClientHeight(const ScwmWindow *psw)
+{
+  return FRAME_HEIGHT(psw) - DecorationHeight(psw);
+}
 
 
 void
@@ -551,10 +593,10 @@ SendClientConfigureNotify(const ScwmWindow *psw)
   client_event.xconfigure.event = psw->w;
   client_event.xconfigure.window = psw->w;
   
-  client_event.xconfigure.x = FRAME_X_VP(psw) + psw->xboundary_width;
-  client_event.xconfigure.y = FRAME_Y_VP(psw) + psw->title_height + psw->boundary_width;
-  client_event.xconfigure.width = FRAME_WIDTH(psw) - 2 * psw->xboundary_width;
-  client_event.xconfigure.height = FRAME_HEIGHT(psw) - 2 * psw->boundary_width - psw->title_height;
+  client_event.xconfigure.x = FRAME_X_VP(psw) + DecorationXOffset(psw);
+  client_event.xconfigure.y = FRAME_Y_VP(psw) + DecorationYOffset(psw);
+  client_event.xconfigure.width = ClientWidth(psw);
+  client_event.xconfigure.height = ClientHeight(psw);
   
   client_event.xconfigure.border_width = psw->bw;
   /* Real ConfigureNotify events say we're above title window, so ... */
@@ -2296,8 +2338,8 @@ context in the usual way if not specified.*/
   width = gh_scm2int(w);
   height = gh_scm2int(h);
 
-  width += (2*psw->xboundary_width);
-  height += (psw->title_height + 2*psw->boundary_width);
+  width += DecorationWidth(psw);
+  height += DecorationHeight(psw);
   ConstrainSize(psw, 0, 0, &width, &height);
   ResizeTo(psw,width,height);
 
@@ -2525,7 +2567,8 @@ SCWM_PROC(window_frame_size, "window-frame-size", 0, 1, 0,
 /** Return the size of the frame of WIN.
 The position is returned as a list of the width and the height in
 pixels. WIN defaults to the window context in the usual way if not
-specified. */
+specified. See `window-size' if you want the size of the application
+(client) window. */
 #define FUNC_NAME s_window_frame_size
 {
   ScwmWindow *psw;
@@ -2557,11 +2600,11 @@ void window_pixel_size_to_client_units(const ScwmWindow *psw,
 SCWM_PROC(window_size, "window-size", 0, 1, 0,
           (SCM win))
 /** Return the size of the application window of WIN.
-
 WIN defaults to the window context in the usual way if not specified.
 The position is returned as a list of four numbers. The first two are
 the width and the height in pixels, the third and fourth are the width
-and height in resize units (e.g., characters for an xterm).  */
+and height in resize units (e.g., characters for an xterm).  See
+`window-frame-size' if you want the size of the frame window. */
 #define FUNC_NAME s_window_size
 {
   ScwmWindow *psw;
@@ -2573,8 +2616,8 @@ and height in resize units (e.g., characters for an xterm).  */
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
-  cpixX = FRAME_WIDTH(psw) - psw->xboundary_width*2;
-  cpixY = FRAME_HEIGHT(psw) - psw->title_height - psw->boundary_width*2;
+  cpixX = ClientWidth(psw);
+  cpixY = ClientHeight(psw);
 
   window_pixel_size_to_client_units(psw,cpixX,cpixY,&width,&height);
 

@@ -32,7 +32,7 @@
 SCM shutdown_hook;
 SCM startup_hook;
 
-static inline void
+static __inline__ void
 run_restart_command(char *command) {
   if (STREQ(command,"scwm")) {
       char *my_argv[20];
@@ -109,8 +109,16 @@ Done(int restart_or_dump, char *command)
     XDefineCursor(dpy, Scr.Root, None);
     XSelectInput(dpy, Scr.Root, 0);
     XSync(dpy, 0);
-    XCloseDisplay(dpy);
 
+    if (restart_or_dump > 0 && STREQ(command,"scwm")) {
+      /* we're restarting Scwm -- must do this before
+         we close the display */
+      XChangeProperty(dpy, Scr.Root, 
+                      XA_SCWM_RESTARTING, XA_STRING,
+                      8, PropModeReplace, (unsigned char *) "scwm-restart", 13);
+    }
+
+    XCloseDisplay(dpy);
   }
   /* FIXGJB: Should restore cursor to original cursor before scwm started */
 
