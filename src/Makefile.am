@@ -62,11 +62,11 @@ scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XPM_LIB@ @x_libs@ @GUILE_LIBS@
 
 INCLUDES = @x_cflags@ @GUILE_INCLUDES@
 
-pkgdata_DATA = init_scheme_string.c scwmpaths.h \
+BUILT_SOURCES = init_scheme_string.c scwmpaths.h \
 binding.x callbacks.x color.x deskpage.x events.x face.x font.x image.x menuitem.x \
 miscprocs.x module-interface.x scwmmenu.x shutdown.x window.x
 
-OMIT_DEPENDENCIES = $(pkgdata_DATA)
+##OMIT_DEPENDENCIES = $(BUILT_SOURCES)
 
 ## This is how guile does it:
 ## (Sadly it does not work with Automake 1.2f)
@@ -110,4 +110,4 @@ scwmpaths.h: ../config.status
 	@echo '#define SCWM_IMAGE_LOAD_PATH "@scwm_image_load_path@"' >> scwmpaths.tmp
 	@mv scwmpaths.tmp scwmpaths.h
 
-CLEANFILES = scwmpaths.h init_scheme_string.c $(pkgdata_DATA)
+CLEANFILES = scwmpaths.h init_scheme_string.c $(BUILT_SOURCES)
