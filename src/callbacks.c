@@ -33,6 +33,7 @@
 #include <unistd.h>
 #include <values.h>
 #include <guile/gh.h>
+#include <config.h>
 #include "scwm.h"
 #include "callbacks.h"
 
@@ -46,9 +47,33 @@ struct scwm_body_apply_data {
 };
 
 
-SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args)
+SCM 
+scwm_handle_error (void *data, SCM tag, SCM throw_args)
 {
-  scm_handle_by_message_noexit(handler_data, tag, throw_args);
+  SCM port = scm_def_errp;
+
+  if (scm_ilength (throw_args) >= 3)
+    {
+      SCM stack = scm_fluid_ref(SCM_CDR (scm_the_last_stack_fluid));
+      SCM subr = SCM_CAR (throw_args);
+      SCM message = SCM_CADR (throw_args);
+      SCM args = SCM_CADDR (throw_args);
+
+      scm_newline (port);
+      scm_display_backtrace (stack, port, SCM_UNDEFINED, SCM_UNDEFINED);
+      scm_newline (port);
+      scm_display_error (stack, port, subr, message, args, SCM_EOL);
+      return SCM_BOOL_F;
+    }
+  else
+    {
+      scm_puts ("uncaught throw to ", port);
+      scm_prin1 (tag, port, 0);
+      scm_puts (": ", port);
+      scm_prin1 (throw_args, port, 1);
+      scm_putc ('\n', port);
+      exit (2);
+    }
   return apply_hooks_message_only(error_hook, gh_cons(tag, throw_args));
 }
 
@@ -66,6 +91,48 @@ scwm_body_apply (void *body_data)
    from disrupting scwm's flow control, which would likely cause a
    crash. */
 
+static SCM
+ssdr_handler (void *data, SCM tag, SCM throw_args)
+{
+  /* Save the stack */
+  scm_fluid_set_x (SCM_CDR (scm_the_last_stack_fluid),
+                   scm_make_stack (scm_cons (SCM_BOOL_T, SCM_EOL)));
+  /* Throw the error */
+  return scm_throw (tag, throw_args);
+}
+
+struct cwssdr_data
+{
+  SCM tag;
+  scm_catch_body_t body;
+  void *data;
+};
+
+static SCM
+cwssdr_body (void *data)
+{
+  struct cwssdr_data *d = data;
+  return scm_internal_lazy_catch (d->tag, d->body, d->data, ssdr_handler, 
+				  NULL);
+}
+
+SCM
+scm_internal_stack_cwdr (scm_catch_body_t body,
+			 void *body_data,
+			 scm_catch_handler_t handler,
+			 void *handler_data,
+			 SCM_STACKITEM *stack_item)
+{
+  struct cwssdr_data d;
+  d.tag = SCM_BOOL_T;
+  d.body = body;
+  d.data = body_data;
+  return scm_internal_cwdr (cwssdr_body, &d, handler, handler_data, 
+			    stack_item);
+}
+
+
+
 SCM
 scwm_safe_apply (SCM proc, SCM args)
 {
@@ -75,9 +142,9 @@ scwm_safe_apply (SCM proc, SCM args)
   apply_data.proc = proc;
   apply_data.args = args;
 
-  return scm_internal_cwdr(scwm_body_apply, &apply_data,
-			   scwm_handle_error, "scwm",
-			   &stack_item);
+  return scm_internal_stack_cwdr(scwm_body_apply, &apply_data,
+				 scwm_handle_error, "scwm",
+				 &stack_item);
 }
 
 
@@ -128,8 +195,8 @@ scwm_body_eval_x (void *body_data)
 
 inline static SCM 
 scwm_catching_eval_x (SCM expr) {
-  return scm_internal_catch (SCM_BOOL_T, scwm_body_eval_x, &expr,
-			     scwm_handle_error, "scwm");
+  return scm_internal_stack_catch (SCM_BOOL_T, scwm_body_eval_x, &expr,
+			  scwm_handle_error, "scwm");
 }
 
 inline static SCM 
@@ -175,7 +242,7 @@ SCM safe_load (SCM fname)
   }
 
   return scm_internal_cwdr(scwm_body_load, &fname,
-			   scwm_handle_error, "scwm", 
+			   scm_handle_by_message_noexit, "scwm", 
 			   &stack_item);
 }
 
@@ -188,7 +255,7 @@ SCM scwm_safe_eval_str (char *string)
 {
   SCM_STACKITEM stack_item;
   return scm_internal_cwdr(scwm_body_eval_str, string,
-			   scwm_handle_error, "scwm", 
+			   scm_handle_by_message_noexit, "scwm", 
 			   &stack_item);
 }
 
