@@ -273,7 +273,6 @@
 
 (add-hook! broadcast-name-hook module-broadcast-name)
 
-
 (define*-public (run-fvwm-module module-file config-file config-info
 				#&optional (other-args '()))
   (let* ((from-module-pipe (pipe))
@@ -369,4 +368,11 @@
 
 (define-public (kill-fvwm-module fmod)
   ((list-ref fmod 5)))
+
+(define-public (kill-all-fvwm-modules)
+  (map (lambda (fmod)
+	 (kill-fvwm-module fmod))
+       active-modules))
+
+(add-hook! shutdown-hook kill-all-fvwm-modules)
 
