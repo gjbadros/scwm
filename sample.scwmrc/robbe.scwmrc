@@ -614,6 +614,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
       (equal? (window-focus-style w) 'click)))
 (define (iconified-or-unfocusable? w)
   (or (iconified-window? w)
+      (shaded-window? w)
       (unfocusable? w)))
 
 (define (bind-circulate fwd bwd . args)
