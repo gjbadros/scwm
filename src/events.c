@@ -67,6 +67,7 @@
 #include <X11/extensions/shape.h>
 #endif /* SHAPE */
 #include "module.h"
+#include "util.h"
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask| Mod3Mask| Mod4Mask| Mod5Mask);
@@ -366,7 +367,7 @@ void HandleKeyPress()
 	    if (NULL!=Tmp_win) {
 	      set_window_context(Tmp_win->schwin);
 	    }
-	    gh_call0(key->Thunk);
+	    call_thunk_with_message_handler(key->Thunk);
 	    if (NULL!=Tmp_win) {
 	      unset_window_context();
 	    }
@@ -1065,7 +1066,7 @@ void HandleButtonPress()
 	      set_window_context(Tmp_win->schwin);
 	    }
 	    find_mouse_event_type();
-	    gh_call0(MouseEntry->Thunk);
+	    call_thunk_with_message_handler(MouseEntry->Thunk);
 	    clear_mouse_event_type();
 	    if (NULL!=Tmp_win) {
 	      unset_window_context();
