@@ -41,7 +41,7 @@ on the window, and set the property on the window, respectively."
 	      (neg win)
 	      (pos win))))
 
-(define*-public (close-window #&optional (win (get-window #t)))
+(define*-public (close-window #&optional (win (get-window #t #t #t)))
   "Close WIN either by deleting it or destroying it.
 WIN is only destroyed if it is not deleteable."
   (if win (if (window-deletable? win)
@@ -224,7 +224,7 @@ If *opaque-move-percent* is a boolean, not a number, just return it."
 
 
 (define*-public (interactive-move 
-		 #&optional (win (get-window #f #t #f))
+		 #&optional (win (get-window #t #f #f))
 		 (opaquely? (if win (move-opaquely? win))))
   "Move WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
@@ -234,7 +234,7 @@ opaquely if that returns #t and uses a rubber-band if it returns #f."
   (if win ((if opaquely? opaque-move rubber-band-move) win)))
 
 (define*-public (interactive-resize 
-		 #&optional (win (get-window #f #t #f))
+		 #&optional (win (get-window #t #f #f))
 		 (opaquely? (if win (resize-opaquely? win))))
   "Resize WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window

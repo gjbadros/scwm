@@ -113,7 +113,7 @@ See `move-window-to-desk'."
 
 (delete 1 '(1 2 3 4))
 
-(define*-public (interactive-move-group #&optional (group (get-window #f #t #f)))
+(define*-public (interactive-move-group #&optional (group (get-window #t #f #f)))
   "Move GROUP interactively.
 You can drag around the window GROUP represents. The other windows in GROUP
 will move along."
