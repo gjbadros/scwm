@@ -104,21 +104,25 @@ If NW or NH is 0, that dimension is not changed."
 		 (y (cadr pos))
 		 (width (car size))
 		 (height (cadr size)))
-	    (if (not (maximized? win))
-		(set-object-property! win 'maximized 
-				      (list x y width height)))
 	    (resize-frame-to (if (> nw 0) nw width)
 			     (if (> nh 0) nh height) win)
 	    ;; above is just a hint, get the actual...
 	    ;; FIXGJB: race condition?
 	    (let* ((new-size (window-frame-size win))
 		   (nw (car new-size))
-		   (nh (cadr new-size)))
-	      (move-window (if (> display-width (+ x nw)) x
-			       (if (> display-width nw) (- display-width nw) 0))
-			   (if (> display-height (+ y nh)) y
-			       (if (> display-height nh) (- display-height nh) 0))
-			   win)))))
+		   (nh (cadr new-size))
+		   (nx (cond
+			((> display-width (+ x nw)) x)
+			((> display-width nw) (- display-width nw))
+			(#t 0)))
+		   (ny (cond
+			((> display-height (+ y nh)) y)
+			((> display-height nh) (- display-height nh))
+			(#t 0))))
+	      (move-window nx ny win)
+	      (if (not (maximized? win))
+		  (set-object-property! win 'maximized
+					(list x y width height nx ny)))))))
 
 
 (define*-public (maximized? #&optional (win (get-window)))
@@ -129,22 +133,18 @@ If NW or NH is 0, that dimension is not changed."
 (define*-public (unmaximize #&optional (win (get-window)))
   "Unmaximize WIN so it returns to its size/position before maximization.
 This should use client units, but currently uses frame-size in pixels."
-  (if win (let ((max-prop (object-property win 'maximized)))
+  (if win (let* ((max-prop (object-property win 'maximized))
+		 (pos (window-position win))
+		 (cur-x (car pos))
+		 (cur-y (cadr pos)))
 	    (cond
-	     (max-prop (move-to (car max-prop)
-				(cadr max-prop) win)
-		       (resize-frame-to (caddr max-prop)
-					(cadddr max-prop) win)
-		       (set-object-property! win 'maximized #f))))))
-
-(define*-public (unmaximize-no-move #&optional (win (get-window)))
-  "Unmaximize WIN so it returns to its size before maximization.
-This should use client units, but currently uses frame-size in pixels."
-  (if win (let ((max-prop (object-property win 'maximized)))
-	    (cond
-	     (max-prop (resize-frame-to (caddr max-prop)
-					(cadddr max-prop) win)
-		       (set-object-property! win 'maximized #f))))))
+	     (max-prop
+	      (let ((maxed-x (car (cddddr max-prop)))
+		    (maxed-y (cadr (cddddr max-prop))))
+		(if (and (= cur-x maxed-x) (= cur-y maxed-y))
+		    (move-window (car max-prop) (cadr max-prop) win))
+		(resize-frame-to (caddr max-prop) (cadddr max-prop) win)
+		(set-object-property! win 'maximized #f)))))))
 
 
 (define-public (window-frame-area win)
