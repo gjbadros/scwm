@@ -15,6 +15,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <assert.h>
 
 #include "virtual.h"
 
