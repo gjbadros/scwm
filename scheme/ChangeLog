@@ -1,5 +1,7 @@
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* flux.scm: Account for module name changes.
+
 	* Makefile.am (scwm_common_scheme): Update file list.
 
 	* gnome-hints.scm: Added support for nearly all gnome
