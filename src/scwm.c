@@ -443,6 +443,7 @@ InitVariables(void)
       if (prop != NULL) {
 	Scr.CurrentDesk = *(unsigned long *) prop;
       }
+      XFree(prop);
     }
   }
 
