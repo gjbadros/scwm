@@ -8,6 +8,10 @@
              (app scwm style)
 	     (app scwm face))
 
+;; Need M_FOCUS_CHANGE for auto-raise
+(use-modules (app scwm module-types))
+
+(define want-autoraise #t)
 
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
@@ -685,6 +689,15 @@
     (while (< i (length str))
 	   (send-key-press (substring str i (+ 1 i)) w)
 	   (set! i (+ 1 i)))))
+
+(if want-autoraise
+    (define broadcast-hook
+      (lambda
+	  (event a1 a2 a3 a4 a5 a6 a7)
+	(if (= event M_FOCUS_CHANGE)
+	    (let ((window (window-from-window-id a1)))
+	      (if window (raise-window window)))))))
+
 
 ;;; menu-item test cases
 ;(define sticky-menu-item (make-menu-item "Sticky" toggle-stick "C-S-F8" (make-image "mini-unkno.xpm") #f #f "sticky"))
