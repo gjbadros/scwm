@@ -1,3 +1,8 @@
+Mon May  3 21:40:19 1999  Greg J Badros  <gjb@bowman.cs.monash.edu.au>
+
+	* scwm.el: GNU Emacs calls it frame-parameter, so alias
+	frame-property to frame-parameter if frame-property is not bound.
+
 Mon May  3 21:23:56 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.el: Added selected-frame-id-string,
