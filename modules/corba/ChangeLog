@@ -1,3 +1,8 @@
+Wed Jan 12 00:01:41 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (INCLUDES): Added -I$(top_srcdir)/include to get
+	arg_unused.h
+
 Tue Jan 11 23:39:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Add scwm_scheme_evaluator.idl to EXTRA_DIST, add

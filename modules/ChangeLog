@@ -1,3 +1,7 @@
+Wed Jan 12 00:02:10 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice/Makefile.am: Added scwmgrammar.fsg to EXTRA_DIST
+
 Sun Jan  9 16:14:48 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c (AnimatedResizeWindows): Permit a
