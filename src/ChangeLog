@@ -1,7 +1,13 @@
+Thu Nov  6 10:59:36 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* paths.c, Makefile.in, envvar.c: Stop using the code in envvar.c
+ 	for environment variable expansion in paths and remove it from the
+ 	build process as well as from the repository.
+
 Wed Nov  5 09:24:21 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* wildcard.c, wildcard.h: Removed because they are not used any
- 	more.	
+ 	more.
 
 	* Makefile.in: Remove wildcard.c from the build process, it's not
  	used any more.
