@@ -94,7 +94,7 @@
 
 
 ;; People seem to prefer move by full virtual desks
-(set-edge-resistance 500 10)
+(set-edge-resistance! 500 10)
 (set-edge-scroll! (%x 100) (%y 100))
 
 
