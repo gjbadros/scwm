@@ -1,1 +1,1 @@
-char *szRepoLastChanged = "Thu Jan 13 02:30:59 EST 2000 -- $Revision$";
+char *szRepoLastChanged = "Thu Jan 13 19:59:55 EST 2000 -- $Revision$";
