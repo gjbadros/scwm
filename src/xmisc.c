@@ -10,6 +10,7 @@
 #include "xmisc.h"
 #include "screen.h"
 #include "image.h"
+#include "system.h"
 
 /*
  * Example Usage: 
@@ -54,3 +55,13 @@ DrawImage(Window w, scwm_image *psimg, int cpixXoffset, int cpixYoffset, GC gc)
   }
 }    
 
+XTextProperty *
+PNewXTextPropertyFromSz(const char *sz)
+{
+  XTextProperty *ptextprop = (XTextProperty *) safemalloc(sizeof(XTextProperty));
+  ptextprop->value = (unsigned char *) sz;
+  ptextprop->encoding = XA_STRING;
+  ptextprop->format = 8;
+  ptextprop->nitems = strlen(sz);
+  return ptextprop;
+}

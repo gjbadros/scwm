@@ -10,5 +10,6 @@
 void XGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn);
 void XGetWindowTopLeft(Window w, int *pxReturn, int *pyReturn);
 void DrawImage(Window w, scwm_image *psimg, int cpixXoffset, int cpixYoffset, GC gc);
+XTextProperty *PNewXTextPropertyFromSz(const char *sz);
 
 #endif
