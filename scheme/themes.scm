@@ -119,18 +119,19 @@ tar file with extension .tar, .tar.gz, or .tgz."
 (define (load-directory-theme file-name theme-name)
   (let* ((old-dir (getcwd))
 	 (result
-	  (catch #t
+;;	  (catch #t
+	  (
 		 (lambda ()
 		   (chdir file-name)
 		   (load (string-append file-name "/theme.scm"))
 		   (module-ref (resolve-module 
 				`(app scwm theme ,(string->symbol theme-name)))
-			       'the-theme))
-		 (lambda args     
-		   (chdir old-dir)
-		   (error (string-append
-			   "Unable to load theme file \"" 
-			   file-name "\"."))))))
+			       'the-theme)))))
+;		 (lambda args     
+;		   (chdir old-dir)
+;		   (error (string-append
+;			   "Unable to load theme file \"" 
+;			   file-name "\"."))))))
     (chdir old-dir)
     result))
 		   
@@ -138,18 +139,19 @@ tar file with extension .tar, .tar.gz, or .tgz."
 (define (load-tar-theme file-name theme-name)
   (let* ((old-dir (getcwd))
 	 (result
-	  (catch #t
+;;	  (catch #t
+	  (
 		 (lambda ()
 		   (chdir theme-unpack-dir)
 		   (system (string-append "tar xf " file-name))
 		   (load-directory-theme 
 		    (string-append theme-unpack-dir "/" theme-name) 
-		    theme-name))
-		 (lambda args 
-		   (chdir old-dir)
-		   (error (string-append
-			   "Unable to load theme file \"" 
-			   file-name "\"."))))))
+		    theme-name)))))
+;		 (lambda args 
+;		   (chdir old-dir)
+;		   (error (string-append
+;			   "Unable to load theme file \"" 
+;			   file-name "\"."))))))
     result))
 
 
@@ -158,15 +160,16 @@ tar file with extension .tar, .tar.gz, or .tgz."
 	 (theme-tar-file (string-append
 			  theme-unpack-dir "/" theme-name ".tar"))
 	 (result
-	  (catch #t
+;;	  (catch #t
+	  (
 		 (lambda ()
 		   (chdir theme-unpack-dir)
 		   (system (string-append "gzip -dc " file-name
 					  " > " theme-tar-file))
-		   (load-tar-theme theme-tar-file theme-name))
-		 (lambda args (error (string-append
-				      "Unable to load theme file \"" 
-				      file-name "\"."))))))
+		   (load-tar-theme theme-tar-file theme-name)))))
+;		 (lambda args (error (string-append
+;				      "Unable to load theme file \"" 
+;				      file-name "\"."))))))
     (chdir old-dir)
     result))
 
