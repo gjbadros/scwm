@@ -11,12 +11,14 @@ SCWM_BUILDSRC_DIR = $(top_builddir)/src
 SUFFIXES = .x
 
 %.x %.doc: %.c
-	$(SCWM_SRC_DIR)/scwm-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).x && \
-	$(SCWM_BUILDSRC_DIR)/scwm-doc-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).doc \
-	|| { rm $(basename $<).x $(basename $<).doc ; false; }
+	B=`basename $< .c`; \
+	$(SCWM_SRC_DIR)/scwm-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $${B}.x && \
+	$(SCWM_BUILDSRC_DIR)/scwm-doc-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $${B}.doc \
+	|| { rm $${B}.x $${B}.doc ; false; }
 
 %.x %.doc: %.cc
+	B=`basename $< .cc`; \
 	CC=$(CXX) \
-	$(SCWM_SRC_DIR)/scwm-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).x && \
-	$(SCWM_BUILDSRC_DIR)/scwm-doc-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).doc \
-	|| { rm $(basename $<).x $(basename $<).doc ; false; }
+	$(SCWM_SRC_DIR)/scwm-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $${B}.x && \
+	$(SCWM_BUILDSRC_DIR)/scwm-doc-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $${B}.doc \
+	|| { rm $${B}.x $${B}.doc ; false; }
