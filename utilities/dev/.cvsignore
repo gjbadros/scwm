@@ -5,3 +5,4 @@ create-dependency-dot-graph
 scwm-usage-counter
 scwmdoc
 scwmdoc.scm
+*.doc

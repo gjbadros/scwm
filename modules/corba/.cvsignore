@@ -11,3 +11,4 @@ scwm_scheme_evaluator-server
 scwm_scheme_evaluator-skels.c
 scwm_scheme_evaluator-stubs.c
 scwm_scheme_evaluator.h
+*.doc

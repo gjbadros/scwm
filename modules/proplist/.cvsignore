@@ -6,3 +6,4 @@ libPropList.la
 libscwmproplist.la
 scwmproplist.lo
 scwmproplist.x
+*.doc

@@ -6,3 +6,4 @@ get_color.lo
 liboverlay-plane.la
 overlay-plane.lo
 overlay-plane.x
+*.doc

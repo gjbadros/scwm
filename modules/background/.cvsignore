@@ -5,3 +5,4 @@ Makefile.in
 background.lo
 background.x
 libbackground.la
+*.doc

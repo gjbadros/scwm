@@ -5,3 +5,4 @@ Makefile
 Makefile.in
 draw-xpm-menu.lo
 libxpm-menus.la
+*.doc
