@@ -37,6 +37,7 @@ char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
 char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
 char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
 
+
 /**************************************************************************
  * 
  * Releases dynamically allocated space used to store window/icon names

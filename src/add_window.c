@@ -56,6 +56,7 @@
 #include "colors.h"
 #include "borders.h"
 #include "resize.h"
+#include "colormaps.h"
 
 #undef MS_DELETION_COMMENT
 

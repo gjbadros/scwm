@@ -46,11 +46,15 @@ typedef struct Scwm_MenuItem_tag
 
 typedef struct MenuItemInMenu_tag
 {
-  Scwm_MenuItem *mi;		/* pointer to the menu item this is for */
+  Scwm_MenuItem *pmi;		/* pointer to the menu item this is for */
   int cpixLabelX;		/* left x offset of label */
-  int cpixExtraX;		/* left x offset of extra info */
+  int cpixOffsetY;		/* left y offset of the item */
   int cpixHeight;		/* height for item */
+  int cpixExtraX;		/* left x offset of extra info */
   menu_item_state mis;		/* current state of item */
+  Bool fOnTopEdge;		/* is this item on the top edge? */
+  Bool fOnBottomEdge;		/* is this item on the bottom edge?  */
+  Bool fShowPopupArrow;		/* should we show a popup arrow */
 } MenuItemInMenu;
 
 

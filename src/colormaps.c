@@ -22,6 +22,7 @@
 #include "misc.h"
 #include "screen.h"
 #include "window.h"
+#include "colormaps.h"
 
 ScwmWindow *colormap_win;
 Colormap last_cmap = None;
@@ -173,7 +174,7 @@ InstallWindowColormaps(ScwmWindow * tmp)
  *	   other colormap list would potentially be loaded anyway.
  ***********************************************************************/
 void 
-InstallRootColormap()
+InstallRootColormap(void)
 {
   ScwmWindow *tmp;
 
@@ -193,7 +194,7 @@ InstallRootColormap()
  * 
  ***************************************************************************/
 void 
-UninstallRootColormap()
+UninstallRootColormap(void)
 {
   if (Scr.root_pushes)
     Scr.root_pushes--;

@@ -32,6 +32,7 @@
 #include "icons.h"
 #include "resize.h"
 #include "borders.h"
+#include "colormaps.h"
 
 
 extern XEvent Event;

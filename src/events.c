@@ -71,6 +71,7 @@
 #include "borders.h"
 #include "resize.h"
 #include "window.h"
+#include "colormaps.h"
 
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |

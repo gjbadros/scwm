@@ -45,6 +45,7 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #endif /* END HAVE_GETOPT_H */
 #include "scwm.h"
 #include "menu.h"
+#include "scwmmenu.h"
 #include "menus.h"
 #include "misc.h"
 #include "screen.h"
@@ -72,6 +73,7 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #include "binding.h"
 #include "decor.h"
 #include "face.h"
+#include "colormaps.h"
 
 #define MAXHOSTNAME 255
 
@@ -199,6 +201,7 @@ scwm_main(int argc, char **argv)
   init_scwm_types();
   init_miscprocs();
   init_menu();
+  init_scwm_menu();
   init_binding();
   init_window();
   init_face();

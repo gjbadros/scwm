@@ -14,6 +14,8 @@
 
 #include <config.h>
 
+#define FONT_IMPLEMENTATION
+
 #include <stdio.h>
 #include <string.h>
 #include <guile/gh.h>
@@ -27,9 +29,6 @@
 #include "util.h"
 #include "icons.h"
 #include "decor.h"
-
-long scm_tc16_scwm_font;
-SCM window_font = SCM_UNDEFINED, icon_font = SCM_UNDEFINED, menu_font = SCM_UNDEFINED;
 
 size_t 
 free_font(SCM obj)

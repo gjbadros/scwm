@@ -112,6 +112,7 @@ init_scwm_procs(void)
   gh_new_procedure("make-menu", make_menu, 1, 0, RESTP);
   gh_new_procedure("make-image", make_picture, 1, 0, 0);
   gh_new_procedure("popup", popup, 1, 1, 0);
+  gh_new_procedure("popup-menu", popup_menu, 1, 0, 0);
   gh_new_procedure("menu?", menu_p, 1, 0, 0);
   gh_new_procedure("color?", color_p, 1, 0, 0);
   gh_new_procedure("font?", font_p, 1, 0, 0);

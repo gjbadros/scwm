@@ -68,6 +68,7 @@ SRCS = \
 	icons.c \
 	menus.c \
 	misc.c \
+	xmisc.c \
 	move.c \
 	placement.c \
 	resize.c \
@@ -82,6 +83,7 @@ SRCS = \
 	util.c \
 	window.c \
 	menu.c \
+	scwmmenu.c \
 	scwmmenu.c \
 	menuitem.c \
 	paths.c \

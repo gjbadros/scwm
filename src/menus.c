@@ -36,6 +36,7 @@
 #include "menu.h"
 #include "util.h"
 #include "string_token.h"
+#include "colormaps.h"
 
 
 int menu_on = 0;

@@ -136,7 +136,8 @@ print_menu(SCM obj, SCM port, scm_print_state * pstate)
   return 1;
 }
 
-SCM sym_title, sym_separator;
+SCM sym_title;
+SCM sym_separator;
 
 SCM 
 make_menu(SCM title, SCM args)

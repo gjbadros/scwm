@@ -30,6 +30,7 @@
 #include "borders.h"
 #include "decor.h"
 #include "colors.h"
+#include "colormaps.h"
 
 size_t 
 free_window(SCM obj)

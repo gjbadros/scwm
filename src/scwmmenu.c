@@ -26,10 +26,18 @@
 #include "font.h"
 #include "system.h"
 #include "scwmmenu.h"
+#include "drawmenu.h"
+#include "colormaps.h"
+#include "xmisc.h"
+#include "screen.h"
+#include "color.h"
 
 #ifndef HAVE_GH_LENGTH
 #define gh_length gh_list_length
 #endif /* HAVE_GH_LENGTH */
+
+#define scmBLACK load_color(gh_str02scm("black"))
+#define scmWHITE load_color(gh_str02scm("white"))
 
 
 SCM 
@@ -152,19 +160,25 @@ SCM make_scwmmenu(SCM list_of_menuitems,
   }
 
   iarg++;
-  if (side_bg_color != SCM_UNDEFINED && !COLORP(side_bg_color)) {
+  if (side_bg_color == SCM_UNDEFINED) {
+    side_bg_color = scmWHITE;
+  } else if (!COLORP(side_bg_color)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,side_bg_color);
   }
   menu->scmSideBGColor = side_bg_color;
 
   iarg++;
-  if (bg_color != SCM_UNDEFINED && !COLORP(bg_color)) {
+  if (bg_color == SCM_UNDEFINED) {
+    bg_color = scmWHITE;
+  } else if (!COLORP(bg_color)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,bg_color);
   }
   menu->scmBGColor = bg_color;
 
   iarg++;
-  if (text_color != SCM_UNDEFINED && !COLORP(text_color)) {
+  if (text_color == SCM_UNDEFINED) {
+    text_color = scmBLACK;
+  } else if (!COLORP(text_color)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,text_color);
   }
   menu->scmTextColor = text_color;
@@ -179,16 +193,249 @@ SCM make_scwmmenu(SCM list_of_menuitems,
   }
 
   iarg++;
-  if (font != SCM_UNDEFINED && !FONTP(font)) {
+  /* FIXGJB: order dependency on menu_font being set before making
+     the menu -- is there a better default -- maybe we should just
+     always have some font object for "fixed" */
+  if (font == SCM_UNDEFINED && menu_font != SCM_UNDEFINED) {
+    menu->scmFont = menu_font;
+  } else if (!FONTP(font)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,font);
   }
   menu->scmFont = font;
 
-  /* FIXGJB: initialize this properly */
   menu->pchUsedShortcutKeys = NewPchKeysUsed(menu->scmMenuItems);
 
   SCM_NEWCELL(answer);
   SCM_SETCAR(answer, scm_tc16_scwm_scwmmenu);
   SCM_SETCDR(answer, (SCM) menu);
   return answer;
+}
+
+
+/* return the appropriate x offset from the prior menu to
+   use as the location of a popup menu */
+/* FIXGJB: this should be a callback function, perhaps */
+static
+int 
+PopupPositionOffset(DynamicMenu *pmd)
+{
+  return pmd->pmdi->cpixWidth - 5;
+}
+
+/*
+ * GetPreferredPopupPosition
+ * Given x,y and the menu to popup, return the coords
+ * that should be used for the upper left
+ */
+/* FIXGJB: this should be a callback function, perhaps */
+static
+void 
+GetPreferredPopupPosition(DynamicMenu *pmd,
+			  DynamicMenu *pmdPoppedFrom, int x, int y, 
+			  int *pxReturn, int *pyReturn)
+{
+  if (pmdPoppedFrom) {
+    *pxReturn = pmdPoppedFrom->pmdi->x + PopupPositionOffset(pmdPoppedFrom);
+    *pyReturn = y;
+  } else {
+    *pxReturn = x - pmd->pmdi->cpixWidth/2;
+    *pyReturn = y - pmd->rgpmiim[0]->cpixHeight/2;
+  }
+  return;
+}
+
+static
+void
+SetPopupMenuPosition(DynamicMenu *pmd, int x_pointer, int y_pointer)
+{
+  DynamicMenu *pmdPoppedFrom = pmd->pmdPrior;
+  int x;
+  int y;
+  GetPreferredPopupPosition(pmd, pmdPoppedFrom, x_pointer, y_pointer,
+			    &x, &y);
+  pmd->pmdi->x = x;
+  pmd->pmdi->y = y;
+}
+
+static
+void
+PopupMenu(DynamicMenu *pmd)
+{
+  MenuDrawingInfo *pmdi = pmd->pmdi;
+  DynamicMenu *pmdPoppedFrom = pmd->pmdPrior;
+  Window w = pmdi->w;
+  InstallRootColormap();
+  XMoveWindow(dpy, w, pmdi->x, pmdi->y);
+  XMapRaised(dpy, w);
+}
+
+static
+void
+PopdownMenu(DynamicMenu *pmd)
+{
+  XUnmapWindow(dpy, pmd->pmdi->w);
+  UninstallRootColormap();
+  XFlush(dpy);
+}
+
+static int HOVER_DELAY_MS = 100;
+
+static
+void
+MenuInteraction(DynamicMenu *pmd)
+{
+  while (True) {
+    int c10ms_delays = 0;
+    while (XCheckMaskEvent(dpy, 
+			   ButtonPressMask|ButtonReleaseMask|ExposureMask | 
+			   KeyPressMask|VisibilityChangeMask|ButtonMotionMask, 
+			   &Event) == FALSE) {
+      sleep_ms(10);
+      if (c10ms_delays++ >= HOVER_DELAY_MS/10 ) {
+	/* FIXGJB: invoke the hover action */
+      } else {  /* block until there is an interesting event */
+	XMaskEvent(dpy, 
+		   ButtonPressMask|ButtonReleaseMask|ExposureMask | 
+		   KeyPressMask|VisibilityChangeMask|ButtonMotionMask, 
+		   &Event);
+      }
+      if (Event.type == MotionNotify) {
+	/* discard any extra motion events before a release */
+	while((XCheckMaskEvent(dpy,ButtonMotionMask|ButtonReleaseMask,
+			       &Event))&&(Event.type != ButtonRelease));
+      }
+
+      switch(Event.type) 
+	{
+	case ButtonRelease:
+	  /* FIXGJB: handle release */
+	  goto MENU_INTERACTION_RETURN;
+	  break;
+
+	case VisibilityNotify:
+	case ButtonPress:
+	  continue;
+
+	case KeyPress:
+	  /* Handle a key press events to allow mouseless operation */
+	  /* FIXGJB: check shortcuts and other keybindings in the menu event map */
+	  goto MENU_INTERACTION_RETURN;
+	  break;
+	  
+	case MotionNotify:
+	  /* FIXGJB: update selected item, mark mouse_moved boolean if
+	     it's moved enough, reset action hook timer, etc. */
+	  break;
+
+	case Expose:
+	{ /* scope */
+	  DynamicMenu *pmdNeedsPainting = NULL;
+	  /* grab our expose events, let the rest go through */
+	  if((XFindContext(dpy, Event.xany.window,ScwmMenuContext,
+			   (caddr_t *)&pmdNeedsPainting) !=XCNOENT)) {
+	    PaintDynamicMenu(pmdNeedsPainting,&Event);
+	  }
+	}
+	continue;
+
+	default:
+	  /* FIXGJB: do other event handling */
+	  DispatchEvent();
+	  break;
+	} /* switch */
+	
+      /* FIXGJB: Now handle new menu items, whether it is from a keypress or
+	 a pointer motion event */
+      XFlush(dpy);
+    } /* while next event */
+  } /* while true */
+ MENU_INTERACTION_RETURN:
+  return;
+}
+
+static
+void
+InitializeDynamicMenu(DynamicMenu *pmd)
+{
+  Scwm_Menu *pmenu = pmd->pmenu;
+  int cmiim = gh_length(pmenu->scmMenuItems);
+  int imiim = 0;
+  MenuItemInMenu **rgpmiim = pmd->rgpmiim =
+    safemalloc(cmiim * sizeof(MenuDrawingInfo));
+  SCM rest = pmd->pmenu->scmMenuItems;
+
+  /* save the array size in the struct */
+  pmd->cmiim = cmiim;
+
+  /* Initialize the list of dynamic menu items;
+     only the drawing-independent code here */
+  while (True) {
+    SCM item = gh_car(rest);
+    Scwm_MenuItem *pmi = SCWM_MENUITEM(item);
+    MenuItemInMenu *pmiim = safemalloc(sizeof(MenuItemInMenu));
+    rgpmiim[imiim] = pmiim;
+    pmiim->pmi = pmi;
+
+    pmiim->cpixLabelX = -1;	/* just init: gets set in drawing code */
+    pmiim->cpixExtraX = -1;     /* just init: gets set in drawing code */
+    pmiim->cpixHeight = -1;     /* just init: gets set in drawing code */
+    pmiim->fOnTopEdge = False;	/* just init: gets set in drawing code */
+    pmiim->fOnBottomEdge = False; /* just init: gets set in drawing code */
+
+    /* Not sure what rule should determine the show popup arrow flag...
+       could be the setting of a Hover action, but that's not quite right....
+       maybe the scheme code should just specify it wants a popup arrow... 
+       --11/23/97 gjb */
+    pmiim->fShowPopupArrow = False;
+
+    pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
+    rest = gh_cdr(rest);
+    if (SCM_NULLP(rest))
+      break;
+    imiim++;
+  }
+}
+
+static 
+void
+PopupGrabMenu(Scwm_Menu *psm, DynamicMenu *pmdPoppedFrom)
+{
+  DynamicMenu *pmd = safemalloc(sizeof(Scwm_Menu));
+  pmd->pmenu = psm;
+  pmd->pmdNext = NULL;
+  pmd->pmdPrior = pmdPoppedFrom;
+  pmd->pmdi = NULL;
+  pmd->fPinned = False;
+
+  InitializeDynamicMenu(pmd);	/* add drawing independent fields */
+  ConstructDynamicMenu(pmd);	/* update/create pmd->pmdi */
+  XSaveContext(dpy,pmd->pmdi->w,ScwmMenuContext,(caddr_t)pmd);
+
+  { /* scope */
+    int cpixX_startpointer;
+    int cpixY_startpointer;
+    XGetPointerWindowOffsets(Scr.Root,&cpixX_startpointer,&cpixY_startpointer);
+
+    SetPopupMenuPosition(pmd, cpixX_startpointer, cpixY_startpointer);
+
+    PopupMenu(pmd);
+    MenuInteraction(pmd);
+    PopdownMenu(pmd);
+  }
+}
+
+SCM 
+popup_menu(SCM menu)
+{
+  if (!(SCM_NIMP(menu) && SCWM_MENU_P(menu))) {
+    scm_wrong_type_arg("popup-menu", 1, menu);
+  }
+  PopupGrabMenu(SCWM_SCWMMENU(menu),NULL);
+  return SCM_UNSPECIFIED;
+}
+
+void 
+init_scwm_menu()
+{
+  /* empty */
 }

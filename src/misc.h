@@ -127,11 +127,7 @@ void HandleHardFocus(ScwmWindow * t);
 
 /* FIXGJB: BELOW ARE NOT DEFINED IN misc.h */
 
-void InstallWindowColormaps(ScwmWindow *);
-void InstallRootColormap(void);
-void UninstallRootColormap(void);
 void FetchWmProtocols(ScwmWindow *);
-void FetchWmColormapWindows(ScwmWindow * tmp);
 void PaintEntry(MenuRoot *, MenuItem *);
 void PaintMenu(MenuRoot *, XEvent *);
 void InitEventHandlerJumpTable(void);
@@ -155,7 +151,6 @@ void HandleClientMessage(void);
 void HandlePropertyNotify(void);
 void HandleKeyPress(void);
 void HandleVisibilityNotify(void);
-void HandleColormapNotify(void);
 void GetGravityOffsets(ScwmWindow *, int *, int *);
 void MoveViewport(int newx, int newy, Bool);
 ScwmWindow *AddWindow(Window w);
@@ -200,7 +195,6 @@ Bool PlaceWindow(ScwmWindow * tmp_win, unsigned long flags, int Desk);
 int do_menu(MenuRoot * menu, int style);
 int check_allowed_function(MenuItem * mi);
 int check_allowed_function2(int function, ScwmWindow * t);
-void ReInstallActiveColormap(void);
 void MapIt(ScwmWindow * t);
 void do_save(void);
 void checkPanFrames(void);
