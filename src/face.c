@@ -570,37 +570,33 @@ be used for titlebars, and only tiled pixmaps may be used for borders.
  <entry>Format</entry>  <entry>Explanation</entry>
 </row></thead>
 <tbody><row>
-  <entry><paragraph><informalexample>
+  <entry><para><informalexample><programlisting>
      '(relief-pattern ((X Y BOOL) ...))
-       </informalexample></paragraph>
-  </entry><entry>
+       </programlisting></informalexample></para></entry><entry>
       Draw a relief pattern using the list of triples, each of which
 indicates a pair of X,Y coordinates given as a percentage of the
 button size, and a boolean value indicating whether to use the lighter
 or darker color. This spec is partially destructive.
   </entry></row>
   <row>
-  <entry><paragraph><informalexample>
+  <entry><para><informalexample><programlisting>
      '(solid COLOR)
-         </informalexample></paragraph>
-  </entry><entry>
+         </programlisting></informalexample></para></entry><entry>
       Use COLOR as the color for this element; fully destructive.
   </entry></row>
   <row>
-  <entry><paragraph><informalexample>
+  <entry><para><informalexample><programlisting>
      '(gradient {horizontal|vertical} NCOLORS {COLOR_PERCENT}* FINAL)
-         </informalexample></paragraph>
-  </entry><entry>
+         </programlisting></informalexample></para></entry><entry>
      Draw a gradient in this element.  The gradient may be horizontal or
 vertical. The number of colors is specified, followed by a number of
 colors with percentages and a final color. The percentages must add to
 100.
   </entry></row>
   <row>
-  <entry><paragraph><informalexample>
+  <entry><para><informalexample><programlisting>
       '(pixmap {'mini-icon|['tiled] IMAGE})
-         </informalexample></paragraph>
-  </entry><entry>
+         </programlisting></informalexample></para></entry><entry>
       Specify a pixmap to use, either the window's mini-icon, an image
 object or image specifier string, or a list of tiled and an image,
 indicating the image should be tiled. Partially destructive, except

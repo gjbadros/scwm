@@ -539,6 +539,43 @@ scwm_main(int argc, char **argv)
   DBUG((DBG,"main", "Entered, about to parse args"));
   
   getopt_opts = "Dsd:f:e:hibV";
+
+  /** CONCEPT: Run-time command-line options
+<segmentedlist>
+<segtitle/Option/
+<segtitle/Description/
+
+<seglistitem>
+<seg/-D or --debug/ <seg/enable lots of debugging messages./
+</seglistitem><seglistitem>
+
+
+<seg/-s or --single-screen/ <seg/run only on on the first screen of the display./
+</seglistitem><seglistitem>
+
+<seg/-d or --display dpy/ <seg/run on display dpy./
+</seglistitem><seglistitem>
+
+<seg/-f or --file file/ <seg>read startup commands from the specified
+file instead of ".scwmrc" or "system.scwmrc".</seg>
+</seglistitem><seglistitem>
+
+<seg/-e or --expression expr/ <seg>evaluate Scheme expression expr
+instead of reading from ".scwmrc" or "system.scwmrc". Multiple -e and
+-f options may be specified on a single command line and in this case
+will be processed in the order in which they were specified.</seg>
+</seglistitem><seglistitem>
+
+<seg/-h or --help/ <seg/prints a usage message and exits./
+</seglistitem><seglistitem>
+
+<seg/-b or --blackout/ <seg/blacks the screen out to hide the initial capture./
+</seglistitem><seglistitem>
+
+<seg/-v or --version/ <seg/prints the version and exits./
+</seglistitem>
+</segmentedlist>
+  */
   
   while(1) {
     static struct option getopt_longopts[] =
