@@ -148,7 +148,7 @@ int JunkX = 0, JunkY = 0;
 
 ScwmWindow *FocusOnNextTimeStamp = NULL;
 
-Boolean debugging = False, PPosOverride, Blackout = False;
+Boolean debugging = False, PPosOverride = False, Blackout = False;
 
 char **g_argv;
 int g_argc;
