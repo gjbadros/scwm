@@ -25,10 +25,13 @@
 #include "screen.h"
 #include "module.h"
 
+#undef MS_DELETION_COMMENT
+
 extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;
 Bool NeedToResizeToo;
 
+#if MS_DELETION_COMMENT
 /****************************************************************************
  *
  * Start a window move operation
@@ -97,7 +100,7 @@ void move_window(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   
   return;
 }
-
+#endif /* MS_DELETION_COMMENT */
 
 
 /****************************************************************************
@@ -418,15 +421,15 @@ void InteractiveMove(Window *win, ScwmWindow *tmp_win, int *FinalX, int *FinalY,
     }
 
 
-  /* DragX = eventp->xbutton.x_root;
-     DragY = eventp->xbutton.y_root;
-  /*
+  DragX = eventp->xbutton.x_root;
+  DragY = eventp->xbutton.y_root;
+  
   /* If this is left commented out, then the move starts from the button press 
    * location instead of the current location, which seems to be an
    * improvement */
-  XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
+  /* XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
 		&DragX, &DragY,	&JunkX, &JunkY, &JunkMask);
-
+		*/
   if(!GrabEm(MOVE))
     {
       XBell(dpy,Scr.screen);
