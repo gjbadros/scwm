@@ -25,6 +25,9 @@ recall correctly, that's what fvwm does.
 -------------
 Visual bugs in boundaries of windows with some configurations of options.
 -------------
+Changing title-height in the decor (e.g., by changing the font) doesn't
+affect new windows using that style
+-------------
 wildcard-matcher in wininfo doesn't permit distinguishing based on title,
 class, and resource name separately.  This is essential for window styles
 to do the right thing (a misfeature compared to fvwm2)
