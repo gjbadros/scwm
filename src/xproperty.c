@@ -208,7 +208,7 @@ unsigned char *GetXProperty(Window win, Atom prop, Bool del,
 {
   int dwords=32;		/* try a small size first */
   unsigned long bytes_left;
-  unsigned char *val;
+  unsigned char *val = NULL;
 
   while (True) {
     if (XGetWindowProperty(dpy, win, prop, 0, dwords, del, AnyPropertyType,
@@ -251,9 +251,13 @@ If the X property could be found, a list "(value type format)" is returned.
   VALIDATE_ARG_ATOM_OR_STRING_COPY(2,name,aprop);
   VALIDATE_ARG_BOOL_COPY_USE_F(3,consume_p,del);
 
+  /* GetXProperty will return NULL if the XGetWindowProperty
+     fails (e.g., if the window disappears very quickly;
+     gimp pops up windows and takes them down quickly enough
+     to cause this problems). */
   val = GetXProperty(w, aprop, del, &atype, &fmt, &len);
 
-  if (atype==None)
+  if (val == NULL || atype==None)
     return SCM_BOOL_F;
 
   switch (fmt) {
