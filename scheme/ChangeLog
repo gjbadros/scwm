@@ -1,3 +1,10 @@
+Wed Nov 18 03:32:19 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* auto-raise.scm: Various minor bug fixes; make unfocus-proc
+ 	actually work. Also, use window-focus-change-hook in lieu of
+ 	broadcast-hook. Minor doc tweak. Also, do not attempt to put
+ 	variables in the root module. That is not good.
+
 Tue Nov 17 01:25:14 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* wininfo.scm: Really really fix the regexp/icase bug. Fix

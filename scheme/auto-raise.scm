@@ -18,31 +18,6 @@
 ;;;; 
 
 
-;;; FIXGJB: hack to get in root module
-
-(define-public default-auto-raise-delay 300)
-;;;**VAR
-;;; Number of ms to delay before raising the window the mouse pointer entered.
-;;; This can be overridden on a per-window basis using `set-auto-raise-delay!'.
-
-(define-public default-auto-raise-unfocus-delay 300)
-;;;**VAR
-;;; Number of ms to delay before running the unfocus proc for a raised window.
-;;; This can be overridden on a per-window basis using `set-auto-raise-unfocus-delay!'
-
-(define-public default-auto-raise-focus-proc raise-window)
-;;;**VAR
-;;; The default procedure to invoke when raising the window.
-;;; This gets called after the auto-raise delay times out, and 
-;;; can be overwridden on a per-window basis using `set-auto-raise-focus-proc!'
-
-(define-public default-auto-raise-unfocus-proc noop)
-;;;**VAR
-;;; The default procedure to invoke when un-raising the window.
-;;; This gets called after the mouse pointer leaves an auto-raised window, and
-;;; can be overwridden on a per-window basis using `set-auto-raise-unfocus-proc!'
-
-
 
 
 (define-module (app scwm auto-raise)
@@ -67,7 +42,7 @@
 ;;;; A slightly more complicated example:
 ;;;;
 ;;;;   (window-style "*" #:auto-raise #t #:auto-raise-delay 400
-;;;;    #:auto-raise-focus-proc 
+;;;;    #:auto-raise-focus-proc raise-window)
 ;;;;
 ;;;; You can also set a separate action to occur with a delay after
 ;;;; the window is unfocused. This action will be cancelled if the
@@ -88,6 +63,28 @@
 ;;;; Auto-raise probably works best with mouse or sloppy focus, since
 ;;;; it is based on the window getting focus, not on the window being
 ;;;; entered. That may change in the future.
+
+(define-public default-auto-raise-delay 300)
+;;;**VAR
+;;; Number of ms to delay before raising the window the mouse pointer entered.
+;;; This can be overridden on a per-window basis using `set-auto-raise-delay!'.
+
+(define-public default-auto-raise-unfocus-delay 300)
+;;;**VAR
+;;; Number of ms to delay before running the unfocus proc for a raised window.
+;;; This can be overridden on a per-window basis using `set-auto-raise-unfocus-delay!'
+
+(define-public default-auto-raise-focus-proc raise-window)
+;;;**VAR
+;;; The default procedure to invoke when raising the window.
+;;; This gets called after the auto-raise delay times out, and 
+;;; can be overwridden on a per-window basis using `set-auto-raise-focus-proc!'
+
+(define-public default-auto-raise-unfocus-proc noop)
+;;;**VAR
+;;; The default procedure to invoke when un-raising the window.
+;;; This gets called after the mouse pointer leaves an auto-raised window, and
+;;; can be overwridden on a per-window basis using `set-auto-raise-unfocus-proc!'
 
 (define*-public (set-auto-raise! auto-raise? #&optional (win (get-window)))
   "Turn auto-raise on (#t) or off (#f) for WIN.
@@ -159,34 +156,32 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
      (or (object-property win 'auto-raise-unfocus-delay)
 	 default-auto-raise-unfocus-delay)))
   
-(define (auto-raise-hook-proc event num-datum a1 a2 a3 a4 a5 a6 a7)
+(define (auto-raise-hook-proc window)
+  (remove-timer-hook! last-focus-handle)
   (cond
-   ((= event M_FOCUS_CHANGE)
-    (remove-timer-hook! last-focus-handle)
-    (let ((window (id->window a1)))
-      (cond
-       (window 
-	(remove-timer-hook! 
-	 (object-property window 'window-last-unfocus-handle))
-	(set-object-property! window 'window-last-unfocus-handle #f)
-	(cond
-	 ((object-property window 'auto-raise)
-	  (let ((delay (auto-delay window)))
-	    (if (= delay 0)
-		((make-auto-focus-func window))
-		(set! last-focus-handle 
-		      (add-timer-hook! 
-		       delay
-		       (make-auto-focus-func window)))))))
-	(if (and last-focus-window (object-property window 'auto-raise))
-	  (let ((delay (auto-unfocus-delay window))
-		(func (make-auto-unfocus-func last-focus-window)))
-	    (if (= delay 0)
-		(func)
-		(set-object-property! last-focus-window 
-				      'window-last-unfocus-handle
-				      (add-timer-hook! delay func)))
-	(set! last-focus-window window)))))))))
+   (window 
+    (remove-timer-hook! 
+     (object-property window 'window-last-unfocus-handle))
+    (set-object-property! window 'window-last-unfocus-handle #f)
+    (cond
+     ((object-property window 'auto-raise)
+      (let ((delay (auto-delay window)))
+	(if (= delay 0)
+	    ((make-auto-focus-func window))
+	    (set! last-focus-handle 
+		  (add-timer-hook! 
+		   delay
+		   (make-auto-focus-func window)))))))))
+  (if (and last-focus-window (object-property last-focus-window 
+					      'auto-raise))
+	(let ((delay (auto-unfocus-delay last-focus-window))
+	      (func (make-auto-unfocus-func last-focus-window)))
+	  (if (= delay 0)
+	      (func)
+	      (set-object-property! last-focus-window 
+				  'window-last-unfocus-handle
+				  (add-timer-hook! delay func)))))
+  (set! last-focus-window window))
 	  
 
-(add-hook! broadcast-hook auto-raise-hook-proc)
+(add-hook! window-focus-change-hook auto-raise-hook-proc)
