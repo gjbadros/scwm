@@ -3,7 +3,7 @@
 
 #include <ctype.h>
 #include "menus.h"
-#include "../libs/scwmlib.h"
+#include <scwm/scwmlib.h>
 
 /************************************************************************
  * ReapChildren - wait() for all dead child processes
@@ -198,9 +198,9 @@ extern void       DrawIconWindow(ScwmWindow *);
 extern void       CreateIconWindow(ScwmWindow *tmp_win, int def_x, int def_y);
 
 
-extern SCWM_INLINE void RelieveWindow(ScwmWindow *, Window, 
+extern inline void RelieveWindow(ScwmWindow *, Window, 
 				      int, int, int, int, GC, GC, int);
-extern SCWM_INLINE void RelieveWindowHH(ScwmWindow *,Window,
+extern inline void RelieveWindowHH(ScwmWindow *,Window,
 					int,int,int,int, GC,GC, int, int);
 void RelieveParts(ScwmWindow *t,int i,GC hor, GC vert);
 #define NO_HILITE     0x0000
@@ -354,7 +354,7 @@ void UpdateDecor(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		unsigned long context, char *action,int *Module);
 void SetColormapFocus(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		      unsigned long context, char *action,int* Module);
-SCWM_INLINE void DrawPattern(Window, GC, GC, int, int,int);
+inline void DrawPattern(Window, GC, GC, int, int,int);
 Pixel    GetShadow(Pixel);
 Pixel    GetHilite(Pixel);
 

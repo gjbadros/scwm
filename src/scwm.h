@@ -120,7 +120,7 @@ typedef struct ColorPair
 } ColorPair;
 
 #ifdef MINI_ICONS
-#include "../libs/scwmlib.h"
+#include <scwm/scwmlib.h>
 #endif
 
 #ifdef USEDECOR
@@ -334,6 +334,22 @@ extern Atom _XA_OL_DECOR_CLOSE;
 extern Atom _XA_OL_DECOR_RESIZE;
 extern Atom _XA_OL_DECOR_HEADER;
 extern Atom _XA_OL_DECOR_ICON_NAME;
+
+
+
+/*
+** if you would like to see lots of debug messages from scwm, for debugging
+** purposes, uncomment the next line
+*/
+/* #define SCWM_DEBUG_MSGS */
+#ifdef SCWM_DEBUG_MSGS
+#define DBUG(x,y) scwm_msg(DBG,x,y)
+#else
+#define DBUG(x,y) /* no messages */
+#endif
+
+/* end of configure.h */
+
 
 #endif /* _SCWM_ */
 

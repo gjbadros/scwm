@@ -11,7 +11,7 @@
  * code for parsing the scwm style command
  *
  ***********************************************************************/
-#include "../configure.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <string.h>

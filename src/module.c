@@ -12,7 +12,7 @@
  *
  ***********************************************************************/
 
-#include "../configure.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <unistd.h>
@@ -41,7 +41,7 @@ char **pipeName;
 unsigned long *PipeMask;
 struct queue_buff_struct **pipeQueue;
 
-SCWM_INLINE int PositiveWrite(int module, unsigned long *ptr, int size);
+inline int PositiveWrite(int module, unsigned long *ptr, int size);
 void DeleteQueueBuff(int module);
 void AddToQueue(int module, unsigned long *ptr, int size, int done);
 
@@ -561,7 +561,7 @@ void SendStrToModule(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
 
 
 #include <sys/errno.h>
-SCWM_INLINE int PositiveWrite(int module, unsigned long *ptr, int size)
+inline int PositiveWrite(int module, unsigned long *ptr, int size)
 {
   if((pipeOn[module]<0)||(!((PipeMask[module]) & ptr[1])))
     return -1;

@@ -16,8 +16,8 @@
 #include <string.h>
 #include <limits.h>
 
-#include "../configure.h"
-#include "scwmlib.h"
+#include <config.h>
+#include <scwm/scwmlib.h>
 
 #include "scwm.h"
 #include "menus.h"

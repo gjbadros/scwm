@@ -5,7 +5,7 @@
  *     You may use this code for any purpose, as long as the original
  *     copyright remains in the source code and all documentation
  ****************************************************************************/
-#include "../configure.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <signal.h>

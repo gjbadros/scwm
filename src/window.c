@@ -3,7 +3,7 @@
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
  * Changes Copyright 1997, Maciej stachowiak
  ****************************************************************************/
-#include "../configure.h"
+#include <config.h>
 #include "scwm.h"
 #include "screen.h"
 #include "misc.h"

@@ -52,7 +52,7 @@
 #define FUNC_NOP 3
 
 #include <guile/gh.h>
-#include "../libs/scwmlib.h"
+#include <scwm/scwmlib.h>
 
 typedef struct MenuItem
 {

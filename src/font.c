@@ -11,7 +11,7 @@
  *     copyright remains in the source code and all documentation
  ****************************************************************************/
 
-#include "../configure.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <string.h>

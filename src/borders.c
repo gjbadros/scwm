@@ -13,7 +13,7 @@
  *
  ***********************************************************************/
 
-#include "../configure.h"
+#include <config.h>
 
 #include <stdio.h>
 #include <signal.h>
@@ -885,7 +885,7 @@ void SetTitleBar (ScwmWindow *t,Bool onoroff, Bool NewTitle)
  *  Draws the relief pattern around a window
  *
  ****************************************************************************/
-SCWM_INLINE void RelieveWindow(ScwmWindow *t,Window win,
+inline void RelieveWindow(ScwmWindow *t,Window win,
 			       int x,int y,int w,int h,
 			       GC ReliefGC,GC ShadowGC, int hilite)
 {
@@ -964,7 +964,7 @@ SCWM_INLINE void RelieveWindow(ScwmWindow *t,Window win,
  *  (veliaa@rpi.edu)
  *
  ****************************************************************************/
-SCWM_INLINE void RelieveWindowHH(ScwmWindow *t,Window win,
+inline void RelieveWindowHH(ScwmWindow *t,Window win,
 			       int x,int y,int w,int h,
 			       GC ReliefGC,GC ShadowGC, 
 			       int draw, int hilite)

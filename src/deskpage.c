@@ -4,7 +4,7 @@
  * Changes Copyright 1997, Maciej stachowiak
  ****************************************************************************/
 #include <guile/gh.h>
-#include "../configure.h"
+#include <config.h>
 
 #include <ctype.h>
 #include <unistd.h>

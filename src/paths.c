@@ -5,7 +5,7 @@
  ****************************************************************************/
 
 #include <guile/gh.h>
-#include "../configure.h"
+#include <config.h>
 #include "scwm.h"
 #include "screen.h"
 #include "errors.h"

@@ -22,7 +22,7 @@
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
 
-#include "../configure.h"
+#include <config.h>
 #include "scwm.h"
 #include "screen.h"
 #include "color.h"
