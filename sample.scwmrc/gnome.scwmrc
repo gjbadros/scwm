@@ -1,0 +1,533 @@
+;;;; $Id$
+;;;; gnome.scwmrc -- Scwm Gnome Minimal  initialization file
+;;;;
+;;;; Copyright (C) 1997-1999 Greg J. Badros
+;;;;
+;;;; This program is free software; you can redistribute it and/or modify
+;;;; it under the terms of the GNU General Public License as published by
+;;;; the Free Software Foundation; either version 2, or (at your option)
+;;;; any later version.
+;;;;
+;;;; This program is distributed in the hope that it will be useful,
+;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;;; GNU General Public License for more details.
+;;;;
+;;;; You should have received a copy of the GNU General Public License
+;;;; along with this software; see the file COPYING.  If not, write to
+;;;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+;;;; Boston, MA 02111-1307 USA
+;;;;
+
+
+;; Uncomment the below to send a single UDP packet to
+;; the scwm usage counter machine at startup
+;; The single packet just contains the hostname and version number
+;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
+;;(define thank-scwm-authors-with-usage-note #t)
+
+(let ((port (current-error-port)))
+  (define (display-string-newline-to-error-port str)
+    (display str port)
+    (newline port)))
+
+;; import scwm modules we need for the startup animation
+(display "using gnome-hints\n")
+(use-scwm-modules gnome-hints)
+(display "done\n")
+
+(use-scwm-modules lambda-startup-logo)
+(logo-setup #f)
+
+;; do this early, since gnome times out in 10 seconds
+(enable-gnome-hints)
+
+;; SCWMDIR is mostly used for testing and running Scwm w/o installing
+;; use (scwm-path-prefix) and (scwm-path-exec-prefix) if
+;; you want the installation locations
+(define scwmdir (or (getenv "SCWMDIR") (string-append (scwm-path-prefix) "/share/scwm")))
+
+;;; set path to use for image searches
+(append! image-load-path
+     (list
+      (string-append scwmdir "/pixmaps")
+      "/usr/share/icons/mini"
+      "/usr/lib/TheNextLevel/pixmaps"
+      "/usr/share/include/X11/pixmaps"
+      "/usr/share/include/X11/bitmaps"
+      "/usr/X11/lib/X11/mini-icons"
+      "/usr/X11/include/X11/pixmaps"
+      "/usr/lib/icons"
+      "/usr/local/X11/include/X11/pixmaps"
+      "/usr/local/lib/icons"
+      "/usr/local/icons"
+      ))
+
+;; import the rest of the scwm modules
+(display "using rest of modules\n")
+(use-scwm-modules base message-window
+		  defoption optargs primopts 
+		  winops winops-menu winlist wininfo 
+		  listops placement style stylist face doc 
+		  virtual basic-styles titlebar-buttons 
+		  flash-window shove-window themes 
+		  key-mover gtk path-cache animation netscape
+		  animated-iconify last-mapped-window
+		  modifier-key-bindings window-selection
+		  group preferences animated-edge-moves
+		  property-respond xprop-extras
+		  wavplay window-configuration
+		  )
+(display "done\n")
+
+(set! *use-scwm-system-proc* #t)
+
+(if (scwm-is-constraint-enabled?)
+    (use-scwm-modules ui-constraints-toggle-menu
+		      ui-constraints-gtk-toggle-menu))
+
+;; prefer doc files in scwmdir/doc
+(set! doc-files
+      (append (map (lambda (s) (string-append scwmdir "/doc/" s))
+		   (list "scwm-procedures.txt"
+			 "scwm-variables.txt"
+			 "scwm-hooks.txt"
+			 "cassowary_scm-procedures.txt"))
+	      doc-files))
+
+(append! *theme-path*
+	 (list (string-append scwmdir "/themes")))
+
+(set! *fvwm2-module-path* (append *fvwm2-module-path* '("/usr/X11R6/lib/X11/fvwm2")))
+
+(define want-close-button #f)
+(define want-autoraise #f)
+
+(define user-image-load-list 
+  (list (string-append (user-home) "/pixmaps")
+	(string-append (user-home) "/bitmaps")))
+
+(menu-style #:fg "black" #:bg "gray80" #:stipple "grey35" 
+	    #:font (optget *menu-font*))
+
+(message-window-options 'interactive-move #:follow-window #t)
+(message-window-options 'interactive-resize #:follow-window #t)
+
+(set-edge-resistance! 500 10)
+(set-edge-scroll! 0 0)  ;; Use no X/Y scroll so x2x works
+
+(scwm-option-set! *window-font* "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*")
+(title-style #:font (optget *window-font*) #:justify 'left #:relief 'raised)
+
+(define* (popup-small-ops)
+  "Popup the small window operations menu."
+  (interactive)
+  (popup-menu (make-small-window-ops-menu (get-window)) #t))
+
+(define* (popup-root-start)
+  "Popup the root window start menu."
+  (interactive)
+  (with-window 
+   #f  ;; ensure that the window context is empty, so that, e.g.,
+       ;; window operations menu always prompts for a window
+   (popup-menu 'menu-root-start #t)))
+
+(define* (popup-root-start-no-warp)
+  "Popup the root window start menu without warping to the first menu item."
+  (interactive)
+  (with-window 
+   #f  ;; ensure that the window context is empty, so that, e.g.,
+       ;; window operations menu always prompts for a window
+   (popup-menu 'menu-root-start)))
+
+(define* (popup-window-ops)
+  "Popup the window operations menu."
+  (interactive)
+  (popup-menu menu-window-ops))
+
+(set! image-load-path (append user-image-load-list image-load-path))
+
+(define pic-system-button
+  (make-image "mini-sys3d-full.xpm"))
+
+(define pic-xterm-mini
+  (make-image "mini-term.xpm"))
+
+(define pic-lambda-mini
+  (make-image "lambda.xpm"))
+
+(define pic-unknown
+  (make-image "unknown1.xpm"))
+;;-------------------------------;;
+;; set some window styles        ;;
+
+(window-style "*" 
+	      #:fg "black" #:bg "grey76" 
+	      #:icon #f ;; this turns off icons, but leaves icon titles
+	      #:show-icon #f ;; this turns off both icon titles and icons
+	      #:icon-box (list (x- 70) 1 69 (y- 141))
+	      #:border-width 4
+	      #:focus 'mouse
+;	      #:plain-border #t
+	      #:sticky-icon #t
+	      #:random-placement #t #:smart-placement #t
+	      #:mwm-func-hint #t #:mwm-decor-hint #t
+	      #:mwm-border #t
+	      #:hint-override #t #:decorate-transient #f
+	      #:PPosition-hint #f
+;;	      #:mini-icon pic-xterm-mini)
+	      #:mini-icon pic-lambda-mini)
+
+;;(window-style "*" #:icon #f #:show-icon #f)
+
+;; This gets my netscape bookmarks windows to do the right thing
+;; and stay on screen (instead of being half off screen when mapped)
+(set-smart-placement-is-really-smart! #t)
+
+(enable-dynamic-netscape-actions)
+
+
+;; GJB:FIXME:MS: make-face's style of argument passing
+;; is different from the window-style method; I imagine
+;; MS has a wrapper planned for this
+(border-style #:hidden-handles #t #:no-inset #t)
+
+
+(define mini-icon-button-face 
+  (make-face '((relief flat))
+	     '((pixmap mini-program-icon))))
+
+;; Can use strings as arg to pixmap
+(define sticky-button-face
+  (make-face '((relief flat))
+	     '((pixmap "mini-hbars-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; 4 Horizontal bars (sticky)
+;;	     '((relief-pattern
+;;		((10 23 #f) (90 23 #f) (90 28 #f) (10 28 #t) (10 47 #t) 
+;;			    (90 47 #f) (90 52 #f) (10 52 #t) (10 70 2) 
+;;			    (90 70 #f) (90 76 #f) (10 76 #t)))))
+)
+
+;; But can also use a (make-image  "file.xpm")
+(define style-button-face
+  (make-face '((relief flat))
+	     '((pixmap "mini-lightbolt-full.xpm")))
+
+;;  (make-face '((relief raised))
+;; ;;; Big Lighting Bolt (Fat at top, comes to a point)
+;;	     '((relief-pattern
+;;		((35 15 #t) (20 50 #t) (40 50 #f) (30 80 #t) (75 40 #f) 
+;;			    (50 40 #t) (75 15 #f) (35 15 #t)))))
+)
+
+
+(define close-button-face
+  (make-face '((relief flat))
+	     '((pixmap  "mini-stylized-x-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; Stylized X
+;;	     '((relief-pattern
+;;		((20 20 #t) (30 20 #t) (50 40 #t) (70 20 #t) (80 20 #t) 
+;;			    (80 30 #f) (60 50 #f) (80 80 #f) (70 80 #f) 
+;;			    (50 60 #f) (30 80 #f) (20 80 #f) (20 70 #f) 
+;;			    (40 50 #t) (20 30 #f) (20 20 #t)))))
+)
+
+
+(define tall-maximize-button-face 
+  (make-face '((relief flat))
+	     '((pixmap "mini-exp-windows-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; tall box
+;;	     '((relief-pattern 
+;;		((40 25 #t) (60 25 #t) (60 75 #f) (40 75 #f) (40 25 #t)))))
+)
+
+(define iconify-button-face 
+  (make-face '((relief flat))
+	     '((pixmap "mini-shrink-windows-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; 3 stacked square panels like stills of a window being minimized
+;;	     '((relief-pattern
+;;		((80 20 #f) (80 60 #f) (60 60 #f) (60 40 #f) (60 70 #f) 
+;;			    (40 70 #f) (40 60 #f) (40 85 #f) (15 85 #f) 
+;;			    (15 60 #t) (40 60 #t) (30 60 #t) (30 40 #t) 
+;;			    (60 40 #t) (45 40 #t) (45 20 #t) (80 20 #t)))))
+)
+
+
+(define (popup-small-ops-or-close)
+  (case (mouse-event-type)
+    ((double-click) (close-window))
+    (else (let ((w (get-window)))
+	    (popup-menu-from-decoration 
+	     (make-small-window-ops-menu w) w 1)
+	    #f))))
+
+(define (close-on-double-click)
+  (case (mouse-event-type)
+    ((double-click one-and-a-half-clicks) (close-window))))
+
+(define (popup-small-ops-from-decoration)
+  (let ((w (get-window)))
+    (popup-menu-from-decoration 
+     (make-small-window-ops-menu w) w 1))
+  #f)
+
+(define (popup-style-menu)
+  (let ((w (get-window)))
+    (popup-menu-from-decoration 
+     (make-window-style-menu w) w 1))
+  #f)
+
+;; the "1" at the end of the prior line is the button number from which 
+;; this is popped.
+
+(add-left-button mini-icon-button-face 
+		 close-on-double-click 
+		 popup-small-ops-from-decoration)
+;;(show-titlebar (select-window-interactively))
+
+(add-left-button style-button-face #f popup-style-menu)
+
+(if want-close-button
+    (add-right-button close-button-face close-window))
+
+;; GJB:FIXME:: why does it not work as an immediate proc?
+;;(add-right-button tall-maximize-button-face #f toggle-maximize-vertical)
+(add-right-button tall-maximize-button-face toggle-maximize-vertical #f)
+(add-right-button iconify-button-face #f animated-iconify)
+
+(gnome-install-window-styles)
+
+(define (scwm-help)
+  (netscape-goto-url "http://scwm.mit.edu" #f 'netscape-new-window #:start-netscape-as-needed #t))
+
+(define (scwm-about-message)
+  (message "Scwm -- The Scheme Constraints Window Manager
+(C) 1999 Greg J. Badros <gjb@cs.washington.edu>
+         and Maciej Stachowiak <mstachow@alum.mit.edu>
+
+See: http://scwm.mit.edu
+
+Scwm is the Scheme Constraints Window Manager, a highly dynamic and
+extensible window manager for the X Window System.  Scwm embeds Guile
+Scheme as the configuration and extension language, and includes a
+sophisticated constraint solver for permitting the user to interactively
+specify constraints among top-level window sizes and positions.  Nearly
+all decorations can be changed at run-time on a per-window basis.
+Dynamic loading of C modules is supported.  Scwm is self-documenting and
+provides A powerful protocol for interacting with the window manager
+from other processes.
+"))
+
+(define menu-root-start
+  (menu
+   (list 
+    (menu-title "Start" #:image-left "mini-exp.xpm")
+    menu-separator
+    (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
+	      #:action 'start-xterm)
+    (menuitem "Constraint sol&ver" #:image-left pic-lambda-mini
+	      #:submenu 'menu-constraints)
+    menu-separator
+    (menuitem "&Window Operations" #:image-left "mini-zoom.xpm" 
+	      #:action 'menu-window-ops)
+    (menuitem "Windows lis&t" #:image-left "mini-windows.xpm" 
+	      #:submenu (lambda () (make-window-list-menu)))
+    (menuitem "Windows by &resource" #:image-left "mini-windows.xpm" 
+	      #:submenu (lambda () (make-window-list-menu #:by-resource #t)))
+    menu-separator
+    (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
+    (menuitem "A&bout Scwm" #:image-left "mini-exclam.xpm" 
+	      #:action (thunk scwm-about-message))
+    (menuitem "&Help Scwm" #:image-left "mini-question.xpm" 
+	      #:action (thunk scwm-help)))
+   #:image-side "scwm-gnu-linux.xpm"
+   #:image-align 'bottom
+   #:color-bg-image-side "blue"))
+
+(define menu-constraints
+  (menu
+   (list
+    (menuitem "&Constraints"
+	      #:submenu (lambda () (ui-constraints-toggle-menu)))
+    (menuitem "Constraint &investigator"
+	      #:action (thunk ui-constraints-gtk-toggle-menu))
+    (menuitem "Turn &on Constraint Solver"
+	      #:action (thunk enable-constraint-solver)))))
+
+(define (enable-constraint-solver)
+  (if (scwm-is-constraint-enabled?)
+      (begin
+	(use-scwm-modules constraints)
+	(start-constraints))
+      (error "Scwm is not built to support constraints\nGet Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/")))
+
+(define* (popup-scwm-root-middle-menu)
+  "Popup the root middle-button menu."
+  (interactive)
+  (popup-menu
+   (menu
+    (cons (menuitem "Scwm" #:extra-label "C-S-M-z" 
+		    #:image-left pic-lambda-mini #:submenu menu-root-start)
+	  (cdadr (menu-properties
+		  (make-window-list-menu #:by-resource #t))))
+    #:popup-delay #f
+    #:hover-delay 0)))
+
+(define* (show-window-list-by-focus-with-geometry)
+  "Show the window list using focus order, including window geometries."
+  (interactive)
+  (show-window-list-menu #f #f #:by-focus #t #:show-geometry #t))
+
+(define* (show-window-list-by-resource-with-geometry)
+  "Show the window list split by window resource, including window geometries."
+  (interactive)
+  (show-window-list-menu #f #f #:by-resource #t #:show-geometry #t))
+
+(if (and
+     gnome-sm
+     (not (SM-register)))
+    (message (SM-error-message)))
+
+;;; first our root menus
+(bind-mouse 'root 1 #f gnome-desktop-press-1)
+(bind-mouse 'root 2 #f popup-scwm-root-middle-menu)
+(bind-mouse 'root 3 #f gnome-desktop-press-3)
+
+;;; operations on parts of the window
+(bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
+(bind-mouse 'frame-corners 1 resize-or-raise)
+(bind-mouse 'frame-sides 1 move-or-raise)
+
+(define (play-window-flashing-start-sound ignored)
+  (wavplay "Utopia Question.WAV"))
+
+(add-hook! window-flashing-start-hook play-window-flashing-start-sound)
+
+(bind-mouse 'title 1 move-or-shade raise-and-stop-flashing)
+(bind-mouse 'title 2 #f lower-window)
+(bind-mouse 'title 3 #f popup-window-ops)
+
+;; key bindings for the menus
+(bind-key 'all "M-F2" popup-window-ops)
+
+;; C-S-M-t makes netscape go to the url specified by cut buffer 0
+(bind-key 'all "C-S-M-t" netscape-goto-cut-buffer-url)
+
+(bind-mouse 'icon 1 move-or-deiconify)
+(bind-mouse 'icon 2 #f animated-deiconify-to-vp-focus)
+
+(bind-mouse 'all "C-S-M-1" #f toggle-raise)
+(bind-mouse 'all "C-S-M-2" #f interactive-move-selected-group-or-window)
+(bind-mouse 'all "C-S-M-3" #f interactive-resize)
+
+(bind-mouse 'title "C-1" #f select-window-toggle)
+(bind-mouse 'title "C-3" #f popup-window-group-menu-no-warp)
+
+;;(bind-mouse 'left-button-1 3 popup-style-menu)
+
+(bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
+(bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
+(bind-key 'all "C-M-S-e" resize-halfscreen)
+(bind-key 'all "C-M-S-d" resize-quarterscreen)
+(bind-key 'all "C-M-S-f" resize-fullscreen)
+
+;; I reserve M-Tab for emacs, but Alt-Tab is fine
+(bind-key 'all "A-Tab" window-task-switcher-menu)
+(bind-key 'all "A-S-Tab" window-task-switcher-menu-backwards)
+
+;; rotate the current window with the keyboard
+(bind-key 'all "M-S-Tab" next-visible-non-iconified-window)
+
+(bind-key 'all "C-M-S-Tab" prev-visible-non-iconified-window)
+
+(key-mouse-moves "C-M-S" 5 "h" "j" "k" "l")
+(key-mouse-moves "C-M-S" 1 "y" "u" "i" "o")
+(key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
+
+;; avoid lots of warnings.... test for this first...
+(define have-kp-keysyms 
+  (let ((v (keysym->keycode "KP_Left")))
+    (and v (not (null? v)))))
+
+(define have-kp-num-keysyms 
+  (let ((v (keysym->keycode "KP_4")))
+    (and v (not (null? v)))))
+
+(if have-kp-keysyms
+    (key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right"))
+
+(if have-kp-num-keysyms
+    (key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6"))
+
+(bind-key 'all "C-M-S-r" refresh)
+(bind-key 'all "C-M-S-x" start-xterm)
+
+(bind-key 'all "C-S-F1" popup-small-ops)
+(bind-key 'all "C-S-F2" show-window-list-by-focus-with-geometry)
+(bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
+(bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
+
+;; Set some environment variables for processes that Scwm starts.
+(setenv "DISPLAY_HEIGHT" (number->string display-height))
+(setenv "DISPLAY_WIDTH" (number->string display-width))
+(setenv "DISPLAY_PLANES" (number->string display-depth))
+(setenv "GNOME_SM" (if gnome-sm "true" "false"))
+
+(bind-key 'all "C-S-Down" animated-iconify)
+(bind-key 'all "C-M-Return" toggle-raise)
+(bind-key 'all "M-F1" toggle-raise)   ;; like SGI's 4dwm
+
+(bind-key 'all "C-S-Up" toggle-maximize-vertical)
+(bind-key 'all "C-S-Right" toggle-maximize-horizontal)
+(bind-key 'all "C-S-Left" toggle-maximize-both)
+
+;; See the binding for mouse button 2
+;; to add geometry strings to this as well.
+(bind-key 'all "C-S-Return" show-icon-list-menu)
+
+(bind-key 'all "C-S-M-z" popup-root-start)
+(bind-key 'all "C-S-M-w" gnome-desktop-menu)
+
+(set-click-delay! 150)
+;; Fluid, cartoon-like
+;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.0))
+
+;; Linear, mechanical
+;(set-animation! '#(0.1 0.2 0.3 0.4 0.6 0.7 0.8 0.9 1.0))
+
+;; Fluid, cartoon-like, overshoots target
+;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
+
+
+(bind-key 'all "C-S-M-p" shove-window-prefix)
+(bind-key 'all "C-S-M-s" toggle-stick)
+
+(if want-autoraise
+    (begin
+      (use-scwm-modules auto-raise)
+      (window-style "*" #:auto-raise #t)))
+
+(append-hook! after-new-window-hook push-window-configuration)
+
+;; enable xterm patch's window flashing behaviour
+(start-property-respond)
+
+;; Get user preferences from $HOME/.scwm-options --
+;; let them take priority over anything done in here
+(load-preferences)
+
+(use-scwm-modules gtk (gtk gtk))
+(add-hook! error-hook gtk-show-error)
+
+(use-scwm-modules gtk (gtk gtk))
+
+(add-hook! error-hook display-string-newline-to-error-port)
+
+(add-hook! error-hook gtk-show-error)
+
+(append-hook! startup-hook
+	      (lambda () (wavplay "scwm-startup.wav")))
