@@ -1,3 +1,49 @@
+Mon Mar 29 14:33:33 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c: Doc fix to get-window-highlight-colors.
+
+	* scwm.c: Move init_image() to as late as possible to defer imlib
+ 	loading when it is used (also image-support of any kind is totally
+ 	optionally, and nothing earlier could depend on this).
+
+	* message-window.c:  Added Jeffrey Nichols to the (C), since this is
+	largely his code.  Renamed ResizeWindow to ResizeMessageWindow for 
+	disambiguation.  Added `id->message-window' primitive as a last
+	resort in case a message window has no easy way to get a hold of
+	its object.  hide message windows when they are freed -- leaving
+	one up that's been garbage-collected would be bad.
+
+	* events.c: Replace an assert(False) with a warning about
+	an unhandled format in a client message.  Sam Steingold tripped
+	this assertion.
+
+	* color.c:  Have ScmMakeColor return BLACK_COLOR instead of
+	SCM_BOOL_F -- this was part of the point of my earlier reworking
+	of this code, but I must've gotten sidetracked.  Now, e.g.,
+	adjust_brightness will always get a valid color back, even if it's 
+	not the best one.
+
+Mon Mar 29 11:28:40 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c, window.h, events.c, : rename window_context variable to scm_window_context,
+	rename get_window_context C primitive to window_context.
+
+	* window.c: Added `window-valid?'.  Thanks Eli Barzilay for the
+	suggestion!
+
+	* session-manager.c: doc fix.
+
+	* miscprocs.c: FUNC_NAME fix.
+
+	* face.c: Added note to Maciej re: add_spec_to_face_x (related to
+ 	a scwmdoc false positive).
+
+Mon Mar 29 10:30:17 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* deskpage.c (s_set_edge_scroll_delay_x):  Document as ms, not
+	usec, and use COPY_INTEGER_WITH_DEFAULT_OR_ERROR for arg
+	processing. (edge-scroll-delay): updated doc.
+
 Mon Mar 29 08:18:08 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* binding.c (s_bind_key): Doc fix -- grammar + remove trailing

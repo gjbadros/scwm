@@ -1,3 +1,37 @@
+Mon Mar 29 14:43:07 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* preferences.scm: Added help buttons to show documentation in a
+	message-window.  This could instead use a gtk window of some
+	sort.  Also added some broken code to try to support tooltips, but 
+	I don't have docs to help figure this out.
+
+	* message-window.scm: provide scwm-message-window. Added comments
+ 	on public functions.
+
+	* flux.scm: Added comments, make unflash-window more robust.
+
+	* file.scm: Added doc comments.
+
+	* defoption.scm: ws, add doc comment for define-scwm-option-proc.
+
+	* base.scm: ws.
+
+Mon Mar 29 10:39:46 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* prompt-range.scm: Use optional digits argument, and set to 0 for 
+	prompt-integer-range.
+
+	* primopts.scm:  Added `*edge-scroll-delay*',
+	`*edge-move-threshold*', use time-convert module.
+
+	* preferences.scm: Simplify prompt for the dialog to just the name 
+	of the option (i.e., drop "Set " prefix)
+
+	* time-convert.scm, flux.scm: Added, moved ms->usec, sec->usec
+ 	from flux.
+
+	* ScwmClock.scm: use time-convert.scm
+
 Mon Mar 29 09:28:34 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* prompt-string.scm: Added prompt-path-hbox, and use-module (app
