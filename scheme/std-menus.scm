@@ -69,4 +69,5 @@
                          (run-in-xterm
                           (string-append "-T telnet:" hh " -n telnet "
                                          "-e telnet -E -l " user " " hh))))
-             hosts-list))))
+             host-list))))
+

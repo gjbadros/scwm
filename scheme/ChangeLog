@@ -1,3 +1,8 @@
+Mon Mar  2 23:49:19 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* std-menus.scm, wmconfig-menu.scm: minor fixes from Sam Steingold
+ 	<sds@usa.net>
+
 Sun Mar  1 02:21:15 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.in: Install the new modules.

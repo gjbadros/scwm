@@ -91,7 +91,6 @@
 
 (define*-public (make-wmconfig-menu 
 		 #&optional (wmconfig-title default-wmconfig-title)
-		 (wmconfig-name default-wmconfig-name)
 		 (wmconfig-dir default-wmconfig-dir))
   (menu (append! (list (menuitem wmconfig-title #f) menu-title menu-separator)
 		 (wmc-regroup (wmc-process-directory wmconfig-dir)))))
