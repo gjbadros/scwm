@@ -76,10 +76,8 @@
 				image-load-path))
 
 (set! image-load-path (append 
-		       '("/home/petersen/work/scwm-icons/icons"
-			 "/home/petersen/work/scwm-icons/mini-icons"
-			"/usr/local/X11R6.1/include/X11/pixmaps"
-			"/usr/local/X11R6.1/include/X11/bitmaps")
+		       '("/usr/local/X11R6.1/include/X11/pixmaps"
+			 "/usr/local/X11R6.1/include/X11/bitmaps")
 		       image-load-path))
 
 ;;; decor
@@ -285,21 +283,22 @@
 	(old-screen (current-screen))
 	(old-window (current-window-with-focus)))
     (move-viewport (car rel-screen-move) (cadr rel-screen-move))
-   (if old-window
-       (unfocus))
-   (let ((screen (current-screen)))
-     (if (equal? old-screen screen)
-	 (beep)
-	 (let ((window (or (array-ref screen-focus-array
-				      (car screen) (cadr screen))
-			   (current-window-with-pointer))))
-	   (if (and window
-		    (not (equal? window old-window))
-		    (visible? window))
-	       (begin
-		 (focus window)
-		 (save-focus old-window old-screen))
-	       (next-window #:only visible? #:except iconified?)))))))
+    (let ((screen (current-screen)))
+      (if (equal? old-screen screen)
+	  (beep)
+	  (begin
+	    (if old-window
+		(unfocus))
+	    (let ((window (or (array-ref screen-focus-array
+					 (car screen) (cadr screen))
+			      (current-window-with-pointer))))
+	      (if (and window
+		       (not (equal? window old-window))
+		       (visible? window))
+		  (begin
+		    (focus window)
+		    (save-focus old-window old-screen))
+		  (next-window #:only visible? #:except iconified?))))))))
 
 (define (windows-off-screen-menu)
   (display-menu
