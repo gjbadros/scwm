@@ -1,3 +1,11 @@
+Wed Nov 12 22:57:31 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added current-window-with-{pointer,focus} functions.
+	Abstract out SwFromWindow() instead of using the more obscure
+	XContext calls inline.  scmprocs.c updated for new functions.
+	Also have a place-holder for select-window-interactively, but it
+	does nothing right now.
+
 Wed Nov 12 15:41:28 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c: Fixed the remaining problems with DeferExecution - the

@@ -1,3 +1,15 @@
+Wed Nov 12 23:04:39 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Improve scwm-buffer.el a bit more-- add C-M-z to send the s-exp
+	after a delay, so the pointer can be moved before the wm evals the
+	text.  Also don't explode the string into a list of characters,
+	and update the patch to accept a string as the last argument to
+	XChangeProperty.
+
+	* gjb.scwmrc: updated to let C-S-F7, C-S-F8 use the window that
+	the pointer is in;  this is less wierd than before, where
+	unfocussed windows could not be moved easily w/ the keyboard
+
 Wed Nov 12 16:11:21 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* Improvements to scwm-buffer.el, to use Emacs interface to Xlib
