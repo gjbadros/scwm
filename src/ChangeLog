@@ -1,3 +1,8 @@
+Mon Mar 29 08:18:08 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* binding.c (s_bind_key): Doc fix -- grammar + remove trailing
+	extraneous \".  Thanks Eli Barzilay!
+
 Sun Mar 28 20:09:38 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* virtual.c (notify_edge_enter, leave): Fix bug 'east <->

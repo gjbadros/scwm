@@ -1,3 +1,33 @@
+Mon Mar 29 09:28:34 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* prompt-string.scm: Added prompt-path-hbox, and use-module (app
+	scwm file) for it.
+
+	* prompt-range.scm: Added prompt-integer-range-hbox.
+
+	* preferences.scm: Clean up option-widget-and-getter -- make it
+	use the new *-hbox procs. Do `scwm-options-dialog' right, with
+	apply button, and make ok/apply take effect.  Works for me now!
+
+	* file.scm:  Fix bug in (path-list->string-with-colons '()).
+
+Mon Mar 29 08:10:12 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* ScwmBiff.scm: Added, from Glenn Trigg.
+
+	* simplebiff.scm: New version from Glenn Trigg -- added
+	activate-proc, deactivate-proc keyword arguments, and return a
+	lambda to remove the hook.  This version is required for his first 
+	version of ScwmBiff.
+
+Sun Mar 28 20:05:38 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* preferences.scm, prompt-bool.scm, prompt-range.scm,
+ 	prompt-string.scm: lots of changes to use key args, to separate
+	building of widget from building of top level.  Now have
+	`scwm-options-dialog' proc  -- still incomplete as I don't invoke
+	the setters yet, but I'm outta time.
+
 Sun Mar 28 16:37:12 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added missing .scm files to the install list.
