@@ -124,8 +124,10 @@
 (define-fvwm-command "Send_ConfigInfo"
   ((caddr fmod)))
 
+;;; GJB:FIXME:MS:  How can we make it easier to
+;;; debug fvwm2-module-send-window-list (that this calls?)
 (define-fvwm-command "Send_WindowList"
-  ((cadddr fmod)))
+  ((cadddr fmod)))   ;; invokes the modules's fvwm2-module-send-window-list
 
 (define-fvwm-command "Set_mask"
   (set-car! (cdr fmod) (get-one-numeric-arg args)))

@@ -301,7 +301,7 @@
   
     (if (iconified? win)
     	(fvwm2-module-send-packet 
-    	 M_ICONIFY_WINDOW 
+    	 M_ICONIFY 
     	 (marshal-fvwm2-iconify-info win)
     	 port))
 
@@ -435,7 +435,7 @@
 	       (to-module-read (car to-module-pipe))
 	       (to-module-write (cdr to-module-pipe))
 	       (input-hook-handle #f)
-	       ;; FIXMS: should use a struct, not a list.
+	       ;; MS:FIXME:: should use a struct, not a list.
 	       (fmod (list to-module-write 0
 			   (lambda ()
 			     (fvwm2-module-send-config-info 
@@ -516,10 +516,19 @@
 					   from-module-read))
 				  (window-id (car packet))
 				  (command (caddr packet)))	
-			     (if *debug-fvwm-module*
+			     (if (scwm-option-get *debug-fvwm-module*)
 				 (begin
 				   (display "packet: ")
 				   (write packet)
+				   (newline)
+				   (display "command =")
+				   (write command)
+				   (newline)
+				   (display "fmod = ")
+				   (write fmod)
+				   (newline)
+				   (display "window-id = ")
+				   (write window-id)
 				   (newline)))
 			     (catch #t
 				    (lambda()
@@ -529,6 +538,7 @@
 							     fmod
 							     (id->window 
 							      window-id))))
+				    ;; GJB:FIXME:MS: Can we get a better error?
 				    (lambda args (display 
 						  "Error evaling packet: ")
 					    (write packet)
