@@ -53,7 +53,7 @@ SCM_SYMBOL(sym_transient_placement_proc,"transient-placement-proc");
  */
 
 
-static struct _gravity_info grav_table[11] =
+static struct gravity_info_tag grav_table[11] =
 {
   {1, 1, 1},			/* ForgetGravity */
   {0, 0, 0},			/* NorthWestGravity */

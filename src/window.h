@@ -59,7 +59,7 @@ struct ScwmWindowConstraintInfo;
 
 
 
-typedef struct _gravity_info {
+typedef struct gravity_info_tag {
   unsigned short x:2; /* how many times the border width difference should we 
 			 move the frame window east? */
   unsigned short y:2; /* how many times the border width difference should we 
