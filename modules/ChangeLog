@@ -1,5 +1,9 @@
 1998-10-18  Todd Larason  <jtl@teeny.molehill.org>
 
+	* xpm-menus/draw-xpm-menu.c (PaintMenuItem, PaintDynamicMenu,
+	ConstructDynamicXpmMenu): look up images with DYNAMIC_SAFE_IMAGE
+	so named will work as well as image objects
+
 	* pie-menus/draw-pie-menu.c: menu_look member added to pmdi; used
 	to differentiate variations on pie menus.
 	(InitGCs): MaskGC initialized;  one-time blocking done here, and
@@ -20,6 +24,16 @@
 	creating circule-shaped pie menus
 	(init_draw_pie_menu): added documentation for pie-menu-look; new
 	menu look circle-pie-menu-look created
+	(MENU_PIE_BORDER): Leave more room around pie menus (6 pixels
+	instead of 2)
+	(struct MenuDrawingInfo_tag): include cpixSideImage and
+	SideBGColor again
+	(PaintSideImage): included again
+	(PaintDynamicMenu): look up images with DYNAMIC_SAFE_IMAGE so
+	named will work as well as image objects; paint side image if it's 
+	configured
+	(ConstructDynamicPieMenuInternal): support background image and
+	(rectangular window style only) side image and side image background
 
 1998-10-17  Todd Larason  <jtl@teeny.molehill.org>
 

@@ -1,3 +1,16 @@
+1998-10-18  Todd Larason  <jtl@teeny.molehill.org>
+
+	* base.scm: add menu-side-image, menu-side-bg-color,
+	menu-side-bg-color-set and menu-bg-image variables,
+	(set-menu-background!): if (not menu-side-bg-color-set), set
+	menu-side-bg-color to the new menu bg color
+	(set-menu-side-image!): new function
+	(set-menu-side-background!): new function
+	(set-menu-bg-image!): new function
+	(menu-style): new tags #:bg-image, #:side-image and #:side-bg
+	(menu): image-side, color-bg-image-side and image-bg change
+	default values, to enable menu-style to set them
+
 1998-10-17  Todd Larason  <jtl@teeny.molehill.org>
 
 	* flux.scm (position-message-window!): add a '.' to the end of the

@@ -1,3 +1,14 @@
+1998-10-18  Todd Larason  <jtl@teeny.molehill.org>
+
+	* menu.c (s_make_menu): validate image items with
+	IMAGE_OR_SYMBOL_P instead of IMAGE_P
+
+	* image.h: added DYNAMIC_IMAGE_P, IMAGE_OR_SYMBOL_P and
+	DYNAMIC_SAFE_IMAGE
+
+	* drawmenu.c (PaintMenuItem, PaintDynamicMenu,
+	ConstructDynamicMenu): use DYNAMIC_SAFE_IMAGE instead of SAFE_IMAGE
+
 1998-10-17  Todd Larason  <jtl@teeny.molehill.org>
 
 	* menulook.c (s_copy_menu_look): add doc string
