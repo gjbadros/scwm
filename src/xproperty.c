@@ -132,7 +132,7 @@ make_xproperty (char *type, unsigned len, void *data)
 
 SCWM_PROC(set_window_text_property, "set-window-text-property", 3, 0, 0,
            (SCM win, SCM propname, SCM value))
-     /** Set a text property on WIN, with format 8 and type
+     /** Set a text property named PROPNAME on WIN, with format 8 and type
 "XA_STRING", and VALUE as the data. */
 #define FUNC_NAME s_set_window_text_property
 {

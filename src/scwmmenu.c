@@ -202,10 +202,13 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
            SCM bg_color, SCM text_color,
            SCM picture_bg, SCM font, SCM extra_options))
 /** Make and return a menu object from the given arguments.
-LIST-OF-MENUITEMS is a scheme list of menu items -- see `make-menuitem'
-PICTURE-SIDE is an image object
-SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR, PICTURE-BG are color objects
-FONT is a font object */
+LIST-OF-MENUITEMS is a scheme list of menu items -- see `make-menuitem';
+PICTURE-SIDE is an image object;
+SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR, PICTURE-BG are color objects;
+FONT is a font object;
+EXTRA-OPTIONS can be anything understood by the menu-specific
+drawing code (not used currently).
+*/
 #define FUNC_NAME s_make_menu
 {
   Menu *pmenu = NEW(Menu);
@@ -1235,7 +1238,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
 
 SCWM_PROC(popup_menu,"popup-menu", 1,1,0,
           (SCM menu, SCM warp_to_first_p))
-/** Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST-P is #t. */
+/** Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST? is #t. */
 #define FUNC_NAME s_popup_menu
 {
   Bool fWarpToFirst = False;

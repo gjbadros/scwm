@@ -2446,10 +2446,12 @@ SCWM_PROC(window_icon_title, "window-icon-title", 0, 1, 0,
      /** Return the icon window title of WIN, as requested by the
 app. WIN defaults to the window context in the usual way if not
 specified. */
+#define FUNC_NAME s_window_icon_title
 {
-  VALIDATE(win, "window-icon-title");
+  VALIDATE(win, FUNC_NAME);
   return gh_str02scm(PSWFROMSCMWIN(win)->icon_name);
 }
+#undef FUNC_NAME
 
 SCWM_PROC(window_class, "window-class", 0, 1, 0,
           (SCM win))

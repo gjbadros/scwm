@@ -145,10 +145,11 @@ arguments as given previously. */
 }
 #undef FUNC_NAME
 
+/* FIXGJB: what is args for, and why does this have it */
 SCWM_PROC(scwm_quit, "scwm-quit", 0, 0, 1,
           (SCM args))
      /** Exit scwm cleanly. `quit' is redefined as this within
-scwm. */
+scwm. ARGS is ignored.*/
 #define FUNC_NAME s_scwm_quit
 {
   if (master_pid != getpid())

@@ -400,12 +400,13 @@ boolean value FLAG. */
 /* FIXMS: remove this one in particular once window-focus-hook exists. */
 
 SCWM_PROC(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
-          (SCM val))
-     /** Determine wether a click */
+          (SCM flag))
+     /** Determine whether a click to focus raises the clicked-on window
+accoring to the boolean value FLAG.*/
 #define FUNC_NAME s_set_click_to_focus_raises_x
 {
-  if (!gh_boolean_p(val)) {
-    scm_wrong_type_arg(FUNC_NAME,1,val);
+  if (!gh_boolean_p(flag)) {
+    scm_wrong_type_arg(FUNC_NAME,1,flag);
   }
   Scr.ClickToFocusRaises =  SCM_NFALSEP(val) ? True : False;
   return SCM_UNSPECIFIED;
