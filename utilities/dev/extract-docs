@@ -36,7 +36,7 @@ use constant TRUE => (1==1);
 use constant FALSE => (1==0);
 
 my $header = "";
-#my $fDebug = FALSE;
+#my $fDebug = TRUE;
 my $fDebug = FALSE;
 
 while (<>) {
@@ -66,7 +66,8 @@ sub ProcessHeader( $ ) {
   $clean_argslist =~ s/\n/ /g;
   $clean_argslist =~ s/[ \t]+//g;
   $clean_argslist =~ s/_/-/g;
-  $clean_argslist =~ s/_[pP]\b/?/g;
+  $clean_argslist =~ s/-[pP]\b/?/g;
+  $clean_argslist =~ s/-[x]\b/!/g;
   my @args = split(/,/, $clean_argslist);
 
   # now create a hash of the names for testing words in the comment
@@ -115,13 +116,25 @@ sub ProcessHeader( $ ) {
 
   my %upcase_words = ();
 
-  foreach my $word (split /[^\w-?!"]+/, $comment) {
-    if ($word =~ /^[A-Z][-A-Z0-9_]+$/) {
+  # check to make sure all all-uppercase words in the comment
+  # refer to formals
+  foreach my $word (split /[^\w-?!\"]+/, $comment) {
+    if ($word =~ /^[A-Z][-A-Z0-9_+]+$/) {
       if (!defined($argnames{$word})) {
 	print STDERR "$ARGV:$.:****$cprimname: all-uppercase word \`$word\' does not match an argument\n";
       }
     }
   }
+
+  # check to make sure all formals are referred to in the comment
+  # warning is #**** since these are less severe problems and one
+  # may choose to filter them
+  foreach my $formal (keys %argnames) {
+    if ($comment !~ /\Q$formal\E/) {
+      print STDERR "$ARGV:$.:\#***$cprimname: formal $formal not mentioned in comment\n";
+    }
+  }
+
 
   if ($fDebug) {
     print <<EOC
