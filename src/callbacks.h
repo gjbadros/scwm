@@ -39,7 +39,7 @@ SCM scwm_safe_eval_str (char *string);
 
 /* Hooks. */
 
-#define DEFINE_HOOK(var, name) var=scm_sysintern(name, SCM_EOL)
+#define SCWM_DEFINE_HOOK(var, name) var=scm_sysintern(name, SCM_EOL)
 
 SCM call0_hooks (SCM hook);
 SCM call1_hooks (SCM hook_type, SCM arg);

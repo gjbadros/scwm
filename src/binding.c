@@ -62,6 +62,13 @@ static unsigned char rgmapMouseButtons[XSERVER_MAX_BUTTONS];
 
 static int cMouseButtons = 3;
 
+/**CONCEPT: Key Specifier
+   A key specifier is a string denoting a keystroke, perhaps including
+modifiers.  The available modifiers include S-, C-, M-, A-, H-, and s-
+for shift, control meta, alt, hyper, and super, respectively.  They
+can be combined arbitrarily, and in any order, but should precide the 
+*/
+
 static const char *
 PchModifiersToModmask(const char *pch, int *pmodifier)
 {

@@ -597,7 +597,7 @@ run_input_hooks(fd_set *in_fdset)
 
 void init_callbacks()
 {
-  DEFINE_HOOK(error_hook, "error-hook");
+  SCWM_DEFINE_HOOK(error_hook, "error-hook");
   gettimeofday(&last_timeval, NULL);
 
   timer_hooks = scm_permanent_object(gh_cons(SCM_EOL, SCM_EOL));

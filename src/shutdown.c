@@ -148,7 +148,7 @@ SCWM_PROC(scwm_quit, "scwm-quit", 0, 1, 1,
 
 void init_shutdown()
 {
-  DEFINE_HOOK(shutdown_hook, "shutdown-hook");
+  SCWM_DEFINE_HOOK(shutdown_hook, "shutdown-hook");
 
 #ifndef SCM_MAGIC_SNARFER
 #include "shutdown.x"

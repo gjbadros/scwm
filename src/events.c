@@ -1807,8 +1807,8 @@ SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
 void 
 init_events()
 {
-  DEFINE_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook");
-  DEFINE_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook");
+  SCWM_DEFINE_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook");
+  SCWM_DEFINE_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook");
 #ifndef SCM_MAGIC_SNARFER
 #include "events.x"
 #endif

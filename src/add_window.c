@@ -969,8 +969,8 @@ GetWindowSizeHints(ScwmWindow * psw)
 
 void init_add_window()
 {
-  DEFINE_HOOK(before_new_window_hook, "before-new-window-hook");
-  DEFINE_HOOK(after_new_window_hook, "after-new-window-hook");
+  SCWM_DEFINE_HOOK(before_new_window_hook, "before-new-window-hook");
+  SCWM_DEFINE_HOOK(after_new_window_hook, "after-new-window-hook");
 }
 
 

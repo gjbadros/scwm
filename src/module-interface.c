@@ -112,9 +112,9 @@ void init_module_interface()
 #include "module-interface.x"
 #endif
   /* This will ensure that these are defined in the root module. */
-  DEFINE_HOOK(broadcast_hook, "broadcast-hook");
-  DEFINE_HOOK(broadcast_config_hook, "broadcast-config-hook");
-  DEFINE_HOOK(broadcast_name_hook, "broadcast-name-hook");
+  SCWM_DEFINE_HOOK(broadcast_hook, "broadcast-hook");
+  SCWM_DEFINE_HOOK(broadcast_config_hook, "broadcast-config-hook");
+  SCWM_DEFINE_HOOK(broadcast_name_hook, "broadcast-name-hook");
 }
 
 

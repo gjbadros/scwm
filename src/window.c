@@ -2780,8 +2780,8 @@ init_window()
   sym_none = gh_symbol2scm("none");
   scm_protect_object(sym_none);
 
-  DEFINE_HOOK(invalid_interaction_hook,"invalid-interaction-hook");
-  DEFINE_HOOK(cannot_grab_hook,"cannot-grab-hook");
+  SCWM_DEFINE_HOOK(invalid_interaction_hook,"invalid-interaction-hook");
+  SCWM_DEFINE_HOOK(cannot_grab_hook,"cannot-grab-hook");
 #ifndef SCM_MAGIC_SNARFER
 #include "window.x"
 #endif
