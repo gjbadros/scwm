@@ -1,21 +1,21 @@
 ;;; scwm --- functions for editing and running SCWM code under Emacs
- 
+
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
- 
-;; File: <scwm.el - 1998-03-26 Thu 17:30:40 EST sds@mute.eaglets.com>
+
+;; File: <scwm.el - 1998-06-19 Fri 11:03:56 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
- 
+
 ;; LCD Archive Entry:
 ;; scwm|Sam Steingold|sds@usa.net|
 ;; Functions for editing and running SCWM code under Emacs|
 ;; $Date$|$Revision$||
- 
+
 ;;; $Id$
- 
+
 ;;; History:
- 
+
 ;; Completion-support added by Greg J. Badros <gjb@cs.washington.edu>
 ;;    03/11/98 gjb
 ;;
@@ -30,6 +30,9 @@
 ;;
 ;; Added font-lock support for the major mode stuff.
 ;;	1998-04-16 Thu 17:04:43 EDT	sds
+;;
+;; Added font-lock support for XEmacs and Emacs19 compatibility.
+;;	1998-06-19 Fri 09:28:19 EDT	sds
 ;;
 ;; This file is distributed under the GPL. See
 ;;	<URL:http://www.gnu.ai.mit.edu/copyleft/gpl.html>
@@ -77,6 +80,21 @@
 ;; distribution contains the corrent version.  You can get the file from
 ;; http://sourcery.naggum.no.
 
+;; let's try to do something about it:
+
+(eval-and-compile
+ (or (fboundp 'unless) (require 'cl))
+ (unless (fboundp 'with-output-to-string)
+   (defmacro with-output-to-string (&rest body)
+     "Execute BODY, return the text it sent to `standard-output', as a string."
+     `(let ((standard-output (get-buffer-create (generate-new-buffer-name
+                                                 " *string-output*"))))
+       ,@body
+       (save-excursion
+         (set-buffer standard-output)
+         (prog1 (buffer-string)
+           (kill-buffer standard-output)))))))
+
 ;;; Code:
 
 ;; user variables
@@ -88,11 +106,10 @@
 ;; Use scheme major mode
 (require 'scheme)
 
-;;; pacify the compiler (XEmacs only)
-(eval-and-compile (autoload 'id-select-symbol "id-select"))
-
 ;;; XEmacs doesn't have thingatpt. Too bad.
 (unless (fboundp 'thing-at-point)
+  ;; pacify the compiler (XEmacs only)
+  (eval-and-compile (autoload 'id-select-symbol "id-select"))
   (defun thing-at-point (what)
     "Return the thing at point (crippled: symbols only!)."
     (unless (eq what 'symbol)
@@ -109,7 +126,9 @@
 Special commands:
 \\{scwm-mode-map}
 Turning on Scwm mode calls the value of the variable `scwm-mode-hook',
-if that value is non-nil.")
+if that value is non-nil.
+If you are using Emacs 20.2 or earlier and want to use fontifications,
+you have to (require 'font-lock) first.  Sorry.")
 
 (define-key scwm-mode-map [(control j)] 'scwm-eval-print)
 (define-key scwm-mode-map [(control c) (control s)] 'scwm-run)
@@ -223,13 +242,18 @@ Returns a string."
     (princ "SCWM apropos `") (princ pat) (princ "':\n\n")
     (scwm-eval (concat "(apropos \"" pat "\")") standard-output)))
 
-;;; font-lock (you better (require 'font-lock) before loading this file!)
+;; fontifications
 
-(when (boundp 'font-lock-defaults-alist)
-  (setq font-lock-defaults-alist
-	(cons (cons 'scwm-mode
-		    (cdr (assq 'scheme-mode font-lock-defaults-alist)))
-	      font-lock-defaults-alist)))
+(cond ((boundp 'running-xemacs)
+       (put 'scwm-mode 'font-lock-defaults
+            (get 'scheme-mode 'font-lock-defaults)))
+      ((and (string-lessp emacs-version "20.3")
+            (boundp 'font-lock-defaults-alist))
+       (unless (assq 'scwm-mode font-lock-defaults-alist)
+         (setq font-lock-defaults-alist
+               (cons (cons 'scwm-mode
+                           (cdr (assq 'scheme-mode font-lock-defaults-alist)))
+                     font-lock-defaults-alist)))))
 
 (provide 'scwm)
 ;;; scwm ends here
