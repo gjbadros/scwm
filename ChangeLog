@@ -1,3 +1,9 @@
+Wed Jun 10 21:36:15 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* configure.in, acconfig.h: Check for scm_internal_select.
+
+	configure, include/config.h.in: regenerated.
+
 Mon Jun  1 20:25:47 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* configure.in, acconfig.h, configure, include/config.h: Detect
