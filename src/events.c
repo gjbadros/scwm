@@ -1707,100 +1707,11 @@ WindowGettingButtonEvent(Window w, int x, int y)
   return w;
 }
 
+
 /* Inspired by GWM 1.8c --gjb */
 /* FIXGJB: use button, not button + modifier */
 /* GJBFIX: why can't we just use the same specification style (and
    code) as for bind-mouse? */
-/* FIXDOC: The underscores in parameter names should turn into huphens
-   in the docs, I am not sure if they do. Also, terminal _p should
-   turn into ?. I am using these convention in the docs already, I
-   hope it;s not too hard to make the doc extractor obey them.*/
-SCWM_PROC(send_button_press, "send-button-press", 2, 4, 0,
-          (SCM button, SCM modifier, SCM win, 
-           SCM button_press_p, SCM button_release_p, SCM propagate_p))
-     /** Send a synthetic mouse press event.
-Create a synthetic event of a press of mouse button BUTTON, with modifier
-MODIFIER and send the event to window WIN if specified; otherwise the
-window to be used defaults to the window context in the usual way. By
-default, both a press and a release are sent. However, the boolean
-parameters BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify
-which are sent individually. PROPAGATE? indicates whether the propagate
-flag is set on the event; the default is #f. You should not have to
-worry about this unless you know what it means. */
-#define FUNC_NAME s_send_button_press
-{
-  int bnum;
-  int mod_mask;
-  Bool fPropagate = False;
-  Bool fPress = True;
-  Bool fRelease = True;
-  int iarg = 1;
-  Window child;
-  XButtonEvent event;
-  int x = 0, y = 0, x_root = 0 , y_root = 0;
-  int x2 = 0, y2 = 0;
-  ScwmWindow *psw;
-  Window w;
-  Window pointer_win;
-
-
-  SCM_REDEFER_INTS;
-
-  VALIDATEN(win, 3, FUNC_NAME);
-  psw = PSWFROMSCMWIN(win);
-  w = psw->w;
-
-  if (!gh_number_p(button)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, iarg++, button);
-  }
-  if (modifier != SCM_UNDEFINED && !gh_number_p(modifier)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, iarg++, modifier);
-  }
-  if (button_press_p != SCM_UNDEFINED) {
-    fPress = gh_scm2bool(button_press_p);
-  }
-  if (button_release_p != SCM_UNDEFINED) {
-    fRelease = gh_scm2bool(button_release_p);
-  }
-  if (propagate_p != SCM_UNDEFINED) {
-    fPropagate = gh_scm2bool(propagate_p);
-  }
-  bnum = gh_scm2int(button);
-  mod_mask = gh_scm2int(modifier);
-
-
-  /* First fill in x_root, y_root */
-  pointer_win = WXGetPointerOffsets( w, &x_root, &y_root,&x, &y );
-
-  /* Now find the window we're in */
-  child = WindowGettingButtonEvent(w,x,y);
-  x2 = x; y2 = y;
-
-  /* and now find the offset within that window */
-  XTranslateCoordinates(dpy, pointer_win, child, x2, y2,
-			&x, &y, &JunkChild);
-
-  if (fPress) {
-    fill_x_button_event(&event, ButtonPress, bnum, mod_mask, 
-			x, y, x_root, y_root, child, 0);
-    XSendEvent(dpy, child, fPropagate, ButtonPressMask, 
-	       (XEvent *) &event);
-    DBUG(__FUNCTION__,"New Sent button press of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
-  }
-  if (fRelease) {
-    fill_x_button_event(&event, ButtonRelease, bnum, mod_mask | (1 << (bnum+7)),
-			x, y, x_root, y_root, child, 0);
-    XSendEvent(dpy, child, fPropagate, ButtonReleaseMask, 
-	       (XEvent *) &event);
-    DBUG(__FUNCTION__,"New Sent button release of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
-  }
-  SCM_REALLOW_INTS;
-  return SCM_UNSPECIFIED;
-}
-#undef FUNC_NAME
-
 
 SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
           (SCM key, SCM win,
@@ -1832,10 +1743,6 @@ should not have to worry about this unless you know what it means. */
   psw = PSWFROMSCMWIN(win);
   w = psw->w;
 
-  if (!gh_string_p(key)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, iarg++, key);
-  }
   if (key_press_p != SCM_UNDEFINED) {
     fPress = gh_scm2bool(key_press_p);
   }
@@ -1846,19 +1753,20 @@ should not have to worry about this unless you know what it means. */
     fPropagate = gh_scm2bool(propagate_p);
   }
 
-  fOkay = FKeyToKeysymModifiers(key,&keysym,&mod_mask);
+  fOkay = FKeyToKeysymModifiers(key,&keysym,&mod_mask, FUNC_NAME);
+
   if (fOkay) {
     if (fPress) {
       fill_x_keypress_event(&event, KeyPress, keysym, mod_mask, w);
       XSendEvent(dpy, w, fPropagate, KeyPressMask, 
 		 (XEvent *) &event);
-      DBUG(__FUNCTION__,"New Sent keypress of %s at %d, %d; time = %ld\n",szKeysym,x,y,lastTimestamp);
+      DBUG(FUNC_NAME,"New Sent keypress of %s at %d, %d; time = %ld\n",szKeysym,x,y,lastTimestamp);
     }
     if (fRelease) {
       fill_x_keypress_event(&event, KeyRelease, keysym, mod_mask, w);
       XSendEvent(dpy, w, fPropagate, KeyReleaseMask, 
 		 (XEvent *) &event);
-      DBUG(__FUNCTION__,"New Sent keyrelease of %s at %d, %d; time = %ld\n",szKeysym,x,y,lastTimestamp);
+      DBUG(FUNC_NAME,"New Sent keyrelease of %s at %d, %d; time = %ld\n",szKeysym,x,y,lastTimestamp);
     }
   } else {
     int len;
@@ -1866,10 +1774,91 @@ should not have to worry about this unless you know what it means. */
     scwm_msg(WARN,FUNC_NAME,"Bad keysym `%s' not sent",keyname);
     FREE(keyname);
   }
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+SCWM_PROC(send_button_press, "send-button-press", 1, 4, 0,
+          (SCM button, SCM win, 
+           SCM button_press_p, SCM button_release_p, SCM propagate_p))
+     /** Send a synthetic mouse press event.
+Create a synthetic event of a press of mouse button BUTTON. The usual
+mouse button specification format (with modifiers) is used. Send the
+event to window WIN if specified; otherwise the window to be used
+defaults to the window context in the usual way. By default, both a
+press and a release are sent. However, the boolean parameters
+BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify which are sent
+individually. PROPAGATE? indicates whether the propagate flag is set
+on the event; the default is #f. You should not have to worry about
+this unless you know what it means. */
+#define FUNC_NAME s_send_button_press
+{
+  int bnum;
+  int mod_mask;
+  Bool fButtonOK = True;
+  Bool fPropagate = False;
+  Bool fPress = True;
+  Bool fRelease = True;
+  int iarg = 1;
+  Window child;
+  XButtonEvent event;
+  int x = 0, y = 0, x_root = 0 , y_root = 0;
+  int x2 = 0, y2 = 0;
+  ScwmWindow *psw;
+  Window w;
+  Window pointer_win;
+
+  VALIDATEN(win, 3, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+  w = psw->w;
+
+  if (button_press_p != SCM_UNDEFINED) {
+    fPress = gh_scm2bool(button_press_p);
+  }
+  if (button_release_p != SCM_UNDEFINED) {
+    fRelease = gh_scm2bool(button_release_p);
+  }
+  if (propagate_p != SCM_UNDEFINED) {
+    fPropagate = gh_scm2bool(propagate_p);
+  }
+
+  fButtonOK = FButtonToBnumModifiers(button, &bnum, &mod_mask, FUNC_NAME);
+
+  if (!fButtonOK) {
+    scm_wrong_type_arg(FUNC_NAME,1,button);
+  }
+
+  /* First fill in x_root, y_root */
+  pointer_win = WXGetPointerOffsets( w, &x_root, &y_root,&x, &y );
+
+  /* Now find the window we're in */
+  child = WindowGettingButtonEvent(w,x,y);
+  x2 = x; y2 = y;
+
+  /* and now find the offset within that window */
+  XTranslateCoordinates(dpy, pointer_win, child, x2, y2,
+			&x, &y, &JunkChild);
+
+  if (fPress) {
+    fill_x_button_event(&event, ButtonPress, bnum, mod_mask, 
+			x, y, x_root, y_root, child, 0);
+    XSendEvent(dpy, child, fPropagate, ButtonPressMask, 
+	       (XEvent *) &event);
+    DBUG(FUNC_NAME,"New Sent button press of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
+  }
+  if (fRelease) {
+    fill_x_button_event(&event, ButtonRelease, bnum, mod_mask | (1 << (bnum+7)),
+			x, y, x_root, y_root, child, 0);
+    XSendEvent(dpy, child, fPropagate, ButtonReleaseMask, 
+	       (XEvent *) &event);
+    DBUG(FUNC_NAME,"New Sent button release of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
+  }
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
 
 
 void 

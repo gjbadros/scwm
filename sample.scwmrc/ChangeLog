@@ -1,3 +1,8 @@
+1998-07-31  Maciej Stachowiak  <maciej@roc-ny5-12.ix.netcom.com>
+
+	* gjb.scwmrc, sds.scwmrc: No longer attempt to pass a modifier
+	mask argument of 0 to send-button-press.
+
 1998-07-31  Maciej Stachowiak  <maciej@roc-ny4-13.ix.netcom.com>
 
 	* robbe.scwmrc, sds.scwmrc, gjb.scwmrc: Replaced the usage of

@@ -792,9 +792,9 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 
 ;; FIXGJB: modifiers interface could be better... mimic off Emacs?
 ;; FIXGJB: keys should be first class
-;;(bind-key 'all "C-M-S-7" (lambda () (send-button-press 1 0)))
-;;(bind-key 'all "C-M-S-8" (lambda () (send-button-press 2 0)))
-;;(bind-key 'all "C-M-S-9" (lambda () (send-button-press 3 0)))
+;;(bind-key 'all "C-M-S-7" (lambda () (send-button-press 1)))
+;;(bind-key 'all "C-M-S-8" (lambda () (send-button-press 2)))
+;;(bind-key 'all "C-M-S-9" (lambda () (send-button-press 3)))
 
 ;;(bind-key 'all "C-M-S-4" (lambda () (send-key-press "Return")))
 ;(bind-key 'all "C-M-S-s" (lambda () (X-synthetic-send-string "hello world")))
@@ -802,7 +802,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;; This one is experimental-- sends only the buttonpress event,
 ;; no buttonrelease
 ;(bind-key 'all "C-M-S-0"
-;	  (lambda () (send-button-press 2 0 (get-window) #t #f)))
+;	  (lambda () (send-button-press 2 (get-window) #t #f)))
 
 ;; Hyper-w
 (bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))

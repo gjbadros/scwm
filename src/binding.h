@@ -65,7 +65,9 @@ void clear_mouse_event_type();
 
 SCM mouse_event_type();
 
-Bool FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier);
+Bool FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name);
+Bool FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name);
+
 void GrabKeys(ScwmWindow *psw);
 void GrabButtons(ScwmWindow *psw);
 

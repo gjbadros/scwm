@@ -74,15 +74,18 @@ static unsigned char rgmapMouseButtons[XSERVER_MAX_BUTTONS];
 
 static int cMouseButtons = 3;
 
+
 /**CONCEPT: Key Specifier
    A key specifier is a string denoting a keystroke, perhaps including
 modifiers.  The available modifiers include S-, C-, M-, A-, H-, and s-
 for Shift, Control, Meta, Alt, Hyper, and Super, respectively.  They
-can be combined arbitrarily, and in any order, but should precede the 
+can be combined arbitrarily, and in any order, but should precede the
+key name.
 */
 
+
 static const char *
-PchModifiersToModmask(const char *pch, int *pmodifier)
+PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name)
 {
   int modmask = 0;
   Bool fError = False;
@@ -121,14 +124,14 @@ PchModifiersToModmask(const char *pch, int *pmodifier)
     case 'P':
       /* FIXGJB this can get pulled out later-- I used 'P' at first to avoid
          confusion between 's-' and 'S-' (shift), but people didn't like it */
-      scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier P- (super is now 's-')");
+      scwm_msg(WARN,func_name,"Unrecognized modifier P- (super is now 's-')");
       return NULL;
     default:
-      scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier %c-",pch[0]);
+      scwm_msg(WARN,func_name,"Unrecognized modifier %c-",pch[0]);
       return NULL;
     }
     if (fError)
-      scwm_msg(WARN,__FUNCTION__,"Unbound modifier %c-",
+      scwm_msg(WARN,func_name,"Unbound modifier %c-",
 	       pch[0]);
     pch += 2;
   }
@@ -143,12 +146,19 @@ PchModifiersToModmask(const char *pch, int *pmodifier)
 
 
 Bool 
-FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
+FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name)
 {
   Bool fOk = True;
   int len;
-  char *keyname = gh_scm2newstr(key,&len);
-  char *pch = (char *) PchModifiersToModmask(keyname,pmodifier);
+  char *keyname;
+  char *pch;
+
+  if (!gh_string_p(key)) {
+    scm_wrong_type_arg(func_name, 2, key);
+  }
+
+  keyname = gh_scm2newstr(key,&len);
+  pch = (char *) PchModifiersToModmask(keyname,pmodifier, func_name);
 
   if (pch == 0 || *pmodifier < 0) {
     FREE(keyname);
@@ -161,12 +171,13 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
 
   if ((*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
 	   (XKeysymToKeycode(dpy, *pkeysym)) == 0) { 
-    scwm_msg(WARN,__FUNCTION__,"No symbol `%s'",keyname);
+    scwm_msg(WARN,func_name,"No symbol `%s'",keyname);
     fOk = False; 
   }
   FREE(keyname);
   return fOk;
 }
+
 
 /* Permit "Mouse-1", "1", "M1", "Mouse1", "mouse1" all to
    be acceptable */
@@ -190,6 +201,49 @@ BnumFromSz(const char *sz)
     }
   }
 }
+
+Bool
+FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name)
+{
+  Bool fOk = True;
+  int len;
+  char *button_name = NULL;
+  char *pch;
+
+  if (!gh_string_p(button)) {
+    if (gh_number_p(button)) {
+      *pbnum = gh_scm2int(button);
+      if (*pbnum < 0 || *pbnum > cMouseButtons) {
+	scwm_msg(WARN,func_name,"No button number `%d'",*pbnum);
+	return False;
+      }
+    } else {
+      scm_wrong_type_arg(func_name, 2, button);
+    }
+  } else { /* it is a string */
+    button_name = gh_scm2newstr(button,&len);
+  }
+
+  if (NULL!=button_name) {
+    *pbnum = BnumFromSz(PchModifiersToModmask(button_name, pmodifier, func_name));
+
+    if (*pbnum < 0) {
+      scwm_msg(WARN,func_name,"No button `%s'",button_name);
+      fOk=False;
+    }
+    if (*pmodifier < 0) {
+      scwm_msg(WARN,func_name,"Ignoring mouse bind/unbind request for %s",
+	       button_name);
+      fOk=False;
+    }
+    FREE(button_name);
+  }
+
+  return fOk;
+}
+
+
+
 
 /*
  *  Procedure:
@@ -431,6 +485,50 @@ remove_binding(int context, int mods, int button, KeySym keysym,
   }
 }
 
+void 
+add_binding(int context, int modmask, int bnum_or_keysym, int mouse_p, 
+	    SCM proc, char *name)
+{
+  Binding *prev_binding = Scr.AllBindings;
+  Scr.AllBindings = NEW(Binding);
+
+  Scr.AllBindings->IsMouse = mouse_p;
+  Scr.AllBindings->Button_Key = bnum_or_keysym;
+  Scr.AllBindings->key_name = name;
+  Scr.AllBindings->Context = context;
+  Scr.AllBindings->Modifier = modmask;
+  /* FIXMS: This field should go away from the binding struct. */
+  Scr.AllBindings->Action = "Scheme";
+  Scr.AllBindings->Thunk = proc;
+  Scr.AllBindings->NextBinding = prev_binding;
+
+  scm_protect_object(proc);
+
+  if (mouse_p) {
+    if ( (context & C_WINDOW) && Scr.fWindowsCaptured) {
+      /* only grab the button press if we have already captured,
+	 otherwise it's a waste of time since we will grab
+	 them all later when we do the initial capture;
+	 this is good, since initialization probably defines
+	 lots of mouse  bindings */
+      grab_button_all_windows(bnum_or_keysym ,modmask);
+    } 
+  } else {
+    if (Scr.fWindowsCaptured) {
+      /* only grab the key if we have already captured,
+	 otherwise it's a waste of time since we will grab
+	 them all later when we do the initial capture;
+	 this is good, since initialization probably defines
+	 lots of key bindings */
+      grab_key_all_windows(bnum_or_keysym ,modmask);
+    }
+  }
+}
+
+
+/**CONCEPT: Event Contexts
+
+ */
 
 int 
 lookup_context(SCM context)
@@ -449,7 +547,7 @@ lookup_context(SCM context)
 }
 
 int 
-compute_contexts(SCM contexts)
+compute_contexts(SCM contexts, char *func_name)
 {
   int tmp, retval;
 
@@ -461,10 +559,28 @@ compute_contexts(SCM contexts)
 	retval |= tmp;
       }
     }
-    return retval;
   } else {
-    return lookup_context(contexts);
+   retval = lookup_context(contexts);
   }
+
+  switch (retval) {
+  case 0:
+    /* FIXGJBERROR: do not error by number */
+    scwm_error(func_name, 8);
+    break;
+  case -1:
+    /* FIXGJBERROR: do not error by number */
+    scwm_error(func_name, 9);
+    break;
+  case -2:
+    /* FIXGJBERROR: do not error by number */
+    scm_wrong_type_arg(func_name, 1, contexts);
+    break;
+  default:
+    break;
+  }
+  
+  return retval;
 }
 
 
@@ -482,34 +598,8 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete) */
   int modmask = 0;
   int context = 0;
 
-  SCM_REDEFER_INTS;
-  if (!gh_string_p(key)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(__FUNCTION__, 2, key);
-  }
-  context = compute_contexts(contexts);
-
-  switch (context) {
-  case 0:
-    SCM_ALLOW_INTS;
-    /* FIXGJBERROR: do not error by number */
-    scwm_error(FUNC_NAME, 8);
-    break;
-  case -1:
-    SCM_ALLOW_INTS;
-    /* FIXGJBERROR: do not error by number */
-    scwm_error(FUNC_NAME, 9);
-    break;
-  case -2:
-    SCM_ALLOW_INTS;
-    /* FIXGJBERROR: do not error by number */
-    scm_wrong_type_arg(__FUNCTION__, 1, contexts);
-    break;
-  default:
-    break;
-  }
-
-  fOkayKey = FKeyToKeysymModifiers(key, &keysym, &modmask);
+  context = compute_contexts(contexts, FUNC_NAME);
+  fOkayKey = FKeyToKeysymModifiers(key, &keysym, &modmask, FUNC_NAME);
 
   /*
    * Don't let a 0 keycode go through, since that means AnyKey to the
@@ -518,14 +608,11 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete) */
   if (keysym == NoSymbol || !fOkayKey) {
     int len;
     char *keyname = gh_scm2newstr(key,&len);
-    gh_allow_ints();
-    SCM_ALLOW_INTS;
-    scwm_msg(WARN,__FUNCTION__,"Ignoring key unbind request for `%s'",keyname);
+    scwm_msg(WARN,FUNC_NAME,"Ignoring key unbind request for `%s'",keyname);
     FREE(keyname);
   } else {
     remove_binding(context,modmask,0,keysym,False);
   }
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -538,67 +625,21 @@ CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number */
 #define FUNC_NAME s_unbind_mouse
 {
-  char *szButton = NULL;
-  int cchButton = 0;
   int bnum = 0;
   int modmask = 0;
   int context = 0;
+  int fButtonOK = True;
 
-  SCM_REDEFER_INTS;
-  if (!gh_string_p(button)) {
-    if (gh_number_p(button)) {
-      bnum = gh_scm2int(button);
-      if (bnum < 0 || bnum > cMouseButtons) {
-	scwm_msg(WARN,__FUNCTION__,"No button number `%d'",bnum);
-	SCM_ALLOW_INTS;
-	return SCM_UNSPECIFIED;
-      }
-    } else {
-      SCM_ALLOW_INTS;
-      scm_wrong_type_arg(FUNC_NAME, 2, button);
-    }
-  } else { /* it is a string */
-    szButton = gh_scm2newstr(button,&cchButton);
-  }
-  context = compute_contexts(contexts);
+  fButtonOK = FButtonToBnumModifiers(button, &bnum, &modmask, FUNC_NAME);
+  context = compute_contexts(contexts, FUNC_NAME);
 
-  switch (context) {
-  case 0:
-    SCM_ALLOW_INTS;
-    scwm_error(FUNC_NAME, 8);
-    break;
-  case -1:
-    SCM_ALLOW_INTS;
-    scwm_error(FUNC_NAME, 9);
-    break;
-  case -2:
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 1, contexts);
-    break;
-  default:
-    break;
-  }
-
-  if (szButton) {
-    bnum = BnumFromSz(PchModifiersToModmask(szButton,&modmask));
-    if (bnum < 0) {
-      scwm_msg(WARN,FUNC_NAME,"No button `%s'",szButton);
-      SCM_ALLOW_INTS;
-      FREE(szButton);
-      return SCM_UNSPECIFIED;
-    }
-    if (modmask < 0) {
-      scwm_msg(WARN,FUNC_NAME,"Ignoring mouse unbind request for %s",
-	       szButton);
-      SCM_ALLOW_INTS;
-      FREE(szButton);
-      return SCM_UNSPECIFIED;
-    }
-    FREE(szButton);
+  if (!fButtonOK) {
+    /* Need a better error */
+    scm_wrong_type_arg(FUNC_NAME,2,button);
   }
 
   remove_binding(context,modmask,bnum,0,True /* Mouse binding */);
-  SCM_REALLOW_INTS;
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -620,36 +661,13 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   int modmask = 0;
   int context = 0;
 
-  SCM_REDEFER_INTS;
-  if (!gh_string_p(key)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 2, key);
-  }
-  if (!PROCEDURE_OR_SYMBOL_P(proc)) {
-    SCM_ALLOW_INTS;
+  if (!gh_procedure_p(proc)) {
     scm_wrong_type_arg(FUNC_NAME, 3, proc);
   }
-  context = compute_contexts(contexts);
 
-  switch (context) {
-  case 0:
-    SCM_ALLOW_INTS;
-    scwm_error(FUNC_NAME, 8);
-    break;
-  case -1:
-    SCM_ALLOW_INTS;
-    scwm_error(FUNC_NAME, 9);
-    break;
-  case -2:
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 1, contexts);
-    
-    break;
-  default:
-    break;
-  }
+  context = compute_contexts(contexts, FUNC_NAME);
 
-  fOkayKey = FKeyToKeysymModifiers(key,&keysym,&modmask);
+  fOkayKey = FKeyToKeysymModifiers(key,&keysym,&modmask, FUNC_NAME);
 
   /*
    * Don't let a 0 keycode go through, since that means AnyKey to the
@@ -668,34 +686,15 @@ PROC is a procedure (possibly a thunk) that should be invoked */
    */
   
   XDisplayKeycodes(dpy, &min, &max);
-  for (i = min; i <= max; i++)
+  for (i = min; i <= max; i++) {
     if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
-      Binding *prev_binding = Scr.AllBindings;
-      Scr.AllBindings = NEW(Binding);
-      Scr.AllBindings->IsMouse = 0;
-      Scr.AllBindings->Button_Key = i;
-      Scr.AllBindings->key_name = gh_scm2newstr(key,&len);
-      Scr.AllBindings->Context = context;
-      Scr.AllBindings->Modifier = modmask;
-      Scr.AllBindings->Action = "Scheme";
-      Scr.AllBindings->Thunk = proc;
-      Scr.AllBindings->NextBinding = prev_binding;
-      scm_protect_object(proc);
-      if (Scr.fWindowsCaptured) {
-	/* only grab the key if we have already captured,
-	   otherwise it's a waste of time since we will grab
-	   them all later when we do the initial capture;
-	   this is good, since initialization probably defines
-	   lots of key bindings */
-	grab_key_all_windows(i,modmask);
-      }
+      add_binding(context, modmask, i, 0, proc, gh_scm2newstr(key,&len));
       fBoundKey = True;
     }
-  SCM_REALLOW_INTS;
+  }
+
   if (!fBoundKey) {
     char *keyname = gh_scm2newstr(key,&len);
-    gh_allow_ints();
-    SCM_ALLOW_INTS;
     scwm_msg(WARN,FUNC_NAME,"No matching keycode for symbol `%s'",keyname);
     FREE(keyname);
     return SCM_BOOL_F; /* Use False for error */
@@ -720,68 +719,23 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   int j = 0;
   int k = 0;
   int modmask = 0;
-  int wincontext = 0;
+  int context = 0;
   Bool fChangedNumButtons = False;
 
-  SCM_REDEFER_INTS;
+  int fButtonOK = True;
 
-  if (!gh_string_p(button)) {
-    if (gh_number_p(button)) {
-      bnum = gh_scm2int(button);
-      if (bnum < 0 || bnum > cMouseButtons) {
-	scwm_msg(WARN,FUNC_NAME,"No button number `%d'",bnum);
-	SCM_ALLOW_INTS;
-	return SCM_UNSPECIFIED;
-      }
-    } else {
-      SCM_ALLOW_INTS;
-      scm_wrong_type_arg(FUNC_NAME, 2, button);
-    }
-  } else { /* it is a string */
-    szButton = gh_scm2newstr(button,&cchButton);
-  }
-  if (!PROCEDURE_OR_SYMBOL_P(proc)) {
-    SCM_ALLOW_INTS;
+  if (!gh_procedure_p(proc)) {
     scm_wrong_type_arg(FUNC_NAME, 3, proc);
   }
-  wincontext = compute_contexts(contexts);
-  switch (wincontext) {
-  case 0:
-    SCM_ALLOW_INTS;
-    scwm_error(FUNC_NAME, 8);
-    break;
-  case -1:
-    SCM_ALLOW_INTS;
-    scwm_error(FUNC_NAME, 9);
-    break;
-  case -2:
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 1, contexts);
-    break;
-  default:
-    break;
-  }
-  
-  if (szButton) {
-    bnum = BnumFromSz(PchModifiersToModmask(szButton,&modmask));
-    if (bnum < 0) {
-      scwm_msg(WARN,FUNC_NAME,"No button `%s'",szButton);
-      SCM_ALLOW_INTS;
-      FREE(szButton);
-      return SCM_UNSPECIFIED;
-    }
-    if (modmask < 0) {
-      scwm_msg(WARN,FUNC_NAME,"Ignoring mouse binding for %s",szButton);
-      SCM_ALLOW_INTS;
-      FREE(szButton);
-      return SCM_UNSPECIFIED;
-    }
-    FREE(szButton);
-  }
-  if ((wincontext != C_ALL) && (wincontext & C_LALL)) {
+
+  context = compute_contexts(contexts, FUNC_NAME);
+  fButtonOK = FButtonToBnumModifiers(button, &bnum, &modmask, FUNC_NAME);
+
+
+  if ((context != C_ALL) && (context & C_LALL)) {
     /* check for nr_left_buttons */
     k = 0;
-    j = (wincontext & C_LALL) / C_L1;
+    j = (context & C_LALL) / C_L1;
     while (j > 0) {
       k++;
       j = j >> 1;
@@ -791,10 +745,10 @@ PROC is a procedure (possibly a thunk) that should be invoked */
       fChangedNumButtons = True;
     }
   }
-  if ((wincontext != C_ALL) && (wincontext & C_RALL)) {
+  if ((context != C_ALL) && (context & C_RALL)) {
     /* check for nr_right_buttons */
     k = 0;
-    j = (wincontext & C_RALL) / C_R1;
+    j = (context & C_RALL) / C_R1;
     while (j > 0) {
       k++;
       j = j >> 1;
@@ -805,30 +759,12 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     }
   }
 
-  if ((wincontext & C_WINDOW) && ((modmask == 0) || modmask == AnyModifier)) {
+  if ((context & C_WINDOW) && ((modmask == 0) || modmask == AnyModifier)) {
     Scr.buttons2grab &= ~(1 << (bnum - 1));
   }
-  temp = Scr.AllBindings;
-  Scr.AllBindings = NEW(Binding);
-  Scr.AllBindings->IsMouse = 1;
-  Scr.AllBindings->Button_Key = bnum;
-  Scr.AllBindings->key_name = NULL;
-  Scr.AllBindings->Context = wincontext;
-  Scr.AllBindings->Modifier = modmask;
-  Scr.AllBindings->Action = "Scheme";
-  Scr.AllBindings->Thunk = proc;
-  Scr.AllBindings->NextBinding = temp;
-  if ( (wincontext & C_WINDOW) && Scr.fWindowsCaptured) {
-    /* only grab the button press if we have already captured,
-       otherwise it's a waste of time since we will grab
-       them all later when we do the initial capture;
-       this is good, since initialization probably defines
-       lots of mouse  bindings */
-    grab_button_all_windows(bnum,modmask);
-  }
+ 
+  add_binding(context, modmask, bnum, 1, proc, NULL);
 
-  scm_protect_object(proc);
-  SCM_REALLOW_INTS;
   if (fChangedNumButtons && Scr.fWindowsCaptured) {
   /* FIXGJB - we should redraw the titlebars if necessary to reflect the new
      buttons */
@@ -842,6 +778,9 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+
+
 
 
 
