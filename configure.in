@@ -292,7 +292,7 @@ AC_DEFINE(HAVE_SHAPE)
 ], no_xext_lib=yes, $x_libs)
 
 dnl # Check for the XTest library (needed for better simulated event support, quoting) ##
-XEXT_LIB=""
+XTST_LIB=""
 AC_CHECK_LIB(Xtst, XTestQueryExtension, [
 XTST_LIB="-lXtst"
 AC_DEFINE(HAVE_XTEST)
