@@ -1,3 +1,37 @@
+Wed Aug 25 12:26:30 1999    <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Fix bug in use of map where the two
+	lists were not the same length-- just shorten the second list by 1.
+
+Wed Aug 25 11:37:13 1999    <gjb@cs.washington.edu>
+
+	* window-selection.scm: Use make-hook, instead of '().
+
+	* ui-constraints.scm: Drop all the add-*-hook! and remove-*-hook!; 
+	these were unnecessary all along, and code is clearer using
+	add-hook! and remove-hook!.  Use make-hook instead of '().
+
+	* ui-constraints-gtk-toggle-menu.scm, ui-constraints-buttons.scm:
+ 	Use add-hook!, remove-hook!  not {add,remove}-*-hook!.
+
+	* ui-constraints-composition.scm: Drop gratuitous begin inside
+	function.  Use add-hook!, remove-hook!, not {add,remove}-*-hook!
+
+	* stylist.scm: Use make-hook, not ().
+
+	* style.scm: ws change.
+
+	* std-menus.scm, rgb-database.scm, path-cache.scm, flux.scm,
+ 	file.scm: Use popen module if minor-version > 3
+
+	* minimal.scm: Write call-hook-procedures using run-hook if it is
+	defined.
+
+	* fvwm-module.scm: Make module-broadcast take 9 arguments, not
+	rest args, since hooks now do checking on number of arguments.
+
+	* base.scm: Define reset-hook! and make-hook! if we're using <= 1.3
+
 Tue Aug 24 23:42:46 1999    <gjb@cs.washington.edu>
 
 	* themes.scm,preferences.scm,minimal.scm,menus-extras.scm: Fix

@@ -1,3 +1,11 @@
+Wed Aug 25 12:24:17 1999    <gjb@cs.washington.edu>
+
+	* scwm.c: Drop the setting of *suppress-old-style-hook-warning*.
+
+	* events.c: Rename get_strport_string to scm_strport_to_string,
+	and define it only if guile does not already have it.  (scwmexec
+	protocol was broken using the old code).
+
 Wed Aug 25 00:13:26 1999    <gjb@cs.washington.edu>
 
 	* scwm-snarf.h: Use HAVE_SCM_MAKE_HOOK to test for whether to use
