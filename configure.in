@@ -191,6 +191,11 @@ else
   GUILE_CONFIG_works=no
 fi
 
+if test "no" = "$GUILE_CONFIG_works"; then
+  AC_MSG_ERROR(Need a working guile-config script in your \$PATH --- check installation of Guile-1.3.4 or later)
+  exit -1
+fi
+
 if test -z "${GUILE_BIN_DIR}"; then
 	AC_PATH_PROG(GUILE, guile, no)
 else
@@ -503,24 +508,12 @@ DL_SUPPORT=false
 
 dnl FIXJTL: readline is sometimes needed too; hopefully anybody with
 dnl a guile with readline support has a working guile-config or build-guile
-if test "yes" = "$GUILE_CONFIG_works"; then
-  AC_MSG_CHECKING(for guile libraries)
-  GUILE_LIBS="${GUILE_LIBS_PRE} `${GUILE_CONFIG} link`"
-  GUILE_STATIC_LIBS="`${GUILE_CONFIG} info libdir`/libguile.a"
-  GUILE_EXTRA_LIBS="${GUILE_LIBS_PRE} `${GUILE_CONFIG} link`"  #this really should not have -lguile in it
-  GUILE_INCLUDES="`${GUILE_CONFIG} compile`"
-  AC_MSG_RESULT($GUILE_LIBS)
-else
-  AC_CHECK_LIB(m, sin, GUILE_LIBS="-lm",, $GUILE_LIBS_PRE)
-  AC_CHECK_LIB(rx, main, GUILE_LIBS="-lrx $GUILE_LIBS",, $GUILE_LIBS_PRE)
-  AC_CHECK_LIB(qt, main, GUILE_LIBS="-lqt $GUILE_LIBS",, $GUILE_LIBS_PRE)
-  AC_CHECK_LIB(dl, dlopen, GUILE_LIBS="-ldl $GUILE_LIBS";DL_SUPPORT=true,, $GUILE_LIBS_PRE)
-  AC_CHECK_LIB(c, dlopen, GUILE_LIBS="$GUILE_LIBS";DL_SUPPORT=true,, $GUILE_LIBS_PRE)
-
-  AC_CHECK_LIB(guile, scm_handle_by_message_noexit, GUILE_LIBS="${GUILE_LIBS_PRE} -lguile ${GUILE_LIBS}", [
-  	AC_MSG_ERROR(Can not find Guile 1.2 or later on the system)
-  ], $GUILE_LIBS_PRE $GUILE_LIBS)
-fi
+AC_MSG_CHECKING(for guile libraries)
+GUILE_LIBS="${GUILE_LIBS_PRE} `${GUILE_CONFIG} link`"
+GUILE_STATIC_LIBS="`${GUILE_CONFIG} info libdir`/libguile.a"
+GUILE_EXTRA_LIBS="${GUILE_LIBS_PRE} `${GUILE_CONFIG} link`"  #this really should not have -lguile in it
+GUILE_INCLUDES="`${GUILE_CONFIG} compile`"
+AC_MSG_RESULT($GUILE_LIBS)
 
 SCWM_ARG_PATH(guile-include-prefix,
 [  --with-guile-include-prefix=DIR 

@@ -1,4 +1,4 @@
-Scwm 0.99.6.1
+Scwm 0.99.6.1post
 
 This is a beta release of
 
@@ -28,11 +28,10 @@ from other processes.
 
 Features Scwm provides include:
 
+ o Full programmability
  o GNOME compatibility
  o GUI configurability
- o Full programmability
- o Theme support
- o sophisticated window decoration system
+ o sophisticated window decoration system, theme support
  o integrated interaction and documentation system 
    (Emacs or readline based)
  o integration with guile-gtk widget bindings
