@@ -42,9 +42,14 @@
   (add-window-style-option key (make-bool-handler th fh) 'normal cumulative?))
 
 (define*-public (add-window-hint-option key handler #&optional (cumulative? #f))
-  (add-window-style-option key handler 'hint cumulative?))				       
+  (add-window-style-option key handler 'hint cumulative?))
+
 (define*-public (add-boolean-hint-option key th fh #&optional (cumulative? #f))
   (add-window-hint-option key (make-bool-handler th fh) cumulative?))
+
+(define*-public (add-window-both-option key handler #&optional (cumulative? #f))
+  (add-window-style-option key handler 'normal cumulative?)
+  (add-window-style-option key handler 'hint cumulative?))
 
 (define*-public (add-boolean-both-option key th fh #&optional (cumulative? #f))
   (add-window-style-option key (make-bool-handler th fh) 'normal cumulative?)
