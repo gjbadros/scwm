@@ -69,10 +69,17 @@
     ,str (lambda (args fmod window)
 	   ,@body)))
 
+(define (calc-desk-args args)
+;; arg1 [ arg2 ] [ min max ]
+;; arg1==0; desk=arg2
+;; arg1!=0; desk=+arg1
+;; need to deal with arg3 and arg4
+  (get-two-numeric-args args
+    (lambda (arg1 arg2)
+      (if (= arg1 0) arg2 (+ arg1 (current-desk))))))
+
 (define-fvwm-command "Desk"
-  (get-two-numeric-args
-   args (lambda (first second)
-	  (set-current-desk! second))))
+  (set-current-desk! (calc-desk-args args)))
 
 (define-fvwm-command "Focus"
   (if window
@@ -134,6 +141,11 @@
 
 (define-fvwm-command "WindowsDesk"
   (move-window-to-desk (get-one-numeric-arg args) window))
+
+;;; WindowsDesk is now obsoleted in favour of MoveToDesk
+;;; MoveToDesk arg1 [ arg2 ] [ min max ]
+(define-fvwm-command "MoveToDesk"
+  (move-window-to-desk (calc-desk-args args) window))
 
 (define-fvwm-command "KillMe"
   (display "Got KillMe! \n")
@@ -536,6 +548,7 @@ working commands."
 ;;; Desk        Focus           RaiseLower      set_mask
 ;;; DesktopSize Iconify         Refresh         SetAnimation
 ;;; Destroy     Lower           RefreshWindow   Stick
+;;; MoveToDesk (7th July 1999)
 
 ;;; Implemented and Untested or broken:
 ;;; Current            IconFont        Next            Recapture
