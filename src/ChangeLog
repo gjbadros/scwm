@@ -1,5 +1,7 @@
 Fri Mar  6 06:46:20 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* scwm.c (scm_parse_path): Provide if not in libguile.
+
 	* window.c: Fix to smart-placement, patch from Hideki Sakurada
  	<sakurada@kuis.kyoto-u.ac.jp>
 
