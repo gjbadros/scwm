@@ -1,0 +1,207 @@
+Event Rewrite Proposal for Scwm
+Greg J. Badros, 6-Aug-1998
+(Inspired by conversations w/ Maciej and his "events" proposal in this
+ same directory)
+
+Intro:
+------
+
+Motivating desires for a more flexible event-binding infrastructure
+
+o Elimination of "contexts" and replacing with event maps
+-- event maps are more fundamental, and unifying
+o Mode-specific event maps (e.g., when in an interactive move)
+o Pinnable-menus event maps
+o Multi-key bindings with prefix keys that change mode map
+o Maps on a per window basis (e.g., xlogo could permit fewer modifier
+keys to accompany an "m" keystroke to signify a desire to move the
+window)
+o Quoting mechanism for turning off scwm's handling of events
+o Unifying X-events and user events
+
+
+As you write, event maps and event objects should be exposed to the
+scheme layer as SMOBs (first class objects).  The event maps will
+contain event objects which are bound to procedures to be invoked.
+Event maps will be attached to X windows (via Xlib's SaveContext
+mechanism) and scheme window objects (for top-level, per-window events).
+
+
+Overview:
+---------
+1 - Event Objects
+2 - Event Map Objects
+3 - Binding of Event Maps
+
+
+1 - Event objects:
+------------------
+(make-key-event KEY-SPECIFIER)
+e.g.:
+(make-key-event "F1")
+KEY-SPECIFIER can be a string where modifiers are prefixes, e.g., "C-S-M-Up"
+or can be a list of modifier symbols and a keysym string in any order,
+e.g. '(control shift meta "x")  or '("x" control shift meta)
+The special pseudo-keysyms "KeyPress" and "KeyRelease" will permit
+events being bound to some combination of modifier keys just being
+depressed or released.  We could also permit modifier symbols 'mod1,
+'mod2, etc., to mean specifically that modifier mask bit (as opposed to
+the more flexible but less predictable symbolic names).
+
+(make-mouse-event MOUSE-SPECIFIER)
+e.g.,
+(make-mouse-event '(1 release))
+MOUSE-SPECIFIER is a list of two symbols [or a cons pair -- use
+'(1 . release) ?].  The car is a number for the button number, the 
+cadr [or cdr] is one of 'motion, 'press, 'release, 'click, or 'double-click.
+('click may be the same as 'release, but 'double-click gets manufactured 
+by scwm). The button number 0 means any button.
+
+
+(make-x-event X-EVENT-SPECIFIER)
+e.g.,
+(make-x-event 'enter-notify)
+X-EVENT-SPECIFIER is a symbol referring to an X11 event.  enter-notify,
+leave-notify, pointer-motion, property-notify, colormap-notify,
+focus-in, focus-out, etc. could be supported (see include/X11/X.h for
+list).  Binding procedures to these events could replace some of the
+ad-hoc mechanisms for property-notification, etc., that we currently
+have in scwm.
+
+Note that make-x-event is the most general case, and the other two
+procedures can be seen as adding a C-level filter on top of the actual
+X-event.  E.g., (make-mouse-event '(1 release)) is applicable if there
+is a x-event "ButtonRelease" *and* the button number is 1.
+
+
+2 - Event Map Objects:
+----------------------
+
+Now, on to event map objects.  My proposal is similar to yours but
+instead of managing the installed event-map from Scheme code, I want to
+attach event map objects to arbitrary X11 windows (e.g., the pager, or a 
+pinned menu, etc.), and have the appropriate grabs and XSelectInput
+calls happen based on the event map for a given window.
+
+First, a means of creating event-maps and populating them with bindings
+from events to procedures:
+
+(make-event-map #&optional PARENT MERGE?)
+;; PARENT is an event-map object, or omitted or #f to indicate no parent
+(I don't think we need to worry about delaying events, but I'm not sure
+what problem that suggestion was trying to solve).
+This will permit a form of inheritance of behaviours.  Note, though,
+that this mechanism should not be necessary for the geometry-based
+chaining that X11 commonly uses.  E.g., an event in a window decoration
+(say, a button on the titlebar) will first dispatch based on the event
+map (if any) attached to the decoration, then on the event map for that
+client window, then on the global event map.  Each of these event maps
+would be built with the PARENT argument omitted or #f.  A special
+primitive or symbol can be bound to an event to permit preventing the
+event from propagating, and instead letting it pass to the application.
+MERGE? is #t to indicate that the resulting event-map should (for the
+purposes of event dispatch) treat the PARENT's bindings as equipotent to 
+this new child event (i.e. all of the bindings will be checked when
+doing dispatch).  MERGE? is #f to indicate that only if no binding
+matched in the child should the parent's bindings be checked.
+
+event-map-global
+;; the built-in global event-map object -- it is an implicit,
+;; non-merged parent of all event-maps
+
+(event-map-parents EVENT-MAP)
+;; Return list of cons pairs (PARENT-EVENT-MAP . MERGE?)
+(add-event-map-parent! EVENT-MAP PARENT MERGE?)
+;; Permit multiple parents, though only one can be specified at a time
+
+(add-event-binding EVENT-MAP EVENT PROC-OR-SYMBOL)
+(remove-event-binding EVENT-MAP EVENT)
+;; Similar to your {add,remove}-event-hook.
+;; These add and remove bindings for EVENT objects in the given
+;; EVENT-MAP object.
+;; PROC-OR-SYMBOL is either a procedure or 'pass to indicate
+;; that the event should not be grabbed by the wm and the application
+;; should get the event (this is only an issue for event maps attached
+;; to client windows).  See dispatch-event for details about how
+;; the bindings are invoked.
+
+(list-event-bindings EVENT-MAP)
+;; return a list of all the event bindings added to EVENT-MAP
+;; as a cons parent of (EVENT-OBJECT . PROC-OR-SYMOBL)
+
+(dispatch-event EVENT-MAP EVENT)
+;; EVENT-MAP is an event-map object, EVENT is an event-object
+;; All applicable events' procedures should be invoked in the order that 
+;; they were added to the EVENT-MAP.  Parent EVENT-MAPs are handled
+;; as discussed above.
+;; Each procedure is invoked with four arguments:
+;; #1 - the scheme object that the event acted on/in (e.g., for a button
+;; decoration, it will be that top-level frame; for a menu it will be
+;; the menu object, etc.), or #f if there is no applicable scheme object 
+;; (e.g., the root window)
+;; #2 - the event object that caused this dispatch (i.e. EVENT)
+;; #3 - the event map object (i.e. EVENT-MAP)
+;; #4 - the window id of the X window that got the event.  We can add 
+;; primitives to query what decoration/menu/whatever a window ID is
+;; We may need to do something to help simplify binding simple
+;; procedures to an event (maybe something like Emacs's (interactive)
+;; declaration), but I think we need all of the above (and maybe more)
+;; to get a lot of useful functionality.
+;; Only when no bindings are applicable in the child or its chain of
+;; parents should the event dispatching mechanism
+;; proceed to chain the event dispatch up to the enclosing event-map
+;; context.  That is, from decoration->frame->global (button decorations 
+;; perhaps should forward to the titlebar before the frame, but side-bar 
+;; decorations probably should not).
+;; This primitive is what will get internally invoked when Scwm gets
+;; an event.  Note that Scwm will have to manage selecting the
+;; appropriate events and grabbing the appropriate keys based on
+;; the event-map objects attached to various windows.
+;; Note that my proposed automatic chaining is a restriction (for 
+;; programming understanding and reasoning purposes) on a more general
+;; notion of a procedure to be called when no event binding matches --
+;; the chaining could be made more explicit and put under programmer
+;; control using this primitive.
+
+
+3 - Binding of Event Maps:
+--------------------------
+
+Event maps can be attached to any X Window by its X Id.  We can add
+primitives that give the window id from a SCWM top-level window and a
+decoration specifier.
+
+(attach-event-map X-WINDOW-ID EVENT-MAP)
+e.g.,
+(attach-event-map (button-n-of 1 win) button-1-map-for-win)
+(attach-event-map (title-bar-of win) title-bar-map-for-win)
+;; Only one event map is attached per window id -- attaching
+;; a new map removes any old one
+
+The window style mechanism should be used to attach a set
+of event maps at startup for a given window style, e.g.:
+
+(window-style "*" #:event-maps (list (1 . default-button-1-map) 
+				     ('title . default-title-map)
+				     ('window . default-window-map)))
+
+[this avoids a bunch of attach-event-maps from being needed in the
+new-window-hook -- the attaching of the default event maps needs to be
+efficient, since it'll happen for each new window and on lots of
+decorations -- it's only a single XSaveContext call for each attachment, 
+which shouldn't be too bad].
+
+(event-map-for X-WINDOW-ID)
+;; Return the currently attach event-map object, if any, or #f
+
+
+(remove-event-map X-WINDOW-ID)
+;; detach any event map from X-WINDOW-ID
+
+
+I'll try to come up with an example of using this system but please feel 
+free to poke holes in it or query me about how one might accomplish
+something you're interested in being able to do.  (Or if you think it's
+redundant, overly-general, inefficient, etc.).
+
+Thanks!
