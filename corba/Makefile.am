@@ -16,6 +16,8 @@ $(idl_output_source): scwm_scheme_evaluator.idl
 
 #	orbit-idl --skeleton_impl $<
 
+AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@ `gnome-config --cflags gnome`
 
 BUILT_SOURCES = $(idl_output_source)
