@@ -753,6 +753,7 @@ end in a "-"; e.g., "S-C-M-"
       break; /* got a real key, not a modifier, so exit the loop */
   }
 
+  /* GJB:FIXME:: race? */
   while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask|KeyPressMask, &evDiscard)) {
     scwm_msg(WARN,FUNC_NAME,"Discarding with state %d",evDiscard.xbutton.state);
   }
