@@ -1,5 +1,5 @@
 Event Rewrite Proposal for Scwm
-Greg J. Badros, 6-Aug-1998
+Greg J. Badros, 6-Aug-1998, revised 2-Sep-1998
 (Inspired by conversations w/ Maciej and his "events" proposal in this
  same directory)
 
@@ -40,25 +40,46 @@ Overview:
 e.g.:
 (make-key-event "F1")
 KEY-SPECIFIER can be a string where modifiers are prefixes, e.g., "C-S-M-Up"
-or can be a list of modifier symbols and a keysym string in any order,
-e.g. '(control shift meta "x")  or '("x" control shift meta)
+or can be a vector or list of modifier symbols and a keysym string in any order,
+e.g. #(control shift meta "x")  or '("x" control shift meta)
 The special pseudo-keysyms "KeyPress" and "KeyRelease" will permit
 events being bound to some combination of modifier keys just being
 depressed or released.  We could also permit modifier symbols 'mod1,
 'mod2, etc., to mean specifically that modifier mask bit (as opposed to
-the more flexible but less predictable symbolic names).
+the more flexible but less explicit symbolic names).
+
+QUESTION: Perhaps the keysym string should be required to be first
+          in the vector/list
+
+QUESTION: Perhaps the KEY-SPECIFIER should be split into KEYSYM-SPECIFIER
+          and MODIFIER-SPECIFIER
+
 
 (make-mouse-event MOUSE-SPECIFIER)
 e.g.,
 (make-mouse-event '(1 release))
-MOUSE-SPECIFIER is a list of two symbols [or a cons pair -- use
-'(1 . release) ?].  The car is a number for the button number, the 
-cadr [or cdr] is one of 'motion, 'press, 'release, 'click, or 'double-click.
-('click may be the same as 'release, but 'double-click gets manufactured 
-by scwm). The button number 0 means any button.
+(make-mouse-event '(#(1 control meta shift) motion))
+
+MOUSE-SPECIFIER is a list of two elements [or a cons pair -- use '(1
+. release) ?].  The car is a button number, or a list or vector for the button
+number and modifiers.  If the car is a vector or list, it must contain
+exactly one number corresponding to the button number; the other elements are
+modifier symbols.  The button number 0 means any button.
+The cadr [or cdr] is one of 'motion, 'press, 'release, 'click, or
+'double-click.  ('click may be the same as 'release, but 'double-click
+gets manufactured by scwm).  E.g., the below are valid MOUSE_SPECIFIERs
+
+QUESTION: Perhaps the button number should be required to be first 
+          in the vector/list
+
+QUESTION: Perhaps the MOUSE-SPECIFIER should be split into MOUSE-SPECIFIER
+          MODIFIER-SPECIFIER
+
+QUESTION: Should the button number instead be a list of 'left 'middle 'right
+	  symbols to permit chording and automatic flipping of chirality?
 
 
-(make-x-event X-EVENT-SPECIFIER)
+(make-x-event X-EVENT-SPECIFIER MODIFIER-SPECIFIER)
 e.g.,
 (make-x-event 'enter-notify)
 X-EVENT-SPECIFIER is a symbol referring to an X11 event.  enter-notify,
@@ -68,7 +89,11 @@ list).  Binding procedures to these events could replace some of the
 ad-hoc mechanisms for property-notification, etc., that we currently
 have in scwm.
 
-Note that make-x-event is the most general case, and the other two
+MODIFIER-SPECIFIER is a vector or list of modifier symbols.  Perhaps it
+should use Xrm-like descriptions so we can say "exactly Hyper" (!Hyper)
+or "not Shift" (~Shift).
+
+Note that make-x-event is the most primitive case, and the other two
 procedures can be seen as adding a C-level filter on top of the actual
 X-event.  E.g., (make-mouse-event '(1 release)) is applicable if there
 is a x-event "ButtonRelease" *and* the button number is 1.
