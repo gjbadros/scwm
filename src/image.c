@@ -33,11 +33,8 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include <signal.h>
 #include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <X11/keysym.h>
 #include <sys/types.h>
 #include <sys/time.h>
 
@@ -53,14 +50,14 @@
 
 #include "image.h"
 
-static Colormap IamgeColorMap;
+static Colormap ImageColorMap;
 
 /* FIXMS: arbitrary choices for these sizes - I need to check out if
  * there is a good way to have hash tables grow automatically. 
  */
 
-#define IMAGE_HASH_SIZE 41;
-#define IMAGE_LOADER_HASH_SIZE 11;
+#define IMAGE_HASH_SIZE 41
+#define IMAGE_LOADER_HASH_SIZE 11
 
 /*
  * A weak value hash table from image name strings to image objects.
@@ -94,7 +91,6 @@ static SCM *loc_image_load_path;
 /* used by C code to create image objects for images not loaded from
    files, e.g. app-provided icon bitmaps or window. */
 
-
 size_t 
 free_image(SCM obj)
 {
@@ -121,7 +117,7 @@ print_image(SCM obj, SCM port, scm_print_state * pstate)
 }
 
 SCM
-mark_image(SCM image)
+mark_image(SCM obj)
 {
   if (SCM_GC8MARKP (obj)) {
     return SCM_BOOL_F;
@@ -130,12 +126,14 @@ mark_image(SCM image)
   return IMAGE(obj)->name;  
 }
 
+
+SCM_PROC (s_image_p, "image?-new", 1, 0, 0, image_p);
+
 SCM 
 image_p(SCM obj)
 {
   return ((SCM_NIMP(obj) && IMAGE_P(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
 }
-
 
 
 SCM
@@ -144,15 +142,15 @@ make_empty_image(SCM name)
   SCM result;
   scwm_image *ci;
 
-  i = safemalloc(sizeof(scwm_image));
-  i->name = name;
-  i->image = None;
-  i->mask = none;
+  ci = safemalloc(sizeof(scwm_image));
+  ci->name = name;
+  ci->image = None;
+  ci->mask = None;
 
   SCM_DEFER_INTS;
-  SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, scm_tc16_scwm_image);
-  SCM_SETCDR(answer, (SCM) ci);
+  SCM_NEWCELL(result);
+  SCM_SETCAR(result, scm_tc16_scwm_image);
+  SCM_SETCDR(result, (SCM) ci);
   SCM_ALLOW_INTS;
 
   return result;
@@ -167,8 +165,10 @@ make_empty_image(SCM name)
    deletes the image in /tmp so you can keep all of your images gzipped. 
    */
 
+SCM_PROC (s_load_xbm, "load-xbm", 1, 0, 0, load_xbm);
+
 SCM
-load_bitmap(SCM full_path)
+load_xbm (SCM full_path)
 {
   SCM result;
   scwm_image *ci;
@@ -181,9 +181,9 @@ load_bitmap(SCM full_path)
 
   c_path=gh_scm2newstr(full_path,&ignore);
 
-  xbm_return=XReadBitmapFile(dpy, Root, c_path, 
+  xbm_return=XReadBitmapFile(dpy, Scr.Root, c_path, 
 		      &ci->width, &ci->height, &ci->image, 
-		      &ignore, &ognore);
+		      &ignore, &ignore);
   free(c_path);
   if (xbm_return == BitmapSuccess) {
     ci->depth = 0;
@@ -196,8 +196,11 @@ load_bitmap(SCM full_path)
   }
 }
 
+
+SCM_PROC (s_load_xpm, "load-xpm", 1, 0, 0, load_xpm);
+
 SCM
-load_pixmap(SCM full_path)
+load_xpm (SCM full_path)
 {
   SCM result;
   scwm_image *ci;
@@ -217,19 +220,20 @@ load_pixmap(SCM full_path)
      usually best. 655535 will allow any color to match, thus
      preventing failure solely due to color allocation problems. 0
      presumably requires an exact match. This should be configurable
-     to some degree, but shouldn't be too high priority. */
+     to some degree, but shouldn't be too high a priority. */
 
   xpm_attributes.closeness = 40000;	
   xpm_attributes.valuemask =
     XpmSize | XpmReturnPixels | XpmColormap | XpmCloseness;
 
-  xpm_return = XpmReadFileToPixmap(dpy, Root, c_path, &ci->image, &ci->mask, 
+  xpm_return = XpmReadFileToPixmap(dpy, Scr.Root, 
+				   c_path, &ci->image, &ci->mask, 
 				   &xpm_attributes);
   free(c_path);
   if (xpm_return  == XpmSuccess) {
-    p->width = xpm_attributes.width;
-    p->height = xpm_attributes.height;
-    p->depth = xpm_attributes.depth; /* the Xpm manual implies this should
+    ci->width = xpm_attributes.width;
+    ci->height = xpm_attributes.height;
+    ci->depth = xpm_attributes.depth; /* the Xpm manual implies this should
 					work, if not, fall back to the
 					code below. */
       /* DefaultDepthOfScreen(DefaultScreenOfDisplay(dpy)); */
@@ -241,16 +245,18 @@ load_pixmap(SCM full_path)
   }
 }
 
+SCM_PROC (s_register_image_loader, "register-image-loader", 2, 0, 0, register_image_loader);
+
 SCM
 register_image_loader(SCM extension, SCM proc)
 {
   if (!gh_string_p(extension)) {
-    scm_wrong_type_arg("register-image-loader", 1, extension);
+    scm_wrong_type_arg(s_register_image_loader, 1, extension);
   }
   
   /* Sadly, there is no way to test the arity of a procedure. */
   if (!gh_procedure_p(proc)) {
-    scwm_wrong_type_arg("register-image-loader", 1, proc);
+    scm_wrong_type_arg(s_register_image_loader, 1, proc);
   }
 
   scm_hash_set_x(image_loader_hash_table, extension, proc);
@@ -258,11 +264,16 @@ register_image_loader(SCM extension, SCM proc)
   return SCM_UNSPECIFIED;
 }
 
+SCM_PROC (s_unregister_image_loader, "unregister-image-loader", 1, 0, 0, unregister_image_loader);
 
 SCM
 unregister_image_loader(SCM extension)
 {
-  scm_hash_remove_x(image_looader_hash_table, extension);
+  if (!gh_string_p(extension)) {
+    scm_wrong_type_arg(s_unregister_image_loader, 1, extension);
+  }
+
+  scm_hash_remove_x(image_loader_hash_table, extension);
 
   return SCM_UNSPECIFIED;
 }
@@ -275,17 +286,17 @@ load_image(SCM name)
   SCM full_name, extension;
   char *c_name, *c_fname, *c_ext;
   int length;
-  int max_path_len=0;
+  int max_path_len = 0;
 
   if (!gh_string_p(name)) {
     scm_wrong_type_arg("load-image", 1, name);
   }
 
-  c_name=gh_scm2newstr(name, &length);
+  c_name = gh_scm2newstr(name, &length);
   
-  if (length > 0 && c_name[0]='/') {
+  if (length > 0 && c_name[0]=='/') {
     /* absolute path */
-    if(access(name, R_OK)==0) {
+    if(access(c_name, R_OK)==0) {
       c_fname=c_name;
       c_name=NULL;
     } else {
@@ -309,12 +320,12 @@ load_image(SCM name)
 	/* Warning, non-string in image-load-path */
 	return SCM_BOOL_F;
       } else {
-	int l=SCM_RO_LENGTH(elt);
+	int l=SCM_ROLENGTH(elt);
 	max_path_len= (l > max_path_len) ? l : max_path_len;
       }
     }
 	  
-    c_fname=(char *) safemalloc(sizoef(char) *(max_path_len + 1 /* '/' */
+    c_fname=(char *) safemalloc(sizeof(char) *(max_path_len + 1 /* '/' */
 					       + length + 1 /* 0 */ ));
     
     /* Try every possible path */
@@ -325,7 +336,7 @@ load_image(SCM name)
       c_fname[path_len] = '/';
       memcpy(&(c_fname[path_len+1]), c_name, length);
       c_fname[path_len+length+1] = 0;
-      if(access(name, R_OK)==0) {
+      if(access(c_fname, R_OK)==0) {
 	break;
       }
     }
@@ -349,7 +360,7 @@ load_image(SCM name)
   free(c_fname);
 
   /* Find the right loader based on the extension. */
-  SCM loader=scm_hash_ref(image_loader_hash_table, extension);
+  loader=scm_hash_ref(image_loader_hash_table, extension, SCM_BOOL_F);
 
   if (loader==SCM_BOOL_F) {
     /* Warn: unknown imge type. */
@@ -370,17 +381,22 @@ load_image(SCM name)
   return SCM_BOOL_F;
 }
 
+SCM_PROC (s_make_image, "make-image-new", 1, 0, 0, make_image);
+
+/* FIXMS: maybe add an optional arg to explicitly specify the type,
+   rather than guessing from the extension? */
+
 SCM
 make_image(SCM name)
 {
   SCM result;
 
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg("make-image",1,name);
+    scm_wrong_type_arg(s_make_image,1,name);
   }
 
   /* First check the hash table for this image.  */
-  result=scm_hash_ref(image_hash_table,name);
+  result=scm_hash_ref(image_hash_table,name, SCM_BOOL_F);
   
   if (result != SCM_BOOL_F) {
     /* FIXMS: should really check for up-to-date-ness here */
@@ -397,21 +413,34 @@ make_image(SCM name)
     return SCM_BOOL_F;
   }
 
-  scm_hash_set_x(table, name, result);
+  scm_hash_set_x(image_hash_table, name, result);
 
   return result;
 }
 
 
+static scm_smobfuns image_smobfuns =
+{
+  &mark_image,
+  &free_image,
+  &print_image,
+  0
+};
+
 
 void init_image() 
 {
   XWindowAttributes root_attributes;
+  SCM val_load_xbm, val_load_xpm;
 
-  XGetWindowAttributes(dpy, Root, &root_attributes);
+  XGetWindowAttributes(dpy, Scr.Root, &root_attributes);
   ImageColorMap = root_attributes.colormap;
 
-  SCM val_load_x_bitmap, val_load_x_pixmap;
+  /* Include registration of procedures and other things. */
+  #include "image.x"
+
+  /* Register the image type. */
+  scm_tc16_scwm_image = scm_newsmob(&image_smobfuns);
 
   /* Initialize the image cache table. */
   image_hash_table = 
@@ -420,29 +449,23 @@ void init_image()
 
   /* Initialize the loader hash table. */
   image_loader_hash_table = 
-    scm_make_vector (SCM_MAKINUM(IMAGE_LOADER_HASH_SIZE), SCM_EOL);
+    scm_make_vector (SCM_MAKINUM(IMAGE_LOADER_HASH_SIZE), SCM_EOL, 
+		     SCM_BOOL_F);
 
   /* Register the standard loaders. */
 
-  val_load_x_bitmap = gh_lookup("load-x-bitmap");
-  val_load_x_bitmap = gh_lookup("load-x-pixmap");
+  val_load_xbm = gh_lookup("load-xbm");
+  val_load_xpm = gh_lookup("load-xpm");
 
-  register_image_loader(gh_str02scm(""),val_load_bitmap);
-  register_image_loader(gh_str02scm(".icon"),val_load_x_bitmap);
-  register_image_loader(gh_str02scm(".bitmap"),val_load_x_bitmap);
-  register_image_loader(gh_str02scm(".xbm"),val_load_x_bitmap);
-  register_image_loader(gh_str02scm(".xpm"),val_load_x_pixmap);
+  register_image_loader (gh_str02scm(""), val_load_xbm);
+  register_image_loader (gh_str02scm(".icon"), val_load_xbm);
+  register_image_loader (gh_str02scm(".bitmap"), val_load_xbm);
+  register_image_loader (gh_str02scm(".xbm"), val_load_xbm);
+  register_image_loader (gh_str02scm(".xpm"), val_load_xpm);
 
   /* Make the image-load-path Scheme variable easily accessible from C,
      and load it with a nice default value. */
-  scm_loc_image_path = SCM_CDRLOC
+  loc_image_load_path = SCM_CDRLOC
     (scm_sysintern("image-load-path", 
-		   gh_eval_string("\'"SCWM_IMAGE_LOAD_PATH)));
-
+		   gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH)));
 }
-
-
-
-
-
-
