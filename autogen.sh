@@ -1,11 +1,11 @@
 ## autogen.sh - generate all the twisty little files.
 
 # Generate aclocal.m4 from configure.in
-aclocal
+aclocal -I .
 
 # Generate Makefile.in's from Makefile.am's and configure.in
 # (adding missing files that may be needed for proper operation)
-automake --add-missing
+automake --add-missing --gnu
 
 # Generate include/config.h.in from acconfig.h and configure.in
 autoheader

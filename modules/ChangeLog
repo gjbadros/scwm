@@ -1,3 +1,13 @@
+Fri Nov 20 02:01:00 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwmgtkhelper/scwmgtkhelper.c: New module with a few auxiliary
+ 	calls to help scwm work sanely when the guile-gtk module is
+ 	loaded.
+
+	scwmgtkhelper/Makefile.am: Build it when we have Gtk+.
+	
+	* Makefile.am: Build in scwmgtkhelper subdir.
+
 Tue Nov 17 18:35:01 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* pie-menus/draw-pie-menu.c, xpm-menus/draw-xpm-menu/c: eliminate

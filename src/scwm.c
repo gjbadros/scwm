@@ -130,8 +130,8 @@ XErrorHandler ScwmErrorHandler(Display *, XErrorEvent *);
 XIOErrorHandler CatchFatal(Display *);
 XErrorHandler CatchRedirectError(Display *, XErrorEvent *);
 
-static void newhandler(int sig);
-static void newsegvhandler(int sig);
+void newhandler(int sig);
+void newsegvhandler(int sig);
 
 void CreateCursors(void);
 void ChildDied(int nonsense);
@@ -1146,14 +1146,14 @@ CaptureAllWindows(void)
  *	newhandler: Installs new signal handler
  *
  ************************************************************************/
-static void 
+void 
 newhandler(int sig)
 {
   if (signal(sig, SIG_IGN) != SIG_IGN)
     signal(sig, SigDone);
 }
 
-static void 
+void 
 newsegvhandler(int sig)
 {
   if (signal(sig, SIG_IGN) != SIG_IGN)

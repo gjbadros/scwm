@@ -1,0 +1,14 @@
+Scwm now has *EXPERIMENTAL* level support for guile-gtk. Do not use
+this unless you know what you are doing - your window manager might
+get killed under certain unsafe operations. 
+
+* Right now, the only one I know about is that doing a
+`destroy-window', so make absolutely sure you "Close" or "Delete"
+scwm-gtk windows rather than "Destroy"ing them.
+
+If you do want to write code that uses gtk with scwm, make sure you
+use both of the modules (app scwm gtk) and (gtk gtk) in that order.
+
+This code has only been tested with gtk+-1.0.6 and guile-gtk-0.12 so
+far.
+

@@ -1,3 +1,7 @@
+Fri Nov 20 02:17:25 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* guile-gtk: Added a note about guile-gtk support.
+
 Tue Nov 17 02:28:08 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* procedures: Remove this ancient thing.

@@ -4,24 +4,23 @@
 ;; Maciej --08/02/98
 
 (begin
-  (use-modules (gtk gtk))
+  (use-modules (app scwm gtk) (gtk gtk))
   
   (define w (gtk-window-new 'toplevel))
   (define b (gtk-button-new-with-label "Name: "))
   (define e (gtk-entry-new))
-  (gtk-container-add w b)
-  (gtk-container-add w e)
+  (gtk-signal-connect b "clicked" 
+		      (lambda ()
+			(display "Entry text is: ")
+			(display (gtk-entry-get-text e))
+			(newline)))
+  (define hb (gtk-hbox-new 0 0))
+  (gtk-container-add w hb)
+  (gtk-box-pack-start hb b)
+  (gtk-box-pack-end hb e)
   (gtk-widget-show e)
   (gtk-widget-show b)
-  (gtk-widget-show w)
-  (while (not (= 0 (gtk-events-pending))) (gtk-main-iteration))
-  (while (not (= 0 (gtk-events-pending))) (gtk-main-iteration))
-  (while (not (= 0 (gtk-events-pending))) (gtk-main-iteration)))
+  (gtk-widget-show hb)
+  (gtk-widget-show w))
 
 (gtk-widget-unmap w)
-
-(define (handle-gtk-events)
-  (while (not (= 0 (gtk-events-pending))) (gtk-main-iteration))
-  (add-timer-hook! 10000 handle-gtk-events))
-
-(define gtk-loop-timer (add-timer-hook! 10000 handle-gtk-events))
