@@ -70,7 +70,7 @@ EXTRA_scwm_SOURCES = $(cassowary_srcs) $(session_manager_srcs)
 
 noinst_HEADERS = Grab.h events.h placement.h ICCCM.h face.h resize.h \
 add_window.h focus.h screen.h binding.h font.h scwm-constraints.h \
-borders.h getopt.h scwm-snarf.h callbacks.h guile-compat.h scwm.h \
+borders.h getopt.h scwm-snarf.h callbacks.h guile-compat.h scwm.h scwm_msg.h \
 color.h cursor.h icons.h session-manager.h colormaps.h image.h shutdown.h \
 colors.h log-usage.h string_token.h menu.h syscompat.h \
 constraint-primitives.h menuitem.h system.h decor.h menulook.h util.h \
