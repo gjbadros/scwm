@@ -356,7 +356,7 @@ path_expand_image_fname(SCM name, const char *func_name)
   SCM result;
 
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg(func_name, 1, name);
+    scm_wrong_type_arg((char *) func_name, 1, name); /* FIXGJB guile const-ness bug */
   }
 
   c_name = gh_scm2newstr(name, &length);
