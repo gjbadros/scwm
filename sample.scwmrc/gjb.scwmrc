@@ -670,6 +670,7 @@
 
 ;;; window buttons
 ;(bind-mouse 'button-1 1 popup-small-ops)
+;(bind-mouse 'button-1 1 close-on-double-click popup-small-ops-from-decoration)
 ;(bind-mouse 'button-2 1 vertical-toggle-maximize)
 ;(bind-mouse 'button-4 1 iconify)
 
@@ -683,11 +684,23 @@
     ((double-click) (close-window))
     (else (let ((w (get-window)))
 	    (popup-menu-from-decoration 
-	     (make-small-window-ops-menu w) w 1)))))
+	     (make-small-window-ops-menu w) w 1)
+	    #f))))
+
+(define (close-on-double-click)
+  (case (mouse-event-type)
+    ((double-click one-and-a-half-clicks) (close-window))))
+
+(define (popup-small-ops-from-decoration)
+  (let ((w (get-window)))
+    (popup-menu-from-decoration 
+     (make-small-window-ops-menu w) w 1))
+  #f)
+
 ;; the "1" at the end of the prior line is the button number from which 
 ;; this is popped.
 
-(add-left-button mini-icon-button-face popup-small-ops-or-close)
+(add-left-button mini-icon-button-face close-on-double-click popup-small-ops-from-decoration)
 ;;(show-titlebar (select-window-interactively))
 ;;(bind-mouse 'button-1 1 popup-small-ops-or-close)
 
@@ -1112,7 +1125,7 @@ union of all other window managers!
 (define (make-small-window-ops-menu w)
   (menu
    (list
-    (menu-title "Window Ops Small") menu-separator
+;;    (menu-title "Window Ops Small") menu-separator
     (menuitem "&Move" #:image-left "mini-move.xpm" 
 	       #:action interactive-move)
     (menuitem "Re&size" #:image-left "mini-resize.xpm" 
@@ -1124,6 +1137,8 @@ union of all other window managers!
     (menuitem (if (maximized? w) 
 			    "Unma&ximize" 
 			    "Ma&ximize") #:action both-toggle-maximize)
+    (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
+	      #:action interactive-set-window-gravity!)
     menu-separator
     (menuitem "More" 
 	       #:action 
@@ -1165,18 +1180,9 @@ union of all other window managers!
 ;; (add-timer-hook! (ms->usec 150) (lambda () (display (lookup-key 'all (get-key-event))) (newline)))
 ;; (procedure-name rename-window-interactively)
 
-(define (describe-key)
-  (add-timer-hook! (ms->usec 150)
-		   (lambda ()
-		     (let* ((key (get-key-event))
-			    (proc (lookup-key 'all key)))
-		       (display-message-briefly
-			(string-append key " is bound to " 
-				       (if (and proc (pair? proc) (procedure? (car proc)))
-					   (or (procedure-name (car proc)) "anonymous proc")
-					   "nothing")))))))
 
 (bind-key 'all "H-w" describe-key)
+(bind-key 'all "C-M-S-g" interactive-set-window-gravity!)
 
 (bind-key 'all "C-A-S-t" toggle-titlebar-in-place)
 (bind-key 'all "C-A-S-m" show-window-list-matching-interactively)
