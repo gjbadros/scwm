@@ -44,6 +44,25 @@
 #include "xproperty.h"
 #include "xmisc.h"
 
+/**CONCEPT: X Properties
+   X windows has a notion of window properties, which live in the X
+server. X window properties are often used to implement protocols
+between applications and the window manager, which can have several
+levels of standardization, from official X standard, to standardized
+by some other organization, to made up informally by groups of
+programmers, to specific to one window manager, to specific to an
+individual, or installation.
+
+  Scwm already internally implements many of these protocols,
+including all X standard protocols, as well as the Motif and Open Look
+protocols. However, the user should be able to implement any of these
+he likes, including making up his own for personal use.
+
+  This is possible through the low-level xproperty interface. Scwm has
+(for now) distinguished Scheme objects representing X properties, and
+several procedures to get, set and manipulate them.
+ */
+
 SCM
 mark_xproperty(SCM obj)
 {
@@ -83,6 +102,7 @@ print_xproperty(SCM obj, SCM port, scm_print_state * pstate)
 
 SCWM_PROC (xproperty_p, "xproperty?", 1, 0, 0,
            (SCM obj))
+     /** Return #t if OBJ is an xproperty object, otherwise #f. */
 {
   return SCM_BOOL_FromBool(XPROPERTY_P(obj));
 }
@@ -110,6 +130,8 @@ make_xproperty (char *type, unsigned len, void *data)
 
 SCWM_PROC (set_window_text_property, "set-window-text-property", 3, 0, 0,
            (SCM win, SCM propname, SCM value))
+     /** Set a text property on WIN, with format 8 and type
+"XA_STRING", and VALUE as the data. */
 {
   Status status;
   if (!WINDOWP(win)) {
@@ -132,12 +154,15 @@ SCWM_PROC (set_window_text_property, "set-window-text-property", 3, 0, 0,
     FREE(ptextprop); ptextprop = NULL;
   }
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 
 
 SCWM_PROC (window_xproperty, "window-xproperty", 2, 1, 0,
            (SCM win, SCM name, SCM consume))
+     /** Get the property called NAME from WIN if the boolean value
+CONSUME is specified and true, the property is also delted in one
+atomic operation. */
 {
   SCM answer;
   Atom type, prop;
@@ -185,6 +210,7 @@ SCWM_PROC (window_xproperty, "window-xproperty", 2, 1, 0,
 
 SCWM_PROC (xproperty_to_string, "xproperty->string", 1, 0, 0,
            (SCM prop))
+     /** Convert that data portion of xproperty object PROP to a string. */
 {
   if (!XPROPERTY_P(prop)) {
     scm_wrong_type_arg(s_xproperty_to_string, 1, prop);
@@ -195,6 +221,7 @@ SCWM_PROC (xproperty_to_string, "xproperty->string", 1, 0, 0,
 
 SCWM_PROC (string_to_xproperty, "string->xproperty", 1, 0, 0,
            (SCM str))
+     /* Create an xproperty object from STR. */
 {
   char *string;
   int len;

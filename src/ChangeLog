@@ -1,3 +1,11 @@
+1998-07-19  Maciej Stachowiak  <maciej@localhost.localdomain>
+
+	* xproperty.c: Documented all concepts and primitives.
+
+	* window.c: Documented all primitives, concepts and hook. Ouch!
+
+	* shutdown.c: Documented all primitives and hooks.
+
 1998-07-18  Maciej Stachowiak  <maciej@localhost.localdomain>
 
 	* module-interface.c: Documented all primitives and hooks.

@@ -121,6 +121,10 @@ SaveDesktopState()
 
 SCWM_PROC(restart, "restart", 0, 1, 0,
           (SCM command))
+     /** Restart the window manager. If COMMAND is specified, use
+that, as the new window manager to run. If COMMAND is not specified or
+is exactly equal to "scwm", restart scwm with the same command-line
+arguments as given previously. */
 {
   int dummy;
   char *sz;
@@ -140,6 +144,8 @@ SCWM_PROC(restart, "restart", 0, 1, 0,
 
 SCWM_PROC(scwm_quit, "scwm-quit", 0, 0, 1,
           (SCM args))
+     /** Exit scwm cleanly. `quit' is redefined as this within
+scwm. */
 {
   if (master_pid != getpid())
     kill(master_pid, SIGTERM);
@@ -151,6 +157,9 @@ SCWM_PROC(scwm_quit, "scwm-quit", 0, 0, 1,
 
 void init_shutdown()
 {
+  /**HOOK: shutdown-hook
+The procedures in shutdown-hook are called with no arguments right
+before scwm quits or restarts . */
   SCWM_DEFINE_HOOK(shutdown_hook, "shutdown-hook");
 
 #ifndef SCM_MAGIC_SNARFER
