@@ -11,21 +11,50 @@
 (keep-tops-even (current-window-with-focus) w2)
 (keep-to-left-of (current-window-with-focus) w2)
 (keep-to-left-of (current-window-with-focus) (get-window))
-(keep-to-left-of (current-window-with-focus) (get-window))
+(keep-to-left-of (get-window) (get-window))
 
-(define v (make-cl-variable))
-(define e (make-cl-expression v))
-(define eq (make-cl-equation e))
-(define ineq (make-cl-inequality e))
-(define solver (make-cl-solver))
+(begin
+  (define v1 (make-cl-variable))
+  (define v2 (make-cl-variable))
+  (define clsw1 (make-cl-weight 1 0 0))
+  (define cls1 (make-cl-strength "cls1" clsw1))
+  (define cls2 (make-cl-strength-3 "cls2" 2 1 0))
+  (define e0 (make-cl-expression v1))
+  (define e1 (cl-plus v1 v2))
+  (define e2 (cl-plus e1 v1))
+  (define e3 (cl-plus e1 4))
+  (define e4 (cl-times e3 2))
+  (define e5 (cl-minus e4 (cl-times 3 e1)))
+  (define eq0 (make-cl-equation e0 cls1 2))
+  (define eq1 (make-cl-equation e4))
+  (define eq2 (make-cl-equation e5))
+  (define eq3 (make-cl-equation (make-cl-expression v2)))
+  (define ineq0 (make-cl-inequality e0 >= 1))
+  (define ineq1 (make-cl-inequality e3 <= 1))
+  (define solver (make-cl-solver))
+  (cl-solver-debug-print solver))
+
+cls-weak
+cls-strong
+cls-required
+
+(define e4 (cl-times e2 v1))
+
+(cl-add-constraint solver eq0)
+(cl-add-constraint solver eq1)
+(cl-add-constraint solver eq3)
+(cl-solver-debug-print solver)
+(cl-add-editvar solver v1)
+
+
 
 (cl-variable? c)
 (cl-variable? w1)
-(cl-expression? e)
+(cl-expression? e0)
 (cl-expression? w1)
-(cl-equation? eq)
+(cl-equation? eq0)
 (cl-equation? w1)
-(cl-inequality? ineq)
+(cl-inequality? ineq0)
 (cl-inequality? w1)
 (cl-solver? solver)
 (cl-solver? w1)
@@ -67,7 +96,11 @@
 
 
 
+(stick (get-window))
 
+(map (lambda (w)
+       (move-to 0 0 w))
+     (list-windows))
 
 ;;; Local Variables:
 ;;; eval: (load "scwm")
