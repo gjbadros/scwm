@@ -7,7 +7,7 @@ Group: X11/Window Managers
 BuildRoot: /tmp/scwmbuild
 Copyright: Copyright (C) 1997,1998,1999 Maciej Stachowiak, Greg J. Badros, et. al.
 Packager: Maciej Stachowiak <mstachow@alum.mit.edu>
-URL: http://vicarious-existence.mit.edu/scwm/
+URL: http://serveuse.mit.edu/scwm/
 
 %description
 Scwm is the Scheme Configurable Window Manager. This is a highly
