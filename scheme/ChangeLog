@@ -1,3 +1,9 @@
+Wed Dec  1 17:09:12 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* netscape.scm: Update netscape-win to use the window-with-pointer 
+	if it is a netscape window.  Improves behaviour (IMO) for Finds
+	within the bookmarks list.
+
 Wed Dec  1 11:38:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm_common_scheme): Fix missing backslash.
