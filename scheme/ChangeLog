@@ -1,3 +1,12 @@
+Wed Aug 25 15:26:19 1999    <gjb@cs.washington.edu>
+
+	* nonants.scm (get-window-with-nonant): Use window-context, since
+	this is used in places that `get-window' used to be used (e.g.,
+	window-selection from the group menu).
+
+	* flux.scm: Use animation, animated-iconify modules.  Move my
+	make-small-window-ops-menu and make-window-group-menu into here.
+
 Wed Aug 25 12:26:30 1999    <gjb@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Fix bug in use of map where the two

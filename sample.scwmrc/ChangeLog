@@ -1,3 +1,14 @@
+Wed Aug 25 16:27:09 1999    <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use MEDIA env var for sounds-dir, also append
+	leading "/".  Use window, not 'all for context for forced
+	rubberband move/resizes.
+
+Wed Aug 25 15:32:05 1999    <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Move make-small-window-ops-menu,
+	make-window-group-menu into flux.scm
+
 Tue Aug 24 14:02:23 1999    <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use stylist, and make Button3 on the left-button-1

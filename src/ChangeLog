@@ -1,3 +1,17 @@
+Wed Aug 25 16:25:39 1999    <gjb@cs.washington.edu>
+
+	* events.c (HandleScwmExec): Use initial length of 0 in
+	make_output_strport -- the non-zero length apparently needs to be
+	initialized and wasn't, resulting in a lot of garbage.
+
+Wed Aug 25 15:24:50 1999    <gjb@cs.washington.edu>
+
+	* scwm.c (scwm_main): Fix typo bug in resetting
+	restart_vp_offset_y twice, not restart_vp_offset_{x,y}
+
+	* events.c: Do not care about return value of
+	scm_set_current_{output,error}_port() when returning to old values.
+
 Wed Aug 25 14:05:02 1999    <gjb@cs.washington.edu>
 
 	* scwm-snarf.h: Fix SCWM_GLOBAL_HOOK macro (had only fixed
