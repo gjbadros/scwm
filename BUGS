@@ -1,7 +1,3 @@
-- Jim Blandy's patch to load boot-9 for newer guile versions is
-problematic; it can't tell wether or not we are running under an older
-guile which has already loaded boot-9, resulting in a segfault. - MS
-
 - Click to focus bugs
 
 1a. At startup usually a window, which I don't want given focus,
@@ -32,6 +28,11 @@ outside the callback handler - the code would lose big on this -ms]
 ----------------------------------------------------------------------
 RESOLVED:
 ----------------------------------------------------------------------
+
+- Jim Blandy's patch to load boot-9 for newer guile versions is
+problematic; it can't tell wether or not we are running under an older
+guile which has already loaded boot-9, resulting in a segfault. - MS
+[fixed for now - MS]
 
 - buggy icon handling everywhere -- needs thorough testing
   -- 2-20-97 mstachow
