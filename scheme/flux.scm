@@ -643,8 +643,10 @@ otherwise; it is an error if NETWIN refers to a non-Netscape window."
     (get-mozilla-hook)
     #t))
 
-(define-public netscape-new-window #f
-  "`netscape-goto-cut-buffer-url' will open the URL in a new window."
+(define-public netscape-new-window
+;;;**VAR
+;;; If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window.
+  #f)
 
 (define*-public (netscape-goto-cut-buffer-url
                 #&optional (new netscape-new-window))
