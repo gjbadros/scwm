@@ -1,3 +1,9 @@
+Sat Jan 23 10:49:43 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* constraints.scm: Use ui-constraints-toggle-menu, and bind it to C-M-S-c
+
+	* ui-constraints-toggle-menu.scm: Added
+
 Fri Jan 22 17:58:26 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraints.scm: Drop the window-style, since it used something
