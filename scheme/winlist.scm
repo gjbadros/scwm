@@ -231,6 +231,8 @@ Warps the pointer to the first menu item iff WARP-TO-FIRST is #t.
 Accepts all keyword arguments that `make-window-list-menu' takes."
   (popup-menu (apply make-window-list-menu rest) warp-to-first))
   
+;; GJB:FIXME:MS: What the heck does this do?
+;; (rotate-around 3 '(1 2 3 4 5)) => (4 5 1 2) --09/19/99 gjb
 (define (rotate-around w wl)
   (append (cond
 	   ((memq w wl) => cdr)
@@ -240,6 +242,7 @@ Accepts all keyword arguments that `make-window-list-menu' takes."
 	    => (lambda (x)
 		 (reverse (cdr x))))
 	   (else '()))))
+
 
 (define*-public (select-window-from-window-list #&key
 						(only '()) (except '())
