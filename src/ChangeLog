@@ -1,3 +1,9 @@
+Fri Sep 17 12:04:43 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* menu.c (MenuInteraction): Invoke the unhover action when a
+	shortcut key selects a menu item and dismisses the menu.  Thanks
+	to bug report from E. Jay Berkenbilt.
+
 Wed Sep 15 14:51:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleClientMessage): Fix bug in testing wrong sense
