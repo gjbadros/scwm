@@ -19,7 +19,7 @@
 
 ;;;;     Example usage.
 ;;;;
-;;;(use-modules (app scwm ScwmButtons))
+;;;(use-scwm-modules ScwmButtons)
 ;;;
 ;;; Start a mini-button bar using ScwmButtons
 ;;; (run-ScwmButtons
@@ -45,6 +45,7 @@
     (button-item "mini-gv.xpm" #:action "gv" #:tooltip "gv")
     (button-item "mini-nscape.xpm" #:action "netscape" #:tooltip "Netscape"))
     #:orientation 'vertical #:name "MiniButtons"
+    #:auto-orient #t
    ))
 (btns 'orientation 'horizontal)
 (btns 'orientation 'vertical)
