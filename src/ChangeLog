@@ -1,3 +1,9 @@
+Thu Aug 20 16:58:52 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandleButtonPress): Clean up redundant cond'l on
+	pswCurrent, and begin to try to get fClickToFocusPassesClick to
+	permit immediate action when on decorations and border even when #f
+
 Thu Aug 20 15:57:22 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* ALL, errors.h: Fix some C-portability problems with DBUG and
