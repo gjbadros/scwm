@@ -1,0 +1,24 @@
+Scwm works great with Gnome!
+
+1) Install the RPMs (see RH6-notes for instructions for that platform)
+
+2) Run the Gnome Control Center from your existing Gnome Desktop:
+   Panel -> Settings -> Gnome Control Center
+
+3) Select "Window Manager" under the "Desktop" subtree
+
+4) Click "Add" in the top right of the control center applet
+
+5) Enter (type what's in quotes below, omitting the quotes):
+
+Name: "Scwm"
+Command: "scwm"
+Configuration command: "scwm-conf"
+
+Do *not* click "Window manager is session managed" -- Scwm is not yet!
+
+6) Click on the new scwm line in the list of window managers
+
+7) Click on the "Try" button, and rid yourself of your old window manager forever!
+
+ENJOY!

@@ -1,6 +1,6 @@
 # Note that this is NOT a relocatable package
 %define ver @VERSION@
-%define rel 1
+%define rel 2
 %define prefix /usr
 
 Name: scwm
@@ -18,7 +18,6 @@ Requires: guile >= 1.3.2
 Requires: guile-gtk >= 0.16
 Requires: imlib >= 1.9
 Requires: esound >= 0.2.7
-Requires: cassowary >= 0.51
 
 Docdir: %{prefix}/doc
 
@@ -113,7 +112,7 @@ install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/
 %{prefix}/include/
 
 %doc ANNOUNCE AUTHORS BUG-REPORTING BUGS COPYING.FVWM COPYING.GPL ChangeLog
-%doc INSTALL NEWS README README-constraints THANKS TODO 
+%doc INSTALL NEWS README RH6-notes README-Gnome README-constraints THANKS TODO 
 %doc scwm/ChangeLog
 %doc modules/ChangeLog
 %doc sample.scwmrc/ChangeLog
