@@ -1,3 +1,10 @@
+Fri Mar 26 15:50:31 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Dropped some sloppy code.  Added
+	setenv-for-sub-process-xterms, fix-ssh-auth-for-xemacs-server.
+	(Better versions of each of these from XEmacs and zsh).  Force
+	re-load of themes using #t as second arg to theme menu procs.
+
 Thu Mar 25 18:45:26 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use #:submenu to make the (lambda ()

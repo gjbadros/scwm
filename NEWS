@@ -17,6 +17,13 @@ numerous bug-fixes, code cleanup
 * KWM Support
 ** `kwm-emulation-initialize', `kwm-emulation-reset', `kwm-send-window-list'
 
+* GNOME Support
+** See (app scwm gnome-hints)
+
+* Alpha version of fvwm2rc-to-scwmrc converter
+** utilities/converters/fvwm2rc-to-scwmrc
+** handles /etc/X11/system.fvwm2rc
+
 * IMLib support as a compile time option (to-replace libXpm, ultimately)
 
 * Themes, Theme Menus (app scwm themes) (app scwm std-menus)

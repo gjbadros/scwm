@@ -1,3 +1,11 @@
+Fri Mar 26 09:01:12 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* configure.in (scwm_image_load_path): Set this string using a for
+ 	loop, and only add directories if they exist.  Also add
+ 	/usr/share/{pixmaps,icons,mini} to the list of directories to use
+ 	if they exist (Sam Steingold points out that these are standard
+ 	RedHat locations).
+
 Thu Mar 25 18:36:44 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Bump version to 0.99.1 since it should not be

@@ -1,3 +1,11 @@
+Fri Mar 26 15:38:00 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* message-window.scm: Added `message-window-copy-style!' and
+	`make-message-window-clone-default'
+
+	* flux.scm: Use make-message-window-clone-default for
+	display-message-briefly's message window.
+
 Thu Mar 25 17:44:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* style.scm: Added #:squashed-titlebar, #:no-side-decorations as
