@@ -1,3 +1,10 @@
+Sat Jul 24 22:29:22 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (get_window): Return #f if the car from
+	select-viewport-position is not a window object (it now might be a 
+	window id).  Otherwise all code that checks (if win ...) has to
+	instead do (if (window? win) ...).
+
 Sat Jul 24 19:07:20 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Simplify DeferExecution-- select-viewport-position was 
