@@ -350,7 +350,8 @@ SCWM_PROC(display_size, "display-size", 0, 0, 0,
           ())
      /** Returns the size of the physical screen in pixels.
 The return value is list of the width and the height. The
-width is the `car', the height is the `cadr' of the returned list. */
+width is the `car', the height is the `cadr' of the returned list. 
+See also the variables "display-width" and "display-height". */
 #define FUNC_NAME s_display_size
 {
   return gh_list(SCM_MAKINUM(Scr.DisplayWidth),
