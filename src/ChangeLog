@@ -1,3 +1,8 @@
+Mon Aug 31 14:05:09 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.h, window.c, color.c, callbacks.c: Remove ifdef-d out
+	code.
+
 Mon Aug 31 13:09:50 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* xproperty.c: #include errors.h for warning
