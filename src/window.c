@@ -1009,7 +1009,7 @@ focus(SCM win)
   tmp_win = SCWMWINDOW(win);
   FocusOn(tmp_win, 0);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM
@@ -1018,7 +1018,7 @@ unfocus()
   SCM_REDEFER_INTS;
   Unfocus();
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }  
 
 void WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit);
@@ -1030,7 +1030,7 @@ warp_to_window(SCM win)
   VALIDATE(win, "warp-to-window");
   WarpOn(SCWMWINDOW(win), 0, 0, 0, 0);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -1052,7 +1052,7 @@ raise_window(SCM win)
      changed by raises and lowers. */
   KeepOnTop();
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -1063,7 +1063,7 @@ lower_window(SCM win)
   VALIDATE(win, "lower-window");
   LowerWindow(SCWMWINDOW(win));
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -1096,7 +1096,7 @@ iconify(SCM win)
   Iconify(tmp_win, 0, 0);
 
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1106,7 +1106,7 @@ deiconify(SCM win)
   VALIDATE(win, "deiconify");
   DeIconify(SCWMWINDOW(win));
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1129,7 +1129,7 @@ stick(SCM win)
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   SetTitleBar(tmp_win, (Scr.Hilite == tmp_win), True);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1144,7 +1144,7 @@ unstick(SCM win)
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   SetTitleBar(tmp_win, (Scr.Hilite == tmp_win), True);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1221,7 +1221,7 @@ window_shade(SCM win, SCM animated_p)
   CoerceEnterNotifyOnCurrentWindow();
   Broadcast(M_WINDOWSHADE, 1, sw->w, 0, 0, 0, 0, 0, 0);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1257,7 +1257,7 @@ un_window_shade(SCM win, SCM animated_p)
 	     sw->orig_wd, sw->orig_ht, True);
   Broadcast(M_DEWINDOWSHADE, 1, sw->w, 0, 0, 0, 0, 0, 0);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1423,7 +1423,7 @@ move_to(SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p)
 
   move_finalize(w, tmp_win, destX, destY);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -1458,7 +1458,7 @@ interactive_move(SCM win)
   InteractiveMove(&w, tmp_win, &x, &y, &event);
   move_finalize(w, tmp_win, x, y);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1498,7 +1498,7 @@ resize_to(SCM w, SCM h, SCM win)
 	     tmp_win->frame_y, width, height, False);
 
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -1695,7 +1695,7 @@ interactive_resize(SCM win)
 
   Scr.flags |= flags & (EdgeWrapX | EdgeWrapY);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1711,7 +1711,7 @@ refresh_window(SCM win)
 		 (tmp_win->icon_w) : (tmp_win->frame));
 
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -1754,7 +1754,7 @@ move_window_to_desk(SCM which, SCM win)
   }
   BroadcastConfig(M_CONFIGURE_WINDOW, t);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;;
+  return SCM_UNSPECIFIED;;
 }
 
 
@@ -1869,7 +1869,7 @@ keep_on_top(SCM win)
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   raise_window(win);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1884,7 +1884,7 @@ un_keep_on_top(SCM win)
   /* is this needed? */
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1921,7 +1921,7 @@ show_titlebar(SCM win)
     /* SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True); */
   }
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1946,7 +1946,7 @@ hide_titlebar(SCM win)
 	       True);
   }
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -1979,7 +1979,7 @@ normal_border(SCM win)
   SetBorderX(tmp_win, (Scr.Hilite == tmp_win), True, True, None, True);
 
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2003,7 +2003,7 @@ plain_border(SCM win)
   SetBorderX(tmp_win, (Scr.Hilite == tmp_win), True, True, None, True);
 
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2040,7 +2040,7 @@ set_border_width_x(SCM width, SCM win)
 
 
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2054,7 +2054,7 @@ stick_icon(SCM win)
   tmp_win->fStickyIcon = True;
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2068,7 +2068,7 @@ unstick_icon(SCM win)
   tmp_win->fStickyIcon = False;
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
   SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2169,7 +2169,7 @@ set_window_foreground_x(SCM fg, SCM win)
   tmp_win->TextColor = fg;
   SetBorderX(tmp_win, (Scr.Hilite == tmp_win), True, True, None, True);
 
-  return SCM_BOOL_T;  
+  return SCM_UNSPECIFIED;  
 }
 
 SCM
@@ -2191,7 +2191,7 @@ set_window_background_x(SCM bg, SCM win)
 
   SetBorderX(tmp_win, (Scr.Hilite == tmp_win), True, True, None, True);
 
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -2206,7 +2206,7 @@ set_random_placement_x(SCM val, SCM win)
   } else {
     scm_wrong_type_arg("set-random-placement!", 1, val);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2220,7 +2220,7 @@ set_smart_placement_x(SCM val, SCM win)
   } else {
     scm_wrong_type_arg("set-smart-placment!", 1, val);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -2239,7 +2239,7 @@ set_window_button_x(SCM butt, SCM val, SCM win)
      Handling of the number of buttons is kind of broken in
      general for now, but will be fixed. */
 
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2259,7 +2259,7 @@ set_mwm_buttons_x(SCM val, SCM win)
   }
 
   /* SetBorder(t,(Scr.Hilite==t),True,True,None); */
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2280,7 +2280,7 @@ set_mwm_border_x(SCM val, SCM win)
 
   SetBorderX(t, (Scr.Hilite == t), True, True, None, True);
 
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -2315,7 +2315,7 @@ set_icon_title_x(SCM title, SCM win)
 
   force_icon_redraw (tmp_win);
 
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -2336,7 +2336,7 @@ set_force_icon_x (SCM flag, SCM win)
   }
 
   force_icon_redraw (tmp_win);
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2357,7 +2357,7 @@ set_show_icon_x (SCM flag, SCM win)
 
   force_icon_redraw (tmp_win);
 
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2376,7 +2376,7 @@ set_icon_x(SCM picture, SCM win)
   }
 
   force_icon_redraw (tmp_win);
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2409,7 +2409,7 @@ set_mini_icon_x(SCM image, SCM win)
 
   SetBorderX(sw, Scr.Hilite == sw, True, sw->fMapped, None, True);
 
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 
 }
 
@@ -2424,7 +2424,7 @@ set_hint_override_x(SCM val, SCM win)
   } else {
     scm_wrong_type_arg("set-hint-override!", 1, val);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2438,7 +2438,7 @@ set_decorate_transient_x(SCM val, SCM win)
   } else {
     scm_wrong_type_arg("set-decorate-transient!", 1, val);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2452,7 +2452,7 @@ set_mwm_decor_hint_x(SCM val, SCM win)
   } else {
     scm_wrong_type_arg("set-mwm-decor-hint!", 1, val);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2466,7 +2466,7 @@ set_mwm_func_hint_x(SCM val, SCM win)
   } else {
     scm_wrong_type_arg("set-mwm-func-hint!", 1, val);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2480,7 +2480,7 @@ set_PPosition_hint_x(SCM val, SCM win)
   } else {
     scm_wrong_type_arg("set-PPosition-hint!", 1, val);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2494,7 +2494,7 @@ set_OL_decor_hint_x(SCM val, SCM win)
   } else {
     scm_wrong_type_arg("set-OL-decor-hint!", 1, val);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2512,7 +2512,7 @@ set_start_on_desk_x(SCM desk, SCM win)
   } else {
     scm_wrong_type_arg("set-start-on-desk!", 1, desk);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2526,7 +2526,7 @@ set_skip_mapping_x(SCM val, SCM win)
   } else {
     scm_wrong_type_arg("set-skip-mapping!", 1, val);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 SCM 
@@ -2540,7 +2540,7 @@ set_lenience_x(SCM val, SCM win)
   } else {
     scm_wrong_type_arg("set-lenience!", 1, val);
   }
-  return SCM_BOOL_T;
+  return SCM_UNSPECIFIED;
 }
 
 /* Local Variables: */
