@@ -1,20 +1,23 @@
+;;; File: <std-menus.scm - 1998-03-20 Fri 10:46:33 EST sds@mute.eaglets.com>
 ;;;; 	Copyright (C) 1998 Sam Steingold and Maciej Stachowiak
-;;;; 
+
+;;;	$Id$
+
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
 ;;;; the Free Software Foundation; either version 2, or (at your option)
 ;;;; any later version.
-;;;; 
+;;;;
 ;;;; This program is distributed in the hope that it will be useful,
 ;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;;;; GNU General Public License for more details.
-;;;; 
+;;;;
 ;;;; You should have received a copy of the GNU General Public License
 ;;;; along with this software; see the file COPYING.  If not, write to
 ;;;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 ;;;; Boston, MA 02111-1307 USA
-;;;; 
+;;;;
 
 
 
@@ -24,9 +27,9 @@
 
 
 
-;;; -----------------------------------------------------------------
-;;; The screen saver and screen lock menus. Use the above split menu.
-;;; -----------------------------------------------------------------
+;;; --------------------------------------
+;;; The screen saver and screen lock menus
+;;; --------------------------------------
 (define screensaver-modes
   '("ant" "ball" "bat" "blot" "bouboule" "bounce" "braid" "bug"
     "cartoon" "clock" "crystal" "daisy" "dclock" "demon" "drift" "eyes"
@@ -41,24 +44,19 @@
 (define (run-xlock mode lock)	; returns a lambda!
   (exe (string-append "xlock -nice -19 -mode " mode (if lock "" " -nolock"))))
 
+;;; to use this, add the following to the menu of your choice:
+;;;   (menuitem "Screensaver" #:action (make-xlock-menu #f))
+;;; or
+;;;   (menuitem "Lock Screen" #:action (make-xlock-menu #t))
 (define*-public (make-xlock-menu #&optional (lock? #f))
-  (if lock?
-      (menu (append!
-	     (list (menuitem "Lock Screen" #f) menu-title menu-separator
-		   (menuitem "Random!" #:action (run-xlock "random" #t))
-		   (menuitem "Blank" #:action (run-xlock "blank" #t))
-		   (menuitem "Bomb" #:action (run-xlock "bomb" #t)))
-	     (fold-menu-list
-	      (map (lambda (str) (menuitem str #:action (run-xlock str #t)))
-		   screensaver-modes))))
-      (menu (append!
-	     (list (menuitem "Screensaver" #f) menu-title menu-separator
-		   (menuitem "Random!" #:action (run-xlock "random" #f))
-		   (menuitem "Blank" #:action (run-xlock "blank" #f))
-		   (menuitem "Bomb" #:action (run-xlock "bomb" #f)))
-	     (fold-menu-list
-	      (map (lambda (str) (menuitem str #:action (run-xlock str #f)))
-		   screensaver-modes))))))
+  (menu (append!
+	 (list (menuitem "Lock Screen" #f) menu-title menu-separator
+	       (menuitem "Random!" #:action (run-xlock "random" lock?))
+	       (menuitem "Blank" #:action (run-xlock "blank" lock?))
+	       (menuitem "Bomb" #:action (run-xlock "bomb" lock?)))
+	 (fold-menu-list
+	  (map (lambda (str) (menuitem str #:action (run-xlock str lock?)))
+	       screensaver-modes)))))
 
 ;;; to use this, add the following to the menu of your choice:
 ;;; (menuitem "telnet" #:action (menu-hosts '("host1" "host2" ...)))
