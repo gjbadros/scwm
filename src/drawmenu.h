@@ -6,6 +6,7 @@
 #ifndef DRAWMENU_H
 #define DRAWMENU_H
 
+void PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim);
 void ConstructDynamicMenu(DynamicMenu *pmd);
 void PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe);
 

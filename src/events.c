@@ -398,7 +398,7 @@ HandleKeyPress()
 	 (key->Modifier == AnyModifier)) &&
 	(key->Context & Context) &&
 	(key->IsMouse == 0)) {
-      if (!strcmp(key->Action, "Scheme")) {
+      if (STREQ(key->Action, "Scheme")) {
 	if (NULL != swCurrent) {
 	  set_window_context(swCurrent->schwin);
 	}
@@ -1149,7 +1149,7 @@ HandleButtonPress()
 	 (MouseEntry->Modifier == (modifier & (~LockMask)))) &&
 	(MouseEntry->IsMouse == 1)) {
       /* got a match, now process it */
-      if (!strcmp(MouseEntry->Action, "Scheme")) {
+      if (STREQ(MouseEntry->Action, "Scheme")) {
 	if (NULL != swCurrent) {
 	  set_window_context(swCurrent->schwin);
 	}

@@ -35,6 +35,7 @@
 #include "screen.h"
 #include "Picture.h"
 #include "system.h"
+#include "paths.h"
 
 static Picture *PictureList = NULL;
 static Colormap PictureCMap;
@@ -237,7 +238,7 @@ make_picture(SCM picture_filename)
     scm_wrong_type_arg(__FUNCTION__, 1, picture_filename);
   }
 
-  pic = CachePicture(dpy,Scr.Root,szPicturePath,szName);
+  pic = CachePicture(dpy,Scr.Root,szImagePath,szName);
 
   if (!pic) {
     scwm_msg(ERR,__FUNCTION__,"Could not load pixmap %s",szName);

@@ -12,12 +12,11 @@
 #include "screen.h"
 #include "errors.h"
 #include "util.h"
+#define PATHS_H_IMPLEMENTATION
 #include "paths.h"
 
-char *szPicturePath = SCWM_ICONDIR;
-
 SCM 
-set_picture_path_x(SCM newpath)
+set_image_path_x(SCM newpath)
 {
   static char *ptemp = NULL;
   char *tmp;
@@ -29,13 +28,13 @@ set_picture_path_x(SCM newpath)
     scm_wrong_type_arg("set-pixmap-path!", 1, newpath);
   }
   if (ptemp == NULL)
-    ptemp = szPicturePath;
-  if ((szPicturePath != ptemp) && (szPicturePath != NULL))
-    free(szPicturePath);
+    ptemp = szImagePath;
+  if ((szImagePath != ptemp) && (szImagePath != NULL))
+    free(szImagePath);
 
   tmp = gh_scm2newstr(newpath, &dummy);
 
-  szPicturePath = tmp;
+  szImagePath = tmp;
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }

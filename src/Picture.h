@@ -14,9 +14,6 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
-/* FIXGJB: maybe paths.c should own this */
-EXTERN char *szPicturePath;
-
 /***********************************************************************
  * Stuff for dealing w/ pictures (built-in types are pixmaps & bitmaps)
  ***********************************************************************/

@@ -37,6 +37,7 @@
 #include "util.h"
 #include "string_token.h"
 #include "colormaps.h"
+#include "paths.h"
 
 
 int menu_on = 0;
@@ -471,7 +472,7 @@ FindEntry(void)
       PrevMenu = ActiveMenu;
       PrevItem = ActiveItem;
 /*******************************************/
-      if (!strcmp(ActiveItem->action, "SchemeMenu")) {
+      if (STREQ(ActiveItem->action, "SchemeMenu")) {
 	menu = MENUROOT(ActiveItem->thunk);
       } else {
         assert(0);
@@ -628,9 +629,9 @@ UpdateMenu(int sticks)
       PopDownMenu();
       if (ActiveItem) {
 	done = 1;
-	if (!strcmp(ActiveItem->action, "Scheme")) {
+	if (STREQ(ActiveItem->action, "Scheme")) {
 	  call_thunk_with_message_handler(ActiveItem->thunk);
-	} else if (!strcmp(ActiveItem->action, "SchemeMenu")) {
+	} else if (STREQ(ActiveItem->action, "SchemeMenu")) {
 	  popup(ActiveItem->thunk, SCM_UNDEFINED);
 	} else {
 	}
@@ -1056,7 +1057,7 @@ scanForPixmap(char *instring, Picture ** p, char identifier)
       name[i] = 0;
 
       /* Next, check for a color pixmap */
-      pp = CachePicture(dpy, Scr.Root, szPicturePath, name);
+      pp = CachePicture(dpy, Scr.Root, szImagePath, name);
       if (*txt != '\0')
 	txt++;
       while (*txt != '\0') {
@@ -1162,10 +1163,10 @@ AddToMenu(MenuRoot * menu, char *item, char *action)
   tmp->func_type = find_func_type(tmp->action);
 #endif
   tmp->func_type = F_BEEP; /*FIXGJB: just cannot be F_NOP */
-  if (!strcmp(tmp->action, "SchemeMenu")) {
+  if (STREQ(tmp->action, "SchemeMenu")) {
     tmp->func_type = F_POPUP;
   }
-  if (!strcmp(tmp->action, "Nop")) {
+  if (STREQ(tmp->action, "Nop")) {
     tmp->func_type = F_NOP;
   }
   tmp->item_num = menu->items++;

@@ -8,7 +8,7 @@
 #define MENUITEM_H
 
 #include <guile/gh.h>
-#include "Picture.h"
+#include "image.h"
 
 #undef EXTERN
 #undef EXTERN_SET
@@ -20,6 +20,8 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
+#define GC_MARK_SCM_IF_SET(scm) do { if (!UNSET_SCM((scm))) \
+     { scm_gc_mark((scm)); } } while (0);
 
 EXTERN long scm_tc16_scwm_menuitem;
 
@@ -30,34 +32,45 @@ typedef enum menu_item_state {
   MIS_Hidden, MIS_Grayed, MIS_Enabled, MIS_Selected
 } menu_item_state;
 
+/* If you add an SCM object to the below, you need to be sure
+   to modify mark_menuitem
+ */
 typedef struct Scwm_MenuItem_tag
 {
   char *szLabel;		/* main label of the item */
   int cchLabel;
   char *szExtra;		/* extra information to display */
   int cchExtra;
-  Picture *picAbove;            /* Pixmap to show  above label*/
-  Picture *picLeft;		/* Pixmap to show to left of label */
+  SCM scmImgAbove;		/* Pixmap to show  above label*/
+  SCM scmImgLeft;		/* Pixmap to show to left of label */
   SCM scmAction;		/* action to perform */
   SCM scmHover;			/* hover hook */
+  SCM scmUnhover;		/* un-hover hook */
   char *pchHotkeyPreferences;	/* ordered list of hotkeys */
   int cchHotkeyPreferences;
 } Scwm_MenuItem;
 
+struct DynamicMenu_tag;
+
 typedef struct MenuItemInMenu_tag
 {
   Scwm_MenuItem *pmi;		/* pointer to the menu item this is for */
+  struct DynamicMenu_tag *pmd;	/* the dynamic menu it is in */
+  int imiim;			/* the item number in the dynamic menu */
   int cpixOffsetY;		/* top y offset of the item */
   int cpixItemHeight;		/* height for item */
   menu_item_state mis;		/* current state of item */
   Bool fOnTopEdge;		/* is this item on the top edge? */
   Bool fOnBottomEdge;		/* is this item on the bottom edge?  */
   Bool fShowPopupArrow;		/* should we show a popup arrow */
+  char chShortcut;		/* FIXGJB: make this a key event */
+  int ichShortcutOffset;	/* For drawing */
 } MenuItemInMenu;
 
 
 #define SCWM_MENUITEM_P(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_menuitem)
 #define SCWM_MENUITEM(X)  ((Scwm_MenuItem *)SCM_CDR(X))
+#define SAFE_SCWM_MENUITEM(X)  (SCWM_MENUITEM_P((X))? SCWM_MENUITEM((X)) : NULL)
 
 SCM mark_menuitem(SCM obj);
 size_t free_menuitem(SCM obj);
@@ -65,7 +78,9 @@ int print_menuitem(SCM obj, SCM port, scm_print_state * pstate);
 SCM menuitem_p(SCM obj);
 
 SCM make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
-		  SCM picture_left, SCM hover_action,
+		  SCM picture_left, SCM hover_action, SCM unhover_action,
 		  SCM hotkey_prefs);
+
+void init_menuitem();
 
 #endif

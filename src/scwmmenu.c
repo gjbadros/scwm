@@ -31,10 +31,11 @@
 #include "xmisc.h"
 #include "screen.h"
 #include "color.h"
+#include "util.h"
+#include "misc.h"
 
 #define scmBLACK load_color(gh_str02scm("black"))
 #define scmWHITE load_color(gh_str02scm("white"))
-
 
 SCM 
 mark_scwmmenu(SCM obj)
@@ -42,21 +43,14 @@ mark_scwmmenu(SCM obj)
   Scwm_Menu *mi = SCWM_SCWMMENU(obj);
 
   SCM_SETGC8MARK(obj);
-  if (mi->scmMenuItems != SCM_UNDEFINED) {
-    scm_gc_mark(mi->scmMenuItems);
-  }
-  if (mi->scmSideBGColor != SCM_UNDEFINED) {
-    scm_gc_mark(mi->scmSideBGColor);
-  }
-  if (mi->scmBGColor != SCM_UNDEFINED) {
-    scm_gc_mark(mi->scmBGColor);
-  }
-  if (mi->scmTextColor != SCM_UNDEFINED) {
-    scm_gc_mark(mi->scmTextColor);
-  }
-  if (mi->scmFont != SCM_UNDEFINED) {
-    scm_gc_mark(mi->scmFont);
-  }
+  GC_MARK_SCM_IF_SET(mi->scmMenuItems);
+  GC_MARK_SCM_IF_SET(mi->scmSideBGColor);
+  GC_MARK_SCM_IF_SET(mi->scmBGColor);
+  GC_MARK_SCM_IF_SET(mi->scmTextColor);
+  GC_MARK_SCM_IF_SET(mi->scmFont);
+  GC_MARK_SCM_IF_SET(mi->scmImgSide);
+  GC_MARK_SCM_IF_SET(mi->scmImgBackground);
+
   return SCM_BOOL_F;
 }
 
@@ -64,12 +58,6 @@ size_t
 free_scwmmenu(SCM obj)
 {
   Scwm_Menu *menu = SCWM_SCWMMENU(obj);
-  if (menu->picSide) {
-    DestroyPicture(dpy,menu->picSide);
-  }
-  if (menu->picBackground) {
-    DestroyPicture(dpy,menu->picBackground);
-  }
   if (menu->pchUsedShortcutKeys) {
     free(menu->pchUsedShortcutKeys);
   }
@@ -84,8 +72,10 @@ print_scwmmenu(SCM obj, SCM port, scm_print_state * pstate)
   if (SCWM_MENU_P(obj)) {
     Scwm_Menu *menu = SCWM_SCWMMENU(obj);
     scm_write(gh_car(menu->scmMenuItems), port);
-    scm_puts(", hotkeys: ",port);
-    scm_puts(menu->pchUsedShortcutKeys,port);
+    if (menu->pchUsedShortcutKeys) {
+      scm_puts(", hotkeys: ",port);
+      scm_puts(menu->pchUsedShortcutKeys,port);
+    }
   } else {
     scm_puts("(invalid)", port);
   }
@@ -101,41 +91,74 @@ scwmmenu_p(SCM obj)
 }
 
 
+/* NewPchKeysUsed:
+ * Assign shortcut keys to the menu items in pmd->rgpmiim[],
+ * and return a newly-allocated null-terminated array of characters
+ * listing those that we assigned as short cuts
+ */
 char *
-NewPchKeysUsed(SCM list_of_menuitems)
+NewPchKeysUsed(DynamicMenu *pmd)
 {
+  SCM list_of_menuitems = pmd->pmenu->scmMenuItems;
+  MenuItemInMenu **rgpmiim = pmd->rgpmiim;
+  int imiim = 0;
   int cItems = gh_length(list_of_menuitems);
   char *pch = safemalloc(sizeof(char) * (cItems + 1));
   int ich = 0;
   SCM item;
   SCM rest = list_of_menuitems;
-  Scwm_MenuItem *mi;
+  Scwm_MenuItem *pmi;
 
   memset(pch,0,cItems+1);
   while (True) {
     item = gh_car(rest);
-    mi = SCWM_MENUITEM(item);
-    if (mi->pchHotkeyPreferences) {
-      char *pchDesiredChars = mi->pchHotkeyPreferences;
+    pmi = SCWM_MENUITEM(item);
+    if (pmi->pchHotkeyPreferences) {
+      char *pchDesiredChars = pmi->pchHotkeyPreferences;
       char ch;
       while ((ch = *pchDesiredChars++) != '\0') {
 	if (!strchr(pch,ch)) {
+	  /* Found the char to use */
+	  rgpmiim[imiim]->chShortcut = ch;
 	  pch[ich++] = ch;
+	  rgpmiim[imiim]->ichShortcutOffset = IchIgnoreCaseInSz(pmi->szLabel,ch);
 	  break;
 	}
       }
     }
     rest = gh_cdr(rest);
+    imiim++;
     if (SCM_NULLP(rest))
       break;
   }
   return pch;
 }
 
-SCM make_scwmmenu(SCM list_of_menuitems,
-		  SCM picture_side, SCM side_bg_color,
-		  SCM bg_color, SCM text_color,
-		  SCM picture_bg, SCM font)
+SCM_PROC(s_menu_properties, "menu-properties", 1, 0, 0, menu_properties);
+
+SCM
+menu_properties(SCM scmMenu)
+{
+  Scwm_Menu *pmenu = SAFE_SCWMMENU(scmMenu);
+  if (!pmenu) {
+    scm_wrong_type_arg(s_menu_properties,1,scmMenu);
+  }
+  return gh_list(pmenu->scmMenuItems,
+		 pmenu->scmImgSide,
+		 pmenu->scmSideBGColor,
+		 pmenu->scmBGColor,
+		 pmenu->scmTextColor,
+		 pmenu->scmImgBackground,
+		 pmenu->scmFont,
+		 gh_str02scm(pmenu->pchUsedShortcutKeys));
+}
+
+
+SCM 
+make_scwmmenu(SCM list_of_menuitems,
+	      SCM picture_side, SCM side_bg_color,
+	      SCM bg_color, SCM text_color,
+	      SCM picture_bg, SCM font)
 {
   Scwm_Menu *menu = safemalloc(sizeof(Scwm_Menu));
   SCM answer;
@@ -147,16 +170,15 @@ SCM make_scwmmenu(SCM list_of_menuitems,
   menu->scmMenuItems = list_of_menuitems;
 
   iarg++;
-  if (picture_side == SCM_UNDEFINED) {
-    menu->picSide = NULL;
-  } else if (!PICTURE_P(picture_side)) {
+  if (UNSET_SCM(picture_side)) {
+    picture_side = SCM_BOOL_F;
+  } else if (!IMAGE_P(picture_side)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,picture_side);
-  } else {
-    menu->picSide = PICTURE(picture_side)->pic;
-  }
+  } 
+  menu->scmImgSide = picture_side;
 
   iarg++;
-  if (side_bg_color == SCM_UNDEFINED) {
+  if (UNSET_SCM(side_bg_color)) {
     side_bg_color = scmWHITE;
   } else if (!COLORP(side_bg_color)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,side_bg_color);
@@ -164,42 +186,41 @@ SCM make_scwmmenu(SCM list_of_menuitems,
   menu->scmSideBGColor = side_bg_color;
 
   iarg++;
-  if (bg_color == SCM_UNDEFINED) {
-    bg_color = scmWHITE;
+  if (UNSET_SCM(bg_color)) {
+    bg_color = scmWHITE; /* FIXGJB: Scr.MenuColors.back; */
   } else if (!COLORP(bg_color)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,bg_color);
   }
   menu->scmBGColor = bg_color;
 
   iarg++;
-  if (text_color == SCM_UNDEFINED) {
-    text_color = scmBLACK;
+  if (UNSET_SCM(text_color)) {
+    text_color =  scmBLACK; /* FIXGJB: Scr.MenuColors.fore ; */
   } else if (!COLORP(text_color)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,text_color);
   }
   menu->scmTextColor = text_color;
 
   iarg++;
-  if (picture_bg == SCM_UNDEFINED) {
-    menu->picBackground = NULL;
-  } else if (!PICTURE_P(picture_bg)) {
+  if (UNSET_SCM(picture_bg)) {
+    picture_bg = SCM_BOOL_F;
+  } else if (!IMAGE_P(picture_bg)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,picture_bg);
-  } else {
-    menu->picBackground = PICTURE(picture_bg)->pic;
-  }
+  } 
+  menu->scmImgBackground = picture_bg;
 
   iarg++;
   /* FIXGJB: order dependency on menu_font being set before making
      the menu -- is there a better default -- maybe we should just
      always have some font object for "fixed" */
-  if (font == SCM_UNDEFINED && menu_font != SCM_UNDEFINED) {
+  if (UNSET_SCM(font) && menu_font != SCM_UNDEFINED) {
     menu->scmFont = menu_font;
   } else if (!FONTP(font)) {
     scm_wrong_type_arg(__FUNCTION__,iarg,font);
   }
   menu->scmFont = font;
 
-  menu->pchUsedShortcutKeys = NewPchKeysUsed(menu->scmMenuItems);
+  menu->pchUsedShortcutKeys = NULL;
 
   SCM_NEWCELL(answer);
   SCM_SETCAR(answer, scm_tc16_scwm_scwmmenu);
@@ -251,6 +272,16 @@ SetPopupMenuPosition(DynamicMenu *pmd, int x_pointer, int y_pointer)
 			    &x, &y);
   pmd->pmdi->x = x;
   pmd->pmdi->y = y;
+
+  /* May want to select a different object initially if we popped up
+     somewhere near an edge/bottom, depending on what behaviour
+     we choose there */
+  pmd->imiimSelected = 0;
+
+  /* mark menu item as selected */
+  if (pmd->imiimSelected >= 0) {
+    pmd->rgpmiim[pmd->imiimSelected]->mis = MIS_Selected;
+  }
 }
 
 static
@@ -258,7 +289,7 @@ void
 PopupMenu(DynamicMenu *pmd)
 {
   MenuDrawingInfo *pmdi = pmd->pmdi;
-  DynamicMenu *pmdPoppedFrom = pmd->pmdPrior;
+/*  DynamicMenu *pmdPoppedFrom = pmd->pmdPrior; */
   Window w = pmdi->w;
   InstallRootColormap();
   XMoveWindow(dpy, w, pmdi->x, pmdi->y);
@@ -274,79 +305,270 @@ PopdownMenu(DynamicMenu *pmd)
   XFlush(dpy);
 }
 
-static int HOVER_DELAY_MS = 100;
+
+static
+DynamicMenu *
+PmdFromWindow(Display *dpy, Window w)
+{
+  DynamicMenu *pmd = NULL;
+  if ((XFindContext(dpy, Event.xany.window,ScwmMenuContext,
+		    (caddr_t *)&pmd) == XCNOENT)) {
+    pmd = NULL;
+  }
+  return pmd;
+}
+
+static
+MenuItemInMenu *
+PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
+{
+  int imiim;
+  for (imiim = 0; imiim < pmd->cmiim; imiim++) {
+    MenuItemInMenu *pmiim = pmd->rgpmiim[imiim];
+    int item_y_offset = pmiim->cpixOffsetY;
+    if (y > item_y_offset && y < item_y_offset + pmiim->cpixItemHeight) {
+      return pmiim;
+    }
+  }
+  return NULL;
+}
+
+
+static
+DynamicMenu *
+PmdFromPointerLocation(Display *dpy)
+{
+  Window wChild;
+  
+  XQueryPointer( dpy, Scr.Root, &JunkRoot, &wChild,
+		&JunkX,&JunkY, &JunkX, &JunkY, &JunkMask);
+  return PmdFromWindow(dpy,wChild);
+}
+
+/* PmiimFromPointerLocation
+ * Find the MenuItemInMenu that the pointer is at now
+ * Return a pointer to the MenuItemInMenu, and *px_offset,
+ * the x offset within the item -- pass px_offset = NULL
+ * to ignore that return value
+ * Returns NULL if pointer not pointing at a menu item
+ */
+static
+MenuItemInMenu *
+PmiimFromPointerLocation(Display *dpy, int *px_offset)
+{
+  int root_x, root_y;
+  int x,y;
+  Window wChild;
+  DynamicMenu *pmd = NULL;
+
+  /* x_offset returns the x offset of the pointer in the found menu item */
+  if (px_offset) *px_offset = 0;
+
+  XQueryPointer( dpy, Scr.Root, &JunkRoot, &wChild,
+		&root_x,&root_y, &JunkX, &JunkY, &JunkMask);
+  if ((pmd = PmdFromWindow(dpy,wChild)) == NULL) {
+    return NULL;
+  }
+
+  /* now get position in that child window */
+  XQueryPointer( dpy, wChild, &JunkRoot, &JunkChild,
+		&root_x,&root_y, &x, &y, &JunkMask);
+
+  /* set the return value for the x_offset */
+  if (px_offset) *px_offset = x;
+
+  /* look for the entry that the mouse is in */
+  return PmiimFromPmdXY(pmd,x,y);
+}
+
+static
+MenuItemInMenu *
+PmiimFromPmdShortcutKeypress(DynamicMenu *pmd, char ch)
+{
+  int imiim;
+  for (imiim = 0; imiim < pmd->cmiim; imiim++) {
+    MenuItemInMenu *pmiim = pmd->rgpmiim[imiim];
+    if (pmiim->chShortcut == ch) {
+      return pmiim;
+    }
+  }
+  return NULL;
+}
+
 
 static
 void
+RepaintMenuItem(MenuItemInMenu *pmiim)
+{
+/*  Scwm_MenuItem *pmi = pmiim->pmi; */
+  DynamicMenu *pmd = pmiim->pmd;
+  Window w = pmd->pmdi->w;
+  PaintMenuItem(w,pmd,pmiim);
+}
+
+inline
+MenuItemInMenu *
+PmiimSelectedFromPmd(DynamicMenu *pmd)
+{
+  int imiimSelected = pmd->imiimSelected;
+  if (imiimSelected < 0)
+    return NULL;
+  return pmd->rgpmiim[imiimSelected];
+}
+
+static
+void
+UnselectAndRepaintSelectionForPmd(DynamicMenu *pmd)
+{
+  MenuItemInMenu *pmiim = PmiimSelectedFromPmd(pmd);
+  if (!pmiim)
+    return;
+
+  if (pmiim->mis != MIS_Selected) {
+    scwm_msg(DBG,__FUNCTION__,"pmiim->mis != MIS_Selected");
+  }
+  pmd->imiimSelected = -1;
+  pmiim->mis = MIS_Enabled;
+  RepaintMenuItem(pmiim);
+}
+
+static
+void
+SelectAndRepaintPmiim(MenuItemInMenu *pmiim)
+{
+  DynamicMenu *pmd = pmiim->pmd;
+  if (pmiim->mis == MIS_Selected) {
+    return;
+  }
+  pmiim->mis = MIS_Selected;
+  pmd->imiimSelected = pmiim->imiim;
+  RepaintMenuItem(pmiim);
+}
+
+/* FIXGJB : Need EnterWindowMask? */
+static const long menu_event_mask = (ButtonPressMask | ButtonReleaseMask | 
+				     ExposureMask | KeyPressMask | 
+				     VisibilityChangeMask | ButtonMotionMask |
+				     PointerMotionMask );
+
+static int HOVER_DELAY_MS = 300;  /* FIXGJB: make configurable */
+
+static
+SCM
 MenuInteraction(DynamicMenu *pmd)
 {
+  int c10ms_delays = 0;
+  SCM scmAction = SCM_UNDEFINED;
+  Bool fHoverActionInvoked = False;
   while (True) {
-    int c10ms_delays = 0;
-    while (XCheckMaskEvent(dpy, 
-			   ButtonPressMask|ButtonReleaseMask|ExposureMask | 
-			   KeyPressMask|VisibilityChangeMask|ButtonMotionMask, 
-			   &Event) == FALSE) {
+    while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == FALSE) {
       sleep_ms(10);
-      if (c10ms_delays++ >= HOVER_DELAY_MS/10 ) {
-	/* FIXGJB: invoke the hover action */
-      } else {  /* block until there is an interesting event */
-	XMaskEvent(dpy, 
-		   ButtonPressMask|ButtonReleaseMask|ExposureMask | 
-		   KeyPressMask|VisibilityChangeMask|ButtonMotionMask, 
-		   &Event);
-      }
-      if (Event.type == MotionNotify) {
-	/* discard any extra motion events before a release */
-	while((XCheckMaskEvent(dpy,ButtonMotionMask|ButtonReleaseMask,
-			       &Event))&&(Event.type != ButtonRelease));
-      }
 
-      switch(Event.type) 
-	{
-	case ButtonRelease:
-	  /* FIXGJB: handle release */
-	  goto MENU_INTERACTION_RETURN;
-	  break;
-
-	case VisibilityNotify:
-	case ButtonPress:
-	  continue;
-
-	case KeyPress:
-	  /* Handle a key press events to allow mouseless operation */
-	  /* FIXGJB: check shortcuts and other keybindings in the menu event map */
-	  goto MENU_INTERACTION_RETURN;
-	  break;
-	  
-	case MotionNotify:
-	  /* FIXGJB: update selected item, mark mouse_moved boolean if
-	     it's moved enough, reset action hook timer, etc. */
-	  break;
-
-	case Expose:
-	{ /* scope */
-	  DynamicMenu *pmdNeedsPainting = NULL;
-	  /* grab our expose events, let the rest go through */
-	  if((XFindContext(dpy, Event.xany.window,ScwmMenuContext,
-			   (caddr_t *)&pmdNeedsPainting) !=XCNOENT)) {
-	    PaintDynamicMenu(pmdNeedsPainting,&Event);
+      if (c10ms_delays++ == HOVER_DELAY_MS/10 ) {
+	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
+	if (pmiimSelected) {
+	  fHoverActionInvoked = True;
+	  /* invoke the hover action */
+	  if (gh_procedure_p(pmiimSelected->pmi->scmHover)) {
+	    call_thunk_with_message_handler(pmiimSelected->pmi->scmHover);
 	  }
 	}
-	continue;
+	/* block until there is an interesting event */
+	XMaskEvent(dpy, menu_event_mask, &Event);
+	break; /* skip out of the while loop since we just blocked 
+		  for an event and got one */
+      }
+    }
+    if (Event.type == MotionNotify) {
+      /* discard any extra motion events before a release */
+      while((XCheckMaskEvent(dpy,ButtonMotionMask|ButtonReleaseMask,
+			     &Event))&&(Event.type != ButtonRelease));
+    }
+    
+    scwm_msg(DBG,__FUNCTION__,"Got an event");
+    switch(Event.type) {
+    case ButtonRelease:
+    { /* scope */
+      MenuItemInMenu *pmiim = PmiimFromPointerLocation(dpy,NULL);
+      if (pmiim) {
+	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
+	if (pmiim != pmiimSelected) {
+	  scwm_msg(WARN,__FUNCTION__,"Pointer not in selected item -- wierd!");
+	}
+	if (gh_procedure_p(pmiim->pmi->scmAction)) {
+	  scmAction = pmiim->pmi->scmAction;
+	}
+      }
+      goto MENU_INTERACTION_RETURN;
+      break;
+    }
 
-	default:
+    case VisibilityNotify:
+    case ButtonPress:
+      continue;
+      
+    case KeyPress:
+    {
+      KeySym keysym = XLookupKeysym(&Event.xkey,0);
+      scwm_msg(DBG,__FUNCTION__,"Got a keypress");
+      /* Handle a key press events to allow mouseless operation */
+      /* FIXGJB: check shortcuts and other keybindings in the menu event map */
+      if (keysym == XK_Escape)
+	goto MENU_INTERACTION_RETURN;
+      break;
+    }
+      
+    case MotionNotify:
+      /* FIXGJB: update selected item, mark mouse_moved boolean if
+	 it's moved enough, reset action hook timer, etc. */
+    { 
+      MenuItemInMenu *pmiim = PmiimFromPointerLocation(dpy,NULL);
+      scwm_msg(DBG,__FUNCTION__,"MotionNotify event %ld", (unsigned long) pmiim);
+      if (!pmiim || (pmiim && pmiim->mis != MIS_Selected)) {
+	if (fHoverActionInvoked) {
+	  MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
+	  /* invoke the un-hover action */
+	  if (pmiimSelected && !UNSET_SCM(pmiimSelected->pmi->scmUnhover)) {
+	    call_thunk_with_message_handler(pmiimSelected->pmi->scmUnhover);
+	  } else {
+	    scwm_msg(DBG,__FUNCTION__,"No unhover hook, %ld",pmiimSelected);
+	  }
+	  fHoverActionInvoked = False;
+	}
+	UnselectAndRepaintSelectionForPmd(pmd);
+	c10ms_delays = 0;
+      }
+      if (pmiim && pmiim->mis != MIS_Selected) {
+	SelectAndRepaintPmiim(pmiim);
+      }
+      break;
+    }
+      
+    case Expose:
+    { /* scope */
+      DynamicMenu *pmdNeedsPainting = NULL;
+      scwm_msg(DBG,__FUNCTION__,"Got expose event for menu");
+      /* grab our expose events, let the rest go through */
+      pmdNeedsPainting = PmdFromWindow(dpy,Event.xany.window);
+      if (pmdNeedsPainting) {
+	   scwm_msg(DBG,__FUNCTION__,"Trying to paint menu");
+	PaintDynamicMenu(pmdNeedsPainting,&Event);
+      }
+    }
+    continue;
+    
+    default:
 	  /* FIXGJB: do other event handling */
-	  DispatchEvent();
-	  break;
-	} /* switch */
-	
-      /* FIXGJB: Now handle newly selected menu items, whether it is from a keypress or
+      DispatchEvent();
+      break;
+    } /* switch */
+    
+    /* FIXGJB: Now handle newly selected menu items, whether it is from a keypress or
 	 a pointer motion event */
-      XFlush(dpy);
-    } /* while next event */
+    XFlush(dpy);
   } /* while true */
  MENU_INTERACTION_RETURN:
-  return;
+  return scmAction;
 }
 
 static
@@ -370,7 +592,14 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     Scwm_MenuItem *pmi = SCWM_MENUITEM(item);
     MenuItemInMenu *pmiim = safemalloc(sizeof(MenuItemInMenu));
     rgpmiim[imiim] = pmiim;
+
+    /* save some back pointers so we can find a dynamic menu
+       just from the menu item */
     pmiim->pmi = pmi;
+    pmiim->pmd = pmd;
+    pmiim->imiim = imiim;
+    pmiim->chShortcut = '\0';
+    pmiim->ichShortcutOffset = -1;
 
     pmiim->cpixItemHeight = -1;	/* just init: gets set in drawing code */
     pmiim->cpixOffsetY = -1;	/* just init: gets set in drawing code */
@@ -381,7 +610,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
        could be the setting of a Hover action, but that's not quite right....
        maybe the scheme code should just specify it wants a popup arrow... 
        --11/23/97 gjb */
-    pmiim->fShowPopupArrow = False;
+    pmiim->fShowPopupArrow = (!UNSET_SCM(pmiim->pmi->scmHover));
 
     pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
     rest = gh_cdr(rest);
@@ -389,13 +618,15 @@ InitializeDynamicMenu(DynamicMenu *pmd)
       break;
     imiim++;
   }
+  pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
+
 }
 
 static 
 void
 PopupGrabMenu(Scwm_Menu *psm, DynamicMenu *pmdPoppedFrom)
 {
-  DynamicMenu *pmd = safemalloc(sizeof(Scwm_Menu));
+  DynamicMenu *pmd = safemalloc(sizeof(DynamicMenu));
   pmd->pmenu = psm;
   pmd->pmdNext = NULL;
   pmd->pmdPrior = pmdPoppedFrom;
@@ -405,11 +636,12 @@ PopupGrabMenu(Scwm_Menu *psm, DynamicMenu *pmdPoppedFrom)
   InitializeDynamicMenu(pmd);	/* add drawing independent fields */
   ConstructDynamicMenu(pmd);	/* update/create pmd->pmdi */
 
+
   { /* scope */
     /* Get the right events -- don't trust the drawing code to do this */
     XSetWindowAttributes attributes;
-    attributes.event_mask = (ExposureMask | EnterWindowMask);
-    XChangeWindowAttributes(dpy,pmd->pmdi->w,CWEventMask,&attributes);
+    attributes.event_mask = menu_event_mask;
+    XChangeWindowAttributes(dpy,pmd->pmdi->w,CWEventMask, &attributes);
   }
 
   /* Connect the window to the dynamic menu, pmd */
@@ -418,20 +650,26 @@ PopupGrabMenu(Scwm_Menu *psm, DynamicMenu *pmdPoppedFrom)
   { /* scope */
     int cpixX_startpointer;
     int cpixY_startpointer;
+    SCM scmAction = SCM_UNDEFINED;
     XGetPointerWindowOffsets(Scr.Root,&cpixX_startpointer,&cpixY_startpointer);
 
     SetPopupMenuPosition(pmd, cpixX_startpointer, cpixY_startpointer);
 
     PopupMenu(pmd);
-    MenuInteraction(pmd);
+    GrabEm(MENU);
+    scmAction = MenuInteraction(pmd);
+    UngrabEm();
     PopdownMenu(pmd);
+    if (gh_procedure_p(scmAction)) {
+      call_thunk_with_message_handler(scmAction);
+    }
   }
 }
 
 SCM 
 popup_menu(SCM menu)
 {
-  if (SCWM_MENU_P(menu)) {
+  if (!SCWM_MENU_P(menu)) {
     scm_wrong_type_arg("popup-menu", 1, menu);
   }
   PopupGrabMenu(SCWM_SCWMMENU(menu),NULL);
@@ -441,5 +679,5 @@ popup_menu(SCM menu)
 void 
 init_scwm_menu()
 {
-  /* empty */
+# include "scwmmenu.x"
 }

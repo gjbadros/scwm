@@ -163,10 +163,11 @@ void scwm_main(int, char **);
  ***********************************************************************
  */
 
-void 
+int
 main(int argc, char **argv)
 {
   gh_enter(argc, argv, scwm_main);
+  return 0;
 }
 
 
@@ -199,10 +200,17 @@ scwm_main(int argc, char **argv)
   Bool single = False;
   Bool option_error = FALSE;
 
+  /* Avoid block buffering on stderr, stdout even if it's piped somewhere;
+     it's useful to pipe through to grep -v or X-error-describe
+     while debugging */
+  setlinebuf(stderr);
+  setlinebuf(stdout);
+
   init_scwm_types();
   init_image();
   init_miscprocs();
   init_menu();
+  init_menuitem();
   init_scwm_menu();
   init_binding();
   init_window();
@@ -1349,7 +1357,7 @@ Done(int restart, char *command)
       j = 0;
       done = 0;
       while ((g_argv[j] != NULL) && (i < 8)) {
-	if (strcmp(g_argv[j], "-s") != 0) {
+	if (STREQ(g_argv[j], "-s")) {
 	  my_argv[i] = g_argv[j];
 	  i++;
 	  j++;

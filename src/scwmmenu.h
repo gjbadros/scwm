@@ -8,7 +8,7 @@
 #define SCWMMENU_H
 
 #include <guile/gh.h>
-#include "Picture.h"
+#include "image.h"
 #include "menuitem.h"
 
 #undef EXTERN
@@ -20,7 +20,6 @@
 #define EXTERN extern
 #define EXTERN_SET(x,y) extern x
 #endif
-
 
 EXTERN long scm_tc16_scwm_scwmmenu;
 EXTERN XContext ScwmMenuContext; /* context for new scwm menus --11/22/97 gjb*/
@@ -43,14 +42,17 @@ typedef struct MenuDrawingInfo_tag
   Pixel TextColor;		/* the text color */
 } MenuDrawingInfo;
 
+
+/* If you add an SCM object to the below, you need to be sure
+   to modify mark_scwmmenu */
 typedef struct Scwm_Menu_tag
 {
   SCM scmMenuItems;		/* list of menu items */
-  Picture *picSide;		/* side image */
+  SCM scmImgSide;		/* side image */
   SCM scmSideBGColor;		/* side image background color */
   SCM scmBGColor;		/* background color */
   SCM scmTextColor;		/* text color */
-  Picture *picBackground;	/* background pixmap */
+  SCM scmImgBackground;		/* background image */
   SCM scmFont;			/* font for labels */
   char *pchUsedShortcutKeys;	/* list of characters that are shortcut keys */
 } Scwm_Menu;
@@ -70,6 +72,7 @@ typedef struct DynamicMenu_tag
 
 #define SCWM_MENU_P(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_scwmmenu)
 #define SCWM_SCWMMENU(X)  ((Scwm_Menu *)SCM_CDR(X))
+#define SAFE_SCWMMENU(X)  (SCWM_MENU_P((X))? SCWM_SCWMMENU((X)): NULL)
 
 SCM mark_scwmmenu(SCM obj);
 

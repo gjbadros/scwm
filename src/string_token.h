@@ -1,4 +1,7 @@
-/* $Id$ */
+/* $Id$ 
+ * string_token.h
+ */
+
 #ifndef STRING_TOKEN_H
 #define STRING_TOKEN_H
 char *stripcpy(char *source);
@@ -10,6 +13,8 @@ int strcasecmp(char *s1, char *s2);
 #ifndef HAVE_STRNCASECMP
 int strncasecmp(char *s1, char *s2, int n);
 #endif /* !HAVE_STRNCASECMP */
+
+int IchIgnoreCaseInSz(const char *sz, char ch);
 
 #endif
 

@@ -204,8 +204,6 @@ Destroy(ScwmWindow * sw)
   return;
 }
 
-
-
 /**************************************************************************
  *
  * Removes expose events for a specific window from the queue 

@@ -16,10 +16,12 @@
 #include <guile/gh.h>
 #include "xmisc.h"
 
-#define MENU_EDGE_SPACING 2
+#define MENU_EDGE_VERT_SPACING 2
+#define MENU_EDGE_HORIZ_SPACING 4
 #define MENU_TEXT_SPACING 4
 #define MENU_ITEM_PICTURE_EXTRA_VERT_SPACE 4
-#define MENU_ITEM_LABEL_EXTRA_VERT_SPACE 4
+#define MENU_ITEM_EXTRA_VERT_SPACE 2
+#define MENU_ITEM_LABEL_EXTRA_VERT_SPACE 2
 #define MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE 4
 #define MENU_SIDE_IMAGE_SPACING 3
 #define MENU_ITEM_RR_SPACE 2
@@ -39,14 +41,14 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     return;
   { /* scope */
     Scwm_Menu *pmenu = pmd->pmenu;
-    Picture *picSide = pmenu->picSide;
-    Picture *picBackground = pmenu->picBackground;
+    scwm_image *psimgSide = SAFE_IMAGE(pmenu->scmImgSide);
+    scwm_image *psimgBackground = SAFE_IMAGE(pmenu->scmImgBackground); 
     XFontStruct *pxfont;
     MenuItemInMenu **rgpmiim = pmd->rgpmiim;
 
     int cmiim = pmd->cmiim;
     int imiim = 0;
-    int total_height = MENU_EDGE_SPACING;
+    int total_height = MENU_EDGE_VERT_SPACING;
     int max_text_width = 0;
     int max_extra_text_width = 0;
     int max_left_image_width = 0;
@@ -77,29 +79,39 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     for (imiim = 0; imiim < cmiim; imiim++) {
       MenuItemInMenu *pmiim = rgpmiim[imiim];
       Scwm_MenuItem *pmi = pmiim->pmi;
+      scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
+      scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
       int text_width = XTextWidth(pxfont, pmi->szLabel, pmi->cchLabel);
-      int extra_text_width = XTextWidth(pxfont, pmi->szExtra, pmi->cchExtra);
-      int item_height = 0;
+      int extra_text_width = 0;
+      int item_height = MENU_ITEM_EXTRA_VERT_SPACE * 2;
       pmiim->cpixOffsetY = total_height;
+
+      /* szLabel we know is not null, but szExtra can be */
+      if (pmi->szExtra) {
+	extra_text_width = XTextWidth(pxfont, pmi->szExtra, pmi->cchExtra);
+      }
       
       /* These are easy when using only one column */
       pmiim->fOnTopEdge = (imiim == 0);
       pmiim->fOnBottomEdge = (imiim == (cmiim - 1));
 
-      item_height = label_font_height + MENU_ITEM_LABEL_EXTRA_VERT_SPACE;
+      if (pmi->cchLabel != 0 || pmi->cchExtra != 0) {
+	item_height += label_font_height + MENU_ITEM_LABEL_EXTRA_VERT_SPACE;
+      }
 
       INCREASE_MAYBE(max_text_width,text_width);
       INCREASE_MAYBE(max_extra_text_width,extra_text_width);
       
-      if (pmi->picAbove) {
-	int height = pmi->picAbove->height + MENU_ITEM_PICTURE_EXTRA_VERT_SPACE;
+      if (psimgAbove) {
+	int height = psimgAbove->height + MENU_ITEM_PICTURE_EXTRA_VERT_SPACE;
 	item_height += height;
-	INCREASE_MAYBE(max_above_image_width,pmi->picAbove->width);
+	INCREASE_MAYBE(max_above_image_width,psimgAbove->width);
       }
-      if (pmi->picLeft) {
-	int height = pmi->picLeft->height + MENU_ITEM_PICTURE_EXTRA_VERT_SPACE;
+      if (psimgLeft) {
+	int height = psimgLeft->height + MENU_ITEM_PICTURE_EXTRA_VERT_SPACE;
 	INCREASE_MAYBE(item_height,height);
-	INCREASE_MAYBE(max_left_image_width,pmi->picLeft->width);
+	INCREASE_MAYBE(max_left_image_width,
+		       psimgLeft->width + MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE);
       }
 
       if (pmiim->fShowPopupArrow) {
@@ -112,13 +124,12 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 
     /* now set global menu drawing properties */
     /* Handle the side image, if any */
-    if (picSide) {
-      pmdi->cpixItemOffset = picSide->width + MENU_SIDE_IMAGE_SPACING*2;
-    } else {
-      pmdi->cpixItemOffset = 0;
+    pmdi->cpixItemOffset = MENU_ITEM_RR_SPACE + MENU_EDGE_HORIZ_SPACING;
+    if (psimgSide) {
+      pmdi->cpixItemOffset += psimgSide->width + MENU_SIDE_IMAGE_SPACING;
     }
 
-    total_height += MENU_EDGE_SPACING;
+    total_height += MENU_EDGE_VERT_SPACING;
 
     pmdi->cpixLeftPicWidth = max_left_image_width;
     pmdi->cpixTextWidth = max_text_width + MENU_TEXT_SPACING;
@@ -133,7 +144,8 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 			 max_right_image_width,
 			 max_above_image_width);
 
-    pmdi->cpixWidth = pmdi->cpixItemOffset + max_item_width + MENU_EDGE_SPACING*2;
+    pmdi->cpixWidth = pmdi->cpixItemOffset + max_item_width + 
+	 MENU_EDGE_HORIZ_SPACING*2;
 
     /* Now create the window */
     { /* scope */
@@ -152,14 +164,18 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 #undef INCREASE_MAYBE
 
 static void
-PaintSideImage(Window w, Pixel bg, int cpixHeight, Picture *pic)
+PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg)
 {
+  if (!psimg) {
+    scwm_msg(ERR,__FUNCTION__,"psimg is NULL");
+    return;
+  }
   Globalgcv.foreground = bg;
   XChangeGC(dpy, Scr.ScratchGC1, GCForeground, &Globalgcv);
   XFillRectangle(dpy, w, Scr.ScratchGC1, 
 		 MENU_SIDE_IMAGE_SPACING, MENU_SIDE_IMAGE_SPACING,
-		 pic->width, cpixHeight - 2*MENU_SIDE_IMAGE_SPACING);
-  DrawImage(w,pic,MENU_SIDE_IMAGE_SPACING,MENU_SIDE_IMAGE_SPACING,NULL);
+		 psimg->width, cpixHeight - 2*MENU_SIDE_IMAGE_SPACING);
+  DrawImage(w,psimg,MENU_SIDE_IMAGE_SPACING,MENU_SIDE_IMAGE_SPACING,NULL);
 }
 
 #ifdef FIXGJB_NEED_THIS_WHEN_NO_MENUS_C
@@ -190,15 +206,32 @@ RelieveHalfRectangle(Window win,int x,int y,int w,int h,
   XDrawLine(dpy, win, Shadow, w+x-1, y-1, w+x-1, h+y);
   XDrawLine(dpy, win, Shadow, w+x-2, y, w+x-2, h+y-1);
 }
+
+/****************************************************************************
+ * Procedure:
+ *	DrawUnderline() - Underline a character in a string (pete@tecc.co.uk)
+ *
+ * Calculate the pixel offsets to the start of the character position we
+ * want to underline and to the next character in the string.  Shrink by
+ * one pixel from each end and the draw a line that long two pixels below
+ * the character...
+ *
+ ****************************************************************************/
+static
+void  DrawUnderline(Window w, GC gc, int x, int y, char *txt, int posn) 
+{
+  int off1 = XTextWidth(Scr.StdFont.font, txt, posn);
+  int off2 = XTextWidth(Scr.StdFont.font, txt, posn + 1) - 1;
+  XDrawLine(dpy, w, gc, x + off1, y + 2, x + off2, y + 2);
+}
 #else
 void RelieveRectangle(Window win, int x, int y, int w, int h, GC Hilite, GC Shadow);
 void RelieveHalfRectangle(Window win, int x, int y, int w, int h, GC Hilite, GC Shadow);
 void DrawTrianglePattern(Window, GC, GC, GC, int, int, int, int);
 void DrawSeparator(Window, GC, GC, int, int, int, int, int);
+void DrawUnderline(Window w, GC gc, int x, int y, char *sz, int ich);
 #endif
 
-
-static
 void
 PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 {
@@ -215,14 +248,17 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   GC ShadowGC = Scr.MenuShadowGC;
   GC ReliefGC = Scr.d_depth<2? Scr.MenuShadowGC: Scr.MenuReliefGC;
   GC currentGC = ShadowGC;
-  Picture *picLeft = pmi->picLeft;
-  Picture *picAbove = pmi->picAbove;
+  GC gcImage = Scr.MenuGC;
+  scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
+  scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
   menu_item_state mis = pmiim->mis;
 
   /* code for FVWM menu look here -- should abstract for other options */
 
   /* Erase any old reliefs indicated selectedness */
-  XClearArea(dpy, w, x_offset, y_offset, width, item_height, False);
+  XClearArea(dpy, w,
+	     x_offset-MENU_ITEM_RR_SPACE-1,
+	     y_offset, width+MENU_ITEM_RR_SPACE+1, item_height, False);
 
   /* Draw the shadows for the absolute outside of the menus
      This stuff belongs in here, not in PaintMenu, since we only
@@ -234,15 +270,16 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 		  width-1,0, -1);
   } 
 
-  /* Botton of the menu */
+  /* Bottom of the menu */
   if (pmiim->fOnBottomEdge) {
     DrawSeparator(w,ShadowGC,ShadowGC, 0,y_offset + item_height-1,
                   width-1, y_offset + item_height-1, 1);
   }
 
-  if (mis == MIS_Selected) {
-    RelieveRectangle(w, x_offset+MENU_ITEM_RR_SPACE, y_offset,
-		     width-2*MENU_ITEM_RR_SPACE, item_height,
+  /* Only highlight if the item has an action */
+  if (mis == MIS_Selected && gh_procedure_p(pmi->scmAction)) {
+    RelieveRectangle(w, x_offset-MENU_ITEM_RR_SPACE, y_offset,
+		     width+MENU_ITEM_RR_SPACE, item_height,
 		     ReliefGC,ShadowGC);
   }
   /* Add the markings for the left edge of the menu and 
@@ -251,19 +288,21 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 		       width, item_height, 
 		       ReliefGC, ShadowGC);
 
-  if (picAbove) {
-    int x = (width - x_offset - picAbove->width) / 2 + x_offset;
-    DrawImage(w, picAbove, x, y_offset, currentGC);
-    y_offset += picAbove->height;
+  if (psimgAbove) {
+    int x = (width - x_offset - psimgAbove->width) / 2 + x_offset;
+    if (!psimgLeft && pmi->cchLabel == 0 && pmi->cchExtra == 0) {
+      /* center psimgAbove vertically in the item_height */
+      y_offset += (item_height - psimgAbove->height)/2;
+    }
+    scwm_msg(DBG,__FUNCTION__,"Drawing psimgAbove");
+    DrawImage(w, psimgAbove, x, y_offset, gcImage);
+    y_offset += psimgAbove->height;
   }
 
   /* center text vertically if the pixmap is taller */
-  if (picLeft) {
-    int cpixPicTallerBy = picLeft->height - label_font_height;
-    DrawImage(w, picLeft, x_offset, y_offset, currentGC);
-    if (cpixPicTallerBy > 1) {
-      y_offset += cpixPicTallerBy/2;
-    }
+  if (psimgLeft) {
+    int cpixExtraYOffset = (item_height - psimgLeft->height) / 2;
+    DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, gcImage);
   }
        
   if (mis == MIS_Grayed) {
@@ -272,7 +311,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
     currentGC = Scr.MenuGC;
   }
 
-  x_offset += pmdi->cpixLeftPicWidth;
+  x_offset += pmdi->cpixLeftPicWidth + MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE;
 
   if (pmi->szLabel) {
     XDrawString(dpy, w, currentGC,
@@ -280,6 +319,12 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 		pmi->szLabel, pmi->cchLabel);
   }
 
+  /* highlight the shortcut key */
+  if (pmiim->ichShortcutOffset >= 0) {
+    DrawUnderline(w, currentGC, x_offset, y_offset +label_font_height,
+		  pmi->szLabel, pmiim->ichShortcutOffset);
+  }
+  
   x_offset += pmdi->cpixTextWidth;
 
   if (pmi->szExtra) {
@@ -287,8 +332,6 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 		x_offset, y_offset + label_font_height,
 		pmi->szExtra, pmi->cchExtra);
   }
-
-  /* FIXGJB: use DrawUnderline to highlight the shortcut key */
 
   x_offset += pmdi->cpixExtraTextWidth;
 
@@ -324,9 +367,9 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
   }
 
   { /* scope */
-    Picture *picSide = pmd->pmenu->picSide;
-    if (picSide) {
-      PaintSideImage(w,pmdi->SideBGColor,pmdi->cpixHeight,pmd->pmenu->picSide);
+    scwm_image *psimgSide = SAFE_IMAGE(pmd->pmenu->scmImgSide);
+    if (psimgSide) {
+      PaintSideImage(w,pmdi->SideBGColor,pmdi->cpixHeight,psimgSide);
     }
   }
   XSync(dpy,0);

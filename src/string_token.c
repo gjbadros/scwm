@@ -95,7 +95,7 @@ strncasecmp(char *s1, char *s2, int n)
  * 
  * Copies a string into a new, malloc'ed string
  * Strips leading spaces and trailing spaces and new lines
- *
+ * FIXGJB: only used in menus.c now -- can be removed --gjb 11/28/97 
  ****************************************************************************/
 char *
 stripcpy(char *source)
@@ -119,6 +119,20 @@ stripcpy(char *source)
   ptr[len] = 0;
   return ptr;
 }
+
+/* IchIgnoreCaseInSz(sz,ch)
+ * Return the offset of ch in sz, ignoring case
+ */
+int
+IchIgnoreCaseInSz(const char *sz, char ch)
+{
+  int ich = 0;
+  while (*sz && tolower(*sz++) != tolower(ch));
+  if (*sz == '\0')
+    ich = -1;
+  return ich;
+}
+
 
 /* Local Variables: */
 /* tab-width: 8 */

@@ -63,6 +63,16 @@
 #define STATIC_CAST(cast,val) ((cast) (val))
 #define min(a,b) (((a)<(b)) ? (a) : (b))
 #define max(a,b) (((a)>(b)) ? (a) : (b))
+#define STREQ(a,b) (!strcmp(a,b))
+
+/* Check if the scm variable is undefined or #f -- these cases
+   correspond to places where we want to use a default value
+   either because the args were omitted, or #f was used to skip
+   the argument to get to an argument that the client wanted to 
+   specify.
+   Intentionally not named SCM_UNSET, since that would imply
+   it's part of guile */
+#define UNSET_SCM(x) ((x) == SCM_UNDEFINED || (x) == SCM_BOOL_F)
 
 /* use PanFrames! this replaces the 3 pixel margin with PanFrame windows
    it should not be an option, once it works right. HEDU 2/2/94 */

@@ -258,16 +258,10 @@ CreateIconWindow(ScwmWindow * sw, int def_x, int def_y)
   }
   if (sw->icon_image != SCM_BOOL_F) {
     if ((sw->flags & ICON_OURS) && (IMAGE(sw->icon_image)->height > 0)) {
-      /* FIXGJB: can't change the size of the image since it is
-	 shared! --gjb 11/27/97  
-      sw->icon_image->width += 4;
-      sw->picIcon->height += 4; */
       sw->icon_w_width = IMAGE(sw->icon_image)->width + 4;
       sw->icon_w_height = IMAGE(sw->icon_image)->height + 4;
     }
     if (IMAGE(sw->icon_image)->width == 0) {
-      /* FIXGJB: see above -- can't change size
-	 sw->picIcon->width = sw->icon_t_width + 6; */
       sw->icon_w_width = IMAGE(sw->icon_image)->width + 6;
     }
     sw->icon_w_width = IMAGE(sw->icon_image)->width;
