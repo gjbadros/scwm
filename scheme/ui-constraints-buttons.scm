@@ -28,7 +28,8 @@
   :use-module (app scwm ui-constraints-classes)
   :use-module (app scwm optargs))
 
-;; (load "/scratch/gjb/scwm/scheme/ui-constraints-buttons.scm")
+;; (load "/home/gjb/scwm/scheme/ui-constraints-buttons.scm")
+;; (load "/home/gjb/scwm/scheme/constraints.scm")
 ;; (set-current-module the-root-module)
 ;; (start-ui-constraints-buttons)
 

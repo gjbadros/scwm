@@ -270,12 +270,12 @@
 (define (ui-cnctr-keep-top-at-value)
   (one-window-prompter "anchor-top" "Window to anchor?"))
 
-(define (cnctr-keep-top-at-value w1)
+(define* (cnctr-keep-top-at-value w1 #&optional (enable? #f))
   (let* ((top (cadr (window-position w1)))
 	 (clv (make-cl-variable "clv" top))
 	 (sc  (make-cl-stay-constraint clv cls-required 10)))
-    (cl-add-constraint (scwm-master-solver) sc)
-    (list (keep-top-at-v w1 clv) clv sc)))
+    (cl-add-constraint (scwm-master-solver) sc) ;; add the stay constraint in
+    (list (keep-top-at-v w1 clv enable?) clv sc)))
 
 (define (draw-cn-keep-top-at-value ui-constraint enable focus mode)
   (let ((win-list (ui-constraint-windows ui-constraint))
@@ -298,12 +298,12 @@
 (define (ui-cnctr-keep-left-at-value)
   (one-window-prompter "anchor-left" "Window to anchor?"))
 
-(define (cnctr-keep-left-at-value w1)
+(define* (cnctr-keep-left-at-value w1 #&optional (enable? #f))
   (let* ((left (car (window-position w1)))
 	 (clv (make-cl-variable "clv" left))
 	 (sc  (make-cl-stay-constraint clv cls-required 10)))
-    (cl-add-constraint (scwm-master-solver) sc)
-    (list (keep-left-at-v w1 clv) clv sc)))
+    (cl-add-constraint (scwm-master-solver) sc) ;; add the stay constraint in
+    (list (keep-left-at-v w1 clv enable?) clv sc)))
 
 (define (draw-cn-keep-left-at-value ui-constraint enable focus mode)
   (let ((win-list (ui-constraint-windows ui-constraint))
@@ -326,12 +326,12 @@
 (define (ui-cnctr-keep-right-at-value)
   (one-window-prompter "anchor-right" "Window to anchor?"))
 
-(define (cnctr-keep-right-at-value w1)
+(define* (cnctr-keep-right-at-value w1 #&optional (enable? #f))
   (let* ((right (+ (car (window-position w1)) (car (window-size w1))))
 	 (clv (make-cl-variable "clv" right))
 	 (sc  (make-cl-stay-constraint clv cls-required 10)))
-    (cl-add-constraint (scwm-master-solver) sc)
-    (list (keep-right-at-v w1 clv) clv sc)))
+    (cl-add-constraint (scwm-master-solver) sc) ;; add the stay constraint in
+    (list (keep-right-at-v w1 clv enable?) clv sc)))
 
 (define (draw-cn-keep-right-at-value ui-constraint enable focus mode)
   (let ((win-list (ui-constraint-windows ui-constraint))

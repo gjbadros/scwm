@@ -10,7 +10,10 @@
 (define-module (app scwm ui-constraints))
 ;;  :use-module (app scwm simple-constraints))
 
-;; (load "/scratch/gjb/scwm/scheme/ui-constraints.scm")
+;; (use-modules (app scwm ui-constraints))
+;; (use-modules (app scwm ui-constraints-classes))
+;; (load "/home/gjb/scwm/scheme/constraints.scm")
+;; (load "/home/gjb/scwm/scheme/ui-constraints.scm")
 ;; (set-current-module the-root-module)
 
 
