@@ -1,3 +1,8 @@
+Sun Nov 15 23:39:52 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am (EXTRA_DIST): Don't distribute menu-test.scm which
+ 	no longer exists. Do distribute relief-examples.
+
 Sat Nov 14 18:58:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* decor.scwmrc: Make Desks submenu actually work (D'oh!). Bug
