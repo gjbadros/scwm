@@ -29,7 +29,7 @@
 #include <signal.h>
 
 #include "scwm-snarf.h"
-
+#include "scwm_msg.h"
 
 SCWM_PROC(scwm_gdk_X_fdes, "scwm-gdk-X-fdes", 0, 0, 0,
 	  ())
@@ -48,6 +48,22 @@ extern void newhandler_doreset(int sig);
 extern void newsegvhandler(int sig);
 extern void Restart(int nonsense);
 extern XErrorHandler ScwmErrorHandler(Display *, XErrorEvent *);
+extern gint gdk_error_warnings;
+
+/* Must chain some gdk specific error handling with
+   the basic ScwmErrorHandler;  discovered this was
+   necessary because guile-gtk images were incorrectly
+   trying to use the X shared memory extension when
+   displaying on a remote host because the gdk_error_code
+   was not getting set to indicate an error in XShmAttach() */
+static XErrorHandler 
+ScwmGdkErrorHandler(Display * dpy, XErrorEvent *error)
+{
+  /* from gdk_x_error function in gdk.c of gtk+-1.2.x */
+  if (error->error_code)
+    gdk_error_code = error->error_code;
+  return ScwmErrorHandler(dpy,error);
+}
 
 
 SCWM_PROC(restore_scwm_handlers, "restore-scwm-handlers", 0, 0, 0,
@@ -70,7 +86,7 @@ after the (gtk gtk) module. */
 
   signal(SIGUSR1, Restart);
 
-  XSetErrorHandler((XErrorHandler) ScwmErrorHandler);
+  XSetErrorHandler((XErrorHandler) ScwmGdkErrorHandler);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME 
