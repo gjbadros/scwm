@@ -61,6 +61,7 @@ WIN is only destroyed if it is not deleteable."
 
 (define*-public (focus-or-toggle-raise #&optional (win (window-with-pointer)))
   "Focus on WIN if it does not have the focus, else toggle-raise WIN."
+  (interactive)
   (if (equal? (window-with-focus) win)
       (toggle-raise win)
       (focus-window win)))
@@ -87,12 +88,14 @@ WIN is only destroyed if it is not deleteable."
   "Turn off display of the titlebar for WIN without moving the client window.
 This may move the frame to keep the application client window area in
 the same position as before the call."
+  (interactive)
   (hide-titlebar win #t))
 
 (define*-public (show-titlebar-in-place #&optional (win (get-window)))
   "Turn on display of the titlebar for WIN without moving the client window.
 This may move the frame to keep the application client window area in
 the same position as before the call."
+  (interactive)
   (show-titlebar win #t))
 
 (define-public toggle-titlebar-in-place
