@@ -7,11 +7,11 @@
 # from a SCWM .c source file and processes them to create
 # documentation
 #
-# Usage: extract-docs <filenames-to-extract-from>
+# Usage: perl extract-docs <filenames-to-extract-from>
 #
 # e.g.,
 #
-# extract-docs *.c
+# perl extract-docs *.c
 #
 # Purpose:
 # Extract documentation from comments in C source files
@@ -97,11 +97,10 @@ my $pid = open2( \*ISPELL_RESPONSE,
 		 \*ISPELL, "ispell -a -p $dictionary") or die "Could not open \'ispell -a\' pipe: $!";
 ISPELL->autoflush();
 
-my $header = "";
 while (<>) {
   close(ARGV) if (eof);
   if (m/^SCWM_PROC/) {
-    $header = $_;
+    my $header = $_;
     my $filename = $ARGV;
     my $line = $.;
     while (($_ = <>) !~ m/^\s*\{/) {
@@ -109,8 +108,23 @@ while (<>) {
     }
     $header .= $_;
     ProcessHeader($filename, $line, $header);
-    $header = "";
+  } elsif ($ARGV =~ /\.scm$/ && m%^\(define\*?-public\s+\(([^\s\)]+)%) {
+    my $scheme_header = $_;
+    my $proc_name = $1;
+    my $filename = $ARGV;
+    my $line = $.;
+    while (defined($_ = <>) && $_ !~ m/[^\\]\"\s*$/) {
+      $scheme_header .= $_;
+#      print STDERR "adding \"$_\" to $proc_name in $filename\n";
+      if ($_ =~ /^[^\s]/) {
+	print STDERR "$filename:$.:****$proc_name got confused.\n";
+	last;
+      }
+    }
+    $scheme_header .= $_ if (defined($_));
+    ProcessSchemeHeader($filename, $proc_name, $line, $scheme_header);
   } elsif (m%/\*\*\s*(\w[^:]*):\s*(.*?)\s*$%) {
+    # matches a /** CHAPTER: DESCRIPTION (e.g., CONCEPT) comment
     my $type = $1;
     my $description = $2;
     if ($type eq "" || $description eq "") {
@@ -327,13 +341,61 @@ END_TRAILER
   ;
 }
 
+sub ProcessSchemeHeader( $$$$ ) {
+  my ($filename, $proc_name, $line, $header) = @_;
+  my @arglist;
+  my $comment;
+  if ($header =~ m%^\(define\*?-public\s+\((.*?)\)\s+\"(.*)$%ms) {
+    @arglist = split(/\s+/,$1);
+    $comment = $2;
+    my $match = shift @arglist;
+    if ($match ne $proc_name) {
+      print STDERR "$filename:$line:**** $match not same as $proc_name";
+      undef $comment;
+    }
+  }
+  if (!defined($comment)) {
+    print STDERR "$filename:$line:****$proc_name: could not find comment\n";
+    $comment = "";
+  }
+  my $usage = sprintf "(%s%s%s)", $proc_name, ($#arglist >= 0? " ":""),
+         join(" ",@arglist);
+  $comment =~ s/\"\s*$//m;
+#  print STDERR "Scheme Proc: $proc_name\nArgs: @arglist\n$header\n";
+#  print STDERR "$usage\n\n$comment\n\n\n";
 
-sub ProcessHeader( $ ) {
+  my $purpose = PurposeFromComment($comment,$filename,$line,$proc_name);
+
+  my $sgml_id = ScmIdToSgmlId($proc_name);
+
+  my $markup_purpose = MarkupComment($purpose);
+  my $markup_usage = MarkupUsage($usage);
+  my $markup_comment = MarkupComment($comment);
+  my $markup = CreateMarkupBody($proc_name, $sgml_id, 
+				$markup_usage, $markup_purpose, $markup_comment,
+				$filename, $line);
+
+  $procedure{$proc_name} = { usage => $usage,
+			     comment => $comment,
+			     purpose => $purpose,
+			     sgml_id => $sgml_id,
+			     markup_purpose => $markup_purpose,
+			     markup_usage => $markup_usage,
+			     markup => $markup,
+			     file => $filename,
+			     line => $line,
+			   };
+
+  push @{$file_funcs{$filename}}, $proc_name;
+
+}
+
+sub ProcessHeader( $$$ ) {
   my ($filename, $line, $header) = @_;
   my ($cprimname, $primname, $req, $opt, $var, $argslist) =
     $header =~ m%^SCWM_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^\)]*)\)%;
   if (!defined($cprimname)) {
-    print STDERR "$filename:$.:****ERROR:could not parse argument list\n";
+    print STDERR "$filename:$line:****ERROR:could not parse argument list\n";
     return FALSE;
   }
   my ($comment) = $header =~ m%/\*\*\s*(.*)\s*\*/%s;
@@ -408,7 +470,8 @@ sub ProcessHeader( $ ) {
     }
   }
 
-  my $usage = sprintf "($primname%s$arg_listing)", ($arg_listing ne ""? " ":"");
+  my $usage = sprintf "(%s%s%s)", $primname, ($arg_listing ne ""? " ":""),
+  $arg_listing;
 
   my %upcase_words = ();
 
@@ -433,17 +496,7 @@ sub ProcessHeader( $ ) {
     }
   }
 
-  my ($purpose) = $comment =~ m%(.*?[\.;\n])%;
-  if (!defined $purpose) {
-    # did not match, so must have been a one-liner w/o a newline
-    $purpose = $comment;
-  }
-  chomp ($purpose); # in case it matched the newline
-  if (!defined($purpose) || $purpose !~ /\.\s*$/) {
-    if (!$fQuiet) {
-      print STDERR "$filename:$line:****$cprimname: first line of comment should be a purpose sentence\n";
-    }
-  }
+  my $purpose = PurposeFromComment($comment,$filename,$line,$cprimname);
 
   # Clean up spacing in $comment -- use \n instead of $ since
   # the latter matches before the new line
@@ -483,42 +536,13 @@ sub ProcessHeader( $ ) {
   }
 
   # Just do simple markup of the usage
-  my $markup_usage = $usage;
-  $markup_usage =~ s%(\s+)&(\s+)%$1&amp;$2%g;
-  $markup_usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
-  $markup_usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
+  my $markup_usage = MarkupUsage($usage);
 
   my $markup_purpose = MarkupComment($purpose);
 
-  # FIXGJB: use some sgml perl library!
-
-  # Use <refentry>, <refname>, <refpurpose>, <synopsis>
-  
-  # Filename url links rely on environment variable SCWMDIR being
-  # set to the base of the scwm distribution
-  # i.e. $SCWMDIR/scwm/scwm.c should contain main()
-  my $markup = 
-"<refentry id=\"$sgml_id\">
-  <refnamediv>
-    <refname>$primname</refname>
-    <refpurpose>$markup_purpose</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>$markup_usage</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  $markup_comment
-  </para>
-  </refsect1>
-  <refsect1>
-  <title>Implementation Notes</title>
-  <para> Defined in <ulink url=\"file://@{[$ENV{'SCWMDIR'}]}/$filename\"><filename>$filename</filename></ulink>
-  at line $line </para> </refsect1>
-</refentry>
-";
-
+  my $markup = CreateMarkupBody($primname, $sgml_id, 
+				$markup_usage, $markup_purpose, $markup_comment,
+				$filename, $line);
 
   if ($fDebug) {
     print STDERR <<EOC
@@ -551,10 +575,30 @@ sub ScmIdToSgmlId ( $ ) {
   my ($id) = @_;
   $id =~ s/\?$/-p/;
   $id =~ s/!$/-x/;
+  $id =~ s/%/pct/;
+  $id =~ s/[?!_$^&]/-/;
   $id =~ s/->/-to-/g;
-  $id =~ s/_/-/;
   return $id;
 }
+
+sub PurposeFromComment ( $$$$ ) {
+  my ($comment,$filename,$line,$primname) = @_;
+
+  my ($purpose) = $comment =~ m%(.*?[\.;\n])%;
+
+  if (!defined $purpose) {
+    # did not match, so must have been a one-liner w/o a newline
+    $purpose = $comment;
+  }
+  chomp ($purpose); # in case it matched the newline
+  if (!defined($purpose) || $purpose !~ /\.\s*$/) {
+    if (!$fQuiet) {
+      print STDERR "$filename:$line:****$primname: first line of comment should be a purpose sentence\n";
+    }
+  }
+  return $purpose;
+}
+
 
 sub ReadRestOfComment ( $ ) {
   my ($comment) = @_;
@@ -618,6 +662,51 @@ sub ProcessVarComment ( $$$$ ) {
 }
 
 
+
+sub CreateMarkupBody ( $$$$$$$ ) {
+  my ($primname, $sgml_id, $markup_usage, $markup_purpose, $markup_comment,
+      $filename, $line) = @_;
+  # Use <refentry>, <refname>, <refpurpose>, <synopsis>
+  
+  # Filename url links rely on environment variable SCWMDIR being
+  # set to the base of the scwm distribution
+  # i.e. $SCWMDIR/scwm/scwm.c should contain main()
+  my $markup = 
+"<refentry id=\"$sgml_id\">
+  <refnamediv>
+    <refname>$primname</refname>
+    <refpurpose>$markup_purpose</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>$markup_usage</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  $markup_comment
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url=\"file://@{[$ENV{'SCWMDIR'}]}/$filename\"><filename>$filename</filename></ulink>
+  at line $line </para> </refsect1>
+</refentry>
+";
+  return $markup;
+}
+
+
+
+sub MarkupUsage( $ ) {
+  my ($markup_usage) = @_;
+  $markup_usage =~ s%&(optional|key)%&amp;$1%g;
+  $markup_usage =~ s%(\s+)&(\s+)%$1&amp;$2%g;
+  $markup_usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
+  $markup_usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
+  return $markup_usage;
+}
+
+
 # FIXGJB
 sub MarkupComment( $ ) {
   my ($body) = @_;
@@ -631,7 +720,7 @@ sub MarkupComment( $ ) {
   $body =~ s%(\#[tf])%<literal>$1</literal>%g;
 
   # Replace `procedure' with <function>procedure</function>
-  $body =~ s%\`([A-Za-z][-A-Za-z0-9_?!+]*?)\'%
+  $body =~ s%\`([-A-Za-z0-9_?!+\%&\$]+?)\'%
     "<link linkend=\"" . ScmIdToSgmlId($1) . "\"><function>$1</function></link>"%eg;
 
   return $body;
