@@ -3,7 +3,7 @@
 ;; 4-October-1998
 
 (define-module (app scwm path-cache)
-  :use-modules (ice-9 string-fun))
+  :use-module (ice-9 string-fun))
 
 ;; Switch this to #t if you're having problems
 (define-public debug-program-cache #f)
