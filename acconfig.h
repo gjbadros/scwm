@@ -32,6 +32,9 @@
    gh_list_length. This should be true of snapshots newer than 970915.  */
 #undef HAVE_GH_LENGTH
 
+/* Define this if your libguile has scm_parse_path.  */
+#undef HAVE_SCM_PARSE_PATH
+
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 
