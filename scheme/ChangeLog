@@ -1,3 +1,8 @@
+Fri Jan  7 11:25:35 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* fvwm-module.scm: Added `raise-fvwm2-pager', `lower-fvwm2-pager'
+	and rewrote `fvwm2-pager-window' to be a bit better.
+
 Fri Jan  7 08:03:55 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* constraint-investigator.scm: Better alignment.

@@ -1,3 +1,8 @@
+Fri Jan  7 11:27:19 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Do not put the pager on top, but raise it when
+	C-S-M is pressed.
+
 Fri Jan  7 10:27:09 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added commented-out `force-gc', binding for it.
