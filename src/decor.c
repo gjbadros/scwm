@@ -88,7 +88,7 @@ print_decor(SCM obj, SCM port, scm_print_state * pstate)
   name = SCWMDECOR(obj)->tag;
   scm_puts("#<decor ", port);
   if (NULL == name) {
-    scm_write(gh_long2scm((long) DECOR(obj)), port);
+    scm_write(scwm_ptr2scm(DECOR(obj)), port);
   } else {
     scm_puts(name, port);
   }

@@ -274,7 +274,7 @@ int
 print_face(SCM obj, SCM port, scm_print_state * pstate)
 {
   scm_puts("#<face ", port);
-  scm_write(gh_int2scm((int)FACE(obj)), port);
+  scm_write(scwm_ptr2scm(FACE(obj)), port);
   scm_putc('>', port);
 
   return 1;

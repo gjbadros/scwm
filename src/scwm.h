@@ -185,6 +185,8 @@ enum wm_client_functions {
 #define RESTP_SCM 1
 
 
+#define scwm_ptr2scm(p) gh_long2scm((long)(p))
+
 #define SCM_BOOL_FromBool(x) ((x)? SCM_BOOL_T: SCM_BOOL_F)
 
 /* use gh_scm2bool() instead 
