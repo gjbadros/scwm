@@ -48,7 +48,10 @@ struct symnum binding_contexts[] =
   {SCM_UNDEFINED, 0}
 };
 
-static int MetaMask, AltMask, HyperMask, SuperMask;
+static int MetaMask = 0,
+  AltMask = 0,
+  HyperMask = 0,
+  SuperMask = 0;
 
 static const char *
 PchModifiersToModmask(const char *pch, int *pmodifier)
@@ -701,6 +704,17 @@ mouse_event_type()
 }
 
 
+SCM_PROC(s_mod_mask_meta, "mod-mask-meta", 0, 0, 0, mod_mask_meta);
+SCM mod_mask_meta() { return gh_int2scm(MetaMask); }
+
+SCM_PROC(s_mod_mask_alt, "mod-mask-alt", 0, 0, 0, mod_mask_alt);
+SCM mod_mask_alt() { return gh_int2scm(AltMask); }
+
+SCM_PROC(s_mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, mod_mask_hyper);
+SCM mod_mask_hyper() { return gh_int2scm(HyperMask); }
+
+SCM_PROC(s_mod_mask_super, "mod-mask-super", 0, 0, 0, mod_mask_super);
+SCM mod_mask_super() { return gh_int2scm(SuperMask); }
 
 
 void
@@ -710,6 +724,8 @@ init_modifiers(void)
   XModifierKeymap *mod;
   KeyCode *codes;
   KeySym *syms;
+
+  MetaMask = AltMask = HyperMask = SuperMask = 0;
 
   mod = XGetModifierMapping(dpy);
   if (mod) {
