@@ -1,3 +1,8 @@
+Thu Mar  5 00:33:50 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* fvwm-eval.scm: Added support for the KillMe fvwm module command,
+ 	so modules can kill themselves.
+
 1998-03-04  Jens-Ulrik Petersen  <petersen@kurims.kyoto-u.ac.jp>
 
 	* winlist.scm (circulate): Improved its behaviour when there is no 

@@ -104,6 +104,9 @@
 (define-fvwm-command "WindowsDesk"
   (move-window-to-desk (first-arg window)))
 
+(define-fvwm-command "KillMe"
+   ((list-ref 5 fmod)))
+
 (define*-public (eval-fvwm-command command #&optional (fmod #f) 
 				   (window (get-window)))
   (let* ((split-result (split-before-char #\space command 
