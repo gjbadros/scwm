@@ -74,10 +74,8 @@ extern int g_argc;
    it should not be an option, once it works right. HEDU 2/2/94 */
 #define PAN_FRAME_THICKNESS 2	/* or just 1 ? */
 
-/* the maximum number of mouse buttons scwm knows about */
-/* don't think that upping this to 5 will make everything
- * hunky-dory with 5 button mouses */
-#define MAX_BUTTONS 3
+/* the maximum number of mouse buttons that X Servers know about */
+#define XSERVER_MAX_BUTTONS 5
 
 #ifdef SIGNALRETURNSINT
 #define SIGNAL_T int
