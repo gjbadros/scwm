@@ -1,3 +1,8 @@
+Thu Aug 26 11:34:24 1999    <gjb@cs.washington.edu>
+
+	* misc/Makefile.am: Improve installation of scripts, distributed
+	files list.
+
 Wed Aug 25 17:32:15 1999    <gjb@cs.washington.edu>
 
 	* misc/startscwm: Make work with no X server running.
