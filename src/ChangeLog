@@ -1,3 +1,10 @@
+Tue Sep  7 17:51:28 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-snarf: Use sed instead of awk, since vendor awk-s do not
+	have sub/gsub commands.
+
+	* events.c: Added a missing return statement.
+
 Mon Sep  6 19:48:21 1999    <gjb@cs.washington.edu>
 
 	* window.c (s_list_stacking_order): Document that this skips
