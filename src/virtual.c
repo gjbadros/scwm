@@ -424,7 +424,7 @@ void MoveViewport(int newx, int newy, Bool grab)
     MyXUngrabServer(dpy);
 }
 
-
+#if MS_DELETION_COMMENT
 /**************************************************************************
  * 
  * Move to a new desktop
@@ -438,6 +438,7 @@ void changeDesks_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   n = GetTwoArguments(action, &val1, &val2, &val1_unit, &val2_unit);
   changeDesks(val1,val2);
 }
+#endif /* MS_DELETION_COMMENT */
 
 void  changeDesks(int val1, int val2)
 {
@@ -524,6 +525,7 @@ void  changeDesks(int val1, int val2)
 
 
 
+#if MS_DELETION_COMMENT
 /**************************************************************************
  * 
  * Move to a new desktop
@@ -582,8 +584,9 @@ void changeWindowsDesk(XEvent *eventp,Window w,ScwmWindow *t,
     }
   BroadcastConfig(M_CONFIGURE_WINDOW,t);
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 void scroll(XEvent *eventp,Window w,ScwmWindow *tmp_win,unsigned long context,
 	    char *action, int *Module)
 {
@@ -632,7 +635,9 @@ void scroll(XEvent *eventp,Window w,ScwmWindow *tmp_win,unsigned long context,
     }
   MoveViewport(x,y,True);
 }
+#endif
 
+#if MS_DELETION_COMMENT
 void goto_page_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		    unsigned long context,char *action, int *Module)
 {
@@ -655,7 +660,7 @@ void goto_page_func(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   y=val2*Scr.MyDisplayHeight;
   MoveViewport(x,y,True);
 }
-
+#endif /* MS_DELETION_COMMENT  */
 
 
 
