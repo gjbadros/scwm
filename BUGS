@@ -1,4 +1,10 @@
 -------
+Changing desktops on elements GWS machines (as tzoompy) crashes Scwm;  I can't
+reproduce as gjb
+-------
+start-x2x-ita causes scwm to grow wildly out of control until that 
+new x2x process is killed.
+-------
 XEmacs pixmap icon doesn't survive after a restart (James Achtung Crippe) --09/15/99 gjb
 -------
 quote undefined problem w/ guile

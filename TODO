@@ -17,8 +17,6 @@ See also doc/dev/scwm-1.0-release-todo
 
 * layers support for GNOME
 
-* use ms, not usec for timer hooks
-
 * path-cache.scm -- test w/o zsh
 
 * Revisit all FIXME lines
@@ -58,6 +56,12 @@ See also doc/dev/scwm-1.0-release-todo
 
 * Advice (like emacs) mechanism for augmenting procedures 
 ** (Robert has done some work on this)
+
+* Autoloading, and ##autoload scanning
+
+* Module-global docstring, and module scanning 
+
+* interactive declarations
 
 * overlay plane support (or grab server during constraint draws)
 ** http://www.motifzone.com/tmd/articles/Overlay/oplanes.html
@@ -247,8 +251,6 @@ alloc/dealloc to see where the memory is going... guile support for this?
 
 * Interactive move/resize should permit using a real color, not just an xor-value, as an option (hard w/o an overlay plane)
 
-* Rename scwm/scwm directory to scwm/src
-
 * Quote key feature -- like C-q in Emacs, C-v in shells
 
 * rewrite of remaining copyrighted code  to allow release under GPL
@@ -257,6 +259,10 @@ alloc/dealloc to see where the memory is going... guile support for this?
 
 
 ** DONE STUFF
+* use ms, not usec for timer hooks --09/26/99 gjb
+
+* Rename scwm/scwm directory to scwm/src --09/26/99 gjb
+
 * quoting keystroke support-- must ungrab keystrokes or do something w/ synch grabbing
 
 * Web Link to bug tracker
