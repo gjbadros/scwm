@@ -1,0 +1,14 @@
+#!/usr/bin/perl -pwi.bak
+BEGIN { $backslashing = 0; }
+
+if (/^SCWM_I?PROC/) { $backslashing = 1; next }
+
+if (/^SCWM_HOOK/) { $backslashing = 2; next }
+
+if (/^\#define FUNC_NAME/) { $backslashing = 0; next }
+
+if ($backslashing == 2 && (m/\"\s*\)\s*;\s*$/)) { $backslashing = 0; next }
+
+if ($backslashing && (m/^\S/ || m/^\s*$/)) {
+  s/$/\\n\\/ unless (m/\"\s*\)\s*$/ || m/\\$/);
+}
