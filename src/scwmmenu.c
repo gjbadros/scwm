@@ -626,7 +626,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   /* Is it okay to treat keysym-s as Ascii? */
 
   /* Try to match hot keys */
-  if (isgraph(keysym) && fControlKey == FALSE) { 
+  if (isascii(keysym) && isgraph(keysym) && fControlKey == FALSE) { 
     /* allow any printable character to be a keysym, but be sure control
        isn't pressed */
     MenuItemInMenu *pmiim;
@@ -677,7 +677,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
     case XK_Up:
     case XK_k: /* vi up */
     case XK_p: /* prior */
-      if (isgraph(keysym))
+      if (isascii(keysym) && isgraph(keysym))
 	  fControlKey = FALSE; /* don't use control modifier 
 				  for k or p, since those might
 				  be shortcuts too-- C-k, C-p will
@@ -699,7 +699,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
     case XK_Down:
     case XK_j: /* vi down */
     case XK_n: /* next */
-      if (isgraph(keysym))
+      if (isascii(keysym) && isgraph(keysym))
 	  fControlKey = FALSE; /* don't use control modifier
 				  for j or n, since those might
 				  be shortcuts too-- C-j, C-n will
