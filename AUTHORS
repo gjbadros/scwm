@@ -45,6 +45,14 @@ and in the directory utilities/emacs:
     scwm.el
 
 
+Robert Bihlmeyer:
+added some bits here, and there. Notable changes include
+ICCCM-compliant modifier handling, querying xlock about available
+modes, readline-support in scwmrepl, and exposing X-properties to
+scheme. Is to blame for the following files in the directory scwm:
+    xproperty.c
+
+
 
 Tom LaStrange: 
 wrote Twm, from which Scwm is indirectly derived. The following files

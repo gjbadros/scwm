@@ -2,10 +2,6 @@ Thanks to:
   Jens-Ulrik Holger Petersen - improved functionality of window list
   operations, contributed his .scwmrc to be distributed as a sample
 
-  Robert Bihlmeyer - ICCCM compliant modifier handling, support for
-  detecting a restart from the Scheme level, readline support in
-  scwmrepl, some scwm.el enhancements
-
   James LewisMoss - argument handling through getopt_long()
 
   ITANI Eiichiro - Support for multibyte character sets.
@@ -14,7 +10,6 @@ Thanks to:
   directory into a TexInfo manual and a man page.
 
 Bug reports and/or fixes have been contributed by:
-  Robert Bihlmeyer
   Mikael Djurfeldt 
   Simon Josefsson
   Bucky LaDieu
