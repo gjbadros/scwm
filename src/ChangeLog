@@ -1,3 +1,12 @@
+Sun Apr  5 14:01:50 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am: List .x files in BUILT_SOURCES rather than lisiting
+ 	dependencies on them explicitly. Make scwmpaths.h depend on
+ 	config.status instead of Makefile. Suggestions from Tom Tromey
+ 	<tromey@cygnus.com>.
+
+	Makefile.in: regenerated.
+
 Fri Apr  3 11:43:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.am: Fixed typo: s/fonts./font./g 
