@@ -98,6 +98,13 @@
 	      #:int-override #t #:decorate-transient #t
 	      #:PPosition-hint #f)
 
+;; (plain-border (get-window)) fixes the display problem for the selected window
+;; something must not be initialized correctly
+
+;; FIXGJB: make-inherited-style;  any other way to do something like this?
+;;(define desk-widget-on-top
+;;  (make-inherited-style desk-widget #:stays-on-top #t))
+
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
@@ -109,16 +116,17 @@
 
 ;;; FIXGJB: this core dumps, seems to w/o the circulate-skip option I added, too
 ;;; MS - hmmm, it works for me.
-(window-style "zwgc" #:use-style desk-widget) ;; desk-widget-on-top
-(window-style "*lock" #:use-style desk-widget)
-(window-style "xload" #:no-title #t #:use-style desk-widget)
-(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
-(window-style "xbiff" #:no-title #t #:use-style desk-widget)
-(window-style "xcalc" #:icon "xcalc.xpm")
-(window-style "xman" #:icon "xman.xpm")
-(window-style "xmag" #:icon "mag_glass.xpm")
-(window-style "Emacs" #:icon "gnu-animal.bmp")
-(window-style "XTerm" #:icon "xterm.xpm")
+;(window-style "zwgc" #:use-style desk-widget) ;; desk-widget-on-top
+;;; I get a memory-allocation-error on the *lock line, below --gjb
+;(window-style "*lock" #:use-style desk-widget)
+;(window-style "xload" #:no-title #t #:use-style desk-widget)
+;(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
+;(window-style "xbiff" #:no-title #t #:use-style desk-widget)
+;(window-style "xcalc" #:icon "xcalc.xpm")
+;(window-style "xman" #:icon "xman.xpm")
+;(window-style "xmag" #:icon "mag_glass.xpm")
+;(window-style "Emacs" #:icon "gnu-animal.bmp")
+;(window-style "XTerm" #:icon "xterm.xpm")
 
 
 ;;-------------------------------;;
@@ -491,3 +499,7 @@
 	   (set! i (+ 1 i)))))
 
 ;(recapture)
+
+;;; Local Variables:
+;;; eval: (load "scwm-buffer.el")
+;;; End:
