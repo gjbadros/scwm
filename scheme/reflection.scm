@@ -119,3 +119,10 @@ Note that these currently do not display in their expected format"
 					 (car i))) optargs-arglist))
 	      #f)))))
 
+
+(define-public (procedure-apropos rgx)
+  "Returns a list of procedures that match RGX.
+Unlike `apropos-internal', this procedure returns
+the procedures themself, not a list of symbols."
+  (filter-map (lambda (p) (let ((proc (eval p))) (if (procedure? proc) proc #f)))
+	      (apropos-internal rgx)))

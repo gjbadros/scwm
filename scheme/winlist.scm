@@ -80,7 +80,8 @@ you can do something like:
 			      (reverse #f))
   "Return the list of windows matching ONLY and not matching EXCEPT.
 The windows are returned their stacking order (top first) if
-BY-STACKING is #t.  They are returned sorted by their last focussed
+BY-STACKING is #t (and that option omits iconified windows).
+They are returned sorted by their last focussed
 time (most recently focussed first) if BY-FOCUS is #t. If REVERSE is
 true, they are returned in the reverse of the usual order. ONLY and
 EXCEPT each are procedures which take a single window argument and
@@ -169,6 +170,7 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
 			 #:by-stacking by-stacking
 			 #:by-focus by-focus
 			 #:reverse reverse))
+;;       (foo-just-for-printing (begin (display lw)  (newline)))
        (hotkeys "1234567890abcdefghijklmnopqrstuvwxyz")
        (hk-len (string-length hotkeys))
        (count -1)
@@ -207,6 +209,7 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
 				       (if enumerate-hotkeys
 					   hotkey #f)))))
 	      lw))))
+;;    (display menuitems-with-window-resource) (newline)
     (menu
      (append 
       (list 
@@ -222,11 +225,11 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
      #:hover-delay hover-delay)))
 
 
-(define-public (show-window-list-menu warp-to-first . rest)
+(define*-public (show-window-list-menu warp-to-first #&rest rest)
   "Popup a window list menu.
 Warps the pointer to the first menu item iff WARP-TO-FIRST is #t.
 Accepts all keyword arguments that `make-window-list-menu' takes."
-  (popup-menu (make-window-list-menu rest) warp-to-first))
+  (popup-menu (apply make-window-list-menu rest) warp-to-first))
   
 (define (rotate-around w wl)
   (append (cond
