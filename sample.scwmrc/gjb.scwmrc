@@ -9,8 +9,7 @@
 	     (app scwm face))
 
 
-(define HOME ;(getenv "HOME"))
-  "/u1/mstachow")
+(define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 (define xterm-user-shell-options "-e start-zsh")
 (define xterm-other-host-use-local-xterm #t)
