@@ -1,3 +1,13 @@
+Tue Jun 29 15:14:08 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.c (AnnounceGnomeCompliancy): Added GNOME_SUPPORT_IN_C
+ 	conditional directive to permit announcing GNOME support more
+ 	quickly than the Scheme module gnome-hints.scm version of it.  Not
+ 	sure if it's necessary yet, so leave it off by default.
+
+	* guile-compat.c: Added comment about where the memory leak is
+	occurring for Maciej to fix it.
+	
 Sat Jun 26 13:36:25 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xrm.c, xproperty.c, window.c, message-window.c, image.c, face.c,
