@@ -651,6 +651,8 @@ HandleScwmExec()
 			8, PropModeReplace, output, olen);
 	XChangeProperty(dpy, w, XA_SCWMEXEC_ERROR, XA_STRING,
 			8, PropModeReplace, error, elen);
+	XSync(dpy,False);
+
 	XChangeProperty(dpy, w, XA_SCWMEXEC_REPLY, XA_STRING,
 			8, PropModeReplace, ret, rlen);
 
@@ -1523,6 +1525,22 @@ HandleConfigureRequest()
    * requested client window width; the inner height is the same as the
    * requested client window height plus any title bar slop.
    */
+
+  /* If the window is already shaded, save original sizes and ignore
+     the height request. Ignoring the height request does not DTRT if
+     a title height change is requested while a window is shaded, but
+     is closer to doing the right thing. */
+
+  /* When the window is shaded, we need to ignore the height change
+     request, but we should save the requested size as the original
+     size. */
+
+  if (SHADED_P(swCurrent)) {
+    swCurrent->orig_wd = width;
+    swCurrent->orig_ht = height;
+    height = swCurrent->frame_height;
+  }
+
   SetupFrame(swCurrent, x, y, width, height, sendEvent);
   KeepOnTop();
 }
