@@ -178,12 +178,12 @@ scwm_main(int argc, char **argv)
   Bool single = False;
   Bool option_error = FALSE;
 
+  init_scwm_types();
   init_miscprocs();
   init_menu();
   init_binding();
   init_window();
   init_face();
-  init_scwm_types();
   init_scwm_procs();
 
   s_cmd_config = malloc(1 * sizeof(char));
@@ -1110,6 +1110,7 @@ DestroyScwmDecor(ScwmDecor * fl)
 {
   int i;
 
+#ifdef MS_DELETION_COMMENT
   /* reset to default button set (frees allocated mem) */
   ResetAllButtons(fl);
   for (i = 0; i < 3; ++i) {
@@ -1122,6 +1123,8 @@ DestroyScwmDecor(ScwmDecor * fl)
   FreeButtonFace(dpy, fl->BorderStyle.active);
   FreeButtonFace(dpy, fl->BorderStyle.inactive);
 #endif
+#endif /* MS_DELETION_COMMENT */
+
 #ifdef USEDECOR
   if (fl->tag) {
     free(fl->tag);
@@ -1146,38 +1149,30 @@ DestroyScwmDecor(ScwmDecor * fl)
 void 
 InitScwmDecor(ScwmDecor * fl)
 {
-  int i;
-  ButtonFace *tmpbf;
-
-  /* FIXMS in all of these, we need to use make_face instead, so
-     relevant scheme objects get created. */
 
   fl->HiReliefGC = NULL;
   fl->HiShadowGC = NULL;
 
 #ifdef USEDECOR
-  fl->tag = NULL;
+  /*  fl->tag = NULL; */
   fl->next = NULL;
 
+#if MS_DELETION_COMMENT
   if (fl != &Scr.DefaultDecor) {
-#if 0
     extern void AddToDecor(ScwmDecor *, char *);
 
     AddToDecor(fl, "HilightColor black grey");
 
     AddToDecor(fl, "WindowFont fixed");
-#endif
   }
+#endif /* MS_DELETION_COMMENT */
 #endif
 
+
+#ifdef MS_DELETION_COMMENT
   /* initialize title-bar button styles */
   for (i = 0; i < 5; ++i) {
     int j = 0;
-
-    /* This allocation is not as wasteful as it looks, it is only
-       per-decor, but must be reconsidered when these settings are
-       per-window. */
-
     tmpbf=calloc(1,sizeof(ButtonFace));
     tmpbf->style = SimpleButton;
 #ifdef MULTISTYLE
@@ -1204,7 +1199,9 @@ InitScwmDecor(ScwmDecor * fl)
   /* initialize title-bar styles */
   fl->titlebar.flags = 0;
 
+
   for (i = 0; i < MaxButtonState; ++i) {
+
     fl->titlebar.state[i]=calloc(1,sizeof(ButtonFace));
     fl->titlebar.state[i]->style = SimpleButton;
 #ifdef MULTISTYLE
@@ -1224,6 +1221,8 @@ InitScwmDecor(ScwmDecor * fl)
   fl->BorderStyle.inactive->next = NULL;
 #endif
 #endif
+
+#endif /* MS_DELETION_COMMENT */
 }
 
 /***********************************************************************
@@ -1314,7 +1313,6 @@ InitVariables(void)
   Scr.randomx = Scr.randomy = 0;
   Scr.buttons2grab = 7;
 
-  InitScwmDecor(&Scr.DefaultDecor);
   decor2scm(&Scr.DefaultDecor);
   DECORREF(Scr.DefaultDecor.scmdecor);
 
