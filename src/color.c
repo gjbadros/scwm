@@ -144,7 +144,6 @@ allocated, an error results. */
   XColor color;
   char *cn;
   int len;
-  Bool fBad = False;
   scwm_color *sc;
 
   if (!gh_string_p(cname)) {
@@ -159,29 +158,16 @@ allocated, an error results. */
   cn = gh_scm2newstr(cname, &len);
   color.pixel = 0;
 
-  /* MSFIX: for now just throw errors for the sake of robustness (!)
-     make it nicer later. */
   if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, cn, &color)) {
     FREE(cn);
     scwm_error(FUNC_NAME,"Unable to parse color.");
-#if 0   
-    scwm_msg(WARN,FUNC_NAME,"Unable to parse color `%s'",cn);
-    fBad = True;
-#endif
   } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
     FREE(cn);
+    /* GJB:FIXME:MS: Return the closest color here, perhaps, and print a warning */
     scwm_error(FUNC_NAME,"Unable to allocate color.");
-#if 0
-    scwm_msg(WARN,FUNC_NAME,"Unable to allocate color `%s'",cn);
-    fBad = True;
-#endif
   }
 
   FREE(cn);
-
-  if (fBad) {
-    return SCM_BOOL_F;
-  }
 
   sc = NEW(scwm_color);
   sc->pixel = color.pixel;
