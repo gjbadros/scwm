@@ -14,7 +14,7 @@ shutdown-opts.scm simplebiff.scm simple-constraints.scm snap.scm sort.scm stacki
 std-menus.scm  style-options.scm style.scm \
 theme-impl.scm themes.scm tile.scm time-convert.scm ui-constraints-buttons.scm \
 ui-constraints-classes.scm ui-constraints-toggle-menu.scm \
-ui-constraints.scm user-options.scm virtual.scm window-locations.scm \
+ui-constraints.scm virtual.scm window-locations.scm \
 wininfo.scm winlist.scm winops.scm wmconfig-menu.scm
 
 scwm_gtk_scheme = gtk.scm ScwmButtons.scm ScwmBiff.scm ScwmClock.scm ScwmDeskButtons.scm \
