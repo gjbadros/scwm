@@ -14,8 +14,7 @@ SHELL=/bin/sh
 VPATH=@srcdir@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-subdirs=scwmsend
-# icons mini-icons
+subdirs=scwmsend libscwmexec scwmexec
 
 CFLAGS=@CFLAGS@
 
