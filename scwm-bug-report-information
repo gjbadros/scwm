@@ -27,28 +27,40 @@ echo "libtool --version"; echo "------------------"
 libtool --version
 echo
 
+echo "gcc --version"; echo "------------------"
+gcc --version
+echo
+
+echo "g++ --version"; echo "------------------"
+g++ --version
+echo
+
+echo "cassowary-config --version --cflags --gtllibs"; echo "------------------"
+cassowary-config --version --cflags --gtllibs
+echo
+
 echo "scwm -V:"; echo "------------------"
-./scwm/scwm -V
+./src/scwm -V
 echo
 
 echo "changed.c:"; echo "------------------"
-cat scwm/changed.c
+cat src/changed.c
 echo
 
 echo "scwmpaths.h:"; echo "------------------"
-cat scwm/scwmpaths.h
+cat src/scwmpaths.h
 echo
 
 echo "ldd scwm:"; echo "------------------"
 if which ldd >/dev/null 2>&1; then
-  ldd scwm/scwm
+  ldd src/scwm
 else
   echo "No ldd on this system."
 fi
 echo
 
 echo "relevant env:"; echo "------------------"
-env | egrep "(SCWM|^(LD_LIBRARY_)?PATH)"
+env | egrep "(SCWM|^(LD_LIBRARY_)?PATH|GUILE)"
 echo
 
 echo "config.h:"; echo "------------------"
