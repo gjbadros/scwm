@@ -716,8 +716,10 @@ PopdownMenu(DynamicMenu *pmd)
     FreeDynamicMenu(pmd->pmdNext);
     pmd->pmdNext = NULL;
   }
-  InvokeUnhoverAction(pmd);
-  pmd->fHoverActionInvoked = False;
+  if (pmd->fHoverActionInvoked) {
+    InvokeUnhoverAction(pmd);
+    pmd->fHoverActionInvoked = False;
+  }
   XUnmapWindow(dpy, pmd->w);
   /* unconnect the window from the dynamic menu */
   XSaveContext(dpy, pmd->w,MenuContext,(caddr_t)NULL);
