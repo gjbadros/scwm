@@ -1,3 +1,25 @@
+Fri Feb 20 03:22:23 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* module-interface.c: Broadcast: Provide the num_datum parameter
+ 	to broadcast hooks.
+
+	* image.c, image.h: Syndry improvements:
+	
+	Reorganized image loading - loaders can now be specified by a
+ 	suffix with more than one dot in it (so ".xpm.gz" works, for
+ 	instance) and the code is more modular overall.
+	
+	Improved cache handling - images are cached by both the requested
+ 	name and the full path; cache entries may be explicitly cleared
+ 	with the new clear-image-cache-entry.
+	
+	image-properties changed to return an association list - this is
+ 	more robust against changes in the set of properties returned.
+	
+	The new "foreign" field allows pixmaps from outside sources (app
+ 	icons and the like) to correctly not be freed when the image
+ 	object is,
+
 Wed Feb  4 23:57:58 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Added patch for initialization from Jim Blandy, to
