@@ -30,11 +30,11 @@
 (set-xor-value! 127)
 
 
-(define HOME (getenv "HOME"))
+(define HOME ;(getenv "HOME"))
+	"/u1/mstachow")
 (define USER (getenv "USER"))
 
-(define user-pixmap-path (string-append HOME "/pixmaps"))
-(define user-bitmap-path (string-append HOME "/bitmaps"))
+(define user-picture-path (string-append HOME "/pixmaps:" HOME "/bitmaps"))
 
 
 ;;-------------------------------;;
@@ -44,17 +44,12 @@
 ;; these are OK for my system, but may need to be changed for
 ;; yours. This should probably be eventually autoconfed or something.
 
-(set-icon-path! (string-append user-bitmap-path 
+(set-picture-path! (string-append user-picture-path
 			       ":/usr/X11/include/X11/bitmaps:\
 /usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
 /uns/include/X11/pixmaps:\
 /usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
 
-(set-pixmap-path! (string-append user-pixmap-path 
-				 ":/usr/X11/include/X11/bitmaps:\
-/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
-/uns/include/X11/pixmaps:\
-/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
 
 ;;-------------------------------;;
 ;; set up a couple of various    ;;
@@ -62,6 +57,10 @@
 
 (define helvetica-12   
   (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+
+(define helvetica-14   
+  (load-font "-adobe-helvetica-bold-o-*-*-14-*-*-*-*-*-*-*"))
+
 
 (define times-14   
   (load-font "-adobe-times-bold-r-*-*-14-*-*-*-*-*-*-*"))
@@ -86,7 +85,7 @@
 	    (set-hilight-colors! "black" "salmon"))
 
 (define fvwm-style 
-  (make-style #:fg "black" #:bg "tan" #:icon "unkown1.xpm"
+  (make-style #:fg "black" #:bg "tan" #:icon "unknown1.xpm"
 	      #:border-width 4 #:mwm-border #f
 	      #:mwm-buttons #f
 	      #:use-decor fvwm-decor))
@@ -114,9 +113,9 @@
 			 #:inactive (list #:solid "grey50"))
 	    (border-style #:no-inset #t #:hidden-handles #t)
 	    (button-style 1 #:relief 'flat 
- 			  #:solid "navy blue" #:pixmap 'mini-icon
+ 			  #:solid "navy blue" #:pixmap 'mini-program-icon
 			  #:inactive 
-			  (list #:solid "grey50" #:pixmap 'mini-icon))
+			  (list #:solid "grey50" #:pixmap 'mini-program-icon))
 	    (button-style 2 #:relief 'flat
 			  #:solid "navy blue"
 			  #:pixmap "win95-maximize-full.xpm"
@@ -150,9 +149,9 @@
 				     "grey50" "grey25")))
 	    (border-style #:no-inset #t #:hidden-handles #t)
 	    (button-style 1 #:relief 'flat 
- 			  #:solid "navy blue" #:pixmap 'mini-icon
+ 			  #:solid "navy blue" #:pixmap 'mini-program-icon
 			  #:inactive 
-			  (list #:solid "grey50" #:pixmap 'mini-icon))
+			  (list #:solid "grey50" #:pixmap 'mini-program-icon))
 	    (button-style 2 #:relief 'flat
 			  #:solid "black"
 			  #:pixmap "win95-maximize-full.xpm"
@@ -173,6 +172,56 @@
 	      #:mwm-buttons #f
 	      #:use-decor win95-grad-decor))
 
+
+(define tile-decor (make-decor))
+
+;; texture by Stephanie Miller <stephane@mit.edu>
+(with-decor tile-decor
+	    (border-style #:hidden-handles #t #:no-inset #t
+			  #:pixmap "lizard.xpm" #:inactive
+			  (list #:hidden-handles #t #:no-inset #t
+			  #:pixmap "lizard2.xpm"))
+	    (title-style #:justify 'center #:font helvetica-14 
+			 #:relief 'raised)
+	    (button-style 1 #:use-style-of 'border
+			  #:relief-pattern 
+			  '((26 29 #t) (34 21 #t) (50 35 #t) 
+				       (70 21 #t) (79 29 #t) 
+				       (63 48 #f) (79 65 #t) 
+				       (70 75 #f) (50 61 #f) 
+				       (34 75 #f) (26 65 #f) 
+				       (44 48 #t) (26 29 #f)))
+	    (button-style 2 #:use-style-of 'border
+			  #:relief-pattern
+			  '((25 25 #t) (25 75 #t) (75 75 #f) 
+				       (75 25 #f) (25 25 #t)))
+	    (button-style 4 #:use-style-of 'border
+			  #:relief-pattern
+			  '((40 40 #t) (60 40 #t) (60 60 #f) 
+				       (40 60 #f) (40 40 #t)))
+	    (set-hilight-colors! "white" "#3cb21c"))
+
+(define tile-style (make-style #:fg "white" #:bg "#a63823"
+			       #:border-width 6
+			       #:use-decor tile-decor))
+
+
+(define twm-decor (make-decor))
+
+(with-decor twm-decor
+	    (title-style #:justify 'left #:font helvetica-12 
+			 #:relief 'flat #:height 20)
+	    (border-style #:hidden-handles #t)
+	    (button-style 1 #:relief 'flat #:pixmap "twm-x.xpm")
+	    (button-style 2 #:relief 'flat #:pixmap "twm-boxes.xpm")
+	    (button-style 4 #:relief 'flat #:pixmap "twm-dot.xpm")
+	    (set-hilight-colors! "light gray" "maroon")
+	    )
+
+(define twm-style (make-style #:border-width 1  #:fg "light gray" #:bg "black"
+			      #:icon #f #:icon #t #:use-decor twm-decor))
+
+
 (define win-decoration-menu
   (make-menu "Decorations"
 	     (list "Fvwm"
@@ -190,7 +239,17 @@
 	     (list "Fvwm95 (With Gradients)" 
 		   (lambda () 
 		     (style-one-window (get-window)
-				       #:use-style win95-grad-style)))))
+				       #:use-style win95-grad-style)))
+	     (list "Lizard Texture" 
+		   (lambda () 
+		     (style-one-window (get-window)
+				       #:use-style tile-style)))
+	     (list "Twm (Inaccurate)"
+		   (lambda () 
+		     (style-one-window (get-window)
+				       #:use-style twm-style)))))
+
+	
 
 (define global-decorations-menu
   (make-menu "Global Decorations Settings"
@@ -206,14 +265,20 @@
 		     (window-style "*" #:use-style win95-style)))
 	     (list "Fvwm95 (With Gradients)" 
 		   (lambda ()
-		     (window-style "*" #:use-style win95-grad-style)))))
+		     (window-style "*" #:use-style win95-grad-style)))
+	     (list "Lizard Texture" 
+		   (lambda () 
+		     (window-style "*" #:use-style tile-style)))
+	     (list "Twm (Inaccurate)"
+		   (lambda () 
+		     (window-style "*" #:use-style twm-style)))))
+
 
 
 ;;-------------------------------;;
 ;; set some window styles        ;;
 
 (window-style "*" 
-	      #:icon "unknown1.xpm" 
 	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:focus 'mouse
 	      #:random-placement #t #:smart-placement #t
@@ -224,6 +289,7 @@
 	      #:mini-icon "mini-x.xpm")
 
 (window-style "*" #:use-style fvwm-style)
+
 
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
