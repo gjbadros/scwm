@@ -1,3 +1,24 @@
+Wed Sep 16 15:30:39 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* xmisc.h, xmisc.c: Move RestoreWithdrawnLocation into scwm.c
+
+	* window.h, window.c: Prototype for FIsPartiallyInViewport and
+ 	make it not static, since scwm.c now uses it in
+	RestoreWithdrawnLocation.  Use FRAME_[XY] instead of accessing the 
+	fields directly.
+
+	* shutdown.c: Pass a fRestart bool to Reborder()
+
+	* scwm.h, scwm.c: Have Reborder take a bool to pass along to
+	RestoreWithdrawnLocation, move RestoreWithdrawnLocation to scwm.c
+	from xmisc.c; Improve RestoreWithdrawnLocation so that it uses
+	FIsPartiallyInViewport
+
+	* image.c: Check if val_load_{xpm,xbm} are not defined, and if so
+	give a build error message (a common build problem is the .x files 
+	being empty -- this catches it and reports a much more useful
+	error message before aborting).
+
 Tue Sep 15 17:08:20 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (MovePswToCurrentPosition): Check for not-visible
