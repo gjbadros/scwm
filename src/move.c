@@ -307,7 +307,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
   }
 
   DisplayPosition(psw, 
-                  FRAME_X_VIRT(psw), FRAME_Y_VIRT(psw),
+                  FRAME_X_VP(psw), FRAME_Y_VP(psw),
                   True);
 
   if (!psw->fIconified) {
@@ -397,19 +397,10 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
                               WIN_VP_OFFSET_Y(psw)+yt,opaque_move);
         }
 
-
-        { /* scope */
-          int x, y;
-
-          /* The above is only a suggestion -- when cassowary
-             constraint solver is used, the window may not have 
-             moved at all, so be sure to use the actual position
-             of the window */
-          FXGetWindowTopLeft(psw->frame,&x,&y);
-          call3_hooks(interactive_move_new_position_hook, psw->schwin,
-		      gh_int2scm(x), gh_int2scm(y));
-          DisplayPosition(psw,x,y,True);
-        }
+	call3_hooks(interactive_move_new_position_hook, psw->schwin,
+		    gh_int2scm(FRAME_X_VP(psw)),
+		    gh_int2scm(FRAME_Y_VP(psw)));
+	DisplayPosition(psw,FRAME_X_VP(psw),FRAME_Y_VP(psw),True);
 
         /* prevent window from lagging behind mouse when paging - mab */
 	if (paged == 0) {
