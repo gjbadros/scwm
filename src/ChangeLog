@@ -1,3 +1,14 @@
+Fri Apr  2 13:52:05 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Added arg to option --segv-cleanup-and-stop, and rename to
+	--segv-reset-count.  Fix SigDoneSegv's message to talk about the
+	proper name of the option.
+
+	* binding.c: Permit CSM-Left, not just C-S-M-Left.  (Motivated by
+	its simplifying the fvwm2rc-to-scwmrc converter a tiny bit, but
+	this is the right thing for now -- ultimately keys should be
+	first-class).
+
 Thu Apr  1 19:18:39 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c (s_destroy_window): Do not permit destroy if the window
