@@ -24,22 +24,22 @@
 #define IS_CURSOR(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_cursor)
 #define XCURSOR(X)  (IS_CURSOR((X))?CURSOR(X)->cursor:None)
 
-SCM *pscm_cursor_set_focus;
+EXTERN SCM *pscm_cursor_set_focus;
 #define XCURSOR_SET_FOCUS XCURSOR(*pscm_cursor_set_focus)
 
-SCM *pscm_cursor_move;
+EXTERN SCM *pscm_cursor_move;
 #define XCURSOR_MOVE XCURSOR(*pscm_cursor_move)
 
-SCM *pscm_cursor_icon;
+EXTERN SCM *pscm_cursor_icon;
 #define XCURSOR_ICON XCURSOR(*pscm_cursor_icon)
 
-SCM *pscm_cursor_kill;
+EXTERN SCM *pscm_cursor_kill;
 #define XCURSOR_KILL XCURSOR(*pscm_cursor_kill)
 
-SCM *pscm_cursor_select;
+EXTERN SCM *pscm_cursor_select;
 #define XCURSOR_SELECT XCURSOR(*pscm_cursor_select)
 
-SCM *pscm_cursor_menu;
+EXTERN SCM *pscm_cursor_menu;
 #define XCURSOR_MENU XCURSOR(*pscm_cursor_menu)
 
 

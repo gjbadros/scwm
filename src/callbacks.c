@@ -266,96 +266,22 @@ scwm_safe_call7 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM
 
 #endif
 
-/* Slightly tricky - we want to catch errors per expression, but only
-   establish a new dynamic root per load operation, as it's perfectly
-   OK for a file to invoke a continuation created by a different
-   expression in the file as far as scwm is concerned. So we set a
-   dynamic root for the whole load operation, but also catch on each
-   eval. */
 
-
-static SCM
-scwm_body_eval_x (void *body_data)
-{
-  SCM expr = *(SCM *) body_data;
-  return scm_eval_x (expr);
-}
-
-
-__inline__ static SCM 
-scwm_catching_eval_x (SCM expr) {
-  return scm_internal_stack_catch (SCM_BOOL_T, scwm_body_eval_x, &expr,
-			  scwm_handle_error, "scwm");
-}
-
-static int clnsProcessingHook = 5;
-
-__inline__ static SCM 
-scwm_catching_load_from_port (SCM port)
-{
-  SCM expr;
-  SCM answer = SCM_UNSPECIFIED;
-  int i = 0;
-
-  while (!SCM_EOF_OBJECT_P(expr = scm_read (port))) {  
-    answer = scwm_catching_eval_x (expr);
-    if (++i % clnsProcessingHook == 0) {
-      call1_hooks(load_processing_hook, gh_int2scm(i));
-    }
-  }
-  scm_close_port (port);
-
-  return answer;
-}
-
-static SCM
-scwm_body_load (void *body_data)
-{
-  SCM filename = *(SCM *) body_data;
-  SCM port = scm_open_file (filename, gh_str02scm("r"));
-  return scwm_catching_load_from_port (port);
-}
-
-static SCM
-scwm_body_eval_str (void *body_data)
-{
-  char *string = (char *) body_data;
-  SCM port = scm_mkstrport (SCM_MAKINUM (0), gh_str02scm(string), 
-			    SCM_OPN | SCM_RDNG, "scwm_safe_eval_str");
-  return scwm_catching_load_from_port (port);
-}
+/* Hooks. */
 
 
 
-SCWM_PROC(safe_load, "safe-load", 1, 0, 0,
-           (SCM fname))
-     /** Load file FNAME while trapping and displaying errors.
-Each individual top-level-expression is evaluated separately and all
-errors are trapped and displayed.  You should use this procedure if
-you need to make sure most of a file loads, even if it may contain
-errors. */
-#define FUNC_NAME s_safe_load
-{
-  SCM_STACKITEM stack_item;
-  VALIDATE_ARG_STR(1,fname);
-  return scm_internal_cwdr_no_unwind(scwm_body_load, &fname,
-				     scm_handle_by_message_noexit, "scwm", 
-				     &stack_item);
-}
-#undef FUNC_NAME
+/* FIXDOC: We need a way to cross-reference concepts in docs. */
 
-SCM scwm_safe_load (char *filename)
-{
-  return safe_load(gh_str02scm(filename));
-}
+/**CONCEPT: Hooks
+  Hooks are used throughout scwm to provide a convenient mechanism for
+user callbacks on particular events. Fundamentally, a hook is just a
+variable that contains a list of procedures that are called in order
+when the relevant event occurs. However, several convenience macros
+are provided for manipulating hooks; see `add-hook!', `remove-hook!',
+`reset-hook!', and `run-hook'. 
+*/
 
-SCM scwm_safe_eval_str (char *string)
-{
-  SCM_STACKITEM stack_item;
-  return scm_internal_cwdr_no_unwind(scwm_body_eval_str, string,
-				     scm_handle_by_message_noexit, "scwm", 
-				     &stack_item);
-}
 
 /* Print warning message, and reset the hook */
 void
@@ -372,64 +298,52 @@ WarnBadHook(SCM hook)
   }
 }
 
-/* Hooks. */
-
-/* FIXDOC: We need a way to cross-reference concepts in docs. */
-
-/**CONCEPT: Hooks
-  Hooks are used throughout scwm to provide a convenient mechanism for
-user callbacks on particular events. Fundamentally, a hook is just a
-variable that contains a list of procedures that are called in order
-when the relevant event occurs. However, several convenience macros
-are provided for manipulating hooks; see `add-hook!', `remove-hook!',
-`reset-hook!', and `run-hook'. 
-*/
 
 #ifdef HAVE_SCM_MAKE_HOOK
 
-SCM call0_hooks(SCM hook)
+__inline__ SCM call0_hooks(SCM hook)
 {
-  scm_run_hook(hook,SCM_EOL);
+  return scm_run_hook(hook,SCM_EOL);
 }
 
-SCM call1_hooks(SCM hook, SCM arg1)
+__inline__ SCM call1_hooks(SCM hook, SCM arg1)
 {
-  scm_run_hook(hook,gh_list(arg1,SCM_UNDEFINED));
+  return scm_run_hook(hook,gh_list(arg1,SCM_UNDEFINED));
 }
 
-SCM call2_hooks(SCM hook, SCM arg1, SCM arg2)
+__inline__ SCM call2_hooks(SCM hook, SCM arg1, SCM arg2)
 {
-  scm_run_hook(hook,gh_list(arg1,arg2,SCM_UNDEFINED));
+  return scm_run_hook(hook,gh_list(arg1,arg2,SCM_UNDEFINED));
 }
 
-SCM call3_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3)
+__inline__ SCM call3_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3)
 {
-  scm_run_hook(hook,gh_list(arg1,arg2,arg3,SCM_UNDEFINED));
+  return scm_run_hook(hook,gh_list(arg1,arg2,arg3,SCM_UNDEFINED));
 }
 
-SCM call4_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
+__inline__ SCM call4_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
 {
-  scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,SCM_UNDEFINED));
+  return scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,SCM_UNDEFINED));
 }
 
-SCM call5_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
+__inline__ SCM call5_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
 {
-  scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,SCM_UNDEFINED));
+  return scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,SCM_UNDEFINED));
 }
 
-SCM call6_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
+__inline__ SCM call6_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
 {
-  scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,SCM_UNDEFINED));
+  return scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,SCM_UNDEFINED));
 }
 
-SCM call7_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
+__inline__ SCM call7_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
 {
-  scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,arg7,SCM_UNDEFINED));
+  return scm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,arg7,SCM_UNDEFINED));
 }
 
-SCM apply_hooks(SCM hook, SCM args)
+__inline__ SCM apply_hooks(SCM hook, SCM args)
 {
-  scm_run_hook(hook,args);
+  return scm_run_hook(hook,args);
 }
 
 #else
@@ -642,6 +556,97 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
   }
     
   return SCM_UNSPECIFIED;
+}
+
+
+/* Slightly tricky - we want to catch errors per expression, but only
+   establish a new dynamic root per load operation, as it's perfectly
+   OK for a file to invoke a continuation created by a different
+   expression in the file as far as scwm is concerned. So we set a
+   dynamic root for the whole load operation, but also catch on each
+   eval. */
+
+static SCM
+scwm_body_eval_x (void *body_data)
+{
+  SCM expr = *(SCM *) body_data;
+  return scm_eval_x (expr);
+}
+
+
+__inline__ static SCM 
+scwm_catching_eval_x (SCM expr) {
+  return scm_internal_stack_catch (SCM_BOOL_T, scwm_body_eval_x, &expr,
+			  scwm_handle_error, "scwm");
+}
+
+static int clnsProcessingHook = 5;
+
+__inline__ static SCM 
+scwm_catching_load_from_port (SCM port)
+{
+  SCM expr;
+  SCM answer = SCM_UNSPECIFIED;
+  int i = 0;
+
+  while (!SCM_EOF_OBJECT_P(expr = scm_read (port))) {  
+    answer = scwm_catching_eval_x (expr);
+    if (++i % clnsProcessingHook == 0) {
+      call1_hooks(load_processing_hook, gh_int2scm(i));
+    }
+  }
+  scm_close_port (port);
+
+  return answer;
+}
+
+static SCM
+scwm_body_load (void *body_data)
+{
+  SCM filename = *(SCM *) body_data;
+  SCM port = scm_open_file (filename, gh_str02scm("r"));
+  return scwm_catching_load_from_port (port);
+}
+
+static SCM
+scwm_body_eval_str (void *body_data)
+{
+  char *string = (char *) body_data;
+  SCM port = scm_mkstrport (SCM_MAKINUM (0), gh_str02scm(string), 
+			    SCM_OPN | SCM_RDNG, "scwm_safe_eval_str");
+  return scwm_catching_load_from_port (port);
+}
+
+
+
+SCWM_PROC(safe_load, "safe-load", 1, 0, 0,
+           (SCM fname))
+     /** Load file FNAME while trapping and displaying errors.
+Each individual top-level-expression is evaluated separately and all
+errors are trapped and displayed.  You should use this procedure if
+you need to make sure most of a file loads, even if it may contain
+errors. */
+#define FUNC_NAME s_safe_load
+{
+  SCM_STACKITEM stack_item;
+  VALIDATE_ARG_STR(1,fname);
+  return scm_internal_cwdr_no_unwind(scwm_body_load, &fname,
+				     scm_handle_by_message_noexit, "scwm", 
+				     &stack_item);
+}
+#undef FUNC_NAME
+
+SCM scwm_safe_load (char *filename)
+{
+  return safe_load(gh_str02scm(filename));
+}
+
+SCM scwm_safe_eval_str (char *string)
+{
+  SCM_STACKITEM stack_item;
+  return scm_internal_cwdr_no_unwind(scwm_body_eval_str, string,
+				     scm_handle_by_message_noexit, "scwm", 
+				     &stack_item);
 }
 
 SCWM_PROC(set_load_processing_frequency_x, "set-load-processing-frequency!", 1, 0, 0,

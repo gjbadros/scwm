@@ -546,7 +546,7 @@ scwm_main(int argc, char **argv)
   /* getopt vars */
   int getopt_ret;
   extern char *optarg;
-  extern int optind, opterr, optopt;
+  extern int /* optind, opterr, */ optopt;
 
   char *display_string;
   char message[255];

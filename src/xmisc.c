@@ -22,8 +22,9 @@
 #include "image.h"
 #include "xproperty.h"
 
-
-Window JunkChild, JunkRoot;
+/* GJB:FIXME:: move the Junk vars from scwm.c into here --
+   be sure they aren't used anywhere else, and make them static in 
+   this file */
 unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
 
 XGCValues Globalgcv;

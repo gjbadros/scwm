@@ -109,6 +109,7 @@ extern SCM sym_click, sym_root_window;
         } else if (WINDOWP(arg)) {                                \
           w = PSWFROMSCMWIN(arg)->w;                              \
         } else {                                                  \
+          w = None;                                               \
           SCWM_WRONG_TYPE_ARG(pos, arg);                          \
         }                                                         \
   } while (0)
