@@ -1,3 +1,14 @@
+1999-03-23  Sam Steingold  <sds@goems.com>
+
+	* scwm.el (scwm-eval-buffer): new variable.
+	(scwm-eval-sexp): use it; when the output to minibuffer is longer
+	than 1 line, display `scwm-eval-buffer'.
+	(scwm-eval-rectangle): new function: eval rectangle.
+	(scwm-uncomment-string): new function: remove comments from
+	line starts in the string.
+	(scwm-eval-uncommenting): uncomment the region (buffer is NOT
+	modified!) and eval it.
+
 1999-03-18  Sam Steingold  <sds@goems.com>
 
 	* scwm.el: added scheme-mode compatibility bindings.

@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1999-03-18 Thu 10:32:51 EST sds@eho.eaglets.com>
+;; File: <scwm.el - 1999-03-23 Tue 14:26:05 EST sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -116,7 +116,8 @@ See also `with-temp-buffer'."
                          (kill-buffer standard-output))))))
  (unless (fboundp 'with-face)
    (defmacro with-face (face &rest body)
-     "Execute body, which prints to `standard-output', then highlight the output."
+     "Execute body, which prints to `standard-output',
+then highlight the output."
      (let ((pp (gensym "wf")))
        `(let ((,pp (with-current-buffer standard-output (point))))
          ,@body
@@ -171,11 +172,13 @@ If you are using Emacs 20.2 or earlier and want to use fontifications,
 you have to (require 'font-lock) first.  Sorry.")
 
 (define-key scwm-mode-map [(control j)] 'scwm-eval-last)
-(define-key scwm-mode-map [(control x) (control e)] 'scwm-eval-last)
-(define-key scwm-mode-map [(control c) (control s)] 'scwm-run)
-(define-key scwm-mode-map [(control c) (control z)] 'scwm-run)
-(define-key scwm-mode-map [(control c) (control r)] 'scwm-eval-region)
 (define-key scwm-mode-map [(control c) (control l)] 'scwm-load-file)
+(define-key scwm-mode-map [(control c) (control n)] 'scwm-eval-rectangle)
+(define-key scwm-mode-map [(control c) (control r)] 'scwm-eval-region)
+(define-key scwm-mode-map [(control c) (control s)] 'scwm-run)
+(define-key scwm-mode-map [(control c) (control u)] 'scwm-eval-uncommenting)
+(define-key scwm-mode-map [(control c) (control z)] 'scwm-run)
+(define-key scwm-mode-map [(control x) (control e)] 'scwm-eval-last)
 (define-key scwm-mode-map [(control h) (control s)] 'scwm-documentation)
 (define-key scwm-mode-map [(control h) (control a)] 'scwm-apropos)
 (define-key scwm-mode-map [(control h) (control f)]
@@ -227,6 +230,9 @@ All evaluation goes through this procedure."
 If this is nil, the output from `scwm-eval-sexp' is inserted into the
 current buffer, otherwise it goes to the minibuffer.")
 
+(defvar scwm-eval-buffer "*scwm-eval*"
+  "The buffer where the `evaluation to minibuffer' actually takes place.")
+
 ;;;###autoload
 (defun scwm-eval-sexp (sexp mb-p)
   "Eval the sexp.  output to the current buffer or minibuffer.
@@ -240,8 +246,14 @@ meaning of the second argument is reversed."
          (newline-and-indent)
          (scwm-eval sexp t)
          (newline))
-        (t (message "%s" (with-output-to-string
-                           (scwm-eval sexp standard-output))))))
+        (t (with-current-buffer (get-buffer-create scwm-eval-buffer)
+             (erase-buffer)
+             (scwm-eval sexp t)
+             (let ((lines (count-lines (point-min) (point-max))))
+               (cond ((= lines 0)
+                      (message "[scwm command completed wuth no output]"))
+                     ((= lines 1) (message "%s" (buffer-string)))
+                     (t (display-buffer (current-buffer)))))))))
 
 ;;;###autoload
 (defun scwm-eval-last (mb-p)
@@ -255,6 +267,31 @@ meaning of the second argument is reversed."
   "Evaluate the region with `scwm-eval-sexp'."
   (interactive "r\nP")
   (scwm-eval-sexp (buffer-substring-no-properties beg end) mb-p))
+
+;;;###autoload
+(defun scwm-eval-rectangle (beg end mb-p)
+  "Evaluate the rectangle with `scwm-eval-sexp'."
+  (interactive "r\nP")
+  (scwm-eval-sexp ;; xemacs doesn't like `set-text-properties'. so what?
+   (mapconcat (lambda (str) (set-text-properties 0 (length str) nil str) str)
+              (extract-rectangle beg end) "\n")
+   mb-p))
+
+(defun scwm-uncomment-string (string)
+  "Uncomment the string."
+  (with-temp-buffer
+    (insert string)
+    (goto-char 0)
+    (while (re-search-forward "^[; \t]+" nil t)
+      (replace-match ""))
+    (buffer-string)))
+
+;;;###autoload
+(defun scwm-eval-uncommenting (beg end mb-p)
+  "Evaluate the region, uncommenting it first, with `scwm-eval-sexp'."
+  (interactive "r\nP")
+  (scwm-eval-sexp
+   (scwm-uncomment-string (buffer-substring-no-properties beg end)) mb-p))
 
 ;;;###autoload
 (defun scwm-load-file (file mp-b)
@@ -489,16 +526,23 @@ Procedure Index or in another manual found via the variable
 
 ;; fontifications
 ;; --------------
-(cond ((boundp 'running-xemacs)
-       (put 'scwm-mode 'font-lock-defaults
-            (get 'scheme-mode 'font-lock-defaults)))
-      ((and (string-lessp emacs-version "20.3")
-            (boundp 'font-lock-defaults-alist))
-       (unless (assq 'scwm-mode font-lock-defaults-alist)
-         (setq font-lock-defaults-alist
-               (cons (cons 'scwm-mode
-                           (cdr (assq 'scheme-mode font-lock-defaults-alist)))
-                     font-lock-defaults-alist)))))
+(let ((font-keywds
+       (cond ((boundp 'running-xemacs)
+              (put 'scwm-mode 'font-lock-defaults
+                   (get 'scheme-mode 'font-lock-defaults)))
+             ((and (string-lessp emacs-version "20.3")
+                   (boundp 'font-lock-defaults-alist))
+              (or (assq 'scwm-mode font-lock-defaults-alist)
+                  (cdar (setq font-lock-defaults-alist
+                              (cons (cons 'scwm-mode
+                                          (cdr (assq
+                                                'scheme-mode
+                                                font-lock-defaults-alist)))
+                                    font-lock-defaults-alist)))))
+             (scheme-font-lock-keywords-2))))
+  (when font-keywds
+    (nconc font-keywds
+           (list (cons "\\<&\\sw+\\>" font-lock-builtin-face)))))
 
 (provide 'scwm)
 ;;; scwm ends here
