@@ -20,16 +20,27 @@ RM=@RM@
 
 RC=system${scwm_rc}
 
+
+
 all: 
 
 depend:
 
 # XXX - this way of doing it sucks. Fix it later when we figure out Automake.
 # Or something.
+# This will work with GNU make, but I don't know about other makes --11/10/97 gjb
+#INSTALL_SCHEME_FILES = $(wildcard *.scm)
+# for i in $(INSTALL_SCHEME_FILES); do \
+#    ${INSTALL_DATA} $$i ${scwm_scheme_dir} \
+# done
 install: 
 	$(mkinstalldirs) ${scwm_scheme_dir}
 	${INSTALL_DATA} base.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} decor.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} face.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} fvwm-compat.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} optargs.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} style-options.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} style.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} wininfo.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} winlist.scm ${scwm_scheme_dir} 
