@@ -180,6 +180,7 @@ init_scwm_procs(void)
   gh_new_procedure("set-button-mwm-flag!", set_button_face_x, 2, 0, 0);
   gh_new_procedure("set-border-face!",set_border_face_x, 1, 1, 0); 
   gh_new_procedure("add-input-hook",add_input_hook,2,0,0);
+  gh_new_procedure("scwm-version", scwm_version, 0, 0, 0);
 }
 
 

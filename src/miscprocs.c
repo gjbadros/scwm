@@ -14,6 +14,7 @@
 #include "util.h"
 #include "decor.h"
 #include "font.h"
+#include "../version.h"
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
 
@@ -345,6 +346,12 @@ set_mouse_focus_click_raises_x(SCM val)
   }
   Scr.MouseFocusClickRaises= SCM_NFALSEP(val) ? True : False;
   return SCM_UNSPECIFIED;  
+}
+
+SCM
+scwm_version ()
+{
+  return gh_str02scm(VERSION);
 }
 
 

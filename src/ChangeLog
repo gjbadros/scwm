@@ -1,5 +1,8 @@
 Fri Mar 20 00:33:33 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* miscprocs.c, miscprocs.h, scmprocs.c: Added scwm-version
+ 	procedure.
+
 	* color.c, color.h: Color object rewrite. The followinf new
  	features are available: colors are properly garbage collected, and
  	are freed when no longer in use. Changing colors a lot will no

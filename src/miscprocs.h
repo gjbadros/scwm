@@ -28,6 +28,8 @@ SCM set_click_to_focus_passes_click_x(SCM val);
 SCM set_click_to_focus_raises_x(SCM val);
 SCM set_mouse_focus_click_raises_x(SCM val);
 
+SCM scwm_version();
+
 #endif	/* MISCPROCS_H */
 
 /* Local Variables: */
