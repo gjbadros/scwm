@@ -47,6 +47,9 @@ typedef struct MenuItem_tag
   SCM scmAction;		/* action to perform */
   SCM scmHover;			/* hover hook */
   SCM scmUnhover;		/* un-hover hook */
+  SCM scmBGColor;		/* background color */
+  SCM scmFGColor;		/* foreground/text color */
+  SCM scmFont;  		/* font */
   char *pchHotkeyPreferences;	/* ordered list of hotkeys */
   int cchHotkeyPreferences;	/* number of hotkeys selected */
   Bool fIsSeparator;		/* Is this a separator? */

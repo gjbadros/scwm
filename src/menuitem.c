@@ -45,6 +45,9 @@ mark_menuitem(SCM obj)
   GC_MARK_SCM_IF_SET(pmi->scmAction);
   GC_MARK_SCM_IF_SET(pmi->scmHover);
   GC_MARK_SCM_IF_SET(pmi->scmUnhover);
+  GC_MARK_SCM_IF_SET(pmi->scmBGColor);
+  GC_MARK_SCM_IF_SET(pmi->scmFGColor);
+  GC_MARK_SCM_IF_SET(pmi->scmFont);
 
   return SCM_BOOL_F;
 }
@@ -185,11 +188,81 @@ For a higher-level interface to this function, see `menuitem'. */
   pmi->fIsSeparator =
     (action == SCM_BOOL_F && pmi->cchLabel == 0 && pmi->cchExtra == 0 &&
      picture_left == SCM_BOOL_F && picture_above == SCM_BOOL_F);
+  
+  pmi->scmBGColor = SCM_BOOL_F;
+  pmi->scmFGColor = SCM_BOOL_F;
+  pmi->scmFont = SCM_BOOL_F;
 
   SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_menuitem,pmi);
   return answer;
 }
 #undef FUNC_NAME
+
+
+SCWM_PROC(set_menuitem_colors_x,"set-menuitem-colors!",3,0,0,
+          (SCM menuitem, SCM fg, SCM bg))
+     /** Sets the fg and bg colors of MENUITEM to FG and BG respectively.
+Use #f for either/both component to have MENUITEM inherit that color
+from the menu in which it is embedded. */
+#define FUNC_NAME s_set_menuitem_colors_x
+{
+  MenuItem *pmi;
+  VALIDATE_ARG_MENUITEM_COPY(1,menuitem,pmi);
+  if (!UNSET_SCM(fg)) {
+    VALIDATE_ARG_COLOR_OR_SYM(2,fg);
+    pmi->scmFGColor = fg;
+  }
+  if (!UNSET_SCM(bg)) {
+    VALIDATE_ARG_COLOR_OR_SYM(3,bg);
+    pmi->scmBGColor = bg;
+  }
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(menuitem_colors,"menuitem-colors",1,0,0,
+          (SCM menuitem))
+     /** Returns a list of the fg and bg colors for MENUITEM.
+Will return #f for either/both components if MENUITEM inherits its color from
+the menu in which it is embedded. */
+#define FUNC_NAME s_menuitem_colors
+{
+  MenuItem *pmi;
+  VALIDATE_ARG_MENUITEM_COPY(1,menuitem,pmi);
+  return gh_list(pmi->scmFGColor,pmi->scmBGColor,SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(set_menuitem_font_x,"set-menuitem-font!",2,0,0,
+          (SCM menuitem, SCM font))
+     /** Sets the font of MENUITEM to FONT.
+Use #f to have MENUITEM inherit its font
+from the menu in which it is embedded. */
+#define FUNC_NAME s_set_menuitem_font_x
+{
+  MenuItem *pmi;
+  VALIDATE_ARG_MENUITEM_COPY(1,menuitem,pmi);
+  if (!UNSET_SCM(font)) {
+    VALIDATE_ARG_FONT_OR_SYM(2,font);
+    pmi->scmFont = font;
+  }
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(menuitem_font,"menuitem-font",1,0,0,
+          (SCM menuitem))
+     /** Returns the font of MENUITEM.
+Returns #f if MENUITEM inherits its font
+from the menu in which it is embedded. */
+#define FUNC_NAME s_menuitem_font
+{
+  MenuItem *pmi;
+  VALIDATE_ARG_MENUITEM_COPY(1,menuitem,pmi);
+  return pmi->scmFont;
+}
+#undef FUNC_NAME
+
 
 
 MAKE_SMOBFUNS(menuitem);

@@ -309,16 +309,26 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
      menu item; maybe the exported PaintMenuItem should set up the GCs
      and then call the real PaintMenuItem, and PaintMenu should set
      them up before looping over the real PaintMenuItem */
-  
+
+
   MakeGCs(pmd, scfont);
 
   ShadowGC = MenuShadowGC;
   ReliefGC = Scr.d_depth < 2 ? MenuShadowGC: MenuReliefGC;
   
   /* Erase any old reliefs indicated selectedness */
-  XClearArea(dpy, w,
-	     x_offset-MENU_ITEM_RR_SPACE-1,
-	     y_offset, width+MENU_ITEM_RR_SPACE+1, item_height, False);
+  if (UNSET_SCM(pmi->scmBGColor)) {
+    /* inherit menu's bg color */
+    XClearArea(dpy, w,
+               x_offset-MENU_ITEM_RR_SPACE-1,
+               y_offset, width+MENU_ITEM_RR_SPACE+1, item_height, False);
+  } else {
+    Pixel bg = DYNAMIC_SAFE_COLOR(pmi->scmBGColor);
+    SetGCFg(Scr.ScratchGC1,bg);
+    XFillRectangle(dpy, w, Scr.ScratchGC1, 
+                   x_offset-MENU_ITEM_RR_SPACE-1,
+                   y_offset, width+MENU_ITEM_RR_SPACE+1, item_height);
+  }
 
   /* Draw the shadows for the absolute outside of the menus
      This stuff belongs in here, not in PaintMenu, since we only
@@ -371,7 +381,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
       int cpixExtraYOffset = (item_height - psimgLeft->height) / 2;
       DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, MenuGC);
     }
-
+    
     /* FIXJTL: don't turn on till title handling is done */
 #if 0
     if (mis == MIS_Grayed) {
@@ -382,6 +392,36 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 #else
     currentGC = MenuGC;
 #endif
+
+    { /* scope */
+      Pixel fg = DYNAMIC_SAFE_COLOR(pmi->scmFGColor);
+      Pixel bg = DYNAMIC_SAFE_COLOR(pmi->scmBGColor);
+#ifndef I18N
+      scwm_font *pf = DYNAMIC_SAFE_FONT(pmi->scmFont);
+#endif
+      
+      if (fg || bg || fg) {
+        XGCValues gcv;
+        unsigned long gcm = 0;
+
+        if (fg) {
+          gcm |= GCForeground;
+          gcv.foreground = fg;
+        }
+        if (bg) { 
+          gcm |= GCBackground;
+          gcv.background = bg;
+        }
+#ifndef I18N
+        if (pf) {
+          gcm |= GCFont;
+          gcv.font = pf->xfs->fid;
+        }
+#endif
+        XChangeGC(dpy, Scr.ScratchGC1, gcm, &gcv);
+        currentGC = Scr.ScratchGC1;
+      }
+    }
   
     x_offset += pmdi->cpixLeftPicWidth;
 
