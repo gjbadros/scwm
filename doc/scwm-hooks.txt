@@ -114,7 +114,7 @@ client-message-hook (4 args)
 This hook is invoked whenever Scwm receives an X/11 client message.
 It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), 
 and the vector of data. 
-[From scwm/events.c:190]
+[From scwm/events.c:191]
 
 
 deiconify-hook (2 args)
@@ -323,7 +323,7 @@ window-enter-hook (1 args)
 This hook is invoked whenever the mouse pointer enters a top-level window.
 It is called with one argument, the window object of the window just
 entered. 
-[From scwm/events.c:159]
+[From scwm/events.c:160]
 
 
 window-focus-change-hook (1 args)
@@ -331,7 +331,16 @@ window-focus-change-hook (1 args)
 This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
 that now has the focus, or #f if no window now has the focus. 
+See also `window-focus-lost-hook'. 
 [From scwm/events.c:154]
+
+
+window-focus-lost-hook (1 args)
+- 
+This hook is invoked whenever the focus is lost on a window.
+It is called with one argument, the window object of the window
+that just lost the keyboard focus. See also `window-focus-change-hook'. 
+[From scwm/focus.c:46]
 
 
 window-fully-obscured-hook (1 args)
@@ -339,7 +348,7 @@ window-fully-obscured-hook (1 args)
 Invoked when window receives a VisibilityFullyObscured event.
 The hook procedures are invoked with one argument, the window object
 of the window that is now fully obscured. 
-[From scwm/events.c:169]
+[From scwm/events.c:170]
 
 
 window-leave-hook (1 args)
@@ -347,7 +356,7 @@ window-leave-hook (1 args)
 This hook is invoked whenever the mouse pointer leaves a top-level window.
 The hook procedures are invoked with one argument, the window object
 of the window just left. 
-[From scwm/events.c:164]
+[From scwm/events.c:165]
 
 
 window-partially-obscured-hook (1 args)
@@ -358,7 +367,7 @@ object of the window that is now partially obscured.  Beware that this
 event happens more often than you might expect and an action procedure
 attached here should be very careful about manipulating windows in a way
 that might cause more Visibility events. 
-[From scwm/events.c:174]
+[From scwm/events.c:175]
 
 
 window-property-change-hook (4 args)
@@ -378,7 +387,7 @@ of the window that is now fully visible. Beware that this
 event happens more often than you might expect and an action procedure
 attached here should be very careful about manipulating windows in a way
 that might cause more Visibility events. 
-[From scwm/events.c:182]
+[From scwm/events.c:183]
 
 
 X-DestroyNotify-hook (1 args)
