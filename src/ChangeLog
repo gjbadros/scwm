@@ -2,6 +2,41 @@ Fri Mar 27 12:26:18 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c: Include callacks.h.
 
+Thu Mar 26 19:04:00 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* add_window.c: Added some comments and debug code
+	
+	* scwm.c, binding.h, binding.c: Patch from Robert Bihlmeyer
+ 	<robbe@orcus.priv.at> to make the modifier keys more ICCCM
+ 	compliant;  he wrote:
+
+	The following patch puts the modifier masks in variables, which
+ 	are initialized by a new function `init_modifiers()'. This should
+ 	be more compliant.
+
+	Scwm will still lose, if the user changes modifiers after it has
+ 	started. One would have to act accordingly on MappingNotify
+ 	events; simply calling `init_modifiers()' is not enough, since the
+ 	now wrong modifier-masks are already stored in the key
+ 	bindings. So a re-evaluation of these is necessary, which is
+ 	beyond my understanding of scwm <g>. One could also say: so don't
+ 	do that.
+
+	* events.c (send_button_press): Fix this function -- it was doing
+	nothing because it wasn't filling in x,y and x_root,y_root of the
+	synthetic event properly -- it's been broken for a long time, it seems.
+
+	* decorations.c: Reset the fBorder and fTitle to false before
+	turning them on again conditionally;  avoids fTitle being
+	incorrectly set to True which was causing X errors when transient
+	windows popped up since their title window was given an illegal
+	height of 0
+	
+	* window.c (CopySetCommonFlags): Added this function; simulates
+	or-ing in the old bit mask of just the "common" flags
+	
+	* window.h: Added proto for CopySetCommonFlags(..)
+
 Thu Mar 26 18:15:59 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c: Fix error redirection to deal with the standard guile
