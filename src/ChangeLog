@@ -1,3 +1,17 @@
+Sat Jul 17 12:53:33 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xmisc.h, xmisc.c (NFromXPropertyCardinal): Added this fn.
+
+	* window.c: Move sticky windows off of the viewport back onto the
+	viewport (but not to 0,0 like the old ifdef-fed out code did).
+	Warn user that we did this via scwm_msg(ERR,..).
+
+	* scwm.c, add_window.c: Use SCWM_VIEWPORT_OFFSET_X/Y Root window
+ 	properties to correct for position of windows that were not on the
+ 	viewport during a previous scwm termination (e.g., when
+ 	restarting).  Also use them to go back to that viewport at
+ 	startup.
+
 Sat Jul 17 03:09:33 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* virtual.c (MoveViewport_internal): Added comment.
@@ -68,7 +82,7 @@ Fri Jul 16 17:56:59 1999  Greg Badros  <gjb@cs.washington.edu>
 	* events.c: Have commented out code using XTestFakeKeyEvent --
 	does the wrong thing since Scwm still grabs the key. Duh.
 
-	* deskpage.c: Fix validate bug in set-desk-size!.  Thanks Jay XXXX.
+	* deskpage.c: Fix validate bug in set-desk-size!.  Thanks Jay Belanger.
 
 Thu Jul 15 09:33:36 1999  Greg Badros  <gjb@cs.washington.edu>
 
