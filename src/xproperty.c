@@ -103,7 +103,7 @@ static int Set32Value(void **dest, long el)
 SCWM_PROC(X_property_set_x, "X-property-set!", 3, 3, 0,
 	  (SCM win, SCM name, SCM value, SCM type, SCM format, SCM action))
      /** Set X property NAME on window WIN to VALUE.
-WIN is the window to set the X property on, or 'root-window.
+WIN is the window to set the X property on, an X window id, or 'root-window.
 NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to "STRING".
 FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
@@ -122,6 +122,9 @@ value. */
 
   if (win == sym_root_window) {
     w = Scr.Root;
+  } else if (gh_number_p(win)) {
+    assert(sizeof(Window) == sizeof(unsigned long));
+    w = gh_scm2ulong(win);
   } else if (WINDOWP(win)) {
     w = PSWFROMSCMWIN(win)->w;
   } else {
@@ -239,7 +242,7 @@ unsigned char *GetXProperty(Window win, Atom prop, Bool del,
 SCWM_PROC(X_property_get, "X-property-get", 2, 1, 0,
 	  (SCM win, SCM name, SCM consume))
      /** Get X property NAME of window WIN.
-WIN is the window to check, or 'root-window.
+WIN is the window to check, an X window id, or 'root-window.
 NAME is a string or an X/11 atom (long).
 If CONSUME is #t, the X property is deleted after getting it. Default is
 not to delete.
@@ -263,6 +266,9 @@ If the X property could be found, a list "(value type format)" is returned.
 
   if (win == sym_root_window) {
     w = Scr.Root;
+  } else if (gh_number_p(win)) {
+    assert(sizeof(Window) == sizeof(unsigned long));
+    w = gh_scm2ulong(win);
   } else if (WINDOWP(win)) {
     w = PSWFROMSCMWIN(win)->w;
   } else {
@@ -325,7 +331,7 @@ If the X property could be found, a list "(value type format)" is returned.
 SCWM_PROC(X_property_delete_x, "X-property-delete!", 2, 0, 0,
 	  (SCM win, SCM name))
      /** Delete X property NAME of window WIN.
-WIN is the window to check, or 'root-window.
+WIN is the window to check, an X window id, or 'root-window.
 NAME is a string. The return value is unspecified. */
 #define FUNC_NAME s_X_property_delete_x
 {
@@ -335,6 +341,9 @@ NAME is a string. The return value is unspecified. */
 
   if (win == sym_root_window) {
     w = Scr.Root;
+  } else if (gh_number_p(win)) {
+    assert(sizeof(Window) == sizeof(unsigned long));
+    w = gh_scm2ulong(win);
   } else if (WINDOWP(win)) {
     w = PSWFROMSCMWIN(win)->w;
   } else {
@@ -354,6 +363,40 @@ NAME is a string. The return value is unspecified. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC(X_properties, "X-properties", 1, 0, 0,
+	  (SCM win))
+  /** Returns a list of WIN's X property names.
+WIN is the window to query, an X window id, or 'root-window. */
+#define FUNC_NAME s_X_properties
+{
+  Atom *props;
+  Window w;
+  int n, i;
+  char *name;
+  SCM properties = SCM_EOL;
+
+  if (win == sym_root_window) {
+    w = Scr.Root;
+  } else if (gh_number_p(win)) {
+    assert(sizeof(Window) == sizeof(unsigned long));
+    w = gh_scm2ulong(win);
+  } else if (WINDOWP(win)) {
+    w = PSWFROMSCMWIN(win)->w;
+  } else {
+    SCWM_WRONG_TYPE_ARG(1, win);
+  }
+  props = XListProperties(dpy, w, &n);
+  if (props) {
+    for (i=n; i--; ) {
+      name = XGetAtomName(dpy, props[i]);
+      properties = gh_cons(gh_str02scm(name), properties);
+      XFree(name);
+    }
+    XFree(props);
+  }
+  return properties;
+}
+#undef FUNC_NAME
 
 /**CONCEPT: X atoms
    X windows allows certain entities (for example, X properties [FIXME: XREF
