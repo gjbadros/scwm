@@ -1,3 +1,21 @@
+Mon Mar 22 14:06:41 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* winprop.c, window.c, virtual.c, shutdown.c, resize.c, move.c,
+	image.c, module-interface.c, icons.c, events.c, deskpage.c,
+	constraint-primitives.cc, callbacks.c, add_window.c: Fix calls to
+	SCWM_HOOK macro to pass the additional argument.
+
+	* callbacks.h: Add extra arg (the # of args) to SCWM_HOOK, and use 
+	scm_make_named_hook if HAVE_SCM_MAKE_HOOK. (i.e., handle new style 
+	Guile hooks -- new == >1.3)
+	
+	* scwm.c: Do not set! the *suppress-old-style-hook-warning*
+	variable as new-style hooks are now properly handled (I hope, but
+	largely untested).
+
+	* menu.c: Fix documentation bug -- do not use <keysym> in a doc
+	comment as that is an sgml tag.
+
 Fri Mar 19 15:09:18 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* binding.c: Make context_strings global so it can be closer to

@@ -1,0 +1,20 @@
+Mon Mar 22 12:04:13 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Wrote fvwm2rc-to-scwmrc and converted first version. Since it
+ 	rained yesterday here in often-sunny Melbourne, I ended up 
+	coding a fvwm2rc translator in Perl, based on the design I've
+	rambled on a bit about here.  I've just committed my first go at
+	it, which is only kinda-sorta tested against RedHat 5.x's
+	system.fvwm2rc.  It seems to pretty much do the right thing, and
+	handles *all* of system.fvwm2rc, converting to a pretty usable
+	.scwmrc.  Numerous commands conversions aren't yet implemented,
+	but the framework is all there and it shouldn't  be that hard to
+	finish off (I just don't have time right now).
+ 
+        Note that the converter puts fvwm2 functions where they are first
+	encountered (unless you give it the '-1' option to restrict it to
+	a single pass and reduce memory consumption).  Also note that
+	menus with pixmaps, sub menus, modules, functions, bindings, and
+	more are all attempted to be preserved.
+
+
