@@ -535,28 +535,32 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (define (visible-xterm? w)
   (and (visible? w)
        (wildcard-match? "xterm" w)))
-(bind-key 'all (super "F9") (lambda () (next-window #:only visible-xterm?
-					       #:except iconified?)))
-(bind-key 'all (super "F10") (lambda () (prev-window #:only visible-xterm?
-						#:except iconified?)))
-(bind-key 'all (super "S-F9") (lambda () (next-window #:only xterm?
-						 #:except iconified?)))
-(bind-key 'all (super "S-F10") (lambda () (prev-window #:only xterm?
-						  #:except iconified?)))
-(bind-key 'all (super-kp "Left")
-	  (lambda () (prev-window #:only visible? #:except iconified?
-				  #:proc warp-to-window)))
-(bind-key 'all (super-kp "Right")
-	  (lambda () (next-window #:only visible? #:except iconified?
-				  #:proc warp-to-window)))
+(define (unfocusable? w)
+  (or (equal? (get-window-focus w) 'none)
+      (equal? (get-window-focus w) 'click)))
+(define (iconified-or-unfocusable? w)
+  (or (iconified? w)
+      (unfocusable? w)))
 (define (focus-raise . args)
   (apply focus args)
   (apply raise-window args))
-(bind-key 'all (super-kp "Up")
-	  (lambda () (prev-window #:only visible? #:proc focus-raise)))
-(bind-key 'all (super-kp "Down")
-	  (lambda () (next-window #:only visible? #:proc focus-raise)))
+
+(define (bind-circulate fwd bwd . args)
+  (bind-key 'all fwd (lambda () (apply next-window args)))
+  (bind-key 'all bwd (lambda () (apply prev-window args))))
+
+(bind-circulate (super "F9") (super "F10") 
+		#:only visible-xterm? #:except iconified-or-unfocusable?)
+(bind-circulate (super "S-F9") (super "S-F10") 
+		#:only xterm? #:except iconified-or-unfocusable?)
+(bind-circulate (super-kp "Left") (super-kp "Right") 
+		#:only visible? #:except iconified-or-unfocusable?
+		#:proc warp-to-window)
+(bind-circulate (super-kp "Up") (super-kp "Down")
+		#:only visible? #:except unfocusable? #:proc focus-raise)
+
 (bind-key 'all (super "space") toggle-focus)
+
 ; desk switching
 (define focused-windows ())
 
