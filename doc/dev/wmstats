@@ -39,3 +39,6 @@ enlightenment:	  127528	5468	    760
 
 * These two binaries are so huge probably solely because they were not
 stripped as installed.
+
+
+See mem-usage for Scwm info.
