@@ -1748,10 +1748,9 @@ union of all other window managers!
 (define scwm-messages-window (find-window-by-class-resource "XTerm" "scwmmessages"))
 
 (if scwm-messages-window
-    (with-window scwm-messages-window
-		 (animated-resize-window 640 84)
-		 (animated-move-to 0 (y- (w%y 100)))
-		 (set-window-gravity! 'southwest)))
+    (begin
+      (animated-resize-window 640 84 scwm-messages-window 0 (y- (w%y 100)))
+      (set-window-gravity! 'southwest scwm-messages-window)))
 
 (debug-display " *** `scwmrc' processed.\n")
 
