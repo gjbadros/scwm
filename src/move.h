@@ -27,10 +27,6 @@ void Keyboard_shortcuts(XEvent * Event, int ReturnEvent,
 Window WFrameOrIcon(ScwmWindow *psw);
 Bool InteractiveMove(ScwmWindow *psw, Bool fOpaque, int *FinalX, int *FinalY);
 
-void DisplayMessage(const char *sz, Bool fRelief);
-void MapMessageWindow();
-void UnmapMessageWindow();
-
 #endif MOVE_H
 
 /* Local Variables: */

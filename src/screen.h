@@ -194,7 +194,6 @@ typedef struct ScreenInfo {
 
   ScwmWindow ScwmRoot;		/* the head of the scwm window list */
   Window Root;			/* the root window */
-  Window MsgWindow;		/* the resize dimensions window */
   Window NoFocusWin;		/* Window which will own focus when no other
 				 * windows have it */
 #ifndef NON_VIRTUAL

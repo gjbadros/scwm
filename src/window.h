@@ -341,6 +341,11 @@ SCM make_window(ScwmWindow *psw);
 void move_finalize(Window w, ScwmWindow * psw, int x, int y);
 void move_finalize_virt(Window w, ScwmWindow * psw, int x, int y);
 
+SCM convert_move_data(SCM x, SCM y, SCM win, char *func, 
+                       int *pStartX, int *pStartY,
+                       int *pDestX, int *pDestY,
+                       ScwmWindow **ppsw, Window *pw);
+
 void set_window_internal_title_height(ScwmWindow *psw, int nh);
 
 /* FIXGJB: this primitive should not be exposed in the interface, 

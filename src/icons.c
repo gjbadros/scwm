@@ -653,6 +653,7 @@ DeIconify(ScwmWindow *psw)
   if (!psw)
     return;
 
+  /* GJB:FIXME:: maybe comment this line out? */
   MovePswToCurrentPosition(psw);
   RaiseWindow(psw);
   /* now de-iconify transients */

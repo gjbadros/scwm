@@ -836,12 +836,18 @@ HandleClientMessage()
 void 
 HandleExpose()
 {
+  ExposeProc pExposeFunc = NULL;
+
   if (Event.xexpose.count != 0)
     return;
 
   DBUG((DBG,"HandleExpose", "Routine Entered"));
 
-  if (pswCurrent) {
+  
+  if ( XFindContext(dpy,Event.xany.window,ExposeWindowProcContext,(XPointer *)&pExposeFunc) == 0/* && pExposeFunc != NULL*/) {
+    (*pExposeFunc)( Event.xany.window );
+  }
+  else if (pswCurrent) {
     if ((Event.xany.window == pswCurrent->title_w)) {
       SetTitleBar(pswCurrent, (Scr.Hilite == pswCurrent), False);
     } else {

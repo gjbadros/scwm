@@ -905,29 +905,17 @@ SCWM_PROC(current_window_with_pointer, "current-window-with-pointer", 0, 0, 0,
 
 /* FIXGJB: it'd be nice to add an option to have the message window follow
    the pointer around! --07/25/98 gjb */
-SCWM_PROC(select_window_interactively, "select-window-interactively", 0, 1, 0,
-          (SCM msg))
-     /** Returns a window selected interactively while displaying MSG.
-Returns #f if no window was selected. Display no message if MSG not given. */
-#define FUNC_NAME s_select_window_interactively
+SCWM_PROC(select_window_interactively, "select-window-interactively-no-message", 0, 0, 0,
+          ())
+     /** Returns a window selected interactively.
+Returns #f if no window was selected.  Use `select-window-interactively' if you would
+like to display a message while the user selects a window. */
+#define FUNC_NAME s_select_window_interactively_no_message
 {
   ScwmWindow *psw = NULL;
-  char *sz = NULL;
-  Bool fWindow = False;
-  if (!UNSET_SCM(msg) && !gh_string_p(msg)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, msg);
-  }
-  if (gh_string_p(msg)) {
-    sz = gh_scm2newstr(msg, NULL);
-    MapMessageWindow();
-    DisplayMessage(sz, True);
-    fWindow = True;
-  }
+
   psw = PswSelectInteractively(dpy);
-  if (fWindow) {
-    FREE(sz);
-    UnmapMessageWindow();
-  }
+
   return psw? psw->schwin: SCM_BOOL_F;
 }
 #undef FUNC_NAME
@@ -2158,21 +2146,12 @@ specified. */
 #undef FUNC_NAME
 
 
-
-
-
 SCM 
 convert_move_data(SCM x, SCM y, SCM win, char *func, 
 		  int *pStartX, int *pStartY,
 		  int *pDestX, int *pDestY,
 		  ScwmWindow **ppsw, Window *pw)
 {
-  ScwmWindow *psw;
-  Window w;
-  Bool fMovePointer = False;
-  int startX, startY;
-  int destX, destY;
-
   VALIDATEN(win, 3, func);
 
   if (x != SCM_BOOL_F && !gh_number_p(x)) {
@@ -2180,11 +2159,6 @@ convert_move_data(SCM x, SCM y, SCM win, char *func,
   }
   if (y != SCM_BOOL_F && !gh_number_p(y)) {
     scm_wrong_type_arg(func, 2, y);
-  }
-
-  /* MS:FIXMS:GJB: Is this really a good idea? */
-  if (x == SCM_BOOL_F && y == SCM_BOOL_F) {
-    scm_misc_error(func,"Either X or Y must be a number",SCM_EOL);
   }
 
   *ppsw = PSWFROMSCMWIN(win);

@@ -54,39 +54,6 @@ static SCM interactive_move_new_position_hook;
 static SCM interactive_move_finish_hook;
 
 
-void
-MapMessageWindow()
-{
-  int w, h;
-  int x, y;
-  
-  if (!FXGetWindowSize(Scr.MsgWindow,&w,&h))
-    assert(False);
-
-  x = Scr.msg_window_x + (int) (Scr.msg_window_x_align * w);
-  y = Scr.msg_window_y + (int) (Scr.msg_window_y_align * h);
-
-  XMoveWindow(dpy, Scr.MsgWindow, x, y);
-  XMapRaised(dpy, Scr.MsgWindow);
-}
-
-void
-UnmapMessageWindow()
-{
-  XUnmapWindow(dpy, Scr.MsgWindow);
-}
-
-
-
-static void
-DisplayPosition(ScwmWindow *psw, int x, int y, Bool fRelief)
-{
-  char sz[30];
-  sprintf(sz, " %+-4d %+-4d ", x, y);
-  DisplayMessage(sz,fRelief);
-}
-
-
 #if 0 /* FIXGJB: remove old version */
 static void
 SnapCoordsToEdges(int *px, int *py, int width, int height, int bw, int resistance)
@@ -167,7 +134,6 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
   int xl, yt, paged, real_x, real_y, saved_x, saved_y; 
   
   /* show the size/position window */
-  MapMessageWindow();
 
   WXGetPointerWindowOffsets(Scr.Root, &xl, &yt);
   xl += XOffset;
@@ -186,7 +152,10 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
     saved_y = FRAME_Y_VP(psw);
     CassowaryEditPosition(psw);
   }
-  DisplayPosition(psw, saved_x, saved_y, True);
+
+  /* same hook is called identically before the iterations; see above */
+  call3_hooks(interactive_move_new_position_hook, psw->schwin,
+	      gh_int2scm(saved_x), gh_int2scm(saved_y));
 
   while (!finished) {
     /* block until there is an interesting event */
@@ -286,9 +255,11 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 	  real_y = FRAME_Y_VP(psw);
         }
 
+        /* same hook is called above, before the iterations begin */
 	call3_hooks(interactive_move_new_position_hook, psw->schwin,
 		    gh_int2scm(real_x), gh_int2scm(real_y));
-	DisplayPosition(psw, real_x, real_y, True);
+
+	/*DisplayPosition(psw, real_x, real_y, True);*/
 
         /* prevent window from lagging behind mouse when paging - mab */
 	if (paged == 0) {
@@ -334,74 +305,6 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
     
   *FinalX = WIN_VP_OFFSET_X(psw) + xl;
   *FinalY = WIN_VP_OFFSET_Y(psw) + yt;
-  UnmapMessageWindow();
-}
-
-
-
-
-/* FIXGJB: It'd be nice to make this facility available at the scheme level */
-
-/*
- * DisplayMessage - Display a string in the dimensions window
- *      psw - the current scwm window
- *      x, y    - position of the window
- */
-void 
-DisplayMessage(const char *sz, Bool fRelief)
-{
-  int textwidth = ComputeXTextWidth(XFONT(Scr.msg_window_font),sz, -1);
-  int winwidth = textwidth + SIZE_HINDENT*2;
-  int textheight = FONTHEIGHT(Scr.msg_window_font);
-  int winheight = textheight + SIZE_VINDENT*2;
-  int win_x, win_y;
-
-  GC gcMsg = Scr.ScratchGC2;
-  GC gcHilite = Scr.ScratchGC2;
-  GC gcShadow = Scr.ScratchGC3;
-  SCM scmFgRelief, scmBgRelief;
-  scmBgRelief = Scr.msg_window_shadow;
-  scmFgRelief = Scr.msg_window_hilite;
-
-  
-  if (scmFgRelief!=SCM_BOOL_F)
-    SetGCFg(gcHilite,XCOLOR(scmFgRelief));
-  else
-    SetGCFg(gcHilite,WhitePixel(dpy,Scr.screen));
-
-  if (scmBgRelief!=SCM_BOOL_F)
-    SetGCFg(gcShadow,XCOLOR(scmBgRelief));
-  else
-    SetGCFg(gcShadow,BlackPixel(dpy,Scr.screen));
-
-  win_x = Scr.msg_window_x + (int) (Scr.msg_window_x_align * winwidth);
-  win_y = Scr.msg_window_y + (int) (Scr.msg_window_y_align * winheight);
-
-  XMoveResizeWindow(dpy, Scr.MsgWindow, win_x, win_y, winwidth, winheight);
-
-  if (fRelief) {
-    XClearWindow(dpy, Scr.MsgWindow);
-    if (Scr.d_depth >= 2) {
-      RelieveRectangle(Scr.MsgWindow, 0, 0, winwidth, winheight,
-                       gcHilite, gcShadow);
-    }
-  } else {
-    XClearArea(dpy, Scr.MsgWindow, 0, 0, 
-               textwidth, textheight, False);
-  }
-
-  NewFontAndColor(gcMsg,XFONTID(Scr.msg_window_font),
-                  XCOLOR(Scr.msg_window_fg), XCOLOR(Scr.msg_window_bg)); 
-
-#ifdef I18N
-  XmbDrawString(dpy, Scr.MsgWindow, XFONT(Scr.msg_window_font),
-#else
-  XDrawString(dpy, Scr.MsgWindow, 
-#endif
-              gcMsg, SIZE_HINDENT, FONTY(Scr.msg_window_font) + SIZE_VINDENT,
-	      sz, strlen(sz));
-#define MATCH_EXTRA_LP_ABOVE )  /* crazy hack, but hey, it works --07/31/98 gjb */
-#undef MATCH_EXTRA_LP_ABOVE
 }
 
 
@@ -608,7 +511,9 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
 
   call1_hooks(interactive_move_start_hook, psw->schwin);
   moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY, fOpaque);
+  call3_hooks(interactive_move_new_position_hook, psw->schwin, gh_int2scm(*FinalX), gh_int2scm(*FinalY) );
   call1_hooks(interactive_move_finish_hook, psw->schwin);
+
   if (psw->fIconified) {
     psw->fIconMoved = True;
   }

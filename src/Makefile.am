@@ -36,6 +36,7 @@ scwm_SOURCES =  Grab.c \
                 miscprocs.c \
                 module-interface.c \
                 move.c \
+		message-window.c \
                 placement.c \
                 resize.c \
 		screen.c \
@@ -73,7 +74,7 @@ constraint-primitives.h menuitem.h system.h decor.h menulook.h util.h \
 decorations.h miscprocs.h virtual.h deskpage.h module-interface.h window.h \
 drawmenu.h module-types.h xmisc.h errors.h move.h window_fwd.h deskpage.h \
 move.h xmisc.h drawmenu.h placement.h xproperty.h errors.h resize.h xrm.h \
-events.h scm_init_funcs.h dbug_resize.h
+events.h scm_init_funcs.h dbug_resize.h message-window.h
 
 noinst_HEADERS += $(cassowary_headers) $(session_manager_headers)
 
@@ -86,10 +87,10 @@ scwm_DEPENDENCIES = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@
 INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 
 guile_snarfs = Grab.x add_window.x binding.x callbacks.x color.x \
-decor.x deskpage.x events.x face.x font.x image.x menu.x menuitem.x \
-miscprocs.x module-interface.x move.x placement.x resize.x \
-screen.x shutdown.x window.x xproperty.x xrm.x constraint-primitives.x \
-drawmenu.x menulook.x virtual.x icons.x
+constraint-primitives.x \
+decor.x deskpage.x drawmenu.x events.x face.x font.x icons.x image.x menu.x menuitem.x \
+menulook.x message-window.x miscprocs.x module-interface.x move.x placement.x resize.x \
+screen.x shutdown.x virtual.x window.x xproperty.x xrm.x
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
 	$(guile_snarfs)

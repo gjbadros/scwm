@@ -320,7 +320,6 @@ NAME is a string. The return value is unspecified. */
 {
   char *str;
   Atom aprop;
-  SCM value;
   Window w;
 
   if (win == sym_root_window) {

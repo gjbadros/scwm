@@ -39,178 +39,6 @@ static SCM interactive_resize_start_hook;
 static SCM interactive_resize_new_size_hook;
 static SCM interactive_resize_finish_hook;
 
-/* Create the small window to show the interactively-moved/resized window's
-   size/position */
-Window
-CreateMessageWindow(Pixel fg, Pixel bg) {
-  Window w;
-  const int width = 50; /* just some starting place-- DisplayMessage resizes */
-  XSetWindowAttributes attributes;
-  unsigned long valuemask = (CWBorderPixel | CWBackPixel | CWBitGravity);
-  attributes.border_pixel = fg;
-  attributes.background_pixel = bg;
-  attributes.bit_gravity = NorthWestGravity;
-
-  w = XCreateWindow(dpy, Scr.Root,
-                    0, 0, width, 
-                    (FONTHEIGHT(Scr.msg_window_font) + SIZE_VINDENT * 2),
-                    0, 0, CopyFromParent, (Visual *) CopyFromParent,
-                    valuemask, &attributes);
-  return w;
-}
-
-const double message_hilight_factor = 1.2;
-const double message_shadow_factor = 0.5;
-
-SCWM_PROC(set_message_window_attributes_x, "set-message-window-attributes!", 3, 0, 0,
-          (SCM font, SCM fg_color, SCM bg_color))
-    /** Set the attributes to be used for the message window.
-The font will be FONT, foreground color FG-COLOR, and background color BG-COLOR.
-This the window which is used to display the current size or position of the window
-being moved or resized interactively. */
-#define FUNC_NAME s_set_message_window_attributes_x
-{
-  int iarg = 1;
-  if (gh_string_p(font)) {
-    font = make_font(font);
-  }
-  if (!FONT_P(font)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, font);
-  }
-  VALIDATE_COLOR (fg_color, FUNC_NAME, iarg++);
-  VALIDATE_COLOR (bg_color, FUNC_NAME, iarg++);
-  Scr.msg_window_font=font;
-  Scr.msg_window_fg = fg_color;
-  Scr.msg_window_bg = bg_color;
-  Scr.msg_window_shadow=
-    adjust_brightness(Scr.msg_window_bg, message_shadow_factor);
-  Scr.msg_window_hilite=
-    adjust_brightness(Scr.msg_window_bg, message_hilight_factor);
-
-  XSetWindowBorder(dpy,Scr.MsgWindow,XCOLOR(Scr.msg_window_fg));
-  XSetWindowBackground(dpy,Scr.MsgWindow,XCOLOR(Scr.msg_window_bg));
-  return SCM_UNDEFINED;
-}
-#undef FUNC_NAME
-
-SCWM_PROC(set_message_window_position_x, "set-message-window-position!", 4, 0, 0,
-          (SCM x, SCM y, SCM x_align, SCM y_align))
-    /** Set the position to be used for the message window.
-X and Y specify the position of the control point of the window,
-while X-ALIGN and Y-ALIGN specify a fraction of the width and
-height of the window to offset the window for alignment.
-X-ALIGN and Y-ALIGN should each be in the range [0,-1].  See also
-`position-message-window!' for a symbolic interface to alignment
-specifications. */
-#define FUNC_NAME s_set_message_window_position_x
-{
-  SCM_REDEFER_INTS;
-
-  if (!gh_number_p(x)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, x);
-  }
-  if (!gh_number_p(y)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, y);
-  }
-  if (!gh_number_p(x_align)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 3, x_align);
-  }
-  if (!gh_number_p(y)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 4, y_align);
-  }
-  
-  Scr.msg_window_x = gh_scm2long(x);
-  Scr.msg_window_y = gh_scm2long(y);
-  Scr.msg_window_x_align = gh_scm2double(x_align);
-  Scr.msg_window_y_align = gh_scm2double(y_align);
-  
-  SCM_REALLOW_INTS;
-
-  XMoveWindow(dpy, Scr.MsgWindow, x, y);
-  return SCM_UNDEFINED;
-}
-#undef FUNC_NAME
-
-SCWM_PROC (display_message, "display-message", 1, 0, 0,
-           (SCM msg))
-     /** Show MSG (a string) as a single line in the message window.
-Note that MSG should not contain newline characters as they will
-not be honoured.  See also `hide-message'.  These primitives
-may disappear when GTk support is sufficiently mature. */
-#define FUNC_NAME s_display_message
-{
-  char *sz = NULL;
-  if (!UNSET_SCM(msg) && !gh_string_p(msg)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, msg);
-  }
-  MapMessageWindow();
-  if (gh_string_p(msg)) {
-    sz = gh_scm2newstr(msg,NULL);
-    DisplayMessage(sz, True);
-  }
-  if (sz) FREE(sz);
-  return SCM_UNDEFINED;
-}
-#undef FUNC_NAME
-
-
-SCWM_PROC (hide_message, "hide-message", 0, 0, 0,
-           ())
-     /** Hide the message window.
-See also `display-message'.  These primitives may disappear when GTk
-support is sufficiently mature.  */
-#define FUNC_NAME s_hide_message
-{
-  UnmapMessageWindow();
-  XFlush(dpy);
-  return SCM_UNDEFINED;
-}
-#undef FUNC_NAME
-
-
-SCWM_PROC (message_window_mapped_p, "message-window-mapped?", 0, 0, 0,
-           ())
-     /** Return #t if the message window is mapped, #f otherwise.
-See also `display-message', `hide-message'.  These primitives may disappear when GTk
-support is sufficiently mature.  */
-#define FUNC_NAME s_message_window_mapped_p
-{
-  return SCM_BOOL_FromBool(FXIsWindowMapped(dpy,Scr.MsgWindow));
-}
-#undef FUNC_NAME
-
-
-
-/*
- *  Procedure:
- *      DisplaySize - display the size in the dimensions window
- *
- *  Inputs:
- *      psw - the current scwm window
- *      width   - the width of the rubber band
- *      height  - the height of the rubber band
- */
-static void 
-DisplaySize(ScwmWindow *psw, int width, int height, Bool fRelief)
-{
-  char sz[30];
-  int dheight = height - psw->title_height - 2*psw->boundary_width;
-  int dwidth = width - 2*psw->boundary_width;
-  
-  dwidth -= psw->hints.base_width;
-  dheight -= psw->hints.base_height;
-  dwidth /= psw->hints.width_inc;
-  dheight /= psw->hints.height_inc;
-
-  sprintf(sz, " %4d x %-4d ", dwidth, dheight);
-  DisplayMessage(sz,fRelief);
-}
-
-
 static int
 makemult(int a, int b)
 {
@@ -595,10 +423,12 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
 
   call3_hooks(interactive_resize_start_hook, psw->schwin,
 	      gh_int2scm(xmotion), gh_int2scm(ymotion));
+
+  /* same hook is called identically on each iteration; see below */
+  call3_hooks(interactive_resize_new_size_hook, psw->schwin,
+	      gh_int2scm(xmotion), gh_int2scm(ymotion));
   
   /* pop up a resize dimensions window */
-  MapMessageWindow();
-  DisplaySize(psw, origWidth, origHeight, True);
 
   CassowaryEditSize(psw);
 
@@ -662,12 +492,10 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                           WIN_VP_OFFSET_X(psw) + dragx, 
                           WIN_VP_OFFSET_Y(psw) + dragy,
                           dragWidth,dragHeight, fOpaque);
-      call3_hooks(interactive_resize_new_size_hook, psw->schwin,
-		  gh_int2scm(FRAME_WIDTH(psw)),
+      call3_hooks(interactive_resize_new_size_hook, psw->schwin,  /* two calls to this hook exist. */ 
+		  gh_int2scm(FRAME_WIDTH(psw)),                   /* see the other above */
 		  gh_int2scm(FRAME_HEIGHT(psw)));
       
-      DisplaySize(psw, FRAME_WIDTH(psw), FRAME_HEIGHT(psw), True);
-
       if (FNeedsPaging(Scr.EdgeScrollX, Scr.EdgeScrollY, x, y)) {
         /* need to move the viewport */
         HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY, &x, &y,
@@ -708,7 +536,6 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   }
 
   /* pop down the size window */
-  UnmapMessageWindow();
 
   SuggestSizeWindowTo(psw,WIN_VP_OFFSET_X(psw)+dragx,WIN_VP_OFFSET_Y(psw)+dragy,
                       dragWidth,dragHeight, True);

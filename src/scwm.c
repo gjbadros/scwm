@@ -80,7 +80,6 @@
 #include "decor.h"
 #include "image.h"
 #include "menu.h"
-#include "events.h"
 #include "callbacks.h"
 #include "font.h"
 #include "resize.h"
@@ -92,6 +91,8 @@
 #include "module-interface.h"
 #include "log-usage.h"
 #include "drawmenu.h"
+#include "events.h"
+#include "message-window.h"
 
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"
@@ -300,6 +301,8 @@ InitVariables(void)
 {
   ScwmContext = XUniqueContext();
   MenuContext = XUniqueContext();
+  MsgWindowContext = XUniqueContext();
+  ExposeWindowProcContext = XUniqueContext();
 
   /* initialize some lists */
   Scr.AllBindings = NULL;
@@ -350,8 +353,6 @@ InitVariables(void)
   Scr.VyMax = 0;
 #endif
   Scr.Vx = Scr.Vy = 0;
-
-  Scr.MsgWindow = None;
 
   CassowaryInitClVarsInPscreen(&Scr);
 
@@ -543,6 +544,7 @@ scwm_main(int argc, char **argv)
   init_miscprocs();
   init_menuitem();
   init_menulook();
+  init_message_window();
   init_drawmenu();
   init_menu();
   init_binding();
@@ -865,10 +867,6 @@ Repository Timestamp: %s\n",
   init_resize_gcs();
   XrmInitialize();
   init_xrm();
-
-  /* must come after variables are init'd */
-  Scr.MsgWindow = CreateMessageWindow( BlackPixel(dpy,Scr.screen), 
-                                       WhitePixel(dpy,Scr.screen) );
 
   InitEventHandlerJumpTable();
 

@@ -20,8 +20,6 @@ void ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
 void RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height);
 #define RemoveRubberbandOutline(root) do { RedrawOutlineAtNewPosition((root), 0,0,0,0); } while (0)
 
-Window CreateMessageWindow(Pixel fg, Pixel bg);
-
 Bool InteractiveResize(ScwmWindow *psw, Bool fOpaque,
                        int *pwidthReturn, int *pheightReturn);
 
