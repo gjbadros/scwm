@@ -2,4 +2,6 @@
 Makefile
 image.x
 init_scheme_string.c
+menuitem.x
 scwm
+scwmmenu.x
