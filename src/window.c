@@ -112,7 +112,7 @@ ensure_valid(SCM win, int n, char *subr, SCM kill_p)
 {
   if (win == SCM_UNDEFINED) {
     win = get_window(kill_p, SCM_BOOL_T);
-    if (win == SCM_BOOL_F) {
+    if (win == SCM_BOOL_F || win == SCM_UNDEFINED) {
       return SCM_BOOL_F;
     }
   }
