@@ -616,9 +616,8 @@ specified. */
 }
 #undef FUNC_NAME
 
-
-void 
-init_resize()
+void
+init_resize_gcs()
 {
   XGCValues gcv;
   unsigned long gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
@@ -627,7 +626,12 @@ init_resize()
   gcv.foreground = 37; /* randomish */
   gcv.subwindow_mode = IncludeInferiors;
   DrawRubberBandGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+}
 
+
+void 
+init_resize()
+{
 #ifndef SCM_MAGIC_SNARFER
 #include "resize.x"
 #endif

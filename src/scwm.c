@@ -355,7 +355,6 @@ InitVariables(void)
   Scr.fClickToFocusRaises = True;
   Scr.fMouseFocusClickRaises = False;
 
-  init_image_colormap();
   return;
 }
 
@@ -712,7 +711,9 @@ scwm_main(int argc, char **argv)
   
   CreateCursors();
   InitVariables();
+  init_image_colormap();
   init_borders();
+  init_resize_gcs();
 
   /* must come after variables are init'd */
   Scr.MsgWindow = CreateMessageWindow( BlackPixel(dpy,Scr.screen), 

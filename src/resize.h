@@ -20,6 +20,8 @@ Window CreateMessageWindow(Pixel fg, Pixel bg);
 /* used by add_window */
 SCM interactive_resize(SCM win);
 
+void init_resize_gcs();
+
 #endif
 
 /* Local Variables: */
