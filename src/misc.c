@@ -236,8 +236,7 @@ CoerceEnterNotifyOnCurrentWindow()
 			 &child, &root_x, &root_y, &win_x, &win_y, &JunkMask);
   if (f && child != None) {
     Event.xany.window = child;
-    if (XFindContext(dpy, child, ScwmContext, (caddr_t *) &swCurrent) == XCNOENT)
-      swCurrent = NULL;
+    swCurrent = SwFromWindow(dpy,child);
     HandleEnterNotify();
     swCurrent = None;
   }

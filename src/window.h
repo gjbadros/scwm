@@ -49,11 +49,19 @@ int print_window(SCM obj, SCM port, scm_print_state * pstate);
 
 void init_window();
 
+ScwmWindow *SwFromWindow(Display *dpy, Window w);
+ScwmWindow *SwFromPointerLocation(Display *dpy);
+ScwmWindow *SwSelectInteractively(Display *dpy);
+
 SCM make_window(ScwmWindow * win);
 void invalidate_window(SCM schwin);
 SCM window_p(SCM obj);
 
 SCM get_window(SCM kill_p, SCM select_p, SCM release_p);
+SCM current_window_with_focus();
+SCM current_window_with_pointer();
+SCM select_window_interactively();
+
 SCM select_window(SCM kill_p, SCM release_p);
 SCM delete_window(SCM win);
 SCM destroy_window(SCM win);

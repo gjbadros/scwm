@@ -70,6 +70,7 @@
 #include "add_window.h"
 #include "borders.h"
 #include "resize.h"
+#include "window.h"
 
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
@@ -155,8 +156,7 @@ DispatchEvent()
 
   StashEventTime(&Event);
 
-  if (XFindContext(dpy, w, ScwmContext, (caddr_t *) & swCurrent) == XCNOENT)
-    swCurrent = NULL;
+  swCurrent = SwFromWindow(dpy,w);
   last_event_type = Event.type;
   last_event_window = w;
 
@@ -328,9 +328,7 @@ HandleFocusIn()
   while (XCheckTypedEvent(dpy, FocusIn, &d)) {
     w = d.xany.window;
   }
-  if (XFindContext(dpy, w, ScwmContext, (caddr_t *) & swCurrent) == XCNOENT) {
-    swCurrent = NULL;
-  }
+  swCurrent = SwFromWindow(dpy,w);
   if (!swCurrent) {
     if (w != Scr.NoFocusWin) {
       Scr.UnknownWinFocused = w;
@@ -735,9 +733,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
 
   Event.xany.window = Event.xmaprequest.window;
 
-  if (XFindContext(dpy, Event.xany.window, ScwmContext,
-		   (caddr_t *) & swCurrent) == XCNOENT)
-    swCurrent = NULL;
+  swCurrent = SwFromWindow(dpy,Event.xany.window);
 
   if (!PPosOverride)
     XFlush(dpy);
@@ -915,9 +911,7 @@ HandleUnmapNotify()
   if (!swCurrent) {
     Event.xany.window = Event.xunmap.window;
     weMustUnmap = 1;
-    if (XFindContext(dpy, Event.xany.window,
-		     ScwmContext, (caddr_t *) & swCurrent) == XCNOENT)
-      swCurrent = NULL;
+    swCurrent = SwFromWindow(dpy, Event.xany.window);
   }
   if (!swCurrent)
     return;
@@ -1236,9 +1230,7 @@ HandleConfigureRequest()
    * be wrong
    */
   Event.xany.window = cre->window;	/* mash parent field */
-  if (XFindContext(dpy, cre->window, ScwmContext, (caddr_t *) & swCurrent) ==
-      XCNOENT)
-    swCurrent = NULL;
+  swCurrent = SwFromWindow(dpy, cre->window);
 
   /*
    * According to the July 27, 1988 ICCCM draft, we should ignore size and
@@ -1284,11 +1276,12 @@ HandleConfigureRequest()
   }
   if (cre->value_mask & CWStackMode) {
     ScwmWindow *otherwin;
-
-    xwc.sibling = (((cre->value_mask & CWSibling) &&
-		    (XFindContext(dpy, cre->above, ScwmContext,
-				  (caddr_t *) & otherwin) == XCSUCCESS))
-		   ? otherwin->frame : cre->above);
+    Bool fSibling = cre->value_mask & CWSibling? True: False;
+    if (fSibling && (otherwin = SwFromWindow(dpy,cre->above))) {
+      xwc.sibling = otherwin->frame;
+    } else {
+      xwc.sibling = cre->above;
+    }
     xwc.stack_mode = cre->detail;
     XConfigureWindow(dpy, swCurrent->frame,
 		     cre->value_mask & (CWSibling | CWStackMode), &xwc);
@@ -1578,11 +1571,6 @@ send_button_press(SCM button, SCM modifier, SCM win,
   }
   bnum = gh_scm2int(button);
   mod_mask = gh_scm2int(modifier);
-
-/*
-  XQueryPointer( dpy, w, &JunkRoot, &pointer_win,
-                 &x_root,&y_root,&x, &y, &JunkMask);
-		 */
 
   child = WindowGettingButtonEvent(w,x,y);
   x2 = x; y2 = y;

@@ -684,8 +684,8 @@ CaptureAllWindows(void)
     /* reborder all windows */
     tmp = Scr.ScwmRoot.next;
     for (i = 0; i < nchildren; i++) {
-      if (XFindContext(dpy, children[i], ScwmContext,
-		       (caddr_t *) & tmp) != XCNOENT) {
+      tmp = SwFromWindow(dpy,children[i]);
+      if (tmp) { 
 	isIconicState = DontCareState;
 	if (XGetWindowProperty(dpy, tmp->w, _XA_WM_STATE, 0L, 3L, False,
 			       _XA_WM_STATE, &atype, &aformat, 

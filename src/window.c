@@ -156,11 +156,25 @@ get_window(SCM kill_p, SCM select_p, SCM release_p)
   return window_context;
 }
 
-/* FIXGJB: write this */
 SCM
-current_window()
+current_window_with_focus()
 {
-  return SCM_UNDEFINED;
+  return Scr.Hilite? Scr.Hilite->schwin : SCM_BOOL_F;
+}
+
+
+SCM
+current_window_with_pointer()
+{
+  ScwmWindow *sw = SwFromPointerLocation(dpy);
+  return sw? sw->schwin: SCM_BOOL_F;
+}
+
+SCM
+select_window_interactively()
+{
+  ScwmWindow *sw = SwSelectInteractively(dpy);
+  return sw? sw->schwin: SCM_BOOL_F;
 }
 
 
@@ -218,7 +232,7 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
       XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
   UngrabEm();
-  SetFocus(t->w, t, 0);
+  SetFocus(t->w, t, False);
 }
 
 
@@ -286,6 +300,37 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
   }
   UngrabEm();
 }
+
+ScwmWindow *
+SwFromWindow(Display *dpy, Window w)
+{
+  ScwmWindow *sw;
+  if (XFindContext(dpy, w, ScwmContext, (caddr_t *) &sw) == XCNOENT) {
+    return NULL;
+  }
+  return sw;
+}
+
+ScwmWindow *
+SwFromPointerLocation(Display *dpy)
+{
+  Window wChild;
+  XQueryPointer(dpy, Scr.Root, &JunkRoot, &wChild,
+		&JunkX, &JunkY, &JunkX, &JunkY, &JunkMask);
+  if (wChild == None) {
+    return NULL;
+  }
+  return SwFromWindow(dpy,wChild);
+}
+
+ScwmWindow *
+SwSelectInteractively(Display *dpy)
+{
+  /* FIXGJB: this needs to be written, but could
+     benefit from better, more general, event handling */
+  return NULL;
+}
+  
 
 
 extern int orig_x, orig_y, have_orig_position;
@@ -383,8 +428,8 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
     UngrabEm();
     return TRUE;
   }
-  if (XFindContext(dpy, *w, ScwmContext, (caddr_t *) tmp_win) == XCNOENT) {
-    *tmp_win = NULL;
+  *tmp_win = SwFromWindow(dpy,*w);
+  if (*tmp_win == NULL) {
     XBell(dpy, Scr.screen);
     UngrabEm();
     return (TRUE);

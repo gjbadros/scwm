@@ -21,6 +21,7 @@
 #include "menus.h"
 #include "misc.h"
 #include "screen.h"
+#include "window.h"
 
 ScwmWindow *colormap_win;
 Colormap last_cmap = None;
@@ -57,9 +58,7 @@ HandleColormapNotify(void)
     ReInstall = True;
   }
   while (XCheckTypedEvent(dpy, ColormapNotify, &Event)) {
-    if (XFindContext(dpy, cevent->window,
-		     ScwmContext, (caddr_t *) & swCurrent) == XCNOENT)
-      swCurrent = NULL;
+    swCurrent = SwFromWindow(dpy,cevent->window);
     if ((swCurrent) && (cevent->new)) {
       XGetWindowAttributes(dpy, swCurrent->w, &(swCurrent->attr));
       if ((swCurrent == colormap_win) && (swCurrent->number_cmap_windows == 0))
