@@ -22,6 +22,7 @@
 (define-module (app scwm gnome-hints)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
+  :use-module (app scwm animation)
   :use-module (app scwm winops))
 
 

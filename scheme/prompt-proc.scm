@@ -211,7 +211,7 @@ See also `prompt-proc'."
 ;;(interactive-proc-list "window")
 ;; (use-modules (app scwm listops))
 ;; (use-modules (app scwm message-window))
-;; (use-modules (app scwm c-animation))
+;; (use-modules (app scwm animation))
 ;;(procedure-property (eval (cdaddr (apropos-internal-with-modules "window"))) 'arity)
 ;;(apropos-internal-with-modules "window")
 
