@@ -1,3 +1,9 @@
+Sun Jan  9 17:38:24 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use `netscape-google-search-selection-url' --
+	much nicer since now words in a web page can be highlighted and
+	A-s takes you right to the google page for those words.
+
 Sun Jan  9 16:29:04 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use `netscape-goto-selection-url' instead of

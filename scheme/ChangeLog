@@ -1,3 +1,16 @@
+Sun Jan  9 17:55:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* animated-iconify.scm: Fix `animated-deiconify-to-viewport' to
+	just use `animated-deiconify' when the window is sticky.
+
+Sun Jan  9 17:37:01 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xprop-extras.scm: Added `propagate-selection-to-cut-buffer'
+
+	* netscape.scm: Parameterize selection stuff based on the
+	selection, but have it default to "PRIMARY".  Added
+	`netscape-google-search-selection-url'.
+
 Sun Jan  9 17:21:52 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* modifier-key-bindings.scm: Added better comments, drop

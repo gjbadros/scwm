@@ -61,7 +61,7 @@ for supporting whole-edge highlighting for better constraint interface
 ** `cl-resolve-xforms', `cl-reset-dirty-windows' for use in scwm-resolve-hook to permit animation
 
 * New procedures
-** `X-handle-selection-string', `netscape-goto-selection-url'
+** `X-handle-selection-string', `netscape-goto-selection-url', `netscape-google-search-selection-url'
 ** `describe-event', to complement `describe-{mouse,key}' using new `get-next-event' primitive
 ** `set-highlight-colors!' convenience procedure.
 ** `unbind-mouse', `unbind-key' take optional ignored extra arguments
