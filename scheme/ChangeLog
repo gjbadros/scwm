@@ -1,3 +1,10 @@
+1999-05-04  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* stylist.scm: Made a proper module.
+	(select-style-for): Unified color and boolean options.
+	Options are now in a table, with activation checkbuttons to their
+	right. Options only contribute to the style if active.
+
 Tue May  4 16:19:55 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* auto-raise.scm: Added missing use-module of (app scwm style)
