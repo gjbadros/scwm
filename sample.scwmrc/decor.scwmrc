@@ -1,0 +1,368 @@
+;;-------------------------------;;
+;; import the scwm modules       ;;
+
+(use-modules (app scwm base)
+	     (app scwm winops)
+	     (app scwm winlist)
+	     (app scwm wininfo)
+             (app scwm style)
+	     (app scwm face)
+	     (app scwm decor))
+
+;;-------------------------------;;
+;; set some basic style info    ;;
+
+(define (vertical-toggle-maximize)
+  (toggle-maximize 0 (%y 100)))
+
+(define font12
+  (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+(define font14 
+  (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
+
+(menu-style #:fg "black" #:bg "grey76" #:stipple "blue"
+	    #:font font14 #:mwm #f)
+
+(title-style #:font font12 #:justify 'left)
+
+(set-icon-font! font12)
+(set-hilight-colors! "white" "blueviolet")
+(set-xor-value! 127)
+
+
+(define HOME ;(getenv "HOME")
+  "/u1/mstachow")
+(define USER (getenv "USER"))
+
+(define user-pixmap-path (string-append HOME "/pixmaps"))
+(define user-bitmap-path (string-append HOME "/bitmaps"))
+
+
+;;-------------------------------;;
+;; set some paths                ;;
+;;
+
+;; these are OK for my system, but may need to be changed for
+;; yours. This should probably be eventually autoconfed or something.
+
+(set-icon-path! (string-append user-bitmap-path 
+			       ":/usr/X11/include/X11/bitmaps:\
+/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
+/uns/include/X11/pixmaps:\
+/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
+
+(set-pixmap-path! (string-append user-pixmap-path 
+				 ":/usr/X11/include/X11/bitmaps:\
+/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
+/uns/include/X11/pixmaps:\
+/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
+
+;;-------------------------------;;
+;; set up a couple of various    ;;
+;; decors and styles             ;;
+
+(define helvetica-12   
+  (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+
+(define times-14   
+  (load-font "-adobe-times-bold-r-*-*-14-*-*-*-*-*-*-*"))
+
+(define fvwm-decor (make-decor))
+
+(with-decor fvwm-decor
+	    (title-style #:justify 'center #:relief 'raised
+			 #:font times-14)
+	    (border-style #:no-inset #f #:hidden-handles #f)
+	    (set-hilight-colors! "black" "salmon"))
+
+(define fvwm-style 
+  (make-style #:fg "black" #:bg "tan" #:icon "unkown1.xpm"
+	      #:border-width 4 #:mwm-border #f
+	      #:mwm-buttons #f
+	      #:use-decor fvwm-decor))
+
+(define mwm-decor (make-decor))
+
+(with-decor mwm-decor
+	    (title-style #:justify 'center #:relief 'raised
+			 #:font times-14)
+	    (border-style #:no-inset #f #:hidden-handles #f)
+	    (set-hilight-colors! "black" "cadet blue"))
+
+(define mwm-style 
+  (make-style #:fg "black" #:bg "gray" #:icon "unknown1.xpm"
+	      #:border-width 6 #:mwm-border #t
+	      #:mwm-buttons #t
+	      #:use-decor mwm-decor))
+
+(define win95-decor (make-decor))
+
+(with-decor win95-decor 
+	    (title-style #:justify 'left #:font helvetica-12
+			 #:relief 'flat
+			 #:solid "navyblue" 
+			 #:inactive (list #:solid "grey76"))
+	    (border-style #:no-inset #t #:hidden-handles #t)
+	    (button-style 1 #:relief 'flat 
+			  #:solid "navyblue" #:pixmap 'mini-icon
+			  #:inactive 
+			  (list #:solid "grey76" #:pixmap 'mini-icon))
+	    (set-hilight-colors! "white" "grey76"))
+
+(define win95-style
+  (make-style #:fg "black" #:bg "grey76" #:icon #f
+	      #:border-width 3 #:mwm-border #f
+	      #:mwm-buttons #f
+	      #:use-decor win95-decor))
+
+(define win95-grad-decor (make-decor))
+
+(with-decor win95-grad-decor 
+	    (title-style #:justify 'left #:font helvetica-12
+			 #:relief 'flat
+			 #:h-gradient (list 20 (list "navyblue" 20) 
+					    "navyblue" "black") 
+			 #:inactive 
+			 (list #:h-gradient 
+			       (list 60 (list "grey76" 20) 
+				     "grey76" "dim grey")))
+	    (border-style #:no-inset #t #:hidden-handles #t)
+	    (button-style 1 #:relief 'flat 
+			  #:solid "navyblue" #:pixmap 'mini-icon
+			  #:inactive 
+			  (list #:solid "grey76" #:pixmap 'mini-icon))
+	    (set-hilight-colors! "white" "grey76"))
+
+(define win95-grad-style
+  (make-style #:fg "black" #:bg "grey76" #:icon #f
+	      #:border-width 3 #:mwm-border #f
+	      #:mwm-buttons #f
+	      #:use-decor win95-grad-decor))
+
+(define win-decoration-menu
+  (make-menu "Decorations"
+	     (list "Fvwm"
+		   (lambda () 
+		     (style-one-window (get-window)
+				       #:use-style fvwm-style)))
+	     (list "Mwm" 
+		   (lambda () 
+		     (style-one-window (get-window)
+				       #:use-style mwm-style)))
+	     (list "Fvwm95" 
+		   (lambda () 
+		     (style-one-window (get-window)
+				       #:use-style win95-style)))
+	     (list "Fvwm95 (With Gradients)" 
+		   (lambda () 
+		     (style-one-window (get-window)
+				       #:use-style win95-grad-style)))))
+
+(define global-decorations-menu
+  (make-menu "Global Decorations Settings"
+	     'title
+	     (list "Fvwm" 
+		   (lambda ()
+		     (window-style "*" #:use-style fvwm-style)))
+	     (list "Mwm" 
+		   (lambda ()
+		     (window-style "*" #:use-style mwm-style)))
+	     (list "Fvwm95" 
+		   (lambda ()
+		     (window-style "*" #:use-style win95-style)))
+	     (list "Fvwm95 (With Gradients)" 
+		   (lambda ()
+		     (window-style "*" #:use-style win95-grad-style)))))
+
+
+;;-------------------------------;;
+;; set some window styles        ;;
+
+(window-style "*" 
+	      #:icon "unknown1.xpm" 
+	      #:icon-box (list (x- 70) 1 69 (y- 141))
+	      #:focus 'mouse
+	      #:random-placement #t #:smart-placement #t
+	      #:mwm-func-hint #t #:mwm-decor-hint #t
+	      #:int-override #t #:decroate-transient #t
+	      #:PPosition-hint #f
+	      #:lenience #t
+	      #:mini-icon "mini-x.xpm")
+
+(window-style "*" #:use-style fvwm-style)
+
+(define desk-widget
+  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
+	      #:border-width 3 #:focus 'none))
+
+(window-style "*lock" #:use-style desk-widget)
+(window-style "xload" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xscreensaver" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xbiff" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xcalc" #:icon "xcalc.xpm")
+(window-style "xman" #:icon "xman.xpm")
+(window-style "xmag" #:icon "mag_glass.xpm")
+(window-style "Emacs" #:icon "gnu-animal.xpm")
+(window-style "XTerm" #:icon "xterm.xpm")
+
+
+
+;;-------------------------------;;
+;; define some useful menus      ;;
+
+
+(define window-ops-menu
+  (make-menu "Window Ops"
+	     'title
+	     (list "Move" interactive-move)
+	     (list "Resize" interactive-resize)
+	     (list "Raise" raise-window)
+	     (list "Lower" lower-window)
+	     (list "Print" print-window)
+	     (list "(Un)Window-Shade" toggle-window-shade)
+	     (list "(De)Iconify" toggle-iconify)
+	     (list "(Un)Maximize" vertical-toggle-maximize)
+	     (list "(Un)Stick" toggle-stick)
+	     (list "(Un)Keep On Top" toggle-on-top)
+	     'separator
+	     (list "Close" close-window)
+	     (list "Delete" delete-window)
+	     (list "Destroy" destroy-window)
+	     'separator
+	     (list "Refresh Screen" refresh)))
+(define (popup-ops)
+  (popup window-ops-menu))
+
+(define quit-verify
+  (make-menu "Really quit scwm?"
+	     'title
+	     (list "Yes" quit)
+	     (list "No" noop)
+	     'separator
+	     (list "Restart scwm" (lambda () (restart "scwm")))))
+
+(define desk-menu 
+  (make-menu "Desks"
+	     'title
+	     (list "Desk 1" (lambda () (set-current-desk! 0)))
+	     (list "Desk 2" (lambda () (set-current-desk! 1)))
+	     (list "Desk 3" (lambda () (set-current-desk! 2)))
+	     (list "Desk 4" (lambda () (set-current-desk! 3)))))
+
+(define util-menu 
+  (make-menu "Utilities"
+	     'title
+	     (list "xterm" (lambda () (execute "xterm")))
+	     (list "rxvt" (lambda () (execute "rxvt")))
+	     (list "emacs" (lambda () (execute "emacs")))
+	     (list "top" (lambda () (execute "rxvt -T Top -n Top -e top")))
+	     (list "xcalc" (lambda () (execute "xcalc")))
+	     (list "xmag" (lambda () (execute "xmag")))
+	     'separator
+	     (list "Globally Set Decorations"
+		   global-decorations-menu)
+	     (list "Desks" desk-menu)
+	     'separator
+	     (list "Exit scwm" quit-verify)))
+
+(define (popup-util)
+  (popup util-menu))
+
+
+(define (make-small-window-ops-menu w)
+  (make-menu "Window Ops2"
+	     (list "Move" interactive-move)
+	     (list "Resize" interactive-resize)
+	     (list "Raise" raise-window)
+	     (list "Lower" lower-window)
+	     (list "Iconify" iconify)
+	     'separator
+	     (list "More" (make-menu "More"
+			    (list (if (maximized? w)
+				      "Unmaximize"
+				      "Maximize") vertical-toggle-maximize)
+			    (list (if (sticky? w)
+				      "Unstick"
+				      "Stick") toggle-stick)
+			    (list (if (window-shaded? w)
+				      "UnWindow-Shade"
+				      "Window-Shade") toggle-window-shade)
+			    (list (if (kept-on-top? w)
+				      "UnKeep On Top"
+				      "Keep On Top") toggle-on-top)))
+	     (list "Set Decorations"
+		   win-decoration-menu)
+             'separator
+	     (list "Close" close-window)
+	     (list "Destroy" destroy-window)))
+
+(define (popup-small-ops)
+  (popup (make-small-window-ops-menu (get-window))))
+
+
+
+;; now set some mouse and key bindings ;;
+
+;; first our root menus
+(bind-mouse 'root 1 popup-util)
+(bind-mouse 'root 2 popup-ops)
+(bind-mouse 'root 3 (lambda () 
+		      (show-window-list-menu #:show-geometry #t)))
+(bind-mouse 'root "M-3" (lambda () (popup desk-menu)))
+
+
+;; window buttons
+(bind-mouse 'button-1 1 popup-small-ops)
+(bind-mouse 'button-2 1 vertical-toggle-maximize)
+(bind-mouse 'button-4 1 iconify)
+
+;; operations on parts of the window
+(bind-mouse '(frame sidebar) 2 popup-small-ops)
+(bind-mouse 'frame 1 resize-or-raise)
+(bind-mouse 'sidebar 1 move-or-raise)
+(define (move-or-shade)
+  (case (mouse-event-type)
+    ((double-click) (toggle-window-shade))
+    (else (move-or-raise))))
+(bind-mouse 'title 1 move-or-shade)
+(bind-mouse 'title 3 lower-window)
+
+
+;; key bindings for the menus
+(bind-key 'all "M-F1" popup-util)
+(bind-key 'all "M-F2" popup-ops)
+
+;; in case of emergency, hit Control-Meta-Q
+(bind-key 'all "C-M-q" quit)
+
+;; some stuff for icons
+(define (move-or-deiconify)
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((double-click) (deiconify))))
+
+(bind-mouse 'icon 1 move-or-deiconify)
+(bind-mouse 'icon 2 deiconify)
+
+
+;; move the pointer with the keyboard
+(bind-key 'all "M-Left" (lambda () (move-pointer (%x -1) 0)))
+(bind-key 'all "M-Right" (lambda () (move-pointer (%x 1) 0)))
+(bind-key 'all "M-Up" (lambda () (move-pointer 0 (%y -1))))
+(bind-key 'all "M-Down" (lambda () (move-pointer 0 (%y 1))))
+
+;; move the viewport with the keyboard
+(bind-key 'all "C-M-Left" (lambda () (move-viewport (%x -100) 0)))
+(bind-key 'all "C-M-Right" (lambda () (move-pointer (%x 100) 0)))
+(bind-key 'all "C-M-Up" (lambda () (move-viewport 0 (%y -100))))
+(bind-key 'all "C-M-Down" (lambda () (move-viewport 0 (%y 100))))
+
+;; rotate the current window with the keyboard
+(bind-key 'all "M-Tab"
+	  (lambda ()
+	    (next-window #:only visible? #:except iconified?)))
+
+(bind-key 'all "M-S-Tab" 
+	  (lambda ()
+	    (prev-window #:only visible? #:except iconified?)))
+
