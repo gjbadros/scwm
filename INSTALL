@@ -1,0 +1,79 @@
+Brief Installation Instructions ===========================================
+
+To build scwm on unix, there are several steps:
+
+	0. (prerequisite) - make sure you have guile installed (preferrably
+	   configured --with-threads).
+
+	1. Edit Scwm.tmpl to set up some directories - you will need to set
+	GuilePrefix to whatever --prefix was used when you compiled Guile -
+	probably /usr/local or /usr. I have set the default to /usr/local.
+	There are several directories, ScwmBinDir, ScwmDir, ScwmlibDir,
+	and ScwmManPath that you may wish to change if you do not like
+	imake's default behavior. Finally, you will want to remove -lqt
+	from the GUILE_LIBRARIES line if your guile does not have thread 
+	support.
+	
+	2. Type "xmkmf" to configure the package.
+	3. Type "make Makefile"
+	4. Type "make Makefiles"
+	5. Type "make all"
+
+Yes, this build process sucks beyond belief. Autoconf and Automake
+will replace imake as the configuration/build utilities as soon as
+possible, and then you'll be able to do "./configure; make" as with
+any autoconf-configured program.
+
+What You Get ==============================================================
+
+The `make' command builds several things: 
+
+   - An executable file `scwm/scwm', which is the window manager
+program itself.
+
+   - An object library `libs/libscwm.a', which is an artifact of the
+olf fvwm2 build process and will probably go away soon.
+
+To install Scwm, type `make install'.  This installs the executable
+mentioned above, as well as a system.scwmrc file and several guile
+modules written in Scheme that provide additional window manager
+commands. Overall, if everything is installed in the default place,
+you will probably end up with something like:
+
+{these go wherever imake thinks they should} 
+/usr/X11R6/bin/scwm
+/usr/X11R6/lib/X11/scwm/system.scwmrc
+
+{these depend on the location of guile}
+/usr/local/share/guile/app/scwm/base.scm
+/usr/local/share/guile/app/scwm/optargs.scm
+/usr/local/share/guile/app/scwm/wininfo.scm
+/usr/local/share/guile/app/scwm/winlist.scm
+/usr/local/share/guile/app/scwm/winops.scm
+
+
+
+Using SCWM Without Installing It =========================================
+
+If you want to run scwm without installing it, copy the
+sample.scwmrc/system.scwmrc file to your home directory as
+.scwmrc. Then set the environment variable `SCHEME_LOAD_PATH' to a
+colon-separated list of directories, including the directory
+containing this INSTALL file.
+
+For example, suppose the Guile distribution unpacked into a directory
+called `/home/mstachow/scwm-0.1' (so the full name of this file would be
+`/home/mstachow/swm-0.1/install').  Then you might say:
+
+  export SCHEME_LOAD_PATH=/home/mstachow/scwm-0.1
+
+if you're using Bash or any other Bourne shell variant, or
+
+  setenv SCHEME_LOAD_PATH /home/mstachow/scwm-0.1
+
+if you're using CSH or one of its variants.
+
+After copying the .scwmrc and setting SCHEME_LOAD_PATH, you should be
+able to run scwm out of the build directory without difficulty.
+
+

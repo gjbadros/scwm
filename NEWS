@@ -1,0 +1,38 @@
+Guile NEWS --- history of user-visible changes.  -*- text -*-
+Copyright (C) 1997 Maciej Stachowiak.
+See the end for copying conditions.
+
+Changes to scwm-0.1
+
+All fvwm2 functionality except styles, decors and modules is
+implemented. 
+
+Many bugs/limitations from the last release were fixed.
+
+Scheme modules that provide extra useful operations are now available.
+
+Initial release: scwm-0.0.0
+
+Nearly all fvwm functionality is available, but a number of useful
+things are missing.
+
+
+Copyright information:
+
+Copyright (C) 1997 Maciej Stachowiak.
+
+   Permission is granted to anyone to make or distribute verbatim copies
+   of this document as received, in any medium, provided that the
+   copyright notice and this permission notice are preserved,
+   thus giving the recipient permission to redistribute in turn.
+
+   Permission is granted to distribute modified versions
+   of this document, or of portions of it,
+   under the above conditions, provided also that they
+   carry prominent notices stating who last changed them.
+
+
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:

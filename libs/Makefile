@@ -630,7 +630,7 @@ OPTION_DEFINES  = -DSHAPE -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -DMINI_ICONS -DVECTO
 
         SCWMDIR = $(LIBDIR)/scwm
 
-   ICONPATH = $(INCDIR)/bitmaps\:$(INCDIR)/pixmaps
+   ICONPATH = /usr/X11R6/include/X11/bitmaps\:/usr/X11R6/include/X11/pixmaps
      SCWMRC = .scwmrc
         LIB = scwm
 

@@ -1,32 +1,44 @@
 
+SCWM 0.1
+
 This is an alpha release of scwm, the Scheme Configurable Window
-Manager.  It doesn't even implement all the useful fvwm functions
-right now. It's just here as a proof of concept. I've only tried
-compiling it on i386-unknown-linux, but any platform that both fvwm
-and guile will build on should work. You need to have guile installed
-to do the build, and then just 
+Manager. SCWM is (currently) a hack of FVWM 2 with the fvwm
+configuration language replaced with Guile Scheme. Eventually, it will
+support many new features enabled by the powerful configuration
+language, including a GUI on-the-fly setup. I also think I can
+eventually get the base binary smaller than fvwm2's, by removing the
+redundant functionality and replacing it with simpler primitives, and
+also by placing some features in dynamically loadable shared libraries.
 
-xmkmf
-make Makefile
-make Makefiles
-make all
+This second alpha release implements nearly all useful fvwm2
+functions, and fixes most of the serious bugs with the last
+release. The only major functionality still missing is: most of the
+style commands, all of the decor commands, and everything related to
+modules. Modules will probably never be implemented, because I have
+better ways to provide the same functionality. Styles and Decors will
+be supported by the next release. This release, although labelled
+alpha, should be pretty stable and moderately useful. I regularly use
+scwm as my window manager now.
 
+I've only tried compiling it on i386-unknown-linux, but any platform
+that both fvwm2 and guile will build on should work. You need to have
+guile installed to do the build. See the file INSTALL for further
+instructions.
 
-You could "make install" after that in theory, but I'd reccommend just
-copying the sample.scwmrc/system.scwmrc to your homedir as .scwmrc and
-running it from wherever it gets compiled, rather than have junk on
-your system that it might be annoying to get rid of.
-
-There's various kinds of documentation and random info in the do
+There's various kinds of documentation and random info in the doc
 directory, and you can see some examples of what might be done in the
-system.scwmrc.
+system.scwmrc, and also looking at the modules in the scheme directory.
 
 However, the system.scwmrc is not very interesting right now. If you
-think of neat hacks for it, pass them along to me. When I'm done
-making this release I'm going to work on sticking everything in a CVS,
-so if people even want to work on the windowmanager itself, that's
-cool.
+think of neat hacks for it, pass them along to me. If people even want
+to work on the windowmanager itself, that's cool too.
 
+The copyright for the code in the scwm and libs subdirectories is the
+fvwm copyright, which may be found in COPYING.FVWM. Several files may
+have a slightly different copyright, or have be copyright by me. The
+files in the scheme directory are under GPL (see scheme/COPYING). The
+files in the doc directory are all under the copyright specified by
+doc/COPYRIGHT.DOC.
 
-- Maciej Stachowiak
+ - Maciej Stachowiak <mstachow@mit.edu>
 

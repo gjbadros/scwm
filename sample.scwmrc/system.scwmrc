@@ -9,12 +9,16 @@
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
 
+(define (vertical-toggle-maximize)
+  (toggle-maximize 0 (%y 100)))
+
 (define helv12
   (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 (define helv14 
   (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 
-(menu-style #:fg "white" #:bg "navy" #:stipple "yellow" #:font helv14 #:mwm #f)
+(menu-style #:fg "white" #:bg "navy" #:stipple "yellow" 
+	    #:font helv14 #:mwm #f)
 (title-style #:font helv12 #:justify 'left)
 
 (set-icon-font! helv12)
@@ -25,18 +29,6 @@
 ;;-------------------------------;;
 ;; define some useful menus      ;;
 
-(define util-menu 
-  (make-menu "Utilities"
-	     'title
-	     (list "xterm" (lambda () (execute "xterm")))
-	     (list "rxvt" (lambda () (execute "rxvt")))
-	     (list "top" (lambda () (execute "rxvt -T Top -n Top -e top")))
-	     (list "xcalc" (lambda () (execute "xcalc")))
-	     (list "xmag" (lambda () (execute "xmag")))
-	     'separator
-	     (list "Exit scwm" quit)))
-(define (popup-util)
-  (popup util-menu))
 
 (define window-ops-menu
   (make-menu "Window Ops"
@@ -45,8 +37,10 @@
 	     (list "Resize" interactive-resize)
 	     (list "Raise" raise-window)
 	     (list "Lower" lower-window)
+	     (list "Print" print-window)
+	     (list "(Un)Window-Shade" toggle-window-shade)
 	     (list "(De)Iconify" toggle-iconify)
-	     (list "(Un)Maximize" (lambda () (toggle-maximize 100 0)))
+	     (list "(Un)Maximize" vertical-toggle-maximize)
 	     (list "(Un)Stick" toggle-stick)
 	     'separator
 	     (list "Close" close-window)
@@ -57,6 +51,29 @@
 (define (popup-ops)
   (popup window-ops-menu))
 
+(define quit-verify
+  (make-menu "Really quit scwm?"
+	     'title
+	     (list "Yes" quit)
+	     (list "No" noop)
+	     'separator
+	     (list "Restart scwm" (lambda () (restart "scwm")))))
+
+(define util-menu 
+  (make-menu "Utilities"
+	     'title
+	     (list "xterm" (lambda () (execute "xterm")))
+	     (list "rxvt" (lambda () (execute "rxvt")))
+	     (list "top" (lambda () (execute "rxvt -T Top -n Top -e top")))
+	     (list "xcalc" (lambda () (execute "xcalc")))
+	     (list "xmag" (lambda () (execute "xmag")))
+	     'separator
+	     (list "Exit scwm" quit-verify)))
+
+(define (popup-util)
+  (popup util-menu))
+
+
 (define small-window-ops-menu
   (make-menu "Window Ops2"
 	     (list "Move" interactive-move)
@@ -64,12 +81,13 @@
 	     (list "Raise" raise-window)
 	     (list "Lower" lower-window)
 	     (list "Iconify" iconify)
-	     (list "(Un)Maximize" (lambda () (toggle-maximize 100 0)))
+	     (list "(Un)Maximize" vertical-toggle-maximize)
 	     (list "(Un)Stick" toggle-stick)
 	     'separator
 	     (list "Close" close-window)
 	     (list "Delete" delete-window)
 	     (list "Destroy" destroy-window)))	
+
 (define (popup-small-ops)	
   (popup small-window-ops-menu))
 
@@ -84,6 +102,10 @@
 	      (show-window-list-menu #:show-geometry #t)))
 
 (bind-mouse 'button-1 1 popup-small-ops)
+(bind-mouse 'button-2 1 vertical-toggle-maximize)
+(bind-mouse 'button-4 1 iconify)
+
+
 (bind-mouse '(title frame sidebar) 2 popup-small-ops)
 (bind-mouse 'frame 1 resize-or-raise)
 (bind-mouse '(title sidebar) 1 move-or-raise)
@@ -112,10 +134,9 @@
 ;; rotate the current window with the keyboard
 (bind-key 'all "M-Tab"
 	  (lambda ()
-	    (window-list-proc
-	     (next-window #:only visible? #:except iconified?))))
+	    (next-window #:only visible? #:except iconified?)))
 
 (bind-key 'all "M-S-Tab" 
 	  (lambda ()
-	    (window-list-proc
-	     (prev-window #:only visible? #:except iconified?))))
+	    (prev-window #:only visible? #:except iconified?)))
+
