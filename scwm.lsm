@@ -15,7 +15,7 @@ Primary-site:   huis-clos.mit.edu /pub/scwm/
 		992 KB scwm-icons.tar.gz
 Alternate-site: ftp.cs.washington.edu /homes/gjb
 Original-site:  
-Platforms:      Linux/Unix, X11, Guile-scheme,
+Platforms:      GNU/Linux or Unix, X11, Guile-scheme,
 		Cassowary Constraint Toolkit (optional)
 Copying-policy: GPL, and fvwm-like -- see COPYING file (included)
 End
