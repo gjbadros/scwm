@@ -1,3 +1,8 @@
+Wed Mar 11 00:10:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwm.c: Fixed version output (added trailing newline). Bug fix
+ 	from James Troup <J.J.Troup@scm.brad.ac.uk>
+
 Tue Mar 10 00:32:45 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* image.c (path_expand_image_fname): Call image-not-found-hook if
