@@ -222,8 +222,10 @@
 ;;; These can change dynamically and the menus which 
 ;;; used 'menu-bg-color [which is used by default]
 ;;; will be drawn in the new color the next time they pop up
-(set! menu-bg-color (make-color "gray80"))
-(set! menu-text-color (make-color "black"))
+;; These have no affect now that the menu-style does the right thing
+;; --10/10/98 gjb
+;; (set! menu-bg-color (make-color "gray80"))
+;; (set! menu-text-color (make-color "black"))
 
 ;; (color-properties (make-color "#cc88ff"))
 
@@ -299,9 +301,11 @@
 	(display (string-append "Perhaps try adding above path to image-load-path\n")))))
 
 
-(define (image-not-found-hook name) 
+(define (handle-image-not-found name) 
   (display (string-append "Could not find image: " name "\n"))
   (suggest-image-path-for name))
+
+(add-hook! image-not-found-hook handle-image-not-found)
 
 (define pic-system-button
   (make-image "mini-sys3d-full.xpm"))
@@ -1128,7 +1132,7 @@
 (bind-key 'all "C-S-F6" (lambda () (popup-menu 'menu-multimedia #t)))
 
 (define (float->integer x)
-	 (inexact->exact x))
+  (inexact->exact (truncate x)))
 
 ;; These are useful!
 (define root-size-x (car (display-size)))
