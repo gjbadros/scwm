@@ -5,6 +5,16 @@
 #ifndef BINDING_H
 #define BINDING_H
 
+#undef EXTERN
+#undef EXTERN_SET
+#ifdef BINDING_IMPLEMENTATION
+#define EXTERN
+#define EXTERN_SET(x,y) x = y
+#else
+#define EXTERN extern
+#define EXTERN_SET(x,y) extern x
+#endif
+
 /* contexts for button presses */
 #define C_NO_CONTEXT	0
 #define C_WINDOW	1
@@ -47,6 +57,7 @@ SCM unbind_mouse(SCM contexts, SCM button);
 
 void init_binding();
 void init_modifiers();
+void init_pointer_mapping(void);
 void find_mouse_event_type();
 void clear_mouse_event_type();
 

@@ -451,6 +451,7 @@ scwm_main(int argc, char **argv)
   menu_init_gcs();
   InternUsefulAtoms();
   init_modifiers();
+  init_pointer_mapping();
   
   /* Make sure property priority colors is empty */
   XChangeProperty(dpy, Scr.Root, _XA_MIT_PRIORITY_COLORS,

@@ -3,6 +3,8 @@
  * (C) 1997-1998 By Maciej Stachowiak and Greg J. Badros
  */
 
+#define BINDING_IMPLEMENTATION
+
 #include <config.h>
 
 #include <guile/gh.h>
@@ -52,6 +54,10 @@ static int MetaMask = 0,
   AltMask = 0,
   HyperMask = 0,
   SuperMask = 0;
+
+static unsigned char rgmapMouseButtons[XSERVER_MAX_BUTTONS];
+
+static int cMouseButtons = 3;
 
 static const char *
 PchModifiersToModmask(const char *pch, int *pmodifier)
@@ -366,7 +372,7 @@ unbind_mouse(SCM contexts, SCM button)
   if (!gh_string_p(button)) {
     if (gh_number_p(button)) {
       bnum = gh_scm2int(button);
-      if (bnum < 0 || bnum > MAX_BUTTONS) {
+      if (bnum < 0 || bnum > cMouseButtons) {
 	scwm_msg(WARN,__FUNCTION__,"No button number `%d'",bnum);
 	SCM_ALLOW_INTS;
 	return SCM_UNSPECIFIED;
@@ -538,7 +544,7 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
   if (!gh_string_p(button)) {
     if (gh_number_p(button)) {
       bnum = gh_scm2int(button);
-      if (bnum < 0 || bnum > MAX_BUTTONS) {
+      if (bnum < 0 || bnum > cMouseButtons) {
 	scwm_msg(WARN,__FUNCTION__,"No button number `%d'",bnum);
 	SCM_ALLOW_INTS;
 	return SCM_UNSPECIFIED;
@@ -716,6 +722,26 @@ SCM mod_mask_hyper() { return gh_int2scm(HyperMask); }
 SCM_PROC(s_mod_mask_super, "mod-mask-super", 0, 0, 0, mod_mask_super);
 SCM mod_mask_super() { return gh_int2scm(SuperMask); }
 
+
+SCM_PROC(s_pointer_mapping, "X-pointer-mapping", 0, 0, 0, x_pointer_mapping);
+
+SCM
+x_pointer_mapping()
+{
+  SCM mapping = SCM_EOL;
+  int imap = cMouseButtons - 1;
+  while (imap >= 0) {
+    mapping = gh_cons(gh_int2scm(rgmapMouseButtons[imap]), mapping);
+    imap--;
+  }
+  return mapping;
+}
+
+void
+init_pointer_mapping(void)
+{
+  cMouseButtons = XGetPointerMapping(dpy, rgmapMouseButtons, XSERVER_MAX_BUTTONS);
+}
 
 void
 init_modifiers(void)

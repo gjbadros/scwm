@@ -212,6 +212,7 @@ HandleMappingNotify()
 {
   scwm_msg(WARN,__FUNCTION__,"Calling mapping notify hook (maybe empty)");
   init_modifiers();
+  init_pointer_mapping();
   call0_hooks(x_mappingnotify_hook);
 }
 
