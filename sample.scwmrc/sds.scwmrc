@@ -461,7 +461,7 @@
 ;;; Window menus
 ;;; ------------
 (define (icon-list)
-  (show-window-list-menu #:only iconified? #:show-geometry #t))
+  (show-window-list-menu #:only iconified-window? #:show-geometry #t))
 (define (winlist) (show-window-list-menu #:show-geometry #t))
 
 (define menu-window-ops
@@ -518,7 +518,7 @@
                    #:extra-label "(H-f7)" #:action interactive-move)
 	 (menuitem "Re&size" #:image-left resize-i
                    #:extra-label "(H-f8)" #:action interactive-resize)
-         (menuitem (if (iconified? ww) "Unmi&nimize" "Mi&nimize")
+         (menuitem (if (iconified-window? ww) "Unmi&nimize" "Mi&nimize")
                    #:extra-label "(H-m)"
                    #:image-left icon-i #:action animated-toggle-iconify)
          (menuitem (if (maximized? ww) "Unma&ximize" "Ma&ximize")
@@ -876,7 +876,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (bind-key 'all "H-z" popup-root-start)
 
 ;; rotate the current window with the keyboard
-(bind-key 'all "H-Tab" (lambda () (next-window #:except iconified?)))
+(bind-key 'all "H-Tab" (lambda () (next-window #:except iconified-window?)))
 
 (key-mouse-moves "H" 5 "h" "j" "k" "l")
 (key-mouse-moves "H" 1 "y" "u" "i" "o")

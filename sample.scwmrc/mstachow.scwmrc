@@ -184,24 +184,6 @@
     ((click) (lower-by-one))
     ((double-click) (lower-window))))
 
-(define* (vertical-maximize #&optional (win (get-window)))
-  (maximize 0 (%y 100) win))
-
-(define* (horizontal-maximize #&optional (win (get-window)))
-  (maximize (%x 100) 0 win))
-
-(define* (both-maximize #&optional (win (get-window)))
-  (maximize (%x 100) (%y 100) win))
-
-(define* (vertical-toggle-maximize #&optional (win (get-window)))
-  (toggle-maximize 0 (%y 100) win))
-
-(define* (horizontal-toggle-maximize #&optional (win (get-window)))
-  (toggle-maximize (%x 100) 0 win))
-
-(define* (both-toggle-maximize #&optional (win (get-window)))
-  (toggle-maximize (%x 100) (%y 100) win))
-
 (define* (toggle-stick-and-on-top #&optional (win (get-window)))
   (cond
    ((and (sticky? win) (kept-on-top? win))
@@ -293,7 +275,7 @@
     (menuitem "Lower" #:action lower-window)
     (menuitem "(Un)Window-Shade" #:action animated-toggle-window-shade)
     (menuitem "(De)Iconify" #:action animated-toggle-iconify)
-    (menuitem "(Un)Maximize" #:action vertical-toggle-maximize)
+    (menuitem "(Un)Maximize" #:action toggle-maximize-vertical)
     (menuitem "(Un)Stick" #:action toggle-stick)
     (menuitem "(Un)Keep On Top" #:action toggle-on-top)
     menu-separator
@@ -388,20 +370,20 @@
     (menuitem "More" #:action 
 	      (menu 
 	       (list
-		(menuitem (if (iconified? w) "Deiconify" "Iconify")
+		(menuitem (if (iconified-window? w) "Deiconify" "Iconify")
 			  #:extra-label "(H-i)"
 			  #:action animated-toggle-iconify)
 		(menuitem (if (maximized? w)
 			      "Unmaximize"
 			      "Maximize") 
 			  #:extra-label "(H-m)"
-			  #:action vertical-toggle-maximize)
+			  #:action toggle-maximize-vertical)
 		(menuitem "Vertical Maximize" 
 			  #:extra-label "(H-v)"
-			  #:action vertical-maximize)
+			  #:action maximize-vertical)
 		(menuitem "Horizontal Maximize" 
 			  #:extra-label "(H-h)"
-			  #:action horizontal-maximize)
+			  #:action maximize-horizontal)
 		(menuitem (if (window-shaded? w)
 			      "Window-Unshade"
 			      "Window-Shade") 
@@ -452,10 +434,10 @@
 	 (list
 	  (menuitem "Vertical Maximize" 
 		    #:extra-label "(H-v)"
-		    #:action vertical-maximize)
+		    #:action maximize-vertical)
 	  (menuitem "Horizontal Maximize" 
 		    #:extra-label "(H-h)"
-		    #:action vertical-maximize))))
+		    #:action maximize-vertical))))
     (menu 
      (if (maximized? win)
 	 (cons (menuitem "Unmaximize" 
@@ -466,12 +448,12 @@
 	  tail
 	  (list (menuitem "Maximize" 
 			  #:extra-label "(H-m)"
-			  #:action both-maximize)))))))
+			  #:action maximize-both)))))))
 
 (define (window-shade-menu win)
   (menu
    (list
-    (menuitem (if (window-shaded? win)
+    (menuitem (if (shaded-window? win)
 		  "Window-Unshade"
 		  "Window-Shade")
 	      #:extra-label "(H-w)"
@@ -480,7 +462,7 @@
 (define (window-iconify-menu win)
   (menu
    (list
-    (menuitem (if (iconified? win)
+    (menuitem (if (iconified-window? win)
 		  "Deiconify"
 		  "Iconify")
 	      #:extra-label "(H-i)"
@@ -554,8 +536,8 @@
 (define (maximize-button-action bnum)
   (lambda* (#&optional (win (get-window)))
 	   (case (mouse-event-type)
-	     ((click) (vertical-toggle-maximize))
-	     ((double-click) (both-toggle-maximize))
+	     ((click) (toggle-maximize-vertical))
+	     ((double-click) (toggle-maximize-both))
 	     ((motion) (popup-menu-from-decoration 
 			(window-maximize-menu win)
 			win bnum)))))
@@ -693,7 +675,7 @@
 (bind-key 'all "H-t" toggle-stick-and-on-top)
 
 (bind-key 'all "H-i" animated-toggle-iconify)
-(bind-key 'all "H-m" both-toggle-maximize)
+(bind-key 'all "H-m" toggle-maximize-both)
 (bind-key 'all "H-v" vertical-maximize)
 (bind-key 'all "H-h" horizontal-maximize)
 
@@ -714,12 +696,12 @@
 (bind-key 'all "s-L" 
           (lambda ()
             (show-window-list-menu #:show-geometry #t #:only 
-                                   (list iconified? on-current-desk?))))
+                                   (list iconified-window? on-current-desk?))))
 
 (bind-key 'all "s-i" 
           (lambda ()
             (show-window-list-menu #:show-geometry #t #:only 
-                                   (list iconified? on-current-desk?))))
+                                   (list iconified-window? on-current-desk?))))
 
 (bind-key 'all "s-o" popup-ops)
 

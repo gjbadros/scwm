@@ -158,9 +158,6 @@
 ;;-------------------------------;;
 ;; define some useful menus      ;;
 
-(define (vertical-toggle-maximize)
-  (toggle-maximize 0 (%y 100)))
-
 (define (root-menu)
   (display-menu
    (menu-title "Root")
@@ -218,7 +215,7 @@
    (menuitem "&Lower" #:image-left "mini-lower.xpm" #:action lower-window)
    (menuitem "&Info" #:action window-info-menu)
    menu-separator
-   (menuitem (if (iconified? w)
+   (menuitem (if (iconified-window? w)
 		  "Deiconify"
 		  "Iconify") 
 	      #:action toggle-iconify)
@@ -299,7 +296,7 @@
 		  (begin
 		    (focus window)
 		    (save-focus old-window old-screen))
-		  (next-window #:only visible? #:except iconified?))))))))
+		  (next-window #:only visible? #:except iconified-window?))))))))
 
 (define (windows-off-screen-menu)
   (display-menu
@@ -441,11 +438,11 @@
 ;; rotate the current window with the keyboard
 (bind-key 'all "A-Tab"
 	  (lambda ()
-	    (next-window #:only visible? #:except iconified?)))
+	    (next-window #:only visible? #:except iconified-window?)))
 
 (bind-key 'all "A-S-Tab" 
 	  (lambda ()
-	    (prev-window #:only visible? #:except iconified?)))
+	    (prev-window #:only visible? #:except iconified-window?)))
 
 
 ;;-------------------------------;;

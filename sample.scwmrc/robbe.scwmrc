@@ -186,12 +186,6 @@
 			     '(barebones squashed decorated barebones)))))
 
 ;; utility functions
-(define (vertical-toggle-maximize)
-  (toggle-maximize 0 (%y 90)))
-
-(define (horizontal-toggle-maximize)
-  (toggle-maximize (%x 100) 0))
-
 (define (toggle-circulate-skip)
   (if (circulate-skip?)
       (circulate-hit)
@@ -427,7 +421,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
     (menuitem "(Un)&Window-Shade" #:action toggle-window-shade)
     (menuitem "(De)&Iconify" #:extra-label "F4" #:action toggle-iconify)
     (menuitem "(Un)&Maximize" #:extra-label "F8"
-	      #:action vertical-toggle-maximize)
+	      #:action toggle-maximize-vertical)
     (menuitem "(Un)&Stick" #:extra-label "Return" #:action toggle-stick)
     (menuitem "(Un)Keep On &Top" #:extra-label "Home" #:action toggle-on-top)
     (menuitem "(Un)S&kip" #:extra-label "Ins" #:action toggle-circulate-skip)
@@ -463,7 +457,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 		  (list
 		   (menuitem (if (maximized? w) "~^" "^")
 			     #:image-left "maximize.xpm"
-			     #:action vertical-toggle-maximize)
+			     #:action toggle-maximize-vertical)
 		   (menuitem (if (sticky? w) "~*" "*")
 			     #:action toggle-stick)
 		   (menuitem (if (window-shaded? w) "~=" "=")
@@ -536,8 +530,8 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (bind-key 'all (super "F4") toggle-iconify)
 (bind-key 'all (super "F5") interactive-move)
 (bind-key 'all (super "F6") interactive-resize)
-(bind-key 'all (super "F7") horizontal-toggle-maximize)
-(bind-key 'all (super "F8") vertical-toggle-maximize)
+(bind-key 'all (super "F7") toggle-maximize-horizontal)
+(bind-key 'all (super "F8") toggle-maximize-vertical)
 (bind-key 'all (super "Return") toggle-stick)
 (bind-key 'all (super-kp "Home") toggle-on-top)
 (bind-key 'all (super-kp "Insert") toggle-circulate-skip)
@@ -552,7 +546,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
   (or (equal? (get-window-focus w) 'none)
       (equal? (get-window-focus w) 'click)))
 (define (iconified-or-unfocusable? w)
-  (or (iconified? w)
+  (or (iconified-window? w)
       (unfocusable? w)))
 
 (define (bind-circulate fwd bwd . args)
@@ -616,7 +610,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (bind-mouse 'right-button-2 1 iconify)
 (bind-mouse 'right-button-1 1
 	    (lambda () (case (mouse-event-type)
-			 ('click (vertical-toggle-maximize))
+			 ('click (toggle-maximize-vertical))
 			 ('double-click (toggle-maximize (%x 100) (%y 100))))))
 (bind-mouse 'frame-corners 1 resize-or-raise)
 (bind-mouse 'frame-sides 1 move-or-raise)

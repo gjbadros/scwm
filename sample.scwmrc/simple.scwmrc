@@ -97,9 +97,6 @@
 ;; define some useful menus      ;;
 
 
-(define (vertical-toggle-maximize)
-  (toggle-maximize 0 (%y 100)))
-
 (define window-ops-menu
   (menu 
    (list
@@ -111,7 +108,7 @@
     (menuitem "Print" #:action print-window)
     (menuitem "(Un)Window-Shade" #:action toggle-window-shade)
     (menuitem "(De)Iconify" #:action toggle-iconify)
-    (menuitem "(Un)Maximize" #:action vertical-toggle-maximize)
+    (menuitem "(Un)Maximize" #:action toggle-maximize-vertical)
     (menuitem "(Un)Stick" #:action toggle-stick)
     (menuitem "(Un)Keep On Top" #:action toggle-on-top)
     menu-separator
@@ -181,7 +178,7 @@
 		(menuitem (if (maximized? w)
 			      "Unmaximize"
 			      "Maximize") 
-			  #:action vertical-toggle-maximize)
+			  #:action toggle-maximize-vertical)
 		(menuitem (if (sticky? w)
 			      "Unstick"
 			      "Stick") #:action toggle-stick)
@@ -212,7 +209,7 @@
 
 ;; window buttons
 (bind-mouse 'left-button-1 1 popup-small-ops)
-(bind-mouse 'right-button-1 1 vertical-toggle-maximize)
+(bind-mouse 'right-button-1 1 toggle-maximize-vertical)
 (bind-mouse 'right-button-2 1 iconify)
 
 ;; operations on parts of the window
@@ -260,8 +257,8 @@
 ;; rotate the current window with the keyboard
 (bind-key 'all "C-S-Tab"
 	  (lambda ()
-	    (next-window #:only visible? #:except iconified?)))
+	    (next-window #:only visible? #:except iconified-window?)))
 
 (bind-key 'all "M-S-Tab" 
 	  (lambda ()
-	    (prev-window #:only visible? #:except iconified?)))
+	    (prev-window #:only visible? #:except iconified-window?)))
