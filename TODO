@@ -28,8 +28,14 @@ provide some example uses of guile-gtk for scwm.
 * Advice (like emacs) mechanism for augmenting procedures 
 ** (Robert has done some work on this)
 
-* overlay plane support
+* overlay plane support (or grab server during constraint draws)
 ** http://www.motifzone.com/tmd/articles/Overlay/oplanes.html
+
+* generalize select-window to permit proc to be called when would-be-selected win changes
+
+* 
+
+* Support for custom cursors
 
 * Improve the gravity handling stuff.
 ** Respect gravity on program resize
@@ -83,6 +89,9 @@ Other Stuff
 ** can we use xlab? http://www.alphalink.com.au/~mvertes/xlab.html
 
 * Constraint embedding
+** Flesh out ui-constraints-classes -- Jeff N.
+** Use toolbar widget, not hbox - guile-gtk is incomplete here
+** Enable/disable checkboxes (instead of menu)
 ** animated windows to new position when resolve
 ** make ClVariables always connect to a scheme level object --done 09/05/98 gjb
 *** Screen (for clv-s part of the pssci)
