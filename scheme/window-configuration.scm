@@ -51,7 +51,7 @@
   (with-window
    win
    (apply move-window (list-ref configuration 2))
-   (apply resize-frame-to (list-ref configuration 3))))
+   (apply resize-frame (list-ref configuration 3))))
 
 ;; (copy-window-configuration c)
 

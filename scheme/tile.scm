@@ -100,7 +100,7 @@ respectively. The default is 'restack-only."
 			   ;;; MS:FIXME:: check for bad values
 				 (else fs))))
 		(if (not (equal? new-size fs))
-		    (resize-frame-to (car new-size) (cadr new-size) win))
+		    (resize-frame (car new-size) (cadr new-size) win))
 		(move-window cur-x cur-y win))
 	      (cond
 	       ((and (eq? order 'horizontal) (= column (- num-per-row 1)))

@@ -22,6 +22,7 @@
 (define-module (app scwm winops)
   :use-module (app scwm optargs)
   :use-module (app scwm defoption)
+  :use-module (app scwm c-animation)
   :use-module (app scwm base)
   :use-module (app scwm style-options)
   :use-module (app scwm sort))
@@ -89,54 +90,42 @@ the same position as before the call."
   (make-toggling-winop icon-sticky? unstick-icon stick-icon))
 
 
-;;; Maximization
+(define-scwm-option *maximize-animatedly* #t
+  "Whether to use animation when maximizing and unmaximizing."
+  #:type 'boolean
+  #:group 'winops)
 
+;;; Maximization
 (define*-public (maximize nw nh #&optional (win (get-window)))
   "Maximize WIN to new pixel width NW and new pixel height NH.
 If NW or NH is 0, that dimension is not changed."
   (if win (let* ((pos (window-viewport-position win))
+		 (virt-pos (window-virtual-position win))
 		 (x (car pos))
 		 (y (cadr pos))
 		 (frame-size (window-frame-size win))
 		 (pix-width (car frame-size))
 		 (pix-height (cadr frame-size))
 		 (cli-size (window-size win))
-		 (cli-width (caddr cli-size))
-		 (cli-height (cadddr cli-size)))
-	    (resize-frame-to (if (> nw 0) nw pix-width)
-			     (if (> nh 0) nh pix-height) win)
-	    ;; above is just a hint, get the actual...
-	    ;; GJB:FIXME:: race conditions? might the resize
-	    ;; not have happened yet -- should we flush the X server
-	    ;; (we might be able to write that as a proc using set-X-server-synchronize!)
-	    (let* ((new-frame-size (window-frame-size win))
-		   (new-client-size (window-size win))
-		   (nfw (car new-frame-size))
-		   (nfh (cadr new-frame-size))
-		   (ncw (caddr new-client-size))
-		   (nch (cadddr new-client-size))
-		   (nx (cond
-			((> 0 x) 0)
-			((> display-width (+ x nfw)) x)
-			((> display-width nfw) (- display-width nfw))
-			(#t 0)))
-		   (ny (cond
-			((> 0 y) 0)
-			((> display-height (+ y nfh)) y)
-			((> display-height nfh) (- display-height nfh))
-			(#t 0))))
-	      (move-window-viewport-position nx ny win)
-	      (if (not (maximized? win))
-		  (begin
-		    ;; GJB:FIXME:: better if we restored the
-		    ;; gravity on unmaximization.  I get
-		    ;; windows moving offscreen when unmaximizing
-		    ;; if gravity is not northwest --07/28/99 gjb
-		    (set-window-gravity! 'northwest win)
-		    (set-window-property!
-		     win 'maximized (list x y cli-width cli-height
-					  nx ny ncw nch))))))))
-
+		 (nx (cond
+		      ((> 0 x) 0)
+		      ((> display-width (+ x nw)) x)
+		      ((> display-width nw) (- display-width nw))
+		      (#t 0)))
+		 (ny (cond
+		      ((> 0 y) 0)
+		      ((> display-height (+ y nh)) y)
+		      ((> display-height nh) (- display-height nh))
+		      (#t 0))))
+	    ((if *maximize-animatedly* 
+		 animated-resize-frame resize-frame)
+	     (if (> nw 0) nw pix-width)
+	     (if (> nh 0) nh pix-height) win (vpx->vx nx) (vpy->vy ny))
+	    (if (not (maximized? win))
+		(begin
+		  (set-window-gravity! 'northwest win)
+		  (set-window-property!
+		   win 'maximized (list virt-pos cli-size frame-size)))))))
 
 (define*-public (maximized? #&optional (win (get-window)))
   "Return #t if WIN is maximized, #f otherwise."
@@ -148,34 +137,14 @@ If NW or NH is 0, that dimension is not changed."
   (if win (let ((max-prop (window-property win 'maximized)))
 	       (cond
 		(max-prop
-		 (let* ((maxed-dims (cddddr max-prop))
-			(maxed-x (car maxed-dims))
-			(maxed-y (cadr maxed-dims))
-			(maxed-width (caddr maxed-dims))
-			(maxed-height (cadddr maxed-dims))
-			(cur-pos (window-viewport-position win))
-			(cur-size (window-size win))
-			(cur-x (car cur-pos))
-			(cur-y (cadr cur-pos))
-			(cur-width (caddr cur-size))
-			(cur-height (cadddr cur-size))
-			(size-hints (cddr (window-size-hints win))))
-		       (if (and (= cur-x maxed-x) (= cur-y maxed-y))
-			   (move-window-viewport-position
-			    (car max-prop) (cadr max-prop) win))
-		       (resize-to
-			(+ (* (if (= maxed-width cur-width)
-				  (caddr max-prop)
-				  cur-width)
-			      (caar size-hints))
-			   (caadr size-hints))
-			(+ (* (if (= maxed-height cur-height)
-				  (cadddr max-prop)
-				  cur-height)
-			      (cdar size-hints))
-			   (cdadr size-hints))
-			win)
-		       (set-window-property! win 'maximized #f)))))))
+		 (let* ((pos (car max-prop))
+			(cli-size (cadr max-prop))
+			(frame-size (caddr max-prop)))
+		   ((if *maximize-animatedly*
+			animated-resize-frame resize-frame)
+		    (car frame-size) (cadr frame-size)
+		    win (car pos) (cadr pos))
+		   (set-window-property! win 'maximized #f)))))))
 
 
 (define*-public (toggle-maximize nw nh #&optional (win (get-window)))
@@ -281,14 +250,15 @@ moves opaquely if that returns #t and uses a rubber-band if it returns
 
 
 
-;; GJB:FIXME:: the resize-to primitive should just be renamed to resize-window
-;; and resize-frame-to should be renamed to resize-window-frame
-(define*-public (resize-window w h #&optional (win (get-window)))
+(define*-public (resize-window w h #&optional (win (get-window)) x y)
   "Resize WIN's client area to a size of W by H in pixels. 
 The size does not include the window decorations -- only the client
 application size. WIN defaults to the window context in the usual way
 if not specified."
-  (resize-to w h win))
+  (let* ((decor-sizes (window-decoration-size win))
+	 (dw (car decor-sizes))
+	 (dh (cadr decor-sizes)))
+    (resize-frame (+ dw w) (+ dh h) win x y)))
 
 
 ;; Window sorting

@@ -90,7 +90,7 @@ sum of the window's border width and title height."
 			   ;;; MS:FIXME:: check for bad values
 			   (else fs))))
 	  (if (not (equal? new-size fs))
-	      (resize-frame-to (car new-size) (cadr new-size) win))
+	      (resize-frame (car new-size) (cadr new-size) win))
 	  (move-to cur-x cur-y win)
 	  (loop (cdr windows) (+ cur-x (num-or-apply x-increment win))
 		(+ cur-y (num-or-apply y-increment win)))))))

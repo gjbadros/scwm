@@ -169,8 +169,8 @@
    (lambda(x y)
      (if (and x y)
 	 (if window
-	     (resize-to x y window)
-	     (resize-to x y))
+	     (resize-window x y window)
+	     (resize-window x y))
 	 (if window
 	     (interactive-resize window)
 	     (interactive-resize))))))

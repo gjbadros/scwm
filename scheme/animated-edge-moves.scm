@@ -53,11 +53,13 @@
 
 ;; West
 (define*-public (animated-move-to-w #&optional (win (get-window)))
-  (with-window (get-window)
+  (with-window win
 	       (animated-move-to 0 #f)
 	       (set-window-gravity! 'west)))
 
 ;; Center -- just set gravity
 (define*-public (animated-move-to-center #&optional (win (get-window)))
   (with-window win
+	       (animated-move-to (- (/ display-width 2) (w%x 50))
+				 (- (/ display-height 2) (w%y 50)))
 	       (set-window-gravity! 'center)))

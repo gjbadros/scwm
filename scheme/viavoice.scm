@@ -106,6 +106,9 @@
     (string-match substring command))
   (if accepted?
       (let ((win (or (current-window-with-pointer))))
+	(display "got accepted command ")
+	(display command)
+	(newline)
 	(if win
 	    (let* ((pos (window-position win))
 		   (x (car pos))
@@ -136,7 +139,8 @@
 		    (for-each display 
 			      (list "move window " win " "
 				    command " to " x " " y " " amount "\n"))
-		    (animated-move-window x y win #t)))))
+		    (animated-move-window x y win #t))))
+	    (display "no current window\n"))
 	(cond
 	 ((matches-command? "focus previous") (prev-visible-non-iconified-window))
 	 ((matches-command? "focus next") (next-visible-non-iconified-window))
