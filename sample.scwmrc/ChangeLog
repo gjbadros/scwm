@@ -1,3 +1,31 @@
+1998-09-30  Jens-Ulrik Petersen  <petersen@kurims.kyoto-u.ac.jp>
+
+	* juhp.scwmrc: Added messages for start and end of file, and
+	scwm version message.
+	Use modules 'flux and 'fvwm-module.
+	Drop setting rubberband mask.
+	Use opaque-move-percent and opaque-resize-percent.
+	Use focus none on XBuffy windows.  Not that it stops xbuffy
+	flashups from getting focus!
+	Use widget decoration for fvwmpager.
+	(root-menu): Use interactive-*-maybe-opaque functions.  Add
+	window-info binding.  Use toggle-max-vert.
+	(window-menu): Ditto.
+	(window-geometry): new function to print out window geometry the X 
+	way.  Should probably be in one of the scwm scheme modules.
+	(window-info-menu): was experimental `focus-window-menu'.  Pops a
+	"menu" with information on the focused window, as available under
+	many X wm's.
+	(do-move-window): was `move-window', which is now defined
+	elsewhere.
+	(move-window-screen): new function to move window with focus
+	to another "screen" [viewport].
+	Improvements to various key and mouse bindings.
+	(move-or-shade): use `move-or-raise-maybe-opaque'.
+	(move-or-deiconify): use `interactive-move-maybe-opaque'.
+	Commented out debugging function `print-info'.
+	Start a FvwmPager.
+
 Fri Sep 18 17:02:52 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added a hacky `deiconify-to-current-viewport' (hacky 
