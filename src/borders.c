@@ -344,7 +344,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 	 */
 
 	if (flags & HiddenHandles) {
-	  if (flags & NoInset)
+	  if (flags & NoInset) {
 	    RelieveWindowHH(t, t->sides[i], 0, 0,
 			    ((vertical) ? t->boundary_width : x),
 			    ((vertical) ? y : t->boundary_width),
@@ -353,7 +353,7 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 			    : (i ? BOTTOM_HILITE : TOP_HILITE),
 			    (0x0001 << i)
 	      );
-	  else
+	  } else {
 	    RelieveWindowHH(t, t->sides[i], 0, 0,
 			    ((vertical) ? t->boundary_width : x),
 			    ((vertical) ? y : t->boundary_width),
@@ -362,11 +362,13 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 			    : (TOP_HILITE | BOTTOM_HILITE),
 			    (0x0001 << i)
 	      );
-	} else
+	  }
+	} else {
 	  RelieveWindow(t, t->sides[i], 0, 0,
 			((i % 2) ? t->boundary_width : x),
 			((i % 2) ? y : t->boundary_width),
 			rgc, sgc, (0x0001 << i));
+	}
       }
       ChangeWindowColor(t->corners[i], valuemask);
       if ((flush_expose(t->corners[i])) || (expose_win == t->corners[i]) ||
