@@ -69,7 +69,7 @@ AC_ARG_WITH(cassowary,
 		AC_DEFINE(CL_NO_TRACE)
 		AC_MSG_CHECKING(where to expect to find cassowary headers and library)
 		CASSOWARY_INCLUDES="-I${withval}"
-		CASSOWARY_LIBS="-L${withval} -lcassowary-scwm"
+		CASSOWARY_LIBS="-L${withval} ${withval}/../guile/cassowary_scm.o -lcassowary-scwm"
 		AC_MSG_RESULT("${withval}")
 
 	fi
