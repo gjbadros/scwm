@@ -16,6 +16,7 @@
   :use-module (app scwm stylist)
   :use-module (app scwm animation)
   :use-module (app scwm animated-iconify)
+  :use-module (app scwm animated-edge-moves)
   :use-module (app scwm time-convert)
   :use-module (app scwm defoption)
   :use-module (app scwm wininfo)
@@ -581,6 +582,20 @@ that corner fixed."
   (end-highlighting-current-window)
   (unselect-all-windows))
 
+(define-public menu-window-move
+  (menu
+   (list
+    (menu-title "Move window") menu-separator
+    (menuitem "Center" #:image-left "win-pos-center.xpm" #:action animated-move-to-center)
+    (menuitem "North" #:image-left "win-pos-n.xpm" #:action animated-move-to-n)
+    (menuitem "East" #:image-left "win-pos-e.xpm" #:action animated-move-to-e)
+    (menuitem "South" #:image-left "win-pos-s.xpm" #:action animated-move-to-s)
+    (menuitem "West" #:image-left "win-pos-w.xpm" #:action animated-move-to-w)
+    (menuitem "Northeast" #:image-left "win-pos-ne.xpm" #:action animated-move-to-ne)
+    (menuitem "Southeast" #:image-left "win-pos-se.xpm" #:action animated-move-to-se)
+    (menuitem "Southwest" #:image-left "win-pos-sw.xpm" #:action animated-move-to-sw)
+    (menuitem "Northwest" #:image-left "win-pos-nw.xpm" #:action animated-move-to-nw)
+    )))
 
 (define-public (make-small-window-ops-menu w)
   (menu
@@ -599,7 +614,7 @@ that corner fixed."
     (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
 	      #:action interactive-set-window-gravity!)
     menu-separator
-    (menuitem "More" 
+    (menuitem "Other" 
 	      #:submenu
 	      (menu 
 	       (list
@@ -610,13 +625,14 @@ that corner fixed."
 			      "&Stick") 
 			  #:action toggle-stick)
 		(menuitem (if (window-shaded? w)
-			      "Unwindow-S&hade"
-			      "Window-S&hade")
+			      "Uns&hade"
+			      "S&hade")
 			  #:action animated-toggle-window-shade)
 		(menuitem (if (kept-on-top? w)
-			      "UnKeep On Top"
-			      "Keep On Top") 
+			      "Do not keep on top"
+			      "Keep on top") 
 			  #:action toggle-on-top))))
+    (menuitem "Move" #:submenu menu-window-move)
     (menuitem "Title"
 	      #:submenu
 	      (menu
