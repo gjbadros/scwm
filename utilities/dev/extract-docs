@@ -34,16 +34,23 @@
 use strict;
 use constant TRUE => (1==1);
 use constant FALSE => (1==0);
+use File::Basename;
+
+my $pkg_name = basename($ENV{PWD});
 
 my $header = "";
 #my $fDebug = TRUE;
 my $fDebug = FALSE;
 
+# maps from a procedure name to a hash
+# containing "usage", "purpose", "comment",  "markup", "file", "line"
+my %procedure = ();
+
 while (<>) {
   close(ARGV) if (eof);
   if (m/^SCWM_PROC/) {
     $header = $_;
-    while (($_ = <>) !~ m/^\s*{/) {
+    while (($_ = <>) !~ m/^\s*\{/) {
       $header .= $_;
     }
     $header .= $_;
@@ -52,19 +59,107 @@ while (<>) {
   }
 }
 
+open (MARKUP_OUT,">$pkg_name.sgml") or die "Could not write to $pkg_name.sgml: $!";
+chop (my $date = `date +"%d %B %Y"`);
+chop (my $year = `date +"%Y"`);
+
+print MARKUP_OUT <<END_HEADER
+<!DOCTYPE Book PUBLIC "-//Davenport//DTD DocBook V3.0//EN">
+<book>
+  <bookinfo>
+    <title>
+      <productname>SCWM Reference Manual</productname>
+    </title>
+    <authorgroup>
+      <author>
+  	<firstname>Maciej</firstname>
+  	<surname>Stachowiak</surname>
+  	<affiliation>
+  	  <shortaffil>MIT</shortaffil>
+  	  <jobtitle>M.S. Degree Recipient</jobtitle>
+  	  <orgname>Massachusetts Institute of Technology</orgname>
+  	  <orgdiv>Department of Computer Science</orgdiv>
+  	  <address>
+  	    <city>Cambridge</city>
+  	    <state>Massachusetts</state>
+  	    <postcode>12345</postcode>
+  	    <country>U.S.A.</country>
+  	    <email>mstachow\@mit.edu</email>
+  	  </address>
+  	</affiliation>
+      </author>
+      <author>
+  	<firstname>Greg</firstname>
+  	<surname>Badros</surname>
+  	<affiliation>
+  	  <shortaffil>UWashington</shortaffil>
+  	  <jobtitle>Graduate Research Assistant</jobtitle>
+  	  <orgname>University of Washington</orgname>
+  	  <orgdiv>Department of Computer Science and Engineering</orgdiv>
+  	  <address>
+  	    <city>Seattle</city>
+  	    <state>Washington</state>
+  	    <postcode>98195</postcode>
+  	    <country>U.S.A.</country>
+  	    <email>gjb\@cs.washington.edu</email>
+  	  </address>
+  	</affiliation>
+      </author>
+    </authorgroup>
+    <releaseinfo>Release pre-0.8</releaseinfo>
+    <pubdate>$date</pubdate>
+    <copyright>
+      <year>1997&ndash;$year</year>
+      <holder>Maciej Stachowiak and Greg J. Badros</holder>
+    </copyright>
+  </bookinfo>
+  <chapter>
+    <title>Primitives</title>
+END_HEADER
+;
+
+foreach my $proc (sort { lc($a) cmp lc($b) } keys %procedure) {
+  my $usage = $procedure{$proc}{usage};
+  my $comment = $procedure{$proc}{comment};
+  my $file = $procedure{$proc}{file};
+  my $line = $procedure{$proc}{line};
+  my $markup = $procedure{$proc}{markup};
+  print <<EOC
+$usage
+$comment
+[From $file:$line]
+
+EOC
+  ;
+  print MARKUP_OUT $markup, "\n";
+}
+
+print MARKUP_OUT <<END_TRAILER
+</chapter>
+</book>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+fill-column: 10000
+sgml-omittag:nil
+sgml-shorttag:t
+End:
+-->
+END_TRAILER
+;
+
 
 sub ProcessHeader( $ ) {
   my ($header) = @_;
   my ($cprimname, $primname, $req, $opt, $var, $argslist) =
-    $header =~ m%^SCWM_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^)]*)\)%;
+    $header =~ m%^SCWM_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^\)]*)\)%;
   if (!defined($cprimname)) {
     print STDERR "$ARGV:$.:****ERROR:could not parse argument list\n";
     return FALSE;
   }
   my ($comment) = $header =~ m%/\*\*\s*(.*)\s*\*/%s;
   my ($fname_define) = $header =~ m%^\s*\#\s*define\s+FUNC_NAME\s+(.*?)\s*$%m;
-
-{ # cperl-mode gets confused at above regexp, so provide scope to help it out
+  
   my $clean_argslist = $argslist;
   my $cremovals = ($clean_argslist =~ s/\bSCM\b//g);
   $clean_argslist =~ s/\n/ /g;
@@ -153,9 +248,59 @@ sub ProcessHeader( $ ) {
     }
   }
 
+  my ($purpose) = $comment =~ m%(.*?[\.;\n])%;
+  chomp ($purpose); # in case it matched the newline
+  if ($purpose !~ /\.\s*$/) {
+    print STDERR "$ARGV:$.:****$cprimname: first line of comment should be a purpose sentence\n";
+  }
+
+  # Now want to do the markup of $comment, and set $markup_comment
+  # FIXGJB: fold into testing, above
+  my $markup_comment = $comment;
+
+  # convert & into &amp; < into &lt;, > into &gt;
+  $markup_comment =~ s%&%&amp;%g;
+  $markup_comment =~ s%<%&lt;%g;
+  $markup_comment =~ s%>%&lt;%g;
+  $usage =~ s%&%&amp;%g;
+  $usage =~ s%<%&lt;%g;
+  $usage =~ s%>%&gt;%g;
+
+  # Mark formals within comment with <parameter> tag
+  foreach my $formal (keys %argnames) {
+    $markup_comment =~ s%(\Q$formal\E)%<parameter>$1</parameter>%g;
+  }
+  # Mark #t and #f within comment with <literal> tag
+  $markup_comment =~ s%(\#[tf])%<literal>$1</literal>%g;
+
+  # FIXGJB: use some sgml perl library!
+
+  # Use <refentry>, <refname>, <refpurpose>, <synopsis>
+  
+  my $markup = 
+"<refentry>
+  <refnamediv>
+    <refname>$primname</refname>
+    <refpurpose> $purpose </refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>$usage</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  $markup_comment
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Implemenation Notes</title>
+  <para> Defined in <filename>$ARGV</filename> at line $. </para> </refsect1>
+</refentry>
+";
+
 
   if ($fDebug) {
-    print <<EOC
+    print STDERR <<EOC
 scheme-primitive-name:	$primname
 C-primitive-name:	$cprimname
 arg kinds:		$req, $opt, $var
@@ -165,12 +310,13 @@ fname define:           $fname_define
 EOC
 ;
   }
-  print <<EOC
-usage:			$usage
-comment:		$comment
-EOC
-  ;
-  print "\n";
-} # end helper scope
+  $procedure{$primname} = { usage => $usage,
+			    comment => $comment,
+			    purpose => $purpose,
+			    markup => $markup,
+			    file => $ARGV,
+			    line => $.,
+			  };
+
   return TRUE;
 }
