@@ -19,7 +19,7 @@ ui-constraints.scm virtual.scm window-locations.scm \
 wininfo.scm winlist.scm winops.scm wmconfig-menu.scm
 
 scwm_gtk_scheme = gtk.scm ScwmButtons.scm ScwmBiff.scm ScwmClock.scm ScwmDeskButtons.scm \
-		prompt-bool.scm prompt-range.scm prompt-string.scm prompt-proc.scm flux-gtk.scm
+		prompt-bool.scm prompt-color.scm prompt-file.scm prompt-font.scm prompt-range.scm prompt-string.scm prompt-proc.scm flux-gtk.scm
 
 check: 
 	echo $(scwm_common_scheme) $(scwm_gtk_scheme) | perl -pe 's/\s+/\n/g' | sort > make.to-install
