@@ -39,7 +39,6 @@ scwm_SOURCES =  Grab.c \
                 resize.c \
 		screen.c \
                 scwm.c \
-		session-manager.c \
                 shutdown.c \
                 string_token.c \
                 syscompat.c \
@@ -51,12 +50,18 @@ scwm_SOURCES =  Grab.c \
                 xproperty.c \
 		xrm.c
 
+session_manager_srcs = session-manager.c
+session_manager_headers = session-manager.h
+
+session_manager_objs = $(session_manager_srcs:.c=.o)
+
+
 cassowary_srcs = constraint-primitives.cc scwm-constraints.cc 
 cassowary_headers = constraint-primitives.h scwm-constraints.h scwm-constraints.hpp
 
 cassowary_objs = $(cassowary_srcs:.cc=.o)
 
-EXTRA_scwm_SOURCES = $(cassowary_srcs)
+EXTRA_scwm_SOURCES = $(cassowary_srcs) $(session_manager_srcs)
 
 noinst_HEADERS = Grab.h ICCCM.h add_window.h binding.h borders.h \
 callbacks.h color.h colormaps.h colors.h complex.h decor.h \
@@ -68,12 +73,13 @@ scwm-constraints.h constraint-primitives.h \
 menu.h shutdown.h string_token.h syscompat.h system.h \
 util.h virtual.h window.h xmisc.h
 
-noinst_HEADERS += $(cassowary_headers)
+noinst_HEADERS += $(cassowary_headers) $(session_manager_headers)
 
-scwm_LDADD = @CASSOWARY_OBJECTS@ @x_ldflags@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
+scwm_LDADD = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@ \
+	      @x_ldflags@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
 	      @x_libs@ @GUILE_LIBS@ @CASSOWARY_LIBS@
 
-scwm_DEPENDENCIES = @CASSOWARY_OBJECTS@
+scwm_DEPENDENCIES = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@
 
 INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 
