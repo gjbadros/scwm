@@ -1,3 +1,10 @@
+Tue Jul 14 16:24:19 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwm.c (scwm_main): Make sure scwm initialization happens in the
+ 	root module rather than the new (user) module, to work around a
+ 	bug in scm_sysintern. Thanks to Mikael Djurfeldt
+ 	<mdj@nada.kth.se>.
+
 1998-07-13  Maciej Stachowiak  <maciej@roc-ny5-15.ix.netcom.com>
 
 	* syscompat.h: Remove extraneous semicolons.

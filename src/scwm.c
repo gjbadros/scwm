@@ -228,8 +228,12 @@ scwm_main(int argc, char **argv)
   Bool option_error = False;
 
 #ifdef I18N
-char *Lang,*territory,*tmp;
+  char *Lang,*territory,*tmp;
+#endif
 
+  gh_eval_str ("(define-module (guile))"); 
+
+#ifdef I18N
   if ((Lang = setlocale (LC_CTYPE,"")) == (char *)NULL) {
     scwm_msg(WARN,"main","Can't set specified locale.\n");
     Lang = "C";
