@@ -1,3 +1,8 @@
+## $Id$
+## process this file with automake to create Makefile.in
+## (You should run ./autogen.sh from the top level directory)
+
+EXTRA_DIST = ChangeLog
 
 lib_LTLIBRARIES = libscwmexec.la
 include_HEADERS = scwmexec.h

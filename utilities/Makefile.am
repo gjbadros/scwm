@@ -1,6 +1,8 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
 
+EXTRA_DIST=ChangeLog
+
 if DL_SUPPORT
 PIDPROPERTY_SUBDIR = pidproperty
 else

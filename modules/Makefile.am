@@ -1,6 +1,8 @@
 ## $Id$
 ## prcoess this file with automake to create Makefile.in
 
+EXTRA_DIST=ChangeLog
+
 if HAVE_GTK
 GTK_SUBDIRS = scwmgtkhelper
 else

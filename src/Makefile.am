@@ -107,7 +107,7 @@ BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
 ## Add -MG to make the .x magic work with auto-dep code.
 ## MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
-EXTRA_DIST=generate_scm_init_funcs
+EXTRA_DIST=generate_scm_init_funcs ChangeLog
 
 SUFFIXES = .x
 

@@ -4,7 +4,7 @@
 
 scwmrc_DATA = system.scwmrc
 
-EXTRA_DIST = $(scwmrc_DATA) decor.scwmrc gjb.scwmrc juhp.scwmrc sds.scwmrc \
+EXTRA_DIST = $(scwmrc_DATA) ChangeLog decor.scwmrc gjb.scwmrc juhp.scwmrc sds.scwmrc \
              mstachow.scwmrc robbe.scwmrc
 
 
