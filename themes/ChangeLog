@@ -1,3 +1,8 @@
+Thu Mar 25 20:24:40 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (afterstep.@TAR_SUFFIX@): Added afterstep
+	directory-- pretty poor likeness, but it's a start.
+
 Wed Mar 24 19:11:55 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added gjb, twm directories.
