@@ -20,6 +20,7 @@ color.  See `unflash-window'."
   (if (and (eq? (object-property win 'old-bg) #f)
 	   (eq? (object-property win 'old-hi-bg) #f))
       (begin
+	(if (string? color) (set! color (make-color color)))
 	(set-object-property! win 'old-bg (cadr (get-window-colors win)))
 	(set-object-property! win 'old-hi-bg (cadr (get-window-highlight-colors win)))
 	(if continually (set-object-property! win 'flashing #t))

@@ -1116,6 +1116,7 @@ union of all other window managers!
 (bind-mouse 'all "A-2" (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
 (bind-key 'all "H-r" (lambda () (rename-window-interactively)))
 (bind-key 'all "C-A-S-t" (lambda () (toggle-titlebar)))
+(bind-key 'all "C-A-S-m" (lambda () (show-window-list-matching-interactively)))
 
 (bind-key 'all "H-A-M-C-d" delete-window)
 

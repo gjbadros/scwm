@@ -27,3 +27,14 @@ WIN defaults as usual to the current window context."
   (prompt-string (string-append "Rename \"" (window-title win) "\" to: ") (lambda (new-name)
 				 (set-window-title! win new-name))
 		 "Rename-window"))
+
+
+(define*-public (show-window-list-matching-interactively)
+  "Prompt for a wildcard, and popup a list of matching windows (by title)."
+  (prompt-string "Window regexp? "
+		 (lambda (wildcard)
+		   (add-timer-hook! (ms->usec 200) handle-pending-events)
+		   (show-window-list-menu #:only (title-match?? wildcard)))))
+;; (show-window-list-matching-interactively)
+;; (use-scwm-modules prompt-string)
+;; (use-scwm-modules time-convert)
