@@ -1,4 +1,4 @@
-;;; File: <std-menus.scm - 1998-08-15 Sat 19:59:03 EDT sds@mute.eaglets.com>
+;;; File: <std-menus.scm - 1998-08-15 Sat 22:08:37 EDT sds@mute.eaglets.com>
 ;;;; 	Copyright (C) 1998 Sam Steingold and Maciej Stachowiak
 
 ;;;	$Id$
@@ -83,9 +83,9 @@ To use this, add the following to the menu of your choice:
 An optional USER argument specifies the user to telnet as."
   (menu (fold-menu-list
          (map (lambda (hh)
-               (menuitem hh #:action
-                         (run-in-xterm
-			  (string-append "telnet -E -l " user " " hh)
-                          (string-append "-T telnet:" hh) "-n telnet"))))
-             host-list))))
+                (menuitem hh #:action
+                          (run-in-xterm
+                           (string-append "telnet -E -l " user " " hh)
+                           (string-append "-T telnet:" hh) "-n telnet")))
+              host-list))))
 
