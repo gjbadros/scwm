@@ -499,7 +499,7 @@ scwm_error_handler (void *data, SCM tag, SCM throw_args)
   scm_display (tag, scm_current_error_port ());
   scm_newline (scm_current_error_port ());
   scm_display (throw_args,scm_current_error_port ());
-  scm_newline (scm_current_errpr_port ());
+  scm_newline (scm_current_error_port ());
 
   return SCM_BOOL_F;
 }
@@ -512,10 +512,11 @@ scwm_error_handler (void *data, SCM tag, SCM throw_args)
 SCM 
 gh_standard_handler (void *data, SCM tag, SCM throw_args)
 {
-  fprintf (stderr, "\nScwm got an error; tag is\n        ");
+  scm_display (gh_str02scm("\nScwm got an error; tag is\n        "),
+	       scm_current_error_port());
   scm_display (tag, scm_current_error_port ());
   scm_newline (scm_current_error_port ());
-  scm_display (throw_args,scm_current_output_port ());
+  scm_display (throw_args,scm_current_error_port ());
   scm_newline (scm_current_error_port ());
 
   return SCM_BOOL_F;
@@ -557,6 +558,27 @@ ScwmExecuteProperty()
 }
 
 
+static SCM make_output_strport(char *fname)
+{
+  return scm_mkstrport(SCM_INUM0, scm_make_string(SCM_MAKINUM(30), 
+						  SCM_UNDEFINED),
+		       SCM_OPN | SCM_WRTNG,
+		       fname);
+}
+
+static SCM get_strport_string(SCM port)
+{
+  SCM answer;
+  {
+    SCM_DEFER_INTS;
+    answer = scm_makfromstr (SCM_CHARS (SCM_CDR (SCM_STREAM (port))),
+			     SCM_INUM (SCM_CAR (SCM_STREAM (port))),
+			     0);
+    SCM_ALLOW_INTS;
+  }
+  return answer;
+}
+
 /* FIXMS: Could use a bit more robustness - find some nice way to handle two
    requests in rapid succession - maybe use append mode and keep track of
    where we are in the property string? */
@@ -573,7 +595,7 @@ HandleScwmExec()
   unsigned char *req;
   unsigned long last_offset=0;
   unsigned long saved_bytes_after=0;
-
+  
   do {
     /* Determine the request window. */
     if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
@@ -584,7 +606,7 @@ HandleScwmExec()
       XFree(pw);
       last_offset+=last_offset+1;
       saved_bytes_after=bytes_after;;
-
+      
       /* Get and delete its request. */
       if (XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
 			     0, 0, False, XA_STRING, 
@@ -594,17 +616,46 @@ HandleScwmExec()
 			     0, bytes_after*4, False, XA_STRING, 
 			     &type_ret, &form_ret, &nitems, &bytes_after,
 			     &req)==Success) {
-	SCM val;<
+	SCM val;
 	SCM str_val;
 	char *ret;
-	int len;
+	char *output;
+	char *error;
+	int rlen;
+	int olen;
+	int elen;
+	SCM o_port;
+	SCM e_port;
+	
+	/* Temporarily redirect output and error to string ports. 
+	   Note that the port setting functions return the current previous
+	   port. */
+
+	o_port=scm_set_current_output_port(make_output_strport(__FUNCTION__));
+	e_port=scm_set_current_error_port(make_output_strport(__FUNCTION__));
+	
 	val = gh_eval_str_with_catch(req,scwm_error_handler);
-	str_val=scm_strprint_obj(val);
-	ret=gh_scm2newstr(str_val, &len);
 	XFree(req); 
+	str_val=scm_strprint_obj(val);
+	ret=gh_scm2newstr(str_val, &rlen);
+	
+	/* restore output and error ports. */
+	o_port=scm_set_current_output_port(o_port);
+	e_port=scm_set_current_error_port(e_port);
+
+	output=gh_scm2newstr(get_strport_string(o_port),&olen);
+	error=gh_scm2newstr(get_strport_string(e_port),&elen);
+
+	XChangeProperty(dpy, w, XA_SCWMEXEC_OUTPUT, XA_STRING,
+			8, PropModeReplace, output, olen);
+	XChangeProperty(dpy, w, XA_SCWMEXEC_ERROR, XA_STRING,
+			8, PropModeReplace, error, elen);
 	XChangeProperty(dpy, w, XA_SCWMEXEC_REPLY, XA_STRING,
-			8, PropModeReplace, ret, strlen(ret)+1);
+			8, PropModeReplace, ret, rlen);
+
 	free(ret);
+	free(output);
+	free(error);
 	return;
       }
     }

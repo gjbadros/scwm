@@ -1,5 +1,13 @@
 Mon Mar  9 01:41:40 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* events.c(HandleScwmExec): redirect output and error to the
+ 	requesting program.
+
+	scwm.c, scwm.h: intern atoms for SCWMEXEC_OUTPUT, SCWMEXEC_ERROR.
+
+	* events.c: Use scm_current_error_port, not
+ 	scm_current_output_port in error handler.
+
 	* events.c: Make HandleScwmExec handle multiple window IDs in the
  	SCWMEXEC_REQWIN property, so clients can use PropModeAppend rather
  	than PropModeReplace.

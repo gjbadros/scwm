@@ -214,7 +214,8 @@ extern Atom XA_SCWMEXEC_REQUEST;
 extern Atom XA_SCWMEXEC_REQWIN;
 extern Atom XA_SCWMEXEC_REPLY;
 extern Atom XA_SCWMEXEC_NOTIFY;
-
+extern Atom XA_SCWMEXEC_OUTPUT;
+extern Atom XA_SCWMEXEC_ERROR;
 
 #endif /* _SCWM_ */
 

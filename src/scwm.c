@@ -534,7 +534,7 @@ scwm_main(int argc, char **argv)
   /* Announce support for scwmexec protocol. */
   XChangeProperty(dpy, Scr.Root, 
 		  XA_SCWMEXEC_LISTENER, XA_STRING,
-		  8, PropModeReplace, NULL, 0);
+		  8, PropModeReplace, "scwm", 5);
 
   XSetErrorHandler((XErrorHandler) CatchRedirectError);
   XSetIOErrorHandler((XIOErrorHandler) CatchFatal);
@@ -869,6 +869,8 @@ Atom XA_SCWMEXEC_REQWIN;
 Atom XA_SCWMEXEC_REQUEST;
 Atom XA_SCWMEXEC_REPLY;
 Atom XA_SCWMEXEC_NOTIFY;
+Atom XA_SCWMEXEC_OUTPUT;
+Atom XA_SCWMEXEC_ERROR;
 
 
 void 
@@ -907,6 +909,8 @@ InternUsefulAtoms(void)
   XA_SCWMEXEC_REQUEST=XInternAtom(dpy,"SCWMEXEC_REQUEST", False);
   XA_SCWMEXEC_REPLY=XInternAtom(dpy,"SCWMEXEC_REPLY", False);
   XA_SCWMEXEC_NOTIFY=XInternAtom(dpy,"SCWMEXEC_NOTIFY", False);
+  XA_SCWMEXEC_OUTPUT=XInternAtom(dpy,"SCWMEXEC_OUTPUT", False);
+  XA_SCWMEXEC_ERROR=XInternAtom(dpy,"SCWMEXEC_ERROR", False);
 
   return;
 }
