@@ -26,6 +26,9 @@
 (define menu-side-bg-color-set #f)
 (define menu-bg-image #f)
 (define menu-look scwm-menu-look)
+(define menu-hl-fg-color #f) ;; (make-color "yellow"))
+(define menu-hl-bg-color #f) ;; (make-color "black"))
+
 
 ;; HACK: GJB:FIXME:: This needs to be done in the root module
 ;; to replace the primitive in more recent guile snapshots
@@ -45,8 +48,16 @@
   (apply append (vector->list h))) 
 
 (define-public (round/ x y)
-  "Reaturn the closest integer to X divided by Y."
+  "Return the closest integer to X divided by Y."
   (inexact->exact (round (/ x y))))
+
+(define-public (maybe-make-color obj)
+  "Try to make OBJ into a color and return that color object.
+Returns #f if OBJ is not a color object or a string."
+  (cond
+   ((color? obj) obj)
+   ((string? obj) (make-color obj))
+   (else #f)))
 
 (define-scwm-option *use-scwm-system-proc* #f
   "If #t, `execute' will use `scwm-system' instead of guile's `system'.
@@ -70,16 +81,35 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
   #:type 'color
   #:group 'menu
   #:favorites (list "white" "grey20" "grey50" "grey75" "black" "blue" "red" "green" "purple" "yellow" "orange")
-  #:setter (lambda (color) (set! menu-text-color (if (color? color) color (make-color color))))
+  #:setter (lambda (color) (set! menu-text-color (maybe-make-color color)))
   #:getter (lambda () menu-text-color))
 
 (define-scwm-option *menu-bg-color* (make-color "grey75")
-  "The default menu text color."
+  "The default menu background color."
   #:type 'color
   #:group 'menu
   #:favorites (list "white" "grey20" "grey50" "grey75" "black" "blue" "red" "green" "purple" "yellow" "orange")
-  #:setter (lambda (color) (set! menu-bg-color (if (color? color) color (make-color color))))
+  #:setter (lambda (color) (set! menu-bg-color (maybe-make-color color)))
   #:getter (lambda () menu-bg-color))
+
+;; GJB:FIXME:: this option needs to be able to set the value to #f
+(define-scwm-option *menu-hl-fg-color* #f
+  "The default menu highlight fg/text color."
+  #:type 'color
+  #:group 'menu
+  #:favorites (list "white" "grey20" "grey50" "grey75" "black" "blue" "red" "green" "purple" "yellow" "orange")
+  #:setter (lambda (color) (set! menu-hl-fg-color (maybe-make-color color)))
+  #:getter (lambda () menu-hl-fg-color))
+
+;; GJB:FIXME:: this option needs to be able to set the value to #f
+(define-scwm-option *menu-hl-bg-color* #f
+  "The default menu highlight background color."
+  #:type 'color
+  #:group 'menu
+  #:favorites (list "white" "grey20" "grey50" "grey75" "black" "blue" "red" "green" "purple" "yellow" "orange")
+  #:setter (lambda (color) (set! menu-hl-bg-color (maybe-make-color color)))
+  #:getter (lambda () menu-hl-bg-color))
+
 
 
 (define-public display-width (car (display-size)))
@@ -398,6 +428,9 @@ the shortcut key for the menu item."
 		      (color-text 'menu-text-color)
 		      (color-bg 'menu-bg-color)
 		      (color-stipple 'menu-stipple-color)
+		      (hl-color-fg 'menu-hl-fg-color)
+		      (hl-color-bg 'menu-hl-bg-color)
+		      (hl-relief? #t)
 		      (font 'menu-font)
 		      (look 'menu-look)
 		      popup-delay hover-delay
@@ -430,6 +463,9 @@ specific to the menu look used for this menu."
 			 extra)))
     (and (bound? popup-delay) popup-delay (set-menu-popup-delay! menu popup-delay))
     (and (bound? hover-delay) hover-delay (set-menu-hover-delay! menu hover-delay))
+    (if (or hl-color-bg hl-color-text) 
+	(set-menu-highlight-colors! menu hl-color-text hl-color-bg))
+    (set-menu-highlight-relief! menu hl-relief?)
     (set-menu-look! menu look)
     menu))
 
