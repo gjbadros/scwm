@@ -38,6 +38,7 @@
 		  modifier-key-bindings window-selection
 		  group preferences
 		  send-string
+		  primopts 
 		  )
 
 ;;(use-scwm-modules gtk)
@@ -291,13 +292,17 @@
 	(warp-to-window win)
 	(move-pointer (w%x 20 win) (w%y 20 win)))))
 
+;;; there is a race condition with the mouse-focus
+;;; giving focus to the new window... 
+;;; we really need a new hook for this that is
+;;; for focus changing from an external program
 (define (focus-change-warp-pointer w)
   (if (and w (not (eq? w (current-window-with-pointer))))
       (warp-to-window w)))
 
 ;;(reset-hook! window-focus-change-hook)
 ;; this is nice with XEmacs's C-x 5 o (other-frame) and mouse-focus
-(add-hook! window-focus-change-hook focus-change-warp-pointer)
+;;(add-hook! window-focus-change-hook focus-change-warp-pointer)
 
 (define (show-icon-list-menu)
   (show-window-list-menu #:only iconified? #:warp-to-first #t 
