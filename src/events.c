@@ -561,7 +561,7 @@ HandleKeyRelease()
 
 static SCM make_output_strport(char *fname)
 {
-  return scm_mkstrport(SCM_INUM0, scm_make_string(SCM_MAKINUM(30), 
+  return scm_mkstrport(SCM_INUM0, scm_make_string(SCM_INUM0, 
 						  SCM_UNDEFINED),
 		       SCM_OPN | SCM_WRTNG,
 		       fname);
@@ -687,8 +687,8 @@ HandleScwmExec()
           /* Temporarily redirect output and error to string ports. 
              Note that the port setting functions return the current previous
              port. */
-          o_port=scm_set_current_output_port(make_output_strport(FUNC_NAME));
-          e_port=scm_set_current_error_port(make_output_strport(FUNC_NAME));
+          o_port = scm_set_current_output_port(make_output_strport(FUNC_NAME));
+          e_port = scm_set_current_error_port(make_output_strport(FUNC_NAME));
           
           /* Workaround for a problem with older Guiles */
           saved_def_e_port = scm_def_errp;
@@ -704,9 +704,10 @@ HandleScwmExec()
           str_val=scm_strprint_obj(val);
           ret = (unsigned char *) gh_scm2newstr(str_val, &rlen);
           
-          /* restore output and error ports. */
-          scm_set_current_output_port(o_port);
-          scm_set_current_error_port(e_port);
+          /* restore output and error ports; use returned o_port/e_port
+             below for getting the strings back */
+          o_port = scm_set_current_output_port(o_port);
+          e_port = scm_set_current_error_port(e_port);
           scm_def_errp = saved_def_e_port;
           
           /* Retrieve output and errors */
