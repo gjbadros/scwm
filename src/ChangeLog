@@ -1,3 +1,13 @@
+Fri Sep 11 11:44:43 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* menu.c (make_menu): Do not permit empty menus; (print_menu)
+	verify that pmeu->scmMenuItems is NIMP before using gh_car on it
+
+Fri Sep 11 11:26:53 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (move_window): Fix to use WIN_VP_OFFSET_[XY] as a
+	correction for viewport->virtual and v.v.
+
 Fri Sep 11 09:39:30 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* xrm.c: Merge the X server database, the .Xdefaults* files, and

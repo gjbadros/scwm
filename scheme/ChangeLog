@@ -1,3 +1,11 @@
+Fri Sep 11 11:49:55 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Clean up comment for scwm-system, drop apply from
+	execlp call;  Improve docs for x-, y-, and add
+	viewport-[xy]-position and vx-, vy- for virtual-coordinate
+	analogues of x- and y- (e.g., for move-window, which takes virtual 
+	coordinates)
+
 Thu Sep 10 14:39:46 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* wininfo.scm: Fix uses of window-position to use
