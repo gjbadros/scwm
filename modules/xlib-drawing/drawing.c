@@ -157,8 +157,8 @@ SCWM_SYMBOL(sym_double_dash,"double-dash");
 
 SCWM_PROC(xlib_set_line_attributes_x, "xlib-set-line-attributes!", 1, 1, 0,
 	  (SCM width, SCM style))
-     /** Sets the line width of the DrawingGC to WIDTH and style to
-STYLE.  One of 'solid (default), 'on-off-dash, or 'double-dash should
+     /** Sets the line width of the DrawingGC to WIDTH and style to STYLE.
+One of 'solid (default), 'on-off-dash, or 'double-dash should
 be given as STYLE. */
 #define FUNC_NAME s_xlib_set_line_attributes_x
 {
