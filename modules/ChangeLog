@@ -1,3 +1,7 @@
+1999-03-29  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* esdsound/sound.c (s_esd_reconnect): Expanded the docs.
+
 Mon Mar 29 20:47:52 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c: Update to use new arg validation macros.
