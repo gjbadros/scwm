@@ -1,3 +1,9 @@
+Wed Nov  5 09:24:21 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c: Added a check that an object passed to a window
+ 	operation is non-immediate (using the SCM_NIMP macro) before
+ 	checking if it is a window (using WINDOWP). 
+
 Tue Nov  4 13:45:31 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* face.c, face.h: Added scheme-level procedures set-title-face!,
