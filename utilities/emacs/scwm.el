@@ -1,4 +1,4 @@
-;;; File: <scwm.el - 1998-03-25 Wed 14:30:57 EST sds@mute.eaglets.com>
+;;; File: <scwm.el - 1998-03-26 Thu 17:30:40 EST sds@mute.eaglets.com>
 ;;;
 ;;; Copyright (c) 1998 by Sam Shteingold <sds@usa.net>
 ;;; $Id$
@@ -177,7 +177,7 @@ Returns a string."
    (list (read-string
 	  "SCWM Apropos: "
 	  (format "%s" (or (thing-at-point 'symbol)
-			   (progn (skip-syntax-backward (or skip "^w"))
+			   (progn (skip-syntax-backward "^w")
 				  (if (bobp) () (backward-char 1))
 				  (thing-at-point 'symbol)) "")))))
   (with-output-to-temp-buffer "*Apropos*"
