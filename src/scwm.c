@@ -737,48 +737,11 @@ CaptureAllWindows(void)
 void 
 SetRCDefaults()
 {
-  /* set up default colors, fonts, etc */
-
-  gh_eval_str("(define quit scwm-quit)"
-	      "(undefine scwm-quit)"
-	      "(define FIXED-FONT (load-font \"fixed\"))"
-	      "(define BLACK (load-color \"black\"))"
-	      "(define GRAY (load-color \"gray\"))"
-	      "(define SLATEGRAY (load-color \"slategray\"))"
-	      "(define LIGHTGRAY (load-color \"lightgray\"))"
-	      "(define DIMGRAY (load-color \"dimgray\"))"
-	      "(set-rubber-band-mask! 1)"
-	      "(set-menu-colors! BLACK GRAY SLATEGRAY)"
-	      "(bind-event \'new-window (lambda () (set-window-colors!"
-	      "                                    LIGHTGRAY DIMGRAY)"
-	      "                                   (show-titlebar)))"
-	   "(bind-event \'new-window-hint (lambda () (set-random-placement!"
-	      "                                    #t)"
-	      "                   (set-smart-placement! #t)))"
-	      "(set-menu-font! FIXED-FONT)"
-	      "(set-menu-mwm-style! #f)"
-	      "(set-hilight-colors! BLACK GRAY)"
-	      "(set-icon-font! FIXED-FONT)"
-	      "(set-window-font! FIXED-FONT)"
-	      "(set-title-justify! \'center)"
-	      "(define default-menu (make-menu \"Default Menu\""
-	      "   \'title (list \"Exit SCWM\" quit)))"
-	      "(bind-mouse \'root 1 (lambda () (popup default-menu)))"
-	      "(define (resize-or-raise)"
-	      "    (raise-window)"
-	      "    (case (mouse-event-type)"
-	      "       ((motion) (interactive-resize))"
-	      "       ((double-click) (lower-window))))"
-	      "(define (move-or-raise)"
-	      "   (raise-window)"
-	      "   (case (mouse-event-type)"
-	      "      ((motion) (interactive-move))"
-	      "      ((double-click) (lower-window))))"
-	      "(bind-mouse \'frame 1 resize-or-raise)"
-	      "(bind-mouse \'(title sidebar) 1 move-or-raise)"
-    );
-
-}				/* SetRCDefaults */
+  /* the compiled-in .scwmrc comes from minimal.scm,
+     built into init_scheme_string.c by the make file */
+  extern const char *init_scheme_string;
+  gh_eval_str(init_scheme_string);
+}
 
 /***********************************************************************
  *
