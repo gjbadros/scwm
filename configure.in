@@ -649,6 +649,7 @@ scwm_bin_load_path=${libdir}/${PACKAGE}/modules
 scwm_moduledir=${scwm_bin_load_path}/app/scwm
 scwm_utildir=${libdir}/${PACKAGE}/util
 scwm_pixmapdir=${datadir}/${PACKAGE}/pixmaps
+scwm_viavoice_grammardir=${datadir}/${PACKAGE}/ViaVoice
 
 
 SCWM_ARG_PATH(scwmrcdir,
@@ -696,6 +697,7 @@ AC_SUBST(scwm_moduledir)
 AC_SUBST(scwmrcdir)
 AC_SUBST(scwm_image_load_path)
 AC_SUBST(scwm_utildir)
+AC_SUBST(scwm_viavoice_grammardir)
 
 
 dnl # Check for optional settings #
