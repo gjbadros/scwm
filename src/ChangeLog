@@ -1,3 +1,28 @@
+Wed Sep 23 11:03:41 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: (GrabEm) only try the XGrabPointer 5 times instead of
+	1000.
+
+	* placement.c: Use FXGetWindowTopLeft to initialize the orig_x,
+	orig_y before placing a window interactively.  Fixes bug whereby
+	interactive placement had the rubberband way offset from the
+	pointer in "xmessage -center 'hello'"
+
+	* move.h, move.c: Added WFrameOrIcon to return the top-level X
+	window for a psw, and use that fn in InteractiveMove.   Do not
+	call the invalid-interaction-hook when a grab fails in the move -- 
+	still not really working correctly with xmag as the
+	interactive-placement will fail (the grab fails because xmag does
+	the grab first)
+
+	* icons.c, borders.c: Added braces to disambiguate dangling else
+
+	* color.h: Fix VALIDATE_COLOR, VALIDATE_COLOR_OR_NONE to use the
+	do while (0) idiom
+
+	* Grab.c: Update docs for X-grab-server, X-ungrab-server to note
+	that the primitives are undefined at startup.
+	
 1998-09-22  Todd Larason  <jtl@teeny.molehill.org>
 
 	* xproperty.c: Removed X-atomic-property-set-if-unset!

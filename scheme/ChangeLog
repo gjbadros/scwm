@@ -1,3 +1,14 @@
+Wed Sep 23 11:11:58 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* minimal.scm: undefine X-grab-server, X-ungrab-server after
+	with-grabbed-server is defined
+
+	* base.scm: No longer define with-grabbed-server here -- do it in
+	minimal.scm so we can undefine the primitives that are just used
+	for writing it
+
+	* flux.scm: Added find-window-by-class-resource
+
 1998-09-22  Todd Larason  <jtl@teeny.molehill.org>
 
 	* flux.scm: use-module (app scwm wininfo) to get visible? defined;
