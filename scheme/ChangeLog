@@ -1,12 +1,16 @@
+1999-04-13  Sam Steingold  <sds@goems.com>
+
+	* Makefile.am (scwm_common_scheme): added stringops.scm.
+
 Tue Apr 13 19:08:12 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* flux.scm: Moved lots of functionality out into other/new modules 
+	* flux.scm: Moved lots of functionality out into other/new modules
 	(the additions below are from flux.scm);  some re-arrangement.
 
 	* file.scm: Added `write-all', `read-until-eof',
 	`output-of-system-cmd'
 
-	* base.scm: Use hash-fold for hash-table->alist if it is available 
+	* base.scm: Use hash-fold for hash-table->alist if it is available
 	(it is in newer guiles).  Rewrote move-window-relative using
 	delta-position, and added `delta-position'.  Added
 	`run-dot-xclients-at-startup' and `run-dot-xclients-script'.
@@ -19,7 +23,7 @@ Tue Apr 13 19:08:12 1999  Greg J Badros  <gjb@cs.washington.edu>
 	the latter two to use the ?? matcher procedures.
 
 	* prefs-menu.scm: New use-modules for possible new dependencies.
-	Is there any good way to check for dependencies?  
+	Is there any good way to check for dependencies?
 
 	* message-window.scm: Added `display-message-briefly!'
 
@@ -32,7 +36,7 @@ Tue Apr 13 19:08:12 1999  Greg J Badros  <gjb@cs.washington.edu>
 	`key-viewport-moves'
 
 	* netscape.scm: New module with various netscape functionality
-	enhancements. 
+	enhancements.
 
 	* send-string.scm: New module with synthetic events code.
 
@@ -83,7 +87,7 @@ Mon Apr 12 17:49:15 1999  Greg J Badros  <gjb@cs.washington.edu>
 1999-04-11  Todd Larason  <jtl@molehill.org>
 
 	* image-loaders.scm ((support-image-conversion)): don't actually
-	do anything if ImLib is being used - it's not needed, and it won't 
+	do anything if ImLib is being used - it's not needed, and it won't
 	work, since xpm-load won't be there.
 
 Mon Apr 12 08:16:42 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -117,8 +121,8 @@ Sat Apr 10 17:06:19 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* hover-focus.scm: Fixed the : -> #: in the define-scwm-option,
 	and added the define of the hover-focus-window variable.  Also
-	make hover-focus windows default to 'click focus style, and revert 
-	when hover-focus is turned off on them.  Added exported 
+	make hover-focus windows default to 'click focus style, and revert
+	when hover-focus is turned off on them.  Added exported
 	`uninstall-hover-focus' proc, too.
 
 	* base.scm: Added fg, bg, font keyword args to menuitem proc, and
@@ -128,7 +132,7 @@ Sat Apr 10 17:06:19 1999  Greg J Badros  <gjb@cs.washington.edu>
 	window-match?? to resource-match?? as matching on titles really is
 	the wrong behaviour (and I finally got annoyed enough by this
 	because an xterm started up sticky w/ nofocus just because the
-	last program I started in it was an "xload" [I make my xterm title 
+	last program I started in it was an "xload" [I make my xterm title
 	display the last program it was running for more than 5 seconds]).
 
 1999-04-09  Robert Bihlmeyer  <robbe@orcus.priv.at>
@@ -140,7 +144,7 @@ Sat Apr 10 17:06:19 1999  Greg J Badros  <gjb@cs.washington.edu>
 	buttons. Instead put tooltips on everything and its children.
 
 	* style.scm: Made #:no-titlebar a hint style option.
-	New styles: #:highlight-{bg,fg,foreground,background}. 
+	New styles: #:highlight-{bg,fg,foreground,background}.
 
 	* prompt-font.scm (prompt-font): prompt-font-hbox was called
 	incorrectly.
@@ -164,7 +168,7 @@ Sun Apr  4 01:24:34 1999  Carl R. Witty  <cwitty@newtonlabs.com>
 
 Thu Apr  8 09:00:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* gtk.scm: Use name `gdk-get-leader-window-id' for the proc that I 
+	* gtk.scm: Use name `gdk-get-leader-window-id' for the proc that I
 	hacked into gdk that I called `gdk-lead-window'.  guile-gtk-0.16
 	will have the new proc with its longer name (and also the needed
 	bug fixes)
@@ -178,7 +182,7 @@ Wed Apr  7 17:27:53 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* winlist.scm: Added Ken Pizzini's warp-placement feature.  Use
 	the 'warp-placement property of a window (a list of two elements)
 	to control where the pointer gets warped to when a window is
-	selected. 
+	selected.
 
 Wed Apr  7 08:03:15 1999  Greg J Badros  <gjb@cs.washington.edu>
 
@@ -197,7 +201,7 @@ Wed Apr  7 07:54:53 1999  Greg J Badros  <gjb@cs.washington.edu>
 	popup-menu proc due to a misplaced paren).
 
 	* flux.scm: Give a hover-delay of 0 to
-	select-window-from-window-list so that the window gets highlighted 
+	select-window-from-window-list so that the window gets highlighted
 	right away.
 
 	* base.scm (menu): Be sure popup-delay and hover-delay are both
@@ -205,7 +209,7 @@ Wed Apr  7 07:54:53 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 Tue Apr  6 12:39:55 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* *.scm: Replace hilight with highlight. 
+	* *.scm: Replace hilight with highlight.
 
 Tue Apr  6 11:13:40 1999  Greg J Badros  <gjb@cs.washington.edu>
 
@@ -236,7 +240,7 @@ Mon Apr  5 15:21:19 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* base.scm: Make menu color setters call make-color as
 	needed. Make background-system a public proc.
 
-	* auto-raise.scm: Move option to end after the window-style exists 
+	* auto-raise.scm: Move option to end after the window-style exists
 	so that the call to the setter when define-scwm-option expands
 	doesn't error.
 
@@ -266,7 +270,7 @@ Fri Apr  2 15:35:58 1999  Greg J Badros  <gjb@cs.washington.edu>
 Thu Apr  1 19:14:14 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added *menu-font*, *menu-text-color*, *menu-bg-color*
-	options. 
+	options.
 
 	* preferences.scm: Handle 'color, 'font, 'file better.  Reverse
 	order of sorting groups so it is forward alphabetical.
@@ -277,7 +281,7 @@ Thu Apr  1 19:14:14 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* defoption.scm: Improve re-load behaviour -- do not reset
 	scwm-options list.  Improve docs on define-scwm-option.  Added
-	permit-disable, layout-hint properties.  Require a docstring and a 
+	permit-disable, layout-hint properties.  Require a docstring and a
 	type.  Make `optget' a synonmym for scwm-option-get.
 
 	* prompt-color.scm, prompt-font.scm, prompt-file.scm: Added, for
@@ -301,7 +305,7 @@ Thu Apr  1 10:21:55 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 Thu Apr  1 08:58:21 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* prompt-range.scm: Handle digits properly, make the adjust widget 
+	* prompt-range.scm: Handle digits properly, make the adjust widget
 	use better arguments (gnome-desktop-number was coming up with a
 	slider from 1 to 5 only, instead of 1 to 10).
 
@@ -331,7 +335,7 @@ Wed Mar 31 17:27:30 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* hover-focus.scm, gnome-hints.scm, flux.scm, auto-raise.scm: Use
  	define-scwm-option instead of **VAR
 
-	* winops.scm: Use defoption, rename each option foo to *foo*.  Fix 
+	* winops.scm: Use defoption, rename each option foo to *foo*.  Fix
 	bug in default-move-opaquely? (was using opaque-resize-percent).
 	Define *foo*'s as scwm options.
 
@@ -343,8 +347,8 @@ Tue Mar 30 20:23:37 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added edge-ops.scm
 
-	* edge-ops.scm: Contributed by Sam Falkner;  I fixed his 'east <-> 
-	'west hack since that bug has been corrected in the C code. Thanks 
+	* edge-ops.scm: Contributed by Sam Falkner;  I fixed his 'east <->
+	'west hack since that bug has been corrected in the C code. Thanks
 	Sam!
 
 Tue Mar 30 19:02:20 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -365,7 +369,7 @@ Mon Mar 29 14:43:07 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* preferences.scm: Added help buttons to show documentation in a
 	message-window.  This could instead use a gtk window of some
-	sort.  Also added some broken code to try to support tooltips, but 
+	sort.  Also added some broken code to try to support tooltips, but
 	I don't have docs to help figure this out.
 
 	* message-window.scm: provide scwm-message-window. Added comments
@@ -381,13 +385,13 @@ Mon Mar 29 14:43:07 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 Mon Mar 29 10:39:46 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* prompt-range.scm: Use optional digits argument, and set to 0 for 
+	* prompt-range.scm: Use optional digits argument, and set to 0 for
 	prompt-integer-range.
 
 	* primopts.scm:  Added `*edge-scroll-delay*',
 	`*edge-move-threshold*', use time-convert module.
 
-	* preferences.scm: Simplify prompt for the dialog to just the name 
+	* preferences.scm: Simplify prompt for the dialog to just the name
 	of the option (i.e., drop "Set " prefix)
 
 	* time-convert.scm, flux.scm: Added, moved ms->usec, sec->usec
@@ -414,7 +418,7 @@ Mon Mar 29 08:10:12 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* simplebiff.scm: New version from Glenn Trigg -- added
 	activate-proc, deactivate-proc keyword arguments, and return a
-	lambda to remove the hook.  This version is required for his first 
+	lambda to remove the hook.  This version is required for his first
 	version of ScwmBiff.
 
 Sun Mar 28 20:05:38 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -436,7 +440,7 @@ Sun Mar 28 16:36:27 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* primopts.scm: Check for feature scwm-auto-raise, not just
 	auto-raise, as the feature namespace is shared across the whole
-	system. 
+	system.
 
 Sun Mar 28 16:13:12 1999  Greg J Badros  <gjb@cs.washington.edu>
 
@@ -448,7 +452,7 @@ Sun Mar 28 16:13:12 1999  Greg J Badros  <gjb@cs.washington.edu>
 	insert-colons and list->string.
 
 	* flux.scm: use-module message-window, + added comment re:
-	sans-final-newline. 
+	sans-final-newline.
 
 	* file.scm: Added path-list->string-with-colons,
 	string-with-colons->path-list.  Use (ice-9 string-fun) for
@@ -479,7 +483,7 @@ Sat Mar 27 20:38:04 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* primopts.scm: Added a handful of `define-scwm-option' calls for
 	options that are managed by primitives and not real variables.
 	Also added for a test boolean flag.  (A test string option is in
-	themes.scm) 
+	themes.scm)
 
 	* prompt-bool.scm, prompt-range.scm: Added.
 
@@ -503,7 +507,7 @@ Fri Mar 26 15:38:00 1999  Greg J Badros  <gjb@cs.washington.edu>
 Thu Mar 25 17:44:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* style.scm: Added #:squashed-titlebar, #:no-side-decorations as
-	full-fledged boolean-options.  They're still not laid out ideally, 
+	full-fledged boolean-options.  They're still not laid out ideally,
 	but now they take effect immediately using new
 	`force-reset-window-frame!' primitive.
 
@@ -538,7 +542,7 @@ Thu Mar 25 12:38:10 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 Wed Mar 24 19:18:54 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* themes.scm: Rename force to force? for style and so I don't hide 
+	* themes.scm: Rename force to force? for style and so I don't hide
 	`force'
 
 Wed Mar 24 19:02:21 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -551,7 +555,7 @@ Wed Mar 24 18:53:51 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* listops.scm: Fix bug in there-exists? -- thanks to Glenn Trigg
 	for patch.
 
-	* themes.scm: Added load-cached-theme.  Also added theme-names, by 
+	* themes.scm: Added load-cached-theme.  Also added theme-names, by
 	Glenn Trigg and it now uses listops.
 
 	* std-menus.scm: Added menu-window-theme andd menu-global-theme,
@@ -560,7 +564,7 @@ Wed Mar 24 18:53:51 1999  Greg J Badros  <gjb@cs.washington.edu>
 Wed Mar 24 15:34:48 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Drop with-window-no-wind -- bug is gone so this is
-	superfluous. 
+	superfluous.
 
 Wed Mar 24 11:57:57 1999  Greg J Badros  <gjb@cs.washington.edu>
 
@@ -611,7 +615,7 @@ Mon Mar 22 16:39:06 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* doc.scm: Put doc-files definition before the define-module so
 	it goes in the root module.
-	
+
 	* winops.scm, style.scm, prefs-menu.scm, minimal.scm,
  	fvwm-compat.scm. flux.scm, doc-files.scm, base.scm: Clean up some FIXGJB
  	comments, switch to new format.
@@ -623,7 +627,7 @@ Mon Mar 22 13:44:35 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `group-leader-id' and `group->windows'.
 
-	* fvwm-compat.scm: Added %x-permit-negative and %y-permit-negative 
+	* fvwm-compat.scm: Added %x-permit-negative and %y-permit-negative
 	(maybe should be default behaviour for %x and %y.
 
 Thu Mar 18 12:04:40 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -653,7 +657,7 @@ Wed Mar 17 18:32:13 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 Wed Mar 17 12:50:02 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* constraints.scm: Cleaned up a bit, added `start-constraints'. 
+	* constraints.scm: Cleaned up a bit, added `start-constraints'.
 
 	* base.scm: Added `select-window' written in terms of
 	`select-viewport-position' primitive (which used to be the
@@ -704,7 +708,7 @@ Fri Mar 12 17:12:05 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* winlist.scm: Added by-resource option to show-window-list-menu,
 	and rework that proc a lot.  Instead of using fold-menu-list, use
-	split-by-resource if the menu would be too tall (as checked by new 
+	split-by-resource if the menu would be too tall (as checked by new
 	menu-max-fold-lines proc.  Use the menus-extras module to get at
 	the new functionality
 
@@ -733,13 +737,13 @@ Wed Mar 10 19:59:00 1999  Greg J Badros  <gjb@cs.washington.edu>
 	does. Patch from Danius Michaelides.
 
 1999-02-27  John Kodis  <kodis@jagunet.com>
- 
+
         * Makefile.am: Added hover-focus.scm to the scwm_common_scheme
         installation list.
- 
+
         * hover-focus.scm: New module to automatically focus a
         click-to-focus window when the mouse hovers over it for a while.
- 
+
 1999-02-16  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* optargs.scm (lambda*): Handle empty argument lists properly.
