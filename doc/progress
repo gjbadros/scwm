@@ -112,7 +112,6 @@ XORvalue
 Functions provided by guile or unnecessary with it:
 
 AddToFunc				define
-Beep					(define (beep) (display ""))
 DestroyFunc				undefine
 Echo					display
 Exec					(define (run . args)
@@ -128,9 +127,11 @@ PipeRead				[no need, you can probably do anything
 Read					load
 Title					[not needed]
 DestroyMenu				undefine
+DestroyDecor				undefine
+UpdateDecor				[not needed]
 
 
-12 total
+13 total
 
 
 
@@ -193,12 +194,23 @@ Next					window-list,etc
 Prev					window-list,etc
 WindowList				window-list,window-title,etc
 Style					(implemented as many procedures)
+GlobalOpts				set-smart-placement-is-really-smart!,
+					set-click-to-focus-passes-click!, 
+					set-click-to-focus-raises!,
+					set-mouse-focus-click-raises!
+BorderStyle				make-face, set-border-face!
+ButtonStyle				make-face, set-button-face!, 
+					set-button-mwm-flag!
+TitleStyle				make-face, set-title-face!, 
+					set-title-justify!, set-title-height!
+AddToDecor				make-decor, set-current-decor!
+ChangeDecor				set-window-decor!
+Beep					beep
 
-49 total
+56 total
 
 
 Intentionally Omitted:
-GlobalOpts				[these options are really obscure]
 KillModule
 Module 
 ModulePath
@@ -206,22 +218,13 @@ DestroyModuleConfig
 SendToModule
 FlipFocus
 
-7 total
+6 total
 
 
 
-5 styles:
+2 styles:
 AddButtonStyle 
 AddTitleStyle 
-BorderStyle
-ButtonStyle
-TitleStyle
-
-4 decors:
-AddToDecor 
-ChangeDecor
-DestroyDecor
-UpdateDecor
 
 4 modules:
 DestroyModuleConfig
@@ -232,13 +235,10 @@ SendToModule
 1 paths:
 ModulePath
 
-1 misc settings:
-GlobalOpts
-
 1 window ops:
 FlipFocus
 
-17
+8
 
 
 
