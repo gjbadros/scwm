@@ -21,7 +21,8 @@
 (define-module (app scwm fvwm-eval)
   :use-module (ice-9 string-fun)
   :use-module (app scwm base)
-  :use-module (app scwm optargs))
+  :use-module (app scwm optargs)
+  :use-module (app scwm winops))
 
 
 
@@ -72,12 +73,24 @@
    args (lambda (first second)
 	  (set-current-desk! second))))
 
+(define-fvwm-command "Focus"
+  (if window
+      (focus window)))
+
 (define-fvwm-command "GotoPage"
   (get-two-numeric-args 
    args (lambda (x y)
 	  (set-viewport-position! 
 	   (* x display-width)
 	   (* y display-height)))))
+
+(define-fvwm-command "Iconify"
+  (if window
+      (let ((arg (get-one-mumeric-arg args)))
+	((cond 
+	  ((or (not arg) (= arg 0)) toggle-iconify)
+	  ((< arg 0) deiconify)
+	  (else iconify)) window))))
 
 (define-fvwm-command "Move"
   (if window
