@@ -1,3 +1,21 @@
+Sat Mar 30 18:39:14 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* cascade.scm: Added a couple of missing modules, flash-window and flux.
+	Made 'meta-apply' plublic and gave it a doc string.
+	Clarified 'cascade-windows' doc.
+	Made #:raise #t work for 'cascade-windows'.
+	Made #:reverse #t the default for 'cascade' since 'cascade-windows'
+	  processes from bottom to top but most of our lists are top to bottom.
+	Made 'cascade' listify atoms passed in #:only and #:except to be more
+	  consistent with the style stuff.
+	Made selections get processed in selection order, so the first selected
+	  window is put on the bottom.
+	Updated to use 'push-undo-global' since 'insert-undo-global' is both
+	  broken and deprecated.
+
+	* flux.scm: Changed 'select-window-group' to return the list of windows
+	in the order selected.
+
 Sat Mar 30 04:29:20 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* auto-unobscure.scm: Updated from object-property/set-object-property!

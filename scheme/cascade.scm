@@ -22,6 +22,8 @@
 (define-module (app scwm cascade)
   :use-module (app scwm optargs)
   :use-module (app scwm base)
+  :use-module (app scwm flash-window)
+  :use-module (app scwm flux)
   :use-module (app scwm window-selection)
   :use-module (app scwm wininfo)
   :use-module (app scwm undo)
@@ -30,7 +32,10 @@
 
 
 
-(define (meta-apply proc . procs)
+(define-public (meta-apply proc . procs)
+  "Make procedure to combine results of several procedures.
+Makes a procedure which uses PROC to combine the results of applying
+PROCS to ARGS."
   (lambda args (apply proc (map (lambda (p) (apply p args)) procs))))
 
 (define (num-or-apply proc-or-num win)
@@ -47,8 +52,8 @@
 		 (y-increment (meta-apply + window-title-height
 					  window-frame-border-width)))
   "Cascade WINDOWS according to several parameters.  
-Cascading places the windows in a diagonal order starting at
-START-POS, (0 0) by default. Each window's size is limited to
+Cascading places the windows in list order in a diagonal order starting 
+at START-POS, (0 0) by default. Each window's size is limited to
 MAX-SIZE, by default the display size.
 
 RESIZE may be #f, 'shrink-only or 'always, indicating that the windows
@@ -76,7 +81,7 @@ sum of the window's border width and title height."
    ((not (null? windows))
     (cond
      (raise (if (not (eq? raise 'restack-only))
-		(raise-window (car windows)))
+		(raise-window (car (reverse windows))))
 	    (restack-windows (reverse windows))))))
   (let loop ((windows windows)
 	     (cur-x (car start-pos))
@@ -99,7 +104,7 @@ sum of the window's border width and title height."
   
 (define*-public (cascade #&key (only ()) (except ()) 
 			 (by-stacking #f) (by-focus #f)
-			 (reverse #f)
+			 (reverse #t)
 			 (all-viewports #f) (desk (current-desk))
 			 (ignore-default-exceptions #f)
 			 (start-pos '(0 0)) (max-size (display-size))
@@ -114,11 +119,12 @@ ALL-VIEWPORTS, when true indicates that the windows in all viewports
 of this desk should be cascaded, otherwise only the current viewport
 is cascaded. 
 
-The options ONLY, EXCEPT, BY-STACKING, BY-FOCUS and REVERSE indicate
-the windows to use and the order to use them in, as with
-`list-windows'. However, unless IGNORE-DEFAULT-EXCEPTIONS is #t,
-transient, maximized, sticky and iconified windows will be always be
-excluded.
+The options ONLY, EXCEPT, BY-STACKING, BY-FOCUS and REVERSE indicate the
+windows to use and the order to use them in, as with
+`list-windows'. However, unless IGNORE-DEFAULT-EXCEPTIONS is #t, transient,
+maximized, sticky and iconified windows will be always be excluded. Note that
+REVERSE default to true, because the list of windows is usually passed in
+top to bottom order.
 
 START-POS, MAX-SIZE, RESIZE, RAISE, X-INCREMENT and Y-INCREMENT
 control the cascading options as for `cascade-windows'."
@@ -127,14 +133,14 @@ control the cascading options as for `cascade-windows'."
     #:only (cons (on-desk-n? desk) 
 		 (append (if all-viewports '() 
 			     (list in-viewport-any-desk?))
-			 only))
+			 (listify-if-atom only)))
     #:except (append (if ignore-default-exceptions
 			 ()
 			 (list transient? maximized? 
 			       sticky-window? iconified-window?
 			       (lambda (w) 
 				 (= (window-title-height w) 0))))
-		     except)
+		     (listify-if-atom except))
     #:by-stacking by-stacking #:by-focus by-focus #:reverse reverse)
    #:start-pos start-pos #:max-size max-size #:raise raise 
    #:resize resize #:x-increment x-increment #:y-increment y-increment))
@@ -145,16 +151,16 @@ control the cascading options as for `cascade-windows'."
 (define*-public (cascade-windows-interactively . args)
   "Cascade a set of selected windows.
 The windows used are selected either by `selected-windows-list' or 
-`select-window-group'.
+`select-window-group'.  Accepts all options that 'cascade-windows' accepts.
 If `selected-windows-list' is empty, then `select-window-group' is used.
-See also the undo module and `insert-undo-global' to save the window 
-configuration before executing this in case the effect is not what you
-expected."
+See also the undo module and `push-undo-global'.  This is an undoable
+operation that saves the window configuration before execution in case
+the effect is not what you expected."
   (interactive)
-  (let* ((winlist (selected-windows-list))
+  (let* ((winlist (reverse (selected-windows-list)))
 	 (wins (if (pair? winlist) winlist (select-window-group))))
     (if (pair? winlist)
 	(unselect-all-windows)
 	(for-each unflash-window wins))
-    (insert-undo-global)
+    (push-undo-global)
     (apply cascade-windows (cons wins args))))

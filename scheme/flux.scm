@@ -196,8 +196,9 @@ example usage."
 
 (define-public (select-window-group)
   "Prompt for multiple windows and return the list of selected windows.
-Windows are highlighted (see `flash-window') as they are selected.  The
-returned list can be used to un-highlight the windows:
+Returns the list of windows in selection order.  Windows are highlighted
+(see `flash-window') as they are selected.  The returned list can be used
+to un-highlight the windows:
  (let ((winlist (select-window-group)))
    (for-each (lambda (w) (unflash-window w)) winlist))"
   (do ((w #f)
@@ -206,7 +207,7 @@ returned list can be used to un-highlight the windows:
        (w #f)
        (done #f))
       (done
-       wlist)
+       (reverse wlist))
     (set! w (select-window-interactively
 	     (string-append "select #" (number->string cwin-selected))))
     (if w
