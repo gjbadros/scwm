@@ -1326,8 +1326,8 @@
 
 (system 
  ;; use [g] in the regexp so that the grep process doesn't
- ;; get matched
- "ps auxww | grep -q \"^[g]jb .*xemacs -f gnus\" || $HOME/.xclients &")
+ ;; get matched, use [ ] so the sh -c process does not get matched
+ "ps auxww | grep \"^[g]jb .*[ ]xemacs -f gnus\" || $HOME/.xclients &")
 
 ;; Remove the windows that are showing tail -f's on 
 ;; scwm error messages and .Xsession errors
