@@ -634,7 +634,7 @@
 
 ;; (popup-menu menu-prefs #t)
 
-(define menu-prefs
+(define menu-prefs-gjb
   (menu (list (menuitem "Preferences" #f) menu-title menu-separator
 	      (menuitem "Reload X resources" #:action
 			(exe "xrdb -merge ${HOME}/.Xresources"))
@@ -662,7 +662,7 @@
 ;				      " " user-init-file))))))
 ;	      (menuitem "Save settings" #:action save-settings))))
 	      )))
-(define menu-preferences menu-prefs)
+(define menu-preferences menu-prefs-gjb)
 
 (define menu-system-utilities
   (menu
