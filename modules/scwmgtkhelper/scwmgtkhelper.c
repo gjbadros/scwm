@@ -56,13 +56,15 @@ This is automatically called when (app scwm gtk) is loaded, to clean up
 after the (gtk gtk) module. */
 #define FUNC_NAME s_restore_scwm_handlers
 {
-  newhandler(SIGINT);
-  newhandler(SIGHUP);
+  extern Bool fHandleSegv;
+  /* this code is coupled with the code that does the same 
+     thing in scwm.c */
+  newhandler_doreset(SIGHUP);
+  newhandler_doreset(SIGINT);
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
-  /* FIXGJB: I seem to lose the last stack frame in my backtrace if this is
-     set... do others not see this? --07/24/98 gjb */
-  newsegvhandler(SIGSEGV);
+  if (fHandleSegv)
+    newsegvhandler(SIGSEGV);
 
   signal(SIGUSR1, Restart);
 
