@@ -1,3 +1,40 @@
+Thu Feb 24 16:58:39 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* where-is.scm: Better error handling of not-found procedures.
+
+	* viavoice.scm: Handle "move window center" phrase.
+
+	* reflection.scm: Handle undefined procedures in
+	`procedure-string->procedure'
+
+Thu Feb 24 08:28:29 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops-menu.scm: Added menu-re-place-window.  Move Focus submenu 
+	further down in the menu-window-ops.
+
+	* viavoice.scm: Move "cotton" matches-command? earlier since it
+	also contains the word "down" and the matching is done very
+	stupidly!
+
+	* undo.scm: Fix `insert-undo-state' to better verify indices.
+	Untested.
+
+	* snap-constraints.scm: Require that both windows stickiness be
+	the same. Make `snap-reset' and `snap-initialize' both
+	interactive.
+
+	* register.scm: Added `get-register-alist', `register-value-type', 
+	`register-type-mapping', `register-type-mapping-string'.  All for
+	nicer register GUI.
+
+	* placement.scm: Added `re-place-window', needs animation module.
+
+	* gtk-table-display.scm: Added some new options, make a bit more
+	robust.  Now used for the registers GUI as well as the URLs GUI.
+
+	* flux-gtk.scm: Added `gtk-register-info', needs undo, register
+	modules
+
 Wed Feb 23 18:26:19 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* tests/demo.scm: Fix iconified? to iconified-window?

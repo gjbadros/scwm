@@ -1,3 +1,7 @@
+Thu Feb 24 19:15:44 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice/scwmgrammar.bnf: Understand "move window center"
+
 Sun Feb 13 09:51:30 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* */Makefile.am: Reordered to include more in automake conditional
