@@ -656,7 +656,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 
     pmdi->BGColor = DYNAMIC_SAFE_COLOR(pmenu->scmBGColor);
     pmdi->HLBGColor = DYNAMIC_SAFE_COLOR_USE_DEF(pmenu->scmHLBGColor,pmdi->BGColor);
-    pmdi->HLTextColor = DYNAMIC_SAFE_COLOR(pmenu->scmHLTextColor);
+    pmdi->HLTextColor = DYNAMIC_SAFE_COLOR_USE_DEF(pmenu->scmHLTextColor,TextColorDefault);
     pmdi->SideBGColor = DYNAMIC_SAFE_COLOR(pmenu->scmSideBGColor);
     pmdi->StippleColor = DYNAMIC_SAFE_COLOR(pmenu->scmStippleColor);
     

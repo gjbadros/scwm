@@ -242,8 +242,8 @@ image-bg font extra-options used-shortcut-keys popup-delay hover-delay) */
 		 pmenu->scmFont,
 		 pmenu->scmExtraOptions,
 		 gh_str02scm(pmenu->pchUsedShortcutKeys),
-                 gh_scm2int(pmenu->cmsPopupDelay),
-                 gh_scm2int(pmenu->cmsHoverDelay),
+                 gh_int2scm(pmenu->cmsPopupDelay),
+                 gh_int2scm(pmenu->cmsHoverDelay),
                  SCM_UNDEFINED);
 }
 #undef FUNC_NAME
