@@ -1,3 +1,8 @@
+1998-11-22  Todd Larason  <jtl@molehill.org>
+
+	* base.scm (scwm-user-var): change #:menu-look tag to #:look for
+	(menu) form, to match (menu-style) and reduce redundancy
+
 Fri Nov 20 15:06:59 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* animation.scm: Added doc comment that got lost when this got

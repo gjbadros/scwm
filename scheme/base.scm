@@ -332,7 +332,7 @@ the shortcut key for the menu item."
 		      (color-bg 'menu-bg-color)
 		      (color-stipple 'menu-stipple-color)
 		      (font 'menu-font)
-		      (menu-look 'menu-look)
+		      (look 'menu-look)
 		      (extra #f))
   "Return a menu object with the given attributes.
 LIST-OF-MENUITEMS is a list of menuitem objects (each created with
@@ -360,7 +360,7 @@ specific to the menu look used for this menu."
 			 font 
 			 image-side image-align color-bg-image-side image-bg
 			 extra)))
-    (set-menu-menu-look! menu menu-look)
+    (set-menu-menu-look! menu look)
     menu))
 
 (define-public (image-property image key)
