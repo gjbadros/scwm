@@ -269,7 +269,7 @@ void PswUpdateFlags(ScwmWindow *psw, unsigned long flags);
 #define BUTTON9     (1<<8)
 #define BUTTON10    (1<<9)
 
-SCM ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p);
+SCM ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p);
 
 #define VALIDATE(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F, SCM_BOOL_T)))==SCM_BOOL_F) return SCM_BOOL_F
 
@@ -340,7 +340,7 @@ SCM make_window(ScwmWindow *psw);
 void move_finalize(Window w, ScwmWindow * psw, int x, int y);
 void move_finalize_virt(Window w, ScwmWindow * psw, int x, int y);
 
-SCM convert_move_data(SCM x, SCM y, SCM win, char *func, 
+SCM convert_move_data(SCM x, SCM y, SCM win, const char *func_name, 
                        int *pStartX, int *pStartY,
                        int *pDestX, int *pDestY,
                        ScwmWindow **ppsw, Window *pw);
