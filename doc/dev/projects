@@ -19,6 +19,9 @@ something that you are interested in and skilled with.
 
 * Configuration, building
 
+** Rewrite configure.in from scratch, use macros directory like gnome projects
+   (this would be *really* useful!)
+
 
 * Testing 
-
+** Write a scwm/scheme/primitive-tests/*.scm for each .c file that tests the primitives.
