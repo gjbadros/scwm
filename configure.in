@@ -11,7 +11,7 @@ AC_INIT(scwm/scwm.c)
 AC_PREREQ(2.4)
 
 dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.99.2post)
+AM_INIT_AUTOMAKE(scwm, 0.99.3)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(include/config.h)
 
