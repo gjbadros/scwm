@@ -63,8 +63,8 @@ MapMessageWindow()
   if (!FXGetWindowSize(Scr.MsgWindow,&w,&h))
     assert(False);
 
-  x = Scr.msg_window_x + (Scr.msg_window_x_align * w);
-  y = Scr.msg_window_y + (Scr.msg_window_y_align * h);
+  x = Scr.msg_window_x + (int) (Scr.msg_window_x_align * w);
+  y = Scr.msg_window_y + (int) (Scr.msg_window_y_align * h);
 
   XMoveWindow(dpy, Scr.MsgWindow, x, y);
   XMapRaised(dpy, Scr.MsgWindow);
@@ -362,8 +362,8 @@ DisplayMessage(const char *sz, Bool fRelief)
   else
     SetGCFg(gcShadow,BlackPixel(dpy,Scr.screen));
 
-  win_x = Scr.msg_window_x + (Scr.msg_window_x_align * winwidth);
-  win_y = Scr.msg_window_y + (Scr.msg_window_y_align * winheight);
+  win_x = Scr.msg_window_x + (int) (Scr.msg_window_x_align * winwidth);
+  win_y = Scr.msg_window_y + (int) (Scr.msg_window_y_align * winheight);
 
   XMoveResizeWindow(dpy, Scr.MsgWindow, win_x, win_y, winwidth, winheight);
 
@@ -541,7 +541,7 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
 {
   int origDragX, origDragY, DragX, DragY;
   unsigned int DragWidth, DragHeight;
-  int border_width;
+  unsigned int border_width;
   int XOffset, YOffset;
   Window w = psw->frame;
   /* FIXGJB: pass these in instead */
