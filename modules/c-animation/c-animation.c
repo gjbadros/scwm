@@ -43,15 +43,10 @@
 /* From window.c */
 extern SCM sym_shaded;
 
-
-/* TODO: Animated resizes? Animated iconifies of various flavors? 
-   what else could be animated? */
-
 extern XEvent Event;
 
 /* MS:FIXME:: Add variable and concept documentation. */
-
-SCM_VCELL(animation_delay, "animation-delay");
+SCM_VCELL_INIT(animation_delay, "animation-delay", SCM_BOOL_F);
 
 float rgpctMovementDefault[32] = {
     -.01, 0, .01, .03,.08,.18,.3,.45,.60,.75,.85,.90,.94,.97,.99,1.0 
@@ -60,73 +55,8 @@ float rgpctMovementDefault[32] = {
 
 int cmsDelayDefault = 10; /* milliseconds */
 
-/* Perform the movement of the window. ppctMovement *must* have a 1.0 entry
-   somewhere in ins list of floats, and movement will stop when it hits a 1.0 entry
-   The positions given are viewport positions (not virtual) */
-void 
-AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY, /* viewport posns */
-		   Bool fWarpPointerToo, int cmsDelay, float *ppctMovement )
-{
-  int pointerX, pointerY;
-  int currentX, currentY;
-  int lastX, lastY;
-  int deltaX, deltaY;
-
-  /* set our defaults */
-  if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
-  if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
-
-  deltaX = endX - startX;
-  deltaY = endY - startY;
-  lastX = startX;
-  lastY = startY;
-
-  if (deltaX == 0 && deltaY == 0)
-    return;
-
-  do {
-    currentX = (int) (startX + deltaX * (*ppctMovement));
-    currentY = (int) (startY + deltaY * (*ppctMovement));
-    XMoveWindow(dpy,w,currentX,currentY);
-    if (fWarpPointerToo) {
-      WXGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
-      pointerX += currentX - lastX;
-      pointerY += currentY - lastY;
-      XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
-		   pointerX,pointerY);
-    }
-    XFlush(dpy);
-    /* handle expose events as we're animating the window move */
-    while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
-      {
-	DispatchEvent();
-      }
-
-    ms_sleep(cmsDelay);
-#ifdef FIXGJB_ALLOW_ABORTING_ANIMATED_MOVES
-    /* this didn't work for me -- maybe no longer necessary since
-       we warn the user when they use > .5 seconds as a between-frame delay
-       time */
-    if (XCheckMaskEvent(dpy, 
-			ButtonPressMask|ButtonReleaseMask|
-			KeyPressMask,
-			&Event)) {
-      /* finish the move immediately */
-      XMoveWindow(dpy,w,endX,endY);
-      XFlush(dpy);
-      return;
-    }
-#endif
-    lastX = currentX;
-    lastY = currentY;
-    }
-  while (*ppctMovement != 1.0 && ppctMovement++);
-
-}
-
 void SendClientConfigureNotify(const ScwmWindow *psw);
 
-/* GJB:FIXME:: can drop AnimatedMoveWindow since this is more general */
 /* Perform the resizing of the window. ppctMovement *must* have a 1.0 entry
    somewhere in ins list of floats, and movement will stop when it hits a 1.0 entry
    The positions given are viewport positions (not virtual) */
@@ -228,7 +158,7 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
 /* AnimatedShadeWindow handles animating of window shades
    note that the first argument to this is a ScwmWindow *, since
    the frame needs to be manipulated; the last two args are like
-   AnimatedMoveWindow, above --11/09/97 gjb */
+   AnimatedResizeindow, above */
 /* Note that this does not allow animations to overshoot target-- it
    stops at first pctMovement >= 1.0 --11/25/97 gjb */
 void 
@@ -298,19 +228,11 @@ animated window shades and animated moves. */
 {
   int citems;
   int i;
-/*
-  FIXGJB: make a scheme-variable move-animation-delay get used instead
-  if (!gh_int_p(delay) && !gh_boolean_p(delay)) {
-    SCWM_WRONG_TYPE_ARG(arg,delay);
-  } */
+
   if (!gh_vector_p(vector)) {
     SCWM_WRONG_TYPE_ARG(1,vector);
   }
-/*
-  if (gh_int_p(delay)) {
-    cmsDelayDefault = gh_scm2int(delay);
-  }
-  */
+
   citems = gh_vector_length(vector);
   for (i=0; i<citems; i++) {
     SCM val = gh_vector_ref(vector,gh_int2scm(i));    
@@ -455,18 +377,18 @@ way if not specified. */
     SCM animation_ms_delay = SCM_CDR(animation_delay);
     int cmsDelay = -1;
     
-    if (animation_ms_delay != SCM_BOOL_F &&
-	gh_number_p(animation_ms_delay)) {
+    if (gh_number_p(animation_ms_delay)) {
       cmsDelay = gh_scm2int(animation_ms_delay);
     }
 
     /* use viewport coordinates */
-    AnimatedMoveWindow(w,
-                       startX - WIN_VP_OFFSET_X(psw),
-                       startY - WIN_VP_OFFSET_Y(psw),
-		       destX - WIN_VP_OFFSET_X(psw),
-		       destY - WIN_VP_OFFSET_Y(psw),
-		       fMovePointer,cmsDelay,NULL);
+    AnimatedResizeWindow(psw, w, FRAME_WIDTH(psw), FRAME_HEIGHT(psw),
+                         FRAME_WIDTH(psw), FRAME_HEIGHT(psw),
+                         startX - WIN_VP_OFFSET_X(psw),
+                         startY - WIN_VP_OFFSET_Y(psw),
+                         destX - WIN_VP_OFFSET_X(psw),
+                         destY - WIN_VP_OFFSET_Y(psw),
+                         fMovePointer,cmsDelay,NULL);
   } /* scope */
   move_finalize_virt(w, psw, destX, destY);
 
