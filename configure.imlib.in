@@ -36,7 +36,7 @@ AC_DEFUN(SCWM_ARG_PATH_MAYBE_EMPTY,
 
 
 dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.9.1-snap)
+AM_INIT_AUTOMAKE(scwm, 0.99.1-imlib)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(include/config.h)
 
@@ -454,16 +454,6 @@ AC_C_CONST
 AC_C_INLINE
 
 dnl check for imlib
-AM_PATH_IMLIB()
-
-if test ! -z "$IMLIB_LIBS"  ; then
-        LIBS="$LIBS $IMLIB_LIBS"
-        CFLAGS="$CFLAGS $IMLIB_CFLAGS"
-        USE_IMLIB="true"
-        AC_DEFINE(USE_IMLIB)
-fi
-
-dnl check for imlib
 AM_PATH_IMLIB
 
 if test ! -z "$IMLIB_LIBS"  ; then
@@ -494,7 +484,28 @@ SCWM_ARG_PATH(scwmrcdir,
 	scwmrcdir="${libdir}/X11/${PACKAGE}"
 ])
 
-scwm_image_load_path="(\\\"${x_includes}/X11/bitmaps\\\" \\\"${x_includes}/X11/pixmaps\\\" \\\"${orig_x_libs}/X11/mini-icons\\\" \\\"${includedir}/X11/pixmaps\\\" \\\"${includedir}/X11/bitmaps\\\" \\\"${libdir}/X11/mini-icons\\\")"
+# open the parentheses
+scwm_image_load_path="(";
+
+for i in \
+   ${x_includes}/X11/bitmaps \
+   ${x_includes}/X11/pixmaps \
+   ${orig_x_libs}/X11/mini-icons \
+   ${includedir}/X11/pixmaps \
+   ${includedir}/X11/bitmaps \
+   ${libdir}/X11/mini-icons \
+   /usr/share/pixmaps \
+   /usr/share/icons \
+   /usr/share/icons/mini \
+; do
+   if test -d $i; then
+      # add the directory to the list as a string
+      scwm_image_load_path="$scwm_image_load_path \\\"$i\\\""
+   fi
+done
+
+# close the parentheses
+scwm_image_load_path="${scwm_image_load_path})";
 
 AC_SUBST(scwm_load_path)
 AC_SUBST(scwm_bin_load_path)
