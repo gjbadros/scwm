@@ -6,14 +6,14 @@ SHELL=/bin/sh
 
 top_srcdir=..
 srcdir=.
-prefix=/usr/local
+prefix=/usr
 exec_prefix=${prefix}
 lib_dir=${prefix}/lib
 x_includes=-I/usr/X11R6/include
 x_libraries=-L/usr/X11R6/lib
-fvwm_icons=@fvwm_icons@
-fvwm_rc=@fvwm_rc@
-fvwm_name=@fvwm_name@
+scwm_icons=/usr/X11R6/include/X11/bitmaps:/usr/X11R6/include/X11/pixmaps:/usr/icons
+scwm_rc=.scwmrc
+scwm_name=scwm
 
 EXTRA_DEFINES=-DXPM -DSHAPE -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -DMINI_ICONS -DVECTOR_BUTTONS -DPIXMAP_BUTTONS -DGRADIENT_BUTTONS -DMULTISTYLE -DEXTENDED_TITLESTYLE -DBORDERSTYLE -DUSEDECOR -DWINDOWSHADE
 
@@ -28,7 +28,7 @@ RM=rm -f
 AR=ar cr
 RANLIB=ranlib
 
-STATIC_LIB=lib${fvwm_name}.a
+STATIC_LIB=lib${scwm_name}.a
 
 SRCS=\
 	ClientMsg.c \

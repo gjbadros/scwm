@@ -10,9 +10,9 @@ exec_prefix=@exec_prefix@
 lib_dir=@exec_prefix@/lib
 x_includes=@x_includes@
 x_libraries=@x_libraries@
-fvwm_icons=@fvwm_icons@
-fvwm_rc=@fvwm_rc@
-fvwm_name=@fvwm_name@
+scwm_icons=@scwm_icons@
+scwm_rc=@scwm_rc@
+scwm_name=@scwm_name@
 
 EXTRA_DEFINES=-DXPM -DSHAPE -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -DMINI_ICONS -DVECTOR_BUTTONS -DPIXMAP_BUTTONS -DGRADIENT_BUTTONS -DMULTISTYLE -DEXTENDED_TITLESTYLE -DBORDERSTYLE -DUSEDECOR -DWINDOWSHADE
 
@@ -27,7 +27,7 @@ RM=@RM@
 AR=@AR@
 RANLIB=@RANLIB@
 
-STATIC_LIB=lib${fvwm_name}.a
+STATIC_LIB=lib${scwm_name}.a
 
 SRCS=\
 	ClientMsg.c \
