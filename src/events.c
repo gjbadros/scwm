@@ -1062,11 +1062,6 @@ HandleDestroyNotify()
     pswCurrent = PswFromAnyWindow(dpy,w);
   }
   
-  /* GJB:FIXME:: I don't think we will
-     ever get a pswCurrent out of the above 
-     and the DispatchEvent routine. */
-  assert(!pswCurrent);
-
   if (pswCurrent) {
     DestroyScwmWindow(pswCurrent);
   }

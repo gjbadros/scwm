@@ -39,13 +39,10 @@
 #include "dmalloc.h"
 #endif
 
-#if 0
-#define SCWM_DEBUG_SAFE_APPLY
-#define SCWM_DEBUG_RUN_HOOK
-#endif
+#undef SCWM_DEBUG_SAFE_APPLY
+#undef SCWM_DEBUG_RUN_HOOK
 
-
-SCWM_HOOK(error_hook, "error-hook", 5);
+SCWM_HOOK(error_hook, "error-hook", 1);
   /** Called on all kinds of errors and exceptions.
 Whenever an error or other uncaught throw occurs on any callback,
 whether a hook, a mouse binding, a key binding, a menu entry, a file
@@ -136,7 +133,33 @@ scm_internal_stack_cwdr (scm_catch_body_t body,
 static SCM run_hook_proc;
 #endif
 
+SCM
+scwm_safe_apply (SCM proc, SCM args)
+{
+  SCM_STACKITEM stack_item;
+  struct scwm_body_apply_data apply_data;
+  apply_data.proc = proc;
+  apply_data.args = args;
+  
+  return scm_internal_cwdr(scwm_body_apply, &apply_data,
+                           scwm_handle_error, "scwm",
+                           &stack_item);
+}
 
+SCM
+scwm_safe_apply_message_only (SCM proc, SCM args)
+{
+  SCM_STACKITEM stack_item;
+  struct scwm_body_apply_data apply_data;
+  apply_data.proc = proc;
+  apply_data.args = args;
+  
+  return scm_internal_cwdr(scwm_body_apply, &apply_data,
+                           scm_handle_by_message_noexit, "scwm",
+                           &stack_item);
+}
+
+#if 0 /* GJB:FIXME:NOW: drop this */
 SCM
 scwm_safe_apply (SCM proc, SCM args)
 {
@@ -161,8 +184,9 @@ scwm_safe_apply (SCM proc, SCM args)
 				 scwm_handle_error, "scwm",
 				 &stack_item);
 }
+#endif
 
-
+#if 0 /* GJB:FIXME:NOW: drop this */
 SCM
 scwm_safe_apply_message_only (SCM proc, SCM args)
 {
@@ -187,6 +211,8 @@ scwm_safe_apply_message_only (SCM proc, SCM args)
 			   scm_handle_by_message_noexit, "scwm",
 			   &stack_item);
 }
+#endif
+
 
 
 SCM
@@ -636,61 +662,28 @@ static SCM
 scwm_body_eval_str (void *body_data)
 {
   char *string = (char *) body_data;
-  SCM port = scm_mkstrport (SCM_MAKINUM (0), gh_str02scm(string), 
+  SCM port = scm_mkstrport (SCM_INUM0, gh_str02scm(string), 
 			    SCM_OPN | SCM_RDNG, "scwm_safe_eval_str");
   return scwm_catching_load_from_port (port);
 }
 
 
 SCM 
-scwm_handle_error (void *ARG_IGNORE(data), SCM tag, SCM throw_args)
+scwm_handle_error (void *data, SCM tag, SCM throw_args)
 {
-#if 0 /* GJB:FIXME:: */
-  SCM port = scm_mkstrport(SCM_INUM0, 
-			   scm_make_string(SCM_MAKINUM(200), SCM_UNDEFINED),
-			   SCM_OPN | SCM_WRTNG,
-			   "error-handler");
-#else
-  SCM port = scm_def_errp;
-#endif
-
-  /* GJB:FIXME:MS: is this a guile compatibility test that can be dropped
-     now?  */
-  if (scm_ilength (throw_args) >= 3)
-    {
-      SCM fl = gh_cdr(scm_the_last_stack_fluid);
-      /* GJB:FIXME:MS: This is a horrible hack,
-         but DEREF_LAST_STACK macro was throwing a wrong type 
-         argument at weird times, and I'm trying to avoid
-         a crash when I demo to RMS tomorrow, hence this
-         ugly hack --04/27/99 gjb */
-      if (SCM_NIMP (fl) && SCM_FLUIDP (fl)) {
-        SCM stack = DEREF_LAST_STACK;
-        SCM subr = gh_car (throw_args);
-        SCM message = SCM_CADR (throw_args);
-        SCM args = SCM_CADDR (throw_args);
-        
-        scm_newline(port);
-        scm_display_backtrace (stack, port, SCM_UNDEFINED, SCM_UNDEFINED);
-        scm_newline(port);
-        scm_display_error (stack, port, subr, message, args, SCM_EOL);
-      } else {
-        scwm_msg(ERR,"scwm_handle_error","scm_the_last_stack_fluid not holding a fluid!");
-      }
-    }
-  else
-    {
-      scm_puts ("uncaught throw to ", port);
-      scm_prin1 (tag, port, 0);
-      scm_puts (": ", port);
-      scm_prin1 (throw_args, port, 1);
-      scm_putc ('\n', port);
-      exit (2);
-    }
-  /* GJB:FIXME:MS: can the scheme code display a backtrace without the
-     stack argument? */
-  DBUG((scwm_msg(DBG,"scwm_handle_error","length(throw_args) = %d", gh_length(throw_args));))
-  return scwm_run_hook_message_only(error_hook, gh_cons(tag, throw_args));
+  SCM port = scm_set_current_error_port(make_output_strport("error-handler"));
+  SCM str;
+  scm_handle_by_message_noexit(data,tag,throw_args);
+  port = scm_set_current_error_port(port);
+  str = scm_strport_to_string(port);
+  if (SCM_BOOL_T == scm_empty_hook_p(error_hook)) {
+    scm_display(str,scm_def_errp);
+    scm_newline(scm_def_errp);
+  } else {
+    scwm_run_hook_message_only(error_hook, 
+                               gh_list(str, SCM_UNDEFINED));
+  }
+  return SCM_UNSPECIFIED;
 }
 
 
