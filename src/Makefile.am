@@ -41,7 +41,8 @@ scwm_SOURCES =  string_token.c \
                 image.c \
                 callbacks.c \
                 shutdown.c \
-                init_scheme_string.c
+                init_scheme_string.c \
+                guile-compat.c
 
 scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XPM_LIB@ @x_libs@ @GUILE_LIBS@
 

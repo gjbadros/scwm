@@ -76,6 +76,7 @@
 #include "focus.h"
 #include "color.h"
 #include "callbacks.h"
+#include "guile-compat.h"
 
 #ifndef WithdrawnState
 #define WithdrawnState 0

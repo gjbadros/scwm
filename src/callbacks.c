@@ -36,6 +36,7 @@
 #include <config.h>
 #include "scwm.h"
 #include "callbacks.h"
+#include "guile-compat.h"
 
 SCM timer_hooks;
 
@@ -142,9 +143,13 @@ scwm_safe_apply (SCM proc, SCM args)
   apply_data.proc = proc;
   apply_data.args = args;
 
+  return scm_internal_stack_catch(SCM_BOOL_T,scwm_body_apply, &apply_data,
+				  scwm_handle_error, "scwm");
+#if 0
   return scm_internal_stack_cwdr(scwm_body_apply, &apply_data,
 				 scwm_handle_error, "scwm",
 				 &stack_item);
+#endif
 }
 
 

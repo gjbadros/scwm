@@ -23,21 +23,16 @@
 #include "colors.h"
 #include "util.h"
 #include "image.h"
+#include "guile-compat.h"
 
 long scm_tc16_scwm_face;
 
 int 
 print_face(SCM obj, SCM port, scm_print_state * pstate)
 {
-#ifdef HAVE_SCM_PUTS
   scm_puts("#<face ", port);
   scm_write(gh_int2scm((int)FACE(obj)), port);
   scm_putc('>', port);
-#else /* !HAVE_SCM_PUTS */
-  scm_gen_puts(scm_regular_port, "#<face ", port);
-  scm_write(gh_int2scm((int)FACE(obj)), port);
-  scm_gen_putc('>', port);
-#endif /* HAVE_SCM_PUTS */
 
   return 1;
 }

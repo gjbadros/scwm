@@ -53,6 +53,8 @@
 #define IMAGE_IMPLEMENTATION
 
 #include "image.h"
+#include "guile-compat.h"
+
 
 static Colormap ImageColorMap;
 

@@ -104,18 +104,6 @@ enum wm_client_functions {
   F_DELETE = 104, F_DESTROY = 103
 };
 
-#ifndef HAVE_SCM_PUTS
-#define scm_putc(x,y) scm_gen_putc(x,y)
-#define scm_puts(x,y) scm_gen_puts(scm_regular_port,x,y)
-#endif
-
-#ifndef HAVE_GH_LENGTH
-#define gh_length gh_list_length
-#endif /* HAVE_GH_LENGTH */
-
-#ifndef HAVE_SCM_INTERNAL_SELECT
-#define scm_internal_select select
-#endif
 
 #define DEREF_IF_SYMBOL(x) do { if (gh_symbol_p((x))) { \
                                    (x) = scm_symbol_binding(SCM_BOOL_F,(x)); \

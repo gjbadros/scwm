@@ -34,6 +34,7 @@
 #include "util.h"
 #include "misc.h"
 #include "string_token.h"
+#include "guile-compat.h"
 
 static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);

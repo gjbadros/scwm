@@ -34,12 +34,7 @@
 #include "decor.h"
 #include "colors.h"
 #include "system.h"
-
-
-#ifndef HAVE_GH_VECTOR_SET_X
-#define gh_vector_set_x gh_vset
-#endif
-
+#include "guile-compat.h"
 
 #define COLOR_HASH_SIZE 20
 

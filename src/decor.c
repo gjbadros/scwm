@@ -26,6 +26,7 @@
 #include "face.h"
 #include "borders.h"
 #include "font.h"
+#include "guile-compat.h"
 
 size_t 
 free_decor(SCM obj)
@@ -43,25 +44,13 @@ print_decor(SCM obj, SCM port, scm_print_state * pstate)
   char *name;
 
   name = SCWMDECOR(obj)->tag;
-#ifdef HAVE_SCM_PUTS
   scm_puts("#<decor ", port);
   if (NULL == name) {
-    /* FIXGJB: not 64 bit compatible -- cast to long instead? --04/07/98 gjb */
-    scm_write(gh_int2scm((long) DECOR(obj)), port);
+    scm_write(gh_long2scm((long) DECOR(obj)), port);
   } else {
     scm_puts(name, port);
   }
   scm_putc('>', port);
-#else /* !HAVE_SCM_PUTS */
-  scm_gen_puts(scm_regular_port, "#<decor ", port);
-  if (NULL == name) {
-    /* FIXGJB: not 64 bit compatible */
-    scm_write(gh_int2scm((long) DECOR(obj)), port);
-  } else {
-    scm_gen_puts(scm_regular_port, name, port);
-  }
-  scm_gen_putc('>', port);
-#endif /* HAVE_SCM_PUTS */
 
   return 1;
 };
