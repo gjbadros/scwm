@@ -446,6 +446,53 @@ void HandleKeyPress()
   ButtonWindow = NULL;
 }
 
+static const int scwm_property_max_length = 8000;
+
+/* Return NULL if not a valid string property */
+char *
+SzGetWindowProperty(Window w,const char *szPropertyName, Bool fDelete)
+{
+    Atom property = XInternAtom(dpy, szPropertyName, False);
+    Atom xproptype;
+    int xpropformat = 0;
+    unsigned long citems = 0;
+    unsigned long bytes_after = 0;
+    unsigned char *pchReturn = 0;
+    int retval = XGetWindowProperty(dpy, w, property, 0,
+				    scwm_property_max_length,
+				    fDelete, AnyPropertyType,
+				    &xproptype, &xpropformat, &citems,
+				    &bytes_after, &pchReturn);
+    if (retval != Success || xproptype != XA_STRING)
+	{
+	fprintf(stderr,"%s: did not get string property!\n",__FUNCTION__);
+	return NULL;
+	}
+   return (char *) pchReturn;
+}
+
+void
+ScwmExecuteProperty()
+{
+    SCM retval;
+    /* execute the XA_SCWM_EXECUTE X property */
+    char *szExecute = SzGetWindowProperty(Scr.Root,"SCWM_EXECUTE", False);
+    if (szExecute)
+	{
+	fprintf(stderr,"Executing %s\n",szExecute);
+	/* WHICH OF THESE SHOULD I USE?? --gjb 
+gh.h:SCM gh_eval_str(char *scheme_code);
+gh.h:SCM gh_eval_str_with_catch(char *scheme_code, scm_catch_handler_t handler);
+gh.h:SCM gh_eval_str_with_standard_handler(char *scheme_code);
+gh.h:SCM gh_eval_str_with_stack_saving_handler(char *scheme_code);
+*/
+	retval = gh_eval_str_with_standard_handler(szExecute);
+	/* Need to make this go to STDERR, or better, some 
+	   pre-opened interaction results port */
+	gh_display(retval);
+	gh_newline();
+	}
+}
 
 /***********************************************************************
  *
@@ -462,10 +509,16 @@ void HandlePropertyNotify()
   
   DBUG("HandlePropertyNotify","Routine Entered");
 
+  if (Event.xproperty.atom == XA_SCWM_EXECUTE)
+      {
+      ScwmExecuteProperty();
+      return;
+      }
+
   if ((!Tmp_win)||(XGetGeometry(dpy, Tmp_win->w, &JunkRoot, &JunkX, &JunkY,
 				&JunkWidth, &JunkHeight, &JunkBW, &JunkDepth) == 0))
     return;
-  
+
   switch (Event.xproperty.atom) 
     {
     case XA_WM_NAME:
@@ -593,7 +646,7 @@ void HandlePropertyNotify()
       break;
       
     default:
-      if(Event.xproperty.atom == _XA_WM_PROTOCOLS)
+      if (Event.xproperty.atom == _XA_WM_PROTOCOLS)
 	FetchWmProtocols (Tmp_win);
       else if (Event.xproperty.atom == _XA_WM_COLORMAP_WINDOWS)
 	{
