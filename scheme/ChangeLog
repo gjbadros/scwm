@@ -1,3 +1,7 @@
+Wed Sep 30 13:57:14 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* fvwm-module.scm: Make debug-fvwm-module default to #f
+
 Mon Sep 28 08:14:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Ken Pizzini's fixes to maximize to use client units, 
