@@ -75,10 +75,10 @@ SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
 
 SCWM_PROC(clone_resized_image, "clone-resized-image", 3, 1, 0,
 	  (SCM image, SCM width, SCM height, SCM bgcolor),
-"Makes a new image from IMAGE of the given WIDTH and HEIGHT.
-It does not scale IMAGE.  If the resized image is smaller than the
-original, it is cropped; if larger, the extra space in the new image
-is filled with BGCOLOR. See also `clone-scaled-image'")
+"Makes a new image from IMAGE of the given WIDTH and HEIGHT.\n\
+It does not scale IMAGE.  If the resized image is smaller than the\n\
+original, it is cropped; if larger, the extra space in the new image\n\
+is filled with BGCOLOR. See also `clone-scaled-image'.")
 #define FUNC_NAME s_clone_resized_image
 {
   int nw;
@@ -155,7 +155,7 @@ is filled with BGCOLOR. See also `clone-scaled-image'")
 
 SCWM_PROC(set_background_image_x, "set-background-image!", 1, 1, 0,
 	  (SCM image, SCM style),
-"Sets the background of the root window to be IMAGE.
+"Sets the background of the root window to be IMAGE.\n\
 STYLE can be either 'centered or 'tiled.")
 #define FUNC_NAME s_set_background_image_x
 {

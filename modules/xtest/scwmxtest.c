@@ -46,8 +46,8 @@ SCWM_PROC(xtest_supported_p,"xtest-supported?",0,0,0,
 
 SCWM_PROC(xtest_fake_button_event,"xtest-fake-button-event",2,1,0,
 	  (SCM button, SCM is_press_p, SCM ms_delay),
-"Fake an X event of button number BUTTON after a delay of MS-DELAY.
-The event is a mouse press if IS-PRESS? is #t, or a release otherwise. If
+"Fake an X event of button number BUTTON after a delay of MS-DELAY.\n\
+The event is a mouse press if IS-PRESS? is #t, or a release otherwise. If\n\
 MS-DELAY is ommitted or is not a number, no delay is used")
 #define FUNC_NAME s_xtest_fake_button_event
 {
@@ -70,9 +70,9 @@ MS-DELAY is ommitted or is not a number, no delay is used")
 
 SCWM_PROC(xtest_fake_key_event,"xtest-fake-key-event",2,1,0,
 	  (SCM keycode, SCM is_press_p, SCM ms_delay),
-"Fake an X event of key KEYCODE after a delay of MS-DELAY.
-The event is a key press if IS-PRESS? is #t, or a release otherwise. If
-MS-DELAY is ommitted or is not a number, no delay is used")
+"Fake an X event of key KEYCODE after a delay of MS-DELAY.\n\
+The event is a key press if IS-PRESS? is #t, or a release otherwise. If\n\
+MS-DELAY is ommitted or is not a number, no delay is used.")
 #define FUNC_NAME s_xtest_fake_key_event
 {
   int key;
@@ -94,9 +94,9 @@ MS-DELAY is ommitted or is not a number, no delay is used")
 
 SCWM_PROC(xtest_fake_motion_event,"xtest-fake-motion-event",2,2,0,
 	  (SCM x, SCM y, SCM screen, SCM ms_delay),
-"Fake an X motion event to X,Y after a delay of MS-DELAY on SCREEN.
-If SCREEN is ommitted, 0 is used.
-If MS-DELAY is ommitted or is not a number, no delay is used")
+"Fake an X motion event to X,Y after a delay of MS-DELAY on SCREEN.\n\
+If SCREEN is ommitted, 0 is used.\n\
+If MS-DELAY is ommitted or is not a number, no delay is used.")
 #define FUNC_NAME s_xtest_fake_motion_event
 {
   int xpos, ypos;
@@ -120,7 +120,7 @@ If MS-DELAY is ommitted or is not a number, no delay is used")
 
 SCWM_PROC(xtest_fake_relative_motion_event,"xtest-fake-relative-motion-event",2,1,0,
 	  (SCM dx, SCM dy, SCM ms_delay),
-"Fake an X motion relative event of a move DX, DY after a delay of MS-DELAY.
+"Fake an X motion relative event of a move DX, DY after a delay of MS-DELAY.\n\
 If MS-DELAY is ommitted or is #f or 0, no delay is used")
 #define FUNC_NAME s_xtest_fake_relative_motion_event
 {

@@ -99,7 +99,7 @@ remove_overlay(Window win)
 
 SCWM_PROC (draw_overlay_plane, "draw-overlay-plane", 0, 0, 0,
            (),
-"Draw a box in the overlay plane.
+"Draw a box in the overlay plane.\n\
 This is just for demonstration and testing purposes for now.")
 #define FUNC_NAME s_draw_overlay_plane
 {
@@ -112,7 +112,7 @@ This is just for demonstration and testing purposes for now.")
 
 SCWM_PROC (hide_overlay_plane, "hide-overlay-plane", 0, 0, 0,
            (),
-"Draw a box in the overlay plane.
+"Draw a box in the overlay plane.\n\
 This is just for demonstration and testing purposes for now.")
 #define FUNC_NAME s_hide_overlay_plane
 {

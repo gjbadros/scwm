@@ -33,8 +33,8 @@ static int esd;
 
 SCWM_PROC(sound_load, "sound-load", 1, 1, 0,
 	  (SCM file, SCM name),
-"Load sound from FILE, tagging it with NAME.
-If NAME is not given, \"scwm\" is used.
+"Load sound from FILE, tagging it with NAME.\n\
+If NAME is not given, \"scwm\" is used.\n\
 Returns a sound object usable with the other sound functions.")
 #define FUNC_NAME s_sound_load
 {
@@ -69,7 +69,7 @@ Returns a sound object usable with the other sound functions.")
 
 SCWM_PROC(sound_unload, "sound-unload", 1, 0, 0,
           (SCM sound),
-"Unload SOUND, freeing any resources it occupies.
+"Unload SOUND, freeing any resources it occupies.\n\
 SOUND must be an object returned by `sound-load'.")
 #define FUNC_NAME s_sound_unload
 {
@@ -90,7 +90,7 @@ SOUND must be an object returned by `sound-load'.")
 
 SCWM_PROC(sound_play, "sound-play", 1, 0, 0,
 	  (SCM sound),
-"Play SOUND.
+"Play SOUND.\n\
 SOUND must be an object returned by `sound-load'.")
 #define FUNC_NAME s_sound_play
 {
@@ -118,11 +118,11 @@ SOUND must be an object returned by `sound-load'.")
 
 SCWM_PROC(esd_reconnect, "esd-reconnect", 0, 1, 0,
 	  (SCM host),
-"Connect to the ESound daemon on the machine named HOST.
-If HOST is not set, the $ESPEAKER environmental variable will be used. If this
-is unset too, localhost is contacted.
-The esdsound module normally connects at startup. This function is useful
-if the connection was lost, esd was not running at startup, or its location
+"Connect to the ESound daemon on the machine named HOST.\n\
+If HOST is not set, the $ESPEAKER environmental variable will be used. If this\n\
+is unset too, localhost is contacted.\n\
+The esdsound module normally connects at startup. This function is useful\n\
+if the connection was lost, esd was not running at startup, or its location\n\
 unknown.")
 #define FUNC_NAME s_esd_reconnect
 {

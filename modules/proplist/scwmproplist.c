@@ -215,7 +215,7 @@ SCWM_PROC(proplist_make_array_from_elements,"proplist-make-array-from-elements",
    ...); */
 SCWM_PROC(proplist_make_dictionary_from_entries,"proplist-make-dictionary-from-entries",0,0,1,
 	  (SCM items),
-"Return a newly created dictionary object with elements ITEMS.
+"Return a newly created dictionary object with elements ITEMS.\n\
 The elements in ITEMS should be a flat list (key1 value1 key2 value2 ...).")
 #define FUNC_NAME s_proplist_make_dictionary_from_entries
 {
@@ -371,8 +371,8 @@ SCWM_PROC(proplist_deep_copy,"proplist-deep-copy",1,0,0,
 /* BOOL PLIsEqual(proplist_t pl1, proplist_t pl2); */
 SCWM_PROC(proplist_is_equal,"proplist-is-equal",2,0,0,
 	  (SCM plA,SCM plB),
-"Return #t iff PLA is equal to PLB.
-This does a case sensitive comparison by default.
+"Return #t iff PLA is equal to PLB.\n\
+This does a case sensitive comparison by default.\n\
 See `proplist-set-string-cmp-hook' for changing the behaviour.")
 #define FUNC_NAME s_proplist_is_equal
 {
@@ -386,8 +386,8 @@ See `proplist-set-string-cmp-hook' for changing the behaviour.")
 /* void PLSetStringCmpHook(BOOL(*fn)(proplist_t, proplist_t)); */
 SCWM_PROC(proplist_set_string_cmp_hook,"proplist-set-string-cmp-hook",1,0,0,
 	  (SCM pred),
-"Use PRED as a predicate for doing proplist string comparisons.
-PRED should take two proplist objects and return #t or #f to answer
+"Use PRED as a predicate for doing proplist string comparisons.\n\
+PRED should take two proplist objects and return #t or #f to answer\n\
 whether they are equal in whatever sense it chooses.")
 #define FUNC_NAME s_proplist_set_string_cmp_hook
 {
@@ -405,9 +405,9 @@ whether they are equal in whatever sense it chooses.")
 /* proplist_t PLMakeString(char *bytes); */
 SCWM_PROC(string_to_proplist,"string->proplist",1,0,0,
 	  (SCM string),
-"Return a proplist object containing STRING.
-This is often unnecessary as the proplist procedures will
-permit Guile strings to be used anywhere a string proplist object is expected. ")
+"Return a proplist object containing STRING.\n\
+This is often unnecessary as the proplist procedures will\n\
+permit Guile strings to be used anywhere a string proplist object is expected.")
 #define FUNC_NAME s_string_to_proplist
 {
   char *s;
@@ -423,9 +423,9 @@ permit Guile strings to be used anywhere a string proplist object is expected. "
 /* proplist_t PLMakeData(unsigned char *data, unsigned int length); */
 SCWM_PROC(proplist_make_data,"proplist-make-data",1,0,0,
 	  (SCM data),
-"Return a proplist argument containing arbitrary data from DATA.
-This is often unnecessary as the proplist procedures will
-permit Guile strings to be used anywhere a string proplist object is expected. ")
+"Return a proplist argument containing arbitrary data from DATA.\n\
+This is often unnecessary as the proplist procedures will\n\
+permit Guile strings to be used anywhere a string proplist object is expected.")
 #define FUNC_NAME s_proplist_make_data
 {
   int len;
@@ -470,9 +470,9 @@ SCWM_PROC(proplist_get_array_element,"proplist-get-array-element",2,0,0,
 /* unsigned int PLGetNumberOfElements(proplist_t pl); */
 SCWM_PROC(proplist_get_number_of_elements,"proplist-get-number-of-elements",1,0,0,
 	  (SCM pl),
-"Return the number of elements in PL.
-If PL is a string or data objects, this returns 0.  If it 
-is an array or dictionary, it is the number of elements
+"Return the number of elements in PL.\n\
+If PL is a string or data objects, this returns 0.  If it\n\
+is an array or dictionary, it is the number of elements\n\
 or pairs.")
 #define FUNC_NAME s_proplist_get_number_of_elements
 {
@@ -497,7 +497,7 @@ SCWM_PROC(proplist_get_all_dictionary_keys,"proplist-get-all-dictionary-keys",1,
 /* proplist_t PLGetDictionaryEntry(proplist_t pl, proplist_t key); */
 SCWM_PROC(proplist_get_dictionary_entry,"proplist-get-dictionary-entry",2,0,0,
 	  (SCM pl_dict,SCM key),
-"Return the proplist dictionary entry associated with entry KEY in PL-DICT. 
+"Return the proplist dictionary entry associated with entry KEY in PL-DICT.\n\
 Returns #f if KEY is not in PL-DICT.")
 #define FUNC_NAME s_proplist_get_dictionary_entry
 {
@@ -512,8 +512,8 @@ Returns #f if KEY is not in PL-DICT.")
 /* char *PLGetStringDescription(proplist_t pl); */
 SCWM_PROC(proplist_get_string_description,"proplist-get-string-description",1,0,0,
 	  (SCM pl),
-"Retuns a description of PL (a string proplist object) in GNUstep format.
-If the string contains whitespace or special characters, the string returned will
+"Retuns a description of PL (a string proplist object) in GNUstep format.\n\
+If the string contains whitespace or special characters, the string returned will\n\
 be enclosed in quotes.")
 #define FUNC_NAME s_proplist_get_string_description
 {
@@ -582,8 +582,8 @@ SCWM_PROC(proplist_get_data,"proplist-get-data",1,0,0,
 /* char *PLGetString(proplist_t pl); */
 SCWM_PROC(proplist_get_string,"proplist-get-string",1,0,0,
 	  (SCM pl),
-"Returns the string from PL (a string proplist object).
-Note that numerous procedures automatically convert string 
+"Returns the string from PL (a string proplist object).\n\
+Note that numerous procedures automatically convert string\n\
 proplist objects into Guile strings, so this may not often be necessary.")
 #define FUNC_NAME s_proplist_get_string
 {
@@ -700,7 +700,7 @@ SCWM_PROC(proplist_register,"proplist-register",2,0,0,
 /* proplist_t PLSetDomain(proplist_t name, proplist_t value, BOOL kickme); */
 SCWM_PROC(proplist_set_domain,"proplist-set-domain",3,0,0,
 	  (SCM pl_domain_name,SCM value,SCM kick_me_p),
-"Set PL-DOMAIN-NAME to have VALUE.
+"Set PL-DOMAIN-NAME to have VALUE.\n\
 If KICK-ME? is #f, any callback registered for the domain will not be called.")
 #define FUNC_NAME s_proplist_set_domain
 {
@@ -718,7 +718,7 @@ If KICK-ME? is #f, any callback registered for the domain will not be called.")
 /* proplist_t PLDeleteDomain(proplist_t name, BOOL kickme); */
 SCWM_PROC(proplist_delete_domain,"proplist-delete-domain",2,0,0,
 	  (SCM pl_domain_name,SCM kick_me_p),
-"Delete domain PL-DOMAIN-NAME.
+"Delete domain PL-DOMAIN-NAME.\n\
 If KICK-ME? is #f, any callback registered for the domain will not be called.")
 #define FUNC_NAME s_proplist_delete_domain
 {

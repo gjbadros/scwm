@@ -63,8 +63,8 @@ void xlib_point_pair_get_values(SCM p, int *piX, int *piY)
    fast to erase */
 SCWM_PROC(xlib_set_drawing_mask_x, "xlib-set-drawing-mask!", 1, 0, 0,
           (SCM value),
-"Set the drawing mask used by the xlib-* primitives.
-VALUE is XORed with the background when dragging non-opaque move or
+"Set the drawing mask used by the xlib-* primitives.\n\
+VALUE is XORed with the background when dragging non-opaque move or\n\
 resize frames. VALUE should be an integer.")
 #define FUNC_NAME s_xlib_set_drawing_mask_x
 {
@@ -86,9 +86,9 @@ resize frames. VALUE should be an integer.")
 
 SCWM_PROC(xlib_draw_rectangle_x, "xlib-draw-rectangle!", 3, 0, 0,
 	  (SCM top_left, SCM width, SCM height),
-"Draws a rectangle to the screen using the Xlib call XDrawRectangle.
-TOP-LEFT is the upper left point of the rectangle.  The rectangle is of size
-WIDTH by HEIGHT.
+"Draws a rectangle to the screen using the Xlib call XDrawRectangle.\n\
+TOP-LEFT is the upper left point of the rectangle.  The rectangle is of size\n\
+WIDTH by HEIGHT.\n\
 TOP-LEFT is a point pair: (X . Y).")
 #define FUNC_NAME s_xlib_draw_rectangle_x
 {
@@ -106,9 +106,9 @@ TOP-LEFT is a point pair: (X . Y).")
 
 SCWM_PROC(xlib_draw_line_x, "xlib-draw-line!", 2, 0, 0,
 	  (SCM p1, SCM p2),
-"Draws a line using the Xlib call XDrawLine.
-The line is drawn from P1 to P2.
-Both P1 and P2 are pairs (X . Y) representing a poin")
+"Draws a line using the Xlib call XDrawLine.\n\
+The line is drawn from P1 to P2.\n\
+Both P1 and P2 are pairs (X . Y) representing points.")
 #define FUNC_NAME s_xlib_draw_line_x
 {
   int iX1, iY1, iX2, iY2;
@@ -124,11 +124,11 @@ Both P1 and P2 are pairs (X . Y) representing a poin")
 
 SCWM_PROC(xlib_draw_arc_x, "xlib-draw-arc!", 5, 0, 0,
 	  (SCM top_left, SCM width, SCM height, SCM angle1, SCM angle2),
-"Draws a arc to the screen using the Xlib call XDrawArc.  
-The arc is specified in terms of a rectangle, in which it is wholly
-enclosed.  TOP-LEFT is a point pair for the upper left corner of the rectangle.  The
-rectangle is of size WIDTH by HEIGHT.  The arc is drawn from ANGLE1 to
-ANGLE2. Angles are specified in degrees (0.0 to 360.0)")
+"Draws a arc to the screen using the Xlib call XDrawArc.\n\
+The arc is specified in terms of a rectangle, in which it is wholly\n\
+enclosed.  TOP-LEFT is a point pair for the upper left corner of the rectangle.  The\n\
+rectangle is of size WIDTH by HEIGHT.  The arc is drawn from ANGLE1 to\n\
+ANGLE2. Angles are specified in degrees (0.0 to 360.0).")
 #define FUNC_NAME s_xlib_draw_arc_x
 {
   int iX, iY, iWidth, iHeight;
@@ -153,8 +153,8 @@ SCWM_SYMBOL(sym_double_dash,"double-dash");
 
 SCWM_PROC(xlib_set_line_attributes_x, "xlib-set-line-attributes!", 1, 1, 0,
 	  (SCM width, SCM style),
-"Sets the line width of the DrawingGC to WIDTH and style to STYLE.
-One of 'solid (default), 'on-off-dash, or 'double-dash should
+"Sets the line width of the DrawingGC to WIDTH and style to STYLE.\n\
+One of 'solid (default), 'on-off-dash, or 'double-dash should\n\
 be given as STYLE.")
 #define FUNC_NAME s_xlib_set_line_attributes_x
 {
@@ -176,8 +176,8 @@ be given as STYLE.")
 
 SCWM_PROC(xlib_set_fill_style_x, "xlib-set-fill-style!", 1, 0, 0,
 	  (SCM style),
-"Sets the fill style of the DrawingGC to STYLE. 
-One of FillSolid (0), FillTiled (1), FillStippled (2), or FillOpaqueStippled (3)
+"Sets the fill style of the DrawingGC to STYLE.\n\
+One of FillSolid (0), FillTiled (1), FillStippled (2), or FillOpaqueStippled (3)\n\
 should be given as STYLE.")
 #define FUNC_NAME s_xlib_set_fill_style_x
 {
