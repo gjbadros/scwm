@@ -7,7 +7,17 @@
 	Use it to flash current desktop name on changes.
 	Can now switch desktops with super-1, super-2, etc.
 	The last two features were inspired by WindowMaker behaviour.
-	
+	(xcmd-action): Don't depend on "xcmd" binary - scwm
+	is perfectly able to do provide this functionality itself (and
+	faster).
+	Resource is now given in a key-argument, alternatively, one can
+	give the new #:class argument, or always start a new copy.
+	New key-argument #:needs-term for launching from a terminal
+	window.
+	Do more stuff to make matching window visible.
+	(xtcmd-action): Removed since #:needs-term makes it obsolete.
+	(build-menu): Adapt to new `xcmd-action'.
+
 Fri Jan  7 11:27:19 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Do not put the pager on top, but raise it when
