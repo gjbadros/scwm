@@ -1,0 +1,15 @@
+The Whole ../libs directory got integrated into here as described below:
+ClientMsg.c -> ../scwm/ICCCM.c
+GetFont.c was unused
+Grab.c -> ../scwm/Grab.c, renamed MyX{Ung,G}rabServer
+Module.c was unused
+Parse.c -> ../scwm/string_token.c
+Picture.c -> ../scwm/Picture.c
+Strings.c -> mostly unused, some into ../scwm/system.c
+System.c -> rewritten largely into ../scwm/system.c
+envvar.c -> ../scwm/envvar.c
+safemalloc.c -> ../scwm/system.c, changed return type to void *
+sleep.c -> ../scwm/system.c
+wild.c -> ../scwm/wildcard.c
+
+Greg J. Badros, 11/04/97 
