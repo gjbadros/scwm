@@ -1,3 +1,9 @@
+Fri Jan 22 15:52:10 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* menu.c (MenuInteraction): Added MENUSTATUS_NEWITEM_HOTKEY for
+	hotkey-based newitem actions to use to differentiate between
+	shortcut keys to select items and keys to just maneuver the menus
+
 Fri Jan 22 08:52:07 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraint-primitives.cc (s_scwm_set_master_solver_x): Added
