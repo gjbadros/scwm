@@ -1,3 +1,11 @@
+Wed Dec  1 11:38:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): Fix missing backslash.
+
+Wed Dec  1 09:10:41 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice.scm: Needs task-switcher module.
+
 Tue Nov 30 09:01:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* fvwm-module.scm: Eliminate bogus conditional definition of
