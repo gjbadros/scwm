@@ -524,9 +524,6 @@ scwm_main(int argc, char **argv)
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
 #endif
-#ifdef HAVE_LIBSM_LIBICE
-  initSM();
-#endif
   gh_allow_ints();
 
   szCmdConfig = NEWC(1,char);
@@ -781,6 +778,9 @@ will be processed in the order in which they were specified.</seg>
   InternUsefulAtoms();
   init_modifiers();
   init_pointer_mapping();
+#ifdef HAVE_LIBSM_LIBICE
+  initSM();
+#endif
   
   /* Make sure property priority colors is empty */
   XChangeProperty(dpy, Scr.Root, XA_MIT_PRIORITY_COLORS,
