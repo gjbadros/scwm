@@ -1,3 +1,8 @@
+1998-03-19 Thu 16:08:43 EST Sam Steingold <sds@usa.net>
+
+	* utilities/emacs/scwm.el: fixed completion, documentation and
+	scwm-run.  The latter re-runs scwmrepl in the same buffer now.
+
 Thu Mar 12 20:28:57 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* utilities/*/Makefile.in: Move -lscwmexec to directly after
@@ -12,7 +17,7 @@ Thu Mar 12 09:20:49 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Wed Mar 11 22:56:28 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
-	* utilities/emacs/scwm.el: Added rudimentary completion support -- 
+	* utilities/emacs/scwm.el: Added rudimentary completion support --
 	mostly proof of concept that an elisp guru should look at.
 
 Wed Mar 11 21:57:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
@@ -21,7 +26,7 @@ Wed Mar 11 21:57:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* utilities/scwmsend, utilties/emacs/scwm-buffer.el: removed so
  	scwmsend stuff can be removed from scwm.
-	
+
 Tue Mar 10 22:57:51 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* utilities/scwmexec/scwmexec.c: Capitalized EXPRESSION in the
@@ -47,7 +52,7 @@ Fri Mar  6 06:49:48 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	* version.h (VERSION): Bumped to 0.6a
 
 	* Made 0.6 release
-	
+
 	* version.h: Bumped to 0.6
 
 	* INSTALL: Updated for 0.6.
@@ -66,10 +71,10 @@ Fri Feb 27 21:16:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* configure.in configure utilities/Makefile.in: Build system
  	changes to make scwmrepl.
-	
+
 	* utilities/scwmrepl/scwmrepl.c, utilities/scwmrepl/Makefile.in:
 	A new program using libscwmexec; it gives you a repl session
-	with a running scwm. 
+	with a running scwm.
 
 	* configure.in configure utilities/Makefile.in: Build system
  	changes to make scwmsend and libscwmsend.
@@ -77,9 +82,9 @@ Fri Feb 27 21:16:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	* utilities/libscwmexec/libmain.c,
  	utlities/libscwmexec/scwmsend.h, utlities/libscwmexec/Makefile.in,
  	utilities/scwmexec/scwmexec.c, utilities/scwmexec/Makefile.in:
-	library and example program for the new scwmexec protocol. 
+	library and example program for the new scwmexec protocol.
 
-	
+
 Thu Feb 26 21:46:06 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* utilities/emacs/scwm-buffer.el: Updated to use the $DISPLAY
@@ -100,7 +105,7 @@ Fri Dec 12 16:12:17 1997  Greg Badros  <gjb@cs.washington.edu>
  	<jas@pdc.kth.se>
 
 	* sample.scwmrc/{gjb.scwmrc,menu-test.scm}: Updated to use much
-	more dynamic features -- using 'foo as a procedure or a color or a 
+	more dynamic features -- using 'foo as a procedure or a color or a
 	menu or a font means delay getting the object that that symbol
 	contains until it is really needed so that it the actual object
 	can be defined or redefined later without recreating all the
@@ -134,7 +139,7 @@ Tue Nov 18 01:23:38 1997  Maciej Stachowiak  <mstachow@mit.edu>
 	* ANNOUNCE: Added 0.5 news to the announcement.
 
 	* NEWS: Updated for 0.5.
-	
+
 Mon Nov 17 20:58:58 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* configure.in, acconfig.h, configure, include/config.h.in: Check
@@ -164,10 +169,10 @@ Wed Nov 12 11:23:50 1997  Maciej Stachowiak  <mstachow@mit.edu>
  	wether we have getopt.h and getopt_long, so getopt_long can be
  	used for argument parsing. Patch from James LewisMoss
  	<dres@dimensional.com>. Regenerated configure and config.h.in.
-	
+
 	* configure.in, configure: Don't try too create a Makefile in libs
  	any more during the configure process. configure regenerated from
- 	configure.in. 
+ 	configure.in.
 
 Mon Nov 10 06:20:42 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
