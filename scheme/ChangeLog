@@ -1,3 +1,7 @@
+Sat Sep  4 01:09:24 1999    <gjb@cs.washington.edu>
+
+	* prompt-proc.scm: Fixed a bad define placement using a let.
+
 Sat Sep  4 00:22:10 1999    <gjb@cs.washington.edu>
 
 	* base.scm: Added `half' to simplify integer division by 2.
