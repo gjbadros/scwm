@@ -474,7 +474,7 @@ HandleScwmExec()
       w=*pw;
       XFree(pw);
       last_offset+=last_offset+1;
-      saved_bytes_after=bytes_after;;
+      saved_bytes_after=bytes_after;
       
       /* Get and delete its request. */
       if (XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
@@ -483,7 +483,7 @@ HandleScwmExec()
 			     &req)==Success && 
 	  XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
 			     0, (bytes_after / 4) +
-			     (bytes_after % 4 ? 1 : 0), False, XA_STRING, 
+			     (bytes_after % 4 ? 1 : 0), True, XA_STRING, 
 			     &type_ret, &form_ret, &nitems, &bytes_after,
 			     &req)==Success) {
 	SCM val, str_val;
@@ -497,7 +497,7 @@ HandleScwmExec()
 	
 	o_port=scm_set_current_output_port(make_output_strport(__FUNCTION__));
 	e_port=scm_set_current_error_port(make_output_strport(__FUNCTION__));
-	
+
 	val = gh_eval_str_with_catch(req,scwm_error_handler);
 	XFree(req); 
 	str_val=scm_strprint_obj(val);
