@@ -1,3 +1,18 @@
+Tue Nov  4 13:45:31 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* face.c, face.h: Added scheme-level procedures set-title-face!,
+ 	set-button-face!, set-button-mwm-flag! and
+ 	set-border-face!. Changing the border, button and title styles
+ 	should now be possible, although a higher-level interface still
+ 	needs to be written. Also, redraws are not done immediately for
+ 	anything but set-title-face!, because of a bug in
+ 	SetBorderX. Added appropriate prototypes.
+
+	* util.c, util.h: New function redraw_borders to redraw borders of
+ 	all windows associated with a decor. However, it doesn't work
+ 	right now, as SetBorderX appears to be buggy. Added prototype for
+ 	redraw_borders.
+	
 Mon Nov  3 11:20:17 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Further changes that should bring things really close to user
