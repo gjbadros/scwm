@@ -192,7 +192,7 @@
 (bind-key 'all "M-F2" popup-ops)
 
 ;; in case of emergency, hit Control-Meta-Q
-(bind-key 'all "C-M-Q" quit)
+(bind-key 'all "C-M-q" quit)
 
 ;; some stuff for icons
 (define (move-or-deiconify)
