@@ -15,6 +15,7 @@
 extern "C" {
 #include "scwm.h"
 #include "window.h"
+#include "callbacks.h"
 }
 
 #include "constraint-primitives.h"
@@ -26,7 +27,6 @@ extern "C" {
 #include "ClSimplexSolver.h"
 #include "../guile/cassowary_scm.hpp"
 #include "../guile/cassowary_scm.h"
-#include "callbacks.h"
 #include "screen.h" /* to be able to add stays to all the windows */
 #include <strstream>
 #include <set>
@@ -35,6 +35,8 @@ extern "C" {
 ClSimplexSolver *psolver;
 
 static set<ScwmWindow *> setpswDirty;
+
+SCM scwm_resolve_hook;
 
 static void
 ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
@@ -62,6 +64,8 @@ ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
 static void
 ScwmResolve(ClSimplexSolver *psolver)
 {
+  SCM solver = ScmFromPv(psolver->Pv());
+  call1_hooks(scwm_resolve_hook,solver);
   // go through the dirty windows and move them
   set<ScwmWindow *>::const_iterator it = setpswDirty.begin();
   for ( ; it != setpswDirty.end(); ++it ) {
@@ -306,6 +310,17 @@ void
 init_constraint_primitives()
 {
   init_cassowary_scm();
+
+  /**HOOK: scwm_resolve-hook
+  Called upon completion of each constraint re-solve.
+The hook is passed a single argument, the solver object that just re-solved.
+The various 'changed-proc hooks on cl-variable objects are called as the solver
+changes variables.  Often, those callbacks should just remember what
+has changed and then act on all the changes at once using this
+callback.  The alternative--acting on all variable changes as they
+occur--can be inefficent and visually distracting. */
+  SCWM_DEFINE_HOOK(scwm_resolve_hook, "scwm-resolve-hook");
+
 #ifndef SCM_MAGIC_SNARFER
 #include "constraint-primitives.x"
 #endif

@@ -144,7 +144,6 @@ AddWindow(Window w)
 {
   ScwmWindow *psw;		/* new scwm window structure */
   unsigned long valuemask;	/* mask for create windows */
-
   SCM schwin; /* To make sure it's on the stack to be marked. */
 
   Pixmap TexturePixmap = None, TexturePixmapSave = None;
@@ -251,12 +250,14 @@ AddWindow(Window w)
   psw->HiShadowColor = SCM_BOOL_F;
   psw->HiBackColor = SCM_BOOL_F;
 
+  gh_defer_ints();
   /* create the scheme-level window */
   psw->schwin = schwin = make_window(psw);
   /* and initialize constraint structure hanging off of psw
      (uses the scheme window so must come after the make_window assignment
      above) */
   CassowaryInitClVarsInPsw(psw);
+  gh_allow_ints();
 
   call1_hooks(before_new_window_hook, psw->schwin);
 

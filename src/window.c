@@ -339,9 +339,11 @@ mark_window(SCM obj)
   SCM_SETGC8MARK(obj);
     
   /* FIXGJB: revisit this */
-  if (VALIDWINP(obj) && PSWFROMSCMWIN(obj)->fl != NULL) {
+  if (VALIDWINP(obj)) {
     ScwmWindow *psw = PSWFROMSCMWIN(obj);
-    scm_gc_mark(psw->fl->scmdecor);
+    if (psw->fl != NULL) {
+      scm_gc_mark(psw->fl->scmdecor);
+    }
     scm_gc_mark(psw->mini_icon_image);
     scm_gc_mark(psw->icon_req_image);
     scm_gc_mark(psw->icon_image);
@@ -353,6 +355,10 @@ mark_window(SCM obj)
     scm_gc_mark(psw->HiShadowColor);
     scm_gc_mark(psw->HiTextColor);
     scm_gc_mark(psw->HiBackColor);
+    GC_MARK_SCM_IF_SET(psw->HiReliefColor);
+    GC_MARK_SCM_IF_SET(psw->HiShadowColor);
+    GC_MARK_SCM_IF_SET(psw->HiTextColor);
+    GC_MARK_SCM_IF_SET(psw->HiBackColor);
     scm_gc_mark(psw->other_properties);
   }
 
@@ -3716,6 +3722,7 @@ notification of all window property changes. This is not yet done. The
 window property primitives should be considered in flux. */
 #define FUNC_NAME s_set_window_property_x
 {
+  ScwmWindow *psw = NULL;
   if (!WINDOWP(win) || !VALIDWINP(win)) {
     scm_wrong_type_arg (FUNC_NAME, 1, win);
   }
@@ -3724,10 +3731,11 @@ window property primitives should be considered in flux. */
     scm_wrong_type_arg (FUNC_NAME, 2, prop);
   }
 
+  psw = PSWFROMSCMWIN(win);
   if (val==SCM_BOOL_F) {
-    scm_hashq_remove_x(PSWFROMSCMWIN(win)->other_properties, prop);
+    scm_hashq_remove_x(psw->other_properties, prop);
   } else {
-    scm_hashq_set_x(PSWFROMSCMWIN(win)->other_properties, prop, val);
+    scm_hashq_set_x(psw->other_properties, prop, val);
   }
 
   /* FIXMS: notification needs to go here. */
