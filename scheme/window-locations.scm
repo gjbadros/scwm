@@ -70,7 +70,8 @@ relative to the current viewport."
 (define-public (window-left-top win)
   "Return a pair (X . Y) that is the pixel position of the left, top of WIN
 relative to the current viewport."
-  (window-viewport-position win))
+  (let ((pos (window-viewport-position win)))
+    (cons (car pos) (cadr pos))))
 
 (define-public (window-left-bottom win)
   "Return a pair (X . Y) that is the pixel position of the left, bottom of WIN
