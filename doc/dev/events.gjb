@@ -170,6 +170,8 @@ event-map-global
 ;; Return list of cons pairs (PARENT-EVENT-MAP . MERGE?)
 (add-event-map-parent! EVENT-MAP PARENT MERGE?)
 ;; Permit multiple parents, though only one can be specified at a time
+(remove-event-map-parent! EVENT-MAP PARENT)
+;; return #t if successful, #f if parent not found
 
 (add-event-binding EVENT-MAP EVENT PROC-OR-SYMBOL)
 (remove-event-binding EVENT-MAP EVENT)
@@ -261,7 +263,7 @@ of event maps at startup for a given window style, e.g.:
 new-window-hook -- the attaching of the default event maps needs to be
 efficient, since it'll happen for each new window and on lots of
 decorations -- it's only a single XSaveContext call for each attachment, 
-which shouldn't be too bad].
+which should be fine].
 
 (event-map-for X-WINDOW-ID)
 ;; Return the currently attach event-map object, if any, or #f
@@ -271,9 +273,18 @@ which shouldn't be too bad].
 ;; detach any event map from X-WINDOW-ID
 
 
+OTHER ISSUES:
+
+Enabling/disabling event maps on a per-attachment basis?
+
+Top-level global event map that's used first before any others?
+
+
+
 I'll try to come up with an example of using this system but please feel 
 free to poke holes in it or query me about how one might accomplish
 something you're interested in being able to do.  (Or if you think it's
 redundant, overly-general, inefficient, etc.).
 
 Thanks!
+
