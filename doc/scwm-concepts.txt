@@ -250,7 +250,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!'
 and `reset-hook!'. 
 
-[From scwm/callbacks.c:299]
+[From scwm/callbacks.c:306]
 
 
 Image Loaders
@@ -290,7 +290,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:571]
+[From scwm/callbacks.c:578]
 
 
 Key Specifier
@@ -358,7 +358,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:593]
+[From scwm/scwm.c:594]
 
 
 SCWMEXEC Protocol
@@ -376,7 +376,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From scwm/events.c:476]
+[From scwm/events.c:478]
 
 
 Shadow and Highlight Factors
@@ -458,7 +458,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From scwm/callbacks.c:437]
+[From scwm/callbacks.c:444]
 
 
 Viewports
@@ -497,7 +497,7 @@ often, these names are in fact X atoms.
 New X atoms can be created, or old ones retrieved simply by specifying
 the string the atom stands for. An X atom can also be converted back to a
 string. Scwm provides primitives for these actions. 
-[From scwm/xproperty.c:347]
+[From scwm/xproperty.c:358]
 
 
 X Properties

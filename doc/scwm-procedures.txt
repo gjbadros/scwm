@@ -51,7 +51,7 @@ PORT. PORT must be open, it must be an input port, and it must be a
 file port (this includes pipes and sockets, but not string ports or
 soft ports). A handle suitable for passing to `remove-input-hook!' is
 returned.
-[From scwm/callbacks.c:585]
+[From scwm/callbacks.c:592]
 
 
 (add-timer-hook! usec proc)
@@ -60,7 +60,7 @@ Add a timer hook to call PROC once sometime after USEC microseconds.
 When at least USEC microseconds have passed, procedure PROC will be
 called with no arguments. A handle suitable for passing to
 `remove-timer-hook!' is returned.
-[From scwm/callbacks.c:446]
+[From scwm/callbacks.c:453]
 
 
 (add-window-hint-option key handler #&optional (cumulative? #f))
@@ -247,7 +247,7 @@ specified button is pressed in the specified context.
 
 (bool->str arg)
 - (app scwm flux)
-Return the string \"false\" if ARG is #f, \"true\" otherwise.
+Return the string "false" if ARG is #f, "true" otherwise.
 [From scheme/flux.scm:146]
 
 
@@ -576,6 +576,18 @@ colormap focus.
 [From scwm/miscprocs.c:224]
 
 
+(constrained-window-in-focus? UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:326]
+
+
+(constraint-satisfied? UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:306]
+
+
 (containing-aligned-viewport pos)
 - (app scwm virtual)
 Compute the viewport-position of the viewport that contains POS.
@@ -686,6 +698,18 @@ all other instances are removed.
 [From scheme/listops.scm:212]
 
 
+(delete-ui-constraint! UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:205]
+
+
+(delete-ui-constraint-class! UI-CONSTRAINT-CLASS)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:73]
+
+
 (delete-window  #&optional win)
 - Built-in Primitive
 Request that WIN remove itself from the display.
@@ -735,6 +759,12 @@ defaults to the window context in the usual way if not specified.
 [From scwm/window.c:1594]
 
 
+(disable-ui-constraint UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:293]
+
+
 (display-message-briefly msg #&optional (sec-timeout 3))
 - (app scwm flux)
 Display MSG in the message window for SEC-TIMEOUT seconds.
@@ -757,6 +787,18 @@ Print the documentation for the string or symbol.
 Works by searching through the files listed in `doc-files'.
 Returns #t if any documentation was found, #f otherwise.
 [From scheme/doc.scm:24]
+
+
+(draw-all-constraints)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:382]
+
+
+(draw-constraint UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:361]
 
 
 (draw-overlay-plane)
@@ -808,6 +850,12 @@ Return the elapsed time in milliseconds since O.S. has been up.
 [From scwm/miscprocs.c:476]
 
 
+(enable-ui-constraint UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:279]
+
+
 (eval-fvwm-command command #&optional (fmod #f) 
 				   (window #f))
 - 
@@ -854,8 +902,8 @@ of LST not equal to e. E.g. `(extreme < ...)' returns the lowest number.
 (filename-is-complete? fname)
 - (app scwm file)
 Return true if FNAME is a fully qualified pathname.
-This is considered to be the case if the string FNAME starts with \"/\",
-\"./\" or \"../\", following the convention of many Unix programs.
+This is considered to be the case if the string FNAME starts with "/",
+"./" or "../", following the convention of many Unix programs.
 [From scheme/file.scm:30]
 
 
@@ -1053,8 +1101,8 @@ Return a two-element list, "(fg bg)", the highlight colors for WIN.
 
 (get-wm-command win)
 - (app scwm flux)
-Get the \"WM_COMMAND\" X-Property of WIN and return that string.
-WIN is a Scwm window object. The \"WM_COMMAND\" X-Property is the application's
+Get the "WM_COMMAND" X-Property of WIN and return that string.
+WIN is a Scwm window object. The "WM_COMMAND" X-Property is the application's
 notion of what the command line was used to run the application.
 [From scheme/flux.scm:429]
 
@@ -1383,6 +1431,24 @@ No documentation supplied.
 [From scheme/fvwm-module.scm:519]
 
 
+(kwm-emulation-initialize)
+- (app scwm kwm-emulation)
+No documentation supplied.
+[From scheme/kwm-emulation.scm:175]
+
+
+(kwm-emulation-reset)
+- (app scwm kwm-emulation)
+No documentation supplied.
+[From scheme/kwm-emulation.scm:210]
+
+
+(kwm-send-window-list)
+- (app scwm kwm-emulation)
+No documentation supplied.
+[From scheme/kwm-emulation.scm:153]
+
+
 (list-all-windows)
 - Built-in Primitive
 Return a list of all of the top-level window objects.
@@ -1550,7 +1616,7 @@ allocated, an error results.
 - (app scwm std-menus)
 Create a telnet menu.
 To use this, add the following to the menu of your choice:
-  (menuitem \"telnet\" #:action (make-hosts-menu '(\"host1\" \"host2\" ...)))
+  (menuitem "telnet" #:action (make-hosts-menu '("host1" "host2" ...)))
 An optional USER argument specifies the user to telnet as.
 The element of the list of hosts can be a host (in which case telnet is
 used) or a cons of (host . command).
@@ -1586,7 +1652,7 @@ SIDE-PICTURE-ALIGN is one of 'top, 'center, or 'bottom;
 SIDE-BG-COLOR is a color object or symbol;
 PICTURE-BG is an image object;
 EXTRA-OPTIONS can be anything understood by the menu-look
-[From scwm/menu.c:261]
+[From scwm/menu.c:263]
 
 
 (make-menuitem label action #&optional extra-label picture-above picture-left hover-action unhover-action hotkey-prefs)
@@ -1623,8 +1689,8 @@ example usage.
 - Built-in Primitive
 Returns a newly created message window object with string MESSAGE.
 MESSAGE is the initial string for the message window.
-GJB:FIXME:: Uses defaults from the ScreenInfo struct for the other values.
-[From scwm/message-window.c:237]
+Uses defaults from the ScreenInfo struct for the other values.
+[From scwm/message-window.c:238]
 
 
 (make-relief-color color factor)
@@ -1694,6 +1760,24 @@ on the window, and set the property on the window, respectively.
 [From scheme/winops.scm:33]
 
 
+(make-ui-constraint UI-CONSTRAINT-CLASS WIN-LIST)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:176]
+
+
+(make-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:61]
+
+
+(make-ui-constraint-interactively UI-CONSTRAINT-CLASS)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:192]
+
+
 (make-wmconfig-menu 
 		 #&optional (wmconfig-title default-wmconfig-title)
 		 (wmconfig-dir default-wmconfig-dir))
@@ -1706,8 +1790,8 @@ Return a menu object for the window-manager configuration menu.
 - (app scwm std-menus)
 Create an xlock menu.
 To use this, add the following to the menu of your choice:
-   (menuitem \"Screensaver\" #:action (make-xlock-menu #f))
-or (menuitem \"Lock Screen\" #:action (make-xlock-menu #t))
+   (menuitem "Screensaver" #:action (make-xlock-menu #f))
+or (menuitem "Lock Screen" #:action (make-xlock-menu #t))
 [From scheme/std-menus.scm:63]
 
 
@@ -1769,7 +1853,7 @@ menu.  COLOR-BG-IMAGE-SIDE is the background color for that image
 object.  COLOR-TEXT is a color object or string for the foreground
 text color of menu items.  COLOR-BG is a color object or string for
 the background color for the menu and menu items.  COLOR-STIPPLE is a
-color object for stippled (\"grayed\") menu items.  FONT is a font
+color object for stippled ("grayed") menu items.  FONT is a font
 object for the font of the menu items.  EXTRA is an extra argument
 specific to the menu look used for this menu.
 [From scheme/base.scm:333]
@@ -1779,6 +1863,12 @@ specific to the menu look used for this menu.
 - Built-in Primitive
 Return the current menu hilight factor.
 [From scwm/color.c:578]
+
+
+(menu-hotkeys-activate-item?)
+- Built-in Primitive
+Return #t if hotkeys invoke item, #f if they just select the item.
+[From scwm/menu.c:1455]
 
 
 (menu-prefs . opts)
@@ -1796,7 +1886,7 @@ The properties returned are:
 text-color stipple-color
 image-bg font extra-options used-shortcut-keys) */
 /* FIXJTL: menu-look
-[From scwm/menu.c:221]
+[From scwm/menu.c:223]
 
 
 (menu-shadow-factor)
@@ -1821,7 +1911,7 @@ See `make-menu' for options on creation of individual menus.
 (menu? obj)
 - Built-in Primitive
 Return #t if and only if OBJ is a menu object.
-[From scwm/menu.c:157]
+[From scwm/menu.c:159]
 
 
 (menuitem label #&key image-above image-left
@@ -1875,26 +1965,26 @@ Requires the program `xmessage'.
 - Built-in Primitive
 Returns the colors that the message window MWN is displayed with.
 These are returned in a list of the form (fg_color,bg_color).
-[From scwm/message-window.c:562]
+[From scwm/message-window.c:563]
 
 
 (message-window-font mwn)
 - Built-in Primitive
 Returns the font that the message window MWN uses for displaying text.
-[From scwm/message-window.c:548]
+[From scwm/message-window.c:549]
 
 
 (message-window-hide! mwn)
 - Built-in Primitive
 Hide the message window MWN.
 See also `message-window-show'.
-[From scwm/message-window.c:483]
+[From scwm/message-window.c:484]
 
 
 (message-window-message mwn)
 - Built-in Primitive
 Returns the message that message window MWN displays.
-[From scwm/message-window.c:517]
+[From scwm/message-window.c:518]
 
 
 (message-window-options action #&key enable
@@ -1936,34 +2026,34 @@ These options are cumulative for repeated calls to
 - Built-in Primitive
 Returns the position that message window MWN is/will be displayed at. This is
 returned as a four element list of (x,y,x_align,y_align)
-[From scwm/message-window.c:531]
+[From scwm/message-window.c:532]
 
 
 (message-window-relief? mwn)
 - Built-in Primitive
 Returns the relief setting for the message window MWN.
-[From scwm/message-window.c:580]
+[From scwm/message-window.c:581]
 
 
 (message-window-set-colors! mwn fg-color bg-color)
 - Built-in Primitive
 Set the fore- and background colors to be used for the message window MWN.
 The foreground color will be FG-COLOR and the background color will be BG-COLOR.
-[From scwm/message-window.c:339]
+[From scwm/message-window.c:340]
 
 
 (message-window-set-font! mwn fnt)
 - Built-in Primitive
 Set the font to be used for the message window MWN.
 The font will be FNT.
-[From scwm/message-window.c:311]
+[From scwm/message-window.c:312]
 
 
 (message-window-set-message! mwn message)
 - Built-in Primitive
 Changes the message displayed by the message window MWN.
 The message will be MESSAGE.
-[From scwm/message-window.c:286]
+[From scwm/message-window.c:287]
 
 
 (message-window-set-position! mwn x y #&optional x-align y-align)
@@ -1973,13 +2063,13 @@ X and Y specify the position of the control point of the window,
 while X-ALIGN and Y-ALIGN specify a fraction of the width and
 height of the window to offset the window for alignment.
 X-ALIGN and Y-ALIGN should each be in the range [0,-1].
-[From scwm/message-window.c:379]
+[From scwm/message-window.c:380]
 
 
 (message-window-set-relief! mwn rlf)
 - Built-in Primitive
 Sets the relief for the window MWN. Relief will be RLF.
-[From scwm/message-window.c:434]
+[From scwm/message-window.c:435]
 
 
 (message-window-show! mwn)
@@ -1988,7 +2078,7 @@ Displays the message window MWN on the screen.
 Be sure to keep the displayed message window somewhere
 do that you can call `message-window-hide!' (otherwise
 the window will not ever disappear).
-[From scwm/message-window.c:453]
+[From scwm/message-window.c:454]
 
 
 (message-window-style msgwin #&key (font #f) (fg #f) (bg #f))
@@ -2003,7 +2093,7 @@ background color.
 - Built-in Primitive
 Return #t if the message window MWN is visible, #f otherwise.
 See also `message-window-show', `message-window-hide'.
-[From scwm/message-window.c:502]
+[From scwm/message-window.c:503]
 
 
 (message-window? mwn)
@@ -2393,7 +2483,7 @@ Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST? is #t.
 X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be
 #t if the menu should be left justified against X-POS, or #f if it should be
 right justified against X-POS.
-[From scwm/menu.c:1435]
+[From scwm/menu.c:1465]
 
 
 (popup-menu-from-decoration menu win button-number)
@@ -2559,7 +2649,7 @@ image object, or #f if it succeeds.
 Remove an input hook identified by HANDLE.
 HANDLE should be an object that was returned by `add-input-hook!'. An
 input hook may safely remove itself.
-[From scwm/callbacks.c:615]
+[From scwm/callbacks.c:622]
 
 
 (remove-timer-hook! handle)
@@ -2568,7 +2658,7 @@ Remove a timer hook identified by HANDLE.
 The HANDLE should be an object that was returned by
 `add-timer-hook!'. No warning or error will occur if HANDLE is for a
 timer hook that has already been triggered.
-[From scwm/callbacks.c:490]
+[From scwm/callbacks.c:497]
 
 
 (report-scwm-usage)
@@ -2594,7 +2684,7 @@ root window.  It should not be necessary but may be useful in case
 your X server goes awry (and otherwise you would have to restart your
 X server).  Use if scwmexec or scwmrepl are not returning (e.g.,
 if your Emacs hangs when you try evaluating a scwm expression).
-[From scwm/events.c:491]
+[From scwm/events.c:493]
 
 
 (resize-frame-to w h #&optional win)
@@ -2653,7 +2743,7 @@ Returns true if scwm is being restarted by itself.
 Restore the scwm behavior for signals and for X errors.
 This is automatically called when (app scwm gtk) is loaded, to clean up
 after the (gtk gtk) module.
-[From modules/scwmgtkhelper/scwmgtkhelper.c:50]
+[From modules/scwmgtkhelper/scwmgtkhelper.c:51]
 
 
 (reverse-iota n)
@@ -2734,7 +2824,7 @@ Each individual top-level-expression is evaluated separately and all
 errors are trapped and displayed.  You Should use this procedure if
 you need to make sure most of a file loads, even if it may contain
 errors.
-[From scwm/callbacks.c:247]
+[From scwm/callbacks.c:254]
 
 
 (save-settings)
@@ -2745,7 +2835,7 @@ No documentation supplied.
 
 (scwm-gdk-X-fdes)
 - Built-in Primitive
-
+Return the integer connection number of the gdk_display.
 [From modules/scwmgtkhelper/scwmgtkhelper.c:36]
 
 
@@ -2785,7 +2875,7 @@ scwm. ARGS is ignored.
 Run CMD using /bin/sh -c CMD and return the exit status.
 The CMD is run synchronously, and Bourne-shell meta characters
 are interpreted by /bin/sh.  E.g., to start CMD in the background,
-use a trailing \"&\" character.  See also guile's `system', but note
+use a trailing "&" character.  See also guile's `system', but note
 that it may permit signals on the controlling tty to be seen
 by children (observed on Linux, Free/NetBSD, but not on Solaris or HP/UX.
 This may be a bug (not meeting POSIX.2 specifications).
@@ -2848,8 +2938,8 @@ No documentation supplied.
 
 (select-window-interactively #&optional (msg #f))
 - 
-No documentation supplied.
-[From scheme/base.scm:602]
+Return an interactively-selected window after prompting (optionally) with MSG.
+[From scheme/base.scm:596]
 
 
 (select-window-interactively-and-highlight)
@@ -2878,7 +2968,16 @@ BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify which are sent
 individually. PROPAGATE? indicates whether the propagate flag is set
 on the event; the default is #f. You should not have to worry about
 this unless you know what it means.
-[From scwm/events.c:1885]
+[From scwm/events.c:1934]
+
+
+(send-client-message win atom #&optional x)
+- Built-in Primitive
+Send WIN the message "ATOM X".
+WIN can be 'root-window or an X window ID number.
+Useful for supporting other WMs module communication protocols.
+ATOM and X are both 32-bit integers.
+[From scwm/ICCCM.c:71]
 
 
 (send-key-press key #&optional win key-press? key-release? propagate?)
@@ -2891,7 +2990,7 @@ sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
 allow you to specify which are sent individually. PROPAGATE? indicates
 whether the propagate flag is set on the event; the default is #f. You
 should not have to worry about this unless you know what it means.
-[From scwm/events.c:1823]
+[From scwm/events.c:1872]
 
 
 (set-animation! vector)
@@ -3276,6 +3375,14 @@ FACTOR is a positive floating point number
 [From scwm/color.c:561]
 
 
+(set-menu-hotkeys-activate-item! activate?)
+- Built-in Primitive
+If ACTIVATE? is #t, let menu hotkeys invoke the item.
+If #f, a menuitem hotkey just makes that item selected and still requires
+a <return> or <space> to activate the item.
+[From scwm/menu.c:1443]
+
+
 (set-menu-look! look)
 - (app scwm base)
 Set the default menu look to LOOK.
@@ -3285,13 +3392,13 @@ Set the default menu look to LOOK.
 (set-menu-menu-look! menu menu-look)
 - Built-in Primitive
 Use MENU-LOOK as the menu-look for MENU.
-[From scwm/menu.c:408]
+[From scwm/menu.c:410]
 
 
 (set-menu-menu-title! menu menu-title)
 - Built-in Primitive
 Use MENU-TITLE as the title for MENU.
-[From scwm/menu.c:431]
+[From scwm/menu.c:433]
 
 
 (set-menu-shadow-factor! factor)
@@ -3838,7 +3945,14 @@ window context in the usual way if not specified.
 - Built-in Primitive
 Returns an X atom representing STRING.
 If STRING contains NULL-characters, the behaviour is undefined.
-[From scwm/xproperty.c:356]
+[From scwm/xproperty.c:367]
+
+
+(string-prompt prompt proc)
+- 
+Use PROMPT as prompt in text entry widget and call PROC with the entered string.
+E.g., (string-prompt "Enter new name" (lambda (nm) (set-window-title! w nm)))
+[From scheme/string-prompt.scm:29]
 
 
 (style-one-window win . args)
@@ -3888,7 +4002,7 @@ Use `show-system-info' to display it in a window.
 Take a snapshot of the whole screen.
 The screenshot will be saved in xwd format in the filename constructed from
 TEMPLATE. %-escapes in TEMPLATE will be replaced by time-elements, according
-to strftime rules. TEMPLATE defaults to the file \"screenshot%y%m%d%H%M%S.xwd\"
+to strftime rules. TEMPLATE defaults to the file "screenshot%y%m%d%H%M%S.xwd"
 in the user's home directory.
 [From scheme/flux.scm:692]
 
@@ -4021,7 +4135,7 @@ and #:v-gradient are horizontal and vertical gradients).  These
 extra keyword arguments can either be included in the main argument
 list, or lists of these arguments can be used as the ACTIVE-UP,
 ACTIVE-DOWN, or INACTIVE arguments.  For instance:
-  (title-style #:solid \"red\" #:inactive (list #:solid \"green\"))
+  (title-style #:solid "red" #:inactive (list #:solid "green"))
 would set the title to be red in either active state, and green
 in the inactive state, leaving FONT, HEIGHT, and JUSTIFY in their
 current state, and returning everything else about the title
@@ -4087,6 +4201,78 @@ Tries to load an arbitrary image, using any available loader.
 [From scheme/image-loaders.scm:49]
 
 
+(ui-constraint-class UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:247]
+
+
+(ui-constraint-class-ctr UI-CONSTRAINT-CLASS)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:116]
+
+
+(ui-constraint-class-draw-proc UI-CONSTRAINT-CLASS)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:138]
+
+
+(ui-constraint-class-name UI-CONSTRAINT-CLASS)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:93]
+
+
+(ui-constraint-class-num-windows UI-CONSTRAINT-CLASS)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:105]
+
+
+(ui-constraint-class-satisfied UI-CONSTRAINT-CLASS)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:150]
+
+
+(ui-constraint-class-ui-ctr UI-CONSTRAINT-CLASS)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:127]
+
+
+(ui-constraint-class? UI-CONSTRAINT-CLASS)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:82]
+
+
+(ui-constraint-cn UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:225]
+
+
+(ui-constraint-enable UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:236]
+
+
+(ui-constraint-windows UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:258]
+
+
+(ui-constraint? UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:214]
+
+
 (un-keep-on-top  #&optional win)
 - Built-in Primitive
 Remove the on-top property from WIN, if it has it.
@@ -4109,6 +4295,18 @@ Remove any bindings attached to mouse BUTTON in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
 [From scwm/binding.c:648]
+
+
+(undraw-all-constraints)
+- 
+No documentation supplied.
+[From scheme/ui-constraints.scm:388]
+
+
+(undraw-constraint UI-CONSTRAINT)
+- (app scwm ui-constraints)
+No documentation supplied.
+[From scheme/ui-constraints.scm:367]
 
 
 (unflash-window #&optional (win (get-window)))
@@ -4165,7 +4363,7 @@ not specified.
 Execute one of the VECTOR-OF-COMMANDS shell commands when the desk changes.
 The 0th element of the vector is used for changes to desk 0,
 the first element for changes to desk 1, etc.  Changes to desks which are
-\"off the end\" of the vector do nothing.
+"off the end" of the vector do nothing.
 [From scheme/flux.scm:656]
 
 
@@ -4329,7 +4527,7 @@ Just a toy--- perhaps could be useful to call attention to a window.
 - (app scwm wininfo)
 Return the regular expresision string corresponding to WILDCARD.
 This involves quoting meta characters and replacing the wildcard
-meta-characters \"*\" with \".*\" and \"?\" with \".\".
+meta-characters "*" with ".*" and "?" with ".".
 [From scheme/wininfo.scm:154]
 
 
@@ -4445,7 +4643,7 @@ specified.
 - (app scwm wininfo)
 Return a string corresponding to the geometry specifications for WIN.
 The virtual position and the frame size are used.  The resulting string
-looks like \"157x133+200+306\".  If WIN is iconified, the string
+looks like "157x133+200+306".  If WIN is iconified, the string
 returned is in parentheses.
 [From scheme/wininfo.scm:126]
 
@@ -4706,7 +4904,7 @@ Return the viewport pixel coordinate X pixels left of the right display edge.
 - Built-in Primitive
 Returns the string represented by ATOM.
 Returns #f, if the X atom was not known.
-[From scwm/xproperty.c:376]
+[From scwm/xproperty.c:387]
 
 
 (X-atomic-property-set-if-unset! window name value #&optional
@@ -4772,14 +4970,14 @@ physical button acts as logical button 1, and the leftmost acts as button 3.
 Delete X property NAME of window WIN.
 WIN is the window to check, or 'root-window.
 NAME is a string. The return value is unspecified.
-[From scwm/xproperty.c:314]
+[From scwm/xproperty.c:325]
 
 
 (X-property-get win name #&optional consume)
 - Built-in Primitive
 Get X property NAME of window WIN.
 WIN is the window to check, or 'root-window.
-NAME is a string.
+NAME is a string or an X/11 atom (long).
 If CONSUME is #t, the X property is deleted after getting it. Default is
 not to delete.
 If the X property could not be found, #f is returned.
@@ -4787,14 +4985,14 @@ If the X property could be found, a list "(value type format)" is returned.
 "type" is a string.
 "format" is either 8, 16, or 32, giving the size of the elements of "value".
 "value" is a string, if "format" is 8, or a vector of integers otherwise.
-[From scwm/xproperty.c:232]
+[From scwm/xproperty.c:239]
 
 
 (X-property-set! win name value #&optional type format action)
 - Built-in Primitive
 Set X property NAME on window WIN to VALUE.
 WIN is the window to set the X property on, or 'root-window.
-NAME and TYPE are strings. TYPE defaults to "STRING".
+NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to "STRING".
 FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
 VALUE may be a string, if FORMAT is 8, and may always be a vector
@@ -4860,6 +5058,51 @@ Return some information about the version of the running X server.
 Return value is a list of the X protocol version, the X protocol
 revision, the X server vendor, and the vendor release number.
 [From scwm/miscprocs.c:561]
+
+
+(xlib-draw-arc! x y width height angle1 angle2)
+- Built-in Primitive
+Draws a arc to the screen using the Xlib call XDrawArc.  The arc is
+specified in terms of a rectangle, in which it is wholly enclosed.
+( X, Y ) is at the upper left corner of the rectangle.  The rectangle is of
+size WIDTH by HEIGHT.  The arc is drawn from ANGLE1 to ANGLE2. Angles are
+specified in degrees (0.0 to 360.0).
+[From modules/xlib-drawing/drawing.c:157]
+
+
+(xlib-draw-line! x1 y1 x2 y2)
+- Built-in Primitive
+Draws a line using the Xlib call XDrawLine.
+The line is drawn from ( X1, Y1 ) to ( X2, Y2 ).
+[From modules/xlib-drawing/drawing.c:114]
+
+
+(xlib-draw-rectangle! x y width height)
+- Built-in Primitive
+Draws a rectangle to the screen using the Xlib call XDrawRectangle.
+( X, Y ) is the upper left point of the rectangle.  The rectangle is of size
+WIDTH by HEIGHT.
+[From modules/xlib-drawing/drawing.c:60]
+
+
+(xlib-set-drawing-mask! value)
+- Built-in Primitive
+Set the drawing mask used by the xlib-* primitives.
+VALUE is XORed with the background when dragging non-opaque move or
+resize frames. VALUE should be an integer.
+[From modules/xlib-drawing/drawing.c:29]
+
+
+(xlib-set-fill-style! style)
+- Built-in Primitive
+Sets the fill style of the DrawingGC to STYLE.
+[From modules/xlib-drawing/drawing.c:255]
+
+
+(xlib-set-line-width! width)
+- Built-in Primitive
+Sets the line width of the DrawingGC to WIDTH.
+[From modules/xlib-drawing/drawing.c:225]
 
 
 (y- y)

@@ -21,7 +21,6 @@
 '(remote-shell-command)
 '(resize-opaquely?)
 '(scwm-menu-look)
-'(shadow-factor)
 '(shaped-pie-menu-look)
 '(use-scwm-system-proc)
 '(xpm-shaped-menu-look)

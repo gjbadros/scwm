@@ -98,6 +98,14 @@ new desktop number, the second is the old desktop number.
 [From scwm/virtual.c:491]
 
 
+client-message-hook
+- 
+This hook is invoked whenever Scwm receives an X/11 client message.
+It is called with three arguments: the message-type atom, the format (8, 16, or 32), 
+and the vector of data. 
+[From scwm/events.c:2066]
+
+
 deiconify-hook
 - 
 This hook is invoked when a window is deiconified.
@@ -114,7 +122,7 @@ being processed, or anything else, error-hook will be invoked. Each
 procedure in the hook will be called with the throw arguments; these
 will generally include information about the nature of the error. 
 
-[From scwm/callbacks.c:694]
+[From scwm/callbacks.c:701]
 
 
 iconify-hook
@@ -210,7 +218,7 @@ window-focus-change-hook
 This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
 that now has the focus, or #f if no window now has the focus. 
-[From scwm/events.c:2000]
+[From scwm/events.c:2061]
 
 
 X-DestroyNotify-hook
@@ -219,7 +227,7 @@ This hook is invoked upon DestroyNotify X events.
 It indicates a window is being destroyed.  The hook procedures are
 invoked with one argument, WIN, the window being destroyed.
 The WIN is still valid during the hook procedures. 
-[From scwm/events.c:1988]
+[From scwm/events.c:2049]
 
 
 X-MappingNotify-hook
@@ -228,7 +236,7 @@ This hook is invoked whenever a MappingNotify X event is
 received. A MappingNotify event indicates a change of keymapping - in
 particular, it may indicate a change of available modifiers or mouse
 buttons. The hook procedures are invoked with no arguments. 
-[From scwm/events.c:1982]
+[From scwm/events.c:2043]
 
 
 X-PropertyNotify-hook
@@ -239,7 +247,21 @@ property has changed. Watching for window property changes can be used
 to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
 that changed (as a string) and the window that it changed for. 
-[From scwm/events.c:1973]
+[From scwm/events.c:2022]
+
+
+X-root-PropertyNotify-hook
+- 
+This hook is invoked whenever a PropertyNotify event is received
+on the root window.  This indicates that an X window
+property has changed. Watching for window property changes can be used
+to construct your own custom window manager protocols, or interface
+to other desktop environments such as KDE or GNOME. The hook
+procedures are invoked with two arguments: the atom for the changed
+property and a boolean telling whether the property was deleted. 
+These arguments are different from those passed to
+X-PropertyNotify-hook's procedures. 
+[From scwm/events.c:2031]
 
 
 X-UnmapNotify-hook
@@ -248,6 +270,6 @@ This hook is invoked upon UnmapNotify X events.  It indicates a
 window is being unmapped (removed from display).  The hook procedures
 are invoked with one argument, WIN, the window being destroyed.  The
 WIN is still valid during the hook procedures. 
-[From scwm/events.c:1994]
+[From scwm/events.c:2055]
 
 
