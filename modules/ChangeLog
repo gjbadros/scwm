@@ -1,3 +1,13 @@
+Wed Mar 31 11:02:39 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c: Drop a bunch of gh_allow_ints() and
+	redefer ints when they were of dubious need and obfuscated code.
+	We need to revisit all of that stuff later, anyway.
+
+	* */*.c: Use SCM_UNSPECIFIED, not SCM_UNDEFINED as the return
+	value for side-effecting procs.  Use SCWM_WRONG_TYPE_ARG( instead
+	of scm_wrong_type_arg(FUNC_NAME.
+
 Tue Mar 30 18:47:51 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* background/background.c, c-animation/c-animation.c,

@@ -1,3 +1,33 @@
+Wed Mar 31 16:56:18 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* */*.c: Use SCM_UNSPECIFIED, not SCM_UNDEFINED as the return
+ 	value for side-effecting procs-- lots of latent bugs fixed!  Use
+ 	SCWM_WRONG_TYPE_ARG( instead of scm_wrong_type_arg(FUNC_NAME.
+
+	* validate.h: Added string validation macros.
+
+	* scwm.h, scwm.c: Fix char * args to const char *.  Updated usage
+	message for --nobacktrace option.  Fixed short arguments, Added
+	reset_signal_handler() and newsegvhandler() protos since
+	miscprocs.c now uses them.  Added -p/-P options to manage what to
+	do with segvs.  Do not do a newhandler_doreset(..) until after
+	sigsetjmp has been called, and use newhandler_doreset for SIGINT,
+	too. 
+
+	* miscprocs.c: Added `force-segv-for-testing!',
+	`set-reset-on-segv!', `set-handle-segv!' primitives.
+
+	* image.c: validate path_expand_image_fname args using new
+	VALIDATE_ARG_STR* macros.
+
+	* binding.h, binding.c: Added fShowError arg to
+	FKeyToKeysymModifiers, honour it (`keysym->keycode' primitive
+	shouldn't display warnings about bad keysyms as it can now be used 
+	to test validity of a keysym).  Validate these procs args better.
+
+	* shutdown.c: reset_signal_handler(SIGSEGV) before generating the
+	segfault to get the backtrace after cleaning up.
+
 Tue Mar 30 20:09:59 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* events.c: Fix bug that scwmdoc caught in argnumber on a VALIDATE 
