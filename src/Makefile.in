@@ -124,6 +124,7 @@ distclean: clean
 
 
 ${PROG}: ${OBJS}
+	rm -f ${PROG}
 	${CC} -o ${PROG} ${OBJS} ${LIBS}
 
 #
