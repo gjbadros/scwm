@@ -181,7 +181,7 @@ interactive-move-finish-hook (1 args)
 - 
 This hook is invoked at the end of an interactive move.
 It is called with one argument, WINDOW. 
-[From scwm/move.c:62]
+[From scwm/move.c:60]
 
 
 interactive-move-new-position-hook (3 args)
@@ -190,14 +190,14 @@ This hook is invoked during an interactive move.
 It is called with three arguments, WINDOW, NEW-X, and NEW-Y,
 whenever the window is moved to a new location. The position refers
 to the position of the frame window (not the client window). 
-[From scwm/move.c:56]
+[From scwm/move.c:54]
 
 
 interactive-move-start-hook (1 args)
 - 
 This hook is invoked at the start of an interactive move.
 It is called with one argument, WINDOW. 
-[From scwm/move.c:52]
+[From scwm/move.c:50]
 
 
 interactive-resize-finish-hook (1 args)
@@ -242,8 +242,8 @@ one example of a procedure to use here.
 select-window-enter-hook (1 args)
 - 
 This hook is invoked when a window is entered during window selection.
-The hook procedures are called with a single argument, the window just entered. 
-This hook is invoked once `select-window-interactively-no-message' is 
+The hook procedures are called with a single argument, the window just entered.
+This hook is invoked once `select-window-interactively-no-message' is
 called if the pointer is already in a window.  (But the
 leave hook is not invoked similarly when the selection completes).
 
@@ -253,8 +253,8 @@ leave hook is not invoked similarly when the selection completes).
 select-window-leave-hook (1 args)
 - 
 This hook is invoked when a window is left during window selection.
-The hook procedures are called with a single argument, the window just left. 
-This hook is not invoked upon selection completion (unlike 
+The hook procedures are called with a single argument, the window just left.
+This hook is not invoked upon selection completion (unlike
 `select-window-enter-hook' that is called initially upon calling
 `select-window-interactively-no-message').
 
