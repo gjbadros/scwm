@@ -218,9 +218,11 @@
 (define-public xterm-command "xterm ")
 (define-public (run-in-xterm cmd) (exe (string-append xterm-command cmd)))
 
-(defmacro-public remove-hook! (var proc)
-  `(if (memq ,proc ,var)
-       (set! ,var (delq! proc var))))
+;; MSFIX:
+;; this is redundant w/ below
+;; (defmacro-public remove-hook! (var proc)
+;;   `(if (memq ,proc ,var)
+;;        (set! ,var (delq! proc var))))
 
 ;; Only define if not already defined by Guile
 (if (not (defined? 'remove-hook!))
@@ -231,3 +233,9 @@
 
 (defmacro-public thunk (proc)
   `(lambda args (apply ,proc args)))
+
+
+;; add-hook! and remove-hook! are defined in guile's boot-9.scm
+;; we still need a reset-hook! though
+(defmacro-public reset-hook! (hook)
+  `(set! ,hook ()))
