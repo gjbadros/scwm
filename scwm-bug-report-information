@@ -11,6 +11,22 @@ echo "guile -v:"; echo "------------------"
 guile -v
 echo
 
+echo "aclocal --version"; echo "------------------"
+aclocal --version
+echo
+
+echo "autoconf --version"; echo "------------------"
+autoconf --version
+echo
+
+echo "automake --version"; echo "------------------"
+automake --version
+echo
+
+echo "libtool --version"; echo "------------------"
+libtool --version
+echo
+
 echo "scwm -V:"; echo "------------------"
 ./scwm/scwm -V
 echo
