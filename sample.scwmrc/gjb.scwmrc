@@ -646,8 +646,8 @@
 ;; (plain-border (get-window)) fixes the display problem for the selected window
 ;; something must not be initialized correctly
 
-(set-hilight-foreground! "white")
-(set-hilight-background! "navyblue")
+(set-highlight-foreground! "white")
+(set-highlight-background! "navyblue")
 
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
@@ -1087,9 +1087,9 @@ union of all other window managers!
 (bind-key 'all "H-r" (lambda () (rename-window-interactively)))
 
 ;;; operations on parts of the window
-(bind-mouse '(frame sidebar) 2 popup-small-ops)
-(bind-mouse 'frame 1 resize-or-raise)
-(bind-mouse 'sidebar 1 move-or-raise)
+(bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
+(bind-mouse 'frame-corners 1 resize-or-raise)
+(bind-mouse 'frame-sides 1 move-or-raise)
 
 (define (move-or-shade)
   (case (mouse-event-type)

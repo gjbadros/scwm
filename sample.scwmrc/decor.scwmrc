@@ -40,8 +40,8 @@
 (title-style #:font font12 #:justify 'left)
 
 (set-icon-font! font12)
-;;(set-hilight-foreground! "white")
-;;(set-hilight-background! "blueviolet")
+;;(set-highlight-foreground! "white")
+;;(set-highlight-background! "blueviolet")
 (set-rubber-band-mask! 127)
 
 
@@ -101,8 +101,8 @@
 ;;; large down triangle
 	    (button-style 4 #:relief-pattern
 			  '((50 75 #t) (25 25 #t) (75 25 #t) (50 75 #f)))
-	    (set-hilight-foreground! "black")
-	    (set-hilight-background! "salmon"))
+	    (set-highlight-foreground! "black")
+	    (set-highlight-background! "salmon"))
 
 (define fvwm-style 
   (make-style #:fg "black" #:bg tan-color #:show-icon #t
@@ -116,8 +116,8 @@
 	    (title-style #:justify 'center #:relief 'raised
 			 #:font times-14)
 	    (border-style #:no-inset #f #:hidden-handles #f)
-	    (set-hilight-foreground! "black")
-	    (set-hilight-background! "cadet blue"))
+	    (set-highlight-foreground! "black")
+	    (set-highlight-background! "cadet blue"))
 
 (define mwm-style 
   (make-style #:fg "black" #:bg "gray" #:show-icon #t
@@ -149,8 +149,8 @@
 			  #:inactive 
 			  (list #:solid "grey50" 
 				#:pixmap "win95-minimize-full.xpm"))
-	    (set-hilight-foreground! "white")
-	    (set-hilight-background! "grey76"))
+	    (set-highlight-foreground! "white")
+	    (set-highlight-background! "grey76"))
 
 (define win95-style
   (make-style #:fg "grey76" #:bg "grey76" #:show-icon #f
@@ -186,8 +186,8 @@
 			  #:inactive 
 			  (list #:solid "grey25" 
 				#:pixmap "win95-minimize-full.xpm"))
-	    (set-hilight-foreground! "white")
-	    (set-hilight-background!  "grey76"))
+	    (set-highlight-foreground! "white")
+	    (set-highlight-background!  "grey76"))
 
 (define win95-grad-style
   (make-style #:fg "grey76" #:bg "grey76" #:show-icon #f
@@ -222,8 +222,8 @@
 			  #:relief-pattern
 			  '((40 40 #t) (60 40 #t) (60 60 #f) 
 				       (40 60 #f) (40 40 #t)))
-	    (set-hilight-foreground! "white")
-;	    (set-hilight-background! "#3cb21c") 
+	    (set-highlight-foreground! "white")
+;	    (set-highlight-background! "#3cb21c") 
 
 )
 
@@ -243,8 +243,8 @@
 	    (button-style 1 #:relief 'flat #:pixmap "twm-x.xpm")
 	    (button-style 2 #:relief 'flat #:pixmap "twm-boxes.xpm")
 	    (button-style 4 #:relief 'flat #:pixmap "twm-dot.xpm")
-	    (set-hilight-foreground! light-gray-color)
-	    (set-hilight-background! "maroon"))
+	    (set-highlight-foreground! light-gray-color)
+	    (set-highlight-background! "maroon"))
 
 (define twm-style (make-style #:border-width 1  #:fg light-gray-color #:bg "black"
 			      #:show-icon #f #:use-decor twm-decor))
@@ -463,9 +463,9 @@
 (bind-mouse 'button-4 1 iconify)
 
 ;; operations on parts of the window
-(bind-mouse '(frame sidebar) 2 popup-small-ops)
-(bind-mouse 'frame 1 resize-or-raise)
-(bind-mouse 'sidebar 1 move-or-raise)
+(bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
+(bind-mouse 'frame-corners 1 resize-or-raise)
+(bind-mouse 'frame-sides 1 move-or-raise)
 (define (move-or-shade)
   (case (mouse-event-type)
     ((double-click) (toggle-window-shade))

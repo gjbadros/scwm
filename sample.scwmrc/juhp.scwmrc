@@ -92,8 +92,8 @@
 ;;; decor
 (define initial-decor (default-decor))
 (with-decor initial-decor
-	    (set-hilight-foreground! "white")
-	    (set-hilight-background! "blue4"))
+	    (set-highlight-foreground! "white")
+	    (set-highlight-background! "blue4"))
 
 (define pix-decor (make-decor))
 (with-decor pix-decor
@@ -107,8 +107,8 @@
 	    (title-style #:justify 'center
 			 #:font font12
 			 #:relief 'flat)
-	    (set-hilight-foreground! "white")
-	    (set-hilight-background! "black"))
+	    (set-highlight-foreground! "white")
+	    (set-highlight-background! "black"))
 
 ;;-------------------------------;;
 ;; set some window styles        ;;
@@ -406,9 +406,9 @@
     ((double-click) (toggle-window-shade))
     (else (move-or-raise-maybe-opaque))))
 
-(bind-mouse '(title frame sidebar) 1 move-or-shade)
-(bind-mouse '(title frame sidebar) 2 resize-or-raise-maybe-opaque)
-(bind-mouse '(title frame sidebar) 3 window-menu)
+(bind-mouse '(title frame-corners frame-sides) 1 move-or-shade)
+(bind-mouse '(title frame-corners frame-sides) 2 resize-or-raise-maybe-opaque)
+(bind-mouse '(title frame-corners frame-sides) 3 window-menu)
 
 ;; some stuff for icons
 (define (move-or-deiconify)

@@ -33,8 +33,8 @@
 (title-style #:font font12 #:justify 'left)
 
 (set-icon-font! font12)
-(set-hilight-foreground! "white")
-(set-hilight-background! "blueviolet")
+(set-highlight-foreground! "white")
+(set-highlight-background! "blueviolet")
 (set-rubber-band-mask! 127)
 
 
@@ -223,9 +223,9 @@
 (bind-mouse 'button-4 1 iconify)
 
 ;; operations on parts of the window
-(bind-mouse '(frame sidebar) 2 popup-small-ops)
-(bind-mouse 'frame 1 resize-or-raise)
-(bind-mouse 'sidebar 1 move-or-raise)
+(bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
+(bind-mouse 'frame-corners 1 resize-or-raise)
+(bind-mouse 'frame-sides 1 move-or-raise)
 (define (move-or-shade)
   (case (mouse-event-type)
     ((double-click) (toggle-window-shade))

@@ -5,7 +5,7 @@
 ;;
 ;; This scwmrc shows off a number of neat features. 
 ;;
-;; Here are some hilights:
+;; Here are some highlights:
 ;;
 ;; - Uses a theme for the look so someone could easily change
 ;; the theme to get a different look but keep the same useful
@@ -759,9 +759,9 @@
 (bind-mouse 'title 3 lower-by-one-or-lower)
 
 ;; corners/sides
-(bind-mouse '(frame sidebar) 1 resize-or-raise-or-iconify)
-(bind-mouse '(frame sidebar) 2 move-or-raise-or-shade)
-(bind-mouse '(frame sidebar) 3 popup-small-ops)
+(bind-mouse '(frame-corners frame-sides) 1 resize-or-raise-or-iconify)
+(bind-mouse '(frame-corners frame-sides) 2 move-or-raise-or-shade)
+(bind-mouse '(frame-corners frame-sides) 3 popup-small-ops)
 
 ;; window buttons
 (bind-mouse 'button-1 1 (system-button-action 1))

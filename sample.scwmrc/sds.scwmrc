@@ -179,8 +179,8 @@
 (with-decor std-d
             (title-style #:font font12 #:justify 'left #:relief 'raised)
             (border-style #:hidden-handles #f #:no-inset #t)
-            (set-hilight-foreground! "PapayaWhip")
-            (set-hilight-background!"tomato3"))
+            (set-highlight-foreground! "PapayaWhip")
+            (set-highlight-background!"tomato3"))
 ;; almost the same: "DarkOrange3" "OrangeRed3" "coral3"
 ;; 205  55   0          OrangeRed3
 ;; 205  79  57          tomato3
@@ -196,8 +196,8 @@
                           #:pixmap "lizard2.xpm" #:inactive
                           (list #:hidden-handles #f #:no-inset #t
                                 #:pixmap "lizard.xpm"))
-            (set-hilight-foreground! "PapayaWhip")
-            (set-hilight-background!"#a69938e31861"))
+            (set-highlight-foreground! "PapayaWhip")
+            (set-highlight-background!"#a69938e31861"))
 (define grad-d (make-decor))
 (with-decor grad-d
             (title-style #:font font12 #:justify 'left #:relief 'flat
@@ -207,8 +207,8 @@
                                           (list 40 (list "grey50" 20)
                                                 "grey50" "grey25")))
             (border-style #:no-inset #f #:hidden-handles #f)
-            (set-hilight-foreground! "PapayaWhip")
-            (set-hilight-background!"coral3"))
+            (set-highlight-foreground! "PapayaWhip")
+            (set-highlight-background!"coral3"))
 (define decor-list (list (cons "Standard" std-d) (cons "Lizard" lizard-d)
                          (cons "Gradient" grad-d)))
 
@@ -595,14 +595,14 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;;(bind-mouse 'root "M-3" (lambda () (popup-menu menu-desk)))
 
 ;; operations on parts of the window
-(bind-mouse '(frame sidebar) 2 popup-small-ops)
+(bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
 (define (move-or-shade)
   (case (mouse-event-type)
     ((double-click) (animated-toggle-window-shade))
     (else (move-or-raise))))
 (bind-mouse 'title 1 move-or-shade)
 (bind-mouse 'title 2 lower-window)
-(bind-mouse '(title frame sidebar) 3 popup-small-ops)
+(bind-mouse '(title frame-corners frame-sides) 3 popup-small-ops)
 
 ;; some stuff for icons
 (define (move-or-deiconify)
