@@ -101,6 +101,7 @@ scwm_SOURCES =  string_token.c \
                 events.c \
                 focus.c \
                 scwm.c \
+                xproperty.c \
                 icons.c \
                 misc.c \
                 xmisc.c \
@@ -147,7 +148,7 @@ INCLUDES = @x_cflags@ @GUILE_INCLUDES@
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h \
 binding.x callbacks.x color.x deskpage.x events.x face.x font.x image.x menuitem.x \
-miscprocs.x module-interface.x scwmmenu.x shutdown.x window.x
+miscprocs.x module-interface.x scwmmenu.x shutdown.x xproperty.x window.x
 
 SUFFIXES = .x
 
@@ -168,11 +169,11 @@ X_EXTRA_LIBS = @X_EXTRA_LIBS@
 X_PRE_LIBS = @X_PRE_LIBS@
 scwm_OBJECTS =  string_token.o ICCCM.o system.o Grab.o add_window.o \
 borders.o colormaps.o colors.o complex.o decorations.o events.o focus.o \
-scwm.o icons.o misc.o xmisc.o move.o placement.o resize.o virtual.o \
-scmtypes.o font.o color.o miscprocs.o binding.o errors.o util.o \
-window.o scwmmenu.o drawmenu.o menuitem.o deskpage.o decor.o face.o \
-module-interface.o image.o callbacks.o shutdown.o init_scheme_string.o \
-guile-compat.o syscompat.o getopt.o getopt1.o
+scwm.o xproperty.o icons.o misc.o xmisc.o move.o placement.o resize.o \
+virtual.o scmtypes.o font.o color.o miscprocs.o binding.o errors.o \
+util.o window.o scwmmenu.o drawmenu.o menuitem.o deskpage.o decor.o \
+face.o module-interface.o image.o callbacks.o shutdown.o \
+init_scheme_string.o guile-compat.o syscompat.o getopt.o getopt1.o
 scwm_DEPENDENCIES = 
 scwm_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -199,7 +200,7 @@ DEP_FILES =  .deps/Grab.P .deps/ICCCM.P .deps/add_window.P \
 .deps/placement.P .deps/resize.P .deps/scmtypes.P .deps/scwm.P \
 .deps/scwmmenu.P .deps/shutdown.P .deps/string_token.P \
 .deps/syscompat.P .deps/system.P .deps/util.P .deps/virtual.P \
-.deps/window.P .deps/xmisc.P
+.deps/window.P .deps/xmisc.P .deps/xproperty.P
 SOURCES = $(scwm_SOURCES)
 OBJECTS = $(scwm_OBJECTS)
 
