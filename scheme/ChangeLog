@@ -1,3 +1,18 @@
+Wed Mar 24 11:57:57 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Use the other fix for the below problem -- use
+	scwm-user-var when referencing move-opaquely? and resize-opaquely?
+	from the winops module.  User variables need standardization.
+
+Wed Mar 24 09:54:32 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Move move-opaquely? and resize-opaquely? into the
+	root module, and use default-move-opaquely? and
+	default-resize-opaquely? if the respective predicate is #f.  This
+	fixes the bug whereby redefining the testing predicates doesn't
+	work because they were in the winops module (Sam Steingold
+	reported this.)
+
 Tue Mar 23 15:47:05 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* flux-gtk.scm: Added -- flux procs that require gtk module.

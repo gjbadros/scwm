@@ -1,3 +1,17 @@
+Wed Mar 24 12:09:02 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Fix some DocBook problems, added an Introduction
+	section for each chapter since the first section gets treated
+	specially in the html (it's put at the bottom of the contents for
+	that chapter).
+
+Wed Mar 24 11:32:13 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Simplify the author information.  Use (thunk) for (0 
+	args), (1 arg) for (1 args).  Fix -F option handling for by-group
+	chapter.  Put by-group synopses chapter before the procedure
+	reference.
+
 Mon Mar 22 13:51:01 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Handle new form of SCWM_HOOK taking extra "num_args" 
