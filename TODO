@@ -17,6 +17,9 @@ still use the MyFont garbage; clean this up
  - event objects?
  - event binding objects?
 
+- stay on bottom window style? Sam Steingold <sds@usa.net>
+- use placement function for window placement Sam Steingold <sds@usa.net>
+
 - legacy module interface -- see utilities/dev/fvwm2-pager-demo
 
 - improve new menus
