@@ -1215,13 +1215,14 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 (bind-key 'all "A-space" popup-small-ops-current-window)
 
-(load-user-file "after-bindings")
-
+(bind-key 'all (hyper "M-x") eval-expression-interactively)
 
 ;; Hyper-w
 ;;(bind-key 'all (hyper "w") (lambda () (write (get-window)) (newline)))
 ;; Alt-w
 ;;(bind-key 'all "A-w" (lambda () (display "alt-w\n")))
+(load-user-file "after-bindings")
+
 
 ;; Handle Gale popup windows--
 ;; close them after 1 hour (GJB:FIXME:: should only do so if not directed to user)
