@@ -239,6 +239,28 @@ one example of a procedure to use here.
 [From scwm/window.c:56]
 
 
+select-window-enter-hook (1 args)
+- 
+This hook is invoked when a window is entered during window selection.
+The hook procedures are called with a single argument, the window just entered. 
+This hook is invoked once `select-window-interactively-no-message' is 
+called if the pointer is already in a window.  (But the
+leave hook is not invoked similarly when the selection completes).
+
+[From scwm/window.c:67]
+
+
+select-window-leave-hook (1 args)
+- 
+This hook is invoked when a window is left during window selection.
+The hook procedures are called with a single argument, the window just left. 
+This hook is not invoked upon selection completion (unlike 
+`select-window-enter-hook' that is called initially upon calling
+`select-window-interactively-no-message').
+
+[From scwm/window.c:75]
+
+
 shutdown-hook (1 args)
 - 
 The procedures in shutdown-hook are before scwm quits or restarts.
@@ -278,7 +300,7 @@ procedures.
 
 window-enter-hook (1 args)
 - 
-This hook is invoked whenever the mouse pointer enters a window.
+This hook is invoked whenever the mouse pointer enters a top-level window.
 It is called with one argument, the window object of the window just
 entered. 
 [From scwm/events.c:154]
@@ -294,7 +316,7 @@ that now has the focus, or #f if no window now has the focus.
 
 window-leave-hook (1 args)
 - 
-This hook is invoked whenever the mouse pointer leaves a window.
+This hook is invoked whenever the mouse pointer leaves a top-level window.
 The hook procedures are invoked with one argument, the window object
 of the window just left. 
 [From scwm/events.c:159]
