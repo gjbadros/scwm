@@ -437,7 +437,7 @@ void init_image()
   ImageColorMap = root_attributes.colormap;
 
   /* Include registration of procedures and other things. */
-  #include "image.x"
+# include "image.x"
 
   /* Register the image type. */
   scm_tc16_scwm_image = scm_newsmob(&image_smobfuns);
