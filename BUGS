@@ -11,6 +11,14 @@ up one pixel larger in height.
 
 --Harvey Stein
 -------
+> btw, you might check for dl support before building utilities/pidproperty/, 
+> at least obsd didn't recognize the RTLD_GLOBAL flag on dlopen, had to 
+> replace it with DL_LAZY, at least it compiled, not sure if it works. had 
+> to remove -ldl from the Makefile too. (aren't there some dlopen tests 
+> done in configure already ?) 
+Bob Pepin bob@sendar.prophecy.lu
+
+-------
 Animated resizes of Emacs frames interact strangely with emacs resulting
 in the resize animating twice.
 -------

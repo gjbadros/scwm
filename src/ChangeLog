@@ -1,3 +1,12 @@
+Fri May  7 08:34:34 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* color.c: Use float.h, not values.h, and DBL_MAX, not
+	MAXDOUBLE. Thanks Bob Pepin.
+
+Tue May  4 16:50:54 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandleScwmExec): Mis-bracketed last change... doh!
+
 Tue May  4 16:16:30 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleScwmExec): If first XGetWindowProperty fails,
