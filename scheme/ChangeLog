@@ -1,3 +1,7 @@
+1999-01-29  Sam Steingold  <sds@goems.com>
+
+	* Makefile.am: install animate-iconify-window.scm.
+
 Tue Jan 26 15:58:08 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* string-prompt.scm: Pack the prompt label in with expand set to
