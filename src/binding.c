@@ -761,10 +761,8 @@ init_binding(void)
      scm_protect_object(sym_edge);
    */
 }
-
 
 /* Local Variables: */
 /* tab-width: 8 */
-/* eval: (set-c-style "k&r") */
 /* c-basic-offset: 2 */
 /* End: */

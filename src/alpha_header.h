@@ -22,3 +22,8 @@ extern void bzero(char *, int);
 extern int gethostname(char *, int);
 
 /**************************************************************************/
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -10,3 +10,8 @@ void scwm_error_imm(char *subr, const char *szErrMsg);
 #define ERROR_LOAD_PICTURE 14
 
 #endif /* ERRORS_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

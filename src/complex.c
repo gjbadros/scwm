@@ -58,3 +58,8 @@ IsClick(int x, int y, unsigned EndMask, XEvent * d)
 }
 
 
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -36,3 +36,8 @@ SCM menu_p(SCM obj);
 void init_menu();
 
 #endif /* MENU_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

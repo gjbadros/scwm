@@ -1269,3 +1269,8 @@ init_menus(void)
   Scr.MenuGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   Scr.MenuStippleGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -88,3 +88,8 @@ scwm_error_imm(char *subr, const char *szErrMsg)
 
 	    gh_list(SCM_UNDEFINED, SCM_UNDEFINED));
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

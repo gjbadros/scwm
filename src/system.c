@@ -192,3 +192,8 @@ findFile(char *szName, char *szPathlist, int type)
   free(path);
   return NULL;
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

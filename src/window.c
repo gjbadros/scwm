@@ -2051,3 +2051,8 @@ set_lenience_x(SCM val, SCM win)
   }
   return SCM_BOOL_T;
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -119,3 +119,8 @@ stripcpy(char *source)
   ptr[len] = 0;
   return ptr;
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -263,3 +263,8 @@ set_window_decor_x(SCM decor, SCM win)
 
   return SCM_UNSPECIFIED;
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

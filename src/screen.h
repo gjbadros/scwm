@@ -314,3 +314,8 @@ void DestroyScwmDecor(ScwmDecor * fl);
 #define EdgeWrapY                (128)
 #define MWMMenus                (1024)
 #endif /* _SCREEN_ */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

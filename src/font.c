@@ -222,3 +222,8 @@ set_menu_font(SCM font)
   return (font);
 }
 
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

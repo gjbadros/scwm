@@ -64,3 +64,8 @@ send_clientmessage(Display * disp, Window w, Atom a, Time timestamp)
   ev.data.l[1] = timestamp;
   XSendEvent(disp, w, False, 0L, (XEvent *) & ev);
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

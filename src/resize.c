@@ -357,3 +357,8 @@ MoveOutline(Window root, int x, int y, int width, int height)
     XDrawRectangles(dpy, Scr.Root, Scr.DrawGC, rects, 5);
   }
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

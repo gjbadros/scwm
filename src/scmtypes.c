@@ -108,3 +108,8 @@ init_scwm_types(void)
   scm_tc16_scwm_face = scm_newsmob(&face_smobfuns);
   scm_tc16_scwm_picture = scm_newsmob(&picture_smobfuns);
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

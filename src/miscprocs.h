@@ -29,3 +29,8 @@ SCM set_click_to_focus_raises_x(SCM val);
 SCM set_mouse_focus_click_raises_x(SCM val);
 
 #endif	/* MISCPROCS_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

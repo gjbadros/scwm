@@ -135,3 +135,8 @@ void init_menus(void);
 int ButtonPosition(int context, ScwmWindow * t);
 
 #endif /* _MENUS_ */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

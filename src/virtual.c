@@ -467,3 +467,8 @@ changeDesks(int val1, int val2)
 #endif
     SetFocus(Scr.NoFocusWin, NULL, 1);
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

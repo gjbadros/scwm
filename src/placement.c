@@ -509,3 +509,8 @@ GetGravityOffsets(ScwmWindow * tmp, int *xp, int *yp)
   }
   return;
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

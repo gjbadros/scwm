@@ -252,3 +252,8 @@ AllocNonlinearGradient(char *s_colors[], int clen[],
     pixels[i] = pixels[i - 1];
   return pixels;
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

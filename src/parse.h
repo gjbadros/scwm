@@ -114,3 +114,8 @@
 #define F_RAISE_IT              2000
 
 #endif /* _PARSE_ */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

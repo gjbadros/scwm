@@ -1655,3 +1655,8 @@ send_key_press(SCM key, SCM win,
 
 
 
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

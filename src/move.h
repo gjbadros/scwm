@@ -23,3 +23,8 @@ void InteractiveMove(Window * win, ScwmWindow * tmp_win,
 		     int *FinalX, int *FinalY, XEvent * eventp);
 
 #endif MOVE_H
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

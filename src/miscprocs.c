@@ -361,3 +361,8 @@ set_mouse_focus_click_raises_x(SCM val)
 
 
 
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

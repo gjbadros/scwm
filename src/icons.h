@@ -17,3 +17,8 @@ void SetMapStateProp(ScwmWindow * tmp_win, int state);
 #define ICON_P_HEIGHT(sw) (sw->picIcon?sw->picIcon->height:0)
 
 #endif
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

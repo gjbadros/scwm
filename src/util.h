@@ -10,3 +10,8 @@ void refresh_common(Window win_or_root);
 SCM call_thunk_with_message_handler(SCM thunk);
 
 #endif	/* UTIL_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

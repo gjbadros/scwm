@@ -239,3 +239,8 @@ init_menu()
   sym_separator = gh_symbol2scm("separator");
   scm_protect_object(sym_separator);
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

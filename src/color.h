@@ -22,3 +22,8 @@ SCM set_menu_colors(SCM fg, SCM bg, SCM stipple);
 SCM color_p(SCM obj);
 
 #endif /* COLOR_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -21,3 +21,8 @@
 #define CLOSE_STRING4 "quit"
 
 #endif /* MWMCOM_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

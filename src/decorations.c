@@ -552,3 +552,8 @@ check_allowed_function2(int function, ScwmWindow * t)
 
   return 1;
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

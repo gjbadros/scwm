@@ -6,3 +6,8 @@
 void  send_clientmessage(Display * disp, Window w, Atom a, Time timestamp);
 
 #endif
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

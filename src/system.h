@@ -10,3 +10,8 @@ int GetFdWidth(void);
 char *findFile(char *name, char *pathlist, int type);
 
 #endif
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -144,3 +144,8 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
   XSync(dpy, 0);
 
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

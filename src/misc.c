@@ -681,3 +681,8 @@ scwm_msg(scwm_msg_levels type, char *id, char *msg,...)
   }
   va_end(args);
 }				/* Scwm_msg */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

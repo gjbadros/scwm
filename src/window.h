@@ -143,3 +143,8 @@ SCM set_skip_mapping_x(SCM val, SCM w);
 SCM set_lenience_x(SCM val, SCM win);
 
 #endif /* WINDOW_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

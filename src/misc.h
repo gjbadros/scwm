@@ -219,3 +219,8 @@ void MakeMenus(void);
 #include "alpha_header.h"
 #endif /* NEEDS_ALPHA_HEADER */
 #endif /* _MISC_ */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

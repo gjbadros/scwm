@@ -245,3 +245,8 @@ set_menu_colors(SCM fg, SCM bg, SCM stipple)
   SCM_REALLOW_INTS;
   return (SCM_UNSPECIFIED);
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

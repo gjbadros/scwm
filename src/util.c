@@ -106,3 +106,8 @@ call_thunk_with_message_handler(SCM thunk)
 			    scm_handle_by_message_noexit, "scwm");
 }
 
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -11,3 +11,8 @@ void ConstrainSize(ScwmWindow * tmp_win, int *widthp, int *heightp);
 void MoveOutline(Window root, int x, int y, int width, int height);
 
 #endif
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

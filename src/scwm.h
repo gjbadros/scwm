@@ -380,3 +380,8 @@ extern Atom XA_SCWM_EXECUTE;
 /* end of configure.h */
 
 #endif /* _SCWM_ */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -13,3 +13,8 @@ SCM send_key_press(SCM key, SCM win,
 		   SCM propagate_p);
 
 #endif
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

@@ -28,3 +28,8 @@ SCM set_menu_font(SCM font);
 SCM font_p(SCM obj);
 
 #endif /* FONT_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

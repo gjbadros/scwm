@@ -37,3 +37,8 @@ SCM set_border_face_x(SCM active, SCM inactive);
 
 
 #endif /* FACE_H */
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

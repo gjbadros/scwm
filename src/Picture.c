@@ -247,3 +247,8 @@ make_picture(SCM picture_filename)
   }
   return pic2scm(pic);
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */
