@@ -32,6 +32,7 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
+#include <guile/gh.h>
 #include <unistd.h>
 
 #undef EXTERN
@@ -96,7 +97,7 @@ SCM make_image_from_pixmap(char *szDescription,
 void init_image_colormap();
 void init_image();
 
-#endif IMAGE_H
+#endif /* IMAGE_H */
 
 
 
