@@ -469,11 +469,25 @@
 (bind-key 'all "C-M-S-8" (lambda () (send-button-press 2 0)))
 (bind-key 'all "C-M-S-9" (lambda () (send-button-press 3 0)))
 
+;;(bind-key 'all "C-M-S-4" (lambda () (send-key-press "Return")))
+(bind-key 'all "C-M-S-4" (lambda () (send-string "helloworld")))
+
 ;; This one is experimental-- sends only the buttonpress event, no buttonrelease
 (bind-key 'all "C-M-S-0" (lambda () (send-button-press 2 0 (get-window) #t #f)))
 
 (bind-key 'all "C-M-S-n" (lambda () (write (get-window)) (newline)))
 
 
+(define (sleep-ms ms)
+  (select '() '() '() 0 (* 1000 ms)))
+
+;; Does not work for arbitrary strings since, e.g,. ' ' needs
+;; to be sent as "space"  FIXGJB: Do we have a char->keysym fn?
+(define (send-string str)
+  (let ((w (get-window))
+	(i 0))
+    (while (< i (length str))
+	   (send-key-press (substring str i (+ 1 i)) w)
+	   (set! i (+ 1 i)))))
 
 ;(recapture)
