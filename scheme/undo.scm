@@ -137,7 +137,3 @@ This re-applyiesthe state at undo-index - 1."
 ;; (undo-use 2)
 ;; (undo-use 3)
 ;; (undo-use 4)
-
-(bind-key 'all "H-slash" undo)
-(bind-key 'all "H-M-slash" redo)
-(bind-key 'all "H-s" insert-undo-global)
