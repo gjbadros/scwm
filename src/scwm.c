@@ -1,4 +1,4 @@
-/****************************************************************************
+q/****************************************************************************
  * This module has been significantly modified by Maciej Stachowiak.
  * It may be used under the terms indicated by the copyright below.
  * Changes Copyright 1997, Maciej stachowiak
@@ -175,7 +175,6 @@ void scwm_main(int argc, char **argv)
   init_window();
   init_scwm_types();
   init_scwm_procs();
-  puts("This is an alpha test version of scwm, the Scheme Configurable Window Manager.");
 
   s_cmd_config=malloc(1*sizeof(char));
   s_cmd_config[0]='\0';
@@ -265,7 +264,9 @@ void scwm_main(int argc, char **argv)
   newhandler (SIGQUIT);
   newhandler (SIGTERM);
   signal (SIGUSR1, Restart);
+#if MS_DELETION_COMMENT
   signal (SIGPIPE, DeadPipe);
+#endif /* MS_DELETION_COMMENT */
 
   ReapChildren();
 
@@ -394,7 +395,9 @@ void scwm_main(int argc, char **argv)
   CreateCursors();
   InitVariables();
   InitEventHandlerJumpTable();
+#if MS_DELETION_COMMENT 
   initModules();
+#endif /* MS_DELETION_COMMENT */
 
   Scr.gray_bitmap = 
     XCreateBitmapFromData(dpy,Scr.Root,g_bits, g_width,g_height);
@@ -404,7 +407,7 @@ void scwm_main(int argc, char **argv)
   SetRCDefaults();
 
   DBUG("main","Running config_commands...");
-#if 0
+#if MS_DELETION_COMMENT
   if (num_config_commands > 0)
   {
     int i;
@@ -418,7 +421,7 @@ void scwm_main(int argc, char **argv)
   {
     ExecuteFunction(default_config_command, NULL,&Event,C_ROOT,-1);
   }
-#endif
+#endif /* MS_DELETION_COMMENT */
 
 #ifndef SCWMRC
 #define SCWMRC ".scwmrc"
@@ -438,7 +441,6 @@ void scwm_main(int argc, char **argv)
 
   free(s_cmd_config);
 
-  puts("done with config commands.");
   CaptureAllWindows();
   MakeMenus();
 
@@ -529,6 +531,7 @@ void scwm_main(int argc, char **argv)
 }
 
 
+#if MS_DELETION_COMMENT
 /*
 ** StartupStuff
 **
@@ -554,7 +557,7 @@ void StartupStuff(void)
       ExecuteFunction("Function InitFunction",NULL,&Event,C_ROOT,-1);
   }
 } /* StartupStuff */
-
+#endif /* MS_DELETION_COMMENT */
 
 /***********************************************************************
  *
@@ -689,18 +692,13 @@ void CaptureAllWindows(void)
 void SetRCDefaults()
 {
   /* set up default colors, fonts, etc */
+#if MS_DELETION_COMMENT
   char *defaults[] = {
-    "TitleStyle -- Raised",
-
-    "Style \"*\" Color lightgrey/dimgrey, Title",
-    "Style \"*\" RandomPlacement, SmartPlacement",
-
-    /*    "AddToFunc WindowListFunc \"I\" WindowId $0 Iconify -1",
-    "+ \"I\" WindowId $0 Focus",
-    "+ \"I\" WindowId $0 Raise",
-    "+ \"I\" WindowId $0 WarpToWindow 5p 5p", */
+    /* "TitleStyle -- Raised", */
+    "",
     NULL
   };
+
   int i=0;
 
   while (defaults[i])
@@ -708,14 +706,24 @@ void SetRCDefaults()
     ExecuteFunction(defaults[i],NULL,&Event,C_ROOT,-1);
     i++;
   }
+#endif /* MS_DELETION_COMMENT */
+
   gh_eval_str("(define quit scwm-quit)"
 	      "(undefine scwm-quit)"
 	      "(define FIXED-FONT (load-font \"fixed\"))"
 	      "(define BLACK (load-color \"black\"))"
 	      "(define GRAY (load-color \"gray\"))"
 	      "(define SLATEGRAY (load-color \"slategray\"))"
+	      "(define LIGHTGRAY (load-color \"lightgray\"))"
+	      "(define DIMGRAY (load-color \"dimgray\"))"
 	      "(set-xor-value! 1)"
 	      "(set-menu-colors! BLACK GRAY SLATEGRAY)"
+	      "(bind-event \'new-window (lambda () (set-window-colors!"
+	      "                                    LIGHTGRAY DIMGRAY)"
+	      "                                   (show-titlebar)))"
+	      "(bind-event \'new-window-hint (lambda () (set-random-placement!"
+	      "                                    #t)"
+	      "                   (set-smart-placement! #t)))"
 	      "(set-menu-font! FIXED-FONT)"
 	      "(set-menu-mwm-style! #f)"
 	      "(set-hilight-colors! BLACK GRAY)"
@@ -1381,12 +1389,16 @@ void Done(int restart, char *command)
   MoveViewport(0,0,False);
 #endif
 
+#if MS_DELETION_COMMENT
   mr = FindPopup("ExitFunction");
   if(mr != NULL)
     ExecuteFunction("Function ExitFunction",NULL,&Event,C_ROOT,-1);
+#endif /* MS_DELETION_COMMENT */
 
   /* Close all my pipes */
+#if MS_DELETION_COMMENT
   ClosePipes();
+#endif /* MS_DELETION_COMMENT */
 
   Reborder ();
 
@@ -1456,7 +1468,9 @@ XIOErrorHandler CatchFatal(Display *dpy)
   /* No action is taken because usually this action is caused by someone
      using "xlogout" to be able to switch between multiple window managers
      */
+#if MS_DELETION_COMMENT
   ClosePipes();
+#endif /* MS_DELETION_COMMENT */
   exit(1);
 }
 
