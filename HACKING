@@ -1,3 +1,29 @@
+USING ANONYMOUS CVS:
+
+After downloading via anonymous CVS, you'll need to:
+
+./autogen.sh      # See REQUIRED TOOLS below 
+                  # for what you need for this to work
+./configure --enable-maintainer-mode ... other flags ...
+
+Most of the time this should be unnecessary; as soon as you have
+configured once with --enable-maintainer-mode, make should rebuild
+those files automatically.  You may need to rerun autogen.sh
+after doing a "cvs update" to get the latest version.
+
+RUNNING SCWM WITHOUT INSTALLING IT:
+
+To run Scwm without installing it, you should be sure
+that your $GUILE_LOAD_PATH environment variable points at the
+top-level scwm directory containing the checked-out module.
+The scwm/app subdirectory should have a symlink scwm->../scheme. 
+
+Also, to use any un-installed C modules with Scwm, be sure your
+SCWM_LOAD_PATH include scwm/modules/lib and you have run
+make-devtest from within scwm/modules (and after building with
+"make all").
+
+
 REQUIRED TOOLS:
 
 Scwm requires at least autoconf, automake and libtool to generate some
@@ -29,15 +55,6 @@ largely removing the need to run the various "auto" tools by
 hand. However, it may sometimes be necessary to run them without
 having the Makefile or configure handy. In this case you can run
 autogen.sh, which will call all these programs for you.
-
-In short, do:
-
-./autogen.sh
-./configure --enable-maintainer-mode ... other flags ...
-
-Most of the time this should be unnecessary; as soon as you have
-configured once with --enable-maintainer-mode, make should rebuild
-those files automatically.
 
 
 DOCUMENTATION TOOLS:
