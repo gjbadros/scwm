@@ -524,8 +524,8 @@ void set_face_flag_x(SCM face, SCM flag, SCM flagval)
 
 ButtonFace *append_new_face(ButtonFace *bf);
 
-/**CONCEPT: 
-  Face Specs Face flags are two-element lists that specify certain
+/**CONCEPT: Face Specification flags
+  Face specification flags are two-element lists that specify certain
 properties that may be chained to indicate how a face is drawn. Face
 specs may be fully or partially destructive. A fully destructive spec
 indicates how the whole area of the element is to be drawn, making
