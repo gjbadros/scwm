@@ -1,0 +1,5 @@
+Tue Jun  2 17:21:19 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwm.el: Apply documentation fixes courtesy of Robert Bihlmeyer
+ 	<robbe@orcus.priv.at>. Also correct spelling of Sam's name.
+
