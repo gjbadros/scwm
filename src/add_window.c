@@ -304,6 +304,8 @@ AddWindow(Window w)
   psw->fTransient =
     (XGetTransientForHint(dpy, psw->w, &psw->transientfor));
 
+  printf("Got transient hint: %d\n", psw->fTransient);
+
   psw->old_bw = psw->attr.border_width;
 
   if (ShapesSupported) {
@@ -334,7 +336,7 @@ AddWindow(Window w)
      way to deal with this - probably a reprocesshints function of
      some kind. */
 
-  ResetAllFlags(psw);
+  ResetCommonFlags(psw);
   psw->fTitle = True;
   psw->fBorder = True;
 

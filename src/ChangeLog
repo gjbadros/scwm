@@ -1,3 +1,9 @@
+1998-07-16  Maciej Stachowiak  <maciej@roc-ny5-44.ix.netcom.com>
+
+	* add_window.c (AddWindow): Replace a call to ResetAllFlags with
+	ResetCommonFlags to avoid clobbering the fTransient bit (and
+	probably other stuff). D'oh!
+
 1998-07-15  Maciej Stachowiak  <maciej@roc-ny2-12.ix.netcom.com>
 
 	* placement.c (PlaceWindow): Use user-defined placement
