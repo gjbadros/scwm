@@ -1,3 +1,16 @@
+Tue Nov 23 09:16:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xmisc.h,xmisc.c: Added SetXWindowGravity(..)
+
+	* window.c: Mark other_properties only if set.  Added some gravity 
+	code that is still #if 0-d out because it doesn't do the right
+	thing.  Inspired by (but very different from) Owen Taylor's
+	suggestions regarding resizing frames on the wmspec list recently.
+
+	* focus.c: Mark a formal as unused.
+
+	* add_window.c: Remove unused extern
+	
 Tue Oct 26 11:21:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* message-window.c: Avoid using pimg->mask if it is NULL.  Fixes
