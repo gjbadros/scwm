@@ -26,6 +26,8 @@
 
 
 
+(define-scwm-group edge-ops "Edge Operations")
+
 (define current-edge-ops-scroll-delay #f)
 (define edge-ops-time-hook #f)
 (define edge-ops-wrap-avoid #f)

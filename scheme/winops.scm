@@ -28,7 +28,7 @@
 
 
 
-
+(define-scwm-group winops "Window Operations")
 
 ;;; Toggling operations
 
@@ -237,13 +237,13 @@ If *opaque-move-percent* is a boolean, not a number, just return it."
   "User-settable predicate to determine if windows should be moved opaquely.
 The procedure should take a single argument, the window."
   #:type 'proc
-  #:group 'window-movement)
+  #:group 'winops)
 
 (define-scwm-option *resize-opaquely-proc* default-resize-opaquely?
   "User-settable predicate to determine if windows should be resized opaquely..
 The procedure should take a single argument, the window."
   #:type 'proc
-  #:group 'window-movement)
+  #:group 'winops)
 
 
 (define*-public (interactive-move 

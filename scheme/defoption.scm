@@ -26,7 +26,8 @@
 ;; `user-options' variable
 (if (not (feature? 'scwm-options))
     (begin
-      (define-public scwm-options '())))
+      (define-public scwm-options '())
+      (define-public scwm-options-groups '())))
 ;;(set! scwm-options '())
 
 (provide 'scwm-options)
@@ -37,7 +38,7 @@
 
 (defmacro-public define-scwm-option (sym default docstring . rest)
   "Define SYM to be a new scwm user option with DEFAULT as its default value.
-DOCSTRING documents the option.  REST includes keyword arguments including:
+DOCSTRING documents the option.  REST contains keyword arguments including:
 #:type - one of 'boolean,
                 'integer, 'percent, 'real
                 'position, 'position-delta
@@ -62,7 +63,50 @@ DOCSTRING documents the option.  REST includes keyword arguments including:
      (define-scwm-option-proc ,sym ',sym ,docstring ,default ,@rest)
      answer))
 
+(defmacro-public define-scwm-group (sym name . rest )
+  "Define SYM to be a new scwm option group.
+REST contains keyword arguments including:
+  #:icon - an image object
+  #:widget - a custom widget to use for this group"
+  `(define-scwm-group-proc ',sym ,name ,@rest))
+
+(define*-public (define-scwm-group-proc sym name #&key (docstring #f) (icon #f) (widget #f))
+  (or (symbol? sym) (error "SYM is not a symbol!"))
+  (let* ((option-group (list sym name docstring icon widget))
+	 (old-og (assoc sym scwm-options-groups)))
+    (if old-og
+	(set-cdr! old-og (cdr option-group))
+	(set! scwm-options-groups (cons option-group scwm-options-groups)))))
+
+(define-public (scwm-group-properties sym)
+  "Return the group properties for group SYM."
+  (assoc-ref scwm-options-groups sym))
+
+(define-public (scwm-group-name sym)
+  "Return the prettified name for group SYM."
+  (let ((sog (assoc-ref scwm-options-groups sym)))
+    (if sog (car sog) (symbol->string sym))))
+
+(define-public (scwm-group-docstring sym)
+  "Return the prettified name for group SYM."
+  (let ((sog (assoc-ref scwm-options-groups sym)))
+    (and sog (caddr sog))))
+
+(define-public (scwm-group-icon sym)
+  "Return the icon for group SYM."
+  (let ((sog (assoc-ref scwm-options-groups sym)))
+    (and sog (cadddr sog))))
+
 #!
+
+(define-scwm-group focus "Focus settings" #:icon (make-image "xterm.xpm"))
+(define-scwm-group focus "Focus settings" #:docstring "Focus stuff." #:icon (make-image "xterm.xpm"))
+(scwm-group-properties 'focus)
+(set-cdr! (assoc 'focus scwm-options-groups)
+(set! scwm-options-groups '())
+scwm-options-groups
+(scwm-group-name 'focus)
+
 (define-scwm-option *desk-width* 2
   "The virtual desktop width, in units of physical screen size."
   #:type 'integer

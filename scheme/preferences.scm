@@ -41,6 +41,10 @@
 ;; (use-modules (app scwm preferences))
 ;; (use-modules (app scwm prompt-string))
 
+;;(define-scwm-group about "About" #:widget  ... ) ;;; GJB:FIXME::
+
+
+
 (define-public mw-curval (make-message-window-clone-default ""))
 (define-public mw-docs (make-message-window-clone-default ""))
 (message-window-style mw-curval #:fg "black" #:bg "yellow") ;; old
@@ -251,6 +255,14 @@ See also `prompt-string'."
 ;; (scwm-options-dialog)
 ;; (define tooltip (gtk-tooltips-new))
 
+(define-scwm-group preferences "Preferences")
+
+(define-scwm-option *preferences-use-notebook* #f
+  "If #t, use a notebook GUI for the Scwm options dialog, else use a listbox format."
+  #:type 'boolean
+  #:group 'preferences)
+;; (set! *preferences-use-notebook* #f)
+
 (define-public (scwm-options-dialog)
   "Popup a scwm options dialog box.
 You may need to use-modules all the modules that contain
@@ -268,7 +280,9 @@ want the saved preferences to take effect."
 	 (cancel-action (lambda ()
 			(message-window-hide! mw-docs)
 			(gtk-widget-destroy toplevel)))
-	 (nb (scwm-options-notebook done-action cancel-action))
+	 (nb ((if *preferences-use-notebook* 
+		  scwm-options-notebook
+		  scwm-options-listbook) done-action cancel-action))
 	 )
     (gtk-window-set-title toplevel "Scwm Options")
     (gtk-box-pack-start vbox nb #t #t)
@@ -290,27 +304,77 @@ want the saved preferences to take effect."
 
 ;;(sort-options-by-type scwm-options)
 
+(define (show-gtk-label-new str)
+  (let ((label (gtk-label-new str)))
+    (gtk-widget-show label)
+    label))
 
 (define-public (scwm-options-notebook done-action cancel-action)
   (let* ((nb (gtk-notebook-new))
 	 (sorted-options (sort (map (lambda (s) (cons (scwm-option-group s) s)) scwm-options)
-			       (lambda (a b) (string>? (symbol->string (car a))
-						       (symbol->string (car b))))))
+			       (lambda (a b) (string>? (scwm-group-name (car a))
+						       (scwm-group-name (car b))))))
 	 (by-group (split-list-by-group sorted-options)))
-    (map (lambda (page) (scwm-options-notebook-page nb done-action cancel-action
-						    (symbol->string (car page)) 
-						    (sort-options-by-type (cdr page))))
-	 by-group)
+    (for-each (lambda (page)
+		(let* ((title (scwm-group-name (car page)))
+		       (vbox (scwm-options-vbox-page nb done-action 
+						     cancel-action title 
+						     (sort-options-by-type (cdr page)))))
+		  (gtk-notebook-append-page nb vbox
+					    (show-gtk-label-new title))))
+	      by-group)
     (gtk-widget-show nb)
     nb))
 
+(define ui-box-spacing 4)
+(define ui-box-border 5)
 
-(define-public (scwm-options-notebook-page nb done-action cancel-action title syms)
-  "Popup a scwm options dialog box.
-NOTE: Not quite functional, but I'm outta time!
-GJB:FIXME::."
-  (let* ((label (gtk-label-new title))
-	 (vbox (gtk-vbox-new #f 10))
+(define-public (scwm-options-listbook done-action cancel-action)
+  (let* ((hbox (gtk-hpaned-new))
+	 (clist (gtk-clist-new 1))
+	 (frame (gtk-frame-new ""))
+	 (sorted-options (sort (map (lambda (s) (cons (scwm-option-group s) s)) scwm-options)
+			       (lambda (a b) (string>? (scwm-group-name (car a))
+						       (scwm-group-name (car b))))))
+	 (by-group (split-list-by-group sorted-options))
+	 (contents (make-vector (length by-group))))
+    (gtk-container-border-width hbox ui-box-border)
+    (gtk-clist-set-column-auto-resize clist 0 #t)
+    (gtk-paned-add1 hbox clist)
+    (gtk-paned-add2 hbox frame)
+    (gtk-clist-set-selection-mode clist 'browse)
+    (for-each (lambda (page)
+		(let* ((title (scwm-group-name (car page)))
+		       (vbox (scwm-options-vbox-page frame done-action 
+						     cancel-action title 
+						     (sort-options-by-type (cdr page))))
+		       (row (gtk-clist-append clist (vector title))))
+		  (gtk-widget-show-all vbox)
+		  (vector-set! contents row (cons page vbox))))
+	      by-group)
+    (gtk-signal-connect clist "select_row"
+			(lambda (row col event)
+			  (listbook-select-row contents row frame)))
+    (gtk-clist-select-row clist 0 0)
+    (gtk-widget-show clist)
+    (gtk-widget-show frame)
+    (gtk-widget-show hbox)
+    hbox))
+
+(define (listbook-select-row contents row frame)
+  (for-each (lambda (widget)
+	      (gtk-container-remove frame widget))
+	    (gtk-container-children frame))
+  (let ((page (car (vector-ref contents row)))
+	(widget (cdr (vector-ref contents row))))
+    (gtk-frame-set-label frame (scwm-group-name (car page)))
+    (gtk-container-add frame widget)))
+
+
+
+(define-public (scwm-options-vbox-page parent done-action cancel-action title syms)
+  "Popup a scwm options dialog box."
+  (let* ((vbox (gtk-vbox-new #f 10))
 	 (tooltip (gtk-tooltips-new))
 	 (hbox (gtk-hbox-new #t 50))
 	 (widgets-and-applyers
@@ -361,10 +425,7 @@ GJB:FIXME::."
 			(lambda () (apply-action)))
     (gtk-signal-connect okbut "pressed" (lambda () (apply-action) (done-action)))
     (gtk-signal-connect cancelbut "pressed" cancel-action)
-    (gtk-widget-show label)
-    (gtk-notebook-append-page nb vbox label)
-    nb))
-
+    vbox))
 
 
 (define (read-color c port)

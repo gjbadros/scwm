@@ -130,24 +130,25 @@ used) or a cons of (host . command)."
 (define-public exe-on-selection-mpeg_play (exe-on-selection "mpeg_play -dither color"))
 (define-public exe-on-selection-mpg3 (exe-on-selection "mpg123"))
 
+(define-scwm-group app-associations "Application Associations")
 
 ;; GJB:FIXME:: must handle alist:re->string
-(define-scwm-option *context-map*
-  `(("\.(txt|pl|c|cc|h)$" "Edit (emacs)"
-			  #:action ,exe-on-selection-editor)
-    ("\.ps$" "View (gv)" #:action ,exe-on-selection-gv)
-    ("\.(gif|jpg)$" "View (ee)" #:action ,exe-on-selection-xv)
-    ("\.(gif|jpg|xcf)(\.gz)?$" "Edit (gimp)"
-			       #:action ,exe-on-selection-gimp)
-    ("\.mpe?g$" "Play (mpeg_play)"
-		#:action ,exe-on-selection-mpeg_play)
-    ("\.mp3$" "Play (mpg123)" #:action ,exe-on-selection-mpg3))
-  "An alist mapping filename patterns to applicable menu entries.
-Whenever the car (a regexp) matches a filename, the cdr is used to
-build a menuitem which is then added to the context menu."
-  #:type 'alist:re->string
-  #:group 'app-associations
-  )
+;;(define-scwm-option *context-map*
+;;  `(("\.(txt|pl|c|cc|h)$" "Edit (emacs)"
+;;			    #:action ,exe-on-selection-editor)
+;;    ("\.ps$" "View (gv)" #:action ,exe-on-selection-gv)
+;;    ("\.(gif|jpg)$" "View (ee)" #:action ,exe-on-selection-xv)
+;;    ("\.(gif|jpg|xcf)(\.gz)?$" "Edit (gimp)"
+;;				 #:action ,exe-on-selection-gimp)
+;;    ("\.mpe?g$" "Play (mpeg_play)"
+;;		  #:action ,exe-on-selection-mpeg_play)
+;;    ("\.mp3$" "Play (mpg123)" #:action ,exe-on-selection-mpg3))
+;;  "An alist mapping filename patterns to applicable menu entries.
+;;Whenever the car (a regexp) matches a filename, the cdr is used to
+;;build a menuitem which is then added to the context menu."
+;;  #:type 'alist:re->string
+;;  #:group 'app-associations
+;;  )
 
 (define-public (make-context-menu)
   "Create a menu of actions applicable to the filename in the X selection.

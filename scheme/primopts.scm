@@ -29,6 +29,8 @@
 ;; scwm-option-variables
 ;; (map (lambda (v) (scwm-option-name (eval v))) scwm-option-variables)
 
+(define-scwm-group virtual "Virtual")
+
 ;; (popup-option-menu *desk-width*)
 (define-scwm-option *desk-width* (car (desk-size))
   "The virtual desktop width, in units of physical screen size."

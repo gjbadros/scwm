@@ -39,6 +39,9 @@
 
 
 
+(define-scwm-group system "System")
+(define-scwm-group menu "Menu")
+
 (if (bound? hash-fold)
     (define-public (hash-table->alist table)
       (hash-fold acons () table))

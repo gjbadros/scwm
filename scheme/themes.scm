@@ -31,6 +31,7 @@
 
 
 
+(define-scwm-group file-locations "File locations")
 
 ;;;**CONCEPT:Themes
 ;;; A theme is a named collection of window manager settings.

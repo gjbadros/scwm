@@ -28,6 +28,8 @@
 
 
 
+(define-scwm-group gnome "Gnome")
+
 ;;;; See the file gnome-libs-*/libgnomeui/gnome-winhints.h
 
 ;;; user variables.

@@ -109,12 +109,12 @@ See also `prompt-range'."
 	 (scale (gtk-hscale-new adjustment)))
     ;; GJB:FIXME:: these numbers are lame-- should be based on 
     ;; the width of the parent and the height of the font
-    (gtk-widget-set-usize scale 500 30)
+    ;;(gtk-widget-set-usize scale 500 30)
     (gtk-range-set-update-policy scale 'delayed)
     (gtk-scale-set-digits scale digits)
     (gtk-scale-set-draw-value scale #t)
-    (gtk-box-pack-start hbox label #t #f 5)
-    (gtk-box-pack-start hbox scale #f #f)
+    (gtk-box-pack-start hbox label #f #f 5)
+    (gtk-box-pack-start hbox scale #t #t)
     (gtk-widget-show label)
     (gtk-widget-show scale)
     (gtk-widget-show hbox)

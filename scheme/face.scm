@@ -25,6 +25,8 @@
   :use-module (app scwm optargs))
 
 
+(define-scwm-group face "Decorations")
+
 (define-scwm-option *window-font* (make-font "fixed")
   "The default window titlebar font."
   #:type 'font

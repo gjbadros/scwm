@@ -15,6 +15,8 @@
 (provide 'scwm-message-window)
 ;;; positioning a message window
 
+(define-scwm-group message-window "Message window")
+
 (define-public (gravity->alignments gravity)
   "Return a list of two numeric alignments corresponding to a GRAVITY.
 GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se

@@ -66,6 +66,8 @@
 ;;;; it is based on the window getting focus, not on the window being
 ;;;; entered. That may change in the future.
 
+(define-scwm-group focus "Focus")
+
 (define-scwm-option *default-auto-raise-delay* 300
   "Number of ms to delay before raising the window the mouse pointer entered.
 This can be overridden on a per-window basis using `set-auto-raise-delay!'"

@@ -34,6 +34,8 @@
 
 
 
+(define-scwm-group fvwm2-module "Fvwm2 Modules")
+
 ;;   fvwm-module
 ;; Supports running fvwm2 modules from scwm - this is mostly useful for
 ;; the pager.
