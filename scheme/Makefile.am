@@ -1,7 +1,7 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
 
-scwm_common_scheme = \
+scwm_common_scheme = \promp
 advice.scm animated-iconify.scm animation.scm auto-raise.scm \
 base.scm bincomm.scm cascade.scm constraints.scm decor.scm \
 defoption.scm desk-background.scm doc.scm edge-ops.scm \
@@ -10,6 +10,7 @@ fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm gnome-hints.scm \
 group.scm image-loaders.scm kde-hints.scm listops.scm message-window.scm \
 minimal.scm modifier-key-bindings.scm module-types.scm menus-extras.scm optargs.scm \
 path-cache.scm placement.scm preferences.scm prefs-menu.scm primopts.scm report-usage.scm \
+rgb-database.scm \
 shutdown-opts.scm simplebiff.scm simple-constraints.scm snap.scm sort.scm stacking.scm \
 std-menus.scm  style-options.scm style.scm \
 theme-impl.scm themes.scm tile.scm time-convert.scm ui-constraints-buttons.scm \
@@ -18,7 +19,7 @@ ui-constraints.scm virtual.scm window-locations.scm \
 wininfo.scm winlist.scm winops.scm wmconfig-menu.scm
 
 scwm_gtk_scheme = gtk.scm ScwmButtons.scm ScwmBiff.scm ScwmClock.scm ScwmDeskButtons.scm \
-		prompt-bool.scm prompt-range.scm prompt-string.scm flux-gtk.scm
+		prompt-bool.scm prompt-range.scm prompt-string.scm prompt-proc.scm flux-gtk.scm
 
 check: 
 	echo $(scwm_common_scheme) $(scwm_gtk_scheme) | perl -pe 's/\s+/\n/g' | sort > make.to-install
