@@ -622,7 +622,7 @@ extern int orig_x, orig_y, have_orig_position;
 static
 int 
 DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
-	       unsigned long *context, enum cursor cursor, int FinishEvent)
+	       enum cursor cursor, int FinishEvent)
 {
   Bool fDone = False;
   Bool fFinished = False;
@@ -630,13 +630,6 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
   Window original_w;
 
   original_w = *w;
-
-  if ((*context != C_ROOT) && (*context != C_NO_CONTEXT)) {
-    if ((FinishEvent == ButtonPress) || ((FinishEvent == ButtonRelease) &&
-					 (eventp->type != ButtonPress))) {
-      return False;
-    }
-  }
 
   if (!GrabEm(cursor)) {
     /* FIXGJB: call a scheme hook, not XBell */
@@ -691,13 +684,14 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
     eventp->xany.window = *w;
   }
   if (*w == Scr.Root) {
-    *context = C_ROOT;
+    /* FIXGJB: scheme callback, not bell */
     XBell(dpy, Scr.screen);
     UngrabEm();
     return True;
   }
   *tmp_win = SwFromWindow(dpy,*w);
   if (*tmp_win == NULL) {
+    /* FIXGJB: scheme callback, not bell */
     XBell(dpy, Scr.screen);
     UngrabEm();
     return (True);
@@ -714,12 +708,11 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
       (original_w != None) && (original_w != Scr.NoFocusWin))
     if (!((*w == (*tmp_win)->frame) &&
 	  (original_w == (*tmp_win)->w))) {
-      *context = C_ROOT;
+      /* FIXGJB: scheme callback, not bell */
       XBell(dpy, Scr.screen);
       UngrabEm();
       return True;
     }
-  *context = GetContext(*tmp_win, eventp, &dummy);
 
   UngrabEm();
   /* interactive operations should not use the stashed mouse position
@@ -734,11 +727,9 @@ select_window(SCM kill_p, SCM release_p)
   XEvent ev;
   Window w;
   ScwmWindow *tmp_win;
-  unsigned long context;
 
   SCM_REDEFER_INTS;
   w = Scr.Root;
-  context = C_ROOT;
 
   tmp_win = &Scr.ScwmRoot;
 
@@ -757,7 +748,7 @@ select_window(SCM kill_p, SCM release_p)
   }
 
 
-  if (DeferExecution(&ev, &w, &tmp_win, &context,
+  if (DeferExecution(&ev, &w, &tmp_win,
 		     (kill_p != SCM_BOOL_F ? CURSOR_DESTROY : CURSOR_SELECT),
 		     (release_p != SCM_BOOL_F ? ButtonRelease :
 		      ButtonPress))) {
