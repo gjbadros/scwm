@@ -125,7 +125,7 @@
 		  modifier-key-bindings window-selection
 		  group preferences
 		  send-string quote background
-		  property-respond highlight-current-window
+		  property-respond
 		  esdsound dir-focus tile undo
 		  )
 
@@ -187,7 +187,7 @@
 ;;;(documentation "make-menuitem")
 ;;;(apropos-internal "*")
 
-(set! *fvwm2-module-path* (append *fvwm2-module-path* '("/uns/lib/fvwm2")))
+(set! *fvwm2-module-path* (append *fvwm2-module-path* '("/usr/X11R6/lib/X11/fvwm2")))
 (define want-fvwm2-pager-module #t)
 (define want-fvwm2-winlist-module #f)
 
@@ -1646,8 +1646,6 @@ union of all other window managers!
 ;;(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
 ;; Alt-w
 ;;(bind-key 'all "A-w" (lambda () (display "alt-w\n")))
-
-;;(highlight-current-window XKM_HYPER_L XKM_SHIFT_L)
 
 ;; Handle Gale popup windows--
 ;; close them after 1 hour (GJB:FIXME:: should only do so if not directed to user)
