@@ -1,3 +1,8 @@
+Tue Sep 14 09:01:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Added font-locking of #! !# comment blocks -- thanks
+	Stephen Tse for the patch!
+
 Mon Sep  6 17:57:40 1999    <gjb@cs.washington.edu>
 
 	* scwm.el: Use scwm's new `object-documentation' to simplify elisp 

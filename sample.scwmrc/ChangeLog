@@ -1,3 +1,8 @@
+Tue Sep 14 08:59:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added a Change Background color menu item in the
+	preferences sub-menu.
+
 Mon Sep 13 13:28:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use xterm-program-name more throughout.  Use
