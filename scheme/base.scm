@@ -390,4 +390,4 @@ Currently, this means in the-root-module."
 
 (define-public (scwm-is-constraint-enabled?)
   "Return #t if scwm has the constraint solver primitives, #f otherwise."
-  (bound? 'cl-set-solver))
+  (bound? scwm-set-master-solver))
