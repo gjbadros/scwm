@@ -70,10 +70,10 @@ Window scwmexec_init(Display *dpy)
   return(XCreateSimpleWindow(dpy, root, 3, 4, 2, 2, 1, 0, 0));
 }
 
-char *scwmexec_exec(Display *dpy, Window w, unsigned char *req)
+char *scwmexec_exec(Display *dpy, Window w, char *req)
 {
-  unsigned char *result, *out, *err;
-  scwmexec_exec_full(dpy, w, req, &out, &err);
+  char *result, *out, *err;
+  result = scwmexec_exec_full(dpy, w, req, &out, &err);
   XFree (out);
   XFree (err);
   return result;
@@ -90,8 +90,8 @@ Bool FPropertyNotifyOnWindow(Display *dpy, XEvent *ev, Window *w)
 
 typedef Bool (*PredicateFn)();
 
-char *scwmexec_exec_full(Display *dpy, Window w, unsigned char *req,
-			 unsigned char **output, unsigned char **error)
+char *scwmexec_exec_full(Display *dpy, Window w, char *req,
+			 char **output, char **error)
 {
   Atom type_ret;
   int form_ret;
@@ -141,22 +141,22 @@ char *scwmexec_exec_full(Display *dpy, Window w, unsigned char *req,
   XGetWindowProperty(dpy, w, XA_SCWMEXEC_OUTPUT,
 		     0,0, False, AnyPropertyType, 
 		     &type_ret, &form_ret, &nitems, &bytes_after,
-		     output);
+		     (unsigned char **) output);
   XGetWindowProperty(dpy, w, XA_SCWMEXEC_OUTPUT,
 		     0, (bytes_after / 4) + ((bytes_after % 4) ? 1 : 0), 
 		     True, type_ret, 
 		     &type_ret, &form_ret, &nitems, &bytes_after,
-		     output);
+		     (unsigned char **) output);
 
   XGetWindowProperty(dpy, w, XA_SCWMEXEC_ERROR,
 		     0,0, False, AnyPropertyType, 
 		     &type_ret, &form_ret, &nitems, &bytes_after,
-		     error);
+		     (unsigned char **) error);
   XGetWindowProperty(dpy, w, XA_SCWMEXEC_ERROR,
 		     0, (bytes_after / 4) + ((bytes_after % 4) ? 1 : 0), 
 		     True, type_ret, 
 		     &type_ret, &form_ret, &nitems, &bytes_after,
-		     error);
+		     (unsigned char **) error);
 
   XGetWindowProperty(dpy, w, XA_SCWMEXEC_REPLY,
 		     0,0, False, AnyPropertyType, 
@@ -168,5 +168,5 @@ char *scwmexec_exec_full(Display *dpy, Window w, unsigned char *req,
 		     &type_ret, &form_ret, &nitems, &bytes_after,
 		     &prop);
 
-  return (prop);
+  return (char *) prop;
 }

@@ -52,12 +52,13 @@ void die(char *str)
 #ifdef HAVE_READLINE
 char *scwm_complete(char *text, int state)
 {
-  static unsigned char *output=NULL;
+  static char *result=NULL;
   static char *last=NULL;
   static char *completions[1024];
 
   if (!state) {
-    unsigned char *c,*e,*query,*error,*result,hold;
+    char *szSymbol;
+    char *query, *output, *error;
     unsigned n;
 
     if (!last || strcmp(last,text)!=0) {
@@ -65,41 +66,33 @@ char *scwm_complete(char *text, int state)
 	XFree(last);
       }
       last=strdup(text);
-      if (output) {
-	XFree(output);
-      }
-      query=(unsigned char *)malloc(strlen(text)+14);
-      strcat(strcat(strcpy(query,"(apropos-internal \"^"),text),"\")");
-      result=scwmexec_exec_full(display,w,query,&output,&error);
-      if (error) {
-	XFree(error);
-      }
       if (result) {
 	XFree(result);
+        output = NULL;
+      }
+      query = malloc(strlen(text)+30);
+      sprintf(query,"(apropos-internal \"^%s\")",text);
+      result = scwmexec_exec_full(display,w,query,&output,&error);
+      if (error) {
+        if (strlen(error) > 0)
+          fprintf(stderr,"Got error querying apropos-internal for completion: %s",error);
+	XFree(error);
+        error = NULL;
+      }
+      if (output) {
+	XFree(output);
+        output = NULL;
       }
       free(query);
+      query = NULL;
     }
 
-    c=output;
+    /* result is something like "(documentation documentation-debug doc-files)" */
+    szSymbol = strtok(result+1," \t)");
     n=0;
-    while (n<1023) {
-      c=strstr(c,": ");
-      if (!c)
-	break;
-      c+=2;
-      e=strpbrk(c,"\t\n");
-      if (!e) {
-	completions[n++]=strdup(c);
-	break;
-      }
-      hold=*e;
-      *e=0;
-      completions[n++]=strdup(c);
-      *e=hold;
-      c=strchr(e,'\n');
-      if (!c)
-	break;
-      c++;
+    while (n<1023 && szSymbol) {
+      completions[n++] = strdup(szSymbol);
+      szSymbol = strtok(NULL," \t)");
     }
     completions[n]=NULL;
   }
@@ -305,7 +298,7 @@ main(int argc, char **argv)
   int splitpoint;
   char *expr;
   int done = 0;
-  char *gather=calloc(1,1);
+  char *gather=calloc(1,sizeof(char));
 
   if (argc != 1)
     die("Usage: scwmrepl\n");
@@ -327,7 +320,7 @@ main(int argc, char **argv)
 
   while (!done) {
     if ((splitpoint = check_balance(gather))) {
-      unsigned char *result, *error, *output;
+      char *result, *error, *output;
       expr = split_at(&gather,splitpoint);
       result = scwmexec_exec_full(display,w,expr,&output,&error);
 
@@ -339,10 +332,11 @@ main(int argc, char **argv)
       }
       putchar('\n');
 
-      if (result) XFree(result);
-      if (output) XFree(output);
-      if (error) XFree(error);
+      if (result) { XFree(result); result = NULL; }
+      if (output) { XFree(output); output = NULL; }
+      if (error) { XFree(error); error = NULL; }
       free(expr);
+      expr = NULL;
     } else {
       done = !appending_fgets(&gather);
     }
