@@ -1226,6 +1226,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
     /* FIXGJB: is this recursion  bad? */
     return popup_menu(scmAction, SCM_BOOL_FromBool(fWarpToFirst));
   }
+  return SCM_BOOL_F;
 }
 
 SCWM_PROC(popup_menu,"popup-menu", 1,1,0,
