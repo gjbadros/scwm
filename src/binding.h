@@ -7,6 +7,7 @@
 #define BINDING_H
 
 SCM bind_key(SCM contexts, SCM key, SCM proc);
+SCM unbind_key(SCM contexts, SCM key);
 SCM bind_mouse(SCM contexts, SCM button, SCM proc);
 
 void init_binding();
