@@ -23,7 +23,8 @@
   :use-module (app scwm base)
   :use-module (app scwm module-types)
   :use-module (app scwm bincomm)
-  :use-module (app scwm fvwm-eval))
+  :use-module (app scwm fvwm-eval)
+  :use-module (app scwm optargs))
 
 
 
@@ -195,7 +196,8 @@
 		      to-module-write))))
 	     active-modules)))
 
-(define-public (run-fvwm-module module-file config-file config-info)
+(define*-public (run-fvwm-module module-file config-file config-info
+				#&ooptional (other-args ""))
   (let* ((from-module-pipe (pipe))
 	 (from-module-read (car from-module-pipe))
 	 (from-module-write (cdr from-module-pipe))
@@ -234,10 +236,11 @@
 	    (read-fd (number->string (fileno to-module-read))))
 ;;	(display (string-append 
 ;;		  "child: " module-file " " write-fd " " read-fd " " config-file 
-;;		  " " app-window " " context " " first-desktop " " 
-;;		  last-desktop "\n") (current-output-port))
-	(execl module-file module-file write-fd read-fd config-file 
-	       app-window context first-desktop last-desktop))
+;;		  " " app-window " " context " " (apply string-append
+;;	(map (lambda (x) (string-apppend " " x)) other-args) "\n") 
+;;	(current-output-port))
+	(apply execl module-file module-file write-fd read-fd config-file 
+	       app-window context other-args))
       (display "Exec failed.\n")
       (exit 0)))
 
