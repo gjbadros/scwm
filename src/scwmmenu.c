@@ -75,6 +75,8 @@ print_scwmmenu(SCM obj, SCM port, scm_print_state * pstate)
   if (SCWM_MENU_P(obj)) {
     Scwm_Menu *menu = SCWM_SCWMMENU(obj);
     scm_write(gh_car(menu->scmMenuItems), port);
+    scm_puts(", hotkeys: ",port);
+    scm_puts(menu->pchUsedShortcutKeys,port);
   } else {
     scm_puts("(invalid)", port);
   }
@@ -89,6 +91,37 @@ scwmmenu_p(SCM obj)
   return ((SCM_NIMP(obj) && SCWM_MENU_P(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
+
+char *
+NewPchKeysUsed(SCM list_of_menuitems)
+{
+  int cItems = gh_list_length(list_of_menuitems);
+  char *pch = safemalloc(sizeof(char) * (cItems + 1));
+  int ich = 0;
+  SCM item;
+  SCM rest = list_of_menuitems;
+  Scwm_MenuItem *mi;
+
+  memset(pch,0,cItems+1);
+  while (True) {
+    item = gh_car(rest);
+    mi = SCWM_MENUITEM(item);
+    if (mi->pchHotkeyPreferences) {
+      char *pchDesiredChars = mi->pchHotkeyPreferences;
+      char ch;
+      while ((ch = *pchDesiredChars++) != '\0') {
+	if (!strchr(pch,ch)) {
+	  pch[ich++] = ch;
+	  break;
+	}
+      }
+    }
+    rest = gh_cdr(rest);
+    if (SCM_NULLP(rest))
+      break;
+  }
+  return pch;
+}
 
 SCM make_scwmmenu(SCM list_of_menuitems,
 		  SCM picture_side, SCM side_bg_color,
@@ -147,7 +180,7 @@ SCM make_scwmmenu(SCM list_of_menuitems,
   menu->scmFont = font;
 
   /* FIXGJB: initialize this properly */
-  menu->pchUsedShortcutKeys = NULL;
+  menu->pchUsedShortcutKeys = NewPchKeysUsed(menu->scmMenuItems);
 
   SCM_NEWCELL(answer);
   SCM_SETCAR(answer, scm_tc16_scwm_scwmmenu);
