@@ -34,6 +34,7 @@ in the directory scheme:
 in the directory utilities/dev:
     X-error-describe
 
+
 Sam Steingold:
 provided numerous bug fixes, added several useful Scheme modules, and
 wrote an emacs interaction mode for scwm. Wrote the followwing files
@@ -62,7 +63,7 @@ subdirectory scwm:
     placement.c   resize.c      scwm.c        util.c
     window.c
 
-Chris Hines:
+Charles Hines:
 continued maintenance of Fvwm after the retirement of Robert Nation as
 maintainer. Many other people added code at this point, but
 determining exactly who did what is difficult due to lack of accurate
