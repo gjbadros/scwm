@@ -432,7 +432,7 @@ Returns a string which is present in the `scwm-obarray'."
 ;; help
 ;; ----
 
-(defvar scwm-bug "scwm-discuss@scwm.mit.edu"
+(defvar scwm-bug "scwm-bugs@scwm.mit.edu"
   "The address to send bug reports on scwm.")
 
 ;;;###autoload
