@@ -1179,6 +1179,8 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all (hyper "f") focus-to-register)
 (bind-key 'all (hyper "c") window-configuration-to-register)
 (bind-key 'all (hyper "x") global-window-configuration-to-register)
+(bind-key 'all (hyper "period") push-window-configuration)
+(bind-key 'all (hyper "S-period") pop-window-configuration)
 
 (bind-key 'all (hyper "d") focus-window-with-pointer)
 
@@ -1191,8 +1193,9 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 ;;; (define (force-gc)  (display "gc...")  (gc) (display "done!\n"))
 ;;; (bind-key 'all "C-S-A-g" force-gc)
 
-(bind-key 'all (hyper "q") quote-key-event)
-(bind-key 'all (hyper "m") quote-mouse-event)
+(bind-key 'all (hyper "q") quote-next-event)
+;; (bind-key 'all (hyper "q") quote-key-event)
+;; (bind-key 'all (hyper "m") quote-mouse-event)
 
 (load-user-file "after-bindings")
 
