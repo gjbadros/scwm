@@ -1,4 +1,4 @@
-Scwm 0.99.2 is released.
+Scwm @VERSION@ is released.
 
 * What Scwm is:
 
@@ -44,10 +44,10 @@ the name of the list you want.
 
 You can download the latest scwm source package from:
 
-ftp://scwm.mit.edu/pub/scwm/scwm-0.99.2.tar.gz
+ftp://scwm.mit.edu/pub/scwm/scwm-@VERSION@.tar.gz
 
 There is also
-ftp://scwm.mit.edu/pub/scwm/scwm-icons-0.99.2.tar.gz
+ftp://scwm.mit.edu/pub/scwm/scwm-icons-@VERSION@.tar.gz
 
 which has a number of images for use with scwm as icons, textures,
 buttons, etc. Some of these images are not available otherwise.
@@ -78,7 +78,11 @@ ftp://scwm.mit.edu/pub/scwm/RPMS/
 
 Various source RPMs are available at:
 
-ftp://scwm.mit.edu/pub/scwm/SRPMS
+ftp://scwm.mit.edu/pub/scwm/SRPMS/
+
+and the scwm-icons distribution is available at:
+
+ftp://scwm.mit.edu/pub/scwm/RPMS/noarch
 
 See the NEWS file in the distribution for a complete list
 of all that has changed since the previous version of Scwm.
