@@ -1,3 +1,9 @@
+Fri Dec  3 13:22:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.common: Added rules for creating *.doc files from *.c,
+	*.cc files for new argument+string based docstring extraction
+	system. 
+
 Fri Nov 26 14:49:30 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-bug-report-information: Fix some bugs from directory

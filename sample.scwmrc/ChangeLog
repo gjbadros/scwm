@@ -1,3 +1,8 @@
+Fri Dec  3 10:25:17 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use cursor module to get fancier resize cursors.
+	Bind 'frame-sides to do resize-or-raise, not move-or-raise.
+
 Sun Nov 28 10:19:00 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Do not quote menus at use-sites.  They don't get

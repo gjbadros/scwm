@@ -6,9 +6,9 @@ Fri Dec  3 13:19:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
 	* scwm-doc-snarf: Added -- for extracting the docstrings from the
 	last argument to the macro.
 
-	* scwm-snarf.h, *.c, *.cc:  Updated SCWM_*PROC and SCWM_*HOOK macros to have
-	docstrings as last argument instead of as a comment just after the 
-	macro.
+	* scwm-snarf.h, *.c, *.cc: Updated SCWM_*PROC and SCWM_*HOOK
+ 	macros to have docstrings as last argument instead of as a comment
+ 	just after the macro.
 
 Fri Dec  3 10:11:34 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
