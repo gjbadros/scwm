@@ -1545,7 +1545,7 @@ HandleButtonPress()
        'done */
     if (SCM_BOOL_F == done &&
         gh_procedure_p(pbnd->Thunk)) {
-      find_mouse_event_type();
+      find_mouse_event_type(&Event.xbutton);
       call_interactively(pbnd->Thunk,SCM_BOOL_F);
       clear_mouse_event_type();
     }

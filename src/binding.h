@@ -10,6 +10,7 @@
 #endif
 
 #include <X11/X.h>
+#include <X11/Xlib.h>
 
 #include "window_fwd.h"
 
@@ -62,7 +63,7 @@ typedef struct Binding_tag {
 
 void init_modifiers();
 void init_pointer_mapping(void);
-void find_mouse_event_type();
+void find_mouse_event_type(XButtonEvent *ev);
 void clear_mouse_event_type();
 
 SCM mouse_event_type();

@@ -204,6 +204,7 @@ Bool fDisableBacktrace = False;
 Bool fDocumentPrimitiveFormals = False;
 Bool segvs_to_reset = 0;
 Bool fHandleSegv = True;
+Bool scwm_gc_often = False;
 
 
 char **g_argv;
@@ -762,7 +763,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 
   
   while(1) {
-    static const char *getopt_opts = "Dsd:f:e:hibVnp:P";
+    static const char *getopt_opts = "Dsd:f:e:hibVnp:Pg";
     static struct option getopt_longopts[] =
     {
       {"debug", 0, NULL, 'D'}, /* turns on Scwm debugging */
@@ -775,6 +776,7 @@ is probably of no use to you unless you're a session manager or debbuging.
       {"version", 0, NULL, 'V'},
       {"dump", 1, NULL, 'm'},
       {"document-formals", 0, NULL, 'F'},
+      {"gc-often", 0, NULL, 'g'},
       {"segv-reset-count", 1, NULL, 'p'},
       {"segv-just-stop", 0, NULL, 'P'},
       {"nobacktrace", 0, NULL, 'n'}, /* turns off guile backtraces */
@@ -791,6 +793,9 @@ is probably of no use to you unless you're a session manager or debbuging.
       fShouldDump = True;
       szBinaryPath = argv[0];
       szDumpFile = strdup(optarg);
+      break;
+    case 'g':
+      scwm_gc_often = True;
       break;
     case 'D':
       debugging = True; break;
@@ -1629,9 +1634,10 @@ void
 usage(void)
 {
   fprintf(stderr, "\nScwm Version %s\n", VERSION);
-  fprintf(stderr, "Usage: %s [--display|-d dpy] [--debug]"
-	  "[--expression|-e expression]\n"
+  fprintf(stderr, "Usage: %s [--display|-d dpy]\n"
+	  "      [--expression|-e expression]\n"
 	  "      [--file|-f rc_file] [--single-screen|-s]\n"
+          "      [--gc-often|-g] [--debug|-D]\n"
 	  "      [--nobacktrace|-n] [--segv-cleanup-and-stop|-p] [--segv-just-stop|-P]\n"
           "      [--no-document-formals|-N]\n"
 	  "      [--blackout|-b] [--" CLIENT_ID_STRING " id]\n"

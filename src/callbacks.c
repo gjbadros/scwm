@@ -340,9 +340,11 @@ are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 #ifdef HAVE_SCM_MAKE_HOOK
 
 extern ScwmWindow *pswCurrent;
+extern Bool scwm_gc_often;
 
 __inline__ SCM scwm_run_hook(SCM hook, SCM args)
 {
+  static Bool scwm_gc_really_often = False;
   ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
   SCM answer;
 #ifdef SCWM_DEBUG_RUN_HOOK
@@ -350,7 +352,9 @@ __inline__ SCM scwm_run_hook(SCM hook, SCM args)
   scm_write(hook,scm_current_error_port());
   scm_newline(scm_current_error_port());
 #endif
+  if (scwm_gc_often) scm_gc();
   answer = scwm_safe_apply(run_hook_proc, gh_cons(hook,args));
+  if (scwm_gc_really_often) scm_gc();
   pswCurrent = psw;
   return answer;
 }

@@ -1365,11 +1365,13 @@ Bool have_orig_position = False;
 int orig_x, orig_y;
 
 void 
-find_mouse_event_type()
+find_mouse_event_type(XButtonEvent *ev)
 {
   XEvent d;
 
-  WXGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y);
+  orig_x = ev->x_root;
+  orig_y = ev->y_root;
+  /*   WXGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y); */
   have_orig_position = True;
 
   mouse_ev_type = sym_motion;

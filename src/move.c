@@ -165,12 +165,17 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
     /* discard any extra motion events before a logical release */
     if (Event.type == MotionNotify) {
       while (XCheckMaskEvent(dpy, PointerMotionMask | ButtonMotionMask |
-			     ButtonPressMask | ButtonRelease, &Event)) {
+                             ButtonPressMask | ButtonReleaseMask, &Event)) {
 	StashEventTime(&Event);
-	if (Event.type == ButtonRelease)
+	if (Event.type == ButtonRelease || Event.type == ButtonPress) {
+#ifdef SCWM_DEBUG_MOVE_LOOP
+          fprintf(stderr,"leaving early due to button event\n");
+#endif
 	  break;
+        }
       }
     }
+
     done = False;
     /* Handle key press events to allow mouseless operation */
     if (Event.type == KeyPress)
@@ -206,19 +211,19 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 	break;
       }
     case ButtonRelease:
-      xl = Event.xmotion.x_root + XOffset;
-      yt = Event.xmotion.y_root + YOffset;
+      xl = Event.xbutton.x_root + XOffset;
+      yt = Event.xbutton.y_root + YOffset;
 
-
+#ifdef SCWM_DEBUG_MOVE_LOOP
+      fprintf(stderr,"button released\n");
+#endif
       done = True;
       finished = True;
       break;
 
     case MotionNotify:
-      xl = Event.xmotion.x_root;
-      yt = Event.xmotion.y_root;
-      xl += XOffset;
-      yt += YOffset;
+      xl = Event.xmotion.x_root + XOffset;
+      yt = Event.xmotion.y_root + YOffset;
 
       /* Resist moving windows over the edge of the screen! */
       SnapCoordsToEdges(&xl, &yt, psw->frame_width, psw->frame_height,
@@ -254,6 +259,11 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
         }
 
         /* same hook is called above, before the iterations begin */
+#ifdef SCWM_DEBUG_MOVE_LOOP
+        fprintf(stderr,"new-position hook %d,%d, finalX/Y %d,%d\n",
+                real_x,real_y,
+                WIN_VP_OFFSET_X(psw)+xl,WIN_VP_OFFSET_Y(psw)+yt);
+#endif
 	call3_hooks(interactive_move_new_position_hook, psw->schwin,
 		    gh_int2scm(real_x), gh_int2scm(real_y));
 
@@ -275,18 +285,19 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
           }
 	}
 	paged++;
-      }
+      } /* while (paged <= 1) */
 
       done = True;
       break;
 
     default:
       break;
-    }
+    } /* switch (Event.type) */
     if (!done) {
       DispatchEvent();
     }
-  }
+  } /* while (!finished) */
+
   if (!opaque_move)
     RemoveRubberbandOutline();
 
@@ -303,6 +314,11 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
     }
   }
     
+#ifdef SCWM_DEBUG_MOVE_LOOP
+  fprintf(stderr,"return finalX/Y %d,%d, frameXY %d,%d\n",
+          WIN_VP_OFFSET_X(psw)+xl, WIN_VP_OFFSET_Y(psw) + yt,
+          FRAME_X_VP(psw),FRAME_Y_VP(psw));
+#endif
   *FinalX = WIN_VP_OFFSET_X(psw) + xl;
   *FinalY = WIN_VP_OFFSET_Y(psw) + yt;
 }
