@@ -102,7 +102,7 @@ SCWM_PROC(X_property_set_x, "X-property-set!", 3, 3, 0,
 	  (SCM win, SCM name, SCM value, SCM type, SCM format, SCM action))
      /** Set X property NAME on window WIN to VALUE.
 WIN is the window to set the X property on, or 'root-window.
-NAME and TYPE are strings. TYPE defaults to "XA_STRING".
+NAME and TYPE are strings. TYPE defaults to "STRING".
 FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
 VALUE may be a string, if FORMAT is 8, and may always be a vector
@@ -170,7 +170,7 @@ value. */
   if (type == SCM_UNDEFINED) {
     atype=XA_STRING;
   } else if (gh_string_p(type)) {
-    str=gh_scm2newstr(name, NULL);
+    str=gh_scm2newstr(type, NULL);
     atype=XInternAtom(dpy, str, False);
     FREE(str);
   } else {
