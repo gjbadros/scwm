@@ -857,16 +857,8 @@ HandlePropertyNotify()
   if (Event.xproperty.state != PropertyDelete) {
     char *szName = XGetAtomName(dpy,Event.xproperty.atom);
     
-    /* FIXMS: window context shouldn't even be set here. */
-    /* GJB:FIXME:MS: what is this for? */
-    
-    if (NULL != pswCurrent) {
-      set_window_context(pswCurrent->schwin);
-    }
-    call2_hooks(x_propertynotify_hook, gh_str02scm(szName), scm_window_context);
-    if (NULL != pswCurrent) {
-      unset_window_context();
-    }
+    call2_hooks(x_propertynotify_hook, gh_str02scm(szName),
+		pswCurrent->schwin);
     XFree(szName);
   }
 }
