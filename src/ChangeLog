@@ -1,3 +1,29 @@
+Mon Aug 10 17:45:55 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added SendClientConfigureNotify fn, and call it from
+	  MovePswToCurrentPosition and ResizePswToCurrentSize (instead of
+	  having the code in SendClientConfigureNotify inline in
+	  SetupFrame).  Rename local var w to cpix, since w implies an
+	  X-Window to me.
+
+	* scwm.c: Added error checking after opening of display in if
+	  (!single) branch
+
+	* resize.c: Use psw->xboundary_width instead of
+	  psw->boundary_width for width of the window
+
+	* borders.c: Move the SendClientConfigureNotify code into function 
+	  by that name in window.c (from SetupFrame).  Added macro to
+	  check 'no-side-decorations property, and honour it by using
+	  xboundary_width instead of boundary_width, as appropriate.
+	  (This is not yet a debugged feature -- unhighlighted windows do
+	  not display properly, and the top boundary decoration sidebar
+	  should probably be dropped when side-decorations are dropped
+	  (just letting the titlebar serve as the top boundary decoration)
+
+	* window.h: Added xboundary_width field of struct ScwmWindow, and
+	  use it in GRAV_X_ADJUSTMENT macro
+
 Fri Aug  7 20:04:44 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added changed.c, log-usage.c, log-usage.h.
