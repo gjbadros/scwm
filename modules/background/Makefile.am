@@ -10,7 +10,8 @@ libbackground_la_LDFLAGS = -export-dynamic
 
 libbackground_snarfs = background.x
 
-INCLUDES = -I$(top_srcdir)/scwm @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
+INCLUDES = -I$(top_srcdir)/scwm -I$(top_srcdir)/include @x_cflags@ \
+	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 BUILT_SOURCES = $(libbackground_snarfs)
 
 SUFFIXES = .x

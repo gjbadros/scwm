@@ -10,7 +10,8 @@ libpie_menus_la_LDFLAGS = -export-dynamic
 
 libpie_menus_snarfs = draw-pie-menu.x
 
-INCLUDES = -I$(top_srcdir)/scwm @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
+INCLUDES = -I$(top_srcdir)/scwm -I$(top_srcdir)/include @x_cflags@ \
+	   @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 BUILT_SOURCES = $(libpie_menus_snarfs)
 
 SUFFIXES = .x
