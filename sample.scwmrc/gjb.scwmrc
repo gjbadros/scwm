@@ -1515,8 +1515,11 @@ union of all other window managers!
 
 
 (define (send-button-press-1) (send-button-press 1))
+;;(define (send-button-press-1) (xtest-fake-button-event 1 #t))
 (define (send-button-press-2) (send-button-press 2))
+;;(define (send-button-press-2) (xtest-fake-button-event 2 #t))
 (define (send-button-press-3) (send-button-press 3))
+;;(define (send-button-press-3) (xtest-fake-button-event 3 #t))
 
 ;; GJB:FIXME:: modifiers interface could be better... mimic off Emacs?
 ;; GJB:FIXME:: keys should be first class
