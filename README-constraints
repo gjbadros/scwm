@@ -1,7 +1,7 @@
 Scwm Constraint Solver Readme
 -----------------------------
 
-By Greg J. Badros -- 14 August 1998
+By Greg J. Badros -- 14 August 1998, Last updated 7 October 1998
 
 
 For any of you interested in playing the the constraint-solving
@@ -46,23 +46,20 @@ scwm `doc-files' variable to point at both).
 Then you need to rebuild scwm w/ constraint-solver support. Do this
 using a recent dev snapshot or v0.8 by giving
 --with-cassowary=/path/to/cassowary/c++ as an argument to scwm's
-configure. Then do a clean build of scwm_cl, but use the
-makefile.cassowary (which includes the scwm-generated Makefile):
+configure. Then do a clean build of scwm, using:
 
-cd scwm/scwm
+make clean
+make all
 
-make -f makefile.cassowary scwm_cl
 
 All the normal scwm files will build with the C compiler, but the couple 
 of .cc files must be built with the same C++ compiler as you used to
 build Cassowary, and the link step must be done by a C++ compiler, too.
-You may need to edit makefile.cassowary to specify the C++
-compiler/linker.
 
-If all has gone well, you should be able to run the new binary
-"./scwm_cl" just as you would an ordinary scwm binary. Then try
-evaluating some of the S-expressions from scheme/tests/constraints.scm
-for a demonstration of some of what the solver and scwm can do together.
+If all has gone well, you should be able to run the new binary just as
+you would an ordinary scwm binary. Then try evaluating some of the
+S-expressions from scheme/tests/constraints.scm for a demonstration of
+some of what the solver and scwm can do together.
 
 Note that when the constraint solver is in use, all interactive resizes
 and moves are done opaquely, no matter what options you give to the
@@ -71,7 +68,10 @@ interactive-move or interactive-resize primitives.
 Please let me know of successes and failures. Consider the constraint
 code alpha. My main wm now has the constraint solver embedded, but I
 only turn on the solver (using the scwm-set-master-solver primitive) on
-my testing X server. The behaviour of scwm_cl w/o ever using the
-constraint primitives should be nearly identical to scwm w/o constraints.
+my testing X server. The behaviour of scwm built w/ constraints w/o ever
+using the constraint primitives should be nearly identical to scwm w/o
+constraints.  The procedure `scwm-is-constraint-enabled?' will return #t
+if the running scwm was built with csontraint support, and #f otherwise.
 
 Good luck.
+Greg J. Badros
