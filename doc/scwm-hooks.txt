@@ -87,7 +87,7 @@ cannot-grab-hook
 This hook is invoked with no arguments whenever scwm cannot
 successfully grab the X server. `beep' is one example of a procedure
 to use here.  
-[From scwm/window.c:3928]
+[From scwm/window.c:3949]
 
 
 change-desk-hook
@@ -103,7 +103,7 @@ client-message-hook
 This hook is invoked whenever Scwm receives an X/11 client message.
 It is called with three arguments: the message-type atom, the format (8, 16, or 32), 
 and the vector of data. 
-[From scwm/events.c:2097]
+[From scwm/events.c:2110]
 
 
 deiconify-hook
@@ -232,7 +232,7 @@ This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
 operation like `interactive-resize' or `interactive-move'. `beep' is
 one example of a procedure to use here. 
-[From scwm/window.c:3922]
+[From scwm/window.c:3943]
 
 
 shutdown-hook
@@ -268,7 +268,15 @@ This hook is invoked whenever a scwm-managed window is closed
 for any reason. The hook procedures are invoked with one argument,
 WIN, the window being closed.  The WIN is still valid during the hook
 procedures. 
-[From scwm/window.c:3916]
+[From scwm/window.c:3937]
+
+
+window-enter-hook
+- 
+This hook is invoked whenever the mouse pointer enters a window.
+It is called with one argument, the window object of the window just
+entered. 
+[From scwm/events.c:2100]
 
 
 window-focus-change-hook
@@ -276,7 +284,15 @@ window-focus-change-hook
 This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
 that now has the focus, or #f if no window now has the focus. 
-[From scwm/events.c:2092]
+[From scwm/events.c:2095]
+
+
+window-leave-hook
+- 
+This hook is invoked whenever the mouse pointer leaves a window.
+The hook procedures are invoked with one argument, the window object
+of the window just left. 
+[From scwm/events.c:2105]
 
 
 window-property-change-hook
@@ -294,7 +310,7 @@ This hook is invoked upon DestroyNotify X events.
 It indicates a window is being destroyed.  The hook procedures are
 invoked with one argument, WIN, the window being destroyed.
 The WIN is still valid during the hook procedures. 
-[From scwm/events.c:2074]
+[From scwm/events.c:2077]
 
 
 X-MappingNotify-hook
@@ -303,7 +319,7 @@ This hook is invoked whenever a MappingNotify X event is
 received. A MappingNotify event indicates a change of keymapping - in
 particular, it may indicate a change of available modifiers or mouse
 buttons. The hook procedures are invoked with no arguments. 
-[From scwm/events.c:2068]
+[From scwm/events.c:2071]
 
 
 X-MapRequest-hook
@@ -312,7 +328,7 @@ This hook is invoked upon MapRequest X events.  It indicates a
 window is trying to map itself (add itself to the display).  The hook 
 procedures are invoked with one argument, WIN, the window being mapped.  
 The WIN is valid during the hook procedures. 
-[From scwm/events.c:2086]
+[From scwm/events.c:2089]
 
 
 X-PropertyNotify-hook
@@ -323,7 +339,7 @@ property has changed. Watching for window property changes can be used
 to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
 that changed (as a string) and the window that it changed for. 
-[From scwm/events.c:2047]
+[From scwm/events.c:2052]
 
 
 X-root-PropertyNotify-hook
@@ -337,7 +353,7 @@ procedures are invoked with two arguments: the atom for the changed
 property and a boolean telling whether the property was deleted. 
 These arguments are different from those passed to
 X-PropertyNotify-hook's procedures. 
-[From scwm/events.c:2056]
+[From scwm/events.c:2060]
 
 
 X-UnmapNotify-hook
@@ -346,6 +362,6 @@ This hook is invoked upon UnmapNotify X events.  It indicates a
 window is being unmapped (removed from display).  The hook procedures
 are invoked with one argument, WIN, the window being destroyed.  The
 WIN is still valid during the hook procedures. 
-[From scwm/events.c:2080]
+[From scwm/events.c:2083]
 
 

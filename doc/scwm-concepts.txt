@@ -69,7 +69,7 @@ Event Contexts
 
 
  
-[From scwm/binding.c:548]
+[From scwm/binding.c:601]
 
 
 Face Flags
@@ -224,7 +224,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3194]
+[From scwm/window.c:3215]
 
 
 Fonts
@@ -300,9 +300,13 @@ Key Specifier
 modifiers.  The available modifiers include S-, C-, M-, A-, H-, and s-
 for Shift, Control, Meta, Alt, Hyper, and Super, respectively.  They
 can be combined arbitrarily, and in any order, but should precede the
-key name.
+key name. When a key specifier is being used to indicate a binding,
+the additional special modifier *- may be used; it indicates that the
+key should be bound with every possible modifier combination,
+including possibly no modifiers. *- may not be combined with any other
+modifier.
 
-[From scwm/binding.c:79]
+[From scwm/binding.c:103]
 
 
 Menu Looks

@@ -10,6 +10,7 @@
 '(default-auto-raise-focus-proc)
 '(default-auto-raise-unfocus-delay)
 '(default-auto-raise-unfocus-proc)
+'(default-hover-focus-delay)
 '(default-menu-max-fold-lines)
 '(gnome-desktop-number)
 '(gnome-shade-animated)

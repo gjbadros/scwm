@@ -41,7 +41,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release post-0.8</releaseinfo>
-    <pubdate>11 February 1999</pubdate>
+    <pubdate>10 March 1999</pubdate>
     <copyright>
       <year>1997&ndash;1999</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
@@ -397,7 +397,7 @@ much as <link linkend="map"><function>map</function></link> would do it. If proc
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/animated-iconify.scm"><filename>scheme/animated-iconify.scm</filename></ulink>
-  at line 58 </para> </refsect1>
+  at line 68 </para> </refsect1>
 </refentry>
 
 <refentry id="animated-deiconify-to-current-viewport">
@@ -416,12 +416,12 @@ much as <link linkend="map"><function>map</function></link> would do it. If proc
   </refsect1>
   <refsect1>
   <title>Module</title>
-  <para></para>
+  <para>(app scwm animated-iconify)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/animated-iconify.scm"><filename>scheme/animated-iconify.scm</filename></ulink>
-  at line 63 </para> </refsect1>
+  at line 77 </para> </refsect1>
 </refentry>
 
 <refentry id="animated-iconify">
@@ -445,7 +445,7 @@ much as <link linkend="map"><function>map</function></link> would do it. If proc
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/animated-iconify.scm"><filename>scheme/animated-iconify.scm</filename></ulink>
-  at line 52 </para> </refsect1>
+  at line 56 </para> </refsect1>
 </refentry>
 
 <refentry id="animated-move-to">
@@ -503,7 +503,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/modules/c-animation/c-animation.c"><filename>modules/c-animation/c-animation.c</filename></ulink>
-  at line 404 </para> </refsect1>
+  at line 405 </para> </refsect1>
 </refentry>
 
 <refentry id="animated-resize-frame">
@@ -529,7 +529,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/modules/c-animation/c-animation.c"><filename>modules/c-animation/c-animation.c</filename></ulink>
-  at line 521 </para> </refsect1>
+  at line 522 </para> </refsect1>
 </refentry>
 
 <refentry id="animated-resize-window">
@@ -555,7 +555,31 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/modules/c-animation/c-animation.c"><filename>modules/c-animation/c-animation.c</filename></ulink>
-  at line 509 </para> </refsect1>
+  at line 510 </para> </refsect1>
+</refentry>
+
+<refentry id="animated-toggle-iconify">
+  <refnamediv>
+    <refname>animated-toggle-iconify</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(animated-toggle-iconify #&amp;optional (win (get-window)))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/animated-iconify.scm"><filename>scheme/animated-iconify.scm</filename></ulink>
+  at line 90 </para> </refsect1>
 </refentry>
 
 <refentry id="animated-window-shade">
@@ -582,7 +606,7 @@ the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/modules/c-animation/c-animation.c"><filename>modules/c-animation/c-animation.c</filename></ulink>
-  at line 313 </para> </refsect1>
+  at line 314 </para> </refsect1>
 </refentry>
 
 <refentry id="animated-window-unshade">
@@ -609,7 +633,7 @@ not specified. See also <link linkend="window-unshade"><function>window-unshade<
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/modules/c-animation/c-animation.c"><filename>modules/c-animation/c-animation.c</filename></ulink>
-  at line 372 </para> </refsect1>
+  at line 373 </para> </refsect1>
 </refentry>
 
 <refentry id="append-fvwm2-module-config">
@@ -633,7 +657,7 @@ not specified. See also <link linkend="window-unshade"><function>window-unshade<
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 365 </para> </refsect1>
+  at line 385 </para> </refsect1>
 </refentry>
 
 <refentry id="append-map">
@@ -861,16 +885,18 @@ The value is read from PORT, or the current-input-port.
     <refpurpose>Bind the given KEY within the CONTEXTS to invoke PROC.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(bind-key contexts key proc)</synopsis>
+    <synopsis>(bind-key contexts key proc #&amp;optional release-proc)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
   Bind the given <parameter>key</parameter> within the <parameter>contexts</parameter> to invoke <parameter>proc</parameter>.
-<parameter>contexts</parameter> is a list of event-contexts (e.g., '(button1 sidebar))
-<parameter>key</parameter> is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
+<parameter>contexts</parameter> is a list of event-contexts (e.g., '(button1 sidebar)) <parameter>key</parameter> is
+a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 <parameter>proc</parameter> is a procedure that will be invoked (with no arguments) when the
-specified key is pressed in the specified context.
+specified key is pressed in the specified context. The optional
+argument RELEASE_<parameter>proc</parameter>, if specified, is a procedure that will be
+invoked when the key is release."
   </para>
   </refsect1>
   <refsect1>
@@ -880,7 +906,7 @@ specified key is pressed in the specified context.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 690 </para> </refsect1>
+  at line 743 </para> </refsect1>
 </refentry>
 
 <refentry id="bind-keycode">
@@ -911,7 +937,7 @@ nothing should be done on key release.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 750 </para> </refsect1>
+  at line 814 </para> </refsect1>
 </refentry>
 
 <refentry id="bind-mouse">
@@ -939,7 +965,7 @@ specified button is pressed in the specified context.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 808 </para> </refsect1>
+  at line 872 </para> </refsect1>
 </refentry>
 
 <refentry id="bind-three-modifier-key-events">
@@ -1042,7 +1068,7 @@ usual way if not specified.  See <link linkend="normal-border"><function>normal-
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3045 </para> </refsect1>
+  at line 3066 </para> </refsect1>
 </refentry>
 
 <refentry id="border-style">
@@ -1319,7 +1345,7 @@ This resets the 'circulate-skip property of WIN.  See also <link linkend="circul
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 181 </para> </refsect1>
+  at line 182 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-hit-icon">
@@ -1345,7 +1371,7 @@ See also <link linkend="circulate-skip-icon"><function>circulate-skip-icon</func
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 196 </para> </refsect1>
+  at line 197 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-skip">
@@ -1370,7 +1396,7 @@ This sets the 'circulate-skip property of WIN.  See also <link linkend="circulat
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 186 </para> </refsect1>
+  at line 187 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-skip-icon">
@@ -1396,7 +1422,7 @@ See also <link linkend="circulate-hit-icon"><function>circulate-hit-icon</functi
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 202 </para> </refsect1>
+  at line 203 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-skip-icon-p">
@@ -1421,7 +1447,7 @@ Otherwise return <literal>#f</literal>.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 208 </para> </refsect1>
+  at line 209 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-skip-p">
@@ -1446,7 +1472,7 @@ Otherwise return <literal>#f</literal>.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 191 </para> </refsect1>
+  at line 192 </para> </refsect1>
 </refentry>
 
 <refentry id="cl-set-solver-var">
@@ -1551,7 +1577,7 @@ cache.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 369 </para> </refsect1>
+  at line 389 </para> </refsect1>
 </refentry>
 
 <refentry id="clear-image-cache-entry">
@@ -1738,7 +1764,7 @@ be more than desired.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 557 </para> </refsect1>
+  at line 548 </para> </refsect1>
 </refentry>
 
 <refentry id="close--cwmClock">
@@ -1912,7 +1938,7 @@ See <link linkend="color-properties"><function>color-properties</function></link
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 383 </para> </refsect1>
+  at line 402 </para> </refsect1>
 </refentry>
 
 <refentry id="color-p">
@@ -2473,12 +2499,12 @@ all other instances are removed.
   </refsect1>
   <refsect1>
   <title>Module</title>
-  <para></para>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 738 </para> </refsect1>
+  at line 729 </para> </refsect1>
 </refentry>
 
 <refentry id="delete-ui-constraint-x">
@@ -2580,7 +2606,7 @@ E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 567 </para> </refsect1>
+  at line 558 </para> </refsect1>
 </refentry>
 
 <refentry id="desk-background">
@@ -2769,7 +2795,7 @@ See <link linkend="display-message"><function>display-message</function></link> 
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 549 </para> </refsect1>
+  at line 540 </para> </refsect1>
 </refentry>
 
 <refentry id="display-size">
@@ -3194,7 +3220,7 @@ working commands.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 415 </para> </refsect1>
+  at line 434 </para> </refsect1>
 </refentry>
 
 <refentry id="exe-on-selection">
@@ -3218,7 +3244,7 @@ working commands.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 678 </para> </refsect1>
+  at line 669 </para> </refsect1>
 </refentry>
 
 <refentry id="execute">
@@ -3242,7 +3268,7 @@ working commands.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 558 </para> </refsect1>
+  at line 577 </para> </refsect1>
 </refentry>
 
 <refentry id="execute-on-selection">
@@ -3266,7 +3292,7 @@ working commands.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 674 </para> </refsect1>
+  at line 665 </para> </refsect1>
 </refentry>
 
 <refentry id="extreme">
@@ -3292,7 +3318,7 @@ of LST not equal to e. E.g. `(extreme &lt; ...)' returns the lowest number.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 690 </para> </refsect1>
+  at line 681 </para> </refsect1>
 </refentry>
 
 <refentry id="filename-is-complete-p">
@@ -3505,7 +3531,7 @@ color.  See <link linkend="unflash-window"><function>unflash-window</function></
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 466 </para> </refsect1>
+  at line 457 </para> </refsect1>
 </refentry>
 
 <refentry id="focus">
@@ -3560,7 +3586,7 @@ defaults to <link linkend="default-menu-max-fold-lines"><function>default-menu-m
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 406 </para> </refsect1>
+  at line 425 </para> </refsect1>
 </refentry>
 
 <refentry id="font-properties">
@@ -3611,7 +3637,7 @@ See <link linkend="font-properties"><function>font-properties</function></link> 
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 378 </para> </refsect1>
+  at line 397 </para> </refsect1>
 </refentry>
 
 <refentry id="font-p">
@@ -3685,7 +3711,7 @@ such window object, return <literal>#f</literal>.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2645 </para> </refsect1>
+  at line 2666 </para> </refsect1>
 </refentry>
 
 <refentry id="fvwm-exec">
@@ -3829,7 +3855,7 @@ such window object, return <literal>#f</literal>.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 357 </para> </refsect1>
+  at line 377 </para> </refsect1>
 </refentry>
 
 <refentry id="get-window">
@@ -3887,7 +3913,7 @@ mouse drags.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3273 </para> </refsect1>
+  at line 3294 </para> </refsect1>
 </refentry>
 
 <refentry id="get-window-focus">
@@ -3912,7 +3938,7 @@ Returns one of 'mouse, 'click, 'sloppy, or 'none.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3250 </para> </refsect1>
+  at line 3271 </para> </refsect1>
 </refentry>
 
 <refentry id="get-window-highlight-colors">
@@ -3936,7 +3962,7 @@ Returns one of 'mouse, 'click, 'sloppy, or 'none.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3287 </para> </refsect1>
+  at line 3308 </para> </refsect1>
 </refentry>
 
 <refentry id="get-wm-command">
@@ -4134,7 +4160,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2946 </para> </refsect1>
+  at line 2967 </para> </refsect1>
 </refentry>
 
 <refentry id="hilight-background">
@@ -4265,6 +4291,33 @@ way if not specified.
   at line 2481 </para> </refsect1>
 </refentry>
 
+<refentry id="icon-size">
+  <refnamediv>
+    <refname>icon-size</refname>
+    <refpurpose>Return the size of the icon for WIN.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(icon-size  #&amp;optional win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the size of the icon for <parameter>win</parameter>.
+The position is returned as a list of the width and height in pixels.
+<parameter>win</parameter> defaults to the window context in the usual way if not
+specified.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
+  at line 2501 </para> </refsect1>
+</refentry>
+
 <refentry id="icon-sticky-p">
   <refnamediv>
     <refname>icon-sticky?</refname>
@@ -4288,7 +4341,7 @@ the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3143 </para> </refsect1>
+  at line 3164 </para> </refsect1>
 </refentry>
 
 <refentry id="icon-viewport-position">
@@ -4394,7 +4447,7 @@ such window object, return <literal>#f</literal>.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2624 </para> </refsect1>
+  at line 2645 </para> </refsect1>
 </refentry>
 
 <refentry id="image-properties">
@@ -4446,7 +4499,7 @@ See <link linkend="image-properties"><function>image-properties</function></link
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 373 </para> </refsect1>
+  at line 392 </para> </refsect1>
 </refentry>
 
 <refentry id="image-p">
@@ -5164,7 +5217,7 @@ Obviously, other windows that are also on-top may obscure <parameter>win</parame
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2826 </para> </refsect1>
+  at line 2847 </para> </refsect1>
 </refentry>
 
 <refentry id="keep-right-at-v">
@@ -5312,7 +5365,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2884 </para> </refsect1>
+  at line 2905 </para> </refsect1>
 </refentry>
 
 <refentry id="key-mouse-moves">
@@ -5393,7 +5446,7 @@ of the directions.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 637 </para> </refsect1>
+  at line 690 </para> </refsect1>
 </refentry>
 
 <refentry id="kill-all-fvwm2-modules">
@@ -5417,7 +5470,7 @@ of the directions.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 515 </para> </refsect1>
+  at line 550 </para> </refsect1>
 </refentry>
 
 <refentry id="kill-fvwm2-module">
@@ -5441,7 +5494,7 @@ of the directions.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 512 </para> </refsect1>
+  at line 547 </para> </refsect1>
 </refentry>
 
 <refentry id="kill-fvwm2-modules-by-name">
@@ -5465,7 +5518,7 @@ of the directions.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 518 </para> </refsect1>
+  at line 553 </para> </refsect1>
 </refentry>
 
 <refentry id="kwm-emulation-initialize">
@@ -5563,7 +5616,7 @@ of circulation.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2742 </para> </refsect1>
+  at line 2763 </para> </refsect1>
 </refentry>
 
 <refentry id="list-focus-order">
@@ -5588,7 +5641,7 @@ The order is from most recently focussed to least recently focussed.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2795 </para> </refsect1>
+  at line 2816 </para> </refsect1>
 </refentry>
 
 <refentry id="list-index">
@@ -5638,7 +5691,7 @@ the topmost window, the last is the bottommost
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2761 </para> </refsect1>
+  at line 2782 </para> </refsect1>
 </refentry>
 
 <refentry id="list-windows">
@@ -6392,7 +6445,7 @@ from "gray50".
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 507 </para> </refsect1>
+  at line 498 </para> </refsect1>
 </refentry>
 
 <refentry id="make-string-usable-for-resource-key">
@@ -6419,7 +6472,7 @@ underscores, so that the resulting string can be used as a key for
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 490 </para> </refsect1>
+  at line 481 </para> </refsect1>
 </refentry>
 
 <refentry id="make-style">
@@ -7489,7 +7542,7 @@ background color.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 205 </para> </refsect1>
+  at line 206 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-visible-p">
@@ -7588,7 +7641,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 963 </para> </refsect1>
+  at line 1027 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-control">
@@ -7614,7 +7667,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 947 </para> </refsect1>
+  at line 1011 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-hyper">
@@ -7640,7 +7693,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 971 </para> </refsect1>
+  at line 1035 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-meta">
@@ -7666,7 +7719,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 955 </para> </refsect1>
+  at line 1019 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-shift">
@@ -7692,7 +7745,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 939 </para> </refsect1>
+  at line 1003 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-super">
@@ -7718,7 +7771,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 980 </para> </refsect1>
+  at line 1044 </para> </refsect1>
 </refentry>
 
 <refentry id="module-event-name-from-number">
@@ -7769,7 +7822,7 @@ to determine, e.g., whether the user single clicked or double clicked.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 926 </para> </refsect1>
+  at line 990 </para> </refsect1>
 </refentry>
 
 <refentry id="mouse-focus-click-raises-p">
@@ -8074,7 +8127,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 573 </para> </refsect1>
+  at line 564 </para> </refsect1>
 </refentry>
 
 <refentry id="move-window-to-desk">
@@ -8234,7 +8287,7 @@ It defaults to <link linkend="netscape-new-window"><function>netscape-new-window
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 647 </para> </refsect1>
+  at line 638 </para> </refsect1>
 </refentry>
 
 <refentry id="netscape-win">
@@ -8259,7 +8312,7 @@ May error if no netscape windows are present.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 586 </para> </refsect1>
+  at line 577 </para> </refsect1>
 </refentry>
 
 <refentry id="next-window">
@@ -8290,7 +8343,7 @@ See also <link linkend="prev-window"><function>prev-window</function></link>.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 248 </para> </refsect1>
+  at line 249 </para> </refsect1>
 </refentry>
 
 <refentry id="normal-border">
@@ -8316,7 +8369,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2983 </para> </refsect1>
+  at line 3004 </para> </refsect1>
 </refentry>
 
 <refentry id="not-menu-background">
@@ -8741,7 +8794,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3015 </para> </refsect1>
+  at line 3036 </para> </refsect1>
 </refentry>
 
 <refentry id="pointer-position">
@@ -8813,12 +8866,12 @@ This positions the popup menu appropriately.
   </refsect1>
   <refsect1>
   <title>Module</title>
-  <para>(app scwm flux)</para>
+  <para>(app scwm base)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
-  <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 454 </para> </refsect1>
+  <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
+  at line 373 </para> </refsect1>
 </refentry>
 
 <refentry id="popup-ui-constraints-toggle-menu">
@@ -8898,7 +8951,7 @@ See also <link linkend="next-window"><function>next-window</function></link>.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 260 </para> </refsect1>
+  at line 261 </para> </refsect1>
 </refentry>
 
 <refentry id="print-window">
@@ -8998,7 +9051,7 @@ version of this.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 718 </para> </refsect1>
+  at line 709 </para> </refsect1>
 </refentry>
 
 <refentry id="quotify-single-quotes">
@@ -9289,7 +9342,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 362 </para> </refsect1>
+  at line 382 </para> </refsect1>
 </refentry>
 
 <refentry id="register-image-loader">
@@ -9660,7 +9713,7 @@ after the (gtk gtk) module.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/modules/scwmgtkhelper/scwmgtkhelper.c"><filename>modules/scwmgtkhelper/scwmgtkhelper.c</filename></ulink>
-  at line 51 </para> </refsect1>
+  at line 49 </para> </refsect1>
 </refentry>
 
 <refentry id="reverse-iota">
@@ -9765,6 +9818,54 @@ specified.
   at line 575 </para> </refsect1>
 </refentry>
 
+<refentry id="run-dot-xclients-at-startup">
+  <refnamediv>
+    <refname>run-dot-xclients-at-startup</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(run-dot-xclients-at-startup)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
+  at line 737 </para> </refsect1>
+</refentry>
+
+<refentry id="run-dot-xclients-script">
+  <refnamediv>
+    <refname>run-dot-xclients-script</refname>
+    <refpurpose>Runs the ~/.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(run-dot-xclients-script)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Runs the ~/.clients script.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
+  at line 733 </para> </refsect1>
+</refentry>
+
 <refentry id="run-fvwm2-module">
   <refnamediv>
     <refname>run-fvwm2-module</refname>
@@ -9775,8 +9876,9 @@ specified.
 				  (other-args '())	       
 				  (config-file "~/.fvwm2rc")
 				  (config-info
-				   (get-fvwm2-module-config
-				    (basename module-name))))</synopsis>
+				   (append (aux-config-info)
+                                           (get-fvwm2-module-config
+					    (basename module-name)))))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -9791,7 +9893,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 383 </para> </refsect1>
+  at line 415 </para> </refsect1>
 </refentry>
 
 <refentry id="run-in-netscape">
@@ -9817,7 +9919,7 @@ otherwise; it is an error if NETWIN refers to a non-Netscape window.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 613 </para> </refsect1>
+  at line 604 </para> </refsect1>
 </refentry>
 
 <refentry id="run-in-xterm">
@@ -9844,7 +9946,7 @@ The rest of the arguments are passed as options to the xterm command.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 434 </para> </refsect1>
+  at line 453 </para> </refsect1>
 </refentry>
 
 <refentry id="run--cwmClock">
@@ -9969,7 +10071,7 @@ errors.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/modules/scwmgtkhelper/scwmgtkhelper.c"><filename>modules/scwmgtkhelper/scwmgtkhelper.c</filename></ulink>
-  at line 36 </para> </refsect1>
+  at line 34 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-gtk-sync">
@@ -10019,7 +10121,7 @@ to the main event loop
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 534 </para> </refsect1>
+  at line 553 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-path-exec-prefix">
@@ -10122,7 +10224,7 @@ This may be a bug (not meeting POSIX.2 specifications).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 538 </para> </refsect1>
+  at line 557 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-version">
@@ -10330,7 +10432,7 @@ a new message window.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 596 </para> </refsect1>
+  at line 615 </para> </refsect1>
 </refentry>
 
 <refentry id="select-window-interactively-and-highlight">
@@ -10413,7 +10515,7 @@ this unless you know what it means.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 1960 </para> </refsect1>
+  at line 1965 </para> </refsect1>
 </refentry>
 
 <refentry id="send-client-message">
@@ -10471,7 +10573,7 @@ should not have to worry about this unless you know what it means.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 1898 </para> </refsect1>
+  at line 1903 </para> </refsect1>
 </refentry>
 
 <refentry id="set-animation-x">
@@ -10501,7 +10603,7 @@ animated window shades and animated moves.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/modules/c-animation/c-animation.c"><filename>modules/c-animation/c-animation.c</filename></ulink>
-  at line 268 </para> </refsect1>
+  at line 269 </para> </refsect1>
 </refentry>
 
 <refentry id="set-auto-raise-x">
@@ -10736,7 +10838,7 @@ Use <parameter>active</parameter> as the face for the border when the window is 
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3058 </para> </refsect1>
+  at line 3079 </para> </refsect1>
 </refentry>
 
 <refentry id="set-button-face-x">
@@ -10983,7 +11085,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3752 </para> </refsect1>
+  at line 3773 </para> </refsect1>
 </refentry>
 
 <refentry id="set-desk-size-x">
@@ -11062,7 +11164,7 @@ See also <link linkend="set-edge-scroll-delay-x"><function>set-edge-scroll-delay
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 501 </para> </refsect1>
+  at line 520 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-x">
@@ -11090,7 +11192,7 @@ dimension to a number of pixels.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 515 </para> </refsect1>
+  at line 534 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-delay-x">
@@ -11145,7 +11247,7 @@ See also <link linkend="set-edge-x-wrap-x"><function>set-edge-x-wrap!</function>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 507 </para> </refsect1>
+  at line 526 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-x-scroll-x">
@@ -11305,7 +11407,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3553 </para> </refsect1>
+  at line 3574 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hilight-background-x">
@@ -11410,7 +11512,61 @@ not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3735 </para> </refsect1>
+  at line 3756 </para> </refsect1>
+</refentry>
+
+<refentry id="set-hover-focus-x">
+  <refnamediv>
+    <refname>set-hover-focus!</refname>
+    <refpurpose>Turn hover-focus on (<literal>#t</literal>) or off (<literal>#f</literal>) for WIN.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(set-hover-focus! hover-focus? #&amp;optional (win (get-window)))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Turn hover-focus on (<literal>#t</literal>) or off (<literal>#f</literal>) for WIN.
+hover-focus makes a window automatically get focus when the mouse pointer
+remains in a window frame.  See <link linkend="set-hover-focus-delay-x"><function>set-hover-focus-delay!</function></link> for controlling
+the delay before the window gets focus.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm hover-focus)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/hover-focus.scm"><filename>scheme/hover-focus.scm</filename></ulink>
+  at line 72 </para> </refsect1>
+</refentry>
+
+<refentry id="set-hover-focus-delay-x">
+  <refnamediv>
+    <refname>set-hover-focus-delay!</refname>
+    <refpurpose>Set the hover-focus delay to DELAY (in ms) for WIN.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(set-hover-focus-delay! delay #&amp;optional (win (get-window)))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Set the hover-focus delay to DELAY (in ms) for WIN.
+DELAY is the number of milliseconds after the pointer enters
+WIN that WIN will be focused.  See <link linkend="set-hover-focus-x"><function>set-hover-focus!</function></link> to turn
+hover-focus on or off for a given window.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm hover-focus)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/hover-focus.scm"><filename>scheme/hover-focus.scm</filename></ulink>
+  at line 60 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-x">
@@ -11437,7 +11593,7 @@ context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3599 </para> </refsect1>
+  at line 3620 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-box-x">
@@ -11464,7 +11620,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3156 </para> </refsect1>
+  at line 3177 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-font-x">
@@ -11513,7 +11669,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3536 </para> </refsect1>
+  at line 3557 </para> </refsect1>
 </refentry>
 
 <refentry id="set-lenience-x">
@@ -11542,7 +11698,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3867 </para> </refsect1>
+  at line 3888 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-background-x">
@@ -11885,7 +12041,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3652 </para> </refsect1>
+  at line 3673 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mouse-focus-click-raises-x">
@@ -11938,7 +12094,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3491 </para> </refsect1>
+  at line 3512 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-buttons-x">
@@ -11965,7 +12121,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3475 </para> </refsect1>
+  at line 3496 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-decor-hint-x">
@@ -11991,7 +12147,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3768 </para> </refsect1>
+  at line 3789 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-func-hint-x">
@@ -12018,7 +12174,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3782 </para> </refsect1>
+  at line 3803 </para> </refsect1>
 </refentry>
 
 <refentry id="set-not-menu-background-x">
@@ -12092,7 +12248,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3814 </para> </refsect1>
+  at line 3835 </para> </refsect1>
 </refentry>
 
 <refentry id="set-PPosition-hint-x">
@@ -12121,7 +12277,7 @@ usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3797 </para> </refsect1>
+  at line 3818 </para> </refsect1>
 </refentry>
 
 <refentry id="set-random-placement-x">
@@ -12148,7 +12304,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3417 </para> </refsect1>
+  at line 3438 </para> </refsect1>
 </refentry>
 
 <refentry id="set-rubber-band-mask-x">
@@ -12227,7 +12383,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3580 </para> </refsect1>
+  at line 3601 </para> </refsect1>
 </refentry>
 
 <refentry id="set-skip-mapping-x">
@@ -12254,7 +12410,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3852 </para> </refsect1>
+  at line 3873 </para> </refsect1>
 </refentry>
 
 <refentry id="set-smart-placement-x">
@@ -12281,7 +12437,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3432 </para> </refsect1>
+  at line 3453 </para> </refsect1>
 </refentry>
 
 <refentry id="set-smart-placement-is-really-smart-x">
@@ -12333,7 +12489,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3828 </para> </refsect1>
+  at line 3849 </para> </refsect1>
 </refentry>
 
 <refentry id="set-title-face-x">
@@ -12492,7 +12648,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3324 </para> </refsect1>
+  at line 3345 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-button-x">
@@ -12519,7 +12675,7 @@ specified. (<parameter>n</parameter>ote: this code may be broken right now.)
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3447 </para> </refsect1>
+  at line 3468 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-colors-x">
@@ -12619,7 +12775,7 @@ if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3216 </para> </refsect1>
+  at line 3237 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-foreground-x">
@@ -12646,7 +12802,7 @@ usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3301 </para> </refsect1>
+  at line 3322 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-highlight-background-x">
@@ -12676,7 +12832,7 @@ for <parameter>win</parameter>).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3382 </para> </refsect1>
+  at line 3403 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-highlight-foreground-x">
@@ -12706,7 +12862,7 @@ color for <parameter>win</parameter>).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3354 </para> </refsect1>
+  at line 3375 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-placement-proc-x">
@@ -12894,7 +13050,7 @@ determining the result.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 215 </para> </refsect1>
+  at line 216 </para> </refsect1>
 </refentry>
 
 <refentry id="show-com">
@@ -13018,7 +13174,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2921 </para> </refsect1>
+  at line 2942 </para> </refsect1>
 </refentry>
 
 <refentry id="show-window-list-menu">
@@ -13397,7 +13553,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3104 </para> </refsect1>
+  at line 3125 </para> </refsect1>
 </refentry>
 
 <refentry id="sticky-p">
@@ -13651,7 +13807,7 @@ in the user's home directory.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 698 </para> </refsect1>
+  at line 689 </para> </refsect1>
 </refentry>
 
 <refentry id="theme:background-style">
@@ -14011,7 +14167,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2969 </para> </refsect1>
+  at line 2990 </para> </refsect1>
 </refentry>
 
 <refentry id="to-string">
@@ -14630,7 +14786,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2856 </para> </refsect1>
+  at line 2877 </para> </refsect1>
 </refentry>
 
 <refentry id="unbind-key">
@@ -14656,7 +14812,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 605 </para> </refsect1>
+  at line 658 </para> </refsect1>
 </refentry>
 
 <refentry id="unbind-mouse">
@@ -14682,7 +14838,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 663 </para> </refsect1>
+  at line 716 </para> </refsect1>
 </refentry>
 
 <refentry id="undraw-all-constraints">
@@ -14755,7 +14911,7 @@ an ui-constraint.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 482 </para> </refsect1>
+  at line 473 </para> </refsect1>
 </refentry>
 
 <refentry id="unfocus">
@@ -14854,7 +15010,7 @@ empty string (for files with no extension), or the string "default"
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 524 </para> </refsect1>
+  at line 543 </para> </refsect1>
 </refentry>
 
 <refentry id="unstick">
@@ -14906,7 +15062,7 @@ not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3123 </para> </refsect1>
+  at line 3144 </para> </refsect1>
 </refentry>
 
 <refentry id="use-change-desk-commands">
@@ -14933,7 +15089,7 @@ the first element for changes to desk 1, etc.  Changes to desks which are
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 662 </para> </refsect1>
+  at line 653 </para> </refsect1>
 </refentry>
 
 <refentry id="use-theme">
@@ -15641,7 +15797,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2703 </para> </refsect1>
+  at line 2724 </para> </refsect1>
 </refentry>
 
 <refentry id="window-client-machine-name">
@@ -15766,7 +15922,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2668 </para> </refsect1>
+  at line 2689 </para> </refsect1>
 </refentry>
 
 <refentry id="window-frame-area">
@@ -15814,7 +15970,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2582 </para> </refsect1>
+  at line 2603 </para> </refsect1>
 </refentry>
 
 <refentry id="window-frame-id">
@@ -15840,7 +15996,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2611 </para> </refsect1>
+  at line 2632 </para> </refsect1>
 </refentry>
 
 <refentry id="window-frame-size">
@@ -15867,7 +16023,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2502 </para> </refsect1>
+  at line 2523 </para> </refsect1>
 </refentry>
 
 <refentry id="window-geometry-string">
@@ -15920,7 +16076,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3635 </para> </refsect1>
+  at line 3656 </para> </refsect1>
 </refentry>
 
 <refentry id="window-icon-shaped-p">
@@ -15944,7 +16100,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3719 </para> </refsect1>
+  at line 3740 </para> </refsect1>
 </refentry>
 
 <refentry id="window-icon-title">
@@ -15970,7 +16126,7 @@ the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2691 </para> </refsect1>
+  at line 2712 </para> </refsect1>
 </refentry>
 
 <refentry id="window-id">
@@ -15996,7 +16152,7 @@ the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2595 </para> </refsect1>
+  at line 2616 </para> </refsect1>
 </refentry>
 
 <refentry id="window-info">
@@ -16046,7 +16202,7 @@ times.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2728 </para> </refsect1>
+  at line 2749 </para> </refsect1>
 </refentry>
 
 <refentry id="window-last-focus-time-string">
@@ -16171,7 +16327,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3687 </para> </refsect1>
+  at line 3708 </para> </refsect1>
 </refentry>
 
 <refentry id="window-overlaps-window-p">
@@ -16308,7 +16464,7 @@ the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2716 </para> </refsect1>
+  at line 2737 </para> </refsect1>
 </refentry>
 
 <refentry id="window-right-bottom">
@@ -16460,7 +16616,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3704 </para> </refsect1>
+  at line 3725 </para> </refsect1>
 </refentry>
 
 <refentry id="window-size">
@@ -16488,7 +16644,7 @@ and height in resize units (e.g., characters for an xterm).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2536 </para> </refsect1>
+  at line 2557 </para> </refsect1>
 </refentry>
 
 <refentry id="window-size-hints">
@@ -16564,7 +16720,7 @@ The list returned contains 4 cons pairs containing:
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2680 </para> </refsect1>
+  at line 2701 </para> </refsect1>
 </refentry>
 
 <refentry id="window-title-height">
@@ -16613,7 +16769,7 @@ See also <link linkend="window-title-size"><function>window-title-size</function
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2567 </para> </refsect1>
+  at line 2588 </para> </refsect1>
 </refentry>
 
 <refentry id="window-title-width">
@@ -16970,7 +17126,7 @@ TYPE and FORMAT are as in X-property-set!
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 599 </para> </refsect1>
+  at line 590 </para> </refsect1>
 </refentry>
 
 <refentry id="X-cut-buffer-to-palm-clipboard">
@@ -16994,7 +17150,7 @@ TYPE and FORMAT are as in X-property-set!
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 723 </para> </refsect1>
+  at line 714 </para> </refsect1>
 </refentry>
 
 <refentry id="X-cut-buffer-string">
@@ -17020,7 +17176,7 @@ CUT_BUFFER0 property is not a string.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 540 </para> </refsect1>
+  at line 531 </para> </refsect1>
 </refentry>
 
 <refentry id="X-display-information">
@@ -17109,7 +17265,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///home/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 989 </para> </refsect1>
+  at line 1053 </para> </refsect1>
 </refentry>
 
 <refentry id="X-property-delete-x">
@@ -17604,6 +17760,7 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="animated-iconify"><function>animated-iconify</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="animated-deiconify"><function>animated-deiconify</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="animated-deiconify-to-current-viewport"><function>animated-deiconify-to-current-viewport</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="animated-toggle-iconify"><function>animated-toggle-iconify</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/animation.scm</title> <itemizedlist>
       <listitem><para><link linkend="animated-move-to"><function>animated-move-to</function></link> &mdash; Move WIN to viewport coordinates X, Y with animation.</para></listitem>
@@ -17654,6 +17811,7 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="simple-title-style"><function>simple-title-style</function></link> &mdash; Set the style for titlebars.</para></listitem>
       <listitem><para><link linkend="menuitem"><function>menuitem</function></link> &mdash; Return a menuitem object with the given attributes.</para></listitem>
       <listitem><para><link linkend="menu"><function>menu</function></link> &mdash; Return a menu object with the given attributes.</para></listitem>
+      <listitem><para><link linkend="popup-menu-from-decoration"><function>popup-menu-from-decoration</function></link> &mdash; Popup MENU from WIN's decoration numbered BUTTON-NUMBER.</para></listitem>
       <listitem><para><link linkend="image-property"><function>image-property</function></link> &mdash; Return the KEY property of IMAGE.</para></listitem>
       <listitem><para><link linkend="font-property"><function>font-property</function></link> &mdash; Return the KEY property of FONT.</para></listitem>
       <listitem><para><link linkend="color-property"><function>color-property</function></link> &mdash; Return the KEY property of COLOR.</para></listitem>
@@ -17738,7 +17896,6 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="get-wm-command"><function>get-wm-command</function></link> &mdash; Get the "WM_COMMAND" X-Property of WIN and return that string.</para></listitem>
       <listitem><para><link linkend="sec-to-usec"><function>sec->usec</function></link> &mdash; Convert SEC seconds into an equivalent number of microseconds.</para></listitem>
       <listitem><para><link linkend="ms-to-usec"><function>ms->usec</function></link> &mdash; Convert MS milliseconds into an equivalent number of microseconds.</para></listitem>
-      <listitem><para><link linkend="popup-menu-from-decoration"><function>popup-menu-from-decoration</function></link> &mdash; Popup MENU from WIN's decoration numbered BUTTON-NUMBER.</para></listitem>
       <listitem><para><link linkend="flash-window"><function>flash-window</function></link> &mdash; Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.</para></listitem>
       <listitem><para><link linkend="unflash-window"><function>unflash-window</function></link> &mdash; Revert WIN's titlebar and boundary color to state before a <link linkend="flash-window"><function>flash-window</function></link>.</para></listitem>
       <listitem><para><link linkend="make-string-usable-for-resource-key"><function>make-string-usable-for-resource-key</function></link> &mdash; Return a converted string from STRING that can be used as an X resource key.</para></listitem>
@@ -17760,6 +17917,8 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="put-string-in-palm-clipboard"><function>put-string-in-palm-clipboard</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="X-cut-buffer-to-palm-clipboard"><function>X-cut-buffer->palm-clipboard</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="delete-multiple-windows-interactively"><function>delete-multiple-windows-interactively</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="run-dot-xclients-script"><function>run-dot-xclients-script</function></link> &mdash; Runs the ~/.</para></listitem>
+      <listitem><para><link linkend="run-dot-xclients-at-startup"><function>run-dot-xclients-at-startup</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/fvwm-compat.scm</title> <itemizedlist>
       <listitem><para><link linkend="fvwm-exec-use-shell"><function>fvwm-exec-use-shell</function></link> &mdash; No documentation supplied.</para></listitem>
@@ -17788,6 +17947,10 @@ resize frames. <parameter>value</parameter> should be an integer.
     <sect1><title>scheme/gtk.scm</title> <itemizedlist>
       <listitem><para><link linkend="scwm-gtk-sync"><function>scwm-gtk-sync</function></link> &mdash; Dispatch all pending gtk-events.</para></listitem>
       <listitem><para><link linkend="gtk-pixmap-new-search-scwm-path"><function>gtk-pixmap-new-search-scwm-path</function></link> &mdash; Return the new pixmap object as <link linkend="gtk-pixmap-new"><function>gtk-pixmap-new</function></link> does, but search Scwm's image-load-path for it.</para></listitem>
+    </itemizedlist> </sect1>
+    <sect1><title>scheme/hover-focus.scm</title> <itemizedlist>
+      <listitem><para><link linkend="set-hover-focus-delay-x"><function>set-hover-focus-delay!</function></link> &mdash; Set the hover-focus delay to DELAY (in ms) for WIN.</para></listitem>
+      <listitem><para><link linkend="set-hover-focus-x"><function>set-hover-focus!</function></link> &mdash; Turn hover-focus on (<literal>#t</literal>) or off (<literal>#f</literal>) for WIN.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/image-loaders.scm</title> <itemizedlist>
       <listitem><para><link linkend="ImageMagick-loader"><function>ImageMagick-loader</function></link> &mdash; Tries to load an arbitrary image using ImageMagick's <link linkend="convert"><function>convert</function></link>.</para></listitem>
@@ -18317,6 +18480,7 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="move-window-to-desk"><function>move-window-to-desk</function></link> &mdash; Move WIN to DESK.</para></listitem>
       <listitem><para><link linkend="window-position"><function>window-position</function></link> &mdash; Return the position of WIN in pixels.</para></listitem>
       <listitem><para><link linkend="icon-position"><function>icon-position</function></link> &mdash; Return the position of the icon for WIN.</para></listitem>
+      <listitem><para><link linkend="icon-size"><function>icon-size</function></link> &mdash; Return the size of the icon for WIN.</para></listitem>
       <listitem><para><link linkend="window-frame-size"><function>window-frame-size</function></link> &mdash; Return the size of the frame of WIN.</para></listitem>
       <listitem><para><link linkend="window-size"><function>window-size</function></link> &mdash; Return the size of the application window of WIN.</para></listitem>
       <listitem><para><link linkend="window-title-size"><function>window-title-size</function></link> &mdash; Return a list with the width and height of WIN's titlebar.</para></listitem>
@@ -18585,10 +18749,20 @@ for any reason. The hook procedures are invoked with one argument,
 WIN, the window being closed.  The WIN is still valid during the hook
 procedures. 
     </para></sect1>
+    <sect1 id="window-enter-hook"><title>window-enter-hook</title><para>
+This hook is invoked whenever the mouse pointer enters a window.
+It is called with one argument, the window object of the window just
+entered. 
+    </para></sect1>
     <sect1 id="window-focus-change-hook"><title>window-focus-change-hook</title><para>
 This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
 that now has the focus, or <literal>#f</literal> if no window now has the focus. 
+    </para></sect1>
+    <sect1 id="window-leave-hook"><title>window-leave-hook</title><para>
+This hook is invoked whenever the mouse pointer leaves a window.
+The hook procedures are invoked with one argument, the window object
+of the window just left. 
     </para></sect1>
     <sect1 id="window-property-change-hook"><title>window-property-change-hook</title><para>
 This hook is invoked whenever a window property changes.
@@ -18675,6 +18849,12 @@ This can be overridden on a per-window basis using <link linkend="set-auto-raise
 The default procedure to invoke when un-raising the window.
 This gets called after the mouse pointer leaves an auto-raised window, and
 can be overwridden on a per-window basis using <link linkend="set-auto-raise-unfocus-proc-x"><function>set-auto-raise-unfocus-proc!</function></link>
+
+    </para></sect1>
+    <sect1 id="default-hover-focus-delay"><title>default-hover-focus-delay</title><para>
+Number of ms to delay before focusing the window that the mouse
+pointer entered.  This can be overridden on a per-window basis
+using <link linkend="set-hover-focus-delay-x"><function>set-hover-focus-delay!</function></link>.
 
     </para></sect1>
     <sect1 id="default-menu-max-fold-lines"><title>default-menu-max-fold-lines</title><para>
@@ -19016,7 +19196,11 @@ invocation.
 modifiers.  The available modifiers include S-, C-, M-, A-, H-, and s-
 for Shift, Control, Meta, Alt, Hyper, and Super, respectively.  They
 can be combined arbitrarily, and in any order, but should precede the
-key name.
+key name. When a key specifier is being used to indicate a binding,
+the additional special modifier *- may be used; it indicates that the
+key should be bound with every possible modifier combination,
+including possibly no modifiers. *- may not be combined with any other
+modifier.
 
     </para></sect1>
     <sect1 id="Menu-Looks"><title>Menu Looks</title><para>
