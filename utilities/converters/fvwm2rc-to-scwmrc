@@ -48,7 +48,9 @@ my ($ct_function,$ct_menu,$ct_decor) = (0..2);
 
 # regex fragment to match an identifier
 my $id_char_seq = '[\w\d._-]+';
-
+my $menu_id_char_seq = '[\w\d._%@^-]+';
+my $num_or_arg_seq = '(?:\$[\dw]|\d+)';
+my $word_or_arg_seq = '(?:\$[\dw]|' . $id_char_seq . ')';
 my %funcs = ();  # names -> text
 my %decors = ();  # names -> text
 my %menus = ();  # names -> text
@@ -84,7 +86,7 @@ my %rules =
    ],
    "*" =>
    [ 
-    '(.*?)\s+(.*)',
+    '(' . $id_char_seq . ')(.*)',
     sub { return HandleModule(@_); },
    ],
    "+" =>
@@ -104,6 +106,45 @@ my %rules =
 	  }
 	  return "";		# no conversion for this line
 	},
+   ],
+   "echo" =>
+   [ '\s+(.*)',
+     sub { my ($text) = (@_);
+	   return "(display " . dquoted($text) . ")";
+	 },
+   ],
+   "setenv" =>
+   [ '\s+(\S+)\s+(\S+)',
+     sub { my ($var,$val) = (@_);
+	   return "(setenv " . dquoted($var) . " " . dquoted($val) . ")";
+	 },
+   ],
+   "hilightcolor" =>
+   [ '\s+(\S+)\s+(\S+)',
+     sub { my ($fg,$bg) = (@_);
+	   return "(set-hilight-foreground! " . dquoted($fg) . ")\n" .
+	     "(set-hilight-background! " . dquoted($bg) . ")";
+	 },
+   ],
+   "xorvalue" =>
+   [ '\s+(\d+)',
+     sub { my ($val) = (@_);
+	   return "(set-rubber-band-mask! $val)";
+	 },
+   ],
+   "colormapfocus" =>
+   [ '\s+(\w+)',
+     sub { my ($kind) = (@_);
+	   $kind = lc($kind);
+	   $kind =~ s/follows//g;
+	   return "(set-colormap-focus! '$kind)";
+	 },
+   ],
+   "clicktime" =>
+   [ '\s+(\d+)',
+     sub { my ($val) = (@_);
+	   return "(set-click-delay! $val)";
+	 },
    ],
    "windowfont" => 
    [ 
@@ -133,7 +174,7 @@ my %rules =
    ],
    "addtomenu" =>
    [
-    '\s+"?(' . $id_char_seq . ')"?\s+(.*)',
+    '\s+"?(' . $menu_id_char_seq . ')"?\s+(.*)',
     sub { my $text;
 	  ($last_context_name,$text) = (@_);
 	  my $answer = "";
@@ -265,13 +306,14 @@ my %rules =
 	    },
    ],
    "move" =>
-   [    '(?:\s+(\d+p?)\s+(\d+p?))?\s*$', #SYNTAXFIX'
+   [    '(?:\s+(' . $num_or_arg_seq . 'p?)\s+' . $num_or_arg_seq . 'p?' .
+        '(?:\s+(\$w))?)?\s*$', #'SYNTAXFIX
 	sub { my ($x,$y) = (@_);
 	      return "(move-window" . HandleMoveResizeArgs($x,$y) . ")";
 	    },
    ],
    "resize" =>
-   [    '(?:\s+(\d+p?)\s+(\d+p?))?\s*$', #SYNTAXFIX'
+   [    '(?:\s+(' . $num_or_arg_seq . 'p?)\s+' . $num_or_arg_seq . 'p?)?\s*$', #'SYNTAXFIX
 	sub { my ($x,$y) = (@_);
 	      return "(resize-window" . HandleMoveResizeArgs($x,$y) . ")";
 	    },
@@ -333,7 +375,7 @@ my %rules =
 	    },
    ],
    "cursormove" =>
-   [    '\s+([+-]?\d+)\s+([+-]?\d+)',
+   [    '\s+([+-]?' . $num_or_arg_seq . ')\s+([+-]?' .$num_or_arg_seq. ')',
 	sub { my ($x,$y) = (@_);
 	      # GJB:FIXME:: new feature in fvwm-compat, below
 	      return "(move-pointer (%x-permit-negative $x) (%y-permit-negative $y))";
@@ -347,7 +389,8 @@ my %rules =
 	    },
    ],
    "key" =>
-   [    '\s+(\w+)\s+(\w+)\s+(\w+)\s+(.*)',
+   [    '\s+(' . $word_or_arg_seq . ')\s+(' . $word_or_arg_seq . ')\s+(' .
+        $word_or_arg_seq . ')\s+(.*)',
 	sub { my ($keysym,$where,$modifiers,$action) = (@_);
 	      return "(bind-key " .
 		convert_where($where) . " " .
@@ -590,8 +633,8 @@ sub HandleModule {
     }
   }
   if (!defined($module)) {
-    warn "Do not know about module \"$1\"\n" if !$fQuiet;
-    return "";
+    warn "Do not know about module \"$first\" -- adding to UNKNOWN\n" if !$fQuiet;
+    $module = "UNKNOWN";
   }
   
   my $param = substr($first,length($module));
@@ -785,9 +828,9 @@ sub convert_fvwm_command {
   if (!ref($re_or_parse_sub)) {
     # it must just be a regexp
     my $re = $re_or_parse_sub;
-    if (!m/^\Q$prefix_string\E\s*$re/i) {
+    if (!m/^\s*\Q$prefix_string\E\s*$re/i) {
       chomp;
-      warn "Internal error: re = \'$prefix_string\\s*$re\' does not match \"$_\"\n";
+      warn "Regex error: re = \'$prefix_string\\s*$re\' does not match \"$_\"\n";
     } else {
       @args = ($1,$2,$3,$4,$5,$6,$7,$8,$9);
     }
@@ -827,7 +870,7 @@ sub convert_action {
     if (exists $funcs{$action}) {
       # This is actually perfectly fine, by the rules of fvwm2
       # but it still seems nice to give a warning
-      warn "Using implied 'Function' for $action" if !$fQuiet;
+      print STDERR "Using implied 'Function' for $action\n" if !$fQuiet;
       return "(fvwm2-func-$action)";
     }
     return "(eval-fvwm-command " . dquoted($action) . ")";
