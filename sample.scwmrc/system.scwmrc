@@ -131,21 +131,13 @@
 		  wavplay dir-focus tile undo
 		  ui-constraints-toggle-menu
 		  ui-constraints-gtk-toggle-menu
+		  image-path-suggestor
 		  )
 
 (debug-display "Done reading modules\n")
 
 (define gnome-sm
   (if (X-property-get 'root-window "GNOME_SM_PROXY") #t #f))
-
-;;(use-scwm-modules gtk)
-;;(use-scwm-modules send-string)
-;;(use-scwm-modules std-menus)
-
-;;(load "/home/gjb/scwm/scheme/constraints.scm")
-;;(load "/home/gjb/scwm/scheme/ui-constraints-buttons.scm")
-;;(set-current-module the-root-module)
-;;(use-scwm-modules constraints)
 
 (set! *use-scwm-system-proc* #t)
 
@@ -405,52 +397,6 @@
 (define (popup-favorite-hosts-menu)
   (popup-menu (make-hosts-menu-gjb favorite-hosts) #t))
 
-
-(define*-public (animated-deiconify-to-current-viewport-focus-raise #&optional (win (get-window)))
-  (cond
-   (win (animated-deiconify-to-current-viewport win)
-	(focus win)
-	(raise-window win)
-	(warp-to-window win)
-	(move-pointer (w%x 20 win) (w%y 20 win)))))
-
-(define*-public (animated-deiconify-to-viewport-focus-raise #&optional (win (get-window)))
-  (cond
-   (win (animated-deiconify-to-last-viewport-position win)
-	(focus win)
-	(raise-window win)
-	(warp-to-window win)
-	(move-pointer (w%x 20 win) (w%y 20 win)))))
-
-
-;;; there is a race condition with the mouse-focus
-;;; giving focus to the new window... 
-;;; we really need a new hook for this that is
-;;; for focus changing from an external program
-(define (focus-change-warp-pointer w)
-  (if (and w (not (eq? w (current-window-with-pointer))))
-      (warp-to-window w)))
-
-;;(reset-hook! window-focus-change-hook)
-;; this is nice with XEmacs's C-x 5 o (other-frame) and mouse-focus
-;;(add-hook! window-focus-change-hook focus-change-warp-pointer)
-
-(define (show-icon-list-menu)
-  (show-window-list-menu #t #:only iconified?
-			 #:proc animated-deiconify-to-viewport-focus-raise))
-
-(define (show-xterm-window-list-menu)
-  (show-window-list-menu #t #:only (lambda (w)
-				     (or 
-				      (string=? (window-class w) "XTerm")
-				      (string=? (window-class w) "NXTerm")))
-			 #:proc animated-deiconify-to-viewport-focus-raise))
-
-
-;;(select-window-from-window-list)
-;;(select-window-interactively)
-;;(restack-windows (select-multiple-windows-interactively))
-
 (debug-display "Before setting image-load-path\n")
 
 (set! image-load-path (append user-image-load-list image-load-path))
@@ -458,17 +404,7 @@
 
 (debug-display "After setting image-load-path\n")
 
-(define (suggest-image-path-for name)
-  (let ((found-if-0 (system (string-append "locate '*/" name "'"))))
-    (if (= 0 found-if-0)
-	(display (string-append "Perhaps try adding above path to image-load-path\n")))))
-
-
-(define (handle-image-not-found name) 
-  (display (string-append "Could not find image: " name "\n"))
-  (suggest-image-path-for name))
-
-(add-hook! image-not-found-hook handle-image-not-found)
+(enable-image-path-suggestor)
 
 (define pic-system-button
   (make-image "mini-sys3d-full.xpm"))
@@ -510,54 +446,6 @@
 (window-style "*" 
 	      #:icon-box (list 0 1 69 (y- 141)))
 
-;; (window-style "*" #:show-icon #t #:sticky-icon #f)
-;; (window-style "*" #:show-icon #t #:sticky-icon #t)
-;; (window-style "xterm" #:use-theme (load-theme "gjb"))
-;; (window-style "xterm" #:show-icon #t)
-;; (window-style "*" #:show-icon #t)
-;; (window-style "*" #:show-icon #f)
-;; (window-style "*" #:sticky-icon #t)
-;; (window-style "*" #:random-placement #f #:smart-placement #f)
-
-;; (window-style "xclock" #:show-icon #t)
-;; (window-style "XTerm" #:show-icon #f)
-;; (window-style "XTerm" #:show-icon #f)
-;; (window-style "*xterm*" #:show-icon #f)
-
-;; (deiconify-to-current-viewport (select-window-interactively))
-
-;; (move-window-to-viewport 1 1 (select-window-from-window-list))
-
-;;(window-style "*" #:border-width 5 #:mwm-border #t)
-
-;;(window-style "xlogo" #:no-titlebar #t #:plain-border #f)
-;;(window-style "*" #:border-width 6)
-;;(resize-to 200 200)
-
-;;(window-style "*" #:squashed-titlebar #t)
-;;(window-style "*" #:squashed-titlebar #f)
-;;(window-style "xterm" #:squashed-titlebar #t)
-;;(window-style "xterm" #:squashed-titlebar #f)
-;;(interactive-resize)
-
-;;(window-style "*" #:bg "purple")
-;; (border-style #:hidden-handles #f #:no-inset #f)
-
-;; (window-style "foo" #:squashed-titlebar #t)
-
-;; (raise-window)
-;; (set-object-property! w 'no-side-decorations #t)
-;; (set-object-property! w 'no-side-decorations #f)
-;; (force-reset-window-frame! w)
-;; (window-style "*" #:no-side-decorations #f)
-;; (window-style "XTerm" #:no-side-decorations #t)
-;; (window-style "XTerm" #:no-side-decorations #f)
-;; (window-style "XTerm" #:squashed-titlebar #t)
-;; (window-style "XTerm" #:squashed-titlebar #f)
-;; (squash-titlebar-decoration w)
-;; (unsquash-titlebar-decoration w)
-;; (define w (select-window-interactively))
-
 ;; This gets my netscape bookmarks windows to do the right thing
 ;; and stay on screen (instead of being half off screen when mapped)
 (set-smart-placement-is-really-smart! #t)
@@ -576,13 +464,13 @@
 ;;; such; I think in general, though, setting the button appearance
 ;;; should be more separated from setting its function. Will look
 ;;; over this more. --MS
-;;; MSFIX: I think actions and conceptual appearance should go together
+;;; GJB:FIXME:MS: I think actions and conceptual appearance should go together
 ;;; but that conceptual appearance and actual appearance should be separated.
 ;;; Now that pixmaps are real objects, I get this by making, e.g.,
 ;;; `sticky-button-face' and `(add-left-button sticky-button-face toggle-stick)'
 ;;; I never want to say, `the third button from the right should do this action'.
 ;;; Ideally, buttons should have some identifier which can be tested by the
-;;; event handling code for the callbacks
+;;; event handling code for the callbacks --gjb
 
 (define mini-icon-button-face 
   (make-face '((relief flat))
@@ -851,37 +739,30 @@
     (menuitem "Re&fresh Screen" #:image-left "mini-ray.xpm" 
 	       #:action (thunk refresh)))))
 
-;;(popup-menu menu-window-ops)
-;;(menu-properties menu-window-ops)
-
 (defmacro menuitem-for-exec (name pixmap . body)
   (if (cached-program-exists? name)
       `(list ,name #:action (lambda () (execute ,name) ,@body)
 	     #:image-left ,pixmap)))
 
-;;(window-shade (get-window) #t)
-;;(un-window-shade (get-window) #t)
-
-;; wiggle-window just demonstrates 
-(define (wiggle-window)
-  (let ((w (get-window)))
-    (window-shade w #t)
-    (un-window-shade w #t)))
-
 (define (scwm-help)
-  (netscape-goto-url "http://scwm.mit.edu/scwm" #f 'netscape-new-window))
+  (netscape-goto-url "http://scwm.mit.edu" #f 'netscape-new-window #:start-netscape-as-needed #t))
 
 (define (scwm-about-message)
-  (message "Scwm TheNextLevel
-(C) 1999 Greg J. Badros
+  (message "Scwm -- The Scheme Constraints Window Manager
+(C) 1999 Greg J. Badros <gjb@cs.washington.edu>
+         and Maciej Stachowiak <mstachow@alum.mit.edu>
 
-This is a re-work of the fvwm2 TheNextLevel and its successor
-AnotherLevel. Most importantly, the underlying window manager
-is Scwm, the Scheme Constraints Window Manager.
+See: http://scwm.mit.edu
 
-Gone is the ugly and impossible to maintain m4 preprocessing.
-Here to stay is beautiful scheme, and more features than the
-union of all other window managers!
+Scwm is the Scheme Constraints Window Manager, a highly dynamic and
+extensible window manager for the X Window System.  Scwm embeds Guile
+Scheme as the configuration and extension language, and includes a
+sophisticated constraint solver for permitting the user to interactively
+specify constraints among top-level window sizes and positions.  Nearly
+all decorations can be changed at run-time on a per-window basis.
+Dynamic loading of C modules is supported.  Scwm is self-documenting and
+provides A powerful protocol for interacting with the window manager
+from other processes.
 "))
 
 (define (start-xlogo)
@@ -908,26 +789,6 @@ union of all other window managers!
 
 (define (quit-verify)
   (popup-menu menu-quit-verify #t))
-
-;;;(map (lambda (elem)
-;;;       (let ((menu-id (car elem))
-;;;	     (menu-title (cadr elem))
-;;;	     (menu-list (caddr elem)))
-;;;	 (define menu-id
-;;;	   (menu (cons menuitem menu-title)
-;;;		 (make-menuitems-from-menu-information-list menu-list)))))
-;;;     '(('menu-applications "Applications" applications-available-menu-information)
-;;;       ('menu-utilities "Utilities" utilities-available-menu-information)))
-
-;;;(defmacro (program-menu-maker str)
-;;;  `(define ,(intern-symbol (string-append "menu" str))
-;;;     (menu
-;;;      (cons
-;;;       (menuitem ,str)
-;;;       (make-menuitems-from-menu-information-list
-;;;	,(intern-symbol (string-append str "-available-menu-information")))))))
-     
-;;;(program-menu-maker "applications")
 
 (define menu-applications
   (menu (cons
@@ -1213,17 +1074,6 @@ union of all other window managers!
 (bind-mouse 'frame-corners 1 resize-or-raise)
 (bind-mouse 'frame-sides 1 move-or-raise)
 
-(define (move-or-shade)
-  (case (mouse-event-type)
-    ((double-click) (animated-toggle-window-shade))
-    (else (move-or-raise))))
-
-(define* (raise-and-stop-flashing #&optional (win (get-window)))
-  (if (window-flashing? win)
-      (stop-flashing-window win))
-  (raise-window win)
-  #f)
-
 (define (play-window-flashing-start-sound ignored)
   (wavplay "Utopia Question.WAV"))
 
@@ -1233,20 +1083,9 @@ union of all other window managers!
 (bind-mouse 'title 2 #f lower-window)
 (bind-mouse 'title 3 #f popup-window-ops)
 
-
 ;; key bindings for the menus
 (bind-key 'all "M-S-F1" popup-utilities)
 (bind-key 'all "M-S-F2" popup-window-ops)
-
-(define url-google "http://www.google.com/search?q=")
-
-;; (netscape-google-search "glade")
-;; (netscape-google-search "gtk")
-(define (netscape-google-search word)n
-  (netscape-goto-url (string-append url-google word)))
-
-(define (netscape-google-search-cut-buffer)
-  (netscape-google-search (X-cut-buffer-string)))
 
 ;; C-S-M-t makes netscape go to the url specified by cut buffer 0
 (bind-key 'all "C-S-M-t" netscape-goto-cut-buffer-url)
@@ -1256,22 +1095,10 @@ union of all other window managers!
 ;; in case of emergency, hit Control-Meta-Q
 (bind-key 'all "C-M-S-q" quit-verify)
 
-;; some stuff for icons
-(define (move-or-deiconify)
-  (case (mouse-event-type)
-    ((motion) (interactive-move))
-    ((double-click) (animated-deiconify))))
-
 (bind-mouse 'icon 1 move-or-deiconify)
 (bind-mouse 'icon 2 #f default-winlist-proc) ;; was deiconify
 
 (bind-mouse 'all "C-S-M-1" #f toggle-raise)
-
-(define* (interactive-move-rubberband #&optional (win (get-window)))
-  (interactive-move (get-window) #f))
-
-(define* (interactive-resize-rubberband #&optional (win (get-window)))
-  (interactive-resize (get-window) #f))
 
 ;; These always do opaque moves
 ;;(bind-mouse 'all "C-S-M-2" #f interactive-move)
@@ -1291,14 +1118,6 @@ union of all other window managers!
 
 (bind-mouse 'all "H-M-3" #f popup-window-ops)
 (bind-mouse 'left-button-1 3 popup-style-menu)
-
-(define (resize-halfscreen)
-  (let ((w (current-window-with-pointer)))
-    (animated-resize-window (%x 49) (%y 90))))
-
-(define (resize-fullscreen)
-  (let ((w (current-window-with-pointer)))
-    (animated-resize-window (%x 90) (%y 90))))
 
 (bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
 (bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
@@ -1352,12 +1171,10 @@ union of all other window managers!
 (bind-key 'all "C-S-F5" popup-utilities)
 (bind-key 'all "C-S-F6" popup-multimedia)
 
-;; These are useful!
-(define root-size-x (car (display-size)))
-(define root-size-y (cadr (display-size)))
-
-(setenv "DISPLAY_HEIGHT" (number->string root-size-y))
-(setenv "DISPLAY_WIDTH" (number->string root-size-x))
+;; Set some environment variables for processes that Scwm starts.
+(setenv "DISPLAY_HEIGHT" (number->string display-height))
+(setenv "DISPLAY_WIDTH" (number->string display-width))
+(setenv "DISPLAY_PLANES" (number->string display-depth))
 (setenv "GNOME_SM" (if gnome-sm "true" "false"))
 
 ;; (define varstr "SSH_AUTH_SOCK")
@@ -1374,11 +1191,6 @@ union of all other window managers!
 ;; this is better done from within the emacs that needs fixing.
 (define (fix-ssh-auth-for-xemacs-server)
   (system "gnuclient -q -batch -f reset-ssh-auth-sock-from-scwm"))
-
-;; GJB:FIXME:: PLANES? SCWM_DIR? SCWM_VERSION?  want these exported too
-
-(define (percent-display x y)
-  (list (%x x) (%y y)))
 
 (bind-key 'all "C-S-Down" animated-iconify)
 (bind-key 'all "C-M-Return" toggle-raise)
@@ -1624,35 +1436,8 @@ union of all other window managers!
 
 (add-hook! startup-hook reposition-scwm-messages-window)
 
-(debug-display " *** `scwmrc' processed.\n")
-
-;; Remove the windows that are showing tail -f's on 
-;; scwm error messages and .Xsession errors
-;(system "test -r ${HOME}/.tracepids && ( kill `cat ${HOME}/.tracepids` ; rm -f ${HOME}/.tracepids )")
-
-;; This lets me find out which shell `system' is using
-;;(system "echo $ZSH_VERSION $version $BASH_VERSION")
-
-;; Be sure we have the users identity (scwm should be started
-;; as 'ssh-agent scwm ...')
-;;(system "ssh-add -l </dev/null | grep -q gjb || ssh-add </dev/null")
-
-;;(hide-titlebar (current-window-with-pointer))
-;;(show-titlebar (current-window-with-pointer))
-;;(load "/scratch/gjb/scwm/scheme/flux.scm")
-;;(load "/scratch/gjb/scwm/scheme/winops.scm")
-;;(load "/scratch/gjb/scwm/scheme/style.scm")
-;;(load "/scratch/gjb/scwm/scheme/cached-program-exists.scm")
-
-;;(set-handle-segv! #f)
-
-;;(add-hook! error-hook (lambda (tag op msg pos-and-arg extra) 
-;;			(display-message-briefly 
-;;			 (string-append (symbol->string tag) " error: " op))))
-;;
-
-;; Get my preferences from ~/.scwm-options --
-;; let them take priority over anything I do in here
+;; Get user preferences from $HOME/.scwm-options --
+;; let them take priority over anything done in here
 (load-preferences)
 
 (if scwm-logo
@@ -1663,3 +1448,5 @@ union of all other window managers!
       
       (remove-hook! load-processing-hook next-logo-image-n)
       (set-background-image! scwm-logo 'tiled)))
+
+(debug-display " *** `scwmrc' processed.\n")
