@@ -181,6 +181,7 @@ you have to (require 'font-lock) first.  Sorry.")
 (define-key scwm-mode-map [(control c) (control s)] 'scwm-run)
 (define-key scwm-mode-map [(control c) (control u)] 'scwm-eval-uncommenting)
 (define-key scwm-mode-map [(control c) (control z)] 'scwm-run)
+(define-key scwm-mode-map [(control c) (control m)] 'scwm-use-module)
 (define-key scwm-mode-map [(control x) (control e)] 'scwm-eval-last)
 (define-key scwm-mode-map [(control h) (control s)] 'scwm-documentation)
 (define-key scwm-mode-map [(control h) (control a)] 'scwm-apropos)
@@ -300,6 +301,16 @@ meaning of the second argument is reversed."
   (interactive "P")
   (scwm-eval-sexp (buffer-substring-no-properties
                    (point) (save-excursion (backward-sexp) (point))) mb-p))
+
+;;;###autoload
+(defun scwm-use-module (mb-p)
+  "Use the module that is just before the point."
+  (interactive "P")
+  (scwm-eval-sexp 
+   (concat "(use-scwm-modules " (buffer-substring-no-properties
+				 (point) (save-excursion (backward-sexp) (point)))
+	   ")") mb-p))
+
 
 ;;;###autoload
 (defun scwm-eval-region (beg end mb-p)
