@@ -1,3 +1,39 @@
+Sun Nov 23 01:42:37 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* menu-item.h: added some more fields to MenuItemInMenu
+
+	* scwmmenu.c: lots of new code to get drawing of the new menus and
+ 	popping up to work.  Added popup_menu(). Implementation is not
+ 	complete.
+
+	* scwmmenu.h:  Added MenuDrawingInfo struct for caching
+	information that the drawing code might use.  Changes to the
+	DynamicMenu structu
+	
+	* scmprocs.c: added popup-menu function, for the new scwm menu
+	code
+
+	* scwm.c: call the new init_scwm_menu() [does nothing now]
+	
+	* menu-test.scm: Added for testing new menu code
+
+	* colormaps.h: Added, for colormaps.c protos;  use where needed
+	throughout;  pull these out of misc.h
+
+	* colormaps.c: fixed protos to be (void) not ()
+
+	* font.[ch]: use FONT_IMPLEMENTATION for file-globals, added
+	SAFE_FONTP (perhaps this should be done for all the OBJECTP
+	macros)
+
+	* drawmenu.[ch]: Added, for drawing-only (look) code;  partially
+	complete implementation of the fvwm menu look
+
+	* xmisc.[ch]: Added for X/Xlib utility functions
+
+	* Makefile.in: updated for above additions
+
+
 Sun Nov 23 02:47:22 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* image.c: Rewrite of the image code to support: hashed image
