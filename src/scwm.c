@@ -62,7 +62,6 @@
 
 #include <guile/gh.h>
 #include "scmtypes.h"
-#include "scmprocs.h"
 #include "miscprocs.h"
 #include "binding.h"
 #include "decor.h"
