@@ -42,7 +42,7 @@
 
 (define*-public (border-style #&key (active '())  
 			      (inactive '()) . rest)
-  (act-on-face-specs (lambda* (active &optional ignore inactive)
+  (act-on-face-specs (lambda* (active #&optional ignore inactive)
 			      (if (bound? inactive)
 				  (set-border-face! active ignore inactive)
 				  (set-border-face! active)))
