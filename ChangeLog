@@ -1,3 +1,18 @@
+Tue Jan 11 23:44:05 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Do not chmod +x src/scwm-snarf, since that does
+	not work when build_dir != src_dir.  Just chmod +x
+	src/scwm-doc-snarf since that *does* have a .in file.
+
+Tue Jan 11 23:40:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in, README: Bump to 0.99.6pre3.  Patch from Harald
+	Meland to test for guile libraries better on his Sun platform.
+	Generate src/scwm-doc-snarf, since src/scwm-doc-snarf.in is now
+	distributed to permit @CPP@ to be expanded in it so that the
+	configured cpp is used (problem first noticed by Harald Meland).
+	Also chmod +x the resulting scwm-doc-snarf.
+
 Tue Jan 11 10:32:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in, README: Bump to 0.99.6pre2

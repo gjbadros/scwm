@@ -1,3 +1,9 @@
+Tue Jan 11 23:39:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Add scwm_scheme_evaluator.idl to EXTRA_DIST, add
+	scwm_scheme_evaluator-impl.c to libscwmcorba_la_SOURCES to fix
+	distribution and build problems.
+
 Tue Jan 11 10:31:48 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (idl_output_source): Added $(idl_output_headers),

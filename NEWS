@@ -107,6 +107,8 @@ version.
 * New configure option, --enable-dump
 Rudimentary, not-state-preserving-yet support for guile-hobbit's
 unexec capabilities (goal: reduce startup time substantially).
+-**-> You need to copy Hobbit's libunexec.a to the build directory's src/
+subdirectory if you configure with this option!
 
 * New preferences options
 ** *highlight-foreground*, *highlight-background*

@@ -1,3 +1,18 @@
+Tue Jan 11 23:53:19 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Fix bin_SCRIPTS's scwm_doc_snarf -- it's
+ 	"scwm-doc-snarf" (hyphens, not underscores).
+
+	* guile-compat.h: Include <guile/gh.h>.
+
+Tue Jan 11 23:28:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* *.c: Use backslashify-docs script to add \n\ to the tail end of
+	all SCWM_PROC docstrings that contain string literals that span
+	multiple lines.  Thanks to Harald Meland for testing with Sun cc
+	and catching this an numerous other configuration/build problems
+	for his platform!
+
 Tue Jan 11 23:00:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Distribute scwm-doc-snarf.in, and add
