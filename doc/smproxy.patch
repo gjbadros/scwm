@@ -1,0 +1,109 @@
+To enable scwm's session management support for non-SM-aware clients, your
+smproxy has to provide the SM_CLIENT_ID property for them. The following
+patch makes gnome-smproxy do this.
+
+This patch is relative to smproxy from gnome-core-0.30, available from
+ftp.gnome.org and its mirrors.
+
+Index: smproxy/ChangeLog
+diff -u smproxy/ChangeLog:1.1.1.1 smproxy/ChangeLog:1.2
+--- smproxy/ChangeLog:1.1.1.1	Sun Nov  1 14:37:02 1998
++++ smproxy/ChangeLog	Sun Nov  8 21:32:24 1998
+@@ -1,3 +1,13 @@
++1998-11-08  Robert Bihlmeyer  <robbe@orcus.priv.at>
++
++	* smproxy.c (wmStateAtom): Removed.
++	(main): So don't initialize it.
++	(HandleCreate): Don't wait for WM_STATE. I don't know what this
++	is for, and it prevents scwm from doing its thing.
++	(HandleUpdate): Ditto.
++	(ConnectClientToSM): Hang SM_CLIENT_ID property on client's
++	top-level window.
++
+ Thu Aug 20 00:25:11 1998  Tom Tromey  <tromey@cygnus.com>
+ 
+ 	* smproxy.h: Don't include <X11/Xosdefs.h> or <X11/Xfuncs.h>.
+Index: smproxy/smproxy.c
+diff -u smproxy/smproxy.c:1.1.1.1 smproxy/smproxy.c:1.2
+--- smproxy/smproxy.c:1.1.1.1	Sun Nov  1 14:37:02 1998
++++ smproxy/smproxy.c	Sun Nov  8 21:32:27 1998
+@@ -34,7 +34,6 @@
+ 
+ Atom wmProtocolsAtom;
+ Atom wmSaveYourselfAtom;
+-Atom wmStateAtom;
+ Atom smClientIdAtom;
+ Atom wmClientLeaderAtom;
+ 
+@@ -528,6 +527,10 @@
+ 	    ProcessIceMsgProc,
+ 	    (XtPointer) ice_conn);
+ 
++    XChangeProperty(disp, winInfo->window,
++		    smClientIdAtom, XA_STRING, 8, PropModeReplace,
++		    winInfo->client_id, strlen(winInfo->client_id) + 1);
++
+     if (debug)
+     {
+ 	printf ("Connected to SM, window = 0x%x\n", winInfo->window);
+@@ -775,7 +778,6 @@
+     unsigned long nitems, bytesafter;
+     unsigned long *datap = NULL;
+     WinInfo *winptr;
+-    Bool got_wm_state = 0;
+ 
+     /*
+      * We are waiting for all proxy connections to close so we can die.
+@@ -817,22 +819,6 @@
+ 	StructureNotifyMask | PropertyChangeMask);	
+ 
+ 
+-    /*
+-     * WM_STATE may already be there.  Check now.
+-     */
+-
+-    if (XGetWindowProperty (disp, event->window, wmStateAtom,
+-	0L, 2L, False, AnyPropertyType,
+-	&actual_type, &actual_format, &nitems, &bytesafter,
+-	(unsigned char **) &datap) == Success && datap)
+-    {
+-	if (nitems > 0)
+-	    got_wm_state = 1;
+-
+-	if (datap)
+-	    XFree ((char *) datap);
+-    }
+-
+     XSync (disp, 0);
+     XSetErrorHandler (NULL);
+ 
+@@ -841,7 +827,7 @@
+ 	caught_error = 0;
+ 	RemoveWindow (winptr);
+     }
+-    else if (got_wm_state)
++    else
+     {
+ 	Got_WM_STATE (winptr);
+     }
+@@ -890,11 +876,7 @@
+     if (!LookupWindow (window, &winptr, NULL))
+ 	return;
+ 
+-    if (event->atom == wmStateAtom)
+-    {
+-	Got_WM_STATE (winptr);
+-    }
+-    else if (event->atom == XA_WM_COMMAND && winptr->waiting_for_update)
++    if (event->atom == XA_WM_COMMAND && winptr->waiting_for_update)
+     {
+ 	/* Finish off the Save Yourself */
+ 
+@@ -1278,7 +1260,6 @@
+ 
+     wmProtocolsAtom = XInternAtom (disp, "WM_PROTOCOLS", False);
+     wmSaveYourselfAtom = XInternAtom (disp, "WM_SAVE_YOURSELF", False);
+-    wmStateAtom = XInternAtom (disp, "WM_STATE", False);
+     smClientIdAtom = XInternAtom (disp, "SM_CLIENT_ID", False);
+     wmClientLeaderAtom = XInternAtom (disp, "WM_CLIENT_LEADER", False);
+ 

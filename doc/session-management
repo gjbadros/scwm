@@ -41,11 +41,50 @@ A: All Gnome applications should support this. A few programs from the X
    distribution do, too. Unfortunately there are a lot of programs anaware of
    session management. A proxy program is normally used to stand in for these
    applications, so that they can at least be restarted correctly. Internal
-   state is not normally preserved by them.
+   state is not normally preserved in this case.
+
+Q: What should the window manager do?
+A: The window manager cares mainly about the state of windows - their
+   geometry, whether they're iconified, etc. Exactly this kind of information
+   should be preserved by the window manager. Settings internal to the window
+   manager (e.g. key bindings) should also be kept across sessions, if
+   appropriate.
+
+Q: What is really preserved by scwm?
+A: Right now (98/11/09) window geometry, and the following flags are
+   preserved: keep-on-top, sticky, sticky-icon, winlist-skip, circulate-skip,
+   circulate-skip-icon. Iconification and desk number is planned but does not
+   work yet.
+
+Q: Ok, I want to check it out. What do I do?
+A: Edit your "~/.xsession" or "~/.xinitrc". If you don't have one, copy the
+   system-default "from /usr/X11R6/lib/X11/xinit/xinitrc". Decide which
+   programs should belong to the session. I recommend that you leave all
+   programs that only set something (xmodmap, xrdb, ...) alone, and
+   concentrate on lingering applications (xterm, emacs, scwm, ...). Move the
+   calls of this applications to a new file "~/.xsmstartup". Keep all program
+   arguments, but remove backgrounding ampersands. This is now your default
+   session. The last line in your .xsession or .xinitrc should be "exec xsm".
+   This hands over responsibility to the session manager.
+
+Q: What can I do with xsm then?
+A: To end X you have to select "Shutdown". "Shutdown Immediately" does not
+   save your session, so you will later resume at the last saved position. If
+   you never saved, all you will have to resume is the default session.
+   "Shutdown With checkpoint" saves the session to an arbitrary name before
+   terminating X. "Checkpoint" saves without termination. "Client list" and
+   "Session log" will display some information.
+
+Q: Why is window information not preserved for most clients?
+A: These clients probably do not support session management themselves. Be
+   sure that you are running a smproxy that provides SM_CLIENT_ID info: The
+   standard smproxy programs from the X distribution and from GNOME do *not*
+   do this. You'll have to patch gnome-smproxy with the "smproxy.patch"
+   found in the same directory as this document.
 
 
-Q: What should emacs do with this file?
-A: Information for Emacs follows:
+Q: What should Emacs do with this file?
+A: Information for Emacs follows - you can safely ignore this if you're human.
    Local Variables:
    mode: indented-text
    fill-column: 78
