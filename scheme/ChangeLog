@@ -1,3 +1,8 @@
+1999-01-26  Sam Steingold  <sds@goems.com>
+
+	* placement.scm (place-at-point-internal): call
+	`move-inside-current-viewport'.
+
 Mon Jan 25 17:35:13 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* message-window.scm: Fix `resize-message-new-size-hook' to take
@@ -84,9 +89,9 @@ Fri Jan 22 16:29:45 1999  Greg Badros  <gjb@cs.washington.edu>
 	* gtk.scm: Added `gtk-pixmap-new-search-scwm-path' for finding
 	pixmaps in image-load-path
 
-	* window-locations.scm: Define `half' that does truncation and use 
+	* window-locations.scm: Define `half' that does truncation and use
 	it instead of dividing by 2 so we don't get floating point
-	numbers.  Use `window-frame-size' not `window-size' (get values in 
+	numbers.  Use `window-frame-size' not `window-size' (get values in
 	pixels)
 
 	* ui-constraints.scm: Added pixmap-name argument to
@@ -121,7 +126,7 @@ Thu Jan 21 12:05:10 1999  Greg Badros  <gjb@cs.washington.edu>
 
 Thu Jan 21 12:02:28 1999  Greg Badros  <gjb@cs.washington.edu>
 
-	* kwm-emulation.scm: Use X-PropertyNotify-hook to catch changes in 
+	* kwm-emulation.scm: Use X-PropertyNotify-hook to catch changes in
 	KWM_WIN_ICONIFIED and honour them -- this makes the middle-button
 	clicking on the task bar work.  Fix bug in initialization in
 	SETTING of CURRENT_DESKTOP.  Remove kwm-kpanel-winid var, and
@@ -139,13 +144,13 @@ Wed Jan 20 16:53:01 1999  Greg Badros  <gjb@cs.washington.edu>
 	flag, the constraint-class object, etc., and update accessors to
 	go to the right places.  Rewrote ui-constraint-windows to use
 	cl-windows-of-constraint instead of building the window list into
-	the ui-constraint instances (in case some of the arguments are not 
+	the ui-constraint instances (in case some of the arguments are not
 	windows... I suppose we could put a real list of windows in the
 	ui-constraint object using `window?').
 
 Wed Jan 20 14:23:09 1999  Greg Badros  <gjb@cs.washington.edu>
 
-	* ui-constraints.scm: Bug fixes.  Use "error" instead of returning 
+	* ui-constraints.scm: Bug fixes.  Use "error" instead of returning
 	#f when wrong type argument; use set! to side-effect global --
 	cons is side effect free; simplify ui-constraint? and
 	ui-constraint-class? predicates -- use pair? not list?.
@@ -204,7 +209,7 @@ Sun Dec 27 14:48:35 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	align-viewport, warp-to-window-viewport); and a macro that saves
  	and restores teh current desktop and viewport
  	(save-virtual-excursion).
-	
+
 	* flux.scm (move-window-to-viewport, in-viewport, place-at-point,
  	move-inside): Removed; virtual.scm and placement.scm have more
  	general replacements (roughly bases on these).

@@ -1,21 +1,21 @@
 ;;;; $Id$
 ;;;; Copyright (C) 1998 Sam Steingold, Greg J. Badros, and Maciej Stachowiak
-;;;; 
+;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
 ;;;; the Free Software Foundation; either version 2, or (at your option)
 ;;;; any later version.
-;;;; 
+;;;;
 ;;;; This program is distributed in the hope that it will be useful,
 ;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;;;; GNU General Public License for more details.
-;;;; 
+;;;;
 ;;;; You should have received a copy of the GNU General Public License
 ;;;; along with this software; see the file COPYING.  If not, write to
 ;;;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 ;;;; Boston, MA 02111-1307 USA
-;;;; 
+;;;;
 
 
 
@@ -54,7 +54,7 @@ interactively immediately after it is placed."
   (interactive-place-internal win resize))
 
 
-(define*-public (place-at-point win #&key (offset '(0 0)) 
+(define*-public (place-at-point win #&key (offset '(0 0))
 			       (proportional-offset '(-0.5 -0.5)))
   "Place WIN at the pointer position.
 
@@ -89,7 +89,7 @@ window with the same DESK argument."
   (lambda (win) (place-on-desk win desk)))
 
 (define*-public (interactive-placement #&key (resize #f) (switch #t)
-  (return #f)) 
+  (return #f))
   "Return a procedure that takes a window and places it interactively.
 
 If the RESIZE argument is true, the resulting procedure will
@@ -105,7 +105,7 @@ places a window interactively."
   (wrap-switch-return switch return
    (lambda (win) (interactive-place-internal win resize))))
 
-(define*-public (at-point-placement #&key (offset '(0 0)) 
+(define*-public (at-point-placement #&key (offset '(0 0))
 			       (proportional-offset '(-0.5 -0.5))
 			       (switch #t) (return #f))
   "Return a procedure that places a window it at the pointer position.
@@ -123,11 +123,11 @@ If SWITCH is true, the returned procedure will switch to the virtual
 desk and viewport of its window argument before placing it. This is
 the default. If RETURN is false, the returned procedure will switch
 back to the previous desk and viewport after placing the window. The
-default is false. 
+default is false.
 
 See also the related `place-at-point' procedure which directly places
 a window at the pointer position."
-  (wrap-switch-return switch return 
+  (wrap-switch-return switch return
    (lambda (win)
      (place-at-point-internal win offset proportional-offset))))
 
@@ -160,14 +160,15 @@ respectively."
      (proc win))))
 
 (define (place-at-point-internal win offset proportional-offset)
-  (let ((final-pos 
+  (let ((final-pos
 	 (map (lambda (pp ws o po wav)
 		(+ wav pp o (inexact->exact (round (* ws po)))))
 	      (peek 'pointer-position (pointer-position))
 	      (peek 'window-size (window-frame-size win))
 	      (peek 'offset offset) (peek 'po proportional-offset)
 	      (peek 'wav (window-aligned-viewport win)))))
-    (move-window (car final-pos) (cadr final-pos) win)))
+    (move-window (car final-pos) (cadr final-pos) win)
+    (move-inside-current-viewport win)))
 
 (define (interactive-place-internal win resize)
   (let ((pp (pointer-position)))
