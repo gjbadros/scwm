@@ -197,11 +197,9 @@ restart scwm with the same command-line arguments as given previously.")
 }
 #undef FUNC_NAME
 
-/* GJB:FIXME:MS: what is args for, and why does this have it */
-SCWM_PROC(scwm_quit, "scwm-quit", 0, 0, 1,
-          (SCM ARG_IGNORE(args)),
-"Exit scwm cleanly. `quit' is redefined as this within scwm.\n\
-ARGS is ignored")
+SCWM_IPROC(scwm_quit, "scwm-quit", 0, 0, 0,
+           (),
+"Exit scwm cleanly. `quit' is redefined as this within scwm.")
 #define FUNC_NAME s_scwm_quit
 {
   if (master_pid != getpid())
