@@ -1111,13 +1111,10 @@
 (debug-display " *** `scwmrc' processed.\n")
 
 (system 
- (string-append "ps auxww | grep -q \"xemacs -f [g]nus\" || " 
+ (string-append "ps auxww | grep -q \"^gjb .*xemacs -f gnus\" || " 
 		HOME "/.xclients &"))
 
 
 ;;; Local Variables:
-;;; eval: (load "scwm")
-;;; eval: (scwm-mode)
+;;; eval: (progn (load "scwm") (scwm-mode))
 ;;; End:
-;; (get-window)
-;; (+ 1 2)
