@@ -98,6 +98,8 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
       (deltaW == 0 && deltaH == 0))
     return;
 
+  CassowaryEditSize(psw);
+
   do {
     currentX = (int) (startX + deltaX * (*ppctMovement));
     currentY = (int) (startY + deltaY * (*ppctMovement));
@@ -106,10 +108,15 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
     currentH = (int) (startH + deltaH * (*ppctMovement));
     /* XResizeWindow(dpy, w, currentW, currentH); */
 
-    SET_CVALUE(psw,frame_width,currentW);
-    SET_CVALUE(psw,frame_height,currentH);
 
-    XMoveWindow(dpy,w,currentX,currentY);
+    if (SuggestSizeWindowTo(psw,
+                            WIN_VP_OFFSET_X(psw) + currentX,
+                            WIN_VP_OFFSET_Y(psw) + currentY,
+                            currentW, currentH, True)) {
+      /* it was resized/moved */
+      /* empty */
+    }
+
     if (fWarpPointerToo) {
       WXGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
       pointerX += currentX - lastX;
@@ -117,21 +124,17 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
       XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
 		   pointerX,pointerY);
     }
-    SendClientConfigureNotify(psw);
-    SetupFrame(psw, currentX, currentY, currentW, currentH, 
-               WAS_MOVED, WAS_RESIZED);
 
-
-    XFlush(dpy);
+    /* XFlush(dpy); */
+    
     /* handle expose events as we're animating the window move */
-    while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
-      {
-	DispatchEvent();
-      }
-
+    while (XCheckMaskEvent(dpy,  ExposureMask, &Event)) {
+      DispatchEvent(); 
+    }
+  
     ms_sleep(cmsDelay);
-#ifdef FIXGJB_ALLOW_ABORTING_ANIMATED_MOVES
-    /* this didn't work for me -- maybe no longer necessary since
+    /* GJB:FIXME:NOW: 
+       this didn't work for me -- maybe no longer necessary since
        we warn the user when they use > .5 seconds as a between-frame delay
        time */
     if (XCheckMaskEvent(dpy, 
@@ -139,18 +142,15 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
 			KeyPressMask,
 			&Event)) {
       /* finish the move immediately */
-      XResizeWindow(dpy,w,endW,endH);
-      XFlush(dpy);
-      return;
+      break;
     }
-#endif
     lastW = currentW;
     lastH = currentH;
     lastX = currentX;
     lastY = currentY;
-    }
-  while (*ppctMovement != 1.0 && ppctMovement++);
-
+  } while (*ppctMovement != 1.0 && ppctMovement++);
+  
+  CassowaryEndEdit(psw);
 }
 
 
