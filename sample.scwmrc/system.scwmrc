@@ -22,7 +22,7 @@
 ;; import the scwm modules       ;;
 
 (define debug #t)
-(define suppress-xclients #t)
+(define suppress-xclients #f)
 
 ;; This will make things go a bit faster at the expense
 ;; of your having to be sure that NumLock and ScrollLock
@@ -830,6 +830,8 @@
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
 
+(window-style "scwmmessages" #:no-titlebar #t)
+
 (window-style "panel"
               #:use-style desk-widget #:border-width 0 #:no-titlebar #t)
 
@@ -1347,21 +1349,25 @@ union of all other window managers!
 (bind-key 'all "C-M-S-e" resize-halfscreen)
 (bind-key 'all "C-M-S-f" resize-fullscreen)
 
+(define (window-task-switcher-menu)
+  (show-window-list-menu #:by-focus #t #:show-last-focus-time #t
+			 #:show-geometry #t #:warp-to-first #t))
+  
 
 ;; I reserve M-Tab for emacs, but Alt-Tab is fine
-(bind-key 'all "A-Tab"
-	  (lambda ()
-	    (show-window-list-menu #:by-focus #t #:show-last-focus-time #t
-				   #:show-geometry #t #:warp-to-first #t)))
+(bind-key 'all "A-Tab" window-task-switcher-menu)
+
+
+(define (next-visible-non-iconified-window)
+	 (next-window #:only visible? #:except iconified?))
+
+(define (prev-visible-non-iconified-window)
+	 (prev-window #:only visible? #:except iconified?))
 
 ;; rotate the current window with the keyboard
-(bind-key 'all "M-S-Tab" 
-	  (lambda ()
-	    (next-window #:only visible? #:except iconified?)))
+(bind-key 'all "M-S-Tab" next-visible-non-iconified-window)
 
-(bind-key 'all "C-M-S-Tab" 
-	  (lambda ()
-	    (prev-window #:only visible? #:except iconified?)))
+(bind-key 'all "C-M-S-Tab" prev-visible-non-iconified-window)
 
 (key-mouse-moves "C-M-S" 5 "h" "j" "k" "l")
 ;; XInside's old X server steal C-M-h for prev virtual console, so use m too
@@ -1739,10 +1745,13 @@ union of all other window managers!
 (if (and (not (restarted?)) (not suppress-xclients))
     (run-dot-xclients-at-startup))
 
-(define scwm-messages-window (find-window-by-name "SCWM Messages...."))
+(define scwm-messages-window (find-window-by-class-resource "XTerm" "scwmmessages"))
 
 (if scwm-messages-window
-    (iconify scwm-messages-window))
+    (with-window scwm-messages-window
+		 (animated-resize-window 640 84)
+		 (animated-move-to 0 (y- (w%y 100)))
+		 (set-window-gravity! 'southwest)))
 
 (debug-display " *** `scwmrc' processed.\n")
 
