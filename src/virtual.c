@@ -432,8 +432,10 @@ changeDesks(int val1, int val2)
 	  psw->FocusDesk = -1;
 	UnmapScwmWindow(psw);
       } else if (psw->Desk == Scr.CurrentDesk) {
-        MovePswToCurrentPosition(psw);
-        MovePswIconToCurrentPosition(psw);
+        if (psw->fIconified)
+          MovePswIconToCurrentPosition(psw);
+        else
+          MovePswToCurrentPosition(psw);
 	MapIt(psw);
 	if (psw->FocusDesk == Scr.CurrentDesk) {
 	  FocusWin = psw;

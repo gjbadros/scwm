@@ -364,8 +364,13 @@ InitVariables(void)
   Scr.randomx = Scr.randomy = 0;
   Scr.buttons2grab = (1 << XSERVER_MAX_BUTTONS) - 1;
 
-  decor2scm(&Scr.DefaultDecor);
+  scm_permanent_object(decor2scm(&Scr.DefaultDecor));
+#if 0
+  scm_permanent_object(Scr.DefaultDecor.scmdecor);
+  /* FIXGJB: is the above overkill? */
+#else
   DECORREF(Scr.DefaultDecor.scmdecor);
+#endif
 
   Scr.DefaultDecor.tag = strdup("default");
 

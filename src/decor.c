@@ -87,7 +87,6 @@ size_t
 free_decor(SCM obj)
 {
   DestroyScwmDecor(SCWMDECOR(obj));
-  FREE(SCWMDECOR(obj)->tag);
   FREE(SCWMDECOR(obj));
   FREE(DECOR(obj));
   return 0;
