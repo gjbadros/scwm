@@ -1,3 +1,9 @@
+Mon Jul  5 00:00:16 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added more debug-display to get a better idea of the 
+	timing of startup.  Made animated-move-to edge keystrokes also set 
+	the gravity of the moved window.
+
 Sun Jul  4 21:29:37 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use toggle-titlebar-in-place.  Remove some

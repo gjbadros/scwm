@@ -1,3 +1,8 @@
+Mon Jul  5 00:02:57 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c (s_keymask_keycode_to_string): Handle bad keycodes w/o 
+	segfaulting -- return #f.
+
 Sun Jul  4 22:56:39 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.h: Added psym to struct gravity_info_tag so I can map
