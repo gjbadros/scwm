@@ -812,5 +812,5 @@
 	      (if window (raise-window window)))))))
 
 ;;; Local Variables:
-;;; eval: (load "scwm-buffer")
+;;; eval: (load "scwm")
 ;;; End:
