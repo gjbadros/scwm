@@ -229,6 +229,8 @@ AC_OUTPUT(Makefile \
           scwm/Makefile \
 dnl          icons/Makefile \
           libs/Makefile \
+	  utilities/Makefile \
+	  utilities/scwmsend/Makefile \
 dnl          mini-icons/Makefile \
           sample.scwmrc/Makefile \
           scheme/Makefile \
