@@ -21,7 +21,12 @@
 (define menu-text-color (make-color "black"))
 (define menu-stipple-color (make-color "grey60"))
 (define menu-font (make-font "fixed"))
+(define menu-side-image #f)
+(define menu-side-bg-color menu-bg-color)
+(define menu-side-bg-color-set #f)
+(define menu-bg-image #f)
 (define menu-look scwm-menu-look)
+
 (define-public use-scwm-system-proc
 ;;;**VAR
 ;;; If #t, `execute' will use `scwm-system' instead of guile's `system'.
@@ -114,13 +119,28 @@ Returns #f otherwise."
   (set! menu-text-color (if (color? fg) fg (make-color fg))))
 (define-public (set-menu-background! bg)
   "Set the default background for menus to BG."
-  (set! menu-bg-color (if (color? bg) bg (make-color bg))))
+  (set! menu-bg-color (if (color? bg) bg (make-color bg)))
+  (if (not menu-side-bg-color-set) (set! menu-side-bg-color menu-bg-color)))
 (define-public (set-menu-stipple! stipple)
   "Set the default color for stippled (inactive) menu text to STIPPLE."
   (set! menu-stipple-color (if (color? stipple) stipple (make-color stipple))))
 (define-public (set-menu-font! font)
   "Set the default font for menu text to FONT."
   (set! menu-font (if (font? font) font (make-font font))))
+(define-public (set-menu-side-image! image)
+  "Set the default menu side image to IMAGE."
+  (set! menu-side-image (if (image? image) image (make-image image))))
+(define-public (set-menu-side-background! bg)
+  "Set the default background for the menu side image to BG.
+If BG is #f, use the default menu background" 
+  (cond (bg (set! menu-side-bg-color 
+		  (if (color? bg) bg (make-color bg)))
+	    (set! menu-side-bg-color-set #t))
+	(else (set! menu-side-bg-color menu-bg-color)
+	      (set! menu-side-bg-color-set #f))))
+(define-public (set-menu-bg-image! image)
+  "Set the default menu background image to IMAGE."
+  (set! menu-bg-image (if (image? image) image (make-image image))))
 (define-public (set-menu-look! look)
   "Set the default menu look to LOOK."
   (if (menulook? look) (set! menu-look look) (error "bad look")))
@@ -214,18 +234,25 @@ negative, and Y pixels vertically, down if positive, up if negative."
 ;; FIXJTL: if everybody uses this interface, remove the set-menu-*
 ;; functions, set the variables directly here, and free those names
 ;; for use for setting a single menu's attributes
+;; FIXJTL: image-align - to work like others, C code has to dereference
+;; symbols that aren't one of 'top, 'bottom or 'center
 (define*-public (menu-style #&key
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
+		     (bg-image #f)
 		     (stipple #f) (font #f)
-		     (look #f))
+		     (look #f)
+		     (side-image #f) (side-bg 'unset))
   "Set various properites for the menus.
 See `make-menu' for options on creation of individual menus."
   (if (or fg foreground) (set-menu-foreground! (or fg foreground)))
   (if (or bg background) (set-menu-background! (or bg background)))
   (if stipple (set-menu-stipple! stipple))
   (if font (set-menu-font! font))
-  (if look (set-menu-look! look)))
+  (if look (set-menu-look! look))
+  (if side-image (set-menu-side-image! side-image))
+  (if (not (eq? side-bg 'unset)) (set-menu-side-background! side-bg))
+  (if bg-image (set-menu-bg-image! bg-image)))
 
 ;; A subset of the real title-style which is here so people don't have
 ;; to load all of face.scm to get at it; will probably go away in the
@@ -301,10 +328,10 @@ the shortcut key for the menu item."
 		  hover-action unhover-action hotkey-prefs))
 
 (define*-public (menu list-of-menuitems #&key
-		      image-side
+		      (image-side 'menu-side-image)
 		      (image-align 'top)
-		      (color-bg-image-side 'menu-bg-color)
-		      (image-bg #f)
+		      (color-bg-image-side 'menu-side-bg-color)
+		      (image-bg 'menu-bg-image)
 		      (color-text 'menu-text-color)
 		      (color-bg 'menu-bg-color)
 		      (color-stipple 'menu-stipple-color)
@@ -561,3 +588,5 @@ Returns the child-pid, or #f if the fork fails."
 	;; Okay, we're the parent process.  Return the child pid, in
 	;; case we want to wait for it at some point in the future.
 	child-pid)))
+
+
