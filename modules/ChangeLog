@@ -1,3 +1,16 @@
+Sat Sep 18 13:50:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice/scwmgrammar.bnf: Added lots of phrases.  Far more
+	interesting a demo, now.
+
+	* viavoice/scwmviavoice.c: Is now a pretty reasonable module. Use
+ 	validate.h, guile-compat.h.  Added *CB_proc variables to be used
+ 	for the asynchronous function calls.  These are *NOT* yet
+ 	complete.  Drop some C wrappers of the SmAPI, and just call the
+ 	SmAPI from the scheme primitives.  Wrote
+ 	`ScmAnnotationsFromRgAnnotations' for better reporting of
+ 	annotations.  Do argument validation on primitives.
+
 Sat Sep 18 01:14:51 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xtest/scwmxtest.c, xpm-menus/draw-xpm-menu.c,
