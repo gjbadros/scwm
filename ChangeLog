@@ -1,3 +1,8 @@
+Mon Sep 20 17:36:04 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in:  Added scwm_viavoice_grammardir and do its
+	substitution so that the .fsg file goes in the right place.
+
 Sun Sep 19 00:36:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in, acconfig.h: Handle HAVE_SCM_MAKE_SMOB_TYPE_MFPE.
