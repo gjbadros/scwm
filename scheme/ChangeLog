@@ -1,3 +1,8 @@
+Sun Sep  5 12:49:37 1999    <gjb@cs.washington.edu>
+
+	* minimal.scm: Set _WIN_WM_NAME, _WIN_WM_VERSION properties on the 
+	root window.
+
 Sat Sep  4 01:09:24 1999    <gjb@cs.washington.edu>
 
 	* prompt-proc.scm: Fixed a bad define placement using a let.
