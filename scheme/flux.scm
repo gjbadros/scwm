@@ -317,3 +317,10 @@ This positions the popup menu appropriately."
 	 (y (+ (cadr pos) (+ 1 (* 2 (window-border-width win)) (window-title-height win))))
 	 (x (if (odd? button-number) x-ne (+ 1 x-ne (car (window-size))))))
     (popup-menu menu #f x y (odd? button-number))))
+
+
+;; We need accessors for window background information,
+;; and window-hilight background information
+(define*-public (flash-window win #&optional (color (make-color "red")))
+  (set-window-background! color win)
+  (add-timer-hook! (sec->usec .5) (lambda () (set-window-background! "grey76" win))))
