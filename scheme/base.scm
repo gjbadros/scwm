@@ -66,8 +66,8 @@
     (move-pointer-to (+ x (car pos)) (+ y (cadr pos)))))
 
 (define-public (move-viewport x y)
-  (let ((pos (viewport-position))
-    (set-viewport-position! (+ x (car pos)) (+ y (cdr pos))))))
+  (let ((pos (viewport-position)))
+    (set-viewport-position! (+ x (car pos)) (+ y (cadr pos)))))
 
 (define*-public (menu-style #&key 
 		     (fg #f) (foreground #f)
@@ -88,5 +88,4 @@
       (set-title-height! height))
   (if (bound? justify)
       (set-title-justify! justify)))
-
 
