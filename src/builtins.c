@@ -36,6 +36,19 @@ static char  *button_states[MaxButtonState]={
 #endif
 };
 
+/* These should be preserved here, everything else can die
+FlipFocus
+GlobalOpts
+Nop
+None
+Quit
+QuitScreen
+Title
+Menu
+Popup
+*/
+
+
 /***********************************************************************
  *
  *  Procedure:
