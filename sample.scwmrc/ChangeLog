@@ -1,3 +1,7 @@
+1998-12-11  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc (build-menu): Would try exec'ing a list.
+
 Sat Dec  5 12:31:46 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc, robbe.scwmrc, sds.scwmrc: Use module (app scwm
