@@ -284,7 +284,7 @@ typedef struct ScreenInfo {
   /* global options */
   PackedBool(fEdgeWrapX);       /* does the pointer wrap horizontally? */
   PackedBool(fEdgeWrapY);       /* does the pointer wrap vertically? */
-  PackedBool(fMWMMenus);        /* MWM menu style (not really --07/26/98 gjb */
+  /*  PackedBool(fMWMMenus);        MWM menu style (not really --07/26/98 gjb */
   PackedBool(fColormapFollowsMouse);
   /* these global options might better be window-specific options */
   PackedBool(fSmartPlacementIsClever);

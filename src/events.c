@@ -1344,7 +1344,7 @@ HandleConfigureRequest()
   XConfigureRequestEvent *cre = &Event.xconfigurerequest;
   Bool sendEvent = False;
 
-  DBUG_RESIZE((dbg,__FUNCTION__, "Routine Entered"));
+  DBUG_RESIZE((DBG,__FUNCTION__, "Routine Entered"));
 
   /*
    * Event.xany.window is Event.xconfigurerequest.parent, so pswCurrent will

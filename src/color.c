@@ -490,6 +490,11 @@ SCWM_PROC(hilight_factor, "hilight-factor", 0, 0, 0,
 #undef FUNC_NAME
 
 
+/**VAR: shadow-factor
+   The numeric factor used in generating shadow colors in the current decor.
+*/
+   
+
 SCWM_PROC(set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
            (SCM factor))
      /** Use FACTOR to generate shadow colors in the current decor. 

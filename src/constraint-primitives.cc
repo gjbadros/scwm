@@ -15,6 +15,7 @@
 extern "C" {
 #include "scwm.h"
 #include "window.h"
+#include "resize.h"
 #include "callbacks.h"
 }
 
@@ -73,7 +74,7 @@ ScwmResolve(ClSimplexSolver *psolver)
     ScwmWindow *psw = *it;
     assert(psw);
     psw->pswci->CopyStateToPswVars(&fMoved, &fResized);
-#ifndef NDEBUG
+#ifndef SCWM_DEBUG_RESIZE_MSGS
     if (fMoved && fResized) {
       DBUG((DBG,__FUNCTION__,"Move and resize of %s",psw->name));
     } else if (fMoved) {
@@ -83,8 +84,25 @@ ScwmResolve(ClSimplexSolver *psolver)
     }
 #endif
     /* resize subsumes a move, so check for it first */
-    if (fResized) ResizePswToCurrentSize(psw);
-    else if (fMoved) MovePswToCurrentPosition(psw);
+    if (fResized) {
+      int width = FRAME_WIDTH(psw), height = FRAME_HEIGHT(psw);
+      ConstrainSize(psw, 0, 0, &width, &height);
+      /* be sure we only set the window to a valid size 
+         in a sense, this is another constraint, that the width/height
+         are a multiple of the width/height increment, that the solver
+         cannot handle directly, so we force it here, just
+         before doing the actual resize */
+#ifdef SCWM_DEBUG_RESIZE_MSGS
+      scwm_msg(DBG,__FUNCTION__,"was %d x %d now %d x %d",
+               FRAME_WIDTH(psw),FRAME_HEIGHT(psw),
+               width, height);
+#endif
+      SET_CVALUE(psw,frame_width,width);
+      SET_CVALUE(psw,frame_height,height);
+      ResizePswToCurrentSize(psw);
+    } else if (fMoved) {
+      MovePswToCurrentPosition(psw);
+    }
   }
   setpswDirty.clear();
 }

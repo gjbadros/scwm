@@ -492,7 +492,7 @@ SendClientConfigureNotify(const ScwmWindow *psw)
   /* what if we don't have a title ????? */
   client_event.xconfigure.above = psw->frame;
   client_event.xconfigure.override_redirect = False;
-  DBUG_RESIZE((dbg,__FUNCTION__, "Sending configure event"));
+  DBUG_RESIZE((DBG,__FUNCTION__, "Sending configure event to %s",psw->name));
   XSendEvent(dpy, psw->w, False, StructureNotifyMask, &client_event);
 }
 

@@ -376,11 +376,11 @@ MoveViewport_internal(int newx, int newy, Bool grab)
   Scr.Vy = newy;
 
   for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-    MovePswToCurrentPosition(psw);
-    /* FIXGJB:
-    XMoveWindow(dpy,psw->frame,FRAME_X_VP(psw),FRAME_Y_VP(psw));
-    */
-    MovePswIconToCurrentPosition(psw);
+    /* do not bother with moving windows not on the current desk */
+    if (psw->Desk == Scr.CurrentDesk) {
+      MovePswToCurrentPosition(psw);
+      MovePswIconToCurrentPosition(psw);
+    }
   }
 
   Broadcast(M_NEW_PAGE, 5, Scr.Vx, Scr.Vy, Scr.CurrentDesk, Scr.VxMax, Scr.VyMax, 0, 0);

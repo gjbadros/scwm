@@ -340,7 +340,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 	/* FIXGJB: this hack removed: NeedToResizeToo = True; */
 	/* Fallthrough to button-release */
       } else {
-	done = 1;
+	done = True;
 	break;
       }
     case ButtonRelease:

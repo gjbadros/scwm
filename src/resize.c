@@ -126,7 +126,8 @@ makemult(int a, int b)
  *      borrowed from uwm's CheckConsistency routine.
  */
 void 
-ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, int *widthp, int *heightp)
+ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, 
+              /* input and output to/from: */ int *widthp, int *heightp)
 {
   int minWidth, minHeight, maxWidth, maxHeight, xinc, yinc, delta;
   int baseWidth, baseHeight;
@@ -503,7 +504,8 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   while (!finished) {
     XEvent ResizeEvent;
     XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask | KeyPressMask |
-	       ButtonMotionMask | PointerMotionMask | ExposureMask, &ResizeEvent);
+	       ButtonMotionMask | PointerMotionMask | ExposureMask, 
+               &ResizeEvent);
     StashEventTime(&ResizeEvent);
 
     if (ResizeEvent.type == MotionNotify)
@@ -544,7 +546,9 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                                  x, y, &xmotion, &ymotion, 
                                  &dragx, &dragy, &dragWidth, &dragHeight);
 
-      SuggestSizeWindowTo(psw,WIN_VP_OFFSET_X(psw) + dragx, WIN_VP_OFFSET_Y(psw) + dragy,
+      SuggestSizeWindowTo(psw,
+                          WIN_VP_OFFSET_X(psw) + dragx, 
+                          WIN_VP_OFFSET_Y(psw) + dragy,
                           dragWidth,dragHeight, fOpaque);
             
       DisplaySize(psw, dragWidth, dragHeight, True);

@@ -30,30 +30,6 @@ extern Bool Restarting, PPosOverride;
 
 SCWM_SYMBOL(sym_focus, "focus");
 
-/* GJBFIX: Maybe the menus should do something w/ this? */
-SCWM_PROC(set_menu_mwm_style_x, "set-menu-mwm-style!", 1, 0, 0,
-          (SCM flag))
-     /** Set the menu mwm style according to the boolean FLAG. 
-This option is currently ignored. */
-#define FUNC_NAME s_set_menu_mwm_style_x
-{
-  COPY_BOOL_OR_ERROR(Scr.fMWMMenus,flag,1,FUNC_NAME);
-  return SCM_UNSPECIFIED;
-}
-#undef FUNC_NAME
-
-SCWM_PROC(menu_mwm_style, "menu-mwm-style", 0, 0, 0,
-          ())
-     /** Return the menu mwm style as set by `set-menu-mwm-style!'. 
-This option is currently ignored. */
-#define FUNC_NAME s_menu_mwm_style
-{
-  return SCM_BOOL_FromBool(Scr.fMWMMenus);
-}
-#undef FUNC_NAME
-
-
-
 SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
           (SCM just))
      /** Set the justification for the title to JUST.

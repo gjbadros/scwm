@@ -1563,7 +1563,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
   }
 
   /* fix up frame and assign size/location values in psw */
-  DBUG_RESIZE((dbg,__FUNCTION__,"w = %d, h = %d", w, h));
+  DBUG_RESIZE((DBG,__FUNCTION__,"w = %d, h = %d", w, h));
 
   XMoveResizeWindow(dpy, psw->frame, x, y, w, h);
 

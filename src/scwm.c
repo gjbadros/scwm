@@ -1374,7 +1374,7 @@ scwm_msg(scwm_msg_levels type, char *id, char *msg,...)
   fprintf(stderr, "\n");
 
   if (type == ERR) {
-    char tmp[1024];		/* I hate to use a fixed length but this will do for now */
+    char tmp[1024];		/* FIXGJB: bad fixed length */
 
     sprintf(tmp, "[Scwm][%s]: %s ", id, typestr);
     vsprintf(tmp + strlen(tmp), msg, args);
