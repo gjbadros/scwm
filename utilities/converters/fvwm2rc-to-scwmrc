@@ -1,0 +1,1060 @@
+#!/usr/bin/perl -w
+# (C) 1999 Greg J. Badros
+# 21-March-1999
+# Distributed under the GNU GPL
+# See the PRESCRIPT text below for more
+# details and warnings.
+
+use strict;
+
+use constant TRUE => (1==1);
+use constant FALSE => (1==0);
+use File::Basename;
+
+my $getopts_option_letters = 'h1q';
+use vars qw($opt_h $opt_1 $opt_q);
+
+sub script_usage ( ) {
+  print "@_\nUsage: $0 [-$getopts_option_letters]
+-1       Use only one-pass, and put functions/menus/decors all at end.
+-q       Quiet mode -- suppress warning messages
+-h       Show this usage message
+";
+  exit 0;
+}
+
+use Getopt::Std;
+getopts($getopts_option_letters);
+
+script_usage() if ($opt_h);
+
+
+my $last_context_name = undef;
+my $last_context_type = undef;
+
+my $two_pass = !$opt_1 || TRUE;
+my $fQuiet = $opt_q || FALSE;
+
+my @module_prefixes = qw( FvwmAudio FvwmAuto FvwmBacker FvwmBanner
+FvwmButtons FvwmCascade FvwmCommand FvwmCommand.sh FvwmCommandS
+FvwmConfig FvwmConsole FvwmConsoleC FvwmConsoleC.pl FvwmCpp
+FvwmDebug FvwmForm FvwmGoodStuff FvwmIconBox FvwmIconMan
+FvwmIdent FvwmM4 FvwmPager FvwmPipe FvwmSave FvwmSaveDesk
+FvwmScript FvwmScroll FvwmTalk FvwmTaskBar FvwmTile FvwmWharf
+FvwmWinList );
+
+
+my ($ct_function,$ct_menu,$ct_decor) = (0..2);
+
+my %funcs = ();  # names -> text
+my %decors = ();  # names -> text
+my %menus = ();  # names -> text
+my %moduleconfigs = ();  # module name
+
+# GJB:FIXME:: the first arg of the aref can also
+# be a closure that returns a list of the arguments
+# to the fvwm2 command.  The argument scanning should
+# probably be done using the Text::Balanced perl module
+# but it's not on my laptop so I cannot test with it now.
+# (See sub convert_fvwm_command for what processes
+#  these rules)
+# Also beware -- do not anchor the beginnings of these
+# regexps -- the matcher inserts text in front of the
+# regex, too, so the anchor would occur wrongly in the middle
+my %rules = 
+  (
+   "#" => 
+   [
+    '(.*)',
+    # GJB:FIXME:: It might be nice to try converting
+    # comments into scheme, too, in case it's a commented
+    # out fvwm2 command (as it often is).
+    # It looks like the system fvwm2rc has the '^#\w' pattern
+    # for commented out commands, so maybe that could
+    # be the hint to convert the comment into a commented-out
+    # s-exp.  (Will need to s/\n/\n;;; /mg to be sure that
+    # the entire resulting s-exp is commented out)
+    # Also a bit tricky with "+" pseudo-command since
+    # we'd need to save the commented-out translation
+    # for later (actually, I don't think it's that bad).
+    sub { return ";;; $_[0]"; },
+   ],
+   "*" =>
+   [ 
+    '(.*?)\s+(.*)',
+    sub { return HandleModule(@_); },
+   ],
+   "+" =>
+   [
+    '\s+(.*)',
+    sub { my ($text) = (@_);
+	  if (!defined($last_context_type)) {
+	    warn "fvwm2rc is in error;  '+' used before a context was established\n" if !$fQuiet;
+	  } else {
+	    if ($last_context_type == $ct_function) {
+	      $funcs{$last_context_name} .= "$text\n";
+	    } elsif ($last_context_type == $ct_decor) {
+	      $decors{$last_context_name} .= "$text\n";
+	    } else {
+	      $menus{$last_context_name} .= "$text\n";
+	    }
+	  }
+	  return "";		# no conversion for this line
+	},
+   ],
+   "windowfont" => 
+   [ 
+    '\s+([^\s]+)',
+    sub { return "(define window-font (make-font \"$_[0]\"))"; },
+   ],
+   "iconfont" =>
+   [
+    '\s+([^\s]+)',
+    sub { return "(define icon-font (make-font \"$_[0]\"))"; },
+   ],
+   "addtofunc" =>
+   [
+    '\s+"?([\w\d_-]+)"?\s+(.*)',
+    sub { my $text;
+	  ($last_context_name,$text) = (@_);
+	  my $answer = "";
+	  $last_context_type = $ct_function;
+	  if (! exists ($funcs{$last_context_name})) {
+	    $funcs{$last_context_name} = "";
+	    $answer = ";;; Start of fvwm2 Function $last_context_name\n" .
+	              ";;; [[@@&&func-$last_context_name&&@@]]";
+	  } 
+	  $funcs{$last_context_name} .= "$text\n";
+	  return $answer;
+	},
+   ],
+   "addtomenu" =>
+   [
+    '\s+"?([\w\d_-]+)"?\s+(.*)',
+    sub { my $text;
+	  ($last_context_name,$text) = (@_);
+	  my $answer = "";
+	  $last_context_type = $ct_menu;
+	  if (! exists ($funcs{$last_context_name})) {
+	    $menus{$last_context_name} = "";
+	    $answer = ";;; Start of fvwm2 Menu $last_context_name\n" .
+        	      ";;; [[@@&&menu-$last_context_name&&@@]]";
+	  } 
+	  $menus{$last_context_name} .= "$text\n";
+	  return $answer;
+	},
+   ],
+   "addtodecor" =>
+   [
+    '\s+"?([\w\d_-]+)"?\s+(.*)',
+    sub { my $text;
+	  ($last_context_name,$text) = (@_);
+	  my $answer = "";
+	  $last_context_type = $ct_decor;
+	  if (! exists ($decors{$last_context_name})) {
+	    $decors{$last_context_name} = "";
+	    $answer = ";;; Start of fvwm2 decor $last_context_name\n" .
+	              ";;; [[@@&&deco-$last_context_name&&@@]]";
+	  } 
+	  $decors{$last_context_name} .= "$text\n";
+	  return $answer;
+	},
+   ],
+   "modulepath" =>
+   [
+    '\s+(.*)',
+    sub {
+      my ($path_colon_sep) = (@_);
+      return "(set! fvwm2-module-path " .
+	colon_list_to_scm_list($path_colon_sep) .
+	  ")";
+    },
+   ],
+   "iconpath" =>
+   [
+    '\s+(.*)',
+    sub {
+      my ($path_colon_sep) = (@_);
+      return "(set! image-load-path (append image-load-path " . 
+	colon_list_to_scm_list($path_colon_sep) .
+	  "))";
+    },
+   ],
+   "pixmappath" =>
+   [
+    '\s+(.*)',
+    sub {
+      my ($path_colon_sep) = (@_);
+      return "(set! image-load-path (append image-load-path " .
+	colon_list_to_scm_list($path_colon_sep) .
+	  "))";
+    },
+   ],
+   "style" =>
+   [
+    '\s+"([\w\d-_\* ]+?)"\s+(.*)', # this requires the quotes
+    sub {
+      my ($pattern,$option) = (@_);
+      return HandleWindowStyle($pattern,$option);
+    },
+   ],
+   "opaquemovesize" =>
+   [
+    '\s+(\d+)',
+    sub { my ($size) = (@_);
+	  return "(set! opaque-move-percent $size)";
+	},
+   ],
+   "edgescroll" =>
+   [
+    '\s+(\d+)\s+(\d+)',
+    sub { my ($xdir, $ydir) = (@_);
+	  return "(set-edge-scroll! $xdir $ydir)";
+	},
+   ],
+   "edgeresistance" =>
+   [
+    '\s+(\d+)\s+(\d+)',
+    sub { my ($delay, $snap) = (@_);
+	  if ($delay >= 10000) {
+	    $delay = "#f";
+	  }
+	  return "(set-edge-resistance! $delay $snap)";
+	},
+   ],
+   "desktopsize" =>
+   [   '\s+(\d+)(?:x|\s+)(\d+)',
+       sub { my ($wide,$high) = (@_);
+	     return "(set-desk-size! $wide $high)"; },
+   ],
+   "mouse" =>
+   [   '\s+(\d+)\s+(\w+)\s+(\w+)\s+(.*)',
+       sub { my ($butnum,$where,$modifiers,$action) = (@_);
+	     return "(bind-mouse " .
+	       convert_where($where) . " " .
+		 convert_mouse_butnum($butnum,$modifiers) .
+		   " (lambda () " .
+		     convert_action($action) . "))";
+	   },
+   ],
+   "module" =>
+   [    '\s+\"?([\w\d_-]+)\"?',
+	sub { my ($m) = (@_);
+	      return "(define fvwm2-module-$m (run-fvwm2-module " . dquoted($m) . "))";
+	    },
+   ],
+   "function" =>
+   [    '\s+\"?([\w\d_-]+)\"?',
+	sub { my ($funcname) = (@_);
+	      return "(fvwm2-func-$funcname)";
+	    },
+   ],
+   "popup" =>
+   [    '\s+\"?([\w\d_-]+)\"?',
+	sub { my ($menuname) = (@_);
+	      return "(popup-menu 'fvwm2-menu-$menuname)";
+	    },
+   ],
+   "menu" =>
+   [    '\s+\"?([\w\d_-]+)\"?',
+	sub { my ($menuname) = (@_);
+	      return "(popup-menu 'fvwm2-menu-$menuname)";
+	    },
+   ],
+   "move" =>
+   [    '(?:\s+(\d+p?)\s+(\d+p?))?\s*$', #SYNTAXFIX'
+	sub { my ($x,$y) = (@_);
+	      return "(move-window" . HandleMoveResizeArgs($x,$y) . ")";
+	    },
+   ],
+   "resize" =>
+   [    '(?:\s+(\d+p?)\s+(\d+p?))?\s*$', #SYNTAXFIX'
+	sub { my ($x,$y) = (@_);
+	      return "(resize-window" . HandleMoveResizeArgs($x,$y) . ")";
+	    },
+   ],
+   "maximize" =>
+   [    '(?:\s+(\d+p?)\s+(\d+p?))?\s*$', #SYNTAXFIX'
+	sub { my ($x,$y) = (@_);
+	      return "(maximize-window" . HandleMoveResizeArgs($x,$y) . ")";
+	    },
+   ],
+   "raise" =>
+   [    '(.*)', # no args?
+	sub { return "(raise-window)";
+	    },
+   ],
+   "lower" =>
+   [    '(.*)', # no args?
+	sub { return "(lower-window)";
+	    },
+   ],
+   "raiselower" =>
+   [    '(.*)', # no args?
+	sub { return "(toggle-raise)";
+	    },
+   ],
+   "iconify" =>
+   [    '(.*)', # no args?
+	sub { return "(iconify-window)";
+	    },
+   ],
+   "stick" =>
+   [    '(.*)', # no args?
+	sub { return "(stick-window)";
+	    },
+   ],
+   "delete" =>
+   [    '(.*)', # no args?
+	sub { return "(close-window)";
+	    },
+   ],
+   "destroy" =>
+   [    '(.*)', # no args?
+	sub { return "(destroy-window)";
+	    },
+   ],
+   "refresh" =>
+   [    '(.*)', # no args?
+	sub { return "(refresh)";
+	    },
+   ],
+   "quit" =>
+   [    '(.*)', # no args?
+	sub { return "(quit)";
+	    },
+   ],
+   "windowlist" =>
+   [    '(.*)', # no args?
+	sub { return "(show-window-list-menu)";
+	    },
+   ],
+   "cursormove" =>
+   [    '\s+([+-]?\d+)\s+([+-]?\d+)',
+	sub { my ($x,$y) = (@_);
+	      # GJB:FIXME:: new feature in fvwm-compat, below
+	      return "(move-pointer (%x-permit-negative $x) (%y-permit-negative $y))";
+	    },
+   ],
+   "scroll" =>
+   [    '\s+([+-]?\d+)\s+([+-]?\d+)',
+	sub { my ($x,$y) = (@_);
+	      # GJB:FIXME:: new feature in fvwm-compat, below
+	      return "(move-viewport (%x-permit-negative $x) (%y-permit-negative $y))";
+	    },
+   ],
+   "key" =>
+   [    '\s+(\w+)\s+(\w+)\s+(\w+)\s+(.*)',
+	sub { my ($keysym,$where,$modifiers,$action) = (@_);
+	      return "(bind-key " .
+		convert_where($where) . " " .
+		  convert_keysym($keysym,$modifiers) .
+		    " (lambda () " .
+		      convert_action($action) . "))";
+	    },
+   ],
+   "exec" =>
+   [    '\s+(.*)',
+	sub { my ($rest) = (@_);
+	      return "(exe " . dquoted($rest) . ")";
+	    },
+   ],
+   "restart" =>
+   [    '\s+(.*)',
+	sub { my ($rest) = (@_);
+	      return "(restart " . dquoted($rest) . ")";
+	    },
+   ],
+   "nop" =>
+   [    '(.*)',
+	sub { return "(nop)" },
+   ],
+   "prev" =>
+   [    '\s+(?:\[(.*?)\]\s+)?(.*)',
+	sub { my ($conditions,$rest) = (@_);
+	      if (!defined($conditions) && $rest =~ m/focus/i) {
+		return "(prev-window)";
+	      } else {
+		#GJB:FIXME:: leave for later 
+		# see "Current" command in fvwm2 man page
+		return "(prev-matching " . dquoted($conditions) . " " .
+		       convert_action($rest) . ")";
+	      }
+	    },
+   ],
+   "next" =>
+   [    '\s+(?:\[(.*?)\]\s+)?(.*)',
+	sub { my ($conditions,$rest) = (@_);
+	      if (!defined($conditions) && $rest =~ m/focus/i) {
+		return "(next-window)";
+	      } else {
+		#GJB:FIXME:: leave for later 
+		# see "Current" command in fvwm2 man page
+		return "(next-matching " . dquoted($conditions) . " " .
+		       convert_action($rest) . ")";
+	      }
+	    },
+   ],
+
+  );
+
+chop(my $date = `date`);
+# By design, this PRESCRIPT should be pretty minimal.
+# We should *NOT* introduce all sorts of fvwm2-specific
+# machinery to convert a fvwm2rc configuration
+print <<"PRESCRIPT"
+;;; Auto-generated scwmrc created by fvwm2rc-to-scwmrc
+;;; fvwm2rc-to-scwmrc converter is 
+;;; (C) 1999 Greg J. Badros <gjb\@cs.washington.edu>
+;;; Use at your own risk!
+;;; http://vicarious-existence.mit.edu/scwm
+;;; http://www.cs.washington.edu/homes/gjb
+;;;
+;;; Generated $date
+;;; Using command line: "$0 @ARGV"
+;;;
+;;; BEWARE OF ALL COMMENTS IN THE CONVERTED TEXT
+;;; fvwm2rc comments have been copied unchanged
+;;; into this scwmrc file, and may not be appropriate,
+;;; may not be correct, and may not use scheme syntax
+;;; when demonstrating functionality.
+;;;
+;;; Also, be warned that not all of the fvwm2rc commands
+;;; are supported.  You should search the output for
+;;; instances of "&&&" and "eval-fvwm-command" for places
+;;; where the script probably did not do the right thing.
+;;;
+
+(use-modules (app scwm base)
+	     (app scwm winops)
+	     (app scwm winlist)
+	     (app scwm wininfo)
+             (app scwm style)
+	     (app scwm face)
+	     (app scwm optargs)
+	     (app scwm menus-extras)
+	     (app scwm std-menus)
+	     (app scwm prefs-menu)
+	     (app scwm doc)
+	     (app scwm virtual)
+	     (app scwm flux)
+	     (app scwm fvwm-module)
+	     (app scwm path-cache)
+	     (app scwm animation)
+	     (app scwm message-window)
+	     (app scwm animated-iconify)
+	     )
+
+;; Uncomment the below to send a single UDP packet to
+;; the scwm usage counter machine at startup
+;; The single packet just contains the hostname and version number
+;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
+;;(define thank-scwm-authors-with-usage-note #t)
+
+(set! image-load-path '())
+
+;;; BEGIN CONVERTED FILE
+PRESCRIPT
+;
+#SYNTAXFIX'
+ 
+my $fGotInitFunction = FALSE;
+my $fGotRestartFunction = FALSE;
+ 
+my $continued = FALSE;
+my $line;
+
+# save main converted text in variable $output
+# so that we can substitute back in the menus, functions,
+# and decor definitions  (it is a two-pass algorithm,
+# but the second pass operates on the $output string
+# just doing some regex substitutions)
+my $output = "";
+while (<>) {
+  if ($continued) {
+    s/^\s+//;
+    $line = "$line$_";
+  } else {
+    $line = $_;
+  }
+  if (m/\\$/) {
+    $continued = 1;
+    chop $line; chop $line;	# drop \ and newline
+    next;
+  }
+  next if $line =~ m/^\s*$/;	# skip blank lines
+  my $scheme_expr = convert_fvwm_command($line);
+  $line = "";
+  if ($scheme_expr ne "") {
+    $output .= "$scheme_expr\n";
+  }
+}
+ 
+print ";;; Menus follow::\n" if !$two_pass;
+for my $m (keys %menus) {
+  my $s = convert_menu($m,$menus{$m});
+  if ($two_pass) {
+    my $marker = ";;; [[@@&&menu-$m&&@@]]";
+    if (!($output =~ s/\Q$marker\E/$s/)) {
+      warn "Internal error: Could not insert menu $m into output stream" if !$fQuiet;
+    }
+  } else {
+    # ! $two_pass
+    print "$s\n";
+  }
+}
+ 
+ 
+print ";;; Functions follow::\n" if !$two_pass;
+for my $f (keys %funcs) {
+  if ($f =~ m/^InitFunction$/i) {
+    $fGotInitFunction = TRUE;
+  } elsif ($f =~ m/^RestartFunction$/i) {
+    $fGotRestartFunction = TRUE;
+  }
+  my $s = convert_function($f,$funcs{$f});
+  if ($two_pass) {
+    my $marker = ";;; [[@@&&func-$f&&@@]]";
+    if (!($output =~ s/\Q$marker\E/$s/)) {
+      warn "Internal error: Could not insert function $f into output stream" if !$fQuiet;
+    }
+  } else {
+    # ! $two_pass
+    print "$s\n";
+  }
+}
+ 
+print ";;; Decors follow::\n" if !$two_pass;
+for my $d (keys %decors) {
+  my $s = convert_decor($d,$decors{$d});
+  if ($two_pass) {
+    my $marker = ";;; [[@@&&deco-$d&&@@]]";
+    if (!($output =~ s/\Q$marker\E/$s/)) {
+      warn "Internal error: Could not insert decor $d into output stream" if !$fQuiet;
+    }
+  } else {
+    # ! $two_pass
+    print "$s\n";
+  }
+}
+ 
+# Dump all the text we have
+# accumulated
+if ($two_pass) {
+  print $output;
+}
+
+for my $m (keys %moduleconfigs) {
+  print <<"EOM"
+(register-fvwm2-module-config "$m"
+$moduleconfigs{$m})
+
+EOM
+    ;
+}
+
+if ($fGotInitFunction) {
+  print <<"EOH"
+(add-hook! startup-hook 
+   (lambda () (if (not (restarted?)) (fvwm2-func-InitFunction))))
+EOH
+   ;
+}
+
+if ($fGotRestartFunction) {
+  print <<"EOH"
+
+(add-hook! startup-hook 
+   (lambda () (if (restarted?) (fvwm2-func-RestartFunction))))
+EOH
+  ;
+}
+
+print <<"END_CONVERSION";
+;;; End of converted fvwm2rc
+END_CONVERSION
+
+sub HandleModule {
+  my ($first,$rest) = (@_);
+  my $answer = "";
+  
+  my $module;
+
+  for my $pref (@module_prefixes) {
+    if (index($first,$pref) ==0) {
+      $module = $pref;
+      last;
+    }
+  }
+  if (!defined($module)) {
+    warn "Do not know about module \"$1\"\n" if !$fQuiet;
+    return "";
+  }
+  
+  my $param = substr($first,length($module));
+  
+  if (!exists $moduleconfigs{$module}) {
+    $moduleconfigs{$module} = "";
+    $answer = ";;; Start of fvwm2 Module $module configuration\n" .
+      ";;; [[@@&&modu-$module&&@@]]";
+  }
+  $rest =~ s/"/\\"/g;
+  $moduleconfigs{$module} .= "   \"*$first $rest\"\n";
+  return $answer;
+}
+
+sub colon_list_to_scm_list {
+  my ($colon_list) = (@_);
+  my $answer = "(list \n";
+  for my $p (split /[^\\]:/,$colon_list) {
+    $answer .= "  \"$p\"\n";
+  }
+  $answer .= "  )";
+  return $answer;
+}
+
+sub HandleWindowStyle {
+  my ($pattern,$option_list) = (@_);
+  
+  my %scwm_style_options = 
+    (
+     "noicon" =>
+     [ "show-icon", sub { return "#f"; } ],
+     "forecolor" =>
+     [ "fg", sub { return dquoted($_[0]); } ],
+     "backcolor" =>
+     [ "bg", sub { return dquoted($_[0]); } ],
+     "decoratetransient" =>
+     [ "decorate-transient", sub { return "#t"; } ],
+     "randomplacement" =>
+     [ "random-placement", sub { return "#t"; } ],
+     "clicktofocus" =>
+     [ "focus", sub { return "'click"; } ],
+     "mwmfunctions" =>
+     [ "mwm-func-hint", sub { return "#t"; } ],
+     "mwmdecor" =>
+     [ "mwm-decor-hint", sub { return "#t"; } ],
+     "hintoverride" =>
+     [ "hint-override", sub { return "#t"; } ],
+     "notitle" =>
+     [ "no-titlebar", sub { return "#t"; } ],
+     "staysontop" =>
+     [ "kept-on-top", sub { return "#t"; } ],
+     "sticky" =>
+     [ "sticky", sub { return "#t"; } ],
+     "nohandles" =>
+     [ "plain-border", sub { return "#t"; } ],
+     "windowlistskip" =>
+     [ "winlist-skip", sub { return "#t"; } ],
+     "circulateskip" =>
+     [ "circulate-skip", sub { return "#t"; } ],
+     "nopposition" =>
+     [ "PPosition-hint", sub { return "#f"; } ],
+     "borderwidth" =>
+     [ "border-width", sub { return $_[0]; } ],
+     "handlewidth" =>
+     # GJB:FIXME: what is the Scwm handle-width option -- the below is *WRONG*
+     [ "border-width", sub { return $_[0]; } ],
+     "icon" =>
+     [ "icon", sub { return dquoted($_[0]); } ],
+     "miniicon" =>
+     [ "mini-icon", sub { return dquoted($_[0]); } ],
+    );
+  
+  my @options = split /,\s*/, $option_list;
+  my $answer = "(window-style \"$pattern\" ";
+  my $scheme_options = "";
+  for my $opt (@options) {
+    my @optargs = split /\s+/, $opt;
+    my $first_arg = shift @optargs;
+    my $optname = lc($first_arg);
+    if (!exists($scwm_style_options{$optname})) {
+      $scheme_options .= "\"&&&$first_arg " . join(" ",@optargs) . "\" ";
+      next;
+    }
+    my $aref = $scwm_style_options{$optname};
+    my ($scwm_option_name,$converter) = @$aref;
+    $scheme_options .= "#:$scwm_option_name " .
+      &{$converter}(@optargs) . " ";
+  }
+  chop $scheme_options;		# drop trailing space
+  $answer .= "$scheme_options)\n\n";
+  return $answer;
+}
+
+
+sub dquoted {
+  my ($str) = (@_);
+  $str =~ s/"/\\"/g;
+  return "\"$str\"";
+}
+
+
+sub convert_where {
+  my ($where) = (@_);
+  my %map = 
+    ( 
+     'a' => 'all',
+     'r' => 'root',
+     'w' => 'window',
+     't' => 'titlebar',
+# GJB:FIXME:: newly supported names are commented out for now
+# should use them instead, though
+#     's' => 'frame-sides',
+     's' => 'sidebar',
+#     'f' => 'frame-corners',
+     'f' => 'frame',
+     'i' => 'icon',
+    );
+  
+  $where = lc($where);
+  my @contexts = ();
+  for my $w (split(//,$where)) {
+    if (exists $map{$w}) {
+      push @contexts, $map{$w};
+    } elsif ($w =~ m/(\d+)/) {
+      my $decoration_num = $1;
+      if ($decoration_num eq "0") {
+	$decoration_num = 10;	# what an ugly fvwm2 hack!
+      }
+      if ($decoration_num % 2 == 0) {
+	#even -=> right side
+	push @contexts, "right-button-" . ($decoration_num/2);
+      } else {
+	#odd -=> left side
+	push @contexts, "left-button-" . (($decoration_num+1)/2);
+      }
+    } else {
+      push @contexts, "context-&&&-$w";
+    }
+  }
+  return perl_aref_to_symbol_list(\@contexts);
+}
+
+sub convert_mouse_butnum {
+  my ($num,$mods) = (@_);
+# GJB:FIXME:: should extend bind-mouse to accept 'all instead of 0
+#    if ($num == 0) {
+#       $num = "'all";  
+#    }
+  if ($mods =~ m/^a$/i) {
+    return $num;
+  }
+  return dquoted(join("-",(split(//,$mods)),$num));
+}
+
+sub convert_keysym {
+  my ($keysym,$mods) = (@_);
+  if ($mods =~ m/^a$/i) {
+    return dquoted($keysym);
+  }
+  return dquoted(join("-",split(//,$mods),$keysym));
+}
+
+
+
+sub convert_fvwm_command {
+  $_ = $_[0];
+  my ($first_char, $first_word);
+  if (m/^\s*(.)/) {
+    $first_char = lc($1);
+  }
+  if (m/^\s*(\S*)/) {
+    $first_word = lc($1);
+  }
+  my $aref = undef;
+  my $prefix_string = $first_char;
+  if (defined($first_char) && exists $rules{$first_char} ) {
+    $aref = $rules{$first_char};
+  }
+  if (!defined($aref) && defined($first_word) && exists $rules{$first_word}) {
+    $aref = $rules{$first_word};
+    $prefix_string = $first_word;
+  }
+  
+  if (!defined($aref)) {
+    return ";;;&&& UNCONVERTED: $_";
+  }
+  my ($re_or_parse_sub,$coderef) = (@$aref);
+  
+  my @args = ();
+  
+  if (!ref($re_or_parse_sub)) {
+    # it must just be a regexp
+    my $re = $re_or_parse_sub;
+    if (!m/^\Q$prefix_string\E\s*$re/i) {
+      chomp;
+      warn "Internal error: re = \'$prefix_string\\s*$re\' does not match \"$_\"\n";
+    } else {
+      @args = ($1,$2,$3,$4,$5,$6,$7,$8,$9);
+    }
+  } else {
+    # the argument scanner is a sub
+    my $parser = $re_or_parse_sub;
+    @args = &$parser($_);
+  }
+  my $scheme_expr = &$coderef(@args);
+  return $scheme_expr;
+}
+
+sub convert_action {
+  # GJB:FIXME:: not sure if this is even necessary -- it
+  # probably should just be the same as convert_fvwm_command,
+  # but the kinds of things used in Menus/Functions are generally
+  # very different from those used as "toplevel" configuration
+  # directives.  Also, some things will not be handled correctly
+  # if they are in Menu/Function action -- e.g., a dynamic AddToMenu
+  # as an action for a key binding or a menuitem will instead be
+  # interpreted statically, at the top level.  Maybe it's useful
+  # to keep this for the warnings it can provide, or to do things
+  # differently when it's a dynamic action as opposed to a static
+  # declaration (could pass a flag to convert_fvwm_command, too).
+  #
+  # We should *NOT* extend eval-fvwm2-command only for the purposes
+  # of use here -- we are better off figuring out the right s-exp
+  # to substitute.  It'll make the converted .scwmrc's better!
+  # N.B., it's fine to extend fvwm-compat.scm with procs that more
+  # closely match fvwm2 semantics -- these are probably useful
+  # to others used to fvwm2, anyway.
+  my ($action) = (@_);
+  
+  my $s = convert_fvwm_command($action);
+  if ($s =~ m/&&&/) {
+#    warn "Could not handle action: '$action'\nGot $s" if !$fQuiet;
+    if (exists $funcs{$action}) {
+      # This is actually perfectly fine, by the rules of fvwm2
+      # but it still seems nice to give a warning
+      warn "Using implied 'Function' for $action" if !$fQuiet;
+      return "(fvwm2-func-$action)";
+    }
+    return "(eval-fvwm-command " . dquoted($action) . ")";
+  } else {
+    if ($s eq "") {
+      warn "Probably mis-interpreting dynamic command statically:\n   $action" if !$fQuiet;
+    }
+    return $s;
+  }
+}
+
+sub perl_aref_to_symbol_list {
+  my ($aref) = (@_);
+  if (scalar(@$aref) == 1) {
+    return "'$$aref[0]";
+  } else {
+    return "'(" . join(" ",@$aref) . ")";
+  }
+}
+
+sub convert_function {
+  my ($name,$text) = (@_);
+  
+  my $lastarg = -1;
+  my $fTakesWindow = FALSE;
+  while ($text =~ m/[^\\]\$([w\d])/g) {
+    if ($1 eq "w") {
+      $fTakesWindow = TRUE;
+      next;
+    }
+    $lastarg = $1 if $1 > $lastarg;
+  }
+  my $answer = "(define (fvwm2-func-$name";
+  if ($lastarg >= 0) {
+    $answer .= " " . join(" ",map { "arg$_" } (0..$lastarg));
+  }
+  $answer .= ")\n";
+  
+  if ($fTakesWindow) {
+    $answer .= " (let ((win-id (window-id (get-window))))\n";
+  }
+  
+  # GJB:FIXME:: does not handle arguments properly yet
+  # need to use "arg0", "arg1", etc for "$0", "$1", ...
+  # and use "win-id" for "$w"  GJB:FIXME:: may need hex-win-id
+  # procedure
+  
+  my @lines = (split /\n/,$text);
+  # first handle "I" functions
+  for my $l (@lines) {
+    if ($l =~ m/^\s*"I"\s+(.*)/) {
+      my $rest = $1;
+      $answer .= "  " . convert_action($rest) . "\n";
+    }
+  }
+  # now handle the "M", "C", and "D" triggers
+  my $responses = "";
+  for my $l (@lines) {
+    if ($l =~ m/^\s*"(\w)"\s+(.*)/) {
+      my ($trigger, $rest) = ($1,$2);
+      next if $trigger =~ m/"?I"?/i;
+      $responses .= "    (" . convert_trigger($trigger) .
+	" " . convert_action($rest) . ")\n";
+    }
+  }
+  if ($responses ne "") {
+    $answer .= "  (case (mouse-event-type)\n$responses";
+    $answer .= "  )";
+  } else {
+    $answer .= "  ";
+  }
+  if ($fTakesWindow) {
+    $answer .= ")";		# close the "let"
+  }
+  $answer .= ")";
+}
+
+
+sub convert_trigger {
+  my ($trigger) = (@_);
+  
+  my %map = ( "m" => "motion",
+	      "c" => "click",
+	      "d" => "double-click",
+	      # GJB:FIXME:: does fvwm2 have "one-and-a-half-clicks"?
+	    );
+  my $orig_text = $trigger;
+  $trigger = lc($trigger);
+  $trigger =~ s/\"//g;
+  
+  if ( exists $map{$trigger} ) {
+    return "($map{$trigger})";
+  } else {
+    return "(trigger-&&&-$orig_text)";
+  }
+}
+
+
+sub convert_menu {
+  my ($name, $text) = (@_);
+  
+  my $answer = "(define fvwm2-menu-$name (menu (list\n";
+  
+  my @lines = (split /\n/,$text);
+  for my $l (@lines) {
+    next if $l eq ""; # skip blank lines -- sometimes happens on title lines after
+                      # the menu name has been stripped out.
+    $answer .= "  " . convert_menu_item($l) . "\n";
+  }
+  
+  $answer .= "  )))";
+}
+
+
+sub convert_menu_item {
+  my ($item) = @_;
+  my $text;
+  my $action;
+  # GJB:FIXME:: Use Text::Balanced package!
+  if ($item =~ m/\s*\"/) {
+    # it's double quoted
+    if ($item =~ m/\s*\"((?:[^\"]|\\\")*)\"\s+(.*)/) {
+      ($text,$action) = ($1,$2);
+    } else {
+      # we failed, so just mark it in the output
+      return ";;;(fvwm2-menu-item-&&&-dq " . dquoted($item) . ")";
+    } 
+  } else {
+    # item is not double quoted
+    if ($item =~ m/\s*([^\s]*)\s+(.*)/) {
+      ($text,$action) = ($1,$2);
+    } else {
+      # we failed, so just mark it in the output
+      return ";;;(fvwm2-menu-item-&&& " . dquoted($item) . ")";
+    }
+  }
+  
+  ## now we have $text, $action separated out
+  
+  # see if there is an image embedded in the menuitem name
+  my $image;
+  if ($text =~ s/%([^%\"]*)(%?)//g) {
+    if (!defined($2) || $2 eq "") {
+      warn "Missing '%' from menu pixmap text in fvwm2rc file for '$text'";
+    }
+    $image = $1;
+  }
+
+# GJB:FIXME:: I think it is better to leave the hotkeys
+# embedded, rather than pull them out;  this code would
+# pull them out (I think -- it's untested)       
+#DBG    # see if there are hotkeys embedded in the menuitem name
+#DBG    my $hotkey_prefs = "";
+#DBG    while ($text =~ s/&(.)/$1/g) {
+#DBG       $hotkey_prefs .= $1;
+#DBG    }
+
+  # remove trailing ws from the menu text, action string
+  $text =~ s/\s+$//;
+  $action =~ s/\s+$//;
+  my $extra_label;
+  if ($text =~ /^(.*)\t(.*)$/) {
+    if (defined($1) && defined($2) &&
+	$1 ne "" && $2 ne "") {
+      ($text,$extra_label) = ($1,$2);
+    }
+  }
+
+  my $extra_label_arg = "";
+  if (defined($extra_label) && $extra_label ne "") {
+    $extra_label_arg = " #:extra-label " . dquoted($extra_label);
+  }
+  my $answer;
+  
+  if (lc($action) eq "nop") {
+    $answer = "menu-separator"
+  } elsif (lc($action) eq "title") {
+    # GJB:FIXME:: here Scwm has a bit of a hack
+    # the title should be more distinguished
+    $answer = "(menuitem " . dquoted($text) . $extra_label_arg . " #f) menu-title";
+  } else {
+    $answer = "(menuitem " . dquoted($text) . $extra_label_arg;
+    if (defined($image)) {
+      $answer .= " #:image-left " . dquoted($image);
+    }
+    my $action_sexp = prepare_for_menuitem(convert_action($action));
+    if ($action_sexp ne "") {
+      $answer .= " #:action $action_sexp";
+    }
+    $answer .= ")";
+  }
+  return $answer;
+}
+
+sub prepare_for_menuitem {
+  my ($sexp) = (@_);
+
+  if ($sexp eq "") {
+    return "";
+  }
+
+  if ($sexp =~ m/^\(popup-menu '(fvwm2-menu-[\w\d-_]+)/) { #SYNTAXFIX'
+    return "'$1";
+  } else {
+    return "(lambda () $sexp)";
+  }
+}
+
+# GJB:FIXME:: this needs writing
+sub convert_decor {
+  my ($name, $text) = @_;
+  
+  $text =~ s/\n/\n;;; /mg;
+  return ";;; Decor $name\n$text";
+}
+
+sub HandleMoveResizeArgs {
+  my ($x,$y) = (@_);
+  my $answer = "";
+  if (defined($x) && defined($y)) {
+    if ($x =~ m/p/) {
+      $answer .= " $x";
+    } else {
+      $answer .= " (%x $x)";
+    }
+    if ($y =~ m/p/) {
+      $answer .= " $y";
+    } else {
+      $answer .= " (%y $y)";
+    }
+  }
+  return "$answer";
+}
