@@ -798,4 +798,6 @@ See `move-window-relative.'"
   (for-each (lambda (w) (move-window-relative x y w)) (list-all-windows)))
 
 ;; Recapture sometimes requires me to use this -- WHY? GJB:FIXME::
+;; (use-modules (app scwm flux))
 ;; (move-all-windows-relative 0 display-height)
+;; (move-all-windows-relative display-width 0)
