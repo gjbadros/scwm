@@ -921,7 +921,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 ;; C-S-M-t makes netscape go to the url specified by cut buffer 0
 (bind-key 'all "C-S-M-t" netscape-goto-selection-url)
-(bind-key 'all "A-s" netscape-google-search-cut-buffer)
+(bind-key 'all "A-s" netscape-google-search-selection-url)
 ;; http://scwm.mit.edu/scwm    ;; highlight w/ mouse and try it!
 
 ;; in case of emergency, hit Control-Meta-Q
