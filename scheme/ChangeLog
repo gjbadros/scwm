@@ -1,3 +1,18 @@
+Thu Oct 23 20:03:30 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* decor.scm: Added some basic support for decors: the
+ 	call-with-decor procedure and with-decor macro.
+
+	* style.scm, style-options.scm, winlist.scm, winops.scm: Split
+ 	style.scm into styles.scm which provides the various style
+ 	commands and style-options.scm which provides the tables of style
+ 	options and hooks to add new ones. style.scm now does not need to
+ 	use every module that may define procedures that should be
+ 	available as style options; the files can just use the (app scwm
+ 	style-options) module and define relevant options themselves. This
+ 	was done for #:circulate-skip, #:circulate-skip-icon,
+ 	#:winlist-skip, and #:start-maximized.
+
 Tue Oct 21 21:04:31 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* style.scm: Change #:mwm-buttons from a style option to a hint

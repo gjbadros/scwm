@@ -1,3 +1,22 @@
+Thu Oct 23 19:54:16 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Added support for decors as Scheme objects. This includes the
+	following changes:
+
+	decor.c, decor.h: new files which implement make-decor, default-decor,
+	current-decor, set-current-decor! and set-window-decor!
+
+	scwm.c: wrap the default decor as a nice Scheme object.
+
+	window.c: protect the decor attached to a window from garbage
+ 	collection in the marker for window.
+
+	scmtypes.c: register the decor type.
+
+	scmprocs.c: register the decor procedures.
+
+	Makefile.in: add decor.c to the build process.
+
 Tue Oct 21 21:03:03 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c: Don't attempt to redraw the border in
