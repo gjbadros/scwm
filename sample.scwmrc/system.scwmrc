@@ -20,7 +20,8 @@
 
 ;; Turn off buffering so that we can see messages as
 ;; they are displayed (an issue in >= guile-1.3.2)
-(setvbuf (current-output-port) _IONBF)
+(if (> guile-version 1.3)
+    (setvbuf (current-output-port) _IONBF))
 
 (define debug #t)
 
