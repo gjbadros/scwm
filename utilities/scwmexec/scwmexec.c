@@ -4,12 +4,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.GPL.  If not, write to
  * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
@@ -45,7 +45,7 @@ main(int argc, char **argv)
 {
   Window w;
   char *result, *output, *error;
-  
+
   if (argc != 2)
     die("Usage: scwmexec EXPRESSION\n");
   if (!init_display())
@@ -57,20 +57,19 @@ main(int argc, char **argv)
     die ("Unable to establish scwmexec connection.\n");
 
   result=scwmexec_exec_full(display,w,argv[1],&output,&error);
-  printf(output);
+  fputs (output, stdout);
   if (strlen(error)!=0) {
-    fprintf(stderr,"%s",error);
+    fputs (error, stderr);
   } else {
-    fprintf(stdout,"%s",result);
+    fputs (result, stdout);
   }
-  
-  XFree(result);
-  XFree(error);
-  XFree(output);
 
+  if (result) XFree(result);
+  if (error) XFree(error);
+  if (output) XFree(output);
 
   XCloseDisplay (display);
-  
+
   return 0;
 }
 

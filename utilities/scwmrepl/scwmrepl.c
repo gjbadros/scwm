@@ -4,12 +4,12 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.GPL.  If not, write to
  * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
@@ -82,7 +82,7 @@ char *scwm_complete(char *text, int state)
 
     c=output;
     n=0;
-    while (n<1023) { 
+    while (n<1023) {
       c=strstr(c,": ");
       if (!c)
 	break;
@@ -102,7 +102,7 @@ char *scwm_complete(char *text, int state)
       c++;
     }
     completions[n]=NULL;
-  }    
+  }
   return completions[state];
 }
 
@@ -149,7 +149,7 @@ int appending_fgets(char **sofar)
 
   return 1;
 }
-  
+
 int check_balance(char *expr) {
   /* If you think _this_ is hairy, try doing it for C statements. */
   int i;
@@ -163,7 +163,7 @@ int check_balance(char *expr) {
   i=0;
   while (i<end) {
     switch(expr[i]) {
-    case ';' : 
+    case ';' :
       /* skip till newline. */
       do {
 	i++;
@@ -172,7 +172,7 @@ int check_balance(char *expr) {
     case ' ':
     case '\n':
     case '\t':
-    case '\r': 
+    case '\r':
       if (non_whitespace_p && paren_count==0 && !quote_wait) {
 	return i;
       } else {
@@ -181,7 +181,7 @@ int check_balance(char *expr) {
       }
       break;
     case '\"' :
-      if (non_whitespace_p && paren_count==0 && 
+      if (non_whitespace_p && paren_count==0 &&
 	  !quote_wait) {
 	return i;
       } else {
@@ -204,10 +204,10 @@ int check_balance(char *expr) {
 	  non_whitespace_p=1;
 	  quote_wait=0;
 	}
-      }	  
+      }
       break;
     case '#' :
-      if (non_whitespace_p && paren_count==0 && 
+      if (non_whitespace_p && paren_count==0 &&
 	  !quote_wait) {
 	return i;
       } else {
@@ -238,11 +238,11 @@ int check_balance(char *expr) {
 	  non_whitespace_p=1;
 	  i++;
 	}
-      }	  
+      }
       break;
     case '(' :
       if (non_whitespace_p && paren_count==0 &&!quote_wait) {
-	return i; 
+	return i;
       } else {
 	i++;
 	paren_count++;
@@ -254,7 +254,7 @@ int check_balance(char *expr) {
     case ')' :
       paren_count--;
       if (non_whitespace_p && paren_count==0) {
-	return i+1; 
+	return i+1;
       } else {
 	i++;
 	non_whitespace_p=1;
@@ -298,7 +298,7 @@ char *split_at(char **to_split, int i) {
   return ret;
 }
 
-int 
+int
 main(int argc, char **argv)
 {
   int splitpoint;
@@ -326,11 +326,11 @@ main(int argc, char **argv)
       expr=split_at(&gather,splitpoint);
       result=scwmexec_exec_full(display,w,expr,&output,&error);
 
-      printf(output);
+      fputs (output, stdout);
       if (strlen(error)!=0) {
-	fprintf(stderr,"%s",error);
+	fputs (error, stderr);
       } else {
-	fprintf(stdout,"%d",result);
+	fputs (result, stdout);
       }
       putchar('\n');
 
@@ -350,6 +350,6 @@ main(int argc, char **argv)
   }
 
   XCloseDisplay (display);
-  
+
   return 0;
 }
