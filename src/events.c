@@ -1281,15 +1281,18 @@ HandleUnmapNotify()
   Window dumwin;
   XEvent dummy;
   extern ScwmWindow *colormap_win;
-  int weMustUnmap;
-  Bool fCoerceEnterNotify = False;
+  Bool fWeMustUnmap = False;
+  ScwmWindow *pswNewFocus = NULL;
 
   /*
    * Don't ignore events as described below.
    */
   if ((Event.xunmap.event != Event.xunmap.window) &&
       (Event.xunmap.event != Scr.Root || !Event.xunmap.send_event)) {
-    return;
+    /* GJB:FIXME:: might need to be sure that the window in the
+       event is the window that had the focus */
+    pswNewFocus = PswFromPointerLocation(dpy);
+    goto HUN_return;
   }
 
   DBUG_EVENT((DBG,"HandleUnmapNotify", "Entered and passed init test"));
@@ -1302,10 +1305,9 @@ HandleUnmapNotify()
    * we looked for the ScwmContext using that field, so try the window
    * field also.
    */
-  weMustUnmap = 0;
   if (!pswCurrent) {
     Event.xany.window = Event.xunmap.window;
-    weMustUnmap = 1;
+    fWeMustUnmap = True;
     pswCurrent = PswFromWindow(dpy, Event.xany.window);
   }
   if (!pswCurrent)
@@ -1317,22 +1319,28 @@ HandleUnmapNotify()
   }
   call1_hooks(x_unmapnotify_hook,pswCurrent->schwin);
 
-  if (weMustUnmap)
+  if (fWeMustUnmap)
     XUnmapWindow(dpy, Event.xunmap.window);
 
   if (pswCurrent == Scr.Focus) {
     if (pswCurrent->fClickToFocus && pswCurrent->next) {
-      HandleHardFocus(pswCurrent->next);
+      pswNewFocus = pswCurrent->next;
     } else {
-      fCoerceEnterNotify = True;
+      pswNewFocus = PswFromPointerLocation(dpy);
     }
   }
 
   if (pswCurrent == Scr.Hilite)
     Scr.Hilite = NULL;
 
-  if (Scr.PreviousFocus == pswCurrent)
+  if (pswCurrent == Scr.PreviousFocus)
     Scr.PreviousFocus = NULL;
+
+  if (pswCurrent == FocusOnNextTimeStamp)
+    FocusOnNextTimeStamp = NULL;
+
+  if (pswCurrent == Scr.Ungrabbed)
+    Scr.Ungrabbed = NULL;
 
   if (pswCurrent == Scr.pushed_window)
     Scr.pushed_window = NULL;
@@ -1392,11 +1400,8 @@ HandleUnmapNotify()
 
   XFlush(dpy);
  HUN_return:
-  if (fCoerceEnterNotify) {
-    ScwmWindow *psw = PswFromPointerLocation(dpy);
-    if (!psw->fClickToFocus) {
-      HandleHardFocus(psw);
-    }
+  if (pswNewFocus) {
+    HandleHardFocus(pswNewFocus);
   }
   DBUG_EVENT((DBG,"HandleUnmapNotify", "return"));
 }

@@ -3335,11 +3335,11 @@ if not specified. */
 }
 #undef FUNC_NAME
 
-SCWM_PROC(get_window_focus, "get-window-focus", 0, 1, 0,
+SCWM_PROC(window_focus_style, "window-focus-style", 0, 1, 0,
 	  (SCM win))
      /** Get the focus style of WIN.
 Returns one of 'mouse, 'click, 'sloppy, or 'none. */
-#define FUNC_NAME s_get_window_focus
+#define FUNC_NAME s_window_focus_style
 {
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_USE_CONTEXT(1, win);

@@ -833,29 +833,8 @@ DestroyScwmWindow(ScwmWindow *psw)
   if (!PPosOverride)
     XSync(dpy, False);
 
-  if (psw == Scr.Hilite)
-    Scr.Hilite = NULL;
-
   Broadcast(M_DESTROY_WINDOW, 3, psw->w, psw->frame,
 	    (unsigned long) psw, 0, 0, 0, 0);
-
-  /* ensure no global variables contain this
-     window;  this may be overkill as it is done in
-     HandleUnmapNotify, too --10/21/99 gjb */
-  if (Scr.PreviousFocus == psw)
-    Scr.PreviousFocus = NULL;
-
-  if (psw == FocusOnNextTimeStamp)
-    FocusOnNextTimeStamp = NULL;
-
-  if (psw == Scr.Ungrabbed)
-    Scr.Ungrabbed = NULL;
-
-  if (psw == Scr.pushed_window)
-    Scr.pushed_window = NULL;
-
-  if (psw == colormap_win)
-    colormap_win = NULL;
 
   XDestroyWindow(dpy, psw->frame);
   XDeleteContext(dpy, psw->frame, ScwmContext);
