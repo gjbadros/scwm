@@ -578,7 +578,7 @@ is not set, or the window starts iconic. */
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY(1,win,psw);
 
-  if ((!PPosOverride) && (!(psw->fShowOnMap)))
+  if (!PPosOverride && !psw->fShowOnMap)
     changeDesks(0, psw->Desk);
 
   default_select_desk(psw);
@@ -629,7 +629,7 @@ It simply leaves the window WIN in place, exactly as requested. */
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY(1,win,psw);
 
-  if ((!PPosOverride) && (!(psw->fShowOnMap)))
+  if (!PPosOverride && !psw->fShowOnMap)
     changeDesks(0, psw->Desk);
 
   default_select_desk(psw);
