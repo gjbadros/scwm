@@ -152,7 +152,7 @@ get_colors()
     overlay_pixel_1 = exact_defs[2].pixel;
     overlay_pixel_2 = exact_defs[3].pixel;
     overlay_plane_mask = plane_masks[0];
-    fprintf(stderr,"overlay_pixel_{1,2} = %d, %d; overlay_plane_mask = %ld\n",
+    fprintf(stderr,"overlay_pixel_{1,2} = %ld, %ld; overlay_plane_mask = %ld\n",
             overlay_pixel_1,overlay_pixel_2,overlay_plane_mask);
     return True;
   } else {

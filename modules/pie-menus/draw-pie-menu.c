@@ -677,7 +677,6 @@ PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
   int ipmiim;
   MenuDrawingInfo *pmdi = pmd->pmdi;
   MenuItemInMenu * pmiimLast;
-  int cpixRadius;
   float numerator, denominator;
   int quadrant, last_order;
   int order = 0;
@@ -1240,8 +1239,7 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
     XFreePixmap(dpy, mask);
   } else if (menu_look == shaped_pie_menu_look) {
     Pixmap mask;
-    int cpixTop, cpixLeft, cpixBottom, cpixRight;
-    
+
     mask = XCreatePixmap(dpy, Scr.Root, pmd->cpixWidth, pmd->cpixHeight, 1);
     
     XSetForeground(dpy, MaskGC, 0);
