@@ -2,7 +2,7 @@ construct-menu-primitive
 - 
 The function to call to construct a menu.This is only useful for testing dynamically-loaded menu drawing code,
 and should normally be left at its default of #f. 
-[From scwm/menu.c:1348]
+[From scwm/menu.c:1374]
 
 
 default-auto-raise-delay
@@ -32,25 +32,25 @@ The default procedure to invoke when un-raising the window.This gets called afte
 default-menu-max-fold-lines
 - (app scwm base)
 The default number of items that menus are split into by `fold-menu-list'.
-[From scheme/base.scm:326]
+[From scheme/base.scm:356]
 
 
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
-[From scwm/image.c:619]
+[From scwm/image.c:626]
 
 
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:487]
+[From scwm/scwm.c:506]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:490]
+[From scwm/scwm.c:509]
 
 
 opaque-move-percent
@@ -68,25 +68,25 @@ Percent of display area below which windows are resized opaquely.
 remote-shell-command
 - (app scwm base)
 The command to use to start a remote shell.It should take a first (non-option) argument ofthe hostname to connect to.  "ssh" "rsh" and "telnet"are each reasonable choices.
-[From scheme/base.scm:357]
+[From scheme/base.scm:387]
 
 
 shadow-factor
 - 
    The numeric factor used in generating shadow colors in the current decor.
 
-[From scwm/color.c:493]
+[From scwm/color.c:494]
 
 
 use-scwm-system-proc
 - 
 If #t, `execute' will use `scwm-system' instead of guile's `system'.This works around a problem observed on pre-glibc Linux 2.0.34 i386where SIGINT on the controlling tty (i.e., the one that startedscwm) propagates to the child processes.  The end result of thepossible bug is that xterms started by scwm are terminated if thescwm that started them is terminated using a Ctrl-C to send it a SIGINT.
-[From scheme/base.scm:28]
+[From scheme/base.scm:27]
 
 
 xterm-command
 - (app scwm base)
 The command to run when a new xterm window is requested.The string given should refer to a binary or script in thepath and should take a "-e" argument of what to run.
-[From scheme/base.scm:350]
+[From scheme/base.scm:380]
 
 

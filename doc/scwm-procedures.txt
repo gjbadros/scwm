@@ -1,25 +1,25 @@
 (%x x)
 - (app scwm base)
 Return the number of pixels that is X percent of the display width.
-[From scheme/base.scm:48]
+[From scheme/base.scm:47]
 
 
 (%x- x)
 - (app scwm base)
 Return the pixel coordinate X percent of the width away from the right edge.
-[From scheme/base.scm:92]
+[From scheme/base.scm:91]
 
 
 (%y y)
 - (app scwm base)
 Return the number of pixels that is Y percent of the display height.
-[From scheme/base.scm:52]
+[From scheme/base.scm:51]
 
 
 (%y- y)
 - (app scwm base)
 Return the pixel coordinate Y percent of the height away from the bottom edge.
-[From scheme/base.scm:96]
+[From scheme/base.scm:95]
 
 
 (add-boolean-hint-option key t-handler f-handler)
@@ -43,7 +43,7 @@ PORT. PORT must be open, it must be an input port, and it must be a
 file port (this includes pipes and sockets, but not string ports or
 soft ports). A handle suitable for passing to `remove-input-hook!' is
 returned.
-[From scwm/callbacks.c:556]
+[From scwm/callbacks.c:587]
 
 
 (add-timer-hook! usec proc)
@@ -52,7 +52,7 @@ Add a timer hook to call PROC once sometime after USEC microseconds.
 When at least USEC microseconds have passed, procedure PROC will be
 called with no arguments. A handle suitable for passing to
 `remove-timer-hook!' is returned.
-[From scwm/callbacks.c:418]
+[From scwm/callbacks.c:449]
 
 
 (add-window-hint-option key handler)
@@ -73,7 +73,7 @@ Move WIN to viewport position x, y animatedly.
 If X or Y is 'x or 'y, respectively (or #f), then do not change
 that coordinate during the move.  At least one of X and Y must be
 a number.  This moves the pointer with the window.
-[From scheme/winops.scm:219]
+[From scheme/winops.scm:237]
 
 
 (animated-move-window x y #&optional (win (get-window)))
@@ -82,7 +82,7 @@ Move WIN to virtual position x, y animatedly.
 If X or Y is 'x or 'y, respectively (or #f), then do not change
 that coordinate during the move.  At least one of X and Y must be
 a number.  This does not move the pointer with the window.
-[From scheme/winops.scm:234]
+[From scheme/winops.scm:252]
 
 
 (append-fvwm2-module-config module-type . args)
@@ -100,7 +100,7 @@ Ask for a string with PROMPT.
 (beep)
 - Built-in Primitive
 Ring the standard X bell.
-[From scwm/miscprocs.c:318]
+[From scwm/miscprocs.c:322]
 
 
 (binary-read length #&optional (port (current-input-port)))
@@ -128,7 +128,7 @@ Bind the given KEY within the CONTEXTS to invoke PROC.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 PROC is a procedure (possibly a thunk) that should be invoked
-[From scwm/binding.c:645]
+[From scwm/binding.c:646]
 
 
 (bind-mouse contexts button proc)
@@ -137,13 +137,13 @@ Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
 PROC is a procedure (possibly a thunk) that should be invoked
-[From scwm/binding.c:704]
+[From scwm/binding.c:705]
 
 
 (bool->str arg)
 - (app scwm flux)
 Return the string \"true\" if ARG is #t, \"false\" otherwise.
-[From scheme/flux.scm:151]
+[From scheme/flux.scm:160]
 
 
 (border-normal?  #&optional win)
@@ -151,7 +151,7 @@ Return the string \"true\" if ARG is #t, \"false\" otherwise.
 Return #t if WIN has a normal border, #f otherwise.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2935]
+[From scwm/window.c:3024]
 
 
 (border-style #&key (active '())  
@@ -183,14 +183,14 @@ This happens at two times: during initial startup, or during a
 recapture operation. In either case, placement procedures should
 probably avoid interaction and perhaps avoid moving the window being
 placed at all.
-[From scwm/miscprocs.c:141]
+[From scwm/miscprocs.c:145]
 
 
 (circulate-hit #&optional (win (get-window)))
 - (app scwm winlist)
 Include WIN among the windows in the circulate list.
 This resets the 'circulate-skip property of WIN.  See also `circulate-skip'.
-[From scheme/winlist.scm:138]
+[From scheme/winlist.scm:149]
 
 
 (circulate-hit-icon #&optional (win (get-window)))
@@ -198,14 +198,14 @@ This resets the 'circulate-skip property of WIN.  See also `circulate-skip'.
 Include WIN's icon among the windows in the circulate list.
 This resets the 'circulate-skip-icon property of WIN.  
 See also `circulate-skip-icon'.
-[From scheme/winlist.scm:153]
+[From scheme/winlist.scm:164]
 
 
 (circulate-skip #&optional (win (get-window)))
 - (app scwm winlist)
 Do not include WIN among the windows in the circulate list.
 This sets the 'circulate-skip property of WIN.  See also `circulate-hit'.
-[From scheme/winlist.scm:143]
+[From scheme/winlist.scm:154]
 
 
 (circulate-skip-icon #&optional (win (get-window)))
@@ -213,21 +213,21 @@ This sets the 'circulate-skip property of WIN.  See also `circulate-hit'.
 Do not include WIN's icon among the windows in the circulate list.
 This sets the 'circulate-skip-icon property of WIN.  
 See also `circulate-hit-icon'.
-[From scheme/winlist.scm:159]
+[From scheme/winlist.scm:170]
 
 
 (circulate-skip-icon? #&optional (win (get-window)))
 - (app scwm winlist)
 Return #t if WIN's icon is not among the windows in the circulate list.
 Otherwise return #f.
-[From scheme/winlist.scm:165]
+[From scheme/winlist.scm:176]
 
 
 (circulate-skip? #&optional (win (get-window)))
 - (app scwm winlist)
 Return #t if WIN is not among the windows in the circulate list.
 Otherwise return #f.
-[From scheme/winlist.scm:148]
+[From scheme/winlist.scm:159]
 
 
 (clear-color-cache-entry name)
@@ -237,7 +237,7 @@ meaning of a particular string as a color will change in your X
 server, if you try hard enough. For this unlikely eventuality,
 `clear-color-cache-entry' is provided - it removes the color
 associated with NAME from the color cache.
-[From scwm/color.c:175]
+[From scwm/color.c:176]
 
 
 (clear-font-cache-entry name)
@@ -248,7 +248,7 @@ server, if you try hard enough (perhaps if you add or remove font
 servers). For this unlikely eventuality, `clear-font-cache-entry' is
 provided - it removes the font associated with NAME from the font
 cache.
-[From scwm/font.c:387]
+[From scwm/font.c:386]
 
 
 (clear-fvwm2-module-config module-type)
@@ -278,35 +278,35 @@ overlap with other windows. Several parameters give different
 weight to various kinds of windows, but they are not tunable
 at runtime currently. If it fails to place the window, it
 returns #f; otherwise it returns #t.
-[From scwm/placement.c:438]
+[From scwm/placement.c:440]
 
 
 (click-delay)
 - Built-in Primitive
 Retrun the delay used in identifying mouse clicks and drags, in microseconds.
 See also `set-click-delay!'
-[From scwm/miscprocs.c:184]
+[From scwm/miscprocs.c:188]
 
 
 (click-to-focus-passes-click?)
 - Built-in Primitive
 Returns a boolean valude indicating whether a click-to-focus window receives the click.
-[From scwm/miscprocs.c:373]
+[From scwm/miscprocs.c:377]
 
 
 (click-to-focus-raises?)
 - Built-in Primitive
 Returns a boolean valude indicating whether a click-to-focus window gets raised on focus.
-[From scwm/miscprocs.c:400]
+[From scwm/miscprocs.c:404]
 
 
 (close-all-xlogo-windows)
-- 
+- (app scwm flux)
 Close each window with class == XLogo.
 Greg uses XLogo windows as a sample window, so this
 is useful for clearing the xlogos away when there get to
 be more than desired.
-[From scheme/flux.scm:446]
+[From scheme/flux.scm:554]
 
 
 (close-window #&optional (win (get-window #t)))
@@ -321,7 +321,7 @@ WIN is only destroyed if it is not deleteable.
 Convert scwm color object COLOR into an X11 name of that color.
 The resulting string can, e.g., be used in command lines for executing
 other applications.
-[From scheme/flux.scm:308]
+[From scheme/flux.scm:422]
 
 
 (color-properties color)
@@ -329,20 +329,20 @@ other applications.
 Return an association list giving some properties of COLOR.
 Currently defined properties are 'name, the string name of the
 color, and 'pixel, the X pixel value it uses.
-[From scwm/color.c:92]
+[From scwm/color.c:93]
 
 
 (color-property color key)
 - (app scwm base)
 Return the KEY property of COLOR.
 See `color-properties' for a list of the keys.
-[From scheme/base.scm:313]
+[From scheme/base.scm:343]
 
 
 (color? obj)
 - Built-in Primitive
 Returns #t if OBJ is a color object, otherwise #f.
-[From scwm/color.c:80]
+[From scwm/color.c:81]
 
 
 (colormap-focus)
@@ -352,7 +352,7 @@ The value can be either be 'mouse, indicating that the window under
 the mouse pointer will always colormap installed, or 'focus to
 indicate that the window with the input focus should also get the
 colormap focus.
-[From scwm/miscprocs.c:219]
+[From scwm/miscprocs.c:223]
 
 
 (current-decor)
@@ -364,19 +364,19 @@ Return the current decor.
 (current-desk)
 - Built-in Primitive
 Returns the integer identifying the current desk.
-[From scwm/deskpage.c:74]
+[From scwm/deskpage.c:76]
 
 
 (current-window-with-focus)
 - Built-in Primitive
 Return the window that currently has the input focus.
-[From scwm/window.c:781]
+[From scwm/window.c:831]
 
 
 (current-window-with-pointer)
 - Built-in Primitive
 Return the window that currently contains the mouse pointer.
-[From scwm/window.c:791]
+[From scwm/window.c:841]
 
 
 (default-decor)
@@ -396,14 +396,14 @@ if one of the following factors holds, the window will instead be
 placed exactly as requested by the program: the position was specified
 by the user, the position was specified by the program, and
 #:no-PPosition-hint is not set, or the window starts iconic.
-[From scwm/placement.c:510]
+[From scwm/placement.c:512]
 
 
 (default-transient-placement-proc win)
 - Built-in Primitive
 This is the default placement procedure for transient windows.
 It simply leaves the window WIN in place, exactly as requested.
-[From scwm/placement.c:568]
+[From scwm/placement.c:570]
 
 
 (default-winlist-proc #&optional (win (get-window)))
@@ -418,7 +418,7 @@ Deiconify WIN.
 Unmap its icon window, and map its regular
 window. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1844]
+[From scwm/window.c:1903]
 
 
 (delete-window  #&optional win)
@@ -427,7 +427,14 @@ Request that WIN remove itself from the display.
 This is the friendly way of closing a window, but it will not work if
 the application does not cooperate. WIN defaults to the window context
 in the usual way if not specified.
-[From scwm/window.c:1493]
+[From scwm/window.c:1553]
+
+
+(delta-position xy-list dx dy)
+- (app scwm flux)
+Return a new coordinate list that is DX,DY offset from XY-LIST.
+E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17).
+[From scheme/flux.scm:564]
 
 
 (desk-size)
@@ -435,7 +442,7 @@ in the usual way if not specified.
 Returns the size of the current desk.
 The returned value is in units of the physical screen size, as a list
 of the width and the height.
-[From scwm/deskpage.c:336]
+[From scwm/deskpage.c:338]
 
 
 (destroy-window  #&optional win)
@@ -444,7 +451,7 @@ Forcibly remove WIN from the screen.
 This will kill the application without giving it a chance to save its
 state or do any other shutdown, but is guaranteed to work. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:1524]
+[From scwm/window.c:1584]
 
 
 (display-message msg)
@@ -453,14 +460,14 @@ Show MSG (a string) as a single line in the message window.
 Note that MSG should not contain newline characters as they will
 not be honoured.  See also `hide-message'.  These primitives
 may disappear when GTk support is sufficiently mature.
-[From scwm/resize.c:86]
+[From scwm/resize.c:126]
 
 
 (display-message-briefly msg #&optional (sec-timeout 3))
 - (app scwm flux)
 Display MSG in the message window for SEC-TIMEOUT seconds.
 See `display-message' for details about MSG.
-[From scheme/flux.scm:439]
+[From scheme/flux.scm:547]
 
 
 (display-size)
@@ -469,7 +476,7 @@ Returns the size of the physical screen in pixels.
 The return value is list of the width and the height. The
 width is the `car', the height is the `cadr' of the returned list.
 See also the variables "display-width" and "display-height".
-[From scwm/deskpage.c:350]
+[From scwm/deskpage.c:352]
 
 
 (documentation func #&optional (port (current-output-port)))
@@ -482,43 +489,43 @@ Return #t if found anything, #f if no documentation.
 (edge-move-threshold)
 - Built-in Primitive
 Return the edge move threshold as set by `set-edge-move-threshold!'.
-[From scwm/deskpage.c:288]
+[From scwm/deskpage.c:290]
 
 
 (edge-scroll-delay)
 - Built-in Primitive
 Return the edge scroll delay as set by `set-edge-scroll-delay!'.
-[From scwm/deskpage.c:257]
+[From scwm/deskpage.c:259]
 
 
 (edge-x-scroll)
 - Built-in Primitive
 Return the horizontal edge scroll increment as set by `set-edge-x-scroll!'.
-[From scwm/deskpage.c:140]
+[From scwm/deskpage.c:142]
 
 
 (edge-x-wrap)
 - Built-in Primitive
 Return the current horizonatal edge wrap setting as set by `set-edge-x-wrap!'.
-[From scwm/deskpage.c:194]
+[From scwm/deskpage.c:196]
 
 
 (edge-y-scroll)
 - Built-in Primitive
 Return the vertical edge scroll increment as set by `set-edge-y-scroll!'.
-[From scwm/deskpage.c:169]
+[From scwm/deskpage.c:171]
 
 
 (edge-y-wrap)
 - Built-in Primitive
 Return the current vertical edge wrap setting as set by `set-edge-y-wrap!'.
-[From scwm/deskpage.c:219]
+[From scwm/deskpage.c:221]
 
 
 (elapsed-time)
 - Built-in Primitive
 Return the elapsed time in milliseconds since O.S. has been up.
-[From scwm/miscprocs.c:461]
+[From scwm/miscprocs.c:465]
 
 
 (end-window-list port)
@@ -537,13 +544,21 @@ No documentation supplied.
 (exe command)
 - (app scwm base)
 Return a procedure that runs the system command COMMAND.
-[From scheme/base.scm:345]
+[From scheme/base.scm:375]
 
 
 (execute command)
-- 
+- (app scwm base)
 Execute COMMAND in the background.
-[From scheme/base.scm:459]
+[From scheme/base.scm:518]
+
+
+(find-window-by-class-resource class resource)
+- (app scwm flux)
+Return a window by its CLASS and RESOURCE names (as strings).
+If there are multiple such windows, an unspecified one of them
+will be returned.
+[From scheme/flux.scm:334]
 
 
 (find-window-by-name window-name)
@@ -551,15 +566,17 @@ Execute COMMAND in the background.
 Return a window with name WINDOW-NAME.
 If there are multiple such windows, an unspecified one of them
 will be returned.
-[From scheme/flux.scm:269]
+[From scheme/flux.scm:323]
 
 
-(flash-window win #&optional
+(flash-window #&optional (win (get-window)) #&key
 			      (color (make-color "red"))
 			      (unflash-delay .5))
 - (app scwm flux)
-No documentation supplied.
-[From scheme/flux.scm:365]
+Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.
+UNFLASH-DELAY may be #f to not automatically revert back to the original
+color.  See `unflash-window'.
+[From scheme/flux.scm:465]
 
 
 (focus  #&optional win)
@@ -569,7 +586,7 @@ This will typically result in drawing WIN's frame in a special style
 as well. WIN defaults to the window context in the usual way if not
 specified. Note that WIN is not raised by giving it the focus;  see
 `raise-window' if that is your intent.
-[From scwm/window.c:1569]
+[From scwm/window.c:1629]
 
 
 (fold-menu-list
@@ -578,7 +595,7 @@ specified. Note that WIN is not raised by giving it the focus;  see
 Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
 defaults to `default-menu-max-fold-lines'.
-[From scheme/base.scm:336]
+[From scheme/base.scm:366]
 
 
 (font-properties font)
@@ -586,20 +603,20 @@ defaults to `default-menu-max-fold-lines'.
 Return an association list giving some properties of FONT.
 Currently defined properties are 'name, the string name of the
 color, and 'height, it's total height in pixels.
-[From scwm/font.c:241]
+[From scwm/font.c:240]
 
 
 (font-property font key)
 - (app scwm base)
 Return the KEY property of FONT.
 See `font-properties' for a list of the keys.
-[From scheme/base.scm:308]
+[From scheme/base.scm:338]
 
 
 (font? obj)
 - Built-in Primitive
 Returns #t if OBJ is a font object, otherwise #f.
-[From scwm/font.c:231]
+[From scwm/font.c:230]
 
 
 (frame-id->window window-id)
@@ -607,7 +624,7 @@ Returns #t if OBJ is a font object, otherwise #f.
 Return the window object corresponding to a frame WINDOW-ID.
 WINDOW-ID should be the X id of a scwm frame window. If there is no
 such window object, return #f.
-[From scwm/window.c:2598]
+[From scwm/window.c:2687]
 
 
 (fvwm-exec command)
@@ -665,25 +682,27 @@ whether or not interactive selection (if any) should wait for a mouse
 release event or just a press. The latter behavior is useful if the
 action being performed on the window is an interactive one involving
 mouse drags.
-[From scwm/window.c:740]
+[From scwm/window.c:756]
 
 
 (get-window-colors  #&optional win)
 - Built-in Primitive
 Return a two-element list, "(fg bg)", the colors for WIN.
-[From scwm/window.c:3140]
+[From scwm/window.c:3229]
 
 
 (get-window-highlight-colors  #&optional win)
 - Built-in Primitive
 Return a two-element list, "(fg bg)", the highlight colors for WIN.
-[From scwm/window.c:3154]
+[From scwm/window.c:3243]
 
 
 (get-wm-command win)
 - (app scwm flux)
-Get the 
-[From scheme/flux.scm:320]
+Get the \"WM_COMMAND\" X-Property of WIN and return that string.
+WIN is a Scwm window object. The \"WM_COMMAND\" X-Property is the application's
+notion of what the command line was used to run the application.
+[From scheme/flux.scm:434]
 
 
 (help obj #&optional (port (current-output-port)))
@@ -703,7 +722,7 @@ No documentation supplied.
 Hide the message window.
 See also `display-message'.  These primitives may disappear when GTk
 support is sufficiently mature.
-[From scwm/resize.c:109]
+[From scwm/resize.c:149]
 
 
 (hide-titlebar  #&optional win)
@@ -711,42 +730,43 @@ support is sufficiently mature.
 Cause WIN not to be decorated with a titlebar.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2835]
+[From scwm/window.c:2924]
 
 
 (hilight-background)
 - Built-in Primitive
 Return the background color for windows with the input focus.
 Applies to the current decor.
-[From scwm/color.c:705]
+[From scwm/color.c:706]
 
 
 (hilight-factor)
 - Built-in Primitive
 Return the current hilight factor.
-[From scwm/color.c:479]
+[From scwm/color.c:480]
 
 
 (hilight-foreground)
 - Built-in Primitive
 Return the foreground color of the window with the input focus.
 Applies to the focus in the current decor.
-[From scwm/color.c:632]
+[From scwm/color.c:633]
 
 
 (icon-font)
 - Built-in Primitive
 Return the font used for drawing icon titles.
-[From scwm/font.c:281]
+[From scwm/font.c:280]
 
 
 (icon-position  #&optional win)
 - Built-in Primitive
 Return the position of the icon for WIN.
 The position is returned as a list of the x coordinate and the y
-coordinate in pixels. WIN defaults to the window context in the usual
+coordinate in pixels.  If the icon is sticky, the position will
+always be in the 0,0 viewport. WIN defaults to the window context in the usual
 way if not specified.
-[From scwm/window.c:2470]
+[From scwm/window.c:2530]
 
 
 (icon-sticky?  #&optional win)
@@ -754,7 +774,16 @@ way if not specified.
 Return #t if WIN is "sticky", #f otherwise.
 See `stick-icon' and `stick'. WIN defaults to the window context in
 the usual way if not specified.
-[From scwm/window.c:3032]
+[From scwm/window.c:3121]
+
+
+(icon-viewport-position #&optional (win (get-window)))
+- (app scwm base)
+Return the position of WIN's icon in pixels within the viewport.
+The position is returned as a list of the x coordinate and the y
+coordinate in pixels. WIN defaults to the window context in the usual
+way if not specified.  See also `icon-position'.
+[From scheme/base.scm:201]
 
 
 (iconified?  #&optional win)
@@ -762,7 +791,7 @@ the usual way if not specified.
 Return #t if WIN is iconified, otherwise return #f.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1863]
+[From scwm/window.c:1922]
 
 
 (iconify  #&optional win)
@@ -771,7 +800,7 @@ Iconify WIN.
 Iconifying unmaps the regular window, and map the window's icon
 window. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1817]
+[From scwm/window.c:1877]
 
 
 (id->window window-id)
@@ -779,7 +808,7 @@ specified.
 Return the window object corresponding to an application WINDOW-ID.
 WINDOW-ID should be the X id of the application window. If there is no
 such window object, return #f.
-[From scwm/window.c:2577]
+[From scwm/window.c:2666]
 
 
 (image-properties image)
@@ -795,7 +824,7 @@ depth, it's color depth.
 - (app scwm base)
 Return the KEY property of IMAGE.
 See `image-properties' for a list of the keys.
-[From scheme/base.scm:303]
+[From scheme/base.scm:333]
 
 
 (image? obj)
@@ -812,8 +841,10 @@ No documentation supplied.
 
 (in-viewport xx yy)
 - (app scwm flux)
-Return a function of one argument, a window, moving it to the viewport.
-[From scheme/flux.scm:93]
+Return a function of single window argument, moving it to the viewport.
+XX and YY are full display-size increments (e.g., (1,0) is the 
+viewport just to the right of the home (0,0) viewport).
+[From scheme/flux.scm:99]
 
 
 (in-viewport-any-desk? #&optional (win (get-window)))
@@ -832,7 +863,7 @@ usual way if not specified.  If OPAQUE? is #t, the move will be done
 used instead to save on server computation (note that the rubberband
 requires a server "grab" which means that nothing else changes on
 screen while the non-opaque move takes place.
-[From scwm/move.c:675]
+[From scwm/move.c:733]
 
 
 (interactive-move-maybe-opaque #&optional (win (get-window)))
@@ -840,7 +871,7 @@ screen while the non-opaque move takes place.
 Move WINDOW interactively and possibly opaquely.
 Calls `move-opaquely?' and moves opaquely if that returns #,
 uses a rubberband if it returns #f.
-[From scheme/winops.scm:150]
+[From scheme/winops.scm:169]
 
 
 (interactive-move-window-with-focus)
@@ -848,7 +879,7 @@ uses a rubberband if it returns #f.
 Interactively move the window which currently has the focus.
 `interactive-move-maybe-opaque' is used to control whether a rubberband
 outline or the window itself is moved.
-[From scheme/flux.scm:29]
+[From scheme/flux.scm:30]
 
 
 (interactive-move-window-with-pointer)
@@ -856,7 +887,7 @@ outline or the window itself is moved.
 Interactively move the window which currently contains the pointer.
 `interactive-move-maybe-opaque' is used to control whether a rubberband
 outline or the window itself is moved.
-[From scheme/flux.scm:41]
+[From scheme/flux.scm:42]
 
 
 (interactive-resize  #&optional win opaque?)
@@ -869,7 +900,7 @@ specified. If OPAQUE? is #t, the resize will be done
 used instead to save on server computation (note that the rubberband
 requires a server "grab" which means that nothing else changes on
 screen while the non-opaque resize takes place.
-[From scwm/resize.c:670]
+[From scwm/resize.c:718]
 
 
 (interactive-resize-maybe-opaque #&optional (win (get-window)))
@@ -877,7 +908,7 @@ screen while the non-opaque resize takes place.
 Move WINDOW interactively and opaquely.
 Calls `resize-opaquely?' and moves opaquely if that returns #,
 uses a rubberband if it returns #f.
-[From scheme/winops.scm:156]
+[From scheme/winops.scm:175]
 
 
 (interactive-resize-window-with-focus)
@@ -885,7 +916,7 @@ uses a rubberband if it returns #f.
 Interactively resize the window which currently has the focus.
 `interactive-resize-maybe-opaque' is used to control whether a rubberband
 outline or the window itself is resized.
-[From scheme/flux.scm:35]
+[From scheme/flux.scm:36]
 
 
 (interactive-resize-window-with-pointer)
@@ -893,7 +924,7 @@ outline or the window itself is resized.
 Interactively resize the window which currently contains the pointer.
 `interactive-resize-maybe-opaque' is used to control whether a rubberband
 outline or the window itself is resized.
-[From scheme/flux.scm:47]
+[From scheme/flux.scm:48]
 
 
 (keep-on-top  #&optional win)
@@ -901,7 +932,7 @@ outline or the window itself is resized.
 Ensure that WIN is kept on top of all other windows.
 Obviously, other windows that are also on-top may obscure WIN.
 WIN defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2731]
+[From scwm/window.c:2820]
 
 
 (kept-on-top?  #&optional win)
@@ -909,7 +940,7 @@ WIN defaults to the window context in the usual way if not specified.
 Return #t if WIN is an on-top window, #f otherwise.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2774]
+[From scwm/window.c:2863]
 
 
 (key-mouse-moves modifiers pct-of-screen left down up right)
@@ -919,7 +950,7 @@ MODIFIERS specifies which modifiers must be depressed for the bindings
 to be active.
 LEFT, DOWN, UP, and RIGHT are the four keysym names to use for each
 of the directions.
-[From scheme/flux.scm:207]
+[From scheme/flux.scm:217]
 
 
 (key-viewport-moves modifiers pct-of-screen left down up right)
@@ -929,25 +960,25 @@ MODIFIERS specifies which modifiers must be depressed for the bindings
 to be active.
 LEFT, DOWN, UP, and RIGHT are the four keysym names to use for each
 of the directions.
-[From scheme/flux.scm:222]
+[From scheme/flux.scm:232]
 
 
 (kill-all-fvwm2-modules)
 - (app scwm fvwm-module)
 No documentation supplied.
-[From scheme/fvwm-module.scm:528]
+[From scheme/fvwm-module.scm:534]
 
 
 (kill-fvwm2-module fmod)
 - (app scwm fvwm-module)
 No documentation supplied.
-[From scheme/fvwm-module.scm:525]
+[From scheme/fvwm-module.scm:531]
 
 
 (kill-fvwm2-modules-by-name module-name)
 - (app scwm fvwm-module)
 No documentation supplied.
-[From scheme/fvwm-module.scm:531]
+[From scheme/fvwm-module.scm:537]
 
 
 (list-all-windows)
@@ -955,7 +986,7 @@ No documentation supplied.
 Return a list of all of the top-level window objects.
 The list is in a semi-arbitrary order that is convenient for the sake
 of circulation.
-[From scwm/window.c:2681]
+[From scwm/window.c:2770]
 
 
 (list-stacking-order)
@@ -963,7 +994,7 @@ of circulation.
 Return a list of all the top-level window objects, from top to bottom.
 The order is the stacking order of the windows. The first element is
 the topmost window, the last is the bottommost
-[From scwm/window.c:2700]
+[From scwm/window.c:2789]
 
 
 (list-windows #&key (only '()) (except '())
@@ -1020,7 +1051,7 @@ W defaults to the window context in the usual way.
 - Built-in Primitive
 Lower WIN to the bottom of the window stack. WIN defaults to
 the window context in the usual way if not specified.
-[From scwm/window.c:1651]
+[From scwm/window.c:1711]
 
 
 (lower-window-below w w2)
@@ -1034,7 +1065,7 @@ Lower window W immediately below W2.
 Return the color object corresponding to the X color specifier CNAME.
 If CNAME is not a valid X color name, or cannot be
 allocated, an error results.
-[From scwm/color.c:110]
+[From scwm/color.c:111]
 
 
 (make-decor  #&optional name)
@@ -1050,14 +1081,14 @@ printed.
 Create a new face.
 FLAGS is a list of face flags (see concept) and
 SPECS is a list of face specifiers.
-[From scwm/face.c:446]
+[From scwm/face.c:448]
 
 
 (make-file-menu file . rest)
 - (app scwm flux)
 Return a menu-object for viewing or editing FILE.
 REST is a list of other menu-items to include in the returned menu.
-[From scheme/flux.scm:119]
+[From scheme/flux.scm:127]
 
 
 (make-font fname)
@@ -1065,7 +1096,7 @@ REST is a list of other menu-items to include in the returned menu.
 Return the font object for the X font specifier FNAME.
 If FNAME is not a valid X font name, or cannot be
 allocated, an error results.
-[From scwm/font.c:101]
+[From scwm/font.c:100]
 
 
 (make-hosts-menu host-list #&optional (user USER))
@@ -1087,16 +1118,17 @@ appropriate file.
 [From scwm/image.c:464]
 
 
-(make-menu list-of-menuitems #&optional picture-side side-bg-color bg-color text-color picture-bg font extra-options)
+(make-menu list-of-menuitems #&optional picture-side picture-align side-bg-color bg-color text-color picture-bg font extra-options)
 - Built-in Primitive
 Make and return a menu object from the given arguments.
 LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
+PICTURE-ALIGN is one of 'top, 'center, or 'bottom;
 PICTURE-SIDE is an image object;
 SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR, PICTURE-BG are color objects;
 FONT is a font object;
 EXTRA-OPTIONS can be anything understood by the menu-specific
 drawing code (not used currently).
-[From scwm/menu.c:207]
+[From scwm/menu.c:211]
 
 
 (make-menuitem label action #&optional extra-label picture-above picture-left hover-action unhover-action hotkey-prefs)
@@ -1117,7 +1149,7 @@ over the item, respectively.
 HOTKEY-PREFS is a string listing preferred alphanumeric shortcut-keys
 for the given menu-item; the menu creation routine uses these as hints
 for assigning shortcut keys to the various menuitems.
-[From scwm/menuitem.c:118]
+[From scwm/menuitem.c:119]
 
 
 (make-menuitems-from-menu-information-list menu-info-list)
@@ -1125,7 +1157,7 @@ for assigning shortcut keys to the various menuitems.
 Return a list of menu-items from a list of detailed programs list.
 The format is subject to change.  See sample.scwmrc/gjb.scwmrc for
 example usage.
-[From scheme/flux.scm:187]
+[From scheme/flux.scm:197]
 
 
 (make-relief-color color factor)
@@ -1136,13 +1168,13 @@ positive floating point number FACTOR. Using a FACTOR smaller than 1
 will result in a dimmer color, suitable for use as a darker
 relief. Using a factor greater than 1 will result in a brighter color
 which is suitable for use as a hilight.
-[From scwm/color.c:376]
+[From scwm/color.c:377]
 
 
 (make-reversed-color color)
 - Built-in Primitive
 Return a new color that is opposite COLOR.
-[From scwm/color.c:399]
+[From scwm/color.c:400]
 
 
 (make-string-usable-for-resource-key string)
@@ -1151,7 +1183,7 @@ Return a converted string from STRING that can be used as an X resource key.
 The returned string will have all non-alphanumeric characters replaced with
 underscores, so that the resulting string can be used as a key for
 `X-resource-get' and `X-resource-put'.
-[From scheme/flux.scm:385]
+[From scheme/flux.scm:489]
 
 
 (make-style . args)
@@ -1189,7 +1221,7 @@ or (menuitem \"Lock Screen\" #:action (make-xlock-menu #t))
 Constructs a fvwm2 BroadcastInfo module packet.
 The return value is the contents of a BroadcastInfo fvwm2
 module packet for WIN as a Scheme string.
-[From scwm/module-interface.c:84]
+[From scwm/module-interface.c:103]
 
 
 (marshal-fvwm2-iconify-info win)
@@ -1197,7 +1229,7 @@ module packet for WIN as a Scheme string.
 Constructs a fvwm2 "M_ICONIFY" module packet.
 The return value is the contents of an "M_ICONIFY" fvwm
 module packet for WIN as a Scheme string.
-[From scwm/module-interface.c:128]
+[From scwm/module-interface.c:149]
 
 
 (maximize nw nh #&optional (win (get-window)))
@@ -1210,11 +1242,12 @@ If NW or NH is 0, that dimension is not changed.
 (maximized? #&optional (win (get-window)))
 - (app scwm winops)
 Return #t if WIN is maximized, #f otherwise.
-[From scheme/winops.scm:115]
+[From scheme/winops.scm:128]
 
 
 (menu list-of-menuitems #&key
 		      image-side
+		      (image-align 'top)
 		      (color-bg-image-side 'menu-bg-color)
 		      (image-bg #f)
 		      (color-text 'menu-text-color)
@@ -1224,36 +1257,38 @@ Return #t if WIN is maximized, #f otherwise.
 Return a menu object with the given attributes.
 LIST-OF-MENUITEMS is a list of menuitem objects (each created with
 `make-menuitem' or `menuitem').  IMAGE-SIDE is an image object to be
-displayed along the left edge of the menu.  COLOR-BG-IMAGE-SIDE is the
-background color for that image object.  COLOR-TEXT is a color object
-or string for the foreground text color of menu items.  COLOR-BG is a
-color object or string for the background color for the menu and menu
-items.  FONT is a font object for the font of the menu items.
-[From scheme/base.scm:277]
+displayed along the left edge of the menu.  IMAGE-ALIGN determines
+whether to align that image to the 'top, 'center or 'bottom of the
+menu.  COLOR-BG-IMAGE-SIDE is the background color for that image
+object.  COLOR-TEXT is a color object or string for the foreground
+text color of menu items.  COLOR-BG is a color object or string for
+the background color for the menu and menu items.  FONT is a font
+object for the font of the menu items.
+[From scheme/base.scm:304]
 
 
 (menu-background)
 - Built-in Primitive
 Return the default background color for menus.
-[From scwm/color.c:809]
+[From scwm/color.c:810]
 
 
 (menu-font)
 - Built-in Primitive
 Return the font used by default for drawing menus.
-[From scwm/font.c:377]
+[From scwm/font.c:376]
 
 
 (menu-foreground)
 - Built-in Primitive
 Return the default foreground color for menus.
-[From scwm/color.c:745]
+[From scwm/color.c:746]
 
 
 (menu-hilight-factor)
 - Built-in Primitive
 Return the current menu hilight factor.
-[From scwm/color.c:559]
+[From scwm/color.c:560]
 
 
 (menu-prefs . opts)
@@ -1269,20 +1304,20 @@ Returns the a list of the menu properties of MENU, a menu object.
 The properties returned are:
 '(menu-items side-image side-bg-color bg-color text-color image-bg
 font extra-options used-shortcut-keys)
-[From scwm/menu.c:181]
+[From scwm/menu.c:185]
 
 
 (menu-shadow-factor)
 - Built-in Primitive
 Return the current menu shadow factor.
-[From scwm/color.c:588]
+[From scwm/color.c:589]
 
 
 (menu-stipple)
 - Built-in Primitive
 Return the default stipple color for menus.
 May not be used any more.
-[From scwm/color.c:855]
+[From scwm/color.c:856]
 
 
 (menu-style #&key
@@ -1293,13 +1328,13 @@ May not be used any more.
 Set various properites for the menus.
 Many of these are ignored.  See `make-menu' for options on
 creation of individual menus.
-[From scheme/base.scm:190]
+[From scheme/base.scm:217]
 
 
 (menu? obj)
 - Built-in Primitive
 Return #t if and only if OBJ is a menu object.
-[From scwm/menu.c:123]
+[From scwm/menu.c:126]
 
 
 (menuitem label #&key image-above image-left
@@ -1321,7 +1356,7 @@ when the item is unhighlighted.  HOTKEY-PREFS is a string listing
 the characters which are appropriate shortcut-keys for the item;
 the first not-yet-used-in-this-menu character will be used for
 the shortcut key for the menu item.
-[From scheme/base.scm:242]
+[From scheme/base.scm:269]
 
 
 (menuitem-properties menu-item)
@@ -1333,13 +1368,13 @@ returned list contains the following, in this order:
 unhover-action hotkey-preferences)
 Note that this is the same as the arguments to the `make-menuitem'
 primitive
-[From scwm/menuitem.c:90]
+[From scwm/menuitem.c:91]
 
 
 (message . str)
 - (app scwm flux)
 Display the string arguments STR in a message window.
-[From scheme/flux.scm:133]
+[From scheme/flux.scm:141]
 
 
 (message-window-mapped?)
@@ -1347,7 +1382,7 @@ Display the string arguments STR in a message window.
 Return #t if the message window is mapped, #f otherwise.
 See also `display-message', `hide-message'.  These primitives may disappear when GTk
 support is sufficiently mature.
-[From scwm/resize.c:123]
+[From scwm/resize.c:163]
 
 
 (mod-desk-size! dx dy)
@@ -1361,7 +1396,7 @@ Modify the current desktop size by the given parameter.
 Return the bit-mask for the Alt modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Alt, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:842]
+[From scwm/binding.c:843]
 
 
 (mod-mask-hyper)
@@ -1369,7 +1404,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Hyper modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Hyper, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:850]
+[From scwm/binding.c:851]
 
 
 (mod-mask-meta)
@@ -1377,7 +1412,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Meta modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Meta, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:834]
+[From scwm/binding.c:835]
 
 
 (mod-mask-super)
@@ -1385,7 +1420,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Super modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Super, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:859]
+[From scwm/binding.c:860]
 
 
 (module-event-name-from-number num)
@@ -1400,19 +1435,19 @@ Return a symbol corresponding to the type of the most recent mouse event.
 Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.
 You can `case' on this symbol in a procedure bound to a mouse event
 to determine, e.g., whether the user single clicked or double clicked.
-[From scwm/binding.c:821]
+[From scwm/binding.c:822]
 
 
 (mouse-focus-click-raises?)
 - Built-in Primitive
 Returns a boolean valude indicating whether a mouse-focus-click will raise the window..
-[From scwm/miscprocs.c:430]
+[From scwm/miscprocs.c:434]
 
 
 (move-opaquely? win)
 - (app scwm winops)
 Return #t if WIN has area < opaque-move-percent of the screen, else #f.
-[From scheme/winops.scm:145]
+[From scheme/winops.scm:164]
 
 
 (move-or-raise-maybe-opaque)
@@ -1421,20 +1456,20 @@ Perform a move, raise, or lower based on the mouse-event-type.
 To be bound to a window decoration: click does `raise-window',
 motion does `interactive-move-maybe-opaque', and double-click does
 `lower-window'.
-[From scheme/winops.scm:177]
+[From scheme/winops.scm:196]
 
 
 (move-pointer x y)
 - (app scwm base)
 Move the X11 pointer X pixels to the right, and Y pixels down.
 If X is negative, moves to the left.  If Y is negative moves up.
-[From scheme/base.scm:144]
+[From scheme/base.scm:143]
 
 
 (move-pointer-to sx sy)
 - Built-in Primitive
 Move the mouse pointer to SX, SY (given in pixels).
-[From scwm/miscprocs.c:247]
+[From scwm/miscprocs.c:251]
 
 
 (move-to x y 
@@ -1448,7 +1483,7 @@ value for that coordinate).
 If ANIMATED? is #t, then animate the window there.
 If MOVE-POINTER-TOO? is #t then also move the pointer as the window is moved.
 See `move-window' if you wish to move a window to a virtual position.
-[From scheme/base.scm:152]
+[From scheme/base.scm:151]
 
 
 (move-viewport x y)
@@ -1456,7 +1491,7 @@ See `move-window' if you wish to move a window to a virtual position.
 Move the viewport onto the virtual desktop relatively.
 Moves X pixels horizontally, to the right if positive, to the left if
 negative, and Y pixels vertically, down if positive, up if negative.
-[From scheme/base.scm:183]
+[From scheme/base.scm:210]
 
 
 (move-window x y #&optional win animated? move-pointer-too?)
@@ -1470,21 +1505,29 @@ and true, move the mouse pointer by the same amount as the window,
 animating the motion of the pointer along with the window if ANIMATED?
 is true. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2156]
+[From scwm/window.c:2215]
+
+
+(move-window-relative dx dy #&optional (win (get-window)))
+- (app scwm flux)
+Move WIN from its current position by (dx,dy) pixels.
+[From scheme/flux.scm:570]
 
 
 (move-window-to-desk desk #&optional win)
 - Built-in Primitive
 Move WIN to DESK. DESK is an integer desk identifier. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2403]
+[From scwm/window.c:2462]
 
 
 (move-window-to-viewport xx yy #&optional win)
 - (app scwm flux)
-Move WIN to the viewport at (XX,YY).
-The (0,0) viewport is the starting viewport.
-[From scheme/flux.scm:84]
+Move WIN to the viewport numbered (XX,YY).
+The (0,0) viewport is the starting viewport.  XX and YY are
+full display-size increments (e.g., (1,0) is the viewport
+just to the right of the home (0,0) viewport).
+[From scheme/flux.scm:85]
 
 
 (ms->usec ms)
@@ -1492,13 +1535,28 @@ The (0,0) viewport is the starting viewport.
 Convert MS milliseconds into an equivalent number of microseconds.
 Especially useful for add-hook! and other timing related procedures
 that take microseconds.
-[From scheme/flux.scm:333]
+[From scheme/flux.scm:447]
 
 
 (netpbm-loader fname)
 - (app scwm image-loaders)
 No documentation supplied.
 [From scheme/image-loaders.scm:38]
+
+
+(netscape-goto-cut-buffer-url)
+- (app scwm flux)
+Make netscape go to the URL in CUT_BUFFER0.
+This permits you to just select a URL and use this function
+to go to that page.
+[From scheme/flux.scm:639]
+
+
+(netscape-win)
+- (app scwm flux)
+Return a netscape window, prefer a visible netscape window.
+May error if no netscape windows are present.
+[From scheme/flux.scm:583]
 
 
 (next-window #&key (window (get-window #f #f))
@@ -1511,7 +1569,7 @@ details.
 PROC is a procedure of one argument which does the work after the
 windows are circulated.  PROC defaults to `window-list-proc'.
 See also `prev-window'.
-[From scheme/winlist.scm:203]
+[From scheme/winlist.scm:214]
 
 
 (normal-border  #&optional win)
@@ -1519,7 +1577,7 @@ See also `prev-window'.
 Cause WIN to be decorated with a normal border.
 This means that there will be resize handles in the corners. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2872]
+[From scwm/window.c:2961]
 
 
 (on-current-desk? #&optional (win (get-window)))
@@ -1543,13 +1601,13 @@ Return #t if WIN is on desk N, else #f.
 (opaque-interactive-move #&optional (win (get-window)))
 - (app scwm winops)
 Move WINDOW interactively and opaquely.
-[From scheme/winops.scm:188]
+[From scheme/winops.scm:207]
 
 
 (opaque-interactive-resize #&optional (win (get-window)))
 - (app scwm winops)
 Resize WINDOW interactively and opaquely.
-[From scheme/winops.scm:192]
+[From scheme/winops.scm:211]
 
 
 (percent-visible #&optional (win (get-window)))
@@ -1567,14 +1625,14 @@ Cause WIN to be decorated with a plain border.
 This means that there will be no resize handles in the corners, and the
 window . WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2904]
+[From scwm/window.c:2993]
 
 
 (pointer-position)
 - Built-in Primitive
 Return the current position of the mouse pointer in pixels.
 The return value is a two-element list of the x and y coordinates.
-[From scwm/miscprocs.c:232]
+[From scwm/miscprocs.c:236]
 
 
 (popup-menu menu #&optional warp-to-first? x-pos y-pos left-side?)
@@ -1583,14 +1641,14 @@ Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST? is #t.
 X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be
 #t if the menu should be left justified against X-POS, or #f if it should be
 right justified against X-POS.
-[From scwm/menu.c:1290]
+[From scwm/menu.c:1316]
 
 
 (popup-menu-from-decoration menu win button-number)
 - (app scwm flux)
 Popup MENU from WIN's decoration numbered BUTTON-NUMBER.
 This positions the popup menu appropriately.
-[From scheme/flux.scm:353]
+[From scheme/flux.scm:453]
 
 
 (prev-window #&key (window (get-window #f #f))
@@ -1603,13 +1661,13 @@ details.
 PROC is a procedure of one argument which does the work after the
 windows are circulated.  PROC defaults to `window-list-proc'.
 See also `next-window'.
-[From scheme/winlist.scm:215]
+[From scheme/winlist.scm:226]
 
 
 (print-window #&optional (win (get-window)))
 - (app scwm winops)
 Print WIN using xpr and lpr.
-[From scheme/winops.scm:212]
+[From scheme/winops.scm:230]
 
 
 (printable-char->keysym-string char)
@@ -1617,20 +1675,20 @@ Print WIN using xpr and lpr.
 Return the keysym string corresponding to a printable character.
 CHAR is a scheme character.  The return value is appropriate for
 use by `send-key-press'.  See also `X-synthetic-send-string'.
-[From scheme/flux.scm:243]
+[From scheme/flux.scm:253]
 
 
 (program-exists? program-name)
 - (app scwm base)
 Return #t if PROGRAM-NAME is found as an executable in the current $PATH.
 Returns #f otherwise.
-[From scheme/base.scm:108]
+[From scheme/base.scm:107]
 
 
 (quotify-single-quotes str)
 - (app scwm flux)
 Return a string that has single quote characters backslashified.
-[From scheme/flux.scm:128]
+[From scheme/flux.scm:136]
 
 
 (raise-by-one #&optional (w (get-window)))
@@ -1645,7 +1703,7 @@ W defaults to the window context in the usual way.
 Raise WIN to the top of the window stack.
 Stays-on-top windows still take priority. WIN defaults to the window
 context in the usual way if not specified.
-[From scwm/window.c:1625]
+[From scwm/window.c:1685]
 
 
 (raise-window-above w w2)
@@ -1659,7 +1717,7 @@ Raise window W immediately above W2.
 Return #t if WIN is currently raised, #f if not.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1756]
+[From scwm/window.c:1816]
 
 
 (random-place-window win)
@@ -1670,7 +1728,7 @@ which are incremented for the x and y coordinates, and which wrap
 around once a window would be forced off the screen. The placement is
 fairly arbitrary, but always succeeds, and so avoids user
 interaction. #t is always returned.
-[From scwm/placement.c:474]
+[From scwm/placement.c:476]
 
 
 (recapture)
@@ -1678,14 +1736,14 @@ interaction. #t is always returned.
 Recapture all the windows.
 This destroys all the current frame windows and recreate them from
 scratch. This is hopefully not necessary during normal operation.
-[From scwm/miscprocs.c:270]
+[From scwm/miscprocs.c:274]
 
 
 (refresh)
 - Built-in Primitive
 Make sure all windows and their decorations are up to date.
 This forces a redraw of the entire current viewport.
-[From scwm/miscprocs.c:155]
+[From scwm/miscprocs.c:159]
 
 
 (refresh-window  #&optional win)
@@ -1695,7 +1753,7 @@ Refreshing ensuring that everything, including the decorations is up
 to date. `refresh' does this in a more efficient way for all windows,
 as well as the root. WIN defaults to the window context in the usual
 way if not specified.
-[From scwm/window.c:2379]
+[From scwm/window.c:2438]
 
 
 (register-fvwm2-module-config module-type . args)
@@ -1720,7 +1778,7 @@ image object, or #f if it succeeds.
 Remove an input hook identified by HANDLE.
 HANDLE should be an object that was returned by `add-input-hook!'. An
 input hook may safely remove itself.
-[From scwm/callbacks.c:586]
+[From scwm/callbacks.c:617]
 
 
 (remove-timer-hook! handle)
@@ -1729,7 +1787,7 @@ Remove a timer hook identified by HANDLE.
 The HANDLE should be an object that was returned by
 `add-timer-hook!'. No warning or error will occur if HANDLE is for a
 timer hook that has already been triggered.
-[From scwm/callbacks.c:461]
+[From scwm/callbacks.c:492]
 
 
 (reset-scwmexec-protocol)
@@ -1740,7 +1798,7 @@ root window.  It should not be necessary but may be useful in case
 your X server goes awry (and otherwise you would have to restart your
 X server).  Use if scwmexec or scwmrepl are not returning (e.g.,
 if your Emacs hangs when you try evaluating a scwm expression).
-[From scwm/events.c:464]
+[From scwm/events.c:469]
 
 
 (resize-frame-to w h #&optional win)
@@ -1748,13 +1806,13 @@ if your Emacs hangs when you try evaluating a scwm expression).
 Resize WIN to a size of W by H in pixels.
 The size includes the window decorations. WIN defaults to the window
 context in the usual way if not specified.
-[From scwm/window.c:2309]
+[From scwm/window.c:2368]
 
 
 (resize-opaquely? win)
 - (app scwm winops)
 Return #t if WIN has area < opaque-resize-percent of the screen, else #f.
-[From scheme/winops.scm:140]
+[From scheme/winops.scm:159]
 
 
 (resize-or-raise-maybe-opaque)
@@ -1763,7 +1821,7 @@ Perform a resize, raise, or lower based on the mouse-event-type.
 To be bound to a window decoration: click does `raise-window',
 motion does `interactive-resize-maybe-opaque', and double-click does
 `lower-window'.
-[From scheme/winops.scm:167]
+[From scheme/winops.scm:186]
 
 
 (resize-to w h #&optional win)
@@ -1772,7 +1830,7 @@ Resize WIN's client area to a size of W by H in pixels.
 The size does not include the window decorations -- only the client
 application size. WIN defaults to the window
 context in the usual way if not specified.
-[From scwm/window.c:2268]
+[From scwm/window.c:2327]
 
 
 (resize-window w h #&optional (win (get-window)))
@@ -1781,7 +1839,7 @@ Resize WIN's client area to a size of W by H in pixels.
 The size does not include the window decorations -- only the client
 application size. WIN defaults to the window context in the usual way
 if not specified.
-[From scheme/winops.scm:259]
+[From scheme/winops.scm:277]
 
 
 (restack-windows winlist)
@@ -1791,7 +1849,7 @@ The first element of WINLIST will be kept in its current stacking
 order, the remainder will be stacked immediately below it in the order
 given. (Note: This will currently confuse the heck out of the pager
 and possibly other legacy fvwm2 modules).
-[From scwm/window.c:1668]
+[From scwm/window.c:1728]
 
 
 (restart  #&optional command)
@@ -1800,13 +1858,13 @@ Restart the window manager. If COMMAND is specified, use
 that, as the new window manager to run. If COMMAND is not specified or
 is exactly equal to "scwm", restart scwm with the same command-line
 arguments as given previously.
-[From scwm/shutdown.c:146]
+[From scwm/shutdown.c:151]
 
 
 (restarted?)
 - Built-in Primitive
 Returns true if scwm is being restarted by itself.
-[From scwm/miscprocs.c:132]
+[From scwm/miscprocs.c:136]
 
 
 (run-fvwm2-module module-name #&optional
@@ -1817,7 +1875,15 @@ Returns true if scwm is being restarted by itself.
 				    (basename module-name))))
 - (app scwm fvwm-module)
 No documentation supplied.
-[From scheme/fvwm-module.scm:396]
+[From scheme/fvwm-module.scm:402]
+
+
+(run-in-netscape command completion #&optional (netwin (netscape-win)))
+- (app scwm flux)
+Runs COMMAND in a Netscape window, calling COMPLETION when done, if set.
+Uses Netscape window NETWIN if specifies, or one found by (netscape-win)
+otherwise; it is an error if NETWIN refers to a non-Netscape window.
+[From scheme/flux.scm:610]
 
 
 (run-in-xterm cmd . opts)
@@ -1826,7 +1892,7 @@ Return a procedure that runs CMD in an xterm.
 Uses the variable `xterm-command' to determine how
 to run an xterm.  CMD may include options to the command.
 The rest of the arguments are passed as options to the xterm command.
-[From scheme/base.scm:364]
+[From scheme/base.scm:394]
 
 
 (safe-load fname)
@@ -1836,7 +1902,7 @@ Each individual top-level-expression is evaluated separately and all
 errors are trapped and displayed.  You Should use this procedure if
 you need to make sure most of a file loads, even if it may contain
 errors.
-[From scwm/callbacks.c:239]
+[From scwm/callbacks.c:250]
 
 
 (save-settings)
@@ -1848,26 +1914,26 @@ No documentation supplied.
 (scwm-is-constraint-enabled?)
 - (app scwm base)
 Return #t if scwm has the constraint solver primitives, #f otherwise.
-[From scheme/base.scm:435]
+[From scheme/base.scm:494]
 
 
 (scwm-path-exec-prefix)
 - Built-in Primitive
 Return the <envar>$EXEC_PREFIX</envar> directory path that scwm was installed with.
-[From scwm/miscprocs.c:519]
+[From scwm/miscprocs.c:523]
 
 
 (scwm-path-prefix)
 - Built-in Primitive
 Return the <envar>$PREFIX</envar> directory path that scwm was installed with.
-[From scwm/miscprocs.c:509]
+[From scwm/miscprocs.c:513]
 
 
 (scwm-quit  . args)
 - Built-in Primitive
 Exit scwm cleanly. `quit' is redefined as this within
 scwm. ARGS is ignored.
-[From scwm/shutdown.c:172]
+[From scwm/shutdown.c:177]
 
 
 (scwm-system cmd)
@@ -1879,19 +1945,19 @@ use a trailing \"&\" character.  See also guile's `system', but note
 that it may permit signals on the controlling tty to be seen
 by children (observed on Linux, Free/NetBSD, but not on Solaris or HP/UX.
 This may be a bug (not meeting POSIX.2 specifications).
-[From scheme/base.scm:439]
+[From scheme/base.scm:498]
 
 
 (scwm-version)
 - Built-in Primitive
 Return the version of scwm running.
-[From scwm/miscprocs.c:488]
+[From scwm/miscprocs.c:492]
 
 
 (scwm-version-date)
 - Built-in Primitive
 Return the date that the running scwm was last changed as a string.
-[From scwm/miscprocs.c:498]
+[From scwm/miscprocs.c:502]
 
 
 (sec->usec sec)
@@ -1899,14 +1965,14 @@ Return the date that the running scwm was last changed as a string.
 Convert SEC seconds into an equivalent number of microseconds.
 Especially useful for add-hook! and other timing related procedures
 that take microseconds.
-[From scheme/flux.scm:327]
+[From scheme/flux.scm:441]
 
 
 (select-multiple-windows-interactively #&optional (max 32000))
 - (app scwm flux)
 Return a list of user-selected windows, up to MAX.
 The list is in the reverse order from the way by which they were selected.
-[From scheme/flux.scm:284]
+[From scheme/flux.scm:389]
 
 
 (select-window  #&optional kill? release?)
@@ -1918,21 +1984,35 @@ optional arguments KILL? and RELEASE? indicate whether to use the
 operations like delete-window and destroy-window), and whether to wait
 for a mouse release or act immediately on the click. The former is a
 place-holder until we have proper cursor support in scwm.
-[From scwm/window.c:671]
+[From scwm/window.c:687]
 
 
-(select-window-from-window-list #&key (only '()) (except '()))
+(select-window-from-window-list #&key 
+						(only '()) (except '())
+						(ignore-winlist-skip #f))
 - (app scwm flux)
 Permit selecting a window from a window list.
 Return the selected window object, or #f if none was selected
-[From scheme/flux.scm:299]
+[From scheme/flux.scm:404]
+
+
+(select-window-group)
+- (app scwm flux)
+No documentation supplied.
+[From scheme/flux.scm:352]
 
 
 (select-window-interactively  #&optional msg)
 - Built-in Primitive
 Returns a window selected interactively while displaying MSG.
 Returns #f if no window was selected. Display no message if MSG not given.
-[From scwm/window.c:804]
+[From scwm/window.c:854]
+
+
+(select-window-interactively-and-highlight)
+- (app scwm flux)
+No documentation supplied.
+[From scheme/flux.scm:378]
 
 
 (send-button-press button #&optional win button-press? button-release? propagate?)
@@ -1947,7 +2027,7 @@ BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify which are sent
 individually. PROPAGATE? indicates whether the propagate flag is set
 on the event; the default is #f. You should not have to worry about
 this unless you know what it means.
-[From scwm/events.c:1830]
+[From scwm/events.c:1842]
 
 
 (send-key-press key #&optional win key-press? key-release? propagate?)
@@ -1960,7 +2040,7 @@ sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
 allow you to specify which are sent individually. PROPAGATE? indicates
 whether the propagate flag is set on the event; the default is #f. You
 should not have to worry about this unless you know what it means.
-[From scwm/events.c:1768]
+[From scwm/events.c:1780]
 
 
 (set-animation! vector)
@@ -1972,7 +2052,7 @@ make the window appear at the initial position, 1/4 of the way, 1/2 of
 the way, 3/4 of the way, overshoot the final position slightly, and
 finally slide back into place. This parameter is used for both
 animated window shades and animated moves.
-[From scwm/window.c:2109]
+[From scwm/window.c:2168]
 
 
 (set-auto-raise! auto-raise? #&optional (win (get-window)))
@@ -2025,14 +2105,14 @@ Set the face for the border In the current decor.
 Use ACTIVE as the face for the border when the window is active. Use
 INACTIVE when the window is inactive. INACTIVE defaults to the same as
 ACTIVE when not specified.
-[From scwm/face.c:983]
+[From scwm/face.c:985]
 
 
 (set-border-width! width #&optional win)
 - Built-in Primitive
 Set the border width of WIN's border to WIDTH pixels.
 WIN defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2947]
+[From scwm/window.c:3036]
 
 
 (set-button-face! button active-up #&optional active-down inactive)
@@ -2046,7 +2126,7 @@ ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically
 reverse the sense of the relief flag, so if the button is raised in
 the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by
 default.
-[From scwm/face.c:889]
+[From scwm/face.c:891]
 
 
 (set-button-mwm-flag! button flag)
@@ -2055,7 +2135,7 @@ Specify the Mwm flag for BUTTON.
 If FLAG is #t, the button's relief pattern (if any) will appear to
 reverse in depth sense (i.e., flip from sunken in to extruding out)
 when the window is maximized.
-[From scwm/face.c:950]
+[From scwm/face.c:952]
 
 
 (set-click-delay! usec)
@@ -2064,7 +2144,7 @@ Set the delay used in identifying mouse clicks and drags.
 USEC is specified in microseconds. After USEC microseconds, a mouse-down
 without a mouse-up is considered a drag.  Also, after USEC microseconds, a
 single click is definitively identified as not a double click.
-[From scwm/miscprocs.c:167]
+[From scwm/miscprocs.c:171]
 
 
 (set-click-to-focus-passes-click! flag)
@@ -2072,7 +2152,7 @@ single click is definitively identified as not a double click.
 Determine whether a click-to-focus window receives the click.
 If FLAG is #t, the window will receive the event, if #f, scwm
 will not pass the event on to the client.
-[From scwm/miscprocs.c:361]
+[From scwm/miscprocs.c:365]
 
 
 (set-click-to-focus-raises! flag)
@@ -2080,7 +2160,7 @@ will not pass the event on to the client.
 Determine whether a click to focus raises the clicked-on window.
 If FLAG is #t, clicks which transfer focus will also raise the target
 window
-[From scwm/miscprocs.c:385]
+[From scwm/miscprocs.c:389]
 
 
 (set-colormap-focus! ftype)
@@ -2091,7 +2171,7 @@ pointer should always have it's colormap installed, or 'focus to
 indicate that the window with the input focus should also get the
 colormap focus. This makes a difference only when using focus policies
 other than 'mouse.
-[From scwm/miscprocs.c:194]
+[From scwm/miscprocs.c:198]
 
 
 (set-current-decor! decor)
@@ -2106,7 +2186,7 @@ one.
 - Built-in Primitive
 Change the current desk to DESK. DESK should be an integer
 small enough to fit in one machine word.
-[From scwm/deskpage.c:58]
+[From scwm/deskpage.c:60]
 
 
 (set-decorate-transient! flag #&optional win)
@@ -2116,7 +2196,7 @@ If FLAG is #t, then if WIN is transient it will be fully
 decorated. Transient windows that are not fully decorated will be
 given only a border and no titlebar regardless of other settings. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3615]
+[From scwm/window.c:3705]
 
 
 (set-desk-size! width height)
@@ -2126,7 +2206,7 @@ Both numbers are given in units of the physical screen size.  For
 example <informalexample><programlisting>(set-desk-size 3 3)
 </programlisting></informalexample> createsa virtual world 9 times the
 size of the physical display.
-[From scwm/deskpage.c:299]
+[From scwm/deskpage.c:301]
 
 
 (set-edge-move-threshold! pixels)
@@ -2134,14 +2214,14 @@ size of the physical display.
 Set the edge move threshold to PIXELS.
 This is the number of pixels past the edge of the screen that a window
 must be moved before it will really move past the edge.
-[From scwm/deskpage.c:269]
+[From scwm/deskpage.c:271]
 
 
 (set-edge-resistance! s m)
 - (app scwm base)
 Set the edge scroll delay to S, and the edge move threshold to M.
 See also `set-edge-scroll-delay!' and `set-edge-move-threshold!'.
-[From scheme/base.scm:406]
+[From scheme/base.scm:461]
 
 
 (set-edge-scroll! x y)
@@ -2151,7 +2231,7 @@ These values are the number of pixels that the viewport
 moves when the pointer hits the edge of the screen.  Use
 `%x' and `%y' to convert from a percentage of a screen
 dimension to a number of pixels.
-[From scheme/base.scm:420]
+[From scheme/base.scm:475]
 
 
 (set-edge-scroll-delay! usec)
@@ -2161,7 +2241,7 @@ When the mouse pointer hits the edge of the screen, it must stay there
 for at least the edge scroll delay amount before the desktop will be
 scrolled. If this parameter is #f, the viewport will not scroll at all
 at the screen edge.
-[From scwm/deskpage.c:229]
+[From scwm/deskpage.c:231]
 
 
 (set-edge-wrap! x y)
@@ -2170,7 +2250,7 @@ Set the edge x and y wrap values to X and Y, respectively.
 These values should be #t to mean that the pointer should
 wrap in the given direction, or #f to not wrap around.
 See also `set-edge-x-wrap!' and `set-edge-y-wrap!'.
-[From scheme/base.scm:412]
+[From scheme/base.scm:467]
 
 
 (set-edge-x-scroll! pixels)
@@ -2179,7 +2259,7 @@ Set the horizontal edge scroll increment to PIXELS.
 The horizontal edge scroll setting is the amount by which the viewport
 will scroll when the mouse hits the left or right edge. Use `%x' to
 convert from a percent of screen size to pixels.
-[From scwm/deskpage.c:121]
+[From scwm/deskpage.c:123]
 
 
 (set-edge-x-wrap! flag)
@@ -2188,7 +2268,7 @@ Set whether to wrap pointer around horizontal edges.
 If the boolean value FLAG is #t, the pointer will wrap from the right
 edge of the desktop to the left of the display as it moves off the
 right edge, and vice-versa. See also `set-edge-y-wrap!'
-[From scwm/deskpage.c:180]
+[From scwm/deskpage.c:182]
 
 
 (set-edge-y-scroll! pixels)
@@ -2197,7 +2277,7 @@ Set the vertical edge scroll increment to PIXELS.
 The vertical edge scroll setting is the amount by which the viewport
 will scroll when the mouse hits the top or bottom edge. Use `%y' to
 convert from a percent of screen size to pixels.
-[From scwm/deskpage.c:150]
+[From scwm/deskpage.c:152]
 
 
 (set-edge-y-wrap! flag)
@@ -2206,14 +2286,14 @@ Set whether to wrap pointer around vertical edges.
 If the boolean value FLAG is #t, the pointer will wrap from the bottom
 edge of the desktop to the top of the display as it moves off the very
 bottom edge, and vice-versa. See also `set-edge-x-wrap!'
-[From scwm/deskpage.c:204]
+[From scwm/deskpage.c:206]
 
 
 (set-face-flag! face flag flagval)
 - Built-in Primitive
 Set the given FLAG to the given FLAGVAL for face FACE.
 See the section on the face-specification-flags concept.
-[From scwm/face.c:345]
+[From scwm/face.c:347]
 
 
 (set-force-icon! flag #&optional win)
@@ -2222,28 +2302,28 @@ Set the window-manager-overriding property for WIN to boolean FLAG.
 If #t, the icon specified for WIN by the user through scwm will override an
 application-provided icon.  WIN defaults to the window context in the usual
 way if not specified.
-[From scwm/window.c:3416]
+[From scwm/window.c:3506]
 
 
 (set-hilight-background! bg)
 - Built-in Primitive
 Use BG as the background color for the window with input focus.
 Applies to the current decor.
-[From scwm/color.c:651]
+[From scwm/color.c:652]
 
 
 (set-hilight-factor! factor)
 - Built-in Primitive
 Use FACTOR to generate highlight colors for the current decor.
 FACTOR is a positive floating point number.
-[From scwm/color.c:456]
+[From scwm/color.c:457]
 
 
 (set-hilight-foreground! fg)
 - Built-in Primitive
 Use FG for foreground color of the window with the input focus.
 Applies to the current decor.
-[From scwm/color.c:608]
+[From scwm/color.c:609]
 
 
 (set-hint-override! flag #&optional win)
@@ -2253,7 +2333,7 @@ If FLAG is #t, the hints, which indicate what operations should be
 allowed on a window, will be ignored for WIN.  If FLAG is #f, the hints will
 be honoured. WIN defaults to the window context in the usual way if
 not specified.
-[From scwm/window.c:3598]
+[From scwm/window.c:3688]
 
 
 (set-icon! image #&optional win)
@@ -2262,7 +2342,7 @@ Set the image to use for the icon of WIN to IMAGE.
 As usual, an image object or a filename string may be given. #f May
 also be specified, indicating no icon image. WIN defaults to the window
 context in the usual way if not specified.
-[From scwm/window.c:3462]
+[From scwm/window.c:3552]
 
 
 (set-icon-box! x y w h #&optional win)
@@ -2271,20 +2351,20 @@ Set the icon box in which WIN's icon will be placed.
 This set the box to the rectangle at coordinates X, Y with width W and
 height H. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3045]
+[From scwm/window.c:3134]
 
 
 (set-icon-font! font)
 - Built-in Primitive
 Set the font used for drawing icon titles to FONT.
-[From scwm/font.c:258]
+[From scwm/font.c:257]
 
 
 (set-icon-title! flag #&optional win)
 - Built-in Primitive
 Set the visibility of WIN's icon title according to FLAG. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3399]
+[From scwm/window.c:3489]
 
 
 (set-lenience! flag #&optional win)
@@ -2295,46 +2375,46 @@ when asked, even if the window claims according to hints that it
 cannot receive the input focus, according to the boolean value
 FLAG. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3730]
+[From scwm/window.c:3820]
 
 
 (set-menu-background! bg)
 - Built-in Primitive
 Use BG as the default foreground color for menus.
-[From scwm/color.c:755]
+[From scwm/color.c:756]
 
 
 (set-menu-font! font)
 - Built-in Primitive
 Set the default font used for drawing menus to FONT.
-[From scwm/font.c:354]
+[From scwm/font.c:353]
 
 
 (set-menu-foreground! fg)
 - Built-in Primitive
 Use FG as the default foreground color for menus.
-[From scwm/color.c:719]
+[From scwm/color.c:720]
 
 
 (set-menu-hilight-factor! factor)
 - Built-in Primitive
 Use FACTOR to generate hilight colors for menus.
 FACTOR is a positive floating point number
-[From scwm/color.c:540]
+[From scwm/color.c:541]
 
 
 (set-menu-shadow-factor! factor)
 - Built-in Primitive
 Use FACTOR to generate shadow colors for menus.
 FACTOR is a positive floating point number
-[From scwm/color.c:569]
+[From scwm/color.c:570]
 
 
 (set-menu-stipple! st)
 - Built-in Primitive
 Use ST as the default stipple color for menus.
 May not be used any longer.
-[From scwm/color.c:820]
+[From scwm/color.c:821]
 
 
 (set-message-window-attributes! font fg-color bg-color)
@@ -2343,7 +2423,19 @@ Set the attributes to be used for the message window.
 The font will be FONT, foreground color FG-COLOR, and background color BG-COLOR.
 This the window which is used to display the current size or position of the window
 being moved or resized interactively.
-[From scwm/resize.c:57]
+[From scwm/resize.c:62]
+
+
+(set-message-window-position! x y x-align y-align)
+- Built-in Primitive
+Set the position to be used for the message window.
+[From scwm/resize.c:89]
+
+
+(set-message-window-position-align! x y gravity)
+- 
+Move the message window's GRAVITY point to (X,Y)
+[From scheme/flux.scm:650]
 
 
 (set-mini-icon! image #&optional win)
@@ -2351,7 +2443,7 @@ being moved or resized interactively.
 Set the image to use for the mini-icon of WIN to IMAGE. As
 usual, an image object or a filename string may be given. WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3515]
+[From scwm/window.c:3605]
 
 
 (set-mouse-focus-click-raises! flag)
@@ -2359,7 +2451,7 @@ to the window context in the usual way if not specified.
 Determine whether a mouse-focus-click will raise the window.
 If FLAG is #t it will raise the window. Not sure if this function
 makes sense any more.
-[From scwm/miscprocs.c:417]
+[From scwm/miscprocs.c:421]
 
 
 (set-mwm-border! flag #&optional win)
@@ -2368,7 +2460,7 @@ Set the mwm-border style flag of WIN to boolean FLAG.
 The Mwm style has shallower bevels than the default scwm/fvwm2 style.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3354]
+[From scwm/window.c:3444]
 
 
 (set-mwm-buttons! flag #&optional win)
@@ -2377,7 +2469,7 @@ Set the mwm-buttons flag of WIN to boolean FLAG.
 The mwm-buttons flag controls whether any of this window's
 flags obey their mwm-flags. See `set-button-mwm-flag!'. WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3338]
+[From scwm/window.c:3428]
 
 
 (set-mwm-decor-hint! flag #&optional win)
@@ -2385,7 +2477,7 @@ to the window context in the usual way if not specified.
 Set whether or not Motif decoration hints are used for WIN.
 If FLAG is #t, the Mwm decor hint will be given for WIN.  WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3631]
+[From scwm/window.c:3721]
 
 
 (set-mwm-func-hint! flag #&optional win)
@@ -2394,7 +2486,7 @@ Set whether or not Motif function hints are used for WIN.
 If FLAG is #t, the Motif function hints are respected for WIN.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3645]
+[From scwm/window.c:3735]
 
 
 (set-OL-decor-hint! flag #&optional win)
@@ -2402,7 +2494,7 @@ specified.
 Determine whether or not to respect Open Look decoration hints.
 If FLAG is #t, the decoration hints will be respected for WIN. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3677]
+[From scwm/window.c:3767]
 
 
 (set-PPosition-hint! flag #&optional win)
@@ -2413,7 +2505,7 @@ matters when using the default placement procedure. Some programs
 allegedly set this hint to a useless value like (0,0) always, so
 ignoring it is recommended. WIN defaults to the window context in the
 usual way if not specified.
-[From scwm/window.c:3660]
+[From scwm/window.c:3750]
 
 
 (set-random-placement! flag #&optional win)
@@ -2422,7 +2514,7 @@ Set the random-placement flag of WIN to boolean FLAG.
 This flag only matters if the default placement procedure is
 being used. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3283]
+[From scwm/window.c:3373]
 
 
 (set-rubber-band-mask! value)
@@ -2430,14 +2522,14 @@ specified.
 Set the rubber band mask used when dragging or resizing.
 VALUE is XORed with the background when dragging non-opaque move or
 resize frames. VALUE should be an integer.
-[From scwm/resize.c:385]
+[From scwm/resize.c:425]
 
 
 (set-shadow-factor! factor)
 - Built-in Primitive
 Use FACTOR to generate shadow colors in the current decor.
 FACTOR is a positive floating point number
-[From scwm/color.c:498]
+[From scwm/color.c:499]
 
 
 (set-show-icon! flag #&optional win)
@@ -2447,7 +2539,7 @@ is #t, the icon will be displayed, if #f, it will not appear when the
 window is iconified (it will still be in the window list, of course).
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3443]
+[From scwm/window.c:3533]
 
 
 (set-skip-mapping! flag #&optional win)
@@ -2456,7 +2548,7 @@ Set or reset whether scwm should not change desktops on a map.
 This only affect the behaviour upon initial mapping of WIN. If FLAG is
 #t, the virtual desktop will not be changed when WIN is mapped.  WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3715]
+[From scwm/window.c:3805]
 
 
 (set-smart-placement! flag #&optional win)
@@ -2465,7 +2557,7 @@ Set the smart-placement flag of WIN to boolean FLAG.
 This flag only matters if the default placement procedure is
 being used. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3298]
+[From scwm/window.c:3388]
 
 
 (set-smart-placement-is-really-smart! flag)
@@ -2474,14 +2566,14 @@ Determine whether or not `clever-place-window' will be used when smart-placing.
 If FLAG is #t, then `clever-place-window' will be used instead of
 `smart-place-window' when the default placement procedure is used, and
 the window's smart-placement flag is on.
-[From scwm/miscprocs.c:329]
+[From scwm/miscprocs.c:333]
 
 
 (set-start-on-desk! desk #&optional win)
 - Built-in Primitive
 Make WIN start on DESK when first mapped. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:3691]
+[From scwm/window.c:3781]
 
 
 (set-title-face! active-up #&optional active-down inactive)
@@ -2494,20 +2586,20 @@ inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not
 specified. Note that ACTIVE-DOWN will magically reverse the sense of
 the relief flag, so if your titlebar bar is raised in the ACTIVE-UP
 state, it will be sunk in the ACTIVE-DOWN state by default.
-[From scwm/face.c:849]
+[From scwm/face.c:851]
 
 
 (set-title-font! font)
 - Built-in Primitive
 Set the font for window titles In the current decor to FONT.
-[From scwm/font.c:291]
+[From scwm/font.c:290]
 
 
 (set-title-height! height)
 - Built-in Primitive
 Set the height of the titlebar in pixels to HEIGHT.
 Applies to the current decor.
-[From scwm/miscprocs.c:85]
+[From scwm/miscprocs.c:89]
 
 
 (set-title-justify! just)
@@ -2515,14 +2607,14 @@ Applies to the current decor.
 Set the justification for the title to JUST.
 JUST should be one of 'right, 'left, or 'center. Applies to the
 current decor
-[From scwm/miscprocs.c:33]
+[From scwm/miscprocs.c:37]
 
 
 (set-viewport-position! x y)
 - Built-in Primitive
 Position the upper left corner of the viewport at coordinates X, Y.
 X and Y are given in pixels.  Does not affect the current desk.
-[From scwm/deskpage.c:90]
+[From scwm/deskpage.c:92]
 
 
 (set-window-background! bg #&optional win)
@@ -2532,7 +2624,7 @@ This color is used to draw most of the window decorations, along with
 the relief colors generated from it, which are used to draw the
 window's 3-D bevels.  WIN defaults to the window context in the usual
 way if not specified.
-[From scwm/window.c:3191]
+[From scwm/window.c:3280]
 
 
 (set-window-button! n flag #&optional win)
@@ -2541,13 +2633,21 @@ Set the visibility of button number N on window WIN.
 If FLAG is #t, the button will be visible, otherwise it won't be
 drawn.  WIN defaults to the window context in the usual way if not
 specified. (Note: this code may be broken right now.)
-[From scwm/window.c:3313]
+[From scwm/window.c:3403]
 
 
 (set-window-colors! #&optional (bg #f) (fg #f) (win (get-window)))
 - (app scwm base)
 Set WIN's background color to BG, foreground color to FG.
-[From scheme/base.scm:138]
+[From scheme/base.scm:137]
+
+
+(set-window-context! win)
+- Built-in Primitive
+Set the current window context to WIN, return the old context.
+WIN can be either a window, or #f, to reset the current window-context.
+See also `with-window'.
+[From scwm/window.c:798]
 
 
 (set-window-decor! win decor)
@@ -2561,7 +2661,7 @@ Set WIN's decor to DECOR, updating its decorations appropriately.
 Set the focus style of WIN to SYM. SYM may be 'click, 'mouse,
 'sloppy or 'none. WIN defaults to the window context in the usual way
 if not specified.
-[From scwm/window.c:3105]
+[From scwm/window.c:3194]
 
 
 (set-window-foreground! fg #&optional win)
@@ -2570,7 +2670,7 @@ Set the foreground color of WIN to FG.
 This color is used to draw the title text currently. In the future, it
 may have other uses as well. WIN defaults to the window context in the
 usual way if not specified.
-[From scwm/window.c:3168]
+[From scwm/window.c:3257]
 
 
 (set-window-highlight-background! bg #&optional win)
@@ -2582,7 +2682,7 @@ used to draw the window's 3-D bevels.  WIN defaults to the window
 context in the usual way if not specified. If BG is #f, then lets the decor highlight
 background color be used (turns off a special highlight
 color for WIN.
-[From scwm/window.c:3248]
+[From scwm/window.c:3338]
 
 
 (set-window-highlight-foreground! fg #&optional win)
@@ -2594,7 +2694,7 @@ as well. WIN defaults to the window context in the usual way
 if not specified. If FG is #f, then lets the decor highlight
 foreground color be used (turns off a special highlight
 color for WIN.
-[From scwm/window.c:3221]
+[From scwm/window.c:3310]
 
 
 (set-window-property! win prop val)
@@ -2608,7 +2708,7 @@ particular fields in the window structure. Also, a
 window-property-change-hook mechanism will soon be implemented for
 notification of all window property changes. This is not yet done. The
 window property primitives should be considered in flux.
-[From scwm/window.c:3746]
+[From scwm/window.c:3836]
 
 
 (set-window-title! win title)
@@ -2616,7 +2716,7 @@ window property primitives should be considered in flux.
 Change the window title X-Property of WIN to TITLE.
 WIN is a Scwm window object, TITLE is a string.  This procedure alters the
 window title by changing the WM_NAME X-Property.
-[From scheme/flux.scm:314]
+[From scheme/flux.scm:428]
 
 
 (set-X-server-synchronize! flag)
@@ -2625,13 +2725,13 @@ Set X server sychronization flag to FLAG.
 If FLAG is #t, then Scwm will turn on synchronous X behaviour; if FLAG
 is #f, Scwm will turn off synchronous behaviour.  Scwm is slower in
 synchronous mode, but can be easier to debug.
-[From scwm/miscprocs.c:529]
+[From scwm/miscprocs.c:533]
 
 
 (shadow-factor)
 - Built-in Primitive
 Return the current shadow factor.
-[From scwm/color.c:522]
+[From scwm/color.c:523]
 
 
 (should-circulate-skip? #&optional (win (get-window)))
@@ -2639,32 +2739,32 @@ Return the current shadow factor.
 Return #t if WIN should now be skipped when circulating, #f otherwise.
 Using the current state of WIN (whether it is iconified or not) in
 determining the result.
-[From scheme/winlist.scm:170]
+[From scheme/winlist.scm:181]
 
 
 (show-com com)
 - (app scwm flux)
-No documentation supplied.
-[From scheme/flux.scm:148]
+Return a lambda to show the stdout generated by the COM shell pipeline.
+[From scheme/flux.scm:156]
 
 
 (show-file filename)
 - (app scwm flux)
 Return a lambda to display the contents of filename in a window.
-[From scheme/flux.scm:144]
+[From scheme/flux.scm:152]
 
 
 (show-mesg . str)
 - (app scwm flux)
 Return a lambda to display the string arguments STR in a message window.
 See also `message'.
-[From scheme/flux.scm:139]
+[From scheme/flux.scm:147]
 
 
 (show-system-info)
 - (app scwm flux)
 Display the `system-info-string' system details in a window.
-[From scheme/flux.scm:183]
+[From scheme/flux.scm:193]
 
 
 (show-titlebar  #&optional win)
@@ -2672,14 +2772,17 @@ Display the `system-info-string' system details in a window.
 Cause WIN to be decorated with a titlebar.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2811]
+[From scwm/window.c:2900]
 
 
 (show-window-list-menu #&key (only '()) (except '())
 				       (by-stacking #f)
 				       (proc window-list-proc)
+				       (flash-window-proc #f)
+				       (unflash-window-proc #f)
 				       (show-geometry #f)
 				       (warp-to-first #f)
+				       (ignore-winlist-skip #f)
 				       (show-mini-icon #t))
 - (app scwm winlist)
 Popup a window list menu and permit a selection to be made.
@@ -2705,14 +2808,14 @@ Set the style for titlebars.
 FONT is a font object or a string, HEIGHT is a number of points,
 JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 'right, or 'center.
-[From scheme/base.scm:207]
+[From scheme/base.scm:234]
 
 
 (size->str sz #&optional (sep "x"))
 - (app scwm flux)
 Convert a two-element list to a string.
 Use the optional second argument as the separator.
-[From scheme/flux.scm:155]
+[From scheme/flux.scm:164]
 
 
 (sleep-ms ms)
@@ -2720,7 +2823,7 @@ Use the optional second argument as the separator.
 Delay for MS milliseconds. 
 Note that timer-hooks are much more useful in nearly all
 cases.  See `add-timer-hook!'.
-[From scheme/flux.scm:237]
+[From scheme/flux.scm:247]
 
 
 (smart-place-window win)
@@ -2730,7 +2833,7 @@ The placement is just as if SmartPlacementIsReallySmart were not in
 effect. That is, it tries to place the window so that it does not
 overlap any other. If it fails to do so, it returns #f; otherwise it
 returns #t.
-[From scwm/placement.c:395]
+[From scwm/placement.c:397]
 
 
 (smart-placement-is-really-smart?)
@@ -2739,7 +2842,7 @@ Return whether or not `clever-place-window' will be used when smart-placing.
 If the value is #t, then `clever-place-window' will be used instead of
 smart-place-window when the default placement procedure is used, and
 the window's smart-placement flag is on.
-[From scwm/miscprocs.c:344]
+[From scwm/miscprocs.c:348]
 
 
 (sort ls #&optional (compare >))
@@ -2755,14 +2858,14 @@ A sticky window will appear on all desktops, and will remain at the
 same screen position regardless of scrolling within the current
 desktop. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1877]
+[From scwm/window.c:1936]
 
 
 (stick-icon  #&optional win)
 - Built-in Primitive
 Cause WIN's icon to become "sticky". See `stick'. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2993]
+[From scwm/window.c:3082]
 
 
 (sticky?  #&optional win)
@@ -2770,14 +2873,14 @@ defaults to the window context in the usual way if not specified.
 Return #t if WIN is "sticky", #f otherwise.
 See `stick' for an explanation. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:1941]
+[From scwm/window.c:2000]
 
 
 (string->X-atom string)
 - Built-in Primitive
 Returns an X atom representing STRING.
 If STRING contains NULL-characters, the behaviour is undefined.
-[From scwm/xproperty.c:299]
+[From scwm/xproperty.c:301]
 
 
 (style-one-window w . args)
@@ -2796,20 +2899,20 @@ No documentation supplied.
 - (app scwm flux)
 Return a string with various system information.
 Use `show-system-info' to display it in a window.
-[From scheme/flux.scm:97]
+[From scheme/flux.scm:105]
 
 
 (title-font)
 - Built-in Primitive
 Return the font used for drawing window titles in the current decor.
-[From scwm/font.c:320]
+[From scwm/font.c:319]
 
 
 (title-height)
 - Built-in Primitive
 Return the height of the titlebar in pixels, as set by `set-title-height!'.
 Applies to the current decor.
-[From scwm/miscprocs.c:118]
+[From scwm/miscprocs.c:122]
 
 
 (title-justify)
@@ -2817,7 +2920,7 @@ Applies to the current decor.
 Return the current justification for the title, as set by `set-title-justify!'.
 The return value will be one of 'right, 'left, or 'center. Applies to the
 current decor.
-[From scwm/miscprocs.c:63]
+[From scwm/miscprocs.c:67]
 
 
 (title-style #&key font height justify
@@ -2838,43 +2941,43 @@ FIXMS: What are? ACTIVE-UP, ACTIVE-DOWN, INACTIVE.
 Return #t if WIN is decorated with a titlebar, #f otherwise.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2858]
+[From scwm/window.c:2947]
 
 
 (to-string . rest)
 - (app scwm flux)
 Dump all arguments into a string.
-[From scheme/flux.scm:80]
+[From scheme/flux.scm:81]
 
 
 (toggle-max-both)
 - (app scwm flux)
 Toggle the current window's maximization (both vertically and horizontally).
-[From scheme/flux.scm:61]
+[From scheme/flux.scm:62]
 
 
 (toggle-max-horz)
 - (app scwm flux)
 Toggle the current window's maximized-horizontally state.
-[From scheme/flux.scm:57]
+[From scheme/flux.scm:58]
 
 
 (toggle-max-vert)
 - (app scwm flux)
 Toggle the current window's maximized-vertically state.
-[From scheme/flux.scm:53]
+[From scheme/flux.scm:54]
 
 
 (toggle-max-vert-part)
 - (app scwm flux)
 Toggle the current window's maximization-vertically to 95% of the screen height.
-[From scheme/flux.scm:65]
+[From scheme/flux.scm:66]
 
 
 (toggle-maximize nw nh #&optional (win (get-window)))
 - (app scwm winops)
 Maximize to width NW, height NH if not maximized, or unmaximize.
-[From scheme/winops.scm:197]
+[From scheme/winops.scm:215]
 
 
 (transient?  #&optional win)
@@ -2882,7 +2985,7 @@ Maximize to width NW, height NH if not maximized, or unmaximize.
 Return #t if WIN is transient, #f if not.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1773]
+[From scwm/window.c:1833]
 
 
 (try-everything-loader fname)
@@ -2896,7 +2999,7 @@ No documentation supplied.
 Remove the on-top property from WIN, if it has it.
 See `keep-on-top'. WIN defaults to the window context in the usual
 way if not specified.
-[From scwm/window.c:2753]
+[From scwm/window.c:2842]
 
 
 (un-window-shade  #&optional win animated?)
@@ -2906,7 +3009,7 @@ By default, the change takes place instantaneously. However, if the
 optional ANIMATED? argument is true, the window will be animated as it
 rolls down, producing a pleasing visual effect. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:2039]
+[From scwm/window.c:2098]
 
 
 (un-window-shade-animated win)
@@ -2922,7 +3025,7 @@ pulling down a window shade on a window.
 Remove any bindings attached to KEY in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
-[From scwm/binding.c:586]
+[From scwm/binding.c:587]
 
 
 (unbind-mouse contexts button)
@@ -2930,26 +3033,26 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 Remove any bindings attached to mouse BUTTON in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
-[From scwm/binding.c:618]
+[From scwm/binding.c:619]
 
 
 (unflash-window #&optional (win (get-window)))
 - (app scwm flux)
-No documentation supplied.
-[From scheme/flux.scm:378]
+Revert WIN's titlebar and boundary color to state before a `flash-window'.
+[From scheme/flux.scm:481]
 
 
 (unfocus)
 - Built-in Primitive
 Remove the input focus from any window that may have it.
-[From scwm/window.c:1591]
+[From scwm/window.c:1651]
 
 
 (unmaximize #&optional (win (get-window)))
 - (app scwm winops)
-Unmaximize WIN so it returns to its size before maximization.
+Unmaximize WIN so it returns to its size/position before maximization.
 This should use client units, but currently uses frame-size in pixels.
-[From scheme/winops.scm:120]
+[From scheme/winops.scm:133]
 
 
 (unregister-image-loader extension)
@@ -2961,12 +3064,18 @@ empty string (for files with no extension), or the string "default"
 [From scwm/image.c:325]
 
 
+(unset-message-window-position!)
+- (app scwm base)
+Move the message window back to the default screen-center position
+[From scheme/base.scm:484]
+
+
 (unstick  #&optional win)
 - Built-in Primitive
 Cause a window to no longer be "sticky", if it is.
 See `stick' for an explanation. WIN defaults to the window context in
 the usual way if not specified.
-[From scwm/window.c:1910]
+[From scwm/window.c:1969]
 
 
 (unstick-icon  #&optional win)
@@ -2974,7 +3083,7 @@ the usual way if not specified.
 Cause WIN's icon to no longer by "sticky". See `stick-icon'
 and `stick'. WIN defaults to the window context in the usual way if
 not specified.
-[From scwm/window.c:3012]
+[From scwm/window.c:3101]
 
 
 (user-option-menuitem symbol)
@@ -2986,38 +3095,38 @@ Create a menuitem for the option.
 (viewport->virtual x y)
 - (app scwm base)
 Return the virtual coordinates for viewport X,Y.
-[From scheme/base.scm:72]
+[From scheme/base.scm:71]
 
 
 (viewport-position)
 - Built-in Primitive
 Returns the current position of the viewport in pixels.
 The returned value is a list of the x and y positions.
-[From scwm/deskpage.c:108]
+[From scwm/deskpage.c:110]
 
 
 (viewport-x-position)
 - (app scwm base)
 Return the x coordinate of the current viewport.
-[From scheme/base.scm:64]
+[From scheme/base.scm:63]
 
 
 (viewport-y-position)
 - (app scwm base)
-Return the y coordinate of the current viewport
-[From scheme/base.scm:68]
+Return the y coordinate of the current viewport.
+[From scheme/base.scm:67]
 
 
 (virtual->viewport x y)
 - (app scwm base)
 Return the viewport coordinates for virtual X,Y.
-[From scheme/base.scm:76]
+[From scheme/base.scm:75]
 
 
 (virtual-size)
 - (app scwm base)
 Return the size of the virtual screen in pixels.
-[From scheme/base.scm:80]
+[From scheme/base.scm:79]
 
 
 (visible? #&optional (win (get-window)))
@@ -3032,25 +3141,25 @@ obscured by other windows.
 (vx- x)
 - (app scwm base)
 Return the virtual coordinate X pixels left of the right virtual edge.
-[From scheme/base.scm:84]
+[From scheme/base.scm:83]
 
 
 (vy- y)
 - (app scwm base)
 Return the virtual coordinate Y pixels up from the bottom virtual edge.
-[From scheme/base.scm:88]
+[From scheme/base.scm:87]
 
 
 (w%x x #&optional (w (get-window)))
 - (app scwm base)
 Return a pixel width X percent of the width of window W.
-[From scheme/base.scm:100]
+[From scheme/base.scm:99]
 
 
 (w%y y #&optional (w (get-window)))
 - (app scwm base)
 Return a pixel height Y percent of the height of window W.
-[From scheme/base.scm:104]
+[From scheme/base.scm:103]
 
 
 (wait-for-window predicate)
@@ -3058,7 +3167,7 @@ Return a pixel height Y percent of the height of window W.
 Wait until a window appears which satisfies PREDICATE.
 Given the existence of before-new-window-hook, this is of questionable
 usefulness and may be removed.
-[From scwm/miscprocs.c:287]
+[From scwm/miscprocs.c:291]
 
 
 (warp-to-window  #&optional win)
@@ -3070,14 +3179,14 @@ to the window context in the usual way if not specified.  Note that
 the target window is not raised, so if the target window's upper
 left corner is under another window, that other window may end up
 with the keyboard focus.
-[From scwm/window.c:1604]
+[From scwm/window.c:1664]
 
 
 (wiggle-window)
 - (app scwm flux)
 Animatedly window shade and then unshade the current window.
 Just a toy--- perhaps could be useful to call attention to a window.
-[From scheme/flux.scm:69]
+[From scheme/flux.scm:70]
 
 
 (wildcard->regexp wildcard)
@@ -3105,18 +3214,12 @@ instead of a shell-like wildcard.
 [From scheme/wininfo.scm:153]
 
 
-(window-border-width win)
-- (app scwm flux)
-No documentation supplied.
-[From scheme/flux.scm:351]
-
-
 (window-class  #&optional win)
 - Built-in Primitive
 Return the window resource class of WIN.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2656]
+[From scwm/window.c:2745]
 
 
 (window-client-machine-name #&optional (win (get-window)))
@@ -3125,10 +3228,17 @@ Return the name of the client machine on which WIN is running.
 [From scheme/wininfo.scm:146]
 
 
+(window-context)
+- Built-in Primitive
+Returns the current window context, or #f if there is none.
+See also `with-window' and `set-window-context!'
+[From scwm/window.c:817]
+
+
 (window-decor win)
 - Built-in Primitive
 Return WIN's decor.
-[From scwm/decor.c:340]
+[From scwm/decor.c:338]
 
 
 (window-deletable?  #&optional win)
@@ -3137,20 +3247,26 @@ Return #t if WIN is able to be deleted, #f otherwise.
 Scwm may call `delete-window' on WIN only if this procedure returns
 #t. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1555]
+[From scwm/window.c:1615]
 
 
 (window-desk  #&optional win)
 - Built-in Primitive
 Return the desk that WIN is currently on. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:2621]
+[From scwm/window.c:2710]
 
 
 (window-frame-area win)
 - (app scwm winops)
 Return the number of square pixels of area that WIN is.
-[From scheme/winops.scm:131]
+[From scheme/winops.scm:150]
+
+
+(window-frame-border-width  #&optional win)
+- Built-in Primitive
+Return the width of WIN's frame's border.
+[From scwm/window.c:2624]
 
 
 (window-frame-id  #&optional win)
@@ -3158,7 +3274,7 @@ Return the number of square pixels of area that WIN is.
 Return the X window id for the outermost frame window of WIN.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2564]
+[From scwm/window.c:2653]
 
 
 (window-frame-size  #&optional win)
@@ -3167,7 +3283,7 @@ Return the size of the frame of WIN.
 The position is returned as a list of the width and the height in
 pixels. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2490]
+[From scwm/window.c:2551]
 
 
 (window-geometry-string #&optional (win (get-window)))
@@ -3183,13 +3299,13 @@ looks like, e.g., FIXGJB.
 Get the icon image being used for WIN.
 Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified.
-[From scwm/window.c:3498]
+[From scwm/window.c:3588]
 
 
 (window-icon-shaped?  #&optional win)
 - Built-in Primitive
 Return #t if WIN has shaped icon, #f otherwise.
-[From scwm/window.c:3582]
+[From scwm/window.c:3672]
 
 
 (window-icon-title  #&optional win)
@@ -3197,7 +3313,7 @@ Return #t if WIN has shaped icon, #f otherwise.
 Return the icon window title of WIN.
 This is the title as requested by the application . WIN defaults to
 the window context in the usual way if not specified.
-[From scwm/window.c:2644]
+[From scwm/window.c:2733]
 
 
 (window-id  #&optional win)
@@ -3205,13 +3321,13 @@ the window context in the usual way if not specified.
 Return the X window id for WIN.
 This is the X id for the actual application window. WIN defaults to
 the window context in the usual way if not specified.
-[From scwm/window.c:2548]
+[From scwm/window.c:2637]
 
 
 (window-info #&optional (win (get-window)))
 - (app scwm flux)
 Display information about WIN in a message window.
-[From scheme/flux.scm:160]
+[From scheme/flux.scm:169]
 
 
 (window-mini-icon win)
@@ -3219,7 +3335,7 @@ Display information about WIN in a message window.
 Get the mini-icon image being used for WIN.
 Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified.
-[From scwm/window.c:3550]
+[From scwm/window.c:3640]
 
 
 ((window-overlaps-window? #&optional (win (get-window))) 
@@ -3231,11 +3347,12 @@ No documentation supplied.
 
 (window-position  #&optional win)
 - Built-in Primitive
-Return the position of WIN in pixels in virtual space.
+Return the position of WIN in pixels.
 The position is returned as a list of the x coordinate and the y
-coordinate in pixels. WIN defaults to the window context in the usual
+coordinate in pixels. If the window is sticky, the position will
+always be in the 0,0 viewport. WIN defaults to the window context in the usual
 way if not specified.  See also `window-viewport-position'.
-[From scwm/window.c:2450]
+[From scwm/window.c:2509]
 
 
 (window-property win prop)
@@ -3248,14 +3365,14 @@ the window structure. Also, a window-property-change-hook mechanism
 will soon be implemented for notification of all window property
 changes. This is not yet done. The window property primitives should
 be considered in flux.
-[From scwm/window.c:3783]
+[From scwm/window.c:3873]
 
 
 (window-resource  #&optional win)
 - Built-in Primitive
 Return the window resource instance of WIN. WIN defaults to
 the window context in the usual way if not specified.
-[From scwm/window.c:2669]
+[From scwm/window.c:2758]
 
 
 (window-shade  #&optional win animated?)
@@ -3266,7 +3383,7 @@ place instantaneously. However, if the optional ANIMATED? argument is
 true, the window will be animated as it rolls up, producing a pleasing
 visual effect. WIN defaults to the window context in the usual way if
 not specified.
-[From scwm/window.c:1967]
+[From scwm/window.c:2026]
 
 
 (window-shade-animated win)
@@ -3282,13 +3399,13 @@ snapping up a window shade on a window.
 Return #t if WIN is shaded.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2087]
+[From scwm/window.c:2146]
 
 
 (window-shaped?  #&optional win)
 - Built-in Primitive
 Return #t if WIN is a shaped window, #f otherwise.
-[From scwm/window.c:3567]
+[From scwm/window.c:3657]
 
 
 (window-size  #&optional win)
@@ -3298,7 +3415,7 @@ WIN defaults to the window context in the usual way if not specified.
 The position is returned as a list of four numbers. The first two are
 the width and the height in pixels, the third and fourth are the width
 and height in resize units (e.g., characters for an xterm).
-[From scwm/window.c:2509]
+[From scwm/window.c:2570]
 
 
 (window-size-hints win)
@@ -3307,7 +3424,7 @@ Return a list of the window size hints associated with WIN.
 The list returned contains 4 cons pairs containing:
 '((min-width . max-width) (min-height . max-height)
 (width-inc . height-inc) (base-width . baseheight))
-[From scwm/window.c:2346]
+[From scwm/window.c:2405]
 
 
 (window-style condition . args)
@@ -3320,13 +3437,27 @@ No documentation supplied.
 - Built-in Primitive
 Return the window title of WIN, as requested by the application.
 WIN defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2633]
+[From scwm/window.c:2722]
 
 
-(window-title-height win)
-- (app scwm flux)
-No documentation supplied.
-[From scheme/flux.scm:342]
+(window-title-height #&optional (win (get-window)))
+- (app scwm base)
+Return WIN's titlebar's height.
+See also `window-title-size', `window-title-width'.
+[From scheme/base.scm:174]
+
+
+(window-title-size  #&optional win)
+- Built-in Primitive
+Return a list with the width and height of WIN's titlebar.
+[From scwm/window.c:2609]
+
+
+(window-title-width #&optional (win (get-window)))
+- (app scwm base)
+Return WIN's titlebar's width.
+See also `window-title-size', `window-title-height'.
+[From scheme/base.scm:179]
 
 
 (window-transient-for  #&optional win)
@@ -3337,7 +3468,7 @@ not the root window and is being managed by scwm, this returns the window
 object of the window that WIN is transient for, otherwise return
 #f. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:1788]
+[From scwm/window.c:1848]
 
 
 (window-viewport-position #&optional (win (get-window)))
@@ -3346,13 +3477,21 @@ Return the position of WIN in pixels within the viewport.
 The position is returned as a list of the x coordinate and the y
 coordinate in pixels. WIN defaults to the window context in the usual
 way if not specified.  See also `window-position'.
-[From scheme/base.scm:171]
+[From scheme/base.scm:184]
+
+
+(window-virtual-position #&optional (win (get-window)))
+- (app scwm base)
+Return the virtual position of WIN in pixels.
+If WIN is sticky, this returns the position of the window in the
+current viewport.
+[From scheme/base.scm:193]
 
 
 (window? obj)
 - Built-in Primitive
 Returns #t if OBJ is a window object, otherwise returns #f.
-[From scwm/window.c:662]
+[From scwm/window.c:678]
 
 
 (windows-overlap? win win2)
@@ -3386,27 +3525,37 @@ Return #t of WIN is skipped in the window list, #f otherwise.
 (write-all port . lst)
 - (app scwm flux)
 Write all arguments into the port. #t means `current-output-port'.
-[From scheme/flux.scm:74]
+[From scheme/flux.scm:75]
 
 
 (x- x)
 - (app scwm base)
 Return the viewport pixel coordinate X pixels left of the right display edge.
-[From scheme/base.scm:56]
+[From scheme/base.scm:55]
 
 
 (X-atom->string atom)
 - Built-in Primitive
 Returns the string represented by ATOM.
 Returns #f, if the X atom was not known.
-[From scwm/xproperty.c:319]
+[From scwm/xproperty.c:321]
+
+
+(X-atomic-property-set-if-unset! window name value #&optional
+						(type "STRING") (format 8))
+- (app scwm flux)
+Set property NAME on WINDOW to VALUE, if it's currently unset.
+Returns #f if the property is already set, #t otherwise.
+TYPE and FORMAT are as in X-property-set!
+[From scheme/flux.scm:596]
 
 
 (X-cut-buffer-string)
 - (app scwm flux)
 Return the text of the CUT_BUFFER0 property of the root window.
-This is the cut text selected by X clients.
-[From scheme/flux.scm:433]
+This is the cut text selected by X clients.  Returns #f if the
+CUT_BUFFER0 property is not a string.
+[From scheme/flux.scm:537]
 
 
 (X-display-information)
@@ -3421,7 +3570,17 @@ The resolutions mentioned above should in theory be pixels per
 centimeter, rounded to the nearest integer. These parameters can be
 used for various workarounds or conditional decisions in a scwmrc to
 be shared among multiple machines.
-[From scwm/miscprocs.c:566]
+[From scwm/miscprocs.c:570]
+
+
+(X-grab-server)
+- Built-in Primitive
+Grab the X server.
+This is very risky; you should almost definitely use
+`with-grabbed-server' instead.  This must be paired with
+X-ungrab-server.  This primitive is undefined at startup
+to make it hard to access directly.
+[From scwm/Grab.c:56]
 
 
 (X-pointer-mapping)
@@ -3431,7 +3590,7 @@ The length of the returned list is the number of buttons available.  Each
 element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
 3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
 physical button acts as logical button 1, and the leftmost acts as button 3.
-[From scwm/binding.c:868]
+[From scwm/binding.c:869]
 
 
 (X-property-get win name #&optional consume)
@@ -3446,7 +3605,7 @@ If the X property could be found, a list "(value type format)" is returned.
 "type" is a string.
 "format" is either 8, 16, or 32, giving the size of the elements of "value".
 "value" is a string, if "format" is 8, or a vector of integers otherwise.
-[From scwm/xproperty.c:203]
+[From scwm/xproperty.c:205]
 
 
 (X-property-set! win name value #&optional type format action)
@@ -3461,7 +3620,7 @@ of FORMAT-bit integers.
 ACTION - one of the symbols 'replace, 'prepend, or 'append signifying
 how the new VALUE should be merged (if at all) with the existing
 value.
-[From scwm/xproperty.c:101]
+[From scwm/xproperty.c:103]
 
 
 (X-resource-database-save filename)
@@ -3469,7 +3628,7 @@ value.
 Save the Scwm resource database to FILENAME.
 Only the settings set or changed via `X-resource-put' go into
 the file.
-[From scwm/xrm.c:81]
+[From scwm/xrm.c:85]
 
 
 (X-resource-get name #&optional xclass)
@@ -3478,14 +3637,14 @@ Get X resource specified by NAME and XCLASS from Xrm database.
 Both NAME and XCLASS are strings, as is the returned value.  If
 XCLASS is omitted, it defaults to the same string as NAME.
 If there is no resource under the given key, #f is returned.
-[From scwm/xrm.c:48]
+[From scwm/xrm.c:52]
 
 
 (X-resource-put resource value)
 - Built-in Primitive
 Stores string VALUE as X resource RESOURCE (also a string).
 Later, the value can be retrieved using `X-resource-get'.
-[From scwm/xrm.c:23]
+[From scwm/xrm.c:27]
 
 
 (X-rotate-cut-buffers n)
@@ -3493,7 +3652,7 @@ Later, the value can be retrieved using `X-resource-get'.
 Rotate the X cut buffers by N positions.
 This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,
 and so on.  This cut buffer numbering is global to the display.
-[From scwm/miscprocs.c:441]
+[From scwm/miscprocs.c:445]
 
 
 (X-synthetic-send-string str #&optional (win (get-window)))
@@ -3501,7 +3660,16 @@ and so on.  This cut buffer numbering is global to the display.
 Send string STR to WIN via synthetic X events.
 Note that some programs (e.g., xterm) by default do not
 honour synthetic key events as they are a security hole.
-[From scheme/flux.scm:258]
+[From scheme/flux.scm:312]
+
+
+(X-ungrab-server)
+- Built-in Primitive
+Ungrab the X server.
+Using these functions directly is risky; you should almost definitely use
+`with-grabbed-server' instead. This primitive is undefined at startup
+to make it hard to access directly.
+[From scwm/Grab.c:70]
 
 
 (X-version-information)
@@ -3509,12 +3677,12 @@ honour synthetic key events as they are a security hole.
 Return some information about the version of the running X server.
 Return value is a list of the X protocol version, the X protocol
 revision, the X server vendor, and the vendor release number.
-[From scwm/miscprocs.c:546]
+[From scwm/miscprocs.c:550]
 
 
 (y- y)
 - (app scwm base)
 Return the viewport pixel coordinate Y pixels up from the bottom display edge.
-[From scheme/base.scm:60]
+[From scheme/base.scm:59]
 
 
