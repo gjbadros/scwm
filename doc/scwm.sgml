@@ -40,15 +40,15 @@
   	</affiliation>
       </author>
     </authorgroup>
-    <releaseinfo>Release pre-0.8</releaseinfo>
-    <pubdate>21 August 1998</pubdate>
+    <releaseinfo>Release post-0.8</releaseinfo>
+    <pubdate>02 September 1998</pubdate>
     <copyright>
       <year>1997&ndash;1998</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
     </copyright>
   </bookinfo>
   <chapter>
-    <title>Primitives in Alphabetical Order</title>
+    <title>Procedures in Alphabetical Order</title>
 <refentry id="pctx">
   <refnamediv>
     <refname>%x</refname>
@@ -62,6 +62,10 @@
   <para>
   Return the number of pixels that is X percent of the display width.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -84,6 +88,10 @@
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
   at line 51 </para> </refsect1>
@@ -102,6 +110,10 @@
   <para>
   Return the number of pixels that is Y percent of the display height.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -124,6 +136,10 @@
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
   at line 55 </para> </refsect1>
@@ -144,6 +160,10 @@
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm style-options)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/style-options.scm"><filename>scheme/style-options.scm</filename></ulink>
   at line 401 </para> </refsect1>
@@ -162,6 +182,10 @@
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm style-options)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -190,9 +214,13 @@ returned.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 560 </para> </refsect1>
+  at line 556 </para> </refsect1>
 </refentry>
 
 <refentry id="add-timer-hook-x">
@@ -213,9 +241,13 @@ called with no arguments. A handle suitable for passing to
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 422 </para> </refsect1>
+  at line 418 </para> </refsect1>
 </refentry>
 
 <refentry id="add-window-hint-option">
@@ -231,6 +263,10 @@ called with no arguments. A handle suitable for passing to
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm style-options)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -253,6 +289,10 @@ called with no arguments. A handle suitable for passing to
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm style-options)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/style-options.scm"><filename>scheme/style-options.scm</filename></ulink>
   at line 389 </para> </refsect1>
@@ -261,7 +301,7 @@ called with no arguments. A handle suitable for passing to
 <refentry id="animated-move-to">
   <refnamediv>
     <refname>animated-move-to</refname>
-    <refpurpose>Move WIN to x y animatedly.</refpurpose>
+    <refpurpose>Move WIN to viewport position x, y animatedly.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(animated-move-to x y #&amp;optional (win (get-window)))</synopsis>
@@ -269,11 +309,15 @@ called with no arguments. A handle suitable for passing to
   <refsect1>
   <title>Description</title>
   <para>
-  Move WIN to x y animatedly.
+  Move WIN to viewport position x, y animatedly.
 If X or Y is 'x or 'y, respectively (or <literal>#f</literal>), then do not change
 that coordinate during the move.  At least one of X and Y must be
 a number.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -296,6 +340,10 @@ a number.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-module)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
   at line 933 </para> </refsect1>
@@ -314,6 +362,10 @@ a number.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm prefs-menu)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -336,6 +388,10 @@ a number.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 340 </para> </refsect1>
@@ -354,6 +410,10 @@ a number.
   <para>
   Reads LENGTH bytes of binary data from PORT and return it as a string.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm bincomm)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -376,6 +436,10 @@ a number.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm bincomm)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/bincomm.scm"><filename>scheme/bincomm.scm</filename></ulink>
   at line 177 </para> </refsect1>
@@ -394,6 +458,10 @@ a number.
   <para>
   Writes STR as binary data to PORT.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm bincomm)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -419,6 +487,10 @@ a number.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
   at line 644 </para> </refsect1>
@@ -442,6 +514,10 @@ a number.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
   at line 703 </para> </refsect1>
@@ -460,6 +536,10 @@ a number.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -484,9 +564,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2833 </para> </refsect1>
+  at line 2872 </para> </refsect1>
 </refentry>
 
 <refentry id="border-style">
@@ -503,6 +587,10 @@ specified.
   <para>
   Set the current border style.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm face)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -528,6 +616,10 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm face)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/face.scm"><filename>scheme/face.scm</filename></ulink>
   at line 123 </para> </refsect1>
@@ -546,6 +638,10 @@ specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm decor)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -572,6 +668,10 @@ placed at all.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 164 </para> </refsect1>
@@ -592,9 +692,13 @@ placed at all.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 271 </para> </refsect1>
+  at line 273 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-hit-icon">
@@ -612,9 +716,13 @@ placed at all.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 280 </para> </refsect1>
+  at line 282 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-skip">
@@ -632,9 +740,13 @@ placed at all.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 274 </para> </refsect1>
+  at line 276 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-skip-icon">
@@ -652,9 +764,13 @@ placed at all.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 283 </para> </refsect1>
+  at line 285 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-skip-icon-p">
@@ -672,9 +788,13 @@ placed at all.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 286 </para> </refsect1>
+  at line 288 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-skip-p">
@@ -692,9 +812,13 @@ placed at all.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 277 </para> </refsect1>
+  at line 279 </para> </refsect1>
 </refentry>
 
 <refentry id="clear-color-cache-entry">
@@ -714,6 +838,10 @@ server, if you try hard enough. For this unlikely eventuality,
 <link linkend="clear-color-cache-entry"><function>clear-color-cache-entry</function></link> is provided - it removes the color
 associated with <parameter>name</parameter> from the color cache.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -741,6 +869,10 @@ cache.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/font.c"><filename>scwm/font.c</filename></ulink>
   at line 387 </para> </refsect1>
@@ -759,6 +891,10 @@ cache.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-module)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -784,6 +920,10 @@ your image path. For this unlikely eventuality,
 <link linkend="clear-image-cache-entry"><function>clear-image-cache-entry</function></link> is provided - it removes the image
 associated with <parameter>name</parameter> from the image cache.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -813,6 +953,10 @@ returns <literal>#f</literal>; otherwise it returns <literal>#t</literal>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/placement.c"><filename>scwm/placement.c</filename></ulink>
   at line 438 </para> </refsect1>
@@ -832,6 +976,10 @@ returns <literal>#f</literal>; otherwise it returns <literal>#t</literal>.
   Retrun the delay used in identifying mouse clicks and drags, in microseconds.
 See also <link linkend="set-click-delay-x"><function>set-click-delay!</function></link>
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -854,6 +1002,10 @@ See also <link linkend="set-click-delay-x"><function>set-click-delay!</function>
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 395 </para> </refsect1>
@@ -874,6 +1026,10 @@ See also <link linkend="set-click-delay-x"><function>set-click-delay!</function>
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 422 </para> </refsect1>
@@ -892,6 +1048,10 @@ See also <link linkend="set-click-delay-x"><function>set-click-delay!</function>
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -916,6 +1076,10 @@ other applications.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 280 </para> </refsect1>
@@ -936,6 +1100,10 @@ other applications.
 Currently defined properties are 'name, the string name of the
 color, and 'pixel, the X pixel value it uses.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -959,9 +1127,13 @@ See <link linkend="color-properties"><function>color-properties</function></link
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 246 </para> </refsect1>
+  at line 273 </para> </refsect1>
 </refentry>
 
 <refentry id="color-p">
@@ -977,6 +1149,10 @@ See <link linkend="color-properties"><function>color-properties</function></link
   <para>
   Returns <literal>#t</literal> if <parameter>obj</parameter> is a color object, otherwise <literal>#f</literal>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1003,6 +1179,10 @@ colormap focus.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 242 </para> </refsect1>
@@ -1021,6 +1201,10 @@ colormap focus.
   <para>
   Return the current decor.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1043,6 +1227,10 @@ colormap focus.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
   at line 74 </para> </refsect1>
@@ -1063,9 +1251,13 @@ colormap focus.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 728 </para> </refsect1>
+  at line 748 </para> </refsect1>
 </refentry>
 
 <refentry id="current-window-with-pointer">
@@ -1083,9 +1275,13 @@ colormap focus.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 738 </para> </refsect1>
+  at line 758 </para> </refsect1>
 </refentry>
 
 <refentry id="default-decor">
@@ -1101,6 +1297,10 @@ colormap focus.
   <para>
   Return the default decor.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1131,6 +1331,10 @@ by the user, the position was specified by the program, and
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/placement.c"><filename>scwm/placement.c</filename></ulink>
   at line 510 </para> </refsect1>
@@ -1150,6 +1354,10 @@ by the user, the position was specified by the program, and
   This is the default placement procedure for transient windows.
 It simply leaves the window <parameter>win</parameter> in place, exactly as requested.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1172,9 +1380,13 @@ It simply leaves the window <parameter>win</parameter> in place, exactly as requ
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 187 </para> </refsect1>
+  at line 189 </para> </refsect1>
 </refentry>
 
 <refentry id="deiconify">
@@ -1195,9 +1407,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1777 </para> </refsect1>
+  at line 1798 </para> </refsect1>
 </refentry>
 
 <refentry id="delete-window">
@@ -1218,9 +1434,13 @@ in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1431 </para> </refsect1>
+  at line 1452 </para> </refsect1>
 </refentry>
 
 <refentry id="desk-size">
@@ -1238,6 +1458,10 @@ in the usual way if not specified.
 The returned value is in units of the physical screen size, as a list
 of the width and the height.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1263,9 +1487,13 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1462 </para> </refsect1>
+  at line 1483 </para> </refsect1>
 </refentry>
 
 <refentry id="display-area">
@@ -1281,6 +1509,10 @@ defaults to the window context in the usual way if not specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1305,6 +1537,10 @@ width is the <link linkend="car"><function>car</function></link>, the height is 
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
   at line 349 </para> </refsect1>
@@ -1324,6 +1560,10 @@ width is the <link linkend="car"><function>car</function></link>, the height is 
   Print the documentation for the string or symbol.
 Return <literal>#t</literal> if found anything, <literal>#f</literal> if no documentation.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm doc)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1346,6 +1586,10 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
   at line 288 </para> </refsect1>
@@ -1364,6 +1608,10 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   <para>
   Return the edge scroll delay as set by <link linkend="set-edge-scroll-delay-x"><function>set-edge-scroll-delay!</function></link>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1386,6 +1634,10 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
   at line 140 </para> </refsect1>
@@ -1404,6 +1656,10 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   <para>
   Return the current horizonatal edge wrap setting as set by <link linkend="set-edge-x-wrap-x"><function>set-edge-x-wrap!</function></link>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1426,6 +1682,10 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
   at line 169 </para> </refsect1>
@@ -1444,6 +1704,10 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   <para>
   Return the current vertical edge wrap setting as set by <link linkend="set-edge-y-wrap-x"><function>set-edge-y-wrap!</function></link>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1467,6 +1731,10 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-eval)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/fvwm-eval.scm"><filename>scheme/fvwm-eval.scm</filename></ulink>
   at line 514 </para> </refsect1>
@@ -1487,9 +1755,13 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 275 </para> </refsect1>
+  at line 302 </para> </refsect1>
 </refentry>
 
 <refentry id="execute">
@@ -1505,6 +1777,10 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   <para>
   Execute COMMAND in the background.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1527,6 +1803,10 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 234 </para> </refsect1>
@@ -1547,9 +1827,13 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 336 </para> </refsect1>
+  at line 337 </para> </refsect1>
 </refentry>
 
 <refentry id="focus">
@@ -1570,9 +1854,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1507 </para> </refsect1>
+  at line 1528 </para> </refsect1>
 </refentry>
 
 <refentry id="fold-menu-list">
@@ -1593,9 +1881,13 @@ defaults to <link linkend="default-max-fold-lines"><function>default-max-fold-li
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 266 </para> </refsect1>
+  at line 293 </para> </refsect1>
 </refentry>
 
 <refentry id="font-properties">
@@ -1613,6 +1905,10 @@ defaults to <link linkend="default-max-fold-lines"><function>default-max-fold-li
 Currently defined properties are 'name, the string name of the
 color, and 'height, it's total height in pixels.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1636,9 +1932,13 @@ See <link linkend="font-properties"><function>font-properties</function></link> 
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 241 </para> </refsect1>
+  at line 268 </para> </refsect1>
 </refentry>
 
 <refentry id="font-p">
@@ -1654,6 +1954,10 @@ See <link linkend="font-properties"><function>font-properties</function></link> 
   <para>
   Returns <literal>#t</literal> if <parameter>obj</parameter> is a font object, otherwise <literal>#f</literal>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1678,9 +1982,13 @@ such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2496 </para> </refsect1>
+  at line 2535 </para> </refsect1>
 </refentry>
 
 <refentry id="fvwm-exec">
@@ -1698,9 +2006,13 @@ such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-compat)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/fvwm-compat.scm"><filename>scheme/fvwm-compat.scm</filename></ulink>
-  at line 40 </para> </refsect1>
+  at line 434 </para> </refsect1>
 </refentry>
 
 <refentry id="fvwm-exec-use-shell">
@@ -1718,9 +2030,13 @@ such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-compat)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/fvwm-compat.scm"><filename>scheme/fvwm-compat.scm</filename></ulink>
-  at line 31 </para> </refsect1>
+  at line 425 </para> </refsect1>
 </refentry>
 
 <refentry id="fvwm-none">
@@ -1738,9 +2054,13 @@ such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-compat)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/fvwm-compat.scm"><filename>scheme/fvwm-compat.scm</filename></ulink>
-  at line 48 </para> </refsect1>
+  at line 442 </para> </refsect1>
 </refentry>
 
 <refentry id="fvwm-nop">
@@ -1758,9 +2078,13 @@ such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-compat)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/fvwm-compat.scm"><filename>scheme/fvwm-compat.scm</filename></ulink>
-  at line 72 </para> </refsect1>
+  at line 466 </para> </refsect1>
 </refentry>
 
 <refentry id="fvwm-pipe-read">
@@ -1778,9 +2102,13 @@ such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-compat)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/fvwm-compat.scm"><filename>scheme/fvwm-compat.scm</filename></ulink>
-  at line 52 </para> </refsect1>
+  at line 446 </para> </refsect1>
 </refentry>
 
 <refentry id="get-fvwm2-module-config">
@@ -1796,6 +2124,10 @@ such window object, return <literal>#f</literal>.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-module)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1829,9 +2161,13 @@ arguments)
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 686 </para> </refsect1>
+  at line 706 </para> </refsect1>
 </refentry>
 
 <refentry id="get-wm-command">
@@ -1847,6 +2183,10 @@ arguments)
   <para>
   Get the 
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1869,6 +2209,10 @@ arguments)
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm doc)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/doc.scm"><filename>scheme/doc.scm</filename></ulink>
   at line 48 </para> </refsect1>
@@ -1887,6 +2231,10 @@ arguments)
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm prefs-menu)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1911,9 +2259,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2733 </para> </refsect1>
+  at line 2772 </para> </refsect1>
 </refentry>
 
 <refentry id="hilight-background">
@@ -1932,9 +2284,13 @@ Applies to the current decor.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 679 </para> </refsect1>
+  at line 672 </para> </refsect1>
 </refentry>
 
 <refentry id="hilight-factor">
@@ -1950,6 +2306,10 @@ Applies to the current decor.
   <para>
   Return the current hilight factor.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -1973,9 +2333,13 @@ Applies to the focus in the current decor.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 606 </para> </refsect1>
+  at line 599 </para> </refsect1>
 </refentry>
 
 <refentry id="icon-font">
@@ -1991,6 +2355,10 @@ Applies to the focus in the current decor.
   <para>
   Return the font used for drawing icon titles.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2016,9 +2384,13 @@ way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2371 </para> </refsect1>
+  at line 2407 </para> </refsect1>
 </refentry>
 
 <refentry id="icon-sticky-p">
@@ -2038,9 +2410,13 @@ the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2934 </para> </refsect1>
+  at line 2969 </para> </refsect1>
 </refentry>
 
 <refentry id="iconified-p">
@@ -2060,9 +2436,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1794 </para> </refsect1>
+  at line 1815 </para> </refsect1>
 </refentry>
 
 <refentry id="iconify">
@@ -2083,9 +2463,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1751 </para> </refsect1>
+  at line 1772 </para> </refsect1>
 </refentry>
 
 <refentry id="id-to-window">
@@ -2105,9 +2489,13 @@ such window object, return <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2475 </para> </refsect1>
+  at line 2514 </para> </refsect1>
 </refentry>
 
 <refentry id="image-properties">
@@ -2126,6 +2514,10 @@ Currently defined properties are 'filename, the fully expanded
 pathname of the image, 'width, it's width, 'height, it's height, and
 depth, it's color depth.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2149,9 +2541,13 @@ See <link linkend="image-properties"><function>image-properties</function></link
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 236 </para> </refsect1>
+  at line 263 </para> </refsect1>
 </refentry>
 
 <refentry id="image-p">
@@ -2167,6 +2563,10 @@ See <link linkend="image-properties"><function>image-properties</function></link
   <para>
   Returns <literal>#t</literal> if <parameter>obj</parameter> is an image object, otherwise <literal>#f</literal>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2189,6 +2589,10 @@ See <link linkend="image-properties"><function>image-properties</function></link
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm image-loaders)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/image-loaders.scm"><filename>scheme/image-loaders.scm</filename></ulink>
   at line 28 </para> </refsect1>
@@ -2209,6 +2613,10 @@ See <link linkend="image-properties"><function>image-properties</function></link
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 92 </para> </refsect1>
@@ -2227,6 +2635,10 @@ See <link linkend="image-properties"><function>image-properties</function></link
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2256,9 +2668,13 @@ screen while the non-opaque move takes place.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/move.c"><filename>scwm/move.c</filename></ulink>
-  at line 672 </para> </refsect1>
+  at line 670 </para> </refsect1>
 </refentry>
 
 <refentry id="interactive-move-maybe-opaque">
@@ -2276,6 +2692,10 @@ screen while the non-opaque move takes place.
 Calls <link linkend="move-opaquely-p"><function>move-opaquely?</function></link> and moves opaquely if that returns #,
 uses a rubberband if it returns <literal>#f</literal>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2300,6 +2720,10 @@ outline or the window itself is moved.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 29 </para> </refsect1>
@@ -2320,6 +2744,10 @@ outline or the window itself is moved.
 <link linkend="interactive-move-maybe-opaque"><function>interactive-move-maybe-opaque</function></link> is used to control whether a rubberband
 outline or the window itself is moved.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2349,9 +2777,13 @@ screen while the non-opaque resize takes place.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
-  at line 610 </para> </refsect1>
+  at line 614 </para> </refsect1>
 </refentry>
 
 <refentry id="interactive-resize-maybe-opaque">
@@ -2369,6 +2801,10 @@ screen while the non-opaque resize takes place.
 Calls <link linkend="resize-opaquely-p"><function>resize-opaquely?</function></link> and moves opaquely if that returns #,
 uses a rubberband if it returns <literal>#f</literal>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2393,6 +2829,10 @@ outline or the window itself is resized.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 35 </para> </refsect1>
@@ -2413,6 +2853,10 @@ outline or the window itself is resized.
 <link linkend="interactive-resize-maybe-opaque"><function>interactive-resize-maybe-opaque</function></link> is used to control whether a rubberband
 outline or the window itself is resized.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2437,9 +2881,13 @@ Obviously, other windows that are also on-top may obscure <parameter>win</parame
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2629 </para> </refsect1>
+  at line 2668 </para> </refsect1>
 </refentry>
 
 <refentry id="kept-on-top-p">
@@ -2459,9 +2907,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2672 </para> </refsect1>
+  at line 2711 </para> </refsect1>
 </refentry>
 
 <refentry id="key-mouse-moves">
@@ -2477,6 +2929,10 @@ specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2499,6 +2955,10 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 200 </para> </refsect1>
@@ -2517,6 +2977,10 @@ specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-module)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2539,6 +3003,10 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-module)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
   at line 1070 </para> </refsect1>
@@ -2557,6 +3025,10 @@ specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-module)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2581,9 +3053,13 @@ of circulation.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2579 </para> </refsect1>
+  at line 2618 </para> </refsect1>
 </refentry>
 
 <refentry id="list-stacking-order">
@@ -2603,9 +3079,13 @@ the topmost window, the last is the bottommost
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2598 </para> </refsect1>
+  at line 2637 </para> </refsect1>
 </refentry>
 
 <refentry id="list-windows">
@@ -2624,9 +3104,13 @@ the topmost window, the last is the bottommost
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 210 </para> </refsect1>
+  at line 212 </para> </refsect1>
 </refentry>
 
 <refentry id="list-windows-above">
@@ -2646,6 +3130,10 @@ above W, in otherwords, from the one immediately above, to the topmost
 window; the ONLY and EXCEPT keyword arguments operate as is usual for
 procedures that deal with the window list.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm stacking)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2672,6 +3160,10 @@ that deal with the window list.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm stacking)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/stacking.scm"><filename>scheme/stacking.scm</filename></ulink>
   at line 233 </para> </refsect1>
@@ -2692,6 +3184,10 @@ that deal with the window list.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
   at line 217 </para> </refsect1>
@@ -2710,6 +3206,10 @@ that deal with the window list.
   <para>
   Load an X Pixmap file identified by the pathname <parameter>full-path</parameter>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2733,6 +3233,10 @@ W defaults to the window context in the usual way.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm stacking)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/stacking.scm"><filename>scheme/stacking.scm</filename></ulink>
   at line 256 </para> </refsect1>
@@ -2754,9 +3258,13 @@ the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1585 </para> </refsect1>
+  at line 1606 </para> </refsect1>
 </refentry>
 
 <refentry id="lower-window-below">
@@ -2772,6 +3280,10 @@ the window context in the usual way if not specified.
   <para>
   Lower window W immediately below W2.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm stacking)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2796,6 +3308,10 @@ allocated, an error results.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
   at line 110 </para> </refsect1>
@@ -2816,6 +3332,10 @@ allocated, an error results.
 that is used to name the decor, and is displayed when the decor is
 printed.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2840,6 +3360,10 @@ printed.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
   at line 446 </para> </refsect1>
@@ -2859,6 +3383,10 @@ printed.
   Return a menu-object for viewing or editing FILE.
 REST is a list of other menu-items to include in the returned menu.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2883,6 +3411,10 @@ allocated, an error results.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/font.c"><filename>scwm/font.c</filename></ulink>
   at line 101 </para> </refsect1>
@@ -2904,6 +3436,10 @@ To use this, add the following to the menu of your choice:
   (menuitem \"telnet\" #:action (make-hosts-menu '(\"host1\" \"host2\" ...)))
 An optional USER argument specifies the user to telnet as.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm std-menus)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2930,6 +3466,10 @@ appropriate file.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
   at line 473 </para> </refsect1>
@@ -2954,6 +3494,10 @@ appropriate file.
 <parameter>extra-options</parameter> can be anything understood by the menu-specific
 drawing code (not used currently).
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2991,6 +3535,10 @@ for assigning shortcut keys to the various menuitems.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menuitem.c"><filename>scwm/menuitem.c</filename></ulink>
   at line 118 </para> </refsect1>
@@ -3009,6 +3557,10 @@ for assigning shortcut keys to the various menuitems.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3036,6 +3588,10 @@ which is suitable for use as a hilight.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
   at line 360 </para> </refsect1>
@@ -3059,9 +3615,13 @@ underscores, so that the resulting string can be used as a key for
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 341 </para> </refsect1>
+  at line 342 </para> </refsect1>
 </refentry>
 
 <refentry id="make-style">
@@ -3077,6 +3637,10 @@ underscores, so that the resulting string can be used as a key for
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm style)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3100,6 +3664,10 @@ underscores, so that the resulting string can be used as a key for
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
   at line 29 </para> </refsect1>
@@ -3120,6 +3688,10 @@ underscores, so that the resulting string can be used as a key for
   <para>
   Return a menu object for the window-manager configuration menu.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm wmconfig-menu)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3145,6 +3717,10 @@ or (menuitem \"Lock Screen\" #:action (make-xlock-menu <literal>#t</literal>))
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm std-menus)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/std-menus.scm"><filename>scheme/std-menus.scm</filename></ulink>
   at line 334 </para> </refsect1>
@@ -3167,9 +3743,13 @@ module packet for <parameter>win</parameter> as a Scheme string.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/module-interface.c"><filename>scwm/module-interface.c</filename></ulink>
-  at line 83 </para> </refsect1>
+  at line 84 </para> </refsect1>
 </refentry>
 
 <refentry id="marshal-fvwm2-iconify-info">
@@ -3189,9 +3769,13 @@ module packet for <parameter>win</parameter> as a Scheme string.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/module-interface.c"><filename>scwm/module-interface.c</filename></ulink>
-  at line 127 </para> </refsect1>
+  at line 128 </para> </refsect1>
 </refentry>
 
 <refentry id="maximize">
@@ -3207,6 +3791,10 @@ module packet for <parameter>win</parameter> as a Scheme string.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3227,6 +3815,10 @@ module packet for <parameter>win</parameter> as a Scheme string.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3262,9 +3854,13 @@ items.  FONT is a font object for the font of the menu items.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 210 </para> </refsect1>
+  at line 237 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-background">
@@ -3282,9 +3878,13 @@ items.  FONT is a font object for the font of the menu items.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 783 </para> </refsect1>
+  at line 776 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-font">
@@ -3300,6 +3900,10 @@ items.  FONT is a font object for the font of the menu items.
   <para>
   Return the font used by default for drawing menus.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3322,9 +3926,13 @@ items.  FONT is a font object for the font of the menu items.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 719 </para> </refsect1>
+  at line 712 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-hilight-factor">
@@ -3340,6 +3948,10 @@ items.  FONT is a font object for the font of the menu items.
   <para>
   Return the current menu hilight factor.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3363,6 +3975,10 @@ This option is currently ignored.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 44 </para> </refsect1>
@@ -3381,6 +3997,10 @@ This option is currently ignored.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm prefs-menu)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3406,6 +4026,10 @@ font extra-options used-shortcut-keys)
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
   at line 170 </para> </refsect1>
@@ -3424,6 +4048,10 @@ font extra-options used-shortcut-keys)
   <para>
   Return the current menu shadow factor.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3447,9 +4075,13 @@ May not be used any more.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 829 </para> </refsect1>
+  at line 822 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-style">
@@ -3472,9 +4104,13 @@ creation of individual menus.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 119 </para> </refsect1>
+  at line 146 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-p">
@@ -3490,6 +4126,10 @@ creation of individual menus.
   <para>
   Return <literal>#t</literal> if and only if <parameter>obj</parameter> is a menu object.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3528,9 +4168,13 @@ the shortcut key for the menu item.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 175 </para> </refsect1>
+  at line 202 </para> </refsect1>
 </refentry>
 
 <refentry id="menuitem-properties">
@@ -3554,6 +4198,10 @@ primitive
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menuitem.c"><filename>scwm/menuitem.c</filename></ulink>
   at line 90 </para> </refsect1>
@@ -3574,6 +4222,10 @@ primitive
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 131 </para> </refsect1>
@@ -3592,6 +4244,10 @@ primitive
   <para>
   Modify the current desktop size by the given parameter.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm prefs-menu)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3616,6 +4272,10 @@ returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
   at line 841 </para> </refsect1>
@@ -3636,6 +4296,10 @@ returns a power of two corresponding to the bit-mask of the modifier
 Returns <literal>#f</literal> if and only if there is no key bound to act as Hyper, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3660,6 +4324,10 @@ returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
   at line 833 </para> </refsect1>
@@ -3682,6 +4350,10 @@ returns a power of two corresponding to the bit-mask of the modifier
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
   at line 858 </para> </refsect1>
@@ -3700,6 +4372,10 @@ returns a power of two corresponding to the bit-mask of the modifier
   <para>
   Return the string module event name for event number NUM.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm module-types)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3725,6 +4401,10 @@ to determine, e.g., whether the user single clicked or double clicked.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
   at line 820 </para> </refsect1>
@@ -3745,6 +4425,10 @@ to determine, e.g., whether the user single clicked or double clicked.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 452 </para> </refsect1>
@@ -3763,6 +4447,10 @@ to determine, e.g., whether the user single clicked or double clicked.
   <para>
   Return <literal>#t</literal> if WIN has area &lt; opaque-move-percent of the screen, else <literal>#f</literal>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3788,6 +4476,10 @@ motion does <link linkend="interactive-move-maybe-opaque"><function>interactive-
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
   at line 154 </para> </refsect1>
@@ -3807,6 +4499,10 @@ motion does <link linkend="interactive-move-maybe-opaque"><function>interactive-
   Move the X11 pointer X pixels to the right, and Y pixels down.
 If X is negative, moves to the left.  If Y is negative moves up.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3829,6 +4525,10 @@ If X is negative, moves to the left.  If Y is negative moves up.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 270 </para> </refsect1>
@@ -3837,29 +4537,32 @@ If X is negative, moves to the left.  If Y is negative moves up.
 <refentry id="move-to">
   <refnamediv>
     <refname>move-to</refname>
-    <refpurpose>Move WIN to coordinates X, Y.</refpurpose>
+    <refpurpose>Move WIN to virtual position X, Y.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(move-to x y #&amp;optional win animated? move-pointer-too?)</synopsis>
+    <synopsis>(move-to x y 
+			#&amp;optional (win (get-window))
+			(animated? #f)
+			(move-pointer-too? #f))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  Move <parameter>win</parameter> to coordinates <parameter>x</parameter>, <parameter>y</parameter>.
-If <parameter>x</parameter> is <literal>#f</literal>, then <parameter>x</parameter> defaults to the current <parameter>x</parameter> position of <parameter>win</parameter>.
-If <parameter>y</parameter> is <literal>#f</literal>, then <parameter>y</parameter> defaults to the current <parameter>y</parameter> position of <parameter>win</parameter>.
-If <parameter>animated?</parameter> is specified and true, animate the motion of the window,
-otherwise the move is instantaneous. If <parameter>move-pointer-too?</parameter> is specified
-and true, move the mouse pointer by the same amount as the window,
-animating the motion of the pointer along with the window if <parameter>animated?</parameter>
-is true. <parameter>win</parameter> defaults to the window context in the usual way if not
-specified.
+  Move WIN to virtual position X, Y.
+If X or Y is <literal>#f</literal>, then do not move along that axis (use existing
+value for that coordinate).
+If ANIMATED? is <literal>#t</literal>, then animate the window there.
+If MOVE-POINTER-TOO? is <literal>#t</literal> then also move the pointer as the window is moved.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
-  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2064 </para> </refsect1>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
+  at line 114 </para> </refsect1>
 </refentry>
 
 <refentry id="move-viewport">
@@ -3879,9 +4582,45 @@ negative, and Y pixels vertically, down if positive, up if negative.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 112 </para> </refsect1>
+  at line 139 </para> </refsect1>
+</refentry>
+
+<refentry id="move-window">
+  <refnamediv>
+    <refname>move-window</refname>
+    <refpurpose>Move WIN to coordinates virtual coordinates X, Y.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(move-window x y #&amp;optional win animated? move-pointer-too?)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Move <parameter>win</parameter> to coordinates virtual coordinates <parameter>x</parameter>, <parameter>y</parameter>.
+If <parameter>x</parameter> is <literal>#f</literal>, then <parameter>x</parameter> defaults to the current <parameter>x</parameter> position of <parameter>win</parameter>.
+If <parameter>y</parameter> is <literal>#f</literal>, then <parameter>y</parameter> defaults to the current <parameter>y</parameter> position of <parameter>win</parameter>.
+If <parameter>animated?</parameter> is specified and true, animate the motion of the window,
+otherwise the move is instantaneous. If <parameter>move-pointer-too?</parameter> is specified
+and true, move the mouse pointer by the same amount as the window,
+animating the motion of the pointer along with the window if <parameter>animated?</parameter>
+is true. <parameter>win</parameter> defaults to the window context in the usual way if not
+specified.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
+  at line 2097 </para> </refsect1>
 </refentry>
 
 <refentry id="move-window-to-desk">
@@ -3900,9 +4639,13 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2304 </para> </refsect1>
+  at line 2340 </para> </refsect1>
 </refentry>
 
 <refentry id="move-window-to-viewport">
@@ -3918,6 +4661,10 @@ defaults to the window context in the usual way if not specified.
   <para>
   Move the window to the viewport; the first one being (0 0).
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3942,9 +4689,13 @@ that take microseconds.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 304 </para> </refsect1>
+  at line 305 </para> </refsect1>
 </refentry>
 
 <refentry id="netpbm-loader">
@@ -3960,6 +4711,10 @@ that take microseconds.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm image-loaders)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -3983,9 +4738,13 @@ that take microseconds.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 316 </para> </refsect1>
+  at line 318 </para> </refsect1>
 </refentry>
 
 <refentry id="normal-border">
@@ -4005,9 +4764,13 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2770 </para> </refsect1>
+  at line 2809 </para> </refsect1>
 </refentry>
 
 <refentry id="on-current-desk-p">
@@ -4023,6 +4786,10 @@ defaults to the window context in the usual way if not specified.
   <para>
   Return <literal>#t</literal> if WIN is on the current desk.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4045,6 +4812,10 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
   at line 35 </para> </refsect1>
@@ -4063,6 +4834,10 @@ defaults to the window context in the usual way if not specified.
   <para>
   Return <literal>#t</literal> if WIN is on desk N, else <literal>#f</literal>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4085,6 +4860,10 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
   at line 165 </para> </refsect1>
@@ -4105,6 +4884,10 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
   at line 169 </para> </refsect1>
@@ -4123,6 +4906,10 @@ defaults to the window context in the usual way if not specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4148,9 +4935,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2802 </para> </refsect1>
+  at line 2841 </para> </refsect1>
 </refentry>
 
 <refentry id="pointer-position">
@@ -4167,6 +4958,10 @@ specified.
   Return the current position of the mouse pointer in pixels.
 The return value is a two-element list of the x and y coordinates.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4192,6 +4987,10 @@ right justified against <parameter>x-pos</parameter>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
   at line 1276 </para> </refsect1>
@@ -4213,9 +5012,13 @@ This positions the popup menu appropriately.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 324 </para> </refsect1>
+  at line 325 </para> </refsect1>
 </refentry>
 
 <refentry id="prev-window">
@@ -4234,9 +5037,13 @@ This positions the popup menu appropriately.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 321 </para> </refsect1>
+  at line 323 </para> </refsect1>
 </refentry>
 
 <refentry id="print-window">
@@ -4252,6 +5059,10 @@ This positions the popup menu appropriately.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4272,6 +5083,10 @@ This positions the popup menu appropriately.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4295,6 +5110,10 @@ Returns <literal>#f</literal> otherwise.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
   at line 71 </para> </refsect1>
@@ -4313,6 +5132,10 @@ Returns <literal>#f</literal> otherwise.
   <para>
   Return a string that has single quote characters backslashified.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4334,6 +5157,10 @@ Returns <literal>#f</literal> otherwise.
   Raise window W above the next window up that overlaps it.
 W defaults to the window context in the usual way.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm stacking)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4358,9 +5185,13 @@ context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1559 </para> </refsect1>
+  at line 1580 </para> </refsect1>
 </refentry>
 
 <refentry id="raise-window-above">
@@ -4376,6 +5207,10 @@ context in the usual way if not specified.
   <para>
   Raise window W immediately above W2.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm stacking)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4400,9 +5235,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1690 </para> </refsect1>
+  at line 1711 </para> </refsect1>
 </refentry>
 
 <refentry id="random-place-window">
@@ -4423,6 +5262,10 @@ around once a window would be forced off the screen. The placement is
 fairly arbitrary, but always succeeds, and so avoids user
 interaction. <literal>#t</literal> is always returned.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4447,6 +5290,10 @@ scratch. This is hopefully not necessary during normal operation.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 293 </para> </refsect1>
@@ -4466,6 +5313,10 @@ scratch. This is hopefully not necessary during normal operation.
   Make sure all decorations for all windows are up to date. In theory,
 this should not be needed.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4492,9 +5343,13 @@ way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2280 </para> </refsect1>
+  at line 2316 </para> </refsect1>
 </refentry>
 
 <refentry id="register-fvwm2-module-config">
@@ -4510,6 +5365,10 @@ way if not specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-module)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4537,6 +5396,10 @@ image object, or <literal>#f</literal> if it succeeds.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
   at line 299 </para> </refsect1>
@@ -4559,9 +5422,13 @@ input hook may safely remove itself.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 590 </para> </refsect1>
+  at line 586 </para> </refsect1>
 </refentry>
 
 <refentry id="remove-timer-hook-x">
@@ -4582,9 +5449,13 @@ timer hook that has already been triggered.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 465 </para> </refsect1>
+  at line 461 </para> </refsect1>
 </refentry>
 
 <refentry id="reset-scwmexec-protocol">
@@ -4607,6 +5478,10 @@ if your Emacs hangs when you try evaluating a scwm expression).
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
   at line 459 </para> </refsect1>
@@ -4623,15 +5498,19 @@ if your Emacs hangs when you try evaluating a scwm expression).
   <refsect1>
   <title>Description</title>
   <para>
-  Resize <parameter>win</parameter> to a size of <parameter>w</parameter> by <parameter>h</parameter> in pixels. The size includes
-the window decorations. <parameter>win</parameter> defaults to the window context in the
-usual way if not specified.
+  Resize <parameter>win</parameter> to a size of <parameter>w</parameter> by <parameter>h</parameter> in pixels.
+The size includes the window decorations. <parameter>win</parameter> defaults to the window
+context in the usual way if not specified.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2210 </para> </refsect1>
+  at line 2246 </para> </refsect1>
 </refentry>
 
 <refentry id="resize-opaquely-p">
@@ -4647,6 +5526,10 @@ usual way if not specified.
   <para>
   Return <literal>#t</literal> if WIN has area &lt; opaque-resize-percent of the screen, else <literal>#f</literal>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4672,6 +5555,10 @@ motion does <link linkend="interactive-resize-maybe-opaque"><function>interactiv
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
   at line 144 </para> </refsect1>
@@ -4689,14 +5576,19 @@ motion does <link linkend="interactive-resize-maybe-opaque"><function>interactiv
   <title>Description</title>
   <para>
   Resize <parameter>win</parameter>'s client area to a size of <parameter>w</parameter> by <parameter>h</parameter> in pixels.
-The size includes the window decorations. <parameter>win</parameter> defaults to the window
+The size does not include the window decorations -- only the client
+application size. <parameter>win</parameter> defaults to the window
 context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2170 </para> </refsect1>
+  at line 2205 </para> </refsect1>
 </refentry>
 
 <refentry id="restack-windows">
@@ -4718,9 +5610,13 @@ and possibly other legacy fvwm2 modules).
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1602 </para> </refsect1>
+  at line 1623 </para> </refsect1>
 </refentry>
 
 <refentry id="restart">
@@ -4741,6 +5637,10 @@ arguments as given previously.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/shutdown.c"><filename>scwm/shutdown.c</filename></ulink>
   at line 130 </para> </refsect1>
@@ -4759,6 +5659,10 @@ arguments as given previously.
   <para>
   Returns true if scwm is being restarted by itself.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4786,6 +5690,10 @@ arguments as given previously.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-module)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
   at line 945 </para> </refsect1>
@@ -4809,9 +5717,13 @@ The rest of the arguments are passed as options to the xterm command.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 283 </para> </refsect1>
+  at line 310 </para> </refsect1>
 </refentry>
 
 <refentry id="safe-load">
@@ -4833,9 +5745,13 @@ errors.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 243 </para> </refsect1>
+  at line 239 </para> </refsect1>
 </refentry>
 
 <refentry id="save-settings">
@@ -4851,6 +5767,10 @@ errors.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm prefs-menu)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4873,6 +5793,10 @@ errors.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 493 </para> </refsect1>
@@ -4891,6 +5815,10 @@ errors.
   <para>
   Return the <envar>$PREFIX</envar> directory path that scwm was installed with.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4914,6 +5842,10 @@ scwm. <parameter>args</parameter> is ignored.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/shutdown.c"><filename>scwm/shutdown.c</filename></ulink>
   at line 156 </para> </refsect1>
@@ -4934,6 +5866,10 @@ scwm. <parameter>args</parameter> is ignored.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 462 </para> </refsect1>
@@ -4952,6 +5888,10 @@ scwm. <parameter>args</parameter> is ignored.
   <para>
   Return the date that the running scwm was last changed as a string.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -4976,9 +5916,13 @@ that take microseconds.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 298 </para> </refsect1>
+  at line 299 </para> </refsect1>
 </refentry>
 
 <refentry id="select-multiple-windows-interactively">
@@ -4995,6 +5939,10 @@ that take microseconds.
   Return a list of user-selected windows, up to MAX.
 The list is in the reverse order from the way by which they were selected.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5023,9 +5971,13 @@ place-holder until we have proper cursor support in scwm.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 619 </para> </refsect1>
+  at line 639 </para> </refsect1>
 </refentry>
 
 <refentry id="select-window-from-window-list">
@@ -5042,6 +5994,10 @@ place-holder until we have proper cursor support in scwm.
   Permit selecting a window from a window list.
 Return the selected window object, or <literal>#f</literal> if none was selected
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5065,9 +6021,13 @@ Returns <literal>#f</literal> if no window was selected. Display no message if <
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 751 </para> </refsect1>
+  at line 771 </para> </refsect1>
 </refentry>
 
 <refentry id="send-button-press">
@@ -5094,9 +6054,13 @@ this unless you know what it means.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 1785 </para> </refsect1>
+  at line 1786 </para> </refsect1>
 </refentry>
 
 <refentry id="send-key-press">
@@ -5121,9 +6085,13 @@ should not have to worry about this unless you know what it means.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 1723 </para> </refsect1>
+  at line 1724 </para> </refsect1>
 </refentry>
 
 <refentry id="set-animation-x">
@@ -5147,9 +6115,13 @@ animated window shades and animated moves.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2017 </para> </refsect1>
+  at line 2050 </para> </refsect1>
 </refentry>
 
 <refentry id="set-auto-raise-x">
@@ -5168,6 +6140,10 @@ Auto-raise makes a window automatically raise when the mouse pointer
 enters the window frame.  See <link linkend="set-auto-raise-delay-x"><function>set-auto-raise-delay!</function></link> for controlling
 the delay before the window raises.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm auto-raise)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5193,6 +6169,10 @@ auto-raise on or off for a given window.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm auto-raise)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/auto-raise.scm"><filename>scheme/auto-raise.scm</filename></ulink>
   at line 73 </para> </refsect1>
@@ -5213,6 +6193,10 @@ auto-raise on or off for a given window.
 The auto-raise-focus-proc is the procedure which is invoked
 after the auto-raise-delay after the pointer enters WIN's frame.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm auto-raise)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5238,6 +6222,10 @@ the auto-raise-unfocus-proc will be called.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm auto-raise)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/auto-raise.scm"><filename>scheme/auto-raise.scm</filename></ulink>
   at line 80 </para> </refsect1>
@@ -5259,6 +6247,10 @@ the auto-raise-unfocus-proc will be called.
 The auto-raise-unfocus-proc is the procedure which is invoked
 after the auto-raise-unfocus-delay after the pointer leaves WIN's frame.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm auto-raise)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5284,6 +6276,10 @@ Use <parameter>active</parameter> as the face for the border when the window is 
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
   at line 987 </para> </refsect1>
@@ -5305,9 +6301,13 @@ Use <parameter>active</parameter> as the face for the border when the window is 
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2845 </para> </refsect1>
+  at line 2884 </para> </refsect1>
 </refentry>
 
 <refentry id="set-button-face-x">
@@ -5333,6 +6333,10 @@ default.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
   at line 893 </para> </refsect1>
@@ -5354,6 +6358,10 @@ If <parameter>flag</parameter> is <literal>#t</literal>, the button's relief pat
 reverse in depth sense (i.e., flip from sunken in to extruding out)
 when the window is maximized.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5379,6 +6387,10 @@ single click is definitively identified as not a double click.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 190 </para> </refsect1>
@@ -5401,6 +6413,10 @@ will not pass the event on to the client.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 383 </para> </refsect1>
@@ -5421,6 +6437,10 @@ will not pass the event on to the client.
 If <parameter>flag</parameter> is <literal>#t</literal>, clicks which transfer focus will also raise the target
 window
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5448,6 +6468,10 @@ other than 'mouse.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 217 </para> </refsect1>
@@ -5470,6 +6494,10 @@ one.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/decor.c"><filename>scwm/decor.c</filename></ulink>
   at line 261 </para> </refsect1>
@@ -5489,6 +6517,10 @@ one.
   Change the current desk to <parameter>desk</parameter>. <parameter>desk</parameter> should be an integer
 small enough to fit in one machine word.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5515,9 +6547,13 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3395 </para> </refsect1>
+  at line 3430 </para> </refsect1>
 </refentry>
 
 <refentry id="set-desk-size-x">
@@ -5536,6 +6572,10 @@ Both numbers are given in units of the physical screen size.  For
 example <informalexample>(set-desk-size 3 3)</informalexample> creates
 a virtual world 9 times the size of the physical display.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5560,6 +6600,10 @@ must be moved before it will really move past the edge.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
   at line 269 </para> </refsect1>
@@ -5581,9 +6625,13 @@ See also <link linkend="set-edge-scroll-delay-x"><function>set-edge-scroll-delay
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 325 </para> </refsect1>
+  at line 352 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-x">
@@ -5605,9 +6653,13 @@ dimension to a number of pixels.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 339 </para> </refsect1>
+  at line 366 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-delay-x">
@@ -5627,6 +6679,10 @@ for at least the edge scroll delay amount before the desktop will be
 scrolled. If this parameter is <literal>#f</literal>, the viewport will not scroll at all
 at the screen edge.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5652,9 +6708,13 @@ See also <link linkend="set-edge-x-wrap-x"><function>set-edge-x-wrap!</function>
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 331 </para> </refsect1>
+  at line 358 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-x-scroll-x">
@@ -5673,6 +6733,10 @@ The horizontal edge scroll setting is the amount by which the viewport
 will scroll when the mouse hits the left or right edge. Use <link linkend="pctx"><function>%x</function></link> to
 convert from a percent of screen size to pixels.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5698,6 +6762,10 @@ right edge, and vice-versa. See also <link linkend="set-edge-y-wrap-x"><function
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
   at line 180 </para> </refsect1>
@@ -5719,6 +6787,10 @@ The vertical edge scroll setting is the amount by which the viewport
 will scroll when the mouse hits the top or bottom edge. Use <link linkend="pcty"><function>%y</function></link> to
 convert from a percent of screen size to pixels.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5744,6 +6816,10 @@ bottom edge, and vice-versa. See also <link linkend="set-edge-x-wrap-x"><functio
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
   at line 204 </para> </refsect1>
@@ -5763,6 +6839,10 @@ bottom edge, and vice-versa. See also <link linkend="set-edge-x-wrap-x"><functio
   Set the given <parameter>flag</parameter> to the given <parameter>flagval</parameter> for face <parameter>face</parameter>.
 See the section on the face-specification-flags concept.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5788,9 +6868,13 @@ way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3227 </para> </refsect1>
+  at line 3262 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hilight-background-x">
@@ -5809,9 +6893,13 @@ Applies to the current decor.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 625 </para> </refsect1>
+  at line 618 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hilight-factor-x">
@@ -5828,6 +6916,10 @@ Applies to the current decor.
   Use <parameter>factor</parameter> to generate highlight colors for the current decor.
 <parameter>factor</parameter> is a positive floating point number.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5851,9 +6943,13 @@ Applies to the current decor.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 582 </para> </refsect1>
+  at line 575 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hint-override-x">
@@ -5875,9 +6971,13 @@ not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3378 </para> </refsect1>
+  at line 3413 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-x">
@@ -5898,9 +6998,13 @@ context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3273 </para> </refsect1>
+  at line 3308 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-box-x">
@@ -5921,9 +7025,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2947 </para> </refsect1>
+  at line 2982 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-font-x">
@@ -5939,6 +7047,10 @@ specified.
   <para>
   Set the font used for drawing icon titles to <parameter>font</parameter>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -5962,9 +7074,13 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3210 </para> </refsect1>
+  at line 3245 </para> </refsect1>
 </refentry>
 
 <refentry id="set-lenience-x">
@@ -5987,9 +7103,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3510 </para> </refsect1>
+  at line 3545 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-background-x">
@@ -6007,9 +7127,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 729 </para> </refsect1>
+  at line 722 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-font-x">
@@ -6025,6 +7149,10 @@ specified.
   <para>
   Set the default font used for drawing menus to <parameter>font</parameter>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6047,9 +7175,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 693 </para> </refsect1>
+  at line 686 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-hilight-factor-x">
@@ -6066,6 +7198,10 @@ specified.
   Use <parameter>factor</parameter> to generate hilight colors for menus.
 <parameter>factor</parameter> is a positive floating point number
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6089,6 +7225,10 @@ This option is currently ignored.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 33 </para> </refsect1>
@@ -6108,6 +7248,10 @@ This option is currently ignored.
   Use <parameter>factor</parameter> to generate shadow colors for menus.
 <parameter>factor</parameter> is a positive floating point number
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6131,9 +7275,13 @@ May not be used any longer.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 794 </para> </refsect1>
+  at line 787 </para> </refsect1>
 </refentry>
 
 <refentry id="set-message-window-attributes-x">
@@ -6152,6 +7300,10 @@ The font will be <parameter>font</parameter>, foreground color <parameter>fg-col
 This the window which is used to display the current size or position of the window
 being moved or resized interactively.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6176,9 +7328,13 @@ to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3326 </para> </refsect1>
+  at line 3361 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mouse-focus-click-raises-x">
@@ -6196,6 +7352,10 @@ to the window context in the usual way if not specified.
 If <parameter>flag</parameter> is <literal>#t</literal> it will raise the window. Not sure if this function
 makes sense any more.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6221,9 +7381,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3166 </para> </refsect1>
+  at line 3201 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-buttons-x">
@@ -6244,9 +7408,13 @@ to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3150 </para> </refsect1>
+  at line 3185 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-decor-hint-x">
@@ -6266,9 +7434,13 @@ to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3411 </para> </refsect1>
+  at line 3446 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-func-hint-x">
@@ -6289,9 +7461,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3425 </para> </refsect1>
+  at line 3460 </para> </refsect1>
 </refentry>
 
 <refentry id="set-OL-decor-hint-x">
@@ -6311,9 +7487,13 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3457 </para> </refsect1>
+  at line 3492 </para> </refsect1>
 </refentry>
 
 <refentry id="set-PPosition-hint-x">
@@ -6336,9 +7516,13 @@ usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3440 </para> </refsect1>
+  at line 3475 </para> </refsect1>
 </refentry>
 
 <refentry id="set-random-placement-x">
@@ -6359,9 +7543,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3095 </para> </refsect1>
+  at line 3130 </para> </refsect1>
 </refentry>
 
 <refentry id="set-rubber-band-mask-x">
@@ -6379,6 +7567,10 @@ specified.
 <parameter>value</parameter> is XORed with the background when dragging non-opaque move or
 resize frames. <parameter>value</parameter> should be an integer.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6400,6 +7592,10 @@ resize frames. <parameter>value</parameter> should be an integer.
   Use <parameter>factor</parameter> to generate shadow colors in the current decor.
 <parameter>factor</parameter> is a positive floating point number
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6426,9 +7622,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3254 </para> </refsect1>
+  at line 3289 </para> </refsect1>
 </refentry>
 
 <refentry id="set-skip-mapping-x">
@@ -6449,9 +7649,13 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3495 </para> </refsect1>
+  at line 3530 </para> </refsect1>
 </refentry>
 
 <refentry id="set-smart-placement-x">
@@ -6472,9 +7676,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3110 </para> </refsect1>
+  at line 3145 </para> </refsect1>
 </refentry>
 
 <refentry id="set-smart-placement-is-really-smart-x">
@@ -6493,6 +7701,10 @@ If <parameter>flag</parameter> is <literal>#t</literal>, then <link linkend="cle
 <link linkend="smart-place-window"><function>smart-place-window</function></link> when the default placement procedure is used, and
 the window's smart-placement flag is on.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6516,9 +7728,13 @@ window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3471 </para> </refsect1>
+  at line 3506 </para> </refsect1>
 </refentry>
 
 <refentry id="set-title-face-x">
@@ -6543,6 +7759,10 @@ state, it will be sunk in the <parameter>active-down</parameter> state by defaul
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
   at line 853 </para> </refsect1>
@@ -6561,6 +7781,10 @@ state, it will be sunk in the <parameter>active-down</parameter> state by defaul
   <para>
   Set the font for window titles In the current decor to <parameter>font</parameter>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6582,6 +7806,10 @@ state, it will be sunk in the <parameter>active-down</parameter> state by defaul
   Set the height of the titlebar in pixels to <parameter>height</parameter>.
 Applies to the current decor.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6606,6 +7834,10 @@ current decor
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 56 </para> </refsect1>
@@ -6625,6 +7857,10 @@ current decor
   Position the upper left corner of the viewport at coordinates <parameter>x</parameter>, <parameter>y</parameter>.
 <parameter>x</parameter> and <parameter>y</parameter> are given in pixels.  Does not affect the current desk.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6651,9 +7887,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3065 </para> </refsect1>
+  at line 3100 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-button-x">
@@ -6674,9 +7914,13 @@ specified. (<parameter>n</parameter>ote: this code may be broken right now.)
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3125 </para> </refsect1>
+  at line 3160 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-colors-x">
@@ -6692,6 +7936,10 @@ specified. (<parameter>n</parameter>ote: this code may be broken right now.)
   <para>
   Set WIN's background color to BG, foreground color to FG.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6712,6 +7960,10 @@ specified. (<parameter>n</parameter>ote: this code may be broken right now.)
   <para>
   Set <parameter>win</parameter>'s decor to <parameter>decor</parameter>, updating its decorations appropriately.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6736,9 +7988,13 @@ if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3007 </para> </refsect1>
+  at line 3042 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-foreground-x">
@@ -6759,9 +8015,13 @@ if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3042 </para> </refsect1>
+  at line 3077 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-property-x">
@@ -6787,30 +8047,13 @@ window property primitives should be considered in flux.
   </para>
   </refsect1>
   <refsect1>
-  <title>Implementation Notes</title>
-  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3526 </para> </refsect1>
-</refentry>
-
-<refentry id="set-window-text-property">
-  <refnamediv>
-    <refname>set-window-text-property</refname>
-    <refpurpose>Set a text property named PROPNAME on WIN.</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(set-window-text-property win propname value)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  Set a text property named <parameter>propname</parameter> on <parameter>win</parameter>.
-Uses format 8 (byte) and type "XA_STRING", and <parameter>value</parameter> as the data.
-  </para>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
-  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
-  at line 146 </para> </refsect1>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
+  at line 3561 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-title-x">
@@ -6828,6 +8071,10 @@ Uses format 8 (byte) and type "XA_STRING", and <parameter>value</parameter> as t
 WIN is a Scwm window object, TITLE is a string.  This procedure alters the
 window title by changing the WM_NAME X-Property.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6853,6 +8100,10 @@ synchronous mode, but can be easier to debug.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 503 </para> </refsect1>
@@ -6871,6 +8122,10 @@ synchronous mode, but can be easier to debug.
   <para>
   Return the current shadow factor.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6893,9 +8148,13 @@ synchronous mode, but can be easier to debug.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 289 </para> </refsect1>
+  at line 291 </para> </refsect1>
 </refentry>
 
 <refentry id="show-com">
@@ -6911,6 +8170,10 @@ synchronous mode, but can be easier to debug.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6933,6 +8196,10 @@ synchronous mode, but can be easier to debug.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 138 </para> </refsect1>
@@ -6953,6 +8220,10 @@ synchronous mode, but can be easier to debug.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 137 </para> </refsect1>
@@ -6971,6 +8242,10 @@ synchronous mode, but can be easier to debug.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -6995,9 +8270,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2709 </para> </refsect1>
+  at line 2748 </para> </refsect1>
 </refentry>
 
 <refentry id="show-window-list-menu">
@@ -7020,9 +8299,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 232 </para> </refsect1>
+  at line 234 </para> </refsect1>
 </refentry>
 
 <refentry id="simple-title-style">
@@ -7043,9 +8326,13 @@ JUSTIFY is a legal argument to <link linkend="set-title-justify"><function>set-t
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 140 </para> </refsect1>
+  at line 167 </para> </refsect1>
 </refentry>
 
 <refentry id="size-to-str">
@@ -7062,6 +8349,10 @@ JUSTIFY is a legal argument to <link linkend="set-title-justify"><function>set-t
   Convert a two-element list to a string.
 Use the optional second argument as the separator.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7082,6 +8373,10 @@ Use the optional second argument as the separator.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7108,6 +8403,10 @@ returns <literal>#t</literal>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/placement.c"><filename>scwm/placement.c</filename></ulink>
   at line 395 </para> </refsect1>
@@ -7129,6 +8428,10 @@ If the value is <literal>#t</literal>, then <link linkend="clever-place-window">
 smart-place-window when the default placement procedure is used, and
 the window's smart-placement flag is on.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7155,9 +8458,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1807 </para> </refsect1>
+  at line 1828 </para> </refsect1>
 </refentry>
 
 <refentry id="stick-icon">
@@ -7176,9 +8483,13 @@ defaults to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2895 </para> </refsect1>
+  at line 2930 </para> </refsect1>
 </refentry>
 
 <refentry id="sticky-p">
@@ -7198,29 +8509,38 @@ window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1850 </para> </refsect1>
+  at line 1883 </para> </refsect1>
 </refentry>
 
-<refentry id="string-to-xproperty">
+<refentry id="string-to-X-atom">
   <refnamediv>
-    <refname>string->xproperty</refname>
-    <refpurpose>Create an xproperty object from STR.</refpurpose>
+    <refname>string->X-atom</refname>
+    <refpurpose>Returns an X atom representing STRING.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(string->xproperty str)</synopsis>
+    <synopsis>(string->X-atom string)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  Create an xproperty object from <parameter>str</parameter>.
+  Returns an X atom representing <parameter>string</parameter>.
+If <parameter>string</parameter> contains NULL-characters, the behaviour is undefined.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
-  at line 242 </para> </refsect1>
+  at line 299 </para> </refsect1>
 </refentry>
 
 <refentry id="style-one-window">
@@ -7236,6 +8556,10 @@ window context in the usual way if not specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm style)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7256,6 +8580,10 @@ window context in the usual way if not specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm image-loaders)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7279,6 +8607,10 @@ Use <link linkend="show-system-info"><function>show-system-info</function></link
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 96 </para> </refsect1>
@@ -7297,6 +8629,10 @@ Use <link linkend="show-system-info"><function>show-system-info</function></link
   <para>
   Return the font used for drawing window titles in the current decor.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7320,6 +8656,10 @@ Applies to the current decor.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 141 </para> </refsect1>
@@ -7340,6 +8680,10 @@ Applies to the current decor.
 The return value will be one of 'right, 'left, or 'center. Applies to the
 current decor.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7369,6 +8713,10 @@ FIXMS: What are? ACTIVE-UP, ACTIVE-DOWN, INACTIVE.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm face)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/face.scm"><filename>scheme/face.scm</filename></ulink>
   at line 92 </para> </refsect1>
@@ -7391,9 +8739,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2756 </para> </refsect1>
+  at line 2795 </para> </refsect1>
 </refentry>
 
 <refentry id="to-string">
@@ -7409,6 +8761,10 @@ specified.
   <para>
   Dump all arguments into a string.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7431,6 +8787,10 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 61 </para> </refsect1>
@@ -7449,6 +8809,10 @@ specified.
   <para>
   Toggle the current window's maximized-horizontally state.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7471,6 +8835,10 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 53 </para> </refsect1>
@@ -7491,6 +8859,10 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 65 </para> </refsect1>
@@ -7509,6 +8881,10 @@ specified.
   <para>
   Maximize to width NW, height NH if not maximized, or unmaximize.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7533,9 +8909,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1707 </para> </refsect1>
+  at line 1728 </para> </refsect1>
 </refentry>
 
 <refentry id="try-everything-loader">
@@ -7551,6 +8931,10 @@ specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm image-loaders)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7575,9 +8959,13 @@ way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2651 </para> </refsect1>
+  at line 2690 </para> </refsect1>
 </refentry>
 
 <refentry id="un-window-shade">
@@ -7599,9 +8987,13 @@ window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1947 </para> </refsect1>
+  at line 1980 </para> </refsect1>
 </refentry>
 
 <refentry id="un-window-shade-animated">
@@ -7617,6 +9009,10 @@ window context in the usual way if not specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7641,6 +9037,10 @@ window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
   at line 585 </para> </refsect1>
@@ -7663,6 +9063,10 @@ window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
   at line 617 </para> </refsect1>
@@ -7683,9 +9087,13 @@ window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1528 </para> </refsect1>
+  at line 1549 </para> </refsect1>
 </refentry>
 
 <refentry id="unmaximize">
@@ -7701,6 +9109,10 @@ window context in the usual way if not specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7726,6 +9138,10 @@ empty string (for files with no extension), or the string "default"
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/image.c"><filename>scwm/image.c</filename></ulink>
   at line 325 </para> </refsect1>
@@ -7748,9 +9164,13 @@ the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1830 </para> </refsect1>
+  at line 1857 </para> </refsect1>
 </refentry>
 
 <refentry id="unstick-icon">
@@ -7770,9 +9190,13 @@ not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2914 </para> </refsect1>
+  at line 2949 </para> </refsect1>
 </refentry>
 
 <refentry id="viewport-position">
@@ -7789,6 +9213,10 @@ not specified.
   Returns the current position of the viewport in pixels.
 The returned value is a list of the x and y positions.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7811,6 +9239,10 @@ The returned value is a list of the x and y positions.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
   at line 83 </para> </refsect1>
@@ -7829,6 +9261,10 @@ The returned value is a list of the x and y positions.
   <para>
   Return a pixel width X percent of the width of window W.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7851,6 +9287,10 @@ The returned value is a list of the x and y positions.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
   at line 63 </para> </refsect1>
@@ -7871,6 +9311,10 @@ The returned value is a list of the x and y positions.
 Given the existence of before-new-window-hook, this is of questionable
 usefulness.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7896,9 +9340,13 @@ to the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1541 </para> </refsect1>
+  at line 1562 </para> </refsect1>
 </refentry>
 
 <refentry id="wiggle-window">
@@ -7915,6 +9363,10 @@ to the window context in the usual way if not specified.
   Animatedly window shade and then unshade the current window.
 Just a toy--- perhaps could be useful to call attention to a window.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7935,6 +9387,10 @@ Just a toy--- perhaps could be useful to call attention to a window.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -7959,9 +9415,13 @@ Just a toy--- perhaps could be useful to call attention to a window.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 152 </para> </refsect1>
+  at line 154 </para> </refsect1>
 </refentry>
 
 <refentry id="wildcard-matcher">
@@ -7982,9 +9442,13 @@ instead of a shell-like wildcard.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
-  at line 129 </para> </refsect1>
+  at line 131 </para> </refsect1>
 </refentry>
 
 <refentry id="window-border-width">
@@ -8002,9 +9466,13 @@ instead of a shell-like wildcard.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 322 </para> </refsect1>
+  at line 323 </para> </refsect1>
 </refentry>
 
 <refentry id="window-bottom">
@@ -8020,6 +9488,10 @@ instead of a shell-like wildcard.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8044,9 +9516,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2554 </para> </refsect1>
+  at line 2593 </para> </refsect1>
 </refentry>
 
 <refentry id="window-client-machine-name">
@@ -8062,6 +9538,10 @@ specified.
   <para>
   Return the name of the client machine on which WIN is running.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8082,6 +9562,10 @@ specified.
   <para>
   Return <parameter>win</parameter>'s decor.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8107,9 +9591,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1493 </para> </refsect1>
+  at line 1514 </para> </refsect1>
 </refentry>
 
 <refentry id="window-desk">
@@ -8128,9 +9616,13 @@ window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2519 </para> </refsect1>
+  at line 2558 </para> </refsect1>
 </refentry>
 
 <refentry id="window-frame-area">
@@ -8146,6 +9638,10 @@ window context in the usual way if not specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8170,9 +9666,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2462 </para> </refsect1>
+  at line 2501 </para> </refsect1>
 </refentry>
 
 <refentry id="window-frame-size">
@@ -8193,9 +9693,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2391 </para> </refsect1>
+  at line 2427 </para> </refsect1>
 </refentry>
 
 <refentry id="window-geometry-string">
@@ -8211,6 +9715,10 @@ specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8235,9 +9743,13 @@ in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3309 </para> </refsect1>
+  at line 3344 </para> </refsect1>
 </refentry>
 
 <refentry id="window-icon-title">
@@ -8257,9 +9769,13 @@ the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2542 </para> </refsect1>
+  at line 2581 </para> </refsect1>
 </refentry>
 
 <refentry id="window-id">
@@ -8279,9 +9795,13 @@ the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2449 </para> </refsect1>
+  at line 2485 </para> </refsect1>
 </refentry>
 
 <refentry id="window-info">
@@ -8297,6 +9817,10 @@ the window context in the usual way if not specified.
   <para>
   Display information about a window in a message window.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8321,9 +9845,13 @@ in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3361 </para> </refsect1>
+  at line 3396 </para> </refsect1>
 </refentry>
 
 <refentry id="window-overlaps-window-p">
@@ -8342,6 +9870,10 @@ in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
   at line 79 </para> </refsect1>
@@ -8350,7 +9882,7 @@ in the usual way if not specified.
 <refentry id="window-position">
   <refnamediv>
     <refname>window-position</refname>
-    <refpurpose>Return the position of WIN in pixels.</refpurpose>
+    <refpurpose>Return the position of WIN in pixels in virtual space.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(window-position  #&amp;optional win)</synopsis>
@@ -8358,16 +9890,20 @@ in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Return the position of <parameter>win</parameter> in pixels.
+  Return the position of <parameter>win</parameter> in pixels in virtual space.
 The position is returned as a list of the x coordinate and the y
 coordinate in pixels. <parameter>win</parameter> defaults to the window context in the usual
-way if not specified.
+way if not specified.  See also <link linkend="window-viewport-position"><function>window-viewport-position</function></link>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2351 </para> </refsect1>
+  at line 2387 </para> </refsect1>
 </refentry>
 
 <refentry id="window-property">
@@ -8392,9 +9928,13 @@ be considered in flux.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3561 </para> </refsect1>
+  at line 3596 </para> </refsect1>
 </refentry>
 
 <refentry id="window-resource">
@@ -8413,9 +9953,13 @@ the window context in the usual way if not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2567 </para> </refsect1>
+  at line 2606 </para> </refsect1>
 </refentry>
 
 <refentry id="window-shade">
@@ -8438,9 +9982,13 @@ not specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1876 </para> </refsect1>
+  at line 1909 </para> </refsect1>
 </refentry>
 
 <refentry id="window-shade-animated">
@@ -8456,6 +10004,10 @@ not specified.
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm winops)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8480,9 +10032,13 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1995 </para> </refsect1>
+  at line 2028 </para> </refsect1>
 </refentry>
 
 <refentry id="window-size">
@@ -8504,9 +10060,13 @@ and height in resize units (e.g., characters for an xterm).
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2410 </para> </refsect1>
+  at line 2446 </para> </refsect1>
 </refentry>
 
 <refentry id="window-size-hints">
@@ -8527,9 +10087,13 @@ The list returned contains 4 cons pairs containing:
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2247 </para> </refsect1>
+  at line 2283 </para> </refsect1>
 </refentry>
 
 <refentry id="window-style">
@@ -8545,6 +10109,10 @@ The list returned contains 4 cons pairs containing:
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm style)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8568,9 +10136,13 @@ The list returned contains 4 cons pairs containing:
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2531 </para> </refsect1>
+  at line 2570 </para> </refsect1>
 </refentry>
 
 <refentry id="window-title-height">
@@ -8588,9 +10160,13 @@ The list returned contains 4 cons pairs containing:
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 313 </para> </refsect1>
+  at line 314 </para> </refsect1>
 </refentry>
 
 <refentry id="window-transient-for">
@@ -8613,31 +10189,40 @@ specified.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1722 </para> </refsect1>
+  at line 1743 </para> </refsect1>
 </refentry>
 
-<refentry id="window-xproperty">
+<refentry id="window-viewport-position">
   <refnamediv>
-    <refname>window-xproperty</refname>
-    <refpurpose>Get and maybe delete the property called NAME from WIN.</refpurpose>
+    <refname>window-viewport-position</refname>
+    <refpurpose>Return the position of WIN in pixels within the viewport.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(window-xproperty win name #&amp;optional consume)</synopsis>
+    <synopsis>(window-viewport-position #&amp;optional (win (get-window)))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  Get and maybe delete the property called <parameter>name</parameter> from <parameter>win</parameter>.
-The property will be deleted upon getting (in an atomic operation)
-if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
+  Return the position of WIN in pixels within the viewport.
+The position is returned as a list of the x coordinate and the y
+coordinate in pixels. WIN defaults to the window context in the usual
+way if not specified.  See also <link linkend="window-position"><function>window-position</function></link>.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
-  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
-  at line 177 </para> </refsect1>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
+  at line 128 </para> </refsect1>
 </refentry>
 
 <refentry id="window-p">
@@ -8655,9 +10240,13 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 610 </para> </refsect1>
+  at line 630 </para> </refsect1>
 </refentry>
 
 <refentry id="windows-overlap-p">
@@ -8673,6 +10262,10 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm wininfo)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8695,9 +10288,13 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 219 </para> </refsect1>
+  at line 221 </para> </refsect1>
 </refentry>
 
 <refentry id="winlist-skip">
@@ -8715,9 +10312,13 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 222 </para> </refsect1>
+  at line 224 </para> </refsect1>
 </refentry>
 
 <refentry id="winlist-skip-p">
@@ -8735,9 +10336,13 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm winlist)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/winlist.scm"><filename>scheme/winlist.scm</filename></ulink>
-  at line 225 </para> </refsect1>
+  at line 227 </para> </refsect1>
 </refentry>
 
 <refentry id="write-all">
@@ -8753,6 +10358,10 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   <para>
   Write all arguments into the port. <literal>#t</literal> means <link linkend="current-output-port"><function>current-output-port</function></link>.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8775,9 +10384,63 @@ if the boolean value <parameter>consume</parameter> is <literal>#t</literal>
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
   at line 43 </para> </refsect1>
+</refentry>
+
+<refentry id="X-atom-to-string">
+  <refnamediv>
+    <refname>X-atom->string</refname>
+    <refpurpose>Returns the string represented by ATOM.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(X-atom->string atom)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Returns the string represented by <parameter>atom</parameter>.
+Returns <literal>#f</literal>, if the X atom was not known.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
+  at line 319 </para> </refsect1>
+</refentry>
+
+<refentry id="X-cut-buffer-string">
+  <refnamediv>
+    <refname>X-cut-buffer-string</refname>
+    <refpurpose>Return the text of the CUT_BUFFER0 property of the root window.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(X-cut-buffer-string)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the text of the CUT_BUFFER0 property of the root window.
+This is the cut text selected by X clients.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
+  at line 390 </para> </refsect1>
 </refentry>
 
 <refentry id="X-display-information">
@@ -8804,6 +10467,10 @@ be shared among multiple machines.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 540 </para> </refsect1>
@@ -8828,9 +10495,79 @@ physical button acts as logical button 1, and the leftmost acts as button 3.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
   at line 867 </para> </refsect1>
+</refentry>
+
+<refentry id="X-property-get">
+  <refnamediv>
+    <refname>X-property-get</refname>
+    <refpurpose>Get X property NAME of window WIN.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(X-property-get win name #&amp;optional consume)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Get X property <parameter>name</parameter> of window <parameter>win</parameter>.
+<parameter>win</parameter> is the window to check, or 'root-window.
+<parameter>name</parameter> is a string.
+If <parameter>consume</parameter> is <literal>#t</literal>, the X property is deleted after getting it. Default is
+not to delete.
+If the X property could not be found, <literal>#f</literal> is returned.
+If the X property could be found, a list "(value type format)" is returned.
+"type" is a string.
+"format" is either 8, 16, or 32, giving the size of the elements of "value".
+"value" is a string, if "format" is 8, or a vector of integers otherwise.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
+  at line 203 </para> </refsect1>
+</refentry>
+
+<refentry id="X-property-set-x">
+  <refnamediv>
+    <refname>X-property-set!</refname>
+    <refpurpose>Set X property NAME on window WIN to VALUE.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(X-property-set! win name value #&amp;optional type format action)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Set X property <parameter>name</parameter> on window <parameter>win</parameter> to <parameter>value</parameter>.
+<parameter>win</parameter> is the window to set the X property on, or 'root-window.
+<parameter>name</parameter> and <parameter>type</parameter> are strings. <parameter>type</parameter> defaults to "XA_STRING".
+<parameter>format</parameter> may be one of the integers 8, 16, and 32, defining the element size
+of the <parameter>value</parameter>. It is 8 by default.
+<parameter>value</parameter> may be a string, if <parameter>format</parameter> is 8, and may always be a vector
+of <parameter>format</parameter>-bit integers.
+<parameter>action</parameter> - one of the symbols 'replace, 'prepend, or 'append signifying
+how the new <parameter>value</parameter> should be merged (if at all) with the existing
+value.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
+  at line 101 </para> </refsect1>
 </refentry>
 
 <refentry id="X-resource-get">
@@ -8849,6 +10586,10 @@ Both <parameter>name</parameter> and <parameter>xclass</parameter> are strings, 
 <parameter>xclass</parameter> is omitted, it defaults to the same string as <parameter>name</parameter>.
 If there is no resource under the given key, <literal>#f</literal> is returned.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8872,6 +10613,10 @@ Later, the value can be retrieved using <link linkend="X-resource-get"><function
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xrm.c"><filename>scwm/xrm.c</filename></ulink>
   at line 20 </para> </refsect1>
@@ -8890,6 +10635,10 @@ Later, the value can be retrieved using <link linkend="X-resource-get"><function
   <para>
   No documentation supplied.
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -8914,49 +10663,13 @@ revision, the X server vendor, and the vendor release number.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
   at line 520 </para> </refsect1>
-</refentry>
-
-<refentry id="xproperty-to-string">
-  <refnamediv>
-    <refname>xproperty->string</refname>
-    <refpurpose>Convert that data portion of xproperty object PROP to a string.</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(xproperty->string prop)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  Convert that data portion of xproperty object <parameter>prop</parameter> to a string.
-  </para>
-  </refsect1>
-  <refsect1>
-  <title>Implementation Notes</title>
-  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
-  at line 229 </para> </refsect1>
-</refentry>
-
-<refentry id="xproperty-p">
-  <refnamediv>
-    <refname>xproperty?</refname>
-    <refpurpose>Return <literal>#t</literal> if OBJ is an xproperty object, otherwise <literal>#f</literal>.</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(xproperty? obj)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  Return <literal>#t</literal> if <parameter>obj</parameter> is an xproperty object, otherwise <literal>#f</literal>.
-  </para>
-  </refsect1>
-  <refsect1>
-  <title>Implementation Notes</title>
-  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xproperty.c"><filename>scwm/xproperty.c</filename></ulink>
-  at line 118 </para> </refsect1>
 </refentry>
 
 <refentry id="y-">
@@ -8974,6 +10687,10 @@ revision, the X server vendor, and the vendor release number.
   </para>
   </refsect1>
   <refsect1>
+  <title>Module</title>
+  <para>(app scwm base)</para>
+  </refsect1>
+  <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
   at line 47 </para> </refsect1>
@@ -8981,7 +10698,7 @@ revision, the X server vendor, and the vendor release number.
 
   </chapter>
   <chapter>
-    <title>Primitives By Defined-in File</title>
+    <title>Procedures By Defined-in File</title>
     <sect1><title>scheme/auto-raise.scm</title> <itemizedlist>
       <listitem><para><link linkend="set-auto-raise-x"><function>set-auto-raise!</function></link> &mdash; Turn auto-raise on (<literal>#t</literal>) or off (<literal>#f</literal>) for WIN.</para></listitem>
       <listitem><para><link linkend="set-auto-raise-delay-x"><function>set-auto-raise-delay!</function></link> &mdash; Set the auto-raise delay to DELAY (in ms) for WIN.</para></listitem>
@@ -9002,6 +10719,8 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="program-exists-p"><function>program-exists?</function></link> &mdash; Return <literal>#t</literal> if PROGRAM-NAME is found as an executable in the current $PATH.</para></listitem>
       <listitem><para><link linkend="set-window-colors-x"><function>set-window-colors!</function></link> &mdash; Set WIN's background color to BG, foreground color to FG.</para></listitem>
       <listitem><para><link linkend="move-pointer"><function>move-pointer</function></link> &mdash; Move the X11 pointer X pixels to the right, and Y pixels down.</para></listitem>
+      <listitem><para><link linkend="move-to"><function>move-to</function></link> &mdash; Move WIN to virtual position X, Y.</para></listitem>
+      <listitem><para><link linkend="window-viewport-position"><function>window-viewport-position</function></link> &mdash; Return the position of WIN in pixels within the viewport.</para></listitem>
       <listitem><para><link linkend="move-viewport"><function>move-viewport</function></link> &mdash; Move the viewport onto the virtual desktop relatively.</para></listitem>
       <listitem><para><link linkend="menu-style"><function>menu-style</function></link> &mdash; Set various properites for the menus.</para></listitem>
       <listitem><para><link linkend="simple-title-style"><function>simple-title-style</function></link> &mdash; Set the style for titlebars.</para></listitem>
@@ -9079,6 +10798,7 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="popup-menu-from-decoration"><function>popup-menu-from-decoration</function></link> &mdash; Popup MENU from WIN's decoration numbered BUTTON-NUMBER.</para></listitem>
       <listitem><para><link linkend="flash-window"><function>flash-window</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="make-string-usable-for-resource-key"><function>make-string-usable-for-resource-key</function></link> &mdash; Return a converted string from STRING that can be used as an X resource key.</para></listitem>
+      <listitem><para><link linkend="X-cut-buffer-string"><function>X-cut-buffer-string</function></link> &mdash; Return the text of the CUT_BUFFER0 property of the root window.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/fvwm-compat.scm</title> <itemizedlist>
       <listitem><para><link linkend="fvwm-exec-use-shell"><function>fvwm-exec-use-shell</function></link> &mdash; No documentation supplied.</para></listitem>
@@ -9191,7 +10911,7 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="opaque-interactive-resize"><function>opaque-interactive-resize</function></link> &mdash; Resize WINDOW interactively and opaquely.</para></listitem>
       <listitem><para><link linkend="toggle-maximize"><function>toggle-maximize</function></link> &mdash; Maximize to width NW, height NH if not maximized, or unmaximize.</para></listitem>
       <listitem><para><link linkend="print-window"><function>print-window</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="animated-move-to"><function>animated-move-to</function></link> &mdash; Move WIN to x y animatedly.</para></listitem>
+      <listitem><para><link linkend="animated-move-to"><function>animated-move-to</function></link> &mdash; Move WIN to viewport position x, y animatedly.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/wmconfig-menu.scm</title> <itemizedlist>
       <listitem><para><link linkend="make-wmconfig-menu"><function>make-wmconfig-menu</function></link> &mdash; Return a menu object for the window-manager configuration menu.</para></listitem>
@@ -9401,13 +11121,13 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="un-window-shade"><function>un-window-shade</function></link> &mdash; Reverse the effect of <link linkend="window-shade"><function>window-shade</function></link> on WIN.</para></listitem>
       <listitem><para><link linkend="window-shaded-p"><function>window-shaded?</function></link> &mdash; Return <literal>#t</literal> if WIN is shaded.</para></listitem>
       <listitem><para><link linkend="set-animation-x"><function>set-animation!</function></link> &mdash; Set the animation parameters to VECTOR.</para></listitem>
-      <listitem><para><link linkend="move-to"><function>move-to</function></link> &mdash; Move WIN to coordinates X, Y.</para></listitem>
+      <listitem><para><link linkend="move-window"><function>move-window</function></link> &mdash; Move WIN to coordinates virtual coordinates X, Y.</para></listitem>
       <listitem><para><link linkend="resize-to"><function>resize-to</function></link> &mdash; Resize WIN's client area to a size of W by H in pixels.</para></listitem>
       <listitem><para><link linkend="resize-frame-to"><function>resize-frame-to</function></link> &mdash; Resize WIN to a size of W by H in pixels.</para></listitem>
       <listitem><para><link linkend="window-size-hints"><function>window-size-hints</function></link> &mdash; Return a list of the window size hints associated with WIN.</para></listitem>
       <listitem><para><link linkend="refresh-window"><function>refresh-window</function></link> &mdash; Refresh the decorations on window WIN.</para></listitem>
       <listitem><para><link linkend="move-window-to-desk"><function>move-window-to-desk</function></link> &mdash; Move WIN to DESK.</para></listitem>
-      <listitem><para><link linkend="window-position"><function>window-position</function></link> &mdash; Return the position of WIN in pixels.</para></listitem>
+      <listitem><para><link linkend="window-position"><function>window-position</function></link> &mdash; Return the position of WIN in pixels in virtual space.</para></listitem>
       <listitem><para><link linkend="icon-position"><function>icon-position</function></link> &mdash; Return the position of the icon for WIN.</para></listitem>
       <listitem><para><link linkend="window-frame-size"><function>window-frame-size</function></link> &mdash; Return the size of the frame of WIN.</para></listitem>
       <listitem><para><link linkend="window-size"><function>window-size</function></link> &mdash; Return the size of the application window of WIN.</para></listitem>
@@ -9464,11 +11184,10 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="window-property"><function>window-property</function></link> &mdash; Retrieve window property PROP of WIN.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scwm/xproperty.c</title> <itemizedlist>
-      <listitem><para><link linkend="xproperty-p"><function>xproperty?</function></link> &mdash; Return <literal>#t</literal> if OBJ is an xproperty object, otherwise <literal>#f</literal>.</para></listitem>
-      <listitem><para><link linkend="set-window-text-property"><function>set-window-text-property</function></link> &mdash; Set a text property named PROPNAME on WIN.</para></listitem>
-      <listitem><para><link linkend="window-xproperty"><function>window-xproperty</function></link> &mdash; Get and maybe delete the property called NAME from WIN.</para></listitem>
-      <listitem><para><link linkend="xproperty-to-string"><function>xproperty->string</function></link> &mdash; Convert that data portion of xproperty object PROP to a string.</para></listitem>
-      <listitem><para><link linkend="string-to-xproperty"><function>string->xproperty</function></link> &mdash; Create an xproperty object from STR.</para></listitem>
+      <listitem><para><link linkend="X-property-set-x"><function>X-property-set!</function></link> &mdash; Set X property NAME on window WIN to VALUE.</para></listitem>
+      <listitem><para><link linkend="X-property-get"><function>X-property-get</function></link> &mdash; Get X property NAME of window WIN.</para></listitem>
+      <listitem><para><link linkend="string-to-X-atom"><function>string->X-atom</function></link> &mdash; Returns an X atom representing STRING.</para></listitem>
+      <listitem><para><link linkend="X-atom-to-string"><function>X-atom->string</function></link> &mdash; Returns the string represented by ATOM.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scwm/xrm.c</title> <itemizedlist>
       <listitem><para><link linkend="X-resource-put"><function>X-resource-put</function></link> &mdash; Stores string VALUE as X resource RESOURCE (also a string).</para></listitem>
@@ -9884,6 +11603,15 @@ perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
     </para></sect1>
+    <sect1 id="X-atoms"><title>X atoms</title><para>
+   X windows allows certain entities (for example, X properties [FIXME: XREF
+to X properties]) to have arbitrary names. To avoid exchanging strings ever so
+often, these names are in fact X atoms.
+
+New X atoms can be created, or old ones retrieved simply by specifying
+the string the atom stands for. An X atom can also be converted back to a
+string. Scwm provides primitives for these actions. 
+    </para></sect1>
     <sect1 id="X-Properties"><title>X Properties</title><para>
    X windows has a notion of window properties, which live in the X
 server. X window properties are often used to implement protocols
@@ -9898,9 +11626,8 @@ including all X standard protocols, as well as the Motif and Open Look
 protocols. However, the user should be able to implement any of these
 he likes, including making up his own for personal use.
 
-  This is possible through the low-level xproperty interface. Scwm has
-(for now) distinguished Scheme objects representing X properties, and
-several procedures to get, set and manipulate them.
+  This is possible through the low-level X property interface. Scwm has
+one procedure to get, and set them, respectively.
  
     </para></sect1>
   </chapter>
