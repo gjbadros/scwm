@@ -83,5 +83,8 @@ ML-CONS is a list of lists. Each sublist's car is the name of the
 group, and the cdr is a list of the menuitems for that group.
 The list must be sorted by GROUP.  Returns a list of menu items
 for each group, popping up the group's MENUITEMs."
-  (map (lambda (lm) (menuitem (car lm) #:action (menu (cdr lm))))
+  (map (lambda (lm)
+	 (if (null? (cddr lm))
+	     (cadr lm)
+	     (menuitem (car lm) #:action (menu (cdr lm)))))
        (split-list-by-group ml-cons)))
