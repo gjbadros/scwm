@@ -343,10 +343,12 @@ of a long computation.")
 #define FUNC_NAME s_handle_pending_events
 {
   int cevents = 0;
-  last_event_type = 0;
-  while (!NextScwmEvent(dpy, &Event, True)) {
-    ++cevents;
-    DispatchEvent();
+  if (Scr.fWindowsCaptured) {
+    last_event_type = 0;
+    while (!NextScwmEvent(dpy, &Event, True)) {
+      ++cevents;
+      DispatchEvent();
+    }
   }
   return gh_int2scm(cevents);
 }
