@@ -25,6 +25,9 @@
   :use-module (app scwm listops))
 
 (define-public (procedure->string proc)
+  "Return a string that represents the name of PROC.
+Returns "<anonymous-procedure>" for procedures without names and "<none>"
+if passed something which is not a procedure."
   (if (and proc (procedure? proc))
       (symbol->string (or (procedure-name proc) '<anonymous-procedure>))
       "<none>"))
@@ -46,7 +49,8 @@ Return #f if PROC-OR-STRING-OR-SYMBOL is none of those things."
 
 ;; (procedure-string->procedure "push-focus-window")
 (define-public (procedure-string->procedure proc-name)
-  "Return a procedure given its name."
+  "Return a procedure given its name (PROC-NAME).
+Returns #f if PROC-NAME is not a procedure name."
   (catch #t
 	 (lambda ()
 	   (eval (string->symbol proc-name)))
@@ -73,6 +77,7 @@ Three values are returned in a list: (num-required num-optional rest-argument-p)
   "Return #t iff PROC take a rest argument."
   (and (symbol? proc) (set! proc (eval proc)))
   (caddr (procedure-arity proc)))
+
 
 (define-public (procedure-formals proc)
   "Return a list of the formal arguments for PROC.
@@ -110,7 +115,7 @@ any \"lambda*\" formals generated using optargs. See also
 
 
 (define-public (procedure-optargs-arglist proc)
-  "Return a list of the optargs keyword arguments for PROC.
+  "BROKEN:Return a list of the optargs keyword arguments for PROC.
 Returns #f if PROC was not defined using keyword or optional
 arguments (this includes procedures defined using standard . rest
 syntax).  Otherwise returns a list such as '(foo #&optional bar).
@@ -120,7 +125,7 @@ Note that these currently do not display in their expected format"
 
 
 (define-public (procedure-keyword-formals proc)
-  "Returns an a-list of the optargs keyword arguments and default values for PROC."
+  "BROKEN:Returns an a-list of the optargs keyword arguments and default values for PROC."
   (and (symbol? proc) (set! proc (eval proc)))
   (let ((optargs-arglist (procedure-optargs-arglist proc)))
     (if optargs-arglist
@@ -132,7 +137,7 @@ Note that these currently do not display in their expected format"
 	#f)))
 
 (define-public (procedure-optional-formals proc)
-  "Returns a list of the optional arguments for PROC."
+  "BROKEN:Returns a list of the optional arguments for PROC."
   (and (symbol? proc) (set! proc (eval proc)))
   (let ((arglist (procedure-property proc 'arglist)))
     (if arglist
@@ -156,7 +161,8 @@ Note that these currently do not display in their expected format"
 
 ;; very slightly changed from ice-9 session's apropos-internal
 (define-public (apropos-internal-with-modules rgx)
-  "Return a list of accessible variable names and the modules they are defined in."
+  "Return a list of accessible variable names and the modules they are defined in.
+The list elements are of the form '(module . procedure)"
   (let ((match (make-regexp rgx))
 	(modules (cons (current-module)
 		       (module-uses (current-module))))
@@ -211,7 +217,7 @@ This returns a simple list of procedure objects."
 
 ;; (interactive-procedure-apropos-with-modules "get-window")
 (define-public (interactive-procedure-apropos-with-modules rgx)
-  "Returns a list of procedures that match RGX and that can take no arguments.
+  "BROKEN: Returns a list of procedures that match RGX and that can take no arguments.
 I.e., they are interactive procedures useful for bindings.
 The returned list contains pairs (modulesym . procsym)"
   (filter-map (lambda (p) (let ((m-p (eval (cdr p)))) 
@@ -223,7 +229,7 @@ The returned list contains pairs (modulesym . procsym)"
 
 ;; (interactive-procedure-apropos "get-window")
 (define-public (interactive-procedure-apropos rgx)
-  "Returns a list of interactive procedures that match RGX.
+  "BROKEN: Returns a list of interactive procedures that match RGX.
 This returns a simple list of procedure objects."
   (map (lambda (p) (eval (cdr p))) (interactive-procedure-apropos-with-modules rgx)))
 
@@ -237,14 +243,17 @@ This returns a simple list of procedure objects."
 ;(procedure? current-module)
 
 (define-public (context->brief-context context)
+  "NOT TESTED: No doc."
   (cond ((memq 'all context) 'all)
 	((= 1 (length context)) (car context))
 	(else context)))
 
 (define-public (context->string context)
+  "NOT TESTED: No doc."
   (with-output-to-string (lambda () (write context))))
 
 (define-public (raw-binding->string raw-binding)
+  "NOT TESTED: No doc."
   (let ((mouse? (list-ref raw-binding 0))
 	(context (list-ref raw-binding 1))
 	(modmask (list-ref raw-binding 2))
@@ -265,6 +274,7 @@ This returns a simple list of procedure objects."
 		     descriptor " -> " proc1nm ", " proc2nm))))
 
 (define-public (procedure->bindings-description proc)
+  "NOT TESTED: No doc."
   (apply
    string-append
    (map (lambda (bnd) (string-append (raw-binding->string bnd) "\n"))

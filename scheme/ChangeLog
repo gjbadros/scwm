@@ -1,3 +1,12 @@
+Sat Aug 10 18:25:33 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* visibility-reporter.scm: Updated the print out procedures to take the
+	additional argument now required by the hooks.
+
+	* reflection.scm: Updated comments to reflect current state of
+	procedures.  Didn't try to actually fix anything since I wasn't sure
+	what a bunch of the procedures were supposed to do.
+	
 Tue Jul  9 00:10:32 2002  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* test-case.scm:

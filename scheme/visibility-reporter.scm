@@ -4,9 +4,18 @@
 
 (define-module (app scwm visibility-reporter))
 
-(define (report-unobscured win) (display "unobscured") (write win) (newline))
-(define (report-partially-obscured win) (display "partially-obscured") (write win) (newline))
-(define (report-fully-obscured win) (display "fully-obscured") (write win) (newline))
+(define (report-unobscured win from-viewport-move?)
+  (display "unobscured") (write win)
+  (display " from viewport move ") (display from-viewport-move?)
+  (newline))
+(define (report-partially-obscured win from-viewport-move?)
+  (display "partially-obscured") (write win)
+  (display " from viewport move ") (display from-viewport-move?)
+  (newline))
+(define (report-fully-obscured win from-viewport-move?)
+  (display "fully-obscured") (write win)
+  (display " from viewport move ") (display from-viewport-move?)
+  (newline))
 
 (define-public (install-visibility-reporter)
   "Install procedures to print debugging messages on window visibility change events."
