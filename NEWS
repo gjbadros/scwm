@@ -10,6 +10,8 @@ Changes for scwm-0.99.6 (not yet released)
 * New modules
 ** cursor.scm -- fancy resize cursor support
 
+* Interactive specifications are now warned when violated.
+
 * Changed behaviours
 ** system.scwmrc now has sides of windows do resizes (like Win) instead of moves
 ** window-configuration.scm

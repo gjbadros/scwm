@@ -1,3 +1,8 @@
+Sun Dec  5 12:04:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flash-window.scm, winops.scm: Make a bunch of procs interactive
+ 	that weren't before.
+
 Sat Dec  4 21:40:46 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Fixed dirvector->string -- was
