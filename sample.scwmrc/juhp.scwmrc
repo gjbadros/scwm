@@ -166,36 +166,47 @@
   (display-menu
    (menuitem "Root" #f)
    menu-title
-   (menuitem "&Move" #:image-left "mini-move.xpm" #:action interactive-move)
-   (menuitem "Re&size" #:image-left "mini-resize.xpm" #:action interactive-resize)
-   (menuitem "&Raise" #:image-left "mini-raise.xpm" #:action raise-window)
-   (menuitem "&Lower" #:image-left "mini-lower.xpm" #:action lower-window)
    ;; (menuitem "Print" #:action print-window)
-   menu-separator
-   (menuitem "M&ore"
+   (menuitem "&Window actions"
 	      #:action
 	      (lambda ()
 		(display-menu
 	       (menuitem "More" #f)
 	       menu-title
+	       (menuitem "&Move" #:image-left "mini-move.xpm"
+			 #:action interactive-move)
+	       (menuitem "Re&size" #:image-left "mini-resize.xpm"
+			 #:action interactive-resize)
+	       (menuitem "&Raise" #:image-left "mini-raise.xpm"
+			 #:action raise-window)
+	       (menuitem "&Lower" #:image-left "mini-lower.xpm"
+			 #:action lower-window)
 	       (menuitem "(Un)Window-Shade"
 			 #:action toggle-window-shade)
-	       (menuitem "(De)Iconify" #:image-left "mini-iconify.xpm" #:action toggle-iconify)
-	       (menuitem "(Un)Maximize" #:image-left "maxtall" 
+	       (menuitem "(De)Iconify" #:image-left "mini-iconify.xpm"
+			 #:action toggle-iconify)
+	       (menuitem "(Un)Maximize" #:image-left "mini-maxtall.xpm" 
 			 #:action vertical-toggle-maximize)
-	       (menuitem "(Un)Stick" #:image-left "mini-stick.xpm" #:action toggle-stick)
+	       (menuitem "(Un)Stick" #:image-left "mini-stick.xpm"
+			 #:action toggle-stick)
 	       (menuitem "(Un)Keep On Top"
-			 #:action toggle-on-top))))
+			 #:action toggle-on-top)
+	       menu-separator
+	       (menuitem "&Delete" #:image-left "mini-cross.xpm"
+			 #:action delete-window)
+	       (menuitem "&Close" #:image-left "mini-bomb.xpm"
+			 #:action close-window)
+	       (menuitem "Destroy" #:image-left "mini-bomb.xpm"
+			 #:action destroy-window))))
    menu-separator
-   (menuitem "&Delete" #:image-left "mini-cross.xpm" #:action delete-window)
-   (menuitem "&Close" #:image-left "mini-bomb.xpm" #:action close-window)
-   (menuitem "Destroy" #:image-left "mini-bomb.xpm" #:action destroy-window)
-   menu-separator
-   (menuitem "Switch to..." #:action
+   (menuitem "&Switch to..." #:action
 	     (lambda () 
 	       (show-window-list-menu #:show-geometry #t)))
    (menuitem "Re&fresh Screen" #:image-left "mini-ray.xpm" 
-	     #:action refresh)))
+	     #:action refresh)
+   menu-separator
+   (menuitem "&Restart scwm" #:action (lambda () (restart "scwm")))
+   (menuitem "&Exit scwm" #:action quit-verify-menu)))
 
 (define* (window-menu #&optional (w (get-window)))
   (display-menu
@@ -214,7 +225,7 @@
    (menuitem (if (maximized? w)
 		  "Unmaximize"
 		  "Maximize")
-	     #:image-left "maxtall"
+	     #:image-left "mini-maxtall.xpm"
 	     #:action vertical-toggle-maximize)
    (menuitem (if (sticky? w)
 		  "Unstick"
@@ -274,23 +285,21 @@
 	(old-screen (current-screen))
 	(old-window (current-window-with-focus)))
     (move-viewport (car rel-screen-move) (cadr rel-screen-move))
-    (if old-window
-	(begin
-	 (set-window-focus! 'none old-window)
-	 (set-window-focus! 'click old-window)))
-    (let ((screen (current-screen)))
-      (if (equal? old-screen screen)
-	  (beep)
-	(let ((window (or (array-ref screen-focus-array
-				 (car screen) (cadr screen))
-			  (current-window-with-pointer))))
-	  (if (and window
-		   (not (equal? window old-window))
-		   (visible? window))
-	      (begin
-	       (focus window)
-	       (save-focus old-window old-screen))
-	    (next-window #:only visible? #:except iconified?)))))))
+   (if old-window
+       (unfocus))
+   (let ((screen (current-screen)))
+     (if (equal? old-screen screen)
+	 (beep)
+	 (let ((window (or (array-ref screen-focus-array
+				      (car screen) (cadr screen))
+			   (current-window-with-pointer))))
+	   (if (and window
+		    (not (equal? window old-window))
+		    (visible? window))
+	       (begin
+		 (focus window)
+		 (save-focus old-window old-screen))
+	       (next-window #:only visible? #:except iconified?)))))))
 
 (define (windows-off-screen-menu)
   (display-menu
@@ -312,11 +321,10 @@
 		   (window-title has-focus)
 		   "none") #f))))
 
-;; NB My ".Xmodmap" is such that "M-" doesn't map to meta
-(bind-key 'all "M-Left" (lambda () (move-screen -1 0)))
-(bind-key 'all "M-Right" (lambda () (move-screen 1 0)))
-(bind-key 'all "M-Up" (lambda () (move-screen 0 -1)))
-(bind-key 'all "M-Down" (lambda () (move-screen 0 1)))
+(bind-key 'all "A-Left" (lambda () (move-screen -1 0)))
+(bind-key 'all "A-Right" (lambda () (move-screen 1 0)))
+(bind-key 'all "A-Up" (lambda () (move-screen 0 -1)))
+(bind-key 'all "A-Down" (lambda () (move-screen 0 1)))
 
 (define* (move-window x y #&optional (w (current-window-with-focus)))
   (let* ((amount 50)
@@ -327,26 +335,26 @@
 	     (+ oldy (* y amount))
 	     w 'animated)))
 
-(bind-key 'all "S-M-Left" (lambda () (move-window -1 0)))
-(bind-key 'all "S-M-Right" (lambda () (move-window 1 0)))
-(bind-key 'all "S-M-Up" (lambda () (move-window 0 -1)))
-(bind-key 'all "S-M-Down" (lambda () (move-window 0 1)))
+(bind-key 'all "S-A-Left" (lambda () (move-window -1 0)))
+(bind-key 'all "S-A-Right" (lambda () (move-window 1 0)))
+(bind-key 'all "S-A-Up" (lambda () (move-window 0 -1)))
+(bind-key 'all "S-A-Down" (lambda () (move-window 0 1)))
 
 ;;; wm related bindings
-;; (bind-key 'all "M-\`" popup-ops)  ;; Bad binding specifier
-(bind-key 'all "M-f" focus-window-menu)
-(bind-key 'all "M-l" refresh)
-(bind-key 'all "M-r" toggle-raise)
-(bind-key 'all "M-S-r" (lambda () (restart "scwm")))
-(bind-key 'all "M-q" quit-verify-menu)
-(bind-key 'all "C-M-S-q" quit)
-(bind-key 'all "M-s" toggle-window-shade)
-(bind-key 'all "M-w" windows-off-screen-menu)
-(bind-key '(window icon) "M-z" toggle-iconify)
-(bind-key 'all "M-F1" root-menu)
-(bind-key '(window icon) "M-F2" window-menu)
-;; (bind-key 'all "M-g" (lambda () (display (get-window #t #f))))
-;; (bind-mouse 'all "M-1" (lambda () (display (get-window #t #f))))
+;; (bind-key 'all "A-\`" popup-ops)  ;; Bad binding specifier
+(bind-key 'all "A-f" focus-window-menu)
+(bind-key 'all "A-l" refresh)
+(bind-key 'all "A-r" toggle-raise)
+(bind-key 'all "A-S-r" (lambda () (restart "scwm")))
+(bind-key 'all "A-q" quit-verify-menu)
+(bind-key 'all "C-A-S-q" quit)
+(bind-key 'all "A-s" toggle-window-shade)
+(bind-key 'all "A-w" windows-off-screen-menu)
+(bind-key '(window icon) "A-z" toggle-iconify)
+(bind-key 'all "A-F1" root-menu)
+(bind-key '(window icon) "A-F2" window-menu)
+;; (bind-key 'all "A-g" (lambda () (display (get-window #t #f))))
+;; (bind-mouse 'all "A-1" (lambda () (display (get-window #t #f))))
 (bind-mouse 'root 1 root-menu)
 (bind-mouse 'root 2 show-window-list-menu)
 (bind-mouse '(title frame sidebar) 3 window-menu)
@@ -369,24 +377,24 @@
 (bind-mouse 'icon 3 window-menu)
 
 ;; app bindings
-(bind-key 'all "M-e" (lambda ()
+(bind-key 'all "A-e" (lambda ()
 		       (execute "emacs --debug-init -fn fontset-standard")))
-(bind-key 'all "M-S-e"
+(bind-key 'all "A-S-e"
 	  (lambda ()
 	    (execute "emacs -q --no-site-file -fn fontset-standard")))
-(bind-key 'all "M-S-l" (lambda ()
+(bind-key 'all "A-S-l" (lambda ()
 			 (execute "xlock")))
-(bind-key 'all "M-m" (lambda ()
+(bind-key 'all "A-m" (lambda ()
 		       (execute "mule -q --no-site-file")))
-(bind-key 'all "M-n" (lambda ()
+(bind-key 'all "A-n" (lambda ()
 		       (execute "netscape -install")))
-(bind-key 'all "M-c" (lambda ()
+(bind-key 'all "A-c" (lambda ()
 		       (execute "communicator")))
-(bind-key 'all "M-t" (lambda ()
+(bind-key 'all "A-t" (lambda ()
 		       (execute "xterm")))
-(bind-key 'all "M-x" (lambda ()
+(bind-key 'all "A-x" (lambda ()
 		       (execute "xemacs -debug-init")))
-(bind-key 'all "M-S-x" (lambda ()
+(bind-key 'all "A-S-x" (lambda ()
 		       (execute "xemacs --vanilla")))
 
 (define (print-info thunk windows)
@@ -399,11 +407,11 @@
 	      (print-info thunk (cdr windows)))))
 
 ;; rotate the current window with the keyboard
-(bind-key 'all "M-Tab"
+(bind-key 'all "A-Tab"
 	  (lambda ()
 	    (next-window #:only visible? #:except iconified?)))
 
-(bind-key 'all "M-S-Tab" 
+(bind-key 'all "A-S-Tab" 
 	  (lambda ()
 	    (prev-window #:only visible? #:except iconified?)))
 
