@@ -33,9 +33,6 @@ redraw_titlebars(ScwmDecor *fl, int extra_height)
 
     set_window_internal_title_height(psw, psw->title_height + extra_height);
 
-#if 0
-    SetTitleBar(psw, True, True);
-#endif
     SetTitleBar(psw, False, True);
   }
   SetTitleBar(Scr.Hilite, True, True);

@@ -123,6 +123,23 @@ SetShapedTitlebar(ScwmWindow *psw, int w)
 }
 
 
+/* FIXGJB: Where are good docs about the XShape extension?
+   this cannot be right! */
+static void 
+UnsetShapedTitlebar(ScwmWindow *psw)
+{
+  if (ShapesSupported) {
+    XRectangle rect;
+    rect.x = 0;
+    rect.y = 0;
+    rect.width = FRAME_WIDTH(psw);
+    rect.height = FRAME_HEIGHT(psw);
+    XShapeCombineRectangles(dpy, psw->frame, ShapeBounding,
+                            0, 0, &rect, 1, ShapeSet, Unsorted);
+  }
+}
+
+
 /*
  *  Draws an arbitrary sequence of lines within a window (more complex)
  */
@@ -1533,8 +1550,12 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     if (fResized) {
       if (psw->fShaped) {
         SetShape(psw, w);
-      } else if (fSquashedTitlebar) {
-        SetShapedTitlebar(psw, tbar_right);
+      } else {
+        if (fSquashedTitlebar) {
+          SetShapedTitlebar(psw, tbar_right);
+        } else {
+          UnsetShapedTitlebar(psw);
+        }
       }
     }
   }
