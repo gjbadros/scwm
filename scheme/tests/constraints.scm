@@ -190,7 +190,13 @@
      (lambda (w) (flash-window w #:color color)) 
      (cl-windows-of-constraint cn))))
 
+(flash-window (select-window-interactively) #:color "red")
+
+(cl-windows-of-constraint cnl)
+(cl-windows-of-constraint cnlt)
+
 (flash-windows-of-constraint cnl)
+(flash-windows-of-constraint cnlt)
 (flash-windows-of-constraint cnlt)
 (flash-windows-of-constraint cnah)
 
