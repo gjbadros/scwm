@@ -18,13 +18,13 @@ to be active.
 LEFT, DOWN, UP, and RIGHT are the four keysym names to use for each
 of the directions."
   (bind-key 'all (string-append modifiers "-" left)
-	    (lambda* () "" (interactive)  (move-pointer (%x (- pct-of-screen)) 0)))
+	    (lambda* () "" (interactive) (move-pointer (%x (- pct-of-screen)) 0)))
   (bind-key 'all (string-append modifiers "-" down)
-	    (lambda* () "" (interactive)  (move-pointer 0 (%y pct-of-screen))))
+	    (lambda* () "" (interactive) (move-pointer 0 (%y pct-of-screen))))
   (bind-key 'all (string-append modifiers "-" up)
-	    (lambda* () "" (interactive)  (move-pointer 0 (%y (- pct-of-screen)))))
+	    (lambda* () "" (interactive) (move-pointer 0 (%y (- pct-of-screen)))))
   (bind-key 'all (string-append modifiers "-" right)
-	    (lambda* () "" (interactive)  (move-pointer (%x pct-of-screen) 0))))
+	    (lambda* () "" (interactive) (move-pointer (%x pct-of-screen) 0))))
 
 (define-public (key-viewport-moves modifiers pct-of-screen left down up right)
   "Bind four keys to move the viewport in compass directions by PCT-OF-SCREEN.
@@ -33,10 +33,10 @@ to be active.
 LEFT, DOWN, UP, and RIGHT are the four keysym names to use for each
 of the directions."
   (bind-key 'all (string-append modifiers "-" left)
-	    (lambda* () "" (interactive)  (move-viewport (%x (- pct-of-screen)) 0)))
+	    (lambda* () "" (interactive) (move-viewport (%x (- pct-of-screen)) 0)))
   (bind-key 'all (string-append modifiers "-" down)
-	    (lambda* () "" (interactive)  (move-viewport 0 (%y pct-of-screen))))
+	    (lambda* () "" (interactive) (move-viewport 0 (%y pct-of-screen))))
   (bind-key 'all (string-append modifiers "-" up)
-	    (lambda* () "" (interactive)  (move-viewport 0 (%y (- pct-of-screen)))))
+	    (lambda* () "" (interactive) (move-viewport 0 (%y (- pct-of-screen)))))
   (bind-key 'all (string-append modifiers "-" right)
 	    (lambda* () "" (interactive) (move-viewport (%x pct-of-screen) 0))))
