@@ -3,6 +3,21 @@
 ;; (documentation "resize-to")
 ;;
 
+(use-modules (app scwm base)
+	     (app scwm winops)
+	     (app scwm winlist)
+	     (app scwm wininfo)
+             (app scwm style)
+	     (app scwm face)
+	     (app scwm optargs)
+	     (app scwm std-menus)
+	     (app scwm decor)
+	     (app scwm prefs-menu)
+	     (app scwm doc)
+	     (app scwm flux)
+	     (app scwm fvwm-module)
+	     )
+
 (resize-to 500 400 (select-window-interactively "Resize me"))
 
 (define w (select-window-interactively))
@@ -10,6 +25,8 @@
 ;; (X-server-set-synchronize! #t)
 (normal-border w)
 (plain-border w)
+
+(window-style "FvwmWinList" #:no-titlebar #t)
 
 (define doc-files        ; '("/usr/src/scwm/doc/scwm-procedures.txt")
   (list (string-append (scwm-path-prefix) "/share/scwm/scwm-procedures.txt")
@@ -85,3 +102,32 @@
   )
 
 (refresh)
+
+;;I want my windows to have no borders and a plain flat titlebar (twm
+;;look). I've tried to do this with this style:
+
+(define std-decor (make-decor))
+
+(define font12
+  (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+
+(with-decor std-decor
+  (title-style #:font font12 #:justify 'left #:relief 'flat)
+  (button-style 1 #:relief 'flat #:pixmap "iconify.xpm")
+  (button-style 2 #:relief 'flat #:pixmap "resize.xpm")
+  (button-style 3 #:relief 'flat #:pixmap "close.xpm")
+  (set-hilight-background! "salmon")
+  )
+
+(define std-style
+  (make-style #:border-width 0 #:plain-border #t #:use-decor std-decor))
+
+(window-style "xlogo" #:use-style std-style)
+
+;; This does not work as I expected. The top resize bar is not removed
+;; and is now drawn in the title bar instead of the border. Plain-border
+;; seems to only remove the shading of the handles. Setting a
+;; border-width of 10 shows that this is also the same for the other
+;; handles. Is this a bug or am I missing something here?
+;; fixed --07/29/98 gjb
+
