@@ -15,7 +15,7 @@
 
 (list-windows)
 
-(map iconified-window? (list-windows))
+(map window-position (list-windows))
 
 (list-windows #:only iconified-window?)
 (list-windows #:only (lambda (w) (string=? (window-class w) "XTerm")))
@@ -39,14 +39,28 @@
   #:setter (lambda (font) (set! menu-font font))
   #:getter (lambda () menu-font))
 
-(clever-place-window w)
-
 (define (fully-obscured-handler win from-vport-move?)
   (if (not from-vport-move?)
       (clever-place-window win)))
 
 (add-hook! window-fully-obscured-hook fully-obscured-handler)
+
+;; cover up some windows
+
 (remove-hook! window-fully-obscured-hook fully-obscured-handler)
+
+;;;; CONSTRAINT SOLVER
+
+;; turn on via root menu, create inequality & equality cns
+
+;; show constraint investigator
+
+;; macro-record a constraint
+
+
+;;;; GRAVITY
+
+;;;; RE-PLACE WINDOWS
 
 ;;;; WINDOW GROUP SELECTIONS
 
@@ -54,13 +68,9 @@
 
 ;; Uses window-enter-hook, window-leave-hook
 
+(reset-undo!)
 
-
-;;;; CONSTRAINT SOLVER
-
-;; turn on via root menu, create inequality & equality cns
-
-;; C-M-A-c to list constraints, and turn off one by one
+;; Tile windows
 
 
 
@@ -95,7 +105,19 @@
 ;; Select a bunch of windows, then do group->tile
 ;; then H-/ to undo, H-M-/ to redo
 
-;;;; REGISTERS
+;;;; REGISTERS, WINDOW CONFIGURATIONS
+
+;; (bind-key 'all (hyper "M-g") gtk-register-info)
+;; (bind-key 'all (hyper "g") jump-to-register)
+;; (bind-key 'all (hyper "f") focus-to-register)
+;; (bind-key 'all (hyper "c") window-configuration-to-register)
+;; (bind-key 'all (hyper "x") global-window-configuration-to-register)
+;; (bind-key 'all (hyper "t") selected-windows-to-register)
+;; (bind-key 'all (hyper "period") push-window-configuration)
+;; (bind-key 'all (hyper "S-period") pop-window-configuration)
+;; 
+;; (bind-key 'all (hyper "M-period") push-focus-window)
+;; (bind-key 'all (hyper "M-S-period") pop-focus-window)
 
 
 ;;;; LEARNING SCWM
@@ -110,4 +132,21 @@
 ;; *theme-path*
 
 
+
+;;;; SPEECH INTERFACE
+
+"move window northeast"
+"move window down"
+"move window left 100"
+
+"start term"
+
+"focus next"
+"focus previous"
+
+"window select"
+"focus next"
+"window select"
+"tile"
+"undo"
 

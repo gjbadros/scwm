@@ -2,6 +2,20 @@
 
 (use-module (app scwm optargs))
 
+(define (keep-aspect-ratio-above win ratio-w-to-h)
+  (let* ((w (window-clv-width win))
+	 (h (window-clv-height win))
+	 (cn (make-cl-constraint w >= (cl-times h ratio-w-to-h))))
+    cn))
+
+
+;; (define w (get-window))
+
+(define c (keep-aspect-ratio-above w 4/3))
+
+;; (cl-add-constraint (scwm-master-solver) c)
+
+
 ;; (reset-scwm-exec-protocol)
 (begin
   (define swi select-window-interactively)
