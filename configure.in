@@ -519,6 +519,7 @@ AC_SUBST(I18N_LIB)
 
 
 AC_OUTPUT(Makefile \
+          scwm.spec \
           sample.scwmrc/Makefile \
           scwm/Makefile \
           scheme/Makefile \

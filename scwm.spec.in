@@ -1,7 +1,7 @@
 Name: scwm
 Summary: A Scheme Configurable Window Manager.
-Version: 0.9
-Release: 1
+Version: @VERSION@
+Release: 2
 Source: ftp://vicarious.mit.edu/pub/scwm/scwm-%{PACKAGE_VERSION}.tar.gz
 Group: X11/Window Managers
 BuildRoot: /tmp/scwmbuild
@@ -21,6 +21,14 @@ window manager while it is running.
 
 
 %changelog
+* Tue Feb  2 1999  Harvey Stein  <hjstein@bfr.co.il>
+
+- Added installation of files from sample.scwmrc directory (into to
+  /usr/doc/scwm-<version> directory).
+- Bumped release #.
+- Autobuild this file from scwm.spec.in (to have version automatically
+  inserted).
+
 * Wed Jan 27 1999  Maciej Stachowiak  <mstachow@mit.edu>
 
 - Devolved for scwm 0.9 release.
@@ -51,6 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %doc ANNOUNCE AUTHORS BUG-REPORTING BUGS COPYING.FVWM COPYING.GPL ChangeLog
 %doc INSTALL NEWS README README-constraints THANKS TODO doc
+%doc sample.scwmrc/*.scwmrc sample.scwmrc/*.scm sample.scwmrc/*example* sample.scwmrc/ChangeLog
 
 %config /usr/X11R6/lib/X11/scwm/system.scwmrc
 
