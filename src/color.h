@@ -89,6 +89,9 @@ EXTERN_SET(double menu_shadow_factor_val, 0.5);
 typedef struct {
   Pixel pixel;
   SCM name;
+  Bool borrowed;  /* true if the color was not allocated by scwm
+                     and we're borrowing it from another application
+                     (for a closest color match) */
 } scwm_color;
 
 #define COLOR_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_color)

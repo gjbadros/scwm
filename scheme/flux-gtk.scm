@@ -16,6 +16,7 @@
   :use-module (app scwm wininfo)
   :use-module (app scwm xprop-extras)
   :use-module (app scwm winlist)
+  :use-module (app scwm time-convert)
   :use-module (app scwm prompt-string)
   :use-module (app scwm winops)
   :use-module (app scwm path-cache)
@@ -31,7 +32,7 @@ WIN defaults as usual to the current window context."
 
 (define*-public (show-window-list-matching-interactively)
   "Prompt for a wildcard, and popup a list of matching windows (by title)."
-  (prompt-string "Window regexp? "
+  (prompt-string "Window wildcard? "
 		 (lambda (wildcard)
 		   (add-timer-hook! (ms->usec 200) handle-pending-events)
 		   (show-window-list-menu #:only (title-match?? wildcard)))))

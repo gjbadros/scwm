@@ -88,7 +88,9 @@ size_t
 free_color(SCM obj)
 {
   scwm_color *sc=COLOR(obj);
-  XFreeColors(dpy, Scr.ScwmRoot.attr.colormap, &sc->pixel, 1, 0);
+  if (!sc->borrowed) {
+    XFreeColors(dpy, Scr.ScwmRoot.attr.colormap, &sc->pixel, 1, 0);
+  }
   FREE(sc);
 
   return 0;
@@ -188,6 +190,7 @@ ScmMakeColor(const char *cn, int *perror_status)
   SCM answer;
   scwm_color *sc;
   XColor color;
+  Bool fBorrowedColor = False;
   if (perror_status)
     *perror_status = 0;
 
@@ -201,9 +204,12 @@ ScmMakeColor(const char *cn, int *perror_status)
     if (perror_status)
       *perror_status = 2; /* cannot alloc */
     if (ClosestColor(&color)) {
+#ifdef WARN_CLOSE_MATCH /* FIXGJB: need warnings to be run-time configurable */
       scwm_msg(WARN,"ScmMakeColor","Allocated a close match for: %s",cn);
+#endif
       if (perror_status)
         *perror_status = 3; /* got close match */
+      fBorrowedColor = True;    /* we are not responsible for freeing this color! */
     } else {
       scwm_msg(WARN,"ScmMakeColor","Cannot allocate color or a close match: %s -- using black",cn);
       return BLACK_COLOR;
@@ -213,6 +219,7 @@ ScmMakeColor(const char *cn, int *perror_status)
   sc = NEW(scwm_color);
   sc->pixel = color.pixel;
   sc->name = gh_str02scm(cn);
+  sc->borrowed = fBorrowedColor;
 
   gh_defer_ints();
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_color, sc);
