@@ -1,4 +1,4 @@
-;; $Id$ -*- scwm -*-
+; $Id$ -*- scwm -*-
 ;; gjb.scwmrc -- Greg J. Badros's Scwm initialization file
 ;;
 ;; Copyright (C) 1997-1999 Greg J. Badros
@@ -406,7 +406,6 @@
 ;; (window-style "foo" #:squashed-titlebar #t)
 
 ;; (raise-window)
-;; (set-object-property! w 'squashed-titlebar #t)
 ;; (set-object-property! w 'no-side-decorations #t)
 ;; (set-object-property! w 'no-side-decorations #f)
 ;; (force-reset-window-frame! w)
@@ -1399,7 +1398,7 @@ union of all other window managers!
 
 ;;;(set! construct-menu-primitive construct-pie-menu)
 
-(run-dot-xclients-at-startup)
+;;(run-dot-xclients-at-startup)
 
 (debug-display " *** `scwmrc' processed.\n")
 
