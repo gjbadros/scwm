@@ -1,6 +1,60 @@
-Guile NEWS --- history of user-visible changes.  -*- text -*-
+Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997 Maciej Stachowiak.
 See the end for copying conditions.
+
+Changes to scwm-0.4
+
+set-xor-value! has been renamed to set-rubber-band-mask!.
+
+Window-shades can now optionally be animated. (See gjb.scwmrc for an
+example.)
+
+Images are now Scheme objects. Anything that takes an image filename
+string can now take either a filename string or an image
+object. make-image creates an image object. set-icon-path! and
+set-pixmap-path! are now gone and replaced by set-image-path!.
+
+Paths are no longer environment-variable expanded; use the Scheme
+procedure getenv if you need this.
+
+wait-for-window now takes a predicate rather than a wildcard
+string. You can pass (wildcard-matcher NAME) to get the old effect.
+
+Implementation of decors and faces to allow a fair amount of
+customization of the look. The low-level interface consists of the
+make-decor, set-current-decor!, set-window-decor!, make-face,
+set-title-face!, set-button-face!, set-button-mwm-flag! and
+set-border-face! procedures, but the new (app scwm decor) and (app
+scwm face) modules provide the friendlier wrappers with-decor,
+title-style, button-style and border-style.
+
+Added support for set-smart-placement-is-really-smart!,
+set-click-to-focus-passes-click!, set-click-to-focus-raises! and
+set-mouse-focus-click-raises!. These are obscure, but being able to
+have click-to-focus without raising the window is nice.
+
+New (app scwm fvwm-compat) module with some fvwm-compatability
+procedures that are otherwise not very useful.
+
+Added send-button-press and send-key-press to send synthetic mouse
+button and keypress events.
+
+Added animated moves - move-to can optionally animate the movement of
+a window. See gjb.scwmrc for examples.
+
+Added unbind-key and unbind-mouse - bindings can now be removed.
+
+Added a sendscwm program and scwm-buffer.el; allows some interaction
+with a running scwm, but the interface is not yet two-way.
+
+Added sample.scwmrc/gjb.scwmrc, a scwmrc example that has more
+features and shows off a lot of new functionality.
+
+Improvements to the build process to make VPATH and dependencies work
+correctly.
+
+Many bug fixes.
+
 
 Changes to scwm-0.3
 
