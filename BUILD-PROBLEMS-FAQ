@@ -65,3 +65,21 @@ image.c:414: warning: passing arg 1 of `scm_wrong_type_arg' discards `const' fro
 Just ignore them-- they are harmless (the latter can be fixed by adding
 const declarations to the prototypes in libguile/error.h).
 
+
+>sync14% scwm -V
+>scwm: error in loading shared libraries
+>: undefined symbol: __bzero
+>sync14% 
+>
+>
+>any pointers on how to fix this?
+
+I have seen this on a stock standard Redhat 5.2, using the scwm RPM from
+redhat-contrib.
+
+I solved the problem by grabbing the SRPM file and remaking the RPM file.
+
+This had an annoying conflict with /usr/info/dir, which I (hastily) solved
+by using --force and then mv /usr/info/dir.rpmsave /usr/info/dir.
+
+Grame Cross
