@@ -142,7 +142,7 @@ scm_prepare_dump()
 void
 scwm_init_after_dump ()
 {
-  scwm_msg(ERR,"scwm_init_after_dump","Initializing from dump file.");
+  scwm_msg(INFO,"scwm_init_after_dump","Initializing from dump file.");
 }
 
 void unexec (char *new_name, char *old_name, 
@@ -825,7 +825,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 
   
   while(1) {
-    static const char *getopt_opts = "Dsd:f:e:hibVnp:Pg";
+    static const char *getopt_opts = "Dsd:f:e:hibVo:p:Pg";
     static struct option getopt_longopts[] =
     {
       {"debug", 0, NULL, 'D'}, /* turns on Scwm debugging */
