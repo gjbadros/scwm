@@ -19,7 +19,7 @@
 
 
 
-(define-module (app scwm kwm-emulation))
+(define-module (app scwm kde-hints))
 
 
 

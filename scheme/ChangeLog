@@ -1,3 +1,9 @@
+1999-02-08  Maciej Stachowiak  <mstachow@racerx.viewlogic.com>
+
+	* kde-hints.scm: Renamed from kwm-emulation.scm
+	* animated-iconify.scm: Renamed from animate-iconify-window.scm
+	* path-cache.scm: Renamed from cached-program-exists.scm
+
 1999-02-04  Sam Steingold  <sds@goems.com>
 
 	* placement.scm: remove `peek'.

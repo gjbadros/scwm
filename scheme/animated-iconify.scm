@@ -1,7 +1,7 @@
 ;; $Id$
 ;; (C) 1999 Greg J. Badros
 
-(define-module (app scwm animate-iconify-window)
+(define-module (app scwm animated-iconify)
   :use-module (app scwm base)
   :use-module (app scwm optargs)
   :use-module (app scwm virtual)
@@ -49,18 +49,18 @@
     (and after-animation-proc (after-animation-proc))
     (set-X-server-synchronize! #f)))
 
-(define*-public (animate-iconify #&optional (win (get-window)))
+(define*-public (animated-iconify #&optional (win (get-window)))
    (animate-iconify-or-deiconify (window-viewport-position win) (window-frame-size win)
 				 20 (lambda () (iconify win)) #f
 				 '(1.0 .9 .8 .7 .6 .5 .4 .3 .2 .1)))
 
 
-(define*-public (animate-deiconify #&optional (win (get-window)))
+(define*-public (animated-deiconify #&optional (win (get-window)))
    (animate-iconify-or-deiconify (window-viewport-position win) (window-frame-size win)
 				 20 #f (lambda () (deiconify win))
 				 '(.1 .2 .3 .4 .5 .6 .7 .8 .9 1.0)))
 
-(define*-public (animate-deiconify-to-current-viewport #&optional (win (get-window)))
+(define*-public (animated-deiconify-to-current-viewport #&optional (win (get-window)))
    (animate-iconify-or-deiconify (apply virtual->viewport 
 					(window-position-in-viewport 
 					 (current-viewport-offset-xx)
@@ -74,3 +74,4 @@
 ;; (begin (animate-iconify w) (sleep 1) (animate-deiconify w))
 
 ;;(window-frame-size (select-window-interactively))
+

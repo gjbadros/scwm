@@ -2,7 +2,7 @@
 ;; (C) 1998 Greg J. Badros
 ;; 4-October-1998
 
-(define-module (app scwm cached-program-exists))
+(define-module (app scwm path-cache))
 
 ;; Switch this to #t if you're having problems
 (define-public debug-program-cache #f)
