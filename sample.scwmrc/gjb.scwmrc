@@ -40,6 +40,7 @@
 		  group preferences gnome-hints
 		  send-string 
 		  property-respond
+		  esdsound
 		  )
 
 ;; do this early, since gnome times out in 10 seconds
@@ -501,8 +502,13 @@
 (window-style "Netscape: Find" #:transient-placement-proc (thunk move-next-to-netscape-win))
 ;; (window-style "Reminder" #:placement-proc (lambda () (system "ring-bells")))
 
-(define (wavplay filename)
-  (system (string-append "wavplay " filename "&")))
+;; (use-scwm-modules esdsound)
+;; (scwm-module-loaded? '(app scwm esdsound))
+(if (scwm-module-loaded? '(app scwm esdsound))
+    (define (wavplay filename)
+      (system (string-append "wavplay " filename "&")))
+    (define (wavplay filename)
+      (sound-play (sound-load filename))))
 
 (define download-closed-wav "/scratch/gjb/Media/tada.wav")
 
