@@ -141,9 +141,11 @@
 (add-boolean-style-option #:sticky stick unstick)
 
 (add-boolean-style-option #:no-titlebar hide-titlebar show-titlebar)
-(add-window-hint-option #:squashed-titlebar
-			  (lambda (arg w)
-			    (set-object-property! w 'squashed-titlebar arg)))
+
+;; FIXGJB: This still needs to force the squashing to take effect
+(add-window-style-option #:squashed-titlebar
+			 (lambda (arg w)
+			   (set-object-property! w 'squashed-titlebar arg)))
 
 ; clashes with maximized so make it hint-only for now
 (add-window-hint-option #:mwm-buttons set-mwm-buttons!)
