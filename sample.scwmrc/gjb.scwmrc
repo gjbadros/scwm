@@ -1,9 +1,12 @@
 ;; $Id$ -*- scwm -*-
-;; As of Mar 4, 1998, I've not updated this file much at all in the
-;; last several months;  I highly recommend using one of the other
-;; better-maintained .scwmrc-s until I have time to make my configuration
-;; complete and current.
-;; Greg J. Badros <gjb@cs.washington.edu>
+;; Greg J. Badros's Scwm initialization file
+;; (C) 1997-1998 Greg J. Badros
+;; Feel free to use and reuse code contained herein
+;; as permitted by the GNU GPL
+;; NO WARRANTIES OF ANY KIND -- USE AT YOUR OWN RISK
+;; It works for me and I like it, but you might not!
+;; Comments are appreciated -- email gjb@cs.washington.edu
+
 
 ;; Uncomment the below to send a single UDP packet to
 ;; the scwm usage counter machine at startup
@@ -1166,10 +1169,10 @@
 ;; Alt-w
 (bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
-;; FIXMS: maybe should be changed to use latest auto-raise stuff?
 (if want-autoraise
-    (use-modules (app scwm auto-raise))
-    (window-style "*" #:auto-raise #t))
+    (begin
+      (use-modules (app scwm auto-raise))
+      (window-style "*" #:auto-raise #f)))
 
 (if want-fvwm2-pager-module
     (begin
