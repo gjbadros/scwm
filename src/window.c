@@ -673,7 +673,7 @@ SCM move_window_to_desk(SCM which, SCM win)
   ScwmWindow *t;
   int val1;
 
-  if (which) {
+  if (!gh_number_p(which)) {
     scm_wrong_type_arg("move-window-to-desk",1,which);
   }
 
@@ -689,19 +689,23 @@ SCM move_window_to_desk(SCM which, SCM win)
   if(!((t->flags & ICONIFIED)&&(t->flags & StickyIcon)) &&
      (!(t->flags & STICKY))&&(!(t->flags & ICON_UNMAPPED)))
     {
-      t->Desk = val1;
       if(t->Desk == Scr.CurrentDesk) {
+	t->Desk = val1;
 	if (val1 != Scr.CurrentDesk) { 
 	  UnmapIt(t);
 	}
       } else if(val1 == Scr.CurrentDesk) {
+	t->Desk = val1;
 	/* If its an icon, auto-place it */
 	if(t->flags & ICONIFIED)
 	  AutoPlace(t);
 	MapIt(t);
-      } 
+      } else {
+	t->Desk = val1;
+      }
     }
   BroadcastConfig(M_CONFIGURE_WINDOW,t);
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -734,4 +738,22 @@ SCM get_window_id(SCM win) {
   tmp_win=SCWMWINDOW(win);
 
   return SCM_MAKINUM(tmp_win->w);
+}
+
+
+SCM get_window_desk(SCM win) {
+  ScwmWindow *tmp_win;
+
+  VALIDATE(win,"get-window-desk");
+  return SCWMWINDOW(win)->desk;
+}
+
+SCM get_window_list() {
+  ScwmWindow *t;
+  SCM result=SCM_EOL;
+
+  for (t=Scr.ScwmRoot.next; NULL!=NULL; t=t->next) {
+    result=scm_cons(t->schwin,result);
+  }
+  return result;
 }
