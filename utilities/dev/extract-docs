@@ -1,4 +1,4 @@
-#!/uns/bin/perl -w
+#!/usr/bin/perl -w
 # $Id$ -*- perl -*-
 # extract-docs
 # By Greg J. Badros -- 7-July-1998
@@ -60,16 +60,6 @@ sub script_usage ( ) {
   exit 0;
 }
 
-my @okay_words = qw(fvwm2 fvwm hilight viewport scwmexec scwmrepl menuitem
-		    menuitems hotkey submenu colormap 
-		    pseudocolor staticgray staticcolor grayscale directcolor truecolor
-		    scwmrc reallysmart smartplacement pposition mwm mwm alt meta hyper
-		    broadcastinfo smartplacementisreallysmart randomplacement
-		    super car cdr cadr titlebar unhover bg fg popup iconify
-		    iconifying deiconify deiconifying unmap iconified desktop desktops
-		    honoured lenience xproperty xored
-		    shift control meta alt hyper super callbacks decors viewports
-		   );
 
 my $pkg_name = basename($ENV{PWD});
 my $fDebug = FALSE;
@@ -104,8 +94,11 @@ my %vars = ();
 use FileHandle;
 use IPC::Open2;
 
+# dictionary of scwm-specific words, in the same directory as this script
+(my $dictionary = $0)=~s#[^/]*$#dictionary#;
+
 my $pid = open2( \*ISPELL_RESPONSE,
-		 \*ISPELL, "ispell -a") or die "Could not open \'ispell -a\' pipe: $!";
+		 \*ISPELL, "ispell -a -p $dictionary") or die "Could not open \'ispell -a\' pipe: $!";
 ISPELL->autoflush();
 
 my $header = "";
@@ -553,16 +546,6 @@ EOC
   return TRUE;
 }
 
-# FIXGJB: replace this with a scwm dictionary that ispell knows about
-sub KnownWord ( $ ) {
-  my ($w) = @_;
-  $w = lc($w);
-  foreach my $ok ( @okay_words ) {
-    return TRUE if $w eq $ok;
-  }
-  return FALSE;
-}
-
 # remember, no underscores in sgml ids
 sub ScmIdToSgmlId ( $ ) {
   my ($id) = @_;
@@ -654,13 +637,12 @@ sub MarkupComment( $ ) {
 }
 
 sub IspellText( $$$ ) {
-  my ($filename,$line,$text) = @_;
+  my ($filename,$line,$text,$response) = @_;
   foreach my $word (split /[\d\W]+/, $text) {
     # ispell is picky about lots of stuff, so ignore them
     next if $word =~ /^[-\#]/;
     next if $word !~ /^\w\w+/;
     next if $word eq uc($word);
-    next if KnownWord($word);
     print STDERR "ispell trying $word -> " if $fDebug;
     my $junk = <ISPELL_RESPONSE>; # read the blank
     print ISPELL $word, "\n";
@@ -673,6 +655,11 @@ sub IspellText( $$$ ) {
     }
     if ($response !~ m/^[+\*]/) {
       print STDERR "$filename:$line:****ispell reported possible misspelling: $word -> $response\n";
+      print STDERR "Should I add `$word' to my list of known correct words? ";
+      $response=<STDIN>;
+      if ($response=~/^y(es)?$/i) {
+	print ISPELL "*",lc($word),"\n";
+      }
     }
   }
 }
