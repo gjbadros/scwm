@@ -3,6 +3,9 @@
 # Generate aclocal.m4 from configure.in
 aclocal
 
+# Copy ltconfig and ltmain.sh for this version of libtool
+libtoolize --automake
+
 # Generate Makefile.in's from Makefile.am's and configure.in
 # (adding missing files that may be needed for proper operation)
 automake --add-missing --gnu

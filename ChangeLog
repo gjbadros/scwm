@@ -1,3 +1,8 @@
+1999-01-07  Todd Larason  <jtl@molehill.org>
+
+	* autogen.sh: Add libtoolize call
+	* ltmain.sh, ltconfig: remove
+
 1999-01-05  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* gtk.m4: Renamed to acinclude.m4. On machines that had gtk.m4 in
