@@ -322,31 +322,62 @@ void die(SmcConn conn, SmPointer client_data)
 static void setSMProperties()
 {
   CARD8 restartStyle = SmRestartImmediately;
-  SmPropValue userIDVal = { strlen(UserName), (SmPointer)UserName };
+  SmPropValue userIDVal;
   SmPropValue cwdVal;
-  SmPropValue *restartVal = NEWC(g_argc+2, SmPropValue);
-  SmPropValue restartStyleVal = { 1, &restartStyle };
+  SmPropValue *restartVal;
+  SmPropValue restartStyleVal;
   SmPropValue discardVal[] = { { 2, "rm" }, { 2, "-f" }, { 0, NULL } };
-  SmProp userIDProp = { SmUserID, SmARRAY8, 1, &userIDVal };
-  SmProp cwdProp = { SmCurrentDirectory, SmARRAY8, 1, &cwdVal };
-  SmProp programProp = { SmProgram, SmARRAY8, 1, restartVal };
-  SmProp restartProp = { SmRestartCommand, SmLISTofARRAY8, 0, restartVal };
-  SmProp cloneProp = { SmCloneCommand, SmLISTofARRAY8, 0, restartVal };
-  SmProp discardProp = { SmDiscardCommand, SmLISTofARRAY8, sizeof(discardVal)/
-			 sizeof(discardVal[0]), discardVal };
-  SmProp restartStyleProp = { SmRestartStyleHint, SmCARD8,
-			      1, &restartStyleVal };
-  SmProp *props[] = {
-    &cwdProp,
-    &programProp,
-    &userIDProp,
-    &restartProp,
-    &cloneProp,
-    &discardProp,
-    &restartStyleProp
-  };
+  SmProp userIDProp;
+  SmProp cwdProp;
+  SmProp programProp;
+  SmProp restartProp;
+  SmProp cloneProp;
+  SmProp discardProp;
+  SmProp restartStyleProp;
+  SmProp *props[7];
   int i, j;
 
+  userIDVal.length = strlen(UserName);
+  userIDVal.value = (SmPointer)UserName;
+  restartVal = NEWC(g_argc+2, SmPropValue);
+  restartStyleVal.length = 1;
+  restartStyleVal.value = (SmPointer)&restartStyle;
+  userIDProp.name = SmUserID;
+  userIDProp.type = SmARRAY8;
+  userIDProp.num_vals = 1;
+  userIDProp.vals = &userIDVal;
+  cwdProp.name = SmCurrentDirectory;
+  cwdProp.type = SmARRAY8;
+  cwdProp.num_vals = 1;
+  cwdProp.vals = &cwdVal;
+  programProp.name = SmProgram;
+  programProp.type = SmARRAY8;
+  programProp.num_vals = 1;
+  programProp.vals = restartVal;
+  restartProp.name = SmRestartCommand;
+  restartProp.type =SmLISTofARRAY8;
+  restartProp.num_vals = 0;
+  restartProp.vals = restartVal;
+  cloneProp.name = SmCloneCommand;
+  cloneProp.type = SmLISTofARRAY8;
+  cloneProp.num_vals = 0;
+  cloneProp.vals = restartVal;
+  discardProp.name = SmDiscardCommand;
+  discardProp.type =SmLISTofARRAY8;
+  discardProp.num_vals = sizeof(discardVal)/ sizeof(discardVal[0]);
+  discardProp.vals = discardVal;
+  restartStyleProp.name = SmRestartStyleHint;
+  restartStyleProp.type = SmCARD8;
+  restartStyleProp.num_vals = 1;
+  restartStyleProp.vals = &restartStyleVal;
+  props[0] = &cwdProp;
+  props[1] = &programProp;
+  props[2] = &userIDProp;
+  props[3] = &restartProp;
+  props[4] = &cloneProp;
+  props[5] = &discardProp;
+  props[6] = &restartStyleProp;
+  
   cwdVal.value = xgetcwd(NULL, 0);
   cwdVal.length = strlen(cwdVal.value);
   for (i=0, j=0; j<g_argc; j++) {
@@ -464,11 +495,18 @@ void initSM()
 void doneSM(int automatic_restart)
 {
   CARD8 restartStyle = SmRestartIfRunning;
-  SmPropValue restartStyleVal = { 1, &restartStyle };
-  SmProp restartStyleProp = { SmRestartStyleHint, SmCARD8,
-			      1, &restartStyleVal };
-  SmProp *props[] = { &restartStyleProp };
+  SmPropValue restartStyleVal;
+  SmProp restartStyleProp;
+  SmProp *props[1];
 
+  restartStyleVal.length = 1;
+  restartStyleVal.value = &restartStyle;
+  restartStyleProp.name = SmRestartStyleHint;
+  restartStyleProp.type = SmCARD8;
+  restartStyleProp.num_vals = 1;
+  restartStyleProp.vals = &restartStyleVal;
+  props[0] = &restartStyleProp;
+  
   if (!SMconn)
     return;
   if (!automatic_restart)

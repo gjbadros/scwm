@@ -1,3 +1,10 @@
+1999-01-14  Todd Larason  <jtl@molehill.org>
+
+	* session-manager.c (doneSM, setSMProperties): Split variable
+	declaration and initialization to make non-gcc compilers happy.
+	Standard C only allows constants in initialization functions.
+	Thanks to Sam Falkner for the good bug reports.
+
 Mon Jan 11 08:36:14 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Added newhandler_doreset(..) and SigResetLoop(..) to use 
