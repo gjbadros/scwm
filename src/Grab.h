@@ -30,6 +30,8 @@ void XGrabServer_withSemaphore(Display * disp);
 
 void XUngrabServer_withSemaphore(Display * disp);
 
+int CServerGrabs();
+
 #endif
 
 /* Local Variables: */

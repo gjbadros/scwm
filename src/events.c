@@ -1776,6 +1776,7 @@ CoerceEnterNotifyOnCurrentWindow()
 
 int
 NoEventsScwmUpdate()
+#define FUNC_NAME "NoEventsScwmUpdate"
 {
   extern int fd_width, x_fd;
   fd_set in_fdset, out_fdset;
@@ -1851,12 +1852,22 @@ NoEventsScwmUpdate()
         }
     } else 
 #endif
-      { /* scope/else in ifdef above */
-        run_input_hooks(&in_fdset);
+      { /* scope/else in if above */
+        DBUG((DBG,FUNC_NAME,"Before input hooks"));
+        if (CServerGrabs() == 0) {
+          /* GJB:FIXME:: why do I need to do this in C code--
+             I also made scwm-gtk-sync bail immediately if
+             there are any grabs, but it still hung for me --04/11/99 gjb */
+          /* only run input hooks if server is grabbed,
+             otherwise gtk may hang */
+          run_input_hooks(&in_fdset);
+        }
+        DBUG((DBG,FUNC_NAME,"After input hooks"));
       }
   }
   return retval;
 }
+#undef FUNC_NAME
 
 /*
  * Waits for next X event, 

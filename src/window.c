@@ -1350,8 +1350,10 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
                            ExposureMask | KeyPressMask | VisibilityChangeMask |
                            ButtonMotionMask | PointerMotionMask |
                            EnterWindowMask,
-                           eventp) == False)
+                           eventp) == False) {
       NoEventsScwmUpdate();
+      ms_sleep(10);
+    }
 
     /* fallen through, so we got an event we're interested in */
     StashEventTime(eventp);
