@@ -116,7 +116,7 @@
 	      #:sticky-icon #t
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
-	      #:int-override #t #:decorate-transient #t
+	      #:int-override #t #:decorate-transient #f
 	      #:PPosition-hint #f
 	      #:mini-icon pic-xterm-mini)
 
@@ -323,7 +323,7 @@
 (define (tell-workman command)
   (execute (string-append "workman -s " command)))
 
-(define quit-verify
+(define menu-quit-verify
   (menu 
    (list
     (menuitem "Really quit scwm?" #f)
@@ -337,6 +337,51 @@
 
 (define use-complete-host-menu #t)
 
+(define menu-applications
+  (menu
+   (list
+    (menuitem "Applications"))))
+
+(define menu-utilities
+  (menu
+   (list
+    (menuitem "Utilities"))))
+
+(define menu-multimedia
+  (menu
+   (list
+    (menuitem "Multimedia"))))
+
+(define menu-games
+  (menu
+   (list
+    (menuitem "Games"))))
+
+(define menu-hosts
+  (menu
+   (list
+    (menuitem "Hosts"))))
+
+(define menu-other-hosts
+  (menu
+   (list
+    (menuitem "Other hosts"))))
+
+(define menu-preferences
+  (menu
+   (list
+    (menuitem "Preferences"))))
+
+(define menu-system-utilities
+  (menu
+   (list
+    (menuitem "Preferences"))))
+
+(define menu-screensaver
+  (menu
+   (list
+    (menuitem "Screensaver"))))
+
 ;;; FIXGJB introduce syntax which gives the popup-menu-root-start closure after
 ;;; defining a menu
 (define menu-root-start
@@ -346,58 +391,43 @@
     (menuitem "Start" #:image-left "mini-exp.xpm")
     menu-title
     (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
-	       #:action start-xterm)
+	      #:action start-xterm)
     (menuitem "&Applications" #:image-left "mini-x2.xpm" 
-	       #:action (lambda () 
-			  (popup-menu menu-applications)))
+	      #:action menu-applications)
     (menuitem "&Utilities" #:image-left "mini-hammer.xpm" 
-	       #:action (lambda ()
-			  (popup-menu menu-utilities)))
+	      #:action menu-utilities)
     (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm" 
-	       #:action (lambda ()
-			  (popup-menu menu-multimedia)))
+	      #:action menu-multimedia)
     (menuitem "&Games" #:image-left "mini-happy.xpm" 
-	       #:action (lambda ()
-			  (popup-menu menu-games)))
+	      #:action menu-games)
     menu-separator
     (menuitem "H&osts" #:image-left "mini-windows.xpm" 
-	       #:action (lambda ()
-			  (popup-menu menu-hosts)))
+	      #:action menu-hosts)
     (if use-complete-host-menu
-	(menuitem "O&ther Hosts" #:action 
-		   (lambda ()
-		     (popup-menu menu-otherhosts))))
+	(menuitem "O&ther Hosts" #:action menu-other-hosts))
     (menuitem "&System Utilities" #:image-left "mini-connect.xpm" 
-	       #:action (lambda ()
-			  (popup-menu menu-system-utilities)))
-    
-    ;; MS - use the menu object rather than a popup closure when 
-    ;; possible to get correct submenu semantics
+	      #:action menu-system-utilities)
     (menuitem "&Window Operations" #:image-left "mini-windows.xpm" 
-	       #:action (lambda ()
-			  (popup-menu menu-window-ops)))
+	      #:action menu-window-ops)
     (menuitem "&Preferences" #:image-left "mini-prefs.xpm" 
-	       #:action (lambda ()
-			  (popup-menu menu-preferences)))
+	      #:action menu-preferences)
     menu-separator
     (menuitem "S&creensaver" #:image-left "mini-display.xpm" 
-	       #:action (lambda ()
-			  (popup-menu menu-screensaver)))
+	      #:action menu-screensaver)
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
-	       #:action (lambda ()
-			  (exec-xlock)))
+	      #:action (lambda ()
+			 (exec-xlock)))
     menu-separator
     (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
-	       #:action (lambda ()
-			  (scwm-about-message)))
+	      #:action (lambda ()
+			 (scwm-about-message)))
     (menuitem "&Help ScwmTNL" #:image-left "mini-question.xpm" 
-	       #:action (lambda ()
-			  (scwm-help)))
+	      #:action (lambda ()
+			 (scwm-help)))
     (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
-	       #:action (lambda ()
-			  (popup-menu quit-verify))))
-      #:image-side "linux-menu.xpm"
-      #:color-bg-image-side "blue"))
+	      #:action menu-quit-verify))
+   #:image-side "linux-menu.xpm"
+   #:color-bg-image-side "blue"))
 
 (define (popup-menu-root-start)
   (popup-menu menu-root-start))
@@ -430,9 +460,9 @@
     (menuitem "xcalc" #:action (lambda () (execute "xcalc")))
     (menuitem "xmag" #:action (lambda () (execute "xmag")))
     menu-separator
-    (menuitem "Desks" #:action (lambda () (popup-menu menu-desk)))
+    (menuitem "Desks" #:action menu-desk)
     menu-separator
-    (menuitem "Exit scwm" (lambda () (popup-menu quit-verify))))))
+    (menuitem "Exit scwm" menu-quit-verify))))
 
 (define (popup-util)
   (popup-menu menu-util))
