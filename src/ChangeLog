@@ -1,3 +1,14 @@
+1998-10-17  Todd Larason  <jtl@teeny.molehill.org>
+
+	* menulook.c (s_copy_menu_look): add doc string
+
+	* menu.c (SzFirstItemFromPmd): include only if SCWM_DEBUG_MSGS is
+	set
+	(PmiimFromPmdShortcutKeypress): #if 0 - this isn't used right now
+	(MenuInteraction): added a griping comment about an earlier
+	change; more thought needs to go into abstracting menu feel, in
+	addition to menu look
+
 1998-10-16  Todd Larason  <jtl@teeny.molehill.org>
 
 	* menu.h: remove unused PfnConstructDynamicMenu typedef

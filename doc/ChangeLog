@@ -1,3 +1,11 @@
+1998-10-17  Todd Larason  <jtl@teeny.molehill.org>
+
+	* Makefile.am (scwm.sgml scwm-procedures.txt): echo 'make[99]:
+	Entering directory ...' and 'make[99]: Leaving directory ...' to
+	let emacs' next-error track directories properly.  pass -d option
+	to scwmdoc, passing $SCWMDIR if set, or the top of the source tree 
+	otherwise, so the links in the sgml file work.
+
 1998-10-16  Todd Larason  <jtl@teeny.molehill.org>
 
 	* Makefile.am (scwm.sgml scwm-procedures.txt): find scwmdoc
