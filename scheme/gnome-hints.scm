@@ -462,8 +462,7 @@ Used in `enable-gnome-hints'."
   (set! bpress_win (make-message-window ""))
   (set! bpress_win_id (message-window-id bpress_win))
   (X-property-set! 'root-window _WIN_SUPPORTING_WM_CHECK
-                   (vector (window-id 'root-window)) "CARDINAL" 32)
-
+                   (vector bpress_win_id) "CARDINAL" 32)
   (X-property-set! 'root-window "_WIN_DESKTOP_BUTTON_PROXY" 
 		   (vector bpress_win_id) "CARDINAL" 32)
   (X-property-set! bpress_win_id "_WIN_DESKTOP_BUTTON_PROXY" 
