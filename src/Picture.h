@@ -52,7 +52,6 @@ EXTERN long scm_tc16_scwm_picture;
 
 /* Scheme object interface to Picture-s */
 
-SCM mark_picture(SCM obj);
 size_t free_picture(SCM obj);
 int print_picture(SCM obj, SCM port, scm_print_state * pstate);
 SCM picture_p(SCM obj);

@@ -163,14 +163,6 @@ DestroyPicture(Display * dpy, Picture * p)
 
 /* Scheme Object Interface to Picture-s */
 
-/* MSFIX: I just copied the one applicable line out of window.c
-   --11/08/97 gjb */
-SCM 
-mark_picture(SCM obj)
-{
-  SCM_SETGC8MARK(obj);
-  return SCM_BOOL_F;
-}
 
 size_t 
 free_picture(SCM obj)

@@ -90,7 +90,7 @@ static scm_smobfuns face_smobfuns =
 
 static scm_smobfuns picture_smobfuns =
 {
-  &mark_picture,
+  &scm_mark0,
   &free_picture,
   &print_picture,
   0
