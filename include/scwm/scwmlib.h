@@ -54,7 +54,7 @@ void sleep_a_little(int n);
 int ReadScwmPacket(int fd, unsigned long *header, unsigned long **body);
 void SendText(int *fd,char *message,unsigned long window);
 #define SendInfo SendText
-void *GetConfigLine(int *fd, char **tline);
+void GetConfigLine(int *fd, char **tline);
 void SetMessageMask(int *fd, unsigned long mask);
 
 /***********************************************************************
