@@ -5,7 +5,7 @@ scwm_common_scheme = \
 advice.scm animated-edge-moves.scm animated-iconify.scm animation.scm auto-raise.scm \
 base.scm basic-styles.scm bincomm.scm \
 cascade.scm constraints.scm constraint-animation.scm corba.scm \
-debianapps-menu.scm decor.scm defoption.scm describe.scm 
+debianapps-menu.scm decor.scm defoption.scm describe.scm \
 desk-background.scm dir-focus.scm doc.scm edge-ops.scm \
 face.scm file.scm flash-window.scm flux.scm \
 focus-titlebar.scm fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm \
