@@ -1,3 +1,18 @@
+Fri Apr  9 17:05:02 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* menuitem.h, menuitem.c: added scmBGColor scmFGColor scmFont
+ 	fields, and mark them and provide getter/setters for them.
+
+	* drawmenu.c: Use the menuitem bg,fg color and font if they are
+	set for each menuitem, otherwise use the menu defaults. (Similar
+	changes to draw-xpm-menu.c).
+
+Fri Apr  9 12:14:38 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* menuitem.c: Fix bug I just introduced.
+
+	* menu.c: Make some code a bit more robust w.r.t. NULL ptrs.
+
 Fri Apr  9 10:56:30 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c: Fix typo in FUNC_NAME def.

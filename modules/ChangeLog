@@ -1,3 +1,8 @@
+Fri Apr  9 17:08:58 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* xpm-menus/draw-xpm-menu.c: Honor menuitem font, bg, fg colors.
+	Like changes to drawmenu.c.
+
 Thu Apr  8 18:21:52 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c: Fix the shaped window before animated 
