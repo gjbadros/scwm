@@ -843,7 +843,7 @@ place-holder until we have proper cursor support in scwm. */
 #undef FUNC_NAME
 
 
-/**CONCEPT: The Window Context
+/**CONCEPT: Window Context
 
   When actions are triggered by mouse or keyboard events, or menu
 actions from menus originally popped up by mouse or keyboard events, a
