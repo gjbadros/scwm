@@ -238,6 +238,7 @@ If OPAQUELY? is specified, it is used to determine if the window
 should be moved opaquely, or using a rubber-band. If it is not
 spcified, `interactive-move' calls `*move-opaquely-proc*' on WIN and moves
 opaquely if that returns #t and uses a rubber-band if it returns #f."
+  (interactive)
   (if win ((if opaquely? opaque-move rubber-band-move) win)))
 
 (define*-public (interactive-resize 
@@ -249,6 +250,7 @@ should be resized opaquely, or using a rubber-band. If it is not
 spcified, `interactive-resize' calls `*resize-opaquely-proc*' on WIN and
 moves opaquely if that returns #t and uses a rubber-band if it returns
 #f."
+  (interactive)
   (if win ((if opaquely? opaque-resize rubber-band-resize) win)))
 
 ;;; hack to work with minimal.scm

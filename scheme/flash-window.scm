@@ -11,6 +11,7 @@
   "Flash WIN's titlebar and boundary color to COLOR indefinitely.
 Returns the window changed.  Use `unflash-window' to rever the
 window to its normal colors."
+  (interactive)
   (flash-window win #:color color #:unflash-delay #f)
   win)
 
@@ -21,6 +22,7 @@ window to its normal colors."
   "Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.
 UNFLASH-DELAY may be #f to not automatically revert back to the original
 color.  See `unflash-window'."
+  (interactive)
   (if (and (window-valid? win)
 	   (eq? (object-property win 'old-bg) #f)
 	   (eq? (object-property win 'old-hi-bg) #f))
@@ -54,6 +56,7 @@ color.  See `unflash-window'."
 (define*-public (unflash-window #&optional (win (get-window)))
   "Revert WIN's titlebar and boundary color to state before a `flash-window'.
 Return the window changed."
+  (interactive)
   (let ((old-bg (object-property win 'old-bg))
 	(old-hi-bg (object-property win 'old-hi-bg)))
     ;; set-window-background! only takes colors
@@ -66,6 +69,7 @@ Return the window changed."
   win)
 
 (define*-public (stop-flashing-window #&optional (win (get-window)))
+  (interactive)
   "Turn off window flashing of WIN.
 Has no effect if WIN is not flashing.
 N.B. flashing and highlight-selection of windows currently use the
@@ -78,6 +82,7 @@ WIN."
 (define*-public (raise-and-stop-flashing #&optional (win (get-window)))
   "Turn off window flashing of WIN and raise it.
 Also return #f so that this can be used as an bound IMMEDIATE-PROC."
+  (interactive)
   (if (window-flashing? win)
       (stop-flashing-window win))
   (raise-window win)
