@@ -1,23 +1,21 @@
 REQUIRED TOOLS:
 
-Scwm requires at least autoconf 2.12, automake 1.3 and libtool 1.2 to
-generate some of the automatically generated files for the build
-process. You don't need these if you are just compiling a release or a
-snapshot, but if you are going to hack on the code and change the
-Makefiles and such, or if you use the versions from anonymous CVS, you
-will probably need them. They are available from:
+Scwm requires at least autoconf, automake and libtool to generate some
+of the automatically generated files for the build process. You don't
+need these if you are just compiling a release or a snapshot, but if
+you are going to hack on the code and change the Makefiles and such,
+or if you use the versions from anonymous CVS, you will probably need
+them. The following are some reccomended versions and
+locations. Earlier versions may work but we don't guarantee this.
 
-** Note that automake 1.2 will *not* work -- the dependencies will fail
-on the missing .x files that guile-snarf generates
+autoconf 2.13: 
+ftp://ftp.gnu.org/pub/gnu/autoconf/autoconf-2.13.tar.gz
 
-autoconf 2.12: 
-ftp://prep.ai.mit.edu/pub/gnu/autoconf-2.12.tar.gz
+automake 1.4:
+ftp://ftp.gnu.org/pub/gnu/automake/automake-1.4.tar.gz
 
-automake 1.3:
-ftp://prep.ai.mit.edu/pub/gnu/automake-1.3.tar.gz
-
-libtool 1.2:
-ftp://prep.ai.mit.edu/pub/gnu/libtool-1.2.tar.gz
+libtool 1.2d:
+ftp://alpha.gnu.org/pub/gnu/libtool-1.2d.tar.gz
 
 Some of these packages may be available as .rpm or .deb packages, or
 other system-specific packages, but I haven't checked.

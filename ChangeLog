@@ -1,3 +1,8 @@
+1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* HACKING: Bumped reccomended tool versions to Autoconf 2.13,
+	Automake 1.4 and Libtool 1.2d. Updated download pointers.
+
 Fri Feb  5 20:36:30 1999  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
         * configure.in: Bump version number to something appropriate for
