@@ -1,3 +1,13 @@
+Tue Sep 15 09:37:57 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added image-align option to `menu'.  Thanks Todd Larason!
+
+Tue Sep 15 08:31:28 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: More changes to maximize from Ken Pizzini.  Gets the 
+	unmaximize to undo the maximize, while still moving minimally to
+	perform the maximize.
+
 Mon Sep 14 15:53:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* fvwm-module.scm (basename): Define if not provided by

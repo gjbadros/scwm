@@ -1,3 +1,20 @@
+Tue Sep 15 09:30:45 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	These changes all by Todd Larason -- thanks Todd!
+	
+	* xmisc.c, xmisc.h: Added DrawSubImage as a generalization of
+	DrawImage, and make DrawImage call DrawSubImage
+
+	* menu.h: Added scmSideAlign field
+
+	* menu.c: Added side-align option to make-menu, and honour it.
+
+	* face.c: Make top and bottom global symbols, since the menuing
+	code now uses them.
+
+	* drawmenu.c: Improve PaintSideImage to take an align argument,
+	'top, 'center, or 'bottom;  Use DrawSubImage to draw it.
+
 Mon Sep 14 10:42:49 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* icons.c (AutoPlace): Use ICON_[XY]_VP, ICON_VP_OFFSET_[XY],
