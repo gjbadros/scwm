@@ -1,3 +1,16 @@
+Mon Aug 31 13:09:50 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* xproperty.c: #include errors.h for warning
+
+	* xmisc.c: Remove #if 0'd code, and unused vars
+
+	* virtual.c, move.c, complex.c: #include util.h for warning
+
+	* util.h: Add prototype for ms_sleep, and #include screen.h for
+	ScwmDecor definition
+
+	* screen.h: Rename multiple-inclusion guard to SCREEN_H__
+
 1998-08-31  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* window.c (s_window_id): Handle 'root-window.
