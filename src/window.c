@@ -790,7 +790,7 @@ void
 ResizePswToCurrentSize(ScwmWindow *psw)
 {
   int w = FRAME_WIDTH(psw), h = FRAME_HEIGHT(psw);
-  int x = FRAME_X_VP(psw), y = FRAME_Y_VP(psw);
+  int x = FRAME_X_VP (psw), y = FRAME_Y_VP  (psw);
 
   SendClientConfigureNotify(psw);
 
@@ -4330,9 +4330,7 @@ ScmArgsFromInteractiveSpec(SCM spec, SCM proc)
 }
 
 
-/* The next two functions are _intentionally_ not exported.
-
-   GJB:FIXME:MS: so make them static, too */
+/* The next two functions are _intentionally_ not exported. */
 
 /*SCWM_VALIDATE: win, flag */
 static void

@@ -1,3 +1,8 @@
+Sun Jul 21 18:28:57 EDT 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* ICCCM.c, borders.c, color.c, drawmenu.c, scwm.c, window.c, window.h,
+	xmisc.c: Various formatting improvements and some comment improvements.
+
 Sun Jul 21 18:26:26 EDT 2002  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* events.c: Added to hack of key bindings so that it is possible to

@@ -212,6 +212,7 @@ ScmMakeColor(const char *cn, int *perror_status)
       if (perror_status)
         *perror_status = 3; /* got close match */
       fBorrowedColor = True;    /* we are not responsible for freeing this color! */
+      /* SRL:FIXME:: Couldn't this color be freed out from under us? */
     } else {
       scwm_msg(WARN,"ScmMakeColor","Cannot allocate color or a close match: %s -- using black",cn);
       return BLACK_COLOR;

@@ -318,41 +318,41 @@ InternUsefulAtoms(void)
    * Create priority colors if necessary.
    */
   XA_MIT_PRIORITY_COLORS = XInternAtom(dpy, "_MIT_PRIORITY_COLORS", False);
-  XA_WM_CHANGE_STATE = XInternAtom(dpy, "WM_CHANGE_STATE", False);
-  XA_WM_STATE = XInternAtom(dpy, "WM_STATE", False);
-  XA_WM_COLORMAP_WINDOWS = XInternAtom(dpy, "WM_COLORMAP_WINDOWS", False);
-  XA_WM_PROTOCOLS = XInternAtom(dpy, "WM_PROTOCOLS", False);
-  XA_WM_TAKE_FOCUS = XInternAtom(dpy, "WM_TAKE_FOCUS", False);
-  XA_WM_DELETE_WINDOW = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
-  XA_WM_DESKTOP = XInternAtom(dpy, "WM_DESKTOP", False);
-  XA_MwmAtom = XInternAtom(dpy, "_MOTIF_WM_HINTS", False);
-  XA_MOTIF_WM = XInternAtom(dpy, "_MOTIF_WM_INFO", False);
-  XA_WM_CLIENT_LEADER = XInternAtom(dpy, "WM_CLIENT_LEADER", False);
+  XA_WM_CHANGE_STATE     = XInternAtom(dpy, "WM_CHANGE_STATE",      False);
+  XA_WM_STATE            = XInternAtom(dpy, "WM_STATE",             False);
+  XA_WM_COLORMAP_WINDOWS = XInternAtom(dpy, "WM_COLORMAP_WINDOWS",  False);
+  XA_WM_PROTOCOLS        = XInternAtom(dpy, "WM_PROTOCOLS",         False);
+  XA_WM_TAKE_FOCUS       = XInternAtom(dpy, "WM_TAKE_FOCUS",        False);
+  XA_WM_DELETE_WINDOW    = XInternAtom(dpy, "WM_DELETE_WINDOW",     False);
+  XA_WM_DESKTOP          = XInternAtom(dpy, "WM_DESKTOP",           False);
+  XA_MwmAtom             = XInternAtom(dpy, "_MOTIF_WM_HINTS",      False);
+  XA_MOTIF_WM            = XInternAtom(dpy, "_MOTIF_WM_INFO",       False);
+  XA_WM_CLIENT_LEADER    = XInternAtom(dpy, "WM_CLIENT_LEADER",     False);
 
-  XA_OL_WIN_ATTR = XInternAtom(dpy, "_OL_WIN_ATTR", False);
-  XA_OL_WT_BASE = XInternAtom(dpy, "_OL_WT_BASE", False);
-  XA_OL_WT_CMD = XInternAtom(dpy, "_OL_WT_CMD", False);
-  XA_OL_WT_HELP = XInternAtom(dpy, "_OL_WT_HELP", False);
-  XA_OL_WT_NOTICE = XInternAtom(dpy, "_OL_WT_NOTICE", False);
-  XA_OL_WT_OTHER = XInternAtom(dpy, "_OL_WT_OTHER", False);
-  XA_OL_DECOR_ADD = XInternAtom(dpy, "_OL_DECOR_ADD", False);
-  XA_OL_DECOR_DEL = XInternAtom(dpy, "_OL_DECOR_DEL", False);
-  XA_OL_DECOR_CLOSE = XInternAtom(dpy, "_OL_DECOR_CLOSE", False);
-  XA_OL_DECOR_RESIZE = XInternAtom(dpy, "_OL_DECOR_RESIZE", False);
-  XA_OL_DECOR_HEADER = XInternAtom(dpy, "_OL_DECOR_HEADER", False);
+  XA_OL_WIN_ATTR        = XInternAtom(dpy, "_OL_WIN_ATTR",        False);
+  XA_OL_WT_BASE         = XInternAtom(dpy, "_OL_WT_BASE",         False);
+  XA_OL_WT_CMD          = XInternAtom(dpy, "_OL_WT_CMD",          False);
+  XA_OL_WT_HELP         = XInternAtom(dpy, "_OL_WT_HELP",         False);
+  XA_OL_WT_NOTICE       = XInternAtom(dpy, "_OL_WT_NOTICE",       False);
+  XA_OL_WT_OTHER        = XInternAtom(dpy, "_OL_WT_OTHER",        False);
+  XA_OL_DECOR_ADD       = XInternAtom(dpy, "_OL_DECOR_ADD",       False);
+  XA_OL_DECOR_DEL       = XInternAtom(dpy, "_OL_DECOR_DEL",       False);
+  XA_OL_DECOR_CLOSE     = XInternAtom(dpy, "_OL_DECOR_CLOSE",     False);
+  XA_OL_DECOR_RESIZE    = XInternAtom(dpy, "_OL_DECOR_RESIZE",    False);
+  XA_OL_DECOR_HEADER    = XInternAtom(dpy, "_OL_DECOR_HEADER",    False);
   XA_OL_DECOR_ICON_NAME = XInternAtom(dpy, "_OL_DECOR_ICON_NAME", False);
 
   XA_SCWM_RESTARTING = XInternAtom(dpy, "SCWM_RESTARTING", False);
 
-  XA_SCWM_EXECUTE = XInternAtom(dpy, "SCWM_EXECUTE", False);
-  XA_SCWM_RESULT = XInternAtom(dpy, "SCWM_RESULT", False);
-  XA_SCWMEXEC_LISTENER=XInternAtom(dpy,"SCWMEXEC_LISTENER", False);
-  XA_SCWMEXEC_REQWIN=XInternAtom(dpy,"SCWMEXEC_REQWIN", False);
-  XA_SCWMEXEC_REQUEST=XInternAtom(dpy,"SCWMEXEC_REQUEST", False);
-  XA_SCWMEXEC_REPLY=XInternAtom(dpy,"SCWMEXEC_REPLY", False);
-  XA_SCWMEXEC_NOTIFY=XInternAtom(dpy,"SCWMEXEC_NOTIFY", False);
-  XA_SCWMEXEC_OUTPUT=XInternAtom(dpy,"SCWMEXEC_OUTPUT", False);
-  XA_SCWMEXEC_ERROR=XInternAtom(dpy,"SCWMEXEC_ERROR", False);
+  XA_SCWM_EXECUTE      = XInternAtom(dpy, "SCWM_EXECUTE",      False);
+  XA_SCWM_RESULT       = XInternAtom(dpy, "SCWM_RESULT",       False);
+  XA_SCWMEXEC_LISTENER = XInternAtom(dpy, "SCWMEXEC_LISTENER", False);
+  XA_SCWMEXEC_REQWIN   = XInternAtom(dpy, "SCWMEXEC_REQWIN",   False);
+  XA_SCWMEXEC_REQUEST  = XInternAtom(dpy, "SCWMEXEC_REQUEST",  False);
+  XA_SCWMEXEC_REPLY    = XInternAtom(dpy, "SCWMEXEC_REPLY",    False);
+  XA_SCWMEXEC_NOTIFY   = XInternAtom(dpy, "SCWMEXEC_NOTIFY",   False);
+  XA_SCWMEXEC_OUTPUT   = XInternAtom(dpy, "SCWMEXEC_OUTPUT",   False);
+  XA_SCWMEXEC_ERROR    = XInternAtom(dpy, "SCWMEXEC_ERROR",    False);
 
   XA_SCWM_VIEWPORT_OFFSET_X = XInternAtom(dpy,"SCWM_VIEWPORT_OFFSET_X", False);
   XA_SCWM_VIEWPORT_OFFSET_Y = XInternAtom(dpy,"SCWM_VIEWPORT_OFFSET_Y", False);
@@ -436,9 +436,9 @@ SetRestartingGlobal()
 static void 
 InitVariables(void)
 {
-  ScwmContext = XUniqueContext();
-  MenuContext = XUniqueContext();
-  MsgWindowContext = XUniqueContext();
+  ScwmContext             = XUniqueContext();
+  MenuContext             = XUniqueContext();
+  MsgWindowContext        = XUniqueContext();
   ExposeWindowProcContext = XUniqueContext();
 
   /* initialize some lists */

@@ -71,10 +71,10 @@ SCM_DEFINE(send_client_message, "send-client-message", 2, 0, 1,
 WIN can be 'root-window or an X window identification number.\n\
 Useful for supporting other WMs module communication protocols. \n\
 ATOM is the X11 atom representing the message type (e.g.,\n\
-\"XA_WM_PROTOCOLS\") and DATA is up to 4 32-bit integers of data.\n\
-for the message. DATA will be the used to create the message data, \n\
-and the lastTimestamp will be appended as the last integer in\n\
-the data message.")
+\"XA_WM_PROTOCOLS\") and DATA is up to 4 32-bit integers of data\n\
+in a list for the message. DATA will be the used to create the\n\
+message data, and the lastTimestamp will be appended as the last\n\
+integer in the data message.")
 #define FUNC_NAME s_send_client_message
 {
   Window w;
@@ -87,6 +87,7 @@ the data message.")
 
   VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
   VALIDATE_ARG_INT_COPY(2,atom,at);
+  /* SRL:FIXME::Why don't we need to validate data?  Seems to reject bad data though. */
   if (gh_length(data) > 4) {
     scm_misc_error(FUNC_NAME,"There can be no more than 4 data elements",SCM_EOL);
   }

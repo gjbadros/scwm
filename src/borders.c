@@ -109,7 +109,7 @@ SetShapedTitlebar(ScwmWindow *psw, int w)
     XRectangle rect;
     rect.x = 0;
     rect.y = 0;
-    rect.width = FRAME_WIDTH(psw);
+    rect.width  = FRAME_WIDTH (psw);
     rect.height = FRAME_HEIGHT(psw) - psw->title_height;
 
     if (!SHADED_P(psw)) {
@@ -238,7 +238,7 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
       border = 0;
     else
       border = psw->fMWMBorders ? 1 : 2;
-    width = w - border * 2;
+    width  = w - border * 2;
     height = h - border * 2;
 
     x = border;
@@ -326,6 +326,9 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
 }
 #undef FUNC_NAME
 
+/* SRL:FIXME:: The relief drawing code is hacked up and needs to be refactored
+   and possibly rewritten. */
+
 /****************************************************************************
  *
  *  Draws the relief pattern around a window for HiddenHandle borders
@@ -368,25 +371,28 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
   DBUG((DBG,FUNC_NAME,"edge = %d",edge));
 
   if (draw & TOP_HILITE) {
-    seg[i].x1 = x;
-    seg[i].y1 = y;
-    seg[i].x2 = w + x - 1;
+    seg[i  ].x1 = x;
+    seg[i  ].y1 = y;
+    seg[i  ].x2 = w + x - 1;
     seg[i++].y2 = y;
 
+    /* SRL:FIXME::edge < 1 is the same as edge==0 since edge can't be negative
+       and therefore the first test is entirely redundant with the second.
+       Also, the way this code is called edge can't be equal to 0. */
     if (((psw->boundary_width > 2) || (edge == 0)) &&
-	((psw->boundary_width > 3) || (edge < 1)) &&
+	((psw->boundary_width > 3) || (edge <  1)) &&
 	(!psw->fMWMBorders ||
-     (((edge == 0) || (psw->boundary_width > 3)) && (highlight & TOP_HILITE)))) {
-      seg[i].x1 = x + ((edge == 2) || b ? 0 : 1);
-      seg[i].y1 = y + 1;
-      seg[i].x2 = x + w - 1 - ((edge == 1) || b ? 0 : 1);
+         (((edge == 0) || (psw->boundary_width > 3)) && (highlight & TOP_HILITE)))) {
+      seg[i  ].x1 = x + ((edge == 2) || b ? 0 : 1);
+      seg[i  ].y1 = y + 1;
+      seg[i  ].x2 = x + w - 1 - ((edge == 1) || b ? 0 : 1);
       seg[i++].y2 = y + 1;
     }
   }
   if (draw & LEFT_HILITE) {
-    seg[i].x1 = x;
-    seg[i].y1 = y;
-    seg[i].x2 = x;
+    seg[i  ].x1 = x;
+    seg[i  ].y1 = y;
+    seg[i  ].x2 = x;
     seg[i++].y2 = h + y - 1;
 
     if (((psw->boundary_width > 2) || (edge == 0)) &&
@@ -394,9 +400,9 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
 	(!psw->fMWMBorders ||
 	 (((edge == 0) || 
 	   (psw->boundary_width > 3)) && (highlight & LEFT_HILITE)))) {
-      seg[i].x1 = x + 1;
-      seg[i].y1 = y + ((edge == 3) || a ? 0 : 1);
-      seg[i].x2 = x + 1;
+      seg[i  ].x1 = x + 1;
+      seg[i  ].y1 = y + ((edge == 3) || a ? 0 : 1);
+      seg[i  ].x2 = x + 1;
       seg[i++].y2 = y + h - 1 - ((edge == 1) || a ? 0 : 1);
     }
   }
@@ -406,32 +412,32 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
   i = 0;
 
   if (draw & BOTTOM_HILITE) {
-    seg[i].x1 = x;
-    seg[i].y1 = y + h - 1;
-    seg[i].x2 = w + x - 1;
+    seg[i  ].x1 = x;
+    seg[i  ].y1 = y + h - 1;
+    seg[i  ].x2 = w + x - 1;
     seg[i++].y2 = y + h - 1;
 
     if (((psw->boundary_width > 2) || (edge == 0)) &&
 	(!psw->fMWMBorders ||
 	 (((edge == 0) || (psw->boundary_width > 3)) && (highlight & BOTTOM_HILITE)))) {
-      seg[i].x1 = x + (b || (edge == 4) ? 0 : 1);
-      seg[i].y1 = y + h - 2;
-      seg[i].x2 = x + w - ((edge == 3) ? 0 : 1);
+      seg[i  ].x1 = x + (b || (edge == 4) ? 0 : 1);
+      seg[i  ].y1 = y + h - 2;
+      seg[i  ].x2 = x + w - ((edge == 3) ? 0 : 1);
       seg[i++].y2 = y + h - 2;
     }
   }
   if (draw & RIGHT_HILITE) {
-    seg[i].x1 = x + w - 1;
-    seg[i].y1 = y;
-    seg[i].x2 = x + w - 1;
+    seg[i  ].x1 = x + w - 1;
+    seg[i  ].y1 = y;
+    seg[i  ].x2 = x + w - 1;
     seg[i++].y2 = y + h - 1;
 
     if (((psw->boundary_width > 2) || (edge == 0)) &&
 	(!psw->fMWMBorders ||
-    (((edge == 0) || (psw->boundary_width > 3)) && (highlight & RIGHT_HILITE)))) {
-      seg[i].x1 = x + w - 2;
-      seg[i].y1 = y + (a || (edge == 4) ? 0 : 1);
-      seg[i].x2 = x + w - 2;
+         (((edge == 0) || (psw->boundary_width > 3)) && (highlight & RIGHT_HILITE)))) {
+      seg[i  ].x1 = x + w - 2;
+      seg[i  ].y1 = y + (a || (edge == 4) ? 0 : 1);
+      seg[i  ].x2 = x + w - 2;
       seg[i++].y2 = y + h - 1 - ((edge == 2) || a ? 0 : 1);
     }
   }
@@ -647,7 +653,7 @@ PixelHiTextFromPsw(const ScwmWindow *psw)
 }
 
 
-/* Return a window-specific highlight foreground color,
+/* Return a window-specific highlight background color,
    or use the decors if no window-specific one has been set */
 static Pixel
 PixelHiBackFromPsw(const ScwmWindow *psw)
@@ -732,8 +738,8 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
   if (!psw)
     return;
 
-  corners[0] = TOP_HILITE | LEFT_HILITE;
-  corners[1] = TOP_HILITE | RIGHT_HILITE;
+  corners[0] = TOP_HILITE    | LEFT_HILITE;
+  corners[1] = TOP_HILITE    | RIGHT_HILITE;
   corners[2] = BOTTOM_HILITE | LEFT_HILITE;
   corners[3] = BOTTOM_HILITE | RIGHT_HILITE;
 
@@ -766,13 +772,13 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
     else if (psw->fIconified && (Scr.Hilite != psw) && !psw->fSuppressIcon)
       w = psw->icon_w;
     Scr.Hilite = psw;
-    Scr.Focus = psw;
+    Scr.Focus  = psw;
 
-    TextColor = PixelHiTextFromPsw(psw);
+    TextColor   = PixelHiTextFromPsw(psw);
     BackPixmap = Scr.gray_pixmap;
-    BackColor = PixelHiBackFromPsw(psw);
-    ReliefGC = GET_DECOR(psw, HiReliefGC);
-    ShadowGC = GET_DECOR(psw, HiShadowGC);
+    BackColor   = PixelHiBackFromPsw(psw);
+    ReliefGC    = GET_DECOR(psw, HiReliefGC);
+    ShadowGC    = GET_DECOR(psw, HiShadowGC);
     BorderColor = XCOLOR(GET_DECOR(psw, HiRelief.bg));
   } else /* this case for !fHighlightOn */ {
     /* don't re-draw just for kicks */
@@ -826,22 +832,24 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
       notex_attributes.background_pixel = BackColor;
       notex_valuemask |= CWBackPixel;
     }
-  } else
-  if (Scr.d_depth < 2) {
-    attributes.background_pixmap = BackPixmap;
-    valuemask |= CWBackPixmap;
-    notex_attributes.background_pixmap = BackPixmap;
-    notex_valuemask |= CWBackPixmap;
   } else {
-    attributes.background_pixel = BackColor;
-    valuemask |= CWBackPixel;
-    notex_attributes.background_pixel = BackColor;
-    notex_valuemask |= CWBackPixel;
+    /* !TexturePixmap */
+    if (Scr.d_depth < 2) {
+      attributes.background_pixmap = BackPixmap;
+      valuemask |= CWBackPixmap;
+      notex_attributes.background_pixmap = BackPixmap;
+      notex_valuemask |= CWBackPixmap;
+    } else {
+      attributes.background_pixel = BackColor;
+      valuemask |= CWBackPixel;
+      notex_attributes.background_pixel = BackColor;
+      notex_valuemask |= CWBackPixel;
+    }
   }
 
   if (psw->fBorder || SHOW_TITLE_P(psw)) {
     XSetWindowBorder(dpy, psw->Parent, BorderColor);
-    XSetWindowBorder(dpy, psw->frame, BorderColor);
+    XSetWindowBorder(dpy, psw->frame,  BorderColor);
   }
 
   if (SHOW_TITLE_P(psw)) {
@@ -949,23 +957,23 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
   if (psw->fBorder) {
     /* draw relief lines */
     y = FRAME_HEIGHT(psw) - 2 * psw->corner_width;
-    x = FRAME_WIDTH(psw) - 2 * psw->corner_width + psw->bw;
+    x = FRAME_WIDTH (psw) - 2 * psw->corner_width + psw->bw;
 
     for (i = 0; i < 4; i++) {
-      int vertical = i % 2;
+      int vertical  = i % 2;
       int northeast = i / 2;
 
       int flags = fHighlightOn
-        ? GET_DECOR(psw, BorderStyle.active->style)
+        ? GET_DECOR(psw, BorderStyle.active  ->style)
         : GET_DECOR(psw, BorderStyle.inactive->style);
       int top_side_relief_offset_when_squashed = 
         psw->tbar_right - psw->corner_width - psw->xboundary_width;
 
       int hn = psw->highlighted_nonant;
 
-      if ((((hn == 1) || (hn == SCWM_NONANT_TOP) || (hn == SCWM_NONANT_HCENTER)) && i == 0) ||
-          (((hn == 3) || (hn == SCWM_NONANT_LEFT) || (hn == SCWM_NONANT_VMIDDLE)) && i == 3) ||
-          (((hn == 5) || (hn == SCWM_NONANT_RIGHT) || (hn == SCWM_NONANT_VMIDDLE)) && i == 1) ||
+      if ((((hn == 1) || (hn == SCWM_NONANT_TOP   ) || (hn == SCWM_NONANT_HCENTER)) && i == 0) ||
+          (((hn == 3) || (hn == SCWM_NONANT_LEFT  ) || (hn == SCWM_NONANT_VMIDDLE)) && i == 3) ||
+          (((hn == 5) || (hn == SCWM_NONANT_RIGHT ) || (hn == SCWM_NONANT_VMIDDLE)) && i == 1) ||
           (((hn == 7) || (hn == SCWM_NONANT_BOTTOM) || (hn == SCWM_NONANT_HCENTER)) && i == 2)) {
         XSetWindowBackground(dpy,psw->sides[i],XCOLOR(Scr.nonant_highlight_color));
         XClearWindow(dpy,psw->sides[i]);
@@ -993,41 +1001,41 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	  if (flags & NoInset) {
             /* no inset, hidden handles */
 	    RelieveWindowHH(psw, psw->sides[i], 
-                            (i==0 && fSquashedTitlebar)? top_side_relief_offset_when_squashed:0,
+                            (i==0 && fSquashedTitlebar) ? top_side_relief_offset_when_squashed : 0,
                             0,
-			    (vertical? psw->boundary_width : x),
-			    (vertical? y : psw->boundary_width),
-			    rgc, sgc, vertical
-			    ? (i == 3 ? LEFT_HILITE : RIGHT_HILITE)
-			    : (i ? BOTTOM_HILITE : TOP_HILITE),
-			    (0x0001 << i)
-	      );
+			    (vertical ? psw->boundary_width : x),
+			    (vertical ? y : psw->boundary_width),
+			    rgc, sgc,
+                            vertical
+			    ? (i == 3 ? LEFT_HILITE   : RIGHT_HILITE)
+			    : (i      ? BOTTOM_HILITE : TOP_HILITE),
+			    (0x0001 << i));
 	  } else {
             /* with inset, hidden handles */
 	    RelieveWindowHH(psw, psw->sides[i], 
-                            (i==0 && fSquashedTitlebar)? top_side_relief_offset_when_squashed:0,
+                            (i==0 && fSquashedTitlebar) ? top_side_relief_offset_when_squashed : 0,
                             0,
-			    (vertical? psw->boundary_width : x),
-			    (vertical? y : psw->boundary_width),
-			    rgc, sgc, vertical
+			    (vertical ? psw->boundary_width : x),
+			    (vertical ? y : psw->boundary_width),
+			    rgc, sgc,
+                            vertical
 			    ? (LEFT_HILITE | RIGHT_HILITE)
-			    : (TOP_HILITE | BOTTOM_HILITE),
-			    (0x0001 << i)
-	      );
+			    : (TOP_HILITE  | BOTTOM_HILITE),
+			    (0x0001 << i));
 	  }
 	} else {
           /* not hidden handles (visible handles) */
 	  RelieveWindow(psw, psw->sides[i], 
-                        (i==0 && fSquashedTitlebar)? top_side_relief_offset_when_squashed :0,
+                        (i==0 && fSquashedTitlebar) ? top_side_relief_offset_when_squashed : 0,
                         0,
-			(vertical? psw->boundary_width : x),
-			(vertical? y : psw->boundary_width),
+			(vertical ? psw->boundary_width : x),
+			(vertical ? y : psw->boundary_width),
 			rgc, sgc, (0x0001 << i));
 	}
       }
-      if ((((hn == 0) || (hn == SCWM_NONANT_TOP) || (hn == SCWM_NONANT_LEFT)) && i == 0) ||
-          (((hn == 2) || (hn == SCWM_NONANT_TOP) || (hn == SCWM_NONANT_RIGHT)) && i == 1) ||
-          (((hn == 6) || (hn == SCWM_NONANT_BOTTOM) || (hn == SCWM_NONANT_LEFT)) && i == 2) ||
+      if ((((hn == 0) || (hn == SCWM_NONANT_TOP   ) || (hn == SCWM_NONANT_LEFT )) && i == 0) ||
+          (((hn == 2) || (hn == SCWM_NONANT_TOP   ) || (hn == SCWM_NONANT_RIGHT)) && i == 1) ||
+          (((hn == 6) || (hn == SCWM_NONANT_BOTTOM) || (hn == SCWM_NONANT_LEFT )) && i == 2) ||
           (((hn == 8) || (hn == SCWM_NONANT_BOTTOM) || (hn == SCWM_NONANT_RIGHT)) && i == 3)) {
         XSetWindowBackground(dpy,psw->corners[i],XCOLOR(Scr.nonant_highlight_color));
         XClearWindow(dpy,psw->corners[i]);
@@ -1045,23 +1053,25 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	  rgc = ShadowGC;
 	}
 	if (flags & HiddenHandles) {
-	  RelieveWindowHH(psw, psw->corners[i], 0, 0, psw->corner_width,
-		      (northeast? psw->corner_width + psw->bw : psw->corner_width),
+	  RelieveWindowHH(psw, psw->corners[i], 0, 0,
+                          psw->corner_width,
+                          (northeast ? psw->corner_width + psw->bw : psw->corner_width),
 			  rgc, sgc, corners[i], corners[i]);
 
 	  if (!(flags & NoInset)) {
 	    if (psw->boundary_width > 1)
 	      RelieveParts(psw, i | HH_HILITE,
-			   (northeast? rgc : sgc), (vertical ? rgc : sgc));
+			   (northeast ? rgc : sgc), (vertical ? rgc : sgc));
 	    else if (psw->boundary_width > 0)
 	      RelieveParts(psw, i | HH_HILITE,sgc,sgc);
           }
 	} else {
-	  RelieveWindow(psw, psw->corners[i], 0, 0, psw->corner_width,
-		      (northeast? psw->corner_width + psw->bw : psw->corner_width),
+	  RelieveWindow(psw, psw->corners[i], 0, 0,
+                        psw->corner_width,
+                        (northeast ? psw->corner_width + psw->bw : psw->corner_width),
 			rgc, sgc, corners[i]);
 	  if (psw->boundary_width > 1)
-	    RelieveParts(psw, i, (northeast? rgc : sgc), (vertical ? rgc : sgc));
+	    RelieveParts(psw, i, (northeast ? rgc : sgc), (vertical ? rgc : sgc));
 	  else if (psw->boundary_width > 0)
 	    RelieveParts(psw, i, sgc,sgc);
 	}
@@ -1073,26 +1083,26 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
     if (psw->boundary_width < 2) {
       flush_expose(psw->frame);
       if (Scr.d_depth < 2) {
-	XSetWindowBorder(dpy, psw->frame, TextColor);
+	XSetWindowBorder(dpy, psw->frame,  TextColor);
 	XSetWindowBorder(dpy, psw->Parent, TextColor);
-	XSetWindowBackgroundPixmap(dpy, psw->frame, BackPixmap);
+	XSetWindowBackgroundPixmap(dpy, psw->frame,  BackPixmap);
 	XClearWindow(dpy, psw->frame);
 	XSetWindowBackgroundPixmap(dpy, psw->Parent, BackPixmap);
 	XClearWindow(dpy, psw->Parent);
       } else {
 	XSetWindowBackgroundPixmap(dpy, psw->frame, TexturePixmap);
-	XSetWindowBorder(dpy, psw->frame, BorderColor);
+	XSetWindowBorder(dpy, psw->frame,  BorderColor);
 	XClearWindow(dpy, psw->frame);
 	XSetWindowBackground(dpy, psw->Parent, BorderColor);
 	XSetWindowBorder(dpy, psw->Parent, BorderColor);
 	XClearWindow(dpy, psw->Parent);
-	XSetWindowBorder(dpy, psw->w, BorderColor);
+	XSetWindowBorder(dpy, psw->w,      BorderColor);
       }
     } else {
       GC rgc, sgc;
 
       XSetWindowBorder(dpy, psw->Parent, BorderColor);
-      XSetWindowBorder(dpy, psw->frame, BorderColor);
+      XSetWindowBorder(dpy, psw->frame,  BorderColor);
 
       rgc = ReliefGC;
       sgc = ShadowGC;
@@ -1104,24 +1114,26 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
       if ((flush_expose(psw->frame)) || (expose_win == psw->frame) ||
 	  (expose_win == None)) {
 	if (psw->boundary_width > 2) {
-	  RelieveWindow(psw, psw->frame, psw->boundary_width - 1 - psw->bw,
+	  RelieveWindow(psw, psw->frame,
+                        psw->boundary_width - 1 - psw->bw,
 			psw->boundary_width - 1 - psw->bw,
-			FRAME_WIDTH(psw) -
+			FRAME_WIDTH (psw) -
 			(psw->boundary_width * 2) + 2 + 3 * psw->bw,
 			FRAME_HEIGHT(psw) -
 			(psw->boundary_width * 2) + 2 + 3 * psw->bw,
 			sgc, rgc,
-			TOP_HILITE | LEFT_HILITE | RIGHT_HILITE |
-			BOTTOM_HILITE);
-	  RelieveWindow(psw, psw->frame, 0, 0, FRAME_WIDTH(psw) + psw->bw,
+			TOP_HILITE   | LEFT_HILITE | 
+                        RIGHT_HILITE | BOTTOM_HILITE);
+	  RelieveWindow(psw, psw->frame, 0, 0,
+                        FRAME_WIDTH (psw) + psw->bw,
 			FRAME_HEIGHT(psw) + psw->bw, rgc, sgc,
-			TOP_HILITE | LEFT_HILITE | RIGHT_HILITE |
-			BOTTOM_HILITE);
+			TOP_HILITE   | LEFT_HILITE | 
+                        RIGHT_HILITE | BOTTOM_HILITE);
 	} else {
 	  RelieveWindow(psw, psw->frame, 0, 0, FRAME_WIDTH(psw) + psw->bw,
 			FRAME_HEIGHT(psw) + psw->bw, rgc, rgc,
-			TOP_HILITE | LEFT_HILITE | RIGHT_HILITE |
-			BOTTOM_HILITE);
+			TOP_HILITE   | LEFT_HILITE | 
+                        RIGHT_HILITE | BOTTOM_HILITE);
 	}
       } else {
 	XSetWindowBackground(dpy, psw->Parent, BorderColor);
@@ -1130,7 +1142,6 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
   }
   /* Sync to make the border-color change look fast! */
   XSync(dpy, False);
-
 }
 
 
@@ -1165,7 +1176,7 @@ SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool ARG_UNUSED(NewTitle))
     SetGCFg(ShadowGC = Scr.ScratchGC2,XCOLOR(psw->ShadowColor));
   }
   if (PressedW == psw->title_w) {
-    tGC = ShadowGC;
+    tGC      = ShadowGC;
     ShadowGC = ReliefGC;
     ReliefGC = tGC;
   }
@@ -1326,64 +1337,64 @@ RelieveWindow(ScwmWindow *psw, Window win,
 
   DBUG((DBG,FUNC_NAME,"edge = %d",edge));
 
-  seg[i].x1 = x;
-  seg[i].y1 = y;
-  seg[i].x2 = w + x - 1;
+  seg[i  ].x1 = x;
+  seg[i  ].y1 = y;
+  seg[i  ].x2 = w + x - 1;
   seg[i++].y2 = y;
 
-  seg[i].x1 = x;
-  seg[i].y1 = y;
-  seg[i].x2 = x;
+  seg[i  ].x1 = x;
+  seg[i  ].y1 = y;
+  seg[i  ].x2 = x;
   seg[i++].y2 = h + y - 1;
 
   if (((psw->boundary_width > 2) || (edge == 0)) &&
       ((psw->boundary_width > 3) || (edge < 1)) &&
       (!psw->fMWMBorders ||
        (((edge == 0) || (psw->boundary_width > 3)) && (highlight & TOP_HILITE)))) {
-    seg[i].x1 = x + 1;
-    seg[i].y1 = y + 1;
-    seg[i].x2 = x + w - 2;
+    seg[i  ].x1 = x + 1;
+    seg[i  ].y1 = y + 1;
+    seg[i  ].x2 = x + w - 2;
     seg[i++].y2 = y + 1;
   }
   if (((psw->boundary_width > 2) || (edge == 0)) &&
       ((psw->boundary_width > 3) || (edge < 1)) &&
       (!psw->fMWMBorders ||
        (((edge == 0) || (psw->boundary_width > 3)) && (highlight & LEFT_HILITE)))) {
-    seg[i].x1 = x + 1;
-    seg[i].y1 = y + 1;
-    seg[i].x2 = x + 1;
+    seg[i  ].x1 = x + 1;
+    seg[i  ].y1 = y + 1;
+    seg[i  ].x2 = x + 1;
     seg[i++].y2 = y + h - 2;
   }
   DBUG((DBG,FUNC_NAME,"i = %d",i));
   XDrawSegments(dpy, win, ReliefGC, seg, i);
 
   i = 0;
-  seg[i].x1 = x;
-  seg[i].y1 = y + h - 1;
-  seg[i].x2 = w + x - 1;
+  seg[i  ].x1 = x;
+  seg[i  ].y1 = y + h - 1;
+  seg[i  ].x2 = w + x - 1;
   seg[i++].y2 = y + h - 1;
 
   if (((psw->boundary_width > 2) || (edge == 0)) &&
       (!psw->fMWMBorders ||
        (((edge == 0) ||
 	 (psw->boundary_width > 3)) && (highlight & BOTTOM_HILITE)))) {
-    seg[i].x1 = x + 1;
-    seg[i].y1 = y + h - 2;
-    seg[i].x2 = x + w - 2;
+    seg[i  ].x1 = x + 1;
+    seg[i  ].y1 = y + h - 2;
+    seg[i  ].x2 = x + w - 2;
     seg[i++].y2 = y + h - 2;
   }
-  seg[i].x1 = x + w - 1;
-  seg[i].y1 = y;
-  seg[i].x2 = x + w - 1;
+  seg[i  ].x1 = x + w - 1;
+  seg[i  ].y1 = y;
+  seg[i  ].x2 = x + w - 1;
   seg[i++].y2 = y + h - 1;
 
   if (((psw->boundary_width > 2) || (edge == 0)) &&
       (!psw->fMWMBorders ||
        (((edge == 0) || 
 	 (psw->boundary_width > 3)) && (highlight & RIGHT_HILITE)))) {
-    seg[i].x1 = x + w - 2;
-    seg[i].y1 = y + 1;
-    seg[i].x2 = x + w - 2;
+    seg[i  ].x1 = x + w - 2;
+    seg[i  ].y1 = y + 1;
+    seg[i  ].x2 = x + w - 2;
     seg[i++].y2 = y + h - 2;
   }
   DBUG((DBG,FUNC_NAME,"i = %d",i));
@@ -1438,7 +1449,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
   /*  Bool fNoTopDecoration = NO_TOP_BORDER_DECORATION_P(psw); */
   const Bool fSquashedTitlebar = psw->fSquashedTitlebar;
 
-  assert(!fMoved || fMoved == WAS_MOVED);
+  assert(!fMoved   || fMoved   == WAS_MOVED);
   assert(!fResized || fResized == WAS_RESIZED);
 
   /* if windows is not shaded, save size for when unshaded
@@ -1479,10 +1490,10 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
 
   if (fResized) {
     /* make the decoration buttons square */
-    int button_width = psw->title_height;
+    int button_width  = psw->title_height;
     int button_height = psw->title_height;
 
-    int left = CLeftButtons(psw);
+    int left  = CLeftButtons (psw);
     int right = CRightButtons(psw);
 
     DBUG((DBG,FUNC_NAME,"Resized to x=%d, y=%d;  w=%d,h=%d",x,y,w,h));
@@ -1496,6 +1507,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     tbar_right = w;
     if (psw->fTitle && fSquashedTitlebar) {
       int tw = ComputeXTextWidth(XFONT(GET_DECOR(psw, window_font)), psw->name, -1);
+      /* SRL:FIXME::Magic number! */
       tw += psw->xboundary_width + psw->bw + 18;
       if (psw->title_width > tw) {
         /* title is wider than it needs to be */
@@ -1511,7 +1523,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       psw->title_x = psw->xboundary_width + (left * button_width);
       if (psw->title_x >= w - psw->xboundary_width)
 	psw->title_x = -10;
-      psw->title_y = fSquashedTitlebar? 0 : psw->boundary_width;
+      psw->title_y = fSquashedTitlebar ? 0 : psw->boundary_width;
 
       XMoveResizeWindow(dpy, psw->title_w,
 			psw->title_x, psw->title_y,
@@ -1525,8 +1537,8 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
 
       xwcm = CWX | CWY | CWHeight | CWWidth;
       xwc.height = button_height;
-      xwc.width = button_width;
-      xwc.y = fSquashedTitlebar? 0 : psw->boundary_width;
+      xwc.width  = button_width;
+      xwc.y = fSquashedTitlebar ? 0 : psw->boundary_width;
       xwc.x = psw->xboundary_width;
       for (i = 0; i < Scr.nr_left_buttons; i++) {
 	if (psw->left_w[i] != None) {
@@ -1549,7 +1561,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       xwc.x = tbar_right - psw->xboundary_width + psw->bw;
       for (i = 0; i < Scr.nr_right_buttons; i++) {
 	if (psw->right_w[i] != None) {
-            xwc.x -= button_width;
+          xwc.x -= button_width;
           if (buttons & (1 << (i*2+1))) {
             /* suppress that button */
             XUnmapWindow(dpy,psw->right_w[i]);
@@ -1604,27 +1616,28 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
           if (i == 0) { /* top side */
             xwc.x = psw->corner_width;
             xwc.y = (fSquashedTitlebar? psw->title_height : 0);
+            xwc.width  = (fSquashedTitlebar? w: tbar_right)- 2 * psw->corner_width + psw->bw;
             xwc.height = psw->boundary_width;
-            xwc.width = (fSquashedTitlebar? w: tbar_right)- 2 * psw->corner_width + psw->bw;
           } else if (i == 1) { /* right side */
             xwc.x = w - psw->boundary_width + psw->bw;
             xwc.y = psw->corner_width;
+            xwc.width  = psw->boundary_width;
             xwc.height = ywidth;
-            xwc.width = psw->boundary_width;
           } else if (i == 2) { /* bottom side */
             xwc.x = psw->corner_width;
             xwc.y = h - psw->boundary_width + psw->bw;
+            xwc.width  = w - 2 * psw->corner_width + psw->bw;
             xwc.height = psw->boundary_width; /* GJB:FIXME:: + psw->bw; */
-            xwc.width = w - 2 * psw->corner_width + psw->bw;
           } else { /* left side */
             xwc.x = 0;
             xwc.y = psw->corner_width;
-            xwc.width = psw->boundary_width;
+            xwc.width  = psw->boundary_width;
             xwc.height = ywidth;
           }
           if (fNoSideDecorations && (i == 1 || i == 3)) {
             XUnmapWindow(dpy,psw->sides[i]);
           } else {
+            /* SRL:FIXME:: Check this logic, seems suspect! Shouldn't it be i==2 ? */
             if (!shaded || (i != 2 && !fSquashedTitlebar)) { 
               /* show the sides -- we do not show them if 
                  the window is shaded; except the bottom
@@ -1676,7 +1689,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       }
     }
   }
-  psw->attr.width = w - 2 * psw->xboundary_width;
+  psw->attr.width  = w                     - 2 * psw->xboundary_width;
   psw->attr.height = h - psw->title_height - 2 * psw->boundary_width;
   
   { /* scope */
@@ -1684,7 +1697,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     int cy = psw->title_height + psw->boundary_width - psw->bw;
 
     if (!shaded && (fMoved || fResized)) {
-      XResizeWindow(dpy, psw->w, psw->attr.width, psw->attr.height);
+      XResizeWindow    (dpy, psw->w, psw->attr.width, psw->attr.height);
       XMoveResizeWindow(dpy, psw->Parent, cx, cy,
                         psw->attr.width, psw->attr.height);
     }

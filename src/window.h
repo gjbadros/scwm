@@ -42,7 +42,7 @@ extern SCM sym_click, sym_root_window;
    [specify arg position explicitly]
 */
 
-
+/* SRL:FIXME:: What's with the do{}while(0) idiom? */
 #define VALIDATE_WIN_USE_CONTEXT(win) \
   do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_F)) == SCM_BOOL_F) \
           return SCM_BOOL_F; } while (0)
@@ -170,7 +170,7 @@ struct ScwmWindow {
 				 * happy at the same time! */
   Window title_w;		/* the title bar window */
   Window sides[4];              /* top, right, bottom, then left */
-  Window corners[4];		/* nw, ne, sw, se  coreners */
+  Window corners[4];		/* nw, ne, sw, se  corners */
 
   SCM corner_cursors[4];
   SCM side_cursors[4];
@@ -196,8 +196,8 @@ struct ScwmWindow {
                                 /* NULL if built w/o cassowary support */
 
   int saved_boundary_width;     /* the decoration vertical boundary's width, in pixels, if it had one */
-  int boundary_width;           /* the decoration vertical boundary's width, in pixels */
-  int xboundary_width;          /* the decoration horizontal boundary's width, in pixels */
+  int boundary_width;           /* the boundary width for the top/bottom of the frame, in pixels */
+  int xboundary_width;          /* the boundary width for the left/right of the frame, in pixels */
   int corner_width;             /* the width of the decoration handles, in pixels */
   int bw;                       /* the border_width for the frame, w, and Parent, in pixels */
   int title_x;
@@ -318,13 +318,13 @@ struct ScwmWindow {
 };
 
 
-enum { SCWM_NONANT_NONE = -1 };
-enum { SCWM_NONANT_LEFT = -2 };
+enum { SCWM_NONANT_NONE    = -1 };
+enum { SCWM_NONANT_LEFT    = -2 };
 enum { SCWM_NONANT_HCENTER = -3 };
-enum { SCWM_NONANT_RIGHT = -4 };
-enum { SCWM_NONANT_TOP = -5 };
+enum { SCWM_NONANT_RIGHT   = -4 };
+enum { SCWM_NONANT_TOP     = -5 };
 enum { SCWM_NONANT_VMIDDLE = -6 };
-enum { SCWM_NONANT_BOTTOM = -7 };
+enum { SCWM_NONANT_BOTTOM  = -7 };
 
 /* FIXJTL: This is ugly, but needed to make window_fwd work at all; is
    it worth it? */
@@ -380,6 +380,7 @@ EXTERN_SET(SCM scm_window_context,SCM_UNDEFINED);
 #define WINDOWP(X) (SCM_NIMP(X) && (gh_car(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)gh_cdr(X))
 
+/* SRL:FIXME:: This is also defined in guile-compat.h.  Bad idea. */
 #ifndef UNSET_SCM
 #define UNSET_SCM(x) (((x) == SCM_UNDEFINED) || ((x) == SCM_BOOL_F))
 #endif
