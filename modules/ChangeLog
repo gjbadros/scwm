@@ -1,3 +1,8 @@
+1998-11-22  Todd Larason  <jtl@molehill.org>
+
+	* pie-menus/draw-pie-menu.c: Support for a new menu-look,
+	shaped-pie-menu-look -- thanks to Russell Nelson.
+
 Fri Nov 20 02:01:00 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* scwmgtkhelper/scwmgtkhelper.c: New module with a few auxiliary
