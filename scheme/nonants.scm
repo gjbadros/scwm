@@ -23,6 +23,7 @@
 
 (define-module (app scwm nonants)
   :use-module (app scwm base)
+  :use-module (app scwm defoption)
   :use-module (app scwm message-window)
   :use-module (app scwm window-selection)
   :use-module (app scwm highlight-current-window)
@@ -79,32 +80,26 @@ window-selection and constraints modules."
       ((3) (list-ref sides 3))
       (else #f))))
 
-(define nonant-highlight-color (make-color "green"))
 
-(define-public (highlight-window-nonant win nonant)
-  (let ((winid (nonant-decoration win nonant)))
-    (if winid (set-window-id-background! nonant-highlight-color winid))))
+(define-scwm-option *nonant-highlight-color* (make-color "green")
+  "The color to use when highlighting window nonants during selection."
+  #:type 'color
+  #:group 'nonant
+  #:setter (lambda (c) (set-nonant-highlight-color! c))
+  #:getter (lambda () (nonant-highlight-color)))
 
-(define-public (unhighlight-window-nonant win nonant)
-  (let ((winid (nonant-decoration win nonant))
-	(colors (if (eq? win (current-window-with-focus)) 
-		    (get-window-highlight-colors win) 
-		    (get-window-colors win))))
-    (if winid (set-window-id-background! (cadr colors) winid))))
-
-
-(define last-nonant #f)
+(define lastwin #f)
 
 (define (mark-nonant-motion-handler x_root y_root state win dx dy)
   (if win 
-      (let ((nonant (window-and-offsets->nonant win dx dy)))
-	(if (not (eqv? last-nonant nonant))
-	    (begin
-	      (unhighlight-window-nonant win last-nonant)
-	      (highlight-window-nonant win nonant)
-	      (set! last-nonant nonant))))))
+      (begin
+	(set-window-highlighted-nonant! 
+	 (window-and-offsets->nonant win dx dy) win)))
+  (if (and lastwin (not (eq? win lastwin)))
+      (set-window-highlighted-nonant! #f lastwin))
+  (set! lastwin win))
 
-
+;; (reset-motion-handlers!)
 ;; nonants
 (define-public (get-window-with-nonant-interactively)
   "Interactively select a window and a nonant.
@@ -121,11 +116,11 @@ for use with the window-selection and constraints modules."
        (if (window? win)
 	   (let ((nonant (get-window-nonant selinf)))
 	     (set-object-property! win 'nonant nonant)
-	     (unhighlight-window-nonant win nonant)
 	     win)
 	   #f)))
    (lambda ()
      (end-highlighting-selected-window)
+     (set-window-highlighted-nonant! #f lastwin)
      (remove-motion-handler! mark-nonant-motion-handler))))
 ;;     (remove-motion-handler! motion-handler-debug))))
 
