@@ -10,6 +10,9 @@
 (define-module (app scwm ui-constraints))
 ;;  :use-module (app scwm simple-constraints))
 
+;; (load "/scratch/gjb/scwm/scheme/ui-constraints.scm")
+;; (set-current-module the-root-module)
+
 
 ;; Object IDs
 
@@ -49,11 +52,11 @@
 ;; returns a new constraint class object based on the parameters
 ;; SIDE-EFFECT: adds new class obj to the global list
 
-(define-public (make-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC)
+(define-public (make-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC PIXMAP-NAME)
   "CTR takes NUM-WINDOWS windows and creates a constraint of this type.
 SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if it is satisfied
 UI-CTR should return the arguments (as a list) for CTR to build the constraint with."
-  (let* ((lst (list NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC))
+  (let* ((lst (list NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC PIXMAP-NAME))
          (obj (cons obid-ui-constraint-class lst)))
     (set! global-constraint-class-list (cons obj global-constraint-class-list))
     obj))
@@ -67,6 +70,10 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 (define-public (delete-ui-constraint-class! UI-CONSTRAINT-CLASS)
   (set! global-constraint-class-list (delq UI-CONSTRAINT-CLASS global-constraint-class-list)))
 
+
+(define-public (reset-ui-constraint-classes!)
+  "Empty the global list of ui-constraint-classes."
+  (set! global-constraint-class-list '()))
 
 ;; ui-constraint-class?
 
@@ -144,6 +151,12 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
       (cadddr (cdddr UI-CONSTRAINT-CLASS))
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
+(define-public (ui-constraint-class-pixmap-name UI-CONSTRAINT-CLASS)
+  "Return the pixmap-name of UI-CONSTRAINT-CLASS.
+Errors if object is not a ui-constraint-class object."
+  (if (ui-constraint-class? UI-CONSTRAINT-CLASS)
+      (cadddr (cdr (cdddr UI-CONSTRAINT-CLASS)))
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
 ;; UI-CONSTRAINT
@@ -286,7 +299,7 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 (define-public (disable-ui-constraint UI-CONSTRAINT)
   (if (ui-constraint? UI-CONSTRAINT)
       (let ((cn (ui-constraint-cn UI-CONSTRAINT)))
-	(cl-remove-constraint solver cn)
+	(cl-remove-constraint (scwm-master-solver) cn)
 	(set-enable! UI-CONSTRAINT #f))
       (error "Argument must be a UI-CONSTRAINT object")))
 
@@ -361,22 +374,17 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
   (do-draw-constraint UI-CONSTRAINT #f))
 
 
-;; draw-loop
-
-;; Loop through a list of constraints and draw each with specified mode
-
-(define (draw-loop WLIST MODE)
-  (cond ((and (list? WLIST) (not (null? WLIST))) 
-	 (begin (do-draw-constraint (car WLIST) MODE) (draw-loop (cdr WLIST) MODE)))))
-
-
 ;; draw-all-constraints
 
 (define-public (draw-all-constraints)
-  (draw-loop global-constraint-instance-list #t))
+  (map draw-constraint global-constraint-instance-list))
 
 
 ;; undraw-all-constraints
 
 (define-public (undraw-all-constraints)
-  (draw-loop global-constraint-instance-list #f))
+  (map undraw-constraint global-constraint-instance-list))
+
+
+(define-public (disable-all-constraints)
+  (map disable-ui-constraint global-constraint-instance-list))

@@ -3,23 +3,26 @@
 
 (define-module (app scwm window-locations))
 
+(define (half n)
+  (truncate (/ n 2)))
+
 (define-public (window-center-top win)
   (let* ((pos (window-position win))
-	 (size (window-size win))
+	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
 	 (w (car size)))
-    (list (+ xl (/ w 2)) yt)))
+    (list (+ xl (half w)) yt)))
 
 
 (define-public (window-center-bottom win)
   (let* ((pos (window-position win))
-	 (size (window-size win))
+	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
 	 (w (car size))
 	 (h (cadr size)))
-    (list (+ xl (/ w 2)) (+ yt h))))
+    (list (+ xl (half w)) (+ yt h))))
 
 (define-public (window-left-middle win)
   (let* ((pos (window-position win))
@@ -27,23 +30,23 @@
 	 (xl (car pos))
 	 (yt (cadr pos))
 	 (h (cadr size)))
-    (list xl (+ yt (/ h 2)))))
+    (list xl (+ yt (half h)))))
 
 (define-public (window-right-middle win)
   (let* ((pos (window-position win))
-	 (size (window-size win))
+	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
 	 (w (car size))
 	 (h (cadr size)))
-    (list (+ xl w) (+ yt (/ h 2)))))
+    (list (+ xl w) (+ yt (half h)))))
 
 (define-public (window-left-top win)
   (window-position win))
 
 (define-public (window-left-bottom win)
   (let* ((pos (window-position win))
-	 (size (window-size win))
+	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
 	 (h (cadr size)))
@@ -51,7 +54,7 @@
 
 (define-public (window-right-top win)
   (let* ((pos (window-position win))
-	 (size (window-size win))
+	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
 	 (w (car size)))
@@ -59,7 +62,7 @@
 
 (define-public (window-right-bottom win)
   (let* ((pos (window-position win))
-	 (size (window-size win))
+	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
 	 (w (car size))

@@ -23,6 +23,7 @@
 (define-module (app scwm ui-constraints-buttons)
   :use-module (app scwm gtk)
   :use-module (gtk gtk)
+  :use-module (gtk gdk)
   :use-module (app scwm ui-constraints)
   :use-module (app scwm ui-constraints-classes)
   :use-module (app scwm optargs))
@@ -39,24 +40,37 @@
 ;; (use-modules (app scwm ui-constraints))
 ;; (draw-all-constraints)
 
+(define tooltips (gtk-tooltips-new))
+
 (define-public (start-ui-constraints-buttons)
   (let* ((ui-constraint-classes global-constraint-class-list)
 	 (cn-ui-ctrs (map ui-constraint-class-ui-ctr ui-constraint-classes))
 	 (cn-names (map ui-constraint-class-name ui-constraint-classes))
-	 (cn-buttons (map gtk-button-new-with-label
-			    cn-names))
+	 (cn-buttons (map (lambda (n) (gtk-button-new)) cn-names))  ;; was gtk-button-new-with-label
+;;	 (cn-buttons (map gtk-button-new-with-label cn-names))
+	 (cn-pixmaps (map (lambda (c b) (gtk-pixmap-new-search-scwm-path (ui-constraint-class-pixmap-name c) b))
+			  ui-constraint-classes cn-buttons))
 	 (toplevel (gtk-window-new 'toplevel))
 	 (hbox (gtk-hbox-new 0 0)))
+    (for-each (lambda (b tip)
+		(gtk-tooltips-set-tip tooltips b tip ""))
+	      cn-buttons cn-names)
     (gtk-window-set-title toplevel "ScwmUIConstraintsButtons")
     (gtk-window-set-wmclass toplevel "ScwmUIConstraintsButtons" "Scwm")
     (gtk-container-add toplevel hbox)
-    (for-each gtk-widget-show cn-buttons)
     (for-each (lambda (b) (gtk-box-pack-start hbox b)) cn-buttons)
+    (for-each (lambda (b p l) 
+		(if p
+		    (gtk-container-add b p)
+		    (gtk-container-add b (gtk-label-new l))))
+	      cn-buttons cn-pixmaps cn-names)
     (for-each (lambda (b d)
 		(gtk-signal-connect b "clicked"
 				    (lambda ()
 				      (enable-ui-constraint (make-ui-constraint-interactively d)))))
 	      cn-buttons ui-constraint-classes)
+    (for-each (lambda (p) (if p (gtk-widget-show p))) cn-pixmaps)
+    (for-each gtk-widget-show cn-buttons)
     (gtk-widget-show hbox)
     (gtk-widget-show toplevel)
     ;; return the close procedure

@@ -40,3 +40,15 @@
 
 (sync-and-add-timer-hook) 
 
+(define-public (gtk-pixmap-new-search-scwm-path pixmap-name button)
+  "Return the new pixmap object as `gtk-pixmap-new' does, but search Scwm's image-load-path for it."
+  (let ((i-l-p image-load-path)
+	(answer #f))
+    (while (and (not answer) (not (null? image-load-path)))
+	   (set! answer (gtk-pixmap-new (string-append (car i-l-p) "/" pixmap-name) button))
+	   (set! i-l-p (cdr i-l-p)))
+    answer))
+
+;; (define b (gtk-button-new))
+;; (gtk-pixmap-new-search-scwm-path "mini-exp-windows-full.xpm" b)
+	   
