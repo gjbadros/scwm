@@ -73,10 +73,9 @@ if [ "$DISPLAY"x = ""x ]; then DISPLAY=:0.0; echo "Warning DISPLAY was empty!! S
 
 XTERM=xterm; export XTERM
 
-xmodmap -pke > $HOME/.xmodmap-pke${DISPLAY2_MAYBE}
+xmodmap -pke > $HOME/.xmodmap-pke-${DISPLAY}
 
-rm -f $HOME/.Xrootenv.* 
-env > $HOME/.Xrootenv.$$
+env > $HOME/.Xrootenv-${DISPLAY}
 
 # This window will get iconified when gjb.scwmrc starts up
 # Uses the title of the window, so be sure to change gjb.scwmrc
