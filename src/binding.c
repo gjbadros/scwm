@@ -394,7 +394,7 @@ bind_key(SCM contexts, SCM key, SCM proc)
     free(keyname);
     /* FIXGJB: is there a guile-specific way to warn? This shouldn't be fatal */
 /*    scwm_error_imm("bind-key", "No matching keycode!"); */
-    return SCM_UNDEFINED; /* use SCM_UNDEFINED for error */
+    return SCM_BOOL_F; /* Use False for error */
   }
   return SCM_UNSPECIFIED;
 }
