@@ -1133,11 +1133,30 @@ union of all other window managers!
 (bind-mouse 'root 3 popup-applications)
 (bind-mouse 'all "H-1" (lambda () (select-window-and-toggle-highlight)))
 (bind-mouse 'all "A-2" (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
-(bind-key 'all "H-r" (lambda () (rename-window-interactively)))
+(bind-key 'all "H-r" rename-window-interactively)
+;; (lookup-key 'all "H-r")
+;; (add-timer-hook! (ms->usec 150) (lambda () (display (lookup-key 'all (get-key-event))) (newline)))
+;; (procedure-name rename-window-interactively)
+
+(define (describe-key)
+  (add-timer-hook! (ms->usec 150)
+		   (lambda ()
+		     (let* ((key (get-key-event))
+			    (proc (lookup-key 'all key)))
+		       (display-message-briefly
+			(string-append key " is bound to " 
+				       (if (and proc (pair? proc) (procedure? (car proc)))
+					   (procedure-name (car proc))
+					   "nothing")))))))
+
+(bind-key 'all "H-w" describe-key)
+
 (bind-key 'all "C-A-S-t" (lambda () (toggle-titlebar)))
 (bind-key 'all "C-A-S-m" (lambda () (show-window-list-matching-interactively)))
 
 (bind-key 'all "H-A-M-C-d" delete-window)
+;; (lookup-key 'all "H-A-M-C-d")
+
 
 ;;; operations on parts of the window
 (bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
