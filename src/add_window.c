@@ -714,6 +714,29 @@ AddWindow(Window w)
   return (tmp_win);
 }
 
+void
+GrabButtonWithModifiers(int button, int modifier, 
+				 ScwmWindow *sw)
+{
+  if (button > 0) {
+    XGrabButton(dpy, button, modifier, sw->w,
+		True, ButtonPressMask | ButtonReleaseMask,
+		GrabModeAsync, GrabModeAsync, None,
+		Scr.ScwmCursors[DEFAULT]);
+    if (modifier != AnyModifier) {
+      XGrabButton(dpy, button, (modifier | LockMask), sw->w,
+		  True, ButtonPressMask | ButtonReleaseMask,
+		  GrabModeAsync, GrabModeAsync, None,
+		  Scr.ScwmCursors[DEFAULT]);
+    }
+  } else {
+    GrabButtonWithModifiers(1,modifier,sw);
+    GrabButtonWithModifiers(2,modifier,sw);
+    GrabButtonWithModifiers(3,modifier,sw);
+  }
+}
+  
+
 /***********************************************************************
  *
  *  Procedure:
@@ -723,6 +746,8 @@ AddWindow(Window w)
  *	tmp_win - the scwm window structure to use
  *
  ***********************************************************************/
+
+/* FIXGJB: rewrite to use GrabButtonWithModifiers, above */
 void 
 GrabButtons(ScwmWindow * tmp_win)
 {
