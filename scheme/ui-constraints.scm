@@ -58,20 +58,17 @@
 ;; returns a new constraint class object based on the parameters
 ;; SIDE-EFFECT: adds new class obj to the global list
 
-(define*-public (make-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc #&optional (disable-hook #f))
+(define*-public (make-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
   "CTR takes NUM-WINDOWS windows and creates a constraint of this type.
 SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if it is satisfied
 UI-CTR should return the arguments (as a list) for CTR to build the constraint with.  UI-CTR should
 return #f if the user cancels the construction or fails to follow the interface correctly.  PIXMAP-NAME
 is the name of the pixmap to associate with this constraint-class in the user interface.
 MENUNAME-PROC is a proc that takes a UI-CONSTRAINT as an arg and returns the name that should be used
-for the constraint in the toggle menu.  DISABLE-HOOK is a procedure that takes two arguments, the instance
-object and a boolean value, and is called whenever an instance is disable or enabled.  This mechanism is used
-to create anchors that re-anchor in a new location after being disable and re-enabled.
+for the constraint in the toggle menu.  
 This routine returns a new constraint class object based on the parameters.
 SIDE-EFFECT: addes new class obj to the global class list."
-  (let* ((obj (vector obid-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc
-		      disable-hook)))
+  (let* ((obj (vector obid-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)))
     (set! global-constraint-class-list (cons obj global-constraint-class-list))
     obj))
 
@@ -199,15 +196,6 @@ the toggle menu.  Errors if object is not a ui-constraint-class object."
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
-;; ui-constraint-class-disable-hook
-
-(define-public (ui-constraint-class-disable-hook ui-constraint-class)
-  "Returns the disable-hook procedure if one exists in the UI-CONSTRAINT-CLASS.
-Returns #f if one does not exist."
-  (if (ui-constraint-class? ui-constraint-class)
-      (vector-ref ui-constraint-class 9)
-      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
-
 
 ;; UI-CONSTRAINT
 
@@ -233,19 +221,21 @@ Returns #f if one does not exist."
   "UI-CONSTRAINT-CLASS specified the type of constraint to be created.
 WIN-LIST specifies the windows to be constrained.  Returns a new constraint
 object that is NOT enabled.  errors if UI-CONSTRAINT-CLASS is not valid.
-Returned objects are #(obid-ui-constraint CLASS CN ENABLED? LIST-OF-WINDOWS OPTS BUT)
+Returned objects are #(obid-ui-constraint CLASS CN ENABLED? LIST-OF-WINDOWS OPTS BUT DHOOKS)
 The OPTS param is a spot for optional data to be specified by the ui-constraint-class 
 constructor.  If data returns from that constructor in list form, the first element of
 the list is assumed to be the CN and the cdr is stuck in OPTS.
 BUT may contain a reference to the gtk button for the constraint instance in the 
 toggle menu if that feature is in use.
+DHOOKS is a list of hook procedures that should be called when the enable is changed on this
+constraint.  These hook functions may only be added after an instance is created.
 SIDE-EFFECT: adds new instance object to the global list."
   (if (ui-constraint-class? ui-constraint-class)
       (let* ((vars (apply (ui-constraint-class-ctr ui-constraint-class) arg-list))
 	     (cn (car vars))
 	     (win-list (cadr vars))
 	     (opts (cddr vars))
-	     (uc (vector obid-ui-constraint ui-constraint-class cn #f win-list opts #f)))
+	     (uc (vector obid-ui-constraint ui-constraint-class cn #f win-list opts #f '())))
 	(set! global-constraint-instance-list (cons uc global-constraint-instance-list))
 	(call-hook-procedures constraint-add-hook-list (list uc))
 	uc)
@@ -361,7 +351,7 @@ Returns #f if no such data exists.  errors if UI-CONSTRAINT is not a ui-constrai
 ;; ui-constraint-button
 
 (define-public (ui-constraint-button ui-constraint)
-  "Returns the a reference to panel representing the instance in the toggle menu.
+  "Returns the a reference to panel representing the UI-CONSTRAINT in the toggle menu.
 Returns #f if the gtk toggle menu feature is not in use."
   (if (ui-constraint? ui-constraint)
       (vector-ref ui-constraint 6)
@@ -371,10 +361,40 @@ Returns #f if the gtk toggle menu feature is not in use."
 ;; ui-constraint-set-button!
 
 (define-public (ui-constraint-set-button! ui-constraint button)
-  "Sets the reference to the gtk button for this instance in the toggle menu."
+  "Sets the reference to the gtk button for this instance in the toggle menu.
+Errors if UI-CONSTRAINT is not a ui-constraint."
   (if (ui-constraint? ui-constraint)
       (vector-set! ui-constraint 6 button)
       (error "Argument must be a UI-CONSTRAINT object")))
+
+
+;; ui-constraint-enable-hooks
+
+(define-public (ui-constraint-enable-hooks ui-constraint)
+  "Returns a list of the enable-hook functions added to the UI-CONSTRAINT.
+Errors if UI-CONSTRAINT is not a ui-constraint object."
+  (if (ui-constraint? ui-constraint)
+      (vector-ref ui-constraint 7)
+      (error "Argument must be a UI-CONSTRAINT object")))
+
+
+;; ui-constraint-add-enable-hook
+
+(define-public (ui-constraint-add-enable-hook ui-constraint hook)
+  "Adds a HOOK proc which will be called when UI-CONSTRAINT enable state changes.
+HOOK should take one argument which is the new state of the UI-CONSTRAINT.
+Errors if UI-CONSTRAINT is not a ui-constraint object."
+  (let ((hlist (ui-constraint-enable-hooks ui-constraint)))
+      (vector-set! ui-constraint 7 (cons hook hlist))))
+    
+
+;; ui-constraint-remove-enable-hook
+
+(define-public (ui-constraint-remove-enable-hook ui-constraint hook)
+  "Removes a HOOK proc from the list in UI-CONSTRAINT.
+Errors if UI-CONSTRAINT is not a ui-constraint object."
+  (let ((hlist (ui-constraint-enable-hooks ui-constraint)))
+    (vector-set! ui-constraint 7 (delq hook hlist))))
 
 
 ;; set-enable!
@@ -401,11 +421,10 @@ errors if UI-CONSTRAINT is not a ui-constraint.
 returns the constraint."
   (if (ui-constraint? ui-constraint)
       (let* ((cn (ui-constraint-cn ui-constraint))
-	     (class (ui-constraint-class ui-constraint))
-	     (dhook (ui-constraint-class-disable-hook class)))
+	     (hooks (ui-constraint-enable-hooks ui-constraint)))
 	(map (lambda (c) (cl-add-constraint (scwm-master-solver) c)) cn)
-	(if dhook (dhook ui-constraint #t))
-	(set-enable! ui-constraint #t))
+	(set-enable! ui-constraint #t)
+	(call-hook-procedures hooks '(#t)))
       (error "Argument must be a UI-CONSTRAINT object")))
 
 
@@ -421,11 +440,10 @@ errors if UI-CONSTRAINT is not a ui-constraint
 returns the constraint"
   (if (ui-constraint? ui-constraint)
       (let* ((cn (ui-constraint-cn ui-constraint))
-	     (class (ui-constraint-class ui-constraint))
-	     (dhook (ui-constraint-class-disable-hook class)))
+	     (hooks (ui-constraint-enable-hooks ui-constraint)))
 	(map (lambda (c) (cl-remove-constraint (scwm-master-solver) c)) cn)
-	(if dhook (dhook ui-constraint #f))
-	(set-enable! ui-constraint #f))
+	(set-enable! ui-constraint #f)
+	(call-hook-procedures hooks '(#f)))
       (error "Argument must be a UI-CONSTRAINT object")))
 
 

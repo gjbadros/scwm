@@ -45,7 +45,7 @@
 (define debug-msgwin (make-message-window "Debug Message Window"))
 
 (define-public gtk-toggle-window (gtk-window-new 'toplevel))
-(define-public gtk-instance-box (gtk-vbutton-box-new))
+(define-public gtk-instance-box (gtk-vbox-new #t 0))
 
 (define-public gtk-toggle-close? #f)
 
@@ -63,6 +63,49 @@
   (for-each 
    (lambda (w) (unflash-window w))
    win-list))
+
+
+;; new routine to make a special widget
+
+(define (make-cn-widget n)
+  (let* ((toplevel gtk-toggle-window)
+	 (box gtk-instance-box)
+	 (close? gtk-toggle-close?)
+	 (class (ui-constraint-class n))
+	 (mproc (ui-constraint-class-menuname-proc class))
+	 (name (mproc n))
+	 (win-list (ui-constraint-windows n))
+	 (enabled? (ui-constraint-enabled? n))
+	 (tbl (gtk-table-new 1 3 #f))
+	 (lbl (gtk-label-new name))
+	 (bt1 (gtk-check-button-new-with-label "Enabled?"))
+	 (bt2 (gtk-button-new-with-label "Delete")))
+    (gtk-toggle-button-set-state bt1 enabled?)
+    (ui-constraint-add-enable-hook n (lambda (e) (gtk-toggle-button-set-state bt1 e)))
+    (gtk-signal-connect bt2 "clicked"
+			(lambda () (delete-ui-constraint! n)))
+;;    (gtk-signal-connect bt1 "clicked"
+;;			(lambda () (if (ui-constraint-enabled? n)
+;;				       (disable-ui-constraint n)
+;;				       (enable-ui-constraint n))))
+    (gtk-signal-connect bt1 "enter"
+			(lambda ()
+			  (flash-windows-of-constraint win-list)
+			  (draw-constraint n)))
+    (gtk-signal-connect bt1 "leave"
+			(lambda ()
+			  (undraw-constraint n)
+			  (unflash-windows-of-constraint win-list)))
+    (gtk-table-attach tbl lbl 0 1 0 1)
+    (gtk-table-attach tbl bt1 1 2 0 1)
+    (gtk-table-attach tbl bt2 2 3 0 1)
+    (gtk-widget-show lbl)
+    (gtk-widget-show bt1)
+    (gtk-widget-show bt2)
+    (gtk-container-add box tbl)
+    (gtk-widget-show tbl)
+    (ui-constraint-set-button! n tbl)
+    tbl))
 
 
 ;; make the button for a particular constraint
@@ -117,19 +160,19 @@ To display the toggle menu, call ui-constraint-gtk-toggle-menu."
 	 (vboxen (gtk-vbutton-box-new))
 	 (vboxcn gtk-instance-box)
 	 (vbox (gtk-vbox-new #f 3))
-	 (cn-buttons (map (lambda (n) (make-cn-button n)) 
+	 (cn-buttons (map (lambda (n) (make-cn-widget n)) 
 			  global-constraint-instance-list))
 	 (disable (gtk-button-new-with-label "Disable All"))
 	 (enable (gtk-button-new-with-label "Enable All"))
 	 (close (gtk-button-new-with-label "Close")))
     (add-constraint-add-hook! 
-     (lambda (cn) (make-cn-button cn)))
+     (lambda (cn) (make-cn-widget cn)))
     (add-constraint-delete-hook!
      (lambda (cn) (remove-cn-button cn)))
     (set! gtk-toggle-close? close?)
-    (gtk-button-box-set-spacing vboxcn 0)
-    (gtk-button-box-set-child-ipadding vboxcn 0 0)
-    (gtk-button-box-set-child-size vboxcn 300 20)
+;;    (gtk-button-box-set-spacing vboxcn 0)
+;;    (gtk-button-box-set-child-ipadding vboxcn 0 0)
+;;    (gtk-button-box-set-child-size vboxcn 300 20)
     (gtk-container-add vbox vboxcn)
     (gtk-widget-show vboxcn)
     (gtk-button-box-set-spacing vboxen 0)
@@ -175,3 +218,24 @@ Maintains consistency with previous toggle menu code."
   (ui-constraints-gtk-toggle-menu))
 
 ;; (popup-ui-constraints-gtk-toggle-menu)
+
+(define chk (gtk-check-button-new-with-label "Enabled?"))
+
+(define (test-widget)
+  (let* ((toplevel (gtk-window-new 'toplevel))
+	 (tbl (gtk-table-new 1 3 #f))
+	 (lbl (gtk-label-new "keep-above"))
+	 (bt2 (gtk-button-new-with-label "Delete")))
+    (gtk-toggle-button-set-state chk #t)
+    (gtk-table-attach tbl lbl 0 1 0 1)
+    (gtk-table-attach tbl chk 1 2 0 1)
+    (gtk-table-attach tbl bt2 2 3 0 1)
+    (gtk-widget-show lbl)
+    (gtk-widget-show chk)
+    (gtk-widget-show bt2)
+    (gtk-container-add toplevel tbl)
+    (gtk-widget-show tbl)
+    (gtk-widget-show toplevel)))
+
+;; (test-widget)
+;; (gtk-toggle-button-set-state chk #t)
