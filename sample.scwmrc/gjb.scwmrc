@@ -620,11 +620,11 @@
 ;; (scwm-module-loaded? '(app scwm esdsound))
 (if (scwm-module-loaded? '(app scwm esdsound))
     (define (wavplay filename)
-      (sound-play (sound-load filename)))
+      (sound-play (sound-load (string-append sounds-dir filename))))
     (define (wavplay filename)
-      (system (string-append "wavplay " filename "&"))))
+      (system (string-append "wavplay " sounds-dir filename "&"))))
 
-(define download-closed-wav (string-append sounds-dir "/tada.wav"))
+(define download-closed-wav "tada.wav")
 
 ;; GJB:FIXME:: make the time below (5) an option
 (define (netscape-download-closed-action win)
@@ -1273,6 +1273,11 @@ union of all other window managers!
   (raise-window win)
   #f)
 
+(define (play-window-flashing-start-sound ignored)
+  (wavplay "Utopia Question.WAV"))
+
+(add-hook! window-flashing-start-hook play-window-flashing-start-sound)
+
 (bind-mouse 'title 1 move-or-shade raise-and-stop-flashing)
 (bind-mouse 'title 2 #f lower-window)
 (bind-mouse 'title 3 #f popup-window-ops)
@@ -1576,6 +1581,15 @@ union of all other window managers!
 
 ;; (unbind-mouse 'window 4)
 ;; (unbind-mouse 'window 5)
+
+;; Permit vertical movement of windows via wheel mouse.
+;; kinda silly, but kinda cute, too!
+(bind-mouse 'window "H-4" (lambda () (move-window-relative 0 -5)))
+(bind-mouse 'window "H-C-4" (lambda () (move-window-relative 0 -1)))
+(bind-mouse 'window "H-M-4" (lambda () (move-window-relative 0 -25)))
+(bind-mouse 'window "H-5" (lambda () (move-window-relative 0 5)))
+(bind-mouse 'window "H-C-5" (lambda () (move-window-relative 0 1)))
+(bind-mouse 'window "H-M-5" (lambda () (move-window-relative 0 25)))
 
 ;; This one is experimental-- sends only the buttonpress event, no buttonrelease
 (bind-key 'all "C-M-S-0" (lambda () (send-button-press 2 (get-window) #t #f)))
