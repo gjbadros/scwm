@@ -49,7 +49,6 @@
 #include "decorations.h"
 #include "scwm.h"
 #include "screen.h"
-#include "mwmcom.h"
 #include "borders.h"
 
 #ifdef USE_DMALLOC
