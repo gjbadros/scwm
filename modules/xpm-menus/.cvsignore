@@ -1,4 +1,7 @@
+*.x
 .deps
+.libs
 Makefile
 Makefile.in
-*.x
+draw-xpm-menu.lo
+libxpm-menus.la

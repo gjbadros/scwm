@@ -1,3 +1,8 @@
+Sat Oct 10 13:59:47 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* xpm-menus/draw-xpm-menu.c: Added include of libguile/dynl.h
+	(should guile's gh.h header include this through libguile.h?)
+
 1998-10-07  Todd Larason  <jtl@teeny.molehill.org>
 
 	* xpm-menus/Makefile.am (INCLUDES): include proper include
