@@ -1109,6 +1109,11 @@ Repository Timestamp: %s\n",
   DBUG((DBG,"main", "Entering HandleEvents loop..."));
 
   sigsetjmp(envHandleEventsLoop,1);
+  /* GJB:FIXME:: Hubert Canon reports that he needs
+     this following line because sigsetjmp on Solaris
+     is corrupting several of the global variable values!
+     InternUsefulAtoms(); 
+  */
   /* this code is coupled with the code that restores this
      behaviour in scwmgtkhelper.c's restore_scwm_handlers */
   newhandler_doreset(SIGHUP);

@@ -160,7 +160,7 @@ SuggestMoveWindowTo(PScwmWindow psw, int x, int y, Bool fOpaque)
 
 
 /* x,y are virtual positions */
-void 
+Bool
 SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
 #define FUNC_NAME "SuggestSizeWindowTo"
 {
@@ -175,7 +175,7 @@ SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
       pswci->_frame_y.IntValue() == y &&
       pswci->_frame_width.IntValue() == w &&
       pswci->_frame_height.IntValue() == h)
-    return;
+    return False;
 
   (*psolver)
     .SuggestValue(pswci->_frame_x,x)
@@ -188,6 +188,7 @@ SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
         "Now clv-width,height are %d x %d",
         pswci->_frame_width.IntValue(),
         pswci->_frame_height.IntValue()));
+  return True;
 }
 #undef FUNC_NAME
 
