@@ -229,3 +229,32 @@ Use the optional second argument as the separator."
 	     (window-position window)
 	     (window-size     window))
 	#f)))
+
+
+;; Returns them in reverse the order they were selected
+;; should probably turn off the invalid interaction hook
+;; or provide a way of telling select-window-interactively that
+;; the root window is not an erro
+(define*-public (select-multiple-windows-interactively #&optional (max 32000))
+  "Return a list of user-selected windows, up to MAX.
+The list is in the reverse order from the way by which they were selected."
+  (do ((w '())
+       (wlist '() (cons w wlist))
+       (i 0 (+ 1 i)))
+      ((or (not w) (>= i max)) 
+       (if w wlist
+	   (cdr wlist)))
+    (set! w (select-window-interactively (string-append "select #" (number->string i))))))
+
+;; e.g.
+;;(select-multiple-windows-interactively 10)
+;;(restack-windows (select-multiple-windows-interactively 3))
+
+(define*-public (select-window-from-window-list #&key (only '()) (except '()))
+  "Permit selecting a window from a window list.
+Return the selected window object, or #f if none was selected"
+  (show-window-list-menu #:only only #:except except #:proc (lambda (w) w)))
+
+;; e.g.
+;; (let ((w (select-window-from-window-list #:only iconified?)))
+;;  (deiconify w) (move-to 0 0 w))

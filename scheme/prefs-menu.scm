@@ -41,7 +41,7 @@
 	((or (eof-object? ll) (equal? ll save-header))
 	 (if (eof-object? ll) (write-all fd save-header "\n"))))
     (truncate-file fd (ftell fd))
-    (write-all fd "(set-edge-scroll! 0 0)\n(set-opaque-move-size! 0)\n"
+    (write-all fd "(set-edge-scroll! 0 0)\n"
 	       "(set-desk-size! " (size->str (desk-size) " "))
     (for-each
      (lambda (ll)
@@ -71,12 +71,14 @@
 			(show-mesg "Set percentage of screen to scroll\\n\
 No saving yet!")))))
 
+(define-public scwm-opaque-move-size 100)
+
 (define opaque-move-menu
-  (menu (list (menuitem "All" #:action (lambda () (set-opaque-move-size! 100)))
-	      (menuitem "50%" #:action (lambda () (set-opaque-move-size! 50)))
-	      (menuitem "20%" #:action (lambda () (set-opaque-move-size! 20)))
+  (menu (list (menuitem "All" #:action (lambda () (set! scwm-opaque-move-size 100)))
+	      (menuitem "50%" #:action (lambda () (set! scwm-opaque-move-size 50)))
+	      (menuitem "20%" #:action (lambda () (set! scwm-opaque-move-size 20)))
 	      (menuitem "Never" #:action
-			(lambda () (set-opaque-move-size! 0)))
+			(lambda () (set! scwm-opaque-move-size! 0)))
 	      menu-separator
 	      (menuitem "Help" #:action
 			(show-mesg "Set the max size of an opaquely\\n\
