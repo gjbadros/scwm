@@ -1,16 +1,16 @@
-;;; File: <sds.scwmrc - 1999-01-26 Tue 14:32:24 EST sds@eho.eaglets.com>
+;;; File: <sds.scwmrc - 1999-02-09 Tue 16:29:49 EST sds@eho.eaglets.com>
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Goal: to attract users.
 ;;; IMHO, this should be the system.scwmrc.
 
-;;; Major ideas:
+;;; Main ideas:
 ;;; 1. look as nice as possible (e.g., if one item in the menu has
 ;;;    mini-icon, all items will have one)
 ;;; 2. use as many features as possible (e.g., multiple decors etc), so
 ;;;    that the users will be able to customize this thing easily.
 
-;;; Some keybindings use H (hyper key).  I have a w95 keyboard, so I use
+;;; Most keybindings use H (hyper key).  I have a w95 keyboard, so I use
 ;;; the "windows key" between the left Control and left Alt as Hyper.
 ;;; Put the following into ~/.xmodmaprc and call `xmodmap ~/.xmodmaprc`
 ;;; from your ~/.xsession or ~/.xinitrc (depending on whether you use
@@ -38,7 +38,13 @@
  (app scwm optargs) (app scwm std-menus) (app scwm wmconfig-menu)
  (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module)
  (app scwm animation) (app scwm placement) (app scwm virtual)
- (app scwm message-window))
+ ;; (app scwm animate-iconify-window)
+ (app scwm message-window) (app scwm gnome-hints))
+
+;; communicate with GNOME
+(set! gnome-desktop-number 1)
+(set! gnome-shade-animated #t)
+(enable-gnome-hints)
 
 ;; user settable!
 (define want-pictures? #f)
@@ -219,9 +225,9 @@
               #:transient-placement-proc place-at-point))
 
 (define desk-widget
-  (make-style #:focus 'none #:use-style std-style #:plain-border #t #:sticky #t
-              #:winlist-skip #t #:border-width 1 #:circulate-skip #t
-              #:no-titlebar #t))
+  (make-style #:focus 'none #:use-style std-style #:plain-border #t
+              #:sticky #t #:winlist-skip #t #:border-width 1
+              #:circulate-skip #t #:no-titlebar #t))
 (define desk-widget-on-top
   (make-style #:use-style desk-widget #:kept-on-top #t))
 
@@ -240,7 +246,7 @@
 (window-style "xman" #:icon "xman.xpm" #:mini-icon manx-i)
 (window-style "xmag" #:icon "mag_glass.xpm" #:mini-icon mag-i)
 (window-style "xplaycd" #:icon "CompactDisk.xpm" #:mini-icon cd-i) ; Music.xpm
-(window-style "xamp" #:icon "Music.xpm" #:mini-icon audio-i)
+(window-style "replay" #:icon "Music.xpm" #:mini-icon audio-i) ; xamp
 (window-style "xv" #:icon "xv.color.xpm" #:mini-icon xv-i)
 (window-style "Netscape" #:icon "nscape.xpm" #:mini-icon nscape-i
               #:placement-proc (in-viewport-placement 1 1))
@@ -256,13 +262,17 @@
 (window-style "Ace*" #:mini-icon games-i)
 (window-style "xpat2" #:mini-icon games-i)
 (window-style "gnothello" #:mini-icon games-i)
+(window-style "freecell" #:mini-icon games-i)
 (window-style "xmessage" #:mini-icon quest-i)
 (window-style "conf" #:icon "settings.xpm" #:mini-icon "mini-penguin.xpm")
 (window-style "gtkfind" #:mini-icon mag-i #:icon "find1.xpm")
 (window-style "ee" #:mini-icon eyes-i)
+(window-style "top" #:mini-icon eye-i)
 (window-style "Gnome*help*browser" #:mini-icon books-i)
 (window-style "helptool" #:mini-icon book2-i)
 (window-style "siag" #:mini-icon siag-i)
+(window-style "xpdf" #:mini-icon pdf-i)
+(window-style "acroread" #:mini-icon pdf-i)
 (window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
               #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
 (window-style "emacs*mbf" #:focus 'sloppy #:use-style desk-widget-on-top)
@@ -331,7 +341,7 @@
               (menuitem "&gnuplot" #:image-left plot-i #:action
                         (run-in-xterm "gnuplot"))
               (menuitem "Play &CD" #:image-left cd-i #:action "xplaycd")
-              (menuitem "Play MP3" #:image-left audio-i #:action "xamp")
+              (menuitem "Play MP&3" #:image-left audio-i #:action "replay")
               (menuitem "X &dos" #:image-left dos-i #:action "/usr/bin/dos -X")
               (menuitem "GTKFind" #:image-left mag-i #:action "gtkfind")
               menu-separator
@@ -366,8 +376,7 @@
 (define menu-apps
   (menu (list (menuitem "Applications" #:image-left x2-i #f)
               menu-title menu-separator
-              ;; (menuitem "Acroread" #:image-left pdf-i #:action
-              ;;           "/usr/local/Acrobat3/bin/acroread")
+              (menuitem "Acroread" #:image-left pdf-i #:action "acroread")
               (menuitem "Netscape" #:image-left nscape-i #:action
                         "/usr/bin/netscape")
               ;; (menuitem "Mozilla" #:image-left nscape-i #:action
@@ -456,7 +465,8 @@
          (menuitem "Ma&ximize" #:image-left max1-i #:action toggle-max-both)
          (menuitem "&Tall" #:image-left maxt-i #:action toggle-max-vert)
          (menuitem "&Wide" #:image-left maxw-i #:action toggle-max-horz)
-         (menuitem "S&hade" #:image-left bolt-i #:action toggle-window-shade)
+         (menuitem "S&hade" #:image-left bolt-i #:action
+                   anoimated-toggle-window-shade)
          menu-separator
          (menuitem "&On-top" #:image-left eyes-i #:action toggle-on-top)
          (menuitem "&Print" #:image-left run-i #:action print-window)
@@ -599,7 +609,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (define (move-or-deiconify)
   (case (mouse-event-type)
     ((motion) (interactive-move))
-    ((double-click) (deiconify))))
+    ((double-click) (deiconify)))) ; animate-
 
 (bind-mouse 'icon 1 move-or-deiconify)
 (bind-mouse 'icon 2 deiconify)
@@ -808,7 +818,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (add-button big-lightning-face animated-toggle-window-shade #t)
 (add-button stylized-X-face close-window #f)
 (add-button up-down-arrow-face toggle-max-vert #f)
-(add-button small-box-face iconify #f)
+(add-button small-box-face iconify #f) ; animate-
 
 ;; should be after the buttons
 ;(with-decor lizard-d (set-button-face! 1 edit-face)) ; emacs

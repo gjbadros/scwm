@@ -1,3 +1,7 @@
+1999-02-09  Sam Steingold  <sds@goems.com>
+
+	* sds.scwmrc: use GNOME.
+
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* gjb.scwmrc: Fix to deal with module renaming.
@@ -34,7 +38,7 @@ Tue Dec 22 04:30:35 1998  Maciej Stachowiak  <mstachow@mit.edu>
 Sat Dec  5 12:31:46 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc, robbe.scwmrc, sds.scwmrc: Use module (app scwm
-	standard-move-resize-message-window) so behaviour remains the same 
+	standard-move-resize-message-window) so behaviour remains the same
 	despite the message-window changes.  Change calls to
 	set-message-window-attributes! to
 	set-move-resize-message-window-attributes!
@@ -99,7 +103,7 @@ Sun Nov  8 17:57:32 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 1998-10-24  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
-	* decor.scwmrc, gjb.scwmrc, juhp.scwmrc, robbe.scwmrc, sds.scwmrc, 
+	* decor.scwmrc, gjb.scwmrc, juhp.scwmrc, robbe.scwmrc, sds.scwmrc,
 	system.scwmrc:  Use `user-name' instead of `USER', `user-home'
 	instead of `HOME'.
 
@@ -120,7 +124,7 @@ Sat Oct 10 15:30:53 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use add-hook! for image-not-found-hook.  Fix
 	float->integer to use truncate.  Remove set!-s of
-	menu-{bg,text}-color since they're redundant w/ menu-style. Thanks 
+	menu-{bg,text}-color since they're redundant w/ menu-style. Thanks
 	Todd Larason!
 
 Sat Oct 10 14:26:27 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -144,7 +148,7 @@ Sat Oct 10 14:26:27 1998  Greg Badros  <gjb@cs.washington.edu>
 	(root-menu): Use interactive-*-maybe-opaque functions.  Add
 	window-info binding.  Use toggle-max-vert.
 	(window-menu): Ditto.
-	(window-geometry): new function to print out window geometry the X 
+	(window-geometry): new function to print out window geometry the X
 	way.  Should probably be in one of the scwm scheme modules.
 	(window-info-menu): was experimental `focus-window-menu'.  Pops a
 	"menu" with information on the focused window, as available under
@@ -161,7 +165,7 @@ Sat Oct 10 14:26:27 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Fri Sep 18 17:02:52 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* gjb.scwmrc: Added a hacky `deiconify-to-current-viewport' (hacky 
+	* gjb.scwmrc: Added a hacky `deiconify-to-current-viewport' (hacky
 	because it deiconifies then moves the window).  Move
 	`netscape-win' out of here into flux.scm.  Use
 	window-viewport-position in `move-next-to-netscape-win'.  Added
@@ -212,7 +216,7 @@ Fri Aug 14 17:32:47 1998  Greg Badros  <gjb@cs.washington.edu>
 	  the args, and use #:xterm-options as appropriate); use the
 	  -maybe-opaque resize and move procs since they'll honour the
 	  opaque-move-percent and opaque-resize-percent vars; make
-	  popu-small-ops on button1 use popup-menu-from-decoration, out of 
+	  popu-small-ops on button1 use popup-menu-from-decoration, out of
 	  flux, since that behaviour should become the default
 
 	* gjb.scwmrc: Added setting of opaque-{move,resize}-percent, use
@@ -242,7 +246,7 @@ Fri Aug 14 17:32:47 1998  Greg Badros  <gjb@cs.washington.edu>
 
 1998-07-22  Greg Badros  <gjb@cs.washington.edu>
 
-	* gjb.scwmrc: Add doc-files setting, turn off pager, use something 
+	* gjb.scwmrc: Add doc-files setting, turn off pager, use something
 	other than write-all.
 
 1998-07-09  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
@@ -293,7 +297,7 @@ Fri Mar 20 22:32:33 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	gjb.scwmrc: Added relief-pattern alternatives for the button
  	images, commented out for now.
-	
+
 Tue Mar 10 00:30:53 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added image-not-found-hook
@@ -337,9 +341,9 @@ Sun Nov 30 12:03:51 1997  unknown  <gjb@cs.washington.edu>
  	-- e.g., use `menu-separator', not `(menu-separator)'
 
 	** menuitem no longer is spelled `menu-item'
- 	
+
 	** keywords for menuitem are now #:image-left, #:image-above, not
- 	#:left-pixmap #:above-pixmap 
+ 	#:left-pixmap #:above-pixmap
 
 	** new keywords for menu include #:image-side (for new side image
  	feature) and #:color-bg-image-side.
