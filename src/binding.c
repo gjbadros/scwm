@@ -51,86 +51,53 @@ SCWM_SYMBOL(sym_any_modifier,"any-modifier");
 
 struct symnum {
   SCM sym;
+  char *sz;
   int value;
 };
 
 /* this array is parallel to the below context_strings array */
+static
 struct symnum binding_contexts[] =
 {
-  {SCM_UNDEFINED, C_WINDOW},
-  {SCM_UNDEFINED, C_TITLE},
-  {SCM_UNDEFINED, C_ICON},
-  {SCM_UNDEFINED, C_ROOT},
-  {SCM_UNDEFINED, C_FRAME},
-  {SCM_UNDEFINED, C_SIDEBAR},
-  {SCM_UNDEFINED, C_WINDOW},   /* intentional duplicates to match aliases */
-  {SCM_UNDEFINED, C_TITLE},    /* in parallel array below */
-  {SCM_UNDEFINED, C_ROOT},
-  {SCM_UNDEFINED, C_FRAME},
-  {SCM_UNDEFINED, C_SIDEBAR},
-  {SCM_UNDEFINED, C_L1},
-  {SCM_UNDEFINED, C_R1},
-  {SCM_UNDEFINED, C_L2},
-  {SCM_UNDEFINED, C_R2},
-  {SCM_UNDEFINED, C_L3},
-  {SCM_UNDEFINED, C_R3},
-  {SCM_UNDEFINED, C_L4},
-  {SCM_UNDEFINED, C_R4},
-  {SCM_UNDEFINED, C_L5},
-  {SCM_UNDEFINED, C_R5},
-  {SCM_UNDEFINED, C_L1},
-  {SCM_UNDEFINED, C_R1},
-  {SCM_UNDEFINED, C_L2},
-  {SCM_UNDEFINED, C_R2},
-  {SCM_UNDEFINED, C_L3},
-  {SCM_UNDEFINED, C_R3},
-  {SCM_UNDEFINED, C_L4},
-  {SCM_UNDEFINED, C_R4},
-  {SCM_UNDEFINED, C_L5},
-  {SCM_UNDEFINED, C_R5},
-  {SCM_UNDEFINED, C_ALL},
-  {SCM_UNDEFINED, 0}
+  {SCM_UNDEFINED, "window", C_WINDOW},
+  {SCM_UNDEFINED, "title", C_TITLE},
+  {SCM_UNDEFINED, "icon", C_ICON},
+  {SCM_UNDEFINED, "root", C_ROOT},
+  {SCM_UNDEFINED, "frame-corners", C_FRAME},
+  {SCM_UNDEFINED, "frame-sides", C_SIDEBAR},
+  {SCM_UNDEFINED, "left-button-1", C_L1},
+  {SCM_UNDEFINED, "right-button-1", C_R1},
+  {SCM_UNDEFINED, "left-button-2", C_L2},
+  {SCM_UNDEFINED, "right-button-2", C_R2},
+  {SCM_UNDEFINED, "left-button-3", C_L3},
+  {SCM_UNDEFINED, "right-button-3", C_R3},
+  {SCM_UNDEFINED, "left-button-4", C_L4},
+  {SCM_UNDEFINED, "right-button-4", C_R4},
+  {SCM_UNDEFINED, "left-button-5", C_L5},
+  {SCM_UNDEFINED, "right-button-5", C_R5},
+  {SCM_UNDEFINED, "all", C_ALL},
+  /* below are deprecated or alternate names */
+#define IBC_MAX_UNDEPRECATED_SYMBOL 16  /* 16 entries above */
+  /* the undeprecated version must be at index-(IBC_MAX_UNDEPRECATED_SYMBOL+1) */
+  {SCM_UNDEFINED, "client-window", C_WINDOW},
+  {SCM_UNDEFINED, "titlebar", C_TITLE},
+  {SCM_UNDEFINED, "icon-window", C_ICON},
+  {SCM_UNDEFINED, "root-window", C_ROOT},
+  {SCM_UNDEFINED, "frame", C_FRAME},
+  {SCM_UNDEFINED, "sidebar", C_SIDEBAR},
+  {SCM_UNDEFINED, "button-1", C_L1},
+  {SCM_UNDEFINED, "button-2", C_R1},
+  {SCM_UNDEFINED, "button-3", C_L2},
+  {SCM_UNDEFINED, "button-4", C_R2},
+  {SCM_UNDEFINED, "button-5", C_L3},
+  {SCM_UNDEFINED, "button-6", C_R3},
+  {SCM_UNDEFINED, "button-7", C_L4},
+  {SCM_UNDEFINED, "button-8", C_R4},
+  {SCM_UNDEFINED, "button-9", C_L5},
+  {SCM_UNDEFINED, "button-10", C_R5},
+  {SCM_UNDEFINED, "any", C_ALL},
+  {SCM_UNDEFINED, NULL, 0}
 };
-
-/* this array is parallel to the above binding_contexts array.
-*/
-static char *context_strings[] =
-{
-  "window",
-  "title",
-  "icon",
-  "root",
-  "frame",  /* really the corners -- 'frame-corners is the preferred sym */
-  "sidebar", /* the frame sidebars -- 'frame-sides is the preferred sym */
-  "client-window",
-  "titlebar",
-  "root-window",
-  "frame-corners",
-  "frame-sides",
-  "button-1",
-  "button-2",
-  "button-3",
-  "button-4",
-  "button-5",
-  "button-6",
-  "button-7",
-  "button-8",
-  "button-9",
-  "button-10",
-  "left-button-1",
-  "right-button-1",
-  "left-button-2",
-  "right-button-2",
-  "left-button-3",
-  "right-button-3",
-  "left-button-4",
-  "right-button-4",
-  "left-button-5",
-  "right-button-5",
-  "all",
-  NULL
-};
-
 
 
 static unsigned 
@@ -757,6 +724,11 @@ lookup_context(SCM context)
   }
   for (i = 0; binding_contexts[i].value != 0; i++) {
     if (gh_eq_p(binding_contexts[i].sym, context)) {
+      if ( i > IBC_MAX_UNDEPRECATED_SYMBOL ) {
+        scwm_msg(ERR,"lookup_context","Context name `%s' has been deprecated; please use new name %s",
+                 binding_contexts[i].sz,
+                 binding_contexts[i-(IBC_MAX_UNDEPRECATED_SYMBOL+1)].sz);
+      }
       return (binding_contexts[i].value);
     }
   }
@@ -803,7 +775,7 @@ PBindingFromKey(KeyCode keycode,
                 unsigned int modifier, int context)
 {
   Binding *pbnd;
-  unsigned int mask =
+  const unsigned int mask =
     (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
      Mod5Mask) & (~(numlock_mask | scrollock_mask | LockMask));
 
@@ -825,7 +797,7 @@ PBindingFromMouse(int button,
                   unsigned int modifier, int context)
 {
   Binding *pbnd;
-  unsigned int mask =
+  const unsigned int mask =
     (ShiftMask | ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask |
      Mod5Mask) & (~(numlock_mask | scrollock_mask | LockMask));
 
@@ -911,7 +883,6 @@ if there is no matching binding. */
   return SCM_BOOL_F;
 }
 #undef FUNC_NAME
-
 
 
 SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
@@ -1189,6 +1160,8 @@ type. */
 SCWM_PROC(lookup_mouse, "lookup-mouse", 2, 0, 0,
           (SCM contexts, SCM button))
      /** Return the procedure bound to mouse BUTTON within the CONTEXTS.
+BUTTON is a string that may contain modifier prefixes, e.g.,
+"C-S-M-1". 
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number and any
 modifiers as a prefix.
@@ -1209,12 +1182,64 @@ matching binding. */
   pbnd = PBindingFromMouse(bnum, modmask, context);
 
   if (pbnd) {
-    return pbnd->Thunk;
+    return gh_list(pbnd->Thunk,pbnd->ReleaseThunk,SCM_UNDEFINED);
   }
 
   return SCM_BOOL_F;
 }
 #undef FUNC_NAME
+
+static SCM
+ScmContextsFromContextMask(int context)
+{
+  SCM answer = SCM_EOL;
+  int i = 0;
+  for (; i <= IBC_MAX_UNDEPRECATED_SYMBOL; ++i) {
+    if (binding_contexts[i].value & context) {
+      answer = gh_cons(binding_contexts[i].sym,answer);
+    }
+  }
+  return answer;
+}
+
+static SCM
+ScmBindingDescriptionFromPbnd(const Binding *pbnd)
+{
+  SCM mouse_p = gh_bool2scm(pbnd->IsMouse);
+  SCM contexts = ScmContextsFromContextMask(pbnd->Context);
+  SCM modmask = gh_int2scm(pbnd->Modifier);
+  SCM keybut = gh_int2scm(pbnd->Button_Key);
+  SCM proc1 = pbnd->Thunk;
+  SCM proc2 = pbnd->ReleaseThunk;
+
+  return gh_list(mouse_p,contexts,modmask,keybut,proc1,proc2,SCM_UNDEFINED);
+}
+
+SCWM_PROC(lookup_procedure_bindings, "lookup-procedure-bindings", 1, 0, 0,
+          (SCM proc))
+     /** Return any bindings that invoke PROC.
+The return value is a list of binding descriptions.  Each binding
+description is a list: (mouse? contexts modmask keycode-or-butnum press-proc
+release-or-immediate-proc).  mouse? is a boolean, contexts is a list of
+symbols. */
+#define FUNC_NAME s_lookup_procedure_bindings
+{
+  SCM bindings = SCM_EOL;
+  Binding *pbnd;
+  VALIDATE_ARG_PROC(1,proc);
+
+  for (pbnd = Scr.AllBindings; pbnd != NULL; pbnd = pbnd->NextBinding) {
+    if (pbnd->Thunk == proc || pbnd->ReleaseThunk == proc) {
+      /* got a hit */
+      SCM bind = ScmBindingDescriptionFromPbnd(pbnd);
+      bindings = gh_cons(bind,bindings);
+    }
+  }
+  return bindings;
+}
+#undef FUNC_NAME
+
+
 
 
 /*
@@ -1420,6 +1445,26 @@ physical button acts as logical button 1, and the leftmost acts as button 3. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC (keymask_to_string, "keymask->string", 1, 0, 0,
+           (SCM keymask))
+     /** Return a string representing KEYMASK.
+E.g., (keymask->string 4) => "C-". Returns #f on an error. */
+#define FUNC_NAME s_keymask_to_string
+{
+  int mask;
+  char *sz;
+  VALIDATE_ARG_INT_RANGE_COPY(1,keymask,0,255,mask);
+
+  sz = SzNewModifierStringForModMask(mask);
+  if (sz) {
+    SCM answer = gh_str02scm(sz);
+    FREE(sz);
+    return answer;
+  }
+  return SCM_BOOL_F;
+}
+#undef FUNC_NAME
+
 SCWM_PROC (keymask_keycode_to_string, "keymask-keycode->string", 2, 0, 0,
            (SCM keymask, SCM keycode))
      /** Return a string representing the key press with mask KEYMASK, code KEYCODE.
@@ -1527,8 +1572,8 @@ void
 init_binding(void)
 {
   int i;
-  for (i = 0; context_strings[i] != NULL; i++) {
-    binding_contexts[i].sym = gh_symbol2scm(context_strings[i]);
+  for (i = 0; binding_contexts[i].sz != NULL; i++) {
+    binding_contexts[i].sym = gh_symbol2scm(binding_contexts[i].sz);
     scm_permanent_object(binding_contexts[i].sym);
   }
 
