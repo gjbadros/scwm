@@ -72,6 +72,20 @@ static scm_smobfuns T ## _smobfuns = { \
 #define REGISTER_SCWMSMOBFUNS(T) scm_tc16_scwm_ ## T = scm_newsmob(& T ## _smobfuns)
 
 
+#ifndef SCWM_EXTRACT_COMMENTS
+/* do not define this macro if we are extracting comments since
+   the macro name is used as a lexical cue to the extractor */
+
+#define SCWM_VAR(cvar, name, val) \
+  do { pscm_ ## cvar = SCM_CDRLOC( \
+      scm_sysintern(name, val) ); } while (0)
+
+/* cvar is ignored for now */
+#define SCWM_VAR_READ_ONLY(cvar, name,val) \
+  do { scm_sysintern(name,val); } while (0)
+#endif
+
+
 /* Check if the scm variable is undefined or #f -- these cases
    correspond to places where we want to use a default value
    either because the args were omitted, or #f was used to skip

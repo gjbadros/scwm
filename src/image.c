@@ -87,9 +87,9 @@ static SCM image_loader_hash_table = SCM_UNDEFINED;
 
 /* The location of the value of the image-load-path variable. */
 
-static SCM *loc_image_load_path;
+static SCM *pscm_image_load_path;
 
-static SCM *loc_image_not_found_hook;
+static SCM image_not_found_hook;
 
 static SCM str_default;
 static SCM str_empty;
@@ -341,16 +341,6 @@ empty string (for files with no extension), or the string "default"
 #undef FUNC_NAME
 
 SCM
-InvokeHook1(SCM proc, SCM arg1)
-{
-  if (proc != SCM_BOOL_F && gh_procedure_p(proc)) {
-    return scwm_safe_call1(proc, arg1);
-  }
-  return SCM_BOOL_F;
-}
-
-
-SCM
 path_expand_image_fname(SCM name, const char *func_name)
 {
   char *c_name, *c_fname;
@@ -380,18 +370,18 @@ path_expand_image_fname(SCM name, const char *func_name)
     int max_path_len= 0;
 
     /* relative path */ 
-    if (!gh_list_p(*loc_image_load_path)) {
+    if (!gh_list_p(*pscm_image_load_path)) {
       /* Warning, image-load-path is not a list. */
       return SCM_BOOL_F;
     }
     
     /* traverse the path list to compute the max buffer size we will
        need. */
-    /* MSFIX: FIXGJB: ideally, we'd like to do this only after 
-     *loc_image_load_path changes */
-    /* GJBFIX: I don't think there is a way to know that... */
+    /* FIXGJB: ideally, we'd like to do this only after 
+     *pscm_image_load_path changes -- maybe we could compare
+     against a hash of the old value before redoing this work */
 
-    for (p = *loc_image_load_path; p != SCM_EOL; p = gh_cdr(p)) {
+    for (p = *pscm_image_load_path; p != SCM_EOL; p = gh_cdr(p)) {
       SCM elt = gh_car(p);
       if (!gh_string_p(elt)) {
 	/* Warning, non-string in image-load-path */
@@ -408,7 +398,7 @@ path_expand_image_fname(SCM name, const char *func_name)
     c_fname = NEWC(max_path_len + length + 2,char);
     
     /* Try every possible path */
-    for(p = *loc_image_load_path; p != SCM_EOL; p = gh_cdr(p)) {
+    for(p = *pscm_image_load_path; p != SCM_EOL; p = gh_cdr(p)) {
       SCM elt = gh_car(p);
       int path_len = SCM_ROLENGTH(elt);
       memcpy(c_fname, SCM_ROCHARS(elt), path_len);
@@ -424,9 +414,7 @@ path_expand_image_fname(SCM name, const char *func_name)
       /* warn that the file is not found. */
       scwm_msg(WARN,__FUNCTION__,"Image file was not found: `%s'",c_name);
 
-      /* FIXMS: Make this into a proper hook! */
-
-      InvokeHook1(*loc_image_not_found_hook,gh_str02scm(c_name));
+      call1_hooks(image_not_found_hook,gh_str02scm(c_name));
       FREE(c_name);
       FREEC(c_fname);
       return SCM_BOOL_F;
@@ -625,16 +613,13 @@ void init_image()
   /* Make the image-load-path Scheme variable easily accessible from C,
      and load it with a nice default value. */
   
-/**VAR: image-load-path
-  List of strings indicating the directories in which to look for image files. 
-*/
-  loc_image_load_path = SCM_CDRLOC
-    (scm_sysintern("image-load-path", 
-		   gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH)));
+  SCWM_VAR(image_load_path,"image-load-path", gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH));
+  /** List of strings of directories in which to look for image files. */
 
-  /**VAR: */
-  loc_image_not_found_hook = SCM_CDRLOC
-    (scm_sysintern("image-not-found-hook", SCM_BOOL_F));
+
+  SCWM_HOOK(image_not_found_hook, "image-not-found-hook");
+  /** Called with image name as a string when not found. */
+  
 }
 
 

@@ -1331,9 +1331,10 @@ init_menu()
 {
   REGISTER_SCWMSMOBFUNS(menu);
 
-  /**VAR: */
-  pscm_construct_menu_primitive = SCM_CDRLOC
-    (scm_sysintern("construct-menu-primitive", SCM_BOOL_F));
+  SCWM_VAR(construct_menu_primitive,"construct-menu-primitive", SCM_BOOL_F);
+  /** The function to call to construct a menu.
+This is only useful for testing dynamically-loaded menu drawing code,
+and should normally be left at its default of #f. */
 
 #ifndef SCM_MAGIC_SNARFER
 # include "menu.x"

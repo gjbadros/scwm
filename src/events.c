@@ -1738,9 +1738,6 @@ WindowGettingButtonEvent(Window w, int x, int y)
 
 
 /* Inspired by GWM 1.8c --gjb */
-/* FIXGJB: use button, not button + modifier */
-/* GJBFIX: why can't we just use the same specification style (and
-   code) as for bind-mouse? */
 
 SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
           (SCM key, SCM win,
