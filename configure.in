@@ -166,6 +166,10 @@ AC_CHECK_LIB(guile, scm_parse_path, AC_DEFINE(HAVE_SCM_PARSE_PATH), ,$GUILE_LIBS
 
 AC_CHECK_LIB(guile, scm_internal_select, AC_DEFINE(HAVE_SCM_INTERNAL_SELECT), ,$GUILE_LIBS)
 
+AC_CHECK_LIB(guile, scm_internal_cwdr, AC_DEFINE(HAVE_SCM_INTERNAL_CWDR), ,$GUILE_LIBS)
+
+AC_CHECK_LIB(guile, scm_internal_stack_catch, AC_DEFINE(HAVE_SCM_INTERNAL_STACK_CATCH), ,$GUILE_LIBS)
+
 dnl check for scm_the_last_fluid in place of scm_the_last_stack_var
 
 saved_LIBS="${LIBS}"

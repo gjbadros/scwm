@@ -80,6 +80,16 @@
 /* Define this if your libguile has scm_parse_path.  */
 #undef HAVE_SCM_INTERNAL_SELECT
 
+/* Define this if your libguile has scm_the_last_stack_fluid instead
+   of scm_the_last_stack_var.  */
+#undef HAVE_SCM_THE_LAST_STACK_FLUID
+
+/* Define this if your libguile has scm_internal_cwdr.  */
+#undef HAVE_SCM_INTERNAL_CWDR
+
+/* Define this if your libguile has scm_internal_stack_catch.  */
+#undef HAVE_SCM_INTERNAL_STACK_CATCH
+
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 
