@@ -1343,7 +1343,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
   XWindowChanges xwc;
   unsigned long xwcm;
   int i;
-  int tbar_right;
+  int tbar_right = 0;
   Bool shaded = SHADED_P(psw);
   Bool fNoSideDecorations = NO_SIDE_DECORATIONS_P(psw);
   /*  Bool fNoTopDecoration = NO_TOP_BORDER_DECORATION_P(psw); */
@@ -1399,15 +1399,13 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     if (psw->title_width < 1)
       psw->title_width = 1;
 
-    { /* scope */
+    tbar_right = w;
+    if (psw->fTitle && fSquashedTitlebar) {
       int tw = ComputeXTextWidth(XFONT(GET_DECOR(psw, window_font)), psw->name, -1);
-      tw += 2*psw->boundary_width + psw->bw + 10;
-      tbar_right = w;
-      if (psw->fTitle && fSquashedTitlebar) {
-        if (psw->title_width > tw) {
-          tbar_right = w - (psw->title_width - tw);
-          psw->title_width = tw;
-        }
+      tw += 2*psw->boundary_width + psw->bw + 18;
+      if (psw->title_width > tw) {
+	tbar_right = w - (psw->title_width - tw);
+	psw->title_width = tw;
       }
     }
 
