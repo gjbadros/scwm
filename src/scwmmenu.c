@@ -766,6 +766,7 @@ XPutBackKeystrokeEvent(Display *dpy, Window w, KeySym keysym)
   ev.state = 0;
   ev.keycode = XKeysymToKeycode(dpy, keysym);
   ev.same_screen = True;
+  XPutBackEvent(dpy,(XEvent *) &ev);
 }
 
   
@@ -964,8 +965,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 	  /* we're at the right edge of the menu so be sure we popup
 	     the cascade menu if any */
 	  if (pmd->pmdNext == NULL) {
-	    PmdPrepopFromPmiim(pmiim);
-            XPutBackKeystrokeEvent(dpy,pmd->pmdi->w,XK_Right);
+            PmdPrepopFromPmiim(pmiim);
 	  }
 	}
       }
@@ -994,6 +994,13 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
     /* FIXGJB: Now handle newly selected menu items, whether it is from a keypress or
 	 a pointer motion event */
     XFlush(dpy);
+
+    /* FIXGJB this doesn't work -- we'd like to be able to jump to
+       the first item of the next menu if a shortcut key was used to popup a new menu */
+#if 0    
+    if (fHotkeyUsed)
+      XPutBackKeystrokeEvent(dpy,pmiim->pmd->pmdi->w,XK_Right);
+#endif    
   } /* while true */
  MENU_INTERACTION_RETURN:
   return scmAction;
