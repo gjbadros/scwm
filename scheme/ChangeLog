@@ -1,3 +1,14 @@
+Tue Oct 19 18:02:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Needs nonants module, fix interactive decl for
+ 	make-toggling-winops to have a comment so it gets recognized
+	(fixes bug w/ C-S-M-button1 -- toggle-window-raise).
+
+	* winlist.scm: Make listify-if-atom public, since winlist-menu
+	needs it now.
+
+	* wininfo.scm: ws change.
+
 Tue Oct 19 15:44:24 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* fvwm-eval.scm: Comments update from Alexander Vorobiev.
