@@ -68,7 +68,7 @@ current decor.")
   } else {
     scwm_error(FUNC_NAME, "Justification must be \'left, \'right or \'center.");
   }
-  /* XXX should redraw the title bars */
+  /* MS:FIXME:: should redraw the title bars */
   redraw_titlebars(fl, 0);
   return (just);
 }

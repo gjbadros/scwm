@@ -975,9 +975,6 @@ init_color()
   scm_protect_object(str_black=gh_str02scm("black"));
   scm_protect_object(str_white=gh_str02scm("white"));
 
-  /* XXX XXX remaining to fix for the color object migration: 
-     fix all the Scheme code */
-
 #ifndef SCM_MAGIC_SNARFER
 #include "color.x"
 #endif
