@@ -3,6 +3,8 @@
 
 include $(top_srcdir)/Makefile.common
 
+EXTRA_DIST = scwmgrammar.fsg
+
 VVLIB=-lsmapi
 VTBNFC = /usr/lib/ViaVoice/bin/vtbnfc
 VVINC = -I/usr/lib/ViaVoice/include
