@@ -71,6 +71,9 @@ and
 is the same as
 '(control shift meta ~super ~alt ~hyper ~capslock)
 
+Another first-element pseudo-modifier is 'with, which is the same as
+'exactly, except for an implicit *numlock *capslock.  'iwith is the same
+as 'with except for adding an implicit *shift, as well.
 
 These get converted internally to on and off bitmasks such that the
 event matches iff:
