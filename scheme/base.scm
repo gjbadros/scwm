@@ -167,7 +167,26 @@
 ;; for compatability
 (define-public load-font make-font)
 
+;;; ----------------------------------------------
+;;; General functionality for splitting long menus
+;;; ----------------------------------------------
+; the max number of lines in a menu
+(define-public default-max-fold-lines 30)		
 
+(define (split-list ls max)
+  (let ((le (length ls)) (tt ()) (t1 ()))
+    (cond ((< le max) (list ls))
+	  (#t (set! tt (list-tail ls (- max 1))) (set! t1 (cdr tt))
+	      (set-cdr! tt ()) (cons ls (split-list t1 max))))))
 
+(define-public (fold-menu-list 
+		ml #&optional (max-lines default-max-fold-lines))
+  ; split the menu list into groups of max-lines
+  (if (<= (length ml) max-lines) ml
+      (map (lambda (lm) (menuitem "more..." #:action (menu lm)))
+	   (split-list ml max-lines))))
 
-
+;; Convenience function to return a precedure that will run a system
+;; command.
+(define-public (exe command) 
+  (lambda () (execute command)))
