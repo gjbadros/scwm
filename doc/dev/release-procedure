@@ -11,7 +11,7 @@ release.
 contributors. Also update NEWS with all user-visible changes since the
 last release, ANNOUNCE with highlights from NEWS and other
 announcement information, and BUGS and TODO to make sure they are
-vaguely up to date.
+vaguely up to date.  Also update `scwm.lsm' file.
 
 4) Grab hypothetical distribution directories by `cvs export'ing both
 the scwm and scwm-icons modules, and running `./autogen.sh'
