@@ -10,6 +10,7 @@
 #include <config.h>
 #endif
 
+#include <assert.h>
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include "scwm.h"
@@ -18,18 +19,49 @@
 #include "image.h"
 
 
+Window JunkChild, JunkRoot;
+unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
+
 XGCValues Globalgcv;
 unsigned long Globalgcm;
 
 /*
  * Example Usage: 
- * FXGetPointerWindowOffsets(Scr.Root,&pixRootXOffset,&pixRootYOffset)
+ * child = WXGetPointerWindowOffsets(Scr.Root,&pixRootXOffset,&pixRootYOffset)
  */
-Bool
-FXGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn)
+
+Window
+WXGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn)
 {
-  return XQueryPointer(dpy,w,&JunkRoot,&JunkChild,&JunkX,&JunkY,
-                       pxReturn,pyReturn,&JunkMask);
+  Window child;
+  if (XQueryPointer(dpy,w,&JunkRoot,&child,&JunkX,&JunkY,
+                    pxReturn,pyReturn,&JunkMask))
+    return child;
+  else
+    return None;
+}
+
+
+Window
+WXGetPointerOffsets(Window w, int *pxRoot, int *pyRoot, int *pxReturn, int *pyReturn)
+{
+  Window child;
+  if (XQueryPointer(dpy,w,&JunkRoot,&child,pxRoot,pyRoot,
+                    pxReturn,pyReturn,&JunkMask))
+    return child;
+  else
+    return None;
+}
+
+Window 
+WXGetPointerChild(Window wParent)
+{
+  Window child;
+  if (XQueryPointer(dpy,wParent,&JunkRoot,&child,&JunkX,&JunkY,
+                    &JunkWidth,&JunkHeight,&JunkMask))
+    return child;
+  else
+    return None;
 }
 
 Bool
@@ -54,19 +86,6 @@ FXWindowAccessible(Display *dpy, Window w)
   /* XGetGeometry returns true if the call was successful */
   return XGetGeometry(dpy, w, &JunkRoot, &JunkX, &JunkY,
 		      &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
-}
-
-/* For some reason, when adding a window, we need to ask the X server
-   for a window geometry w/o caring about the results
-   Note that this happens to be identical to FXWindowAccessible,
-   but their names encode their separate uses (and making these
-   inline functions would avoid the extra space overhead)
-   --03/29/98 gjb */
-Bool
-XGetGeometryCacheIt(Display *dpy, Window w)
-{
-  return XGetGeometry(dpy, w, &JunkRoot, &JunkX, &JunkY,
-                      &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
 }
 
 
@@ -123,19 +142,19 @@ flush_expose(Window w)
  *  Procedure:
  *	RestoreWithdrawnLocation
  * 
- *  Puts windows back where they were before Scwm took over 
+ *  Puts window back where it was before Scwm took over 
  */
 void 
 RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
 {
-  int a, b, w2, h2;
-  unsigned int mask;
   XWindowChanges xwc;
 
   if (!psw)
     return;
 
   if (FXGetWindowTopLeft(psw->w, &xwc.x, &xwc.y )) {
+    int a, b, w2, h2;
+    unsigned int mask;
     XTranslateCoordinates(dpy, psw->frame, Scr.Root, xwc.x, xwc.y,
 			  &a, &b, &JunkChild);
     xwc.x = a + psw->xdiff;
@@ -231,4 +250,44 @@ RelieveRectangle(Window win,int x,int y,int w, int h,GC Hilite,GC Shadow)
   XDrawLine(dpy, win, Hilite, x, y, x, h+y-1);
   XDrawLine(dpy, win, Shadow, x, h+y-1, w+x-1, h+y-1);
   XDrawLine(dpy, win, Shadow, w+x-1, y, w+x-1, h+y-1);
+}
+
+
+char *
+SzExtractTextPropValue(const XTextProperty *pxtp)
+{
+  assert(pxtp);
+#ifndef I18N
+  return (char *) pxtp->value;
+#else
+  pxtp->nitems = strlen(pxtp->value);
+  if (pxtp->encoding == XA_STRING)
+    return (char *) pxtp->value;
+  else {
+    char **list;
+    int num;
+    if (XmbTextPropertyToTextList(dpy,pxtp,&list,&num) >= Success
+        && num > 0 && *list)
+      return *list;
+    else
+      return (char *) pxtp->value;
+  }
+#endif
+}
+
+/* Return the width of the string sz in pixels
+   Takes the font as an XFontStruct or an XFontSet depending
+   on i18n support; the arg passed is XFONT(scmFont) */
+int
+ComputeXTextWidth(XFONT_TYPE *pxfs, const char *sz, int cch)
+{
+  if (cch < 0)
+    cch = strlen(sz);
+#ifdef I18N
+  XRectangle dummy,log_ret;
+  XmbTextExtents(XFONT(Scr.msg_window_font), sz, cch, &dummy, &log_ret);
+  return log_ret.width;
+#else
+  return XTextWidth(pxfs, sz, cch);
+#endif
 }

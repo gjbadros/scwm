@@ -19,15 +19,9 @@ void SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h);
 
 ScwmWindow *AddWindow(Window w);
 
-void GrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw);
-
-void UngrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw);
-
 void GetWindowSizeHints(ScwmWindow *psw);
 
 void FetchWmProtocols(ScwmWindow *psw);
-
-void GrabKeys(ScwmWindow *psw);
 
 #undef ScwmWindow
 

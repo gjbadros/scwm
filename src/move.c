@@ -45,7 +45,6 @@
 
 extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;
-Bool NeedToResizeToo;
 
 float rgpctMovementDefault[32] = {
     -.01, 0, .01, .03,.08,.18,.3,.45,.60,.75,.85,.90,.94,.97,.99,1.0 
@@ -69,10 +68,8 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
   if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
   if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
 
-  if (startX < 0 || startY < 0) 
-    {
-    XGetGeometry(dpy, w, &JunkRoot, &currentX, &currentY, 
-		 &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
+  if (startX < 0 || startY < 0) {
+    FXGetWindowTopLeft(w,&currentX,&currentY);
     if (startX < 0) startX = currentX;
     if (startY < 0) startY = currentY;
     }
@@ -87,7 +84,7 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
     currentY = (int) (startY + deltaY * (*ppctMovement));
     XMoveWindow(dpy,w,currentX,currentY);
     if (fWarpPointerToo) {
-      FXGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
+      WXGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
       pointerX += currentX - lastX;
       pointerY += currentY - lastY;
       XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
@@ -233,16 +230,20 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
   /* show the size/position window */
   MapMessageWindow();
 
-  FXGetPointerWindowOffsets(Scr.Root, &xl, &yt);
+  WXGetPointerWindowOffsets(Scr.Root, &xl, &yt);
   xl += XOffset;
   yt += YOffset;
 
-  if (((!opaque_move) && (!(Scr.fMWMMenus))))
+
+  if (!opaque_move) {
     RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
+  }
 
   DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
 
-  CassowaryEditPosition(psw);
+  if (!psw->fIconified) {
+    CassowaryEditPosition(psw);
+  }
 
   while (!finished) {
     /* block until there is an interesting event */
@@ -260,16 +261,13 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       }
     }
     done = False;
-    /* Handle a limited number of key press events to allow mouseless
-     * operation */
+    /* Handle key press events to allow mouseless operation */
     if (Event.type == KeyPress)
       Keyboard_shortcuts(&Event, ButtonRelease);
     switch (Event.type) {
     case KeyPress:
       /* simple code to bag out of move - CKH */
       if (XLookupKeysym(&(Event.xkey), 0) == XK_Escape) {
-	if (!opaque_move)
-          RemoveRubberbandOutline(Scr.Root);
 	finished = True;
       }
       done = True;
@@ -279,15 +277,13 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       if (((Event.xbutton.button == 2) && !Scr.fMWMMenus) ||
 	  ((Event.xbutton.button == 1) && Scr.fMWMMenus &&
 	   (Event.xbutton.state & ShiftMask))) {
-	NeedToResizeToo = True;
+	/* FIXGJB: this hack removed: NeedToResizeToo = True; */
 	/* Fallthrough to button-release */
       } else {
 	done = 1;
 	break;
       }
     case ButtonRelease:
-      if (!opaque_move)
-	RemoveRubberbandOutline(Scr.Root);
       xl = Event.xmotion.x_root + XOffset;
       yt = Event.xmotion.y_root + YOffset;
 
@@ -332,30 +328,30 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       /* redraw after paging if needed - mab */
       paged = 0;
       while (paged <= 1) {
-	if (!opaque_move)
-	  RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
-	else {
-	  if (psw->fIconified) {
-	    psw->icon_x_loc = xl;
-	    psw->icon_xl_loc = xl -
-	      (psw->icon_w_width - psw->icon_p_width) / 2;
-	    psw->icon_y_loc = yt;
-	    if (psw->icon_pixmap_w != None)
-	      XMoveWindow(dpy, psw->icon_pixmap_w,
-			  psw->icon_x_loc, yt);
-	    else if (psw->icon_w != None)
-	      XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
-			  yt + psw->icon_p_height);
-
-	  } else {
+        if (psw->fIconified) {
+          psw->icon_x_loc = xl;
+          psw->icon_xl_loc = xl -
+            (psw->icon_w_width - psw->icon_p_width) / 2;
+          psw->icon_y_loc = yt;
+          if (opaque_move) {
+            if (psw->icon_pixmap_w != None)
+              XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, psw->icon_y_loc);
+            if (psw->icon_w != None)
+              XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
+                          yt + psw->icon_p_height);
+          }
+        } else {
+          if (opaque_move) {
             /* the solver's resolve does the move window */
             /* if not using Cassowary, this just does an XMoveWindow */
             SuggestMoveWindowTo(psw,xl,yt);
           }
-	}
+        }
+	if (!opaque_move)
+	  RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
 	DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
 
-/* prevent window from lagging behind mouse when paging - mab */
+        /* prevent window from lagging behind mouse when paging - mab */
 	if (paged == 0) {
 	  xl = Event.xmotion.x_root;
 	  yt = Event.xmotion.y_root;
@@ -383,8 +379,21 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
     }
   }
-  SuggestMoveWindowTo(psw,xl,yt);
-  CassowaryEndEdit(psw);
+  if (!opaque_move)
+    RemoveRubberbandOutline(Scr.Root);
+
+  if (!psw->fIconified) {
+    SuggestMoveWindowTo(psw,xl,yt);
+    CassowaryEndEdit(psw);
+  } else if (!opaque_move) {
+    /* need to move the real windows for the icon */
+    if (psw->icon_pixmap_w != None)
+      XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, psw->icon_y_loc);
+    if (psw->icon_w != None)
+      XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
+                  yt + psw->icon_p_height);
+  }
+    
   *FinalX = xl;
   *FinalY = yt;
   UnmapMessageWindow();
@@ -394,27 +403,6 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 
 const double message_hilight_factor = 1.2;
 const double message_shadow_factor = 0.5;
-
-/* Return the width of the string sz in pixels
-   Takes the font as an XFontStruct or an XFontSet depending
-   on i18n support; the arg passed is XFONT(scmFont) */
-int
-ComputeXTextWidth(
-#ifdef I18N
-XFontSet
-#else
-XFontStruct
-#endif
-                  *pxfs, const char *sz)
-{
-#ifdef I18N
-  XRectangle dummy,log_ret;
-  XmbTextExtents(XFONT(Scr.msg_window_font), sz, strlen(sz), &dummy, &log_ret);
-  return log_ret.width;
-#else
-  return XTextWidth(pxfs, sz, strlen(sz));
-#endif
-}
 
 /* FIXGJB: It'd be nice to make this facility available at the scheme level */
 
@@ -426,7 +414,7 @@ XFontStruct
 void 
 DisplayMessage(const char *sz, Bool fRelief)
 {
-  int textwidth = ComputeXTextWidth(XFONT(Scr.msg_window_font),sz);
+  int textwidth = ComputeXTextWidth(XFONT(Scr.msg_window_font),sz, -1);
   int winwidth = textwidth + SIZE_HINDENT*2;
   int textheight = FONTHEIGHT(Scr.msg_window_font);
   int winheight = textheight + SIZE_VINDENT*2;
@@ -525,8 +513,8 @@ Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
   default:
     break;
   }
-  XQueryPointer(dpy, Scr.Root, &JunkRoot, &Event->xany.window,
-		&x_root, &y_root, &x, &y, &JunkMask);
+  Event->xany.window =
+    WXGetPointerOffsets(Scr.Root, &x_root, &y_root, &x, &y);
 
   if ((x_move != 0) || (y_move != 0)) {
     /* beat up the event */
@@ -546,28 +534,18 @@ Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
 /* InteractiveMove
     psw is the ScwmWindow to move
     FinalX, FinalY are used to return the final position */
-void 
-InteractiveMove(ScwmWindow *psw, 
+Bool 
+InteractiveMove(ScwmWindow *psw, Bool fOpaque,
 		int *FinalX, int *FinalY)
 {
   int origDragX, origDragY, DragX, DragY;
   unsigned int DragWidth, DragHeight;
   int border_width;
   int XOffset, YOffset;
-  Bool opaque_move = False;
   Window w = psw->frame;
   /* FIXGJB: pass these in instead */
   extern Bool have_orig_position;
   extern int orig_x, orig_y;
-
-  if (psw->fIconified) {
-    if (psw->icon_pixmap_w != None) {
-      XUnmapWindow(dpy, psw->icon_w);
-      w = psw->icon_pixmap_w;
-    } else {
-      w = psw->icon_w;
-    }
-  }
 
   /* find out from where we should start the move */
   if (have_orig_position) {
@@ -575,48 +553,86 @@ InteractiveMove(ScwmWindow *psw,
     DragY = orig_y;
   } else {
     /* just use current position */
-    FXGetPointerWindowOffsets(Scr.Root, &DragX, &DragY);
+    WXGetPointerWindowOffsets(Scr.Root, &DragX, &DragY);
   }
 
   InstallRootColormap();
 
   if (!GrabEm(CURSOR_MOVE)) {
     call0_hooks(invalid_interaction_hook);
-    return;
+    return False;
   }
+
+  if (psw->fIconified) {
+    if (psw->icon_pixmap_w != None)
+      w = psw->icon_pixmap_w;
+    else
+      w = psw->icon_w;
+  }
+
   XGetGeometry(dpy, w, &JunkRoot, &origDragX, &origDragY,
 	       &DragWidth, &DragHeight, &border_width, &JunkDepth);
 
-  /* FIXGJB: this should be a single proc predicate callback
-     with one argument: the window to be moved interactively,
-     then remove the Scr.OpaqueSize var and setters/getters
-  */
-  if (DragWidth * DragHeight <
-      (Scr.OpaqueSize * Scr.DisplayWidth * Scr.DisplayHeight) / 100)
-    opaque_move = True;
-  else
+  if (!fOpaque) {
     XGrabServer_withSemaphore(dpy);
-
-  if (!opaque_move && psw->fIconified)
-    XUnmapWindow(dpy, w);
-
-  /* enlarge the draw rubberband to include the border width */
-  DragWidth += border_width;
-  DragHeight += border_width;
+    /* enlarge the draw rubberband to include the border width */
+    DragWidth += border_width;
+    DragHeight += border_width;
+  }
 
   XOffset = origDragX - DragX;
   YOffset = origDragY - DragY;
 
-  moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY, opaque_move);
+  moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY, fOpaque);
+  if (psw->fIconified) {
+    psw->fIconMoved = True;
+  }
 
   UninstallRootColormap();
 
-  if (!opaque_move)
+  if (!fOpaque)
     XUngrabServer_withSemaphore(dpy);
 
   UngrabEm();
+  return True;
 }
 
+
+SCWM_PROC(interactive_move, "interactive-move", 0, 2, 0,
+          (SCM win, SCM opaque_p))
+     /** Move WIN interactively.
+This allows the user to drag a rubber band frame or the window itself
+around the screen (depending on the setting of `set-opaque-move-size!'
+and drop it where desired). WIN defaults to the window context in the
+usual way if not specified.  If OPAQUE? is #t, the move will be done
+"opaquely", moving the actual X window, if #f a rubberband will be
+used instead to save on server computation (note that the rubberband
+requires a server "grab" which means that nothing else changes on
+screen while the non-opaque move takes place. */
+#define FUNC_NAME s_interactive_move
+{
+  ScwmWindow *psw;
+  int x, y;                     /* not used now */
+  Bool fOpaque;
+
+  SCM_REDEFER_INTS;
+  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
+  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fOpaque,opaque_p,2,FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+  InteractiveMove(psw, fOpaque, &x, &y);
+  SCM_REALLOW_INTS;
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+void 
+init_move()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "move.x"
+#endif
+}
 
 /* Local Variables: */
 /* tab-width: 8 */

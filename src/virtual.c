@@ -59,7 +59,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     usleep(10);
     total += 10;
 
-    FXGetPointerWindowOffsets(Scr.Root, &x, &y);
+    WXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
     if (XCheckWindowEvent(dpy, Scr.PanFrameTop.win,
 			  LeaveWindowMask, &Event)) {
@@ -88,7 +88,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
       return;
   }
 
-  FXGetPointerWindowOffsets(Scr.Root, &x, &y);
+  WXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
   RemoveRubberbandOutline(Scr.Root);
 
@@ -168,7 +168,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
       XGrabServer_withSemaphore(dpy);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, *xl, *yt);
     MoveViewport(Scr.Vx + *delta_x, Scr.Vy + *delta_y, False);
-    FXGetPointerWindowOffsets(Scr.Root, xl, yt);
+    WXGetPointerWindowOffsets(Scr.Root, xl, yt);
     if (Grab)
       XUngrabServer_withSemaphore(dpy);
   }
@@ -379,6 +379,16 @@ MoveViewport(int newx, int newy, Bool grab)
 		      psw->icon_w_height + psw->icon_p_width);
 	  }
 	}
+        /* FIXGJBNOW: this is broken with cassowary since
+           the order in which the windows move around
+           can ruin the position of other windows.  Instead
+           I need to always position windows relative to the virtual
+           desktop when I do the X11 calls, or when I store in the
+           constraint solver.  the x coordinate of a window could be
+           the Scr.Vx + the psw->frame_x, perhaps... or I could
+           have another set of primitives, window-clv-vx, for virtual
+           x coordinate, and have that return the expression.  That
+           means also making Scr.V[xy] constraint variables */
 	MoveTo(psw, FRAME_X(psw) + deltax, FRAME_Y(psw) + deltay);
       }
     }

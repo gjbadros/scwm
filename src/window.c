@@ -500,11 +500,6 @@ void
 move_finalize(Window w, ScwmWindow * psw, int x, int y)
 {
   if (w == psw->frame) {
-#if 0 /* FIXGJB */
-    SetupFrame(psw, x, y,
-	       FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False,
-               WAS_MOVED, NOT_RESIZED);
-#endif
     MoveTo(psw,x,y);
   } else {			/* icon window */
     psw->fIconMoved = True;
@@ -926,9 +921,7 @@ PswFromWindow(Display *dpy, Window w)
 ScwmWindow *
 PswFromPointerLocation(Display *dpy)
 {
-  Window wChild;
-  XQueryPointer(dpy, Scr.Root, &JunkRoot, &wChild,
-		&JunkX, &JunkY, &JunkX, &JunkY, &JunkMask);
+  Window wChild = WXGetPointerChild(Scr.Root);
   if (wChild == None) {
     return NULL;
   }
@@ -1081,7 +1074,7 @@ UnmapScwmWindow(ScwmWindow * psw)
  * Maps a window on transition to a new desktop
  */
 void 
-MapIt(ScwmWindow * psw)
+MapIt(ScwmWindow *psw)
 {
   if (psw->fIconified) {
     if (psw->icon_pixmap_w != None)
@@ -1099,7 +1092,7 @@ MapIt(ScwmWindow * psw)
  * Raise a window in the stacking order
  */ 
 void 
-RaiseWindow(ScwmWindow * psw)
+RaiseWindow(ScwmWindow *psw)
 {
   ScwmWindow *t2;
   int count, i;
@@ -1233,6 +1226,8 @@ free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
 
 /*
  * Handles destruction of a window 
+ * FIXGJB: maybe this should go right after AddWindow, in add_window.c
+ * since it is most tightly couple to that code
  */
 void 
 DestroyScwmWindow(ScwmWindow *psw)
@@ -1401,8 +1396,7 @@ context in the usual way if not specified. */
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
-  if (XGetGeometry(dpy, psw->w, &JunkRoot, &JunkX, &JunkY,
-		   &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth) == 0) {
+  if (!FXWindowAccessible(dpy,psw->w)) {
     DestroyScwmWindow(psw);
   } else {
     XKillClient(dpy, psw->w);
@@ -2055,7 +2049,7 @@ specified. */
 		       fMovePointer,cmsDelay,NULL);
   } else if (fMovePointer) {
     int x, y;
-    FXGetPointerWindowOffsets(Scr.Root, &x, &y);
+    WXGetPointerWindowOffsets(Scr.Root, &x, &y);
     XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
 		 Scr.DisplayHeight, x + destX - startX, y + destY - startY);
   }
@@ -2066,26 +2060,7 @@ specified. */
 }
 #undef FUNC_NAME
 
-SCWM_PROC(interactive_move, "interactive-move", 0, 1, 0,
-          (SCM win))
-     /** Move WIN interactively.
-This allows the user to drag a rubber band frame or the window itself
-around the screen (depending on the setting of `set-opaque-move-size!'
-and drop it where desired). WIN defaults to the window context in the
-usual way if not specified. */
-#define FUNC_NAME s_interactive_move
-{
-  ScwmWindow *psw;
-  int x, y;                     /* not used now */
 
-  SCM_REDEFER_INTS;
-  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
-  psw = PSWFROMSCMWIN(win);
-  InteractiveMove(psw, &x, &y);
-  SCM_REALLOW_INTS;
-  return SCM_UNSPECIFIED;
-}
-#undef FUNC_NAME
 
 /* FIXMS: would animated resizes be a good idea? */
 
@@ -2204,9 +2179,10 @@ defaults to the window context in the usual way if not specified. */
 
 SCWM_PROC(window_position, "window-position", 0, 1, 0,
           (SCM win))
-     /** Return the position of WIN. The position is returned as a
-list of the x coordinate and the y coordinate in pixels. WIN defaults
-to the window context in the usual way if not specified. */
+     /** Return the position of WIN in pixels.
+The position is returned as a list of the x coordinate and the y
+coordinate in pixels. WIN defaults to the window context in the usual
+way if not specified. */
 #define FUNC_NAME s_window_position
 {
   ScwmWindow *psw;
@@ -2219,6 +2195,48 @@ to the window context in the usual way if not specified. */
 		     SCM_UNDEFINED);
 }
 #undef FUNC_NAME
+
+
+SCWM_PROC(icon_position, "icon-position", 0, 1, 0,
+          (SCM win))
+     /** Return the position of the icon for WIN. 
+The position is returned as a list of the x coordinate and the y
+coordinate in pixels. WIN defaults to the window context in the usual
+way if not specified. */
+#define FUNC_NAME s_icon_position
+{
+  ScwmWindow *psw;
+
+  VALIDATE(win, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  return scm_listify(SCM_MAKINUM(psw->icon_x_loc),
+		     SCM_MAKINUM(psw->icon_y_loc),
+		     SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(window_diff_deltas, "window-diff-deltas", 0, 1, 0,
+          (SCM win))
+     /** Return the repositioning position difference deltas of WIN.
+These correspond to the xdiff and ydiff fields of the ScwmWindow 
+structure and are used for restoring the appropriate position
+of the window after Scwm exits.  These values are probably not
+generally useful, but may be convenient for debugging. */
+#define FUNC_NAME s_window_diff_deltas
+{
+  ScwmWindow *psw;
+
+  VALIDATE(win, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  return scm_listify(SCM_MAKINUM(psw->xdiff),
+		     SCM_MAKINUM(psw->ydiff),
+		     SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
 
 
 SCWM_PROC(window_size, "window-size", 0, 1, 0,

@@ -64,7 +64,7 @@ INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 
 guile_snarfs = add_window.x binding.x callbacks.x color.x \
 decor.x deskpage.x events.x face.x font.x image.x menu.x menuitem.x \
-miscprocs.x module-interface.x placement.x resize.x \
+miscprocs.x module-interface.x move.x placement.x resize.x \
 screen.x shutdown.x xproperty.x window.x
 
 

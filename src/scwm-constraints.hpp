@@ -59,7 +59,9 @@ public:
   void
   AddStays(ClSimplexSolver *psolver)
     {
-      scwm_msg(DBG,__FUNCTION__,"Adding stays for window %s",Psw()->name);
+      scwm_msg(DBG,__FUNCTION__,"Adding stays for window %s: (%d,%d) %d x %d",
+               Psw()->name, _frame_x.intValue(), _frame_y.intValue(),
+               _frame_width.intValue(), _frame_height.intValue());
       // FIXGJB: these weights should increase each time this is called
       psolver->addPointStay(_frame_width,_frame_height,100);
       psolver->addPointStay(_frame_x,_frame_y,1);

@@ -191,21 +191,169 @@ BnumFromSz(const char *sz)
   }
 }
 
-#ifdef FIXGJB_NOTUSED
-/* This grabs all the defined keys on all the windows */
-/* FIXGJB: this is not used, but I'm sure it should be used */
-static void
-grab_all_keys_all_windows()
+/*
+ *  Procedure:
+ *	GrabKeys - grab needed keys for the window
+ *
+ *  Inputs:
+ *	psw - the scwm window structure to use
+ */
+void 
+GrabKeys(ScwmWindow *psw)
 {
-  ScwmWindow *psw;
+  Binding *tmp;
 
-  psw = Scr.ScwmRoot.next;
-  while (psw) {
-    GrabKeys(psw);
-    psw = psw->next;
+  for (tmp = Scr.AllBindings; tmp != NULL; tmp = tmp->NextBinding) {
+    if ((tmp->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) &&
+	(tmp->IsMouse == 0)) {
+      XGrabKey(dpy, tmp->Button_Key, tmp->Modifier, psw->frame, True,
+	       GrabModeAsync, GrabModeAsync);
+      if (tmp->Modifier != AnyModifier) {
+	XGrabKey(dpy, tmp->Button_Key, tmp->Modifier | LockMask,
+		 psw->frame, True,
+		 GrabModeAsync, GrabModeAsync);
+      }
+    }
+  }
+  return;
+}
+
+
+void
+GrabButtonWithModifiers(int button, int modifier, 
+			ScwmWindow *psw)
+{
+  if (button > 0) {
+    XGrabButton(dpy, button, modifier, psw->w,
+		True, ButtonPressMask | ButtonReleaseMask,
+		GrabModeAsync, GrabModeAsync, None,
+		Scr.ScwmCursors[CURSOR_DEFAULT]);
+    if (modifier != AnyModifier) {
+      XGrabButton(dpy, button, (modifier | LockMask), psw->w,
+		  True, ButtonPressMask | ButtonReleaseMask,
+		  GrabModeAsync, GrabModeAsync, None,
+		  Scr.ScwmCursors[CURSOR_DEFAULT]);
+    }
+  } else {
+    GrabButtonWithModifiers(1,modifier,psw);
+    GrabButtonWithModifiers(2,modifier,psw);
+    GrabButtonWithModifiers(3,modifier,psw);
   }
 }
-#endif
+  
+
+void
+UngrabButtonWithModifiers(int button, int modifier, 
+			  ScwmWindow *psw)
+{
+  if (button > 0) {
+    XUngrabButton(dpy, button, modifier, psw->w);
+    if (modifier != AnyModifier) {
+      XUngrabButton(dpy, button, (modifier | LockMask), psw->w);
+    }
+  } else {
+    UngrabButtonWithModifiers(1,modifier,psw);
+    UngrabButtonWithModifiers(2,modifier,psw);
+    UngrabButtonWithModifiers(3,modifier,psw);
+  }
+}
+
+/*
+ *  Procedure:
+ *	GrabButtons - grab needed buttons for the window
+ *
+ *  Inputs:
+ * 	psw - the scwm window structure to use
+ */
+
+/* FIXGJB: rewrite to use GrabButtonWithModifiers, above */
+void 
+GrabButtons(ScwmWindow * psw)
+{
+  Binding *MouseEntry;
+
+  MouseEntry = Scr.AllBindings;
+  while (MouseEntry != (Binding *) 0) {
+    if ((MouseEntry->Action != NULL) && (MouseEntry->Context & C_WINDOW)
+	&& (MouseEntry->IsMouse == 1)) {
+      if (MouseEntry->Button_Key > 0) {
+	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier,
+		    psw->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+	if (MouseEntry->Modifier != AnyModifier) {
+	  XGrabButton(dpy, MouseEntry->Button_Key,
+		      (MouseEntry->Modifier | LockMask),
+		      psw->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[CURSOR_DEFAULT]);
+	}
+      } else {
+	XGrabButton(dpy, 1, MouseEntry->Modifier,
+		    psw->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+	XGrabButton(dpy, 2, MouseEntry->Modifier,
+		    psw->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+	XGrabButton(dpy, 3, MouseEntry->Modifier,
+		    psw->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[CURSOR_DEFAULT]);
+	if (MouseEntry->Modifier != AnyModifier) {
+	  XGrabButton(dpy, 1,
+		      (MouseEntry->Modifier | LockMask),
+		      psw->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[CURSOR_DEFAULT]);
+	  XGrabButton(dpy, 2,
+		      (MouseEntry->Modifier | LockMask),
+		      psw->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[CURSOR_DEFAULT]);
+	  XGrabButton(dpy, 3,
+		      (MouseEntry->Modifier | LockMask),
+		      psw->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[CURSOR_DEFAULT]);
+	}
+      }
+    }
+    MouseEntry = MouseEntry->NextBinding;
+  }
+  return;
+}
+
+/* This grabs all the defined keys on all the windows */
+static void
+grab_all_keys_all_buttons_all_windows()
+{
+  ScwmWindow *psw;
+  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
+    GrabKeys(psw);
+    GrabButtons(psw);
+  }
+}
+
+
+/* This grabs all the defined keys on all the windows */
+static void
+grab_all_buttons_all_windows()
+{
+  ScwmWindow *psw;
+  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
+    GrabButtons(psw);
+  }
+}
 
 /* Just grab a single key + modifier on all windows
    This needs to be done after a new key binding */
@@ -213,15 +361,13 @@ static void
 grab_key_all_windows(int key, int modifier)
 {
   ScwmWindow *psw;
-  psw = Scr.ScwmRoot.next;
-  while (psw != NULL) {
+  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
     XGrabKey(dpy, key, modifier, psw->frame, True, 
 	     GrabModeAsync, GrabModeAsync);
     if (modifier != AnyModifier) {
       XGrabKey(dpy, key, modifier | LockMask, psw->frame, True,
 	       GrabModeAsync, GrabModeAsync);
     }
-    psw = psw->next;
   }
 }
 
@@ -231,10 +377,8 @@ static void
 grab_button_all_windows(int button, int modifier)
 {
   ScwmWindow *psw;
-  psw = Scr.ScwmRoot.next;
-  while (psw != NULL) {
+  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
     GrabButtonWithModifiers(button,modifier,psw);
-    psw = psw->next;
   }
 }
 
@@ -243,10 +387,8 @@ static void
 ungrab_button_all_windows(int button, int modifier)
 {
   ScwmWindow *psw;
-  psw = Scr.ScwmRoot.next;
-  while (psw != NULL) {
+  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
     UngrabButtonWithModifiers(button,modifier,psw);
-    psw = psw->next;
   }
 }
 
@@ -255,7 +397,7 @@ ungrab_button_all_windows(int button, int modifier)
    ** for mouse binding lines though, like when context is a title bar button).
  */
 void 
-remove_binding(int contexts, int mods, int button, KeySym keysym,
+remove_binding(int context, int mods, int button, KeySym keysym,
 	       int mouse_binding)
 {
   Binding *temp = Scr.AllBindings, *temp2, *prev = NULL;
@@ -263,7 +405,7 @@ remove_binding(int contexts, int mods, int button, KeySym keysym,
 
   if (!mouse_binding) {
     keycode = XKeysymToKeycode(dpy, keysym);
-  } else if (contexts & C_WINDOW) {
+  } else if (context & C_WINDOW) {
     ungrab_button_all_windows(button,mods);
   }
 
@@ -271,7 +413,7 @@ remove_binding(int contexts, int mods, int button, KeySym keysym,
     temp2 = temp->NextBinding;
     if (temp->IsMouse == mouse_binding) {
       if ((temp->Button_Key == ((mouse_binding) ? (button) : (keycode))) &&
-	  (temp->Context == contexts) &&
+	  (temp->Context == context) &&
 	  (temp->Modifier == mods)) {
 	/* we found it, remove it from list */
 	if (prev) {		/* middle of list */
@@ -578,7 +720,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   int j = 0;
   int k = 0;
   int modmask = 0;
-  int context = 0;
+  int wincontext = 0;
   Bool fChangedNumButtons = False;
 
   SCM_REDEFER_INTS;
@@ -602,8 +744,8 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     SCM_ALLOW_INTS;
     scm_wrong_type_arg(FUNC_NAME, 3, proc);
   }
-  context = compute_contexts(contexts);
-  switch (context) {
+  wincontext = compute_contexts(contexts);
+  switch (wincontext) {
   case 0:
     SCM_ALLOW_INTS;
     scwm_error(FUNC_NAME, 8);
@@ -636,10 +778,10 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     }
     FREE(szButton);
   }
-  if ((context != C_ALL) && (context & C_LALL)) {
+  if ((wincontext != C_ALL) && (wincontext & C_LALL)) {
     /* check for nr_left_buttons */
     k = 0;
-    j = (context & C_LALL) / C_L1;
+    j = (wincontext & C_LALL) / C_L1;
     while (j > 0) {
       k++;
       j = j >> 1;
@@ -649,10 +791,10 @@ PROC is a procedure (possibly a thunk) that should be invoked */
       fChangedNumButtons = True;
     }
   }
-  if ((context != C_ALL) && (context & C_RALL)) {
+  if ((wincontext != C_ALL) && (wincontext & C_RALL)) {
     /* check for nr_right_buttons */
     k = 0;
-    j = (context & C_RALL) / C_R1;
+    j = (wincontext & C_RALL) / C_R1;
     while (j > 0) {
       k++;
       j = j >> 1;
@@ -663,7 +805,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     }
   }
 
-  if ((contexts & C_WINDOW) && (((modmask == 0) || modmask == AnyModifier))) {
+  if ((wincontext & C_WINDOW) && ((modmask == 0) || modmask == AnyModifier)) {
     Scr.buttons2grab &= ~(1 << (bnum - 1));
   }
   temp = Scr.AllBindings;
@@ -671,12 +813,12 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   Scr.AllBindings->IsMouse = 1;
   Scr.AllBindings->Button_Key = bnum;
   Scr.AllBindings->key_name = NULL;
-  Scr.AllBindings->Context = context;
+  Scr.AllBindings->Context = wincontext;
   Scr.AllBindings->Modifier = modmask;
   Scr.AllBindings->Action = "Scheme";
   Scr.AllBindings->Thunk = proc;
   Scr.AllBindings->NextBinding = temp;
-  if (contexts & C_WINDOW && Scr.fWindowsCaptured) {
+  if ( (wincontext & C_WINDOW) && Scr.fWindowsCaptured) {
     /* only grab the button press if we have already captured,
        otherwise it's a waste of time since we will grab
        them all later when we do the initial capture;
@@ -717,7 +859,7 @@ find_mouse_event_type()
   XEvent d;
 
   gh_defer_ints();
-  FXGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y);
+  WXGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y);
   have_orig_position = True;
 
   mouse_ev_type = sym_motion;

@@ -945,9 +945,6 @@ SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool NewTitle)
   int tb_flags;
   GC ReliefGC, ShadowGC, tGC;
   Pixel Forecolor, BackColor;
-#ifdef I18N
-  XRectangle dummy,log_ret;
-#endif
 
   if (!psw)
     return;
@@ -973,13 +970,7 @@ SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool NewTitle)
   flush_expose(psw->title_w);
 
   if (psw->name != (char *) NULL) {
-#ifdef I18N
-    XmbTextExtents(XFONT(GET_DECOR(psw,window_font)),
-		   psw->name, strlen(psw->name), &dummy, &log_ret);
-    w = log_ret.width;
-#else
-    w = XTextWidth(XFONT(GET_DECOR(psw, window_font)), psw->name, strlen(psw->name));
-#endif
+    w = ComputeXTextWidth(XFONT(GET_DECOR(psw, window_font)), psw->name, -1);
     if (w > psw->title_width - 12)
       w = psw->title_width - 4;
     if (w < 0)
@@ -998,11 +989,7 @@ SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool NewTitle)
   } else
     hor_off = (psw->title_width - w) / 2;
 
-#ifdef I18N
-  NewFontAndColor(Scr.ScratchGC3,FONT(GET_DECOR(psw, window_font))->xfs->fid, Forecolor, BackColor);
-#else
-  NewFontAndColor(Scr.ScratchGC3,XFONT(GET_DECOR(psw, window_font))->fid, Forecolor, BackColor);
-#endif
+  NewFontAndColor(Scr.ScratchGC3,XFONTID(GET_DECOR(psw, window_font)), Forecolor, BackColor);
 
   /* the next bit tries to minimize redraw based upon compilation options (veliaa@rpi.edu) */
   /* we need to check for UseBorderStyle for the titlebar */

@@ -233,7 +233,7 @@ The return value is a two-element list of the x and y coordinates. */
   int x, y;
 
   SCM_REDEFER_INTS;
-  FXGetPointerWindowOffsets(Scr.Root, &x, &y);
+  WXGetPointerWindowOffsets(Scr.Root, &x, &y);
   SCM_REALLOW_INTS;
   return scm_listify(SCM_MAKINUM(x), SCM_MAKINUM(y), SCM_UNDEFINED);
 }
@@ -416,6 +416,21 @@ SCWM_PROC(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
 }
 #undef FUNC_NAME
 
+
+SCWM_PROC(X_server_set_synchronize_x, "X-server-set-synchronize!", 1, 0, 0,
+          (SCM flag))
+     /** Set X server sychronization flag to FLAG.
+If FLAG is #t, then Scwm will turn on synchronous X behaviour; if FLAG 
+is #f, Scwm will turn off synchronous behaviour.  Scwm is slower in
+synchronous mode, but can be easier to debug. */
+#define FUNC_NAME s_X_server_set_synchronize_x
+{
+  Bool fSynch;
+  COPY_BOOL_OR_ERROR(fSynch,flag,1,FUNC_NAME);
+  XSynchronize(dpy, fSynch);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
 
 
 /* FIXMS: this should probably be split into multiple procs. */

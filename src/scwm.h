@@ -135,8 +135,10 @@ enum wm_client_functions {
 
 #define SCM_BOOL_FromBool(x) ((x)? SCM_BOOL_T: SCM_BOOL_F)
 
+/* use gh_scm2bool() instead 
 #define FFromSCMBool(x) ((x) == SCM_BOOL_T)
 #define FInvertFromSCMBool(x) ((x) != SCM_BOOL_T)
+*/
 
 #define COPY_BOOL_OR_ERROR(var,flag,pos,func) \
   do { \
@@ -144,6 +146,21 @@ enum wm_client_functions {
   else if (flag == SCM_BOOL_F) var = False; \
   else scm_wrong_type_arg(func,pos,flag); \
   } while (0)
+
+#define COPY_BOOL_OR_ERROR_DEFAULT_TRUE(var,flag,pos,func) \
+  do { \
+  if (flag == SCM_BOOL_T || flag == SCM_UNDEFINED) var = True; \
+  else if (flag == SCM_BOOL_F) var = False; \
+  else scm_wrong_type_arg(func,pos,flag); \
+  } while (0)
+
+#define COPY_BOOL_OR_ERROR_DEFAULT_FALSE(var,flag,pos,func) \
+  do { \
+  if (flag == SCM_BOOL_T) var = True; \
+  else if (flag == SCM_BOOL_F || flag == SCM_UNDEFINED) var = False; \
+  else scm_wrong_type_arg(func,pos,flag); \
+  } while (0)
+
 
 #define COPY_INVERT_BOOL_OR_ERROR(var,flag,pos,func) \
   do { \
@@ -211,11 +228,10 @@ extern struct ScwmWindow *FocusOnNextTimeStamp;
 
 extern XContext ScwmContext;
 
-extern Window BlackoutWin;
-
 extern Boolean ShapesSupported;
 
-extern Window JunkRoot, JunkChild;
+
+extern Window JunkChild, JunkRoot;
 extern int JunkX, JunkY;
 extern unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
 

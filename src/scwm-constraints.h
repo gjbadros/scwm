@@ -17,6 +17,10 @@ typedef const struct ScwmWindow *ConstPScwmWindow;
 
 #define FRAME_X(psw) ((psw)->frame_x)
 #define FRAME_Y(psw) ((psw)->frame_y)
+#define ABS(x) ((x)<0?-(x):(x))
+#define FRAME_X_NONVIRT(psw) (ABS((psw)->frame_x) % Scr.DisplayWidth)
+#define FRAME_Y_NONVIRT(psw) (ABS((psw)->frame_y) % Scr.DisplayHeight)
+
 #define FRAME_WIDTH(psw) ((psw)->frame_width)
 #define FRAME_HEIGHT(psw) ((psw)->frame_height)
 

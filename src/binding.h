@@ -9,6 +9,9 @@
 #include <config.h>
 #endif
 
+#include "window_fwd.h"
+#define ScwmWindow   struct ScwmWindow
+
 #undef EXTERN
 #undef EXTERN_SET
 #ifdef BINDING_IMPLEMENTATION
@@ -62,6 +65,11 @@ void clear_mouse_event_type();
 SCM mouse_event_type();
 
 Bool FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier);
+void GrabKeys(ScwmWindow *psw);
+void GrabButtons(ScwmWindow *psw);
+
+
+#undef ScwmWindow
 
 #endif /* BINDING_H */
 

@@ -20,13 +20,14 @@ void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
 void AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp, 
 			 int cmsDelay, float *ppctMovement);
 
-void moveLoop(ScwmWindow *psw, int XOffset, int YOffset, int Width,
-	      int Height, int *FinalX, int *FinalY, Bool opaque_move);
+void moveLoop(ScwmWindow *psw,
+              int XOffset, int YOffset, int Width,
+	      int Height, int *FinalX, int *FinalY, Bool fOpaque);
 
 
 void Keyboard_shortcuts(XEvent * Event, int ReturnEvent);
 
-void InteractiveMove(ScwmWindow *psw, int *FinalX, int *FinalY);
+Bool InteractiveMove(ScwmWindow *psw, Bool fOpaque, int *FinalX, int *FinalY);
 
 void DisplayMessage(const char *sz, Bool fRelief);
 void MapMessageWindow();

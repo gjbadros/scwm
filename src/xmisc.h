@@ -20,11 +20,12 @@ extern XGCValues Globalgcv;
 extern unsigned long Globalgcm;
 extern XEvent Event;
 
-Bool FXGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn);
+Window WXGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn);
+Window WXGetPointerOffsets(Window w, int *pxRoot, int *pyRoot, int *pxReturn, int *pyReturn);
+Window WXGetPointerChild(Window wParent);
 Bool FXGetWindowTopLeft(Window w, int *pxReturn, int *pyReturn);
 Bool FXGetWindowSize(Window w, int *pwidthReturn, int *pheightReturn);
 Bool FXWindowAccessible(Display *dpy, Window w);
-Bool XGetGeometryCacheIt(Display *dpy, Window w);
 void DrawImage(Window w, scwm_image *psimg, int cpixXoffset, int cpixYoffset, GC gc);
 XTextProperty *PNewXTextPropertyFromSz(const char *sz);
 int flush_expose(Window w);
@@ -33,6 +34,15 @@ void SetGCColors(GC gc, Pixel pix, Pixel pixBG);
 void SetGCFg(GC gc, Pixel pix);
 void SetGCFb(GC gc, Pixel pix);
 void RelieveRectangle(Window win,int x,int y,int w, int h,GC Hilite,GC Shadow);
+char *SzExtractTextPropValue(const XTextProperty *pxtp);
+
+#ifdef I18N
+#define XFONT_TYPE XFontSet
+#else
+#define XFONT_TYPE XFontStruct
+#endif
+
+int ComputeXTextWidth(XFONT_TYPE *pxfs, const char *sz, int cch);
 
 
 #undef ScwmWindow

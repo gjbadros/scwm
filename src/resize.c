@@ -384,14 +384,13 @@ RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height)
 }
 
 
-SCWM_PROC(interactive_resize, "interactive-resize", 0, 1, 0,
-          (SCM win))
-     /** Resize WIN interactively.
-This allows the user to drag a rubber band frame to set the size of
-the window. WIN defaults to the window context in the usual way if not
-specified. */
-#define FUNC_NAME s_interactive_resize
+/* FIXGJB: InteractiveResize uses the global var PressedW 
+   to figure out how the resize should work. This is bad! */
+Bool
+InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheightReturn)
 {
+  extern Window PressedW;       /* FIXGJB: ugly! */
+
   int dragx;			/* all these variables are used */
   int dragy;			/* in resize operations */
   int dragWidth;
@@ -401,42 +400,22 @@ specified. */
   int origy;
   int origWidth;
   int origHeight;
+
+  int ymotion = 0, xmotion = 0;
+  Bool finished = False, done = False, abort = False;
+  int x, y, delta_x, delta_y;
+
   /* save state of edge wrap */
   Bool fEdgeWrapX = Scr.fEdgeWrapX;
   Bool fEdgeWrapY = Scr.fEdgeWrapY;
 
-  int ymotion = 0, xmotion = 0;
 
-  Bool fOpaque = True;
-  extern Window PressedW;
-  ScwmWindow *psw;
-  Bool finished = False, done = False, abort = False;
-  int x, y, delta_x, delta_y;
-  Window ResizeWindow;
-
-  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
-  psw = PSWFROMSCMWIN(win);
-
-
-  if (check_allowed_function(F_RESIZE, psw) == 0
-      || SHADED_P(psw)) {
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
-  }
   psw->fMaximized = False;
-
-  if (psw->fIconified) {
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
-  }
-  ResizeWindow = psw->frame;
-
 
   InstallRootColormap();
   if (!GrabEm(CURSOR_MOVE)) {
     call0_hooks(cannot_grab_hook);
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
+    return False;
   }
   if (!fOpaque) {
     XGrabServer_withSemaphore(dpy);
@@ -445,9 +424,9 @@ specified. */
   /* handle problems with edge-wrapping while resizing */
   Scr.fEdgeWrapX = Scr.fEdgeWrapY = False;
 
-  XGetGeometry(dpy, (Drawable) ResizeWindow, &JunkRoot,
-	       &dragx, &dragy, (unsigned int *) &dragWidth,
-	       (unsigned int *) &dragHeight, &JunkBW, &JunkDepth);
+  XGetGeometry(dpy, psw->frame, &JunkRoot, &dragx, &dragy, 
+               (unsigned int *) &dragWidth, (unsigned int *) &dragHeight,
+               &JunkBW, &JunkDepth);
 
   origx = dragx;
   origy = dragy;
@@ -462,7 +441,9 @@ specified. */
   CassowaryEditSize(psw);
 
 
-  /* Get the current position to determine which border to resize */
+  /* Get the current position to determine which border to resize 
+     FIXGJB: this is ugly -- perhaps should pass in
+     resize directions? */
   if ((PressedW != Scr.Root) && (PressedW != None)) {
     if (PressedW == psw->sides[0])	/* top */
       ymotion = 1;
@@ -596,7 +577,7 @@ specified. */
   CassowaryEndEdit(psw);
 
   UninstallRootColormap();
-  ResizeWindow = None;
+
   if (!fOpaque) {
     XUngrabServer_withSemaphore(dpy);
   }
@@ -607,7 +588,41 @@ specified. */
   /* restore edge wrap state */
   Scr.fEdgeWrapX = fEdgeWrapX;
   Scr.fEdgeWrapY = fEdgeWrapY;
-  SCM_REALLOW_INTS;
+
+  return True;
+}
+
+
+SCWM_PROC(interactive_resize, "interactive-resize", 0, 2, 0,
+          (SCM win, SCM opaque_p))
+     /** Resize WIN interactively.
+This allows the user to drag a rubber band frame to set the size of
+the window. WIN defaults to the window context in the usual way if not
+specified. If OPAQUE? is #t, the resize will be done
+"opaquely", moving the actual X window, if #f a rubberband will be
+used instead to save on server computation (note that the rubberband
+requires a server "grab" which means that nothing else changes on
+screen while the non-opaque resize takes place. */
+#define FUNC_NAME s_interactive_resize
+{
+  ScwmWindow *psw;
+  int width, height;            /* not used, now */
+  Bool fOpaque;
+
+  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
+  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fOpaque,opaque_p,2,FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  if (check_allowed_function(F_RESIZE, psw) == 0
+      || SHADED_P(psw)) {
+    return SCM_BOOL_F;
+  }
+
+  if (psw->fIconified) {
+    return SCM_BOOL_F;
+  }
+
+  InteractiveResize(psw, fOpaque, &width, &height);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

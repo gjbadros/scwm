@@ -89,9 +89,9 @@ typedef struct ScwmWindow {
   struct ScwmWindowConstraintInfo *pswci; /* Constraint information for this scheme window */
                                 /* NULL if built w/o cassowary support */
 
-  int boundary_width;
-  int corner_width;
-  int bw;
+  int boundary_width;           /* the decoration boundary's width, in pixels */
+  int corner_width;             /* the width of the decoration handles, in pixels */
+  int bw;                       /* the border_width for the frame, w, and Parent, in pixels */
   int title_x;
   int title_y;
   int title_height;		/* height of the title bar */

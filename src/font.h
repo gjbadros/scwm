@@ -65,7 +65,9 @@ typedef struct {
 } scwm_font;
 
 #ifdef I18N
-#define XFIXEDFONTSET "-*-fixed-*"
+#define XFIXEDFONTNAME "-*-fixed-*"
+#else
+#define XFIXEDFONTNAME "fixed"
 #endif
 
 #define FONT_P(X) (SCM_NIMP((X)) && SCM_CAR((X)) == (SCM)scm_tc16_scwm_font)
@@ -87,6 +89,8 @@ typedef struct {
 #define XFONT(X) (((scwm_font *)SCM_CDR((X)))->xfs)
 #define FONTY(X) ((XFONT(X))->ascent)
 #endif
+
+#define XFONTID(X) (((scwm_font *)SCM_CDR((X)))->xfs->fid)
 
 #define SAFE_XFONT(X) (FONT_P((X))?XFONT((X)):NULL)
 #define FONTNAME(X) (((scwm_font *)SCM_CDR(X))->name)

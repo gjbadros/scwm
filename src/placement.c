@@ -582,7 +582,7 @@ by the user, the position was specified by the program, and
 	random_place_window(win);
       } else {
         int finalx, finaly;     /* unused for now */
-	InteractiveMove(psw, &finalx, &finaly);
+	InteractiveMove(psw, False, &finalx, &finaly);
       }
     }
   }
@@ -604,7 +604,7 @@ It simply leaves the window WIN in place, exactly as requested. */
 
   psw=PSWFROMSCMWIN(win);
 
-#if 0
+#if 0 /* MSFIX: I think you #ifdef'd this out... should it be? --07/27/98 gjb */
   psw->xdiff = psw->attr.x;
   psw->ydiff = psw->attr.y;
   /* put it where asked, mod title bar */
@@ -659,8 +659,8 @@ PlaceWindow(ScwmWindow *psw, int Desk)
     }
   }
   
-  psw->xdiff= FRAME_X(psw);
-  psw->ydiff= FRAME_Y(psw);
+  psw->xdiff = FRAME_X_NONVIRT(psw);
+  psw->ydiff = FRAME_Y_NONVIRT(psw);
 
   return True;
 }

@@ -133,6 +133,8 @@ allocated, an error results. */
   allocation:
     scm_memory_error(FUNC_NAME);
   }
+
+/* FIXGJB: merge these two paths */
 #ifdef I18N
   fontset = XCreateFontSet(dpy,fn,&list_names,&missings,&defstrreturn);
   if (NULL == fontset) {
@@ -154,7 +156,7 @@ allocated, an error results. */
     scwm_error(FUNC_NAME, 1);
   }
 
-  font = NEW(*font);
+  font = NEW(scwm_font);
   if (NULL == font) {
     FREE(fn);
     XFreeFontSet(dpy, fontset);
@@ -179,10 +181,7 @@ allocated, an error results. */
       return answer;
     }
     
-    fn = strdup("fixed");
-    if (NULL == fn)
-      goto allocation;
-    xfs = XLoadQueryFont(dpy, fn);
+    xfs = XLoadQueryFont(dpy, XFIXEDFONTNAME);
   } 
   if (NULL == xfs) {
     FREE(fn);
@@ -317,11 +316,8 @@ menu_font_update()
   unsigned long gcm;
 
   gcm = GCFont;
-#ifdef I18N
-  gcv.font = FONT(Scr.menu_font)->xfs->fid;
-#else
-  gcv.font = XFONT(Scr.menu_font)->fid;
-#endif
+  gcv.font = XFONTID(Scr.menu_font);
+
   /* are all these needed? */
   /* MSFIX: This stuff should really be handled by other code. */
   XChangeGC(dpy, Scr.MenuReliefGC, gcm, &gcv);
@@ -377,11 +373,7 @@ void init_font()
 {
   REGISTER_SCWMSMOBFUNS(font);
 
-#ifdef I18N
-  str_fixed=gh_str02scm(XFIXEDFONTSET);
-#else
-  str_fixed=gh_str02scm("fixed");
-#endif
+  str_fixed=gh_str02scm(XFIXEDFONTNAME);
   scm_protect_object(str_fixed);
 
   font_hash_table = 

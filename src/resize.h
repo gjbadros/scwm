@@ -17,8 +17,8 @@ void RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height
 
 Window CreateMessageWindow(Pixel fg, Pixel bg);
 
-/* used by add_window */
-SCM interactive_resize(SCM win);
+Bool InteractiveResize(ScwmWindow *psw, Bool fOpaque,
+                       int *pwidthReturn, int *pheightReturn);
 
 void init_resize_gcs();
 

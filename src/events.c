@@ -297,7 +297,7 @@ HandleHardFocus(ScwmWindow *psw)
   FocusOnNextTimeStamp = psw;
   Scr.Focus = NULL;
   /* Do something to guarantee a new time stamp! */
-  FXGetPointerWindowOffsets(Scr.Root, &x, &y);
+  WXGetPointerWindowOffsets(Scr.Root, &x, &y);
   GrabEm(CURSOR_WAIT);
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
 	       Scr.DisplayHeight,
@@ -594,10 +594,6 @@ void
 HandlePropertyNotify()
 {
   XTextProperty text_prop;
-#ifdef I18N
-  char **list;
-  int num;
-#endif
 
   DBUG("HandlePropertyNotify", "Routine Entered");
 
@@ -616,28 +612,10 @@ HandlePropertyNotify()
 
     free_window_names(pswCurrent, True, False);
 
-#ifdef I18N
-    {
-      if (text_prop.value) {
-	text_prop.nitems = strlen(text_prop.value);
-	if (text_prop.encoding == XA_STRING)
-	  pswCurrent->name = (char *)text_prop.value;
-	else {
-	  if (XmbTextPropertyToTextList(dpy,&text_prop,&list,&num) >= Success
-	      && num > 0 && *list)
-	    pswCurrent->name = *list;
-	  else
-	    pswCurrent->name = (char *)text_prop.value;
-	}
-      } else
-	pswCurrent->name = NoName;
-    }
-#else
-    pswCurrent->name = (char *) text_prop.value;
-#endif
-
+    pswCurrent->name = SzExtractTextPropValue(&text_prop);
     if (pswCurrent->name == NULL)
       pswCurrent->name = NoName;
+
     BroadcastName(M_WINDOW_NAME, pswCurrent->w, pswCurrent->frame,
 		  (unsigned long) pswCurrent, pswCurrent->name);
 
@@ -790,7 +768,7 @@ HandleClientMessage()
   if ((Event.xclient.message_type == XA_WM_CHANGE_STATE) &&
       (Event.xclient.data.l[0] == IconicState) &&
       pswCurrent && !pswCurrent->fIconified) {
-    FXGetPointerWindowOffsets(Scr.Root, &(button.xmotion.x_root), &(button.xmotion.y_root));
+    WXGetPointerWindowOffsets(Scr.Root, &(button.xmotion.x_root), &(button.xmotion.y_root));
     button.type = 0;
     Iconify(pswCurrent,0,0);
     return;
@@ -1793,8 +1771,7 @@ worry about this unless you know what it means. */
 
 
   /* First fill in x_root, y_root */
-  XQueryPointer( dpy, w, &JunkRoot, &pointer_win,
-                 &x_root,&y_root,&x, &y, &JunkMask);
+  pointer_win = WXGetPointerOffsets( w, &x_root, &y_root,&x, &y );
 
   /* Now find the window we're in */
   child = WindowGettingButtonEvent(w,x,y);

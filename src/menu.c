@@ -430,10 +430,7 @@ static
 DynamicMenu *
 PmdFromPointerLocation(Display *dpy)
 {
-  Window wChild;
-  
-  XQueryPointer( dpy, Scr.Root, &JunkRoot, &wChild,
-		&JunkX,&JunkY, &JunkX, &JunkY, &JunkMask);
+  Window wChild = WXGetPointerChild( Scr.Root );
   return PmdFromWindow(dpy,wChild);
 }
 #endif
@@ -451,7 +448,6 @@ PmiimFromPointerLocation(Display *dpy, int *px_offset)
 {
   int root_x, root_y;
   int x,y;
-  Bool f;
   Window wChild;
   DynamicMenu *pmd = NULL;
 
@@ -469,8 +465,7 @@ PmiimFromPointerLocation(Display *dpy, int *px_offset)
   DBUG(__FUNCTION__,"root = %d,%d",root_x,root_y);
 
   /* now get position in that child window */
-  f = XQueryPointer( dpy, wChild, &JunkRoot, &JunkChild,
-                     &root_x,&root_y, &x, &y, &JunkMask);
+  WXGetPointerOffsets( wChild, &root_x,&root_y, &x, &y);
 
   DBUG(__FUNCTION__,"Now root = %d,%d; window = %d, %d (%d)",root_x,root_y, x,y, (int) f);
 
@@ -1213,7 +1208,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
   int cpixY_startpointer;
   SCM scmAction = SCM_UNDEFINED;
 
-  FXGetPointerWindowOffsets(Scr.Root,&cpixX_startpointer,&cpixY_startpointer);
+  WXGetPointerWindowOffsets(Scr.Root,&cpixX_startpointer,&cpixY_startpointer);
   
   SetPopupMenuPosition(pmd, cpixX_startpointer, cpixY_startpointer);
   

@@ -193,11 +193,7 @@ decor2scm(ScwmDecor * fl)
 
   set_hilight_foreground_x(BLACK_COLOR);
   set_hilight_background_x(gh_str02scm("grey"));
-#ifdef I18N
-  set_window_font_x(gh_str02scm(XFIXEDFONTSET));
-#else
-  set_window_font_x(gh_str02scm("fixed"));
-#endif
+  set_window_font_x(str_fixed);
   set_current_decor_x(tmpd);
 
   /* initialize buttons */

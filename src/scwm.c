@@ -94,8 +94,6 @@ ScreenInfo Scr;			/* structures for the screen */
 SCM scmScreen;                  /* the scheme object wrapping Scr */
 Display *dpy;			/* which display are we talking to */
 
-Window BlackoutWin = None;	/* window to hide window captures */
-
 char *szCmdConfig;
 
 static char *szLoad_pre = "(safe-load \"";
@@ -122,7 +120,6 @@ XContext MenuContext;           /* context for menus */
 
 Window JunkRoot, JunkChild;	/* junk window */
 int JunkX = 0, JunkY = 0;
-unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
 
 ScwmWindow *FocusOnNextTimeStamp = NULL;
 
@@ -192,6 +189,8 @@ Atom XA_SCWMEXEC_NOTIFY;
 Atom XA_SCWMEXEC_OUTPUT;
 Atom XA_SCWMEXEC_ERROR;
 
+
+static Window BlackoutWin = None; /* window to hide window captures */
 
 static void 
 InternUsefulAtoms(void)
@@ -462,6 +461,7 @@ scwm_main(int argc, char **argv)
   init_binding();
   init_window();
   init_resize();
+  init_move();
   init_face();
   init_shutdown();
   init_xproperty();
@@ -884,6 +884,8 @@ MappedNotOverride(Window w)
  *      CaptureAllWindows
  *
  *   Decorates all windows at start-up and during recaptures
+ * AddWindow gets called by X11
+ * when the windows make their request to be mapped
  */
  
 void 
@@ -908,10 +910,8 @@ CaptureAllWindows(void)
   }
   PPosOverride = True;
 
-  if (!(Scr.fWindowsCaptured)) {		/* initial capture? */
-    /*
-       ** weed out icon windows
-     */
+  if (!Scr.fWindowsCaptured) {		/* initial capture? */
+    /* weed out icon windows */
     for (i = 0; i < nchildren; i++) {
       if (children[i]) {
 	XWMHints *wmhintsp = XGetWMHints(dpy, children[i]);
@@ -929,9 +929,7 @@ CaptureAllWindows(void)
 	}
       }
     }
-    /*
-       ** map all of the non-override, non-icon windows
-     */
+    /* map all of the non-override, non-icon windows */
     for (i = 0; i < nchildren; i++) {
       if (children[i] && MappedNotOverride(children[i])) {
 	XUnmapWindow(dpy, children[i]);
@@ -940,7 +938,7 @@ CaptureAllWindows(void)
       }
     }
     Scr.fWindowsCaptured = True;
-  } else {			/* must be recapture */
+  } else {			/* must be a recapture */
     /* reborder all windows */
     psw = Scr.ScwmRoot.next;
     for (i = 0; i < nchildren; i++) {
@@ -966,6 +964,7 @@ CaptureAllWindows(void)
 	XUnmapWindow(dpy, w);
 	RestoreWithdrawnLocation(psw, True);
 	DestroyScwmWindow(psw);
+        /* This will cause AddWindow to get called for w */
 	Event.xmaprequest.window = w;
 	HandleMapRequestKeepRaised(BlackoutWin);
 	psw = pswNext;
@@ -1179,6 +1178,7 @@ SetMWM_INFO(Window window)
 		  PropModeReplace, (char *) &motif_wm_info, 2);
 #endif
 }
+
 
 void 
 BlackoutScreen()
