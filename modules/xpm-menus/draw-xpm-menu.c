@@ -132,8 +132,12 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
   unsigned long gcm;
   XGCValues gcv;
   Pixel Bright, Dim;
+  static Bool GCs_initted;
 
-  InitGCs();
+  if (!GCs_initted) {
+    InitGCs();
+    GCs_initted = True;
+  }
   
   if (pmd->pmdi->BGColor != LastBGColor ||
       menu_highlight_factor_val != last_highlight_factor ||
@@ -444,7 +448,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   MakeGCs(pmd, scfont);
 
   ShadowGC = MenuShadowGC;
-  ReliefGC = Scr.d_depth<2? MenuShadowGC: MenuReliefGC;
+  ReliefGC = Scr.d_depth < 2 ? MenuShadowGC: MenuReliefGC;
 
   /* Erase any old reliefs indicated selectedness --
      Use ClearArea if the color to use is the same as the menu color */
@@ -499,6 +503,13 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
       DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, MenuGC);
     }
 
+    /* JTL:FIXME:: fix for proper menu title support */
+    if (mis == MIS_Grayed) {
+      currentGC = MenuStippleGC;
+    } else {
+      currentGC = MenuGC;
+    }
+
     { /* scope */
       Pixel fg = pmidi->TextColor;
       Pixel bg = pmidi->BGColor;
@@ -521,7 +532,6 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
           gcm |= GCBackground;
           gcv.background = bg;
         }
-        scwm_msg(DBG,FUNC_NAME,"Changing GC with %ld",gcm);
         XChangeGC(dpy, Scr.ScratchGC1, gcm, &gcv);
         currentGC = Scr.ScratchGC1;
       }
@@ -531,12 +541,6 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 
     x_offset += MENU_TEXT_SPACING/2;
     
-    if (mis == MIS_Grayed) {
-      currentGC = MenuStippleGC;
-    } else {
-      currentGC = MenuGC;
-    }
-
     if (pmi->szLabel) {
 #ifdef I18N
       XmbDrawString(dpy, w, scfont->fontset, currentGC,
@@ -572,7 +576,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
     x_offset += pmdi->cpixExtraTextWidth;
 
     if (pmiim->fShowPopupArrow) {
-      int d = (item_height-7)/2; /* FIXGJB: magic numbers! */
+      int d = (item_height-7)/2; /* GJB:FIXME:: magic numbers! */
       if (mis != MIS_Enabled) {
 	DrawTrianglePattern(w, ShadowGC, ReliefGC, ShadowGC, /* ReliefGC, */
 			    x_offset,

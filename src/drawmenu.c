@@ -582,7 +582,9 @@ PmiimFromPmdXY(DynamicMenu *pmd, int ARG_UNUSED(x), int y)
 static int
 InPopupZone(MenuItemInMenu *pmiim, int cpixXoffset, int ARG_IGNORE(cpixYoffset))
 {
-  return cpixXoffset > pmiim->pmd->cpixWidth*3/4;
+  /* FIXJTL: this works well for narrow menus; *3/4 works better for larger
+     one; maybe something more complicated is needed */
+  return cpixXoffset > pmiim->pmd->cpixWidth/2;
 }
 
 /* px and py are in & out parameters; return the x,y location for the
