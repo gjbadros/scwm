@@ -94,10 +94,11 @@ my %procedure = ();
 # primitives defined in that file
 my %file_funcs = ();
 
-# Maps from concepts/hooks to a hash containing
+# Maps from concepts/hooks/vars to a hash containing
 # "comment", "markup", "file", "line"
 my %concepts = ();
 my %hooks = ();
+my %vars = ();
 
 
 use FileHandle;
@@ -137,6 +138,11 @@ while (<>) {
       my $line = $.;
       my $body = ReadRestOfComment("");
       ProcessConceptComment($filename, $line, $description,$body);
+    } elsif (uc($type) eq "VAR") {
+      my $filename = $ARGV;
+      my $line = $.;
+      my $body = ReadRestOfComment("");
+      ProcessVarComment($filename, $line, $description, $body);
     } else {
       print STDERR "$ARGV:$.:**** Unrecognized type for /**-style comment = \`$type\'\n";
       next;
@@ -272,6 +278,22 @@ START_HOOKS_CHAPTER
   foreach my $hook (sort { lc($a) cmp lc($b) } keys %hooks ) {
     my $markup = $hooks{$hook}{markup};
     print MARKUP_OUT "    <sect1 id=\"$hook\"><title>$hook</title><para>\n$markup
+    </para></sect1>\n";
+  }
+  print MARKUP_OUT "  </chapter>\n";
+}
+
+
+# Now output vars chapter
+if ($opt_o) {
+  print MARKUP_OUT <<START_VARS_CHAPTER
+  <chapter>
+    <title>User variables</title>
+START_VARS_CHAPTER
+  ;
+  foreach my $var (sort { lc($a) cmp lc($b) } keys %vars ) {
+    my $markup = $vars{$var}{markup};
+    print MARKUP_OUT "    <sect1 id=\"$var\"><title>$var</title><para>\n$markup
     </para></sect1>\n";
   }
   print MARKUP_OUT "  </chapter>\n";
@@ -499,7 +521,7 @@ sub ProcessHeader( $ ) {
   </para>
   </refsect1>
   <refsect1>
-  <title>Implemenation Notes</title>
+  <title>Implementation Notes</title>
   <para> Defined in <ulink url=\"file://@{[$ENV{'SCWMDIR'}]}/$filename\"><filename>$filename</filename></ulink>
   at line $line </para> </refsect1>
 </refentry>
@@ -559,7 +581,7 @@ sub ReadRestOfComment ( $ ) {
   return $comment;
 }
 
-sub ProcessConceptComment ( $ ) {
+sub ProcessConceptComment ( $$$$ ) {
   my ($filename,$line,$description,$comment) = @_;
   $comment =~ s%\*/\s*$%%m;
   if ($fDebug) {
@@ -577,7 +599,7 @@ sub ProcessConceptComment ( $ ) {
 			    };
 }
 
-sub ProcessHookComment ( $ ) {
+sub ProcessHookComment ( $$$$ ) {
   my ($filename,$line,$description,$comment) = @_;
   $comment =~ s%\*/\s*$%%m;
   if ($fDebug) {
@@ -593,6 +615,24 @@ sub ProcessHookComment ( $ ) {
 			   line => $line,
 			 };
 }
+
+sub ProcessVarComment ( $$$$ ) {
+  my ($filename,$line,$description,$comment) = @_;
+  $comment =~ s%\*/\s*$%%m;
+  if ($fDebug) {
+    print STDERR "Var \`$description\' with body = \n$comment\n";
+  }
+
+  IspellText($filename,$line,$comment) if $opt_s;
+
+  my $markup = MarkupComment($comment);
+  $vars{$description} = { comment => $comment,
+			   markup => $markup,
+			   file => $filename,
+			   line => $line,
+			 };
+}
+
 
 # FIXGJB
 sub MarkupComment( $ ) {
