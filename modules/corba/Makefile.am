@@ -16,13 +16,17 @@ idl_output_source = \
 	scwm_scheme_evaluator-stubs.c \
 	scwm_scheme_evaluator-skels.c
 
+idl_output_headers = \
+	scwm_scheme_evaluator.h
+
+
 scwm_corba_exec_SOURCES = \
 	scwm-corba-exec.c \
 	scwm_scheme_evaluator-common.c \
 	scwm_scheme_evaluator-stubs.c
 endif
 
-$(idl_output_source): scwm_scheme_evaluator.idl
+$(idl_output_source) $(idl_output_headers): scwm_scheme_evaluator.idl
 	orbit-idl $<
 
 libscwmcorba_la_SOURCES = \
