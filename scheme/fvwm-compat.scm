@@ -113,3 +113,16 @@
 (define-public FVWM_VERSION "3") ;; for lack of a better number
 (define-public OPTIONS "SHAPE XPM")
 ;(define-public FVWMDIR (default-directory))
+
+
+;; Perhaps this should be the default behaviour of %x?
+(define-public (%x-permit-negative x)
+  (if (>= x 0)
+      (%x x)
+      (x- (%x (- x)))))
+
+;; Perhaps this should be the default behaviour of %y?
+(define-public (%y-permit-negative y)
+  (if (>= y 0)
+      (%y y)
+      (y- (%y (- y)))))

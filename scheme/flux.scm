@@ -773,3 +773,8 @@ of this function, as a string."
 	str
 	(substring str 0 ich))))
 
+(define-public (group-leader-id win)
+  (vector-ref (car (X-property-get win "WM_HINTS")) 8))
+
+(define-public (group->windows group)
+  (list-windows #:only (lambda (win) (= (group-leader-id group) (group-leader-id win)))))

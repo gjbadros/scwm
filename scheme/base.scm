@@ -437,11 +437,8 @@ The rest of the arguments are passed as options to the xterm command."
                              (map (lambda (st) (string-append " " st)) opts))
                       " -e " cmd)))
 
-;; MSFIX:
-;; this is redundant w/ below
-;; (defmacro-public remove-hook! (var proc)
-;;   `(if (memq ,proc ,var)
-;;        (set! ,var (delq! proc var))))
+(defmacro-public thunk (proc)
+  `(lambda args (apply ,proc args)))
 
 ;; Only define if not already defined by Guile
 (if (not (defined? 'remove-hook!))
@@ -450,14 +447,13 @@ The rest of the arguments are passed as options to the xterm command."
            (set! ,hook
                  (delq! ,proc ,hook)))))
 
-(defmacro-public thunk (proc)
-  `(lambda args (apply ,proc args)))
-
 
 ;; add-hook! and remove-hook! are defined in guile's boot-9.scm
-;; we still need a reset-hook! though
-(defmacro-public reset-hook! (hook)
-  `(set! ,hook ()))
+;; we still need a reset-hook! though, but only if HAVE_SCM_MAKE_HOOK is 0
+;; (otherwise, in post guile-1.3, it's already a primitive)
+(if (not (defined? 'reset-hook!))
+    (defmacro-public reset-hook! (hook)
+      `(set! ,hook ())))
 
 (defmacro-public with-window (win . body)
 ;;;** Bind the window-context to WIN while evaluating BODY.
