@@ -32,6 +32,7 @@
 #include "guile-compat.h"
 #include "screen.h"
 #include "xmisc.h"
+#include "errors.h"
 
 static GC DrawingGC;
 
@@ -150,18 +151,27 @@ ANGLE2. Angles are specified in degrees (0.0 to 360.0).*/
 }
 #undef FUNC_NAME
 
+SCWM_SYMBOL(sym_solid,"solid");
+SCWM_SYMBOL(sym_on_off_dash,"on-off-dash");
+SCWM_SYMBOL(sym_double_dash,"double-dash");
 
-SCWM_PROC(xlib_set_line_attributes_x, "xlib-set-line-attributes!", 2, 0, 0,
+SCWM_PROC(xlib_set_line_attributes_x, "xlib-set-line-attributes!", 1, 1, 0,
 	  (SCM width, SCM style))
-     /** Sets the line width of the DrawingGC to WIDTH and style to STYLE. 
-One of LineSolid(0), LineOnOffDash(1), or LineDoubleDash(2) should be given as
-STYLE. */
+     /** Sets the line width of the DrawingGC to WIDTH and style to
+STYLE.  One of 'solid (default), 'on-off-dash, or 'double-dash should
+be given as STYLE. */
 #define FUNC_NAME s_xlib_set_line_attributes_x
 {
-  int iWidth, iStyle;
+  int iWidth;
+  int iStyle = 0;
   VALIDATE_ARG_INT_COPY_USE_DEF(1,width,iWidth,0);
-  VALIDATE_ARG_INT_RANGE_COPY(1,style,LineSolid,LineDoubleDash,iStyle);
-
+  if (SCM_BOOL_F == style) iStyle = LineSolid; /* default */
+  else if (sym_solid == style) iStyle = LineSolid;
+  else if (sym_on_off_dash == style) iStyle = LineOnOffDash;
+  else if (sym_double_dash == style) iStyle = LineDoubleDash;
+  else {
+    scwm_error(FUNC_NAME,"STYLE must be one of 'solid 'on-off-dash 'double-dash.");
+  }
   XSetLineAttributes(dpy, DrawingGC, iWidth, iStyle, CapButt, JoinMiter);
   return SCM_UNSPECIFIED;
 }
@@ -189,9 +199,11 @@ init_drawing_gcs()
 {
   XGCValues gcv;
   unsigned long gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
+  int Mscreen = DefaultScreen(dpy);
+  int planes = DisplayPlanes(dpy,Mscreen);
   gcv.function = GXxor;
   gcv.line_width = 0;
-  gcv.foreground = 37; /* randomish */
+  gcv.foreground = ((long) pow(2,planes)) - 1;
   gcv.subwindow_mode = IncludeInferiors;
   DrawingGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
