@@ -1,3 +1,7 @@
+Tue Mar 31 23:44:08 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* include/scwm/scwmlib.h: Removed this unused file.
+
 Tue Mar 24 17:18:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/emacs/scwm.el: Fixed keybindings for XEmacs, and added 
