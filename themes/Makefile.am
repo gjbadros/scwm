@@ -1,5 +1,7 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
+## (You should run ./autogen.sh from the top level directory)
+
 ## GJB:FIXME:: adding a new theme here is error-prone
 
 ## Distribute and install

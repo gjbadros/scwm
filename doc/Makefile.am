@@ -1,5 +1,6 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
+## (You should run ./autogen.sh from the top level directory)
 
 info_TEXINFOS=scwm.texi
 man_MANS=scwm.1 scwmexec.1 scwmrepl.1
