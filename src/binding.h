@@ -53,7 +53,7 @@ typedef struct Binding_tag {
   int Button_Key;		/* Mouse Button number or Keycode */
   char *key_name;		/* In case of keycode, give the key_name too */
   int Context;			/* Contex is Scwm context, ie titlebar, frame, etc */
-  int Modifier;			/* Modifiers for keyboard state */
+  unsigned int Modifier;	/* Modifiers for keyboard state */
   SCM Thunk;
   SCM ReleaseThunk;             /* this is also the immediate clink thunk 
                                    for mouse bindings */

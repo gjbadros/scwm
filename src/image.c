@@ -44,6 +44,7 @@
 #include "callbacks.h"
 #include "scwmpaths.h"
 #include "guile-compat.h"
+#include "xmisc.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"

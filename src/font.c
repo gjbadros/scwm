@@ -115,7 +115,6 @@ allocated, an error results. */
   XFontStruct *xfs;
 #endif
   char *fn;
-  int len;
 
   VALIDATE_ARG_STR_NEWCOPY(1,fname,fn);
   

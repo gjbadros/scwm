@@ -48,6 +48,11 @@ procedure in the hook will be called with the throw arguments; these
 will generally include information about the nature of the error. 
 */
 
+SCWM_HOOK(load_processing_hook,"load-processing-hook",1);
+  /** This hook is invoked for every five top-level s-exps in the startup file.
+The hook procedures are invoked with one argument, the count of the
+s-expressions evaluated thus far. */
+
 SCM timer_hooks;
 
 struct scwm_body_apply_data {
@@ -283,9 +288,14 @@ scwm_catching_load_from_port (SCM port)
 {
   SCM expr;
   SCM answer = SCM_UNSPECIFIED;
+  int i = 0;
 
   while (!SCM_EOF_OBJECT_P(expr = scm_read (port))) {  
     answer = scwm_catching_eval_x (expr);
+    if (++i % 5 == 0) {
+       /* GJB:FIXME:: make an option */
+      call1_hooks(load_processing_hook, gh_int2scm(i));
+    }
   }
   scm_close_port (port);
 
@@ -315,7 +325,7 @@ SCWM_PROC(safe_load, "safe-load", 1, 0, 0,
            (SCM fname))
      /** Load file FNAME while trapping and displaying errors.
 Each individual top-level-expression is evaluated separately and all
-errors are trapped and displayed.  You Should use this procedure if
+errors are trapped and displayed.  You should use this procedure if
 you need to make sure most of a file loads, even if it may contain
 errors. */
 #define FUNC_NAME s_safe_load
@@ -784,9 +794,9 @@ input hook may safely remove itself. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(reset_input_hook_x, "reset-input-hook!", 1, 0, 0,
-          (SCM handle))
-     /** Remove all procedures from the input hook HANDLE. */
+SCWM_PROC(reset_input_hook_x, "reset-input-hook!", 0, 0, 0,
+          ())
+     /** Remove all procedures from the input hook. */
 #define FUNC_NAME s_reset_input_hook_x
 {
   gh_set_cdr_x(input_hooks,SCM_EOL);

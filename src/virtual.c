@@ -33,6 +33,7 @@
 #include "syscompat.h"
 #include "callbacks.h"
 #include "cursor.h"
+#include "events.h"
 
 SCWM_SYMBOL(sym_north,"north");
 SCWM_SYMBOL(sym_east,"east");

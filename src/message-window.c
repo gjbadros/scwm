@@ -355,8 +355,8 @@ SCWM_PROC(message_window_set_image_x, "message-window-set-image!", 2, 0, 0,
   scwm_image *pimg;
 
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
+  VALIDATE_ARG_IMAGE(2,image);
 
-  VALIDATE_ARG_IMAGE_USE_F(2,image);
   pimg = IMAGE(image);
 
   msg->bg_image = image;
@@ -440,14 +440,15 @@ while X-ALIGN and Y-ALIGN specify a fraction of the width and
 height of the message window to offset it from the specified position.
 X-ALIGN and Y-ALIGN should each be in the range [-1,0].  E.g.,
 If X-ALIGN and Y-ALIGN are both -0.5, the window will be
-centered at viewport pixel position X, Y. */
+centered at viewport pixel position X, Y.  Any of the parameters
+excep MWN can be #f to mean not to change the existing value. */
 #define FUNC_NAME s_message_window_set_position_x
 {
   scwm_msgwindow* msg;
 
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
-  VALIDATE_ARG_INT_COPY(2,x,msg->x);
-  VALIDATE_ARG_INT_COPY(3,y,msg->y);
+  VALIDATE_ARG_INT_COPY_USE_DEF(2,x,msg->x,msg->x);
+  VALIDATE_ARG_INT_COPY_USE_DEF(3,y,msg->y,msg->y);
   VALIDATE_ARG_DBL_COPY_USE_DEF(4,x_align,msg->x_align,msg->x_align);
   VALIDATE_ARG_DBL_COPY_USE_DEF(5,y_align,msg->y_align,msg->y_align);
 

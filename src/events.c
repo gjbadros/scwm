@@ -89,6 +89,7 @@
 #include "dbug_resize.h"
 #include "virtual.h"
 #include "cursor.h"
+#include "events.h"
 
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"

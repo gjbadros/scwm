@@ -215,7 +215,6 @@ printed. */
 #define FUNC_NAME s_make_decor
 {
   char *tag;
-  int dummy;
   ScwmDecor *newdec;
 
   VALIDATE_ARG_STR_NEWCOPY_USE_NULL(1,name,tag);

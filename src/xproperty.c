@@ -121,16 +121,7 @@ value. */
   Window w;
 
   VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
-
-  if (gh_number_p(name)) {
-    aprop = gh_scm2long(name);
-  } else if (gh_string_p(name)) {
-    str = gh_scm2newstr(name, NULL);
-    aprop = XInternAtom(dpy, str, False);
-    gh_free(str);
-  } else {
-    SCWM_WRONG_TYPE_ARG(2, name);
-  }
+  VALIDATE_ARG_ATOM_OR_STRING_COPY(2,name,aprop);
 
   if (format == SCM_UNDEFINED) {
     fmt=8;
@@ -232,11 +223,11 @@ unsigned char *GetXProperty(Window win, Atom prop, Bool del,
 }
 
 SCWM_PROC(X_property_get, "X-property-get", 2, 1, 0,
-	  (SCM win, SCM name, SCM consume))
+	  (SCM win, SCM name, SCM consume_p))
      /** Get X property NAME of window WIN.
 WIN is the window to check, an X window id, or 'root-window.
 NAME is a string or an X/11 atom (long).
-If CONSUME is #t, the X property is deleted after getting it. Default is
+If CONSUME? is #t, the X property is deleted after getting it. Default is
 not to delete.
 If the X property could not be found, #f is returned.
 If the X property could be found, a list "(value type format)" is returned.
@@ -256,34 +247,9 @@ If the X property could be found, a list "(value type format)" is returned.
   SCM value, type;
   Window w;
 
-  if (win == sym_root_window) {
-    w = Scr.Root;
-  } else if (gh_number_p(win)) {
-    assert(sizeof(Window) == sizeof(unsigned long));
-    w = gh_scm2ulong(win);
-  } else if (WINDOWP(win)) {
-    w = PSWFROMSCMWIN(win)->w;
-  } else {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  if (gh_number_p(name)) {
-    aprop = gh_scm2long(name);
-  } else if (gh_string_p(name)) {
-    str=gh_scm2newstr(name, NULL);
-    aprop=XInternAtom(dpy, str, False);
-    gh_free(str);
-  } else {
-    SCWM_WRONG_TYPE_ARG(2, name);
-  }
-
-  if (consume == SCM_UNDEFINED) {
-    del=False;
-  } else if (gh_boolean_p(consume)) {
-    del=gh_scm2bool(consume);
-  } else {
-    SCWM_WRONG_TYPE_ARG(3, consume);
-  }
+  VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
+  VALIDATE_ARG_ATOM_OR_STRING_COPY(2,name,aprop);
+  VALIDATE_ARG_BOOL_COPY_USE_F(3,consume_p,del);
 
   val = GetXProperty(w, aprop, del, &atype, &fmt, &len);
 

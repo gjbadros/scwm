@@ -620,7 +620,7 @@ ungrab_button_all_windows(int button, int modifier)
    for mouse binding lines though, like when context is a title bar button).
 */
 void 
-remove_binding(int context, int mods, int button, KeySym keysym,
+remove_binding(int context, unsigned int mods, int button, KeySym keysym,
 	       int mouse_binding)
 {
   Binding *pbnd = Scr.AllBindings, *pbndNext, *prev = NULL;
@@ -821,6 +821,7 @@ SCWM_PROC(set_quote_key_events_x, "set-quote-key-events!", 1, 0, 0,
 #define FUNC_NAME s_set_quote_key_events_x
 {
   VALIDATE_ARG_BOOL_COPY(1,quoting_on_p,fQuotingKeystrokes);
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -847,9 +848,7 @@ if there is no matching binding. */
 #define FUNC_NAME s_lookup_key
 {
   KeySym keysym;
-  int len = 0;
   Bool fOkayKey = False;
-  Bool fBoundKey = False;	/* for error checking */
   int i, min, max;
   int modmask = 0;
   int context = 0;
@@ -1203,7 +1202,8 @@ matching binding. */
 Bool 
 IsClick(int x, int y, unsigned EndMask, XEvent * d)
 {
-  int xcurrent, ycurrent, total = 0;
+  int xcurrent, ycurrent;
+  unsigned int total = 0;
   Time t0;
 
   xcurrent = x;

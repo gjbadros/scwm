@@ -48,8 +48,20 @@ unsigned char *GetXProperty(Window, Atom, Bool, Atom *,
   do { \
   assert(sizeof(Atom) == sizeof(unsigned long)); \
   if (gh_number_p(scm)) cvar = (Atom) gh_scm2ulong(scm); \
-  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else SCWM_WRONG_TYPE_ARG(pos,scm); \
   } while (0)
+
+#define VALIDATE_ARG_ATOM_OR_STRING_COPY(pos,scm,cvar) \
+  do { \
+  assert(sizeof(Atom) == sizeof(unsigned long)); \
+  if (gh_number_p(scm)) cvar = (Atom) gh_scm2ulong(scm); \
+  else if (gh_string_p(scm)) { \
+    char *sz = gh_scm2newstr(scm,NULL); \
+    cvar = XInternAtom(dpy,sz,False); \
+    gh_free(sz); \
+  } else SCWM_WRONG_TYPE_ARG(pos,scm); \
+  } while (0)
+
 
 #endif /* XPROPERTY_H__ */
 

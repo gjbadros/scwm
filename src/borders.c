@@ -189,7 +189,8 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
 
   scwm_image *image;
   int border = 0;
-  int width, height, x, y;
+  unsigned int width, height;
+  int x, y;
 
 
   switch (type) {
@@ -263,9 +264,9 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
       width = image->width;
     if (height > image->height)
       height = image->height;
-    if (width > w - x - border)
+    if ((int) width > w - x - border)
       width = w - x - border;
-    if (height > h - y - border)
+    if ((int) height > h - y - border)
       height = h - y - border;
 
     XSetClipMask(dpy, TransMaskGC, image->mask);

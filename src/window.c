@@ -52,6 +52,7 @@
 #include "winprop.h"
 #include "xproperty.h"
 #include "cursor.h"
+#include "placement.h"
 
 
 SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0);
@@ -2184,7 +2185,7 @@ SCWM_PROC(window_shade, "window-shade", 0, 1, 0,
 That is, to roll up into just a titlebar. By default, the change takes
 place instantaneously. WIN defaults to the window context in the usual
 way if not specified. See also `window-unshade'.
-A shaded window has the WM_STATE hint set to WithdrawnState, since 
+A shaded window has the "WM_STATE" hint set to WithdrawnState, since 
 the client application window is not visible. */
 #define FUNC_NAME s_window_shade
 {
@@ -2227,7 +2228,7 @@ SCWM_PROC(window_unshade, "window-unshade", 0, 1, 0,
     /** Reverse the effect of `window-shade' on WIN.
 The change takes place instantaneously. WIN defaults to the window
 context in the usual way if not specified.
-A shaded window has the WM_STATE hint set to WithdrawnState, since 
+A shaded window has the "WM_STATE" hint set to WithdrawnState, since 
 the client application window is not visible. */
 #define FUNC_NAME s_window_unshade
 {
@@ -2879,15 +2880,27 @@ the window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 
+/* GJB:FIXME:: should we have procedures that return creation/focus time
+   in X server time (that time wraps every 50 days or so, though! */
+
 SCWM_PROC (window_last_focus_time, "window-last-focus-time", 0, 1, 0,
            (SCM win))
-     /** Return the time that WIN was last focussed in seconds since 1/1/70.
-This currently uses time_t-s, but should probably use X server
-times. */
+     /** Return the time that WIN was last focussed in seconds since 1/1/70. */
 #define FUNC_NAME s_window_last_focus_time
 {
   VALIDATE_WIN_USE_CONTEXT(win);
   return gh_long2scm(PSWFROMSCMWIN(win)->ttLastFocussed);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC (window_creation_time, "window-creation-time", 0, 1, 0,
+           (SCM win))
+     /** Return the time that WIN was created in seconds since 1/1/70. */
+#define FUNC_NAME s_window_creation_time
+{
+  VALIDATE_WIN_USE_CONTEXT(win);
+  return gh_long2scm(PSWFROMSCMWIN(win)->ttCreated);
 }
 #undef FUNC_NAME
 

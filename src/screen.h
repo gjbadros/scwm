@@ -284,7 +284,7 @@ typedef struct ScreenInfo {
   PackedBool(fMouseFocusClickRaises);
 
   /* Global options */
-  int ClickTime;		/* Max button-click delay for distinguishing clicks/drags */
+  unsigned int ClickTime;		/* Max button-click delay for distinguishing clicks/drags */
   int ScrollResistance;		/* resistance to scrolling in desktop */
   int MoveResistance;		/* res to moving windows over viewport edge */
 

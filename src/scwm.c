@@ -1162,13 +1162,13 @@ CaptureAllWindows(void)
 
   if (!Scr.fWindowsCaptured) {		/* initial capture? */
     /* weed out icon windows */
-    for (i = 0; i < nchildren; i++) {
+    for (i = 0; i < (int) nchildren; i++) {
       if (children[i]) {
 	XWMHints *wmhintsp = XGetWMHints(dpy, children[i]);
 
 	if (wmhintsp) {
 	  if (wmhintsp->flags & IconWindowHint) {
-	    for (j = 0; j < nchildren; j++) {
+	    for (j = 0; j < (int) nchildren; j++) {
 	      if (children[j] == wmhintsp->icon_window) {
 		children[j] = None;
 		break;
@@ -1180,7 +1180,7 @@ CaptureAllWindows(void)
       }
     }
     /* map all of the non-override, non-icon windows */
-    for (i = 0; i < nchildren; i++) {
+    for (i = 0; i < (int) nchildren; i++) {
       if (children[i] && MappedNotOverride(children[i])) {
 	XUnmapWindow(dpy, children[i]);
 	Event.xmaprequest.window = children[i];
@@ -1191,7 +1191,7 @@ CaptureAllWindows(void)
   } else {			/* must be a recapture */
     /* reborder all windows */
     psw = Scr.ScwmRoot.next;
-    for (i = 0; i < nchildren; i++) {
+    for (i = 0; i < (int) nchildren; i++) {
       psw = PswFromWindow(dpy,children[i]);
       if (psw) { 
 	isIconicState = DontCareState;

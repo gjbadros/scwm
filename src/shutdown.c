@@ -181,7 +181,6 @@ is exactly equal to "scwm", restart scwm with the same command-line
 arguments as given previously. */
 #define FUNC_NAME s_restart
 {
-  int dummy;
   char *sz;
 
   VALIDATE_ARG_STR_NEWCOPY_USE_NULL(1,command,sz);

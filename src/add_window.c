@@ -231,7 +231,9 @@ AddWindow(Window w)
   psw->icon_cursor=SCM_UNDEFINED;
 
   psw->cmap_windows = NULL;
-  psw->ttLastFocussed = time(NULL);
+
+  psw->ttCreated = 
+    psw->ttLastFocussed = time(NULL);
 
   if (!PPosOverride && !FXWindowAccessible(dpy,psw->w)) {
     FREE(psw);
@@ -934,7 +936,7 @@ FetchWmProtocols(ScwmWindow *psw)
 			    XA_WM_PROTOCOLS, &atype, &aformat, &nitems,
 			    &bytes_remain,
 			    (unsigned char **) &protocols)) == Success) {
-      for (i = 0, ap = protocols; i < nitems; i++, ap++) {
+      for (i = 0, ap = protocols; i < (int) nitems; i++, ap++) {
 	if (*ap == (Atom) XA_WM_TAKE_FOCUS)
 	  psw->fDoesWmTakeFocus = True;
 	if (*ap == (Atom) XA_WM_DELETE_WINDOW)

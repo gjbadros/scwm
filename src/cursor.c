@@ -197,7 +197,7 @@ SCM
 get_scm_cursor_by_name(const char *sz) 
 {
   int i;
-  unsigned int cursor_num = -1;
+  int cursor_num = -1;
 
   cursor_num=XC_num_glyphs;
   for (i=0; i < ARRAY_SIZE(map); ++i) {

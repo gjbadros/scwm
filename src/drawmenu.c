@@ -179,7 +179,7 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg,
 {
 #define FUNC_NAME "PaintSideImage"
   int cpixDstYoffset, cpixSrcYoffset;
-  int height;
+  unsigned int height;
   
   if (!psimg) {
     scwm_msg(ERR,FUNC_NAME,"psimg is NULL");
@@ -191,7 +191,7 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg,
 		 psimg->width, cpixHeight - 2*MENU_ITEM_RR_SPACE);
 
   height = psimg->height;
-  if (height > cpixHeight - 2*MENU_ITEM_RR_SPACE)
+  if ((int) height > cpixHeight - 2*MENU_ITEM_RR_SPACE)
     height = cpixHeight - 2*MENU_ITEM_RR_SPACE;
   
   if (align == sym_top) {

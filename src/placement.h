@@ -15,6 +15,7 @@
 Bool PlaceWindow(struct ScwmWindow *psw);
 void GetGravityOffsets(ScwmWindow *psw);
 void SetPswGravity(ScwmWindow *psw, int grav);
+int GravityFromSym(SCM sym);
 
 #endif
 
