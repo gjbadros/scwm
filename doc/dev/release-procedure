@@ -16,6 +16,7 @@ vaguely up to date.  Also update `scwm.lsm' file.
 4) Grab hypothetical distribution directories by `cvs export'ing both
 the scwm and scwm-icons modules, and running `./autogen.sh'
 
+   cvs -d huis-clos.mit.edu:/usr/local/repository export -D today scwm-icons
    cvs -d huis-clos.mit.edu:/usr/local/repository export -D today scwm
    cd scwm; sh ./autogen.sh
 
@@ -31,29 +32,34 @@ correct file size and version number
 7) Tag the repository using the convention of using "v" followed by the
    version number with all periods replaced by dashes, e.g. v0-7).
 
+   cvs -d huis-clos.mit.edu:/usr/local/repository rtag v0-8 scwm-icons
    cvs -d huis-clos.mit.edu:/usr/local/repository rtag v0-8 scwm
 
 8) Export modules to tar up, creating directories that contain the
 version number (e.g. scwm-0.8/). 
 
+   cvs -d huis-clos.mit.edu:/usr/local/repository export -r v0-8 scwm-icons
+   mv scwm-icons scwm-icons-0.8
    cvs -d huis-clos.mit.edu:/usr/local/repository export -r v0-8 scwm
    mv scwm scwm-0.8
    cd scwm-0.8; sh ./autogen.sh
 
-
 9) Make the tarballs.
+
+   tar czf scwm-0.8.tar.gz scwm-0.8
+   tar czf scwm-icons-0.8.tar.gz scwm-icons-0.8
 
 10) Place the tarballs in the usual locations:
 
 * /home/ftp/pub/scwm (group scwm-dev has write permissons)
+  Be sure to "chmod go+r *" to get the permissions right
  
 * My web server directory (I should obsolete this, the ftp site is
-probably more heavily used, and quite sufficient.)
+probably more heavily used, and quite sufficient.) -- not put here
+for 0.8 release.
 
 11) Update the web site. Taking some hilights from NEWS and fixing the
-version numbe references is useful (the web stuff will move to a CVS
-module RSN and the scwm web site will move to running off of
-huis-clos).
+version number references is useful.
 
 12) Send out the release announcement. I send announcements to the
 following places:
@@ -71,6 +77,11 @@ Newsgroups:
 comp.lang.scheme
 comp.os.linux.announce
 comp.windows.x.announce
+
+
+Newsgroups: comp.os.linux.announce, comp.windows.x.announce, comp.lang.scheme
+To: scwm-discuss@mit.edu, guile@cygnus.com, scsh@ai.mit.edu, gnome-list@gnome.org
+
 
 Web Sites and/or Ftp Archives (getting volunteers to do these is sufficent):
 
