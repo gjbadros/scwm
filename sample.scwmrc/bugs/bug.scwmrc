@@ -1,0 +1,17 @@
+(use-scwm-modules message-window)
+
+(define m (make-message-window-clone-default "Foo"))
+
+(message-window-show! m)
+
+;;(message-window-hide! m)
+
+
+(use-scwm-modules style auto-raise)
+
+(window-style "*"
+	      #:auto-raise #t #:auto-raise-delay 400
+	      #:focus 'sloppy
+	      )
+
+

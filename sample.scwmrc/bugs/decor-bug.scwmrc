@@ -1,0 +1,36 @@
+(use-scwm-modules optargs base winops style wininfo decor face)
+
+(bind-key 'all "C-S-A-End" restart)
+
+(setvbuf (current-output-port) _IONBF)
+
+(define* (print-size-and-position #&optional (win (get-window)))
+  (display win)
+  (display " ")
+  (display (window-frame-size win))
+  (display " ")
+  (display (window-position win))
+  (display "\n")
+)
+
+(define* (print-border #&optional (win (get-window)))
+  (display win)
+  (display " ")
+  (display (window-frame-border-width win))
+  (display "\n")
+  )
+
+(append-hook! after-new-window-hook
+           (lambda (win)
+	     (if (string=? (window-class win) "Xmessage")
+		 (print-border win))))
+
+(define test-decor (make-decor))
+
+(with-decor test-decor
+    	(title-style #:height 55))
+
+(window-style "xmessage"
+    	  #:border-width 15
+    	  #:placement-proc print-size-and-position
+    	  #:use-decor test-decor)

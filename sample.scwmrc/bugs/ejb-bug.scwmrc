@@ -1,0 +1,24 @@
+(use-scwm-modules base
+     	     style
+     	     decor
+     	     face
+     	     winops
+)
+
+(bind-key 'all "C-S-M-End" restart)
+
+(define q-decor (make-decor))
+(with-decor q-decor
+            (bind-mouse 'window "M-1" lower-window lower-window)
+            (bind-mouse 'window "M-2" interactive-move)
+            (bind-mouse 'window "M-3" raise-window raise-window)
+            (title-style #:height 50)
+)
+
+(window-style "*"
+     	 #:show-icon #t
+     	 #:border-width 1
+     	 #:highlight-bg "#fbe"
+     	 #:bg "#393"
+     	 #:use-decor q-decor
+)
