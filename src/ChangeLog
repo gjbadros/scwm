@@ -1,3 +1,20 @@
+Wed Sep  2 17:10:55 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.h: Added Hi{Relief,Shadow,Text,Back}Color members of
+	struct ScwmWindow
+
+	* window.c: Mark new members of struct ScwmWindow.  Added
+	`get-window-colors', `get-highlight-window-colors',
+	`set-window-highlight-foreground!',
+	`set-window-highlight-background!'
+
+	* borders.c: Use new fns PixelHi{Text,Back}FromPsw for selecting
+	the color for a highlighted window -- those fns use the new
+	per-window highlight colors, or fall back to the decor settings if 
+	no per-window highlight color is specified (ie, they are #f)
+
+	* add_window.c: init new members of struct ScwmWindow
+
 Wed Sep  2 13:11:47 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (window-icon-shaped?, window-shaped?): Added new
