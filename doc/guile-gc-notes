@@ -1,6 +1,6 @@
 From notes from an email from Maciej to Greg on 11/29/97:
 
-SCM_GC8MARKP() determines wether or not an object has already been
+SCM_GC8MARKP() determines whether or not an object has already been
 marked. If it has, and potentially points to other objects that it
 protects from GC, than it is a worthwhile optimization to check this
 and do nothing if the object is aldeady mark.
