@@ -96,12 +96,15 @@
 ;;-------------------------------;;
 ;; set some window styles        ;;
 
-;;; FIXGJB: these can be regexps, not goofy wildcards
+;;; MSFIX: I don't like the ordering dependence on the
+;;; window-style... I think that will go away when using
+;;; the XClass and/or Instance name tests, which I'd prefer
+;;; anyway...
 (window-style "*" 
 	      #:fg "black" #:bg "grey76" 
 	      #:icon pic-unknown
 ;	      #:icon #f        ;; MS - specify #f to not get an icon.
-;	      #:icon-box (list (x- 70) 1 69 (y- 141))
+	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:border-width 4 ;; MS borderwidth of 4 looks slightly better
 	                       ;; to my eye than 3.
 	      #:focus 'mouse
@@ -638,4 +641,3 @@
 ;;; Local Variables:
 ;;; eval: (load "scwm-buffer")
 ;;; End:
-
