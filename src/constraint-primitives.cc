@@ -41,10 +41,10 @@ static set<ScwmWindow *> setpswDirty;
 SCM scwm_resolve_hook;
 
 static void
-ScwmClvChanged(ClVariable clv, ClSimplexSolver *)
+ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
 #define FUNC_NAME "ScwmClvChanged"
 {
-  SCM obj = ScmFromPv(clv.Pv());
+  SCM obj = ScmFromPv(pclv->Pv());
   if (obj && obj != SCM_UNDEFINED) {
     SCM proc = scm_object_property(obj,
                                    gh_symbol2scm("changed-proc"));
@@ -52,9 +52,9 @@ ScwmClvChanged(ClVariable clv, ClSimplexSolver *)
       scwm_safe_call0(proc);
     }
   }
-  ScwmWindow *psw = PswFromClvPv(clv.Pv());
+  ScwmWindow *psw = PswFromClvPv(pclv->Pv());
   if (!psw) {
-    DBUG((DBG,FUNC_NAME,"No struct ScwmWindow attached to var: %s", clv.name().data()));
+    DBUG((DBG,FUNC_NAME,"No struct ScwmWindow attached to var: %s", pclv->name().data()));
     return;
   }
   if (!psolver) {

@@ -421,15 +421,15 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
 
   { /* scope */
     int x_units, y_units;
-    window_pixel_size_to_client_units(psw,xmotion, ymotion, &x_units, &y_units);
+    window_pixel_size_to_client_units(psw,dragWidth, dragHeight, &x_units, &y_units);
 
     call3_hooks(interactive_resize_start_hook, psw->schwin,
-                gh_int2scm(x_units), gh_int2scm(y_units));
+                gh_int2scm(xmotion), gh_int2scm(ymotion));
 
     /* same hook is called identically on each iteration; see below */
     call7_hooks(interactive_resize_new_size_hook, psw->schwin,
                 gh_int2scm(dragx), gh_int2scm(dragy),
-                gh_int2scm(xmotion), gh_int2scm(ymotion),
+                gh_int2scm(dragWidth), gh_int2scm(dragHeight),
                 gh_int2scm(x_units), gh_int2scm(y_units));
   }
   
