@@ -1,3 +1,8 @@
+1998-12-04  Todd Larason  <jtl@molehill.org>
+
+	* scwmdoc.in: fix to display escaped quotes inside C documentation 
+	strings properly - patch from Carl Witty
+
 Tue Nov 24 08:15:27 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Added -H, -N options to output hooks and concepts

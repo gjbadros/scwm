@@ -593,6 +593,9 @@ sub ProcessSchemeHeader( $$$$$ ) {
   my $usage = $name_and_args;
   # Remove leading and trailing quote
   $comment =~ s/^\"(.*)\"$/$1/ms;
+  # Unquote quoted quotes (CRW:FIXME:GJB: are there other things we
+  # may need to unquote here?)
+  $comment =~ s/\\"/"/g;
 #  print STDERR "Scheme Proc: $proc_name\nArgs: @arglist\n$header\n";
 #  print STDERR "$usage\n\n$comment\n\n\n";
 
