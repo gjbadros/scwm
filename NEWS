@@ -9,6 +9,8 @@ many bug-fixes (compiles warning free with virtually all warnings turned
 on!), lots of code cleanup (especially primitive argument validation),
 numerous scwmdoc script fixes and improvements.
 
+* Much more consistent argument checking and converting; substantial code simplification, too.
+
 * GUI-configurable options support via new define-scwm-option
 ** Requires guile-gtk-0.15 or better, gtk+-1.2.x
 
@@ -34,6 +36,8 @@ numerous scwmdoc script fixes and improvements.
 
 * X11 Cursors are now wrapped as SMOBs
 ** various global variables used for cursors for window decorations
+** pixmap cursors can be created with `create-pixmap-cursor'
+** New primitive `set-window-cursor!' for attaching a cursor to an arbitrary window
 
 * Introduce syntax `use-scwm-modules' to reduce redundancy in module names
   and handle errors in one module more gracefully (rather than ignoring
@@ -41,8 +45,14 @@ numerous scwmdoc script fixes and improvements.
 
 * IMLib support as a configure-time option (to-replace libXpm, ultimately)
 ** use imlib_config binary (comes with imlib) to control options
+** `clone-scaled-image' for resizing images.
+** `window->image' for grabbing a window's contents as an image
 
 * ESD Sound support module
+** sound-load, sound-play primitives (among others)
+
+* libPropList integration support module
+** many many `proplist-*' primitives
 
 * Themes, Theme Menus (app scwm themes) (app scwm std-menus)
 ** Various themes in new themes directory
@@ -58,13 +68,17 @@ numerous scwmdoc script fixes and improvements.
 ** scheme-mode compatibility bindings
 ** scwm-load-file command
 
+* message-window objects now support a background image and explicit sizing
+** `message-window-set-image!', `message-window-image'
+** `message-window-set-size!', `message-window-size'
+
 * ICCCM Group support (app scwm group)
 ** `group->windows', `interactive-move-group', `lower-group', `raise-group'
 ** `move-group', `move-group-to-desk', `move-group-relative'
 
 * New window style options
 ** #:squashed-titlebar, #:no-side-decorations, #:use-theme (see Themes, above)
-** (better drawing of squashed-titlebars)
+** better drawing of squashed-titlebars
 
 * New menu style options
 ** #:hover-delay, #:popup-delay (in ms)
@@ -105,8 +119,7 @@ deprecated `SM-client-id'.
 ** `xlib-draw-arc', `xlib-draw-line!', `xlib-draw-rectangle!', etc.
 
 * Better handling of color allocation failures
-** return black color when called by internal functions, instead of
-returning #f which ultimately would cause an error somewhere
+** return a closely-matching color or the black color when called by internal functions, instead of returning #f which ultimately would cause an error soewhere
 
 * More robust signal handling
 ** SIGINT now resets to the main loop (in addition to SIGHUP)
@@ -126,7 +139,10 @@ returning #f which ultimately would cause an error somewhere
 ** --segv-cleanup-and-stop [-p]
 ** --segv-just-stop [-P]  (also `set-handle-segv!')
 
-* Misc. new primitives
+* Misc. new primitives not discussed above
+** `get-key-event' returns the next arbitrary key w/ modifiers that the user hits
+** `lookup-key' returns the procedures bound to a specific key
+** `lookup-mouse' returns the procedures bound to a specific mouse event
 ** `window-valid?' for testing if a window object still is valid.
 ** `id->message-window' -- convert from a window id to a message window object
 ** `send-client-message'
@@ -134,18 +150,21 @@ returning #f which ultimately would cause an error somewhere
 ** `force-reset-window-frame!' -- force redraw of frame
 ** `select-viewport-position' (returns pointer position and selected window)
 ** `bind-keycode' -- lower level interface to binding keys, allows release procs
-** `keysym->keycode', `mod-mask-control', `mod-mask-shift'
+** `keymask-keycode->string', `keysym->keycode', `mod-mask-control', `mod-mask-shift', `mod-mask-hyper', `mod-mask-super'
 ** `animated-resize-window', `animated-resize-frame'
 ** `force_segv_for_testing', `set-reset-on-segv!', `set-handles-segv!'
 ** `scwm-last-timestamp'
 ** `set-menu-colors!', `set-menu-font!', `set-menu-side-picture!',
 ** `set-menu-background-picture!', `set-menu-extra-options!'
+** `image-size' for easier access to special case of `image-properties'
+** `any-id->win'
 
 * Removed primitives
 ** dangerous and unnecessary `wait-for-window' procedure
 ** `select-window' is now a proc in base.scm (replaced with `select-viewport-position'
 
 * Misc. changed primitives
+** `bind-mouse' now takes a 4th argument IMMEDIATE-PROC which gets executed right away on first click, and may disable execution of the more general PROC (3rd arg)
 ** `make-color' returns the closest color (instead of #f) when alloc color fails
    (only for 8 bit and lower displays now)
 ** `get-window' and `select-window' have the kill? argument now a cursor object
@@ -155,7 +174,8 @@ returning #f which ultimately would cause an error somewhere
 ** `menulook?' is now spelled menu-look? for consistency
 ** `set-menu-menu-look!' is now set-menu-look!
 ** `set-menu-menu-title!' is now set-menu-title!
-** `select-viewport-position!' now takes a cursor object; also affects `select-window-interactively'
+** `select-viewport-position!' now takes a cursor object as third argument; also affects `select-window-interactively', `get-window'
+** `send-client-message' now takes a rest argument with up to four long integers, instead of just one
 
 * Misc. new procedures
 ** `fold-menu-list-by-group', `rename-window-interactively'
@@ -184,6 +204,7 @@ returning #f which ultimately would cause an error somewhere
 ** ui-constraints-gtk-toggle-menu: Persistent constraints menu support
 ** xprop-extras.scm: Procs moved from flux.
 ** window-selection.scm: Permit marking windows and then operating on them as a group
+** ScwmButtons.scm: button-bar (toolbar) support, including auto-orienting at screen edges (Thanks Glenn Trigg!)
 ** group.scm: Window group support (both from window hints and the selected-window list)
 ** gnome-hints.scm: Support GNOME hints
 ** kde-hints.scm: Support KDE hints
