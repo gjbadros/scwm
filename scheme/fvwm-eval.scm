@@ -141,7 +141,7 @@
   (eval-string args))
 
 (define-fvwm-command "Exec"
-  (fvwm-exec (apply string-append args)))
+  (fvwm-exec args))
 
 (define-fvwm-command "Restart"
   (restart))
@@ -235,7 +235,7 @@
   (beep))
 
 (define-fvwm-command "Echo"
-  (write args))
+  (display args))
 
 (define-fvwm-command "EdgeScroll"
   (get-two-numeric-args
