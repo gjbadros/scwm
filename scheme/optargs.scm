@@ -296,34 +296,28 @@
      (if (not (or (symbol? rest-arg) (eq? #f rest-arg)))
 	 (error "Syntax error in rest argument declaration."))
      ;; generate the code.
-     (let ((rest-gensym (or rest-arg (gensym "lambda*:G")))
-	   (proc-gensym (or rest-arg (gensym "proc*:P"))))
+     (let ((rest-gensym (or rest-arg (gensym "lambda*:G"))))
        (if (not (and (null? optionals) (null? keys)))
-	   `(let ((,proc-gensym
-		   (lambda (,@non-optional-args . ,rest-gensym)
-		     ;; Make sure that if the proc had a docstring, we put it
-		     ;; here where it will be visible.
-		     ,@(if (and (not (null? BODY))
-				(string? (car BODY)))
-			   (list (car BODY))
-			   '())
-		     (let-optional* 
-		      ,rest-gensym
-		      ,optionals
-		      (let-keywords* ,rest-gensym
-				     ,aok?
-				     ,keys
-				     ,@(if (and (not rest-arg) (null? keys))
-					   `((if (not (null? ,rest-gensym))
-						 (error "Too many arguments.")))
-					   '())
-				     ,@BODY)))))
-	      (set-procedure-property! ,proc-gensym 'optargs-arglist '(,@ARGLIST))
-	      ,proc-gensym)
-	   `(let ((,proc-gensym
-		   (lambda (,@non-optional-args . ,(if rest-arg rest-arg '())) 
-		     ,@BODY)))
-	      (set-procedure-property! ,proc-gensym 'optargs-arglist '(,@ARGLIST))))))))
+	   `(lambda (,@non-optional-args . ,rest-gensym)
+	      ;; Make sure that if the proc had a docstring, we put it
+	      ;; here where it will be visible.
+	      ,@(if (and (not (null? BODY))
+			 (string? (car BODY)))
+		    (list (car BODY))
+		    '())
+	      (let-optional* 
+	       ,rest-gensym
+	       ,optionals
+	       (let-keywords* ,rest-gensym
+			      ,aok?
+			      ,keys
+			      ,@(if (and (not rest-arg) (null? keys))
+				    `((if (not (null? ,rest-gensym))
+					  (error "Too many arguments.")))
+				    '())
+			      ,@BODY)))
+	   `(lambda (,@non-optional-args . ,(if rest-arg rest-arg '()))
+	      ,@BODY))))))
 
 (define (every? pred lst)
   (or (null? lst)
