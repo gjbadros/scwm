@@ -14,7 +14,10 @@
 #include <libguile.h>
 
 #include "scwm.h"
+
+#ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h> /* for file descriptors */
+#endif
 
 extern Window w_for_scwmexec_response;  
 

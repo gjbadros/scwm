@@ -8,14 +8,16 @@
 #include <config.h>
 #endif
 
-#include <guile/gh.h>
-#include <libguile.h>
-#include <X11/Xproto.h>
-#include <X11/Xatom.h>
-#include <assert.h>
-
 #define MESSAGE_WINDOW_IMPLEMENTATION
 #include "message-window.h"
+
+#include <guile/gh.h>
+#include <libguile.h>
+#include <X11/X.h>
+#ifdef HAVE_SHAPE
+#include <X11/extensions/shape.h>
+#endif
+#include <assert.h>
 
 #include "scwm.h"
 #include "screen.h"
