@@ -742,7 +742,7 @@ lookup_context(SCM context)
   for (i = 0; binding_contexts[i].value != 0; i++) {
     if (gh_eq_p(binding_contexts[i].sym, context)) {
       if ( i > IBC_MAX_UNDEPRECATED_SYMBOL ) {
-        scwm_msg(ERR,"lookup_context","Context name `%s' has been deprecated; please use new name %s",
+        scwm_msg(ERR,"lookup_context","Context name `%s' has been deprecated; please use new name `%s'",
                  binding_contexts[i].sz,
                  binding_contexts[i-(IBC_MAX_UNDEPRECATED_SYMBOL+1)].sz);
       }
