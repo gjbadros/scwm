@@ -60,7 +60,7 @@ void invalidate_window(SCM schwin)
 }
 
 
-SCM ensure_valid(SCM win, char *subr) {
+SCM ensure_valid(SCM win, int n, char *subr) {
   if (win==SCM_UNDEFINED) {
     win=get_window();
     if (win==SCM_BOOL_F) {
@@ -68,7 +68,7 @@ SCM ensure_valid(SCM win, char *subr) {
     }
   }
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(subr,1,win);
+    scm_wrong_type_arg(subr,n,win);
   }
   if(!VALIDWINP(win)) {
     scwm_error(subr,6);
@@ -77,7 +77,9 @@ SCM ensure_valid(SCM win, char *subr) {
   return(win);
 }
 
-#define VALIDATE(win,subr)  if(((win=ensure_valid(win,subr)))==SCM_BOOL_F) return SCM_BOOL_F
+#define VALIDATE(win,subr)  if(((win=ensure_valid(win,1,subr)))==SCM_BOOL_F) return SCM_BOOL_F
+
+#define VALIDATEN(win,n,subr)  if(((win=ensure_valid(win,n,subr)))==SCM_BOOL_F) return SCM_BOOL_F
 
 
 
@@ -354,7 +356,7 @@ SCM move_to(SCM x, SCM y, SCM win)
 {
   ScwmWindow *tmp_win;
   Window w;
-  VALIDATE(win,"move-to");
+  VALIDATEN(win,3,"move-to");
   if (!gh_number_p(x)) {
     scm_wrong_type_arg("move-to",1,x);
   }
@@ -405,7 +407,7 @@ SCM resize_to(SCM w, SCM h, SCM win)
   int width,height;
   ScwmWindow *tmp_win;
   
-  VALIDATE(win,"resize-to");
+  VALIDATEN(win,3,"resize-to");
   tmp_win=SCWMWINDOW(win);
 
   if(check_allowed_function2(F_RESIZE,tmp_win) == 0
@@ -663,4 +665,40 @@ SCM refresh_window(SCM win)
   refresh_common((tmp_win->flags & ICONIFIED)?
 		 (tmp_win->icon_w):(tmp_win->frame));
   return SCM_BOOL_T;
+}
+
+
+move_window_to_desk(SCM which, SCM win)
+{
+  ScwmWindow t;
+  int val1;
+
+  if (which) {
+    scm_wrong_type_arg("move-window-to-desk",1,which);
+  }
+
+  VALIDATEN(win,2,"move-window-to-desk");
+  t=SCWMWINDOW(win);
+
+  val1=gh_scm2int(which);
+
+  /* Mapping window on its new Desk,
+     unmapping it from the old Desk */
+  /* Only change mapping for non-sticky windows */
+  if(!((t->flags & ICONIFIED)&&(t->flags & StickyIcon)) &&
+     (!(t->flags & STICKY))&&(!(t->flags & ICON_UNMAPPED)))
+    {
+      t->Desk = val1;
+      if(t->Desk == Scr.CurrentDesk) {
+	if (val1 != Scr.CurrentDesk) { 
+	  UnmapIt(t);
+	}
+      } else if(val1 == Scr.CurrentDesk) {
+	/* If its an icon, auto-place it */
+	if(t->flags & ICONIFIED)
+	  AutoPlace(t);
+	MapIt(t);
+      } 
+    }
+  BroadcastConfig(M_CONFIGURE_WINDOW,t);
 }
