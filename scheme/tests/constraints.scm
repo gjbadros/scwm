@@ -105,7 +105,7 @@
 
   (define (keep-at-top-edge w)
     (let ((w-yt (window-clv-yt w)))
-      (let ((cn (make-cl-constraint w-yt = 0 cls-strong .1)))
+      (let ((cn (make-cl-constraint w-yt = 0)))
 	(cl-add-constraint solver cn)
 	cn)))
 
