@@ -309,7 +309,7 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
   if (DECORP(decor)) {
     fl = SCWMDECOR(decor);
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, decor);
+    scm_wrong_type_arg(FUNC_NAME, 2, decor);
   }
 
   old_height = psw->fl->TitleHeight;

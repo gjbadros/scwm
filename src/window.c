@@ -3345,18 +3345,21 @@ drawn.  WIN defaults to the window context in the usual way if not
 specified. (Note: this code may be broken right now.) */
 #define FUNC_NAME s_set_window_button_x
 {
-  VALIDATEN(win, 2, FUNC_NAME);
+  VALIDATEN(win, 3, FUNC_NAME);
+  if (!gh_number_p(n)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, n);
+  }
   if (flag == SCM_BOOL_T) {
     PSWFROMSCMWIN(win)->buttons &= ~(1 << (gh_scm2int(n) - 1));
   } else if (flag == SCM_BOOL_F) {
     PSWFROMSCMWIN(win)->buttons |= (1 << (gh_scm2int(n) - 1));
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
+    scm_wrong_type_arg(FUNC_NAME, 2, flag);
   }
   /* XXX - This won't really work for any case unless it is a hint.
      Handling of the number of buttons is kind of broken in
      general for now, but will be fixed. */
-
+  
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

@@ -279,11 +279,10 @@ EXTRA-OPTIONS can be anything understood by the menu-look
 {
   Menu *pmenu = NEW(Menu);
   SCM answer;
-  int iarg = 1;
 
   /* LIST-OF-MENUITEMS: Required */
   if (!gh_list_p(list_of_menuitems)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,list_of_menuitems);
+    scm_wrong_type_arg(FUNC_NAME,1,list_of_menuitems);
   }
   if (SCM_IMP(list_of_menuitems) || (gh_car(list_of_menuitems) == SCM_EOL)) {
     scm_misc_error(FUNC_NAME,"LIST-OF-MENUITEMS cannot be empty",SCM_EOL);
@@ -291,45 +290,39 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   pmenu->scmMenuItems = list_of_menuitems;
 
   /* BG-COLOR: Required */
-  iarg++;
   if (!COLOR_OR_SYMBOL_P(bg_color)) { /* why not DYNAMIC_COLOR_P? */
-    scm_wrong_type_arg(FUNC_NAME,iarg,bg_color);
+    scm_wrong_type_arg(FUNC_NAME,2,bg_color);
   }
   pmenu->scmBGColor = bg_color;
 
   /* TEXT-COLOR: Required */
-  iarg++;
   if (!COLOR_OR_SYMBOL_P(text_color)) { /* again */
-    scm_wrong_type_arg(FUNC_NAME,iarg,text_color);
+    scm_wrong_type_arg(FUNC_NAME,3,text_color);
   }
   pmenu->scmTextColor = text_color;
 
   /* STIPPLE-COLOR: Required */
-  iarg++;
   if (!COLOR_OR_SYMBOL_P(stipple_color)) { /* And again */
-    scm_wrong_type_arg(FUNC_NAME,iarg,stipple_color);
+    scm_wrong_type_arg(FUNC_NAME,4,stipple_color);
   }
   pmenu->scmStippleColor = stipple_color;
 
   /* FONT: Required */
-  iarg++;
   if (!FONT_OR_SYMBOL_P(font)) { /* DYNAMIC_FONT_P ? */
-    scm_wrong_type_arg(FUNC_NAME,iarg,font);
+    scm_wrong_type_arg(FUNC_NAME,5,font);
   }
   pmenu->scmFont = font;
 
 
   /* PICTURE-SIDE: Optional */
-  iarg++;
   if (UNSET_SCM(picture_side)) {
     picture_side = SCM_BOOL_F;
   } else if (!IMAGE_OR_SYMBOL_P(picture_side)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,picture_side);
+    scm_wrong_type_arg(FUNC_NAME,6,picture_side);
   } 
   pmenu->scmImgSide = picture_side;
 
   /* SIDE-PICTURE-ALIGN: Optional */
-  iarg++;
   if (UNSET_SCM(side_picture_align)) {
     side_picture_align = sym_top;
   } else if (!gh_symbol_p(side_picture_align) ||
@@ -342,25 +335,22 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   pmenu->scmSideAlign = side_picture_align;
 
   /* SIDE-BG-COLOR: Optional */
-  iarg++;
   if (UNSET_SCM(side_bg_color)) {
     side_bg_color = WHITE_COLOR;
   } else if (!COLOR_OR_SYMBOL_P(side_bg_color)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,side_bg_color);
+    scm_wrong_type_arg(FUNC_NAME,8,side_bg_color);
   }
   pmenu->scmSideBGColor = side_bg_color;
 
   /* PICTURE-BG: Optional */
-  iarg++;
   if (UNSET_SCM(picture_bg)) {
     picture_bg = SCM_BOOL_F;
   } else if (!IMAGE_OR_SYMBOL_P(picture_bg)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,picture_bg);
+    scm_wrong_type_arg(FUNC_NAME,9,picture_bg);
   } 
   pmenu->scmImgBackground = picture_bg;
 
   /* EXTRA-OPTIONS: Optional */
-  iarg++;
   pmenu->scmExtraOptions = extra_options;
 
   pmenu->scmMenuTitle = SCM_BOOL_F;
@@ -412,16 +402,12 @@ SCWM_PROC(set_menu_menu_look_x, "set-menu-menu-look!", 2, 0, 0,
 /** Use MENU-LOOK as the menu-look for MENU. */
 #define FUNC_NAME s_set_menu_menu_look_x
 {
-  int iarg = 0;
-
-  iarg++;
   if (!MENU_P(menu)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,menu);
+    scm_wrong_type_arg(FUNC_NAME,1,menu);
   }
 
-  iarg++;
   if (!MENULOOK_OR_SYMBOL_P(menu_look)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,menu_look);
+    scm_wrong_type_arg(FUNC_NAME,2,menu_look);
   }
 
   MENU(menu)->scmMenuLook = menu_look;
@@ -435,16 +421,12 @@ SCWM_PROC(set_menu_menu_title_x, "set-menu-menu-title!", 2, 0, 0,
 /** Use MENU-TITLE as the title for MENU. */
 #define FUNC_NAME s_set_menu_menu_title_x
 {
-  int iarg = 0;
-
-  iarg++;
   if (!MENU_P(menu)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,menu);
+    scm_wrong_type_arg(FUNC_NAME,1,menu);
   }
 
-  iarg++;
   if (!MENUITEM_P(menu_title)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,menu_title);
+    scm_wrong_type_arg(FUNC_NAME,2,menu_title);
   }
 
   MENU(menu)->scmMenuTitle = menu_title;
@@ -1479,32 +1461,24 @@ right justified against X-POS. */
   Bool fPermitAltReleaseToSelect = False;
   /* FIXGJB: above needs to be true if we're doing the window list */
   int x = -1, y = -1;
-  int iarg = 0;
   /* permit 'menu to be used, and look up dynamically */
   DEREF_IF_SYMBOL(menu);
-  ++iarg;
   if (!MENU_P(menu)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg, menu);
+    scm_wrong_type_arg(FUNC_NAME, 1, menu);
   }
-  ++iarg;
-  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fWarpToFirst,warp_to_first_p,iarg,FUNC_NAME);
+  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fWarpToFirst,warp_to_first_p,2,FUNC_NAME);
 
-  ++iarg;
   if (!UNSET_SCM(x_pos) && !gh_number_p(x_pos)) 
-    scm_wrong_type_arg(FUNC_NAME, iarg, x_pos);
+    scm_wrong_type_arg(FUNC_NAME, 3, x_pos);
 
-  ++iarg;
   if (!UNSET_SCM(y_pos) && !gh_number_p(y_pos)) 
-    scm_wrong_type_arg(FUNC_NAME, iarg, y_pos);
+    scm_wrong_type_arg(FUNC_NAME, 4, y_pos);
 
-  ++iarg;
   if (gh_number_p(x_pos)) x = gh_scm2int(x_pos);
 
-  ++iarg;
   if (gh_number_p(y_pos)) y = gh_scm2int(y_pos);
 
-  ++iarg;
-  COPY_BOOL_OR_ERROR_DEFAULT_TRUE(fLeftSide,left_side_p,iarg,FUNC_NAME);
+  COPY_BOOL_OR_ERROR_DEFAULT_TRUE(fLeftSide,left_side_p,5,FUNC_NAME);
 
   return PopupGrabMenu(MENU(menu),NULL,fWarpToFirst,fPermitAltReleaseToSelect,
                        x,y, fLeftSide?0:1);

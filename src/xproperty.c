@@ -189,7 +189,7 @@ value. */
     atype = gh_scm2long(type);
   } else {
     FREE(val);
-    scm_wrong_type_arg(FUNC_NAME, 4, value);
+    scm_wrong_type_arg(FUNC_NAME, 4, type);
   }
   if (action == SCM_UNDEFINED || action == sym_replace) {
     mode=PropModeReplace;

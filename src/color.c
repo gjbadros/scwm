@@ -426,7 +426,7 @@ which is suitable for use as a hilight. */
   VALIDATE_COLOR (color, FUNC_NAME, 1);
 
   if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, factor);
+    scm_wrong_type_arg(FUNC_NAME, 2, factor);
   }
 
   return adjust_brightness(color, f);

@@ -44,12 +44,10 @@ SCWM_PROC (X_resource_put, "X-resource-put", 2, 0, 0,
 Later, the value can be retrieved using `X-resource-get'. */
 #define FUNC_NAME s_X_resource_put
 {
-  int iarg = 1;
-
   if (!gh_string_p(resource))
-    scm_wrong_type_arg(FUNC_NAME, iarg++, resource);
+    scm_wrong_type_arg(FUNC_NAME, 1, resource);
   if (!gh_string_p(value))
-    scm_wrong_type_arg(FUNC_NAME, iarg++, value);
+    scm_wrong_type_arg(FUNC_NAME, 2, value);
 
   { /* scope */
     char *szSpecifier = gh_scm2newstr(resource,NULL);
@@ -71,13 +69,12 @@ XCLASS is omitted, it defaults to the same string as NAME.
 If there is no resource under the given key, #f is returned. */
 #define FUNC_NAME s_X_resource_get
 {
-  int iarg = 1;
   SCM answer = SCM_BOOL_F;
 
   if (!gh_string_p(name))
-    scm_wrong_type_arg(FUNC_NAME, iarg++, name);
+    scm_wrong_type_arg(FUNC_NAME, 1, name);
   if (!UNSET_SCM(xclass) && !gh_string_p(xclass))
-    scm_wrong_type_arg(FUNC_NAME, iarg++, xclass);
+    scm_wrong_type_arg(FUNC_NAME, 2, xclass);
 
   { /* scope */
     char *szName = gh_scm2newstr(name,NULL);
@@ -103,10 +100,9 @@ Only the settings set or changed via `X-resource-put' go into
 the file. */
 #define FUNC_NAME s_X_resource_database_save
 {
-  int iarg = 1;
   char *szFilename = NULL;
   if (!gh_string_p(filename))
-    scm_wrong_type_arg(FUNC_NAME, iarg++, filename);
+    scm_wrong_type_arg(FUNC_NAME, 1, filename);
   szFilename = gh_scm2newstr(filename,NULL);
   XrmPutFileDatabase(db, szFilename);
   FREE(szFilename);

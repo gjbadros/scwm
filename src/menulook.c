@@ -97,21 +97,17 @@ menu look, and is documented with the original menu looks; currently,
 only the XPM menu look uses the EXTRA information. */
 #define FUNC_NAME s_copy_menu_look
 {
-  int iarg = 0;
   scwm_menulook * pmlOrig;
   
-  iarg++;
   if (!DYNAMIC_MENULOOK_P(original_menu_look)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,original_menu_look);
+    scm_wrong_type_arg(FUNC_NAME,1,original_menu_look);
   }
   pmlOrig = DYNAMIC_SAFE_MENULOOK(original_menu_look);
 
-  iarg++;
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,name);
+    scm_wrong_type_arg(FUNC_NAME,2,name);
   }
   
-  iarg++;
   if (UNSET_SCM(extra)) {
     extra = pmlOrig->extra;
   }

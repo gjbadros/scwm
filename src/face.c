@@ -439,7 +439,7 @@ See the section on the `Face Flags' concept. */
 
   } else {
     /* FIXMS: use something more accurate. */
-    scm_wrong_type_arg(FUNC_NAME,2,flagval);    
+    scm_wrong_type_arg(FUNC_NAME,3,flagval);    
   }
   return SCM_UNSPECIFIED;
 }
@@ -492,7 +492,7 @@ SPECS is a list of face specifiers. */
       add_spec_to_face_x(answer,gh_car(spec),gh_cadr(spec));
     } else {
       /* Bad flag specifier error */
-      scm_wrong_type_arg(FUNC_NAME,1,specs);          
+      scm_wrong_type_arg(FUNC_NAME,2,specs);
     }
   }
 
@@ -975,7 +975,7 @@ property). */
   } else if (flag==SCM_BOOL_F) {
     fl->left_buttons[n].flags &= ~MWMButton;    
   } else {
-    scm_wrong_type_arg(FUNC_NAME,1,flag);
+    scm_wrong_type_arg(FUNC_NAME,2,flag);
   }
 
   redraw_borders(fl);

@@ -313,7 +313,7 @@ image object, or #f if it succeeds. */
   /* Sadly, there is no way to test the arity of a procedure. */
   /* MSFIX: Yes there is, but let's not use it yet. */
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, proc);
+    scm_wrong_type_arg(FUNC_NAME, 2, proc);
   }
 
   scm_hash_set_x(image_loader_hash_table, extension, proc);

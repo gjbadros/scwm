@@ -344,22 +344,18 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR.
 #define FUNC_NAME s_message_window_set_colors_x
 {
   scwm_msgwindow* msg = MSGWINDOW(mwn);
-  int iarg = 0;
 
-  ++iarg;
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, iarg, mwn);
+    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
   }
 
-  ++iarg;
   if ( fg_color != SCM_BOOL_F ) {
-    VALIDATE_COLOR (fg_color, FUNC_NAME, iarg);
+    VALIDATE_COLOR (fg_color, FUNC_NAME, 2);
     msg->fg_color = fg_color;
   }
 
-  ++iarg;
   if ( bg_color != SCM_BOOL_F ) {
-    VALIDATE_COLOR (bg_color, FUNC_NAME, iarg);
+    VALIDATE_COLOR (bg_color, FUNC_NAME, 3);
     msg->bg_color = bg_color;
     msg->shadow_color = adjust_brightness(msg->bg_color, 
 					  message_shadow_factor);

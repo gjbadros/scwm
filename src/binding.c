@@ -753,26 +753,21 @@ nothing should be done on key release.
   int keycd = 0;
   int modmask = 0;
   int context = 0;
-  int iarg = 0;
 
-  ++iarg;
   if (!gh_number_p(keycode)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg, keycode);
+    scm_wrong_type_arg(FUNC_NAME, 2, keycode);
   }
 
-  ++iarg;
   if (!gh_number_p(modifier_mask)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg, modifier_mask);
+    scm_wrong_type_arg(FUNC_NAME, 3, modifier_mask);
   }
 
-  ++iarg;
   if (!UNSET_SCM(proc) && !gh_procedure_p(proc)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg, proc);
+    scm_wrong_type_arg(FUNC_NAME, 4, proc);
   }
 
-  ++iarg;
   if (!UNSET_SCM(release_proc) && !gh_procedure_p(release_proc)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg, release_proc);
+    scm_wrong_type_arg(FUNC_NAME, 5, release_proc);
   }
 
   context = compute_contexts(contexts, FUNC_NAME);

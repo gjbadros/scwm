@@ -95,11 +95,11 @@ ATOM and X are both 32-bit integers. */
   }
 
   if (!gh_number_p(atom)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, win);
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
   }
 
   if (!gh_number_p(x)) {
-    scm_wrong_type_arg(FUNC_NAME, 3, win);
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
   }
 
   ev.type = ClientMessage;

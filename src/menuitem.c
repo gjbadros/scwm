@@ -141,69 +141,60 @@ For a higher-level interface to this function, see `menuitem'. */
 {
   MenuItem *pmi = NEW(MenuItem);
   SCM answer;
-  int iarg = 1;
-
   if (!gh_string_p(label)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,label);
+    scm_wrong_type_arg(FUNC_NAME,1,label);
   }
   pmi->szLabel = gh_scm2newstr(label,&pmi->cchLabel);
 
-  iarg++;
   if (UNSET_SCM(action)) {
     action = SCM_BOOL_F;
   } else if (!gh_symbol_p(action) && !gh_procedure_p(action) && !MENU_P(action)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,action);
+    scm_wrong_type_arg(FUNC_NAME,2,action);
   }
   pmi->scmAction = action;
 
-  iarg++;
   if (UNSET_SCM(extra_label)) {
     pmi->szExtra = NULL;
     pmi->cchExtra = 0;
   } else if (!gh_string_p(extra_label)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,extra_label);
+    scm_wrong_type_arg(FUNC_NAME,3,extra_label);
   } else {
     pmi->szExtra = gh_scm2newstr(extra_label,&pmi->cchExtra);
   }
 
-  iarg++;
   if (UNSET_SCM(picture_above)) {
     picture_above = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_above)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,picture_above);
+    scm_wrong_type_arg(FUNC_NAME,4,picture_above);
   }
   pmi->scmImgAbove = picture_above;
 
-  iarg++;
   if (UNSET_SCM(picture_left)) {
     picture_left = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_left)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,picture_left);
+    scm_wrong_type_arg(FUNC_NAME,5,picture_left);
   } 
   pmi->scmImgLeft = picture_left;
 
-  iarg++;
   if (UNSET_SCM(hover_action)) {
     pmi->scmHover = SCM_BOOL_F;
   } else if (!PROCEDURE_OR_SYMBOL_P(hover_action)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,hover_action);
+    scm_wrong_type_arg(FUNC_NAME,6,hover_action);
   }
   pmi->scmHover = hover_action;
 
-  iarg++;
   if (UNSET_SCM(unhover_action)) {
     pmi->scmUnhover = SCM_BOOL_F;
   } else if (!PROCEDURE_OR_SYMBOL_P(unhover_action)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,unhover_action);
+    scm_wrong_type_arg(FUNC_NAME,7,unhover_action);
   }
   pmi->scmUnhover = unhover_action;
 
-  iarg++;
   if (UNSET_SCM(hotkey_prefs)) {
     pmi->pchHotkeyPreferences = NULL;
     pmi->cchHotkeyPreferences = 0;
   } else if (!gh_string_p(hotkey_prefs)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,hotkey_prefs);
+    scm_wrong_type_arg(FUNC_NAME,8,hotkey_prefs);
   } else {
     pmi->pchHotkeyPreferences = 
       gh_scm2newstr(hotkey_prefs,&pmi->cchHotkeyPreferences);
