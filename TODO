@@ -2,6 +2,18 @@
 
 See also doc/dev/scwm-1.0-release-todo
 
+* Right click to get at cancel/window-selection menu during interactive-selections
+  -> also permit escape to cancel a window selection
+* make nonant selection permit using only ternants
+
+* constraints
+** Improve error handling in constraint solver
+** Reorder widgets in constraint investigator
+** make label draw visualization in constraint investigator
+** right-click menus for toolbar
+** debug timer-hook problems
+** use ternant-only selection for alignment constraints.
+
 * Copyright issues -- get release from UW
 
 * Leader windows and window groups could be made implicit

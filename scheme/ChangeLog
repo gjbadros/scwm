@@ -1,3 +1,15 @@
+Wed Dec  8 11:05:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Fix some of the descriptions for the 
+	buttons.  Make the prompt for the alignments mention "Vertical" or 
+	"Horizontal" instead of using identical prompts.
+
+Wed Dec  8 11:03:37 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* constraint-investigator.scm: Remove the close button;  mostly
+	did this for usability study, but also seems extraneous so may be
+	worth leaving out.
+
 Tue Dec  7 15:14:50 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-composition.scm: Write out the class-creator for
