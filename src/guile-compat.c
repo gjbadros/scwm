@@ -23,6 +23,11 @@
 #include <config.h>
 #include "guile-compat.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #ifndef HAVE_SCM_PARSE_PATH
 SCM
 scm_parse_path (char *path, SCM tail)
@@ -92,4 +97,7 @@ scm_internal_stack_catch (SCM tag,
 
 #endif /* HAVE_SCM_INTERNAL_STACK_CATCH */
 
+#ifdef __cplusplus
+}
+#endif
 

@@ -61,9 +61,10 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
     Fw->prev = &Scr.ScwmRoot;
   }
   if (Scr.NumberOfScreens > 1) {
-    XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
+    Window wRoot;
+    XQueryPointer(dpy, Scr.Root, &wRoot, &JunkChild,
 		  &JunkX, &JunkY, &JunkX, &JunkY, &JunkMask);
-    if (JunkRoot != Scr.Root) {
+    if (wRoot != Scr.Root) {
       if ((Scr.Ungrabbed != NULL) && Scr.Ungrabbed->fClickToFocus) {
 	/* Need to grab buttons for focus window */
 	XSync(dpy, 0);

@@ -1,3 +1,8 @@
+/* $Id
+ * scwm.h
+ * Copyright (C) 1997-1998, Maciej Stachowiak and Greg J. Badros
+ */
+
 /****************************************************************************
  * This module is based on Twm, but has been siginificantly modified 
  * by Rob Nation 
@@ -29,13 +34,8 @@
 /**    OR PERFORMANCE OF THIS SOFTWARE.                                     **/
 /*****************************************************************************/
 
-
-/***********************************************************************
- * scwm include file
- ***********************************************************************/
-
-#ifndef _SCWM_
-#define _SCWM_
+#ifndef SCWM_H__
+#define SCWM_H__
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -46,8 +46,8 @@
 #include "module-types.h"
 #include <stdlib.h>
 
-EXTERN char **g_argv;
-EXTERN int g_argc;
+extern char **g_argv;
+extern int g_argc;
 
 #define STATIC_CAST(cast,val) ((cast) (val))
 #define CONST_CAST(cast,val) ((cast) (val))
@@ -173,6 +173,7 @@ extern int master_pid;
 
 extern Display *dpy;
 struct ScwmWindow;
+
 extern struct ScwmWindow *FocusOnNextTimeStamp;
 
 extern XContext ScwmContext;
@@ -218,7 +219,7 @@ extern Atom XA_SCWMEXEC_NOTIFY;
 extern Atom XA_SCWMEXEC_OUTPUT;
 extern Atom XA_SCWMEXEC_ERROR;
 
-#endif /* _SCWM_ */
+#endif /* SCWM_H__ */
 
 /* Local Variables: */
 /* tab-width: 8 */

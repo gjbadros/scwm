@@ -39,7 +39,7 @@ nocolor(char *note, char *name)
   sprintf(err, "can't %s color %s", note, name);
   scm_error(gh_symbol2scm("scwm-error"), "[color allocation]", "%s",
 	    gh_list(gh_str02scm(err), SCM_UNDEFINED),
-	    gh_list(gh_int2scm(err), SCM_UNDEFINED));
+	    gh_list(gh_str02scm(err), SCM_UNDEFINED));
 }
 
 /****************************************************************************

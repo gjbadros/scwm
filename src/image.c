@@ -166,7 +166,7 @@ make_empty_image(SCM name)
   SCM result;
   scwm_image *ci;
 
-  ci = safemalloc(sizeof(scwm_image));
+  ci = (scwm_image *) safemalloc(sizeof(scwm_image));
   ci->full_name = name;
   ci->image = None;
   ci->mask = None;
@@ -368,7 +368,7 @@ path_expand_image_fname(SCM name)
     }
     
     /* Add 2, one for the '/', one for the final NULL */
-    c_fname = safemalloc(sizeof(char) *(max_path_len + length + 2));
+    c_fname = (char *) safemalloc(sizeof(char) *(max_path_len + length + 2));
     
     /* Try every possible path */
     for(p = *loc_image_load_path; p != SCM_EOL; p = SCM_CDR(p)) {

@@ -78,6 +78,9 @@ SCM default_rbutton_face[5];
 void set_face_flag_x(SCM face, SCM flag, SCM flagval);
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg);
 
+
+SCM_PROC(s_make_face, "make-face",2,0,0, make_face);
+
 SCM 
 make_face(SCM flags, SCM specs) {
   SCM answer;
@@ -147,6 +150,7 @@ SCM sym_clear, sym_justify, sym_vertical_justify, sym_relief,
   sym_use_style_of, sym_hidden_handles, sym_no_inset, sym_left,
   sym_right, sym_center, sym_top, sym_bottom, sym_flat, sym_sunk,
   sym_raised, sym_title, sym_border;
+
 
 
 /* FIXMS Probably the right way to do this is to keep a hash table of
@@ -489,6 +493,8 @@ ButtonFace *append_new_face(ButtonFace *bf) {
 extern ScwmDecor *cur_decor;
 
 
+SCM_PROC(s_set_title_face_x, "set-title-face!", 1 , 2, 0,  set_title_face_x);
+
 SCM
 set_title_face_x (SCM active_up, SCM active_down, SCM inactive)
 {
@@ -519,6 +525,7 @@ set_title_face_x (SCM active_up, SCM active_down, SCM inactive)
   return SCM_UNSPECIFIED;
 }
 
+SCM_PROC(s_set_button_face_x, "set-button-face!", 2, 2, 0,  set_button_face_x);
 
 SCM
 set_button_face_x (SCM button, SCM active_up, SCM active_down, SCM inactive) 
@@ -569,6 +576,9 @@ set_button_face_x (SCM button, SCM active_up, SCM active_down, SCM inactive)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,  set_button_mwm_flag_x);
+
 SCM
 set_button_mwm_flag_x(SCM button, SCM flag) 
 {
@@ -595,6 +605,9 @@ set_button_mwm_flag_x(SCM button, SCM flag)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_border_face_x, "set-border-face!", 1, 1, 0, set_border_face_x);
+
 SCM
 set_border_face_x(SCM active, SCM inactive) 
 {
@@ -618,6 +631,41 @@ set_border_face_x(SCM active, SCM inactive)
   return SCM_UNSPECIFIED;
 }
 
+
+
+/* fvwm's FreeButton face was buggy and breaks with garbage collection
+   and other stuff */
+void 
+FreeButtonFace(Display * dpy, ButtonFace * bf)
+{
+  switch (bf->style & ButtonFaceTypeMask) {
+  case HGradButton:
+  case VGradButton:
+    /* - should we check visual is not TrueColor before doing this? 
+
+       XFreeColors(dpy, Scr.ScwmRoot.attr.colormap, 
+       bf->u.grad.pixels, bf->u.grad.npixels,
+       AllPlanes); */
+    free(bf->u.grad.pixels);
+    bf->u.grad.pixels = NULL;
+    break;
+
+  case PixmapButton:
+  case TiledPixmapButton:
+    bf->u.image=SCM_UNDEFINED;
+    break;
+  default:
+    break;
+  }
+  /* delete any compound styles */
+  if (bf->next) {
+    FreeButtonFace(dpy, bf->next);
+    free(bf->next);
+  }
+  bf->next = NULL;
+  bf->style &= ~ButtonFaceTypeMask;
+  bf->style |= SimpleButton;
+}
 
 
 void 
@@ -693,44 +741,10 @@ init_face()
     scm_protect_object(default_rbutton_face[i]);
   }
 
-
+#ifndef SCM_MAGIC_SNARFER
+#include "face.x"
+#endif
 }
-
-
-/* fvwm's FreeButton face was buggy and breaks with garbage collection
-   and other stuff */
-void 
-FreeButtonFace(Display * dpy, ButtonFace * bf)
-{
-  switch (bf->style & ButtonFaceTypeMask) {
-  case HGradButton:
-  case VGradButton:
-    /* - should we check visual is not TrueColor before doing this? 
-
-       XFreeColors(dpy, Scr.ScwmRoot.attr.colormap, 
-       bf->u.grad.pixels, bf->u.grad.npixels,
-       AllPlanes); */
-    free(bf->u.grad.pixels);
-    bf->u.grad.pixels = NULL;
-    break;
-
-  case PixmapButton:
-  case TiledPixmapButton:
-    bf->u.image=SCM_UNDEFINED;
-    break;
-  default:
-    break;
-  }
-  /* delete any compound styles */
-  if (bf->next) {
-    FreeButtonFace(dpy, bf->next);
-    free(bf->next);
-  }
-  bf->next = NULL;
-  bf->style &= ~ButtonFaceTypeMask;
-  bf->style |= SimpleButton;
-}
-
 
 /* Local Variables: */
 /* tab-width: 8 */

@@ -41,7 +41,7 @@
 void *
 safemalloc(int length)
 {
-  char *ptr;
+  void *ptr;
 
   if (length <= 0)
     length = 1;

@@ -118,10 +118,10 @@ GetIconWindow(ScwmWindow * sw)
 {
   Pixmap picture;
   Pixmap mask = None;
-  int width;
-  int height;
-  int border_width;
-  int depth;
+  unsigned int width;
+  unsigned int height;
+  unsigned int border_width;
+  unsigned int depth;
 
   /* We are guaranteed that wmhints is non-null when calling this routine */
   if (XGetGeometry(dpy, sw->wmhints->icon_window, &JunkRoot,
@@ -170,9 +170,9 @@ GetIconBitmap(ScwmWindow *sw)
 {
   Pixmap picture;
   Pixmap mask = None;
-  int width;
-  int height;
-  int depth;
+  unsigned int width;
+  unsigned int height;
+  unsigned int depth;
 
   /* We are guaranteed that wmhints is non-null when calling this
    * routine */
@@ -753,7 +753,8 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
 
 	Broadcast(M_ICONIFY, 7, t->w, t->frame,
 		  (unsigned long) t,
-		  -10000, -10000,
+		  0, 0,  
+                  /* above were -10000, but broadcast only takes unsigned longs --06/24/98 gjb */
 		  t->icon_w_width,
 		  t->icon_w_height + t->icon_p_height);
 	BroadcastConfig(M_CONFIGURE_WINDOW, t);

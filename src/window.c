@@ -16,6 +16,7 @@
 #include <guile/gh.h>
 #include <X11/keysym.h>
 #include <config.h>
+#include <assert.h>
 #include "scwm.h"
 #include "screen.h"
 #include "misc.h"
@@ -39,8 +40,13 @@
 #include "module-interface.h"
 #include "virtual.h"
 #include "font.h"
-#include <assert.h>
+#include "xmisc.h"
 #include "guile-compat.h"
+
+
+SCM sym_mouse, sym_sloppy, sym_none;
+extern SCM sym_click;
+
 
 unsigned long 
 FlagsBitsFromSw(ScwmWindow *psw)
@@ -340,7 +346,7 @@ make_window(ScwmWindow * win)
   scwm_window *schwin;
   SCM answer;
 
-  schwin = safemalloc(sizeof(scwm_window));
+  schwin = (scwm_window *) safemalloc(sizeof(scwm_window));
 
   /* FIXGJB: we should decide on right way to do memory allocation;
      this check is redundant w/ safemalloc */
@@ -390,11 +396,17 @@ ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
   return (win);
 }
 
+
+SCM_PROC(s_window_p, "window?", 1, 0, 0,  window_p);
+
 SCM 
 window_p(SCM obj)
 {
   return SCM_BOOL_FromBool(WINDOWP(obj));
 }
+
+
+SCM_PROC(s_get_window, "get-window", 0, 3, 0,  get_window);
 
 SCM 
 get_window(SCM kill_p, SCM select_p, SCM release_p)
@@ -424,6 +436,8 @@ get_window(SCM kill_p, SCM select_p, SCM release_p)
   return window_context;
 }
 
+SCM_PROC(s_current_window_with_focus, "current-window-with-focus", 0, 0, 0, current_window_with_focus);
+
 SCM
 current_window_with_focus()
 {
@@ -431,12 +445,17 @@ current_window_with_focus()
 }
 
 
+SCM_PROC(s_current_window_with_pointer, "current-window-with-pointer", 0, 0, 0, current_window_with_pointer);
+
 SCM
 current_window_with_pointer()
 {
   ScwmWindow *sw = SwFromPointerLocation(dpy);
   return sw? sw->schwin: SCM_BOOL_F;
 }
+
+
+SCM_PROC(s_select_window_interactively, "select-window-interactively", 0, 0, 0, select_window_interactively);
 
 SCM
 select_window_interactively()
@@ -721,6 +740,9 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
   have_orig_position = 0; 
   return False; 
 }
+
+
+SCM_PROC(s_select_window, "select-window", 0, 2, 0,  select_window);
 
 SCM 
 select_window(SCM kill_p, SCM release_p)
@@ -1030,6 +1052,8 @@ DestroyScwmWindow(ScwmWindow * sw)
 }
 
 
+SCM_PROC(s_delete_window, "delete-window", 0, 1, 0,  delete_window);
+
 SCM 
 delete_window(SCM win)
 {
@@ -1052,6 +1076,9 @@ delete_window(SCM win)
   SCM_REALLOW_INTS;
   return SCM_BOOL_F;
 }
+
+
+SCM_PROC(s_destroy_window, "destroy-window", 0, 1, 0,  destroy_window);
 
 SCM 
 destroy_window(SCM win)
@@ -1078,12 +1105,17 @@ destroy_window(SCM win)
 
 
 
+SCM_PROC(s_window_deletable_p, "window-deletable?", 0, 1, 0,  window_deletable_p);
+
 SCM 
 window_deletable_p(SCM win)
 {
   VALIDATEKILL(win, "window-deletable?");
   return SCM_BOOL_FromBool(SCWMWINDOW(win)->fDoesWmDeleteWindow);
 }
+
+
+SCM_PROC(s_focus, "focus", 0, 1, 0,  focus);
 
 SCM 
 focus(SCM win)
@@ -1098,6 +1130,9 @@ focus(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_unfocus, "unfocus", 0, 0, 0,  unfocus);
+
 SCM
 unfocus()
 {
@@ -1106,6 +1141,9 @@ unfocus()
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }  
+
+
+SCM_PROC(s_warp_to_window, "warp-to-window", 0, 1, 0,  warp_to_window);
 
 SCM 
 warp_to_window(SCM win)
@@ -1118,6 +1156,7 @@ warp_to_window(SCM win)
 }
 
 
+SCM_PROC(s_raise_window, "raise-window", 0, 1, 0,  raise_window);
 
 SCM 
 raise_window(SCM win)
@@ -1140,6 +1179,8 @@ raise_window(SCM win)
 }
 
 
+SCM_PROC(s_lower_window, "lower-window", 0, 1, 0,  lower_window);
+
 SCM 
 lower_window(SCM win)
 {
@@ -1150,6 +1191,8 @@ lower_window(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_raised_p, "raised?", 0, 1, 0,  raised_p);
 
 SCM 
 raised_p(SCM win)
@@ -1162,6 +1205,9 @@ raised_p(SCM win)
 			   tmp_win->fVisible);
 }
 
+
+SCM_PROC(s_transient_p, "transient?", 0, 1, 0,  transient_p);
+
 SCM 
 transient_p(SCM win)
 {
@@ -1173,6 +1219,8 @@ transient_p(SCM win)
 }
 
 
+
+SCM_PROC(s_iconify, "iconify", 0, 1, 0,  iconify);
 
 SCM 
 iconify(SCM win)
@@ -1193,6 +1241,9 @@ iconify(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_deiconify, "deiconify", 0, 1, 0,  deiconify);
+
 SCM 
 deiconify(SCM win)
 {
@@ -1203,6 +1254,9 @@ deiconify(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_iconified_p, "iconified?", 0, 1, 0,  iconified_p);
+
 SCM 
 iconified_p(SCM win)
 {
@@ -1210,6 +1264,8 @@ iconified_p(SCM win)
   return SCM_BOOL_FromBool(SCWMWINDOW(win)->fIconified);
 }
 
+
+SCM_PROC(s_stick, "stick", 0, 1, 0,  stick);
 
 SCM 
 stick(SCM win)
@@ -1226,6 +1282,9 @@ stick(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_unstick, "unstick", 0, 1, 0,  unstick);
+
 SCM 
 unstick(SCM win)
 {
@@ -1241,14 +1300,14 @@ unstick(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+SCM_PROC(s_sticky_p, "sticky?", 0, 1, 0,  sticky_p);
+
 SCM 
 sticky_p(SCM win)
 {
   VALIDATE(win, "sticky?");
   return SCM_BOOL_FromBool(SCWMWINDOW(win)->fSticky);
 }
-
-
 
 
 /***********************************************************************
@@ -1258,6 +1317,8 @@ sticky_p(SCM win)
 
 /* Modified for scwm by mstachow@mit.edu, 
    animation added by gjb@cs.washington.edu */
+
+SCM_PROC(s_window_shade, "window-shade", 0, 2, 0,  window_shade);
 
 SCM 
 window_shade(SCM win, SCM animated_p)
@@ -1318,6 +1379,9 @@ window_shade(SCM win, SCM animated_p)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_un_window_shade, "un-window-shade", 0, 2, 0,  un_window_shade);
+
 SCM 
 un_window_shade(SCM win, SCM animated_p)
 {
@@ -1353,6 +1417,9 @@ un_window_shade(SCM win, SCM animated_p)
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_window_shaded_p, "window-shaded?", 0, 1, 0,  window_shaded_p);
 
 SCM 
 window_shaded_p(SCM win)
@@ -1396,6 +1463,8 @@ extern int cmsDelayDefault;
 extern int c10msDelaysBeforePopup;
 
 
+SCM_PROC(s_set_animation_x, "set-animation!", 1,0,0,  set_animation_x);
+
 /* set animation parameters */
 SCM
 set_animation_x(SCM vector)
@@ -1434,6 +1503,8 @@ set_animation_x(SCM vector)
   return SCM_UNDEFINED;
 }
  
+
+SCM_PROC(s_move_to, "move-to", 2, 3, 0,  move_to);
 
 SCM 
 move_to(SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p)
@@ -1490,9 +1561,7 @@ move_to(SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p)
   fMovePointer = gh_scm2bool(move_pointer_too_p);
   fAnimated = gh_scm2bool(animated_p);
   if (fMovePointer || fAnimated) {
-    XGetGeometry(dpy,w,&JunkRoot,
-		 &startX, &startY,
-		 &JunkX,&JunkY,&JunkX,&JunkY);
+    XGetWindowTopLeft(w,&startX, &startY);
   }
   if (fAnimated) {
     SCM animation_ms_delay = gh_lookup("animation-ms-delay");
@@ -1505,8 +1574,7 @@ move_to(SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p)
 		       fMovePointer,cmsDelay,NULL);
   } else if (fMovePointer) {
     int x, y;
-    XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-		  &x, &y, &JunkX, &JunkY, &JunkMask);
+    XGetPointerWindowOffsets(Scr.Root, &x, &y);
     XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
 		 Scr.MyDisplayHeight, x + destX - startX, y + destY - startY);
   }
@@ -1516,6 +1584,8 @@ move_to(SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_interactive_move, "interactive-move", 0, 1, 0,  interactive_move);
 
 SCM 
 interactive_move(SCM win)
@@ -1541,15 +1611,16 @@ interactive_move(SCM win)
     event.xbutton.x_root = orig_x;
     event.xbutton.y_root = orig_y;
   } else {
-    XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-		  &event.xbutton.x_root, &event.xbutton.y_root,
-		  &JunkX, &JunkY, &JunkMask);
+    XGetPointerWindowOffsets(Scr.Root, &event.xbutton.x_root, &event.xbutton.y_root);
   }
   InteractiveMove(&w, tmp_win, &x, &y, &event);
   move_finalize(w, tmp_win, x, y);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_resize_to, "resize-to", 2, 1, 0,  resize_to);
 
 SCM 
 resize_to(SCM w, SCM h, SCM win)
@@ -1607,6 +1678,9 @@ extern int ymotion, xmotion;
 extern int last_width, last_height;
 extern int menuFromFrameOrWindowOrTitlebar;
 extern Window PressedW;
+
+
+SCM_PROC(s_interactive_resize, "interactive-resize", 0, 1, 0,  interactive_resize);
 
 SCM 
 interactive_resize(SCM win)
@@ -1788,6 +1862,9 @@ interactive_resize(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_refresh_window, "refresh-window", 0, 1, 0,  refresh_window);
+
 SCM 
 refresh_window(SCM win)
 {
@@ -1804,6 +1881,8 @@ refresh_window(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_move_window_to_desk, "move-window-to-desk", 1, 1, 0,  move_window_to_desk);
 
 SCM 
 move_window_to_desk(SCM which, SCM win)
@@ -1848,6 +1927,8 @@ move_window_to_desk(SCM which, SCM win)
 }
 
 
+SCM_PROC(s_window_position, "window-position", 0, 1, 0,  window_position);
+
 SCM 
 window_position(SCM win)
 {
@@ -1860,6 +1941,9 @@ window_position(SCM win)
 		     SCM_MAKINUM(tmp_win->frame_y),
 		     SCM_UNDEFINED);
 }
+
+
+SCM_PROC(s_window_size, "window-size", 0, 1, 0,  window_size);
 
 SCM 
 window_size(SCM win)
@@ -1874,6 +1958,9 @@ window_size(SCM win)
 		     SCM_UNDEFINED);
 }
 
+
+SCM_PROC(s_window_id, "window-id", 0, 1, 0,  window_id);
+
 SCM 
 window_id(SCM win)
 {
@@ -1881,12 +1968,18 @@ window_id(SCM win)
   return SCM_MAKINUM(SCWMWINDOW(win)->w);
 }
 
+
+SCM_PROC(s_window_frame_id, "window-frame-id", 0, 1, 0,  window_frame_id);
+
 SCM 
 window_frame_id(SCM win)
 {
   VALIDATE(win, "window-frame-id");
   return SCM_MAKINUM(SCWMWINDOW(win)->frame);
 }
+
+
+SCM_PROC(s_window_from_window_id, "window-from-window-id", 0, 1, 0,  window_from_window_id);
 
 SCM
 window_from_window_id(SCM window_id)
@@ -1902,12 +1995,18 @@ window_from_window_id(SCM window_id)
   return (sw?sw->schwin : SCM_BOOL_F);
 }
 
+
+SCM_PROC(s_window_desk, "window-desk", 0, 1, 0,  window_desk);
+
 SCM 
 window_desk(SCM win)
 {
   VALIDATE(win, "window-desk");
   return SCM_MAKINUM(SCWMWINDOW(win)->Desk);
 }
+
+
+SCM_PROC(s_window_title, "window-title", 0, 1, 0,  window_title);
 
 SCM 
 window_title(SCM win)
@@ -1916,12 +2015,18 @@ window_title(SCM win)
   return gh_str02scm(SCWMWINDOW(win)->name);
 }
 
+
+SCM_PROC(s_window_class, "window-class", 0, 1, 0,  window_class);
+
 SCM 
 window_class(SCM win)
 {
   VALIDATE(win, "window-class");
   return gh_str02scm(SCWMWINDOW(win)->classhint.res_class);
 }
+
+
+SCM_PROC(s_window_resource, "window-resource", 0, 1, 0,  window_resource);
 
 SCM 
 window_resource(SCM win)
@@ -1930,6 +2035,8 @@ window_resource(SCM win)
   return gh_str02scm(SCWMWINDOW(win)->classhint.res_name);
 }
 
+
+SCM_PROC(s_list_all_windows, "list-all-windows", 0, 0, 0,  list_all_windows);
 
 SCM 
 list_all_windows()
@@ -1945,6 +2052,8 @@ list_all_windows()
   return result;
 }
 
+
+SCM_PROC(s_keep_on_top, "keep-on-top", 0, 1, 0,  keep_on_top);
 
 SCM 
 keep_on_top(SCM win)
@@ -1962,6 +2071,9 @@ keep_on_top(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_un_keep_on_top, "un-keep-on-top", 0, 1, 0,  un_keep_on_top);
+
 SCM 
 un_keep_on_top(SCM win)
 {
@@ -1977,6 +2089,9 @@ un_keep_on_top(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_kept_on_top_p, "kept-on-top?", 0, 1, 0,  kept_on_top_p);
+
 SCM 
 kept_on_top_p(SCM win)
 {
@@ -1987,6 +2102,8 @@ kept_on_top_p(SCM win)
 
 /* maybe all of this can be replaced with set-title-height 
    (a per-window version) ? */
+
+SCM_PROC(s_show_titlebar, "show-titlebar", 0, 1, 0,  show_titlebar);
 
 SCM 
 show_titlebar(SCM win)
@@ -2014,6 +2131,9 @@ show_titlebar(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_hide_titlebar, "hide-titlebar", 0, 1, 0,  hide_titlebar);
+
 SCM 
 hide_titlebar(SCM win)
 {
@@ -2039,6 +2159,9 @@ hide_titlebar(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_titlebar_shown_p, "titlebar-shown?", 0, 1, 0,  titlebar_shown_p);
+
 SCM 
 titlebar_shown_p(SCM win)
 {
@@ -2046,6 +2169,8 @@ titlebar_shown_p(SCM win)
   return SCM_BOOL_FromBool(SCWMWINDOW(win)->fTitle);
 }
 
+
+SCM_PROC(s_normal_border, "normal-border", 0, 1, 0,  normal_border);
 
 SCM 
 normal_border(SCM win)
@@ -2072,6 +2197,9 @@ normal_border(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_plain_border, "plain-border", 0, 1, 0,  plain_border);
+
 SCM 
 plain_border(SCM win)
 {
@@ -2096,12 +2224,18 @@ plain_border(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_border_normal_p, "border-normal?", 0, 1, 0,  border_normal_p);
+
 SCM 
 border_normal_p(SCM win)
 {
   VALIDATE(win, "border-normal?");
   return SCM_BOOL_FromBool(SCWMWINDOW(win)->fBorder);
 }
+
+
+SCM_PROC(s_set_border_width_x, "set-border-width!", 1, 1, 0,  set_border_width_x);
 
 SCM 
 set_border_width_x(SCM width, SCM win)
@@ -2133,6 +2267,9 @@ set_border_width_x(SCM width, SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_stick_icon, "stick-icon", 0, 1, 0,  stick_icon);
+
 SCM 
 stick_icon(SCM win)
 {
@@ -2146,6 +2283,9 @@ stick_icon(SCM win)
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_unstick_icon, "unstick-icon", 0, 1, 0,  unstick_icon);
 
 SCM 
 unstick_icon(SCM win)
@@ -2161,12 +2301,18 @@ unstick_icon(SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_icon_sticky_p, "icon-sticky?", 0, 1, 0,  icon_sticky_p);
+
 SCM 
 icon_sticky_p(SCM win)
 {
   VALIDATE(win, "icon-sticky?");
   return SCM_BOOL_FromBool(SCWMWINDOW(win)->fStickyIcon);
 }
+
+
+SCM_PROC(s_set_icon_box_x, "set-icon-box!", 4, 1, 0,  set_icon_box_x);
 
 SCM 
 set_icon_box_x(SCM sx, SCM sy, SCM sw, SCM sh, SCM win)
@@ -2201,20 +2347,7 @@ set_icon_box_x(SCM sx, SCM sy, SCM sw, SCM sh, SCM win)
 }
 
 
-SCM sym_mouse, sym_sloppy, sym_none;
-extern SCM sym_click;
-
-void 
-init_window()
-{
-  sym_mouse = gh_symbol2scm("mouse");
-  scm_protect_object(sym_mouse);
-  sym_sloppy = gh_symbol2scm("sloppy");
-  scm_protect_object(sym_sloppy);
-  sym_none = gh_symbol2scm("none");
-  scm_protect_object(sym_none);
-}
-
+SCM_PROC(s_set_window_focus_x, "set-window-focus!", 1, 1, 0,  set_window_focus_x);
 
 SCM 
 set_window_focus_x(SCM sym, SCM win)
@@ -2246,6 +2379,8 @@ set_window_focus_x(SCM sym, SCM win)
 }
 
 
+SCM_PROC(s_set_window_foreground_x, "set-window-foreground!", 1, 1, 0,  set_window_foreground_x);
+
 SCM
 set_window_foreground_x(SCM fg, SCM win)
 {
@@ -2261,6 +2396,9 @@ set_window_foreground_x(SCM fg, SCM win)
 
   return SCM_UNSPECIFIED;  
 }
+
+
+SCM_PROC(s_set_window_background_x, "set-window-background!", 1, 1, 0,  set_window_background_x);
 
 SCM
 set_window_background_x(SCM bg, SCM win)
@@ -2285,6 +2423,8 @@ set_window_background_x(SCM bg, SCM win)
 }
 
 
+SCM_PROC(s_set_random_placement_x, "set-random-placement!", 1, 1, 0,  set_random_placement_x);
+
 SCM 
 set_random_placement_x(SCM val, SCM win)
 {
@@ -2298,6 +2438,9 @@ set_random_placement_x(SCM val, SCM win)
   }
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_set_smart_placement_x, "set-smart-placement!", 1, 1, 0,  set_smart_placement_x);
 
 SCM 
 set_smart_placement_x(SCM val, SCM win)
@@ -2313,6 +2456,8 @@ set_smart_placement_x(SCM val, SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_window_button_x, "set-window-button!", 2, 1, 0,  set_window_button_x);
 
 SCM 
 set_window_button_x(SCM butt, SCM val, SCM win)
@@ -2331,6 +2476,9 @@ set_window_button_x(SCM butt, SCM val, SCM win)
 
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_set_mwm_buttons_x, "set-mwm-buttons!", 1, 1, 0,  set_mwm_buttons_x);
 
 SCM 
 set_mwm_buttons_x(SCM val, SCM win)
@@ -2351,6 +2499,9 @@ set_mwm_buttons_x(SCM val, SCM win)
   /* SetBorder(t,(Scr.Hilite==t),True,True,None); */
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_set_mwm_border_x, "set-mwm-border!", 1, 1, 0,  set_mwm_border_x);
 
 SCM 
 set_mwm_border_x(SCM val, SCM win)
@@ -2375,15 +2526,18 @@ set_mwm_border_x(SCM val, SCM win)
 
 
 void
-force_icon_redraw (ScwmWindow *tmp_win)
+force_icon_redraw (ScwmWindow *sw)
 {
-  XDestroyWindow(dpy, tmp_win->icon_w);
-  tmp_win->icon_w = None;
+  XDestroyWindow(dpy, sw->icon_w);
+  sw->icon_w = None;
 
-  if (tmp_win->fIconified) {
-    Iconify(tmp_win, 0, 0);
+  if (sw->fIconified) {
+    Iconify(sw, 0, 0);
   }  
 }
+
+
+SCM_PROC(s_set_icon_title_x, "set-icon-title!", 1, 1, 0,  set_icon_title_x);
 
 SCM 
 set_icon_title_x(SCM title, SCM win)
@@ -2409,6 +2563,8 @@ set_icon_title_x(SCM title, SCM win)
 }
 
 
+SCM_PROC(s_set_force_icon_x, "set-force-icon!", 1, 1, 0,  set_force_icon_x);
+
 SCM
 set_force_icon_x (SCM flag, SCM win)
 {
@@ -2428,6 +2584,9 @@ set_force_icon_x (SCM flag, SCM win)
   force_icon_redraw (tmp_win);
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_set_show_icon_x, "set-show-icon!", 1, 1, 0, set_show_icon_x); 
 
 SCM 
 set_show_icon_x (SCM flag, SCM win)
@@ -2450,6 +2609,9 @@ set_show_icon_x (SCM flag, SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_icon_x, "set-icon!", 1, 1, 0,  set_icon_x);
+
 SCM 
 set_icon_x(SCM picture, SCM win)
 {
@@ -2468,6 +2630,9 @@ set_icon_x(SCM picture, SCM win)
   force_icon_redraw (tmp_win);
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_set_mini_icon_x, "set-mini-icon!", 1, 1, 0,  set_mini_icon_x);
 
 SCM 
 set_mini_icon_x(SCM image, SCM win)
@@ -2503,6 +2668,9 @@ set_mini_icon_x(SCM image, SCM win)
 
 }
 
+
+SCM_PROC(s_set_hint_override_x, "set-hint-override!", 1, 1, 0,  set_hint_override_x);
+
 SCM 
 set_hint_override_x(SCM val, SCM win)
 {
@@ -2516,6 +2684,9 @@ set_hint_override_x(SCM val, SCM win)
   }
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_set_decorate_transient_x, "set-decorate-transient!", 1, 1, 0,  set_decorate_transient_x);
 
 SCM 
 set_decorate_transient_x(SCM val, SCM win)
@@ -2531,6 +2702,9 @@ set_decorate_transient_x(SCM val, SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_mwm_decor_hint_x, "set-mwm-decor-hint!", 1, 1, 0,  set_mwm_decor_hint_x);
+
 SCM 
 set_mwm_decor_hint_x(SCM val, SCM win)
 {
@@ -2544,6 +2718,9 @@ set_mwm_decor_hint_x(SCM val, SCM win)
   }
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_set_mwm_func_hint_x, "set-mwm-func-hint!", 1, 1, 0,  set_mwm_func_hint_x);
 
 SCM 
 set_mwm_func_hint_x(SCM val, SCM win)
@@ -2559,6 +2736,9 @@ set_mwm_func_hint_x(SCM val, SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_PPosition_hint_x, "set-PPosition-hint!", 1, 1, 0,  set_PPosition_hint_x);
+
 SCM 
 set_PPosition_hint_x(SCM val, SCM win)
 {
@@ -2573,6 +2753,9 @@ set_PPosition_hint_x(SCM val, SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_OL_decor_hint_x, "set-OL-decor-hint!", 1, 1, 0,  set_OL_decor_hint_x);
+
 SCM 
 set_OL_decor_hint_x(SCM val, SCM win)
 {
@@ -2586,6 +2769,9 @@ set_OL_decor_hint_x(SCM val, SCM win)
   }
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_set_start_on_desk_x, "set-start-on-desk!", 1, 1, 0,  set_start_on_desk_x);
 
 SCM 
 set_start_on_desk_x(SCM desk, SCM win)
@@ -2606,6 +2792,9 @@ set_start_on_desk_x(SCM desk, SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_skip_mapping_x, "set-skip-mapping!", 1, 1, 0,  set_skip_mapping_x);
+
 SCM 
 set_skip_mapping_x(SCM val, SCM win)
 {
@@ -2620,6 +2809,9 @@ set_skip_mapping_x(SCM val, SCM win)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_lenience_x, "set-lenience!", 1, 1, 0,  set_lenience_x);
+
 SCM 
 set_lenience_x(SCM val, SCM win)
 {
@@ -2633,6 +2825,23 @@ set_lenience_x(SCM val, SCM win)
   }
   return SCM_UNSPECIFIED;
 }
+
+
+void 
+init_window()
+{
+  sym_mouse = gh_symbol2scm("mouse");
+  scm_protect_object(sym_mouse);
+  sym_sloppy = gh_symbol2scm("sloppy");
+  scm_protect_object(sym_sloppy);
+  sym_none = gh_symbol2scm("none");
+  scm_protect_object(sym_none);
+#ifndef SCM_MAGIC_SNARFER
+#include "window.x"
+#endif
+}
+
+
 
 /* Local Variables: */
 /* tab-width: 8 */

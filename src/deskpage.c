@@ -1,5 +1,24 @@
+/* $Id$
 
-
+/*
+ *      Copyright (C) 1997-1998, Maciej Stachowiak and Greg J. Badros
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.GPL.  If not, write to
+ * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA
+ *
+ */
 
 /****************************************************************************
  * This module has been significantly modified by Maciej Stachowiak.
@@ -19,6 +38,9 @@
 #include "module-interface.h"
 #include "virtual.h"
 
+
+SCM_PROC(s_set_current_desk_x, "set-current-desk!", 1, 0, 0,  set_current_desk_x);
+
 SCM 
 set_current_desk_x(SCM sx)
 {
@@ -35,6 +57,8 @@ set_current_desk_x(SCM sx)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_viewport_position_x, "set-viewport-position!", 2, 0, 0,  set_viewport_position_x);
 
 SCM 
 set_viewport_position_x(SCM sx, SCM sy)
@@ -53,6 +77,8 @@ set_viewport_position_x(SCM sx, SCM sy)
   return (SCM_UNSPECIFIED);
 }
 
+
+SCM_PROC(s_set_edge_scroll_x, "set-edge-scroll!", 2, 0, 0,  set_edge_scroll_x);
 
 SCM 
 set_edge_scroll_x(SCM sx, SCM sy)
@@ -74,6 +100,8 @@ set_edge_scroll_x(SCM sx, SCM sy)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_edge_wrap_x, "set-edge-wrap!", 2, 0, 0,  set_edge_wrap_x);
 
 SCM 
 set_edge_wrap_x(SCM sx, SCM sy)
@@ -103,6 +131,8 @@ set_edge_wrap_x(SCM sx, SCM sy)
 }
 
 
+SCM_PROC(s_set_edge_resistance_x, "set-edge-resistance!", 2, 0, 0,  set_edge_resistance_x);
+
 SCM 
 set_edge_resistance_x(SCM sr, SCM mr)
 {
@@ -123,6 +153,8 @@ set_edge_resistance_x(SCM sr, SCM mr)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_desk_size_x, "set-desk-size!", 2, 0, 0,  set_desk_size_x);
 
 SCM 
 set_desk_size_x(SCM sx, SCM sy)
@@ -154,6 +186,8 @@ set_desk_size_x(SCM sx, SCM sy)
 }
 
 
+SCM_PROC(s_display_size, "display-size", 0, 0, 0,  display_size);
+
 SCM 
 display_size()
 {
@@ -161,6 +195,9 @@ display_size()
 		     SCM_MAKINUM(Scr.MyDisplayHeight),
 		     SCM_UNDEFINED);
 }
+
+
+SCM_PROC(s_desk_size, "desk-size", 0, 0, 0,  desk_size);
 
 SCM 
 desk_size()
@@ -170,6 +207,9 @@ desk_size()
 		     SCM_UNDEFINED);
 }
 
+
+SCM_PROC(s_viewport_position, "viewport-position", 0, 0, 0,  viewport_position);
+
 SCM 
 viewport_position()
 {
@@ -178,10 +218,21 @@ viewport_position()
 		     SCM_UNDEFINED);
 }
 
+
+SCM_PROC(s_current_desk, "current-desk", 0, 0, 0,  current_desk);
+
 SCM 
 current_desk()
 {
   return SCM_MAKINUM(Scr.CurrentDesk);
+}
+
+void
+init_deskpage()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "deskpage.x"
+#endif
 }
 
 /* Local Variables: */

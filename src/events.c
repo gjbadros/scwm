@@ -78,6 +78,7 @@
 #include "callbacks.h"
 #include "guile-compat.h"
 #include "syscompat.h"
+#include "xmisc.h"
 
 #ifndef WithdrawnState
 #define WithdrawnState 0
@@ -275,8 +276,7 @@ HandleHardFocus(ScwmWindow * t)
   FocusOnNextTimeStamp = t;
   Scr.Focus = NULL;
   /* Do something to guarantee a new time stamp! */
-  XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-		&JunkX, &JunkY, &x, &y, &JunkMask);
+  XGetPointerWindowOffsets(Scr.Root, &x, &y);
   GrabEm(CURSOR_WAIT);
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
 	       Scr.MyDisplayHeight,
@@ -461,7 +461,7 @@ HandleScwmExec()
 			     &type_ret, &form_ret, &nitems, &bytes_after,
 			     &req)==Success) {
 	SCM val, str_val;
-	char *ret, *output, *error;
+	unsigned char *ret, *output, *error;
 	int rlen, olen, elen;
 	SCM o_port, e_port;
 	SCM saved_def_e_port;
@@ -475,18 +475,18 @@ HandleScwmExec()
 	saved_def_e_port = scm_def_errp;
 	scm_def_errp = scm_current_error_port();
 
-	val = scwm_safe_eval_str(req);
+	val = scwm_safe_eval_str((char *) req);
 	XFree(req); 
 	str_val=scm_strprint_obj(val);
-	ret=gh_scm2newstr(str_val, &rlen);
+	ret = (unsigned char *) gh_scm2newstr(str_val, &rlen);
 	
 	/* restore output and error ports. */
 	o_port=scm_set_current_output_port(o_port);
 	e_port=scm_set_current_error_port(e_port);
 	scm_def_errp = saved_def_e_port;
 
-	output=gh_scm2newstr(get_strport_string(o_port),&olen);
-	error=gh_scm2newstr(get_strport_string(e_port),&elen);
+	output = (unsigned char *) gh_scm2newstr(get_strport_string(o_port),&olen);
+	error = (unsigned char *) gh_scm2newstr(get_strport_string(e_port),&elen);
 	
 	XChangeProperty(dpy, w, XA_SCWMEXEC_OUTPUT, XA_STRING,
 			8, PropModeReplace, output, olen);
@@ -684,10 +684,7 @@ HandleClientMessage()
   if ((Event.xclient.message_type == _XA_WM_CHANGE_STATE) &&
       (Event.xclient.data.l[0] == IconicState) &&
       swCurrent && !swCurrent->fIconified) {
-    XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-		  &(button.xmotion.x_root),
-		  &(button.xmotion.y_root),
-		  &JunkX, &JunkY, &JunkMask);
+    XGetPointerWindowOffsets(Scr.Root, &(button.xmotion.x_root), &(button.xmotion.y_root));
     button.type = 0;
     iconify(swCurrent->schwin);
     return;
@@ -1201,8 +1198,9 @@ HandleEnterNotify()
   if (!swCurrent->fClickToFocus) {
     if (Scr.Focus != swCurrent) {
       SetFocus(swCurrent->w, swCurrent, 0);
-    } else
+    } else {
       SetFocus(swCurrent->w, swCurrent, 0);
+    }
   }
   if (Scr.ColormapFocus == COLORMAP_FOLLOWS_MOUSE) {
     if (!swCurrent->fIconified && (Event.xany.window == swCurrent->w))
@@ -1614,6 +1612,8 @@ WindowGettingButtonEvent(Window w, int x, int y)
 
 /* Inspired by GWM 1.8c --gjb */
 /* FIXGJB: use button, not button + modifier */
+SCM_PROC(s_send_button_press, "send-button-press", 2,4,0,  send_button_press);
+
 SCM
 send_button_press(SCM button, SCM modifier, SCM win,
 		  SCM button_press_p, SCM button_release_p,
@@ -1691,6 +1691,9 @@ send_button_press(SCM button, SCM modifier, SCM win,
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_send_key_press, "send-key-press", 1,4,0,  send_key_press);
+
 SCM
 send_key_press(SCM key, SCM win,
 	       SCM button_press_p, SCM button_release_p,
@@ -1750,6 +1753,17 @@ send_key_press(SCM key, SCM win,
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+
+
+void 
+init_events()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "events.x"
+#endif
+}
+
+
 
 /* Local Variables: */
 /* tab-width: 8 */

@@ -19,6 +19,7 @@
 #include "focus.h"
 #include "module-interface.h"
 #include "virtual.h"
+#include "xmisc.h"
 #include "syscompat.h"
 
 /***************************************************************************
@@ -51,8 +52,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     usleep(10);
     total += 10;
 
-    XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-		  &x, &y, &JunkX, &JunkY, &JunkMask);
+    XGetPointerWindowOffsets(Scr.Root, &x, &y);
 
     if (XCheckWindowEvent(dpy, Scr.PanFrameTop.win,
 			  LeaveWindowMask, &Event)) {
@@ -81,8 +81,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
       return;
   }
 
-  XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-		&x, &y, &JunkX, &JunkY, &JunkMask);
+  XGetPointerWindowOffsets(Scr.Root, &x, &y);
 
   /* Turn off the rubberband if its on */
   MoveOutline(Scr.Root, 0, 0, 0, 0);
@@ -161,8 +160,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
       XGrabServer_withSemaphore(dpy);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, *xl, *yt);
     MoveViewport(Scr.Vx + *delta_x, Scr.Vy + *delta_y, False);
-    XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-		  xl, yt, &JunkX, &JunkY, &JunkMask);
+    XGetPointerWindowOffsets(Scr.Root, xl, yt);
     if (Grab)
       XUngrabServer_withSemaphore(dpy);
   }

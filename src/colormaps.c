@@ -44,7 +44,7 @@ HandleColormapNotify(void)
   Bool ReInstall = False;
 
   Bool fCeventNew;
-#if defined(__cplusplus) || defined(c_plusplus)
+#if defined(__cplusplus)
   fCeventNew = cevent->c_new;
 #else
   fCeventNew = cevent->new;

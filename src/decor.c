@@ -167,6 +167,8 @@ decor2scm(ScwmDecor * fl)
 };
 
 
+SCM_PROC(s_make_decor, "make-decor", 0, 1, 0,  make_decor);
+
 SCM 
 make_decor(SCM name)
 {
@@ -189,12 +191,17 @@ make_decor(SCM name)
   return decor2scm(newdec);
 }
 
+
+SCM_PROC(s_default_decor, "default-decor", 0, 0, 0,  default_decor);
+
 SCM 
 default_decor()
 {
   return Scr.DefaultDecor.scmdecor;
 }
 
+
+SCM_PROC(s_set_current_decor_x, "set-current-decor!", 1, 0, 0,  set_current_decor_x);
 
 SCM 
 set_current_decor_x(SCM decor)
@@ -220,6 +227,9 @@ set_current_decor_x(SCM decor)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_current_decor, "current-decor", 0, 0, 0,  current_decor);
+
 SCM 
 current_decor()
 {
@@ -230,6 +240,8 @@ current_decor()
   }
 }
 
+
+SCM_PROC(s_set_window_decor_x, "set-window-decor!", 1, 1, 0,  set_window_decor_x);
 
 SCM 
 set_window_decor_x(SCM decor, SCM win)

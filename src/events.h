@@ -1,3 +1,8 @@
+/* $Id$
+ * events.h
+ */
+
+
 #ifndef EVENTS_H
 #define EVENTS_H
 #include <libguile.h>
@@ -25,7 +30,7 @@ int XNextEvent_orTimeout(Display * dpy, XEvent * event);
 
 void HandlePaging(int, int, int *, int *, int *, int *, Bool);
 
-void HandleHardFocus(ScwmWindow * t);
+void HandleHardFocus(struct ScwmWindow * t);
 
 void HandleEvents(void);
 void HandleExpose(void);
@@ -44,6 +49,7 @@ void HandlePropertyNotify(void);
 void HandleKeyPress(void);
 void HandleVisibilityNotify(void);
 
+void init_events();
 
 #endif
 

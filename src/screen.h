@@ -70,7 +70,9 @@ typedef enum {
   MiniIconButton,
   SolidButton
   /* max button is 15 (0xF) */
-} ButtonFaceStyle;
+} ButtonFaceType;
+
+typedef int ButtonFaceStyle;
 
 #define ButtonFaceTypeMask      0x000F
 
@@ -104,7 +106,9 @@ struct vector_coords {
 };
 
 typedef struct ButtonFace {
-  ButtonFaceStyle style;
+  ButtonFaceStyle style;   /* a ButtonFaceType + some flags in the high order bits */
+  /* was just the enum ButtonFaceType, but that isn't the right thing
+     and causes problems with C++'s more picky enum semantics */
   union {
     SCM image;
     SCM back;

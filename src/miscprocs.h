@@ -1,11 +1,13 @@
+/* $Id$
+ * miscprocs.h
+ */
+
+#include "scwm.h"
+
 #ifndef MISCPROCS_H
 #define MISCPROCS_H
 
 
-SCM set_menu_mwm_style(SCM should);
-SCM set_rubber_band_mask_x(SCM value);
-SCM set_title_justify(SCM just);
-SCM set_title_height(SCM height);
 void init_miscprocs();
 SCM refresh();
 

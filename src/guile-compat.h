@@ -24,6 +24,10 @@
 
 #include <config.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef HAVE_SCM_PUTS
 #define scm_putc(x,y) scm_gen_putc(x,y)
 #define scm_puts(x,y) scm_gen_puts(scm_regular_port,x,y)
@@ -86,9 +90,9 @@ extern SCM scm_internal_stack_catch (SCM tag,
 #define gh_memq scm_memq
 #endif
 
+#ifdef __cplusplus
+}
+#endif
+
+
 #endif GUILE_COMPAT_H
-
-
-
-
-

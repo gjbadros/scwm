@@ -112,7 +112,7 @@ make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
 	      SCM picture_left, SCM hover_action, SCM unhover_action,
 	      SCM hotkey_prefs)
 {
-  MenuItem *pmi = safemalloc(sizeof(MenuItem));
+  MenuItem *pmi = (MenuItem *) safemalloc(sizeof(MenuItem));
   SCM answer;
   int iarg = 1;
 

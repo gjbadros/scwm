@@ -137,8 +137,9 @@ scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XPM_LIB@ @x_libs@ @GUILE_LIBS@
 
 INCLUDES = @x_cflags@ @GUILE_INCLUDES@
 
-BUILT_SOURCES = init_scheme_string.c callbacks.x color.x font.x \
- image.x menuitem.x module-interface.x scwmmenu.x shutdown.x scwmpaths.h
+BUILT_SOURCES = init_scheme_string.c scwmpaths.h \
+ binding.x callbacks.x color.x deskpage.x events.x face.x font.x image.x \
+ menuitem.x miscprocs.x module-interface.x scwmmenu.x shutdown.x window.x \
 
 SUFFIXES = .x
 
@@ -162,7 +163,7 @@ X_PRE_LIBS = @X_PRE_LIBS@
 scwm_OBJECTS =  string_token.o ICCCM.o system.o Grab.o add_window.o \
 borders.o colormaps.o colors.o complex.o decorations.o events.o focus.o \
 scwm.o icons.o misc.o xmisc.o move.o placement.o resize.o virtual.o \
-scmprocs.o scmtypes.o font.o color.o miscprocs.o binding.o errors.o \
+scmtypes.o font.o color.o miscprocs.o binding.o errors.o \
 util.o window.o scwmmenu.o drawmenu.o menuitem.o deskpage.o decor.o \
 face.o module-interface.o image.o callbacks.o shutdown.o \
 init_scheme_string.o guile-compat.o syscompat.o getopt.o getopt1.o
@@ -187,7 +188,7 @@ DEP_FILES =  .deps/Grab.P .deps/ICCCM.P .deps/add_window.P \
 .deps/getopt1.P .deps/guile-compat.P .deps/icons.P .deps/image.P \
 .deps/init_scheme_string .deps/init_scheme_string.P .deps/menuitem.P \
 .deps/misc.P .deps/miscprocs.P .deps/module-interface.P .deps/move.P \
-.deps/placement.P .deps/resize.P .deps/scmprocs.P .deps/scmtypes.P \
+.deps/placement.P .deps/resize.P .deps/scmtypes.P \
 .deps/scwm.P .deps/scwmmenu.P .deps/shutdown.P .deps/string_token.P \
 .deps/syscompat.P .deps/system.P .deps/util.P .deps/virtual.P \
 .deps/window.P .deps/xmisc.P
@@ -399,7 +400,7 @@ install uninstall all installdirs mostlyclean-generic distclean-generic \
 clean-generic maintainer-clean-generic clean mostlyclean distclean \
 maintainer-clean
 
-.c.x:
+%.x: %.c
 	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
 
 init_scheme_string.c: ../scheme/minimal.scm

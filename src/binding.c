@@ -1,9 +1,8 @@
+/* $Id$
+ * binding.c
+ * (C) 1997-1998 By Maciej Stachowiak and Greg J. Badros
+ */
 
-/****************************************************************************
- * This module has been significantly modified by Maciej Stachowiak.
- * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
- * Changes Copyright 1997, Maciej stachowiak
- ****************************************************************************/
 #include <config.h>
 
 #include <guile/gh.h>
@@ -19,6 +18,7 @@
 #include "miscprocs.h"
 #include "add_window.h"
 #include "binding.h"
+#include "xmisc.h"
 #include "syscompat.h"
 
 struct symnum {
@@ -287,8 +287,11 @@ compute_contexts(SCM contexts)
   }
 }
 
+
 /* FIXGJB: abstract out stuff-- lots of duplication
    between this and unbind_mouse */
+SCM_PROC(s_unbind_key, "unbind-key", 2, 0, 0,  unbind_key);
+
 SCM 
 unbind_key(SCM contexts, SCM key)
 {
@@ -344,6 +347,8 @@ unbind_key(SCM contexts, SCM key)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_unbind_mouse, "unbind-mouse", 2, 0, 0,  unbind_mouse);
 
 SCM 
 unbind_mouse(SCM contexts, SCM button)
@@ -412,6 +417,8 @@ unbind_mouse(SCM contexts, SCM button)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_bind_key, "bind-key", 3, 0, 0,  bind_key);
 
 SCM 
 bind_key(SCM contexts, SCM key, SCM proc)
@@ -507,6 +514,8 @@ bind_key(SCM contexts, SCM key, SCM proc)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_bind_mouse, "bind-mouse", 3, 0, 0,  bind_mouse);
 
 SCM 
 bind_mouse(SCM contexts, SCM button, SCM proc)
@@ -653,14 +662,15 @@ int orig_x, orig_y;
 
 /* FIXGJB: a single, slow click with no movement should
    still count as a single click, see IsClick(), too */
+SCM_PROC(s_mouse_event_type, "mouse-event-type", 0, 0, 0,  mouse_event_type);
+
 void 
 find_mouse_event_type()
 {
   XEvent d;
 
   gh_defer_ints();
-  XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-		&orig_x, &orig_y, &JunkX, &JunkY, &JunkMask);
+  XGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y);
   have_orig_position = 1;
 
   mouse_ev_type = sym_motion;
@@ -690,6 +700,50 @@ mouse_event_type()
   return mouse_ev_type;
 }
 
+
+
+
+void
+init_modifiers(void)
+{
+  int i, j, num;
+  XModifierKeymap *mod;
+  KeyCode *codes;
+  KeySym *syms;
+
+  mod = XGetModifierMapping(dpy);
+  if (mod) {
+    codes = mod->modifiermap;
+    for (i = 0; i < 8; i++)
+      for (j = 0; j < mod->max_keypermod; j++, codes++)
+	if (*codes) {
+	  syms = XGetKeyboardMapping(dpy, *codes, 1, &num);
+	  if (syms) {
+	    while (num--)
+	      switch (syms[num]) {
+	      case XK_Meta_L:
+	      case XK_Meta_R:
+		MetaMask = 1<<i;
+		break;
+	      case XK_Alt_L:
+	      case XK_Alt_R:
+		AltMask = 1<<i;
+		break;
+	      case XK_Super_L:
+	      case XK_Super_R:
+		SuperMask = 1<<i;
+		break;
+	      case XK_Hyper_L:
+	      case XK_Hyper_R:
+		HyperMask = 1<<i;
+		break;
+	      }
+	    XFree(syms);
+	  }
+	}
+    XFreeModifiermap(mod);
+  }
+}
 
 
 void 
@@ -733,49 +787,11 @@ init_binding(void)
   sym_double_click = gh_symbol2scm("double-click");
   scm_protect_object(sym_double_click);
 
+#ifndef SCM_MAGIC_SNARFER
+#include "binding.x"
+#endif
 }
 
-void
-init_modifiers(void)
-{
-  int i, j, num;
-  XModifierKeymap *mod;
-  KeyCode *codes;
-  KeySym *syms;
-
-  mod = XGetModifierMapping(dpy);
-  if (mod) {
-    codes = mod->modifiermap;
-    for (i = 0; i < 8; i++)
-      for (j = 0; j < mod->max_keypermod; j++, codes++)
-	if (*codes) {
-	  syms = XGetKeyboardMapping(dpy, *codes, 1, &num);
-	  if (syms) {
-	    while (num--)
-	      switch (syms[num]) {
-	      case XK_Meta_L:
-	      case XK_Meta_R:
-		MetaMask = 1<<i;
-		break;
-	      case XK_Alt_L:
-	      case XK_Alt_R:
-		AltMask = 1<<i;
-		break;
-	      case XK_Super_L:
-	      case XK_Super_R:
-		SuperMask = 1<<i;
-		break;
-	      case XK_Hyper_L:
-	      case XK_Hyper_R:
-		HyperMask = 1<<i;
-		break;
-	      }
-	    XFree(syms);
-	  }
-	}
-    XFreeModifiermap(mod);
-  }
-}
 
 /* Local Variables: */
 /* tab-width: 8 */

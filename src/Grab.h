@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _GRAB_H
-#define _GRAB_H
+#ifndef GRAB_H__
+#define GRAB_H__
 
 void XGrabServer_withSemaphore(Display * disp);
 

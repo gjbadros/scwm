@@ -18,9 +18,17 @@
 void
 XGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn)
 {
-  XQueryPointer(dpy,w,&JunkRoot,&JunkChild,
-		pxReturn,pyReturn,&JunkX,&JunkY,&JunkMask);
+  XQueryPointer(dpy,w,&JunkRoot,&JunkChild,&JunkX,&JunkY,
+		pxReturn,pyReturn,&JunkMask);
 }
+
+void 
+XGetWindowTopLeft(Window w, int *pxReturn, int *pyReturn)
+{
+  XGetGeometry(dpy,w,&JunkRoot,pxReturn,pyReturn,
+               &JunkWidth,&JunkHeight,&JunkBW,&JunkDepth);
+}
+
 
 /* Note: gc is only used for bitmaps! */
 void

@@ -139,7 +139,7 @@ typedef struct ScwmWindow {
   int xdiff, ydiff;		/* used to restore window position on exit */
   int *mwm_hints;
   int ol_hints;
-  enum wm_client_functions functions;
+  int functions;  /* was enum wm_client_functions, but causes problems for C++ --06/24/98 gjb */
   Window *cmap_windows;		/* Colormap windows property */
   int number_cmap_windows;	/* Should generally be 0 */
   SCM ReliefColor;

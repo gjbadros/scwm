@@ -25,6 +25,7 @@
 #include "scwm.h"
 #include "font.h"
 #include "system.h"
+#include "events.h"
 #include "scwmmenu.h"
 #include "drawmenu.h"
 #include "colormaps.h"
@@ -128,7 +129,7 @@ NewPchKeysUsed(DynamicMenu *pmd)
   MenuItemInMenu **rgpmiim = pmd->rgpmiim;
   int ipmiim = 0;
   int cItems = gh_length(list_of_menuitems);
-  char *pch = safemalloc(sizeof(char) * (cItems + 1));
+  char *pch = (char *) safemalloc(sizeof(char) * (cItems + 1));
   int ich = 0;
   SCM item;
   SCM rest = list_of_menuitems;
@@ -194,7 +195,7 @@ make_menu(SCM list_of_menuitems,
 	  SCM bg_color, SCM text_color,
 	  SCM picture_bg, SCM font, SCM extra_options)
 {
-  Menu *pmenu = safemalloc(sizeof(Menu));
+  Menu *pmenu = (Menu *) safemalloc(sizeof(Menu));
   SCM answer;
   int iarg = 1;
 
@@ -1074,7 +1075,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
   Menu *pmenu = pmd->pmenu;
   int cmiim = gh_length(pmenu->scmMenuItems);
   int ipmiim = 0;
-  MenuItemInMenu **rgpmiim = pmd->rgpmiim =
+  MenuItemInMenu **rgpmiim = pmd->rgpmiim = (MenuItemInMenu **)
     safemalloc(cmiim * sizeof(MenuDrawingInfo));
   SCM rest = pmd->pmenu->scmMenuItems;
 
@@ -1095,7 +1096,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
       scwm_msg(WARN,__FUNCTION__,"Bad menu item number %d",ipmiim);
       goto NEXT_MENU_ITEM;
     }
-    pmiim = safemalloc(sizeof(MenuItemInMenu));
+    pmiim = (MenuItemInMenu *) safemalloc(sizeof(MenuItemInMenu));
     rgpmiim[ipmiim] = pmiim;
 
     /* save some back pointers so we can find a dynamic menu
@@ -1139,7 +1140,7 @@ static
 DynamicMenu *
 NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom) 
 {
-  DynamicMenu *pmd = safemalloc(sizeof(DynamicMenu));
+  DynamicMenu *pmd = (DynamicMenu *) safemalloc(sizeof(DynamicMenu));
   pmd->pmenu = pmenu;
   pmd->pmdNext = NULL;
   pmd->pmdPrior = pmdPoppedFrom;

@@ -24,6 +24,7 @@
 #include <values.h>
 #include <guile/gh.h>
 #include <config.h>
+#include <libguile.h>
 #include "scwm.h"
 #include "callbacks.h"
 #include "guile-compat.h"
@@ -99,7 +100,7 @@ struct cwssdr_data
 static SCM
 cwssdr_body (void *data)
 {
-  struct cwssdr_data *d = data;
+  struct cwssdr_data *d = (struct cwssdr_data *) data;
   return scm_internal_lazy_catch (d->tag, d->body, d->data, ssdr_handler, 
 				  NULL);
 }

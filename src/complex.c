@@ -1,10 +1,6 @@
-
-/****************************************************************************
- * This module is all new
- * by Rob Nation 
- * Copyright 1993 Robert Nation. No restrictions are placed on this code,
- * as long as the copyright notice is preserved
- ****************************************************************************/
+/* $Id$
+ * complex.c
+ */
 
 #include <config.h>
 
@@ -19,14 +15,15 @@
 #include "screen.h"
 #include "syscompat.h"
 
-/*****************************************************************************
- *
+/*
+ * IsClick(...)
  * Waits Scr.ClickTime, or until it is evident that the user is not
  * clicking, but is moving the cursor
- *
- ****************************************************************************/
+ * This function is derived from code by Robert Nation
+ */
+
 /* FIXGJB: a single, slow click with no movement should
-   still cound as a single click */
+   still count as a single click */
 Bool 
 IsClick(int x, int y, unsigned EndMask, XEvent * d)
 {

@@ -26,6 +26,7 @@
 #include "scwm.h"
 #include "misc.h"
 #include "move.h"
+#include "events.h"
 #include "screen.h"
 #include "Grab.h"
 #include "icons.h"
@@ -34,6 +35,8 @@
 #include "colormaps.h"
 #include "font.h"
 #include "syscompat.h"
+#include "virtual.h"
+#include "xmisc.h"
 
 
 extern XEvent Event;
@@ -76,12 +79,11 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
   lastY = startY;
 
   do {
-    currentX = startX + deltaX * (*ppctMovement);
-    currentY = startY + deltaY * (*ppctMovement);
+    currentX = (int) (startX + deltaX * (*ppctMovement));
+    currentY = (int) (startY + deltaY * (*ppctMovement));
     XMoveWindow(dpy,w,currentX,currentY);
     if (fWarpPointerToo) {
-      XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-		    &JunkX,&JunkY,&pointerX,&pointerY,&JunkMask);
+      XGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
       pointerX += currentX - lastX;
       pointerY += currentY - lastY;
       XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
@@ -139,9 +141,9 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
   if (fRollUp) {
     XLowerWindow(dpy,w);
     do {
-      XMoveWindow(dpy, w, 0, -client_height * (*ppctMovement));
+      XMoveWindow(dpy, w, 0, (int) (-client_height * (*ppctMovement)));
       XResizeWindow(dpy, wFrame, width, 
-		    shaded_height + client_height * (1 - *ppctMovement));
+		    (int) (shaded_height + client_height * (1 - *ppctMovement)));
       XFlush(dpy);
       /* handle expose events as we're rolling up the window shade */
       while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
@@ -153,8 +155,8 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
   } else {  /* roll down the window shade */
     do {
       XResizeWindow(dpy, wFrame, width, 
-		    shaded_height + client_height * (*ppctMovement));
-      XMoveWindow(dpy, w, 0, -client_height * (1 - *ppctMovement));
+		    (int) (shaded_height + client_height * (*ppctMovement)));
+      XMoveWindow(dpy, w, 0, (int) (-client_height * (1 - *ppctMovement)));
       XFlush(dpy);
       usleep(cmsDelay);
     } while (*ppctMovement < 1.0 && ppctMovement++);
@@ -178,8 +180,7 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
   Bool done;
   int xl, yt, delta_x, delta_y, paged;
 
-  XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild, &xl, &yt,
-		&JunkX, &JunkY, &JunkMask);
+  XGetPointerWindowOffsets(Scr.Root, &xl, &yt);
   xl += XOffset;
   yt += YOffset;
 

@@ -24,6 +24,7 @@
 #include "screen.h"
 #include "Grab.h"
 #include "icons.h"
+#include "virtual.h"
 
 int get_next_x(ScwmWindow * t, int x, int y);
 int get_next_y(ScwmWindow * t, int y);

@@ -45,6 +45,7 @@
 #include "virtual.h"
 #include "miscprocs.h"
 #include "font.h"
+#include "deskpage.h"
 #include "module-interface.h"
 #include "syscompat.h"
 
@@ -107,8 +108,8 @@ void usage(void);
 
 XContext ScwmContext;		/* context for scwm windows */
 
-int JunkX = 0, JunkY = 0;
 Window JunkRoot, JunkChild;	/* junk window */
+int JunkX = 0, JunkY = 0;
 unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
 
 Boolean debugging = False, PPosOverride, Blackout = False;
@@ -186,10 +187,6 @@ main(int argc, char **argv)
   return 0;
 }
 
-#ifdef USE_CASSOWARY
-extern "C" { void cassowary(); }
-#endif
-
 /***********************************************************************
  *
  *  Procedure:
@@ -240,12 +237,10 @@ scwm_main(int argc, char **argv)
   init_window();
   init_face();
   init_shutdown();
-  init_scwm_procs();
-#ifdef USE_CASSOWARY
-  cassowary();
-#endif
+  init_events();
+  init_deskpage();
 
-  szCmdConfig = safemalloc(1 * sizeof(char));
+  szCmdConfig = (char *) safemalloc(1 * sizeof(char));
   
   szCmdConfig[0] = '\0';
   
@@ -292,11 +287,11 @@ scwm_main(int argc, char **argv)
         option_error=True;
         break;
       } else {
-        szCmdConfig = realloc(szCmdConfig, sizeof(char) * 
-			      (strlen(szCmdConfig) +
-			       strlen(szLoad_pre) +
-			       strlen(optarg) +
-			       strlen(szLoad_post) + 1));
+        szCmdConfig = (char *) realloc(szCmdConfig, sizeof(char) * 
+                                       (strlen(szCmdConfig) +
+                                        strlen(szLoad_pre) +
+                                        strlen(optarg) +
+                                        strlen(szLoad_post) + 1));
         
         szCmdConfig = strcat(szCmdConfig, szLoad_pre);
         szCmdConfig = strcat(szCmdConfig, optarg);
@@ -308,9 +303,9 @@ scwm_main(int argc, char **argv)
         option_error=True;
       break;
       } else {
-        szCmdConfig=realloc(szCmdConfig, sizeof(char) *
-			    (strlen(szCmdConfig) +
-			     strlen(optarg) + 1));
+        szCmdConfig = (char *) realloc(szCmdConfig, sizeof(char) *
+                                       (strlen(szCmdConfig) +
+                                        strlen(optarg) + 1));
         
 	szCmdConfig = strcat(szCmdConfig, optarg);
         break;
@@ -408,7 +403,7 @@ scwm_main(int argc, char **argv)
    * with scwm -display term:0.0
    */
   len = strlen(XDisplayString(dpy));
-  display_string = safemalloc(len + 10);
+  display_string = (char *) safemalloc(len + 10);
   sprintf(display_string, "DISPLAY=%s", XDisplayString(dpy));
   putenv(display_string);
   /* Add a HOSTDISPLAY environment variable, which is the same as
@@ -420,21 +415,21 @@ scwm_main(int argc, char **argv)
     char client[MAXHOSTNAME], *rdisplay_string;
     
     gethostname(client, MAXHOSTNAME);
-    rdisplay_string = safemalloc(len + 14 + strlen(client));
+    rdisplay_string = (char *) safemalloc(len + 14 + strlen(client));
     sprintf(rdisplay_string, "HOSTDISPLAY=%s:%s", client, &display_string[9]);
     putenv(rdisplay_string);
   } else if (strncmp(display_string, "DISPLAY=unix:", 13) == 0) {
     char client[MAXHOSTNAME], *rdisplay_string;
     
     gethostname(client, MAXHOSTNAME);
-    rdisplay_string = safemalloc(len + 14 + strlen(client));
+    rdisplay_string = (char *) safemalloc(len + 14 + strlen(client));
     sprintf(rdisplay_string, "HOSTDISPLAY=%s:%s", client,
 	    &display_string[13]);
     putenv(rdisplay_string);
   } else {
     char *rdisplay_string;
     
-    rdisplay_string = safemalloc(len + 14);
+    rdisplay_string = (char *) safemalloc(len + 14);
     sprintf(rdisplay_string, "HOSTDISPLAY=%s", XDisplayString(dpy));
     putenv(rdisplay_string);
   }
@@ -458,7 +453,7 @@ scwm_main(int argc, char **argv)
   /* Announce support for scwmexec protocol. */
   XChangeProperty(dpy, Scr.Root, 
 		  XA_SCWMEXEC_LISTENER, XA_STRING,
-		  8, PropModeReplace, "scwm", 5);
+		  8, PropModeReplace, (unsigned char *) "scwm", 5);
   
   XSetErrorHandler((XErrorHandler) CatchRedirectError);
   XSetIOErrorHandler((XIOErrorHandler) CatchFatal);

@@ -12,15 +12,21 @@
 #include "scwm.h"
 #include "screen.h"
 #include "errors.h"
+#include "events.h"
 #include "util.h"
 #include "decor.h"
 #include "font.h"
+#include "xmisc.h"
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
 extern Bool Restarting;
 
+SCM sym_focus;
+
+SCM_PROC(s_set_menu_mwm_style, "set-menu-mwm-style!", 0, 1, 0, set_menu_mwm_style_x);
+
 SCM 
-set_menu_mwm_style(SCM should)
+set_menu_mwm_style_x(SCM should)
 {
   SCM_REDEFER_INTS;
   if (SCM_IMP(should)) {
@@ -37,6 +43,9 @@ set_menu_mwm_style(SCM should)
   SCM_ALLOW_INTS;
   scm_wrong_type_arg("set-mwm-menu-style!", 1, should);
 }
+
+
+SCM_PROC(s_set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0, set_rubber_band_mask_x);
 
 SCM 
 set_rubber_band_mask_x(SCM value)
@@ -62,6 +71,9 @@ set_rubber_band_mask_x(SCM value)
   SCM_REALLOW_INTS;
   return (value);
 }
+
+
+SCM_PROC(s_set_title_justify,"set-title-justify!", 1, 0, 0, set_title_justify);
 
 SCM 
 set_title_justify(SCM just)
@@ -91,6 +103,9 @@ set_title_justify(SCM just)
   SCM_REALLOW_INTS;
   return (just);
 }
+
+
+SCM_PROC(s_set_title_height, "set-title-height!", 1, 0, 0,  set_title_height);
 
 SCM 
 set_title_height(SCM height)
@@ -128,6 +143,7 @@ set_title_height(SCM height)
   return (height);
 }
 
+SCM_PROC(s_restarted_p, "restarted?", 0, 0, 0, restarted_p);
 
 SCM
 restarted_p()
@@ -136,14 +152,7 @@ restarted_p()
 }
 
 
-SCM sym_focus;
-
-void 
-init_miscprocs()
-{
-  sym_focus = gh_symbol2scm("focus");
-  scm_protect_object(sym_focus);
-}
+SCM_PROC(s_refresh, "refresh", 0, 0, 0,  refresh);
 
 SCM 
 refresh()
@@ -152,6 +161,8 @@ refresh()
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_click_time_x, "set-click-time!", 1, 0, 0,  set_click_time_x);
 
 SCM 
 set_click_time_x(SCM ctime)
@@ -165,6 +176,9 @@ set_click_time_x(SCM ctime)
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,  set_colormap_focus_x);
 
 SCM 
 set_colormap_focus_x(SCM ftype)
@@ -186,6 +200,9 @@ set_colormap_focus_x(SCM ftype)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_opaque_move_size_x, "set-opaque-move-size!", 1, 0, 0,  set_opaque_move_size_x);
+
 SCM 
 set_opaque_move_size_x(SCM size)
 {
@@ -200,17 +217,21 @@ set_opaque_move_size_x(SCM size)
 }
 
 
+SCM_PROC(s_pointer_position, "pointer-position", 0, 0, 0, pointer_position);
+
 SCM 
 pointer_position()
 {
   int x, y;
 
   SCM_REDEFER_INTS;
-  XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-		&x, &y, &JunkX, &JunkY, &JunkMask);
+  XGetPointerWindowOffsets(Scr.Root, &x, &y);
   SCM_REALLOW_INTS;
   return scm_listify(SCM_MAKINUM(x), SCM_MAKINUM(y), SCM_UNDEFINED);
 }
+
+
+SCM_PROC(s_move_pointer_to, "move-pointer-to", 2, 0, 0, move_pointer_to);
 
 SCM 
 move_pointer_to(SCM sx, SCM sy)
@@ -236,6 +257,8 @@ move_pointer_to(SCM sx, SCM sy)
 }
 
 
+SCM_PROC(s_recapture, "recapture", 0, 0, 0, recapture);
+
 SCM 
 recapture()
 {
@@ -248,6 +271,7 @@ recapture()
 }
 
 
+SCM_PROC(s_wait_for_window, "wait-for-window", 1, 0, 0,  wait_for_window);
 
 SCM 
 wait_for_window(SCM predicate)
@@ -274,12 +298,18 @@ wait_for_window(SCM predicate)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_beep, "beep", 0, 0, 0, beep);
+
 SCM 
 beep()
 {
   XBell(dpy, 0);
   return SCM_UNSPECIFIED;
 }
+
+
+SCM_PROC(s_set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!", 1, 0, 0,  set_smart_placement_is_really_smart_x);
 
 SCM
 set_smart_placement_is_really_smart_x(SCM val)
@@ -294,6 +324,8 @@ set_smart_placement_is_really_smart_x(SCM val)
 /* FIXMS - the functionality related to the next three procedures
    should be implemented by adding new event bindings eventually */
 
+SCM_PROC(s_set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0, set_click_to_focus_passes_click_x);
+
 SCM
 set_click_to_focus_passes_click_x(SCM val)
 {
@@ -304,18 +336,25 @@ set_click_to_focus_passes_click_x(SCM val)
   return SCM_UNSPECIFIED;
 }
 
+
+SCM_PROC(s_set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0, set_click_to_focus_raises_x);
+
 SCM
 set_click_to_focus_raises_x(SCM val)
 {
   if (!gh_boolean_p(val)) {
     scm_wrong_type_arg("set-click-to-focus-raises!",1,val);
   }
-  Scr.ClickToFocusRaises= SCM_NFALSEP(val) ? True : False;
+  Scr.ClickToFocusRaises=  SCM_NFALSEP(val) ? True : False;
   return SCM_UNSPECIFIED;
 }
 
 /* FIXMS - this seems to be a pretty useless idea, or at least there
    must be a better way of implementing it. */
+
+
+SCM_PROC(s_set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0, 0, set_mouse_focus_click_raises_x);
+
 SCM
 set_mouse_focus_click_raises_x(SCM val)
 {
@@ -326,11 +365,17 @@ set_mouse_focus_click_raises_x(SCM val)
   return SCM_UNSPECIFIED;  
 }
 
+
+SCM_PROC(s_scwm_version, "scwm-version", 0, 0, 0,  scwm_version);
+
 SCM
 scwm_version()
 {
   return gh_str02scm(VERSION);
 }
+
+
+SCM_PROC(s_x_version_information, "X-version-information", 0, 0, 0, x_version_information);
 
 SCM
 x_version_information()
@@ -342,6 +387,8 @@ x_version_information()
 		     SCM_UNDEFINED);
 }
 
+
+SCM_PROC(s_x_display_information, "X-display-information", 0, 0, 0,  x_display_information);
 
 SCM
 x_display_information()
@@ -357,9 +404,17 @@ x_display_information()
   int planes = DisplayPlanes(dpy,Mscreen);
   int bits_per_rgb = visual->bits_per_rgb;
   char *vc = NULL;
-  Bool fColor = visual->class != StaticGray && visual->class != GrayScale;
 
-  switch(visual->class) 
+  /* class is res'd word in C++, struct member renamed to c_class in header */
+#ifdef __cplusplus
+  int visual_class = visual->c_class;
+#else
+  int visual_class = visual->class;
+#endif
+
+  Bool fColor = (visual_class != StaticGray && visual_class != GrayScale);
+
+  switch(visual_class) 
   {
     case(StaticGray):
       vc = "StaticGray";
@@ -391,6 +446,17 @@ x_display_information()
 		     gh_str02scm(vc), /* class */
 		     SCM_BOOL_FromBool(fColor),
 		     SCM_UNDEFINED);
+}
+
+void 
+init_miscprocs()
+{
+  sym_focus = gh_symbol2scm("focus");
+  scm_protect_object(sym_focus);
+
+#ifndef SCM_MAGIC_SNARFER
+#include "miscprocs.x"
+#endif
 }
 
 
