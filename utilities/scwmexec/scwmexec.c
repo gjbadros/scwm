@@ -20,6 +20,7 @@
 #include "../libscwmexec/scwmexec.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 Display *display;
 char *dispName;
