@@ -1,3 +1,32 @@
+1998-07-16  Greg Badros  <gjb@cs.washington.edu>
+
+	* all: Use FREE and NEW instead of free and malloc, use FREEC
+	and NEWC for free and new w/ counts of objects (for arrays), and use
+	FREECPP and NEWCPP and FREECPPC and NEWCPPC for C++ style memory
+	allocations w/ ctr invocations.  Fix some bugs by the removal of the
+	cast of old malloc calls' return values.
+
+
+	* all: Use FRAME_{X,Y,HEIGHT,WIDTH} macros to access the rvalue of the
+	window geometry -- does the right thing based on USE_CASSOWARY
+
+	* system.c: Make safemalloc really call calloc
+
+	* system.h: Define new memory management macros
+	FREE,NEW,FREEC,NEWC,FREECPP,NEWCPP,FREECPPC,NEWCPPC
+
+	* window.h: Use ScwmClVariable's for frame_{x,y,width,height}, added
+	PSWFROMWIN macro
+
+	* icons.c, placement.c, util.c, virtual.c, window.c: Rename some temporaries to psw
+
+	* scwm.c: add global solver variable.
+
+	* borders.h, borders.c: Added two new args to SetupFrame, and define
+	bool constants WAS_MOVED,NOT_MOVED, WAS_RESIZED,NOT_RESIZED to set them
+
+	* Fix a couple of memory leaks
+
 Fri Jul 10 10:45:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c (XNextEvent_orTimeout: Remove the #ifdef _hpux, it's
