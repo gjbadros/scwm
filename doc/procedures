@@ -1,4 +1,7 @@
+THIS IS OBSOLETED!  See scwm-procedures.txt or the html
+documentation in doc/html/*
 
+OBSOLETED OBSOLETED OBSOLETED OBSOLETED
 
 SCWM Scheme function documentation :
 
@@ -18,6 +21,7 @@ is called foo and has required arguments BAR and BAZ, optional
 arguments QUUX and XYZZY, and accepts any variable number of arguments
 beyond that. All the specifications follow this pattern.
 
+OBSOLETED OBSOLETED OBSOLETED OBSOLETED
 
 FONTS:
 

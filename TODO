@@ -4,6 +4,7 @@ For scwm 0.9:
 
 * Add session manager support
 ** TEST IT!  Add hooks to scheme code for various messages, etc.
+*** Robert said he could do this
 ** configure test for libSM, libICE, link with -lSM -lICE and #define XSM
 ** #include <X11/SM/SMlib.h>
 ** initialization routines in scwm-smc.c
@@ -11,10 +12,11 @@ For scwm 0.9:
 ** main loop processing of ICE messages, i/o multiplexing w/ select
 
 * Use only gh_ interface to guile -- remove uses of scm_ calls
+** See and update doc/dev/Guile-gh-needs
 
 * Finish C-level API review, renaming things, adding getters, etc
 
-* Move scheme documentation into .scm files as doc strings
+* Finish documenting scheme procedures, marking user vars (see below)
 
 * Make sure that scwm and guile-gtk interoperate reasonably well;
 provide some example uses of guile-gtk for scwm.
@@ -42,12 +44,10 @@ and add convenient ways to match on certain other things.
 
 * split into on-demand loaded modules of primitives
 
-* Try some beta testing (although there won't be much time for
-this). Personally make sure it builds and runs on Linux, NetBSD, Irix,
-Solaris and SunOS (these being the platforms Maciej has easy access
-to). These should be a good broad test, though. On each of this try
-compiling and running with both guile 1.2 and the latest snap, and try
-with and without threads.
+* Try some beta testing
+Maciej has access to ensure it builds and runs on Linux, NetBSD, Irix,
+Solaris and SunOS.  On each of this try compiling and running with both
+guile 1.2 and the latest snap, and try with and without threads.
 
 
 Other Stuff
@@ -65,7 +65,7 @@ Other Stuff
 ** can we use xlab? http://www.alphalink.com.au/~mvertes/xlab.html
 
 * Constraint embedding
-** make ClVariables always connect to a scheme level object
+** make ClVariables always connect to a scheme level object --done 09/05/98 gjb
 *** Screen (for clv-s part of the pssci)
 *** window (for clv-s part of the Psw-s)
 *** cl-variable (for bare cl-variables)
@@ -74,7 +74,6 @@ Other Stuff
 ** z-order stacking constraints to replace add-hoc stays-on-top, raisewindow, lowerwindow
 ** See also ../cassowary/local/TODO
 ** rubberband-resizing fixes -- generalization of the rubberband
-
 
 * WM_ATTENTION patch for xterms (from Robert Bihlmeyer), integration with zsh instead?
 
@@ -87,7 +86,7 @@ the real work -- those C functions would then be the core of a WM library
 specifically, I'd like the non-primitive C-level functions to all start
 with capital letters.  Obviously I prefer Hungarian!
 ** fewer global variables, fewer function static variables
-** separation of of initialization work
+** separation of of initialization work (may be overkill)
 separate init_MODULE which registers the SMOB, and
 init_MODULE_LATER_WORK which needs to be called after all SMOB types
 exist and the X11 connection and screen information have been
@@ -106,9 +105,8 @@ isn't now).
 * StayOnBottom style
 ** constraints will do this really cleanly
 
-* XSM (X Session Manager) support (as a nested server?)  Look at ICEWM, specs
-
 * X Selection support
+** Gtk have functions?  Wrap Xt Instrinsics (libXt)?
 
 * Other useful primitives/procedures --08/02/98 gjb (inspired by GWM, other wms)
 ** (meminfo) ; Return string describing memory usage information
