@@ -6,6 +6,9 @@ Garbage collection
 Adding a new type?
  - be sure to call init_TYPE from scwm.c -- search for init_
 
+Using gh_list?
+ - terminate the list with SCM_UNDEFINED, not SCM_EOL
+
 Dieing in malloc()?
  - free-d an already freed pointer; consider setting
    the pointer to NULL immediately after freeing it
