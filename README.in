@@ -25,12 +25,6 @@ Dynamic loading of C modules is supported.  Scwm is self-documenting and
 provides A powerful protocol for interacting with the window manager
 from other processes.
 
-If you're reading this before 15-October-1999, please take time to
-submit your vote for Scwm as your favorite window manager at the Linux
-Journal's Reader's Choice awards:
-
-http://207.178.22.52/contest/readchoice.html
-
 
 Features Scwm provides include:
 

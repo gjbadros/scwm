@@ -1,3 +1,7 @@
+Sun Oct 24 12:56:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c: Fix docstring.
+
 Sun Oct 24 12:05:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* message-window.c (CreateMessageWindow): Added CWSaveUnder bit
