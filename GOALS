@@ -3,12 +3,12 @@ Maciej's goals for 0.7:
 Definitely:
 
  (infrastructure:)
- * use automake and libtool, and make use of autoconf more correct
- * fix error/warning system - provide useful error messages (with line
+ x use automake and libtool, and make use of autoconf more correct
+ x fix error/warning system - provide useful error messages (with line
  numbers where feasible), support user hooks for displaying warnings,
  possibly also errors.
- * review menu oddities (visual effects, API)
- * uniform way of doing callbacks - a file of support functions to call
+[punt]  * review menu oddities (visual effects, API)
+ x uniform way of doing callbacks - a file of support functions to call
  procedures with 0, 1 or n arguments, evaluate strings, etc. Also
  uniform support for hooks, in particular, make the places where hooks
  are handled (and where it would be appropriate) provide uniform access
@@ -19,23 +19,23 @@ Definitely:
  * Clarify copyright/license status of files.
 
  (features:)
- * improve fvwm legacy module support - make tkgoodstuff work (work with
+ x(?) improve fvwm legacy module support - make tkgoodstuff work (work with
  Richard A. Guay <guay.thailand@juno.com> on this)
- * guile-gtk support as a test of loadable modules
+ * guile-gtk and/or support as a test of loadable modules
  * possibly experiment with breaking out some more stuff into loadable
  binary modules
  * fix more bugs
 
 Possibly:
 
- * Fix modifier key stuff should support Alt, Hyper, Super, Meta
+ x Fix modifier key stuff should support Alt, Hyper, Super, Meta
  properly, perhaps also provide physical modifiers
  ("1-","2-","3-","4-") that would map straight to mod1-mod4, ignoring
  the keysyms. Maybe steal from GNU Emacs or XEmacs? RMS claims mixing
  GPL with the old Twm license is kosher...
  * review broadcast and input hooks - improve to the state where the
  latter at least can be documented.
- * Add timer hooks.
+ x Add timer hooks.
  * review add_window.c
  * add getters for some setters
  * placement functions
@@ -49,7 +49,7 @@ Possibly:
  * Scheme objects for GCs 
 
 Done:
- * Figure out what's going wrong with window shading.
- * Remove old scwmsend stuff.
- * better scheme wrappers for colors
+ x Figure out what's going wrong with window shading.
+ x Remove old scwmsend stuff.
+ x better scheme wrappers for colors
 

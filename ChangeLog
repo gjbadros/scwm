@@ -1,3 +1,10 @@
+1998-06-18  Maciej Stachowiak  <maciej@roc-ny5-14.ix.netcom.com>
+
+	* configure.in, acconfig.h: Detect scm_internal_cwdr and
+	scm_internal_stack_catch.
+
+	configure, include/config.h.in: Regenerated.
+
 Thu Jun 18 16:48:02 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* configure.in (LDFLAGS): Properly detect the presence of

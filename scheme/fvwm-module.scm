@@ -158,7 +158,6 @@
 	#f)))
 
 
-
 (define (add-window win port)
   (let* ((id (window-id win))
 	 (frame-id (window-frame-id win))
@@ -212,11 +211,6 @@
 
 (define (end-window-list port)
   (fvwm2-module-send-packet M_END_WINDOWLIST "" port))
-
-(define (add-input-hook-checking port thunk)
-  (if (char-ready? port)
-      (thunk)
-      (add-input-hook (fileno port) thunk)))
 
 (define active-modules '())
 
@@ -281,6 +275,7 @@
 	 (to-module-pipe (pipe))
 	 (to-module-read (car to-module-pipe))
 	 (to-module-write (cdr to-module-pipe))
+	 (input-hook-handle #f)
 	 ;; FIXMS: should use a struct, not a list.
 	 (fmod (list to-module-write 0
 		         (lambda ()
@@ -302,6 +297,7 @@
 				(close-port to-module-write)
 				(close-port from-module-read))
 			      (lambda args args))
+		       (remove-inout-hook! input-hook-handle)
 		       (list-set! fmod 4 #f))))))
 
     ;; actually, scwm waits on its children so it should be no problem.
@@ -358,12 +354,11 @@
 
 	      (eval-fvwm-command command fmod (id->window window-id))
 
-	    (if (list-ref fmod 4)
-		(add-input-hook-checking from-module-read packet-handler))))))
+	    (if (not (list-ref fmod 4))
+		(remove-input-hook! input-hook-handle)))))))
       
-
-
-      (add-input-hook-checking from-module-read packet-handler)
+      (set! input-hook-handle (add-input-hook! from-module-read 
+					       packet-handler))
       fmod)))
 
 (define-public (kill-fvwm-module fmod)

@@ -8,6 +8,7 @@ SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args);
 SCM scwm_safe_apply_message_only (SCM proc, SCM args);
 
 /* Individual callbacks. */
+
 SCM scwm_safe_apply (SCM proc, SCM args);
 SCM scwm_safe_call0 (SCM thunk);
 SCM scwm_safe_call1 (SCM proc, SCM arg);
@@ -32,6 +33,17 @@ SCM remove_timer_hook_x(SCM handle);
 long shortest_timer_timeout();
 void update_timer_hooks();
 void run_timed_out_timers();
+
+/* Input hooks. */
+
+SCM add_input_hook_x (SCM fd, SCM proc);
+SCM remove_timer_hook_x(SCM handle);
+
+void add_hook_fds_to_set(fd_set *in_fdset, int *fd_width);
+void force_new_input_hooks();
+void run_input_hooks(fd_set *in_fdset);
+
+/* Initialization. */
 
 void init_callbacks();
 

@@ -1,3 +1,9 @@
+1998-06-20  Maciej Stachowiak  <maciej@localhost.localdomain>
+
+	* fvwm-module.scm: Use the new input hook system (add-input-hook!
+	and remove-input-hook!, instead of using add-input-hook and
+	counting on the hook being a one-shot).
+
 Wed Jun 10 02:19:58 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* auto-raise.scm, flux.scm: minor typos fixed, thanks to Shuji

@@ -39,14 +39,12 @@
 #include "guile-compat.h"
 
 SCM timer_hooks;
-
 SCM error_hook;
 
 struct scwm_body_apply_data {
   SCM proc;
   SCM args;
 };
-
 
 SCM 
 scwm_handle_error (void *data, SCM tag, SCM throw_args)
@@ -263,6 +261,8 @@ SCM scwm_safe_eval_str (char *string)
 			   &stack_item);
 }
 
+/* Hooks. */
+
 SCM call0_hooks (SCM hook)
 {
   SCM p;
@@ -360,6 +360,8 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
     
   return SCM_UNSPECIFIED;
 }
+
+/* Timer hooks. */
 
 SCM_PROC(s_add_timer_hook_x, "add-timer-hook!", 2, 0, 0, add_timer_hook_x);
 
@@ -472,6 +474,104 @@ void run_timed_out_timers()
   }
 }
 
+/* Input hooks. */
+
+static SCM input_hooks;
+static SCM new_input_hooks;
+
+SCM_PROC(s_add_input_hook_x, "add-input-hook!", 2, 0, 0, add_input_hook_x);
+
+SCM 
+add_input_hook_x (SCM port, SCM proc)
+{
+  SCM newcell;
+  SCM p, last;
+
+  if (SCM_OPINFPORTP(proc)) {
+    scm_wrong_type_arg(s_add_input_hook_x, 1, port);
+  }
+
+  if (!gh_procedure_p(proc)) {
+    scm_wrong_type_arg(s_add_input_hook_x, 2, proc);
+  }
+
+  newcell=gh_cons(proc, proc);
+
+  SCM_SETCDR(input_hooks, gh_cons(newcell, SCM_CDR(input_hooks)));
+  SCM_SETCDR(new_input_hooks, gh_cons(newcell, SCM_CDR(new_input_hooks)));
+
+  return newcell;
+}
+
+SCM_PROC(s_remove_input_hook_x, "remove-input-hook!", 1, 0, 0, remove_input_hook_x);
+
+SCM 
+remove_timer_hook_x(SCM handle)
+{
+  SCM_SETCDR(input_hooks,scm_delq_x (handle, SCM_CDR(input_hooks)));
+
+  return SCM_UNSPECIFIED;
+}
+
+
+void 
+add_hook_fds_to_set(fd_set *in_fdset, int *fd_width)
+{
+  SCM cur;
+  
+  for (cur = SCM_CDR(input_hooks); cur != SCM_EOL; cur= SCM_CDR(cur)) {
+    if (SCM_OPINFPORTP(SCM_CAAR(cur))) {
+      int fd = gh_scm2int(scm_fileno(SCM_CAAR(cur)));
+      
+      FD_SET (fd, in_fdset);
+      
+      if (fd > *fd_width)
+	*fd_width = fd;
+    }
+  }
+}
+
+void
+force_new_input_hooks()
+{
+  SCM cur;
+
+  for (cur = SCM_CDR(new_input_hooks);
+       cur != SCM_EOL;
+       cur = SCM_CDR(cur)) {
+    SCM item = SCM_CAR(cur);
+    SCM port = SCM_CAR(item);
+    SCM proc = SCM_CDR(item);
+    while (SCM_BOOL_T==gh_memq(item, inout_hooks) && 
+	   SCM_BOOL_T==scm_char_ready_p(port)) {
+      scwm_safe_call0(proc);
+    }
+  }
+  SCM_SETCDR(new_input_hooks, SCM_EOL);
+}
+
+void 
+run_input_hooks(fd_set *in_fdset)
+{
+  SCM prev, cur;
+
+  for (prev=input_hooks, cur=SCM_CDR(prev);
+       cur != SCM_EOL;
+       prev=cur, cur=SCM_CDR(cur)) {
+    SCM item = SCM_CAR(cur);
+    SCM port = SCM_CAR(item);
+    SCM proc = SCM_CDR(item);
+
+    if (FD_ISSET(gh_scm2int(scm_fileno(SCM_CAR(item))), in_fdset)) {
+      scwm_safe_call0(SCM_CDR(item));
+      while(SCM_BOOL_T==scm_char_ready_p(port) 
+	    && SCM_CDR(prev)==cur) {
+	scm_safe_call0(proc);
+      }
+    }
+  }
+}
+/* Initialization. */
 
 void init_callbacks()
 {
@@ -479,10 +579,11 @@ void init_callbacks()
   gettimeofday(&last_timeval, NULL);
 
   timer_hooks = scm_permanent_object(gh_cons(SCM_EOL, SCM_EOL));
+  input_hooks=scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
+  new_input_hooks=scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
 
 #ifndef SCM_MAGIC_SNARFER
 #include "callbacks.x"
 #endif
 }
-
 
