@@ -7,7 +7,8 @@ scwm_common_scheme = advice.scm animation.scm auto-raise.scm base.scm \
     image-loaders.scm listops.scm minimal.scm module-types.scm optargs.scm \
     prefs-menu.scm report-usage.scm shutdown-opts.scm sort.scm stacking.scm \
     std-menus.scm style-options.scm style.scm theme-impl.scm themes.scm tile.scm \
-    user-options.scm wininfo.scm winlist.scm winops.scm wmconfig-menu.scm
+    user-options.scm wininfo.scm winlist.scm winops.scm wmconfig-menu.scm \
+    desk-background.scm
 
 scwm_gtk_scheme = gtk.scm ScwmClock.scm ScwmDeskButtons.scm
 
