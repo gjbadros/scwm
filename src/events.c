@@ -1476,7 +1476,7 @@ HandleButtonPress()
 #undef FUNC_NAME
 
 
-static SCM g_lastwin_entered;
+static SCM g_lastwin_entered = SCM_BOOL_Fx;
 
 /*
  * HandleEnterNotify - EnterNotify event handler
