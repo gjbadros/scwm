@@ -382,22 +382,16 @@ GrabButtonWithModifiersMaskXcPm(int button, int modifier,
                                 Window w, unsigned int event_mask,
                                 Cursor xc, int pointer_mode)
 {
-  if (button > 0) {
+  if (AnyModifier == modifier) {
     XGrabButton(dpy, button, modifier, w,
-		True, event_mask,
-		pointer_mode, GrabModeAsync, None, xc);
-    if (modifier != AnyModifier) {
-      int i = 0;
-      for (; i<8; ++i) {
-        XGrabButton(dpy, button, (modifier | mask_mod_combos[i]), w,
-                    True, event_mask,
-                    pointer_mode, GrabModeAsync, None, xc);
-      }
-    }
+                True, event_mask,
+                pointer_mode, GrabModeAsync, None, xc);
   } else {
-    int i = 1;
-    for ( ; i <= XSERVER_MAX_BUTTONS; ++i) {
-      GrabButtonWithModifiersMaskXcPm(i,modifier,w,event_mask,xc,pointer_mode);
+    int i = 0;
+    for (; i<8; ++i) {
+      XGrabButton(dpy, button, (modifier | mask_mod_combos[i]), w,
+                  True, event_mask,
+                  pointer_mode, GrabModeAsync, None, xc);
     }
   }
 }
@@ -406,9 +400,12 @@ __inline__ void
 GrabButtonWithModifiers(int button, int modifier, 
 			ScwmWindow *psw)
 { 
-  GrabButtonWithModifiersMaskXcPm(button,modifier,psw->w,
-                                  ButtonPressMask | ButtonReleaseMask,
-                                  XCursorByNumber(XC_top_left_arrow),
+  DBUG((DBG,"GrabButtonsForPsw","Grabbing button %d (mod %d) for %s",
+        button,modifier,psw->name));
+  GrabButtonWithModifiersMaskXcPm(button,modifier,psw->frame,
+                                  (ButtonPressMask | ButtonReleaseMask) ,
+                                  /* XCursorByNumber(XC_top_left_arrow), */
+                                  None,
                                   GrabModeAsync);
 }
 
@@ -416,25 +413,19 @@ GrabButtonWithModifiers(int button, int modifier,
 void
 UngrabButtonWithModifiersWin(int button, int modifier, Window w)
 {
-  if (button > 0) {
+  if (AnyModifier == modifier) {
     XUngrabButton(dpy, button, modifier, w);
-    if (modifier != AnyModifier) {
-      int i = 0;
-      for (; i<8; ++i) {
-        XUngrabButton(dpy, button, (modifier | mask_mod_combos[i]), w);
-      }
-    }
   } else {
-    int i = 1;
-    for ( ; i <= XSERVER_MAX_BUTTONS; ++i) {
-      UngrabButtonWithModifiersWin(i,modifier,w);
+    int i = 0;
+    for (; i<8; ++i) {
+      XUngrabButton(dpy, button, (modifier | mask_mod_combos[i]), w);
     }
   }
 }
 
 __inline__ void
 UngrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw)
-{ UngrabButtonWithModifiersWin(button,modifier,psw->w); }
+{ UngrabButtonWithModifiersWin(button,modifier,psw->frame); }
 
 
 void 
@@ -609,21 +600,13 @@ ungrab_button_all_windows(int button, int modifier)
   }
 }
 
-/* to remove a binding from the global list (probably needs more processing
-   for mouse binding lines though, like when context is a title bar button).
-*/
-void 
-remove_binding(int context, unsigned int mods, int bnum_or_keycode,
-	       int mouse_binding)
+
+static void
+remove_binding_from_list(int context, unsigned int mods, int bnum_or_keycode,
+                         int mouse_binding)
 {
   Binding *pbnd = Scr.AllBindings, *pbndNext, *prev = NULL;
   
-  if (!mouse_binding) {
-    ungrab_key_all_windows(bnum_or_keycode, mods);
-  } else if (context & C_WINDOW) {
-    ungrab_button_all_windows(bnum_or_keycode,mods);
-  }
-
   while (pbnd) {
     pbndNext = pbnd->NextBinding;
     if (pbnd->IsMouse == mouse_binding) {
@@ -652,6 +635,21 @@ remove_binding(int context, unsigned int mods, int bnum_or_keycode,
   }
 }
 
+/* to remove a binding from the global list (probably needs more processing
+   for mouse binding lines though, like when context is a title bar button).
+*/
+void 
+remove_binding(int context, unsigned int mods, int bnum_or_keycode,
+	       int mouse_binding)
+{
+  if (!mouse_binding) {
+    ungrab_key_all_windows(bnum_or_keycode, mods);
+  } else if (context & C_WINDOW) {
+    ungrab_button_all_windows(bnum_or_keycode,mods);
+  }
+  remove_binding_from_list(context,mods,bnum_or_keycode,mouse_binding);
+}
+
 void 
 remove_binding_keysym(int context, unsigned int mods, KeySym keysym)
 {
@@ -666,7 +664,7 @@ add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p,
 {
   Binding *pbndPrev;
 
-  remove_binding(context,modmask,bnum_or_keycode,mouse_p);
+  remove_binding_from_list(context,modmask,bnum_or_keycode,mouse_p);
 
   pbndPrev = Scr.AllBindings; 
 
