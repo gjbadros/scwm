@@ -1,3 +1,9 @@
+Tue Mar 10 22:57:51 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* utilities/scwmexec/scwmexec.c: Capitalized EXPRESSION in the
+ 	usage note. Thanks to Sam Steingold <sds@usa.net> for the bug
+ 	report.
+
 Mon Mar  9 09:12:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* utilities/scwmexec/scwmexec.c: Use scwmexec_exec_full and

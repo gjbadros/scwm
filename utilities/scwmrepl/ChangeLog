@@ -1,3 +1,8 @@
+Tue Mar 10 22:56:43 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwmrepl.c: Fixed usage, thanks to Sam Steingold <sds@usa.net>
+ 	for the bug report and patch.
+
 Mon Mar  9 09:13:12 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* scwmrepl.c: Report errors and output, if any; also, stop
