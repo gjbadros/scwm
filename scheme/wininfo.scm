@@ -90,8 +90,8 @@
   (let ((wc-rgx (apply 
 		 make-regexp 
 		 (if full-regexp
-		     (wildcard->regexp wildcard)
-		     wildcard)
+		     wildcard
+		     (wildcard->regexp wildcard))
 		 regexp-options)))
     (lambda* (#&optional (w (get-window)))
       (or
