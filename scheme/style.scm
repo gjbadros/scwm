@@ -26,12 +26,9 @@
 
 
 
-;; MSFIX-- what's defalias in scheme?  syntax macro?
 ;; Also, this may be better placed somewhere else
 ;; Make make-pixmap and make-bitmap aliases for make-image;
 ;; Prefer and encourage make-image, though!
-;; GJBFIX-- You can just use define, I assume make-image is not
-;; going to be changing dynamically. Also, these should be exported.
 (define-public make-pixmap make-image)
 
 (define-public make-bitmap make-image)
