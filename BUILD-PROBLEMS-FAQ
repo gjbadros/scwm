@@ -1,4 +1,10 @@
-GNU Make 3.77 may not work properly with the automake+configure generated Makefiles.
+
+If make fails on you in any way, be sure you are using GNU Make, 
+available from ftp.gnu.org
+
+Also, note that GNU Make 3.77 may not work properly with the
+automake+configure generated Makefiles.  
+
 Use GNU Make 3.76.1 instead.  (Harald Meland --07/06/99 gjb)
 
 

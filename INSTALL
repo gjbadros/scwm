@@ -41,11 +41,36 @@ make.  You need to edit the line that looks like:
 ac_cv_lib_rx_main=${ac_cv_lib_rx_main='no'}
                                        ^^ be sure this is no
 
-Scwm is tested with guile-1.3.
+Scwm is tested with guile-1.3, with the single small important patch,
+guile-1.3-scm.patch (included with Scwm)
 
 You also need the `sed' stream editor in your PATH, and a working GNU make.
 
 Configuring guile `--with-threads' may be useful but is not currently required.
+
+It is also highly recommended that you have GTK+-1.2 and GLib-1.2 built
+and installed along with the guile-gtk wrapper of GTk+.
+
+GTK+-1.2 is available from www.gtk.org
+guile-gtk is available from www.ping.de/sites/zagadka/guile-gtk
+*** note that the cvs version is required for Scwm at this point --07/09/99 gjb
+*** use:
+
+CVSROOT=':pserver:anonymous@anoncvs.gnome.org:/cvs/gnome' \
+   cvs login
+CVSROOT=':pserver:anonymous@anoncvs.gnome.org:/cvs/gnome' \
+   cvs -z3 checkout guile-gtk
+
+to get guile-gtk.
+
+guile-gtk-0.17, when it is released, should be sufficient for Scwm to use.
+
+Other GNOME libraries, available from www.gnome.org, can be used by Scwm.
+In particular, the imlib library available from www.gnome.org can be used
+with Scwm instead of the xpm libraries; imlib's use results in some extra
+functionality such as resizable images and better color palette sharing
+behaviour.
+
 
 Using SCWM Without Installing It =========================================
 
@@ -53,22 +78,28 @@ If you want to run scwm without installing it, copy the
 sample.scwmrc/system.scwmrc file to your home directory as
 .scwmrc. Then set the environment variable `SCWM_LOAD_PATH' to a
 colon-separated list of directories, including the directory
-containing this INSTALL file.
+containing this INSTALL file and the directory filled with the
+modules' .so.* files.  There is a script, modules/make-devtest, that
+creates a subdirectory modules/lib/ and fills it with symlinks and
+copies the .so.* files from the various subdirectores of modules/.  You
+should run the script after building all the modules, and again after
+any of the modules change (e.g., if you are tracking CVS sources of
+Scwm).
 
 For example, suppose the Scwm distribution unpacked into a directory
-called `/home/mstachow/scwm-0.7' (so the full name of this file would be
-`/home/mstachow/scwm-0.7/INSTALL').  Then you might say
+called `$HOME/scwm-0.99' (so the full name of this file would be
+`$HOME/scwm-0.99/INSTALL').  Then you might say
 
 (for sh, Bash, Zsh, or other Bourne shell variants):
 
-  export SCWM_LOAD_PATH=/home/mstachow/scwm-0.7
+  export SCWM_LOAD_PATH=$HOME/scwm-0.99:$HOME/scwm-0.99/modules/lib
 
 or (for Csh, Tcsh, or one of its variants):
 
-  setenv SCWM_LOAD_PATH /home/mstachow/scwm-0.7
+  setenv SCWM_LOAD_PATH $HOME/scwm-0.99:$HOME/scwm-0.99/modules/lib
 
 After copying the .scwmrc and setting SCWM_LOAD_PATH, you should be
-able to run scwm out of the build directory without difficulty.
+able to run scwm out of the build directory without difficulty.  
 
 
 Generic Instructions for Building Auto-Configured Packages ================

@@ -40,8 +40,8 @@ ftp://ftp.gnu.org/pub/gnu/autoconf/autoconf-2.13.tar.gz
 automake 1.4:
 ftp://ftp.gnu.org/pub/gnu/automake/automake-1.4.tar.gz
 
-libtool 1.2d:
-ftp://alpha.gnu.org/pub/gnu/libtool-1.2d.tar.gz
+libtool 1.3
+ftp://ftp.gnu.org/pub/gnu/libtool/libtool-1.3.tar.gz
 
 Some of these packages may be available as .rpm or .deb packages, or
 other system-specific packages, but I haven't checked.
