@@ -278,7 +278,7 @@ void SendName(int channel, unsigned long event_type,unsigned long data1,
 void SendStrToModule(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
                      unsigned long context, char *action,int* Module);
 void DeadPipe(int nonsense);
-#endif /* MS_DELETION_COMMENT
+#endif /* MS_DELETION_COMMENT */
 void GetMwmHints(ScwmWindow *t);
 void SelectDecor(ScwmWindow *, unsigned long, int,int);
 extern Bool PopUpMenu(MenuRoot *, int, int);
