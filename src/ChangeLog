@@ -1,3 +1,13 @@
+Wed Apr 21 16:35:47 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c, window.h: Update order of args to ensure_valid,
+	get_window.  Drop FIXMS comment about the reordering of the
+	arguments (I hope we agree on what the order should be!)
+
+Wed Apr 21 15:48:03 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* *.c, *.h: Added vim modeline to end of file.
+
 Wed Apr 21 15:10:16 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* cursor.c, cursor.h: Added
