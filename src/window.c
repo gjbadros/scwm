@@ -2969,8 +2969,10 @@ specified. */
 void
 force_icon_redraw (ScwmWindow *psw)
 {
-  XDestroyWindow(dpy, psw->icon_w);
-  psw->icon_w = None;
+  if (None != psw->icon_w) {
+    XDestroyWindow(dpy, psw->icon_w);
+    psw->icon_w = None;
+  }
 
   if (psw->fIconified) {
     Iconify(psw, 0, 0);
@@ -3072,6 +3074,7 @@ context in the usual way if not specified. */
   }
 
   force_icon_redraw (psw);
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

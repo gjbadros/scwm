@@ -312,13 +312,14 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
 			   VisibilityChangeMask |
 			   ExposureMask | KeyPressMask | EnterWindowMask |
 			   FocusChangeMask);
+
   if (!psw->fNoIconTitle || (psw->icon_p_height == 0))
     psw->icon_w =
       XCreateWindow(dpy, Scr.Root, final_x, final_y + psw->icon_p_height,
 		    psw->icon_w_width, psw->icon_w_height, 0,
 		    CopyFromParent,
 		    CopyFromParent, CopyFromParent, valuemask, &attributes);
-  
+
   /* psw->icon_p_width should always be > 0 here - MS 2-19-98 */
   if ((psw->fIconOurs) /* && psw->icon_p_width > 0 */ 
       && psw->icon_p_height > 0) {
@@ -326,7 +327,7 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
       XCreateWindow(dpy, Scr.Root, final_x, final_y, psw->icon_p_width,
 		    psw->icon_p_height, 0, CopyFromParent,
 		    CopyFromParent, CopyFromParent, valuemask, &attributes);
-  } else {
+  } else if (None != psw->icon_pixmap_w) {
     attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
 			     VisibilityChangeMask |
 			     KeyPressMask | EnterWindowMask |
@@ -787,6 +788,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 
   LowerWindow(psw);
+
   if (psw->Desk == Scr.CurrentDesk) {
     if (psw->icon_w != None)
       XMapWindow(dpy, psw->icon_w);
@@ -795,6 +797,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
       XMapWindow(dpy, psw->icon_pixmap_w);
     KeepOnTop();
   }
+
   if (psw->fClickToFocus || psw->fSloppyFocus) {
     if (psw == Scr.Focus) {
       if (Scr.PreviousFocus == Scr.Focus)

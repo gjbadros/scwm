@@ -1,3 +1,11 @@
+1998-08-01  Maciej Stachowiak  <maciej@localhost.localdomain>
+
+	* icons.c (CreateIconWindow): Check if psw->icon_pixmap_w is None
+	before trying to set it's attributes.
+
+	* window.c (force_icon_redraw): Check if psw->icon_w is None
+	before destroying it.
+
 1998-08-01  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
 
 	* miscprocs.c: Rename set-click-time! to set-click-delay! and
