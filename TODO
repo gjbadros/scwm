@@ -1,6 +1,8 @@
 - Make scwm work with automake, and libtool where appropriate; this
 should make setting up loadable modules much easier.
 
+- get rid of sun-headers.h -- we should just include the proper files
+
 - Implement error reporting and output redirection for the scwmexec
 protocol, and make setting the SCWMEXEC_REQWIN property safe against
 race conditions; with these, scwmrepl should be a total replacement of

@@ -1,3 +1,9 @@
+Sun Mar 29 10:47:24 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Add transient? to window-info
+
+	* fvwm-eval.scm: Fix typo that showed up with FvwmWinList
+
 Sun Mar 29 15:04:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* base.scm: Add thunk macro.

@@ -1,3 +1,56 @@
+Sun Mar 29 13:38:24 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* misc.c: simplify code for return value of GrabEm()
+
+	* scwmmenu.c: Commented out the attempt to send XK_Right;
+	XPutBackKeystrokeEvent seems to be working, now, though, but the
+	menu still doesn't deal with the keystroke event properly.
+
+	* window.c: Simplify DeferExecution -- it's now only used by
+	select_window, and it's still buggy (when used with scwmexec)
+
+Sun Mar 29 11:01:49 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* borders.c: use SHOW_TITLE_P, instead of just checking fTitle --
+	this handles decorate transients better, as they might have fTitle 
+	set, but fDecorateTransient not set and be a transient window;
+	Also changed SetupFrame(..) a bit to make it more clear what is
+	happening (replaced uses of title_height by new variable
+	button_width when they conceptually were the decoration button
+	width [which we choose to be the title_height so the buttons are
+	square]) 
+
+	* decorations.c: Use SHOW_TITLE_P, see above note.
+
+	* misc.c, misc.h: Added FXWindowAccessible(..) to abstract the oft-used
+	XGetGeometry calls used only for their error return value;
+	presumably this is just checking whether the window exists and can 
+	be accessed.
+
+	* miscprocs.c: Comment the RESOLUTION macro
+
+	* scmprocs.c, window.c, window.h: Added transient? primitive,
+	added CopySetAllFlags(..), added SHOW_TITLE_P macro for testing
+	whether a title should be visible
+
+	* scwm.c: Clean up some of the startup code -- moved the XSync in
+	CaptureAllWindows into just the recapture case -- the main startup 
+	code does an XSync anyway.  Added some commented out
+	XDeleteProperty-s;  not sure if these are necessary, but my gut
+	feeling was that we want to return the Server to a cleaner state.
+
+	* scwmmenu.c: Make keyboard shortcuts immediately prepop the next
+ 	menu, use SCM_BOOL_FromBool(..), Try XPutBackKeystrokeEvent to
+ 	send a XK_Right to also automatically move the pointer into the
+ 	newly popped menu item (this doesn't work yet -- I probably need
+ 	to fill in more fields of the XKeyEvent struct.)
+	
+	* binding.c: Use 's' for super modifier, not 'P'
+
+	* add_window.c (AddWindow): Clean up a lot -- always create the
+	title windows, since we dynamically can turn them on or off.
+	Simplify and comment throughout.
+
 Fri Mar 27 12:26:18 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* module-interface.c: Use new hook interface. The broadcast-hook,
