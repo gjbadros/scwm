@@ -1,3 +1,10 @@
+Wed Apr  7 17:27:53 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm: Added Ken Pizzini's warp-placement feature.  Use
+	the 'warp-placement property of a window (a list of two elements)
+	to control where the pointer gets warped to when a window is
+	selected. 
+
 Wed Apr  7 08:03:15 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* prompt-proc.scm: ws change.

@@ -40,6 +40,8 @@ Installation related
 * Add "srpm", "rpm" and "deb" targets to the makefile to make it
 easier to build source rpms, binary rpms, and debian packages
 
+* Add a scwm-icons-...-noarch.rpm
+
 
 Scwm-core related
 -----------------

@@ -1,3 +1,8 @@
+Wed Apr  7 17:40:14 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c (DeferExecution): make DBG msg into DBUG macro so it
+	compiles away (i.e., remove some debug output).
+
 Wed Apr  7 10:32:01 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.c (scwm_main): Handle SIGFPE, too
