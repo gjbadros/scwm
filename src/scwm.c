@@ -1295,10 +1295,10 @@ void init_scwm_load_path()
   SCWM_VAR_READ_ONLY(pct_load_path,"%load-path", SCM_EOL);
   /** The internal compiled-in loading path for scwm. */
 
-  path=*pscm_load_path;
+  path=*pscm_pct_load_path;
   path=gh_cons(gh_str02scm(SCWM_LOAD_PATH),path);
   path=scm_internal_parse_path(getenv("SCWM_LOAD_PATH"), path);
-  *pscm_load_path = path;
+  *pscm_pct_load_path = path;
 }
 
 
