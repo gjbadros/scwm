@@ -142,7 +142,7 @@
 (define applications-available-program-information
   `(
     ("&Netscape" "nscape" "netscape_3d" "netscape")
-    ("GNU &Emacs" "edit" "emacs_3d" "emacs")
+    ("GNU &Emacs" "edit" "emacs_3d" "xemacs")
     ("Email (&Gnus)" #f #f "emailuw")
 ;;    ("Calenda&r" "clock" "calendar.next" "PREFERRED_CALENDAR_BIN")
     ("&Ical" "clock" "calendar.next" "ical")
@@ -905,6 +905,7 @@ union of all other window managers!
 
 (define menu-prefs-gjb
   (menu (list (menu-title "Preferences") menu-separator
+	      (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
 	      (menuitem "Change global theme" #:submenu (lambda () (menu-global-theme #t)))
 	      (menuitem "Reload .Xresources" #:action
 			(exe "xrdb -merge ${HOME}/.Xresources"))
@@ -1475,4 +1476,4 @@ union of all other window managers!
 
 ;; Get my preferences from ~/.scwm-options --
 ;; let them take priority over anything I do in here
-;; (load-preferences)
+(load-preferences)
