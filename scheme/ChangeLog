@@ -1,3 +1,10 @@
+Wed Jul 29 19:20:46 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* doc.scm: Added
+	
+	* flux.scm: Move doc-files and documentation into doc.scm; Added
+	  find-window-by-name and window-bottom from Harvey Stein.
+
 Mon Jul 27 20:07:17 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: use opaque moves by default, for
