@@ -1,3 +1,14 @@
+Mon Sep 27 08:42:33 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* misc/startscwm:  Fix scwm/scwm to src/scwm.  Try to let
+	"display=:1 startscwm" work.  Fix bug in loading of .Xmodmap files 
+	-- was referencing un-defined shell variables.
+
+Sun Sep 26 14:06:31 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* run-renamed/Makefile.am:  Change dependence to
+	../../src/syscompat.o, not ../../scwm/syscompat.o
+
 Fri Sep 17 12:53:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/startscwm: Echo "exit" when Scwm crashes before starting
