@@ -86,10 +86,10 @@
 	(apply intersection-area
 	       (append
 		(window-position w)
-		(window-size w)
+		(window-frame-size w)
 		(list 0 0)
 		(display-size))))
-     (apply * (window-size w))))
+     (apply * (window-frame-size w))))
 	   
 (define*-public (window-geometry-string #&optional (w (get-window)))
   (if w (let ((i (iconified? w))
