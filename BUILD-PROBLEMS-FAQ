@@ -1,4 +1,14 @@
 
+libtool announces an error about --no-rexec option?
+
+Just 
+
+rm libtool ltconfig ltmain.sh
+
+and re-run
+
+./autogen.sh
+
 If make fails on you in any way, be sure you are using GNU Make, 
 available from ftp.gnu.org
 
