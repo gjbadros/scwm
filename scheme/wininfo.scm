@@ -109,7 +109,7 @@ if it were on top (unobscured)."
 		    (window-frame-size win)
 		    (list 0 0)
 		    (display-size))))
-	 (apply * (window-frame-size win))))
+	 (apply * (window-frame-size win)))))
 
 (define*-public (window-geometry-string #&optional (win (get-window)))
   "Return a string corresponding to the geometry specifications for WIN.
