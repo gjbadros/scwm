@@ -54,6 +54,6 @@ int  strncasecmp(char *s1, char *s2, int n);
   #else /* HAVE_SETVBUF */
     #define setlinebuf(stream) setbuf((stream), NULL);
   #endif /* HAVE_SETVBUF */
-#endif /* HAVE_SETLINEBUF
+#endif /* HAVE_SETLINEBUF */
 
 #endif /* SYSCOMPAT_H */
