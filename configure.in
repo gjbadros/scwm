@@ -45,8 +45,6 @@ dnl ## Checks for programs ##
 AC_PROG_CC
 AC_PROG_CXX
 
-
-
 AC_CHECK_PROGS(GTAR, gnutar gtar tar, "no")
 
 AC_DEFUN(scwm_TAR_IS_GNU_TAR,
@@ -441,27 +439,6 @@ AC_TRY_LINK([
 return scm_the_last_stack_fluid;
 ], [
 AC_DEFINE(HAVE_SCM_THE_LAST_STACK_FLUID)
-AC_MSG_RESULT(yes)
-],[
-AC_MSG_RESULT(no)
-])
-
-LIBS="${saved_LIBS}"
-CFLAGS="${saved_CFLAGS}"
-
-
-dnl FIXJTL: this shouldn't be needed any more; verify and remove
-saved_LIBS="${LIBS}"
-LIBS="${LIBS} ${GUILE_LIBS}"
-saved_CFLAGS="${CFLAGS}"
-CFLAGS="${CFLAGS} ${GUILE_INCLUDES}"
-AC_MSG_CHECKING(whether scm_make_vector in -lguile takes a third argument)
-AC_TRY_LINK([
-#include <guile/gh.h>
-],[
-return scm_make_vector(SCM_MAKINUM(0), SCM_BOOL_F, SCM_BOOL_F);
-], [
-AC_DEFINE(HAVE_SCM_MAKE_VECTOR_3_ARGS)
 AC_MSG_RESULT(yes)
 ],[
 AC_MSG_RESULT(no)
