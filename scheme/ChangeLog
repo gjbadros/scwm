@@ -1,3 +1,13 @@
+Sun Apr 11 17:32:05 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm: Added enumerate-hotkeys option to
+	`show-window-list-menu'; Thanks to Eric Beuscher for patch!
+
+Sun Apr 11 16:50:08 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gtk.scm: Do not dispatch gtk events if the server is grabbed.
+	(Uses new `X-server-grabs' primitive)
+
 Sat Apr 10 17:06:19 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* hover-focus.scm: Fixed the : -> #: in the define-scwm-option,

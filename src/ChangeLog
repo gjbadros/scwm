@@ -1,3 +1,42 @@
+Sun Apr 11 17:27:36 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* move.c, resize.c, window.c: add a ms_sleep(10) when looping calling
+	NoEventsScwmUpdate() so it blocks a little bit;  we really need a
+	better blocking mechanism.
+
+	* events.c: Do not run input hooks when the server is grabbed --
+	causes GTk+ windows to hang if manual placement is used.
+
+	* Grab.h, Grab.c: Add and export CServerGrabs, new primitive
+	`X-server-grabs'. Updated some docs, fix some possible future
+	races.
+
+Sat Apr 10 20:30:03 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* drawmenu.c: Biggish rewrite of the menuitem flexibility stuff I
+	implemented too quickly yesterday.  Added HLBGColor, HLTextColor
+	to MenuDrawingInfo-s, drop TextColor and font.  Move TextColor and 
+	font into MenuItemDrawinInfo struct, and have that have a BGColor
+	value, too.  Manage all the drawing and color setting -- this code 
+	has too much optimization in avoiding GC manipulation; it cannot
+	be *that* expensive to mess with GCs.  Get the height of an item
+	right based on the items font size -- do not assume they'll all be 
+	the same height.
+
+	* menu.h: Added scmHLBGColor, scmHLTextColor to menus-- does not
+	seem to make sense to let the highlight color change on a per item 
+	basis.  Also added fHighlightRelief to permit turning off
+	relieving if the highlight colors are to be used exclusively for
+	indicating the selected menu item.
+
+	* menu.c: Mark new objects, provide getters/setters:
+	`(set-)menu-highlight-colors(!)',
+	`(set-)menu-highlight-relief(!/?)'
+
+	* color.h: Added SAFE_COLOR_USE_DEF and DYNAMIC_SAFE_COLOR_USE_DEF 
+	macros since I was thinking 0 was a valid out-of-range value for
+	Pixels (but it's not-- it's often black! duh!)
+
 Sat Apr 10 17:16:30 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandlePropertyNotify): Call the X-PropertyNotify-hook
