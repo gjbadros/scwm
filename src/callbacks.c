@@ -819,9 +819,9 @@ force_new_input_hooks()
   for (cur = gh_cdr(new_input_hooks);
        cur != SCM_EOL;
        cur = gh_cdr(cur)) {
-    if (gh_list_p(cur)) {
+    if (gh_pair_p(cur)) {
       SCM item = gh_car(cur);
-      if (gh_list_p(item)) {
+      if (gh_pair_p(item)) {
         SCM port = gh_car(item);
         SCM proc = gh_cdr(item);
         while (SCM_BOOL_F!=gh_memq(item, input_hooks) && 
