@@ -1,3 +1,9 @@
+Thu Mar 18 09:51:47 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* THANKS: Added entries at top for Carl Witty for his
+ 	documentation fixes and code cleanup, Jeffrey Nichols for the
+ 	message window feature, UI for constraints.
+
 Wed Mar 17 18:41:12 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added SCWM_ARG_PATH_MAYBE_EMPTY macro to support
