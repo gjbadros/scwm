@@ -245,9 +245,9 @@ SCWM_PROC(get_x_cursor,"get-x-cursor",1,0,0,
 	  (SCM name_or_number),
 "Return the cursor object corresponding to NAME-OR-NUMBER.
 NAME-OR-NUMBER can be either a string naming an X11 cursor (e.g.,
-"trek") or a number specifying the cursor number.  See 
+\"trek\") or a number specifying the cursor number.  See 
 <file>X11/cursorfont.h</file> for the standard cursors.  Note
-that the "XC_" macro prefix should be omitted when used with
+that the \"XC_\" macro prefix should be omitted when used with
 this procedure..")
 #define FUNC_NAME s_get_x_cursor
 {

@@ -618,7 +618,7 @@ SCWM_PROC(user_name, "user-name", 0, 0, 0,
 This is set to one of the following (in order of relevance):
 <envar>$USER</envar>, <envar>$LOGNAME</envar>,
 the name field of the current uid's entry in the password file,
-the constant string "nobody".")
+the constant string \"nobody\".")
 #define FUNC_NAME s_user_name
 {
   return gh_str02scm(UserName);
@@ -631,7 +631,7 @@ SCWM_PROC(user_home, "user-home", 0, 0, 0,
 This is set to one of the following (in order of relevance):
 <envar>$HOME</envar>,
 the directory field of the current uid's entry in the password file,
-the constant string "/tmp".")
+the constant string \"/tmp\".")
 #define FUNC_NAME s_user_home
 {
   return gh_str02scm(UserHome);
@@ -813,8 +813,8 @@ The return value is (string modmask button-number #t).  The
 `cdr' of the return value can be used as the arguments to 
 `undo-passive-grab' and `redo-passive-grab'.
 The string is usable as a mouse binding string.  Modifiers 
-are listed first, separated by "-" followed by a "-" and the
-button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1.")
+are listed first, separated by \"-\" followed by a \"-\" and the
+button number.  E.g., \"S-C-M-1\" is Shift+Control+Meta + button 1.")
 #define FUNC_NAME s_get_mouse_event
 {
   Bool fAsyncMouse = True;

@@ -953,7 +953,7 @@ otherwise. ")
 SCWM_PROC(keysym_to_keycode, "keysym->keycode", 1, 0, 0,
           (SCM keysym_name),
 "Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
-KEYSYM-NAME should be a string.  E.g., "Control_L".  Return #f if KEYSYM-NAME
+KEYSYM-NAME should be a string.  E.g., \"Control_L\".  Return #f if KEYSYM-NAME
 is not a valid keysym.")
 #define FUNC_NAME s_keysym_to_keycode
 {
@@ -1215,7 +1215,7 @@ SCWM_PROC(lookup_mouse, "lookup-mouse", 2, 0, 0,
           (SCM contexts, SCM button),
 "Return the procedure bound to mouse BUTTON within the CONTEXTS.
 BUTTON is a string that may contain modifier prefixes, e.g.,
-"C-S-M-1". 
+\"C-S-M-1\". 
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number and any
 modifiers as a prefix.
@@ -1629,7 +1629,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3.")
 SCWM_PROC (keymask_to_string, "keymask->string", 1, 0, 0,
            (SCM keymask),
 "Return a string representing KEYMASK.
-E.g., (keymask->string 4) => "C-". Returns #f on an error.")
+E.g., (keymask->string 4) => \"C-\". Returns #f on an error.")
 #define FUNC_NAME s_keymask_to_string
 {
   int mask;
@@ -1649,7 +1649,7 @@ E.g., (keymask->string 4) => "C-". Returns #f on an error.")
 SCWM_PROC (keymask_keycode_to_string, "keymask-keycode->string", 2, 0, 0,
            (SCM keymask, SCM keycode),
 "Return a string representing the key press with mask KEYMASK, code KEYCODE.
-E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.")
+E.g., (keymask-keycode->string 4 44) => \"C-j\". Returns #f on an error.")
 #define FUNC_NAME s_keymask_keycode_to_string
 {
   int mask;

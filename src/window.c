@@ -969,9 +969,9 @@ viewport-x and viewport-y give the position in the viewport that the
 cursor was located when the selection was finalized.  RELEASE?
 indicates whether to whether to wait for a mouse release or act
 immediately on the click.  CURSOR is the cursor object to use, or
-#t for the "skull and cross-bones" kill cursor
+#t for the \"skull and cross-bones\" kill cursor
 (recommended for destructive operations like delete-window and
-destroy-window), or #f or omitted for the standard circle cursor. ")
+destroy-window), or #f or omitted for the standard circle cursor.")
 #define FUNC_NAME s_select_viewport_position
 {
   XEvent ev;
@@ -1033,7 +1033,7 @@ interactive selection (if any) should wait for a mouse release event
 or just a press. The latter behavior is useful if the action being
 performed on the window is an interactive one involving mouse
 drags. The CURSOR argument is either a cursor object or #t to use
-the "skull and crossbones" cursor, or #f to use the standard
+the \"skull and crossbones\" cursor, or #f to use the standard
 circle cursor.")
 #define FUNC_NAME s_get_window
 {
@@ -2136,8 +2136,8 @@ specified.")
 
 SCWM_IPROC(unstick_window, "unstick-window", 0, 1, 0,
   (SCM win),
-"Cause a window to no longer be "sticky", if it is.
-See `stick' for an explanation. WIN defaults to the window context in
+"Cause a window to no longer be \"sticky\", if it is.
+See `stick-window' for an explanation. WIN defaults to the window context in
 the usual way if not specified.")
 #define FUNC_NAME s_unstick_window
 {
@@ -2170,8 +2170,8 @@ the usual way if not specified.")
 
 SCWM_PROC(sticky_window_p, "sticky-window?", 0, 1, 0,
           (SCM win),
-"Return #t if WIN is "sticky", #f otherwise.
-See `stick' for an explanation. WIN defaults to the
+"Return #t if WIN is \"sticky\", #f otherwise.
+See `stick-window' for an explanation. WIN defaults to the
 window context in the usual way if not specified.")
 #define FUNC_NAME s_sticky_window_p
 {
@@ -2205,11 +2205,11 @@ SCWM_PROPERTY_HANDLER(sticky_handler, sym_sticky, sticky_window_p, set_sticky);
 
 SCWM_IPROC(shade_window, "shade-window", 0, 1, 0,
            (SCM win),
-"Cause WIN to become "window-shaded".
+"Cause WIN to become \"window-shaded\".
 That is, to roll up into just a titlebar. By default, the change takes
 place instantaneously. WIN defaults to the window context in the usual
 way if not specified. See also `window-unshade'.
-A shaded window has the "WM_STATE" hint set to WithdrawnState, since 
+A shaded window has the \"WM_STATE\" hint set to WithdrawnState, since 
 the client application window is not visible.")
 #define FUNC_NAME s_shade_window
 {
@@ -2251,7 +2251,7 @@ SCWM_IPROC(unshade_window, "unshade-window", 0, 1, 0,
 "Reverse the effect of `shade-window' on WIN.
 The change takes place instantaneously. WIN defaults to the window
 context in the usual way if not specified.
-A shaded window has the "WM_STATE" hint set to WithdrawnState, since 
+A shaded window has the \"WM_STATE\" hint set to WithdrawnState, since 
 the client application window is not visible.")
 #define FUNC_NAME s_unshade_window
 {
@@ -3325,8 +3325,11 @@ WIN defaults to the window context in the usual way if not specified.")
 
 SCWM_IPROC(stick_icon, "stick-icon", 0, 1, 0,
            (SCM win),
-"Cause WIN's icon to become "sticky". See `stick'. WIN
-defaults to the window context in the usual way if not specified.")
+"Cause WIN's icon to become \"sticky\". 
+A sticky window stays at its current viewport position
+no matter how where the viewport is in the virtual desktop.
+See `stick-window'. 
+WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_stick_icon
 {
   ScwmWindow *psw;
@@ -3342,8 +3345,11 @@ defaults to the window context in the usual way if not specified.")
 
 SCWM_IPROC(unstick_icon, "unstick-icon", 0, 1, 0,
            (SCM win),
-"Cause WIN's icon to no longer by "sticky". See `stick-icon'
-and `stick'. WIN defaults to the window context in the usual way if
+"Cause WIN's icon to no longer be \"sticky\". 
+A sticky window stays at its current viewport position
+no matter how where the viewport is in the virtual desktop.
+See `stick-icon' and `stick-window'. 
+WIN defaults to the window context in the usual way if
 not specified.")
 #define FUNC_NAME s_unstick_icon
 {
@@ -3360,8 +3366,8 @@ not specified.")
 
 SCWM_PROC(icon_sticky_p, "icon-sticky?", 0, 1, 0,
           (SCM win),
-"Return #t if WIN is "sticky", #f otherwise.
-See `stick-icon' and `stick'. WIN defaults to the window context in
+"Return #t if WIN is \"sticky\", #f otherwise.
+See `stick-icon' and `stick-window'. WIN defaults to the window context in
 the usual way if not specified.")
 #define FUNC_NAME s_icon_sticky_p
 {
@@ -3478,7 +3484,7 @@ Returns one of 'mouse, 'click, 'sloppy, or 'none.")
 
 SCWM_PROC(get_window_colors, "get-window-colors", 0, 1, 0,
           (SCM win),
-"Return a two-element list, "(fg bg)", the colors for WIN.")
+"Return a two-element list, '(fg bg), the colors for WIN.")
 #define FUNC_NAME s_get_window_colors
 {
   ScwmWindow *psw;
@@ -3492,7 +3498,7 @@ SCWM_PROC(get_window_colors, "get-window-colors", 0, 1, 0,
 
 SCWM_PROC(get_window_highlight_colors, "get-window-highlight-colors", 0, 1, 0,
           (SCM win),
-"Return a two-element list, "(fg bg)", the highlight colors for WIN.
+"Return a two-element list, '(fg bg), the highlight colors for WIN.
 fg or bg may be #f, which means that the color is inherited from the decor.")
 #define FUNC_NAME s_get_window_highlight_colors
 {

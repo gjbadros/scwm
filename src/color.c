@@ -505,8 +505,8 @@ SCWM_PROC(make_reversed_color, "make-reversed-color", 1, 0, 0,
           (SCM color),
 "Return a new color that is opposite COLOR.
 Note that the returned color will not necessarily contrast with
-COLOR; (make-reversed-color "gray50") is almost indistinguishable
-from "gray50".")
+COLOR; (make-reversed-color \"gray50\") is almost indistinguishable
+from \"gray50\".")
 #define FUNC_NAME s_make_reversed_color
 {
   VALIDATE_ARG_COLOR(1,color);

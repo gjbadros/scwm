@@ -933,7 +933,7 @@ SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
 "Specify the Mwm flag for BUTTON.
 If FLAG is #t, the button's relief pattern (if any) will appear to
 reverse in depth sense (i.e., flip from sunken in to extruding out)
-when the window is maximized (has a non-#f "maximized" window
+when the window is maximized (has a non-#f \"maximized\" window
 property).")
 #define FUNC_NAME s_set_button_mwm_flag_x
 {

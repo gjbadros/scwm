@@ -627,7 +627,7 @@ FIXDOC: Link to file!
 SCWM_PROC (reset_scwmexec_protocol, "reset-scwmexec-protocol", 0, 0, 0,
            (),
 "Reset the scwmexec protocol.
-This procedure removes the "XA_SCWMEXEC_REQUEST" property on the
+This procedure removes the \"XA_SCWMEXEC_REQUEST\" property on the
 root window.  It should not be necessary but may be useful in case
 your X server goes awry (and otherwise you would have to restart your
 X server).  Use if scwmexec or scwmrepl are not returning (e.g.,

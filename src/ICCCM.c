@@ -67,11 +67,11 @@ send_clientmessage(Display * disp, Window w, Atom a, Time timestamp)
 
 SCWM_PROC(send_client_message, "send-client-message", 2, 0, 1,
           (SCM win, SCM atom, SCM data),
-"Send WIN the message "ATOM DATA".
+"Send WIN the message \"ATOM DATA\".
 WIN can be 'root-window or an X window identification number.
 Useful for supporting other WMs module communication protocols. 
 ATOM is the X11 atom representing the message type (e.g.,
-"XA_WM_PROTOCOLS") and DATA is up to 4 32-bit integers of data.
+\"XA_WM_PROTOCOLS\") and DATA is up to 4 32-bit integers of data.
 for the message. DATA will be the used to create the message data, 
 and the lastTimestamp will be appended as the last integer in
 the data message.")

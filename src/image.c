@@ -410,7 +410,7 @@ SCWM_PROC(register_image_loader, "register-image-loader", 2, 0, 0,
           (SCM extension, SCM proc),
 "Register PROC as the loader to use for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
-empty string (for files with no extension), or the string "default"
+empty string (for files with no extension), or the string \"default\"
 (for files that no other image loader succeeds in loading). PROC will
 be called with the full pathname of the image and should return an
 image object, or #f if it succeeds.")
@@ -431,7 +431,7 @@ SCWM_PROC(unregister_image_loader, "unregister-image-loader", 1, 0, 0,
           (SCM extension),
 "Unregister the loader, if any, for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
-empty string (for files with no extension), or the string "default"
+empty string (for files with no extension), or the string \"default\"
 (for files that no other image loader succeeds in loading).")
 #define FUNC_NAME s_unregister_image_loader
 {
@@ -569,7 +569,7 @@ SCWM_PROC(make_image, "make-image", 1, 0, 0,
           (SCM name),
 "Loads an image from the file NAME.
 To load the image, the appropriate image loaders will be invoked as
-needed. If NAME starts with "/", "./" or "../", it is treated as a
+needed. If NAME starts with \"/\", \"./\" or \"../\", it is treated as a
 fully qualified pathname; otherwise, the image path is searched for an
 appropriate file.")
 #define FUNC_NAME s_make_image

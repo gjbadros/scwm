@@ -179,8 +179,8 @@ SCWM_PROC(restart, "restart", 0, 1, 0,
           (SCM command),
 "Restart the window manager. 
 If COMMAND is specified, use that, as the new window manager to
-run. If COMMAND is not specified or is exactly equal to"scwm", restart scwm with the same command-line
-arguments as given previously.")
+run. If COMMAND is not specified or is exactly equal to \"scwm\",
+restart scwm with the same command-line arguments as given previously.")
 #define FUNC_NAME s_restart
 {
   char *sz;

@@ -492,7 +492,7 @@ used in user-defined placement procedures (see
 
 SCWM_PROC(clever_place_window, "clever-place-window", 1, 0, 0, 
           (SCM win),
-"Places WIN using fvwm2's "ReallySmart" algorithm.
+"Places WIN using fvwm2's \"ReallySmart\" algorithm.
 The placement is just as if being placed by fvwm2's SmartPlacement,
 as if SmartPlacementIsReallySmart were in effect. That is, it
 tries to place the window so as to minimize its area of

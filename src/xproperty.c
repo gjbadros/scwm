@@ -104,7 +104,7 @@ SCWM_PROC(X_property_set_x, "X-property-set!", 3, 3, 0,
 	  (SCM win, SCM name, SCM value, SCM type, SCM format, SCM action),
 "Set X property NAME on window WIN to VALUE.
 WIN is the window to set the X property on, an X window id, or 'root-window.
-NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to "STRING".
+NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to \"STRING\".
 FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
 If FORMAT is 8, VALUE may be a string or a list of null-terminated strings.
@@ -253,10 +253,10 @@ NAME is a string or an X/11 atom (long).
 If CONSUME? is #t, the X property is deleted after getting it. Default is
 not to delete.
 If the X property could not be found, #f is returned.
-If the X property could be found, a list "(value type format)" is returned.
-"type" is a string.
-"format" is either 8, 16, or 32, giving the size of the elements of "value".
-"value" is a string, if "format" is 8, or a vector of integers otherwise.")
+If the X property could be found, a list '(value type format) is returned.
+\"type\" is a string.
+\"format\" is either 8, 16, or 32, giving the size of the elements of \"value\".
+\"value\" is a string, if \"format\" is 8, or a vector of integers otherwise.")
 #define FUNC_NAME s_X_property_get
 {
   Bool del;
