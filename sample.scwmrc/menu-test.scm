@@ -1,10 +1,12 @@
 ;;; menu-item test cases
+
 (define sticky-menu-item
   (make-menu-item "Sticky - this is a long one" toggle-stick "C-S-F8" #f
-		  (make-image "unknown.xpm") #f "sticky"))
+		  (make-image "mini-stick.xpm") #f "sticky"))
 
+;; Use a pixmap separator is just temporary -- it has lots of problems
 (define move-menu-item
-  (make-menu-item "Move" interactive-move "C-S-F7" #f
+  (make-menu-item "Move" interactive-move "C-S-F7" (make-image "separator.xbm")
 		  (make-image "mini-move.xpm") #f "move"))
 
 (define resize-menu-item
