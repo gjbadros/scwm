@@ -13,6 +13,7 @@
 (define-module (app scwm flux)
   :use-module (ice-9 regex)
   :use-module (app scwm base)
+  :use-module (app scwm winlist)
   :use-module (app scwm optargs))
 
 
