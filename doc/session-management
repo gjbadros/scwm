@@ -51,10 +51,9 @@ A: The window manager cares mainly about the state of windows - their
    appropriate.
 
 Q: What is really preserved by scwm?
-A: Right now (98/11/09) window geometry, and the following flags are
-   preserved: keep-on-top, sticky, sticky-icon, winlist-skip, circulate-skip,
-   circulate-skip-icon. Iconification and desk number is planned but does not
-   work yet.
+A: Right now (98-11-16) window geometry, icon position, desk number, and the
+   following flags are preserved: iconified, keep-on-top, sticky, sticky-icon,
+   winlist-skip, circulate-skip, circulate-skip-icon.
 
 Q: Ok, I want to check it out. What do I do?
 A: Edit your "~/.xsession" or "~/.xinitrc". If you don't have one, copy the
