@@ -39,6 +39,13 @@ and add convenient ways to match on certain other things.
 * bug fixes
 
 * event rewrite
+** Read about Tk's multi-event sequences:
+> The relevant user-level documentation is in the bind manpage (man 3tk
+> bind); in particular, the section "multi-event sequences and ignored
+> events" describes how multi-event bindings are matched against
+> events.  The implementation is in tkBind.c:Tk_BindEvent().
+  -- says Carl Witty
+
 
 * decorations rewrite
 
