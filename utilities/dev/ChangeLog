@@ -1,3 +1,9 @@
+Sun Dec  5 16:00:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Handle SCWM_IPROC's extra interactive-specification
+ 	argument.  Also avoid using an undefined variable when comment is
+ 	missing.
+
 Sat Dec  4 12:36:24 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: unescaped escaped quotes in C docstrings, too, now,
