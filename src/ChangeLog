@@ -1,3 +1,26 @@
+Thu Apr 15 19:24:28 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* events.c: Added `handle-pending-events';  this lets
+	delete-multiple-windows-interactively work like a charm since the
+	killed window can be removed from the display.  This procedure
+	would let Scwm have the main thread of control in Scheme, instead
+	of C (not an explicit goal, just an off-the-cuff observation about 
+	its power).
+
+	* window.c: Doc fix.
+
+	* menuitem.c: Export `menuitem?' primitive
+
+Thu Apr 15 12:59:23 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* *.c: Drop SCM_SETGC8MARK calls in mark functions -- gc hands
+	objects to us already marked (thanks Greg Harvey for pointing this 
+	out!)
+
+	* scwm.h: Call SCM_SETCDR before SCM_SETCAR in SCWM_NEWCELL_SMOB
+	-- a bit safer, and will be fine when gc is changed as Greg Harvey 
+	suggests it might be.
+
 Wed Apr 14 15:09:12 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Build fixes: added scwm-screen-ci.hpp to

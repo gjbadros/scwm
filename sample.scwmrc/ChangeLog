@@ -1,3 +1,9 @@
+Thu Apr 15 19:06:51 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use window-selection, group modules.  Add dev
+	documentation to my doc-files path.  Added keybindings for window
+	selection support (the highlight-current-window stuff is still buggy).
+
 Wed Apr 14 15:10:01 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (EXTRA_DIST): Added mstachow.scwmrc, robbe.scwmrc,
