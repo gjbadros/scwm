@@ -1,3 +1,11 @@
+Tue Feb  1 14:17:16 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* style.scm: Drop `deiconify-window' from the start-iconified
+	window style;  when it's false, just do nothing.  This is perhaps
+	the right behaviour, but also works around a bug in drawing ghost
+	frames for iconified windows when restarting.  A better fix might
+	change Deiconify() in window.c.
+
 Wed Jan 26 16:50:44 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* placement.scm: Added `at-virtual-offset-placement'.

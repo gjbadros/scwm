@@ -1,3 +1,17 @@
+Wed Feb  2 09:19:30 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* shutdown.c: Fix some SCWM_IPROC uses, and make `restart'
+ 	interactive.
+
+	* callbacks.c: Fix an error in the !HAVE_SCM_MAKE_HOOK (i.e., <
+	guile-1.3.4 or so);  should just not support earlier versions of
+	Guile, methinks.
+
+Tue Feb  1 14:19:04 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* shutdown.c: Make `quit' interactive using SCWM_IPROC, and drop
+	its rest args.
+
 Fri Jan 28 14:33:21 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* resize.c: Use the adding 1 to dwidth/dheight only if the
