@@ -732,11 +732,20 @@ exec guile -l $0 -- --run-from-shell "$@"
 	 (skip-to-next-quote (cdr l)))))
 
 
+(define (capitalize! s)
+  (do ((i 1 (1+ i))
+       (l (string-length s)))
+      ((>= i l)
+       (if (>= l 1)
+	   (string-set! s 0 (char-upcase (string-ref s 0))))
+       s)
+    (string-set! s i (char-downcase (string-ref s i)))))
+
 (define (parse-doc doclist)
-  (define parser (make-regexp "^[ \t]*([^ \t:]*):[ \t]*(.*)[ \t]*$"))
+  (define parser (make-regexp "^[ \t]*([^ \t:]*):[ \t]*(.*[^ \t])[ \t]*$"))
   (cond ((null? doclist) '(#f '()))
 	(else (let ((match (regexp-exec parser (car doclist))))
-		(list (match:substring match 1)
+		(list (capitalize! (match:substring match 1))
 		      (match:substring match 2)
 		      (cdr doclist))))))
   
@@ -861,7 +870,7 @@ exec guile -l $0 -- --run-from-shell "$@"
 
 (define (proclist->file-chapter procs)
   (let ((procs (group (sort procs (lexcmp (list (list (lambda (x) (docitem:file x)) string<? string=?)
-						(list (lambda (x) (docitem:line x)) < =))))
+						(list (lambda (x) (vdocitem:scheme-name x)) string<? string=?))))
 		      (lambda (x y) (string=? (docitem:file x) (docitem:file y))))))
     (make-chapter "Primitives by File"
 		  (map gen-file-group procs))))
@@ -893,21 +902,21 @@ exec guile -l $0 -- --run-from-shell "$@"
 		`((listitem)
 		  ((para)
 		   ((link (linkend ,(sgml-escape-xref (proc:scheme-name proc))))
-		    ((function) ,(proc:scheme-name proc))
-		    ,(string-append "&mdash; " 
-				    (cond ((null? doc)
-					   "")
-					   ((null? args)
-					    (car doc))
-					   (else (markup-args
-						  (arglist->argregexp args)
-						  (car doc))))))))))
+		    ((function) ,(proc:scheme-name proc)))
+		   ,(string-append "&mdash; " 
+				   (cond ((null? doc)
+					  "")
+					 ((null? args)
+					  (car doc))
+					 (else (markup-args
+						(arglist->argregexp args)
+						(car doc)))))))))
 	    procs-from-file))))
 
 
 (define (emblist->ssgml docs)
-  (let ((docs (group (sort docs (lexcmp (list (list (lambda (x) (doc:chapter (docitem:data x)))
-						    string-ci<? string-ci=?))))
+  (let ((docs (group (sort docs (lexcmp (list (list (lambda (x) (doc:chapter (docitem:data x))) string-ci<? string-ci=?)
+					      (list (lambda (x) (doc:section (docitem:data x))) string-ci<? string-ci=?))))
 		     (lambda (x y) (string-ci=? (doc:chapter (docitem:data x))
 						(doc:chapter (docitem:data y)))))))
     (map embchapter->ssgml docs)))
@@ -917,7 +926,7 @@ exec guile -l $0 -- --run-from-shell "$@"
 		(map embsect->ssgml group)))
 
 (define (embsect->ssgml item)
-  `((sect1 (id ,(doc:section (docitem:data item))))
+  `((sect1 (id ,(sgml-escape-xref (doc:section (docitem:data item)))))
     ((title) ,(doc:section (docitem:data item)))
     ((para) ,@(doc:doc (docitem:data item)))))
 
@@ -944,14 +953,17 @@ exec guile -l $0 -- --run-from-shell "$@"
       ((#\&) " &amp; ")))
   (my-regexp-substitute/global #f echars s 'pre esc 'post))
 
+
 (define (sgml-escape-xref s)
-  (define echars (make-regexp "->|_|!|\\?"))
+  (define echars (make-regexp "->|_|!|\\?|% "))
   (define (esc m)
     (case (string-ref (match:substring m 0) 0)
-      ((#\-) "--to--")
-      ((#\_) "--")
-      ((#\!) "--p")
-      ((#\?) "--x")))
+      ((#\-) "-to-")
+      ((#\_) "-")
+      ((#\!) "-p")
+      ((#\?) "-x")
+      ((#\%) "-pct-")
+      ((#\space) "_")))
   (my-regexp-substitute/global #f echars s 'pre esc 'post))
   
 
