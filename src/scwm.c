@@ -65,6 +65,7 @@
 #include <sys/systeminfo.h>
 #endif
 
+#include <stdarg.h>
 #include <guile/gh.h>
 #include "miscprocs.h"
 #include "binding.h"
@@ -79,13 +80,12 @@
 #include "guile-compat.h"
 #include "syscompat.h"
 #include "scwm-constraints.h"
+
 #ifdef USE_CASSOWARY
-#include "ClSimplexSolver.h"
-#include "constraint-primitives.h"
-#include "../guile/cassowary_scm.h"
+#include "constraint-primitives.h"   /* from the scwm distribution */
+#include "../guile/cassowary_scm.h"  /* from the cassowary distribution */
 #endif
 
-#include <stdarg.h>
 
 #ifdef I18N
 #include <locale.h>
@@ -376,11 +376,6 @@ main(int argc, char **argv)
   return 0;
 }
 
-
-#ifdef USE_CASSOWARY
-ClSimplexSolver solver;
-void init_cassowary_scm();
-#endif
 
 /*
  * scwm_main - main routine for scwm
