@@ -34,7 +34,7 @@
     value))
 
 (define-public (get-register register)
-  "Return contents of Emacs register named REGISTER, or #f if none."
+  "Return contents of Scwm register named REGISTER, or #f if none."
   (assq-ref register-alist register))
 
 ;;; (set-register 'a 3)
@@ -76,6 +76,7 @@
      (val (restore-global-window-configuration val)))))
 
 #!
+register
 (bind-key 'all "H-j" jump-to-register)
 (bind-key 'all "H-f" focus-to-register)
 (bind-key 'all "H-c" window-configuration-to-register)

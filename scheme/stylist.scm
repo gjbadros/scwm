@@ -49,7 +49,7 @@ random window that matches PREDICATE."
 	   (Apply (lambda ignored-args
 		    (for-each unflash-window flashed-windows)
 		    (set! flashed-windows ())
-		    (run-hooks apply-hook)
+		    (run-hook apply-hook)
 		    (let ((form `(window-style ,predicate ,@the-style)))
 		      (eval form)
 		      (write form)
@@ -134,7 +134,7 @@ random window that matches PREDICATE."
 	 #t #t)
 	(gtk-box-pack-start
 	 box
-	 (let ((bbox (gtk-hbox-new #f 0)))
+	 (let ((bbox (gtk-hbutton-box-new)))
 	   (for-each (lambda (label action)
 		       (gtk-box-pack-start
 			bbox 
@@ -147,7 +147,7 @@ random window that matches PREDICATE."
 					    (gtk-button-child button)
 					    "Close"))))
 			  button)
-			#t #f))
+			#f #f))
 		     '("Ok" "Apply" "Cancel")
 		     (list Ok Apply Cancel))
 	   bbox)
@@ -163,6 +163,7 @@ WIN is the window to style and defaults to the window-context."
     (menu
      (list
       (menu-title "Style")
+      menu-separator
       (menuitem "&this &window"
 		#:action (lambda () (select-style-for
 				     `(lambda (w) (eq? w ,win))
