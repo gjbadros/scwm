@@ -59,9 +59,9 @@ main(int argc, char **argv)
   result=scwmexec_exec_full(display,w,argv[1],&output,&error);
   printf(output);
   if (strlen(error)!=0) {
-    fprintf(stderr,error);
+    fprintf(stderr,"%s",error);
   } else {
-    fprintf(stdout,result);
+    fprintf(stdout,"%s",result);
   }
   
   XFree(result);

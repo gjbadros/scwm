@@ -328,9 +328,9 @@ main(int argc, char **argv)
 
       printf(output);
       if (strlen(error)!=0) {
-	fprintf(stderr,error);
+	fprintf(stderr,"%s",error);
       } else {
-	fprintf(stdout,result);
+	fprintf(stdout,"%d",result);
       }
       putchar('\n');
 
