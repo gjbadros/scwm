@@ -14,6 +14,7 @@
 #include <signal.h>
 #include <sys/times.h>
 #include <X11/Xlib.h>
+#include <X11/keysym.h>
 
 #include <guile/gh.h>
 
@@ -26,6 +27,7 @@
 #include "font.h"
 #include "xmisc.h"
 #include "scwmpaths.h"
+#include "cursor.h"
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
 extern Bool Restarting, PPosOverride;
@@ -713,11 +715,14 @@ end in a "-"; e.g., "S-C-M-"
   Bool fAsyncKeyboard = True;
   XEvent ev;
   XEvent evDiscard;
+  Bool fGotPress = False;
 
   XSync(dpy,True);
-  
+
+#if 0  
   /* discard events on the no focus win */
-  while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask, &evDiscard));
+  while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyPress | KeyReleaseMask, &evDiscard));
+#endif
 
   if (XGrabKeyboard(dpy, Scr.NoFocusWin, False /* no owner events */, 
                     fAsyncMouse? GrabModeAsync: GrabModeSync, 
@@ -726,9 +731,28 @@ end in a "-"; e.g., "S-C-M-"
     return SCM_BOOL_F;
   }
     
-  XWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask, &ev);
+  while (True) {
+    KeySym keysym;
+    XWindowEvent(dpy, Scr.NoFocusWin, KeyPressMask | KeyReleaseMask, &ev);
+    keysym = XKeycodeToKeysym(dpy,ev.xkey.keycode,0);
+    if (ev.type == KeyPress) {
+      fGotPress = True;
+      continue;
+    }
+#if 0
+    scwm_msg(WARN,FUNC_NAME,"Got keycode = %d, keysym = %d",
+             ev.xkey.keycode,keysym);
+#endif
+    /* GJB:FIXME:: is this portable? Want to not list modifier
+       keys as keysym strings */
+    if (!(keysym >= XK_Shift_L && keysym <= XK_Hyper_R)
+        &&(ev.type == KeyRelease && fGotPress))
+      break; /* got a real key, not a modifier, so exit the loop */
+  }
 
-  while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask|KeyPressMask, &evDiscard));
+  while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask|KeyPressMask, &evDiscard)) {
+    scwm_msg(WARN,FUNC_NAME,"Discarding with state %d",evDiscard.xbutton.state);
+  }
 
   XUngrabKeyboard(dpy, CurrentTime);
 
@@ -740,6 +764,59 @@ end in a "-"; e.g., "S-C-M-"
     return answer;
   }
 }
+#undef FUNC_NAME
+
+SCWM_PROC(get_mouse_event, "get-mouse-event", 0, 0, 0,
+          ())
+     /** Return a string representing the next mouse event.
+The string is usable as a mouse binding string.  Modifiers 
+are listed first, separated by "-" followed by a "-" and the
+button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1. */
+#define FUNC_NAME s_get_mouse_event
+{
+  Bool fAsyncMouse = True;
+  Bool fAsyncKeyboard = True;
+  XEvent ev;
+  XEvent evDiscard;
+
+  XSync(dpy,True);
+  
+  if (XGrabPointer(dpy, Scr.NoFocusWin, False /* no owner events */, 
+                   (ButtonPressMask | ButtonReleaseMask),
+                   fAsyncMouse? GrabModeAsync: GrabModeSync, 
+                   fAsyncKeyboard? GrabModeAsync: GrabModeSync,
+                   False,XCURSOR_ICON,
+                   CurrentTime) != Success) {
+    return SCM_BOOL_F;
+  }
+    
+  while (True) {
+    XWindowEvent(dpy, Scr.NoFocusWin, 
+                 ButtonPressMask | KeyPressMask | KeyReleaseMask, &ev);
+    if (ev.type = ButtonPress)
+      break;
+  }
+
+  while (XCheckWindowEvent(dpy, Scr.NoFocusWin, 
+                           ButtonPressMask|ButtonReleaseMask, &evDiscard)) {
+    scwm_msg(WARN,FUNC_NAME,"Discarding with state %d",evDiscard.xbutton.state);
+  }
+
+  XUngrabPointer(dpy, CurrentTime);
+
+  { /* scope */
+    char *sz = SzNewModifierStringForModMask(ev.xbutton.state);
+    char *szFull = NEWC(strlen(sz)+4,char);
+    SCM answer;
+    sprintf(szFull,"%s%d",sz,ev.xbutton.button);
+    answer = gh_str02scm(szFull);
+    FREE(sz);
+    FREE(szFull);
+    return answer;
+  }
+}
+#undef FUNC_NAME
+
 
 void 
 init_miscprocs()

@@ -1222,6 +1222,7 @@ ScmBindingDescriptionFromPbnd(const Binding *pbnd)
 SCWM_PROC(lookup_procedure_bindings, "lookup-procedure-bindings", 1, 0, 0,
           (SCM proc))
      /** Return any bindings that invoke PROC.
+If PROC is #f, return all bindings.
 The return value is a list of binding descriptions.  Each binding
 description is a list: (mouse? contexts modmask keycode-or-butnum press-proc
 release-or-immediate-proc).  mouse? is a boolean, contexts is a list of
@@ -1233,7 +1234,8 @@ symbols. */
   VALIDATE_ARG_PROC(1,proc);
 
   for (pbnd = Scr.AllBindings; pbnd != NULL; pbnd = pbnd->NextBinding) {
-    if (pbnd->Thunk == proc || pbnd->ReleaseThunk == proc) {
+    if (SCM_BOOL_F == proc || 
+        (pbnd->Thunk == proc || pbnd->ReleaseThunk == proc)) {
       /* got a hit */
       SCM bind = ScmBindingDescriptionFromPbnd(pbnd);
       bindings = gh_cons(bind,bindings);
