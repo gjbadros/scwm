@@ -1443,8 +1443,8 @@ HandleConfigureRequest()
   }
 
   /* Don't modify frame_XXX fields before calling SetupWindow! */
-  x = FRAME_X(pswCurrent);
-  y = FRAME_Y(pswCurrent);
+  x = FRAME_X_VP(pswCurrent);
+  y = FRAME_Y_VP(pswCurrent);
   width = FRAME_WIDTH(pswCurrent);
   height = FRAME_HEIGHT(pswCurrent);
 

@@ -1169,7 +1169,7 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
     unsigned int mask;
     /* Undo gravity adjustments. */
     xwc.x = FRAME_X_VP(psw) - GRAV_X_ADJUSTMENT(psw);
-    xwc.y = FRAME_X_VP(psw) - GRAV_Y_ADJUSTMENT(psw);
+    xwc.y = FRAME_Y_VP(psw) - GRAV_Y_ADJUSTMENT(psw);
 
     xwc.border_width = psw->old_bw;
     mask = (CWX | CWY | CWBorderWidth);

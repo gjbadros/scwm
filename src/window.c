@@ -781,7 +781,7 @@ mouse drags. */
   } else if (!gh_boolean_p(release_p)) {
     scm_wrong_type_arg(FUNC_NAME, 3, release_p);
   }
-  if (window_context == SCM_UNDEFINED) {
+  if (UNSET_SCM(window_context)) {
     if (select_p == SCM_BOOL_T) {
       return select_window(kill_p,release_p);
     } else {
@@ -791,6 +791,40 @@ mouse drags. */
   return window_context;
 }
 #undef FUNC_NAME
+
+
+SCWM_PROC (set_window_context_x, "set-window-context!", 1, 0, 0,
+           (SCM win))
+     /** Set the current window context to WIN, return the old context.
+WIN can be either a window, or #f, to reset the current window-context.
+See also `with-window'. */
+#define FUNC_NAME s_set_window_context_x
+{
+  int iarg = 1;
+  SCM answer = window_context;
+  if (win != SCM_BOOL_F && !WINDOWP(win)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg++,win);
+  }
+  window_context = win;
+  if (answer == SCM_UNDEFINED)
+    answer = SCM_BOOL_F;
+  return answer;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(get_window_context, "window-context", 0, 0, 0,
+          ())
+     /** Returns the current window context, or #f if there is none.
+See also `with-window' and `set-window-context!' */
+#define FUNC_NAME s_get_window_context
+{
+  if (window_context == SCM_UNDEFINED)
+    return SCM_BOOL_F;
+  else
+    return window_context;
+}
+#undef FUNC_NAME
+
 
 SCWM_PROC(current_window_with_focus, "current-window-with-focus", 0, 0, 0,
           ())
@@ -867,8 +901,8 @@ KeepOnTop()
 Bool
 FIsPartiallyInViewport(const ScwmWindow *psw)
 {
-  return ! (((FRAME_X_VP(psw) + FRAME_HEIGHT(psw)) < 0) ||
-            (FRAME_Y_VP(psw) + FRAME_WIDTH(psw) < 0) ||
+  return ! (((FRAME_X_VP(psw) + FRAME_WIDTH(psw)) < 0) ||
+            (FRAME_Y_VP(psw) + FRAME_HEIGHT(psw) < 0) ||
             (FRAME_X_VP(psw) > Scr.DisplayWidth) || 
             (FRAME_Y_VP(psw) > Scr.DisplayHeight));
 }

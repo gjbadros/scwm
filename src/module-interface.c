@@ -55,7 +55,7 @@ BroadcastIconInfo(unsigned long event_type, const ScwmWindow *psw)
   assert(event_type == M_ICONIFY || event_type == M_ICON_LOCATION);
   Broadcast(event_type, 7, psw->w, psw->frame,
             (unsigned long) psw,
-	    ICON_X_VP(psw), ICON_Y_VP(psw),
+	    ICON_X_VIRT(psw), ICON_Y_VIRT(psw),
             psw->icon_p_width,
             psw->icon_w_height + psw->icon_p_height);
 }
