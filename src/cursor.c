@@ -39,7 +39,7 @@ free_cursor(SCM obj)
   if (xp->szName && xp->is_x_cursor)
     FREE((char *)xp->szName);
   FREE(xp);
-  return sizeof(*xp);
+  return 0;
 }
 
 static
