@@ -601,7 +601,7 @@ HandleScwmExec()
     if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
 			   last_offset, 1, True, AnyPropertyType, 
 			   &type_ret, &form_ret, &nitems, &bytes_after,
-			   &pw)==Success && pw!=NULL) {
+			   (unsigned char **) &pw)==Success && pw!=NULL) {
       w=*pw;
       XFree(pw);
       last_offset+=last_offset+1;
