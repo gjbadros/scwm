@@ -98,6 +98,7 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 void init_borders(); /* borders.c */
 
 static char rcsid[] = "$Id$";
+extern char *szRepoLastChanged;
 
 int master_pid;			/* process number of 1st scwm process */
 
@@ -381,7 +382,6 @@ static void
 scwm_maybe_send_thankyou_packet()
 {
   char buf[256];
-  extern char *szRepoLastChanged;
   SCM log_usage = gh_lookup("thank-scwm-authors-with-usage-note");
 
   /* use (define thank-scwm-authors-with-usage-note #t) to
@@ -639,8 +639,9 @@ will be processed in the order in which they were specified.</seg>
       Blackout = True; 
       break;
     case 'V':
-      printf("Scwm Version %s compiled on %s at %s\nRCS_ID=%s\n",
-             VERSION, __DATE__, __TIME__, rcsid);
+      printf("Scwm Version %s compiled on %s at %s\nRCS_ID=%s\n\
+Repository Timestamp: %s\n",
+             VERSION, __DATE__, __TIME__, rcsid, szRepoLastChanged);
       exit(0);
     case ':':
       scwm_msg(ERR, "main", "Missing option argument: `-%c'\n",

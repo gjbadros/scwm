@@ -228,6 +228,8 @@ enum wm_client_functions {
  */
 typedef enum scwm_msg_levels_tag { DBG = -1, INFO, WARN, ERR } scwm_msg_levels;
 
+struct ScwmWindow;
+
 /* Prototypes for functions in scwm.c */
 
 void scwm_msg(scwm_msg_levels type, char *id, char *msg,...);
@@ -245,7 +247,6 @@ void CaptureAllWindows(void);
 extern int master_pid;
 
 extern Display *dpy;
-struct ScwmWindow;
 
 extern struct ScwmWindow *FocusOnNextTimeStamp;
 
