@@ -21,6 +21,11 @@
 
 
 
+;; hook procedures
+
+(define window-selection-add-hook-list '())
+(define window-selection-remove-hook-list '())
+
 (define selected-windows '())
 ;;(set! selected-windows '())
 
@@ -45,9 +50,11 @@ accessed via `selected-windows-list'."
   (if (member w selected-windows)
       (begin
 	(unflash-window w)
+	(call-hook-procedures window-selection-remove-hook-list (list w))
 	(set! selected-windows (list-without-elem selected-windows w)))
       (begin
 	(flash-window w #:unflash-delay #f)
+	(call-hook-procedures window-selection-add-hook-list (list w))
 	(set! selected-windows (cons w selected-windows))
 	w)))
 
@@ -59,6 +66,7 @@ accessed via `selected-windows-list'."
 (define-public (unselect-all-windows)
   "Unselect all windows selected via `select-window-add-selecttion'."
   (for-each unflash-window selected-windows)
+  (for-each (lambda (w) (call-hook-procedures window-selection-remove-hook-list (list w))) selected-windows)
   (set! selected-windows '()))
 
 ;; (bind-mouse 'all "H-1" (thunk select-window-add-selection))
@@ -94,3 +102,25 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
 ;; e.g.
 ;;(select-multiple-windows-interactively 10)
 ;;(restack-windows (select-multiple-windows-interactively 3))
+
+;; adding and removing hooks
+
+(define-public (add-window-selection-add-hook! hook)
+  "Add a HOOK to be called when a window is added to the selection list.
+HOOK should take a single parameter which is the window selected."
+  (set! window-selection-add-hook-list (cons hook window-selection-add-hook-list)))
+
+(define-public (add-window-selection-remove-hook! hook)
+  "Add a HOOK to be called when a window is removed from the selection list.
+HOOK should take a single parameter which is the window removed."
+  (set! window-selection-remove-hook-list (cons hook window-selection-remove-hook-list)))
+
+(define-public (remove-window-selection-add-hook! hook)
+  "Remove a HOOK to be called when a window is added to the selection list.
+HOOK should take a single parameter which is the window selected."
+  (set! window-selection-add-hook-list (delq hook window-selection-add-hook-list)))
+
+(define-public (remove-window-selection-remove-hook! hook)
+  "Remove a HOOK to be called when a window is removed from the selection list.
+HOOK should take a single parameter which is the window removed."
+  (set! window-selection-remove-hook-list (delq hook window-selection-remove-hook-list)))
