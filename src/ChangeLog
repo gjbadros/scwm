@@ -1,3 +1,31 @@
+Fri Sep  4 19:01:55 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* screen.h, scwm.c: Add schscreen field of struct ScreenInfo and
+	initialize it.
+
+	* screen-ci.hpp: Store the scheme-level screen object with the
+	viewport position and pointer position cl variables.  Now all
+	cl-variables have an attached scheme objects (via _pv)
+
+	* scwm-constraints.hpp: Added PswFromClvPv, PclvFromClvPv to get
+	at an attached ScwmWindow * or ClVariable * from a pclv->Pv().
+	Store Psw's via their schwin field (their scheme level window
+	object, instead of their C "ScwmWindow *").
+
+	* constraint-primitives.cc: Call the callback attached to the
+	changed-proc property of any scheme cl-variable.  Call is made
+	when the variable is changed -- still need a callback on the
+	resolve after all the changes are made.  
+	Fixed various bugs in screen_clv_* primitives
+
+	* add-window.c: Create the scheme window to attach to Psw before
+	calling CassowaryInitClVarsInPsw since the latter attaches the
+	_pv's to that scheme object
+
+	* window.c: clean up a doc comment.
+
+	* miscprocs.c: Fix name X_rotate_cut_buffers (capitalize the X)
+
 Fri Sep  4 12:28:33 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (stick, unstick): Sandwich SuggestMoveWindowTo-s

@@ -1,3 +1,13 @@
+Fri Sep  4 18:57:49 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Added docs for some user variables, and document
+	them a bit better.  Very tentative format.  In particular, it'd be 
+	better if doc strings worked on variables (are they supposed to?)
+
+Fri Sep  4 18:54:56 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* tests/constraint-stacking.scm, test/fvwm2-modules.scm: Added
+
 Fri Sep  4 11:52:12 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm (window-viewport-position):  Check for sticky windows
