@@ -2451,6 +2451,10 @@ defaults to the window context in the usual way if not specified. */
   VALIDATE_ARG_INT_COPY(1,desk,newdesk);
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(2, win, psw);
 
+  /* do nothing if already on the right desk */
+  if (newdesk == psw->Desk)
+    return SCM_UNSPECIFIED;
+
   olddesk = psw->Desk;
 
   /* Mapping window on its new Desk,

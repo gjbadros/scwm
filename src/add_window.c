@@ -4,9 +4,10 @@
  */
 
 /* This module is derived from code based on fvwm2 which was in turn
- * based on code derived from Twm.  It was siginificantly modified by
+ * based on code derived from Twm.  It was significantly modified by
  * Rob Nation for fvwm2 */
 
+/* An old copyright that we may still be required to have around... --gjb */
 /*****************************************************************************/
 /**       Copyright 1988 by Evans & Sutherland Computer Corporation,        **/
 /**                          Salt Lake City, Utah                           **/

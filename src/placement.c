@@ -37,6 +37,8 @@
 #include "borders.h"
 #include "xmisc.h"
 
+#undef DEBUG_PLACE_WINDOW
+
 int get_next_x(ScwmWindow * psw, int x, int y);
 int get_next_y(ScwmWindow * psw, int y);
 int test_fit(ScwmWindow * psw, int test_x, int test_y, int aoimin);
@@ -590,29 +592,45 @@ is not set, or the window starts iconic. */
        (psw->wmhints->flags & StateHint) &&
        (psw->wmhints->initial_state == IconicState))) {
     /* Do nothing. */
-
+#ifdef DEBUG_PLACE_WINDOW
+    scwm_msg(DBG,"PlaceWindow","doing no placement");
+#endif
   } else {
     SCM result=SCM_BOOL_F;
 
     if (psw->fSmartPlace) {
       if (Scr.fSmartPlacementIsClever) {
+#ifdef DEBUG_PLACE_WINDOW
+        scwm_msg(DBG,"PlaceWindow","clever placing");
+#endif        
 	result=clever_place_window(win);
       } else {
+#ifdef DEBUG_PLACE_WINDOW
+        scwm_msg(DBG,"PlaceWindow","smart placing");
+#endif
 	result=smart_place_window(win);
       }
     }
     
     if (SCM_BOOL_F==result) {
       if (psw->fRandomPlace) {
+#ifdef DEBUG_PLACE_WINDOW
+        scwm_msg(DBG,"PlaceWindow","random placing");
+#endif
 	random_place_window(win);
       } else {
         int finalx, finaly;     /* unused for now */
         extern Bool have_orig_position;
         extern int orig_x, orig_y;
+#ifdef DEBUG_PLACE_WINDOW
+        scwm_msg(DBG,"PlaceWindow","interactive placing");
+#endif
         /* GJB:FIXME:: ugh! passing args thru globals */
         have_orig_position = True;
         FXGetWindowTopLeft(WFrameOrIcon(psw), &orig_x, &orig_y);
 	InteractiveMove(psw, False, &finalx, &finaly);
+        /*        move_finalize(psw->frame,psw,finalx,finaly); */
+        MovePswToCurrentPosition(psw);
       }
     }
   }
@@ -677,15 +695,24 @@ PlaceWindow(ScwmWindow *psw)
   win=psw->schwin;
 
   if (psw->fTransient) {
+#ifdef DEBUG_PLACE_WINDOW
+    scwm_msg(DBG,"PlaceWindow","%s is a transient window",psw->name);
+#endif
     place_proc=scm_object_property(win,sym_transient_placement_proc);
     if (SCM_BOOL_F == place_proc || 
 	SCM_BOOL_F == scwm_safe_call1(place_proc, win)) {
+#ifdef DEBUG_PLACE_WINDOW
+    scwm_msg(DBG,"PlaceWindow","using default_transient_placement_proc");
+#endif
       default_transient_placement_proc(win);
     }
   } else {
     place_proc=scm_object_property(win,sym_placement_proc);
     if (SCM_BOOL_F == place_proc || 
 	SCM_BOOL_F == scwm_safe_call1(place_proc, win)) {
+#ifdef DEBUG_PLACE_WINDOW
+    scwm_msg(DBG,"PlaceWindow","using default_placement_proc");
+#endif
       default_placement_proc(win);
     }
   }

@@ -107,11 +107,9 @@ GrabIconKeys(ScwmWindow *ARG_UNUSED(psw), Window w)
   return;
 }
 
-/****************************************************************************
- *
+/*
  * Looks for an application supplied icon window
- *
- ****************************************************************************/
+ */
 static void 
 GetIconWindow(ScwmWindow * psw)
 {
@@ -159,11 +157,9 @@ GetIconWindow(ScwmWindow * psw)
 }
 
 
-/****************************************************************************
- *
+/*
  * Looks for an application supplied bitmap or pixmap
- *
- ****************************************************************************/
+ */
 static void 
 GetIconBitmap(ScwmWindow *psw)
 {
@@ -198,11 +194,9 @@ GetIconBitmap(ScwmWindow *psw)
 }
 #undef FUNC_NAME
 
-/************************************************************************
- ************************************************************************
+/*
  * Public functions below here
- ************************************************************************
- ************************************************************************/
+ *************************************************************************/
 
 
 /*
@@ -353,11 +347,9 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
   return;
 }
 
-/****************************************************************************
- *
+/*
  * Draws the icon window
- *
- ****************************************************************************/
+ */
 void 
 DrawIconWindow(ScwmWindow * psw)
 {
@@ -481,12 +473,9 @@ DrawIconWindow(ScwmWindow * psw)
   }
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	RedoIconName - procedure to re-position the icon window and name
- *
- ************************************************************************/
+/*
+ * RedoIconName - procedure to re-position the icon window and name
+ */
 void 
 RedoIconName(ScwmWindow *psw)
 {
@@ -533,12 +522,6 @@ AutoPlace(ScwmWindow *psw)
       /* just make sure the icon is on this screen */
       psw->icon_x_loc = ICON_X_VIRT(psw) % Scr.DisplayWidth + base_x;
       psw->icon_y_loc = ICON_Y_VIRT(psw) % Scr.DisplayHeight + base_y;
-#if 0 /* GJB:FIXME:: can we kill this now? */
-      if (psw->icon_x_loc < ICON_VP_OFFSET_X(psw))
-        psw->icon_x_loc += Scr.DisplayWidth;
-      if (psw->icon_y_loc < ICON_VP_OFFSET_Y(psw))
-        psw->icon_y_loc += Scr.DisplayHeight;
-#endif 
     }
   } else if (psw->wmhints && psw->wmhints->flags & IconPositionHint) {
     psw->icon_x_loc = psw->wmhints->icon_x;
@@ -675,11 +658,9 @@ DeIconify(ScwmWindow *psw)
 }
 
 
-/****************************************************************************
- *
+/*
  * Iconifies the selected window
- *
- ****************************************************************************/
+ */
 void 
 Iconify(ScwmWindow *psw, int def_x, int def_y)
 {
@@ -792,13 +773,11 @@ void redraw_icon_titles()
   }
 }
 
-/****************************************************************************
- *
+/*
  * This is used to tell applications which windows on the screen are
  * top level appication windows, and which windows are the icon windows
  * that go with them.
- *
- ****************************************************************************/
+ */
 void 
 SetMapStateProp(ScwmWindow *psw, int state)
 {

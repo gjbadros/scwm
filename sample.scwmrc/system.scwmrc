@@ -611,6 +611,7 @@
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
 
+;;; gmc desktop iconds
 (window-style "desktop_icon" #:use-style desk-icon #:placement-proc use-placement-hint)
 
 (window-style "scwmmessages" #:no-titlebar #t)

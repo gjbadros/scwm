@@ -280,6 +280,8 @@ Used in `enable-gnome-hints'."
       ))))
 
 (define (gnome-update-state win mask new-state)
+;;  (display "state = ")
+;;  (write-line new-state)
   (if (nonzero? (logand mask WIN_STATE_STICKY))
       (if (nonzero? (logand new-state WIN_STATE_STICKY))
 	  (if (not (sticky? win)) (stick win))
@@ -287,21 +289,30 @@ Used in `enable-gnome-hints'."
 
   ;; ignore WIN_STATE_MINIMIZED  - apparently deprecated
 
+  ;; gmc's desktop_icons come up with maximize and minimize bits set
+  ;; why?  for now, just do not maximize if WIN_STATE_MINIMIZED --09/29/99 gjb
 
-  ;; for now kludge separate horizontal and vertical maximization
-
-  (if (or (nonzero? (logand mask WIN_STATE_MAXIMIZED_VERT))
-	  (nonzero? (logand mask WIN_STATE_MAXIMIZED_HORIZ)))
-
-      (if (or (nonzero? (logand mask new-state WIN_STATE_MAXIMIZED_VERT))
-	      (nonzero? (logand mask new-state  WIN_STATE_MAXIMIZED_HORIZ)))
-	  (if (not (maximized? win))
-	      (maximize
-	       (if (nonzero? (logand mask new-state WIN_STATE_MAXIMIZED_HORIZ)) (%x 100) 0)
-	       (if (nonzero? (logand mask new-state WIN_STATE_MAXIMIZED_VERT)) (%y 100) 0)
-	       win))
-	  (if (maximized? win)
-	      (unmaximize win))))
+  (if (not (nonzero? (logand mask WIN_STATE_MINIMIZED)))
+      (begin
+	;; for now kludge separate horizontal and vertical maximization
+	
+	(if (or (nonzero? (logand mask WIN_STATE_MAXIMIZED_VERT))
+		(nonzero? (logand mask WIN_STATE_MAXIMIZED_HORIZ)))
+	    
+	    (if (or (nonzero? (logand mask new-state WIN_STATE_MAXIMIZED_VERT))
+		    (nonzero? (logand mask new-state WIN_STATE_MAXIMIZED_HORIZ)))
+		(if (not (maximized? win))
+		    (begin
+;;		      (write-line "maximizing")
+		      (maximize
+		       (if (nonzero? (logand mask new-state WIN_STATE_MAXIMIZED_HORIZ)) (%x 100) 0)
+		 (if (nonzero? (logand mask new-state WIN_STATE_MAXIMIZED_VERT)) (%y 100) 0)
+		 win)))
+		(if (maximized? win)
+		    (begin
+;;		      (write-line "unmaximizing")
+		      (unmaximize win)))))
+	))
 
   ;; ignore WIN_STATE_HIDDEN - it is unused and duplicates a WIN_HINTS bit
 
