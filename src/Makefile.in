@@ -148,7 +148,7 @@ $(PROG): $(OBJS)
 # Build the scheme string to include in the executable
 init_scheme_string.c: ../scheme/minimal.scm
 	( echo -n "char *init_scheme_string = \"" ; \
-	  sed -e 's/;.*$$//g' -e 's/"/\\"/g' -e "s/'/\\\\'/g" ; \
+	  sed -e 's/;.*$$//g' -e 's/"/\\"/g' -e "s/'/\\\\'/g" -e 's/$/\\n\\/' ; \
 	  echo \"\; ) <$< > $@
 
 # guile-snarf builds the .x file which gets included by the .c
