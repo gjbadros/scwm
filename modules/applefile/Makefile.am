@@ -14,7 +14,7 @@ make_crc_table_SOURCES = make_crc_table.c
 BUILT_SOURCES = crc.c
 noinst_HEADERS = applefile.h applefile_int.h applesingledouble.h \
                  macbinary.h crc.h resource.h
-INCLUDES = -I$(top_srcdir)/scwm @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
+INCLUDES = -I$(SCWM_SRC_DIR) @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 
 #macbinary_SOURCES = macbinary.c crc.c
 
