@@ -2,8 +2,6 @@ Fri Aug 27 14:35:12 1999    <gjb@cs.washington.edu>
 
 	* Makefile.am (EXTRA_DIST): Added RH6-notes
 
-Fri Aug 27 14:32:03 1999    <gjb@cs.washington.edu>
-
 	* scwm.spec.in: Bump release to 2.
 
 Fri Aug 27 01:27:31 1999    <gjb@cs.washington.edu>
