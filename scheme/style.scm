@@ -154,7 +154,10 @@
 
 (add-boolean-style-option #:no-titlebar hide-titlebar show-titlebar)
 (add-boolean-style-option #:winlist-skip winlist-skip winlist-hit)
-(add-window-style-option #:mwm-buttons set-mwm-buttons!)
+
+; clashes with maximized so make it hint-only for now
+(add-window-hint-option #:mwm-buttons set-mwm-buttons!)
+
 (add-window-style-option #:mwm-border set-mwm-border!)
 (add-window-style-option #:icon set-icon!)
 (add-window-style-option #:mini-icon set-mini-icon!)
