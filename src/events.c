@@ -451,47 +451,6 @@ HandleKeyPress()
 
 static const int scwm_property_max_length = 8000;
 
-/* Return NULL if not a valid string property */
-char *
-SzGetWindowProperty(Window w, const char *szPropertyName, Bool fDelete)
-{
-  Atom property = XInternAtom(dpy, szPropertyName, False);
-  Atom xproptype;
-  int xpropformat = 0;
-  unsigned long citems = 0;
-  unsigned long bytes_after = 0;
-  unsigned char *pchReturn = 0;
-  int retval = XGetWindowProperty(dpy, w, property, 0,
-				  scwm_property_max_length,
-				  fDelete, AnyPropertyType,
-				  &xproptype, &xpropformat, &citems,
-				  &bytes_after, &pchReturn);
-
-  if (retval != Success || xproptype != XA_STRING) {
-    scwm_msg(WARN, __FUNCTION__, "did not get string property!");
-    return NULL;
-  }
-  return (char *) pchReturn;
-}
-
-void 
-SetXPropertySz(Window w, const char *szPropertyName, const char *sz)
-{
-  Atom property = XInternAtom(dpy, szPropertyName, False);
-  int len = strlen(sz);
-  if (property == None) {
-    scwm_msg(ERR,__FUNCTION__,"No property `%s'",szPropertyName);
-    return;
-  }
-  XChangeProperty(dpy, w,
-		  property, XA_STRING, 8 /* bits in a byte */ ,
-		  PropModeReplace, sz, len);
-  /* FIXGJB: should above be PropModeAppend to avoid race cond'ns
-     hinted at in gwm? */
-  XFlush(dpy);
-}
-
-
 SCM 
 scwm_error_handler (void *data, SCM tag, SCM throw_args)
 {
@@ -520,41 +479,6 @@ gh_standard_handler (void *data, SCM tag, SCM throw_args)
   scm_newline (scm_current_error_port ());
 
   return SCM_BOOL_F;
-}
-
-
-void
-ScwmExecuteProperty()
-{
-  SCM retval;
-
-  /* execute the XA_SCWM_EXECUTE X property */
-  char *szExecute = SzGetWindowProperty(Scr.Root, "SCWM_EXECUTE", False);
-  SCM scm;
-
-  if (szExecute) {
-    char *szResult;
-    int len;
-    scwm_msg(DBG, __FUNCTION__, "Executing %s", szExecute);
-    /* FIXGJB: scwm_error_handler doesn't get used -- I redefine
-       gh_standard_handler above to give better messages */
-    retval = gh_eval_str_with_catch(szExecute,scwm_error_handler);
-    /* Need to make this go to STDERR, or better, some 
-       pre-opened interaction results port */
-    gh_display(retval);
-    gh_newline();
-#ifdef FIXGJB /* MSFIX: do you know? */
-    /* How the hell do you get the printable representation 
-       of a SCM object as a char * ??? --gjb 11/13/97 */
-    scm = gh_cons(gh_symbol2scm("'write"),retval);
-    retval = gh_eval_str_with_standard_handler(scm)
-    szResult = gh_scm2newstr(gh_evalretval,&len);
-    SetXPropertySz(Scr.Root,"SCWM_RESULT",szResult);
-    free(szResult);
-#else
-    SetXPropertySz(Scr.Root,"SCWM_RESULT","SCWM not returning results yet\n");
-#endif
-  }
 }
 
 
@@ -596,12 +520,13 @@ HandleScwmExec()
   unsigned long last_offset=0;
   unsigned long saved_bytes_after=0;
   
+      
   do {
     /* Determine the request window. */
     if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
 			   last_offset, 1, True, AnyPropertyType, 
 			   &type_ret, &form_ret, &nitems, &bytes_after,
-			   (unsigned char **) &pw)==Success && pw!=NULL) {
+                          (unsigned char **) &pw)==Success && pw!=NULL) {
       w=*pw;
       XFree(pw);
       last_offset+=last_offset+1;
@@ -617,21 +542,15 @@ HandleScwmExec()
 			     (bytes_after % 4 ? 1 : 0), False, XA_STRING, 
 			     &type_ret, &form_ret, &nitems, &bytes_after,
 			     &req)==Success) {
-	SCM val;
-	SCM str_val;
-	char *ret;
-	char *output;
-	char *error;
-	int rlen;
-	int olen;
-	int elen;
-	SCM o_port;
-	SCM e_port;
+	SCM val, str_val;
+	char *ret, *output, *error;
+	int rlen, olen, elen;
+	SCM o_port, e_port;
 	
 	/* Temporarily redirect output and error to string ports. 
 	   Note that the port setting functions return the current previous
 	   port. */
-
+	
 	o_port=scm_set_current_output_port(make_output_strport(__FUNCTION__));
 	e_port=scm_set_current_error_port(make_output_strport(__FUNCTION__));
 	
@@ -643,19 +562,17 @@ HandleScwmExec()
 	/* restore output and error ports. */
 	o_port=scm_set_current_output_port(o_port);
 	e_port=scm_set_current_error_port(e_port);
-
+	
 	output=gh_scm2newstr(get_strport_string(o_port),&olen);
 	error=gh_scm2newstr(get_strport_string(e_port),&elen);
-
+	
 	XChangeProperty(dpy, w, XA_SCWMEXEC_OUTPUT, XA_STRING,
 			8, PropModeReplace, output, olen);
 	XChangeProperty(dpy, w, XA_SCWMEXEC_ERROR, XA_STRING,
 			8, PropModeReplace, error, elen);
-	XSync(dpy,False);
-
 	XChangeProperty(dpy, w, XA_SCWMEXEC_REPLY, XA_STRING,
 			8, PropModeReplace, ret, rlen);
-
+	
 	free(ret);
 	free(output);
 	free(error);
@@ -668,7 +585,7 @@ HandleScwmExec()
      been re-created before we exit, but that doesn't matter because we'll
      get a PropertyNotify and re-enter, but the offset to use will correctly
      be 0. */
-
+  
   /* scwm_msg(DBG, __FUNCTION__, "scwmexec protocol failure.\n"); */
   return;
 }
@@ -686,11 +603,6 @@ HandlePropertyNotify()
   XTextProperty text_prop;
 
   DBUG("HandlePropertyNotify", "Routine Entered");
-
-  if (Event.xproperty.atom == XA_SCWM_EXECUTE) {
-    ScwmExecuteProperty();
-    return;
-  }
 
   if (Event.xproperty.atom == XA_SCWMEXEC_REQWIN) {
     HandleScwmExec();
