@@ -152,6 +152,8 @@
 (define left-button-number 1)
 (define right-button-number 2)
 
+;;(set-button-face! 1 mini-icon-button-face)
+
 (define (add-left-button button-face hook)
   (set-button-face! left-button-number button-face)
   (bind-mouse (string->symbol 
@@ -159,6 +161,7 @@
 			      (number->string left-button-number)))
 	      1 hook)
   (set! left-button-number (+ 2 left-button-number)))
+
 
 (define (add-right-button button-face hook)
   (set-button-face! right-button-number button-face)
@@ -172,11 +175,6 @@
 ;;(bind-mouse 'button-1 1 popup-small-ops)
 ;;(bind-mouse 'button-2 1 vertical-toggle-maximize)
 ;;(bind-mouse 'button-4 1 iconify)
-
-;;; FIXGJB: use mini-icon-button-face instead of system-button-face
-;;; but then I need to be able to associate mini-icons w/ different
-;;; windows
-;;; MS: works now!
 
 ;;; FIXGJB: how does the number of buttons to be displayed get
 ;;; chosen;  is this dynamically changeable?
@@ -215,15 +213,11 @@
 ;; (plain-border (get-window)) fixes the display problem for the selected window
 ;; something must not be initialized correctly
 
-;; FIXGJB: make-inherited-style;  any other way to do something like this?
-;;(define desk-widget-on-top
-;;  (make-inherited-style desk-widget #:stays-on-top #t))
-
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
 
-;; MS - this does the right thing-- style options are applied in order.
+;; Inherit above style options and specialize
 (define desk-widget-on-top
   (make-style #:use-style desk-widget #:stays-on-top #t))
 
@@ -288,6 +282,10 @@
 (define (start-xterm)
   (execute (string-append "color-xterm " xterm-user-shell-options)))
 
+(define (start-xterm)
+  (execute (string-append "color-xterm " xterm-user-shell-options))
+  (display "Starting Xterm...\n"))
+
 (define (exec-xlock)
   (execute "xlock -nice -16 -mode blank"))
 
@@ -337,8 +335,6 @@
 	     'separator
 	     (menu-item "S&creensaver" "display" (lambda ()
 						   (popup menu-screensaver)))
-	     ;; MS - you can just specify exec-xlock rather than 
-	     ;; (lambda () (exec-xlock)), any reason you did it this way?     
 	     (menu-item "&Lock Screen" "lock" (lambda ()
 						(exec-xlock)))
 	     'separator
@@ -508,7 +504,7 @@
 
 (bind-key 'all "C-M-S-r" refresh)
 (bind-key 'all "C-M-S-5" recapture)
-(bind-key 'all "C-M-S-x" start-xterm)
+(bind-key 'all "C-M-S-x" (lambda () (start-xterm)))
 
 (bind-key 'all "C-S-F1" popup-small-ops)
 (bind-key 'all "C-S-F2" show-window-list-menu)
