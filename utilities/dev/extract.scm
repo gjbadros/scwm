@@ -22,15 +22,19 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 ;;; 1. Procs to document have declarations OTF:
 ;;;    SCWM_PROC(c_name,
 ;;;	      "scheme_name",
-;;;	      number_of_args,
-;;;	      another_number,
-;;;	      another_number,
+;;;	      number_of_required_args,
+;;;	      number_of_optional_args,
+;;;	      zero_or_one_for_whether_there_are_variable_numbers_of_args,
 ;;;	      (SCM arg1, SCM arg2, ...))
 ;;; 2. The documentation for said proc starts on the line following it's
 ;;;    definition, starting with /** & ending with */.
-;;; 3. Additional documentation starts with /** spaces identifier: & ends with */, but is not
-;;;    preceeded by a SCWM_PROC.
-   
+;;; 3. Additional documentation starts with:
+;;;       /** <spaces> chapter_name: section_name
+;;;    & ends with */, but is not preceeded by a SCWM_PROC.
+;;; 4. For .scm files, we pull out the arglist & doc-string for sexps
+;;;    starting with define*-public & define-public, but we don't do
+;;;    anything with them yet.
+;;;
 ;;; Usage:
 ;;;   Parsing:
 ;;;   (extract-docs-from-files f1.c f2.c ...)
@@ -69,22 +73,43 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 
 ;;;(debug-enable 'backtrace)
 
+;;; Turn off debugging if run from the command line.
+(or (null? (command-line))
+    (null? (cdr (command-line)))
+    (debug-disable 'debug))
+
 (if (not (member "/usr/lib" %load-path))
     (set! %load-path (cons "/usr/lib" %load-path))) ; HACK for guile to find slib!!!!!!!
 (use-modules (ice-9 regex)		; For regexp-quote & substitute.
 	     (ice-9 slib))		; For sort.
 (require 'sort)
 
+(define proc-start-match-string "[ \t]*SCWM_PROC[ \t]*\\(")
 (define proc-start-match
-  (make-regexp "^[ \t]*SCWM_PROC[ \t]*\\("))
+  (make-regexp (string-append "^" proc-start-match-string)))
+(define doc-start-match-string "[ \t]*/\\*\\*[ \t]*([^ \t:*]*:.*)") ; spaces /**[^space or *]
 (define doc-start-match
-  (make-regexp "^[ \t]*/\\*\\*[ \t]*([^ \t:*]*:.*)")) ; spaces /**[^space or *]
+  (make-regexp (string-append "^" doc-start-match-string)))
+
+(define proc-or-doc-start
+  (make-regexp (string-append "^(" proc-start-match-string "|" doc-start-match-string ")")))
+
 (define post-proc-doc-start-match
   (make-regexp "^[ \t]*/\\*\\*[ \t]+(.*)")) ; spaces /** space+
 (define func-name-match
   (make-regexp "^[ \t]*#[ \t]*define[ \t]+FUNC_NAME[ \t]+([^ \t]*)[ \t]*$"))
 (define doc-end-match
   (make-regexp "[ \t]*\\*/[ \t]*"))	; Strip off spaces */ spaces
+;;;(define sentence (make-regexp "\\."))
+(define to-regexp (make-regexp "_to_"))
+(define whitespace-line (make-regexp "^[ \t]*$"))
+(define split (make-regexp "^([^.]*\\.)[ \t]*(.*)$"))
+(define blank (make-regexp "^[ \t]*$"))
+(define doc-parser-regexp (make-regexp "^[ \t]*([^ \t:]*):[ \t]*(.*[^ \t])[ \t]*$"))
+(define parse-proc-regexp (make-regexp "^[ \t]*SCWM_PROC[ \t]*\\([ \t]*([^, \t]*)[ \t]*,[ \t]*\"([^, \t]*)\"[ \t]*,[ \t]*([^, \t]*)[ \t]*,[ \t]*([^, \t]*)[ \t]*,[ \t]*([^, \t]*)[ \t]*,[ \t]*(\\([^)]*\\)[ \t]*)\\)[ \t]*$"))
+(define proc-regexp (make-regexp "`([^'` \t]*)'"))
+(define tf-regexp (make-regexp "(#[tf])"))
+
 
 (define (proc:c-name procrec)
   (list-ref procrec 0))
@@ -151,7 +176,11 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 
 (define (counting-read-line p)
   (set-port-line! p (1+ (port-line p)))
-  (read-line p))
+  (car (%read-line p)))
+
+;;; Output parsed docs.
+(define (docs->docs l)
+  (write l))
 
 ;;; Output procedures-list document.
 (define (docs->proclist l)
@@ -187,31 +216,25 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
   (for-each check-docitem docitemlist)
   ;; Now the global checks.
 
-  ;; Check for >=2 identical scheme names.
-  (let loop ((spl (group (sort (select-type 'SCWM_PROC docitemlist)
-			       scheme-name<?)
-			 (lambda (x y)
-			   (string=?
-			    (vdocitem:scheme-name x)
-			    (vdocitem:scheme-name y))))))
-    (for-each
-     (lambda (g)
-       (if (null? g)
-	   (complain "" "" "Internal error - null group")
-	   (for-each (lambda (r)
-		       (complain (docitem:file r)
-				 (docitem:line r)
-				 "Scheme name " (vdocitem:scheme-name r) " redefined."
-				 "  First defined in " (docitem:file (car g)) " on line "
-				 (docitem:line (car g))))
-		     (cdr g))))
-     spl))
   ;; Don't need to check for >=2 identical proc names - compiler will catch it.
-  )
+
+  ;; Check for >=2 identical scheme names.
+  (let ((h (make-vector 2999)))
+    (for-each (lambda (item)
+		(if (eq? 'SCWM_PROC (docitem:type item))
+		    (let* ((scheme-name (string->symbol (vdocitem:scheme-name item)))
+			   (other-item  (hashq-ref h scheme-name)))
+		      (if other-item
+			  (complain (docitem:file item)
+				    (docitem:line item)
+				 "Scheme name " scheme-name " redefined."
+				 "  First defined in " (docitem:file other-item) " on line "
+				 (docitem:line other-item))
+			  (hashq-set! h scheme-name item)))))
+	      docitemlist)))
 
 ;;; Complains about docitem recs it doesn't like
 (define (check-docitem procdocrec)
-  (define sentence (make-regexp "\\."))
   (let* ((data     (docitem:data procdocrec))
 	 (file     (docitem:file procdocrec))
 	 (line     (docitem:line procdocrec)))
@@ -235,24 +258,30 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
       ;; Check that DOC doc identifier is HOOK or CONCEPT?      
 
       ((SCWM_PROC)
-       (let ((procrec  (procdoc:decl data))
-	     (docrec   (procdoc:doc  data))
-	     (funcname (procdoc:funcname data)))
+       (let* ((procrec  (procdoc:decl data))
+	      (docrec   (procdoc:doc  data))
+	      (funcname (procdoc:funcname data))
+	      (scheme-name (proc:scheme-name procrec))
+	      (c-name      (proc:c-name procrec))
+	      (string-cname (symbol->string c-name))
+	      (cvt-c-name   (c-name->scheme-name string-cname))
+	      (arglist      (proc:args procrec))
+	      (canonargstrings (map (lambda (arg) (string-upcase! (c-name->scheme-name (symbol->string (cadr arg)))))
+				    arglist)))
+	     
 	 ;; What's this business about the 1st doc line being a "purpose" sentence?
 	 ;; What's this business about "leading spaces" being omitted?
 
 	 ;; Check c-name vs scheme-name.
-	 (if (and (not (string=? (c-ident->scheme-ident (symbol->string (proc:c-name procrec)))
-				 (proc:scheme-name procrec)))
-		  (not (string=? (c-name->scheme-name (symbol->string (proc:c-name procrec)))
-				 (proc:scheme-name procrec))))
+	 (if (and (not (string=? cvt-c-name scheme-name))
+		  (not (string=? (c-ident->scheme-ident string-cname) scheme-name)))
 	     (complain file line
-		       "Scheme name of " (proc:scheme-name procrec) " doesn't match a C name of "
-		       (proc:c-name procrec)))
+		       "Scheme name of " scheme-name " doesn't match a C name of "
+		       string-cname))
 
 	 ;; Check that 1st doc sentence is a complete sentence (contains a ".")
 	 (if (and (not (null? docrec))
-		  (not (regexp-exec sentence (car docrec))))
+		  (not (memq #\. (string->list (car docrec)))))
 	     (complain file line
 		       "First documentation line is not a complete sentence"))
 
@@ -260,10 +289,10 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 	 (if (not (= (+ (proc:required-args procrec)
 			(proc:optional-args procrec)
 			(proc:extra-var-args procrec))
-		     (length (proc:args procrec))))
+		     (length arglist)))
 	     (complain file line
 		       "Argument count mismatch in "
-		       (proc:scheme-name procrec)))
+		       scheme-name))
 
 	 ;; Warn about var param != 0 or 1.
 	 (if (and  (not (= (proc:extra-var-args procrec) 0))
@@ -273,61 +302,48 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 
 	 ;; Check that all args are of type SCM
 	 (let loop ((i 1)
-		    (args (proc:args procrec)))
+		    (args arglist))
 	   (cond ((null? args))
 		 ((eq? (caar args) 'SCM)
 		  (loop (1+ i) (cdr args)))
 		 (else
 		  (complain file line
 			    "In the declaration for "
-			    (proc:scheme-name procrec)
+			    scheme-name
 			    ", argument " i " (" (cadar args) ") is not of type SCM"))))
 
 	 ;; Check that the proc is documented:
 	 (if (null? docrec)
 	     (complain file line
-		       "Procedure " (proc:scheme-name procrec) " is not documented"))
+		       "Procedure " scheme-name " is not documented"))
 
-	 ;; Check that each arg appears in upper case in description.
-	 (let next-arg ((argregexp (map (lambda (arg)
-					  (delimited-regexp 
-					   (string-upcase! (c-name->scheme-name (symbol->string (cadr arg))))))
-					(proc:args procrec)))
-			(args (map cadr (proc:args procrec)))
-			(i 1))
-
-	   (cond ((null? args))
-		 (else
-		  (let next-docline ((doc docrec))
-		    (cond ((null? doc)
-			   (complain file line
-				     "Argument " i " (" (car args) ") of "
-				     (proc:scheme-name procrec)
-				     " is undocumented"))
-			  ((regexp-exec (car argregexp) (car doc)))
-			  (else (next-docline (cdr doc)))))
-		  (next-arg (cdr argregexp) (cdr args) (+ i 1)))))
-
-	 ;; Check for upper case words that don't match args.
-	 (let ((args (map (lambda (arg) (string-upcase! (c-name->scheme-name (symbol->string (cadr arg)))))
-			  (proc:args procrec))))
+	 ;; Check for upper case words that don't match args & that each arg appears in upper case.
+	 (let ((args canonargstrings)
+	       (h  (make-vector 19)))
 	   (for-each (lambda (word)
-		       (if (and (upper-case? word)
-				(> (string-length word) 1)
-				(char-upper-case? (string-ref word 0))
-				(not (member word args)))
-			   (complain file line "Documentation for procedure " (proc:scheme-name procrec)
-				     " contains upper case word " word " which isn't an argument")))
-		     (apply append (map (lambda (d) (extract-words d kw-delim?)) docrec))))
+		       (if (upper-case? word)
+			   (if (member word args)
+			       (hash-set! h word #t)
+			       (if (and (> (string-length word) 1)
+					(char-upper-case? (string-ref word 0)))
+				   (complain file line "Documentation for procedure " scheme-name
+					     " contains upper case word " word " which isn't an argument")))))
+		     (apply append (map (lambda (d) (extract-words d kw-delim?)) docrec)))
+	   (let loop ((i 1)
+		      (args canonargstrings))
+	     (cond ((not (null? args))
+		    (if (not (hash-ref h (car args)))
+			(complain file line "Argument " i " (" (car args) ") of " scheme-name " is undocumented"))
+		    (loop (1+ i) (cdr args))))))
 
 	 ;; Check that there's a func_name & it matches the c-name
 	 (if funcname
-	     (if (not (string=? (string-append "s_" (symbol->string (proc:c-name procrec)))
+	     (if (not (string=? (string-append "s_" string-cname)
 				funcname))
 		 (complain file line
-			   "Procedure " (proc:scheme-name procrec) " doesn't have a matching FUNC_NAME"))
+			   "Procedure " scheme-name " doesn't have a matching FUNC_NAME"))
 	     (complain file line
-		       "Procedure " (proc:scheme-name procrec) " doesn't have a FUNC_NAME"))))
+		       "Procedure " scheme-name " doesn't have a FUNC_NAME"))))
       (else (complain file line "Internal error - unrecognized doc record type.")))))
 
 (define (upper-case? s)
@@ -371,13 +387,13 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
     ((#\: #\space #\tab #\+ #\= #\\ #\| #\{ #\} #\[ #\] #\' #\` #\: #\; #\. #\/ #\< #\> #\@ #\# #\% #\^ #\& #\* #\( #\) #\,) #t)
     (else #f)))
 
+(define (to->-> s)
+  (let ((match (regexp-exec to-regexp s)))
+    (if match
+	(regexp-substitute #f match 'pre "->" 'post)
+	s)))
+
 (define (c-ident->scheme-ident s)
-  (define to-regexp (make-regexp "_to_"))
-  (define (to->-> s)
-    (let ((match (regexp-exec to-regexp s)))
-      (if match
-	  (regexp-substitute #f match 'pre "->" 'post)
-	  s)))
   (c-name->scheme-name (to->-> s)))
 
 (define (c-name->scheme-name s)
@@ -577,8 +593,66 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 	     (files files))
     (cond ((null? files) (reverse defs))
 	  (else (loop (call-with-input-file (car files)
-			(lambda (p) (extract-docs-from-port p defs)))
+			(let ((type (file-type (car files))))
+			  (case type
+			    ((scheme)
+			     (lambda (p) (extract-scheme-docs-from-port p defs)))
+			    ((c)
+			     (lambda (p) (extract-docs-from-port p defs)))
+			    ((pdoc)
+			     (lambda (p) (append (read p) defs))))))
 		      (cdr files))))))
+
+(define scheme-suffix (make-regexp "\\.scm$"))
+(define c-suffix (make-regexp "\\.c$"))
+(define pdoc-suffix (make-regexp "\\.pdoc$"))
+(define (scheme-file? x)
+  (regexp-exec scheme-suffix x))
+(define (c-file? x)
+  (regexp-exec c-suffix x))
+(define (pdoc-file? x)
+  (regexp-exec pdoc-suffix x))
+
+(define (file-type f)
+  (display f)
+  (cond ((scheme-file? f) 'scheme)
+	((c-file? f) 'c)
+	((pdoc-file? f) 'pdoc)
+	(else (error "Unrecognized file type for " f))))
+
+(define the-optional-value 
+  ((record-constructor (make-record-type 
+			'optional '() (lambda (o p)
+					(display "#&optional" p))))))
+
+(define the-key-value 
+  ((record-constructor (make-record-type 
+			'key '() (lambda (o p)
+					(display "#&key" p))))))
+
+(read-hash-extend #\& (lambda (c port)
+			(case (read port)
+			  ((optional) the-optional-value)
+			  ((key) the-key-value)
+			  (else (error "Bad #& value.")))))
+
+(define (extract-scheme-docs-from-port p . start)
+  (let ((filename (port-filename p)))
+    (let loop ((def (read p))
+	       (defs (if (null? start) '() (car start))))
+      (cond ((eof-object? def)
+	     defs)
+	    ((and (list? def)
+		  (memq (car def) '(define*-public define-public))
+		  (string? (list-ref def 2)))
+	     (loop (read p)
+		   (cons (list 'SCHEME_PROC
+			       (list (list-ref def 1)
+				     (list-ref def 2)))
+			 defs)))
+	    (else 
+	     (loop (read p)
+		   defs))))))
 
 ;;; Extract docs from specified input port.
 (define (extract-docs-from-port p . start)
@@ -587,8 +661,9 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 	       (defs (if (null? start) '() (car start))))
       (if (eof-object? line)
 	  defs
-	  (let* ((proc (regexp-exec proc-start-match line))
-		 (docstart (or proc (regexp-exec doc-start-match line)))
+	  (let* ((pd  (regexp-exec proc-or-doc-start line))
+		 (proc (if (and pd (match:start pd 2)) #f pd))
+		 (docstart (if (and pd (match:start pd 2)) pd #f))
 		 (linenum (port-line p)))
 	    (cond (proc
 		   (let ((doc (extract-proc-n-doc line p)))
@@ -615,7 +690,6 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 		   (loop (counting-read-line p) defs))))))))
 
 (define (next-non-whitespace-line p)
-  (define whitespace-line (make-regexp "^[ \t]*$"))
   (let ((line (counting-read-line p)))
     (cond ((eof-object? line)
 	   line)
@@ -650,8 +724,6 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 		 (list proc doc #f)))))))
 
 (define (parse-proc-doc doc)
-  (define split (make-regexp "^([^.]*\\.)[ \t]*(.*)$"))
-  (define blank (make-regexp "^[ \t]*$"))
   (cond ((null? doc) '())
 	(else (let ((m (regexp-exec split (car doc))))
 		(if m
@@ -666,16 +738,17 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 			  (cons (string-append (car doc) " " (car r))
 				(cdr r)))))))))
 
+(define (doclist lines)
+  (reverse lines))
+
 (define (extract-doc p . xargs)
-  (define (doclist lines)
-    lines)
   (define (extract-to-end lines)
     (if (eof-object? (car lines))
-	(doclist (reverse lines))
+	(doclist lines)
 	(let ((end (regexp-exec doc-end-match (car lines))))
 	  (if end
-	      (doclist (reverse (cons (substring (car lines) 0 (car (vector-ref end 1)))
-				      (cdr lines))))
+	      (doclist (cons (substring (car lines) 0 (car (vector-ref end 1)))
+				      (cdr lines)))
 	      (extract-to-end (cons (counting-read-line p) lines))))))
 
   (let ((line (if (null? xargs)
@@ -697,40 +770,26 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
   (dumb-match-parentheses line p))
 
 (define (dumb-match-parentheses line p)
-  (let loop ((umc (unmatched-p-count (string->list line)))
+  (let loop ((umc (unmatched-p-count line))
 	     (lines (list line)))
     (if (> umc 0)
 	(let ((line (counting-read-line p)))
 	  (if (eof-object? line)
 	      (apply string-append (reverse lines))
-	      (loop (+ umc (unmatched-p-count (string->list line)))
+	      (loop (+ umc (unmatched-p-count line))
 		    (cons line lines))))
 	(apply string-append (reverse lines)))))
 
 (define (unmatched-p-count l)
-  (let loop ((c 0)
-	     (l l))
-    (cond ((null? l) c)
-	  ((char=? (car l) #\()
-	   (loop (+ c 1) (cdr l)))
-	  ((char=? (car l) #\))
-	   (loop (- c 1) (cdr l)))
-	  ((char=? (car l) #\")
-	   (loop c (skip-to-next-quote (cdr l))))
-	  (else (loop c (cdr l))))))
-
-(define (skip-to-next-quote l)
-  (cond ((null? l) '())
-	((char=? (car l) #\")
-	 (cdr l))
-	((char=? (car l) #\\)		; Escaped quote.
-	 (if (and (not (null? (cdr l)))
-		  (char=? (cadr l) #\"))
-	     (skip-to-next-quote (cddr l))
-	     l))
-	(else
-	 (skip-to-next-quote (cdr l)))))
-
+  (do ((c 0)
+       (ln (string-length l))
+       (i 0 (1+ i))
+       (keep #t))
+      ((>= i ln) c)
+    (case (string-ref l i)
+      ((#\() (if keep (set! c (1+ c))))
+      ((#\)) (if keep (set! c (1- c))))
+      ((#\") (set! keep (not keep))))))
 
 (define (capitalize! s)
   (do ((i 1 (1+ i))
@@ -742,17 +801,15 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
     (string-set! s i (char-downcase (string-ref s i)))))
 
 (define (parse-doc doclist)
-  (define parser (make-regexp "^[ \t]*([^ \t:]*):[ \t]*(.*[^ \t])[ \t]*$"))
   (cond ((null? doclist) '(#f '()))
-	(else (let ((match (regexp-exec parser (car doclist))))
-		(list (capitalize! (match:substring match 1))
+	(else (let ((match (regexp-exec doc-parser-regexp (car doclist))))
+		(list (capitalize! (string-copy (match:substring match 1)))
 		      (match:substring match 2)
 		      (cdr doclist))))))
   
 
 (define (parse-proc defstring)
-  (define parser (make-regexp "^[ \t]*SCWM_PROC[ \t]*\\([ \t]*([^, \t]*)[ \t]*,[ \t]*\"([^, \t]*)\"[ \t]*,[ \t]*([^, \t]*)[ \t]*,[ \t]*([^, \t]*)[ \t]*,[ \t]*([^, \t]*)[ \t]*,[ \t]*(\\([^)]*\\)[ \t]*)\\)[ \t]*$"))
-  (let ((match (regexp-exec parser defstring)))
+  (let ((match (regexp-exec parse-proc-regexp defstring)))
     (if match
 	(let ((args (list->vector (cdr (split-match match)))))
 	  (list (string->symbol (vector-ref args 0))
@@ -767,15 +824,15 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 		      args))))
 	#f)))
 
-(define (replace-occurrences string char repl)
-  (define (my-repl start end char srepl)
-    (cond ((null? end) (list->string (reverse start)))
-	  ((char=? (car end) char)
-	   (my-repl (append srepl start) (cdr end) char srepl))
-	  (else
-	   (my-repl (cons (car end) start) (cdr end) char srepl))))
-  (my-repl '() (string->list string) char (reverse (string->list repl))))
+(define (my-repl start end char srepl)
+  (cond ((null? end) (list->string (reverse start)))
+	((char=? (car end) char)
+	 (my-repl (append srepl start) (cdr end) char srepl))
+	(else
+	 (my-repl (cons (car end) start) (cdr end) char srepl))))
 
+(define (replace-occurrences string char repl)
+  (my-repl '() (string->list string) char (reverse (string->list repl))))
 
 (define (split-match match)
   (map (lambda (startnend)
@@ -811,19 +868,18 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
   (make-regexp (arglist->argregexpstring l)))
 
 
-	
-
 (define (proc->primitives-ssgml docitem)
   (let* ((data (docitem:data docitem))
 	 (proc (procdoc:decl data))
 	 (doc (procdoc:doc data))
 	 (arglist (proc:args proc))
-	 (argregexp (arglist->argregexp arglist)))
+	 (argregexp (arglist->argregexp arglist))
+	 (purpose (if (null? doc) "UNDOCUMENTED" (car doc))))
     `((refentry (id ,(sgml-escape-xref (proc:scheme-name proc))))
       ((refnamediv)
        ((refname) ,(proc:scheme-name proc))
-       ((refpurpose) ,(if (null? arglist) (car doc)
-			  (markup-args argregexp (car doc)))))
+       ((refpurpose) ,(if (null? arglist) purpose
+			  (markup-args argregexp purpose))))
       ((refsynopsisdiv)
        ((synopsis) ,(function-call-decl proc)))
       ((refsect1)
@@ -887,9 +943,8 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 	   (grp (cdr l) (cons (car l) result)))
 	   (else
 	    (cons result (grp l '())))))
-  (grp l '()))
-;;  (if (null? l) '()
-;;      (grp l '())))
+  (if (null? l) '()
+      (grp l '())))
   
 (define (gen-file-group procs-from-file)
   `((sect1)
@@ -933,7 +988,7 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 
 (define (docs->sgml frontpiece docs)
   (display "<!DOCTYPE Book PUBLIC \"-//Davenport//DTD DocBook V3.0//EN\">\n")
-  (sgml (docs->ssgml frontpiece docs)))
+  (sgml (docs->ssgml frontpiece docs) ""))
 
 (define (docs->ssgml frontpiece docs)
   (let ((procs (sort (select-type 'SCWM_PROC docs) scheme-name-ci<?))
@@ -945,26 +1000,33 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
       ,@(emblist->ssgml embdocs))))
 
 
+(define sgml-escape-echars (make-regexp " ([<&]) "))
+(define (sgml-excape-match m)
+  (case (string-ref (match:substring m 1) 0)
+    ((#\<) " &lt; ")
+    ((#\&) " &amp; ")))
 (define (sgml-escape s)
-  (define echars (make-regexp " ([<&]) "))
-  (define (esc m)
-    (case (string-ref (match:substring m 1) 0)
-      ((#\<) " &lt; ")
-      ((#\&) " &amp; ")))
-  (my-regexp-substitute/global #f echars s 'pre esc 'post))
+  (my-regexp-substitute/global #f sgml-escape-echars s 'pre sgml-escape-match 'post))
 
+(define sgml-escape-xref-echars (make-regexp "->|_|!|\\?|% "))
+(define (sgml-escape-xref-string s)
+  (case (string-ref s 0)
+    ((#\-) "-to-")
+    ((#\_) "-")
+    ((#\!) "-p")
+    ((#\?) "-x")
+    ((#\%) "-pct-")
+    ((#\space) "_")))
 
 (define (sgml-escape-xref s)
-  (define echars (make-regexp "->|_|!|\\?|% "))
-  (define (esc m)
-    (case (string-ref (match:substring m 0) 0)
-      ((#\-) "-to-")
-      ((#\_) "-")
-      ((#\!) "-p")
-      ((#\?) "-x")
-      ((#\%) "-pct-")
-      ((#\space) "_")))
-  (my-regexp-substitute/global #f echars s 'pre esc 'post))
+  (let ((r (regexp-exec sgml-escape-xref-echars s)))
+    (if r
+	(let ((f (match:substring r 0)))
+	  (string-append (match:prefix r)
+			 (sgml-escape-xref-string f)
+			 (sgml-escape-xref (match:suffix r))))
+	s)))
+;;  (my-regexp-substitute/global #f sgml-escape-xref-echars s 'pre sgml-escape-xref-match 'post))
   
 
 (define (my-regexp-substitute/global port rx string . items)
@@ -1002,9 +1064,8 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
     (if (not (equal? (vector-ref match (1+ i)) '(-1 . -1)))
 	(set! n (1- n)))))
 
-(define (sgml-markup s)
-  (define proc-regexp (make-regexp "`([^'` \t]*)'"))
-  (define tf-regexp (make-regexp "(#[tf])"))
+
+(define (old-sgml-markup s)
   (my-regexp-substitute/global
    #f
    tf-regexp
@@ -1019,24 +1080,48 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 				"</function></link>" `post)
    `pre "<literal>" 1 "</literal>" `post))
 
+(define (sgml-markup s)
+  (sgml-markup-literals (sgml-markup-fcns s)))
 
+(define (sgml-markup-fcns s)
+  (let ((r (regexp-exec proc-regexp s)))
+    (if r
+	(let ((f (match:substring r 1)))
+	  (string-append (match:prefix r)
+			 "<link linkend=\"" 
+			 (sgml-escape-xref f)
+			 "\"><function>"
+			 f
+			 "</function></link>"
+			 (sgml-markup-fcns (match:suffix r))))
+	s)))
+
+(define (sgml-markup-literals s)
+  (let ((r (regexp-exec tf-regexp s)))
+    (if r
+	(string-append (match:prefix r)
+		       "<literal>"
+		       (match:substring r 1)
+		       "</literal>"
+		       (sgml-markup-literals (match:suffix r)))
+	s)))
 
 ;;; Convert ssgml to sgml:
-(define (sgml form . depth)
-  (if (null? depth) (set! depth '(0)))
+(define (sgml form prefix)
   (cond ((string? form)
-	 (display (make-string (car depth) #\space))
+	 (display prefix)
 	 (display (sgml-markup form))
 	 (newline))
 	((null? form)
 	 '())
 	(else 
-	      (display (make-string (car depth) #\space))
-	      (sgml-render-start (car form))
-	      (for-each (lambda (f) (sgml f (+ (car depth) 3)))
-			(cdr form))
-	      (display (make-string (car depth) #\space))
-	      (sgml-render-end (car form)))))
+	 (display prefix)
+	 (sgml-render-start (car form))
+	 (let ((d (string-append prefix "   ")))
+	   (for-each (lambda (f) (sgml f d))
+		     (cdr form)))
+	 (display prefix)
+	 (sgml-render-end (car form)))))
 
 (define (sgml-render-start tag)
   (displayl "<" (car tag))
@@ -1049,52 +1134,117 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 (define (sgml-render-end tag)
   (displayl "</" (car tag) ">\n"))
 
+(define (ssgml->texi form prefix)
+  (cond ((string? form)
+	 (display prefix)
+	 (display form)
+	 (newline))
+	((null? form)
+	 '())
+	(else 
+	 (texi-render-start (car form))
+	 (let ((d (string-append prefix "   ")))
+	   (for-each (lambda (f) (ssgml->texi f d))
+		     (cdr form)))
+	 (texi-render-end (car form)))))
+
+(define *sgml-texi-taglist*
+  '((bookinfo . titlepage)
+    (productname . title)
+    (author . author)
+    (releaseinfo . subtitle)
+    (pubdate . subtitle)
+    (synopsis . defun)))
+
+(define (sgml-tag->texi-tag tag)
+  (let ((t (assoc tag *sgml-texi-taglist*)))
+    (if t (cdr t) #f)))
+
+(define (texi-render-start tag)
+  (let ((t (sgml-tag->texi-tag (car tag))))
+    (if t
+	(displayl "@" t "\n"))))
+	
+
+(define (texi-render-end tag)
+  (let ((t (sgml-tag->texi-tag (car tag))))
+    (if t
+	(displayl "@end " t "\n"))))
+
 (define testfilelist
-  '("/home/hjstein/software/scwm/scwm/Grab.c"
-    "/home/hjstein/software/scwm/scwm/ICCCM.c"
-    "/home/hjstein/software/scwm/scwm/add_window.c"
-    "/home/hjstein/software/scwm/scwm/binding.c"
-    "/home/hjstein/software/scwm/scwm/borders.c"
-    "/home/hjstein/software/scwm/scwm/callbacks.c"
-    "/home/hjstein/software/scwm/scwm/color.c"
-    "/home/hjstein/software/scwm/scwm/colormaps.c"
-    "/home/hjstein/software/scwm/scwm/colors.c"
-    "/home/hjstein/software/scwm/scwm/complex.c"
-    "/home/hjstein/software/scwm/scwm/decor.c"
-    "/home/hjstein/software/scwm/scwm/decorations.c"
-    "/home/hjstein/software/scwm/scwm/deskpage.c"
-    "/home/hjstein/software/scwm/scwm/draw-pie-menu.c"
-    "/home/hjstein/software/scwm/scwm/drawmenu.c"
-    "/home/hjstein/software/scwm/scwm/errors.c"
-    "/home/hjstein/software/scwm/scwm/events.c"
-    "/home/hjstein/software/scwm/scwm/face.c"
-    "/home/hjstein/software/scwm/scwm/focus.c"
-    "/home/hjstein/software/scwm/scwm/font.c"
-    "/home/hjstein/software/scwm/scwm/getopt.c"
-    "/home/hjstein/software/scwm/scwm/getopt1.c"
-    "/home/hjstein/software/scwm/scwm/guile-compat.c"
-    "/home/hjstein/software/scwm/scwm/icons.c"
-    "/home/hjstein/software/scwm/scwm/image.c"
-    "/home/hjstein/software/scwm/scwm/init_scheme_string.c"
-    "/home/hjstein/software/scwm/scwm/menu.c"
-    "/home/hjstein/software/scwm/scwm/menuitem.c"
-    "/home/hjstein/software/scwm/scwm/miscprocs.c"
-    "/home/hjstein/software/scwm/scwm/module-interface.c"
-    "/home/hjstein/software/scwm/scwm/move.c"
-    "/home/hjstein/software/scwm/scwm/placement.c"
-    "/home/hjstein/software/scwm/scwm/resize.c"
-    "/home/hjstein/software/scwm/scwm/screen.c"
-    "/home/hjstein/software/scwm/scwm/scwm.c"
-    "/home/hjstein/software/scwm/scwm/scwmmenu.c"
-    "/home/hjstein/software/scwm/scwm/shutdown.c"
-    "/home/hjstein/software/scwm/scwm/string_token.c"
-    "/home/hjstein/software/scwm/scwm/syscompat.c"
-    "/home/hjstein/software/scwm/scwm/system.c"
-    "/home/hjstein/software/scwm/scwm/util.c"
-    "/home/hjstein/software/scwm/scwm/virtual.c"
-    "/home/hjstein/software/scwm/scwm/window.c"
-    "/home/hjstein/software/scwm/scwm/xmisc.c"
-    "/home/hjstein/software/scwm/scwm/xproperty.c"))
+  '("/home/hjstein/remote-cvs-pkgs/scwm/scwm/Grab.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/ICCCM.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/add_window.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/binding.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/borders.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/callbacks.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/color.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/colormaps.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/colors.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/complex.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/decor.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/decorations.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/deskpage.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/draw-pie-menu.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/drawmenu.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/errors.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/events.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/face.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/focus.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/font.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/getopt.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/getopt1.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/guile-compat.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/icons.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/image.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/menu.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/menuitem.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/miscprocs.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/module-interface.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/move.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/placement.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/resize.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/screen.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/scwm.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/shutdown.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/string_token.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/syscompat.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/system.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/util.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/virtual.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/window.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/xmisc.c"
+    "/home/hjstein/remote-cvs-pkgs/scwm/scwm/xproperty.c"))
+
+(define (testit . files)
+  (let ((start 0)
+	(ec 0)
+	(cc 0)
+	(pc 0)
+	(sc 0))
+    (set! start (profile:clock))
+    (displayl "Start time: " start "\n")
+    (let ((d (apply extract-docs-from-files
+		    (if (null? files)
+			testfilelist
+			files))))
+      (set! ec (profile:clock))
+      (displayl "Extraction completed : " ec "\n")
+      (check-docs d)
+      (set! cc (profile:clock))
+      (displayl "Check completed       : " cc "\n")
+      (with-output-to-file "hjs_scwm.txt" (lambda () (docs->proclist d)))
+      (set! pc (profile:clock))
+      (displayl "Proclist completed   : " pc "\n")
+      (with-output-to-file "hjs_scwm.sgml" (lambda () (docs->sgml frontpiece d)))
+      (set! sc (profile:clock))
+      (displayl "sgml completed       : " sc "\n")
+      (displayl "extract time : " (- ec start) "\n")
+      (displayl "check time   : " (- cc ec) "\n")
+      (displayl "proc time    : " (- pc cc) "\n")
+      (displayl "sgml time    : " (- sc pc) "\n"))))
+
+
 
 (define frontpiece
   `((bookinfo)
@@ -1137,8 +1287,8 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 
 
 (define (usage)
-  (displayl "Usage: extract.scm [options] file1.c file2.c ...
-  Extracts documentation from specified C source code files.
+  (displayl "Usage: extract.scm [options] file1.[c|scm|doc] file2.[c|scm|doc] ...
+  Extracts documentation from specified C and Scheme source code files.
   Documentation must be embedded according to SCWM conventions:
    - Functions declared with the SCWM_PROC macro will be documented.
      They can be immediately followed by comments of the form /**
@@ -1147,6 +1297,13 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
      define which matches the C function name given by the SCWM_PROC.
    - Comments of the form /** chapter_name : section_name ... */ will
      also be extracted.
+   - For scheme files, the arglist & the doc string are extracted for
+     each top level form starting with define*-public or define-public,
+     but they're not yet used for anything.
+
+  If input file's extension is doc, then we assume it contains the
+  output from previously using the -d switch to dump the documentation
+  in a parsed format for quick reading.
 
   Options:
     -nc, --nocheck         Don't check documentation for reasonableness.
@@ -1155,6 +1312,8 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
                            specified file.
     -t file, --text file   Generate plain text output to specified
                            file.
+    -d file, --pdoc file   Dump documentation in a parsed format for easy
+                           reading.
     -a, --annotated-text   Output plain text with each line prefixed by
                            file:line_number:.
     -l, --ispell           Run ispell on documentation.  Currently
@@ -1235,6 +1394,8 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
 	       (process-arg 1
 			    (lambda (d) (docs->sgml frontpiece d))
 			    (car args) (cdr args) files actions))
+	      ((-d --pdoc)
+	       (process-arg 1 docs->docs (car args) (cdr args) files actions))
 	      ((-p --proc)
 	       (process-arg 1 docs->proclist (car args) (cdr args) files actions))
 	      ((-t --text)
@@ -1268,4 +1429,3 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
        ;;;(debug-enable 'backtrace)
        (process-cmd-line (cddr (command-line)) '() '())
        (exit)))
-
