@@ -2257,10 +2257,7 @@ this unless you know what it means.")
 		 (XEvent *) &event);
     }
   } else {
-    int len;
-    char *keyname = gh_scm2newstr(key,&len);
-    scwm_msg(WARN,FUNC_NAME,"Bad keysym `%s' not sent",keyname);
-    gh_free(keyname);
+    scwm_message(WARN,FUNC_NAME,"Bad keysym `%s' not sent",SCM_LIST1(key));
   }
   return SCM_UNSPECIFIED;
 }

@@ -319,12 +319,15 @@ __inline__ SCM scwm_run_hook(SCM hook, SCM args)
   static Bool scwm_gc_really_often = False;
   ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
   SCM answer;
+  if (!SCM_HOOKP(hook)) {
+    scm_display_error_message(gh_str02scm("Bad hook: %S, args = %S\n"), 
+                              gh_list(hook,args,SCM_UNDEFINED),
+                              scm_current_error_port());
+    return SCM_UNSPECIFIED;
+  }
 #ifdef SCWM_DEBUG_RUN_HOOK
-  scm_puts("scwm_run_hook: Calling: ", scm_current_error_port());
-  scm_write(hook,scm_current_error_port());
-  scm_puts(" args = ", scm_current_error_port());
-  scm_write(args,scm_current_error_port());
-  scm_newline(scm_current_error_port());
+  scwm_message(DBG,"scwm_run_hook","Calling hook `%s'; args = %S",
+               gh_list(hook,args,SCM_UNDEFINED));
 #endif
   if (scwm_gc_often) scm_gc();
   answer = scwm_safe_apply(run_hook_proc, gh_cons(hook,args));
@@ -336,9 +339,8 @@ __inline__ SCM scwm_run_hook(SCM hook, SCM args)
 __inline__ SCM scwm_run_hook_message_only(SCM hook, SCM args)
 {
 #ifdef SCWM_DEBUG_RUN_HOOK
-  scwm_msg(DBG,"scwm_run_hook","Calling hook:");
-  scm_write(hook,scm_current_error_port());
-  scm_newline(scm_current_error_port());
+  scwm_message(DBG,"scwm_run_hook_message_only","Calling hook `%s'; args = %S",
+               gh_list(hook,args,SCM_UNDEFINED));
 #endif
   return scwm_safe_apply_message_only(run_hook_proc, gh_cons(hook,args));
 }
@@ -405,10 +407,8 @@ WarnBadHook(SCM hook)
   assert(!gh_list_p(gh_cdr(hook)));
   { /* scope */ 
     /* Warn that hook list is not a list. */
-    SCM hook_name = gh_car(hook);
     char *szHookName = gh_scm2newstr(hook_name, NULL);
-    scwm_msg(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", szHookName);
-    gh_free(szHookName);
+    scwm_message(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", hook_name);
     gh_set_cdr_x(hook, SCM_EOL);
   }
 }
@@ -1072,10 +1072,9 @@ Write a debug message if DEBUG is #t.")
     /* char *szProcname = strdup("<anonymous procedure>"); 
        only warn about non-anonymous non-interactive procedures;
        it's a pain to use (lambda* "" () ..) to create procs for bindings */
-    if (gh_string_p(procname)) {
-      char *szProcname = gh_scm2newstr(procname, NULL);
-      scwm_msg(WARN,FUNC_NAME,"Procedure %s is not interactive.", szProcname);
-      gh_free(szProcname);
+    if (gh_string_p(procname) || gh_symbol_p(procname)) {
+      scwm_message(WARN,FUNC_NAME,"Procedure `%s' is not interactive.", 
+                   SCM_LIST1(procname));
     }
   }
   { /* scope */

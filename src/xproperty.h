@@ -41,6 +41,8 @@
 #include <X11/Xlib.h>
 #include <assert.h>
 
+Atom InternAtomFromScm(Display *dpy, SCM s, Bool f);
+
 unsigned char *GetXProperty(Window, Atom, Bool, Atom *,
 			    int *, unsigned long *);
 
@@ -56,9 +58,7 @@ unsigned char *GetXProperty(Window, Atom, Bool, Atom *,
   assert(sizeof(Atom) == sizeof(unsigned long)); \
   if (gh_number_p(scm)) cvar = (Atom) gh_scm2ulong(scm); \
   else if (gh_string_p(scm)) { \
-    char *sz = gh_scm2newstr(scm,NULL); \
-    cvar = XInternAtom(dpy,sz,False); \
-    gh_free(sz); \
+    cvar = InternAtomFromScm(dpy,scm,False); \
   } else SCWM_WRONG_TYPE_ARG(pos,scm); \
   } while (0)
 

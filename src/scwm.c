@@ -1820,6 +1820,32 @@ void init_scwm_load_path()
 }
 
 
+void
+scwm_message(scwm_msg_levels type, const char *id, const char *msg, SCM args)
+{
+  SCM eport = scm_current_error_port();
+  char *typestr;
+  assert (gh_list_p(args));
+
+  switch (type) {
+  case DBG:
+    typestr = "<<DEBUG>>"; break;
+  case ERR:
+    typestr = "<<ERROR>>"; break;
+  case WARN:
+    typestr = "<<WARNING>>"; break;
+  case INFO: default:
+    typestr = "";
+    break;
+  }
+
+  scm_puts(typestr,eport);
+  scm_puts(" ",eport);
+  scm_puts((char *)id,eport);
+  scm_puts(": ",eport);
+  scm_display_error_message(gh_str02scm((char *)msg),args,eport);
+}
+
 /*
    ** Scwm_msg: used to send output from Scwm to files and or stderr/stdout
    **

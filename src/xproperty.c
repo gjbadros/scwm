@@ -100,6 +100,15 @@ static int Set32Value(void **dest, long el)
   return 1;
 }
 
+Atom InternAtomFromScm(Display *dpy, SCM s, Bool f)
+{
+  char *sz = gh_scm2newstr(s, NULL);
+  Atom answer = XInternAtom(dpy, sz, f);
+  gh_free(sz);
+  return answer;
+}
+
+
 SCWM_PROC(X_property_set_x, "X-property-set!", 3, 3, 0,
 	  (SCM win, SCM name, SCM value, SCM type, SCM format, SCM action),
 "Set X property NAME on window WIN to VALUE.
@@ -116,7 +125,6 @@ value.")
 {
   int fmt, len, mode;
   void *val;
-  char *str;
   Atom aprop, atype;
   Window w;
 
@@ -168,9 +176,7 @@ value.")
   if (type == SCM_UNDEFINED) {
     atype=XA_STRING;
   } else if (gh_string_p(type)) {
-    str=gh_scm2newstr(type, NULL);
-    atype=XInternAtom(dpy, str, False);
-    gh_free(str);
+    atype = InternAtomFromScm(dpy, type, False);
   } else if (gh_number_p(type)) {
     atype = gh_scm2long(type);
   } else {
@@ -376,9 +382,7 @@ If STRING contains NULL-characters, the behaviour is undefined.")
   Atom a;
 
   VALIDATE_ARG_STR_NEWCOPY(1,string,sz);
-  sz=gh_scm2newstr(string, NULL);
-  a=XInternAtom(dpy, sz, False);
-  gh_free(sz);
+  a = InternAtomFromScm(dpy,string,False);
   assert(sizeof(Atom) == sizeof(unsigned long));
   return gh_ulong2scm((unsigned long)a);
 }
