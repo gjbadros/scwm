@@ -1,11 +1,16 @@
+/* $Id$
+ * borders.c
+ *
+
 /****************************************************************************
- * This module is all original code 
+ * This module is derived from code 
  * by Rob Nation 
  * Copyright 1993, Robert Nation
  *     You may use this code for any purpose, as long as the original
  *     copyright remains in the source code and all documentation
  ****************************************************************************/
 
+/* #define SCWM_DEBUG_MSGS */
 
 /***********************************************************************
  *
@@ -661,12 +666,12 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
     notex_valuemask |= CWBackPixel;
   }
 
-  if (t->fBorder || t->fTitle) {
+  if (t->fBorder || SHOW_TITLE_P(t)) {
     XSetWindowBorder(dpy, t->Parent, BorderColor);
     XSetWindowBorder(dpy, t->frame, BorderColor);
   }
 
-  if (t->fTitle) {
+  if (SHOW_TITLE_P(t)) {
     ChangeWindowColor(t->title_w, valuemask);
     for (i = 0; i < Scr.nr_left_buttons; ++i) {
       if (t->left_w[i] != None) {
@@ -949,7 +954,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
 
   if (!t)
     return;
-  if (!t->fTitle)
+  if (!SHOW_TITLE_P(t))
     return;
 
   if (onoroff) {
@@ -1178,8 +1183,8 @@ RelieveWindow(ScwmWindow * t, Window win,
 /***********************************************************************
  *
  *  Procedure:
- *      Setupframe - set window sizes, this was called from either
- *              AddWindow, EndResize, or HandleConfigureNotify.
+ *      Setupframe - set window sizes
+ *           This is called from lots and lots of places!
  *
  *  Inputs:
  *      tmp_win - the ScwmWindow pointer
@@ -1239,23 +1244,29 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
     sendEvent = True;
 
   if (Resized) {
+    int button_width;
+    DBUG(__FUNCTION__,"Resized!");
     left = tmp_win->nr_left_buttons;
     right = tmp_win->nr_right_buttons;
 
-    if (tmp_win->fTitle)
+    if (SHOW_TITLE_P(tmp_win)) {
+      DBUG(__FUNCTION__,"Has title!");
       tmp_win->title_height = GetDecor(tmp_win, TitleHeight) + tmp_win->bw;
+      DBUG(__FUNCTION__,"Reset height to %d",tmp_win->title_height);
+    }
+    /* make the decoration buttons square */
+    button_width = tmp_win->title_height;
 
     tmp_win->title_width = w -
-      (left + right) * tmp_win->title_height
+      (left + right) * button_width
       - 2 * tmp_win->boundary_width + tmp_win->bw;
-
 
     if (tmp_win->title_width < 1)
       tmp_win->title_width = 1;
 
-    if (tmp_win->fTitle) {
+    if (SHOW_TITLE_P(tmp_win)) {
       tmp_win->title_x = tmp_win->boundary_width +
-	(left) * tmp_win->title_height;
+	(left * button_width);
       if (tmp_win->title_x >= w - tmp_win->boundary_width)
 	tmp_win->title_x = -10;
       tmp_win->title_y = tmp_win->boundary_width;
@@ -1266,35 +1277,36 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
 
       xwcm = CWX | CWY | CWHeight | CWWidth;
       xwc.height = tmp_win->title_height;
-      xwc.width = tmp_win->title_height;
+      xwc.width = button_width;
       xwc.y = tmp_win->boundary_width;
       xwc.x = tmp_win->boundary_width;
       for (i = 0; i < Scr.nr_left_buttons; i++) {
 	if (tmp_win->left_w[i] != None) {
-	  if (xwc.x + tmp_win->title_height < w - tmp_win->boundary_width)
+	  if (xwc.x + button_width < w - tmp_win->boundary_width)
 	    XConfigureWindow(dpy, tmp_win->left_w[i], xwcm, &xwc);
 	  else {
-	    xwc.x = -tmp_win->title_height;
+	    xwc.x = -button_width;
 	    XConfigureWindow(dpy, tmp_win->left_w[i], xwcm, &xwc);
 	  }
-	  xwc.x += tmp_win->title_height;
+	  xwc.x += button_width;
 	}
       }
 
       xwc.x = w - tmp_win->boundary_width + tmp_win->bw;
       for (i = 0; i < Scr.nr_right_buttons; i++) {
 	if (tmp_win->right_w[i] != None) {
-	  xwc.x -= tmp_win->title_height;
+	  xwc.x -= button_width;
 	  if (xwc.x > tmp_win->boundary_width)
 	    XConfigureWindow(dpy, tmp_win->right_w[i], xwcm, &xwc);
 	  else {
-	    xwc.x = -tmp_win->title_height;
+	    xwc.x = -button_width;
 	    XConfigureWindow(dpy, tmp_win->right_w[i], xwcm, &xwc);
 	  }
 	}
       }
     }
     if (tmp_win->fBorder) {
+      DBUG(__FUNCTION__,"Has border!");
       tmp_win->corner_width = GetDecor(tmp_win, TitleHeight) + tmp_win->bw +
 	tmp_win->boundary_width;
 
@@ -1360,7 +1372,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
   cx = tmp_win->boundary_width - tmp_win->bw;
   cy = tmp_win->title_height + tmp_win->boundary_width - tmp_win->bw;
 
-  if (!shaded) { /* FIXGJB: the XResizeWindow can be removed, below, methinks */
+  if (!shaded) {
     XResizeWindow(dpy, tmp_win->w, tmp_win->attr.width,
 		  tmp_win->attr.height);
     XMoveResizeWindow(dpy, tmp_win->Parent, cx, cy,
@@ -1370,6 +1382,8 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
   /* 
    * fix up frame and assign size/location values in tmp_win
    */
+  DBUG(__FUNCTION__,"w = %d, h = %d", w, h);
+
   tmp_win->frame_x = x;
   tmp_win->frame_y = y;
   tmp_win->frame_width = w;
