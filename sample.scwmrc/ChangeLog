@@ -1,3 +1,7 @@
+Sat Jul  3 23:57:59 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added describe-key, and some example lookup-key calls.
+
 Sat Jul  3 22:44:14 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use esdsound, and use it for wavplay if it was found.

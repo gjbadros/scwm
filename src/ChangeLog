@@ -1,3 +1,11 @@
+Sat Jul  3 23:55:50 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* events.c: Simplify HandleButtonPress and HandleKeyEvent by using 
+	new PBindingFromMouse and PBindingFromKey fns.
+
+	* binding.h, binding.c: Added PBindingFromKey, PBindingFromMouse;
+	new primitives `lookup-key', `lookup-mouse'
+
 Sat Jul  3 20:56:38 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* binding.c (s_keymask_keycode_to_string): Doc string fix.
