@@ -1,3 +1,7 @@
+Thu Sep 17 12:08:23 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* events.c: Added X-DestroyNotify-hook and X-UnmapNotify-hook.
+
 Thu Sep 17 09:10:19 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Added set-window-context!, window-context to support

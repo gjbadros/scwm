@@ -1,3 +1,14 @@
+Thu Sep 17 12:07:41 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Fix uses of WIN to be win.  Duh.
+
+	* flux.scm (popup-menu-from-decoration): Don't inc y so much.
+
+Thu Sep 17 11:05:33 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Extend printable-char->keysym-string to be (nearly?)
+	complete -- the special characters now work for me.
+
 Thu Sep 17 09:16:53 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `delta-position' and `move-window-relative' (the 
