@@ -234,14 +234,13 @@
   ())
 
 (define (popup-util)
-  (popup-menu (thunk menu-util)))
+  (popup-menu 'menu-util))
 
 (define (popup-applications)
-  (popup-menu (thunk menu-applications)))
-
+  (popup-menu 'menu-applications))
 
 (define (popup-root-start)
-  (popup-menu (thunk menu-root-start)))
+  (popup-menu 'menu-root-start))
 
 (define (show-icon-list-menu)
   (show-window-list-menu #:only iconified? #:warp-to-first #t))
@@ -307,6 +306,7 @@
 	      #:sticky-icon #t
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
+	      #:mwm-border #t
 	      #:int-override #t #:decorate-transient #f
 	      #:PPosition-hint #f
 	      #:mini-icon pic-xterm-mini)
@@ -314,9 +314,14 @@
 (window-style "*" 
 	      #:icon-box (list 0 1 69 (y- 141)))
 
+;;(window-style "*" #:border-width 5 #:mwm-border #t)
+
 (window-style "xlogo" #:no-titlebar #t #:normal-border #t)
+;;(window-style "*" #:squashed-titlebar #t)
 
 ;; (set-object-property! (select-window-interactively) 'squashed-titlebar #t)
+;; (define w (select-window-interactively))
+
 
 ;; This gets my netscape bookmarks windows to do the right thing
 ;; and stay on screen (instead of being half off screen when mapped)
@@ -845,34 +850,34 @@
     (menuitem "Start" #:image-left "mini-exp.xpm")
     menu-title
     (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
-	      #:action (thunk start-xterm))
+	      #:action 'start-xterm)
     (menuitem "&Applications" #:image-left "mini-x2.xpm" 
-	      #:action (thunk menu-applications))
+	      #:action 'menu-applications)
     (menuitem "&Utilities" #:image-left "mini-hammer.xpm" 
-	      #:action (thunk menu-utilities))
+	      #:action 'menu-utilities)
     (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm" 
-	      #:action (thunk menu-multimedia))
+	      #:action 'menu-multimedia)
     (menuitem "&Games" #:image-left "mini-happy.xpm" 
-	      #:action (thunk menu-games))
+	      #:action 'menu-games)
     menu-separator
     (menuitem "H&osts - Servers" #:image-left "mini-windows.xpm" 
-	      #:action (thunk menu-hosts-servers))
+	      #:action 'menu-hosts-servers)
     (menuitem "Hosts - Linux" #:image-left "mini-windows.xpm" 
-	      #:action (thunk menu-hosts-linux))
+	      #:action 'menu-hosts-linux)
     (menuitem "Hosts - Solaris" #:image-left "mini-windows.xpm" 
-	      #:action (thunk menu-hosts-solaris))
+	      #:action 'menu-hosts-solaris)
     (menuitem "Hosts - Other" #:image-left "mini-windows.xpm" 
-	      #:action (thunk menu-hosts-other))
+	      #:action 'menu-hosts-other)
     (menuitem "&System Utilities" #:image-left "mini-connect.xpm" 
-	      #:action (thunk menu-system-utilities))
+	      #:action 'menu-system-utilities)
     (menuitem "&Window Operations" #:image-left "mini-windows.xpm" 
-	      #:action (thunk menu-window-ops))
+	      #:action 'menu-window-ops)
     (menuitem "&Preferences" #:image-left "mini-prefs.xpm" 
-	      #:action (menu-prefs))
+	      #:action 'menu-prefs)
 ;;	      #:action menu-prefs-gjb)
     menu-separator
     (menuitem "S&creensaver" #:image-left "mini-display.xpm" 
-	      #:action (thunk menu-screensaver))
+	      #:action 'menu-screensaver)
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
 	      #:action (thunk exec-xlock))
     menu-separator
@@ -881,18 +886,18 @@
     (menuitem "&Help ScwmTNL" #:image-left "mini-question.xpm" 
 	      #:action (thunk scwm-help))
     (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
-	      #:action (thunk menu-quit-verify)))
+	      #:action 'menu-quit-verify))
    #:image-side "linux-menu.xpm"
    #:color-bg-image-side "blue"))
 
 (debug-display "before-popup-menu-root-start\n")
 
 (define (popup-menu-root-start)
-  (popup-menu (thunk menu-root-start)))
+  (popup-menu 'menu-root-start))
 
 
 (define (popup-window-ops)
-  (popup-menu (thunk menu-window-ops)))
+  (popup-menu 'menu-window-ops))
 
 (define menu-desk 
   (menu 
@@ -922,13 +927,6 @@
     menu-separator
     (menuitem "Exit scwm" menu-quit-verify))
    #:font bold-menu-font))
-
-
-(define (popup-util)
-  (popup-menu (thunk menu-util)))
-
-(define (popup-root-start)
-  (popup-menu (thunk menu-root-start)))
 
 (define (make-small-window-ops-menu w)
   (menu
@@ -978,7 +976,7 @@
 (bind-mouse 'root 1 popup-root-start)
 (bind-mouse 'root 2 (lambda () 
 		      (show-window-list-menu #:show-geometry #t)))
-(bind-mouse 'root "M-3" (lambda () (popup-menu (thunk menu-desk))))
+(bind-mouse 'root "M-3" (lambda () (popup-menu 'menu-desk)))
 (bind-mouse 'root 3 popup-applications)
 
 ;;; operations on parts of the window
@@ -1059,10 +1057,10 @@
 
 (bind-key 'all "C-S-F1" popup-small-ops)
 (bind-key 'all "C-S-F2" show-window-list-menu)
-(bind-key 'all "C-S-F3" (lambda () (popup-menu menu-hosts #t)))
-(bind-key 'all "C-S-F4" (lambda () (popup-menu menu-applications #t)))
-(bind-key 'all "C-S-F5" (lambda () (popup-menu menu-utilities #t)))
-(bind-key 'all "C-S-F6" (lambda () (popup-menu menu-multimedia #t)))
+(bind-key 'all "C-S-F3" (lambda () (popup-menu 'menu-hosts #t)))
+(bind-key 'all "C-S-F4" (lambda () (popup-menu 'menu-applications #t)))
+(bind-key 'all "C-S-F5" (lambda () (popup-menu 'menu-utilities #t)))
+(bind-key 'all "C-S-F6" (lambda () (popup-menu 'menu-multimedia #t)))
 
 (define (float->integer x)
 	 (inexact->exact x))
@@ -1210,3 +1208,4 @@
 ;;(hide-titlebar (current-window-with-pointer))
 ;;(show-titlebar (current-window-with-pointer))
 ;;(load "/scratch/gjb/scwm/scheme/flux.scm")
+;;(load "/scratch/gjb/scwm/scheme/style.scm")
