@@ -1,3 +1,8 @@
+Sat Jan  9 11:31:52 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Turn off edge scrollso it works better with x2x;
+	Use message-window-style, not set-move-resize-message-window-attributes!
+
 Tue Dec 22 04:30:35 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* system.scwmrc, gjb.scwmrc, robbe.scwmrc, sds.scwmrc: Replace use
