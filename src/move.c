@@ -292,7 +292,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 {
   Bool finished = False;
   Bool done;
-  int xl, yt, paged;
+  int xl, yt, paged, real_x, real_y; 
   
   /* show the size/position window */
   MapMessageWindow();
@@ -389,18 +389,22 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
                                        ICON_X_VP(psw), ICON_Y_VP(psw),
                                        OutlineWidth, OutlineHeight);
           }
+	  real_x = ICON_X_VP(psw);
+	  real_y = ICON_Y_VP(psw);
         } else {
           /* the solver's resolve does the move window */
           /* if not using Cassowary, this just does an XMoveWindow */
           SuggestMoveWindowTo(psw,
                               WIN_VP_OFFSET_X(psw)+xl,
                               WIN_VP_OFFSET_Y(psw)+yt,opaque_move);
+	  /* recheck - may not have moved at all */
+	  real_x = FRAME_X_VP(psw);
+	  real_y = FRAME_Y_VP(psw);
         }
 
 	call3_hooks(interactive_move_new_position_hook, psw->schwin,
-		    gh_int2scm(FRAME_X_VP(psw)),
-		    gh_int2scm(FRAME_Y_VP(psw)));
-	DisplayPosition(psw,FRAME_X_VP(psw),FRAME_Y_VP(psw),True);
+		    real_x, real_y); 
+	DisplayPosition(psw, real_x, real_y, True);
 
         /* prevent window from lagging behind mouse when paging - mab */
 	if (paged == 0) {
