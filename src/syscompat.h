@@ -25,6 +25,7 @@
 #include <config.h>
 
 #include <sys/wait.h>
+
 #ifdef HAVE_WAITPID
 #define ReapChildren()  while ((waitpid(-1, NULL, WNOHANG)) > 0)
 #else /* !HAVE_WAITPID */
@@ -50,10 +51,11 @@ int  strncasecmp(char *s1, char *s2, int n);
 
 #ifndef HAVE_SETLINEBUF
   #ifdef HAVE_SETVBUF
-    #define setlinebuf(stream) setvbuf((stream), NULL, _IOLBF, BUFSIZ);
+    #define setlinebuf(stream) setvbuf((stream), NULL, _IOLBF, BUFSIZ)
   #else /* HAVE_SETVBUF */
-    #define setlinebuf(stream) setbuf((stream), NULL);
+    #define setlinebuf(stream) setbuf((stream), NULL)
   #endif /* HAVE_SETVBUF */
 #endif /* HAVE_SETLINEBUF */
 
 #endif /* SYSCOMPAT_H */
+

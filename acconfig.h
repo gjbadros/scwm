@@ -68,6 +68,10 @@
    which should be used instead of scm_parse_path from C.  */
 #undef HAVE_SCM_INTERNAL_PARSE_PATH
 
+/* Define this if your libguile has a scm_make_vector, which needs
+   three arguments. This should be true only of older versions. */
+#undef HAVE_SCM_MAKE_VECTOR_3_ARGS
+
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 

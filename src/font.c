@@ -361,8 +361,7 @@ void init_font()
     scm_make_weak_value_hash_table (SCM_MAKINUM(FONT_HASH_SIZE));
   scm_protect_object(font_hash_table);
   protected_fonts =
-    scm_make_vector (SCM_MAKINUM(2), SCM_EOL, 
-		     SCM_BOOL_F);
+    scm_make_vector (SCM_MAKINUM(2), SCM_EOL);
   scm_protect_object(protected_fonts);
 
   scm_tc16_scwm_font = scm_newsmob(&font_smobfuns);

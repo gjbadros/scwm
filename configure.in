@@ -255,6 +255,26 @@ AC_MSG_RESULT(no)
 LIBS="${saved_LIBS}"
 CFLAGS="${saved_CFLAGS}"
 
+saved_LIBS="${LIBS}"
+LIBS="${LIBS} ${GUILE_LIBS}"
+saved_CFLAGS="${CFLAGS}"
+CFLAGS="${CFLAGS} ${GUILE_INCLUDES}"
+AC_MSG_CHECKING(whether scm_make_vector in -lguile takes a third argument)
+AC_TRY_LINK([
+#include <guile/gh.h>
+],[
+return scm_make_vector(SCM_MAKINUM(0), SCM_BOOL_F, SCM_BOOL_F);
+], [
+AC_DEFINE(HAVE_SCM_MAKE_VECTOR_3_ARGS)
+AC_MSG_RESULT(yes)
+],[
+AC_MSG_RESULT(no)
+])
+
+LIBS="${saved_LIBS}"
+CFLAGS="${saved_CFLAGS}"
+
+
 dnl ## Checks for typedefs, structures, and compiler characteristics. ##
 
 AC_C_CONST
@@ -302,9 +322,3 @@ AC_OUTPUT(Makefile \
           utilities/dev/Makefile \
           utilities/emacs/Makefile \
           doc/Makefile)
-
-
-
-
-
-

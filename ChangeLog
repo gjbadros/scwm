@@ -1,3 +1,8 @@
+1998-07-13  Maciej Stachowiak  <maciej@roc-ny5-15.ix.netcom.com>
+
+	* configure.in, acconfig.h: Check wether scm_make_vector needs a
+	third argument (newer Guiles only take 2).
+
 Fri Jul 10 10:44:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* configure.in, acconfig.h: Check for setlinebuf and setvbuf (patch

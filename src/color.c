@@ -723,7 +723,7 @@ init_color()
     scm_make_weak_value_hash_table (SCM_MAKINUM(COLOR_HASH_SIZE));
   scm_protect_object(color_hash_table);
 
-  protected_colors = scm_make_vector (SCM_MAKINUM(6), SCM_EOL, SCM_BOOL_F);
+  protected_colors = scm_make_vector (SCM_MAKINUM(6), SCM_EOL);
   scm_protect_object(protected_colors);
 
   str_black=gh_str02scm("black");
