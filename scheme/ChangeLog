@@ -1,3 +1,25 @@
+1999-07-15  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-composition.scm: Added a new module to support the
+	construction of constraint "compositions".  The interface to this 
+	module exists purely through scheme function calls for now, but a 
+	graphical ui is coming.  With this module, you may record a series of
+	ui-constraint applications and then compile that set into a "composition"
+	that you can then reuse as a new constraint type.
+
+	* ui-constraints.scm: Added a new option to the make-ui-constraint
+	function.  This new option, in the form of the key visible?, specifies
+	whether or not the newly constructed ui-constraint should be added to
+	the global list or not.  The add hooks are also not called if the 
+	ui-constraint is not added to the list.
+
+	* ui-constraints.scm: Added a function to obtain a ui-constraint-class
+	object given it's textual name.  This routine could easily be generalized
+	to fetch based on any property should that feature become necessary.
+  	
+	* Makefile.am: Added ui-constraints-composition.scm to the list
+	scheme modules.
+
 Thu Jul 15 09:40:32 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Make `select-window' return the (car
