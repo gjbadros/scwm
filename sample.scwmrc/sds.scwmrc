@@ -1,8 +1,4 @@
-<<<<<<<<<<<<<< variant A
-;;; File: <.scwmrc - 1998-12-01 Tue 13:31:46 EST sds@eho.eaglets.com>
->>>>>>>>>>>>>> variant B
-;;; File: <.scwmrc - 1998-08-15 Sat 19:52:15 EDT sds@mute.eaglets.com>
-======= end of combination
+;;; File: <.scwmrc - 1998-12-02 Wed 22:19:26 EST sds@eho.eaglets.com>
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Goal: to attract users.
@@ -207,6 +203,27 @@
 (define decor-list (list (cons "Standard" std-d) (cons "Lizard" lizard-d)
                          (cons "Gradient" grad-d)))
 
+; (define (place-at-point win)
+;   (let ((pp (pointer-position)) (ws (window-size win)))
+;     (move-to (- (car pp) (quotient (car ws) 2))
+;              (- (cadr pp) (quotient (cadr ws) 2)) win))
+;   (move-inside win))
+
+; (define (move-inside win)
+;   (let* ((vp (viewport-position)) (ds (display-size)) (ws (window-size win))
+;          (wp (window-position win)) (xx (car wp))
+;          (bw (window-frame-border-width win)))
+;     (cond ((< (car wp) (car vp)) (set! xx (car vp))
+;            (move-to xx (cadr wp) win))
+;           ((> (+ (car wp) (car ws)) (+ (car vp) (car ds)))
+;            (set! xx (- (+ (car vp) (car ds)) (car ws) bw bw))
+;            (move-to xx (cadr wp) win)))
+;     (cond ((< (cadr wp) (cadr vp)) (move-to xx (cadr vp) win))
+;           ((> (+ (cadr wp) (cadr ws)) (+ (cadr vp) (cadr ds)))
+;            (move-to xx (- (+ (cadr vp) (cadr ds)) (cadr ws)
+;                           bw bw (title-height))
+;                     win)))))
+
 (define std-style
   (make-style #:fg "black" #:bg "grey76" #:sticky-icon #t
               #:icon (if want-pictures? unknown-i #f) ; #f: no pics, just text
@@ -215,12 +232,8 @@
               #:random-placement #t #:smart-placement #t #:use-decor std-d
 	      #:mwm-func-hint #t #:mwm-decor-hint #t #:hint-override #t
               #:decorate-transient #t #:PPosition-hint #f #:mini-icon term-i
-              #:transient-placement-proc
-              (lambda (win)
-                (let ((pp (pointer-position)) (ws (window-size win)))
-                  (move-to (+ (car pp) (modulo (car ws) 2))
-                           (+ (cdr pp) (modulo (cdr ws) 2)) win)))))
-              ;; #:squashed-titlebar #t))
+              ;; #:squashed-titlebar #t
+              #:transient-placement-proc place-at-point))
 (define desk-widget
   (make-style #:focus 'none #:use-style std-style #:plain-border #t #:sticky #t
               #:winlist-skip #t #:border-width 1 #:circulate-skip #t
@@ -257,6 +270,8 @@
 (window-style "xxgdb" #:mini-icon xxgdb-i)
 ;(window-style "Toplevel" #:icon "toolbox.xpm")
 (window-style "Ace*" #:mini-icon games-i)
+(window-style "xpat2" #:mini-icon games-i)
+(window-style "xmessage" #:mini-icon quest-i)
 (window-style "gtkfind" #:mini-icon mag-i #:icon "find1.xpm")
 (window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
               #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
@@ -384,6 +399,7 @@
   (menu (list (menuitem "Games" #f) ; #:image-left games-i
               menu-title menu-separator
               (menuitem "XJewel" #:action "xjewel")
+              (menuitem "XPat2" #:action "xpat2")
               menu-separator
               (menuitem "Bogged" #:action "/home/sds/bin/bog")
               ;; (menuitem "Nethack" #:action "/usr/games/nethack")
@@ -838,24 +854,24 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;; Linear, mechanical
 ;(set-animation! '#(0.1 0.2 0.3 0.4 0.6 0.7 0.8 0.9 1.0))
 
-(bind-key 'all "H-KP_Down"
-	  (lambda () (with-window (get-window)
-		       (animated-move-to #f (y- (w%y 100)))))
-(bind-key 'all "H-KP_End"
+(bind-key 'all "H-KP_1"
 	  (lambda () (with-window (get-window)
 		       (animated-move-to 0 (y- (w%y 100))))))
-(bind-key 'all "H-KP_Home" (lambda () (animated-move-to 0 0)))
-(bind-key 'all "H-KP_Left" (lambda () (animated-move-to 0 #f)))
-(bind-key 'all "H-KP_Next"
+(bind-key 'all "H-KP_2"
+	  (lambda () (with-window (get-window)
+		       (animated-move-to #f (y- (w%y 100))))))
+(bind-key 'all "H-KP_3"
  	  (lambda () (with-window (get-window)
 		       (animated-move-to (x- (w%x 100)) (y- (w%y 100))))))
-(bind-key 'all "H-KP_Prior"
+(bind-key 'all "H-KP_4" (lambda () (animated-move-to 0 #f)))
+(bind-key 'all "H-KP_6"
  	  (lambda () (with-window (get-window)
-		       (animated-move-to (x- (w%x 100)) 0)))))
-(bind-key 'all "H-KP_Right"
- 	  (lambda () (with-window (get-window
-		       (animated-move-to (x- (w%x 100)) #f)))))
-(bind-key 'all "H-KP_Up" (lambda () (animated-move-to #f 0)))
+		       (animated-move-to (x- (w%x 100)) #f))))
+(bind-key 'all "H-KP_7" (lambda () (animated-move-to 0 0)))
+(bind-key 'all "H-KP_8" (lambda () (animated-move-to #f 0)))
+(bind-key 'all "H-KP_9"
+ 	  (lambda () (with-window (get-window)
+		       (animated-move-to (x- (w%x 100)) 0))))
 
 ;; FIXGJB: modifiers interface could be better... mimic off Emacs?
 ;; FIXGJB: keys should be first class
