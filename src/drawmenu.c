@@ -56,11 +56,11 @@ struct MenuDrawingInfo_tag
   int cpixExtraTextWidth;	/* how wide are the text items */
   int cpixSideImage;		/* how wide is the side image */
   /* cpixItemOffset + ccol * cpixItemWidth == cpixWidth */
+  Pixel HLBGColor;		/* the highlight background color */
+  Pixel HLTextColor;		/* the highlight text color */
   Pixel BGColor;		/* the background color */
   Pixel SideBGColor;		/* the side image bg color */
-  Pixel TextColor;		/* the text color */
   Pixel StippleColor;		/* the stipple color */
-  scwm_font *scfont;		/* To use scwm_font instead of XFont */
 };
 
 struct MenuItemDrawingInfo_tag
@@ -69,6 +69,10 @@ struct MenuItemDrawingInfo_tag
   int cpixItemHeight;		/* height for item */
   Bool fOnTopEdge;		/* is this item on the top edge? */
   Bool fOnBottomEdge;		/* is this item on the bottom edge?  */
+  Pixel BGColor;		/* the background color-- inherited from menu's if 0 */
+  Pixel TextColor;		/* the text/fg color, set from menu's if not given */
+                                /* above colors are overridden by HL* colors when selected */
+  scwm_font *scfont;		/* set from menu's if not given */
 };
 
 #define INCREASE_MAYBE(var,val) do { if (val > var) { var = val; } } while (0)
@@ -133,7 +137,7 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
   }
   
   gcm = GCForeground | GCBackground;
-  gcv.foreground = pmd->pmdi->TextColor;
+  gcv.foreground = DYNAMIC_SAFE_COLOR(pmd->pmenu->scmTextColor);
   gcv.background = pmd->pmdi->BGColor;
 #ifndef I18N
   gcm |= GCFont;
@@ -142,7 +146,6 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
   XChangeGC(dpy, MenuGC, gcm, &gcv);
 
   gcm = GCForeground | GCBackground;
-/*  gcv.foreground = pmd->pmdi->TextColor; */
   gcv.foreground = pmd->pmdi->StippleColor;
   gcv.background = pmd->pmdi->BGColor;
   if (Scr.d_depth < 2) {
@@ -158,14 +161,14 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
   XChangeGC(dpy, MenuStippleGC, gcm, &gcv);
 }
 
+/* use scmFont, but default to scfont, or scmFixedFont */
 static
 scwm_font *
-PscwmFontForMenuItem(SCM scmFont)
+PscwmFontForMenuItem(scwm_font *scfontDefault, SCM scmFont)
 {
   scwm_font *scfont = DYNAMIC_SAFE_FONT(scmFont);
-  if (!scfont) {
-    scfont = FONT(scmFixedFont);
-  }
+  if (!scfont) scfont = scfontDefault;
+  if (!scfont) scfont = FONT(scmFixedFont);
   return scfont;
 }
 
@@ -286,22 +289,23 @@ void
 PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 #define FUNC_NAME "PaintMenuItem"
 {
-  /*  Menu *pmenu = pmd->pmenu; */
   MenuDrawingInfo *pmdi = pmd->pmdi;
   MenuItem *pmi = pmiim->pmi;
-  scwm_font *scfontItem = DYNAMIC_SAFE_FONT(pmi->scmFont);
-  scwm_font *scfont = scfontItem? scfontItem : pmdi->scfont;
+  MenuItemDrawingInfo *pmidi = pmiim->pmidi;
+  scwm_font *scfont = pmidi->scfont;
   int label_font_height = scfont->height;
-  int y_offset = pmiim->pmidi->cpixOffsetY;
+  int y_offset = pmidi->cpixOffsetY;
   int x_offset = pmdi->cpixItemOffset;
   int width = pmd->cpixWidth;
-  int item_height = pmiim->pmidi->cpixItemHeight;
+  int item_height = pmidi->cpixItemHeight;
   GC ShadowGC;
   GC ReliefGC;
   GC currentGC;
   scwm_image *psimgLeft = DYNAMIC_SAFE_IMAGE(pmi->scmImgLeft);
   scwm_image *psimgAbove = DYNAMIC_SAFE_IMAGE(pmi->scmImgAbove);
   menu_item_state mis = pmiim->mis;
+  Bool fSelected = (mis == MIS_Selected && !UNSET_SCM(pmi->scmAction));
+  Pixel TextColorDefault = DYNAMIC_SAFE_COLOR(pmd->pmenu->scmTextColor);
 
   /* code for FVWM menu look here -- should abstract for other options */
 
@@ -317,14 +321,16 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   ShadowGC = MenuShadowGC;
   ReliefGC = Scr.d_depth < 2 ? MenuShadowGC: MenuReliefGC;
   
-  /* Erase any old reliefs indicated selectedness */
-  if (UNSET_SCM(pmi->scmBGColor)) {
+  /* Erase any old reliefs indicated selectedness --
+     Use ClearArea if the color to use is the same as the menu color */
+  if (pmidi->BGColor == pmdi->BGColor && (!fSelected || pmdi->HLBGColor == pmdi->BGColor)) {
     /* inherit menu's bg color */
     XClearArea(dpy, w,
                x_offset-MENU_ITEM_RR_SPACE-1,
                y_offset, width+MENU_ITEM_RR_SPACE+1, item_height, False);
   } else {
-    Pixel bg = DYNAMIC_SAFE_COLOR(pmi->scmBGColor);
+    /* use the item-specific color, or the highlight color */
+    Pixel bg = fSelected? pmdi->HLBGColor : pmidi->BGColor;
     SetGCFg(Scr.ScratchGC1,bg);
     XFillRectangle(dpy, w, Scr.ScratchGC1, 
                    x_offset-MENU_ITEM_RR_SPACE-1,
@@ -336,24 +342,28 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
      want to redraw it when we have too (i.e. on expose event) */
 
   /* Top of the menu */
-  if (pmiim->pmidi->fOnTopEdge) {
+  if (pmidi->fOnTopEdge) {
     DrawSeparator(w, ReliefGC,ReliefGC, 
 		  0, width-1,0, -1);
   } 
 
   /* Bottom of the menu */
-  if (pmiim->pmidi->fOnBottomEdge) {
+  if (pmidi->fOnBottomEdge) {
     DrawSeparator(w, ShadowGC, ShadowGC, 
 		  0, width-1, y_offset + item_height,
 		  1);
   }
 
   /* Only highlight if the item has an action */
-  if (mis == MIS_Selected && !UNSET_SCM(pmi->scmAction)) {
-    RelieveRectangle(w, x_offset-MENU_ITEM_RR_SPACE, y_offset,
-		     width+MENU_ITEM_RR_SPACE, item_height,
-		     ReliefGC,ShadowGC);
+  if (fSelected) {
+    /* see also below where we pick colors based on this guard */
+    if (pmd->pmenu->fHighlightRelief) {
+      RelieveRectangle(w, x_offset-MENU_ITEM_RR_SPACE, y_offset,
+                       width+MENU_ITEM_RR_SPACE, item_height,
+                       ReliefGC,ShadowGC);
+    }
   }
+
   /* Add the markings for the left edge of the menu and 
      the right edge of the menu */
   RelieveHalfRectangle(w, 0, y_offset, 
@@ -383,35 +393,35 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
       DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, MenuGC);
     }
     
-    /* FIXJTL: don't turn on till title handling is done */
-#if 0
-    if (mis == MIS_Grayed) {
+    /* JTL:FIXME:: fix for proper menu title support */
+    if (mis == MIS_Grayed && False) {
       currentGC = MenuStippleGC;
     } else {
       currentGC = MenuGC;
     }
-#else
-    currentGC = MenuGC;
-#endif
 
     { /* scope */
-      Pixel fg = DYNAMIC_SAFE_COLOR(pmi->scmFGColor);
-      Pixel bg = DYNAMIC_SAFE_COLOR(pmi->scmBGColor);
+      Pixel fg = pmidi->TextColor;
+      Pixel bg = pmidi->BGColor;
+
+      if (fSelected) {
+        fg = pmdi->HLTextColor;
+        bg = pmdi->HLBGColor;
+      }
       
-      if (fg || bg || fg) {
+      if (fg != TextColorDefault || bg != pmdi->BGColor) {
         XGCValues gcv;
         unsigned long gcm = 0;
         XCopyGC(dpy,MenuGC,GCForeground | GCBackground | GCFont,Scr.ScratchGC1);
 
-        if (fg) {
+        if (fg != TextColorDefault) {
           gcm |= GCForeground;
           gcv.foreground = fg;
         }
-        if (bg) { 
+        if (bg != pmdi->BGColor) { 
           gcm |= GCBackground;
           gcv.background = bg;
         }
-        scwm_msg(DBG,FUNC_NAME,"Changing GC with %ld",gcm);
         XChangeGC(dpy, Scr.ScratchGC1, gcm, &gcv);
         currentGC = Scr.ScratchGC1;
       }
@@ -626,8 +636,9 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     Menu *pmenu = pmd->pmenu;
     scwm_image *psimgSide = DYNAMIC_SAFE_IMAGE(pmenu->scmImgSide);
     scwm_image *psimgBackground = DYNAMIC_SAFE_IMAGE(pmenu->scmImgBackground);
-    scwm_font *scfont;
+    Pixel TextColorDefault = DYNAMIC_SAFE_COLOR(pmenu->scmTextColor);
     MenuItemInMenu **rgpmiim = pmd->rgpmiim;
+    scwm_font *scfontDefault = DYNAMIC_SAFE_FONT(pmenu->scmFont);
 
     int cmiim = pmd->cmiim;
     int imiim = 0;
@@ -637,40 +648,42 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     int max_left_image_width = 0;
     int max_right_image_width = 0;
     int max_above_image_width = 0;
-    int label_font_height = 0;
     int max_item_width = 0;
 
     MenuDrawingInfo *pmdi = pmd->pmdi =
       NEW(MenuDrawingInfo);
-    
+
     pmdi->BGColor = DYNAMIC_SAFE_COLOR(pmenu->scmBGColor);
+    pmdi->HLBGColor = DYNAMIC_SAFE_COLOR_USE_DEF(pmenu->scmHLBGColor,pmdi->BGColor);
+    pmdi->HLTextColor = DYNAMIC_SAFE_COLOR(pmenu->scmHLTextColor);
     pmdi->SideBGColor = DYNAMIC_SAFE_COLOR(pmenu->scmSideBGColor);
-    pmdi->TextColor = DYNAMIC_SAFE_COLOR(pmenu->scmTextColor);
     pmdi->StippleColor = DYNAMIC_SAFE_COLOR(pmenu->scmStippleColor);
-    
-    scfont = pmdi->scfont = PscwmFontForMenuItem(pmenu->scmFont);
- 
-    label_font_height = scfont->height;
     
     pmdi->ccol = 1;
 
     for (imiim = 0; imiim < cmiim; imiim++) {
       MenuItemInMenu *pmiim = rgpmiim[imiim];
+      MenuItemDrawingInfo *pmidi = pmiim->pmidi = NEW(MenuItemDrawingInfo);
       MenuItem *pmi = pmiim->pmi;
       scwm_image *psimgAbove = DYNAMIC_SAFE_IMAGE(pmi->scmImgAbove);
       scwm_image *psimgLeft = DYNAMIC_SAFE_IMAGE(pmi->scmImgLeft);
+      scwm_font *scfont = pmidi->scfont = PscwmFontForMenuItem(scfontDefault, pmi->scmFont);
+
+      int label_font_height = scfont->height;
+
       int text_width;
       int extra_text_width = 0;
       int item_height = MENU_ITEM_EXTRA_VERT_SPACE * 2;
 
-      pmiim->pmidi = NEW(MenuItemDrawingInfo);
-      
-      pmiim->pmidi->cpixOffsetY = total_height;
+      pmidi->cpixOffsetY = total_height;
 
       text_width = ComputeXTextWidth(XFONT_FONTTYPE(scfont), pmi->szLabel, pmi->cchLabel);
 
       DBUG((DBG,FUNC_NAME,"`%s' has width %d (%d chars)\n",
 	   pmi->szLabel,text_width,pmi->cchLabel));
+
+      /* need to set the bg color even for separators. */
+      pmidi->BGColor = DYNAMIC_SAFE_COLOR_USE_DEF(pmi->scmBGColor,pmdi->BGColor);
 
       if (pmi->fIsSeparator) {
 	item_height = MENU_HEIGHT_SEPARATOR;
@@ -682,8 +695,10 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 	}
       
 	/* These are easy when using only one column */
-	pmiim->pmidi->fOnTopEdge = (imiim == 0);
-	pmiim->pmidi->fOnBottomEdge = (imiim == (cmiim - 1));
+	pmidi->fOnTopEdge = (imiim == 0);
+	pmidi->fOnBottomEdge = (imiim == (cmiim - 1));
+
+        pmidi->TextColor = DYNAMIC_SAFE_COLOR_USE_DEF(pmi->scmFGColor,TextColorDefault);
 
 	if (pmi->cchLabel != 0 || pmi->cchExtra != 0) {
 	  item_height += label_font_height + MENU_ITEM_LABEL_EXTRA_VERT_SPACE;
@@ -708,7 +723,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 	  INCREASE_MAYBE(max_right_image_width, MENU_POPUP_ARROW_WIDTH);
 	}
       }
-      pmiim->pmidi->cpixItemHeight = item_height;
+      pmidi->cpixItemHeight = item_height;
       total_height += item_height;
     }
 

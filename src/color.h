@@ -103,6 +103,7 @@ typedef struct {
 #define WHITE_COLOR make_color(str_white)
 
 #define SAFE_COLOR(X) (COLOR_P((X))?XCOLOR((X)):0)
+#define SAFE_COLOR_USE_DEF(X,def) (COLOR_P((X))?XCOLOR((X)):def)
 
 #define SAFE_XCOLOR_OR_WHITE(X) (COLOR_P((X))?XCOLOR((X)):XCOLOR(WHITE_COLOR))
 #define SAFE_XCOLOR_OR_BLACK(X) (COLOR_P((X))?XCOLOR((X)):XCOLOR(BLACK_COLOR))
@@ -116,6 +117,10 @@ typedef struct {
 #define DYNAMIC_SAFE_COLOR(X) (gh_symbol_p((X))? \
 			       SAFE_COLOR(scm_symbol_binding(SCM_BOOL_F,(X))) : \
 			       SAFE_COLOR((X)))
+
+#define DYNAMIC_SAFE_COLOR_USE_DEF(X,def) (gh_symbol_p((X))? \
+			       SAFE_COLOR_USE_DEF(scm_symbol_binding(SCM_BOOL_F,(X)),def) : \
+			       SAFE_COLOR_USE_DEF((X),def))
 
 
 /* GJB:FIXME:: colors have an especially poor interfaces --

@@ -48,6 +48,8 @@ typedef struct Menu_tag
   SCM scmSideBGColor;		/* side image background color */
   SCM scmBGColor;		/* background color */
   SCM scmTextColor;		/* text color */
+  SCM scmHLBGColor;		/* highlight background color */
+  SCM scmHLTextColor;		/* highlight text color */
   SCM scmStippleColor;		/* stipple color */
   SCM scmImgBackground;		/* background image */
   SCM scmFont;			/* font for labels */
@@ -56,6 +58,7 @@ typedef struct Menu_tag
   char *pchUsedShortcutKeys;	/* list of characters that are shortcut keys */
   int cmsPopupDelay;            /* delay in ms before submenu popup */
   int cmsHoverDelay;            /* delay in ms before hover action is invoked */
+  Bool fHighlightRelief;        /* should we draw a relief when we highlight the item */
 } Menu;
 
 struct DynamicMenu_tag

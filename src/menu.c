@@ -113,6 +113,8 @@ mark_menu(SCM obj)
   GC_MARK_SCM_IF_SET(pmenu->scmSideBGColor);
   GC_MARK_SCM_IF_SET(pmenu->scmBGColor);
   GC_MARK_SCM_IF_SET(pmenu->scmTextColor);
+  GC_MARK_SCM_IF_SET(pmenu->scmHLBGColor);
+  GC_MARK_SCM_IF_SET(pmenu->scmHLTextColor);
   GC_MARK_SCM_IF_SET(pmenu->scmStippleColor);
   GC_MARK_SCM_IF_SET(pmenu->scmImgBackground);
   GC_MARK_SCM_IF_SET(pmenu->scmFont);
@@ -289,13 +291,17 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   }
   pmenu->scmMenuItems = list_of_menuitems;
 
+  pmenu->fHighlightRelief = True;
+
   /* BG-COLOR: Required */
   VALIDATE_ARG_COLOR_OR_SYM(2,bg_color);
   pmenu->scmBGColor = bg_color;
+  pmenu->scmHLBGColor = SCM_BOOL_F; /* unchanged when highlighted */
 
   /* TEXT-COLOR: Required */
   VALIDATE_ARG_COLOR_OR_SYM(3,text_color);
   pmenu->scmTextColor = text_color;
+  pmenu->scmHLTextColor = SCM_BOOL_F; /* unchanged when highlighted */
 
   /* STIPPLE-COLOR: Required */
   VALIDATE_ARG_COLOR_OR_SYM(4,stipple_color);
@@ -443,6 +449,63 @@ stipple color for the MENU. */
   }
   
   return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(set_menu_highlight_colors_x, "set-menu-highlight-colors!", 3, 0, 0,
+           (SCM menu, SCM text_color, SCM bg_color))
+     /** Use TEXT-COLOR and BG-COLOR as the highlight colors for MENU.
+These colors will be used for the selected item. */
+#define FUNC_NAME s_set_menu_highlight_colors_x
+{
+  Menu *pm;
+  VALIDATE_ARG_MENU_COPY(1,menu,pm);
+  if (!UNSET_SCM(text_color)) {
+    VALIDATE_ARG_COLOR_OR_SYM(2,text_color);
+    pm->scmHLTextColor = text_color;
+  }
+  if (!UNSET_SCM(bg_color)) {
+    VALIDATE_ARG_COLOR_OR_SYM(3,bg_color);
+    pm->scmHLBGColor = bg_color;
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(set_menu_highlight_relief_x, "set-menu-highlight-relief!", 2, 0, 0,
+           (SCM menu, SCM highlight_relief_p))
+     /** If HIGHLIGHT-RELIEF? is #t, then draw a relief on selected items in MENU.
+Otherwise, do not.  See also `set-menu-highlight-colors!'. */
+#define FUNC_NAME s_set_menu_highlight_relief_x
+{
+  Menu *pm;
+  VALIDATE_ARG_MENU_COPY(1,menu,pm);
+  VALIDATE_ARG_BOOL_COPY(2,highlight_relief_p,pm->fHighlightRelief);
+  
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(menu_highlight_colors, "menu-highlight-colors", 1, 0, 0,
+           (SCM menu))
+     /** Return a list:  text-color, bg-color; the highlight colors for MENU. */
+#define FUNC_NAME s_menu_highlight_colors
+{
+  Menu *pm;
+  VALIDATE_ARG_MENU_COPY(1,menu,pm);
+  return gh_list(pm->scmHLTextColor,pm->scmHLBGColor,SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(menu_highlight_relief_p, "menu-highlight-relief?", 1, 0, 0,
+           (SCM menu))
+     /** Return #t if MENU's selected item is relieved, #f otherwise. */
+#define FUNC_NAME s_menu_highlight_relief_p
+{
+  Menu *pm;
+  VALIDATE_ARG_MENU_COPY(1,menu,pm);
+  return SCM_BOOL_FromBool(pm->fHighlightRelief);
 }
 #undef FUNC_NAME
 
