@@ -71,6 +71,10 @@ Bool FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_
 			   Bool allow_any_p, Bool fShowError);
 Bool FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name,
 			    Bool allow_any_p);
+const char *SzKeysymForKeyCode(KeyCode code, int index);
+char *SzNewModifierStringForModMask(int modmask);
+char *SzNewForModMaskKeyCode(int modmask, KeyCode code);
+
 
 void GrabKeys(ScwmWindow *psw);
 void GrabButtons(ScwmWindow *psw);
