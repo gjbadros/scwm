@@ -32,6 +32,8 @@
 #include "menu.h"
 #include "util.h"
 
+#undef MS_DELETION_COMMENT
+
 int menu_on=0;
 
 MenuRoot *ActiveMenu = NULL;		/* the active menu */
@@ -671,8 +673,10 @@ int UpdateMenu(int sticks)
 	      } else if (!strcmp(ActiveItem->action,"SchemeMenu")) {
 		popup(ActiveItem->thunk,SCM_UNDEFINED);
 	      } else {
+#if MS_DELETION_COMMENT
 		ExecuteFunction(ActiveItem->action,
 				ButtonWindow, &Event, Context,-1);
+#endif /* MS_DELETION_COMMENT */
 	      }
 	    }
 	  ActiveItem = NULL;
@@ -891,7 +895,7 @@ void WaitForButtonsUp()
 
 
 
-
+#if MS_DELETION_COMMENT
 void DestroyMenu(MenuRoot *mr)
 {
   MenuItem *mi,*tmp2;
@@ -935,6 +939,7 @@ void DestroyMenu(MenuRoot *mr)
     }
   free(mr);
 }
+#endif /* MS_DELETION_COMMENT */
 
 /****************************************************************************
  * 
@@ -1389,6 +1394,7 @@ void init_menus(void)
   Scr.MenuGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   Scr.MenuStippleGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
+
 
 
 
