@@ -800,7 +800,7 @@ a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 PROC is a procedure that will be invoked (with no arguments) when the
 specified key is pressed in the specified context. The optional
 argument RELEASE-PROC, if specified, is a procedure that will be
-invoked when the key is release."
+invoked when the key is released.
 */
 #define FUNC_NAME s_bind_key
 {
