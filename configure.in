@@ -11,7 +11,7 @@ AC_INIT(src/scwm.c)
 AC_PREREQ(2.4)
 
 dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.99.4)
+AM_INIT_AUTOMAKE(scwm, 0.99.5pre1)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(include/config.h)
 
@@ -124,8 +124,6 @@ if test "NONE" = "$prefix"; then
 else
     PREFIX_INCLUDES="-I$prefix/include"
 fi
-AC_SUBST(PREFIX_INCLUDES)
-
 
 dnl # check for build-guile #
 
@@ -640,6 +638,12 @@ AC_C_INLINE
 
 dnl check for imlib
 AM_PATH_IMLIB
+
+if test ! "x" = x"$imlib_prefix"; then
+    PREFIX_INCLUDES="$PREFIX_INCLUDES -I$imlib_prefix/include"
+fi
+
+AC_SUBST(PREFIX_INCLUDES)
 
 
 AC_ARG_ENABLE(imlib, [  --disable-imlib       Do not use IMLIB library even if it exists],
