@@ -719,7 +719,34 @@ SCWM_PROC(x_connection_number, "X-connection-number", 0, 0, 0,
   int c = ConnectionNumber(dpy);
   return gh_int2scm(c);
 }
+#undef FUNC_NAME
 
+SCWM_PROC(get_key_event, "get-key-event", 0, 2, 0,
+          (SCM async_mouse, SCM async_keyboard))
+     /** Return a string representing the next key event.
+If ASYNC-MOUSE is #t, mouse events are treated asynchronously.
+If ASYNC-KEYBOARD is #t, keyboard events are treated asynchronously.
+A non-modifier key must be pressed before it is considered an event. */
+#define FUNC_NAME s_get_key_event
+{
+  Bool fAsyncMouse;
+  Bool fAsyncKeyboard;
+  XEvent ev;
+  VALIDATE_ARG_BOOL_COPY_USE_F(1,async_mouse,fAsyncMouse);
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,async_keyboard,fAsyncKeyboard);
+  XSync(dpy,True);
+  XGrabKeyboard(dpy, Scr.Root, False, 
+                fAsyncMouse? GrabModeAsync: GrabModeSync, 
+                fAsyncKeyboard? GrabModeAsync: GrabModeSync,
+                CurrentTime);
+  while (True) {
+    XNextEvent(dpy, &ev);
+    if (ev.type == KeyRelease)
+      break;
+  }
+  XUngrabKeyboard(dpy, CurrentTime);
+  return gh_list(gh_long2scm(ev.xkey.state),gh_long2scm(ev.xkey.keycode),SCM_UNDEFINED);
+}
 
 void 
 init_miscprocs()

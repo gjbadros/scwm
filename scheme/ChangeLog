@@ -1,3 +1,29 @@
+Tue Apr 20 21:12:07 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* xprop-extras.scm: Added `window-pid'
+
+	* minimal.scm: Turn off using handle-system-error in
+	use-scwm-modules as it causes immediate exiting for me -- I
+	thought this had worked before.  Also added a mouse binding to
+	enable deiconify action on icons since sometimes you need to be
+	able to deiconify an icon to do something to an xterm from within
+	a super-minimal scwm.
+
+	* file.scm: Added `first-line-output-of-system-cmd' to avoid
+	blocking waiting for more output, and added `execute-with-pidprop' 
+	to support the scwm_set_pid_property mechanism for using
+	`window-pid' primitive.
+
+	* base.scm: Change `scwm-system' to return a list -- exit-status
+	and child-pid.  Add doc that the child-pid is not CMD, but the sh
+	that is used to exec the CMD.  Other doc fixes.
+
+Mon Apr 19 20:19:15 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* preferences.scm: Added `save-preferences', `load-preferences'.
+	These should work, modulo the option variable referencing problem
+	due to variables possibly being hidden inside modules.
+
 1999-04-19  Jeff Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Added an anchor constraint class.

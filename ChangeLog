@@ -1,3 +1,13 @@
+Tue Apr 20 21:17:47 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Added utilities/pidproperty/Makefile as a file to generate.
+
+Tue Apr 20 20:10:31 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* utilities/pidproperty/Makefile.in,
+	utilities/pidproperty/scwm_set_pid_property.c: Added -- to support 
+	`window-pid' primitive.
+
 Thu Apr 15 20:04:41 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* libtool-deps.patch: Added -- I need this patch to my generated
