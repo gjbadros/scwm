@@ -128,7 +128,7 @@
 		  group preferences animated-edge-moves
 		  send-string quote background
 		  property-respond xprop-extras
-		  esdsound dir-focus tile undo
+		  wavplay dir-focus tile undo
 		  ui-constraints-toggle-menu
 		  ui-constraints-gtk-toggle-menu
 		  )
@@ -161,7 +161,6 @@
 	       "Display Size: " (display-size) "\n"))
 
 (define mail-spool-dir (getenv "MAIL"))
-(define sounds-dir (or (getenv "MEDIA") (string-append scwmdir "/Media/")))
 
 ;; prefer doc files in scwmdir/doc
 (set! doc-files
@@ -563,80 +562,7 @@
 ;; and stay on screen (instead of being half off screen when mapped)
 (set-smart-placement-is-really-smart! #t)
 
-;; (normal-border (current-window-with-pointer))
-
-
-(define (place-near-pointer w)
-  (let* ((posn (pointer-position))
-	 (x (car posn))
-	 (y (cadr posn)))
-    (set! x (- x 60))
-    (set! y (- y 45))
-;;    (display "x = ") (display x)
-;;    (display ", y = ") (display y) (newline)
-    (move-to x y w)))
-
-(define (place-interactively win)
-  (let* ((posn (pointer-position))
-	 (size (window-size win))
-	 (w (car size))
-	 (h (cadr size))
-	 (x (- (car posn) (/ w 2)))
-	 (y (- (cadr posn) (/ h 2))))
-    (move-to x y win)
-    ;; don't use an opaque move, since window is
-    ;; not mapped before the placement-proc gets called
-    (interactive-move win #f)))
-
-;;(define ns-win (select-window-interactively))
-;;(define (netscape-win) ns-win)
-
-;; (define w (select-window-interactively))
-
-(define (move-next-to-netscape-win w)
-  (let* ((ns-pos (window-viewport-position (netscape-win)))
-	 (x (+ (car ns-pos) 300))
-	 (y (- (cadr ns-pos) 30)))
-    (move-to x y w)
-    (move-pointer-to (+ x 30) (+ y 55))))
-;;    (write-all #t "moving next to netscape window " x ", " y "\n")))
-
-;;(window-title (select-window-interactively))
-;;(move-next-to-netscape-win (select-window-interactively))
-
-;; GJB:FIXME:: this is a bit unintuitive-- must use transient-placement-proc
-;; instead of just placement-proc, even though I've explicitly
-;; named the window
-(window-style "Netscape: Find" #:transient-placement-proc move-next-to-netscape-win)
-;; (window-style "Reminder" #:placement-proc (lambda () (system "ring-bells")))
-
-;; (use-scwm-modules esdsound)
-;; (scwm-module-loaded? '(app scwm esdsound))
-(if (scwm-module-loaded? '(app scwm esdsound))
-    (define (wavplay filename)
-      (sound-play (sound-load (string-append sounds-dir filename))))
-    (define (wavplay filename)
-      (system (string-append "wavplay " sounds-dir filename "&"))))
-
-(define download-closed-wav "tada.wav")
-
-;; GJB:FIXME:: make the time below (5) an option
-(define (netscape-download-closed-action win)
-  (let ((time-up (- (current-time) (window-creation-time win))))
-    (if (> time-up 5)
-	(wavplay download-closed-wav))))
-;;  (message "Download finished"))
-
-(define (call-netscape-download-closed-action win)
-  (if (and (string=? (window-class win) "Netscape")
-	   (string=? (window-resource win) "Download"))
-      (netscape-download-closed-action win)))
-
-(add-hook! window-close-hook call-netscape-download-closed-action)
-
-;;(window-style "Netscape: Find" #:no-titlebar #t) ;; not needed -- it's a transient
-;;(window-style "findDialog_popup" #:placement-proc move-next-to-netscape-win)
-;; (move-next-to-netscape-win (select-window-interactively))
+(enable-dynamic-netscape-actions)
 
 
 ;; GJB:FIXME:MS: make-face's style of argument passing
@@ -825,14 +751,14 @@
 (for-each (lambda (resource)
 	    (window-style resource
 			  #:use-style desk-widget #:no-titlebar #t
-			  #:placement-proc center-placement))
+			  #:placement-proc place-at-center))
 	  (list 
 	   "gnome-splash"
 	   "guname"))
 
 (window-style "wm-properties-capplet"
               #:use-style desk-widget #:no-titlebar #t
-	      #:transient-placement-proc place-near-pointer)
+	      #:transient-placement-proc (at-point-placement #:offset '(60 45)))
 
 
 ;;  This shows a bug in dealing with 0 bordered windows (from HJ Stein)
@@ -854,7 +780,7 @@
 ;; MSFIX: important! window-style's argument 
 
 (window-style "tooltip" #:use-style desk-widget-on-top-no-titlebar #:border-width 0
-	      #:placement-proc place-near-pointer)
+	      #:placement-proc (at-point-placement))
 (window-style (resource-match?? "ScwmUIConstraintsButtons") 
 	      #:use-style desk-widget-on-top-no-titlebar)
 (window-style "FvwmPager" #:use-style desk-widget-on-top-no-titlebar)
