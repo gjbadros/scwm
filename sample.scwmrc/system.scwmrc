@@ -906,7 +906,7 @@ from other processes.
     menu-separator
     (menuitem "&Window Operations" #:image-left "mini-zoom.xpm" 
 	      #:action 'menu-window-ops)
-    (menuitem "Windows &list" #:image-left "mini-windows.xpm" 
+    (menuitem "Windows lis&t" #:image-left "mini-windows.xpm" 
 	      #:submenu (lambda () (make-window-list-menu)))
     (menuitem "Windows by &resource" #:image-left "mini-windows.xpm" 
 	      #:submenu (lambda () (make-window-list-menu #:by-resource #t)))
