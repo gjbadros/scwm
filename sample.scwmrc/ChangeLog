@@ -1,3 +1,16 @@
+Tue Sep 28 23:12:35 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: (C) change.  Added xlock-command variable, move
+	the *-hosts variables to the front until there is an editing
+	interface, drop the second window-style that set the icon box to
+	overlap with Gnome icons.  Rename sysutils-button-face to
+	style-button-face.  Drop separate animated shade/reset, just
+	animate the plain one.  Clean up menus a lot!  Fix bug in warnings 
+	about KP_4/KP_Left when they're not defined.  Added binding for
+	select-window-toggle.  Fix `shove-window-prefix' to display the
+	message only until the action is executed.  Added binding "H-e"
+	for focus-last-mapped-window.
+
 Tue Sep 28 18:01:15 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added `shove-window-prefix', and bind to H-p.

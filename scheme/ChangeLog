@@ -1,3 +1,21 @@
+Tue Sep 28 23:08:37 1999    <gjb@cs.washington.edu>
+
+	* winops.scm: Only define `print-window' if xpr program exists,
+	use path-cache module.
+
+	* winlist.scm: Propoagate the hover-delay and popup-delay items to 
+	submenus for `make-window-list-menu'.
+
+	* prompt-color.scm: Use prompting-shell.
+
+	* listops.scm: ws change
+
+	* flux.scm: Rename `menu-window-move' to `menu-window-shove', call 
+	it "shove" not "move" in menus.  Fix window group menu from the
+	root menu.
+
+	* base.scm: (C) update.
+
 Tue Sep 28 17:47:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* doc.scm: Remove superfluous dependence on flux module.

@@ -6,6 +6,9 @@ See also doc/dev/scwm-1.0-release-todo
 
 * Leader windows and window groups could be made implicit
 
+* make scwmrepl take options w/ getopt. e.g., -v for a startup message
+  re: documentation and apropos and autoloading of (app scwm doc) module
+
 * Improvements to ScwmButtons
 ;;; o Extend ScwmButtons to permit animated icons when mouse is over button
 ;;; o Extend ScwmButtons to have a right-click menu for
