@@ -41,10 +41,10 @@ static set<ScwmWindow *> setpswDirty;
 SCM scwm_resolve_hook;
 
 static void
-ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
+ScwmClvChanged(ClVariable clv, ClSimplexSolver *)
 #define FUNC_NAME "ScwmClvChanged"
 {
-  SCM obj = ScmFromPv(pclv->Pv());
+  SCM obj = ScmFromPv(clv.Pv());
   if (obj && obj != SCM_UNDEFINED) {
     SCM proc = scm_object_property(obj,
                                    gh_symbol2scm("changed-proc"));
@@ -52,9 +52,9 @@ ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
       scwm_safe_call0(proc);
     }
   }
-  ScwmWindow *psw = PswFromClvPv(pclv->Pv());
+  ScwmWindow *psw = PswFromClvPv(clv.Pv());
   if (!psw) {
-    DBUG((DBG,FUNC_NAME,"No struct ScwmWindow attached to var: %s", pclv->name().data()));
+    DBUG((DBG,FUNC_NAME,"No struct ScwmWindow attached to var: %s", clv.name().data()));
     return;
   }
   if (!psolver) {
@@ -318,11 +318,8 @@ SCWM_PROC(cl_windows_of_constraint, "cl-windows-of-constraint", 1, 0, 0,
 
   ClLinearExpression::ClVarToCoeffMap::const_iterator it = mapclv.begin();
   for ( ; it != mapclv.end(); ++it) {
-    const ClAbstractVariable *pclav = (*it).first;
-    const ClVariable *pclv = dynamic_cast<const ClVariable *>(pclav);
-    if (!pclv)
-      continue;
-    ScwmWindow *psw = PswFromClvPv(pclv->Pv());
+    ClVariable clv = (*it).first;
+    ScwmWindow *psw = PswFromClvPv(clv.Pv());
     if (psw)
       setpsw.insert(psw);
   }
