@@ -71,9 +71,10 @@
 
 (define mail-spool-dir (getenv "MAIL"))
 
+(define scwmdir (or (getenv "SCWMDIR") "/scratch/gjb/scwm"))
 
 (set! doc-files
-  (append (map (lambda (s) (string-append (getenv "SCWMDIR") "/doc/" s ))
+  (append (map (lambda (s) (string-append scwmdir "/doc/" s ))
 	     (list "scwm-procedures.txt" "scwm-variables.txt" "scwm-hooks.txt"))
 	  (list 
 	   (string-append (getenv "HOME") "/cassowary/guile/cassowary_scm-procedures.txt"))))
@@ -91,7 +92,7 @@
 
 
 (set! *theme-path*
-      (append (list (string-append (getenv "SCWMDIR") "/themes")) *theme-path*))
+      (append (list (string-append scwmdir "/themes")) *theme-path*))
 
 
 ;;;(documentation "make-menuitem")
@@ -818,7 +819,8 @@ union of all other window managers!
     (menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
 	       #:action (lambda () (restart "scwm")))
     (menuitem "Restart development scwm" #:image-left "mini-turn.xpm" 
-	       #:action (lambda () (restart "$SCWMDIR/scwm/scwm")))
+	       #:action (lambda () (restart 
+				    (string-append scwmdir "/scwm/scwm"))))
     menu-separator
     (menuitem "&Yes" #:image-left "mini-exclam.xpm" #:action quit)
     (menuitem "&No"  #:image-left "mini-cross.xpm" #:action noop))))
