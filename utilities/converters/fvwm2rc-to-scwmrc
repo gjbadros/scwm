@@ -55,6 +55,7 @@ my %funcs = ();  # names -> text
 my %decors = ();  # names -> text
 my %menus = ();  # names -> text
 my %moduleconfigs = ();  # module name
+my @unknown_module_lines = ();  # array of array refs, [ $first, $last]
 
 # GJB:FIXME:: the first arg of the aref can also
 # be a closure that returns a list of the arguments
@@ -282,9 +283,19 @@ my %rules =
 	   },
    ],
    "module" =>
-   [    '\s+\"?(' . $id_char_seq . ')\"?',
-	sub { my ($m) = (@_);
-	      return "(define fvwm2-module-$m (run-fvwm2-module " . dquoted($m) . "))";
+   [    '\s+\"?(' . $id_char_seq . ')\"?(?:\s+(\S+))?',
+	sub { my ($m,$extra) = (@_);
+	      my $s = "(define fvwm2-module-$m (run-fvwm2-module " . dquoted($m);
+	      if (defined($extra) && $extra ne "") {
+		$s .= " (list " . dquoted($extra) . ")";
+		if ($extra =~ m/^$id_char_seq$/o &&
+		    $extra !~ m/^\d+$/) {
+		  print STDERR "Treating $extra as a module\n" if !$fQuiet;
+		  push @module_prefixes, $extra;
+		}
+	      }
+	      $s .= "))";
+	      return $s;
 	    },
    ],
    "function" =>
@@ -590,7 +601,25 @@ if ($two_pass) {
   print $output;
 }
 
+# first handle unknown module configuration lines
+foreach my $aref (@unknown_module_lines) {
+  my ($first,$rest) = @$aref;
+  HandleModule($first,$rest,"wasunknown");
+}
+
+# Now handle the module lines that are still unknown
+if (exists $moduleconfigs{"UNKNOWN"}) {
+  print <<"EOM"
+(define fvwm2-module-unknown-lines (list
+ $moduleconfigs{"UNKNOWN"}
+ ))
+EOM
+  ;
+}
+
+# Register the modules that we do recognize
 for my $m (keys %moduleconfigs) {
+  next if $m eq "UNKNOWN";
   print <<"EOM"
 (register-fvwm2-module-config "$m"
 $moduleconfigs{$m})
@@ -621,7 +650,7 @@ print <<"END_CONVERSION";
 END_CONVERSION
 
 sub HandleModule {
-  my ($first,$rest) = (@_);
+  my ($first,$rest,$wasunknown) = (@_);
   my $answer = "";
   
   my $module;
@@ -633,8 +662,17 @@ sub HandleModule {
     }
   }
   if (!defined($module)) {
-    warn "Do not know about module \"$first\" -- adding to UNKNOWN\n" if !$fQuiet;
-    $module = "UNKNOWN";
+    if (!defined($wasunknown)) {
+      # initial pass--
+      # defer deciding on a module until later
+      push @unknown_module_lines, [ $first, $rest ];
+      return "";
+    } else {
+      # now we're trying to categorize the unknown modules
+      # so put it in the "UNKNOWN" module
+      print STDERR "Do not recognize module for line: \"$first$rest\"\n";
+      $module = "UNKNOWN";
+    }
   }
   
   my $param = substr($first,length($module));
@@ -645,7 +683,7 @@ sub HandleModule {
       ";;; [[@@&&modu-$module&&@@]]";
   }
   $rest =~ s/"/\\"/g;
-  $moduleconfigs{$module} .= "   \"*$first $rest\"\n";
+  $moduleconfigs{$module} .= "   \"*$first$rest\"\n";
   return $answer;
 }
 
