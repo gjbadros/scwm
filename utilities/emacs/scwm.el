@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-09-04 Fri 14:34:08 EDT sds@eho.eaglets.com>
+;; File: <scwm.el - 1998-09-08 Tue 10:08:43 EDT sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -186,6 +186,7 @@ you have to (require 'font-lock) first.  Sorry.")
 
 (define-key scwm-mode-map [(control j)] 'scwm-eval-print)
 (define-key scwm-mode-map [(control c) (control s)] 'scwm-run)
+(define-key scwm-mode-map [(control c) (control r)] 'scwm-eval-region)
 (define-key scwm-mode-map [(control x) (control j)] 'scwm-eval-to-minibuffer)
 (define-key scwm-mode-map [(control h) (control s)] 'scwm-documentation)
 (define-key scwm-mode-map [(control h) (control a)] 'scwm-apropos)
@@ -207,16 +208,16 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (define-key inferior-scheme-mode-map [(control h)]
     (lookup-key scwm-mode-map [(control h)])))
 
-(defsubst scwm-eval (sexp out)
+(defun scwm-eval (sexp out)
   "Evaluate the SEXP with scwm-exec and print the results to OUT."
   (call-process scwm-exec nil out nil sexp))
 
-(defsubst scwm-eval-last (out)
+(defun scwm-eval-last (out)
   "Evaluate the last sexp with scwm-exec and print the results to OUT."
   (scwm-eval (buffer-substring-no-properties
 	      (point) (save-excursion (backward-sexp) (point))) out))
 
-(defsubst scwm-safe-call (func args out)
+(defun scwm-safe-call (func args out)
   "Call FUNC with ARGS and output to OUT, checking existence of FUNC first."
   (scwm-eval (concat "(if (defined? '" func ") (" func " " args ") "
                      "(display \"This Guile version lacks `" func "'.\n\"))")
@@ -226,6 +227,16 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 (defun scwm-eval-print ()
   "Evaluate the last SEXP and insert the result into the current buffer."
   (interactive) (newline-and-indent) (scwm-eval-last t) (newline))
+
+;;;###autoload
+(defun scwm-eval-region (beg end &optional out)
+  "Evaluate the region, print the result to minibuffer or current buffer
+\(with a prefix argument)."
+  (interactive "r\nP")
+  (let ((sexp (buffer-substring-no-properties beg end)))
+    (if out (scwm-eval sexp t)
+        (message "%s" (with-output-to-string
+                        (scwm-eval sexp standard-output))))))
 
 ;;;###autoload
 (defun scwm-eval-to-minibuffer ()
