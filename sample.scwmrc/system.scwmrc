@@ -478,7 +478,7 @@
 
 (debug-display "After setting image-load-path\n")
 
-(enable-image-path-suggestor)
+;;(enable-image-path-suggestor)
 
 (define pic-system-button
   (make-image "mini-sys3d-full.xpm"))
