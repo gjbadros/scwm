@@ -74,6 +74,7 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
 #ifdef USE_STACKJMPBUF
     SCM_SETJMPBUF (new_rootcont, &static_jmpbuf);
 #else
+    /* GJB:FIXME:MS:: this is leaking! */
     SCM_SETJMPBUF (new_rootcont,
 		   scm_must_malloc ((long) sizeof (scm_contregs),
 				    "inferior root continuation"));
