@@ -204,7 +204,7 @@
 ;;; FIXGJB: should be a function returning whether it should do opaque
 ;;; move or an integer for the percent (server/net/cpu load might
 ;;; influence whether you want to do an opaque move, e.g.)
-;;(set-opaque-move-size! 30) 
+(set-opaque-move-size! 100) 
 
 (set-edge-resistance! 500 10)
 (set-edge-scroll! (%x 100) (%y 100))
