@@ -1,3 +1,16 @@
+Fri Mar 12 19:49:51 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* string-prompt.scm: Use dialog style instead of toplevel.  Set
+	the position of the window based on pointer position (still not
+	right, though).
+
+	* prefs-menu.scm: Minor changes to docs, some actiosn.
+
+	* flux.scm: Added rename-window-interactively (use string-prompt
+	because of this).  Added read-until-eof, output-of-system-cmd,
+	chop-newline.  Still need some asynchronous execution of scheme
+	command on the output of a system cmd.
+
 Fri Mar 12 17:12:05 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* menus-extras.scm: Added -- moved fold-menu-list and split-list

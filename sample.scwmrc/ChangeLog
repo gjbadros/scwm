@@ -1,3 +1,17 @@
+Fri Mar 12 19:57:00 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Clean up prefs-menu, added H-r binding to
+	rename-window-interactively.
+
+Fri Mar 12 17:15:27 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use menus-extras module. Use nxterm, not
+	color-xterm. Rename menu-font to basic-menu-font.  Added Y/N
+	shortcut keys in menu-quit-verify. Use #:by-focus #t for the
+	window list menu.  Added 'all H-1 binding to do new #:by-resource
+	#t window list.  Added 'all H-z binding for root menu.  Fix bug in 
+	C-M-KP_7 animated move.  Fix indent of C-M-KP_6 binding.
+
 Wed Mar 10 20:20:32 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Call `run-dot-xclients-at-startup'.  Reset the
