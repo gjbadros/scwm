@@ -86,7 +86,7 @@ int ViaVoiceNotifier(int socket_handle, int (*recv_fn)(), void *recv_data,
 
 /* These callbacks handle the various messages that the speech       */
 /* engine might be sending back                                      */
-SmHandler ConnectCB     ( SM_MSG reply, caddr_t client, caddr_t call_data );
+static SmHandler ConnectCB     ( SM_MSG reply, caddr_t client, caddr_t call_data );
 SmHandler DisconnectCB  ( SM_MSG reply, caddr_t client, caddr_t call_data );
 SmHandler SetCB         ( SM_MSG reply, caddr_t client, caddr_t call_data );
 SmHandler MicOnCB       ( SM_MSG reply, caddr_t client, caddr_t call_data );
@@ -125,7 +125,7 @@ vv_scwm_cb(SCM proc, SM_MSG reply, caddr_t ARG_UNUSED(client), caddr_t ARG_UNUSE
 }
 
 static
-int DisconnectStuff( MyClientData * MyData )
+int DisconnectStuff( MyClientData * ARG_UNUSED(MyData) )
 {
   int smc = 0;
   SmArg smargs[30];
@@ -304,8 +304,8 @@ SmHandler DefineVocabCB ( SM_MSG reply, caddr_t client,
 }
 
 
-SmHandler DefineGrammarCB ( SM_MSG reply, caddr_t client, 
-                            caddr_t caller )
+SmHandler DefineGrammarCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), 
+                            caddr_t ARG_UNUSED(caller) )
 {
   int             rc;
   int             i;
@@ -357,8 +357,8 @@ SmHandler DefineGrammarCB ( SM_MSG reply, caddr_t client,
   return ( 0 );
 }
 
-SmHandler GetNextWordCB ( SM_MSG reply, caddr_t client, 
-                          caddr_t calldata )
+SmHandler GetNextWordCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), 
+                          caddr_t ARG_UNUSED(calldata) )
 {
   CheckSmRC("GetNextWordCB");
 
@@ -390,8 +390,8 @@ ScmAnnotationsFromRgAnnotations(int n, SM_ANNOTATION rgannot[])
   return answer;
 }
 
-SmHandler RecoWordCB ( SM_MSG reply, caddr_t client, 
-                       caddr_t calldata )
+SmHandler RecoWordCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), 
+                       caddr_t ARG_UNUSED(calldata) )
 {
   int             rc;
   int             i;
@@ -420,7 +420,9 @@ SmHandler RecoWordCB ( SM_MSG reply, caddr_t client,
 }
 
 
-SmHandler RecoPhraseCB ( SM_MSG reply, caddr_t client, caddr_t caller )
+SmHandler RecoPhraseCB ( SM_MSG reply, 
+                         caddr_t ARG_UNUSED(client), 
+                         caddr_t ARG_UNUSED(caller) )
 {
   int       rc;
   SM_WORD * firm;
@@ -428,7 +430,6 @@ SmHandler RecoPhraseCB ( SM_MSG reply, caddr_t client, caddr_t caller )
   int       i;
   char      phrase [ 255 ];
   unsigned  long flags;
-  int       increment = 10;
   SM_ANNOTATION * annots;
   unsigned  long num_annots;
 
