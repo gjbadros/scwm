@@ -24,6 +24,8 @@ an xor-value, as an option
 
 - Quote key feature -- like C-q in Emacs, C-v in shells
 
+- Undo feature?
+
 - Modular window decoration system.
 
 - Eventually, a total rewrite will probably be needed to allow release
