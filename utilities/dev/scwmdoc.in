@@ -16,7 +16,7 @@
 # Purpose:
 # Extract documentation from comments in C source files
 # and generate a plaintext listing of the procedures, and
-# DocBook SGML output to create parts of the SCWM manual.
+# DocBook SGML output to create parts of the Scwm manual.
 #
 # Note that this script does lots of important error checking, and
 # produces error and warning messages that look like grep, so emacs'
@@ -67,6 +67,7 @@ sub script_usage ( ) {
 -n       No warning for functions without comments
 -d URL  Set scwmdir source code base to path (e.g., file:///usr/local/src/scwm)
 -P prefix Set package prefix (e.g., -PCL to use CL_PROC and CL_* instead of SCWM_*)
+-G       Output procedures only by group (i.e., skip alphabetical listing)
 -S       Skip the procedures chapters-- makes it much faster to convert to HTML
 -F       Skip all procedures except those starting with \"F\" for fast check on output
 ";
@@ -296,23 +297,15 @@ if ($opt_o) {
 <book>
   <bookinfo>
     <title>
-      <productname>SCWM Reference Manual</productname>
+      <productname>Scwm Reference Manual</productname>
     </title>
     <authorgroup>
       <author>
   	<firstname>Maciej</firstname>
   	<surname>Stachowiak</surname>
   	<affiliation>
-  	  <shortaffil>MIT</shortaffil>
-  	  <jobtitle>M.S. Degree Recipient</jobtitle>
-  	  <orgname>Massachusetts Institute of Technology</orgname>
-  	  <orgdiv>Department of Computer Science</orgdiv>
   	  <address>
-  	    <city>Cambridge</city>
-  	    <state>Massachusetts</state>
-  	    <postcode>12345</postcode>
-  	    <country>U.S.A.</country>
-  	    <email>mstachow\@mit.edu</email>
+  	    <email>mstachow\@alum.mit.edu</email>
   	  </address>
   	</affiliation>
       </author>
@@ -320,15 +313,7 @@ if ($opt_o) {
   	<firstname>Greg</firstname>
   	<surname>Badros</surname>
   	<affiliation>
-  	  <shortaffil>UWashington</shortaffil>
-  	  <jobtitle>PhD Candidate</jobtitle>
-  	  <orgname>University of Washington</orgname>
-  	  <orgdiv>Department of Computer Science and Engineering</orgdiv>
   	  <address>
-  	    <city>Seattle</city>
-  	    <state>Washington</state>
-  	    <postcode>98195</postcode>
-  	    <country>U.S.A.</country>
   	    <email>gjb\@cs.washington.edu</email>
   	  </address>
   	</affiliation>
@@ -380,7 +365,13 @@ START_HOOKS_CHAPTER
   foreach my $hook (sort { lc($a) cmp lc($b) } keys %hooks ) {
     my $markup = $hooks{$hook}{markup};
     my $numargs = $hooks{$hook}{numargs};
-    print MARKUP_OUT "    <sect1 id=\"$hook\"><title>$hook ($numargs args)</title><para>\n$markup
+    my $args_text = "$numargs args";
+    if ($numargs == 0) {
+      $args_text = "thunk";
+    } elsif ($numargs == 1) {
+      $args_text = "1 arg";
+    }
+    print MARKUP_OUT "    <sect1 id=\"$hook\"><title>$hook ($args_text)</title><para>\n$markup
     </para></sect1>\n";
   }
   print MARKUP_OUT "  </chapter>\n";
@@ -407,6 +398,38 @@ if ($opt_S) {
   goto SGML_TRAILER;
 }
 
+PROCEDURES_BY_GROUP:
+
+# Now output primitives by defined-in file
+if ($opt_o) {
+  print MARKUP_OUT <<START_PROC_BY_FILE
+  <chapter>
+    <title>Procedure Synopses by Group</title>
+START_PROC_BY_FILE
+  ;
+  
+  foreach my $file (sort { lc($a) cmp lc($b) } keys %file_funcs) {
+    my @prims = @{$file_funcs{$file}};
+    if ($opt_F) {
+      # keep only primitives that start with "F"
+      @prims = grep(m/^f/i, @prims);
+    }
+    if (scalar(@prims) > 0) {
+      print MARKUP_OUT "    <sect1><title>$file</title> <itemizedlist>\n";
+      foreach my $proc (sort { $procedure{$a}{line} <=> $procedure{$b}{line} } @prims ) {
+	my $markup = $procedure{$proc}{markup};
+	my $target = $procedure{$proc}{sgml_id};
+	my $primname = $procedure{$proc}{primname};
+	my $purpose = $procedure{$proc}{purpose};
+	my $markup_purpose = $procedure{$proc}{markup_purpose};
+	print MARKUP_OUT "      <listitem><para><link linkend=\"$target\"><function>$proc</function></link> &mdash; $markup_purpose</para></listitem>\n";
+      }
+      print MARKUP_OUT "    </itemizedlist> </sect1>\n";
+    }
+  }
+  print MARKUP_OUT "  </chapter>\n";
+}
+
 PROCEDURES_CHAPTER:
 
 if ($opt_o) {
@@ -419,7 +442,6 @@ END_CHAP_HEAD
 
 # This outputs the scwm-procedures.txt file to stdout
 foreach my $proc (sort { lc($a) cmp lc($b) } keys %procedure) {
-  next if $opt_F && $proc !~ m/^f/i;
   my $usage = $procedure{$proc}{usage};
   my $comment = $procedure{$proc}{comment};
   my $file = $procedure{$proc}{file};
@@ -436,6 +458,7 @@ $comment
 EOC
   ;
   if ($opt_o) {
+    next if $opt_F && $proc !~ m/^f/i;
     print MARKUP_OUT $markup, "\n";
   }
 }
@@ -445,33 +468,6 @@ if ($opt_o) {
   print MARKUP_OUT "  </chapter>\n";
 }
 
-
-# Now output primitives by defined-in file
-if ($opt_o) {
-  print MARKUP_OUT <<START_PROC_BY_FILE
-  <chapter>
-    <title>Procedures By Defined-in File</title>
-START_PROC_BY_FILE
-  ;
-  
-  foreach my $file (sort { lc($a) cmp lc($b) } keys %file_funcs) {
-    my @prims = @{$file_funcs{$file}};
-    if (scalar(@prims) > 0) {
-      print MARKUP_OUT "    <sect1><title>$file</title> <itemizedlist>\n";
-      foreach my $proc (sort { $procedure{$a}{line} <=> $procedure{$b}{line} } @prims ) {
-	next if $opt_F && $proc !~ m/^f/i;
-	my $markup = $procedure{$proc}{markup};
-	my $target = $procedure{$proc}{sgml_id};
-	my $primname = $procedure{$proc}{primname};
-	my $purpose = $procedure{$proc}{purpose};
-	my $markup_purpose = $procedure{$proc}{markup_purpose};
-	print MARKUP_OUT "      <listitem><para><link linkend=\"$target\"><function>$proc</function></link> &mdash; $markup_purpose</para></listitem>\n";
-      }
-      print MARKUP_OUT "    </itemizedlist> </sect1>\n";
-    }
-  }
-  print MARKUP_OUT "  </chapter>\n";
-}
 
 
 SGML_TRAILER:
