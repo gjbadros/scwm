@@ -1,3 +1,9 @@
+1998-07-31  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
+
+	* base.scm (set-edge-resistance!, set-edge-scroll!,
+	set-edge-wrap!): Added these convenience wrappers, but people
+	should migrate to the new versions.
+
 1998-07-30  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
 
 	* decor.scm (#:use-decor): Deal with reversing the arguments to

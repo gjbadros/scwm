@@ -69,7 +69,8 @@
 ;;(set-click-time! 150)		; msec [150]
 (set-colormap-focus! 'focus)	; colormap focus == keyboard focus
 (set-rubber-band-mask! 255)
-(set-edge-resistance! 100 100)	; time distance
+(set-edge-scroll-delay! 100)
+(set-edge-move-threshold! 100)	
 (set-edge-scroll! 0 0)		; no scroll
 (set-edge-wrap! #f #f)          ; wrap when scrolling in X/Y directions
 
@@ -245,6 +246,9 @@
 
 ;; To later shut down the module, use kill-fvwm-module:
 ;; (kill-fvwm2-module fvwm-pager)
+
+(set! fvwm2-module-path (append fvwm2-module-path
+	'("/usr/X11/lib/X11/fvwm2")))
 
 ; (register-fvwm2-module-config "FvwmPager"
 ;                               "*FvwmPagerBack grey76"

@@ -41,16 +41,18 @@
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 
+
+(set! doc-files '("/scratch/gjb/scwm/doc/scwm-procedures.txt"))
 ;;(define-public doc-files        ; '("/usr/src/scwm/doc/scwm-procedures.txt")
 ;;  (list (string-append (scwm-path-prefix) "/share/scwm/scwm-procedures.txt")
 ;;	(string-append (scwm-path-prefix) "/share/scwm/cassowary_scm-procedures.txt")))
 
+
 ;;;(documentation "make-menuitem")
 ;;;(apropos-internal "*")
-(define fvwm2-pager-path "/uns/lib/fvwm2/FvwmPager")
-(define want-fvwm2-pager-module #f)
 
-(define fvwm2-winlist-path "/uns/lib/fvwm2/FvwmWinList")
+(set! fvwm2-module-path (append fvwm2-module-path '("/uns/lib/fvwm2")))
+(define want-fvwm2-pager-module #f)
 (define want-fvwm2-winlist-module #f)
 
 ;; Disabled autoraise by default; 
@@ -212,7 +214,9 @@
 ;;(set-color-map-focus! 'follows-mouse)
 ;;(set-desktop-size! 3 3)
 
-(set-edge-resistance! 500 10)
+(set-edge-scroll-delay! 500)
+(set-edge-move-threshold! 10)
+
 (set-edge-scroll! (%x 100) (%y 100))
 
 (title-style #:font font12 #:justify 'left #:relief 'raised)
@@ -1097,6 +1101,7 @@
 ;; Alt-w
 (bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
+;; FIXMS: maybe should be changed to use latest auto-raise stuff?
 (if want-autoraise
     (use-modules (app scwm auto-raise))
     (window-style "*" #:auto-raise #t))
@@ -1121,22 +1126,18 @@
 ;;; This does not work for me -- I get:
 ;;; Xlib: unexpected async reply (sequence 0x13e0)!
 ;;; 
-(if want-fvwm2-winlist-module
-    (define fvwm2-winlist 
-      (run-fvwm2-module
-       ;; path to the module
-       fvwm2-winlist-path
-       ;; your .fvwm2rc (does not need to exist for most modules)
-       "~/.fvwm2rc"
-       ;; list of configuration lines
-       '("*FvwmWinListBack #c3c3c3"
-	 "*FvwmWinListFore Black"
-	 "*FvwmWinListFont -helvetica-bold-r-*-*-10-*-*-*-*-*-*-*"
-	 "*FvwmWinListAction Click1 Iconify -1,Focus"
-	 "*FvwmWinListAction Click2 Iconify"
-	 ;;     "*FvwmWinListAction Click3 Module FvwmIdent FvwmIdent"
-	 "*FvwmWinListUseSkipList"
-	 "*FvwmWinListGeometry +0-1"))))
+(if want-fvwm-winlist-module
+    (register-fvwm2-module-config 
+     "FvwmWinList"
+     "*FvwmWinListBack #c3c3c3"
+     "*FvwmWinListFore Black"
+     "*FvwmWinListFont -helvetica-bold-r-*-*-10-*-*-*-*-*-*-*"
+     "*FvwmWinListAction Click1 Iconify -1,Focus"
+     "*FvwmWinListAction Click2 Iconify"
+     ;;     "*FvwmWinListAction Click3 Module FvwmIdent FvwmIdent"
+     "*FvwmWinListUseSkipList"
+     "*FvwmWinListGeometry +0-1")
+    (define fvwm-winlist (run-fvwm2-module "FvwmWinList")))
 
 ;; To later shut down the module, use kill-fvwm2-module:
 ;; (kill-fvwm2-module fvwm2-pager)

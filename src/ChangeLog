@@ -1,5 +1,14 @@
 1998-07-31  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
 
+	* deskpage.c: Split set-edge-wrap! into set-edge-x-wrap! and
+	set-edge-y-wrap!; split set-edge-scroll! into set-edge-x-scroll!
+	and set-edge-y-scroll!; split set-edge-resistance! into
+	set-edge-scroll-delay! and set-edge-move-threshold!. Added
+	corresponding accessors: edge-x-wrap, edge-y-wrap, edge-x-scroll,
+	edge-y-scroll, edge-scroll-delay, edge-move-threshold. Reordered
+	the file so all getters are near their setters. Removed extraneous
+	instances of SCM_REDEFER_INTS/SCM_REALLOW_INTS.
+
 	* decor.c (s_window_decor): Fixed a minor typo.
 
 1998-07-30  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>

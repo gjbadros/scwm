@@ -1,3 +1,15 @@
+1998-07-31  Maciej Stachowiak  <maciej@roc-ny4-13.ix.netcom.com>
+
+	* robbe.scwmrc, sds.scwmrc, gjb.scwmrc: Replaced the usage of
+	set-edge-resistance! with set-edge-scroll-delay! and
+	set-edge-move-threshold!; this seemed to be the only one of the
+	old paging parameter setters that was a really silly combination.
+
+1998-07-21  Maciej Stachowiak  <maciej@roc-ny3-18.ix.netcom.com>
+
+	* sds.scwmrc, gjb.scwmrc: Use new interface for fvwm2 module
+	stuff.
+
 1998-07-22  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Add doc-files setting, turn off pager, use something 

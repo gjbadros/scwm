@@ -251,3 +251,18 @@
 
 (add-hook! cannot-grab-hook
 	   (lambda () (beep) (display "scwm: cannot grab\n")))
+
+
+(define-public (set-edge-resistance! s m)
+  (set-edge-scroll-delay! s)
+  (set-edge-move-threshold! m))
+
+(define-public (set-edge-wrap! x y)
+  (set-edge-x-wrap! x)
+  (set-edge-y-wrap! y))
+
+(define-public (set-edge-scroll! x y)
+  (set-edge-x-scroll! x)
+  (set-edge-y-scroll! y))
+
+

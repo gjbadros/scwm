@@ -59,20 +59,27 @@ SCWM_PROC(set_current_desk_x, "set-current-desk!", 1, 0, 0,
           (SCM desk))
      /** Change the current desk to DESK. DESK should be an integer
 small enough to fit in one machine word. */
-  #define FUNC_NAME s_set_current_desk_x
-{ SCM_REDEFER_INTS;
-
+#define FUNC_NAME s_set_current_desk_x
+{
   if (!gh_number_p(desk)) {
-    SCM_ALLOW_INTS;
     scm_wrong_type_arg(FUNC_NAME, 1, desk);
   }
   /* XXX - should do something useful if desk is out of range. */
   changeDesks(0, gh_scm2int(desk));
 
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+SCWM_PROC(current_desk, "current-desk", 0, 0, 0,
+          ())
+     /** Returns the integer identifying the current desk. */
+#define FUNC_NAME s_current_desk
+{
+  return SCM_MAKINUM(Scr.CurrentDesk);
+}
+#undef FUNC_NAME
+
 
 /**CONCEPT: Viewports 
   The current viewport is the area of the current desk that may be
@@ -86,100 +93,201 @@ SCWM_PROC(set_viewport_position_x, "set-viewport-position!", 2, 0, 0,
 X and Y are given in pixels.  Does not affect the current desk. */
 #define FUNC_NAME s_set_viewport_position_x
 {
-  SCM_REDEFER_INTS;
   if (!gh_number_p(x)) {
-    SCM_ALLOW_INTS;
     scm_wrong_type_arg(FUNC_NAME, 1, x);
   }
   if (!gh_number_p(y)) {
-    SCM_ALLOW_INTS;
     scm_wrong_type_arg(FUNC_NAME, 2, y);
   }
   MoveViewport(gh_scm2int(x), gh_scm2int(y), True);
-  SCM_REALLOW_INTS;
+
   return (SCM_UNSPECIFIED);
 }
 #undef FUNC_NAME
 
-
-SCWM_PROC(set_edge_scroll_x, "set-edge-scroll!", 2, 0, 0,
-          (SCM sx, SCM sy))
-     /** Set the edge scroll amount in pixels.
-The edge scroll setting is the amount by which the viewport will scroll
-when the mouse hits the edge. SX gives the amount at a time to scroll
-horizontally, while SY gives the amount to scroll vertically. Use `%x'
-and `%y' to convert from a percent of screen size to pixels. */
-#define FUNC_NAME s_set_edge_scroll_x
+SCWM_PROC(viewport_position, "viewport-position", 0, 0, 0,
+          ())
+     /** Returns the current position of the viewport in pixels.
+The returned value is a list of the x and y positions. */
+#define FUNC_NAME s_viewport_position
 {
-  SCM_REDEFER_INTS;
-  if (!gh_number_p(sx)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 1, sx);
+  return scm_listify(SCM_MAKINUM(Scr.Vx),
+		     SCM_MAKINUM(Scr.Vy),
+		     SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_edge_x_scroll_x, "set-edge-x-scroll!", 1, 0, 0,
+          (SCM pixels))
+     /** Set the horizontal edge scroll increment to PIXELS.
+The horizontal edge scroll setting is the amount by which the viewport
+will scroll when the mouse hits the left or right edge. Use `%x' to
+convert from a percent of screen size to pixels. */
+#define FUNC_NAME s_set_edge_x_scroll_x
+{
+  if (!gh_number_p(pixels)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, pixels);
   }
-  if (!gh_number_p(sy)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 2, sy);
-  }
-  Scr.EdgeScrollX = gh_scm2int(sx);
-  Scr.EdgeScrollY = gh_scm2int(sy);
+
+  Scr.EdgeScrollX = gh_scm2int(pixels);
   checkPanFrames();
 
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
-
-SCWM_PROC(set_edge_wrap_x, "set-edge-wrap!", 2, 0, 0,
-          (SCM wx, SCM wy))
-     /** Set whether to wrap pointer around edges.
-If WX is #t, the pointer will wrap from the right edge of the
-display to the left of the display as it moves off the right edge,
-and vice-versa.  WY indicates whether the analogous vertical
-wraparound is in effect */
-#define FUNC_NAME s_set_edge_wrap_x
+SCWM_PROC(edge_x_scroll, "edge-x-scroll", 0, 0, 0,
+          ())
+     /** Return the horizontal edge scroll increment as set by `set-edge-x-scroll!'. */
+#define FUNC_NAME s_edge_x_scroll
 {
-  SCM_REDEFER_INTS;
-  COPY_BOOL_OR_ERROR(Scr.fEdgeWrapX,wx,1,FUNC_NAME);
-  COPY_BOOL_OR_ERROR(Scr.fEdgeWrapY,wy,2,FUNC_NAME);
-  SCM_REALLOW_INTS;
+  return (gh_int2scm(Scr.EdgeScrollX));
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_edge_y_scroll_x, "set-edge-y-scroll!", 1, 0, 0,
+          (SCM pixels))
+     /** Set the vertical edge scroll increment to PIXELS.
+The vertical edge scroll setting is the amount by which the viewport
+will scroll when the mouse hits the top or bottom edge. Use `%y' to
+convert from a percent of screen size to pixels. */
+#define FUNC_NAME s_set_edge_y_scroll_x
+{
+  if (!gh_number_p(pixels)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, pixels);
+  }
+
+  Scr.EdgeScrollY = gh_scm2int(pixels);
+  checkPanFrames();
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(edge_y_scroll, "edge-y-scroll", 0, 0, 0,
+          ())
+     /** Return the vertical edge scroll increment as set by `set-edge-y-scroll!'. */
+#define FUNC_NAME s_edge_y_scroll
+{
+  return (gh_int2scm(Scr.EdgeScrollY));
+}
+#undef FUNC_NAME
+
+
+
+SCWM_PROC(set_edge_x_wrap_x, "set-edge-x-wrap!", 1, 0, 0,
+          (SCM flag))
+     /** Set whether to wrap pointer around horizontal edges.
+If the boolean value FLAG is #t, the pointer will wrap from the right
+edge of the desktop to the left of the display as it moves off the
+right edge, and vice-versa. See also `set-edge-y-wrap!' */
+#define FUNC_NAME s_set_edge_x_wrap_x
+{
+  COPY_BOOL_OR_ERROR(Scr.fEdgeWrapX, flag, 1, FUNC_NAME);
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(edge_x_wrap, "edge-x-wrap", 1, 0, 0,
+          ())
+     /** Return the current horizonatal edge wrap setting as set by `set-edge-x-wrap!' */
+#define FUNC_NAME s_edge_x_wrap
+{
+  return SCM_BOOL_FromBool(Scr.fEdgeWrapX);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_edge_y_wrap_x, "set-edge-y-wrap!", 1, 0, 0,
+          (SCM flag))
+     /** Set whether to wrap pointer around vertical edges.
+If the boolean value FLAG is #t, the pointer will wrap from the bottom
+edge of the desktop to the top of the display as it moves off the very
+bottom edge, and vice-versa. See also `set-edge-x-wrap!' */
+#define FUNC_NAME s_set_edge_y_wrap_x
+{
+  COPY_BOOL_OR_ERROR(Scr.fEdgeWrapY, flag, 1, FUNC_NAME);
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
 
-/* FIXMS: this should probably be split into two procedures. */
-SCWM_PROC(set_edge_resistance_x, "set-edge-resistance!", 2, 0, 0,
-          (SCM sr, SCM mr))
-     /** Set the edge resistance parameters.
-Sets two parameters indicating how much resistance should be
-offered when scrolling things past the edge, in two different
-senses. SR is an amount in microseconds that indicates how long the
-mouse pointer must stay at the edge of the screen before the viewport
-scrolls. If this parameter is greater than 10,000, the viewport will
+SCWM_PROC(edge_y_wrap, "edge-y-wrap", 0, 0, 0,
+          ())
+     /** Return the current vertical edge wrap setting as set by `set-edge-y-wrap!' */
+#define FUNC_NAME s_edge_y_wrap
+{
+  return SCM_BOOL_FromBool(Scr.fEdgeWrapY);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_edge_scroll_delay_x, "set-edge-scroll-delay!", 1, 0, 0,
+          (SCM usec))
+     /** Set the edge scroll delay to USEC microseconds.
+When the mouse pointer hits the edge of the screen, it must stay there
+for at least the edge scroll delay amount before the desktop will be
+scrolled. If this parameter is greater than 10,000, the viewport will
 not scroll at all at the screen edge (FIXMS: that's a bogus way to
-indicate that.) MR is an amount in pixels that indicates how many
-pixels past the edge of the screen a window must be moved before it
-will really go past the edge. */
-#define FUNC_NAME s_set_edge_resistance_x
+indicate that.) */
+#define FUNC_NAME s_set_edge_scroll_delay_x
 {
-  SCM_REDEFER_INTS;
-
-  if (!gh_number_p(sr)) {
+ if (!gh_number_p(usec)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 1, sr);
+    scm_wrong_type_arg(FUNC_NAME, 1, usec);
   }
-  if (!gh_number_p(mr)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 2, mr);
-  }
-  Scr.ScrollResistance = gh_scm2int(sr);
-  Scr.MoveResistance = gh_scm2int(mr);
 
-  SCM_REALLOW_INTS;
+  Scr.ScrollResistance = gh_scm2int(usec);
+
+  return SCM_UNSPECIFIED; 
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(edge_scroll_delay, "edge-scroll-delay", 0, 0, 0,
+          ())
+     /** Return the edge scroll delay as set by `set-edge-scroll-delay!'. */
+#define FUNC_NAME s_edge_scroll_delay
+{
+  return gh_int2scm(Scr.ScrollResistance);
+}
+#undef FUNC_NAME
+
+
+
+
+SCWM_PROC(set_edge_move_threshold_x, "set-edge-move-threshold!", 1, 0, 0,
+          (SCM pixels))
+	  /**  Set the edge move threshold to PIXELS.
+This is the number of pixels past the edge of the screen that a window
+must be moved before it will really move past the edge. */
+#define FUNC_NAME s_set_edge_move_threshold_x
+{
+  if (!gh_number_p(pixels)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(FUNC_NAME, 1, pixels);
+  }
+
+  Scr.MoveResistance = gh_scm2int(pixels);
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+
+SCWM_PROC(edge_move_threshold, "edge-move-threshold", 0, 0, 0,
+          ())
+     /** Return the edge move threshold as set by `set-edge-move-threshold!'. */
+#define FUNC_NAME s_edge_move_threshold
+{
+  return gh_int2scm(Scr.MoveResistance);
+}
+#undef FUNC_NAME
+
 
 
 SCWM_PROC(set_desk_size_x, "set-desk-size!", 2, 0, 0,
@@ -218,20 +326,6 @@ virtual world 9 times the size of the physical display. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(display_size, "display-size", 0, 0, 0,
-          ())
-     /** Returns the size of the physical screen in pixels.
-The return value is list of the width and the height. The
-width is the `car', the height is the `cadr' of the returned list. */
-#define FUNC_NAME s_display_size
-{
-  return scm_listify(SCM_MAKINUM(Scr.DisplayWidth),
-		     SCM_MAKINUM(Scr.DisplayHeight),
-		     SCM_UNDEFINED);
-}
-#undef FUNC_NAME
-
-
 SCWM_PROC(desk_size, "desk-size", 0, 0, 0,
           ())
      /** Returns the size of the current desk.
@@ -246,27 +340,21 @@ of the width and the height. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(viewport_position, "viewport-position", 0, 0, 0,
+SCWM_PROC(display_size, "display-size", 0, 0, 0,
           ())
-     /** Returns the current position of the viewport in pixels.
-The returned value is a list of the x and y positions. */
-#define FUNC_NAME s_viewport_position
+     /** Returns the size of the physical screen in pixels.
+The return value is list of the width and the height. The
+width is the `car', the height is the `cadr' of the returned list. */
+#define FUNC_NAME s_display_size
 {
-  return scm_listify(SCM_MAKINUM(Scr.Vx),
-		     SCM_MAKINUM(Scr.Vy),
+  return scm_listify(SCM_MAKINUM(Scr.DisplayWidth),
+		     SCM_MAKINUM(Scr.DisplayHeight),
 		     SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
 
-SCWM_PROC(current_desk, "current-desk", 0, 0, 0,
-          ())
-     /** Returns the integer identifying the current desk. */
-#define FUNC_NAME s_current_desk
-{
-  return SCM_MAKINUM(Scr.CurrentDesk);
-}
-#undef FUNC_NAME
+
 
 void
 init_deskpage()
