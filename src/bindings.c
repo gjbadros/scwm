@@ -1,3 +1,6 @@
+#undef MS_DELETION_COMMENT
+#if MS_DELETION_COMMENT
+
 #include <config.h>
 
 #include <stdio.h>
@@ -13,12 +16,12 @@
 #include "screen.h"
 #include "module.h"
 
+
 struct charstring 
 {
   char key;
   int  value;
 };
-
 
 /* The keys musat be in lower case! */
 struct charstring win_contexts[]=
@@ -59,6 +62,7 @@ struct charstring key_modifiers[]=
   {'n',0},
   {0,0}
 };
+
 
 void find_context(char *string, int *output, struct charstring *table,
 		  char *tline);
@@ -103,6 +107,7 @@ void remove_binding(int contexts, int mods, int button, KeySym keysym,
     temp=temp2;
   }
 }
+
 
 /****************************************************************************
  * 
@@ -360,4 +365,4 @@ void find_context(char *string, int *output, struct charstring *table,
   }
   return;
 }
-
+#endif /* MS_DELETION_COMMENT */
