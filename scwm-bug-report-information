@@ -24,7 +24,11 @@ cat scwm/scwmpaths.h
 echo
 
 echo "ldd scwm:"; echo "------------------"
-ldd scwm/scwm
+if which ldd >/dev/null 2>&1; then
+  ldd scwm/scwm
+else
+  echo "No ldd on this system."
+fi
 echo
 
 echo "relevant env:"; echo "------------------"
