@@ -564,12 +564,16 @@
 	 (oldx (car position))
 	 (oldy (cadr position)))
     ;;; FIXGJB: is there a better way to correct for width, height, etc
+    ;;; MS: perhaps we should make move-to take #f for either coordinate,
+    ;;; which means don't move along that coord?
     (if (equal? x 'x) (set! x oldx))
     (if (equal? y 'y) (set! y oldy))
+    ;; MS: see base.scm for x- and y-, which I think are a more genric
+    ;; way to handle negative positions in the traditional X11 way.
     (if (< x 0) (set! x (- root-size-x (abs x) width)))
     (if (< y 0) (set! y (- root-size-y (abs y) height)))
     (raise-window w)
-    (move-to x y w 'animated 'move-pointer-to)))
+    (move-to x y w 'animated 'move-pointer-too)))
 
 (define animation-ms-delay 50)
 
@@ -582,6 +586,9 @@
 ;; Fluid, cartoon-like, overshoots target
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
 
+;; FIXMS: none of the KP_n keysyms work on my X server. I think
+;; Jens-Ulrik had the same complaint. Is there a more portable way to
+;; handle these?
 
 ;(bind-key 'all "C-M-KP_7" (lambda () (animated-move-to 0 0)))
 ;(bind-key 'all "C-M-KP_9" (lambda () (animated-move-to -1 0)))
