@@ -1,3 +1,13 @@
+Wed Sep 29 10:56:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* cursor.c (free_cursor): Return 0, not sizeof(*xp), since we did
+	not use scm_must_malloc to allocate the memory.
+
+Wed Sep 29 10:05:45 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* add_window.c: Added some debugging code and
+	DBUG_ADDWINDOW{,_VERBOSE} macros.
+
 Tue Sep 28 17:46:42 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.c ("init_modifiers"): Do not warn about no scrollock, no 
