@@ -120,7 +120,7 @@
 (use-scwm-modules base defoption optargs primopts 
 		  winops winlist wininfo listops placement
 		  style stylist face time-convert menus-extras
-		  std-menus doc virtual
+		  std-menus doc virtual prompt-color
 		  flux flux-gtk flash-window key-mover
 		  fvwm-module path-cache animation themes netscape
 		  message-window animated-iconify
@@ -1111,6 +1111,12 @@ union of all other window managers!
 (define menu-prefs-gjb
   (menu (list (menu-title "Preferences") menu-separator
 	      (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
+	      (menuitem "Change background color..."
+			#:action (lambda () 
+				   (prompt-color 
+				    "New background color"
+				    (lambda (c) (set-background-color! c))
+				    #:title "Background color?")))
 	      (menuitem "Change global theme" #:submenu (lambda () (menu-global-theme #t)))
 	      (menuitem "Reload .Xresources" #:action
 			(exe "xrdb -merge ${HOME}/.Xresources"))
