@@ -116,3 +116,15 @@
   (bind-key 'all (string-append modifiers "-" right) 
 	    (lambda () (move-viewport (%x pct-of-screen) 0))))
 
+(define-public (sleep-ms ms)
+  (select '() '() '() 0 (* 1000 ms)))
+
+;; Does not work for arbitrary strings since, e.g,. ' ' needs
+;; to be sent as "space"  FIXGJB: Do we have a char->keysym fn?
+(define-public (X-synthetic-send-string str)
+  (let ((w (get-window))
+	(i 0))
+    (while (< i (length str))
+	   (send-key-press (substring str i (+ 1 i)) w)
+	   (set! i (+ 1 i)))))
+
