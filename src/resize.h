@@ -15,9 +15,13 @@
 
 #include "window_fwd.h"
 
+void ComputePositionForResize(ScwmWindow *psw, int *px, int *py, int width, int height);
+
 void ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, 
                    int *widthp, int *heightp);
+
 void RedrawOutlineAtNewPosition(int x, int y, int width, int height);
+
 #define RemoveRubberbandOutline() do { RedrawOutlineAtNewPosition(0,0,0,0); } while (0)
 
 Bool InteractiveResize(ScwmWindow *psw, Bool fOpaque,

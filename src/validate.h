@@ -50,26 +50,30 @@ VALIDATE_...
 
 /* Sample Usage:
   VALIDATE_ARG_BOOL_COPY(1,modified_p?,fModified);
+
+NOTE: Assignments to the cvar in the error handling
+      branch of the _COPY macros are to quiet compiler
+      warnings about possibly unitialized variables.
 */
 #define VALIDATE_ARG_BOOL_COPY(pos,scm,f) \
   do { \
   if (scm == SCM_BOOL_T) f = True; \
   else if (scm == SCM_BOOL_F) f = False; \
-  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else { f = False; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 #define VALIDATE_ARG_BOOL_COPY_USE_T(pos,scm,f) \
   do { \
   if (scm == SCM_BOOL_T || scm == SCM_UNDEFINED) f = True; \
   else if (scm == SCM_BOOL_F) f = False; \
-  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else { f = False; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 #define VALIDATE_ARG_BOOL_COPY_USE_F(pos,scm,f) \
   do { \
   if (scm == SCM_BOOL_T) f = True; \
   else if (scm == SCM_BOOL_F || scm == SCM_UNDEFINED) f = False; \
-  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else {f = False; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 
@@ -77,7 +81,7 @@ VALIDATE_...
   do { \
   if (scm == SCM_BOOL_F) f = True; \
   else if (scm == SCM_BOOL_T) f = False; \
-  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else { f = False; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 /* range is [low,high]; i.e., low and high are both okay values */
@@ -106,6 +110,10 @@ VALIDATE_...
                                   gh_list(gh_int2scm(pos),gh_int2scm(high),SCM_UNDEFINED)); \
   } while (0)
 
+#define VALIDATE_ARG_INT_OR_UNDEF(pos,x) \
+  do { \
+    if (!UNSET_SCM(x) && !gh_number_p(x)) SCWM_WRONG_TYPE_ARG(pos, x); \
+  } while (0)
 
 
 /* Sample Usage:
@@ -115,7 +123,7 @@ VALIDATE_...
   do { \
   if (UNSET_SCM(scm)) cvar = val; \
   else if (gh_number_p(scm)) cvar = gh_scm2int(scm); \
-  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  else { cvar = 0; scm_wrong_type_arg(FUNC_NAME,pos,scm); } \
   } while (0)
 
 

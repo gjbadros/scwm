@@ -531,11 +531,6 @@ invalidate_window(SCM schwin)
   scm_unprotect_object(schwin);
 }
 
-
-
-
-
-
 /**** ResizeTo, MoveResizeTo, MoveTo
  These three functions are the main way to reconfigure
  a top level window.  They will update the psw-> fields
@@ -556,19 +551,13 @@ invalidate_window(SCM schwin)
  Note that resizing involves calling SetupFrame, which positions all
  the decoration windows appropriately.
 */
-
 void
 ResizeTo(ScwmWindow *psw, int width, int height)
 {
   int x = FRAME_X(psw);
   int y = FRAME_Y(psw);
-  int grav_x = psw->grav.x;
-  int grav_y = psw->grav.y;
-  int dx = width - FRAME_WIDTH(psw);   /* wider => positive */
-  int dy = height - FRAME_HEIGHT(psw); /* taller => positive */
-  x -= dx * (double) grav_x/2.0;
-  y -= dy * (double) grav_y/2.0;
   ConstrainSize(psw, 0, 0, &width, &height);
+  ComputePositionForResize(psw, &x, &y, width, height);
   CassowaryEditSize(psw);
   SuggestSizeWindowTo(psw, x, y, width, height, True);
   CassowaryEndEdit(psw);
@@ -2281,7 +2270,7 @@ specified. */
 }
 #undef FUNC_NAME
 
-/* All values are in virtual coordinates */
+/* All values (both input and output) are in virtual coordinates */
 /*SCWM_VALIDATE: x, y, win */
 SCM
 convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
@@ -2291,14 +2280,9 @@ convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
 		  ScwmWindow **ppsw, Window *pw) /* the ScwmWindow, and X11 window */
 #define FUNC_NAME func_name
 {
+  VALIDATE_ARG_INT_OR_UNDEF(1,x);
+  VALIDATE_ARG_INT_OR_UNDEF(2,y);
   VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
-
-  if (x != SCM_BOOL_F && !gh_number_p(x)) {
-    SCWM_WRONG_TYPE_ARG(1, x);
-  }
-  if (y != SCM_BOOL_F && !gh_number_p(y)) {
-    SCWM_WRONG_TYPE_ARG(2, y);
-  }
 
   *ppsw = PSWFROMSCMWIN(win);
 
@@ -2314,12 +2298,12 @@ convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
 
   FXGetWindowTopLeft(*pw,pStartX, pStartY);
 
-  if (x == SCM_BOOL_F)
+  if (UNSET_SCM(x))
     *pDestX = *pStartX + WIN_VP_OFFSET_X(*ppsw);
   else
     *pDestX = gh_scm2int(x);
 
-  if (y == SCM_BOOL_F)
+  if (UNSET_SCM(y))
     *pDestY = *pStartY + WIN_VP_OFFSET_Y(*ppsw);
   else
     *pDestY = gh_scm2int(y);
