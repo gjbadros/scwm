@@ -31,6 +31,7 @@
 #include "dmalloc.h"
 #endif
 
+Bool fQuotingKeystrokes = False;
 
 /* also used by window.c's set-window-focus! */
 SCWM_GLOBAL_SYMBOL(sym_click,"click");
@@ -395,11 +396,7 @@ FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name,
 
 
 /*
- *  Procedure:
- *	GrabKeys - grab needed keys for the window
- *
- *  Inputs:
- *	psw - the scwm window structure to use
+ * GrabKeys - grab needed keys for the window
  */
 void 
 GrabKeys(ScwmWindow *psw)
@@ -420,6 +417,7 @@ GrabKeys(ScwmWindow *psw)
   }
   return;
 }
+
 
 
 void
@@ -808,6 +806,28 @@ PBindingFromMouse(int button,
   }
   return NULL;
 }
+
+SCWM_PROC(set_quote_key_events_x, "set-quote-key-events!", 1, 0, 0,
+          (SCM quoting_on_p))
+     /** Set key event quoting to QUOTING-ON? */
+#define FUNC_NAME s_set_quote_key_events_x
+{
+  VALIDATE_ARG_BOOL_COPY(1,quoting_on_p,fQuotingKeystrokes);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(quote_key_events_p, "quote-key-events?", 0, 0, 0,
+          ())
+     /** Return #t iff key events are being qutoed.
+See also `set-quote-key-events!'. */
+#define FUNC_NAME s_quote_key_events_p
+{
+  return gh_bool2scm(fQuotingKeystrokes);
+}
+#undef FUNC_NAME
+
+
 
 SCWM_PROC(lookup_key, "lookup-key", 2, 0, 0,
           (SCM contexts, SCM key))

@@ -398,7 +398,7 @@ SCM convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
 
 SCM list_stacking_order();
 
-void set_window_internal_title_height(ScwmWindow *psw, int nh);
+void set_window_internal_title_height(ScwmWindow *psw, int nh, Bool fInPlace);
 
 /* GJB:FIXME:: this primitive should not be exposed in the interface, 
    but needs to be for resetting the relief decor, color.c */

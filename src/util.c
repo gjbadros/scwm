@@ -35,7 +35,7 @@ redraw_titlebars(ScwmDecor *fl, int extra_height)
       continue;
     }
 
-    set_window_internal_title_height(psw, psw->title_height + extra_height);
+    set_window_internal_title_height(psw, psw->title_height + extra_height, False);
 
     SetTitleBar(psw, False, True);
   }

@@ -103,6 +103,7 @@
 #endif
 
 extern SCM sym_root_window;
+extern Bool fQuotingKeystrokes;
 
 SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook", 2);
   /** This hook is invoked whenever a PropertyNotify event is received
@@ -459,25 +460,27 @@ HandleFocusIn()
 static void 
 HandleKeyEvent(Bool fPress)
 {
-  Binding *pbnd;
+  Binding *pbnd = NULL;
   unsigned int modifier;
 
-  modifier = (Event.xkey.state & mods_used);
-  ButtonWindow = pswCurrent;
-
-  DBUG((DBG,"HandleKeyPress", "Routine Entered"));
-
-  Context = GetContext(pswCurrent, &Event, &PressedW);
-  PressedW = None;
-
-  /* Here's a real hack - some systems have two keys with the
-   * same keysym and different keycodes. This converts all
-   * the cases to one keycode. */
-  Event.xkey.keycode =
-    XKeysymToKeycode(dpy, XKeycodeToKeysym(dpy, Event.xkey.keycode, 0));
-
-  pbnd = PBindingFromKey(Event.xkey.keycode, modifier, Context);
-
+  if (!fQuotingKeystrokes) {
+    modifier = (Event.xkey.state & mods_used);
+    ButtonWindow = pswCurrent;
+    
+    DBUG((DBG,"HandleKeyPress", "Routine Entered"));
+    
+    Context = GetContext(pswCurrent, &Event, &PressedW);
+    PressedW = None;
+    
+    /* Here's a real hack - some systems have two keys with the
+     * same keysym and different keycodes. This converts all
+     * the cases to one keycode. */
+    Event.xkey.keycode =
+      XKeysymToKeycode(dpy, XKeycodeToKeysym(dpy, Event.xkey.keycode, 0));
+    
+    pbnd = PBindingFromKey(Event.xkey.keycode, modifier, Context);
+  }
+  
   if (pbnd) {
     if (NULL != pswCurrent) {
       set_window_context(pswCurrent->schwin);
@@ -494,8 +497,17 @@ HandleKeyEvent(Bool fPress)
       unset_window_context();
     }
   } else {
+#if 0
+    /* only has effect w/ synch keyboard grabs...
+       not sure how to do them synchronously, though...
+       HandleKeyEvent never gets called --07/04/99 gjb */
+    XAllowEvents(dpy, ReplayKeyboard, CurrentTime);
+#else
+/* GJB:FIXME:NOW: this code seems bogus -- synthetic events
+   are no substitute for the real thing; could use XTest
+   extension, but would rather not rely on that */
     /* if we get here, no function key was bound to the key.  Send it
-     * to the client if it was in a window we know about.
+     * to the client if it was in a window we know abou
      */
     if (pswCurrent) {
       if (Event.xkey.window != pswCurrent->w) {
@@ -503,6 +515,7 @@ HandleKeyEvent(Bool fPress)
         XSendEvent(dpy, pswCurrent->w, False, KeyPressMask, &Event);
       }
     }
+#endif
   }
   ButtonWindow = NULL;
 }

@@ -742,7 +742,7 @@ end in a "-"; e.g., "S-C-M-"
   /* discard events on the no focus win */
   while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask, &evDiscard));
 
-  if (XGrabKeyboard(dpy, Scr.NoFocusWin, False /* no owneer events */, 
+  if (XGrabKeyboard(dpy, Scr.NoFocusWin, False /* no owner events */, 
                     fAsyncMouse? GrabModeAsync: GrabModeSync, 
                     fAsyncKeyboard? GrabModeAsync: GrabModeSync,
                     CurrentTime) != Success) {

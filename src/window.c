@@ -2224,7 +2224,9 @@ SCWM_PROC(window_shade, "window-shade", 0, 1, 0,
      /** Cause WIN to become "window-shaded".
 That is, to roll up into just a titlebar. By default, the change takes
 place instantaneously. WIN defaults to the window context in the usual
-way if not specified. See also `window-unshade'.*/
+way if not specified. See also `window-unshade'.
+A shaded window has the WM_STATE hint set to WithdrawnState, since 
+the client application window is not visible. */
 #define FUNC_NAME s_window_shade
 {
   ScwmWindow *psw;
@@ -2247,14 +2249,13 @@ way if not specified. See also `window-unshade'.*/
   SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), FRAME_WIDTH(psw),
 	     psw->title_height + (psw->fSquashedTitlebar? 2:1) * psw->boundary_width,
 	     NOT_MOVED, WAS_RESIZED);
+  SetMapStateProp(psw, WithdrawnState);
 
   CoerceEnterNotifyOnCurrentWindow();
   Broadcast(M_WINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
 
   signal_window_property_change(win, sym_shaded, SCM_BOOL_T,
                                 SCM_BOOL_FromBool(old));
-
-
 
   return SCM_UNSPECIFIED;
 }
@@ -2266,7 +2267,9 @@ SCWM_PROC(window_unshade, "window-unshade", 0, 1, 0,
           (SCM win))
     /** Reverse the effect of `window-shade' on WIN.
 The change takes place instantaneously. WIN defaults to the window
-context in the usual way if not specified. */
+context in the usual way if not specified.
+A shaded window has the WM_STATE hint set to WithdrawnState, since 
+the client application window is not visible. */
 #define FUNC_NAME s_window_unshade
 {
   ScwmWindow *psw;
@@ -2281,6 +2284,7 @@ context in the usual way if not specified. */
   SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw),
 	     psw->orig_width, psw->orig_height,
 	     NOT_MOVED, WAS_RESIZED);
+  SetMapStateProp(psw, NormalState);
 
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
 
@@ -3066,12 +3070,14 @@ specified. */
    (a per-window version) ? */
 
 
-void set_window_internal_title_height(ScwmWindow *psw, int nh)
+void set_window_internal_title_height(ScwmWindow *psw, int nh, Bool fInPlace)
 {
   int oldyadj, oldh;
 
   oldh = psw->title_height;
   if (oldh != nh) {
+    int dpixY = nh-oldh;        /* change in height */
+
     oldyadj = GRAV_Y_ADJUSTMENT(psw);
 
     psw->title_height=nh;
@@ -3079,18 +3085,21 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh)
     if (psw->fFullyConstructed) {
       MoveResizeTo(psw,
                    FRAME_X(psw),
-                   FRAME_Y(psw) + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
+                   FRAME_Y(psw) 
+                   + GRAV_Y_ADJUSTMENT(psw) - oldyadj 
+                   - (fInPlace? dpixY:0),
                    FRAME_WIDTH(psw),
-                   FRAME_HEIGHT(psw) + nh - oldh);
+                   FRAME_HEIGHT(psw) + dpixY);
       BroadcastConfig(M_CONFIGURE_WINDOW, psw);
     }
   }
 }
 
 
-SCWM_PROC(show_titlebar, "show-titlebar", 0, 1, 0,
-          (SCM win))
+SCWM_PROC(show_titlebar, "show-titlebar", 0, 2, 0,
+          (SCM win, SCM in_place_p))
      /** Cause WIN to be decorated with a titlebar.
+Keeps the client window at its current location if IN-PLACE? is #t.
 See also `hide-titlebar'.
 WIN defaults to the window context in the usual way if not
 specified. */
@@ -3098,36 +3107,41 @@ specified. */
 {
   ScwmWindow *psw;
   ScwmDecor *fl;
+  Bool fInPlace;
 
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,in_place_p,fInPlace);
   fl = psw->fl ? psw->fl : &Scr.DefaultDecor;
 
   if (!psw->fTitle) {
     psw->fTitle = True;
-    set_window_internal_title_height(psw, fl->TitleHeight);
+    set_window_internal_title_height(psw, fl->TitleHeight, fInPlace);
   }
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
 
-SCWM_PROC(hide_titlebar, "hide-titlebar", 0, 1, 0,
-          (SCM win))
+SCWM_PROC(hide_titlebar, "hide-titlebar", 0, 2, 0,
+          (SCM win, SCM in_place_p))
      /** Cause WIN not to be decorated with a titlebar.
+Keeps the client window at its current location if IN-PLACE? is #t.
 See also `show-titlebar'.
 WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_hide_titlebar
 {
   ScwmWindow *psw;
+  Bool fInPlace;
 
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,in_place_p,fInPlace);
 
   if (psw->fTitle) {
     psw->fTitle = False;
-    set_window_internal_title_height(psw, 0);
+    set_window_internal_title_height(psw, 0, fInPlace);
   }
 
   return SCM_UNSPECIFIED;
