@@ -64,25 +64,37 @@ contains the center of the window, or the closest possible if none
 does."
   (containing-aligned-viewport (window-center-position win)))
 
+(define-public (current-viewport-offset-xx)
+  (/ (viewport-x-position) display-width))
 
+(define-public (current-viewport-offset-yy)
+  (/ (viewport-y-position) display-height))
 
 ;;;
 ;;; Higher-level operations for changing a window's viewport.
 ;;;
 
-(define*-public (move-window-to-viewport xx yy #&optional win)
-  "Move WIN to the viewport numbered (XX,YY).
+(define*-public (window-position-in-viewport xx yy #&optional win)
+  "Return a virtual position for WIN that is in viewport (XX,YY).
 The (0,0) viewport is the starting viewport.  XX and YY are
 full display-size increments (e.g., (1,0) is the viewport
-just to the right of the home (0,0) viewport)."
+just to the right of the home (0,0) viewport).  This returns
+the position that `move-window-to-viewport' moves the window to."
   (let ((d-s (desk-size)))
     (if (or (> xx (- (car d-s) 1)) (> yy (- (cadr d-s) 1)))
 	(error "viewport position outside range of desk-size")))
   (let ((pos (window-position win)))
-    (move-window (+ (* xx display-width)
-		    (modulo (car pos) display-width))
-		 (+ (* yy display-height)
-		    (modulo (cadr pos) display-height)) win)))
+    (list (+ (* xx display-width)
+	     (modulo (car pos) display-width))
+	  (+ (* yy display-height)
+	     (modulo (cadr pos) display-height)))))
+
+(define*-public (move-window-to-viewport xx yy #&optional (win (get-window)))
+  "Move WIN to the viewport numbered (XX,YY).
+The (0,0) viewport is the starting viewport.  XX and YY are
+full display-size increments (e.g., (1,0) is the viewport
+just to the right of the home (0,0) viewport)."
+  (apply move-window (append (window-position-in-viewport xx yy win) (list win))))
 
 (define-public (move-inside-viewport win x y)
   "Ensure that WIN is entirely inside the X, Y viewport if possible.
@@ -110,6 +122,11 @@ XX and YY are given in units of the display size."
 The viewport selected will be an integral multiple of the desk size."
   (apply move-inside-viewport win (window-aligned-viewport win)))
 
+(define*-public (deiconify-to-current-viewport #&optional (win (get-window)))
+  "De-iconify WIN and make it visible in the current viewport."
+  (let ((vpx (current-viewport-offset-xx))
+	(vpy (current-viewport-offset-yy)))
+    (apply deiconify (append (list win) (window-position-in-viewport vpx vpy win)))))
 
 ;;;
 ;;; Higher-level operations for setting the current viewport.
