@@ -1,6 +1,6 @@
 %define nam      guile-gtk
-%define ver      26Aug99
-%define rel      2gjb
+%define ver      28Sep99
+%define rel      1gjb
 %define prefix   /usr
 
 Name: %nam
@@ -19,6 +19,9 @@ Docdir: %{prefix}/doc
 
 
 %changelog
+* Tue Sep 28 1999 Greg J. Badros <gjb@cs.washington.edu>
+  Link to guile-1.3.4, use new CVS that has Marius's proxy bug fix.
+
 * Wed Sep 1 1999 Greg J. Badros <gjb@cs.washington.edu>
   Link to guile-1.3.3, so bump to release 2.
 
