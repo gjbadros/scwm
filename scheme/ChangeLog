@@ -1,3 +1,14 @@
+Sat Jul 17 02:06:39 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* modifier-key-bindings.scm, message-window.scm: doc fixes.
+
+	* minimal.scm: Make process-use-scwm-module private.
+	
+	* key-mover-xtest.scm: Added.
+
+	* winops.scm, wininfo.scm, window-locations.scm,
+	window-configuration.scm: Doc fixes, rename formals in some cases.
+
 Fri Jul 16 17:34:11 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* message-window.scm: Added optional shaped argument to

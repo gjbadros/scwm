@@ -1,3 +1,27 @@
+Sat Jul 17 02:08:08 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c: Only grab buttons when context is C_WINDOW.  Ignore
+	the various locks in PBindingFromMouse() as I do in PBindingFromKey().
+
+Sat Jul 17 01:28:40 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* virtual.c (MoveViewport_internal): Fix bug in setting of
+	XA_SCWM_VIEWPORT_OFFSET_X/Y -- give &Scr.Vx/y instead of the
+	number itself. (Was causing segfaults, obviously).
+
+	* scwm.c: Fix typo just like above in #ifdef-fed out
+	AnnounceGnomeCompliancy().
+
+	* icons.c, focus.c, add_window.c: Do not call
+ 	XGrabKey/XGrabButton; using binding.c's GrabKeyWithModifiersWin(),
+ 	GrabButtonWithModifiersMaskXcPm(), UngrabButtonWithModifiersWin,
+	etc.
+
+	* binding.h, binding.c: Major clean up button/key grabbing stuff.
+  	Figure out what mask numlock and scroll-lock are, make bindings
+ 	and Grabs for all 8 combinations of the various lock states so
+ 	that bindings are independent of keyboard lock state.
+
 Fri Jul 16 17:56:59 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xmisc.h, xmisc.c (Pixmap1DeepFromPixmap): Move this function

@@ -2,8 +2,6 @@
 
 See also doc/dev/scwm-1.0-release-todo
 
-* Link to bug tracker
-
 * Error messages in a text window
 
 * improve look of scwm-options-dialog, expose more options.
@@ -17,9 +15,9 @@ See also doc/dev/scwm-1.0-release-todo
 
 * better dynamic linking test for platforms like HP/UX?
 
-* XTest module -- replace synth event w/ XTest directly in core?
+* replace synth event w/ XTest directly in core?
 
-* XTest for quoting keystrokes
+* quoting keystroke support-- must ungrab keystrokes or do something w/ synch grabbing
 
 * Improve esound wrapper
 
@@ -252,6 +250,9 @@ alloc/dealloc to see where the memory is going... guile support for this?
 
 
 ** DONE STUFF
+* Web Link to bug tracker
+
+* XTest module
 
 * Make sure that scwm and guile-gtk interoperate reasonably well;
 provide some example uses of guile-gtk for scwm.
