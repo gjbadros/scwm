@@ -1,5 +1,5 @@
 ;; $Id$
-;;;; Copyright (C) 1999 Maciej Stachowiak
+;;;; Copyright (C) 1999 Maciej Stachowiak and Greg J. Badros
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -139,15 +139,15 @@ Used in `enable-gnome-hints'."
   (apply string-append (map (lambda (x) (string-append x (string #\nul))) strings)))
 
 (define (X-property-value win prop)
-    (let ((pval (X-property-get win prop)))
-      (and pval (car pval))))
+  (let ((pval (X-property-get win prop)))
+    (and pval (car pval))))
 
 (define (X-root-property-value prop)
   (X-property-value 'root-window prop))
 
 (define (X-property-numeric-value win prop)
-    (let ((pval (X-property-get win prop)))
-      (and pval (vector-ref (car pval) 0))))
+  (let ((pval (X-property-get win prop)))
+    (and pval (vector-ref (car pval) 0))))
 
 (define (X-root-property-numeric-value prop)
   (X-property-numeric-value 'root-window prop))
@@ -335,7 +335,7 @@ Used in `enable-gnome-hints'."
 (define (gnome-update-state-from-client-message win msg)
   (let ((mask (vector-ref msg 0))
 	(new-state (vector-ref msg 1)))
-      (gnome-update-state win mask new-state)))
+    (gnome-update-state win mask new-state)))
 
 
 
@@ -367,9 +367,9 @@ Used in `enable-gnome-hints'."
   (gnome-set-layer! win))
 
 (define (gnome-X-root-PropertyNotify-hook prop deleted?)
-;;  (cond
-;;   ((eqv? prop _WIN_WORKSPACE)
-;;    (gnome-update-workspace))))
+  ;;  (cond
+  ;;   ((eqv? prop _WIN_WORKSPACE)
+  ;;    (gnome-update-workspace))))
   ())
 
 
