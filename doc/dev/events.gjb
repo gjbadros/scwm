@@ -1,10 +1,10 @@
 Event Rewrite Proposal for Scwm
-Greg J. Badros, 6-Aug-1998, revised 2-Sep-1998, 3-Sep-1998, 5-Sep-1998
-(Inspired by conversations w/ Maciej and his "events" proposal in this
- same directory)
+Greg J. Badros, 
+  Revised 19-Sep-1999
+  2-Sep-1998, 3-Sep-1998, 5-Sep-1998, 6-Aug-1998
 
-Intro:
-------
+Introduction:
+-------------
 
 Motivating desires for a more flexible event-binding infrastructure
 
@@ -40,6 +40,7 @@ Overview:
 1 - Event objects:
 ------------------
 (make-key-event KEYSYM-NAME #&optional MODIFIER-SPECIFIER)
+(key-event? OBJECT)
 e.g.:
 (make-key-event "F1")
 (make-key-event "Return" '(control shift meta))
@@ -83,8 +84,10 @@ Rebinding of modifiers will recompute the bitmasks.
 (Thanks to Robert Bihlmeyer who made useful comments regarding this
 subsection.)
 
+
 (make-mouse-event BUTTON-SPECIFIER X-EVENT-SPECIFIER 
                   #&optional MODIFIER-SPECIFIER)
+(mouse-event? OBJECT)
 e.g.,
 (make-mouse-event 1 'release)
 (make-mouse-event 3 'double-click (with-modifier 'control 'meta 'shift))
@@ -100,7 +103,7 @@ worth discouraging).
 X-EVENT-SPECIFIER is one of 'motion, 'press, 'release, 'click,
 'single-click or 'double-click.  ('click, 'single-click and
 'double-click get manufactured by scwm -- a 'click is a press followed
-by a release w/o intervening motion or too much intervening time.  A
+by a release w/o intervening motion (of more than a threshold delta).  A
 'double-click is two clicks w/o intervening motion or too much
 intervening time, and a 'single-click is a 'click that is not followed
 by a second click; note that a 'click will always precede a
@@ -112,31 +115,39 @@ MODIFIER-SPECIFIER is as described above.
 
 
 (make-x-event X-EVENT-SPECIFIER #&optional MODIFIER-SPECIFIER)
+(x-event? OBJECT)
 e.g.,
 (make-x-event 'enter-notify)
-(make-x-event 'keypress (with-modifer 'control 'shift 'meta))
-(make-x-event 'pointer-motion (with-modifier 'hyper))
+(make-x-event 'keypress '(with control shift meta))
+(make-x-event 'pointer-motion '(with hyper))
 
 X-EVENT-SPECIFIER is a symbol referring to an X11 event.  keypress,
 keyrelease, enter-notify, leave-notify, pointer-motion, property-notify,
 colormap-notify, focus-in, focus-out, etc. could be supported (see
 include/X11/X.h for list).  Binding procedures to these events could
 replace some of the ad-hoc mechanisms for property-notification, etc.,
-that we currently have in scwm.
+that we currently have in scwm.  Though some of these events are
+currently handled by global hooks, treating them as proper events
+permits different behaviours to be specified for different windows
+instead of requiring that the hook procedures be more globally aware (or 
+have lots of hook procedures invoked).  This is an important efficiency
+optimization.
 
 MODIFIER-SPECIFIER is as described above.  It is included
 mostly for completeness and orthogonality.  'keypress events may test
 for modifiers using the current state of the modifiers, not the state
 under which the key was pressed.  E.g., if Ctrl-Shift-Meta is depressed, 
-whichever of the three modifier keys that is physically registered last
+whichever of the three modifier keys that is physically recognized last
 will not be in the modifier bitmask for that keypress, but we might like 
 to bind something (e.g., a help menu) to those three keys being held
 down.
 
-Note that make-x-event is the most primitive case, and the other two
-procedures can be seen as adding a C-level filter on top of the actual
-X-event.  E.g., (make-mouse-event 1 'release) is applicable if there
-is a x-event "ButtonRelease" and the button number is 1.
+Note that make-x-event can be viewed as the most primitive case, and the
+other two procedures can be seen as adding a C-level filter and event
+grabbing capabilities on top of the actual X-event.  E.g.,
+(make-mouse-event 1 'release) is applicable if there is a x-event
+"ButtonRelease" and the button number is 1.  X-event bindings will never 
+do any grabs implicitly-- key-events need to be used for that.
 
 
 2 - Event Map Objects:
@@ -151,10 +162,9 @@ calls happen based on the event map for a given window.
 First, a means of creating event-maps and populating them with bindings
 from events to procedures:
 
-(make-event-map #&optional PARENT MERGE?)
+(make-event-map #&optional PARENT)
+(event-map? OBJECT)
 ;; PARENT is an event-map object, or omitted or #f to indicate no parent
-(I don't think we need to worry about delaying events, but I'm not sure
-what problem that suggestion was trying to solve).
 This will permit a form of inheritance of behaviours.  Note, though,
 that this mechanism should not be necessary for the geometry-based
 chaining that X11 commonly uses.  E.g., an event in a window decoration
@@ -171,11 +181,11 @@ doing dispatch).  MERGE? is #f to indicate that only if no binding
 matched in the child should the parent's bindings be checked.
 
 event-map-global
-;; the built-in global event-map object -- it is an implicit,
-;; non-merged parent of all event-maps
+;; the built-in global event-map object -- it is an implicit
+;; parent of all event-maps
 
 (event-map-parents EVENT-MAP)
-;; Return list of cons pairs (PARENT-EVENT-MAP . MERGE?)
+;; Return list of parent event map objects
 (add-event-map-parent! EVENT-MAP PARENT MERGE?)
 ;; Permit multiple parents, though only one can be specified at a time
 (remove-event-map-parent! EVENT-MAP PARENT)
@@ -189,8 +199,12 @@ event-map-global
 ;; PROC-OR-SYMBOL is either a procedure or 'pass to indicate
 ;; that the event should not be grabbed by the wm and the application
 ;; should get the event (this is only an issue for event maps attached
-;; to client windows).  See dispatch-event for details about how
+;; to client windows -- it's a means of overriding and eliminating
+;; a parents event map's grab).  See dispatch-event for details about how
 ;; the bindings are invoked.
+
+;; In add-event-binding, using an event object `equal?' to one with a
+;; pre-existing binding will replace the old binding
 
 (list-event-bindings EVENT-MAP)
 ;; return a list of all the event bindings added to EVENT-MAP
@@ -205,6 +219,17 @@ event-map-global
 ;; All applicable events' procedures should be invoked in the order that 
 ;; they were added to the EVENT-MAP.  Parent EVENT-MAPs are handled
 ;; as discussed above.
+
+;; We could consider looking at CLOS method combination for more
+;; sophisticated dispatching combination techniques, but that's for later.
+
+THE BELOW IS QUESTIONABLE!
+
+I want to come up with an alternative formulation that doesn't require
+the action procedure to take all of the below arguments.  Perhaps I need 
+to look at Emacs' `interactive' specifier to see how they manage this
+issue.
+
 ;; Each procedure is invoked with four arguments:
 ;; #1 - the scheme object that the event acted on/in (e.g., for a button
 ;; decoration, it will be that top-level frame; for a menu it will be
