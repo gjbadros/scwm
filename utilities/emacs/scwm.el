@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-22 Wed 14:52:49 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-22 Wed 16:30:14 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -208,7 +208,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 Returns a string."
   ;; removed the last arg, `sym', for backward compatibility with e19.
   (completing-read "SCWM symbol: " (scwm-obarray) nil nil
-                   (or sym (thing-at-point 'symbol)) scwm-history))
+                   (or sym (thing-at-point 'symbol)) 'scwm-history))
 
 ;;;###autoload
 (defun scwm-complete-symbol-insert ()
@@ -223,7 +223,6 @@ Returns a string."
 	     (with-output-to-temp-buffer "*Completions*"
 	       (display-completion-list (all-completions pat scwm-obarray)))
 	     (message "Making completion list...done")))))
-
 
 ;; fontifications
 ;; --------------
@@ -253,13 +252,13 @@ Returns a string."
         (princ "procedure-documentation")
         (put-text-property pos (point) 'face 'highlight))
       (princ ":\n\n")
-      (scwm-safe-call "procedure-documentation" pat standard-output)
+      (scwm-safe-call "documentation" (concat "\"" pat "\"") standard-output)
       (princ "\n\n ")
       (let ((pos (point)))
         (princ "documentation")
         (put-text-property pos (point) 'face 'highlight))
       (princ ":\n\n")
-      (scwm-safe-call "documentation" (concat "\"" pat "\"") standard-output)
+      (scwm-safe-call "procedure-documentation" pat standard-output)
       (help-mode))))
 
 ;;;###autoload
@@ -275,9 +274,25 @@ Returns a string."
 				  (thing-at-point 'symbol)) "")))))
   (with-output-to-temp-buffer "*Apropos*"
     (with-current-buffer "*Apropos*"
-      (princ "SCWM apropos `") (princ pat) (princ "'")
-      (put-text-property 1 (point) 'face 'highlight) (princ ":\n\n")
+      (princ "Click mouse-2 for documentation.\n\n")
+      (let ((pos (point)))
+        (princ "SCWM apropos `") (princ pat) (princ "'")
+        (put-text-property pos (point) 'face 'highlight) (princ ":\n\n"))
       (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
+      (goto-char (point-max))   ; kill `#<unspecified>'
+      (delete-region (point) (progn (beginning-of-line) (point)))
+      (goto-char 1) (forward-line 3)
+      (sort-lines nil (point) (point-max))
+      (let ((props '(action scwm-documentation mouse-face highlight
+                     face italic)) p0 p1 p2)
+        (while (not (eobp))
+          (setq p0 (point) p1 (search-forward ": ")
+                p2 (1- (re-search-forward "\\s ")))
+          (forward-char -1)
+          (add-text-properties
+           p0 p2 (cons 'item (cons (buffer-substring-no-properties
+                                    p1 p2) props)))
+          (forward-line 1)))
       (apropos-mode) (setq truncate-lines t))))
 
 ;; info interface
