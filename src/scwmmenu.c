@@ -461,7 +461,6 @@ RepaintMenuItem(MenuItemInMenu *pmiim)
   PaintMenuItem(w,pmd,pmiim);
 }
 
-inline
 MenuItemInMenu *
 PmiimSelectedFromPmd(DynamicMenu *pmd)
 {
