@@ -2,7 +2,16 @@
 
 See also doc/dev/scwm-1.0-release-todo
 
+* Fix web page using pub/scwm/old-ftp
+
+* Link to bug tracker
+
+* Error messages in a text window
+
 * improve look of scwm-options-dialog, expose more options.
+** (copy econf's widget layout?)
+
+* Integrate menus, icons w/ theme infrastructure, also cursor pixmaps
 
 * face.c (add_spec_to_face_x) should use color objects, not strings, for gradients; see also colors.c (AllocLinearGradient)
 
@@ -10,7 +19,7 @@ See also doc/dev/scwm-1.0-release-todo
 
 * better dynamic linking test for platforms like HP/UX?
 
-* XTest module
+* XTest module -- replace synth event w/ XTest directly in core?
 
 * XTest for quoting keystrokes
 
@@ -19,8 +28,6 @@ See also doc/dev/scwm-1.0-release-todo
 * Test proplist module
 
 * window style options dialog ala KDE
-
-* better-looking options dialog (copy econf's widget layout?)
 
 * multi-window animated move/resize
 
