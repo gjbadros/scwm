@@ -1,7 +1,7 @@
-Wed Apr 21 14:34:37 1999  Greg J Badros  <gjb@cs.washington.edu>
+Thu Apr 22 16:32:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* utilities/pidproperty/Makefile.in: Added clean target for
-	recursive builds.
+	* configure.in (scwm_image_load_path): Added scwm_utildir -- not
+	used now, except by the broken utilities/pidproperty/Makefile.am.broken.
 
 Tue Apr 20 21:17:47 1999  Greg J Badros  <gjb@cs.washington.edu>
 
