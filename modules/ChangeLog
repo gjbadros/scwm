@@ -1,3 +1,8 @@
+Fri Jul  9 08:56:47 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c (s_xlib_set_drawing_mask_x): Permit mask
+	to be in [0,+Inf], not [0,255]
+
 Mon Jul  5 19:59:22 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xlib-drawing/drawing.c: Permit 0 values for the width height
