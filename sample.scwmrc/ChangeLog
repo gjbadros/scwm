@@ -1,3 +1,12 @@
+1998-11-17  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc: Don't hint-override. Whatever that is. Sounds bad.
+	Add "Properties" and "Info" items to winops. Do an xprop, or
+	xwininfo, respectively.
+	(toggle-focus): Works correctly now.
+	No more Terminal style - I have no real use for it.
+	Minor style changes.
+
 Sun Nov 15 23:39:52 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.am (EXTRA_DIST): Don't distribute menu-test.scm which
