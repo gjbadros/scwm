@@ -6,6 +6,7 @@
 
 use IO::Socket;
 use strict;
+use POSIX;
 
 my $scwm_usage_port = 13671; # from log-usage.h
 
@@ -23,8 +24,9 @@ my $data = "";
 
 while (recv($listener, $data, 1000, 0)) {
   my ($magic, $len) = unpack("C1n", substr($data,0,3));
-  my $msg = substr($data,3);
-  print "Got: $magic, $len: $msg\n";
+  my $msg = substr($data,3,$len-4);
+  my $date = POSIX::strftime("%d-%B-%Y %H:%M:%S",gmtime(time()));
+  print "$date ($magic) -- $msg\n";
 }
 
 print "Exited: $!\n";
