@@ -54,7 +54,6 @@ SRCS = \
 	system.c \
 	envvar.c \
 	Grab.c \
-	wildcard.c \
 	add_window.c \
 	borders.c \
 	builtins.c \
