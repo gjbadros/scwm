@@ -78,6 +78,7 @@
 	 (tbl (gtk-table-new 1 2 #f))
 	 (lbl (gtk-label-new name))
 	 (aln (gtk-alignment-new 1 .5 0 0))
+	 (constraint-drawn #f)
 	 (buts (gtk-hbox-new #f 3))
 	 (bt1 (gtk-check-button-new))
 	 (bt2 (gtk-button-new-with-label "Delete")))
@@ -106,10 +107,16 @@
     (gtk-signal-connect bt1 "enter"
 			(lambda ()
 			  (flash-windows-of-constraint win-list)
-			  (draw-constraint n)))
+			  (if (ui-constraint-enabled? n)
+			      (begin
+				(draw-constraint n)
+				(set! constraint-drawn #t)))))
     (gtk-signal-connect bt1 "leave"
 			(lambda ()
-			  (undraw-constraint n)
+			  (if constraint-drawn
+			      (begin
+				(undraw-constraint n)
+				(set! constraint-drawn #f)))
 			  (unflash-windows-of-constraint win-list)))
     (gtk-box-pack-start buts bt1 #f #f 2)
     (gtk-box-pack-start buts bt2 #f #f 2)
@@ -134,6 +141,7 @@
 	 (name (mproc n))
 	 (win-list (ui-constraint-windows n))
 	 (enabled? (ui-constraint-enabled? n))
+	 (constraint-drawn #f)
 	 (but (gtk-button-new-with-label name)))
     (gtk-signal-connect but "clicked" 
 			(lambda ()
@@ -144,10 +152,14 @@
     (gtk-signal-connect but "enter"
 			(lambda ()
 			  (flash-windows-of-constraint win-list)
-			  (draw-constraint n)))
+			  (if (ui-constraint-enabled? n)
+			      (begin
+				(set! constraint-drawn #t)
+				(draw-constraint n)))))
     (gtk-signal-connect but "leave"
 			(lambda ()
-			  (undraw-constraint n)
+			  (if constraint-drawn
+			      (undraw-constraint n))
 			  (unflash-windows-of-constraint win-list)))
     (gtk-container-add box but)
     (gtk-widget-show but)
