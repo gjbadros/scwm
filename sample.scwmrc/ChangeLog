@@ -7,6 +7,11 @@ Mon Apr  5 15:17:39 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Comment out a bad binding.
 
+1999-04-03  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc: Use `window-unstyle' as to not force titlebars
+	onto windows.
+
 Fri Apr  2 15:36:59 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use flux-gtk, for rename-window-interactively.

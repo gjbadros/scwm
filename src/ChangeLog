@@ -1,3 +1,8 @@
+1999-04-07  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* session-manager.c (setSMProperties): Support xsm's broken idea
+	of SmDiscardCommand.
+
 Wed Apr  7 17:40:14 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c (DeferExecution): make DBG msg into DBUG macro so it
