@@ -1,5 +1,5 @@
-;;;; $Id$
-;;;; Copyright (C) 1998 Maciej Stachowiak
+;;;; $Id$ -*-scwm-*-
+;;;; Copyright (C) 1999 Glenn Trigg
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -31,34 +31,45 @@
   (strftime format (localtime (current-time))))
 
 (define*-public (run-ScwmClock #&key (24-hour #t) (show-timezone #t)
-			       (update-interval 1))
+			       (update-interval 1) (parent #f))
   (let* ((time-format (string-append (if 24-hour "%T" "%r")
 				     (if show-timezone " %Z" "")))
 	 (update-usec (* 1000000 update-interval))
-	 (toplevel (gtk-window-new 'toplevel))
+	 (frame (gtk-frame-new #f))
 	 (label (gtk-label-new (date-string time-format))))
-    (gtk-window-set-title toplevel "ScwmClock")
-    (gtk-window-set-wmclass toplevel "ScwmClock" "Scwm")
-    (gtk-container-add toplevel label)
+    (if (not parent)
+	(begin (define toplevel (gtk-window-new 'toplevel))
+	       (gtk-window-set-title toplevel "ScwmClock")
+	       (gtk-window-set-wmclass toplevel "ScwmClock" "Scwm")
+	       (gtk-container-add toplevel frame)
+	       (gtk-widget-show toplevel))
+	(parent 'add-child frame "Current Time"))
+    (gtk-container-add frame label)
+    (gtk-frame-set-shadow-type frame 'etched-out)
     (gtk-widget-show label)
+    (gtk-widget-show frame)
     (letrec ((handle #f)
 	     (update-string-and-add-timer 
 	      (lambda ()
 		(gtk-label-set label (date-string time-format))
-		(set! handle (add-timer-hook! 1000000
+		(set! handle (add-timer-hook! update-usec
 					      update-string-and-add-timer))))
 	     (remove-hook (lambda () 
 			    (if handle (remove-timer-hook! handle)))))
       (update-string-and-add-timer)
-      (gtk-widget-show toplevel)
-      (lambda () 
-	(if (not (gtk-object-destroyed toplevel))
-	    (gtk-widget-unmap toplevel)
-	    (gtk-widget-destroy toplevel))
+      (lambda ()
+	(if (not parent)
+	    (if (not (gtk-object-destroyed toplevel))
+		(gtk-widget-unmap toplevel)
+		(gtk-widget-destroy toplevel))
+	    (if (not (gtk-object-destroyed label))
+		(gtk-widget-unmap label)
+		(gtk-widget-destroy label)))
 	(remove-hook)))))
 
 (define-public (close-ScwmClock sc)
   (sc))
 
-
-
+#!
+(define clock (run-ScwmClock #:show-timezone #f #:update-interval 5))
+!#

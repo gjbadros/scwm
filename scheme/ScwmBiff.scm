@@ -63,7 +63,7 @@
 	(begin
 	  (gtk-container-add toplevel button)
 	  (gtk-widget-show toplevel))
-	(gtk-box-pack-start parent button))
+	(parent 'add-child button "Mail Notifier"))
     (lambda (action)
       (case action
 	((quit)
