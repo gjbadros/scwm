@@ -1,3 +1,8 @@
+1999-03-23  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* autogen.sh: Add --copy to libtoolize call, as we don't want to
+	distribute symlinks.
+
 Tue Mar 23 11:46:00 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* THANKS: Added imlib support to James LewisMoss's contribution list.

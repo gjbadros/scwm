@@ -1,3 +1,8 @@
+1999-03-23  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* wininfo.scm (wildcard->regexp): Would not treat escaped * and ?
+	correctly.
+
 1999-03-23  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* tile.scm (tile): Pass #:raise option rather than #:restack to
