@@ -56,7 +56,8 @@
 (define*-public (animated-iconify #&optional (win (get-window)))
   (cond
    ((not (iconified? win))
-    (iconify win) ;; ensure a useful icon position the first time,
+    (iconify win) ;; ensure a useful icon position the first time
+    (set-window-property! win 'last-viewport-position (window-viewport-position win))
     (animate-iconify-or-deiconify (icon-viewport-position win) 
                                   (window-viewport-position win) 
                                   (icon-size win)
@@ -73,6 +74,21 @@
                                      (window-frame-size win)
                                      20 #f (lambda () (deiconify win))
                                      '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0))))
+
+(define*-public (animated-deiconify-to-last-viewport-position #&optional (win (get-window)))
+  (if (iconified? win)
+    (animate-iconify-or-deiconify (icon-viewport-position win)
+				  (or (window-property win 'last-viewport-position)
+				      (apply virtual->viewport
+					     (window-position-in-viewport
+					      (current-viewport-offset-xx)
+					      (current-viewport-offset-yy)
+					      win)))
+                                  (icon-size win)
+                                  (window-frame-size win)
+                                  20 #f (lambda () (deiconify-to-current-viewport win))
+                                  '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0))))
+
 
 (define*-public (animated-deiconify-to-current-viewport #&optional (win (get-window)))
   (if (iconified? win)
