@@ -15,11 +15,16 @@ X-HOTSPOT and Y-HOTSPOT can specify the hotspot coordinates for the cursor."
   (create-pixmap-cursor (make-image name) #f #f x-hotspot y-hotspot))
 
 ;;; these pixmaps are in pixmaps/
+;;; double-headed arrow from top left to bottom right
 (define resize-br (image-name->cursor "resize_br.xpm"))
+;;; double-headed arrow from bottom left to top right
 (define resize-tr (image-name->cursor "resize_tr.xpm"))
+;;; double-headed arrow from left to right
 (define resize-h (image-name->cursor "resize_h.xpm"))
+;;; double-headed arrow from top to bottom
 (define resize-v (image-name->cursor "resize_v.xpm"))
 
+;;; SRL:FIXME:: Should allow different cursors for each nonant.
 ;; (apply-fancy-resize-cursors)
 (define*-public (apply-fancy-resize-cursors #&optional (win (get-window)))
   "Use the fancy resize cursors for WIN."

@@ -1,3 +1,8 @@
+Mon Apr  1 02:50:45 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* cursor.scm: Added some comments.
+	Added FIXME about allowing different cursors for each nonant.
+
 Sun Mar 31 23:56:29 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* group.scm:
