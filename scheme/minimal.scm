@@ -171,6 +171,7 @@ Run PROC immediately if MODULE has already been loaded."
 	 (lambda (key . args)
 	   (display "Error loading module: ")
 	   (display module) (newline)
+	   (backtrace)
 	   (catch #t
 		  (lambda () (apply handle-system-error (cons key args)))
 		  (lambda (key . args) #t))
