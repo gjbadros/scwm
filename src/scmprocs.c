@@ -78,6 +78,7 @@ init_scwm_procs(void)
   gh_new_procedure("raise-window", raise_window, 0, 1, 0);
   gh_new_procedure("lower-window", lower_window, 0, 1, 0);
   gh_new_procedure("raised?", raised_p, 0, 1, 0);
+  gh_new_procedure("transient?", transient_p, 0, 1, 0);
   gh_new_procedure("iconify", iconify, 0, 1, 0);
   gh_new_procedure("deiconify", deiconify, 0, 1, 0);
   gh_new_procedure("iconified?", iconified_p, 0, 1, 0);

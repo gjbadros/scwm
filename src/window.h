@@ -157,12 +157,17 @@ typedef struct ScwmWindow {
 
 /* FIXGJB: fWindowListSkip, fCirculateSkipIcon, fCirculateSkip are unused */
 
+
 void ResetCommonFlags(ScwmWindow *psw);
 void ResetAllFlags(ScwmWindow *psw);
 void CopyCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
 void CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
+void CopySetAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
 void CopySetCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
 unsigned long FlagsBitsFromSw(ScwmWindow *psw);
+
+
+#define SHOW_TITLE_P(sw) ((sw)->fTitle && (!(sw)->fTransient || (sw)->fDecorateTransient))
 
 #define SHADED_P(sw) ((sw)->fWindowShaded)
 #define SET_UNSHADED(sw) do { (sw)->fWindowShaded = False; } while (0)
@@ -241,6 +246,7 @@ SCM warp_to_window(SCM win);
 SCM raise_window(SCM win);
 SCM lower_window(SCM win);
 SCM raised_p(SCM win);
+SCM transient_p(SCM win);
 SCM deiconify(SCM win);
 SCM iconify(SCM win);
 SCM iconified_p(SCM win);

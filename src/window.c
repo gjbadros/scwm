@@ -3,6 +3,8 @@
  *
  */
 
+/* #define SCWM_DEBUG_MSGS */
+
 #define WINDOW_IMPLEMENTATION
 
 /****************************************************************************
@@ -191,9 +193,70 @@ CopySetCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
 }
 
 void
+CopySetAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
+{
+  CopySetCommonFlags(psw,pswSrc);
+
+  if ( pswSrc->fBorder )
+    psw->fBorder = True;
+  if ( pswSrc->fTitle )
+    psw->fTitle = True;
+  if ( pswSrc->fMapped )
+    psw->fMapped = True;
+  if ( pswSrc->fIconified )
+    psw->fIconified = True;
+  if ( pswSrc->fTransient )
+    psw->fTransient = True;
+  if ( pswSrc->fRaised )
+    psw->fRaised = True;
+  if ( pswSrc->fVisible )
+    psw->fVisible = True;
+  if ( pswSrc->fIconOurs )
+    psw->fIconOurs = True;
+  if ( pswSrc->fPixmapOurs )
+    psw->fPixmapOurs = True;
+  if ( pswSrc->fShapedIcon )
+    psw->fShapedIcon = True;
+  if ( pswSrc->fMaximized )
+    psw->fMaximized = True;
+  if ( pswSrc->fDoesWmTakeFocus )
+    psw->fDoesWmTakeFocus = True;
+  if ( pswSrc->fDoesWmDeleteWindow )
+    psw->fDoesWmDeleteWindow = True;
+  if ( pswSrc->fIconMoved )
+    psw->fIconMoved = True;
+  if ( pswSrc->fIconUnmapped )
+    psw->fIconUnmapped = True;
+  if ( pswSrc->fMapPending )
+    psw->fMapPending = True;
+  if ( pswSrc->fHintOverride )
+    psw->fHintOverride = True;
+  if ( pswSrc->fMWMButtons )
+    psw->fMWMButtons = True;
+  if ( pswSrc->fMWMBorders )
+    psw->fMWMBorders = True;
+  if ( pswSrc->fMWMFunctions )
+    psw->fMWMFunctions = True;
+  if ( pswSrc->fMWMDecor )
+    psw->fMWMDecor = True;
+  if ( pswSrc->fDecorateTransient )
+    psw->fDecorateTransient = True;
+  if ( pswSrc->fWindowShaded )
+    psw->fWindowShaded = True;
+  if ( pswSrc->fStartsOnDesk )
+    psw->fStartsOnDesk = True;
+  if ( pswSrc->fOLDecorHint )
+    psw->fOLDecorHint = True;
+  if ( pswSrc->fNoPPosition )
+    psw->fNoPPosition = True;
+  if ( pswSrc->fForceIcon )
+    psw->fForceIcon = True;
+}
+
+void
 CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
 {
-  CopyCommonFlags(psw,pswSrc);
+  CopyCommonFlags(psw, pswSrc);
 
   psw->fBorder = pswSrc->fBorder;
   psw->fTitle = pswSrc->fTitle;
@@ -222,7 +285,9 @@ CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
   psw->fOLDecorHint = pswSrc->fOLDecorHint;
   psw->fNoPPosition = pswSrc->fNoPPosition;
   psw->fForceIcon = pswSrc->fForceIcon;
+
 }
+
 
 size_t 
 free_window(SCM obj)
@@ -710,10 +775,6 @@ select_window(SCM kill_p, SCM release_p)
 }
 
 
-
-
-
-
 /*
  * Unmaps a window on transition to a new desktop
  */
@@ -803,6 +864,7 @@ RaiseWindow(ScwmWindow * t)
   }
 
   /* now raise transients */
+  /* FIXGJB: this should be a runtime option */
 #ifndef DONT_RAISE_TRANSIENTS
   for (t2 = Scr.ScwmRoot.next; t2 != NULL; t2 = t2->next) {
     if (t2->fTransient &&
@@ -1110,6 +1172,16 @@ raised_p(SCM win)
   tmp_win = SCWMWINDOW(win);
   return SCM_BOOL_FromBool(tmp_win == Scr.LastWindowRaised ||
 			   tmp_win->fVisible);
+}
+
+SCM 
+transient_p(SCM win)
+{
+  ScwmWindow *tmp_win;
+
+  VALIDATE(win, "transient?");
+  tmp_win = SCWMWINDOW(win);
+  return SCM_BOOL_FromBool(tmp_win->fTransient);
 }
 
 
@@ -2541,6 +2613,7 @@ set_start_on_desk_x(SCM desk, SCM win)
   if (desk == SCM_BOOL_F) {
     tmp_win->fStartsOnDesk = False;
   } else if (gh_number_p(desk)) {
+    DBUG(__FUNCTION__,"setting fStartsOnDesk");
     tmp_win->fStartsOnDesk = True;
     tmp_win->StartDesk = gh_scm2int(desk);
   } else {
