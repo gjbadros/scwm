@@ -1,3 +1,8 @@
+1998-10-05  Todd Larason  <jtl@teeny.molehill.org>
+
+	* move.c (moveLoop): call the interactive-move-new-position hook
+	with properly schemified arguments
+
 Mon Oct  5 12:25:21 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Added KeyReleaseMask to the event mask used on the root

@@ -406,7 +406,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
              moved at all, so be sure to use the actual position
              of the window */
           FXGetWindowTopLeft(psw->frame,&x,&y);
-          call3_hooks(interactive_move_new_position_hook, psw->schwin, x,y);
+          call3_hooks(interactive_move_new_position_hook, psw->schwin,
+		      gh_int2scm(x), gh_int2scm(y));
           DisplayPosition(psw,x,y,True);
         }
 
