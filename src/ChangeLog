@@ -1,3 +1,22 @@
+Fri Jan  7 09:59:08 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added some debugging code for make-ing and free-ing
+	window objects.  print_window now uses sprintf to avoid the
+	possibility of GCing (it used to do a gh_ulong2scm w/ scm_write
+	which caused problems when calling print_window from within GC
+	debugging routines.  Display some debug information when the
+	mark_window routine is called with obj != psw->schwin.
+
+	* events.c (HandleButtonPress): Call find_mouse_event_type for the
+ 	immediate proc, too.  This avoids offset anomalies when using
+	C-S-M-2 button to move a window.
+
+	* add_window.c: Fix a terrible race condition for windows that
+	don't live very long by invalidating the window before freeing the 
+	memory.  This changes corrects the sporadically-reproducible bug I 
+	was observing with the GIMP (and maybe others' problems w/
+	netscape, too?).
+
 Thu Jan  6 18:04:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c, callbacks.c: added -g option to force gc'ing at all c hooks.  Slows
