@@ -2,7 +2,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-14 Tue 12:44:41 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-20 Mon 09:50:13 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -168,20 +168,14 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (interactive) (newline-and-indent)
   (scwm-eval-last t) (newline))
 
-(defun quote-percents (str)
-  "Replace all % with %% in str to quote them for use as an arg to message."
-  (string-match "^" str)
-  (while (string-match "%" str (+ 1 (match-end 0)))
-    (setq str (replace-match "%%" t t str)))
-  str)
-
 ;;;###autoload
 (defun scwm-eval-to-minibuffer ()
   "Evaluate the last SEXP and show the result in the minibuffer."
   (interactive)
+  ;; this is a workaround for XEmacs' buggy `with-output-to-string'.
   (let ((last (buffer-substring-no-properties
 	       (point) (save-excursion (backward-sexp) (point)))))
-    (message (quote-percents (with-output-to-string (scwm-eval last standard-output))))))
+    (message "%s" (with-output-to-string (scwm-eval last standard-output)))))
 
 (defalias 'advertised-xscheme-send-previous-expression
     'scwm-eval-to-minibuffer)
@@ -306,6 +300,8 @@ i.e. (FILENAME NODENAME BUFFERPOS)"
                                          (match-end 1))
                                         0)
                                   where))))))))
+    (let ((ww (get-buffer-window "*info*" t)))
+      (when ww (quit-window nil ww)))
     where))
 
 ;;;###autoload
