@@ -44,7 +44,7 @@
 			      (inactive '()) . rest)
   (act-on-face-specs (lambda* (active #&optional ignore inactive)
 			      (if (bound? inactive)
-				  (set-border-face! active ignore inactive)
+				  (set-border-face! active inactive)
 				  (set-border-face! active)))
 		     parse-border-face-specs parse-border-face-flags
 		     rest active '() inactive))
