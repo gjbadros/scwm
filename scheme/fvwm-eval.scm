@@ -130,7 +130,8 @@
   (move-window-to-desk (get-one-numeric-arg args) window))
 
 (define-fvwm-command "KillMe"
-   ((list-ref 5 fmod)))
+  (display "Got KillMe! \n")
+  ((list-ref 5 fmod)))
 
 (define-fvwm-command "Eval"
   (eval-string args))
@@ -163,7 +164,8 @@
 
 (define-fvwm-command "WarpToWindow"
   (if window
-    (warp-to-window window)))
+    (warp-to-window window)
+    (warp-to-window)))
 
 (define*-public (eval-fvwm-command command #&optional (fmod #f) 
 				   (window #f))
@@ -173,3 +175,6 @@
 	 (lc-cmd (string-downcase! (string-copy main-cmd)))
 	 (args (cadr split-result)))
     ((hash-ref fvwm-command-hash-table lc-cmd) args fmod window)))
+
+
+

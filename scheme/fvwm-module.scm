@@ -24,7 +24,8 @@
   :use-module (app scwm module-types)
   :use-module (app scwm bincomm)
   :use-module (app scwm fvwm-eval)
-  :use-module (app scwm optargs))
+  :use-module (app scwm optargs)
+  :use-module (app scwm decor))
 
 
 
@@ -58,10 +59,8 @@
 ;; module (q.v.).
 ;;
 
-;;(sigaction SIGPIPE
-;;	   (lambda (sig)
-;;	     (display "In the sigpipe handler, wheee!")
-;;	     (newline)))
+;; FIXMS: Maybe scwm should always ignore sigpipes?
+(sigaction SIGPIPE SIG_IGN)
 
 (define app-window "0")
 (define context "0") ; C_NO_CONTEXT
@@ -98,10 +97,12 @@
        config-info)
   (send-end-config-info port))
 
+(define (longs->string . longs)
+  (apply string-append 
+	 (map long->string longs)))
+
 (define (make-packet-header id body-length)
-  (apply string-append
-	 (map long->string 
-	      (list #xffffffff id (+ body-length 4) (current-time)))))
+  (longs->string #xffffffff id (+ body-length 4) (current-time)))
 
 (define (fvwm2-module-send-packet id body port)
   (if (not (= (modulo (string-length body)  4) 0))
@@ -111,14 +112,27 @@
 		  body) port)
   (force-output port))
 
+;; Send mini-icon info 
+(define (send-mini-icon-packet win port)
+  (let ((mini-icon (window-mini-icon win)))
+    (if mini-icon
+	(let* ((props (image-properties mini-icon))
+	       (body (string-append
+		      (longs->string 
+		       (window-id win) (window-frame-id win)
+		       0 (assq 'width props)
+		       (assq 'height props) (assq 'depth props)
+		       (assq 'pixmap props) (assq 'mask props))
+		      (pad-string-to-long (assq 'filename props)))))
+	  (fvwm2-module-send-packet M_MINI_ICON body port)))))
+
+
 (define (send-end-config-info port)
   (fvwm2-module-send-packet M_END_CONFIG_INFO "" port))
 
 (define (send-string-packet type data1 data2 data3 str port)
-  (let* ((data (string-append 
-		(long->string data1)
-		(long->string data2)
-		(long->string data3)
+  (let* ((data (string-append
+		(longs->string data1 data2 data3)
 		(pad-string-to-long str))))
     (fvwm2-module-send-packet type data port)))
 
@@ -131,26 +145,30 @@
   ;; broadcasting an M_NEW_DESK first can fortunately be avoided.
   (fvwm2-module-send-packet 
    M_NEW_PAGE
-   (apply string-append
-	  (map (lambda (x) (long->string x)) 
-	       (append (viewport-position)
-		       (list (current-desk))
-		       (list (* (- (car (desk-size)) 1) display-width)
-			     (* (- (cadr (desk-size)) 1) display-height)))))
+   (apply longs->string
+	  (append (viewport-position)
+		  (list (current-desk))
+		  (list (* (- (car (desk-size)) 1) display-width)
+			(* (- (cadr (desk-size)) 1) display-height))))
    port)
 
-
-;;      if(Scr.Hilite != NULL)
-;;	SendPacket(*Module,M_FOCUS_CHANGE,5,Scr.Hilite->w,Scr.Hilite->frame,
-;;		   (unsigned long)Scr.Hilite,
-;;		   Scr.DefaultDecor.HiColors.fore,
-;;		   Scr.DefaultDecor.HiColors.back,
-;;		   0,0);
-;;     else
-;;	SendPacket(*Module,M_FOCUS_CHANGE,5,0,0,0,Scr.DefaultDecor.HiColors.fore,
-;;		   Scr.DefaultDecor.HiColors.back,0,0);
-
-
+  (let ((focus-win (current-window-with-focus)))
+    (fvwm2-module-send-packet
+     M_FOCUS_CHANGE
+     (longs->string
+      (if focus-win (window-id focus-win) 0)
+      (if focus-win (window-frame-id focus-win) 0)
+      0 ;; was (unsigned long)Scr.Hilite, which is EVIL
+      ;; Fvwm always uses the default decor to send this; perhaps we should
+      ;; use the window's decor instead?
+      (with-decor (default-decor)
+		  (color-property (hilight-foreground) 
+				  'pixel))
+      (with-decor (default-decor)		   
+		  (color-property (hilight-background) 
+				  'pixel)))
+     port))
+  
   (map (lambda (w) (add-window w port)) (list-all-windows))
   (end-window-list port))
 
@@ -169,41 +187,25 @@
     
     (send-win-string M_WINDOW_NAME (window-title win))
     
-    ;;  (send-win-string M_ICON_NAME (window-icon-title win))
+    (send-win-string M_ICON_NAME (window-icon-title win))
     
-    ;;  (send-win-string M_ICON_FILE (image-property (window-icon win) 'name))
+    (let* ((wi (window-icon win))
+	   (wif (if wi (image-property window-icon 'filename) #f)))
+      (if (and wif
+	       (not (string=? wif "FromApp"))
+	       (not (string=? wif "FromAppBitmap")))
+	  (send-win-string M_ICON_FILE wif)))
 
     (send-win-string M_RES_CLASS (window-class win))
     (send-win-string M_RES_NAME (window-resource win))
   
-;;   (if (iconified? win)
-;;	(send-win-string M_ICONIFY (fvwm2-marshal-iconify-info win)))
+    (if (iconified? win)
+    	(fvwm2-module-send-packet 
+    	 M_ICONIFY_WINDOW 
+    	 (marshal-fvwm2-iconify-info win)
+    	 port))
 
-;;	  if((t->flags & ICONIFIED)&&(!(t->flags & ICON_UNMAPPED)))
-;;	    SendPacket(*Module,M_ICONIFY,7,t->w,t->frame,
-;;		       (unsigned long)t,
-;;		       t->icon_x_loc,t->icon_y_loc,
-;;		       t->icon_w_width, 
-;;		       t->icon_w_height+t->icon_p_height);
-;;	  if((t->flags & ICONIFIED) && (t->flags & ICON_UNMAPPED))
-;;	    SendPacket(*Module,M_ICONIFY,7,t->w,t->frame,
-;;		       (unsigned long)t,0,0,0,0);
-;;#ifdef MINI_ICONS
-
-;;    (if (window-mini-icon win)
-;;	(send-win-string M_MINI_ICON (fvwm2-marshal-mini-icon-info win)))
-
-;;	  if (t->mini_icon != NULL) 
-;;           SendMiniIcon(*Module, M_MINI_ICON,
-;;                        t->w, t->frame, (unsigned long)t,
-;;                         t->mini_icon->width,
-;;                        t->mini_icon->height,
-;;                         t->mini_icon->depth,
-;;                         t->mini_icon->picture,
-;;                         t->mini_icon->mask,
-;;                         t->mini_pixmap_file)
-;;#endif
-
+    (send-mini-icon-packet win port)
     ))
 
 (define (end-window-list port)
@@ -264,6 +266,16 @@
 
 (add-hook! broadcast-name-hook module-broadcast-name)
 
+(define (module-broadcast-mini-icon type window)
+  (map (lambda (fmod)
+	 (let ((to-module-write (car fmod))
+	       (mask (cadr fmod)))
+	   (if (logior type mask)
+	       (send-mini-icon-packet window to-module-write))))
+       active-modules))
+
+(add-hook! broadcast-mini-icon-hook module-broadcast-mini-icon)
+
 (define*-public (run-fvwm-module module-file config-file config-info
 				#&optional (other-args '()))
   (let* ((from-module-pipe (pipe))
@@ -294,7 +306,6 @@
 				(close-port to-module-write)
 				(close-port from-module-read))
 			      (lambda args 
-				(display "Step 5.5\n")
 				args))
 		       (remove-input-hook! input-hook-handle)
 		       (list-set! fmod 4 #f))))))

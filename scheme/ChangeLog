@@ -1,5 +1,23 @@
+1998-07-20  Maciej Stachowiak  <maciej@roc-ny5-21.ix.netcom.com>
+
+	* fvwm-module.scm: Ignore SIGPIPE if using fvwm modules; they have
+	a tendency to break the pipe when you kill them w/o sending KillMe
+	(at least for me) for some reason.
+
+	* base.scm (color-property): Added color-property
+	procedure. Reversed order of key and object on image-property and
+	font-property to be consistent and Schemey.
+
 1998-07-20  Maciej Stachowiak  <maciej@localhost.localdomain>
 
+	* fvwm-eval.scm ("WarpToWindow"): Make the fvwm2 "WarpToWindow"
+	command pick a window to warp to if none specified. Kind of
+	stupid, but complete.
+
+	* fvwm-module.scm: Support the broadcast-mini-icon-hook. Also,
+	make send-window-list send the complete list of information, just
+	like fvwm2 sends it. Many things were missing before.
+	
 	* fvwm-module.scm (run-fvwm-module): Make sure to do something
 	more sensible when reciving a packet that specifies no
 	window. Patch from Danius Michaelides <danius@duff.org>

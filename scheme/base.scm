@@ -182,11 +182,14 @@
   (make-menu list-of-menuitems image-side color-bg-image-side
 	     color-bg color-text image-bg font))
 
-(define-public (image-property key image)
+(define-public (image-property image key)
   (cdr (assoc key (image-properties image))))
 
-(define-public (font-property key font)
+(define-public (font-property font key)
   (cdr (assoc key (font-properties font))))
+
+(define-public (color-property color key)
+  (cdr (assoc key (color-properties color))))
 
 ;; for compatability
 (define-public load-font make-font)
