@@ -830,6 +830,9 @@
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
 
+(window-style "panel"
+              #:use-style desk-widget #:border-width 0 #:no-titlebar #t)
+
 ;;  This shows a bug in dealing with 0 bordered windows (from HJ Stein)
 ;;(define desk-widget-hjs
 ;;  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
@@ -1329,7 +1332,6 @@ union of all other window managers!
 
 (bind-mouse 'all "H-M-3" #f popup-window-ops)
 (bind-mouse 'left-button-1 3 popup-style-menu)
-
 
 (define (resize-halfscreen)
   (let ((w (current-window-with-pointer)))
