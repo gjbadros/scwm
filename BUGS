@@ -13,3 +13,5 @@ should initially focus/hilight some window (also a bug in fvwm2).
 
 set-hilight-colors! does not deal w/ current hilighted window correctly.
 
+callbacks should run from a new dynamic root.
+
