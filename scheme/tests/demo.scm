@@ -62,7 +62,7 @@
 
 (list-windows #:only iconified?)
 (list-windows #:only (lambda (w) (string=? (window-class w) "XTerm")))
-(list-windows #:only (wildcard-matcher?? "XTerm"))
+(list-windows #:only (wildcard-matcher "XTerm"))
 ;; de-iconify via window list
 
 
@@ -74,11 +74,11 @@
 (define w (select-window-interactively))
 
 (define wid (car (window-size w)))
-(define height (car (cdr (window-size w))))
+(define height (cadr (window-size w)))
 wid
 height
-(resize-to wid height w)
-(resize-to (* wid 2) (* height 2) w)
+(resize-window wid height w)
+(resize-window (* wid 2) (* height 2) w)
 
 ;;;; VIRTUAL DESKTOP, STICKINESS, PAGER
 
@@ -186,7 +186,7 @@ height
 ;; Only need below if did not define w earlier
 ;; (define w (select-window-interactively))
 
-(add-timer-hook! (sec->usec 1.5) 
+(add-timer-hook! (sec->msec 1.5) 
 		 (lambda () (X-synthetic-send-string "ls -ld g*" w)))
 
 
