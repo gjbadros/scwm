@@ -1,3 +1,8 @@
+Sat Jul 24 20:25:00 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Do not warp mouse to first menu item when bound to
+	mouse event.
+
 Sat Jul 24 19:22:48 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Put scwm-logo up before loading the other 23
