@@ -698,3 +698,18 @@ the first element for changes to desk 1, etc."
   "Return a procedure that runs COMMAND in the background on the X selection."
   (lambda () (execute-on-selection command)))
 
+(define (extreme1 pred lst)
+  (if (null? (cdr lst))
+      (car lst)
+      (let ((ex (extreme pred (cdr lst))))
+	(if (pred (car lst) ex)
+	    (car lst)
+	    ex))))
+
+(define-public (extreme pred lst)
+  "Find extreme value e of PRED in LST.
+If PRED defines a semi-ordering, `(PRED e x)' will hold for all members x
+of LST not equal to e. E.g. `(extreme < ...)' returns the lowest number."
+  (if (null? lst)
+      ()
+      (extreme1 pred lst)))
