@@ -1,3 +1,29 @@
+Thu Oct  8 12:42:25 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* resize.c (s_set_message_window_position_x): Document X-ALIGN and 
+	Y-ALIGN.
+
+	* menulook.c (menulook?) : Document the proc.  (copy_menu_look)
+ 	Remove dummy variable, add some braces for readability, warning
+	elimination. 
+
+	* menu.c: Permit SCM_BOOL_F menuitems w/o giving Bad menu item
+	warning.  Fix some doc strings to have ending periods for synopsis 
+	sentence.  Added prototype for ConstructDynamicMenu (instead of
+	#includeing "drawmenu.h"
+
+	* drawmenu.c: Document scwm-menu-look variable.
+
+	* constraint-primitives.cc: Use PswFromClvPv instead of a
+	static_cast to get at the windows in cl_windows_of_constraint
+
+	* color.c: Fix mis-edit in not renaming FUNC_NAME macro of
+	not_menu_background.  Should these "not_menu..." things get
+	obliterated or do we still rely on them somewhere?  Todd says: yes 
+	we use them for icon and window backgrounds and borders -- they
+	need to get their colors from somewhere else before the code can
+	be killed
+
 1998-10-07  Todd Larason  <jtl@teeny.molehill.org>
 
 	* menu.h: scmMenuTag added to Menu; pmiimTitle added to DynamicMenu
