@@ -210,6 +210,7 @@ typedef struct ScwmDecor {
 #ifdef USEDECOR
     struct ScwmDecor *next;	/* additional user-defined styles */
 #endif
+  SCM scmdecor;
 } ScwmDecor;
 
 

@@ -1,3 +1,10 @@
+Tue Oct 21 21:03:03 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c: Don't attempt to redraw the border in
+ 	set-mwm-buttons!; it is now called only on 'new-window-hint, not
+ 	'new-window because the MWM_BUTTON_FLAG bit clashes with the
+ 	MAXIMIZE bit.
+
 Mon Oct 20 15:40:48 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c: Changed set-mwm-buttons! to actually set the MWMButton

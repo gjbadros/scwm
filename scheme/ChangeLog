@@ -1,3 +1,8 @@
+Tue Oct 21 21:04:31 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* style.scm: Change #:mwm-buttons from a style option to a hint
+ 	option.
+
 Mon Oct 20 06:10:38 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* winlist.scm: Circulate (and therefore prev-window and
