@@ -120,7 +120,7 @@ print_menu(SCM obj, SCM port, scm_print_state * pstate)
   scm_puts("#<menu ", port);
   if (MENU_P(obj)) {
     Menu *pmenu = MENU(obj);
-    if (SAFE_MENUITEM(pmenu->scmMenuTitle)) {
+    if (MENUITEM_P(pmenu->scmMenuTitle)) {
       scm_write(pmenu->scmMenuTitle, port);
     } else if (SCM_NIMP(pmenu->scmMenuItems)) {
       scm_write(gh_car(pmenu->scmMenuItems), port);
