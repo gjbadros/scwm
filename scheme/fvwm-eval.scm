@@ -70,7 +70,7 @@
 (defmacro define-fvwm-command (str . body)
   `(add-fvwm-command 
     ,str (lambda (args fmod window)
-	  ,@body)))
+	   ,@body)))
 
 (define-fvwm-command "Desk"
   (get-two-numeric-args
@@ -91,26 +91,26 @@
 (define-fvwm-command "Iconify"
   (let* ((arg (get-one-numeric-arg args))
          (fn (cond 
-	  ((or (not arg) (= arg 0)) toggle-iconify)
-	  ((< arg 0) deiconify)
-	           (else iconify))))
+	      ((or (not arg) (= arg 0)) toggle-iconify)
+	      ((< arg 0) deiconify)
+	      (else iconify))))
     (if window
-      (fn window)
-      (fn))))
+	(fn window)
+	(fn))))
 
 (define-fvwm-command "Move"
-      (get-two-numeric-args
-    args
-    (lambda (x y)
-	      (if (and x y)
-          (if window
-		  (move-to x y window)
-            (move-to x y))
-          (if window
-		  (begin
-		    (if fmod (move-to (car (pointer-position))
-				      (cadr (pointer-position)) window))
-		       (interactive-move window))
+  (get-two-numeric-args
+   args
+   (lambda (x y)
+     (if (and x y)
+	 (if window
+	     (move-to x y window)
+	     (move-to x y))
+	 (if window
+	     (begin
+	       (if fmod (move-to (car (pointer-position))
+				 (cadr (pointer-position)) window))
+	       (interactive-move window))
              (interactive-move))))))
 
 (define-fvwm-command "Raise"
@@ -122,10 +122,10 @@
   (get-two-numeric-args args move-viewport))
 
 (define-fvwm-command "Send_ConfigInfo"
-    ((caddr fmod)))
+  ((caddr fmod)))
 
 (define-fvwm-command "Send_WindowList"
-    ((cadddr fmod)))
+  ((cadddr fmod)))
 
 (define-fvwm-command "Set_mask"
   (set-car! (cdr fmod) (get-one-numeric-arg args)))
@@ -151,15 +151,15 @@
 
 (define-fvwm-command "Resize"
   (get-two-numeric-args
-    args
-    (lambda(x y)
-      (if (and x y)
-        (if window
-          (resize-to x y window)
-          (resize-to x y))
-        (if window
-          (interactive-resize window)
-          (interactive-resize))))))
+   args
+   (lambda(x y)
+     (if (and x y)
+	 (if window
+	     (resize-to x y window)
+	     (resize-to x y))
+	 (if window
+	     (interactive-resize window)
+	     (interactive-resize))))))
 
 (define-fvwm-command "Lower"
   (if window
@@ -168,24 +168,24 @@
 
 (define-fvwm-command "WarpToWindow"
   (if window
-    (warp-to-window window)
-    (warp-to-window)))
+      (warp-to-window window)
+      (warp-to-window)))
 
 (define-fvwm-command "Delete"
   (if window
       (delete-window window)
       (delete-window)))
- 
+
 (define-fvwm-command "Destroy"
   (if window
       (destroy-window window)
       (destroy-window)))
- 
+
 (define-fvwm-command "Close"
   (if window
       (close-window window)
       (close-window)))
- 
+
 (define-fvwm-command "Maximize"
   (get-two-numeric-args
    args
@@ -197,7 +197,7 @@
          (if window
 	     (toggle-maximize (%x 100) (%y 100) window)
 	     (toggle-maximize (%x 100) (%y 100)))))))
- 
+
 (define-fvwm-command "WindowShade"
   (let ((x (get-one-numeric-arg args)))
     (if x
@@ -205,45 +205,45 @@
          ((= x 1) (if window (window-shade window) (window-shade)))
          ((= x 2) (if window (un-window-shade window) (un-window-shade))))
 	(if window (toggle-window-shade window)(toggle-window-shade)))))
- 
+
 (define-fvwm-command "RaiseLower"
   (if window
       (toggle-raise window)
       (toggle-raise)))
- 
+
 (define-fvwm-command "CursorMove"
   (get-two-numeric-args
    args
    (lambda(x y)
      (if (and x y)
          (move-pointer (%x x) (%y y))))))
- 
+
 (define-fvwm-command "Refresh"
   (refresh))     
- 
+
 (define-fvwm-command "RefreshWindow"
   (if window
       (refresh-window window)
       (refresh-window)))
- 
+
 (define-fvwm-command "Stick"
   (if window
       (toggle-stick window)
       (toggle-stick)))
- 
+
 (define-fvwm-command "Beep"
   (beep))
- 
+
 (define-fvwm-command "Echo"
   (write args))
- 
+
 (define-fvwm-command "EdgeScroll"
   (get-two-numeric-args
    args
    (lambda(x y)
      (if (and x y)
          (set-edge-scroll! x y)))))
- 
+
 (define-fvwm-command "ExecUseShell"
   (if args
       (fvwm-exec-use-shell args)
@@ -265,47 +265,47 @@
 	     )
 	(if (and x y)
 	    (set-desk-size! x y)))))
- 
+
 (define-fvwm-command "EdgeResistance"
   (get-two-numeric-args
    args
    (lambda(x y)
      (if (and x y)
          (set-edge-resistance! x y)))))
- 
+
 (define-fvwm-command "XORvalue"
   (let ((x (get-one-numeric-arg args)))
     (if x
 	(set-rubber-band-mask! x))))
- 
+
 (define (clean l)
   (if (null? l) '()
       (if (car l)
 	  (cons (car l)(clean (cdr l)))
 	  (clean (cdr l)))))
- 
+
 (define (words s)
   (clean (separate-fields-discarding-char #\space s (lambda a a))))
- 
+
 (define-fvwm-command "SetAnimation"
   (set-animation!
    (list->vector 
     (clean
      (words args)))))
- 
+
 ;; FIXMS: set-opaque-move-size is broken! for now.
 
 ;;(define-fvwm-command "OpaqueMoveSize"
 ;;  (let ((x (get-one-numeric-arg args)))
 ;;    (if x
 ;;	(set-opaque-move-size! x))))
- 
+
 
 (define-fvwm-command "ClickTime"
   (let ((x (get-one-numeric-arg args)))
     (if x
 	(set-click-delay! x))))
- 
+
 (define-fvwm-command "HiLightColor"
  ;;; HilightColor textcolour bgcolour
  ;;; lets assume colournames are spaceless
@@ -316,18 +316,18 @@
 		 (lambda a a)))
 	)
     (set-hilight-foreground! (car s-args))
-       (set-hilight-background! (cadr s-args))))
- 
+    (set-hilight-background! (cadr s-args))))
+
 (define-fvwm-command "Recapture"
  ;;; running this seems to screw my display up
   (recapture))
- 
+
 (define fvwm-flags-table
   (make-hash-table 7))
- 
+
 (define (add-flag s fn)
   (hash-set! fvwm-flags-table (string-downcase! (string-copy s)) fn))
- 
+
 (add-flag "Iconic" iconified?)
 (add-flag "Visible" visible?)
 (add-flag "Sticky" sticky?)
@@ -337,7 +337,7 @@
 (add-flag "CurrentDesk" on-current-desk?)
 (add-flag "CurrentPage" visible?)
 (add-flag "CurrentPageAnyDesk" in-viewport-any-desk?)
- 
+
 (define (extract-conditions s)
   (let (
 	(x (string-index s #\[))
@@ -346,7 +346,7 @@
     (if (and x y)
 	(substring s (+ x 1) y)
 	#f)))
- 
+
 (define (extract-command s)
   (sans-surrounding-whitespace
    (substring s (+ 1 (string-index s #\])) (string-length s))))
@@ -363,7 +363,7 @@
      (if tr
 	 tr
 	 (wildcard-matcher reals)))))
- 
+
 (define (parse-conditions s)
   (define (just l a)
     (if (null? l) '()
@@ -383,19 +383,19 @@
      (if (not (null? e)) e '()))
     )
   )
- 
+
 (define-fvwm-command "Next"
   (let ((c (parse-conditions args)))
     (next-window #:only (car c) #:except (cdr c)
 		 #:proc (lambda(x)(eval-fvwm-command
 				   (extract-command args) fmod x)))))
- 
+
 (define-fvwm-command "Prev"
   (let ((c (parse-conditions args)))
     (prev-window #:only (car c) #:except (cdr c)
 		 #:proc (lambda(x)(eval-fvwm-command
 				   (extract-command args) fmod x)))))
- 
+
 (define-fvwm-command "None"
   (let ((c (parse-conditions args)))
     (fvwm-none (lambda () 
@@ -439,7 +439,7 @@
      ))
   (map parse-a-context (string->list s))
   )
- 
+
 (define (flatten l)
   (if (null? l)
       '()
@@ -483,7 +483,7 @@
 		(lambda()
 		  (eval-fvwm-command command-string fmod))))
   )
- 
+
 (define-fvwm-command "Key"
  ;;; Key keyname Context Modifiers Function
  ;;; (bind-key CONTEXTS KEY PROC)
@@ -508,7 +508,7 @@
 	      (lambda()
 		(eval-fvwm-command command-string fmod))))
   )
- 
+
 
 
 (define*-public (eval-fvwm-command command #&optional (fmod #f) 
@@ -521,14 +521,14 @@
     ((hash-ref fvwm-command-hash-table lc-cmd) args fmod window)))
 
 ;;; Implemented and Tested:
-;;; Beep       EdgeResistance  Maximize        Resize          WarpToWindow
-;;; ClickTime  EdgeScroll      Move            Restart         WindowsDesk
-;;; Close      Exec            Quit            Scroll          WindowShade
-;;; CursorMove GotoPage        OpaqueMoveSize  Send_ConfigInfo XORValue
-;;; Delete     HilightColor    Raise           Send_WindowList
-;;; Desk       Focus           RaiseLower      set_mask
-;;; DesktopSize        Iconify         Refresh         SetAnimation
-;;; Destroy    Lower           RefreshWindow   Stick
+;;; Beep        EdgeResistance  Maximize        Resize          WarpToWindow
+;;; ClickTime   EdgeScroll      Move            Restart         WindowsDesk
+;;; Close       Exec            Quit            Scroll          WindowShade
+;;; CursorMove  GotoPage        OpaqueMoveSize  Send_ConfigInfo XORValue
+;;; Delete      HilightColor    Raise           Send_WindowList
+;;; Desk        Focus           RaiseLower      set_mask
+;;; DesktopSize Iconify         Refresh         SetAnimation
+;;; Destroy     Lower           RefreshWindow   Stick
 
 ;;; Implemented and Untested or broken:
 ;;; Current            IconFont        Next            Recapture
@@ -543,11 +543,11 @@
 ;;; AddToFunc          GlobalOpts              SetMenuDelay
 ;;; AddToMenu          IconPath                Style
 ;;; AnimatedMove       KillModule              Title
-;;; BorderStyle                Menu                    TitleStyle
-;;; ButtonStyle                Menustyle               UpdateDecor
-;;; ChangeDecor                Module                  Wait
+;;; BorderStyle        Menu                    TitleStyle
+;;; ButtonStyle        Menustyle               UpdateDecor
+;;; ChangeDecor        Module                  Wait
 ;;; ColorLimit         ModulePath              WindowId
 ;;; ColormapFocus      Nop                     WindowList
-;;; CursorStyle                PipeRead                +
+;;; CursorStyle        PipeRead                +
 ;;; DestroyDecor       PixmapPath
-;;; DestroyFunc                PopUp
+;;; DestroyFunc        PopUp
