@@ -1,3 +1,14 @@
+Thu Sep 23 15:51:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Drop inlined- menu-utilities-- use the original
+	definition that uses make-menuitems-from-menu-information-list.
+	Use focus-change-warp-pointer, not default-winlist-proc (latter no 
+	longer exists)
+
+Thu Sep 23 13:30:11 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Fix `show-window-list-menu' calls.
+
 Thu Sep 23 00:12:21 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use new image-path-suggestor, remove a lot of

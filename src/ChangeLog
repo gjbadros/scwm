@@ -1,3 +1,9 @@
+Thu Sep 23 15:34:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* menuitem.c (s_menuitem_properties): Return fIsForcedSubmenu
+
+	* menu.c: Permit #t in warp-to-index to mean 1.
+
 Thu Sep 23 11:41:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* focus.c (SetFocus): Set psw->timeLastFocussed.

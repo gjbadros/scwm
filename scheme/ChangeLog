@@ -1,3 +1,13 @@
+Thu Sep 23 15:44:58 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Use filter-map, not map, for
+	make-menuitems-from-menu-information-list.
+
+	* prefs-menu.scm: Drop use of user-options.  Thanks Francesco
+	Tapparo for the bug report.
+
+	* Makefile.am, gtk-menu.scm: Added gtk-menu module.
+
 Thu Sep 23 13:28:15 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winlist.scm: Rename `default-winlist-proc' to

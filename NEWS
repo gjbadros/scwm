@@ -15,6 +15,15 @@ Changes for scwm-0.99.3 (not yet released)
 
 * Improved preferences dialog support, cleaner internally, too.
 
+* New modules
+** image-path-suggestor -- for using `locate' to find images not in the load-path
+** wavplay -- for abstracting different kinds of audio support
+** gtk-menu -- for using GTK+'s menus
+** prompt-enum -- for choosing among multiple discrete possibilities 
+** prompting-shell -- factored out top-level window for various prompting code
+** animated-edge-moves -- functions for pushing windows to edges of viewport
+** viavoice (C) -- speech recognizer
+
 * New primitives
 ** `window-decoration-size'
 ** `window-decoration-ids', `set-window-id-background!'
