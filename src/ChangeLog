@@ -1,3 +1,13 @@
+Tue Nov 23 14:16:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* menu.c (SetPopupMenuPositionFromDecoration): Be sure that
+	decoration popup menus stay on screen.  Thanks to Tessa Lau for
+	the bug report.
+
+	* scwm.c: Default to resetting 0 segvs (instead of 100); guile-gtk
+ 	is now not gratuitously segfaulting, so this resetting segvs is no
+ 	longer useful as the default.
+
 Tue Nov 23 12:18:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.h: Added visibility field for tracking the current
