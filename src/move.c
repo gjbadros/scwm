@@ -22,6 +22,7 @@
 #endif
 
 #include <stdio.h>
+#include <assert.h>
 #include <unistd.h>
 #include <signal.h>
 #include <string.h>
@@ -172,24 +173,46 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
   XFlush(dpy);
 }
 
+void
+MapSizePositionWindow()
+{
+  XMoveWindow(dpy, Scr.SizeWindow, 
+              Scr.MyDisplayWidth/2 - Scr.SizeStringWidth/2, 
+              Scr.MyDisplayHeight/2 - (FONTHEIGHT(Scr.menu_font) + HEIGHT_EXTRA)/2);
+  XMapRaised(dpy, Scr.SizeWindow);
+}
+
+
 /*
- * Move the rubberband around, return with the new window location
+  Move the window around, return with the new window location in Final[XY]
+  
+  XOffset, YOffset are amounts (in pixels) that the pointer has moved since
+  the original button press event (so the window should be moved by that amount, initially)
+
+  Width and Height refer to the size of the window (for drawing the rubberband)
+
+  FinalX, FinalY are used to return the ending position of the move
+
+  opaque_move is true iff the window itself should be moved, instead of the rubberband
+
  */
 void 
 moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
-	 int Height, int *FinalX, int *FinalY, Bool opaque_move,
-	 Bool fAddWindow)
+	 int Height, int *FinalX, int *FinalY, Bool opaque_move)
 {
   Bool finished = False;
   Bool done;
   int xl, yt, delta_x, delta_y, paged;
 
+  /* show the size/position window */
+  MapSizePositionWindow();
+
   FXGetPointerWindowOffsets(Scr.Root, &xl, &yt);
   xl += XOffset;
   yt += YOffset;
 
-  if (((!opaque_move) && (!(Scr.flags & MWMMenus))) || (fAddWindow))
-    MoveOutline(Scr.Root, xl, yt, Width, Height);
+  if (((!opaque_move) && (!(Scr.flags & MWMMenus))))
+    RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
 
   DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
 
@@ -220,9 +243,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       /* simple code to bag out of move - CKH */
       if (XLookupKeysym(&(Event.xkey), 0) == XK_Escape) {
 	if (!opaque_move)
-	  MoveOutline(Scr.Root, 0, 0, 0, 0);
-	*FinalX = FRAME_X(psw);
-	*FinalY = FRAME_Y(psw);
+          RemoveRubberbandOutline(Scr.Root);
 	finished = True;
       }
       done = True;
@@ -240,7 +261,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       }
     case ButtonRelease:
       if (!opaque_move)
-	MoveOutline(Scr.Root, 0, 0, 0, 0);
+	RemoveRubberbandOutline(Scr.Root);
       xl = Event.xmotion.x_root + XOffset;
       yt = Event.xmotion.y_root + YOffset;
 
@@ -255,9 +276,6 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	yt = Scr.MyDisplayHeight - Height - psw->bw;
       if ((yt <= 0) && (yt > -Scr.MoveResistance))
 	yt = 0;
-
-      *FinalX = xl;
-      *FinalY = yt;
 
       done = True;
       finished = True;
@@ -289,7 +307,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       paged = 0;
       while (paged <= 1) {
 	if (!opaque_move)
-	  MoveOutline(Scr.Root, xl, yt, Width, Height);
+	  RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
 	else {
 	  if (psw->fIconified) {
 	    psw->icon_x_loc = xl;
@@ -333,27 +351,24 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
     }
     if (!done) {
       if (!opaque_move)
-	MoveOutline(Scr.Root, 0, 0, 0, 0);
+        RemoveRubberbandOutline(Scr.Root);
       DispatchEvent();
       if (!opaque_move)
-	MoveOutline(Scr.Root, xl, yt, Width, Height);
+	RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
     }
   }
   SuggestMoveWindowTo(psw,xl,yt);
-  CassowaryEndEditPosition(psw);
+  CassowaryEndEdit(psw);
+  *FinalX = xl;
+  *FinalY = yt;
+  XUnmapWindow(dpy, Scr.SizeWindow);
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *      DisplayPosition - display the position in the dimensions window
- *
- *  Inputs:
+/*
+ * DisplayPosition - display the position in the dimensions window
  *      psw - the current scwm window
  *      x, y    - position of the window
- *
- ************************************************************************/
-
+ */
 void 
 DisplayPosition(ScwmWindow * psw, int x, int y, int Init)
 {
@@ -369,27 +384,27 @@ DisplayPosition(ScwmWindow * psw, int x, int y, int Init)
     if (Scr.d_depth >= 2)
       RelieveWindow(psw, Scr.SizeWindow, 0, 0,
 		    Scr.SizeStringWidth + SIZE_HINDENT * 2,
-		    FONTHEIGHT(Scr.menu_font) + SIZE_VINDENT * 2,
+		    FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2,
 		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
   } else {
     XClearArea(dpy, Scr.SizeWindow, SIZE_HINDENT, SIZE_VINDENT, Scr.SizeStringWidth,
-	       FONTHEIGHT(Scr.menu_font), False);
+	       FONTHEIGHT(Scr.size_window_font), False);
   }
 
 #ifdef I18N
-  XmbTextExtents(XFONT(Scr.menu_font), str, strlen(str), &dummy, &log_ret);
+  XmbTextExtents(XFONT(Scr.size_window_font), str, strlen(str), &dummy, &log_ret);
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
 	    - log_ret.width ) / 2;
-  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.menu_font),Scr.MenuGC,
+  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.size_window_font),Scr.MenuGC,
 	      offset,
-	      FONTY(Scr.menu_font) + SIZE_VINDENT,
+	      FONTY(Scr.size_window_font) + SIZE_VINDENT,
 	      str, strlen(str));
 #else
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
-	    - XTextWidth(XFONT(Scr.menu_font), str, strlen(str))) / 2;
+	    - XTextWidth(XFONT(Scr.size_window_font), str, strlen(str))) / 2;
   XDrawString(dpy, Scr.SizeWindow, Scr.MenuGC,
 	      offset,
-	      FONTY(Scr.menu_font) + SIZE_VINDENT,
+	      FONTY(Scr.size_window_font) + SIZE_VINDENT,
 	      str, strlen(str));
 #endif
 }
@@ -472,36 +487,41 @@ Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
 }
 
 
+/* InteractiveMove
+    w is psw->frame, the X window we must move
+    psw is the ScwmWindow to move
+    FinalX, FinalY are used to return the final position
+    eventp is the event that initiated the move -- in particular
+       it contains the coordinates of the button press */
 void 
-InteractiveMove(Window * win, ScwmWindow * psw, 
-		int *FinalX, int *FinalY, XEvent * eventp)
+InteractiveMove(Window w, ScwmWindow * psw, 
+		int *FinalX, int *FinalY, XEvent *eventp)
 {
-  int origDragX, origDragY, DragX, DragY, DragWidth, DragHeight;
+  int origDragX, origDragY, DragX, DragY;
+  unsigned int DragWidth, DragHeight;
+  int border_width;
   int XOffset, YOffset;
-  Window w;
-
   Bool opaque_move = False;
-
-  w = *win;
+  assert(psw->frame == w);
 
   InstallRootColormap();
+
+  /* the move starts from the button press location, not from
+     the current location */
   DragX = eventp->xbutton.x_root;
   DragY = eventp->xbutton.y_root;
 
-  /* If this is left commented out, then the move starts from the button press 
-   * location instead of the current location, which seems to be an
-   * improvement */
-  /* XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
-     &DragX, &DragY,    &JunkX, &JunkY, &JunkMask);
-   */
   if (!GrabEm(CURSOR_MOVE)) {
     call0_hooks(invalid_interaction_hook);
     return;
   }
   XGetGeometry(dpy, w, &JunkRoot, &origDragX, &origDragY,
-	       (unsigned int *) &DragWidth, (unsigned int *) &DragHeight,
-	       &JunkBW, &JunkDepth);
+	       &DragWidth, &DragHeight, &border_width, &JunkDepth);
 
+  /* FIXGJB: this should be a single proc predicate callback
+     with one argument: the window to be moved interactively,
+     then remove the Scr.OpaqueSize var and setters/getters
+  */
   if (DragWidth * DragHeight <
       (Scr.OpaqueSize * Scr.MyDisplayWidth * Scr.MyDisplayHeight) / 100)
     opaque_move = True;
@@ -511,22 +531,23 @@ InteractiveMove(Window * win, ScwmWindow * psw,
   if (!opaque_move && psw->fIconified)
     XUnmapWindow(dpy, w);
 
-  DragWidth += JunkBW;
-  DragHeight += JunkBW;
+  /* enlarge the draw rubberband to include the border width */
+  DragWidth += border_width;
+  DragHeight += border_width;
+
   XOffset = origDragX - DragX;
   YOffset = origDragY - DragY;
-  XMapRaised(dpy, Scr.SizeWindow);
-  moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY,
-	   opaque_move, False);
 
-  XUnmapWindow(dpy, Scr.SizeWindow);
+  moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY, opaque_move);
+
   UninstallRootColormap();
 
   if (!opaque_move)
     XUngrabServer_withSemaphore(dpy);
-  UngrabEm();
 
+  UngrabEm();
 }
+
 
 /* Local Variables: */
 /* tab-width: 8 */
