@@ -1,3 +1,29 @@
+1998-07-23  Maciej Stachowiak  <maciej@roc-ny1-20.ix.netcom.com>
+
+	* fvwm-module.scm (add-window): Determine the icon file
+	correctly. Thanks to Danius Michalides for the bug report.
+
+1998-07-21  Maciej Stachowiak  <maciej@roc-ny4-02.ix.netcom.com>
+
+	* fvwm-module.scm: New interface to launching fvwm2 modules. This
+	should be a better base for fvwm2 emulation, as well as a more
+	convenient interface for users. Added/renamed/modified:
+
+	variable: fvwm2-module-path 
+
+	register-fvwm2-module-config MODULE-TYPE . ARGS
+
+	append-fvwm2-module-config MODULE-TYPE . ARGS
+	clear-fvwm2-module-config MODULE-TYPE
+	get-fvwm2-module-config MODULE-TYPE
+	run-fvwm2-module MODULE-NAME #&optional OTHER-ARGS CONFIG-INFO
+	  CONFIG-FILE
+	kill-fvwm2-module FMOD
+	kill-all-fvwm2-modules
+	kill-fvwm2-modules-by-name MODULE-NAME
+
+	See the comment at the top of the file for more details.
+	
 Tue Jul 21 14:31:08 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* tests/constraints.scm: Added sample of how to write constriants
