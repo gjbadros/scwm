@@ -10,7 +10,7 @@ specify constraints among top-level window sizes and positions.  Nearly
 all decorations can be changed at run-time on a per-window basis.
 Dynamic loading of C modules is supported.  Scwm is self-documenting and
 provides A powerful protocol for interacting with the window manager
-from other processes
+from other processes.
 
 * Primary Authors:
 
