@@ -111,22 +111,22 @@
      (map (lambda (st) (string-append "\n\t" st)) image-load-path))))
 
 (define-public (make-menuitems-from-menu-information-list menu-info-list)
-  (cons menu-title
-	(map (lambda (elem)
-	       (let ((title (car elem))
-		     (mini-icon (cadr elem))
-		     (icon (caddr elem))
-		     (exename (cadddr elem)))
-		 (if (program-exists? exename)
-		     (menuitem title
-			       #:image-left (if mini-icon
-						(string-append
-						 "mini-" mini-icon ".xpm") #f)
-			       #:icon (if icon (string-append icon ".xpm") #f)
-			       #:action (lambda () (execute exename)))
-		     #f)))
-	     menu-info-list)))
-
+  (cons menu-title 
+	(cons menu-separator
+	      (map (lambda (elem)
+		     (let ((title (car elem))
+			   (mini-icon (cadr elem))
+			   (icon (caddr elem))
+			   (exename (cadddr elem)))
+		       (if (program-exists? exename)
+			   (menuitem title
+				     #:image-left (if mini-icon
+						      (string-append
+						       "mini-" mini-icon ".xpm") #f)
+				     #:icon (if icon (string-append icon ".xpm") #f)
+				     #:action (lambda () (execute exename)))
+			   #f)))
+		   menu-info-list))))
 
 (define-public (animated-move-to x y)
   (let* ((w (get-window))
