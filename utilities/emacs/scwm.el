@@ -1,3 +1,4 @@
+;;; $Id$
 ;;; scwm --- functions for editing and running SCWM code under Emacs
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
