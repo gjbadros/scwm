@@ -1,3 +1,13 @@
+Sat Nov 29 01:09:35 1997  unknown  <gjb@cs.washington.edu>
+
+	* menu.c, menu.h, menus.c, menus.h: Removed since menuitem.c,
+	menuitem.h, scwmmenu.c, scwmmenu.h, drawmenu.c, drawmenu.h replace
+	the functionality these had.  Binding stuff got moved into
+	binding.c
+
+	* Picture.c, Picture.h: Removed these, since image.c, image.h
+	replaces their functionality.
+
 Fri Nov 28 23:58:30 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* image.c: Added full_name scm string to track where the image
