@@ -39,6 +39,9 @@
 
 
 
+(define-public (hash-table->alist h) 
+  (apply append (vector->list h))) 
+
 (define-public (round/ x y)
   "Reaturn the closest integer to X divided by Y."
   (inexact->exact (round (/ x y))))
