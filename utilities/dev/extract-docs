@@ -18,6 +18,16 @@
 # Right now, it just does the extraction into high-level elements w/o
 # adding the logical tags
 #
+# Note that it does some error checking, and produces error and warning
+# messages that look like grep, so emacs' compile-mode (and probably grep-mode)
+# can be used to find problems with the documentation using M-x compile (C-x c)
+#   extract-docs *.c
+# then M-x next-error (C-x `)
+#
+# TODO:
+#  * ensure that #define FUNC_NAME, #undef FUNC_NAME appear as appropriate (when used pervasively)
+#  * better abstractions for argument checking
+#
 # BUGS:
 # This should probably be written in guile-scheme instead of perl
 #
@@ -31,6 +41,7 @@ my $header = "";
 my $fDebug = TRUE;
 
 while (<>) {
+  close(ARGV) if (eof);
   if (m/^SCWM_PROC/) {
     $header = $_;
     while (($_ = <>) !~ m%\*/% && $_ !~ m/^\s*{/) {
@@ -62,19 +73,19 @@ sub ProcessHeader( $ ) {
   my %argnames = map {uc($_) => 1} @args;
 
   if ($cremovals != scalar(@args) ) {
-    print STDERR "****$cprimname: types inconsistency (all args should be type SCM)\n";
+    print STDERR "$ARGV:$.:****$cprimname: types inconsistency (all args should be type SCM)\n";
   }
 
   if (($req + $opt + $var) != scalar(@args)  ) {
-    print STDERR "****$cprimname: argument inconsistency -- check #s of arguments\n";
+    print STDERR "$ARGV:$.:****$cprimname: argument inconsistency -- check #s of arguments\n";
   }
 
   if ($var != 0 && $var != 1) {
-    print STDERR "****$cprimname: number of variable arguments == $var -- why?\n";
+    print STDERR "$ARGV:$.:****$cprimname: number of variable arguments == $var -- why?\n";
   }
 
   if (!defined($comment) || $comment eq "") {
-    print STDERR "****$cprimname: comment missing\n";
+    print STDERR "$ARGV:$.:****$cprimname: comment missing\n";
     $comment = "";
   }
 
