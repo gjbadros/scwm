@@ -633,6 +633,21 @@ Keyboard_shortcuts(XEvent *Event, int ReturnEvent,
   }
 }
 
+/* return either the frame or the icon window,
+   based on whether psw->fIconified */
+Window
+WFrameOrIcon(ScwmWindow *psw)
+{
+  Window w = psw->frame;
+  if (psw->fIconified) {
+    if (psw->icon_pixmap_w != None)
+      w = psw->icon_pixmap_w;
+    else
+      w = psw->icon_w;
+  }
+
+  return w;
+}
 
 /* InteractiveMove
     psw is the ScwmWindow to move
@@ -667,17 +682,15 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   InstallRootColormap();
 
   if (!GrabEm(CURSOR_MOVE)) {
-    call0_hooks(invalid_interaction_hook);
+    /* FIXGJB: xmag caused this to run
+       when click-to place (no auto/smart placemet)
+       and it should not, IMO --09/22/98 gjb
+       call0_hooks(invalid_interaction_hook);
+    */
     return False;
   }
 
-  if (psw->fIconified) {
-    if (psw->icon_pixmap_w != None)
-      w = psw->icon_pixmap_w;
-    else
-      w = psw->icon_w;
-  }
-
+  w = WFrameOrIcon(psw);
   XGetGeometry(dpy, w, &JunkRoot, &origDragX, &origDragY,
 	       &DragWidth, &DragHeight, &border_width, &JunkDepth);
 

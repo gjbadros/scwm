@@ -951,12 +951,13 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 		      ((i / 2) ? psw->corner_width + psw->bw : psw->corner_width),
 			  rgc, sgc, corners[i], corners[i]);
 
-	  if (!(flags & NoInset))
+	  if (!(flags & NoInset)) {
 	    if (psw->boundary_width > 1)
 	      RelieveParts(psw, i | HH_HILITE,
 			   ((i / 2) ? rgc : sgc), (vertical ? rgc : sgc));
 	    else
 	      RelieveParts(psw, i | HH_HILITE,sgc,sgc);
+          }
 	} else {
 	  RelieveWindow(psw, psw->corners[i], 0, 0, psw->corner_width,
 		      ((i / 2) ? psw->corner_width + psw->bw : psw->corner_width),

@@ -28,6 +28,7 @@ void moveLoop(ScwmWindow *psw,
 void Keyboard_shortcuts(XEvent * Event, int ReturnEvent, 
                         const ScwmWindow *psw, Bool fResize);
 
+Window WFrameOrIcon(ScwmWindow *psw);
 Bool InteractiveMove(ScwmWindow *psw, Bool fOpaque, int *FinalX, int *FinalY);
 
 void DisplayMessage(const char *sz, Bool fRelief);

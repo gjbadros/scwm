@@ -1060,7 +1060,8 @@ GrabEm(enum cursor cursor)
   SetFocus(Scr.NoFocusWin, NULL, 0);
   mask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask
     | EnterWindowMask | LeaveWindowMask;
-  while ((i < 1000) && 
+  /*  FIXGJB: while ((i < 1000) &&  */
+  while ((i < 5) && 
          (val = XGrabPointer(dpy, Scr.Root, True, mask,
                              GrabModeAsync, GrabModeAsync, Scr.Root,
                              Scr.ScwmCursors[cursor], 
@@ -3317,8 +3318,9 @@ color for WIN. */
 {
   ScwmWindow *psw;
 
-  if (fg != SCM_BOOL_F)
+  if (fg != SCM_BOOL_F) {
     VALIDATE_COLOR(fg, FUNC_NAME, 1);
+  }
 
   VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);

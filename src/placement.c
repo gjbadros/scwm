@@ -34,6 +34,7 @@
 #include "callbacks.h"
 #include "window.h"
 #include "borders.h"
+#include "xmisc.h"
 
 int get_next_x(ScwmWindow * psw, int x, int y);
 int get_next_y(ScwmWindow * psw, int y);
@@ -556,7 +557,7 @@ by the user, the position was specified by the program, and
         extern int orig_x, orig_y;
         /* FIXGJB: passing thru globals */
         have_orig_position = True;
-        orig_x = 0; orig_y = 0; 
+        FXGetWindowTopLeft(WFrameOrIcon(psw), &orig_x, &orig_y);
 	InteractiveMove(psw, False, &finalx, &finaly);
       }
     }

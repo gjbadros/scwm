@@ -745,11 +745,12 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
       }
     }
   }
-  if (psw->icon_w == None)
+  if (psw->icon_w == None) {
     if (psw->fIconMoved)
       CreateIconWindow(psw, ICON_X_VP(psw), ICON_Y_VP(psw));
     else
       CreateIconWindow(psw, def_x, def_y);
+  }
 
   /* if no pixmap we want icon width to change to text width every iconify */
   if ((psw->icon_w != None) && (psw->icon_pixmap_w == None)) {

@@ -53,9 +53,10 @@ XUngrabServer_withSemaphore(Display * disp)
 SCWM_PROC(X_grab_server, "X-grab-server", 0, 0, 0,
 	  ())
 /** Grab the X server.
-This is very risky; you should almost definately use
-with-grabbed-server instead.  This must be paired with
-X-ungrab-server. */
+This is very risky; you should almost definitely use
+`with-grabbed-server' instead.  This must be paired with
+X-ungrab-server.  This primitive is undefined at startup
+to make it hard to access directly. */
 #define FUNC_NAME s_X_grab_server
 {
   XGrabServer_withSemaphore(dpy);
@@ -66,8 +67,9 @@ X-ungrab-server. */
 SCWM_PROC(X_ungrab_server, "X-ungrab-server", 0, 0, 0,
 	  ())
 /** Ungrab the X server.
-Using these functions directly is risky; you should almost definately use
-with-grabbed-server instead. */
+Using these functions directly is risky; you should almost definitely use
+`with-grabbed-server' instead. This primitive is undefined at startup
+to make it hard to access directly. */
 #define FUNC_NAME s_X_ungrab_server
 {
   XUngrabServer_withSemaphore(dpy);
