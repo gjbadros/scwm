@@ -29,8 +29,14 @@
  *
  */
 
+#include <sys/time.h>
+#include <unistd.h>
+#include <values.h>
 #include <guile/gh.h>
+#include "scwm.h"
 #include "callbacks.h"
+
+SCM timer_hooks;
 
 SCM error_hook;
 
@@ -284,13 +290,125 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
   return SCM_UNSPECIFIED;
 }
 
+SCM_PROC(s_add_timer_hook_x, "add-timer-hook!", 2, 0, 0, add_timer_hook_x);
+
+SCM add_timer_hook_x(SCM usec, SCM proc)
+{
+  SCM newcell;
+  SCM p, last;
+  SCM th_list;
+
+
+  if (!gh_number_p(usec) || 
+      (scm_num2long(usec, (char *) SCM_ARG1, s_add_timer_hook_x) < 0)) {
+    scm_wrong_type_arg(s_add_timer_hook_x, 1, usec);
+  }
+
+  if (!gh_procedure_p(proc)) {
+    scm_wrong_type_arg(s_add_timer_hook_x, 2, proc);
+  }
+
+  th_list=SCM_CDR(timer_hooks);
+  
+  newcell=gh_cons(usec, proc);
+
+  update_timer_hooks ();
+
+  for (p = th_list, last = timer_hooks; p != SCM_EOL; 
+       last = p, p = SCM_CDR(p)) {
+    SCM cur = SCM_CAR(p);
+    if (SCM_FALSEP(scm_gr_p(usec, SCM_CAR(cur)))) {
+      break;
+    }
+  }
+
+  SCM_SETCDR(last, gh_cons(newcell, p));
+
+  return newcell;
+}
+
+SCM_PROC(s_remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0, remove_timer_hook_x);
+
+SCM remove_timer_hook_x(SCM handle)
+{
+  SCM_SETCDR(timer_hooks,scm_delq_x (handle, SCM_CDR(timer_hooks)));
+
+  return SCM_UNSPECIFIED;
+}
+
+long shortest_timer_timeout()
+{
+  if (SCM_CDR(timer_hooks)==SCM_EOL) {
+    return -1;
+  } else {
+    return (gh_scm2long(SCM_CAADR(timer_hooks)));
+  }
+}
+
+static struct timeval last_timeval;
+
+void update_timer_hooks()
+{
+  struct timeval tmp;
+  long sdelta;
+  long usdelta;
+  SCM p;
+
+  gettimeofday(&tmp, NULL);
+
+  sdelta = tmp.tv_sec - last_timeval.tv_sec;
+  usdelta = tmp.tv_usec - last_timeval.tv_usec;
+
+  /* Be careful to avoid overflow. */
+  if (sdelta > MAXLONG / 1000000) {
+    sdelta = MAXLONG;
+  } else {
+    sdelta = sdelta * 1000000;
+  }
+
+  if (MAXLONG - sdelta < usdelta) {
+    usdelta = MAXLONG;
+  } else {
+    usdelta = usdelta + sdelta;
+  }
+
+  for (p = SCM_CDR(timer_hooks); p != SCM_EOL; p = SCM_CDR(p)) {
+    SCM cur = SCM_CAR(p);
+    long val;
+
+    val = gh_scm2long(SCM_CAR(cur));
+    val = max (0, val - usdelta);
+    SCM_SETCAR(cur, gh_long2scm(val));
+  }
+
+  last_timeval = tmp;
+}
+
+void run_timed_out_timers()
+{
+  SCM p = SCM_CDR(timer_hooks);
+
+  while (p != SCM_EOL) {
+    SCM cur = SCM_CAR(p);
+    if (gh_scm2long(SCM_CAR(cur)) == 0) {
+      p = SCM_CDR(p);
+      SCM_SETCDR(timer_hooks, p);
+      scwm_safe_call0(SCM_CDR(cur));
+    }
+  }
+}
 
 
 void init_callbacks()
 {
   DEFINE_HOOK(error_hook, "error-hook");
-  
+  gettimeofday(&last_timeval, NULL);
+
+  timer_hooks = scm_permanent_object(gh_cons(SCM_EOL, SCM_EOL));
+
 #ifndef SCM_MAGIC_SNARFER
 #include "callbacks.x"
 #endif
 }
+
+
