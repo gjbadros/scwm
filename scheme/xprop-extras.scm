@@ -98,6 +98,51 @@ name, and `window-pid' to get the process id.
     ((null? sym))
   (eval `(define ,(car sym) ,n)))
 
+; define the _MOTIF_WM_HINTS flags MWH-*
+(define MWH-FUNCTIONS 1)
+(define MWH-DECORATIONS 2)
+
+; define the Motif WM function flags MWF-*
+(do ((n 1 (* 2 n))
+     (sym '(MWF-ALL MWF-RESIZE MWF-MOVE MWF-MINIMIZE MWF-MAXIMIZE MWF-CLOSE)
+	  (cdr sym)))
+    ((null? sym))
+  (eval `(define ,(car sym) ,n)))
+
+(define-public (mwm-functions->string func)
+  "Converts the MWM function flags into a readable form."
+  (if (zero? func)
+      "NONE"
+      (string-join ", "
+		   (map (lambda (flag)
+			  (if (not (zero? (logand func
+						  (eval flag))))
+			      (substring (symbol->string flag) 4)
+			      ""))
+			'(MWF-ALL MWF-RESIZE MWF-MOVE
+				  MWF-MINIMIZE MWF-MAXIMIZE MWF-CLOSE)))))
+
+; define the Motif WM decoration flags MWD-*
+(do ((n 1 (* 2 n))
+     (sym '(MWD-ALL MWD-BORDER MWD-RESIZEH MWD-TITLE MWD-MENU
+		    MWD-MINIMIZE MWD-MAXIMIZE)
+	  (cdr sym)))
+    ((null? sym))
+  (eval `(define ,(car sym) ,n)))
+
+(define-public (mwm-decorations->string decor)
+  "Converts the MWM decoration flags into a readable form."
+  (if (zero? decor)
+      "NONE"
+      (string-join ", "
+		   (map (lambda (flag)
+			  (if (not (zero? (logand decor
+						  (eval flag))))
+			      (substring (symbol->string flag) 4)
+			      ""))
+			'(MWD-ALL MWD-BORDER MWD-RESIZEH MWD-TITLE MWD-MENU
+				  MWD-MINIMIZE MWD-MAXIMIZE)))))
+
 (define*-public (X-properties->string #&optional (win (get-window))
 				      (recurse #t))
   "Prints the X properties of WIN into a string.
@@ -128,7 +173,7 @@ If RECURSE is non-#f, also list properties of referenced windows."
 		      ", "
 		      (map
 		       (lambda (s)
-			 (if (not (equal? s ""))
+			 (if (not (string-null? s))
 			     (string-append "\"" s "\"")
 			     ""))
 		       (separate-fields-discarding-char #\null val list))))
@@ -288,9 +333,33 @@ If RECURSE is non-#f, also list properties of referenced windows."
 			     "\n\t\tfrom angle " " to angle ")
 			   (repeat 6 number->string)
 			   (array->list val))))
-		    (else ; INTEGER, CARDINAL also handeled here
+		    ((member type '("INTEGER" "CARDINAL"))
 		     (string-join ", "
-				  (map number->string (array->list val)))))
+				      (map number->string
+					   (array->list val))))
+		    ((equal? type "_MOTIF_WM_HINTS")
+		     (apply
+		      string-append
+		      (map
+		       (lambda (name flag converter value)
+			 (if (not (zero? (logand flag (array-ref val 0))))
+			     (string-append name (converter value))
+			     ""))
+		       '("\n\t\tmwm functions: "
+			 "\n\t\tmwm decorations: ")
+		       (list MWH-FUNCTIONS MWH-DECORATIONS)
+		       (list mwm-functions->string mwm-decorations->string)
+		       (array->list val))))
+		    (else
+		     (string-append "0x"
+				    (string-join ", 0x"
+						 (map
+						  (if (= (caddr res) 8)
+						      (lambda (v)
+							(number->hex-string
+							 (char->integer v)))
+						      number->hex-string)
+						  (array->list val))))))
 		   "\n")))
 	      (X-properties win))
       (if recurse
