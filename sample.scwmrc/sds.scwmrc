@@ -36,6 +36,7 @@
 (use-scwm-modules base face decor style winops winlist wininfo doc optargs
 		  std-menus wmconfig-menu flux prefs-menu fvwm-module key-mover netscape
 		  stringops animation placement virtual shutdown-opts ;; themes
+		  defoption
 		  animated-iconify message-window gnome-hints)
 
 ;; communicate with GNOME
@@ -74,14 +75,15 @@
 (define font12 (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 ;;(define font14 (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 ;;(define window-font (make-font "*helvetica*bold-r*12*"))
-(define menu-font (make-font "*helvetica*medium-r*10*"))
+(scwm-option-set! *menu-font* (make-font "*helvetica*medium-r*10*"))
+(scwm-option-set! *menu-title-font* (make-font "*helvetica*bold-r*10*"))
 ;;(define icon-font (make-font "fixed"))
 (set-icon-font! font12)
 
 ;(define menu-bg-color (make-color "gray80"))
 ;(define menu-text-color (make-color "black"))
 
-(menu-style #:fg "black" #:bg "grey76" #:stipple "grey35" #:font menu-font)
+(menu-style #:fg "black" #:bg "grey76" #:stipple "grey35" #:font (optget *menu-font*))
 
 ;(use-scwm-modules pie-menus)
 ;(set! menu-look scwm-menu-look) ; default, try `pie-menu-look'
@@ -309,8 +311,7 @@
 ;;; -------------
 
 (define menu-lisps
-  (menu (list (menuitem "Lisps" #:extra-label "(H-f12)")
-              menu-title menu-separator
+  (menu (list (menu-title "Lisps" #:extra-label "(H-f12)") menu-separator
               (menuitem "ACL" #:action (run-in-xterm "/home/sds/bin/acl"))
               (menuitem "CLISP" #:action (run-in-xterm "/home/sds/bin/cli"))
               (menuitem "CMUCL" #:action (run-in-xterm "/home/sds/bin/cmu"))
@@ -339,8 +340,8 @@
 ; (define fvwm2-pager (run-fvwm2-module "FvwmPager" '("0" "0")))
 
 (define menu-quit-verify
-  (menu (list (menuitem "Really quit scwm?" #:image-left quest-i)
-              menu-title menu-separator
+  (menu (list (menu-title "Really quit scwm?" #:image-left quest-i)
+	      menu-separator
               (menuitem "Yes" #:image-left excl-i #:action quit)
               (menuitem "No" #:image-left cross-i #:action noop)
               (menuitem "Restart scwm" #:image-left turn-i
@@ -356,9 +357,9 @@
                         #:action (lambda () (restart "fvwm"))))))
 
 (define menu-util
-  (menu (list (menuitem "Utilities" #:image-left hamm-i
+  (menu (list (menu-title "Utilities" #:image-left hamm-i
                         #:extra-label "(H-f11)" #f)
-              menu-title menu-separator
+              menu-separator
               (menuitem "&xterm" #:image-left term-i
                         #:extra-label "(H-x)" #:action start-xterm)
               (menuitem "rx&vt" #:image-left rxvt-i #:action "rxvt")
@@ -404,8 +405,8 @@
 ;; #:image-bg "lizard2.xpm"
 
 (define menu-apps
-  (menu (list (menuitem "Applications" #:image-left x2-i #f)
-              menu-title menu-separator
+  (menu (list (menu-title "Applications" #:image-left x2-i)
+              menu-separator
               (menuitem "Acroread" #:image-left pdf-i #:action "acroread")
               (menuitem "Netscape" #:image-left nscape-i #:action
                         "/usr/bin/netscape")
@@ -432,10 +433,10 @@
               (menuitem "XV" #:image-left xv-i #:action "xv"))))
 
 ;;(define menu-multimedia
-;;  (menu (list (menuitem "Multimedia" #f) menu-title menu-separator)))
+;;  (menu (list (menu-title "Multimedia") menu-separator menu-separator)))
 (define menu-games
-  (menu (list (menuitem "Games" #f) ; #:image-left games-i
-              menu-title menu-separator
+  (menu (list (menu-title "Games" #f) ; #:image-left games-i
+              menu-separator
               (menuitem "misc" #:action
                         (menu (list (menuitem "XJewel" #:action "xjewel")
                                     (menuitem "XPat2" #:action "xpat2")
@@ -466,9 +467,9 @@
 
 (define menu-window-ops
   (menu (list
-         (menuitem "Window Operations" #:image-left windows-i
+         (menu-title "Window Operations" #:image-left windows-i
                    #:extra-label "(H-f2)")
-         menu-title menu-separator
+         menu-separator
 	 (menuitem "&Move" #:image-left move-i
                    #:extra-label "(H-f7)" #:action interactive-move)
 	 (menuitem "Re&size" #:image-left resize-i
@@ -512,8 +513,8 @@
 
 (define (make-small-window-ops-menu ww)
   (menu (list
-         (menuitem "Small Ops" #:image-left windows-i)
-         menu-title menu-separator
+         (menu-title "Small Ops" #:image-left windows-i)
+         menu-separator
 	 (menuitem "&Move" #:image-left move-i
                    #:extra-label "(H-f7)" #:action interactive-move)
 	 (menuitem "Re&size" #:image-left resize-i
@@ -567,9 +568,9 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
                         #:action "helptool"))))
 
 (define menu-root-start
-  (menu (list (menuitem "Start" #:image-left "mini-start.xpm"
+  (menu (list (menu-title "Start" #:image-left "mini-start.xpm"
                         #:extra-label "(H-z)")
-              menu-title menu-separator
+              menu-separator
               (menuitem "&New shell" #:image-left term-i
                         #:extra-label "(H-x)" #:action start-xterm)
               (menuitem "Midnight &Commander" #:image-left "mini-display.xpm"

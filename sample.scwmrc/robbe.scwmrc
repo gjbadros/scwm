@@ -256,8 +256,8 @@
   (menu
    (append
     (list
-     (menuitem (string-append (if lock "Lock" "Save") " Screen" tag) #f)
-     menu-title)
+     (menu-title (string-append (if lock "Lock" "Save") " Screen" tag))
+     menu-separator)
     (map (lambda (mode) (make-xlock-item lock mode)) modes))))
 
 ; Returns MENULIST augmented with a menuitem, that calls a submenu containing
@@ -278,8 +278,8 @@
 	   (potential () (cons (car rest) potential))
 	   (omega #\z)
 	   (rest modes (cdr rest))
-	   (template (list (menuitem (if lock "Lock Screen" "Save Screen") #f)
-			   menu-title)))
+	   (template (list (menu-title (if lock "Lock Screen" "Save Screen"))
+			   menu-separator)))
 	  ((null? rest) (menu (append-xlock-submenu
 			       template lock
 			       (string-ref (car potential) 0)
@@ -327,8 +327,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
   (menu
    (append
     (list
-     (menuitem title #f)
-     menu-title)
+     (menu-title title) menu-separator)
     (delete #f (map
 		(lambda (item)
 		  (if (list? item)
@@ -419,8 +418,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (define window-ops-menu
   (menu
    (list
-    (menuitem "Window Ops" #f)
-    menu-title
+    (menu-title "Window Ops" #f) menu-separator
     (menuitem "&Move" #:extra-label "F5" #:action interactive-move)
     (menuitem "Re&size" #:extra-label "F6" #:action interactive-resize)
     (menuitem "&Raise" #:action raise-window)

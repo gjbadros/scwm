@@ -126,8 +126,8 @@
 
 (define desk-widget
   (make-style #:use-decor initial-decor
-	      #:fg "lightgrey"
- 	      #:bg "darkgrey" 
+	      #:fg "light grey"
+ 	      #:bg "dark slate grey" ;; is this a portable name for this color?
 	      #:sticky #t
 	      #:winlist-skip #t
 	      #:border-width 3
@@ -165,15 +165,15 @@
 
 (define (root-menu)
   (display-menu
-   (menuitem "Root" #f)
-   menu-title
+   (menu-title "Root")
+   menu-separator
    ;; (menuitem "Print" #:action print-window)
    (menuitem "&Window actions"
 	      #:action
 	      (lambda ()
 		(display-menu
 	       (menuitem "More" #f)
-	       menu-title
+	       menu-separator
 	       (menuitem "&Move" #:image-left "mini-move.xpm"
 			 #:action interactive-move-maybe-opaque)
 	       (menuitem "Re&size" #:image-left "mini-resize.xpm"
@@ -211,8 +211,7 @@
 
 (define* (window-menu #&optional (w (get-window)))
   (display-menu
-   (menuitem "Window" #f)
-   menu-title
+   (menu-title "Window") menu-separator
    (menuitem "&Move" #:image-left "mini-move.xpm"
 	     #:action interactive-move-maybe-opaque)
    (menuitem "Re&size" #:image-left "mini-resize.xpm"
@@ -253,8 +252,7 @@
 (define (quit-verify-menu)
   (display-menu
    (apply list
-	  (menuitem "Quit: sure?" #f)
-	  menu-title
+	  (menu-title "Quit: sure?") menu-separator
 	  (append
 	   (map (lambda (x)
 		  (menuitem
@@ -308,8 +306,7 @@
 (define (windows-off-screen-menu)
   (display-menu
    (apply list
-	  (menuitem "On other screens:" #f)
-	  menu-title
+	  (menu-title "On other screens:") menu-separator
 	  (map (lambda (x)
 		 (menuitem
 		  (window-title x)

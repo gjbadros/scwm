@@ -686,7 +686,7 @@
 (define menu-window-ops
   (menu
    (list
-    (menuitem "Window Ops" #f) menu-title
+    (menu-title "Window Ops") menu-separator
     (menuitem "&Move" #:image-left "mini-move.xpm" 
 	       #:action interactive-move)
     (menuitem "&Resize" #:image-left "mini-resize.xpm" 
@@ -769,8 +769,8 @@ union of all other window managers!
 (define menu-quit-verify
   (menu 
    (list
-    (menuitem "Really quit Scwm?" #f)
-    menu-title
+    (menu-title "Really quit Scwm?")
+    menu-separator
     (menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
 	       #:action (lambda () (restart "scwm")))
     (menuitem "Restart development scwm" #:image-left "mini-turn.xpm" 
@@ -804,28 +804,28 @@ union of all other window managers!
 
 (define menu-applications
   (menu (cons
-	 (menuitem "Applications")
+	 (menu-title "Applications")
 	 (make-menuitems-from-menu-information-list
 	  applications-available-program-information)
 	 )))
 
 (define menu-utilities
   (menu (cons
-	 (menuitem "Utilities")
+	 (menu-title "Utilities")
 	 (make-menuitems-from-menu-information-list
 	  utilities-available-program-information)
 	 )))
 
 (define menu-multimedia
   (menu (cons
-	 (menuitem "Multimedia")
+	 (menu-title "Multimedia")
 	 (make-menuitems-from-menu-information-list
 	  multimedia-available-program-information)
 	 )))
 
 (define menu-games
   (menu (cons
-	 (menuitem "Games")
+	 (menu-title "Games")
 	 (make-menuitems-from-menu-information-list
 	  games-available-program-information)
 	 )))
@@ -856,7 +856,7 @@ union of all other window managers!
 
 ;; (popup-menu menu-hosts #t)
 (define (make-hosts-menu-gjb hosts)
-  (cons menu-title
+  (cons menu-separator
 	(fold-menu-list
 	 (map
 	  (lambda (elem)
@@ -865,28 +865,28 @@ union of all other window managers!
 
 (define menu-hosts-servers
   (menu (cons
-	 (menuitem "Hosts (Servers)") 
+	 (menu-title "Hosts (Servers)") 
 	 (make-hosts-menu-gjb server-hosts))))
 
 (define menu-hosts-linux
   (menu (cons
-	 (menuitem "Hosts (Linux)") 
+	 (menu-title "Hosts (Linux)") 
 	 (make-hosts-menu-gjb linux-hosts))))
 
 (define menu-hosts-solaris
   (menu (cons
-	 (menuitem "Hosts (Solaris)") 
+	 (menu-title "Hosts (Solaris)") 
 	 (make-hosts-menu-gjb solaris-hosts))))
 
 (define menu-hosts-other
   (menu (cons
-	 (menuitem "Hosts (Other)") 
+	 (menu-title "Hosts (Other)") 
 	 (make-hosts-menu-gjb solaris-hosts))))
 
 (define menu-preferences-scroll
   (menu (list
-	 (menuitem "Change Scroll Behavior")
-	 menu-title
+	 (menu-title "Change Scroll Behavior")
+	 menu-separator
 	 (menuitem "&On" #:action (lambda () (set-edge-scroll 100 100)))
 	 (menuitem "O&ff" #:action (lambda () (set-edge-scroll 0 0)))
 	 (menuitem "&Horizontal Only" #:action (lambda () (set-edge-scroll 100 0)))
@@ -897,7 +897,7 @@ union of all other window managers!
 ;; (popup-menu (menu-prefs) #t)
 
 (define menu-prefs-gjb
-  (menu (list (menuitem "Preferences" #f) menu-title menu-separator
+  (menu (list (menu-title "Preferences") menu-separator
 	      (menuitem "Change global theme" #:submenu (lambda () (menu-global-theme #t)))
 	      (menuitem "Reload .Xresources" #:action
 			(exe "xrdb -merge ${HOME}/.Xresources"))
@@ -917,7 +917,7 @@ union of all other window managers!
 (define menu-system-utilities
   (menu
    (list
-    (menuitem "Preferences"))))
+    (menu-title "Preferences"))))
 
 (define menu-screensaver
   (make-xlock-menu #f))
@@ -944,8 +944,8 @@ union of all other window managers!
   ;;  (menu "RootStart" "Start %mini-exp.xpm%"
   (menu
    (list 
-    (menuitem "Start" #:image-left "mini-exp.xpm")
-    menu-title
+    (menu-title "Start" #:image-left "mini-exp.xpm")
+    menu-separator
     (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
 	      #:action 'start-xterm)
     (menuitem "&Applications" #:image-left "mini-x2.xpm" 
@@ -1011,8 +1011,8 @@ union of all other window managers!
 
 (define menu-desk 
   (menu 
-   (list (menuitem "Desks" #f)
-	 menu-title
+   (list (menu-title "Desks")
+	 menu-separator
 	 (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
 	 (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
 	 (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
@@ -1021,8 +1021,8 @@ union of all other window managers!
 (define menu-util 
   (menu 
    (list
-    (menuitem "Utilities" #f)
-    menu-title
+    (menu-title "Utilities")
+    menu-separator
     (menuitem "xterm" #:image-left "mini-term.xpm" 
 	       #:action "color_xterm")
     (menuitem "rxvt"
@@ -1040,7 +1040,7 @@ union of all other window managers!
 (define (make-small-window-ops-menu w)
   (menu
    (list
-    (menuitem "Window Ops Small" #f) menu-title
+    (menu-title "Window Ops Small") menu-separator
     (menuitem "&Move" #:image-left "mini-move.xpm" 
 	       #:action interactive-move)
     (menuitem "Re&size" #:image-left "mini-resize.xpm" 

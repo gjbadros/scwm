@@ -286,8 +286,7 @@
 (define window-ops-menu
   (menu 
    (list
-    (menuitem "Window Ops" #f)
-    menu-title
+    (menu-title "Window Ops") menu-separator
     (menuitem "Move" #:action opaque-move)
     (menuitem "Resize" #:action opaque-resize)
     (menuitem "Raise" #:action raise-window)
@@ -310,8 +309,7 @@
 (define menu-quit-verify
   (menu 
    (list
-    (menuitem "Really quit scwm?" #f)
-    menu-title
+    (menu-title "Really quit scwm?") menu-separator
     (menuitem "Yes" #:action quit)
     (menuitem "No" #:action #f)
     menu-separator
@@ -323,8 +321,7 @@
 (define desk-menu 
   (menu 
    (list
-    (menuitem "Desks" #f)
-    menu-title
+    (menu-title "Desks") menu-separator
     (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
     (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
     (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
@@ -353,8 +350,7 @@
 (define util-menu 
   (menu 
    (list
-    (menuitem "Utilities" #f)
-    menu-title
+    (menu-title "Utilities") menu-separator
     (menuitem "xterm" #:action (lambda () (execute "xterm")))
     (menuitem "rxvt" #:action (lambda () (execute "rxvt")))
     (menuitem "emacs" #:action (lambda () (execute "emacs")))
@@ -495,8 +491,7 @@
 (define util-menu 
   (menu 
    (list
-    (menuitem "Utilities" #f)
-    menu-title
+    (menu-title "Utilities") menu-separator
     (menuitem "xterm" #:action (lambda () (execute "xterm")))
     (menuitem "rxvt" #:action (lambda () (execute "rxvt")))
     (menuitem "emacs" #:action (lambda () (execute "emacs")))

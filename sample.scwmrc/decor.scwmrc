@@ -276,8 +276,8 @@
 (define global-decorations-menu
   (menu 
    (list
-    (menuitem "Global Decorations Settings" #f)
-    menu-title
+    (menu-title "Global Decorations Settings")
+    menu-separator
     (menuitem "Fvwm" 
 	      #:action (lambda ()
 			 (window-style "*" #:use-style fvwm-style)))
@@ -339,8 +339,8 @@
 (define window-ops-menu
   (menu
    (list
-    (menuitem "Window Ops" #f)
-    menu-title
+    (menu-title "Window Ops")
+    menu-separator
     (menuitem "Move" interactive-move)
     (menuitem "Resize" #:action interactive-resize)
     (menuitem "Raise" #:action raise-window)
@@ -364,8 +364,8 @@
 (define menu-quit-verify
   (menu 
    (list 
-    (menuitem "Really quit scwm?" #f)
-    menu-title
+    (menu-title "Really quit scwm?")
+    menu-separator
     (menuitem "Yes" #:action quit)
     (menuitem "No" #:action noop)
     menu-separator
@@ -377,8 +377,8 @@
 (define desk-menu 
   (menu 
    (list
-    (menuitem "Desks")
-    menu-title
+    (menu-title "Desks")
+    menu-separator
     (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
     (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
     (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
@@ -387,8 +387,8 @@
 (define util-menu 
   (menu
    (list
-    (menuitem "Utilities")
-    menu-title
+    (menu-title "Utilities")
+    menu-separator
     (menuitem "xterm" #:action (lambda () (execute "xterm")))
     (menuitem "rxvt" #:action (lambda () (execute "rxvt")))
     (menuitem "emacs" #:action (lambda () (execute "emacs")))
