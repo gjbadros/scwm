@@ -2,6 +2,13 @@
 
 For scwm 0.9:
 
+* Add session manager support
+** configure test for libSM, libICE, link with -lSM -lICE and #define XSM
+** #include <X11/SM/SMlib.h>
+** initialization routines in scwm-smc.c
+** call initSM() from scwm.c
+** main loop processing of ICE messages, i/o multiplexing w/ select
+
 * Use only gh_ interface to guile -- remove uses of scm_ calls
 
 * Finish C-level API review, renaming things, adding getters, etc
@@ -14,9 +21,6 @@ provide some example uses of guile-gtk for scwm.
 ** guile-gtk imitation of fvwm-buttons
 
 * Do some more work on the window struct rewrite.
-
-* Fix Perry Metzger's long-standing bug with all the timing-related
-things on NetBSD.
 
 * Improve the gravity handling stuff.
 ** Respect gravity on program resize
@@ -220,6 +224,9 @@ alloc/dealloc to see where the memory is going... guile support for this?
 
 
 * Done:
+
+* Fix Perry Metzger's long-standing bug with all the timing-related
+things on NetBSD. --8/31/98 gjb
 
 - Implement error reporting and output redirection for the scwmexec
 protocol, and make setting the SCWMEXEC_REQWIN property safe against
