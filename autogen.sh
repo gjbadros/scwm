@@ -6,12 +6,12 @@ aclocal
 # Copy ltconfig and ltmain.sh for this version of libtool
 libtoolize --automake --copy
 
+# Generate include/config.h.in from acconfig.h and configure.in
+autoheader
+
 # Generate Makefile.in's from Makefile.am's and configure.in
 # (adding missing files that may be needed for proper operation)
 automake --add-missing --gnu
-
-# Generate include/config.h.in from acconfig.h and configure.in
-autoheader
 
 # Generate configure from configure.in and aclocal.m4
 autoconf
