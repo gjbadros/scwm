@@ -4,15 +4,16 @@ See also doc/dev/scwm-1.0-release-todo
 
 * Right click to get at cancel/window-selection menu during interactive-selections
   -> also permit escape to cancel a window selection
-* make nonant selection permit using only ternants
+  -> right-click could bring up a window-list menu with a first option "Cancel"
+* make nonant selection permit using only ternants --01/05/00 gjb
 
 * constraints
 ** Improve error handling in constraint solver
-** Reorder widgets in constraint investigator
-** make label draw visualization in constraint investigator
 ** right-click menus for toolbar
 ** debug timer-hook problems
-** use ternant-only selection for alignment constraints.
+** use ternant-only selection for alignment constraints. --01/05/00 gjb
+** Reorder widgets in constraint investigator --01/05/00 gjb
+** make label draw visualization in constraint investigator --01/05/00 gjb
 
 * Copyright issues -- get release from UW
 
@@ -23,12 +24,11 @@ See also doc/dev/scwm-1.0-release-todo
 
 * Improvements to ScwmButtons
 ;;; o Extend ScwmButtons to permit animated icons when mouse is over button
+;;;   (like ui-constraints buttonbar)
 ;;; o Extend ScwmButtons to have a right-click menu for
 ;;;   -> turning on/off tooltips
 ;;;   -> changing orientation
 ;;;   -> changing auto-orientation
-
-* Error messages in a text window (like guile-gtk)
 
 * layers support for GNOME
 
@@ -40,15 +40,15 @@ See also doc/dev/scwm-1.0-release-todo
 ** (copy econf's widget layout?)
 ** reflection module and optargs support for more information about procedures
 
-* Integrate menus, icons w/ theme infrastructure, also cursor pixmaps
+* Integrate menus, icons, cursor-pixmaps w/ theme infrastructure
 
-* window style options dialog ala KDE (improve the stylist module)
+* window style options dialog ala KDE (i.e., improve the stylist module)
 
 * face.c (add_spec_to_face_x) should use color objects, not strings, for gradients; see also colors.c (AllocLinearGradient)
 
 * Improve esound wrapper
 
-* Test proplist module
+* Test proplist module better
 
 * multi-window animated move/resize; scheme level slower, not-synchronous, anim. move/resize
 ** do this with constraint solver and a "t" variable?  Super cool!
