@@ -156,4 +156,5 @@ not open a new netscape frame."
   (netscape-goto-url (string-append (cgi-escapify-space url-google word))))
 
 (define-public (netscape-google-search-cut-buffer)
-  (netscape-google-search (X-cut-buffer-string)))
+  (let ((s (X-cut-buffer-string)))
+    (and s (netscape-google-search s))))

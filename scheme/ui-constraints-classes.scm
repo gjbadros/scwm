@@ -132,7 +132,7 @@ drawn.  POINT is of the form (X . Y)."
     (if (eqv? (length winlist) 1)
 	(begin 
 	  (unselect-all-windows)
-	  (list winlist))
+	  winlist)
 	(let ((win (select-window-interactively 
 		    (string-append name ": " p1) msgwin)))
 	  (if win (list win) #f)))))
