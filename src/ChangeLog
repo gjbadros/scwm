@@ -1,12 +1,48 @@
-Mon Jul 20 11:09:43 1998  Greg Badros  <gjb@cs.washington.edu>
+Mon Jul 20 15:03:39 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandleScwmExec): Fixed long-time probable bug that I
+	just noticed for the first time-- last_offset was being increased
+	by last_offset+1, instead of just being incremented.  I'm not sure 
+	of the purpose of the loop, or of the protocol in general, but the 
+	code looked wrong, and my fix gets things working for me again.
+
+Mon Jul 20 14:24:13 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c, color.c, deskpage.c, image.c, miscprocs.c,
+ 	scwmmenu.c: Update some comments based on warnings reported by new
+ 	additions to extract-docs.  All unquoted all-caps words should
+ 	refer to arguments -- I change NOTE: to Note: or to a FIXGJB,
+ 	FIXMS comment -- the latter still produce warnings in
+ 	extract-comments, but it's a good thing!
+
+	
+	* scwm.c: Move InitVariables() and InternUsefulAtoms() up to the
+ 	top, and remove their prototypes.  Inline SetRCDefaults() since it
+ 	was short and not a useful abstraction.  Move MappedNotOverride()
+ 	to before CapturaAllWindows(), and make it static.  Move
+ 	LoadDefaultLeftButton, LoadDefaultRightButton, LoadDefaultButton,
+ 	ResetAllButtons into face.c.  Move DestroyScwmWindow,
+ 	InitScwmDecor into decor.c
+
+	* face.c: Moved Button faces into here from scwm.c (see above)
+
+	* decor.c: Moved fns from scwm.c into here & made static.
+	
+	* screen.h: remove some obsoleted prototypes.
+
+
+Mon Jul 20 13:43:51 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* *.c, *.h: Replace _XA_ atom names with XA_ atom names, since
+ 	_UPPERCASE is res'd for impl.
 
 	* *.c: Use #define FUNC_NAME, #undef FUNC_NAME to bracket
-	primitives, and use FUNC_NAME within the primitive -- error
-	handling code gets cut and pasted a lot, and an
-	incorrectly-specified function name could be really annoying to
-	track down.  extract-docs checks the #define -- we could automate
-	instead, but that would slow compile times more, and require an
-	extra build step
+ 	primitives, and use FUNC_NAME within the primitive -- error
+ 	handling code gets cut and pasted a lot, and an
+ 	incorrectly-specified function name could be really annoying to
+ 	track down.  extract-docs checks the #define -- we could automate
+ 	instead, but that would slow compile times more, and require an
+ 	extra build step
 
 	* Fixed a couple of doc strings that were mis-commented, added a
 	couple for primitives that were missing doc strings
