@@ -12,7 +12,8 @@ libscwmproplist_la_LIBADD = -L/usr/contrib/lib/ -lPropList
 
 libscwmproplist_snarfs = scwmproplist.x
 
-INCLUDES = @PROPLIST_INCLUDES@ -I$(top_srcdir)/scwm @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
+INCLUDES = @PROPLIST_INCLUDES@ -I$(top_srcdir)/scwm @x_cflags@ \
+	@GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 BUILT_SOURCES = $(libscwmproplist_snarfs)
 
 SUFFIXES = .x

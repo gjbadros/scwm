@@ -10,7 +10,7 @@ libxpm_menus_la_LDFLAGS = -export-dynamic
 
 libxpm_menus_snarfs = draw-xpm-menu.x
 
-INCLUDES = -I$(top_srcdir)/scwm @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
+INCLUDES = -I$(top_srcdir)/scwm @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 BUILT_SOURCES = $(libxpm_menus_snarfs)
 
 SUFFIXES = .x
