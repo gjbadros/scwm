@@ -1,3 +1,33 @@
+Fri Aug  7 10:43:43 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: create scmFixedFont global object to use in a last-ditch 
+	  need for a font; fix unrelated compiler warning
+
+	* font.h, font.c: Added global scmFixedFont which should always be 
+	  initialized and contain the fixed font
+
+	* drawmenu.c: Patched PscwmFontForMenuItem to use FONT() instead
+	  of completely wrong (scwm_font *) cast.  Thanks Craig Kaplan!
+
+	* borders.c: Unmap the side windows if their width/height would be 
+	  zero.  Fixes problems I noticed with robbe.scwmrc's barebones decor
+
+	* scwm-constraints.cc: Use resolve() form instead of resolve(..)
+	  for changing virtual position so that it works with nested
+	  edits.
+
+Thu Aug  6 22:04:48 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* resize.c, move.c: Remove ifdefs around the code to manage
+	  changing the virtual screen w/ cassowary since I now have
+	  nestable beginEdits;  Fix SnapCoordsToEdges to remove some
+	  errors that Tom Larason brought to my attention (and provided a
+	  patch for that I used slightly modified)
+
+	* borders.c, windows.c: Handle set-mwm-border! more accurately,
+	  including fixing the border-width of the frame and Parent
+	  windows, and do the border resizing in SetupFrame.
+
 Thu Aug  6 11:55:21 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraint-primitives.cc: Add cassowary_scm.h to avoid warning
