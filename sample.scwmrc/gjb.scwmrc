@@ -253,19 +253,19 @@
 (set-rubber-band-mask! 255)  
 
 (define (popup-small-ops)
-  (popup-menu (make-small-window-ops-menu (get-window))))
+  (popup-menu (make-small-window-ops-menu (get-window)) #t))
 
 (define (popup-sysutils)
   ())
 
 (define (popup-util)
-  (popup-menu 'menu-util))
+  (popup-menu 'menu-util #t))
 
 (define (popup-applications)
-  (popup-menu 'menu-applications))
+  (popup-menu 'menu-applications #t))
 
 (define (popup-root-start)
-  (popup-menu 'menu-root-start))
+  (popup-menu 'menu-root-start #t))
 
 (define (show-icon-list-menu)
   (show-window-list-menu #:only iconified? #:warp-to-first #t))
@@ -640,6 +640,7 @@
 	              #:icon "xterm.xpm")
 (window-style "Emacs" #:mini-icon "mini-edit.xpm"
 	              #:icon "TextEditor.xpm")
+;; (window-style "x2x upintheair:0.0" #:kept-on-top #t) ;; does not give desired effect
 
 (debug-display "Before menu-window-ops\n")
 
