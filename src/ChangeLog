@@ -1,5 +1,8 @@
 Wed Nov  5 09:24:21 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* builtins.c: Deleted all the Decor stuff, it is not needed any
+ 	more.
+
 	* window.c: Added a check that an object passed to a window
  	operation is non-immediate (using the SCM_NIMP macro) before
  	checking if it is a window (using WINDOWP). 
