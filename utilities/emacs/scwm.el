@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-22 Wed 19:21:14 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-23 Thu 19:53:38 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -77,7 +77,7 @@
 (eval-and-compile
  (or (and (fboundp 'cadr) (fboundp 'unless)) (require 'cl))
  (or (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos"))
- (or (fboundp 'ignore-errors) (autoload 'ignore-errors "cl-macs" nil nil t)))
+ (or (fboundp 'ignore-errors) (autoload 'ignore-errors "cl" nil nil t)))
 (eval-when-compile
  (unless (fboundp 'with-output-to-string)
    (defmacro with-output-to-string (&rest body)
@@ -247,26 +247,38 @@ Returns a string."
 ;; help
 ;; ----
 
+(defmacro with-face (face &rest body)
+  "Execute body, which prints to `standard-output', then highlight the output."
+  (let ((pp (gensym "wh")))
+    `(let ((,pp (point)))
+      ,@body
+      (put-text-property ,pp (point) 'face ,face standard-output))))
+
+;; (macroexpand '(with-face 'highlight (print "zz")))
+
 ;;;###autoload
 (defun scwm-documentation (pat)
   "Query scwm for documentation for the symbol PAT."
   (interactive (list (scwm-complete-symbol)))
+  (when (fboundp 'help-setup-xref)
+    (help-setup-xref (list 'scwm-documentation pat) (interactive-p)))
   (with-output-to-temp-buffer "*Help*"
     (with-current-buffer "*Help*"
-      (princ "SCWM documentation for `") (princ pat) (princ "'")
-      (put-text-property 1 (point) 'face 'highlight) (princ ":\n\n ")
-      (let ((pos (point)))
-        (princ "documentation")
-        (put-text-property pos (point) 'face 'highlight))
+      (with-face 'highlight
+        (princ "SCWM documentation for `") (princ pat) (princ "'"))
+      (princ ":\n\n ")
+      (with-face 'highlight (princ "documentation"))
       (princ ":\n\n")
       (scwm-safe-call "documentation" (concat "\"" pat "\"") standard-output)
       (princ "\n\n ")
-      (let ((pos (point)))
-        (princ "procedure-documentation")
-        (put-text-property pos (point) 'face 'highlight))
+      (with-face 'highlight (princ "procedure-documentation"))
       (princ ":\n\n")
       (scwm-safe-call "procedure-documentation" pat standard-output)
-      (help-mode))))
+      (when (fboundp 'help-xref-button)
+        (goto-char 1) (forward-line 1)
+        (while (re-search-forward "`\\(\\sw\\(\\sw\\|\\s_\\)+\\)'" nil t)
+          (help-xref-button 1 #'scwm-documentation (match-string 1))))
+      (help-mode) (goto-char 1))))
 
 ;;;###autoload
 (defun scwm-apropos (pat)
@@ -277,9 +289,8 @@ Returns a string."
   (with-output-to-temp-buffer "*Apropos*"
     (with-current-buffer "*Apropos*"
       (princ "Click mouse-2 for documentation.\n\n")
-      (let ((pos (point)))
-        (princ "SCWM apropos `") (princ pat) (princ "'")
-        (put-text-property pos (point) 'face 'highlight) (princ ":\n\n"))
+      (with-face 'highlight (princ "SCWM apropos `") (princ pat) (princ "'"))
+      (princ ":\n\n")
       (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
       (goto-char (point-max))   ; kill `#<unspecified>'
       (delete-region (point) (progn (beginning-of-line) (point)))
