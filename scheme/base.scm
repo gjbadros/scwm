@@ -519,5 +519,35 @@ This may be a bug (not meeting POSIX.2 specifications)."
   "Execute COMMAND in the background."
   ((if use-scwm-system-proc scwm-system system) (string-append "exec " command " &")))
 
+;; FIXGJB: switch to this after testing it
+;; From Jim Blandy -- his [better] version of 
+;; my scwm-system, above --09/26/98 gjb
+(define (background-system command)
+  "Run CMD using /bin/sh -c CMD and return the exit status.
+The CMD is run synchronously, and Bourne-shell meta characters
+are interpreted by /bin/sh.  E.g., to start CMD in the background,
+use a trailing \"&\" character.  See also guile's `system', but note
+that it may permit signals on the controlling tty to be seen
+by children (observed on Linux, Free/NetBSD, but not on Solaris or HP/UX.
+This may be a bug (not meeting POSIX.2 specifications).
+Returns the child-pid, or #f if the fork fails."
+  (let ((child-pid (primitive-fork)))
+    (if (zero? child-pid)
 
-
+	;; Okay, we're the child process.  We need to catch any and
+	;; all errors and exit, or else we'll end up with two Guile
+	;; repls trying to read from the same terminal.
+	(begin
+	  (catch #t
+		 (lambda ()
+		   ;; Put ourselves in our own process group.
+		   (setpgid 0 0)   ;; Jim used (getpid) (getpid) for the args
+		   ;; Try to execute the user's command.
+		   (execl "/bin/sh" "sh" "-c" command))
+		 (lambda args #f))
+	  ;; If we return from the exec for any reason, it means it failed.
+	  (quit 1))
+	
+	;; Okay, we're the parent process.  Return the child pid, in
+	;; case we want to wait for it at some point in the future.
+	child-pid)))
