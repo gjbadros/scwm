@@ -181,7 +181,8 @@ SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
 		 pmenu->scmImgBackground,
 		 pmenu->scmFont,
 		 pmenu->scmExtraOptions,
-		 gh_str02scm(pmenu->pchUsedShortcutKeys));
+		 gh_str02scm(pmenu->pchUsedShortcutKeys),
+                 SCM_UNDEFINED);
 }
 
 

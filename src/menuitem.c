@@ -110,7 +110,7 @@ primitive */
 		 pmi->scmHover,
 		 pmi->scmUnhover,
 		 gh_str02scm(pmi->pchHotkeyPreferences),
-		 SCM_EOL);
+		 SCM_UNDEFINED);
 }
 
 
