@@ -1,3 +1,16 @@
+Sun Apr 25 16:35:36 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* *.scwmrc: Clean up for menu-title change-- now menu-title is a
+	  proc that returns a menuitem using a different default font.
+	  menu-separator is used where the old menu-title is used (or just 
+	  deleted if it was already used once -- double lines are gone,
+	  now)
+	
+	* system.scwmrc: Set hl-fg to yellow.
+
+	* sds.scwmrc: Use scwm-option-set! on *menu-font* and
+	  menu-title-font* instead of defining new menu-font variable.
+
 1999-04-22  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* robbe.scwmrc: Typo.

@@ -1,3 +1,11 @@
+Sun Apr 25 16:16:53 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* menu.c: Fix bug in menu-properties -- was using gh_scm2int
+	  instead of scmint2scm in creating list to return.
+
+	* drawmenu.c: Make the HLTextColor default to the menu text color
+	  when menu-hl-fg-color is #f -- it was using black in error.
+
 Wed Apr 21 19:22:56 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* color.c (ClosestColor): Added this new function, and use it in

@@ -1,3 +1,24 @@
+Sun Apr 25 16:22:57 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* wmconfig-menu.scm, winlist.scm, std-menus.scm, preferences.scm,
+	  flux.scm: Use menu-title instead of menu-item for titles, use
+	  menu-separator exclusively for separators (not menu-title any
+	  longer, since it is no longer an alias for menu-separator)
+
+	* ui-constraints-toggle-menu.scm: Use menuitem, menu-title, not
+	  make-menuitem.
+
+	* base.scm: Added menu-title-font var, *menu-title-font* option,
+	  set-default-menu-title-font! setter, #:title-font #:hl-{fg,bg}
+	  options to menu-style.  Make `menu-title' a proper procedure
+	  instead of an alias for menu-separator.
+
+	* listops.scm: Added `flatten'
+
+Sun Apr 25 16:14:31 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* test-case.scm: Added (from tests/test.scm)
+
 Fri Apr 23 09:25:04 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* winlist.scm: ws change.
