@@ -1,4 +1,4 @@
-;; $Id$
+;;;; $Id$
 ;;;; Copyright (C) 1999 Greg J. Badros
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -38,39 +38,54 @@
 !#
 
 ;;(use-modules (app scwm prompt-bool))
-;;(define w (prompt-bool "Do it?" (lambda (v) (display v) (newline)) "Prompt" #t))
-(define*-public (prompt-bool prompt proc #&optional
-			      (title "prompt-bool")
-			      initval)
+;;(define w (prompt-bool "Do it?" (lambda (v) (display v) (newline)) #:initval #t))
+(define*-public (prompt-bool prompt proc #&key
+			      (initval #f)
+			      (title "prompt-bool"))
+  "Prompt with PROMPT for a boolean value, and call PROC with result if Ok button is clicked."
   (let* ((toplevel (gtk-window-new 'dialog))
-	 (vbox (gtk-vbox-new 0 0))
-	 (hbox (gtk-hbox-new 0 0))
+	 (vbox (gtk-vbox-new #f 5))
+	 (hbox-buttons (gtk-hbox-new #f 5))
+	 (hbox-and-getter (prompt-bool-hbox prompt initval))
+	 (hbox (car hbox-and-getter))
+	 (getter (cadr hbox-and-getter))
 	 (okbut (gtk-button-new-with-label "Ok"))
-	 (cancelbut (gtk-button-new-with-label "Cancel"))
-	 (checkbut (gtk-check-button-new-with-label prompt)))
+	 (cancelbut (gtk-button-new-with-label "Cancel")))
     (gtk-window-set-title toplevel title)
-    (gtk-toggle-button-set-state checkbut initval)
-    (gtk-box-pack-start vbox checkbut #t #t)
-    (gtk-box-pack-start hbox okbut #t #t)
-    (gtk-box-pack-start hbox cancelbut #t #t)
+    (gtk-box-pack-start hbox-buttons okbut #t #t)
+    (gtk-box-pack-start hbox-buttons cancelbut #t #t)
     (gtk-box-pack-start vbox hbox #t #t)
+    (gtk-box-pack-start vbox hbox-buttons #t #t)
     (gtk-container-add toplevel vbox)
-    (gtk-widget-show checkbut)
     (gtk-widget-show vbox)
-    (gtk-widget-show hbox)
+    (gtk-widget-show hbox-buttons)
     (gtk-widget-show cancelbut)
     (gtk-widget-show okbut)
     (let ((pp (pointer-position)))
       (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
     (gtk-widget-show toplevel)
-
     (gtk-signal-connect okbut "pressed" 
 			(lambda () 
 			  (gtk-widget-destroy toplevel)
-			  (proc (string=? "active" (gtk-widget-state checkbut)))))
+			  (proc (getter))))
     (gtk-signal-connect cancelbut "pressed"
 			(lambda ()
 			  (gtk-widget-destroy toplevel)))
     (lambda ()
       (gtk-widget-hide toplevel)
       (gtk-widget-destroy toplevel))))
+
+(define-public (prompt-bool-hbox prompt initval)
+  "Create and return a boolean-prompting hbox and button.
+hbox is the gtk container widget, selected-proc?? is a proc
+that when invoked returns #t or #f depending on the state
+of the boolean displayed in hbox.
+The returned value is a list: (hbox getter).
+See also `prompt-bool'." 
+  (let* ((hbox (gtk-hbox-new #f 5))
+	 (checkbut (gtk-check-button-new-with-label prompt)))
+    (gtk-toggle-button-set-state checkbut initval)
+    (gtk-box-pack-start hbox checkbut #t #t)
+    (gtk-widget-show checkbut)
+    (gtk-widget-show hbox)
+    (list hbox (lambda () (string=? "active" (gtk-widget-state checkbut))))))

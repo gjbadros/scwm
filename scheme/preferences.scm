@@ -30,6 +30,7 @@
   :use-module (app scwm prompt-range)
   )
 
+;; (use-modules (app scwm preferences))
 ;; (use-modules (app scwm prompt-string))
 
 (define mw-curval (make-message-window-clone-default ""))
@@ -54,7 +55,7 @@
   (apply message-window-set-position! mw-curval (map (lambda (x) (- x 10)) (pointer-position)))
   (message-window-show! mw-curval))
 
-(define (popup-docs-for var)
+(define-public (popup-docs-for var)
   (message-window-set-message! mw-docs (scwm-option-documentation var))
   (apply message-window-set-position! mw-docs (map (lambda (x) (- x 40)) (pointer-position)))
   (message-window-show! mw-docs))
@@ -75,20 +76,47 @@
 	(set-proc (lambda (v) (scwm-option-symset! sym v))))
     (case type
       (('string 'directory)
-       (prompt-string prompt set-proc title value))
+       (prompt-string prompt set-proc #:initval value #:title title))
       ('path
        (prompt-string prompt (lambda (v) (set-proc (string-with-colons->path-list v)))
-		      title (path-list->string-with-colons value)))
+		      #:initval (path-list->string-with-colons value)
+		      #:title title))
       ('integer 
-       (prompt-integer-range prompt range set-proc title value))
+       (prompt-integer-range prompt range set-proc #:initval value #:title title))
       ('real
-       (prompt-range prompt range set-proc title value))
+       (prompt-range prompt range set-proc #:initval value #:title title))
       ('percent
-       (prompt-integer-range prompt '(0 . 100) set-proc title value))
+       (prompt-integer-range prompt '(0 . 100) set-proc #:initval value #:title title))
       ('boolean
-       (prompt-bool prompt set-proc title value))
+       (prompt-bool prompt set-proc #:initval value #:title title))
       (else
        (error "Cannot yet handle type " (symbol->string type))))))
+
+(define-public (option-widget-and-getter sym)
+  (let* ((name (scwm-option-name sym))
+	(value (scwm-option-symget sym))
+	(type (scwm-option-type sym))
+	(range (scwm-option-range sym))
+	(var (eval sym))
+	(prompt (string-append "Set " name))
+	(title (string-append "Set " name))
+	(set-proc (lambda (v) (scwm-option-symset! sym v))))
+    (case type
+      (('string 'directory)
+       (prompt-string-hbox prompt value))
+      ('path
+       (prompt-string-hbox prompt (path-list->string-with-colons value)))
+      ('integer 
+       (prompt-range-hbox prompt range value))
+      ('real
+       (prompt-range-hbox prompt range value))
+      ('percent
+       (prompt-range-hbox prompt '(0 . 100) value))
+      ('boolean
+       (prompt-bool-hbox prompt value))
+      (else
+       (error "Cannot yet handle type " (symbol->string type))))))
+
 
 ;; (gui-set '*desk-width*)   ;; an integer
 ;; (gui-set '*edge-x-scroll*) ;; a percent
@@ -119,7 +147,8 @@
 		 (map (lambda (val) (menuitem (printable val)
 					      #:action (lambda () (scwm-option-symset! sym val))))
 		      (scwm-option-favorites sym))
-		 '()))))))
+		 '()))
+	    #:hover-delay 100))))
 
 (define-public (popup-option-menu sym)
   (popup-menu (option-menu sym) #t)
@@ -131,6 +160,7 @@
 ;; (popup-option-menu *desk-width*) ;; ERROR! must use symbols
 ;; (popup-docs-for '*desk-width*)
 ;; (show-current-value '*desk-width*)
+;; (message-window-hide! mw-docs)
 ;; (message-window-hide! mw-curval)
 ;; (gui-set '*desk-width*)
 ;; (gui-set '*edge-x-scroll*)
@@ -152,3 +182,41 @@
 	      scwm-options))))
 
 ;; (popup-menu (scwm-options-menu) #t)
+
+;; (use-modules (app scwm preferences))
+;; (use-modules (app scwm defoption))
+;; (use-modules (app scwm primopts))
+;; (scwm-options-dialog)
+(define-public (scwm-options-dialog)
+  "Popup a scwm options dialog box.
+NOTE: Not quite functional, but I'm outta time!
+GJB:FIXME::."
+  (let* ((toplevel (gtk-window-new 'dialog))
+	 (vbox (gtk-vbox-new #f 10))
+	 (option-widgets (map (lambda (s) (car (option-widget-and-getter s))) scwm-options))
+	 (hbox (gtk-hbox-new 0 0))
+	 (okbut (gtk-button-new-with-label "Ok"))
+	 (cancelbut (gtk-button-new-with-label "Cancel")))
+    (gtk-window-set-title toplevel "Scwm Options")
+
+    (map (lambda (w) (gtk-box-pack-start vbox w #t #t) (gtk-widget-show w))
+	 option-widgets)
+    (gtk-box-pack-start hbox okbut #t #t)
+    (gtk-box-pack-start hbox cancelbut #t #t)
+    (gtk-container-add toplevel vbox)
+    (map gtk-widget-show (list okbut cancelbut hbox))
+    (gtk-box-pack-start vbox hbox #t #t)
+    (gtk-widget-show vbox)
+    (let ((pp (pointer-position)))
+      (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
+    (gtk-widget-show toplevel)
+    (gtk-signal-connect okbut "pressed" 
+			(lambda () 
+			  (gtk-widget-destroy toplevel)))
+;;			  (proc (getter))))
+    (gtk-signal-connect cancelbut "pressed"
+			(lambda ()
+			  (gtk-widget-destroy toplevel)))
+    (lambda ()
+      (gtk-widget-hide toplevel)
+      (gtk-widget-destroy toplevel))))
