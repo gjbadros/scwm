@@ -904,7 +904,7 @@
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
     (menuitem "&Print" #:action (thunk print-window))
     menu-separator
-    (menuitem "Group" #:submenu (lambda () (make-window-group-menu (get-window))))
+    (menuitem "Group" #:submenu (lambda () (make-window-group-menu (window-context))))
     (menuitem "Change theme" #:submenu (lambda () (menu-window-theme)))
     (menuitem "Reload and change theme" #:submenu (lambda () (menu-window-theme #t)))
     menu-separator
@@ -920,7 +920,7 @@
     (menuitem "Re&fresh Screen" #:image-left "mini-ray.xpm" 
 	       #:action (thunk refresh)))))
 
-;;(popup-menu (thunk menu-window-ops))
+;;(popup-menu menu-window-ops)
 ;;(menu-properties menu-window-ops)
 
 (defmacro menuitem-for-exec (name pixmap . body)
