@@ -2,7 +2,7 @@
 ## process this file with automake to create Makefile.in
 
 scwm_common_scheme = \
-advice.scm animated-iconify.scm animation.scm auto-raise.scm \
+advice.scm animated-edge-moves.scm animated-iconify.scm animation.scm auto-raise.scm \
 base.scm bincomm.scm cascade.scm constraints.scm decor.scm \
 defoption.scm desk-background.scm dir-focus.scm doc.scm edge-ops.scm \
 face.scm file.scm flash-window.scm flux.scm focus-titlebar.scm \

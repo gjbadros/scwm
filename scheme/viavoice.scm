@@ -23,6 +23,8 @@
   :use-module (app scwm scwmviavoice)
   :use-module (app scwm optargs)
   :use-module (app scwm base)
+  :use-module (app scwm animation)
+  :use-module (app scwm animated-edge-moves)
   :use-module (app scwm defoption)
   )
 
@@ -45,36 +47,52 @@
   ;; Make sure the home directory is set up
   ;; (this will create $HOME/viavoice/temp
   ;; and $HOME/viavoice/users)
-  (system (string-append (getenv "SPCH_BIN") "/vvuseradm -makedirs"))
+  (system (string-append (getenv "SPCH_BIN") "/vvuseradm -makedirs")))
+
+(define-public (vv-setup-recognition-hook)
+  (reset-hook! vv-recognition-hook)
+  (add-hook! vv-recognition-hook vv-move-window)
+  (add-hook! vv-recognition-hook vv-recognition-debug))
+
+
+(define-public (vv-initialize)
+  "Use this to start ViaVoice recognition."
+  (vv-connect)
+  (vv-turn-microphone-on)
+  (vv-setup-recognition-hook)
   )
 
-(vv-initialize-environment)
-
-(define (vv-move-window dir amount)
+(define-public (vv-move-window dir amount)
   (let ((win (current-window-with-focus)))
     (if win
 	(let* ((pos (window-position win))
 	       (x (car pos))
-	       (y (cadr pos)))
+	       (y (cadr pos))
+	       (do-animation #t))
 	  (cond
-	    ((string=? dir "right") (set! x (+ x amount)))
-	    ((string=? dir "left") (set! x (- x amount)))
-	    ((string=? dir "down") (set! y (+ y amount)))
-	    ((string=? dir "up") (set! y (- y amount))))
-	  (display "move window ")
-	  (display win)
-	  (display " ")
-	  (display dir)
-	  (display " to ")
-	  (display x)
-	  (display " ")
-	  (display y)
-	  (display " ")
-	  (display amount)
-	  (newline)
-	  (animated-move-window x y win #t)))))
-      
-(add-hook! vv_recognition_hook vv-move-window)
+	   ((string=? dir "right") (set! x (+ x amount)))
+	   ((string=? dir "left") (set! x (- x amount)))
+	   ((string=? dir "down") (set! y (+ y amount)))
+	   ((string=? dir "up") (set! y (- y amount)))
+	   ((string=? dir "north") (set! do-animation #f) (animated-move-to-n win))
+	   ((string=? dir "north west") (set! do-animation #f) (animated-move-to-nw win))
+	   ((string=? dir "north east") (set! do-animation #f) (animated-move-to-ne win))
+	   ((string=? dir "west") (set! do-animation #f) (animated-move-to-w win))
+	   ((string=? dir "east") (set! do-animation #f) (animated-move-to-e win))
+	   ((string=? dir "south west") (set! do-animation #f) (animated-move-to-sw win))
+	   ((string=? dir "south east") (set! do-animation #f) (animated-move-to-se win))
+	   ((string=? dir "south") (set! do-animation #f) (animated-move-to-s win))
+	   )
+	  (for-each display 
+		    (list "move window " win " "
+			  dir " to " x " " y " " amount "\n"))
+	  (if do-animation  (animated-move-window x y win #t))))))
 
-;;(remove-hook! vv_recognition_hook vv-move-window)
-;;(reset-hook! vv_recognition_hook)
+(define-public (vv-recognition-debug dir amount)
+  (for-each display (list "Got dir = " dir ", amount = " amount "\n")))
+      
+;;(add-hook! vv-recognition-hook vv-move-window)
+;;(add-hook! vv-recognition-hook vv-recognition-debug)
+;;(remove-hook! vv-recognition-hook vv-move-window)
+;;(reset-hook! vv-recognition-hook)
+
