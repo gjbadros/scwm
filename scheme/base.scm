@@ -589,6 +589,18 @@ Returns the child-pid, or #f if the fork fails."
 	child-pid)))
 
 
+(define-public (select-window #&optional (kill? #f) (release? #f))
+  "Select a window interactively, and return the specified window.
+Use a special cursor and let the user click to select the window. The
+optional arguments KILL? and RELEASE? indicate whether to use the
+\"skull and cross-bones\" kill cursor (recommended for destructive
+operations like delete-window and destroy-window), and whether to wait
+for a mouse release or act immediately on the click. The former is a
+place-holder until we have proper cursor support in scwm.
+Returns #f if no window was selected."
+  (car (select-viewport-position kill? release?)))
+
+
 (define*-public (select-window-interactively #&optional (msg #f) (message-window #f))
   "Return an interactively-selected window after prompting (optionally) with MSG.
 If given, use message window MESSAGE-WINDOW to display the message, otherwise create

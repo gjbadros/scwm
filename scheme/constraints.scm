@@ -14,7 +14,7 @@
 ;; (use-modules (app scwm ui-constraints-toggle-menu))
 ;; (use-modules (app scwm modifier-key-bindings))
 
-(define-public (reset-scwm-constraints)
+(define-public (reset-constraints)
   "Reset the constraint solving system.
 This switches to a fresh new master solver object, and resets
 the global list of ui-constraint instances (so the menu of
@@ -23,21 +23,29 @@ constraints is reset to empty)."
   (scwm-set-master-solver! solver)
   (set! global-constraint-instance-list '()))
 
-(reset-scwm-constraints)
+(define ui-constraints-window #f)
 
-(define ui-constraints-window
-  (start-ui-constraints-buttons))
+(define-public (start-constraints)
+  "Start using the constraint solver."
+  (reset-constraints)
+  (install-constraints-ui-features)
+  (set! ui-constraints-window
+    (start-ui-constraints-buttons)))
 
 (define-public (end-constraints)
-  "Terminate using the constraint solver.  Can restart with a fresh
-solver by using `reset-scwm-constraints'."
+  "Terminate using the constraint solver.  
+Can restart with a fresh solver by using `start-constraints'."
   (close-ui-constraints-buttons ui-constraints-window)
-  (reset-scwm-constraints))
+  (reset-constraints))
 
-(bind-three-modifier-key-events 
- XKM_CONTROL_L  XKM_ALT_L  XKM_SHIFT_L
-;; (37 . 4) (115 . 16) (50 . 1)
- draw-all-constraints
- undraw-all-constraints)
+(define (install-constraints-ui-features)
+  (bind-three-modifier-key-events 
+   XKM_CONTROL_L  XKM_ALT_L  XKM_SHIFT_L
+   ;; (37 . 4) (115 . 16) (50 . 1)
+   draw-all-constraints
+   undraw-all-constraints)
+  
+  (bind-key 'all "C-M-S-c" popup-ui-constraints-toggle-menu))
 
-(bind-key 'all "C-M-S-c" popup-ui-constraints-toggle-menu)
+;; and now start everything
+(start-constraints)
