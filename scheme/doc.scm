@@ -16,6 +16,10 @@
        '("scwm-procedures.txt" "scwm-variables.txt" "scwm-hooks.txt"
          "scwm-concepts.txt" "cassowary_scm-procedures.txt")))
 
+(define-public (hook-documentation hook)
+  "Return the docstring for HOOK."
+  (object-property hook 'doc))
+
 (define-public documentation-debug #f)
 
 (define*-public (documentation func #&optional (port (current-output-port)))
@@ -68,6 +72,20 @@ Returns #t if any documentation was found, #f otherwise."
              (lambda () (procedure-documentation bb))))))
   (display "\n\n" port))
 
+(define-public (object-documentation sym)
+  "Return documentation attached to SYM or to (eval SYM)."
+  (let ((evalsym (catch #t
+			(lambda () (eval sym))
+			(lambda (key . args)
+			  #f))))
+    (cond
+     ((procedure? evalsym) 
+      (procedure-documentation evalsym))
+     ((hook? evalsym)
+      (hook-documentation evalsym))
+     (else (begin (use-modules (app scwm defoption))
+		  (scwm-option-documentation sym))))))
+      
 ;; For testing...
 ;; (documentation "window-position")
 ;; (documentation "make-cl-constraint")

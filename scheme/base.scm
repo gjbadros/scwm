@@ -38,7 +38,9 @@
       ;; to replace the primitive in more recent guile snapshots
       (defmacro-public reset-hook! (hook)
 	`(set! ,hook ()))
-      (define-public (make-hook . n) ())))
+      (define-public (make-hook . n) ())
+      (define-public hook? list?))
+    (define-public (hook? h) (and (pair? h) (eq? (car h) 'hook))))
     
 
 
