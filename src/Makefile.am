@@ -44,6 +44,7 @@ scwm_SOURCES =  string_token.c \
                 callbacks.c \
                 shutdown.c \
                 init_scheme_string.c \
+		constraint-primitives.cc \
                 guile-compat.c \
                 syscompat.c \
 		getopt.c \
@@ -55,17 +56,19 @@ decorations.h deskpage.h drawmenu.h errors.h events.h face.h focus.h \
 font.h getopt.h guile-compat.h icons.h image.h menuitem.h misc.h \
 miscprocs.h module-interface.h module-types.h move.h mwmcom.h \
 placement.h resize.h scmtypes.h screen.h scwm.h \
+scwm-constraints.h constraint-primitives.h \
 scwmmenu.h shutdown.h string_token.h syscompat.h system.h \
 util.h virtual.h window.h xmisc.h
 
 
-scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XPM_LIB@ @x_libs@ @GUILE_LIBS@
+scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XPM_LIB@ @x_libs@ @GUILE_LIBS@ @CASSOWARY_LIBS@
 
-INCLUDES = @x_cflags@ @GUILE_INCLUDES@
+INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h \
 binding.x callbacks.x color.x decor.x deskpage.x events.x face.x font.x image.x menuitem.x \
-miscprocs.x module-interface.x scwmmenu.x shutdown.x xproperty.x window.x
+miscprocs.x module-interface.x constraint-primitives.x \
+scwmmenu.x shutdown.x xproperty.x window.x
 
 ##OMIT_DEPENDENCIES = $(BUILT_SOURCES)
 
@@ -75,12 +78,15 @@ miscprocs.x module-interface.x scwmmenu.x shutdown.x xproperty.x window.x
 ## MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 
 SUFFIXES = .x
+
+
+# just use `make CC=g++' and the revised guile-snarf which uses ${CC} will work
+# for C++ prototype extraction
 %.x: %.c
-#ifeq($(CC),g++)
-#	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -D__cplusplus $< > $@
-#else
 	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
-#endif
+
+%.x: %.cc
+	guile-snarf -D__cplusplus $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
 
 
 ## FIXMS: This really sucks, but it's the best we can do until
@@ -116,4 +122,4 @@ CLEANFILES = scwmpaths.h init_scheme_string.c $(BUILT_SOURCES)
 # Want etags to mark SCM_SYMBOL macros and SCWM_PROC macros
 # Note that we mark through the 2nd argument to SCWM_PROC so we
 # get the scheme procedure name, too (not just the C function name)
-ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*([^,]*/' --regex='/[ \t]*SCWM_PROC[ \t]*([^,]*,[^,]*/' *.[ch]
+ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_PROC[ \t]*(\([^,]*\),[^,]*/\1/' *.[ch]
