@@ -129,26 +129,20 @@
 
 
 (define (circulate backwards? window only except proc)
-  ;; not totally right... what if we just move the mouse to the
-  ;; root window after focusing a window not by circulating?
-  ;; things should still work right. This will require the focus 
-  ;; machinery to set some appropriate Scheme variables.
-  (let ((window (if window window last-circulated)))
-    (if window
-      (let* ((wl (list-all-windows))
-	     (rotwl (append ((if backwards? reverse id)
-			     (rotate-around window wl))))
-	     (list window))
-	(cond
-	 ((filter-only-except rotwl only (cons
-					  should-circulate-skip? 
-					  (listify-if-atom except)))
-	  => (lambda (x) 
-	       (cond
-		((pair? x)
-		 (set! last-circulated (car x))
-		 (proc (car x)))))))))))
-
+  (let* ((window (or window last-circulated))
+	 (wl (if window
+		 ((if backwards? reverse id)
+		  (rotate-around window (list-all-windows)))
+		 (list-all-windows))))
+    (cond
+     ((filter-only-except wl only (cons
+				   should-circulate-skip? 
+				   (listify-if-atom except)))
+      => (lambda (x) 
+	   (cond
+	    ((pair? x)
+	     (set! last-circulated (car x))
+	     (proc (car x)))))))))
 
 (define*-public (next-window #&key (window (get-window #f #f))
 			     (only '()) (except '()) (proc window-list-proc))
