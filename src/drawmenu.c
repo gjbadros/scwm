@@ -390,6 +390,8 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     /* now set global menu drawing properties */
     /* Handle the side image, if any */
     pmdi->cpixItemOffset = MENU_ITEM_RR_SPACE + MENU_EDGE_HORIZ_SPACING;
+
+    pmdi->cpixSideImage = 0;
     if (psimgSide) {
       pmdi->cpixSideImage = psimgSide->width + MENU_SIDE_IMAGE_SPACING;
       pmdi->cpixItemOffset += pmdi->cpixSideImage;
