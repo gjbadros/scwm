@@ -93,6 +93,9 @@
 /* Define this if you want multibyte support. */
 #undef I18N
 
+/* Define this if you want to compile with X_LOCALE define. */
+#undef X_LOCALE
+
 /* Define this and use C++ compiler if you want to use constraint solver */
 #undef USE_CASSOWARY
 

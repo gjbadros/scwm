@@ -69,7 +69,12 @@ AC_ARG_WITH(cassowary,
 		AC_DEFINE(CL_NO_TRACE)
 		AC_MSG_CHECKING(where to expect to find cassowary headers and library)
 		CASSOWARY_INCLUDES="-I${withval}"
-		CASSOWARY_LIBS="-L${withval} ${withval}/../guile/cassowary_scm.o -lcassowary-scwm"
+		case "$ac_R_nospace" in 
+		"yes") cas_lib_path="-L${withval} -R ${withval}" ;;
+		"no")  cas_lib_path="-L${withval} -R${withval}" ;;
+		*)     cas_lib_path="-L${withval}" ;;
+		esac
+		CASSOWARY_LIBS="$cas_lib_path ${withval}/../guile/cassowary_scm.o -lcassowary-scwm"
 		AC_MSG_RESULT("${withval}")
 	fi
 ])
@@ -114,7 +119,8 @@ XPM_LIB=""
 AC_CHECK_LIB(Xpm, XpmReadFileToPixmap, [
 XPM_LIB="-lXpm"
 AC_DEFINE(HAVE_LIBXPM)
-], , $x_libs)
+], AC_MSG_WARN(libXpm not found -- scwm may not build correctly)
+, $x_libs)
 
 
 dnl # Check for the Xmu library #
@@ -124,6 +130,8 @@ XMU_LIB="-lXmu"
 AC_DEFINE(HAVE_LIBXMU)
 ], , $x_libs)
 
+dnl # check if X11 library was compiled with X_LOCALE definition
+AC_CHECK_LIB(X11, _Xsetlocale, [ AC_DEFINE(X_LOCALE) ], [], $x_libs)
 
 x_cflags="$X_CFLAGS"
 x_ldflags="$X_LDFLAGS $X_LIBS"
@@ -165,9 +173,9 @@ AC_SUBST(READLINE_LIB)
 dnl # Guile checks #
 
 if test "x$exec_prefix" = "xNONE"; then
-	GUILE_LIBS_PRE="-L$ac_default_prefix/lib"
+	guile_lib_path="$ac_default_prefix/lib"
 else
-	GUILE_LIBS_PRE="-L$exec_prefix/lib"
+	guile_lib_path="$exec_prefix/lib"
 fi
 if test "x$prefix" = "xNONE"; then
 	GUILE_INCLUDES="-I$ac_default_prefix/include"
@@ -184,12 +192,17 @@ AC_ARG_WITH(guile-prefix,
 		AC_MSG_CHECKING(where to expect to find guile)
 		guile_prefix="${withval}"
 		GUILE_INCLUDES="-I${guile_prefix}/include"
-		GUILE_LIBS_PRE="-L${guile_prefix}/lib"
+		guile_lib_path="${guile_prefix}/lib"
 
 		AC_MSG_RESULT("${guile_prefix}")
 	fi
 ])
 
+case "$ac_R_nospace" in 
+"yes") GUILE_LIBS_PRE="-L${guile_lib_path} -R ${guile_lib_path}" ;;
+"no")  GUILE_LIBS_PRE="-L${guile_lib_path} -R${guile_lib_path}" ;;
+*)     GUILE_LIBS_PRE="-L${guile_lib_path}" ;;
+esac
 
 AC_ARG_WITH(guile-exec-prefix,
 [  --with-guile-exec-prefix=DIR 
@@ -367,6 +380,15 @@ AC_ARG_ENABLE(multibyte,
 [
 	AC_MSG_RESULT(no);
 ])
+
+I18N_LIB=""
+if test x"$enable_multibyte" = x"yes" ; then
+	# check if system has xpg4 library ( for FreeBSD )
+	AC_CHECK_LIB(xpg4, _xpg4_setrunelocale, [
+	I18N_LIB="-lxpg4"
+	],[])
+fi
+AC_SUBST(I18N_LIB)
 
 
 AC_OUTPUT(Makefile \
