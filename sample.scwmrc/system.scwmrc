@@ -20,6 +20,9 @@
 (menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue"
 	    #:font font14 #:mwm #f)
 
+(define menu-bg-color (load-color "blueviolet"))
+(define menu-text-color (load-color "white"))
+
 (title-style #:font font12 #:justify 'left)
 
 (set-icon-font! font12)
