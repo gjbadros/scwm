@@ -1,3 +1,20 @@
+Tue Nov 23 12:18:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.h: Added visibility field for tracking the current
+	visibility of a window.
+
+	* window.c: Added `window-visibility' procedure for returning
+	symbol based on the tracked visibility field.
+
+	* resize.c, move.c: Watch for visibility events during
+	move/resize.
+
+	* events.c: Update visibility field, and call hooks only when the
+	frame window's visibility changes (not the client window)
+
+	* add_window.c: Watch for VisibilityChangeMask events on frame,
+	and initialize the new visibility field of windows.
+
 Tue Nov 23 09:16:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xmisc.h,xmisc.c: Added SetXWindowGravity(..)

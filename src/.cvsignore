@@ -3,6 +3,7 @@
 .libs
 Makefile
 Makefile.in
+dumped_scwm
 err.log
 init_scheme_string.c
 out.log
