@@ -142,12 +142,6 @@ scwm_safe_apply_message_only (SCM proc, SCM args)
 			   &stack_item);
 }
 
-Bool 
-FEmptyHook(SCM hook)
-{
-  return (hook == SCM_EOL || UNSET_SCM(hook));
-}
-
 
 SCM
 scwm_safe_call0 (SCM thunk)
@@ -296,6 +290,11 @@ scm_empty_hook_p(SCM hook)
 
 #else
 
+SCM
+scm_empty_hook_p(SCM hook)
+{
+  return gh_bool2scm(hook == SCM_EOL || UNSET_SCM(hook));
+}
 
 /* Print warning message, and reset the hook */
 void

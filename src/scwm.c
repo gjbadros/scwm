@@ -154,7 +154,7 @@ ScwmWindow *FocusOnNextTimeStamp = NULL;
 
 Bool debugging = False, PPosOverride = False, Blackout = False;
 Bool fDisableBacktrace = False;
-Bool fDocumentPrimitiveFormals = True;
+Bool fDocumentPrimitiveFormals = False;
 Bool segvs_to_reset = 100;
 Bool fHandleSegv = True;
 
@@ -686,7 +686,7 @@ instead of reading from ".scwmrc" or "system.scwmrc". Multiple -e and
 will be processed in the order in which they were specified.</seg>
 </seglistitem><seglistitem>
 
-<seg/-N or --no-document-formals/ <seg/do not document formal parameters of primitives./
+<seg/-F or --document-formals/ <seg/document formal parameters of primitives./
 </seglistitem><seglistitem>
 
 <seg/-h or --help/ <seg/prints a usage message and exits./
@@ -719,7 +719,7 @@ is probably of no use to you unless you're a session manager or debbuging.
       {"help", 0, NULL, 'h'},
       {"blackout", 0, NULL, 'b'},
       {"version", 0, NULL, 'V'},
-      {"no-document-formals", 0, NULL, 'N'},
+      {"document-formals", 0, NULL, 'F'},
       {"segv-reset-count", 1, NULL, 'p'},
       {"segv-just-stop", 0, NULL, 'P'},
       {"nobacktrace", 0, NULL, 'n'}, /* turns off guile backtraces */
@@ -757,8 +757,10 @@ is probably of no use to you unless you're a session manager or debbuging.
       }
     case 'n':
       fDisableBacktrace = True; break;
-    case 'N':
-      fDocumentPrimitiveFormals = False; break;
+    case 'F':
+      /* GJB:FIXME:: invert sense of this switch when
+         undefined quote problem is taken care of */
+      fDocumentPrimitiveFormals = True; break;
     case 'f':
       if(optarg == NULL) {
         option_error=True;
@@ -1492,8 +1494,10 @@ ScwmErrorHandler(Display * dpy, XErrorEvent * event)
 {
   /* some errors are acceptable, mostly they're caused by 
    * trying to update a lost  window */
-  if ((event->error_code == BadWindow) || (event->request_code == X_GetGeometry) ||
-      (event->error_code == BadDrawable) || (event->request_code == X_SetInputFocus) ||
+  if ((event->error_code == BadWindow) || 
+      (event->request_code == X_GetGeometry) ||
+      (event->error_code == BadDrawable) || 
+      (event->request_code == X_SetInputFocus) ||
       (event->request_code == X_GrabButton) ||
       (event->request_code == X_ChangeWindowAttributes) ||
       (event->request_code == X_InstallColormap))

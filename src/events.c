@@ -933,7 +933,7 @@ HandleClientMessage()
   }
 
   /* GJB:FIXME:: converting from C array to SCM vector is clumsy -- better way? */
-  if (!FEmptyHook(client_message_hook)) {
+  if (SCM_BOOL_F != scm_empty_hook_p(client_message_hook)) {
     SCM data = SCM_BOOL_F;
     switch (Event.xclient.format) {
     case 8: /* interpret as a string */
@@ -972,7 +972,7 @@ HandleClientMessage()
     } /* end switch */
     if (Event.xclient.window == Scr.Root) {
       win = sym_root_window;
-    } else if (NULL != (psw = PswFromWindow(dpy,Event.xclient.window))) {
+    } else if (NULL != (psw = PswFromAnyWindow(dpy,Event.xclient.window))) {
       win = psw->schwin;
     } else {
       win = SCM_BOOL_F;
