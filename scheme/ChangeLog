@@ -1,3 +1,9 @@
+Fri Mar  6 02:50:47 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* base.scm: A few changes to make menu-style work right.
+
+	* fvwm-module.scm: Added optional other-args argument to module.
+
 Thu Mar  5 00:33:50 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* fvwm-eval.scm: Added support for the KillMe fvwm module command,
