@@ -1,3 +1,10 @@
+1998-09-17  Todd Larason  <jtl@teeny.molehill.org>
+
+	* base.scm (unset-message-window-position!): Added, to move
+	message window to default center-screen position
+
+	* Makefile.am (ETAGS_ARGS): Build TAGS file from .scm files
+
 Thu Sep 17 16:18:55 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* wininfo.scm (windows-overlap?): Use window-virtual-position, not

@@ -1,3 +1,32 @@
+1998-09-18  Todd Larason  <jtl@teeny.molehill.org>
+
+	* xmisc.c (DrawSubImage): Offset the clip origin so masked images
+	drawn at non-0,0 position are masked properly.
+
+	* scwm.c (InitVariables): Intialize msg_window_{x,y}{,_align}
+	items.
+
+	* screen.h: Added msg_window_x, msg_window_y, msg_window_x_align,
+	msg_window_y_align.
+
+	* resize.c: Added interactive-resize-start-hook,
+	interactive-resize-new-size-hook and interactive-resize-finish-hook.
+	(s_set_message_window_position_x): Added
+	set-message-window-position!.
+	(InteractiveResize): reordered startup procedure to allow
+	interactive-resize-start-hook to be called with useful arguments
+	before message window is mapped
+
+	* move.c: Added interactive-move-start-hook,
+	interactive-move-new-position-hook and interactive-move-finish-hook.
+	Map message window at position set by msg_window_{x,y}{,_align},
+	not always the center of the screen.
+
+	* callbacks.h: Added call3_hooks.
+
+	* callbacks.c: Added scwm_safe_call3 and call3_hooks to support
+	3-argument hooks
+
 Thu Sep 17 15:51:48 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Make stick use FRAME_[XY]_VP even though slightly

@@ -233,6 +233,10 @@ typedef struct ScreenInfo {
   SCM msg_window_font;          /* font for the size/position window */
   SCM msg_window_fg;            /* fg color for the size/position window */
   SCM msg_window_bg;            /* bg color for the size/position window */
+  int msg_window_x;		/* x position of the size/position window */
+  int msg_window_y;		/* y position of the size/position window */
+  double msg_window_x_align;	/* offset msg window by multiple of size */
+  double msg_window_y_align;	/* offset msg window by multiple of size */
 
   GC MenuGC;
   GC MenuStippleGC;

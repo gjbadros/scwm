@@ -119,8 +119,8 @@ DrawSubImage(Window w, scwm_image *psimg,
     GC gcPixmap = Scr.ScratchGC1;
     /* a full pixmap (as opposed to just a bitmap) */
     Globalgcv.clip_mask = psimg->mask;
-    Globalgcv.clip_x_origin = cpixDstXoffset;
-    Globalgcv.clip_y_origin = cpixDstYoffset;
+    Globalgcv.clip_x_origin = cpixDstXoffset - cpixSrcXoffset;
+    Globalgcv.clip_y_origin = cpixDstYoffset - cpixSrcYoffset;
     
     XChangeGC(dpy,gcPixmap,(GCClipMask | GCClipXOrigin | GCClipYOrigin),&Globalgcv);
     XCopyArea(dpy, psimg->image, w, gcPixmap,

@@ -180,6 +180,13 @@ scwm_safe_call2 (SCM proc, SCM arg1, SCM arg2)
   return scwm_safe_apply (proc, gh_list(arg1, arg2, SCM_UNDEFINED));
 }
 
+SCM
+scwm_safe_call3 (SCM proc, SCM arg1, SCM arg2, SCM arg3)
+{
+  /* This means w must cons (albeit only once) on each callback of
+     size two - seems lame. */
+  return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, SCM_UNDEFINED));
+}
 
 /* Slightly tricky - we want to catch errors per expression, but only
    establish a new dynamic root per load operation, as it's perfectly
@@ -352,6 +359,26 @@ SCM call2_hooks (SCM hook, SCM arg1, SCM arg2)
 
   for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
     scwm_safe_call2 (gh_car(p), arg1, arg2);
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+
+SCM call3_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3)
+{
+  SCM p;
+  SCM hook_list;
+  /* Ensure hook list is a list. */
+
+  hook_list = gh_cdr(hook);
+
+  if (!gh_list_p(hook_list)) {
+    WarnBadHook(hook);
+    return SCM_UNSPECIFIED;
+  }
+
+  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
+    scwm_safe_call3 (gh_car(p), arg1, arg2, arg3);
   }
   
   return SCM_UNSPECIFIED;

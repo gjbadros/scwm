@@ -47,6 +47,10 @@
 extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;
 
+static SCM interactive_move_start_hook;
+static SCM interactive_move_new_position_hook;
+static SCM interactive_move_finish_hook;
+
 float rgpctMovementDefault[32] = {
     -.01, 0, .01, .03,.08,.18,.3,.45,.60,.75,.85,.90,.94,.97,.99,1.0 
     /* must end in 1.0 */
@@ -177,13 +181,15 @@ void
 MapMessageWindow()
 {
   int w, h;
+  int x, y;
+  
   if (!FXGetWindowSize(Scr.MsgWindow,&w,&h))
     assert(False);
 
-  /* center it onscreen */
-  XMoveWindow(dpy, Scr.MsgWindow, 
-              Scr.DisplayWidth/2 - w/2,
-              Scr.DisplayHeight/2 - h/2);
+  x = Scr.msg_window_x + (Scr.msg_window_x_align * w);
+  y = Scr.msg_window_y + (Scr.msg_window_y_align * h);
+
+  XMoveWindow(dpy, Scr.MsgWindow, x, y);
   XMapRaised(dpy, Scr.MsgWindow);
 }
 
@@ -282,7 +288,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
   Bool finished = False;
   Bool done;
   int xl, yt, paged;
-
+  
   /* show the size/position window */
   MapMessageWindow();
 
@@ -385,6 +391,9 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
                               WIN_VP_OFFSET_X(psw)+xl,
                               WIN_VP_OFFSET_Y(psw)+yt,opaque_move);
         }
+	call3_hooks(interactive_move_new_position_hook, psw->schwin,
+		    gh_int2scm(xl + WIN_VP_OFFSET_X(psw)),
+		    gh_int2scm(yt + WIN_VP_OFFSET_Y(psw)));
 	DisplayPosition(psw,
                         xl + WIN_VP_OFFSET_X(psw),
                         yt + WIN_VP_OFFSET_Y(psw), True);
@@ -455,19 +464,22 @@ DisplayMessage(const char *sz, Bool fRelief)
   int winwidth = textwidth + SIZE_HINDENT*2;
   int textheight = FONTHEIGHT(Scr.msg_window_font);
   int winheight = textheight + SIZE_VINDENT*2;
+  int win_x, win_y;
+
   GC gcMsg = Scr.ScratchGC2;
   GC gcHilite = Scr.ScratchGC2;
   GC gcShadow = Scr.ScratchGC3;
   SCM scmFgRelief, scmBgRelief;
   scmBgRelief = adjust_brightness(Scr.msg_window_bg, message_shadow_factor);
   scmFgRelief = adjust_brightness(Scr.msg_window_bg, message_hilight_factor);
-
+  
   SetGCFg(gcHilite,XCOLOR(scmFgRelief));
   SetGCFg(gcShadow,XCOLOR(scmBgRelief));
-  
-  XMoveResizeWindow(dpy, Scr.MsgWindow, 
-                    (Scr.DisplayWidth-winwidth)/2,(Scr.DisplayHeight-winheight)/2,
-                    winwidth, winheight);
+
+  win_x = Scr.msg_window_x + (Scr.msg_window_x_align * winwidth);
+  win_y = Scr.msg_window_y + (Scr.msg_window_y_align * winheight);
+
+  XMoveResizeWindow(dpy, Scr.MsgWindow, win_x, win_y, winwidth, winheight);
 
   if (fRelief) {
     XClearWindow(dpy, Scr.MsgWindow);
@@ -658,7 +670,9 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   XOffset = origDragX - DragX;
   YOffset = origDragY - DragY;
 
+  call1_hooks(interactive_move_start_hook, psw->schwin);
   moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY, fOpaque);
+  call1_hooks(interactive_move_finish_hook, psw->schwin);
   if (psw->fIconified) {
     psw->fIconMoved = True;
   }
@@ -703,6 +717,19 @@ screen while the non-opaque move takes place. */
 void 
 init_move()
 {
+  SCWM_HOOK(interactive_move_start_hook,"interactive-move-start-hook");
+  /** This hook is invoked at the start of an interactive move.
+It is called with one argument, WINDOW. */
+
+  SCWM_HOOK(interactive_move_new_position_hook,"interactive-move-new-position-hook");
+  /** This hook is invoked during an interactive move.
+It is called with three arguments, WINDOW, NEW_X, and NEW_Y,
+whenever the window is moved to a new location. */
+
+SCWM_HOOK(interactive_move_finish_hook,"interactive-move-finish-hook");
+  /** This hook is invoked at the end of an interactive move.
+It is called with one argument, WINDOW. */
+
 #ifndef SCM_MAGIC_SNARFER
 #include "move.x"
 #endif

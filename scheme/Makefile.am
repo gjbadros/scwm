@@ -11,3 +11,5 @@ scwm_scheme_DATA = auto-raise.scm base.scm bincomm.scm decor.scm doc.scm \
 
 ## Distribute only
 EXTRA_DIST = minimal.scm
+ETAGS_ARGS = $(scwm_scheme_DATA) $(EXTRA_DIST)
+TAGS_DEPENDENCIES = $(scwm_scheme_DATA) $(EXTRA_DIST)

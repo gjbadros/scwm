@@ -461,6 +461,10 @@ dimension to a number of pixels."
   (set-edge-x-scroll! x)
   (set-edge-y-scroll! y))
 
+(define-public (unset-message-window-position!)
+  "Move the message window back to the default screen-center position"
+  (apply set-message-window-position!
+	 (append (map (lambda (x) (/ x 2)) (display-size)) (list -.5 -.5))))
 
 (defmacro-public scwm-user-var (sym)
   "Lookup sym in the scwm user variable environment.

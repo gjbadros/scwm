@@ -33,6 +33,9 @@
 #include "events.h"
 #include "xmisc.h"
 
+static SCM interactive_resize_start_hook;
+static SCM interactive_resize_new_size_hook;
+static SCM interactive_resize_finish_hook;
 
 /* Create the small window to show the interactively-moved/resized window's
    size/position */
@@ -81,7 +84,42 @@ being moved or resized interactively. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC(set_message_window_position_x, "set-message-window-position!", 4, 0, 0,
+          (SCM x, SCM y, SCM x_align, SCM y_align))
+    /** Set the position to be used for the message window.
+*/
+#define FUNC_NAME s_set_message_window_position_x
+{
+  SCM_REDEFER_INTS;
 
+  if (!gh_number_p(x)) {
+    gh_allow_ints();
+    scm_wrong_type_arg(FUNC_NAME, 1, x);
+  }
+  if (!gh_number_p(y)) {
+    gh_allow_ints();
+    scm_wrong_type_arg(FUNC_NAME, 2, y);
+  }
+  if (!gh_number_p(x_align)) {
+    gh_allow_ints();
+    scm_wrong_type_arg(FUNC_NAME, 3, x_align);
+  }
+  if (!gh_number_p(y)) {
+    gh_allow_ints();
+    scm_wrong_type_arg(FUNC_NAME, 4, y_align);
+  }
+  
+  Scr.msg_window_x = gh_scm2long(x);
+  Scr.msg_window_y = gh_scm2long(y);
+  Scr.msg_window_x_align = gh_scm2double(x_align);
+  Scr.msg_window_y_align = gh_scm2double(y_align);
+  
+  SCM_REALLOW_INTS;
+
+  XMoveWindow(dpy, Scr.MsgWindow, x, y);
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
 
 SCWM_PROC (display_message, "display-message", 1, 0, 0,
            (SCM msg))
@@ -509,13 +547,6 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   origHeight = dragHeight;
   ymotion = xmotion = 0;
 
-  /* pop up a resize dimensions window */
-  MapMessageWindow();
-  DisplaySize(psw, origWidth, origHeight, True);
-
-  CassowaryEditSize(psw);
-
-
   /* Get the current position to determine which border to resize 
      FIXGJB: this is ugly -- perhaps should pass in
      resize directions? */
@@ -545,6 +576,16 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
       xmotion = -1;
     }
   }
+
+  call3_hooks(interactive_resize_start_hook, psw->schwin,
+	      gh_int2scm(xmotion), gh_int2scm(ymotion));
+  
+  /* pop up a resize dimensions window */
+  MapMessageWindow();
+  DisplaySize(psw, origWidth, origHeight, True);
+
+  CassowaryEditSize(psw);
+
   /* draw the rubber-band window */
   if (!fOpaque) {
     RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
@@ -602,7 +643,11 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                           WIN_VP_OFFSET_X(psw) + dragx, 
                           WIN_VP_OFFSET_Y(psw) + dragy,
                           dragWidth,dragHeight, fOpaque);
-            
+
+      call3_hooks(interactive_resize_new_size_hook, psw->schwin,
+		  gh_int2scm(dragWidth),
+		  gh_int2scm(dragHeight));
+      
       DisplaySize(psw, dragWidth, dragHeight, True);
       if (FNeedsPaging(Scr.EdgeScrollX, Scr.EdgeScrollY, x, y)) {
         /* need to move the viewport */
@@ -649,7 +694,8 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   SuggestSizeWindowTo(psw,WIN_VP_OFFSET_X(psw)+dragx,WIN_VP_OFFSET_Y(psw)+dragy,
                       dragWidth,dragHeight, True);
   CassowaryEndEdit(psw);
-
+  call1_hooks(interactive_resize_finish_hook, psw->schwin);
+  
   UninstallRootColormap();
 
   if (!fOpaque) {
@@ -718,6 +764,22 @@ init_resize_gcs()
 void 
 init_resize()
 {
+  SCWM_HOOK(interactive_resize_start_hook,"interactive-resize-start-hook");
+  /** This hook is invoked at the start of an interactive resize.
+It is called with three arguments: WINDOW, XMOTION, YMOTION.
+XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
+can happen on the right/bottom side, not at all, or the top/left side,
+respectively. */
+
+  SCWM_HOOK(interactive_resize_new_size_hook,"interactive-resize-new-size-hook");
+  /** This hook is invoked during an interactive resize.
+It is called with three arguments, WINDOW, NEW_X_SIZE, and NEW_Y_SIZE,
+whenever the window is changed to a new size */
+
+SCWM_HOOK(interactive_resize_finish_hook,"interactive-resize-finish-hook");
+  /** This hook is invoked at the end of an interactive resize.
+It is called with one argument, WINDOW. */
+
 #ifndef SCM_MAGIC_SNARFER
 #include "resize.x"
 #endif

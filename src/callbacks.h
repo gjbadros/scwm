@@ -53,6 +53,7 @@ SCM scwm_safe_eval_str (char *string);
 SCM call0_hooks (SCM hook);
 SCM call1_hooks (SCM hook_type, SCM arg);
 SCM call2_hooks (SCM hook_type, SCM arg1, SCM arg2);
+SCM call3_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3);
 SCM apply_hooks (SCM hook_type, SCM args);
 SCM apply_hooks_message_only (SCM hook_type, SCM args);
 
