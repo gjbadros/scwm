@@ -78,18 +78,34 @@ FUNCS should be a list of strings."
               menu-separator
               (menuitem "Help" #:action (help-mesg "set-edge-scroll!")))))
 
-;; FIXGJB: windows can be bigger than the viewport so "all" is not accurate
 (define opaque-move-menu
   (menu (list (menuitem "All" #:action
+                        (lambda () (set! opaque-move-percent #t)))
+              (menuitem "100%" #:action
                         (lambda () (set! opaque-move-percent 100)))
               (menuitem "50%" #:action
                         (lambda () (set! opaque-move-percent 50)))
               (menuitem "20%" #:action
                         (lambda () (set! opaque-move-percent 20)))
               (menuitem "Never" #:action
-                        (lambda () (set! opaque-move-percent 0)))
+                        (lambda () (set! opaque-move-percent #f)))
               menu-separator
               (menuitem "Help" #:action (help-mesg "opaque-move-percent")))))
+
+(define opaque-resize-menu
+  (menu (list (menuitem "All" #:action
+                        (lambda () (set! opaque-resize-percent #t)))
+              (menuitem "100%" #:action
+                        (lambda () (set! opaque-resize-percent 100)))
+              (menuitem "50%" #:action
+                        (lambda () (set! opaque-resize-percent 50)))
+              (menuitem "20%" #:action
+                        (lambda () (set! opaque-resize-percent 20)))
+              (menuitem "Never" #:action
+                        (lambda () (set! opaque-resize-percent #f)))
+              menu-separator
+              (menuitem "Help" #:action (help-mesg "opaque-resize-percent")))))
+
 
 (define desk-size-menu
   (menu (list (menuitem "2x2" #:action (lambda () (set-desk-size! 2 2)))

@@ -79,7 +79,8 @@
 ;; guile probably permits us access to a lot of these
 ;; things, but some new primitives may need to be added
 ;; --03/10/98 gjb
-(define-public TWM_TYPE "fvwm")  ;; FIXGJB should this be scwm?
+(define-public TWM_TYPE "scwm")
+;;; GJB:FIXME:: new primitives or use guile to implement the below
 ;(define-public SERVERHOST (X-server-host-name))
 ;(define-public CLIENTHOST (X-client-host-name))
 ;(define-public HOSTNAME (process-host-name))

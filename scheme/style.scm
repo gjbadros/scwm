@@ -195,7 +195,8 @@
 
 (add-boolean-style-option #:no-titlebar hide-titlebar show-titlebar)
 
-;; FIXGJB: This still needs to force the squashing to take effect
+;; GJB:FIXME:: This still needs to force the squashing to take effect
+;; right now it is delayed until, e.g., the window is resized
 (add-window-style-option #:squashed-titlebar
 			 (lambda (arg w)
 			   (set-object-property! w 'squashed-titlebar arg)))

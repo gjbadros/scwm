@@ -90,7 +90,9 @@ If NW or NH is 0, that dimension is not changed."
 	    (resize-frame-to (if (> nw 0) nw pix-width)
 			     (if (> nh 0) nh pix-height) win)
 	    ;; above is just a hint, get the actual...
-	    ;; FIXGJB: race conditions?
+	    ;; GJB:FIXME:: race conditions? might the resize
+	    ;; not have happened yet -- should we flush the X server
+	    ;; (we might be able to write that as a proc using set-X-server-synchronize!)
 	    (let* ((new-frame-size (window-frame-size win))
 		   (new-client-size (window-size win))
 		   (nfw (car new-frame-size))
@@ -193,14 +195,22 @@ If NW or NH is 0, that dimension is not changed."
 (define display-area (* display-width display-height))
 
 (define-public (default-resize-opaquely? win)
-  "Return #t if WIN has area <= opaque-resize-percent of the screen, else #f."
-  (<= (window-frame-area win) 
-     (* display-area (/ (scwm-user-var opaque-resize-percent) 100))))
+  "Return #t if WIN has area <= opaque-resize-percent of the screen, else #f.
+If opaque-resize-percent is a boolean, not a number, just return it."
+  (let ((p (scwm-user-var opaque-resize-percent)))
+    (if (boolean? p)
+	p
+	(<= (window-frame-area win) 
+	    (* display-area (/ p 100))))))
 
 (define-public (default-move-opaquely? win)
-  "Return #t if WIN has area <= opaque-move-percent of the screen, else #f."
-  (<= (window-frame-area win)
-     (* display-area (/ (scwm-user-var opaque-move-percent) 100))))
+  "Return #t if WIN has area <= opaque-move-percent of the screen, else #f.
+If opaque-move-percent is a boolean, not a number, just return it."
+  (let ((p (scwm-user-var opaque-resize-percent)))
+    (if (boolean? p)
+	p
+	(<= (window-frame-area win)
+	    (* display-area (/ p 100))))))
 
 
 (define-public move-opaquely?
@@ -253,7 +263,8 @@ moves opaquely if that returns #t and uses a rubber-band if it returns
 
 
 
-;; FIXGJB: the resize-to primitive should just be renamed
+;; GJB:FIXME:: the resize-to primitive should just be renamed to resize-window
+;; and resize-frame-to should be renamed to resize-window-frame
 (define*-public (resize-window w h #&optional (win (get-window)))
   "Resize WIN's client area to a size of W by H in pixels. 
 The size does not include the window decorations -- only the client

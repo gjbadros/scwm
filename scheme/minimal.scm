@@ -67,7 +67,10 @@ motion does `interactive-move', and double-click does
 		     (make-color "slate gray") FIXED-FONT)))
   (bind-mouse 'root 1 (lambda () (popup-menu default-menu))))
 
-;; FIXGJB: BEGIN gross hack -- better way?
+;; GJB:FIXME:: Here I trade flexibility
+;; for safety.  If this ever becomes an issue
+;; we should consider exposing the X-grab-server, X-ungrab-server
+;; primitives
 (define (with-grabbed-server thunk)
   "Execute THUNK with the X server grabbed."
   #f)

@@ -186,7 +186,7 @@ See `move-window' if you wish to move a window to a virtual position."
   (move-window x y win))
 
 ;; Give move-to a better name, too
-;; FIXGJB: Can this have a doc string?
+;; GJB:FIXME:DOC: Can this have a doc string?
 (define-public move-window-viewport-position move-to)
 
 (define*-public (window-title-height #&optional (win (get-window)))
@@ -551,7 +551,7 @@ This may be a bug (not meeting POSIX.2 specifications)."
   "Execute COMMAND in the background."
   ((if use-scwm-system-proc scwm-system system) (string-append "exec " command " &")))
 
-;; FIXGJB: switch to this after testing it
+;; GJB:FIXME:: switch to this after testing it
 ;; From Jim Blandy -- his [better] version of 
 ;; my scwm-system, above --09/26/98 gjb
 (define (background-system command)

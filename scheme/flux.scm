@@ -123,7 +123,7 @@ REST is a list of other menu-items to include in the returned menu."
   "Return a string that has single quote characters backslashified."
   (regexp-substitute/global #f "'" str 'pre "'\"'\"'" 'post))
 
-;;; FIXGJB: how set width of an xmessage?
+;;; GJB:FIXME:: do not use xmessage-- use guile-gtk
 (define-public (message . str)
   "Display the string arguments STR in a message window.
 Requires the program `xmessage'."
@@ -181,12 +181,16 @@ Use the optional second argument as the separator."
   "Display the `system-info-string' system details in a window."
   (message (system-info-string)))
 
-;; FIXGJB: stop at tabs, too
 (define (first-word s)
-  "Return the first word of S (up to but not including first space char."
-  (let ((i (string-index s #\space)))
-    (if i (substring s 0 i) s)))
+  "Return the first word of S (up to but not including first space char)."
+  (let ((i (string-index s #\space))
+	(j (string-index s #\tab))
+	(l (string-length s)))
+    (let ((k (if (< (or i j l) (or j i l)) i j)))
+      (if k (substring s 0 k) s))))
 ;;(first-word "foo bar") => "foo"
+;;(first-word "foo	bar") => "foo"
+;;(first-word "foobar") => "foo"
 
 (define-public (make-menuitems-from-menu-information-list menu-info-list)
   "Return a list of menu-items from a list of detailed programs list.
@@ -636,19 +640,27 @@ otherwise; it is an error if NETWIN refers to a non-Netscape window."
 ;;; If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window.
   #f)
 
-(define*-public (netscape-goto-cut-buffer-url
-                #&optional (new netscape-new-window))
-  "Make netscape go to the URL in CUT_BUFFER0.
-This permits you to just select a URL and use this function
-to go to that page.
+(define*-public (netscape-goto-url url 
+                #&optional
+		(completion #f)
+		(new netscape-new-window))
+  "Make netscape go to the location URL.
+Calls COMPLETION when done.
 The optional argument specifies whether a new window should be opened.
 It defaults to `netscape-new-window'."
   (run-in-netscape
-   (string-append "openURL(" (X-cut-buffer-string) (if new ",new-window)" ")"))
-   display-message-briefly (netscape-win)))
+   (string-append "openURL(" url (if new ",new-window)" ")"))
+   completion))
+
+(define*-public (netscape-goto-cut-buffer-url 
+                #&optional (new netscape-new-window))
+  (netscape-goto-url (X-cut-buffer-string) display-message-briefly new))
+
+
 
 ;; (run-in-netscape "openUrl(http://vicarious-existence.mit.edu/scwm)" display-message-briefly)
 ;; (run-in-netscape "openUrl(http://www.cs.washington.edu/homes/gjb)" display-message-briefly)
+;; (netscape-goto-url "http://vicarious-existence.mit.edu/scwm")
 
 ;; Inspired by Julian Satchell's version of this --10/09/98 gjb
 (define-public (use-change-desk-commands vector-of-commands)
