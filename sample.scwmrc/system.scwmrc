@@ -150,7 +150,7 @@
 (if (scwm-is-constraint-enabled?)
     (use-scwm-modules ui-constraints-toggle-menu
 		      ui-constraints
-		      ui-constraints-gtk-toggle-menu))
+		      constraint-investigator))
 
 ;; prefer doc files in scwmdir/doc
 (set! doc-files
@@ -694,6 +694,8 @@ from other processes.
 	  games-available-program-information)
 	 )))
 
+;; (popup-menu menu-games)
+
 ;; (popup-menu menu-hosts #t)
 (define (make-hosts-menu hosts)
   (cons menu-separator
@@ -810,7 +812,7 @@ from other processes.
     (menuitem "&Constraints"
 	      #:submenu (lambda () (ui-constraints-toggle-menu)))
     (menuitem "Constraint &investigator"
-	      #:action (thunk ui-constraints-gtk-toggle-menu))
+	      #:action (thunk start-constraint-investigator))
     (menuitem "Turn &on Constraint Solver"
 	      #:action (thunk enable-constraint-solver)))))
 
@@ -893,7 +895,7 @@ from other processes.
 (bind-key 'all "H-r" rename-window-interactively)
 
 ;; (lookup-key 'all "H-r")
-;; (add-timer-hook! (ms->usec 150) (lambda () (display (lookup-key 'all (get-key-event))) (newline)))
+;; (add-timer-hook! 150 (lambda () (display (lookup-key 'all (get-key-event))) (newline)))
 ;; (procedure-name rename-window-interactively)
 
 (bind-key 'all "H-slash" undo)
@@ -1146,7 +1148,7 @@ from other processes.
 ;; close them after 1 hour (GJB:FIXME:: should only do so if not directed to user)
 ;; (add-hook! after-new-window-hook
 ;;	   (lambda (w) (if (string=? (window-class w) "Gsubrc")
-;;			   (add-timer-hook! (sec->usec (* 60 60) (thunk (close-window w)))))))
+;;			   (add-timer-hook! (sec->msec (* 60 60) (thunk (close-window w)))))))
 ;; (reset-hook! after-new-window-hook)
 
 (if want-autoraise
@@ -1190,7 +1192,7 @@ from other processes.
       (define fvwm-winlist (run-fvwm2-module "FvwmWinList" '()))
       ;; work around a race condition in decorating FvwmWinList
       ;; and notifying FvwmWinList of the configure window event
-      (add-timer-hook! (* 1000000 5) 
+      (add-timer-hook! (sec->msec 5)
 		       (lambda () 
 			 (window-style "FvwmWinList"
 				       #:use-style
