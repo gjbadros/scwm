@@ -106,7 +106,6 @@
 (defvar Desks '("Main" "Root" "Gimp" "Games"))
 
 ;; init functions
-(execute "xsetroot")
 (if (not (restarted?))
     (initialize))
 
@@ -745,7 +744,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (window-style (resource-match?? "gimp_startup")
 	      #:start-on-desk #f)
 (window-style (title-match?? "GimpConsole")
-	      #:start-on-desk (desk-number "Gimp")) #:skip-mapping #t)
+	      #:start-on-desk (desk-number "Gimp") #:skip-mapping #t)
 (window-style (title-match?? "GTimer")
 	      #:start-lowered #t #:use-style NoFocus)
 (window-style (class-match?? "GTimeTracker")
