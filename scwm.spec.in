@@ -13,6 +13,7 @@ BuildRoot: /tmp/scwm-%ver-build
 Copyright: Copyright (C) 1997,1998,1999 Greg J. Badros, Maciej Stachowiak, et. al.
 Packager: Greg J. Badros <gjb@cs.washington.edu> and Maciej Stachowiak <mstachow@alum.mit.edu>
 URL: http://scwm.mit.edu
+Distribution: scwm
 Requires: guile >= 1.3.2
 Requires: guile-gtk >= 0.16
 Requires: imlib >= 1.9
@@ -87,18 +88,34 @@ install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/
 %files
 %defattr(-, root, root)
 
-%{prefix}/bin/*
+%{prefix}/bin/
 %{prefix}/lib/libscwm*
-%{prefix}/lib/scwm/*
-%{prefix}/info/*
-%{prefix}/man/*
-%{prefix}/share/emacs/site-lisp/*
-%{prefix}/share/scwm/*
-%{prefix}/include/*
+%{prefix}/lib/scwm/
+%{prefix}/info/
+%{prefix}/man/
+%{prefix}/share/emacs/site-lisp/scwm.el
+## GJB:FIXME:: should byte compile scwm.el in %postun
+#%{prefix}/share/emacs/site-lisp/scwm.elc
+%{prefix}/share/scwm/scwmrc/gjb.scwmrc
+%{prefix}/share/scwm/scwmrc/juhp.scwmrc
+%{prefix}/share/scwm/scwmrc/mstachow.scwmrc
+%{prefix}/share/scwm/scwmrc/sds.scwmrc
+%{prefix}/share/scwm/scwmrc/simple.scwmrc
+%config %{prefix}/share/scwm/scwmrc/system.scwmrc
+%{prefix}/share/scwm/themes/
+%{prefix}/share/scwm/modules/
+%{prefix}/share/scwm/pixmaps/
+%{prefix}/share/scwm/Xmodmap-win95keyboard
+%{prefix}/share/scwm/Xresources-cpp
+%{prefix}/share/scwm/Xsession
+%{prefix}/share/scwm/Xsession.patch
+%{prefix}/share/scwm/gnome-session-Scwm
+%{prefix}/include/
 
 %doc ANNOUNCE AUTHORS BUG-REPORTING BUGS COPYING.FVWM COPYING.GPL ChangeLog
-%doc INSTALL NEWS README README-constraints THANKS TODO doc
-%doc sample.scwmrc/*.scwmrc sample.scwmrc/ChangeLog
-
-#GJB:FIXME:: what 
-#%config %{prefix}/share/scwm/scwmrc/*
+%doc INSTALL NEWS README README-constraints THANKS TODO 
+%doc scwm/ChangeLog
+%doc modules/ChangeLog
+%doc sample.scwmrc/ChangeLog
+%doc utilities/ChangeLog
+%doc doc
