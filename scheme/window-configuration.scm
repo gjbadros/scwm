@@ -137,9 +137,12 @@ CFG should be a window configuration object.  See also `animate-windows'."
 	  (cons endW endH)
 	  (cons startX startY)
 	  (cons endX endY)
-	  (cons #f #f))))
+	  (cons #t #t))))
 
 (define*-public (apply-window-configurations win-configs)
+  "Apply the window configurations in WIN-CONFIGS.
+WIN-CONFIGS should be a list of elements of the form
+(list window window-configuration)."
   ;; get iconify state of window to match configuration
   (map
    (lambda (win-configuration)

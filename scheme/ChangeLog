@@ -1,3 +1,13 @@
+Sun Mar 31 05:41:03 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* window-configuration.scm: Fixed bug in generation of xforms
+	for 'animate-windows' which made 'apply-window-configurations'
+	claim that we weren't moving the window.  This caused the
+	final position to be wrong if the window had any gravity except
+	northwest.
+
+	Add doc string to 'apply-window-configurations'.
+
 Sun Mar 31 01:36:56 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* snap.scm: Changed name of 'snap-reset' to 'snap-disable'.
