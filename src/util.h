@@ -15,7 +15,6 @@
 void redraw_titlebars(ScwmDecor * fl, int extra_height);
 void redraw_borders(ScwmDecor *fl) ;
 void refresh_common(Window win_or_root);
-SCM call_thunk_with_message_handler(SCM thunk);
 void ms_sleep(unsigned long ms);
 
 #endif	/* UTIL_H */

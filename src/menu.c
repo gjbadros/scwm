@@ -38,6 +38,7 @@
 #include "string_token.h"
 #include "guile-compat.h"
 #include "syscompat.h"
+#include "callbacks.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -45,6 +46,14 @@
 static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);
 static void FreeDynamicMenu(DynamicMenu *pmd);
+
+static
+SCM
+scwm_safe_call0_sym(SCM thunk)
+{
+  DEREF_IF_SYMBOL(thunk);
+  return scwm_safe_call0(thunk);
+}
 
 #ifndef NDEBUG
 /* Give string name of first item in a dynamic menu; mostly used for debugging */
@@ -520,6 +529,12 @@ void
 UnselectAndRepaintSelectionForPmd(DynamicMenu *pmd)
 {
   MenuItemInMenu *pmiim = PmiimSelectedFromPmd(pmd);
+
+  if (pmd->fHoverActionInvoked) {
+    InvokeUnhoverAction(pmd);
+    pmd->fHoverActionInvoked = False;
+  }
+
   if (!pmiim) {
     DBUG((DBG,__FUNCTION__,"pmiimSelected == NULL"));
     return;
@@ -568,7 +583,7 @@ InvokeUnhoverAction(DynamicMenu *pmd)
   MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
   /* invoke the un-hover action */
   if (pmiimSelected && !UNSET_SCM(pmiimSelected->pmi->scmUnhover)) {
-    return call_thunk_with_message_handler(pmiimSelected->pmi->scmUnhover);
+    return scwm_safe_call0_sym(pmiimSelected->pmi->scmUnhover);
   } else {
     DBUG((DBG,__FUNCTION__,"No unhover hook, %ld",pmiimSelected));
   }
@@ -868,22 +883,23 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
       ms_sleep(10);
+      ++c10ms_delays;
 
-      if (c10ms_delays++ == MENU_POPUP_DELAY_MS/10) {
+      if (c10ms_delays == MENU_POPUP_DELAY_MS/10) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	if (pmd->pmdNext == NULL) {
 	  PmdPrepopFromPmiim(pmiimSelected);
 	}
       }
 
-      if (c10ms_delays++ == HOVER_DELAY_MS/10 ) {
+      if (c10ms_delays == HOVER_DELAY_MS/10 ) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	if (pmiimSelected) {
 	  SCM scmHover = pmiimSelected->pmi->scmHover;
 	  pmd->fHoverActionInvoked = True;
 	  /* invoke the hover action */
 	  if (DYNAMIC_PROCEDURE_P(scmHover)) {
-	    call_thunk_with_message_handler(scmHover);
+	    scwm_safe_call0_sym(scmHover);
 	  }
 	}
 	/* block until there is an interesting event */
@@ -977,10 +993,6 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
       if (pmiim == NULL) {
 	/* not on an item now */
         DBUG((DBG,__FUNCTION__,"Not on menu item, %d", c10ms_delays));
-	if (pmd->fHoverActionInvoked) {
-	  InvokeUnhoverAction(pmd);
-	  pmd->fHoverActionInvoked = False;
-	}
 	UnselectAndRepaintSelectionForPmd(pmd);
       } else {
 	/* we're on a menu item */
@@ -1266,7 +1278,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst,
   FreeDynamicMenu(pmd);
   DEREF_IF_SYMBOL(scmAction);
   if (DYNAMIC_PROCEDURE_P(scmAction)) {
-    return call_thunk_with_message_handler(scmAction);
+    return scwm_safe_call0_sym(scmAction);
   } else if (DYNAMIC_MENU_P(scmAction)) {
     /* FIXGJB: is this recursion  bad? */
     return popup_menu(scmAction, SCM_BOOL_FromBool(fWarpToFirst), 

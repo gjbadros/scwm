@@ -81,7 +81,7 @@ refresh_common(Window win_or_root)
 
 }
 
-
+#if 0 /* FIXGJB: removed when menus reworked to use call*_hooks */
 SCM 
 call_thunk_with_message_handler(SCM thunk)
 {
@@ -93,6 +93,7 @@ call_thunk_with_message_handler(SCM thunk)
   return scm_internal_catch(SCM_BOOL_T, scm_body_thunk, &thunk_data,
 			    scm_handle_by_message_noexit, "scwm");
 }
+#endif
 
 void
 ms_sleep(unsigned long ms)

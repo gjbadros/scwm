@@ -114,6 +114,7 @@ support is sufficiently mature.  */
 #define FUNC_NAME s_hide_message
 {
   UnmapMessageWindow();
+  XFlush(dpy);
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME

@@ -382,6 +382,8 @@ MoveViewport_internal(int newx, int newy, Bool grab)
     if (psw->Desk == Scr.CurrentDesk) {
       MovePswToCurrentPosition(psw);
       MovePswIconToCurrentPosition(psw);
+    } else {
+      BroadcastConfig(M_CONFIGURE_WINDOW, psw);
     }
   }
 
