@@ -1,5 +1,16 @@
 Sun Mar 29 18:10:45 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* shutdown.c, shutdown.h: Files with shutdown handling for scwm,
+ 	moved from scwm.c, and implementations of restart and quit from
+ 	miscprocs.c. Features added are making the argument to restart
+ 	optional (defaults to whatever scwm was run as) and adding a
+ 	shutdown-hook using the new functionality.
+
+	scwm.c, scwm.h, miscprocs.c, miscprocs.h, scmprocs.c: remove stuff
+ 	reimplemented above.
+
+	Makefile.in: compile shutdown.c, generate shutdown.x.
+	
 	* add_window.c: Remove a bit more dead code from AddWindow().
 
 	* binding.c, binding.h, scmprocs.c: Remove bind-event.

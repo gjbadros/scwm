@@ -99,11 +99,9 @@ init_scwm_procs(void)
   gh_new_procedure("set-opaque-move-size!", set_opaque_move_size_x, 1, 0, 0);
   gh_new_procedure("font?", font_p, 1, 0, 0);
   gh_new_procedure("window?", window_p, 1, 0, 0);
-  gh_new_procedure("scwm-quit", scwm_quit, 0, 0, RESTP_SCM);
   gh_new_procedure("pointer-position", pointer_position, 0, 0, 0);
   gh_new_procedure("move-pointer-to", move_pointer_to, 2, 0, 0);
   gh_new_procedure("recapture", recapture, 0, 0, 0);
-  gh_new_procedure("restart", restart, 1, 0, 0);
   gh_new_procedure("wait-for-window", wait_for_window, 1, 0, 0);
   gh_new_procedure("move-window-to-desk", move_window_to_desk, 1, 1, 0);
   gh_new_procedure("set-current-desk!", set_current_desk_x, 1, 0, 0);

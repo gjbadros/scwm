@@ -111,6 +111,7 @@ SRCS = \
 	module-interface.c \
 	image.c \
 	callbacks.c \
+	shutdown.c
 
 SNARFED_FILES = font.x \
 	image.x \
@@ -118,7 +119,8 @@ SNARFED_FILES = font.x \
 	module-interface.x \
 	scwmmenu.x \
 	color.x \
-	callbacks.x
+	callbacks.x \
+	shutdown.x
 
 LOADABLE_PRIMITIVE_SOURCES = draw-pie-menu.c
 

@@ -200,16 +200,6 @@ set_opaque_move_size_x(SCM size)
   return SCM_UNSPECIFIED;
 }
 
-SCM 
-scwm_quit(SCM args)
-{
-  SCM_REDEFER_INTS;
-  if (master_pid != getpid())
-    kill(master_pid, SIGTERM);
-  Done(0, NULL);
-  SCM_REALLOW_INTS;
-  return SCM_UNSPECIFIED;	/* you never know... */
-}
 
 SCM 
 pointer_position()
@@ -258,23 +248,6 @@ recapture()
   return SCM_UNSPECIFIED;
 }
 
-SCM 
-restart(SCM command)
-{
-  int dummy;
-  char *n;
-
-  SCM_REDEFER_INTS;
-  if (!gh_string_p(command)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg("restart", 1, command);
-  }
-  n = gh_scm2newstr(command, &dummy);
-  Done(1, n);
-  free(n);
-  SCM_REALLOW_INTS;
-  return SCM_UNSPECIFIED;	/* you never know... */
-}
 
 
 SCM 
