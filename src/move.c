@@ -369,19 +369,16 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
             (psw->icon_w_width - psw->icon_p_width) / 2;
           psw->icon_y_loc = yt;
           if (opaque_move) {
-            if (psw->icon_pixmap_w != None)
-              XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, psw->icon_y_loc);
-            if (psw->icon_w != None)
-              XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
-                          yt + psw->icon_p_height);
+            MovePswIconToCurrentPosition(psw);
           } else {
-            RedrawOutlineAtNewPosition(Scr.Root, psw->icon_x_loc, psw->icon_y_loc,
+            RedrawOutlineAtNewPosition(Scr.Root, 
+                                       ICON_X_VP(psw), ICON_Y_VP(psw),
                                        OutlineWidth, OutlineHeight);
           }
         } else {
           /* the solver's resolve does the move window */
           /* if not using Cassowary, this just does an XMoveWindow */
-          SuggestMoveWindowTo(psw,xl,yt,opaque_move);
+          SuggestMoveWindowTo(psw,Scr.Vx+xl,Scr.Vy+yt,opaque_move);
         }
 	DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
 
@@ -417,22 +414,18 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
   SnapCoordsToEdges(&xl, &yt, psw->frame_width, psw->frame_height,
 		    psw->bw, Scr.MoveResistance);
   if (!psw->fIconified) {
-    SuggestMoveWindowTo(psw,xl,yt,True);
+    SuggestMoveWindowTo(psw,Scr.Vx+xl,Scr.Vy+yt,True);
     CassowaryEndEdit(psw);
   } else {
     /* we're moving an icon */
     if (!opaque_move) {
       /* we finally need to move the real windows for the icon */
-      if (psw->icon_pixmap_w != None)
-        XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, psw->icon_y_loc);
-      if (psw->icon_w != None)
-        XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
-                    yt + psw->icon_p_height);
+      MovePswIconToCurrentPosition(psw);
     }
   }
     
-  *FinalX = xl;
-  *FinalY = yt;
+  *FinalX = Scr.Vx + xl;
+  *FinalY = Scr.Vy + yt;
   UnmapMessageWindow();
 }
 
@@ -613,7 +606,10 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   extern Bool have_orig_position;
   extern int orig_x, orig_y;
 
-  CassowaryModifyOpaqueFlag(&fOpaque);
+  /* Allow using the rubberband for initial placement even with
+     cassowary in use */
+  if (FXIsWindowMapped(dpy,psw->w))
+    CassowaryModifyOpaqueFlag(&fOpaque);
 
   /* find out from where we should start the move */
   if (have_orig_position) {

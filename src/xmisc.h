@@ -26,6 +26,8 @@ Window WXGetPointerChild(Window wParent);
 Bool FXGetWindowTopLeft(Window w, int *pxReturn, int *pyReturn);
 Bool FXGetWindowSize(Window w, int *pwidthReturn, int *pheightReturn);
 Bool FXWindowAccessible(Display *dpy, Window w);
+Bool FXIsWindowMapped(Display *dpy, Window w);
+
 void DrawImage(Window w, scwm_image *psimg, int cpixXoffset, int cpixYoffset, GC gc);
 XTextProperty *PNewXTextPropertyFromSz(const char *sz);
 int flush_expose(Window w);

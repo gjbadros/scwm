@@ -1,6 +1,45 @@
+Tue Sep  1 14:26:53 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added cassowary_headers, and use it to add to
+	noinst_HEADERS
+
+	* xmisc.h, xmisc.c: Added FXIsWindowMapped()
+
+	* window.h, window.c: Added MovePswIconToCurrentPosition(), use
+	FRAME_X_VP, FRAME_Y_VP in MovePswToCurrentPosition.  Make
+	stickiness result in changes to the real position of the window,
+	since now windows store their virtual position, and are converted
+	to viewport positions at a pretty low level (when positioned using 
+	MovePsw* functions)
+
+	* virtual.c: Simplify MoveViewport_internal, since now windows do
+	not need to be moved directly -- less work needs to be done since
+	windows store their virtual position instead of their viewport
+	position. 
+
+	* scwm-constraints.h: Added FRAME_[XY]_VP, ICON_[XY]_VP macros
+
+	* scwm-constraints.cc: Make CassowarySetCValuesAndSolve() call
+	MovePswToCurrentPosition when the solver is not in use.
+
+	* move.c: Use MovePswIconToCurrentPosition() instead of multiple
+ 	XMoveWindow calls.  Correct for Scr.V[xy] in pointer position in
+ 	moveLoop.  Use rubberband for initial placement even when
+	Cassowary is on.
+
+	* module-interface.c: Use FRAME_[XY]_VP, ICON_[XY]_VP in the
+	marshalling functions
+
+	* icons.c: Use MovePswIconToCurrentPosition, and use virtual
+	coords in AutoPlace (instead of viewport coordinates).
+
+	* events.c: Clean up positioning of icon_w and icon_pixmap_w so
+	that the latter is the thing that icon_[xy]_loc refers to.
+
+
 1998-09-01  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
-	* xproperty.c (s_string_to_X_atom, s_X_atom_to_string): New
+	* xproperty.c (string_to_X_atom, X_atom_to_string): New
 	primitives.
 
 Mon Aug 31 14:05:09 1998  Greg Badros  <gjb@cs.washington.edu>

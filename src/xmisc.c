@@ -89,6 +89,16 @@ FXWindowAccessible(Display *dpy, Window w)
 		      &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);
 }
 
+Bool
+FXIsWindowMapped(Display *dpy, Window w)
+{
+  XWindowAttributes xwa;
+  if (XGetWindowAttributes(dpy,w,&xwa)) {
+    /* success */
+    return xwa.map_state != IsUnmapped;
+  }
+  return False;
+}
 
 /* Note: gc is only used for bitmaps! */
 void

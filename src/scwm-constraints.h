@@ -17,11 +17,18 @@ typedef const struct ScwmWindow *ConstPScwmWindow;
 
 struct ScreenInfo;
 
+#define ABS(x) ((x)<0?-(x):(x))
+
 #define FRAME_X(psw) ((psw)->frame_x)
 #define FRAME_Y(psw) ((psw)->frame_y)
-#define ABS(x) ((x)<0?-(x):(x))
-#define FRAME_X_NONVIRT(psw) (ABS((psw)->frame_x) % Scr.DisplayWidth)
-#define FRAME_Y_NONVIRT(psw) (ABS((psw)->frame_y) % Scr.DisplayHeight)
+#define FRAME_X_VP(psw) (FRAME_X(psw) - ((psw)->fSticky? 0:Scr.Vx))
+#define FRAME_Y_VP(psw) (FRAME_Y(psw) - ((psw)->fSticky? 0:Scr.Vy))
+
+#define ICON_X(psw) ((psw)->icon_x_loc)
+#define ICON_Y(psw) ((psw)->icon_y_loc)
+#define ICON_X_VP(psw) (ICON_X(psw) - ((psw)->fStickyIcon? 0:Scr.Vx))
+#define ICON_Y_VP(psw) (ICON_Y(psw) - ((psw)->fStickyIcon? 0:Scr.Vy))
+
 
 #define FRAME_WIDTH(psw) ((psw)->frame_width)
 #define FRAME_HEIGHT(psw) ((psw)->frame_height)

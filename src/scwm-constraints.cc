@@ -66,6 +66,7 @@ CassowarySetCValuesAndSolve(ScwmWindow *psw, int fSolve)
     pswci->_frame_y.set_value(psw->frame_y);
     pswci->_frame_width.set_value(psw->frame_width);
     pswci->_frame_height.set_value(psw->frame_height);
+    MovePswToCurrentPosition(psw);
     return;
   }
     

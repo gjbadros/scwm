@@ -358,86 +358,34 @@ void
 MoveViewport_internal(int newx, int newy, Bool grab)
 {
   ScwmWindow *psw;
-  int deltax, deltay;
+
+  if (newx < 0)
+    newx = 0;
+  else if (newx > Scr.VxMax)
+    newx = Scr.VxMax;
+  if (newy < 0)
+    newy = 0;
+  else if (newy > Scr.VyMax)
+    newy = Scr.VyMax;
 
   /* no change? then do nothing */
   if (newx == Scr.Vx && newy == Scr.Vy)
     return;
 
-  if (grab)
-    XGrabServer_withSemaphore(dpy);
-
-  if (newx > Scr.VxMax)
-    newx = Scr.VxMax;
-  if (newy > Scr.VyMax)
-    newy = Scr.VyMax;
-  if (newx < 0)
-    newx = 0;
-  if (newy < 0)
-    newy = 0;
-
-  deltay = Scr.Vy - newy;
-  deltax = Scr.Vx - newx;
-
   Scr.Vx = newx;
   Scr.Vy = newy;
+
+  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
+    MovePswToCurrentPosition(psw);
+    /* FIXGJB:
+    XMoveWindow(dpy,psw->frame,FRAME_X_VP(psw),FRAME_Y_VP(psw));
+    */
+    MovePswIconToCurrentPosition(psw);
+  }
+
   Broadcast(M_NEW_PAGE, 5, Scr.Vx, Scr.Vy, Scr.CurrentDesk, Scr.VxMax, Scr.VyMax, 0, 0);
 
-  if ((deltax != 0) || (deltay != 0)) {
-    for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-      /* If the window is iconified, and sticky Icons is set,
-       * then the window should essentially be sticky */
-      if (!(psw->fIconified && psw->fStickyIcon) && !psw->fSticky) {
-	if (!psw->fStickyIcon) {
-	  psw->icon_x_loc += deltax;
-	  psw->icon_xl_loc += deltax;
-	  psw->icon_y_loc += deltay;
-	  if (psw->icon_pixmap_w != None)
-	    XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc,
-			psw->icon_y_loc);
-	  if (psw->icon_w != None)
-	    XMoveWindow(dpy, psw->icon_w, psw->icon_x_loc,
-			psw->icon_y_loc + psw->icon_p_height);
-	  if (!psw->fIconUnmapped) {
-	    Broadcast(M_ICON_LOCATION, 7, psw->w, psw->frame,
-		      (unsigned long) psw,
-		      psw->icon_x_loc, psw->icon_y_loc,
-		      psw->icon_w_width,
-		      psw->icon_w_height + psw->icon_p_width);
-	  }
-	}
-        /* FIXGJBNOW: this is broken with cassowary since
-           the order in which the windows move around
-           can ruin the position of other windows.  Instead
-           I need to always position windows relative to the virtual
-           desktop when I do the X11 calls, or when I store in the
-           constraint solver.  the x coordinate of a window could be
-           the Scr.Vx + the psw->frame_x, perhaps... or I could
-           have another set of primitives, window-clv-vx, for virtual
-           x coordinate, and have that return the expression.  That
-           means also making Scr.V[xy] constraint variables */
-	MoveTo(psw, FRAME_X(psw) + deltax, FRAME_Y(psw) + deltay);
-      }
-    }
-    for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-      /* If its an icon, and its sticking, autoplace it so
-       * that it doesn't wind up on top a a stationary
-       * icon */
-      if ((psw->fSticky || psw->fStickyIcon) &&
-	  psw->fIconified && !psw->fIconMoved && 
-	  !psw->fIconUnmapped) {
-	AutoPlace(psw);
-      }
-    }
-
-  }
   checkPanFrames();
-
-  /* do this with PanFrames too ??? HEDU */
-  while (XCheckTypedEvent(dpy, MotionNotify, &Event))
-    StashEventTime(&Event);
-  if (grab)
-    XUngrabServer_withSemaphore(dpy);
 }
 
 

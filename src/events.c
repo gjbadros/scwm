@@ -1379,16 +1379,17 @@ HandleConfigureRequest()
     XConfigureWindow(dpy, Event.xany.window, xwcm, &xwc);
 
     if (pswCurrent) {
-      xwc.x = pswCurrent->icon_x_loc;
-      xwc.y = pswCurrent->icon_y_loc - pswCurrent->icon_p_height;
       xwcm = cre->value_mask & (CWX | CWY);
-      if (pswCurrent->icon_pixmap_w != None)
+      if (pswCurrent->icon_pixmap_w != None) {
+        xwc.x = pswCurrent->icon_x_loc;
+        xwc.y = pswCurrent->icon_y_loc;
 	XConfigureWindow(dpy, pswCurrent->icon_pixmap_w, xwcm, &xwc);
-      xwc.x = pswCurrent->icon_x_loc;
-      xwc.y = pswCurrent->icon_y_loc;
-      xwcm = cre->value_mask & (CWX | CWY);
-      if (pswCurrent->icon_w != None)
+      }
+      if (pswCurrent->icon_w != None) {
+        xwc.x = pswCurrent->icon_x_loc;
+        xwc.y = pswCurrent->icon_y_loc +  pswCurrent->icon_p_height;
 	XConfigureWindow(dpy, pswCurrent->icon_w, xwcm, &xwc);
+      }
     }
     return;
   }

@@ -14,6 +14,7 @@
 #include <guile/gh.h>
 #include <stdarg.h>
 #include "scwm.h"
+#include "screen.h"
 #include "window.h"
 #include "callbacks.h"
 #include "scwm-constraints.h"
@@ -97,8 +98,8 @@ module packet for WIN as a Scheme string. */
   info[i=0] = psw->w;
   info[++i] = psw->frame;
   info[++i] = 0; /* modules shouldn't need to know this! was (unsigned long)t; */
-  info[++i] = FRAME_X(psw);
-  info[++i] = FRAME_Y(psw);
+  info[++i] = FRAME_X_VP(psw);
+  info[++i] = FRAME_Y_VP(psw);
   info[++i] = FRAME_WIDTH(psw);
   info[++i] = FRAME_HEIGHT(psw);
   info[++i] = psw->Desk;
@@ -147,8 +148,8 @@ module packet for WIN as a Scheme string. */
     info[6] = 0;
     info[7] = 0;
   } else {
-    info[4] = psw->icon_x_loc;
-    info[5] = psw->icon_y_loc;
+    info[4] = ICON_X_VP(psw);
+    info[5] = ICON_Y_VP(psw);
     info[6] = psw->icon_w_width;
     info[7] = psw->icon_w_height+psw->icon_p_height;
   }

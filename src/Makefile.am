@@ -51,6 +51,7 @@ scwm_SOURCES =  Grab.c \
 		xrm.c
 
 cassowary_srcs = constraint-primitives.cc scwm-constraints.cc 
+cassowary_headers = constraint-primitives.h scwm-constraints.h scwm-constraints.hpp
 
 cassowary_objs = $(cassowary_srcs:.cc=.o)
 
@@ -66,6 +67,7 @@ scwm-constraints.h constraint-primitives.h \
 menu.h shutdown.h string_token.h syscompat.h system.h \
 util.h virtual.h window.h xmisc.h
 
+noinst_HEADERS += $(cassowary_headers)
 
 scwm_LDADD = @CASSOWARY_OBJECTS@ @x_ldflags@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
 	      @x_libs@ @GUILE_LIBS@ @CASSOWARY_LIBS@

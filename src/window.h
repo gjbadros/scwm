@@ -293,6 +293,7 @@ void LowerWindow(ScwmWindow *psw);
 
 void KeepOnTop();
 void MovePswToCurrentPosition(const ScwmWindow *psw);
+void MovePswIconToCurrentPosition(const ScwmWindow *psw);
 void ResizePswToCurrentSize(ScwmWindow *psw);
 
 /* do not call these functions -- they are exported for cassowary to call,

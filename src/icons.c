@@ -289,15 +289,15 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
 
   final_x = def_x;
   final_y = def_y;
-  if (final_x < 0)
-    final_x = 0;
-  if (final_y < 0)
-    final_y = 0;
+  if (final_x < Scr.Vx)
+    final_x = Scr.Vx;
+  if (final_y < Scr.Vy)
+    final_y = Scr.Vy;
 
-  if (final_x + psw->icon_w_width >= Scr.DisplayWidth)
-    final_x = Scr.DisplayWidth - psw->icon_w_width - 1;
-  if (final_y + psw->icon_w_height >= Scr.DisplayHeight)
-    final_y = Scr.DisplayHeight - psw->icon_w_height - 1;
+  if (final_x + psw->icon_w_width >= Scr.Vx + Scr.DisplayWidth)
+    final_x = Scr.Vx + Scr.DisplayWidth - psw->icon_w_width - 1;
+  if (final_y + psw->icon_w_height >= Scr.Vy + Scr.DisplayHeight)
+    final_y = Scr.Vy + Scr.DisplayHeight - psw->icon_w_height - 1;
 
   psw->icon_x_loc = final_x;
   psw->icon_xl_loc = final_x;
@@ -430,19 +430,13 @@ DrawIconWindow(ScwmWindow * psw)
 
   NewFontAndColor(Scr.ScratchGC3,XFONTID(Scr.icon_font), TextColor, BackColor);
 
-  if (psw->icon_pixmap_w != None)
-    XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc,
-		psw->icon_y_loc);
 
   if (psw->icon_w != None) {
     psw->icon_w_height = ICON_HEIGHT;
-    XMoveResizeWindow(dpy, psw->icon_w, psw->icon_xl_loc,
-		      psw->icon_y_loc + psw->icon_p_height,
-		      psw->icon_w_width, ICON_HEIGHT);
-
     XClearWindow(dpy, psw->icon_w);
   }
 
+  MovePswIconToCurrentPosition(psw);
 
   if (psw->fIconOurs) {
     if ((psw->icon_image != SCM_BOOL_F) &&
@@ -503,7 +497,7 @@ RedoIconName(ScwmWindow *psw)
   if (psw->fSuppressIcon)
     return;
 
-  if (psw->icon_w == 0)
+  if (psw->icon_w == None)
     return;
 
   psw->icon_t_width = ComputeXTextWidth(XFONT(Scr.icon_font), psw->icon_name,
@@ -559,9 +553,9 @@ AutoPlace(ScwmWindow *psw)
     /* just make sure the icon is on this screen */
     psw->icon_x_loc = psw->icon_x_loc % Scr.DisplayWidth + base_x;
     psw->icon_y_loc = psw->icon_y_loc % Scr.DisplayHeight + base_y;
-    if (psw->icon_x_loc < 0)
+    if (psw->icon_x_loc < Scr.Vx)
       psw->icon_x_loc += Scr.DisplayWidth;
-    if (psw->icon_y_loc < 0)
+    if (psw->icon_y_loc < Scr.Vy)
       psw->icon_y_loc += Scr.DisplayHeight;
   } else if (psw->wmhints && psw->wmhints->flags & IconPositionHint) {
     psw->icon_x_loc = psw->wmhints->icon_x;
@@ -632,16 +626,11 @@ AutoPlace(ScwmWindow *psw)
     psw->icon_x_loc = real_x;
     psw->icon_y_loc = real_y;
 
-    if (psw->icon_pixmap_w)
-      XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, psw->icon_y_loc);
-
     psw->icon_w_width = psw->icon_p_width;
     psw->icon_xl_loc = psw->icon_x_loc;
 
-    if (psw->icon_w != None)
-      XMoveResizeWindow(dpy, psw->icon_w, psw->icon_xl_loc,
-			psw->icon_y_loc + psw->icon_p_height,
-			psw->icon_w_width, ICON_HEIGHT);
+    MovePswIconToCurrentPosition(psw);
+
     Broadcast(M_ICON_LOCATION, 7, psw->w, psw->frame,
 	      (unsigned long) psw,
 	      psw->icon_x_loc, psw->icon_y_loc,

@@ -487,10 +487,21 @@ SendClientConfigureNotify(const ScwmWindow *psw)
 void 
 MovePswToCurrentPosition(const ScwmWindow *psw)
 {
-  int x = FRAME_X(psw), y = FRAME_Y(psw);
+  int x = FRAME_X_VP(psw), y = FRAME_Y_VP(psw);
   XMoveWindow(dpy, psw->frame, x, y);
   SendClientConfigureNotify(psw);
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+}
+
+
+void 
+MovePswIconToCurrentPosition(const ScwmWindow *psw)
+{
+  int x = ICON_X_VP(psw), y = ICON_Y_VP(psw);
+  if (psw->icon_w != None)
+    XMoveWindow(dpy, psw->icon_w, x, y + psw->icon_p_height);
+  if (psw->icon_pixmap_w != None)
+    XMoveWindow(dpy, psw->icon_pixmap_w, x, y);
 }
 
 
@@ -589,15 +600,15 @@ move_finalize(Window w, ScwmWindow * psw, int x, int y)
     Broadcast(M_ICON_LOCATION, 7, psw->w, psw->frame,
 	      (unsigned long) psw,
 	      psw->icon_x_loc, psw->icon_y_loc,
-	      psw->icon_w_width, psw->icon_w_height
-	      + psw->icon_p_height);
-    XMoveWindow(dpy, psw->icon_w,
-		psw->icon_xl_loc, y + psw->icon_p_height);
+	      psw->icon_w_width, 
+              psw->icon_w_height + psw->icon_p_height);
+    MovePswIconToCurrentPosition(psw);
+#if 0 /* FIXGJB */
     if (psw->icon_pixmap_w != None) {
       XMapWindow(dpy, psw->icon_w);
-      XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, y);
       XMapWindow(dpy, w);
     }
+#endif
   }
 }
 
@@ -1819,9 +1830,15 @@ specified. */
   SCM_REDEFER_INTS;
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
-  psw->fSticky = True;
-  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-  SetTitleBar(psw, (Scr.Hilite == psw), True);
+  if (!psw->fSticky) {
+    psw->fSticky = True;
+    SuggestMoveWindowTo(psw,
+                        (FRAME_X(psw)-Scr.Vx) % Scr.DisplayWidth,
+                        (FRAME_Y(psw)-Scr.Vy) % Scr.DisplayHeight,
+                        True);
+    BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+    SetTitleBar(psw, (Scr.Hilite == psw), True);
+  }
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -1840,9 +1857,15 @@ the usual way if not specified. */
   SCM_REDEFER_INTS;
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
-  psw->fSticky = False;
-  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-  SetTitleBar(psw, (Scr.Hilite == psw), True);
+  if (psw->fSticky) {
+    psw->fSticky = False;
+    SuggestMoveWindowTo(psw,
+                        (FRAME_X(psw)+Scr.Vx),
+                        (FRAME_Y(psw)+Scr.Vy),
+                        True);
+    BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+    SetTitleBar(psw, (Scr.Hilite == psw), True);
+  }
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
