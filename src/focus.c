@@ -105,7 +105,9 @@ void SetFocus(Window w, ScwmWindow *Fw, Bool FocusByMouse)
     }
   /* if we do click to focus, remove the grab on mouse events that
    * was made to detect the focus change */
-  if((Fw != NULL)&&(Fw->flags&ClickToFocus))
+  if((Fw != NULL)&&
+     ((Fw->flags&ClickToFocus)
+      && !(Fw->flags&SloppyFocus)))
     {
       for(i=0;i<3;i++)
 	if(Scr.buttons2grab & (1<<i))
@@ -118,30 +120,29 @@ void SetFocus(Window w, ScwmWindow *Fw, Bool FocusByMouse)
   if((Fw)&&(Fw->flags & ICONIFIED)&&(Fw->icon_w))
     w= Fw->icon_w;
   
-  if((Fw)&&(Fw->flags & Lenience))
-    {
-      XSetInputFocus (dpy, w, RevertToParent, lastTimestamp);
-      Scr.Focus = Fw;
-      Scr.UnknownWinFocused = None;
-    }
-  else if(!((Fw)&&(Fw->wmhints)&&(Fw->wmhints->flags & InputHint)&&
-	    (Fw->wmhints->input == False)))
-    {
-      /* Window will accept input focus */
-      XSetInputFocus (dpy, w, RevertToParent, lastTimestamp);
-      Scr.Focus = Fw;
-      Scr.UnknownWinFocused = None;
-    }
-  else if ((Scr.Focus)&&(Scr.Focus->Desk == Scr.CurrentDesk))
-    {
-      /* Window doesn't want focus. Leave focus alone */
-      /* XSetInputFocus (dpy,Scr.Hilite->w , RevertToParent, lastTimestamp);*/
-    }
-  else
-    {
-      XSetInputFocus (dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
-      Scr.Focus = NULL;
-    }
+  if(((Fw) && (Fw->flags & ClickToFocus)
+       && (Fw->flags & SloppyFocus))) {
+    XSetInputFocus (dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
+    Scr.Focus = NULL;
+    Scr.UnknownWinFocused = None;
+  } else if((Fw)&&(Fw->flags & Lenience) ||
+	    !((Fw)&&
+	      (Fw->wmhints)&&(Fw->wmhints->flags & InputHint)&&
+	      (Fw->wmhints->input == False))) {
+    /* Window will accept input focus */
+
+    XSetInputFocus (dpy, w, RevertToParent, lastTimestamp);
+    Scr.Focus = Fw;
+    Scr.UnknownWinFocused = None;
+  } else if ((Scr.Focus)&&(Scr.Focus->Desk == Scr.CurrentDesk)) {
+
+    /* Window doesn't want focus. Leave focus alone */
+    /* XSetInputFocus (dpy,Scr.Hilite->w , RevertToParent, lastTimestamp);*/
+
+  } else {
+    XSetInputFocus (dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
+    Scr.Focus = NULL;
+  }
 
 
   if ((Fw)&&(Fw->flags & DoesWmTakeFocus))
