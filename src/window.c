@@ -2917,6 +2917,7 @@ SCWM_PROC(set_lenience_x, "set-lenience!", 1, 1, 0,
 }
 
 
+MAKE_SMOBFUNS(window);
 
 void 
 init_window()
@@ -2930,6 +2931,8 @@ init_window()
 
   SCWM_DEFINE_HOOK(invalid_interaction_hook,"invalid-interaction-hook");
   SCWM_DEFINE_HOOK(cannot_grab_hook,"cannot-grab-hook");
+
+  REGISTER_SCWMSMOBFUNS(window);
 #ifndef SCM_MAGIC_SNARFER
 #include "window.x"
 #endif

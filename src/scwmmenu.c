@@ -1251,14 +1251,17 @@ menu_init_gcs()
   Scr.MenuStippleGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
 
+
+MAKE_SMOBFUNS(menu);
+
 void
 init_menu()
 {
-#ifndef SCM_MAGIC_SNARFER
-# include "scwmmenu.x"
-#endif
-
   pscm_construct_menu_primitive = SCM_CDRLOC
     (scm_sysintern("construct-menu-primitive", SCM_BOOL_F));
 
+  REGISTER_SCWMSMOBFUNS(menu);
+#ifndef SCM_MAGIC_SNARFER
+# include "scwmmenu.x"
+#endif
 }

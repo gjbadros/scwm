@@ -221,9 +221,12 @@ for assigning shortcut keys to the various menuitems. */
 }
 
 
+MAKE_SMOBFUNS(menuitem);
+
 void
 init_menuitem()
 {
+  REGISTER_SCWMSMOBFUNS(menuitem);
 #ifndef SCM_MAGIC_SNARFER
 # include "menuitem.x"
 #endif

@@ -666,11 +666,14 @@ FreeButtonFace(Display * dpy, ButtonFace * bf)
   bf->style |= SimpleButton;
 }
 
+MAKE_SMOBFUNS(face);
 
 void 
 init_face()
 {
   int i;
+  /* This needs to be done before the faces are created, below */
+  REGISTER_SCWMSMOBFUNS(face);
 
   sym_clear = gh_symbol2scm("clear");
   scm_protect_object(sym_clear);

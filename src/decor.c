@@ -295,10 +295,12 @@ the window context in the usual way. */
   return SCM_UNSPECIFIED;
 }
 
+MAKE_SMOBFUNS(decor);
 
 void
 init_decor()
 {
+  REGISTER_SCWMSMOBFUNS(decor);
 #ifndef SCM_MAGIC_SNARFER
 #include "decor.x"
 #endif
