@@ -292,7 +292,10 @@ See `color-properties' for a list of the keys."
 ;;; General functionality for splitting long menus
 ;;; ----------------------------------------------
 ;;; the max number of lines in a menu
-(define-public default-max-fold-lines 30)
+(define-public default-menu-max-fold-lines 
+;;;**VAR
+;;; The default number of items that menus are split into by `fold-menu-list'.
+  30)
 
 (define (split-list ls max)
   (let ((le (length ls)) (tt ()) (t1 ()))
@@ -301,10 +304,10 @@ See `color-properties' for a list of the keys."
 	      (set-cdr! tt ()) (cons ls (split-list t1 max))))))
 
 (define*-public (fold-menu-list
-		ml #&optional (max-lines default-max-fold-lines))
+		ml #&optional (max-lines default-menu-max-fold-lines))
   "Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
-defaults to `default-max-fold-lines'."
+defaults to `default-menu-max-fold-lines'."
   (if (<= (length ml) max-lines) ml
       (map (lambda (lm) (menuitem "more..." #:action (menu lm)))
 	   (split-list ml max-lines))))
@@ -313,9 +316,20 @@ defaults to `default-max-fold-lines'."
   "Return a procedure that runs the system command COMMAND."
   (lambda () (execute command)))
 
-(define-public xterm-command "xterm")
+(define-public xterm-command
+;;;**VAR
+;;; The command to run when a new xterm window is requested.
+;;; The string given should refer to a binary or script in the
+;;; path and should take a "-e" argument of what to run.
+  "xterm")
 
-(define-public remote-shell-command "telnet")
+(define-public remote-shell-command 
+;;;**VAR
+;;; The command to use to start a remote shell.
+;;; It should take a first (non-option) argument of
+;;; the hostname to connect to.  "ssh" "rsh" and "telnet"
+;;; are each reasonable choices.
+  "telnet")
 
 (define-public (run-in-xterm cmd . opts)
   "Return a procedure that runs CMD in an xterm.
