@@ -42,8 +42,8 @@ E.g., (string-prompt \"Enter new name\" (lambda (nm) (set-window-title! w nm)))"
     (gtk-container-add toplevel hbox)
     (gtk-widget-show entry)
     (gtk-widget-show label)
-    (gtk-box-pack-start hbox label)
-    (gtk-box-pack-start hbox entry)
+    (gtk-box-pack-start hbox label #f #t)
+    (gtk-box-pack-start hbox entry #t #t)
     (gtk-signal-connect entry "activate"
 			(lambda () (gtk-widget-destroy toplevel) 
 				(proc (gtk-entry-get-text entry))))
