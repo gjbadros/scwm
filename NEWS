@@ -1,8 +1,12 @@
 Scwm NEWS --- history of user-visible changes.  -*- text -*-
-Copyright (C) 1997, 1998, 1999 Greg J. Badros and Maciej Stachowiak
+Copyright (C) 1997, 1998, 1999, 2000 Greg J. Badros and Maciej Stachowiak
 See the end for copying conditions.
 
-Changes for scwm-0.99.6 (not yet released)
+Changes for scwm-0.99.7 (not yet released)
+
+
+
+Changes for scwm-0.99.6 (released 12-January-2000)
 * Bug fixes
 ** Button-click position is used as anchor for interactive window moves
 Fixes a race condition in determining where the user clicked on the window
@@ -92,6 +96,7 @@ for supporting whole-edge highlighting for better constraint interface
 slows stuff down enough for easier debugging, and also finds problems in
 gcing sooner, rather than later.
 
+
 Changes for scwm-0.99.5.1 (released 26-October-1999)
 * Bug fixes
 * RPM built to link against libguile.so.6 (guile-1.3.4) instead of
@@ -1326,7 +1331,7 @@ things are missing.
 
 Copyright information:
 
-Copyright (C) 1997, 1998, 1999 Maciej Stachowiak and Greg J. Badros
+Copyright (C) 1997, 1998, 1999, 2000 Greg J. Badros and Maciej Stachowiak
 
    Permission is granted to anyone to make or distribute verbatim copies
    of this document as received, in any medium, provided that the

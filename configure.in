@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl $Id$
 dnl configure.in
 dnl Autoconf script for SCWM
-dnl (C) 1998, 1999 Greg J. Badros and Maciej Stachowiak
+dnl (C) 1998, 1999, 2000 Greg J. Badros and Maciej Stachowiak
 
 
 dnl ## Initialize autoconf ##
@@ -11,7 +11,7 @@ AC_INIT(src/scwm.c)
 AC_PREREQ(2.4)
 
 dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.99.6)
+AM_INIT_AUTOMAKE(scwm, 0.99.6post)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(include/config.h)
 
