@@ -69,10 +69,15 @@
 ;; *Alternatively* (that's OR, not XOR) you can type C-j evaluate the
 ;; last SEXP and insert the results at point, or type C-x C-j to display
 ;; them in the minibuffer.  This functionality does not require
-;; preliminary M-x scwm-run.  Note that you can find your recent
-;; minibuffer messages in the buffer *Messages*.  Help and Apropos are
-;; also available: type C-h C-a for apropos and C-h C-s for documentation.
-;; Type M-TAB to complete symbol at point.
+;; preliminary M-x scwm-run.  Type M-TAB to complete symbol at point.
+
+;; Note that you can find your recent minibuffer messages in the
+;; buffer *Messages* in Emacs, or my using M-x show-message-log in XEmacs
+
+;; Help and Apropos are also available: type C-h C-a for apropos and
+;; C-h C-s for documentation.  C-h C-f looks up the info node for
+;; a guile procedure.  Be sure guile-ref.info exists and is in your
+;; Info-directory-list path.
 
 (eval-and-compile
  (or (and (fboundp 'cadr) (fboundp 'unless)) (require 'cl))
@@ -143,7 +148,7 @@ See also `with-temp-buffer'."
 
 (defvar scwm-repl "scwmrepl" "*The path to scwmrepl.")
 (defvar scwm-exec "scwmexec" "*The path to scwmexec.")
-(defvar scwm-source-path "/usr/src/scwm/" "*The path to the SCWM sources.")
+(defvar scwm-source-path "/usr/src/scwm/" "*The path to the Scwm sources.")
 
 ;; thing-at-point-file-name-chars ==>
 (defvar scwm-file-name-chars "~/A-Za-z0-9---_.${}#%,:"
@@ -155,9 +160,8 @@ See also `with-temp-buffer'."
 ;;; XEmacs doesn't have thingatpt. Too bad.
 (eval-and-compile
  (unless (fboundp 'thing-at-point)
-   ;; pacify the compiler (XEmacs only)
-   (eval-when-compile
-     (autoload 'id-select-symbol "id-select"))
+   ;; this line gives a warning for Emacs, but is needed for XEmacs
+   (autoload 'id-select-symbol "id-select")
    (defun thing-at-point (what)
      "Return the thing at point (crippled: symbols only!)."
      (unless (eq what 'symbol)
@@ -211,7 +215,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 
 ;;; service variables
 (defvar scwm-obarray nil "The obarray for scwm completion.")
-(defvar scwm-history nil "The input history of SCWM completions.")
+(defvar scwm-history nil "The input history of Scwm completions.")
 
 (defun scwm-eval (sexp out)
   "Evaluate the SEXP with scwm-exec and print the results to OUT.
@@ -227,7 +231,7 @@ All evaluation goes through this procedure."
              out))
 
 (defvar scwm-eval-to-minibuffer nil
-  "*The default destination of SCWM output.
+  "*The default destination of Scwm output.
 If this is nil, the output from `scwm-eval-sexp' is inserted into the
 current buffer, otherwise it goes to the minibuffer.")
 
@@ -296,14 +300,14 @@ meaning of the second argument is reversed."
   (setq scwm-obarray (or scwm-obarray (scwm-make-obarray))))
 
 (defun scwm-complete-symbol (&optional sym)
-  "Complete the current symbol or SYM by querying SCWM with `apropos-internal'.
+  "Complete the current symbol or SYM by querying Scwm with `apropos-internal'.
 Returns a string which is present in the `scwm-obarray'."
   (when current-prefix-arg (setq scwm-obarray nil))
   (let ((oa (scwm-obarray)))
     ;; Require a match only when the obarry is present
     ;; (in case guile lacks `apropos-internal')
     ;; to be removed when the situation stabilizes.
-    (completing-read "scwm symbol: " oa nil oa
+    (completing-read "Scwm/guile symbol: " oa nil oa
                      (or sym (scwm-symbol-at-point)) 'scwm-history)))
 
 ;;;###autoload
@@ -345,7 +349,7 @@ Returns a string which is present in the `scwm-obarray'."
   (help-setup-xref (list 'scwm-documentation pat) (interactive-p))
   (with-output-to-temp-buffer "*Help*"
     (with-current-buffer "*Help*"
-      (princ "SCWM documentation for `")
+      (princ "Scwm documentation for `")
       (with-face 'highlight (princ pat))
       (princ "':\n\n ")
       (with-face 'highlight (princ "value"))
@@ -403,10 +407,10 @@ Returns a string which is present in the `scwm-obarray'."
 (defun scwm-apropos (pat)
   "List all scwm symbols matching pat."
   (interactive
-   (list (read-string "SCWM apropos: " (format "%s" (scwm-symbol-at-point)))))
+   (list (read-string "Scwm apropos: " (format "%s" (scwm-symbol-at-point)))))
   (with-output-to-temp-buffer "*Apropos*"
     (with-current-buffer "*Apropos*"
-      (princ "click mouse-2 for documentation.\n\nSCWM apropos `")
+      (princ "click mouse-2 for documentation.\n\nScwm apropos `")
       (with-face 'highlight (princ pat))
       (princ "':\n\n")
       (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
@@ -474,7 +478,7 @@ Procedure Index or in another manual found via the variable
 `scwm-info-file-list'."
   (interactive (list (scwm-complete-symbol)))
   (let ((where (scwm-find-guile-procedure-nodes procedure)))
-    (unless where (error "Couldn't find documentation for %s" procedure))
+    (unless where (error "Could not find guile documentation for %s -- check your Info-directory-list variable and ensure guile-ref.info exists" procedure))
     (let ((num-matches (length where)))
       ;; Get Info running, and pop to it in another window.
       (save-window-excursion (info))
