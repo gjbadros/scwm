@@ -160,9 +160,9 @@
 		    (string-append (scwm-path-prefix) 
 				   "/share/scwm/cassowary_scm-procedures.txt"))))
 
-
-(set! *theme-path*
-      (append (list (string-append scwmdir "/themes")) *theme-path*))
+(append! *theme-path*
+	 (list (string-append (scwm-path-prefix) "/share/scwm/themes" 
+	       (string-append scwmdir "/themes")))
 
 ;;; Lost window?  Get it back with:
 ;; (move-to 0 0 (select-window-from-window-list #:ignore-winlist-skip #t))
