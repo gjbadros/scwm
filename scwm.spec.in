@@ -101,4 +101,5 @@ install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/
 %doc INSTALL NEWS README README-constraints THANKS TODO doc
 %doc sample.scwmrc/*.scwmrc sample.scwmrc/ChangeLog
 
-%config %{prefix}/lib/X11/scwm/system.scwmrc
+#GJB:FIXME:: what 
+#%config %{prefix}/share/scwm/scwmrc/*
