@@ -1,3 +1,8 @@
+Mon May  3 15:49:32 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* *.[ch]: Clean up vim lines at ends of files so the close comment 
+	"*/" is on the following line.
+
 Mon May  3 15:14:00 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* miscprocs.c: #ifdef out `get-key-event' since I never finished
