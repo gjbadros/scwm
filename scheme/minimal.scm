@@ -54,7 +54,3 @@
 (bind-mouse '(title sidebar) 1 move-or-raise)
 
 (bind-mouse 'root 1 (lambda () (popup-menu default-menu)))
-
-
-
-
