@@ -1,3 +1,10 @@
+Wed Aug 12 17:26:30 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* move.c: Added Todd Larson's patch
+
+	* window.c: Let move-to take #f for X or Y to mean don't move
+	  along that coordinate.
+
 Wed Aug 12 14:59:21 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Added resize-frame-to which does what resize-to used

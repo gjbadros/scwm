@@ -1,3 +1,11 @@
+Wed Aug 12 17:21:31 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm, flux.scm: move "animated-move-to" into here (from
+	  flux), and use (app scwm base) module
+
+	* wininfo.scm: Added intersection-area and percent-visible from
+	  Todd Larson, and use them in rectangle-overlap?
+
 Wed Aug 12 15:31:33 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Use resize-frame-to and window-frame-size for
