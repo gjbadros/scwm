@@ -239,7 +239,6 @@ set_window_decor_x(SCM decor, SCM win)
 
   old_height = tmp_win->fl->TitleHeight;
 
-  printf("%x %x \n", (int) tmp_win->fl, (int) fl);
   tmp_win->fl = fl;
 
   extra_height = (tmp_win->flags & TITLE) ?

@@ -13,6 +13,9 @@
 
 #include <config.h>
 
+/* FIXMS looking at this file, it's clear we need to do autoconf tests
+   for a lot of this stuff. */
+
 #if HAVE_UNAME
 #include <sys/utsname.h>
 #endif
@@ -92,3 +95,6 @@ sleep_ms(int n)
 
   (void) select(1, 0, 0, 0, &value);
 }
+
+
+

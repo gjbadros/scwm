@@ -189,6 +189,7 @@ scwm_main(int argc, char **argv)
 
   DBUG("main", "Entered, about to parse args");
 
+  /* FIXMS: this should all be done with getopt. */
   for (i = 1; i < argc; i++) {
     if (strncasecmp(argv[i], "-debug", 6) == 0) {
       debugging = True;
