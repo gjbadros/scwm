@@ -234,6 +234,29 @@ set_window_font_x(SCM font)
 
 SCM_PROC (s_set_menu_font_x, "set-menu-font!", 1, 0, 0, set_menu_font_x);
 
+
+static
+void
+menu_font_update()
+{
+  XGCValues gcv;
+  unsigned long gcm;
+
+  Scr.EntryHeight = FONTHEIGHT(Scr.menu_font) + HEIGHT_EXTRA;
+  Scr.SizeStringWidth = XTextWidth(XFONT(Scr.menu_font),
+					 " +8888 x +8888 ", 15);
+				   
+  gcm = GCFont;
+  gcv.font = XFONT(Scr.menu_font)->fid;
+  /* are all these needed? */
+  /* MSFIX: This stuff should really be handled by other code. */
+  XChangeGC(dpy, Scr.MenuReliefGC, gcm, &gcv);
+  XChangeGC(dpy, Scr.MenuShadowGC, gcm, &gcv);
+  XChangeGC(dpy, Scr.MenuGC, gcm, &gcv);
+  XChangeGC(dpy, Scr.MenuStippleGC, gcm, &gcv);
+}
+
+
 SCM 
 set_menu_font_x(SCM font)
 {
