@@ -11,7 +11,7 @@ AC_INIT(src/scwm.c)
 AC_PREREQ(2.4)
 
 dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.99.6pre3)
+AM_INIT_AUTOMAKE(scwm, 0.99.6)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(include/config.h)
 
@@ -475,18 +475,6 @@ AC_SUBST(READLINE_LIB)
 
 dnl # Guile checks #
 
-SCWM_ARG_PATH(guile-include-prefix,
-[  --with-guile-include-prefix=DIR 
-                          Expect guile header files to be installed in DIR 
-                          [optional]],
-[
-	AC_MSG_CHECKING(where to expect guile header files)
-	guile_include_prefix="${withval}"
-	GUILE_INCLUDES="-I${guile_include_prefix}"
-	
-	AC_MSG_RESULT("${guile_include_prefix}")
-])
-
 SCWM_ARG_PATH(guile-lib-prefix,
 [  --with-guile-lib-prefix=DIR 
                           Expect guile libraries to be installed in DIR 
@@ -513,6 +501,7 @@ dnl a guile with readline support has a working guile-config or build-guile
 if test "yes" = "$GUILE_CONFIG_works"; then
   AC_MSG_CHECKING(for guile libraries)
   GUILE_LIBS="${GUILE_LIBS_PRE} `${GUILE_CONFIG} link`"
+  GUILE_INCLUDES="`${GUILE_CONFIG} compile`"
   AC_MSG_RESULT($GUILE_LIBS)
 else
   AC_CHECK_LIB(m, sin, GUILE_LIBS="-lm",, $GUILE_LIBS_PRE)
@@ -525,6 +514,19 @@ else
   	AC_MSG_ERROR(Can not find Guile 1.2 or later on the system)
   ], $GUILE_LIBS_PRE $GUILE_LIBS)
 fi
+
+SCWM_ARG_PATH(guile-include-prefix,
+[  --with-guile-include-prefix=DIR 
+                          Expect guile header files to be installed in DIR 
+                          [optional]],
+[
+	AC_MSG_CHECKING(where to expect guile header files)
+	guile_include_prefix="${withval}"
+	GUILE_INCLUDES="-I${guile_include_prefix}"
+	
+	AC_MSG_RESULT("${guile_include_prefix}")
+])
+
 
 AC_SUBST(GUILE_INCLUDES)
 AC_SUBST(GUILE_LIBS)

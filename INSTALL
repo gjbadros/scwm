@@ -54,18 +54,16 @@ It is also highly recommended that you have GTK+-1.2 and GLib-1.2 built
 and installed along with the guile-gtk wrapper of GTk+.
 
 GTK+-1.2 is available from www.gtk.org
-guile-gtk is available from www.ping.de/sites/zagadka/guile-gtk
-*** note that the cvs version is required for Scwm at this point --07/09/99 gjb
-*** use:
+guile-gtk is available from www.ping.de/sites/zagadka/guile-gtk.
+guile-gtk-0.17 is recommended, or you can use the CVS version of guile-gtk.
+Use:
 
 CVSROOT=':pserver:anonymous@anoncvs.gnome.org:/cvs/gnome' \
    cvs login
 CVSROOT=':pserver:anonymous@anoncvs.gnome.org:/cvs/gnome' \
    cvs -z3 checkout guile-gtk
 
-to get guile-gtk.
-
-guile-gtk-0.17, when it is released, should be sufficient for Scwm to use.
+to get guile-gtk from CVS.
 
 Other GNOME libraries, available from www.gnome.org, can be used by Scwm.
 In particular, the imlib library available from www.gnome.org can be used
@@ -89,16 +87,16 @@ any of the modules change (e.g., if you are tracking CVS sources of
 Scwm).
 
 For example, suppose the Scwm distribution unpacked into a directory
-called `$HOME/scwm-0.99' (so the full name of this file would be
-`$HOME/scwm-0.99/INSTALL').  Then you might say
+called `$HOME/scwm-0.99.6' (so the full name of this file would be
+`$HOME/scwm-0.99.6/INSTALL').  Then you might say
 
 (for sh, Bash, Zsh, or other Bourne shell variants):
 
-  export SCWM_LOAD_PATH=$HOME/scwm-0.99:$HOME/scwm-0.99/modules/lib
+  export SCWM_LOAD_PATH=$HOME/scwm-0.99:$HOME/scwm-0.99.6/modules/lib
 
 or (for Csh, Tcsh, or one of its variants):
 
-  setenv SCWM_LOAD_PATH $HOME/scwm-0.99:$HOME/scwm-0.99/modules/lib
+  setenv SCWM_LOAD_PATH $HOME/scwm-0.99:$HOME/scwm-0.99.6/modules/lib
 
 After copying the .scwmrc and setting SCWM_LOAD_PATH, you should be
 able to run scwm out of the build directory without difficulty.  
@@ -169,6 +167,7 @@ INSTALL         Program to use to install files.
                 Default is `install' if you have it, `cp' otherwise.
 INCLUDEDIR      Directory for `configure' to search for include files.
                 Default is /usr/include.
+PERL            Path to Perl v5.0.x
 
 (For these variables, any value given in the environment is added to
 the value that `configure' chooses:)

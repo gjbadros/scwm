@@ -30,7 +30,7 @@ changes; see AUTHORS and THANKS in the distribution.
 
 Some information about scwm is available at:
 
-http://scwm.mit.edu/
+http://scwm.mit.edu
 
 There are also scwm-discuss@scwm.mit.edu and
 scwm-announce@scwm.mit.edu mailing lists for disscussion and
@@ -57,28 +57,22 @@ get the latest release from:
 
 ftp://prep.ai.mit.edu/pub/gnu/guile
 
-or any archive that has GNU source packages available.
-
-You can get the latest guile snapshot from:
-
-http://www.gnu.org/software/guile/guile.html
-
-The snapshots are officially alpha but they generally work pretty
-well; however, 1.3.4 is recommended for now since it is the most 
-recent. Guile 1.2 is no longer supported, but Guile-1.3 should still
-work with only minimal loss of functionality (Guile-1.3.2 was buggy and
-should be avoided).
+or any archive that has GNU source packages available.  Guile 1.3.4 is
+recommended because all testing by the developers is done against 
+that version, the latest stable release of Guile. Guile 1.2 is no longer
+supported, but Guile-1.3 may still work with only minimal loss of
+functionality (Guile-1.3.2 was buggy and should be avoided).
 
 
 * Packages
 
 Various binary RPMs are available at:
 
-ftp://scwm.mit.edu/pub/scwm/RPMS/
+ftp://scwm.mit.edu/pub/scwm/RPMS
 
 Various source RPMs are available at:
 
-ftp://scwm.mit.edu/pub/scwm/SRPMS/
+ftp://scwm.mit.edu/pub/scwm/SRPMS
 
 and the scwm-icons distribution is available at:
 
