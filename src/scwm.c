@@ -82,8 +82,8 @@
 #include "scwm-constraints.h"
 
 #ifdef USE_CASSOWARY
-#include "constraint-primitives.h"   /* from the scwm distribution */
-#include "../guile/cassowary_scm.h"  /* from the cassowary distribution */
+void init_cassowary_scm();           /* from the cassowary distribution */
+void init_constraint_primitives();   /* from the scwm distribution */
 #endif
 
 
