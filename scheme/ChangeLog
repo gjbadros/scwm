@@ -1,3 +1,8 @@
+Wed Jul  7 15:39:24 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* fvwm-eval.scm: Patch from Danius Michaelides to add support for
+ 	the MoveToDesk command
+
 Mon Jul  5 17:38:16 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* preferences.scm: Move *favorite-colors* option into

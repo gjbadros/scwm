@@ -58,23 +58,29 @@ Lots of warnings like (see guile-1.3-includes.patch):
 
 constraint-primitives.x:2: warning: ANSI C++ prohibits conversion from `(SCM)' to `(...)'
 
-Fix this using a patch to the snarf.h header file included with guile:
+Fix this using a patch to the snarf.h header file included with guile
+(and be sure your Makefile.am uses -DGUILE_CPLUSPLUS_SNARF in the rule
+to create .x files from .cc files):
 
 --- snarf.h	1999/07/06 19:20:42	1.1
-+++ snarf.h	1999/07/06 19:21:39
-@@ -55,9 +55,9 @@
++++ snarf.h	1999/07/08 19:15:28
+@@ -54,10 +54,15 @@
+ #define SCM_PROC1(RANAME, STR, TYPE, CFN)  \
  	static char RANAME[]=STR
  #else
- #define SCM_PROC(RANAME, STR, REQ, OPT, VAR, CFN)  \
--%%%	scm_make_gsubr (RANAME, REQ, OPT, VAR, CFN)
++#if defined(__cplusplus) || defined(GUILE_CPLUSPLUS_SNARF)
++#define SCM_PROC(RANAME, STR, REQ, OPT, VAR, CFN)  \
 +%%%	scm_make_gsubr (RANAME, REQ, OPT, VAR, (SCM (*)(...))CFN)
++#else
+ #define SCM_PROC(RANAME, STR, REQ, OPT, VAR, CFN)  \
+ %%%	scm_make_gsubr (RANAME, REQ, OPT, VAR, CFN)
++#endif
  #define SCM_PROC1(RANAME, STR, TYPE, CFN)  \
 -%%%	scm_make_subr(RANAME, TYPE, CFN)
 +%%%	scm_make_subr(RANAME, TYPE, (SCM (*)(...))CFN)
  #endif
  
  #ifndef SCM_MAGIC_SNARFER
-
 
 Lots of warnings like (see guile-1.3-includes.patch):
 
