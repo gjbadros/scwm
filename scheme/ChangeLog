@@ -3,6 +3,12 @@ Sat Dec 19 02:42:52 1998  Carl R. Witty  <cwitty@newtonlabs.com>
 	* wininfo.scm (title-match??, class-match??, resource-match??,
  	icon-title-match??, client-hostname-match??): Typo fix in doc.
 
+1998-12-15  Todd Larason  <jtl@molehill.org>
+
+	* Makefile.am (scwm_common_scheme): install message window files
+
+	* desk-background.scm: use-module (app scwm optargs)
+
 Sat Dec 12 00:15:14 1998  Carl R. Witty  <cwitty@newtonlabs.com>
 
 	* winlist.scm (list-windows): Update doc.
