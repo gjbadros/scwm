@@ -13,53 +13,54 @@
 	     (app scwm winlist)
 	     (app scwm wininfo)
              (app scwm style)
-	     (app scwm face))
-
-(define (suggest-image-path-for name)
-  (let ((found-if-0 (system (string-append "locate " name))))
-    (if (= 0 found-if-0)
-	(display (string-append "Perhaps try adding above path to image-load-path\n")))))
-
-(define (image-not-found-hook name)
-  (display (string-append "Could not find image: " name "\n"))
-  (suggest-image-path-for name))
-
+	     (app scwm face)
+	     (app scwm std-menus)
+	     (app scwm fvwm-module)
+	     )
 ;; Need M_FOCUS_CHANGE for auto-raise
 (use-modules (app scwm module-types))
 
-;; Disabled for now - the instant autoraise with no timeout is not
-;; very usable.
-(define want-autoraise #f)
-;; (define want-autoraise #t)
-(define want-workman-menu #t)
+(define (write-all port . lst)
+  (if (eq? port ()) (set! port (current-output-port)))
+  (do ((zz lst (cdr zz))) ((null? zz))
+    (if (string? (car zz)) (display (car zz) port) (write (car zz) port))))
+;;; print some information
+(write-all () " *** Reading `scwmrc'...\nDisplay Size: " (display-size)
+	   "\nDesk Size: " (desk-size) "\nViewport Position: "
+	   (viewport-position) "\nCurrent Desk: " (current-desk) "\n")
+
 
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
+
+(define fvwm-pager-path "/usr/X11R6/lib/X11/fvwm2/FvwmPager")
+
+;; Disabled autoraise by default; 
+;; would give an instant autoraise with no timeout, which 
+;; is not all that useful
+(define want-autoraise #f)
+(define want-workman-menu #t)
+
 (define xterm-user-shell-options "-e start-zsh")
+(define xterm-program-name "color-xterm")
+
+(define use-complete-host-menu #t)
 (define xterm-other-host-use-local-xterm #t)
+
 (define mail-spool-dir (string-append "/var/spool/mail/" USER))
 
+;; Want a Win95-like "X" button at top right of window decoration
+;; to immediately close the window?
+;; (Generally, I find that that makes it too easy to accidentally
+;;  destroy a window, so the basic setting is #f)
+(define want-close-button #f)
 
 (define user-image-load-list 
   (list (string-append HOME "/pixmaps")
 	(string-append HOME "/bitmaps")))
 
-(define want-close-button #t) ;; was #f
-
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
-
-(define (vertical-toggle-maximize)
-  (toggle-maximize 0 (%y 100)))
-
-(define (horizontal-toggle-maximize)
-  (toggle-maximize (%x 100) 0))
-
-(define (both-toggle-maximize)
-  (toggle-maximize (%x 100) (%y 100)))
-
-(define (vertical-toggle-maximize-partial)
-  (toggle-maximize 0 (%y 95)))
 
 (define font12
   (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
@@ -73,6 +74,107 @@
   (make-font "*helvetica*bold-r*9*"))
 (define icon-font
   (make-font "fixed"))
+
+(define (start-program-in-xterm binary title resources)
+  (string-append binary " -T" title " -name " resources))
+
+(define applications-available-program-information
+  `(
+    ("&Netscape" "nscape" "netscape_3d" "netscape")
+    ("&Emacs" "edit" "emacs_3d" "PREFERRED_EMACS_BIN")
+    ("Email (&Gnus)" #f #f "emailuw")
+;;    ("Calenda&r" "clock" "calendar.next" "PREFERRED_CALENDAR_BIN")
+    ("&Ical" "clock" "calendar.next" "ical")
+;;    ("&Plan" "clock" "calendar.next" "plan")
+    ("WindowsN&T" #f #f "start_nt")
+    ("&RedBaron" #f #f "redbaron")
+    ("Grail" #f #f "grail")
+    ("&Pine" "letter" "Mail" 
+	     ,(start-program-in-xterm "pine" "Pine" "pinexterm"))
+    ("Framema&ker" "book2" "book_3d" "framemkr")
+    ("Acroread (PDF Viewer)" #f #f "acroread")
+    ("&Answerbook" "book2" "book_3d" "answerbook")
+    ("Ghost&view" "gv" "view_3d" "ghostview")
+    ("X&Dvi" "doc" "xdvi.next" "xdvi")
+    ("Xvie&w" "xv" "xv.color" "xv")
+    ("Text&edit" "edit" "TextEditor" "textedit -geometry 630x490+95+5")
+    ("Xedit" "edit" "document_3d" "xedit")
+    ("GnuP&lot" "plot" "Chart" 
+		,(start-program-in-xterm "gnuplot" "GnuPlot" "gnuplotxterm"))
+    ("X&Fig" "pencil" "fig_3d" "xfig")
+    ("&XPaint" "paint" "paint_3d" "xpaint")
+    ("Mathematica" #f #f "frontend")
+    ("De&bugger" "bug2" "debug_3d" "debugger")
+    ("Xxgd&b" "bug2" "debug2_3d" "xxgdb")
+    ("gdb" "bug2" "debug2_3d" 
+	   ,(start-program-in-xterm "gdb" "GDB" "gdbxterm"))
+    ("XWpe" #f #f "xwpe")
+    ("Arena Browser" #f #f "arena")
+    ("XLispstat" #f #f 
+		 ,(start-program-in-xterm "xlispstat" "XLispStat" "xlispxterm"))
+    ("Chipmunk Basic" #f #f
+		      ,(start-program-in-xterm "basic" "Chipmunk Basic" "basicxterm"))
+    ("&Irc" #f #f ,(start-program-in-xterm "irc" "IRC" "ircxterm"))
+    ("&Minicom" #f #f ,(start-program-in-xterm "minicom -c on" "Minicom" "minicomxterm"))
+    ("Tin" #f #f ,(start-program-in-xterm "tin -r" "News (tin)" "tinxterm"))
+    ("T&rn" #f #f ,(start-program-in-xterm "trn" "News (trn)" "trnxterm"))
+    ("Athena" #f #f "athena")
+    ("XGopher" #f #f "xgopher")
+    ("XPdf" #f #f "xpdf") ;; used to have a get-file option
+    ("X&jed" #f #f "xjed")
+    ("Xedit" #f #f "xedit")
+    ))
+
+(define utilities-available-program-information
+  `(
+    ("&Control Panel" #f #f "control-panel")
+    ("&Glint" #f #f "glint")
+    ("Color &XTerm" "sh1" "XTERM_ICON" "COLOR_XTERM -cr blue")
+    ("&Manual pages" "book1" "manpage_3d" "xman")
+    ("XCa&lc" "calc" "Calculator" "xcalc")
+    ("Filemanager" "filemgr" "FileManager" "filemgr")
+    ("X&fm" "filemgr" "FileManager" "xfm")
+    ("XF&tp" "xftp" "ftp_3d" "xftp")
+    ("X&Quote" #f #f "Xquote")
+    ("Ma&gnifying glass" "zoom" "mag_glass_3d" "xmag")
+    ("XLo&ad" "run" "xload.next" "xload")
+    ("Xgrab" "camera" "camera_3d" "xgrab")
+    ("X&colormap" "colors" "colormap_3d" "xcolormap")
+    ("Font&sel" #f #f "xfontsel")
+    ("&Editres" #f #f "editres")
+    ("Clip&board" #f #f "xclipboard")
+    ("X&Osview" #f #f "xosview")
+    ("Cloc&k" #f "oclock_3d" "xclock")
+    ("XBiff" #f #f "xbiff -bg MENUBACK_COLOR")
+    ("Xev" #f #f "xev")
+    ))
+
+(define games-available-program-information
+  `(
+    ("X&Board" "slon" "chess_3d" "xboard -sze medium")
+    ("&Spider" #f "cards_3d" "spider")
+    ("X&Lander" #f #f "xlander")
+    ("X&Mahjongg" #f #f "xmahjongg")
+    ("X&Vier" #f #f "xvier")
+    ("XPat&ience" #f #f "xpat2")
+    ("XMo&rph" #f #f "xmorph")
+    ("XE&vil" #f #f "xevil")
+    ("&XBill" #f #f "xbill")
+    ("XBlock&out" #f #f "xbl")
+    ("X&Gammon" #f #f "xgammon")
+    ))
+
+(define multimedia-available-program-information
+  `(
+    ("XM&ix" "audiovol" "Multimedia" "xmix")
+    ("XMi&xer" "audiovol" "Multimedia" "xmixer")
+    ("&WorkMan" "cdlabel" "cdrom2_3d" "workman")
+    ("XPlay&Cd" "cdlabel" "cdrom2_3d" "xplaycd")
+    ("&Tracker" #f #f "tracker $("xgetfile -title "Select a MOD file for Tracker" -path MOD_SOUND_PATH -pattern "*.mod#f)")
+    ("Play&midi" #f #f "xplaymidi $("xgetfile -title "Select a MIDI file for PlayMidi" -path MIDI_SOUND_PATH -pattern "*.mid*#f)")
+    ("Xm&play" #f #f "xmplay")
+    ))
+
 
 ;;; These can change dynamically and the menus which 
 ;;; used 'menu-bg-color [which is used by default]
@@ -92,9 +194,8 @@
 ;;; influence whether you want to do an opaque move, e.g.)
 ;;(set-opaque-move-size! 30) 
 
-;;(set-edge-resistance! 500 10)
-;;(set-edge-scroll! 100 100)
-
+(set-edge-resistance! 500 10)
+(set-edge-scroll! (%x 100) (%y 100))
 
 (title-style #:font font12 #:justify 'left #:relief 'raised)
 
@@ -129,6 +230,15 @@
 (set! image-load-path (cons "/usr/lib/TheNextLevel/pixmaps" image-load-path))
 (set! image-load-path (append user-image-load-list image-load-path))
 ;;(set! image-load-path '())
+
+(define (suggest-image-path-for name)
+  (let ((found-if-0 (system (string-append "locate " name))))
+    (if (= 0 found-if-0)
+	(display (string-append "Perhaps try adding above path to image-load-path\n")))))
+
+(define (image-not-found-hook name) 
+  (display (string-append "Could not find image: " name "\n"))
+  (suggest-image-path-for name))
 
 (define pic-system-button
   (make-image "mini-sys3d-full.xpm"))
@@ -170,6 +280,20 @@
 ;; is different from the window-style method; I imagine
 ;; MS has a wrapper planned for this (MSFIX)
 (border-style #:hidden-handles #t #:no-inset #t)
+
+;; Some wrappers for button functions
+(define (vertical-toggle-maximize)
+  (toggle-maximize 0 (%y 100)))
+
+(define (horizontal-toggle-maximize)
+  (toggle-maximize (%x 100) 0))
+
+(define (both-toggle-maximize)
+  (toggle-maximize (%x 100) (%y 100)))
+
+(define (vertical-toggle-maximize-partial)
+  (toggle-maximize 0 (%y 95)))
+
 
 ;;; I'm not changing these for now to use the new style
 ;;; because of the way add-left-button and add-right-button work and
@@ -315,9 +439,13 @@
 (define desk-widget-on-top
   (make-style #:use-style desk-widget #:stays-on-top #t))
 
+(define desk-widget-on-top-no-titlebar
+  (make-style #:use-style desk-widget-on-top #:no-titlebar #t))
+
 ;; NOTE: you can use a string or a (make-image "filename.xpm")
 ;; after #:icon and #:mini-icon
 ;; MSFIX: important! window-style's argument 
+(window-style "FvwmPager" #:use-style desk-widget-on-top-no-titlebar)
 (window-style "zwgc" #:use-style desk-widget-on-top)
 (window-style "*lock" #:use-style desk-widget)
 (window-style "xload" #:no-title #t #:use-style desk-widget)
@@ -351,9 +479,9 @@
     (menuitem "&Stick/Unstick" #:image-left "mini-stick.xpm" 
 	       #:action 'toggle-stick)
     (menuitem "Ma&ximize/Reset" #:action 'both-toggle-maximize)
-    (menuitem "Ma&ximize &Tall/Reset" #:image-left "maxtall" 
+    (menuitem "Ma&ximize &Tall/Reset" #:image-left "mini-maxtall.xpm" 
 	       #:action 'vertical-toggle-maximize)
-    (menuitem "Maximize &Wide/Reset" #:image-left "maxwide"
+    (menuitem "Maximize &Wide/Reset" #:image-left "mini-maxwide.xpm"
 	       #:action 'horizontal-toggle-maximize)
     (menuitem "S&hade/Reset" 
 	       #:action 'toggle-window-shade)
@@ -384,6 +512,7 @@
 ;;(window-shade (get-window) #t)
 ;;(un-window-shade (get-window) #t)
 
+;; wiggle-window just demonstrates 
 (define (wiggle-window)
   (let ((w (get-window)))
     (window-shade w #t)
@@ -398,10 +527,10 @@
   (display "Need to write scwm-about-message\n"))
 
 (define (start-xterm)
-  (execute (string-append "color-xterm " xterm-user-shell-options)))
+  (execute (string-append xterm-program-name " " xterm-user-shell-options)))
 
 (define (exec-xlock)
-  (execute "xlock -nice -16 -mode blank"))
+  (execute "xlock -nice -19 -mode blank"))
 
 (define menu-quit-verify
   (menu 
@@ -414,33 +543,95 @@
     (menuitem "Yes" #:image-left "mini-exclam.xpm" #:action quit)
     (menuitem "No"  #:image-left "mini-cross.xpm" #:action noop))))
 
+(define (make-menuitems-from-menu-information-list menu-info-list)
+  (cons menu-title
+	(map (lambda (elem) 
+	       (let ((title (car elem))
+		     (mini-icon (cadr elem))
+		     (icon (caddr elem))
+		     (exename (cadddr elem)))
+		 (if (program-exists? exename)
+		     (menuitem title
+			       #:image-left (if mini-icon (string-append "mini-" mini-icon ".xpm") #f)
+			       #:icon (if icon (string-append icon ".xpm") #f)
+			       #:action (lambda () (execute exename)))
+		     #f)))
+	     menu-info-list)))
 
-(define use-complete-host-menu #t)
+;;;(map (lambda (elem)
+;;;       (let ((menu-id (car elem))
+;;;	     (menu-title (cadr elem))
+;;;	     (menu-list (caddr elem)))
+;;;	 (define menu-id
+;;;	   (menu (cons menuitem menu-title)
+;;;		 (make-menuitems-from-menu-information-list menu-list)))))
+;;;     '(('menu-applications "Applications" applications-available-menu-information)
+;;;       ('menu-utilities "Utilities" utilities-available-menu-information)))
+
+;;;(defmacro (program-menu-maker str)
+;;;  `(define ,(intern-symbol (string-append "menu" str))
+;;;     (menu
+;;;      (cons
+;;;       (menuitem ,str)
+;;;       (make-menuitems-from-menu-information-list
+;;;	,(intern-symbol (string-append str "-available-menu-information")))))))
+     
+;;;(program-menu-maker "applications")
 
 (define menu-applications
-  (menu
-   (list
-    (menuitem "Applications"))))
+  (menu (cons
+	 (menuitem "Applications")
+	 (make-menuitems-from-menu-information-list
+	  applications-available-program-information)
+	 )))
 
 (define menu-utilities
-  (menu
-   (list
-    (menuitem "Utilities"))))
+  (menu (cons
+	 (menuitem "Utilities")
+	 (make-menuitems-from-menu-information-list
+	  utilities-available-program-information)
+	 )))
 
 (define menu-multimedia
-  (menu
-   (list
-    (menuitem "Multimedia"))))
+  (menu (cons
+	 (menuitem "Multimedia")
+	 (make-menuitems-from-menu-information-list
+	  multimedia-available-program-information)
+	 )))
 
 (define menu-games
-  (menu
-   (list
-    (menuitem "Games"))))
+  (menu (cons
+	 (menuitem "Games")
+	 (make-menuitems-from-menu-information-list
+	  games-available-program-information)
+	 )))
+
+(define (xterm-other-host hostname)
+  (exe (string-append xterm-program-name " -name remotexterm -T " hostname " -n " hostname 
+		      " -e sh -c 'ssh " hostname "'")))
+
+(define favorite-hosts 
+  '(pahtoo glacier demille rhodes fielder elwha
+	   kani nishin kazunoko hirame uni unagi methow chiwawa tolt torigai
+	   elwha apex bugbane bugs-bunny hoh oddvar calvin forbidden emerald
+	   daisy fireweed hobbes greg herman pugsly shrimp june cindy pysht
+	   puyallup manastash bergen twain hammahamma curie lutefisk chelan saba)
+  )
+
+;; (popup-menu menu-hosts #t)
+(define (make-hosts-menu-gjb hosts)
+  (cons menu-title
+	(fold-menu-list
+	 (map
+	  (lambda (elem)
+	    (menuitem elem #:image-left "mini-display.xpm" #:action (xterm-other-host elem)))
+	  hosts))))
 
 (define menu-hosts
   (menu
-   (list
-    (menuitem "Hosts"))))
+   (cons
+    (menuitem "Hosts")
+    (make-hosts-menu-gjb favorite-hosts))))
 
 (define menu-other-hosts
   (menu
@@ -469,10 +660,7 @@
     (menuitem "Preferences"))))
 
 (define menu-screensaver
-  (menu
-   (list
-    (menuitem "Screensaver"))))
-
+  (make-xlock-menu #f))
 
 (if want-workman-menu
     (define (tell-workman command)
@@ -726,8 +914,12 @@
 (bind-key 'all "C-M-S-5" recapture)
 (bind-key 'all "C-M-S-x" start-xterm)
 
-;(bind-key 'all "C-S-F1" popup-small-ops)
+(bind-key 'all "C-S-F1" popup-small-ops)
 (bind-key 'all "C-S-F2" show-window-list-menu)
+(bind-key 'all "C-S-F3" (lambda () (popup-menu menu-hosts #t)))
+(bind-key 'all "C-S-F4" (lambda () (popup-menu menu-applications #t)))
+(bind-key 'all "C-S-F5" (lambda () (popup-menu menu-utilities #t)))
+(bind-key 'all "C-S-F6" (lambda () (popup-menu menu-multimedia #t)))
 
 (define (float->integer x)
 	 (inexact->exact x))
@@ -746,22 +938,19 @@
   (list (%x x) (%y y)))
 
 (bind-key 'all "C-S-Down" iconify)
-;;(bind-key 'all "C-M-Return" raise-window)
 (bind-key 'all "C-M-Return" toggle-raise)
+(bind-key 'all "C-S-M-q" toggle-raise)
+(bind-key 'all "M-F1" toggle-raise)   ;; like SGI's 4dwm
+
 (bind-key 'all "C-S-Up" vertical-toggle-maximize-partial)
 (bind-key 'all "C-S-Right" horizontal-toggle-maximize)
 (bind-key 'all "C-S-Left" both-toggle-maximize)
-;; MS thinks (maximize (%x 0) (%y 95)) is easier to read than 
-;; (apply maximize (percent-display 0 95)), but that's a matter of taste.
-(bind-key 'all "C-S-Up" (lambda () (apply toggle-maximize (percent-display 0 95))))
-(bind-key 'all "C-S-Right" (lambda () (apply toggle-maximize (percent-display 100 0))))
-(bind-key 'all "C-S-Left" (lambda () (apply toggle-maximize (percent-display 100 95))))
 
 ;; See the binding for mouse button 2
 ;; to add geometry strings to this as well.
 (bind-key 'all "C-S-Return" show-icon-list-menu)
 
-(bind-key 'all "C-S-M-z" (lambda () (popup-menu 'menu-root-start)))
+(bind-key 'all "C-S-M-z" (lambda () (popup-menu 'menu-root-start #t)))
 
 (set-click-time! 150)
 
@@ -845,6 +1034,28 @@
 	(if (= event M_FOCUS_CHANGE)
 	    (let ((window (window-from-window-id a1)))
 	      (if window (raise-window window)))))))
+
+
+(define fvwm-pager (run-fvwm-module  
+	    ;; path to the module
+	    fvwm-pager-path
+	    ;; your .fvwm2rc (does not need to exist for most modules)
+	    "~/.fvwm2rc"
+	    ;; list of configuration lines
+	    '("*FvwmPagerBack grey76"
+	      "*FvwmPagerFore black"
+	      "*FvwmPagerHilight navyblue"
+	      "*FvwmPagerDeskTopScale 50"
+	      "*FvwmPagerLabel 0 Top"
+	      "*FvwmPagerLabel 1 Bottom"
+	      "*FvwmPagerSmallFont 5x8")
+	    '("0" "1")))
+
+;; To later shut down the module, use kill-fvwm-module:
+;; (kill-fvwm-module fvwm-pager)
+
+(display " *** `scwmrc' processed.\n")
+
 
 ;;; Local Variables:
 ;;; eval: (load "scwm")
