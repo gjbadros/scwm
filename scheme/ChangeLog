@@ -1,3 +1,21 @@
+Mon Sep 20 17:29:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* animated-iconify.scm: Use xlib-set-line-attributes!, not removed 
+	xlib-set-line-width!
+
+	* ui-constraints-classes.scm: Use default of 'solid for
+	xlib-set-line-attributes, and use symbolic 'on-off-dash for the
+	rest where 1 was used before
+
+	* base.scm: Added convenience `dispaly-depth' variable.
+
+Mon Sep 20 13:35:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice.scm: call (vv-initialize) after module is loaded.
+
+	* ui-constraints-gtk-toggle-menu.scm: Fix initialization bug,
+	remove some old code.
+
 1999-09-20  Jeff Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints.scm: Added options to the draw-constraints* 

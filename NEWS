@@ -3,7 +3,10 @@ Copyright (C) 1997, 1998, 1999 Greg J. Badros and Maciej Stachowiak
 See the end for copying conditions.
 
 Changes for scwm-0.99.3 (not yet released)
+
 * ViaVoice (IBM TM) module for permitting speech recognition actions
+
+* Improved visual constraint representations
 
 * Improved preferences dialog support, cleaner internally, too.
 
@@ -12,6 +15,10 @@ Changes for scwm-0.99.3 (not yet released)
 ** `set-window-highlighted-nonant!', `window-highlighted-nonant'
 ** `set-nonant-highlight-color!', `nonant-highlight-color'
 ** `focussable-window?'
+
+* Changed primitives
+** xlib-set-line-width! has been replaced by xlib-set-line-attributes! which now takes
+a width and a line style.
 
 
 Changes for scwm-0.99.2 (released 14-September-1999)

@@ -1,3 +1,17 @@
+Mon Sep 20 17:19:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c: Added sym_solid, sym_on_off_dash,
+ 	sym_double_dash, and make xlib-set-line-attributes! use them
+ 	instead of integers, and make its second argument option optional, 
+	defaulting to 'solid.   Also update the default XOR value (drawing 
+	mask) to use the 2^(display_depth) - 1 for better visibility.
+
+Mon Sep 20 09:49:42 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* corba/Makefile.am: Move more targets into if/endif block so
+	builds do nothing when corba is not enabled.  Thanks to Robert
+	Chassell for the bug report.
+
 1999-09-20  Jeff Nichols  <jwnichls@cs.washington.edu>
 
 	* xlib-drawing/drawing.c: changed xlib-set-line-width! to
