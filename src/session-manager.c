@@ -56,7 +56,8 @@ typedef struct SMWindowData_ {
   CARD32 flags;
 } SMWindowData;
 
-SMWindowData *SMData;		/* the head of a list of SMWindowData el's */
+static SMWindowData *SMData;	/* the head of a list of SMWindowData el's */
+static char SMerror[256];
 
 /* write a 32-bit quantity in network byte order */
 static void writeI32(FILE *fd, CARD32 x)
@@ -191,6 +192,8 @@ void restoreWindowState(ScwmWindow *psw)
   unsigned char *clientId;
   extern long isIconicState;
   
+  if (!SmcId)
+    return;
   clientId = getWindowClientId(psw);
   if (!clientId)
     return;
@@ -386,12 +389,35 @@ static void iceWatchFD(IceConn conn, IcePointer client_data,
 }
 #undef FUNC_NAME
 
+SCWM_PROC(SM_client_id, "SM-client-id", 0, 0, 0,
+	  ())
+     /** Return scwm's session management client id (a string).
+A return value of #f indicates that session management is not active. */
+#define FUNC_NAME s_SM_client_id
+{
+  if (!SmcId)
+    return SCM_BOOL_F;
+  return gh_str02scm(SmcId);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(SM_error_message, "SM-error-message", 0, 0, 0,
+	  ())
+     /** Return a string, describing why session management is not available.
+Only valid, if `SM-client-id' is #f. */
+#define FUNC_NAME s_SM_error_message
+{
+  return gh_str02scm(SMerror);
+}
+#undef FUNC_NAME
+
 void initSM()
 #define FUNC_NAME "initSM"
 {
-  char error_str[256];
   SmcCallbacks smcall;
   char *SmcNewId;
+
+#include "session-manager.x"
 
   XA_SM_CLIENT_ID = XInternAtom(dpy, "SM_CLIENT_ID", False);
   XA_WM_CLIENT_LEADER = XInternAtom(dpy, "WM_CLIENT_LEADER", False);
@@ -422,12 +448,11 @@ void initSM()
                                   SmcDieProcMask,
                                   &smcall,
                                   SmcId, &SmcNewId,
-                                  sizeof(error_str), error_str)) == NULL)
-    {
-      scwm_msg(WARN, FUNC_NAME,
-	       "session manager initialization failed: %s\n", error_str);
-      return ;
-    } 
+                                  sizeof(SMerror), SMerror)) == NULL)
+  {
+    SmcId = NULL;
+    return;
+  }
   SmcId = SmcNewId;
   IceSMconn = SmcGetIceConnection(SMconn);
   setSMProperties();

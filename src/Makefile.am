@@ -90,7 +90,7 @@ guile_snarfs = Grab.x add_window.x binding.x callbacks.x color.x \
 constraint-primitives.x \
 decor.x deskpage.x drawmenu.x events.x face.x font.x icons.x image.x menu.x menuitem.x \
 menulook.x message-window.x miscprocs.x module-interface.x move.x placement.x resize.x \
-screen.x shutdown.x virtual.x window.x xproperty.x xrm.x
+screen.x session-manager.x shutdown.x virtual.x window.x xproperty.x xrm.x
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
 	$(guile_snarfs)
