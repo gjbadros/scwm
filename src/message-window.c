@@ -225,8 +225,8 @@ CreateMessageWindow( scwm_msgwindow* msg )
   attributes.event_mask = ExposureMask;
 
   return msg->win = XCreateWindow(dpy, Scr.Root,
-                                  0, 0, width, 
-                                  (FONTHEIGHT(msg->font) + SIZE_VINDENT * 2),
+                                  0, 0, width,
+				  (FONTHEIGHT(msg->font) + SIZE_VINDENT * 2),
                                   0, 0, CopyFromParent, (Visual *) CopyFromParent,
                                   valuemask, &attributes);
 }
@@ -608,7 +608,9 @@ This is returned as a four element list: (x y x-align y-align). */
   scwm_msgwindow* msg;
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
 
-  return gh_list(msg->x, msg->y, msg->x_align, msg->y_align, SCM_UNDEFINED );
+  return gh_list(gh_int2scm(msg->x), gh_int2scm(msg->y), 
+		 gh_double2scm(msg->x_align), gh_double2scm(msg->y_align), 
+		 SCM_UNDEFINED );
 }
 #undef FUNC_NAME
 
@@ -620,8 +622,14 @@ Returns as a two element list: (width height). */
 #define FUNC_NAME s_message_window_size
 {
   scwm_msgwindow* msg;
+  int w, h;
+
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
-  return gh_list(msg->width, msg->height, SCM_UNDEFINED);
+
+  w = MessageWindowWidth(msg);
+  h = MessageWindowHeight(msg);
+
+  return gh_list(gh_int2scm(w), gh_int2scm(h), SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
