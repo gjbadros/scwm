@@ -450,7 +450,7 @@ JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 All arguments that `menuitem' takes are accepted as usual,
 except the font defaults to `*menu-title-font*' instead of
 `*menu-font*'."
-  (apply menuitem (append (list label #:font 'menu-title-font rest))))
+  (apply menuitem (append (list label #:font 'menu-title-font) rest)))
 
 (define*-public (menuitem label #&key image-above image-left
 			  (fg #f) (bg #f) (font #f)
