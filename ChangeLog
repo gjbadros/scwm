@@ -1,3 +1,12 @@
+Sun Sep  5 19:52:11 1999    <gjb@cs.washington.edu>
+
+	* configure.in, Makefile.am: Added corba subdirectory.
+
+Sun Sep  5 15:36:11 1999    <gjb@cs.washington.edu>
+
+	* corba/: Added this directory for experimenting with adding Corba 
+	support to Scwm.
+
 Sat Sep  4 00:29:40 1999    <gjb@cs.washington.edu>
 
 	* configure.in: Bump to pre5

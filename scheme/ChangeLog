@@ -1,3 +1,16 @@
+Sun Sep  5 19:50:50 1999    <gjb@cs.washington.edu>
+
+	* reflection.scm: Added docs to `procedure-formals', added
+	`procedure-keyword-arguments', `procedure-optional-arguments'.
+
+Sun Sep  5 19:34:00 1999    <gjb@cs.washington.edu>
+
+	* optargs.scm: Added setting of 'optargs-arglist procedure
+	property on lambda* (and cousin) procedure definitions.
+
+	* reflection.scm: Added -- better support for interactive
+	programming with Guile/Scwm.
+
 Sun Sep  5 12:49:37 1999    <gjb@cs.washington.edu>
 
 	* minimal.scm: Set _WIN_WM_NAME, _WIN_WM_VERSION properties on the 

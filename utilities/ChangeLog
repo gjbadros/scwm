@@ -1,3 +1,13 @@
+Sun Sep  5 16:57:03 1999    <gjb@cs.washington.edu>
+
+	* misc/startscwm: Added some xauth calls to set up .Xauthority
+	before running xinit (so my start-x2x script will work).  Changed
+	the code from the RedHat startx script.
+
+Sun Sep  5 16:19:38 1999    <gjb@cs.washington.edu>
+
+	* misc/startscwm: Use xinit instead of starting X manually.
+
 Sat Sep  4 15:18:07 1999    <gjb@cs.washington.edu>
 
 	* misc/startscwm: Use XTERM_PROGRAM_NAME instead of just XTERM and 
