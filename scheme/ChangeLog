@@ -1,3 +1,12 @@
+Fri Jan  7 08:03:55 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* constraint-investigator.scm: Better alignment.
+
+Fri Jan  7 07:58:14 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* time-convert.scm: Added msec->usec and sec->usec (for usleep,
+	which still takes microseconds).
+
 Wed Jan  5 15:51:54 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Added orientation option to
