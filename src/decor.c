@@ -339,7 +339,7 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_window_decor_x, "window-decor", 1, 0, 0,
+SCWM_PROC(window_decor, "window-decor", 1, 0, 0,
           (SCM win))
      /** Return WIN's decor. */
 #define FUNC_NAME s_window_decor
