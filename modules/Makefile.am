@@ -14,6 +14,7 @@ SUBDIRS = \
 	esdsound \
 	proplist \
 	xtest \
-	scwmgtkhelper
+	scwmgtkhelper \
+	viavoice
 
 DIST_SUBDIRS = $(SUBDIRS)
