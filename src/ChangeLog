@@ -1,3 +1,10 @@
+Thu Jul 15 09:33:36 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (s_select_viewport_position): Return window id instead
+	of #f if a window was selected.  Now #f is returned only if the
+	selection failed. (select-window is changed to provide old
+	behaviour at that level of the API).
+
 Wed Jul 14 10:05:18 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xproperty.h (VALIDATE_ARG_ATOM_OR_STRING_COPY): Added this

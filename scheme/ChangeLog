@@ -1,3 +1,15 @@
+Thu Jul 15 09:40:32 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Make `select-window' return the (car
+	(select-viewport-position)) iff it is a window? object --
+	otherwise return #f;  now select-viewport-position returns a
+	window ID integer as its car, but that would break too much code
+	using `select-window' expecting a #f for no-window.
+
+Thu Jul 15 09:31:43 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* minimal.scm: Added note re: environment-bound? in G1.4
+
 Tue Jul 13 23:11:55 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* message-window.scm: Added `make-message-window-with-image'
