@@ -1,3 +1,13 @@
+1998-10-07  Todd Larason  <jtl@teeny.molehill.org>
+
+	* xpm-menus/draw-xpm-menu.c: comments added to all the spacing defines;
+	(PaintMenuItem): move right side of RR over one to improve
+	appearance; move text right by half of MENU_TEXT_SPACING to
+	improve appearance
+	(InPopupZone): change popop zone from right 1/4 to right 1/2; something
+	(ConstructDynamicXpmMenu): compute item width properly - was
+	adding an extra MENU_ITEM_RR_SPACE
+
 1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
 
 	* xpm-menus/draw-xpm-menu.c: moved from scwm/;

@@ -32,13 +32,19 @@ static SCM xpm_shaped_menu_look = SCM_UNDEFINED;
 
 extern SCM sym_top, sym_center, sym_bottom;
 
-/* FIXGJB: comment these! */
+/* horizontal space for label or extra label, besides text */
 #define MENU_TEXT_SPACING 4
+/* vertical space for above and left images, besides image height */
 #define MENU_ITEM_PICTURE_EXTRA_VERT_SPACE 4
+/* vertical space to leave above and below item (FIXJTL: allocated, but not used? */
 #define MENU_ITEM_EXTRA_VERT_SPACE 2
+/* vertical space to leave for label or extra label, besides text */
 #define MENU_ITEM_LABEL_EXTRA_VERT_SPACE 2
+/* horizontal space to leave for left image */
 #define MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE 4
+/* horizontal space to leave for side image, besides image */
 #define MENU_SIDE_IMAGE_SPACING 5
+/* Relief rectangle width */
 #define MENU_ITEM_RR_SPACE 2
 #define MENU_POPUP_ARROW_WIDTH 8
 #define MENU_HEIGHT_SEPARATOR 4
@@ -432,7 +438,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   /* Erase any old reliefs indicated selectedness */
   XClearArea(dpy, w,
 	     x_offset-MENU_ITEM_RR_SPACE-1, y_offset,
-	     item_width+2*MENU_ITEM_RR_SPACE+1, item_height, False);
+	     item_width+2*MENU_ITEM_RR_SPACE+2, item_height, False);
   
   /* Draw the shadows for the absolute outside of the menus
      This stuff belongs in here, not in PaintMenu, since we only
@@ -441,7 +447,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   /* Only highlight if the item has an action */
   if (mis == MIS_Selected && !UNSET_SCM(pmi->scmAction)) {
     RelieveRectangle(w, x_offset-MENU_ITEM_RR_SPACE, y_offset,
-		     item_width+2*MENU_ITEM_RR_SPACE, item_height,
+		     item_width+2*MENU_ITEM_RR_SPACE+1, item_height,
 		     ReliefGC,ShadowGC);
   }
 
@@ -464,11 +470,14 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 
     /* center image vertically */
     if (psimgLeft) {
+      /* FIXJTL: this doesn't work well with both left & above iamges; */
       int cpixExtraYOffset = (item_height - psimgLeft->height) / 2;
       DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, MenuGC);
-      x_offset += pmdi->cpixLeftPicWidth + MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE;
     }
-       
+    x_offset += pmdi->cpixLeftPicWidth;
+
+    x_offset += MENU_TEXT_SPACING/2;
+    
     if (mis == MIS_Grayed) {
       currentGC = MenuStippleGC;
     } else {
@@ -705,7 +714,9 @@ PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
 static int
 InPopupZone(MenuItemInMenu *pmiim, int cpixXoffset, int cpixYoffset)
 {
-  return cpixXoffset > pmiim->pmd->cpixWidth *3/4;
+  /* FIXJTL: this works well for narrow menus; *3/4 works better for larger
+     one; maybe something more complicated is needed */
+  return cpixXoffset > pmiim->pmd->cpixWidth/2;
 }
 
 /* px and py are in & out parameters; return the x,y location for the
@@ -927,7 +938,7 @@ ConstructDynamicXpmMenu(DynamicMenu *pmd)
 			 max_above_image_width);
 
     pmd->cpixWidth = pmdi->cpixItemOffset + max_item_width +  
-      MENU_ITEM_RR_SPACE*2 + cpixBorder;
+      MENU_ITEM_RR_SPACE + cpixBorder;
     pmd->pmdi->cpixItemWidth = max_item_width;
     DBUG((DBG,__FUNCTION__,"LeftPic = %d, Text = %d, ExtraText = %d, RightImage = %d; above = %d\n",
 	 pmdi->cpixLeftPicWidth,pmdi->cpixTextWidth,pmdi->cpixExtraTextWidth,
