@@ -102,7 +102,7 @@ ScwmWindow *AddWindow(Window w)
 #ifdef USEDECOR
   char *decor = NULL;
 #endif
-  unsigned long tflag;
+  unsigned long tflag,saved_flags;
   int Desk, border_width, resize_width;
   extern Bool NeedToResizeToo;
   extern ScwmWindow *colormap_win;
@@ -207,6 +207,25 @@ ScwmWindow *AddWindow(Window w)
 		     &border_width, &resize_width,
                      &forecolor,&backcolor,&tmp_win->buttons, 
 		     tmp_win->IconBox,&(tmp_win->BoxFillMethod));
+
+
+  /* XXX - bletcherous... we process the hint properties separately,
+     since hints need to be processed early, but some procs we may
+     want to pass alter the size of the window &c. Will find a better
+     way to deal with this - probably a reprocesshints function of
+     some kind. */
+
+  saved_flags = tmp_win->flags;
+  tmp_win->flags = tflag;
+  tmp_win->schwin=make_window(tmp_win);
+  run_new_window_hint_hook(tmp_win->schwin);
+  tflag=tmp_win->flags;
+
+  tmp_win->flags = saved_flags;
+  
+  if (tflag & STARTSONDESK_FLAG) {
+    Desk = tmp_win->StartDesk;
+  }
 
 #ifdef USEDECOR
   /* search for a UseDecor tag in the Style */
@@ -713,10 +732,12 @@ ScwmWindow *AddWindow(Window w)
       Event.xany.window = tmp_win->w;
       resize_window(&Event , tmp_win->w, tmp_win, C_WINDOW, "", 0);
     }
-  tmp_win->schwin=make_window(tmp_win);
-  /* XXX - Not sure if this is the right place to do this, but oh well.... */
-  run_new_window_hook(tmp_win->schwin);
   InstallWindowColormaps(colormap_win);
+  /* XXX - Not sure if this is the right place to do this, but oh well.... */
+
+  /* tmp_win->schwin=make_window(tmp_win); */
+  run_new_window_hook(tmp_win->schwin);
+
   return (tmp_win);
 }
 
@@ -1120,5 +1141,7 @@ unsigned long LookInList(name_list *list, char *name, XClassHint *class,
     }
   return retval;
 }
+
+
 
 
