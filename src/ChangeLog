@@ -1,3 +1,10 @@
+1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* window.c: Fixed minor bug in `resize-to' in computation of size
+	adjustment (only was broken for no-side-decoration windows). Also
+	made sym_shaded and SendClientConfigurNotify have external linkage
+	for the benefit of the c-animation module.
+
 1999-02-10  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* virtual.c (GenerateEdgeEvents): New function which checks the

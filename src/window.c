@@ -62,9 +62,12 @@ extern SCM sym_click, sym_root_window;
 
 
 SCWM_SYMBOL(sym_sticky , "sticky");
-SCWM_SYMBOL(sym_shaded , "shaded");
-SCWM_SYMBOL(sym_on_top , "on-top");
 SCWM_SYMBOL(sym_desk   , "desk");
+SCWM_SYMBOL(sym_on_top , "on-top");
+
+/* Also used by c-animation.c */
+SCWM_GLOBAL_SYMBOL(sym_shaded , "shaded");
+
 
 SCWM_SYMBOL(sym_winlist_skip, "winlist-skip");
 SCWM_SYMBOL(sym_circulate_skip_icon, "circulate-skip-icon");
@@ -536,7 +539,7 @@ MoveTo(ScwmWindow *psw, int x, int y)
 }
 
 
-static
+
 void
 SendClientConfigureNotify(const ScwmWindow *psw)
 #define FUNC_NAME "SendClientConfigureNotify"
@@ -2111,6 +2114,7 @@ way if not specified. See also `window-unshade'.*/
   psw = PSWFROMSCMWIN(win);
   old = psw->fWindowShaded;
 
+
   /* CRW:FIXME:MS: Should this refuse to shade maximized windows?
      (It used to try to do this by looking at the unused fMaximized
      window flag...) */
@@ -2292,7 +2296,7 @@ context in the usual way if not specified.*/
   width = gh_scm2int(w);
   height = gh_scm2int(h);
 
-  width += (2*psw->boundary_width);
+  width += (2*psw->xboundary_width);
   height += (psw->title_height + 2*psw->boundary_width);
   ConstrainSize(psw, 0, 0, &width, &height);
   ResizeTo(psw,width,height);
