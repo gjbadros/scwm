@@ -1,3 +1,41 @@
+Fri Jul  9 09:04:22 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added -DGUILE_CPLUSPLUS_SNRF to arguments to guile-snarf 
+	when building .x from .cc files.  This is only useful when using a 
+	patched version of snarf.h that adds a cast to the last argument
+	to scm_make_gsubr when GUILE_CPLUSPLUS_SNARF is defined (that cast 
+	eliminates spurious warnings on those function calls).
+
+Fri Jul  9 08:58:24 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (select_viewport_position,get_window): Use
+ 	VALIDATE_ARG_CURSOR_COPY_USE_KILLORCIRCLE to do the right thing
+ 	with values #t and #f for the cursor (was getting run-time errors
+ 	about uses of #t for the kill cursor)
+
+	* scwm.c: Change the SigDoneSegv message to suggest running with
+	--segv-just-stop or --segv-reset-count 0, and call scwm_msg only
+	once instead of once per line.
+
+	* resize.c: Permit rubberband mask in [0,65535], not just [0,255]
+
+	* menuitem.h, menu.h: Added self field to Menu and MenuItem
+ 	structures, a pointer back to the scheme object. Need this to be
+	sure we can protect/unprotect the object so that they don't get
+	gc-d when we're still using the guts of the objects from
+	DynamicMenu and MenuItemInMenu instances.
+
+	* menu.c: Initialize self fields, and use
+	scm_protect_object/scm_unprotect_object to ensure menuitems and
+	menus don't get gc-d while the menu is displayed.
+
+	* cursor.h: Rename and fix VALIDATE_ARG_CURSOR_COPY_USE_NONE to
+	VALIDATE_ARG_CURSOR_COPY_USE_KILLORCIRCLE
+
+Thu Jul  8 12:20:02 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: 
+
 Mon Jul  5 20:26:08 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* *.c, *.h: Updated copyrights to include 1999.
