@@ -1,4 +1,4 @@
-;;; File: <std-menus.scm - 1998-05-27 Wed 12:08:16 EDT sds@mute.eaglets.com>
+;;; File: <std-menus.scm - 1998-06-08 Mon 18:12:27 EDT sds@mute.eaglets.com>
 ;;;; 	Copyright (C) 1998 Sam Steingold and Maciej Stachowiak
 
 ;;;	$Id$
@@ -31,17 +31,23 @@
 ;;; --------------------------------------
 ;;; The screen saver and screen lock menus
 ;;; --------------------------------------
-(define-public screensaver-modes
-  '("ant" "ball" "bat" "blot" "bouboule" "bounce" "braid" "bug" "bubble"
-    "cartoon" "clock" "coral" "crystal" "daisy" "dclock" "deco" "demon"
-    "dilemma" "drift" "eyes" "fadeplot" "flag" "flame" "forest" "galaxy"
-    "grav" "helix" "hop" "hyper" "ico" "ifs" "image" "julia" "kaleid"
-    "laser" "life" "life1d" "life3d" "lightning" "lisa" "lissie" "loop"
-    "mandelbrot" "marquee" "maze" "mountain" "munch" "nose" "pacman"
-    "penrose" "petal" "puzzle" "pyro" "qix" "roll" "rotor" "shape"
-    "sierpinski" "slip" "sphere" "spiral" "spline" "star" "strange" "swarm"
-    "swirl" "triangle" "tube" "turtle" "vines" "voters" "wator" "wire"
-    "world" "worm"))
+
+;; Returns a list of mode names queried from the given XLOCK program.
+;; Special modes "random", "bomb", and "blank" are not included in this list.
+(define (xlock-query-modes xlock)
+  (let ((pipe (open-input-pipe (string-append xlock " -help"))))
+    (do ((line (read-line pipe) (read-line pipe))
+         (start-re (make-regexp "where mode is one of:" regexp/icase)))
+        ((or (eof-object? line) (regexp-exec start-re line))
+         (if (eof-object? line) (error "modes not found"))))
+    (do ((line (read-line pipe) (read-line pipe)) (match #f) (ml '())
+         (mode-re (make-regexp "^[ 	]*([a-zA-Z0-9]+)")))
+        ((eof-object? line) (close-pipe pipe)
+         (reverse! (delete! "random" (delete! "bomb" (delete! "blank" ml)))))
+      (set! match (regexp-exec mode-re line))
+      (if match (set! ml (cons (match:substring match 1) ml))))))
+
+(define-public screensaver-modes (xlock-query-modes "xlock"))
 
 (define-public xlock-options
   "-nice -19 +mousemotion +timeelapsed -lockdelay 600 -timeout 30")
