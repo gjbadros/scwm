@@ -1,3 +1,19 @@
+Sat Oct  2 10:44:06 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandleUnmapNotify): Move g_lastwin_entered variable
+	earlier. Make DestroyNotify try harder to get a window object, but 
+	assert that it never will, and instead call the hook on the X Id
+	of the destroyed window since that might very well be all the
+	information we can give.
+
+	* window.h: Use VALIDWINP in VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY
+	so that X-property-get does not seg fault on an invalid window.
+	Use VALIDATE_ARG_WIN_COPY in VALIDATE_WIN_COPY,
+	VALIDATE_ARG_WINVALID_COPY in VALIDATE_WINVALID_COPY.  Probably
+	some VALIDATE_WIN_COPY calls should be VALIDATE_WINVALID_COPY, but 
+	haven't exhaustively looked for these.  Thanks to E. Jay
+	Berkenbilt for the bug report!
+
 Sat Oct  2 00:07:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.h (DecorationYOffset, DecorationXOffset): Add protos for

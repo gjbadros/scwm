@@ -1,3 +1,5 @@
+some VALIDATE_WIN_COPY calls should be VALIDATE_WINVALID_COPY, but 
+haven't exhaustively looked for these. --10/02/99 gjb
 -------
 Sticky windows do not de-iconify properly.
 -------
