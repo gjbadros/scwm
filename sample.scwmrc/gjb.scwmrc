@@ -984,6 +984,9 @@ union of all other window managers!
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
 	      #:action (thunk exec-xlock))
     menu-separator
+    (menuitem "Turn on Constraint Solver"
+	      #:action (thunk enable-constraint-solver))
+    menu-separator
     (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
 	      #:action (thunk scwm-about-message))
     (menuitem "&Help ScwmTNL" #:image-left "mini-question.xpm" 
@@ -995,6 +998,14 @@ union of all other window managers!
    #:color-bg-image-side "blue"))
 
 (debug-display "before-popup-menu-root-start\n")
+
+(define (enable-constraint-solver)
+  (if (scwm-is-constraint-enabled?)
+      (begin
+	(use-modules (app scwm constraints))
+	(start-constraints))
+      (error "Scwm is not built to support constraints\nGet Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/")))
+
 
 (define (popup-menu-root-start)
   (with-window 
@@ -1398,7 +1409,7 @@ union of all other window managers!
 
 ;;;(set! construct-menu-primitive construct-pie-menu)
 
-;;(run-dot-xclients-at-startup)
+(run-dot-xclients-at-startup)
 
 (debug-display " *** `scwmrc' processed.\n")
 
