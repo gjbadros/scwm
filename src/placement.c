@@ -39,10 +39,7 @@
 
 #undef DEBUG_PLACE_WINDOW
 
-int get_next_x(ScwmWindow * psw, int x, int y);
-int get_next_y(ScwmWindow * psw, int y);
-int test_fit(ScwmWindow * psw, int test_x, int test_y, int aoimin);
-void CleverPlacement(ScwmWindow * psw, int *x, int *y);
+Bool CleverPlacement(ScwmWindow * psw, int *x, int *y);
 
 extern Bool PPosOverride;
 
@@ -139,24 +136,19 @@ GravityFromSym(SCM sym)
  */
 #define AVOIDONTOP 5
 #define AVOIDSTICKY 1
-#ifdef NO_STUBBORN_PLACEMENT
-#define AVOIDICON 0		/*  Ignore Icons.  Place windows over them  */
-#else
-#define AVOIDICON 10		/*  Try hard no to place windows over icons */
-#endif
+#define AVOIDICON 10		/*  Try hard to not place windows over icons */
 
 static
-void 
+Bool
 SmartPlacement(ScwmWindow *psw, int width, int height, int *x, int *y)
 {
   int temp_h, temp_w;
-  int test_x = 0, test_y = 0;
+  int test_x = *x, test_y = *y;
   int loc_ok = False, tw, tx, ty, th;
   ScwmWindow *pswTest;
 
   if (Scr.fSmartPlacementIsClever) {	/* call clever placement instead? */
-    CleverPlacement(psw, x, y);
-    return;
+    return CleverPlacement(psw, x, y);
   }
   temp_h = height;
   temp_w = width;
@@ -168,7 +160,6 @@ SmartPlacement(ScwmWindow *psw, int width, int height, int *x, int *y)
       pswTest = Scr.ScwmRoot.next;
       while ((pswTest != (ScwmWindow *) 0) && (loc_ok == True)) {
 	if (pswTest->Desk == Scr.CurrentDesk) {
-#ifndef NO_STUBBORN_PLACEMENT
 	  if (pswTest->fIconified &&
 	      !pswTest->fIconUnmapped &&
 	      pswTest->icon_w &&
@@ -184,7 +175,6 @@ SmartPlacement(ScwmWindow *psw, int width, int height, int *x, int *y)
 	      test_x = tx + tw;
 	    }
 	  }
-#endif /* !NO_STUBBORN_PLACEMENT */
 	  if (!pswTest->fIconified && (pswTest != psw)) {
 	    tw = FRAME_WIDTH(pswTest) + 2 * pswTest->bw;
 	    th = FRAME_HEIGHT(pswTest) + 2 * pswTest->bw;
@@ -206,22 +196,27 @@ SmartPlacement(ScwmWindow *psw, int width, int height, int *x, int *y)
   if (loc_ok == False) {
     *x = -1;
     *y = -1;
-    return;
+    return False;
   }
   *x = test_x;
   *y = test_y;
+  return True;
 }
 
+
+static int get_next_x(ScwmWindow * psw, int x, int y);
+static int get_next_y(ScwmWindow * psw, int y);
+static int test_fit(ScwmWindow * psw, int test_x, int test_y, int aoimin);
 
 /* CleverPlacement by Anthony Martin <amartin@engr.csulb.edu>
  * This function will place a new window such that there is a minimum amount
  * of interference with other windows.  If it can place a window without any
  * interference, fine.  Otherwise, it places it so that the area of of
  * interference between the new window and the other windows is minimized */
-void 
+Bool
 CleverPlacement(ScwmWindow *psw, int *x, int *y)
 {
-  int test_x = 0, test_y = 0;
+  int test_x = *x, test_y = *y;
   int xbest, ybest;
   int aoi, aoimin;		/* area of interference */
 
@@ -245,9 +240,10 @@ CleverPlacement(ScwmWindow *psw, int *x, int *y)
   }
   *x = xbest;
   *y = ybest;
+  return True;
 }
 
-int 
+static int 
 get_next_x(ScwmWindow *psw, int x, int y)
 {
   int xnew;
@@ -285,7 +281,8 @@ get_next_x(ScwmWindow *psw, int x, int y)
   }
   return xnew;
 }
-int 
+
+static int 
 get_next_y(ScwmWindow * psw, int y)
 {
   int ynew;
@@ -320,7 +317,7 @@ get_next_y(ScwmWindow * psw, int y)
   return ynew;
 }
 
-int 
+static int 
 test_fit(ScwmWindow * psw, int x11, int y11, int aoimin)
 {
   ScwmWindow *testw;
@@ -447,8 +444,8 @@ used in user-defined placement procedures (see \n\
 #undef FUNC_NAME
 
 
-SCWM_PROC(smart_place_window, "smart-place-window", 1, 0, 0, 
-          (SCM win),
+SCWM_PROC(smart_place_window, "smart-place-window", 1, 3, 0, 
+          (SCM win, SCM no_move, SCM x_sugg, SCM y_sugg),
 "Places WIN using fvwm2's SmartPlacement algorithm.\n\
 The placement is just as if SmartPlacementIsReallySmart were not in\n\
 effect. That is, it tries to place the window so that it does not\n\
@@ -457,13 +454,24 @@ returns #t.\n\
 \n\
 This is called as part of `default-placement-proc'.  It could also be\n\
 used in user-defined placement procedures (see \n\
-`set-window-placement-proc!').")
+`set-window-placement-proc!').\n\
+\n\
+If NO-MOVE is #t, then the position is returned instead of\n\
+actually moving the window to that position.  This can\n\
+be useful for finding a new location for an existing window.\n\
+X-SUGG and Y-SUGG are suggested coordinates that `clever-place-window'\n\
+may try to use as a preferred location for WIN.")
 #define FUNC_NAME s_smart_place_window
 {
   ScwmWindow *psw;
   int x, y;
+  Bool fNoMove;
+  Bool fPlacedOk = False;
 
   VALIDATE_ARG_WIN_COPY(1,win,psw);
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,no_move,fNoMove);
+  VALIDATE_ARG_INT_COPY_USE_DEF(3,x_sugg,x,0);
+  VALIDATE_ARG_INT_COPY_USE_DEF(4,y_sugg,y,0);
 
   /* MS:FIXME:: hackish workaround for now to not mess with the smart
      placement function itself, but make it not call CleverPlacement
@@ -473,12 +481,16 @@ used in user-defined placement procedures (see \n\
     /* save state of fSmartPlacementIsClever */
     Bool fSmartPlacementIsClever = Scr.fSmartPlacementIsClever;
     Scr.fSmartPlacementIsClever = False;
-    SmartPlacement(psw, FRAME_WIDTH(psw) + 2 * psw->bw,
-                   FRAME_HEIGHT(psw) + 2 * psw->bw, &x, &y);
+    fPlacedOk = SmartPlacement(psw, FRAME_WIDTH(psw) + 2 * psw->bw,
+                               FRAME_HEIGHT(psw) + 2 * psw->bw, &x, &y);
     Scr.fSmartPlacementIsClever = fSmartPlacementIsClever;
   }
 
-  if (x < 0) {
+  if (fNoMove) {
+    return gh_list(gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
+  }
+
+  if (!fPlacedOk) {
     return SCM_BOOL_F;
   } else {
     /* GJB:FIXME:MS: Why fix for bw diffs when clever placement is placing frame,
@@ -492,8 +504,8 @@ used in user-defined placement procedures (see \n\
 }
 #undef FUNC_NAME
 
-SCWM_PROC(clever_place_window, "clever-place-window", 1, 0, 0, 
-          (SCM win),
+SCWM_PROC(clever_place_window, "clever-place-window", 1, 3, 0, 
+          (SCM win, SCM no_move, SCM x_sugg, SCM y_sugg),
 "Places WIN using fvwm2's \"ReallySmart\" algorithm.\n\
 The placement is just as if being placed by fvwm2's SmartPlacement,\n\
 as if SmartPlacementIsReallySmart were in effect. That is, it\n\
@@ -505,18 +517,32 @@ returns #f; otherwise it returns #t.\n\
 \n\
 This is called as part of `default-placement-proc'.  It could also be\n\
 used in user-defined placement procedures (see \n\
-`set-window-placement-proc!').")
+`set-window-placement-proc!').\n\
+\n\
+If NO-MOVE is #t, then the position is returned instead of\n\
+actually moving the window to that position.  This can\n\
+be useful for finding a new location for an existing window.\n\
+X-SUGG and Y-SUGG are suggested coordinates that `clever-place-window'\n\
+may try to use as a preferred location for WIN.")
 #define FUNC_NAME s_clever_place_window
 {
   ScwmWindow *psw;
   int x, y;
+  Bool fNoMove;
+  Bool fPlacedOk = False;
 
   VALIDATE_ARG_WIN_COPY(1,win,psw);
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,no_move,fNoMove);
+  VALIDATE_ARG_INT_COPY_USE_DEF(3,x_sugg,x,0);
+  VALIDATE_ARG_INT_COPY_USE_DEF(4,y_sugg,y,0);
 
-  CleverPlacement(psw, &x, &y);
+  fPlacedOk = CleverPlacement(psw, &x, &y);
 
-  if (x < 0) {
+  if (!fPlacedOk)
     return SCM_BOOL_F;
+
+  if (fNoMove) {
+    return gh_list(gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
   } else {
     /* GJB:FIXME:MS: Why fix for bw diffs when clever placement is placing frame,
        not client window?  This is not cst w/ the above. */
@@ -530,8 +556,8 @@ used in user-defined placement procedures (see \n\
 #undef FUNC_NAME
 
 
-SCWM_PROC(random_place_window, "random-place-window", 1, 0, 0, 
-          (SCM win),
+SCWM_PROC(random_place_window, "random-place-window", 1, 3, 0, 
+          (SCM win, SCM no_move, ARG_UNUSED(SCM x_sugg), ARG_UNUSED(SCM y_sugg)),
 "Places WIN just as if being placed by fvwm2's RandomPlacement.\n\
 This placement is not truly random; it is based on two state variables\n\
 which are incremented for the x and y coordinates, and which wrap\n\
@@ -541,12 +567,17 @@ interaction. #t is always returned.\n\
 \n\
 This is called as part of `default-placement-proc'.  It could also be\n\
 used in user-defined placement procedures (see \n\
-`set-window-placement-proc!').")
+`set-window-placement-proc!').\n\
+\n\
+If NO-MOVE is #t, then just return the new position but do not\n\
+move WIN. X-SUGG and Y-SUGG are ignored.")
 #define FUNC_NAME s_random_place_window
 {
   ScwmWindow *psw;
+  Bool fNoMove;
 
   VALIDATE_ARG_WIN_COPY(1,win,psw);
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,no_move,fNoMove);
   
   /* place window in a random location;
      uses Scr.randomx, Scr.randomy as holders of the
@@ -559,10 +590,14 @@ used in user-defined placement procedures (see \n\
     Scr.randomy = 2 * GET_DECOR(psw, TitleHeight);
   }
 
-  psw->attr.x = Scr.randomx - psw->old_bw + psw->bw;
-  psw->attr.y = Scr.randomy - psw->old_bw + psw->bw;
+  if (fNoMove) {
+    return gh_list(gh_int2scm(Scr.randomx),gh_int2scm(Scr.randomy),SCM_UNDEFINED);
+  } else {
+    psw->attr.x = Scr.randomx - psw->old_bw + psw->bw;
+    psw->attr.y = Scr.randomy - psw->old_bw + psw->bw;
 
-  move_finalize(psw->frame,psw, Scr.randomx, Scr.randomy);
+    move_finalize(psw->frame,psw, Scr.randomx, Scr.randomy);
+  }
   return SCM_BOOL_T; 
 }
 #undef FUNC_NAME
@@ -609,12 +644,12 @@ is not set, or the window starts iconic.")
 #ifdef DEBUG_PLACE_WINDOW
         scwm_msg(DBG,"PlaceWindow","clever placing");
 #endif        
-	result=clever_place_window(win);
+	result=clever_place_window(win, SCM_UNDEFINED, SCM_UNDEFINED, SCM_UNDEFINED);
       } else {
 #ifdef DEBUG_PLACE_WINDOW
         scwm_msg(DBG,"PlaceWindow","smart placing");
 #endif
-	result=smart_place_window(win);
+	result=smart_place_window(win, SCM_UNDEFINED, SCM_UNDEFINED, SCM_UNDEFINED);
       }
     }
     
@@ -623,7 +658,7 @@ is not set, or the window starts iconic.")
 #ifdef DEBUG_PLACE_WINDOW
         scwm_msg(DBG,"PlaceWindow","random placing");
 #endif
-	random_place_window(win);
+	random_place_window(win, SCM_UNDEFINED, SCM_UNDEFINED, SCM_UNDEFINED);
       } else {
         int finalx, finaly;     /* unused for now */
         extern Bool have_orig_position;
