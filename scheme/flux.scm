@@ -82,16 +82,23 @@ Just a toy--- perhaps could be useful to call attention to a window."
   (with-output-to-string (lambda () (apply write-all #t rest))))
 
 (define*-public (move-window-to-viewport xx yy #&optional win)
-  "Move WIN to the viewport at (XX,YY).
-The (0,0) viewport is the starting viewport."
-  (let ((pos (window-position win)) (sz (display-size))
-        (vp (viewport-position)))
-    (move-to (+ (* xx (car sz)) (- (car vp)) (modulo (car pos) (car sz)))
-             (+ (* yy (cadr sz)) (- (cadr vp))
-                (modulo (cadr pos) (cadr sz))) win)))
+  "Move WIN to the viewport numbered (XX,YY).
+The (0,0) viewport is the starting viewport.  XX and YY are
+full display-size increments (e.g., (1,0) is the viewport
+just to the right of the home (0,0) viewport)."
+  (let ((d-s (desk-size)))
+    (if (or (> xx (car d-s)) (> yy (cadr d-s)))
+	(error "viewport position outside range of desk-size")))
+  (let ((pos (window-position win)))
+    (move-window (+ (* xx display-width)
+		    (modulo (car pos) display-width))
+		 (+ (* yy display-height)
+		    (modulo (cadr pos) display-height)) win)))
 
 (define-public (in-viewport xx yy)
-  "Return a function of one argument, a window, moving it to the viewport."
+  "Return a function of single window argument, moving it to the viewport.
+XX and YY are full display-size increments (e.g., (1,0) is the 
+viewport just to the right of the home (0,0) viewport)."
   (lambda (win) (move-window-to-viewport xx yy win)))
 
 (define-public (system-info-string)
@@ -163,9 +170,10 @@ Use the optional second argument as the separator."
   (message
    "Window ID:\t\t" (number->string (window-id win))
    "\nWindow Frame ID:\t" (number->string (window-frame-id win))
-   "\nTitle:\t\t\t\"" (window-title win) "\"\nPosition:\t\t"
-   (size->str (window-position win)) "\nSize:\t\t\t"
-   (size->str (window-frame-size win))
+   "\nTitle:\t\t\t\"" (window-title win) "\""
+   "\nVirtual Position:\t\t" (size->str (window-position win))
+   "\nViewport Position:\t\t" (size->str (window-viewport-position win))
+   "\nSize:\t\t\t" (size->str (window-frame-size win))
    "\nDesk:\t\t\t" (number->string (window-desk win)) "\nClass:\t\t\t\""
    (window-class win) "\"\nResource:\t\t\"" (window-resource win)
    "\"\nBorder Normal:\t\t" (bool->str (border-normal? win))
@@ -325,7 +333,7 @@ will be returned."
 ;; Returns them in reverse the order they were selected
 ;; should probably turn off the invalid interaction hook
 ;; or provide a way of telling select-window-interactively that
-;; the root window is not an erro
+;; the root window is not an error
 (define*-public (select-multiple-windows-interactively #&optional (max 32000))
   "Return a list of user-selected windows, up to MAX.
 The list is in the reverse order from the way by which they were selected."

@@ -78,8 +78,8 @@ is non-empty."
   (and
    (= (window-desk win) (window-desk win2))
    (apply rectangle-overlap?
-	  (append (window-position win) (window-frame-size win)
-		  (window-position win2) (window-frame-size win2)))))
+	  (append (window-virtual-position win) (window-frame-size win)
+		  (window-virtual-position win2) (window-frame-size win2)))))
 
 ;;; MSFIX: Why is this separate instead of having the above
 ;;; have optional arguments.
@@ -116,7 +116,7 @@ if it were on top (unobscured)."
 The virtual position and the frame size are used.  The resulting string
 looks like, e.g., FIXGJB."
   (if win (let ((i (iconified? win))
-		(pos (window-position win))
+		(pos (window-virtual-position win))
 		(size (window-size win)))
 	    (string-append (if i "(" "")
 			   (number->string (caddr size))

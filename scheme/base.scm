@@ -187,6 +187,14 @@ way if not specified.  See also `window-position'."
     (if (sticky? win) pos
 	(apply virtual->viewport pos))))
 
+(define*-public (window-virtual-position #&optional (win (get-window)))
+  "Return the virtual position of WIN in pixels.
+If WIN is sticky, this returns the position of the window in the
+current viewport."
+  (let ((pos (window-position win)))
+    (if (sticky? win) (apply viewport->virtual pos)
+	pos)))
+
 (define*-public (icon-viewport-position #&optional (win (get-window)))
   "Return the position of WIN's icon in pixels within the viewport.
 The position is returned as a list of the x coordinate and the y
