@@ -12,6 +12,7 @@
 (use-modules (app scwm module-types))
 
 (define want-autoraise #t)
+(define want-workman-menu #t)
 
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
@@ -50,7 +51,7 @@
 (define menu-font
   (load-font "*helvetica*medium-r*12*"))
 (define bold-menu-font
-  (load-font "*helvetica*bold-r*14*"))
+  (load-font "*helvetica*bold-r*9*"))
 (define icon-font
   (load-font "fixed"))
 
@@ -106,7 +107,9 @@
 (set! image-load-path (cons "/usr/local/icons" image-load-path))
 (set! image-load-path (cons "/uns/share/include/X11/pixmaps" image-load-path))
 (set! image-load-path (cons "/uns/share/include/X11/bitmaps" image-load-path))
+(set! image-load-path (cons "/usr/lib/TheNextLevel/pixmaps" image-load-path))
 (set! image-load-path (append user-image-load-list image-load-path))
+;;(set! image-load-path '())
 
 (define pic-system-button
   (make-image "mini-sys3d-full.xpm"))
@@ -319,6 +322,10 @@
 ;;(popup-menu 'menu-window-ops)
 ;;(menu-properties menu-window-ops)
 
+(defmacro menuitem-for-exec (name pixmap . body)
+  (if (program-exists? name)
+      `(list ,name #:action (lambda () (execute ,name) ,@body)
+	     #:left-pixmap ,pixmap)))
 
 ;;(window-shade (get-window) #t)
 ;;(un-window-shade (get-window) #t)
@@ -342,19 +349,16 @@
 (define (exec-xlock)
   (execute "xlock -nice -16 -mode blank"))
 
-(define (tell-workman command)
-  (execute (string-append "workman -s " command)))
-
 (define menu-quit-verify
   (menu 
    (list
-    (menuitem "Really quit scwm?" #f)
+    (menuitem "Really quit Scwm?" #f)
     menu-title
-    (menuitem "Yes" #:image-left "mini-exclam.xpm" #:action quit)
-    (menuitem "No"  #:image-left "mini-cross.xpm" #:action noop)
+    (menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
+	       #:action (lambda () (restart "scwm")))
     menu-separator
-    (menuitem "Restart scwm" 
-	       #:action (lambda () (restart "scwm"))))))
+    (menuitem "Yes" #:image-left "mini-exclam.xpm" #:action quit)
+    (menuitem "No"  #:image-left "mini-cross.xpm" #:action noop))))
 
 
 (define use-complete-host-menu #t)
@@ -389,6 +393,17 @@
    (list
     (menuitem "Other hosts"))))
 
+(define menu-preferences-scroll
+  (menu (list
+	 (menuitem "Change Scroll Behavior")
+	 menu-title
+	 (menuitem "&On" #:action (lambda () (set-edge-scroll 100 100)))
+	 (menuitem "O&ff" #:action (lambda () (set-edge-scroll 0 0)))
+	 (menuitem "&Horizontal Only" #:action (lambda () (set-edge-scroll 100 0)))
+	 (menuitem "&Vertical Only" #:action (lambda () (set-edge-scroll 0 100)))
+	 (menuitem "&Partial 1/2" #:action (lambda () (set-edge-scroll 50 50)))
+	 (menuitem "Partial 1/&4" #:action (lambda () (set-edge-scroll 25 25))))))
+
 (define menu-preferences
   (menu
    (list
@@ -403,6 +418,27 @@
   (menu
    (list
     (menuitem "Screensaver"))))
+
+
+(if want-workman-menu
+    (define (tell-workman command)
+      (execute (string-append "workman -s " command)))
+    (define menu-workman
+      (menu (list
+	     (menuitem "&Pause" #:image-left "mini-wm-pause.xpm"
+		       #:action (lambda () (tell-workman "pause")))
+	     (menuitem "P&lay" #:image-left "mini-wm-play.xpm"
+		       #:action (lambda () (tell-workman "play")))
+	     (menuitem "&Next" #:image-left "mini-wm-next.xpm"
+		       #:action (lambda () (tell-workman "fwd")))
+	     (menuitem "P&rev" #:image-left "mini-wm-prev.xpm"
+		       #:action (lambda () (tell-workman "back")))
+	     (menuitem "&Stop" #:image-left "mini-wm-stop.xpm"
+		       #:action (lambda () (tell-workman "stop")))
+	     (menuitem "&Eject" #:image-left "mini-wm-eject.xpm"
+		       #:action (lambda () (tell-workman "eject")))))))
+
+
 
 ;;; FIXGJB introduce syntax which gives the popup-menu-root-start closure after
 ;;; defining a menu
@@ -482,7 +518,14 @@
     (menuitem "Desks" #:action menu-desk)
     menu-separator
     (menuitem "Exit scwm" menu-quit-verify))
-   #:font bold-menu-font))
+   #:font 'bold-menu-font))
+
+
+(define (popup-util)
+  (popup-menu 'menu-util))
+
+(define (popup-root-start)
+  (popup-menu 'menu-root-start))
 
 (define (make-small-window-ops-menu w)
   (menu
