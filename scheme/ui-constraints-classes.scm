@@ -246,15 +246,13 @@
 
 ;; ------
 
-;; translates a quadrant vector into a string for display
-(define (quadvec->string vec)
-  (let*  ((str  
-	   (string-append 
-	    (if (eq? (vector-ref vec 0) 1) "N" "")
-	    (if (eq? (vector-ref vec 3) 1) "S" "")
-	    (if (eq? (vector-ref vec 1) 1) "W" "")
-	    (if (eq? (vector-ref vec 2) 1) "E" ""))))
-    str))
+;; translates a direction vector into a string for display
+(define (dirvector->string vec)
+  (string-append 
+   (if (vector-ref vec 0) "N" "")
+   (if (vector-ref vec 3) "S" "")
+   (if (vector-ref vec 1) "W" "")
+   (if (vector-ref vec 2) "E" "")))
 
 ;; the anchor constraint stores the clv in the first element of OPTS and 
 ;; constraint quadrant in the second element
@@ -262,7 +260,7 @@
   (let* ((opts (ui-constraint-opts ui-constraint))
 	 (name (ui-constraint-class-name (ui-constraint-class ui-constraint)))
 	 (quad  (car opts))
-	 (val (quadvec->string quad)))
+	 (val (dirvector->string quad)))
     (string-append name ": " val)))
 
 
@@ -287,16 +285,16 @@
     (xlib-draw-line! downleft upleft)))
 
 
-(define-public (quadrant->vector quad)
-  (let ((vec (make-vector 4 0)))
+(define-public (nonant->dirvector quad)
+  (let ((vec (make-vector 4 #f)))
     (case quad
-      ((0 1 2 4) (vector-set! vec 0 1))) ;; constrain top
+      ((0 1 2 4) (vector-set! vec 0 #t))) ;; constrain top
     (case quad
-      ((0 3 4 6) (vector-set! vec 1 1))) ;; constrain left
+      ((0 3 4 6) (vector-set! vec 1 #t))) ;; constrain left
     (case quad
-      ((2 4 5 8) (vector-set! vec 2 1))) ;; constrain right
+      ((2 4 5 8) (vector-set! vec 2 #t))) ;; constrain right
     (case quad
-      ((4 6 7 8) (vector-set! vec 3 1))) ;; constrain bottom
+      ((4 6 7 8) (vector-set! vec 3 #t))) ;; constrain bottom
     vec))
 
 
@@ -306,9 +304,9 @@
     (message-window-show! msgwin)
     (let* ((winlist (select-viewport-position))
 	   (win (car winlist))
-	   (quad (get-window-quadrant winlist)))
+	   (nonant (get-window-nonant winlist)))
       (message-window-hide! msgwin)
-      (list win (quadrant->vector quad)))))
+      (list win (nonant->dirvector nonant)))))
 
       
 
@@ -321,7 +319,7 @@
 	 (sc-list ())
 	 (clv-list ()))
 
-    (if (eq? (vector-ref quad 0) 1)
+    (if (vector-ref quad 0)
 	(let* ((w1-yt (window-clv-yt w1))
 	       (clv (make-cl-variable "clvt" top))
 	       (cn (make-cl-constraint w1-yt = clv))
@@ -332,7 +330,7 @@
 	  (set! sc-list (cons sc sc-list))
 	  (set! clv-list (cons clv clv-list))))
 
-    (if (eq? (vector-ref quad 1) 1)
+    (if (vector-ref quad 1)
 	(let* ((w1-xl (window-clv-xl w1))
 	       (clv (make-cl-variable "clvl" lft))
 	       (cn (make-cl-constraint w1-xl = clv))
@@ -343,7 +341,7 @@
 	  (set! sc-list (cons sc sc-list))
 	  (set! clv-list (cons clv clv-list))))
 
-    (if (eq? (vector-ref quad 2) 1)
+    (if (vector-ref quad 2)
 	(let* ((w1-xr (window-clv-xr w1))
 	       (clv (make-cl-variable "clvr" rgt))
 	       (cn (make-cl-constraint w1-xr = clv))
@@ -354,7 +352,7 @@
 	  (set! sc-list (cons sc sc-list))
 	  (set! clv-list (cons clv clv-list))))
 
-    (if (eq? (vector-ref quad 3) 1)
+    (if (vector-ref quad 3)
 	(let* ((w1-yb (window-clv-yb w1))
 	       (clv (make-cl-variable "clvb" bot))
 	       (cn (make-cl-constraint w1-yb = clv))
@@ -387,13 +385,13 @@
       (if (not (vector? quad))
 	  (error "Quadrant value in opts list should be a vector."))
       (xlib-set-line-width! width)
-      (if (eq? (vector-ref quad 0) 1)
+      (if (vector-ref quad 0)
 	  (draw-vertical-anchor-symbol wt 10))
-      (if (eq? (vector-ref quad 1) 1)
+      (if (vector-ref quad 1)
 	  (draw-horizontal-anchor-symbol wl 10))
-      (if (eq? (vector-ref quad 2) 1)
+      (if (vector-ref quad 2)
 	  (draw-horizontal-anchor-symbol wr 10))
-      (if (eq? (vector-ref quad 3) 1)
+      (if (vector-ref quad 3)
 	  (draw-vertical-anchor-symbol wb 10)))))
 
 
