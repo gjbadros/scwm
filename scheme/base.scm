@@ -854,7 +854,9 @@ but no error is thrown; `image-not-found-message' is used to
 write a warning instead."
   (let ((answer (make-image filename)))
     (or answer
-	(image-not-found-message filename))))
+	(begin
+	  (image-not-found-message filename)
+	  #f))))
 
 (define-public (image-not-found-message filename)
   "Report a missing image filename, but do not error."
