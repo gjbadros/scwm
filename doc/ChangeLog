@@ -1,3 +1,11 @@
+1998-11-09  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* session-management: More about what the wm, and especially scwm
+	does/should do. Short tutorial about how to setup SM, and usage of 
+	xsm. Paragraph about patching of smproxy added.
+
+	* smproxy.patch: New file.
+
 1998-11-06  Todd Larason  <jtlmolehill.org>
 
 	* dev/decorations: New file, very prelimiary thoughts on the goals 
