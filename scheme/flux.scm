@@ -835,6 +835,11 @@ that corner fixed."
   "Resize interactively, using the rubberband (unless constraint solver is active."
   (interactive-resize (get-window) #f))
 
+(define-public (resize-quarterscreen)
+  "Resize the current window with the pointer to 1/4 of the screen."
+  (let ((w (current-window-with-pointer)))
+    (animated-resize-window (%x 49) (%y 49))))
+
 (define-public (resize-halfscreen)
   "Resize the current window with the pointer to full height and half the screen size in width."
   (let ((w (current-window-with-pointer)))
