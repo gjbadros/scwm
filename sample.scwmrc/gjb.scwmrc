@@ -495,7 +495,17 @@
 
 
 ;;;(add-left-button system-button-face (lambda () (popup-small-ops)))
-(add-left-button mini-icon-button-face popup-small-ops)
+(define (popup-small-ops-or-close)
+  (case (mouse-event-type)
+    ((double-click) (close-window))
+    (else (let ((w (get-window)))
+	    (popup-menu-from-decoration (make-small-window-ops-menu w) w 1)))))
+;; the "1" at the end of the prior line is the button number from which 
+;; this is popped. FIXGJB return lambda
+
+(add-left-button mini-icon-button-face popup-small-ops-or-close)
+;;(show-titlebar (select-window-interactively))
+;;(bind-mouse 'button-1 1 popup-small-ops-or-close)
 
 ;; MS: I presume this is the desired efffect.
 ;; random thought: A nice extension would be buttons that change
@@ -958,6 +968,7 @@
 (bind-mouse '(frame sidebar) 2 popup-small-ops)
 (bind-mouse 'frame 1 resize-or-raise)
 (bind-mouse 'sidebar 1 move-or-raise)
+
 (define (move-or-shade)
   (case (mouse-event-type)
     ((double-click) (toggle-window-shade-animated))
@@ -1173,3 +1184,7 @@
 (system 
  (string-append "ps auxww | grep -q \"^gjb .*xemacs -f gnus\" || " 
 		HOME "/.xclients &"))
+
+;; Remove the windows that are showing tail -f's on 
+;; scwm error messages and .Xsession errors
+(system "test -r ${HOME}/.tracepids && { kill `cat ${HOME}/.tracepids`; rm -f ${HOME}/.tracepids }")
