@@ -43,6 +43,7 @@
 	     (app scwm face)
 	     (app scwm flux)
 	     (app scwm optargs)
+	     (app scwm std-menus)
 	     (ice-9 string-fun))
 
 ;; random niceties
@@ -86,23 +87,6 @@
 		  (if (executable? loc)
 		      (return loc)))))))))))
 
-; returns a list of mode names queried from the given XLOCK program.
-(define (xlock-query-modes xlock)
-  (let ((pipe (open-input-pipe (string-append xlock " -help")))
-	(start-re (make-regexp "where mode is one of:" regexp/icase))
-	(mode-re (make-regexp "^[ 	]*([a-zA-Z0-9]+)"))
-	(modes-p #f)
-	(modelist '()))
-    (do ((line (read-line pipe) (read-line pipe)))
-	((eof-object? line) (close-pipe pipe))
-      (cond
-       (modes-p
-	(let ((match (regexp-exec mode-re line)))
-	  (if match
-	      (set! modelist (cons (match:substring match 1) modelist)))))
-       ((regexp-exec start-re line) (set! modes-p #t))))
-    (reverse modelist)))
-
 ;; Expected Variables & their defaults
 ;; Can be overridden by defining them before this point.
 
@@ -132,13 +116,10 @@
 
 ;; general settings
 
-(define HOME (getenv "HOME"))
-(define USER (getenv "USER"))
-
 ; paths
 (define user-image-load-path 
-  (list (string-append HOME "/pixmaps")
-	(string-append HOME "/bitmaps")))
+  (list (string-append (user-home) "/pixmaps")
+	(string-append (user-home) "/bitmaps")))
 (set! image-load-path 
       (append 
        user-image-load-path 
@@ -151,7 +132,7 @@
 (set-desk-size! 1 1)			; desktops are good, paging is evil
 (set-colormap-focus! 'focus)
 (set-edge-scroll-delay! #f)
-(set-edge-move-threshold! 5)
+(set-edge-move-threshold! 10)
 (set-rubber-band-mask! 255)
 (set-animation!
  '#(0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1))
@@ -165,6 +146,7 @@
 (set-icon-font! font12)
 (set-hilight-foreground! "white")
 (set-hilight-background! "navy")
+(set-shadow-factor! 0.3)
 
 (set-message-window-attributes! font12 "black" "royal blue")
 (menu-style #:fg "black" #:bg "royal blue" #:stipple "maroon"
@@ -194,7 +176,7 @@
 	      #:random-placement #f #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:int-override #t #:decroate-transient #f
-	      #:PPosition-hint #f
+	      #:PPosition-hint #t
 	      #:lenience #t)
 
 (define wm-style 'squashed)
@@ -202,9 +184,9 @@
 (define (set-wm-style! style)
   (set! wm-style style)
   (case style
-    ((barebones) (window-style "*" #:border-width 0 #:no-titlebar #t
+    ((barebones) (window-style "*" #:border-width 1 #:no-titlebar #t
 			        #:squashed-titlebar #f))
-    ((squashed) (window-style "*" #:border-width 0 #:no-titlebar #f
+    ((squashed) (window-style "*" #:border-width 1 #:no-titlebar #f
 			      #:squashed-titlebar #t))
     ((decorated) (window-style "*" #:border-width 4 #:no-titlebar #f
 			       #:squashed-titlebar #f))))
@@ -268,8 +250,7 @@
 
 
 (define xlock-modelist
-  (delete "random" (delete "bomb" (delete "blank"
-					  (xlock-query-modes "xlock")))))
+  (delete! "random" (delete! "bomb" (delete "blank" screensaver-modes))))
 
 (define screen-rows 35)			; this many menuitems fit on the screen
 
@@ -663,38 +644,49 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 	      #:winlist-skip #t #:border-width 3 #:use-style NoFocus))
 
 (window-style "Color Mixer"	#:icon "colormap_3d.xpm.gz"
-	      #:use-style FixedSize #:use-style NoFocus)
-(window-style "Control"		#:icon "amiga.xpm.gz" #:use-style FixedSize)
+				#:use-style FixedSize #:use-style NoFocus)
 (window-style "GTimer"		#:placement-proc (lambda (win)
 						   (move-to
-						    0 (+ 27
+						    0 (+ 20
 							 (y-
 							  (cadr
 							   (window-size win))))
 						    win))
-	      #:start-lowered #t #:use-style NoFocus)
+				#:start-lowered #t #:use-style NoFocus)
+(window-style "GTimeTracker*"	#:focus 'none)
+(window-style "UAE"		#:icon "amiga.xpm.gz"
+				#:placement-proc (lambda (win)
+						   (move-to 0 0 win)))
+(window-style "Control"		#:icon "amiga.xpm.gz" #:use-style FixedSize
+				#:placement-proc (lambda (win)
+						   (move-to 600 0 win)))
 (window-style "UAE - Debuger"	#:icon "amiga.xpm.gz" #:use-style FixedSize)
-(window-style "UAE"		#:icon "amiga.xpm.gz")
 (window-style "XCd"		#:icon "CompactDisc.xpm.gz"
-	      #:random-placement #t #:use-style FixedSize)
+				#:random-placement #t #:use-style FixedSize)
 (window-style "XZip Status"	#:random-placement #t #:use-style FixedSize)
 (window-style "povray"		#:icon "xpovicon.xpm.gz"
-	      #:random-placement #t #:use-style FixedSize)
+				#:random-placement #t #:use-style FixedSize)
 (window-style "rxvt*"		#:icon "term.xpm.gz"  #:use-style Terminal)
 (window-style "xcalc"		#:icon "Calculator.xpm.gz"
-	      #:random-placement #t)
+				#:random-placement #t)
 (window-style "xclock"		#:use-style Widget)
 (window-style "xconsole"	#:icon "rterm.xpm.gz" #:use-style NoFocus)
 (window-style "xmag"		#:icon "view_3d.xpm.gz" #:random-placement #t
-	      #:use-style NoFocus)
+				#:use-style NoFocus)
 (window-style "xman"		#:icon "xman.xpm.gz" #:random-placement #t
-	      #:use-style NoFocus)
-(window-style "xterm*"		#:icon "xterm-linux.xpm.gz"
-	      #:use-style Terminal)
+				#:use-style NoFocus)
+(window-style "xsm:*"		#:focus 'none
+				#:placement-proc (lambda (win)
+						   (move-to
+						    (x-
+						     (car (window-size win)))
+						    0 win)))
+(window-style "xterm*"		#:icon "xterm-linux.xpm"
+				#:use-style Terminal)
 (window-style "xv controls"	#:icon "xv.color.xpm.gz" #:use-style FixedSize
-	      #:use-style NoFocus)
+				#:use-style NoFocus)
 (window-style "xv load"		#:icon "xv.color.xpm.gz" #:use-style FixedSize
-	      #:use-style NoFocus)
+				#:use-style NoFocus)
 (window-style "xterm root*"	#:start-on-desk 1)
 
 (window-style "bitmap"		#:icon "draw3_3d.xpm.gz")
