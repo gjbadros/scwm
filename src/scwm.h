@@ -270,6 +270,10 @@ EXTERN char *UserName, *UserHome;
 
 extern Display *dpy;
 
+#ifdef USE_IMLIB
+extern ImlibData *imlib_data;
+#endif
+
 extern struct ScwmWindow *FocusOnNextTimeStamp;
 
 extern XContext ScwmContext;

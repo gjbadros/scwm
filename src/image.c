@@ -119,7 +119,7 @@ shared.
 
 
 size_t 
-free_image(SCM obj)
+free_scwmimage(SCM obj)
 {
   scwm_image *si = IMAGE(obj);
   if (!si)
@@ -144,7 +144,7 @@ free_image(SCM obj)
 }
 
 int 
-print_image(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+print_scwmimage(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<image ", port);
   scm_write(IMAGE(obj)->full_name, port);
@@ -153,7 +153,7 @@ print_image(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 }
 
 SCM
-mark_image(SCM obj)
+mark_scwmimage(SCM obj)
 {
   GC_MARK_SCM_IF_SET(IMAGE(obj)->full_name);
   return SCM_BOOL_F;
@@ -255,7 +255,7 @@ make_empty_image(SCM name)
   ci->foreign = 0;
 
   gh_defer_ints();
-  SCWM_NEWCELL_SMOB(result, scm_tc16_scwm_image, ci);
+  SCWM_NEWCELL_SMOB(result, scm_tc16_scwm_scwmimage, ci);
   gh_allow_ints();
 
   return result;
@@ -734,7 +734,7 @@ init_image_colormap()
   ImageColorMap = root_attributes.colormap;
 }
 
-MAKE_SMOBFUNS(image);
+MAKE_SMOBFUNS(scwmimage);
 
 void init_image() 
 {
@@ -744,7 +744,7 @@ void init_image()
   SCM val_load_xbm, val_load_xpm;
 #endif
   
-  REGISTER_SCWMSMOBFUNS(image);
+  REGISTER_SCWMSMOBFUNS(scwmimage);
 
   /* Save a convenient Scheme "default" string */
   scm_permanent_object(str_default=gh_str02scm("default"));
@@ -769,21 +769,26 @@ void init_image()
 
   /* Register the standard loaders. */
 #ifdef USE_IMLIB
+  { /* scope */
+    Screen *screen = ScreenOfDisplay(dpy, Scr.screen);
+    Visual *v = DefaultVisualOfScreen(screen);
+    ImlibInitParams imlib_params;
+    imlib_params.flags = PARAMS_VISUALID;
+    imlib_params.visualid = XVisualIDFromVisual(v);
 
-  /* init imlib */
-  imlib_data = Imlib_init(dpy);
-  
-  val_load_imlib_image = gh_lookup("load-imlib-image");
-  if(val_load_imlib_image == SCM_UNDEFINED)
-  {
-    scwm_msg(ERR,"init_image","load-imlib-image not defined -- "
-             "probable build error\n consider 'rm *.x' and rebuild");
-    abort();
+    /* init imlib */
+    imlib_data = Imlib_init_with_params(dpy, &imlib_params);
+    
+    val_load_imlib_image = gh_lookup("load-imlib-image");
+    if(val_load_imlib_image == SCM_UNDEFINED) {
+      scwm_msg(ERR,"init_image","load-imlib-image not defined -- "
+               "probable build error\n consider 'rm *.x' and rebuild");
+      abort();
+    }
+
+    register_image_loader (str_empty, val_load_imlib_image);
+    register_image_loader (gh_str02scm("default"), val_load_imlib_image);
   }
-
-  register_image_loader (str_empty, val_load_imlib_image);
-  register_image_loader (gh_str02scm("default"), val_load_imlib_image);
-
 #else /* !USE_IMLIB */  
   val_load_xbm = gh_lookup("load-xbm");
   val_load_xpm = gh_lookup("load-xpm");

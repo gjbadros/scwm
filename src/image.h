@@ -64,7 +64,7 @@ typedef struct
 } scwm_image;
 
 
-#define IMAGE_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_image)
+#define IMAGE_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_scwmimage)
 #define IMAGE(X)  ((scwm_image *)gh_cdr(X))
 #define SAFE_IMAGE(X)  (IMAGE_P((X))? IMAGE((X)) : NULL)
 #define DYNAMIC_IMAGE_P(X) (gh_symbol_p(X)? \
@@ -75,7 +75,7 @@ typedef struct
                                SAFE_IMAGE(scm_symbol_binding(SCM_BOOL_F,(X))):\
                                SAFE_IMAGE(X))
 
-EXTERN long scm_tc16_scwm_image;
+EXTERN long scm_tc16_scwm_scwmimage;
 
 SCM make_image_from_pixmap(char *szDescription,
 			   Pixmap image, Pixmap mask, 
