@@ -74,6 +74,7 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #include "decor.h"
 #include "face.h"
 #include "colormaps.h"
+#include "image.h"
 
 #define MAXHOSTNAME 255
 
@@ -199,6 +200,7 @@ scwm_main(int argc, char **argv)
   Bool option_error = FALSE;
 
   init_scwm_types();
+  init_image();
   init_miscprocs();
   init_menu();
   init_scwm_menu();
@@ -1273,7 +1275,7 @@ InitVariables(void)
   /* Not the right place for this, should only be called once somewhere .. */
   /* FIXGJB: why not the right place? */
   InitPictureCMap(dpy, Scr.Root);
-
+  init_image_colormap();
   return;
 }
 
