@@ -80,7 +80,7 @@
 
 
 (use-scwm-modules base defoption optargs primopts 
-		  winops winlist wininfo
+		  winops winlist wininfo listops
 		  style face time-convert menus-extras
 		  std-menus doc virtual
 		  flux flux-gtk flash-window key-mover
@@ -339,6 +339,12 @@
 
 (set-rubber-band-mask! 255)  
 
+(define (popup-window-group-menu)
+  (popup-menu (make-window-group-menu (get-window))) #t)
+
+(define (popup-window-group-menu-no-warp)
+  (popup-menu (make-window-group-menu (get-window))))
+
 (define (popup-small-ops)
   (popup-menu (make-small-window-ops-menu (get-window)) #t))
 
@@ -529,7 +535,7 @@
 
 ;;(window-style "*" #:border-width 5 #:mwm-border #t)
 
-(window-style "xlogo" #:no-titlebar #t #:plain-border #f)
+;;(window-style "xlogo" #:no-titlebar #t #:plain-border #f)
 ;;(window-style "*" #:border-width 6)
 ;;(resize-to 200 200)
 
@@ -889,6 +895,7 @@
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
     (menuitem "&Print" #:action (thunk print-window))
     menu-separator
+    (menuitem "Group" #:submenu (lambda () (make-window-group-menu (get-window))))
     (menuitem "Change theme" #:submenu (lambda () (menu-window-theme)))
     (menuitem "Reload and change theme" #:submenu (lambda () (menu-window-theme #t)))
     menu-separator
@@ -1227,7 +1234,7 @@ union of all other window managers!
 	      #:action interactive-set-window-gravity!)
     menu-separator
     (menuitem "More" 
-	       #:action 
+	       #:submenu
 	       (menu 
 		(list
 		 (menuitem "&Raise" #:action raise-window)
@@ -1244,12 +1251,36 @@ union of all other window managers!
 			       "UnKeep On Top"
 				   "Keep On Top") 
 			   #:action toggle-on-top))))
+    (menuitem "Group"
+	      #:submenu
+	      (make-window-group-menu w))
     menu-separator
     (menuitem "Close" #:image-left "mini-cross.xpm" 
 	      #:action close-window)
     (menuitem "Destroy" #:image-left "mini-bomb.xpm" 
 	      #:action destroy-window))))
   
+(define (make-window-group-menu w)
+  (let* ((swl (selected-windows-list))
+	 (wla? (pair? swl)) ;; wla? -- winlist-active?
+	 (n (length swl)))
+    (menu
+     (filter-map 
+      noop
+      (list
+       (menu-title "Window Group") menu-separator
+       (menuitem 
+	(if (window-is-selected? w) "&Unselect" "&Select") 
+	#:action select-window-add-selection)
+       (if wla?	(menuitem "Unselect &all windows" 
+		     #:action unselect-all-windows)
+	   #f)
+       (if (and wla? (> n 1))
+	   (menuitem (string-append 
+		      "&Tile " (number->string n)
+		      " windows") #:action tile-windows-interactively)
+	   #f))
+      ))))
 
 ;;; now set some mouse and key bindings ;;
 
@@ -1344,6 +1375,8 @@ union of all other window managers!
 (bind-mouse 'all "H-S-1" #f select-window-add-selection)
 (bind-mouse 'all "H-A-1" #f select-window-add-selection)
 (bind-mouse 'all "H-S-2" #f interactive-move-selected-group-or-window)
+(bind-mouse 'title "C-1" #f select-window-add-selection)
+(bind-mouse 'title "C-3" #f popup-window-group-menu-no-warp)
 
 (bind-mouse 'all "H-M-3" #f popup-window-ops)
 
