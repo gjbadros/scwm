@@ -1,3 +1,14 @@
+Fri Jul  9 15:05:04 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* INSTALL: Updated with notes about dynamically-linked files,
+	guile-gtk, the guile-1.3 patch.
+
+	* HACKING: Up to libtool 1.3.
+
+	* COPYING.FVWM: Added my name to the disclaimer.
+
+	* BUILD-PROBLEMS-FAQ: reminder to use GNU make.
+
 Tue Jul  6 12:41:38 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* guile-1.3-includes.patch: Added -- reference this in

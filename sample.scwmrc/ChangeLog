@@ -1,3 +1,14 @@
+Fri Jul  9 15:09:45 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added `close-on-double-click',
+	`popup-small-ops-from-decoration' to make the top-left button not
+	require a delay when clicked, but also still close when
+	double-clicked.  Drop the title from the
+	popup-small-window-ops-menu, and add a "Set gravity" option that
+	is way cool and shows off the improved gravity support and the new 
+	pixmap cursor support.  Moved `describe-key' into flux.  Added
+	binding for interactive-set-window-gravity!.
+
 Mon Jul  5 19:47:59 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added #f argument to various bind-mouse calls to

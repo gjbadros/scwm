@@ -1,3 +1,7 @@
+Fri Jul  9 15:13:16 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added `describe-key' moved here from gjb.scwmrc
+
 Wed Jul  7 15:39:24 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* fvwm-eval.scm: Patch from Danius Michaelides to add support for
