@@ -1,3 +1,16 @@
+1998-09-27  Todd Larason  <jtl@teeny.molehill.org>
+
+	* draw-pie-menu.c: Lots of changes to bring it up to date with the 
+	current drawmenu.c, and to fix bugs with the larger spacing; the
+	'real' spacing works out nicely to avoid some work.  This still
+	doesn't actually do pies, and still isn't used at all, but this is 
+	a better starting place for additional work than the previous
+	version.
+
+	* drawmenu.c (PaintSideImage): Align the side image properly if it 
+	completely fits and it's bottom aligned.
+	(ConstructDynamicMenu): enable background images
+
 1998-09-26  Todd Larason  <jtl@teeny.molehill.org>
 
 	* drawmenu.c (MakeGCs): only recompute the relief and shadow

@@ -151,7 +151,7 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg,
       cpixDstYoffset = MENU_ITEM_RR_SPACE;
       cpixSrcYoffset = psimg->height - height;
     } else {
-      cpixDstYoffset = cpixHeight - height;
+      cpixDstYoffset = cpixHeight - height - MENU_ITEM_RR_SPACE;
       cpixSrcYoffset = 0;
     }
   }
@@ -305,7 +305,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
       y_offset += psimgAbove->height;
     }
 
-    /* center text vertically if the pixmap is taller */
+    /* center image vertically */
     if (psimgLeft) {
       int cpixExtraYOffset = (item_height - psimgLeft->height) / 2;
       DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, MenuGC);
@@ -412,7 +412,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
   { /* scope */
     Menu *pmenu = pmd->pmenu;
     scwm_image *psimgSide = SAFE_IMAGE(pmenu->scmImgSide);
-    /*    scwm_image *psimgBackground = SAFE_IMAGE(pmenu->scmImgBackground);  */
+    scwm_image *psimgBackground = SAFE_IMAGE(pmenu->scmImgBackground);
     scwm_font *scfont;
     MenuItemInMenu **rgpmiim = pmd->rgpmiim;
 
@@ -542,6 +542,10 @@ ConstructDynamicMenu(DynamicMenu *pmd)
       pmdi->w = XCreateWindow(dpy, Scr.Root, 0, 0, pmdi->cpixWidth,
 			      pmdi->cpixHeight, 0, CopyFromParent, InputOutput,
 			      CopyFromParent, valuemask, &attributes);
+
+      if (psimgBackground) {
+	XSetWindowBackgroundPixmap(dpy, pmdi->w, psimgBackground->image);
+      }
     }
   }
 }
