@@ -1,4 +1,7 @@
 ;; $Id$
+
+(use-module (app scwm optargs))
+
 ;; (reset-scwm-exec-protocol)
 (begin
   (define swi select-window-interactively)
@@ -15,11 +18,11 @@
 	(cl-add-constraint solver cn)
 	cn)))
 
-  (define (keep-lefts-even w1 w2)
+  (define* (keep-lefts-even w1 w2 #&optional (enable? #f))
     (let ((w1-x (window-clv-xl w1))
 	  (w2-x (window-clv-xl w2)))
       (let ((cn (make-cl-constraint w1-x = w2-x)))
-	(cl-add-constraint solver cn)
+	(and enable? (cl-add-constraint solver cn))
 	cn)))
 
   (define (keep-bottoms-even w1 w2)
