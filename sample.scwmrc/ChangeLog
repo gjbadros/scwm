@@ -1,5 +1,8 @@
 Thu Mar  5 03:15:48 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* sds.scwmrc: Update to the latest version from Sam Steingold
+ 	<sds@usa.net>.
+
 	* decor.scwmrc, system.scwmrc, gjb.scwmrc, juhp.scwmrc: General
  	improvements to make them work and be generally usable.
 
