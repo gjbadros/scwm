@@ -179,8 +179,6 @@ char *display_name = NULL;
 
 void scwm_main(int, char **);
 
-typedef void (*main_prog_t) (int argc, char **argv);
-
 Atom XA_MIT_PRIORITY_COLORS;
 Atom XA_WM_CHANGE_STATE;
 Atom XA_WM_STATE;
