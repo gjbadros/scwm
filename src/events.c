@@ -1137,31 +1137,35 @@ HandleButtonPress()
       && (pswCurrent != Scr.Ungrabbed) &&
       ((Event.xbutton.state &
 	(ControlMask | Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask)) == 0)) {
-    if (pswCurrent) {
-      SetFocus(pswCurrent->w, pswCurrent, 1);
-      if (Scr.fClickToFocusRaises) {
-	RaiseWindow(pswCurrent);
-      } else if ((Event.xany.window != pswCurrent->w) &&
-                 (Event.xbutton.subwindow != pswCurrent->w) &&
-                 (Event.xany.window != pswCurrent->Parent) &&
-                 (Event.xbutton.subwindow != pswCurrent->Parent)) {
-        scwm_msg(DBG,__FUNCTION__,"Would have raised window %s, but commented out -- did you want it to raise?  Tell Greg!",
-                 pswCurrent->name);
-        /* RaiseWindow(pswCurrent);  -- above condition was an || of the fClickToFocusRaises
-           cond'n above --07/26/98 gjb */
-      }
-      KeepOnTop();
-
-      /* Why is this here? Seems to cause breakage with
-       * non-focusing windows! */
-      if (!pswCurrent->fIconified) {
-	XSync(dpy, 0);
-        XAllowEvents(dpy, 
-                     (Scr.fClickToFocusPassesClick?ReplayPointer:AsyncPointer),
-                     CurrentTime);
-	XSync(dpy, 0);
-	return;
-      }
+    SetFocus(pswCurrent->w, pswCurrent, 1);
+    if (Scr.fClickToFocusRaises) {
+      RaiseWindow(pswCurrent);
+    } else if ((Event.xany.window != pswCurrent->w) &&
+               (Event.xbutton.subwindow != pswCurrent->w) &&
+               (Event.xany.window != pswCurrent->Parent) &&
+               (Event.xbutton.subwindow != pswCurrent->Parent)) {
+      scwm_msg(DBG,__FUNCTION__,"Would have raised window %s, but commented out -- did you want it to raise?  Tell Greg!",
+               pswCurrent->name);
+      /* RaiseWindow(pswCurrent);  -- above condition was an || of the fClickToFocusRaises
+         cond'n above --07/26/98 gjb */
+    }
+    KeepOnTop();
+    
+    /* Why is this here? Seems to cause breakage with
+     * non-focusing windows! */
+    if (!pswCurrent->fIconified) {
+      Bool fSendClick = Scr.fClickToFocusPassesClick;
+#if 0
+      /* FIXGJB */
+      if ( /* click was in a border, titlebar, or decoration */ )
+        fSendClick = True;
+#endif
+      XSync(dpy, 0);
+      XAllowEvents(dpy, 
+                   (fSendClick?ReplayPointer:AsyncPointer),
+                   CurrentTime);
+      XSync(dpy, 0);
+      return;
     }
   } else if (pswCurrent && !pswCurrent->fClickToFocus &&
 	     (Event.xbutton.window == pswCurrent->frame) &&
