@@ -1,3 +1,16 @@
+Fri Oct  2 15:31:38 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* menu.c (MenuInteraction): Use pmd->pmdv... not pmiim->pmd (pmiim 
+	  is NULL at start of this fn)
+
+	* drawmenu.c (SetPopupMenuPositionFromMenuItem): Comment out
+	  unused var pmdiNew (eliminates warning)
+
+	* drawxpm-menu.c: #include "drawmmenu.h", add return type to
+	  InitGCs(), add parens to disambiguate && and || in same
+	  expression, and comment out unused var pmdiNew (all to eliminate 
+	  warnings)
+
 1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
 
 	* menu.c (menu_properties): added scmSideAlign and removed for
