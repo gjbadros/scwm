@@ -1,3 +1,16 @@
+Tue Mar 23 11:36:04 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* image.h, image.c: Use imlib if USE_IMLIB is set.  This removes
+ 	the load-xbm, load-xpm primitives, and replaces them with a new
+ 	load-imlib-image primitive. That new primitive is then the only
+ 	image loader registered by default.  Patch from James LewisMoss.
+
+	* scwm.c: Call init_image() later, after the display has been
+	opened, since the new optional imlib code needs the display opened
+	for its initialization.  (Patch from James LewisMoss, though I
+	removed the conditionals as the xbm/xpm init_image() works fine
+	later, too).
+
 1999-03-22  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* session-manager.c (setSMProperties): Add GsmPriority prop.
