@@ -2,7 +2,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-09 Thu 13:03:54 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-10 Fri 17:22:27 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -76,7 +76,7 @@
 ;; Type M-TAB to complete symbol at point.
 
 (eval-and-compile
- (unless (and (fboundp 'cadr) (fboundp 'unless)) (require 'cl))
+ (or (and (fboundp 'cadr) (fboundp 'unless)) (require 'cl))
  (or (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos"))
  (unless (fboundp 'with-output-to-string)
    (defmacro with-output-to-string (&rest body)
