@@ -568,10 +568,10 @@ HandleKeyEvent(Bool fPress)
     }
     if (fPress) {
       if (!UNSET_SCM(pbnd->Thunk)) {
-        call_interactively(pbnd->Thunk);
+        call_interactively(pbnd->Thunk,SCM_BOOL_F);
       }
     } else if (!UNSET_SCM(pbnd->ReleaseThunk)) {
-      call_interactively(pbnd->ReleaseThunk);
+      call_interactively(pbnd->ReleaseThunk,SCM_BOOL_F);
     }
     
     if (NULL != pswCurrent) {
@@ -1536,7 +1536,7 @@ HandleButtonPress()
       set_window_context(pswCurrent->schwin);
     }
     if (gh_procedure_p(pbnd->ReleaseThunk)) {
-      done = call_interactively(pbnd->ReleaseThunk);
+      done = call_interactively(pbnd->ReleaseThunk,SCM_BOOL_F);
     }
     /* GJB:FIXME:: maybe this should only not
        do the main action if immediate proc returns
@@ -1544,7 +1544,7 @@ HandleButtonPress()
     if (SCM_BOOL_F == done &&
         gh_procedure_p(pbnd->Thunk)) {
       find_mouse_event_type();
-      call_interactively(pbnd->Thunk);
+      call_interactively(pbnd->Thunk,SCM_BOOL_F);
       clear_mouse_event_type();
     }
     if (NULL != pswCurrent) {

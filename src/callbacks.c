@@ -225,13 +225,16 @@ extern SCM sym_interactive;
 /* from window.c */
 extern SCM ScmArgsFromInteractiveSpec(SCM spec, SCM proc);
 
-SCWM_PROC(call_interactively, "call-interactively", 1, 0, 0,
-          (SCM thunk),
-"Invoke THUNK interactively.")
+SCWM_PROC(call_interactively, "call-interactively", 1, 1, 0,
+          (SCM thunk, SCM debug),
+"Invoke THUNK interactively.
+Write a debug message if DEBUG is #t.")
 #define FUNC_NAME s_call_interactively
 {
   SCM interactive_spec = SCM_BOOL_F;
+  Bool fDebugThisCommand = False;
   VALIDATE_ARG_PROC(1,thunk);
+  VALIDATE_ARG_BOOL_COPY_USE_F(1,debug,fDebugThisCommand);
   interactive_spec = scm_procedure_property(thunk,sym_interactive);
   if (UNSET_SCM(interactive_spec)) {
     SCM procname = scm_procedure_name(thunk);
@@ -245,6 +248,9 @@ SCWM_PROC(call_interactively, "call-interactively", 1, 0, 0,
     SCM args = SCM_EOL;
     if (gh_string_p(interactive_spec)) {
       args = ScmArgsFromInteractiveSpec(interactive_spec,thunk);
+    }
+    if (fDebugThisCommand) {
+      scm_write(gh_list(thunk,interactive_spec,args,SCM_UNDEFINED),scm_current_output_port());
     }
     return scwm_safe_apply(thunk, args);
   }

@@ -42,7 +42,7 @@ SCM scwm_safe_apply_message_only (SCM proc, SCM args);
 
 /* Individual callbacks. */
 
-SCM call_interactively (SCM thunk);
+SCM call_interactively (SCM thunk, SCM debug);
 
 SCM scwm_safe_apply (SCM proc, SCM args);
 SCM scwm_safe_call0 (SCM thunk);
