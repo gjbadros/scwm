@@ -1,3 +1,18 @@
+Fri Jul  2 08:40:31 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* message-window.h, message-window.c: Drop the message field of
+ 	scwm_msgwindow struct, and add a char *sz instead; just convert to
+ 	C string on set-message! primitive, then don't do so much memory
+ 	allocation and deallocation.  Factor out MessageWindowWidth(),
+	MessageWindowHeight() functions.  Make C functions static as
+	appropriate, clean up some stylistic issues.  Still need to make
+	msg windows permit multi-line messages.
+
+Thu Jul  1 22:58:29 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* message-window.c: Fix alignment bug-- use manual sizes if
+ 	desired before computing the position.
+
 Thu Jul  1 22:40:07 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* message-window.h: Added macros: MSGWINDOW_IMAGE(),
