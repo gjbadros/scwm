@@ -1,5 +1,7 @@
 Sun Mar 29 18:10:45 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* binding.c, binding.h, scmprocs.c: Remove bind-event.
+
 	* add_window.c, add_window.h: Use new-style hook support for new
  	window hooks; add-hook! should now be used with the
  	before-new-window-hook and after-new-window-hook hooks.

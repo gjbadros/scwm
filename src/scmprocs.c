@@ -142,7 +142,6 @@ init_scwm_procs(void)
   gh_new_procedure("set-window-foreground!", set_window_foreground_x, 1, 1, 0);
   gh_new_procedure("set-window-background!", set_window_background_x, 1, 1, 0);
   gh_new_procedure("set-icon-title!", set_icon_title_x, 1, 1, 0);
-  gh_new_procedure("bind-event", bind_event, 2, 0, 0);
   gh_new_procedure("set-random-placement!", set_random_placement_x, 1, 1, 0);
   gh_new_procedure("set-smart-placement!", set_smart_placement_x, 1, 1, 0);
   gh_new_procedure("set-window-button!", set_window_button_x, 2, 1, 0);
