@@ -6,9 +6,10 @@
 
 
 ;; FIXGJB: hack to put doc-files in root module
-(define-public doc-files        ; '("/usr/src/scwm/doc/scwm-procedures.txt")
-  (map (lambda (s) (string-append (scwm-path-prefix) "/share/scwm/" s))
-       '("scwm-procedures.txt" "scwm-variables.txt" "cassowary_scm-procedures.txt")))
+(define-public doc-files
+  (map (lambda (st) (string-append (scwm-path-prefix) "/share/scwm/" st))
+       '("scwm-procedures.txt" "scwm-variables.txt"
+         "cassowary_scm-procedures.txt")))
 
 (define-module (app scwm doc)
   :use-module (ice-9 regex)
@@ -17,6 +18,8 @@
   :use-module (app scwm optargs))
 
 
+
+(define-public documentation-debug #t)
 
 (define*-public (documentation func #&optional (port (current-output-port)))
   "Print the documentation for the string or symbol.
@@ -28,10 +31,11 @@ Return #t if found anything, #f if no documentation."
                                   (char=? (string-ref st 0)  #\np)))))
     (do ((fl doc-files (cdr fl)) (done #f) (fd #f))
         ((or (null? fl) done)
-         (if (not done) (write-all #t "No documentation for `" func "'\n"))
+         (if (not done) (write-all port "No documentation for `" func "'\n"))
          done)
-;;      (write-all #t "trying `" (car fl) "'...")
-      (cond ((file-exists? (car fl)) (display "file exists\n")
+      (if documentation-debug (write-all port "trying `" (car fl) "'..."))
+      (cond ((file-exists? (car fl))
+             (if documentation-debug (display "file exists\n" port))
              (set! fd (open-input-file (car fl)))
              (do ((ln (read-line fd) (read-line fd)) (delim-p #f))
                  ((or (eof-object? ln) done) (close-input-port fd))
@@ -44,19 +48,21 @@ Return #t if found anything, #f if no documentation."
                       (do ((ln (read-line fd) (read-line fd)))
                           ((delim ln))
                         (display ln port) (newline port))))))
-            (#t (display "file not found\n"))))))
+            (documentation-debug (display "file not found\n" port))))))
 
 (define*-public (help obj #&optional (port (current-output-port)))
   "Print all possible documentation for string or symbol."
-  (display " *** documentation for `") (display obj) (display "':\n\n")
+  (display " *** documentation for `" port)
+  (display obj port)
+  (display "':\n\n" port)
   (documentation obj port)
   (let ((bb (symbol-binding #f (if (string? obj) (string->symbol obj) obj))))
     (cond ((procedure? bb)
-           (display "\n *** procedure-documentation for `")
-           (display obj) (display "':\n\n")
+           (display "\n *** procedure-documentation for `" port)
+           (display obj port) (display "':\n\n" port)
            (with-output-to-port port
              (lambda () (procedure-documentation bb))))))
-  (display "\n\n"))
+  (display "\n\n" port))
 
 ;; For testing...
 ;; (documentation "window-position")
