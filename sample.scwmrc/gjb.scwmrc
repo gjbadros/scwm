@@ -5,6 +5,12 @@
 ;; complete and current.
 ;; Greg J. Badros <gjb@cs.washington.edu>
 
+;; Change below to #t to not send a packet to
+;; the scwm usage counter machine
+;; Or set environment variable SCWM_DO_NOT_LOG_USAGE to anything
+(define scwm-do-not-log-usage #f)
+
+
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 

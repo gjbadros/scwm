@@ -35,6 +35,12 @@
 
 ;;; Code:
 
+;; Change below to #t to not send a packet to
+;; the scwm usage counter machine
+;; Or set environment variable SCWM_DO_NOT_LOG_USAGE to anything
+(define scwm-do-not-log-usage #f)
+
+
 (use-modules (app scwm base)
 	     (app scwm winops)
 	     (app scwm winlist)
@@ -677,3 +683,4 @@
 	((not (<= 0 color 100)))
       (style-one-window win #:fg (string-append "grey" (number->string color)))
       (sleep-ms 100))))
+

@@ -1,5 +1,11 @@
 ;;; ".scwmrc"   -*-scwm-*-
 
+;; Change below to #t to not send a packet to
+;; the scwm usage counter machine
+;; Or set environment variable SCWM_DO_NOT_LOG_USAGE to anything
+(define scwm-do-not-log-usage #f)
+
+
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
@@ -417,4 +423,5 @@
 	    (prev-window #:only visible? #:except iconified?)))
 
 (write-line "\n\".scwmrc\" parsed.")
+
 ;;; end of ".scwmrc"

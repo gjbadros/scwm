@@ -1,3 +1,10 @@
+;; $Id$
+
+;; Change below to #t to not send a packet to
+;; the scwm usage counter machine
+;; Or set environment variable SCWM_DO_NOT_LOG_USAGE to anything
+(define scwm-do-not-log-usage #f)
+
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
@@ -259,6 +266,3 @@
 (bind-key 'all "M-S-Tab" 
 	  (lambda ()
 	    (prev-window #:only visible? #:except iconified?)))
-
-
-
