@@ -164,15 +164,11 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
    * between the rounding or the flooring behaviour, since
    * interactive resizes benefit from rounding behaviour.
    */
-  if (xinc != 0) 
+  if (xinc > 1) 
     dwidth = ((dwidth - baseWidth + 1 /* (xinc/2) */ ) / xinc * xinc) + baseWidth;
-  else
-    scwm_msg(WARN,FUNC_NAME,"xinc == 0");
 
-  if (yinc != 0)
+  if (yinc > 1)
     dheight = ((dheight - baseHeight + 1 /* (yinc/2) */ ) / yinc * yinc) + baseHeight;
-  else
-    scwm_msg(WARN,FUNC_NAME,"yinc == 0");
 
 
   /*

@@ -81,10 +81,20 @@ move.h xmisc.h drawmenu.h placement.h xproperty.h errors.h resize.h xrm.h \
 events.h scm_init_funcs.h dbug_resize.h message-window.h validate.h winprop.h\
 $(cassowary_headers) $(session_manager_headers)
 
-
+if ENABLE_DUMP
 scwm_LDADD = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@ \
-	      @SM_LIB@ @XEXT_LIB@ @XTST_LIB@ @XMU_LIB@ @XPM_LIB@ \
-	      @x_libs@ @GUILE_LIBS@ @CASSOWARY_LIBS@ @UNEXEC_LIB@
+		@SM_LIB@ @XEXT_LIB@ @XTST_LIB@ @XMU_LIB@ @XPM_LIB@ @x_libs@ \
+		@GUILE_STATIC_LIBS@ @GUILE_EXTRA_LIBS@ \
+		@CASSOWARY_STATIC_LIBS@ \
+		@UNEXEC_LIB@
+else
+scwm_LDADD = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@ \
+		@SM_LIB@ @XEXT_LIB@ @XTST_LIB@ @XMU_LIB@ @XPM_LIB@ @x_libs@ \
+		@GUILE_LIBS@ \
+		@CASSOWARY_LIBS@ \
+		@UNEXEC_LIB@
+endif
+
 scwm_LDFLAGS = @x_ldflags@ -export-dynamic
 scwm_DEPENDENCIES = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@
 

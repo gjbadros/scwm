@@ -122,6 +122,8 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 
 #define MAXHOSTNAME 255
 
+static int dumped = 0;
+
 #ifdef ENABLE_DUMP
 
 #define GDB_TYPE SCM
@@ -150,8 +152,6 @@ void unexec (char *new_name, char *old_name,
              unsigned entry_address);
 
 void scwm_brk_report();
-
-static int dumped = 0;
 
 static void
 dodump(char *progname, char *dumpfile)
@@ -253,7 +253,7 @@ int restart_vp_offset_x = 0, restart_vp_offset_y = 0;
 int fd_width, x_fd;
 char *display_name = NULL;
 
-static void scwm_main(void *closure, int, char **);
+static void scwm_main(int, char **);
 
 Atom XA_MIT_PRIORITY_COLORS;
 Atom XA_WM_CHANGE_STATE;
@@ -592,7 +592,9 @@ InitUserData()
  *	main - Enters scwm_main using the gh_enter convention.
  */
 
+#ifdef ENABLE_DUMP
 void init_sbrk();
+#endif
 
 int
 main(int argc, char **argv)
@@ -600,12 +602,10 @@ main(int argc, char **argv)
 #ifdef HAVE_SCM_INIT_HEAP_SIZE_FACTOR
   scm_init_heap_size_factor = 24;
 #endif
-#if 0
-  scwm_gh_enter(argc, argv, scwm_main);
-#else
+#if ENABLE_DUMP
   init_sbrk();			/* Do this before malloc()s. */
-  scm_boot_guile(argc, argv, scwm_main, 0);
 #endif
+  scwm_gh_enter(argc, argv, scwm_main);
   return 0;
 }
 
@@ -697,7 +697,7 @@ void scwm_brk_report()
  * scwm_main - main routine for scwm
  */
 static void 
-scwm_main(void *ARG_UNUSED(closure), int argc, char **argv)
+scwm_main(int argc, char **argv)
 {
 #ifdef ENABLE_DUMP
   static Bool fShouldDump = False;
