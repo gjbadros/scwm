@@ -23,6 +23,7 @@
 ;;; (use-scwm-modules scwmxtest)
 (define-module (app scwm quote)
   :use-module (app scwm optargs)
+  :use-module (app scwm describe)
   :use-module (app scwm scwmxtest))
 
 
@@ -47,6 +48,20 @@
      (lambda () (apply undo-passive-grab (cdr m)))
      (lambda () (apply xtest-fake-modmask-button (cdr m)))
      (lambda () (apply redo-passive-grab (cdr m))))))
+
+(define*-public (quote-next-event)
+  "Quote the next mouse or keyboard event and let it pass to the application."
+  (interactive)
+  (let ((m (get-next-event)))
+    (if (is-mouse-event? m)
+	(dynamic-wind
+	 (lambda () (apply undo-passive-grab (cdr m)))
+	 (lambda () (apply xtest-fake-modmask-button (cdr m)))
+	 (lambda () (apply redo-passive-grab (cdr m))))
+	(dynamic-wind
+	 (lambda () (apply undo-passive-grab (cdr m)))
+	 (lambda () (apply xtest-fake-modmask-key (cdr m)))
+	 (lambda () (apply redo-passive-grab (cdr m)))))))
 
 ;; (bind-key 'all "H-q" quote-key-event)
 ;; (quote-key-event)

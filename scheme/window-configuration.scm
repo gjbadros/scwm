@@ -109,6 +109,7 @@ CFG should be a window configuration object.  See also `animate-windows'."
 
 (define*-public (push-window-configuration #&optional (win (get-window)))
   "Save the configuration of WIN on its stack of previous configurations."
+  (interactive)
   (set-window-property! 
    win 'window-configuration-stack
    (cons 
@@ -118,6 +119,7 @@ CFG should be a window configuration object.  See also `animate-windows'."
 				      
 (define*-public (pop-window-configuration #&optional (win (get-window)))
   "Restore the last configuration of WIN that was saved on its stack of previous configurations."
+  (interactive)
   (let ((config (window-property win 'window-configuration-stack)))
     (if (and config (not (null? config)))
 	(begin

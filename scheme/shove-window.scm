@@ -5,6 +5,7 @@
 (define-module (app scwm shove-window)
   :use-module (app scwm optargs)
   :use-module (app scwm base)
+  :use-module (app scwm window-configuration)
   :use-module (app scwm animated-edge-moves)
   :use-module (app scwm message-window))
 
@@ -16,18 +17,25 @@
   (with-message-window-shown 
    nonant-keys-mwin
    (let* ((next-key-event (get-key-event))
-	  (key (string->symbol (car next-key-event))))
-     (case key
-       ((j) (animated-move-to-w))
-       ((l) (animated-move-to-e))
-       ((i) (animated-move-to-n))
-       ((comma) (animated-move-to-s))
-       ((period) (animated-move-to-se))
-       ((o) (animated-move-to-ne))
-       ((u) (animated-move-to-nw))
-       ((m) (animated-move-to-sw))
-       ((k) (animated-move-to-center))
-       ))))
+	  (key (string->symbol (car next-key-event)))
+	  (proc
+	   (case key
+	     ((j) animated-move-to-w)
+	     ((l) animated-move-to-e)
+	     ((i) animated-move-to-n)
+	     ((comma) animated-move-to-s)
+	     ((period) animated-move-to-se)
+	     ((o) animated-move-to-ne)
+	     ((u) animated-move-to-nw)
+	     ((m) animated-move-to-sw)
+	     ((k) animated-move-to-center)
+	     (else #f)
+	     )))
+     (if proc 
+	 (begin
+	   (push-window-configuration)
+	   (proc))))))
+     
 
 (define-public menu-window-shove
   (menu
