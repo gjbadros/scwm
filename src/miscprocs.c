@@ -466,7 +466,7 @@ SCWM_PROC (elapsed_time, "elapsed-time", 0, 0, 0,
 SCWM_PROC(scwm_last_timestamp, "scwm-last-timestamp", 0, 0, 0,
           ())
      /** Return the timestamp of the last event Scwm handled. */
-#define FUNC_NAME s_last_timestamp
+#define FUNC_NAME s_scwm_last_timestamp
 {
   extern Time lastTimestamp;
   return gh_long2scm(lastTimestamp);

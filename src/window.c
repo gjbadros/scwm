@@ -803,6 +803,18 @@ SCWM_PROC(window_p, "window?", 1, 0, 0,
 }
 #undef FUNC_NAME
 
+SCWM_PROC(window_valid_p, "window-valid?", 1, 0, 0,
+          (SCM obj))
+     /** Returns #t if OBJ is window object and is still valid, otherwise returns #f.
+A window is no longer valid when it is destroyed or closed.  An iconified
+window that can be deiconified is still represented by a valid window object. */
+#define FUNC_NAME s_window_valid_p
+{
+  return SCM_BOOL_FromBool(WINDOWP(obj) && VALIDWINP(obj));
+}
+#undef FUNC_NAME
+
+
 SCWM_PROC(select_viewport_position, "select-viewport-position", 0, 2, 0,
           (SCM kill_p, SCM release_p))
      /** Select a viewport position and return the window there.
@@ -907,7 +919,7 @@ mouse drags. */
   } else if (!gh_boolean_p(release_p)) {
     scm_wrong_type_arg(FUNC_NAME, 3, release_p);
   }
-  if (UNSET_SCM(window_context)) {
+  if (UNSET_SCM(scm_window_context)) {
     if (select_p == SCM_BOOL_T) {
       SCM win = gh_car(select_viewport_position(kill_p,release_p));
       if (SCM_BOOL_F == win)
@@ -917,7 +929,7 @@ mouse drags. */
       return SCM_BOOL_F;
     }
   }
-  return window_context;
+  return scm_window_context;
 }
 #undef FUNC_NAME
 
@@ -945,30 +957,27 @@ WIN can be either a window, or #f, to reset the current window-context.
 See also `with-window' and `get-window'. */
 #define FUNC_NAME s_set_window_context_x
 {
-  SCM answer = window_context;
+  SCM answer = scm_window_context;
   if (win != SCM_BOOL_F && !WINDOWP(win)) {
     scm_wrong_type_arg(FUNC_NAME,1,win);
   }
-  window_context = win;
+  scm_window_context = win;
   if (answer == SCM_UNDEFINED)
     answer = SCM_BOOL_F;
   return answer;
 }
 #undef FUNC_NAME
 
-/* GJB:FIXME:: Generates a doc extraction warning, but cannot
-   use the name window_context for this function because that's
-   a variable */
-SCWM_PROC(get_window_context, "window-context", 0, 0, 0,
+SCWM_PROC(window_context, "window-context", 0, 0, 0,
           ())
      /** Returns the current window context, or #f if there is none.
 See also `with-window' and `set-window-context!' */
-#define FUNC_NAME s_get_window_context
+#define FUNC_NAME s_window_context
 {
-  if (window_context == SCM_UNDEFINED)
+  if (scm_window_context == SCM_UNDEFINED)
     return SCM_BOOL_F;
   else
-    return window_context;
+    return scm_window_context;
 }
 #undef FUNC_NAME
 

@@ -642,9 +642,14 @@ SCWM_SYMBOL(sym_pixmap , "pixmap");
 SCWM_SYMBOL(sym_mini_program_icon , "mini-program-icon");
 SCWM_SYMBOL(sym_tiled , "tiled");
 
-/* FIXMS this function is horrible, functions should never be this
+/* MS:FIXME:: this function is horrible, functions should never be this
    huge, but I did not see an easier way to translate it. */
 
+/* GJB:FIXME:MS: This produces some argument name/number mismatches
+   because add_spec_to_face_x is not a primitive but calls
+   scm_wrong_type_arg.  Not sure what the right fix is now, but
+   as you are planning on revisiting the code, I'll let you figure
+   it out! :-) */
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 #define FUNC_NAME "add_spec_to_face_x"
 {

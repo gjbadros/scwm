@@ -444,7 +444,7 @@ SCWM_PROC(SM_client_id, "SM-client-id", 0, 0, 0,
 	  ())
      /** DEPRECATED: Return scwm's session management client id (a string).
 A return value of #f indicates that session management is not active.
-DEPRECATED. Use `SM-register' instead. */
+DEPRECATED: Use `SM-register' instead. */
 #define FUNC_NAME s_SM_client_id
 {
   if (!SmcId)
@@ -465,11 +465,11 @@ Only valid, if `SM-register' returned #f. */
 
 SCWM_PROC(SM_register, "SM-register", 0, 0, 0,
 	  ())
-     /** Register scwm with the session manager, and return the client id.
-The return value is either an id string, or #f if SM could not be
+     /** Register Scwm with the session manager, and return the client id.
+The return value is either an id string, or #f if the session manager could not be
 initialized - `SM-error-message' can be used to get more information in this
 case.
-If scwm is already registered, this function just returns the client id. */
+If Scwm is already registered, this function just returns the client id. */
 #define FUNC_NAME s_SM_register
 {
   SmcCallbacks smcall;

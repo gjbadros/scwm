@@ -281,7 +281,7 @@ typedef struct {
 } scwm_window;
 
 EXTERN long scm_tc16_scwm_window;
-EXTERN_SET(SCM window_context,SCM_UNDEFINED);
+EXTERN_SET(SCM scm_window_context,SCM_UNDEFINED);
 
 #define WINDOWP(X) (SCM_NIMP(X) && (gh_car(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)gh_cdr(X))
@@ -295,8 +295,8 @@ EXTERN_SET(SCM window_context,SCM_UNDEFINED);
 #define PSWFROMSCMWIN(X) (((scwm_window *)gh_cdr(X))->psw)
 #define VALIDWINP(X) (((scwm_window *)gh_cdr(X))->valid)
 
-#define set_window_context(X) window_context=X;
-#define unset_window_context() window_context=SCM_UNDEFINED;
+#define set_window_context(X) do { scm_window_context = (X); } while (0)
+#define unset_window_context() do { scm_window_context = SCM_UNDEFINED; } while (0)
 
 ScwmWindow *PswFromWindow(Display *dpy, Window w);
 ScwmWindow *PswFromPointerLocation(Display *dpy);

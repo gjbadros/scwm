@@ -856,7 +856,7 @@ HandlePropertyNotify()
 	set_window_context(pswCurrent->schwin);
       }
       DBUG((DBG,FUNC_NAME,"Calling hook (maybe empty)"));
-      call2_hooks(x_propertynotify_hook, gh_str02scm(szName), window_context);
+      call2_hooks(x_propertynotify_hook, gh_str02scm(szName), scm_window_context);
       if (NULL != pswCurrent) {
 	unset_window_context();
       }
