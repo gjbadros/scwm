@@ -1,3 +1,8 @@
+Tue Jan  5 07:43:21 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* auto-insert-tkld.el: Added for for use with
+ 	utilities/dev/new-{scheme-primitive,type-skeleton}.cc
+
 1998-12-12  Sam Steingold  <sds@goems.com>
 
 	* scwm.el (scwm-apropos): should be working again.
