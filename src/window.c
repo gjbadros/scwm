@@ -2927,9 +2927,10 @@ of circulation.*/
 #undef FUNC_NAME
 
 
+/* GJB:FIXME:: this should not exclude iconified windows */
 SCWM_PROC (list_stacking_order, "list-stacking-order", 0, 0, 0,
            ())
-     /** Return a list of all the top-level window objects, from top to bottom.
+     /** Return a list of all non-iconified the top-level window objects, from top to bottom.
 The order is the stacking order of the windows. The first element is
 the topmost window, the last is the bottommost */
 #define FUNC_NAME s_list_stacking_order
