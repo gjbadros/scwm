@@ -1,3 +1,14 @@
+Fri Aug 27 14:38:01 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use append! to update the image-load-path, and do 
+	not use /uns directories.  Added missing (begin) to controlling
+	the scwm-logo animation. Define and use have-kp-num-keysyms.
+	Thanks Dirk Herrmann!
+
+	* gjb.scwmrc: Some bug fixes from above propagated here.  I may be 
+	dropping support for gjb.scwmrc for a while (and just focussing on 
+	system.scwmrc.
+
 Fri Aug 27 01:26:56 1999    <gjb@cs.washington.edu>
 
 	* Makefile.am (EXTRA_DIST): Install new simple.scwmrc (the old

@@ -1,3 +1,16 @@
+Fri Aug 27 14:33:27 1999    <gjb@cs.washington.edu>
+
+	* xtest/Makefile.am, scwmgtkhelper/Makefile.am,
+ 	proplist/Makefile.am, esdsound/Makefile.am: Use HAVE_XTEST to
+ 	control whether scwm_module_LTLIBRARIES gets set (instead of
+ 	controlling whether directories are included in ../Makefile.am
+ 	since that was omitting directories from the distributino).
+
+	* Makefile.am: Do not conditionally include sub directories--
+	conditionally have those subdirectories have no targets. (That way 
+	they are still in the distribution even if we don't have, e.g.,
+	proplist installed).
+
 Fri Aug 27 12:33:25 1999    <gjb@cs.washington.edu>
 
 	* background/background.c (s_clone_resized_image): Use image, not
