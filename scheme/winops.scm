@@ -21,14 +21,14 @@
 ;;; FIXMS: disgusting hack for now to get these in the root module.
 
 
-;;;**USER-VAR
 (define-public opaque-move-percent 
-;;  "Percent of display area below which windows are move opaquely."
+;;;**VAR
+;;; Percent of display area below which windows are moved opaquely.
   50)
 
-;;;**USER-VAR
-(define-public opaque-resize-percent
-;;  "Percent of display area below which windows are resized opaquely."
+(define-public opaque-resize-percent 
+;;;**VAR
+;;; Percent of display area below which windows are resized opaquely.
   35)
 
 
