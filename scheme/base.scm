@@ -19,8 +19,8 @@
 
 ;;; FIXMS: disgusting hack for now to get these in the root module.
 
-(define menu-bg-color (load-color "gray80"))
-(define menu-text-color (load-color "black"))
+(define menu-bg-color (make-color "gray80"))
+(define menu-text-color (make-color "black"))
 (define menu-font (make-font "fixed"))
 
 
@@ -61,17 +61,33 @@
 (define-public (program-exists? program-name)
   (= 0 (system (string-append "which " program-name " >/dev/null" ))))
 
-(define-public (set-menu-foreground! fg) (set! menu-text-color fg))
+
+;; FIXMS: gross hack alert!
+(let ((old-smfg! set-menu-foreground!))
+  (set! set-menu-foreground! 
+	(lambda (fg) 
+	  (old-smfg! fg) 
+	  (set! menu-text-color (make-color fg)))))
+
 ;; (define-public (set-menu-foreground! fg) (set-menu-colors! fg))
-(define-public (set-menu-background! bg) (set! menu-bg-color bg))
+(let ((old-smbg! set-menu-background!))
+  (set! set-menu-background!
+	(lambda (bg) 
+	  (old-smbg! bg)
+	  (set! menu-bg-color (make-color bg)))))
+
 ;; (define-public (set-menu-background! bg) (set-menu-colors! #f bg))
-(define-public (set-menu-stipple! st) (set-menu-colors! #f #f st))
+;; (define-public (set-menu-stipple! st) (set-menu-colors! #f #f st))
 
-(define*-public (set-window-foreground! fg #&optional (w (get-window)))
-  (set-window-colors! fg #f w))
+;;(define*-public (set-window-foreground! fg #&optional (w (get-window)))
+;;  (set-window-colors! fg #f w))
 
-(define*-public (set-window-background! bg #&optional (w (get-window))) 
-  (set-window-colors! #f bg w))
+;;(define*-public (set-window-background! bg #&optional (w (get-window))) 
+;;  (set-window-colors! #f bg w))
+
+(define*-public (set-window-colors! #&optional (bg #f) (fg #f) (w (get-window)))
+  (if bg (set-window-background! bg w))
+  (if fg (set-window-foreground! fg w)))
 
 ;; relative versions of absolute move procedures.
 (define-public (move-pointer x y)
@@ -86,7 +102,9 @@
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
 		     (stipple #f) font mwm mwm-style)
-  (set-menu-colors! (or fg foreground) (or bg background) stipple)
+  (if (or fg foreground) (set-menu-foreground! (or fg foreground)))
+  (if (or bg background) (set-menu-background! (or bg background)))
+  (if stipple (set-menu-stipple! stipple))
   (if (bound? font)
       (set! menu-font font))
   (if (bound? mwm)
@@ -156,11 +174,11 @@
   (if (string? image-side)
       (set! image-side (make-image image-side)))
   (if (string? color-bg)
-      (set! color-bg (load-color color-bg)))
+      (set! color-bg (make-color color-bg)))
   (if (string? color-text)
-      (set! color-text (load-color color-text)))
+      (set! color-text (make-color color-text)))
   (if (string? color-bg-image-side)
-      (set! color-bg-image-side (load-color color-bg-image-side)))
+      (set! color-bg-image-side (make-color color-bg-image-side)))
   (make-menu list-of-menuitems image-side color-bg-image-side
 	     color-bg color-text image-bg font))
 

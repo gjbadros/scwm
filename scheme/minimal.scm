@@ -10,18 +10,23 @@
 
 ;;; Make some colors
 (define FIXED-FONT (make-font "fixed"))
-(define BLACK (load-color "black"))
-(define GRAY (load-color "gray"))
-(define SLATEGRAY (load-color "slategray"))
-(define LIGHTGRAY (load-color "lightgray"))
-(define DIMGRAY (load-color "dimgray"))
+(define BLACK (make-color "black"))
+(define GRAY (make-color "gray"))
+(define SLATEGRAY (make-color "slategray"))
+(define LIGHTGRAY (make-color "lightgray"))
+(define DIMGRAY (make-color "dimgray"))
 
 ;;; Set some global options
 (set-rubber-band-mask! 1)
-(set-menu-colors! BLACK GRAY SLATEGRAY)
+(set-menu-foreground! BLACK)
+(set-menu-background! GRAY)
+(set-menu-stipple! SLATEGRAY)
+
 (set-menu-font! FIXED-FONT)
 (set-menu-mwm-style! #f)
-(set-hilight-colors! BLACK GRAY)
+
+(set-hilight-foreground! BLACK)
+(set-hilight-background! GRAY)
 (set-icon-font! FIXED-FONT)
 (set-window-font! FIXED-FONT)
 (set-title-justify! 'center)
@@ -49,11 +54,15 @@
 
 (bind-mouse '(title sidebar) 1 move-or-raise)
 
-(bind-event 'new-window (lambda () (set-window-colors!
-                                    LIGHTGRAY DIMGRAY)
-				(show-titlebar)))
-(bind-event 'new-window-hint (lambda () (set-random-placement!
-					 #t)
-				     (set-smart-placement! #t)))
+(bind-event 'new-window (lambda () 
+			  (set-window-foreground! LIGHTGRAY)
+			  (set-window-background! DIMGRAY)
+			  (show-titlebar)))
+(bind-event 'new-window-hint (lambda () 
+			       (set-random-placement! #t)
+			       (set-smart-placement! #t)))
 (bind-mouse 'root 1 (lambda () (popup-menu default-menu)))
+
+
+
 
