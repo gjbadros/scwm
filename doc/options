@@ -1,0 +1,30 @@
+
+SCWM command line options:
+
+(sorry about the mixture of long and short options, I'll switch to
+using getopt to parse them ASAP)
+
+
+   -debug : enable lots of debugging messages.
+
+       -s : run only on on the first screen of the display
+
+   -d dpy : run on display dpy
+
+  -f file : read startum commands from teh specified file instead of
+            ".scwmrc" or "system.scwmrc".
+
+  -e expr : evaluate Scheme expression expr instead of reading from
+            ".scwmrc" or "system.scwmrc". Multiple -e and -f options
+            may be specified on a single command line and in this case
+            will be processed in the order in which they were specified.
+
+       -i : starts scwm in interactive mode - the .scwmrc or system.scwmrc 
+            file is read as usual (unless of course there are -f or -e 
+            options.)
+
+       -h :  prints a usage message and exits
+
+-blackout : blacks the screen out to hide the initial capture
+
+       -v : prints the version and exits
