@@ -1,3 +1,13 @@
+Sat Oct 10 10:30:19 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* virtual.c (init_virtual): Added change-desk-hook, and call it
+	with the new and old desks when the desktop changes
+
+	* scwm.c: Invoke init_virtual() to add the change-desk-hook var.
+
+	* events.c: Added window-focus-change-hook, and call it when the
+	focus changes (for auto-raise, e.g.)
+
 Thu Oct  8 12:42:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* resize.c (s_set_message_window_position_x): Document X-ALIGN and 
