@@ -1,0 +1,13 @@
+(define (keep-in-view w1)
+  "Keep window W1 in the current viewport always."
+  (map (lambda (func op val)
+	 (let ((cn (make-cl-constraint (func w1) op val cls-strong 1)))
+	   (cl-add-constraint solver cn)
+	   cn))
+       (list window-clv-xl window-clv-yt window-clv-xr window-clv-yb)
+       (list >= >= <= <=)
+       (append (viewport-position) (map + (viewport-position)
+					(display-size))))
+  (map (lambda (func)
+	 (cl-add-stay solver (func w1) cls-strong 1))
+       (list window-clv-width window-clv-height)))
