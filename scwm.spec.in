@@ -94,7 +94,6 @@ install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/
 %{prefix}/man/*
 %{prefix}/share/emacs/site-lisp/*
 %{prefix}/share/scwm/*
-%{prefix}/share/pixmaps/scwm/*
 %{prefix}/include/*
 
 %doc ANNOUNCE AUTHORS BUG-REPORTING BUGS COPYING.FVWM COPYING.GPL ChangeLog
