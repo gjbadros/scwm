@@ -81,7 +81,7 @@ SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
 #undef FUNC_NAME 
 
 SCWM_PROC(make_resized_image, "make-resized-image", 3, 1, 0,
-	  (image, width, height, bgcolor))
+	  (SCM image, SCM width, SCM height, SCM bgcolor))
      /** Makes a new image from IMAGE of the given WIDTH and HEIGHT.
 It does not scale IMAGE.  If the resized image is smaller than the
 original, it is cropped; if larger, the extra space in the new image
