@@ -124,7 +124,7 @@ extern SCM scm_internal_stack_catch (SCM tag,
 typedef void (*main_prog_t) (int argc, char **argv);
 
 #ifdef HAVE_SCM_LOAD_STARTUP_FILES
-#define scwm_gh_enter gh_enter		     
+#define scwm_gh_enter gh_enter
 #else /* !HAVE_SCM_LOAD_STARTUP_FILES */
 void scwm_gh_enter (int argc, char *argv[], main_prog_t c_main_prog);
 #endif /* !HAVE_SCM_LOAD_STARTUP_FILES */

@@ -149,6 +149,10 @@ void unexec (char *new_name, char *old_name,
              unsigned data_start, unsigned bss_start,
              unsigned entry_address);
 
+void scwm_brk_report();
+
+static int dumped = 0;
+
 static void
 dodump(char *progname, char *dumpfile)
 {
@@ -156,6 +160,7 @@ dodump(char *progname, char *dumpfile)
   scm_igc("dump");
   sbrk(4096);  /* work around a bug somewhere */
   unexec(dumpfile, progname, 0, 0, 0);
+  /*  scwm_brk_report(); */
   printf("dumped `%s'.\n", dumpfile);
 }
 
@@ -248,7 +253,7 @@ int restart_vp_offset_x = 0, restart_vp_offset_y = 0;
 int fd_width, x_fd;
 char *display_name = NULL;
 
-void scwm_main(int, char **);
+static void scwm_main(void *closure, int, char **);
 
 Atom XA_MIT_PRIORITY_COLORS;
 Atom XA_WM_CHANGE_STATE;
@@ -587,13 +592,20 @@ InitUserData()
  *	main - Enters scwm_main using the gh_enter convention.
  */
 
+void init_sbrk();
+
 int
 main(int argc, char **argv)
 {
 #ifdef HAVE_SCM_INIT_HEAP_SIZE_FACTOR
   scm_init_heap_size_factor = 24;
 #endif
+#if 0
   scwm_gh_enter(argc, argv, scwm_main);
+#else
+  init_sbrk();			/* Do this before malloc()s. */
+  scm_boot_guile(argc, argv, scwm_main, 0);
+#endif
   return 0;
 }
 
@@ -646,13 +658,47 @@ __ptr_t scwm_realloc_debug(__ptr_t ptr, __malloc_size_t size)
 
 #endif
 
+#ifdef ENABLE_DUMP
+unsigned long scm_init_brk = 0, scm_dumped_brk = 0;
+void init_sbrk()
+{
+  if (dumped)
+    scm_dumped_brk = (unsigned long)sbrk(0);
+  else
+    scm_init_brk = (unsigned long)sbrk(0);
+}
+
+void scwm_brk_report()
+{
+  long scm_curbrk = (long) sbrk(0),
+    dif1 = ((dumped ? scm_dumped_brk : scm_curbrk) - scm_init_brk)/1024,
+    dif2 = (scm_curbrk - scm_dumped_brk)/1024;
+
+  scm_puts("initial brk = 0x", scm_cur_errp);
+  scm_intprint(scm_init_brk, -16, scm_cur_errp);
+  if (dumped) {
+    scm_puts(", dumped = 0x", scm_cur_errp);
+    scm_intprint(scm_dumped_brk, -16, scm_cur_errp);
+  }
+  scm_puts(", current = 0x", scm_cur_errp);
+  scm_intprint(scm_curbrk, -16, scm_cur_errp);
+  scm_puts("; ", scm_cur_errp);
+  scm_intprint(dif1, 10, scm_cur_errp);
+  if (dumped) {
+    scm_puts(dif2<0 ? " - " : " + ", scm_cur_errp);
+    scm_intprint(dif2<0 ? -dif2 : dif2, 10, scm_cur_errp);
+  }
+  scm_puts(" kb\n", scm_cur_errp);
+}
+
+#endif
+
 /*
  * scwm_main - main routine for scwm
  */
-void 
-scwm_main(int argc, char **argv)
+static void 
+scwm_main(void *ARG_UNUSED(closure), int argc, char **argv)
 {
-  static int dumped = 0;
 #ifdef ENABLE_DUMP
   static Bool fShouldDump = False;
   static char *szBinaryPath = NULL;
@@ -850,7 +896,7 @@ is probably of no use to you unless you're a session manager or debbuging.
     
     getopt_ret = getopt_long(argc, argv, getopt_opts,
 			     getopt_longopts, 0);
-    if(getopt_ret == EOF) break;
+    if (getopt_ret == EOF) break;
     
     switch(getopt_ret) {
 #ifdef ENABLE_DUMP
@@ -879,7 +925,7 @@ is probably of no use to you unless you're a session manager or debbuging.
       /* do not even catch segv's */
       fHandleSegv = False; break;
     case 'd':
-      if(optarg == NULL) {
+      if (optarg == NULL) {
         option_error = True;
       break;
       } else {
@@ -893,7 +939,7 @@ is probably of no use to you unless you're a session manager or debbuging.
          undefined quote problem is taken care of */
       fDocumentPrimitiveFormals = True; break;
     case 'f':
-      if(optarg == NULL) {
+      if (optarg == NULL) {
         option_error=True;
         break;
       } else {
@@ -909,7 +955,7 @@ is probably of no use to you unless you're a session manager or debbuging.
         break;
       }
     case 'e':
-      if(optarg == NULL) {
+      if (optarg == NULL) {
         option_error=True;
       break;
       } else {
@@ -951,7 +997,7 @@ Repository Timestamp: %s\n",
     }
   }
   
-  if(option_error) {
+  if (option_error) {
     usage();
     exit(-1);
   }
@@ -981,6 +1027,14 @@ Repository Timestamp: %s\n",
   Scr.NumberOfScreens = ScreenCount(dpy);
 
   master_pid = getpid();
+
+#ifdef ENABLE_DUMP
+  if (fShouldDump) {
+#ifdef DUMP_INIT
+    DUMP_INIT
+#endif
+  }
+#endif
 
   if (!single) {
     int myscreen = 0;
@@ -1166,8 +1220,14 @@ Repository Timestamp: %s\n",
     extern char *init_scheme_string;
     scwm_safe_eval_str(init_scheme_string);
   } /* end scope */
+
+#ifdef ENABLE_DUMP
+  if (dumped) {
+    scwm_init_after_dump();
+  }
+#endif
   
-  if (!dumped) {
+  if (!dumped || 1) {
     DBUG((DBG,"main", "Running config_commands..."));
     
 #ifndef SCWMRC
@@ -1208,7 +1268,6 @@ Repository Timestamp: %s\n",
     }
     
     FREEC(szCmdConfig);
-    
   }
 
 #ifdef ENABLE_DUMP  
@@ -1220,11 +1279,6 @@ Repository Timestamp: %s\n",
   }
 #endif
 
-#ifdef ENABLE_DUMP
-  if (dumped) {
-    scwm_init_after_dump();
-  }
-#endif
   restart_vp_offset_x = 
     NFromXPropertyCardinal(Scr.Root, XA_SCWM_VIEWPORT_OFFSET_X, 
                            False,0);

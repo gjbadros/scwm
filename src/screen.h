@@ -170,7 +170,7 @@ typedef struct ScwmDecor {
   double highlight_factor;
   double shadow_factor;
   struct ScwmDecor *next;	/* additional user-defined styles */
-  SCM scmdecor;
+  SCM scmdecor;                 /* self pointer */
 } ScwmDecor;
 
 

@@ -153,14 +153,24 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
 
   /*
    * Second, fit to base + N * inc
+   * when I round using xinc/2, this results in 
+   * the geometry sometimes being too large for when fitting in a restricted
+   * space (such as the display size) -- E. Jay Berkenbilt patched to
+   * no longer do that on 1999-10-03.
+   * But that makes xterms, ical be one resize_increment too small
+   * since my change on 2000-01-09 to fix an off-by-one error,
+   * so now I re-add 1 back in before constraining size.
+   * It might be better to pass in a fRoundedConstraint that decides
+   * between the rounding or the flooring behaviour, since
+   * interactive resizes benefit from rounding behaviour.
    */
   if (xinc != 0) 
-    dwidth = ((dwidth - baseWidth) / xinc * xinc) + baseWidth;
+    dwidth = ((dwidth - baseWidth + 1 /* (xinc/2) */ ) / xinc * xinc) + baseWidth;
   else
     scwm_msg(WARN,FUNC_NAME,"xinc == 0");
 
   if (yinc != 0)
-    dheight = ((dheight - baseHeight) / yinc * yinc) + baseHeight;
+    dheight = ((dheight - baseHeight + 1 /* (yinc/2) */ ) / yinc * yinc) + baseHeight;
   else
     scwm_msg(WARN,FUNC_NAME,"yinc == 0");
 
