@@ -205,6 +205,7 @@ scwm_main(int argc, char **argv)
   init_binding();
   init_window();
   init_face();
+  init_input_hooks();
   init_scwm_procs();
 
   szCmdConfig = safemalloc(1 * sizeof(char));

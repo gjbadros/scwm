@@ -1502,6 +1502,7 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
     FD_SET(repl_fd, &in_fdset);
   }
 #endif /* HAVE_SAFE_SCM_EVAL_STRING */
+  add_hook_fds_to_set(&in_fdset);
 
   FD_ZERO(&out_fdset);
 
@@ -1513,11 +1514,61 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
   retval = select(fd_width, &in_fdset, &out_fdset, 0, NULL);
 #endif
 
+  run_input_hooks(&in_fdset);
+
+#ifdef HAVE_SAFE_SCM_EVAL_STRING
   if (interactive && FD_ISSET(repl_fd, &in_fdset)) {
     return 1;
   }
+#endif /* HAVE_SAFE_SCM_EVAL_STRING */
+
   DBUG(__FUNCTION__, "leaving");
   return 2;
+}
+
+static SCM input_hooks;
+
+void init_input_hooks()
+{
+  input_hooks=gh_cons(SCM_EOL,SCM_EOL);
+  scm_protect_object(input_hooks);
+}
+
+void run_input_hooks(fd_set *in_fdset)
+{
+  SCM prev, cur;
+
+  for (prev=input_hooks, cur=SCM_CDR(prev);
+       cur != SCM_EOL;
+       prev=cur, cur=SCM_CDR(cur)) {
+    SCM item = SCM_CAR(cur);
+    if (FD_ISSET(gh_scm2int(SCM_CAR(item)), in_fdset)) {
+      call_thunk_with_message_handler(SCM_CDR(item));
+      /* In case the thunk added an input hook */
+      while (SCM_CDR(prev)!=cur) {
+	prev=SCM_CDR(prev);
+      }
+      SCM_SETCDR(prev,SCM_CDR(cur));
+      cur=prev;
+    }
+  }
+}
+
+void add_hook_fds_to_set(fd_set *in_fdset)
+{
+  SCM cur;
+  for (cur = SCM_CDR(input_hooks); cur != SCM_EOL; cur= SCM_CDR(cur)) {
+    FD_SET (gh_scm2int(SCM_CAR(SCM_CAR(cur))), in_fdset);
+  }
+}
+
+SCM 
+add_input_hook (SCM fd, SCM thunk)
+{
+  /* should check to make sure fd is int, thunk is thunk */
+  SCM_SETCDR(input_hooks, 
+	     gh_cons(gh_cons(fd,thunk), SCM_CDR(input_hooks)));
+  return SCM_UNDEFINED;
 }
 
 /* Stolen from GWM 1.8c --gjb */
