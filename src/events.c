@@ -178,7 +178,11 @@ void HandleEvents()
       last_event_type = 0;
       if(My_XNextEvent(dpy, &Event))
 	{
+	  SCM_DEFER_INTS;
 	  DispatchEvent ();
+	  SCM_ALLOW_INTS;
+	} else {
+	  scm_yield();
 	}
     }
 }
