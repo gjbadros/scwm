@@ -1,4 +1,4 @@
-
+#include <guile/gh.h>
 #include "../configure.h"
 #include "scwm.h"
 #include "screen.h"
@@ -61,3 +61,12 @@ void refresh_common(Window win_or_root)
 
 }
 
+
+SCM call_thunk_with_message_handler(SCM thunk)
+{
+  struct scm_body_thunk_data thunk_data;
+  thunk_data.tag=SCM_BOOL_T;
+  thunk_data.body_proc=thunk; 
+  return scm_internal_catch(SCM_BOOL_T,scm_body_thunk,&thunk_data,
+			    scm_handle_by_message_noexit,"scwm");
+}
