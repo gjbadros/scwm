@@ -495,7 +495,7 @@ that corner fixed."
       "<none>"))
 
 (define-public (describe-key)
-  (let* ((key (get-key-event))
+  (let* ((key (car (get-key-event)))
 	 (procs (lookup-key 'all key)))
     (display-message-briefly
      (string-append key " is bound to " 
@@ -504,6 +504,18 @@ that corner fixed."
 				       ", "
 				       (procedure->string (cadr procs)))
 			"nothing")))))
+
+(define-public (describe-mouse)
+  (let* ((key (car (get-mouse-event)))
+	 (procs (lookup-mouse 'all key)))
+    (display-message-briefly
+     (string-append key " is bound to " 
+		    (if (pair? procs)
+			(string-append (procedure->string (car procs))
+				       ", "
+				       (procedure->string (cadr procs)))
+			"nothing")))))
+
 
 (define-public (context->brief-context context)
   (cond ((memq 'all context) 'all)
@@ -544,3 +556,4 @@ that corner fixed."
 
 (define-public (add-ms-timer-hook! ms proc)
   (add-timer-hook! (ms->usec ms) proc))
+
