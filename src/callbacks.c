@@ -234,7 +234,7 @@ Write a debug message if DEBUG is #t.")
   SCM interactive_spec = SCM_BOOL_F;
   Bool fDebugThisCommand = False;
   VALIDATE_ARG_PROC(1,thunk);
-  VALIDATE_ARG_BOOL_COPY_USE_F(1,debug,fDebugThisCommand);
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,debug,fDebugThisCommand);
   interactive_spec = scm_procedure_property(thunk,sym_interactive);
   if (UNSET_SCM(interactive_spec)) {
     SCM procname = scm_procedure_name(thunk);
