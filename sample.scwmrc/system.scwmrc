@@ -1390,7 +1390,8 @@ from other processes.
 
 ;;;(set! construct-menu-primitive construct-pie-menu)
 
-(if (and (not (restarted?)) (not suppress-xclients))
+(if (and (not (restarted?)) (not suppress-xclients)
+	 (not gnome-sm))
     (run-dot-xclients-at-startup))
 
 (define scwm-messages-window #f)
@@ -1419,5 +1420,7 @@ from other processes.
       
       (remove-hook! load-processing-hook next-logo-image-n)
       (set-background-image! scwm-logo 'tiled)))
+
+(wavplay "scwm-startup.wav")
 
 (debug-display " *** `scwmrc' processed.\n")
