@@ -1,3 +1,10 @@
+Tue Mar 24 16:09:00 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* fvwm-compat.scm: Added all the FvwmM4 simple macros like
+ 	X_RESOLUTION, and CLASS
+
+	* flux.scm: added sleep-ms and X-synthetic-send-string
+
 Tue Mar 24 14:15:16 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* fvwm-module.scm: Append newlines to the configuration strings;
