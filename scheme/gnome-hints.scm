@@ -28,6 +28,13 @@
 ;;; user variables.
 ;;; set them in ~/.scwmrc, then call (enable-gnome-hints)
 
+(define-public debug-gnome-hints 
+;;;**VAR
+;;; Set true to enable debugging messages for the gnome-hints module
+  #f)
+
+
+;; Hint properties
 (define-public gnome-desktop-number
 ;;;**VAR
 ;;; The number of desktops to show in the GNOME pager.
@@ -176,19 +183,19 @@
                    (if (window-shaded? win) WIN_STATE_SHADED 0)
                    (if (object-property win 'arrange-skip)
                        WIN_STATE_ARRANGE_IGNORE 0)))
-         (and-mask (logand
-                    #x7fffffff
-                    (if (sticky? win) #x7fffffff (lognot WIN_STATE_STICKY))
-                    (if (maximized? win)
-                        #x7fffffff (lognot WIN_STATE_MAXIMIZED_VERT))
-                    (if (maximized? win)
-                        #x7fffffff (lognot WIN_STATE_MAXIMIZED_HORIZ))
-                    (if (window-shaded? win)
-                        #x7fffffff (lognot WIN_STATE_SHADED))
-                    (if (object-property win 'arrange-skip)
-                        #x7fffffff (lognot WIN_STATE_ARRANGE_IGNORE)))))
-    (X-property-set! win _WIN_STATE
-                     (vector (logior or-mask
+         (and-mask (logand 
+                    WIN_STATE_ALL
+                    (if (sticky? win) WIN_STATE_ALL (lognot WIN_STATE_STICKY))
+                    (if (maximized? win) 
+                        WIN_STATE_ALL (lognot WIN_STATE_MAXIMIZED_VERT))
+                    (if (maximized? win) 
+                        WIN_STATE_ALL (lognot WIN_STATE_MAXIMIZED_HORIZ))
+                    (if (window-shaded? win) 
+                        WIN_STATE_ALL (lognot WIN_STATE_SHADED))
+                    (if (object-property win 'arrange-skip) 
+                        WIN_STATE_ALL (lognot WIN_STATE_ARRANGE_IGNORE)))))
+    (X-property-set! win _WIN_STATE 
+                     (vector (logior or-mask 
                                      (logand and-mask cur-state)))
                      "CARDINAL" 32)))
 
@@ -252,7 +259,6 @@
     (if (not (equal? (viewport-position) new-pos))
         (apply set-viewport-position! new-pos))))
 
-
 (define (gnome-update-hints win)
   (let ((prop (X-property-numeric-value win _WIN_HINTS)))
     (cond
@@ -263,8 +269,6 @@
       ;; ignore GROUP_TRANSIENT
       ;; ignore FOCUS_ON_CLICK
       ))))
-
-
 
 (define (gnome-update-state win mask new-state)
   (if (nonzero? (logand mask WIN_STATE_STICKY))
@@ -385,27 +389,23 @@
   (gnome-set-area! x y))
 
 (define (gnome-window-property-change-hook win property newval oldval)
+  (cond
+   (debug-gnome-hints
+    (write (list 'window 'property 'change: win property newval oldval))
+    (newline)))
   (case property
     ((sticky maximized shaded arrange-skip) (gnome-set-state! win))
     ((desk) (gnome-set-win-workspace! win newval))
-    ((on-top) (gnome-set-layer! win)))
-  (write (list 'property-change: win property newval oldval))
-  (newline))
+    ((on-top) (gnome-set-layer! win))))
 
 
 (define (gnome-client-message-hook win type format data)
-;;  (display "Client message: ")
-;;  (newline)
-;;  (write win)
-;;  (newline)
-;;  (write type)(display " ")(write (X-atom->string type))
-;;  (newline)
-;;  (write format)
-;;  (newline)
-;;  (write data)
-;;  (newline)
   (cond
-   ((eqv? type _WIN_STATE)
+   (debug-gnome-hints
+    (write (list 'Client 'message: win (X-atom->string type) format data))
+    (newline)))
+  (cond
+   ((eqv? type _WIN_STATE) 
     (gnome-update-state-from-client-message win data))
    ((eqv? type _WIN_LAYER)
     (gnome-update-layer-from-client-message win data))
@@ -429,9 +429,10 @@
   (X-property-delete! 'root-window "_WIN_PROTOCOLS"))
 
 (define-public (enable-gnome-hints)
-  "Hook up SCWM with GNOME.
-Set the user parameters first.
-See also `disable-gnome-hints'."
+  "Enable support for GNOME hints.
+GNOME hint support allows for better integration with the GNOME
+desktop environment, including support for the GNOME panel and 
+pager applet. See also `disable-gnome-hints'."
   (announce-gnome-hint-support)
   (map (lambda (win)
 	 (gnome-init-window-from-props win))
@@ -450,13 +451,14 @@ See also `disable-gnome-hints'."
   (add-hook! viewport-position-change-hook gnome-viewport-position-change-hook)
   (add-hook! client-message-hook gnome-client-message-hook)
   (add-hook! window-property-change-hook gnome-window-property-change-hook)
-;  (add-hook! window-property-hook gnome-window-property-hook)
   (add-hook! shutdown-hook (lambda args  (disable-gnome-hints))))
 
 
 (define-public (disable-gnome-hints)
-  "Disengage SCWM from GNOME.
-Reverses the effect of `enable-gnome-hints'."
+  "Disable support for GNOME hints.
+GNOME hint support allows for better integration with the GNOME
+desktop environment, including support for the GNOME panel and 
+pager applet. Reverses the effect of `enable-gnome-hints'."
   (unannounce-gnome-hint-support)
   (set! client-window-id-list '())
   (remove-hook! X-PropertyNotify-hook gnome-X-PropertyNotify-hook)
@@ -469,7 +471,6 @@ Reverses the effect of `enable-gnome-hints'."
   (remove-hook! viewport-position-change-hook gnome-viewport-position-change-hook)
   (remove-hook! client-message-hook gnome-client-message-hook)
   (remove-hook! window-property-change-hook gnome-window-property-change-hook)
-;  (remove-hook! window-property-hook gnome-window-property-hook)
   (remove-hook! shutdown-hook disable-gnome-hints))
 
 

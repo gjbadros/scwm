@@ -1,3 +1,8 @@
+1999-02-09  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* gnome-hints.scm: Expanded documentation and added optional
+	debugging code.
+
 1999-02-09  Sam Steingold  <sds@goems.com>
 
 	* gnome-hints.scm: new user variable - `gnome-desktop-number'.
