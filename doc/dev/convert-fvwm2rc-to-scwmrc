@@ -1,0 +1,171 @@
+;; Doug McNaught's text is the main body,
+;; my responses in between >> and << --03/11/99 gjb
+
+   -*- indented-text -*-
+
+Notes on implementing a converter from .fvwm2rc files to .scwmrc files.
+
+Main issues:
+  Source format is fairly free-form, and one can add attributes to 
+    any object at any time, whereas in Scheme, functions and menus are
+    defined once.
+  Context-sensitive--'+' denotes continuation of last AddTo{Decor,Func,Menu}
+    command (are these the only ones?)
+
+>> Quick look at the source code suggests yes, these are the only ones.
+N.B. fvwm2 implements functions as a special case of menus, so it's even
+are to recognize that functions are in the list that "+" applies to when 
+looking at the source.
+<<
+
+  Reasonably well documented, but no BNF--need to look at fvwm2 source 
+    for authoritative answers to weird format/function questions.
+
+Handling menus:
+  The Scheme function 'menu' returns a menu object.  There isn't any 
+    built-in way to add items to an existing menu (it would probably
+    have to be added at the C level).
+
+>> Correct, we'd need to add it at the C level, and it doesn't seem
+worth it given the speed with which we can dynamically construct a menu
+and the complications that would ensue.
+<<
+
+  Therefore, since 'menu' takes a list of menu items, we could define
+    the scwm equivalent of AddToMenu to add the given items to a
+    (possibly empty, created if necessary) list of items corresponding
+    to that menu.  Once we've seen the entire .fvwm2rc file, we emit
+    calls to 'menu' for each defined menu.  The problem here is that
+    'menuitem' is a regular function, so it evaluates all its
+    arguments when it's called to produce a menu item.  This means
+    that menu items (and any other things like title buttons and
+    keybindings) that pop up a previously defined menu will fail,
+    since the 'menu' function binding the submenu will not have been
+    called yet.  
+
+>> I think the converter should combine all of the AddTo{...} calls and
+agreggate the Decor, Function, or menu, itself whenever possible.  The
+only time it's not possible is when the AddTo{...} calls are not
+declarations, but are instead dynamically executed (either bound to
+key, menu, or inside a function).  My guess is that this doesn't happen
+very often, and that initially we can just ignore those things.
+<<
+
+  So maybe the thing to do is add a level of indirection, binding
+    fvwm2 calls that pop up menus to an intermediate function that
+    takes a symbolic menu name, does a variable lookup on that name,
+    and uses 'apply' to call popup-menu on that value.  Can we do this
+    without 'eval'?  Looks like we can't.
+
+>> You can use a symbol in a menuitem's action -- see "menu-root-start"
+in sample.scwmrc/gjb.scwmrc.  E.g., it does: 
+    (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
+              #:action 'menu-quit-verify))
+where menu-quit-verify could be defined later in the .scwmrc file.
+<<
+
+  Alternatively, we could keep menus hashed by their fvwm name, and
+    bind the popup call to a function that does a hash lookup and pops 
+    up the fetched menu.
+  Both of these are a bit fugly, but without the ability to add items
+    to an existing menu structure, we can't handle menu definitions in 
+    full generality.
+
+>> I think we can output fully-statically-converted scwm menu
+definitions for fvwm2 menus (ignoring the dynamic changing of menus for
+the time being).  One thing to be careful about is that a menuitem that
+is to popup a menu as a sub-menu needs to have its #:action be either
+the menu object or a symbol that refers to a menu object in order for
+the menuing code to realize it is a submenu and show the triangle
+indicating the submenu.  Doing a closure with a popup-menu call hides
+too much information from the menuitem object.
+<<
+
+Handling functions:
+  One of the goals here is to produce as elegant Scheme as possible, so 
+    the user will be able to use our output as a base to construct a
+    clear and maintainable .scwmrc file.  It is therefore desirable
+    that fvwm2 "functions" correspond to real Scheme functions.  It is
+    therefore a bit tricky if the user defines a single function in
+    two chunks--we can either build the function up as a list and use
+    'eval' (ick) within the function once it's completed, or define a
+    function for each "chunk" of definition, with the functions
+    corresponding to previous chunks renamed as necessary and called
+    before any parts of the new chunk are invoked.  The latter has the
+    advantages of not using 'eval', and of making the Scheme code
+    quite straightforward if the user defines a function in a single
+    chunk (which is the usual case).
+  Fvwm "functions" are weird.  Each step in the function has a quoted
+     modifier ("I", "M", "C", or "D") that controls whether that step
+    is executed Immediately, on Motion, on Click, or on DoubleClick.
+    We *should* be able to use 'mouse-event-type' to determine which
+    of these tags should be considered for each function invocation.
+  Additionally, Fvwm functions can have arguments, which are denoted by 
+    '$'-escaped names similar to shell variables.  $w corresponds to
+    the current window ID (which will correspond to a Scheme window
+    object) and $0 through $9 are the user-supplied arguments to the
+    function, evaluated at function invocation.  The tricky thing here
+    will be generating the Scheme function definitions with optional 
+    arguments when necessary.
+
+>> Consider, e.g.,
+AddToFunc "Move-or-Raise" 
++ "M" Move
++ "M" Raise
++ "C" Raise
++ "D" Lower
+
+This can be converted rather mechanically into:
+;; (inspired by code from minimal.scm)
+(define (Move-or-Raise)
+  (with-window (get-window) ;; ensure that we use the same window-context throughout
+    (case (mouse-event-type)
+      ((motion) (interactive-move) (raise-window))
+      ((click) (raise-window))
+      ((double-click) (lower-window)))))
+
+You can see that multiple "M"s get strung together (as would multiple
+"C"s, etc.), and that the function names are different, but generally
+this conversion is straightforward.
+<<
+
+Handling modules:
+  This will be *very* tough to do in full generality--we would basically
+    have to extend eval-fvwm-command to handle the full fvwm2 command
+    language.  Doing this would make scwm able to use .fvwm2rc's "out
+    of the box", which wouldn't encourage anybody to convert them to
+    Scheme.  It would also be a *lot* of work, especially for the more
+    involved commands for function definition etc.
+  Short of handling modules in full generality, we can implement them 
+    piecemeal as is being done (eg with the pager) by extending
+    'eval-fvwm-command' as needed by each module, and keeping the
+    translator code in sync with these additions.  Module config lines
+    in the .fvwm2rc file can be easily collected and handed off to
+    'register-fvwm2-module-config' on a per-module basis.  If we do
+    this (which I think is the only realistic option) we need to keep
+    a list of supported modules and warn the user when we hit a module
+    call that's not in the list.
+
+>> I think we just need to worry about collecting module lines and
+handing them off appropriately to register-fvwm2-module-config.  The
+necessary fvwm2 module support in Scwm can then be extended as deemed
+useful.
+<<
+
+
+Handling styles, decors, etc:
+  There seems to be a reasonably close mapping between the fvwm and
+    scwm ways of doing this (not too surprisingly).  For the most part 
+    translation should be fairly straightforward.  Exceptions: the
+    Fvwm2 Add<object>Style commands build on top of existing styles.
+    We can do the same build list & eval trick as with menus, or
+    extend the stuff in 'face.scm' to provide the addition
+    functionality, given that faces are a nonprimitive object of some
+    sort (though I haven't had much of a chance to find out what).
+>> I've not thought much about these, but it does not look too bad.
+Certainly incrementally making more and more work is a reasonable
+approach here.
+<<
+
+<snipped per-function notes>
+
