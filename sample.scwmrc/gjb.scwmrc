@@ -109,16 +109,16 @@
 
 ;;; FIXGJB: this core dumps, seems to w/o the circulate-skip option I added, too
 ;;; MS - hmmm, it works for me.
-;(window-style "zwgc" #:use-style desk-widget) ;; desk-widget-on-top
-;(window-style "*lock" #:use-style desk-widget)
-;(window-style "xload" #:no-title #t #:use-style desk-widget)
-;(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
-;(window-style "xbiff" #:no-title #t #:use-style desk-widget)
-;(window-style "xcalc" #:icon "xcalc.xpm")
-;(window-style "xman" #:icon "xman.xpm")
-;(window-style "xmag" #:icon "mag_glass.xpm")
-;(window-style "Emacs" #:icon "gnu-animal.bmp")
-;(window-style "XTerm" #:icon "xterm.xpm")
+(window-style "zwgc" #:use-style desk-widget) ;; desk-widget-on-top
+(window-style "*lock" #:use-style desk-widget)
+(window-style "xload" #:no-title #t #:use-style desk-widget)
+(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
+(window-style "xbiff" #:no-title #t #:use-style desk-widget)
+(window-style "xcalc" #:icon "xcalc.xpm")
+(window-style "xman" #:icon "xman.xpm")
+(window-style "xmag" #:icon "mag_glass.xpm")
+(window-style "Emacs" #:icon "gnu-animal.bmp")
+(window-style "XTerm" #:icon "xterm.xpm")
 
 
 ;;-------------------------------;;
