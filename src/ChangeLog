@@ -1,3 +1,9 @@
+1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
+
+	* menu.c (menu_properties): added scmSideAlign and removed for
+	now scmMenuLook
+	(make_menu): removed menu-look from the documentation for now
+
 Thu Oct  1 04:51:55 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* callbacks.c: Use scm_internal_stack_catch instead of

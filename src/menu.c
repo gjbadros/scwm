@@ -183,13 +183,16 @@ NewPchKeysUsed(DynamicMenu *pmd)
   return pch;
 }
 
-/* FIXGJB: better as an assoc list, probably */
+/* FIXGJB: better as an assoc list, probably: we'd have to invent a name for
+   menu-items if we did */
 SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
           (SCM menu))
 /** Returns the a list of the menu properties of MENU, a menu object.
 The properties returned are: 
-'(menu-items side-image side-bg-color bg-color text-color stipple-color
-image-bg font extra-options menu-look used-shortcut-keys) */
+'(menu-items side-image side-image-align side-bg-color bg-color
+text-color stipple-color
+image-bg font extra-options used-shortcut-keys) */
+/* FIXJTL: menu-look */
 #define FUNC_NAME s_menu_properties
 {
   Menu *pmenu = SAFE_MENU(menu);
@@ -198,6 +201,7 @@ image-bg font extra-options menu-look used-shortcut-keys) */
   }
   return gh_list(pmenu->scmMenuItems,
 		 pmenu->scmImgSide,
+		 pmenu->scmSideAlign,
 		 pmenu->scmSideBGColor,
 		 pmenu->scmBGColor,
 		 pmenu->scmTextColor,
@@ -205,7 +209,7 @@ image-bg font extra-options menu-look used-shortcut-keys) */
 		 pmenu->scmImgBackground,
 		 pmenu->scmFont,
 		 pmenu->scmExtraOptions,
-		 pmenu->scmMenuLook,
+/*		 pmenu->scmMenuLook, */
 		 gh_str02scm(pmenu->pchUsedShortcutKeys),
                  SCM_UNDEFINED);
 }
@@ -229,9 +233,9 @@ SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects;
 PICTURE-BG is an image object;
 FONT is a font object;
 EXTRA-OPTIONS can be anything understood by the menu-look
-drawing code;
-MENU-LOOK is a menulook object (not currently implemented).
 */
+/* FIXJTL MENU-LOOK is a menulook object (not currently implemented). */
+
 #define FUNC_NAME s_make_menu
 {
   Menu *pmenu = NEW(Menu);
