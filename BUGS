@@ -1,14 +1,14 @@
 
 select-window is unimplemented
 
-handle errors on events properly - currently we crash :-(
-
 ! functions should be renamed to end with _x
-
-handle submenus correctly in make-menu
 
 start interactive moves and resizes right, so that initial mouse motion is not
 lost.
 
 Possibly stop making resizes account for decorations, so that maximize
 is happier.
+
+procedures that start with get- probably should not.
+
+there needs to be a way to remove bindings.
