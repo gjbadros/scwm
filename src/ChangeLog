@@ -1,5 +1,8 @@
 1998-10-24  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
+	* scwm.c: Move `main_prog_t' from here ...
+	* guile-compat.h: ... to here.
+
 	* window.c (get-window-focus): New primitive.
 
 	* Makefile.am (noinst_HEADERS): Removed a nother reference to
