@@ -1,6 +1,8 @@
+INSTALLING SCWM
+
 Brief Installation Instructions ===========================================
 
-To build scwm on unix, there are two basic steps:
+To build SCWM on unix, there are two basic steps:
 
         1. Type "./configure", to configure the package for your system.
         2. Type "make", to build the package.
@@ -13,12 +15,13 @@ What You Get ==============================================================
 
 The `make' command builds several things: 
 
-   - An executable file `scwm/scwm', which is the window manager
-program itself.
+   - An executable file `scwm/scwm', which is the window manager program
+     itself.
 
-   - Two executables, `utilities/scwmexec/scwmexec' and `utilities/scwmrepl/scwmrepl
+   - Two executables, `utilities/scwmexec/scwmexec' and
+     `utilities/scwmrepl/scwmrepl
 
-To install Scwm, type `make install'.  This installs the executable
+To install SCWM, type `make install'.  This installs the executable
 mentioned above, as well as a system.scwmrc file and several guile
 modules written in Scheme that provide additional window manager
 commands. 
@@ -41,7 +44,7 @@ Scwm is tested with both guile-1.2, and recent developer releases of guile.
 
 You also need the `sed' stream editor in your PATH, and a working GNU make.
 
-Configureing guile `--with-threads' may be useful but is not required.
+Configuring guile `--with-threads' may be useful but is not currently required.
 
 Using SCWM Without Installing It =========================================
 
@@ -52,16 +55,16 @@ colon-separated list of directories, including the directory
 containing this INSTALL file.
 
 For example, suppose the SCWM distribution unpacked into a directory
-called `/home/mstachow/scwm-0.6' (so the full name of this file would be
-`/home/mstachow/scwm-0.6/INSTALL').  Then you might say:
+called `/home/mstachow/scwm-0.7' (so the full name of this file would be
+`/home/mstachow/scwm-0.7/INSTALL').  Then you might say
 
-  export SCWM_LOAD_PATH=/home/mstachow/scwm-0.1
+(for sh, Bash, Zsh, or other Bourne shell variants):
 
-if you're using Bash or any other Bourne shell variant, or
+  export SCWM_LOAD_PATH=/home/mstachow/scwm-0.7
 
-  setenv SCWM_LOAD_PATH /home/mstachow/scwm-0.1
+or (for Csh, Tcsh, or one of its variants):
 
-if you're using CSH or one of its variants.
+  setenv SCWM_LOAD_PATH /home/mstachow/scwm-0.7
 
 After copying the .scwmrc and setting SCWM_LOAD_PATH, you should be
 able to run scwm out of the build directory without difficulty.
@@ -153,9 +156,3 @@ Makefile(s), the header file containing system-dependent definitions
 The file `configure.in' is used as a template to create `configure' by
 a program called `autoconf'.  You will only need it if you want to
 regenerate `configure' using a newer version of `autoconf'.
-
-
-
-
-
-

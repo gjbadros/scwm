@@ -1,45 +1,52 @@
-SCWM 0.5
+SCWM 0.7
 
-This is a beta release of scwm, the Scheme Configurable Window
-Manager. SCWM is (currently) a hack of FVWM 2 with the fvwm
-configuration language replaced with Guile Scheme. Eventually, it will
-support many new features enabled by the powerful configuration
-language, including a GUI on-the-fly setup. Already many cool features
-have been added. The base binary is now smaller than fvwm2's, though
-memory usage is still higher. Placing some features in dynamically
-loadable shared libraries should help with this even more.
+This is a beta release of SCWM, the Scheme Configurable Window
+Manager. 
 
-This fifth release implements nearly all useful fvwm2 functions, and
-fixes some of the bugs from the last release. The only functionality
-still missing is: everything related to modules. FVWM Modules will
-probably never be implemented, because I have better ways to provide
-similar functionality.  An interactive repl is available through the
--i command-line option. This release, although labelled beta, should
-be pretty stable and moderately useful. I've regularly used scwm as my
-window manager for about four months now.
+SCWM descends from fvwm2 and replaces its ad-hoc configuration language
+with Guile Scheme. It supports virtually all fvwm2 functionality (module 
+support is still alpha-quality), and is far more powerful thanks
+to the embedded Scheme interpreter, and all its features and libraries.
 
-I've only tried compiling it on i386-unknown-linux, but any platform
-that both fvwm2 and guile will build on should work. I've heard
-success reports on sparc-sun-solaris. You need to have
-guile installed to do the build. See the file INSTALL for further
-instructions.
+Other additional features scwm provides are:
+
+ o sophisticated window decoration system
+ o flexible menu system, permitting dynamically loadable 
+   menu drawing primitives
+ o animated window movements
+ o animated window shading
+ o synthetic key press events (no more mouse needed to click on
+   URLs in netscape!)
+ o an interactive read-eval-print loop (repl)
+ o scwmexec, and scwm.el, for interactively evaluating and testing
+   new window manager functions from your shell or within emacs
+
+This release, although labelled beta, should be pretty stable and
+moderately useful. Numerous individuals have reported using SCWM 
+as their main window manager for several months.  We make every effort
+to eliminate segmentation faults and other bugs, but make no guarantees
+-- use at your own risk, as always.
+
+SCWM builds on i386-unknown-linux, sparc-sun-solaris, mips-sgi-irix, and
+generally any platform where both fvwm2 and guile will build.  Note that
+we recommend using recent developer's snapshots of guile until guile 1.3
+is released (guile 1.2 may work with some tweaking). See the file
+INSTALL for further instructions.
 
 There's various kinds of documentation and random info in the doc
 directory, and you can see some examples of what might be done in the
-system.scwmrc, the gjb.scwwmrc and decor.scwmrc, and also looking at
-the modules in the scheme directory.
-
-However, the system.scwmrc is not very interesting right now. If you
-think of neat hacks for it, pass them along to me. If people even want
-to work on the windowmanager itself, that's cool too.
+startup files included in the sample.scwmrc/ directory.  Also consider
+browsing the SCWM modules in the scheme/ directory.
 
 Things to look for in the near future include: more cleaning up of the
 leftover fvwm-isms in the code, restruccturing of the internal data
 structures, a more complete external interface, and a start on
 integrating guile-gtk and/or guile-tk so that you can create your own
-arbitrary gui elements.
+arbitrary gui elements.  We are also working on adding a window layout
+constraint solver to SCWM; stay tuned for details, as this should be one 
+highly nifty feature!
 
-The copyright for the code in the scwm and libs subdirectories is the
+The copyright for the code in the SCWM and libs subdirectories is the
 fvwm copyright, which may be found in COPYING.FVWM. Several files may
 have a slightly different copyright, or be under our copyright. The
 files in the scheme directory are under GPL (see scheme/COPYING). The
