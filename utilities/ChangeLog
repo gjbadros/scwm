@@ -1,3 +1,23 @@
+Thu Apr 22 20:25:34 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* run-renamed/Makefile.am, run-renamed/run-renamed.c: Added --
+ 	from Ken Pizzini and my discussion on scwm-discuss.  Permits
+ 	programmatically changing WM_COMMAND of an X application to embed
+ 	an identifier to later be used to map back to the execution that
+ 	started the process that mapped the window.  Similar purpose to
+ 	pidproperty, but different approach. Credit for the approach goes
+ 	to Robert Bihlmeyer.
+
+Thu Apr 22 20:07:15 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added run-renamed directory
+
+Tue Apr 20 20:10:31 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* pidproperty/Makefile.in,
+	pidproperty/scwm_set_pid_property.c: Added -- to support 
+	`window-pid' primitive.
+
 Thu Apr 22 16:47:43 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* pidproperty/scwm_set_pid_property.c: Factor out some code into a 
@@ -18,3 +38,246 @@ Wed Apr 21 14:34:37 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* pidproperty/Makefile.in: Added clean target for
 	recursive builds.
+
+1998-10-27  Sam Steingold  <sds@goems.com>
+
+	* emacs/scwm.el (scwm-documentation): signal an error
+	when the source file doesn't exist.
+
+1998-09-27  Todd Larason  <jtl@teeny.molehill.org>
+
+	* dev/extract-docs: 'use Text::Balanced' instead of 'use
+	Balanced'
+	
+
+Wed Sep  9 16:06:44 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs (ProcessVarComment): Set module for
+	$vars{$description} hash -- fixes undef-d variable bug
+
+Tue Sep  8 17:14:20 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs:  Added -O option for
+	scwm-variables.txt
+
+Mon Sep  7 11:15:05 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Added some debug code, and fix bug
+	that resulted in the last proc of a .scm file being missed.
+
+Sun Sep  6 16:17:42 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Added -V option to write a
+	user-options variable definition out to a file
+
+Sun Sep  6 15:53:02 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Fix ReadRestOfComment for Scheme
+	comments by stripping leading ;;;s.  fDebug-guard some debugging
+	output.  force single words after /** so that long comments
+	with /** prefixes don't get mistaken for /** special comments
+
+Sun Sep  6 15:19:26 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Track
+	$last_public_scheme_definition, and handle SCWM_VAR,
+	SCWM_VAR_READ_ONLY, and ;;;**VAR markers.  Fix some bugs in
+	ReadRestOfComment, and generalize to read scheme comments through
+	lines matching ^;;;  Permit pct_ to convert to % in
+	CNameMatchesSchemeName;  fix some bugs in redo-ing when eof hit in
+	conditional of main loop
+
+Sun Sep  6 13:14:22 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Look for SCWM_HOOK macros, and
+	process the following comment as the docs for the hook, or warn
+	about a missing comment.  Also check for mismatches between the C
+	and Scheme names of the hook (and abstract out that facility for
+	use in checking primitive's names -- see CNameMatchesSchemeName).
+	Print a warning when encountering old-style /**HOOK documentation.
+
+Sat Sep  5 15:05:21 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Test for eof in all the places I
+	loop on <> so that the line numbers get reset properly (they
+	were incorrect for the scheme files)
+
+Fri Aug 21 18:05:10 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Track the current_module, and output
+	that information to both scwm-procedures.txt and scwm.sgml
+
+Fri Aug 21 15:43:37 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Use Damian Conway's Text::Balanced
+	package (available from CPAN) to scan scheme procs more reliably.
+	Later that functionality will be folded into the script.  Clean up
+	warnings to have a space after "****".  Add -d option to specify
+	root of source code.
+
+Fri Aug 14 20:42:21 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Added -C option to only output
+	  concepts chapters (quicker testing of DocBook tables format)
+
+Fri Aug 14 19:29:11 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: First go at extracting comments from
+	  the scheme source files.  Pretty broken right now, but am going
+	  to update to try to use the Text::Balanced module by Damian
+	  Conway to match parens instead of using regexp hacks.
+
+Wed Aug 12 09:36:21 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract.scm:  Added, and updated with newest
+	  version.  Written by Harvey J. Stein.
+
+1998-07-24  Greg Badros  <gjb@cs.washington.edu>
+
+	* extract-docs: Lowercase the known words.  Abstract out the
+	marking and the ispell-running into subroutines. Fix a bug in
+	IspellText -- it was not splitting on digits, but ispell does.
+
+	* dev/extract-docs: Added hooks and concepts chapters.
+	The markup within the source needs to be revised to use DocBook
+	tables, etc., but otherwise this is close to working
+
+1998-07-23  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Added id's to refentry's, and add
+	links to reference them.  Also add ulinks to source
+	files. Reworked chapter two output to be just the primitive names
+	and links to the chapter 1 descriptions.
+
+1998-07-22  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Added spell checking using 'ispell
+	-a' as an option (-s);  use $filename and $line instead of $ARGV
+	and $. for readability
+
+	* dev/extract-docs: Added -o option for specifying
+	output .sgml file, don't markup & in scwm-procedures.txt -- use
+	$markup_usage to hold a copy, and mark that up, instead.
+
+	* dev/extract-docs: Add usage comment, options, clean up
+	leading/trailing whitespace, separate procs on stdout by ^L
+
+1998-07-21  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/extract-docs: Add sections for the per-file
+	sorting of function names.  Remove extra spaces in refpurpose,
+	improve some debug support.  Fixed bug whereby parameter names
+	which were subsequences of each caused problems.
+
+	* dev/extract-docs: Add second chapter w/ prims sorted
+	by function name, and deal with `procedure' convention.  Should
+	really be linked much better than it is, but I don't know the
+	docbook DTD at all.
+
+	* dev/extract-docs: Actually generate .sgml file using
+	docbook format.  Also, treat the first line of the comment
+	docstring specially like Emacs docstrings (I should've made this
+	explicit before -- the docstrings need editing to make the first
+	line a better "purpose" statement -- extract-docs gives warnings
+	to help find such strings)
+
+	* dev/extract-docs: Check the expected primitive name,
+	and warn if it doesn't match the c function name.  Handle _to_
+	turning into -> optionally.  Also handle mis-parses better
+
+	* dev/extract-docs: (see also change logs in scwm/scwm
+	directory) Ensure formals are mentioned in doc string
+
+Mon Jun  1 20:25:47 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* dev/Makefile.in, scwmexec/Makefile.in, Makefile.in:
+ 	regenerated with automake 1.3 (others too, see individual
+ 	ChangeLogs)
+
+Tue Mar 31 21:09:32 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmrepl/scwmrepl.c, scwmexec/scwmexec.c:
+ 	Changed main's return type to int, and return 0, not exit(0);
+ 	Thanks Ken Pizzini <ken@halcyon.com>
+
+Tue Mar 24 17:18:25 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* emacs/scwm.el: Fixed keybindings for XEmacs, and added
+	missing (require 'scheme)
+
+1998-03-19 Thu 16:08:43 EST Sam Steingold <sds@usa.net>
+
+	* emacs/scwm.el: fixed completion, documentation and
+	scwm-run.  The latter re-runs scwmrepl in the same buffer now.
+
+Thu Mar 12 20:28:57 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* */Makefile.in: Move -lscwmexec to directly after
+ 	-L../libscwmexec, instead of after the X libraries -- was causing
+ 	problems with `cc' on Irix 6.2 for Jesse Glick.
+
+Thu Mar 12 09:20:49 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* emacs/scwm.el: Added scwm-procedure-documentation, and
+ 	some support functions; Fixed scwm-complete to go back an sexp,
+ 	not just a word
+
+Wed Mar 11 22:56:28 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* emacs/scwm.el: Added rudimentary completion support --
+	mostly proof of concept that an elisp guru should look at.
+
+Wed Mar 11 21:57:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.in: Don't attempt to build scwmsend.
+
+	* scwmsend, utilties/emacs/scwm-buffer.el: removed so
+ 	scwmsend stuff can be removed from scwm.
+
+Tue Mar 10 22:57:51 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwmexec/scwmexec.c: Capitalized EXPRESSION in the
+ 	usage note. Thanks to Sam Steingold <sds@usa.net> for the bug
+ 	report.
+
+Mon Mar  9 09:12:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwmexec/scwmexec.c: Use scwmexec_exec_full and
+ 	display output and errors, if any, resulting from the evaluation.
+
+
+Sat Feb 28 19:24:18 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* dev/fvwm2-module-adapter: Pretty much works now - runs
+ 	the fvwm2 pager flawlessly if you load it into a running scwm,
+ 	other modules may or may not work (for testing change the module
+ 	name at the end). However, this functionality really needs to be
+ 	packaged better, and some stuff on the C side needs cleaning up.
+
+Fri Feb 27 21:16:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwmrepl/scwmrepl.c, scwmrepl/Makefile.in:
+	A new program using libscwmexec; it gives you a repl session
+	with a running scwm.
+
+	* libscwmexec/libmain.c,
+ 	utlities/libscwmexec/scwmsend.h, utlities/libscwmexec/Makefile.in,
+ 	scwmexec/scwmexec.c, scwmexec/Makefile.in:
+	library and example program for the new scwmexec protocol.
+	
+Thu Feb 26 21:46:06 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* emacs/scwm-buffer.el: Updated to use the $DISPLAY
+ 	environment variable to choose which X server to open a connection
+ 	to define-key for scwm-interaction-mode-map, not scheme-mode-map
+
+Fri Dec 12 16:12:17 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmsend/Makefile.in: Added creation
+ 	of installation directories -- thanks to Simon Josefsson
+ 	<jas@pdc.kth.se>
+
+1997-10-24  Jens-Ulrik Holger Petersen  <petersen@kurims.kyoto-u.ac.jp>
+
+	* Makefile.in (mostlyclean): New target.
+
