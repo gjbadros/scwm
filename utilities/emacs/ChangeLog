@@ -1,3 +1,7 @@
+1999-03-24  Sam Steingold  <sds@goems.com>
+
+	* scwm.el (font-keywds): added fontification for #&optional &c.
+
 1999-03-23  Sam Steingold  <sds@goems.com>
 
 	* scwm.el (scwm-eval-buffer): new variable.
