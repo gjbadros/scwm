@@ -1,3 +1,15 @@
+Sun Nov 23 02:47:22 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* image.c: Rewrite of the image code to support: hashed image
+ 	cache, garbage collection of all images including ones generated
+ 	by C code, eq?-ness for multiple loads of the same image, ability
+ 	to register additional image loaders, and image path in the
+ 	distinguished Scheme variable image-load-path which is interpreted
+ 	as containing a list of path strings. Basically, everything has
+ 	been totally rewritten except the low-level image loading calls,
+ 	which can't be written much differently. This code is not yet
+ 	integrated into the rest of the program or the build process.
+
 Mon Nov 17 21:07:44 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* string_token.h: Only give prototypes for strcasecmp and
