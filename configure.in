@@ -530,6 +530,7 @@ AC_OUTPUT(Makefile \
 	  modules/background/Makefile \
 	  modules/c-animation/Makefile \
 	  modules/scwmgtkhelper/Makefile \
+	  modules/xlib-drawing/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
