@@ -1,3 +1,10 @@
+Mon Apr 26 15:07:48 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* xpm-menus/draw-xpm-menu.c (ConstructDynamicXpmMenu): Make the
+	  HLTextColor default to the menu text color when menu-hl-fg-color
+	  is #f -- it was using black in error. (Same change as to
+	  drawmenu.c a couple days ago).
+
 Wed Apr 21 15:13:18 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* pie-menus/draw-pie-menu.c, xpm-menus/draw-xpm-menu.c: Use
