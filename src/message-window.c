@@ -375,10 +375,10 @@ is used for MWN. */
     Pixel bg = XCOLOR(bg_color);
     Pixmap mask;
     pimg = IMAGE(image);
-    mask = Pixmap1DeepFromPixmap(pimg->mask,fg,bg);
     XSetWindowBackgroundPixmap(dpy, msg->win, pimg->image);
 #ifdef HAVE_SHAPE
-    if (fShaped) {
+    if (fShaped && pimg->mask) {
+      mask = Pixmap1DeepFromPixmap(pimg->mask,fg,bg);
       XShapeCombineMask(dpy,msg->win,ShapeBounding,0,0,mask,ShapeSet);
     }
 #endif
