@@ -1743,8 +1743,9 @@ init_modifiers(void)
       }
       c_mask_mod_combos = im;
     }
-    scwm_msg(INFO,"init_modifiers",
-             "Doing %d XGrabKey calls for window bindings when ignoring dubious modifiers",c_mask_mod_combos);
+    DBUG((scwm_msg(INFO,"init_modifiers",
+                   "Doing %d XGrabKey calls for window bindings when ignoring dubious modifiers",
+                   c_mask_mod_combos);))
     XFreeModifiermap(mod);
   }
 }
