@@ -920,7 +920,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all "M-S-F2" popup-window-ops)
 
 ;; C-S-M-t makes netscape go to the url specified by cut buffer 0
-(bind-key 'all "C-S-M-t" netscape-goto-cut-buffer-url)
+(bind-key 'all "C-S-M-t" netscape-goto-selection-url)
 (bind-key 'all "A-s" netscape-google-search-cut-buffer)
 ;; http://scwm.mit.edu/scwm    ;; highlight w/ mouse and try it!
 
@@ -984,6 +984,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 ;; Raise the pager when C-M-S is depressed.
 (bind-three-modifier-key-events XKM_CONTROL_L XKM_SHIFT_L XKM_META_L raise-fvwm2-pager #f) ;;lower-fvwm2-pager)
+;; (unbind-three-modifier-key-events XKM_CONTROL_L XKM_SHIFT_L XKM_META_L)
 
 ;; avoid lots of warnings.... test for this first...
 (define have-kp-keysyms 
