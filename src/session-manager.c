@@ -474,20 +474,6 @@ static void iceWatchFD(IceConn conn, IcePointer ARG_UNUSED(client_data),
 }
 #undef FUNC_NAME
 
-/* RB:FIXME:: kill this before 1.0. */
-SCWM_PROC(SM_client_id, "SM-client-id", 0, 0, 0,
-	  ())
-     /** DEPRECATED: Return scwm's session management client id (a string).
-A return value of #f indicates that session management is not active.
-DEPRECATED: Use `SM-register' instead. */
-#define FUNC_NAME s_SM_client_id
-{
-  if (!SmcId)
-    return SCM_BOOL_F;
-  return gh_str02scm(SmcId);
-}
-#undef FUNC_NAME
-
 SCWM_PROC(SM_error_message, "SM-error-message", 0, 0, 0,
 	  ())
      /** Return a string, describing why session management is not available.
