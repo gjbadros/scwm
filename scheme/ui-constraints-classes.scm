@@ -355,8 +355,9 @@ to make it resize around its center."
 ;; horizontal alignment
 
 ;; ui-constructor
-(define (ui-cnctr-align)
-  (two-window-or-more-nonant-prompter "Alignment"))
+(define (make-ui-cnctr-align horiz-or-vert)
+  (lambda ()
+    (two-window-or-more-nonant-prompter (string-append horiz-or-vert " alignment"))))
 
 ;; get the proper constraint var for alignment
 (define (get-hcl-from-nonant win nonant)
@@ -427,7 +428,7 @@ to make it resize around its center."
 Keep windows together using a horizontal connecting bar. \
 Also can be used to glue top and bottom edges of windows together."
    '(2 '+) cnctr-halign 
-   ui-cnctr-align draw-cn-halign 
+   (make-ui-cnctr-align "Horizontal") draw-cn-halign 
    cl-is-constraint-satisfied? 
    "cn-keep-tops-even.xpm" "cn-keep-top-bottom-even.xpm" menuname-halign))
 
@@ -508,7 +509,7 @@ Also can be used to glue top and bottom edges of windows together."
 Keep windows together using a vertical connecting bar. \
 Also can be used to glue left and right edges of windows together." 
    '(2 '+) cnctr-valign 
-   ui-cnctr-align draw-cn-valign 
+   (make-ui-cnctr-align "Vertical") draw-cn-valign 
    cl-is-constraint-satisfied? 
    "cn-keep-lefts-even.xpm" "cn-right-left-even.xpm" menuname-valign))
 
@@ -919,8 +920,8 @@ Do not let window get taller than it is."
 (define-public uicc-strict-relpos
   (make-ui-constraint-class
    "Strict relative position"
-   "Strict relative position.
-Move windows around together.  Where you click in the windows
+   "Strict relative position. \n\
+Move windows around together.  Where you click in the windows \
 determines what part of each window is connected to the other." 
    '(2 '+) cnctr-strict-relpos
    ui-cnctr-strict-relpos draw-cn-strict-relpos
@@ -1109,7 +1110,7 @@ Keep one window wholly to the left of another."
 (define-public uicc-sum-to-width
   (make-ui-constraint-class
    "Sum of Widths Constant"
-   "Sum of Widths Constant.
+   "Sum of Widths Constant. \n\
 The sum of the widths of the windows \
 in the constraint remain constant."
    '(2 '+) cnctr-sum-to-width
@@ -1161,7 +1162,7 @@ in the constraint remain constant."
 (define-public uicc-sum-to-height
   (make-ui-constraint-class
    "Sum of Heights Constant"
-   "Sum of Heights Constant.
+   "Sum of Heights Constant. \n\
 The sum of the heights of the windows \
 in the constraint remain constant."
    '(2 '+) cnctr-sum-to-height
