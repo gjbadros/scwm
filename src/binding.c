@@ -781,14 +781,14 @@ returns a power of two corresponding to the bitmask of the modifier */
 #undef FUNC_NAME
 
 
-SCWM_PROC(pointer_mapping, "X-pointer-mapping", 0, 0, 0,
+SCWM_PROC(X_pointer_mapping, "X-pointer-mapping", 0, 0, 0,
           ())
      /** Return the mapping of physical->logical pointer buttons as a list.
 The length of the returned list is the number of buttons available.  Each
 element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
 3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
 physical button acts as logical button 1, and the leftmost acts as button 3. */
-#define FUNC_NAME s_pointer_mapping
+#define FUNC_NAME s_X_pointer_mapping
 {
   SCM mapping = SCM_EOL;
   int imap = cMouseButtons - 1;

@@ -29,11 +29,11 @@ extern Bool Restarting, PPosOverride;
 SCM sym_focus;
 
 /* GJBFIX: Maybe the menus should do something w/ this? */
-SCWM_PROC(set_menu_mwm_style, "set-menu-mwm-style!", 0, 1, 0,
+SCWM_PROC(set_menu_mwm_style_x, "set-menu-mwm-style!", 0, 1, 0,
           (SCM flag))
      /** Set the menu mwm style according to the boolean FLAG. This
          option is currently ignored. */
-#define FUNC_NAME s_set_menu_mwm_style
+#define FUNC_NAME s_set_menu_mwm_style_x
 {
   SCM_REDEFER_INTS;
   if (SCM_IMP(flag)) {
@@ -86,11 +86,11 @@ be an integer. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_title_justify,"set-title-justify!", 1, 0, 0,
+SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
           (SCM just))
      /** Set the justification used for the title in the current decor
 to JUST. JUST should be one of 'right, 'left, or 'center. */
-#define FUNC_NAME s_set_title_justify
+#define FUNC_NAME s_set_title_justify_x
 {
   ScwmDecor *fl;
 
@@ -120,11 +120,11 @@ to JUST. JUST should be one of 'right, 'left, or 'center. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_title_height, "set-title-height!", 1, 0, 0,
+SCWM_PROC(set_title_height_x, "set-title-height!", 1, 0, 0,
           (SCM height))
      /** Set the height of the titlebar in pixels to HEIGHT in the
 current decor. */
-#define FUNC_NAME s_set_title_height
+#define FUNC_NAME s_set_title_height_x
 {
   int th, extra_height;
   ScwmDecor *fl;
@@ -445,13 +445,13 @@ SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
 #undef FUNC_NAME
 
 /* FIXMS: this should probably be split into multiple procs. */
-SCWM_PROC(x_version_information, "X-version-information", 0, 0, 0,
+SCWM_PROC(X_version_information, "X-version-information", 0, 0, 0,
           ())
      /** Return some information about the version of the running X
 server.  In particular, return a list of the X protocol version, the X
 protocol revision, the X server vendor, and the vendor release
 number. */
-#define FUNC_NAME s_x_version_information
+#define FUNC_NAME s_X_version_information
 {
   return scm_listify(SCM_MAKINUM(ProtocolVersion(dpy)),
 		     SCM_MAKINUM(ProtocolRevision(dpy)),
@@ -466,7 +466,7 @@ number. */
    visual type should probably be returned as a symbol, not a
    string.*/
 
-SCWM_PROC(x_display_information, "X-display-information", 0, 0, 0,
+SCWM_PROC(X_display_information, "X-display-information", 0, 0, 0,
           ())
      /** Return some information about the screen. In particular,
 return a list of the horizontal resolution, the vertical resolution,
@@ -478,7 +478,7 @@ The resolutions mentioned above should in theory be pixels per
 centimeter, rounded to the nearest integer. These parameters can be
 used for various workarounds or conditional decisions in a scwmrc to
 be shared anmong multiple machines. */
-#define FUNC_NAME s_x_display_information
+#define FUNC_NAME s_X_display_information
 {
   int Mscreen = DefaultScreen(dpy);
   Screen *screen = ScreenOfDisplay(dpy, Mscreen);
