@@ -1,3 +1,15 @@
+1999-04-26  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-gtk-toggle-menu.scm: Modified the gtk toggle
+	window to work in realtime.  The window can either be used as 
+	popup or as a permanent window which updates as constraints are
+	added.  Currently does not update when constraints are removed.
+
+	* ui-constraints.scm: Fixed some inefficiencies in the 
+	ui-constraint-class-disable-hook.  Also added constraint-add
+	and constraint-delete hooks using the 'call-hook-procedures'
+	method just added by Greg (see below).
+
 Mon Apr 26 08:16:54 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added `call-hook-procedures' for some basic
