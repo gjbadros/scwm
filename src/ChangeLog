@@ -1,3 +1,18 @@
+Sun Sep 13 18:47:12 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* virtual.c (changeDesks): Call one or the other of
+	MovePswIconToCurrentPosition or MovePswToCurrentPosition based on
+	iconification state -- only one fvwm2 module packet should be
+	sent, and we'll call the other when iconification state changes
+	anyway. 
+
+	* scwm.c (InitVariables): Use scm_permanent_object to protect the
+	scm for Scr.DefaultDecor so that it does not get FREEd (it is
+	statically allocated)  Thanks Craig Struble!
+
+	* decor.c: Remove reduandant FREE of SCWMDECOR(obj)->tag.  Thanks
+	Craig Struble!
+
 Sun Sep 13 12:52:03 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.h: Drop FocusOn's 2nd argument
