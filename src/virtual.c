@@ -112,8 +112,7 @@ notify_edge_enter(Edge e)
     break;
   }
 
-  call1_hooks(edge_enter_hook, edge_sym);
-
+  scwm_run_hook1(edge_enter_hook, edge_sym);
   in_edge = e;
 }
 
@@ -142,8 +141,7 @@ notify_edge_leave(Edge e)
     break;
   }
 
-  call1_hooks(edge_leave_hook, edge_sym);
-
+  scwm_run_hook1(edge_leave_hook, edge_sym);
   in_edge = EDGE_NONE;
 }
 
@@ -364,7 +362,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     WXGetPointerWindowOffsets(Scr.Root, xl, yt);
     if (Grab)
       XUngrabServer_withSemaphore(dpy);
-    call0_hooks(edge_scroll_hook);
+    scwm_run_hook0(edge_scroll_hook);
   }
 }
 
@@ -525,7 +523,10 @@ MoveViewport_internal(int newx, int newy)
   XChangeProperty(dpy, Scr.Root, XA_SCWM_VIEWPORT_OFFSET_Y,
 		  XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &Scr.Vy, 1);
 
-  call4_hooks(viewport_position_change_hook, gh_int2scm(Scr.Vx), gh_int2scm(Scr.Vy), gh_int2scm(diffx), gh_int2scm(diffy)); 
+  scwm_run_hook(viewport_position_change_hook, 
+                gh_list(gh_int2scm(Scr.Vx), gh_int2scm(Scr.Vy),
+                        gh_int2scm(diffx), gh_int2scm(diffy),
+                        SCM_UNDEFINED)); 
 
   Broadcast(M_NEW_PAGE, 5, Scr.Vx, Scr.Vy, Scr.CurrentDesk, Scr.VxMax, Scr.VyMax, 0, 0);
 
@@ -571,7 +572,8 @@ changeDesks(int val1, int val2)
       return;
   }
 
-  call2_hooks(change_desk_hook, gh_int2scm(Scr.CurrentDesk), gh_int2scm(oldDesk));
+  scwm_run_hook2(change_desk_hook, 
+                gh_int2scm(Scr.CurrentDesk), gh_int2scm(oldDesk));
   
   Broadcast(M_NEW_DESK, 1, Scr.CurrentDesk, 0, 0, 0, 0, 0, 0);
   /* Scan the window list, mapping windows on the new Desk,
@@ -630,8 +632,8 @@ changeDesks(int val1, int val2)
      if we are in focus-follow-mouse mode */
   CoerceEnterNotifyOnCurrentWindow();
 
-  call2_hooks(after_change_desk_hook, 
-              gh_int2scm(Scr.CurrentDesk), gh_int2scm(oldDesk));
+  scwm_run_hook2(after_change_desk_hook, 
+                 gh_int2scm(Scr.CurrentDesk), gh_int2scm(oldDesk));
 }
 
 

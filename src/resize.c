@@ -430,7 +430,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
 
   InstallRootColormap();
   if (!GrabEm(XCursorByNumber(XC_fleur))) {
-    call0_hooks(cannot_grab_hook);
+    scwm_run_hook0(cannot_grab_hook);
     return False;
   }
   if (!fOpaque) {
@@ -519,14 +519,18 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                                       dragHeight - DecorationHeight(psw),
                                       &x_units, &y_units);
 
-    call3_hooks(interactive_resize_start_hook, SCM_FROM_PSW(psw),
-                gh_int2scm(xmotion), gh_int2scm(ymotion));
+    scwm_run_hook(interactive_resize_start_hook, 
+                  gh_list(SCM_FROM_PSW(psw),
+                          gh_int2scm(xmotion), gh_int2scm(ymotion), 
+                          SCM_UNDEFINED));
 
     /* same hook is called identically on each iteration; see below */
-    call7_hooks(interactive_resize_new_size_hook, SCM_FROM_PSW(psw),
-                gh_int2scm(dragx), gh_int2scm(dragy),
-                gh_int2scm(dragWidth), gh_int2scm(dragHeight),
-                gh_int2scm(x_units), gh_int2scm(y_units));
+    scwm_run_hook(interactive_resize_new_size_hook, 
+                  gh_list(SCM_FROM_PSW(psw),
+                          gh_int2scm(dragx), gh_int2scm(dragy),
+                          gh_int2scm(dragWidth), gh_int2scm(dragHeight),
+                          gh_int2scm(x_units), gh_int2scm(y_units),
+                          SCM_UNDEFINED));
   }
   
   /* pop up a resize dimensions window */
@@ -608,10 +612,12 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                                           &x_units, &y_units);
         /* two calls to this hook exist.
            see the other above */
-        call7_hooks(interactive_resize_new_size_hook, SCM_FROM_PSW(psw),
-                    gh_int2scm(dragx), gh_int2scm(dragy),
-                    gh_int2scm(dragWidth), gh_int2scm(dragHeight),
-                    gh_int2scm(x_units), gh_int2scm(y_units));
+        scwm_run_hook(interactive_resize_new_size_hook, 
+                      gh_list(SCM_FROM_PSW(psw),
+                              gh_int2scm(dragx), gh_int2scm(dragy),
+                              gh_int2scm(dragWidth), gh_int2scm(dragHeight),
+                              gh_int2scm(x_units), gh_int2scm(y_units),
+                              SCM_UNDEFINED));
       }
       
 
@@ -652,7 +658,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   SuggestSizeWindowTo(psw,WIN_VP_OFFSET_X(psw)+dragx,WIN_VP_OFFSET_Y(psw)+dragy,
                       dragWidth,dragHeight, True);
   CassowaryEndEdit(psw);
-  call1_hooks(interactive_resize_finish_hook, SCM_FROM_PSW(psw));
+  scwm_run_hook1(interactive_resize_finish_hook, SCM_FROM_PSW(psw));
   
   UninstallRootColormap();
 

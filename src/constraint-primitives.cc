@@ -76,7 +76,7 @@ ScwmResolve(ClSimplexSolver *psolver)
 {
   SCM solver = ScmFromPv(psolver->Pv());
   fInResolveHook = True; // be sure not to use Cassowary when moving windows around
-  call1_hooks(scwm_resolve_hook,solver);
+  scwm_run_hook1(scwm_resolve_hook,solver);
   fInResolveHook = False;
   // go through the dirty windows and move them
   set<ScwmWindow *>::const_iterator it = setpswDirty.begin();

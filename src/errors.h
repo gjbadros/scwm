@@ -27,6 +27,7 @@
 #endif
 
 void scwm_error(const char *subr, const char *szErr);
+void scwm_error_message (SCM message, SCM args);
 
 #define ERROR_LOAD_PICTURE 14
 

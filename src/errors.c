@@ -40,6 +40,13 @@ scwm_error(const char *subr, const char *szErr)
 }
 
 void
+scwm_error_message (SCM message, SCM args)
+{
+  scm_display_error_message(message, args, scm_current_error_port());
+}
+
+
+void
 init_error()
 {
 #ifndef SCM_MAGIC_SNARFER

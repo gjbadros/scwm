@@ -84,7 +84,7 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
     pRootContinuation =
       scm_must_malloc ((long) sizeof (scm_contregs),
                        "inferior root continuation");
-#if 0
+#ifdef SCWM_DEBUG_SCM_INTERNAL_CWDR_NO_UNWIND
     scwm_msg(DBG,"scm_internal_cwdr_no_unwind","+");
 #endif
     SCM_SETJMPBUF (new_rootcont,pRootContinuation);
@@ -113,7 +113,7 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
                                cwdr_no_unwind_handler, &my_handler_data);
 
   scwm_defer_ints();
-#if 0
+#ifdef SCWM_DEBUG_SCM_INTERNAL_CWDR_NO_UNWIND
   scwm_msg(DBG,"scm_internal_cwdr_no_unwind","-");
 #endif
   scm_must_free(pRootContinuation);

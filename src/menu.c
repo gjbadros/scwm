@@ -56,14 +56,6 @@ static void PopdownMenu(DynamicMenu *pmd);
 static void FreeDynamicMenu(DynamicMenu *pmd);
 SCM popup_menu(SCM menu, SCM warp_to_first, SCM x_pos, SCM y_pos, SCM left_side_p, SCM permit_alt_release_selection_p);
 
-static
-SCM
-scwm_safe_call0_sym(SCM thunk)
-{
-  DEREF_IF_SYMBOL(thunk);
-  return scwm_safe_call0(thunk);
-}
-
 #ifdef SCWM_DEBUG_MSGS
 /* Give string name of first item in a dynamic menu; mostly used for debugging */
 static const char *
@@ -684,21 +676,20 @@ PmiimFromPointerLocation(Display *dpy, int *px_offset, int *py_offset)
 }
 #undef FUNC_NAME
 
-#if 0
 static
 MenuItemInMenu *
 PmiimFromPmdShortcutKeypress(DynamicMenu *pmd, char ch)
 {
-  int ipmiim;
-  for (ipmiim = 0; ipmiim < pmd->cmiim; ipmiim++) {
+  int ipmiim = 0;
+  ch = tolower(ch);
+  for (; ipmiim < pmd->cmiim; ipmiim++) {
     MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim];
-    if (pmiim->chShortcut == ch) {
+    if (tolower(pmiim->chShortcut) == ch) {
       return pmiim;
     }
   }
   return NULL;
 }
-#endif
 
 
 static
@@ -801,7 +792,7 @@ InvokeUnhoverAction(DynamicMenu *pmd)
   /* invoke the un-hover action */
   if (pmiimSelected && pmiimSelected->pmi &&
       !UNSET_SCM(pmiimSelected->pmi->scmUnhover)) {
-    return scwm_safe_call0_sym(pmiimSelected->pmi->scmUnhover);
+    return call_interactively(pmiimSelected->pmi->scmUnhover, SCM_BOOL_F);
   } else {
     DBUG((DBG,FUNC_NAME,"No unhover hook, %ld",pmiimSelected));
   }
@@ -916,15 +907,11 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   if (cch == 1 && isascii(ch) && isgraph(ch) && fControlKey == False) { 
     /* allow any printable character to be a keysym, but be sure control
        isn't pressed */
-    int ipmiim = 0;
-    ch = tolower(ch);
-    /* Search menu for matching hotkey */
-    for (; ipmiim < pmd->cmiim; ipmiim ++ ) {
-      if (ch == tolower(rgpmiim[ipmiim]->chShortcut)) {
-	*pmenu_status = MENUSTATUS_NEWITEM_HOTKEY;
-	*pfHotkeyUsed = True;
-	return rgpmiim[ipmiim];
-      }
+    MenuItemInMenu *pmiim = PmiimFromPmdShortcutKeypress(pmd, ch);
+    if (pmiim) {
+      *pmenu_status = MENUSTATUS_NEWITEM_HOTKEY;
+      *pfHotkeyUsed = True;
+      return pmiim;
     }
   }
   /* Fell through here, so it didn't match a shortcut key */
@@ -1162,7 +1149,7 @@ MenuInteraction(DynamicMenu *pmd, int warp_to, Bool fPermitAltReleaseToSelect)
 	  pmd->fHoverActionInvoked = True;
 	  /* invoke the hover action */
 	  if (DYNAMIC_PROCEDURE_P(scmHover)) {
-	    scwm_safe_call0_sym(scmHover);
+	    call_interactively(scmHover, SCM_BOOL_F);
 	  }
 	}
       }
@@ -1628,7 +1615,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
     scmAction = scwm_safe_call0(scmAction);
   }
   if (DYNAMIC_PROCEDURE_P(scmAction)) {
-    return scwm_safe_call0(scmAction);
+    return call_interactively(scmAction,SCM_BOOL_F);
   } else if (DYNAMIC_MENU_P(scmAction)) {
     /* this recurses indirectly back into PopupGrabMenu */
     return popup_menu(scmAction, SCM_BOOL_F,

@@ -780,41 +780,10 @@ ResizePswToCurrentSize(ScwmWindow *psw)
     h = psw->title_height + psw->boundary_width;
   }
 
-#if 0
-  { /* scope */
-    unsigned int ow, oh;
-    int ox, oy;
-    int win_gravity = CenterGravity;
-    XGetGeometry(dpy,psw->frame,&JunkRoot,&ox,&oy,&ow,&oh,&JunkBW,&JunkDepth);
-    if (ox == x && oy == y) {
-      win_gravity = NorthWestGravity;
-    } else if (ox+ow == x+w && oy+oh == y+h) {
-      win_gravity = SouthEastGravity;
-    } else if (ox == x && oy+oh == y+h) {
-      win_gravity = SouthWestGravity;
-    } else if (ox+ow == x+w && oy == y) {
-      win_gravity = NorthEastGravity;
-    } else if (ox == x) {
-      win_gravity = EastGravity;
-    } else if (ox+ow == x+w) {
-      win_gravity = WestGravity;
-    } else if (oy == y) {
-      win_gravity = NorthGravity;
-    } else if (oy+oh == y+h) {
-      win_gravity = SouthGravity;
-    }
-    fprintf(stderr,"gravity = %d\n", win_gravity);
-    SetXWindowGravity(psw->w, win_gravity);
-  }
-#endif
-
   /* GJB:FIXME:: this is overkill for just resizing a window;
      it'd be nice to do an optimized version of this--- plan
      for that in the decoration rewrite! */
   SetupFrame(psw,x,y,w,h,WAS_MOVED,WAS_RESIZED);
-#if 0
-  SetXWindowGravity(psw->w, NorthWestGravity);
-#endif
 }
 
 /* Similar to SetScwmWindowGeometry, below -- normal scwm functions
@@ -875,7 +844,7 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
     /* use gravity to correct for any tweaks that ConstrainSize makes */
     dx = (oldw - w) * (double) grav_x/2.0;
     dy = (oldh - h) * (double) grav_y/2.0;
-#if 0
+#ifdef SCWM_DEBUG_SET_SCWM_WINDOW_GEOMETRY
     fprintf(stderr,"oldw = %d, w = %d, diff = %d, dx = %d, x = %d, x+dx = %d\n",
             oldw, w, (oldw - w), dx, x, x+dx);
 #endif
@@ -1100,7 +1069,7 @@ circle cursor.")
     if (fSelect) {
       SCM win = gh_car(select_viewport_position(cursor,release_p));
       if (!WINDOWP(win)) {
-        call0_hooks(invalid_interaction_hook);
+        scwm_run_hook0(invalid_interaction_hook);
         /* do not return a window id -- be sure it is #f */
         return SCM_BOOL_F;
       }
@@ -1472,7 +1441,7 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
   XEvent event_junk;
 
   if (!GrabEm(cursor)) {
-    call0_hooks(cannot_grab_hook);
+    scwm_run_hook0(cannot_grab_hook);
     *w = None;
     return False;
   }
@@ -1493,7 +1462,7 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
 
   if (pswInitialWin) {
     lastwin_entered = SCM_FROM_PSW(pswInitialWin);
-    call1_hooks(select_window_enter_hook, lastwin_entered);
+    scwm_run_hook1(select_window_enter_hook, lastwin_entered);
   }
 
   while (!fFinished) {
@@ -1533,15 +1502,15 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
       if (Scr.Root == eventp->xany.window && SCM_BOOL_F != lastwin_entered) {
         /* See note above about spurious EnterNotify event on the
            root window that we throw away when first entering this function */
-        call1_hooks(select_window_leave_hook, lastwin_entered);
+        scwm_run_hook1(select_window_leave_hook, lastwin_entered);
         lastwin_entered = SCM_BOOL_F;
       } else if (psw && SCM_FROM_PSW(psw) && VALIDWINP(SCM_FROM_PSW(psw))) {
         SCM win = SCM_FROM_PSW(psw);
         if (win != lastwin_entered) {
           if (SCM_BOOL_F != lastwin_entered)
-            call1_hooks(select_window_leave_hook, lastwin_entered);
+            scwm_run_hook1(select_window_leave_hook, lastwin_entered);
           lastwin_entered = win;
-          call1_hooks(select_window_enter_hook, lastwin_entered);
+          scwm_run_hook1(select_window_enter_hook, lastwin_entered);
         }
       }
     }
@@ -1574,7 +1543,7 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
   if (*w == (*ppsw)->Parent)
     *w = (*ppsw)->w;
 
-  call1_hooks(select_window_done_hook, SCM_FROM_PSW(*ppsw));
+  scwm_run_hook1(select_window_done_hook, SCM_FROM_PSW(*ppsw));
 
   UngrabEm();
   return True;
@@ -3864,9 +3833,8 @@ far from perfect.)")
   /* MS:FIXME:: - This won't really work for any case unless it is a hint.
      Handling of the number of buttons is kind of broken in
      general for now, but will be fixed. */
-#if 0
+#if 0 /* GJB:FIXME:: this is overkill */
   /* Force a redraw */
-  /* GJB:FIXME:: this is overkill */
   ResizePswToCurrentSize(psw);
 #endif
 

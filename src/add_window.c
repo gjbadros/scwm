@@ -362,8 +362,7 @@ AddWindow(Window w)
      above) */
   CassowaryInitClVarsInPsw(psw);
 
-
-  call1_hooks(before_new_window_hook, SCM_FROM_PSW(psw));
+  scwm_run_hook1(before_new_window_hook, SCM_FROM_PSW(psw));
 
   SelectDecor(psw, border_width, resize_width);
 
@@ -728,7 +727,7 @@ AddWindow(Window w)
      returns a Bool that's always just True... --07/27/98 gjb
   */
 
-  call1_hooks(before_place_new_window_hook, SCM_FROM_PSW(psw));
+  scwm_run_hook1(before_place_new_window_hook, SCM_FROM_PSW(psw));
 
   if (!PlaceWindow(psw)) {
     scwm_msg(ERR,FUNC_NAME,"PlaceWindow failed for %s -- resources leaked!",psw->name);
@@ -794,8 +793,7 @@ AddWindow(Window w)
 
   InstallWindowColormaps(colormap_win);
 
-  call1_hooks(after_new_window_hook, SCM_FROM_PSW(psw));
-
+  scwm_run_hook1(after_new_window_hook, SCM_FROM_PSW(psw));
 
   if (!psw->fSticky) {
     if (restart_vp_offset_x != 0 || restart_vp_offset_y != 0) {
@@ -837,7 +835,7 @@ DestroyScwmWindow(ScwmWindow *psw)
     Scr.Hilite=NULL;
   }
 
-  call1_hooks(window_close_hook, SCM_FROM_PSW(psw));
+  scwm_run_hook1(window_close_hook, SCM_FROM_PSW(psw));
 
   CassowaryCloseWindow(psw);
 

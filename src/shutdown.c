@@ -43,6 +43,12 @@ captured, so the window-list (as reported by `list-all-windows') is\n\
 empty.  To provide behviour conditioned on a property of an existing\n\
 window, this hook should be used instead.");
 
+void
+run_startup_hook()
+{
+  scwm_run_hook0(startup_hook);
+}
+
 
 static SCWM_INLINE void
 run_restart_command(char *command) {
@@ -86,7 +92,7 @@ Done(int restart_or_dump, char *command)
   /* need to be sure we've opened the display -- could
      seg fault during startup */
   if (dpy) {
-    call1_hooks(shutdown_hook,SCM_BOOL_FromBool(restart_or_dump));
+    scwm_run_hook1(shutdown_hook,SCM_BOOL_FromBool(restart_or_dump));
 
     Reborder((restart_or_dump > 0));
     XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
@@ -151,11 +157,6 @@ Done(int restart_or_dump, char *command)
 }
 
 
-/****************************************************************************
- *
- * Save Desktop State
- *
- ****************************************************************************/
 void 
 SaveDesktopState()
 {
@@ -210,11 +211,6 @@ ARGS is ignored")
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
-
-void run_startup_hook()
-{
-  call0_hooks(startup_hook);
-}
 
 void init_shutdown()
 {

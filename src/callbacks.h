@@ -37,34 +37,24 @@
 #define SCWM_MAKE_HOOK(name,args) SCM_EOL
 #endif
 
-SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args);
-SCM scwm_safe_apply_message_only (SCM proc, SCM args);
+static SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args);
 
 /* Individual callbacks. */
 
 SCM call_interactively (SCM thunk, SCM debug);
 
+static SCM scwm_safe_apply_message_only (SCM proc, SCM args);
 SCM scwm_safe_apply (SCM proc, SCM args);
 SCM scwm_safe_call0 (SCM thunk);
 SCM scwm_safe_call1 (SCM proc, SCM arg);
-SCM scwm_safe_call2 (SCM proc, SCM arg1, SCM arg2);
 
 SCM safe_load (SCM fname);
-SCM scwm_safe_load (char *filename);
 SCM scwm_safe_eval_str (char *string);
 
 /* Hooks. */
-
-SCM call0_hooks (SCM hook);
-SCM call1_hooks (SCM hook_type, SCM arg);
-SCM call2_hooks (SCM hook_type, SCM arg1, SCM arg2);
-SCM call3_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3);
-SCM call4_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3, SCM arg4);
-SCM call5_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5);
-SCM call6_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6);
-SCM call7_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7);
-
 SCM scwm_run_hook(SCM hook, SCM args);
+SCM scwm_run_hook1(SCM hook, SCM arg1);
+SCM scwm_run_hook2(SCM hook, SCM arg1, SCM arg2);
 SCM scwm_run_hook_message_only(SCM hook, SCM args);
 
 SCM scm_empty_hook_p(SCM hook);

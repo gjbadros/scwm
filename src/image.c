@@ -514,7 +514,7 @@ path_expand_image_fname(SCM name, const char *func_name)
       /* warn that the file is not found. */
       scwm_msg(WARN,FUNC_NAME,"Image file was not found: `%s'",c_name);
 
-      call1_hooks(image_not_found_hook,gh_str02scm(c_name));
+      scwm_run_hook1(image_not_found_hook,gh_str02scm(c_name));
       FREE(c_name);
       FREEC(c_fname);
       return SCM_BOOL_F;

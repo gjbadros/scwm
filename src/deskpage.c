@@ -315,11 +315,9 @@ size of the physical display.")
 
   checkPanFrames();
 
-
-  call2_hooks(desk_size_change_hook,
-              gh_ulong2scm(Scr.VxMax / Scr.DisplayWidth + 1),
-              gh_ulong2scm(Scr.VyMax / Scr.DisplayHeight + 1));
-                 
+  scwm_run_hook2(desk_size_change_hook,
+                 gh_ulong2scm(Scr.VxMax / Scr.DisplayWidth + 1),
+                 gh_ulong2scm(Scr.VyMax / Scr.DisplayHeight + 1));
 
   return SCM_UNSPECIFIED;
 }

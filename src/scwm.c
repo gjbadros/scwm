@@ -587,7 +587,7 @@ InitUserData()
 int
 main(int argc, char **argv)
 {
-#if 0 || defined(HAVE_SCM_INIT_HEAP_SIZE_FACTOR)
+#ifdef HAVE_SCM_INIT_HEAP_SIZE_FACTOR
   scm_init_heap_size_factor = 24;
 #endif
   scwm_gh_enter(argc, argv, scwm_main);
@@ -1255,7 +1255,6 @@ Repository Timestamp: %s\n",
   CoerceEnterNotifyOnCurrentWindow();
 
   run_startup_hook();
-
   fDoneStartup = True;
 
   scwm_maybe_send_thankyou_packet();
@@ -1843,7 +1842,7 @@ scwm_message(scwm_msg_levels type, const char *id, const char *msg, SCM args)
   scm_puts(" ",eport);
   scm_puts((char *)id,eport);
   scm_puts(": ",eport);
-  scm_display_error_message(gh_str02scm((char *)msg),args,eport);
+  scwm_error_message(gh_str02scm((char *)msg),args);
 }
 
 /*

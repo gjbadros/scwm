@@ -46,9 +46,8 @@ public:
       scwm_allow_ints();
     }
 
-#if 0
-  /* GJB:FIXME:: will need to do something with this when supporting
-     multiple screens better */
+#if 0  /* GJB:FIXME:: will need to do something with this when supporting
+          multiple screens better */
   ScreenInfo *Pscreen() const
     {
       return static_cast<ScreenInfo *>(_vx.Pv());

@@ -93,10 +93,6 @@
 #include "session-manager.h"
 #endif
 
-#if 0 && defined(HAVE_XTEST)
-#include <X11/extensions/XTest.h>
-#endif
-
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -370,7 +366,7 @@ HandleMappingNotify()
   DBUG_EVENT((DBG,FUNC_NAME,"Calling mapping notify hook (maybe empty)"));
   init_modifiers();
   init_pointer_mapping();
-  call0_hooks(x_mappingnotify_hook);
+  scwm_run_hook0(x_mappingnotify_hook);
 }
 #undef FUNC_NAME
 
@@ -487,7 +483,7 @@ HandleFocusIn()
     if (w != Scr.NoFocusWin) {
       /* Scr.UnknownWinFocused = w; */
     } else {
-      call1_hooks(window_focus_change_hook,SCM_BOOL_F);
+      scwm_run_hook1(window_focus_change_hook,SCM_BOOL_F);
       Scr.Focus = NULL;
       SetBorder(Scr.Hilite, False, True, True, None);
       Broadcast(M_FOCUS_CHANGE, 5, 0, 0, 0,
@@ -522,7 +518,7 @@ HandleFocusIn()
       Scr.ScwmRoot.next = psw;
       psw->prev = &Scr.ScwmRoot;
     }
-    call1_hooks(window_focus_change_hook,SCM_FROM_PSW(pswCurrent));
+    scwm_run_hook1(window_focus_change_hook, SCM_FROM_PSW(pswCurrent));
     SetBorder(pswCurrent, True, True, True, None);
     Broadcast(M_FOCUS_CHANGE, 5, pswCurrent->w,
               pswCurrent->frame, (unsigned long) pswCurrent,
@@ -687,99 +683,93 @@ HandleScwmExec()
 			   last_offset, 1, True, AnyPropertyType, 
 			   &type_ret, &form_ret, &nitems, &bytes_after,
                           (unsigned char **) &pw)==Success && pw != NULL) {
-#if 0
-      if (pw!=NULL) {
-#endif
-        /* This is the window we want to look at: */
-        w = *pw;
-        XFree(pw);
-        /* Increment the offset at which to read within the property. It
-           will not get deleted until we read the very last bytes at the
-           end. */
-        last_offset += nitems * (form_ret/8);
-        /* Save an indication of whether we need to read more or not. */
-        saved_bytes_after=bytes_after;
+      /* This is the window we want to look at: */
+      w = *pw;
+      XFree(pw);
+      /* Increment the offset at which to read within the property. It
+         will not get deleted until we read the very last bytes at the
+         end. */
+      last_offset += nitems * (form_ret/8);
+      /* Save an indication of whether we need to read more or not. */
+      saved_bytes_after=bytes_after;
+      
+      DBUG((DBG,FUNC_NAME,"Trying to get request from %ld",w));
+      
+      /* Get and delete its SCWMEXEC_REQUEST property. We do
+         XGetWindowProperty twice, once to get the length, and again
+         to read the whole length's worth. */
+      if (XGetWindowProperty(dpy, w,
+                             XA_SCWMEXEC_REQUEST,
+                             0, 0, False, XA_STRING, 
+                             &type_ret, &form_ret, &nitems, &bytes_after,
+                             &req)==Success && 
+          XGetWindowProperty(dpy, w,
+                             XA_SCWMEXEC_REQUEST,
+                             0, (bytes_after / 4) +
+                             (bytes_after % 4 ? 1 : 0), True, XA_STRING, 
+                             &type_ret, &form_ret, &nitems, &bytes_after,
+                             &req)==Success) {
+        SCM val, str_val;
+        unsigned char *ret, *output, *error;
+        int rlen, olen, elen;
+        SCM o_port, e_port;
+        SCM saved_def_e_port;
         
-        DBUG((DBG,FUNC_NAME,"Trying to get request from %ld",w));
+        /* Temporarily redirect output and error to string ports. 
+           Note that the port setting functions return the current previous
+           port. */
+        o_port = scm_set_current_output_port(make_output_strport(FUNC_NAME));
+        e_port = scm_set_current_error_port(make_output_strport(FUNC_NAME));
         
-        /* Get and delete its SCWMEXEC_REQUEST property. We do
-           XGetWindowProperty twice, once to get the length, and again
-           to read the whole length's worth. */
-        if (XGetWindowProperty(dpy, w,
-                               XA_SCWMEXEC_REQUEST,
-                               0, 0, False, XA_STRING, 
-                               &type_ret, &form_ret, &nitems, &bytes_after,
-                               &req)==Success && 
-            XGetWindowProperty(dpy, w,
-                               XA_SCWMEXEC_REQUEST,
-                               0, (bytes_after / 4) +
-                               (bytes_after % 4 ? 1 : 0), True, XA_STRING, 
-                               &type_ret, &form_ret, &nitems, &bytes_after,
-                               &req)==Success) {
-          SCM val, str_val;
-          unsigned char *ret, *output, *error;
-          int rlen, olen, elen;
-          SCM o_port, e_port;
-          SCM saved_def_e_port;
+        /* Workaround for a problem with older Guiles */
+        saved_def_e_port = scm_def_errp;
+        scm_def_errp = scm_current_error_port();
+        
+        /* before we eval the request, record the window to respond
+           in a global, so Done can respond if necessary (in case
+           the eval-d expression calls `quit' or seg faults, etc.) */
+        w_for_scwmexec_response = w;
+        /* Evaluate the request expression and free it. */
+        val = scwm_safe_eval_str((char *) req);
+        XFree(req); 
+        str_val=scm_strprint_obj(val);
+        ret = (unsigned char *) gh_scm2newstr(str_val, &rlen);
+        
+        /* restore output and error ports; use returned o_port/e_port
+           below for getting the strings back */
+        o_port = scm_set_current_output_port(o_port);
+        e_port = scm_set_current_error_port(e_port);
+        scm_def_errp = saved_def_e_port;
+        
+        /* Retrieve output and errors */
+        output = (unsigned char *) gh_scm2newstr(scm_strport_to_string(o_port),
+                                                 &olen);
+        error = (unsigned char *) gh_scm2newstr(scm_strport_to_string(e_port),
+                                                &elen);
+        
+        /* Set the output, error and reply properties appropriately. */
+        XChangeProperty(dpy, w_for_scwmexec_response,
+                        XA_SCWMEXEC_OUTPUT, XA_STRING,
+                        8, PropModeReplace, output, olen);
+        XChangeProperty(dpy, w_for_scwmexec_response,
+                        XA_SCWMEXEC_ERROR, XA_STRING,
+                        8, PropModeReplace, error, elen);
+        XChangeProperty(dpy, w_for_scwmexec_response,
+                        XA_SCWMEXEC_REPLY, XA_STRING,
+                        8, PropModeReplace, ret, rlen);
           
-          /* Temporarily redirect output and error to string ports. 
-             Note that the port setting functions return the current previous
-             port. */
-          o_port = scm_set_current_output_port(make_output_strport(FUNC_NAME));
-          e_port = scm_set_current_error_port(make_output_strport(FUNC_NAME));
-          
-          /* Workaround for a problem with older Guiles */
-          saved_def_e_port = scm_def_errp;
-          scm_def_errp = scm_current_error_port();
-          
-          /* before we eval the request, record the window to respond
-             in a global, so Done can respond if necessary (in case
-             the eval-d expression calls `quit' or seg faults, etc.) */
-          w_for_scwmexec_response = w;
-          /* Evaluate the request expression and free it. */
-          val = scwm_safe_eval_str((char *) req);
-          XFree(req); 
-          str_val=scm_strprint_obj(val);
-          ret = (unsigned char *) gh_scm2newstr(str_val, &rlen);
-          
-          /* restore output and error ports; use returned o_port/e_port
-             below for getting the strings back */
-          o_port = scm_set_current_output_port(o_port);
-          e_port = scm_set_current_error_port(e_port);
-          scm_def_errp = saved_def_e_port;
-          
-          /* Retrieve output and errors */
-          output = (unsigned char *) gh_scm2newstr(scm_strport_to_string(o_port),
-                                                   &olen);
-          error = (unsigned char *) gh_scm2newstr(scm_strport_to_string(e_port),
-                                                  &elen);
-          
-          /* Set the output, error and reply properties appropriately. */
-          XChangeProperty(dpy, w_for_scwmexec_response,
-                          XA_SCWMEXEC_OUTPUT, XA_STRING,
-                          8, PropModeReplace, output, olen);
-          XChangeProperty(dpy, w_for_scwmexec_response,
-                          XA_SCWMEXEC_ERROR, XA_STRING,
-                          8, PropModeReplace, error, elen);
-          XChangeProperty(dpy, w_for_scwmexec_response,
-                          XA_SCWMEXEC_REPLY, XA_STRING,
-                          8, PropModeReplace, ret, rlen);
-          
-          /* Since we successfully reset the reply properties,
-             shutdown.c's Done no longer needs to, so reset
-             the global */
-          w_for_scwmexec_response = None;
-          
-          gh_free(ret);
-          gh_free(output);
-          gh_free(error);
-        } else {
-          scwm_msg(WARN,FUNC_NAME,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
-                   w_for_scwmexec_response);
-        }
-#if 0
-      } /* if (pw != NULL) */
-#endif
+        /* Since we successfully reset the reply properties,
+           shutdown.c's Done no longer needs to, so reset
+           the global */
+        w_for_scwmexec_response = None;
+        
+        gh_free(ret);
+        gh_free(output);
+        gh_free(error);
+      } else {
+        scwm_msg(WARN,FUNC_NAME,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
+                 w_for_scwmexec_response);
+      }
     } else {
       /* XGetWindowProperty returned False */
       DBUG((WARN,FUNC_NAME,"Done with last window in list of scwmexec requests"));
@@ -814,9 +804,9 @@ HandlePropertyNotify()
   }
 
   if (Event.xproperty.window == Scr.Root) {
-    call2_hooks(x_root_propertynotify_hook, 
-                gh_long2scm(Event.xproperty.atom),
-                SCM_BOOL_FromBool(Event.xproperty.state == PropertyDelete));
+    scwm_run_hook2(x_root_propertynotify_hook, 
+                   gh_long2scm(Event.xproperty.atom),
+                   SCM_BOOL_FromBool(Event.xproperty.state == PropertyDelete));
   }
 
   if (!pswCurrent || !FXWindowAccessible(dpy, pswCurrent->w))
@@ -958,8 +948,8 @@ HandlePropertyNotify()
   { /* scope */
     char *szName = XGetAtomName(dpy,Event.xproperty.atom);
     
-    call2_hooks(x_propertynotify_hook, gh_str02scm(szName),
-		SCM_FROM_PSW(pswCurrent));
+    scwm_run_hook2(x_propertynotify_hook, 
+                   gh_str02scm(szName), SCM_FROM_PSW(pswCurrent));
     XFree(szName);
   }
 }
@@ -1096,7 +1086,7 @@ HandleDestroyNotify()
   Window w = Event.xdestroywindow.window;
   DBUG_EVENT((DBG,"HandleDestroyNotify", "Entered"));
 
-  call1_hooks(x_destroynotify_hook,gh_ulong2scm(w));
+  scwm_run_hook1(x_destroynotify_hook,gh_ulong2scm(w));
 
   /* maybe use the window in the XDestroyWindowEvent structure
      if the one in xany did not correlate to a sw */
@@ -1156,7 +1146,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
     ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
 
     if (Scr.fWindowsCaptured) {
-      call1_hooks(x_maprequest_hook, SCM_FROM_PSW(pswCurrent));
+      scwm_run_hook1(x_maprequest_hook, SCM_FROM_PSW(pswCurrent));
     }
 
     pswCurrent = psw; /* restore from value before hooks were invoked */
@@ -1333,10 +1323,10 @@ HandleUnmapNotify()
     goto HUN_return;
   
   if (SCM_FROM_PSW(pswCurrent) == g_lastwin_entered) {
-    call1_hooks(window_leave_hook, g_lastwin_entered);
+    scwm_run_hook1(window_leave_hook, SCM_FROM_PSW(pswCurrent));
     g_lastwin_entered = SCM_BOOL_F;
   }
-  call1_hooks(x_unmapnotify_hook,SCM_FROM_PSW(pswCurrent));
+  scwm_run_hook1(x_unmapnotify_hook, SCM_FROM_PSW(pswCurrent));
 
   if (fWeMustUnmap)
     XUnmapWindow(dpy, Event.xunmap.window);
@@ -1448,8 +1438,9 @@ HandleMotionNotify()
     x = gh_int2scm(pev->x_root - FRAME_X_VP(psw));
     y = gh_int2scm(pev->y_root - FRAME_Y_VP(psw));
   }
-  call6_hooks(x_motionnotify_hook,
-              x_root,y_root,state,win,x,y);
+  scm_run_hook(x_motionnotify_hook,
+               gh_list(x_root,y_root,state,win,x,y,
+                       SCM_UNDEFINED));
   DBUG_EVENT((DBG,"HandleMotionNotify","return"));
 #endif
 }
@@ -1494,11 +1485,6 @@ HandleButtonPress()
      * non-focusing windows! */
     if (!pswCurrent->fIconified) {
       Bool fSendClick = Scr.fClickToFocusPassesClick;
-#if 0
-      /* GJB:FIXME:: can we remove this? */
-      if ( /* click was in a border, titlebar, or decoration */ )
-        fSendClick = True;
-#endif
       XSync(dpy, False);
       XAllowEvents(dpy, 
                    (fSendClick?ReplayPointer:AsyncPointer),
@@ -1615,7 +1601,7 @@ HandleEnterNotify()
 
   if (Event.xany.window == Scr.Root) {
     if (SCM_BOOL_F != g_lastwin_entered) {
-      call1_hooks(window_leave_hook, g_lastwin_entered);
+      scwm_run_hook1(window_leave_hook, g_lastwin_entered);
       g_lastwin_entered = SCM_BOOL_F;
     }
   
@@ -1636,9 +1622,9 @@ HandleEnterNotify()
 
   if (SCM_FROM_PSW(pswCurrent) != g_lastwin_entered) {
     if (SCM_BOOL_F != g_lastwin_entered)
-      call1_hooks(window_leave_hook, g_lastwin_entered);
+      scwm_run_hook1(window_leave_hook, g_lastwin_entered);
     g_lastwin_entered = SCM_FROM_PSW(pswCurrent);
-    call1_hooks(window_enter_hook, g_lastwin_entered);
+    scwm_run_hook1(window_enter_hook, SCM_FROM_PSW(pswCurrent));
   }
 
   if (!pswCurrent->fClickToFocus) {
@@ -1894,7 +1880,7 @@ HandleShapeNotify(void)
 void
 HandleSelectionNotify(void)
 {
-  call0_hooks(x_selectionnotify_hook);
+  scwm_run_hook0(x_selectionnotify_hook);
 }
 
 
@@ -1925,13 +1911,13 @@ HandleVisibilityNotify()
     }
     switch (vevent->state) {
     case VisibilityFullyObscured:
-      call1_hooks(window_fully_obscured_hook,SCM_FROM_PSW(pswCurrent));
+      scwm_run_hook1(window_fully_obscured_hook, SCM_FROM_PSW(pswCurrent));
       break;
     case VisibilityUnobscured:
-      call1_hooks(window_unobscured_hook,SCM_FROM_PSW(pswCurrent));
+      scwm_run_hook1(window_unobscured_hook, SCM_FROM_PSW(pswCurrent));
       break;
     case VisibilityPartiallyObscured:
-      call1_hooks(window_partially_obscured_hook,SCM_FROM_PSW(pswCurrent));
+      scwm_run_hook1(window_partially_obscured_hook, SCM_FROM_PSW(pswCurrent));
       break;
     }
     pswCurrent->visibility = vevent->state;

@@ -99,10 +99,8 @@ void
 BroadcastConfig(unsigned long event_type, const ScwmWindow *psw)
 {
   if (Scr.fWindowsCaptured) {
-    scwm_run_hook(broadcast_config_hook, 
-                  gh_list(gh_ulong2scm(event_type), 
-                          SCM_FROM_PSW(psw),
-                          SCM_UNDEFINED));
+    scwm_run_hook2(broadcast_config_hook, 
+                  gh_ulong2scm(event_type), SCM_FROM_PSW(psw));
   }
 }
 
@@ -124,10 +122,8 @@ void BroadcastName(unsigned long event_type, unsigned long data1,
 void BroadcastMiniIcon(unsigned long event_type, ScwmWindow *psw)
 {
   if (Scr.fWindowsCaptured) {
-    scwm_run_hook(broadcast_mini_icon_hook, 
-                  gh_list(gh_ulong2scm(event_type), 
-                          SCM_FROM_PSW(psw),
-                          SCM_UNDEFINED));
+    scwm_run_hook2(broadcast_mini_icon_hook, 
+                   gh_ulong2scm(event_type), SCM_FROM_PSW(psw));
   }
 }
 

@@ -123,7 +123,7 @@ char *SzNameOfProcedureNew(SCM proc)
 #endif
 
 
-SCM
+static SCM
 scm_internal_stack_cwdr (scm_catch_body_t body,
 			 void *body_data,
 			 scm_catch_handler_t handler,
@@ -136,43 +136,12 @@ scm_internal_stack_cwdr (scm_catch_body_t body,
   d.data = body_data;
   d.handler = handler;
   return scm_internal_cwdr_no_unwind (cwssdr_body, &d, handler, handler_data, 
-			    stack_item);
+                                      stack_item);
 }
 
 
 #ifdef HAVE_SCM_MAKE_HOOK
 static SCM run_hook_proc;
-#endif
-
-#if 0
-/* GJB:FIXME::
-   this resulted in the crazy message-window-show/hide! infinite-loop
-   bug.  Why is the _stack_cwdr version needed?--10/04/99 gjb */
-SCM
-scwm_safe_apply (SCM proc, SCM args)
-{
-  SCM_STACKITEM stack_item;
-  struct scwm_body_apply_data apply_data;
-  apply_data.proc = proc;
-  apply_data.args = args;
-  
-  return scm_internal_cwdr(scwm_body_apply, &apply_data,
-                           scwm_handle_error, "scwm",
-                           &stack_item);
-}
-
-SCM
-scwm_safe_apply_message_only (SCM proc, SCM args)
-{
-  SCM_STACKITEM stack_item;
-  struct scwm_body_apply_data apply_data;
-  apply_data.proc = proc;
-  apply_data.args = args;
-  
-  return scm_internal_cwdr(scwm_body_apply, &apply_data,
-                           scm_handle_by_message_noexit, "scwm",
-                           &stack_item);
-}
 #endif
 
 SCM
@@ -200,7 +169,7 @@ scwm_safe_apply (SCM proc, SCM args)
 				 &stack_item);
 }
 
-SCM
+static SCM
 scwm_safe_apply_message_only (SCM proc, SCM args)
 {
   SCM_STACKITEM stack_item;
@@ -221,8 +190,8 @@ scwm_safe_apply_message_only (SCM proc, SCM args)
 #endif
 
   return scm_internal_cwdr_no_unwind(scwm_body_apply, &apply_data,
-			   scm_handle_by_message_noexit, "scwm",
-			   &stack_item);
+                                     scm_handle_by_message_noexit, "scwm",
+                                     &stack_item);
 }
 
 
@@ -241,62 +210,8 @@ scwm_safe_call1 (SCM proc, SCM arg)
 }
 
 
-#ifndef HAVE_SCM_MAKE_HOOK
-
-SCM
-scwm_safe_call2 (SCM proc, SCM arg1, SCM arg2)
-{
-  /* This means w must cons (albeit only once) on each callback of
-     size two - seems lame. */
-  return scwm_safe_apply (proc, gh_list(arg1, arg2, SCM_UNDEFINED));
-}
-
-SCM
-scwm_safe_call3 (SCM proc, SCM arg1, SCM arg2, SCM arg3)
-{
-  /* This means w must cons (albeit only once) on each callback of
-     size two - seems lame. */
-  return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, SCM_UNDEFINED));
-}
-
-SCM
-scwm_safe_call4 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
-{
-  /* This means w must cons (albeit only once) on each callback of
-     size two - seems lame. */
-  return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, arg4, SCM_UNDEFINED));
-}
-
-SCM
-scwm_safe_call5 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
-{
-  /* This means w must cons (albeit only once) on each callback of
-     size two - seems lame. */
-  return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, arg4, arg5, SCM_UNDEFINED));
-}
-
-SCM
-scwm_safe_call6 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
-{
-  /* This means w must cons (albeit only once) on each callback of
-     size two - seems lame. */
-  return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, arg4, arg5, arg6, SCM_UNDEFINED));
-}
-
-SCM
-scwm_safe_call7 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
-{
-  /* This means w must cons (albeit only once) on each callback of
-     size two - seems lame. */
-  return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, arg4, arg5, arg6, arg7, SCM_UNDEFINED));
-}
-
-#endif
-
 
 /* Hooks. */
-
-
 
 /* FIXDOC: We need a way to cross-reference concepts in docs. */
 
@@ -320,9 +235,8 @@ SCWM_INLINE SCM scwm_run_hook(SCM hook, SCM args)
   ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
   SCM answer;
   if (!SCM_HOOKP(hook)) {
-    scm_display_error_message(gh_str02scm("Bad hook: %S, args = %S\n"), 
-                              gh_list(hook,args,SCM_UNDEFINED),
-                              scm_current_error_port());
+    scwm_error_message(gh_str02scm("Bad hook: %S, args = %S\n"), 
+                       gh_list(hook,args,SCM_UNDEFINED));
     return SCM_UNSPECIFIED;
   }
 #ifdef SCWM_DEBUG_RUN_HOOK
@@ -346,45 +260,21 @@ SCWM_INLINE SCM scwm_run_hook_message_only(SCM hook, SCM args)
 }
 
 
-SCWM_INLINE SCM call0_hooks(SCM hook)
+SCWM_INLINE SCM scwm_run_hook0(SCM hook)
 {
   return scwm_run_hook(hook,SCM_EOL);
 }
 
-SCWM_INLINE SCM call1_hooks(SCM hook, SCM arg1)
+SCWM_INLINE SCM scwm_run_hook1(SCM hook, SCM arg1)
 {
-  return scwm_run_hook(hook,gh_list(arg1,SCM_UNDEFINED));
+  return scwm_run_hook(hook,gh_cons(arg1,SCM_EOL));
 }
 
-SCWM_INLINE SCM call2_hooks(SCM hook, SCM arg1, SCM arg2)
+SCWM_INLINE SCM scwm_run_hook2(SCM hook, SCM arg1, SCM arg2)
 {
-  return scwm_run_hook(hook,gh_list(arg1,arg2,SCM_UNDEFINED));
+  return scwm_run_hook(hook,SCM_LIST2(arg1,arg2));
 }
 
-SCWM_INLINE SCM call3_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3)
-{
-  return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,SCM_UNDEFINED));
-}
-
-SCWM_INLINE SCM call4_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
-{
-  return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,SCM_UNDEFINED));
-}
-
-SCWM_INLINE SCM call5_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
-{
-  return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,SCM_UNDEFINED));
-}
-
-SCWM_INLINE SCM call6_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
-{
-  return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,SCM_UNDEFINED));
-}
-
-SCWM_INLINE SCM call7_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
-{
-  return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,arg7,SCM_UNDEFINED));
-}
 
 SCM
 scm_empty_hook_p(SCM hook)
@@ -401,7 +291,7 @@ scm_empty_hook_p(SCM hook)
 }
 
 /* Print warning message, and reset the hook */
-void
+static void
 WarnBadHook(SCM hook)
 {
   assert(!gh_list_p(gh_cdr(hook)));
@@ -414,7 +304,7 @@ WarnBadHook(SCM hook)
 }
 
 
-SCM call0_hooks (SCM hook)
+SCM scwm_run_hook0 (SCM hook)
 {
   SCM p;
   SCM hook_list;
@@ -434,7 +324,7 @@ SCM call0_hooks (SCM hook)
   return SCM_UNSPECIFIED;
 }
 
-SCM call1_hooks (SCM hook, SCM arg)
+SCM scwm_run_hook1 (SCM hook, SCM arg)
 {
   SCM p;
   SCM hook_list;
@@ -454,7 +344,7 @@ SCM call1_hooks (SCM hook, SCM arg)
   return SCM_UNSPECIFIED;
 }
 
-SCM call2_hooks (SCM hook, SCM arg1, SCM arg2)
+SCM scwm_run_hook2 (SCM hook, SCM arg1, SCM arg2)
 {
   SCM p;
   SCM hook_list;
@@ -468,108 +358,7 @@ SCM call2_hooks (SCM hook, SCM arg1, SCM arg2)
   }
 
   for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
-    scwm_safe_call2 (gh_car(p), arg1, arg2);
-  }
-  
-  return SCM_UNSPECIFIED;
-}
-
-SCM call3_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3)
-{
-  SCM p;
-  SCM hook_list;
-  /* Ensure hook list is a list. */
-
-  hook_list = gh_cdr(hook);
-
-  if (!gh_list_p(hook_list)) {
-    WarnBadHook(hook);
-    return SCM_UNSPECIFIED;
-  }
-
-  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
-    scwm_safe_call3 (gh_car(p), arg1, arg2, arg3);
-  }
-  
-  return SCM_UNSPECIFIED;
-}
-
-SCM call4_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4)
-{
-  SCM p;
-  SCM hook_list;
-  /* Ensure hook list is a list. */
-
-  hook_list = gh_cdr(hook);
-
-  if (!gh_list_p(hook_list)) {
-    WarnBadHook(hook);
-    return SCM_UNSPECIFIED;
-  }
-
-  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
-    scwm_safe_call4 (gh_car(p), arg1, arg2, arg3, arg4);
-  }
-  
-  return SCM_UNSPECIFIED;
-}
-
-
-SCM call5_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5)
-{
-  SCM p;
-  SCM hook_list;
-  /* Ensure hook list is a list. */
-
-  hook_list = gh_cdr(hook);
-
-  if (!gh_list_p(hook_list)) {
-    WarnBadHook(hook);
-    return SCM_UNSPECIFIED;
-  }
-
-  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
-    scwm_safe_call5 (gh_car(p), arg1, arg2, arg3, arg4, arg5);
-  }
-  
-  return SCM_UNSPECIFIED;
-}
-
-SCM call6_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6)
-{
-  SCM p;
-  SCM hook_list;
-  /* Ensure hook list is a list. */
-
-  hook_list = gh_cdr(hook);
-
-  if (!gh_list_p(hook_list)) {
-    WarnBadHook(hook);
-    return SCM_UNSPECIFIED;
-  }
-
-  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
-    scwm_safe_call6 (gh_car(p), arg1, arg2, arg3, arg4, arg5, arg6);
-  }
-  
-  return SCM_UNSPECIFIED;
-}
-
-SCM call7_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7)
-{
-  SCM p;
-  SCM hook_list;
-  /* Ensure hook list is a list. */
-
-  hook_list = gh_cdr(hook);
-
-  if (!gh_list_p(hook_list)) {
-    WarnBadHook(hook);
-    return SCM_UNSPECIFIED;
-  }
-
-  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
-    scwm_safe_call7 (gh_car(p), arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+    scwm_safe_apply (gh_car(p), SCM_LIST2(arg1, arg2));
   }
   
   return SCM_UNSPECIFIED;
@@ -658,7 +447,7 @@ scwm_catching_load_from_port (SCM port)
   while (!SCM_EOF_OBJECT_P(expr = scm_read (port))) {  
     answer = scwm_catching_eval_x (expr);
     if (++i % clnsProcessingHook == 0) {
-      call1_hooks(load_processing_hook, gh_int2scm(i));
+      scwm_run_hook1(load_processing_hook, gh_int2scm(i));
     }
   }
   scm_close_port (port);
@@ -679,12 +468,12 @@ scwm_body_eval_str (void *body_data)
 {
   char *sz = (char *) body_data;
   SCM port = scm_mkstrport (SCM_INUM0, gh_str02scm(sz), 
-			    SCM_OPN | SCM_RDNG, "scwm_safe_eval_str");
+			    SCM_OPN | SCM_RDNG, "scwm_body_eval_str");
   return scwm_catching_load_from_port (port);
 }
 
 
-SCM 
+static SCM 
 scwm_handle_error (void *data, SCM tag, SCM throw_args)
 {
   SCM port = scm_set_current_error_port(make_output_strport("error-handler"));
@@ -719,11 +508,6 @@ errors.")
 				     &stack_item);
 }
 #undef FUNC_NAME
-
-SCM scwm_safe_load (char *filename)
-{
-  return safe_load(gh_str02scm(filename));
-}
 
 SCM scwm_safe_eval_str (char *string)
 {
@@ -1059,11 +843,14 @@ static SCM *pscm_this_command_args;
 SCWM_PROC(call_interactively, "call-interactively", 1, 1, 0,
           (SCM thunk, SCM debug),
 "Invoke THUNK interactively.\n\
+THUNK can be either a procedure or a symbol.\n\
+If it is a symbol it is dereferenced.\n\
 Write a debug message if DEBUG is #t.")
 #define FUNC_NAME s_call_interactively
 {
   SCM interactive_spec = SCM_BOOL_F;
   Bool fDebugThisCommand = False;
+  DEREF_IF_SYMBOL(thunk);
   VALIDATE_ARG_PROC(1,thunk);
   VALIDATE_ARG_BOOL_COPY_USE_F(2,debug,fDebugThisCommand);
   interactive_spec = scm_procedure_property(thunk,sym_interactive);
@@ -1094,11 +881,11 @@ Write a debug message if DEBUG is #t.")
     }
     *pscm_this_command = thunk;
     *pscm_this_command_args = args;
-    scwm_run_hook(pre_command_hook,gh_list(thunk,args,SCM_UNDEFINED));
+    scwm_run_hook2(pre_command_hook,thunk,args);
     thunk = *pscm_this_command;
     args = *pscm_this_command_args;
     answer = scwm_safe_apply(thunk, args);
-    scwm_run_hook(post_command_hook,gh_list(thunk,args,SCM_UNDEFINED));
+    scwm_run_hook2(post_command_hook,thunk,args);
 
     return answer;
   }

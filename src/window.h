@@ -387,7 +387,7 @@ EXTERN_SET(SCM scm_window_context,SCM_UNDEFINED);
 #endif
 
 
-#if 0
+#ifdef NDEBUG
 #define SCM_FROM_PSW(X) ((X)->_schwin)
 #else
 static SCWM_INLINE 

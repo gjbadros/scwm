@@ -57,7 +57,7 @@ static SCWM_INLINE void
 call_lost_focus_hook(ScwmWindow *psw)
 {
   if (Scr.Focus && Scr.Focus != psw && NULL == Scr.PreviousFocus) {
-    call1_hooks(window_focus_lost_hook,SCM_FROM_PSW(Scr.Focus));
+    scwm_run_hook1(window_focus_lost_hook, SCM_FROM_PSW(Scr.Focus));
   }
 }
   

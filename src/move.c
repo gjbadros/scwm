@@ -145,8 +145,10 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
   }
 
   /* same hook is called identically before the iterations; see above */
-  call3_hooks(interactive_move_new_position_hook, SCM_FROM_PSW(psw),
-	      gh_int2scm(saved_x), gh_int2scm(saved_y));
+  scwm_run_hook(interactive_move_new_position_hook, 
+                gh_list(SCM_FROM_PSW(psw),
+                        gh_int2scm(saved_x), gh_int2scm(saved_y),
+                        SCM_UNDEFINED));
 
   while (!finished) {
     while (XCheckMaskEvent(dpy, 
@@ -264,8 +266,10 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
                 real_x,real_y,
                 WIN_VP_OFFSET_X(psw)+xl,WIN_VP_OFFSET_Y(psw)+yt);
 #endif
-	call3_hooks(interactive_move_new_position_hook, SCM_FROM_PSW(psw),
-		    gh_int2scm(real_x), gh_int2scm(real_y));
+	scwm_run_hook(interactive_move_new_position_hook, 
+                      gh_list(SCM_FROM_PSW(psw),
+                              gh_int2scm(real_x), gh_int2scm(real_y),
+                              SCM_UNDEFINED));
 
 	/*DisplayPosition(psw, real_x, real_y, True);*/
 
@@ -504,7 +508,7 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
     /* GJB:FIXME:: xmag caused this to run
        when click-to place (no auto/smart placement)
        and it should not, IMO --09/22/98 gjb
-       call0_hooks(invalid_interaction_hook);
+       scwm_run_hook0(invalid_interaction_hook);
     */
     return False;
   }
@@ -527,12 +531,14 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   XOffset = origDragX - DragX;
   YOffset = origDragY - DragY;
 
-  call1_hooks(interactive_move_start_hook, SCM_FROM_PSW(psw));
+  scwm_run_hook1(interactive_move_start_hook, SCM_FROM_PSW(psw));
   moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY, fOpaque);
   /* same hook is called above, before the iterations begin, and during the iterations */
-  call3_hooks(interactive_move_new_position_hook, SCM_FROM_PSW(psw),
-              gh_int2scm(FRAME_X_VP(psw)), gh_int2scm(FRAME_Y_VP(psw)));
-  call1_hooks(interactive_move_finish_hook, SCM_FROM_PSW(psw));
+  scwm_run_hook(interactive_move_new_position_hook, 
+                gh_list(SCM_FROM_PSW(psw),
+                        gh_int2scm(FRAME_X_VP(psw)), gh_int2scm(FRAME_Y_VP(psw)),
+                        SCM_UNDEFINED));
+  scwm_run_hook1(interactive_move_finish_hook, SCM_FROM_PSW(psw));
 
   if (psw->fIconified) {
     psw->fIconMoved = True;

@@ -733,7 +733,7 @@ SCWM_IPROC(scwm_run_test_hook_0, "scwm-run-test-hook-0", 1, 0, 0,
   int c, i;
   VALIDATE_ARG_INT_COPY(1,count,c);
   for (i=0; i<c; ++i) {
-    call0_hooks(scwm_test_hook_0);
+    scwm_run_hook0(scwm_test_hook_0);
   }
   return SCM_UNDEFINED;
 }
@@ -747,7 +747,7 @@ SCWM_IPROC(scwm_run_test_hook_1, "scwm-run-test-hook-1", 2, 0, 0,
   int c, i;
   VALIDATE_ARG_INT_COPY(1,count,c);
   for (i=0; i<c; ++i) {
-    call1_hooks(scwm_test_hook_1,arg);
+    scwm_run_hook1(scwm_test_hook_1,arg);
   }
   return SCM_UNDEFINED;
 }
@@ -1014,20 +1014,6 @@ SCWM_PROC(X_store_bytes, "X-store-bytes", 1, 0, 0,
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
-
-/* GJB:FIXME:  Need to link with Intrinsics
-   to get XtGetSelectionValue;  maybe not worth it */
-#if 0
-SCWM_PROC(X_get_primary_selection, "X-get-primary-selection", 0, 0, 0,
-	  (),
-"Return the X primary selection.")
-#define FUNC_NAME s_X_get_primary_selection
-{
-  
-}
-#undef FUNC_NAME
-
-#endif
 
 
 void 
