@@ -21,7 +21,6 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <signal.h>
-#include <stdarg.h>
 
 #include "scwm.h"
 #include <X11/Xatom.h>
@@ -378,51 +377,7 @@ KeepOnTop()
   }
 }
 
-/*
-   ** Scwm_msg: used to send output from Scwm to files and or stderr/stdout
-   **
-   ** type -> DBG == Debug, ERR == Error, INFO == Information, WARN == Warning
-   ** id -> name of function, or other identifier
- */
-void 
-scwm_msg(scwm_msg_levels type, char *id, char *msg,...)
-{
-  char *typestr;
-  va_list args;
 
-  switch (type) {
-  case DBG:
-    typestr = "<<DEBUG>>";
-    break;
-  case ERR:
-    typestr = "<<ERROR>>";
-    break;
-  case WARN:
-    typestr = "<<WARNING>>";
-    break;
-  case INFO:
-  default:
-    typestr = "";
-    break;
-  }
-
-  va_start(args, msg);
-
-  fprintf(stderr, "[Scwm][%s]: %s ", id, typestr);
-  vfprintf(stderr, msg, args);
-  fprintf(stderr, "\n");
-
-  if (type == ERR) {
-    char tmp[1024];		/* I hate to use a fixed length but this will do for now */
-
-    sprintf(tmp, "[Scwm][%s]: %s ", id, typestr);
-    vsprintf(tmp + strlen(tmp), msg, args);
-    tmp[strlen(tmp) + 1] = '\0';
-    tmp[strlen(tmp)] = '\n';
-    BroadcastName(M_ERROR, 0, 0, 0, tmp);
-  }
-  va_end(args);
-}				/* Scwm_msg */
 
 /* Local Variables: */
 /* tab-width: 8 */

@@ -154,13 +154,17 @@ enum wm_client_functions {
 #  endif
 #endif
 
-/* end of configure.h */
-
-
+/*
+   ** message levels for scwm_msg:
+ */
+typedef enum scwm_msg_levels_tag { DBG = -1, INFO, WARN, ERR } scwm_msg_levels;
 
 /* Prototypes for functions in scwm.c */
+
+void scwm_msg(scwm_msg_levels type, char *id, char *msg,...);
 void Reborder(void);
 void SigDone(int);
+void SigDoneSegv(int);
 void Restart(int nonsense);
 void BlackoutScreen(void);
 void UnBlackoutScreen(void);

@@ -75,6 +75,8 @@
 #include "guile-compat.h"
 #include "syscompat.h"
 
+#include <stdarg.h>
+
 #define MAXHOSTNAME 255
 
 static char rcsid[] = "$Id$";
@@ -97,7 +99,10 @@ char *output_file = NULL;
 XErrorHandler ScwmErrorHandler(Display *, XErrorEvent *);
 XIOErrorHandler CatchFatal(Display *);
 XErrorHandler CatchRedirectError(Display *, XErrorEvent *);
-void newhandler(int sig);
+
+static void newhandler(int sig);
+static void newsegvhandler(int sig);
+
 void CreateCursors(void);
 void ChildDied(int nonsense);
 void SetMWM_INFO(Window window);
@@ -236,6 +241,7 @@ scwm_main(int argc, char **argv)
   init_window();
   init_face();
   init_shutdown();
+  init_xproperty();
   init_events();
   init_deskpage();
 
@@ -348,7 +354,8 @@ scwm_main(int argc, char **argv)
   newhandler(SIGHUP);
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
-  newhandler(SIGSEGV);
+  newsegvhandler(SIGSEGV);
+
   signal(SIGUSR1, Restart);
   
   ReapChildren();
@@ -848,11 +855,18 @@ InternUsefulAtoms(void)
  *	newhandler: Installs new signal handler
  *
  ************************************************************************/
-void 
+static void 
 newhandler(int sig)
 {
   if (signal(sig, SIG_IGN) != SIG_IGN)
     signal(sig, SigDone);
+}
+
+static void 
+newsegvhandler(int sig)
+{
+  if (signal(sig, SIG_IGN) != SIG_IGN)
+    signal(sig, SigDoneSegv);
 }
 
 
@@ -1290,17 +1304,23 @@ Reborder(void)
 
 }
 
-/***********************************************************************
+/*
+ * SigDone - the signal handler installed by newhandler
  *
- *  Procedure:
- *	Done - cleanup and exit scwm
- *
- ***********************************************************************
+ * FIXGJB: I don't think this is legit to call a function
+ * that uses libraries in a signal handler!
  */
-void 
+SIGNAL_T
 SigDone(int nonsense)
 {
   Done(0, NULL);
+  SIGNAL_RETURN;
+}
+
+SIGNAL_T
+SigDoneSegv(int nonsense)
+{
+  Done(-1, NULL);
   SIGNAL_RETURN;
 }
 
@@ -1440,6 +1460,53 @@ void init_scwm_load_path()
   path=scm_internal_parse_path(getenv("SCWM_LOAD_PATH"), path);
   *loc_load_path = path;
 }
+
+
+/*
+   ** Scwm_msg: used to send output from Scwm to files and or stderr/stdout
+   **
+   ** type -> DBG == Debug, ERR == Error, INFO == Information, WARN == Warning
+   ** id -> name of function, or other identifier
+ */
+void 
+scwm_msg(scwm_msg_levels type, char *id, char *msg,...)
+{
+  char *typestr;
+  va_list args;
+
+  switch (type) {
+  case DBG:
+    typestr = "<<DEBUG>>";
+    break;
+  case ERR:
+    typestr = "<<ERROR>>";
+    break;
+  case WARN:
+    typestr = "<<WARNING>>";
+    break;
+  case INFO:
+  default:
+    typestr = "";
+    break;
+  }
+
+  va_start(args, msg);
+
+  fprintf(stderr, "[Scwm][%s]: %s ", id, typestr);
+  vfprintf(stderr, msg, args);
+  fprintf(stderr, "\n");
+
+  if (type == ERR) {
+    char tmp[1024];		/* I hate to use a fixed length but this will do for now */
+
+    sprintf(tmp, "[Scwm][%s]: %s ", id, typestr);
+    vsprintf(tmp + strlen(tmp), msg, args);
+    tmp[strlen(tmp) + 1] = '\0';
+    tmp[strlen(tmp)] = '\n';
+    BroadcastName(M_ERROR, 0, 0, 0, tmp);
+  }
+  va_end(args);
+}				/* Scwm_msg */
 
 
 /* Local Variables: */
