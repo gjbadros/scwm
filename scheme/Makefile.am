@@ -10,7 +10,8 @@ scwm_scheme_DATA = auto-raise.scm base.scm bincomm.scm decor.scm doc.scm \
 	 user-options.scm cached-program-exists.scm listops.scm file.scm \
 	 animation.scm themes.scm theme-impl.scm report-usage.scm shutdown-opts.scm
 
+
 ## Distribute only
-EXTRA_DIST = minimal.scm
-ETAGS_ARGS = $(scwm_scheme_DATA) $(EXTRA_DIST)
-TAGS_DEPENDENCIES = $(scwm_scheme_DATA) $(EXTRA_DIST)
+EXTRA_DIST = minimal.scm $(scwm_scheme_DATA)
+ETAGS_ARGS = $(EXTRA_DIST)
+TAGS_DEPENDENCIES = $(EXTRA_DIST)

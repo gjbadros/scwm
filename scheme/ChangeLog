@@ -1,5 +1,8 @@
 Mon Nov 16 14:54:14 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* Makefile.am: Make sure all scheme files are noticed by `make
+ 	dist'.
+
 	* wininfo.scm (define-string-matcher): Finally, a real fix for the
  	regexp/icase thing, from Craig Struble <cstruble@vt.edu>. Thanks!
 
