@@ -52,6 +52,7 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 #include "events.h"
 #include "callbacks.h"
 #include "font.h"
+#include "resize.h"
 #include "virtual.h"
 #include "Grab.h"
 #include "shutdown.h"
@@ -88,6 +89,7 @@ static char rcsid[] = "$Id$";
 int master_pid;			/* process number of 1st scwm process */
 
 ScreenInfo Scr;			/* structures for the screen */
+SCM scmScreen;                  /* the scheme object wrapping Scr */
 Display *dpy;			/* which display are we talking to */
 
 Window BlackoutWin = None;	/* window to hide window captures */
@@ -272,6 +274,11 @@ InitVariables(void)
   /* create graphics contexts */
   CreateGCs();
 
+  SCM_DEFER_INTS;
+  scmScreen = ScmFromPScreenInfo(&Scr);
+  scm_protect_object(scmScreen);
+  SCM_ALLOW_INTS;
+
   Scr.d_depth = DefaultDepth(dpy, Scr.screen);
   Scr.ScwmRoot.w = Scr.Root;
   Scr.ScwmRoot.next = 0;
@@ -294,6 +301,8 @@ InitVariables(void)
   Scr.menu_font = SCM_UNDEFINED;
   Scr.icon_font = SCM_UNDEFINED;
   Scr.size_window_font = make_font(str_fixed);
+  Scr.size_window_fg = BLACK_COLOR;
+  Scr.size_window_bg = WHITE_COLOR;
   Scr.MenuColors.bg = SCM_UNDEFINED;
   Scr.DefaultDecor.HiColors.bg = SCM_UNDEFINED;
 
@@ -445,6 +454,7 @@ scwm_main(int argc, char **argv)
   setlinebuf(stdout);
   init_font();
   init_decor();
+  init_screen();
   init_callbacks();
   init_add_window();
   init_image();
@@ -576,6 +586,8 @@ scwm_main(int argc, char **argv)
   newhandler(SIGHUP);
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
+  /* FIXGJB: I seem to lose the last stack frame in my backtrace if this is
+     set... do others not see this? --07/24/98 gjb */
   newsegvhandler(SIGSEGV);
 
   signal(SIGUSR1, Restart);
@@ -704,9 +716,9 @@ scwm_main(int argc, char **argv)
   InitVariables();
 
   /* must come after variables are init'd */
-  Scr.SizeWindow = CreateSizeDisplayWindow( BlackPixel(dpy,Scr.screen), 
-                                            WhitePixel(dpy,Scr.screen), 
-                                            Scr.flags & MWMMenus);
+  Scr.SizeWindow = CreateMessageWindow( BlackPixel(dpy,Scr.screen), 
+                                        WhitePixel(dpy,Scr.screen), 
+                                        Scr.flags & MWMMenus);
 
 
   InitEventHandlerJumpTable();
