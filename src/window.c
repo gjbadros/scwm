@@ -774,7 +774,6 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
 {
   Bool fDone = False;
   Bool fFinished = False;
-  Window dummy;
   Window original_w;
 
   original_w = *w;
@@ -1786,6 +1785,9 @@ move_finalize(Window w, ScwmWindow * psw, int x, int y)
     SetupFrame(psw, x, y,
 	       FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False,
                WAS_MOVED, NOT_RESIZED);
+    CassowaryEditPosition(psw);
+    SuggestMoveWindowTo(psw,x,y);
+    CassowaryEndEdit(psw);
   } else {			/* icon window */
     psw->fIconMoved = True;
     psw->icon_x_loc = x;
@@ -1988,8 +1990,10 @@ usual way if not specified. */
   } else {
     FXGetPointerWindowOffsets(Scr.Root, &event.xbutton.x_root, &event.xbutton.y_root);
   }
-  InteractiveMove(&w, psw, &x, &y, &event);
+  InteractiveMove(w, psw, &x, &y, &event);
+#if 0 /* FIXGJBUNUSED */
   move_finalize(w, psw, x, y);
+#endif
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -2042,212 +2046,6 @@ usual way if not specified.*/
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
-
-
-
-extern int dragx;		/* all these variables are used */
-extern int dragy;		/* in resize operations */
-extern int dragWidth;
-extern int dragHeight;
-
-extern int origx;
-extern int origy;
-extern int origWidth;
-extern int origHeight;
-
-extern int ymotion, xmotion;
-extern int last_width, last_height;
-extern int menuFromFrameOrWindowOrTitlebar;
-extern Window PressedW;
-
-
-SCWM_PROC(interactive_resize, "interactive-resize", 0, 1, 0,
-          (SCM win))
-     /** Resize WIN interactively.
-This allows the user to drag a rubber band frame to set the size of
-the window. WIN defaults to the window context in the usual way if not
-specified. */
-#define FUNC_NAME s_interactive_resize
-{
-  ScwmWindow *psw;
-  Bool finished = False, done = False, abort = False;
-  int x, y, delta_x, delta_y;
-  Window ResizeWindow;
-  Bool flags;
-
-  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
-  psw = PSWFROMSCMWIN(win);
-
-
-  if (check_allowed_function(F_RESIZE, psw) == 0
-      || SHADED_P(psw)) {
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
-  }
-  psw->fMaximized = False;
-
-  if (psw->fIconified) {
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
-  }
-  ResizeWindow = psw->frame;
-
-
-  InstallRootColormap();
-  if (!GrabEm(CURSOR_MOVE)) {
-    call0_hooks(cannot_grab_hook);
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
-  }
-  XGrabServer_withSemaphore(dpy);
-
-  /* handle problems with edge-wrapping while resizing */
-  flags = Scr.flags;
-  Scr.flags &= ~(EdgeWrapX | EdgeWrapY);
-
-  XGetGeometry(dpy, (Drawable) ResizeWindow, &JunkRoot,
-	       &dragx, &dragy, (unsigned int *) &dragWidth,
-	       (unsigned int *) &dragHeight, &JunkBW, &JunkDepth);
-
-  dragx += psw->bw;
-  dragy += psw->bw;
-  origx = dragx;
-  origy = dragy;
-  origWidth = dragWidth;
-  origHeight = dragHeight;
-  ymotion = xmotion = 0;
-
-  /* pop up a resize dimensions window */
-  XMapRaised(dpy, Scr.SizeWindow);
-  last_width = 0;
-  last_height = 0;
-  DisplaySize(psw, origWidth, origHeight, True);
-
-  /* Get the current position to determine which border to resize */
-  if ((PressedW != Scr.Root) && (PressedW != None)) {
-    if (PressedW == psw->sides[0])	/* top */
-      ymotion = 1;
-    if (PressedW == psw->sides[1])	/* right */
-      xmotion = -1;
-    if (PressedW == psw->sides[2])	/* bottom */
-      ymotion = -1;
-    if (PressedW == psw->sides[3])	/* left */
-      xmotion = 1;
-    if (PressedW == psw->corners[0]) {	/* upper-left */
-      ymotion = 1;
-      xmotion = 1;
-    }
-    if (PressedW == psw->corners[1]) {	/* upper-right */
-      xmotion = -1;
-      ymotion = 1;
-    }
-    if (PressedW == psw->corners[2]) {	/* lower left */
-      ymotion = -1;
-      xmotion = 1;
-    }
-    if (PressedW == psw->corners[3]) {	/* lower right */
-      ymotion = -1;
-      xmotion = -1;
-    }
-  }
-  /* draw the rubber-band window */
-  MoveOutline(Scr.Root, dragx - psw->bw, dragy - psw->bw,
-	      dragWidth + 2 * psw->bw,
-	      dragHeight + 2 * psw->bw);
-
-  /* loop to resize */
-  while (!finished) {
-    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask | KeyPressMask |
-	       ButtonMotionMask | PointerMotionMask | ExposureMask, &Event);
-    StashEventTime(&Event);
-
-    if (Event.type == MotionNotify)
-      /* discard any extra motion events before a release */
-      while (XCheckMaskEvent(dpy, ButtonMotionMask | ButtonReleaseMask |
-			     PointerMotionMask, &Event)) {
-	StashEventTime(&Event);
-	if (Event.type == ButtonRelease)
-	  break;
-      }
-    done = False;
-    /* Handle a limited number of key press events to allow mouseless
-     * operation */
-    if (Event.type == KeyPress)
-      Keyboard_shortcuts(&Event, ButtonRelease);
-    switch (Event.type) {
-    case ButtonPress:
-      XAllowEvents(dpy, ReplayPointer, CurrentTime);
-    case KeyPress:
-      /* simple code to bag out of move - CKH */
-      if (XLookupKeysym(&(Event.xkey), 0) == XK_Escape) {
-	abort = True;
-	finished = True;
-      }
-      done = True;
-      break;
-
-    case ButtonRelease:
-      finished = True;
-      done = True;
-      break;
-
-    case MotionNotify:
-      x = Event.xmotion.x_root;
-      y = Event.xmotion.y_root;
-      /* resize before paging request to prevent resize from lagging mouse - mab */
-      DoResize(x, y, psw);
-      /* need to move the viewport */
-      HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY, &x, &y,
-		   &delta_x, &delta_y, False);
-      /* redraw outline if we paged - mab */
-      if ((delta_x != 0) || (delta_y != 0)) {
-	origx -= delta_x;
-	origy -= delta_y;
-	dragx -= delta_x;
-	dragy -= delta_y;
-
-	DoResize(x, y, psw);
-      }
-      done = True;
-    default:
-      break;
-    }
-    if (!done) {
-      MoveOutline(Scr.Root, 0, 0, 0, 0);
-
-      DispatchEvent();
-
-      MoveOutline(Scr.Root, dragx - psw->bw, dragy - psw->bw,
-		  dragWidth + 2 * psw->bw, dragHeight + 2 * psw->bw);
-
-    }
-  }
-
-  /* erase the rubber-band */
-  MoveOutline(Scr.Root, 0, 0, 0, 0);
-
-  /* pop down the size window */
-  XUnmapWindow(dpy, Scr.SizeWindow);
-
-  if (!abort) {
-    ConstrainSize(psw, &dragWidth, &dragHeight);
-    SetupFrame(psw, dragx - psw->bw,
-	       dragy - psw->bw, dragWidth, dragHeight, False,
-               NOT_MOVED, WAS_RESIZED);
-  }
-  UninstallRootColormap();
-  ResizeWindow = None;
-  XUngrabServer_withSemaphore(dpy);
-  UngrabEm();
-  xmotion = 0;
-  ymotion = 0;
-
-  Scr.flags |= flags & (EdgeWrapX | EdgeWrapY);
-  SCM_REALLOW_INTS;
-  return SCM_UNSPECIFIED;
-}
-#undef FUNC_NAME
-
 
 SCWM_PROC(refresh_window, "refresh-window", 0, 1, 0,
           (SCM win))

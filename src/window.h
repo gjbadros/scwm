@@ -336,7 +336,6 @@ SCM set_animation_x(SCM vector);
 SCM move_to(SCM x, SCM y, SCM win, SCM animated, SCM move_pointer_too);
 SCM interactive_move(SCM win);
 SCM resize_to(SCM w, SCM h, SCM win);
-SCM interactive_resize(SCM win);
 SCM refresh_window(SCM win);
 
 SCM move_window_to_desk(SCM which, SCM win);
