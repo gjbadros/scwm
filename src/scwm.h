@@ -356,9 +356,9 @@ extern Atom XA_SCWM_EXECUTE;
 /* #define SCWM_DEBUG_MSGS */
 #ifdef __GNUC__
 #  ifdef SCWM_DEBUG_MSGS
-#    define DBUG(x,y..) scwm_msg(DBG,x,## y)
+#    define DBUG(x,y...) scwm_msg(DBG,x,## y)
 #  else
-#    define DBUG(x,y)		/* no messages */
+#    define DBUG(x,y...)		/* no messages */
 #  endif
 #else
 /* Not GNUC, so no varargs macros */
