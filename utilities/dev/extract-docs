@@ -213,17 +213,19 @@ END_CHAP_PRIM_IN_ALPHA
   foreach my $file (sort { lc($a) cmp lc($b) } keys %file_funcs) {
     my @prims = @{$file_funcs{$file}};
     if (scalar(@prims) > 0) {
-      print MARKUP_OUT "    <sect1><title>$file</title>\n";
-    foreach my $proc (sort { $procedure{$a}{line} <=> $procedure{$b}{line} } @prims ) {
-      my $markup = $procedure{$proc}{markup};
-      print MARKUP_OUT $markup, "\n";
-    }
-      print MARKUP_OUT "    </sect1>\n";
+      print MARKUP_OUT "    <sect1><title>$file</title> <itemizedlist>\n";
+      foreach my $proc (sort { $procedure{$a}{line} <=> $procedure{$b}{line} } @prims ) {
+	my $markup = $procedure{$proc}{markup};
+	my $target = $procedure{$proc}{sgml_id};
+	my $primname = $procedure{$proc}{primname};
+	my $purpose = $procedure{$proc}{purpose};
+	print MARKUP_OUT "      <listitem><para><link linkend=\"$target\"><function>$proc</function></link> &mdash; $purpose</para></listitem>\n";
+      }
+      print MARKUP_OUT "    </itemizedlist> </sect1>\n";
     }
   }
 
-
-print MARKUP_OUT <<END_TRAILER
+  print MARKUP_OUT <<END_TRAILER
 </chapter>
 </book>
 <!-- Keep this comment at the end of the file
@@ -235,7 +237,7 @@ sgml-shorttag:t
 End:
 -->
 END_TRAILER
-;
+  ;
 }
 
 
@@ -390,6 +392,9 @@ sub ProcessHeader( $ ) {
     }
   }
 
+  my $sgml_id = $cprimname;
+  $sgml_id =~ s/_/-/g;
+
   # Now want to do the markup of $comment, and set $markup_comment
   # FIXGJB: fold into testing, above
   my $markup_comment = $comment;
@@ -417,14 +422,18 @@ sub ProcessHeader( $ ) {
   $markup_comment =~ s%(\#[tf])%<literal>$1</literal>%g;
 
   # Replace `procedure' with <function>procedure</function>
-  $markup_comment =~ s%\`([A-Za-z][-A-Za-z0-9_?!+]*?)\'%<function>$1</function>%g;
+  $markup_comment =~ s%\`([A-Za-z][-A-Za-z0-9_?!+]*?)\'%
+    "<link linkend=\"" . ScmIdToSgmlId($1) . "\"><function>$1</function></link>"%eg;
 
   # FIXGJB: use some sgml perl library!
 
   # Use <refentry>, <refname>, <refpurpose>, <synopsis>
   
+  # Filename url links rely on environment variable SCWMDIR being
+  # set to the base of the scwm distribution
+  # i.e. $SCWMDIR/scwm/scwm.c should contain main()
   my $markup = 
-"<refentry>
+"<refentry id=\"$sgml_id\">
   <refnamediv>
     <refname>$primname</refname>
     <refpurpose>$purpose</refpurpose>
@@ -440,7 +449,8 @@ sub ProcessHeader( $ ) {
   </refsect1>
   <refsect1>
   <title>Implemenation Notes</title>
-  <para> Defined in <filename>$filename</filename> at line $line </para> </refsect1>
+  <para> Defined in <ulink url=\"file://@{[$ENV{'SCWMDIR'}]}/$filename\"><filename>$filename</filename></ulink>
+  at line $line </para> </refsect1>
 </refentry>
 ";
 
@@ -459,6 +469,7 @@ EOC
   $procedure{$primname} = { usage => $usage,
 			    comment => $comment,
 			    purpose => $purpose,
+			    sgml_id => $sgml_id,
 			    markup_usage => $markup_usage,
 			    markup => $markup,
 			    file => $filename,
@@ -475,4 +486,13 @@ sub KnownWord ( $ ) {
     return TRUE if $w eq $ok;
   }
   return FALSE;
+}
+
+# remember, no underscores in sgml ids
+sub ScmIdToSgmlId ( $ ) {
+  my ($id) = @_;
+  $id =~ s/\?$/-p/;
+  $id =~ s/!$/-x/;
+  $id =~ s/->/-to-/g;
+  return $id;
 }
