@@ -1,3 +1,10 @@
+Fri Sep 17 12:53:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* misc/startscwm: Echo "exit" when Scwm crashes before starting
+	xterm so it's easy to cut and paste to remove the xterm and
+	restart scwm again (in case the focus policy didn't get reset
+	properly).
+
 Thu Sep 16 10:01:15 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/guile.spec: Bump to release 3gjb, take care of readline
