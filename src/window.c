@@ -1789,7 +1789,7 @@ window context in the usual way if not specified. */
     AnimatedShadeWindow(psw,False /* !roll up */, -1, NULL);
   } else {
     SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), 
-               psw->orig_wd, psw->orig_ht, True,
+               psw->orig_width, psw->orig_height, True,
                NOT_MOVED, WAS_RESIZED);
   }
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
