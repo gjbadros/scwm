@@ -1,3 +1,8 @@
+Mon Mar  9 22:50:16 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* drawmenu.c: Inverted the shading of the popup menu item arrow;
+	selected now appears pushed in, unselected is reliefed out.
+
 Mon Mar  9 01:41:40 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c: Calculate length for read SCWM_REQUEST property more
