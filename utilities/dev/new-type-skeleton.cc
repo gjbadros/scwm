@@ -31,12 +31,14 @@ extern "C" {
 inline SCM SCM_BOOL_FromF(bool f) { return (f? SCM_BOOL_T: SCM_BOOL_F); }
 inline bool FUnsetSCM(SCM scm) { return (scm == SCM_UNDEFINED || scm == SCM_BOOL_F); }
 
+
+//// %3 wrapper
 #undef SCMTYPEID
 #define SCMTYPEID scm_tc16_%1
 
 long SCMTYPEID;
 
-inline bool FIs%3SCM(SCM scm) 
+inline bool FIs%3Scm(SCM scm) 
 { return SCM_NIMP(scm) && SCM_CAR(scm) == (SCM) SCMTYPEID; }
 
 inline %3 *P%4FromScm(SCM scm)
@@ -71,7 +73,7 @@ SCWM_PROC (%1_p, "%2?", 1, 0, 0,
            (SCM scm))
 #define FUNC_NAME s_%1_p
 {
-  return SCM_BOOL_FromF(FIs%3SCM(scm));
+  return SCM_BOOL_FromF(FIs%3Scm(scm));
 }
 #undef FUNC_NAME
 
@@ -81,7 +83,8 @@ SCWM_PROC (make_%1, "make-%2", 0, 0, 0,
 {
   int iarg = 1;
 
-#if 0
+%@
+#if 0 // FIXME
   if (!FUnsetSCM(scm)) {
     if ( ) {
       scm_wrong_type_arg(FUNC_NAME, iarg++, scm);
@@ -107,6 +110,7 @@ SCWM_PROC (make_%1, "make-%2", 0, 0, 0,
 #undef FUNC_NAME
 
 
+#if 0 // PRIMITIVE FUNCTION TEMPLATE
 SCWM_PROC (, , 0, 0, 0,
            ())
 #define FUNC_NAME s_
@@ -114,6 +118,7 @@ SCWM_PROC (, , 0, 0, 0,
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
+#endif
 
 
 MAKE_SMOBFUNS(%1);
