@@ -1149,7 +1149,7 @@ from other processes.
 (bind-key 'all "C-M-S-p" start-xlogo)
 
 (bind-key 'all "C-S-F1" popup-small-ops)
-(bind-key 'all "C-S-F2" show-window-list-menu)
+(bind-key 'all "C-S-F2" show-window-list-by-focus-with-geometry)
 ;;(bind-key 'all "C-S-F3" popup-favorite-hosts-menu)
 (bind-key 'all "C-S-F4" popup-applications)
 (bind-key 'all "C-S-F5" popup-utilities)
