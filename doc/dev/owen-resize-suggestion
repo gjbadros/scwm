@@ -201,3 +201,80 @@ Regards,
 To unsubscribe: mail wm-spec-list-request@gnome.org with "unsubscribe"
 as the Subject.
 
+
+
+From: Dominik Vogt <dominik.vogt@fvwm.org>
+Subject: Re: Suggestion: Gravity and resizing from the left
+To: wm-spec-list@gnome.org
+Date: Mon, 22 Nov 1999 10:18:44 +0100
+Reply-To: dominik.vogt@gmx.de
+Resent-From: wm-spec-list@gnome.org
+X-From-Line: wm-spec-list-request@redhat.com  Tue Nov 23 12:06:18 1999
+Received: from lists.redhat.com (lists.redhat.com [199.183.24.247])
+	by june.cs.washington.edu (8.9.3/8.9.3/0.3j) with SMTP id MAA01290
+	for <gjb@cs.washington.edu>; Tue, 23 Nov 1999 12:06:17 -0800
+	(envelope-from wm-spec-list-request@redhat.com)
+Received: (qmail 14847 invoked by uid 501); 23 Nov 1999 18:01:44 -0000
+Resent-Date: 23 Nov 1999 18:01:44 -0000
+Resent-Cc: recipient list not shown: ;
+MBOX-Line: From wm-spec-list-request@gnome.org  Tue Nov 23 13:01:44 1999
+X-Authentication-Warning: DarkSun.nodomain: luthien set sender to dominik.vogt@gmx.de using -f
+Message-ID: <19991122101844.A648@gmx.de>
+Mail-Followup-To: wm-spec-list@gnome.org
+References: <ybe1z9o508w.fsf@fresnel.labs.redhat.com> <19991121123115.A13988@gmx.de> <ybeso1zi6kr.fsf@fresnel.labs.redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+X-Mailer: Mutt 0.95.6i
+In-Reply-To: <ybeso1zi6kr.fsf@fresnel.labs.redhat.com>; from Owen Taylor on Sun, Nov 21, 1999 at 09:49:24PM -0500
+Resent-Message-ID: <"d5zwH.0.dd3.8QjEu"@lists.redhat.com>
+X-Mailing-List: <wm-spec-list@gnome.org> archive/latest/164
+X-Loop: wm-spec-list@gnome.org
+Precedence: list
+Resent-Sender: wm-spec-list-request@gnome.org
+X-URL: http://www.redhat.com
+Lines: 52
+Xref: clavicle.cs.washington.edu wmspeclist:454
+
+On Sun, Nov 21, 1999 at 09:49:24PM -0500, Owen Taylor wrote:
+> 
+> Dominik Vogt <dominik.vogt@fvwm.org> writes:
+> > I've spent the morning experimenting with this in fvwm.  Your
+> > approach suffers from the same problem: if you resize the frame
+> > window first when the window gets bigger, you will se the WM
+> > border flashing instead of e.g. a scrollbar.  That's nor any
+> > better.  
+> 
+> The ordering of resizes is rather incidental to my 
+> recommendation. The important part is using a MoveResize
+> on the client window instead of moving the frame window
+> and then reszing the client window.
+
+The hard part was to get the decoration windows into
+the picture.  I'm a bit disappointed about tha applications.
+I tried xterm, rxvt (with backgroiund pixmap), netscape,
+xman and xv and none of the is intelligent enough to
+reduce redrawing based on the areas that have been exposed.
+rxvt 2.7.1 has some improved ConfigureNotify code, but I
+didn't try that yet.  I must say that the six hours I needed
+were not very well spent; opaque resizing is still
+worthless except for selected applications.  Netscape
+4.61 for example freaks out completely.  I have seen it
+redrawing for about thirty seconds after I released the
+mouse because it's too stupid to throw away all but the last
+ConfigureNotify event in a row.
+
+> That is, the appearance of the borders during opaque 
+> resizing depends on the resize sequence, and the best
+> sequence there probably depends on the exact geometry
+> of the frame windows and decorations, but using 
+> MoveResizeWindow and static gravity to move the client
+> window should be relatively universal.
+
+Static Gravity seems to be broken with XFree 3.3.3.4.
+At least it doesn't work on grandchildren of top level
+windows.
+ 
+Bye
+
+Dominik ^_^
+
