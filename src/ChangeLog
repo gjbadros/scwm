@@ -1,3 +1,8 @@
+Wed Apr 14 15:09:12 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Build fixes: added scwm-screen-ci.hpp to
+	cassowary_headers, validate.h to noinst_HEADERS
+
 1999-04-13  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* events.c (HandlePropertyNotify): Remove unnecessary setting of

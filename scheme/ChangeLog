@@ -1,3 +1,9 @@
+Wed Apr 14 20:30:38 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm: Use flash-window module.
+
+	* base.scm: Fix move-window-relative to use x,y, not dx,dy
+
 Wed Apr 14 10:10:06 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm_common_scheme): List all the other missing

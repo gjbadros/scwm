@@ -1,3 +1,10 @@
+Wed Apr 14 20:29:07 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* dev/smobs: Added
+
+	* dev/dynamic-modules, dev/common-primitive-mistakes,
+	dev/hungarian-tags, dev/new-devs: Some minor updates.
+
 Thu Apr  1 19:27:28 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Drop the option/user-variable stuff.
