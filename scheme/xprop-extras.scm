@@ -38,6 +38,12 @@ TYPE and FORMAT are as in X-property-set!"
      (cond ((X-property-get window name) #f)
 	   (#t (X-property-set! window name value type format 'replace) #t)))))
 
+
+;;SCWM_OTHER_ID=foo LD_PRELOAD=/usr/contrib/bin/scwm_set_pid_property.so  xlogo
+;(use-scwm-modules xprop-extras)
+;(window-pid (get-window))
+;(window-other-id (get-window))
+
 (define-public (window-pid win)
   "Returns the process id of the process that created WIN.
 Requires using the LD_PRELOAD environment variable for the
