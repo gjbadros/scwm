@@ -44,8 +44,8 @@ right. The final result is returned. Compare to `reduce'.
 
 (activate-ScwmBiff sb)
 - (app scwm ScwmBiff)
-No documentation supplied.
-[From scheme/ScwmBiff.scm:100]
+Turn on the ScwmBiff notification service.
+[From scheme/ScwmBiff.scm:101]
 
 
 (add-boolean-hint-option key th fh #&optional (cumulative? #f))
@@ -180,25 +180,27 @@ much as `map' would do it. If proc never returns a false value, return
 
 (animated-deiconify #&optional (win (get-window)))
 - (app scwm animated-iconify)
-No documentation supplied.
-[From scheme/animated-iconify.scm:69]
+Deiconify WIN using a simple animation of a growing rectangle.
+The rectangle grows outwards from the icon, if there is one.
+[From scheme/animated-iconify.scm:71]
 
 
 (animated-deiconify-to-current-viewport #&optional (win (get-window)))
 - (app scwm animated-iconify)
-No documentation supplied.
-[From scheme/animated-iconify.scm:93]
+Deicionify WIN with an animation to the current viewport.
+[From scheme/animated-iconify.scm:98]
 
 
 (animated-deiconify-to-last-viewport-position #&optional (win (get-window)))
 - (app scwm animated-iconify)
-No documentation supplied.
-[From scheme/animated-iconify.scm:78]
+Deiconify WIN with an animation to the same viewport position as it was iconified from.
+[From scheme/animated-iconify.scm:82]
 
 
 (animated-iconify #&optional (win (get-window)))
 - (app scwm animated-iconify)
-No documentation supplied.
+Iconify WIN using a simple animation of a shrinking rectangle.
+The rectangle moves towards the icon's location, if there is one.
 [From scheme/animated-iconify.scm:56]
 
 
@@ -242,8 +244,9 @@ specified.
 
 (animated-toggle-iconify #&optional (win (get-window)))
 - 
-No documentation supplied.
-[From scheme/animated-iconify.scm:106]
+Iconify WIN if not iconified, or de-iconify WIN if it is iconified.
+Uses animation, in either case.
+[From scheme/animated-iconify.scm:112]
 
 
 (animated-window-shade  #&optional win)
@@ -355,8 +358,8 @@ Ring the standard X bell.
 
 (binary number)
 - 
-No documentation supplied.
-[From scheme/number-convert.scm:55]
+Return the integer that corresponds to string NUMBER as a binary value.
+[From scheme/number-convert.scm:62]
 
 
 (binary-read length #&optional (port (current-input-port)))
@@ -385,7 +388,7 @@ Writes STR as binary data to PORT.
 Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
 MODKEY1, MODKEY2, MODKEY3, MODKEY4 are the four modifiers that, when pressed at the same time,
 will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
-[From scheme/modifier-key-bindings.scm:50]
+[From scheme/modifier-key-bindings.scm:107]
 
 
 (bind-key contexts key proc #&optional release-proc)
@@ -409,7 +412,7 @@ invoked when the key is released.  The contexts include:
 'root-window
 'left-button-N  (N=1-5)
 'right-button-N (N=1-5)
-[From scwm/binding.c:998]
+[From scwm/binding.c:1001]
 
 
 (bind-keycode contexts keycode modifier-mask proc #&optional release-proc)
@@ -422,7 +425,7 @@ specified key is pressed in the specified context.
 RELEASE-PROC is a procedure that will be invoked (with no arguments) when the
 specified key is released in the specified context, or #f or omitted if
 nothing should be done on key release.
-[From scwm/binding.c:1072]
+[From scwm/binding.c:1075]
 
 
 (bind-mouse contexts button proc #&optional immediate-proc)
@@ -436,7 +439,7 @@ for a list of the contexts. If IMMEDIATE-PROC is given, it will be
 executed immediately on a button-click.  If IMMEDIATE-PROC returns
 #f, then PROC will still get executed after determining the mouse click
 type.
-[From scwm/binding.c:1125]
+[From scwm/binding.c:1128]
 
 
 (bind-three-modifier-key-events 
@@ -446,17 +449,17 @@ type.
 Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
 MODKEY1, MODKEY2, MODKEY3 are the three modifiers that, when pressed at the same time,
 will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
-[From scheme/modifier-key-bindings.scm:26]
+[From scheme/modifier-key-bindings.scm:65]
 
 
-(bind-two-modifier-key-events 
+(bind-two-modifier-key-events
 		modkey1 modkey2 
 		proc-press proc-release)
 - (app scwm modifier-key-bindings)
 Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
 MODKEY1 and MODKEY2 are the two modifiers that, when pressed at the same time,
 will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
-[From scheme/modifier-key-bindings.scm:8]
+[From scheme/modifier-key-bindings.scm:26]
 
 
 (bool->string arg)
@@ -489,8 +492,8 @@ arguments can be used as the ACTIVE or INACTIVE arguments.
 
 (button-item pixmap-file #&key (action noop) (tooltip #f))
 - 
-No documentation supplied.
-[From scheme/ScwmButtons.scm:182]
+Create a button item for a ScwmButtons window.
+[From scheme/ScwmButtons.scm:183]
 
 
 (button-style button #&key mwm
@@ -510,7 +513,7 @@ and #:h-gradient and #:v-gradient are horizontal and vertical
 gradients).  These extra keyword arguments can either be included
 in the main argument list, or lists of these arguments can be used
 as the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments.
-[From scheme/face.scm:94]
+[From scheme/face.scm:102]
 
 
 (cached-program-exists? program-name)
@@ -622,8 +625,8 @@ No documentation supplied.
 
 (char-value ch)
 - (app scwm number-convert)
-No documentation supplied.
-[From scheme/number-convert.scm:26]
+Return the integer that corresponds to the Ascii code for CH.
+[From scheme/number-convert.scm:28]
 
 
 (chop-newline str)
@@ -810,19 +813,20 @@ be more than desired.
 
 (close-ScwmBiff sb)
 - (app scwm ScwmBiff)
-No documentation supplied.
+Close the ScwmBiff notification window.
 [From scheme/ScwmBiff.scm:97]
 
 
 (close-ScwmButtons sb)
 - (app scwm ScwmButtons)
-No documentation supplied.
-[From scheme/ScwmButtons.scm:179]
+Close the ScwmButtons window of SB.
+SB should be a handle returned from `run-ScwmButtons'.
+[From scheme/ScwmButtons.scm:178]
 
 
 (close-ScwmClock sc)
 - (app scwm ScwmClock)
-No documentation supplied.
+Close the ScwmClock with handle SC.
 [From scheme/ScwmClock.scm:70]
 
 
@@ -994,8 +998,8 @@ Return the window that currently contains the mouse pointer.
 
 (deactivate-ScwmBiff sb)
 - 
-No documentation supplied.
-[From scheme/ScwmBiff.scm:103]
+Make ScwmBiff no longer notify, but leave visible.
+[From scheme/ScwmBiff.scm:105]
 
 
 (decrement-in-range v low)
@@ -1020,7 +1024,7 @@ Return the default decor.
 - (app scwm winops)
 Return #t if WIN has area <= *opaque-move-percent* of the screen, else #f.
 If *opaque-move-percent* is a boolean, not a number, just return it.
-[From scheme/winops.scm:227]
+[From scheme/winops.scm:229]
 
 
 (default-placement-proc win)
@@ -1043,7 +1047,7 @@ is not set, or the window starts iconic.
 - (app scwm winops)
 Return #t if WIN has area <= *opaque-resize-percent* of the screen, else #f.
 If *opaque-resize-percent* is a boolean, not a number, just return it.
-[From scheme/winops.scm:218]
+[From scheme/winops.scm:220]
 
 
 (default-transient-placement-proc win)
@@ -1205,22 +1209,11 @@ defaults to the window context in the usual way if not specified.
 [From scwm/window.c:1680]
 
 
-(dir-calculate-score win dir)
-- (app scwm dir-focus)
-No documentation supplied.
-[From scheme/dir-focus.scm:28]
-
-
 (dir-focus dir #&optional (win (current-window-with-pointer)))
 - 
-No documentation supplied.
+Move focus to the closest window in direction DIR.
+DIR must be one of the symbols 'north, 'south, 'east, or 'west.
 [From scheme/dir-focus.scm:50]
-
-
-(dir-score-function distance offset)
-- (app scwm dir-focus)
-No documentation supplied.
-[From scheme/dir-focus.scm:22]
 
 
 (disable-all-constraints)
@@ -1383,8 +1376,9 @@ Can restart with a fresh solver by using `start-constraints'.
 (end-highlighting-current-window 
 		 #&optional (win current-highlighted-window))
 - (app scwm highlight-current-window)
-No documentation supplied.
-[From scheme/highlight-current-window.scm:45]
+Remove the hook procedures that make the window with mouse be highlighted.
+See also `start-highlighting-current-window'.
+[From scheme/highlight-current-window.scm:47]
 
 
 (esd-reconnect  #&optional host)
@@ -1570,7 +1564,7 @@ specified. Note that WIN is not raised by giving it the focus;  see
 Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
 defaults to `default-menu-max-fold-lines'.
-[From scheme/menus-extras.scm:58]
+[From scheme/menus-extras.scm:59]
 
 
 (fold-menu-list-by-group ml-cons)
@@ -1580,7 +1574,7 @@ ML-CONS is a list of lists. Each sublist's car is the name of the
 group, and the cdr is a list of the menuitems for that group.
 The list must be sorted by GROUP.  Returns a list of menu items
 for each group, popping up the group's MENUITEMs.
-[From scheme/menus-extras.scm:83]
+[From scheme/menus-extras.scm:84]
 
 
 (font-properties font)
@@ -1993,8 +1987,8 @@ No documentation supplied.
 
 (hex number)
 - (app scwm number-convert)
-No documentation supplied.
-[From scheme/number-convert.scm:49]
+Return the integer that corresponds to string NUMBER as a hexadecimal value.
+[From scheme/number-convert.scm:54]
 
 
 (hide-overlay-plane)
@@ -2031,7 +2025,7 @@ specified.
 Turn off display of the titlebar for WIN without moving the client window.
 This may move the frame to keep the application client window area in
 the same position as before the call.
-[From scheme/winops.scm:70]
+[From scheme/winops.scm:71]
 
 
 (highlight-background)
@@ -2045,7 +2039,7 @@ have their own background color.
 (highlight-current-window . modifiers)
 - (app scwm highlight-current-window)
 No documentation supplied.
-[From scheme/highlight-current-window.scm:51]
+[From scheme/highlight-current-window.scm:55]
 
 
 (highlight-factor)
@@ -2271,7 +2265,7 @@ If OPAQUELY? is specified, it is used to determine if the window
 should be moved opaquely, or using a rubber-band. If it is not
 spcified, `interactive-move' calls `*move-opaquely-proc*' on WIN and moves
 opaquely if that returns #t and uses a rubber-band if it returns #f.
-[From scheme/winops.scm:249]
+[From scheme/winops.scm:251]
 
 
 (interactive-move-group #&optional (group (get-window #t #f #f)))
@@ -2348,7 +2342,7 @@ should be resized opaquely, or using a rubber-band. If it is not
 spcified, `interactive-resize' calls `*resize-opaquely-proc*' on WIN and
 moves opaquely if that returns #t and uses a rubber-band if it returns
 #f.
-[From scheme/winops.scm:259]
+[From scheme/winops.scm:261]
 
 
 (interactive-resize-window-with-focus)
@@ -2540,21 +2534,21 @@ of the directions.
 (keycode->keysym keycode)
 - 
 Return a string containing the X11 keysym for key with code KEYCODE.
-[From scheme/base.scm:764]
+[From scheme/base.scm:766]
 
 
 (keymask->string keymask)
 - Built-in Primitive
 Return a string representing KEYMASK.
 E.g., (keymask->string 4) => "C-". Returns #f on an error.
-[From scwm/binding.c:1563]
+[From scwm/binding.c:1573]
 
 
 (keymask-keycode->string keymask keycode)
 - Built-in Primitive
 Return a string representing the key press with mask KEYMASK, code KEYCODE.
 E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.
-[From scwm/binding.c:1583]
+[From scwm/binding.c:1593]
 
 
 (keysym->keycode keysym-name)
@@ -2562,7 +2556,7 @@ E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.
 Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
 KEYSYM-NAME should be a string.  E.g., "Control_L".  Return #f if KEYSYM-NAME
 is not a valid keysym.
-[From scwm/binding.c:936]
+[From scwm/binding.c:939]
 
 
 (kill-all-fvwm2-modules)
@@ -2728,7 +2722,7 @@ KEY is a modifiers and keysym string.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 The return value is a list: (press-proc release-proc), or #f
 if there is no matching binding.
-[From scwm/binding.c:853]
+[From scwm/binding.c:856]
 
 
 (lookup-mouse contexts button)
@@ -2741,7 +2735,7 @@ BUTTON is a string or integer giving the mouse button number and any
 modifiers as a prefix.
 The return values is the procedure object, or #f if there is no
 matching binding.
-[From scwm/binding.c:1200]
+[From scwm/binding.c:1203]
 
 
 (lookup-procedure-bindings  #&optional proc)
@@ -2752,7 +2746,7 @@ The return value is a list of binding descriptions.  Each binding
 description is a list: (mouse? contexts modmask keycode-or-butnum press-proc
 release-or-immediate-proc).  mouse? is a boolean, contexts is a list of
 symbols.
-[From scwm/binding.c:1258]
+[From scwm/binding.c:1261]
 
 
 (lower-by-one #&optional (w (get-window)))
@@ -3092,13 +3086,13 @@ No documentation supplied.
 - (app scwm winops)
 Maximize WIN to new pixel width NW and new pixel height NH.
 If NW or NH is 0, that dimension is not changed.
-[From scheme/winops.scm:94]
+[From scheme/winops.scm:96]
 
 
 (maximized? #&optional (win (get-window)))
 - (app scwm winops)
 Return #t if WIN is maximized, #f otherwise.
-[From scheme/winops.scm:141]
+[From scheme/winops.scm:143]
 
 
 (maybe-make-color obj)
@@ -3512,7 +3506,7 @@ Modify the current desktop size by the given parameter.
 Return the bit-mask for the Alt modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Alt, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1401]
+[From scwm/binding.c:1411]
 
 
 (mod-mask-control)
@@ -3520,7 +3514,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Control modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Control, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1385]
+[From scwm/binding.c:1395]
 
 
 (mod-mask-hyper)
@@ -3528,7 +3522,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Hyper modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Hyper, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1409]
+[From scwm/binding.c:1419]
 
 
 (mod-mask-meta)
@@ -3536,7 +3530,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Meta modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Meta, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1393]
+[From scwm/binding.c:1403]
 
 
 (mod-mask-numlock)
@@ -3544,7 +3538,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the NumLock modifier key, or #f.
 Returns #f if and only if there is no key bound to act as NumLock, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1427]
+[From scwm/binding.c:1437]
 
 
 (mod-mask-scrolllock)
@@ -3552,7 +3546,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the ScrollLock modifier key, or #f.
 Returns #f if and only if there is no key bound to act as ScrollLock, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1436]
+[From scwm/binding.c:1446]
 
 
 (mod-mask-shift)
@@ -3560,7 +3554,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Shift modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Shift, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1377]
+[From scwm/binding.c:1387]
 
 
 (mod-mask-super)
@@ -3568,7 +3562,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Super modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Super, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1418]
+[From scwm/binding.c:1428]
 
 
 (module-and-proc-names->proc module-name proc-name)
@@ -3591,7 +3585,7 @@ Return a symbol corresponding to the type of the most recent mouse event.
 Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.
 You can `case' on this symbol in a procedure bound to a mouse event
 to determine, e.g., whether the user single clicked or double clicked.
-[From scwm/binding.c:1364]
+[From scwm/binding.c:1367]
 
 
 (mouse-focus-click-raises?)
@@ -3855,16 +3849,23 @@ A convenience wrapper around `number->string' that returns N in base-16.
 [From scheme/stringops.scm:39]
 
 
-(number-in-base number base value)
+(number-in-base number base #&optional value)
 - (app scwm number-convert)
-No documentation supplied.
-[From scheme/number-convert.scm:35]
+Return the integer that corresponds to string NUMBER in base BASE.
+VALUE is the optional value of any prefix to NUMBER.
+[From scheme/number-convert.scm:38]
+
+
+(number-of-mouse-buttons)
+- Built-in Primitive
+Return the number of mouse buttons of the current mouse.
+[From scwm/binding.c:1380]
 
 
 (oct number)
 - (app scwm number-convert)
-No documentation supplied.
-[From scheme/number-convert.scm:52]
+Return the integer that corresponds to string NUMBER as an octal value.
+[From scheme/number-convert.scm:58]
 
 
 (on-current-desk? #&optional (win (get-window)))
@@ -4118,7 +4119,7 @@ See also `next-window'.
 (print-window #&optional (win (get-window)))
 - (app scwm winops)
 Print WIN using xpr and lpr.
-[From scheme/winops.scm:276]
+[From scheme/winops.scm:278]
 
 
 (printable-char->keysym-string char)
@@ -4615,7 +4616,7 @@ No documentation supplied.
 - Built-in Primitive
 Return #t iff key events are being qutoed.
 See also `set-quote-key-events!'.
-[From scwm/binding.c:841]
+[From scwm/binding.c:844]
 
 
 (quote-mouse-event)
@@ -4732,7 +4733,7 @@ See `undo-all-passive-grabs' for temporarily removing those bindings.
 This procedure might be useful for re-establishing bindings after
 quoting numerous keystrokes or mouse events.  Beware that it can
 take several seconds to execute.
-[From scwm/binding.c:1485]
+[From scwm/binding.c:1495]
 
 
 (redo-passive-grab modmask keycode-or-butnum #&optional mouse?)
@@ -4740,7 +4741,7 @@ take several seconds to execute.
 Re-instate the passive grab of KEYCODE-OR-BUTNUM with MODMASK on all windows.
 If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove
 a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.
-[From scwm/binding.c:1521]
+[From scwm/binding.c:1531]
 
 
 (reduce proc init l)
@@ -4963,7 +4964,7 @@ Resize WIN's client area to a size of W by H in pixels.
 The size does not include the window decorations -- only the client
 application size. WIN defaults to the window context in the usual way
 if not specified.
-[From scheme/winops.scm:286]
+[From scheme/winops.scm:288]
 
 
 (resource-match?? STRING TYPE CASE-SENSITIVE?)
@@ -5064,13 +5065,14 @@ specified.
 
 (run-dot-xclients-at-startup)
 - (app scwm base)
-No documentation supplied.
+After done reading your startup file, run your ~/.xclients script.
+Uses the `startup-hook' and `run-dot-xclients-script' to do so.
 [From scheme/base.scm:755]
 
 
 (run-dot-xclients-script)
 - (app scwm base)
-Runs the ~/.clients script.
+Runs the ~/.xclients script.
 [From scheme/base.scm:751]
 
 
@@ -5101,6 +5103,14 @@ Uses the variable `*xterm-command*' to determine how
 to run an xterm.  CMD may include options to the command.
 The rest of the arguments are passed as options to the xterm command.
 [From scheme/base.scm:567]
+
+
+(run-ScwmButtons button-item-list #&key (orientation 'horizontal)
+				 (name "ScwmButtons") (auto-orient #t)
+				 (auto-orient-margin 100))
+- (app scwm ScwmButtons)
+No documentation supplied.
+[From scheme/ScwmButtons.scm:83]
 
 
 (run-ScwmClock #&key (24-hour #t) (show-timezone #t)
@@ -5915,7 +5925,10 @@ defaults to the window context in the usual way if not specified.
 (set-left-button-face! button active-up #&optional
 				      (active-down #f) (inactive #f))
 - (app scwm face)
-No documentation supplied.
+Set the button face for the left-button numbered BUTTON.
+E.g., if BUTTON is 1, this will set the leftmost button of your
+titlebar.  See `set-button-face!' for a description of ACTIVE-UP,
+ACTIVE-DOWN, and INACTIVE.
 [From scheme/face.scm:83]
 
 
@@ -6063,7 +6076,7 @@ Set the bit-mask for the NumLock modifier key.
 MASK must be a power of 2. The NumLock modifier mask is
 set automatically, but you can use this procedure if you
 need to override the built-in algorithm.
-[From scwm/binding.c:1444]
+[From scwm/binding.c:1454]
 
 
 (set-mod-mask-scrolllock! mask)
@@ -6072,7 +6085,7 @@ Set the bit-mask for the ScrollLock modifier key.
 MASK must be a power of 2. The ScrollLock modifier mask is
 set automatically, but you can use this procedure if you
 need to override the built-in algorithm.
-[From scwm/binding.c:1457]
+[From scwm/binding.c:1467]
 
 
 (set-mouse-focus-click-raises! flag)
@@ -6152,7 +6165,7 @@ usual way if not specified.
 (set-quote-key-events! quoting-on?)
 - Built-in Primitive
 Set key event quoting to QUOTING-ON?.
-[From scwm/binding.c:830]
+[From scwm/binding.c:833]
 
 
 (set-random-placement! flag #&optional win)
@@ -6176,8 +6189,11 @@ by setting it to 0.  See also `set-handle-segv!'.
 (set-right-button-face! button active-up #&optional
 				       (active-down #f) (inactive #f))
 - (app scwm face)
-No documentation supplied.
-[From scheme/face.scm:88]
+Set the button face for the right-button numbered BUTTON.
+E.g., if BUTTON is 1, this will set the rightmost button of your
+titlebar.  See `set-button-face!' for a description of ACTIVE-UP,
+ACTIVE-DOWN, and INACTIVE.
+[From scheme/face.scm:92]
 
 
 (set-rubber-band-mask! value)
@@ -6496,7 +6512,7 @@ specified.
 Turn on display of the titlebar for WIN without moving the client window.
 This may move the frame to keep the application client window area in
 the same position as before the call.
-[From scheme/winops.scm:76]
+[From scheme/winops.scm:78]
 
 
 (show-window-list-matching-interactively)
@@ -6615,19 +6631,11 @@ cases.  See `add-timer-hook!'.
 [From scheme/flux.scm:210]
 
 
-(SM-client-id)
-- Built-in Primitive
-DEPRECATED: Return scwm's session management client id (a string).
-A return value of #f indicates that session management is not active.
-DEPRECATED: Use `SM-register' instead.
-[From scwm/session-manager.c:478]
-
-
 (SM-error-message)
 - Built-in Primitive
 Return a string, describing why session management is not available.
 Only valid, if `SM-register' returned #f.
-[From scwm/session-manager.c:491]
+[From scwm/session-manager.c:477]
 
 
 (SM-register)
@@ -6637,7 +6645,7 @@ The return value is either an id string, or #f if the session manager could not 
 initialized - `SM-error-message' can be used to get more information in this
 case.
 If Scwm is already registered, this function just returns the client id.
-[From scwm/session-manager.c:501]
+[From scwm/session-manager.c:487]
 
 
 (smart-place-window win)
@@ -6689,12 +6697,12 @@ No documentation supplied.
 (sort-windows-by-middle-pos winlist #&key (horiz #t) (ascending #t))
 - 
 No documentation supplied.
-[From scheme/winops.scm:298]
+[From scheme/winops.scm:300]
 
 
 (sorted-by-car-string l)
 - (app scwm menus-extras)
-No documentation supplied.
+Sort the elements of list L based on the string value of their `car'.
 [From scheme/menus-extras.scm:38]
 
 
@@ -6723,7 +6731,7 @@ SOUND must be an object returned by `sound-load'.
 (split-list-by-group ls #&optional (rest #f))
 - (app scwm menus-extras)
 No documentation supplied.
-[From scheme/menus-extras.scm:67]
+[From scheme/menus-extras.scm:68]
 
 
 (start-constraints)
@@ -6734,7 +6742,8 @@ Start using the constraint solver.
 
 (start-highlighting-current-window #&optional (win (window-context)))
 - (app scwm highlight-current-window)
-No documentation supplied.
+Add appropriate hook procedures to make the window with the mouse be highlighted.
+See also `end-highlighting-current-window'.
 [From scheme/highlight-current-window.scm:38]
 
 
@@ -6782,8 +6791,12 @@ window context in the usual way if not specified.
 
 (stop-flashing-window #&optional (win (get-window)))
 - 
-No documentation supplied.
-[From scheme/flash-window.scm:64]
+Turn off window flashing of WIN.
+Has no effect if WIN is not flashing.
+N.B. flashing and highlight-selection of windows currently use the
+same mechanism, so turning off flashing will also visually un-select
+WIN.
+[From scheme/flash-window.scm:65]
 
 
 (stop-property-respond)
@@ -7097,7 +7110,7 @@ Toggle the WIN's maximization-vertically to 95% of the screen height.
 (toggle-maximize nw nh #&optional (win (get-window)))
 - (app scwm winops)
 Maximize to width NW, height NH if not maximized, or unmaximize.
-[From scheme/winops.scm:181]
+[From scheme/winops.scm:183]
 
 
 (transient?  #&optional win)
@@ -7309,6 +7322,13 @@ way if not specified.
 [From scwm/window.c:3019]
 
 
+(unbind-four-modifier-key-events
+		modkey1 modkey2 modkey3 modkey4)
+- (app scwm modifier-key-bindings)
+Unbind events attached to a multi-modifier key event.
+[From scheme/modifier-key-bindings.scm:116]
+
+
 (unbind-key contexts key)
 - Built-in Primitive
 Remove any bindings attached to KEY in given CONTEXTS.
@@ -7316,14 +7336,14 @@ CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete).
 The return value is #t if the binding was removed successfully, #f
 otherwise.
-[From scwm/binding.c:901]
+[From scwm/binding.c:904]
 
 
 (unbind-keycode contexts keycode #&optional modifier-mask)
 - Built-in Primitive
 Unbind the given KEYCODE within the CONTEXTS.
 KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
-[From scwm/binding.c:1102]
+[From scwm/binding.c:1105]
 
 
 (unbind-mouse contexts button)
@@ -7331,7 +7351,21 @@ KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
 Remove any bindings attached to mouse BUTTON in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
-[From scwm/binding.c:971]
+[From scwm/binding.c:974]
+
+
+(unbind-three-modifier-key-events
+		modkey1 modkey2 modkey3)
+- (app scwm modifier-key-bindings)
+Unbind events attached to a multi-modifier key event.
+[From scheme/modifier-key-bindings.scm:74]
+
+
+(unbind-two-modifier-key-events
+		modkey1 modkey2)
+- (app scwm modifier-key-bindings)
+Unbind events attached to a multi-modifier key event.
+[From scheme/modifier-key-bindings.scm:36]
 
 
 (undo)
@@ -7348,7 +7382,7 @@ Remove all passive grabs of keys and buttons of bindings.
 See `redo-all-passive-grabs' for re-establishing those bindings.
 This procedure can be useful for quoting numerous keystrokes or
 mouse events. Beware that it can take several seconds to execute.
-[From scwm/binding.c:1471]
+[From scwm/binding.c:1481]
 
 
 (undo-passive-grab modmask keycode-or-butnum #&optional mouse?)
@@ -7356,7 +7390,7 @@ mouse events. Beware that it can take several seconds to execute.
 Remove the passive grabs of KEYCODE-OR-BUTNUM with MODMASK on all windows.
 If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove
 a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.
-[From scwm/binding.c:1500]
+[From scwm/binding.c:1510]
 
 
 (undo-state-at-index index)
@@ -7388,7 +7422,7 @@ an ui-constraint.
 - (app scwm flash-window)
 Revert WIN's titlebar and boundary color to state before a `flash-window'.
 Return the window changed.
-[From scheme/flash-window.scm:50]
+[From scheme/flash-window.scm:51]
 
 
 (unfocus)
@@ -7408,7 +7442,7 @@ on for.
 (unmaximize #&optional (win (get-window)))
 - (app scwm winops)
 Unmaximize WIN so it returns to its size/position before maximization.
-[From scheme/winops.scm:146]
+[From scheme/winops.scm:148]
 
 
 (unregister-image-loader extension)
@@ -7778,14 +7812,14 @@ WIN defaults to the window context in the usual way if not specified.
 
 (window-flashing? #&optional (win (get-window)))
 - (app scwm flash-window)
-No documentation supplied.
+Return #t iff WIN is currently flashing, #f otherwise.
 [From scheme/flash-window.scm:47]
 
 
 (window-frame-area win)
 - (app scwm winops)
 Return the area of WIN's frame in square pixels.
-[From scheme/winops.scm:209]
+[From scheme/winops.scm:211]
 
 
 (window-frame-border-width  #&optional win)
@@ -8305,7 +8339,7 @@ The length of the returned list is the number of buttons available.  Each
 element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
 3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
 physical button acts as logical button 1, and the leftmost acts as button 3.
-[From scwm/binding.c:1544]
+[From scwm/binding.c:1554]
 
 
 (X-properties win)

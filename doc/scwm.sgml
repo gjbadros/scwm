@@ -26,7 +26,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release pre-1.0</releaseinfo>
-    <pubdate>31 July 1999</pubdate>
+    <pubdate>03 August 1999</pubdate>
     <copyright>
       <year>1997-1999</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
@@ -551,7 +551,7 @@ The options include at least:
 <row><entry/winlist-skip/ <entry/boolean-style/ <entry>scheme/winlist.scm:112</entry>  </row>
 <row><entry/circulate-skip/ <entry/boolean-style/ <entry>scheme/winlist.scm:299</entry>  </row>
 <row><entry/circulate-skip-icon/ <entry/boolean-style/ <entry>scheme/winlist.scm:300</entry>  </row>
-<row><entry/start-maximized/ <entry/window-style/ <entry>scheme/winops.scm:188</entry>  </row>
+<row><entry/start-maximized/ <entry/window-style/ <entry>scheme/winops.scm:190</entry>  </row>
 </tbody></tgroup></table>
 
     </para></sect1>
@@ -1068,11 +1068,11 @@ The shaped XPM menu look.
       <listitem><para><link linkend="xtest-fake-relative-motion-event"><function>xtest-fake-relative-motion-event</function></link> -- Fake an X motion relative event of a move DX, DY after a delay of MS-DELAY.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/animated-iconify.scm</title> <itemizedlist>
-      <listitem><para><link linkend="animated-iconify"><function>animated-iconify</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="animated-deiconify"><function>animated-deiconify</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="animated-deiconify-to-last-viewport-position"><function>animated-deiconify-to-last-viewport-position</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="animated-deiconify-to-current-viewport"><function>animated-deiconify-to-current-viewport</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="animated-toggle-iconify"><function>animated-toggle-iconify</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="animated-iconify"><function>animated-iconify</function></link> -- Iconify WIN using a simple animation of a shrinking rectangle.</para></listitem>
+      <listitem><para><link linkend="animated-deiconify"><function>animated-deiconify</function></link> -- Deiconify WIN using a simple animation of a growing rectangle.</para></listitem>
+      <listitem><para><link linkend="animated-deiconify-to-last-viewport-position"><function>animated-deiconify-to-last-viewport-position</function></link> -- Deiconify WIN with an animation to the same viewport position as it was iconified from.</para></listitem>
+      <listitem><para><link linkend="animated-deiconify-to-current-viewport"><function>animated-deiconify-to-current-viewport</function></link> -- Deicionify WIN with an animation to the current viewport.</para></listitem>
+      <listitem><para><link linkend="animated-toggle-iconify"><function>animated-toggle-iconify</function></link> -- Iconify WIN if not iconified, or de-iconify WIN if it is iconified.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/animation.scm</title> <itemizedlist>
       <listitem><para><link linkend="animated-move-to"><function>animated-move-to</function></link> -- Move WIN to viewport coordinates X, Y with animation.</para></listitem>
@@ -1152,7 +1152,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="select-window"><function>select-window</function></link> -- Select a window interactively, and return the specified window.</para></listitem>
       <listitem><para><link linkend="select-window-interactively"><function>select-window-interactively</function></link> -- Return an interactively-selected window after prompting (optionally) with MSG.</para></listitem>
       <listitem><para><link linkend="run-dot-xclients-script"><function>run-dot-xclients-script</function></link> -- Runs the ~/.</para></listitem>
-      <listitem><para><link linkend="run-dot-xclients-at-startup"><function>run-dot-xclients-at-startup</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="run-dot-xclients-at-startup"><function>run-dot-xclients-at-startup</function></link> -- After done reading your startup file, run your ~/.</para></listitem>
       <listitem><para><link linkend="keycode-to-keysym"><function>keycode->keysym</function></link> -- Return a string containing the X11 keysym for key with code KEYCODE.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/bincomm.scm</title> <itemizedlist>
@@ -1192,9 +1192,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="desk-background"><function>desk-background</function></link> -- Set the background to use on desk DESK.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/dir-focus.scm</title> <itemizedlist>
-      <listitem><para><link linkend="dir-score-function"><function>dir-score-function</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="dir-calculate-score"><function>dir-calculate-score</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="dir-focus"><function>dir-focus</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="dir-focus"><function>dir-focus</function></link> -- Move focus to the closest window in direction DIR.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/doc.scm</title> <itemizedlist>
       <listitem><para><link linkend="documentation"><function>documentation</function></link> -- Print the documentation for the string or symbol.</para></listitem>
@@ -1203,8 +1201,8 @@ The shaped XPM menu look.
     <sect1><title>scheme/face.scm</title> <itemizedlist>
       <listitem><para><link linkend="title-style"><function>title-style</function></link> -- Set the title style in the current decor.</para></listitem>
       <listitem><para><link linkend="border-style"><function>border-style</function></link> -- Set the border style in the current decor.</para></listitem>
-      <listitem><para><link linkend="set-left-button-face-x"><function>set-left-button-face!</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="set-right-button-face-x"><function>set-right-button-face!</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="set-left-button-face-x"><function>set-left-button-face!</function></link> -- Set the button face for the left-button numbered BUTTON.</para></listitem>
+      <listitem><para><link linkend="set-right-button-face-x"><function>set-right-button-face!</function></link> -- Set the button face for the right-button numbered BUTTON.</para></listitem>
       <listitem><para><link linkend="button-style"><function>button-style</function></link> -- Set the button style for button number BUTTON in the current decor.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/file.scm</title> <itemizedlist>
@@ -1220,9 +1218,9 @@ The shaped XPM menu look.
     <sect1><title>scheme/flash-window.scm</title> <itemizedlist>
       <listitem><para><link linkend="flash-window-on"><function>flash-window-on</function></link> -- Flash WIN's titlebar and boundary color to COLOR indefinitely.</para></listitem>
       <listitem><para><link linkend="flash-window"><function>flash-window</function></link> -- Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.</para></listitem>
-      <listitem><para><link linkend="window-flashing-p"><function>window-flashing?</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="window-flashing-p"><function>window-flashing?</function></link> -- Return <literal>#t</literal> iff WIN is currently flashing, <literal>#f</literal> otherwise.</para></listitem>
       <listitem><para><link linkend="unflash-window"><function>unflash-window</function></link> -- Revert WIN's titlebar and boundary color to state before a <link linkend="flash-window"><function>flash-window</function></link>.</para></listitem>
-      <listitem><para><link linkend="stop-flashing-window"><function>stop-flashing-window</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="stop-flashing-window"><function>stop-flashing-window</function></link> -- Turn off window flashing of WIN.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/flux-gtk.scm</title> <itemizedlist>
       <listitem><para><link linkend="rename-window-interactively"><function>rename-window-interactively</function></link> -- Prompt for a new name for WIN and change its title.</para></listitem>
@@ -1320,8 +1318,8 @@ The shaped XPM menu look.
       <listitem><para><link linkend="gtk-window-to-scwm-window"><function>gtk-window->scwm-window</function></link> -- Return the Scwm window object corresponding to GTKWIN.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/highlight-current-window.scm</title> <itemizedlist>
-      <listitem><para><link linkend="start-highlighting-current-window"><function>start-highlighting-current-window</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="end-highlighting-current-window"><function>end-highlighting-current-window</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="start-highlighting-current-window"><function>start-highlighting-current-window</function></link> -- Add appropriate hook procedures to make the window with the mouse be highlighted.</para></listitem>
+      <listitem><para><link linkend="end-highlighting-current-window"><function>end-highlighting-current-window</function></link> -- Remove the hook procedures that make the window with mouse be highlighted.</para></listitem>
       <listitem><para><link linkend="highlight-current-window"><function>highlight-current-window</function></link> -- No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/hover-focus.scm</title> <itemizedlist>
@@ -1370,7 +1368,7 @@ The shaped XPM menu look.
     </itemizedlist> </sect1>
     <sect1><title>scheme/menus-extras.scm</title> <itemizedlist>
       <listitem><para><link linkend="menu-max-fold-lines"><function>menu-max-fold-lines</function></link> -- Return an approximation of the number of menuitems that will fit vertically on screen.</para></listitem>
-      <listitem><para><link linkend="sorted-by-car-string"><function>sorted-by-car-string</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="sorted-by-car-string"><function>sorted-by-car-string</function></link> -- Sort the elements of list L based on the string value of their <link linkend="car"><function>car</function></link>.</para></listitem>
       <listitem><para><link linkend="fold-menu-list"><function>fold-menu-list</function></link> -- Split ML into chained menus of no more than MAX-LINES items.</para></listitem>
       <listitem><para><link linkend="split-list-by-group"><function>split-list-by-group</function></link> -- No documentation supplied.</para></listitem>
       <listitem><para><link linkend="fold-menu-list-by-group"><function>fold-menu-list-by-group</function></link> -- Split ML-CONS into chained menus based on their group.</para></listitem>
@@ -1395,8 +1393,11 @@ The shaped XPM menu look.
     </itemizedlist> </sect1>
     <sect1><title>scheme/modifier-key-bindings.scm</title> <itemizedlist>
       <listitem><para><link linkend="bind-two-modifier-key-events"><function>bind-two-modifier-key-events</function></link> -- Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.</para></listitem>
+      <listitem><para><link linkend="unbind-two-modifier-key-events"><function>unbind-two-modifier-key-events</function></link> -- Unbind events attached to a multi-modifier key event.</para></listitem>
       <listitem><para><link linkend="bind-three-modifier-key-events"><function>bind-three-modifier-key-events</function></link> -- Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.</para></listitem>
+      <listitem><para><link linkend="unbind-three-modifier-key-events"><function>unbind-three-modifier-key-events</function></link> -- Unbind events attached to a multi-modifier key event.</para></listitem>
       <listitem><para><link linkend="bind-four-modifier-key-events"><function>bind-four-modifier-key-events</function></link> -- Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.</para></listitem>
+      <listitem><para><link linkend="unbind-four-modifier-key-events"><function>unbind-four-modifier-key-events</function></link> -- Unbind events attached to a multi-modifier key event.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/module-types.scm</title> <itemizedlist>
       <listitem><para><link linkend="module-event-name-from-number"><function>module-event-name-from-number</function></link> -- Return the string module event name for event number NUM.</para></listitem>
@@ -1415,11 +1416,11 @@ The shaped XPM menu look.
       <listitem><para><link linkend="nonant-to-string"><function>nonant->string</function></link> -- Return the string name for NONANT.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/number-convert.scm</title> <itemizedlist>
-      <listitem><para><link linkend="char-value"><function>char-value</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="number-in-base"><function>number-in-base</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="hex"><function>hex</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="oct"><function>oct</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="binary"><function>binary</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="char-value"><function>char-value</function></link> -- Return the integer that corresponds to the Ascii code for CH.</para></listitem>
+      <listitem><para><link linkend="number-in-base"><function>number-in-base</function></link> -- Return the integer that corresponds to string NUMBER in base BASE.</para></listitem>
+      <listitem><para><link linkend="hex"><function>hex</function></link> -- Return the integer that corresponds to string NUMBER as a hexadecimal value.</para></listitem>
+      <listitem><para><link linkend="oct"><function>oct</function></link> -- Return the integer that corresponds to string NUMBER as an octal value.</para></listitem>
+      <listitem><para><link linkend="binary"><function>binary</function></link> -- Return the integer that corresponds to string NUMBER as a binary value.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/path-cache.scm</title> <itemizedlist>
       <listitem><para><link linkend="program-exists-p"><function>program-exists?</function></link> -- Return <literal>#t</literal> iff PROGRAM-NAME is in the current $PATH.</para></listitem>
@@ -1528,17 +1529,18 @@ The shaped XPM menu look.
       <listitem><para><link linkend="rgb-colors"><function>rgb-colors</function></link> -- Read in the rgb-colors database.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/ScwmBiff.scm</title> <itemizedlist>
-      <listitem><para><link linkend="close-ScwmBiff"><function>close-ScwmBiff</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="activate-ScwmBiff"><function>activate-ScwmBiff</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="deactivate-ScwmBiff"><function>deactivate-ScwmBiff</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="close-ScwmBiff"><function>close-ScwmBiff</function></link> -- Close the ScwmBiff notification window.</para></listitem>
+      <listitem><para><link linkend="activate-ScwmBiff"><function>activate-ScwmBiff</function></link> -- Turn on the ScwmBiff notification service.</para></listitem>
+      <listitem><para><link linkend="deactivate-ScwmBiff"><function>deactivate-ScwmBiff</function></link> -- Make ScwmBiff no longer notify, but leave visible.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/ScwmButtons.scm</title> <itemizedlist>
-      <listitem><para><link linkend="close-ScwmButtons"><function>close-ScwmButtons</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="button-item"><function>button-item</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="run-ScwmButtons"><function>run-ScwmButtons</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="close-ScwmButtons"><function>close-ScwmButtons</function></link> -- Close the ScwmButtons window of SB.</para></listitem>
+      <listitem><para><link linkend="button-item"><function>button-item</function></link> -- Create a button item for a ScwmButtons window.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/ScwmClock.scm</title> <itemizedlist>
       <listitem><para><link linkend="run-ScwmClock"><function>run-ScwmClock</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="close-ScwmClock"><function>close-ScwmClock</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="close-ScwmClock"><function>close-ScwmClock</function></link> -- Close the ScwmClock with handle SC.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/ScwmDeskButtons.scm</title> <itemizedlist>
       <listitem><para><link linkend="run-ScwmDeskButtons"><function>run-ScwmDeskButtons</function></link> -- No documentation supplied.</para></listitem>
@@ -1911,6 +1913,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="lookup-mouse"><function>lookup-mouse</function></link> -- Return the procedure bound to mouse BUTTON within the CONTEXTS.</para></listitem>
       <listitem><para><link linkend="lookup-procedure-bindings"><function>lookup-procedure-bindings</function></link> -- Return any bindings that invoke PROC.</para></listitem>
       <listitem><para><link linkend="mouse-event-type"><function>mouse-event-type</function></link> -- Return a symbol corresponding to the type of the most recent mouse event.</para></listitem>
+      <listitem><para><link linkend="number-of-mouse-buttons"><function>number-of-mouse-buttons</function></link> -- Return the number of mouse buttons of the current mouse.</para></listitem>
       <listitem><para><link linkend="mod-mask-shift"><function>mod-mask-shift</function></link> -- Return the bit-mask for the Shift modifier key, or <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="mod-mask-control"><function>mod-mask-control</function></link> -- Return the bit-mask for the Control modifier key, or <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="mod-mask-meta"><function>mod-mask-meta</function></link> -- Return the bit-mask for the Meta modifier key, or <literal>#f</literal>.</para></listitem>
@@ -2170,7 +2173,6 @@ The shaped XPM menu look.
       <listitem><para><link linkend="opaque-resize"><function>opaque-resize</function></link> -- Resize WIN interactively, opaquely.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scwm/session-manager.c</title> <itemizedlist>
-      <listitem><para><link linkend="SM-client-id"><function>SM-client-id</function></link> -- DEPRECATED: Return scwm's session management client id (a string).</para></listitem>
       <listitem><para><link linkend="SM-error-message"><function>SM-error-message</function></link> -- Return a string, describing why session management is not available.</para></listitem>
       <listitem><para><link linkend="SM-register"><function>SM-register</function></link> -- Register Scwm with the session manager, and return the client id.</para></listitem>
     </itemizedlist> </sect1>
@@ -2460,7 +2462,7 @@ right. The final result is returned. Compare to <link linkend="reduce"><function
 <refentry id="activate-ScwmBiff">
   <refnamediv>
     <refname>activate-ScwmBiff</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Turn on the ScwmBiff notification service.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(activate-ScwmBiff sb)</synopsis>
@@ -2468,13 +2470,13 @@ right. The final result is returned. Compare to <link linkend="reduce"><function
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Turn on the ScwmBiff notification service.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm ScwmBiff)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ScwmBiff.scm"><filename>scheme/ScwmBiff.scm</filename></ulink>
-  at line 100 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmBiff.scm">CVS log</ulink>)</para> </refsect2>
+  at line 101 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmBiff.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -2866,7 +2868,7 @@ much as <link linkend="map"><function>map</function></link> would do it. If proc
 <refentry id="animated-deiconify">
   <refnamediv>
     <refname>animated-deiconify</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Deiconify WIN using a simple animation of a growing rectangle.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(animated-deiconify #&amp;optional (win (get-window)))</synopsis>
@@ -2874,20 +2876,21 @@ much as <link linkend="map"><function>map</function></link> would do it. If proc
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Deiconify WIN using a simple animation of a growing rectangle.
+The rectangle grows outwards from the icon, if there is one.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm animated-iconify)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/animated-iconify.scm"><filename>scheme/animated-iconify.scm</filename></ulink>
-  at line 69 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/animated-iconify.scm">CVS log</ulink>)</para> </refsect2>
+  at line 71 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/animated-iconify.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="animated-deiconify-to-current-viewport">
   <refnamediv>
     <refname>animated-deiconify-to-current-viewport</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Deicionify WIN with an animation to the current viewport.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(animated-deiconify-to-current-viewport #&amp;optional (win (get-window)))</synopsis>
@@ -2895,20 +2898,20 @@ much as <link linkend="map"><function>map</function></link> would do it. If proc
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Deicionify WIN with an animation to the current viewport.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm animated-iconify)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/animated-iconify.scm"><filename>scheme/animated-iconify.scm</filename></ulink>
-  at line 93 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/animated-iconify.scm">CVS log</ulink>)</para> </refsect2>
+  at line 98 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/animated-iconify.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="animated-deiconify-to-last-viewport-position">
   <refnamediv>
     <refname>animated-deiconify-to-last-viewport-position</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Deiconify WIN with an animation to the same viewport position as it was iconified from.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(animated-deiconify-to-last-viewport-position #&amp;optional (win (get-window)))</synopsis>
@@ -2916,20 +2919,20 @@ much as <link linkend="map"><function>map</function></link> would do it. If proc
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Deiconify WIN with an animation to the same viewport position as it was iconified from.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm animated-iconify)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/animated-iconify.scm"><filename>scheme/animated-iconify.scm</filename></ulink>
-  at line 78 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/animated-iconify.scm">CVS log</ulink>)</para> </refsect2>
+  at line 82 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/animated-iconify.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="animated-iconify">
   <refnamediv>
     <refname>animated-iconify</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Iconify WIN using a simple animation of a shrinking rectangle.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(animated-iconify #&amp;optional (win (get-window)))</synopsis>
@@ -2937,7 +2940,8 @@ much as <link linkend="map"><function>map</function></link> would do it. If proc
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Iconify WIN using a simple animation of a shrinking rectangle.
+The rectangle moves towards the icon's location, if there is one.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -3048,7 +3052,7 @@ specified.
 <refentry id="animated-toggle-iconify">
   <refnamediv>
     <refname>animated-toggle-iconify</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Iconify WIN if not iconified, or de-iconify WIN if it is iconified.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(animated-toggle-iconify #&amp;optional (win (get-window)))</synopsis>
@@ -3056,13 +3060,14 @@ specified.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Iconify WIN if not iconified, or de-iconify WIN if it is iconified.
+Uses animation, in either case.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/animated-iconify.scm"><filename>scheme/animated-iconify.scm</filename></ulink>
-  at line 106 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/animated-iconify.scm">CVS log</ulink>)</para> </refsect2>
+  at line 112 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/animated-iconify.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3341,7 +3346,7 @@ Returns the child-pid, or <literal>#f</literal> if the fork fails.
 <refentry id="binary">
   <refnamediv>
     <refname>binary</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Return the integer that corresponds to string NUMBER as a binary value.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(binary number)</synopsis>
@@ -3349,13 +3354,13 @@ Returns the child-pid, or <literal>#f</literal> if the fork fails.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Return the integer that corresponds to string NUMBER as a binary value.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/number-convert.scm"><filename>scheme/number-convert.scm</filename></ulink>
-  at line 55 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/number-convert.scm">CVS log</ulink>)</para> </refsect2>
+  at line 62 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/number-convert.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3444,7 +3449,7 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
   <title>Implementation Notes</title>
   <para> Module: (app scwm modifier-key-bindings)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/modifier-key-bindings.scm"><filename>scheme/modifier-key-bindings.scm</filename></ulink>
-  at line 50 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
+  at line 107 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3483,7 +3488,7 @@ invoked when the key is released.  The contexts include:
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 998 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1001 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3511,7 +3516,7 @@ nothing should be done on key release.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1072 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1075 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3540,7 +3545,7 @@ type.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1125 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1128 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3565,7 +3570,7 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
   <title>Implementation Notes</title>
   <para> Module: (app scwm modifier-key-bindings)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/modifier-key-bindings.scm"><filename>scheme/modifier-key-bindings.scm</filename></ulink>
-  at line 26 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
+  at line 65 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3575,7 +3580,7 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
     <refpurpose>Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(bind-two-modifier-key-events 
+    <synopsis>(bind-two-modifier-key-events
 		modkey1 modkey2 
 		proc-press proc-release)</synopsis>
   </refsynopsisdiv>
@@ -3590,7 +3595,7 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
   <title>Implementation Notes</title>
   <para> Module: (app scwm modifier-key-bindings)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/modifier-key-bindings.scm"><filename>scheme/modifier-key-bindings.scm</filename></ulink>
-  at line 8 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
+  at line 26 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3670,7 +3675,7 @@ arguments can be used as the ACTIVE or INACTIVE arguments.
 <refentry id="button-item">
   <refnamediv>
     <refname>button-item</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Create a button item for a ScwmButtons window.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(button-item pixmap-file #&amp;key (action noop) (tooltip #f))</synopsis>
@@ -3678,13 +3683,13 @@ arguments can be used as the ACTIVE or INACTIVE arguments.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Create a button item for a ScwmButtons window.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ScwmButtons.scm"><filename>scheme/ScwmButtons.scm</filename></ulink>
-  at line 182 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmButtons.scm">CVS log</ulink>)</para> </refsect2>
+  at line 183 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmButtons.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3719,7 +3724,7 @@ as the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments.
   <title>Implementation Notes</title>
   <para> Module: (app scwm face)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/face.scm"><filename>scheme/face.scm</filename></ulink>
-  at line 94 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/face.scm">CVS log</ulink>)</para> </refsect2>
+  at line 102 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/face.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3938,7 +3943,7 @@ sum of the window's border width and title height.
 <refentry id="char-value">
   <refnamediv>
     <refname>char-value</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Return the integer that corresponds to the Ascii code for CH.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(char-value ch)</synopsis>
@@ -3946,13 +3951,13 @@ sum of the window's border width and title height.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Return the integer that corresponds to the Ascii code for CH.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm number-convert)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/number-convert.scm"><filename>scheme/number-convert.scm</filename></ulink>
-  at line 26 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/number-convert.scm">CVS log</ulink>)</para> </refsect2>
+  at line 28 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/number-convert.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4471,7 +4476,7 @@ be more than desired.
 <refentry id="close-ScwmBiff">
   <refnamediv>
     <refname>close-ScwmBiff</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Close the ScwmBiff notification window.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(close-ScwmBiff sb)</synopsis>
@@ -4479,7 +4484,7 @@ be more than desired.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Close the ScwmBiff notification window.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -4492,7 +4497,7 @@ be more than desired.
 <refentry id="close-ScwmButtons">
   <refnamediv>
     <refname>close-ScwmButtons</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Close the ScwmButtons window of SB.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(close-ScwmButtons sb)</synopsis>
@@ -4500,20 +4505,21 @@ be more than desired.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Close the ScwmButtons window of SB.
+SB should be a handle returned from <link linkend="run-ScwmButtons"><function>run-ScwmButtons</function></link>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm ScwmButtons)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ScwmButtons.scm"><filename>scheme/ScwmButtons.scm</filename></ulink>
-  at line 179 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmButtons.scm">CVS log</ulink>)</para> </refsect2>
+  at line 178 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmButtons.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="close-ScwmClock">
   <refnamediv>
     <refname>close-ScwmClock</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Close the ScwmClock with handle SC.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(close-ScwmClock sc)</synopsis>
@@ -4521,7 +4527,7 @@ be more than desired.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Close the ScwmClock with handle SC.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -5045,7 +5051,7 @@ The returned value will be a non-negative real number.
 <refentry id="deactivate-ScwmBiff">
   <refnamediv>
     <refname>deactivate-ScwmBiff</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Make ScwmBiff no longer notify, but leave visible.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(deactivate-ScwmBiff sb)</synopsis>
@@ -5053,13 +5059,13 @@ The returned value will be a non-negative real number.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Make ScwmBiff no longer notify, but leave visible.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ScwmBiff.scm"><filename>scheme/ScwmBiff.scm</filename></ulink>
-  at line 103 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmBiff.scm">CVS log</ulink>)</para> </refsect2>
+  at line 105 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmBiff.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5144,7 +5150,7 @@ If *opaque-move-percent* is a boolean, not a number, just return it.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 227 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 229 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5197,7 +5203,7 @@ If *opaque-resize-percent* is a boolean, not a number, just return it.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 218 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 220 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5645,31 +5651,10 @@ defaults to the window context in the usual way if not specified.
   </refsect1>
 </refentry>
 
-<refentry id="dir-calculate-score">
-  <refnamediv>
-    <refname>dir-calculate-score</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(dir-calculate-score win dir)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  No documentation supplied.
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: (app scwm dir-focus)</para>
-  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/dir-focus.scm"><filename>scheme/dir-focus.scm</filename></ulink>
-  at line 28 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/dir-focus.scm">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
 <refentry id="dir-focus">
   <refnamediv>
     <refname>dir-focus</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Move focus to the closest window in direction DIR.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(dir-focus dir #&amp;optional (win (current-window-with-pointer)))</synopsis>
@@ -5677,34 +5662,14 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Move focus to the closest window in direction DIR.
+DIR must be one of the symbols 'north, 'south, 'east, or 'west.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/dir-focus.scm"><filename>scheme/dir-focus.scm</filename></ulink>
   at line 50 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/dir-focus.scm">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
-<refentry id="dir-score-function">
-  <refnamediv>
-    <refname>dir-score-function</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(dir-score-function distance offset)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  No documentation supplied.
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: (app scwm dir-focus)</para>
-  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/dir-focus.scm"><filename>scheme/dir-focus.scm</filename></ulink>
-  at line 22 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/dir-focus.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6198,7 +6163,7 @@ Can restart with a fresh solver by using <link linkend="start-constraints"><func
 <refentry id="end-highlighting-current-window">
   <refnamediv>
     <refname>end-highlighting-current-window</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Remove the hook procedures that make the window with mouse be highlighted.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(end-highlighting-current-window 
@@ -6207,13 +6172,14 @@ Can restart with a fresh solver by using <link linkend="start-constraints"><func
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Remove the hook procedures that make the window with mouse be highlighted.
+See also <link linkend="start-highlighting-current-window"><function>start-highlighting-current-window</function></link>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm highlight-current-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/highlight-current-window.scm"><filename>scheme/highlight-current-window.scm</filename></ulink>
-  at line 45 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/highlight-current-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 47 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/highlight-current-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6729,7 +6695,7 @@ defaults to <link linkend="default-menu-max-fold-lines"><function>default-menu-m
   <title>Implementation Notes</title>
   <para> Module: (app scwm menus-extras)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/menus-extras.scm"><filename>scheme/menus-extras.scm</filename></ulink>
-  at line 58 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/menus-extras.scm">CVS log</ulink>)</para> </refsect2>
+  at line 59 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/menus-extras.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6754,7 +6720,7 @@ for each group, popping up the group's MENUITEMs.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/menus-extras.scm"><filename>scheme/menus-extras.scm</filename></ulink>
-  at line 83 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/menus-extras.scm">CVS log</ulink>)</para> </refsect2>
+  at line 84 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/menus-extras.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8024,7 +7990,7 @@ of a long computation.
 <refentry id="hex">
   <refnamediv>
     <refname>hex</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Return the integer that corresponds to string NUMBER as a hexadecimal value.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(hex number)</synopsis>
@@ -8032,13 +7998,13 @@ of a long computation.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Return the integer that corresponds to string NUMBER as a hexadecimal value.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm number-convert)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/number-convert.scm"><filename>scheme/number-convert.scm</filename></ulink>
-  at line 49 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/number-convert.scm">CVS log</ulink>)</para> </refsect2>
+  at line 54 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/number-convert.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8150,7 +8116,7 @@ the same position as before the call.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 70 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 71 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8194,7 +8160,7 @@ have their own background color.
   <title>Implementation Notes</title>
   <para> Module: (app scwm highlight-current-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/highlight-current-window.scm"><filename>scheme/highlight-current-window.scm</filename></ulink>
-  at line 51 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/highlight-current-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 55 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/highlight-current-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8855,7 +8821,7 @@ opaquely if that returns <literal>#t</literal> and uses a rubber-band if it retu
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 249 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 251 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9052,7 +9018,7 @@ moves opaquely if that returns <literal>#t</literal> and uses a rubber-band if i
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 259 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 261 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9664,7 +9630,7 @@ of the directions.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 764 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 766 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9686,7 +9652,7 @@ E.g., (keymask->string 4) => "C-". Returns <literal>#f</literal> on an error.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1563 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1573 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9708,7 +9674,7 @@ E.g., (keymask-keycode->string 4 44) => "C-j". Returns <literal>#f</literal> on 
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1583 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1593 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9731,7 +9697,7 @@ is not a valid keysym.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 936 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 939 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10227,7 +10193,7 @@ if there is no matching binding.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 853 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 856 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10255,7 +10221,7 @@ matching binding.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1200 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1203 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10281,7 +10247,7 @@ symbols.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1258 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1261 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11191,7 +11157,7 @@ If NW or NH is 0, that dimension is not changed.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 94 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 96 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11212,7 +11178,7 @@ If NW or NH is 0, that dimension is not changed.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 141 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 143 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12331,7 +12297,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1401 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1411 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12354,7 +12320,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1385 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1395 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12377,7 +12343,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1409 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1419 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12400,7 +12366,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1393 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1403 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12423,7 +12389,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1427 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1437 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12446,7 +12412,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1436 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1446 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12469,7 +12435,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1377 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1387 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12492,7 +12458,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1418 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1428 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12560,7 +12526,7 @@ to determine, e.g., whether the user single clicked or double clicked.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1364 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1367 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13338,28 +13304,50 @@ defaults to the window context in the usual way if not specified.
 <refentry id="number-in-base">
   <refnamediv>
     <refname>number-in-base</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Return the integer that corresponds to string NUMBER in base BASE.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(number-in-base number base value)</synopsis>
+    <synopsis>(number-in-base number base #&amp;optional value)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Return the integer that corresponds to string NUMBER in base BASE.
+VALUE is the optional value of any prefix to NUMBER.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm number-convert)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/number-convert.scm"><filename>scheme/number-convert.scm</filename></ulink>
-  at line 35 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/number-convert.scm">CVS log</ulink>)</para> </refsect2>
+  at line 38 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/number-convert.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="number-of-mouse-buttons">
+  <refnamediv>
+    <refname>number-of-mouse-buttons</refname>
+    <refpurpose>Return the number of mouse buttons of the current mouse.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(number-of-mouse-buttons)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the number of mouse buttons of the current mouse.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Built-in Primitive</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
+  at line 1380 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="oct">
   <refnamediv>
     <refname>oct</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Return the integer that corresponds to string NUMBER as an octal value.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(oct number)</synopsis>
@@ -13367,13 +13355,13 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Return the integer that corresponds to string NUMBER as an octal value.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm number-convert)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/number-convert.scm"><filename>scheme/number-convert.scm</filename></ulink>
-  at line 52 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/number-convert.scm">CVS log</ulink>)</para> </refsect2>
+  at line 58 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/number-convert.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14107,7 +14095,7 @@ See also <link linkend="next-window"><function>next-window</function></link>.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 276 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 278 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15624,7 +15612,7 @@ See also <link linkend="set-quote-key-events-x"><function>set-quote-key-events!<
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 841 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 844 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15966,7 +15954,7 @@ take several seconds to execute.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1485 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1495 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15989,7 +15977,7 @@ a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1521 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1531 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16647,7 +16635,7 @@ if not specified.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 286 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 288 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16930,7 +16918,7 @@ specified.
 <refentry id="run-dot-xclients-at-startup">
   <refnamediv>
     <refname>run-dot-xclients-at-startup</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>After done reading your startup file, run your ~/.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(run-dot-xclients-at-startup)</synopsis>
@@ -16938,7 +16926,8 @@ specified.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  After done reading your startup file, run your ~/.xclients script.
+Uses the <link linkend="startup-hook"><function>startup-hook</function></link> and <link linkend="run-dot-xclients-script"><function>run-dot-xclients-script</function></link> to do so.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -16959,7 +16948,7 @@ specified.
   <refsect1>
   <title>Description</title>
   <para>
-  Runs the ~/.clients script.
+  Runs the ~/.xclients script.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -17040,6 +17029,29 @@ The rest of the arguments are passed as options to the xterm command.
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
   at line 567 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="run-ScwmButtons">
+  <refnamediv>
+    <refname>run-ScwmButtons</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(run-ScwmButtons button-item-list #&amp;key (orientation 'horizontal)
+				 (name "ScwmButtons") (auto-orient #t)
+				 (auto-orient-margin 100))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm ScwmButtons)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ScwmButtons.scm"><filename>scheme/ScwmButtons.scm</filename></ulink>
+  at line 83 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmButtons.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19355,7 +19367,7 @@ defaults to the window context in the usual way if not specified.
 <refentry id="set-left-button-face-x">
   <refnamediv>
     <refname>set-left-button-face!</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Set the button face for the left-button numbered BUTTON.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(set-left-button-face! button active-up #&amp;optional
@@ -19364,7 +19376,10 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Set the button face for the left-button numbered BUTTON.
+E.g., if BUTTON is 1, this will set the leftmost button of your
+titlebar.  See <link linkend="set-button-face-x"><function>set-button-face!</function></link> for a description of ACTIVE-UP,
+ACTIVE-DOWN, and INACTIVE.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -19817,7 +19832,7 @@ need to override the built-in algorithm.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1444 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1454 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19841,7 +19856,7 @@ need to override the built-in algorithm.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1457 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1467 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20071,7 +20086,7 @@ usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 830 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 833 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20126,7 +20141,7 @@ by setting it to 0.  See also <link linkend="set-handle-segv-x"><function>set-ha
 <refentry id="set-right-button-face-x">
   <refnamediv>
     <refname>set-right-button-face!</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Set the button face for the right-button numbered BUTTON.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(set-right-button-face! button active-up #&amp;optional
@@ -20135,13 +20150,16 @@ by setting it to 0.  See also <link linkend="set-handle-segv-x"><function>set-ha
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Set the button face for the right-button numbered BUTTON.
+E.g., if BUTTON is 1, this will set the rightmost button of your
+titlebar.  See <link linkend="set-button-face-x"><function>set-button-face!</function></link> for a description of ACTIVE-UP,
+ACTIVE-DOWN, and INACTIVE.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm face)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/face.scm"><filename>scheme/face.scm</filename></ulink>
-  at line 88 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/face.scm">CVS log</ulink>)</para> </refsect2>
+  at line 92 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/face.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21030,7 +21048,7 @@ the same position as before the call.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 76 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 78 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21270,29 +21288,6 @@ cases.  See <link linkend="add-timer-hook-x"><function>add-timer-hook!</function
   </refsect1>
 </refentry>
 
-<refentry id="SM-client-id">
-  <refnamediv>
-    <refname>SM-client-id</refname>
-    <refpurpose>DEPRECATED: Return scwm's session management client id (a string).</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(SM-client-id)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  DEPRECATED: Return scwm's session management client id (a string).
-A return value of <literal>#f</literal> indicates that session management is not active.
-DEPRECATED: Use <link linkend="SM-register"><function>SM-register</function></link> instead.
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: Built-in Primitive</para>
-  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/session-manager.c"><filename>scwm/session-manager.c</filename></ulink>
-  at line 478 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/session-manager.c">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
 <refentry id="SM-error-message">
   <refnamediv>
     <refname>SM-error-message</refname>
@@ -21311,7 +21306,7 @@ Only valid, if <link linkend="SM-register"><function>SM-register</function></lin
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/session-manager.c"><filename>scwm/session-manager.c</filename></ulink>
-  at line 491 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/session-manager.c">CVS log</ulink>)</para> </refsect2>
+  at line 477 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/session-manager.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21336,7 +21331,7 @@ If Scwm is already registered, this function just returns the client id.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/session-manager.c"><filename>scwm/session-manager.c</filename></ulink>
-  at line 501 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/session-manager.c">CVS log</ulink>)</para> </refsect2>
+  at line 487 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/session-manager.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21493,14 +21488,14 @@ the window's smart-placement flag is on.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 298 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 300 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="sorted-by-car-string">
   <refnamediv>
     <refname>sorted-by-car-string</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Sort the elements of list L based on the string value of their <link linkend="car"><function>car</function></link>.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(sorted-by-car-string l)</synopsis>
@@ -21508,7 +21503,7 @@ the window's smart-placement flag is on.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Sort the elements of list L based on the string value of their <link linkend="car"><function>car</function></link>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -21602,7 +21597,7 @@ Returns a sound object usable with the other sound functions.
   <title>Implementation Notes</title>
   <para> Module: (app scwm menus-extras)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/menus-extras.scm"><filename>scheme/menus-extras.scm</filename></ulink>
-  at line 67 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/menus-extras.scm">CVS log</ulink>)</para> </refsect2>
+  at line 68 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/menus-extras.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21630,7 +21625,7 @@ Returns a sound object usable with the other sound functions.
 <refentry id="start-highlighting-current-window">
   <refnamediv>
     <refname>start-highlighting-current-window</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Add appropriate hook procedures to make the window with the mouse be highlighted.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(start-highlighting-current-window #&amp;optional (win (window-context)))</synopsis>
@@ -21638,7 +21633,8 @@ Returns a sound object usable with the other sound functions.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Add appropriate hook procedures to make the window with the mouse be highlighted.
+See also <link linkend="end-highlighting-current-window"><function>end-highlighting-current-window</function></link>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -21783,7 +21779,7 @@ window context in the usual way if not specified.
 <refentry id="stop-flashing-window">
   <refnamediv>
     <refname>stop-flashing-window</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Turn off window flashing of WIN.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(stop-flashing-window #&amp;optional (win (get-window)))</synopsis>
@@ -21791,13 +21787,17 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Turn off window flashing of WIN.
+Has no effect if WIN is not flashing.
+N.B. flashing and highlight-selection of windows currently use the
+same mechanism, so turning off flashing will also visually un-select
+WIN.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flash-window.scm"><filename>scheme/flash-window.scm</filename></ulink>
-  at line 64 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flash-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 65 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flash-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -22651,7 +22651,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 181 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 183 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23314,6 +23314,28 @@ way if not specified.
   </refsect1>
 </refentry>
 
+<refentry id="unbind-four-modifier-key-events">
+  <refnamediv>
+    <refname>unbind-four-modifier-key-events</refname>
+    <refpurpose>Unbind events attached to a multi-modifier key event.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(unbind-four-modifier-key-events
+		modkey1 modkey2 modkey3 modkey4)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Unbind events attached to a multi-modifier key event.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm modifier-key-bindings)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/modifier-key-bindings.scm"><filename>scheme/modifier-key-bindings.scm</filename></ulink>
+  at line 116 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="unbind-key">
   <refnamediv>
     <refname>unbind-key</refname>
@@ -23335,7 +23357,7 @@ otherwise.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 901 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 904 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23357,7 +23379,7 @@ otherwise.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1102 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1105 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23380,7 +23402,51 @@ otherwise.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 971 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 974 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="unbind-three-modifier-key-events">
+  <refnamediv>
+    <refname>unbind-three-modifier-key-events</refname>
+    <refpurpose>Unbind events attached to a multi-modifier key event.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(unbind-three-modifier-key-events
+		modkey1 modkey2 modkey3)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Unbind events attached to a multi-modifier key event.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm modifier-key-bindings)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/modifier-key-bindings.scm"><filename>scheme/modifier-key-bindings.scm</filename></ulink>
+  at line 74 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="unbind-two-modifier-key-events">
+  <refnamediv>
+    <refname>unbind-two-modifier-key-events</refname>
+    <refpurpose>Unbind events attached to a multi-modifier key event.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(unbind-two-modifier-key-events
+		modkey1 modkey2)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Unbind events attached to a multi-modifier key event.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm modifier-key-bindings)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/modifier-key-bindings.scm"><filename>scheme/modifier-key-bindings.scm</filename></ulink>
+  at line 36 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/modifier-key-bindings.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23427,7 +23493,7 @@ mouse events. Beware that it can take several seconds to execute.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1471 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1481 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23450,7 +23516,7 @@ a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1500 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1510 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23557,7 +23623,7 @@ Return the window changed.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flash-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flash-window.scm"><filename>scheme/flash-window.scm</filename></ulink>
-  at line 50 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flash-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 51 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flash-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23622,7 +23688,7 @@ on for.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 146 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 148 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24684,7 +24750,7 @@ specified.
 <refentry id="window-flashing-p">
   <refnamediv>
     <refname>window-flashing?</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Return <literal>#t</literal> iff WIN is currently flashing, <literal>#f</literal> otherwise.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(window-flashing? #&amp;optional (win (get-window)))</synopsis>
@@ -24692,7 +24758,7 @@ specified.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Return <literal>#t</literal> iff WIN is currently flashing, <literal>#f</literal> otherwise.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -24719,7 +24785,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
-  at line 209 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
+  at line 211 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26184,7 +26250,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1544 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1554 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 

@@ -86,7 +86,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From scwm/binding.c:709]
+[From scwm/binding.c:712]
 
 
 Face Flags
@@ -574,7 +574,7 @@ use-theme (window-style) from scheme/themes.scm:47
 winlist-skip (boolean-style) from scheme/winlist.scm:112
 circulate-skip (boolean-style) from scheme/winlist.scm:299
 circulate-skip-icon (boolean-style) from scheme/winlist.scm:300
-start-maximized (window-style) from scheme/winops.scm:188
+start-maximized (window-style) from scheme/winops.scm:190
 
 [From scwm/face.c:542]
 
