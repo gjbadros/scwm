@@ -162,7 +162,7 @@ indicates wether vertical wraparound is in effect. */
 #undef FUNC_NAME
 
 
-/* FIXMS: this should probably be split into two procedures.
+/* FIXMS: this should probably be split into two procedures. */
 SCWM_PROC(set_edge_resistance_x, "set-edge-resistance!", 2, 0, 0,
           (SCM sr, SCM mr))
      /** Set two parameters indicating how much resistance should be
