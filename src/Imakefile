@@ -77,7 +77,7 @@ OBJS = \
 	window.o \
 	menu.o \
 	paths.o \
-	deskpage.o`
+	deskpage.o
 
 LOCAL_LIBRARIES = $(SCWM_LIBS) $(XLIB)
 

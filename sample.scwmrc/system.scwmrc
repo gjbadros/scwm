@@ -1,102 +1,29 @@
-;;--------------------------;;
-;; needed Scheme procedures ;;
+;;-------------------------------;;
+;; import the scwm modules       ;;
 
-(define (close-window . args)
-  (let ((w (if (null? args) 
-	       (get-window)
-	       (car args))))
-    (if (window-deletable? w)
-	(delete-window w)
-	(destroy-window w))))
-
-
-(define (toggle-raise . args)
-  (let ((w (if (null? args) 
-	       (get-window)
-	       (car args))))
-    (if (raised? w)
-	(lower-window w)
-      (raise-window w))))
-
-(define (toggle-iconify . args)
-  (let ((w (if (null? args) 
-	       (get-window)
-	       (car args))))
-    (if (iconified? w)
-	(deiconify w)
-	(iconify w))))
-
-(define (toggle-stick . args)
-  (let ((w (if (null? args) 
-	       (get-window)
-	       (car args))))
-    (if (sticky? w)
-	(unstick-window w)
-	(stick-window w))))
-
-(define (toggle-window-shade . args)
-  (let ((w (if (null? args) 
-	       (get-window)
-	       (car args))))
-    (if (window-shaded? w)
-	(un-window-shade w)
-	(window-shade w))))
-
-(define (execute command) 
-  (system (string-append "exec " command " &")))
-
-(define (set-menu-foreground! fg) (set-menu-colors! fg))
-(define (set-menu-background! bg) (set-menu-colors! #f bg))
-(define (set-menu-stipple! st) (set-menu-colors! #f #f st))
-
-(defmacro parse-keywords (args . actions)
-  `(let* ((args ,args)
-	  (get-arg (lambda () (let ((a (car args))) 
-		      (set! args (cdr args)) 
-		      a)))
-	  (peek-arg (lambda () (car args))))
-     (while (and (not (null? args)) (keyword? (peek-arg)))
-	    (let ((key (get-arg)))
-	      (case key
-		,@actions
-		(else (throw 'bad-keyword key args)))))
-     args))
-
-(define (menu-style . args)
-  (parse-keywords args
-		  ((#:fg #:foreground) 
-		   (set-menu-foreground! (get-arg)))
-		  ((#:bg #:background)
-		   (set-menu-background! (get-arg)))
-		  ((#:stipple) 
-		   (set-menu-stipple! (get-arg)))
-		  ((#:font) (set-menu-font! (get-arg)))
-		  ((#:mwm #:mwm-style) (set-menu-mwm-style! (get-arg)))))
-
-(define (title-style . args)
-  (parse-keywords args
-		  ((#:font)
-		   (set-window-font! (get-arg)))
-		  ((#:height) 
-		   (set-title-height! (get-arg)))
-		  ((#:justify)
-		   (set-title-justify! (get-arg)))))
-
+(use-modules (app scwm base)
+	     (app scwm winops)
+	     (app scwm winlist)
+	     (app scwm wininfo))
 
 ;;-------------------------------;;
-;;-------------------------------;;
-;; The actual setup stuff itself ;;
+;; set some basic styles info    ;;
 
-;; set some basic styles
 (define helv12
   (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 (define helv14 
   (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 
-(menu-style #:fg "white" #:bg "navy" #:stipple "purple" #:font helv14 #:mwm #f)
+(menu-style #:fg "white" #:bg "navy" #:stipple "yellow" #:font helv14 #:mwm #f)
 (title-style #:font helv12 #:justify 'left)
 
+(set-icon-font! helv12)
 (set-hilight-colors! "white" "navy")
+(set-xor-value! 127)
+
+
+;;-------------------------------;;
+;; define some useful menus      ;;
 
 (define util-menu 
   (make-menu "Utilities"
@@ -119,6 +46,7 @@
 	     (list "Raise" raise-window)
 	     (list "Lower" lower-window)
 	     (list "(De)Iconify" toggle-iconify)
+	     (list "(Un)Maximize" (lambda () (toggle-maximize 100 0)))
 	     (list "(Un)Stick" toggle-stick)
 	     'separator
 	     (list "Close" close-window)
@@ -136,6 +64,7 @@
 	     (list "Raise" raise-window)
 	     (list "Lower" lower-window)
 	     (list "Iconify" iconify)
+	     (list "(Un)Maximize" (lambda () (toggle-maximize 100 0)))
 	     (list "(Un)Stick" toggle-stick)
 	     'separator
 	     (list "Close" close-window)
@@ -144,10 +73,17 @@
 (define (popup-small-ops)	
   (popup small-window-ops-menu))
 
-;; now set some mouse and key bindings
+
+;; now set some mouse and key bindings ;;
+
+;; first our root menus
 (bind-mouse 'root 1 popup-util)
 (bind-mouse 'root 2 popup-ops)
-;;(bind-mouse 'button-1 1 popup-small-ops)
+(bind-mouse 'root 3 
+	    (lambda () 
+	      (show-window-list-menu #:show-geometry #t)))
+
+(bind-mouse 'button-1 1 popup-small-ops)
 (bind-mouse '(title frame sidebar) 2 popup-small-ops)
 (bind-mouse 'frame 1 resize-or-raise)
 (bind-mouse '(title sidebar) 1 move-or-raise)
@@ -166,3 +102,20 @@
 
 (bind-mouse 'icon 1 move-or-deiconify)
 (bind-mouse 'icon 2 deiconify)
+
+;; move the pointer with the keyboard
+(bind-key 'all "M-Left" (lambda () (move-pointer (%x -1) 0)))
+(bind-key 'all "M-Right" (lambda () (move-pointer (%x 1) 0)))
+(bind-key 'all "M-Up" (lambda () (move-pointer 0 (%y -1))))
+(bind-key 'all "M-Down" (lambda () (move-pointer 0 (%y 1))))
+
+;; rotate the current window with the keyboard
+(bind-key 'all "M-Tab"
+	  (lambda ()
+	    (window-list-proc
+	     (next-window #:only visible? #:except iconified?))))
+
+(bind-key 'all "M-S-Tab" 
+	  (lambda ()
+	    (window-list-proc
+	     (prev-window #:only visible? #:except iconified?))))

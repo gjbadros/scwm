@@ -126,6 +126,7 @@ Read					load
 Title					[not needed]
 DestroyMenu				undefine
 
+
 12 total
 
 
@@ -182,8 +183,15 @@ EdgeResistance				set-edge-resistance!
 EdgeScroll				set-edge-scroll!, set-edge-wrap!
 Scroll					set-viewport-position!, 
 					get-viewport-position
+WindowId				get-window-id
+Maximize				written in terms of resize-to
 
-41 total
+None					get-window-list,etc
+Next					get-window-list,etc
+Prev					get-window-list,etc
+WindowList				get-window-list,get-window-title,etc
+
+48 total
 
 
 Intentionally Omitted:
@@ -193,10 +201,9 @@ Module
 ModulePath
 DestroyModuleConfig
 SendToModule
+FlipFocus
 
-6 total
-
-
+7 total
 
 
 
@@ -214,7 +221,6 @@ ChangeDecor
 DestroyDecor
 UpdateDecor
 
-
 4 modules:
 DestroyModuleConfig
 KillModule
@@ -224,19 +230,13 @@ SendToModule
 1 paths:
 ModulePath
 
-4 window selection:
-Next
-None
-Prev
-WindowList
-
 1 misc settings:
 GlobalOpts
 
-3 window ops:
+1 window ops:
 FlipFocus
 
-23
+17
 
 
 

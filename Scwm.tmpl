@@ -40,11 +40,10 @@ XCOMM Template file for scwm
 
 
 /******
- * Path to the guile libraries and includes
+ * Path to the guile libraries, includes, scheme modules
  *
  */
-/* #define GuileLibs -L/usr/local/lib */
-/* #define GuileIncs -I/usr/local/include */
+#define GuilePrefix /usr
 
 /***************************************************************************
  * #define HasXpm
@@ -333,9 +332,11 @@ OPTION_DEFINES  = -DSHAPE -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -DMINI_ICONS -DVECTO
 #endif
 
 
-
-   GUILE_INCLUDES = GuileIncs
-  GUILE_LIBRARIES = GuileLibs  -lguile  -lqt 
+     GUILE_PREFIX = GuilePrefix
+   GUILE_INCLUDES = -I $(GUILE_PREFIX)/include
+  GUILE_LIBRARIES = -I $(GUILE_PREFIX)/lib  -lguile  -lqt 
+    GUILE_MODULES = GuilePrefix/share/guile
+   SCWM_SCHEMEDIR = $(GUILE_MODULES)/app/scwm
 
 #if HasXpm
     XPM_DEFINES = -DXPM

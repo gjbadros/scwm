@@ -1,0 +1,8 @@
+Sun Sep 21 05:14:35 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Imakefile: Added the scheme directory to the build process.
+
+Fri Sep 19 00:48:52 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* version.h: Bumped version to 0.1.
+
