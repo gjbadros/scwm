@@ -1038,7 +1038,7 @@ from other processes.
 (bind-key 'all "C-M-S-q" quit-verify)
 
 (bind-mouse 'icon 1 move-or-deiconify)
-(bind-mouse 'icon 2 #f animated-deiconify-to-current-viewport)
+(bind-mouse 'icon 2 #f animated-deiconify-to-vp-focus)
 
 (bind-mouse 'all "C-S-M-1" #f toggle-raise)
 
