@@ -1,3 +1,23 @@
+Fri Aug  7 20:04:44 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added changed.c, log-usage.c, log-usage.h.
+	  changed.c is automatically managed by the CVSROOT/loginfo admin
+	  file on the server, using the make-repo-date-file from
+	  utilities/dev/make-repo-date-file.  Note that after a commit,
+	  devs will need to "cvs update changed.c" to make changed.c correct
+
+	* log-usage.c, log-usage.h: Added, defined SendUsagePacket()
+	  function
+
+	* miscprocs.c: Added scwm-version-date primitive to give the
+	  string in changed.c.
+
+	* scwm.c (scwm_log_usage): Add this function, have it call
+	  SendUsagePacket() from log-usage.c, and call the function after
+	  run_startup_hook() is invoked.  Can set SCWM_DO_NOT_LOG_USAGE
+	  environment variable, or scwm-do-not-log-usage scheme variable
+	  to turn off this functionality.
+
 Fri Aug  7 18:03:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c: Rename list-windows-in-stacking-order to
