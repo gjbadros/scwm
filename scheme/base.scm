@@ -758,3 +758,19 @@ Uses the `startup-hook' and `run-dot-xclients-script' to do so."
 (define-public (keycode->keysym keycode)
   "Return a string containing the X11 keysym for key with code KEYCODE."
   (keymask-keycode->string 0 keycode))
+
+(define*-public (window-class #&optional (win (get-window)))
+  "Return the window resources class of WIN. 
+WIN defaults to the window context in the usual way if not specified. 
+Returns \"NoClass\" if the window has not set its class.
+See also `window-class-hint'."
+  (let ((prop (X-property-get win "WM_CLASS")))
+    (if prop (cadar prop) "NoClass")))
+
+(define*-public (window-resource #&optional (win (get-window)))
+  "Return the window resource instance of WIN. 
+WIN defaults to the window context in the usual way if not specified. 
+Returns \"NoResource\" if the window has not set its resource name.
+See also `window-resource-hint'."
+  (let ((prop (X-property-get win "WM_CLASS")))
+    (if prop (caar prop) "NoResource")))
