@@ -4192,7 +4192,7 @@ ensure_valid(SCM win, int n, const char *func_name, SCM release_p, SCM cursor)
 }
 
 
-/**CONCEPT: Interactive specfications
+/**CONCEPT: Interactive specifications
 
    Procedures can have an interactive specification that looks like:
 
