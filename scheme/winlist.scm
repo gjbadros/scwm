@@ -135,38 +135,39 @@ menuitem (see `popup-menu').
 		 (make-menuitem "Window list" #f (if show-geometry "Geometry" #f)
 				#f #f #f #f #f)
 		 menu-title)
-		(map (lambda (x)
-		       (let ((extra-label-string 
-			      (if show-geometry (window-geometry-string x) #f)))
-			 (if show-last-focus-time
-			     (set! extra-label-string 
-				   (string-append (or extra-label-string "")
-						  (if extra-label-string ", " "")
-						  (window-last-focus-time-string x))))
-			 (make-menuitem (window-title x)
-					(lambda () (proc x))
-					extra-label-string
-					#f 
-					(if show-mini-icon
-					    (window-mini-icon x) #f)
-					(if flash-window-proc
-					    (lambda () (flash-window-proc x))
-					    #f)
-					(if unflash-window-proc
-					    (lambda () (unflash-window-proc x))
-					    #f)
-					#f)))
-		     (list-windows #:only only #:except 
-				   (if ignore-winlist-skip
-				       except
-				       (cons 
-					winlist-skip?
-					(listify-if-atom except)))
-				   #:by-stacking by-stacking
-				   #:by-focus by-focus
-				   #:reverse reverse))))
-	      warp-to-first))
-
+		(fold-menu-list
+		 (map (lambda (x)
+			(let ((extra-label-string 
+			       (if show-geometry (window-geometry-string x) #f)))
+			  (if show-last-focus-time
+			      (set! extra-label-string 
+				    (string-append (or extra-label-string "")
+						   (if extra-label-string ", " "")
+						   (window-last-focus-time-string x))))
+			  (make-menuitem (window-title x)
+					 (lambda () (proc x))
+					 extra-label-string
+					 #f 
+					 (if show-mini-icon
+					     (window-mini-icon x) #f)
+					 (if flash-window-proc
+					     (lambda () (flash-window-proc x))
+					     #f)
+					 (if unflash-window-proc
+					     (lambda () (unflash-window-proc x))
+					     #f)
+					 #f)))
+		      (list-windows #:only only #:except 
+				    (if ignore-winlist-skip
+					except
+					(cons 
+					 winlist-skip?
+					 (listify-if-atom except)))
+				    #:by-stacking by-stacking
+				    #:by-focus by-focus
+				    #:reverse reverse))))
+	       warp-to-first)))
+  
 (define (rotate-around w wl)
   (append (cond
 	   ((memq w wl) => cdr)
