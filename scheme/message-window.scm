@@ -108,7 +108,7 @@ These options are cumulative for repeated calls to
     (lambda (msgwin win)
       (if (and follow-window win)
 	  (let* ((pos (window-viewport-position win))
-		 (size (window-frame-size win))
+		 (size (window-visible-frame-size win))
 		 (x (+ (car pos) offset-x (round (* po-x (car size)))))
 		 (y (+ (cadr pos) offset-y (round (* po-y (cadr size))))))
 	    (position-message-window! msgwin x y gravity))

@@ -825,3 +825,12 @@ Returns \"NoResource\" if the window has not set its resource name.
 See also `window-resource-hint'."
   (let ((prop (X-property-get win "WM_CLASS")))
     (if prop (caar prop) "NoResource")))
+
+(define-public (window-visible-frame-size win)
+  "Return the visible frame size of WIN.
+This is just the `window-frame-size' unless WIN is shaded in
+which case the height is just the titlebar height."
+  (let ((size (window-frame-size win)))
+    (if (shaded-window? win)
+	(list (car size) (cadr (window-decoration-size win)))
+	(window-frame-size win))))
