@@ -311,6 +311,7 @@ if ($opt_o) {
       </author>
       <author>
   	<firstname>Greg</firstname>
+  	<othername>J.</othername>
   	<surname>Badros</surname>
   	<affiliation>
   	  <address>
@@ -322,7 +323,7 @@ if ($opt_o) {
     <releaseinfo>Release $scwm_version</releaseinfo>
     <pubdate>$date</pubdate>
     <copyright>
-      <year>1997&ndash;$year</year>
+      <year>1997-$year</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
     </copyright>
   </bookinfo>
@@ -338,6 +339,9 @@ if ($opt_o) {
   print MARKUP_OUT <<START_CONCEPTS_CHAPTER
   <chapter>
     <title>Concepts</title>
+      <sect1 id="Concepts-Introduction"><title>Introduction</title>
+	<para>This chapter discusses some high level concepts in Scwm.</para>
+      </sect1>
 START_CONCEPTS_CHAPTER
    ;
   foreach my $concept (sort { lc($a) cmp lc($b) } keys %concepts ) {
@@ -360,6 +364,10 @@ if ($opt_o) {
   print MARKUP_OUT <<START_HOOKS_CHAPTER
   <chapter>
     <title>Hooks</title>
+      <sect1 id="Hooks-Introduction"><title>Introduction</title>
+	<para>This chapter lists the hooks provided by Scwm
+	      ordered alphabetically by name.</para>
+      </sect1>
 START_HOOKS_CHAPTER
   ;
   foreach my $hook (sort { lc($a) cmp lc($b) } keys %hooks ) {
@@ -383,6 +391,9 @@ if ($opt_o) {
   print MARKUP_OUT <<START_VARS_CHAPTER
   <chapter>
     <title>User variables</title>
+      <sect1 id="Vars-Introduction"><title>Introduction</title>
+	<para>This chapter lists the user options defined by Scwm.</para>
+      </sect1>
 START_VARS_CHAPTER
   ;
   foreach my $var (sort { lc($a) cmp lc($b) } keys %vars ) {
@@ -405,6 +416,10 @@ if ($opt_o) {
   print MARKUP_OUT <<START_PROC_BY_FILE
   <chapter>
     <title>Procedure Synopses by Group</title>
+      <sect1 id="Procs-ByGroup-Introduction"><title>Introduction</title>
+	<para>This chapter lists the procedures supplied by Scwm
+	      grouped and ordered by the source file that they are defined in.</para>
+      </sect1>
 START_PROC_BY_FILE
   ;
   
@@ -436,6 +451,10 @@ if ($opt_o) {
   print MARKUP_OUT <<END_CHAP_HEAD
   <chapter>
     <title>Procedures in Alphabetical Order</title>
+      <sect1 id="Procs-Alphabetical-Introduction"><title>Introduction</title>
+	<para>This chapter lists the procedures supplied by Scwm
+	      ordered alphabetically by name.</para>
+      </sect1>
 END_CHAP_HEAD
   ;
 }
