@@ -23,6 +23,7 @@
   :use-module (app scwm optargs)
   :use-module (app scwm wininfo)
   :use-module (app scwm base)
+  :use-module (app scwm menus-extras)
   :use-module (app scwm style-options)
   :use-module (app scwm listops))
 
@@ -91,10 +92,10 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 ;; add style options for #:winlist-skip
 (add-boolean-style-option #:winlist-skip winlist-skip winlist-hit)
 
-
 (define*-public (show-window-list-menu #&key (only '()) (except '())
 				       (by-stacking #f)
 				       (by-focus #f)
+				       (by-resource #f)
 				       (reverse #f)
 				       (proc window-list-proc)
 				       (flash-window-proc #f)
@@ -128,45 +129,57 @@ displayed with each menuitem.
 
 If WARP-TO-FIRST is #t, the mouse pointer will be warped to the first
 menuitem (see `popup-menu').  
+
+If BY-RESOURCE is #t, the window list is split into sublists by the
+window resource name (this is also the behaviour if too many windows
+exist to fit vertically on the menu).
 "
-  (popup-menu (menu
-	       (append 
-		(list 
-		 (make-menuitem "Window list" #f (if show-geometry "Geometry" #f)
-				#f #f #f #f #f)
-		 menu-title)
-		(fold-menu-list
-		 (map (lambda (x)
-			(let ((extra-label-string 
-			       (if show-geometry (window-geometry-string x) #f)))
-			  (if show-last-focus-time
-			      (set! extra-label-string 
-				    (string-append (or extra-label-string "")
-						   (if extra-label-string ", " "")
-						   (window-last-focus-time-string x))))
-			  (make-menuitem (window-title x)
-					 (lambda () (proc x))
-					 extra-label-string
-					 #f 
-					 (if show-mini-icon
-					     (window-mini-icon x) #f)
-					 (if flash-window-proc
-					     (lambda () (flash-window-proc x))
-					     #f)
-					 (if unflash-window-proc
-					     (lambda () (unflash-window-proc x))
-					     #f)
-					 #f)))
-		      (list-windows #:only only #:except 
-				    (if ignore-winlist-skip
-					except
-					(cons 
-					 winlist-skip?
-					 (listify-if-atom except)))
-				    #:by-stacking by-stacking
-				    #:by-focus by-focus
-				    #:reverse reverse))))
-	       warp-to-first)))
+  (let* 
+      ((lw (list-windows #:only only #:except 
+			 (if ignore-winlist-skip
+			     except
+			     (cons 
+			      winlist-skip?
+			      (listify-if-atom except)))
+			 #:by-stacking by-stacking
+			 #:by-focus by-focus
+			 #:reverse reverse))
+       (split-by-resource (or by-resource (> (length lw) (menu-max-fold-lines))))
+       (menuitems-with-window-resource
+	((if split-by-resource sorted-by-car-string noop)
+	 (map (lambda (x)
+		(let ((extra-label-string 
+		       (if show-geometry (window-geometry-string x) #f)))
+		  (if show-last-focus-time
+		      (set! extra-label-string 
+			    (string-append (or extra-label-string "")
+					   (if extra-label-string ", " "")
+					   (window-last-focus-time-string x))))
+		  (cons (window-resource x)
+			(make-menuitem (window-title x)
+				       (lambda () (proc x))
+				       extra-label-string
+				       #f 
+				       (if show-mini-icon
+					   (window-mini-icon x) #f)
+				       (if flash-window-proc
+					   (lambda () (flash-window-proc x))
+					   #f)
+				       (if unflash-window-proc
+					   (lambda () (unflash-window-proc x))
+					   #f)
+				       #f))))
+	      lw))))
+    (popup-menu (menu
+		 (append 
+		  (list 
+		   (make-menuitem "Window list" #f (if show-geometry "Geometry" #f)
+				  #f #f #f #f #f)
+		   menu-title)
+		  (if split-by-resource
+		      (fold-menu-list-by-group menuitems-with-window-resource)
+		      (map (lambda (x) (cdr x)) menuitems-with-window-resource)))
+		 warp-to-first))))
   
 (define (rotate-around w wl)
   (append (cond

@@ -21,6 +21,7 @@
 
 (define-module (app scwm std-menus)
   :use-module (app scwm base)
+  :use-module (app scwm menus-extras)
   :use-module (app scwm flux)
   :use-module (app scwm optargs)
   :use-module (ice-9 regex))

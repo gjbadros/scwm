@@ -407,29 +407,6 @@ See `color-properties' for a list of the keys."
 ;; for compatability
 (define-public load-font make-font)
 
-;;; ----------------------------------------------
-;;; General functionality for splitting long menus
-;;; ----------------------------------------------
-;;; the max number of lines in a menu
-(define-public default-menu-max-fold-lines 
-;;;**VAR
-;;; The default number of items that menus are split into by `fold-menu-list'.
-  30)
-
-(define (split-list ls max)
-  (let ((le (length ls)) (tt ()) (t1 ()))
-    (cond ((< le max) (list ls))
-	  (#t (set! tt (list-tail ls (- max 1))) (set! t1 (cdr tt))
-	      (set-cdr! tt ()) (cons ls (split-list t1 max))))))
-
-(define*-public (fold-menu-list
-		ml #&optional (max-lines default-menu-max-fold-lines))
-  "Split ML into chained menus of no more than MAX-LINES items.
-ML is a list of menuitem objects. MAX-LINES is a number, which
-defaults to `default-menu-max-fold-lines'."
-  (if (<= (length ml) max-lines) ml
-      (map (lambda (lm) (menuitem "more..." #:action (menu lm)))
-	   (split-list ml max-lines))))
 
 (define-public (exe command)
   "Return a procedure that, when invoked, executes COMMAND in the background."
