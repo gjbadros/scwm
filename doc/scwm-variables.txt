@@ -1,3 +1,9 @@
+circle-pie-menu-look
+- 
+A menu-look that gives pie menus in a circular window. 
+[From modules/pie-menus/draw-pie-menu.c:1305]
+
+
 context-map
 - (app scwm std-menus)
 An alist mapping filename patterns to applicable menu entries.Whenever the car (a regexp) matches a filename, the cdr is used tobuild a menuitem which is then added to the context menu.
@@ -31,7 +37,7 @@ The default procedure to invoke when un-raising the window.This gets called afte
 default-menu-max-fold-lines
 - (app scwm base)
 The default number of items that menus are split into by `fold-menu-list'.
-[From scheme/base.scm:361]
+[From scheme/base.scm:393]
 
 
 image-load-path
@@ -43,13 +49,13 @@ List of strings of directories in which to look for image files.
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:541]
+[From scwm/scwm.c:517]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:544]
+[From scwm/scwm.c:520]
 
 
 opaque-move-percent
@@ -64,10 +70,16 @@ Percent of display area below which windows are resized opaquely.
 [From scheme/winops.scm:30]
 
 
+pie-menu-look
+- 
+A menu-look that gives pie menus in a rectangular window 
+[From modules/pie-menus/draw-pie-menu.c:1287]
+
+
 remote-shell-command
 - (app scwm base)
 The command to use to start a remote shell.It should take a first (non-option) argument ofthe hostname to connect to.  "ssh" "rsh" and "telnet"are each reasonable choices.
-[From scheme/base.scm:392]
+[From scheme/base.scm:424]
 
 
 scwm-menu-look
@@ -86,7 +98,7 @@ shadow-factor
 use-scwm-system-proc
 - 
 If #t, `execute' will use `scwm-system' instead of guile's `system'.This works around a problem observed on pre-glibc Linux 2.0.34 i386where SIGINT on the controlling tty (i.e., the one that startedscwm) propagates to the child processes.  The end result of thepossible bug is that xterms started by scwm are terminated if thescwm that started them is terminated using a Ctrl-C to send it a SIGINT.
-[From scheme/base.scm:26]
+[From scheme/base.scm:31]
 
 
 xpm-shaped-menu-look
@@ -98,6 +110,6 @@ The shaped XPM menu look.
 xterm-command
 - (app scwm base)
 The command to run when a new xterm window is requested.The string given should refer to a binary or script in thepath and should take a "-e" argument of what to run.
-[From scheme/base.scm:385]
+[From scheme/base.scm:417]
 
 
