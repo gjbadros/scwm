@@ -157,3 +157,6 @@
       (set! color-bg-image-side (load-color color-bg-image-side)))
   (make-menu list-of-menuitems image-side color-bg-image-side
 	     color-bg color-text image-bg font))
+
+(define (image-property key image)
+  (cdr (assoc key (image-properties image))))
