@@ -350,7 +350,8 @@ SCWM_PROC(message_window_set_image_x, "message-window-set-image!", 2, 3, 0,
           (SCM mwn, SCM image, SCM fg_color, SCM bg_color, SCM shaped_p))
      /** Changes the background image for the message window MWN to IMAGE. 
 FG-COLOR, BG-COLOR are the colors for the image, SHAPED? is whether it
-should use a shaped message window. */
+should use a shaped message window. If IMAGE is #f, then no image
+is used for MWN. */
 #define FUNC_NAME s_message_window_set_image_x
 {
   scwm_msgwindow *msg;
@@ -358,7 +359,7 @@ should use a shaped message window. */
   Bool fShaped;
 
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
-  VALIDATE_ARG_IMAGE(2,image);
+  VALIDATE_ARG_IMAGE_USE_F(2,image);
   VALIDATE_ARG_COLOR_OR_SYM_USE_WHITE(3,fg_color);
   VALIDATE_ARG_COLOR_OR_SYM_USE_BLACK(4,bg_color);
   VALIDATE_ARG_BOOL_COPY_USE_F(5,shaped_p,fShaped);
