@@ -263,7 +263,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
     done = False;
     /* Handle key press events to allow mouseless operation */
     if (Event.type == KeyPress)
-      Keyboard_shortcuts(&Event, ButtonRelease);
+      Keyboard_shortcuts(&Event, ButtonRelease, psw, False);
     switch (Event.type) {
     case KeyPress:
       /* simple code to bag out of move - CKH */
@@ -445,12 +445,14 @@ DisplayMessage(const char *sz, Bool fRelief)
                   XCOLOR(Scr.msg_window_fg), XCOLOR(Scr.msg_window_bg)); 
 
 #ifdef I18N
-  XmbDrawString(dpy, Scr.MsgWindow, XFONT(Scr.msg_window_font), /* ) */
+  XmbDrawString(dpy, Scr.MsgWindow, XFONT(Scr.msg_window_font),
 #else
   XDrawString(dpy, Scr.MsgWindow, 
 #endif
               gcMsg, SIZE_HINDENT, FONTY(Scr.msg_window_font) + SIZE_VINDENT,
 	      sz, strlen(sz));
+#define MATCH_EXTRA_LP_ABOVE )  /* crazy hack, but hey, it works --07/31/98 gjb */
+#undef MATCH_EXTRA_LP_ABOVE
 }
 
 
@@ -459,18 +461,42 @@ DisplayMessage(const char *sz, Bool fRelief)
  * shortcuts by warping the pointer.
  */
 void 
-Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
+Keyboard_shortcuts(XEvent *Event, int ReturnEvent, 
+                   const ScwmWindow *psw, Bool fResize)
 {
   int x, y, x_root, y_root;
-  int move_size, x_move, y_move;
+  int xmove_size, ymove_size, x_move, y_move;
   KeySym keysym;
+  Bool fOnXBoundary = False;
+  Bool fOnYBoundary = False;
+
+  Event->xany.window =
+    WXGetPointerOffsets(psw->frame, &x_root, &y_root, &x, &y);
 
   /* Pick the size of the cursor movement */
-  move_size = 10;
-  if (Event->xkey.state & ControlMask)
-    move_size = 1;
-  if (Event->xkey.state & ShiftMask)
-    move_size = 100;
+  if (fResize) {
+    xmove_size = psw->hints.width_inc;
+    ymove_size = psw->hints.height_inc;
+    if (Event->xkey.state & ShiftMask) {
+      xmove_size *= 5;
+      ymove_size *= 5;
+    }
+  } else {
+    xmove_size = 10;
+    if (Event->xkey.state & ControlMask)
+      xmove_size = 1;
+    if (Event->xkey.state & ShiftMask)
+      xmove_size = 100;
+    ymove_size = xmove_size;
+  }
+
+  if (x >= (psw->frame_width - xmove_size) ||
+      (x <= xmove_size))
+    fOnXBoundary = True;
+
+  if (y >= (psw->frame_height - ymove_size) ||
+      (y <= ymove_size))
+    fOnYBoundary = True;
 
   keysym = XLookupKeysym(&Event->xkey, 0);
 
@@ -480,22 +506,26 @@ Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
   case XK_Up:
   case XK_k:
   case XK_p:
-    y_move = -move_size;
+    if (fResize && !fOnYBoundary) y_move = -y - ymove_size;
+    else y_move = -ymove_size;
     break;
   case XK_Down:
   case XK_n:
   case XK_j:
-    y_move = move_size;
+    if (fResize && !fOnYBoundary) y_move = psw->frame_height - y + ymove_size;
+    else y_move = ymove_size;
     break;
   case XK_Left:
   case XK_b:
   case XK_h:
-    x_move = -move_size;
+    if (fResize && !fOnXBoundary) x_move = -x - xmove_size;
+    else x_move = -xmove_size;
     break;
   case XK_Right:
   case XK_f:
   case XK_l:
-    x_move = move_size;
+    if (fResize && !fOnXBoundary) x_move = psw->frame_width - x + xmove_size;
+    else x_move = xmove_size;
     break;
   case XK_Return:
   case XK_space:
@@ -511,8 +541,6 @@ Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
   default:
     break;
   }
-  Event->xany.window =
-    WXGetPointerOffsets(Scr.Root, &x_root, &y_root, &x, &y);
 
   if ((x_move != 0) || (y_move != 0)) {
     /* beat up the event */

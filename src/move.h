@@ -25,7 +25,8 @@ void moveLoop(ScwmWindow *psw,
 	      int Height, int *FinalX, int *FinalY, Bool fOpaque);
 
 
-void Keyboard_shortcuts(XEvent * Event, int ReturnEvent);
+void Keyboard_shortcuts(XEvent * Event, int ReturnEvent, 
+                        const ScwmWindow *psw, Bool fResize);
 
 Bool InteractiveMove(ScwmWindow *psw, Bool fOpaque, int *FinalX, int *FinalY);
 

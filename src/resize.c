@@ -505,7 +505,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
     /* Handle a limited number of key press events to allow mouseless
      * operation */
     if (ResizeEvent.type == KeyPress)
-      Keyboard_shortcuts(&ResizeEvent, ButtonRelease);
+      Keyboard_shortcuts(&ResizeEvent, ButtonRelease, psw, True);
     switch (ResizeEvent.type) {
     case ButtonPress:
       XAllowEvents(dpy, ReplayPointer, CurrentTime);

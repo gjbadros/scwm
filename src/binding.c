@@ -91,7 +91,7 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name)
   Bool fError = False;
 
   while (True) {
-    if (pch[1] != '-') {
+    if (pch[0] && pch[1] != '-') { /* be sure we do not look past end of string */
       break;
     }
     switch (pch[0]) {

@@ -580,6 +580,9 @@ AddWindow(Window w)
      to  resolve */
   CassowarySetCValuesAndSolve(psw,False /* no solve */);
 
+  /* stay constraints need to be added before any calls to 
+     move_finalize, which PlaceWindow, e.g., does */
+  CassowaryNewWindow(psw);      /* add the stay constraints in */
 
   /* FIXMS: Hmm, do we need to do any real cleanup if this fails?
      _Can_ it fail, in it's new location?
@@ -593,8 +596,6 @@ AddWindow(Window w)
        meaning of a failed PlaceWindow?) --07/27/98 gjb */
     return NULL;
   }
-
-  CassowaryNewWindow(psw);      /* add the stay constraints in */
 
   /* wait until the window is iconified and the icon window is mapped
      before creating the icon window */

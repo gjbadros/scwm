@@ -62,12 +62,19 @@ run_restart_command(char *command) {
 void 
 Done(int restart_or_dump, char *command)
 {
-  if (restart_or_dump >= 0)
-    call0_hooks(shutdown_hook);
+  if (restart_or_dump < 0) {
+    /* force seg fault -- need to use as an argument to a function
+       to be sure it doesn't get optimized away, so invoke a function
+       we're sure exists -- this same function! --07/23/98 gjb */
+    Done(*((int *)0),NULL); /* Force seg fault */
+    return; /* Never executed */
+  }
 
   /* need to be sure we've opened the display -- could
      seg fault during startup */
   if (dpy) {
+    call0_hooks(shutdown_hook);
+
     MoveViewport(0, 0, False);
 
     Reborder();
@@ -77,9 +84,8 @@ Done(int restart_or_dump, char *command)
     /* Pretty sure this should be done... */
     XDeleteProperty(dpy, Scr.Root, XA_MOTIF_WM);
 
-    if (restart_or_dump > 0) {
-      SaveDesktopState();		/* I wonder why ... */
-    }
+    /* FIXGJB: this used to be done only on restart -- why? --07/31/98 gjb */
+    SaveDesktopState();
 
     /* Really make sure that the connection is closed and cleared! */
     XSelectInput(dpy, Scr.Root, 0);
@@ -93,11 +99,6 @@ Done(int restart_or_dump, char *command)
     sleep(1);
     ReapChildren();
     run_restart_command(command);
-  } else if (restart_or_dump < 0) {
-    /* force seg fault -- need to use as an argument to a function
-       to be sure it doesn't get optimized away, so invoke a function
-       we're sure exists -- this same function! --07/23/98 gjb */
-    Done(*((int *)0),NULL); /* Force seg fault */
   } else {
     exit(0);
   }
