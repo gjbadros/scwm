@@ -1442,7 +1442,7 @@ void init_scwm_load_path()
   loc_load_path = SCM_CDRLOC(scm_sysintern0("%load-path"));
   path=*loc_load_path;
   path=gh_cons(gh_str02scm(SCWM_LOAD_PATH),path);
-  path=scm_parse_path(getenv("SCWM_LOAD_PATH"), path);
+  path=scm_internal_parse_path(getenv("SCWM_LOAD_PATH"), path);
   *loc_load_path = path;
 }
 

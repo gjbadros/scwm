@@ -76,6 +76,10 @@ extern SCM scm_internal_stack_catch (SCM tag,
 				     void *handler_data);
 #endif
 
+#ifndef HAVE_SCM_INTERNAL_PARSE_PATH
+#define scm_internal_parse_path scm_parse_path
+#endif
+
 #endif GUILE_COMPAT_H
 
 
