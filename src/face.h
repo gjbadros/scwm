@@ -27,5 +27,13 @@ extern SCM default_lbutton_face[5];
 extern SCM default_rbutton_face[5];
 
 SCM make_face(SCM flags, SCM specs);
+SCM set_title_face_x (SCM active_up, SCM active_down, SCM inactive);
+SCM set_button_face_x (SCM button, SCM active_up, SCM active_down, 
+		       SCM inactive);
+SCM set_button_mwm_flag_x(SCM button, SCM flag);
+SCM set_border_face_x(SCM active, SCM inactive);
+
+
+
 
 #endif /* FACE_H */
