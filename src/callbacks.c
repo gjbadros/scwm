@@ -49,9 +49,9 @@ will generally include information about the nature of the error.
 */
 
 SCWM_HOOK(load_processing_hook,"load-processing-hook",1);
-  /** This hook is invoked for every five top-level s-exps in the startup file.
+  /** This hook is invoked for every several top-level s-exps in the startup file.
 The hook procedures are invoked with one argument, the count of the
-s-expressions evaluated thus far. */
+s-expressions evaluated thus far. See also `set-load-processing-hook-frequency!'. */
 
 SCM timer_hooks;
 
@@ -283,6 +283,8 @@ scwm_catching_eval_x (SCM expr) {
 			  scwm_handle_error, "scwm");
 }
 
+static int clnsProcessingHook = 5;
+
 __inline__ static SCM 
 scwm_catching_load_from_port (SCM port)
 {
@@ -292,8 +294,7 @@ scwm_catching_load_from_port (SCM port)
 
   while (!SCM_EOF_OBJECT_P(expr = scm_read (port))) {  
     answer = scwm_catching_eval_x (expr);
-    if (++i % 5 == 0) {
-       /* GJB:FIXME:: make an option */
+    if (++i % clnsProcessingHook == 0) {
       call1_hooks(load_processing_hook, gh_int2scm(i));
     }
   }
@@ -587,6 +588,17 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
   return SCM_UNSPECIFIED;
 }
 
+SCWM_PROC(set_load_processing_frequency_x, "set-load-processing-frequency!", 1, 0, 0,
+          (SCM num_lines))
+     /* Invoke hooks on `load-processing-hook' every NUM-LINES lines. 
+Returns the old value. */
+#define FUNC_NAME s_set_load_processing_frequency_x
+{
+  int i = clnsProcessingHook;
+  VALIDATE_ARG_INT_MIN_COPY(1,num_lines,1,clnsProcessingHook);
+  return gh_int2scm(i);
+}
+#undef FUNC_NAME
 
 /* Timer hooks. */
 
