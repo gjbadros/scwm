@@ -1,3 +1,15 @@
+Tue Dec  7 11:16:48 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c: Use FRAME_[XY]_VP(psw) in getting arguments for
+	x_motionnotify_hook instead of using psw->frame_x.  This makes
+	nonant-selection work even when not at the (0,0) viewport.
+
+Tue Dec  7 08:27:51 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c: pass 2nd arg to call_interactively.
+
+	* callbacks.h, callbacks.c: Added 2nd arg (debug) to call-interactively.
+
 Sun Dec  5 17:31:48 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* add_window.c, events.c, image.c: Fix some unescaped quotes in
