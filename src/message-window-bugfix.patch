@@ -1,0 +1,117 @@
+? message-window-bugfix.patch
+Index: events.c
+===================================================================
+RCS file: /usr/local/repository/scwm/src/events.c,v
+retrieving revision 1.195
+diff -u -p -r1.195 events.c
+--- events.c	1999/10/02 19:43:53	1.195
++++ events.c	1999/10/05 06:08:26
+@@ -88,6 +88,9 @@
+ #include "dbug_resize.h"
+ #include "virtual.h"
+ #include "cursor.h"
++/* GJB:FIXME:: Broke modularity of message-windows to do 
++   a bugfix --10/04/99 gjb */
++#include "message-window.h"
+ 
+ #ifdef HAVE_LIBSM_LIBICE
+ #include "session-manager.h"
+@@ -1187,6 +1190,16 @@ HandleMapNotify()
+       XSelectInput(dpy, Event.xmap.window, FocusChangeMask);
+       Scr.UnknownWinFocused = Event.xmap.window;
+     }
++    
++    { /* scope */
++      /* GJB:FIXME:: Broke modularity of message-windows to do 
++         this bugfix --10/04/99 gjb */
++      scwm_msgwindow* msg = NULL;
++      if ( XFindContext(dpy, Event.xmap.window, MsgWindowContext, (XPointer*)&msg) == 0 && msg != NULL ) {
++        /* do not let GC collect the object when it is visible */
++        scm_protect_object(msg->self);
++      }
++    }
+     return;
+   }
+   /* Except for identifying over-ride redirect window mappings, we
+@@ -1277,8 +1290,18 @@ HandleUnmapNotify()
+     weMustUnmap = 1;
+     pswCurrent = PswFromWindow(dpy, Event.xany.window);
+   }
+-  if (!pswCurrent)
++
++
++  if (!pswCurrent) { 
++    /* GJB:FIXME:: Broke modularity of message-windows to do 
++       this bugfix --10/04/99 gjb */
++    scwm_msgwindow* msg = NULL;
++    if ( XFindContext(dpy, Event.xunmap.window, MsgWindowContext, (XPointer*)&msg) == 0 && msg != NULL ) {
++      /* do not let GC collect the object when it is visible */
++      scm_unprotect_object(msg->self);
++    }
+     return;
++  }
+   
+   if (pswCurrent->schwin == g_lastwin_entered) {
+     call1_hooks(window_leave_hook, g_lastwin_entered);
+Index: message-window.c
+===================================================================
+RCS file: /usr/local/repository/scwm/src/message-window.c,v
+retrieving revision 1.30
+diff -u -p -r1.30 message-window.c
+--- message-window.c	1999/09/28 15:32:08	1.30
++++ message-window.c	1999/10/05 06:08:27
+@@ -293,9 +293,14 @@ Uses defaults from the ScreenInfo struct
+ 
+   CreateMessageWindow(msg);
+   XSaveContext(dpy, msg->win, ExposeWindowProcContext, (caddr_t) OnExposeEvent);
++#if 0 /* GJB:FIXME:: */
++  XSaveContext(dpy, msg->win, MapWindowProcContext, (caddr_t) OnMapEvent);
++  XSaveContext(dpy, msg->win, UnmapWindowProcContext, (caddr_t) OnUnmapEvent);
++#endif
+   XSaveContext(dpy, msg->win, MsgWindowContext, (caddr_t) msg);
+ 
+   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_msgwindow, msg);
++  msg->self = answer;
+ 
+   return answer;
+ }
+@@ -535,12 +540,10 @@ the window will not ever disappear). */
+   if (FXIsWindowMapped(dpy,MSGWINDOW(mwn)->win))
+     return SCM_UNSPECIFIED;
+ 
+-  /* do not let GC collect the object when it is visible */
+-  scm_protect_object(mwn);
+-
+   MapMessageWindow(MSGWINDOW(mwn));
+   ResizeMessageWindow( MSGWINDOW(mwn) );
+ 
++  XFlush(dpy);
+   return SCM_UNSPECIFIED;
+ }
+ #undef FUNC_NAME
+@@ -556,7 +559,6 @@ See also `message-window-show'. */
+   UnmapMessageWindow(MSGWINDOW(mwn));
+   XFlush(dpy);
+ 
+-  scm_unprotect_object(mwn);
+   return SCM_UNSPECIFIED;
+ }
+ #undef FUNC_NAME
+Index: message-window.h
+===================================================================
+RCS file: /usr/local/repository/scwm/src/message-window.h,v
+retrieving revision 1.8
+diff -u -p -r1.8 message-window.h
+--- message-window.h	1999/07/02 15:46:26	1.8
++++ message-window.h	1999/10/05 06:08:27
+@@ -54,9 +54,8 @@ typedef struct {
+   double x_align, y_align;  /* alignment (e.g., -.5,-.5 is centered*/
+   int width, height; /* -1 means auto-sized in that direction */
+   Window win;   /* X Window obj */
++  SCM self;                     /* pointer back to the scheme object */
+ } scwm_msgwindow;
+-
+-/* JWN: msgwindow interface functions */
+ 
+ /* Constructor */
+ 
