@@ -78,11 +78,11 @@ Use the optional second argument as the separator."
 (define-public (string-join delimit strings)
   "Concatenates the list STRINGS into a single string.
 DELIMIT is put between every two elements of STRINGS."
-  (let ((result #f))
+  (let ((result ""))
     (map (lambda (el)
-	   (if (not (equal? el ""))
-	       (if result
-		   (set! result (string-append result delimit el))
-		   (set! result el))))
+	   (if (not (string-null? el))
+	       (if (string-null? result)
+		   (set! result el)
+		   (set! result (string-append result delimit el)))))
 	 strings)
     result))
