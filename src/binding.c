@@ -147,12 +147,14 @@ static int cMouseButtons = 3;
 modifiers.  The available modifiers include S-, C-, M-, A-, H-, and s-
 for Shift, Control, Meta, Alt, Hyper, and Super, respectively.  They
 can be combined arbitrarily, and in any order, but should precede the
-key name. When a key specifier is being used to indicate a binding,
-the additional special modifier *- may be used; it indicates that the
-key should be bound with every possible modifier combination,
-including possibly no modifiers. *- may not be combined with any other
-modifier.
-*/
+key name. They may also be combined without the dash separator;  e.g.,
+CSM-Left refers to the keysym "Left" with the control, shift, and meta
+modifiers.
+
+When a key specifier is being used to indicate a binding, the
+additional special modifier *- may be used; it indicates that the key
+should be bound with every possible modifier combination, including
+possibly no modifiers. *- may not be combined with any other modifier.  */
 
 
 static const char *
@@ -160,11 +162,14 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool all
 {
   int modmask = 0;
   Bool fError = False;
+  /* C-S-M-Left and CSM-Left should both be okay */
+  char *pchLastDash = strrchr(pch,'-');
 
   while (True) {
-    if (pch[0] && pch[1] != '-') { /* be sure we do not look past end of string */
+    /* do not look at the keysym -- if there was no last dash
+       then leave right away, too. */
+    if (pch[0] == '\0' || pchLastDash == NULL || pch >= pchLastDash)
       break;
-    }
     switch (pch[0]) {
     case 'S': /* Shift */
       if (modmask == AnyModifier) {
@@ -222,7 +227,9 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool all
     if (fError)
       scwm_msg(WARN,func_name,"Unbound modifier %c-",
 	       pch[0]);
-    pch += 2;
+    /* go to next char, skipping over '-' if necessary */
+    if (*(++pch) == '-')
+      ++pch;
   }
 
   if (fError) {

@@ -671,7 +671,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 
   
   while(1) {
-    static const char *getopt_opts = "Dsd:f:e:hibVnpP";
+    static const char *getopt_opts = "Dsd:f:e:hibVnp:P";
     static struct option getopt_longopts[] =
     {
       {"debug", 0, NULL, 'D'}, /* turns on Scwm debugging */
@@ -682,7 +682,7 @@ is probably of no use to you unless you're a session manager or debbuging.
       {"help", 0, NULL, 'h'},
       {"blackout", 0, NULL, 'b'},
       {"version", 0, NULL, 'V'},
-      {"segv-cleanup-and-stop", 0, NULL, 'p'},
+      {"segv-reset-count", 1, NULL, 'p'},
       {"segv-just-stop", 0, NULL, 'P'},
       {"nobacktrace", 0, NULL, 'n'}, /* turns off guile backtraces */
       {CLIENT_ID_STRING, required_argument, NULL, CLIENT_ID},
@@ -698,7 +698,7 @@ is probably of no use to you unless you're a session manager or debbuging.
       debugging = True; break;
     case 's':
       single = True; break;
-    case 'p':
+    case 'p': /* --segv-reset-count */
       /* still handle the segv, just do not reset to the main event handler */
       if (optarg == NULL) {
         segvs_to_reset = 0;
@@ -706,7 +706,7 @@ is probably of no use to you unless you're a session manager or debbuging.
         segvs_to_reset = atoi(optarg);
       };
       break;
-    case 'P':
+    case 'P': /* --segv-just-stop */
       /* do not even catch segv's */
       fHandleSegv = False; break;
     case 'd':
@@ -1416,7 +1416,7 @@ SigDone(int ARG_IGNORE(ignored))
 SIGNAL_T
 SigDoneSegv(int ARG_IGNORE(ignored))
 {
-  scwm_msg(ERR, "SigDoneSegv","Caught seg fault... please run with --permit-segv and report a bug!");
+  scwm_msg(ERR, "SigDoneSegv","Caught seg fault... please run with '--segv-reset-count 0' and report a bug!");
   if (segvs_to_reset-- > 0) {
     scwm_msg(ERR, "SigDoneSegv","Trying to continue... save your work if you still can!");
     siglongjmp(envHandleEventsLoop,1);
