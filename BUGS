@@ -1,3 +1,9 @@
+Passing a bad window from guile can cause scwm to dump core in ensure_valid()
+
+gjb gets random "Memory allocation error"s during window decorating
+(add_window, perhaps?);  two per window decorated.  They are not
+identified as to where the problem occurs...
+
 ! functions should be renamed to end with _x  -- This looks partially done...
 
 Possibly stop making resizes account for decorations, so that maximize

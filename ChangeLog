@@ -1,3 +1,14 @@
+Sat Nov  1 00:12:37 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Do dependecies in libs/ and scwm/ using Make info page's
+	suggested method
+
+	* Added send_key_press command
+
+	* Fix some bugs in send_button_press command
+
+	* Abstract out the key modifier functionality
+
 1997-10-29  Jens-Ulrik Holger Petersen  <petersen@kurims.kyoto-u.ac.jp>
 
 	* app/Makefile.in (scwm): Link to the top source directory, for
