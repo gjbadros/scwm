@@ -329,8 +329,8 @@ color_mult (unsigned short *red,
     g = (double) *green;
     b = (double) *blue;
 
-    if (r > g) {
-      if (r > b) {
+    if (r >= g) {
+      if (r >= b) {
 	max = r;
 	if (g < b) {
 	  min = g;
@@ -348,7 +348,7 @@ color_mult (unsigned short *red,
 	a = r - g;
       }
     } else {
-      if (g > b) {
+      if (g >= b) {
 	max = g;
 	if (b < r) {
 	  min = b;
