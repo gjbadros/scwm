@@ -1,3 +1,8 @@
+Mon Jul  5 17:17:16 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* background/background.c, proplist/scwmproplist.c,
+	xlib-drawing/drawing.c: Use VALIDATE_XXX macros.
+
 Fri Jul  2 22:25:22 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* proplist/scwmproplist.c: Largish cleanup of formal argument
