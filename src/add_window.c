@@ -110,7 +110,7 @@ here, in particular, those that control what hints will be respected
 for this window, and those that control how the window will be placed.
 
 This hook does not typically need to be used directly by the user;
-`window-style' from the "(app scwm style)" module provides a convenient
+`window-style' from the \"(app scwm style)\" module provides a convenient
 interface to setting the relevant parameters when a new window is
 created.
 
@@ -134,7 +134,7 @@ position, desk, viewport location and z-ordering of a window be done
 in the placement procedure instead.  It should be used for setting
 window styles, as the window geometry needs to be fully and correctly
 specified before the window is placed.  The `window-style' mechanism
-from the "(app scwm style)" module provides a convenient interface to
+from the \"(app scwm style)\" module provides a convenient interface to
 setting the relevant parameters when a new window is created. 
 
 See also `before-new-window-hook' and `before-place-new-window-hook'.");

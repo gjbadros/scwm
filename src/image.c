@@ -96,9 +96,7 @@ static SCM image_loader_hash_table = SCM_UNDEFINED;
 static SCM *pscm_image_load_path;
 
 SCWM_HOOK(image_not_found_hook, "image-not-found-hook", 1,
-          "Called with image name as a string when not found.");
-  
-
+"Called with image name as a string when not found.");
 
 static SCM str_default;
 static SCM str_empty;

@@ -123,7 +123,7 @@ SCWM_SYMBOL(sym_desk_click,"desk-click");
 
 SCWM_HOOK(x_configurerequest_hook,"X-ConfigureRequest-hook", 6,
 "This hook is invoked upon ConfigureRequest events.
-The arguments are: "(win icon? x y width height)" where win
+The arguments are: '(win icon? x y width height) where win
 is the window requesting the configuration change, icon? is #t
 iff that window's icon is requesting the change, x, y, width,
 and height are either integers or #f to indicate that that
