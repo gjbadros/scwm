@@ -1453,9 +1453,12 @@ CaptureAllWindows(void)
         }
       }
     }
-    Scr.fWindowsCaptured = True;
   } else {			/* must be a recapture */
     /* reborder all windows */
+    
+    /* avoid deadlock by preventing some actions
+       that only get run when Scr.fWindowsCaptured == True */
+    Scr.fWindowsCaptured = False;
     psw = Scr.ScwmRoot.next;
     for (i = 0; i < (int) nchildren; i++) {
       psw = PswFromWindow(dpy,children[i]);
@@ -1491,6 +1494,7 @@ CaptureAllWindows(void)
     XSync(dpy, False);
   }
 
+  Scr.fWindowsCaptured = True;
   isIconicState = DontCareState;
 
   if (children) XFree(children);
@@ -1763,7 +1767,7 @@ usage(void)
           "      [--dump|-o executable_filename]\n"
 #endif
 	  "      [--nobacktrace|-n] [--segv-cleanup-and-stop|-p] [--segv-just-stop|-P]\n"
-          "      [--no-document-formals|-N]\n"
+          "      [--document-formals|-N]\n"
 	  "      [--blackout|-b] [--" CLIENT_ID_STRING " id]\n"
 	  "      [--version|-V] [--help|-h]\n"
 	  , g_argv[0]);
@@ -1836,8 +1840,8 @@ SCM
 scwm_make_gsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char *szArgList)
 {
   static SCM sym_arglist = SCM_UNDEFINED;
-  if (SCM_UNDEFINED == sym_arglist)
-    sym_arglist = scm_permanent_object(((scm_cell *)scm_intern0("arglist"))->car);
+  if (!sym_arglist || UNSET_SCM(sym_arglist))
+    sym_arglist = scm_permanent_object(SCM_CAR(scm_intern0("arglist")));
   { /* scope */
   SCM p = scm_make_gsubr(name,req,opt,var,fcn);
   if (fDocumentPrimitiveFormals) {
@@ -1856,9 +1860,9 @@ scwm_make_igsubr(const char *name, int req, int opt, int var,
   extern SCM sym_interactive;
   /* GJB:FIXME:: a hack to guarantee that this is initialized
      since events.c has the SCWM_GLOBAL_SYMBOL definition of it */
-  if (SCM_BOOL_F == sym_interactive)
+  if (!sym_interactive || UNSET_SCM(sym_interactive))
     sym_interactive = 
-      scm_permanent_object(((scm_cell *)scm_intern0("interactive"))->car);
+      scm_permanent_object(SCM_CAR(scm_intern0("interactive")));
   { /* scope */
     SCM p = scwm_make_gsubr(name,req,opt,var,fcn,szArgList);
     scm_set_procedure_property_x(p,sym_interactive,
