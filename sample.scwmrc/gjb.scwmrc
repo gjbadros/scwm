@@ -450,9 +450,7 @@
 				   (string=? (window-class w) "XTerm")
 				   (string=? (window-class w) "NXTerm")) )
 			 #:warp-to-first #t
-			 #:proc animated-deiconify-to-viewport-focus-raise
-			 #:flash-window-proc flash-window-on
-			 #:unflash-window-proc unflash-window))
+			 #:proc animated-deiconify-to-viewport-focus-raise))
 
 
 ;;(select-window-from-window-list)
