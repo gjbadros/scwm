@@ -1,3 +1,8 @@
+Mon Sep 27 15:19:41 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* undo.scm: Move bindings into system.scwmrc; they shouldn't be in 
+	the module.
+
 Sat Sep 25 17:26:09 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* wavplay.scm: Handle SCWMDIR not set w/o error.

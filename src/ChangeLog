@@ -1,3 +1,28 @@
+Mon Sep 27 16:52:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Use setjmp/longjmp on non-BSD -- just a trial test to
+ 	see if sigsetjmp clobbers globals on Solaris/SGI but setjmp does
+ 	not.
+
+	* image.c: Use HAVE_LIBXPM to guard include of xpm.h, load-xpm
+	primitive.
+
+	* icons.c: Drop gratuitous include if xpm.h
+
+Mon Sep 27 15:25:45 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* menu.c: #ifdef out code if no XK_ISO_Left_Tab symbol (X11R5 --
+	e.g., Solaris -- does not have it).  Reduces functionality a bit
+	in that Shift-Tab won't go backwards in a menu for those users.
+
+	* focus.c: ws change
+
+	* callbacks.c: Added some debugging code, conditionally-compiled
+	out. 
+
+	* miscprocs.c: Added scwm_run_test_hook_0, scwm_run_test_hook_1
+	iff SCWM_TEST_HOOK_PROCS is #defined.
+
 Mon Sep 27 08:49:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Separate out ScwmReportX11Error function so it's easier

@@ -1,3 +1,9 @@
+Mon Sep 27 15:31:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Drop ui-constraints stuff unless
+	(scwm-is-constraint-enabled?) returns #t.  Add undo.scm's binding
+	here (removed from undo.scm). 
+
 Mon Sep 27 08:52:30 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use popup-style-menu for the 3rd button from the
