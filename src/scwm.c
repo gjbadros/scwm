@@ -66,7 +66,6 @@
 #endif
 
 #include <guile/gh.h>
-#include "scmtypes.h"
 #include "miscprocs.h"
 #include "binding.h"
 #include "decor.h"
@@ -270,7 +269,6 @@ scwm_main(int argc, char **argv)
   setlinebuf(stderr);
   setlinebuf(stdout);
   
-  init_scwm_types();
   init_callbacks();
   init_add_window();
   init_image();

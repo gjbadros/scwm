@@ -63,6 +63,15 @@ extern int g_argc;
 
 #define STREQ(a,b) (!strcmp(a,b))
 
+#define MAKE_SMOBFUNS(T) \
+static scm_smobfuns T ## _smobfuns = { \
+  &mark_ ## T, \
+  &free_ ## T, \
+  &print_ ## T,  0 }
+
+#define REGISTER_SCWMSMOBFUNS(T) scm_tc16_scwm_ ## T = scm_newsmob(& T ## _smobfuns)
+
+
 /* Check if the scm variable is undefined or #f -- these cases
    correspond to places where we want to use a default value
    either because the args were omitted, or #f was used to skip
