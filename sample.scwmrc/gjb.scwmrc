@@ -84,7 +84,7 @@
 		  modifier-key-bindings window-selection
 		  group preferences gnome-hints
 		  send-string quote
-		  property-respond
+		  property-respond highlight-current-window
 		  esdsound dir-focus
 		  )
 
@@ -1246,7 +1246,6 @@ union of all other window managers!
 (bind-mouse 'root 2 #f show-window-list-by-focus-with-geometry)
 (bind-mouse 'root "M-3" #f popup-desk)
 (bind-mouse 'root 3 #f popup-applications)
-(bind-mouse 'all "H-1" #f select-window-add-selection)
 (bind-mouse 'all "A-2" #f show-window-list-by-resource-with-geometry)
 
 (bind-key 'all "H-r" rename-window-interactively)
@@ -1316,11 +1315,20 @@ union of all other window managers!
   (interactive-resize (get-window) #f))
 
 ;; These always do opaque moves
-(bind-mouse 'all "C-S-M-2" #f interactive-move)
+;;(bind-mouse 'all "C-S-M-2" #f interactive-move)
+(bind-mouse 'all "C-S-M-2" #f interactive-move-selected-group-or-window)
 (bind-mouse 'all "C-S-M-3" #f interactive-resize)
 ;; These always do rubberband moves (except when constraint solver is active)
 (bind-mouse 'all "H-2" #f interactive-move-rubberband)
 (bind-mouse 'all "H-3" #f interactive-resize-rubberband)
+
+(bind-mouse 'all "H-1" #f select-window-add-selection)
+(bind-mouse 'all "H-S-1" #f select-window-add-selection)
+(bind-mouse 'all "H-A-1" #f select-window-add-selection)
+(bind-mouse 'all "H-S-2" #f interactive-move-selected-group-or-window)
+
+(bind-mouse 'all "H-M-3" #f popup-window-ops)
+
 
 (define (resize-halfscreen)
   (let ((w (current-window-with-pointer)))
@@ -1632,53 +1640,16 @@ union of all other window managers!
 
 (add-hook! change-desk-hook show-desk-name)
 
-(define current-highlighted-window #f)
-
-(define* (unflash-window-if-not-selected #&optional (win (window-context)))
-  (if (and win (not (window-is-selected? win)))
-      (begin (unflash-window win)
-	     (set! current-highlighted-window #f))))
-
-(define (flash-window-on-and-update-current-highlighted win)
-  (set! current-highlighted-window (flash-window-on win)))
-
-(define* (start-highlighting-current-window #&optional (win (window-context)))
-  (and win (set! current-highlighted-window (flash-window-on win)))
-  (add-hook! window-enter-hook flash-window-on-and-update-current-highlighted)
-  (add-hook! window-leave-hook unflash-window-if-not-selected))
-
-;; window-leave-hook  window-enter-hook
-
-(define* (end-highlighting-current-window 
-	  #&optional (win current-highlighted-window))
-  (and win (unflash-window-if-not-selected win))
-  (remove-hook! window-enter-hook flash-window-on-and-update-current-highlighted)
-  (remove-hook! window-leave-hook unflash-window-if-not-selected))
+(highlight-current-window XKM_HYPER_L XKM_SHIFT_L)
 
 ;; enable xterm patch's window flashing behaviour
 (start-property-respond)
-
-(bind-two-modifier-key-events
- XKM_HYPER_L XKM_SHIFT_L
- start-highlighting-current-window
- end-highlighting-current-window)
-
-(define (interactive-move-selected-group)
-  (interactive-move-group (selected-windows-list))
-  (end-highlighting-current-window)
-  (unselect-all-windows))
 
 (define (select-message-window)
   (id->message-window (car (select-viewport-position))))
 
 (define (select-and-hide-message-window)
   (message-window-hide! (select-message-window)))
-
-(bind-mouse 'all "H-S-1" #f select-window-add-selection)
-(bind-mouse 'all "H-A-1" #f select-window-add-selection)
-(bind-mouse 'all "H-S-2" #f interactive-move-selected-group)
-
-(bind-mouse 'all "H-M-3" #f popup-window-ops)
 
 (define (dir-focus-west) (dir-focus 'west))
 (define (dir-focus-south) (dir-focus 'south))
