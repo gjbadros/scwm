@@ -220,7 +220,8 @@ E.g., passing 0 answers 8, passing 1 answers 7, etc."
 	    (set! hoz-win vert-win))
 	(if (and hoz-win
 		 (eq? ()
-		      (ui-constraints-involving-two-windows hoz-win win)))
+		      (ui-constraints-involving-two-windows hoz-win win))
+		 (eq? (sticky-window? win) (sticky-window? hoz-win)))
 	    (let ((uic
 		   (make-ui-constraint uicc-strict-relpos
 				       (list (list hoz-win win) (list n1 n2)))))
@@ -231,8 +232,9 @@ E.g., passing 0 answers 8, passing 1 answers 7, etc."
     )
   )
   
-(define-public (snap-reset)
+(define*-public (snap-reset)
   "Turn off auto-snapping during interactive moves."
+  (interactive)
   (remove-hook! interactive-move-start-hook imsh)
   ;; (remove-hook! interactive-move-new-position-hook imnph)
   (remove-hook! interactive-move-finish-hook imeh)
@@ -243,6 +245,7 @@ E.g., passing 0 answers 8, passing 1 answers 7, etc."
 ;; (snap-initialize)
 (define*-public (snap-initialize #&optional (sw 25))
   "Turn on auto-snapping during interactive moves."
+  (interactive)
   (if (not (scwm-master-solver))
       (start-constraints))
   (set! current-windows '())

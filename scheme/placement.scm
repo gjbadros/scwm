@@ -25,6 +25,7 @@
   :use-module (app scwm focus-stack)
   :use-module (app scwm window-locations)
   :use-module (app scwm winops)
+  :use-module (app scwm animation)
   :use-module (app scwm virtual))
 
 
@@ -256,3 +257,21 @@ The resulting procedure should be used put in the `X-ConfigureRequest-hook'."
   (rubber-band-move win)
   (if resize
       (rubber-band-resize win)))
+
+
+;; (re-place-window)
+;; (re-place-window (get-window) smart-place-window)
+(define*-public (re-place-window #&optional (win (get-window)) (proc clever-place-window))
+  "Reposition WIN by re-placing it using PROC.
+PROC defaults to `clever-place-window'.  The
+return value is the new position of the window,
+or #f if it was not moved."
+  (let* ((wp (window-position win))
+	 (x (car wp))
+	 (y (cadr wp))
+	 (newpos (proc win #t x y)))
+    (if newpos
+	(let ((nx (car newpos))
+	      (ny (cadr newpos)))
+	  (animated-move-to nx ny win #t)))
+    newpos))

@@ -22,7 +22,9 @@
   :use-module (app scwm time-convert)
   :use-module (app scwm prompt-string)
   :use-module (app scwm gtk-table-display)
+  :use-module (app scwm undo)
   :use-module (app scwm winops)
+  :use-module (app scwm register)
   :use-module (app scwm path-cache)
   :use-module (app scwm optargs))
 
@@ -65,4 +67,12 @@ is a substring search."
 		   (let ((str (output-of-system-cmd (string-append "bookmark-grep 2>/dev/null " string))))
 		     (if (> (string-length str) 1)
 			 (gtk-table-from-string (chop-string str)
-						(lambda (vals) (netscape-goto-url (car vals)))))))))
+						#:select-proc (lambda (vals) (netscape-goto-url (car vals)))))))))
+
+(define*-public (gtk-register-info)
+  "Display a table containing Scwm registers and their contents"
+  (interactive)
+  (gtk-table-from-string (register-type-mapping-string)
+			 #:titles '("Register" "Contents")
+			 #:window-title "Registers"
+			 #:select-proc (lambda (str) (insert-undo-global) (jump-to-register (string->symbol (car str))))))

@@ -12,6 +12,10 @@
 
 (define register-alist '())
 
+(define-public (get-register-alist)
+  "Return the register-alist."
+  register-alist)
+
 (define*-public (get-register-name #&optional (descriptor #f))
   "Prompt for a register name and return a corresponding symbol.
 If DESCRIPTOR is given, then use DECRIPTOR before \"Register?\"
@@ -95,21 +99,44 @@ in the prompt."
 (define-public (list-of-windows? list-of-windows)
   (and-map window? list-of-windows))
 
+(define-public (register-value-type val)
+  (cond 
+   ((window? val) 'window)
+   ((window-configuration? val) 'window-configuration)
+   ((list-of-windows? val) 'list-of-windows)
+   (val 'global-window-configuration)
+   (else #f)))
+
 (define*-public (jump-to-register #&optional (register (get-register-name "Jump-to-")))
   "Restore the state saved in REGISTER."
   (interactive)
   (let ((val (get-register register)))
     (if val
-	(cond
-	 ((window? val) (focus-change-warp-pointer val))
-	 ((window-configuration? val) (copy-window-configuration val (car val))
-	  (focus-window (car val)))
-	 ((list-of-windows? val) (set-selected-windows-list! val))
-	 (val (restore-global-window-configuration val)))
+	(case (register-value-type val)
+	  ((window) (focus-change-warp-pointer val))
+	  ((window-configuration)
+	   (begin (copy-window-configuration val (car val))
+		  (focus-window (car val))))
+	  ((list-of-windows) (set-selected-windows-list! val))
+	  ((global-window-configuration) (restore-global-window-configuration val))
+	  (else (display-message-briefly "Cannot handle that register")))
 	(begin
 	  (display-message-briefly "Empty register")
 	  #f))))
-  
+
+(define-public (register-type-mapping)
+  (map (lambda (cell) 
+	 (string-append (symbol->string (car cell))
+			"\t"
+			(symbol->string (register-value-type (cdr cell)))))
+       (sort (get-register-alist) (lambda (cell) (string<? (symbol->string (car cell)))))))
+
+(define-public (register-type-mapping-string)
+  (let ((answer ""))
+    (for-each (lambda (str) (set! answer (string-append answer str "\n")))
+	      (register-type-mapping))
+    answer))
+
 #!
 register
 (bind-key 'all "H-j" jump-to-register)

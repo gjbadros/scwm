@@ -15,6 +15,7 @@
   :use-module (app scwm listops)
   :use-module (app scwm group)
   :use-module (app scwm winops)
+  :use-module (app scwm placement)
   :use-module (app scwm shove-window)
   :use-module (app scwm window-configuration)
   :use-module (app scwm xprop-extras)
@@ -109,6 +110,16 @@ stick, shove, set the style, group, etc."
     (menuitem "&Sloppy" #:action (lambda () (set-window-focus! 'sloppy win)))
     (menuitem "&None" #:action (lambda () (set-window-focus! 'none win))))))
 
+(define-public menu-re-place-window
+  (menu
+   (list
+    (menu-title "Re-place window") menu-separator
+    (menuitem "&Smart placement"
+	      #:action (lambda () (re-place-window (get-window) smart-place-window)))
+    (menuitem "&Clever placement"
+	      #:action (lambda () (re-place-window (get-window) clever-place-window)))
+    (menuitem "&Random placement"
+	      #:action (lambda () (re-place-window (get-window) random-place-window))))))
 
 (define-public menu-window-ops
   (menu
@@ -126,7 +137,6 @@ stick, shove, set the style, group, etc."
 	       #:action (thunk toggle-iconify))
     (menuitem "&Stick/Unstick" #:image-left "mini-stick.xpm" 
 	       #:action (thunk toggle-stick))
-    (menuitem "&Focus" #:submenu (lambda () (make-menu-focus-options (window-context))))
     (menuitem "Ma&ximize/Reset" #:action (thunk toggle-maximize-both))
     (menuitem "Ma&ximize &Tall/Reset" #:image-left "mini-maxtall.xpm" 
 	       #:action (thunk toggle-maximize-vertical))
@@ -137,11 +147,13 @@ stick, shove, set the style, group, etc."
     menu-separator
     (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
 	      #:action interactive-set-window-gravity!)
+    (menuitem "&Focus" #:submenu (lambda () (make-menu-focus-options (window-context))))
     (menuitem "Sho&ve" #:image-left "win-pos-center.xpm"
 	      #:submenu menu-window-shove)
+    (menuitem "Re-&place window" #:submenu menu-re-place-window)
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
     (if (defined? 'print-window)
-	(menuitem "&Print" #:action (thunk print-window))
+	(menuitem "Print" #:action (thunk print-window))
 	#f)
     menu-separator
     (menuitem "Group" #:submenu (lambda () (make-window-group-menu (window-context))))

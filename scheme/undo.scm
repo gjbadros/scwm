@@ -79,10 +79,11 @@ See also `push-undo-global'."
 
 (define-public (insert-undo-state state)
   "Insert STATE into the undo list at undo-index."
-  (if (= 0 undo-index)
+  (if (<= 0 undo-index)
       (push-undo-state state)
       (begin
-	(set-cdr! (list-ref undo-list (- undo-index 1)) (cons state undo-list))
+	(set-cdr! (list-ref undo-list (- undo-index 1)) 
+		  (cons state (list-tail undo-list undo-index)))
 	(set! undo-num-entries (+ undo-num-entries 1)))))
 
 (define-public (undo-state-at-index index)

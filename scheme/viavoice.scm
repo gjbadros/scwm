@@ -126,6 +126,7 @@ longer in use by another process."
 	      ;;; WARNING: be sure that the longer strings come first.
 	      ;;; Should just do this more logically, anyway
 	      (cond
+	       ((matches-command? "cotton") (animated-window-shade win))
 	       ((matches-command? "north west") (animated-move-to-nw win))
 	       ((matches-command? "north east") (animated-move-to-ne win))
 	       ((matches-command? "south west") (animated-move-to-sw win))
@@ -138,7 +139,6 @@ longer in use by another process."
 	       ((matches-command? "west") (animated-move-to-w win))
 	       ((matches-command? "east") (animated-move-to-e win))
 	       ((matches-command? "south") (animated-move-to-s win))
-	       ((matches-command? "cotton") (animated-window-shade win))
 	       ((matches-command? "close") (close-window win))
 	       ((matches-command? "window select") (select-window-toggle win))
 	       ((matches-command? "minimize") (animated-iconify win))
