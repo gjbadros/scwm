@@ -1,5 +1,15 @@
 Sat Nov 14 14:40:24 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* Makefile.am: install report-usage.scm
+
+	* report-usage.scm: New file which has a function to log usage. If
+ 	this works, users could log usage by doing:
+
+	(use-modules (app scwm report-usage))
+	(report-scwm-usage)
+
+	and we can remove support for logging usage from the core.
+
 	* style.scm: Add back style-one-window.
 
 	* animation.scm: Export set-animation!
