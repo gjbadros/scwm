@@ -1,4 +1,6 @@
-Wed Sep  1 10:47:00 1999    <gjb@cs.washington.edu>
+Wed Sep  1 14:03:19 1999    <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Go back to release 1.
 
 	* configure.in: Bump to 0.99.2pre3.
 
