@@ -1,6 +1,11 @@
+1998-10-09  Sam Steingold  <sds@goems.com>
+
+	* std-menus.scm (make-hosts-menu): accept a (host . command) as an
+	element of host-list.
+
 1998-10-07  Todd Larason  <jtl@teeny.molehill.org>
 
-	* base.scm (menu-style): treat #:font the same as the other options; 
+	* base.scm (menu-style): treat #:font the same as the other options;
 	new option #:look
 
 1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
@@ -14,10 +19,10 @@
 
 	* minimal.scm: set-menu-foreground! and set-menu-background!
 	primitives renamed set-not-menu-foreground! and
-	set-not-menu-background!; set-menu-stipple! removed;  default-menu 
+	set-not-menu-background!; set-menu-stipple! removed;  default-menu
 	passes colors and font to make-menu as they're now required arguments
 
-	* base.scm: 
+	* base.scm:
 	new procedures: set-menu-stipple!, set-menu-font! and
 	set-menu-look!
 	(menu-stipple-color): new
@@ -29,7 +34,7 @@
 	(set-menu-look!): new
 	(menu): #:color-stipple defaults to 'menu-stipple-color;
 	#:menu-look added
-	
+
 
 1998-10-05  Todd Larason  <jtl@teeny.molehill.org>
 
@@ -49,8 +54,8 @@ Sun Oct  4 20:25:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	args; it's one long string already. Thanks to Doug McNaught
  	<doug@tc.net>.
 
-	Made "Echo" use `display' instead of `write'. 
-	
+	Made "Echo" use `display' instead of `write'.
+
 	* cached-program-exists.scm: Make cached-program-exists? check
  	debug-program-cache each time called so debugging can be turned on
  	dynamically; make debug-program-cache a public definition so the
@@ -75,7 +80,7 @@ Wed Sep 30 13:57:14 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Mon Sep 28 08:14:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* winops.scm: Ken Pizzini's fixes to maximize to use client units, 
+	* winops.scm: Ken Pizzini's fixes to maximize to use client units,
 	and have unmaximize only undo changes attributable to the last
 	maximize action.
 
@@ -119,10 +124,10 @@ Wed Sep 23 11:11:58 1998  Greg Badros  <gjb@cs.washington.edu>
 	* flux.scm: use-module (app scwm wininfo) to get visible? defined;
 	Added X-atomic-property-set-if-unset! implemented with
 	with-grabbed-server primitive; Minor cleanup on run-in-netscape,
-	and allowing a netscape window to be passed to send a command to a 
+	and allowing a netscape window to be passed to send a command to a
 	particular one.
 
-	* base.scm: Added with-grabbed-server 
+	* base.scm: Added with-grabbed-server
 
 Mon Sep 21 11:15:34 1998  Greg Badros  <gjb@cs.washington.edu>
 
@@ -133,7 +138,7 @@ Mon Sep 21 11:15:34 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Mon Sep 21 10:28:48 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* flux.scm: Added `select-window-group' to allow choosing multiple 
+	* flux.scm: Added `select-window-group' to allow choosing multiple
 	windows interactively.
 
 Sat Sep 19 12:01:16 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -193,7 +198,7 @@ Thu Sep 17 11:05:33 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Thu Sep 17 09:16:53 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* flux.scm: Added `delta-position' and `move-window-relative' (the 
+	* flux.scm: Added `delta-position' and `move-window-relative' (the
 	latter uses new `with-window' macro
 
 	* base.scm:  Make bell an alias for beep (instead of a macro).
@@ -213,7 +218,7 @@ Tue Sep 15 09:37:57 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Tue Sep 15 08:31:28 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* winops.scm: More changes to maximize from Ken Pizzini.  Gets the 
+	* winops.scm: More changes to maximize from Ken Pizzini.  Gets the
 	unmaximize to undo the maximize, while still moving minimally to
 	perform the maximize.
 
@@ -229,7 +234,7 @@ Mon Sep 14 10:01:35 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Sun Sep 13 19:29:10 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* flux.scm: Fixed typo bug in X-synthetic-send-string -- use `win' 
+	* flux.scm: Fixed typo bug in X-synthetic-send-string -- use `win'
 	instead of `w'
 
 Sun Sep 13 13:00:37 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -260,26 +265,26 @@ Fri Sep 11 17:08:01 1998  Greg Badros  <gjb@cs.washington.edu>
 	show-window-list-menu so that we can do stuff like this:
 
  	(define (show-xterm-window-list-menu)
-            (show-window-list-menu #:only 
-	        (lambda (w) (string=? (window-class w) "XTerm")) 
+            (show-window-list-menu #:only
+	        (lambda (w) (string=? (window-class w) "XTerm"))
 			 #:warp-to-first #t
 			 #:flash-window-proc flash-window
 			 #:unflash-window-proc unflash-window))
 
 	  to flash windows that are currently highlighted.  Needs better
-	  configurability for hover timeouts, but that'll wait until after 
+	  configurability for hover timeouts, but that'll wait until after
 	  the event rewrite, as menus may change a bit then.
 
 Fri Sep 11 15:49:33 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `unflash-window', and make `flash-window' store
 	old colors in scheme properties, instead of a lambda closure (for
-	support of highlighting the current window using hover hooks in 
+	support of highlighting the current window using hover hooks in
 	the menuing code [during window-list popups])
 
 Fri Sep 11 13:41:03 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* winops.scm: Added animated-move-window (taking virtual coords).  
+	* winops.scm: Added animated-move-window (taking virtual coords).
 
 	* base.scm: Added a bunch of utility functions to the base
 	module: viewport->virtual, virtual->viewport, viewport-size,
@@ -312,7 +317,7 @@ Thu Sep 10 11:08:53 1998  Greg Badros  <gjb@cs.washington.edu>
 	* fvwm-module.scm: Make add-window non-public again (changed for
  	debugging a while back), and give comment response (to MS's GJBFIX
  	note) about why o_nonblock is necessary on the output pipe.
-	
+
 Wed Sep  9 14:25:21 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `display-message-briefly'
@@ -322,8 +327,8 @@ Wed Sep  9 12:40:50 1998  Greg Badros  <gjb@cs.washington.edu>
 	* base.scm: Added use-scwm-system variable to control whether
 	`system' or `scwm-system' is used.  Wrote `scwm-system' to work
 	around a problem in my Linux system's "system" call which ends up
-	having scwm/guile propagate a SIGINT to the child processes in the 
-	same process group.  Make execute use use-scwm-system to decide on 
+	having scwm/guile propagate a SIGINT to the child processes in the
+	same process group.  Make execute use use-scwm-system to decide on
 	using either `system' or `scwm-system'.
 
 Tue Sep  8 17:12:59 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -361,7 +366,7 @@ Sun Sep  6 16:20:20 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* auto-raise.scm: Added VAR comments, and move the vars into the
 	root module.  Also added default-auto-raise-unfocus-delay instead
-	of falling back to the default-auto-raise-delay since these delays 
+	of falling back to the default-auto-raise-delay since these delays
 	seem conceptually asymmetric to me
 
 	* Makefile.am, user-options.scm:  added user-options.scm
@@ -374,7 +379,7 @@ Sun Sep  6 15:37:45 1998  Greg Badros  <gjb@cs.washington.edu>
 Sat Sep  5 15:34:59 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: fix unbalenced paren.
-	
+
 	* Makefile.am: Added sort.scm
 
 	* winlist.scm, wininfo.scm, flux.scm: Document more procedures,
@@ -394,7 +399,7 @@ Sat Sep  5 13:21:02 1998  Greg Badros  <gjb@cs.washington.edu>
 Fri Sep  4 18:57:49 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Added docs for some user variables, and document
-	them a bit better.  Very tentative format.  In particular, it'd be 
+	them a bit better.  Very tentative format.  In particular, it'd be
 	better if doc strings worked on variables (are they supposed to?)
 
 Fri Sep  4 18:54:56 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -408,7 +413,7 @@ Fri Sep  4 11:52:12 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Fri Sep  4 08:44:31 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* winops.scm: Make display-area a variable, and use display-width, 
+	* winops.scm: Make display-area a variable, and use display-width,
 	display-height
 
 	* fvwm-module.scm: Added debug-fvwm-module var, turn on
@@ -425,7 +430,7 @@ Fri Sep  4 08:44:31 1998  Greg Badros  <gjb@cs.washington.edu>
 	current-input-port, not current-output-port. fixed.
 
 	* base.scm: Define vars display-width, display-height and use
-	them. 
+	them.
 
 1998-09-03  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
@@ -477,7 +482,7 @@ Wed Sep  2 09:58:52 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Tue Sep  1 16:31:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* base.scm: Added move-to, since move-window is the primitive that 
+	* base.scm: Added move-to, since move-window is the primitive that
 	move-to used to be.  move-to moves a window to a viewport
 	position, move-window (the primitive) moves a window to a virtual position
 
@@ -495,7 +500,7 @@ Tue Sep  1 16:31:25 1998  Greg Badros  <gjb@cs.washington.edu>
 	interface.
 
 	* tests/properties.scm, tests/window-opns.scm: Removed tests for
-	old X property interface, added some for the new one. 
+	old X property interface, added some for the new one.
 
 Tue Aug 25 14:37:43 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
@@ -519,8 +524,8 @@ Fri Aug 14 17:13:35 1998  Greg Badros  <gjb@cs.washington.edu>
 	* winops.scm: Added vars `opaque-move-percent' and
 	  `opaque-resize-percent', procs `window-frame-area' and
 	  `display-area', user-procs `resize-opaquely?' and
-	  `move-opaquely?', and procs `interactive-move-maybe-opaque', 
-	  `interactive-resize-maybe-opaque', `move-or-raise-maybe-opaque', 
+	  `move-opaquely?', and procs `interactive-move-maybe-opaque',
+	  `interactive-resize-maybe-opaque', `move-or-raise-maybe-opaque',
 	  `resize-or-raise-maybe-opaque'.  Document toggle-maximize.
 
 	* std-menus.scm, prefs-menu.scm: Use new form of run-in-xterm w/
@@ -533,11 +538,11 @@ Fri Aug 14 17:13:35 1998  Greg Badros  <gjb@cs.washington.edu>
 	* base.scm: Drop xterm-command to just "xterm", and make
 	  run-in-xterm now take #:xterm-options STRING to give options to
 	  the xterm program.  It is assummed that "-e" is used as the
-	  argument to invoke the CMD.  Also added `scwm-user-var' macro as 
+	  argument to invoke the CMD.  Also added `scwm-user-var' macro as
 	  a means at dynamically looking up a variable in
 	  `the-root-module'.  This may not be the right way to do this--
 	  feedback is appreciated.
-	
+
 Thu Aug 13 16:20:43 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* minimal.scm: Document all functions.
@@ -594,7 +599,7 @@ Fri Aug  7 17:57:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	* wininfo.scm: Add windows-overlap? procedure to determine if two
  	windows overlap. Add window-overlaps-window? wrapper for this
  	which basically Currys it.
-	
+
 
 1998-08-07  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
@@ -628,9 +633,9 @@ Sun Aug  2 16:31:41 1998  Greg Badros  <gjb@cs.washington.edu>
 	  improved wildcard-matcher that distinguishes among Class,
 	  Resource, Title, Icon-name, Window-machine-name, etc).
 
-	* flux.scm: Added printable-char->keysym-string and use it to make 
+	* flux.scm: Added printable-char->keysym-string and use it to make
 	  X-synthetic-send-string work with embedded spaces, newlines,
-	  etc.  It's a very primitive keyboard macro facility, now.  Added 
+	  etc.  It's a very primitive keyboard macro facility, now.  Added
 	  color->string as an accessor to the name property of a color
 	  color->object.
 
@@ -679,7 +684,7 @@ Thu Jul 30 20:21:18 1998  Greg Badros  <gjb@cs.washington.edu>
 Wed Jul 29 19:20:46 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* doc.scm: Added
-	
+
 	* flux.scm: Move doc-files and documentation into doc.scm; Added
 	  find-window-by-name and window-bottom from Harvey Stein.
 
@@ -712,7 +717,7 @@ Mon Jul 27 20:07:17 1998  Greg Badros  <gjb@cs.washington.edu>
 	should be a better base for fvwm2 emulation, as well as a more
 	convenient interface for users. Added/renamed/modified:
 
-	variable: fvwm2-module-path 
+	variable: fvwm2-module-path
 
 	register-fvwm2-module-config MODULE-TYPE . ARGS
 
@@ -726,7 +731,7 @@ Mon Jul 27 20:07:17 1998  Greg Badros  <gjb@cs.washington.edu>
 	kill-fvwm2-modules-by-name MODULE-NAME
 
 	See the comment at the top of the file for more details.
-	
+
 Tue Jul 21 14:31:08 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* tests/constraints.scm: Added sample of how to write constriants
@@ -752,7 +757,7 @@ Tue Jul 21 14:31:08 1998  Greg Badros  <gjb@cs.washington.edu>
 	* fvwm-module.scm: Support the broadcast-mini-icon-hook. Also,
 	make send-window-list send the complete list of information, just
 	like fvwm2 sends it. Many things were missing before.
-	
+
 	* fvwm-module.scm (run-fvwm-module): Make sure to do something
 	more sensible when reciving a packet that specifies no
 	window. Patch from Danius Michaelides <danius@duff.org>
@@ -763,7 +768,7 @@ Tue Jul 21 14:31:08 1998  Greg Badros  <gjb@cs.washington.edu>
 	command; this lets Fvwm modules evaluate arbitrary Scheme
 	expressions, allowing for FvwmButtons configs for instance, to be
 	very flexible. Patch from Danius Michaelides <danius@duff.org>
-	
+
 1998-07-15  Maciej Stachowiak  <maciej@roc-ny2-12.ix.netcom.com>
 
 	* style.scm: Added #:placement-proc and #:transient-placement-proc
@@ -794,7 +799,7 @@ Mon Jul  6 01:51:30 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	* base.scm: comment out the remove-hook! macro, since there is
 	also code that defines the macro iff it's not already defined;
 	add reset-hook! macro
-	set invalid-interaction-hook and cannot-grab-hook to ring the bell 
+	set invalid-interaction-hook and cannot-grab-hook to ring the bell
 	with (beep)
 
 1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-21.ix.netcom.com>
@@ -804,7 +809,7 @@ Mon Jul  6 01:51:30 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 1998-06-23  Maciej Stachowiak  <maciej@roc-ny1-07.ix.netcom.com>
 
-	* std-menus.scm: Use the (ice-9 regex) module. 
+	* std-menus.scm: Use the (ice-9 regex) module.
 
 1998-06-20  Maciej Stachowiak  <maciej@localhost.localdomain>
 
@@ -923,7 +928,7 @@ Wed Mar 11 21:05:11 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	Bucky LaDieu <nega@vt.edu>.
 
 Tue Mar 10 22:39:58 1998  Greg Badros  <gjb@cs.washington.edu>
-	
+
 	* fvwm-compat.scm: Added a bunch of commented out functions for
  	FvwmM4 pre-defines; these need to be fleshed out, but I wanted to
  	get the code started so I could see/think about what new
@@ -946,7 +951,7 @@ Thu Mar  5 00:33:50 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 1998-03-04  Jens-Ulrik Petersen  <petersen@kurims.kyoto-u.ac.jp>
 
-	* winlist.scm (circulate): Improved its behaviour when there is no 
+	* winlist.scm (circulate): Improved its behaviour when there is no
 	window with focus.
 
 Mon Mar  2 23:49:19 1998  Maciej Stachowiak  <mstachow@mit.edu>
@@ -988,7 +993,7 @@ Sat Feb 28 01:34:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	Makefile.in: Install image-loaders.scm.
 
 	* Makefile.in: Install wmconfig-menu.scm, std-menus.scm
-	
+
 	* base.scm: Added run-in-xterm from Sam Steingold <sds@usa.net>
 
 	* std-menus.scm: Renamed the former xlock-menu.scm to this and
@@ -1015,7 +1020,7 @@ Wed Feb 25 21:39:58 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* base.scm: Added fold-menu-list and exe, contributed by Sam
  	Steingold.
-	
+
 	fold-menu-list takes a menu and an optional number of lines, and
  	splits it at that number of lines (or 30 by default), adding
  	"more..."-labeled submenu entries. exe is just a wrapper around
@@ -1062,7 +1067,7 @@ Mon Nov 10 05:43:11 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* fvwm-compat.scm: In fvwm-pipe-read, use dup to properly connect
  	the pipe to the standard output for the subprocess.
-	
+
 	* style.scm: Use make-image in lieu of make-picture.
 
 Mon Nov 10 00:16:04 1997  Greg J. Badros  <gjb@cs.washington.edu>
@@ -1162,7 +1167,7 @@ Fri Oct 17 18:18:55 1997  Maciej Stachowiak  <mstachow@mit.edu>
 	* style.scm: The 'new-window and 'new-window-hint event handlers
  	were changes to call the old handler first and then execute the
  	style hooks.
-	
+
 	Also, the #:lenience style option was added.
 
 	* base.scm: Fixed a bug in move-viewport - the let syntax was
