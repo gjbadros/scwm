@@ -187,10 +187,17 @@ HandleEvents()
 
   DBUG("HandleEvents", "Routine Entered");
 
+#ifdef HAVE_SAFE_SCM_EVAL_STRING
   if (interactive) {
     repl_fd = SCM_INUM(scm_fileno(scm_current_input_port()));
 
-    repl_th = gh_eval_str(
+    repl_th = gh_eval_str( 
+			  /* FIXMS - gross hack alert: pretend we don't
+			     have Scheme access to readline if we do so
+			     that scwm -i works. Do this right later. */
+#ifdef HAVE_SCM_READLINE
+			   "(delq! 'readline *features*)"
+#endif /* HAVE_SCM_READLINE */
 			   "(letrec "
 			   "    ((wrap-port-continuing-read "
 			   "      (lambda (port cont) "
@@ -215,13 +222,15 @@ HandleEvents()
 			   "		     (catch #t "
 			   "			    (lambda () (top-repl)) "
 			   "			    (lambda args args)))) "
-			   "	     (close-port wrapped-input))))))) "
+			   "	     (close-port wrapped-input)))))))"
 			   "  (set-repl-prompt! \"scwm> \")"
-			   "  (continuing-top-repl)) ");
+			   "  (continuing-top-repl))");
     if (!gh_procedure_p(repl_th)) {
       interactive = 0;
     }
   }
+  #endif /* HAVE_SAFE_SCM_EVAL_STR */
+
   while (TRUE) {
     last_event_type = 0;
     switch (My_XNextEvent(dpy, &Event)) {
@@ -1434,9 +1443,12 @@ My_XNextEvent(Display * dpy, XEvent * event)
 
   FD_ZERO(&in_fdset);
   FD_SET(x_fd, &in_fdset);
+#ifdef HAVE_SAFE_SCM_EVAL_STRING
   if (interactive) {
     FD_SET(repl_fd, &in_fdset);
   }
+#endif /* HAVE_SAFE_SCM_EVAL_STRING */
+
   FD_ZERO(&out_fdset);
 
 #ifdef OLD_MODULE_CODE
