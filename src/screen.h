@@ -224,9 +224,9 @@ typedef struct ScreenInfo {
 
   SCM menu_font;		 /* font structure for menus, resize/move gadgets */
   SCM icon_font;                 /* for icon labels */
-  SCM size_window_font;          /* font for the size/position window */
-  SCM size_window_fg;          /* fg color for the size/position window */
-  SCM size_window_bg;          /* bg color for the size/position window */
+  SCM msg_window_font;          /* font for the size/position window */
+  SCM msg_window_fg;          /* fg color for the size/position window */
+  SCM msg_window_bg;          /* bg color for the size/position window */
 
   GC TransMaskGC;		/* GC for transparency masks */
   GC DrawGC;			/* GC to draw lines for move and resize */
