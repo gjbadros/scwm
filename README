@@ -1,10 +1,14 @@
-SCWM 0.8
+Scwm 0.8
 
 This is a beta release of
 
-SCWM, the Scheme Configurable Window Manager.
+Scwm, The Scheme Configurable Window Manager.
 
-SCWM is a dynamic and extensible window manager based on Guile Scheme.
+Web site: http://huis-clos.mit.edu/scwm/
+Ftp directory: ftp://huis-clos.mit.edu/pub/scwm/
+
+
+Scwm is a dynamic and extensible window manager based on Guile Scheme.
 It descends loosely from fvwm2 and supports virtually all fvwm2
 functionality (module support is still only beta-quality), and is far more
 powerful thanks to the embedded Scheme interpreter, and all of its features
@@ -28,11 +32,11 @@ Other additional features scwm provides are:
 
 This release, although labeled beta, is reasonably stable and
 exceedingly useful.  Many individuals, including the developers, have
-been using SCWM as their primary window manager for several months.  We
+been using Scwm as their primary window manager for several months.  We
 make every effort to eliminate segmentation faults and other bugs, but
 make no guarantees -- use at your own risk, as always.
 
-SCWM builds on i386-pc-linux, i386-pc-freebsd, sparc-sun-solaris,
+Scwm builds on i386-pc-linux, i386-pc-freebsd, sparc-sun-solaris,
 mips-sgi-irix, and generally any platform where both fvwm2 and guile
 will build.  Note that we recommend using recent developer's snapshots
 of guile until guile 1.3 is released (guile 1.2 may work with some
@@ -41,7 +45,7 @@ tweaking). See the file INSTALL for further instructions.
 There's various kinds of documentation and random info in the doc
 directory, and you can see some examples of what might be done in the
 startup files included in the sample.scwmrc/ directory.  Also consider
-browsing the SCWM modules in the scheme/ and the example/test code in
+browsing the Scwm modules in the scheme/ and the example/test code in
 the scheme/tests/ directory, 
 
 Things to look for in the near future include: an event-binding system
@@ -50,7 +54,7 @@ better support for using guile-gtk (and perhaps support for guile-tk),
 dynamically loadable primitives (separating Scwm into smaller pieces for
 a leaner memory footprint), and much much more.
 
-The copyright for the code in the SCWM and libs subdirectories is the
+The copyright for the code in the Scwm and libs subdirectories is the
 fvwm copyright, which may be found in COPYING.FVWM. Several files may
 have a slightly different copyright, or be under our copyright. The
 files in the scheme directory are under GPL (see scheme/COPYING). The

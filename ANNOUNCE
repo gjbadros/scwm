@@ -22,7 +22,7 @@ Greg J. Badros <gjb@cs.washington.edu>
 
 Some information about scwm is available at:
 
-http://web.mit.edu/mstachow/www/scwm.html
+http://huis-clos.mit.edu/scwm/
 
 There are also scwm-discuss@huis-clos.mit.edu and
 scwm-announce@huis-clos.mit.edu mailing lists for disscussion and
@@ -33,10 +33,10 @@ majordomo@huis-clos.mit.edu
 
 You can download the latest scwm package from:
 
-http://web.mit.edu/mstachow/www/scwm-0.8.tar.gz
+ftp://huis-clos.mit.edu/pub/scwm/scwm-0.8.tar.gz
 
 There is also
-http://web.mit.edu/mstachow/www/scwm-icons-0.8.tar.gz
+ftp://huis-clos.mit.edu/pub/scwm/scwm-icons-0.8.tar.gz
 
 which has a number of images for use with scwm as icons, textures,
 buttons, etc. Some of these images are not available otherwise.

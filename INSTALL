@@ -2,7 +2,7 @@ INSTALLING SCWM
 
 Brief Installation Instructions ===========================================
 
-To build SCWM on unix, there are two basic steps:
+To build Scwm on unix, there are two basic steps:
 
         1. Type "./configure", to configure the package for your system.
         2. Type "make", to build the package.
@@ -21,7 +21,7 @@ The `make' command builds several things:
    - Two executables, `utilities/scwmexec/scwmexec' and
      `utilities/scwmrepl/scwmrepl
 
-To install SCWM, type `make install'.  This installs the executable
+To install Scwm, type `make install'.  This installs the executable
 mentioned above, as well as a system.scwmrc file and several guile
 modules written in Scheme that provide additional window manager
 commands. 
@@ -54,7 +54,7 @@ sample.scwmrc/system.scwmrc file to your home directory as
 colon-separated list of directories, including the directory
 containing this INSTALL file.
 
-For example, suppose the SCWM distribution unpacked into a directory
+For example, suppose the Scwm distribution unpacked into a directory
 called `/home/mstachow/scwm-0.7' (so the full name of this file would be
 `/home/mstachow/scwm-0.7/INSTALL').  Then you might say
 

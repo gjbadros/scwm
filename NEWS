@@ -6,6 +6,10 @@ Changes to scwm-0.8 (released XX-August-1998)
 
 * extract-docs documentation extraction system
 
+* usage-logging system -- UDP packet gets sent to a counter machine
+  every time scwm starts up.  Disable by setting SCWM_DO_NOT_LOG_USAGE
+  environment variable before starting scwm
+
 * all primitives have been documented
 
 * better standardized names, more symmetric getters and setters

@@ -90,7 +90,7 @@ shaded make the wm lose. [ reported by Oleg Tihnov ]
 2. When I quit a X app, the focus is usually given to a window I don't 
    want to have focus.
 
-Jens	<http://www.kurims.kyoto-u.ac.jp/~petersen/>
+Jens
 
 
 Possibly stop making resizes account for decorations, so that maximize
