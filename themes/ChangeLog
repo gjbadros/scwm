@@ -1,3 +1,11 @@
+Mon Apr 12 17:36:24 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* */theme.scm: Fix hilight -> highlight renaming.  This had been
+	broken for a while; must remember to check for .scm files from
+	./scwm, not ./scwm/scheme.
+
+	* Makefile.am: Make afterstep, twm get installed properly.
+
 Thu Mar 25 20:24:40 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (afterstep.@TAR_SUFFIX@): Added afterstep

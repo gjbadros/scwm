@@ -1,3 +1,13 @@
+Mon Apr 12 19:03:32 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added H + Button1 to highlight the current window
+	(see flux.scm).  Moved by-resource window-list to H + Button2.
+
+Mon Apr 12 18:23:44 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added enable-constraint-solver, and root-menu option 
+	to invoke it.  Also uncomment run-dot-xclients-at-startup.
+
 Tue Apr  6 12:35:17 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* *.scwmrc: Replace hilight with highlight. Replace 'sidebar with

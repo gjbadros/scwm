@@ -1,3 +1,39 @@
+Mon Apr 12 19:12:56 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-buttons.scm: Call gtk-widget-show on the buttons
+	before the pixmaps (avoids some gtk warnings for me, I think).
+
+	* gtk.scm: Use find-file-in-path for
+	gtk-pixmap-new-search-scwm-path.
+
+	* group.scm: Permit `group->windows' to take a list of windows as
+	the group, and just return it.  Thus, we can use flux.scm's new
+	`selected-windows-list' proc and treat the highlighted windows as
+	a group.
+
+	* flux.scm: Drop
+	`select-window-interactively-and-highlight'. Added
+	`selected-windows-list', `select-window-and-toggle-highlight',
+	`unselect-all-windows'.  Fix `flash-window' and `unflash-window'
+	to be a bit more robust.  (How do you delete object properties?)
+
+	* constraints.scm: Do not call (start-constraints) at load time.
+
+Mon Apr 12 17:55:24 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* preferences.scm: Added `scwm-options-string' proc to return a
+	string that can be evaluated to set all the options to the values
+	that they are currently.  Added read-{color,font,proc} and use
+	them via read-hash-extend so that colors, fonts, and procedures
+	can be read in from their printable forms (procedures with some
+	obvious module-related snafus).  This goes a long way to making
+	preferences persistable!
+
+Mon Apr 12 17:49:15 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* themes.scm: Do not catch errors-- it's far more useful to see
+	the error output for now.
+
 1999-04-11  Todd Larason  <jtl@molehill.org>
 
 	* image-loaders.scm ((support-image-conversion)): don't actually
