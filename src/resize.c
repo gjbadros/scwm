@@ -141,8 +141,8 @@ DisplaySize(ScwmWindow * psw, int width, int height, Bool Init)
   if (Init) {
     XClearWindow(dpy, Scr.SizeWindow);
     if (Scr.d_depth >= 2)
-      RelieveWindow(tmp_win,
-	       Scr.SizeWindow, 0, 0, Scr.SizeStringWidth + SIZE_HINDENT * 2,
+      RelieveWindow(psw,
+                    Scr.SizeWindow, 0, 0, Scr.SizeStringWidth + SIZE_HINDENT * 2,
 		    log_ret.height + SIZE_VINDENT * 2,
 		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
   } else {
