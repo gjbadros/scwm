@@ -1,5 +1,11 @@
 1998-07-30  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
 
+	* decor.c: Make the window argument to `set-window-decor!'
+	mandatory and first. Add the corresponding getter, `window-decor'.
+
+	* color.c: API review: Added menu-foreground, menu-background,
+	menu-stipple primitives w/ docs.	
+
 	* window.h, window.c: Window structure changes, phase 1. Added
 	other_properties member to window structure; GC protect it and
 	initialize it to an empty hash table. Add set-window-property! and

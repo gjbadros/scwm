@@ -1,5 +1,8 @@
 1998-07-30  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
 
+	* decor.scm (#:use-decor): Deal with reversing the arguments to
+	set-window-decor! for this style option.
+
 	* fvwm-eval.scm: Major improvements from Danius Michaelides
 	<danius@duff.org>; many more fvwm commands are now supported. See
 	the end of the file for the complete support status.

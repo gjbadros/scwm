@@ -719,6 +719,16 @@ SCWM_PROC(set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
 }
 #undef FUNC_NAME
 
+SCWM_PROC (menu_foreground, "menu-foreground", 0, 0, 0,
+           () )
+     /** Return the default foreground color for menus.
+      */
+#define FUNC_NAME s_menu_foreground
+{ 
+  return (Scr.MenuColors.fg);
+}
+#undef FUNC_NAME
+
 
 SCWM_PROC(set_menu_background_x, "set-menu-background!", 1, 0, 0,
            (SCM bg) )
@@ -774,6 +784,17 @@ SCWM_PROC(set_menu_background_x, "set-menu-background!", 1, 0, 0,
 #undef FUNC_NAME
 
 
+SCWM_PROC (menu_background, "menu-background", 0, 0, 0,
+           () )
+     /** Return the default background color for menus.
+      */
+#define FUNC_NAME s_menu_background
+{ 
+  return (Scr.MenuColors.bg);
+}
+#undef FUNC_NAME
+
+
 /* FIXGJB: I am not sure this is used for anything any more. */
 SCWM_PROC(set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0,
            (SCM st) )
@@ -810,6 +831,18 @@ May not be used any longer. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC (menu_stipple, "menu-stipple", 0, 0, 0,
+           () )
+     /** Return the default stipple color for menus.
+May not be used any more.
+      */
+#define FUNC_NAME s_menu_stipple
+{ 
+  return (Scr.MenuStippleColors.fg);
+}
+#undef FUNC_NAME
+
+
 MAKE_SMOBFUNS(color);
 
 void 
@@ -840,3 +873,4 @@ init_color()
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
+

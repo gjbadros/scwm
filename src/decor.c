@@ -304,15 +304,19 @@ SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_window_decor_x, "set-window-decor!", 1, 1, 0,
-          (SCM decor, SCM win))
-     /** Set WIN's decor to DECOR. If WIN is not given, it defaults to
-the window context in the usual way. */
+SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
+          (SCM win, SCM decor))
+     /** Set WIN's decor to DECOR, updating it's decorations appropriately. */
 #define FUNC_NAME s_set_window_decor_x
 {
   int old_height, extra_height;
   ScwmDecor *fl;
   ScwmWindow *psw;
+
+  if (!WINDOWP(win) || !VALIDWINP(win)) {
+    scm_wrong_type_arg (FUNC_NAME, 1, win);
+  }
+  psw = PSWFROMSCMWIN(win);
 
   if (DECORP(decor)) {
     fl = SCWMDECOR(decor);
@@ -320,8 +324,6 @@ the window context in the usual way. */
     scm_wrong_type_arg(FUNC_NAME, 1, decor);
   }
 
-  VALIDATEN(win, 2, FUNC_NAME);
-  psw = PSWFROMSCMWIN(win);
 
   old_height = psw->fl->TitleHeight;
 
@@ -336,6 +338,24 @@ the window context in the usual way. */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+SCWM_PROC(set_window_decor_x, "window-decor", 1, 0, 0,
+          (SCM win))
+     /** Return WIN's decor. */
+#define FUNC_NAME s_window_decor
+{
+  ScwmWindow *psw;
+
+  if (!WINDOWP(win) || !VALIDWINP(win)) {
+    scm_wrong_type_arg (FUNC_NAME, 1, win);
+  }
+  psw = PSWFROMSCMWIN(win);
+
+  return (psw->fl->scmdecor);
+}
+#undef FUNC_NAME
+
+
 
 MAKE_SMOBFUNS(decor);
 
