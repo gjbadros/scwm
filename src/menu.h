@@ -89,12 +89,19 @@ struct DynamicMenu_tag
 
 #define SAFE_MENU(X)  (MENU_P((X))? MENU((X)): NULL)
 
-#define DYNAMIC_MENU_P(X)  (gh_symbol_p((X))? \
-			    MENU_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
-			    MENU_P((X)))
-#define DYNAMIC_SAFE_MENU(X)  (gh_symbol_p((X))? \
-			       SAFE_MENU(scm_symbol_binding(SCM_BOOL_F,(X))) : \
-			       SAFE_MENU((X)))
+#define DYNAMIC_MENU_P(X) \
+  (gh_symbol_p((X))? (\
+    scm_symbol_bound_p(SCM_BOOL_F,(X)) == SCM_BOOL_T? \
+      MENU_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+      False ) : \
+    MENU_P((X)))
+
+#define DYNAMIC_SAFE_MENU(X) \
+  (gh_symbol_p((X))? (\
+    scm_symbol_bound_p(SCM_BOOL_F,(X)) == SCM_BOOL_T? \
+      SAFE_MENU(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+      NULL ) : \
+    SAFE_MENU((X)))
 
 SCM popup_menu(SCM menu, SCM warp_to_first, SCM x_pos, SCM y_pos, SCM left_side_p);
 
