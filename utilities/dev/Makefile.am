@@ -1,3 +1,3 @@
 
 # Maybe X-error-describe should be installed?
-EXTRA_DIST = X-error-describe guile-snarf
+EXTRA_DIST = guile-snarf

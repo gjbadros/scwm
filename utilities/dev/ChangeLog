@@ -1,3 +1,12 @@
+Mon Nov 16 22:12:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am: Don't redundantly distribute X-error-describe
+ 	(automake can do it automatically).
+
+	* extract-docs: renamed to scwmdoc.in
+
+	* extract.scm: renamed to scwmdoc.scm.in
+
 Wed Sep 30 19:08:54 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* scwm-usage-counter.in, X-error-describe.in,
