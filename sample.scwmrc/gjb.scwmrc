@@ -1217,7 +1217,7 @@
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to (x- (w%x 100)) 0)))))
   (bind-key 'all "C-M-KP_9" p)
-  (bind-key 'all "C-M-KP-Prior" p))
+  (bind-key 'all "C-M-KP_Prior" p))
 
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to 0 (y- (w%y 100)))))))
