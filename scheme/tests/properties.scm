@@ -64,40 +64,40 @@
  => #f)
 
 (test-case
- (X-property-set! 'root-window "WM_FOO" #(-2 3) "WM_FOO" 16)
+ (X-property-set! 'root-window "WM_FOO" #(-2 3) "WM_BAR" 16)
  #t)
 
 (test-case
  (X-property-get 'root-window "WM_FOO")
- => '(#(-2 3) "WM_FOO" 16))
+ => '(#(-2 3) "WM_BAR" 16))
 
 (test-case
- (X-property-set! 'root-window "WM_FOO" #(1) "WM_FOO" 16 'prepend)
+ (X-property-set! 'root-window "WM_FOO" #(1) "WM_BAR" 16 'prepend)
  #t)
 
 (test-case
  (X-property-get 'root-window "WM_FOO" #f)
- => '(#(1 -2 3) "WM_FOO" 16))
+ => '(#(1 -2 3) "WM_BAR" 16))
 
 (test-case
- (X-property-set! 'root-window "WM_FOO" #(4 -5 6) "WM_FOO" 16 'append)
+ (X-property-set! 'root-window "WM_FOO" #(4 -5 6) "WM_BAR" 16 'append)
  #t)
 
 (test-case
  (X-property-get 'root-window "WM_FOO" #t)
- => '(#(1 -2 3 4 -5 6) "WM_FOO" 16))
+ => '(#(1 -2 3 4 -5 6) "WM_BAR" 16))
 
 ; error conditions
 (test-case
- (X-property-set! 'root-window "WM_FOO" #(1) "WM_FOO" 16 'root-window)
+ (X-property-set! 'root-window "WM_FOO" #(1) "WM_BAR" 16 'root-window)
  #f)
 
 (test-case
- (X-property-set! 'root-window "WM_FOO" #(500 0) "WM_FOO" 8)
+ (X-property-set! 'root-window "WM_FOO" #(500 0) "WM_BAR" 8)
  #f)
 
 (test-case
- (X-property-set! 'root-window "WM_FOO" #(-100000 0) "WM_FOO" 16)
+ (X-property-set! 'root-window "WM_FOO" #(-100000 0) "WM_BAR" 16)
  #f)
 
 ;; hooks
