@@ -13,6 +13,7 @@
 (define-module (app scwm flux)
   :use-module (ice-9 regex)
   :use-module (app scwm base)
+  :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
   :use-module (app scwm winops)
   :use-module (app scwm optargs))
@@ -580,34 +581,45 @@ May error if no netscape windows are present."
     win))
 
 
+(define*-public (X-atomic-property-set-if-unset! window name value #&optional
+						(type "STRING") (format 8))
+  "Set property NAME on WINDOW to VALUE, if it's currently unset.
+Returns #f if the property is already set, #t otherwise.
+TYPE and FORMAT are as in X-property-set!"
+  (with-grabbed-server
+   (lambda ()
+     (cond ((X-property-get window name)
+	    #f)
+	   (#t
+	    (X-property-set! window name value type format 'replace)
+	    #t)))))
+
 ;; from Todd Larason
-(define-public (run-in-netscape command completion)
-  (let* ((netwin (netscape-win))
-	 (mozilla-version
-	  (car (X-property-get netwin "_MOZILLA_VERSION"))))
-    (letrec ((get-mozilla-hook
-	      (lambda ()
-		(if (X-atomic-property-set-if-unset! 
-		     netwin "_MOZILLA_LOCK" "lock!")
-		    (put-mozilla-command)
-		    (add-timer-hook! 50 get-mozilla-hook))))
-	     (put-mozilla-command
-	      (lambda ()
-		(X-property-set! netwin "_MOZILLA_COMMAND" command)))
-	     (mozilla-property-notify
-	      (lambda (propname window)
-;;		(write-all #t "mpn: want " netwin ":_MOZILLA_RESPONSE " 
-;;			   "got " window ":" propname "\n")
-		(cond ((and (eq? window netwin)
-			    (string=? propname "_MOZILLA_RESPONSE"))
-		       (remove-hook! X-PropertyNotify-hook 
-				     mozilla-property-notify)
-		       (X-property-get netwin "_MOZILLA_LOCK" #t)
-		       (completion (car (X-property-get 
-					 netwin "_MOZILLA_RESPONSE" #t))))))))
-      (add-hook! X-PropertyNotify-hook mozilla-property-notify)
-      (get-mozilla-hook)
-      #t)))
+(define*-public (run-in-netscape command completion #&optional (netwin (netscape-win)))
+  (letrec 
+      ((get-mozilla-hook
+	(lambda ()
+	  (if (X-atomic-property-set-if-unset! netwin "_MOZILLA_LOCK" "lock!")
+	      (begin
+		(add-hook! X-PropertyNotify-hook mozilla-property-notify)
+		(put-mozilla-command))
+	      (add-timer-hook! 50 get-mozilla-hook))))
+
+       (put-mozilla-command
+	(lambda ()
+	  (X-property-set! netwin "_MOZILLA_COMMAND" command)))
+
+       (mozilla-property-notify
+	(lambda (propname window)
+	  (cond ((and (eq? window netwin)
+		      (string=? propname "_MOZILLA_RESPONSE"))
+		 (remove-hook! X-PropertyNotify-hook mozilla-property-notify)
+		 (X-property-get netwin "_MOZILLA_LOCK" #t)
+		 (if completion
+		     (completion (car (X-property-get 
+				       netwin "_MOZILLA_RESPONSE" #t)))))))))
+    (get-mozilla-hook)
+    #t))
 
 (define-public (netscape-goto-cut-buffer-url)
   "Make netscape go to the URL in CUT_BUFFER0.
@@ -615,6 +627,7 @@ This permits you to just select a URL and use this function
 to go to that page."
   (run-in-netscape 
    (string-append "openURL(" (X-cut-buffer-string) ")")
-   display-message-briefly))
+   display-message-briefly (netscape-win)))
 
 ;; (run-in-netscape "openUrl(http://huis-clos.mit.edu/scwm)" display-message-briefly)
+

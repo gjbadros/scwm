@@ -1,3 +1,13 @@
+1998-09-22  Todd Larason  <jtl@teeny.molehill.org>
+
+	* flux.scm: use-module (app scwm wininfo) to get visible? defined;
+	Added X-atomic-property-set-if-unset! implemented with
+	with-grabbed-server primitive; Minor cleanup on run-in-netscape,
+	and allowing a netscape window to be passed to send a command to a 
+	particular one.
+
+	* base.scm: Added with-grabbed-server 
+
 Mon Sep 21 11:15:34 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Make flash-window take keyword args for color and

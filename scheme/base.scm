@@ -519,3 +519,11 @@ This may be a bug (not meeting POSIX.2 specifications)."
 (define-public (execute command)
   "Execute COMMAND in the background."
   ((if use-scwm-system-proc scwm-system system) (string-append "exec " command " &")))
+
+(define-public (with-grabbed-server thunk)
+  "Execute THUNK with the X server grabbed."
+  (dynamic-wind X-grab-server
+		thunk
+		X-ungrab-server))
+
+
