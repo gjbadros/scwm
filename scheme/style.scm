@@ -206,7 +206,7 @@ for details."
 
 (add-boolean-style-option #:no-titlebar hide-titlebar show-titlebar)
 (add-boolean-style-option #:no-side-decorations hide-side-decorations show-side-decorations)
-(add-property-style--option #:squashed-titlebar 'squashed-titlebar)
+(add-property-style-option #:squashed-titlebar 'squashed-titlebar)
 
 ; clashes with maximized so make it hint-only for now
 (add-window-hint-option #:mwm-buttons set-mwm-buttons!)

@@ -1,3 +1,7 @@
+Fri Mar 26 11:09:25 1999  Maciej Stachowiak  (mstachow@racerx)
+
+        * style.scm (#:squashed-titlebar): Fix typo.
+
 Fri Mar 26 15:38:00 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* message-window.scm: Added `message-window-copy-style!' and
