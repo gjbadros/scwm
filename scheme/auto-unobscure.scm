@@ -38,28 +38,33 @@
   "Turn auto-unobscure on (#t) or off (#f) for WIN.
 Auto-unobscure makes a window automatically move when it becomes
 fully obscured."
-  (if win (set-object-property! win 'auto-unobscure auto-unobscure?)))
+  (if win (set-window-property! win 'auto-unobscure auto-unobscure?)))
 
 (define*-public (set-auto-unobscure-proc! fproc #&optional (win (get-window)))
   "Set the auto-unobscure-proc for WIN.
 The auto-unobscure-proc is the procedure which is invoked
 when WIN is fully obscured if auto-unobscuring is set for the window."
-  (if win (set-object-property! win 'auto-unobscure-proc fproc)))
+  (if win (set-window-property! win 'auto-unobscure-proc fproc)))
 
-(define default-auto-unobscure-move-proc smart-place-window)
+;;; Default proc to use to unobscure windows.
+(define-public default-auto-unobscure-move-proc smart-place-window)
 
-(define (auto-unobscure-hook-proc win)
+(define (auto-unobscure-hook-proc win resulting-from-viewport-move?)
   (if (and win 
-	   (object-property win 'auto-unobscure)
+           (not resulting-from-viewport-move?)
+	   (window-property win 'auto-unobscure)
 	   (not (eq? (window-with-pointer) win)))
-      ((or (object-property win 'auto-unobscure-proc)
+      ((or (window-property win 'auto-unobscure-proc)
 	   default-auto-unobscure-move-proc) win)))
 
 (define-public (enable-auto-unobscure)
+  "Enable auto-unobscure for windows with #:auto-unobscure on.
+Works really nicely with 'clever-place-window'."
   (add-hook! window-fully-obscured-hook auto-unobscure-hook-proc))
 
 ;; (reset-hook! window-fully-obscured-hook)
 (define-public (disable-auto-unobscure)
+  "Disable auto-unobscure for all windows."
   (remove-hook! window-fully-obscured-hook auto-unobscure-hook-proc))
 
 (add-window-style-option #:auto-unobscure set-auto-unobscure!)

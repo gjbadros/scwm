@@ -1,3 +1,10 @@
+Sat Mar 30 04:29:20 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* auto-unobscure.scm: Updated from object-property/set-object-property!
+	to window-property/set-window-property!.  Updated for new arguments to
+	window-fully-obscured-hook.  Added doc strings for 
+	enable/disable-auto-unobscure.
+
 Sat Mar 30 03:56:16 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* auto-shrink.scm: Made 'shrink-inactive-windows' use the delay-seconds
