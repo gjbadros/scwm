@@ -132,8 +132,8 @@ make_xproperty (char *type, unsigned len, void *data)
 
 SCWM_PROC(set_window_text_property, "set-window-text-property", 3, 0, 0,
            (SCM win, SCM propname, SCM value))
-     /** Set a text property named PROPNAME on WIN, with format 8 and type
-"XA_STRING", and VALUE as the data. */
+     /** Set a text property named PROPNAME on WIN.
+Uses format 8 (byte) and type "XA_STRING", and VALUE as the data. */
 #define FUNC_NAME s_set_window_text_property
 {
   Status status;
@@ -164,9 +164,9 @@ SCWM_PROC(set_window_text_property, "set-window-text-property", 3, 0, 0,
 
 SCWM_PROC(window_xproperty, "window-xproperty", 2, 1, 0,
            (SCM win, SCM name, SCM consume))
-     /** Get the property called NAME from WIN if the boolean value
-CONSUME is specified and true, the property is also delted in one
-atomic operation. */
+     /** Get and maybe delete the property called NAME from WIN.
+The property will be deleted upon getting (in an atomic operation)
+if the boolean value CONSUME is #t */
 #define FUNC_NAME s_window_xproperty
 {
   SCM answer;
