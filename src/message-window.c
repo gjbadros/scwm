@@ -437,46 +437,19 @@ SCWM_PROC(message_window_set_position_x, "message-window-set-position!", 3, 2, 0
     /** Set the position to be used for the message window MWN.
 X and Y specify the position of the control point of the window,
 while X-ALIGN and Y-ALIGN specify a fraction of the width and
-height of the window to offset the window for alignment.
-X-ALIGN and Y-ALIGN should each be in the range [0,-1].*/
+height of the message window to offset it from the specified position.
+X-ALIGN and Y-ALIGN should each be in the range [-1,0].  E.g.,
+If X-ALIGN and Y-ALIGN are both -0.5, the window will be
+centered at viewport pixel position X, Y. */
 #define FUNC_NAME s_message_window_set_position_x
 {
   scwm_msgwindow* msg;
 
   VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
-
-  SCM_REDEFER_INTS;
-
-  if ( !UNSET_SCM(x) ) {
-    if (!gh_number_p(x)) {
-      gh_allow_ints();
-      SCWM_WRONG_TYPE_ARG(2, x);
-    }
-    msg->x = gh_scm2long(x);
-  }
-  if ( !UNSET_SCM(y) ) {
-    if (!gh_number_p(y)) {
-      gh_allow_ints();
-      SCWM_WRONG_TYPE_ARG(3, y);
-    }
-    msg->y = gh_scm2long(y);
-  }
-  if ( !UNSET_SCM(x_align) ) {
-    if (!gh_number_p(x_align)) {
-      gh_allow_ints();
-      SCWM_WRONG_TYPE_ARG(4, x_align);
-    }
-    msg->x_align = gh_scm2double(x_align);
-  }
-  if ( !UNSET_SCM(y_align) ) {
-    if (!gh_number_p(y)) {
-      gh_allow_ints();
-      SCWM_WRONG_TYPE_ARG(5, y_align);
-    }
-    msg->y_align = gh_scm2double(y_align);
-  }
-
-  SCM_REALLOW_INTS;
+  VALIDATE_ARG_INT_COPY(2,x,msg->x);
+  VALIDATE_ARG_INT_COPY(3,y,msg->y);
+  VALIDATE_ARG_DBL_COPY_USE_DEF(4,x_align,msg->x_align,msg->x_align);
+  VALIDATE_ARG_DBL_COPY_USE_DEF(5,y_align,msg->y_align,msg->y_align);
 
   ResizeMessageWindow(msg);
 
@@ -693,5 +666,3 @@ init_message_window()
 /* End: */
 /* vim:ts=8:sw=2:sta 
  */
-
-

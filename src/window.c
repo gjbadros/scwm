@@ -100,19 +100,26 @@ SCWM_SYMBOL(sym_winlist_skip, "winlist-skip");
 SCWM_SYMBOL(sym_circulate_skip_icon, "circulate-skip-icon");
 SCWM_SYMBOL(sym_circulate_skip, "circulate-skip");
 
+/* Window Gravities */
+
+SCWM_GLOBAL_SYMBOL(sym_grav_forget, "forget");
+SCWM_GLOBAL_SYMBOL(sym_grav_northwest, "northwest");
+SCWM_GLOBAL_SYMBOL(sym_grav_north, "north");
+SCWM_GLOBAL_SYMBOL(sym_grav_northeast, "northeast");
+SCWM_GLOBAL_SYMBOL(sym_grav_west, "west");
+SCWM_GLOBAL_SYMBOL(sym_grav_center, "center");
+SCWM_GLOBAL_SYMBOL(sym_grav_east, "east");
+SCWM_GLOBAL_SYMBOL(sym_grav_southwest, "southwest");
+SCWM_GLOBAL_SYMBOL(sym_grav_south, "south");
+SCWM_GLOBAL_SYMBOL(sym_grav_southeast, "southeast");
+SCWM_GLOBAL_SYMBOL(sym_grav_static, "static");
+
 /* Also used by borders.c */
 SCWM_GLOBAL_SYMBOL(sym_maximized, "maximized");
 SCWM_GLOBAL_SYMBOL(sym_no_side_decorations, "no-side-decorations");
 
 /***************/
 SCWM_SYMBOL(sym_squashed_titlebar, "squashed-titlebar");
-
-#if 0
-SCWM_SYMBOL(sym_no_top_border, "no-top-border");
-SCWM_SYMBOL(sym_no_side_border, "no-side-borders");
-SCWM_SYMBOL(sym_no_border, "no-border");
-#endif
-
 
 
 char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
@@ -548,10 +555,17 @@ invalidate_window(SCM schwin)
 void
 ResizeTo(ScwmWindow *psw, int width, int height)
 {
+  int x = FRAME_X(psw);
+  int y = FRAME_Y(psw);
+  int grav_x = psw->grav.x;
+  int grav_y = psw->grav.y;
+  int dx = width - FRAME_WIDTH(psw);   /* wider => positive */
+  int dy = height - FRAME_HEIGHT(psw); /* taller => positive */
+  x -= dx * (double) grav_x/2.0;
+  y -= dy * (double) grav_y/2.0;
   ConstrainSize(psw, 0, 0, &width, &height);
   CassowaryEditSize(psw);
-  SuggestSizeWindowTo(psw, FRAME_X(psw), FRAME_Y(psw),
-                      width, height, True);
+  SuggestSizeWindowTo(psw, x, y, width, height, True);
   CassowaryEndEdit(psw);
 }
 
@@ -2583,6 +2597,49 @@ defaults to the window context in the usual way if not specified. */
   return SCM_UNSPECIFIED;;
 }
 #undef FUNC_NAME
+
+
+SCWM_PROC(window_gravity, "window-gravity", 0, 1, 0,
+          (SCM win))
+     /** Return the gravity for WIN as a symbol.
+Return value is one of the following: 
+'forget, 'northwest, 'north, 'northeast,
+'west, 'center, 'east, 'southwest 'south, 'southeast,
+'static. */
+#define FUNC_NAME s_window_gravity
+{
+  ScwmWindow *psw;
+
+  VALIDATE_WIN_USE_CONTEXT(win);
+  psw = PSWFROMSCMWIN(win);
+
+  return *(psw->grav.psym);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_window_gravity_x, "set-window-gravity!", 1, 1, 0,
+          (SCM gravity, SCM win))
+     /** Sets the gravity for WIN to GRAVITY.
+GRAVITY must be one of the following: 
+'forget, 'northwest, 'north, 'northeast,
+'west, 'center, 'east, 'southwest 'south, 'southeast,
+'static. */
+#define FUNC_NAME s_set_window_gravity_x
+{
+  ScwmWindow *psw;
+  int grav = GravityFromSym(gravity);
+  if (grav < 0) {
+    SCWM_WRONG_TYPE_ARG(1,gravity);
+  }
+  VALIDATE_ARG_WIN_USE_CONTEXT(2,win);
+  psw = PSWFROMSCMWIN(win);
+
+  SetPswGravity(psw,grav);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
 
 
 SCWM_PROC(window_position, "window-position", 0, 1, 0,

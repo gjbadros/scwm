@@ -105,6 +105,20 @@ VALIDATE_...
   } while (0)
 
 
+#define VALIDATE_ARG_DBL_COPY(pos,scm,cvar) \
+  do { \
+  if (gh_number_p(scm)) cvar = gh_scm2double(scm); \
+  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_DBL_COPY_USE_DEF(pos,scm,cvar,val) \
+  do { \
+  if (UNSET_SCM(scm)) cvar = val; \
+  else if (gh_number_p(scm)) cvar = gh_scm2double(scm); \
+  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+
 #define VALIDATE_ARG_SYM(pos,scm) \
   do { \
   if (!gh_symbol_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \

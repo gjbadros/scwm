@@ -54,24 +54,35 @@ SCM_SYMBOL(sym_transient_placement_proc,"transient-placement-proc");
  *		to x and y when window is mapped to get proper placement.
  */
 
+extern SCM sym_grav_forget,
+  sym_grav_northwest,
+  sym_grav_north,
+  sym_grav_northeast,
+  sym_grav_west,
+  sym_grav_center,
+  sym_grav_east,
+  sym_grav_southwest,
+  sym_grav_south,
+  sym_grav_southeast,
+  sym_grav_static;
+  
 
 static struct gravity_info_tag grav_table[11] =
 {
-  {1, 1, 1},			/* ForgetGravity */
-  {0, 0, 0},			/* NorthWestGravity */
-  {1, 0, 0},			/* NorthGravity */
-  {2, 0, 0},			/* NorthEastGravity */
-  {0, 1, 1},			/* WestGravity */
-  {1, 1, 1},			/* CenterGravity */
-  {2, 1, 1},			/* EastGravity */
-  {0, 2, 2},			/* SouthWestGravity */
-  {1, 2, 2},			/* SouthGravity */
-  {2, 2, 2},			/* SouthEastGravity */
-  {1, 1, 2},			/* StaticGravity */
+  {1, 1, 1, &sym_grav_forget},    /* ForgetGravity */
+  {0, 0, 0, &sym_grav_northwest}, /* NorthWestGravity */
+  {1, 0, 0, &sym_grav_north},     /* NorthGravity */
+  {2, 0, 0, &sym_grav_northeast}, /* NorthEastGravity */
+  {0, 1, 1, &sym_grav_west},      /* WestGravity */
+  {1, 1, 1, &sym_grav_center},    /* CenterGravity */
+  {2, 1, 1, &sym_grav_east},      /* EastGravity */
+  {0, 2, 2, &sym_grav_southwest}, /* SouthWestGravity */
+  {1, 2, 2, &sym_grav_south},     /* SouthGravity */
+  {2, 2, 2, &sym_grav_southeast}, /* SouthEastGravity */
+  {1, 1, 2, &sym_grav_static},    /* StaticGravity */
 };
 
 
-static
 void 
 GetGravityOffsets(ScwmWindow *psw)
 {
@@ -85,6 +96,28 @@ GetGravityOffsets(ScwmWindow *psw)
   }
   
   return;
+}
+
+void
+SetPswGravity(ScwmWindow *psw, int g)
+{
+  /* GJB:FIXME:NOW: need to update the X Property, too! */
+  psw->hints.flags |= PWinGravity;
+  assert(g >= ForgetGravity && g <= StaticGravity);
+  psw->hints.win_gravity = g;
+  psw->grav = grav_table[g];
+}
+
+/* Return -1 for no match */
+int
+GravityFromSym(SCM sym)
+{
+  int i;
+  for (i=0; i <= StaticGravity; ++i) {
+    if (*(grav_table[i].psym) == sym)
+      return i;
+  }
+  return -1;
 }
 
 
@@ -635,9 +668,6 @@ It simply leaves the window WIN in place, exactly as requested. */
 
 /*
  * Handles initial placement and sizing of a new window
- * Returns False in the event of a lost window.
- * CRW:FIXME:MS: I'm not sure what a "lost window" is, but as far as I can
- * tell, this never returns False.
  */
 Bool 
 PlaceWindow(ScwmWindow *psw)

@@ -107,6 +107,7 @@ typedef struct gravity_info_tag {
 			 move the frame window north? */
   unsigned short t:2; /* how many times (half the title bar height) should we
 			 move the frame window north? */
+  SCM *psym;          /* the SCM symbol for this gravity */
 } gravity_info;
 
 
