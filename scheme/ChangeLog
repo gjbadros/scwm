@@ -1,3 +1,30 @@
+Sat May  1 14:36:34 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* prompt-color.scm: Use maybe-make-color in apply, and fix bogus
+	let bindings when mis-edited before.
+
+Sat May  1 13:43:18 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* prompt-color.scm: Permit "#f" and "inherit" as values in color
+	selection (should be split into color-or-inherit type).
+
+	* base.scm: Added "inherit" to favorites list for
+	menu-hl-fg-color, menu-hl-bg-color.
+
+	* tests/demo.scm: Use auto-orient feature of ScwmButtons -- also
+	fix the class name in the window-style (it's ScwmButtons again,
+	not ScwmButtons2).
+
+Sat May  1 11:40:54 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* ScwmButtons.scm: New version from Glenn Trigg-- adds auto-orient 
+	options.  Slightly updated by me to use-scwm-modules, and
+	commented out debugging display-s.
+
+	* base.scm: Permit "#f" and "inherit" to mean use #f for the color 
+	setting (to allow menu-hl-fg-color, menu-hl-bg-color to inherit
+	menu-fg-color, menu-bg-color).
+
 Fri Apr 30 16:14:50 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* undo.scm: Added... support for multi-level undo using a partial
