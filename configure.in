@@ -165,6 +165,15 @@ AC_PATH_PROGS(PERL, perl perl5, no)
 
 AC_SUBST(PERL)
 
+AC_ARG_ENABLE(cflags,
+[  --enable-cflags=FLAGS   Set CFLAGS to FLAGS [-g -O2]],
+[case "$enableval" in
+   yes|no) echo "Please specify a parameter for --enable-cflags"
+	   exit;;
+ esac
+ CFLAGS="$enableval"
+])
+
 dnl ## Find paths ##
 
 AC_PATH_X
@@ -543,7 +552,6 @@ AC_ARG_ENABLE(warnings,
   fi
 ])
 AC_SUBST(CPPEXTRAFLAGS)
-
 
 AC_OUTPUT(Makefile \
           scwm.spec \
