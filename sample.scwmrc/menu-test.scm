@@ -57,14 +57,31 @@
 		  (lambda () (display "unhover\n"))
 		  "moreoptions"))
 
+(define a-color
+  (load-color "gray40"))
+
 (define a-menu
   (make-menu (list 
 		   window-ops-title-item bitmap-separator
 		   sticky-menu-item move-menu-item resize-menu-item
 		   more-menu-ops-item)
 		  (make-image "linux-menu.xpm") (load-color "blue")
-		  (load-color "gray80")))
+		  'a-color))
 
+
+(popup-menu a-menu)
+
+(define a-popup-menu 
+  (make-menu 
+   (list
+    (make-menu-item "Iconify/Restore" toggle-iconify "C-S-Down" #f
+		    (make-image "mini-iconify.xpm") #f #f
+		    "iconify")
+    (make-menu-item "Stick/Unstick" toggle-stick "" #f
+		    (make-image "mini-stick.xpm") #f #f
+		    "stick"))
+   #f #f (load-color "gray80"))
+   )
 
 ;;(popup-menu a-menu)
 ;;(popup-menu a-popup-menu)
@@ -80,5 +97,6 @@
 ;;(window-id)
 ;;(raise-window (window-from-window-id 16777234))
 
+(define broadcast-hook (lambda (d1 d2 d3 d4 d5 d6 d7) (display "hook\n")))
 (define pic-unknown (make-image "unknown1.xpm"))
 (image-properties pic-unknown)
