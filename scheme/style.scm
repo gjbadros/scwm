@@ -28,13 +28,13 @@
 
 ;; MSFIX-- what's defalias in scheme?  syntax macro?
 ;; Also, this may be better placed somewhere else
-;; Make make-pixmap and make-bitmap aliases for make-picture;
-;; Prefer and encourage make-picture, though!
-;; GJBFIX-- You can just use define, I assume make-picture
+;; Make make-pixmap and make-bitmap aliases for make-image;
+;; Prefer and encourage make-image, though!
+;; GJBFIX-- You can just use define, I assume make-image is not
 ;; going to be changing dynamically. Also, these should be exported.
-(define-public make-pixmap make-picture)
+(define-public make-pixmap make-image)
 
-(define-public make-bitmap make-picture)
+(define-public make-bitmap make-image)
 
 ;; MSFIX: should use X Class name, or X Instance name first,
 ;; not wildcard matcher!  My xterm-s track the running program
@@ -161,14 +161,14 @@
 ;(define (set-icon-maybe-name! arg w)
 ;  (set-icon!
 ;   (if (string? arg)
-;       (make-picture arg)
+;       (make-image arg)
 ;       arg)
 ;   w))
   
 ;(define (set-mini-icon-maybe-name! arg w)
 ;  (set-mini-icon! 
 ;   (if (string? arg)
-;       (make-picture arg)
+;       (make-image arg)
 ;       arg)
 ;   w))
 
