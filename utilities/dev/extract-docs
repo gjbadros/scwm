@@ -62,12 +62,13 @@ sub script_usage ( ) {
 
 my @okay_words = qw(fvwm2 fvwm hilight viewport scwmexec scwmrepl menuitem
 		    menuitems hotkey submenu colormap 
-		    PseudoColor StaticGray StaticColor GrayScale DirectColor TrueColor
-		    scwmrc ReallySmart SmartPlacement PPosition Mwm mwm Alt Meta Hyper
-		    BroadcastInfo SmartPlacementIsReallySmart RandomPlacement
-		    Super car cdr cadr titlebar unhover bg fg Popup Iconify
-		    Iconifying Deiconify Deiconifying Unmap iconified desktop desktops
-		    honoured lenience xproperty XORed
+		    pseudocolor staticgray staticcolor grayscale directcolor truecolor
+		    scwmrc reallysmart smartplacement pposition mwm mwm alt meta hyper
+		    broadcastinfo smartplacementisreallysmart randomplacement
+		    super car cdr cadr titlebar unhover bg fg popup iconify
+		    iconifying deiconify deiconifying unmap iconified desktop desktops
+		    honoured lenience xproperty xored
+		    shift control meta alt hyper super callbacks decors viewports
 		   );
 
 my $pkg_name = basename($ENV{PWD});
@@ -445,25 +446,7 @@ sub ProcessHeader( $ ) {
   # Clean up trailing space, but don't warn about it
   $comment =~ s/\s+$//mg;
 
-  if ($opt_s) {
-    foreach my $word (split /\W+/, $comment) {
-      # ispell is picky about lots of stuff, so ignore them
-      next if $word =~ /^[-\#]/;
-      next if $word !~ /^\w\w+/;
-      next if $word eq uc($word);
-      next if KnownWord($word);
-      my $junk = <ISPELL_RESPONSE>; # read the blank
-      print ISPELL $word, "\n";
-      chomp (my $response = <ISPELL_RESPONSE>);
-      if ($response eq "") {
-	print STDERR "ISPELL is out of sync -- aborting its use!";
-	last;
-      }
-      if ($response !~ m/^[+\*]/) {
-	print STDERR "$filename:$line:****$cprimname: possible misspelling: $word -> $response\n";
-      }
-    }
-  }
+  IspellText($filename,$line,$comment) if $opt_s;
 
   my $sgml_id = $cprimname;
   $sgml_id =~ s/_/-/g;
@@ -542,8 +525,10 @@ EOC
   return TRUE;
 }
 
+# FIXGJB: replace this with a scwm dictionary that ispell knows about
 sub KnownWord ( $ ) {
   my ($w) = @_;
+  $w = lc($w);
   foreach my $ok ( @okay_words ) {
     return TRUE if $w eq $ok;
   }
@@ -574,6 +559,9 @@ sub ProcessConceptComment ( $ ) {
   if ($fDebug) {
     print STDERR "Concept \`$description\' with body = \n$comment\n";
   }
+
+  IspellText($filename,$line,$comment) if $opt_s;
+
   my $markup = MarkupComment($comment);
 
   $concepts{$description} = { comment => $comment,
@@ -589,6 +577,9 @@ sub ProcessHookComment ( $ ) {
   if ($fDebug) {
     print STDERR "Hook \`$description\' with body = \n$comment\n";
   }
+
+  IspellText($filename,$line,$comment) if $opt_s;
+
   my $markup = MarkupComment($comment);
   $hooks{$description} = { comment => $comment,
 			   markup => $markup,
@@ -614,4 +605,28 @@ sub MarkupComment( $ ) {
     "<link linkend=\"" . ScmIdToSgmlId($1) . "\"><function>$1</function></link>"%eg;
 
   return $body;
+}
+
+sub IspellText( $$$ ) {
+  my ($filename,$line,$text) = @_;
+  foreach my $word (split /[\d\W]+/, $text) {
+    # ispell is picky about lots of stuff, so ignore them
+    next if $word =~ /^[-\#]/;
+    next if $word !~ /^\w\w+/;
+    next if $word eq uc($word);
+    next if KnownWord($word);
+    print STDERR "ispell trying $word -> " if $fDebug;
+    my $junk = <ISPELL_RESPONSE>; # read the blank
+    print ISPELL $word, "\n";
+    chomp (my $response = <ISPELL_RESPONSE>);
+    print STDERR "response = \`$response\'\n" if $fDebug;
+    if ($response eq "") {
+      print STDERR "$filename:$line:****ISPELL is out of sync (last word \`$word\') -- aborting its use!\n";
+      $opt_s = FALSE;
+      last;
+    }
+    if ($response !~ m/^[+\*]/) {
+      print STDERR "$filename:$line:****ispell reported possible misspelling: $word -> $response\n";
+    }
+  }
 }
