@@ -90,7 +90,7 @@ HandleColormapNotify(void)
   /* Reinstall the colormap that we think should be installed,
    * UNLESS and unrecognized window has the focus - it might be
    * an override-redirect window that has its own colormap. */
-  if ((ReInstall) && (Scr.UnknownWinFocused == None)) {
+  if (ReInstall) /*  && (Scr.UnknownWinFocused == None))  */ {
     XInstallColormap(dpy, last_cmap);
   }
 }
@@ -184,12 +184,10 @@ InstallWindowColormaps(ScwmWindow * tmp)
 void 
 InstallRootColormap(void)
 {
-  ScwmWindow *tmp;
-
   if (Scr.root_pushes == 0) {
-    tmp = Scr.pushed_window;
+    ScwmWindow *psw = Scr.pushed_window;
     InstallWindowColormaps(&Scr.ScwmRoot);
-    Scr.pushed_window = tmp;
+    Scr.pushed_window = psw;
   }
   Scr.root_pushes++;
   return;

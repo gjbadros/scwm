@@ -439,7 +439,7 @@ HandleHardFocus(ScwmWindow *psw)
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
 	       Scr.DisplayHeight,
 	       x + 2, y + 2);
-  XSync(dpy, 0);
+  XSync(dpy, False);
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
 	       Scr.DisplayHeight,
 	       x, y);
@@ -465,9 +465,10 @@ HandleFocusIn()
   pswCurrent = PswFromAnyWindow(dpy,w);
   if (!pswCurrent) {
     if (w != Scr.NoFocusWin) {
-      Scr.UnknownWinFocused = w;
+      /* Scr.UnknownWinFocused = w; */
     } else {
       call1_hooks(window_focus_change_hook,SCM_BOOL_F);
+      Scr.Focus = NULL;
       SetBorder(Scr.Hilite, False, True, True, None);
       Broadcast(M_FOCUS_CHANGE, 5, 0, 0, 0,
 		XCOLOR(Scr.DefaultDecor.HiColors.fg),
@@ -1158,7 +1159,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
     }
     pswCurrent->fStartIconic = False;
     if (!PPosOverride)
-      XSync(dpy, 0);
+      XSync(dpy, False);
     XUngrabServer_withSemaphore(dpy);
   }
   /* If no hints, or currently an icon, just "deiconify" */
@@ -1185,7 +1186,6 @@ HandleMapNotify()
     if ((Event.xmap.override_redirect == True) &&
 	(Event.xmap.window != Scr.NoFocusWin)) {
       XSelectInput(dpy, Event.xmap.window, FocusChangeMask);
-      Scr.UnknownWinFocused = Event.xmap.window;
     }
     return;
   }
@@ -1219,7 +1219,7 @@ HandleMapNotify()
   }
 
   if ((pswCurrent->fClickToFocus) && Scr.Focus &&
-      ((!Scr.Focus) || Scr.Focus->fClickToFocus)) {
+      (!Scr.Focus || Scr.Focus->fClickToFocus)) {
     SetFocus(pswCurrent->w, pswCurrent, True);
   }
   /* GJB:FIXME:: what is this all about? */
@@ -1231,7 +1231,7 @@ HandleMapNotify()
              FRAME_X_VP(pswCurrent),FRAME_Y_VP(pswCurrent),
              FRAME_WIDTH(pswCurrent),FRAME_HEIGHT(pswCurrent),
              WAS_MOVED,WAS_RESIZED);
-  XSync(dpy, 0);
+  XSync(dpy, False);
   XUngrabServer_withSemaphore(dpy);
   XFlush(dpy);
   pswCurrent->fMapped = True;
@@ -1289,20 +1289,18 @@ HandleUnmapNotify()
   if (weMustUnmap)
     XUnmapWindow(dpy, Event.xunmap.window);
 
+  if (pswCurrent == Scr.Focus) {
+    if (pswCurrent->fClickToFocus && pswCurrent->next) {
+      HandleHardFocus(pswCurrent->next);
+    } else
+    SetFocus(Scr.NoFocusWin, NULL, False);
+  }
+
   if (pswCurrent == Scr.Hilite)
     Scr.Hilite = NULL;
 
   if (Scr.PreviousFocus == pswCurrent)
     Scr.PreviousFocus = NULL;
-
-  if ((pswCurrent == Scr.Focus) && pswCurrent->fClickToFocus) {
-    if (pswCurrent->next) {
-      HandleHardFocus(pswCurrent->next);
-    } else
-      SetFocus(Scr.NoFocusWin, NULL, True);
-  }
-  if (Scr.Focus == pswCurrent)
-    SetFocus(Scr.NoFocusWin, NULL, True);
 
   if (pswCurrent == Scr.pushed_window)
     Scr.pushed_window = NULL;
@@ -1435,11 +1433,11 @@ HandleButtonPress()
       if ( /* click was in a border, titlebar, or decoration */ )
         fSendClick = True;
 #endif
-      XSync(dpy, 0);
+      XSync(dpy, False);
       XAllowEvents(dpy, 
                    (fSendClick?ReplayPointer:AsyncPointer),
                    CurrentTime);
-      XSync(dpy, 0);
+      XSync(dpy, False);
       return;
     }
   } else if (pswCurrent && !pswCurrent->fClickToFocus &&
@@ -1452,14 +1450,14 @@ HandleButtonPress()
       RaiseWindow(pswCurrent);
       KeepOnTop();
     }
-    XSync(dpy, 0);
+    XSync(dpy, False);
     XAllowEvents(dpy, ReplayPointer, CurrentTime);
-    XSync(dpy, 0);
+    XSync(dpy, False);
     return;
   }
-  XSync(dpy, 0);
+  XSync(dpy, False);
   XAllowEvents(dpy, ReplayPointer, CurrentTime);
-  XSync(dpy, 0);
+  XSync(dpy, False);
 
   Context = GetContext(pswCurrent, &Event, &PressedW);
   LocalContext = Context;

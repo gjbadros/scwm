@@ -1175,7 +1175,7 @@ GrabEm(Cursor cursor)
   int i = 0, val = 0;
   unsigned int mask;
 
-  XSync(dpy, 0);
+  XSync(dpy, False);
   /* move the keyboard focus prior to grabbing the pointer to
    * eliminate the enterNotify and exitNotify events that go
    * to the windows */
@@ -1199,7 +1199,7 @@ GrabEm(Cursor cursor)
 
   /* If we fall out of the loop without grabbing the pointer, its
      time to give up */
-  XSync(dpy, 0);
+  XSync(dpy, False);
 
   return (val == GrabSuccess);
 }
@@ -1213,7 +1213,7 @@ UngrabEm()
 {
   Window w;
 
-  XSync(dpy, 0);
+  XSync(dpy, False);
   XUngrabPointer(dpy, CurrentTime);
 
   if (Scr.PreviousFocus != NULL) {
@@ -1225,7 +1225,7 @@ UngrabEm()
     }
     Scr.PreviousFocus = NULL;
   }
-  XSync(dpy, 0);
+  XSync(dpy, False);
 }
 
 
@@ -1675,7 +1675,7 @@ defaults to the window context in the usual way if not specified. */
   } else {
     XKillClient(dpy, psw->w);
   }
-  XSync(dpy, 0);
+  XSync(dpy, False);
   return SCM_BOOL_T;
 }
 #undef FUNC_NAME

@@ -699,7 +699,7 @@ CRightButtons(const ScwmWindow *psw)
   return c;
 }
 
-/* Set Border just calls SetBorderX with really_force == False */
+/* Set Border just calls SetBorderX with really_force == False; .*/
 void
 SetBorder(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	  Window expose_win)
@@ -707,7 +707,8 @@ SetBorder(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
   SetBorderX(psw, fHighlightOn, force, Mapped, expose_win, False);
 }
 
-
+/* This sets Scr.Hilite to psw;  do not set it prematurely, as
+   then this code will opt out of the border redraw as an optimization */
 void 
 SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	   Window expose_win, Bool really_force)
@@ -1125,7 +1126,7 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
     }
   }
   /* Sync to make the border-color change look fast! */
-  XSync(dpy, 0);
+  XSync(dpy, False);
 
 }
 

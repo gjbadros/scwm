@@ -126,7 +126,7 @@ SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
     if (wRoot != Scr.Root) {
       if ((Scr.Ungrabbed != NULL) && Scr.Ungrabbed->fClickToFocus) {
 	/* Need to grab buttons for focus window */
-	XSync(dpy, 0);
+	XSync(dpy, False);
 	for (i = 0; i < XSERVER_MAX_BUTTONS; i++)
 	  if (Scr.buttons2grab & (1 << i)) {
             GrabButtonWithModifiersMaskXcPm(i+1,0,Scr.Ungrabbed->frame,
@@ -137,7 +137,7 @@ SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
         call_lost_focus_hook(NULL);
 	Scr.Focus = NULL;
 	Scr.Ungrabbed = NULL;
-	XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
+	XSetInputFocus(dpy, Scr.NoFocusWin, RevertToPointerRoot, lastTimestamp);
       }
       return;
     }
@@ -150,7 +150,7 @@ SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
       Scr.Ungrabbed->fClickToFocus && (Scr.Ungrabbed != psw)) {
     /* need to grab all buttons for window that we are about to
      * unfocus */
-    XSync(dpy, 0);
+    XSync(dpy, False);
     for (i = 0; i < XSERVER_MAX_BUTTONS; i++) {
       if (Scr.buttons2grab & (1 << i)) {
         /* GJB:FIXME:: segfaulted on a NULL Scr.Ungrabbed 
@@ -181,21 +181,19 @@ SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
 
   if (psw && !FFocussableWin(psw)) {
     call_lost_focus_hook(NULL);
-    XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
+    XSetInputFocus(dpy, Scr.NoFocusWin, RevertToPointerRoot, lastTimestamp);
     Scr.Focus = NULL;
-    Scr.UnknownWinFocused = None;
   } else {
     call_lost_focus_hook(psw);
-    XSetInputFocus(dpy, w, RevertToParent, lastTimestamp);
+    XSetInputFocus(dpy, w, RevertToPointerRoot, lastTimestamp);
     Scr.Focus = psw;
-    Scr.UnknownWinFocused = None;
 #if 0  /* GJB:FIXME:: what are all these cases? --09/17/99 gjb */
   } else if (Scr.Focus && (Scr.Focus->Desk == Scr.CurrentDesk)) {
     /* Window doesn't want focus. Leave focus alone */
-    /* XSetInputFocus (dpy,Scr.Hilite->w , RevertToParent, lastTimestamp); */
+    /* XSetInputFocus (dpy,Scr.Hilite->w , RevertToPointerRoot, lastTimestamp); */
   } else {
     call_lost_focus_hook(NULL);
-    XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
+    XSetInputFocus(dpy, Scr.NoFocusWin, RevertToPointerRoot, lastTimestamp);
     Scr.Focus = NULL;
 #endif
   }
@@ -203,7 +201,7 @@ SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
   if (psw && psw->fDoesWmTakeFocus) {
     send_clientmessage(dpy, w, XA_WM_TAKE_FOCUS, lastTimestamp);
   }
-  XSync(dpy, 0);
+  XSync(dpy, False);
 }
 
 

@@ -813,7 +813,6 @@ void
 DestroyScwmWindow(ScwmWindow *psw)
 {
   int i;
-  extern ScwmWindow *ButtonWindow;
   extern ScwmWindow *colormap_win;
   extern Bool PPosOverride;
 
@@ -832,7 +831,7 @@ DestroyScwmWindow(ScwmWindow *psw)
   XUnmapWindow(dpy, psw->frame);
 
   if (!PPosOverride)
-    XSync(dpy, 0);
+    XSync(dpy, False);
 
   if (psw == Scr.Hilite)
     Scr.Hilite = NULL;
@@ -840,21 +839,11 @@ DestroyScwmWindow(ScwmWindow *psw)
   Broadcast(M_DESTROY_WINDOW, 3, psw->w, psw->frame,
 	    (unsigned long) psw, 0, 0, 0, 0);
 
+  /* ensure no global variables contain this
+     window;  this may be overkill as it is done in
+     HandleUnmapNotify, too --10/21/99 gjb */
   if (Scr.PreviousFocus == psw)
     Scr.PreviousFocus = NULL;
-
-  if (ButtonWindow == psw)
-    ButtonWindow = NULL;
-
-  if ((psw == Scr.Focus) && psw->fClickToFocus) {
-    if (psw->next) {
-      HandleHardFocus(psw->next);
-    } else {
-      SetFocus(Scr.NoFocusWin, NULL, True);
-    }
-  } else if (Scr.Focus == psw) {
-    SetFocus(Scr.NoFocusWin, NULL, True);
-  }
 
   if (psw == FocusOnNextTimeStamp)
     FocusOnNextTimeStamp = NULL;
@@ -931,7 +920,8 @@ DestroyScwmWindow(ScwmWindow *psw)
   FREE(psw);
 
   if (!PPosOverride)
-    XSync(dpy, 0);
+    XSync(dpy, False);
+
   return;
 }
 

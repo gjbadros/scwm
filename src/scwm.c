@@ -1031,7 +1031,7 @@ Repository Timestamp: %s\n",
   XSetErrorHandler((XErrorHandler) CatchRedirectError);
   XSetIOErrorHandler((XIOErrorHandler) CatchFatal);
   XSelectInput(dpy, Scr.Root,basic_event_mask);
-  XSync(dpy, 0);
+  XSync(dpy, False);
   
   XSetErrorHandler((XErrorHandler) ScwmErrorHandler);
   
@@ -1354,7 +1354,7 @@ CaptureAllWindows(void)
     }
     /* We only need to XSync on a recapture, since the initial capture
        calls XSync itself after we return */
-    XSync(dpy, 0);
+    XSync(dpy, False);
   }
 
   isIconicState = DontCareState;
@@ -1483,7 +1483,7 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
     }
     XConfigureWindow(dpy, psw->w, mask, &xwc);
     if (!fRestart)
-      XSync(dpy, 0);
+      XSync(dpy, False);
   }
 }
 #undef FUNC_NAME
@@ -1518,8 +1518,7 @@ Reborder(Bool fRestart)
   }
 
   XUngrabServer_withSemaphore(dpy);
-  XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
-  XSync(dpy, 0);
+  XSync(dpy, False);
 }
 
 /*
@@ -1680,7 +1679,7 @@ BlackoutScreen()
 				CopyFromParent, CopyFromParent,
 				valuemask, &attributes);
     XMapWindow(dpy, BlackoutWin);
-    XSync(dpy, 0);
+    XSync(dpy, False);
   }
 }				/* BlackoutScreen */
 
@@ -1690,7 +1689,7 @@ UnBlackoutScreen()
   if (Blackout && (BlackoutWin != None) && !debugging) {
     DBUG((DBG,"UnBlackoutScreen", "UnBlacking out screen"));
     XDestroyWindow(dpy, BlackoutWin);	/* unblacken the screen */
-    XSync(dpy, 0);
+    XSync(dpy, False);
     BlackoutWin = None;
   }
 }				/* UnBlackoutScreen */

@@ -89,6 +89,7 @@ Done(int restart_or_dump, char *command)
     call1_hooks(shutdown_hook,SCM_BOOL_FromBool(restart_or_dump));
 
     Reborder((restart_or_dump > 0));
+    XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
 
     XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_LISTENER);
 
@@ -120,7 +121,7 @@ Done(int restart_or_dump, char *command)
     XUngrabServer(dpy);
     XDefineCursor(dpy, Scr.Root, None);
     XSelectInput(dpy, Scr.Root, 0);
-    XSync(dpy, 0);
+    XSync(dpy, False);
 
     if (restart_or_dump > 0 && STREQ(command,"scwm")) {
       /* we're restarting Scwm -- must do this before
@@ -171,7 +172,7 @@ SaveDesktopState()
   XChangeProperty(dpy, Scr.Root, XA_WM_DESKTOP, XA_WM_DESKTOP, 32,
 		  PropModeReplace, (unsigned char *) data, 1);
 
-  XSync(dpy, 0);
+  XSync(dpy, False);
 }
 
 SCWM_PROC(restart, "restart", 0, 1, 0,
