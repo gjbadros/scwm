@@ -47,6 +47,12 @@ for details."
     (set! global-conditional-style
 	  (merge-styles global-conditional-style new-style))))
 
+(define-public (window-unstyle . style)
+  "Remove STYLE definition from list of window styles.
+STYLE must be given exactly the same way as on invocation of `window-style'."
+  (delete! (car (apply make-conditional-style style))
+	   global-conditional-style))
+
 (define-public (clear-window-style)
   (set! global-conditional-style (make-window-style)))
 
