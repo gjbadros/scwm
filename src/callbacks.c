@@ -89,29 +89,25 @@ scwm_body_apply (void *body_data)
    all throws to be caught and prevents continuations from exiting the
    dynamic scope of the callback. This is needed to prevent callbacks
    from disrupting scwm's flow control, which would likely cause a
-   crash. */
-
-static SCM
-ssdr_handler (void *data, SCM tag, SCM throw_args)
-{
-  /* Save the stack */
-  SET_LAST_STACK(scm_make_stack (gh_cons(SCM_BOOL_T, SCM_EOL)));
-  /* Throw the error */
-  return scm_throw (tag, throw_args);
-}
+   crash. Use scm_internal_stack_catch to save the stack so we can
+   display a backtrace. scm_internal_stack_cwdr is the combination of
+   both. Note that the current implementation causes three(!) distinct
+   catch-like constructs to be used; this may have negative, perhaps
+   even significantly so, performance implications. */
 
 struct cwssdr_data
 {
   SCM tag;
   scm_catch_body_t body;
   void *data;
+  SCM handler;
 };
 
 static SCM
 cwssdr_body (void *data)
 {
   struct cwssdr_data *d = (struct cwssdr_data *) data;
-  return scm_internal_lazy_catch (d->tag, d->body, d->data, ssdr_handler, 
+  return scm_internal_stack_catch (d->tag, d->body, d->data, d->handler, 
 				  NULL);
 }
 
@@ -126,6 +122,7 @@ scm_internal_stack_cwdr (scm_catch_body_t body,
   d.tag = SCM_BOOL_T;
   d.body = body;
   d.data = body_data;
+  d.handler = handler;
   return scm_internal_cwdr (cwssdr_body, &d, handler, handler_data, 
 			    stack_item);
 }

@@ -1,3 +1,11 @@
+Thu Oct  1 04:51:55 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* callbacks.c: Use scm_internal_stack_catch instead of
+ 	scm_internal_lazy_catch to effectively roll our own. This will
+ 	have worse performance bu works around the bug/limitation in
+ 	scm_internal_cwdr which causes occasional crashes with the
+ 	previous version.
+
 1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
 
 	* scwm.c (scwm_main): init_menulook, init_drawmenu and
