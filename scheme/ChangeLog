@@ -1,3 +1,13 @@
+1999-09-16  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints.scm: Added draw-constraints-of-window and 
+	undraw-constraints-of-window functions.
+
+	* constraints.scm: Added draw-constraints-with-focus option  to 
+	start-constraints along with helper functions.  This allows either 
+	all constraints to be drawn or only those attached to the focus 
+	window.
+
 Wed Sep 15 13:59:58 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added prompt-enum.scm

@@ -9,7 +9,6 @@
 ;;; Constraints TODO
 ;;;
 ;;; o Use ScwmButtons instead of rolling our own
-;;; o Added the sum-to-width and sum-to-height constraints
 ;;; o Fix visual representations for the handful of constraints w/o good ones
 ;;; o Use new version of get-window-nonant-interactively that provides
 ;;;   feedback about which nonant is selected
@@ -566,6 +565,22 @@ an ui-constraint."
   "Undraw the UI-CONSTRAINT.  error if UI-CONSTRAINT is not
 an ui-constraint."
   (do-draw-constraint ui-constraint #f))
+
+
+;; draw-constraints-of-window
+
+(define*-public (draw-constraints-of-window #&optional (win (get-window)))
+  "Draw all constraints associated with a window.
+If a window is not specified, the window with the focus is used."
+  (map draw-constraint (ui-constraints-involving-window win)))
+
+
+;; undraw-constraints-of-window
+
+(define*-public (undraw-constraints-of-window #&optional (win (get-window)))
+  "Undraw all constraints associated with a window.
+If a window is not specified, the window with the focus is used."
+  (map undraw-constraint (ui-constraints-involving-window win)))
 
 
 ;; draw-all-constraints
