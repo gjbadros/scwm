@@ -1,3 +1,28 @@
+Tue Sep 28 08:27:16 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Bug fix from Rusty Chris Holleman: use sigjmp_buf, not
+	jmp_buf;  this fixes the global-variables-changing corrupting bug
+	on Solaris/SGI.  Thanks!
+	
+	* scwm.h: Move some macros into scwm-guile.h
+
+	* scwm-guile.h: Added.  Various guile helpers for Scwm... was in
+	scwm.h.
+
+	* Makefile.am: Updated for above addition.
+
+	* image.c: Do not guarantee that val_load_xpm is not SCM_UNDEFINED 
+	since `load-xpm' is now compile-time optional so that Xpm library
+	is not necessary.
+
+	* **.c:  Replace SCM_DEFER_INTS, gh_defer_ints() with
+	scwm_defer_ints() that calls SCM_REDEFER_INTS.  Replace
+	SCM_ALLOW_INTS, gh_allow_ints() with scwm_allow_ints that calls
+	SCM_REALLOW_INTS.  Remove the sandwiching around SCWM_NEWCELL_SMOB 
+	since that is no longer needed because the cdr is set before the
+	ID is set in the car.
+	
+
 Mon Sep 27 16:52:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Use setjmp/longjmp on non-BSD -- just a trial test to

@@ -1,4 +1,9 @@
-Fri Sep 17 12:06:57 1999  Greg J. Badros  <gjb@cs.washington.edu>
+Tue Sep 28 08:34:14 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmcorba.c: Switch from gh_{defer,allow}_ints() to
+ 	scwm_{defer,allow}_ints().
+
+Tue Sep 18   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmcorba.c, scwm_scheme_evaluator-impl.c: Drop _object suffix
 	from scwm_scheme_evaluator.  Use ARG_UNUSED to avoid some warnings.

@@ -1,3 +1,8 @@
+Tue Sep 28 08:33:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* proplist/scwmproplist.c: Switch from gh_{defer,allow}_ints() to
+	scwm_{defer,allow}_ints().
+
 Sun Sep 26 13:58:52 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* */Makefile.am (INCLUDES): Use new $(SCWM_SRC_DIR) so that
