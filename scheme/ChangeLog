@@ -1,3 +1,10 @@
+Wed Sep 16 08:56:14 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm (maximize, unmaximize): Use
+ 	move-window-viewport-position, instead of just move-window, and
+ 	use window-viewport-position to get the current position, instead
+ 	of window-position.
+
 Tue Sep 15 09:37:57 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added image-align option to `menu'.  Thanks Todd Larason!

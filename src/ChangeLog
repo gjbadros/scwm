@@ -1,3 +1,15 @@
+Tue Sep 15 17:08:20 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (MovePswToCurrentPosition): Check for not-visible
+	sticky windows and move them back on screen w/ warning (only
+	ifndef NDEBUG)
+
+	* events.c: Use WIN_VP_OFFSET_[XY] in handling ConfigureNotify
+	events -- fixes bug whereby drags in pager mis-moved the window,
+	and whereby "xv" started up in the top-left viewport always (it
+	actually moved there pretty quickly after the ConfigureNotify came 
+	in)
+
 Tue Sep 15 13:37:36 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* menu.c:  Use XLookupString to convert a key event into a string
