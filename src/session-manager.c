@@ -148,7 +148,7 @@ static void writeWindow(FILE *fd, ScwmWindow *psw)
     writeI32(fd, FRAME_Y(psw));
     writeI32(fd, FRAME_WIDTH(psw) - psw->xboundary_width*2);
     writeI32(fd, FRAME_HEIGHT(psw)
-	     - psw->title_height - psw->boundary_width*2);
+	     - (psw->fTitle ? psw->title_height : 0) - psw->boundary_width*2);
     writeI32(fd, ICON_X(psw));
     writeI32(fd, ICON_Y(psw));
     writeI32(fd, psw->Desk);
