@@ -169,7 +169,7 @@ value. */
       assert(0);		/* we checked this above */
     }
     len=gh_vector_length(value);
-    v=val=safemalloc(len*fmt/8);
+    v=val= (len == 0 ? NULL : safemalloc(len*fmt/8));
     for (i=0; i<len; i++) {
       SCM el=gh_vector_ref(value, gh_int2scm(i));
       if (!gh_number_p(el) || !setter(&v, gh_scm2long(el))) {

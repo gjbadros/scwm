@@ -1,4 +1,13 @@
+1999-02-09  Maciej Stachowiak  <mstachow@alu.mit.edu>
+
+	* xproperty.c (s_X_property_set_x): Deal apropriately with
+	zero-length property values (D'oh!). Bug report from Sam Steingold.
+
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* virtual.c, window.c, window.h: Abstract out notification of new
+	desk for a window; notify of new window for desk when moving
+	sticky windows during a desk change.
 
 	* winprop.c, winprop.h: New files, generic window property
 	handling moved here. Notification of window property changes set
