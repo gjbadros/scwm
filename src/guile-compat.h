@@ -101,6 +101,12 @@ extern SCM scm_internal_stack_catch (SCM tag,
 #define scm_make_vector(X, Y) (scm_make_vector((X), (Y), SCM_BOOL_F))
 #endif
 
+#ifdef HAVE_SCM_LOAD_STARTUP_FILES
+#define scwm_gh_enter gh_enter		     
+#else /* !HAVE_SCM_LOAD_STARTUP_FILES */
+void scwm_gh_enter (int argc, char *argv[], main_prog_t c_main_prog);
+#endif /* !HAVE_SCM_LOAD_STARTUP_FILES */
+
 #ifdef __cplusplus
 }
 #endif

@@ -101,6 +101,32 @@ scm_internal_stack_catch (SCM tag,
 
 #endif /* HAVE_SCM_INTERNAL_STACK_CATCH */
 
+#ifndef HAVE_SCM_LOAD_STARTUP_FILES
+/*
+ *  Procedures:
+ *	scwm_gh_enter, scwm_gh_launch_pad - Replacement for gh_enter that 
+ *      guarantees loading of boot-9.scm
+ */
+
+static void 
+scwm_gh_launch_pad (void *closure, int argc, char **argv)
+{
+  main_prog_t c_main_prog = (main_prog_t) closure;
+
+  gh_eval_str ("(primitive-load-path \"ice-9/boot-9.scm\")");
+  c_main_prog (argc, argv);
+  exit (0);
+}
+
+void 
+scwm_gh_enter (int argc, char *argv[], main_prog_t c_main_prog)
+{
+  scm_boot_guile (argc, argv, scwm_gh_launch_pad, (void *) c_main_prog);
+  /* never returns */
+}
+#endif /* !HAVE_SCM_LOAD_STARTUP_FILES */
+
+
 #ifdef __cplusplus
 }
 #endif

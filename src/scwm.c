@@ -451,30 +451,7 @@ InitUserData()
   UserHome = strdup(home);
 }
 
-
 
-/*
- *  Procedures:
- *	scwm_gh_enter, scwm_gh_launch_pad - Replacement for gh_enter that 
- *      guarantees loading of boot-9.scm
- */
-
-static void 
-scwm_gh_launch_pad (void *closure, int argc, char **argv)
-{
-  main_prog_t c_main_prog = (main_prog_t) closure;
-
-  gh_eval_str ("(primitive-load-path \"ice-9/boot-9.scm\")");
-  c_main_prog (argc, argv);
-  exit (0);
-}
-
-static void 
-scwm_gh_enter (int argc, char *argv[], main_prog_t c_main_prog)
-{
-  scm_boot_guile (argc, argv, scwm_gh_launch_pad, (void *) c_main_prog);
-  /* never returns */
-}
 
 /*
  *  Procedure:

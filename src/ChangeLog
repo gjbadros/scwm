@@ -1,3 +1,11 @@
+Thu Oct 22 14:23:44 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwm.c: Remove scwm_gh_enter and scwm_gh_launch_pad defintions.
+
+	guile-compat.c, guile-compat.h: Move them here; if guile has
+ 	scm_load_startup_files, do not actually define them, just #define
+ 	scwm_gh_enter as gh_enter.
+
 1998-10-22  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* decorations.c: Remove reference to unused mwmcom.h.
