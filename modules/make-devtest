@@ -1,12 +1,19 @@
 #!/uns/bin/zsh -f
 # Use this script to copy the dynamic libraries to lib subdir
-# and put $SCWMDIR/modules/lib in your GUILE_LOAD_PATH
+# and put $SCWMDIR/modules/lib in your SCWM_LOAD_PATH
 # ahead of the system libraries.
 # This will let you test w/o installing
-if [ ! -d lib ]; then
-  mkdir lib
+# Can give an argument to this script, too:
+# e.g.,:
+# make-devtest devlib
+# then use $SCWMDIR/modules/devlib in your SCWM_LOAD_PATH
+# so that your main Scwm does not crash
+libdir=${1:-lib}
+if [ ! -d $libdir ]; then
+  mkdir $libdir
 fi
-cd lib
+cd $libdir
+pwd
 if [ ! -L app ]; then
   ln -sf . app
 fi
@@ -15,7 +22,7 @@ if [ ! -L scwm ]; then
 fi
 cd ..
 setopt extended_glob
-cp  **/lib*.so*~lib/*(D) lib  # does not preserve symlinks, but who cares
+cp  **/lib*.so*~*lib/*(D) $libdir  # does not preserve symlinks, but who cares
 
 echo $SCWM_LOAD_PATH $GUILE_LOAD_PATH | grep -q $PWD  || 
-  { print -u2 "Put `pwd`/lib in your SCWM_LOAD_PATH" }
+  { print -u2 "Put `pwd`/$libdir in your SCWM_LOAD_PATH" }
