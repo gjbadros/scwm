@@ -1,3 +1,12 @@
+Mon Oct 18 09:33:46 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* minimal.scm: Show a backtrace when a module load fails.
+
+Mon Oct 18 09:02:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm: Fixed symbol that was incorrectly changed to 
+	`focus-window' in last big round of renaming changes.
+
 Sun Oct 17 19:01:35 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* message-window.scm: Use window-visible-frame-size to pick
