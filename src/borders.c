@@ -535,30 +535,30 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
     case 2:
       seg[0].x1 = psw->boundary_width - 1;
       seg[0].x2 = psw->corner_width - (hh ? 1 : 2);
-      seg[0].y1 = psw->corner_width - psw->boundary_width + 1;
-      seg[0].y2 = psw->corner_width - psw->boundary_width + 1;
+      seg[0].y1 = psw->corner_width - psw->boundary_width;
+      seg[0].y2 = psw->corner_width - psw->boundary_width;
       n = 1;
       if (psw->boundary_width > 3) {
 	seg[1].x1 = psw->boundary_width - 2;
 	seg[1].x2 = psw->corner_width - (hh ? 1 : 3);
-	seg[1].y1 = psw->corner_width - psw->boundary_width + 2;
-	seg[1].y2 = psw->corner_width - psw->boundary_width + 2;
+	seg[1].y1 = psw->corner_width - psw->boundary_width + 1;
+	seg[1].y2 = psw->corner_width - psw->boundary_width + 1;
 	n = 2;
       }
       break;
     case 3:
       seg[0].x1 = 0;
       seg[0].x2 = psw->corner_width - psw->boundary_width;
-      seg[0].y1 = psw->corner_width - psw->boundary_width + 1;
-      seg[0].y2 = psw->corner_width - psw->boundary_width + 1;
+      seg[0].y1 = psw->corner_width - psw->boundary_width;
+      seg[0].y2 = psw->corner_width - psw->boundary_width;
       n = 1;
       if (psw->boundary_width > 3) {
 	seg[0].x2 = psw->corner_width - psw->boundary_width + 1;
 
 	seg[1].x1 = 0;
 	seg[1].x2 = psw->corner_width - psw->boundary_width + 1;
-	seg[1].y1 = psw->corner_width - psw->boundary_width + 2;
-	seg[1].y2 = psw->corner_width - psw->boundary_width + 2;
+	seg[1].y1 = psw->corner_width - psw->boundary_width + 1;
+	seg[1].y2 = psw->corner_width - psw->boundary_width + 1;
 	n = 2;
       }
       break;
@@ -603,19 +603,20 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
 	seg[1].y2 = psw->corner_width - psw->boundary_width;
 	seg[1].x1 = psw->boundary_width - 1;
 	seg[1].x2 = psw->boundary_width - 1;
+	n=2;
       }
       break;
     case 3:
       seg[0].y1 = 0;
-      seg[0].y2 = psw->corner_width - psw->boundary_width + 1;
+      seg[0].y2 = psw->corner_width - psw->boundary_width;
       seg[0].x1 = psw->corner_width - psw->boundary_width;
       seg[0].x2 = psw->corner_width - psw->boundary_width;
       n = 1;
 
       if (psw->boundary_width > 3) {
-	seg[0].y2 = psw->corner_width - psw->boundary_width + 2;
+	seg[0].y2 = psw->corner_width - psw->boundary_width + 1;
 	seg[1].y1 = 0;
-	seg[1].y2 = psw->corner_width - psw->boundary_width + 2;
+	seg[1].y2 = psw->corner_width - psw->boundary_width + 1;
 	seg[1].x1 = psw->corner_width - psw->boundary_width + 1;
 	seg[1].x2 = psw->corner_width - psw->boundary_width + 1;
 	n = 2;

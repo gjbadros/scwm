@@ -293,7 +293,7 @@ AddWindow(Window w)
 
   psw->xboundary_width = psw->boundary_width;
   if (psw->fMWMBorders) psw->bw = 0;
-  else psw->bw = BW;
+  else psw->bw = 0;
 
   /* Tentative size estimate */
   frame_x = 0;
