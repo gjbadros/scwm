@@ -211,8 +211,26 @@ main(int argc, char **argv)
   printf("scwm> ");
   while (!done) {
     if ((splitpoint=check_balance(gather))) {
+      char *result, *error, *output;
       expr=split_at(&gather,splitpoint);
-      printf("; value: %s",scwmexec_exec(display,w,expr));
+      result=scwmexec_exec_full(display,w,expr,&output,&error);
+
+      printf(output);
+      if (strlen(error)!=0) {
+	fprintf(stderr,error);
+      } else {
+	fprintf(stdout,result);
+      }
+
+      if (result!=NULL) {
+	XFree(result);
+      }
+      if (output!=NULL) {
+	XFree(output);
+      }
+      if (error!=NULL) {
+	XFree(error);
+      }
       free(expr);
       printf("\nscwm> ");
     } else {
