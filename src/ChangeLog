@@ -1,5 +1,9 @@
 Wed Nov 12 15:41:28 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* window.c: Fixed the remaining problems with DeferExecution - the
+ 	event it reads needs to be copied to the global event struct
+ 	before calling DispatchEvent(). 
+
 	* scwm.c: Use getopt_long when available for argument parsing,
  	otherwise accept both long and short options by
  	hand-parsing. Patch from James LewisMoss <dres@dimensional.com>,
