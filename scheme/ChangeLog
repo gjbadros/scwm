@@ -1,3 +1,14 @@
+Fri Oct 22 17:56:06 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Needs winlist, wininfo (fixes unbound variables when 
+	using the viavoice interface).
+
+Fri Oct 22 17:37:06 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Use window-with-pointer, not get-window, for
+ 	focus-or-toggle-raise (otherwise we'd nearly always get the window
+ 	that has the focus).
+
 Fri Oct 22 17:27:17 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Added `focus-or-toggle-raise'
