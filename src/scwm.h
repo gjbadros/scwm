@@ -260,8 +260,10 @@ void BlackoutScreen(void);
 void UnBlackoutScreen(void);
 void init_scwm_load_path();
 void CaptureAllWindows(void);
-void newsegvhandler(int sig);
 void reset_signal_handler(int sig);
+void newhandler(int sig);
+void newhandler_doreset(int sig);
+void newsegvhandler(int sig);
 
 
 /* Global variables */

@@ -133,10 +133,6 @@ XErrorHandler ScwmErrorHandler(Display *, XErrorEvent *);
 XIOErrorHandler CatchFatal(Display *);
 XErrorHandler CatchRedirectError(Display *, XErrorEvent *);
 
-void newhandler(int sig);
-void newhandler_doreset(int sig);
-void newsegvhandler(int sig);
-
 void CreateCursors(void);
 void ChildDied(int nonsense);
 void SetMWM_INFO(Window window);
@@ -155,6 +151,8 @@ ScwmWindow *FocusOnNextTimeStamp = NULL;
 Bool debugging = False, PPosOverride = False, Blackout = False;
 Bool fDisableBacktrace = False;
 Bool segvs_to_reset = 100;
+Bool fHandleSegv = True;
+
 
 char **g_argv;
 int g_argc;
@@ -522,7 +520,6 @@ scwm_main(int argc, char **argv)
   char message[255];
   Bool single = False;
   Bool option_error = False;
-  Bool fHandleSegv = True;
 
 #ifdef I18N
   char *Lang,*territory,*tmp;
@@ -787,10 +784,11 @@ Repository Timestamp: %s\n",
   
   DBUG((DBG,"main", "Installing signal handlers"));
   
-#define SIGNAL_FOR_RESET SIGHUP
-
   newhandler(SIGINT); /* later change this to do a reset
                          don't want it to try to longjmp too soon, though */
+
+  /* this code is coupled with the code that restores this
+     behaviour in scwmgtkhelper.c's restore_scwm_handlers */
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
   /* GJB:FIXME:: I seem to lose the last stack frame in my backtrace if this is
@@ -1060,8 +1058,11 @@ Repository Timestamp: %s\n",
   scwm_maybe_send_thankyou_packet();
 
   DBUG((DBG,"main", "Entering HandleEvents loop..."));
+
   sigsetjmp(envHandleEventsLoop,1);
-  newhandler_doreset(SIGNAL_FOR_RESET);
+  /* this code is coupled with the code that restores this
+     behaviour in scwmgtkhelper.c's restore_scwm_handlers */
+  newhandler_doreset(SIGHUP);
   newhandler_doreset(SIGINT);
   HandleEvents();
   DBUG((DBG,"main", "Back from HandleEvents loop?  Exitting..."));
@@ -1223,7 +1224,7 @@ CaptureAllWindows(void)
 SIGNAL_T
 SigResetLoop(int ARG_IGNORE(ignored))
 {
-  newhandler_doreset(SIGNAL_FOR_RESET);
+  newhandler_doreset(SIGHUP);
   if (envHandleEventsLoop) {
     scwm_msg(INFO,"SigResetLoop","Got a reset signal, so longjmp-ing to event handler");
     siglongjmp(envHandleEventsLoop,1 /* ret. val for setjmp */);
