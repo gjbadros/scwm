@@ -470,22 +470,6 @@ The rest of the arguments are passed as options to the xterm command."
       (lambda () (set-window-context! old-window-context)))))
 
 
-;; The above with-window has a bug when used w/ interactive-move
-;; if broadcast-config-hook is non-empty whereby select-window
-;; gets called multiple times w/o explanation.  See tests/with-window.scm
-;; This macro can be used instead when you know ,@body won't
-;; throw
-(defmacro-public with-window-no-wind (win . body)
-;;;** Bind the window-context to WIN while evaluating BODY.
-;;; All `get-window' calls within BODY will return WIN.
-  `(let ((old-window-context (window-context))
-	 (answer #f))
-     (set-window-context! ,win)
-     (set! answer ,@body)
-     (set-window-context! old-window-context)
-     answer))
-
-
 (define-public bell beep)
 
 (add-hook! invalid-interaction-hook
