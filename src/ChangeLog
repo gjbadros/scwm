@@ -1,3 +1,24 @@
+Mon Jan 25 17:36:52 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c, window.h: Added window_pixel_size_to_client_units to
+	support conversion to client units since that code is now needed
+	by the resize hook as well as the `window-size' primitive (rewrote 
+	the latter to use it).
+
+	* resize.c: Added args to interactive_resize_new_size_hook to
+	support reporting position and client-unit sizes, as well as pixel 
+	sizes.
+
+	* callbacks.c: Added scwm_safe_callN, callN_hooks for 4<=N<=7.  
+
+Mon Jan 25 10:27:31 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (s_deiconify): Permit deiconify to be given a virtual
+	position to deiconify the window to.  This permits supporting a
+	deiconify-to-current-viewport function
+
+	* icons.c: Fixed a couple of comments.
+
 Sat Jan 23 16:35:02 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xrm.c, xproperty.c, window.c, message-window.c, menulook.c,

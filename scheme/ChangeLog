@@ -1,3 +1,21 @@
+Mon Jan 25 17:35:13 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* message-window.scm: Fix `resize-message-new-size-hook' to take
+	all the extra arguments I just added so the window can report in
+	client units and pixel positions as well.
+
+Mon Jan 25 16:55:02 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* animate-iconify-window.scm: Added
+	animate-deiconify-to-current-viewport, wrote
+	animate-iconify-or-deiconify in terms of a win-pos and win-size,
+	not an explicit window---this better supports
+	animate-deiconify-to-current-viewport.
+
+	* virtual.scm: Added current-viewport-offset-xx,
+	current-viewport-offset-yy, window-position-in-viewport, and
+	deiconify-to-current-viewport
+
 Sat Jan 23 17:43:35 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* animate-iconify-window.scm: Added.  Still issues remaining with
