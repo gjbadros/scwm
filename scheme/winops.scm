@@ -402,6 +402,7 @@ outline or the window itself is resized."
 
 (define*-public (toggle-maximize-horizontal #&optional (win (get-window)))
   "Toggle the WIN's maximized-horizontally state."
+  (interactive)
   (toggle-maximize (%x 100) 0 win))
 
 (define*-public (toggle-maximize-both #&optional (win (get-window)))

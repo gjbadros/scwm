@@ -349,6 +349,91 @@ to make it resize around its center."
    cl-is-constraint-satisfied? 
    "anchor.xpm" #f menuname-anchor))
 
+
+;;-----------------------------------------------------------
+;; strict relative position
+;;-----------------------------------------------------------
+
+;;  ui-constructor
+(define (ui-cnctr-strict-relpos)
+  (two-window-or-more-nonant-prompter "Strict relative position"))
+
+;; utilities functions to create some cl-variables
+(define (window-clv-cx win) 
+  (cl-plus (window-clv-xl win) (cl-divide (window-clv-width win) 2)))
+
+(define (window-clv-my win)
+  (cl-plus (window-clv-yt win) (cl-divide (window-clv-height win) 2)))
+
+
+;; constructor
+(define* (cnctr-strict-relpos winlist nonantlist #&optional (enable? #f))
+  (let* ((clvxposlist (map get-vcl-from-nonant winlist nonantlist))
+	 (clvyposlist (map get-hcl-from-nonant winlist nonantlist))
+	 (xposlist (map (lambda (w n) (car (get-vpos-from-nonant w n))) winlist nonantlist))
+	 (yposlist (map (lambda (w n) (car (get-hpos-from-nonant w n))) winlist nonantlist))
+	 (clvxlist (map (lambda (xp) (make-cl-variable "clv-xdiff" (- (car xposlist) xp))) (cdr xposlist)))
+	 (clvylist (map (lambda (yp) (make-cl-variable "clv-ydiff" (- (car yposlist) yp))) (cdr yposlist)))
+	 (scxlist (map (lambda (clvx) (make-cl-stay-constraint clvx cls-required 10)) clvxlist))
+	 (scylist (map (lambda (clvy) (make-cl-stay-constraint clvy cls-required 10)) clvylist))
+	 (sclist (append scxlist scylist))
+	 (cleqxlist (map (lambda (clvp) (cl-minus (car clvxposlist) clvp)) (cdr clvxposlist)))
+	 (cleqylist (map (lambda (clvp) (cl-minus (car clvyposlist) clvp)) (cdr clvyposlist)))
+	 (cnxlist (map (lambda (clv1 cleqx) (make-cl-constraint clv1 = cleqx )) clvxlist cleqxlist))
+	 (cnylist (map (lambda (clv2 cleqy) (make-cl-constraint clv2 = cleqy )) clvylist cleqylist))
+	 (cnlist (append cnxlist cnylist)))
+    (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist)
+    (and enable? (for-each (lambda (sc) (cl-add-constraint (scwm-master-solver) sc)) sclist))
+    (list sclist winlist nonantlist cnlist)))
+
+;; utility function (for getting positions from nonants)
+
+(define (get-pos-from-nonant win nonant)
+  (case nonant
+    ((0) (window-left-top win))
+    ((1) (window-center-top win))
+    ((2) (window-right-top win))
+    ((3) (window-left-middle win))
+    ((4) (window-center-middle win))
+    ((5) (window-right-middle win))
+    ((6) (window-left-bottom win))
+    ((7) (window-center-bottom win))
+    ((8) (window-right-bottom win))
+    (else (error "Bad nonant"))))
+
+;; draw-proc
+(define (draw-cn-strict-relpos ui-constraint enable focus mode)
+  (let* ((win-list (ui-constraint-windows ui-constraint))
+	 (width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width))
+	 (nonant-list (car (ui-constraint-opts ui-constraint)))
+	 (w1pos (get-pos-from-nonant (car win-list) (car nonant-list)))
+	 (w1top (translate-point w1pos 0 5))
+	 (w1bot (translate-point w1pos 0 -5))
+	 (wposlist (map (lambda (w n) (get-pos-from-nonant w n)) (cdr win-list) (cdr nonant-list)))
+	 (wtoplist (map (lambda (wpos) (translate-point wpos 0 5)) wposlist))
+	 (wbotlist (map (lambda (wpos) (translate-point wpos 0 -5)) wposlist)))
+    (xlib-set-line-attributes! width)
+    (draw-window-line-anchor w1pos 5)
+    (for-each (lambda (wpos wtop wbot)
+		(xlib-draw-line! w1pos wpos)
+		(xlib-draw-line! w1top wtop)
+		(xlib-draw-line! w1bot wbot)
+		(draw-window-line-anchor wpos 5))
+	      wposlist wtoplist wbotlist)))
+
+;; declare the strict relative position constraint
+(define-public uicc-strict-relpos
+  (make-ui-constraint-class
+   "Strict relative position"
+   "Strict relative position. \n\
+Move windows around together.  Where you click in the windows \
+determines what part of each window is connected to the other." 
+   '(2 '+) cnctr-strict-relpos
+   ui-cnctr-strict-relpos draw-cn-strict-relpos
+   cl-is-constraint-satisfied?
+   "cn-strict-relative-pos.xpm" #f menuname-as-win-num))
+
+
 ;;-----------------------------------------------------------------------
 ;; alignment constraint
 ;;
@@ -849,95 +934,6 @@ Do not let window get taller than it is."
    ui-cnctr-maxvsize draw-cn-maxvsize
    cl-is-constraint-satisfied?
    "cn-max-vsize.xpm" #f menuname-as-class-name))
-
-
-;;-----------------------------------------------------------
-;; strict relative position
-;;-----------------------------------------------------------
-
-;;  ui-constructor
-(define (ui-cnctr-strict-relpos)
-  (two-window-or-more-nonant-prompter "Strict relative position"))
-
-;; utilities functions to create some cl-variables
-(define (window-clv-cx win) 
-  (cl-plus (window-clv-xl win) (cl-divide (window-clv-width win) 2)))
-
-(define (window-clv-my win)
-  (cl-plus (window-clv-yt win) (cl-divide (window-clv-height win) 2)))
-
-
-;; constructor
-(define* (cnctr-strict-relpos winlist nonantlist #&optional (enable? #f))
-  (let* ((clvxposlist (map get-vcl-from-nonant winlist nonantlist))
-	 (clvyposlist (map get-hcl-from-nonant winlist nonantlist))
-	 (xposlist (map (lambda (w n) (car (get-vpos-from-nonant w n))) winlist nonantlist))
-	 (yposlist (map (lambda (w n) (car (get-hpos-from-nonant w n))) winlist nonantlist))
-	 (clvxlist (map (lambda (xp) (make-cl-variable "clv-xdiff" (- (car xposlist) xp))) (cdr xposlist)))
-	 (clvylist (map (lambda (yp) (make-cl-variable "clv-ydiff" (- (car yposlist) yp))) (cdr yposlist)))
-	 (scxlist (map (lambda (clvx) (make-cl-stay-constraint clvx cls-required 10)) clvxlist))
-	 (scylist (map (lambda (clvy) (make-cl-stay-constraint clvy cls-required 10)) clvylist))
-	 (sclist (append scxlist scylist))
-	 (cleqxlist (map (lambda (clvp) (cl-minus (car clvxposlist) clvp)) (cdr clvxposlist)))
-	 (cleqylist (map (lambda (clvp) (cl-minus (car clvyposlist) clvp)) (cdr clvyposlist)))
-	 (cnxlist (map (lambda (clv1 cleqx) (make-cl-constraint clv1 = cleqx )) clvxlist cleqxlist))
-	 (cnylist (map (lambda (clv2 cleqy) (make-cl-constraint clv2 = cleqy )) clvylist cleqylist))
-	 (cnlist (append cnxlist cnylist)))
-    (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist)
-    (and enable? (for-each (lambda (sc) (cl-add-constraint (scwm-master-solver) sc)) sclist))
-    (list sclist winlist nonantlist cnlist)))
-
-;; utility function (for getting positions from nonants)
-
-(define (get-pos-from-nonant win nonant)
-  (case nonant
-    ((0) (window-left-top win))
-    ((1) (window-center-top win))
-    ((2) (window-right-top win))
-    ((3) (window-left-middle win))
-    ((4) (window-center-middle win))
-    ((5) (window-right-middle win))
-    ((6) (window-left-bottom win))
-    ((7) (window-center-bottom win))
-    ((8) (window-right-bottom win))
-    (else (error "Bad nonant"))))
-
-;; draw-proc
-(define (draw-cn-strict-relpos ui-constraint enable focus mode)
-  (let* ((win-list (ui-constraint-windows ui-constraint))
-	 (width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width))
-	 (nonant-list (car (ui-constraint-opts ui-constraint)))
-	 (w1pos (get-pos-from-nonant (car win-list) (car nonant-list)))
-	 (w1top (translate-point w1pos 0 5))
-	 (w1bot (translate-point w1pos 0 -5))
-	 (wposlist (map (lambda (w n) (get-pos-from-nonant w n)) (cdr win-list) (cdr nonant-list)))
-	 (wtoplist (map (lambda (wpos) (translate-point wpos 0 5)) wposlist))
-	 (wbotlist (map (lambda (wpos) (translate-point wpos 0 -5)) wposlist)))
-    (xlib-set-line-attributes! width)
-    (draw-window-line-anchor w1pos 5)
-    (for-each (lambda (wpos wtop wbot)
-		(xlib-draw-line! w1pos wpos)
-		(xlib-draw-line! w1top wtop)
-		(xlib-draw-line! w1bot wbot)
-		(draw-window-line-anchor wpos 5))
-	      wposlist wtoplist wbotlist)))
-
-;; declare the strict relative position constraint
-(define-public uicc-strict-relpos
-  (make-ui-constraint-class
-   "Strict relative position"
-   "Strict relative position. \n\
-Move windows around together.  Where you click in the windows \
-determines what part of each window is connected to the other." 
-   '(2 '+) cnctr-strict-relpos
-   ui-cnctr-strict-relpos draw-cn-strict-relpos
-   cl-is-constraint-satisfied?
-   "cn-strict-relative-pos.xpm" #f menuname-as-win-num))
-
-
-;;---------------------------------------------------------
-;; weak relative position constraints  
-;;---------------------------------------------------------
 
 ;; keep-above
   

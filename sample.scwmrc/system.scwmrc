@@ -178,6 +178,7 @@
 		  describe task-switcher cursor
 		  winops winlist winlist-menu wininfo listops placement
 		  style stylist basic-styles
+		  easyraise
 		  face time-convert menus-extras
 		  std-menus xlock-menus doc virtual prompt-color
 		  flux flux-gtk flash-window key-mover shove-window
@@ -679,11 +680,11 @@
 	      #:use-style desk-widget-on-top-no-titlebar)
 (window-style (resource-match?? "prompt-string")   ;; these need to be on top of the ScwmUIConstraintsButtons
 	      #:use-style desk-widget-on-top-no-titlebar)
-(window-style "FvwmPager" #:use-style desk-widget-no-titlebar)
+(window-style "FvwmPager" #:use-style desk-widget-no-titlebar #:easyraise #t)
 (window-style "zwgc" #:use-style desk-widget-on-top)
 (window-style "*lock" #:use-style desk-widget)
-(window-style "xclock*" #:use-style desk-widget-on-top-no-titlebar)
-(window-style "xload" #:no-titlebar #t #:use-style desk-widget-on-top-no-titlebar)
+(window-style "xclock*" #:use-style desk-widget-no-titlebar #:easyraise #t)
+(window-style "xload" #:no-titlebar #t #:use-style desk-widget-no-titlebar #:easyraise #t)
 (window-style "xscreensaver" #:no-titlebar #t #:use-style desk-widget)
 (window-style "xbiff" #:no-titlebar #t #:use-style desk-widget-on-top
 	      #:mini-icon "mini-xbiff.xpm")
@@ -1049,8 +1050,12 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
 
+;; (raise-easyraise-windows)
+;; (lower-easyraise-windows)
 ;; Raise the pager when C-M-S is depressed.
-(bind-three-modifier-key-events XKM_CONTROL_L XKM_SHIFT_L XKM_META_L raise-fvwm2-pager #f) ;;lower-fvwm2-pager)
+;;(unbind-four-modifier-key-events XKM_ALT_L XKM_CONTROL_L XKM_SHIFT_L XKM_META_L)
+(bind-four-modifier-key-events XKM_ALT_L XKM_CONTROL_L XKM_SHIFT_L XKM_META_L toggle-easyraise-windows #f) ;;lower-fvwm2-pager)
+;; (bind-three-modifier-key-events XKM_CONTROL_L XKM_SHIFT_L XKM_META_L raise-easyraise-windows #f) ;;lower-fvwm2-pager)
 ;; (unbind-three-modifier-key-events XKM_CONTROL_L XKM_SHIFT_L XKM_META_L)
 
 ;; avoid lots of warnings.... test for this first...

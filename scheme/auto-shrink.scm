@@ -2,6 +2,9 @@
 ;;;; auto-shrink.scm
 ;;;; Copyright (C) 2000 Greg J. Badros <gjb@cs.washington.edu>
 ;;;;
+;;;; Inspired by T. Miah and J.L. Alty's 
+;;;; "Vanishing Windows---A Technique for Adapative Window Management"
+;;;; paper from _Interacting_with_Computers_ 12 (2000) 337-355.
 
 (define-module (app scwm auto-shrink)
   :use-module (app scwm optargs)
@@ -17,7 +20,8 @@
 (define-public auto-shrink-delay-seconds 5)
 
 (define*-public (shrink-window #&key (frac .99) (min-width 30) (min-height 45) (win (get-window)))
-  ""
+  "Shrink the window WIN to FRAC * its old size.
+Never let it get smaller than MIN-WIDTH by MIN-HEIGHT."
   (interactive)
   (let* ((sz (window-size win))
 	 (wid (car sz))
@@ -52,13 +56,13 @@
       (add-timer-hook! (sec->msec auto-shrink-delay-seconds) shrink-and-reinstall)))
 
 (define*-public (enable-timed-autoshrink-windows)
-  ""
+  "Turn on auto-shrinking window behaviour."
   (interactive)
   (set! reinstall-autoshrink #t)
   (shrink-and-reinstall))
 
 (define*-public (disable-timed-autoshrink-windows)
-  ""
+  "Turn off auto-shrinking window behaviour."
   (interactive)
   (remove-timer-hook! shrink-and-reinstall)
   (set! reinstall-autoshrink #f))
