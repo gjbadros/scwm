@@ -118,6 +118,7 @@ init_scwm_procs(void)
   gh_new_procedure("window-position", window_position, 0, 1, 0);
   gh_new_procedure("window-size", window_size, 0, 1, 0);
   gh_new_procedure("window-id", window_id, 0, 1, 0);
+  gh_new_procedure("window-frame-id", window_frame_id, 0, 1, 0);
   gh_new_procedure("window-from-window-id", window_from_window_id, 0, 1, 0);
   gh_new_procedure("window-desk", window_desk, 0, 1, 0);
   gh_new_procedure("window-title", window_title, 0, 1, 0);

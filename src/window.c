@@ -1791,6 +1791,13 @@ window_id(SCM win)
   return SCM_MAKINUM(SCWMWINDOW(win)->w);
 }
 
+SCM 
+window_frame_id(SCM win)
+{
+  VALIDATE(win, "window-frame-id");
+  return SCM_MAKINUM(SCWMWINDOW(win)->frame);
+}
+
 SCM
 window_from_window_id(SCM window_id)
 {

@@ -1,5 +1,8 @@
 Thu Mar 26 07:41:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* window.c, window.h, scmprocs.c: Added window-frame-id procedure,
+ 	needed by the fvwm module stuff and perhaps generally useful.
+	
 	* scwm.c, events.c, module-interface.c, image.c: Replace
  	gh_eval_str, load, gh_apply and gh_call1 with new safe
  	versions. Calls to call_thunk_with_message_handler not replaced

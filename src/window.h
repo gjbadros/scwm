@@ -263,6 +263,7 @@ SCM move_window_to_desk(SCM which, SCM win);
 SCM window_position(SCM win);
 SCM window_size(SCM win);
 SCM window_id(SCM win);
+SCM window_frame_id(SCM win);
 SCM window_from_window_id(SCM window_id);
 
 SCM window_desk(SCM win);
