@@ -8,6 +8,7 @@
 
 (define-module (app scwm message-window)
   :use-module (app scwm base)
+  :use-module (app scwm defoption)
   :use-module (app scwm optargs))
 
 (provide 'scwm-message-window)
@@ -133,6 +134,14 @@ These options are cumulative for repeated calls to
 ;;;; the default message window
 
 (define-public default-message-window (make-message-window ""))
+
+(define-scwm-option *message-window-font* (make-font "*helvetica*medium-r*10*")
+  "The default message-window font."
+  #:type 'font
+  #:group 'message-window
+  #:setter (lambda (font) (message-window-set-font! default-message-window font))
+  #:getter (lambda () (message-window-font default-message-window)))
+
 
 ;;; hooks for the usual resize and move message windows
 

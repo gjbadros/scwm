@@ -22,10 +22,14 @@
   :use-module (app scwm optargs)
   )
 
-;; scwm-option-variables could ultimately take the place
-;; of the doc tools generated `user-options' variable
-(define-public scwm-options '())
+;; scwm-options takes the place of the doc tools-generated
+;; `user-options' variable
+(if (not (feature? 'scwm-options))
+    (begin
+      (define-public scwm-options '())))
 ;;(set! scwm-options '())
+
+(provide 'scwm-options)
 
 
 ;; GJB:FIXME:MS: Is this bad scheme style?
@@ -34,10 +38,22 @@
 (defmacro-public define-scwm-option (sym default docstring . rest)
   "Define VAR to be a new scwm user option with DEFAULT as its default value.
 DOCSTRING documents the option.  REST includes keyword arguments including:
-#:type - one of 'boolean, 'integer, 'percent, 'percent-or-on-off, 
-         'real, 'string, 'directory, 'path, 'command.
-#:group - an option group, or a list of group, subgroup, subsubgroup
+#:type - one of 'boolean,
+                'integer, 'percent, 'real
+                'position, 'position-delta
+                'time 'time-delta
+                'string, 'directory, 'path, 'command, 'hostname
+                'string-list
+                'interactive-proc, 'proc
+                'color
+     (numerous of these types are not yet supported)
+#:group - an option group, or a list of group, subgroup, subsubgroup, etc.
+#:permit-disable - string labels for the forced-on, forced-off states (#t/#f used as value)
+     (permit-disable is not yet supported -- intention is for stuff like
+      opaque-move-percent which has a percent but also may be always on/off)
 #:range - a cons cell (low . high), both inclusive with low <= high.
+#:layout-hint - any object as a hint to the type-layout engine (e.g., 'horizontal)
+     (layout hint is not yet supported)
 #:favorites - a list of favorite possibilities for this variable.
 #:setter - the setter procedure, if any.
 #:getter - the getter procedure, if any."
@@ -81,14 +97,18 @@ DOCSTRING documents the option.  REST includes keyword arguments including:
 !#
 
 (define*-public (define-scwm-option-proc var sym docstring default #&key
-		  (type 'integer)
+		  (type #f)
+		  (permit-disable #f)
 		  (range #f)
 		  (favorites #f)
 		  (group #f)
+		  (layout-hint #f)
 		  (setter #f)
 		  (getter #f))
   "Helper procedure for `define-scwm-option'.
 See `define-scwm-option'."
+  (if (not (string? docstring)) (error "Must give a docstring!"))
+  (if (not type) (error "Must specify a type!"))
   (set-object-property! sym 'doc docstring)
   (set-object-property! sym 'name (symbol->string sym))
   (if setter (set-object-property! sym 'setter setter))
@@ -97,6 +117,8 @@ See `define-scwm-option'."
   (if favorites (set-object-property! sym 'favorites favorites)
       (if (eq? type 'boolean)
 	  (set-object-property! sym 'favorites (list #t #f))))
+  (if permit-disable (set-object-property! sym 'permit-disable permit-disable))
+  (if layout-hint (set-object-property! sym 'layout-hint layout-hint))
   (if type (set-object-property! sym 'type type))
   (if group (set-object-property! sym 'group group))
   (set! scwm-options (uniq (cons sym scwm-options)))
@@ -139,6 +161,16 @@ See `define-scwm-option'."
   (or (symbol? sym) (error "SYM option must be a symbol"))
   (object-property sym 'group))
 
+(define-public (scwm-option-permit-disable sym)
+  "Return the permit-disable flag for SYM."
+  (or (symbol? sym) (error "SYM option must be a symbol"))
+  (object-property sym 'permit-disable))
+
+(define-public (scwm-option-layout-hint sym)
+  "Return the permit-disable flag for SYM."
+  (or (symbol? sym) (error "SYM option must be a symbol"))
+  (object-property sym 'layout-hint))
+
 (define-public (scwm-option-type sym)
   "Return the type for SYM."
   (or (symbol? sym) (error "SYM option must be a symbol"))
@@ -152,6 +184,13 @@ See `define-scwm-option'."
 
 (defmacro-public scwm-option-get (var)
   "Get option VAR's value."
+  `(let ((g (scwm-option-getter ',var)))
+     (if g (g)
+	 ,var)))
+
+(defmacro-public optget (var)
+  "Get option VAR's value.
+Shorthand for scwm-option-get."
   `(let ((g (scwm-option-getter ',var)))
      (if g (g)
 	 ,var)))

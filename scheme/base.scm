@@ -58,6 +58,30 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
   #:type 'boolean
   #:group 'system)
 
+(define-scwm-option *menu-font* (make-font "*helvetica*medium-r*12*")
+  "The default menu font."
+  #:type 'font
+  #:group 'menu
+  #:setter (lambda (font) (set! menu-font font))
+  #:getter (lambda () menu-font))
+
+(define-scwm-option *menu-text-color* (make-color "black")
+  "The default menu text color."
+  #:type 'color
+  #:group 'menu
+  #:favorites (list "white" "grey20" "grey50" "grey70" "black" "blue" "red" "green" "purple" "yellow" "orange")
+  #:setter (lambda (color) (set! menu-text-color color))
+  #:getter (lambda () menu-text-color))
+
+(define-scwm-option *menu-bg-color* (make-color "grey75")
+  "The default menu text color."
+  #:type 'color
+  #:group 'menu
+  #:favorites (list "white" "grey20" "grey50" "grey70" "black" "blue" "red" "green" "purple" "yellow" "orange")
+  #:setter (lambda (color) (set! menu-bg-color color))
+  #:getter (lambda () menu-bg-color))
+
+
 (define-public display-width (car (display-size)))
 (define-public display-height (cadr (display-size)))
 

@@ -26,9 +26,12 @@
   :use-module (app scwm message-window)
   :use-module (app scwm gtk)
   :use-module (gtk gtk)
-  :use-module (app scwm prompt-string)
   :use-module (app scwm prompt-bool)
+  :use-module (app scwm prompt-string)
   :use-module (app scwm prompt-range)
+  :use-module (app scwm prompt-font)
+  :use-module (app scwm prompt-file)
+  :use-module (app scwm prompt-color)
   )
 
 ;; (use-modules (gtk gtk))
@@ -79,7 +82,6 @@
 	(popup-docs-for var))))
 
 ;;(path-list->string-with-colons (scwm-option-get *theme-path*))
-
 ;; (use-modules (app scwm string-prompt))
 ;; (use-modules (gtk gtk))
 ;; (gui-set '*desk-width*)
@@ -88,13 +90,16 @@
 	 (value (scwm-option-symget sym))
 	 (type (scwm-option-type sym))
 	 (range (scwm-option-range sym))
+	 (favorites (scwm-option-favorites sym))
 	 (var (eval sym))
 	 (prompt (string-append "Set " name))
 	 (title (string-append "Set " name))
 	 (set-proc (lambda (v) (scwm-option-symset! sym v))))
     (case type
-      ((string directory command) ;; GJB:FIXME:: separate these
+      ('string 
        (prompt-string prompt set-proc #:initval value #:title title))
+      ((command file directory)
+       (prompt-file prompt set-proc #:initval value #:title title #:favorites favorites))
       ('path
        (prompt-string prompt (lambda (v) (set-proc (string-with-colons->path-list v)))
 		      #:initval (path-list->string-with-colons value)
@@ -105,6 +110,8 @@
 		      #:title title))
       ('integer 
        (prompt-integer-range prompt range set-proc #:initval value #:title title))
+      ('color 
+       (prompt-color prompt set-proc #:initval value #:title title #:favorites favorites))
       ('real
        (prompt-range prompt range set-proc #:initval value #:title title))
       ((percent percent-or-on-off) ;; GJB:FIXME:: separate percent-or-on-off
@@ -124,15 +131,22 @@
 	 (value (scwm-option-symget sym))
 	 (type (scwm-option-type sym))
 	 (range (scwm-option-range sym))
+	 (favorites (scwm-option-favorites sym))
 	 (var (eval sym))
 	 (prompt (prompt-from-name name)))
     (case type
-      ((string directory command) ;; GJB:FIXME:: separate these
+      ('string
        (prompt-string-hbox prompt value))
+      ((command directory file)
+       (prompt-file-hbox prompt value favorites))
       ('path
        (prompt-path-hbox prompt value))
       ('proc
        (prompt-proc-hbox prompt value))
+      ('font
+       (prompt-font-hbox prompt value))
+      ('color
+       (prompt-color-hbox prompt value favorites))
       ('integer 
        (prompt-integer-range-hbox prompt range value))
       ('real
@@ -257,7 +271,7 @@ scwm-options to have this work for now."
 (define-public (scwm-options-notebook)
   (let* ((nb (gtk-notebook-new))
 	 (sorted-options (sort (map (lambda (s) (cons (scwm-option-group s) s)) scwm-options)
-			       (lambda (a b) (string<? (symbol->string (car a))
+			       (lambda (a b) (string>? (symbol->string (car a))
 						       (symbol->string (car b))))))
 	 (by-group (split-list-by-group sorted-options)))
     (map (lambda (page) (scwm-options-notebook-page nb (symbol->string (car page)) 

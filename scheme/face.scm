@@ -21,10 +21,16 @@
 
 (define-module (app scwm face)
   :use-module (app scwm base)
+  :use-module (app scwm defoption)
   :use-module (app scwm optargs))
 
 
-
+(define-scwm-option *window-font* (make-font "*helvetica*bold-r*12*")
+  "The default window titlebar font."
+  #:type 'font
+  #:group 'face
+  #:setter (lambda (font) (set-title-font! font))
+  #:getter (lambda () (title-font)))
 
 (define*-public (title-style #&key font height justify
 			     (active-up '()) 
