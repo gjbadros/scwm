@@ -113,7 +113,7 @@ Use `show-system-info' to display it in a window."
      "\nRestarted:\t\t" (bool->str (restarted?))
      "\nDisplay Size:\t\t" (size->str (display-size))
      "\nDesk Size:\t\t" (size->str (desk-size))
-     "\nViewport:\t\t" (size->str (viewport-position))
+     "\nViewport Position:\t" (size->str (viewport-position))
      "\nPointer:\t\t" (size->str (pointer-position))
      "\nCurrent Desk:\t\t" (number->string (current-desk))
      "\nX vendor:\t\t" (caddr vv) "; version: " (number->string (car vv)) "."
