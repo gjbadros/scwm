@@ -913,7 +913,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
 {
   Bool fControlKey = Event->xkey.state & ControlMask? True : False;
   Bool fShiftedKey = Event->xkey.state & ShiftMask? True: False;
-  Bool fAltedKey = Event->xkey.state & (Mod1Mask | Mod2Mask)? True: False;
+  Bool fAltedKey = Event->xkey.state & (Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask)? True: False;
   Bool fNeedControl = False;
   Bool fWrapAround = False;
   KeySym keysym;
@@ -1202,7 +1202,8 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
         char ch;
         /* int cch = */ XLookupString(&Event.xkey,&ch,1,&keysym,NULL);
         if (keysym == XK_Meta_L || keysym == XK_Meta_R ||
-            keysym == XK_Alt_L || keysym == XK_Alt_R) {
+            keysym == XK_Alt_L || keysym == XK_Alt_R ||
+            keysym == XK_Hyper_L || keysym == XK_Hyper_R) {
           if (pmiim && pmiim->pmi)
             pmiSelected = pmiim->pmi;
           goto MENU_INTERACTION_RETURN;
