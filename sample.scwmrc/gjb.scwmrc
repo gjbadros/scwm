@@ -77,10 +77,10 @@
 ;;; These can change dynamically and the menus which 
 ;;; used 'menu-bg-color [which is used by default]
 ;;; will be drawn in the new color the next time they pop up
-(define menu-bg-color (load-color "gray80"))
-(define menu-text-color (load-color "black"))
+(set! menu-bg-color (make-color "gray80"))
+(set! menu-text-color (make-color "black"))
 
-(menu-style #:fg "black" #:bg "grey76" #:stipple "grey35" 
+(menu-style #:fg "black" #:bg "gray80" #:stipple "grey35" 
 	    #:font menu-font #:mwm #f)
 
 ;;(set-click-time! 150)
@@ -191,7 +191,14 @@
 ;; Can use strings as arg to pixmap
 (define sticky-button-face
   (make-face '((relief flat))
-	     '((pixmap "mini-hbars-full.xpm"))))
+	     '((pixmap "mini-hbars-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; 4 Horizontal bars (sticky)
+;;	     '((relief-pattern
+;;		((10 23 #f) (90 23 #f) (90 28 #f) (10 28 #t) (10 47 #t) 
+;;			    (90 47 #f) (90 52 #f) (10 52 #t) (10 70 2) 
+;;			    (90 70 #f) (90 76 #f) (10 76 #t)))))
+)
 
 ;; For testing
 ;;(set-button-face! 3 sticky-button-face)
@@ -200,21 +207,48 @@
 ;; But can also use a (make-image  "file.xpm")
 (define sysutils-button-face
   (make-face '((relief flat))
-	     '((pixmap "mini-lightbolt-full.xpm"))))
+	     '((pixmap "mini-lightbolt-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; Big Lighting Bolt (Fat at top, comes to a point)
+;;	     '((relief-pattern
+;;		((35 15 #t) (20 50 #t) (40 50 #f) (30 80 #t) (75 40 #f) 
+;;			    (50 40 #t) (75 15 #f) (35 15 #t)))))
+)
 
 
-(define close-button-face 
+(define close-button-face
   (make-face '((relief flat))
-	     '((pixmap  "mini-stylized-x-full.xpm"))))
+	     '((pixmap  "mini-stylized-x-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; Stylized X
+;;	     '((relief-pattern
+;;		((20 20 #t) (30 20 #t) (50 40 #t) (70 20 #t) (80 20 #t) 
+;;			    (80 30 #f) (60 50 #f) (80 80 #f) (70 80 #f) 
+;;			    (50 60 #f) (30 80 #f) (20 80 #f) (20 70 #f) 
+;;			    (40 50 #t) (20 30 #f) (20 20 #t)))))
+)
 
 
-(define tall-maximize-button-face (make-face '((relief flat))
-					     '((pixmap "mini-exp-windows-full.xpm"))))
+(define tall-maximize-button-face 
+  (make-face '((relief flat))
+	     '((pixmap "mini-exp-windows-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; tall box
+;;	     '((relief-pattern 
+;;		((40 25 #t) (60 25 #t) (60 75 #f) (40 75 #f) (40 25 #t)))))
+)
 
-
-(define iconify-button-face (make-face '((relief flat))
-				       '((pixmap "mini-shrink-windows-full.xpm"))))
-
+(define iconify-button-face 
+  (make-face '((relief flat))
+	     '((pixmap "mini-shrink-windows-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; 3 stacked square panels like stills of a window being minimized
+;;	     '((relief-pattern
+;;		((80 20 #f) (80 60 #f) (60 60 #f) (60 40 #f) (60 70 #f) 
+;;			    (40 70 #f) (40 60 #f) (40 85 #f) (15 85 #f) 
+;;			    (15 60 #t) (40 60 #t) (30 60 #t) (30 40 #t) 
+;;			    (60 40 #t) (45 40 #t) (45 20 #t) (80 20 #t)))))
+)
 
 
 (define left-button-number 1)
@@ -270,7 +304,8 @@
 ;; (plain-border (get-window)) fixes the display problem for the selected window
 ;; something must not be initialized correctly
 
-(set-hilight-colors! "white" "navyblue")
+(set-hilight-foreground! "white")
+(set-hilight-background! "navyblue")
 
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t

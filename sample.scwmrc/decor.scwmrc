@@ -23,13 +23,14 @@
 
 (menu-style #:fg "black" #:bg "grey76" #:stipple "blue"
 	    #:font font14 #:mwm #f)
-(define menu-bg-color (load-color "gray76"))
-(define menu-text-color (load-color "black"))
+;; (define menu-bg-color (make-color "gray76"))
+;; (define menu-text-color (make-color "black"))
 
 (title-style #:font font12 #:justify 'left)
 
 (set-icon-font! font12)
-(set-hilight-colors! "white" "blueviolet")
+(set-hilight-foreground! "white")
+(set-hilight-background! "blueviolet")
 (set-rubber-band-mask! 127)
 
 
@@ -92,7 +93,8 @@
 ;;; large down triangle
 	    (button-style 4 #:relief-pattern
 			  '((50 75 #t) (25 25 #t) (75 25 #t) (50 75 #f)))
-	    (set-hilight-colors! "black" "salmon"))
+	    (set-hilight-foreground! "black")
+	    (set-hilight-background! "salmon"))
 
 (define fvwm-style 
   (make-style #:fg "black" #:bg "tan" #:show-icon #t
@@ -106,7 +108,8 @@
 	    (title-style #:justify 'center #:relief 'raised
 			 #:font times-14)
 	    (border-style #:no-inset #f #:hidden-handles #f)
-	    (set-hilight-colors! "black" "cadet blue"))
+	    (set-hilight-foreground! "black")
+	    (set-hilight-background! "cadet blue"))
 
 (define mwm-style 
   (make-style #:fg "black" #:bg "gray" #:show-icon #t
@@ -138,7 +141,8 @@
 			  #:inactive 
 			  (list #:solid "grey50" 
 				#:pixmap "win95-minimize-full.xpm"))
-	    (set-hilight-colors! "white" "grey76"))
+	    (set-hilight-foreground! "white")
+	    (set-hilight-background! "grey76"))
 
 (define win95-style
   (make-style #:fg "grey76" #:bg "grey76" #:show-icon #f
@@ -174,7 +178,8 @@
 			  #:inactive 
 			  (list #:solid "grey25" 
 				#:pixmap "win95-minimize-full.xpm"))
-	    (set-hilight-colors! "white" "grey76"))
+	    (set-hilight-foreground! "white")
+	    (set-hilight-background!  "grey76"))
 
 (define win95-grad-style
   (make-style #:fg "grey76" #:bg "grey76" #:show-icon #f
@@ -209,7 +214,8 @@
 			  #:relief-pattern
 			  '((40 40 #t) (60 40 #t) (60 60 #f) 
 				       (40 60 #f) (40 40 #t)))
-	    (set-hilight-colors! "white" "#3cb21c"))
+	    (set-hilight-foreground! "white")
+	    (set-hilight-background! "#3cb21c"))
 
 (define tile-style (make-style #:fg "white" #:bg "#a63823"
 			       #:show-icon #t
@@ -226,11 +232,11 @@
 	    (button-style 1 #:relief 'flat #:pixmap "twm-x.xpm")
 	    (button-style 2 #:relief 'flat #:pixmap "twm-boxes.xpm")
 	    (button-style 4 #:relief 'flat #:pixmap "twm-dot.xpm")
-	    (set-hilight-colors! "light gray" "maroon")
-	    )
+	    (set-hilight-foreground! "light gray")
+	    (set-hilight-background! "maroon"))
 
 (define twm-style (make-style #:border-width 1  #:fg "light gray" #:bg "black"
-			      #:show-icon #f #:icon #t #:use-decor twm-decor))
+			      #:show-icon #f #:use-decor twm-decor))
 
 
 (define win-decoration-menu

@@ -39,8 +39,8 @@
 	    #:stipple "grey30"
 	    #:font font14
 	    #:mwm #f)
-(define menu-bg-color (load-color "grey"))
-(define menu-text-color (load-color "black"))
+;; (define menu-bg-color (make-color "grey"))
+;; (define menu-text-color (make-color "black"))
 
 (set-icon-font! font12)
 
@@ -85,7 +85,8 @@
 ;;; decor
 (define initial-decor (default-decor))
 (with-decor initial-decor
-	    (set-hilight-colors! "white" "blue4"))
+	    (set-hilight-foreground! "white")
+	    (set-hilight-background! "blue4"))
 
 (define pix-decor (make-decor))
 (with-decor pix-decor
@@ -99,7 +100,8 @@
 	    (title-style #:justify 'center
 			 #:font font12
 			 #:relief 'flat)
-	    (set-hilight-colors! "white" "black"))
+	    (set-hilight-foreground! "white")
+	    (set-hilight-background! "black"))
 
 ;;-------------------------------;;
 ;; set some window styles        ;;

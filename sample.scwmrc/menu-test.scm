@@ -32,7 +32,7 @@
 					   (display "toggle-stick\n")) #f #f
 		    (make-image "mini-stick.xpm") #f #f
 		    "stick"))
-   #f #f (load-color "gray80"))
+   #f #f (make-color "gray80"))
    )
 
 (define b-popup-menu 
@@ -47,7 +47,7 @@
 					   (display "toggle-stick\n")) #f #f
 		    (make-image "mini-stick.xpm") #f #f
 		    "stick"))
-   #f #f (load-color "gray80"))
+   #f #f (make-color "gray80"))
    )
 
 (define more-menu-ops-item
@@ -58,14 +58,14 @@
 		  "moreoptions"))
 
 (define a-color
-  (load-color "gray40"))
+  (make-color "gray40"))
 
 (define a-menu
   (make-menu (list 
 		   window-ops-title-item bitmap-separator
 		   sticky-menu-item move-menu-item resize-menu-item
 		   more-menu-ops-item)
-		  (make-image "linux-menu.xpm") (load-color "blue")
+		  (make-image "linux-menu.xpm") (make-color "blue")
 		  'a-color))
 
 
@@ -80,7 +80,7 @@
     (make-menu-item "Stick/Unstick" toggle-stick "" #f
 		    (make-image "mini-stick.xpm") #f #f
 		    "stick"))
-   #f #f (load-color "gray80"))
+   #f #f (make-color "gray80"))
    )
 
 ;;(popup-menu a-menu)

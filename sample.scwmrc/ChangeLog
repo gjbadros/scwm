@@ -1,3 +1,12 @@
+Fri Mar 20 22:32:33 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* system.scwmrc, juhp.scwmrc, gjb.scwmrc, sds.scwmrc,
+ 	decor.scwmrc, mnu-test.scm: Modified to work with the new color
+ 	stuff.
+
+	gjb.scwmrc: Added relief-pattern alternatives for the button
+ 	images, commented out for now.
+	
 Tue Mar 10 00:30:53 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added image-not-found-hook

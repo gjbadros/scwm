@@ -33,11 +33,19 @@
 
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
+
+
 (define user-init-file (string-append HOME "/.scwmrc"))
 (set! xterm-command "xterm ")
 ;;(define mail-spool-dir (or (getenv "MAIL")
 ;;			   (string-append "/var/spool/mail/" USER)))
 ;;(define user-image-path (string-append HOME "/pixmaps:" HOME "/bitmaps"))
+(define user-image-path 
+  (list (string-append HOME "/pixmaps") 
+	(string-append HOME "/bitmaps")
+	(string-append HOME "/icons")
+	(string-append HOME "/mini-icons")))
+
 
 ;;; --------------------------
 ;;; set some basic styles info
@@ -55,8 +63,8 @@
 ;;(define icon-font (load-font "fixed"))
 (set-icon-font! font12)
 
-(define menu-bg-color (load-color "gray80"))
-(define menu-text-color (load-color "black"))
+;; (define menu-bg-color (load-color "gray80"))
+;; (define menu-text-color (load-color "black"))
 
 (menu-style #:fg "black" #:bg "grey76" #:stipple "grey35"
 	    #:font menu-font #:mwm #t)
@@ -79,6 +87,10 @@
 	    ;; "/usr/local/X11/include/X11/pixmaps" "/usr/local/lib/icons"
 	    ;; "/uns/include/X11/pixmaps" "/usr/lib/icons"
 	    ;; "/usr/X11/lib/X11/mini-icons"
+
+(set! image-load-path (append user-image-path
+			      image-load-path))
+
 
 (define biff-i (make-image "mini-xbiff.xpm"))
 (define bolt-i (make-image "mini-ray.xpm"))
@@ -138,7 +150,8 @@
 (with-decor std-d
 	    (title-style #:font font12 #:justify 'left #:relief 'raised)
 	    (border-style #:hidden-handles #f #:no-inset #t)
-	    (set-hilight-colors! "PapayaWhip" "tomato3"))
+	    (set-hilight-foreground! "PapayaWhip")
+	    (set-hilight-background! "tomato3"))
 ;; almost the same: "DarkOrange3" "OrangeRed3" "coral3"
 ;; 205  55   0		OrangeRed3
 ;; 205  79  57		tomato3
@@ -154,7 +167,8 @@
 			  #:pixmap "lizard2.xpm" #:inactive
 			  (list #:hidden-handles #f #:no-inset #t
 				#:pixmap "lizard.xpm"))
-	    (set-hilight-colors! "PapayaWhip" "#a69938e31861"))
+	    (set-hilight-foreground! "PapayaWhip")
+	    (set-hilight-background! "#a69938e31861"))
 (define grad-d (make-decor))
 (with-decor grad-d
 	    (title-style #:font font12 #:justify 'left #:relief 'flat
@@ -164,7 +178,8 @@
 					  (list 40 (list "grey50" 20)
 						"grey50" "grey25")))
 	    (border-style #:no-inset #f #:hidden-handles #f)
-	    (set-hilight-colors! "PapayaWhip" "coral3"))
+	    (set-hilight-foreground! "PapayaWhip")
+	    (set-hilight-background! "coral3"))
 (define decor-list (list (cons "Standard" std-d) (cons "Lizard" lizard-d)
 			 (cons "Gradient" grad-d)))
 
