@@ -187,6 +187,8 @@ extern ScwmWindow *AddWindow(Window w);
 extern int MappedNotOverride(Window w);
 extern void GrabButtons(ScwmWindow *);
 extern void GrabKeys(ScwmWindow *);
+extern void GrabButtonWithModifiers(int button, 
+				    int modifier, ScwmWindow *sw);
 extern void GetWindowSizeHints(ScwmWindow *);
 extern void SwitchPages(Bool, Bool);
 extern void NextPage(void);
