@@ -585,14 +585,6 @@ The rest of the arguments are passed as options to the xterm command."
                  (delq! ,proc ,hook)))))
 
 
-;; add-hook! and remove-hook! are defined in guile's boot-9.scm
-;; we still need a reset-hook! though, but only if HAVE_SCM_MAKE_HOOK is 1
-;; (otherwise, in post guile-1.3, it's already a primitive)
-;; GJB:FIXME:: we can use this code once we support new-style hooks
-;(if (not (defined? 'reset-hook!))
-;    (defmacro-public reset-hook! (hook)
-;      `(set! ,hook ())))
-
 (defmacro-public with-window (win . body)
 ;;;** Bind the window-context to WIN while evaluating BODY.
 ;;; All `get-window' calls within BODY will return WIN.
@@ -602,6 +594,21 @@ The rest of the arguments are passed as options to the xterm command."
       (lambda () ,@body)
       (lambda () (set-window-context! old-window-context)))))
 
+(defmacro-public with-message-window-shown (mwn . body)
+;;;** Display message window MWN while evaluating BODY.
+;;; If BODY throws, the MWN is guaranteed to be removed from the display.
+  `(dynamic-wind
+    (lambda () (message-window-show! ,mwn))
+    (lambda () ,@body)
+    (lambda () (message-window-hide! ,mwn))))
+
+;; add-hook! and remove-hook! are defined in guile's boot-9.scm
+;; we still need a reset-hook! though, but only if HAVE_SCM_MAKE_HOOK is 1
+;; (otherwise, in post guile-1.3, it's already a primitive)
+;; GJB:FIXME:: we can use this code once we support new-style hooks
+;(if (not (defined? 'reset-hook!))
+;    (defmacro-public reset-hook! (hook)
+;      `(set! ,hook ())))
 
 (define-public bell beep)
 
@@ -711,16 +718,17 @@ Returns the child-pid, or #f if the fork fails."
 	child-pid)))
 
 
-(define*-public (select-window #&optional (release? #f) (cursor #f))
+(define*-public (select-window #&optional (cursor #f) (release? #f))
   "Select a window interactively, and return the specified window.
-Use a special cursor and let the user click to select the window. The
-optional argument RELEASE? indicates whether to wait
-for a mouse release or act immediately on the click. 
+Use a special cursor and let the user click to select the window. 
 The optional CURSOR argument can be either a cursor object or #t to
 indicate to use the \"skull and cross-bones\" kill cursor (recommended for destructive
 operations like delete-window and destroy-window).
+The optional argument RELEASE? indicates whether to wait
+for a mouse release or act immediately on the click. 
 Returns #f if no window was selected."
-  (car (select-viewport-position release? cursor)))
+  (car (select-viewport-position cursor release?)))
+
 
 
 (define*-public (select-window-interactively #&optional (msg #f) (message-window #f))
@@ -734,12 +742,11 @@ a new message window."
 			       message-window))
 			 (make-message-window msg)))
 	    (answer #f))
-	(message-window-show! msgwin)
-	(set! answer (select-window-interactively-no-message))
-	(message-window-hide! msgwin)
-	answer)
-      (select-window-interactively-no-message)))
+	(with-message-window-shown msgwin (select-window)))
+      (select-window)))
 ;; (select-window-interactively "foo")
+;; (select-viewport-position)
+
 
 (define-public (run-dot-xclients-script)
   "Runs the ~/.clients script."

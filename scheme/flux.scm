@@ -474,7 +474,7 @@ See also `get-window-nonant'."
 
 (define anchor-cursor #f)
 (let ((acimage (make-image "anchor-cursor.xpm")))
-  (if acimage (set! anchor-cusor (create-pixmap-cursor acimage))))
+  (if acimage (set! anchor-cursor (create-pixmap-cursor acimage))))
 
 (define-public (interactive-set-window-gravity!)
   "Permit user to click on an area of a window and anchor that nonant.
@@ -482,6 +482,8 @@ E.g., if the user clicks on the northeast corner of a window, that
 window will be set to have northeast gravity so future resizes keep
 that corner fixed."
   (let* ((win-pos (select-viewport-position anchor-cursor))
-	 (win (car win-pos))
-	 (gravity (nonant->gravity (get-window-nonant win-pos))))
-    (set-window-gravity! gravity win)))
+	 (win (car win-pos)))
+    (if win
+	(set-window-gravity! 
+	 (nonant->gravity (get-window-nonant win-pos))
+	 win))))
