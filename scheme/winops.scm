@@ -31,10 +31,14 @@
 ;;; Toggling operations
 
 (define*-public ((make-toggling-winop pred neg pos) 
-		 #&optional (w (get-window)))
-  (if w (if (pred w)
-	    (neg w)
-	    (pos w))))
+		 #&optional (win (get-window)))
+  "Returns a procedure which takes a window WIN and toggles a property of it.
+PRED, NEG, and POS should be functions which take a window and
+check whether the property holds for the window, reset the property
+on the window, and set the property on the window, respectively."
+  (if win (if (pred win)
+	      (neg win)
+	      (pos win))))
 
 (define*-public (close-window #&optional (win (get-window #t)))
   "Close WIN either by deleting it or destroying it.

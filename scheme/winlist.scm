@@ -64,8 +64,8 @@ BY-STACKING is #t.  They are returned sorted by their last focussed
 time (most recently focussed first) if BY-FOCUS is #t. If REVERSE is
 true, they are returned in the reverse of the usual order. ONLY and
 EXCEPT each are procedures which take a single window argument and
-returns #t if the window should be included (for ONLY) or excluded
-(for EXCEPT), or #f otherwise."
+returns #t if the window should be included (for ONLY) or 
+excluded (for EXCEPT), or #f otherwise."
   ((if reverse local-reverse id)
    (filter-only-except 
     (if by-stacking

@@ -1,3 +1,49 @@
+1998-12-04  Todd Larason  <jtl@molehill.org>
+
+	* animation.scm: doc update
+
+	* base.scm: minor doc updates
+
+	* cached-program-exists.scm: doc updates
+
+	* doc.scm: doc update
+
+	* face.scm: minor doc updates
+
+	* flux.scm: documentation fixes
+
+	* fvwm-eval.scm: documentation for eval-fvwm-command
+
+	* fvwm-module.scm (end-window-list): no longer public
+
+	* image-loaders.scm: documentation for image-loader functions 
+
+	* listops.scm: fix documentation of and-map and or-map to match
+	actual funcationality
+
+	* module-types.scm: fix typo in defintion of M_DEWINDOWSHADE
+
+	* prefs-menu.scm: doc update
+
+	* stacking.scm: "nitpicking" doc fixes
+
+	* std-menus.scm: typo fix and doc clarification
+
+	* style.scm: doc updates, with some minor code rearrangement
+
+	* theme-impl.scm: initial documentation
+
+	* themes.scm: initial documentation
+
+	* wininfo.scm: minor doc updates
+
+	* winlist.scm (list-windows): workaround for scwmdoc bug
+
+	* winops.scm: doc update
+
+	All of the above are from Carl R. Witty <cwitty@newtonlabs.com>
+	Thanks much!
+
 1998-12-04  Sam Steingold  <sds@goems.com>
 
 	* doc.scm (documentation): cleaned up.

@@ -278,8 +278,7 @@
     (send-mini-icon-packet win port)
     ))
 
-;; FIXGJB: not public
-(define-public (end-window-list port)
+(define (end-window-list port)
   (fvwm2-module-send-packet M_END_WINDOWLIST "" port))
 
 (define active-modules '())

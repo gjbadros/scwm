@@ -35,6 +35,7 @@
   (if win (= n (window-desk win))))
 
 (define*-public ((on-desk-n? n) #&optional (win (get-window)))
+  "Returns a function which takes WIN and returns #t if WIN is on desk N, else #f."
   (on-desk? n win))
 
 (define*-public (on-current-desk? #&optional (win (get-window)))
@@ -100,7 +101,7 @@ obscured by other windows."
 
 (define*-public (percent-visible #&optional (win (get-window)))
   "Return the percent of WIN currently in the viewport as a real in [0,100].
-Note that this does not discount for other windows which may
+Note that this does not consider other windows which may
 obscure WIN;  it only checks what fraction of WIN would be visible
 if it were on top (unobscured)."
   (if (not (on-current-desk? win))

@@ -48,7 +48,7 @@ FIXMS: What are? ACTIVE-UP, ACTIVE-DOWN, INACTIVE."
 
 (define*-public (border-style #&key (active '())  
 			      (inactive '()) #&allow-other-keys . rest)
-  "Set the current border style."
+  "Set the border style in the current decor."
   (act-on-face-specs (lambda* (active #&optional ignore inactive)
 			      (if (bound? inactive)
 				  (set-border-face! active inactive)
@@ -61,7 +61,7 @@ FIXMS: What are? ACTIVE-UP, ACTIVE-DOWN, INACTIVE."
 			      (active-up '()) 
 			      (active-down '()) 
 			      (inactive '()) #&allow-other-keys . rest)
-  "Set the current button style for button number BUTTON."
+  "Set the button style for button number BUTTON in the current decor."
   (if (bound? mwm)
       (set-button-mwm-flag! mwm))
   (act-on-face-specs (lambda args

@@ -23,19 +23,20 @@
 
 
 
-;; Uses the "convert" tool from the ImageMagick package to try to
-;; convert the file to an xpm, then attempts to load it as such.
 (define-public (ImageMagick-loader fname)
+  "Tries to load an arbitrary image using ImageMagick's `convert'.
+Uses `convert' to try to convert the file to an xpm, then
+attempts to load it as such."
   (let ((t (string-append (tmpnam) ".xpm")))
     (catch #t
 	   (lambda () (system (string-append "convert " fname " " t)))
 	   (lambda args #f))
     (load-xpm t)))
 
-;; Uses the "anytopnm" and "ppmtoxpm" tools from the netpbm package to
-;; try to convert the file to an xpm, then attempts to load it as
-;; such.
 (define-public (netpbm-loader fname)
+  "Tries to load an arbitrary image using the netpbm packge.
+Uses `anytoppm' and `ppmtoxpm' to try to convert the file to an xpm,
+then attempts to load it as such."
   (let ((t (string-append (tmpnam) ".xpm")))
     (catch #t
 	   (lambda () 
@@ -43,13 +44,14 @@
 	   (lambda args #f))
     (load-xpm t)))
 
-;; Try all available loaders.
 (define-public (try-everything-loader fname)
+  "Tries to load an arbitrary image, using any available loader."
   (cond
    ((ImageMagick-loader fname) => id)
    (else (netpbm-loader fname))))
 
-;; Just a convenience wrapper to make the try-everything-loader
-;; the default.
 (define-public (support-image-conversion)
+  "Set things up to try to load arbitrary images.
+Works by setting `try-everything-loader' as the image loader for
+unknown extensions."
   (register-image-loader "default" try-everything-loader))

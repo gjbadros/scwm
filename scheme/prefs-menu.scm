@@ -63,6 +63,7 @@
     (set-desk-size! (+ xx dx) (+ yy dx))))
 
 (define-public (help-mesg . funcs) ; return lambda
+  "Displays help for each element of FUNCS, which should be a list of strings."
   (lambda ()
     (message (with-output-to-string (lambda () (for-each help funcs))))))
 

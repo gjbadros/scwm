@@ -28,25 +28,25 @@
 
 (define-public (interactive-move-window-with-focus)
   "Interactively move the window which currently has the focus.
-`interactive-move' is used to control whether a rubberband
+`move-opaquely?' is used to control whether a rubberband
 outline or the window itself is moved."
   (let ((w (current-window-with-focus))) (and w (interactive-move w))))
 
 (define-public (interactive-resize-window-with-focus)
   "Interactively resize the window which currently has the focus.
-`interactive-resize' is used to control whether a rubberband
+`resize-opaquely?' is used to control whether a rubberband
 outline or the window itself is resized."
   (let ((w (current-window-with-focus))) (and w (interactive-resize w))))
 
 (define-public (interactive-move-window-with-pointer)
   "Interactively move the window which currently contains the pointer.
-`interactive-move-maybe-opaque' is used to control whether a rubberband
+`move-opaquely?' is used to control whether a rubberband
 outline or the window itself is moved."
   (let ((w (current-window-with-pointer))) (and w (interactive-move w))))
 
 (define-public (interactive-resize-window-with-pointer)
   "Interactively resize the window which currently contains the pointer.
-`interactive-resize-maybe-opaque' is used to control whether a rubberband
+`resize-opaquely?' is used to control whether a rubberband
 outline or the window itself is resized."
   (let ((w (current-window-with-pointer))) (and w (interactive-resize w))))
 
@@ -96,7 +96,7 @@ just to the right of the home (0,0) viewport)."
 		    (modulo (cadr pos) display-height)) win)))
 
 (define-public (in-viewport xx yy)
-  "Return a function of a single argument, a window, moving it to the viewport.
+  "Return a function which takes a window and moves it to the specified viewport.
 XX and YY are full display-size increments (e.g., (1,0) is the
 viewport just to the right of the home (0,0) viewport)."
   (lambda (win) (move-window-to-viewport xx yy win)))
@@ -147,6 +147,8 @@ Use `show-system-info' to display it in a window."
      "; bits per RGB: " (number->string (cadddr dd)) ")\nimage-load-path:\n"
      (map (lambda (st) (string-append "\t" st "\n")) image-load-path))))
 
+;; CRW:FIXME:: This should be merged with make-context-menu in
+;; std-menus.scm
 (define-public (make-file-menu file . rest)
   "Return a menu-object for viewing or editing FILE.
 REST is a list of other menu-items to include in the returned menu."
@@ -162,7 +164,8 @@ REST is a list of other menu-items to include in the returned menu."
 
 ;;; FIXGJB: how set width of an xmessage?
 (define-public (message . str)
-  "Display the string arguments STR in a message window."
+  "Display the string arguments STR in a message window.
+Requires the program `xmessage'."
   (execute (string-append "echo -e \'"
 			  (quotify-single-quotes (apply string-append str))
 			   "\'| xmessage -file - -default okay -nearmouse")))
@@ -535,6 +538,7 @@ underscores, so that the resulting string can be used as a key for
 ;;;;;;;; rlogin menu making from .rhosts file ;;;;;;;;;
 
 (define-public (make-rhosts-menu)
+  "Returns a menu which lets you rlogin to each host mentioned in your .rhosts"
   (false-if-exception
    (let* ((rhostfn (string-append (user-home) "/.rhosts"))
 	  (termprog "xterm")
@@ -678,7 +682,7 @@ otherwise; it is an error if NETWIN refers to a non-Netscape window."
   "Make netscape go to the URL in CUT_BUFFER0.
 This permits you to just select a URL and use this function
 to go to that page.
-The optional argument specifies whether a new window should be open.
+The optional argument specifies whether a new window should be opened.
 It defaults to `netscape-new-window'."
   (run-in-netscape
    (string-append "openURL(" (X-cut-buffer-string) (if new ",new-window)" ")"))
@@ -699,7 +703,9 @@ the first element for changes to desk 1, etc."
 	       )))
 
 (define*-public (position-message-window! x y gravity)
-  "Move the message window's GRAVITY point to (X,Y)."
+  "Move the message window's GRAVITY point to (X,Y).
+GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
+(or spelled-out versions of these)."
   (apply
    (lambda (xa ya)
      (set-message-window-position! x y xa ya))

@@ -231,14 +231,27 @@
 (add-window-hint-option #:lenience set-lenience!)
 
 
+;; CRW:FIXME:GJB: Should there be a way to document window properties?
+;; The only reason for the existence of the following functions is to
+;; have a place to hang the documentation...
+
+(define-public (set-window-placement-proc! proc win)
+  "Set the 'placement-proc property of WIN to PROC.
+When the window manager tries to place WIN, it will call PROC to
+actually set its position.  This function must be called before the 
+window is placed (i.e., from before-new-window-hook); see `window-style'
+for a way to make sure this function is called at the correct time."
+  (set-object-property! win 'placement-proc proc))
+
+(define-public (set-window-transient-placement-proc! proc win)
+  "Like `set-window-placement-proc!' (which see), but for transient
+windows."
+  (set-object-property! win 'transient-placement-proc proc))
+
 ;; placement
-(add-window-hint-option #:placement-proc 
-			(lambda (val w) 
-			  (set-object-property! w 'placement-proc val)))
-(add-window-hint-option #:transient-placement-proc 
-			(lambda (val w) 
-			  (set-object-property! w 'transient-placement-proc 
-						val)))
+(add-window-hint-option #:placement-proc set-window-placement-proc!)
+(add-window-hint-option #:transient-placement-proc
+			set-window-transient-placement-proc!)
 
 ;; random stuff
 (add-boolean-style-option #:start-lowered lower-window raise-window)

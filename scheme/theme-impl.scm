@@ -26,12 +26,42 @@
 
 
 
+;;;**CONCEPT:Creating themes
+;;; Currently, the best documentation on themes is the source code;
+;;; however, here are a few notes.
+;;; To create a theme, create a new subdirectory of a directory in
+;;; `theme-path' (you'll probably want to add a private directory to 
+;;; `theme-path').  This subdirectory should be named the same as the
+;;; theme.  This subdirectory must contain (at least) a file named
+;;; theme.scm.  This file must create a module named
+;;; (app scwm theme your-theme-name), and define (in this module)
+;;; a theme object named `the-theme'.  See the existing themes for
+;;; examples of what you can do when building `the-theme'.
+
+;; CRW:FIXME:MS: I assume that load-theme-image is supposed to be used
+;; by a theme file for loading images.  However, it only works if
+;; the theme loads all its images when the theme itself is loaded.
+;; I've got an idea for another implementation:
+;; There is a global variable theme-dir (exported from, say, themes.scm).
+;; This is dynamically bound to the theme directory when loading
+;; .../theme.scm.
+;; Each theme module says (define theme-dir theme-dir); now the module
+;; has a record of what directory it was loaded from.
+;; load-theme-image changes to (load-theme-image theme-dir fname);
+;; the first branch of the or changes to (string-append theme-dir fname).
+;; Unfortunately, this conflicts with the desire to erase the unpacked
+;; forms of .tar/.tar.gz/.tgz themes.  (As far as I can tell, these
+;; currently stick around forever?)
+
 (define-public (load-theme-image fname)
   (or (make-image (string-append "./" fname))
       (make-image fname)))
 
+;; CRW:FIXME:: The following docstring is totally redundant with the function
+;; name and argument list.  Can we do better?
 (define*-public (make-theme name #&key (window-style (make-style #t))
 			   (background-style (lambda () ())))
+  "Creates a theme object with the given NAME, WINDOW-STYLE, and BACKGROUND-STYLE."
   (vector name window-style background-style))
 
 (define-public (theme:name theme)

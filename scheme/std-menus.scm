@@ -80,7 +80,7 @@ To use this, add the following to the menu of your choice:
   (menuitem \"telnet\" #:action (make-hosts-menu '(\"host1\" \"host2\" ...)))
 An optional USER argument specifies the user to telnet as.
 The element of the list of hosts can be a host (in which case telnet is
-used or a cons of (host . command)."
+used) or a cons of (host . command)."
   (menu (fold-menu-list
          (map (lambda (hh)
                 (if (pair? hh)
@@ -112,8 +112,7 @@ used or a cons of (host . command)."
 
 (define-public (make-context-menu)
   "Create a menu of actions applicable to the filename in the X selection.
-The selection is limited to contain one filename, and the full path of the
-file must be given."
+The selection must contain a single full pathname."
   (let ((file (X-cut-buffer-string)))
     (menu (append
 	   (list (menuitem (string-append "... " file))

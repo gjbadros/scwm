@@ -41,11 +41,11 @@
 ;; MS:FIXME:: Figure out why this is needed (as well as move-to in base)
 (define*-public (animated-move-to x y #&optional (win (get-window))
 				  (move-pointer-too? #t))
-  "Move WIN to viewport position x, y animatedly. 
-If X or Y is 'x or 'y, respectively (or #f), then do not change that
-coordinate during the move. At least one of X and Y must be a
-number. This moves the pointer with the window unless
-MOVE-POINTER-TOO? is #f"
+  "Move WIN to viewport coordinates X, Y with animation. 
+If X or Y is #f, then do not change that coordinate during 
+the move. At least one of X and Y must be a number. This 
+moves the pointer with the window unless MOVE-POINTER-TOO? 
+is #f."
   (let* ((sticky (sticky? win))
 	 (pos (viewport-position))
 	 (x (if x

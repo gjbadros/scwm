@@ -110,7 +110,7 @@ appeared in L."
   "Apply PROC repeatedly, returning the first false value.
 PROC is applied to elements of FIRST and the lists comprising REST
 much as `map' would do it. If proc never returns a false value, return
-the last value instead. If all the lists are empty, return #t."
+#t instead. If all the lists are empty, return #t."
   (if (null? rest)
       (let loop ((first first))
 	(or (null? first)
@@ -125,10 +125,10 @@ the last value instead. If all the lists are empty, return #t."
 
 
 (define-public (or-map proc first . rest)
-  "Apply PROC repeatedly, returning the first false value.
+  "Apply PROC repeatedly, returning the first true value.
 PROC is applied to elements of FIRST and the lists comprising REST
-much as `map' would do it. If PROC never returns a false value, return
-the last value instead. If all the lists are empty, return true."
+much as `map' would do it. If PROC never returns a true value, return
+#f instead. If all the lists are empty, return #f."
   (if (null? rest)
       (let loop ((first first))
 	(and (not (null? first))

@@ -111,7 +111,8 @@
 
 (define-public (program-exists? program-name)
   "Return #t if PROGRAM-NAME is found as an executable in the current $PATH.
-Returns #f otherwise."
+Returns #f otherwise.  See `cached-program-exists?' for a more efficient
+version of this."
   (= 0 (system (string-append "which " program-name " >/dev/null" ))))
 
 (define-public (set-menu-foreground! fg)
@@ -406,7 +407,7 @@ defaults to `default-menu-max-fold-lines'."
 	   (split-list ml max-lines))))
 
 (define-public (exe command)
-  "Return a procedure that runs the system command COMMAND."
+  "Return a procedure that, when invoked, executes COMMAND in the background."
   (lambda () (execute command)))
 
 (define-public xterm-command

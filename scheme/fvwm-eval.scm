@@ -513,6 +513,11 @@
 
 (define*-public (eval-fvwm-command command #&optional (fmod #f) 
 				   (window #f))
+  "Evaluate an fvwm2 command.
+Implemented for compatibility with fvwm2 modules, which can send
+commands back to the window manager for evaluation.  Not all fvwm2
+commands are implemented; see the end of fvwm-eval.scm for a list of
+working commands."
   (let* ((split-result (split-before-char #\space command 
 					  (lambda args args)))
 	 (main-cmd (car split-result))

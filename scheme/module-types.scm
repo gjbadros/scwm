@@ -57,7 +57,7 @@
    (cons 4194304 "M_STRING")
    (cons 8388608 "M_MINI_ICON")
    (cons 16777216 "M_WINDOWSHADE")
-   (cons 3355443 "M_DEWINDOWSHADE")))
+   (cons 33554432 "M_DEWINDOWSHADE")))
 
 
 ;; Usage e.g.: (module-event-name-from-number 8192)

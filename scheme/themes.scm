@@ -29,6 +29,12 @@
 
 
 
+;;;**CONCEPT:Themes
+;;; A theme is a named collection of window manager settings.
+;;; Themes are still under development, but they are planned to
+;;; affect window styles, menus, icons, backgrounds, and various
+;;; global settings.
+
 (define-public theme-path (list (string-append (scwm-path-prefix) "/share/scwm-themes")))
 
 
@@ -44,6 +50,15 @@
 			    (for-menus #t) (for-icons #t)
 			    (for-background #t) 
 			    (for-global-settings #t))
+  "Use settings from THEME to set up the window manager.
+THEME can be either a theme object (as returned by `load-theme') or a
+string naming a theme, in which case that theme will be loaded and
+used.  By default, window styles, menus, icons, backgrounds, and
+global settings are all affected; if the FOR-WINDOWS, FOR-MENUS,
+FOR-ICONS, FOR-BACKGROUND, or FOR-GLOBAL-SETTINGS arguments are #f,
+the corresponding areas are not affected.  (Note: at this time,
+only windows and backgrounds are affected; the other components
+of themes have yet to be implemented.)"
   (let ((theme (if (string? theme) (load-theme theme) theme)))
 
     (if for-windows
@@ -55,6 +70,9 @@
 	((theme:background-style theme)))))
 
 (define-public (load-theme fname)
+  "Returns a theme FNAME which is loaded from `theme-path'.
+The theme should be either a directory, or a (possibly gzipped)
+tar file with extension .tar, .tar.gz, or .tgz."
   (let ((full-fname (or 
 		     (find-file-in-path fname theme-path)
 		     (find-file-in-path (string-append fname ".tar") theme-path)
