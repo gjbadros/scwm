@@ -631,6 +631,12 @@ that corner fixed."
 			      "UnKeep On Top"
 			      "Keep On Top") 
 			  #:action toggle-on-top))))
+    (menuitem "Title"
+	      #:submenu
+	      (menu
+	       (list
+		(menuitem "&Copy to CUT_BUFFER0" #:action copy-window-title-to-cut-buffer0)
+		(menuitem "&Paste from CUT_BUFFER0" #:action paste-window-title-from-cut-buffer0))))
     (menuitem "Group"
 	      #:submenu
 	      (make-window-group-menu w))

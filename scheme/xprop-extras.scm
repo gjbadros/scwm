@@ -25,6 +25,21 @@ CUT_BUFFER0 property is not a string."
 	(car l)
 	#f)))
 
+(define-public (X-set-cut-buffer-string! string)
+  "Set the text of the CUT_BUFFER0 property of the root window.
+This is the cut text selected by X clients."
+  (X-property-set! 'root-window "CUT_BUFFER0" string))
+
+(define*-public (copy-window-title-to-cut-buffer0 #&optional (window (get-window)))
+  "Set CUT_BUFFER0 to be a string that is the title of WINDOW."
+  (X-set-cut-buffer-string! (window-title window)))
+
+(define*-public (paste-window-title-from-cut-buffer0 #&optional (window (get-window)))
+  "Set the window title of WINDOW to be the string in CUT_BUFFER0.
+Do nothing if the cut buffer does not contain a string."
+  (let ((t (X-cut-buffer-string)))
+    (if t (set-window-title! window t))))
+
 (define-public (get-wm-command win)
   "Get the \"WM_COMMAND\" X-Property of WIN and return that string.
 WIN is a Scwm window object. The \"WM_COMMAND\" X-Property is the application's
