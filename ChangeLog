@@ -1,3 +1,8 @@
+1998-07-15  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* configure: Use prefix/exec-prefix as defaults for
+	guile-prefix/guile-exec-prefix.
+
 1998-07-13  Maciej Stachowiak  <maciej@roc-ny5-15.ix.netcom.com>
 
 	* configure.in, acconfig.h: Check wether scm_make_vector needs a
