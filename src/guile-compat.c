@@ -31,7 +31,9 @@
 extern "C" {
 #endif
 
+#define DBG -1
 
+void  scwm_msg(int , const char *id, const char *msg,...);
 
 #undef USE_STACKJMPBUF
 
@@ -65,6 +67,7 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
   SCM old_rootcont;
   struct cwdr_no_unwind_handler_data my_handler_data;
   SCM answer;
+  void *pRootContinuation = NULL;
 
   /* Create a fresh root continuation.  */
   { /* scope */
@@ -74,10 +77,16 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
 #ifdef USE_STACKJMPBUF
     SCM_SETJMPBUF (new_rootcont, &static_jmpbuf);
 #else
-    /* GJB:FIXME:MS:: this is leaking! */
-    SCM_SETJMPBUF (new_rootcont,
-		   scm_must_malloc ((long) sizeof (scm_contregs),
-				    "inferior root continuation"));
+    /* GJB:FIXME:MS:: this was leaking, but now I explicitly
+       deallocate it, below.  Not sure what fix you were looking
+       for so it should probably still be revisited. */
+    pRootContinuation =
+      scm_must_malloc ((long) sizeof (scm_contregs),
+                       "inferior root continuation");
+#if 0
+    scwm_msg(DBG,"scm_internal_cwdr_no_unwind","+");
+#endif
+    SCM_SETJMPBUF (new_rootcont,pRootContinuation);
 #endif
     SCM_SETCAR (new_rootcont, scm_tc7_contin);
     SCM_DYNENV (new_rootcont) = SCM_EOL;
@@ -96,17 +105,18 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
   scm_last_debug_frame = 0;
 #endif
 
-  {
-    my_handler_data.run_handler = 0;
-    answer = scm_internal_catch (SCM_BOOL_T,
-				 body, body_data,
-				 cwdr_no_unwind_handler, &my_handler_data);
-  }
+  /* now invoke the function */
+  my_handler_data.run_handler = 0;
+  answer = scm_internal_catch (SCM_BOOL_T,
+                               body, body_data,
+                               cwdr_no_unwind_handler, &my_handler_data);
 
   SCM_REDEFER_INTS;
-#ifdef USE_STACKCJMPBUF
-  SCM_SETJMPBUF (scm_rootcont, NULL);
+#if 0
+  scwm_msg(DBG,"scm_internal_cwdr_no_unwind","-");
 #endif
+  scm_must_free(pRootContinuation);
+  SCM_SETJMPBUF (scm_rootcont, NULL);
 #ifdef DEBUG_EXTENSIONS
   scm_last_debug_frame = SCM_DFRAME (old_rootcont);
 #endif
