@@ -1,3 +1,16 @@
+Tue Jan 11 18:15:39 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Make some fns interactive that weren't.
+
+Tue Jan 11 18:09:47 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window-configuration.scm: Make `push-window-configuration',
+	`pop-window-configuration' interactive.
+
+	* shove-window.scm: Make shoving first push-window-position.
+
+	* quote.scm: Added `quote-next-event', needs describe.scm to do so.
+
 Tue Jan 11 13:27:53 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* netscape.scm (netscape-google-search): Let word == #f mean just
