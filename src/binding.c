@@ -1490,7 +1490,7 @@ set automatically, but you can use this procedure if you
 need to override the built-in algorithm. */
 #define FUNC_NAME s_set_mod_mask_numlock_x
 {
-  VALIDATE_ARG_BOOL_COPY(1,mask,numlock_mask);
+  VALIDATE_ARG_INT_COPY(1,mask,numlock_mask);
   return SCM_UNSPECIFIED;
 } 
 #undef FUNC_NAME
@@ -1503,7 +1503,7 @@ set automatically, but you can use this procedure if you
 need to override the built-in algorithm. */
 #define FUNC_NAME s_set_mod_mask_scrolllock_x
 {
-  VALIDATE_ARG_BOOL_COPY(1,mask,scrollock_mask);
+  VALIDATE_ARG_INT_COPY(1,mask,scrollock_mask);
   return SCM_UNSPECIFIED;
 } 
 #undef FUNC_NAME

@@ -1008,7 +1008,7 @@ circle cursor. */
 
 /* GJB:FIXME:: we'd like to not need this, though
    it might be nice to leave in just in case */
-SCWM_PROC (force_reset_window_frame_x, "force-reset-window-frame!", 0, 1, 0,
+SCWM_IPROC (force_reset_window_frame_x, "force-reset-window-frame!", 0, 1, 0,
            (SCM win))
      /** This redraws the window frame and decorations of WIN.
 Ideally it would never be necessary, but it is useful for debugging
@@ -1654,7 +1654,7 @@ free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
 }
 
 
-SCWM_PROC(delete_window, "delete-window", 0, 1, 0,
+SCWM_IPROC(delete_window, "delete-window", 0, 1, 0,
           (SCM win))
      /** Request that WIN remove itself from the display.
 
@@ -1680,10 +1680,9 @@ in the usual way if not specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(destroy_window, "destroy-window", 0, 1, 0,
+SCWM_IPROC(destroy_window, "destroy-window", 0, 1, 0,
           (SCM win))
      /** Forcibly remove WIN from the screen.
-
 This will kill the application without giving it a chance to save its
 state or do any other shutdown, but is guaranteed to work. WIN
 defaults to the window context in the usual way if not specified. */
@@ -1741,15 +1740,14 @@ specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(focus, "focus", 0, 1, 0,
+SCWM_IPROC(focus_window, "focus-window", 0, 1, 0,
           (SCM win))
-     /** Give WIN the input focus.
-
+     /** Give WIN the keyboard input focus.
 This will typically result in drawing WIN's frame in a special style
 as well. WIN defaults to the window context in the usual way if not
 specified. Note that WIN is not raised by giving it the focus;  see
 `raise-window' if that is your intent. */
-#define FUNC_NAME s_focus
+#define FUNC_NAME s_focus_window
 {
   ScwmWindow *psw;
 
@@ -1761,7 +1759,7 @@ specified. Note that WIN is not raised by giving it the focus;  see
 #undef FUNC_NAME
 
 
-SCWM_PROC(unfocus, "unfocus", 0, 0, 0,
+SCWM_IPROC(unfocus, "unfocus", 0, 0, 0,
           ())
      /** Remove the input focus from any window that may have it. */
 #define FUNC_NAME s_unfocus
@@ -1772,7 +1770,7 @@ SCWM_PROC(unfocus, "unfocus", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(warp_to_window, "warp-to-window", 0, 1, 0,
+SCWM_IPROC(warp_to_window, "warp-to-window", 0, 1, 0,
           (SCM win))
      /** Move the mouse pointer to the upper left corner of WIN.
 
@@ -1791,7 +1789,7 @@ with the keyboard focus. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(raise_window, "raise-window", 0, 1, 0,
+SCWM_IPROC(raise_window, "raise-window", 0, 1, 0,
           (SCM win))
      /** Raise WIN to the top of the window stack.
 Stays-on-top windows still take priority. WIN defaults to the window
@@ -1815,7 +1813,7 @@ context in the usual way if not specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(lower_window, "lower-window", 0, 1, 0,
+SCWM_IPROC(lower_window, "lower-window", 0, 1, 0,
           (SCM win))
      /** Lower WIN to the bottom of the window stack. WIN defaults to
 the window context in the usual way if not specified. */
@@ -1981,15 +1979,13 @@ specified. */
 #undef FUNC_NAME
 
 
-/* GJB:FIXME:: rename to window-iconify */
-
-SCWM_PROC(iconify, "iconify", 0, 1, 0,
+SCWM_IPROC(iconify_window, "iconify-window", 0, 1, 0,
           (SCM win))
      /** Iconify WIN.
 Iconifying hides the regular window, and shows the window's icon.
 WIN defaults to the window context in the usual way if not
 specified. */
-#define FUNC_NAME s_iconify
+#define FUNC_NAME s_iconify_window
 {
   ScwmWindow *psw;
   VALIDATE_WIN_COPY_USE_CONTEXT(win,psw);
@@ -2003,9 +1999,7 @@ specified. */
 }
 #undef FUNC_NAME
 
-/* GJB:FIXME:: rename to window-deiconify */
-
-SCWM_PROC(deiconify, "deiconify", 0, 3, 0,
+SCWM_IPROC(deiconify_window, "deiconify-window", 0, 3, 0,
           (SCM win, SCM x, SCM y))
      /** Deiconify WIN.
 Hides its icon, and shows its regular window.
@@ -2018,7 +2012,7 @@ refer to the icon window (not the frame window) if a window is iconified.
 Without being able to specify a position on de-iconification, the window
 cannot, e.g., cleanly be brought back onto the current viewport.
 */
-#define FUNC_NAME s_deiconify
+#define FUNC_NAME s_deiconify_window
 {
   VALIDATE_WIN_USE_CONTEXT(win);
   if (!UNSET_SCM(x)) {
@@ -2033,13 +2027,12 @@ cannot, e.g., cleanly be brought back onto the current viewport.
 #undef FUNC_NAME
 
 
-/* GJB:FIXME:MS: rename to window-iconified? */
-SCWM_PROC(iconified_p, "iconified?", 0, 1, 0,
+SCWM_PROC(iconified_window_p, "iconified-window?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is iconified, otherwise return #f.
 WIN defaults to the window context in the usual way if not
 specified. */
-#define FUNC_NAME s_iconified_p
+#define FUNC_NAME s_iconified_window_p
 
 {
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -2055,13 +2048,12 @@ desktop.
 */
 
 
-/* GJB:FIXME:MS: rename to window-stick */
-SCWM_PROC(stick, "stick", 0, 1, 0,
+SCWM_IPROC(stick_window, "stick-window", 0, 1, 0,
           (SCM win))
      /** Make WIN "sticky" so that it stays stationary in the viewport.
 WIN defaults to the window context in the usual way if not
 specified. */
-#define FUNC_NAME s_stick
+#define FUNC_NAME s_stick_window
 {
   ScwmWindow *psw;
   Bool old;
@@ -2090,13 +2082,12 @@ specified. */
 #undef FUNC_NAME
 
 
-/* GJB:FIXME:MS: rename to window-unstick */
-SCWM_PROC(unstick, "unstick", 0, 1, 0,
+SCWM_IPROC(unstick_window, "unstick-window", 0, 1, 0,
           (SCM win))
      /** Cause a window to no longer be "sticky", if it is.
 See `stick' for an explanation. WIN defaults to the window context in
 the usual way if not specified. */
-#define FUNC_NAME s_unstick
+#define FUNC_NAME s_unstick_window
 {
   ScwmWindow *psw;
   Bool old;
@@ -2125,13 +2116,12 @@ the usual way if not specified. */
 #undef FUNC_NAME
 
 
-/* GJB:FIXME:MS: rename to window-sticky? */
-SCWM_PROC(sticky_p, "sticky?", 0, 1, 0,
+SCWM_PROC(sticky_window_p, "sticky-window?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is "sticky", #f otherwise.
 See `stick' for an explanation. WIN defaults to the
 window context in the usual way if not specified. */
-#define FUNC_NAME s_sticky_p
+#define FUNC_NAME s_sticky_window_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
   return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fSticky);
@@ -2141,14 +2131,14 @@ window context in the usual way if not specified. */
 void set_sticky (SCM win, SCM flag)
 {
   if (flag==SCM_BOOL_F) {
-    unstick(win);
+    unstick_window(win);
   } else {
-    stick(win);
+    stick_window(win);
   }
 }
 
 
-SCWM_PROPERTY_HANDLER(sticky_handler, sym_sticky, sticky_p, set_sticky);
+SCWM_PROPERTY_HANDLER(sticky_handler, sym_sticky, sticky_window_p, set_sticky);
 
 
 /*
@@ -2161,7 +2151,7 @@ SCWM_PROPERTY_HANDLER(sticky_handler, sym_sticky, sticky_p, set_sticky);
 
 
 
-SCWM_PROC(window_shade, "window-shade", 0, 1, 0,
+SCWM_IPROC(shade_window, "shade-window", 0, 1, 0,
           (SCM win))
      /** Cause WIN to become "window-shaded".
 That is, to roll up into just a titlebar. By default, the change takes
@@ -2169,7 +2159,7 @@ place instantaneously. WIN defaults to the window context in the usual
 way if not specified. See also `window-unshade'.
 A shaded window has the "WM_STATE" hint set to WithdrawnState, since 
 the client application window is not visible. */
-#define FUNC_NAME s_window_shade
+#define FUNC_NAME s_shade_window
 {
   ScwmWindow *psw;
   Bool old;
@@ -2204,15 +2194,14 @@ the client application window is not visible. */
 #undef FUNC_NAME
 
 
-/* GJB:FIXME:MS: rename to window-unshade */
-SCWM_PROC(window_unshade, "window-unshade", 0, 1, 0,
+SCWM_IPROC(unshade_window, "unshade-window", 0, 1, 0,
           (SCM win))
-    /** Reverse the effect of `window-shade' on WIN.
+    /** Reverse the effect of `shade-window' on WIN.
 The change takes place instantaneously. WIN defaults to the window
 context in the usual way if not specified.
 A shaded window has the "WM_STATE" hint set to WithdrawnState, since 
 the client application window is not visible. */
-#define FUNC_NAME s_window_unshade
+#define FUNC_NAME s_unshade_window
 {
   ScwmWindow *psw;
   Bool old;
@@ -2240,12 +2229,12 @@ the client application window is not visible. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(window_shaded_p, "window-shaded?", 0, 1, 0,
+SCWM_PROC(shaded_window_p, "shaded-window?", 0, 1, 0,
           (SCM win))
     /** Return #t if WIN is shaded.
 WIN defaults to the window context in the usual way if not
 specified. */
-#define FUNC_NAME s_window_shaded_p
+#define FUNC_NAME s_shaded_window_p
 {
   VALIDATE_WIN_USE_CONTEXT(win);
   return SCM_BOOL_FromBool(SHADED_P(PSWFROMSCMWIN(win)));
@@ -2409,7 +2398,7 @@ The list returned contains 4 cons pairs containing:
 #undef FUNC_NAME
 
 
-SCWM_PROC(refresh_window, "refresh-window", 0, 1, 0,
+SCWM_IPROC(refresh_window, "refresh-window", 0, 1, 0,
           (SCM win))
      /** Refresh the decorations on window WIN.
 Refreshing ensuring that everything, including the decorations is up
@@ -2971,7 +2960,7 @@ The order is from most recently focussed to least recently focussed. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(keep_on_top, "keep-on-top", 0, 1, 0,
+SCWM_IPROC(keep_on_top, "keep-on-top", 0, 1, 0,
           (SCM win))
      /** Ensure that WIN is kept on top of all other windows.
 Obviously, other windows that are also on-top may obscure WIN.
@@ -3001,7 +2990,7 @@ WIN defaults to the window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(un_keep_on_top, "un-keep-on-top", 0, 1, 0,
+SCWM_IPROC(un_keep_on_top, "un-keep-on-top", 0, 1, 0,
           (SCM win))
      /** Remove the on-top property from WIN, if it has it.
 See `keep-on-top'. WIN defaults to the window context in the usual
@@ -3084,7 +3073,7 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh, Bool fInPlace)
   }
 }
 
-SCWM_PROC(show_titlebar, "show-titlebar", 0, 2, 0,
+SCWM_IPROC(show_titlebar, "show-titlebar", 0, 2, 0,
           (SCM win, SCM in_place_p))
      /** Cause WIN to be decorated with a titlebar.
 Keeps the client window at its current location if IN-PLACE? is #t.
@@ -3112,7 +3101,7 @@ specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(hide_titlebar, "hide-titlebar", 0, 2, 0,
+SCWM_IPROC(hide_titlebar, "hide-titlebar", 0, 2, 0,
           (SCM win, SCM in_place_p))
      /** Cause WIN not to be decorated with a titlebar.
 Keeps the client window at its current location if IN-PLACE? is #t.
@@ -3152,10 +3141,9 @@ specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(normal_border, "normal-border", 0, 1, 0,
+SCWM_IPROC(normal_border, "normal-border", 0, 1, 0,
           (SCM win))
      /** Cause WIN to be decorated with a normal border.
-
 This means that there will be resize handles in the corners. WIN
 defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_normal_border
@@ -3182,7 +3170,7 @@ defaults to the window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(plain_border, "plain-border", 0, 1, 0,
+SCWM_IPROC(plain_border, "plain-border", 0, 1, 0,
           (SCM win))
      /** Cause WIN to be decorated with a plain border.
 This means that there will be no resize handles in the corners. WIN
@@ -3262,7 +3250,7 @@ WIN defaults to the window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(stick_icon, "stick-icon", 0, 1, 0,
+SCWM_IPROC(stick_icon, "stick-icon", 0, 1, 0,
           (SCM win))
      /** Cause WIN's icon to become "sticky". See `stick'. WIN
 defaults to the window context in the usual way if not specified. */
@@ -3279,7 +3267,7 @@ defaults to the window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(unstick_icon, "unstick-icon", 0, 1, 0,
+SCWM_IPROC(unstick_icon, "unstick-icon", 0, 1, 0,
           (SCM win))
      /** Cause WIN's icon to no longer by "sticky". See `stick-icon'
 and `stick'. WIN defaults to the window context in the usual way if
@@ -3537,6 +3525,7 @@ SCWM_PROC (set_nonant_highlight_color_x, "set-nonant-highlight-color!", 1, 0, 0,
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
+
 
 SCWM_PROC (nonant_highlight_color, "nonant-highlight-color", 0, 0, 0,
            ())
@@ -3968,6 +3957,7 @@ not specified. */
 
 /* MS:FIXME:: seems silly in current framework. */
 
+
 SCWM_PROC(set_decorate_transient_x, "set-decorate-transient!", 1, 1, 0,
           (SCM flag, SCM win))
      /** Set decoration of transients property on WIN.
@@ -4096,7 +4086,6 @@ specified. */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
-
 
 
 

@@ -158,7 +158,7 @@ placed at all. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(refresh, "refresh", 0, 0, 0,
+SCWM_IPROC(refresh, "refresh", 0, 0, 0,
           ())
      /** Make sure all windows and their decorations are up to date.
 This forces a redraw of the entire current viewport. Should not be
@@ -264,7 +264,7 @@ SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(recapture, "recapture", 0, 0, 0,
+SCWM_IPROC(recapture, "recapture", 0, 0, 0,
           ())
      /** Recapture all the windows.
 This destroys all the current frame windows and recreate them from
@@ -280,7 +280,7 @@ scratch. This is hopefully not necessary during normal operation. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(beep, "beep", 0, 0, 0,
+SCWM_IPROC(beep, "beep", 0, 0, 0,
           ())
      /** Ring the standard X bell. */
 #define FUNC_NAME s_beep
@@ -638,7 +638,7 @@ the constant string "/tmp". */
 }
 #undef FUNC_NAME
 
-SCWM_PROC(force_segv_for_testing, "force-segv-for-testing", 0, 0, 0,
+SCWM_IPROC(force_segv_for_testing, "force-segv-for-testing", 0, 0, 0,
 	  ())
      /** Cause a segmentation violation.
 Do not do this unless you are testing segv handling! */
@@ -712,7 +712,7 @@ SCWM_PROC(x_connection_number, "x-connection-number", 0, 0, 0,
 
 #ifdef SCWM_TEST_HOOK_PROCS
 
-SCWM_PROC(scwm_run_test_hook_0, "scwm-run-test-hook-0", 1, 0, 0,
+SCWM_IPROC(scwm_run_test_hook_0, "scwm-run-test-hook-0", 1, 0, 0,
           (SCM count))
      /** Invoke `scwm-test-hook-0' COUNT times. */
 #define FUNC_NAME s_scwm_run_test_hook_0
@@ -726,7 +726,7 @@ SCWM_PROC(scwm_run_test_hook_0, "scwm-run-test-hook-0", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(scwm_run_test_hook_1, "scwm-run-test-hook-1", 2, 0, 0,
+SCWM_IPROC(scwm_run_test_hook_1, "scwm-run-test-hook-1", 2, 0, 0,
           (SCM count, SCM arg))
      /** Invoke `scwm-test-hook-1' COUNT times with ARG as the single argument. */
 #define FUNC_NAME s_scwm_run_test_hook_1

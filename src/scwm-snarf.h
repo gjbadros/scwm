@@ -28,13 +28,23 @@ SCM scwm_make_gsubr(const char *name, int req, int opt, int rst, SCM (*fcn)(), c
 #define SCWM_PROC(fname,primname, req, opt, var, ARGLIST) \
 	SCM_PROC(s_ ## fname, primname, req, opt, var, fname); \
 SCM fname ARGLIST
+
+#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST) \
+	SCM_PROC(s_ ## fname, primname, req, opt, var, fname); \
+SCM fname ARGLIST
 #else
 #if defined(__cplusplus) || defined(GUILE_CPLUSPLUS_SNARF)
 #define SCWM_PROC(fname,primname, req, opt, var, ARGLIST) \
 %%%	scwm_make_gsubr(s_ ## fname, req, opt, var, (SCM (*)(...))fname, %/%/ #ARGLIST);
+
+#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST) \
+%%%	scwm_make_igsubr(s_ ## fname, req, opt, var, (SCM (*)(...))fname, %/%/ #ARGLIST);
 #else
 #define SCWM_PROC(fname,primname, req, opt, var, ARGLIST) \
 %%%	scwm_make_gsubr(s_ ## fname, req, opt, var, (SCM (*)())   fname, %/%/ #ARGLIST);
+
+#define SCWM_IPROC(fname,primname, req, opt, var, ARGLIST) \
+%%%	scwm_make_igsubr(s_ ## fname, req, opt, var, (SCM (*)())   fname, %/%/ #ARGLIST);
 #endif
 #endif
 #endif

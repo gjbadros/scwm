@@ -537,6 +537,9 @@ InitUserData()
 int
 main(int argc, char **argv)
 {
+#ifdef HAVE_SCM_INIT_HEAP_SIZE_FACTOR
+  scm_init_heap_size_factor = 24;
+#endif
   scwm_gh_enter(argc, argv, scwm_main);
   return 0;
 }
@@ -1633,6 +1636,22 @@ scwm_make_gsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char 
   return p;
   }
 }
+
+SCM
+scwm_make_igsubr(const char *name, int req, int opt, int var,
+                 SCM (*fcn)(), char *szArgList)
+{
+  static SCM sym_interactive = SCM_UNDEFINED;
+  if (SCM_UNDEFINED == sym_interactive)
+    sym_interactive = 
+      scm_permanent_object(((scm_cell *)scm_intern0("interactive"))->car);
+  { /* scope */
+    SCM p = scwm_make_gsubr(name,req,opt,var,fcn,szArgList);
+    scm_set_procedure_property_x(p,sym_interactive,SCM_BOOL_T);
+    return p;
+  }
+}
+
 
 void init_scwm_load_path()
 {
