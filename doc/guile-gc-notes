@@ -1,9 +1,12 @@
-From notes from an email from Maciej to Greg on 11/29/97:
+From notes from an email from Maciej to Greg on 11/29/97, revised by
+Greg --07/25/98 gjb
 
 SCM_GC8MARKP() determines whether or not an object has already been
-marked. If it has, and potentially points to other objects that it
-protects from GC, than it is a worthwhile optimization to check this
-and do nothing if the object is aldeady mark.
+marked.  Note that in older guile snapshots (before about 20-July-1998)
+it was considered a  a worthwhile optimization to check this
+and do nothing if the object is already marked -- this is no longer
+safe, as the top level objects are already marked by the g.c. mechanism
+before their mark routine is called.
 
 SCM_SETGC8MARK() marks a single object or cell, but not any objects it
 points to.
@@ -11,7 +14,7 @@ points to.
 scm_gc_mark() marks an object recursively; however, since it does this
 using the registered marker on an object itself from within its marker
 function will cause an infinite loop. Thus, it is usual to use
-SCM_SETGC8MARK or the object itself and scm_gc_mark on any objects it
+SCM_SETGC8MARK on the object itself and scm_gc_mark on any objects it
 points to and should protect from gc.
 
 The return value from a marker function: returning a value from a
@@ -20,8 +23,31 @@ passed to scwm_gc_mark(); it is used conventionally when only one
 object or a list of objects needs to be marked by the parent object.
 
 -------
+Also note that a seg fault in gc_mark may mean that a type that was
+created has not been initialized properly using scm_newsmob (or
+REGISTER_SCWMSMOBFUNS macro).  Be sure to initialize a type before
+creating any objects of that type.
 
-Greg's proposed standard:
+Another thing to check is that a protected object has been initialized.
+If you protect an object before initializing the scheme objects it
+contains (and thus, the things it marks), you can get a seg fault.
+-------
+scm_protect_object is used to add an object to the list of protected
+objects in scm_sys_protects[15] (which scm_protects is a #define alias
+for).  Those objects are always recursively marked by the garbage
+collector.
+
+scm_permanent_object is used to add an object to a different list of
+protected objects in scm_sys_protects[14] (which scm_permobjs is a
+#define alias for). Those objects are always recursively marked by the
+#garbage
+collector.
+
+
+-------
+
+An example from Greg:
+
 
 for a foo object, like this in foo.h:
 
@@ -40,10 +66,7 @@ SCM
 mark_foo(SCM scmFoo)
 {
   foo *pfoo;
-  /* done if the object is already marked -- avoid recursion */
-  if (SCM_GC8MARKP (scmFoo)) {
-    return SCM_BOOL_F;
-  }
+
   /* FOO(scmFoo) should be defined in foo.h; it returns the foo *
      that scmFoo wraps */
   pfoo = FOO(scmFoo);

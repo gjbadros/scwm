@@ -1,6 +1,9 @@
 Garbage collection
  - be sure to mark all contained scm objects
 
+Adding a new type?
+ - be sure to call init_TYPE from scwm.c -- search for init_
+
 Dieing in malloc()?
  - free-d an already freed pointer; consider setting
    the pointer to NULL immediately after freeing it

@@ -1,88 +1,105 @@
-- Make scwm work with automake, and libtool where appropriate; this
-should make setting up loadable modules much easier.
+* Constraint embedding
+** use cleaner subclassing w/ partial wrap model, instead of C-like void pointers
+** virtual desktop and sticky interaction with the constraint variables
+** rubberband-resizing fixes -- generalization of the rubberband
 
-- get rid of sun-headers.h -- we should just include the proper files
+* Add checks about redefining keystrokes, if not already done
+
+* only move mouse with moving window if a keyboard command, or forced to -- allow user to control this + update man page for menustyle animated
+
+* accelerated mouse movements w/ keyboard shortcuts
+
+* StayOnBottom style
+
+* administrative b.s.
+** cvsweb
+** gnats for problem reporting?
+
+* Memory profiling -- instrument NEW and FREE and keep track of
+alloc/dealloc to see where the memory is going... guile support for this?
+
+* getters for setter functions
+
+* Better error handling system -- don't call scwm_error w/ a number!
+
+
+* color scheme wrappers need reference counting; whole rewrite like image?
+
+* replace ColorPair struct w/ scheme-bject based
+
+* New event handling mechanism
+** event objects?
+** event binding objects?
+
+* Menu functionality
+** existence testing for menu items
+** side images should have optional alignment to top, center, or bottom
+** pie menus
+** auto splitting
+** sticky menus (like button-bar)
+** cacade-menu vs. popup-menu
+** make-menu-item, make-menu
+** horizontal vs. vertical vs. matrix
+** auto-cascade vs. auto-matrix when too long
+** reverting mouse position when only keyboard used
+** extra-information list of properties (e.g, options for drawing, behaviour)
+** animation
+** keyboard short cuts using the new event model
+** smarter placement of menus that is aware of the context of the popup-menu (or give args to popup-menu so button decorations can do inform popup-menu of a left edge or right edge constraint)
+** pinup menus?  e.g. like the button bars
+** multi-columns?
+** horizontal?
+
+* Better error handling  -- this may be more of a guile problem
+** more consistent use, especially abstractions for argument type checking
+** keyword argument checking -- give me errors instead of silently failing
+** get a line number!  -- done!
+** Don't crash and burn so often -- done!
+** keep trying on .scwmrc especially! -- done!
+
+* New threads stuff & widget embedding -- GTk?
+
+* Add a hook to the scwm_error handler routine passing the request error and event type; provide a module to make these human readable -- see X-error-describe
+
+* scwm.h has some stuff that belongs in window.h; separate these out better
+
+* add_window.c, borders.c seem to duplicate some functionality
+** figure out what each should do and remove extraneous stuff
+** modularize the window decorations as C functions
+
+* figure out dynamic loading issues
+** what is guile's support for this?
+** test with the drawmenu.c functions
+** menu objects should be able to specify a .o file containing the functions they want to use to do the drawing
+
+* Write some graphical reconfiguration tools.
+
+* Interactive move/resize should permit using a real color, not justan xor-value, as an option (hard w/o an overlay plane)
+
+* Rename scwm/scwm directory to scwm/src
+
+* Quote key feature -- like C-q in Emacs, C-v in shells
+
+* rewrite of remaining copyrighted code  to allow release under GPL
+
+* Undo feature?
+
+
+* Done:
 
 - Implement error reporting and output redirection for the scwmexec
 protocol, and make setting the SCWMEXEC_REQWIN property safe against
 race conditions; with these, scwmrepl should be a total replacement of
 the --interactive option.
 
-- all (or at least nearly all) setters should have corresponding
-getters
+- get rid of sun-headers.h -- we should just include the proper files
 
-- Use guile-snarf pervasively
+- Opaque resize -- afterstep and others do this --07/25/98 gjb
 
-- Better system than calling scwm_error with a number?
+- use placement function for window placement (suggested by Sam Steingold <sds@usa.net>)
 
-- Hook callback on scwm_msg-s, instead of just writing to stderr
-
-- side images should have optional alignment to top, center, or bottom
-
-- color scheme wrappers need reference counting; whole rewrite like image?
-
-- replace ColorPair struct w/ scheme-object based
-
-- New event handling mechanism
- - event objects?
- - event binding objects?
-
-- stay on bottom window style? Sam Steingold <sds@usa.net>
-
-- use placement function for window placement Sam Steingold <sds@usa.net>
-
-- improve new menus
- - cascading popups -- done!
- - reverting mouse position when only keyboard used
- - extra-information list of properties (e.g, options for drawing, behaviour)
- - animation
- - keyboard short cuts using the new event model
- - smarter placement of menus that is aware of the context of the
-   popup-menu (or give args to popup-menu so button decorations can
-   do inform popup-menu of a left edge or right edge constraint)
- - pinup menus?  e.g. like the button bars
- - multi-columns?
- - horizontal?
-
-- Better error handling  -- this may be more of a guile problem
-  - get a line number!
-  - Don't crash and burn so often
-  - keep trying on .scwmrc especially!
-  - more consistent use, especially abstractions for argument type checking
-
-- New threads stuff & widget embedding -- GTk?
-
-- Add a hook to the scwm_error handler routine passing the request error and event type; provide a module to make these human readable -- see X-error-describe
-
-- scwm.h has some stuff that belongs in window.h; separate these out better
-
-- add_window.c, borders.c seem to duplicate some functionality
-  - figure out what each should do and remove extraneous stuff
-  - modularize the window decorations as C functions
-
-- figure out dynamic loading issues
-  - what is guile's support for this?
-  - test with the drawmenu.c functions
-    -- menu objects should be able to specify a .o file containing
-       the functions they want to use to do the drawing
-
-- Write some graphical reconfiguration tools.
-
-- Interactive move/resize should permit using a real color, not just
-an xor-value, as an option
-
-- Opaque resize -- afterstep and others do this
-
-- Rename scwm/scwm directory to scwm/src
-
-- Quote key feature -- like C-q in Emacs, C-v in shells
-
-- Eventually, a total rewrite will probably be needed to allow release
-under GPL and reorganize years of layered cruft.
-
-- Undo feature?
-
-Done:
+- Make scwm work with automake, and libtool where appropriate; this
+should make setting up loadable modules much easier.
 
 - Clean out all of the artifacts of the FVWM function system.
   [ I think that stuff is all gone now - MS ]
