@@ -219,11 +219,6 @@ flagval) { ButtonFace *bf;
   }
 }
 
-
-extern char *PixmapPath;
-
-extern char *IconPath;
-
 ButtonFace *append_new_face(ButtonFace *bf);
 
 /*
@@ -253,7 +248,7 @@ ButtonFace *append_new_face(ButtonFace *bf);
 
 
 SCM sym_relief_pattern, sym_solid, sym_gradient, sym_horizontal,
-  sym_vertical, sym_pixmap, sym_mini_icon, sym_tiled;
+  sym_vertical, sym_pixmap, sym_mini_program_icon, sym_tiled;
 
 
 /* FIXMS this function is horrible, functions should never be this
@@ -398,28 +393,38 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
     
     tiled_p=(gh_list_p(arg) && gh_length(arg) ==2 &&
 	     gh_car(arg)==sym_tiled && gh_string_p(gh_cadr(arg)));
-    if (tiled_p || gh_string_p(arg) || (mini_p=(arg==sym_mini_icon))) {
+    if (tiled_p || gh_string_p(arg) || (mini_p=(arg==sym_mini_program_icon)) ||
+	PICTURE_P(arg)) {
       Picture *p = NULL;
       
       if (tiled_p) {
 	arg=gh_cadr(arg);
       }
 
+      /* FIXGJB: I think this should only take pixmap objects;
+	 if we want scheme sugar for converting strings into
+	 pixmaps, that's fine, too;  this works well now, though,
+	 so maybe it's only work changing when make-face is
+	 wrapped to use keyword arguments */
       if (!mini_p) {
-	char *pixmap;
-	int dummy;
+	int len;
 
-	pixmap=gh_scm2newstr(arg,&dummy);
-	p = CachePicture(dpy, Scr.Root,
-			 IconPath,
-			 PixmapPath,
-			 pixmap);
+	if (PICTURE_P(arg)) {
+	  p = PICTURE(arg)->pic;
+	  if (p==NULL) {
+	    scwm_msg(ERR,"add_spec_to_face_x","Picture object has no pic==NULL");
+	  }
+	} else {
+	  char *pixmap = gh_scm2newstr(arg,&len);
+	  p = CachePicture(dpy, Scr.Root,
+			   szPicturePath, pixmap);
+	  if (pixmap) free(pixmap);
+	}
 	if (p==NULL) {
 	  /* signal an error: couldn't load picture */
 	  /* FIXMS give a better error message */
 	  scm_wrong_type_arg("add_spec_to_face_x",3,arg);
 	}
-	free(pixmap);
       }
       
       if (tiled_p) {
@@ -657,8 +662,8 @@ init_face()
   scm_protect_object(sym_vertical);
   sym_pixmap =gh_symbol2scm("pixmap");
   scm_protect_object(sym_pixmap);
-  sym_mini_icon =gh_symbol2scm("mini-icon");
-  scm_protect_object(sym_mini_icon);
+  sym_mini_program_icon =gh_symbol2scm("mini-program-icon");
+  scm_protect_object(sym_mini_program_icon);
   sym_tiled = gh_symbol2scm("tiled");
   scm_protect_object(sym_tiled);
 

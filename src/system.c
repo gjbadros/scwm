@@ -98,3 +98,67 @@ sleep_ms(int n)
 
 
 
+/****************************************************************************
+ *
+ * Find the specified file (or file.gz) somewhere along the given path.
+ *
+ * There is a possible race condition here:  We check the file and later
+ * do something with it.  By then, the file might not be accessible.
+ * Oh well.
+ * FIXGJB: race conditions here!
+ *
+ ****************************************************************************/
+char *
+findFile(char *szName, char *szPathlist, int type)
+{
+  char *path = NULL;
+  char *dir_end = NULL;
+  int cchName = 0;
+  int cchPathlist = 0;
+
+  if (szName != NULL)
+    cchName = strlen(szName);
+
+  if (szPathlist != NULL)
+    cchPathlist = strlen(szPathlist);
+
+  path = safemalloc(cchName + cchPathlist + 10);
+  *path = '\0';
+
+  if (*szName == '/') {
+    /* No search if szName begins with a slash */
+    strcpy(path, szName);
+    return path;
+  }
+  if ((szPathlist == NULL) || (*szPathlist == '\0')) {
+    /* No search if szPathlist is empty */
+    strcpy(path, szName);
+    return path;
+  }
+  /* Search each element of the szPathlist for the szName file */
+  while ((szPathlist) && (*szPathlist)) {
+    dir_end = strchr(szPathlist, ':');
+    if (dir_end != NULL) {
+      strncpy(path, szPathlist, dir_end - szPathlist);
+      path[dir_end - szPathlist] = 0;
+    } else
+      strcpy(path, szPathlist);
+
+    strcat(path, "/");
+    strcat(path, szName);
+    if (access(path, type) == 0)
+      return path;
+    strcat(path, ".gz");
+    if (access(path, type) == 0)
+      return path;
+
+    /* Point to next element of the path */
+    if (dir_end == NULL)
+      szPathlist = NULL;
+    else
+      szPathlist = dir_end + 1;
+  }
+  /* Hmm, couldn't find the file.  Return NULL */
+  free(path);
+  return NULL;
+}

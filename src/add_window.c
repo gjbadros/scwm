@@ -71,11 +71,6 @@ static XrmOptionDescRec table[] =
   {"-xrm", NULL, XrmoptionResArg, (caddr_t) NULL},
 };
 
-extern char *IconPath;
-
-extern char *PixmapPath;
-
-
 /***********************************************************************
  *
  *  Procedure:
@@ -129,8 +124,8 @@ AddWindow(Window w)
   tmp_win->w = w;
 
   tmp_win->cmap_windows = (Window *) NULL;
-  tmp_win->mini_pixmap_file = NULL;
-  tmp_win->mini_icon = NULL;
+  tmp_win->szMiniIconFile = NULL;
+  tmp_win->szIconFile = NULL;
 
   if (!PPosOverride)
     if (XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
@@ -240,20 +235,18 @@ AddWindow(Window w)
   /* find a suitable icon pixmap */
   if (tflag & ICON_FLAG) {
     /* an icon was specified */
-    tmp_win->icon_bitmap_file = value;
+    tmp_win->szIconFile = value;
   } else if ((tmp_win->wmhints)
 	 && (tmp_win->wmhints->flags & (IconWindowHint | IconPixmapHint))) {
     /* window has its own icon */
-    tmp_win->icon_bitmap_file = NULL;
+    tmp_win->szIconFile = NULL;
   } else {
     /* use default icon */
-    tmp_win->icon_bitmap_file = Scr.DefaultIcon;
+    tmp_win->szIconFile = Scr.DefaultIcon;
   }
 
   if (tflag & MINIICON_FLAG) {
-    tmp_win->mini_pixmap_file = mini_value;
-  } else {
-    tmp_win->mini_pixmap_file = NULL;
+    tmp_win->szMiniIconFile = mini_value;
   }
 
   GetWindowSizeHints(tmp_win);
@@ -492,13 +485,12 @@ AddWindow(Window w)
 	tmp_win->right_w[i] = None;
     }
 
-    if (tmp_win->mini_pixmap_file) {
-      tmp_win->mini_icon = CachePicture(dpy, Scr.Root,
-					IconPath,
-					PixmapPath,
-					tmp_win->mini_pixmap_file);
+    if (tmp_win->szMiniIconFile) {
+      tmp_win->picMiniIcon = CachePicture(dpy, Scr.Root,
+					  szPicturePath,
+					  tmp_win->szMiniIconFile);
     } else {
-      tmp_win->mini_icon = NULL;
+      tmp_win->picMiniIcon = NULL;
     }
   }
   if (tmp_win->flags & BORDER) {
@@ -615,22 +607,22 @@ AddWindow(Window w)
 		(unsigned long) tmp_win, tmp_win->name);
   BroadcastName(M_ICON_NAME, tmp_win->w, tmp_win->frame,
 		(unsigned long) tmp_win, tmp_win->icon_name);
-  if (tmp_win->icon_bitmap_file != NULL &&
-      tmp_win->icon_bitmap_file != Scr.DefaultIcon)
+  if (tmp_win->szIconFile != NULL &&
+      tmp_win->szIconFile != Scr.DefaultIcon)
     BroadcastName(M_ICON_FILE, tmp_win->w, tmp_win->frame,
-		  (unsigned long) tmp_win, tmp_win->icon_bitmap_file);
+		  (unsigned long) tmp_win, tmp_win->szIconFile);
   BroadcastName(M_RES_CLASS, tmp_win->w, tmp_win->frame,
 		(unsigned long) tmp_win, tmp_win->class.res_class);
   BroadcastName(M_RES_NAME, tmp_win->w, tmp_win->frame,
 		(unsigned long) tmp_win, tmp_win->class.res_name);
-  if (tmp_win->mini_icon != NULL)
+  if (tmp_win->picMiniIcon != NULL)
     Broadcast(M_MINI_ICON, 6,
 	      tmp_win->w,	/* Watch Out ! : I reduced the set of infos... */
-	      tmp_win->mini_icon->picture,
-	      tmp_win->mini_icon->mask,
-	      tmp_win->mini_icon->width,
-	      tmp_win->mini_icon->height,
-	      tmp_win->mini_icon->depth, 0);
+	      tmp_win->picMiniIcon->picture,
+	      tmp_win->picMiniIcon->mask,
+	      tmp_win->picMiniIcon->width,
+	      tmp_win->picMiniIcon->height,
+	      tmp_win->picMiniIcon->depth, 0);
 
   FetchWmProtocols(tmp_win);
   FetchWmColormapWindows(tmp_win);

@@ -37,10 +37,11 @@
 #ifndef _SCWM_
 #define _SCWM_
 
-#include <guile/gh.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
+#include <X11/Intrinsic.h> 
+#include <guile/gh.h>
 #include "Picture.h"
 
 #ifndef WithdrawnState
@@ -70,8 +71,6 @@
 /* don't think that upping this to 5 will make everything
  * hunky-dory with 5 button mouses */
 #define MAX_BUTTONS 3
-
-#include <X11/Intrinsic.h>
 
 #ifdef SIGNALRETURNSINT
 #define SIGNAL_T int
@@ -196,9 +195,11 @@ typedef struct ScwmWindow {
   Window transientfor;
 
   unsigned long flags;
-  char *mini_pixmap_file;
-  Picture *mini_icon;
-  char *icon_bitmap_file;
+  char *szMiniIconFile;  /* FIXNOWGJB: was: mini_pixmap_file */
+  Picture *picMiniIcon; /* was mini_icon */
+  char *szIconFile; /* FIXNOWGJB: was: icon_bitmap_file */
+  /* FIXGJB: this duplicates above icon_ fields */
+  Picture *picIcon; /* was icon_?? */
 
   int orig_x;			/* unmaximized x coordinate */
   int orig_y;			/* unmaximized y coordinate */
@@ -337,6 +338,13 @@ extern Atom _XA_OL_DECOR_RESIZE;
 extern Atom _XA_OL_DECOR_HEADER;
 extern Atom _XA_OL_DECOR_ICON_NAME;
 extern Atom XA_SCWM_EXECUTE;
+
+
+#ifndef HAVE_SCM_PUTS
+#define scm_putc(x,y) scm_gen_putc(x,y)
+#define scm_puts(x,y) scm_gen_puts(scm_regular_port,x,y)
+#endif
+
 
 
 

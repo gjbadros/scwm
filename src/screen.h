@@ -291,6 +291,8 @@ typedef struct ScreenInfo {
 
 } ScreenInfo;
 
+extern ScreenInfo Scr;
+
 /* 
    Macro which gets specific decor or default decor.
    This saves an indirection in case you don't want
@@ -305,8 +307,6 @@ void LoadDefaultButton(ButtonFace * bf, int i);
 void ResetAllButtons(ScwmDecor * fl);
 void InitScwmDecor(ScwmDecor * fl);
 void DestroyScwmDecor(ScwmDecor * fl);
-
-extern ScreenInfo Scr;
 
 /* for the flags value - these used to be seperate Bool's */
 #define WindowsCaptured            (1)

@@ -54,7 +54,6 @@ SRCS = \
 	Picture.c \
 	system.c \
 	Grab.c \
-	pixmap.c \
 	add_window.c \
 	borders.c \
 	colormaps.c \

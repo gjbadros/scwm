@@ -7,5 +7,6 @@ int gethostname(char *client, size_t length);
 char *envDupExpand(const char *s, int extra);
 void sleep_ms(int n);
 int GetFdWidth(void);
+char *findFile(char *name, char *pathlist, int type);
 
 #endif

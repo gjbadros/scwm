@@ -1,3 +1,4 @@
+/* $Id$ */
 
 /****************************************************************************
  * This module has been significantly modified by Maciej Stachowiak.
@@ -13,11 +14,10 @@
 #include "util.h"
 #include "paths.h"
 
-
-char *PixmapPath = SCWM_ICONDIR;
+char *szPicturePath = SCWM_ICONDIR;
 
 SCM 
-set_pixmap_path_x(SCM newpath)
+set_picture_path_x(SCM newpath)
 {
   static char *ptemp = NULL;
   char *tmp;
@@ -29,40 +29,13 @@ set_pixmap_path_x(SCM newpath)
     scm_wrong_type_arg("set-pixmap-path!", 1, newpath);
   }
   if (ptemp == NULL)
-    ptemp = PixmapPath;
-  if ((PixmapPath != ptemp) && (PixmapPath != NULL))
-    free(PixmapPath);
+    ptemp = szPicturePath;
+  if ((szPicturePath != ptemp) && (szPicturePath != NULL))
+    free(szPicturePath);
 
   tmp = gh_scm2newstr(newpath, &dummy);
 
-  PixmapPath = /* envDupExpand( */ tmp /* , 0) */ ;
+  szPicturePath = tmp;
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
-
-char *IconPath = SCWM_ICONDIR;
-
-SCM 
-set_icon_path_x(SCM newpath)
-{
-  static char *ptemp = NULL;
-  char *tmp;
-  int dummy;
-
-  SCM_REDEFER_INTS;
-
-  if (!gh_string_p(newpath)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-icon-path!", 1, newpath);
-  }
-  if (ptemp == NULL)
-    ptemp = IconPath;
-
-  if ((IconPath != ptemp) && (IconPath != NULL))
-    free(IconPath);
-  tmp = gh_scm2newstr(newpath, &dummy);
-  IconPath = tmp;
-  SCM_REALLOW_INTS;
-  return SCM_UNSPECIFIED;
-}
-

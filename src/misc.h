@@ -207,8 +207,6 @@ void HandleModuleInput(Window w, int channel);
 void no_popup(char *ptr);
 void KillModule(int channel, int place);
 void ClosePipes(void);
-char *findIconFile(char *icon, char *pathlist, int mode);
-int find_func_type(char *action);
 void GetBitmapFile(ScwmWindow * tmp_win);
 void GetXPMFile(ScwmWindow * tmp_win);
 void GetIconWindow(ScwmWindow * tmp_win);

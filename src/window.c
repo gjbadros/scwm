@@ -47,8 +47,6 @@ mark_window(SCM obj)
 int 
 print_window(SCM obj, SCM port, scm_print_state * pstate)
 {
-
-#if HAVE_SCM_PUTS
   scm_puts("#<window ", port);
   if (VALIDWINP(obj)) {
     scm_write(gh_ulong2scm((unsigned long) (SCWMWINDOW(obj)->w)), port);
@@ -56,15 +54,6 @@ print_window(SCM obj, SCM port, scm_print_state * pstate)
     scm_puts("(invalid)", port);
   }
   scm_putc('>', port);
-#else /* !HAVE_SCM_PUTS */
-  scm_gen_puts(scm_regular_port, "#<window ", port);
-  if (VALIDWINP(obj)) {
-    scm_write(gh_ulong2scm((unsigned long) (SCWMWINDOW(obj)->w)), port);
-  } else {
-    scm_gen_puts(scm_regular_port, "(invalid)", port);
-  }
-  scm_gen_putc('>', port);
-#endif /* HAVE_SCM_PUTS */
 
   return 1;
 }
@@ -76,8 +65,10 @@ make_window(ScwmWindow * win)
   scwm_window *schwin;
   SCM answer;
 
-  schwin = (scwm_window *) safemalloc(sizeof(scwm_window));
+  schwin = safemalloc(sizeof(scwm_window));
 
+  /* FIXGJB: we should decide on right way to do memory allocation;
+     this check is redundant w/ safemalloc */
   if (schwin == NULL) {
     scm_memory_error("make_window");
   }
@@ -1731,33 +1722,34 @@ set_mwm_border_x(SCM val, SCM win)
 }
 
 SCM 
-set_icon_x(SCM val, SCM win)
+set_icon_x(SCM picture, SCM win)
 {
   ScwmWindow *tmp_win;
-  int dummy;
 
   VALIDATEN(win, 2, "set-icon!");
   tmp_win = SCWMWINDOW(win);
-  if (val == SCM_BOOL_F) {
+  if (picture == SCM_BOOL_F) {
     tmp_win->flags |= SUPPRESSICON_FLAG;
     XDestroyWindow(dpy, tmp_win->icon_w);
     tmp_win->icon_w = None;
-    tmp_win->icon_bitmap_file = NULL;
-  } else if (val == SCM_BOOL_T) {
+    tmp_win->szIconFile = NULL;
+  } else if (picture == SCM_BOOL_T) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
-  } else if (gh_string_p(val)) {
+  } else if (PICTURE_P(picture)) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
     /* XXX -This is silly, we really should have an "icon" or "image" type. */
     if (!((tmp_win->wmhints)
 	  && (tmp_win->wmhints->flags &
 	      (IconWindowHint | IconPixmapHint)))) {
-      tmp_win->icon_bitmap_file = gh_scm2newstr(val, &dummy);
+      tmp_win->picIcon = PICTURE(picture)->pic;
+      /* FIXGJB: shouldn't have to set the filename */
+      tmp_win->szIconFile = tmp_win->picIcon->name;
       XDestroyWindow(dpy, tmp_win->icon_w);
       tmp_win->icon_w = None;
     }
   } else {
-    scm_wrong_type_arg("set-icon!", 1, val);
+    scm_wrong_type_arg("set-icon!", 1, picture);
   }
   /* also it should redraw automatically */
   if (tmp_win->flags & ICONIFIED) {
@@ -1766,34 +1758,22 @@ set_icon_x(SCM val, SCM win)
   return SCM_BOOL_T;
 }
 
-extern char *PixmapPath, *IconPath;
-
 SCM 
-set_mini_icon_x(SCM val, SCM win)
+set_mini_icon_x(SCM picture, SCM win)
 {
   ScwmWindow *tmp_win;
-  int dummy;
 
   VALIDATEN(win, 2, "set-mini-icon!");
   tmp_win = SCWMWINDOW(win);
-  if (val == SCM_BOOL_F) {
-    tmp_win->mini_pixmap_file = NULL;
-  } else if (gh_string_p(val)) {
-    tmp_win->mini_pixmap_file = gh_scm2newstr(val, &dummy);
+  if (picture == SCM_BOOL_F) {
+    tmp_win->picMiniIcon = NULL;
+  } else if (PICTURE_P(picture)) {
+    tmp_win->picMiniIcon = PICTURE(picture)->pic;
   } else {
-    scm_wrong_type_arg("set-mini-icon!", 1, val);
+    scm_wrong_type_arg("set-mini-icon!", 1, picture);
   }
 
-  if (tmp_win->mini_pixmap_file!=NULL) {
-    tmp_win->mini_icon = CachePicture(dpy, Scr.Root,
-				      IconPath,
-				      PixmapPath,
-				      tmp_win->mini_pixmap_file);
-  } else {
-    tmp_win->mini_icon = NULL;
-  }
-
-  /* also it should redraw automatically */
+  /* FIXNOWGJB: also it should redraw automatically */
 
   return SCM_BOOL_T;
 

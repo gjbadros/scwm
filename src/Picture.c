@@ -1,19 +1,10 @@
+/* $Id$
+ * Picture.c
+ * By Greg J. Badros -- Nov 8, 1997
+ * Loosely descended from code by Robert Nation, 1993, for fvwm
+ */
 
-/****************************************************************************
- * This module is all original code 
- * by Rob Nation 
- * Copyright 1993, Robert Nation
- *     You may use this code for any purpose, as long as the original
- *     copyright remains in the source code and all documentation
- ****************************************************************************/
-
-
-/****************************************************************************
- *
- * Routines to handle initialization, loading, and removing of xpm's or mono-
- * icon images.
- *
- ****************************************************************************/
+#define PICTURE_IMPLEMENTATION
 
 #include <config.h>
 
@@ -30,7 +21,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#include <X11/xpm.h>
+#include <guile/gh.h>
+#include "scwm.h"
+#include "screen.h"
 #include "Picture.h"
 #include "system.h"
 
@@ -60,7 +53,11 @@ LoadPicture(Display * dpy, Window Root, char *path)
   p = (Picture *) safemalloc(sizeof(Picture));
   p->count = 1;
   p->name = path;
+  p->cchName = strlen(path);
   p->next = NULL;
+
+  /* FIXGJB: should check extension and call appropriate loader */
+  /* don't try calling each loader waiting for a success! */
 
   /* Try to load it as an X Pixmap first */
   xpm_attributes.colormap = PictureCMap;
@@ -92,33 +89,34 @@ LoadPicture(Display * dpy, Window Root, char *path)
 /* This is the fvwm2 (old code's) main interface to getting a pixmap or 
    bitmap */
 Picture *
-CachePicture(Display * dpy, Window Root, char *IconPath, char *PixmapPath,
-	     char *name)
+CachePicture(Display * dpy, Window Root, char *szPath, char *name)
 {
-  char *path;
   Picture *p = PictureList;
-  int i, l;
+  char *path;
+  int ich; 
+  int cchPath;
 
   /* First find the full pathname */
-  if (!(path = findIconFile(name, PixmapPath, R_OK)))
-    if (!(path = findIconFile(name, IconPath, R_OK)))
-      return NULL;
+  if (!(path = findFile(name, szPath, R_OK)))
+    return NULL;
 
-  l = strlen(path);
+  cchPath = strlen(path);
 
   /* See if the picture is already cached */
   while (p) {
-    i = l;
-    /* Check for matching name; backwards compare will probably find
-       differences fastest, but is a little 'unclean' (Doesn't check
-       length of pl->name, compares beyond end, should do no harm...)
-       FIXGJB: this could be a bug */
-    while (i >= 0 && path[i] == p->name[i])
-      i--;
-    if (i < 0) {		/* We have found a picture with the wanted name */
-      p->count++;		/* Put another weight on the picture */
+    /* first check length */
+    if (cchPath != p->cchName) {
+      goto NEXT;
+    }
+    /* start from end since that's more likely to differ */
+    ich = cchPath;
+    while (ich >= 0 && path[ich] == p->name[ich])
+      ich--;
+    if (ich < 0) {		/* We have found a picture with the wanted name */
+      p->count++;		/* Increment its reference count */
       return p;
     }
+NEXT:
     p = p->next;
   }
 
@@ -162,69 +160,84 @@ DestroyPicture(Display * dpy, Picture * p)
   free(p);
 }
 
-/****************************************************************************
- *
- * Find the specified icon file somewhere along the given path.
- *
- * There is a possible race condition here:  We check the file and later
- * do something with it.  By then, the file might not be accessible.
- * Oh well.
- * FIXGJB: race conditions here!
- *
- ****************************************************************************/
-char *
-findIconFile(char *icon, char *pathlist, int type)
+
+/* Scheme Object Interface to Picture-s */
+
+/* MSFIX: I just copied the one applicable line out of window.c
+   --11/08/97 gjb */
+SCM 
+mark_picture(SCM obj)
 {
-  char *path;
-  char *dir_end;
-  int l1, l2;
+  SCM_SETGC8MARK(obj);
+  return SCM_BOOL_F;
+}
 
-  if (icon != NULL)
-    l1 = strlen(icon);
-  else
-    l1 = 0;
+size_t 
+free_picture(SCM obj)
+{
+  free(PICTURE(obj));
+  return (0);
+}
 
-  if (pathlist != NULL)
-    l2 = strlen(pathlist);
-  else
-    l2 = 0;
-
-  path = (char *)safemalloc(l1 + l2 + 10);
-  *path = '\0';
-  if (*icon == '/') {
-    /* No search if icon begins with a slash */
-    strcpy(path, icon);
-    return path;
+int 
+print_picture(SCM obj, SCM port, scm_print_state * pstate)
+{
+  scm_puts("#<picture ", port);
+  if (PICTURE_P(obj)) {
+    scm_write(gh_str02scm(PICTURE(obj)->pic->name), port);
+  } else {
+    scm_puts("(invalid)", port);
   }
-  if ((pathlist == NULL) || (*pathlist == '\0')) {
-    /* No search if pathlist is empty */
-    strcpy(path, icon);
-    return path;
-  }
-  /* Search each element of the pathlist for the icon file */
-  while ((pathlist) && (*pathlist)) {
-    dir_end = strchr(pathlist, ':');
-    if (dir_end != NULL) {
-      strncpy(path, pathlist, dir_end - pathlist);
-      path[dir_end - pathlist] = 0;
-    } else
-      strcpy(path, pathlist);
+  scm_putc('>', port);
 
-    strcat(path, "/");
-    strcat(path, icon);
-    if (access(path, type) == 0)
-      return path;
-    strcat(path, ".gz");
-    if (access(path, type) == 0)
-      return path;
+  return 1;
+}
 
-    /* Point to next element of the path */
-    if (dir_end == NULL)
-      pathlist = NULL;
-    else
-      pathlist = dir_end + 1;
+SCM 
+picture_p(SCM obj)
+{
+  return ((SCM_NIMP(obj) && PICTURE_P(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
+}
+
+inline SCM
+pic2scm(Picture *pic)
+{
+  SCM answer;
+  scwm_picture *scmpic;
+
+  scmpic = safemalloc(sizeof(scwm_picture));
+  scmpic->valid = (pic? True: False);
+  scmpic->pic = pic;
+
+  SCM_DEFER_INTS;
+  SCM_NEWCELL(answer);
+  SCM_SETCAR(answer, scm_tc16_scwm_picture);
+  SCM_SETCDR(answer, (SCM) scmpic);
+  SCM_ALLOW_INTS;
+
+  return answer;
+}
+
+SCM 
+make_picture(SCM picture_filename)
+{
+  char *szName = NULL;
+  int len;
+  Picture *pic;
+
+  if (gh_string_p(picture_filename)) {
+    szName = gh_scm2newstr(picture_filename, &len);
+  } else {
+    scm_wrong_type_arg(__FUNCTION__, 1, picture_filename);
+    return SCM_UNDEFINED;
   }
-  /* Hmm, couldn't find the file.  Return NULL */
-  free(path);
-  return NULL;
+
+  pic = CachePicture(dpy,Scr.Root,szPicturePath,szName);
+
+  if (!pic) {
+    scwm_msg(ERR,__FUNCTION__,"Could not load pixmap %s",szName);
+    return SCM_UNDEFINED;
+  }
+
+  return pic2scm(pic);
 }

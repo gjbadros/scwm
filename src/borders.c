@@ -522,9 +522,9 @@ DrawButton(ScwmWindow * t, Window win, int w, int h,
     if (type == PixmapButton)
       p = bf->u.p;
     else {
-      if (!t->mini_icon)
+      if (!t->picMiniIcon)
 	break;
-      p = t->mini_icon;
+      p = t->picMiniIcon;
     }
     if (bf->style & FlatButton)
       border = 0;

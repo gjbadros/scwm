@@ -65,11 +65,11 @@ CreateIconWindow(ScwmWindow * tmp_win, int def_x, int def_y)
   tmp_win->icon_p_width = 0;
 
   /* First, check for a monochrome bitmap */
-  if (tmp_win->icon_bitmap_file != NULL)
+  if (tmp_win->szIconFile != NULL)
     GetBitmapFile(tmp_win);
 
   /* Next, check for a color pixmap */
-  if ((tmp_win->icon_bitmap_file != NULL) &&
+  if ((tmp_win->szIconFile != NULL) &&
       (tmp_win->icon_p_height == 0) && (tmp_win->icon_p_width == 0))
     GetXPMFile(tmp_win);
 
@@ -522,9 +522,7 @@ GetBitmapFile(ScwmWindow * tmp_win)
 {
   char *path = NULL;
   int HotX, HotY;
-  extern char *IconPath;
-
-  path = findIconFile(tmp_win->icon_bitmap_file, IconPath, R_OK);
+  path = findFile(tmp_win->szIconFile, szPicturePath, R_OK);
 
   if (path == NULL)
     return;
@@ -547,32 +545,18 @@ GetBitmapFile(ScwmWindow * tmp_win)
 void 
 GetXPMFile(ScwmWindow * tmp_win)
 {
-  XWindowAttributes root_attr;
-  XpmAttributes xpm_attributes;
-  extern char *PixmapPath;
-  char *path = NULL;
-
-  path = findIconFile(tmp_win->icon_bitmap_file, PixmapPath, R_OK);
-  if (path == NULL)
+  Picture *pic = CachePicture(dpy, Scr.Root, 
+			      szPicturePath, tmp_win->szIconFile);
+  if (pic == NULL)
     return;
-
-  XGetWindowAttributes(dpy, Scr.Root, &root_attr);
-  xpm_attributes.colormap = root_attr.colormap;
-  xpm_attributes.closeness = 40000;	/* Allow for "similar" colors */
-  xpm_attributes.valuemask = XpmSize | XpmReturnPixels | XpmColormap | XpmCloseness;
-
-  if (XpmReadFileToPixmap(dpy, Scr.Root, path,
-			  &tmp_win->iconPixmap,
-			  &tmp_win->icon_maskPixmap,
-			  &xpm_attributes) == XpmSuccess) {
-    tmp_win->icon_p_width = xpm_attributes.width;
-    tmp_win->icon_p_height = xpm_attributes.height;
-    tmp_win->flags |= PIXMAP_OURS;
-    tmp_win->iconDepth = Scr.d_depth;
-    if (ShapesSupported && tmp_win->icon_maskPixmap)
-      tmp_win->flags |= SHAPED_ICON;
-  }
-  free(path);
+  tmp_win->iconPixmap = pic->picture;
+  tmp_win->icon_maskPixmap = pic->mask;
+  tmp_win->icon_p_width = pic->width;
+  tmp_win->icon_p_height = pic->height;
+  tmp_win->iconDepth = pic->depth; /* was: Scr.d_depth */
+  tmp_win->flags |= PIXMAP_OURS;
+  if (ShapesSupported && tmp_win->icon_maskPixmap)
+    tmp_win->flags |= SHAPED_ICON;
 }
 
 /****************************************************************************
