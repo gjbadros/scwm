@@ -58,9 +58,9 @@
 
 (list-windows)
 
-(map iconified? (list-windows))
+(map iconified-window? (list-windows))
 
-(list-windows #:only iconified?)
+(list-windows #:only iconified-window?)
 (list-windows #:only (lambda (w) (string=? (window-class w) "XTerm")))
 (list-windows #:only (wildcard-matcher "XTerm"))
 ;; de-iconify via window list

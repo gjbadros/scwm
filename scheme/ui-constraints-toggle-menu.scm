@@ -65,7 +65,8 @@
 	 global-constraint-instance-list))
    #:hover-delay 100))
 
-(define-public (popup-ui-constraints-toggle-menu)
+(define*-public (popup-ui-constraints-toggle-menu)
   "Popup a menu that can be used to turn added constraints on and off.
 See also `constraint-toggle-menu'."
+  (interactive)
   (popup-menu (ui-constraints-toggle-menu) #t))

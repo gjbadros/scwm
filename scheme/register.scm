@@ -12,10 +12,15 @@
 
 (define register-alist '())
 
-(define-public (get-register-name)
-  "Prompt for a register name and return a corresponding symbol."
+(define*-public (get-register-name #&optional (descriptor #f))
+  "Prompt for a register name and return a corresponding symbol.
+If DESCRIPTOR is given, then use DECRIPTOR before \"Register?\"
+in the prompt."
   (with-message-window-shown 
-   (make-message-window-clone-default "Register?")
+   (make-message-window-clone-default 
+    (string-append 
+     (if descriptor (string-append descriptor "") "")
+     "Register?"))
    (let* ((event (get-key-event))
 	  (keycode (caddr event))
 	  (key (keycode->keysym keycode))
@@ -57,7 +62,7 @@
 ;; (jump-to-register)
 ;; (selected-windows-to-register)
 
-(define*-public (focus-to-register #&optional (register (get-register-name)))
+(define*-public (focus-to-register #&optional (register (get-register-name "Focus-to-")))
   "Save the currently-focused window to REGISTER."
   (interactive)
   (if register
@@ -66,13 +71,14 @@
 
 (define*-public (window-configuration-to-register 
 		 #&optional (win (or (window-with-focus) (get-window)))
-		 (register (get-register-name)))
+		 (register (get-register-name "Window-configuration-to-")))
   "Save the configuration of WIN to REGISTER."
   (interactive)
   (if (and win register)
       (set-register register (window-configuration win))))
 
-(define*-public (selected-windows-to-register #&optional (register (get-register-name)))
+(define*-public (selected-windows-to-register 
+		 #&optional (register (get-register-name "Selected-windows-to-")))
   "Save the current set of selected windows to REGISTER."
   (interactive)
   (if register
@@ -80,7 +86,7 @@
 	(set-register register val))))
 
 (define*-public (global-window-configuration-to-register
-		 #&optional (register (get-register-name)))
+		 #&optional (register (get-register-name "Global-configurations-to-")))
   "Save the global configuration of windows to REGISTER."
   (interactive)
   (if register
@@ -89,7 +95,7 @@
 (define-public (list-of-windows? list-of-windows)
   (and-map window? list-of-windows))
 
-(define*-public (jump-to-register #&optional (register (get-register-name)))
+(define*-public (jump-to-register #&optional (register (get-register-name "Jump-to-")))
   "Restore the state saved in REGISTER."
   (interactive)
   (let ((val (get-register register)))
