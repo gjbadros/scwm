@@ -4,6 +4,12 @@ Mon Mar 29 15:24:57 1999  Greg J Badros  <gjb@cs.washington.edu>
 	configure.in changes.  We need to make imlib support a normal
 	option soon, but I don't know how this works for gtk.
 
+1999-03-28  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* configure.in: Added modules/esdsound/Makefile to outputs.
+	Also check for libesd and define HAVE_ESD accordingly.
+	* esd.m4: New file, used by configure.in.
+
 Sun Mar 28 16:21:27 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.lsm: Fix Maciej's email to @alum.mit.edu

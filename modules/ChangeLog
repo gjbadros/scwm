@@ -7,6 +7,11 @@ Mon Mar 29 08:17:00 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* c-animation/c-animation.c (s_animated_move_window): Fix default
  	to FALSE for 4th param to animated_move_window.
 
+1999-03-28  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* Makefile.am (SUBDIRS, DIST_SUBDIRS): New directory "esdsound".
+	* esdsound/sound.c, esdsound/Makefile.am: Added.
+
 Sun Mar 28 18:18:27 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c (s_animated_move_window): Fix bug --
