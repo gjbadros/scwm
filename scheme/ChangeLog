@@ -1,3 +1,13 @@
+Wed Jan 20 14:23:09 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm: Bug fixes.  Use "error" instead of returning 
+	#f when wrong type argument; use set! to side-effect global --
+	cons is side effect free; simplify ui-constraint? and
+	ui-constraint-class? predicates -- use pair? not list?.
+	Documentation still needs to be inside the procedures,
+	ui-constraint-class still is wrong because the ui-constraint
+	objects do not refer to their ui-constraint-class objects.
+
 Wed Jan 20 13:23:23 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints.scm: Use delq, not remove-from-list, fix some
