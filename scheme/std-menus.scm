@@ -1,4 +1,4 @@
-;;; File: <std-menus.scm - 1998-06-19 Fri 12:19:12 EDT sds@mute.eaglets.com>
+;;; File: <std-menus.scm - 1998-07-06 Mon 10:43:28 EDT sds@mute.eaglets.com>
 ;;;; 	Copyright (C) 1998 Sam Steingold and Maciej Stachowiak
 
 ;;;	$Id$
@@ -39,7 +39,7 @@
 ;; read to compute the list of modes, e.g.,
 ;; (define xlock-query-program "xlock-stdout")
 (define (xlock-query-modes xlock)
-  (let ((pipe (open-input-pipe (string-append xlock " -help"))))
+  (let ((pipe (open-input-pipe (string-append xlock " -help 2>&1"))))
     (do ((line (read-line pipe) (read-line pipe))
          (start-re (make-regexp "where mode is one of:" regexp/icase)))
         ((or (eof-object? line) (regexp-exec start-re line))
@@ -51,8 +51,8 @@
       (set! match (regexp-exec mode-re line))
       (if match (set! ml (cons (match:substring match 1) ml))))))
 
-(define-public screensaver-modes 
-  (xlock-query-modes 
+(define-public screensaver-modes
+  (xlock-query-modes
    (or (and (defined? 'xlock-query-program) xlock-query-program)
        "xlock")))
 
