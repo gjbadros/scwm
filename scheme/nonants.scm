@@ -126,10 +126,10 @@ for use with the window-selection and constraints modules."
 	   #f)))
    (lambda ()
      (end-highlighting-selected-window)
-     (set-window-highlighted-nonant! #f lastwin)
+     (if lastwin (set-window-highlighted-nonant! #f lastwin))
      (remove-motion-handler! mark-nonant-motion-handler))))
 ;;     (remove-motion-handler! motion-handler-debug))))
-
+;; (set-window-highlighted-nonant! #f #f)
 
 ;; determining the nonant from select-viewport-position
 
