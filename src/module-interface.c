@@ -12,18 +12,10 @@
 #include "misc.h"
 #include "callbacks.h"
 
-/* FIXGJB: use call_thunk_with_message_handler, or some 
-   variety thereof to keep bad broadcast handlers
-   from crashing scwm.  MSFIX: do you know how to do this?
-   --gjb 11/27/97 */
 
-/* FIXMS: these should really be lists of procedures, or something
-   higher level should provide proper hook add/remove functionality,
-   otherwise it is kind of a pain to use them. */
-
-SCM *loc_broadcast_hook;
-SCM *loc_broadcast_config_hook;
-SCM *loc_broadcast_name_hook;
+SCM broadcast_hook;
+SCM broadcast_config_hook;
+SCM broadcast_name_hook;
 
 void
 Broadcast(unsigned long event_type, unsigned long num_datum,
@@ -31,67 +23,40 @@ Broadcast(unsigned long event_type, unsigned long num_datum,
 	  unsigned long data4, unsigned long data5, unsigned long data6,
 	  unsigned long data7)
 {
-  SCM proc = *loc_broadcast_hook;
-  if (proc != SCM_BOOL_F) {
-    if (gh_procedure_p(proc)) {
-      scwm_safe_apply(proc, gh_list(
-	gh_ulong2scm(event_type), 
-	gh_ulong2scm(num_datum),
-	gh_ulong2scm(data1),
-	gh_ulong2scm(data2),
-	gh_ulong2scm(data3),
-	gh_ulong2scm(data4),
-	gh_ulong2scm(data5),
-	gh_ulong2scm(data6),
-	gh_ulong2scm(data7),
-	SCM_UNDEFINED
-	));
-    } else {
-      scwm_msg(ERR,__FUNCTION__,"broadcast-hook is not a procedure -- unsetting it");
-      *loc_broadcast_hook = SCM_BOOL_F;
-    }
-  }
+  apply_hooks (broadcast_hook, 
+	       gh_list(gh_ulong2scm(event_type), 
+		       gh_ulong2scm(num_datum),
+		       gh_ulong2scm(data1),
+		       gh_ulong2scm(data2),
+		       gh_ulong2scm(data3),
+		       gh_ulong2scm(data4),
+		       gh_ulong2scm(data5),
+		       gh_ulong2scm(data6),
+		       gh_ulong2scm(data7),
+		       SCM_UNDEFINED));
 }
 
 
 void
 BroadcastConfig(unsigned long event_type, ScwmWindow *sw)
 {
-  SCM proc = *loc_broadcast_config_hook;
-  if (proc != SCM_BOOL_F) {
-    if (gh_procedure_p(proc)) {
-      scwm_safe_apply(proc, gh_list(
-				    gh_ulong2scm(event_type), 
-				    sw->schwin,
-				    SCM_UNDEFINED
-	));
-    } else {
-      scwm_msg(ERR,__FUNCTION__,"broadcast-config-hook is not a procedure -- unsetting it");
-      *loc_broadcast_config_hook = SCM_BOOL_F;
-    }
-  }
+  apply_hooks (broadcast_config_hook, 
+	       gh_list(gh_ulong2scm(event_type), 
+		       sw->schwin,
+		       SCM_UNDEFINED));
 }
 
 void BroadcastName(unsigned long event_type, unsigned long data1,
 		   unsigned long data2, unsigned long data3, char *szName)
 {
-  SCM proc = *loc_broadcast_name_hook;
-  if (proc != SCM_BOOL_F) {
-    if (gh_procedure_p(proc)) {
-      SCM name = gh_str02scm(szName);
-      scwm_safe_apply(proc, gh_list(
-				    gh_ulong2scm(event_type), 
-				    gh_ulong2scm(data1),
-				    gh_ulong2scm(data2),
-				    gh_ulong2scm(data3),
-				    name,
-				    SCM_UNDEFINED
-				    ));
-    } else {
-      scwm_msg(ERR,__FUNCTION__,"broadcast-name-hook is not a procedure -- unsetting it");
-      gh_define("broadcast-name-hook",SCM_BOOL_F);
-    }
-  }
+  SCM name = gh_str02scm(szName);
+  apply_hooks (broadcast_name_hook, 
+	       gh_list(gh_ulong2scm(event_type), 
+		       gh_ulong2scm(data1),
+		       gh_ulong2scm(data2),
+		       gh_ulong2scm(data3),
+		       name,
+		       SCM_UNDEFINED));
 }
 
 
@@ -144,12 +109,9 @@ void init_module_interface()
 #include "module-interface.x"
 #endif
   /* This will ensure that these are defined in the root module. */
-  loc_broadcast_hook = SCM_CDRLOC
-    (scm_sysintern("broadcast-hook", SCM_BOOL_F));
-  loc_broadcast_config_hook = SCM_CDRLOC
-    (scm_sysintern("broadcast-config-hook", SCM_BOOL_F));
-  loc_broadcast_name_hook = SCM_CDRLOC
-    (scm_sysintern("broadcast-name-hook", SCM_BOOL_F));  
+  DEFINE_HOOK(broadcast_hook, "broadcast-hook");
+  DEFINE_HOOK(broadcast_config_hook, "broadcast-config-hook");
+  DEFINE_HOOK(broadcast_name_hook, "broadcast-name-hook");
 }
 
 
