@@ -178,6 +178,8 @@ See `netscape-download-closed-action'."
 
 (define-public url-google "http://www.google.com")
 (define-public url-google-search (string-append url-google "/search?q="))
+(define-public url-av "http://www.altavista.com")
+(define-public url-av-search (string-append url-av "/cgi-bin/query?q="))
 
 ;; (netscape-google-search "glade")
 ;; (netscape-google-search "gtk")
@@ -187,6 +189,14 @@ Just go to the google home page if WORD is #f."
   (netscape-goto-url (if word
 			 (string-append url-google-search (cgi-escapify-space word))
 			 url-google)))
+
+(define-public (netscape-av-search word)
+  "Use Netscape to do an AltaVista search for WORD.
+Just go to the AltaVista home page if WORD is #f."
+  (netscape-goto-url (if word
+			 (string-append url-av-search (cgi-escapify-space word))
+			 url-av)))
+
 
 (define*-public (netscape-google-search-cut-buffer)
   "Use Netscape to do a Google search of the `X-cut-buffer-string'."
@@ -202,3 +212,12 @@ SELECTION defaults to \"PRIMARY\" if not specified."
   (X-handle-selection-string selection
 			     (lambda (str)
 			       (netscape-google-search str))))
+
+
+(define*-public (netscape-av-search-selection-url #&optional (selection "PRIMARY"))
+  "Use Netscape to do a AltaVista search of the selection, SELECTION.
+SELECTION defaults to \"PRIMARY\" if not specified."
+  (interactive)
+  (X-handle-selection-string selection
+			     (lambda (str)
+			       (netscape-av-search str))))

@@ -25,6 +25,7 @@
   :use-module (app scwm defoption)
   :use-module (app scwm menus-extras)
   :use-module (app scwm style)
+  :use-module (app scwm xprop-extras)
   :use-module (app scwm themes)
   :use-module (ice-9 regex))
 
@@ -33,13 +34,22 @@
 
 
 
-(define-public (execute-on-selection command)
-  "Run COMMAND in the background, with arguments supplied by the X selection."
-  (execute (string-append command " '" (X-cut-buffer-string) "'")))
+(define*-public (execute-on-selection command #&optional (selection "PRIMARY"))  
+  "Run COMMAND in the background, with arguments supplied by the X selection.
+If there is no selection, then uses the `X-cut-buffer-string'.  SELECTION
+default to \"PRIMARY\"."
+  (X-handle-selection-string 
+   selection
+   (lambda (str)
+     (execute (string-append command " '" 
+			     (if str str (X-cut-buffer-string))
+			     "'")))))
 
-(define-public (exe-on-selection command)
-  "Return a procedure that runs COMMAND in the background on the X selection."
-  (lambda () (execute-on-selection command)))
+(define*-public (exe-on-selection command #&optional (selection "PRIMARY"))
+  "Return a procedure that runs COMMAND in the background on the X selection.
+If there is no selection, then uses the `X-cut-buffer-string'.  SELECTION
+default to \"PRIMARY\"."
+  (lambda () (execute-on-selection command selection)))
 
 (define*-public (make-hosts-menu host-list #&optional (user (user-name)))
   "Create a telnet menu.
@@ -68,6 +78,8 @@ used) or a cons of (host . command)."
 (define-public exe-on-selection-gimp (exe-on-selection "gimp"))
 (define-public exe-on-selection-mpeg_play (exe-on-selection "mpeg_play -dither color"))
 (define-public exe-on-selection-mpg3 (exe-on-selection "mpg123"))
+
+;; (exe-on-selection-editor)
 
 (define-scwm-group app-associations "Application Associations")
 

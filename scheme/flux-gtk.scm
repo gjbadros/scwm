@@ -13,6 +13,8 @@
 (define-module (app scwm flux-gtk)
   :use-module (ice-9 regex)
   :use-module (app scwm base)
+  :use-module (app scwm file)
+  :use-module (app scwm netscape)
   :use-module (app scwm wininfo)
   :use-module (app scwm xprop-extras)
   :use-module (app scwm winlist)
