@@ -1,3 +1,10 @@
+Sat Dec  4 12:26:19 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Move the setting of the image-load-path to before 
+	the use-scwm-modules of lambda-startup-logo so that an uninstalled 
+	scwm-icons package can still work just by updating the path list
+	here.  Thanks to Jeff Nichols for suggesting these change.
+
 Fri Dec  3 10:25:17 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use cursor module to get fancier resize cursors.

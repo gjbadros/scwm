@@ -16,49 +16,49 @@ configure-request-handled
 - 
 Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.
 See also `X-ConfigureRequest-hook'. 
-[From src/events.c:2355]
+[From src/events.c:2354]
 
 
 cursor-icon
 - 
 The cursor to use for icon windows, defaults to top_left_arrow. 
-[From src/cursor.c:318]
+[From src/cursor.c:312]
 
 
 cursor-kill
 - 
 The cursor to use for selecting a window to kill, defaults to pirate. 
-[From src/cursor.c:321]
+[From src/cursor.c:315]
 
 
 cursor-menu
 - 
 The cursor to use when in a menu, defaults to sb_left_arrow. 
-[From src/cursor.c:327]
+[From src/cursor.c:321]
 
 
 cursor-move
 - 
 The cursor to use for move actions, defaults to fleur. 
-[From src/cursor.c:315]
+[From src/cursor.c:309]
 
 
 cursor-select
 - 
 The cursor to use for selecting a window, defaults to dot. 
-[From src/cursor.c:324]
+[From src/cursor.c:318]
 
 
 cursor-set-focus
 - 
 The cursor to use for set focus actions, defaults to hand2. 
-[From src/cursor.c:312]
+[From src/cursor.c:306]
 
 
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
-[From src/image.c:818]
+[From src/image.c:817]
 
 
 locale-fullname

@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From src/window.c:3407]
+[From src/window.c:3406]
 
 
 Fonts
@@ -266,7 +266,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 `reset-hook!', and `run-hook'. 
 
-[From src/callbacks.c:294]
+[From src/callbacks.c:293]
 
 
 Image Loaders
@@ -278,7 +278,7 @@ register other image loaders using the extension or the special string
 "default" for the loader to be tried for an image that cannot be
 loaded any other way.
 
-[From src/image.c:263]
+[From src/image.c:262]
 
 
 Images
@@ -306,7 +306,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From src/callbacks.c:879]
+[From src/callbacks.c:878]
 
 
 Key Specifier
@@ -413,7 +413,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From src/events.c:613]
+[From src/events.c:612]
 
 
 Shadow and Highlight Factors
@@ -453,8 +453,7 @@ Sticky
   A "sticky" window will appear on all desktops, and will remain at the
 same screen position regardless of scrolling within the current
 desktop.
-
-[From src/window.c:2101]
+[From src/window.c:2096]
 
 
 Themes
@@ -477,7 +476,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From src/callbacks.c:735]
+[From src/callbacks.c:734]
 
 
 Viewports
@@ -509,7 +508,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From src/window.c:1015]
+[From src/window.c:1012]
 
 
 Window Style
@@ -589,7 +588,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From src/window.c:495]
+[From src/window.c:493]
 
 
 X atoms

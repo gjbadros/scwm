@@ -1,3 +1,15 @@
+Sat Dec  4 12:36:24 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: unescaped escaped quotes in C docstrings, too, now,
+	since they are literal strings unlike before (when they were
+	comments). 
+
+Fri Dec  3 13:52:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Minimalistic change to statically grab the new-style 
+	arg+string comments from primitive headers.  Does not yet use the
+	.doc files.
+
 Sun Oct 17 11:00:34 1999    <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Permit SCWM_[IW]?PROC, not just SCWM_PROC.

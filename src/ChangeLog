@@ -1,3 +1,7 @@
+Sat Dec  4 12:33:57 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* *.c: Fix un-escaped double-quotes in docstrings.
+
 Fri Dec  3 13:19:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-snarf: Drop everything after $$$ so that the docstring
