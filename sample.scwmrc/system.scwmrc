@@ -357,9 +357,6 @@
 (define (popup-small-ops)
   (popup-menu (make-small-window-ops-menu (get-window)) #t))
 
-(define (popup-sysutils)
-  ())
-
 (define (popup-utilities)
   (popup-menu 'menu-utilities #t))
 
@@ -607,7 +604,7 @@
 ;; of course.
 (add-left-button sticky-button-face #f toggle-stick)
 
-(add-left-button sysutils-button-face #f popup-sysutils)
+(add-left-button sysutils-button-face #f popup-style-menu)
 
 (if want-close-button
     (add-right-button close-button-face close-window))
@@ -1100,7 +1097,7 @@ from other processes.
 (bind-mouse 'title "C-3" #f popup-window-group-menu-no-warp)
 
 (bind-mouse 'all "H-M-3" #f popup-window-ops)
-(bind-mouse 'left-button-1 3 popup-style-menu)
+;;(bind-mouse 'left-button-1 3 popup-style-menu)
 
 (bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
 (bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
