@@ -1,3 +1,7 @@
+1999-03-21  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* window.c (s_restack_windows): Save one PSWFROMSCMWIN call.
+
 Mon Mar 22 18:57:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* callbacks.h, callback.c: Added some extra prototypes, prepare
