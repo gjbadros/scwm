@@ -898,14 +898,15 @@ SCWM_PROC(select_viewport_position, "select-viewport-position", 0, 2, 0,
 Use a special cursor and let the user click to select a viewport
 position Returns a list of three items: (selected-window viewport-x
 viewport-y).  selected-window is either the window object
-corresponding to the selected window or #f if no window was selected.
+corresponding to the selected window, a window id as an integer, 
+or #f if no window was selected.
 viewport-x and viewport-y give the position in the viewport that the
 cursor was located when the selection was finalized.  RELEASE?
 indicates whether to whether to wait for a mouse release or act
 immediately on the click.  CURSOR is the cursor object to use, or
 #t for the "skull and cross-bones" kill cursor
 (recommended for destructive operations like delete-window and
-destroy-window), or #f or omitted for the standard circle cursor. */
+destroy-window), or #f or omitted for the standard circle cursor.  */
 #define FUNC_NAME s_select_viewport_position
 {
   XEvent ev;
@@ -932,6 +933,10 @@ destroy-window), or #f or omitted for the standard circle cursor. */
     if (psw && !UNSET_SCM(psw->schwin)) {
       win = psw->schwin;
     }
+  }
+  
+  if (SCM_BOOL_F == win && None != win) {
+    win = gh_long2scm((long)w);
   }
 
   return gh_list(win,gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
@@ -1328,7 +1333,9 @@ extern Bool have_orig_position;
  * Also, the viewport position of the cursor at finalization time is returned:
  *      px,py    - pointers to ints to store viewport position of the cursor in
  *
- * Returns True if a window was selected, False otherwise
+ * Returns True if a scwm-decorated window was selected, False otherwise
+ * *w contains the window id of a selected window (even if
+ * the window isn't wrapped as a ScwmWindow;  e.g., message-windows)
  *
  * side effects the "have_orig_position" global -- resets to False
  */
@@ -1348,6 +1355,7 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
 
   if (!GrabEm(cursor)) {
     call0_hooks(cannot_grab_hook);
+    *w = None;
     return False;
   }
 
