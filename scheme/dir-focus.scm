@@ -30,9 +30,10 @@
 	 (size (window-frame-size win))
 	 (window-x (car pos))
 	 (window-y (cadr pos))
-	 (window-width (car size)))
+	 (window-width (car size))
+	 (window-height (cadr size)))
     (let ((win-x (+ window-x (/ window-width 2)))
-	  (win-y window-y)
+	  (win-y (+ window-y (/ window-height 2)))
 	  (cur-x (car (pointer-position)))
 	  (cur-y (cadr (pointer-position))))
       (cond
@@ -50,17 +51,19 @@
   (let ((cur win)
 	(best-score 0)
 	(best-win #f))
-    (for-each (lambda (win)
-		(if (not (dirlist-skip-proc win))
-		    (let ((score (dir-calculate-score win dir)))
+    (for-each (lambda (w)
+		(if (not (eq? w win))
+		    (let ((score (dir-calculate-score w dir)))
 		      (and (> score 0)
 			   (or (< score best-score)
 			       (not best-win))
 			   (set! best-score score)
-			   (set! best-win win)))))
-	      (list-windows #:only visible?))
+			   (set! best-win w)))))
+	      (list-windows #:only visible? #:except dirlist-skip-proc))
     (if (and best-win
 	     (not (eq? best-win win)))
-	(warp-to-window best-win))))
+	(begin
+	  (raise-window best-win)
+	  (warp-to-window best-win)))))
 
 ;;; end of file
