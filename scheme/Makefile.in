@@ -23,7 +23,7 @@ RC=system${scwm_rc}
 
 
 
-all: 
+all:
 
 depend:
 
@@ -34,26 +34,27 @@ depend:
 # for i in $(INSTALL_SCHEME_FILES); do \
 #    ${INSTALL_DATA} $$i ${scwm_scheme_dir} \
 # done
-install: 
+install:
 	$(mkinstalldirs) ${scwm_scheme_dir}
-	${INSTALL_DATA} base.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} decor.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} face.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} fvwm-compat.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} base.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} bincomm.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} decor.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} face.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} flux.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} fvwm-compat.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} fvwm-eval.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} fvwm-module.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} image-loaders.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} module-types.scm ${scwm_scheme_dir}
 	${INSTALL_DATA} optargs.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} style-options.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} style.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} wininfo.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} winlist.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} winops.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} std-menus.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} wmconfig-menu.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} image-loaders.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} bincomm.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} flux.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} fvwm-eval.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} fvwm-module.scm ${scwm_scheme_dir} 
-	${INSTALL_DATA} module-types.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} prefs-menu.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} std-menus.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} style-options.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} style.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} wininfo.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} winlist.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} winops.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} wmconfig-menu.scm ${scwm_scheme_dir}
 
 mostlyclean:
 	${RM} *~ core *.bak
