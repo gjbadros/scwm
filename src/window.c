@@ -1724,14 +1724,15 @@ and possibly other legacy fvwm2 modules). */
     
     for (p=winlist, i=0; SCM_EOL!=p; p=gh_cdr(p)) {
       SCM cur=gh_car(p);
-      ScwmWindow *psw=PSWFROMSCMWIN(cur);
+      ScwmWindow *psw;
       
       if (!WINDOWP(cur)) {
 	FREEC(windows);
 	scm_wrong_type_arg(FUNC_NAME, 1, winlist);      
       }
-      
-      windows[i++]=PSWFROMSCMWIN(cur)->frame;    
+
+      psw=PSWFROMSCMWIN(cur);
+      windows[i++]=psw->frame;    
       
       if (psw->fIconified && !psw->fSuppressIcon) {
 	if (!psw->fNoIconTitle) {
