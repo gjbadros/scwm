@@ -1,7 +1,12 @@
+Wed Apr 21 15:13:18 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* pie-menus/draw-pie-menu.c, xpm-menus/draw-xpm-menu.c: Use
+ 	XCursorByNumber instead of the Scr.ScwmCursors array.
+
 Thu Apr 15 19:53:08 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added PROPLIST_SUBDIRS, conditional on
-	HAVE_PROPLIST AM_CONDITIONAL.
+ 	HAVE_PROPLIST AM_CONDITIONAL.
 
 Thu Apr 15 19:45:30 1999  Greg J Badros  <gjb@cs.washington.edu>
 

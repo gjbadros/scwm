@@ -1,3 +1,35 @@
+Wed Apr 21 15:10:16 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* cursor.c, cursor.h: Added
+
+	* Makefile.am: Added cursor.[ch], cursor.x as appropriate.
+	
+	* window.h, window.c: Dropped enum_cursor; added the various
+ 	window decoration cursors to the window structure, and mark
+ 	them. (GrabeEm) takes Cursor, instead of enum cursor, same with
+ 	(DeferExecution), (select-viewport-position).  Switch order of
+	first two arguments for select-viewport-position; move the cursor
+	argument to the third position (from first) for get-window.
+
+	* resize.c, move.c, menu.c, icons.c, focus.c, events.c,
+	drawmenu.c, binding.c, virtual.c: Use XCursorByNumber instead of the Scr.ScwmCursors
+	array.
+
+	* add_window.c (AddWindow): Initialize cursor objects of window struct when
+	creating a window.
+	
+	* validate.h: Added VALIDATE_ARG_INT_RANGE_COPY
+
+	* scwm.h: Added ARRAY_SIZE macro and #include cursorfont.h
+
+	* scwm.c: Call init_cursor(), drop CreateCursors().
+
+	* screen.h: Drop ScwmCursors array.
+
+Wed Apr 21 14:37:44 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* cursor.h, cursor.c: Cursor object support from Toby Sargeant.
+
 Mon Apr 19 13:04:40 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c (DeferExecution): Use eventp->xbutton.[xy]_root,

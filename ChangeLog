@@ -1,3 +1,8 @@
+Wed Apr 21 14:34:37 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* utilities/pidproperty/Makefile.in: Added clean target for
+	recursive builds.
+
 Tue Apr 20 21:17:47 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added utilities/pidproperty/Makefile as a file to generate.
