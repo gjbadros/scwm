@@ -6,15 +6,6 @@
     <subtitle>The Authoritative Guide to the Emacs of Window Managers</subtitle>
     <authorgroup>
       <author>
-  	<firstname>Maciej</firstname>
-  	<surname>Stachowiak</surname>
-  	<affiliation>
-  	  <address>
-  	    <email>mstachow@alum.mit.edu</email>
-  	  </address>
-  	</affiliation>
-      </author>
-      <author>
   	<firstname>Greg</firstname>
   	<othername>J.</othername>
   	<surname>Badros</surname>
@@ -24,11 +15,20 @@
   	  </address>
   	</affiliation>
       </author>
+      <author>
+  	<firstname>Maciej</firstname>
+  	<surname>Stachowiak</surname>
+  	<affiliation>
+  	  <address>
+  	    <email>mstachow@alum.mit.edu</email>
+  	  </address>
+  	</affiliation>
+      </author>
     </authorgroup>
     <releaseinfo>Release @VERSION@</releaseinfo>
     <pubdate>@DATE@</pubdate>
     <copyright>
       <year>1997-@YEAR@</year>
-      <holder>Maciej Stachowiak and Greg J. Badros</holder>
+      <holder>Greg J. Badros and Maciej Stachowiak</holder>
     </copyright>
   </bookinfo>
