@@ -113,7 +113,7 @@ void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
 void 
 moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
 	 int Height, int *FinalX, int *FinalY, Bool opaque_move,
-	 Bool AddWindow)
+	 Bool fAddWindow)
 {
   Bool finished = False;
   Bool done;
@@ -124,7 +124,7 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
   xl += XOffset;
   yt += YOffset;
 
-  if (((!opaque_move) && (!(Scr.flags & MWMMenus))) || (AddWindow))
+  if (((!opaque_move) && (!(Scr.flags & MWMMenus))) || (fAddWindow))
     MoveOutline(Scr.Root, xl, yt, Width, Height);
 
   DisplayPosition(tmp_win, xl + Scr.Vx, yt + Scr.Vy, True);
