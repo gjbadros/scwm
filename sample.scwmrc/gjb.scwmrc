@@ -31,19 +31,20 @@
 
 (use-scwm-modules base message-window)
 
+(define scwm-logo (make-image "scwm-logo-0.xpm"))
+
+(define scwm-logo-msgwin 
+  (make-message-window-with-image scwm-logo #t))
+(set-X-server-synchronize! #t)
+(message-window-show! scwm-logo-msgwin)
+(set-X-server-synchronize! #f)
+
 (define logo-image-sequence
   (list->vector
    (map (lambda (deg) (make-image
 		       (string-append "scwm-logo-"
 				      (number->string deg) ".xpm")))
 	(iota 24))))
-
-(define scwm-logo-msgwin 
-  (make-message-window-with-image 
-   (vector-ref logo-image-sequence 0) #t))
-(set-X-server-synchronize! #t)
-(message-window-show! scwm-logo-msgwin)
-(set-X-server-synchronize! #f)
 
 (define next-logo-image
   (let ((i 0))
@@ -87,7 +88,7 @@
 		  message-window animated-iconify
 		  modifier-key-bindings window-selection
 		  group preferences gnome-hints
-		  send-string quote
+		  send-string quote background
 		  property-respond highlight-current-window
 		  esdsound dir-focus
 		  )
@@ -422,8 +423,7 @@
 ;;; set path to use for image searches
 (map (lambda (s) (set! image-load-path (cons s image-load-path)))
      (list
-      (string-append scwmdir "/pixmaps")
-      "/uns/lib/X11/mini-icons"
+      "/uns/lib/X11/mini-icons"           ;; last checked
       "/uns/lib/X11/pixmaps"
       "/usr/X11/lib/X11/mini-icons"
       "/usr/X11/include/X11/pixmaps"
@@ -436,6 +436,7 @@
       "/uns/share/include/X11/bitmaps"
       "/usr/lib/TheNextLevel/pixmaps"
       "/usr/share/icons/mini"
+      (string-append scwmdir "/pixmaps")   ;; first checked
       ))
 
 (set! image-load-path (append user-image-load-list image-load-path))
@@ -1732,3 +1733,5 @@ union of all other window managers!
 
 (remove-hook! load-processing-hook next-logo-image-n)
 ;;(remove-hook! load-processing-hook move-scwm-logo-msgwin)
+
+(set-background-image! scwm-logo 'tiled)
