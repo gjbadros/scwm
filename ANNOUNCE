@@ -1,14 +1,19 @@
-
 Scwm 0.5 is released.
 
 * What scwm is:
 
 Scwm is the Scheme Configurable Window Manager. This is a highly
-dynamic and extensible window manager (based originally on fvwm, but
+dynamic and extensible window manager (based originally on fvwm2, but
 now much enhanced) with Guile Scheme as the configuration/extension
 language. Nearly all decorations can be changed at run-time or
 per-window, and eventually many decoration styles and additional
 features will be supported through dynamically loaded code.
+
+
+* Primary Authors:
+
+Maciej Stachowiak <mstachow@mit.edu> and Greg J. Badros <gjb@cs.washington.edu>,
+
 
 * Where you can find more info:
 
@@ -50,6 +55,4 @@ Many bug fixes to the build process and the program itself.
 
 Integrated the icon distribution.
 
-The documentation ahs been updaed to roughly reflect current reality.
-
-
+The documentation has been updaed to roughly reflect current reality.
