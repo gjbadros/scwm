@@ -265,7 +265,7 @@ Refreshes the window, ensuring that its contents and decorations  are
 up to date and properly displayed.
 
 (move-window-to-desk DESK #&optional W)
-Moves the window to a new desk, specified by 
+Moves the window to a new desk, specified by an integer.
 
 MENUS:
 
@@ -306,10 +306,10 @@ VIRTUAL DESKTOP:
 (set-edge-wrap! X Y)
 (set-edge-resistance! SCROLL-RESISTANCE MOVE-RESISTANCE)
 (set-desk-size! X Y)
-(get-display-size)
-(get-desk-size)
-(get-viewport-position)
-(get-current-desk)
+(display-size)
+(desk-size)
+(viewport-position)
+(current-desk)
 
 
 
@@ -317,10 +317,10 @@ VIRTUAL DESKTOP:
 
 
 
-SYNTACTIC SUGAR:
+PROCEDURES IN SCHEME:
 
-These procedures are written and scheme and are only there to provide
-a friendlier interface to the builtins.
+These procedures are written and scheme and are there to provide a
+friendlier interface to the builtins.
 
 These two are always available because they are defined in the default
 rc code that's built into the binary. They do not accept an optional
@@ -336,12 +336,87 @@ Always raise the window, move it interactively if the mouse is
 moved, and lower on a double-click.
 
 
-The rest of these will eventually be available as a module, but right
-now they are just defined in the system.scwmrc. I reccomend copying
-them to the top of your own .scwmrc file until they are a proper module.
-The first bunch are more useful compound window operations:
+The rest of the operations are available in modules. Each set is
+prefaced with the proper module name.
+
+
+MODULE (app scwm base)
+
+(%x x) 
+
+x is treated as a precentage of the horizontal screen size and the
+proper value in pixels is returned. This is useful for writing rc
+files that don't depend too much on the display size for reasonable
+placement.
+
+(%y y)
+
+Kust like %x, but for the vertical direction.
+
+(execute command) 
+
+Executes a shell command as a separate process, for example (execute
+"xterm") or (execute "cat ~/some-file | grep pattern") or whatever.
+
+
+(set-menu-foreground! fg)
+(set-menu-background! bg)
+(set-menu-stipple! st)
+
+These set only one of the menu color components. They may go away
+since the menu-style interface is more useful.
+
+
+(move-pointer x y) 
+Moves the mouse pointer relative to the current position
+(move-pointer-to moves it absolutely).
+
+(menu-style #&key fg foreground bg background stipple font mwm mwm-style) 
+
+This is a general-purpose interface for setting various things that
+relate to menus. It is called with keyword-value pairs like so:
+(menu-style #:fg "red" #:background "black" #:mwm #t)
+
+This example sets the foreground to red, the background to black, and
+the mwm-style to true. The keywords available are:
+
+#:fg or #:foreground - foreground color
+#:bg or #:background - background color
+#:stipple - stipple color
+#:font - font
+#:mwm or #:mwm-style - mwm style. If true, menus are "mwm style", else they
+are "fvwm style".
+
+(title-style #&key font height justify)
+
+This is a similar interface to the above. The available keywords are
+
+#:font - the titlebar font
+#:height - the titlebar height
+#:justify - the justification - 'left, 'right or 'center.
+
+I'd like to eventually have more option-style interfaces like this,
+which collect all the different style options for something into one
+convenient procedure.
+
+
+MODULE (app scwm winops)
+
+This is a collection of extra window operations. Like the standard
+window operations, they default to the current window context if the
+window is not specified.
+
+(define*-public ((make-toggling-winop pred neg pos) 
+		 #&optional W)
+
+This can be used to define toggling window operations easily. you pass
+a predicate which determines if the window has been affected, then a
+procedure which undoes the operation, then one which does it, and a
+procedure is returned which will do a toggling version of the effect.
+
 
 (close-window #&optional W)
+
 Delete the window if possible, otherwise destroy it.
 
 (toggle-raise #&optional W)
@@ -356,26 +431,108 @@ Stick the window if it isn't already, else unstick it.
 (toggle-window-shade #&optional W)
 window-shade the window if it isn't already, else un-window-shade it.
 
-Now some other miscellaneous front ends:
+(maximize nw nh #&optional W)
+Maximizes the window to size nw by nh. If either of nw or nh is 0, the
+size in that direction will not be changed. Also, a window maximized
+vertically will be moved to the top edge of the display, and a window
+maximized horizontally will be moved to the left edge.
 
-(execute COMMAND) 
-Runs the string specified by COMMAND as a separate process.
+(maximized? #&optional W)
+Determines if the window is maximized.
 
-(set-menu-foreground! COLOR)
-(set-menu-background! COLOR)
-(set-menu-color! COLOR)
-These set the menu colors one at a time.
+(unmaximize #&optional W)
+Unmaximizes the window if it is maximized, restoring it to its size
+and position previous to any maximize operations.
 
-(menu-style 
-	[#:fg|#:foreground FOREGROUND]
-	[#:bg|#:background BACKGROUND]
-	[#:stipple STIPPLE-COLOR]
-	[#:font MENU-FONT]
-	[#:mwm|#:mwm-style #t|#f])
+(toggle-maximize nw nh #&optional W)
+A toggling version of maximize.
 
-I'd like to eventually have more option-style interfaces like this,
-which collect all the different style options for something into one
-convenient procedure. I've also added title-style which takes #:font,
-#:height and #:justify options.
+(print-window #&optional W)
+Prints a screen dump of the selected window.
 
 
+MODULE (app scwm winlist)
+
+This module includes procedures for manipulating the window list.
+
+
+(default-winlist-proc #&optional w)
+This is the normal default window list procedure. It deiconifies,
+focuses and raises the window, then warps the pointer to a convenient
+point inside it.
+
+window-list-proc
+
+This varibale holds the procedure that will be applied by default to
+the window selected from the window list menu. It is normally
+default-winlist-proc, but you can set! it to something else to make
+that the default behavior.
+
+(list-windows #&key only except) 
+
+This works like list-all-windows but allows you to specify additional
+conditions on the windows returned. The #:only and #:except keyword
+parameters may be specified to achieve this. Either should be followed
+by a predicate or list of predicates. The windows returned are those
+that satisfy all of the #:only predicates but none of the #:except
+predicates. 
+
+
+(show-window-list-menu #&key only except proc show-geometry)
+
+This procedure shows a menu that lists the title of every suitable
+window, and takes an action on the appropriate window if one is
+selected. Here is the meaning of the keywords:
+
+#:only - as above with list-windows; show only those windows that 
+         satisfy the predicate or predictes given.
+#:except - as above with list-windows; show only those windows that 
+         do not satisfy the predicate or predictes given.
+#:proc - apply this procedure to the window selected to the menu.
+         defaults to window-list-proc.
+#:show-geometry - If #t, will show the window geometry in addition to
+                  titles. Defaults to #f.
+
+
+(next-window #&key window only except proc)
+(prev-window #&key window only except proc)
+
+These procedures do something useful to the next or previous window in
+the window list. They are most useful for implementing circulation of
+the window list with the keyboard. Here is the meaning of the keywords:
+
+#:window - start going forward or back in the window list from the 
+	   specified window; defaults to the current window context.
+#:only - as above with list-windows; show only those windows that 
+         satisfy the predicate or predictes given.
+#:except - as above with list-windows; show only those windows that 
+         do not satisfy the predicate or predictes given.
+#:proc - apply this procedure to the window selected to the menu.
+         defaults to window-list-proc.
+
+
+
+MODULE (app scwm wininfo)
+
+This module provides additional predicates and generally informative
+procedures for finding out stuff about windows.
+
+(on-desk? n #&optional (w (get-window)))
+
+((on-desk-n? n) #&optional (w (get-window)))
+
+(on-current-desk? #&optional (w (get-window)))
+
+(in-viewport-any-desk? #&optional (w (get-window)))
+
+(visible? #&optional (w (get-window)))
+
+(geometry-string #&optional w)
+
+
+
+
+MODULE (app scwm optargs)
+
+This module provides the interface for optional and keyword arguments
+used by the other modules.

@@ -1,3 +1,6 @@
+This file tracks my progress in converting the fvwm2 functions to
+scheme procedures.
+
 fvwm2's functions (as of 2.0.45)
  
 
@@ -168,28 +171,28 @@ AddToMenu				make-menu
 Quit					quit
 Menu					popup
 Popup					popup
-CursorMove				move-pointer-to, get-pointer-position
+CursorMove				move-pointer-to, pointer-position
 Recapture 				recapture
 Restart					restart
 Wait 					wait-for-window
 IconPath				set-icon-path!
 PixmapPath				set-pixmap-path!
 WindowsDesk				move-window-to-desk
-Desk					set-current-desk!, get-current-desk
-DeskTopSize				set-desk-size!, get-desk-size
+Desk					set-current-desk!, current-desk
+DeskTopSize				set-desk-size!, desk-size
 GotoPage				set-viewport-position!, 
-					get-display-size
+					display-size
 EdgeResistance				set-edge-resistance!
 EdgeScroll				set-edge-scroll!, set-edge-wrap!
 Scroll					set-viewport-position!, 
 					get-viewport-position
-WindowId				get-window-id
+WindowId				window-id
 Maximize				written in terms of resize-to
 
-None					get-window-list,etc
-Next					get-window-list,etc
-Prev					get-window-list,etc
-WindowList				get-window-list,get-window-title,etc
+None					window-list,etc
+Next					window-list,etc
+Prev					window-list,etc
+WindowList				window-list,window-title,etc
 
 48 total
 
