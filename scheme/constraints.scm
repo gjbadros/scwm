@@ -17,6 +17,3 @@
 ;; (37 . 4) (115 . 16) (50 . 1)
  draw-all-constraints
  undraw-all-constraints)
-
-(window-style (resource-match?? "ScwmUIConstraintsButtons") 
-	      #:use-style desk-widget-on-top-no-titlebar)
