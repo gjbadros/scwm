@@ -36,6 +36,12 @@ guile 1.2 and the latest snap, and try with and without threads.
 
 After Scwm 1.0:
 
+* Generalize stickiness -- permit windows to appear on multiple desktops,
+  but not all (can we do anything funky for viewports, too?)
+
+* Generalize stays-on-top -- Layers code from fvwm2?  shadows for showing
+  depth?
+
 * event rewrite
 ** Read about Tk's multi-event sequences:
 > The relevant user-level documentation is in the bind manpage (man 3tk

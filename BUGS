@@ -11,6 +11,9 @@ up one pixel larger in height.
 
 --Harvey Stein
 -------
+Animated resizes of Emacs frames interact strangely with emacs resulting
+in the resize animating twice.
+-------
 Really smart placement (i.e., clever placement) has an off my one bug.
 
 Try starting a couple of xterms in the viewport one below the home viewport,
