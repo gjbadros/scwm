@@ -85,7 +85,7 @@
 		  group preferences gnome-hints
 		  send-string 
 		  property-respond
-		  esdsound
+		  esdsound dir-focus
 		  )
 
 (debug-display "Done reading modules\n")
@@ -1685,6 +1685,16 @@ union of all other window managers!
 (bind-mouse 'all "H-S-2" #f interactive-move-selected-group)
 
 (bind-mouse 'all "H-M-3" #f popup-window-ops)
+
+(define (dir-focus-west) (dir-focus 'west))
+(define (dir-focus-south) (dir-focus 'south))
+(define (dir-focus-north) (dir-focus 'north))
+(define (dir-focus-east) (dir-focus 'east))
+
+(bind-key 'all "C-S-M-n" dir-focus-west)
+(bind-key 'all "C-S-M-m" dir-focus-south)
+(bind-key 'all "C-S-M-comma" dir-focus-north)
+(bind-key 'all "C-S-M-period" dir-focus-east)
 
 ;; send 100 presses of button 1
 ;; for benchmarking amaya's reload
