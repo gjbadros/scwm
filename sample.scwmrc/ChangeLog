@@ -1,3 +1,8 @@
+Wed Feb 17 17:21:50 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added C-M-S-b for new fn start-xterm-on-other-host,
+	for a second preferred host.  Fixed show-xterm-window-list-menu bugs.
+
 1999-02-14  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* mstachow.scwmrc: Make sure to toggle maximize on H-m.
