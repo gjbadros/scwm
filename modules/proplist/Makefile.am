@@ -14,7 +14,6 @@ libscwmproplist_snarfs = scwmproplist.x
 
 libscwmproplist_la_LDFLAGS = -export-dynamic
 libscwmproplist_la_LIBADD = -L/usr/contrib/lib/ -lPropList
-#@PROPLIST_LIBS@
 
 INCLUDES = @PROPLIST_INCLUDES@ -I$(top_srcdir)/scwm @x_cflags@ \
 	@GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
