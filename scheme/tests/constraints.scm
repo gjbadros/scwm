@@ -1,5 +1,5 @@
 ;; keep two windows at same y coord
-(proc
+(begin
  (define w2 (get-window))
  (add-stays-on-window w2)
  (add-stays-on-window (current-window-with-focus)))
@@ -43,4 +43,3 @@
 ;;; eval: (load "scwm")
 ;;; eval: (scwm-mode)
 ;;; End:
-
