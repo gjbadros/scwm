@@ -1,3 +1,8 @@
+Sat Mar 14 01:04:14 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* screen.h: StdColor and StdRElief members of the ScreenInfo
+ 	struct are not used anywehere; removed.
+
 Thu Mar 12 20:35:02 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.in: Build init_scheme_string.c use \n\ at ends of
