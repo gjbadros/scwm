@@ -411,7 +411,10 @@ which is suitable for use as a hilight. */
 
 SCWM_PROC(make_reversed_color, "make-reversed-color", 1, 0, 0,
            (SCM color))
-     /** Return a new color that is opposite COLOR. */
+     /** Return a new color that is opposite COLOR.
+Note that the returned color will not necessarily contrast with
+COLOR; (make-reversed-color "gray50") is almost indistinguishable
+from "gray50". */
 #define FUNC_NAME s_make_reversed_color
 {
   VALIDATE_COLOR (color, FUNC_NAME, 1);
@@ -601,7 +604,8 @@ redraw_hilight_window()
 SCWM_PROC(set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0,
            (SCM fg) )
      /** Use FG for foreground color of the window with the input focus.
-Applies to the current decor. */
+Applies to the current decor. This is used only for windows that don't
+have their own foreground color. */
 #define FUNC_NAME s_set_hilight_foreground_x
 { 
   ScwmDecor *fl;
@@ -625,7 +629,8 @@ Applies to the current decor. */
 SCWM_PROC (hilight_foreground, "hilight-foreground", 0, 0, 0,
            () )
      /** Return the foreground color of the window with the input focus.
-Applies to the focus in the current decor. */
+Applies to the current decor. This is used only for windows that don't
+have their own foreground color. */
 #define FUNC_NAME s_hilight_foreground
 { 
   ScwmDecor *fl;
@@ -644,7 +649,8 @@ Applies to the focus in the current decor. */
 SCWM_PROC(set_hilight_background_x, "set-hilight-background!", 1, 0, 0,
            (SCM bg))
      /** Use BG as the background color for the window with input focus.
-Applies to the current decor. */
+Applies to the current decor. This is used only for windows that don't
+have their own background color. */
 #define FUNC_NAME s_set_hilight_background_x
 {
   XGCValues gcv;
@@ -698,7 +704,8 @@ Applies to the current decor. */
 SCWM_PROC (hilight_background, "hilight-background", 0, 0, 0,
            () )
      /** Return the background color for windows with the input focus.
-Applies to the current decor. */
+Applies to the current decor. This is used only for windows that don't
+have their own background color. */
 #define FUNC_NAME s_hilight_background
 { 
   ScwmDecor *fl;
@@ -711,7 +718,7 @@ Applies to the current decor. */
 
 SCWM_PROC(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
            (SCM fg) )
-     /** Use FG as the default foreground color for non-menus. */
+     /** Use FG as the default foreground color for icons, titlebars, etc. */
 #define FUNC_NAME s_set_not_menu_foreground_x
 { 
   VALIDATE_COLOR(fg, FUNC_NAME, 1);
@@ -730,7 +737,7 @@ SCWM_PROC(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
 
 SCWM_PROC (not_menu_foreground, "not-menu-foreground", 0, 0, 0,
            () )
-     /** Return the default foreground color for menus. */
+     /** Return the default foreground color for icons, titlebars, etc. */
 #define FUNC_NAME s_not_menu_foreground
 { 
   return (Scr.NotMenuColors.fg);
@@ -739,7 +746,7 @@ SCWM_PROC (not_menu_foreground, "not-menu-foreground", 0, 0, 0,
 
 SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
            (SCM bg) )
-     /** Use BG as the default foreground color for menus. */
+     /** Use BG as the default background color for icons, window frames, etc. */
 #define FUNC_NAME s_set_not_menu_background_x
 { 
   VALIDATE_COLOR(bg, FUNC_NAME, 1);
@@ -765,7 +772,7 @@ SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
 
 SCWM_PROC (not_menu_background, "not-menu-background", 0, 0, 0,
            () )
-     /** Return the default background color for menus. */
+     /** Return the default background color for icons, window frames, etc. */
 #define FUNC_NAME s_not_menu_background
 { 
   return (Scr.NotMenuColors.bg);

@@ -159,7 +159,8 @@ placed at all. */
 SCWM_PROC(refresh, "refresh", 0, 0, 0,
           ())
      /** Make sure all windows and their decorations are up to date.
-This forces a redraw of the entire current viewport. */
+This forces a redraw of the entire current viewport. Should not be
+necessary during normal operation. */
 #define FUNC_NAME s_refresh
 {
   refresh_common(Scr.Root);
@@ -169,25 +170,25 @@ This forces a redraw of the entire current viewport. */
 
 
 SCWM_PROC(set_click_delay_x, "set-click-delay!", 1, 0, 0,
-          (SCM usec))
+          (SCM msec))
      /** Set the delay used in identifying mouse clicks and drags.
-USEC is specified in microseconds. After USEC microseconds, a mouse-down
-without a mouse-up is considered a drag.  Also, after USEC microseconds, a
+MSEC is specified in milliseconds. After MSEC milliseconds, a mouse-down
+without a mouse-up is considered a drag.  Also, after MSEC milliseconds, a
 single click is definitively identified as not a double click. */
 #define FUNC_NAME s_set_click_delay_x
 {
-  if (!gh_number_p(usec)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, usec);
+  if (!gh_number_p(msec)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, msec);
   }
 
-  Scr.ClickTime = gh_scm2long(usec);
+  Scr.ClickTime = gh_scm2long(msec);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
 SCWM_PROC(click_delay, "click-delay", 0, 0, 0,
           ())
-     /** Retrun the delay used in identifying mouse clicks and drags, in microseconds. 
+     /** Returns the delay used in identifying mouse clicks and drags, in milliseconds. 
 See also `set-click-delay!' */
 #define FUNC_NAME s_click_delay
 {
@@ -199,7 +200,7 @@ SCWM_PROC(set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,
           (SCM ftype))
      /** Set the colormap focus policy to FTYPE. 
 FTYPE can either be 'mouse, indicating that the window under the mouse
-pointer should always have it's colormap installed, or 'focus to
+pointer should always have its colormap installed, or 'focus to
 indicate that the window with the input focus should also get the
 colormap focus. This makes a difference only when using focus policies
 other than 'mouse. */
@@ -250,7 +251,7 @@ The return value is a two-element list of the x and y coordinates. */
 
 SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
           (SCM sx, SCM sy))
-     /** Move the mouse pointer to SX, SY (given in pixels). */
+     /** Move the mouse pointer to viewport coordinates SX, SY. */
 #define FUNC_NAME s_move_pointer_to
 {
   int x, y;
@@ -433,7 +434,7 @@ makes sense any more. */
 
 SCWM_PROC(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
           ())
-     /** Returns a boolean valude indicating whether a mouse-focus-click will raise the window.. */
+     /** Returns a boolean value indicating whether a mouse-focus-click will raise the window. */
 #define FUNC_NAME s_mouse_focus_click_raises_p
 {
   return SCM_BOOL_FromBool(Scr.fMouseFocusClickRaises);
@@ -462,6 +463,13 @@ and so on.  This cut buffer numbering is global to the display. */
 
 
 
+/* CRW:FIXME:: If CLK_TCK is defined, the following works as documented;
+otherwise, it returns the number of milliseconds of CPU time used
+by the current process (both user time and system time), divided
+by 60. */
+/* CRW:FIXME:MS: Maybe this function should just be deleted?  It
+doesn't seem to be used anywhere, and (as mentioned above) its implementation
+is inconsistent... */
 SCWM_PROC (elapsed_time, "elapsed-time", 0, 0, 0,
            ())
      /** Return the elapsed time in milliseconds since O.S. has been up. */

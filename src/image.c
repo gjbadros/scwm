@@ -102,8 +102,8 @@ SCM_SYMBOL (sym_pixmap,"pixmap");
 SCM_SYMBOL (sym_mask,"mask");
 
 /**CONCEPT: Images 
-  Images are first-class objects. However, anywhere that a font is
-taken as an argument, a string containing an filename will also be
+  Images are first-class objects. However, anywhere that an image is
+taken as an argument, a string containing a filename will also be
 accepted, and will be automatically converted to the proper image
 object by loading the image. Using the same image filename more than
 once is not inefficient, as caching ensures that image objects are
@@ -160,8 +160,8 @@ SCWM_PROC(image_properties, "image-properties", 1, 0, 0,
            (SCM image))
      /** Return an association list giving some properties of IMAGE.
 Currently defined properties are 'filename, the fully expanded
-pathname of the image, 'width, it's width, 'height, it's height, and
-depth, it's color depth. 
+pathname of the image, 'width, its width, 'height, its height, and
+depth, its color depth. 
 */
 #define FUNC_NAME s_image_properties
 {

@@ -581,7 +581,7 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
 
   if (!GrabEm(CURSOR_MOVE)) {
     /* FIXGJB: xmag caused this to run
-       when click-to place (no auto/smart placemet)
+       when click-to place (no auto/smart placement)
        and it should not, IMO --09/22/98 gjb
        call0_hooks(invalid_interaction_hook);
     */

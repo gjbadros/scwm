@@ -613,7 +613,7 @@ AddWindow(Window w)
   CassowaryNewWindow(psw);      /* add the stay constraints in */
 
   /* FIXMS: Hmm, do we need to do any real cleanup if this fails?
-     _Can_ it fail, in it's new location?
+     _Can_ it fail, in its new location?
      -- I think we just have to make PlaceWindow put it somewhere
      and never fail - that's its current behaviour, but it still
      returns a Bool that's always just True... --07/27/98 gjb

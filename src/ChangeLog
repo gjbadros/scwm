@@ -1,3 +1,44 @@
+1998-12-04  Todd Larason  <jtl@molehill.org>
+
+	* add_window.c: grammar fix
+
+	* binding.c: documentation clarification
+
+	* callbacks.c: grammar fix in documentation
+
+	* color.c: doc fixes
+
+	* decor.c: code simplification, merge InitScwmDecor into decor2scm 
+
+	* events.c: minor doc fix
+
+	* deskpage.c: doc fix, standardize on 'virtual coordinate' and
+	'viewport coordinate' 
+
+	* face.c: fix typo in comment
+
+	* font.c: grammar fix to documentation
+
+	* icons.c: remove an obsolete comment, mark another as probably
+	obsolete
+
+	* image.c: minor doc fixes
+
+	* miscprocs.c: doc fixes, change name of argument to
+	set-click-delay! from usec to msec to reflect actual resolution
+
+	* move.c: doc fix
+
+	* placement.c: doc fixes, information on placement procedures
+
+	* window.c: lots of doc fixes
+
+	* xproperty.c: "It's a window system named X, not a system named X 
+	Windows"
+
+	All of the above are from Carl R. Witty <cwitty@newtonlabs.com>
+	Thanks much!
+
 Fri Dec  4 21:57:39 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* menu.c: Gross hack alert - temporarily declare some variables

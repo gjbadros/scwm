@@ -574,7 +574,7 @@ normal hooks - use `add-input-hook!' and `remove-input-hook!' to
 manipulate them. Like regular hooks and unlike timer hooks, input
 hooks are not one-shot - they trigger every time input is made
 available on the particular port, and do not go away until explicitly
-removed. An input hook may safely remove itself from within it's own
+removed. An input hook may safely remove itself from within its own
 invocation.
 */
 

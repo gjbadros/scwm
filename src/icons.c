@@ -252,19 +252,11 @@ CreateIconWindow(ScwmWindow * psw, int def_x, int def_y)
     psw->fShapedIcon = True;
   }
 
-  /* FIXGJB: we need a way of setting an icon here if we've not got
-     one already; e.g., a user should be able to specify a default
-     icon in case none can be found in any of the previous places.
-     Just using a default as it is now lets that icon take priority
-     over any icon window or bitmap window that the application might
-     provide.  Perhaps :icon and `:forced-icon' or something like
-     that, where the #:icon behaviour allows the application to
-     override, and the forced-icon says we always want a specific icon
-  */
-
   
   /* FIXMS: You should be able to set separately whether you want icon
      titles or icon images or both. */
+  /* CRW:FIXME:MS: Has the above already been implemented?  If so,
+     the comment should be deleted... */
 
   /* figure out the icon window size */
   if (!psw->fNoIconTitle || psw->icon_p_height == 0) {

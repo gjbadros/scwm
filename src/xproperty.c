@@ -58,7 +58,7 @@ SCWM_SYMBOL(sym_append,"append");
 SCWM_SYMBOL(sym_prepend,"prepend");
 
 /**CONCEPT: X Properties
-   X windows has a notion of window properties, which live in the X
+   X has a notion of window properties, which live in the X
 server. X window properties are often used to implement protocols
 between applications and the window manager, which can have several
 levels of standardization, from official X standard, to standardized

@@ -87,6 +87,11 @@ SCWM_PROC(current_desk, "current-desk", 0, 0, 0,
   The current viewport is the area of the current desk that may be
 seen on the physical screen. Since a desk can be larger than the
 physical screen size, the viewport can move around the desk.
+
+  Viewports give rise to two concepts of coordinates.  A viewport
+coordinate is relative to the current viewport (i.e., it is the 
+coordinate you actually see on the screen).  A virtual coordinate
+is relative to the origin of the current desk.
 */
 
 SCWM_PROC(set_viewport_position_x, "set-viewport-position!", 2, 0, 0,

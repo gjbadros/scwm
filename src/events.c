@@ -466,7 +466,8 @@ value, and the output and error output generated, if any.
   For more information on how to make use of this protocol, see the
 documentation for the scwmexec and scwmrepl programs, the scwm.el
 emacs interaction mode, the libscwmexec library, and the details of
-the SCWMEXEC protocol.  Also see <filename>doc/scwmexec.proto</filename>.
+the SCWMEXEC protocol (as documented in
+<filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 */
 

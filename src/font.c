@@ -239,7 +239,7 @@ SCWM_PROC(font_properties, "font-properties", 1, 0, 0,
            (SCM font))
      /** Return an association list giving some properties of FONT.
 Currently defined properties are 'name, the string name of the
-color, and 'height, it's total height in pixels. */
+color, and 'height, its total height in pixels. */
 #define FUNC_NAME s_font_properties
 {
   scwm_font *psfont = SAFE_FONT(font);

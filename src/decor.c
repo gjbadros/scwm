@@ -54,19 +54,6 @@ DestroyScwmDecor(ScwmDecor * fl)
   }
 }
 
-/*
- *  InitScwmDecor -- initializes an ScwmDecor structure to defaults
- */
-static void 
-InitScwmDecor(ScwmDecor * fl)
-{
-  fl->HiReliefGC = NULL;
-  fl->HiShadowGC = NULL;
-
-  /*  fl->tag = NULL; */
-  fl->next = NULL;
-}
-
 /**CONCEPT: Decors
 
   Decors are a means of managing the abundance of visual appearance
@@ -182,7 +169,10 @@ decor2scm(ScwmDecor * fl)
   SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_decor,dec);
   fl->scmdecor = answer;
 
-  InitScwmDecor(fl);
+  fl->HiReliefGC = NULL;
+  fl->HiShadowGC = NULL;
+
+  fl->next = NULL;
  
   tmpd = current_decor();
   set_current_decor_x(answer);

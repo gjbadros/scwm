@@ -1873,7 +1873,10 @@ SCWM_PROC(raised_p, "raised?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is currently raised, #f if not.
 WIN defaults to the window context in the usual way if not
-specified. */
+specified. A window is considered to be raised if the application
+window (not the frame) is unobscured (or if this was the last
+window you called `raise-window' on).
+*/
 #define FUNC_NAME s_raised_p
 {
   ScwmWindow *psw;
@@ -1933,8 +1936,8 @@ specified. */
 SCWM_PROC(iconify, "iconify", 0, 1, 0,
           (SCM win))
      /** Iconify WIN.
-Iconifying unmaps the regular window, and map the window's icon
-window. WIN defaults to the window context in the usual way if not
+Iconifying hides the regular window, and shows the window's icon.
+WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_iconify
 {
@@ -1959,8 +1962,8 @@ specified. */
 SCWM_PROC(deiconify, "deiconify", 0, 1, 0,
           (SCM win))
      /** Deiconify WIN.
-Unmap its icon window, and map its regular
-window. WIN defaults to the window context in the usual way if not
+Hides its icon, and shows its regular window.
+WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_deiconify
 {
@@ -1987,14 +1990,19 @@ specified. */
 }
 #undef FUNC_NAME
 
+/**CONCEPT: Sticky
+
+  A "sticky" window will appear on all desktops, and will remain at the
+same screen position regardless of scrolling within the current
+desktop.
+*/
+
 /* FIXGJB: rename to window-stick */
 
 SCWM_PROC(stick, "stick", 0, 1, 0,
           (SCM win))
-     /** Make WIN "sticky" so that it stays stationary in viewport.
-A sticky window will appear on all desktops, and will remain at the
-same screen position regardless of scrolling within the current
-desktop. WIN defaults to the window context in the usual way if not
+     /** Make WIN "sticky" so that it stays stationary in the viewport.
+WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_stick
 {
@@ -2209,7 +2217,7 @@ convert_move_data(SCM x, SCM y, SCM win, char *func,
 
 SCWM_PROC(move_window, "move-window", 2, 1, 0,
           (SCM x, SCM y, SCM win))
-     /** Move WIN to coordinates virtual coordinates X, Y.
+     /** Move WIN to virtual coordinates X, Y.
 If X is #f, then X defaults to the current X position of WIN.
 If Y is #f, then Y defaults to the current Y position of WIN.
 WIN defaults to the window context in the usual way if not
@@ -2863,6 +2871,7 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh)
 SCWM_PROC(show_titlebar, "show-titlebar", 0, 1, 0,
           (SCM win))
      /** Cause WIN to be decorated with a titlebar. 
+See also `hide-titlebar'.
 WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_show_titlebar
@@ -2887,7 +2896,7 @@ specified. */
 SCWM_PROC(hide_titlebar, "hide-titlebar", 0, 1, 0,
           (SCM win))
      /** Cause WIN not to be decorated with a titlebar. 
-
+See also `show-titlebar'.
 WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_hide_titlebar
@@ -2956,9 +2965,8 @@ defaults to the window context in the usual way if not specified. */
 SCWM_PROC(plain_border, "plain-border", 0, 1, 0,
           (SCM win))
      /** Cause WIN to be decorated with a plain border. 
-This means that there will be no resize handles in the corners, and the
-window . WIN defaults to the window context in the usual way if not
-specified. */
+This means that there will be no resize handles in the corners. WIN
+defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_plain_border
 {
   ScwmWindow *psw;
@@ -2986,9 +2994,10 @@ specified. */
 
 SCWM_PROC(border_normal_p, "border-normal?", 0, 1, 0,
           (SCM win))
-     /** Return #t if WIN has a normal border, #f otherwise.
-WIN defaults to the window context in the usual way if not
-specified. */
+     /** Return #t if WIN has a normal border, #f if it has
+a plain border.  WIN defaults to the window context in the 
+usual way if not specified.  See `normal-border' and 
+`plain-border'. */
 #define FUNC_NAME s_border_normal_p
 {
   VALIDATE(win, FUNC_NAME);

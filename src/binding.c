@@ -648,7 +648,8 @@ SCWM_PROC(bind_key, "bind-key", 3, 0, 0,
      /** Bind the given KEY within the CONTEXTS to invoke PROC.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
-PROC is a procedure (possibly a thunk) that should be invoked */
+PROC is a procedure that will be invoked (with no arguments) when the 
+specified key is pressed in the specified context. */
 #define FUNC_NAME s_bind_key
 {
   KeySym keysym;
@@ -680,7 +681,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     return SCM_BOOL_F;
   }
   /* 
-   * One keycode might map to the same keysym -MS
+   * More than one keycode might map to the same keysym -MS
    */
   
   XDisplayKeycodes(dpy, &min, &max);
@@ -707,7 +708,8 @@ SCWM_PROC(bind_mouse, "bind-mouse", 3, 0, 0,
      /** Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
-PROC is a procedure (possibly a thunk) that should be invoked */
+PROC is a procedure that will be invoked (with no arguments) when the 
+specified button is pressed in the specified context. */
 #define FUNC_NAME s_bind_mouse
 {
   int bnum = 0;

@@ -786,7 +786,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       /* FIXGJB: I think this should only take pixmap objects;
 	 if we want scheme sugar for converting strings into
 	 pixmaps, that's fine, too;  this works well now, though,
-	 so maybe it's only work changing when make-face is
+	 so maybe it's only worth changing when make-face is
 	 wrapped to use keyword arguments */
       if (!mini_p) {
 	if (IMAGE_P(arg)) {
