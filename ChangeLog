@@ -1,3 +1,9 @@
+Tue Apr 27 20:59:57 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* THANKS: Added Michael Livshin -- contributed
+	  maximize-and-move.scm (holding off on putting in the repository
+	  to consider his suggestion to use hooks, instead).
+
 Thu Apr 22 20:13:20 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added utilities/run-renamed/Makefil as a file to generate.

@@ -1,3 +1,10 @@
+Tue Apr 27 20:46:42 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* callbacks.c (scwm_handle_error): Ugly hack to avoid a throw in
+	  DEREF_LAST_STACK in a desperate attempt to squash one of the
+	  bugs that seems to happen at random times in the hopes that Scwm 
+	  won't crash when I demo it to RMS tomorrow.
+
 Sun Apr 25 19:49:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Change the format for printing X11 errors (only if not

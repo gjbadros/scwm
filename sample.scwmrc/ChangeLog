@@ -1,3 +1,11 @@
+Tue Apr 27 20:57:46 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Fix doc-files to include hooks and variables, too.
+	  Use send-string module.  Label Emacs as "GNU Emacs", use new
+	  icon "GNU/Linux" instead of "Linux '95" (more pc for demo for
+	  RMS, and better anyway!).  Drop running xclients, drop loading
+	  preferences (just temporary, for demo).
+
 Sun Apr 25 16:35:36 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* *.scwmrc: Clean up for menu-title change-- now menu-title is a

@@ -1,3 +1,32 @@
+Tue Apr 27 21:03:52 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* tests/demo.scm: Added -- sample code showing lots of features of 
+	  Scwm.  For RMS, and also for Linux User's of Victoria Scwm talk
+	  on 4-May-1999 (GMT+10).
+
+Tue Apr 27 20:53:32 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window-selection.scm: Add a timer hook to call
+	  handle-pending-events while doing the next select.  Looks a
+	  little bit nicer for me, even though it introduces a harmless
+	  race for the correct behaviour.  Use time-convert module for the 
+	  hook.
+
+	* preferences.scm: Added ";; -*- scwm -*-" prefix when writing out 
+	  the options file.
+
+	* message-window.scm:  Change default size to 24pt, not 10pt --
+	  10pt was too small.
+
+	* flux-gtk.scm: Use-modules xprop-extras, needed for
+	  set-window-title!
+
+	* base.scm: Use 'menu-title-font in `menu-title', not (opt-get
+	  *menu-title-font*) (we want the default font to be whatever is
+	  in 'menu-title-font so it'll change dynamically).
+
+	* ScwmButtons.scm: Added tooltip arguments for sample code.
+
 1999-04-26  Jeff W. Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-gtk-toggle-menu.scm: Modified the gtk toggle
