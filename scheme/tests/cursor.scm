@@ -91,4 +91,23 @@ xterm
 
 (set! cursor-select crsr)
 
-(get-window)
+(define w (get-window))
+
+(define i (make-image "resize_br.xpm"))
+(image-properties i)
+
+(use-scwm-modules nonants)
+(define*-public (image-name->cursor name #&optional (x-hotspot 8) (y-hotspot 8))
+  (create-pixmap-cursor (make-image name) #f #f x-hotspot y-hotspot))
+(define resize-br (image-name->cursor "resize_br.xpm"))
+(define resize-tr (image-name->cursor "resize_tr.xpm"))
+(define resize-h (image-name->cursor "resize_h.xpm"))
+(define resize-v (image-name->cursor "resize_v.xpm"))
+(set-window-cursor! (nonant-decoration w 'northwest) resize-br)
+(set-window-cursor! (nonant-decoration w 'southeast) resize-br)
+(set-window-cursor! (nonant-decoration w 'southwest) resize-tr)
+(set-window-cursor! (nonant-decoration w 'northeast) resize-tr)
+(set-window-cursor! (nonant-decoration w 'north) resize-v)
+(set-window-cursor! (nonant-decoration w 'south) resize-v)
+(set-window-cursor! (nonant-decoration w 'east) resize-h)
+(set-window-cursor! (nonant-decoration w 'west) resize-h)
