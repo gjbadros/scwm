@@ -27,18 +27,10 @@
 (define window-selection-add-hook '())
 (define window-selection-remove-hook '())
 
-(define selected-windows '())
+(define-public selected-windows '())
 ;;(set! selected-windows '())
 
 (define show-nonant-flag #f)
-
-(define-public (show-selected-nonants)
-  "Show nonant markers on window when they are selected."
-  (set! show-nonant-flag #t))
-
-(define-public (hide-selected-nonants)
-  "Hide nonant markers on window when they are selected."
-  (set! show-nonant-flag #f))
 
 (define*-public (window-is-selected? #&optional (w (get-window)))
   "Return #t if W is in the selected window list, else #f.
@@ -163,7 +155,8 @@ HOOK should take a single parameter which is the window removed."
     (message-window-set-position! markwin (+ xpos (* xoffset xnon)) (+ ypox (* yoffset ynon)))))
 
 
-(define* (place-nonant-marker #&optional (w (get-window-with-nonant)))
+(define*-public (place-nonant-marker #&optional (w (get-window-with-nonant)))
+  "Place a nonant marker on W."
   (if (and (window? w) (object-property w 'nonant))
       (let ((nonant (object-property w 'nonant))
 	    (markwin (if (message-window? (object-property w 'markwin))
@@ -174,7 +167,8 @@ HOOK should take a single parameter which is the window removed."
 	(set-object-property! w 'markwin markwin))))
 
 	     
-(define* (remove-nonant-marker #&optional (w (get-window)))
+(define*-public (remove-nonant-marker #&optional (w (get-window)))
+  "Remove a nonant marker from W."
   (let ((markwin (object-property w 'markwin)))
     (if (message-window? markwin)
 	(begin 
@@ -220,3 +214,15 @@ HOOK should take a single parameter which is the window removed."
   
 (add-hook! change-desk-hook desk-hook)
 ;; (remove-hook! change-desk-hook desk-hook)
+
+;; toggle on and off the nonant markers
+
+(define-public (show-selected-nonants)
+  "Show nonant markers on window when they are selected."
+  (set! show-nonant-flag #t)
+  (for-each place-nonant-marker selected-windows))
+
+(define-public (hide-selected-nonants)
+  "Hide nonant markers on window when they are selected."
+  (set! show-nonant-flag #f)
+  (for-each remove-nonant-marker selected-windows))

@@ -51,6 +51,12 @@
 (define (menuname-as-class-name ui-constraint)
   (ui-constraint-class-name (ui-constraint-class ui-constraint)))
 
+;; generic menuname-proc for >2 window constraints
+(define (menuname-as-win-num ui-constraint)
+  (string-append (menuname-as-class-name ui-constraint) ": " 
+		 (number->string (length (ui-constraint-windows ui-constraint)))
+		 " windows"))
+
 ;; helpful draw utilities
 (define (draw-window-line-anchor point radius)
   "Draw the circles that anchor a line to a window."
@@ -72,6 +78,25 @@
 		    (list (list w1 w2))
 		    #f))
 	      #f)))))
+
+;; helpful prompter for two-window constraints
+;; NOTE: Will either return all windows in selection list
+;; (if size of list greater than 1) or prompts the user to
+;; select two windows.
+(define-public (two-window-or-more-prompter name p1 p2)
+  (let ((winlist (selected-windows-list)))
+    (if (>= (length winlist) 2)
+	(begin
+	  (unselect-all-windows)
+	  (list winlist))
+	(let ((w1 (select-window-interactively (string-append name ": " p1) msgwin)))
+	  (if w1
+	      (let ((w2 (select-window-interactively (string-append name ": " p2) msgwin)))
+		(if w2
+		    (list (list w1 w2))
+		    #f))
+	      #f)))))
+
 
 (define*-public (one-window-prompter name #&optional (p1 "select window"))
   (let ((winlist (selected-windows-list)))
@@ -155,7 +180,7 @@
     (if (eqv? (length winlist) 1)
 	(begin 
 	  (unselect-all-windows)
-	  (list (car winlist) (nonant->dirvector 4))) ;; give the default nonant as the middle
+	  (list (car winlist) (nonant->dirvector (object-property (car winlist) 'nonant)))) ;; give the default nonant as the middle
 	(begin
 	  (message-window-set-message! msgwin "Select window to anchor")
 	  (message-window-show! msgwin)
@@ -272,7 +297,7 @@
     (if (>= (length winlist) 2)
 	(begin
 	  (unselect-all-windows)
-	  (list winlist (map (lambda (n) 4) winlist)))
+	  (list winlist (map (lambda (w) (object-property w 'nonant)) winlist)))
 	(let ((win1 #f)
 	      (win2 #f)
 	      (slope #f)
@@ -341,12 +366,15 @@
 
 ;; menuname code for alignment
 (define (menuname-halign ui-constraint)
-  (let* ((opts (car (ui-constraint-opts ui-constraint)))
-	 (name (ui-constraint-class-name (ui-constraint-class ui-constraint)))
-	 (q1 (car opts))
-	 (q2 (cadr opts))
-	 (val (string-append (halign-nonant->string q1) "<->" (halign-nonant->string q2))))
-    (string-append name ": " val)))
+  (let ((numwin (length (ui-constraint-windows ui-constraint))))
+    (if (> numwin 2)
+	(menuname-as-win-num ui-constraint)
+	(let* ((opts (car (ui-constraint-opts ui-constraint)))
+	       (name (ui-constraint-class-name (ui-constraint-class ui-constraint)))
+	       (q1 (car opts))
+	       (q2 (cadr opts))
+	       (val (string-append (halign-nonant->string q1) "<->" (halign-nonant->string q2))))
+	  (string-append name ": " val)))))
 
 ;; define the horiz. alignment constraint
 (define-public uicc-halign
@@ -410,12 +438,15 @@
 
 ;; menuname code for alignment
 (define (menuname-valign ui-constraint)
-  (let* ((opts (car (ui-constraint-opts ui-constraint)))
-	 (name (ui-constraint-class-name (ui-constraint-class ui-constraint)))
-	 (q1 (car opts))
-	 (q2 (cadr opts))
-	 (val (string-append (valign-nonant->string q1) "<->" (valign-nonant->string q2))))
-    (string-append name ": " val)))
+  (let ((numwin (length (ui-constraint-windows ui-constraint))))
+    (if (> numwin 2)
+	(menuname-as-win-num ui-constraint)
+	(let* ((opts (car (ui-constraint-opts ui-constraint)))
+	       (name (ui-constraint-class-name (ui-constraint-class ui-constraint)))
+	       (q1 (car opts))
+	       (q2 (cadr opts))
+	       (val (string-append (valign-nonant->string q1) "<->" (valign-nonant->string q2))))
+	  (string-append name ": " val)))))
 
 ;; define the vert. alignment constraint
 (define-public uicc-valign
@@ -434,7 +465,7 @@
 
 ;; ui-constructor
 (define (ui-cnctr-hsize)
-  (two-window-prompter "relative hsize" "select first window" "select second window"))
+  (two-window-or-more-prompter "relative hsize" "select first window" "select second window"))
 
 ;; constructor
 (define* (cnctr-hsize winlist #&optional (enable? #f))
@@ -475,13 +506,13 @@
    "horiz. relative size" '(2 '+) cnctr-hsize
    ui-cnctr-hsize draw-cn-hsize
    cl-is-constraint-satisfied?
-   "cn-relative-hsize.xpm" menuname-as-class-name))
+   "cn-relative-hsize.xpm" menuname-as-win-num))
 
 ;; Vertical Size
 
 ;; ui-constructor
 (define (ui-cnctr-vsize)
-  (two-window-prompter "relative vsize" "select first window" "select second window"))
+  (two-window-or-more-prompter "relative vsize" "select first window" "select second window"))
 
 ;; constructor
 (define* (cnctr-vsize winlist #&optional (enable? #f))
@@ -520,7 +551,7 @@
    "vert. relative size" '(2 '+) cnctr-vsize
    ui-cnctr-vsize draw-cn-vsize
    cl-is-constraint-satisfied?
-   "cn-relative-vsize.xpm" menuname-as-class-name))
+   "cn-relative-vsize.xpm" menuname-as-win-num))
 
 
 ;;------------------------------------------------------------------
@@ -655,7 +686,7 @@
 
 ;;  ui-constructor
 (define (ui-cnctr-strict-relpos)
-  (two-window-prompter "relative position" "select first window" "select second window"))
+  (two-window-or-more-prompter "relative position" "select first window" "select second window"))
 
 ;; utilities functions to create some cl-variables
 (define (window-clv-cx win) 
@@ -707,7 +738,7 @@
    "strict relative pos." '(2 '+) cnctr-strict-relpos
    ui-cnctr-strict-relpos draw-cn-strict-relpos
    cl-is-constraint-satisfied?
-   "cn-strict-relative-pos.xpm" menuname-as-class-name))
+   "cn-strict-relative-pos.xpm" menuname-as-win-num))
 
 
 ;;---------------------------------------------------------
@@ -752,7 +783,7 @@
    "keep-above" 2 cnctr-keep-above
    ui-cnctr-keep-above draw-cn-keep-above 
    cl-is-constraint-satisfied? 
-   "cn-keep-above.xpm" menuname-as-class-name))
+   "cn-keep-above.xpm" menuname-as-win-num))
 
 ;; keep-to-left-of
 
@@ -790,7 +821,7 @@
    "keep-to-left-of" 2 cnctr-keep-to-left-of
    ui-cnctr-keep-to-left-of draw-cn-keep-to-left-of
    cl-is-constraint-satisfied? 
-   "cn-keep-to-left-of.xpm" menuname-as-class-name))
+   "cn-keep-to-left-of.xpm" menuname-as-win-num))
 
 
 ;; global-constraint-instance-list
