@@ -2774,7 +2774,6 @@ ac_given_INSTALL="$INSTALL"
 
 trap 'rm -fr `echo "Makefile \
           scwm/Makefile \
-          libs/Makefile \
 	  utilities/Makefile \
 	  utilities/scwmsend/Makefile \
           sample.scwmrc/Makefile \
@@ -2871,7 +2870,6 @@ cat >> $CONFIG_STATUS <<EOF
 
 CONFIG_FILES=\${CONFIG_FILES-"Makefile \
           scwm/Makefile \
-          libs/Makefile \
 	  utilities/Makefile \
 	  utilities/scwmsend/Makefile \
           sample.scwmrc/Makefile \

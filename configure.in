@@ -250,7 +250,6 @@ AC_SUBST(guile_scheme_prefix)
 AC_OUTPUT(Makefile \
           scwm/Makefile \
 dnl          icons/Makefile \
-          libs/Makefile \
 	  utilities/Makefile \
 	  utilities/scwmsend/Makefile \
 dnl          mini-icons/Makefile \
