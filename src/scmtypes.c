@@ -73,7 +73,7 @@ static scm_smobfuns menu_smobfuns =
 
 static scm_smobfuns decor_smobfuns =
 {
-  &scm_mark0,
+  &mark_decor,
   &free_decor,
   &print_decor,
   0
