@@ -89,14 +89,17 @@ SRCS = \
 	paths.c \
 	deskpage.c \
 	decor.c \
-	face.c
+	face.c \
+	image.c
 
 OBJS := $(SRCS:.c=.o)
 DEPS := $(SRCS:.c=.d)
 
+BUILT_SOURCES = image.x
+
 all: ${PROG}
 
-tags: $(SRCS) $(HEADERS)
+tags: $(SRCS) $BUILT_SRCS $(HEADERS)
 	etags $^
 
 depend:
@@ -114,6 +117,10 @@ clean: mostlyclean
 distclean: clean
 
 
+image.x: image.c
+	guile-snarf $(CFLAGS) $< >tmp && mv tmp $@
+
+
 ${PROG}: ${OBJS}
 	rm -f ${PROG}
 	${CC} -o ${PROG} ${OBJS} ${LIBS}
@@ -125,3 +132,5 @@ ${PROG}: ${OBJS}
 # FIXGJB: how do we not remake the .d files for a clean build?
 # The leading - means do not error, but still creates the .d file
 -include ${DEPS}
+
+
