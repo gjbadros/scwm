@@ -1,3 +1,12 @@
+Fri Nov 13 20:33:46 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* robbe.scwmrc, gjb.scwmrc, juhp.scwmrc, sds.scwmrc, decor.scwmrc:
+ 	Minor changes to work with stuff in the branch stuff, etc.
+
+Sun Nov  8 17:57:32 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* system.scwmrc: Fix spelling of #:hint-override.
+
 1998-10-24  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* decor.scwmrc, gjb.scwmrc, juhp.scwmrc, robbe.scwmrc, sds.scwmrc, 

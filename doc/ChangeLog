@@ -6,6 +6,11 @@
 
 	* smproxy.patch: New file.
 
+Sun Nov  8 19:01:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* theme-howto: Added preliminary advice on making themes for the
+ 	new theme module.
+
 1998-11-06  Todd Larason  <jtlmolehill.org>
 
 	* dev/decorations: New file, very prelimiary thoughts on the goals 
@@ -16,6 +21,13 @@
 	* session-management: New file.
 
 	* README: Added a pointer to SGMLtools.
+
+Sat Oct 17 03:53:40 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* dev/naming-conventions: Documentation of some of the scwm naming
+ 	conventions. A developer doc for now while it evolves, but it
+ 	should probably become user documentation once it becomes more
+ 	complete and better worded.
 
 1998-10-17  Todd Larason  <jtl@teeny.molehill.org>
 
@@ -33,13 +45,6 @@
 
 	* dev/dynamic-modules: add note about updating AC_OUTPUT list in
 	configure.in
-
-Fri Oct 16 09:29:46 1998  Greg Badros  <gjb@cs.washington.edu>
-
-	* Makefile.am: Run scwmdoc from the top of the tree so the
-	filenames are passed to the script as scheme/base.scm, not
-	../scheme/base.scm (the latter is not ideal, and breaks the Emacs
-	interface).
 
 1998-10-10  Todd Larason  <jtl@teeny.molehill.org>
 

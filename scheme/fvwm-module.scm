@@ -19,11 +19,6 @@
 
 
 
-;; FIXGJB: hack to get debug-fvwm-module in root environment
-(define debug-fvwm-module #f)
-;; Use (set! debug-fvwm-module #t) in your .scwmrc 
-;; after importing this module if you want to see the debug code
-
 (define-module (app scwm fvwm-module)
   :use-module (app scwm winlist)
   :use-module (app scwm base)
@@ -32,7 +27,8 @@
   :use-module (app scwm fvwm-eval)
   :use-module (app scwm optargs)
   :use-module (app scwm decor)
-  :use-module (ice-9 common-list))
+  :use-module (app scwm file)
+  :use-module (app scwm listops))
 
 
 
@@ -122,6 +118,12 @@
 ;; supported by the fvwm-eval module (q.v.).
 ;;
 ;;
+
+
+(define-public debug-fvwm-module #f)
+;; Use (set! debug-fvwm-module #t) in your .scwmrc 
+;; after importing this module if you want to see the debug code
+
 
 
 ;; FIXMS: Maybe scwm should always ignore sigpipes?
@@ -345,31 +347,6 @@
 
 (add-hook! broadcast-mini-icon-hook module-broadcast-mini-icon)
 
-;;; FIXMS: The next two should be more generally available!
-(define (filename-is-full-path? fname)
-  (and (> (string-length fname) 0)
-       (or (char=? (string-ref fname 0) #\/)
-	   (and (char=? (string-ref fname 0) #\.)
-		(or
-		 (and (> (string-length fname 1))
-		      (char=? (string-ref fname 1) #\/))
-		 (and (> (string-length fname 2))
-		      (char=? (string-ref fname 1) #\.)
-		      (char=? (string-ref fname 2) #\/)))))))
-			 
-(define (find-file-in-path fname path)
-  (if (filename-is-full-path? fname)
-      (if (and (file-exists? fname)
-	       (not (file-is-directory? fname)))
-	  fname
-	  #f)
-      (or-map (lambda (prefix)
-		(let ((fp (string-append prefix "/" fname)))
-		  (if (and (file-exists? fp)
-			   (not (file-is-directory? fp)))
-		      fp
-		      #f))) 
-	      path)))
 
 (define fvwm2-module-config-hash (make-hash-table 5))
 
@@ -534,11 +511,11 @@
   ((list-ref fmod 5)))
        
 (define-public (kill-all-fvwm2-modules)
-  (map kill-fvwm2-module active-modules))
+  (for-each kill-fvwm2-module active-modules))
 
 (define-public (kill-fvwm2-modules-by-name module-name)
-  (map kill-fvwm2-module (pick (lambda (fmod)  
-				(string=? (list-ref fmod 6) module-name)) 
-				active-modules)))
+  (for-each kill-fvwm2-module (filter (lambda (fmod)  
+					(string=? (list-ref fmod 6) module-name)) 
+				      active-modules)))
 
 (add-hook! shutdown-hook kill-all-fvwm2-modules)

@@ -44,6 +44,7 @@
 
 
 
+
 (define-public display-width (car (display-size)))
 (define-public display-height (cadr (display-size)))
 
@@ -113,7 +114,6 @@
 Returns #f otherwise."
   (= 0 (system (string-append "which " program-name " >/dev/null" ))))
 
-
 (define-public (set-menu-foreground! fg)
   "Set the default color for menu text to FG."
   (set! menu-text-color (if (color? fg) fg (make-color fg))))
@@ -166,14 +166,10 @@ If X is negative, moves to the left.  If Y is negative moves up."
 ;; Horrible name kept for now for backward compatibility.
 ;; move-window is the preferred name, and it uses virtual coordinates
 (define*-public (move-to x y 
-			#&optional (win (get-window))
-			(animated? #f)
-			(move-pointer-too? #f))
+			#&optional (win (get-window)))
   "Move WIN to viewport position X, Y.
 If X or Y is #f, then do not move along that axis (use existing
 value for that coordinate).
-If ANIMATED? is #t, then animate the window there.
-If MOVE-POINTER-TOO? is #t then also move the pointer as the window is moved.
 See `move-window' if you wish to move a window to a virtual position."
   (if (not (sticky? win))
       (let ((pos (viewport-position)))
@@ -182,7 +178,7 @@ See `move-window' if you wish to move a window to a virtual position."
       (begin
 	(if x (set! x (modulo x display-width)))
 	(if y (set! y (modulo y display-height)))))
-  (move-window x y win animated? move-pointer-too?))
+  (move-window x y win))
 
 ;; Give move-to a better name, too
 ;; FIXGJB: Can this have a doc string?

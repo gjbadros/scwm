@@ -34,6 +34,41 @@ AC_PROG_CC
 AC_PROG_CXX
 
 
+
+AC_CHECK_PROGS(GTAR, gnutar gtar tar, "no")
+
+AC_DEFUN(scwm_TAR_IS_GNU_TAR,
+[AC_MSG_CHECKING(whether $GTAR is GNU tar)
+AC_CACHE_VAL(scwm_cv_TAR_IS_GNU_TAR,
+[
+if $GTAR --version 2>/dev/null
+then
+  scwm_cv_TAR_IS_GNU_TAR="yes";
+else
+  scwm_cv_TAR_IS_GNU_TAR="no";
+fi])dnl
+TAR_IS_GNU_TAR="$scwm_cv_TAR_IS_GNU_TAR";
+if test "yes" = "$TAR_IS_GNU_TAR"
+then
+  AC_MSG_RESULT(yes)
+else
+  AC_MSG_RESULT(no)
+fi
+])
+
+scwm_TAR_IS_GNU_TAR
+
+if test "no" = "$TAR_IS_GNU_TAR"; then
+	TAR_CF="$GTAR cf";
+	TAR_SUFFIX="tar";
+else
+	TAR_CF="$GTAR zcf";
+	TAR_SUFFIX="tar.gz";
+fi
+
+AC_SUBST(TAR_CF)
+AC_SUBST(TAR_SUFFIX)
+
 dnl Ensure compiler sanity on pathological platforms
 AC_ISC_POSIX
 AC_AIX
@@ -416,6 +451,7 @@ dnl ## Define directories ##
 
 scwm_load_path=${datadir}/${PACKAGE}-modules
 scwm_schemedir=${scwm_load_path}/app/scwm
+scwm_themedir=${datadir}/${PACKAGE}-themes
 scwm_bin_load_path=${libdir}/${PACKAGE}-modules
 scwm_moduledir=${scwm_bin_load_path}/app/scwm
 
@@ -437,6 +473,7 @@ scwm_image_load_path="(\\\"${x_includes}/X11/bitmaps\\\" \\\"${x_includes}/X11/p
 AC_SUBST(scwm_load_path)
 AC_SUBST(scwm_bin_load_path)
 AC_SUBST(scwm_schemedir)
+AC_SUBST(scwm_themedir)
 AC_SUBST(scwm_moduledir)
 AC_SUBST(scwmrcdir)
 AC_SUBST(scwm_image_load_path)
@@ -478,6 +515,8 @@ AC_OUTPUT(Makefile \
 	  modules/xpm-menus/Makefile \
 	  modules/overlay-plane/Makefile \
 	  modules/pie-menus/Makefile \
+	  modules/background/Makefile \
+	  modules/c-animation/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
@@ -485,6 +524,7 @@ AC_OUTPUT(Makefile \
           utilities/dev/Makefile \
           utilities/emacs/Makefile \
           doc/Makefile \
+	  themes/Makefile \
 	  utilities/dev/scwmdoc:utilities/dev/extract-docs \
 	  utilities/dev/scwmdoc.scm:utilities/dev/extract.scm \
 	  utilities/dev/scwm-usage-counter \

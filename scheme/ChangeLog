@@ -1,3 +1,9 @@
+Sat Nov 14 14:40:24 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* style.scm: Add back style-one-window.
+
+	* animation.scm: Export set-animation!
+
 1998-11-11  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* flux.scm (extreme): New function - calculates extreme values of
@@ -9,6 +15,93 @@ Tue Nov 10 10:02:02 1998  Greg Badros  <gjb@cs.washington.edu>
 	docstring, and added the closing paren that was missing (as
 	noticed by Ken Pizzini)
 
+Mon Nov  9 10:34:40 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am: Install animation.scm, themes.scm, theme-impl.scm
+
+Sun Nov  8 17:59:23 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* themes.scm, theme-impl.scm: A start at implementing "themes",
+ 	i.e. packages that can be loaded into scwm setting only the look,
+ 	but not messing with the feel. Right now this handles only window
+ 	decorations and backgrounds. Menu support is one obvious thing
+ 	that needs to be added. However, theme support is being designed
+ 	to be flexible, so themes can be used per-window, and eventually
+ 	per-menu when menu support is added. See the new "themes"
+ 	directory in the distribution for example themes. Themes may be
+ 	directories, tar files, or gzipped tar files. themes.scm is meant
+ 	to be imported into a scwmrc; it provides `use-themes' for
+ 	handling global theme settings and a `#:use-theme' style option
+ 	for setting themes per-window. theme-impl.scm is meant to be
+ 	imported by theme control files and provides important
+ 	functionality for them.
+
+	* minimal.scm: Some changes to minimize unnecessary hogging of
+ 	colors (don't define colors or things that reference them to
+ 	global variables).
+
+Sat Nov  7 15:47:30 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* wininfo.scm: Export always? and never? predicates.
+
+	* style.scm: Significant rewrite; use new representation of styles
+ 	which includes the test condition and which makes a chain of
+ 	styles itself a style; this will make theme support much easier
+ 	and will help add advanced features, like intelligent style
+ 	merging which will ensure you don't waste memory if you change
+ 	styles a lot. New exported procedures include `clear-style',
+ 	`make-conditional-style' and `apply-style', other than that the
+ 	interface is mostly the same. Also, `window-style' and friends
+ 	will now complain about bad keyword options.
+
+	* style-options.scm: Change the way style options are stored;
+ 	abstract accessors style-option:handler, style-option:type and
+ 	style-option:cumulative should now be used to get info about style
+ 	options. The various procs for adding style options have extra
+ 	arguments for specifying type and the cumulative setting. A style
+ 	option is "cumulative" if setting it more than once should not
+ 	wipe out earlier settings, for instance #:use-style or
+ 	#:other-proc.
+
+	* file.scm: Don't check if the file is a directory in
+ 	`find-file-in-path' or `filename-is-complete?'.
+
+Wed Oct 28 00:03:55 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* cascade.scm: Fixed a bug in cascade (use raise, not restack to
+ 	test desired raise behavior).
+
+	* cascade.scm: Added `cascade' and `cascade-windows', inspired by
+ 	Andrew Veliath's FvwmCascade module for fvwm. However, this
+ 	version is more flexible, takes one eighth the code, excluding
+ 	comments, and was coded and tested in two hours including
+ 	docs. For a good time, try binding something to
+	(lambda () (cascade #:by-stacking #t #:reverse #t)).
+
+Tue Oct 27 22:55:35 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* winlist.scm: Document #:reverse options.
+	
+	* winlist.scm: Add #:reverse optional argument to list-windows and
+ 	show-window-list-menu - you might very well want to go in the
+ 	reverse of the stacking order, for instance.
+
+	* base.scm: Remove references to animatio-related options in
+ 	move-to.
+
+	* animation.scm: Re-export animated-move-window,
+ 	animated-window-shade, and animated-window-unshade from the
+ 	c-animation module. Add animated-toggle-window-shade and
+ 	animated-move-to. Users should only need to import this module
+ 	directly, not c-animation, since it re-exports the primitives.
+
+	* style.scm: Make #:start-window-shaded option use window-unshade,
+ 	not un-window-shade.
+
+	* winops.scm: remove various -animated operations from here.
+
+	* wininfo.scm: Numerous bug fixes to the new stuff here.
+
 1998-10-23  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* flux.scm, prefs-menu.scm, std-menus.scm: Use `user-name' instead
@@ -16,10 +109,72 @@ Tue Nov 10 10:02:02 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Remove `USER' and `HOME'.
 
+Thu Oct 22 05:44:55 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am: Install listops.scm and file.scm
+
 1998-10-20  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* tests/misc.scm: test-caseification of older tests.
 	New tests for `user-name' and `user-home'.
+
+
+Mon Oct 19 04:07:15 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* style.scm: Added default-style-condition-handler public variable
+ 	(set to window-match?? by default) which is the procedure applied
+ 	to string style conditions to get a predicate.
+
+	Edited Greg's comment on this code to note he can now do this and
+ 	be happy:
+	
+	 (set! default-style-condition-handler class-match??)
+	 (set! default-matcher-type 'regexp)
+
+	
+	* wininfo.scm: Added a new system of predicate makers which return
+ 	`eq?' predicates when given `equal?' arguments. This will become
+ 	important with some of the upcoming changes to style
+ 	handling. Predicates and meta-predicates added include:
+
+	title-match?? STRING #&optional TYPE CASE-SENSITIVE
+	class-match?? STRING #&optional TYPE CASE-SENSITIVE
+	resource-match?? STRING #&optional TYPE CASE-SENSITIVE
+	icon-title-match?? STRING #&optional TYPE CASE-SENSITIVE
+	client-hostname-match?? STRING #&optional TYPE CASE-SENSITIVE
+
+	  Each of these returns a predicate which matches an appropriate
+ 	aspect of a window to the given pattern string; TYPE may be
+ 	'exact, 'regexp or 'wildcard; CASE-SENSITIVE may be #t or #f.
+	
+	always? WIN
+	  Returns #t for any value of WIN.
+	never? WIN
+	  Returns #f for any value of WIN.
+
+	win-and?? . PREDICATES
+	win-or?? . PREDICATES
+	win-not?? PREDICATE
+	  Returns a predicate that, when applied to a window, is the
+ 	logical and, logical or, or logical not of the application of
+ 	PREDICATES or PREDICATE. Some simplification is done.
+
+	window-match?? STRING #&optional TYPE CASE-SENSITIVE
+	  Does the logical or of `title-match??', `class-match??'
+	and `resource-match??' on the same arguments. wildcard-matcher
+	should be deprecated in favor of this.
+
+	The public variables default-matcher-type and
+ 	default-matcher-case-sensitive control the default values of TYPE
+ 	and CASE-SENSITIVE in all the above.
+	
+	* optargs.scm: Fix minor bug that stress-testing with real scwm
+ 	runs found.
+
+Sun Oct 18 16:14:59 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* listops.scm: Fix some argument name mismatches among
+ 	declarations, docstrings and bodies. Added `delete-duplicates'.
 
 1998-10-18  Todd Larason  <jtl@teeny.molehill.org>
 
@@ -54,6 +209,25 @@ Thu Oct 15 08:03:03 1998  Greg Badros  <gjb@cs.washington.edu>
  	partially off the left and top windows by moving them wholly on
  	screen when maximized
 
+Wed Oct 14 00:39:02 1998  Maciej Stachowiak  <mstachow@mit.edu>
+ 
+ 	* listops.scm: New file of list operations. Better than
+  	common-list because: more traditional Scheme names and interfaces
+  	are used and all implementations are tail-recursive. Should go in
+  	guile-core someday, IMO.
+ 
+  	winlist.scm, style.scm, fvwm-module.scm: use listops.scm instead
+  	of common-list.scm; replace calls to `pick' with
+  	`filter'. `filter' is better anyway, it doesn't reverse the result
+  	like filter does.
+ 	
+ 	* fvwm-module.scm: Remove `filename-is-full-path?' and
+  	`find-file-in-path'.
+
+ 	file.scm: New file to segregate generic file operations that
+ 	should be more generally available. add `find-file-in-path' and
+  	`filename-is-full-path?' (renamed to `filename-is-complete?').
+ 	
 1998-10-13  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* std-menus.scm (context-map): New variable.
@@ -65,6 +239,30 @@ Thu Oct 15 08:03:03 1998  Greg Badros  <gjb@cs.washington.edu>
 	* advice.scm: Added a first shot at advising. This is probably not
 	very usable yet. Some kind scheme guru should improve/reimplement
 	this.
+
+Sun Oct 11 17:40:15 1998  Maciej Stachowiak  <mstachow@mit.edu>
+ 
+ 	* face.scm: Specify #&allow-other-keys for `title-style',
+  	`border-style' and `button-style'.
+ 
+ 	* optargs.scm: New version supporting the following new features:
+
+ 		- More stringent error reporting for lambda* argment list
+  		syntax.
+ 
+ 		- `#&rest' available as a synonym for `.' to specify a
+  		rest argument.
+ 
+ 		- An error is reported if an unknown keyword argument is
+  		passed to a procedure declared with #&key arguments,
+  		unless `#&allow-other-keys' is specified in the
+  		declaration.
+ 
+ 		- Better code is generated by the macros.
+ 
+ 		- `defmacro*' and `defmacro*-public' are provided; they
+  		may be used to declare macros with optional or keyword
+  		arguments.
 
 Sat Oct 10 14:25:29 1998  Greg Badros  <gjb@cs.washington.edu>
 

@@ -1,0 +1,109 @@
+
+Scwm Naming Conventions
+
+These guidelines are not necessarily respected by all of scwm (yet).
+
+* General guidelines:
+
+Procedures and variables in Scheme are usually given names that are
+fairly long as compared to most programming languages (except perhaps
+other Scheme dialects). The tradeoff for this, however, is that names
+tend to be very clear and infromative - it is much easier to guess
+what a procedure does without any special knowledge than in many other
+languages, such as C or Perl. Scheme also tends to have rather
+high-level operators, so even though the function names might be
+longer, the code isn't necessarily.
+
+However, we should try to avoid succumbing to the temptation of making
+names _too_ long. Complete sentences, for instance, are probably too
+long. However, a name should not be shortened so much that the purpose
+of a function cannot at least be roughly guessed at from the name. So
+the rule of thumb is, "as short as possible while remaining
+informative."
+
+There are a few systematic conventions used in scwm to help create
+names that are both informative and concise; these are listed
+below. Those marked by two asterisks are also general Scheme
+conventions that apply widely beyond scwm.
+
+
+** Predicates:
+
+A predicate is a procedure that returns either #t or #f - true or
+false. The names of predicates should end in `?'. Predicates are used
+as tests - for `if' or `cond' expressions, for example. Some examples
+of predicates are `equal?', `odd?' and `window-shaded?'. Sometimes the
+names of parameters to procedures, or sometimes even global variables,
+which are expected to hod a boolean value, are given names that end in
+`?' as well.
+
+** Mutators:
+
+Procedures that modify the data objects they are passed generally end
+with a `!'. This is not the case for all procedures with side effects
+- I/O operations and other primitives that are better thought of as
+doing a general operation than as changing a data structure do _not_
+end in `!'. As an example, `set-window-icon!' is a mutator, but
+`interactive-resize' is not.
+
+** Converters:
+
+A procedure that converts an object of one type to a corresponding
+object of another type, or that in general converts from one thing to
+another, uses the names of the two types separated by `->', for
+example `string->integer' or `id->window'.
+
+* Higher Order Predicates:
+
+A procedure that returns a predicate has a name that ends in
+`??'. Such procedures are likely to be common in scwm because many
+mechanisms that operate on a set of windows use predicates to figure
+out which windows to choose, and there are predicates, like matching a
+title with a particular regexp, that are very useful to generate on
+the fly.
+
+* Procedures Related to Types:
+
+Most primitive types in scwm have several associated procedures that
+you can almost always count on.
+
+** Type Constructors:
+
+When a type has a simple primitive constructor, it will usually be
+called `make-'<type>. There may be other constructors that might well
+start with `make-'.
+
+** Type Predicates:
+
+Type predicates are the name of the type followed by `?'; they test
+whether an object is of the specified type. For example, `string?' or
+`window?'.
+
+** Type Accessors:
+
+Procedures that access a particular field or portion of a given type
+have names of the form <type>`-'<field>. Accessors to boolean values
+will generally also end with a question mark, for instance
+`window-deletable?'. More generic accessors may have a name like
+<type>`-ref'.
+
+** Type Mutators:
+
+The mutator corresponding to an accessor will be the same name, but
+prefixed with `set-' and suffixed with `!',
+i.e. `set-'<type>`-'<field>`!'. The mutator corresponding to a `-ref'
+accessor will generally instead start with the type name and end in
+`-set!'.
+
+
+* General operations:
+
+Procedures called mainly to do something, rather than access or set a
+value, create an object of a given type, or do a test, usually have
+names that are a verb, or a verb followed by a noun, the nound often
+being a type name. Examples include `refresh' or
+`destroy-window'. Sometimes adjectives will appear, often to
+distinguish two otherwise similar operations. Adverbs and prepositions
+or prepositional phrases may appear sometimes, but generally are to be
+avoided unless absolutely necessary for clarity or to avoid ambiguity.
+

@@ -22,6 +22,7 @@
 (define-module (app scwm wininfo)
   :use-module (app scwm optargs)
   :use-module (app scwm base)
+  :use-module (app scwm listops)
   :use-module (ice-9 regex))
 
 
@@ -83,6 +84,8 @@ is non-empty."
 
 ;;; MSFIX: Why is this separate instead of having the above
 ;;; have optional arguments.
+
+;;; The main point is the currying, not the optional arguments. - MS 10/7/98
 (define*-public ((window-overlaps-window? #&optional (win (get-window))) 
 		 #&optional (win2 (get-window)))
   (windows-overlap? win win2))
@@ -189,3 +192,195 @@ instead of a shell-like wildcard."
 				 (regexp-options `(,regexp/icase)))
   ((wildcard-matcher wildcard #:full-regexp full-regexp 
 		     #:regexp-options regexp-options) win))
+
+
+;;;; FIXMS: This file should probably be split into wininfo and
+;;;; winpredicates or wintests or something like that.
+
+
+(define predicate-hash (make-weak-value-hash-table 30))
+
+;;; probably should invalidate all entries in the hash when redefining a 
+;;; predicate maker
+
+(define (undot lst)
+  (if (list? lst)
+      lst
+      (let loop ((lst lst))
+	(cond
+	 ((null? lst) '())
+	 ((pair? lst) (cons (car lst) (loop (cdr lst))))
+	 (else (cons lst '()))))))
+
+(defmacro define-predicate-maker (deftype decl . body)
+  (let ((tag (car decl))
+	(args (filter-map (lambda (x)
+			    (cond 
+			     ((symbol? x) x)
+			     ((list? x) (car x))
+			     (else #f)))
+			  (undot (cdr decl)))))
+    `(,deftype ,decl
+       ;; Save the docstring
+       ,@(if (string? (car body)) (list (car body)) '())
+       (or (hash-ref predicate-hash (list ',tag ,@args))
+	   (let ((pred (begin ,@body)))
+	     (hash-set! predicate-hash (list ',tag ,@args) pred))))))
+
+(define-public default-matcher-type 'wildcard)
+(define-public default-matcher-case-sensitive #f)
+
+(defmacro* define-string-matcher
+  (name docstring-or-accessor #&optional accessor)
+  (let ((docstring-list (if (bound? accessor) 
+			    (list docstring-or-accessor) '()))
+	(accessor (if (bound? accessor) accessor docstring-or-accessor)))
+    `(define-predicate-maker define*-public
+       (,name string #&optional 
+	     (type default-matcher-type) 
+	     (case-sensitive default-matcher-case-sensitive))
+       ,@docstring-list
+       (case type
+	 ((exact) 
+	  (let ((compare? (if case-sensitive string=? string-ci=?)))
+	    (lambda (win)
+	      (compare? (,accessor win) string))))
+	 ((regexp) 
+	  (let ((match-regexp 
+		 (make-regexp string (if case-sensitive
+					 '()
+					 '(regexp/icase)))))
+	    (lambda (win)
+	      (let* ((target (,accessor win))
+		     (result (regexp-exec match-regexp target)))
+		(and result (= (match:end result) 
+			       (string-length target)))))))
+	 ((wildcard) 
+	  (,name (wildcard->regexp string) 'regexp case-sensitive))))))
+      
+
+(define-string-matcher title-match?? 
+  "Return a predicate that tests a window's title.  
+When applied to a window, this precicate will return true if the title
+matches STRING in the manner specified by the optional argument TYPE,
+which may be 'exact, 'regexp, or 'wildcard. The optional
+CASE-SENSITIVE argument determines whether the matching is
+case-sensitive or not."
+  window-title)
+
+(define-string-matcher class-match?? 
+  "Return a predicate that tests a window's resource class.  
+When applied to a window, this precicate will return true if the
+resource class matches STRING in the manner specified by the optional
+argument TYPE, which may be 'exact, 'regexp, or 'wildcard. The
+optional CASE-SENSITIVE argument determines whether the matching is
+case-sensitive or not."
+  window-class)
+
+(define-string-matcher resource-match?? 
+  "Return a predicate that tests a window's resource instance.  
+When applied to a window, this precicate will return true if the
+resource instance matches STRING in the manner specified by the
+optional argument TYPE, which may be 'exact, 'regexp, or
+'wildcard. The optional CASE-SENSITIVE argument determines whether the
+matching is case-sensitive or not."  
+  window-resource)
+
+(define-string-matcher icon-title-match?? 
+  "Return a predicate that tests a window's icon title.  
+When applied to a window, this precicate will return true if the icon
+title matches STRING in the manner specified by the optional argument
+TYPE, which may be 'exact, 'regexp, or 'wildcard. The optional
+CASE-SENSITIVE argument determines whether the matching is
+case-sensitive or not."
+  window-icon-title)
+
+(define-string-matcher client-hostname-match?? 
+  "Return a predicate that tests a window's client hostname.  
+When applied to a window, this precicate will return true if the
+client hostname matches STRING in the manner specified by the optional
+argument TYPE, which may be 'exact, 'regexp, or 'wildcard. The
+optional CASE-SENSITIVE argument determines whether the matching is
+case-sensitive or not."  
+  window-client-matchine-name)
+
+(define-public always? (lambda (w) #t))
+(define-public never? (lambda (w) #f))
+
+(define-predicate-maker 
+  define-public (win-and?? . predicates)
+  "Return a predicate which is the logical and of PREDICATES when applied to a window."
+  (let ((predicates
+	 (append-map
+	  (lambda (pred)
+	    (cond
+	     ((object-property pred 'win-and??) 
+	      => id)
+	     (else (list pred))))
+	  ;;; FIXME: need a copy of uniq
+	  (delete-duplicates (delq always? predicates)))))
+    (internal-win-and?? predicates)))
+
+(define-predicate-maker 
+  define (internal-win-and?? predicates)
+  (cond
+   ((null? predicates) always?)
+   ((memq never? predicates) never?)
+   ((null? (cdr predicates)) (car predicates))
+   (else (let ((return (lambda (w)
+			 (and-map (lambda (p) (p w)) predicates))))
+	   (set-object-property! return 'win-and?? predicates)
+	   return))))
+
+(define-predicate-maker 
+  define-public (win-or?? . predicates)
+  "Return a predicate which is the logical or of PREDICATES when applied to a window."
+  (let ((predicates
+	 (append-map
+	  (lambda (pred)
+	    (cond
+	     ((object-property pred 'style-or) 
+	      => id)
+	     (else (list pred))))
+	  (delete-duplicates (delq never? predicates)))))
+    (internal-win-or?? predicates)))
+
+(define-predicate-maker 
+  define (internal-win-or?? predicates)
+  (cond
+   ((null? predicates) never?)
+   ((memq always? predicates) always?)
+   ((null? (cdr predicates)) (car predicates))
+   (else (let ((return (lambda (w)
+			 (or-map (lambda (p) (p w)) predicates))))
+	   (set-object-property! return 'style-or predicates)
+	   return))))
+
+(define-predicate-maker 
+  define-public (win-not?? predicate)
+  "Return a predicate which is the logical not of PREDICATE when applied to a window."
+  (cond
+   ((object-property 'style-not predicate) => id)
+   ((eq? always? predicate) never?)
+   ((eq? never? predicate) always?)
+   (else
+    (let ((return
+	   (lambda (w)
+	     (not (predicate w)))))
+      (set-object-property! return 'style-not predicate)
+      return))))
+
+
+(define-predicate-maker
+  define*-public (window-match?? string #&optional 
+				 (type default-matcher-type) 
+				 (case-sensitive 
+				  default-matcher-case-sensitive))
+  ;;; FIXMS: Document me!
+  (win-or?? (title-match?? string type case-sensitive) 
+	    (class-match?? string type case-sensitive) 
+	    (resource-match?? string type case-sensitive)))
+
+
+
+

@@ -58,17 +58,19 @@ typedef struct {
    that make_color should indeed throw an error if it fails to parse or
    allocate the color. */
 
-#define VALIDATE_COLOR(X, proc, pos) do { if (gh_string_p(X)) {X=make_color(X);} else if (!COLOR_P(X)) {scm_wrong_type_arg(proc,pos,X);}; } while (0)
+#define VALIDATE_COLOR(X, proc, pos) do { if (gh_string_p(X)) {X=make_color(X);}; if (!COLOR_P(X)) {scm_wrong_type_arg(proc,pos,X);}; } while (0)
 
 /* FIXMS: is this needed? */
-#define VALIDATE_COLOR_OR_NONE do { if (gh_string_p(X) {X=make_color(X)} else if (!COLOR_P(X) || X == SCM_BOOL_F) {scm_wrong_type_arg(proc,pos,X);}; } while(0)
+#define VALIDATE_COLOR_OR_NONE(X, proc, pos) do { if (gh_string_p(X)) {X=make_color(X)}; if (!COLOR_P(X) || X == SCM_BOOL_F) {scm_wrong_type_arg(proc,pos,X);}; } while(0)
+
+#define VALIDATE_COLOR_OR_UNDEFINED(X, proc, pos) do { if (X==SCM_UNDEFINED||X==SCM_BOOL_F) {X=SCM_BOOL_F;} else { if (gh_string_p(X)) {X=make_color(X);}; if (!COLOR_P(X) || X == SCM_BOOL_F) {scm_wrong_type_arg(proc,pos,X);};}; } while(0)
 
 
 
 #define SAFE_COLOR(X) (COLOR_P((X))?XCOLOR((X)):0)
 
-#define SAFE_XCOLOR_OR_WHITE(X) (COLOR_P((X))?XCOLOR((X))->pixel:XCOLOR(WHITE_COLOR)->pixel)
-#define SAFE_XCOLOR_OR_BLACK(X) (COLOR_P((X))?XCOLOR((X))->pixel:XCOLOR(BLACK_COLOR)->pixel)
+#define SAFE_XCOLOR_OR_WHITE(X) (COLOR_P((X))?XCOLOR((X)):XCOLOR(WHITE_COLOR))
+#define SAFE_XCOLOR_OR_BLACK(X) (COLOR_P((X))?XCOLOR((X)):XCOLOR(BLACK_COLOR))
 
 #define COLOR_OR_SYMBOL_P(x) (COLOR_P((x)) || gh_symbol_p((x)))
 

@@ -29,7 +29,7 @@
 (define*-public (title-style #&key font height justify
 			     (active-up '()) 
 			     (active-down '()) 
-			     (inactive '()) . rest)
+			     (inactive '()) #&allow-other-keys . rest)
   "Set the current title style to use FONT, HEIGHT, and JUSTIFY.
 FONT is the window title font, a font object or a string.
 HEIGHT is the height of the title bar, in points.
@@ -47,7 +47,7 @@ FIXMS: What are? ACTIVE-UP, ACTIVE-DOWN, INACTIVE."
 
 
 (define*-public (border-style #&key (active '())  
-			      (inactive '()) . rest)
+			      (inactive '()) #&allow-other-keys . rest)
   "Set the current border style."
   (act-on-face-specs (lambda* (active #&optional ignore inactive)
 			      (if (bound? inactive)
@@ -60,7 +60,7 @@ FIXMS: What are? ACTIVE-UP, ACTIVE-DOWN, INACTIVE."
 (define*-public (button-style button #&key mwm
 			      (active-up '()) 
 			      (active-down '()) 
-			      (inactive '()) . rest)
+			      (inactive '()) #&allow-other-keys . rest)
   "Set the current button style for button number BUTTON."
   (if (bound? mwm)
       (set-button-mwm-flag! mwm))

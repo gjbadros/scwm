@@ -15,11 +15,6 @@
 
 #include "window_fwd.h"
 
-void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
-			Bool fWarpPointerToo, int cmsDelay, float *ppctMovement);
-
-void AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp, 
-			 int cmsDelay, float *ppctMovement);
 
 void moveLoop(ScwmWindow *psw,
               int XOffset, int YOffset, int Width,

@@ -40,6 +40,7 @@
 	     (app scwm flux)
 	     (app scwm fvwm-module)
 	     (app scwm cached-program-exists)
+	     (app scwm animation)
 	     )
 
 (set! debug-fvwm-module #f)
@@ -334,7 +335,7 @@
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:mwm-border #t
-	      #:int-override #t #:decorate-transient #f
+	      #:hint-override #t #:decorate-transient #f
 	      #:PPosition-hint #f
 	      #:mini-icon pic-xterm-mini)
 
@@ -359,7 +360,7 @@
 
 ;;(window-style "*" #:border-width 5 #:mwm-border #t)
 
-(window-style "xlogo" #:no-titlebar #t #:normal-border #t)
+(window-style "xlogo" #:no-titlebar #t #:plain-border #f)
 ;;(window-style "*" #:border-width 6)
 ;;(resize-to 200 200)
 
@@ -613,9 +614,9 @@
 (window-style "zwgc" #:use-style desk-widget-on-top)
 (window-style "*lock" #:use-style desk-widget)
 (window-style "xclock*" #:use-style desk-widget-on-top-no-titlebar)
-(window-style "xload" #:no-title #t #:use-style desk-widget-on-top-no-titlebar)
-(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
-(window-style "xbiff" #:no-title #t #:use-style desk-widget-on-top
+(window-style "xload" #:no-titlebar #t #:use-style desk-widget-on-top-no-titlebar)
+(window-style "xscreensaver" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xbiff" #:no-titlebar #t #:use-style desk-widget-on-top
 	      #:mini-icon "mini-xbiff.xpm")
 (window-style "xcalc" #:icon "xcalc.xpm"
 	              #:mini-icon "mini-calc.xpm")
@@ -651,7 +652,7 @@
     (menuitem "Maximize &Wide/Reset" #:image-left "mini-maxwide.xpm"
 	       #:action (thunk horizontal-toggle-maximize))
     (menuitem "Animated S&hade/Reset" 
-	       #:action (thunk toggle-window-shade-animated))
+	       #:action (thunk animated-toggle-window-shade))
     (menuitem "Shade/Reset" 
 	       #:action (thunk toggle-window-shade))
     menu-separator
@@ -1007,7 +1008,7 @@
 		 (menuitem (if (window-shaded? w)
 			       "Unwindow-S&hade"
 			       "Window-S&hade")
-			   #:action toggle-window-shade-animated)
+			   #:action animated-toggle-window-shade)
 		 (menuitem (if (kept-on-top? w)
 			       "UnKeep On Top"
 				   "Keep On Top") 
@@ -1036,7 +1037,7 @@
 
 (define (move-or-shade)
   (case (mouse-event-type)
-    ((double-click) (toggle-window-shade-animated))
+    ((double-click) (animated-toggle-window-shade))
     (else (move-or-raise-maybe-opaque))))
 (bind-mouse 'title 1 move-or-shade)
 (bind-mouse 'title 2 lower-window)
@@ -1173,14 +1174,27 @@
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
 
 (bind-key 'all "C-M-KP_7" (lambda () (animated-move-to 0 0)))
-(bind-key 'all "C-M-KP_9" (lambda () (animated-move-to -1 0)))
-(bind-key 'all "C-M-KP_1" (lambda () (animated-move-to 0 -1)))
-(bind-key 'all "C-M-KP_3" (lambda () (animated-move-to -1 -1)))
+(bind-key 'all "C-M-KP_9"
+ 	  (lambda () (with-window (get-window)
+		       (animated-move-to (x- (w%x 100)) 0)))))
+(bind-key 'all "C-M-KP_1" 
+	  (lambda () (with-window (get-window)
+		       (animated-move-to 0 (y- (w%y 100))))))
+(bind-key 'all "C-M-KP_3" (lambda ()
+ 	  (lambda () (with-window (get-window)
+		       (animated-move-to (x- (w%x 100)) (y- (w%y 100))))))
 
-(bind-key 'all "C-M-KP_8" (lambda () (animated-move-to 'x 0)))
-(bind-key 'all "C-M-KP_6" (lambda () (animated-move-to -1 'y)))
-(bind-key 'all "C-M-KP_2" (lambda () (animated-move-to 'x -1)))
-(bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 'y)))
+(bind-key 'all "C-M-KP_8" (lambda () (animated-move-to #f 0)))
+(bind-key 'all "C-M-KP_6" 
+ 	  (lambda () (with-window (get-window
+		       (animated-move-to (x- (w%x 100)) #f)))))
+(bind-key 'all "C-M-KP_2"  
+	  (lambda () (with-window (get-window) 
+		       (animated-move-to #f (y- (w%y 100)))))
+(bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 #f)))
+
+
+
 
 ;; FIXGJB: modifiers interface could be better... mimic off Emacs?
 ;; FIXGJB: keys should be first class

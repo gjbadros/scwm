@@ -232,6 +232,7 @@ int check_balance(char *expr) {
 	    non_whitespace_p=1;
 	    quote_wait=0;
 	  }
+	  /* MS:FIXME:: Handle #\) properly! */
 	} else {
 	  prev_separator=0;
 	  quote_wait=0;

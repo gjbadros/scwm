@@ -1,4 +1,5 @@
 ;; $Id$ -*-scwm-*-
+
 (use-modules (app scwm xpm-menus))
 
 (define theme-dir "/home/jtl/.pixmaps/kde_themes/")  ;; needs trailing slash

@@ -134,7 +134,6 @@ allocated, an error results. */
   cn = gh_scm2newstr(cname, &len);
   color.pixel = 0;
 
-
   /* MSFIX: for now just throw errors for the sake of robustness (!)
      make it nicer later. */
   if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, cn, &color)) {

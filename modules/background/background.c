@@ -1,0 +1,242 @@
+/* $Id$
+ * Copyright (C) 1998, Maciej Stachowiak
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this software; see the file COPYING.GPL.  If not, write to
+ * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA
+ *
+ */
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <X11/Xlib.h>
+#if 0
+#include <X11/Xresource.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/shape.h>
+#endif
+
+#include <guile/gh.h>
+/* FIXGJB13: guile-1.3 will have this already included */
+#include <libguile/dynl.h>
+
+#include "scwm.h"
+#include "image.h"
+#include "color.h"
+#include "guile-compat.h"
+#include "screen.h"
+
+SCM_SYMBOL(sym_centered, "centered");
+SCM_SYMBOL(sym_tiled, "tiled");
+
+/* Maybe once we can use Imlib?
+SCM_SYMBOL(sym_scale, "scale");
+*/
+
+/* MS:FIXME:: hack-around for scm_[un]protect_object not nesting, but
+   it does in Guile 1.3 so fix this when 1.3 support is dropped. */
+
+SCM protected_objs;
+
+
+/* MS:FIXME:MS: Add docs! */
+
+SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
+	  (SCM color))
+#define FUNC_NAME s_set_background_color_x
+{
+  VALIDATE_COLOR(color, FUNC_NAME, 1);
+
+  gh_vector_set_x(protected_objs, SCM_MAKINUM(0), color);
+  XSetWindowBackground(dpy, Scr.Root, XCOLOR(color));
+  XClearWindow(dpy, Scr.Root);
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME 
+
+SCWM_PROC(make_resized_image, "make-resized-image", 3, 1, 0,
+	  (image, width, height, bgcolor))
+#define FUNC_NAME s_make_resized_image
+{
+  int nw;
+  int nh;
+
+  {
+    SCM i = image;
+    if (gh_string_p(image)) {
+      image = make_image(image);
+    }
+    
+    if (!IMAGE_P(image)) {
+      scm_wrong_type_arg(FUNC_NAME, 1, i);
+    }
+  }
+
+  if (!gh_number_p(width)) {
+    scm_wrong_type_arg(FUNC_NAME, 2, width);
+  } else {
+    nw=gh_scm2ulong(width);
+  }
+
+  if (!gh_number_p(height)) {
+    scm_wrong_type_arg(FUNC_NAME, 3, height);
+  } else {
+    nh=gh_scm2ulong(height);
+  }
+
+  VALIDATE_COLOR_OR_UNDEFINED(bgcolor, FUNC_NAME, 4);
+
+  if (IMAGE(image)->width==nw && IMAGE(image)->height==nh) {
+    return image;
+  }
+  
+  {
+    SCM retval;
+    int ox, oy, nx, ny, nnw, nnh;
+    XGCValues gcv;
+    GC gc;
+    Pixmap pix = IMAGE(image)->image;
+    Pixmap bit = IMAGE(image)->mask;
+    
+    Pixmap npix = XCreatePixmap(dpy, Scr.Root, nw, nh, Scr.d_depth);
+
+    if (IMAGE(image)->height <= nh) {
+      oy = 0;
+      ny = (nh - IMAGE(image)->height)/2;
+      nnh = IMAGE(image)->height;
+    } else {
+      oy = (IMAGE(image)->height - nh)/2;
+      ny = 0;
+      nnh = nh;   
+    }
+
+    if (IMAGE(image)->width <= nw) {
+      ox = 0;
+      nx = (nw - IMAGE(image)->width)/2;
+      nnw = IMAGE(image)->width;
+    } else {
+      ox = (IMAGE(image)->width - nw)/2;
+      nx = 0;
+      nnw = nw;   
+    }
+    
+    /* Create the GC and stuff */
+
+    gcv.foreground=SAFE_XCOLOR_OR_BLACK(bgcolor);
+
+    gc=XCreateGC(dpy, Scr.Root, GCForeground, &gcv);
+		 
+    XFillRectangle(dpy, npix, gc, 0, 0, nw+1, nh+1);
+
+    if (bit!=None) {
+      /* Add appropriate mask */
+      gcv.clip_mask = bit;
+      gcv.clip_x_origin = nx;
+      gcv.clip_y_origin = ny;
+      
+      XChangeGC(dpy, gc, GCClipMask | GCClipXOrigin | GCClipYOrigin,
+		&gcv);
+    }
+
+    XCopyArea(dpy, pix, npix, gc, ox, oy, nnw, nnh, nx, ny);
+
+
+    /* Use a better name */
+    retval=make_image_from_pixmap("(resized image)", npix, None, nw,
+				  nh, Scr.d_depth);
+
+    return retval;
+  }    
+}
+#undef FUNC_NAME 
+
+
+SCWM_PROC(set_background_image_x, "set-background-image!", 1, 1, 0,
+	  (SCM image, SCM style))
+#define FUNC_NAME s_set_background_image_x
+{
+  {
+    SCM i = image;
+    if (gh_string_p(image)) {
+      image = make_image(image);
+    }
+
+    if (!IMAGE_P(image)) {
+      scm_wrong_type_arg(FUNC_NAME, 1, i);
+    }
+  }
+ 
+  if (style==SCM_UNDEFINED) {
+    style = sym_centered;
+  }
+
+  if (!(style == sym_tiled || style == sym_centered)) {
+    scm_wrong_type_arg (FUNC_NAME,2,style);
+  }
+
+
+  if (style==sym_centered) {
+    image=make_resized_image(image, gh_ulong2scm(Scr.DisplayWidth),
+			     gh_ulong2scm(Scr.DisplayHeight),
+			     gh_vector_ref(protected_objs, SCM_MAKINUM(0)));
+  };
+
+  gh_vector_set_x(protected_objs, SCM_MAKINUM(1), image);
+  XSetWindowBackgroundPixmap(dpy, Scr.Root, IMAGE(image)->image);
+  XClearWindow(dpy, Scr.Root);
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME 
+
+
+SCWM_PROC(reset_background_x, "reset-background!", 0, 0, 0,
+	  ())
+#define FUNC_NAME s_reset_background_x
+{
+  XSetWindowBackgroundPixmap(dpy, Scr.Root, (Pixmap) None);
+  XClearWindow(dpy, Scr.Root);
+ 
+  gh_vector_set_x(protected_objs, SCM_MAKINUM(0), SCM_BOOL_F);
+  gh_vector_set_x(protected_objs, SCM_MAKINUM(1), SCM_BOOL_F);
+  
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME 
+
+
+static
+void
+init_background()
+{
+  protected_objs = scm_make_vector(SCM_MAKINUM(2), SCM_BOOL_F);
+  scm_permanent_object(protected_objs);
+
+#ifndef SCM_MAGIC_SNARFER
+ #include "background.x"
+#endif
+}
+
+void scm_init_app_scwm_background_module()
+{
+  scm_register_module_xxx("app scwm background", init_background);
+}
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */

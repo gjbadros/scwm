@@ -13,28 +13,18 @@
 (define FIXED-FONT (make-font "fixed"))
 
 ;;; Make some colors
-(define BLACK (make-color "black"))
-(define GRAY (make-color "gray"))
-(define SLATEGRAY (make-color "slategray"))
 
 ;;; Set some global options
 (set-rubber-band-mask! 30)
-(set-not-menu-foreground! BLACK)
-(set-not-menu-background! GRAY)
+(set-not-menu-foreground! "black")
+(set-not-menu-background! "gray")
 
 
-(set-hilight-foreground! BLACK)
-(set-hilight-background! GRAY)
+(set-hilight-foreground! "black")
+(set-hilight-background! "gray")
 (set-icon-font! FIXED-FONT)
 (set-title-font! FIXED-FONT)
 (set-title-justify! 'center)
-
-;;; The default menu
-(define default-menu (make-menu 
-		      (list
-		       (make-menuitem "Default Menu" #f)
-		       (make-menuitem "Exit SCWM" quit))
-		      GRAY BLACK SLATEGRAY FIXED-FONT))
 
 ;;; Some functions for decoration bindings
 (define (resize-or-raise)
@@ -63,7 +53,13 @@ motion does `interactive-move', and double-click does
 
 (bind-mouse '(title sidebar) 1 move-or-raise)
 
-(bind-mouse 'root 1 (lambda () (popup-menu default-menu)))
+(let ((default-menu (make-menu 
+		     (list
+		      (make-menuitem "Default Menu" #f)
+		      (make-menuitem "Exit SCWM" quit))
+		     (make-color "gray") (make-color "black")
+		     (make-color "slate gray") FIXED-FONT)))
+  (bind-mouse 'root 1 (lambda () (popup-menu default-menu))))
 
 ;; FIXGJB: BEGIN gross hack -- better way?
 (define (with-grabbed-server thunk)

@@ -1,0 +1,45 @@
+
+Directory themes:
+
+Suppose you want to create a theme called `fantabulous'. The following
+steps are necessary:
+
+* Create a `fantabulous' directory.
+
+* Copy all the images to be used by the theme into the directory.
+
+* Create a file theme.scm in the directory.
+
+* The file should define a Guile module named (app scwm theme
+fantabulous), which should import at least the (app scwm theme-impl)
+module, for example like this:
+
+(define-module (app scwm theme fantabulous)
+  :use-modules (app scwm theme-impl)
+  :use-modules (app scwm style))
+
+
+* The file should export a variable named `the-theme' which should be
+bound to the appropriate theme object created with make-theme.
+
+For example:
+
+(define-public the-theme 
+  (make-theme "fantabulous" #:window-style
+	      (make-style #:border-width 20)))
+
+* Whenever loading images in the theme, use `load-theme-image', not
+just a bare filename. This will properly load images from the theme directory.
+
+
+.tar and .tar.gz themes:
+
+* Just tar up the directory structure of a directory theme, and name
+it something appropriate with the same filename stem. For instance, if
+you have a directory `foo' that contains a theme, the command `tar
+cvf foo.tar foo' run in the same directory as foo will create an
+appropriate tar theme. The result can then be gzipped.
+
+
+
+See the themes directory in the scwm distribution for a few examples.

@@ -216,7 +216,8 @@ example usage."
                             title #:action exename #:image-left
                             (if mini-icon
                                 (string-append "mini-" mini-icon ".xpm") #f)
-                            #:icon (if icon (string-append icon ".xpm") #f))
+                            ;; #:icon (if icon (string-append icon ".xpm") #f)
+			    )
 			   #f)))
 		   menu-info-list))))
 

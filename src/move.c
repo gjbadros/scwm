@@ -53,134 +53,6 @@ static SCM interactive_move_start_hook;
 static SCM interactive_move_new_position_hook;
 static SCM interactive_move_finish_hook;
 
-float rgpctMovementDefault[32] = {
-    -.01, 0, .01, .03,.08,.18,.3,.45,.60,.75,.85,.90,.94,.97,.99,1.0 
-    /* must end in 1.0 */
-  };
-
-int cmsDelayDefault = 10; /* milliseconds */
-
-/* Perform the movement of the window. ppctMovement *must* have a 1.0 entry
-   somewhere in ins list of floats, and movement will stop when it hits a 1.0 entry
-   The positions given are viewport positions (not virtual */
-void 
-AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
-		   Bool fWarpPointerToo, int cmsDelay, float *ppctMovement )
-{
-  int pointerX, pointerY;
-  int currentX, currentY;
-  int lastX, lastY;
-  int deltaX, deltaY;
-
-  /* set our defaults */
-  if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
-  if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
-
-  if (startX < 0 || startY < 0) {
-    FXGetWindowTopLeft(w,&currentX,&currentY);
-    if (startX < 0) startX = currentX;
-    if (startY < 0) startY = currentY;
-    }
-
-  deltaX = endX - startX;
-  deltaY = endY - startY;
-  lastX = startX;
-  lastY = startY;
-
-  if (deltaX == 0 && deltaY == 0)
-    return;
-
-  do {
-    currentX = (int) (startX + deltaX * (*ppctMovement));
-    currentY = (int) (startY + deltaY * (*ppctMovement));
-    XMoveWindow(dpy,w,currentX,currentY);
-    if (fWarpPointerToo) {
-      WXGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
-      pointerX += currentX - lastX;
-      pointerY += currentY - lastY;
-      XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
-		   pointerX,pointerY);
-    }
-    XFlush(dpy);
-    /* handle expose events as we're animating the window move */
-    while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
-      {
-      DispatchEvent();
-      }
-
-    ms_sleep(cmsDelay);
-#ifdef FIXGJB_ALLOW_ABORTING_ANIMATED_MOVES
-    /* this didn't work for me -- maybe no longer necessary since
-       we warn the user when they use > .5 seconds as a between-frame delay
-       time */
-    if (XCheckMaskEvent(dpy, 
-			ButtonPressMask|ButtonReleaseMask|
-			KeyPressMask,
-			&Event)) {
-      /* finish the move immediately */
-      XMoveWindow(dpy,w,endX,endY);
-      XFlush(dpy);
-      return;
-    }
-#endif
-    lastX = currentX;
-    lastY = currentY;
-    }
-  while (*ppctMovement != 1.0 && ppctMovement++);
-
-}
-
-
-/* AnimatedShadeWindow handles animating of window shades
-   note that the first argument to this is a ScwmWindow *, since
-   the frame needs to be manipulated; the last two args are like
-   AnimatedMoveWindow, above --11/09/97 gjb */
-/* Note that this does not allow animations to overshoot target-- it
-   stops at first pctMovement >= 1.0 --11/25/97 gjb */
-void 
-AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp, 
-		    int cmsDelay, float *ppctMovement)
-{
-  Window w = psw->w;
-  Window wFrame = psw->frame;
-  int width = FRAME_WIDTH(psw);
-  int shaded_height = psw->title_height + psw->boundary_width;
-  /* FIXGJB above was psw->title_height + 2 * (psw->boundary_width + psw->bw); */
-  int normal_height = psw->orig_height;
-  int client_height = normal_height - shaded_height;
-  /* set our defaults */
-  if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
-  if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
-  
-  if (fRollUp) {
-    XLowerWindow(dpy,w);
-    do {
-      XMoveWindow(dpy, w, 0, (int) (-client_height * (*ppctMovement)));
-      XResizeWindow(dpy, wFrame, width, 
-		    (int) (shaded_height + client_height * (1 - *ppctMovement)));
-      XFlush(dpy);
-      /* handle expose events as we're rolling up the window shade */
-      while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
-	DispatchEvent();
-      ms_sleep(cmsDelay);
-    } while (*ppctMovement < 1.0 && ppctMovement++);
-    XMoveWindow(dpy,w,0,-client_height);
-    XResizeWindow(dpy,wFrame,width,shaded_height);
-  } else {  /* roll down the window shade */
-    do {
-      XResizeWindow(dpy, wFrame, width, 
-		    (int) (shaded_height + client_height * (*ppctMovement)));
-      XMoveWindow(dpy, w, 0, (int) (-client_height * (1 - *ppctMovement)));
-      XFlush(dpy);
-      while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
-	DispatchEvent();
-      ms_sleep(cmsDelay);
-    } while (*ppctMovement < 1.0 && ppctMovement++);
-    XResizeWindow(dpy,wFrame,width,shaded_height+client_height);
-    XMoveWindow(dpy,w,0,0);
-  }
-  XFlush(dpy);
-}
 
 void
 MapMessageWindow()
@@ -756,12 +628,11 @@ screen while the non-opaque move takes place. */
   int x, y;                     /* not used now */
   Bool fOpaque;
 
-  SCM_REDEFER_INTS;
   VALIDATE_PRESS_ONLY(win, FUNC_NAME);
   COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fOpaque,opaque_p,2,FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
   InteractiveMove(psw, fOpaque, &x, &y);
-  SCM_REALLOW_INTS;
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

@@ -1,3 +1,8 @@
+Sat Nov  7 16:21:55 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* background/background.c (reset_background_x): Added
+ 	`reset-background!' which should restore the default X background.
+
 1998-11-03  Todd Larason  <jtlmolehill.org>
 
 	* pie-menus/draw-pie-menu.c (PaintMenuItemLabel): fix renamed
@@ -17,6 +22,34 @@
 	(ConstructDynamicPieMenuInternal): guard against divide-by-zero if 
 	all the menu items are separators. It still won't work *well*, but 
 	crashes aren't acceptable
+
+Tue Oct 27 23:09:32 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* c-animation/c-animation.c: New loadable module to allow animated
+ 	moves and shades. All animation-related stuff from window.c and
+ 	move.c in the core was moved here. The new primitives are
+ 	`animated-move-window', `animated-window-shade',
+ 	`animated-whindow-unshade', and `set-animation!'. The animation
+ 	delay factor was moved to an `animation-delay' variable declared
+ 	here. Still needs variable and concept documentation, maybe
+ 	animated resizes, various flavors of animated iconify.
+	
+	* c-animation/Makefile.am: Build the c-animation module.
+
+	* Makefile.am: Build new c-animation subdir. 
+
+Thu Oct 22 05:45:16 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* background/background.c: New loadable module to set images or
+ 	colors as backgrounds. Use it as (app scwm background) and get
+ 	`set-background-color!' and `set-background-image!'.
+  	`make-resized-image' is also provided; it is used internally by
+ 	set-background-image! to crop or uncrop the image if it is
+ 	centered rather than tiled.
+
+	* background/Makefile.am: build setup stuff.
+	
+	* Makefile.am: Build new background subdir.
 
 1998-10-18  Todd Larason  <jtl@teeny.molehill.org>
 

@@ -44,6 +44,7 @@
 	     (app scwm flux)
 	     (app scwm optargs)
 	     (app scwm std-menus)
+	     (app scwm animation)
 	     (ice-9 string-fun))
 
 ;; random niceties
@@ -150,7 +151,7 @@
 
 (set-message-window-attributes! font12 "black" "royal blue")
 (menu-style #:fg "black" #:bg "royal blue" #:stipple "maroon"
-	    #:font font14 #:mwm #f)
+	    #:font font14)
 (title-style #:font font12 #:justify 'left)
 
 (button-style 3 #:relief-pattern	; an X
@@ -175,7 +176,7 @@
 	      #:focus 'sloppy
 	      #:random-placement #f #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
-	      #:int-override #t #:decroate-transient #f
+	      #:hint-override #t #:decorate-transient #f
 	      #:PPosition-hint #t
 	      #:lenience #t)
 
@@ -620,7 +621,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (bind-mouse 'sidebar 1 move-or-raise)
 (define (move-or-shade)
   (case (mouse-event-type)
-    ((double-click) (toggle-window-shade-animated))
+    ((double-click) (animated-toggle-window-shade))
     (else (move-or-raise))))
 (bind-mouse 'title 1 move-or-shade)
 (bind-mouse 'sidebar (super "1") interactive-resize)

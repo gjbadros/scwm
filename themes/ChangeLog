@@ -1,0 +1,12 @@
+Mon Nov  9 10:47:45 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am: Makefile for the themes; pack them up into possibly
+ 	compressed tarballs when building, and install theme in the
+ 	system-wide theme dir.
+
+	* fvwm2, mwm, win95, fvwm2/theme.scm, mwm/theme.scm,
+ 	win95/theme.scm, win95/mini-x.xpm, win95/win95-close-full.xpm,
+ 	win95/win95-maximize-full.xpm, win95/win95-minimize-full.xpm,
+ 	win95/win95-sysmenu-full.xpm: New theme directories with example
+ 	themes.
+

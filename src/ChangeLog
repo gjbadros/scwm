@@ -1,3 +1,8 @@
+Sat Nov 14 14:50:06 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c (restack_windows): Make restack_windows not lose on an
+ 	empty list.
+
 Fri Nov 13 15:03:15 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.h (SCWM_NEWCELL_SMOB): Remove extraneous trailing
@@ -51,6 +56,11 @@ Tue Nov 10 10:16:05 1998  Greg Badros  <gjb@cs.washington.edu>
 	* window.c (compare_focus_time): New function.
 	(list-focus-order): Did not work. Reimplemented.
 
+Sat Nov  7 15:41:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* decor.c (set_window_decor_x): Use SetBorderX instead of
+ 	SetBorder to guarantee redraw.
+
 1998-11-02  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* session-manager.h (XA_WM_CLIENT_LEADER): New variable.
@@ -70,6 +80,26 @@ Tue Nov 10 10:16:05 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* menu.c (print_menu): But using SAFE_MENUITEM is wasteful, use
 	MENUITEM_P instead.
+
+Tue Oct 27 22:59:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c: Remove optional arguments for animation and/or moving
+ 	pointer from move-window, window-shade, un-window-shade; rename
+ 	un-window-shade to window-unshade; remove set-animation! and
+ 	extern declarations assorted variables holding animation
+ 	parameters. Add convert_move_data which abstracts converting the
+ 	arguments passed into a move into a form usable by C, with error
+ 	checking, so animated-move-window can reuse this code; make
+ 	move-window use it.
+
+	* move.c, move.h: Remove prototypes and declarations for
+ 	AnimatedMoveWindow, AnimatedShadeWindow, and assorted variables
+ 	holding animation parameters.
+
+Tue Nov 10 10:48:38 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.h (REGISTER_SCWMSMOBFUNS): Protect REGISTER_SCWMSMOBFUNS
+	macro with do { .. } while (0)
 
 1998-10-27  Todd Larason  <jtlmolehill.org>
 
@@ -139,6 +169,11 @@ Thu Oct 22 14:23:44 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	guile-compat.c, guile-compat.h: Move them here; if guile has
  	scm_load_startup_files, do not actually define them, just #define
  	scwm_gh_enter as gh_enter.
+
+Thu Oct 22 05:43:45 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* color.h: Fix a bunch of color validation/access macros; add
+ 	VALIDATE_COLOR_OR_UNDEFINED.
 
 1998-10-22  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
@@ -263,7 +298,6 @@ Sat Oct 10 10:30:19 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c: Added window-focus-change-hook, and call it when the
 	focus changes (for auto-raise, e.g.)
-
 Thu Oct  8 12:42:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* resize.c (s_set_message_window_position_x): Document X-ALIGN and 

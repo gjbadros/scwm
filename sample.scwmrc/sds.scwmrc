@@ -36,7 +36,8 @@
  (app scwm base) (app scwm face) (app scwm decor) (app scwm style)
  (app scwm winops) (app scwm winlist) (app scwm wininfo) (app scwm doc)
  (app scwm optargs) (app scwm std-menus) (app scwm wmconfig-menu)
- (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module))
+ (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module)
+ (app scwm animation))
 
 ;; user settable!
 (define want-pictures? #f)
@@ -75,7 +76,9 @@
 ;(define menu-text-color (make-color "black"))
 
 (menu-style #:fg "black" #:bg "grey76" #:stipple "grey35"
-	    #:font menu-font #:mwm #t)
+	    #:font menu-font 
+	;#:mwm #t
+	)
 
 ;;(set-click-delay! 150)		; msec [150]
 (set-colormap-focus! 'focus)	; colormap focus == keyboard focus
@@ -199,7 +202,7 @@
 	      #:icon-box (list 500 1 (x- 500) 200) ; (x- 70) 1 69 (y- 141))
 	      #:border-width 3 #:mwm-border #t #:focus 'sloppy ; mouse
 	      #:random-placement #t #:smart-placement #t #:use-decor std-d
-	      #:mwm-func-hint #t #:mwm-decor-hint #t #:int-override #t
+	      #:mwm-func-hint #t #:mwm-decor-hint #t #:hint-override #t
 	      #:decorate-transient #t #:PPosition-hint #f #:mini-icon term-i
               #:squashed-titlebar #t))
 (define desk-widget
@@ -520,7 +523,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (bind-mouse '(frame sidebar) 2 popup-small-ops)
 (define (move-or-shade)
   (case (mouse-event-type)
-    ((double-click) (toggle-window-shade-animated))
+    ((double-click) (animated-toggle-window-shade))
     (else (move-or-raise))))
 (bind-mouse 'title 1 move-or-shade)
 (bind-mouse 'title 2 lower-window)
@@ -736,7 +739,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
             #t)
 (add-button prog-face popup-small-ops #t)
 (add-button horizontal-bar4-face toggle-stick #t)
-(add-button big-lightning-face toggle-window-shade-animated #t)
+(add-button big-lightning-face animated-toggle-window-shade #t)
 (add-button stylized-X-face close-window #f)
 (add-button up-down-arrow-face toggle-max-vert #f)
 (add-button small-box-face iconify #f)
@@ -804,14 +807,24 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;; Linear, mechanical
 ;(set-animation! '#(0.1 0.2 0.3 0.4 0.6 0.7 0.8 0.9 1.0))
 
-(bind-key 'all "H-KP_Down" (lambda () (animated-move-to 'x -1)))
-(bind-key 'all "H-KP_End" (lambda () (animated-move-to 0 -1)))
+(bind-key 'all "H-KP_Down" 
+	  (lambda () (with-window (get-window) 
+		       (animated-move-to #f (y- (w%y 100)))))
+(bind-key 'all "H-KP_End" 
+	  (lambda () (with-window (get-window)
+		       (animated-move-to 0 (y- (w%y 100))))))
 (bind-key 'all "H-KP_Home" (lambda () (animated-move-to 0 0)))
-(bind-key 'all "H-KP_Left" (lambda () (animated-move-to 0 'y)))
-(bind-key 'all "H-KP_Next" (lambda () (animated-move-to -1 -1)))
-(bind-key 'all "H-KP_Prior" (lambda () (animated-move-to -1 0)))
-(bind-key 'all "H-KP_Right" (lambda () (animated-move-to -1 'y)))
-(bind-key 'all "H-KP_Up" (lambda () (animated-move-to 'x 0)))
+(bind-key 'all "H-KP_Left" (lambda () (animated-move-to 0 #f)))
+(bind-key 'all "H-KP_Next" 
+ 	  (lambda () (with-window (get-window)
+		       (animated-move-to (x- (w%x 100)) (y- (w%y 100))))))
+(bind-key 'all "H-KP_Prior" 
+ 	  (lambda () (with-window (get-window)
+		       (animated-move-to (x- (w%x 100)) 0)))))
+(bind-key 'all "H-KP_Right" 
+ 	  (lambda () (with-window (get-window
+		       (animated-move-to (x- (w%x 100)) #f)))))
+(bind-key 'all "H-KP_Up" (lambda () (animated-move-to #f 0)))
 
 ;; FIXGJB: modifiers interface could be better... mimic off Emacs?
 ;; FIXGJB: keys should be first class

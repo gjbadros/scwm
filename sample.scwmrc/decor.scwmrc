@@ -23,21 +23,25 @@
 (define (vertical-toggle-maximize)
   (toggle-maximize 0 (%y 100)))
 
+(define tan-color (make-color "tan"))
+(define light-gray-color (make-color "light gray"))
+
 (define font12
   (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 (define font14 
   (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 
-(menu-style #:fg "black" #:bg "grey76" #:stipple "blue"
-	    #:font font14 #:mwm #f)
+(menu-style #:fg "black" #:bg "grey76" ; #:stipple "blue"
+	    #:font font14 ; #:mwm #f
+)
 ;; (define menu-bg-color (make-color "gray76"))
 ;; (define menu-text-color (make-color "black"))
 
 (title-style #:font font12 #:justify 'left)
 
 (set-icon-font! font12)
-(set-hilight-foreground! "white")
-(set-hilight-background! "blueviolet")
+;;(set-hilight-foreground! "white")
+;;(set-hilight-background! "blueviolet")
 (set-rubber-band-mask! 127)
 
 
@@ -101,7 +105,7 @@
 	    (set-hilight-background! "salmon"))
 
 (define fvwm-style 
-  (make-style #:fg "black" #:bg "tan" #:show-icon #t
+  (make-style #:fg "black" #:bg tan-color #:show-icon #t
 	      #:border-width 4 #:mwm-border #f
 	      #:mwm-buttons #f
 	      #:use-decor fvwm-decor))
@@ -219,9 +223,12 @@
 			  '((40 40 #t) (60 40 #t) (60 60 #f) 
 				       (40 60 #f) (40 40 #t)))
 	    (set-hilight-foreground! "white")
-	    (set-hilight-background! "#3cb21c"))
+;	    (set-hilight-background! "#3cb21c") 
 
-(define tile-style (make-style #:fg "white" #:bg "#a63823"
+)
+
+(define tile-style (make-style #:fg "white" 
+; #:bg "#a63823" 
 			       #:show-icon #t
 			       #:border-width 6
 			       #:use-decor tile-decor))
@@ -236,10 +243,10 @@
 	    (button-style 1 #:relief 'flat #:pixmap "twm-x.xpm")
 	    (button-style 2 #:relief 'flat #:pixmap "twm-boxes.xpm")
 	    (button-style 4 #:relief 'flat #:pixmap "twm-dot.xpm")
-	    (set-hilight-foreground! "light gray")
+	    (set-hilight-foreground! light-gray-color)
 	    (set-hilight-background! "maroon"))
 
-(define twm-style (make-style #:border-width 1  #:fg "light gray" #:bg "black"
+(define twm-style (make-style #:border-width 1  #:fg light-gray-color #:bg "black"
 			      #:show-icon #f #:use-decor twm-decor))
 
 
@@ -307,7 +314,7 @@
 	      #:icon "unknown1.xpm"
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
-	      #:int-override #t #:decroate-transient #t
+	      #:hint-override #t #:decorate-transient #t
 	      #:PPosition-hint #f
 	      #:lenience #t
 	      #:mini-icon "mini-x.xpm")
@@ -374,7 +381,7 @@
   (popup-menu menu-quit-verify))
 
 (define desk-menu 
-  (make-menu 
+  (menu 
    (list
     (menuitem "Desks" #f)
     menu-title

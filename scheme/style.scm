@@ -22,106 +22,158 @@
 (define-module (app scwm style)
   :use-module (app scwm base)
   :use-module (app scwm style-options)
-  :use-module (app scwm wininfo)
-  :use-module (ice-9 common-list))
+  :use-module (app scwm wininfo))
 
 
 
-;; MSFIX: I don't think these are useful any longer, commenting for now
-;; Also, this may be better placed somewhere else
-;; Make make-pixmap and make-bitmap aliases for make-image;
-;; Prefer and encourage make-image, though!
-;;(define-public make-pixmap make-image)
+(define (x-make-style style-entries)
+  style-entries)
 
-;;(define-public make-bitmap make-image)
+(define (style:style-entries style)
+  style)
 
-;; MSFIX: should use X Class name, or X Instance name first,
-;; not wildcard matcher!  My xterm-s track the running program
-;; name in the title bar, so just because I start an "xbiff"
-;; from an XTERM does not mean I want that xterm, whose title
-;; may be something like "<hostname> xbiff", to have an xbiff-like
-;; window style! --11/08/97 gjb
-;; FIXMS: OK, I guess you should be able to choose which of {title,
-;; resource name, resource class} you would like to be matched, currently
-;; all three are matched unconditionally. Note, however, that
-;; a window titled "<hostname> xbiff" willl not match an "xbiff" wildcard,
-;; although it _will_ match "*xbiff".
+(define global-conditional-style (x-make-style ()))
 
-(define-public (window-style condition . args)
-  (let ((predicate (cond
-		    ((or (eq? #t condition) 
-			 (and (string? condition) (string=? "*" condition))) 
-		     (lambda (w) #t))
-		    ((string? condition) (wildcard-matcher condition))
-		    ((procedure? condition) condition)
-		    (else (error "Bad window specifier for window-style.")))))
-    (let* ((the-style (apply make-style args))
-	   (style-proc (car the-style))
-	   (hint-proc (cdr the-style))
-	   (new-style-hook
-	     (lambda (w) 
-	       (if (predicate w)
-		   (style-proc w))))
-	   (new-hint-hook
-	     (lambda (w) 
-	       (if (predicate w)
-		   (hint-proc w)))))
-      (set! window-style-hooks (append window-style-hooks 
-				       (list new-style-hook)))
-      (set! window-hint-hooks (append window-hint-hooks 
-				      (list new-hint-hook)))
-      (for-each new-style-hook (list-all-windows)))))
+(define-public (style-one-window win . args)
+  (let ((new-style (apply make-conditional-style always? args)))
+    (apply-style new-style win)))
 
+(define-public (window-style condition . args) 
+  (let ((new-style (apply make-conditional-style condition args)))
+    (for-each (lambda (w) (apply-style new-style w)) (list-all-windows))
+    (set! global-conditional-style
+	  (merge-styles global-conditional-style new-style))))
 
-(define-public (style-one-window w . args)
-  (let ((the-style (apply make-style args)))
-    ((car the-style) w)))
+(define-public (clear-window-style)
+  (set! global-conditional-style (make-window-style)))
 
 (define-public (make-style . args)
-  (let ((style-procs-and-args 
-	 (pick id (map-by-twos 
-		   (lambda (key val)
-		     (let ((hr (hashq-ref window-style-options key)))
-		       (if hr (cons hr val) #f))) args)))
-	(hint-procs-and-args 
-	 (pick id (map-by-twos 
-		   (lambda (key val)
-		     (let ((hr (hashq-ref window-hint-options key)))
-		       (if hr (cons hr val) #f))) args))))
-    (cons
-     (lambda (w)
-       (for-each (lambda (x) 
-		   ((car x) (cdr x) w)) style-procs-and-args))
-     (lambda (w)
-       (for-each (lambda (x) ((car x) (cdr x) w)) hint-procs-and-args)))))
-    
+  (apply make-conditional-style always? args))
 
-(define (map-by-twos proc l)
-  (if (or (null? l) (null? (cdr l)))
-      '()
-      (cons (proc (car l) (cadr l))
-	    (map-by-twos proc (cddr l)))))
+  (define (mcs-complain warning key)
+    (error (string-append 
+	    warning " style option: "
+	    (objects->string key))))
 
 
+(define (mcs-parse-args condition args)
+  (let loop ((l args)
+	     (style-accum ())
+	     (hint-accum ())
+	     (already ()))
+    (cond
+     ((null? l) 
+      (x-make-style (append already
+			  (list
+			   (make-style-entry
+			    condition (reverse style-accum) 
+			    (reverse hint-accum))))))
+     ((null? (cdr l)) (mcs-complain "No value for" (car l)))
+     (else 
+      (let ((key (car l)))
+	(if (not (keyword? key))
+	    (mcs-complain "Invalid" key)
+	    (let ((key (keyword->symbol key))
+		  (value (cadr l)))
+	      (case (style-option:type key)
+		((normal)
+		 (loop (cddr l) (acons key value style-accum) hint-accum 
+		       already))
+		((hint) 
+		 (loop (cddr l) style-accum (acons key value hint-accum)
+		       already))
+		((splicing) 
+		 (loop (cddr l) () ()
+		       (append already
+			       (list
+				(make-style-entry condition (reverse style-accum)
+						  (reverse hint-accum)))
+			       ((style-option:handler key) condition value))))
+		(else (mcs-complain "Unknown" (symbol->keyword key)))))))))))
 
-(define old-new-window-handler #f)
-(define old-new-window-hint-handler #f)
 
-(define window-style-hooks '())
-(define window-hint-hooks '())
+(define-public default-style-condition-handler window-match??)
+
+(define (condition->predicate condition)
+  (cond
+   ((or (eq? #t condition) 
+	(and (string? condition) (string=? "*" condition))) 
+    always?)
+   ((eq? #f condition) never?)
+   ((string? condition) (default-style-condition-handler condition))
+   ((procedure? condition) condition)
+   (else (error "Bad window specifier for window-style."))))
 
 
-(add-hook! after-new-window-hook
-	   (lambda (win)
-	     (for-each (lambda (hook) 
-			 (hook win))
-		       window-style-hooks)))
+(define-public (make-conditional-style condition . args)
+  (simplify-style (mcs-parse-args (condition->predicate condition) args)))
 
-(add-hook! before-new-window-hook
-	   (lambda (win)
-	     (for-each (lambda (hook) 
-			 (hook win)) 
-		       window-hint-hooks)))
+(define-public (apply-style style win)
+  (apply-style-internal style win style-entry:window-options))
+
+(define (apply-hint-style style win)
+  (apply-style-internal style win style-entry:hint-options))
+
+(define (apply-style-internal style win stype)
+  (for-each 
+   (lambda (se)
+     (if ((style-entry:condition se) win) 
+	 (for-each 
+	  (lambda (o)
+	    ((style-option:handler (car o)) (cdr o) win))
+	  (stype se))))
+   (style:style-entries style)))
+
+(add-hook!  after-new-window-hook
+	    (lambda (win)
+	      (apply-style global-conditional-style win)))
+
+(add-hook!  before-new-window-hook
+	    (lambda (win)
+	      (apply-hint-style global-conditional-style win)))
+
+
+
+(define (make-style-entry condition window-options hint-options)
+  (vector condition window-options hint-options))
+
+(define vector-first (lambda (v) (vector-ref v 0)))
+(define vector-second (lambda (v) (vector-ref v 1)))
+(define vector-third (lambda (v) (vector-ref v 2)))
+
+(define (style-entry:condition style-entry)
+  (vector-first style-entry))
+(define (style-entry:window-options style-entry) 
+  (vector-second style-entry))
+(define (style-entry:hint-options style-entry)
+  (vector-third style-entry))
+
+(define (objects->string . objs)
+  (with-output-to-string 
+    (lambda () (map write objs))))
+
+(define (merge-styles style1 style2)
+  (x-make-style (append (style:style-entries style1)
+		      (style:style-entries style2))))
+
+;; MS:FIXME:: Figure out what I meant by the comment below.
+
+;; MS:FIXME:: add actual simplification later. Hack to make windows eq?
+(define (simplify-style style)
+  style)
+  
+(add-window-style-option 
+ #:use-style (lambda (condition style) 
+	       (x-make-style (map 
+			      (lambda (s-entry)
+				(make-style-entry 
+				 (win-and?? condition 
+					    (style-entry:condition s-entry))
+				 (style-entry:window-options s-entry)
+				 (style-entry:hint-options s-entry)))
+			      (style:style-entries style))))
+ 'splicing)
+
 
 
 ;; some useful style options
@@ -158,18 +210,15 @@
 (add-window-style-option #:icon set-icon!)
 (add-window-style-option #:mini-icon set-mini-icon!)
 
-;; MSFIX: how do I add a new keword argument like this, to use
-;; the above function?
-;; GJBFIX: what you have here should be right, but I am deeply
-;; supspicious of this; I think specifying the whole filename
-;; for the mini-icon is much cleaner, and stuff like this in
-;; scwmrc files will be confusing.
-;;(add-window-style-option #:minipix set-mini-icon-pixmap-name!)
-
 (add-window-hint-option #:random-placement set-random-placement!)
 (add-window-hint-option #:smart-placement set-smart-placement!)
-(add-window-hint-option #:button (lambda (n w) (set-window-button! n #t w)))
-(add-window-hint-option #:no-button (lambda (n w) (set-window-button! n #f w)))
+
+;; MS:FIXME:: Figure out a better way to do this
+(add-window-hint-option #:button (lambda (n w) (set-window-button! n #t w))
+			#t) ; cumulative
+(add-window-hint-option #:no-button (lambda (n w) (set-window-button! n #f w))
+			#t) ; cumulative
+
 (add-window-hint-option #:hint-override set-hint-override!)
 (add-window-hint-option #:decorate-transient set-decorate-transient!)
 (add-window-hint-option #:mwm-decor-hint set-mwm-decor-hint!)
@@ -181,18 +230,8 @@
 (add-window-hint-option #:skip-mapping set-skip-mapping!)
 (add-window-hint-option #:lenience set-lenience!)
 
-(add-window-style-option #:use-style 
-			 (lambda (the-style w) ((car the-style) w)))
-(add-window-hint-option #:use-style 			 
-			(lambda (the-style w) ((cdr the-style) w)))
 
-;; some extra style options of questionable usefulness
-
-(add-boolean-style-option #:start-lowered lower-window raise-window)
-(add-boolean-style-option #:start-window-shaded window-shade un-window-shade)
-(add-window-style-option #:other-proc (lambda (val w) (val w)))
-(add-window-hint-option #:other-hint-proc (lambda (val w) (val w)))
-
+;; placement
 (add-window-hint-option #:placement-proc 
 			(lambda (val w) 
 			  (set-object-property! w 'placement-proc val)))
@@ -201,5 +240,13 @@
 			  (set-object-property! w 'transient-placement-proc 
 						val)))
 
+;; random stuff
+(add-boolean-style-option #:start-lowered lower-window raise-window)
+(add-boolean-style-option #:start-window-shaded window-shade window-unshade)
+(add-window-style-option #:other-proc (lambda (val w) (val w))
+			 #t) ; cumulative
+(add-window-hint-option #:other-hint-proc (lambda (val w) (val w))
+			#t) ; cumulative
+			
 
 

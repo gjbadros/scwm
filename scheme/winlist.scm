@@ -24,7 +24,7 @@
   :use-module (app scwm wininfo)
   :use-module (app scwm base)
   :use-module (app scwm style-options)
-  :use-module (ice-9 common-list))
+  :use-module (app scwm listops))
 
 
 
@@ -43,31 +43,36 @@
 (define-public window-list-proc default-winlist-proc)
 
 (define (filter-only-except l only except)
-  (reverse (pick (lambda (item)
-		   (and
-		    (and-map (lambda (pred) (pred item)) 
-			     (listify-if-atom only))
-		    (not (or-map (lambda (pred) (pred item)) 
-				 (listify-if-atom except)))))
-		 l)))
+  (filter (lambda (item)
+	    (and
+	     (and-map (lambda (pred) (pred item)) 
+		      (listify-if-atom only))
+	     (not (or-map (lambda (pred) (pred item)) 
+			  (listify-if-atom except)))))
+	  l))
 
+(define local-reverse reverse)
 
 (define*-public (list-windows #&key (only '()) (except '())
 			      (by-stacking #f)
-			      (by-focus #f))
+			      (by-focus #f)
+			      (reverse #f))
+
   "Return the list of windows matching ONLY or not matching EXCEPT.
 The windows are returned their stacking order (top first) if
 BY-STACKING is #t.  They are returned sorted by their last focussed
-time (most recently focussed first) if BY-FOCUS is #t.
-ONLY and EXCEPT each are procedures which
-take a single window argument and returns #t if the window
-should be included (for ONLY) or excluded (for EXCEPT), or #f otherwise."
-  (filter-only-except 
-   (if by-stacking
-       (list-stacking-order)
-       (if by-focus
-	   (list-focus-order)
-	   (list-all-windows))) only except))
+time (most recently focussed first) if BY-FOCUS is #t. If REVERSE is
+true, they are returned in the reverse of the usual order. ONLY and
+EXCEPT each are procedures which take a single window argument and
+returns #t if the window should be included (for ONLY) or excluded
+(for EXCEPT), or #f otherwise."
+  ((if reverse local-reverse id)
+   (filter-only-except 
+    (if by-stacking
+	(list-stacking-order)
+	(if by-focus
+	    (list-focus-order)
+	    (list-all-windows))) only except)))
 
 (define*-public (winlist-hit #&optional (win (get-window)))
   "Permit WIN to be displayed in the window list by default.
@@ -90,6 +95,7 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 (define*-public (show-window-list-menu #&key (only '()) (except '())
 				       (by-stacking #f)
 				       (by-focus #f)
+				       (reverse #f)
 				       (proc window-list-proc)
 				       (flash-window-proc #f)
 				       (unflash-window-proc #f)
@@ -98,9 +104,13 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 				       (warp-to-first #f)
 				       (ignore-winlist-skip #f)
 				       (show-mini-icon #t))
+
   "Popup a window list menu and permit a selection to be made.
-ONLY and EXCEPT are procedures that control which windows will
-appear in the list -- see `list-windows' for details.
+ONLY and EXCEPT are procedures that control which windows will appear
+in the list -- see `list-windows' for details. BY-STACKING, BY-FOCUS
+and REVERSE control the order in which windows appear. See
+`list-windows' for more on these as well.
+
 PROC is the procedure which will be called on the selected window. 
 
 If SHOW-GEOMETRY is #t, the geometries of the windows will be listed
@@ -149,7 +159,8 @@ menuitem (see `popup-menu').
 					winlist-skip?
 					(listify-if-atom except)))
 				   #:by-stacking by-stacking
-				   #:by-focus by-focus))))
+				   #:by-focus by-focus
+				   #:reverse reverse))))
 	      warp-to-first))
 
 (define (rotate-around w wl)

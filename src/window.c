@@ -1811,45 +1811,47 @@ and possibly other legacy fvwm2 modules). */
     }
   }
 
-  windows = NEWC(cnt,Window);
+  if (cnt!=0) {
+    windows = NEWC(cnt,Window);
   
-  /* FIXMS: This doesn't properly handle transient windows (the way
-     raise does), but I am unsure what the really right way to handle
-     those is. Need to see if ICCCM really requires them to always be
-     in front of the app. In fact, ICCCM says no such thing about
-     transients, so we should probably implement the RaiseTransients
-     functionality using a more general hook of some kind,
-     ultimately. */
-
-  for (p=winlist, i=0; SCM_EOL!=p; p=gh_cdr(p)) {
-    SCM cur=gh_car(p);
-    ScwmWindow *psw=PSWFROMSCMWIN(cur);
-
-    if (!WINDOWP(cur)) {
-      FREEC(windows);
-      scm_wrong_type_arg(FUNC_NAME, 1, winlist);      
-    }
-
-    windows[i++]=PSWFROMSCMWIN(cur)->frame;    
-
-    if (psw->fIconified && !psw->fSuppressIcon) {
-      if (!psw->fNoIconTitle) {
-	windows[i++]=psw->icon_w;
+    /* FIXMS: This doesn't properly handle transient windows (the way
+       raise does), but I am unsure what the really right way to handle
+       those is. Need to see if ICCCM really requires them to always be
+       in front of the app. In fact, ICCCM says no such thing about
+       transients, so we should probably implement the RaiseTransients
+       functionality using a more general hook of some kind,
+       ultimately. */
+    
+    for (p=winlist, i=0; SCM_EOL!=p; p=gh_cdr(p)) {
+      SCM cur=gh_car(p);
+      ScwmWindow *psw=PSWFROMSCMWIN(cur);
+      
+      if (!WINDOWP(cur)) {
+	FREEC(windows);
+	scm_wrong_type_arg(FUNC_NAME, 1, winlist);      
       }
-      if (!(psw->icon_pixmap_w)) {
-	windows[i++]=psw->icon_pixmap_w;
+      
+      windows[i++]=PSWFROMSCMWIN(cur)->frame;    
+      
+      if (psw->fIconified && !psw->fSuppressIcon) {
+	if (!psw->fNoIconTitle) {
+	  windows[i++]=psw->icon_w;
+	}
+	if (!(psw->icon_pixmap_w)) {
+	  windows[i++]=psw->icon_pixmap_w;
+	}
       }
     }
-  }
   
   /* This will interact badly with the fvwm pager, ultimately, we will
      want to fake an appropriate set of M_RAISE_WINDOW and
      M_LOWER_WINDOW broadcasts. */
 
 
-  XRestackWindows(dpy, windows, cnt);
-
-  KeepOnTop();
+    XRestackWindows(dpy, windows, cnt);
+  
+    KeepOnTop();
+  }
 
   return SCM_UNSPECIFIED;
 }
@@ -2054,6 +2056,7 @@ window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 
+
 /*
  *  WindowShade -- shades or unshades a window
  *  Originally written for fvwm2 by Andrew V. <veliaa@rpi.edu>
@@ -2062,126 +2065,63 @@ window context in the usual way if not specified. */
 /* Modified for scwm by mstachow@mit.edu, 
    animation added by gjb@cs.washington.edu */
 
-/* FIXMS: split out animated versions of this and move-to into their
-own procs! 
-  why? so they're separate add-ons?  that's reasonable-- just curious --07/24/98 gjb
-*/
 
-SCWM_PROC(window_shade, "window-shade", 0, 2, 0,
-          (SCM win, SCM animated_p))
+
+SCWM_PROC(window_shade, "window-shade", 0, 1, 0,
+          (SCM win))
      /** Cause WIN to become "window-shaded".
 That is, to roll up into just a titlebar. By default, the change takes
-place instantaneously. However, if the optional ANIMATED? argument is
-true, the window will be animated as it rolls up, producing a pleasing
-visual effect. WIN defaults to the window context in the usual way if
-not specified. */
+place instantaneously. WIN defaults to the window context in the usual
+way if not specified. See also `window-shade'.*/
 #define FUNC_NAME s_window_shade
 {
   ScwmWindow *psw;
-  Bool fAnimated = False;
 
-  SCM_REDEFER_INTS;
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
   if (!psw->fTitle || psw->fMaximized) {
     return SCM_BOOL_F;
   }
-#ifdef GJB_BE_ANAL_ABOUT_BOOLS
-  /* FIXGJB: I took this code out so I can say:
-     (window-shade (get-window) 'animated)
-     Is there a better way? */
-  if (!gh_boolean_p(animated_p)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, animated_p);
-  }
-#endif
-  if (animated_p == SCM_UNDEFINED) {
-    /* FIXGJB: make an option for allowing the default to be animated */
-    animated_p = SCM_BOOL_F;
-  }
-  fAnimated = gh_scm2bool(animated_p);
 
   SET_SHADED(psw);
   
-  if (fAnimated) {
-    AnimatedShadeWindow(psw,True /* roll up */, -1, NULL);
-    /* discard resize events */
-    while (XCheckMaskEvent(dpy,  ResizeRedirectMask, &Event))
-      { }
-    /* We discard events so we don't propagate a resize
-       event that will call SetupFrame again */
-    /* Note sometimes the event we're trying to discard won't be
-       generated in time for the above to discard it, so I had to hack
-       the HandleConfigureNotify() routine to avoid resizing the
-       frame; I left the XSync in for performance, since there's no
-       reason to propagate that event if we can avoid it; perhaps
-       substructure redirection is a solution here, but I don't know
-       much about it --11/11/97 gjb */
-
-    /* need to reset the client window offset so that if
-       if it's un-window-shaded w/o animation, things are ok */
-    XMoveWindow(dpy,psw->w,0,0);
-  } /* else { FIXGJB: ideally, avoid this call when animated,
-     but we need it to ensure that different combinations of 
-     animated/unanimated shading do the right thing */
-    SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), FRAME_WIDTH(psw),
-               psw->title_height + psw->boundary_width, 
-               NOT_MOVED, WAS_RESIZED);
-    /*  } */
-
+  SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), FRAME_WIDTH(psw),
+	     psw->title_height + psw->boundary_width, 
+	     NOT_MOVED, WAS_RESIZED);
+  
   CoerceEnterNotifyOnCurrentWindow();
   Broadcast(M_WINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
-  SCM_REALLOW_INTS;
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
+
 /* FIXGJB: rename to window-unshade */
 
-SCWM_PROC(un_window_shade, "un-window-shade", 0, 2, 0,
-          (SCM win, SCM animated_p))
+
+
+
+SCWM_PROC(window_unshade, "window-unshade", 0, 1, 0,
+          (SCM win))
     /** Reverse the effect of `window-shade' on WIN.
-By default, the change takes place instantaneously. However, if the
-optional ANIMATED? argument is true, the window will be animated as it
-rolls down, producing a pleasing visual effect. WIN defaults to the
-window context in the usual way if not specified. */
-#define FUNC_NAME s_un_window_shade
+The change takes place instantaneously. WIN defaults to the window
+context in the usual way if not specified. */
+#define FUNC_NAME s_window_unshade
 {
   ScwmWindow *psw;
-  Bool fAnimated = False;
 
-  SCM_REDEFER_INTS;
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
-#ifdef GJB_BE_ANAL_ABOUT_BOOLS
-  /* FIXGJB: I took this code out so I can say:
-     (window-shade (get-window) 'animated)
-     Is there a better way? */
-  if (!gh_boolean_p(animated_p)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, animated_p);
-  }
-#endif
-  if (animated_p == SCM_UNDEFINED) {
-    /* FIXGJB: make an option for allowing the default to be animated */
-    animated_p = SCM_BOOL_F;
-  }
-  fAnimated = gh_scm2bool(animated_p);
-
   SET_UNSHADED(psw);
-  if (fAnimated) {
-    AnimatedShadeWindow(psw,False /* !roll up */, -1, NULL);
-  } /* else { FIXGJB: ideally, avoid this call when animated,
-     but we need it to ensure that different combinations of 
-     animated/unanimated shading do the right thing */
-    SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), 
-               psw->orig_width, psw->orig_height,
-               NOT_MOVED, WAS_RESIZED);
-    /*  } */
+
+  SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), 
+	     psw->orig_width, psw->orig_height,
+	     NOT_MOVED, WAS_RESIZED);
+  
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2202,165 +2142,86 @@ specified. */
 
 
 
-extern float rgpctMovementDefault[32];
-extern int cpctMovementDefault;
-extern int cmsDelayDefault;
-extern int c10msDelaysBeforePopup;
 
-
-/* set animation parameters */
-SCWM_PROC(set_animation_x, "set-animation!", 1,0,0,
-          (SCM vector))
-     /** Set the animation parameters to VECTOR. VECTOR is a vector of
-floats which give the fractions of the final position that the window
-should appear at. For instance, #(0.0 0.25 0.5 0.75 1.0 1.1 1.0) would
-make the window appear at the initial position, 1/4 of the way, 1/2 of
-the way, 3/4 of the way, overshoot the final position slightly, and
-finally slide back into place. This parameter is used for both
-animated window shades and animated moves. */
-#define FUNC_NAME s_set_animation_x
+SCM 
+convert_move_data(SCM x, SCM y, SCM win, char *func, 
+		  int *pStartX, int *pStartY,
+		  int *pDestX, int *pDestY,
+		  ScwmWindow **ppsw, Window *pw)
 {
-  int citems;
-  int i;
-  int iarg = 1;
-/*
-  FIXGJB: make a scheme-variable move-animation-delay get used instead
-  if (!gh_int_p(delay) && !gh_boolean_p(delay)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg++,delay);
-  } */
-  if (!gh_vector_p(vector)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg++,vector);
-  }
-/*
-  if (gh_int_p(delay)) {
-    cmsDelayDefault = gh_scm2int(delay);
-  }
-  */
-  citems = gh_vector_length(vector);
-  for (i=0; i<citems; i++) {
-    SCM val = gh_vector_ref(vector,gh_int2scm(i));    
-    if (!gh_number_p(val)) {
-      scm_wrong_type_arg(FUNC_NAME,iarg-1,vector);
-    }
-    /* FIXGJB: also check < 2, perhaps (don't want to
-      check < 1, since we might want to overshoot and then come back) */
-    rgpctMovementDefault[i] = (float) gh_scm2double(val);
-  }
-  /* Ensure that we end up 100% of the way to our destination */
-  if (i>0 && rgpctMovementDefault[i-1] != 1.0) {
-    rgpctMovementDefault[i++] = 1.0;
-  }
-  return SCM_UNDEFINED;
-}
-#undef FUNC_NAME
- 
-/* FIXMS: move frame or window? How to deal w/ gravity? */
+  ScwmWindow *psw;
+  Window w;
+  Bool fMovePointer = False;
+  int startX, startY;
+  int destX, destY;
 
-SCWM_PROC(move_window, "move-window", 2, 3, 0,
-          (SCM x, SCM y, SCM win, SCM animated_p, SCM move_pointer_too_p))
+  VALIDATEN(win, 3, func);
+
+  if (x != SCM_BOOL_F && !gh_number_p(x)) {
+    scm_wrong_type_arg(func, 1, x);
+  }
+  if (y != SCM_BOOL_F && !gh_number_p(y)) {
+    scm_wrong_type_arg(func, 2, y);
+  }
+
+  /* MS:FIXMS:GJB: Is this really a good idea? */
+  if (x == SCM_BOOL_F && y == SCM_BOOL_F) {
+    scm_misc_error(func,"Either X or Y must be a number",SCM_EOL);
+  }
+
+  *ppsw = PSWFROMSCMWIN(win);
+
+  if ((*ppsw)->fIconified) {
+    if ((*ppsw)->icon_pixmap_w != None) {
+      XUnmapWindow(dpy, (*ppsw)->icon_w);
+      *pw = (*ppsw)->icon_pixmap_w;
+    } else
+      *pw = (*ppsw)->icon_w;
+  } else {
+    *pw = (*ppsw)->frame;
+  }
+
+  FXGetWindowTopLeft(*pw,pStartX, pStartY);
+
+  if (x == SCM_BOOL_F)
+    *pDestX = *pStartX + WIN_VP_OFFSET_X(*ppsw);
+  else 
+    *pDestX = gh_scm2int(x);
+  
+  if (y == SCM_BOOL_F)
+    *pDestY = *pStartY + WIN_VP_OFFSET_Y(*ppsw);
+  else 
+    *pDestY = gh_scm2int(y);
+
+  return SCM_BOOL_T;
+}
+ 
+
+SCWM_PROC(move_window, "move-window", 2, 1, 0,
+          (SCM x, SCM y, SCM win))
      /** Move WIN to coordinates virtual coordinates X, Y.
 If X is #f, then X defaults to the current X position of WIN.
 If Y is #f, then Y defaults to the current Y position of WIN.
-If ANIMATED? is specified and true, animate the motion of the window,
-otherwise the move is instantaneous. If MOVE-POINTER-TOO? is specified
-and true, move the mouse pointer by the same amount as the window,
-animating the motion of the pointer along with the window if ANIMATED?
-is true. WIN defaults to the window context in the usual way if not
+WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_move_window
 {
   ScwmWindow *psw;
   Window w;
-  Bool fMovePointer = False;
-  Bool fAnimated = False;
   int startX, startY;
   int destX, destY;
 
-  SCM_REDEFER_INTS;
-  VALIDATEN(win, 3, FUNC_NAME);
-  if (x != SCM_BOOL_F && !gh_number_p(x)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, x);
-  }
-  if (y != SCM_BOOL_F && !gh_number_p(y)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, y);
-  }
-  if (x == SCM_BOOL_F && y == SCM_BOOL_F) {
-    gh_allow_ints();
-    scm_misc_error(FUNC_NAME,"Either X or Y must be a number",SCM_EOL);
-  }
-#ifdef GJB_BE_ANAL_ABOUT_BOOLS
-  /* FIXGJB: I took this code out so I can say:
-     (move-to x y (get-window) 'animated 'move-pointer)
-     Is there a better way? */
-  if (!gh_boolean_p(animated_p)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 4, animated_p);
-  }
-  if (!gh_boolean_p(move_pointer_too_p)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 5, move_pointer_too_p);
-  }
-#endif
-  if (animated_p == SCM_UNDEFINED) {
-    /* FIXGJB: make an option for allowing the default to be animated */
-    animated_p = SCM_BOOL_F;
-  }
-  if (move_pointer_too_p == SCM_UNDEFINED) {
-    /* This is the only sensible default */
-    move_pointer_too_p = SCM_BOOL_F;
-  }
-  psw = PSWFROMSCMWIN(win);
-  w = psw->frame;
-  if (psw->fIconified) {
-    if (psw->icon_pixmap_w != None) {
-      XUnmapWindow(dpy, psw->icon_w);
-      w = psw->icon_pixmap_w;
-    } else
-      w = psw->icon_w;
-  }
-  fMovePointer = gh_scm2bool(move_pointer_too_p);
-  fAnimated = gh_scm2bool(animated_p);
-  if (fMovePointer || fAnimated ||
-      x == SCM_BOOL_F || y == SCM_BOOL_F) {
-    FXGetWindowTopLeft(w,&startX, &startY);
-  }
-  if (x == SCM_BOOL_F)
-    destX = startX + WIN_VP_OFFSET_X(psw);
-  else 
-    destX = gh_scm2int(x);
-
-  if (y == SCM_BOOL_F)
-    destY = startY + WIN_VP_OFFSET_Y(psw);
-  else 
-    destY = gh_scm2int(y);
-
-  if (fAnimated) {
-    SCM animation_ms_delay = gh_lookup("animation-ms-delay");
-    int cmsDelay = -1;
-    if (animation_ms_delay != SCM_UNDEFINED &&
-	gh_number_p(animation_ms_delay)) {
-      cmsDelay = gh_scm2int(animation_ms_delay);
-    }
-    /* use viewport coordinates */
-    AnimatedMoveWindow(w,startX,startY,
-                       destX - WIN_VP_OFFSET_X(psw),
-                       destY - WIN_VP_OFFSET_Y(psw),
-		       fMovePointer,cmsDelay,NULL);
-  } else if (fMovePointer) {
-    int x, y;
-    WXGetPointerWindowOffsets(Scr.Root, &x, &y);
-    XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.DisplayWidth,
-		 Scr.DisplayHeight, x + destX - startX, y + destY - startY);
-  }
+  if (SCM_BOOL_F==
+      convert_move_data(x,y,win, FUNC_NAME,
+			&startX,&startY,&destX, &destY, &psw, &w)) {
+    return SCM_BOOL_F;
+  };
 
   move_finalize_virt(w, psw, destX, destY);
-  SCM_REALLOW_INTS;
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
-
 
 
 /* FIXMS: would animated resizes be a good idea? */

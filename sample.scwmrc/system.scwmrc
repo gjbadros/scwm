@@ -27,7 +27,7 @@
   (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 
 (menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue"
-	    #:font font14 #:mwm #f)
+	    #:font font14)
 
 (title-style #:font font12 #:justify 'left)
 
@@ -70,7 +70,7 @@
 	      #:focus 'mouse
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
-	      #:int-override #t #:decorate-transient #t
+	      #:hint-override #t #:decorate-transient #t
 	      #:PPosition-hint #f
 	      #:lenience #t
 	      )
@@ -163,7 +163,7 @@
     (menuitem "xcalc" #:action (lambda () (execute "xcalc")))
     (menuitem "xmag" #:action (lambda () (execute "xmag")))
     menu-separator
-    (menuitem "Desks" #:action 'desk-menu)
+    (menuitem "Desks" #:action desk-menu)
     menu-separator
     (menuitem "Exit scwm" #:action menu-quit-verify))))
 
