@@ -855,6 +855,7 @@ sub ProcessVarComment ( $$$$ ) {
   my $markup = MarkupComment($comment);
   $vars{$description} = { comment => $comment,
 			  markup => $markup,
+			  module => $current_module,
 			  file => $filename,
 			  line => $line,
 			};
