@@ -2,7 +2,7 @@
 ## process this file with automake to create Makefile.in
 
 if HAVE_GTK
-pkglib_LTLIBRARIES = libscwmgtkhelper.la
+scwm_module_LTLIBRARIES = libscwmgtkhelper.la
 
 libscwmgtkhelper_la_SOURCES = scwmgtkhelper.c
 libscwmgtkhelper_la_LDFLAGS = -export-dynamic @GTK_LIBS@
@@ -27,10 +27,3 @@ SUFFIXES = .x
 ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_PROC[ \t]*(\([^,]*\),[^,]*/\1/'
 
 
-install-data-hook:
-	$(mkinstalldirs) $(DESTDIR)$(scwm_schemedir)
-	rm -f $(DESTDIR)$(scwm_schemedir)/libscwmgtkhelper.la
-	$(LN_S) $(pkglibdir)/libscwmgtkhelper.la $(DESTDIR)$(scwm_schemedir)/libscwmgtkhelper.la
-
-uninstall-local:
-	rm -f $(scwm_schemedir)/libscwmgtkhelper.la

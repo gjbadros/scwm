@@ -1,7 +1,7 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
 
-pkglib_LTLIBRARIES = libbackground.la
+scwm_module_LTLIBRARIES = libbackground.la
 
 libbackground_la_SOURCES = background.c
 libbackground_la_LDFLAGS = -export-dynamic
@@ -23,11 +23,3 @@ SUFFIXES = .x
 	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CXXFLAGS) $< > $@
 
 ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_PROC[ \t]*(\([^,]*\),[^,]*/\1/'
-
-install-data-hook:
-	$(mkinstalldirs) $(DESTDIR)$(scwm_schemedir)
-	rm -f $(DESTDIR)$(scwm_schemedir)/libbackground.la
-	$(LN_S) $(pkglibdir)/libbackground.la $(DESTDIR)$(scwm_schemedir)/libbackground.la
-
-uninstall-local:
-	rm -f $(scwm_schemedir)/libbackground.la
