@@ -54,6 +54,7 @@
 #include "miscprocs.h"
 #include "binding.h"
 #include "decor.h"
+#include "face.h"
 
 #define MAXHOSTNAME 255
 
