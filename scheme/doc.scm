@@ -8,7 +8,7 @@
 ;; FIXGJB: hack to put doc-files in root module
 (define-public doc-files        ; '("/usr/src/scwm/doc/scwm-procedures.txt")
   (map (lambda (s) (string-append (scwm-path-prefix) "/share/scwm/" s))
-       '("scwm-procedures.txt" "cassowary_scm-procedures.txt")))
+       '("scwm-procedures.txt" "scwm-variables.txt" "cassowary_scm-procedures.txt")))
 
 (define-module (app scwm doc)
   :use-module (ice-9 regex)
@@ -30,7 +30,7 @@ Return #t if found anything, #f if no documentation."
         ((or (null? fl) done)
          (if (not done) (write-all #t "No documentation for `" func "'\n"))
          done)
-      (write-all #t "trying `" (car fl) "'...")
+;;      (write-all #t "trying `" (car fl) "'...")
       (cond ((file-exists? (car fl)) (display "file exists\n")
              (set! fd (open-input-file (car fl)))
              (do ((ln (read-line fd) (read-line fd)) (delim-p #f))
