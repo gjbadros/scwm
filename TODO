@@ -4,6 +4,10 @@ See also doc/dev/scwm-1.0-release-todo
 
 * Error messages in a text window
 
+* Revisit all FIXME lines
+
+* Multi-line message windows
+
 * improve look of scwm-options-dialog, expose more options.
 ** (copy econf's widget layout?)
 
@@ -16,8 +20,6 @@ See also doc/dev/scwm-1.0-release-todo
 * better dynamic linking test for platforms like HP/UX?
 
 * replace synth event w/ XTest directly in core?
-
-* quoting keystroke support-- must ungrab keystrokes or do something w/ synch grabbing
 
 * Improve esound wrapper
 
@@ -36,8 +38,6 @@ See also doc/dev/scwm-1.0-release-todo
 
 * Why did I have to do "cd libtool-1.3.2; cp libtool.m4 /usr/share/aclocal" to get "aclocal" to run on alpha? -- aclocal running gave "AM_PROG_LIBTOOL not found"
 
-* libtool --no-reexec bug-- how do you make it go away?
-
 * Use  gh_ interface to guile as much as possible -- limit uses of scm_ calls
 ** See and update doc/dev/Guile-gh-needs
 
@@ -53,7 +53,7 @@ See also doc/dev/scwm-1.0-release-todo
 
 * WM_HINTS update on gravity change
 
-* bug fixes
+* bug fixes -- especially test on Solaris/ Solaris displays...
 
 * beta testing
 Maciej has access to ensure it builds and runs on Linux, NetBSD, Irix,
@@ -250,6 +250,8 @@ alloc/dealloc to see where the memory is going... guile support for this?
 
 
 ** DONE STUFF
+* quoting keystroke support-- must ungrab keystrokes or do something w/ synch grabbing
+
 * Web Link to bug tracker
 
 * XTest module
