@@ -501,7 +501,7 @@ EOC
   }
 }
 
-use Balanced;
+use Text::Balanced;
 
 sub ProcessSchemeHeader( $$$$$ ) {
   my ($filename, $module, $proc_name, $line, $header) = @_;

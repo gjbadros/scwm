@@ -66,19 +66,6 @@ focus and bring it back in, crossing the border slowly.
 Ken Pizzini
 
 -------------
-windows having a different border-width than the default (6) are
-placed incorrectly if they have SE gravity. They are several pixels
-[(6-border_width)*2] off the screen-border.
-
-This is due to the fact that `PlaceWindow' is called before the
-evaluation of window-styles. `PlaceWindow' needs to be called if the
-border-width changed (from `set_border_width_x', or `SetupFrame', or
-whatever). It would be nice if the call to `PlaceWindow' before the
-window is properly styled could then be removed, but I don't know what
-this could break.
-
-	Robert Bihlmeyer
-------------
 - Another window shade problem: clients that resize themsleves while
 shaded make the wm lose. [ reported by Oleg Tihnov ]
 ------------
@@ -103,6 +90,20 @@ outside the callback handler - the code would lose big on this -ms]
 ----------------------------------------------------------------------
 RESOLVED:
 ----------------------------------------------------------------------
+windows having a different border-width than the default (6) are
+placed incorrectly if they have SE gravity. They are several pixels
+[(6-border_width)*2] off the screen-border.
+
+This is due to the fact that `PlaceWindow' is called before the
+evaluation of window-styles. `PlaceWindow' needs to be called if the
+border-width changed (from `set_border_width_x', or `SetupFrame', or
+whatever). It would be nice if the call to `PlaceWindow' before the
+window is properly styled could then be removed, but I don't know what
+this could break.
+
+	Robert Bihlmeyer
+Robert verified this has been fixed -- 09/26/98 jtl
+------------
 Changing title-height in the decor (e.g., by changing the font) doesn't
 affect new windows using that style
 -------------
