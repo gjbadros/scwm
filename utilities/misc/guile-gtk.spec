@@ -19,6 +19,9 @@ Docdir: %{prefix}/doc
 
 
 %changelog
+* Wed Sep 1 1999 Greg J. Badros <gjb@cs.washington.edu>
+  Link to guile-1.3.3, so bump to release 2.
+
 * Thu Aug 26 1999 Greg J. Badros <gjb@cs.washington.edu>
   Built from CVS especially for the Scwm-0.99.2 on RH6.
 

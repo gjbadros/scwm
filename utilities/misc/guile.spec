@@ -1,6 +1,6 @@
 %define nam      guile
 %define ver      1.3.3
-%define rel      1gjb
+%define rel      2gjb
 %define prefix   /usr
 
 Summary: A GNU implementation of Scheme for application extensibility.
@@ -78,6 +78,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc SNAPSHOTS ANON-CVS THANKS
 %{prefix}/bin/guile
 %{prefix}/lib/libguile.so.*.*
+%{prefix}/lib/libguilereadline.so.*.*
 %dir %{prefix}/share/guile
 %dir %{prefix}/share/guile/site
 %dir %{prefix}/share/guile/%{PACKAGE_VERSION}
@@ -92,11 +93,15 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/lib/lib*so
 %{prefix}/lib/lib*a
 %{prefix}/include/guile
+%{prefix}/include/guile-readline
 %{prefix}/include/libguile
 %{prefix}/include/libguile.h
 %{prefix}/info/data-rep*
 
 %changelog
+* Wed Sep 1 1999 Greg J. Badros <gjb@cs.washington.edu>
+- Updated for guile-1.3.3, fix readline support of install
+
 * Thu Aug 26 1999 Greg J. Badros <gjb@redhat.com>
 - Updated for guile-1.3.2
 
