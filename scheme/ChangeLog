@@ -1,3 +1,8 @@
+Mon Sep 14 15:53:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* fvwm-module.scm (basename): Define if not provided by
+	Guile.
+
 Mon Sep 14 10:01:35 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Rework maximize, added unmaximize-no-move.  Thanks

@@ -392,6 +392,12 @@
 (define-public fvwm2-module-path '("/usr/lib/X11/fvwm2"
 				   "/usr/local/lib/X11/fvwm2"))
 
+(if (not (defined? 'basename))
+    (define (basename str)
+      (let ((ix (string-rindex str #\/)))
+	(if ix
+	    (substring str ix)
+	    str))))
 
 (define*-public (run-fvwm2-module module-name #&optional
 				  (other-args '())	       
