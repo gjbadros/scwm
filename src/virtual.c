@@ -491,7 +491,7 @@ initPanFrames()
     Scr.PanFrameRight.isMapped = Scr.PanFrameBottom.isMapped = False;
 }
 
-int fInMoveViewport_internal = False;
+Bool fInMoveViewport_internal = False;
 
 /*
  *  Moves the viewport within the virtual desktop
@@ -501,8 +501,6 @@ MoveViewport_internal(int newx, int newy)
 {
   ScwmWindow *psw;
   int diffx, diffy;
-
-  fInMoveViewport_internal = True;
 
   if (newx < 0)
     newx = 0;
@@ -516,6 +514,8 @@ MoveViewport_internal(int newx, int newy)
   /* no change? then do nothing */
   if (newx == Scr.Vx && newy == Scr.Vy)
     return;
+
+  fInMoveViewport_internal = True;
 
   diffx = newx - Scr.Vx;
   diffy = newy - Scr.Vy;

@@ -1182,10 +1182,10 @@ KeepOnTop()
 Bool
 FIsPartiallyInViewport(const ScwmWindow *psw)
 {
-  return ! (((FRAME_X_VP(psw) + FRAME_WIDTH(psw)) < 0) ||
-            (FRAME_Y_VP(psw) + FRAME_HEIGHT(psw) < 0) ||
-            (FRAME_X_VP(psw) > Scr.DisplayWidth) ||
-            (FRAME_Y_VP(psw) > Scr.DisplayHeight));
+  return ! (((FRAME_X_VP(psw) + FRAME_WIDTH(psw)) <= 0) ||
+            (FRAME_Y_VP(psw) + FRAME_HEIGHT(psw) <= 0) ||
+            (FRAME_X_VP(psw) >= Scr.DisplayWidth) ||
+            (FRAME_Y_VP(psw) >= Scr.DisplayHeight));
 }
 
 /* pcx, pcy are output only */
@@ -1242,8 +1242,8 @@ FocusOn(ScwmWindow *psw)
 /*
  * Moves pointer to specified window
  */
-void
-WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
+static void
+WarpOn(ScwmWindow * psw, int warp_x, int warp_y)
 {
   int cx, cy;
   int x, y;
@@ -1271,27 +1271,13 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
       y -= Scr.Vy;
     }
   } else {
-    if (x_unit != Scr.DisplayWidth)
-      x = FRAME_X_VP(psw) + 2 + warp_x;
-    else
-      x = FRAME_X_VP(psw) + 2 + (FRAME_WIDTH(psw) - 4) * warp_x / 100;
-    if (y_unit != Scr.DisplayHeight)
-      y = FRAME_Y_VP(psw) + 2 + warp_y;
-    else
-      y = FRAME_Y_VP(psw) + 2 + (FRAME_HEIGHT(psw) - 4) * warp_y / 100;
+    x = FRAME_X_VP(psw) + warp_x;
+    y = FRAME_Y_VP(psw) + warp_y;
   }
   if (warp_x >= 0 && warp_y >= 0) {
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, x, y);
   }
   KeepOnTop();
-
-  if (!FIsPartiallyInViewport(psw)) {
-    move_finalize(psw->frame,psw,0,0);
-    XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
-  }
-#if 0 /* GJB:FIXME:: --09/13/98 gjb */
-  UngrabEm();
-#endif
 }
 
 
@@ -1854,19 +1840,24 @@ SCWM_IPROC(unfocus, "unfocus", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_IPROC(warp_to_window, "warp-to-window", 0, 1, 0,
-           (SCM win), "%W",
+SCWM_IPROC(warp_to_window, "warp-to-window", 0, 3, 0,
+           (SCM win, SCM x_offset, SCM y_offset), "%W",
 "Move the mouse pointer to the upper left corner of WIN.\n\
+X-OFFSET, Y-OFFSET are pixel offsets from the top left corner;\n\
+they each default to 2 pixels.\n\
 If WIN is on a different desk or in a different viewport, these will\n\
-be changed appropriately so that the window is visible. WIN defaults\n\
-to the window context in the usual way if not specified.  Note that\n\
+be changed appropriately so that the window is visible.  Note that\n\
 the target window is not raised, so if the target window's upper\n\
 left corner is under another window, that other window may end up\n\
 with the keyboard focus.")
 #define FUNC_NAME s_warp_to_window
 {
-  VALIDATE_WIN_USE_CONTEXT(win);
-  WarpOn(PSWFROMSCMWIN(win), 0, 0, 0, 0);
+  ScwmWindow *psw = NULL;
+  int dx, dy;
+  VALIDATE_WIN_COPY_USE_CONTEXT(win,psw);
+  VALIDATE_ARG_INT_COPY_USE_DEF(2,x_offset,dx,2);
+  VALIDATE_ARG_INT_COPY_USE_DEF(3,y_offset,dy,2);
+  WarpOn(PSWFROMSCMWIN(win),dx,dy);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

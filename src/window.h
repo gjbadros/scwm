@@ -443,7 +443,6 @@ void SetScwmWindowPosition(ScwmWindow *psw, int x, int y,
                            Bool fOpaque);
 
 void FocusOn(ScwmWindow *psw);
-void WarpOn(ScwmWindow *psw, int warp_x, int x_unit, int warp_y, int y_unit);
 
 void MoveTo(ScwmWindow *psw, int x, int y);
 void ResizeTo(ScwmWindow *psw, int width, int height);
