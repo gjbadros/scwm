@@ -67,6 +67,8 @@ exec guile -l $0 -- --run-from-shell "$@"
 ;;; 3. Still can't load slib stuff without stupid hacks that should
 ;;;    have been dealt with when guile installed.
 
+;;;(debug-enable 'backtrace)
+
 (if (not (member "/usr/lib" %load-path))
     (set! %load-path (cons "/usr/lib" %load-path))) ; HACK for guile to find slib!!!!!!!
 (use-modules (ice-9 regex)		; For regexp-quote & substitute.
@@ -209,6 +211,7 @@ exec guile -l $0 -- --run-from-shell "$@"
 
 ;;; Complains about docitem recs it doesn't like
 (define (check-docitem procdocrec)
+  (define sentence (make-regexp "\\."))
   (let* ((data     (docitem:data procdocrec))
 	 (file     (docitem:file procdocrec))
 	 (line     (docitem:line procdocrec)))
@@ -235,6 +238,9 @@ exec guile -l $0 -- --run-from-shell "$@"
        (let ((procrec  (procdoc:decl data))
 	     (docrec   (procdoc:doc  data))
 	     (funcname (procdoc:funcname data)))
+	 ;; What's this business about the 1st doc line being a "purpose" sentence?
+	 ;; What's this business about "leading spaces" being omitted?
+
 	 ;; Check c-name vs scheme-name.
 	 (if (and (not (string=? (c-ident->scheme-ident (symbol->string (proc:c-name procrec)))
 				 (proc:scheme-name procrec)))
@@ -244,8 +250,11 @@ exec guile -l $0 -- --run-from-shell "$@"
 		       "Scheme name of " (proc:scheme-name procrec) " doesn't match a C name of "
 		       (proc:c-name procrec)))
 
-	 ;; What's this business about the 1st doc line being a "purpose" sentence?
-	 ;; What's this business about "leading spaces" being omitted?
+	 ;; Check that 1st doc sentence is a complete sentence (contains a ".")
+	 (if (and (not (null? docrec))
+		  (not (regexp-exec sentence (car docrec))))
+	     (complain file line
+		       "First documentation line is not a complete sentence"))
 
 	 ;; Check that arg 2+3+4 = length of arg5
 	 (if (not (= (+ (proc:required-args procrec)
@@ -260,7 +269,7 @@ exec guile -l $0 -- --run-from-shell "$@"
 	 (if (and  (not (= (proc:extra-var-args procrec) 0))
 		   (not (= (proc:extra-var-args procrec) 1)))
 	     (complain file line
-		       "Var count is not 0 and is not 1"))
+		       "Var count is (proc:extra-var-args procrec), but should be 0 or 1"))
 
 	 ;; Check that all args are of type SCM
 	 (let loop ((i 1)
@@ -617,7 +626,7 @@ exec guile -l $0 -- --run-from-shell "$@"
 	  ((eof-object? next)		; No doc & no func
 	   (list proc '() #f))
 	  ((regexp-exec post-proc-doc-start-match next)	; Doc is first.
-	   (let* ((doc (extract-doc p next post-proc-doc-start-match))
+	   (let* ((doc (parse-proc-doc (extract-doc p next post-proc-doc-start-match)))
 		  (next (next-non-whitespace-line p))
 		  (match (if next (regexp-exec func-name-match next) #f)))
 	     (if match
@@ -634,6 +643,23 @@ exec guile -l $0 -- --run-from-shell "$@"
 					   (car (vector-ref match 2))
 					   (cdr (vector-ref match 2))))
 		 (list proc doc #f)))))))
+
+(define (parse-proc-doc doc)
+  (define split (make-regexp "^([^.]*\\.)[ \t]*(.*)$"))
+  (define blank (make-regexp "^[ \t]*$"))
+  (cond ((null? doc) '())
+	(else (let ((m (regexp-exec split (car doc))))
+		(if m
+		    (let ((s (match:substring m 1))
+			  (e (match:substring m 2)))
+		      (if (regexp-exec blank e)
+			  doc
+			  (cons s (cons e (cdr doc)))))
+		    (let ((r (parse-proc-doc (cdr doc))))
+		      (if (null? r)
+			  doc
+			  (cons (string-append (car doc) " " (car r))
+				(cdr r)))))))))
 
 (define (extract-doc p . xargs)
   (define (doclist lines)
@@ -847,6 +873,8 @@ exec guile -l $0 -- --run-from-shell "$@"
 	   (else
 	    (cons result (grp l '())))))
   (grp l '()))
+;;  (if (null? l) '()
+;;      (grp l '())))
   
 (define (gen-file-group procs-from-file)
   `((sect1)
@@ -952,10 +980,15 @@ exec guile -l $0 -- --run-from-shell "$@"
 
 (define (sgml-markup s)
   (define proc-regexp (make-regexp "`([^'` \t]*)'"))
-  (my-regexp-substitute/global #f
-			       proc-regexp
-			       s
-			       `pre "<link linkend=\"" 1 "\"><function>" 1 "</function></link>" `post))
+  (define tf-regexp (make-regexp "(#[tf])"))
+  (my-regexp-substitute/global
+   #f
+   tf-regexp
+   (my-regexp-substitute/global #f
+				proc-regexp
+				s
+				`pre "<link linkend=\"" 1 "\"><function>" 1 "</function></link>" `post)
+   `pre "<literal>" 1 "</literal>" `post))
 
 
 
@@ -1087,7 +1120,7 @@ exec guile -l $0 -- --run-from-shell "$@"
      also be extracted.
 
   Options:
-    -c, --check            Check documentation for reasonableness.
+    -nc, --nocheck         Don't check documentation for reasonableness.
     -s file, --sgml file   Generate SGML and output to specified file.
     -p file, --proc file   Generate procedure listing and output to
                            specified file.
@@ -1102,6 +1135,27 @@ exec guile -l $0 -- --run-from-shell "$@"
 
   If no flags are given, the default action is to check the files.
 "))
+
+;(define arglist
+;  '((("-nc" "--nocheck") 0)
+;    (("-s" "--sgml") 1)
+;    (("-p" "--proc") 1)
+;    (("-t" "--text") 1)
+;    (("-a" "--annotated-text") 0)
+;    (("-i" "--ispell") 0)
+;    (("-w" "--words") 1)
+;    (("-h" "-?" "--help" 0))))
+
+;(define (alistmember arg arglist)
+;  (cond ((null? arglist) #f)
+;	((member arg (caar arglist)) (car arglist))
+;	(else (alistmember arg (cdr arglist)))))
+
+;(define (process-cmd-line args arglist)
+;  (cond ((null? args) '())
+;	((and (option? (car args))
+;	      (alistmember (car arg) arglist)
+	 
 
 (define (process-arg n func arg rest files actions)
 ;;  (displayl "process-arg\n"
@@ -1124,54 +1178,56 @@ exec guile -l $0 -- --run-from-shell "$@"
 	(else
 	 (displayl "Internal error: process-arg only takes 0 or 1 as arg count\n"))))
 
+(define check #t)
+
 (define (process-cmd-line args files actions)
   (call-with-current-continuation
    (lambda (ret)
      (cond ((null? args)
-;;	    (displayl "args    : " args "\n"
-;;		      "files   : " files "\n"
-;;		      "actions : " actions "\n")
+;;;	    (displayl "args    : " args "\n" ;
+;;;		      "files   : " files "\n"
+;;;		      "actions : " actions "\n")
 	    (if (null? files)
 		(displayl "Error: You must specify at least one file.")
 		(let ((docs (apply extract-docs-from-files (reverse files))))
-		  (if (null? actions)
-		      (check-docs docs)
-		      (for-each (lambda (act)
-				  (act docs))
-				(reverse actions))))))
+		  (if check (check-docs docs))
+		  (for-each (lambda (act)
+			      (act docs))
+			    (reverse actions)))))
 	   (else 
-;;	    (displayl "process-cmd-line: processing '" (car args) "'\n")
+;;;	    (displayl "process-cmd-line: processing '" (car args) "'\n")
 	    (case (string->symbol (car args))
-		   ((-l --ispell)
-		    (process-arg 0 ispell-docs (car args) (cdr args) files actions))
-		   ((-c --check)
-		    (process-arg 0 check-docs (car args) (cdr args) files actions))
-		   ((-s --sgml)
-		    (process-arg 1
-				 (lambda (d) (docs->sgml frontpiece d))
-				 (car args) (cdr args) files actions))
-		   ((-p --proc)
-		    (process-arg 1 docs->proclist (car args) (cdr args) files actions))
-		   ((-t --text)
-		    (process-arg 1 docs->text (car args) (cdr args) files actions))
-		   ((-a --annotated-text)
-		    (process-arg 1 docs->annotated-text (car args) (cdr args) files actions))
-		   ((-w --words)
-		    (cond ((null? (cdr args))
-			   (displayl (car args)
-				     " flag given without arguments.  Ignored.\n")
-			   (process-cmd-line (cdr args) files actions))
-			  (else (set! *scwm-ok-words*
-				      (append (extract-words (cadr args))
-					      *scwm-ok-words*))
-				(process-cmd-line (cddr args) files actions))))
-		   ((-h -? --help)
-		    (usage)
-		    (ret '()))
-		   (else
-;;		    (displayl "process-cmd-line: else.  (car args) = '" (car args) "'\n")
-;;		    (displayl "(eq? (car args) '-i) = " (eq? (string->symbol (car args)) '-i) "\n")
-		    (process-cmd-line (cdr args) (cons (car args) files) actions))))))))
+	      ((-l --ispell)
+	       (process-arg 0 ispell-docs (car args) (cdr args) files actions))
+	      ((-nc --nocheck)
+	       (set! check #f)
+	       (process-cmd-line (cdr args) files actions))
+	      ((-s --sgml)
+	       (process-arg 1
+			    (lambda (d) (docs->sgml frontpiece d))
+			    (car args) (cdr args) files actions))
+	      ((-p --proc)
+	       (process-arg 1 docs->proclist (car args) (cdr args) files actions))
+	      ((-t --text)
+	       (process-arg 1 docs->text (car args) (cdr args) files actions))
+	      ((-a --annotated-text)
+	       (process-arg 1 docs->annotated-text (car args) (cdr args) files actions))
+	      ((-w --words)
+	       (cond ((null? (cdr args))
+		      (displayl (car args)
+				" flag given without arguments.  Ignored.\n")
+		      (process-cmd-line (cdr args) files actions))
+		     (else (set! *scwm-ok-words*
+				 (append (extract-words (cadr args))
+					 *scwm-ok-words*))
+			   (process-cmd-line (cddr args) files actions))))
+	      ((-h -? --help)
+	       (usage)
+	       (ret '()))
+	      (else
+;;;	       (displayl "process-cmd-line: else.  (car args) = '" (car args) "'\n")
+;;;	       (displayl "(eq? (car args) '-i) = " (eq? (string->symbol (car args)) '-i) "\n")
+	       (process-cmd-line (cdr args) (cons (car args) files) actions))))))))
 
 ;;; Arg processing.
 (cond ((or (null? (command-line))
@@ -1180,5 +1236,6 @@ exec guile -l $0 -- --run-from-shell "$@"
        (usage)
        (exit))
       (else 
+       ;;;(debug-enable 'backtrace)
        (process-cmd-line (cddr (command-line)) '() '())
        (exit)))
