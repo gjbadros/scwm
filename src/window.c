@@ -604,11 +604,16 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
 /* This will involve cassowary as needed, through
    use of MoveTo 
    Same as MoveTo, except it knows about icons as well 
-   x, y are virtual coordinates 
+   x, y are viewport coordinates 
 */
 void 
 move_finalize(Window w, ScwmWindow * psw, int x, int y)
 {
+  scwm_msg(DBG,__FUNCTION__,"%d,%s, %d,%d",
+           (w==psw->frame), psw->name, x,y);
+  x += WIN_VP_OFFSET_X(psw);
+  y += WIN_VP_OFFSET_Y(psw);
+  scwm_msg(DBG,__FUNCTION__,"adjusted to %d,%d", x,y);
   if (w == psw->frame) {
     MoveTo(psw,x,y);
   } else {			/* icon window */
@@ -3340,7 +3345,8 @@ specified. */
     psw->bw = BW;
     /*    psw->boundary_width -= 1; makes no sense --08/12/98 gjb */
   }
-  SetupFrame(psw,FRAME_X(psw),FRAME_Y(psw),FRAME_WIDTH(psw),FRAME_HEIGHT(psw),
+  SetupFrame(psw,FRAME_X_VP(psw),FRAME_Y_VP(psw),
+             FRAME_WIDTH(psw),FRAME_HEIGHT(psw),
              WAS_MOVED, WAS_RESIZED);
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
   return SCM_UNSPECIFIED;

@@ -135,8 +135,8 @@ SmartPlacement(ScwmWindow *psw, int width, int height, int *x, int *y)
 	      pswTest != psw) {
 	    tw = pswTest->icon_p_width;
 	    th = pswTest->icon_p_height + pswTest->icon_w_height;
-	    tx = pswTest->icon_x_loc;
-	    ty = pswTest->icon_y_loc;
+	    tx = ICON_X_VP(pswTest);
+	    ty = ICON_Y_VP(pswTest);
 
 	    if ((tx < (test_x + width)) && ((tx + tw) > test_x) &&
 		(ty < (test_y + height)) && ((ty + th) > test_y)) {
@@ -148,8 +148,8 @@ SmartPlacement(ScwmWindow *psw, int width, int height, int *x, int *y)
 	  if (!pswTest->fIconified && (pswTest != psw)) {
 	    tw = FRAME_WIDTH(pswTest) + 2 * pswTest->bw;
 	    th = FRAME_HEIGHT(pswTest) + 2 * pswTest->bw;
-	    tx = FRAME_X(pswTest);
-	    ty = FRAME_Y(pswTest);
+	    tx = FRAME_X_VP(pswTest);
+	    ty = FRAME_Y_VP(pswTest);
 	    if ((tx <= (test_x + width)) && ((tx + tw) >= test_x) &&
 		(ty <= (test_y + height)) && ((ty + th) >= test_y)) {
 	      loc_ok = False;
@@ -224,21 +224,21 @@ get_next_x(ScwmWindow *psw, int x, int y)
     if ((testw->Desk != Scr.CurrentDesk) || (testw == psw))
       continue;
     if (testw->fIconified) {
-      if ((y < testw->icon_p_height + testw->icon_w_height + testw->icon_y_loc) &&
-	  (testw->icon_y_loc < (FRAME_HEIGHT(psw) + 2 * psw->bw + y))) {
-	xtest = testw->icon_p_width + testw->icon_x_loc;
+      if ((y < testw->icon_p_height + testw->icon_w_height + ICON_Y_VP(testw)) &&
+	  (ICON_Y_VP(testw) < (FRAME_HEIGHT(psw) + 2 * psw->bw + y))) {
+	xtest = testw->icon_p_width + ICON_X_VP(testw);
 	if (xtest > x)
 	  xnew = min(xnew, xtest);
-	xtest = testw->icon_x_loc - (FRAME_WIDTH(psw) + 2 * psw->bw);
+	xtest = ICON_X_VP(testw) - (FRAME_WIDTH(psw) + 2 * psw->bw);
 	if (xtest > x)
 	  xnew = min(xnew, xtest);
       }
-    } else if ((y < (FRAME_HEIGHT(testw) + 2 * testw->bw + FRAME_Y(testw))) &&
-	       (FRAME_Y(testw) < (FRAME_HEIGHT(psw) + 2 * psw->bw + y))) {
-      xtest = FRAME_WIDTH(testw) + 2 * testw->bw + FRAME_X(testw);
+    } else if ((y < (FRAME_HEIGHT(testw) + 2 * testw->bw + FRAME_Y_VP(testw))) &&
+	       (FRAME_Y_VP(testw) < (FRAME_HEIGHT(psw) + 2 * psw->bw + y))) {
+      xtest = FRAME_WIDTH(testw) + 2 * testw->bw + FRAME_X_VP(testw);
       if (xtest > x)
 	xnew = min(xnew, xtest);
-      xtest = FRAME_X(testw) - (FRAME_WIDTH(psw) + 2 * psw->bw);
+      xtest = FRAME_X_VP(testw) - (FRAME_WIDTH(psw) + 2 * psw->bw);
       if (xtest > x)
 	xnew = min(xnew, xtest);
     }
@@ -262,17 +262,17 @@ get_next_y(ScwmWindow * psw, int y)
     if ((testw->Desk != Scr.CurrentDesk) || (testw == psw))
       continue;
     if (testw->fIconified) {
-      ytest = testw->icon_p_height + testw->icon_w_height + testw->icon_y_loc;
+      ytest = testw->icon_p_height + testw->icon_w_height + ICON_Y_VP(testw);
       if (ytest > y)
 	ynew = min(ynew, ytest);
-      ytest = testw->icon_y_loc - (FRAME_HEIGHT(psw) + 2 * psw->bw);
+      ytest = ICON_Y_VP(testw) - (FRAME_HEIGHT(psw) + 2 * psw->bw);
       if (ytest > y)
 	ynew = min(ynew, ytest);
     } else {
-      ytest = FRAME_HEIGHT(testw) + 2 * testw->bw + FRAME_Y(testw);
+      ytest = FRAME_HEIGHT(testw) + 2 * testw->bw + FRAME_Y_VP(testw);
       if (ytest > y)
 	ynew = min(ynew, ytest);
-      ytest = FRAME_Y(testw) - (FRAME_HEIGHT(psw) + 2 * psw->bw);
+      ytest = FRAME_Y_VP(testw) - (FRAME_HEIGHT(psw) + 2 * psw->bw);
       if (ytest > y)
 	ynew = min(ynew, ytest);
     }
@@ -305,13 +305,13 @@ test_fit(ScwmWindow * psw, int x11, int y11, int aoimin)
 	(testw->icon_w)) {
       if (testw->fIconUnmapped)
 	continue;
-      x21 = testw->icon_x_loc;
-      y21 = testw->icon_y_loc;
+      x21 = ICON_X_VP(testw);
+      y21 = ICON_Y_VP(testw);
       x22 = x21 + testw->icon_p_width;
       y22 = y21 + testw->icon_p_height + testw->icon_w_height;
     } else {
-      x21 = FRAME_X(testw);
-      y21 = FRAME_Y(testw);
+      x21 = FRAME_X_VP(testw);
+      y21 = FRAME_Y_VP(testw);
       x22 = x21 + FRAME_WIDTH(testw) + 2 * testw->bw;
       y22 = y21 + FRAME_HEIGHT(testw) + 2 * testw->bw;
     }
@@ -599,7 +599,7 @@ PlaceWindow(ScwmWindow *psw, int Desk)
 
   default_select_desk(psw,Desk);
 
-#ifdef DEBUG_PLACE_WINDOW
+#if DEBUG_PLACE_WINDOW
   scwm_msg(DBG,"PlaceWindow","attr = (%d,%d)",psw->attr.x,psw->attr.y);
 #endif
 

@@ -375,6 +375,8 @@ MoveViewport_internal(int newx, int newy, Bool grab)
   Scr.Vx = newx;
   Scr.Vy = newy;
 
+  Broadcast(M_NEW_PAGE, 5, Scr.Vx, Scr.Vy, Scr.CurrentDesk, Scr.VxMax, Scr.VyMax, 0, 0);
+
   for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
     /* do not bother with moving windows not on the current desk */
     if (psw->Desk == Scr.CurrentDesk) {
@@ -382,8 +384,6 @@ MoveViewport_internal(int newx, int newy, Bool grab)
       MovePswIconToCurrentPosition(psw);
     }
   }
-
-  Broadcast(M_NEW_PAGE, 5, Scr.Vx, Scr.Vy, Scr.CurrentDesk, Scr.VxMax, Scr.VyMax, 0, 0);
 
   checkPanFrames();
 }

@@ -958,7 +958,8 @@ HandleMapRequestKeepRaised(Window KeepRaised)
 void 
 HandleMapNotify()
 {
-  DBUG((DBG,"HandleMapNotify", "Routine Entered"));
+  DBUG((DBG,"HandleMapNotify", "Routine Entered for %s",
+        pswCurrent?pswCurrent->name:"null"));
 
   if (!pswCurrent) {
     if ((Event.xmap.override_redirect == True) &&
@@ -1006,7 +1007,8 @@ HandleMapNotify()
       && (pswCurrent->boundary_width < 2)) {
     SetBorder(pswCurrent, False, True, True, pswCurrent->frame);
   }
-  SetupFrame(pswCurrent,FRAME_X(pswCurrent),FRAME_Y(pswCurrent),
+  SetupFrame(pswCurrent,
+             FRAME_X_VP(pswCurrent),FRAME_Y_VP(pswCurrent),
              FRAME_WIDTH(pswCurrent),FRAME_HEIGHT(pswCurrent),
              WAS_MOVED,WAS_RESIZED);
   XSync(dpy, 0);
