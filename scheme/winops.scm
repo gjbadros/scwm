@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;;; Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
+;;;; Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros and Jeff W. Nichols
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@
   :use-module (app scwm optargs)
   :use-module (app scwm defoption)
   :use-module (app scwm base)
-  :use-module (app scwm style-options))
+  :use-module (app scwm style-options)
+  :use-module (app scwm sort))
 
 
 
@@ -282,3 +283,22 @@ The size does not include the window decorations -- only the client
 application size. WIN defaults to the window context in the usual way
 if not specified."
   (resize-to w h win))
+
+
+;; Window sorting
+
+;; Sort windows by position
+
+(define*-public (sort-windows-by-middle-pos winlist #&key (horiz #t) (ascending #t))
+  (let* ((assoclist (map (lambda (w) 
+			   (let* ((pos (window-viewport-position w))
+				  (size (window-frame-size w)))
+			     (list (if horiz 
+				       (+ (car pos) (car size)) 
+				       (+ (cadr pos) (cadr size))) w)))
+			 winlist))
+	 (compare (if ascending < >))
+	 (sortedlist (sort assoclist (lambda (l1 l2) (compare (car l1) (car l2))))))
+    (map (lambda (t) (cadr t)) sortedlist)))
+
+

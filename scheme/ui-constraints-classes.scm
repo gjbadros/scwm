@@ -9,6 +9,7 @@
   :use-module (app scwm window-locations)
   :use-module (app scwm nonants)
   :use-module (app scwm window-selection)
+  :use-module (app scwm winops)
   :use-module (app scwm nonants)
   :use-module (app scwm xlib-drawing))
 
@@ -749,33 +750,29 @@
   
 ;; ui-constructor
 (define (ui-cnctr-keep-above)
-  (two-window-prompter "keep-above" "Window on top?" "Window below?"))
+  (two-window-or-more-prompter "keep-above" "Window on top?" "Window below?"))
 
 ;; draw-proc
 (define (draw-cn-keep-above ui-constraint enable focus mode)
-  (let ((cn (car (ui-constraint-cn ui-constraint)))
-	(win-list (ui-constraint-windows ui-constraint))
+  (let ((winlist (ui-constraint-windows ui-constraint))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
-    (if (not (= (length win-list) 2))
-	(error "Expected only two windows in win-list of cn for draw-cn-keep-lefts-even"))
-    (let* ((w1 (car win-list))
-	   (w2 (cadr win-list))
-	   (w1pos (window-center-bottom w1))
-	   (w2pos (window-center-top w2)))
+    (let* ((wblist (map (lambda (w) (window-center-bottom w)) winlist))
+	   (wtlist (map (lambda (w) (window-center-top w)) (cdr winlist))))
       (xlib-set-line-width! width)
-      ;; GJB:FIXME:: we'd like to be able to use color, mode
-      ;; but cannot w/o using an overlay plance
-      (xlib-draw-line! w1pos w2pos)
-      (draw-window-line-anchor w1pos 5)
-      (draw-window-line-anchor w2pos 5))))
+      (for-each (lambda (wt wb) 
+		  (xlib-draw-line! wb wt)
+		  (draw-window-line-anchor wb 5)
+		  (draw-window-line-anchor wt 5))
+		wtlist wblist))))
 
 ;; constructor
 (define* (cnctr-keep-above winlist #&optional (enable? #f))
-  (let* ((clv1 (window-clv-yb (car winlist)))
-	 (clv2 (window-clv-yt (cadr winlist)))
-	 (cn (make-cl-constraint clv1 <= clv2)))
-    (and enable? (cl-add-constraint (scwm-master-solver) cn))
-    (list (list cn) winlist)))
+  (let* ((sortedwl (sort-windows-by-middle-pos winlist #:horiz #f))
+	 (clvtlist (map (lambda (w) (window-clv-yt w)) (cdr sortedwl)))
+	 (clvblist (map (lambda (w) (window-clv-yb w)) sortedwl))
+	 (cnlist (map (lambda (ct cb) (make-cl-constraint cb <= ct)) clvtlist clvblist)))
+    (and enable? (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist))
+    (list cnlist sortedwl)))
 
 ;; declare the keep-above constraint
 (define-public uicc-ka
@@ -789,31 +786,29 @@
 
 ;; ui-constructor
 (define (ui-cnctr-keep-to-left-of)
-  (two-window-prompter "keep-to-left-of" "Window on left?" "Window on right?"))
+  (two-window-or-more-prompter "keep-to-left-of" "Window on left?" "Window on right?"))
 
 ;; draw-proc
 (define (draw-cn-keep-to-left-of ui-constraint enable focus mode)
-  (let ((cn (car (ui-constraint-cn ui-constraint)))
-	(win-list (ui-constraint-windows ui-constraint))
+  (let ((winlist (ui-constraint-windows ui-constraint))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
-    (if (not (= (length win-list) 2))
-	(error "Expected only two windows in win-list of cn for draw-cn-keep-lefts-even"))
-    (let* ((w1 (car win-list))
-	   (w2 (cadr win-list))
-	   (w1pos (window-right-middle w1))
-	   (w2pos (window-left-middle w2)))
+    (let* ((wrlist (map (lambda (w) (window-right-middle w)) winlist))
+	   (wllist (map (lambda (w) (window-left-middle w)) (cdr winlist))))
       (xlib-set-line-width! width)
-      (xlib-draw-line! w1pos w2pos)
-      (draw-window-line-anchor w1pos 5)
-      (draw-window-line-anchor w2pos 5))))
+      (for-each (lambda (wl wr) 
+		  (xlib-draw-line! wr wl)
+		  (draw-window-line-anchor wr 5)
+		  (draw-window-line-anchor wl 5))
+		wllist wrlist))))
 
 ;; constructor
 (define* (cnctr-keep-to-left-of winlist #&optional (enable? #f))
-  (let* ((clv1 (window-clv-xr (car winlist)))
-	 (clv2 (window-clv-xl (cadr winlist)))
-	 (cn (make-cl-constraint clv1 <= clv2)))
-    (and enable? (cl-add-constraint (scwm-master-solver) cn))
-    (list (list cn) winlist)))
+  (let* ((sortedwl (sort-windows-by-middle-pos winlist #:horiz #t))
+	 (clvrlist (map (lambda (w) (window-clv-xr w)) sortedwl))
+	 (clvllist (map (lambda (w) (window-clv-xl w)) (cdr sortedwl)))
+	 (cnlist (map (lambda (cr cl) (make-cl-constraint cr <= cl)) clvrlist clvllist)))
+    (and enable? (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist))
+    (list cnlist sortedwl)))
 
 ;; declare the keep-to-left-of constraint
 (define-public uicc-klo

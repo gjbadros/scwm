@@ -1,3 +1,19 @@
+1999-07-29  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* winops.scm: Added a method to sort a list of 
+	windows based on the position of their middle.
+
+	* ui-constraints-composition.scm: Adapted 
+	ui-constraints-composition to work with the 
+	window-selection module.  If the correct number of
+	selections exists, selected windows will be used to
+	create the constraint rather than prompting.
+
+	* ui-constraints-classes.scm: Adapted keep-above and 
+	keep-to-left-of constraint classes to work with the
+	window-selection module and two or more selections.
+	Constraints are based on window position.
+
 1999-07-28  Jeff W. Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Added support for using the
