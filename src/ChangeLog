@@ -1,3 +1,14 @@
+Mon Nov 24 00:07:05 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.in: Compile image.c; use guile-snarf on it as well to
+ 	create image.x.
+
+Sun Nov 23 23:59:00 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* image.c: Updated to be able to at least compile; experimentally
+ 	use the SCM_PROC macro and the guile-snarf program to register new
+ 	procedures.
+
 Sun Nov 23 17:08:02 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* xmisc.[hc]: added DrawImage to abstract drawing of both pixmaps
