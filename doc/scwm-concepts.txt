@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From src/window.c:3440]
+[From src/window.c:3455]
 
 
 Fonts
@@ -351,7 +351,7 @@ Interactive specifications
 </tgroup>
 </table>
 
-[From src/window.c:4263]
+[From src/window.c:4278]
 
 
 Key Specifier
@@ -458,7 +458,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From src/events.c:616]
+[From src/events.c:624]
 
 
 Shadow and Highlight Factors
@@ -498,7 +498,7 @@ Sticky
   A "sticky" window will appear on all desktops, and will remain at the
 same screen position regardless of scrolling within the current
 desktop.
-[From src/window.c:2130]
+[From src/window.c:2145]
 
 
 Themes
@@ -553,7 +553,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From src/window.c:1048]
+[From src/window.c:1063]
 
 
 Window Style
@@ -620,7 +620,7 @@ use-theme (window-style) from scheme/themes.scm:48
 winlist-skip (boolean-style) from scheme/winlist.scm:91
 circulate-skip (boolean-style) from scheme/winlist.scm:138
 circulate-skip-icon (boolean-style) from scheme/winlist.scm:139
-start-maximized (window-style) from scheme/winops.scm:172
+start-maximized (window-style) from scheme/winops.scm:175
 
 [From src/face.c:542]
 
@@ -633,7 +633,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From src/window.c:502]
+[From src/window.c:503]
 
 
 X atoms
@@ -646,7 +646,7 @@ often, these names are in fact X atoms.
 New X atoms can be created, or old ones retrieved simply by specifying
 the string the atom stands for. An X atom can also be converted back to a
 string. Scwm provides primitives for these actions. 
-[From src/xproperty.c:365]
+[From src/xproperty.c:360]
 
 
 X Properties

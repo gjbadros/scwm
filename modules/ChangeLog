@@ -1,3 +1,27 @@
+Sun Jan  9 16:14:48 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* c-animation/c-animation.c (AnimatedResizeWindows): Permit a
+	maximum of 100 steps in a window animation.  Make keypresses in
+	the middle of an animation cause it to jump to the end, instead of 
+	just stopping in the middle of the animation.  Added some
+	debugging code.  Be sure that the *original* size of the windows
+	is *always* used to compute the deltas within the iterations --
+	ideally we would cache the values somewhere or build up an array,
+	but there still isn't really a performance problem, so why
+	bother.  (animated_resize_common) do not ComputePositionForResize
+	before calling AnimatedResizeWindow, since the latter function
+	does the gravity handling itself.  (This fixes bugs in animated
+	maximization, e.g., that cause the window to wrongly move
+	offscreen;  non-animated maximization worked fine before and still 
+	does).
+
+Sun Jan  9 16:13:15 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* make-devtest: Copy the files *after* removing the old files, so
+	the inodes don't get re-used (thus letting running Scwm's that use 
+	the old libraries keep running, and not crash after running this
+	script).
+
 2000-01-09  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* viavoice/Makefile.am (INCLUDES): Would not find (generated)

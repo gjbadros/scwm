@@ -1,3 +1,10 @@
+Sun Jan  9 16:29:04 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use `netscape-goto-selection-url' instead of
+	`netscape-goto-cut-buffer-url'.  This is useful because
+	highlighting text in, e.g., netscape, does *not* set the
+	CUT_BUFFER0 property, it only grabs the selection.
+
 Sat Jan  8 17:48:04 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Drop H-comma, and use Hyper-w for new

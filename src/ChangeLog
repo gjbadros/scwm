@@ -1,3 +1,48 @@
+Sun Jan  9 17:17:51 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xproperty.c: Fix #define FUNC_NAME mismatch caught by scwmdoc.
+
+	* events.c (HandleKeyEvent): Ungrab the keyboard when we're about
+	to do the execution of the commands.  This lets C-S-M-Enter, e.g., 
+	still be sent to the application (XTerm, e.g.) even when C-S-M is
+	a three-modifier binding that would otherwise wait for the Meta to 
+	be released before releasing the passive grab.  Fixs bug reported
+	by Stefan Saroui re: C-S-M-Enter in XTerms no longer working since 
+	I added the fvwm2-pager auto-raising on C-S-M modifier binding.
+
+	* binding.c: Let `unbind-keycode' take two ignored-proc arguments
+	to permit calls that are otherwise identical to `bind-keycode'
+
+Sun Jan  9 16:22:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* placement.c: Consistently subtract (psw->old_bw + psw->bw) from
+	the final x/y positions for the placement functions.  The various
+	fns were all different w.r.t. whether they did this.
+
+	* events.c: Added `X-SelectionNotify-hook', and handle
+	SelectionNotify events by calling the hook.  Useful with new
+	`X-convert-selection' primitive.
+
+	* xproperty.c: Added `X-convert-selection',
+	`X-get-selection-owner'.  Make `X-property-delete!' take an Atom
+	or a String, instead of requiring a string.
+
+	* window.h: Fix aliasing of "w" variable bug in
+	VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY.
+
+	* window.c (SetScwmWindowGeometry): Correct x/y after using
+	ConstrainSize to account for gravity.  No remarkable perceived
+	effect:  I'm trying to eliminate the jumpiness of the right edge
+	of an East-gravity window when resizing it out to the left (so
+	that it's right edge should stay exactly where it is throughout
+	the animation)
+
+	* resize.h, resize.c (ComputeDeltaForResizeWithOrigSize): Added
+	this function, and rewrote ComputeDeltaForResize in terms of it.
+	This permits using something other than the current
+	FRAME_WIDTH/FRAME_HEIGHT for the size (as was needed by
+	c-animation.c).
+
 Sat Jan  8 17:17:40 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* miscprocs.c: Added `get-next-event' primitive.  Updates docs of

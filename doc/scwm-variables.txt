@@ -3,7 +3,7 @@ animation-delay
 Number of milliseconds to delay between frames of animation.
 Defaults to 10 milliseconds if this is not a number.  See also
 `animated-resize-window', `animated-move-window', etc. 
-[From modules/c-animation/c-animation.c:614]
+[From modules/c-animation/c-animation.c:629]
 
 
 circle-pie-menu-look
@@ -16,7 +16,7 @@ configure-request-handled
 - 
 Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.
 See also `X-ConfigureRequest-hook'. 
-[From src/events.c:2360]
+[From src/events.c:2375]
 
 
 cursor-icon

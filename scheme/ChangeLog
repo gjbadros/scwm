@@ -1,3 +1,13 @@
+Sun Jan  9 17:21:52 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* modifier-key-bindings.scm: Added better comments, drop
+	unbind-keycode-ignore-procs since that is now a capability of the
+	primitive. 
+
+	* fvwm-module.scm: ws change.
+
+	* base.scm: `caught-error' need not be define*-public, just define-public.
+
 Sun Jan  9 16:25:43 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xprop-extras.scm: Added `X-handle-selection-string' (nicer
