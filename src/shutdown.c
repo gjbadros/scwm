@@ -133,7 +133,7 @@ SCWM_PROC(restart, "restart", 0, 1, 0,
   }
 
   Done(1, sz);  /* 1 == restart */
-  free(sz); /* Done shouldn't return, but you never know... */
+  FREE(sz); /* Done shouldn't return, but you never know... */
   return SCM_UNSPECIFIED;	
 }
 

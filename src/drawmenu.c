@@ -355,7 +355,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 #endif
 
     MenuDrawingInfo *pmdi = pmd->pmdi =
-      (MenuDrawingInfo *) safemalloc(sizeof(MenuDrawingInfo));
+      NEW(MenuDrawingInfo);
 
     pmdi->BGColor = DYNAMIC_SAFE_COLOR(pmenu->scmBGColor);
     pmdi->SideBGColor = DYNAMIC_SAFE_COLOR(pmenu->scmSideBGColor);

@@ -12,6 +12,7 @@
 #include "scwm.h"
 #include "misc.h"
 #include "callbacks.h"
+#include "scwm-constraints.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -74,36 +75,37 @@ SCWM_PROC(marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0,
 {
   ScwmWindow *psw;
   unsigned long info[24];
+  int i;
 
   VALIDATE(win, s_marshal_fvwm2_config_info);
   psw = SCWMWINDOW(win);
 
-  info[0] = psw->w;
-  info[1] = psw->frame;
-  info[2] = 0; /* modules shouldn't need to know this! was (unsigned long)t; */
-  info[3] = psw->frame_x;
-  info[4] = psw->frame_y;
-  info[5] = psw->frame_width;
-  info[6] = psw->frame_height;
-  info[7] = psw->Desk;
-  info[8] = FlagsBitsFromSw(psw);
-  info[9] = psw->title_height;
-  info[10] = psw->boundary_width;
-  info[11] = (psw->hints.flags & PBaseSize)?psw->hints.base_width:0;
-  info[12] = (psw->hints.flags & PBaseSize)?psw->hints.base_height:0;
-  info[13] = (psw->hints.flags & PResizeInc)?psw->hints.width_inc:1;
-  info[14] = (psw->hints.flags & PResizeInc)?psw->hints.height_inc:1;
-  info[15] = psw->hints.min_width;
-  info[16] = psw->hints.min_height;
-  info[17] = psw->hints.max_width;
-  info[18] = psw->hints.max_height;
-  info[19] = psw->icon_w;
-  info[20] = psw->icon_pixmap_w;
-  info[21] = psw->hints.win_gravity;
-  info[22] = XCOLOR(psw->TextColor);
-  info[23] = XCOLOR(psw->BackColor);
+  info[i=0] = psw->w;
+  info[++i] = psw->frame;
+  info[++i] = 0; /* modules shouldn't need to know this! was (unsigned long)t; */
+  info[++i] = FRAME_X(psw);
+  info[++i] = FRAME_Y(psw);
+  info[++i] = FRAME_WIDTH(psw);
+  info[++i] = FRAME_HEIGHT(psw);
+  info[++i] = psw->Desk;
+  info[++i] = FlagsBitsFromSw(psw);
+  info[++i] = psw->title_height;
+  info[++i] = psw->boundary_width;
+  info[++i] = (psw->hints.flags & PBaseSize)?psw->hints.base_width:0;
+  info[++i] = (psw->hints.flags & PBaseSize)?psw->hints.base_height:0;
+  info[++i] = (psw->hints.flags & PResizeInc)?psw->hints.width_inc:1;
+  info[++i] = (psw->hints.flags & PResizeInc)?psw->hints.height_inc:1;
+  info[++i] = psw->hints.min_width;
+  info[++i] = psw->hints.min_height;
+  info[++i] = psw->hints.max_width;
+  info[++i] = psw->hints.max_height;
+  info[++i] = psw->icon_w;
+  info[++i] = psw->icon_pixmap_w;
+  info[++i] = psw->hints.win_gravity;
+  info[++i] = XCOLOR(psw->TextColor);
+  info[++i] = XCOLOR(psw->BackColor);
 
-  return (gh_str2scm((char *)info,24*sizeof(unsigned long)));
+  return gh_str2scm((char *)info,sizeof(info));
 }
 
 void init_module_interface()

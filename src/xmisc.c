@@ -60,7 +60,7 @@ DrawImage(Window w, scwm_image *psimg, int cpixXoffset, int cpixYoffset, GC gc)
 XTextProperty *
 PNewXTextPropertyFromSz(const char *sz)
 {
-  XTextProperty *ptextprop = (XTextProperty *) safemalloc(sizeof(XTextProperty));
+  XTextProperty *ptextprop = NEW(XTextProperty);
   ptextprop->value = (unsigned char *) sz;
   ptextprop->encoding = XA_STRING;
   ptextprop->format = 8;

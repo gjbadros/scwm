@@ -5,6 +5,7 @@
 
 #include <libguile.h>
 #include "scwm.h"
+#include "scwm-constraints.h"
 
 #undef EXTERN
 #undef EXTERN_SET
@@ -45,10 +46,12 @@ typedef struct ScwmWindow {
   Window icon_w;		/* the icon window */
   Window icon_pixmap_w;		/* the icon window */
   int wShaped;			/* is this a shaped window */
-  int frame_x;			/* x position of frame */
-  int frame_y;			/* y position of frame */
-  int frame_width;		/* width of frame */
-  int frame_height;		/* height of frame */
+
+  ScwmClVariable frame_x;       /* x position of frame */
+  ScwmClVariable frame_y;       /* y position of frame */
+  ScwmClVariable frame_width;   /* width of frame */
+  ScwmClVariable frame_height;  /* height of frame */
+
   int boundary_width;
   int corner_width;
   int bw;
@@ -210,7 +213,7 @@ EXTERN SCM cannot_grab_hook;
 #define WINDOW(X)  ((scwm_window *)SCM_CDR(X))
 #define SCWMWINDOW(X) (((scwm_window *)SCM_CDR(X))->psw)
 #define VALIDWINP(X) (((scwm_window *)SCM_CDR(X))->valid)
-
+#define PSWFROMWIN(X) (((scwm_window *)SCM_CDR(X))->psw)
 
 #define set_window_context(X) window_context=X;
 #define unset_window_context() window_context=SCM_UNDEFINED;

@@ -86,9 +86,9 @@ free_menu(SCM obj)
 {
   Menu *pmenu = MENU(obj);
   if (pmenu->pchUsedShortcutKeys) {
-    free(pmenu->pchUsedShortcutKeys);
+    FREE(pmenu->pchUsedShortcutKeys);
   }
-  free(pmenu);
+  FREE(pmenu);
   return(0);
 }
 
@@ -130,13 +130,12 @@ NewPchKeysUsed(DynamicMenu *pmd)
   MenuItemInMenu **rgpmiim = pmd->rgpmiim;
   int ipmiim = 0;
   int cItems = gh_length(list_of_menuitems);
-  char *pch = (char *) safemalloc(sizeof(char) * (cItems + 1));
+  char *pch = NEWC(cItems+1, char);
   int ich = 0;
   SCM item;
   SCM rest = list_of_menuitems;
   MenuItem *pmi;
 
-  memset(pch,0,cItems+1);
   while (True) {
     item = gh_car(rest);
     pmi = SAFE_MENUITEM(item);
@@ -192,7 +191,7 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
            SCM bg_color, SCM text_color,
            SCM picture_bg, SCM font, SCM extra_options))
 {
-  Menu *pmenu = (Menu *) safemalloc(sizeof(Menu));
+  Menu *pmenu = NEW(Menu);
   SCM answer;
   int iarg = 1;
 
@@ -1057,10 +1056,10 @@ FreeDynamicMenu(DynamicMenu *pmd)
   int ipmiim = 0;
   int cmiim = pmd->cmiim;
   for ( ; ipmiim < cmiim; ipmiim++) {
-    free(pmd->rgpmiim[ipmiim]);
+    FREE(pmd->rgpmiim[ipmiim]);
   }
-  free(pmd->rgpmiim);
-  free(pmd->pmdi);
+  FREEC(pmd->rgpmiim);
+  FREE(pmd->pmdi);
 }  
   
   
@@ -1072,8 +1071,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
   Menu *pmenu = pmd->pmenu;
   int cmiim = gh_length(pmenu->scmMenuItems);
   int ipmiim = 0;
-  MenuItemInMenu **rgpmiim = pmd->rgpmiim = (MenuItemInMenu **)
-    safemalloc(cmiim * sizeof(MenuDrawingInfo));
+  MenuItemInMenu **rgpmiim = pmd->rgpmiim = NEWC(cmiim, MenuItemInMenu *);
   SCM rest = pmd->pmenu->scmMenuItems;
 
   /* Initialize the list of dynamic menu items;
@@ -1093,7 +1091,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
       scwm_msg(WARN,__FUNCTION__,"Bad menu item number %d",ipmiim);
       goto NEXT_MENU_ITEM;
     }
-    pmiim = (MenuItemInMenu *) safemalloc(sizeof(MenuItemInMenu));
+    pmiim = NEW(MenuItemInMenu);
     rgpmiim[ipmiim] = pmiim;
 
     /* save some back pointers so we can find a dynamic menu
@@ -1126,7 +1124,7 @@ InitializeDynamicMenu(DynamicMenu *pmd)
   if (!pmd->pmenu->pchUsedShortcutKeys) {
   */
   /* we choose to not use this optimization for now */
-  free(pmd->pmenu->pchUsedShortcutKeys); 
+  FREE(pmd->pmenu->pchUsedShortcutKeys); 
   pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
 }
 
@@ -1137,7 +1135,7 @@ static
 DynamicMenu *
 NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom) 
 {
-  DynamicMenu *pmd = (DynamicMenu *) safemalloc(sizeof(DynamicMenu));
+  DynamicMenu *pmd = NEW(DynamicMenu);
   pmd->pmenu = pmenu;
   pmd->pmdNext = NULL;
   pmd->pmdPrior = pmdPoppedFrom;

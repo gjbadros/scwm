@@ -1,11 +1,10 @@
-
-
-/****************************************************************************
- * This module is all new
- * by Rob Nation 
+/* $Id
+ * (C) 1998 Maciej Stachowiak and Greg J. Badros
+ *
+ * This module is derived from code written by Rob Nation 
  * Copyright 1993 Robert Nation. No restrictions are placed on this code,
  * as long as the copyright notice is preserved
- ****************************************************************************/
+ */
 
 
 #include <config.h>
@@ -45,11 +44,9 @@ nocolor(char *note, char *name)
 	    gh_list(gh_str02scm(err), SCM_UNDEFINED));
 }
 
-/****************************************************************************
- * 
+/*
  * Allocates a linear color gradient (veliaa@rpi.edu)
- *
- ****************************************************************************/
+ */
 static Pixel *
 AllocLinearGradient(char *s_from, char *s_to, int npixels)
 {
@@ -75,7 +72,7 @@ AllocLinearGradient(char *s_from, char *s_to, int npixels)
   dg = (to.green - from.green) / npixels;
   b = from.blue;
   db = (to.blue - from.blue) / npixels;
-  pixels = (Pixel *) safemalloc(sizeof(Pixel) * npixels);
+  pixels = NEWC(npixels,Pixel);
   c.flags = DoRed | DoGreen | DoBlue;
   for (; i < npixels; ++i) {
     if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &c))
@@ -95,13 +92,9 @@ AllocLinearGradient(char *s_from, char *s_to, int npixels)
 }
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	CreateGCs - open fonts and create all the needed GC's.  I only
- *		    want to do this once, hence the first_time flag.
- *
- ***********************************************************************/
+/*
+ * CreateGCs - create all the needed GC's.  done only once during startup
+ */
 void 
 CreateGCs(void)
 {
@@ -122,22 +115,20 @@ CreateGCs(void)
   Scr.TransMaskGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 }
 
-/****************************************************************************
- * 
+/*
  * Allocates a nonlinear color gradient (veliaa@rpi.edu)
- *
- ****************************************************************************/
+ */
 Pixel *
 AllocNonlinearGradient(char *s_colors[], int clen[],
 		       int nsegs, int npixels)
 {
-  Pixel *pixels = (Pixel *) safemalloc(sizeof(Pixel) * npixels);
+  Pixel *pixels = NEWC(npixels,Pixel);
   int i = 0, curpixel = 0, perc = 0;
 
   if (nsegs < 1) {
     scwm_msg(ERR, "AllocNonlinearGradient",
 	     "must specify at least one segment");
-    free(pixels);
+    FREE(pixels);
     return NULL;
   }
   for (; i < npixels; i++)
@@ -151,14 +142,14 @@ AllocNonlinearGradient(char *s_colors[], int clen[],
     if (!p) {
       scwm_msg(ERR, "AllocNonlinearGradient",
 	       "couldn't allocate gradient");
-      free(pixels);
+      FREEC(pixels);
       return NULL;
     }
     for (; j < n; ++j)
       pixels[curpixel + j] = p[j];
     perc += clen[i];
     curpixel += n;
-    free(p);
+    FREEC(p);
   }
   for (i = curpixel; i < npixels; ++i)
     pixels[i] = pixels[i - 1];

@@ -129,7 +129,7 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
 {
   Window w = psw->w;
   Window wFrame = psw->frame;
-  int width = psw->frame_width;
+  int width = FRAME_WIDTH(psw);
   int shaded_height = psw->title_height + 2 * (psw->boundary_width + psw->bw);
   /* FIXGJB: using orig_ht doesn't seem right -- does it interact
      correctly w/ maximization? */
@@ -216,8 +216,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       if (XLookupKeysym(&(Event.xkey), 0) == XK_Escape) {
 	if (!opaque_move)
 	  MoveOutline(Scr.Root, 0, 0, 0, 0);
-	*FinalX = psw->frame_x;
-	*FinalY = psw->frame_y;
+	*FinalX = FRAME_X(psw);
+	*FinalY = FRAME_Y(psw);
 	finished = True;
       }
       done = True;

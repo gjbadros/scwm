@@ -514,9 +514,9 @@ HandleScwmExec()
 	XChangeProperty(dpy, w, XA_SCWMEXEC_REPLY, XA_STRING,
 			8, PropModeReplace, ret, rlen);
 	
-	free(ret);
-	free(output);
-	free(error);
+	FREE(ret);
+	FREE(output);
+	FREE(error);
 	return;
       }
     }
@@ -679,13 +679,13 @@ HandlePropertyNotify()
       if (SHADED_P(pswCurrent)) break;
 
       GetWindowSizeHints(pswCurrent);
-      new_width = pswCurrent->frame_width;
-      new_height = pswCurrent->frame_height;
+      new_width = FRAME_WIDTH(pswCurrent);
+      new_height = FRAME_HEIGHT(pswCurrent);
       ConstrainSize(pswCurrent, &new_width, &new_height);
-      if ((new_width != pswCurrent->frame_width) ||
-	  (new_height != pswCurrent->frame_height))
-	SetupFrame(pswCurrent, pswCurrent->frame_x, pswCurrent->frame_y,
-		   new_width, new_height, False);
+      if ((new_width != FRAME_WIDTH(pswCurrent)) ||
+	  (new_height != FRAME_HEIGHT(pswCurrent)))
+	SetupFrame(pswCurrent, FRAME_X(pswCurrent), FRAME_Y(pswCurrent),
+		   new_width, new_height, False, NOT_MOVED, WAS_RESIZED);
 
       BroadcastConfig(M_CONFIGURE_WINDOW, pswCurrent);
     }
@@ -1387,10 +1387,10 @@ HandleConfigureRequest()
   }
 
   /* Don't modify frame_XXX fields before calling SetupWindow! */
-  x = pswCurrent->frame_x;
-  y = pswCurrent->frame_y;
-  width = pswCurrent->frame_width;
-  height = pswCurrent->frame_height;
+  x = FRAME_X(pswCurrent);
+  y = FRAME_Y(pswCurrent);
+  width = FRAME_WIDTH(pswCurrent);
+  height = FRAME_HEIGHT(pswCurrent);
 
   /* for restoring */
   if (cre->value_mask & CWBorderWidth) {
@@ -1429,10 +1429,11 @@ HandleConfigureRequest()
   if (SHADED_P(pswCurrent)) {
     pswCurrent->orig_wd = width;
     pswCurrent->orig_ht = height;
-    height = pswCurrent->frame_height;
+    height = FRAME_HEIGHT(pswCurrent);
   }
 
-  SetupFrame(pswCurrent, x, y, width, height, sendEvent);
+  SetupFrame(pswCurrent, x, y, width, height, sendEvent,
+             WAS_MOVED,WAS_RESIZED);
   KeepOnTop();
 }
 
@@ -1455,7 +1456,7 @@ HandleShapeNotify(void)
     if (sev->kind != ShapeBounding)
       return;
     pswCurrent->wShaped = sev->shaped;
-    SetShape(pswCurrent, pswCurrent->frame_width);
+    SetShape(pswCurrent, FRAME_WIDTH(pswCurrent));
   }
 }
 
@@ -1793,7 +1794,7 @@ SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
     int len;
     char *keyname = gh_scm2newstr(key,&len);
     scwm_msg(WARN,__FUNCTION__,"Bad keysym `%s' not sent",keyname);
-    free(keyname);
+    FREE(keyname);
   }
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;

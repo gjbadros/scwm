@@ -50,8 +50,8 @@ size_t
 free_face(SCM obj)
 {
   FreeButtonFace(dpy,BUTTONFACE(obj));
-  free(BUTTONFACE(obj));
-  free(FACE(obj));
+  FREE(BUTTONFACE(obj));
+  FREE(FACE(obj));
   return (0);
 }
 
@@ -101,9 +101,8 @@ SCWM_PROC(make_face, "make-face",2,0,0,
     scm_wrong_type_arg("make-face",2,specs);
   }
 
-  bf=(ButtonFace *)calloc(1,sizeof(ButtonFace));
-  sf=(scwm_face *)safemalloc(sizeof(scwm_face));
-  sf->bf=bf;
+  sf = NEW(scwm_face);
+  sf->bf = bf = NEW(ButtonFace);
 
   SCM_DEFER_INTS;
   SCM_NEWCELL(answer);
@@ -357,8 +356,8 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	/* FIXMS give a better error message */
 	scm_wrong_type_arg("add_spec_to_face_x",3,arg);
       }
-      perc = (int *) safemalloc(nsegs*sizeof(int));
-      s_colors = (char **) safemalloc((nsegs+1)*sizeof(char *));
+      perc = NEWC(nsegs,int);
+      s_colors = NEWC(nsegs+1,char *);
 
       sum=0;
       for (i = 0, p=arg; i <= nsegs; ++i, p=SCM_CDR(p)) {
@@ -378,20 +377,20 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       
       if (sum!=100) {
 	for (i = 0; i <= nsegs; ++i) {
-	  free(s_colors[i]);
+	  FREE(s_colors[i]);
 	}
-	free(s_colors);
-	free(perc);
+	FREEC(s_colors);
+	FREEC(perc);
 	/* FIXMS give a better error message */
 	scm_wrong_type_arg("add_spec_to_face_x",3,arg);
       }
 
       pixels = AllocNonlinearGradient(s_colors, perc, nsegs, npixels);
       for (i = 0; i <= nsegs; ++i) {
-	free(s_colors[i]);
+	FREE(s_colors[i]);
       }
-      free(s_colors);
-      free(perc);
+      FREEC(perc);
+      FREEC(s_colors);
 
       if (!pixels) {
 	/* error: couldn't allocate gradient */
@@ -486,8 +485,7 @@ ButtonFace *append_new_face(ButtonFace *bf) {
   if ((bf->style & ButtonFaceTypeMask) == SimpleButton) {
     return bf;
   } else {
-    ButtonFace *retval;
-    retval=(ButtonFace *)calloc(1,sizeof(ButtonFace));
+    ButtonFace *retval = NEW(ButtonFace);
     bf->next=retval;
     retval->style=SimpleButton;
     retval->next=NULL;
@@ -643,7 +641,7 @@ FreeButtonFace(Display * dpy, ButtonFace * bf)
        XFreeColors(dpy, Scr.ScwmRoot.attr.colormap, 
        bf->u.grad.pixels, bf->u.grad.npixels,
        AllPlanes); */
-    free(bf->u.grad.pixels);
+    FREEC(bf->u.grad.pixels);
     bf->u.grad.pixels = NULL;
     break;
 
@@ -657,7 +655,7 @@ FreeButtonFace(Display * dpy, ButtonFace * bf)
   /* delete any compound styles */
   if (bf->next) {
     FreeButtonFace(dpy, bf->next);
-    free(bf->next);
+    FREE(bf->next);
   }
   bf->next = NULL;
   bf->style &= ~ButtonFaceTypeMask;

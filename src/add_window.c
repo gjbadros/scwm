@@ -244,11 +244,13 @@ AddWindow(Window w)
   XrmValue rm_value;
   XTextProperty text_prop;
   extern Bool PPosOverride;
+  int frame_x, frame_y;
+  int frame_width, frame_height;
 
   NeedToResizeToo = False;
   /* allocate space for the scwm window */
 
-  psw = (ScwmWindow *) calloc(1, sizeof(ScwmWindow));
+  psw = NEWCPP(ScwmWindow);
   if (!psw) {
     return NULL;
   }
@@ -259,7 +261,7 @@ AddWindow(Window w)
 
   if (!PPosOverride)
     if (!FXWindowAccessible(dpy,psw->w)) {
-      free((char *) psw);
+      FREECPP(psw);
       return (NULL);
     }
   if (XGetWMName(dpy, psw->w, &text_prop) != 0)
@@ -371,11 +373,10 @@ AddWindow(Window w)
   GetWindowSizeHints(psw);
 
   /* Tentative size estimate */
-  psw->frame_width = psw->attr.width + 2 * psw->boundary_width;
-  psw->frame_height = psw->attr.height + psw->title_height +
-    2 * psw->boundary_width;
+  frame_width = psw->attr.width + 2 * psw->boundary_width;
+  frame_height = psw->attr.height + psw->title_height + 2 * psw->boundary_width;
 
-  ConstrainSize(psw, &psw->frame_width, &psw->frame_height);
+  ConstrainSize(psw, &frame_width, &frame_height);
 
   /* Find out if the client requested a specific desk on the command line. */
   if (XGetCommand(dpy, psw->w, &client_argv, &client_argc)) {
@@ -388,6 +389,19 @@ AddWindow(Window w)
     XrmDestroyDatabase(db);
     db = NULL;
   }
+
+#ifdef USE_CASSOWARY
+  psw->frame_x.set_value(frame_x);
+  psw->frame_y.set_value(frame_y);
+  psw->frame_width.set_value(frame_width);
+  psw->frame_height.set_value(frame_height);
+#else
+  FRAME_X(psw) = frame_x;
+  FRAME_Y(psw) = frame_y;
+  FRAME_WIDTH(psw) = frame_width;
+  FRAME_HEIGHT(psw) = frame_height;
+#endif
+
   if (!PlaceWindow(psw, Desk))
     return NULL;
 
@@ -400,7 +414,7 @@ AddWindow(Window w)
    */
   XGrabServer_withSemaphore(dpy); 
   if (!FXWindowAccessible(dpy,w)) {
-    free((char *) psw);
+    FREECPP(psw);
     XUngrabServer_withSemaphore(dpy);
     return (NULL);
   }
@@ -441,13 +455,12 @@ AddWindow(Window w)
   Scr.ScwmRoot.next = psw;
 
   /* create windows */
-  psw->frame_x = psw->attr.x + psw->old_bw - psw->bw;
-  psw->frame_y = psw->attr.y + psw->old_bw - psw->bw;
+  frame_x = psw->attr.x + psw->old_bw - psw->bw;
+  frame_y = psw->attr.y + psw->old_bw - psw->bw;
 
-  psw->frame_width = psw->attr.width + 2 * psw->boundary_width;
-  psw->frame_height = psw->attr.height + psw->title_height +
-    2 * psw->boundary_width;
-  ConstrainSize(psw, &psw->frame_width, &psw->frame_height);
+  frame_width = psw->attr.width + 2 * psw->boundary_width;
+  frame_height = psw->attr.height + psw->title_height + 2 * psw->boundary_width;
+  ConstrainSize(psw, &frame_width, &frame_height);
 
   valuemask = CWBorderPixel | CWCursor | CWEventMask;
   if (Scr.d_depth < 2) {
@@ -483,13 +496,13 @@ AddWindow(Window w)
 
   /* What the heck, we'll always reparent everything from now on! */
   DBUG(__FUNCTION__,"Creating child of root window: %d %d, %d x %d, %d",
-       psw->frame_x, psw->frame_y,
-       psw->frame_width, psw->frame_height,
+       FRAME_X(psw), FRAME_Y(psw),
+       FRAME_WIDTH(psw), FRAME_HEIGHT(psw),
        psw->bw);
 
   psw->frame =
-    XCreateWindow(dpy, Scr.Root, psw->frame_x, psw->frame_y,
-		  psw->frame_width, psw->frame_height,
+    XCreateWindow(dpy, Scr.Root, FRAME_X(psw), FRAME_Y(psw),
+		  FRAME_WIDTH(psw), FRAME_HEIGHT(psw),
 		  psw->bw, CopyFromParent, InputOutput,
 		  CopyFromParent,
 		  valuemask,
@@ -506,15 +519,15 @@ AddWindow(Window w)
   attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
   DBUG(__FUNCTION__,"Creating child of frame: %d %d, %d x %d, %d",
        psw->boundary_width, psw->boundary_width + psw->title_height,
-       psw->frame_width - 2 * psw->boundary_width,
-       psw->frame_height - 2 * psw->boundary_width - psw->title_height,
+       FRAME_WIDTH(psw) - 2 * psw->boundary_width,
+       FRAME_HEIGHT(psw) - 2 * psw->boundary_width - psw->title_height,
        psw->bw);
   psw->Parent =
     XCreateWindow(dpy, psw->frame,
 		  psw->boundary_width, 
 		  psw->boundary_width + psw->title_height,
-		  (psw->frame_width - 2 * psw->boundary_width),
-		  (psw->frame_height - 2 * psw->boundary_width -
+		  (FRAME_WIDTH(psw) - 2 * psw->boundary_width),
+		  (FRAME_HEIGHT(psw) - 2 * psw->boundary_width -
 		   psw->title_height), psw->bw, CopyFromParent,
 		  InputOutput, CopyFromParent, valuemask, &attributes);
 
@@ -522,7 +535,7 @@ AddWindow(Window w)
 			   EnterWindowMask | LeaveWindowMask);
   psw->title_x = psw->title_y = 0;
   psw->title_w = 0;
-  psw->title_width = psw->frame_width - 2 * psw->corner_width
+  psw->title_width = FRAME_WIDTH(psw) - 2 * psw->corner_width
     - 3 + psw->bw;
   if (psw->title_width < 1)
     psw->title_width = 1;
@@ -687,15 +700,9 @@ AddWindow(Window w)
    * again in HandleMapNotify.
    */
   psw->fMapped = False;
-  width = psw->frame_width;
-  psw->frame_width = 0;
-  height = psw->frame_height;
-  psw->frame_height = 0;
 
-  /* Since we forced the width and height to be different from what is in 
-     psw->frame_width,frame_height, SetupFrame will pretend it has been
-     resized and deal accordingly. --03/27/98 gjb */
-  SetupFrame(psw, psw->frame_x, psw->frame_y, width, height, True);
+  SetupFrame(psw, frame_x, frame_y, frame_width, frame_height,
+             True, NOT_MOVED, WAS_RESIZED);
 
 
   /* wait until the window is iconified and the icon window is mapped
@@ -789,14 +796,14 @@ AddWindow(Window w)
   if (NeedToResizeToo) {
     XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
 		 Scr.MyDisplayHeight,
-		 psw->frame_x + (psw->frame_width >> 1),
-		 psw->frame_y + (psw->frame_height >> 1));
+		 FRAME_X(psw) + (FRAME_WIDTH(psw) >> 1),
+		 FRAME_Y(psw) + (FRAME_HEIGHT(psw) >> 1));
     Event.xany.type = ButtonPress;
     Event.xbutton.button = 1;
-    Event.xbutton.x_root = psw->frame_x + (psw->frame_width >> 1);
-    Event.xbutton.y_root = psw->frame_y + (psw->frame_height >> 1);
-    Event.xbutton.x = (psw->frame_width >> 1);
-    Event.xbutton.y = (psw->frame_height >> 1);
+    Event.xbutton.x_root = FRAME_X(psw) + (FRAME_WIDTH(psw) >> 1);
+    Event.xbutton.y_root = FRAME_Y(psw) + (FRAME_HEIGHT(psw) >> 1);
+    Event.xbutton.x = (FRAME_WIDTH(psw) >> 1);
+    Event.xbutton.y = (FRAME_HEIGHT(psw) >> 1);
     Event.xbutton.subwindow = None;
     Event.xany.window = psw->w;
     interactive_resize(psw->schwin);

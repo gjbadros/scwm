@@ -209,11 +209,11 @@ RestoreWithdrawnLocation(ScwmWindow * tmp, Bool fRestart)
 
     if (!fRestart) {
       /* Don't mess with it if its partially on the screen now */
-      if ((tmp->frame_x < 0) || (tmp->frame_y < 0) ||
-	  (tmp->frame_x >= Scr.MyDisplayWidth) ||
-	  (tmp->frame_y >= Scr.MyDisplayHeight)) {
-	w2 = (tmp->frame_width >> 1);
-	h2 = (tmp->frame_height >> 1);
+      if ((FRAME_X(tmp) < 0) || (FRAME_Y(tmp) < 0) ||
+	  (FRAME_X(tmp) >= Scr.MyDisplayWidth) ||
+	  (FRAME_Y(tmp) >= Scr.MyDisplayHeight)) {
+	w2 = (FRAME_WIDTH(tmp) >> 1);
+	h2 = (FRAME_HEIGHT(tmp) >> 1);
 	if ((xwc.x < -w2) || (xwc.x > (Scr.MyDisplayWidth - w2))) {
 	  xwc.x = xwc.x % Scr.MyDisplayWidth;
 	  if (xwc.x < -w2)

@@ -29,6 +29,7 @@
 #include "scwm.h"
 #include "callbacks.h"
 #include "guile-compat.h"
+#include "system.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -274,7 +275,7 @@ WarnBadHook(SCM hook)
     SCM hook_name = SCM_CAR(hook);
     char *szHookName = gh_scm2newstr(hook_name, NULL);
     scwm_msg(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", szHookName);
-    free(szHookName);
+    FREE(szHookName);
     SCM_SETCDR(hook, SCM_EOL);
   }
 }

@@ -77,6 +77,11 @@
 #include "scwmpaths.h"
 #include "guile-compat.h"
 #include "syscompat.h"
+#include "scwm-constraints.h"
+#ifdef USE_CASSOWARY
+#include "Cl/ClSimplexSolver.h"
+#include "constraint-primitives.h"
+#endif
 
 #include <stdarg.h>
 
@@ -198,12 +203,14 @@ main(int argc, char **argv)
   return 0;
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	scwm_main - start of scwm
- *
- ***********************************************************************
+
+
+#ifdef USE_CASSOWARY
+ClSimplexSolver solver;
+#endif
+
+/*
+ * scwm_main - main routine for scwm
  */
 void 
 scwm_main(int argc, char **argv)
@@ -236,7 +243,7 @@ char *Lang,*territory,*tmp;
   }
   tmp = index(Lang,'.');
   if (tmp) {
-      territory = safemalloc((tmp-Lang)*sizeof(char));
+      territory = NEWC(tmp-Lang+1,char);
       strncpy(territory,Lang,(tmp-Lang));
       *(territory+(size_t)(tmp-Lang)) = '\0';
   } else {
@@ -272,8 +279,11 @@ char *Lang,*territory,*tmp;
   init_events();
   init_deskpage();
   init_decor();
+#ifdef USE_CASSOWARY
+  init_constraint_primitives();
+#endif
 
-  szCmdConfig = (char *) safemalloc(1 * sizeof(char));
+  szCmdConfig = NEWC(1,char);
   
   szCmdConfig[0] = '\0';
   
@@ -437,7 +447,7 @@ char *Lang,*territory,*tmp;
    * with scwm -display term:0.0
    */
   len = strlen(XDisplayString(dpy));
-  display_string = (char *) safemalloc(len + 10);
+  display_string = NEWC(len+10,char);
   sprintf(display_string, "DISPLAY=%s", XDisplayString(dpy));
   putenv(display_string);
   /* Add a HOSTDISPLAY environment variable, which is the same as
@@ -446,26 +456,29 @@ char *Lang,*territory,*tmp;
   /* Note: Can't free the rdisplay_string after putenv, because it
    * becomes part of the environment! */
   if (strncmp(display_string, "DISPLAY=:", 9) == 0) {
-    char client[MAXHOSTNAME], *rdisplay_string;
+    char client[MAXHOSTNAME];
+    char *rdisplay_string = NULL;
     
     gethostname(client, MAXHOSTNAME);
-    rdisplay_string = (char *) safemalloc(len + 14 + strlen(client));
+    rdisplay_string = NEWC(len + 14 + strlen(client), char);
     sprintf(rdisplay_string, "HOSTDISPLAY=%s:%s", client, &display_string[9]);
     putenv(rdisplay_string);
+    FREEC(rdisplay_string);
   } else if (strncmp(display_string, "DISPLAY=unix:", 13) == 0) {
-    char client[MAXHOSTNAME], *rdisplay_string;
+    char client[MAXHOSTNAME];
+    char *rdisplay_string = NULL;
     
     gethostname(client, MAXHOSTNAME);
-    rdisplay_string = (char *) safemalloc(len + 14 + strlen(client));
+    rdisplay_string = NEWC(len + 14 + strlen(client), char);
     sprintf(rdisplay_string, "HOSTDISPLAY=%s:%s", client,
 	    &display_string[13]);
     putenv(rdisplay_string);
+    FREEC(rdisplay_string);
   } else {
-    char *rdisplay_string;
-    
-    rdisplay_string = (char *) safemalloc(len + 14);
+    char *rdisplay_string = NEWC(len + 14, char);
     sprintf(rdisplay_string, "HOSTDISPLAY=%s", XDisplayString(dpy));
     putenv(rdisplay_string);
+    FREEC(rdisplay_string);
   }
   
   Scr.Root = RootWindow(dpy, Scr.screen);
@@ -559,7 +572,7 @@ char *Lang,*territory,*tmp;
     scwm_safe_eval_str(szCmdConfig);
   }
   
-  free(szCmdConfig);
+  FREEC(szCmdConfig);
   
   CaptureAllWindows();
   
@@ -697,7 +710,7 @@ CaptureAllWindows(void)
 	      }
 	    }
 	  }
-	  XFree((char *) wmhintsp);
+	  XFree(wmhintsp);
 	}
       }
     }
@@ -751,7 +764,7 @@ CaptureAllWindows(void)
   isIconicState = DontCareState;
 
   if (nchildren > 0)
-    XFree((char *) children);
+    XFree(children);
 
   /* after the windows already on the screen are in place,
    * don't use PPosition */
@@ -1195,7 +1208,7 @@ DestroyScwmDecor(ScwmDecor * fl)
 {
 
   if (fl->tag) {
-    free(fl->tag);
+    FREE(fl->tag);
     fl->tag = NULL;
   }
   if (fl->HiReliefGC != NULL) {
