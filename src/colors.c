@@ -94,29 +94,6 @@ AllocLinearGradient(char *s_from, char *s_to, int npixels)
 
 
 /*
- * CreateGCs - create all the needed GC's.  done only once during startup
- */
-void 
-CreateGCs(void)
-{
-  XGCValues gcv;
-  unsigned long gcm;
-
-  /* create scratch GC's */
-  gcm = GCFunction | GCPlaneMask | GCGraphicsExposures | GCLineWidth;
-  gcv.line_width = 0;
-  gcv.function = GXcopy;
-  gcv.plane_mask = AllPlanes;
-  gcv.graphics_exposures = False;
-
-  Scr.ScratchGC1 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-  Scr.ScratchGC2 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-  Scr.ScratchGC3 = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-
-  Scr.TransMaskGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-}
-
-/*
  * Allocates a nonlinear color gradient (veliaa@rpi.edu)
  */
 Pixel *

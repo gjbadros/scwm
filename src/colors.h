@@ -10,7 +10,6 @@
 #include <config.h>
 #endif
 
-void CreateGCs(void);
 Pixel *AllocNonlinearGradient(char *s_colors[], int clen[], 
 			      int nsegs, int npixels);
 
