@@ -1,3 +1,8 @@
+1999-04-07  Sam Steingold  <sds@goems.com>
+
+	* window.c ("set_squashed_titlebar_x!"): removed a spurious
+	`printf'.
+
 1999-04-07  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* session-manager.c (setSMProperties): Support xsm's broken idea
@@ -13,7 +18,7 @@ Wed Apr  7 10:32:01 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* scwm.c (scwm_main): Handle SIGFPE, too
 
 	* resize.c (ConstrainSize): Be sure to not divide by zero.  Added
-	some warning messages if we would have so we can better track down 
+	some warning messages if we would have so we can better track down
 	the cause of the problem.
 
 	* events.c (HandleLeaveNotify): Remove unused variable.
@@ -25,7 +30,7 @@ Wed Apr  7 07:48:44 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* window.h, window.c: Added PswFromAnyWindow() to return the
  	ScwmWindow * from any of the child windows of the frame or the
  	frame (not just the frame itself as PswFromWindow() does).  Added
-	select_window_enter_hook, select_window_leave_hook and invoke them 
+	select_window_enter_hook, select_window_leave_hook and invoke them
 	when top-level windows are entered and left during
 	`select-window-interactively-no-message'
 
@@ -37,7 +42,7 @@ Wed Apr  7 07:48:44 1999  Greg J Badros  <gjb@cs.washington.edu>
 	events on the frame decorations, too, and called the hooks too
 	often.  Now I watch only for enter events and call the leave hook
 	when a new window or the root window is entered.  This gives much
-	more useful behaviour (I can't imagine anything relying on the old 
+	more useful behaviour (I can't imagine anything relying on the old
 	calling pattern, but this would break any code that did).
 
 Tue Apr  6 12:51:52 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -78,13 +83,13 @@ Thu Apr  1 19:18:39 1999  Greg J Badros  <gjb@cs.washington.edu>
 	destroy-window to protect gtk windows using their client-leader
 
 	* scwm.c: Intern XA_WM_CLIENT_LEADER atom.  Change fResetOnSegv
-	from a bool to segvs_to_reset, a count of the number of segvs that 
+	from a bool to segvs_to_reset, a count of the number of segvs that
 	will result in a result (permits looping segvs to dump core
 	instead of doing really ugly things).
 
 	* miscprocs.c: set-reset-on-segv! now takes an integer, not a
 	bool.  Added getter `reset-on-segv'.  Added `X-connection-number'.
-	
+
 
 Wed Mar 31 16:56:18 1999  Greg J Badros  <gjb@cs.washington.edu>
 
@@ -100,7 +105,7 @@ Wed Mar 31 16:56:18 1999  Greg J Badros  <gjb@cs.washington.edu>
 	miscprocs.c now uses them.  Added -p/-P options to manage what to
 	do with segvs.  Do not do a newhandler_doreset(..) until after
 	sigsetjmp has been called, and use newhandler_doreset for SIGINT,
-	too. 
+	too.
 
 	* miscprocs.c: Added `force-segv-for-testing!',
 	`set-reset-on-segv!', `set-handle-segv!' primitives.
@@ -110,7 +115,7 @@ Wed Mar 31 16:56:18 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* binding.h, binding.c: Added fShowError arg to
 	FKeyToKeysymModifiers, honour it (`keysym->keycode' primitive
-	shouldn't display warnings about bad keysyms as it can now be used 
+	shouldn't display warnings about bad keysyms as it can now be used
 	to test validity of a keysym).  Validate these procs args better.
 
 	* shutdown.c: reset_signal_handler(SIGSEGV) before generating the
@@ -118,12 +123,12 @@ Wed Mar 31 16:56:18 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 Tue Mar 30 20:09:59 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* events.c: Fix bug that scwmdoc caught in argnumber on a VALIDATE 
+	* events.c: Fix bug that scwmdoc caught in argnumber on a VALIDATE
 	call.
 
 	* window.c, face.c: Added use of new scwmdoc-understood /*SCWM_VALIDATE*/
 	comment pointing out what the argument list is.  This isn't
-	perfect as it's redundant with the prototype, but it's a quick fix 
+	perfect as it's redundant with the prototype, but it's a quick fix
 	(and already helped me catch one bug in face.c.  Also start using
 	SCWM_WRONG_TYPE_ARG, instead of scm_wrong_type_arg when the
 	function is FUNC_NAME.
@@ -163,7 +168,7 @@ Tue Mar 30 19:35:06 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* miscprocs.c, menuitem.c, menu.c, deskpage.c,: Annotated unused formals with new ARG_UNUSED or
  	ARG_IGNORE macro. Use VALIDATE_*, not COPY_*.
-	
+
 
 	* winprop.h: ws change.
 
@@ -175,7 +180,7 @@ Mon Mar 29 20:38:02 1999  Greg J Badros  <gjb@cs.washington.edu>
 	VALIDATE, VALIDATEN, and nothing, respectively, with arg order
 	reversed), all using implicit FUNC_NAME macro as function name.
 
-	* scwm.h: Added SCWM_WRONG_TYPE_ARG macro using implicit FUNC_NAME 
+	* scwm.h: Added SCWM_WRONG_TYPE_ARG macro using implicit FUNC_NAME
 	macro as function name.
 
 	* color.h: Define and use VALIDATE_ARG_COLOR to replace
@@ -196,7 +201,7 @@ Mon Mar 29 14:33:33 1999  Greg J Badros  <gjb@cs.washington.edu>
  	optionally, and nothing earlier could depend on this).
 
 	* message-window.c:  Added Jeffrey Nichols to the (C), since this is
-	largely his code.  Renamed ResizeWindow to ResizeMessageWindow for 
+	largely his code.  Renamed ResizeWindow to ResizeMessageWindow for
 	disambiguation.  Added `id->message-window' primitive as a last
 	resort in case a message window has no easy way to get a hold of
 	its object.  hide message windows when they are freed -- leaving
@@ -209,7 +214,7 @@ Mon Mar 29 14:33:33 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* color.c:  Have ScmMakeColor return BLACK_COLOR instead of
 	SCM_BOOL_F -- this was part of the point of my earlier reworking
 	of this code, but I must've gotten sidetracked.  Now, e.g.,
-	adjust_brightness will always get a valid color back, even if it's 
+	adjust_brightness will always get a valid color back, even if it's
 	not the best one.
 
 Mon Mar 29 11:28:40 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -262,12 +267,12 @@ Sun Mar 28 18:23:21 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* menu.c: Call NoEventsScwmUpdate() in the local menu-interaction
 	event loop.
 
-	* events.h, events.c:  Split new NoEventsScwmUpdate() function out 
+	* events.h, events.c:  Split new NoEventsScwmUpdate() function out
 	of NextScwmEvent function so other event loops can call it.  This
 	makes scwm more responsive during those local event loops.  E.g.,
 	timer hooks can get executed while a menu is popped up, or a
 	window is being resized, etc.  I expect some bugs will be exposed
-	by this change, but it's the right thing, and we might as well fix 
+	by this change, but it's the right thing, and we might as well fix
 	those bugs now as they'll be a problem for the post-1.0 event rewrite.
 
 	* scwm.c: Use sigsetjmp/siglongjmp to catch the SIGHUP signals
@@ -305,11 +310,11 @@ Fri Mar 26 12:56:31 1999  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 1999-03-25  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
-	* borders.c (SetShapedTitlebar): Would not detect window w/o title 
+	* borders.c (SetShapedTitlebar): Would not detect window w/o title
 	correctly.
 
 1999-03-25  Maciej Stachowiak  <mstachow@alum.mit.edu>
- 
+
  	* winprops.c, winprop.h (set_property_handler): New function
  	allows C code to intercept property changes and reads through
  	`set-window-property!' and `window-property' for specific
@@ -319,19 +324,19 @@ Fri Mar 26 12:56:31 1999  Maciej Stachowiak  <mstachow@alum.mit.edu>
  	* scwm.c: call init_winprops before init_window.
  	* window.c: use set_property_handler for the 'sticky window
  	property as an example.
- 	
+
 Thu Mar 25 17:57:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* NOTE TO DEVS: Consider configuring with newish --enable-warnings
- 	option.  I fixed lots of problems that this caught for me. (Option 
+ 	option.  I fixed lots of problems that this caught for me. (Option
 	may be gcc-specific)
-	
-	* window.h: Added protos for Decoration{Width,Height}, comment for 
+
+	* window.h: Added protos for Decoration{Width,Height}, comment for
 	psw->buttons field.
 
 	* window.c: Drop Root argument from RedrawOutlineAtNewPosition.
 	Added `force-reset-window-frame!'. Update comment on
-	`set-window-button!' since it's working a bit better, and force it 
+	`set-window-button!' since it's working a bit better, and force it
 	to redraw, and simplify it a bit.
 
 	* virtual.c, deskpage.c: Drop last arg from MoveViewport_internal,
@@ -381,7 +386,7 @@ Thu Mar 25 17:57:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 	placeholder for improvements to scwmdoc to extract the window
 	style options.
 
-	* events.c: #include <assert.h>, minor formatting, fix uninit var, 
+	* events.c: #include <assert.h>, minor formatting, fix uninit var,
 	add failure on missed switch.
 
 	* decorations.c: drop unused code, minore formatting.
@@ -397,7 +402,7 @@ Thu Mar 25 17:57:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* add_window.c: #include events.h, focus.h for their
 	prototypes. Drop last arg from MoveViewport_internal,
-	ChangeVirtualPosition.  Fix bug in possibly calling XDeleteContext 
+	ChangeVirtualPosition.  Fix bug in possibly calling XDeleteContext
 	on None.
 
 Wed Mar 24 19:14:06 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -439,7 +444,7 @@ Mon Mar 22 18:57:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 Mon Mar 22 18:39:45 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* *.[ch]: Clean up FIXGJB comments to use the new format
-	
+
 	* window.h, window.c, add_window.c, add_window.h: Remove
  	fWindowListSkip, fCirculateSkip, fCirculateSkipIcon as these are
  	no longer used.  Move DestroyScwmWindow, window_close_hook into
@@ -479,10 +484,10 @@ Mon Mar 22 14:06:41 1999  Greg J Badros  <gjb@cs.washington.edu>
 	constraint-primitives.cc, callbacks.c, add_window.c: Fix calls to
 	SCWM_HOOK macro to pass the additional argument.
 
-	* callbacks.h: Add extra arg (the # of args) to SCWM_HOOK, and use 
-	scm_make_named_hook if HAVE_SCM_MAKE_HOOK. (i.e., handle new style 
+	* callbacks.h: Add extra arg (the # of args) to SCWM_HOOK, and use
+	scm_make_named_hook if HAVE_SCM_MAKE_HOOK. (i.e., handle new style
 	Guile hooks -- new == >1.3)
-	
+
 	* scwm.c: Do not set! the *suppress-old-style-hook-warning*
 	variable as new-style hooks are now properly handled (I hope, but
 	largely untested).
@@ -538,7 +543,7 @@ Wed Mar 17 12:47:45 1999  Greg J Badros  <gjb@cs.washington.edu>
  	the beginning of the file.  Replace `select-window' primitive with
  	`select-viewport-position' primitive that returns the position of
  	the click as well as the window selected. `select-window' is now a
- 	proc in base.scm.  Replace calls to select_window C primitive with 
+ 	proc in base.scm.  Replace calls to select_window C primitive with
 	"gh_car(select_viewport_position(..))" to just return the window.
 	Remove invocations of the invalid-interaction-hook from
 	DeferExecution.  Instead do that only in `get-window' if
@@ -553,7 +558,7 @@ Wed Mar 17 10:45:50 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 Wed Mar 17 10:45:16 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* window.h: Added list_stacking_order prototype as this is used by 
+	* window.h: Added list_stacking_order prototype as this is used by
 	the rebordering code.
 
 Tue Mar 16 16:38:55 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -576,22 +581,22 @@ Fri Mar 12 14:44:33 1999  Greg J Badros  <gjb@cs.washington.edu>
 	use of __inline__ (expands to nothing #ifndef __GNUCC__).  Improve
 	docs on window-size, window-frame-size to refer to each other.
 
-	* shutdown.c: Use new XA_SCWM_RESTARTING, and set that property to 
+	* shutdown.c: Use new XA_SCWM_RESTARTING, and set that property to
 	"scwm-restart" before restarting scwm (done before
 	run_restart_command because we must do it before the X connection
 	is closed).  Also replaced a use of inline with __inline__ since
 	the former is a GNU CCism.
 
-	* scwm.h: Added #define of __inline__ to nothing if needed.  Added 
+	* scwm.h: Added #define of __inline__ to nothing if needed.  Added
 	XA_SCWM_RESTARTING, update other extern Atom decls.
 
-	* scwm.c: Added XA_SCWM_RESTARTING, removed extern XA_WM_PROTOCOLS 
+	* scwm.c: Added XA_SCWM_RESTARTING, removed extern XA_WM_PROTOCOLS
 	(already done in scwm.h).  Added SetRestartingGlobal() to check
 	XA_SCWM_RESTARTING property (set just before run_restart_command).  My
 	WM_DESKTOP property is set on the root window even when Scwm is
-	not restarting itself, but this reliably works for me. 
+	not restarting itself, but this reliably works for me.
 
-	* resize.c:  Convert dragWidth, dragHeight to application (client) 
+	* resize.c:  Convert dragWidth, dragHeight to application (client)
 	window size before coverting to client units.  Improve docs of
 	interactive_resize_new_size_hook.
 
@@ -599,7 +604,7 @@ Fri Mar 12 14:44:33 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* ICCCM.c: Drop an Intern that's guaranteed to already be done.
 
-	* callbacks.c: Replace inline with __inline__ to remove dependence 
+	* callbacks.c: Replace inline with __inline__ to remove dependence
 	on GCC.
 
 Wed Mar 10 20:15:57 1999  Greg J Badros  <gjb@cs.washington.edu>
@@ -610,7 +615,7 @@ Wed Mar 10 20:15:57 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 Wed Mar 10 19:58:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 
-	* resize.c: Fix bugs in calls of interactive_resize_new_size_hook, 
+	* resize.c: Fix bugs in calls of interactive_resize_new_size_hook,
 	interactive_resize_start_hook.  The wrong numbers were being
 	passed in.
 
@@ -630,13 +635,13 @@ Wed Mar 10 19:58:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 	allow AnyModifier.
 
 	* events.c: Make window-leve-hook pass the window as an argument.
-	
+
 1999-02-27  John Kodis  <kodis@jagunet.com>
 
 	* events.c (HandleEnterNotify): run window-enter-hook functions.
 	(HandleLeaveNotify): run window-leave-hook functions.
 	(init_events): set up the window-enter- and window-leave- hooks.
-	
+
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* window.c: Added new primitive icon-size which takes a window and
@@ -653,7 +658,7 @@ Wed Mar 10 19:58:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 	* virtual.c (GenerateEdgeEvents): New function which checks the
 	pan frame state and generates appropriate invocations of
 	`edge-enter-hook' and/or `edge-leave-hook'.
-	(HandleEvents): Invoke `edge-scroll-hook' when edge scrolling 
+	(HandleEvents): Invoke `edge-scroll-hook' when edge scrolling
 	happens. This hook is temporary.
 	(checkPanFrames): Always leave the pan frames mapped.
 	* virtual.h: prototype GenerateEdgeEvents
@@ -669,7 +674,7 @@ Wed Mar 10 19:58:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 	gh_symbol2scm, instead declare appropriate sym_ variables wherever
 	appropriate.
 	* Makefile.am: Handle borders.x, errors.x
-	
+
 	* borders.c: Fix numerous visual inconsistencies when using
 	`no-side-decorations'. Nearly all should be fixed, a handful
 	remain in the case where both mwm-border and no-side-decorations
@@ -696,7 +701,7 @@ Wed Mar 10 19:58:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 	`window-property-change-hook'. Others will be added over time.
 
 	* scwm.c: Call init_winprop()
-	
+
 	* Makefile.am: Handle winprop.c, winprop.h, winprop.x
 
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>

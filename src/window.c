@@ -66,16 +66,16 @@ to use here.  */
 
 SCWM_HOOK(select_window_enter_hook,"select-window-enter-hook",1);
   /** This hook is invoked when a window is entered during window selection.
-The hook procedures are called with a single argument, the window just entered. 
-This hook is invoked once `select-window-interactively-no-message' is 
+The hook procedures are called with a single argument, the window just entered.
+This hook is invoked once `select-window-interactively-no-message' is
 called if the pointer is already in a window.  (But the
 leave hook is not invoked similarly when the selection completes).
 */
 
 SCWM_HOOK(select_window_leave_hook,"select-window-leave-hook",1);
   /** This hook is invoked when a window is left during window selection.
-The hook procedures are called with a single argument, the window just left. 
-This hook is not invoked upon selection completion (unlike 
+The hook procedures are called with a single argument, the window just left.
+This hook is not invoked upon selection completion (unlike
 `select-window-enter-hook' that is called initially upon calling
 `select-window-interactively-no-message').
 */
@@ -125,7 +125,7 @@ static int DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
                           enum cursor cursor, int FinishEvent,
                           int *px, int *py);
 
-unsigned long 
+unsigned long
 FlagsBitsFromSw(ScwmWindow *psw)
 #define FUNC_NAME FlagsBitsFromSw
 {
@@ -233,8 +233,8 @@ void
 ResetCommonFlags(ScwmWindow *psw)
 {
   psw->fStartIconic =
-    psw->fOnTop = 
-    psw->fSticky = 
+    psw->fOnTop =
+    psw->fSticky =
     psw->fSuppressIcon =
     psw->fNoIconTitle =
     psw->fLenience =
@@ -249,7 +249,7 @@ ResetAllFlags(ScwmWindow *psw)
 {
   ResetCommonFlags(psw);
 
-  psw->fBorder = 
+  psw->fBorder =
     psw->fTitle =
     psw->fMapped =
     psw->fIconified =
@@ -413,25 +413,25 @@ CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
 
 }
 
-/**CONCEPT: Windows 
+/**CONCEPT: Windows
   Windows are the most important scwm data type. A window object
 represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  */
 
-size_t 
+size_t
 free_window(SCM obj)
 {
   FREE(WINDOW(obj));
   return (0);
 }
 
-SCM 
+SCM
 mark_window(SCM obj)
 {
   SCM_SETGC8MARK(obj);
-    
+
   if (VALIDWINP(obj)) {
     ScwmWindow *psw = PSWFROMSCMWIN(obj);
     if (psw->fl != NULL) {
@@ -459,7 +459,7 @@ mark_window(SCM obj)
 }
 
 
-int 
+int
 print_window(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<window ", port);
@@ -480,7 +480,7 @@ print_window(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 }
 
 
-SCM 
+SCM
 make_window(ScwmWindow * win)
 {
   scwm_window *schwin;
@@ -504,7 +504,7 @@ make_window(ScwmWindow * win)
   return answer;
 }
 
-void 
+void
 invalidate_window(SCM schwin)
 {
   VALIDWINP(schwin) = 0;
@@ -621,12 +621,12 @@ SendClientConfigureNotify(const ScwmWindow *psw)
   client_event.xconfigure.display = dpy;
   client_event.xconfigure.event = psw->w;
   client_event.xconfigure.window = psw->w;
-  
+
   client_event.xconfigure.x = FRAME_X_VP(psw) + DecorationXOffset(psw);
   client_event.xconfigure.y = FRAME_Y_VP(psw) + DecorationYOffset(psw);
   client_event.xconfigure.width = ClientWidth(psw);
   client_event.xconfigure.height = ClientHeight(psw);
-  
+
   client_event.xconfigure.border_width = psw->bw;
   /* Real ConfigureNotify events say we're above title window, so ... */
   /* what if we don't have a title ????? */
@@ -642,7 +642,7 @@ SendClientConfigureNotify(const ScwmWindow *psw)
    which will remove the icon window from the pager
    and display the window instead -- probably should
    be called only if !psw->fIconified */
-void 
+void
 MovePswToCurrentPosition(const ScwmWindow *psw)
 #define FUNC_NAME "MovePswToCurrentPosition"
 {
@@ -657,7 +657,7 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
 #endif
   }
 #endif
-    
+
   XMoveWindow(dpy, psw->frame, x, y);
   SendClientConfigureNotify(psw);
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
@@ -669,7 +669,7 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
    which will remove the real mapped window from the pager
    and display the icon instead -- probably should
    be called only if psw->fIconified */
-void 
+void
 MovePswIconToCurrentPosition(const ScwmWindow *psw)
 {
   int x = ICON_X_VP(psw), y = ICON_Y_VP(psw);
@@ -682,7 +682,7 @@ MovePswIconToCurrentPosition(const ScwmWindow *psw)
 
 
 /* ResizePswToCurrentSize may update psw->attr, so is not const */
-void 
+void
 ResizePswToCurrentSize(ScwmWindow *psw)
 {
   int w = FRAME_WIDTH(psw), h = FRAME_HEIGHT(psw);
@@ -700,16 +700,16 @@ ResizePswToCurrentSize(ScwmWindow *psw)
    don't call this -- it is called when cassowary is not re-solving
    for this window, so we must be sure that the window has really
    changed.  (Note that it may get called when cassowary is in use if
-   there is no master solver yet) 
+   there is no master solver yet)
    x,y are virtual positions
 */
 void
-SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque) 
+SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque)
 {
   if (x != FRAME_X(psw) || y != FRAME_Y(psw)) {
     SET_CVALUE(psw,frame_x,x);
     SET_CVALUE(psw,frame_y,y);
-    if (fOpaque) 
+    if (fOpaque)
       MovePswToCurrentPosition(psw);
     else {
       int h = FRAME_HEIGHT(psw);
@@ -727,7 +727,7 @@ SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque)
    when cassowary is not re-solving for this window, so we must be sure that
    the window has really changed.
    (Note that it may get called when cassowary is in use if there is
-   no master solver yet) 
+   no master solver yet)
 
    Normal scwm function never call this function -- they should call
    MoveTo or MoveResizeTo or ResizeTo, and this will get invoked as
@@ -736,7 +736,7 @@ SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque)
    x,y are virtual positions
   */
 void
-SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, 
+SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
                       Bool fOpaque)
 {
   Bool fNeedResize = (psw->frame_width != w || psw->frame_height != h);
@@ -748,7 +748,7 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
     SET_CVALUE(psw,frame_height,h);
     if (!fOpaque) {
       RemoveRubberbandOutline();
-      RedrawOutlineAtNewPosition(FRAME_X_VP(psw) - psw->bw, 
+      RedrawOutlineAtNewPosition(FRAME_X_VP(psw) - psw->bw,
                                  FRAME_Y_VP(psw) - psw->bw,
                                  FRAME_WIDTH(psw) + 2 * psw->bw,
                                  FRAME_HEIGHT(psw) + 2 * psw->bw);
@@ -762,11 +762,11 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
 }
 
 /* This will involve cassowary as needed, through
-   use of MoveTo 
-   Same as MoveTo, except it knows about icons as well 
-   x, y are viewport coordinates 
+   use of MoveTo
+   Same as MoveTo, except it knows about icons as well
+   x, y are viewport coordinates
 */
-void 
+void
 move_finalize(Window w, ScwmWindow * psw, int x, int y)
 #define FUNC_NAME "move_finalize"
 {
@@ -786,11 +786,11 @@ move_finalize(Window w, ScwmWindow * psw, int x, int y)
 
 
 /* This will involve cassowary as needed, through
-   use of MoveTo 
-   Same as MoveTo, except it knows about icons as well 
+   use of MoveTo
+   Same as MoveTo, except it knows about icons as well
    x, y are virtual coordinates
 */
-void 
+void
 move_finalize_virt(Window w, ScwmWindow * psw, int x, int y)
 {
   if (w == psw->frame) {
@@ -898,7 +898,7 @@ actions from menus originally popped up by mouse or keyboard events, a
 context window is saved, which is used as the default for window
 operations that are not passed their optional window argument. This
 allows the user to easily bind actions to events without worrying
-about passing around the window argument. 
+about passing around the window argument.
 
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
@@ -951,7 +951,7 @@ mouse drags. */
 #undef FUNC_NAME
 
 
-/* GJB:FIXME:: we'd like to not need this, though 
+/* GJB:FIXME:: we'd like to not need this, though
    it might be nice to leave in just in case */
 SCWM_PROC (force_reset_window_frame_x, "force-reset-window-frame!", 0, 1, 0,
            (SCM win))
@@ -1043,7 +1043,7 @@ like to display a message while the user selects a window. */
  * for a visibility notify on the windows. Exeption: OnTop windows which are
  * obscured by other OnTop windows, which need to be raised here.
  */
-void 
+void
 KeepOnTop()
 {
   ScwmWindow *psw = Scr.ScwmRoot.next;
@@ -1063,10 +1063,10 @@ FIsPartiallyInViewport(const ScwmWindow *psw)
 {
   return ! (((FRAME_X_VP(psw) + FRAME_WIDTH(psw)) < 0) ||
             (FRAME_Y_VP(psw) + FRAME_HEIGHT(psw) < 0) ||
-            (FRAME_X_VP(psw) > Scr.DisplayWidth) || 
+            (FRAME_X_VP(psw) > Scr.DisplayWidth) ||
             (FRAME_Y_VP(psw) > Scr.DisplayHeight));
 }
-     
+
 /* pcx, pcy are output only */
 static void
 GetWindowVirtualCenter(const ScwmWindow *psw, int *pcx, int *pcy)
@@ -1107,9 +1107,9 @@ GetSnappedViewportPositionFor(int vx, int vy, int *viewport_x, int *viewport_y)
 
 
 /*
- * Moves focus to specified window 
+ * Moves focus to specified window
  */
-void 
+void
 FocusOn(ScwmWindow *psw)
 {
   SetFocus(psw->w, psw, False);
@@ -1119,9 +1119,9 @@ FocusOn(ScwmWindow *psw)
 
 
 /*
- * Moves pointer to specified window 
+ * Moves pointer to specified window
  */
-void 
+void
 WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
 {
   int cx, cy;
@@ -1177,7 +1177,7 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
 /*
  * Grab the pointer and keyboard
  */
-Bool 
+Bool
 GrabEm(enum cursor cursor)
 {
   int i = 0, val = 0;
@@ -1193,10 +1193,10 @@ GrabEm(enum cursor cursor)
   mask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask
     | EnterWindowMask | LeaveWindowMask;
   /*  GJB:FIXME:: while ((i < 1000) &&  (why must try this hard?) */
-  while ((i < 5) && 
+  while ((i < 5) &&
          (val = XGrabPointer(dpy, Scr.Root, True, mask,
                              GrabModeAsync, GrabModeAsync, Scr.Root,
-                             Scr.ScwmCursors[cursor], 
+                             Scr.ScwmCursors[cursor],
                              CurrentTime) != GrabSuccess)) {
     i++;
     /* If you go too fast, other windows may not get a change to release
@@ -1216,7 +1216,7 @@ GrabEm(enum cursor cursor)
 /*
  * UnGrab the pointer and keyboard
  */
-void 
+void
 UngrabEm()
 {
   Window w;
@@ -1239,7 +1239,7 @@ UngrabEm()
 
 /* PswFromWindow only checks w, not its parents,
    it may often be better to use PswFromAnyWindow
-   which traverses up the window hierarchy until 
+   which traverses up the window hierarchy until
    it finds a window with the ScwmContext before failing */
 ScwmWindow *
 PswFromWindow(Display *dpy, Window w)
@@ -1253,7 +1253,7 @@ PswFromWindow(Display *dpy, Window w)
 
 /* PswFromAnyWindow checks w and all its parents
    for a ScwmContext context.
-   This is the right function to use to map from 
+   This is the right function to use to map from
    a window event to the top-level ScwmWindow in
    which that event happened (e.g., window-enter/leave-hook) */
 ScwmWindow *
@@ -1288,7 +1288,7 @@ PswSelectInteractively(Display *ARG_UNUSED(dpy))
     return NULL;
   return PSWFROMSCMWIN(result);
 }
-  
+
 
 
 extern Bool have_orig_position;
@@ -1309,7 +1309,7 @@ extern Bool have_orig_position;
  *      px,py    - pointers to ints to store viewport position of the cursor in
  *
  */
-static int 
+static int
 DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
 	       enum cursor cursor, int FinishEvent,
                int *px, int *py)
@@ -1346,14 +1346,14 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
     while (XCheckMaskEvent(dpy,
                            ButtonPressMask | ButtonReleaseMask |
                            ExposureMask | KeyPressMask | VisibilityChangeMask |
-                           ButtonMotionMask | PointerMotionMask | 
+                           ButtonMotionMask | PointerMotionMask |
                            EnterWindowMask,
                            eventp) == False)
       NoEventsScwmUpdate();
 
     /* fallen through, so we got an event we're interested in */
     StashEventTime(eventp);
-    
+
     if (eventp->type == KeyPress) {
       Keyboard_shortcuts(eventp, FinishEvent, 0, False);
     }
@@ -1430,15 +1430,15 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
   UngrabEm();
   /* interactive operations should not use the stashed mouse position
      if we just selected the window. */
-  have_orig_position = False; 
-  return False; 
+  have_orig_position = False;
+  return False;
 }
 
 
 /*
  * Unmaps a window on transition to a new desktop
  */
-void 
+void
 UnmapScwmWindow(ScwmWindow * psw)
 {
   XWindowAttributes winattrs;
@@ -1465,7 +1465,7 @@ UnmapScwmWindow(ScwmWindow * psw)
 /*
  * Maps a window on transition to a new desktop
  */
-void 
+void
 MapIt(ScwmWindow *psw)
 {
   if (psw->fIconified) {
@@ -1482,8 +1482,8 @@ MapIt(ScwmWindow *psw)
 
 /*
  * Raise a window in the stacking order
- */ 
-void 
+ */
+void
 RaiseWindow(ScwmWindow *psw)
 {
   ScwmWindow *t2;
@@ -1561,7 +1561,7 @@ RaiseWindow(ScwmWindow *psw)
 }
 
 
-void 
+void
 LowerWindow(ScwmWindow * psw)
 {
   XLowerWindow(dpy, psw->frame);
@@ -1578,7 +1578,7 @@ LowerWindow(ScwmWindow * psw)
 /*
  * Releases dynamically allocated space used to store window/icon names
  */
-void 
+void
 free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
 {
   if (!psw)
@@ -1618,7 +1618,7 @@ free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
 
 SCWM_PROC(delete_window, "delete-window", 0, 1, 0,
           (SCM win))
-     /** Request that WIN remove itself from the display. 
+     /** Request that WIN remove itself from the display.
 
 This is the friendly way of closing a window, but it will not work if
 the application does not cooperate. WIN defaults to the window context
@@ -1649,7 +1649,7 @@ in the usual way if not specified. */
 
 SCWM_PROC(destroy_window, "destroy-window", 0, 1, 0,
           (SCM win))
-     /** Forcibly remove WIN from the screen.  
+     /** Forcibly remove WIN from the screen.
 
 This will kill the application without giving it a chance to save its
 state or do any other shutdown, but is guaranteed to work. WIN
@@ -1713,7 +1713,7 @@ specified. */
 
 SCWM_PROC(focus, "focus", 0, 1, 0,
           (SCM win))
-     /** Give WIN the input focus. 
+     /** Give WIN the input focus.
 
 This will typically result in drawing WIN's frame in a special style
 as well. WIN defaults to the window context in the usual way if not
@@ -1743,12 +1743,12 @@ SCWM_PROC(unfocus, "unfocus", 0, 0, 0,
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
-#undef FUNC_NAME  
+#undef FUNC_NAME
 
 
 SCWM_PROC(warp_to_window, "warp-to-window", 0, 1, 0,
           (SCM win))
-     /** Move the mouse pointer to the upper left corner of WIN.  
+     /** Move the mouse pointer to the upper left corner of WIN.
 
 If WIN is on a different desk or in a different viewport, these will
 be changed appropriately so that the window is visible. WIN defaults
@@ -1835,7 +1835,7 @@ and possibly other legacy fvwm2 modules). */
     SCM cur=gh_car(p);
 
     if (!WINDOWP(cur)) {
-      SCWM_WRONG_TYPE_ARG(1, winlist);      
+      SCWM_WRONG_TYPE_ARG(1, winlist);
     }
 
     psw=PSWFROMSCMWIN(cur);
@@ -1854,7 +1854,7 @@ and possibly other legacy fvwm2 modules). */
 
   if (cnt!=0) {
     windows = NEWC(cnt,Window);
-  
+
     /* FIXMS: This doesn't properly handle transient windows (the way
        raise does), but I am unsure what the really right way to handle
        those is. Need to see if ICCCM really requires them to always be
@@ -1862,19 +1862,19 @@ and possibly other legacy fvwm2 modules). */
        transients, so we should probably implement the RaiseTransients
        functionality using a more general hook of some kind,
        ultimately. */
-    
+
     for (p=winlist, i=0; SCM_EOL!=p; p=gh_cdr(p)) {
       SCM cur=gh_car(p);
       ScwmWindow *psw;
-      
+
       if (!WINDOWP(cur)) {
 	FREEC(windows);
-	SCWM_WRONG_TYPE_ARG(1, winlist);      
+	SCWM_WRONG_TYPE_ARG(1, winlist);
       }
 
       psw=PSWFROMSCMWIN(cur);
-      windows[i++]=psw->frame;    
-      
+      windows[i++]=psw->frame;
+
       if (psw->fIconified && !psw->fSuppressIcon) {
 	if (!psw->fNoIconTitle) {
 	  windows[i++]=psw->icon_w;
@@ -1884,14 +1884,14 @@ and possibly other legacy fvwm2 modules). */
 	}
       }
     }
-  
+
   /* This will interact badly with the fvwm pager, ultimately, we will
      want to fake an appropriate set of M_RAISE_WINDOW and
      M_LOWER_WINDOW broadcasts. */
 
 
     XRestackWindows(dpy, windows, cnt);
-  
+
     KeepOnTop();
   }
 
@@ -1996,7 +1996,7 @@ SCWM_PROC(deiconify, "deiconify", 0, 3, 0,
      /** Deiconify WIN.
 Hides its icon, and shows its regular window.
 WIN defaults to the window context in the usual way if not
-specified. 
+specified.
 If X and Y are given, then move WIN to virtual position (X . Y)
 before de-iconifying.  If X is specified, Y must be specified, too.
 These arguments are useful since `move-window' and `move-to' will
@@ -2058,7 +2058,7 @@ specified. */
 #define FUNC_NAME s_stick
 {
   ScwmWindow *psw;
-  Bool old; 
+  Bool old;
 
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
@@ -2094,7 +2094,7 @@ the usual way if not specified. */
 #define FUNC_NAME s_unstick
 {
   ScwmWindow *psw;
-  Bool old; 
+  Bool old;
 
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
@@ -2152,7 +2152,7 @@ SCWM_PROPERTY_HANDLER(sticky_handler, sym_sticky, sticky_p, set_sticky);
  *  Originally written for fvwm2 by Andrew V. <veliaa@rpi.edu>
  */
 
-/* Modified for scwm by mstachow@mit.edu, 
+/* Modified for scwm by mstachow@mit.edu,
    animation added by gjb@cs.washington.edu */
 
 
@@ -2181,11 +2181,11 @@ way if not specified. See also `window-unshade'.*/
   }
 
   SET_SHADED(psw);
-  
+
   SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), FRAME_WIDTH(psw),
-	     psw->title_height + psw->boundary_width, 
+	     psw->title_height + psw->boundary_width,
 	     NOT_MOVED, WAS_RESIZED);
-  
+
   CoerceEnterNotifyOnCurrentWindow();
   Broadcast(M_WINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
 
@@ -2216,10 +2216,10 @@ context in the usual way if not specified. */
 
   SET_UNSHADED(psw);
 
-  SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw), 
+  SetupFrame(psw, FRAME_X_VP(psw), FRAME_Y_VP(psw),
 	     psw->orig_width, psw->orig_height,
 	     NOT_MOVED, WAS_RESIZED);
-  
+
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
 
 
@@ -2246,8 +2246,8 @@ specified. */
 
 /* Return values are in virtual coordinates */
 /*SCWM_VALIDATE: x, y, win */
-SCM 
-convert_move_data(SCM x, SCM y, SCM win, const char *func_name, 
+SCM
+convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
                   /* output params follow */
 		  int *pStartX, int *pStartY, /* the current position of win */
 		  int *pDestX, int *pDestY, /* the converted destination position for win */
@@ -2279,18 +2279,18 @@ convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
 
   if (x == SCM_BOOL_F)
     *pDestX = *pStartX + WIN_VP_OFFSET_X(*ppsw);
-  else 
+  else
     *pDestX = gh_scm2int(x);
-  
+
   if (y == SCM_BOOL_F)
     *pDestY = *pStartY + WIN_VP_OFFSET_Y(*ppsw);
-  else 
+  else
     *pDestY = gh_scm2int(y);
 
   return SCM_BOOL_T;
 }
 #undef FUNC_NAME
- 
+
 
 SCWM_PROC(move_window, "move-window", 2, 1, 0,
           (SCM x, SCM y, SCM win))
@@ -2325,7 +2325,7 @@ specified. */
 
 SCWM_PROC(resize_to, "resize-to", 2, 1, 0,
           (SCM w, SCM h, SCM win))
-     /** Resize WIN's client area to a size of W by H in pixels. 
+     /** Resize WIN's client area to a size of W by H in pixels.
 The size does not include the window decorations -- only the client
 application size. WIN defaults to the window
 context in the usual way if not specified.*/
@@ -2365,7 +2365,7 @@ context in the usual way if not specified.*/
 
 SCWM_PROC(resize_frame_to, "resize-frame-to", 2, 1, 0,
           (SCM w, SCM h, SCM win))
-     /** Resize WIN to a size of W by H in pixels. 
+     /** Resize WIN to a size of W by H in pixels.
 The size includes the window decorations. WIN defaults to the window
 context in the usual way if not specified.  The resulting size
 of the frame may not be W by H due to rounding to the nearest
@@ -2406,7 +2406,7 @@ SCWM_PROC (window_size_hints, "window-size-hints", 1, 0, 0,
            (SCM win))
      /** Return a list of the window size hints associated with WIN.
 The list returned contains 4 cons pairs containing:
-'((min-width . max-width) (min-height . max-height) 
+'((min-width . max-width) (min-height . max-height)
 (width-inc . height-inc) (base-width . base-height)) */
 #define FUNC_NAME s_window_size_hints
 {
@@ -2428,7 +2428,7 @@ The list returned contains 4 cons pairs containing:
 
   answer = gh_cons(gh_cons(gh_int2scm(psw->hints.min_width),
                            gh_int2scm(psw->hints.max_width)),answer);
-  
+
   return answer;
 }
 #undef FUNC_NAME
@@ -2461,7 +2461,7 @@ void
 notify_new_desk(ScwmWindow *psw, int desk, int old)
 {
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-  
+
   signal_window_property_change(psw->schwin, sym_desk,
                                 gh_int2scm(desk), gh_int2scm(old));
 }
@@ -2539,7 +2539,7 @@ way if not specified.  See also `window-viewport-position'. */
 
 SCWM_PROC(icon_position, "icon-position", 0, 1, 0,
           (SCM win))
-     /** Return the position of the icon for WIN. 
+     /** Return the position of the icon for WIN.
 The position is returned as a list of the x coordinate and the y
 coordinate in pixels.  If the icon is sticky, the position will
 always be in the 0,0 viewport. WIN defaults to the window context in the usual
@@ -2559,7 +2559,7 @@ way if not specified. */
 
 SCWM_PROC(icon_size, "icon-size", 0, 1, 0,
           (SCM win))
-     /** Return the size of the icon for WIN.  
+     /** Return the size of the icon for WIN.
 The position is returned as a list of the width and height in pixels.
 WIN defaults to the window context in the usual way if not
 specified. */
@@ -2601,7 +2601,7 @@ specified. See `window-size' if you want the size of the application
 
 
 void window_pixel_size_to_client_units(const ScwmWindow *psw,
-                                       int width, int height, 
+                                       int width, int height,
                                        int *px_units,
                                        int *py_units)
 {
@@ -2662,7 +2662,7 @@ SCWM_PROC (window_title_size, "window-title-size", 0, 1, 0,
 
 SCWM_PROC (window_frame_border_width, "window-frame-border-width", 0, 1, 0,
            (SCM win))
-     /** Return the width of WIN's frame's border. 
+     /** Return the width of WIN's frame's border.
 WIN defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_window_frame_border_width
 {
@@ -2715,7 +2715,7 @@ such window object, return #f. */
 
   if (!gh_number_p(window_id)) {
     SCWM_WRONG_TYPE_ARG(1, window_id);
-  }		   
+  }
 
   w =(Window) gh_scm2int(window_id);
   psw = PswFromWindow(dpy, w);
@@ -2749,7 +2749,7 @@ such window object, return #f. */
 
 SCWM_PROC(window_desk, "window-desk", 0, 1, 0,
           (SCM win))
-     /** Return the desk that WIN is currently on. 
+     /** Return the desk that WIN is currently on.
 WIN defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_window_desk
 {
@@ -2784,7 +2784,7 @@ the window context in the usual way if not specified. */
 
 SCWM_PROC(window_class, "window-class", 0, 1, 0,
           (SCM win))
-     /** Return the window resource class of WIN. 
+     /** Return the window resource class of WIN.
 WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_window_class
@@ -2823,12 +2823,12 @@ times. */
 
 SCWM_PROC(list_all_windows, "list-all-windows", 0, 0, 0,
           ())
-     /** Return a list of all of the top-level window objects. 
+     /** Return a list of all of the top-level window objects.
 
 The list is in a semi-arbitrary order that is convenient for the sake
 of circulation.*/
 #define FUNC_NAME s_list_all_windows
-{ 
+{
   ScwmWindow *psw; SCM result = SCM_EOL;
 
   for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
@@ -2851,7 +2851,7 @@ the topmost window, the last is the bottommost */
   Window *rgw;
   int cw = 0;
   int iw = 0;
-  
+
   if (!XQueryTree(dpy, Scr.Root, &JunkWindow, &JunkWindow, &rgw, &cw))
     return SCM_BOOL_F;
 
@@ -2877,7 +2877,7 @@ static int compare_focus_time(ScwmWindow **a, ScwmWindow **b)
 SCWM_PROC(list_focus_order, "list-focus-order", 0, 0, 0,
            ())
      /** Return a list of all the top-level window objects in focus order.
-The order is from most recently focussed to least recently focussed. */ 
+The order is from most recently focussed to least recently focussed. */
 #define FUNC_NAME s_list_focus_order
 {
   ScwmWindow *psw, **rgpsw;
@@ -2896,7 +2896,7 @@ The order is from most recently focussed to least recently focussed. */
     qsort(rgpsw, cwin, sizeof(rgpsw[0]),
 	  (int (*)(const void *, const void *))compare_focus_time);
     for (i = 0; i < cwin; i++) {
-      result = scm_cons(rgpsw[i]->schwin, result); 
+      result = scm_cons(rgpsw[i]->schwin, result);
     }
     FREEC(rgpsw);
   }
@@ -2976,7 +2976,7 @@ specified. */
 #undef FUNC_NAME
 
 
-/* maybe all of this can be replaced with set-title-height 
+/* maybe all of this can be replaced with set-title-height
    (a per-window version) ? */
 
 
@@ -2987,9 +2987,9 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh)
   oldh = psw->title_height;
   if (oldh != nh) {
     oldyadj = GRAV_Y_ADJUSTMENT(psw);
-    
+
     psw->title_height=nh;
-    
+
     MoveResizeTo(psw,
 		 FRAME_X(psw),
 		 FRAME_Y(psw) + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
@@ -3002,7 +3002,7 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh)
 
 SCWM_PROC(show_titlebar, "show-titlebar", 0, 1, 0,
           (SCM win))
-     /** Cause WIN to be decorated with a titlebar. 
+     /** Cause WIN to be decorated with a titlebar.
 See also `hide-titlebar'.
 WIN defaults to the window context in the usual way if not
 specified. */
@@ -3027,7 +3027,7 @@ specified. */
 
 SCWM_PROC(hide_titlebar, "hide-titlebar", 0, 1, 0,
           (SCM win))
-     /** Cause WIN not to be decorated with a titlebar. 
+     /** Cause WIN not to be decorated with a titlebar.
 See also `show-titlebar'.
 WIN defaults to the window context in the usual way if not
 specified. */
@@ -3064,7 +3064,7 @@ specified. */
 
 SCWM_PROC(normal_border, "normal-border", 0, 1, 0,
           (SCM win))
-     /** Cause WIN to be decorated with a normal border. 
+     /** Cause WIN to be decorated with a normal border.
 
 This means that there will be resize handles in the corners. WIN
 defaults to the window context in the usual way if not specified. */
@@ -3096,7 +3096,7 @@ defaults to the window context in the usual way if not specified. */
 
 SCWM_PROC(plain_border, "plain-border", 0, 1, 0,
           (SCM win))
-     /** Cause WIN to be decorated with a plain border. 
+     /** Cause WIN to be decorated with a plain border.
 This means that there will be no resize handles in the corners. WIN
 defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_plain_border
@@ -3127,8 +3127,8 @@ defaults to the window context in the usual way if not specified. */
 SCWM_PROC(border_normal_p, "border-normal?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN has a normal border, #f if it has a plain border.
-WIN defaults to the window context in the 
-usual way if not specified.  See `normal-border' and 
+WIN defaults to the window context in the
+usual way if not specified.  See `normal-border' and
 `plain-border'. */
 #define FUNC_NAME s_border_normal_p
 {
@@ -3139,7 +3139,7 @@ usual way if not specified.  See `normal-border' and
 
 SCWM_PROC(set_border_width_x, "set-border-width!", 1, 1, 0,
           (SCM width, SCM win))
-     /** Set the border width of WIN's border to WIDTH pixels. 
+     /** Set the border width of WIN's border to WIDTH pixels.
 WIN defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_border_width_x
 {
@@ -3172,7 +3172,7 @@ WIN defaults to the window context in the usual way if not specified. */
   if (!NO_SIDE_DECORATIONS_P(psw))
     psw->xboundary_width = psw->boundary_width;
 
-  MoveResizeTo(psw, 
+  MoveResizeTo(psw,
 	       FRAME_X(psw) + GRAV_X_ADJUSTMENT(psw) - oldxadj,
 	       FRAME_Y(psw) + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
 	       FRAME_WIDTH(psw) + 2 * (psw->xboundary_width - oldxw),
@@ -3281,7 +3281,7 @@ requires that the user click on it before it will receive the input
 focus, and will not lose it again until some other window gains
 focus. The 'mouse focus style is mouse-focus in the traditional sense
 - the window will gain and lose focus as the mouse enters and leaves
-it. 
+it.
 
   'sloppy indicates the sloppy-focus style. This is like mouse-focus,
 but the window will not lose the focus until another gains it. So if
@@ -3368,7 +3368,7 @@ SCWM_PROC(get_window_colors, "get-window-colors", 0, 1, 0,
 
 SCWM_PROC(get_window_highlight_colors, "get-window-highlight-colors", 0, 1, 0,
           (SCM win))
-     /** Return a two-element list, "(fg bg)", the highlight colors for WIN. 
+     /** Return a two-element list, "(fg bg)", the highlight colors for WIN.
 fg or bg may be #f, which means that the color is inherited from the decor.
 */
 #define FUNC_NAME s_get_window_highlight_colors
@@ -3384,7 +3384,7 @@ fg or bg may be #f, which means that the color is inherited from the decor.
 
 SCWM_PROC(set_window_foreground_x, "set-window-foreground!", 1, 1, 0,
           (SCM fg, SCM win))
-     /** Set the foreground color of WIN to FG. 
+     /** Set the foreground color of WIN to FG.
 This color is used to draw the title text currently. In the future, it
 may have other uses as well. WIN defaults to the window context in the
 usual way if not specified. */
@@ -3400,14 +3400,14 @@ usual way if not specified. */
   psw->TextColor = fg;
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
 
-  return SCM_UNSPECIFIED;  
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
 
 SCWM_PROC(set_window_background_x, "set-window-background!", 1, 1, 0,
           (SCM bg, SCM win))
-     /** Set the background color of WIN to BG. 
+     /** Set the background color of WIN to BG.
 This color is used to draw most of the window decorations, along with
 the relief colors generated from it, which are used to draw the
 window's 3-D bevels.  WIN defaults to the window context in the usual
@@ -3458,7 +3458,7 @@ color for WIN). */
   psw->HiTextColor = fg;
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
 
-  return SCM_UNSPECIFIED;  
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -3468,9 +3468,9 @@ SCWM_PROC(set_window_highlight_background_x, "set-window-highlight-background!",
      /** Set the highlighted background color of WIN to BG.
 This color is used when WIN has the focus to draw most of the window
 decorations, along with the relief colors generated from it, which are
-used to draw the window's 3-D bevels.  WIN defaults to the window context 
-in the usual way if not specified. If BG is #f, then lets the decor 
-highlight background color be used (turns off a special highlight color 
+used to draw the window's 3-D bevels.  WIN defaults to the window context
+in the usual way if not specified. If BG is #f, then lets the decor
+highlight background color be used (turns off a special highlight color
 for WIN).   */
 #define FUNC_NAME s_set_window_highlight_background_x
 {
@@ -3534,7 +3534,7 @@ SCWM_PROC(set_window_button_x, "set-window-button!", 2, 1, 0,
 If FLAG is #t, the button will be visible, otherwise it won't be
 drawn.  WIN defaults to the window context in the usual way if not
 specified. (Note: the titlebar will not expand if you disable
-a button via this procedure -- the decoration code is still 
+a button via this procedure -- the decoration code is still
 far from perfect.) */
 #define FUNC_NAME s_set_window_button_x
 {
@@ -3626,7 +3626,7 @@ force_icon_redraw (ScwmWindow *psw)
 
   if (psw->fIconified) {
     Iconify(psw, 0, 0);
-  }  
+  }
 }
 
 
@@ -3661,9 +3661,9 @@ way if not specified. */
   psw = PSWFROMSCMWIN(win);
 
   if (flag== SCM_BOOL_F) {
-    psw->fForceIcon=False; 
+    psw->fForceIcon=False;
   } else if (flag== SCM_BOOL_T) {
-    psw->fForceIcon=True; 
+    psw->fForceIcon=True;
   } else {
     SCWM_WRONG_TYPE_ARG(1, flag);
   }
@@ -3682,7 +3682,7 @@ window is iconified (it will still be in the window list, of course).
 WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_set_show_icon_x
-{ 
+{
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
@@ -3695,7 +3695,7 @@ specified. */
 
 SCWM_PROC(set_icon_x, "set-icon!", 1, 1, 0,
           (SCM image, SCM win))
-     /** Set the image to use for the icon of WIN to IMAGE. 
+     /** Set the image to use for the icon of WIN to IMAGE.
 As usual, an image object or a filename string may be given. #f May
 also be specified, indicating no icon image. WIN defaults to the window
 context in the usual way if not specified. */
@@ -3719,7 +3719,7 @@ context in the usual way if not specified. */
     icon_name=gh_scm2newstr(IMAGE(psw->icon_req_image)->full_name, &length);
     /* FIXMS: This can't deal properly with app-specified icons! */
     BroadcastName(M_ICON_FILE, psw->w, psw->frame,
-		  (unsigned long) psw, icon_name);   
+		  (unsigned long) psw, icon_name);
     free (icon_name);
   }
 
@@ -3800,7 +3800,7 @@ in the usual way if not specified. */
 
 SCWM_PROC (window_shaped_p, "window-shaped?", 0, 1, 0,
            (SCM win))
-     /** Return #t if WIN is a shaped window, #f otherwise. 
+     /** Return #t if WIN is a shaped window, #f otherwise.
 WIN defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_window_shaped_p
 {
@@ -3987,7 +3987,7 @@ MAKE_SMOBFUNS(window);
 /* this function is part of the implementation of
    VALIDATE_WIN_USE_CONTEXT, so do not have it use
    that for argument checking --03/31/99 gjb */
-SCM 
+SCM
 ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
 {
   if (UNSET_SCM(win)) {
@@ -4010,7 +4010,7 @@ ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
 
 
 
-/* The next two functions are _intentionally_ not exported. 
+/* The next two functions are _intentionally_ not exported.
 
    GJB:FIXME:MS: so make them static, too */
 
@@ -4025,7 +4025,6 @@ set_squashed_titlebar_x(SCM win, SCM flag)
   VALIDATE_ARG_WIN_COPY(1,win,psw);
   oldval = SCM_BOOL_FromBool(psw->fSquashedTitlebar);
   psw->fSquashedTitlebar = gh_scm2bool(flag);
-  printf("psw->fSquashedTitlebar now: %d", psw->fSquashedTitlebar);
   ResizePswToCurrentSize(psw);
   signal_window_property_change(win, sym_squashed_titlebar, flag, oldval);
 }
@@ -4045,7 +4044,7 @@ squashed_titlebar_p(SCM win)
 SCWM_PROPERTY_HANDLER(squashed_titlebar_handler, sym_squashed_titlebar, squashed_titlebar_p, set_squashed_titlebar_x);
 
 
-void 
+void
 init_window()
 {
   REGISTER_SCWMSMOBFUNS(window);
