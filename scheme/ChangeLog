@@ -1,3 +1,10 @@
+Tue Sep 28 14:42:26 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* prompting-shell.scm, prompt-proc.scm, prompt-font.scm, 
+	prompt-file.scm, prompt-color.scm, prompt-binding.scm, 
+	preferences.scm, stylist.scm: Use "clicked" signal instead
+ 	of "pressed" signal on the various buttons
+
 Tue Sep 28 13:16:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* register.scm: Fix type "Emacs"->"Scwm".
