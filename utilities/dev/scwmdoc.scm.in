@@ -614,7 +614,6 @@ exec @GUILE@ -l $0 -- --run-from-shell "$@"
   (regexp-exec pdoc-suffix x))
 
 (define (file-type f)
-  (display f)
   (cond ((scheme-file? f) 'scheme)
 	((c-file? f) 'c)
 	((pdoc-file? f) 'pdoc)
