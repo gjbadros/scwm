@@ -574,7 +574,7 @@ HandleScwmExec()
 
   /* Determine the request window. */
   if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
-		     0, 4, True, AnyPropertyType, 
+		     0, 1, True, AnyPropertyType, 
 		     &type_ret, &form_ret, &nitems, &bytes_after,
 			 &pw)==Success && pw!=NULL) {
     w=*pw;
@@ -594,13 +594,11 @@ HandleScwmExec()
       char *ret;
       int len;
       val = gh_eval_str_with_catch(req,scwm_error_handler);
-      XFree(req);
       str_val=scm_strprint_obj(val);
       ret=gh_scm2newstr(str_val, &len);
-
+      XFree(req); 
       XChangeProperty(dpy, w, XA_SCWMEXEC_REPLY, XA_STRING,
-		      32, PropModeReplace, ret, strlen(ret)+1);
-  
+		      8, PropModeReplace, ret, strlen(ret)+1);
       free(ret);
       return;
     }
