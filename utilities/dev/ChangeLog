@@ -1,3 +1,9 @@
+1999-02-11  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Added -P argument for specifying a prefix other than
+	SCWM so that it's useful for other packages (specifically, for the
+	guile wrapper of the Cassowary library)
+
 Sat Jan 23 16:41:21 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Check scm_wrong_type_arg and VALIDATE_COLOR lines to

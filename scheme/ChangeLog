@@ -1,3 +1,10 @@
+1999-02-10  Greg J Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Set the xlib-drawing-mask so that
+	the drawing is visible on a 32 bit display.  Change names--
+	e.g., keep-top-at-value -> anchor-top.  Also update pixmap names
+	for the anchor constraints
+
 1999-02-09  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* gnome-hints.scm: Expanded documentation and added optional

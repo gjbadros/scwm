@@ -1,3 +1,10 @@
+1999-02-10  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added some paths to image-load-path; added some
+	commented out code for starting the constraint ui; bind the
+	animated movement keys to both variants of KP_* keysyms (e.g.,
+	KP_7 and KP_Home)
+
 1999-02-09  Sam Steingold  <sds@goems.com>
 
 	* sds.scwmrc: use GNOME.
