@@ -1,3 +1,26 @@
+Sat Sep 18 14:06:16 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ScwmBiff.scm: Replace incorrectly positioned define with a let
+	binding instead.  Patch from Glenn Trigg. (Needed for >= guile-1.3.2).
+
+	* flux.scm: Moved some stuff from system.scwmrc to here.  Make
+	`{next,prev}-visible-non-iconified-window' use focussable-window?
+	and also ignore shaded windows.
+
+Sat Sep 18 14:02:09 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice.scm: Handles lots more commands, easier to change the
+	grammar now w/o restarting.
+
+	* viavoice-smrc.scm: Map SMRC response codes to symbolic names
+	(for debugging, reporting)
+
+Fri Sep 17 21:50:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* preferences.scm: Quote symbols too, when outputting them to
+	.scwm-options (not just lists).  Need this to fix "undefined symbol 
+	mouse/click" when reading .scwm-options with new focus-type option.
+
 Thu Sep 16 16:01:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* viavoice.scm: Use flux module, invert default of do-animation,

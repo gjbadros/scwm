@@ -19,6 +19,8 @@ lot nicer than the command line or even the vc-mode keybindings.
 
 Other files to read:
 
+* naming-conventions
+
 * smobs
 
 * dynamic-modules
@@ -28,8 +30,6 @@ Other files to read:
 * guile-gc-notes
 
 * hungarian-tags
-
-
 
 --09/16/98 gjb
 

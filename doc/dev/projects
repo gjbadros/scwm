@@ -1,0 +1,24 @@
+This file documents possible projects for contributors to Scwm. I've
+split the projects up into categories so you can choose to volunteer for 
+something that you are interested in and skilled with.
+
+--09/18/99 Greg J. Badros
+
+* Comprehensive (these are hard -- do not attack alone)
+** decoration rewrite (see doc/dev/decorations)
+** event rewrite (see doc/dev/events*)
+
+* X11 hacking
+
+
+* Scheme hacking
+
+
+* Software-engineering 
+
+
+* Configuration, building
+
+
+* Testing 
+

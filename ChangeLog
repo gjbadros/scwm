@@ -1,3 +1,8 @@
+Fri Sep 17 15:56:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Try to fix --enable-viavoice and
+	--enable-gnome-corba so that they default to no and do the right thing.
+
 Fri Sep 17 12:21:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added --enable-gnome-corba option (instead of

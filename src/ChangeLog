@@ -1,3 +1,19 @@
+Sat Sep 18 12:31:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xrm.c, shutdown.c, menulook.c, drawmenu.c, deskpage.c, cursor.c, 
+	constraint-primitives.cc, borders.c, binding.c: Include guile-compat.h
+
+	* scwm.h, guile-compat.h: Move UNSET_SCM and GC_MARK_SCM_IF_SET
+ 	into guile-compat.h (they are not scwm specific).
+
+	* window.c: Add check on psw before dereferencing, add some braces 
+	to help make code more clear.
+
+	* focus.c: Added `focussable-window?' primitive and use it to
+	simplify some window focus stuff. Might have broken some
+	relied-upon behaviour... will wait for bug reports (works fine in
+	my usage pattern).
+
 Fri Sep 17 14:57:52 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-snarf: Permit spaces in guile-snarf output.  Thanks Chris
