@@ -721,6 +721,7 @@ scwm_main(int argc, char **argv)
   setlinebuf(stdout);
 
   scwm_defer_ints();
+  init_error();
   init_font();
   init_decor();
   init_screen();

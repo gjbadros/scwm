@@ -34,9 +34,9 @@ SCWM_GLOBAL_SYMBOL(sym_scwm_error, "scwm-error");
 void 
 scwm_error(const char *subr, const char *szErr)
 {
-  scm_error(sym_scwm_error, (char *) subr, "%s",
+  scm_error(sym_scwm_error, subr, "%s",
 	    gh_list(gh_str02scm((char *)szErr), SCM_UNDEFINED),
-	    gh_list(gh_str02scm((char *)szErr), SCM_UNDEFINED));
+            SCM_UNDEFINED);
 }
 
 void
@@ -44,7 +44,6 @@ scwm_error_message (SCM message, SCM args)
 {
   scm_display_error_message(message, args, scm_current_error_port());
 }
-
 
 void
 init_error()

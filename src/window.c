@@ -4242,6 +4242,7 @@ ensure_valid(SCM win, int n, const char *func_name, SCM release_p, SCM cursor)
     scwm_allow_ints();
     scwm_error(func_name, "Window no longer valid.");
     /* maybe should just return SCM_BOOL_F; */
+    return SCM_BOOL_F;
   }
   return (win);
 }
