@@ -1,3 +1,19 @@
+1998-11-21  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc: Highlight colors changed once again.
+	(warp-raise): New function.
+	Use it where `warp-to-window' was previously used.
+	(mouse-movers): New function.
+	Use it.
+	Bindings for mouse-button emulation added.
+
+1998-11-18  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc: (ice-9 regex) was needed.
+	Superflous quote broke top and procinfo.
+	Double-clicking the X will now destroy the app.
+	Remove left-over references to Terminal style.
+
 1998-11-17  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* robbe.scwmrc: Don't hint-override. Whatever that is. Sounds bad.
