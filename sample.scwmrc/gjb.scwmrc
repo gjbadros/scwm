@@ -324,9 +324,17 @@
 ;;(window-style "*" #:border-width 5 #:mwm-border #t)
 
 (window-style "xlogo" #:no-titlebar #t #:normal-border #t)
+;;(window-style "*" #:border-width 6)
+;;(resize-to 200 200)
+
 ;;(window-style "*" #:squashed-titlebar #t)
+;;(window-style "*" #:bg "purple")
+;; (border-style #:hidden-handles #f #:no-inset #f)
+
 
 ;; (set-object-property! (select-window-interactively) 'squashed-titlebar #t)
+;; (set-object-property! (select-window-interactively) 'no-side-decorations #t)
+;; (set-object-property! (select-window-interactively) 'no-side-decorations #f)
 ;; (define w (select-window-interactively))
 
 
