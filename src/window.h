@@ -457,6 +457,8 @@ void notify_new_desk(ScwmWindow *psw, int desk, int old);
 
 __inline__ int DecorationWidth(const ScwmWindow *psw);
 __inline__ int DecorationHeight(const ScwmWindow *psw);
+__inline__ int DecorationXOffset(const ScwmWindow *psw);
+__inline__ int DecorationYOffset(const ScwmWindow *psw);
 
 
 #endif /* WINDOW_H__ */

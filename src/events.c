@@ -62,6 +62,7 @@
 
 #include <guile/gh.h>
 
+#define EVENTS_IMPLEMENTATION
 #include "events.h"
 
 #include "window.h"
@@ -87,7 +88,6 @@
 #include "dbug_resize.h"
 #include "virtual.h"
 #include "cursor.h"
-#include "events.h"
 
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"
@@ -116,6 +116,17 @@ SCWM_SYMBOL(sym_desk_press,"desk-press");
 SCWM_SYMBOL(sym_desk_release,"desk-release");
 SCWM_SYMBOL(sym_desk_click,"desk-click");
 
+
+SCWM_HOOK(x_configurerequest_hook,"X-ConfigureRequest-hook", 6);
+  /** This hook is invoked upon ConfigureRequest events.
+The arguments are: "(win icon? x y width height)" where win
+is the window requesting the configuration change, icon? is #t
+iff that window's icon is requesting the change, x, y, width,
+and height are either integers or #f to indicate that that
+aspect was not part of the configure request event. 
+If `configure-request-handled' is #t after execution of the
+hook procedures, then no C-level handling of the request
+will be performed. */
 
 SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook", 2);
   /** This hook is invoked whenever a PropertyNotify event is received
@@ -1082,6 +1093,8 @@ HandleMapRequestKeepRaised(Window KeepRaised)
   /* If it's not merely iconified, and we have hints, use them. */
   if (!pswCurrent->fIconified || pswCurrent->fStartIconic) {
     int state;
+    /* GJB:FIXME:G1.2: Drop this dynamic saving when guile-1.3 is no longer supported;
+       scwm_run_hook manages the complexity */
     ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
 
     call1_hooks(x_maprequest_hook, pswCurrent->schwin);
@@ -1455,6 +1468,9 @@ HandleButtonPress()
     if (gh_procedure_p(pbnd->ReleaseThunk)) {
       done = scwm_safe_call0(pbnd->ReleaseThunk);
     }
+    /* GJB:FIXME:: maybe this should only not
+       do the main action if immediate proc returns
+       'done */
     if (SCM_BOOL_F == done &&
         gh_procedure_p(pbnd->Thunk)) {
       find_mouse_event_type();
@@ -1599,6 +1615,11 @@ HandleConfigureRequest()
   int x, y, width, height;
   XConfigureRequestEvent *cre = &Event.xconfigurerequest;
   Bool sendEvent = False;
+  Bool fX_spec = cre->value_mask & CWX;
+  Bool fY_spec = cre->value_mask & CWY;
+  Bool fWidth_spec = cre->value_mask &CWWidth;
+  Bool fHeight_spec = cre->value_mask &CWHeight;
+  Bool fIconConfigure = False;
 
   DBUG_RESIZE((DBG,FUNC_NAME, "Routine Entered"));
 
@@ -1609,15 +1630,33 @@ HandleConfigureRequest()
   Event.xany.window = cre->window;	/* mash parent field */
   pswCurrent = PswFromWindow(dpy, cre->window);
 
+  fIconConfigure = (!pswCurrent || 
+                    (pswCurrent->icon_w == cre->window) ||
+                    (pswCurrent->icon_pixmap_w == cre->window));
+
+
+  *pscm_configure_request_handled = SCM_BOOL_F;
+
+  scwm_run_hook(x_configurerequest_hook,
+                gh_list(pswCurrent?pswCurrent->schwin:SCM_BOOL_F,
+                        gh_bool2scm(fIconConfigure),
+                        fX_spec? gh_int2scm(cre->x): SCM_BOOL_F,
+                        fY_spec? gh_int2scm(cre->y): SCM_BOOL_F,
+                        fWidth_spec? gh_int2scm(cre->width): SCM_BOOL_F,
+                        fHeight_spec? gh_int2scm(cre->height): SCM_BOOL_F,
+                        SCM_UNDEFINED));
+                        
+  /* do nothing else in C if the hook handles it */
+  if (SCM_BOOL_T == *pscm_configure_request_handled)
+    return;
+
   /*
    * According to the July 27, 1988 ICCCM draft, we should ignore size and
    * position fields in the WM_NORMAL_HINTS property when we map a window.
    * Instead, we'll read the current geometry.  Therefore, we should respond
    * to configuration requests for windows which have never been mapped.
    */
-  if (!pswCurrent || 
-      (pswCurrent->icon_w == cre->window) ||
-      (pswCurrent->icon_pixmap_w == cre->window)) {
+  if (fIconConfigure) {
     xwcm = cre->value_mask &
       (CWX | CWY | CWWidth | CWHeight | CWBorderWidth);
     xwc.x = cre->x;
@@ -1693,16 +1732,14 @@ HandleConfigureRequest()
   }
   /* override even if border change */
 
-  if (cre->value_mask & CWX)
-    x = cre->x - pswCurrent->boundary_width - pswCurrent->bw;
-  if (cre->value_mask & CWY)
-    y = cre->y - pswCurrent->boundary_width - pswCurrent->title_height - pswCurrent->bw;
-  if (cre->value_mask & CWWidth)
-    width = cre->width + 2 * pswCurrent->boundary_width;
-
-  if (cre->value_mask & CWHeight)
-    height = cre->height + pswCurrent->title_height + 2 * pswCurrent->boundary_width;
-
+  if (fX_spec)
+    x = cre->x - DecorationXOffset(pswCurrent);
+  if (fY_spec)
+    y = cre->y - DecorationYOffset(pswCurrent);
+  if (fWidth_spec)
+    width = cre->width + DecorationWidth(pswCurrent);
+  if (fHeight_spec)
+    height = cre->height + DecorationHeight(pswCurrent);
 
   /*
    * SetupWindow (x,y) are the location of the upper-left outer corner and
@@ -1727,13 +1764,18 @@ HandleConfigureRequest()
     height = FRAME_HEIGHT(pswCurrent);
   }
 
+  if ((fX_spec || fY_spec) && (fWidth_spec || fHeight_spec)) {
 #ifdef SCWM_DEBUG_RESIZE_MSGS
-  scwm_msg(DBG,FUNC_NAME,"MoveResize to %d,%d %dx%d", 
-           x, y, width, height);
+    scwm_msg(DBG,FUNC_NAME,"MoveResize to %d,%d %dx%d", 
+             x, y, width, height);
 #endif
-  MoveResizeTo(pswCurrent, 
-               x + WIN_VP_OFFSET_X(pswCurrent),
-               y + WIN_VP_OFFSET_Y(pswCurrent), width, height);
+    MoveResizeTo(pswCurrent, 
+                 x + WIN_VP_OFFSET_X(pswCurrent),
+                 y + WIN_VP_OFFSET_Y(pswCurrent), width, height);
+  } else {
+    /* just resize, and let gravity take effect */
+    ResizeTo(pswCurrent, width, height);
+  }
   KeepOnTop();
 }
 #undef FUNC_NAME
@@ -2217,6 +2259,10 @@ init_events()
 {
   /* do not permit add-hook!, remove-hook! access to this */
   x_motionnotify_hook = SCWM_MAKE_HOOK(6 /* numargs */);
+
+  SCWM_VAR_INIT(configure_request_handled,"configure-request-handled",SCM_BOOL_F);
+  /** Set to #t by an X-ConfigureRequest-hook procedure if no C handling should be done.
+See also `X-ConfigureRequest-hook'. */
 
 #ifndef SCM_MAGIC_SNARFER
 #include "events.x"

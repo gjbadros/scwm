@@ -13,6 +13,16 @@
 
 #include "window_fwd.h"
 
+#undef EXTERN
+#undef EXTERN_SET
+#ifdef ADD_WINDOW_IMPLEMENTATION
+#define EXTERN
+#define EXTERN_SET(x,y) x = y
+#else
+#define EXTERN extern
+#define EXTERN_SET(x,y) extern x
+#endif
+
 void SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque);
 Bool SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque);
 

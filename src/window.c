@@ -594,7 +594,8 @@ __inline__
 int
 DecorationXOffset(const ScwmWindow *psw)
 {
-  return psw->xboundary_width;
+  return psw->xboundary_width; 
+  /* + psw->bw; GJB:FIXME:: do I need this? --10/01/99 gjb */
 }
 
 __inline__
@@ -609,6 +610,7 @@ int
 DecorationYOffset(const ScwmWindow *psw)
 {
   return psw->title_height + psw->boundary_width;
+  /* + psw->bw; GJB:FIXME:: do I need this? --10/01/99 gjb */
 }
 
 
@@ -2352,9 +2354,9 @@ only be sizes that are multiples of the basic character size).*/
   int cpix_x = 0, cpix_y = 0;
   ScwmWindow *psw;
 
-  VALIDATE_ARG_INT_COPY(1,w,width);
-  VALIDATE_ARG_INT_COPY(2,h,height);
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(3, win, psw);
+  VALIDATE_ARG_INT_COPY_USE_DEF(1,w,width,FRAME_WIDTH(psw));
+  VALIDATE_ARG_INT_COPY_USE_DEF(2,h,height,FRAME_HEIGHT(psw));
   if (!UNSET_SCM(x)) VALIDATE_ARG_INT_COPY(4,x,cpix_x);
   if (!UNSET_SCM(y)) VALIDATE_ARG_INT_COPY(5,y,cpix_y);
 

@@ -899,6 +899,20 @@ SCWM_PROC(X_store_bytes, "X-store-bytes", 1, 0, 0,
 }
 #undef FUNC_NAME
 
+/* GJB:FIXME:  Need to link with Intrinsics
+   to get XtGetSelectionValue;  maybe not worth it */
+#if 0
+SCWM_PROC(X_get_primary_selection, "X-get-primary-selection", 1, 0, 0,
+	  ())
+     /** Return the X primary selection. */
+#define FUNC_NAME s_X_get_primary_selection
+{
+  
+}
+#undef FUNC_NAME
+
+#endif
+
 
 void 
 init_miscprocs()

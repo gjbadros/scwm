@@ -19,6 +19,18 @@
 #include <sys/select.h> /* for file descriptors */
 #endif
 
+#undef EXTERN
+#undef EXTERN_SET
+#ifdef EVENTS_IMPLEMENTATION
+#define EXTERN
+#define EXTERN_SET(x,y) x = y
+#else
+#define EXTERN extern
+#define EXTERN_SET(x,y) extern x
+#endif
+
+EXTERN SCM *pscm_configure_request_handled;
+
 extern Window w_for_scwmexec_response;  
 
 extern XContext ExposeWindowProcContext;

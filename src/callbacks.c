@@ -275,14 +275,20 @@ are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 
 #ifdef HAVE_SCM_MAKE_HOOK
 
+extern ScwmWindow *pswCurrent;
+
 __inline__ SCM scwm_run_hook(SCM hook, SCM args)
 {
+  ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
+  SCM answer;
 #ifdef SCWM_DEBUG_RUN_HOOK
   scwm_msg(DBG,"scwm_run_hook","Calling:");
   scm_write(hook,scm_current_error_port());
   scm_newline(scm_current_error_port());
 #endif
-  return scwm_safe_apply(run_hook_proc, gh_cons(hook,args));
+  answer = scwm_safe_apply(run_hook_proc, gh_cons(hook,args));
+  pswCurrent = psw;
+  return answer;
 }
 
 __inline__ SCM scwm_run_hook_message_only(SCM hook, SCM args)
