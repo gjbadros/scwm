@@ -26,7 +26,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release pre-1.0</releaseinfo>
-    <pubdate>05 July 1999</pubdate>
+    <pubdate>10 July 1999</pubdate>
     <copyright>
       <year>1997-1999</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
@@ -1170,7 +1170,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="execute-with-pidprop"><function>execute-with-pidprop</function></link> -- Execute COMMAND in the background and permit use of <link linkend="window-pid"><function>window-pid</function></link> on its windows.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/flash-window.scm</title> <itemizedlist>
-      <listitem><para><link linkend="flash-window-on"><function>flash-window-on</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="flash-window-on"><function>flash-window-on</function></link> -- Flash WIN's titlebar and boundary color to COLOR indefinitely.</para></listitem>
       <listitem><para><link linkend="flash-window"><function>flash-window</function></link> -- Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.</para></listitem>
       <listitem><para><link linkend="unflash-window"><function>unflash-window</function></link> -- Revert WIN's titlebar and boundary color to state before a <link linkend="flash-window"><function>flash-window</function></link>.</para></listitem>
       <listitem><para><link linkend="stop-flashing-window"><function>stop-flashing-window</function></link> -- No documentation supplied.</para></listitem>
@@ -1216,6 +1216,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="tile-windows-interactively"><function>tile-windows-interactively</function></link> -- Tile a set of selected windows either vertically or horizontally based on ORDER.</para></listitem>
       <listitem><para><link linkend="nonant-to-gravity"><function>nonant->gravity</function></link> -- Return a gravity symbol given NONANT in [0,8].</para></listitem>
       <listitem><para><link linkend="interactive-set-window-gravity-x"><function>interactive-set-window-gravity!</function></link> -- Permit user to click on an area of a window and anchor that nonant.</para></listitem>
+      <listitem><para><link linkend="describe-key"><function>describe-key</function></link> -- No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/fvwm-compat.scm</title> <itemizedlist>
       <listitem><para><link linkend="fvwm-exec-use-shell"><function>fvwm-exec-use-shell</function></link> -- No documentation supplied.</para></listitem>
@@ -1906,7 +1907,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="X-server-grabs"><function>X-server-grabs</function></link> -- Return the number of nested server grabs.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scwm/ICCCM.c</title> <itemizedlist>
-      <listitem><para><link linkend="send-client-message"><function>send-client-message</function></link> -- Send WIN the message "ATOM X".</para></listitem>
+      <listitem><para><link linkend="send-client-message"><function>send-client-message</function></link> -- Send WIN the message "ATOM DATA".</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scwm/image.c</title> <itemizedlist>
       <listitem><para><link linkend="image-p"><function>image?</function></link> -- Returns <literal>#t</literal> if OBJ is an image object, otherwise <literal>#f</literal>.</para></listitem>
@@ -3174,7 +3175,7 @@ invoked when the key is released.  The contexts include:
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 982 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 985 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3202,7 +3203,7 @@ nothing should be done on key release.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1054 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1057 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3212,7 +3213,7 @@ nothing should be done on key release.
     <refpurpose>Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(bind-mouse contexts button proc)</synopsis>
+    <synopsis>(bind-mouse contexts button proc #&amp;optional immediate-proc)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -3222,13 +3223,16 @@ nothing should be done on key release.
 <parameter>button</parameter> is a string or integer giving the mouse button number
 <parameter>proc</parameter> is a procedure that will be invoked (with no arguments) when the
 specified button is pressed in the specified context. See <link linkend="bind-key"><function>bind-key</function></link>
-for a list of the contexts.
+for a list of the contexts. If <parameter>immediate-proc</parameter> is given, it will be
+executed immediately on a button-click.  If <parameter>immediate-proc</parameter> returns
+<literal>#f</literal>, then <parameter>proc</parameter> will still get executed after determining the mouse click
+type.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1085 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1088 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5099,6 +5103,27 @@ E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17).
   </refsect1>
 </refentry>
 
+<refentry id="describe-key">
+  <refnamediv>
+    <refname>describe-key</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(describe-key)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: </para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
+  at line 491 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="desk-background">
   <refnamediv>
     <refname>desk-background</refname>
@@ -5399,7 +5424,7 @@ See also <link linkend="prompt-string"><function>prompt-string</function></link>
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 136 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 129 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5734,7 +5759,7 @@ working commands.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/fvwm-eval.scm"><filename>scheme/fvwm-eval.scm</filename></ulink>
-  at line 516 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-eval.scm">CVS log</ulink>)</para> </refsect2>
+  at line 528 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-eval.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6082,14 +6107,14 @@ color.  See <link linkend="unflash-window"><function>unflash-window</function></
   <title>Implementation Notes</title>
   <para> Module: (app scwm flash-window)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flash-window.scm"><filename>scheme/flash-window.scm</filename></ulink>
-  at line 13 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/flash-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 17 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/flash-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="flash-window-on">
   <refnamediv>
     <refname>flash-window-on</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Flash WIN's titlebar and boundary color to COLOR indefinitely.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(flash-window-on #&amp;optional (win (get-window))
@@ -6098,7 +6123,9 @@ color.  See <link linkend="unflash-window"><function>unflash-window</function></
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Flash WIN's titlebar and boundary color to COLOR indefinitely.
+Returns the window changed.  Use <link linkend="unflash-window"><function>unflash-window</function></link> to rever the
+window to its normal colors.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -7276,7 +7303,7 @@ not support this procedure (you should upgrade!).
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 97 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 90 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8379,7 +8406,7 @@ that corner fixed.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
-  <para> Module: </para>
+  <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
   at line 479 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
@@ -8943,7 +8970,7 @@ E.g., (keymask-keycode->string 4 44) => "C-j". Returns <literal>#f</literal> on 
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1308 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1352 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8966,7 +8993,7 @@ is not a valid keysym.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 920 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 923 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9351,7 +9378,7 @@ Returns <literal>#t</literal> iff the load was successful, false otherwise.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 474 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 467 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9462,7 +9489,7 @@ if there is no matching binding.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 837 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 840 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9488,7 +9515,7 @@ matching binding.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1157 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1163 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10505,7 +10532,7 @@ specific to the menu look used for this menu.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 483 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 484 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10547,7 +10574,7 @@ specific to the menu look used for this menu.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 494 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 495 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10568,7 +10595,7 @@ specific to the menu look used for this menu.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 1609 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 1623 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10590,7 +10617,7 @@ See <link linkend="set-menu-hover-delay-x"><function>set-menu-hover-delay!</func
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 382 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 383 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10654,7 +10681,7 @@ See <link linkend="set-menu-popup-delay-x"><function>set-menu-popup-delay!</func
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 357 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 358 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11511,7 +11538,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1263 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1307 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11534,7 +11561,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1247 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1291 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11557,7 +11584,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1271 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1315 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11580,7 +11607,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1255 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1299 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11603,7 +11630,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1239 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1283 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11626,7 +11653,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1280 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1324 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11694,7 +11721,7 @@ to determine, e.g., whether the user single clicked or double clicked.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1226 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1270 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12643,7 +12670,7 @@ place.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 196 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 189 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12664,7 +12691,7 @@ place.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 155 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 148 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12995,7 +13022,7 @@ The return value is a two-element list of the x and y coordinates.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 82 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 75 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13019,7 +13046,7 @@ right justified against <parameter>x-pos</parameter>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 1619 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 1633 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13062,7 +13089,7 @@ This positions the popup menu appropriately.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 223 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 216 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13341,7 +13368,7 @@ TITLE is a window title.
   <title>Implementation Notes</title>
   <para> Module: (app scwm prompt-color)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/prompt-color.scm"><filename>scheme/prompt-color.scm</filename></ulink>
-  at line 32 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/prompt-color.scm">CVS log</ulink>)</para> </refsect2>
+  at line 44 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/prompt-color.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13365,7 +13392,7 @@ See also <link linkend="prompt-color"><function>prompt-color</function></link>.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/prompt-color.scm"><filename>scheme/prompt-color.scm</filename></ulink>
-  at line 82 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/prompt-color.scm">CVS log</ulink>)</para> </refsect2>
+  at line 94 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/prompt-color.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13485,7 +13512,7 @@ See also <link linkend="prompt-font"><function>prompt-font</function></link>.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 131 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 124 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14653,7 +14680,7 @@ See also <link linkend="set-quote-key-events-x"><function>set-quote-key-events!<
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 825 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 828 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15940,7 +15967,7 @@ The string written is generated by <link linkend="scwm-options-string"><function
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 463 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 456 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16300,7 +16327,7 @@ to the main event loop
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 69 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 62 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16388,7 +16415,7 @@ want the saved preferences to take effect.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 261 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 254 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16409,7 +16436,7 @@ want the saved preferences to take effect.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 240 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 233 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16430,7 +16457,7 @@ want the saved preferences to take effect.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 302 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 295 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16453,7 +16480,7 @@ GJB:FIXME::.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 315 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 308 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16480,7 +16507,7 @@ value.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 434 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 427 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16869,25 +16896,29 @@ this unless you know what it means.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 2073 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/events.c">CVS log</ulink>)</para> </refsect2>
+  at line 2080 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/events.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="send-client-message">
   <refnamediv>
     <refname>send-client-message</refname>
-    <refpurpose>Send WIN the message "ATOM X".</refpurpose>
+    <refpurpose>Send WIN the message "ATOM DATA".</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(send-client-message win atom #&amp;optional x)</synopsis>
+    <synopsis>(send-client-message win atom . data)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  Send <parameter>win</parameter> the message "<parameter>atom</parameter> <parameter>x</parameter>".
-<parameter>win</parameter> can be 'root-window or an <parameter>x</parameter> window identification number.
+  Send <parameter>win</parameter> the message "<parameter>atom</parameter> <parameter>data</parameter>".
+<parameter>win</parameter> can be 'root-window or an X window identification number.
 Useful for supporting other WMs module communication protocols.
-<parameter>atom</parameter> and <parameter>x</parameter> are both 32-bit integers.
+<parameter>atom</parameter> is the X11 atom representing the message type (e.g.,
+"XA_WM_PROTOCOLS") and <parameter>data</parameter> is up to 4 32-bit integers of data.
+for the message. <parameter>data</parameter> will be the used to create the message data,
+and the lastTimestamp will be appended as the last integer in
+the data message.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -16921,7 +16952,7 @@ should not have to worry about this unless you know what it means.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/events.c"><filename>scwm/events.c</filename></ulink>
-  at line 2013 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/events.c">CVS log</ulink>)</para> </refsect2>
+  at line 2020 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/events.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18199,7 +18230,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 556 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 557 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18222,7 +18253,7 @@ stipple color for the <parameter>menu</parameter>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 422 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 423 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18243,7 +18274,7 @@ stipple color for the <parameter>menu</parameter>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 572 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 573 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18264,7 +18295,7 @@ stipple color for the <parameter>menu</parameter>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 506 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 507 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18286,7 +18317,7 @@ These colors will be used for the selected item.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 448 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 449 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18330,7 +18361,7 @@ Otherwise, do not.  See also <link linkend="set-menu-highlight-colors-x"><functi
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 469 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 470 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18353,7 +18384,7 @@ a Return or Space keypress to activate the item.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 1597 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 1611 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18375,7 +18406,7 @@ a Return or Space keypress to activate the item.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 370 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 371 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18396,7 +18427,7 @@ a Return or Space keypress to activate the item.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 394 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 395 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18418,7 +18449,7 @@ a Return or Space keypress to activate the item.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 344 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 345 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18463,7 +18494,7 @@ color to <parameter>bg-color</parameter>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 522 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 523 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18484,7 +18515,7 @@ color to <parameter>bg-color</parameter>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 408 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
+  at line 409 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/menu.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18783,7 +18814,7 @@ usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 815 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 818 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20139,7 +20170,7 @@ the window's smart-placement flag is on.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 295 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 288 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20422,7 +20453,7 @@ window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flash-window.scm"><filename>scheme/flash-window.scm</filename></ulink>
-  at line 55 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/flash-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 61 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/flash-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21171,7 +21202,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: (app scwm preferences)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/preferences.scm"><filename>scheme/preferences.scm</filename></ulink>
-  at line 87 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
+  at line 80 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/preferences.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21849,7 +21880,7 @@ way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 888 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 891 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21872,7 +21903,7 @@ way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 955 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 958 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21996,12 +22027,13 @@ an ui-constraint.
   <title>Description</title>
   <para>
   Revert WIN's titlebar and boundary color to state before a <link linkend="flash-window"><function>flash-window</function></link>.
+Return the window changed.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: (app scwm flash-window)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flash-window.scm"><filename>scheme/flash-window.scm</filename></ulink>
-  at line 43 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/flash-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 47 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scheme/flash-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23825,7 +23857,7 @@ relative to the current viewport.
 That is, to roll up into just a titlebar. By default, the change takes
 place instantaneously. <parameter>win</parameter> defaults to the window context in the usual
 way if not specified. See also <link linkend="window-unshade"><function>window-unshade</function></link>.
-A shaded window has the WM_STATE hint set to WithdrawnState, since
+A shaded window has the "WM_STATE" hint set to WithdrawnState, since
 the client application window is not visible.
   </para>
   <refsect2>
@@ -24102,7 +24134,7 @@ specified.
   Reverse the effect of <link linkend="window-shade"><function>window-shade</function></link> on <parameter>win</parameter>.
 The change takes place instantaneously. <parameter>win</parameter> defaults to the window
 context in the usual way if not specified.
-A shaded window has the WM_STATE hint set to WithdrawnState, since
+A shaded window has the "WM_STATE" hint set to WithdrawnState, since
 the client application window is not visible.
   </para>
   <refsect2>
@@ -24567,7 +24599,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 1289 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
+  at line 1333 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/binding.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 

@@ -345,7 +345,7 @@ invoked when the key is released.  The contexts include:
 'root-window
 'left-button-N  (N=1-5)
 'right-button-N (N=1-5)
-[From scwm/binding.c:982]
+[From scwm/binding.c:985]
 
 
 (bind-keycode contexts keycode modifier-mask proc #&optional release-proc)
@@ -358,18 +358,21 @@ specified key is pressed in the specified context.
 RELEASE-PROC is a procedure that will be invoked (with no arguments) when the
 specified key is released in the specified context, or #f or omitted if
 nothing should be done on key release.
-[From scwm/binding.c:1054]
+[From scwm/binding.c:1057]
 
 
-(bind-mouse contexts button proc)
+(bind-mouse contexts button proc #&optional immediate-proc)
 - Built-in Primitive
 Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
 PROC is a procedure that will be invoked (with no arguments) when the
 specified button is pressed in the specified context. See `bind-key'
-for a list of the contexts.
-[From scwm/binding.c:1085]
+for a list of the contexts. If IMMEDIATE-PROC is given, it will be
+executed immediately on a button-click.  If IMMEDIATE-PROC returns
+#f, then PROC will still get executed after determining the mouse click
+type.
+[From scwm/binding.c:1088]
 
 
 (bind-three-modifier-key-events 
@@ -1054,6 +1057,12 @@ E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17).
 [From scheme/base.scm:285]
 
 
+(describe-key)
+- 
+No documentation supplied.
+[From scheme/flux.scm:491]
+
+
 (desk-background desk #&key
 				 (reset #f) 
 				 (color #f) 
@@ -1160,7 +1169,7 @@ Create and return a dummy-prompting hbox and entry.
 PROMPT is the prompt, and INITVAL is the initial string.
 The returned value is a list: (hbox getter entry).
 See also `prompt-string'.
-[From scheme/preferences.scm:136]
+[From scheme/preferences.scm:129]
 
 
 (edge-move-threshold)
@@ -1270,7 +1279,7 @@ Implemented for compatibility with fvwm2 modules, which can send
 commands back to the window manager for evaluation.  Not all fvwm2
 commands are implemented; see the end of fvwm-eval.scm for a list of
 working commands.
-[From scheme/fvwm-eval.scm:516]
+[From scheme/fvwm-eval.scm:528]
 
 
 (exe command)
@@ -1393,13 +1402,15 @@ if you want to read all of the output of CMD.
 Flash WIN's titlebar and boundary color to COLOR for UNFLASH-DELAY seconds.
 UNFLASH-DELAY may be #f to not automatically revert back to the original
 color.  See `unflash-window'.
-[From scheme/flash-window.scm:13]
+[From scheme/flash-window.scm:17]
 
 
 (flash-window-on #&optional (win (get-window))
 				 (color "red"))
 - (app scwm flash-window)
-No documentation supplied.
+Flash WIN's titlebar and boundary color to COLOR indefinitely.
+Returns the window changed.  Use `unflash-window' to rever the
+window to its normal colors.
 [From scheme/flash-window.scm:9]
 
 
@@ -1777,7 +1788,7 @@ not support this procedure (you should upgrade!).
 (gui-set sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:97]
+[From scheme/preferences.scm:90]
 
 
 (handle-pending-events)
@@ -2157,7 +2168,7 @@ outline or the window itself is resized.
 
 
 (interactive-set-window-gravity!)
-- 
+- (app scwm flux)
 Permit user to click on an area of a window and anchor that nonant.
 E.g., if the user clicks on the northeast corner of a window, that
 window will be set to have northeast gravity so future resizes keep
@@ -2334,7 +2345,7 @@ Return a string containing the X11 keysym for key with code KEYCODE.
 - Built-in Primitive
 Return a string representing the key press with mask KEYMASK, code KEYCODE.
 E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.
-[From scwm/binding.c:1308]
+[From scwm/binding.c:1352]
 
 
 (keysym->keycode keysym-name)
@@ -2342,7 +2353,7 @@ E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.
 Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
 KEYSYM-NAME should be a string.  E.g., "Control_L".  Return #f if KEYSYM-NAME
 is not a valid keysym.
-[From scwm/binding.c:920]
+[From scwm/binding.c:923]
 
 
 (kill-all-fvwm2-modules)
@@ -2472,7 +2483,7 @@ Load FILENAME to restore the Scwm preferences.
 Since the options file is just a bunch of S-expressions,
 this currently just `load's the file to evaluate it.
 Returns #t iff the load was successful, false otherwise.
-[From scheme/preferences.scm:474]
+[From scheme/preferences.scm:467]
 
 
 (load-theme fname)
@@ -2508,7 +2519,7 @@ KEY is a modifiers and keysym string.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 The return value is a list: (press-proc release-proc), or #f
 if there is no matching binding.
-[From scwm/binding.c:837]
+[From scwm/binding.c:840]
 
 
 (lookup-mouse contexts button)
@@ -2519,7 +2530,7 @@ BUTTON is a string or integer giving the mouse button number and any
 modifiers as a prefix.
 The return values is the procedure object, or #f if there is no
 matching binding.
-[From scwm/binding.c:1157]
+[From scwm/binding.c:1163]
 
 
 (lower-by-one #&optional (w (get-window)))
@@ -2906,7 +2917,7 @@ No documentation supplied.
 (menu-highlight-colors menu)
 - Built-in Primitive
 Return list text-color, bg-color, the highlight colors for MENU.
-[From scwm/menu.c:483]
+[From scwm/menu.c:484]
 
 
 (menu-highlight-factor)
@@ -2918,20 +2929,20 @@ Return the current menu highlight factor.
 (menu-highlight-relief? menu)
 - Built-in Primitive
 Return #t if MENU's selected item is relieved, #f otherwise.
-[From scwm/menu.c:494]
+[From scwm/menu.c:495]
 
 
 (menu-hotkeys-activate-item?)
 - Built-in Primitive
 Return #t if hotkeys invoke item, #f if they just select the item.
-[From scwm/menu.c:1609]
+[From scwm/menu.c:1623]
 
 
 (menu-hover-delay menu)
 - Built-in Primitive
 Return MENU's hover action delay.
 See `set-menu-hover-delay!'.
-[From scwm/menu.c:382]
+[From scwm/menu.c:383]
 
 
 (menu-look? obj)
@@ -2950,7 +2961,7 @@ Return an approximation of the number of menuitems that will fit vertically on s
 - Built-in Primitive
 Return MENU's submenu popup delay.
 See `set-menu-popup-delay!'.
-[From scwm/menu.c:357]
+[From scwm/menu.c:358]
 
 
 (menu-prefs . opts)
@@ -3267,7 +3278,7 @@ Modify the current desktop size by the given parameter.
 Return the bit-mask for the Alt modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Alt, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1263]
+[From scwm/binding.c:1307]
 
 
 (mod-mask-control)
@@ -3275,7 +3286,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Control modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Control, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1247]
+[From scwm/binding.c:1291]
 
 
 (mod-mask-hyper)
@@ -3283,7 +3294,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Hyper modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Hyper, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1271]
+[From scwm/binding.c:1315]
 
 
 (mod-mask-meta)
@@ -3291,7 +3302,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Meta modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Meta, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1255]
+[From scwm/binding.c:1299]
 
 
 (mod-mask-shift)
@@ -3299,7 +3310,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Shift modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Shift, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1239]
+[From scwm/binding.c:1283]
 
 
 (mod-mask-super)
@@ -3307,7 +3318,7 @@ returns a power of two corresponding to the bit-mask of the modifier
 Return the bit-mask for the Super modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Super, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
-[From scwm/binding.c:1280]
+[From scwm/binding.c:1324]
 
 
 (module-and-proc-names->proc module-name proc-name)
@@ -3330,7 +3341,7 @@ Return a symbol corresponding to the type of the most recent mouse event.
 Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.
 You can `case' on this symbol in a procedure bound to a mouse event
 to determine, e.g., whether the user single clicked or double clicked.
-[From scwm/binding.c:1226]
+[From scwm/binding.c:1270]
 
 
 (mouse-focus-click-raises?)
@@ -3649,13 +3660,13 @@ place.
 (option-menu sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:196]
+[From scheme/preferences.scm:189]
 
 
 (option-widget-and-getter sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:155]
+[From scheme/preferences.scm:148]
 
 
 (or-map proc first . rest)
@@ -3776,7 +3787,7 @@ The return value is a two-element list of the x and y coordinates.
 (popup-docs-for var)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:82]
+[From scheme/preferences.scm:75]
 
 
 (popup-menu menu #&optional warp-to-first? x-pos y-pos left-side?)
@@ -3785,7 +3796,7 @@ Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST? is #t.
 X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be
 #t if the menu should be left justified against X-POS, or #f if it should be
 right justified against X-POS.
-[From scwm/menu.c:1619]
+[From scwm/menu.c:1633]
 
 
 (popup-menu-from-decoration menu win button-number)
@@ -3798,7 +3809,7 @@ This positions the popup menu appropriately.
 (popup-option-menu sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:223]
+[From scheme/preferences.scm:216]
 
 
 (popup-ui-constraints-gtk-toggle-menu)
@@ -3897,7 +3908,7 @@ See also `prompt-bool'.
 Prompt using PROMPT for a color and call PROC with value if Ok is clicked.
 INITVAL is a default initial color as a color object or string.
 TITLE is a window title.
-[From scheme/prompt-color.scm:32]
+[From scheme/prompt-color.scm:44]
 
 
 (prompt-color-hbox prompt initval #&optional favorites)
@@ -3906,7 +3917,7 @@ Create and return a color-prompting hbox, complete with link to full color dialo
 PROMPT is the prompt, INITVAL is the initial color as a color object or a string.
 The returned value is a list: (hbox getter).
 See also `prompt-color'.
-[From scheme/prompt-color.scm:82]
+[From scheme/prompt-color.scm:94]
 
 
 (prompt-file prompt proc #&key
@@ -3951,7 +3962,7 @@ See also `prompt-font'.
 (prompt-from-name name)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:131]
+[From scheme/preferences.scm:124]
 
 
 (prompt-integer-range prompt range proc #&key
@@ -4324,7 +4335,7 @@ No documentation supplied.
 - Built-in Primitive
 Return #t iff key events are being qutoed.
 See also `set-quote-key-events!'.
-[From scwm/binding.c:825]
+[From scwm/binding.c:828]
 
 
 (quotify-single-quotes str)
@@ -4771,7 +4782,7 @@ errors.
 Save the current Scwm preferences to FILENAME.
 FILENAME defaults to $HOME/.scwm-options if not specified.
 The string written is generated by `scwm-options-string'.
-[From scheme/preferences.scm:463]
+[From scheme/preferences.scm:456]
 
 
 (save-settings)
@@ -4876,7 +4887,7 @@ Return the setter for SYM.
 (scwm-option-short-documentation sym)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:69]
+[From scheme/preferences.scm:62]
 
 
 (scwm-option-symget sym)
@@ -4904,19 +4915,19 @@ You may need to use-modules all the modules that contain
 scwm-options to have this work for now.
 Put "(load-preferences)" in your .scwmrc where you
 want the saved preferences to take effect.
-[From scheme/preferences.scm:261]
+[From scheme/preferences.scm:254]
 
 
 (scwm-options-menu)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:240]
+[From scheme/preferences.scm:233]
 
 
 (scwm-options-notebook)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:302]
+[From scheme/preferences.scm:295]
 
 
 (scwm-options-notebook-page nb title syms)
@@ -4924,7 +4935,7 @@ No documentation supplied.
 Popup a scwm options dialog box.
 NOTE: Not quite functional, but I'm outta time!
 GJB:FIXME::.
-[From scheme/preferences.scm:315]
+[From scheme/preferences.scm:308]
 
 
 (scwm-options-string #&optional (syms scwm-options))
@@ -4936,7 +4947,7 @@ the options in the current session.  At present this means that if some
 modules are not loaded, those options will not be included.
 The returned string will contain multiple S-expressions, one for each Scwm preference
 value.
-[From scheme/preferences.scm:434]
+[From scheme/preferences.scm:427]
 
 
 (scwm-path-exec-prefix)
@@ -5085,15 +5096,19 @@ BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify which are sent
 individually. PROPAGATE? indicates whether the propagate flag is set
 on the event; the default is #f. You should not have to worry about
 this unless you know what it means.
-[From scwm/events.c:2073]
+[From scwm/events.c:2080]
 
 
-(send-client-message win atom #&optional x)
+(send-client-message win atom . data)
 - Built-in Primitive
-Send WIN the message "ATOM X".
+Send WIN the message "ATOM DATA".
 WIN can be 'root-window or an X window identification number.
 Useful for supporting other WMs module communication protocols.
-ATOM and X are both 32-bit integers.
+ATOM is the X11 atom representing the message type (e.g.,
+"XA_WM_PROTOCOLS") and DATA is up to 4 32-bit integers of data.
+for the message. DATA will be the used to create the message data,
+and the lastTimestamp will be appended as the last integer in
+the data message.
 [From scwm/ICCCM.c:68]
 
 
@@ -5107,7 +5122,7 @@ sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
 allow you to specify which are sent individually. PROPAGATE? indicates
 whether the propagate flag is set on the event; the default is #f. You
 should not have to worry about this unless you know what it means.
-[From scwm/events.c:2013]
+[From scwm/events.c:2020]
 
 
 (set-animation! vector)
@@ -5560,7 +5575,7 @@ specified.
 (set-menu-background-picture! menu picture)
 - Built-in Primitive
 Use PICTURE as the background image for MENU.
-[From scwm/menu.c:556]
+[From scwm/menu.c:557]
 
 
 (set-menu-colors! menu text-color bg-color #&optional stipple-color)
@@ -5568,26 +5583,26 @@ Use PICTURE as the background image for MENU.
 Use TEXT-COLOR and BG-COLOR as the colors for MENU.
 STIPPLE-COLOR is optional, and if given will be used for the
 stipple color for the MENU.
-[From scwm/menu.c:422]
+[From scwm/menu.c:423]
 
 
 (set-menu-extra-options! menu options)
 - Built-in Primitive
 Set MENU's extra options to OPTIONS.
-[From scwm/menu.c:572]
+[From scwm/menu.c:573]
 
 
 (set-menu-font! menu font)
 - Built-in Primitive
 Use FONT as the font for MENU.
-[From scwm/menu.c:506]
+[From scwm/menu.c:507]
 
 
 (set-menu-highlight-colors! menu text-color bg-color)
 - Built-in Primitive
 Use TEXT-COLOR and BG-COLOR as the highlight colors for MENU.
 These colors will be used for the selected item.
-[From scwm/menu.c:448]
+[From scwm/menu.c:449]
 
 
 (set-menu-highlight-factor! factor)
@@ -5601,7 +5616,7 @@ FACTOR is a positive floating point number
 - Built-in Primitive
 If HIGHLIGHT-RELIEF? is #t, then draw a relief on selected items in MENU.
 Otherwise, do not.  See also `set-menu-highlight-colors!'.
-[From scwm/menu.c:469]
+[From scwm/menu.c:470]
 
 
 (set-menu-hotkeys-activate-item! activate?)
@@ -5609,27 +5624,27 @@ Otherwise, do not.  See also `set-menu-highlight-colors!'.
 If ACTIVATE? is #t, let menu hotkeys invoke the item.
 If #f, a menuitem hotkey just makes that item selected and still requires
 a Return or Space keypress to activate the item.
-[From scwm/menu.c:1597]
+[From scwm/menu.c:1611]
 
 
 (set-menu-hover-delay! menu hover-delay)
 - Built-in Primitive
 Set MENU's hover delay to HOVER-DELAY.
 HOVER-DELAY is the number of ms to wait before invoking the hover action.
-[From scwm/menu.c:370]
+[From scwm/menu.c:371]
 
 
 (set-menu-look! menu menu-look)
 - Built-in Primitive
 Use MENU-LOOK as the menu-look for MENU.
-[From scwm/menu.c:394]
+[From scwm/menu.c:395]
 
 
 (set-menu-popup-delay! menu popup-delay)
 - Built-in Primitive
 Set MENU's submenu popup delay to POPUP-DELAY.
 POPUP-DELAY is the number of ms to wait before popping up submenus.
-[From scwm/menu.c:344]
+[From scwm/menu.c:345]
 
 
 (set-menu-shadow-factor! factor)
@@ -5644,13 +5659,13 @@ FACTOR is a positive floating point number
 Use PICTURE as the side picture for MENU.
 Set its alignment to ALIGN, and its background
 color to BG-COLOR.
-[From scwm/menu.c:522]
+[From scwm/menu.c:523]
 
 
 (set-menu-title! menu menu-title)
 - Built-in Primitive
 Use MENU-TITLE as the title for MENU.
-[From scwm/menu.c:408]
+[From scwm/menu.c:409]
 
 
 (set-menuitem-colors! menuitem fg bg)
@@ -5754,7 +5769,7 @@ usual way if not specified.
 (set-quote-key-events! quoting-on?)
 - Built-in Primitive
 Set key event quoting to QUOTING-ON?.
-[From scwm/binding.c:815]
+[From scwm/binding.c:818]
 
 
 (set-random-placement! flag #&optional win)
@@ -6270,7 +6285,7 @@ Returned LS sorted according to COMPARE (defaults to ascending numerical order).
 (sort-options-by-type symlist)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:295]
+[From scheme/preferences.scm:288]
 
 
 (sorted-by-car-string l)
@@ -6358,7 +6373,7 @@ window context in the usual way if not specified.
 (stop-flashing-window #&optional (win (get-window)))
 - 
 No documentation supplied.
-[From scheme/flash-window.scm:55]
+[From scheme/flash-window.scm:61]
 
 
 (stop-property-respond)
@@ -6642,7 +6657,7 @@ Dump all arguments into a string.
 (toggle-docs-for var)
 - (app scwm preferences)
 No documentation supplied.
-[From scheme/preferences.scm:87]
+[From scheme/preferences.scm:80]
 
 
 (toggle-max-both)
@@ -6855,7 +6870,7 @@ way if not specified.
 Remove any bindings attached to KEY in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
-[From scwm/binding.c:888]
+[From scwm/binding.c:891]
 
 
 (unbind-mouse contexts button)
@@ -6863,7 +6878,7 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 Remove any bindings attached to mouse BUTTON in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
-[From scwm/binding.c:955]
+[From scwm/binding.c:958]
 
 
 (undo)
@@ -6902,7 +6917,8 @@ an ui-constraint.
 (unflash-window #&optional (win (get-window)))
 - (app scwm flash-window)
 Revert WIN's titlebar and boundary color to state before a `flash-window'.
-[From scheme/flash-window.scm:43]
+Return the window changed.
+[From scheme/flash-window.scm:47]
 
 
 (unfocus)
@@ -7546,7 +7562,7 @@ Cause WIN to become "window-shaded".
 That is, to roll up into just a titlebar. By default, the change takes
 place instantaneously. WIN defaults to the window context in the usual
 way if not specified. See also `window-unshade'.
-A shaded window has the WM_STATE hint set to WithdrawnState, since
+A shaded window has the "WM_STATE" hint set to WithdrawnState, since
 the client application window is not visible.
 [From scwm/window.c:2181]
 
@@ -7643,7 +7659,7 @@ specified.
 Reverse the effect of `window-shade' on WIN.
 The change takes place instantaneously. WIN defaults to the window
 context in the usual way if not specified.
-A shaded window has the WM_STATE hint set to WithdrawnState, since
+A shaded window has the "WM_STATE" hint set to WithdrawnState, since
 the client application window is not visible.
 [From scwm/window.c:2225]
 
@@ -7803,7 +7819,7 @@ The length of the returned list is the number of buttons available.  Each
 element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
 3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
 physical button acts as logical button 1, and the leftmost acts as button 3.
-[From scwm/binding.c:1289]
+[From scwm/binding.c:1333]
 
 
 (X-properties win)
