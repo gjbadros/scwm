@@ -1,3 +1,18 @@
+Thu Feb 26 22:00:17 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Rework all the code to make compile using g++, while still
+ 	remaining C code. Lots of C++ warnings, but no more errors
+ 	Included renaming window.h's item from class to classhint Adding
+ 	missing include files (to fix missing function prototypes)
+ 	Removing duplicate sym_XXXX symbols from miscprocs.c and other *.c
+ 	files Fixing some missing `return' specifiers of non-void fns
+ 	Unnesting the vector_coords struct from the ButtonFace struct
+ 	Adding some #ifdef __cplusplus as needed Reworking access to the
+ 	`new' memvar of the colormap X object Adding break;'s to switch's
+ 	empty default cases.
+
+	* scmw.c: Also added some #ifdef USE_CASSOWARY blocks
+
 Wed Feb 25 16:55:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* font.c, font.h: Several changes to the font interface. Fonts are

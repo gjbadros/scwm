@@ -1,3 +1,9 @@
+Thu Feb 26 20:24:12 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Added constraints.scm; these are for the Cassowary extension to
+ 	scwm; they are not functional in the basic scwm, and can be
+ 	ignored
+
 Wed Feb 25 21:43:46 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Changed load-font to make-font throughout.

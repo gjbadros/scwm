@@ -1,7 +1,13 @@
+Thu Feb 26 21:46:06 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* utilities/emacs/scwm-buffer.el: Updated to use the $DISPLAY
+ 	environment variable to choose which X server to open a connection
+ 	to define-key for scwm-interaction-mode-map, not scheme-mode-map
+
 Wed Feb 25 21:10:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
-	* configure.in, acconfig.h: Check for gh_vector_set_x so that or 
-	gh_vset can be used as appropriate.
+	* configure.in, acconfig.h: Check for gh_vector_set_x so that or
+ 	gh_vset can be used as appropriate.
 
 	configure, include/config.h.in: regenerated
 
