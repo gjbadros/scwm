@@ -46,6 +46,17 @@
 #define WithdrawnState 0
 #endif
 
+/* Some stubs to take care of the gone module stuff.
+   I don't want to delete the calls for two reasons, 
+   first, they will eventually be used to figure out
+   where hooks for the new external interface system 
+   should go, and second there are a lot and I don't
+   feel like commenting them all. */
+
+#define Broadcast(a,b,c,d,e,f,g,h,i) 
+#define BroadcastConfig(a,b)
+#define BroadcastName(a,b,c,d,e)
+
 /* use PanFrames! this replaces the 3 pixel margin with PanFrame windows
 it should not be an option, once it works right. HEDU 2/2/94 */
 #define PAN_FRAME_THICKNESS 2	/* or just 1 ? */
