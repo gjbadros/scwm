@@ -6,13 +6,13 @@ Last Updated 7-Oct-1998
 
 * How can I find out more about Scwm?
 
-Web Page:      http://huis-clos.mit.edu/scwm/
+Web Page:      http://vicarious-existence.mit.edu/scwm/
 
 Mailing list:  scwm-discuss-request@mit.edu, body (not subject) of "subscribe"
                scwm-discuss@mit.edu to post to the list
 
   Mailing list
-  Archived at: http://huis-clos.mit.edu/scwm-discuss.1998/
+  Archived at: http://vicarious-existence.mit.edu/scwm-discuss.1998/
 
 Documentation: http://www.cs.washington.edu/homes/gjb/scwm-doc/
 
@@ -22,3 +22,18 @@ Documentation: http://www.cs.washington.edu/homes/gjb/scwm-doc/
 Some spell it out: "Ess See Double-you Emm", others pronounce it as
 an acronym "squim" or "skwim" rhyming with "whim" starting with the
 "squ" as in "squat".
+
+
+* How can I convert by .fvwm2rc to a .scwmrc?
+
+Unfortunately, right now there are no automatic tools for doing the
+conversion (we'd love to see someone contribute such a thing).  A more
+complete answer is that you probably do not want to directly convert
+your .fvwm2rc to a .scwmrc because Scwm permits so much greater
+abstraction and programmability that a simple conversion is likely to
+not be a very good .scwmrc.
+
+We recommend that you take one of the existing .scwmrc files from the
+sample.scwmrc/ directory, and modify it to suit your needs.  We are
+working for easier-to-use GUI configuration tools, but they are not yet
+in place.
