@@ -30,7 +30,7 @@ SCM sym_focus;
 
 /* GJBFIX: Maybe the menus should do something w/ this? */
 SCWM_PROC(set_menu_mwm_style, "set-menu-mwm-style!", 0, 1, 0,
-          (SCM glag))
+          (SCM flag))
      /** Set the menu mwm style according to the boolean FLAG. This
          option is currently ignored. */
 {
@@ -47,7 +47,7 @@ SCWM_PROC(set_menu_mwm_style, "set-menu-mwm-style!", 0, 1, 0,
     }
   }
   SCM_ALLOW_INTS;
-  scm_wrong_type_arg("set-mwm-menu-style!", 1, should);
+  scm_wrong_type_arg("set-mwm-menu-style!", 1, flag);
 }
 
 
@@ -367,10 +367,10 @@ SCWM_PROC(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
           (SCM val))
      /** Determine wether a click */
 {
-  if (!gh_boolean_p(flag)) {
-    scm_wrong_type_arg("set-click-to-focus-raises!",1,flag);
+  if (!gh_boolean_p(val)) {
+    scm_wrong_type_arg("set-click-to-focus-raises!",1,val);
   }
-  Scr.ClickToFocusRaises=  SCM_NFALSEP(val) ? True : False;
+  Scr.ClickToFocusRaises =  SCM_NFALSEP(val) ? True : False;
   return SCM_UNSPECIFIED;
 }
 
@@ -386,10 +386,10 @@ SCWM_PROC(set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0,
      /** Determine wether or not a mouse-focus window will always be
 raised by a click on the frame according to the boolean value FLAG.*/
 {
-  if (!gh_boolean_p(val)) {
-    scm_wrong_type_arg("set-mouse-focus-click-raises!",1,val);
+  if (!gh_boolean_p(flag)) {
+    scm_wrong_type_arg("set-mouse-focus-click-raises!",1,flag);
   }
-  Scr.MouseFocusClickRaises= SCM_NFALSEP(val) ? True : False;
+  Scr.MouseFocusClickRaises= SCM_NFALSEP(flag) ? True : False;
   return SCM_UNSPECIFIED;  
 }
 
