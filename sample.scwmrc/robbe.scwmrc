@@ -517,9 +517,9 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (mouse-movers super 1 "KP_Left" "KP_Down" "KP_Up" "KP_Right")
 (mouse-movers (lambda (key) (super (string-append "S-" key))) 10
 	      "KP_Left" "KP_Down" "KP_Up" "KP_Right")
-(bind-key 'all (super "KP_Divide") (lambda () (send-button-press 1)))
-(bind-key 'all (super "KP_Multiply") (lambda () (send-button-press 2)))
-(bind-key 'all (super "KP_Subtract") (lambda () (send-button-press 3)))
+(bind-key 'all (super "KP_Divide") (lambda () (send-button 1)))
+(bind-key 'all (super "KP_Multiply") (lambda () (send-button 2)))
+(bind-key 'all (super "KP_Subtract") (lambda () (send-button 3)))
 
 ; backdrop action
 (bind-key 'all (super "F1") popup-softs)

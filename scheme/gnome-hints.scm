@@ -437,11 +437,11 @@
 
 (define-public (gnome-desktop-press n)
   "Send a button-press N to the gnome desktop manager."
-  (send-button-press n bpress_win_id 'desk-press))
+  (send-button n bpress_win_id 'desk-press))
 
 (define-public (gnome-desktop-click n)
   "Send a button-press N to the gnome desktop manager."
-  (send-button-press n bpress_win_id 'desk-click))
+  (send-button n bpress_win_id 'desk-click))
 
 (define*-public (gnome-desktop-menu)
   "Pop-up the gnome desktop menu."

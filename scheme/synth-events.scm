@@ -4,17 +4,17 @@
 (define-module (app scwm synth-events)
   :use-module (app scwm optargs))
 
-(define*-public (send-button-press-1)
+(define*-public (send-button-1)
   "Send a mouse-1 button press and release event."
   (interactive)
-  (send-button-press 1))
+  (send-button 1))
 
-(define*-public (send-button-press-2)
+(define*-public (send-button-2)
   "Send a mouse-2 button press and release event."
   (interactive)
-  (send-button-press 2))
+  (send-button 2))
 
-(define*-public (send-button-press-3)
+(define*-public (send-button-3)
   "Send a mouse-3 button press and release event."
   (interactive)
-  (send-button-press 3))
+  (send-button 3))
