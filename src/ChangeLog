@@ -1,3 +1,9 @@
+1999-02-10  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* borders.c: Fix all remaining visual glitches when using
+	no-side-decorations, both mwm-border and regular. (As far as I can
+	tell).
+
 1999-02-09  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* borders.c, colors.c, errors.c, window.c: Do not use

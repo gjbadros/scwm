@@ -473,7 +473,7 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
       break;
     case 3:
       seg[0].x1 = 0;
-      seg[0].x2 = psw->corner_width - psw->xboundary_width;
+      seg[0].x2 = psw->corner_width - (psw->xboundary_width ? psw->xboundary_width : 2);
       seg[0].y1 = psw->corner_width - psw->boundary_width + psw->bw;
       seg[0].y2 = psw->corner_width - psw->boundary_width + psw->bw;
       n = 1;
@@ -514,7 +514,7 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
   } else {
     switch (i) {
     case 0:
-      seg[0].x1 = psw->xboundary_width - 2;
+      seg[0].x1 = psw->xboundary_width ? psw->xboundary_width - 2 : 1;
       seg[0].x2 = psw->corner_width;
       seg[0].y1 = psw->boundary_width - 2;
       seg[0].y2 = psw->boundary_width - 2;
@@ -538,13 +538,13 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
       n = 2;
       break;
     case 2:
-      seg[0].x1 = psw->xboundary_width - 1;
+      seg[0].x1 = psw->xboundary_width ? psw->xboundary_width - 1 : 0;
       seg[0].x2 = psw->corner_width - (hh ? 1 : 2);
       seg[0].y1 = psw->corner_width - psw->boundary_width;
       seg[0].y2 = psw->corner_width - psw->boundary_width;
       n = 1;
       if (psw->boundary_width > 3) {
-	seg[1].x1 = psw->xboundary_width - 2;
+	seg[1].x1 = psw->xboundary_width ? psw->xboundary_width - 2 : 0;
 	seg[1].x2 = psw->corner_width - (hh ? 1 : 3);
 	seg[1].y1 = psw->corner_width - psw->boundary_width + 1;
 	seg[1].y2 = psw->corner_width - psw->boundary_width + 1;
