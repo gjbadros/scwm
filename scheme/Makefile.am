@@ -11,12 +11,12 @@ minimal.scm modifier-key-bindings.scm module-types.scm menus-extras.scm optargs.
 path-cache.scm placement.scm preferences.scm prefs-menu.scm primopts.scm report-usage.scm \
 shutdown-opts.scm simplebiff.scm simple-constraints.scm snap.scm sort.scm stacking.scm \
 std-menus.scm  style-options.scm style.scm \
-theme-impl.scm themes.scm tile.scm ui-constraints-buttons.scm \
+theme-impl.scm themes.scm tile.scm time-convert.scm ui-constraints-buttons.scm \
 ui-constraints-classes.scm ui-constraints-toggle-menu.scm \
 ui-constraints.scm user-options.scm virtual.scm window-locations.scm \
 wininfo.scm winlist.scm winops.scm wmconfig-menu.scm
 
-scwm_gtk_scheme = gtk.scm ScwmButtons.scm ScwmClock.scm ScwmDeskButtons.scm \
+scwm_gtk_scheme = gtk.scm ScwmButtons.scm ScwmBiff.scm ScwmClock.scm ScwmDeskButtons.scm \
 		prompt-bool.scm prompt-range.scm prompt-string.scm flux-gtk.scm
 
 check: 
