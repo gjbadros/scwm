@@ -304,6 +304,9 @@ compute_contexts(SCM contexts)
    between this and unbind_mouse */
 SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
           (SCM contexts, SCM key))
+     /** Remove any bindings attached to KEY in given CONTEXTS.
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+KEY is a string giving the key-specifier (e.g., M-Delete for META+Delete) */
 {
   KeySym keysym;
   Bool fOkayKey;
@@ -360,6 +363,9 @@ SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
 
 SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 0, 0,
           (SCM contexts, SCM button))
+     /** Remove any bindings attached to mouse BUTTON in given CONTEXTS.
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+BUTTON is a string or integer giving the mouse button number */
 {
   char *szButton = NULL;
   int cchButton = 0;
@@ -428,6 +434,10 @@ SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 0, 0,
 
 SCWM_PROC(bind_key, "bind-key", 3, 0, 0,
           (SCM contexts, SCM key, SCM proc))
+     /** Bind the given KEY within the CONTEXTS to invoke PROC.
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+KEY is a string giving the key-specifier (e.g., M-Delete for META+Delete)
+PROC is a procedure (possibly a thunk) that should be invoked */
 {
   KeySym keysym;
   int len = 0;
@@ -523,6 +533,10 @@ SCWM_PROC(bind_key, "bind-key", 3, 0, 0,
 
 SCWM_PROC(bind_mouse, "bind-mouse", 3, 0, 0,
           (SCM contexts, SCM button, SCM proc))
+     /** Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+BUTTON is a string or integer giving the mouse button number
+PROC is a procedure (possibly a thunk) that should be invoked */
 {
   Binding *temp;
   char *szButton = 0;
@@ -698,27 +712,46 @@ clear_mouse_event_type()
    still count as a single click, see IsClick(), too */
 SCWM_PROC(mouse_event_type, "mouse-event-type", 0, 0, 0,
           ())
+     /** Return a mouse-event-type corresponding to the most recent mouse event.
+Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-clicks */
 {
   return mouse_ev_type;
 }
 
 
 SCWM_PROC(mod_mask_meta,"mod-mask-meta", 0, 0, 0, ())
+     /** Return the bitmask for the META modifier key, or #f.
+Returns #f iff there is no key bound to act as META, otherwise
+returns a power of two corresponding to the bitmask of the modifier */
 { return MetaMask == 0? SCM_BOOL_F : gh_int2scm(MetaMask); }
 
 SCWM_PROC(mod_mask_alt, "mod-mask-alt", 0, 0, 0, ())
+     /** Return the bitmask for the ALT modifier key, or #f.
+Returns #f iff there is no key bound to act as ALT, otherwise
+returns a power of two corresponding to the bitmask of the modifier */
 { return AltMask == 0? SCM_BOOL_F : gh_int2scm(AltMask); }
 
 SCWM_PROC(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, ())
+     /** Return the bitmask for the HYPER modifier key, or #f.
+Returns #f iff there is no key bound to act as HYPER, otherwise
+returns a power of two corresponding to the bitmask of the modifier */
 { return HyperMask == 0? SCM_BOOL_F : gh_int2scm (HyperMask); }
 
 
 SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0,())
+     /** Return the bitmask for the SUPER modifier key, or #f.
+Returns #f iff there is no key bound to act as SUPER, otherwise
+returns a power of two corresponding to the bitmask of the modifier */
 { return SuperMask == 0? SCM_BOOL_F : gh_int2scm (SuperMask); }
 
 
 SCWM_PROC(pointer_mapping, "X-pointer-mapping", 0, 0, 0,
           ())
+     /** Return the mapping of physical->logical pointer buttons as a list.
+The length of the returned list is the number of buttons available.  Each
+element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
+3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
+physical button acts as logical button 1, and the leftmost acts as button 3. */
 {
   SCM mapping = SCM_EOL;
   int imap = cMouseButtons - 1;

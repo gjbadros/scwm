@@ -1,0 +1,6 @@
+We need to document these concepts separate from the primitives since
+they are used by multiple primitives
+
+key specifiers
+context specifiers
+thunks, lambdas
