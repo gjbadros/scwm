@@ -97,8 +97,8 @@ TOP-LEFT is a point pair: (X . Y). */
   int iX, iY, iWidth, iHeight;
 
   VALIDATE_ARG_XLIBPP_COPY(1,top_left,iX,iY);
-  VALIDATE_ARG_INT_MIN_COPY(2,width,1,iWidth);
-  VALIDATE_ARG_INT_MIN_COPY(3,height,1,iHeight);
+  VALIDATE_ARG_INT_MIN_COPY(2,width,0,iWidth);
+  VALIDATE_ARG_INT_MIN_COPY(3,height,0,iHeight);
 
   XDrawRectangle(dpy, Scr.Root, DrawingGC, iX, iY, iWidth, iHeight);
   return SCM_UNSPECIFIED;
@@ -137,8 +137,8 @@ ANGLE2. Angles are specified in degrees (0.0 to 360.0).*/
   double nAngle1, nAngle2;
   
   VALIDATE_ARG_XLIBPP_COPY(1,top_left,iX,iY);
-  VALIDATE_ARG_INT_MIN_COPY(2,width,1,iWidth);
-  VALIDATE_ARG_INT_MIN_COPY(3,height,1,iHeight);
+  VALIDATE_ARG_INT_MIN_COPY(2,width,0,iWidth);
+  VALIDATE_ARG_INT_MIN_COPY(3,height,0,iHeight);
   VALIDATE_ARG_DBL_COPY(4,angle1,nAngle1);
   VALIDATE_ARG_DBL_COPY(5,angle2,nAngle2);
 
