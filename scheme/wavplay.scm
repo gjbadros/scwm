@@ -5,6 +5,8 @@
   :use-module (app scwm esdsound)
   :use-module (app scwm defoption))
 
+;;(wavplay "scwm-startup.wav")
+
 (define-scwm-option *sounds-dir* (or (getenv "MEDIA") 
 				     (string-append 
 				      (or (getenv "SCWMDIR") (scwm-path-prefix))
@@ -19,8 +21,10 @@ This is only used if the Scwm esdsound module is not built."
   #:type 'command
   #:group 'system)
 
-(if (scwm-module-loaded? '(app scwm esdsound))
+;; (define filename "scwm-startup.wav")
+(if (and (defined? 'sound-play) (defined? 'sound-load))
     (define-public (wavplay filename)
       (sound-play (sound-load (string-append *sounds-dir* filename))))
     (define-public (wavplay filename)
-      (system (string-append "wavplay " *sounds-dir* filename "&"))))
+      (system (string-append *external-wav-player*
+			     " " *sounds-dir* filename "&"))))
