@@ -65,11 +65,16 @@ Other Stuff
 ** can we use xlab? http://www.alphalink.com.au/~mvertes/xlab.html
 
 * Constraint embedding
+** make ClVariables always connect to a scheme level object
+*** Screen (for clv-s part of the pssci)
+*** window (for clv-s part of the Psw-s)
+*** cl-variable (for bare cl-variables)
 ** consider using cleaner subclassing w/ partial wrap model, instead of C-like void pointers
 ** virtual desktop and sticky interaction with the constraint variables
-** rubberband-resizing fixes -- generalization of the rubberband
 ** z-order stacking constraints to replace add-hoc stays-on-top, raisewindow, lowerwindow
-** See also cassowary/local/TODO
+** See also ../cassowary/local/TODO
+** rubberband-resizing fixes -- generalization of the rubberband
+
 
 * WM_ATTENTION patch for xterms (from Robert Bihlmeyer), integration with zsh instead?
 
