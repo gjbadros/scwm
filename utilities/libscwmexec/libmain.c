@@ -29,10 +29,11 @@ Window scwmexec_init(Display *dpy)
 
   root=DefaultRootWindow(dpy);
 
+  nitems=1;
   if (XGetWindowProperty(dpy, root, XA_SCWMEXEC_LISTENER,
 			 0,1, False, AnyPropertyType, 
 			 &type_ret, &form_ret, &nitems, &bytes_after,
-			 &prop) != Success) {
+			 &prop) != Success || nitems==0) {
     return (None);
   }
 
