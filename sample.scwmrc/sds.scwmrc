@@ -1,4 +1,8 @@
+<<<<<<<<<<<<<< variant A
+;;; File: <.scwmrc - 1998-12-01 Tue 13:31:46 EST sds@eho.eaglets.com>
+>>>>>>>>>>>>>> variant B
 ;;; File: <.scwmrc - 1998-08-15 Sat 19:52:15 EDT sds@mute.eaglets.com>
+======= end of combination
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Goal: to attract users.
@@ -43,7 +47,7 @@
 (define want-pictures? #f)
 
 ;; initial desk size
-(set-desk-size! 2 2)		; X x Y
+(set-desk-size! 2 2)            ; X x Y
 
 ;;; print some information
 (display " *** Reading `scwmrc'...\n")
@@ -56,6 +60,7 @@
                        (list-all-windows))))
 ;; (load user-init-file)
 ;;(set! xterm-command "rxvt ")
+;(set! scwm-no-move-windows-on-exit #t)
 ;;(define mail-spool-dir (or (getenv "MAIL")
 ;;			   (string-append "/var/spool/mail/" (user-name))))
 
@@ -75,13 +80,13 @@
 ;(define menu-bg-color (make-color "gray80"))
 ;(define menu-text-color (make-color "black"))
 
-(menu-style #:fg "black" #:bg "grey76" #:stipple "grey35"
-	    #:font menu-font 
-	;#:mwm #t
-	)
+(menu-style #:fg "black" #:bg "grey76" #:stipple "grey35" #:font menu-font)
 
-;;(set-click-delay! 150)		; msec [150]
-(set-colormap-focus! 'focus)	; colormap focus == keyboard focus
+;(use-modules (app scwm pie-menus))
+;(set! menu-look scwm-menu-look) ; default, try `pie-menu-look'
+
+;;(set-click-delay! 150)                ; msec [150]
+(set-colormap-focus! 'focus)    ; colormap focus == keyboard focus
 (set-rubber-band-mask! 255)
 (set-edge-scroll-delay! 100)
 (set-edge-move-threshold! 100)
@@ -89,6 +94,10 @@
 (set-edge-y-scroll! 0)
 (set-edge-x-wrap! #f)
 (set-edge-y-wrap! #f)
+;;(set! opaque-move-percent 100)
+;;(set! opaque-resize-percent 100)
+(define (resize-opaquely? win) #t)
+(define (move-opaquely? win) #t)
 
 ;;; ----------------
 ;;; paths and images
@@ -96,62 +105,64 @@
 
 ;(set! image-load-path
 ;      (append! image-load-path
-;	       (list		; "/usr/share/icons/" "/usr/share/icons/mini/"
-;		     "/opt/kde/share/icons")))
+;              (list            ; "/usr/share/icons/" "/usr/share/icons/mini/"
+;                    "/opt/kde/share/icons")))
 ;; "/usr/local/lib/X11/mini-icons" "/usr/local/include/X11/pixmaps"
 ;; "/usr/X11/include/X11/bitmaps" "/usr/X11/include/X11/pixmaps"
 ;; "/usr/local/X11/include/X11/pixmaps" "/usr/local/lib/icons"
 ;; "/uns/include/X11/pixmaps" "/usr/lib/icons" "/usr/X11/lib/X11/mini-icons"
 
-(define biff-i (make-image "mini-xbiff.xpm"))
-(define bolt-i (make-image "mini-ray.xpm"))
-(define bomb-i (make-image "mini-bomb.xpm"))
-(define bomb2-i (make-image "mini-bomb2.xpm"))
-(define calc-i (make-image "mini-calc.xpm"))
-(define cd-i (make-image "mini-cdlabel.xpm"))
-(define clock-i (make-image "mini-clock.xpm"))
-(define cross-i (make-image "mini-cross.xpm"))
-(define ctd-i (make-image "mini-connect.xpm"))
-(define decor-i (make-image "mini-color-splotch.xpm"))
-(define dos-i (make-image "mini-bug2.xpm"))
-(define edit-i (make-image "mini-edit.xpm"))
-(define excl-i (make-image "mini-exclam.xpm"))
-(define eye-i (make-image "mini-eye.xpm"))
-(define eyes-i (make-image "mini-eyes.xpm"))
-(define fig-i (make-image "mini-paint.xpm"))
-(define fresh-i (make-image "mini-refresh.xpm"))
-(define games-i (make-image "mini-happy.xpm"))
-(define gimp-i (make-image "mini-wilbur.xpm"))
-(define hamm-i (make-image "mini-hammer.xpm"))
-(define icon-i (make-image "mini-iconify.xpm"))
-(define lock-i (make-image "mini-lock.xpm"))
-(define lower-i (make-image "mini-lower.xpm"))
-(define mag-i (make-image "mini-xmag.xpm"))
-(define man-i (make-image "mini-manual.xpm"))
-(define manx-i (make-image "mini-xman.xpm"))
-(define max-i (make-image "mini-maximize2.xpm"))
-(define max1-i (make-image "mini-max1.xpm"))
-(define maxt-i (make-image "mini-maxtall.xpm"))
-(define maxw-i (make-image "mini-maxwide.xpm"))
-(define move-i (make-image "mini-move.xpm"))
-(define nscape-i (make-image "mini-nscape.xpm"))
-(define pdf-i (make-image "mini-pdf.xpm"))
-(define plot-i (make-image "mini-plot.xpm"))
-(define pref-i (make-image "mini-prefs.xpm"))
-(define quest-i (make-image "mini-question.xpm"))
-(define raise-i (make-image "mini-raise.xpm"))
-(define resize-i (make-image "mini-resize.xpm"))
-(define run-i (make-image "mini-run.xpm"))
-(define rxvt-i (make-image "mini-term.xpm"))
-(define save-i (make-image "mini-wm-save.xpm"))
-(define stick-i (make-image "mini-stick.xpm"))
-(define stop-i (make-image "mini-stop.xpm"))
-(define term-i (make-image "mini-sh1.xpm"))
-(define turn-i (make-image "mini-turn.xpm"))
+(define audio-i   (make-image "mini-audiovol.xpm"))
+(define biff-i    (make-image "mini-xbiff.xpm"))
+(define bolt-i    (make-image "mini-ray.xpm"))
+(define bomb-i    (make-image "mini-bomb.xpm"))
+(define bomb2-i   (make-image "mini-bomb2.xpm"))
+(define calc-i    (make-image "mini-calc.xpm"))
+(define cd-i      (make-image "mini-cdlabel.xpm"))
+(define clock-i   (make-image "mini-clock.xpm"))
+(define cross-i   (make-image "mini-cross.xpm"))
+(define ctd-i     (make-image "mini-connect.xpm"))
+(define decor-i   (make-image "mini-color-splotch.xpm"))
+(define dos-i     (make-image "mini-bug2.xpm"))
+(define edit-i    (make-image "mini-edit.xpm"))
+(define excl-i    (make-image "mini-exclam.xpm"))
+(define eye-i     (make-image "mini-eye.xpm"))
+(define eyes-i    (make-image "mini-eyes.xpm"))
+(define fig-i     (make-image "mini-paint.xpm"))
+(define fresh-i   (make-image "mini-refresh.xpm"))
+(define games-i   (make-image "mini-happy.xpm"))
+(define gimp-i    (make-image "mini-wilbur.xpm"))
+(define hamm-i    (make-image "mini-hammer.xpm"))
+(define icon-i    (make-image "mini-iconify.xpm"))
+(define lock-i    (make-image "mini-lock.xpm"))
+(define lower-i   (make-image "mini-lower.xpm"))
+(define mag-i     (make-image "mini-xmag.xpm"))
+(define man-i     (make-image "mini-manual.xpm"))
+(define manx-i    (make-image "mini-xman.xpm"))
+(define max-i     (make-image "mini-maximize2.xpm"))
+(define max1-i    (make-image "mini-max1.xpm"))
+(define maxt-i    (make-image "mini-maxtall.xpm"))
+(define maxw-i    (make-image "mini-maxwide.xpm"))
+(define move-i    (make-image "mini-move.xpm"))
+(define nscape-i  (make-image "mini-nscape.xpm"))
+(define pdf-i     (make-image "mini-pdf.xpm"))
+(define plot-i    (make-image "mini-plot.xpm"))
+(define pref-i    (make-image "mini-prefs.xpm"))
+(define quest-i   (make-image "mini-question.xpm"))
+(define raise-i   (make-image "mini-raise.xpm"))
+(define resize-i  (make-image "mini-resize.xpm"))
+(define run-i     (make-image "mini-run.xpm"))
+(define rxvt-i    (make-image "mini-term.xpm"))
+(define save-i    (make-image "mini-wm-save.xpm"))
+(define stick-i   (make-image "mini-stick.xpm"))
+(define stop-i    (make-image "mini-stop.xpm"))
+(define term-i    (make-image "mini-sh1.xpm"))
+(define turn-i    (make-image "mini-turn.xpm"))
 (define windows-i (make-image "mini-windows.xpm"))
-(define x2-i (make-image "mini-x2.xpm"))
-(define xv-i (make-image "mini-xv.xpm"))
-(define xx-i (make-image "mini-x.xpm"))
+(define x2-i      (make-image "mini-x2.xpm"))
+(define xv-i      (make-image "mini-xv.xpm"))
+(define xx-i      (make-image "mini-x.xpm"))
+(define xxgdb-i   (make-image "mini-bug1.xpm"))
 
 (if want-pictures? (define unknown-i (make-image "NoName.xpm")))
 
@@ -161,54 +172,59 @@
 
 (define std-d (make-decor "std"))
 (with-decor std-d
-	    (title-style #:font font12 #:justify 'left #:relief 'raised)
-	    (border-style #:hidden-handles #f #:no-inset #t)
-	    (set-hilight-foreground! "PapayaWhip")
-	    (set-hilight-background!"tomato3"))
+            (title-style #:font font12 #:justify 'left #:relief 'raised)
+            (border-style #:hidden-handles #f #:no-inset #t)
+            (set-hilight-foreground! "PapayaWhip")
+            (set-hilight-background!"tomato3"))
 ;; almost the same: "DarkOrange3" "OrangeRed3" "coral3"
-;; 205  55   0		OrangeRed3
-;; 205  79  57		tomato3
-;; 205  91  69		coral3
-;; 205 102   0		DarkOrange3
+;; 205  55   0          OrangeRed3
+;; 205  79  57          tomato3
+;; 205  91  69          coral3
+;; 205 102   0          DarkOrange3
 ;; orig: "grey" "navyblue"
 ;; "white" "navyblue"; "navyblue" "IndianRed"
 
 (define lizard-d (make-decor))
 (with-decor lizard-d
-	    (title-style #:font font12 #:justify 'left #:relief 'raised)
-	    (border-style #:hidden-handles #f #:no-inset #t
-			  #:pixmap "lizard2.xpm" #:inactive
-			  (list #:hidden-handles #f #:no-inset #t
-				#:pixmap "lizard.xpm"))
-	    (set-hilight-foreground! "PapayaWhip")
-	    (set-hilight-background!"#a69938e31861"))
+            (title-style #:font font12 #:justify 'left #:relief 'raised)
+            (border-style #:hidden-handles #f #:no-inset #t
+                          #:pixmap "lizard2.xpm" #:inactive
+                          (list #:hidden-handles #f #:no-inset #t
+                                #:pixmap "lizard.xpm"))
+            (set-hilight-foreground! "PapayaWhip")
+            (set-hilight-background!"#a69938e31861"))
 (define grad-d (make-decor))
 (with-decor grad-d
-	    (title-style #:font font12 #:justify 'left #:relief 'flat
-			 #:h-gradient (list 20 (list "OrangeRed3" 20)
-					    "OrangeRed3" "#3cb21c")
-			 #:inactive (list #:h-gradient
-					  (list 40 (list "grey50" 20)
-						"grey50" "grey25")))
-	    (border-style #:no-inset #f #:hidden-handles #f)
-	    (set-hilight-foreground! "PapayaWhip")
-	    (set-hilight-background!"coral3"))
+            (title-style #:font font12 #:justify 'left #:relief 'flat
+                         #:h-gradient (list 20 (list "OrangeRed3" 20)
+                                            "OrangeRed3" "#3cb21c")
+                         #:inactive (list #:h-gradient
+                                          (list 40 (list "grey50" 20)
+                                                "grey50" "grey25")))
+            (border-style #:no-inset #f #:hidden-handles #f)
+            (set-hilight-foreground! "PapayaWhip")
+            (set-hilight-background!"coral3"))
 (define decor-list (list (cons "Standard" std-d) (cons "Lizard" lizard-d)
-			 (cons "Gradient" grad-d)))
+                         (cons "Gradient" grad-d)))
 
 (define std-style
   (make-style #:fg "black" #:bg "grey76" #:sticky-icon #t
-	      #:icon (if want-pictures? unknown-i #f) ; #f: no pics, just text
-	      #:icon-box (list 500 1 (x- 500) 200) ; (x- 70) 1 69 (y- 141))
-	      #:border-width 3 #:mwm-border #t #:focus 'sloppy ; mouse
-	      #:random-placement #t #:smart-placement #t #:use-decor std-d
+              #:icon (if want-pictures? unknown-i #f) ; #f: no pics, just text
+              #:icon-box (list 500 1 (x- 500) 200) ; (x- 70) 1 69 (y- 141))
+              #:border-width 3 #:mwm-border #t #:focus 'sloppy ; mouse
+              #:random-placement #t #:smart-placement #t #:use-decor std-d
 	      #:mwm-func-hint #t #:mwm-decor-hint #t #:hint-override #t
-	      #:decorate-transient #t #:PPosition-hint #f #:mini-icon term-i
-              #:squashed-titlebar #t))
+              #:decorate-transient #t #:PPosition-hint #f #:mini-icon term-i
+              #:transient-placement-proc
+              (lambda (win)
+                (let ((pp (pointer-position)) (ws (window-size win)))
+                  (move-to (+ (car pp) (modulo (car ws) 2))
+                           (+ (cdr pp) (modulo (cdr ws) 2)) win)))))
+              ;; #:squashed-titlebar #t))
 (define desk-widget
   (make-style #:focus 'none #:use-style std-style #:plain-border #t #:sticky #t
-	      #:winlist-skip #t #:border-width 1 #:circulate-skip #t
-	      #:no-titlebar #t))
+              #:winlist-skip #t #:border-width 1 #:circulate-skip #t
+              #:no-titlebar #t))
 (define desk-widget-on-top
   (make-style #:use-style desk-widget #:kept-on-top #t))
 
@@ -227,21 +243,24 @@
 (window-style "xman" #:icon "xman.xpm" #:mini-icon manx-i)
 (window-style "xmag" #:icon "mag_glass.xpm" #:mini-icon mag-i)
 (window-style "xplaycd" #:icon "Music.xpm" #:mini-icon cd-i)
+(window-style "xamp" #:icon "Music.xpm" #:mini-icon audio-i)
 (window-style "xv" #:icon "xv.color.xpm" #:mini-icon xv-i)
-(window-style "netscape" #:icon "nscape.xpm" #:mini-icon nscape-i
+(window-style "Netscape" #:icon "nscape.xpm" #:mini-icon nscape-i
               #:placement-proc (in-viewport 1 1))
 (window-style "gnuplot" #:icon "math4.xpm" #:mini-icon plot-i)
 (window-style "gimp" #:icon "wilbur.xpm" #:mini-icon gimp-i)
 (window-style "XDosEmu" #:icon "dosemu.xpm" #:mini-icon dos-i)
 (window-style "xfig" #:icon "xpaint.xpm" #:mini-icon fig-i) ; Paint[1234]?.xpm
 (window-style "xterm" #:icon (if want-pictures? "xterm.xpm" #f)
-	      #:mini-icon term-i #:use-decor grad-d)
+              #:mini-icon term-i #:use-decor grad-d)
 (window-style "rxvt" #:mini-icon rxvt-i)
+(window-style "xxgdb" #:mini-icon xxgdb-i)
 ;(window-style "Toplevel" #:icon "toolbox.xpm")
-(window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
-	      #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
-(window-style "emacs_mbf" #:focus 'sloppy #:use-style desk-widget-on-top)
 (window-style "Ace*" #:mini-icon games-i)
+(window-style "gtkfind" #:mini-icon mag-i #:icon "find1.xpm")
+(window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
+              #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
+(window-style "emacs*mbf" #:focus 'sloppy #:use-style desk-widget-on-top)
 
 ;TextEditor.xpm ; emacs.xbm
 ;(window-style "emacs: *Minibuf" #:use-style desk-widget-on-top)
@@ -252,12 +271,12 @@
 
 (define menu-lisps
   (menu (list (menuitem "Lisps" #f) menu-title menu-separator
-	      (menuitem "ACL" #:action (run-in-xterm "/home/sds/bin/acl"))
-	      (menuitem "CLISP" #:action (run-in-xterm "/home/sds/bin/cli"))
-	      (menuitem "CMUCL" #:action (run-in-xterm "/home/sds/bin/cmu"))
-	      (menuitem "GCL" #:action (run-in-xterm "/usr/local/bin/gcl"))
-	      menu-separator
-	      (menuitem "Guile" #:action (run-in-xterm "guile")))))
+              (menuitem "ACL" #:action (run-in-xterm "/home/sds/bin/acl"))
+              (menuitem "CLISP" #:action (run-in-xterm "/home/sds/bin/cli"))
+              (menuitem "CMUCL" #:action (run-in-xterm "/home/sds/bin/cmu"))
+              (menuitem "GCL" #:action (run-in-xterm "/usr/local/bin/gcl"))
+              menu-separator
+              (menuitem "Guile" #:action (run-in-xterm "guile")))))
 
 (define start-xterm (run-in-xterm "bash"))
 
@@ -280,82 +299,84 @@
 
 (define menu-quit-verify
   (menu (list (menuitem "Really quit scwm?" #:image-left quest-i)
-	      menu-title menu-separator
-	      (menuitem "Yes" #:image-left excl-i #:action quit)
-	      (menuitem "No" #:image-left cross-i #:action noop)
-	      (menuitem "Restart scwm" #:image-left turn-i
-			#:action (lambda () (restart "scwm")))
-	      (menuitem "/usr/src/ scwm" #:image-left turn-i #:action
+              menu-title menu-separator
+              (menuitem "Yes" #:image-left excl-i #:action quit)
+              (menuitem "No" #:image-left cross-i #:action noop)
+              (menuitem "Restart scwm" #:image-left turn-i
+                        #:action (lambda () (restart "scwm")))
+              (menuitem "/usr/src/ scwm" #:image-left turn-i #:action
                         (lambda () (restart "/usr/src/scwm/scwm/scwm")))
-	      menu-separator
-	      ;;(menuitem "Start KDE" #:image-left xx-i #:action
-	      ;;	(lambda () (restart "/opt/kde/bin/startkde")))
-	      (menuitem "Start fvwm2" #:image-left "mini-fvwm.xpm"
-			#:action (lambda () (restart "fvwm2")))
-	      (menuitem "Start fvwm" #:image-left "mini-fvwm.xpm"
-			#:action (lambda () (restart "fvwm"))))))
+              menu-separator
+              ;;(menuitem "Start KDE" #:image-left xx-i #:action
+              ;;        (lambda () (restart "/opt/kde/bin/startkde")))
+              (menuitem "Start fvwm2" #:image-left "mini-fvwm.xpm"
+                        #:action (lambda () (restart "fvwm2")))
+              (menuitem "Start fvwm" #:image-left "mini-fvwm.xpm"
+                        #:action (lambda () (restart "fvwm"))))))
 
 (define menu-util
   (menu (list (menuitem "Utilities" #:image-left hamm-i #f)
-	      menu-title menu-separator
-	      (menuitem "&xterm" #:image-left term-i #:action start-xterm)
-	      (menuitem "rx&vt" #:image-left rxvt-i #:action "rxvt")
-	      (menuitem "&root" #:image-left "mini-excl.xpm"
-			#:action (run-in-xterm "su" "-T ROOT"))
-	      (menuitem "&emacs" #:image-left edit-i #:action "emacs")
-	      (menuitem "&gnuplot" #:image-left plot-i #:action
-			(run-in-xterm "gnuplot"))
-	      (menuitem "Play &CD" #:image-left cd-i #:action "xplaycd")
-	      (menuitem "X &dos" #:image-left dos-i #:action "xdos")
-	      menu-separator
-	      (menuitem "&Lisps" #:image-left bolt-i #:action menu-lisps)
-	      (menuitem "&Misc" #:image-left "mini-maze.xpm" #:action
-			(menu (list
-			       (menuitem
-				"&Top" #:image-left eye-i #:action
-				"rxvt +scrollBar -T Top -n Top -e top")
-			       (menuitem "&Calculator"#:image-left calc-i
-					 #:action "xcalc")
-			       (menuitem "X&Mag" #:image-left mag-i
-					 #:action "xmag")
-			       (menuitem "Ca&lendar" #:image-left bolt-i
-					 #:action "ical")
-			       (menuitem "X&Biff" #:image-left biff-i
-					 #:action "xbiff")
-			       (menuitem "X&MailBox" #:image-left biff-i
-					 #:action "xmailbox")
-			       (menuitem "Clock (&D)" #:image-left clock-i
-					 #:action "xclock -digital")
-			       (menuitem "Clock (&A)" #:image-left clock-i
-					 #:action "oclock"))))
-	      ;; menu-separator
-	      ;; (menuitem "Desks" #:action menu-desk)
-	      menu-separator
-	      (menuitem "Exit scwm" #:image-left "mini-exit.xpm"
+              menu-title menu-separator
+              (menuitem "&xterm" #:image-left term-i #:action start-xterm)
+              (menuitem "rx&vt" #:image-left rxvt-i #:action "rxvt")
+              (menuitem "&root" #:image-left "mini-excl.xpm"
+                        #:action (run-in-xterm "su" "-T ROOT"))
+              (menuitem "&emacs" #:image-left edit-i #:action "emacs")
+              (menuitem "&gnuplot" #:image-left plot-i #:action
+                        (run-in-xterm "gnuplot"))
+              (menuitem "Play &CD" #:image-left cd-i #:action "xplaycd")
+              (menuitem "Play MP3" #:image-left audio-i #:action "xamp")
+              (menuitem "X &dos" #:image-left dos-i #:action "xdos")
+              (menuitem "GTKFind" #:image-left mag-i #:action "gtkfind")
+              menu-separator
+              (menuitem "&Lisps" #:image-left bolt-i #:action menu-lisps)
+              (menuitem "&Misc" #:image-left "mini-maze.xpm" #:action
+                        (menu (list
+                               (menuitem
+                                "&Top" #:image-left eye-i #:action
+                                "rxvt +scrollBar -T Top -n Top -e top")
+                               (menuitem "&Calculator"#:image-left calc-i
+                                         #:action "xcalc")
+                               (menuitem "X&Mag" #:image-left mag-i
+                                         #:action "xmag")
+                               (menuitem "Ca&lendar" #:image-left bolt-i
+                                         #:action "ical")
+                               (menuitem "X&Biff" #:image-left biff-i
+                                         #:action "xbiff")
+                               (menuitem "X&MailBox" #:image-left biff-i
+                                         #:action "xmailbox")
+                               (menuitem "Clock (&D)" #:image-left clock-i
+                                         #:action "xclock -digital")
+                               (menuitem "Clock (&A)" #:image-left clock-i
+                                         #:action "oclock"))))
+              ;; menu-separator
+              ;; (menuitem "Desks" #:action menu-desk)
+              menu-separator
+              (menuitem "Exit scwm" #:image-left "mini-exit.xpm"
 			#:action menu-quit-verify))
-	#:image-side "utilities-menu.xpm" #:color-bg-image-side "blue"))
+        #:image-side "utilities-menu.xpm" #:color-bg-image-side "blue"))
 ;; #:image-bg "lizard2.xpm"
 
 (define menu-apps
   (menu (list (menuitem "Applications" #:image-left x2-i #f)
-	      menu-title menu-separator
-	      ;; (menuitem "Acroread" #:image-left pdf-i #:action
-		;;	"/usr/local/Acrobat3/bin/acroread")
-	      (menuitem "Netscape" #:image-left nscape-i #:action
-			"/usr/bin/netscape")
-	      (menuitem "Mozilla" #:image-left nscape-i #:action
-			"/usr/bin/mozilla")
-	      (menuitem "GhostView" #:image-left "mini-gv.xpm"
-			#:action "ghostview")
-	      (menuitem "GNU Emacs" #:image-left edit-i #:action "emacs")
-	      (menuitem "Emacs Pretest" #:image-left edit-i #:action
-                        "/usr/src/emacs/src/emacs")
-	      (menuitem "VIM 5.0" #:image-left edit-i #:action "/usr/bin/gvim")
-	      (menuitem "Xfig" #:image-left fig-i #:action "xfig")
-	      (menuitem "XPaint" #:image-left fig-i #:action "xpaint")
-	      (menuitem "The GIMP" #:image-left gimp-i #:action "gimp")
-	      (menuitem "XPDF" #:image-left pdf-i #:action "xpdf")
-	      (menuitem "XV" #:image-left xv-i #:action "xv"))))
+              menu-title menu-separator
+              ;; (menuitem "Acroread" #:image-left pdf-i #:action
+                ;;      "/usr/local/Acrobat3/bin/acroread")
+              (menuitem "Netscape" #:image-left nscape-i #:action
+                        "/usr/bin/netscape")
+              (menuitem "Mozilla" #:image-left nscape-i #:action
+                        "/usr/bin/mozilla")
+              (menuitem "GhostView" #:image-left "mini-gv.xpm"
+                        #:action "ghostview")
+              (menuitem "GNU Emacs" #:image-left edit-i #:action "emacs")
+              (menuitem "Emacs Pretest" #:image-left edit-i #:action
+                        "xxgdb -i /usr/src/emacs/src/.gdbinit -cd=/usr/src/emacs/src emacs")
+              (menuitem "VIM 5.0" #:image-left edit-i #:action "/usr/bin/gvim")
+              (menuitem "Xfig" #:image-left fig-i #:action "xfig")
+              (menuitem "XPaint" #:image-left fig-i #:action "xpaint")
+              (menuitem "The GIMP" #:image-left gimp-i #:action "gimp")
+              (menuitem "XPDF" #:image-left pdf-i #:action "xpdf")
+              (menuitem "XV" #:image-left xv-i #:action "xv"))))
 
 ;;(define menu-multimedia
 ;;  (menu (list (menuitem "Multimedia" #f) menu-title menu-separator)))
@@ -363,6 +384,7 @@
   (menu (list (menuitem "Games" #f) ; #:image-left games-i
               menu-title menu-separator
               (menuitem "XJewel" #:action "xjewel")
+              menu-separator
               (menuitem "Bogged" #:action "/home/sds/bin/bog")
               ;; (menuitem "Nethack" #:action "/usr/games/nethack")
               (menuitem "freecell" #:action "/home/sds/bin/freecell")
@@ -372,12 +394,15 @@
               (menuitem "solitaire" #:action "/home/sds/bin/solitaire")
               (menuitem "taipedit" #:action "/home/sds/bin/taipedit")
               (menuitem "taipei" #:action "/home/sds/bin/taipei"))))
+;;            menu-separator
+;;            (menuitem "Frei" #:action
+;;                      (exe "bash -c '(cd text/frei; xterm -fn koi9x15)'")))))
 ;;(define menu-desk
 ;;  (menu (list (menuitem "Desks" #f) menu-title menu-separator
-;;	      (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
-;;	      (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
-;;	      (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
-;;	      (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
+;;            (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
+;;            (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
+;;            (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
+;;            (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
 
 ;;; ------------
 ;;; Window menus
@@ -388,116 +413,120 @@
 
 (define menu-window-ops
   (menu (list
-	 (menuitem "Window Operations" #:image-left windows-i)
-	 menu-title menu-separator
+         (menuitem "Window Operations" #:image-left windows-i)
+         menu-title menu-separator
 	 (menuitem "&Move" #:image-left move-i #:action interactive-move)
 	 (menuitem "&Resize" #:image-left resize-i #:action interactive-resize)
-	 (menuitem "R&aise" #:image-left raise-i #:action raise-window)
-	 (menuitem "&Lower" #:image-left lower-i #:action lower-window)
-	 (menuitem "&Iconify" #:image-left icon-i #:action toggle-iconify)
-	 (menuitem "&Sticky" #:image-left stick-i #:action toggle-stick)
-	 (menuitem "Ma&ximize" #:image-left max1-i #:action toggle-max-both)
-	 (menuitem "&Tall" #:image-left maxt-i #:action toggle-max-vert)
-	 (menuitem "&Wide" #:image-left maxw-i #:action toggle-max-horz)
-	 (menuitem "S&hade" #:image-left bolt-i #:action toggle-window-shade)
-	 menu-separator
-	 (menuitem "&On-top" #:image-left eyes-i #:action toggle-on-top)
-	 (menuitem "&Print" #:image-left run-i #:action print-window)
-	 (menuitem "In&fo" #:image-left quest-i #:action window-info)
-	 (menuitem "Decorations" #:image-left decor-i #:action
-		   (menu (map (lambda (dec)
-				(menuitem
-				 (car dec) #:action
-				 (lambda () (window-style "*" #:use-decor
-							  (cdr dec)))))
-			      decor-list)))
-	 menu-separator
-	 (menuitem "&Close" #:image-left bomb2-i #:action close-window)
-	 (menuitem "&Delete" #:image-left cross-i #:action delete-window)
-	 (menuitem "&Destroy" #:image-left bomb-i #:action destroy-window)
-	 menu-separator
-	 (menuitem "Switch to..." #:image-left turn-i #:action winlist)
-	 (menuitem "Re&fresh" #:image-left fresh-i #:action refresh))))
+         (menuitem "R&aise" #:image-left raise-i #:action raise-window)
+         (menuitem "&Lower" #:image-left lower-i #:action lower-window)
+         (menuitem "&Iconify" #:image-left icon-i #:action toggle-iconify)
+         (menuitem "&Sticky" #:image-left stick-i #:action toggle-stick)
+         (menuitem "Ma&ximize" #:image-left max1-i #:action toggle-max-both)
+         (menuitem "&Tall" #:image-left maxt-i #:action toggle-max-vert)
+         (menuitem "&Wide" #:image-left maxw-i #:action toggle-max-horz)
+         (menuitem "S&hade" #:image-left bolt-i #:action toggle-window-shade)
+         menu-separator
+         (menuitem "&On-top" #:image-left eyes-i #:action toggle-on-top)
+         (menuitem "&Print" #:image-left run-i #:action print-window)
+         (menuitem "In&fo" #:image-left quest-i #:action window-info)
+         (menuitem "Decorations" #:image-left decor-i #:action
+                   (menu (map (lambda (dec)
+                                (menuitem
+                                 (car dec) #:action
+                                 (lambda () (window-style "*" #:use-decor
+                                                          (cdr dec)))))
+                              decor-list)))
+         menu-separator
+         (menuitem "&Close" #:image-left bomb2-i #:action close-window)
+         (menuitem "&Delete" #:image-left cross-i #:action delete-window)
+         (menuitem "&Destroy" #:image-left bomb-i #:action destroy-window)
+         menu-separator
+         (menuitem "Switch to..." #:image-left turn-i #:action winlist)
+         (menuitem "Re&fresh" #:image-left fresh-i #:action refresh))))
 
 (define (make-small-window-ops-menu ww)
   (menu (list
-	 (menuitem "Small Ops" #:image-left windows-i)
-	 menu-title menu-separator
+         (menuitem "Small Ops" #:image-left windows-i)
+         menu-title menu-separator
 	 (menuitem "&Move" #:image-left move-i #:action interactive-move)
 	 (menuitem "Re&size" #:image-left resize-i #:action interactive-resize)
-	 (menuitem (if (iconified? ww) "Unmi&nimize" "Mi&nimize")
-		   #:image-left icon-i #:action toggle-iconify)
-	 (menuitem (if (maximized? ww) "Unma&ximize" "Ma&ximize")
-		   #:image-left max1-i #:action toggle-max-both)
-	 menu-separator
-	 (menuitem "Info" #:image-left quest-i #:action
-		   (lambda () (window-info ww)))
-	 (menuitem "More" #:image-left max-i #:action
-		   (menu (list
-			  (menuitem "&Raise" #:action raise-window)
-			  (menuitem "&Lower" #:action lower-window)
-			  (menuitem (if (sticky? ww) "Un&stick" "&Stick")
-				    #:action toggle-stick)
-			  (menuitem (if (window-shaded? ww)
-					"Unwindow-S&hade" "Window-S&hade")
-				    #:action toggle-window-shade)
-			  (menuitem (if (kept-on-top? ww)
-					"UnKeep On Top" "Keep On Top")
-				    #:action toggle-on-top))))
-	 (menuitem "Decorations" #:image-left decor-i #:action
-		   (menu (map (lambda (dec)
-				(menuitem
-				 (car dec) #:action
-				 (lambda () (style-one-window ww #:use-decor
-							      (cdr dec)))))
-			      decor-list)))
-	 menu-separator
-	 (menuitem "&Close" #:image-left cross-i #:action close-window)
-	 (menuitem "&Delete" #:image-left bomb2-i #:action delete-window)
-	 (menuitem "&Kill" #:image-left bomb-i #:action destroy-window))))
+         (menuitem (if (iconified? ww) "Unmi&nimize" "Mi&nimize")
+                   #:image-left icon-i #:action toggle-iconify)
+         (menuitem (if (maximized? ww) "Unma&ximize" "Ma&ximize")
+                   #:image-left max1-i #:action toggle-max-both)
+         menu-separator
+         (menuitem "Info" #:image-left quest-i #:action
+                   (lambda () (window-info ww)))
+         (menuitem "More" #:image-left max-i #:action
+                   (menu (list
+                          (menuitem "&Raise" #:action raise-window)
+                          (menuitem "&Lower" #:action lower-window)
+                          (menuitem (if (sticky? ww) "Un&stick" "&Stick")
+                                    #:action toggle-stick)
+                          (menuitem (if (window-shaded? ww)
+                                        "Unwindow-S&hade" "Window-S&hade")
+                                    #:action toggle-window-shade)
+                          (menuitem (if (kept-on-top? ww)
+                                        "UnKeep On Top" "Keep On Top")
+                                    #:action toggle-on-top))))
+         (menuitem "Decorations" #:image-left decor-i #:action
+                   (menu (map (lambda (dec)
+                                (menuitem
+                                 (car dec) #:action
+                                 (lambda () (style-one-window ww #:use-decor
+                                                              (cdr dec)))))
+                              decor-list)))
+         menu-separator
+         (menuitem "&Close" #:image-left cross-i #:action close-window)
+         (menuitem "&Delete" #:image-left bomb2-i #:action delete-window)
+         (menuitem "&Kill" #:image-left bomb-i #:action destroy-window))))
 
 (define menu-help
   (menu (list (menuitem "&About scwm" #:image-left excl-i #:action
-			(show-mesg "Scheme Configurable Window Manager.\\n\
+                        (show-mesg "Scheme Configurable Window Manager.\\n\
 Based on fvwm; uses guile. Distributed under the GPL2.\\n\
 See http://web.mit.edu/mstachow/www/scwm.html for details."))
-	      (menuitem "&Help scwm" #:image-left quest-i
-			#:action (show-mesg "No scwm help yet. Sorry."))
-	      (menuitem "&XMan" #:image-left manx-i #:action "xman")
-	      (menuitem "Help&Tool" #:image-left "mini-book2.xpm"
-			#:action "helptool"))))
+              (menuitem "&Help scwm" #:image-left quest-i
+                        #:action (show-mesg "No scwm help yet. Sorry."))
+              (menuitem "&XMan" #:image-left manx-i #:action "xman")
+              (menuitem "Help&Tool" #:image-left "mini-book2.xpm"
+                        #:action "helptool"))))
 
 (define menu-root-start
   (menu (list (menuitem "Start" #:image-left "mini-start.xpm")
-	      menu-title menu-separator
-	      (menuitem "&New shell" #:image-left term-i #:action start-xterm)
-	      (menuitem "Midnight &Commander" #:image-left "mini-display.xpm"
-			#:action "rxvt +scrollBar -color11 coral -e mc")
-	      (menuitem "&Applications" #:image-left x2-i #:action menu-apps)
-	      (menuitem "&Utilities" #:image-left hamm-i #:action menu-util)
-	      (menuitem "H&osts" #:image-left ctd-i #:action
-			(make-hosts-menu
-			 '("central1" "eagle_one" "gandalf" "phish"
-			   "right.ml.org" "stormbringer")))
-	      ;; (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm"
-	      ;;		#:action menu-multimedia)
-	      (menuitem "&Games" #:image-left games-i #:action menu-games)
-	      menu-separator
-	      (menuitem "&Window Operations" #:image-left windows-i
-			#:action menu-window-ops)
-	      (menuitem "&Preferences" #:image-left pref-i #:action
-			(menu-prefs))
-	      (menuitem "WM Conf&ig (RH5)" #:image-left xx-i ; #:extra-label
-			#:action (make-wmconfig-menu))
-	      menu-separator
-	      (menuitem "&Screensaver" #:image-left save-i #:action
-			(make-xlock-menu #f))
-	      (menuitem "Lock Scree&n" #:image-left lock-i #:action
-			(make-xlock-menu #t))
-	      menu-separator
-	      (menuitem "Help" #:image-left man-i #:action menu-help)
-	      (menuitem "E&xit scwm" #:image-left stop-i #:action menu-quit-verify))
-	#:image-side "scwm-color.xpm" #:color-bg-image-side "grey50"))
+              menu-title menu-separator
+              (menuitem "&New shell" #:image-left term-i #:action start-xterm)
+              (menuitem "Midnight &Commander" #:image-left "mini-display.xpm"
+                        #:action "rxvt +scrollBar -color11 coral -e mc")
+              (menuitem "&Applications" #:image-left x2-i #:action menu-apps)
+              (menuitem "&Utilities" #:image-left hamm-i #:action menu-util)
+              (menuitem "H&osts" #:image-left ctd-i #:action
+                        (make-hosts-menu ; "stormbringer" "right.ml.org"
+                         '(("mute" . "rlogin") ("delysid" . "rlogin")
+                           ("mescaline" . "rlogin") ("melange" . "rlogin")
+                           ("cellar" . "ssh -P") ("fatty" . "ssh -P")
+                           ("huis-clos" . "ssh") "central1" "eagle_one"
+                           "gandalf" "phish" ("eho" . "rlogin"))))
+              ;; (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm"
+              ;;                #:action menu-multimedia)
+              (menuitem "&Games" #:image-left games-i #:action menu-games)
+              menu-separator
+              (menuitem "&Window Operations" #:image-left windows-i
+                        #:action menu-window-ops)
+              (menuitem "&Preferences" #:image-left pref-i #:action
+                        (menu-prefs))
+              (menuitem "WM Conf&ig (RH5)" #:image-left xx-i ; #:extra-label
+                        #:action (make-wmconfig-menu))
+              menu-separator
+              (menuitem "&Screensaver" #:image-left save-i #:action
+                        (make-xlock-menu #f))
+              (menuitem "Lock Scree&n" #:image-left lock-i #:action
+                        (make-xlock-menu #t))
+              menu-separator
+              (menuitem "Help" #:image-left man-i #:action menu-help)
+	      (menuitem "E&xit scwm" #:image-left stop-i #:action
+                        menu-quit-verify))
+        #:image-side "scwm-color.xpm" #:color-bg-image-side "grey50"))
 
 ;;; -----------
 ;;; keybindings
@@ -532,7 +561,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;; some stuff for icons
 (define (move-or-deiconify)
   (case (mouse-event-type)
-    ((motion) (interactive-move))
+    ((motion) (interactive-move-maybe-opaque))
     ((double-click) (deiconify))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
@@ -540,8 +569,8 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (bind-mouse 'icon 3 popup-small-ops)
 
 (bind-mouse 'all "H-1" toggle-raise)
-(bind-mouse 'all "H-2" interactive-move)
-(bind-mouse 'all "H-3" interactive-resize)
+(bind-mouse 'all "H-2" interactive-move-maybe-opaque)
+(bind-mouse 'all "H-3" interactive-resize-maybe-opaque)
 
 ;;; -----------------
 ;;; Title bar buttons
@@ -562,181 +591,181 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;;  (make-face '((relief flat)) '((pixmap "mini-shrink-windows-full.xpm"))))
 
 ;;; these come from relief-examples
-;;(define big-box-face		; big box
+;;(define big-box-face          ; big box
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern ((25 25 #t) (25 75 #t) (75 75 #f)
-;;				(75 25 #f) (25 25 #t))))))
-(define small-box-face		; small box
+;;           '((relief-pattern ((25 25 #t) (25 75 #t) (75 75 #f)
+;;                              (75 25 #f) (25 25 #t))))))
+(define small-box-face          ; small box
   (make-face '((relief raised))
-	     '((relief-pattern ((40 40 #t) (60 40 #t) (60 60 #f) (40 60 #f)
-				(40 40 #t))))))
-;;(define tall-box-face		; tall box
+             '((relief-pattern ((40 40 #t) (60 40 #t) (60 60 #f) (40 60 #f)
+                                (40 40 #t))))))
+;;(define tall-box-face         ; tall box
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern ((40 25 #t) (60 25 #t) (60 75 #f) (40 75 #f)
-;;				(40 25 #t))))))
-;;(define dot-face		; dot
+;;           '((relief-pattern ((40 25 #t) (60 25 #t) (60 75 #f) (40 75 #f)
+;;                              (40 25 #t))))))
+;;(define dot-face              ; dot
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern ((45 45 #t) (55 45 #t) (55 55 #f) (45 55 #f)
-;;				(45 45 #t))))))
-;;(define stack2-face		; 2 stacked rectangular panels like stills
-;;  (make-face '((relief raised))	; of a window being maximized.
-;;	     '((relief-pattern ((80 15 #f) (85 70 #f) (30 70 #f) (55 70 #f)
-;;				(55 85 #f) (15 85 #f) (15 55 #t) (30 55 #t)
-;;				(30 70 #t) (30 15 #t) (85 15 #t))))))
-;;(define stack3-face		; 3 stacked square panels like stills
-;;  (make-face '((relief raised))	; of a window being minimized
-;;	     '((relief-pattern
-;;		((80 20 #f) (80 60 #f) (60 60 #f) (60 40 #f) (60 70 #f)
-;;		 (40 70 #f) (40 60 #f) (40 85 #f) (15 85 #f) (15 60 #t)
-;;		 (40 60 #t) (30 60 #t) (30 40 #t) (60 40 #t) (45 40 #t)
-;;		 (45 20 #t) (80 20 #t))))))
-;;(define big-box-arrow-face	; Big Box with arrow to little box (iconify)
+;;           '((relief-pattern ((45 45 #t) (55 45 #t) (55 55 #f) (45 55 #f)
+;;                              (45 45 #t))))))
+;;(define stack2-face           ; 2 stacked rectangular panels like stills
+;;  (make-face '((relief raised))       ; of a window being maximized.
+;;           '((relief-pattern ((80 15 #f) (85 70 #f) (30 70 #f) (55 70 #f)
+;;                              (55 85 #f) (15 85 #f) (15 55 #t) (30 55 #t)
+;;                              (30 70 #t) (30 15 #t) (85 15 #t))))))
+;;(define stack3-face           ; 3 stacked square panels like stills
+;;  (make-face '((relief raised))       ; of a window being minimized
+;;           '((relief-pattern
+;;              ((80 20 #f) (80 60 #f) (60 60 #f) (60 40 #f) (60 70 #f)
+;;               (40 70 #f) (40 60 #f) (40 85 #f) (15 85 #f) (15 60 #t)
+;;               (40 60 #t) (30 60 #t) (30 40 #t) (60 40 #t) (45 40 #t)
+;;               (45 20 #t) (80 20 #t))))))
+;;(define big-box-arrow-face    ; Big Box with arrow to little box (iconify)
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern ((20 20 #t) (20 70 #t) (70 70 #f) (70 20 #f)
-;;				(20 20 #t) (60 60 #f) (60 50 #f) (60 60 #f)
-;;				(50 60 #f) (60 60 #f) (60 80 #f) (80 80 #f)
-;;				(80 60 #f) (60 60 #f))))))
-;;(define std-X-face		; Standard X
+;;           '((relief-pattern ((20 20 #t) (20 70 #t) (70 70 #f) (70 20 #f)
+;;                              (20 20 #t) (60 60 #f) (60 50 #f) (60 60 #f)
+;;                              (50 60 #f) (60 60 #f) (60 80 #f) (80 80 #f)
+;;                              (80 60 #f) (60 60 #f))))))
+;;(define std-X-face            ; Standard X
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((20 20 #t) (30 20 #t) (50 40 #t) (70 20 #t) (80 20 #t)
-;;		 (80 30 #f) (60 50 #f) (80 70 #t) (80 80 #f) (70 80 #f)
-;;		 (50 60 #f) (30 80 #f) (20 80 #f) (20 70 #f) (40 50 #t)
-;;		 (20 30 #f) (20 20 #t))))))
-;;(define funky-X-face		; Funky X
+;;           '((relief-pattern
+;;              ((20 20 #t) (30 20 #t) (50 40 #t) (70 20 #t) (80 20 #t)
+;;               (80 30 #f) (60 50 #f) (80 70 #t) (80 80 #f) (70 80 #f)
+;;               (50 60 #f) (30 80 #f) (20 80 #f) (20 70 #f) (40 50 #t)
+;;               (20 30 #f) (20 20 #t))))))
+;;(define funky-X-face          ; Funky X
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern ((26 29 #t) (34 21 #t) (50 35 #t) (70 21 #t)
-;;				(79 29 #t) (63 48 #f) (79 65 #t) (70 75 #f)
-;;				(50 61 #f) (34 75 #f) (26 65 #f) (44 48 #t)
-;;				(26 29 #f))))))
-(define stylized-X-face		; Stylized X
+;;           '((relief-pattern ((26 29 #t) (34 21 #t) (50 35 #t) (70 21 #t)
+;;                              (79 29 #t) (63 48 #f) (79 65 #t) (70 75 #f)
+;;                              (50 61 #f) (34 75 #f) (26 65 #f) (44 48 #t)
+;;                              (26 29 #f))))))
+(define stylized-X-face         ; Stylized X
   (make-face '((relief raised))
-	     '((relief-pattern
-		((20 20 #t) (30 20 #t) (50 40 #t) (70 20 #t) (80 20 #t)
-		 (80 30 #f) (60 50 #f) (80 80 #f) (70 80 #f) (50 60 #f)
-		 (30 80 #f) (20 80 #f) (20 70 #f) (40 50 #t) (20 30 #f)
-		 (20 20 #t))))))
-;;(define small-up-triangle-face	; small up triangle
+             '((relief-pattern
+                ((20 20 #t) (30 20 #t) (50 40 #t) (70 20 #t) (80 20 #t)
+                 (80 30 #f) (60 50 #f) (80 80 #f) (70 80 #f) (50 60 #f)
+                 (30 80 #f) (20 80 #f) (20 70 #f) (40 50 #t) (20 30 #f)
+                 (20 20 #t))))))
+;;(define small-up-triangle-face        ; small up triangle
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((50 35 #t) (65 65 #f) (35 65 #f) (50 35 #t))))))
+;;           '((relief-pattern
+;;              ((50 35 #t) (65 65 #f) (35 65 #f) (50 35 #t))))))
 ;;(define small-down-triangle-face ; small down triangle
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((50 65 #t) (35 35 #t) (65 35 #t) (50 65 #f))))))
-;;(define large-up-triangle-face	; large up triangle
+;;           '((relief-pattern
+;;              ((50 65 #t) (35 35 #t) (65 35 #t) (50 65 #f))))))
+;;(define large-up-triangle-face        ; large up triangle
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((50 25 #t) (75 75 #f) (25 75 #f) (50 25 #t))))))
+;;           '((relief-pattern
+;;              ((50 25 #t) (75 75 #f) (25 75 #f) (50 25 #t))))))
 ;;(define large-down-triangle-face ; large down triangle
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((50 75 #t) (25 25 #t) (75 25 #t) (50 75 #f))))))
-;;(define up-arrow-face		; Up Arrow
+;;           '((relief-pattern
+;;              ((50 75 #t) (25 25 #t) (75 25 #t) (50 75 #f))))))
+;;(define up-arrow-face         ; Up Arrow
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((40 80 #t) (40 50 #t) (20 50 #t) (50 20 #t) (80 50 #f)
-;;		 (60 50 #f) (60 80 #f) (40 80 #f))))))
-;;(define down-arrow-face		; Down Arrow
+;;           '((relief-pattern
+;;              ((40 80 #t) (40 50 #t) (20 50 #t) (50 20 #t) (80 50 #f)
+;;               (60 50 #f) (60 80 #f) (40 80 #f))))))
+;;(define down-arrow-face               ; Down Arrow
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((40 20 #t) (40 50 #t) (20 50 #t) (50 80 #t) (80 50 #f)
-;;		 (60 50 #f) (60 20 #f) (40 20 #t))))))
-;;(define left-arrow-face		; Left arrow  ( <- )
+;;           '((relief-pattern
+;;              ((40 20 #t) (40 50 #t) (20 50 #t) (50 80 #t) (80 50 #f)
+;;               (60 50 #f) (60 20 #f) (40 20 #t))))))
+;;(define left-arrow-face               ; Left arrow  ( <- )
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((80 40 #t) (50 40 #t) (50 20 #t) (20 50 #t) (50 80 #f)
-;;		 (50 60 #f) (80 60 #f) (80 40 #f))))))
-;;(define right-arrow-face	; Right arrow ( -> )
+;;           '((relief-pattern
+;;              ((80 40 #t) (50 40 #t) (50 20 #t) (20 50 #t) (50 80 #f)
+;;               (50 60 #f) (80 60 #f) (80 40 #f))))))
+;;(define right-arrow-face      ; Right arrow ( -> )
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((20 40 #t) (50 40 #t) (50 20 #t) (80 50 #t) (50 80 #f)
-;;		 (50 60 #f) (20 60 #f) (20 40 #t))))))
-;;(define left-right-arrow-face	; Horizontal Line with arrowheads on
-;;  (make-face '((relief raised))	; left and right ( <-> )
-;;	     '((relief-pattern
-;;		((10 50 #t) (35 25 #t) (35 40 #t) (65 40 #t) (65 25 #t)
-;;		 (90 50 #t) (65 75 #f) (65 60 #f) (35 60 #f) (35 75 #f)
-;;		 (10 50 #f) (10 50 #t))))))
-(define up-down-arrow-face	; Vertical Line with arrowheads on
-  (make-face '((relief raised))	; top and bottom
-	     '((relief-pattern
-		((50 10 #t) (25 35 #t) (40 35 #t) (40 60 #t) (25 60 #t)
-		 (50 85 #t) (75 60 #f) (60 60 #f) (60 35 #f) (75 35 #f)
-		 (50 10 #f) (50 10 #t))))))
-;;(define slash-arrow-face	; Diagonal Line with arrowheads on
-;;  (make-face '((relief raised))	; top and bottom ( / )
-;;	     '((relief-pattern ((80 15 #t) (45 15 #t) (55 25 #t) (25 55 #t)
-;;				(15 45 #t) (15 80 #t) (50 80 #f) (40 70 #f)
-;;				(70 40 #f) (80 50 #f) (80 15 #f))))))
-;;(define backslash-arrow-face	; Diagonal Line with arrowheads on
-;;  (make-face '((relief raised))	; top and bottom ( \ )
-;;	     '((relief-pattern
-;;		((55 15 #f) (45 25 #f) (75 55 #f) (85 45 #f) (85 80 #f)
-;;		 (50 80 #f) (60 70 #t) (30 40 #t) (20 50 #t) (20 15 #t)
-;;		 (55 15 #t) (55 15 #f))))))
-;;(define small-lightning-face	; Small Lightning Bolt (skinny at both ends)
+;;           '((relief-pattern
+;;              ((20 40 #t) (50 40 #t) (50 20 #t) (80 50 #t) (50 80 #f)
+;;               (50 60 #f) (20 60 #f) (20 40 #t))))))
+;;(define left-right-arrow-face ; Horizontal Line with arrowheads on
+;;  (make-face '((relief raised))       ; left and right ( <-> )
+;;           '((relief-pattern
+;;              ((10 50 #t) (35 25 #t) (35 40 #t) (65 40 #t) (65 25 #t)
+;;               (90 50 #t) (65 75 #f) (65 60 #f) (35 60 #f) (35 75 #f)
+;;               (10 50 #f) (10 50 #t))))))
+(define up-down-arrow-face      ; Vertical Line with arrowheads on
+  (make-face '((relief raised)) ; top and bottom
+             '((relief-pattern
+                ((50 10 #t) (25 35 #t) (40 35 #t) (40 60 #t) (25 60 #t)
+                 (50 85 #t) (75 60 #f) (60 60 #f) (60 35 #f) (75 35 #f)
+                 (50 10 #f) (50 10 #t))))))
+;;(define slash-arrow-face      ; Diagonal Line with arrowheads on
+;;  (make-face '((relief raised))       ; top and bottom ( / )
+;;           '((relief-pattern ((80 15 #t) (45 15 #t) (55 25 #t) (25 55 #t)
+;;                              (15 45 #t) (15 80 #t) (50 80 #f) (40 70 #f)
+;;                              (70 40 #f) (80 50 #f) (80 15 #f))))))
+;;(define backslash-arrow-face  ; Diagonal Line with arrowheads on
+;;  (make-face '((relief raised))       ; top and bottom ( \ )
+;;           '((relief-pattern
+;;              ((55 15 #f) (45 25 #f) (75 55 #f) (85 45 #f) (85 80 #f)
+;;               (50 80 #f) (60 70 #t) (30 40 #t) (20 50 #t) (20 15 #t)
+;;               (55 15 #t) (55 15 #f))))))
+;;(define small-lightning-face  ; Small Lightning Bolt (skinny at both ends)
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern ((70 15 #f) (30 55 #t) (50 55 #f) (40 85 #t)
-;;				(80 45 #f) (60 45 #t) (70 15 #f))))))
-(define big-lightning-face	; Big Lighting Bolt (Fat at top,
-  (make-face '((relief raised))	; comes to a point)
-	     '((relief-pattern
-		((35 15 #t) (20 50 #t) (40 50 #f) (30 80 #t) (75 40 #f)
-		 (50 40 #t) (75 15 #f) (35 15 #t))))))
+;;           '((relief-pattern ((70 15 #f) (30 55 #t) (50 55 #f) (40 85 #t)
+;;                              (80 45 #f) (60 45 #t) (70 15 #f))))))
+(define big-lightning-face      ; Big Lighting Bolt (Fat at top,
+  (make-face '((relief raised)) ; comes to a point)
+             '((relief-pattern
+                ((35 15 #t) (20 50 #t) (40 50 #f) (30 80 #t) (75 40 #f)
+                 (50 40 #t) (75 15 #f) (35 15 #t))))))
 ;;(define nested-right-angles-face-1 ; Nested Right Angles (looks kinda crappy)
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((10 0 #t) (80 0 #t) (80 10 #t) (80 80 #f) (0 80 #f)
-;;		 (0 60 #t) (10 65 #t) (70 65 #f) (70 0 #f) (55 0 #t)
-;;		 (55 10 #t) (55 55 #f) (10 55 #f))))))
+;;           '((relief-pattern
+;;              ((10 0 #t) (80 0 #t) (80 10 #t) (80 80 #f) (0 80 #f)
+;;               (0 60 #t) (10 65 #t) (70 65 #f) (70 0 #f) (55 0 #t)
+;;               (55 10 #t) (55 55 #f) (10 55 #f))))))
 ;;(define nested-right-angles-face-2 ; Nested Right Angles (looks nice)
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((0 0 #t) (0 20 #t) (20 20 #f) (20 0 #f) (0 0 #t) (0 25 #t)
-;;		 (25 25 #t) (25 0 #t) (55 0 #t) (55 55 #f) (0 55 #f) (0 60 #t)
-;;		 (60 60 #t) (60 0 #t))))))
-(define horizontal-bar4-face	; 4 Horizontal bars (sticky)
+;;           '((relief-pattern
+;;              ((0 0 #t) (0 20 #t) (20 20 #f) (20 0 #f) (0 0 #t) (0 25 #t)
+;;               (25 25 #t) (25 0 #t) (55 0 #t) (55 55 #f) (0 55 #f) (0 60 #t)
+;;               (60 60 #t) (60 0 #t))))))
+(define horizontal-bar4-face    ; 4 Horizontal bars (sticky)
   (make-face '((relief raised))
-	     '((relief-pattern
-		((10 23 #f) (90 23 #f) (90 28 #f) (10 28 #t) (10 47 #t)
-		 (90 47 #f) (90 52 #f) (10 52 #t) (10 70 2) (90 70 #f)
-		 (90 76 #f) (10 76 #t))))))
-;;(define expanding-windows-face	; Expanding Windows
-;;  (make-face '((relief raised))	; (iconify -- looks NICE)
-;;	     '((relief-pattern
-;;		((60 40 #t) (60 80 #f) (15 80 #f) (15 40 #t) (60 40 #t)
-;;		 (40 40 #t) (40 25 #t) (75 25 #t) (75 60 #f) (60 60 #f)
-;;		 (75 60 #f) (75 40 #f) 	(85 40 #f) (85 15 #f) (60 15 #t)
-;;		 (60 25 #t))))))
-;;(define letter-Z-face		; the letter "Z"
+             '((relief-pattern
+                ((10 23 #f) (90 23 #f) (90 28 #f) (10 28 #t) (10 47 #t)
+                 (90 47 #f) (90 52 #f) (10 52 #t) (10 70 2) (90 70 #f)
+                 (90 76 #f) (10 76 #t))))))
+;;(define expanding-windows-face        ; Expanding Windows
+;;  (make-face '((relief raised))       ; (iconify -- looks NICE)
+;;           '((relief-pattern
+;;              ((60 40 #t) (60 80 #f) (15 80 #f) (15 40 #t) (60 40 #t)
+;;               (40 40 #t) (40 25 #t) (75 25 #t) (75 60 #f) (60 60 #f)
+;;               (75 60 #f) (75 40 #f)  (85 40 #f) (85 15 #f) (60 15 #t)
+;;               (60 25 #t))))))
+;;(define letter-Z-face         ; the letter "Z"
 ;;  (make-face '((relief raised))
-;;	     '((relief-pattern
-;;		((80 80 #f) (22 80 #f) (80 40 #f) (70 25 #f) (30 25 #f)
-;;		 (20 35 #f) (20 30 #t) (30 20 #t) (70 20 #t) (80 30 #t)
-;;		 (20 75 #t) (80 75 #t))))))
+;;           '((relief-pattern
+;;              ((80 80 #f) (22 80 #f) (80 40 #f) (70 25 #f) (30 25 #f)
+;;               (20 35 #f) (20 30 #t) (30 20 #t) (70 20 #t) (80 30 #t)
+;;               (20 75 #t) (80 75 #t))))))
 
 ;; buttons now
 (define button-numbers (cons 1 2)) ; (left . right)
 (define (add-button face hook left) ; in all decors
   (let ((num (if left (car button-numbers) (cdr button-numbers))))
     (map (lambda (decor) (with-decor (cdr decor) (set-button-face! num face)))
-	 decor-list)
+         decor-list)
     (bind-mouse (string->symbol (string-append "button-" (number->string num)))
-		1 hook)
+                1 hook)
     (if left (set-car! button-numbers (+ 2 num))
-	(set-cdr! button-numbers (+ 2 num)))))
+        (set-cdr! button-numbers (+ 2 num)))))
 
-(add-button prog-face
-            (lambda ()
-              (let ((win (get-window)))
-                (popup-menu-from-decoration
-                 (make-small-window-ops-menu win)
-                 ;; window to pop-up from
-                 win
-                 ;; button number to pop-up from
-                 (car button-numbers))))
-            #t)
+;; (add-button prog-face
+;;             (lambda ()
+;;               (let ((win (get-window)))
+;;                 (popup-menu-from-decoration
+;;                  (make-small-window-ops-menu win)
+;;                  ;; window to pop-up from
+;;                  win
+;;                  ;; button number to pop-up from
+;;                  (car button-numbers))))
+;;             #t)
 (add-button prog-face popup-small-ops #t)
 (add-button horizontal-bar4-face toggle-stick #t)
 (add-button big-lightning-face animated-toggle-window-shade #t)
@@ -782,6 +811,8 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (bind-key 'all "H-r" refresh)
 (bind-key 'all "H-5" recapture)
 (bind-key 'all "H-x" start-xterm)
+(set! netscape-new-window #t)
+(bind-key 'all "H-w" netscape-goto-cut-buffer-url)
 
 ;;(define root-size-x (car (display-size)))
 ;;(define root-size-y (cadr (display-size)))
@@ -797,8 +828,8 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 
 ;(define (message-show-error . args)
 ;  (message "scwm error:"
-;	   (with-output-to-string
-;	     (lambda () (map (lambda (arg) (display " ") (write arg)) args)))))
+;          (with-output-to-string
+;            (lambda () (map (lambda (arg) (display " ") (write arg)) args)))))
 ;(add-hook! error-hook message-show-error)
 
 ;; Fluid, cartoon-like
@@ -807,21 +838,21 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;; Linear, mechanical
 ;(set-animation! '#(0.1 0.2 0.3 0.4 0.6 0.7 0.8 0.9 1.0))
 
-(bind-key 'all "H-KP_Down" 
-	  (lambda () (with-window (get-window) 
+(bind-key 'all "H-KP_Down"
+	  (lambda () (with-window (get-window)
 		       (animated-move-to #f (y- (w%y 100)))))
-(bind-key 'all "H-KP_End" 
+(bind-key 'all "H-KP_End"
 	  (lambda () (with-window (get-window)
 		       (animated-move-to 0 (y- (w%y 100))))))
 (bind-key 'all "H-KP_Home" (lambda () (animated-move-to 0 0)))
 (bind-key 'all "H-KP_Left" (lambda () (animated-move-to 0 #f)))
-(bind-key 'all "H-KP_Next" 
+(bind-key 'all "H-KP_Next"
  	  (lambda () (with-window (get-window)
 		       (animated-move-to (x- (w%x 100)) (y- (w%y 100))))))
-(bind-key 'all "H-KP_Prior" 
+(bind-key 'all "H-KP_Prior"
  	  (lambda () (with-window (get-window)
 		       (animated-move-to (x- (w%x 100)) 0)))))
-(bind-key 'all "H-KP_Right" 
+(bind-key 'all "H-KP_Right"
  	  (lambda () (with-window (get-window
 		       (animated-move-to (x- (w%x 100)) #f)))))
 (bind-key 'all "H-KP_Up" (lambda () (animated-move-to #f 0)))
@@ -838,10 +869,10 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;; This one is experimental-- sends only the buttonpress event,
 ;; no buttonrelease
 ;(bind-key 'all "C-M-S-0"
-;	  (lambda () (send-button-press 2 (get-window) #t #f)))
+;         (lambda () (send-button-press 2 (get-window) #t #f)))
 
 ;; Hyper-w
-(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
+;(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
 ;; Alt-w
 ;; (bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
@@ -851,8 +882,8 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;;(define broadcast-hook
 ;;  (lambda (event a1 a2 a3 a4 a5 a6 a7)
 ;;    (if (= event M_FOCUS_CHANGE)
-;;	(let ((window (id->window a1)))
-;;	  (if window (raise-window window))))))
+;;      (let ((window (id->window a1)))
+;;        (if window (raise-window window))))))
 
 ;;; menu-item test cases
 ;(define sticky-menu-item (make-menu-item "Sticky" toggle-stick "C-S-F8" (make-image "mini-unkno.xpm") #f #f "sticky"))
