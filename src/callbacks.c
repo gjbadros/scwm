@@ -39,7 +39,7 @@
 #include "dmalloc.h"
 #endif
 
-SCWM_HOOK(error_hook, "error-hook", 1);
+SCWM_HOOK(error_hook, "error-hook", 5);
   /** Called on all kinds of errors and exceptions.
 Whenever an error or other uncaught throw occurs on any callback,
 whether a hook, a mouse binding, a key binding, a menu entry, a file
@@ -630,6 +630,7 @@ scwm_handle_error (void *ARG_IGNORE(data), SCM tag, SCM throw_args)
     }
   /* GJB:FIXME:MS: can the scheme code display a backtrace without the
      stack argument? */
+  DBUG((scwm_msg(DBG,"scwm_handle_error","length(throw_args) = %d", gh_length(throw_args));))
   return scwm_run_hook_message_only(error_hook, gh_cons(tag, throw_args));
 }
 

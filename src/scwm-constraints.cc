@@ -165,8 +165,7 @@ SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
 #define FUNC_NAME "SuggestSizeWindowTo"
 {
   if (!psolver) {
-    SetScwmWindowGeometry(psw,x,y,w,h,fOpaque);
-    return False;
+    return SetScwmWindowGeometry(psw,x,y,w,h,fOpaque);
   }
   ScwmWindowConstraintInfo *pswci = psw->pswci;
 
