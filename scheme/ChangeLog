@@ -1,4 +1,13 @@
 Fri Oct 17 18:18:55 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* style.scm: The 'new-window and 'new-window-hint event handlers
+ 	were changes to call the old handler first and then execute the
+ 	style hooks.
+	
+	Also, the #:lenience style option was added.
+
+	* base.scm: Fixed a bug in move-viewport - the let syntax was
+	incorrect.
+
 	* Makefile.in: Added VPATH support.
 
