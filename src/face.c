@@ -372,6 +372,7 @@ See the section on the `Face Flags' concept.")
       bf->style &= ~VBottom;
     } else if (flagval==sym_bottom) {
       bf->style |= VOffCenter;
+      /* SRL:FIXME:: Broken. */
       bf->style &= ~VBottom;
     } else if (flagval==sym_center) {
       bf->style &= ~VOffCenter;
@@ -585,12 +586,20 @@ or darker color. This spec is partially destructive.
   </entry></row>
   <row>
   <entry><para><informalexample><programlisting>
-     '(gradient ({horizontal|vertical} NCOLORS {COLOR_PERCENT}* FINAL))
+     '(gradient ({horizontal|vertical} NPOINTS {(COLOR COLOR_PERCENT)}+ FINAL_COLOR))
          </programlisting></informalexample></para></entry><entry>
-     Draw a gradient in this element.  The gradient may be horizontal or
-vertical. The number of colors is specified, followed by a number of
-colors with percentages and a final color. The percentages must add to
-100.
+     Draw a gradient in this element.  Fully destructive.
+The gradient may be horizontal or vertical.
+The gradient is approximated using a series of colors along the gradient.
+NPOINTS specifies the number of points to use in this approximation.
+More points makes the gradient look better but allocates more colors and takes
+slightly more time to draw.
+NPOINTS must be at least 100 divided by the smallest COLOR_PERCENT specified
+or you will get a cryptic \"Wrong type argument in position 3\" error.
+Each COLOR, COLOR_PERCENT item specifies a color as an X color name and
+a percent of the element to use to transition to the next color.
+FINAL_COLOR is a string specifying the ending color as an X color name.
+The COLOR_PERCENT values specified must add up to 100.
   </entry></row>
   <row>
   <entry><para><informalexample><programlisting>
@@ -722,6 +731,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	if (i< nsegs-1 || gh_list_p(item_i)) {
 	  perc[i] = gh_scm2int(gh_cadr(item_i));
 	  sum += perc[i];
+          /* SRL:FIXME:: This is evil!  Use another variable! */
 	  item_i=gh_car(item_i);
 	} else if (i < nsegs) {
 	  perc[i] = abs(100-sum);
@@ -862,18 +872,20 @@ is active and pressed in, and INACTIVE when the window is\n\
 inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not\n\
 specified. Note that ACTIVE-DOWN will magically reverse the sense of\n\
 the relief flag, so if your titlebar bar is raised in the ACTIVE-UP\n\
-state, it will be sunk in the ACTIVE-DOWN state by default. ")
+state, it will be sunk in the ACTIVE-DOWN state by default.  This\n
+also means that if you are explicitly passing ACTIVE-DOWN, you must\n
+reverse the sense of the relief flag to compensate.")
 #define FUNC_NAME s_set_title_face_x
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   VALIDATE_ARG_FACE(1,active_up);
   VALIDATE_ARG_FACE_USE_DEF(2,active_down,active_up);
-  VALIDATE_ARG_FACE_USE_DEF(3,inactive,active_up);
+  VALIDATE_ARG_FACE_USE_DEF(3,inactive,   active_up);
 
-  fl->titlebar.state[ActiveUp]=BUTTONFACE(active_up);
+  fl->titlebar.state[ActiveUp  ]=BUTTONFACE(active_up  );
   fl->titlebar.state[ActiveDown]=BUTTONFACE(active_down);
-  fl->titlebar.state[Inactive]=BUTTONFACE(inactive);
+  fl->titlebar.state[Inactive  ]=BUTTONFACE(inactive   );
 
   redraw_titlebars(fl,0);
 
@@ -904,20 +916,20 @@ default. ")
   VALIDATE_ARG_INT_RANGE_COPY(1,button,1,10,n);
   VALIDATE_ARG_FACE(2,active_up);
   VALIDATE_ARG_FACE_USE_DEF(3,active_down,active_up);
-  VALIDATE_ARG_FACE_USE_DEF(4,inactive,active_up);
+  VALIDATE_ARG_FACE_USE_DEF(4,inactive,   active_up);
 
   left_p = n % 2;
   n = n / 2;
 
   if (left_p) {
-    fl->left_buttons[n].state[ActiveUp]=BUTTONFACE(active_up);
-    fl->left_buttons[n].state[ActiveDown]=BUTTONFACE(active_down);
-    fl->left_buttons[n].state[Inactive]=BUTTONFACE(inactive);
+    fl->left_buttons [n].state[ActiveUp  ]=BUTTONFACE(active_up  );
+    fl->left_buttons [n].state[ActiveDown]=BUTTONFACE(active_down);
+    fl->left_buttons [n].state[Inactive  ]=BUTTONFACE(inactive   );
   } else {
     n = n - 1;
-    fl->right_buttons[n].state[ActiveUp]=BUTTONFACE(active_up);
+    fl->right_buttons[n].state[ActiveUp  ]=BUTTONFACE(active_up  );
     fl->right_buttons[n].state[ActiveDown]=BUTTONFACE(active_down);
-    fl->right_buttons[n].state[Inactive]=BUTTONFACE(inactive);    
+    fl->right_buttons[n].state[Inactive  ]=BUTTONFACE(inactive   );    
   }
 
   redraw_borders(fl); 
@@ -967,7 +979,7 @@ ACTIVE when not specified.")
   VALIDATE_ARG_FACE(1,active);
   VALIDATE_ARG_FACE_USE_DEF(2,inactive,active);
 
-  fl->BorderStyle.active=BUTTONFACE(active);
+  fl->BorderStyle.active  =BUTTONFACE(active  );
   fl->BorderStyle.inactive=BUTTONFACE(inactive);
 
   redraw_borders(fl); 

@@ -561,7 +561,8 @@ get_image_loader(SCM name)
   return result;
 }
 
-
+/* SRL:FIXME:: Sometimes crashes scwm if can't find pixmap. 
+ * Use (title-style #:pixmap "a036") to trigger error. */
 SCM_DEFINE(make_image, "make-image", 1, 0, 0,
           (SCM name),
 "Loads an image from the file NAME.\n\

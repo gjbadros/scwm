@@ -516,20 +516,20 @@ AllocLinearGradient(char *s_from, char *s_to, int npixels)
   }
   c = from;
   r = from.red;
-  dr = (to.red - from.red) / npixels;
+  dr = (to.red   - from.red  ) / npixels;
   g = from.green;
   dg = (to.green - from.green) / npixels;
   b = from.blue;
-  db = (to.blue - from.blue) / npixels;
+  db = (to.blue  - from.blue ) / npixels;
   pixels = NEWC(npixels,Pixel);
   c.flags = DoRed | DoGreen | DoBlue;
   for (; i < npixels; ++i) {
     if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &c))
       got_all = 0;
     pixels[i] = c.pixel;
-    c.red = (unsigned short) (r += dr);
+    c.red   = (unsigned short) (r += dr);
     c.green = (unsigned short) (g += dg);
-    c.blue = (unsigned short) (b += db);
+    c.blue  = (unsigned short) (b += db);
   }
   if (!got_all) {
     char s[256];

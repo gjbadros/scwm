@@ -1,3 +1,13 @@
+Tue Apr  2 22:16:13 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* face.c: Drastically improved the doc string for gradients.
+	Better doc string for 'set-title-face!'.
+	Improved formatting of code in several places.
+
+	* color.c: Improved formatting of code.
+
+	* image.c: Added FIXME about way to crash scwm.
+
 Sat Jun 24 14:10:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* callbacks.c, errors.c, events.c: Use SCWM_WRITE, SCWM_DISPLAY

@@ -34,97 +34,20 @@
   #:setter (lambda (font) (set-title-font! font))
   #:getter (lambda () (title-font)))
 
-(define*-public (title-style #&key font height justify
-			     (active-up '()) 
-			     (active-down '()) 
-			     (inactive '()) #&allow-other-keys #&rest rest)
-  "Set the title style in the current decor.
-FONT is the window title font, a font object or a string.
-HEIGHT is the height of the title bar, in points.
-JUSTIFY is one of 'left, 'right, or 'center.
-This function also takes the keyword arguments #:relief, #:solid,
-#:gradient, #:h-gradient, #:v-gradient, and #:pixmap, with effects
-as described under the `Face Flags' and `Face Specification Flags'
-concepts (except that #:pixmap is always tiled, and #:h-gradient
-and #:v-gradient are horizontal and vertical gradients).  These
-extra keyword arguments can either be included in the main argument
-list, or lists of these arguments can be used as the ACTIVE-UP,
-ACTIVE-DOWN, or INACTIVE arguments.  For instance:
-  (title-style #:solid \"red\" #:inactive (list #:solid \"green\"))
-would set the title to be red in either active state, and green
-in the inactive state, leaving FONT, HEIGHT, and JUSTIFY in their
-current state, and returning everything else about the title
-to their default state."
-  (if (bound? font)
-      (set-title-font! font))
-  (if (bound? height) 
-      (set-title-height! height))
-  (if (bound? justify)
-      (set-title-justify! justify))
-  (act-on-face-specs set-title-face! parse-title-face-specs
-		     parse-title-face-flags rest active-up
-		     active-down inactive))
+;;;; Handlers
 
+;;; SRL:FIXME:: This is a fair amount of code and extra maintenance for
+;;; each option just so we can have different keys for options than
+;;; the associated symbols.  Can we just make the names the same and
+;;; get rid of this maintenance cost?  On the other hand, this allows
+;;; for much easier backwards compatibility.
 
-(define*-public (border-style #&key (active '())  
-			      (inactive '()) #&allow-other-keys #&rest rest)
-  "Set the border style in the current decor.
-This function takes the keyword arguments #:hidden-handles, 
-#:no-inset, and #:pixmap, with effects as described under the
-`Face Flags' and `Face Specification Flags' concepts (except
-that #:pixmap is always tiled).  These keyword arguments can
-either be included in the main argument list, or lists of these
-arguments can be used as the ACTIVE or INACTIVE arguments."
-  (act-on-face-specs (lambda* (active #&optional ignore inactive)
-			      (if (bound? inactive)
-				  (set-border-face! active inactive)
-				  (set-border-face! active)))
-		     parse-border-face-specs parse-border-face-flags
-		     rest active '() inactive))
+;;; A handler is responsible for translating a key and arg into
+;;;   a list of lists of the form:
+;;;    '(symbol arg)
 
-(define*-public (set-left-button-face! button active-up #&optional
-				      (active-down #f) (inactive #f))
-  "Set the button face for the left-button numbered BUTTON.
-E.g., if BUTTON is 1, this will set the leftmost button of your
-titlebar.  See `set-button-face!' for a description of ACTIVE-UP,
-ACTIVE-DOWN, and INACTIVE."
-  (set-button-face! (+ (* (- button 1) 2) 1)
-		    active-up active-down inactive))
-
-(define*-public (set-right-button-face! button active-up #&optional
-				       (active-down #f) (inactive #f))
-  "Set the button face for the right-button numbered BUTTON.
-E.g., if BUTTON is 1, this will set the rightmost button of your
-titlebar.  See `set-button-face!' for a description of ACTIVE-UP,
-ACTIVE-DOWN, and INACTIVE."
-  (set-button-face! (+ (* (- button 1) 2) 2)
-		    active-up active-down inactive))
-
-
-(define*-public (button-style button #&key mwm
-			      (active-up '()) 
-			      (active-down '()) 
-			      (inactive '()) #&allow-other-keys #&rest rest)
-  "Set the button style for button number BUTTON in the current decor.
-MWM sets the button's mwm flag (see `set-button-mwm-flag!'.
-This function also takes the keyword arguments #:justify, #:relief,
-#:vertical-justify, #:use-style-of, #:solid, #:gradient, #:h-gradient,
-#:v-gradient, #:relief-pattern, #:vector, #:pixmap, and #:tiled-pixmap,
-with effects as described under the `Face Flags' and `Face
-Specification Flags' concepts (with the additions that #:tiled-pixmap
-is an always-tiled pixmap, #:vector is a synonym for #:relief-pattern,
-and #:h-gradient and #:v-gradient are horizontal and vertical
-gradients).  These extra keyword arguments can either be included
-in the main argument list, or lists of these arguments can be used
-as the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments."
-  (if (bound? mwm)
-      (set-button-mwm-flag! mwm))
-  (act-on-face-specs (lambda args
-		       (apply set-button-face! button args))
-		     parse-button-face-specs parse-button-face-flags 
-		     rest active-up active-down inactive))
-
-
+;;; Default is just to translate the key into a symbol.
+;;; The C code in face.c does most of the translation.
 (define (default-handler key arg)
   `((,(keyword->symbol key) ,arg)))
 
@@ -135,48 +58,55 @@ as the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments."
   `((gradient (horizontal ,@arg))))
 
 (define (v-gradient-handler key arg)
-  `((gradient (vertical ,@arg))))
+  `((gradient (vertical  ,@arg))))
 
 (define title-face-flag-handlers
-  `((#:relief . ,default-handler)))
+  `((#:relief           . ,default-handler)))
 
 (define title-face-spec-handlers
-  `((#:solid . ,default-handler) 
-    (#:gradient . ,default-handler)
-    (#:h-gradient . ,h-gradient-handler) 
-    (#:v-gradient . ,v-gradient-handler)
-    (#:pixmap . ,tiled-only-pixmap-handler)))
+  `((#:solid            . ,default-handler) 
+    (#:gradient         . ,default-handler)
+    (#:h-gradient       . ,h-gradient-handler) 
+    (#:v-gradient       . ,v-gradient-handler)
+    (#:pixmap           . ,tiled-only-pixmap-handler)))
 
 (define border-face-flag-handlers
-  `((#:hidden-handles . ,default-handler)
-    (#:no-inset . ,default-handler)))
+  `((#:hidden-handles   . ,default-handler)
+    (#:no-inset         . ,default-handler)))
 
 (define border-face-spec-handlers
-  `((#:pixmap . ,tiled-only-pixmap-handler)))
+  `((#:pixmap           . ,tiled-only-pixmap-handler)))
 
 (define button-face-flag-handlers
-  `((#:justify . ,default-handler)
-    (#:relief . ,default-handler)
+  `((#:justify          . ,default-handler)
+    (#:relief           . ,default-handler)
     (#:vertical-justify . ,default-handler)
-    (#:use-style-of . ,default-handler)))
+    (#:use-style-of     . ,default-handler)))
 
 (define button-face-spec-handlers
-  `((#:solid . ,default-handler)
-    (#:gradient . ,default-handler)
-    (#:h-gradient . ,h-gradient-handler)
-    (#:v-gradient . ,v-gradient-handler)
-    (#:relief-pattern . ,default-handler)
-    (#:vector . ,(lambda (key arg) (default-handler #:relief-pattern arg)))
-    (#:pixmap . ,default-handler)
-    (#:tiled-pixmap . ,tiled-only-pixmap-handler)))
+  `((#:solid            . ,default-handler)
+    (#:gradient         . ,default-handler)
+    (#:h-gradient       . ,h-gradient-handler)
+    (#:v-gradient       . ,v-gradient-handler)
+    (#:relief-pattern   . ,default-handler)
+    (#:vector           . ,(lambda (key arg) (default-handler #:relief-pattern arg)))
+    ;; SRL:FIXME:: Bad form to have same option have different effects.
+    (#:pixmap           . ,default-handler)
+    (#:tiled-pixmap     . ,tiled-only-pixmap-handler)))
 
+
+;;;; Parsers
+
+;;; Build up a list of lists of the form:
+;;;  '(symbol arg)
+;;; representing the specs or flags specified
 (define (generic-parse-specs-or-flags handlers specs-or-flags)
   (define (helper specs-or-flags result)
     (if (or (null? specs-or-flags) (null? (cdr specs-or-flags)))
 	result
-	(let ((first (car specs-or-flags))
+	(let ((first  (car  specs-or-flags))
 	      (second (cadr specs-or-flags))
-	      (rest (cddr specs-or-flags)))
+	      (rest   (cddr specs-or-flags)))
 	  (helper rest
 		  (append result (cond
 				  ((assoc first handlers) 
@@ -208,17 +138,136 @@ as the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments."
 			   rest active-up active-down inactive)
   (let* ((all-specs (spec-parser rest))
 	 (all-flags (flag-parser rest))
-	 (active-up-specs (append all-specs (spec-parser active-up)))
-	 (active-up-flags (append all-flags (flag-parser active-up)))
+	 (active-up-specs   (append all-specs (spec-parser active-up  )))
+	 (active-up-flags   (append all-flags (flag-parser active-up  )))
 	 (active-down-specs (append all-specs (spec-parser active-down)))
 	 (active-down-flags (append all-flags (flag-parser active-down)))
-	 (inactive-specs (append all-specs (spec-parser inactive)))
-	 (inactive-flags (append all-flags (flag-parser inactive))))
-    (if (not (and (null? active-up-specs) (null? active-up-flags)
+	 (inactive-specs    (append all-specs (spec-parser inactive   )))
+	 (inactive-flags    (append all-flags (flag-parser inactive   ))))
+    (if (not (and (null? active-up-specs  ) (null? active-up-flags  )
 		  (null? active-down-specs) (null? active-down-flags)
-		  (null? inactive-flags) (null? inactive-specs)))
+		  (null? inactive-flags   ) (null? inactive-specs   )))
 	(if (and (null? active-up) (null? active-down) (null? inactive))
 	    (setter-proc (make-face all-flags all-specs))
-	    (setter-proc (make-face active-up-flags active-up-specs)
+	    (setter-proc (make-face active-up-flags   active-up-specs  )
 			 (make-face active-down-flags active-down-specs)
-			 (make-face inactive-flags inactive-specs))))))
+			 (make-face inactive-flags    inactive-specs   ))))))
+
+
+;;;; setters
+
+(define*-public (set-left-button-face! button active-up #&optional
+				      (active-down #f) (inactive #f))
+  "Set the button face for the left-button numbered BUTTON.
+Not recommended to call directly, see 'button-style'.
+Buttons are numbered starting at 1 and increasing to the right.
+E.g., if BUTTON is 1, this will set the leftmost button of your
+titlebar.  See `set-button-face!' for a description of ACTIVE-UP,
+ACTIVE-DOWN, and INACTIVE."
+  (set-button-face! (+ (* (- button 1) 2) 1)
+		    active-up active-down inactive))
+
+(define*-public (set-right-button-face! button active-up #&optional
+				       (active-down #f) (inactive #f))
+  "Set the button face for the right-button numbered BUTTON.
+Not recommended to call directly, see 'button-style'.
+Buttons are numbered starting at 1 and increasing to the left.
+E.g., if BUTTON is 1, this will set the rightmost button of your
+titlebar.  See `set-button-face!' for a description of ACTIVE-UP,
+ACTIVE-DOWN, and INACTIVE."
+  (set-button-face! (+ (* (- button 1) 2) 2)
+		    active-up active-down inactive))
+
+
+;;;; stylers
+
+;;; SRL:FIXME:: #:relief has its sense reversed for active-down even if
+;;;   it was explicitly set using active-down.  Having the C code reverse
+;;;   this flag is just wrong!
+;;; SRL:FIXME:: Remove WARNING when make-icon gets fixed.
+(define*-public (title-style #&key font height justify
+			     (active-up   '()) 
+			     (active-down '()) 
+			     (inactive    '()) #&allow-other-keys #&rest rest)
+  "Set the title style in the current decor.
+WARNING: The #:pixmap flag will crash scwm if it can't find the pixmap specified!
+  Suggest using 'make-image-or-warn' to be safe.
+FONT is the window title font, a font object or a string.
+HEIGHT is the height of the title bar, in points.
+JUSTIFY is one of 'left, 'right, or 'center.
+This function also takes the keyword arguments #:relief, #:solid,
+#:gradient, #:h-gradient, #:v-gradient, and #:pixmap, with effects
+as described under the `Face Flags' and `Face Specification Flags'
+concepts (except that #:pixmap is always tiled, #:h-gradient
+and #:v-gradient are horizontal and vertical gradients, and #:relief
+on the active-down state has its sense reverse [you have to use 'raised
+to get a sunk display and 'sunk to get a raised display]).  If any
+of these keywords are specified, the new style replaces the old style
+except for the FONT, HEIGHT, and JUSTIFY settings.  It will use the
+HiBackColor and BackColor by default with relief borders and default
+buttons.  These extra keyword arguments can either be included in
+the main argument list, or lists of these arguments can be used as
+the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments.  For instance:
+  (title-style #:solid \"red\" #:inactive (list #:solid \"green\"))
+would set the title to be red in either active state, and green
+in the inactive state, leaving FONT, HEIGHT, and JUSTIFY in their
+current state, and returning everything else about the title
+to their default state."
+  (if (bound? font)
+      (set-title-font! font))
+  (if (bound? height) 
+      (set-title-height! height))
+  (if (bound? justify)
+      (set-title-justify! justify))
+  (act-on-face-specs set-title-face! parse-title-face-specs
+		     parse-title-face-flags rest active-up
+		     active-down inactive))
+
+;;; SRL:FIXME:: Why aren't their more options?
+;;;   Should be able to set border-width, relief, etc. in here.
+;;;   Should be able to specify active-down options.
+(define*-public (border-style #&key (active '())  
+                              (inactive '()) #&allow-other-keys #&rest rest)
+  "Set the border style in the current decor.
+This completely overwrites the previous border style (except in
+the trivial case of not passing any arguments).
+This function takes the keyword arguments #:hidden-handles, 
+#:no-inset, and #:pixmap, with effects as described under the
+`Face Flags' and `Face Specification Flags' concepts (except
+that #:pixmap is always tiled).  You may want to use mwm style
+borders with #:pixmap so the image is more visible, see the
+#:mwm-border style option.  These keyword arguments can
+either be included in the main argument list, or lists of these
+arguments can be used as the ACTIVE or INACTIVE arguments."
+  (act-on-face-specs (lambda* (active #&optional ignore inactive)
+			      (if (bound? inactive)
+				  (set-border-face! active inactive)
+				  (set-border-face! active)))
+		     parse-border-face-specs parse-border-face-flags
+		     rest active '() inactive))
+
+(define*-public (button-style button #&key mwm
+			      (active-up '()) 
+			      (active-down '()) 
+			      (inactive '()) #&allow-other-keys #&rest rest)
+  "Set the button style for button number BUTTON in the current decor.
+MWM sets the button's mwm flag (see `set-button-mwm-flag!'.
+This function also takes the keyword arguments #:justify, #:relief,
+#:vertical-justify, #:use-style-of, #:solid, #:gradient, #:h-gradient,
+#:v-gradient, #:relief-pattern, #:vector, #:pixmap, and #:tiled-pixmap,
+with effects as described under the `Face Flags' and `Face
+Specification Flags' concepts (with the additions that #:tiled-pixmap
+is an always-tiled pixmap, #:vector is a synonym for #:relief-pattern,
+#:h-gradient and #:v-gradient are horizontal and vertical gradients, and
+#:relief on the active-down state has its sense reverse [you have to use
+'raised to get a sunk display and 'sunk to get a raised display]).  
+These extra keyword arguments can either be included
+in the main argument list, or lists of these arguments can be used
+as the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments."
+  (if (bound? mwm)
+      (set-button-mwm-flag! mwm))
+  (act-on-face-specs (lambda args
+		       (apply set-button-face! button args))
+		     parse-button-face-specs parse-button-face-flags 
+		     rest active-up active-down inactive))
+

@@ -1,3 +1,26 @@
+Tue Apr  2 22:16:22 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* face.scm: 
+	'title-style' - Added FIXME because the sense of #:relief for
+	active-down gets reversed even if it was explicitly set in
+	the 'title-style' call.
+	Add warning about #:pixmap sometimes crashing scwm.  Filed bug
+	  report.
+	Improved doc string to document the way the function actually
+	  operates.  The function has odd semantics and should probably
+	  be changed at some point.
+
+	'border-style' - Added FIXME about lack of option.
+	Added suggestion of using mwm style borders with #:pixmap option
+	  since otherwise they tend to be mostly occluded by the relief.
+
+	'button-style' - Added to doc string about reversal of #:relief
+	flag in active-down.
+
+	Improved formatting of code in much of the file.
+	Rearranged file so that flow of control goes from bottom of file
+	  to top instead of jumping around.
+
 Mon Apr  1 03:06:41 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* decor.scm: Added doc string to 'with-decor'.
