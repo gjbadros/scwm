@@ -56,6 +56,9 @@
 #include "Grab.h"
 #include "wildcard.h"
 
+
+#undef MS_DELETION_COMMENT
+
 /* Used to parse command line of clients for specific desk requests. */
 /* Todo: check for multiple desks. */
 static XrmDatabase db;
@@ -1017,11 +1020,19 @@ LookInList(name_list * list, char *name, XClassHint * class,
   IconBox[2] = Scr.MyDisplayWidth;
   IconBox[3] = Scr.MyDisplayHeight;
 
+  /* MS: The code commented below never does anything, because the style
+     list is always empty under the current possible execution paths.
+     This can be seen by uncommenting the code and watching for the
+     printf and puts statements in it. */
+#ifdef MS_DELETION_COMMENT
+  puts("Looking in list.");
   /* look for the name first */
   for (nptr = list; nptr != NULL; nptr = nptr->next) {
+    puts("Examining a list item.");
     if (class) {
       /* first look for the res_class  (lowest priority) */
       if (matchWildcards(nptr->name, class->res_class) == TRUE) {
+	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
 	if (nptr->value != NULL)
 	  *value = nptr->value;
 #ifdef MINI_ICONS
@@ -1057,6 +1068,7 @@ LookInList(name_list * list, char *name, XClassHint * class,
       }
       /* look for the res_name next */
       if (matchWildcards(nptr->name, class->res_name) == TRUE) {
+	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
 	if (nptr->value != NULL)
 	  *value = nptr->value;
 #ifdef MINI_ICONS
@@ -1094,6 +1106,7 @@ LookInList(name_list * list, char *name, XClassHint * class,
     /* finally, look for name matches */
     if (matchWildcards(nptr->name, name) == TRUE) {
       if (nptr->value != NULL)
+	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
 	*value = nptr->value;
 #ifdef MINI_ICONS
       if (nptr->mini_value != NULL)
@@ -1127,5 +1140,11 @@ LookInList(name_list * list, char *name, XClassHint * class,
       }
     }
   }
+#endif /* MS_DELETION_COMMENT */
   return retval;
 }
+
+
+
+
+
