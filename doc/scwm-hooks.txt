@@ -247,7 +247,7 @@ This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
 operation like `interactive-resize' or `interactive-move'. `beep' is
 one example of a procedure to use here. 
-[From scwm/window.c:58]
+[From scwm/window.c:59]
 
 
 load-processing-hook (1 args)
@@ -263,7 +263,7 @@ select-window-done-hook (1 args)
 This hooks is run when a window is selected.
 The hook procedures are called with a single argument, the window just left.
 See also `select-window-enter-hook' and `select-window-leave-hook'. 
-[From scwm/window.c:85]
+[From scwm/window.c:86]
 
 
 select-window-enter-hook (1 args)
@@ -274,7 +274,7 @@ This hook is invoked once `select-window-interactively-no-message' is
 called if the pointer is already in a window.  (But the
 leave hook is not invoked similarly when the selection completes).
 
-[From scwm/window.c:69]
+[From scwm/window.c:70]
 
 
 select-window-leave-hook (1 args)
@@ -285,7 +285,7 @@ This hook is not invoked upon selection completion (unlike
 `select-window-enter-hook' that is called initially upon calling
 `select-window-interactively-no-message'). See also `select-window-done-hook'.
 
-[From scwm/window.c:77]
+[From scwm/window.c:78]
 
 
 shutdown-hook (1 args)
