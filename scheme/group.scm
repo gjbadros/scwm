@@ -22,6 +22,7 @@
   :use-module (app scwm optargs)
   :use-module (app scwm listops)
   :use-module (app scwm window-selection)
+  :use-module (app scwm tile)
   :use-module (app scwm base)
   :use-module (app scwm winlist))
 

@@ -393,7 +393,7 @@
 (define* (popup-window-ops)
   "Popup the window operations menu."
   (interactive)
-  (popup-menu 'menu-window-ops))
+  (popup-menu menu-window-ops))
 
 (define* (popup-desk)
   "Popup the desk operations menu."
