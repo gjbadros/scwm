@@ -198,14 +198,13 @@ animated window shades and animated moves. */
 {
   int citems;
   int i;
-  int iarg = 1;
 /*
   FIXGJB: make a scheme-variable move-animation-delay get used instead
   if (!gh_int_p(delay) && !gh_boolean_p(delay)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg++,delay);
+    scm_wrong_type_arg(FUNC_NAME,iarg,delay);
   } */
   if (!gh_vector_p(vector)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg++,vector);
+    scm_wrong_type_arg(FUNC_NAME,1,vector);
   }
 /*
   if (gh_int_p(delay)) {
@@ -216,7 +215,7 @@ animated window shades and animated moves. */
   for (i=0; i<citems; i++) {
     SCM val = gh_vector_ref(vector,gh_int2scm(i));    
     if (!gh_number_p(val)) {
-      scm_wrong_type_arg(FUNC_NAME,iarg-1,vector);
+      scm_wrong_type_arg(FUNC_NAME,1,vector);
     }
     /* FIXGJB: also check < 2, perhaps (don't want to
       check < 1, since we might want to overshoot and then come back) */
