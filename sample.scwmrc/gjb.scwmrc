@@ -1630,6 +1630,26 @@ union of all other window managers!
 (bind-mouse 'window "C-A-H-1" #f send-key-press-prior)
 (bind-mouse 'window "C-A-H-3" #f send-key-press-next)
 
+;; From Bruno Daniel
+;; GJB:FIXME:: proof that we need per-window event mappings
+;; since it is unfortunate we have to do things this way..
+(bind-mouse 'window 4
+            (lambda ()
+              (if (wildcard-match? "XMathematica"
+                                   (current-window-with-pointer))
+                  (send-key-press "Prior"
+                    (current-window-with-pointer) #t #t #t))
+                  (send-button-press "4" #f #t #t)))
+
+(bind-mouse 'window 5
+            (lambda ()
+              (if (wildcard-match? "XMathematica"
+                                   (current-window-with-pointer))
+                  (send-key-press "Next"
+                     (current-window-with-pointer) #t #t #t)
+                  (send-button-press "5" #f #t #t))))
+
+
 ;; This one is experimental-- sends only the buttonpress event, no buttonrelease
 (bind-key 'all "C-M-S-0" (lambda () (send-button-press 2 (get-window) #t #f)))
 
