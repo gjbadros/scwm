@@ -331,16 +331,21 @@ meaning of the second argument is reversed."
 ;; Completion
 ;; ----------
 
+(defun scwm-use-session ()
+  "Have Scwm use the ice-9 session module.
+This is needed for some commands such as apropos and apropos-internal.
+apropos-internal is used for completion, too"
+  (scwm-eval "(use-modules (ice-9 session))" nil))
+  
+
 (defun scwm-make-obarray ()
   "Create and return an obarray of scwm symbols."
-  ;; (setq scwm-obarray (scwm-make-obarray))
+  (scwm-use-session)
   ;; Can't use `read' because "? " is read as 32.  Another problem is
   ;; that the symbols will be interned in the standard elisp obarray
   ;; `obarray', not in the obarray `scwm-obarray'.
   (let ((oa (make-vector 131 0)) (pos 2)) ; obarray
     (with-temp-buffer
-      ;; make sure `apropos' is present
-      (scwm-eval "(use-modules (ice-9 session))" nil)
       (scwm-safe-call "apropos-internal" "\"\"" (current-buffer))
       (unless (= (char-after 1) ?\()
         (error "not a list: %s" (buffer-string)))
@@ -468,6 +473,7 @@ Returns a string which is present in the `scwm-obarray'."
       (princ "click mouse-2 for documentation.\n\nScwm apropos `")
       (with-face 'highlight (princ pat))
       (princ "':\n\n")
+      (scwm-use-session) ;; be sure to load session module to get apropos cmd
       (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
       (goto-char (point-max))   ; kill `#<unspecified>'
       (delete-region (point) (progn (beginning-of-line) (point)))
