@@ -218,7 +218,7 @@ CreateMessageWindow( scwm_msgwindow* msg )
   const int width = 50; /* just some starting place-- we'll figure it out later */
   XSetWindowAttributes attributes;
   unsigned long valuemask = (CWBorderPixel | CWBackPixel | CWBitGravity | 
-                             CWEventMask | CWSaveUnder);
+                             CWEventMask);
 
   attributes.border_pixel = XCOLOR(msg->fg_color);
   attributes.background_pixel = XCOLOR(msg->bg_color);
@@ -243,13 +243,16 @@ MapMessageWindow(scwm_msgwindow* msg)
   int w, h;
   int x, y;
   
-  if (!FXGetWindowSize(msg->win,&w,&h))
-    assert(False);
-
-  x = msg->x + (msg->x_align * w);
-  y = msg->y + (msg->y_align * h);
-
-  XMoveWindow(dpy, msg->win, x, y);
+  if (!FXGetWindowSize(msg->win,&w,&h)) {
+    /* GJB:FIXME:: do something to avoid this */
+    scwm_msg(WARN,"MapMessageWindow","Bitten by race condition in getting window size");
+  } else {
+    
+    x = msg->x + (msg->x_align * w);
+    y = msg->y + (msg->y_align * h);
+    
+    XMoveWindow(dpy, msg->win, x, y);
+  }
   XMapRaised(dpy, msg->win);
 }
 

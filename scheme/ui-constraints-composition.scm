@@ -109,7 +109,7 @@ the construction of a composition."
 	 "Enter name: " 
 	 (lambda (name) 
 	   (make-ui-constraint-class 
-	    name "Composition-recorded" (length winlist) composition-ctr 
+	    name (string-append name " (User-recorded)") (length winlist) composition-ctr 
 	    (lambda () 
 	      (if (eqv? (length (selected-windows-list)) (length winlist))
 		  (list (selected-windows-list) classlist)
