@@ -37,17 +37,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include <endian.h>
-#if   __BYTE_ORDER == __LITTLE_ENDIAN
-# define hton32(x) ((x >> 24)|((0xff0000 & x) >> 8)|((0xff00 & x) << 8)| \
-			((0xff & x) << 24))
-# define ntoh32(x) hton32(x)
-#elif __BYTE_ORDER == __BIG_ENDIAN
-# define hton32(x) (x)
-# define ntoh32(x) (x)
-#else
-#error Unknown __BYTE_ORDER
-#endif
+#include <netinet/in.h>
 
 /* encapsulates state information of a window that is saved across sessions */
 typedef struct SMWindowData_ {
@@ -63,7 +53,7 @@ SMWindowData *SMData;		/* the head of a list of SMWindowData el's */
 /* write a 32-bit quantity in network byte order */
 static void writeI32(FILE *fd, CARD32 x)
 {
-  x = hton32(x);
+  x = htonl(x);
   fwrite(&x, sizeof(x), 1, fd);
 }
 
@@ -72,8 +62,9 @@ static CARD32 readI32(FILE *fd)
 {
   CARD32 x;
 
-  fread(&x, sizeof(x), 1, fd);
-  return ntoh32(x);
+  if (fread(&x, sizeof(x), 1, fd) < 1)
+    return 0;
+  return ntohl(x);
 }
 
 /*  write a zero-terminated string */
@@ -86,7 +77,8 @@ static void writeString(FILE *fd, char *s)
     fwrite(s, len, 1, fd);
 }
 
-/* read a string, zero-terminate and return it */
+/* read a string, zero-terminate and return it.
+   The returned string must be FREE'd by the caller. */
 static char *readString(FILE *fd)
 {
   char *s;
@@ -100,32 +92,62 @@ static char *readString(FILE *fd)
   return s;
 }
 
-/* write out the state of a ScwmWindow */
-static void writeWindow(FILE *fd, ScwmWindow *psw)
+/* find the SM client id to which a ScwmWindow belongs.
+   Returns NULL on failure.
+   The returned string must be XFree'd by the caller. */
+static unsigned char *getWindowClientId(ScwmWindow *psw)
 {
   Atom type;
   int fmt;
   unsigned long len;
-  char *clientId;
+  unsigned char *leader, *id;
+  Window win;
 
-  clientId = GetXProperty(psw->w, XA_SM_CLIENT_ID, False,
-		     &type, &fmt, &len);
+  leader = GetXProperty(psw->w, XA_WM_CLIENT_LEADER, False, &type, &fmt, &len);
+  if (leader && (type != XA_WINDOW || fmt != 32 || len != 1)) {
+    XFree(leader);
+    leader = NULL;
+  }
+  if (leader)
+    win = *(Window *)leader;
+  else if (psw->wmhints->flags & WindowGroupHint)
+    win = psw->wmhints->window_group;
+  else if (psw->fTransient)
+    win = psw->transientfor;
+  else
+    return NULL;
+
+  id = GetXProperty(win, XA_SM_CLIENT_ID, False, &type, &fmt, &len);
+  if (id && (type != XA_STRING || fmt != 8)) {
+    XFree(id);
+    id = NULL;
+  }
+  return id;
+}
+
+/* write out the state of a ScwmWindow */
+static void writeWindow(FILE *fd, ScwmWindow *psw)
+{
+  unsigned char *clientId;
+
+  clientId = getWindowClientId(psw);
   if (clientId) {
-    if (type == XA_STRING && fmt == 8) {
-      writeString(fd, clientId);
-      writeString(fd, psw->name);
-      writeString(fd, psw->classhint.res_name);
-      writeString(fd, psw->classhint.res_class);
-      writeI32(fd, psw->frame_x);
-      writeI32(fd, psw->frame_y);
-      writeI32(fd, psw->frame_width);
-      writeI32(fd, psw->frame_height);
-    }
+    writeString(fd, clientId);
+    writeString(fd, psw->name);
+    writeString(fd, psw->classhint.res_name);
+    writeString(fd, psw->classhint.res_class);
+    writeI32(fd, FRAME_X(psw));
+    writeI32(fd, FRAME_Y(psw));
+    writeI32(fd, FRAME_WIDTH(psw) - psw->xboundary_width*2);
+    writeI32(fd, FRAME_HEIGHT(psw)
+	     - psw->title_height - psw->boundary_width*2);
     XFree(clientId);
   }
 }
 
-/* read state info about a window */
+/* read state info about a window.
+   Returns NULL on EOF.
+   The returned structure must be FREE'd by the caller. */
 static SMWindowData *readWindow(FILE *fd)
 {
   SMWindowData *d = NEW(SMWindowData);
@@ -138,7 +160,38 @@ static SMWindowData *readWindow(FILE *fd)
   d->y = readI32(fd);
   d->w = readI32(fd);
   d->h = readI32(fd);
+  if (feof(fd)) {
+    FREE(d);
+    d = NULL;
+  }
   return d;
+}
+
+/* if the ScwmWindow matches a window from the previous session,
+   initialize its state with the saved information. */
+void restoreWindowState(ScwmWindow *psw)
+{
+  SMWindowData **p, *d;
+  unsigned char *clientId;
+  
+  clientId = getWindowClientId(psw);
+  if (!clientId)
+    return;
+  for (p = &SMData; (d = *p) != NULL; p = &d->next)
+    if (strcmp(clientId, d->id) == 0
+	&& strcmp(psw->classhint.res_name, d->class.res_name) == 0
+	&& strcmp(psw->classhint.res_class, d->class.res_class) == 0)
+      break;
+  if (d) {			/* found match */
+    scwm_msg(DBG, "restoreWindowState", "moving `%s' to +%d+%d %dx%d",
+	     psw->name, d->x, d->y, d->w, d->h);
+    psw->attr.x = d->x;
+    psw->attr.y = d->y;
+    psw->attr.width = d->w;
+    psw->attr.height = d->h;
+    *p = d->next;		/* remove from list */
+    FREE(d);
+  }
 }
 
 /* the name of the state file used by the current scwm */
@@ -190,12 +243,13 @@ static void loadMyself()
   char *loadname = statefile();
   FILE *load;
 
+  SMData = NULL;
   scwm_msg(DBG, FUNC_NAME, "Restoring from `%s'", loadname);
   if ((load = fopen(loadname, "r")) != NULL) {
-    SMData = NULL;
-    d = readWindow(load);
-    d->next = SMData;
-    SMData = d;
+    while ((d = readWindow(load)) != NULL) {
+      d->next = SMData;
+      SMData = d;
+    }
     fclose(load);
   } else {
     scwm_msg(WARN, FUNC_NAME, "Could not read `%s' (%s)",
@@ -203,13 +257,6 @@ static void loadMyself()
   }
   FREE(loadname);
 #undef FUNC_NAME
-}
-
-/* if the ScwmWindow matches a window from the previous session,
-   initialize its state with the saved information */
-void restoreWindowState(ScwmWindow *psw)
-{
-  /* do nothing yet */
 }
 
 static
@@ -315,6 +362,7 @@ void initSM()
   char *SmcNewId;
 
   XA_SM_CLIENT_ID = XInternAtom(dpy, "SM_CLIENT_ID", False);
+  XA_WM_CLIENT_LEADER = XInternAtom(dpy, "WM_CLIENT_LEADER", False);
 
   if (SmcId)
     loadMyself();

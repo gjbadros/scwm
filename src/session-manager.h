@@ -32,6 +32,7 @@ EXTERN_SET(SmcConn SMconn, NULL);
 EXTERN_SET(char *SmcId, NULL);
 
 EXTERN Atom XA_SM_CLIENT_ID;
+EXTERN Atom XA_WM_CLIENT_LEADER;
 
 void initSM();
 void doneSM(int);

@@ -264,10 +264,6 @@ AddWindow(Window w)
 
   psw->fl = &Scr.DefaultDecor;
 
-#ifdef HAVE_LIBSM_LIBICE
-  restoreWindowState(psw);
-#endif
-
   call1_hooks(before_new_window_hook, psw->schwin);
 
   if (psw->fStartsOnDesk) {
@@ -281,6 +277,10 @@ AddWindow(Window w)
   SelectDecor(psw, border_width, resize_width);
 
   DBUG((DBG,__FUNCTION__,"fTitle = %d, th = %d", psw->fTitle, psw->title_height));
+
+#ifdef HAVE_LIBSM_LIBICE
+  restoreWindowState(psw);	/* RBFIX: where should we call this? */
+#endif
 
   /* FIXGJB: need to provide more flexibility in how the
      icon gets selected */
