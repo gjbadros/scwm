@@ -1,6 +1,7 @@
 /* $Id$
  * Copyright (C) 1997-1999 Jeffrey Nichols, Greg J. Badros, and Maciej Stachowiak
- * 
+ *
+ * Background image extension added --07/01/99 gjb
  */
 
 #ifdef HAVE_CONFIG_H
@@ -39,6 +40,7 @@ mark_msgwindow(SCM obj)
   GC_MARK_SCM_IF_SET(msg->shadow_color);
   GC_MARK_SCM_IF_SET(msg->highlight_color);
   GC_MARK_SCM_IF_SET(msg->message);
+  GC_MARK_SCM_IF_SET(msg->bg_image);
 
   return SCM_BOOL_F;
 }
@@ -79,6 +81,10 @@ print_msgwindow(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<msgwindow ", port);
   scm_write(MSGWINDOW_MESSAGE(obj), port);
+  if (!UNSET_SCM(MSGWINDOW_IMAGE(obj))) {
+    scm_puts("; ", port);
+    scm_write(MSGWINDOW_IMAGE(obj),port);
+  }
   scm_putc('>', port);
   return 1;
 }
@@ -175,6 +181,11 @@ ResizeMessageWindow( scwm_msgwindow* msg ) {
 
   win_x = msg->x + (msg->x_align * winwidth);
   win_y = msg->y + (msg->y_align * winheight);
+
+  if (msg->width > 0)
+    winwidth = msg->width;
+  if (msg->height > 0)
+    winheight = msg->height;
 
   XMoveResizeWindow(dpy, msg->win, win_x, win_y, winwidth, winheight);
 
@@ -277,6 +288,8 @@ Uses defaults from the ScreenInfo struct for the other values. */
   msg->bg_color = Scr.msg_window_bg;
   msg->shadow_color = SCM_BOOL_F;
   msg->highlight_color = SCM_BOOL_F;
+  msg->bg_image = SCM_BOOL_F;
+  msg->width = msg->height = -1;   /* auto-sized */
 
   msg->font = Scr.msg_window_font;
   msg->fRelief = TRUE;
@@ -324,18 +337,34 @@ SCWM_PROC(message_window_set_message_x, "message-window-set-message!", 2, 0, 0,
 The message will be MESSAGE.*/
 #define FUNC_NAME s_message_window_set_message_x
 {
-  scwm_msgwindow* msg = MSGWINDOW(mwn);
+  scwm_msgwindow *msg;
 
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
-
-  if (!gh_string_p(message)) {
-    SCWM_WRONG_TYPE_ARG(2, message);
-  }
+  VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
+  VALIDATE_ARG_STR(2,message);
 
   msg->message = message;
+  ResizeMessageWindow( msg );
 
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(message_window_set_image_x, "message-window-set-image!", 2, 0, 0,
+          (SCM mwn, SCM image))
+     /** Changes the background image for the message window MWN to IMAGE. */
+#define FUNC_NAME s_message_window_set_image_x
+{
+  scwm_msgwindow *msg;
+  scwm_image *pimg;
+
+  VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
+
+  VALIDATE_ARG_IMAGE_USE_F(2,image);
+  pimg = IMAGE(image);
+
+  msg->bg_image = image;
+
+  XSetWindowBackgroundPixmap(dpy, msg->win, pimg->image);
   ResizeMessageWindow( msg );
 
   return SCM_UNSPECIFIED;
@@ -349,19 +378,15 @@ SCWM_PROC(message_window_set_font_x, "message-window-set-font!", 2, 0, 0,
 The font will be FNT.*/
 #define FUNC_NAME s_message_window_set_font_x
 {
-  scwm_msgwindow* msg = MSGWINDOW(mwn);
+  scwm_msgwindow *msg;
 
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
+  VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
 
   if (gh_string_p(fnt)) {
     fnt = make_font(fnt);
   }
 
-  if (!FONT_P(fnt)) {
-    SCWM_WRONG_TYPE_ARG(2, fnt);
-  }
+  VALIDATE_ARG_FONT(2,fnt);
   msg->font=fnt;
 
   ResizeMessageWindow( msg );
@@ -377,11 +402,8 @@ SCWM_PROC(message_window_set_colors_x, "message-window-set-colors!", 3, 0, 0,
 The foreground color will be FG-COLOR and the background color will be BG-COLOR.*/
 #define FUNC_NAME s_message_window_set_colors_x
 {
-  scwm_msgwindow* msg = MSGWINDOW(mwn);
-
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
+  scwm_msgwindow *msg;
+  VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
 
   if ( fg_color != SCM_BOOL_F ) {
     VALIDATE_ARG_COLOR(2,fg_color);
@@ -407,6 +429,7 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR.
 }
 #undef FUNC_NAME
 
+
 /* GJB:FIXME:: it'd be nice to add an option to have the message window follow
    the pointer around! --07/25/98 gjb
    This might best be done in the message-window code, as a special option
@@ -421,11 +444,9 @@ height of the window to offset the window for alignment.
 X-ALIGN and Y-ALIGN should each be in the range [0,-1].*/
 #define FUNC_NAME s_message_window_set_position_x
 {
-  scwm_msgwindow* msg = MSGWINDOW(mwn);
+  scwm_msgwindow* msg;
 
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
+  VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
 
   SCM_REDEFER_INTS;
 
@@ -467,18 +488,41 @@ X-ALIGN and Y-ALIGN should each be in the range [0,-1].*/
 #undef FUNC_NAME
 
 
+SCWM_PROC(message_window_set_size_x, "message-window-set-size!", 3, 2, 0,
+          (SCM mwn, SCM width, SCM height))
+    /** Set the size of message window MWN to WIDTH pixels by HEIGHT pixels.
+If WIDTH or HEIGHT is #f, that direction is automatically sized
+based on the message content. This procedure is especially useful when a message window
+is used to display an image. */
+#define FUNC_NAME s_message_window_set_size_x
+{
+  scwm_msgwindow* msg;
+  int w, h;
+
+  VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
+  VALIDATE_ARG_INT_COPY_USE_DEF(2,width,w,-1);
+  VALIDATE_ARG_INT_COPY_USE_DEF(3,height,h,-1);
+
+  msg->width = w;
+  msg->height = h;
+
+  ResizeMessageWindow(msg);
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
 SCWM_PROC (message_window_set_relief_x, "message-window-set-relief!", 2, 0, 0,
-           (SCM mwn, SCM rlf))
-  /** Sets the relief for the window MWN. Relief will be RLF. */
+           (SCM mwn, SCM draw_relief_p))
+  /** Sets the relief for the window MWN.
+Relief will be drawn if and only if DRAW-RELIEF? is #t. */
 #define FUNC_NAME s_message_window_set_relief_x
 {
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
-
-  if ( gh_boolean_p(rlf) )
-    MSGWINDOW(mwn)->fRelief = rlf;
-
+  Bool f;
+  VALIDATE_ARG_MSGWINDOW(1,mwn);
+  VALIDATE_ARG_BOOL_COPY(2,draw_relief_p,f);
+  MSGWINDOW(mwn)->fRelief = f;
   DrawWindow(MSGWINDOW(mwn));
 
   return SCM_UNSPECIFIED;
@@ -494,9 +538,7 @@ do that you can call `message-window-hide!' (otherwise
 the window will not ever disappear). */
 #define FUNC_NAME s_message_window_show_x
 {
-  if (! MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1,mwn);
-  }
+  VALIDATE_ARG_MSGWINDOW(1,mwn);
 
   /* if it's already visible, we need do nothing;
      in particular, scm_protect_object may track
@@ -541,9 +583,7 @@ SCWM_PROC (message_window_visible_p, "message-window-visible?", 1, 0, 0,
 See also `message-window-show', `message-window-hide'. */
 #define FUNC_NAME s_message_window_visible_p
 {
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
+  VALIDATE_ARG_MSGWINDOW(1,mwn);
 
   return SCM_BOOL_FromBool(FXIsWindowMapped(dpy,MSGWINDOW(mwn)->win));
 }
@@ -555,28 +595,47 @@ SCWM_PROC (message_window_message, "message-window-message", 1, 0, 0,
      /** Returns the message that message window MWN displays. */
 #define FUNC_NAME s_message_window_message
 {
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
-
+  VALIDATE_ARG_MSGWINDOW(1,mwn);
   return MSGWINDOW_MESSAGE(mwn);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC (message_window_image, "message-window-image", 1, 0, 0,
+           (SCM mwn))
+     /** Returns the image that message window MWN displays. */
+#define FUNC_NAME s_message_window_image
+{
+  VALIDATE_ARG_MSGWINDOW(1,mwn);
+  return MSGWINDOW_IMAGE(mwn);
 }
 #undef FUNC_NAME
 
 
 SCWM_PROC (message_window_position, "message-window-position", 1, 0, 0,
            (SCM mwn))
-     /** Returns the position that message window MWN is/will be displayed at. This is 
-returned as a four element list of (x,y,x_align,y_align) */
+     /** Returns the position that message window MWN is/will be displayed at. 
+This is returned as a four element list: (x y x-align y-align). */
 #define FUNC_NAME s_message_window_position
 {
-  scwm_msgwindow* msg = MSGWINDOW(mwn);
+  scwm_msgwindow* msg;
+  VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
 
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
+  return gh_list(msg->x, msg->y, msg->x_align, msg->y_align, SCM_UNDEFINED );
+}
+#undef FUNC_NAME
 
-  return gh_list( msg->x, msg->y, msg->x_align, msg->y_align, SCM_UNDEFINED );
+
+SCWM_PROC (message_window_size, "message-window-size", 1, 0, 0,
+           (SCM mwn))
+     /** Returns the size of message window MWN in pixels.
+Returns as a two element list: (width height). */
+#define FUNC_NAME s_message_window_size
+{
+  scwm_msgwindow* msg;
+  VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
+
+  return gh_list(msg->width, msg->height, SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -601,14 +660,8 @@ SCWM_PROC (message_window_colors, "message-window-colors", 1, 0, 0,
 These are returned in a list of the form (fg_color,bg_color). */
 #define FUNC_NAME s_message_window_colors
 {
-  scwm_msgwindow* msg = NULL;
-
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
-
-  msg = MSGWINDOW(mwn);
-
+  scwm_msgwindow* msg;
+  VALIDATE_ARG_MSGWINDOW_COPY(1,mwn,msg);
   return gh_list( msg->fg_color, msg->bg_color, SCM_UNDEFINED );
 }
 #undef FUNC_NAME
@@ -618,9 +671,7 @@ SCWM_PROC (message_window_relief_p, "message-window-relief?", 1, 0, 0,
      /** Returns the relief setting for the message window MWN. */
 #define FUNC_NAME s_message_window_relief_p
 {
-  if (!MSGWINDOW_P(mwn) ) {
-    SCWM_WRONG_TYPE_ARG(1, mwn);
-  }
+  VALIDATE_ARG_MSGWINDOW(1,mwn);
 
   return SCM_BOOL_FromBool(MSGWINDOW(mwn)->fRelief);
 }

@@ -36,6 +36,7 @@ EXTERN long scm_tc16_scwm_msgwindow;
 #define MSGWINDOW_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_msgwindow)
 #define MSGWINDOW(X)   ((scwm_msgwindow *)(gh_cdr(X)))
 #define MSGWINDOW_MESSAGE(X)     (MSGWINDOW(X)->message)
+#define MSGWINDOW_IMAGE(X)     (MSGWINDOW(X)->bg_image)
 
 
 /* JWN: Variable Struct   -- stores whatever variables are 
@@ -48,9 +49,11 @@ typedef struct {
   SCM bg_color;
   SCM shadow_color; /* relief colors for message window (color object) */
   SCM highlight_color;
+  SCM bg_image; /* bg image, or SCM_BOOL_F if none */
   Bool fRelief;  /* draw with relief? */
   int x, y;        /* current position */
   double x_align, y_align;  /* alignment (e.g., -.5,-.5 is centered*/
+  int width, height; /* -1 means auto-sized in that direction */
   Window win;   /* X Window obj */
 } scwm_msgwindow;
 
@@ -91,6 +94,15 @@ SCM message_window_position( SCM mwn );
 SCM message_window_font( SCM mwn );
 SCM message_window_colors( SCM mwn );
 SCM message_window_relief_p( SCM mwn );
+
+
+#define VALIDATE_ARG_MSGWINDOW(pos,arg) \
+  do { if (!MSGWINDOW_P(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); } while (0)
+
+#define VALIDATE_ARG_MSGWINDOW_COPY(pos,arg,cvar) \
+  do { if (!MSGWINDOW_P(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
+       else cvar = MSGWINDOW(arg); } while (0)
+
  
 #endif /* MSGWINDOW_H */
 
