@@ -70,5 +70,3 @@ rm -rf $RPM_BUILD_ROOT
 /usr/man/man1
 /usr/share/emacs/site-lisp
 /usr/share/scwm
-/usr/share/scwm-modules
-/usr/share/scwm-themes
