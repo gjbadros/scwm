@@ -32,9 +32,10 @@
 
 ;; public drawing variables
 
+;;; (set! ui-constraint-out-focus-width 3)
+;;; (draw-all-constraints)
 (define-public ui-constraint-in-focus-width 4)
 (define-public ui-constraint-out-focus-width 2)
-;; (set! ui-constraint-out-focus-width 2)
 
 ;; alias for internal use
 (define msgwin ui-constraint-prompter-msgwin)
