@@ -1,3 +1,7 @@
+Fri Aug 27 01:50:12 1999    <gjb@cs.washington.edu>
+
+	* constraints.scm: Only bind modifier keys if all are non-#f.
+
 Thu Aug 26 21:12:44 1999    <gjb@cs.washington.edu>
 
 	* flash-window.scm: Avoid trying to flash a window that has been
