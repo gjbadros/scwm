@@ -3,7 +3,7 @@
  *
  * Copyright (C) 1998-1999, Maciej Stachowiak and Greg J. Badros
  *
- * This module has been significantly modified by Maciej Stachowiak.
+ * This module has been significantly modified by Greg J. Badros and Maciej Stachowiak.
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
  *
  */
@@ -2665,10 +2665,17 @@ void window_pixel_size_to_client_units(const ScwmWindow *psw,
                                        int *px_units,
                                        int *py_units)
 {
-  width -= psw->hints.base_width;
-  height -= psw->hints.base_height;
-  width /= psw->hints.width_inc;
-  height /= psw->hints.height_inc;
+  /* if the width/height_inc is 1, then do not do any conversion
+     since it would result in just subtracting the base_width/height;
+     the gimp, e.g., has a base_width but resizes by pixels */
+  if (psw->hints.width_inc != 1) {
+    width -= psw->hints.base_width;
+    width /= psw->hints.width_inc;
+  }
+  if (psw->hints.height_inc != 1) {
+    height -= psw->hints.base_height;
+    height /= psw->hints.height_inc;
+  }
   *px_units = width;
   *py_units = height;
 }
