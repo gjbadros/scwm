@@ -112,6 +112,12 @@ safemalloc(int length)
  *
  *************************************************************************/
 
+/* FIXGJB:  Andrei Tcherepanov <tandr@ptc.com> notes that the
+   below select line does not work for him on solaris;
+   we should probably only use select for platforms w/o
+   usleep (from <unistd.h>), and just use usleep(n*1000) when
+   we've got it */
+
 void 
 sleep_ms(int n)
 {
