@@ -1,3 +1,25 @@
+Wed Mar 17 18:37:16 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm-screen-ci.hpp, scwm-constraints.hpp,scwm-constraints.cc,
+ 	constraint-primitives.cc,: Include "Cl.h" and "cassowary_scm.hpp"
+ 	from the $prefix/include directory, instead of from the cassowary
+ 	build directory.
+
+Wed Mar 17 12:47:45 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c (DeferExecution): Added two extra args to return the
+ 	location of the click selection.  Moved the prototype closer to
+ 	the beginning of the file.  Replace `select-window' primitive with
+ 	`select-viewport-position' primitive that returns the position of
+ 	the click as well as the window selected. `select-window' is now a
+ 	proc in base.scm.  Replace calls to select_window C primitive with 
+	"gh_car(select_viewport_position(..))" to just return the window.
+	Remove invocations of the invalid-interaction-hook from
+	DeferExecution.  Instead do that only in `get-window' if
+	select-viewport-position returned #f for the window.
+
+	* move.c: Added note to comment for Keyboard_shortcuts.
+
 Wed Mar 17 10:45:50 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* virtual.c: Handle the EDGE_NONE case in notify_edge_enter,

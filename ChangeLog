@@ -1,3 +1,10 @@
+Wed Mar 17 18:41:12 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Added SCWM_ARG_PATH_MAYBE_EMPTY macro to support
+	"--with-cassowary" w/o a "=DIR" argument to use the $PREFIX dir.
+	Simplify CASSOWARY_LIBS to work with new, installable distribution 
+	of Cassowary (>= 0.4).
+
 Wed Mar 17 11:17:38 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* acinclude.m4: Do not call AC_PATH_PROG macro for gtk-config if

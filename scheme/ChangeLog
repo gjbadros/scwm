@@ -1,3 +1,14 @@
+Wed Mar 17 18:32:13 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm, simple-constraints.scm,
+ 	ui-constraints-toggle-menu.scm: Added commented-out use-module of
+ 	(cassowary-constraints) -- it's built in to --with-cassowary
+ 	configured scwms still, but might not be later.
+
+	* ui-constraints-classes.scm: Needs (app scwm optargs)
+
+	* base.scm: Fix select-window to use define*-public.
+
 Wed Mar 17 12:50:02 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* constraints.scm: Cleaned up a bit, added `start-constraints'. 
