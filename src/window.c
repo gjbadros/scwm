@@ -3244,18 +3244,17 @@ WIN defaults to the window context in the usual way if not specified. */
   oldxadj = GRAV_X_ADJUSTMENT(psw);
   oldyadj = GRAV_Y_ADJUSTMENT(psw);
 
-#define NO_SIDE_DECORATIONS_P(psw) \
-  SCM_NFALSEP( scm_object_property((psw)->schwin, sym_no_side_decorations))
-
   psw->boundary_width = cpix;
   if (!NO_SIDE_DECORATIONS_P(psw))
     psw->xboundary_width = psw->boundary_width;
 
-  MoveResizeTo(psw,
-	       FRAME_X(psw) + GRAV_X_ADJUSTMENT(psw) - oldxadj,
-	       FRAME_Y(psw) + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
-	       FRAME_WIDTH(psw) + 2 * (psw->xboundary_width - oldxw),
-	       FRAME_HEIGHT(psw) + 2 * (psw->boundary_width - oldw));
+  if (psw->fFullyConstructed) {
+    MoveResizeTo(psw,
+                 FRAME_X(psw) + GRAV_X_ADJUSTMENT(psw) - oldxadj,
+                 FRAME_Y(psw) + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
+                 FRAME_WIDTH(psw) + 2 * (psw->xboundary_width - oldxw),
+                 FRAME_HEIGHT(psw) + 2 * (psw->boundary_width - oldw));
+  }
 
   return SCM_UNSPECIFIED;
 }

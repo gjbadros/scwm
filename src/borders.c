@@ -54,14 +54,6 @@ SCWM_SYMBOL(sym_no_top_border_decoration, "no-top-border-decoration");
 /* Also used in window.c */
 extern SCM sym_maximized, sym_no_side_decorations;
 
-
-#define NO_SIDE_DECORATIONS_P(psw) \
-  SCM_NFALSEP( scm_object_property((psw)->schwin, sym_no_side_decorations))
-
-#define NO_TOP_BORDER_DECORATION_P(psw) \
-  SCM_NFALSEP( scm_object_property((psw)->schwin, sym_no_top_border_decoration))
-
-
 /* macro rules to get button state */
 /* GJB:FIXME:: ugh! dynamic scoping in a macro! --07/26/98 gjb */
 #define GetButtonState(window)						\

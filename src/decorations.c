@@ -335,7 +335,6 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
   /* GJB:FIXME:: should these get reset? */
   t->fBorder = False;
 
-  t->boundary_width = 0;
   t->corner_width = 0;
   t->title_height = 0;
   t->fTitle = False;
@@ -344,7 +343,8 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     /* A narrow border is displayed (5 pixels - 2 relief, 1 top,
      * (2 shadow) */
     t->fBorder = True;
-    t->boundary_width = border_width;
+    if (t->boundary_width < 0)
+      t->boundary_width = border_width;
   }
   if (decor & MWM_DECOR_TITLE) {
     /*  A title barm with no buttons in it
@@ -356,7 +356,8 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     /* A wide border, with corner tiles is desplayed
      * (10 pixels - 2 relief, 2 shadow) */
     t->fBorder = True;
-    t->boundary_width = resize_width;
+    if (t->boundary_width < 0)
+      t->boundary_width = resize_width;
     t->corner_width = GET_DECOR(t, TitleHeight) + t->boundary_width;
   }
   if (!(decor & MWM_DECOR_MENU)) {
@@ -406,11 +407,16 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     t->bw = 0;
   } else {
     t->bw = BW;
-    --t->boundary_width;
+    /* --t->boundary_width; Why do this?  I know BW is one
+       but it's confusing that the border width is
+       off by one when explicitly specified --10/04/99 gjb */
   }
 
   if (t->title_height > 0)
     t->title_height += t->bw;
+
+  if (t->boundary_width < 0)
+    t->boundary_width = 0;
 
 #if 1 /* GJB:FIXME:: I think we should keep these orthogonal --07/29/98 gjb 
        but it's buggy if we do for now */
