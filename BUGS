@@ -1,3 +1,9 @@
+scwm-gtk-sync is run too often -- my load gets pinned at 10%
+when I use it.  We should rewrite in C, and be smarter about calling
+it instead of using a timer hook.  Can we be smart about calling it only
+after expose events on gtk windows? (And on input from the fdes, but 
+that's already done).
+-------
 There seems to be a bug in window size (or allowable size) 
 communication between scwm & applications. 
  
