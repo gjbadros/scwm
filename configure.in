@@ -163,9 +163,12 @@ else
   AC_CHECK_LIB(rx, main, GUILE_LIBS="-lrx $GUILE_LIBS",, $GUILE_LIBS_PRE)
   AC_CHECK_LIB(qt, main, GUILE_LIBS="-lqt $GUILE_LIBS",, $GUILE_LIBS_PRE)
   AC_CHECK_LIB(dl, dlopen, GUILE_LIBS="-ldl $GUILE_LIBS",, $GUILE_LIBS_PRE)
+  echo "${GUILE_LIBS}"
   AC_CHECK_LIB(guile, scm_handle_by_message_noexit, GUILE_LIBS="${GUILE_LIBS_PRE} -lguile ${GUILE_LIBS}", [
+  echo "${GUILE_LIBS}"
   AC_MSG_ERROR(Can not find Guile 1.2 or later on the system)
-], "${GUILE_LIBS_PRE} ${GUILE_LIBS}")
+], $GUILE_LIBS_PRE $GUILE_LIBS)
+  echo "${GUILE_LIBS}"
 fi
 
 AC_SUBST(GUILE_INCLUDES)

@@ -1,3 +1,8 @@
+1998-06-27  Maciej Stachowiak  <maciej@roc-ny5-05.ix.netcom.com>
+
+	* configure.in, configure: Forgot to add "-lguile" to GUILE_LIBS
+	in the non-build-guile fork of checking for guile libs.
+
 1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-21.ix.netcom.com>
 
 	* configure.in, configure: Bumped version to 0.7a (forgot to do
