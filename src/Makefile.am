@@ -93,7 +93,7 @@ AM_CPPFLAGS = $(CPPEXTRAFLAGS)
 
 guile_snarfs = Grab.x ICCCM.x add_window.x binding.x callbacks.x color.x \
 constraint-primitives.x cursor.x \
-decor.x deskpage.x drawmenu.x events.x face.x font.x icons.x image.x menu.x menuitem.x \
+decor.x deskpage.x drawmenu.x events.x face.x focus.x font.x icons.x image.x menu.x menuitem.x \
 menulook.x message-window.x miscprocs.x module-interface.x move.x placement.x resize.x \
 screen.x session-manager.x shutdown.x virtual.x window.x xproperty.x xrm.x winprop.x \
 borders.x errors.x
