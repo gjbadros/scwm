@@ -1,3 +1,8 @@
+Fri Apr 30 16:52:34 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added focus-change-warp-pointer to warp the pointer
+ 	on-focus changes performed by applications (e.g., C-x 5 0 in Emacs).
+
 Wed Apr 28 19:47:55 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added "Change global theme", uncomment the

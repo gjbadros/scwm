@@ -1,3 +1,12 @@
+Fri Apr 30 16:14:50 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* undo.scm: Added... support for multi-level undo using a partial
+	global state.  Keybindings using H- are defined, and saving states 
+	must be done manually (until we get a reasonable advice mechanism
+	so we can do this w/o adding code to other modules).  This is not
+	completely, but decided I'd check it in anyway so people can see
+	that it has no impact on the size of the system unless you use it.
+
 1999-04-30  Jeff W Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints-gtk-toggle-menu.scm: Changed the flash and
