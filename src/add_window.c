@@ -344,7 +344,6 @@ AddWindow(Window w)
   }
   if (backcolor != NULL) {
     XColor color;
-
     if ((XParseColor(dpy, Scr.ScwmRoot.attr.colormap, backcolor, &color))
 	&& (XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color))) {
       tmp_win->BackPixel = color.pixel;
