@@ -1,64 +1,104 @@
+;; $Id$
 ;; (reset-scwm-exec-protocol)
-(set-opaque-move-size! 30)
+(set-opaque-move-size! 100)
+
+(define w (select-window-interactively "Pick w"))
+(window-position w)
 
 (begin
   (define solver (make-cl-solver))
   (scwm-set-master-solver solver)
-  (define wA (get-window))
-  (define wB (get-window))
+  ;(map (lambda (w) (add-stays-on-window w)) (list-all-windows))
+  (define wA (select-window-interactively "Pick window A"))
+  (define wB (select-window-interactively "Pick window B"))
   (define v (make-cl-variable "v"))
   (cl-add-stay solver v)
-  (map (lambda (w) (add-stays-on-window w)) (list-all-windows))
-  #t)
-
-(define (keep-tops-even w1 w2)
-  (let ((w1-y (window-clv-y w1))
-	(w2-y (window-clv-y w2)))
-    (cl-add-constraint solver (make-cl-constraint w1-y = w2-y))))
-
-(define (keep-bottoms-even w1 w2)
-  (let ((w1-y (window-clv-y w1))
-	(w2-y (window-clv-y w2))
-	(w1-height (window-clv-height w1))
+  (define (keep-tops-even w1 w2)
+    (let ((w1-y (window-clv-y w1))
+	  (w2-y (window-clv-y w2)))
+      (cl-add-constraint solver (make-cl-constraint w1-y = w2-y))))
+  
+  (define (keep-bottoms-even w1 w2)
+    (let ((w1-y (window-clv-y w1))
+	  (w2-y (window-clv-y w2))
+	  (w1-height (window-clv-height w1))
 	(w2-height (window-clv-height w2)))
-    (cl-add-constraint 
-     solver (make-cl-constraint
-	     (cl-plus w1-y w1-height) =
-	     (cl-plus w2-y w2-height)))))
+      (cl-add-constraint 
+       solver (make-cl-constraint
+	       (cl-plus w1-y w1-height) =
+	       (cl-plus w2-y w2-height)))))
+  
+  (define (keep-to-left-of w1 w2)
+    (let ((w1-x (window-clv-x w1))
+	  (w1-width (window-clv-width w1))
+	  (w2-x (window-clv-x w2)))
+      (cl-add-constraint 
+       solver (make-cl-constraint (cl-plus w1-width w1-x) <= w2-x))))
 
-(define (keep-to-left-of w1 w2)
-  (let ((w1-x (window-clv-x w1))
-	(w1-width (window-clv-width w1))
-	(w2-x (window-clv-x w2)))
-    (cl-add-constraint 
-     solver (make-cl-constraint (cl-plus w1-width w1-x) <= w2-x))))
+  (define (keep-top-at-v w1)
+    (let ((w1-y (window-clv-y w1)))
+      (cl-add-constraint solver (make-cl-constraint w1-y = v))))
+  
+  (define (keep-left-at-v w1)
+    (let ((w1-x (window-clv-x w1)))
+      (cl-add-constraint solver (make-cl-constraint w1-x = v))))
+  
+  (define (cl-set-solver-var s clv value)
+    (cl-add-editvar s clv)
+    (cl-begin-edit s)
+    (cl-suggest-value s clv value)
+    (cl-end-edit s))
 
-(define (keep-top-at-v w1)
-  (let ((w1-y (window-clv-y w1)))
-    (cl-add-constraint solver (make-cl-constraint w1-y = v))))
+  (define (keep-full-width w1 w2)
+    (let ((w1-width (window-clv-width w1))
+	  (w2-width (window-clv-width w2)))
+      (cl-add-constraint 
+       solver 
+       (make-cl-constraint (cl-plus w1-width w2-width) = 500))))
 
-(define (keep-left-at-v w1)
-  (let ((w1-x (window-clv-x w1)))
-    (cl-add-constraint solver (make-cl-constraint w1-x = v))))
+  (define (keep-full-height w1 w2)
+    (let ((w1-height (window-clv-height w1))
+	  (w2-height (window-clv-height w2)))
+      (cl-add-constraint 
+       solver 
+       (make-cl-constraint (cl-plus w1-height w2-height) = 800))))
+  )
 
-(keep-bottoms-even (current-window-with-focus) wA)
-(keep-tops-even (current-window-with-focus) wB)
+
+;;(for-each (lambda (w) (move-to 0 0 w)) (list-all-windows))
+
+(keep-to-left-of wA wB)
+(keep-full-width wA wB)
+(define wC (select-window-interactively "Pick window C"))
 (keep-to-left-of (current-window-with-focus) wA)
+(keep-bottoms-even wA wC)
+(keep-to-left-of wB wC)
+
+(keep-tops-even wA wC)
+
+(keep-full-height (get-window) (get-window))
+(keep-full-height wA wB)
+
+(cl-solver-debug-print solver)
+
+(keep-tops-even (current-window-with-focus) wB)
 (keep-to-left-of wA wB)
 (keep-top-at-v (current-window-with-focus))
 (keep-left-at-v (current-window-with-focus))
 
-(define (cl-set-solver-var s clv value)
-  (cl-add-editvar s clv)
-  (cl-begin-edit s)
-  (cl-suggest-value s clv value)
-  (cl-end-edit s))
+(cl-value v)
+(cl-set-solver-var solver v 20)
+
+(cl-value (window-clv-height wA))
+
 
 (for-each (lambda (x) (cl-set-solver-var solver v x) (usleep 100000))
 	  '(10 20 30 40 50 60 70 80 90 100 110 120 130))
 
 (keep-to-left-of (current-window-with-focus) wA)
 (keep-to-left-of (current-window-with-focus) wB)
+
+(window-clv-width (current-window-with-focus))
 
 (window-clv-x (current-window-with-focus))
 
