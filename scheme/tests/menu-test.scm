@@ -1,4 +1,5 @@
 ;;; menu-item test cases
+(use-modules (app scwm base))
 
 (define m (make-menu (list (make-menuitem "foo" #f)
 			   (make-menuitem "bar" #f)
@@ -11,6 +12,8 @@
 			   (make-menuitem "bom" #f)
 			   (make-menuitem "bal" #f)
 			   (make-menuitem "biz 123" #f #f #f #f #f #f "123"))
+		     menu-bg-color menu-text-color menu-stipple-color
+		     menu-font
 		     (make-image "linux-menu.xpm") 'top (make-color "blue")))
 (popup-menu m)
 
@@ -47,6 +50,7 @@
 					   (display "toggle-stick\n")) #f #f
 		    (make-image "mini-stick.xpm") #f #f
 		    "stick"))
+   menu-bg-color menu-text-color menu-stipple-color menu-font 
    #f #f (make-color "gray80"))
    )
 
@@ -62,7 +66,7 @@
 					   (display "toggle-stick\n")) #f #f
 		    (make-image "mini-stick.xpm") #f #f
 		    "stick"))
-   #f #f #f (make-color "gray80"))
+   (make-color "gray80") menu-text-color menu-stipple-color menu-font)
    )
 
 (define more-menu-ops-item
@@ -80,8 +84,8 @@
 		   window-ops-title-item bitmap-separator
 		   sticky-menu-item move-menu-item resize-menu-item
 		   more-menu-ops-item)
-		  (make-image "linux-menu.xpm") 'top (make-color "blue")
-		  'a-color))
+	          'a-color menu-text-color menu-stipple-color menu-font
+		  (make-image "linux-menu.xpm") 'top (make-color "blue")))
 
 
 (define a-popup-menu 
@@ -93,7 +97,8 @@
     (make-menu-item "Stick/Unstick" toggle-stick "" #f
 		    (make-image "mini-stick.xpm") #f #f
 		    "stick"))
-   #f #f #f (make-color "gray80"))
+   (make-color "gray80") menu-text-color menu-stipple-color menu-font
+   (make-color "gray80"))
    )
 
 ;;(popup-menu a-menu)

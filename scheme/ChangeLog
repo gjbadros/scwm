@@ -1,5 +1,12 @@
 1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
 
+	* tests/menus.scm: update tests for new make-menu argument order
+
+	* tests/menu-test.scm: update tests for new make-menu argument order
+
+	* tests/arctic-theme.scm: test/demonstrate more of the ways menu
+	looks can be created & used
+
 	* minimal.scm: set-menu-foreground! and set-menu-background!
 	primitives renamed set-not-menu-foreground! and
 	set-not-menu-background!; set-menu-stipple! removed;  default-menu 

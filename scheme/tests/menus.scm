@@ -1,3 +1,4 @@
+(use-modules (app scwm base))
 
 (popup-menu
  (make-menu
@@ -11,7 +12,8 @@
 		  (lambda () (display "bar\n"))
 		  #f #f #f
 		  (lambda () (display-message "bar hover"))
-		  (lambda () (hide-message))))))
+		  (lambda () (hide-message))))
+  menu-bg-color menu-text-color menu-stipple-color menu-font))
 
 (use-modules (app scwm flux))
 (use-modules (app scwm optargs))
@@ -30,7 +32,8 @@
 		    (lambda () (unflash-window w1)))
      (make-menuitem (window-title w2) (lambda () w2) #f #f #f
 		    (lambda () (flash-window w2 #:unflash-delay #f))
-		    (lambda () (unflash-window w2)))))))
+		    (lambda () (unflash-window w2)))))
+  menu-bg-color menu-text-color menu-stipple-color menu-font))
 
 (flash-window (select-window-interactively) #:unflash-delay 10)
 (unflash-window (select-window-interactively))
