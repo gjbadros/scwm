@@ -1,3 +1,11 @@
+Tue Oct 26 13:53:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* style-options.scm: Add the 'hint handler before the 'normal
+	handler for add-window-both-option to try to get decor.scm's theme 
+	switching to work.  This fixes things for me, finally.
+
+	* flux-gtk.scm: Use old title as init value when renaming a window.
+
 Tue Oct 26 11:48:17 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* wmconfig-menu.scm: Do not try to process directories as files.
