@@ -27,6 +27,9 @@ Changes for scwm-0.99.3 (not yet released)
 a width and a line style.
 ** Renamed `resize-to' to `resize-window', `resize-frame-to' to `resize-frame' and permit each to take X, Y for movement, to.
 
+* Changed procedures
+** `interactive-place' renamed to `place-interactively' for consistency (all others start with place-*)
+
 
 Changes for scwm-0.99.2 (released 14-September-1999)
 
