@@ -26,11 +26,14 @@
 #include <string.h>
 #include <unistd.h>
 #include "scwm.h"
+#include "menu.h"
 #include "menus.h"
 #include "misc.h"
 #include "screen.h"
 #include "parse.h"
 #include "module.h"
+#include "window.h"
+
 
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
@@ -56,11 +59,6 @@
 
 #include "../version.h"
 
-#if 0				/* #ifndef lint */
-static char sccsid[] = "@(#)fvwm.c " VERSION " " __DATE__ " fvwm";
-
-#endif
-
 static char rcsid[] = "$Id$";
 
 int master_pid;			/* process number of 1st scwm process */
@@ -78,8 +76,10 @@ char *default_config_command = "Read .scwmrc";
 
 #endif
 #define MAX_CFG_CMDS 10
+#ifdef MS_DELETION_COMMENT
 static char *config_commands[MAX_CFG_CMDS];
 static int num_config_commands = 0;
+#endif
 char *s_cmd_config;
 int interactive = 0;
 
@@ -125,8 +125,6 @@ static char l_g_bits[] =
 
 #define s_g_width 4
 #define s_g_height 4
-static char s_g_bits[] =
-{0x01, 0x02, 0x04, 0x08};
 
 #ifdef SHAPE
 int ShapeEventBase, ShapeErrorBase;
@@ -178,7 +176,6 @@ scwm_main(int argc, char **argv)
   char message[255];
   Bool single = False;
   Bool option_error = FALSE;
-  MenuRoot *mr;
 
   init_miscprocs();
   init_menu();
@@ -234,8 +231,8 @@ scwm_main(int argc, char **argv)
     } else if (mystrncasecmp(argv[i], "-blackout", 9) == 0) {
       Blackout = True;
     } else if (mystrncasecmp(argv[i], "-v", 8) == 0) {
-      printf("Scwm Version %s compiled on %s at %s\n",
-	     VERSION, __DATE__, __TIME__);
+      printf("Scwm Version %s compiled on %s at %s\nRCS_ID=%s",
+	     VERSION, __DATE__, __TIME__, rcsid);
       exit(0);
     } else {
       scwm_msg(ERR, "main", "Unknown option:  `%s'\n", argv[i]);
@@ -1358,7 +1355,9 @@ SigDone(int nonsense)
 void 
 Done(int restart, char *command)
 {
+#ifdef MS_DELETION_COMMENT
   MenuRoot *mr;
+#endif
 
 #ifndef NON_VIRTUAL
   MoveViewport(0, 0, False);

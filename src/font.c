@@ -24,6 +24,7 @@
 #include "screen.h"
 #include "errors.h"
 #include "font.h"
+#include "util.h"
 
 #ifdef USEDECOR
 extern ScwmDecor *last_decor, *cur_decor;

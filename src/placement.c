@@ -131,7 +131,6 @@ CleverPlacement(ScwmWindow * t, int *x, int *y)
   int test_x = 0, test_y = 0;
   int xbest, ybest;
   int aoi, aoimin;		/* area of interference */
-  int dummy = 0;
 
   aoi = aoimin = test_fit(t, test_x, test_y, -1);
   xbest = test_x;
@@ -231,8 +230,6 @@ get_next_y(ScwmWindow * t, int y)
 int 
 test_fit(ScwmWindow * t, int x11, int y11, int aoimin)
 {
-  int height;
-  int width;
   ScwmWindow *testw;
   int x12, x21, x22;
   int y12, y21, y22;

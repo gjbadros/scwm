@@ -131,5 +131,7 @@ typedef struct Binding {
 extern MenuRoot *ActiveMenu;
 extern MenuItem *ActiveItem;
 
+void init_menus(void);
+int ButtonPosition(int context, ScwmWindow * t);
 
 #endif /* _MENUS_ */

@@ -18,6 +18,7 @@
 #include "window.h"
 #include "color.h"
 #include "util.h"
+#include "errors.h"
 
 #ifdef USEDECOR
 extern ScwmDecor *last_decor, *cur_decor;
@@ -184,8 +185,8 @@ select_window(SCM kill_p)
 		     (kill_p != SCM_BOOL_F ? DESTROY : SELECT)
 		     ,ButtonRelease)) {
   }
-  /* XXX - this needs to done right. */
-  if (tmp_win->schwin != NULL) {
+  /* XXX - this needs to done right.  (Was != NULL before --10/24/97 gjb ) */
+  if (tmp_win->schwin != SCM_UNDEFINED) {
     SCM_REALLOW_INTS;
     return (tmp_win->schwin);
   } else {
@@ -1128,7 +1129,6 @@ set_border_width_x(SCM width, SCM win)
 {
   ScwmWindow *tmp_win;
   ScwmDecor *fl;
-  int i;
   int w, oldw;
 
   SCM_REDEFER_INTS;
@@ -1365,8 +1365,6 @@ set_smart_placement_x(SCM val, SCM win)
 SCM 
 set_window_button_x(SCM butt, SCM val, SCM win)
 {
-  int x;
-
   VALIDATEN(win, 2, "set-smart-pacement!");
   if (val == SCM_BOOL_T) {
     SCWMWINDOW(win)->buttons &= ~(1 << (butt - 1));
@@ -1406,7 +1404,6 @@ SCM
 set_mwm_border_x(SCM val, SCM win)
 {
   ScwmWindow *t;
-  int test;
 
   VALIDATEN(win, 2, "set-mwm-border!");
   t = SCWMWINDOW(win);

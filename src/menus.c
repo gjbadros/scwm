@@ -77,7 +77,7 @@ do_menu(MenuRoot * menu, int style)
   MenuItem *PrevActiveItem = 0;
   int retval = MENU_NOP;
   int x, y;
-  Time t0;
+  Time t0 = 0;
   extern Time lastTimestamp;
 
 #ifdef LEFT_MENUS

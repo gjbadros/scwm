@@ -38,6 +38,7 @@
 #include "scwm.h"
 #include "menu.h"
 #include "screen.h"
+#include "errors.h"
 
 long scm_tc16_scwm_menu;
 
@@ -46,7 +47,9 @@ extern XContext MenuContext;
 void 
 rem_menu_from_list(MenuRoot * mr)
 {
-  MenuRoot *tmp, *last, *tmp2;
+  MenuRoot *tmp = NULL;
+  MenuRoot *last = NULL;
+  MenuRoot *tmp2 = NULL;
 
   tmp = Scr.SchemeMenus;
   if (Scr.SchemeMenus == mr) {
@@ -106,7 +109,7 @@ free_menu(SCM obj)
 SCM 
 mark_menu(SCM obj)
 {
-  MenuItem *mi, *tmp2;
+  MenuItem *mi = NULL;
   MenuRoot *mr = MENUROOT(obj);
 
   SCM_SETGC8MARK(obj);

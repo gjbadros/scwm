@@ -4,6 +4,7 @@
  * Changes Copyright 1997, Maciej stachowiak
  ****************************************************************************/
 
+#include <unistd.h>
 #include <guile/gh.h>
 #include <signal.h>
 #include <config.h>
@@ -117,7 +118,7 @@ set_title_height(SCM height)
     scm_wrong_type_arg("set-title-height!", 1, height);
   }
   th = gh_scm2int(height);
-  if (th <= 4 | th > 256) {
+  if (th <= 4 || th > 256) {
     SCM_ALLOW_INTS;
     scwm_error("set-title-height!", 7);
   }

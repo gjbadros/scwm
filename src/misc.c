@@ -30,6 +30,7 @@
 #include "parse.h"
 #include "screen.h"
 #include "module.h"
+#include "window.h"
 
 ScwmWindow *FocusOnNextTimeStamp = NULL;
 
@@ -364,7 +365,7 @@ StashEventTime(XEvent * ev)
 
 
 
-
+#ifdef GJB_DELETE_ME
 
 int 
 GetTwoArguments(char *action, int *val1, int *val2, int *val1_unit, int *val2_unit)
@@ -412,7 +413,7 @@ GetOneArgument(char *action, long *val1, int *val1_unit)
     return 1;
 
   c1 = '%';
-  n = sscanf(action, "%d%c", val1, &c1);
+  n = sscanf(action, "%ld%c", val1, &c1);
 
   if (n != 2)
     return 0;
@@ -422,6 +423,8 @@ GetOneArgument(char *action, long *val1, int *val1_unit)
 
   return 1;
 }
+
+#endif
 
 
 /*****************************************************************************
@@ -692,7 +695,6 @@ scwm_msg(int type, char *id, char *msg,...)
 {
   char *typestr;
   va_list args;
-  int error = 0;
 
   switch (type) {
   case DBG:

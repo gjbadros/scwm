@@ -26,7 +26,9 @@
 
 #undef MS_DELETION_COMMENT	/* Undefine explicitly just in case. */
 
+#ifdef MS_DELETION_COMMENT
 static char *exec_shell_name = "/bin/sh";
+#endif
 
 /* button state strings must match the enumerated states */
 static char *button_states[MaxButtonState] =
@@ -986,7 +988,6 @@ wait_func(XEvent * eventp, Window w, ScwmWindow * tmp_win,
     }
   }
 }
-#endif /* MS_DELETION_COMMENT */
 
 void 
 raise_it_func(XEvent * eventp, Window w, ScwmWindow * tmp_win,
@@ -1006,14 +1007,13 @@ raise_it_func(XEvent * eventp, Window w, ScwmWindow * tmp_win,
   }
 }
 
+#endif /* MS_DELETION_COMMENT */
 
 
 void 
 flip_focus_func(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 		unsigned long context, char *action, int *Module)
 {
-
-  ScwmWindow *scratch;
 
   if (DeferExecution(eventp, &w, &tmp_win, &context, SELECT, ButtonRelease))
     return;

@@ -120,10 +120,10 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
     XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, lastTimestamp);
     Scr.Focus = NULL;
     Scr.UnknownWinFocused = None;
-  } else if ((Fw) && (Fw->flags & Lenience) ||
-	     !((Fw) &&
-	       (Fw->wmhints) && (Fw->wmhints->flags & InputHint) &&
-	       (Fw->wmhints->input == False))) {
+  } else if (((Fw) && (Fw->flags & Lenience)) ||  /*FIXGJB: split this up */
+	     (!((Fw) &&
+		(Fw->wmhints) && (Fw->wmhints->flags & InputHint) &&
+		(Fw->wmhints->input == False)))) {
     /* Window will accept input focus */
 
     XSetInputFocus(dpy, w, RevertToParent, lastTimestamp);

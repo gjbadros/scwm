@@ -51,6 +51,8 @@
 #endif /* SHAPE */
 #include "module.h"
 #include "binding.h"
+#include "window.h"
+#include "decorations.h"
 
 /* Used to parse command line of clients for specific desk requests. */
 /* Todo: check for multiple desks. */

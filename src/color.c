@@ -178,7 +178,6 @@ set_menu_colors(SCM fg, SCM bg, SCM stipple)
 {
   XGCValues gcv;
   unsigned long gcm;
-  int wid, hei;
 
   SCM_REDEFER_INTS;
   if (gh_string_p(fg)) {

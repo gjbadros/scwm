@@ -68,6 +68,7 @@
 #endif /* SHAPE */
 #include "module.h"
 #include "util.h"
+#include "binding.h"
 
 #undef MS_DELETION_COMMENT
 
@@ -1406,8 +1407,10 @@ My_XNextEvent(Display * dpy, XEvent * event)
 {
   extern int fd_width, x_fd;
   fd_set in_fdset, out_fdset;
+#ifdef MS_DELETION_COMMENT
   Window targetWindow;
-  int i, count;
+  int i;, count;
+#endif
   int retval;
   struct timeval timeout;
 
@@ -1436,23 +1439,19 @@ My_XNextEvent(Display * dpy, XEvent * event)
   }
   FD_ZERO(&out_fdset);
 
-  /*
-     for(i=0; i<npipes; i++)
-     {
-     if(readPipes[i]>=0)
-     {
-     FD_SET(readPipes[i], &in_fdset);
-     }
-     }
-
-     for(i=0; i<npipes; i++)
-     {
-     if(pipeQueue[i]!= NULL)
-     {
-     FD_SET(writePipes[i], &out_fdset);
-     }
-     }
-   */
+#ifdef OLD_MODULE_CODE
+  for (i=0; i<npipes; i++) {
+    if (readPipes[i]>=0) {
+      FD_SET(readPipes[i], &in_fdset);
+    }
+  }
+  
+  for (i=0; i<npipes; i++) {
+    if (pipeQueue[i]!= NULL) {
+      FD_SET(writePipes[i], &out_fdset);
+    }
+  }
+#endif
 
   DBUG("My_XNextEvent", "waiting for module input/output");
   XFlush(dpy);
@@ -1466,7 +1465,7 @@ My_XNextEvent(Display * dpy, XEvent * event)
   if (interactive && FD_ISSET(repl_fd, &in_fdset)) {
     return 1;
   }
-#if 0
+#if MS_DELETION_COMMENT
   /* Check for module input. */
   for (i = 0; i < npipes; i++) {
     if (readPipes[i] >= 0) {

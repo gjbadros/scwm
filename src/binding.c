@@ -11,6 +11,9 @@
 #include "menus.h"
 #include "screen.h"
 #include "window.h"
+#include "errors.h"
+#include "complex.h"
+#include "util.h"
 
 struct symnum {
   SCM sym;
@@ -43,7 +46,7 @@ struct symnum binding_contexts[] =
 int 
 lookup_context(SCM context)
 {
-  int i, dummy;
+  int i;
 
   if (!gh_symbol_p(context)) {
     return -2;
@@ -175,10 +178,13 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
 {
 
   Binding *temp;
-  KeySym keysym;
-  char *keyname, *okey;
-  int bnum, bset = 0;
-  int len, i, min, max, j, k;
+  char *keyname = 0;
+  char *okey = 0;
+  int bnum = 0;
+  int bset = 0;
+  int len = 0;
+  int j = 0;
+  int k = 0;
   int modmask = 0;
   int context = 0;
 
@@ -297,7 +303,6 @@ void
 find_mouse_event_type()
 {
   XEvent d;
-  int x, y;
 
   gh_defer_ints();
   XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
@@ -347,7 +352,7 @@ static SCM new_window_hint_hook = SCM_BOOL_F;
 SCM 
 bind_event(SCM ev_sym, SCM proc)
 {
-  SCM old_handler;
+  SCM old_handler = SCM_UNDEFINED;
 
   if (!gh_symbol_p(ev_sym)) {
     scm_wrong_type_arg("bind-event", 1, ev_sym);
@@ -363,6 +368,7 @@ bind_event(SCM ev_sym, SCM proc)
     new_window_hint_hook = proc;
   } else {
     scwm_error("bind-event", 12);
+    return SCM_UNDEFINED;
   }
   scm_unprotect_object(old_handler);
   scm_protect_object(proc);

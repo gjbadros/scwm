@@ -1316,7 +1316,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
   XWindowChanges frame_wc, xwc;
   unsigned long frame_mask, xwcm;
   int cx, cy, i;
-  Bool Resized = False, Moved = False, Reconfigured = False;
+  Bool Resized = False, Moved = False;
   int xwidth, ywidth, left, right;
 
 #ifdef WINDOWSHADE
