@@ -354,6 +354,7 @@ scwm_main(int argc, char **argv)
   newhandler(SIGHUP);
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
+  newhandler(SIGSEGV);
   signal(SIGUSR1, Restart);
   
   ReapChildren();
