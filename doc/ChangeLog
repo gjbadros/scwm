@@ -1,3 +1,7 @@
+1998-12-18  Todd Larason  <jtl@molehill.org>
+
+	* Makefile.am: pass -d argument correctly if SCWMDIR isn't defined 
+
 Tue Nov 24 08:18:42 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: build scwm-{hooks,concepts}.txt using new options
