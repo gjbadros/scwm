@@ -1360,7 +1360,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
   cx = tmp_win->boundary_width - tmp_win->bw;
   cy = tmp_win->title_height + tmp_win->boundary_width - tmp_win->bw;
 
-  if (!shaded) {
+  if (!shaded) { /* FIXGJB: the XResizeWindow can be removed, below, methinks */
     XResizeWindow(dpy, tmp_win->w, tmp_win->attr.width,
 		  tmp_win->attr.height);
     XMoveResizeWindow(dpy, tmp_win->Parent, cx, cy,

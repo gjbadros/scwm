@@ -346,7 +346,9 @@ PlaceWindow(ScwmWindow *tmp_win, int Desk)
     }
   }
   /* I think it would be good to switch to the selected desk
-   * whenever a new window pops up, except during initialization */
+   * whenever a new window pops up, except during initialization */  
+  /* FIXGJB: this should be a callback, not a forced switch to the new
+     desk --03/26/98 gjb */
   if ((!PPosOverride) && (!(tmp_win->fShowOnMap)))
     changeDesks(0, tmp_win->Desk);
 
