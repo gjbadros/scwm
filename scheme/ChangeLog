@@ -1,3 +1,15 @@
+Mon Sep 21 11:15:34 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Make flash-window take keyword args for color and
+	unflash-delay, and use them instead of optional positional
+	arguments.  Fixes `select-window-from-window-list' so that it
+	correctly highlights the currently-selected window in its hover action
+
+Mon Sep 21 10:28:48 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added `select-window-group' to allow choosing multiple 
+	windows interactively.
+
 Sat Sep 19 12:01:16 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added `with-window-no-wind' macro, since there seems
