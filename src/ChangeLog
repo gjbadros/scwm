@@ -1,3 +1,12 @@
+Wed Feb  4 23:57:58 1998  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Added patch for initialization from Jim Blandy, to
+	account for changes in the guile startup code -- fixes the unbound
+	variable error.
+
+	* scwmmenu.c: Permit embedded #f's in menu lists, and just ignore
+ 	them
+
 Tue Jan 27 18:16:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c, events.h, scwm.c, scmprocs.c: Added new Scheme
