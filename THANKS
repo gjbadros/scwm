@@ -10,6 +10,8 @@ Thanks to:
 
   ITANI Eiichiro - Support for multibyte character sets.
 
+  Michael Schmitz - Contributed gnome-panel-menus module.
+
   Dale Smith - Converting some of the random documentation in the doc/
   directory into a TexInfo manual and a man page.
 
