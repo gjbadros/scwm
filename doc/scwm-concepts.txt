@@ -138,7 +138,7 @@ title and border faces, are indicated below.
 </tgroup>
 </table>
 
-[From scwm/face.c:504]
+[From scwm/face.c:502]
 
 
 Face Specification Flags
@@ -198,7 +198,7 @@ when tiled, which makes it fully destructive.
 </tgroup>
 </table>
 
-[From scwm/face.c:565]
+[From scwm/face.c:563]
 
 
 Faces
@@ -241,7 +241,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3319]
+[From scwm/window.c:3316]
 
 
 Fonts
@@ -279,7 +279,7 @@ register other image loaders using the extension or the special string
 "default" for the loader to be tried for an image that cannot be
 loaded any other way.
 
-[From scwm/image.c:214]
+[From scwm/image.c:213]
 
 
 Images
@@ -339,7 +339,7 @@ C modules.  For example, the xpm-menus module creates a variable
 using that code.  `copy-menu-look' can be used to copy a menu
 look and change some of its properties.
 
-[From scwm/menulook.c:79]
+[From scwm/menulook.c:78]
 
 
 Run-time command-line options
@@ -411,7 +411,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From scwm/events.c:531]
+[From scwm/events.c:549]
 
 
 Shadow and Highlight Factors
@@ -452,7 +452,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:2087]
+[From scwm/window.c:2084]
 
 
 Themes
@@ -507,7 +507,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:933]
+[From scwm/window.c:930]
 
 
 Window Style
@@ -571,12 +571,12 @@ start-window-shaded (boolean-style) from scheme/style.scm:280
 other-proc (window-style) from scheme/style.scm:281
 other-hint-proc (window-hint) from scheme/style.scm:283
 use-theme (window-style) from scheme/themes.scm:46
-winlist-skip (boolean-style) from scheme/winlist.scm:112
-circulate-skip (boolean-style) from scheme/winlist.scm:281
-circulate-skip-icon (boolean-style) from scheme/winlist.scm:282
+winlist-skip (boolean-style) from scheme/winlist.scm:113
+circulate-skip (boolean-style) from scheme/winlist.scm:302
+circulate-skip-icon (boolean-style) from scheme/winlist.scm:303
 start-maximized (window-style) from scheme/winops.scm:167
 
-[From scwm/face.c:553]
+[From scwm/face.c:551]
 
 
 Windows
