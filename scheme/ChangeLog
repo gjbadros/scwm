@@ -1,3 +1,17 @@
+1999-04-09  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* prompt-color.scm (prompt-color-hbox): Initialize the color
+	selection dialog with the current color.
+
+	* preferences.scm (scwm-options-notebook-page): Removed the help
+	buttons. Instead put tooltips on everything and its children.
+
+	* style.scm: Made #:no-titlebar a hint style option.
+	New styles: #:highlight-{bg,fg,foreground,background}. 
+
+	* prompt-font.scm (prompt-font): prompt-font-hbox was called
+	incorrectly.
+
 Fri Apr  9 11:31:24 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* prefs-menu.scm: Update some proc names in a comment.
