@@ -80,8 +80,8 @@ void set_property_handler(SCM prop, scwm_property_handler *handler)
 void
 signal_window_property_change(SCM win, SCM prop, SCM new_val, SCM old_val)
 {
-  apply_hooks(window_property_change_hook, 
-              gh_list (win, prop, new_val, old_val, SCM_UNDEFINED));
+  scwm_run_hook(window_property_change_hook, 
+                gh_list (win, prop, new_val, old_val, SCM_UNDEFINED));
 }
 
 

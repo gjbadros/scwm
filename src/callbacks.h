@@ -62,8 +62,8 @@ SCM call5_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5
 SCM call6_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6);
 SCM call7_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM arg6, SCM arg7);
 
-SCM apply_hooks (SCM hook_type, SCM args);
-SCM apply_hooks_message_only (SCM hook_type, SCM args);
+SCM scwm_run_hook(SCM hook, SCM args);
+SCM scwm_run_hook_message_only(SCM hook, SCM args);
 
 int /* Bool */ FEmptyHook(SCM hook);
 

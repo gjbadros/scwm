@@ -978,11 +978,11 @@ HandleClientMessage()
       win = SCM_BOOL_F;
     }
 
-    apply_hooks(client_message_hook,
-		      gh_list(win,
-			      gh_long2scm(Event.xclient.message_type),
-			      gh_int2scm(Event.xclient.format),
-			      data, SCM_UNDEFINED));
+    scwm_run_hook(client_message_hook,
+                  gh_list(win,
+                          gh_long2scm(Event.xclient.message_type),
+                          gh_int2scm(Event.xclient.format),
+                          data, SCM_UNDEFINED));
   }
 
   /*

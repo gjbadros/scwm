@@ -60,55 +60,6 @@ struct scwm_body_apply_data {
   SCM args;
 };
 
-SCM 
-scwm_handle_error (void *ARG_IGNORE(data), SCM tag, SCM throw_args)
-{
-#if 0 /* GJB:FIXME:: */
-  SCM port = scm_mkstrport(SCM_INUM0, 
-			   scm_make_string(SCM_MAKINUM(200), SCM_UNDEFINED),
-			   SCM_OPN | SCM_WRTNG,
-			   "error-handler");
-#else
-  SCM port = scm_def_errp;
-#endif
-
-  /* GJB:FIXME:MS: is this a guile compatibility test that can be dropped
-     now?  */
-  if (scm_ilength (throw_args) >= 3)
-    {
-      SCM fl = gh_cdr(scm_the_last_stack_fluid);
-      /* GJB:FIXME:MS: This is a horrible hack,
-         but DEREF_LAST_STACK macro was throwing a wrong type 
-         argument at weird times, and I'm trying to avoid
-         a crash when I demo to RMS tomorrow, hence this
-         ugly hack --04/27/99 gjb */
-      if (SCM_NIMP (fl) && SCM_FLUIDP (fl)) {
-        SCM stack = DEREF_LAST_STACK;
-        SCM subr = gh_car (throw_args);
-        SCM message = SCM_CADR (throw_args);
-        SCM args = SCM_CADDR (throw_args);
-        
-        scm_newline(port);
-        scm_display_backtrace (stack, port, SCM_UNDEFINED, SCM_UNDEFINED);
-        scm_newline(port);
-        scm_display_error (stack, port, subr, message, args, SCM_EOL);
-      } else {
-        scwm_msg(ERR,"scwm_handle_error","scm_the_last_stack_fluid not holding a fluid!");
-      }
-    }
-  else
-    {
-      scm_puts ("uncaught throw to ", port);
-      scm_prin1 (tag, port, 0);
-      scm_puts (": ", port);
-      scm_prin1 (throw_args, port, 1);
-      scm_putc ('\n', port);
-      exit (2);
-    }
-  /* GJB:FIXME:MS: can the scheme code display a backtrace without the
-     stack argument? */
-  return apply_hooks_message_only(error_hook, gh_cons(tag, throw_args));
-}
 
 static SCM
 scwm_body_apply (void *body_data)
@@ -282,23 +233,6 @@ are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 `reset-hook!', and `run-hook'. 
 */
 
-
-/* Print warning message, and reset the hook */
-void
-WarnBadHook(SCM hook)
-{
-  assert(!gh_list_p(gh_cdr(hook)));
-  { /* scope */ 
-    /* Warn that hook list is not a list. */
-    SCM hook_name = gh_car(hook);
-    char *szHookName = gh_scm2newstr(hook_name, NULL);
-    scwm_msg(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", szHookName);
-    gh_free(szHookName);
-    gh_set_cdr_x(hook, SCM_EOL);
-  }
-}
-
-
 #ifdef HAVE_SCM_MAKE_HOOK
 
 static SCM run_hook_proc;
@@ -307,6 +241,12 @@ __inline__ SCM scwm_run_hook(SCM hook, SCM args)
 {
   return scwm_safe_apply(run_hook_proc, gh_cons(hook,args));
 }
+
+__inline__ SCM scwm_run_hook_message_only(SCM hook, SCM args)
+{
+  return scwm_safe_apply_message_only(run_hook_proc, gh_cons(hook,args));
+}
+
 
 __inline__ SCM call0_hooks(SCM hook)
 {
@@ -348,11 +288,6 @@ __inline__ SCM call7_hooks(SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM
   return scwm_run_hook(hook,gh_list(arg1,arg2,arg3,arg4,arg5,arg6,arg7,SCM_UNDEFINED));
 }
 
-__inline__ SCM apply_hooks(SCM hook, SCM args)
-{
-  return scwm_run_hook(hook,args);
-}
-
 SCM
 scm_empty_hook_p(SCM hook)
 {
@@ -360,6 +295,23 @@ scm_empty_hook_p(SCM hook)
 }
 
 #else
+
+
+/* Print warning message, and reset the hook */
+void
+WarnBadHook(SCM hook)
+{
+  assert(!gh_list_p(gh_cdr(hook)));
+  { /* scope */ 
+    /* Warn that hook list is not a list. */
+    SCM hook_name = gh_car(hook);
+    char *szHookName = gh_scm2newstr(hook_name, NULL);
+    scwm_msg(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", szHookName);
+    gh_free(szHookName);
+    gh_set_cdr_x(hook, SCM_EOL);
+  }
+}
+
 
 SCM call0_hooks (SCM hook)
 {
@@ -523,7 +475,7 @@ SCM call7_hooks (SCM hook, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM
 }
 
 
-SCM apply_hooks (SCM hook, SCM args)
+SCM scwm_run_hook(SCM hook, SCM args)
 {
   SCM p;
   SCM hook_list;
@@ -543,7 +495,6 @@ SCM apply_hooks (SCM hook, SCM args)
   return SCM_UNSPECIFIED;
 }
 
-#endif
 
 /* This is needed for running error hooks - if an error hook throws an
    error, we really don't want to invoke the standard handler (which
@@ -551,7 +502,7 @@ SCM apply_hooks (SCM hook, SCM args)
    and assume the caller is catching errors and doing something
    appropriate. */
 
-SCM apply_hooks_message_only (SCM hook, SCM args)
+SCM scwm_run_hook_message_only (SCM hook, SCM args)
 {
   SCM p;
   SCM hook_list;
@@ -571,6 +522,7 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
   return SCM_UNSPECIFIED;
 }
 
+#endif
 
 /* Slightly tricky - we want to catch errors per expression, but only
    establish a new dynamic root per load operation, as it's perfectly
@@ -630,6 +582,56 @@ scwm_body_eval_str (void *body_data)
   return scwm_catching_load_from_port (port);
 }
 
+
+SCM 
+scwm_handle_error (void *ARG_IGNORE(data), SCM tag, SCM throw_args)
+{
+#if 0 /* GJB:FIXME:: */
+  SCM port = scm_mkstrport(SCM_INUM0, 
+			   scm_make_string(SCM_MAKINUM(200), SCM_UNDEFINED),
+			   SCM_OPN | SCM_WRTNG,
+			   "error-handler");
+#else
+  SCM port = scm_def_errp;
+#endif
+
+  /* GJB:FIXME:MS: is this a guile compatibility test that can be dropped
+     now?  */
+  if (scm_ilength (throw_args) >= 3)
+    {
+      SCM fl = gh_cdr(scm_the_last_stack_fluid);
+      /* GJB:FIXME:MS: This is a horrible hack,
+         but DEREF_LAST_STACK macro was throwing a wrong type 
+         argument at weird times, and I'm trying to avoid
+         a crash when I demo to RMS tomorrow, hence this
+         ugly hack --04/27/99 gjb */
+      if (SCM_NIMP (fl) && SCM_FLUIDP (fl)) {
+        SCM stack = DEREF_LAST_STACK;
+        SCM subr = gh_car (throw_args);
+        SCM message = SCM_CADR (throw_args);
+        SCM args = SCM_CADDR (throw_args);
+        
+        scm_newline(port);
+        scm_display_backtrace (stack, port, SCM_UNDEFINED, SCM_UNDEFINED);
+        scm_newline(port);
+        scm_display_error (stack, port, subr, message, args, SCM_EOL);
+      } else {
+        scwm_msg(ERR,"scwm_handle_error","scm_the_last_stack_fluid not holding a fluid!");
+      }
+    }
+  else
+    {
+      scm_puts ("uncaught throw to ", port);
+      scm_prin1 (tag, port, 0);
+      scm_puts (": ", port);
+      scm_prin1 (throw_args, port, 1);
+      scm_putc ('\n', port);
+      exit (2);
+    }
+  /* GJB:FIXME:MS: can the scheme code display a backtrace without the
+     stack argument? */
+  return scwm_run_hook_message_only(error_hook, gh_cons(tag, throw_args));
+}
 
 
 SCWM_PROC(safe_load, "safe-load", 1, 0, 0,

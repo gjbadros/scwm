@@ -68,17 +68,17 @@ Broadcast(unsigned long event_type, unsigned long num_datum,
 	  unsigned long data4, unsigned long data5, unsigned long data6,
 	  unsigned long data7)
 {
-  apply_hooks (broadcast_hook, 
-	       gh_list(gh_ulong2scm(event_type), 
-		       gh_ulong2scm(num_datum),
-		       gh_ulong2scm(data1),
-		       gh_ulong2scm(data2),
-		       gh_ulong2scm(data3),
-		       gh_ulong2scm(data4),
-		       gh_ulong2scm(data5),
-		       gh_ulong2scm(data6),
-		       gh_ulong2scm(data7),
-		       SCM_UNDEFINED));
+  scwm_run_hook(broadcast_hook, 
+                gh_list(gh_ulong2scm(event_type), 
+                        gh_ulong2scm(num_datum),
+                        gh_ulong2scm(data1),
+                        gh_ulong2scm(data2),
+                        gh_ulong2scm(data3),
+                        gh_ulong2scm(data4),
+                        gh_ulong2scm(data5),
+                        gh_ulong2scm(data6),
+                        gh_ulong2scm(data7),
+                        SCM_UNDEFINED));
 }
 
 
@@ -98,31 +98,31 @@ BroadcastIconInfo(unsigned long event_type, const ScwmWindow *psw)
 void
 BroadcastConfig(unsigned long event_type, const ScwmWindow *psw)
 {
-  apply_hooks (broadcast_config_hook, 
-	       gh_list(gh_ulong2scm(event_type), 
-		       psw->schwin,
-		       SCM_UNDEFINED));
+  scwm_run_hook(broadcast_config_hook, 
+                gh_list(gh_ulong2scm(event_type), 
+                        psw->schwin,
+                        SCM_UNDEFINED));
 }
 
 void BroadcastName(unsigned long event_type, unsigned long data1,
 		   unsigned long data2, unsigned long data3, char *szName)
 {
   SCM name = gh_str02scm(szName);
-  apply_hooks (broadcast_name_hook, 
-	       gh_list(gh_ulong2scm(event_type), 
-		       gh_ulong2scm(data1),
-		       gh_ulong2scm(data2),
-		       gh_ulong2scm(data3),
-		       name,
-		       SCM_UNDEFINED));
+  scwm_run_hook(broadcast_name_hook, 
+                gh_list(gh_ulong2scm(event_type), 
+                        gh_ulong2scm(data1),
+                        gh_ulong2scm(data2),
+                        gh_ulong2scm(data3),
+                        name,
+                        SCM_UNDEFINED));
 }
 
 void BroadcastMiniIcon(unsigned long event_type, ScwmWindow *psw)
 {
-  apply_hooks (broadcast_mini_icon_hook, 
-	       gh_list(gh_ulong2scm(event_type), 
-		       psw->schwin,
-		       SCM_UNDEFINED));
+  scwm_run_hook(broadcast_mini_icon_hook, 
+                gh_list(gh_ulong2scm(event_type), 
+                        psw->schwin,
+                        SCM_UNDEFINED));
 }
 
 /* This and other fvwm-module-related stuff should go in a dynamically
