@@ -1,3 +1,29 @@
+Fri Jan 14 21:53:51 2000    <gjb@cs.washington.edu>
+
+	* guile-compat.c, window.h: Replace an #if 0 with an #ifdef NDEBUG.
+
+	* miscprocs.c, window.c: Remove #if 0s; use scwm_run_hook*.
+
+	* scwm.c: Use scwm_error_message, remove #if 0.
+
+	* scwm-screen-ci.hpp: Clean-up #if 0 to have comment.
+
+	* add_window.c, constraint-primitives.cc, deskpage.c, focus.c,
+ 	icons.c, image.c, module-interface.c, move.c, resize.c,
+ 	shutdown.c, virtual.c: Use scwm_run_hook*, not callN_hooks.
+
+	* menu.c: use call-interactively, not scwm_safe_call0_sym.  Use
+	PmiimFromPmdShortcutKeypress, and fix that fn.  Drop now-unused
+	scwm_safe_call0_sym.
+
+	* events.c: Drop #if 0 code, use scwm_run_hook*, not callN_hooks.
+
+	* errors.h, errors.c: Added scwm_error_message.
+
+	* callbacks.c, callbacks.h: Make more fns static that are not
+ 	needed externally.  Rename callN_hooks to scwm_run_hookN, and only
+ 	allow N <= 2, otherwise use scwm_run_hook w/ list of args.
+
 Wed Jan 12 21:22:39 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* add_window.c, binding.c, callbacks.c, events.c, focus.c,
