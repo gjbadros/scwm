@@ -86,7 +86,7 @@
 
 (define-fvwm-command "Iconify"
   (if window
-      (let ((arg (get-one-mumeric-arg args)))
+      (let ((arg (get-one-numeric-arg args)))
 	((cond 
 	  ((or (not arg) (= arg 0)) toggle-iconify)
 	  ((< arg 0) deiconify)
