@@ -1,6 +1,10 @@
 some VALIDATE_WIN_COPY calls should be VALIDATE_WINVALID_COPY, but 
 haven't exhaustively looked for these. --10/02/99 gjb
 -------
+using (gtk gtk) before (app scwm gtk) causes a premature exit.
+How can we force app scwm gtk to be called when (gtk gtk) module is loaded?
+--10/02/99 gjb
+-------
 Sticky windows do not de-iconify properly.
 -------
 XEmacs pixmap icon doesn't survive after a restart (James Achtung Crippe) --09/15/99 gjb

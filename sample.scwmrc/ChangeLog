@@ -1,3 +1,8 @@
+Sat Oct  2 12:44:11 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added error-hook procedures to write to stderr
+	and to use gtk-show-error.
+
 Sat Oct  2 00:29:15 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added `resize-quarterscreen' bound to C-S-M-d

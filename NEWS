@@ -32,6 +32,10 @@ Changes for scwm-0.99.4 (released )
 * New hooks
 ** X-ConfigureRequest-hook
 
+* Changed hooks
+** X-DestroyNotify-hook now calls with window ID integer, instead of a window object
+** error-hook now calls with a single argument, the string error message
+
 
 
 Changes for scwm-0.99.3 (released 25-September-1999)
