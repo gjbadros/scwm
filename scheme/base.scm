@@ -179,7 +179,7 @@
 	  (#t (set! tt (list-tail ls (- max 1))) (set! t1 (cdr tt))
 	      (set-cdr! tt ()) (cons ls (split-list t1 max))))))
 
-(define-public (fold-menu-list 
+(define*-public (fold-menu-list 
 		ml #&optional (max-lines default-max-fold-lines))
   ; split the menu list into groups of max-lines
   (if (<= (length ml) max-lines) ml
