@@ -1644,7 +1644,7 @@ scwm_msg(scwm_msg_levels type, const char *id, const char *msg,...)
     FREE(sz);
   }
   va_end(args);
-}				/* Scwm_msg */
+} /* scwm_msg */
 
 
 /* Local Variables: */
