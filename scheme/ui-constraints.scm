@@ -25,6 +25,7 @@
   :use-module (app scwm hooks)
   :use-module (app scwm message-window)
   :use-module (app scwm listops)
+  :use-module (app scwm winops)
   :use-module (app scwm optargs)
 ;;  :use-module (cassowary constraints))
   )
@@ -528,11 +529,28 @@ The entire global-constraint-instance-list is checked."
        global-constraint-instance-list))
 
 
+(define-public (ui-constraints-involving-two-windows win1 win2)
+  "Returns the list of ui-constraint objects that involve WIN1 and WIN2.
+The entire global-constraint-instance-list is checked."
+  (filter-map 
+   (lambda (c) 
+     (let ((wins (ui-constraint-windows c)))
+       (if (and (member win1 wins) (member win2 wins)) c #f)))
+       global-constraint-instance-list))
+
+
 (define-public (delete-ui-constraints-involving-window! win)
   "Delete all the ui-constraint objects that involve WIN.
 This removes the constraints from the global-constraint-instance-list."
   (for-each delete-ui-constraint! (ui-constraints-involving-window win)))
 
+(define-public (delete-inferred-ui-constraints-involving-window! win)
+  "Delete all the ui-constraint objects that involve WIN.
+This removes the constraints from the global-constraint-instance-list."
+  (for-each (lambda (uic)
+	      (if (object-property uic 'inferred)
+		  (delete-ui-constraint! uic)))
+	    (ui-constraints-involving-window win)))
 
 ;; do-draw-constraint
 
@@ -686,3 +704,17 @@ Errors if UI-CONSTRAINT is not a ui-constraint object."
       (error "ui-constraint-enable-hooks argument must be a UI-CONSTRAINT object")))
 
 (add-hook! window-close-hook delete-ui-constraints-involving-window!)
+
+(define*-public (move-after-deleting-constraints #&optional (win (get-window)))
+  "Move WIN after deleting all constraints that involve it.
+See also `delete-ui-constraints-involving-window!'."
+  (interactive)
+  (delete-ui-constraints-involving-window! win)
+  (interactive-move win))
+
+(define*-public (move-after-deleting-inferred-constraints #&optional (win (get-window)))
+  "Move WIN after deleting all inferred constraints that involve it.
+See also `delete-inferred-ui-constraints-involving-window!'."
+  (interactive)
+  (delete-inferred-ui-constraints-involving-window! win)
+  (interactive-move win))

@@ -46,7 +46,7 @@
 (define (wininfo-e wi) (cadr wi))
 (define (wininfo-s wi) (caddr wi))
 (define (wininfo-w wi) (cadddr wi))
-(define (wininfo-win wi) (write wi) (newline) (list-ref wi 4))
+(define (wininfo-win wi) (list-ref wi 4))
 
 (define wininfo-x wininfo-w)
 (define wininfo-y wininfo-n)
@@ -215,24 +215,25 @@ E.g., passing 0 answers 8, passing 1 answers 7, etc."
        win)
       (let* ((n1 (edges->nonant hoz-constraint vert-constraint))
 	     (n2 (invert-nonant n1)))
-	(let ((uic
-	       (cond
-		((and hoz-win vert-win (eq? hoz-win vert-win))
-		 (make-ui-constraint uicc-strict-relpos (list (list hoz-win win) (list n1 n2))))
-		(hoz-win
-		 (make-ui-constraint uicc-strict-relpos (list (list hoz-win win) (list n1 n2))))
-		(vert-win
-		 (make-ui-constraint uicc-strict-relpos (list (list vert-win win) (list n1 n2)))))
-	       ))
-	  (if (ui-constraint? uic)
-	      (enable-ui-constraint uic)))))
+	(if (not hoz-win)
+	    (set! hoz-win vert-win))
+	(if (and hoz-win
+		 (eq? ()
+		      (ui-constraints-involving-two-windows hoz-win win)))
+	    (let ((uic
+		   (make-ui-constraint uicc-strict-relpos
+				       (list (list hoz-win win) (list n1 n2)))))
+	      (if (ui-constraint? uic)
+		  (begin
+		    (set-object-property! uic 'inferred #t)
+		    (enable-ui-constraint uic)))))))
     )
   )
   
 (define-public (snap-reset)
   "Turn off auto-snapping during interactive moves."
   (remove-hook! interactive-move-start-hook imsh)
-					;  (remove-hook! interactive-move-new-position-hook imnph)
+  ;; (remove-hook! interactive-move-new-position-hook imnph)
   (remove-hook! interactive-move-finish-hook imeh)
   )
 
@@ -252,7 +253,12 @@ E.g., passing 0 answers 8, passing 1 answers 7, etc."
   (set! last-y -1)
 
   (add-hook! interactive-move-start-hook imsh)
-					;  (add-hook! interactive-move-new-position-hook imnph)
+  ;;(add-hook! interactive-move-new-position-hook imnph)
   (add-hook! interactive-move-finish-hook imeh)
   )
 
+#!
+;; (bind-mouse 'title "H-3" #f move-after-disabling-constraints)
+;; (bind-mouse 'sidebar "H-3" #f move-after-disabling-constraints)
+;; (move-after-disabling-constraints)
+!#

@@ -19,7 +19,8 @@ path-cache.scm placement.scm preferences.scm prefs-menu.scm primopts.scm \
 property-respond.scm quote.scm \
 rectangle.scm reflection.scm register.scm report-usage.scm \
 rgb-database.scm send-string.scm session.scm shove-window.scm \
-shutdown-opts.scm simplebiff.scm simple-constraints.scm snap.scm sort.scm \
+shutdown-opts.scm simplebiff.scm simple-constraints.scm snap.scm \
+snap.scm snap-constraints.scm sort.scm \
 stacking.scm std-menus.scm stringops.scm style-options.scm style.scm \
 stylist.scm synth-events.scm task-switcher.scm \
 theme-impl.scm themes.scm titlebar-buttons.scm \

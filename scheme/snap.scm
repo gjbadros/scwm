@@ -169,7 +169,7 @@
 (define-public (snap-reset)
   "Turn off auto-snapping during interactive moves."
   (remove-hook! interactive-move-start-hook imsh)
-					;  (remove-hook! interactive-move-new-position-hook imnph)
+  ;;  (remove-hook! interactive-move-new-position-hook imnph)
   (remove-hook! interactive-move-finish-hook imeh)
   )
 
@@ -188,7 +188,7 @@
   (set! last-y -1)
 
   (add-hook! interactive-move-start-hook imsh)
-					;  (add-hook! interactive-move-new-position-hook imnph)
+  ;; (add-hook! interactive-move-new-position-hook imnph)
   (add-hook! interactive-move-finish-hook imeh)
   )
 
