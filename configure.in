@@ -534,6 +534,7 @@ scwm_schemedir=${scwm_load_path}/app/scwm
 scwm_themedir=${datadir}/${PACKAGE}-themes
 scwm_bin_load_path=${libdir}/${PACKAGE}-modules
 scwm_moduledir=${scwm_bin_load_path}/app/scwm
+scwm_utildir=${libdir}/${PACKAGE}-util
 
 
 SCWM_ARG_PATH(scwmrcdir,
@@ -579,6 +580,7 @@ AC_SUBST(scwm_themedir)
 AC_SUBST(scwm_moduledir)
 AC_SUBST(scwmrcdir)
 AC_SUBST(scwm_image_load_path)
+AC_SUBST(scwm_utildir)
 
 
 dnl # Check for optional settings #
