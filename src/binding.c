@@ -9,6 +9,8 @@
 
 #include <guile/gh.h>
 #include <X11/keysym.h>
+#include <ctype.h>
+
 #include "scwm.h"
 #include "screen.h"
 #include "window.h"
@@ -136,11 +138,18 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
   Bool fOk = True;
   int len;
   char *keyname = gh_scm2newstr(key,&len);
-  const char *pch = PchModifiersToModmask(keyname,pmodifier);
+  char *pch = PchModifiersToModmask(keyname,pmodifier);
 
-  if (pch == 0 || *pmodifier < 0)
-    fOk = False;
-  else if ((*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
+  if (pch == 0 || *pmodifier < 0) {
+    FREE(keyname);
+    return False;
+  }
+
+  if (pch[1] == '\0' && isgraph(pch[0])) {  /* single character, so use tolower */
+    pch[0] = tolower(pch[0]);
+  }
+
+  if ((*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
 	   (XKeysymToKeycode(dpy, *pkeysym)) == 0) { 
     scwm_msg(WARN,__FUNCTION__,"No symbol `%s'",keyname);
     fOk = False; 
