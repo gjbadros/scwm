@@ -130,6 +130,42 @@ color, and 'pixel, the X pixel value it uses. */
 }
 #undef FUNC_NAME
 
+
+SCM
+ScmMakeColor(const char *cn, int *perror_status)
+{
+  SCM answer;
+  scwm_color *sc;
+  XColor color;
+  if (perror_status)
+    *perror_status = 0;
+
+  color.pixel = 0;
+
+  if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, cn, &color)) {
+    if (perror_status)
+      *perror_status = 1; /* cannot parse */
+    return SCM_BOOL_F;
+  } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
+    if (perror_status)
+      *perror_status = 2; /* cannot alloc */
+    return SCM_BOOL_F;
+  }
+
+
+  sc = NEW(scwm_color);
+  sc->pixel = color.pixel;
+  sc->name = gh_str02scm(cn);
+
+  gh_defer_ints();
+  SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_color, sc);
+  gh_allow_ints();
+
+  /* GJB:FIXME:MS: why scm_string_copy? */
+  scm_hash_set_x (color_hash_table, scm_string_copy(sc->name), answer);
+  return answer;
+}
+
 /* Not as inefficient as it looks - after the first time, this just
    amounts to a hash lookup. */
 
@@ -141,44 +177,32 @@ allocated, an error results. */
 #define FUNC_NAME s_make_color
 {
   SCM answer;
-  XColor color;
   char *cn;
-  int len;
-  scwm_color *sc;
+  int error_status;
 
   if (!gh_string_p(cname)) {
     scm_wrong_type_arg(FUNC_NAME, 1, cname);
   }
 
   answer=scm_hash_ref(color_hash_table, cname, SCM_BOOL_F);
+
   if (answer!=SCM_BOOL_F) {
     return answer;
   }
 
-  cn = gh_scm2newstr(cname, &len);
-  color.pixel = 0;
-
-  if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, cn, &color)) {
-    FREE(cn);
-    scwm_error(FUNC_NAME,"Unable to parse color.");
-  } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
-    FREE(cn);
-    /* GJB:FIXME:MS: Return the closest color here, perhaps, and print a warning */
-    scwm_error(FUNC_NAME,"Unable to allocate color.");
+  cn = gh_scm2newstr(cname, NULL);
+  answer = ScmMakeColor(cn,&error_status);
+  switch (error_status) {
+  case 1:
+    scm_misc_error(FUNC_NAME,"Cannot parse color!",SCM_EOL);
+    break;
+  case 2:
+    scwm_msg(WARN,FUNC_NAME,"Cannot allocate color: %s -- using black",cn);
+    answer = BLACK_COLOR;
+    break;
   }
-
   FREE(cn);
-
-  sc = NEW(scwm_color);
-  sc->pixel = color.pixel;
-  sc->name = cname;
-
-  gh_defer_ints();
-  SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_color, sc);
-  gh_allow_ints();
-
-  scm_hash_set_x (color_hash_table, scm_string_copy(cname), answer);
-  return (answer);  
+  return answer;
 }
 #undef FUNC_NAME
 
@@ -364,7 +388,7 @@ adjust_brightness(SCM color, double factor) {
   sprintf(cnamebuf, "rgb:%.4hx/%.4hx/%.4hx", c.red, c.green, c.blue);
   cnamebuf[19]=0;
 
-  return make_color(gh_str02scm(cnamebuf));
+  return ScmMakeColor(cnamebuf, NULL);
 }
 
 Pixel
@@ -393,7 +417,7 @@ invert_color(SCM color) {
           0xffff-c.red, 0xffff-c.green, 0xffff-c.blue);
   cnamebuf[19]=0;
 
-  return make_color(gh_str02scm(cnamebuf));
+  return ScmMakeColor(cnamebuf, NULL);
 }
 
 
