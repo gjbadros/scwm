@@ -425,6 +425,20 @@ grab_key_all_windows(int key, int modifier)
   }
 }
 
+
+static void
+ungrab_key_all_windows(int key, int modifier)
+{
+  ScwmWindow *psw;
+  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
+    XUngrabKey(dpy, key, modifier, psw->frame);
+    if (modifier != AnyModifier) {
+      XUngrabKey(dpy, key, modifier | LockMask, psw->frame);
+    }
+  }
+}
+
+
 /* Just grab a mouse button + modifier on all windows
    This needs to be done after a new mouse binding */
 static void
@@ -459,6 +473,7 @@ remove_binding(int context, int mods, int button, KeySym keysym,
 
   if (!mouse_binding) {
     keycode = XKeysymToKeycode(dpy, keysym);
+    ungrab_key_all_windows(keycode, mods);
   } else if (context & C_WINDOW) {
     ungrab_button_all_windows(button,mods);
   }

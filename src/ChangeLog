@@ -1,3 +1,11 @@
+Fri Feb  5 20:39:37 1999  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+        * binding.c (remove_binding): Ungrab key when removing a
+        binding. Fixes some annoying bugs for me. This might trigger
+        latent bugginess with respect to key bindings that exist
+        separately for different contexts but I don't have time to fix
+        that now (exists for mouse bindings too, it seems).
+
 1999-01-30  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* borders.c (SetBorderX): Do not try to draw when the border width
