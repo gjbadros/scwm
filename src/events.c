@@ -75,6 +75,7 @@
 #include "events.h"
 #include "focus.h"
 #include "color.h"
+#include "callbacks.h"
 
 #ifndef WithdrawnState
 #define WithdrawnState 0
