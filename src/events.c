@@ -447,6 +447,24 @@ SzGetWindowProperty(Window w, const char *szPropertyName, Bool fDelete)
   return (char *) pchReturn;
 }
 
+void 
+SetXPropertySz(Window w, const char *szPropertyName, const char *sz)
+{
+  Atom property = XInternAtom(dpy, szPropertyName, False);
+  int len = strlen(sz);
+  if (property == None) {
+    scwm_msg(ERR,__FUNCTION__,"No property `%s'",szPropertyName);
+    return;
+  }
+  XChangeProperty(dpy, w,
+		  property, XA_STRING, 8 /* bits in a byte */ ,
+		  PropModeReplace, sz, len);
+  /* FIXGJB: should above be PropModeAppend to avoid race cond'ns
+     hinted at in gwm */
+  XFlush(dpy);
+}
+
+
 void
 ScwmExecuteProperty()
 {
@@ -454,8 +472,11 @@ ScwmExecuteProperty()
 
   /* execute the XA_SCWM_EXECUTE X property */
   char *szExecute = SzGetWindowProperty(Scr.Root, "SCWM_EXECUTE", False);
+  SCM scm;
 
   if (szExecute) {
+    char *szResult;
+    int len;
     scwm_msg(DBG, __FUNCTION__, "Executing %s", szExecute);
     /* WHICH OF THESE SHOULD I USE?? --gjb 
        gh.h:SCM gh_eval_str(char *scheme_code);
@@ -468,6 +489,17 @@ ScwmExecuteProperty()
        pre-opened interaction results port */
     gh_display(retval);
     gh_newline();
+#ifdef FIXGJBNOW
+    /* How the hell do you get the printable representation 
+       of a SCM object as a char * ??? --gjb 11/13/97 */
+    scm = gh_cons(gh_symbol2scm("'write"),retval);
+    retval = gh_eval_str_with_standard_handler(scm)
+    szResult = gh_scm2newstr(gh_evalretval,&len);
+    SetXPropertySz(Scr.Root,"SCWM_RESULT",szResult);
+    free(szResult);
+#else
+    SetXPropertySz(Scr.Root,"SCWM_RESULT","SCWM not returning results yet\n");
+#endif
   }
 }
 

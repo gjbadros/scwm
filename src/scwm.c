@@ -821,14 +821,8 @@ MappedNotOverride(Window w)
 }
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	InternUsefulAtoms:
- *            Dont really know what it does
- *
- ***********************************************************************
- */
+/* FIXGJB: leading underscores are reserved for the compiler;
+   these should be changed */
 Atom _XA_MIT_PRIORITY_COLORS;
 Atom _XA_WM_CHANGE_STATE;
 Atom _XA_WM_STATE;
@@ -853,6 +847,7 @@ Atom _XA_OL_DECOR_RESIZE;
 Atom _XA_OL_DECOR_HEADER;
 Atom _XA_OL_DECOR_ICON_NAME;
 Atom XA_SCWM_EXECUTE;
+Atom XA_SCWM_RESULT;
 
 void 
 InternUsefulAtoms(void)
@@ -884,6 +879,7 @@ InternUsefulAtoms(void)
   _XA_OL_DECOR_HEADER = XInternAtom(dpy, "_OL_DECOR_HEADER", False);
   _XA_OL_DECOR_ICON_NAME = XInternAtom(dpy, "_OL_DECOR_ICON_NAME", False);
   XA_SCWM_EXECUTE = XInternAtom(dpy, "SCWM_EXECUTE", False);
+  XA_SCWM_RESULT = XInternAtom(dpy, "SCWM_RESULT", False);
   return;
 }
 
