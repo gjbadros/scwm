@@ -44,7 +44,7 @@
 ;; these are OK for my system, but may need to be changed for
 ;; yours. This should probably be eventually autoconfed or something.
 
-(set-image-path! (string-append user-image-path
+(set! image-load-path (string-append user-image-path
 			       ":/usr/X11/include/X11/bitmaps:\
 /usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
 /uns/include/X11/pixmaps:\
