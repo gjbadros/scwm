@@ -1,3 +1,9 @@
+Thu Aug 20 15:57:22 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* ALL: Fix some C-portability problems with DBUG and DBUG_RESIZE
+	macros.  Now double-quote at call site, and give the DBG stream
+	argument as first arg.
+
 Thu Aug 20 14:41:28 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* borders.c (SetupFrame): Call UnsetShapedTitlebar if
