@@ -1,7 +1,7 @@
 circle-pie-menu-look
 - 
 A menu-look that gives pie menus in a circular window. 
-[From modules/pie-menus/draw-pie-menu.c:1305]
+[From modules/pie-menus/draw-pie-menu.c:1306]
 
 
 context-map
@@ -58,6 +58,12 @@ The language territory name, as a string
 [From scwm/scwm.c:520]
 
 
+netscape-new-window
+- (app scwm flux)
+If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window.
+[From scheme/flux.scm:647]
+
+
 opaque-move-percent
 - 
 Percent of display area below which windows are moved opaquely.
@@ -73,7 +79,7 @@ Percent of display area below which windows are resized opaquely.
 pie-menu-look
 - 
 A menu-look that gives pie menus in a rectangular window 
-[From modules/pie-menus/draw-pie-menu.c:1287]
+[From modules/pie-menus/draw-pie-menu.c:1288]
 
 
 remote-shell-command
