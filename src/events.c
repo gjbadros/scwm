@@ -98,6 +98,8 @@
 
 SCM x_propertynotify_hook;
 SCM x_mappingnotify_hook;
+SCM x_destroynotify_hook;
+SCM x_unmapnotify_hook;
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask);
@@ -845,8 +847,10 @@ void
 HandleDestroyNotify()
 {
   DBUG((DBG,"HandleDestroyNotify", "Routine Entered"));
-
-  DestroyScwmWindow(pswCurrent);
+  if (pswCurrent) {
+    call1_hooks(x_destroynotify_hook,pswCurrent->schwin);
+    DestroyScwmWindow(pswCurrent);
+  }
 }
 
 
@@ -1061,6 +1065,8 @@ HandleUnmapNotify()
   }
   if (!pswCurrent)
     return;
+  
+  call1_hooks(x_unmapnotify_hook,pswCurrent->schwin);
 
   if (weMustUnmap)
     XUnmapWindow(dpy, Event.xunmap.window);
@@ -1927,10 +1933,23 @@ that changed (as a string) and the window that it changed for. */
 
 
   SCWM_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook");
-  /** This hook is invoked whenever a MappingNotify X even is
+  /** This hook is invoked whenever a MappingNotify X event is
 received. A MappingNotify event indicates a change of keymapping - in
 particular, it may indicate a change of available modifiers or mouse
 buttons. The hook procedures are invoked with no arguments. */
+
+  SCWM_HOOK(x_destroynotify_hook,"X-DestroyNotify-hook");
+  /** This hook is invoked upon DestroyNotify X events.
+It indicates a window is being destroyed.  The hook procedures are
+invoked with one argument, WIN, the window being destroyed.
+The WIN is still valid during the hook procedures. */
+
+  SCWM_HOOK(x_unmapnotify_hook,"X-UnmapNotify-hook");
+  /** This hook is invoked upon UnmapNotify X events.  It indicates a
+window is being unmapped (removed from display).  The hook procedures
+are invoked with one argument, WIN, the window being destroyed.  The
+WIN is still valid during the hook procedures. */
+
 
 #ifndef SCM_MAGIC_SNARFER
 #include "events.x"
