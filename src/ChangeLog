@@ -1,3 +1,9 @@
+Wed Oct  6 09:21:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* binding.c (IsClick): Also grab ButtonPress and ButtonRelease
+	events, and fix use of DBUG macro.  Thanks E. Jay Berkenbilt for
+	patch!
+
 Tue Oct  5 18:22:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.c (IsClick): Make this grab the pointer so we actually
