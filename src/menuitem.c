@@ -171,7 +171,7 @@ For a higher-level interface to this function, see `menuitem'. */
   pmi->scmHover = hover_action;
 
   VALIDATE_ARG_PROC_OR_SYM_USE_F(7,unhover_action);
-  pmi->scmHover = unhover_action;
+  pmi->scmUnhover = unhover_action;
 
   if (UNSET_SCM(hotkey_prefs)) {
     pmi->pchHotkeyPreferences = NULL;

@@ -674,7 +674,11 @@ MenuItemInMenu *
 PmiimSelectedFromPmd(DynamicMenu *pmd)
 #define FUNC_NAME "PmiimSelectedFromPmd"
 {
-  int ipmiimSelected = pmd->ipmiimSelected;
+  int ipmiimSelected;
+  if (!pmd)
+    return NULL;
+
+  ipmiimSelected = pmd->ipmiimSelected;
   if (ipmiimSelected < 0)
     return NULL;
   if (ipmiimSelected >= pmd->cmiim) {
@@ -754,7 +758,8 @@ InvokeUnhoverAction(DynamicMenu *pmd)
 {
   MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
   /* invoke the un-hover action */
-  if (pmiimSelected && !UNSET_SCM(pmiimSelected->pmi->scmUnhover)) {
+  if (pmiimSelected && pmiimSelected->pmi &&
+      !UNSET_SCM(pmiimSelected->pmi->scmUnhover)) {
     return scwm_safe_call0_sym(pmiimSelected->pmi->scmUnhover);
   } else {
     DBUG((DBG,FUNC_NAME,"No unhover hook, %ld",pmiimSelected));
