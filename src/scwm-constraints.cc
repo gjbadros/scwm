@@ -115,6 +115,7 @@ CassowaryEditPosition(PScwmWindow psw)
     return;
 
   ScwmWindowConstraintInfo *pswci = psw->pswci;
+  DBUG((scwm_msg(INFO,"CassowaryEditPosition","Begin edit");))
   (*psolver)
     .AddEditVar(pswci->_frame_x)
     .AddEditVar(pswci->_frame_y)
@@ -128,6 +129,7 @@ CassowaryEditSize(PScwmWindow psw)
     return;
 
   ScwmWindowConstraintInfo *pswci = psw->pswci;
+  DBUG((scwm_msg(INFO,"CassowaryEditSize","Begin edit");))
   (*psolver)
     .AddEditVar(pswci->_frame_x)
     .AddEditVar(pswci->_frame_y)
@@ -152,10 +154,15 @@ SuggestMoveWindowTo(PScwmWindow psw, int x, int y, Bool fOpaque)
       pswci->_frame_y.IntValue() == y)
     return;
 
-  (*psolver)
-    .SuggestValue(pswci->_frame_x,x)
-    .SuggestValue(pswci->_frame_y,y)
-    .Resolve();
+  try {
+    (*psolver)
+      .SuggestValue(pswci->_frame_x,x)
+      .SuggestValue(pswci->_frame_y,y)
+      .Resolve();
+  }
+  catch (const ExCLEditMisuse &e) {
+    scwm_msg(ERR,"SuggestMoveWindowTo","Constraint solver edit misuse exception!");
+  }
 }
 
 
@@ -238,6 +245,7 @@ CassowaryEndEdit(PScwmWindow)
   if (!psolver) {
     return;
   }
+  DBUG((scwm_msg(INFO,"CassowaryEndEdit","Ended edit");))
   psolver->EndEdit();
 }
 
