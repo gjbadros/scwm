@@ -18,6 +18,9 @@
 /* Define this if you have libXmu */
 #undef HAVE_LIBXMU
 
+/* Define this if you have libXtst, the XTest X server extension */
+#undef HAVE_XTEST
+
 /* Define this if you have libSM and libIce for session manager support */
 #undef HAVE_LIBSM_LIBICE
 
