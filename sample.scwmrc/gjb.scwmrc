@@ -648,22 +648,24 @@
 (define right-button-number 2)
 
 ;;(set-button-face! 1 mini-icon-button-face)
+;; (set! left-button-number 1)
+;; (set! right-button-number 2)
 
-(define (add-left-button button-face hook)
+(define* (add-left-button button-face hook #&optional (immed-hook #f))
   (set-button-face! left-button-number button-face)
   (bind-mouse (string->symbol 
 	       (string-append "button-" 
 			      (number->string left-button-number)))
-	      1 hook)
+	      1 hook immed-hook)
   (set! left-button-number (+ 2 left-button-number)))
 
 
-(define (add-right-button button-face hook)
+(define* (add-right-button button-face hook #&optional (immed-hook #f))
   (set-button-face! right-button-number button-face)
   (bind-mouse (string->symbol 
 	       (string-append "button-" 
 			      (number->string right-button-number)))
-	      1 hook)
+	      1 hook immed-hook)
   (set! right-button-number (+ 2 right-button-number)))
 
 ;;; window buttons
@@ -695,15 +697,15 @@
 ;; the fvwm2 "MWMButton" concept whereby a button reverses its vector 
 ;; pattern when the window is maximized. It should be much more general, 
 ;; of course.
-(add-left-button sticky-button-face toggle-stick)
+(add-left-button sticky-button-face #f toggle-stick)
 
-(add-left-button sysutils-button-face popup-sysutils)
+(add-left-button sysutils-button-face #f popup-sysutils)
 
 (if want-close-button
     (add-right-button close-button-face close-window))
 
-(add-right-button tall-maximize-button-face vertical-toggle-maximize)
-(add-right-button iconify-button-face animated-iconify)
+(add-right-button tall-maximize-button-face #f vertical-toggle-maximize)
+(add-right-button iconify-button-face #f animated-iconify)
 
 ;; (plain-border (get-window)) fixes the display problem for the selected window
 ;; something must not be initialized correctly
@@ -1150,14 +1152,14 @@ union of all other window managers!
 
 ;;; now set some mouse and key bindings ;;
 
-
 ;;; first our root menus
-(bind-mouse 'root 1 (lambda () (popup-menu 'menu-root-start)))
-(bind-mouse 'root 2 (lambda () (show-window-list-menu #:by-focus #t #:show-geometry #t)))
-(bind-mouse 'root "M-3" (lambda () (popup-menu 'menu-desk)))
-(bind-mouse 'root 3 popup-applications)
-(bind-mouse 'all "H-1" (lambda () (select-window-and-toggle-highlight)))
-(bind-mouse 'all "A-2" (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
+(bind-mouse 'root 1 #f (lambda () (popup-menu 'menu-root-start)))
+(bind-mouse 'root 2 #f (lambda () (show-window-list-menu #:by-focus #t #:show-geometry #t)))
+(bind-mouse 'root "M-3" #f (lambda () (popup-menu 'menu-desk)))
+(bind-mouse 'root 3 #f popup-applications)
+(bind-mouse 'all "H-1" #f select-window-add-selection)
+(bind-mouse 'all "A-2" #f (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
+
 (bind-key 'all "H-r" rename-window-interactively)
 ;; (lookup-key 'all "H-r")
 ;; (add-timer-hook! (ms->usec 150) (lambda () (display (lookup-key 'all (get-key-event))) (newline)))
@@ -1193,8 +1195,8 @@ union of all other window managers!
     ((double-click) (animated-toggle-window-shade))
     (else (move-or-raise))))
 (bind-mouse 'title 1 move-or-shade)
-(bind-mouse 'title 2 lower-window)
-(bind-mouse 'title 3 popup-window-ops)
+(bind-mouse 'title 2 #f lower-window)
+(bind-mouse 'title 3 #f popup-window-ops)
 
 
 ;; key bindings for the menus
@@ -1215,16 +1217,16 @@ union of all other window managers!
     ((double-click) (animated-deiconify))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
-(bind-mouse 'icon 2 default-winlist-proc) ;; was deiconify
+(bind-mouse 'icon 2 #f default-winlist-proc) ;; was deiconify
 
-(bind-mouse 'all "C-S-M-1" toggle-raise)
+(bind-mouse 'all "C-S-M-1" #f toggle-raise)
 
 ;; These always do opaque moves
-(bind-mouse 'all "C-S-M-2" interactive-move)
-(bind-mouse 'all "C-S-M-3" interactive-resize)
+(bind-mouse 'all "C-S-M-2" #f interactive-move)
+(bind-mouse 'all "C-S-M-3" #f interactive-resize)
 ;; These always do rubberband moves (except when constraint solver is active)
-(bind-mouse 'all "H-2" (lambda () (interactive-move (get-window) #f)))
-(bind-mouse 'all "H-3" (lambda () (interactive-resize (get-window) #f)))
+(bind-mouse 'all "H-2" #f (lambda () (interactive-move (get-window) #f)))
+(bind-mouse 'all "H-3" #f (lambda () (interactive-resize (get-window) #f)))
 
 (define (resize-halfscreen)
   (let ((w (current-window-with-pointer)))
@@ -1544,12 +1546,12 @@ union of all other window managers!
  start-highlighting-current-window
  end-highlighting-current-window)
 
-(bind-mouse 'all "H-S-1" select-window-add-selection)
-(bind-mouse 'all "H-A-1" select-window-add-selection)
-(bind-mouse 'all "H-S-2" (lambda () 
-			   (interactive-move-group (selected-windows-list))
-			   (end-highlighting-current-window)
-			   (unselect-all-windows)))
+(bind-mouse 'all "H-S-1" #f select-window-add-selection)
+(bind-mouse 'all "H-A-1" #f select-window-add-selection)
+(bind-mouse 'all "H-S-2" #f (lambda () 
+			      (interactive-move-group (selected-windows-list))
+			      (end-highlighting-current-window)
+			      (unselect-all-windows)))
 
 ;; send 100 presses of button 1
 ;; for benchmarking amaya's reload
