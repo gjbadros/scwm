@@ -1,3 +1,26 @@
+Tue Aug  4 14:57:44 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Restore the call to SetupFrame after animated
+	  shade/unshade since combinations of animated/unanimated
+	  shading/unshading fail unless the state of the window is
+	  well-defined.
+
+	* scwm-constraints.hpp, constraint-primitives.cc: Make _scmXL,
+	  _scmXR and _scmYT, _scmYB all fields, instead of forcing writing
+	  the linear-expressions to find the right coordinate of a window at
+	  the scheme level.
+
+	* move.c: Remove mention of set-opaque-move-size! from docs for
+	  interactive-move.
+
+Tue Aug  4 12:01:32 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* menu.h, menu.c: Added x_pos, y_pos, and left_side_p args to
+	  popup_menu, improve arg processing; added
+	  SetPopupMenuPositionFromDecoration to help out.
+
+	* binding.c: Cleanup docs for mouse-event-type
+
 Mon Aug  3 16:13:52 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Use new macro SET_BIT_FOR_OBJ_PROP within
