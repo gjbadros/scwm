@@ -1,3 +1,8 @@
+Thu Jan 20 11:41:49 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmcorba.c (SCWM_CORBA_VERSION): Added this #define, and use it 
+	instead of just VERSION. Also #include "scwmconfig.h", not <config.h>
+
 Wed Jan 12 00:01:41 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (INCLUDES): Added -I$(top_srcdir)/include to get

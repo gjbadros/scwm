@@ -1,3 +1,19 @@
+Thu Jan 20 12:24:43 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Fix typo, rename include/config.h.in to
+	include/scwmconfig.h.in.
+
+Thu Jan 20 11:40:17 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* include/scwmconfig.h.in: Added
+
+	* configure.in: Use include/scwmconfig.h, use SCWM-VERSION sh
+	script, substitute SCWM_MAJOR_VERSION, SCWM_MINOR_VERSION,
+	SCWM_VERSION, and build src/scwm-versiondat.h;  these changes
+	inspired by how guile handles its version information.
+
+	* SCWM-VERSION, Makefile.am: Added SCWM-VERSION
+
 Wed Jan 12 23:29:14 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in, README: Bump to 0.99.6post, update copyrights

@@ -1,3 +1,7 @@
+Thu Jan 20 11:42:28 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* */*.c: Include "scwmconfig.h", not <config.h>
+
 Wed Jan 12 00:02:10 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* viavoice/Makefile.am: Added scwmgrammar.fsg to EXTRA_DIST

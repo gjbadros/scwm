@@ -1,3 +1,26 @@
+Thu Jan 20 12:14:56 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-versiondat.h.in: Added
+
+	* scwm.c, miscprocs.c: Use SCWM_VERSION, not VERSION.
+
+	* colors.c, colors.h: Removed, folded code into color.c, color.h.
+
+	* color.c, color.h: Added code/protos from colors.c, colors.h
+
+	* callbacks.c (WarnBadHook): Patch from Michael Schmitz to fix
+	compile-time error when building against guile-1.3 (not
+	recommended)
+
+	* Makefile.am: Drop colors.[ch].
+
+	* *.c:  Use #include "scwmconfig.h", not #include <config.h>
+
+Sun Jan 16 16:33:29 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* callbacks.c: Added static Bool fSuppressRunningHooks to help in
+	debugging. 
+
 Sat Jan 15 12:48:01 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Need errors.h.
