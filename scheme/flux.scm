@@ -23,7 +23,7 @@
 (define-public USER (getenv "USER"))
 (define-public user-init-file (string-append HOME "/.scwmrc"))
 
-;; The #t arguments should perhaps instead be a closure 
+;; The #t arguments should perhaps instead be a closure
 ;; returning whether an opaque move/resize is desired
 
 (define-public (interactive-move-window-with-focus)
@@ -50,11 +50,11 @@ outline or the window itself is moved."
 outline or the window itself is resized."
   (let ((w (current-window-with-pointer))) (and w (interactive-resize-maybe-opaque w))))
 
-(define-public (toggle-max-vert) 
+(define-public (toggle-max-vert)
   "Toggle the current window's maximized-vertically state."
   (toggle-maximize 0 (%y 100)))
 
-(define-public (toggle-max-horz) 
+(define-public (toggle-max-horz)
   "Toggle the current window's maximized-horizontally state."
   (toggle-maximize (%x 100) 0))
 
@@ -164,6 +164,8 @@ Use the optional second argument as the separator."
    "\nTransient:\t\t" (bool->str (transient? ww))
    "\nRaised:\t\t\t" (bool->str (raised? ww))
    "\nShaded:\t\t\t" (bool->str (window-shaded? ww))
+   "\nShaped:\t\t\t" (bool->str (window-shaped? ww))
+   "\nIcon Shaped:\t\t" (bool->str (window-icon-shaped? ww))
    "\nSticky Icon:\t\t" (bool->str (icon-sticky? ww))
    "\nSticky:\t\t\t" (bool->str (sticky? ww))
    "\nTitle Bar Shown:\t" (bool->str (titlebar-shown? ww))))
@@ -216,7 +218,7 @@ Use the optional second argument as the separator."
 	  ((char=? char #\newline) "Return")
 	  ((char=? char #\cr) "Return")
 	  ((= charval 27) "Escape")
-	  ((< charval 32) (string-append "C-" (make-string 1 (integer->char 
+	  ((< charval 32) (string-append "C-" (make-string 1 (integer->char
 							      (+ 64 charval)))))
 	  (#t (make-string 1 char)))))
 
@@ -226,14 +228,14 @@ Use the optional second argument as the separator."
   (let ((w (get-window))
 	(i 0))
     (while (< i (string-length str))
-	   (send-key-press 
+	   (send-key-press
 	    (printable-char->keysym-string (string-ref str i)) w)
 	   (set! i (+ 1 i)))))
 
 ;; from Harvey Stein
 (define-public (find-window-by-name window-name)
-  (let ((wlist (list-windows 
-		#:only (lambda (w) 
+  (let ((wlist (list-windows
+		#:only (lambda (w)
 			 (string=? (window-title w) window-name)))))
     (if (not (null? wlist))
 	(car wlist)
@@ -259,7 +261,7 @@ The list is in the reverse order from the way by which they were selected."
   (do ((w '())
        (wlist '() (cons w wlist))
        (i 0 (+ 1 i)))
-      ((or (not w) (>= i max)) 
+      ((or (not w) (>= i max))
        (if w wlist
 	   (cdr wlist)))
     (set! w (select-window-interactively (string-append "select #" (number->string i))))))
@@ -344,7 +346,7 @@ This positions the popup menu appropriately."
 The returned string will have all non-alphanumeric characters replaced with
 underscores, so that the resulting string can be used as a key for
 `X-resource-get' and `X-resource-put'."
-  (regexp-substitute/global 
+  (regexp-substitute/global
    #f "[^a-zA-Z_0-9]" string
    'pre (lambda (match) "_")
    'post))
