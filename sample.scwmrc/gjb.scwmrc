@@ -66,7 +66,7 @@
 (set! opaque-move-percent 100)
 ;;(set! opaque-move-percent 20)
 (set! opaque-resize-percent 100)
-;;(set! opaque-resize-percent 100)
+;;(set! opaque-resize-percent 20)
 
 ;; Disabled autoraise by default; 
 ;; would give an instant autoraise with no timeout, which 
@@ -325,6 +325,11 @@
 
 (window-style "*" 
 	      #:icon-box (list 0 1 69 (y- 141)))
+
+;; (window-style "*" #:show-icon #t)
+;; (window-style "*" #:sticky-icon #f)
+;; (window-style "*" #:sticky-icon #t)
+;; (window-style "*" #:random-placement #f #:smart-placement #f)
 
 ;;(window-style "*" #:border-width 5 #:mwm-border #t)
 
@@ -1173,7 +1178,7 @@
       (register-fvwm2-module-config "FvwmPager"
 				    "*FvwmPagerBack grey76"
 				    "*FvwmPagerFore black"
-				    "*FvwmPagerHilight navyblue"
+				    "*FvwmPagerHilight yellow"
 				    "*FvwmPagerFont none"
 				    "*FvwmPagerDeskTopScale 50"
 				    "*FvwmPagerGeometry -0-0"
