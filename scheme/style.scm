@@ -111,7 +111,7 @@
 (define window-hint-hooks '())
 
 
-(add-hook! before-place-new-window-hook
+(add-hook! after-new-window-hook
 	   (lambda (win)
 	     (for-each (lambda (hook) 
 			 (hook win))
