@@ -1083,14 +1083,17 @@ nothing should be done on key release.
 #undef FUNC_NAME
 
 
-SCWM_PROC(bind_mouse, "bind-mouse", 3, 0, 0,
-          (SCM contexts, SCM button, SCM proc))
+SCWM_PROC(bind_mouse, "bind-mouse", 3, 1, 0,
+          (SCM contexts, SCM button, SCM proc, SCM immediate_proc))
      /** Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
 PROC is a procedure that will be invoked (with no arguments) when the 
 specified button is pressed in the specified context. See `bind-key'
-for a list of the contexts. */
+for a list of the contexts. If IMMEDIATE-PROC is given, it will be
+executed immediately on a button-click.  If IMMEDIATE-PROC returns
+#f, then PROC will still get executed after determining the mouse click
+type. */
 #define FUNC_NAME s_bind_mouse
 {
   int bnum = 0;
@@ -1102,7 +1105,8 @@ for a list of the contexts. */
 
   int fButtonOK = True;
 
-  VALIDATE_ARG_PROC(3,proc);
+  VALIDATE_ARG_PROC_USE_F(3,proc);
+  VALIDATE_ARG_PROC_USE_F(4,immediate_proc);
 
   context = compute_contexts(contexts, FUNC_NAME);
   fButtonOK = FButtonToBnumModifiers(button, &bnum, &modmask, FUNC_NAME, True);
@@ -1138,16 +1142,15 @@ for a list of the contexts. */
   if ((context & C_WINDOW) && ((modmask == 0) || modmask == AnyModifier)) {
     Scr.buttons2grab &= ~(1 << (bnum - 1));
   }
- 
-  add_binding(context, modmask, bnum, 1, proc, SCM_UNDEFINED, NULL);
+
+  add_binding(context, modmask, bnum, 1, proc, immediate_proc, NULL);
 
   if (fChangedNumButtons && Scr.fWindowsCaptured) {
-#if 1 /* GJB:FIXME:: does this work? just want to redraw buttons on all windows */
+    /* GJB:FIXME:: does this work? 
+       just want to redraw buttons on all windows 
+       (used to use a recapture(), but that seems heavy handed) */
     ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
     redraw_borders(fl);
-#else
-    recapture(); /* this stinks, but'll have to do for now --11/11/97 gjb */
-#endif
   }
   return SCM_UNSPECIFIED;
 }

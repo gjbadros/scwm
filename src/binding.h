@@ -55,7 +55,8 @@ typedef struct Binding_tag {
   int Context;			/* Contex is Scwm context, ie titlebar, frame, etc */
   int Modifier;			/* Modifiers for keyboard state */
   SCM Thunk;
-  SCM ReleaseThunk;
+  SCM ReleaseThunk;             /* this is also the immediate clink thunk 
+                                   for mouse bindings */
   struct Binding_tag *NextBinding;
 } Binding;
 

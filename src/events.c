@@ -1434,12 +1434,19 @@ HandleButtonPress()
   pbnd = PBindingFromMouse(Event.xbutton.button,modifier,Context);
 
   if (pbnd) {
+    SCM done = SCM_BOOL_F;
     if (NULL != pswCurrent) {
       set_window_context(pswCurrent->schwin);
     }
-    find_mouse_event_type();
-    scwm_safe_call0(pbnd->Thunk);
-    clear_mouse_event_type();
+    if (gh_procedure_p(pbnd->ReleaseThunk)) {
+      done = scwm_safe_call0(pbnd->ReleaseThunk);
+    }
+    if (SCM_BOOL_F == done &&
+        gh_procedure_p(pbnd->Thunk)) {
+      find_mouse_event_type();
+      scwm_safe_call0(pbnd->Thunk);
+      clear_mouse_event_type();
+    }
     if (NULL != pswCurrent) {
       unset_window_context();
     }
