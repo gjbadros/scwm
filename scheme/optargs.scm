@@ -282,6 +282,8 @@
 ;; Lisp dialects.
 
 (define-public (set-*-procedure-properties proc arglist interactive-spec)
+  "Add the ARGLIST and INTERACTIVE-SPEC properties to procedure PROC.
+This is used internally by the optargs macro system."
   (set-procedure-property! proc 'optargs-arglist arglist)
   (set-procedure-property! proc 'interactive interactive-spec))
 

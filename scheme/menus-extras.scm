@@ -66,6 +66,7 @@ defaults to `default-menu-max-fold-lines'."
 	   (split-list ml max-lines))))
 
 (define*-public (split-list-by-group ls #&optional (rest #f))
+  "Split the a-list LS into groups according to the car of each of its cells."
   (cond ((null? ls) rest)
 	((and rest (string=? (caar ls) (caar rest)))
 	 (begin
@@ -73,7 +74,7 @@ defaults to `default-menu-max-fold-lines'."
 	   (split-list-by-group (cdr ls) rest)))
 	(else (split-list-by-group (cdr ls) (cons (cons (caar ls) (list (cdar ls))) 
 						  (if rest rest '()))))))
-
+;; menus-extras
 ;; (split-list-by-group '() '(("Emacs" "em1")))
 ;; (split-list-by-group '(("Emacs" . "em1")) #f)
 ;; (split-list-by-group '(("Emacs" . "em1") ("XTerm" . "xt1")) #f)

@@ -167,12 +167,14 @@
 )
 
 (define-public (snap-reset)
+  "Turn off auto-snapping during interactive moves."
   (remove-hook! interactive-move-start-hook imsh)
 ;  (remove-hook! interactive-move-new-position-hook imnph)
   (remove-hook! interactive-move-finish-hook imeh)
   )
 
 (define*-public (snap-initialize #&optional (sw 25))
+  "Turn on auto-snapping during interactive moves."
   (set! current-windows '())
   (set! current-windows-info '())
   (set! trail '())

@@ -280,6 +280,10 @@ if not specified."
 ;; Sort windows by position
 
 (define*-public (sort-windows-by-middle-pos winlist #&key (horiz #t) (ascending #t))
+  "Sort WINLIST (a list of windows) by their middle positioins.
+Sort on horizontal position (x coordinate) if HORIZ is #t, otherwise
+sort on vertical position (y coordiate) otherwise.  Sort in 
+ascending order if ASCENDING is #t, otherwise descending."
   (let* ((assoclist (map (lambda (w) 
 			   (let* ((pos (window-viewport-position w))
 				  (size (window-frame-size w)))

@@ -37,6 +37,10 @@
 ;;   (run-ScwmDeskButtons 4 #:desk-names '("Work" "Play" "Graphics" "Emacs")))
 
 (define*-public (run-ScwmDeskButtons desks #&key desk-names)
+  "Start a ScwmDeskButtons toolbar interface.
+DESKS is the number of desktops, and DESK-NAMES can be given to
+specify names for each of the desks.  Answers an object that
+is used in `close-ScwmDeskButtons' to close the window."
   (let* ((desk-numbers (iota desks))
 	 (desk-names (if (bound? desk-names)
 			 desk-names
@@ -61,4 +65,5 @@
 	  (gtk-widget-destroy toplevel)))))
 
 (define-public (close-ScwmDeskButtons sdb)
+  "Close a ScwmDeskButtons object that was returned from `run-ScwmDeskButtons'."
   (sdb))

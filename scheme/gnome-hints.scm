@@ -564,6 +564,8 @@ pager applet. Reverses the effect of `enable-gnome-hints'."
   (->bool (X-property-get 'root-window "GNOME_SM_PROXY")))
 
 (define-public (gnome-install-window-styles)
+  "Initialize various window styles for GNOME support.
+This handles desktop icons, splash screens, and the panel."
 ;;; gmc desktop icons
   (window-style "desktop_icon" 
 		#:use-style desk-icon 

@@ -111,6 +111,8 @@ The selection must contain a single full pathname."
 
 ;; contributed by Glenn Trig
 (define*-public (menu-window-theme #&optional force?)
+  "Return a menu that lets the user set the theme for a single window.
+If FORCE? is #t, then the cached theme file is reloaded."
   (menu  
    (map 
     (lambda (x) 
@@ -122,6 +124,8 @@ The selection must contain a single full pathname."
 
 ;; contributed by Glenn Trig
 (define*-public (menu-global-theme #&optional force?)
+  "Return a menu that lets the user set the theme for all windows.
+If FORCE? is #t, then the cached theme file is reloaded."
   (menu  
    (map 
     (lambda (x) 

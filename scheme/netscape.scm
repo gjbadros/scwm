@@ -137,6 +137,9 @@ not open a new netscape frame."
 				     #:relative-to 'northeast))
 
 (define-public (netscape-download-closed-action win)
+  "Execute the closed action for WIN, a netscape download window.
+This plays `*netscape-download-closed-wav*' iff WIN has been
+up from at least `*netscape-download-closed-threshold-seconds*'."
   (let ((time-up (- (current-time) (window-creation-time win))))
     (if (> time-up *netscape-download-closed-threshold-seconds*)
 	(wavplay *netscape-download-closed-wav*))))
@@ -147,6 +150,8 @@ not open a new netscape frame."
       (netscape-download-closed-action win)))
 
 (define-public (enable-dynamic-netscape-actions)
+  "Enable the netscape download-closed action.
+See `netscape-download-closed-action'."
   (window-style "findDialog_popup" #:transient-placement-proc 
 		(near-window-placement netscape-win #:proportional-offset '(-1 0) #:relative-to 'northeast))
   (add-hook! window-close-hook call-netscape-download-closed-action))

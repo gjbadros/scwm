@@ -106,7 +106,7 @@ Uses animation, in either case."
 
 
 (define*-public (animated-deiconify-to-vp-focus #&optional (win (get-window)))
-  "Deiconify WIN to the current viewport, and give it the focus"
+  "Deiconify WIN to the current viewport, and give it the focus."
   (interactive)
   (cond
    (win (animated-deiconify-to-viewport win)

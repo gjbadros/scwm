@@ -11,6 +11,7 @@
 (define register-alist '())
 
 (define-public (get-register-name)
+  "Prompt for a register name and return a corresponding symbol."
   (with-message-window-shown 
    (make-message-window-clone-default "Register?")
    (let* ((event (get-key-event))

@@ -86,6 +86,12 @@
 (define*-public (run-ScwmButtons button-item-list #&key (orientation 'horizontal)
 				 (name "ScwmButtons") (auto-orient #t)
 				 (auto-orient-margin 100))
+  "Start a ScwmButtons window giving a simple toolbar button/action interface.
+ORIENTATION can be either 'horizontal or 'vertical;
+NAME is the name of the window.
+AUTO-ORIENT is #t if you wish the window to switch orientations when
+the window approaches an edge of the viewport, and AUTO-ORIENT-MARGIN
+determines how wide the \"edge\" of a viewport is (in pixels)."
   (let* ((toplevel (gtk-window-new 'toplevel))
 	 (toolbar (case orientation
 		((horizontal) (gtk-toolbar-new 'horizontal 'icons))

@@ -71,6 +71,8 @@ window-selection and constraints modules."
 ;;(message-window-hide! interactive-mark-nonant-msgwin)
 
 (define-public (nonant-decoration win nonant)
+  "Return the window id numbers of the decoration for WIN corresponding to NONANT.
+E.g., NONANT == 0 will answer the id of the northwest corner window."
   (let* ((decoration-ids (window-decoration-ids win))
 	 (sides (caddr decoration-ids))
 	 (corners (cadddr decoration-ids)))

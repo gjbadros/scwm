@@ -55,7 +55,11 @@
 
 
 
+;; quote
+;; (mask->keycodes 13)
+
 (define-public (mask->keycodes mask)
+  "Return a list of keycodes corresponding to keys that generate the modifiers in MASK."
   (let ((answer '())
 	(table `((,mod-mask-control . "Control_L")
 		 (,mod-mask-alt . "Alt_L")
@@ -72,7 +76,6 @@
 	      table)
     answer))
 
-;; (mask->keycodes 13)
 
 (define-public (xtest-fake-modmask mask delay press?)
   (for-each 

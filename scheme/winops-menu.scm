@@ -20,6 +20,9 @@
   )
 
 (define-public (make-small-window-ops-menu w)
+  "Return a short menu of window operations for window W.
+The menu lets you move, resize, maximize, minimize, set gravity,
+stick, shove, set the style, group, etc."
   (menu
    (list
     (menuitem "&Move" #:image-left "mini-move.xpm" 

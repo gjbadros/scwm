@@ -32,6 +32,11 @@
 
 (define*-public (run-ScwmClock #&key (24-hour #t) (show-timezone #t)
 			       (update-interval 1) (parent #f))
+  "Start a ScwmClock window display.
+24-HOUR is #t if you want to use military time, #f for am/pm display.
+SHOW-TIMEZONE is #t to display the timezeon.
+UPDATE-INTERVAL is how often (in seconds) that the clock should be updated.
+PARENT is a parent window to use for the clock."
   (let* ((time-format (string-append (if 24-hour "%T" "%r")
 				     (if show-timezone " %Z" "")))
 	 (update-msec (sec->msec update-interval))

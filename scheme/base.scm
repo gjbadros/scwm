@@ -632,6 +632,11 @@ The rest of the arguments are passed as options to the xterm command."
   (execute (string-append (optget *xterm-command*) " " opt)))
 
 (define*-public (xterm-other-host hostname)
+  "Run an xterm on machine HOSTNAME.
+Starts the XTerm with resource \"remotexterm\" and uses
+`*xterm-command*' to determine which terminal program
+to use and `*remote-shell-command*' to determine how to
+start the shell remotely."
   (exe (string-append (optget *xterm-command*)
 		      " -name remotexterm -T " hostname " -n " hostname 
 		      " -e sh -c '" *remote-shell-command* hostname "'")))

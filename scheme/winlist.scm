@@ -34,9 +34,14 @@
 (define-public window-list-proc focus-window)
   
 (define-public (listify-if-atom l)
+  "Make L into a list if it is not."
   (if (or (pair? l) (null? l)) l (list l)))
 
 (define-public (filter-only-except l only except)
+  "Return a filtered list of the elements from L.
+The returned list will contain only elements from L
+that have the predicate ONLY accepts but EXCEPT
+does not accept."
   (filter (lambda (item)
 	    (and
 	     (and-map (lambda (pred) (pred item)) 

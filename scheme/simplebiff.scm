@@ -43,12 +43,20 @@
 (define-public mail-file-time 0)
 (define-public mail-file-size 0)
 
-(define*-public
-  (simplebiff #&key (mail-spool-dir "/var/spool/mail")
-	      (username (getenv "USER"))
-	      (activate-proc beep)
-	      (deactivate-proc noop)
-	      (check-interval 10))
+(define*-public (simplebiff #&key (mail-spool-dir "/var/spool/mail")
+			    (username (getenv "USER"))
+			    (activate-proc beep)
+			    (deactivate-proc noop)
+			    (check-interval 10))
+  "Run a simple xbiff-like notification system.
+MAIL-SPOOL-DIR tells where the mail files live, USERNAME is
+the username of the file to watch (defaults to environement
+variable \"USER\".  ACTIVATE-PROC is the procedure to apply when the
+file grows, DEACTIVATE-PROC is the procedure to apply when the
+file changes without growing (by shrinking or staying the same size).
+CHECK-INTERVAL is the number of seconds between checks.
+Returns an object to pass to `stop-simplebiff' to turn off
+the notifier."
   (let* ((mailfile (string-append mail-spool-dir "/" username))
 	 (mail-file-time (stat:mtime (stat mailfile)))
 	 (mail-file-size (stat:size (stat mailfile))))
@@ -76,4 +84,5 @@
       )))
 
 (define-public (stop-simplebiff sb)
+  "Call this with the object returned from `simplebiff' to turn off the notifier"
   (sb))

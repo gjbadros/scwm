@@ -43,7 +43,7 @@ Use the optional second argument as the separator."
 (define WindowStates #("Withdrawn" "Normal" "Zoom" "Iconic" "Inactive"))
 
 (define-public (window-state->string win-state)
-  "Returns a string representation of the numerical WIN-STATE"
+  "Returns a string representation of the numerical WIN-STATE."
   (if (array-in-bounds? WindowStates win-state)
       (array-ref WindowStates win-state)
       "Invalid"))
@@ -52,7 +52,7 @@ Use the optional second argument as the separator."
 			     "East" "SouthWest" "South" "SouthEast" "Static"))
 
 (define-public (gravity->string gravity)
-  "Returns a string representation of the numerical GRAVITY"
+  "Returns a string representation of the numerical GRAVITY."
   (if (array-in-bounds? Gravities gravity)
       (array-ref Gravities gravity)
       "Invalid"))

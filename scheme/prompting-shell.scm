@@ -26,6 +26,11 @@
 
 
 (define*-public (prompting-shell proc title hbox getter)
+  "Create a GTk+ shell window and return a procedure that closes it.
+PROC is the procedure to run when the okay button is clicked, and
+it is called with a single argument, the result of applying
+GETTER to no arguments.  TITLE is the title of the window,
+and HBOX is a Gtk HBox widget that the shell should contain."
   (let* ((toplevel (gtk-window-new 'dialog))
 	 (vbox (gtk-vbox-new #f 5))
 	 (hbox-buttons (gtk-hbox-new #f 5))
