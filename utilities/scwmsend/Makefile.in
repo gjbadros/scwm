@@ -15,6 +15,7 @@ scwm_icons=@scwm_icons@
 scwm_rc=@scwm_rc@
 scwm_name=@scwm_name@
 scwm_dir=@scwm_dir@
+mkinstalldirs=$(SHELL) $(top_srcdir)/mkinstalldirs
 LDFLAGS=@LDFLAGS@
 #
 # This is where the modules will be installed
@@ -55,6 +56,7 @@ depend:
 	${MAKEDEPEND} ${CFLAGS} ${SRCS}
 
 install: all
+	$(mkinstalldirs) ${bin_dir}
 	${INSTALL_PROGRAM} ${PROG} ${bin_dir}
 
 mostlyclean:
