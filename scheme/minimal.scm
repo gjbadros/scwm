@@ -6,6 +6,9 @@
 ;;;; In a sense, these are compiled-in primitives implemented in scheme
 ;;;; (these can get overridden later, of course)
 
+(define-public guile-version (+ (string->number (major-version)) 
+				(/ (string->number (minor-version)) 10)))
+
 ;; Make quit an alias for scwm-quit
 (define quit scwm-quit)
 (undefine scwm-quit)
