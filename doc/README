@@ -21,6 +21,12 @@ sites.  The W3C page also has some useful pointers and files:
 
 http://www.w3c.org
 
+As an alternative, the SGMLtools bundle should contain all of the
+above, nicely integrated.  Be sure to have a recent version (>=2.0).
+It's available from:
+
+http://www.sgmltools.org/
+
 Other useful pointers include:
 
 http://www.egr.msu.edu/Pgrt/
