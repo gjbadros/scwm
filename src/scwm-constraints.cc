@@ -71,6 +71,9 @@ CassowarySetCValuesAndSolve(ScwmWindow *psw)
 void
 CassowaryEditPosition(PScwmWindow psw)
 {
+  if (!psolver)
+    return;
+
   ScwmWindowConstraintInfo *pswci = psw->pswci;
   (*psolver)
     .addEditVar(pswci->_frame_x)
@@ -82,6 +85,10 @@ CassowaryEditPosition(PScwmWindow psw)
 void 
 SuggestMoveWindowTo(PScwmWindow psw, int x, int y)
 {
+  if (!psolver) {
+    XMoveWindow(dpy, psw->frame, x, y);
+    return;
+  }
   ScwmWindowConstraintInfo *pswci = psw->pswci;
   (*psolver)
     .suggestValue(pswci->_frame_x,x)
@@ -92,6 +99,8 @@ SuggestMoveWindowTo(PScwmWindow psw, int x, int y)
 void 
 CassowaryEndEditPosition(PScwmWindow psw)
 {
+  if (!psolver)
+    return;
   psolver->endEdit();
 }
 

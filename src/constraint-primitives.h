@@ -13,6 +13,14 @@
 #include <config.h>
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void init_constraint_primitives();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* CONSTRAINT_PRIMITIVES_H__ */

@@ -12,18 +12,49 @@
 
 #ifdef USE_CASSOWARY
 
+extern "C" {
 #include "scwm.h"
+#include "window.h"
+}
+
 #include "constraint-primitives.h"
 #include "scwm-constraints.h"
 #include "scwm-constraints.hpp"
-#include "window.h"
 #include "ClLinearEquation.h"
 #include "ClLinearInequality.h"
 #include "ClSimplexSolver.h"
 #include "../guile/cassowary_scm.hpp"
 #include <strstream>
 
+
 ClSimplexSolver *psolver;
+
+static vector<ScwmWindow *> rgpswDirty;
+
+static void
+ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
+{
+  ScwmWindow *psw = static_cast<ScwmWindow *>(pclv->Pv());
+  if (!psw) {
+    scwm_msg(WARN,__FUNCTION__,"No struct ScwmWindow attached to var: %s", pclv->name().data());
+    return;
+  }
+  rgpswDirty.push_back(psw);
+}
+
+static void
+ScwmResolve(ClSimplexSolver *psolver)
+{
+  // go through the dirty windows and move them
+  vector<ScwmWindow *>::const_iterator it = rgpswDirty.begin();
+  for ( ; it != rgpswDirty.end(); ++it ) {
+    const ScwmWindow *psw = *it;
+    psw->pswci->CopyStateToPswVars();
+    MovePswToCurrentPosition(psw);
+  }
+  rgpswDirty.clear();
+}
+
 
 SCWM_PROC(add_stays_on_window, "add-stays-on-window", 1, 0, 0,
           (SCM win))
@@ -38,7 +69,7 @@ WIN is a window objects */
   
   ScwmWindow const *const psw = PSWFROMSCMWIN(win);
   ScwmWindowConstraintInfo *pswci = psw->pswci;
-  pswci->AddStays();
+  pswci->AddStays(psolver);
 
   /* FIXGJB: need to add hook to remove the stays if win disappears */
   return SCM_UNSPECIFIED;
@@ -55,6 +86,8 @@ SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
     scm_wrong_type_arg(FUNC_NAME,iarg++,solver);
 
   psolver = PsolverFromScm(solver);
+  psolver->SetChangeClvCallback(ScwmClvChanged);
+  psolver->SetResolveCallback(ScwmResolve);
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME

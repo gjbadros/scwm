@@ -20,8 +20,6 @@
 #include "ClVariable.h"
 #include "ClSimplexSolver.h"
 
-extern ClSimplexSolver *psolver;
-
 class ScwmWindowConstraintInfo {
 public:
   ScwmWindowConstraintInfo(ScwmWindow *psw)
@@ -43,11 +41,29 @@ public:
       _frame_height.setPv(psw);
     }
 
-  AddStays()
+  AddStays(ClSimplexSolver *psolver)
     {
       // FIXGJB: these weights should increase each time this is called
       psolver->addPointStay(_frame_width,_frame_height,100);
       psolver->addPointStay(_frame_x,_frame_y,1);
+    }
+
+  ScwmWindow *Psw() const
+    {
+      assert(_frame_x.Pv() == _frame_y.Pv());
+      assert(_frame_x.Pv() == _frame_width.Pv());
+      assert(_frame_x.Pv() == _frame_height.Pv());
+      return static_cast<ScwmWindow *>(_frame_x.Pv());
+    }
+
+  void CopyStateToPswVars() const
+    {
+      ScwmWindow *psw = Psw();
+      assert(psw);
+      psw->frame_x = _frame_x.intValue();
+      psw->frame_y = _frame_y.intValue();
+      psw->frame_width = _frame_width.intValue();
+      psw->frame_height = _frame_height.intValue();
     }
 
   ClVariable _frame_x;
@@ -55,5 +71,6 @@ public:
   ClVariable _frame_width;
   ClVariable _frame_height;
 };
+
 
 #endif
