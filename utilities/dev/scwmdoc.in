@@ -104,6 +104,9 @@ my %concepts = ();
 my %hooks = ();
 my %vars = ();
 
+# list of the argument names in the current C function
+my @argnames = ();
+
 # Current scheme environment
 # i.e., the last define-module seen, reset at new files
 my $current_module = "";
@@ -144,6 +147,22 @@ while (<>) {
     }
     $header .= $_;
     ProcessHeader($filename, $line, $header);
+  } elsif (m/^\s*scm_wrong_type_arg\s*\(\s*FUNC_NAME\s*,\s*(\d+)\s*,\s*(\w+)\s*\)/) {
+    my $argnum = $1; # 1-based
+    my $argname = $2;
+    print STDERR "Checking ", $argname, " (arg ", $argnum, ") against list: ", join(" ",@argnames), "\n"
+      if $fDebug;
+    if ($argnum-1 > $#argnames || $argnames[$argnum-1] ne $argname) {
+      print STDERR "$ARGV:$.:**** Argument name/number mismatch in scm_wrong_type_arg line\n";
+    }
+  } elsif (m/^\s*VALIDATE_COLOR[^\(]*\s*\(\s*(\w+)\s*,\s*FUNC_NAME\s*,\s*(\d+)\s*\)/) {
+    my $argnum = $2; # 1-based
+    my $argname = $1;
+    print STDERR "Checking ", $argname, " (arg ", $argnum, ") against list: ", join(" ",@argnames), "\n"
+      if $fDebug;
+    if ($argnum-1 > $#argnames || $argnames[$argnum-1] ne $argname) {
+      print STDERR "$ARGV:$.:**** Argument name/number mismatch in VALIDATE_COLOR_... line\n";
+    }
   } elsif (m/SCWM_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"\s*\)/) {
     my $c_hookname = $1;
     my $scheme_hookname = $2;
@@ -650,6 +669,7 @@ sub ProcessHeader( $$$ ) {
   my $cremovals = ($clean_argslist =~ s/\bSCM\b//g);
   $clean_argslist =~ s/\n/ /g;
   $clean_argslist =~ s/[ \t]+//g;
+  @argnames = split(/,/, $clean_argslist);  # this array is for comparison w/ C code
   $clean_argslist =~ s/_[pP]\b/?/g;
   $clean_argslist =~ s/_[xX]\b/!/g;
   $clean_argslist =~ s/_/-/g;
