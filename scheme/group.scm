@@ -20,7 +20,6 @@
 (define-module (app scwm group)
   :use-module (app scwm winops)
   :use-module (app scwm wininfo)
-  :use-module (app scwm winlist)
   :use-module (app scwm optargs)
   :use-module (app scwm listops)
   :use-module (app scwm window-selection)
@@ -36,11 +35,14 @@
 (define (group-leader-id group)
   "Returns the id of the leader window of GROUP.
 GROUP can be any window belonging to the group."
-  (let ((hints (car (X-property-get group "WM_HINTS"))))
-    (if (not (zero? (logand (vector-ref hints FlagsHintIndex)
-			    WindowGroupHint)))
-	(vector-ref hints GroupHintIndex)
-	#f)))
+  (let ((xprop (X-property-get group "WM_HINTS")))
+    (if xprop
+        (let ((hints (car xprop)))
+          (if (not (zero? (logand (vector-ref hints FlagsHintIndex)
+                                  WindowGroupHint)))
+              (vector-ref hints GroupHintIndex)
+              #f))
+        #f)))
 
 (define-public (group-window group)
   "Returns a distinguished window of GROUP.
@@ -75,21 +77,61 @@ all the group action procedures to be used on lists of windows, too."
 	    stick-window unstick-window keep-on-top un-keep-on-top
 	    close-window delete-window destroy-window))
 
-(define (seperate-group-windows windows leader members non-members)
-  (if (null? windows)
-      (cons members non-members)
-      (if (= (group-leader-id (car windows)) leader)
-	  (seperate-group-windows (cdr windows) leader
-				  (cons (car windows) members) non-members)
-	  (seperate-group-windows (cdr windows) leader
-				  members (cons (car windows) non-members)))))
+;;; Returns result of adding windows from WINDOWS with group-leader-id matching LEADER
+;;;    to MEMBERS and other windows to NON-MEMBERS.  Result is returned as a cons cell.
+;;;    List of members first; list of non-members second.
+;;; MEMBERS and NON-MEMBERS are not modified.
+;;; Does not preserve the order of WINDOWS in the members and non-members return values.
+(define (seperate-group-windows-id windows leader-id members non-members)
+  (if leader-id
+      (if (null? windows)
+          (cons members non-members)
+          (let ((other-gli (group-leader-id (car windows))))
+            (if (and other-gli (= other-gli leader-id))
+                (seperate-group-windows-id (cdr windows) leader-id
+                                           (cons (car windows) members) non-members)
+                (seperate-group-windows-id (cdr windows) leader-id
+                                           members (cons (car windows) non-members)))))
+      (cons members (append windows non-members))))
+
+;;; Returns result of adding windows from WINDOWS in GROUP-LIST
+;;;    to MEMBERS and other windows to NON-MEMBERS.  Result is returned as a cons cell.
+;;;    List of members first; list of non-members second.
+;;; GROUP-LIST, MEMBERS, and NON-MEMBERS are not modified.
+;;; Does not preserve the order of WINDOWS in the members and non-members return values.
+(define (seperate-group-windows-list windows group-list members non-members)
+  (if (null? group-list)
+      (cons members (append windows non-members))
+      (if (null? windows)
+          (cons members non-members)
+          (if (member (car windows) group-list)
+              (seperate-group-windows-list (cdr windows) group-list
+                                           (cons (car windows) members) non-members)
+              (seperate-group-windows-list (cdr windows) group-list
+                                           members (cons (car windows) non-members))))))
+
+;;; Returns result of adding windows from WINDOWS in GROUP
+;;;    to MEMBERS and other windows to NON-MEMBERS.  Result is returned as a cons cell.
+;;;    List of members first; list of non-members second.
+;;; GROUP, MEMBERS, and NON-MEMBERS are not modified.
+;;; Does not preserve the order of WINDOWS in the members and non-members return values.
+;;; GROUP can be a window, a list of windows, or a group-leader-id
+(define (seperate-group-windows windows group members non-members)
+  (if (list? group)
+      (seperate-group-windows-list windows group members non-members)
+      (if (window? group)
+          (let ((glid (group-leader-id group)))
+            (if glid
+                (seperate-group-windows-id windows glid members non-members)
+                (seperate-group-windows-list windows (list group) members non-members)))
+          (seperate-group-windows-id windows group members non-members))))
 
 (define*-public (raise-group #&optional (group (get-window)))
   "Raise members of GROUP above all other windows.
 Keeps the relative stacking order of the members intact."
   (let ((res (seperate-group-windows (list-windows #:by-stacking #t
 						   #:reverse #t)
-				     (group-leader-id test-group) () ())))
+				     group () ())))
     (restack-windows (append (car res) (cdr res)))))
 
 (define*-public (lower-group #&optional (group (get-window)))
@@ -97,7 +139,7 @@ Keeps the relative stacking order of the members intact."
 Keeps the relative stacking order of the members intact."
   (let ((res (seperate-group-windows (list-windows #:by-stacking #t
 						   #:reverse #t)
-				     (group-leader-id test-group) () ())))
+				     group () ())))
     (restack-windows (append (cdr res) (car res)))))
 
 (define*-public (move-group-relative dx dy #&optional (group (get-window)))
@@ -106,7 +148,7 @@ Keeps the relative stacking order of the members intact."
 	    (group->windows group)))
 
 (define*-public (move-group x y #&optional (group (get-window)))
-  "Move GROUP to virtual coordinates X, Y.
+  "Move GROUP to viewport coordinates X, Y.
 Move the window GROUP represents to X, Y, and keep the other windows in GROUP
 in the same relative positions to this window."
   (let ((pos (window-viewport-position (group-window group))))
@@ -125,18 +167,20 @@ will move along."
 	 (others (delete! gwin (group->windows group))))
     (if (null? others)
 	(interactive-move gwin)
-	(let* ((last-pos (window-viewport-position gwin))
+	(let* ((last-pos (window-position gwin))
 	       (drag-others-along
 		(lambda (win x y)
-		  (let ((dx (- x (car last-pos)))
-			(dy (- y (cadr last-pos))))
+		  (let* ((win-pos (window-position win))
+                         (dx (- (car win-pos) (car last-pos)))
+                         (dy (- (cadr win-pos) (cadr last-pos))))
+                    (display last-pos)(display win-pos)(newline)
 		    (for-each (lambda (w) 
 				;; GJB:FIXME:: must also run the 
 				;; interactive-move-new-position-hook for w
 				;; and should do the start/end hooks for it, too
 				(move-window-relative dx dy w))
-			      others))
-		  (set! last-pos (list x y)))))
+			      others)
+                    (set! last-pos win-pos)))))
 	  (dynamic-wind
 	   (lambda () 
 	     (add-hook! interactive-move-new-position-hook drag-others-along))
@@ -145,24 +189,29 @@ will move along."
 	   (lambda ()
 	     (remove-hook! interactive-move-new-position-hook drag-others-along)))))))
 
+;;; SRL:FIXME:: Broken.  Can't test because set-show-icon! is deadly.
 (define*-public (deiconify-group #&optional (group (get-window)) x y)
-  "Deiconify all members of GROUP."
+  "BROKEN: Deiconify all members of GROUP."
   (for-each (lambda (w)
 	      (deiconify-window w x y)
 	      (set-show-icon! #t w)
 	      (set-object-property! w 'group-deiconify #f))
 	    (group->windows group)))
 
+;;; SRL:FIXME:: Broken.  Can't test because set-show-icon! is broken.
 (define*-public (deiconify-group-or-window #&optional (win (get-window)) x y)
-  "Deiconify WIN, and perhaps all members of its group.
+  "BROKEN: Deiconify WIN, and perhaps all members of its group.
 If WIN's icon was the result of an `iconify-group', all members of the group
 are deiconified; otherwise, only WIN is affected."
   (cond ((object-property win 'group-deiconify)
 	 (deiconify-group win x y))
 	(else (deiconify-window win x y))))
 
+;;; SRL:FIXME:: If group is a list of windows, then no icon is actually displayed
+;;; SRL:FIXME:: Some windows will not iconify here that will iconify singly
+;;; SRL:FIXME:: Broken.  Can't test because set-show-icon! is broken.
 (define*-public (iconify-group #&optional (group (get-window)))
-  "Iconify GROUP into one icon.
+  "BROKEN: Iconify GROUP into one icon.
 The icon is that of the window GROUP represents.
 `deiconify-group-or-window' will deiconify this icon into the whole GROUP."
   (set-object-property! group 'group-deiconify #t)
@@ -173,7 +222,10 @@ The icon is that of the window GROUP represents.
 
 
 (define-public (make-window-group-menu w)
-  "Return a menu for window group operations."
+  "Return a menu for window group operations.
+W must be a window or #f.  The resulting menu can be used for
+manipulating the current group of selected windows or selecting
+windows based on comparison to properties of W."
   (let* ((swl (selected-windows-list))
 	 (wla? (pair? swl)) ;; wla? -- winlist-active?
 	 (n (length swl))
@@ -182,7 +234,9 @@ The icon is that of the window GROUP represents.
 	 (wop (if sel? "Unselect" "Select"))
 	 (title (if w (window-title w) #f))
 	 (resource (if w (window-resource w) #f))
-	 (class (if w (window-class w) #f)))
+	 (class (if w (window-class w) #f))
+         (group-size (if w (length (group->windows w)) 0))
+         (group-size-str (number->string group-size)))
     (menu
      (append
       (filter-map 
@@ -191,7 +245,14 @@ The icon is that of the window GROUP represents.
 	(menu-title "Window Group") menu-separator
 	(menuitem 
 	 (string-append "&" wop (if w " this" " a") " window")
-	 #:action select-window-toggle)
+	 #:action select-window-toggle) 
+	(if (> group-size 1)
+	    (menuitem
+	     (string-append wop " " group-size-str " windows in this windows &group")
+	     #:action (lambda () (map
+                                  (if sel? select-window-remove select-window-add)
+				  (group->windows w))))
+	    #f)
 	(if title
 	    (menuitem
 	     (string-append wop " windows with &title `" title "'")
@@ -213,16 +274,17 @@ The icon is that of the window GROUP represents.
 	(if wla? (menuitem "Unselect &all windows" 
 			   #:action unselect-all-windows)
 	    #f)))
-      (if (and wla? (> n 1))
+      (if (and wla? (>= n 1))
 	  (list
 	   (menuitem (string-append "&Tile " nstr " windows") 
 		     #:action tile-windows-interactively)
 	   (menuitem (string-append "&Cascade " nstr " windows") 
 		     #:action cascade-windows-interactively)
-	   (menuitem (string-append "C&lose " nstr " windows")
-		     #:action (lambda () (delete-group swl) (unselect-all-windows)))
+	   (menuitem (string-append "M&ove " nstr " windows")
+		     #:action (lambda () (interactive-move-group swl)))
 	   (menuitem (string-append "&Iconify " nstr " windows")
-		     #:action (lambda () (iconify-group swl)))
+                     ;; SRL:FIXME:: Change back to iconify-group when it is fixed.
+		     #:action (lambda () (iconify-group-individually swl)))
 	   (menuitem (string-append "&Shade " nstr " windows")
 		     #:action (lambda () (window-shade-group swl)))
 	   (menuitem (string-append "&Unshade " nstr " windows")
@@ -235,6 +297,8 @@ The icon is that of the window GROUP represents.
 		     #:action (lambda () (keep-group-on-top swl)))
 	   (menuitem (string-append "Unk&eep on top " nstr " windows")
 		     #:action (lambda () (un-keep-group-on-top swl)))
+	   (menuitem (string-append "C&lose " nstr " windows")
+		     #:action (lambda () (close-group swl) (unselect-all-windows)))
 	   (menuitem (string-append "Destroy group " nstr " windows")
 		     #:action (lambda () (destroy-group swl) (unselect-all-windows))))
 	  ()
@@ -252,7 +316,8 @@ The icon is that of the window GROUP represents.
 
 (define*-public (interactive-move-selected-group-or-window)
   "Interactively move either the selected windows or the current window.
-The current window alone is moved if no windows are selected."
+The current window alone is moved if no windows are selected.
+All windows are unselected after this operation."
   (interactive)
   (let ((wingroup (selected-windows-list)))
     (if (pair? wingroup)

@@ -1,3 +1,40 @@
+Sun Mar 31 23:56:29 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* group.scm:
+	Removed redundant :use-module declaration.
+	Fixed 'group-leader-id' so it returns the right thing on windows
+	  without any WM_HINTS set.
+	Enhanced 'seperate-group-windows' so that it can take a 
+	  group-leader-id or a group (either list of windows or example
+	  window) and do the right thing.  This fixes some of the routines
+	  that call this so that they can use any type of group.
+	Changed 'raise-group' to use the new 'seperate-group-windows' in such
+	  a way that a list of windows is now accepted as the group parameter.
+	Made same change to 'lower-group' that was made to 'raise-group'.
+	Changed doc for 'move-group' to match what the function does (change
+	  from virtual coordinates to viewport coordinates).
+	Modified 'interactive-move-group' so that it uses virtual coordinates
+	  rather than viewport coordinates to make the other windows tag along.
+	  This fixes the movement behavior for when an 'interactive-move-group'
+	  causes the viewport to scroll.
+	Marked 'deiconify-group', 'deiconify-group-or-window', and 'iconify-group'
+	  broken since they all use the busted 'set-show-icon!' function and
+	  hence can't be tested (but don't work now in any case).
+	Improved doc string for 'make-window-group-menu' noting that W can be
+	  passed as #f.
+	Changed 'make-window-group-menu' so that it allows group operations on
+	  a single window selection since they work just fine.
+	Enhanced 'make-window-group-menu' by adding an option to (un)select all
+	  the windows in the same group as this window (as indicated by their
+	  group-leader-id).
+	Enhanced 'make-window-group-menu' by adding move to the list of operations.
+	Moved the close-window option of 'make-window-group-menu' down near the end
+	  by the destroy option.
+	Changed iconify option of 'make-window-group-menu' to use 
+	  'iconify-group-individually' since 'iconify-group' is currently
+	  broken.  This should be changed back once 'iconify-group' is fixed.
+	  I left a FIXME behind as a reminder.
+
 Sun Mar 31 19:52:25 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* winops-menu.scm: Fixed Unminimize option in
