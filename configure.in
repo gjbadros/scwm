@@ -31,7 +31,7 @@ AC_CHECK_PROG(BUILD_GUILE, build-guile, yes, no)
 
 if test $BUILD_GUILE = yes; then
   AC_MSG_CHECKING(whether build-guile works)
-  if test x`build-guile --version >/dev/null 2>&1 || echo no` = xno; then
+  if test x`build-guile link >/dev/null 2>&1 || echo no` = xno; then
     BUILD_GUILE=no
   fi
   AC_MSG_RESULT($BUILD_GUILE)
@@ -72,6 +72,9 @@ CFLAGS="$X_CFLAGS"
 LDFLAGS="$X_LDFLAGS $X_LIBS"
 orig_x_libs="$x_libs"
 
+dnl # check for math library
+AC_CHECK_LIB(m, main)
+
 dnl # Check for the X11 library ##
 
 AC_CHECK_LIB(X11, XOpenDisplay, x_libs="-lX11 $X_EXTRA_LIBS", no_x11_lib=yes, $X_EXTRA_LIBS)
@@ -105,13 +108,22 @@ CFLAGS="$saved_cflags"
 LDFLAGS="$saved_ldflags"
 
 dnl # Check for readline library #
+
+
 AC_CHECK_LIB(termcap, tgoto, [
 	AC_CHECK_LIB(readline, readline, [
 	READLINE_LIB="-lreadline -ltermcap"
 	AC_DEFINE(HAVE_READLINE)
 	AC_CHECK_LIB(readline, add_history, AC_DEFINE(HAVE_HISTORY),,"-ltermcap")
 	], READLINE_LIB="", "-ltermcap")  
-], READLINE_LIB="")
+], AC_CHECK_LIB(ncurses, tgoto, [
+	AC_CHECK_LIB(readline, readline, [
+		READLINE_LIB="-lreadline -lncurses"
+		AC_DEFINE(HAVE_READLINE)
+		AC_CHECK_LIB(readline, add_history, AC_DEFINE(HAVE_HISTORY),,"-lncurses")
+	], READLINE_LIB="", "-lncurses")
+], READLINE_LIB=""))
+
 
 AC_SUBST(READLINE_LIB)
 
@@ -163,12 +175,10 @@ else
   AC_CHECK_LIB(rx, main, GUILE_LIBS="-lrx $GUILE_LIBS",, $GUILE_LIBS_PRE)
   AC_CHECK_LIB(qt, main, GUILE_LIBS="-lqt $GUILE_LIBS",, $GUILE_LIBS_PRE)
   AC_CHECK_LIB(dl, dlopen, GUILE_LIBS="-ldl $GUILE_LIBS",, $GUILE_LIBS_PRE)
-  echo "${GUILE_LIBS}"
+
   AC_CHECK_LIB(guile, scm_handle_by_message_noexit, GUILE_LIBS="${GUILE_LIBS_PRE} -lguile ${GUILE_LIBS}", [
-  echo "${GUILE_LIBS}"
-  AC_MSG_ERROR(Can not find Guile 1.2 or later on the system)
-], $GUILE_LIBS_PRE $GUILE_LIBS)
-  echo "${GUILE_LIBS}"
+  	AC_MSG_ERROR(Can not find Guile 1.2 or later on the system)
+  ], $GUILE_LIBS_PRE $GUILE_LIBS)
 fi
 
 AC_SUBST(GUILE_INCLUDES)
@@ -183,11 +193,12 @@ AC_CHECK_HEADERS(getopt.h, AC_DEFINE(HAVE_GETOPT_H))
 
 dnl ## Check for library functions ##
 
-AC_CHECK_FUNC(getopt_long, AC_DEFINE(HAVE_GETOPT_LONG))
 # AC_CHECK_FUNCS(select)
+AC_CHECK_FUNCS(getopt_long)
 AC_CHECK_FUNCS(gethostname waitpid sysconf uname)
 AC_CHECK_FUNCS(strerror strcasecmp strncasecmp)
-AC_CHECK_FUNC(usleep, AC_DEFINE(HAVE_USLEEP))
+AC_CHECK_FUNCS(usleep)
+AC_CHECK_FUNCS(setlinebuf setvbuf)
 
 dnl # Check for bleeding-edge guile funcs
 

@@ -1567,11 +1567,7 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
     }
   }
 
-#ifdef __hpux
-  retval = scwm_internal_select(fd_width + 1, (int *) &in_fdset, (int *) &out_fdset, 0, tp);
-#else
   retval = scm_internal_select(fd_width + 1, &in_fdset, &out_fdset, 0, tp);
-#endif
 
   if (retval == 0) {
     update_timer_hooks();

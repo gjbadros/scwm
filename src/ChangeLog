@@ -1,3 +1,14 @@
+Fri Jul 10 10:45:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* events.c (XNextEvent_orTimeout: Remove the #ifdef _hpux, it's
+ 	unnecessary, and an evil system-test macro anyway. Thanks to
+ 	Stephen Tell <tell@cs.unc.edu>.
+
+	* syscompat.c: #define setlinebuf in terms of setvbuf or
+ 	(approximating) setbuf. Based on a patch from Stephen Tell
+ 	<tell@cs.unc.edu>.
+	
+
 1998-07-08  Greg Badros  <gjb@cs.washington.edu>
 
 	* color.c, shutdown.c: fixed arguments that didn't match argument

@@ -47,4 +47,13 @@ int  strcasecmp(char *s1, char *s2);
 int  strncasecmp(char *s1, char *s2, int n);
 #endif /* !HAVE_STRNCASECMP */
 
+
+#ifndef HAVE_SETLINEBUF
+  #ifdef HAVE_SETVBUF
+    #define setlinebuf(stream) setvbuf((stream), NULL, _IOLBF, BUFSIZ);
+  #else /* HAVE_SETVBUF */
+    #define setlinebuf(stream) setbuf((stream), NULL);
+  #endif /* HAVE_SETVBUF */
+#endif /* HAVE_SETLINEBUF
+
 #endif /* SYSCOMPAT_H */

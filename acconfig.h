@@ -77,6 +77,12 @@
 /* Define this if your system has the usleep function. */
 #undef HAVE_USLEEP
 
+/* Define this if your system has the setlinebuf function. */
+#undef HAVE_SETLINEBUF
+
+/* Define this if your system has the setvbuf function. */
+#undef HAVE_SETVBUF
+
 /* Define this if you want multibyte support. */
 #undef I18N
 
