@@ -1,3 +1,12 @@
+Tue Mar 30 19:02:20 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added hash-table->alist (should be a guile proc, so I
+	put it here)
+
+Mon Mar 29 20:55:39 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added install of ScwmBiff.scm, time-convert.scm
+
 Mon Mar 29 14:43:07 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* preferences.scm: Added help buttons to show documentation in a
