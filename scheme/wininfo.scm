@@ -156,15 +156,16 @@ returned is in parentheses."
 This involves quoting meta characters and replacing the wildcard
 meta-characters \"*\" with \".*\" and \"?\" with \".\"."
   (regexp-substitute/global 
-   #f "\\\\\\*|\\\\\\?" 
+   #f "(\\\\)?\\\\([*?])" 
    (regexp-quote wildcard) 
-   'pre 
-   (lambda (match) 
-     (case (string-ref (match:string match) (1+ (match:start match))) 
-       ((#\*) ".*")
-       ((#\?) "."))) ;; changed from .? --08/04/98 gjb
+   'pre
+   (lambda (match)
+     (if (match:start match 1)
+	 (match:substring match 2)
+	 (case (string-ref (match:string match) (match:start match 2))
+	   ((#\*) ".*")
+	   ((#\?) "."))))
    'post))
-
 
 (define*-public (window-client-machine-name #&optional (win (get-window)))
   "Return the name of the client machine on which WIN is running."
