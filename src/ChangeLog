@@ -1,3 +1,18 @@
+Sat Jul 18 16:26:11 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scmtypes.h, scmtypes.c: Removed -- now individual init functions do the
+	right thing
+	
+	* window.c, scwmmenu.c, menuitem.c, face.c, decor.c: Add smob type 
+	initialization code using the below macros to obviate the need for 
+	scmtypes.{h,c}
+
+	* scwm.h: Added MAKE_SMBFUNS and REGISTER_SCWMSMOBFUNS macros that 
+	should be used more consistently
+
+	* scwm.c: Remove call to init_scwm_types, don't include scmtypes.h 
+	any longer
+
 Sat Jul 18 11:15:59 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* *.c, *.h: Use #ifdef HAVE_CONFIG_H to guard #include config.h,
