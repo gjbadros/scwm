@@ -1220,6 +1220,10 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
 	goto MENU_INTERACTION_RETURN;
       } else if (ms == MENUSTATUS_ITEM_SELECTED ||
                  (fMenuHotkeysActivateItems && ms == MENUSTATUS_NEWITEM_HOTKEY )) {
+        if (pmd->fHoverActionInvoked) {
+          InvokeUnhoverAction(pmd);
+          pmd->fHoverActionInvoked = False;
+        }
 	if (pmiim) {
           MenuItemInMenu *pmiimSelected;
           if (fMenuHotkeysActivateItems && (ms == MENUSTATUS_NEWITEM ||
