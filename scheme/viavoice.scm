@@ -165,3 +165,4 @@
 ;;(remove-hook! vv-recognition-hook vv-move-window)
 ;;(reset-hook! vv-recognition-hook)
 
+(vv-initialize)

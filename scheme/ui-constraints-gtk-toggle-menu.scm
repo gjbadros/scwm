@@ -29,7 +29,7 @@
 ;; constraints.
 
 ;; (use-scwm-modules ui-constraints-gtk-toggle-menu)
-;; (popup-ui-constraints-gtk-toggle-menu)
+;; (ui-constraints-gtk-toggle-menu)
 
 
 (define-module (app scwm ui-constraints-gtk-toggle-menu)
@@ -48,12 +48,10 @@
 
 (define gtk-toggle-close? #f)
 
-(define toggle-initialized? #f)
+(define is-toggle-initialized? #f)
 
-;; hack to fix gtk signal recursion
-
+;; GJB:FIXME:: hack to fix gtk signal recursion (?)
 (define allow-enable-hooks? #t)
-
 
 
 ;; window flashing code from ui-constraints-toggle-menu
@@ -209,41 +207,12 @@ To display the toggle menu, call ui-constraint-gtk-toggle-menu."
     (gtk-window-position toplevel 'mouse)
     (gtk-window-set-policy toplevel #t #t #t)
     (gtk-signal-connect toplevel "delete_event" (lambda (args) (gtk-widget-hide toplevel)))
-;;    (gtk-widget-show toplevel)
-    ))
-
-
-;; (initialize-gtk-toggle-menu)
+    (set! is-toggle-initialized? #t)))
 
 
 (define-public (ui-constraints-gtk-toggle-menu)
   "Displays the GTK version of the constraints toggle menu."
-  (if (not toggle-initialized?) (initialize-gtk-toggle-menu))
+  (if (not is-toggle-initialized?)
+      (initialize-gtk-toggle-menu))
   (gtk-widget-show gtk-toggle-window))
 
-;; (ui-constraints-gtk-toggle-menu)
-
-
-(define-public (popup-ui-constraints-gtk-toggle-menu)
-  "Pops up the constraint toggle menu.
-Maintains consistency with previous toggle menu code."
-  (ui-constraints-gtk-toggle-menu))
-
-;; (popup-ui-constraints-gtk-toggle-menu)
-
-(define chk (gtk-check-button-new-with-label "Enabled?"))
-
-(define (test-widget)
-  (let* ((toplevel (gtk-window-new 'toplevel))
-	 (tbl (gtk-table-new 1 3 #f))
-	 (lbl (gtk-label-new "keep-above"))
-	 (bt2 (gtk-button-new-with-label "Delete")))
-    (gtk-toggle-button-set-state chk #t)
-    (gtk-table-attach tbl lbl 0 1 0 1)
-    (gtk-table-attach tbl chk 1 2 0 1)
-    (gtk-table-attach tbl bt2 2 3 0 1)
-    (gtk-container-add toplevel tbl)
-    (gtk-widget-show-all toplevel)))
-
-;; (test-widget)
-;; (gtk-toggle-button-set-state chk #t)
