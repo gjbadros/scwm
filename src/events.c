@@ -1707,7 +1707,7 @@ SCWM_PROC(send_button_press, "send-button-press", 2, 4, 0,
   SCM_REDEFER_INTS;
 
   VALIDATEN(win, 3, __FUNCTION__);
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   w = psw->w;
 
   if (!gh_number_p(button)) {
@@ -1780,7 +1780,7 @@ SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
   SCM_REDEFER_INTS;
 
   VALIDATEN(win, 2, __FUNCTION__);
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   w = psw->w;
 
   if (!gh_string_p(key)) {

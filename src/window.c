@@ -312,8 +312,8 @@ mark_window(SCM obj)
   SCM_SETGC8MARK(obj);
     
   /* FIXGJB: revisit this */
-  if (VALIDWINP(obj) && SCWMWINDOW(obj)->fl != NULL) {
-    ScwmWindow *psw = SCWMWINDOW(obj);
+  if (VALIDWINP(obj) && PSWFROMSCMWIN(obj)->fl != NULL) {
+    ScwmWindow *psw = PSWFROMSCMWIN(obj);
     scm_gc_mark(psw->fl->scmdecor);
     scm_gc_mark(psw->mini_icon_image);
     scm_gc_mark(psw->icon_req_image);
@@ -333,7 +333,7 @@ print_window(SCM obj, SCM port, scm_print_state * pstate)
 {
   scm_puts("#<window ", port);
   if (VALIDWINP(obj)) {
-    scm_write(gh_ulong2scm((unsigned long) (SCWMWINDOW(obj)->w)), port);
+    scm_write(gh_ulong2scm((unsigned long) (PSWFROMSCMWIN(obj)->w)), port);
   } else {
     scm_puts("(invalid)", port);
   }
@@ -356,7 +356,7 @@ make_window(ScwmWindow * win)
   SCM_NEWCELL(answer);
   SCM_SETCAR(answer, scm_tc16_scwm_window);
   SCM_SETCDR(answer, (SCM) schwin);
-  SCWMWINDOW(answer) = win;
+  PSWFROMSCMWIN(answer) = win;
   VALIDWINP(answer) = 1;
   scm_protect_object(answer);
 
@@ -368,7 +368,7 @@ void
 invalidate_window(SCM schwin)
 {
   VALIDWINP(schwin) = 0;
-  SCWMWINDOW(schwin) = NULL;
+  PSWFROMSCMWIN(schwin) = NULL;
   scm_unprotect_object(schwin);
 }
 
@@ -1160,7 +1160,7 @@ SCWM_PROC(delete_window, "delete-window", 0, 1, 0,
 
   VALIDATEKILL(win, "delete-window");
 
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   if (check_allowed_function(F_DELETE, psw) == 0) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
@@ -1182,7 +1182,7 @@ SCWM_PROC(destroy_window, "destroy-window", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATEKILL(win, "destroy-window");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   if (check_allowed_function(F_DESTROY, psw) == 0) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
@@ -1204,7 +1204,7 @@ SCWM_PROC(window_deletable_p, "window-deletable?", 0, 1, 0,
           (SCM win))
 {
   VALIDATEKILL(win, "window-deletable?");
-  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fDoesWmDeleteWindow);
+  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fDoesWmDeleteWindow);
 }
 
 
@@ -1215,7 +1215,7 @@ SCWM_PROC(focus, "focus", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "focus");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   FocusOn(psw, 0);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -1237,7 +1237,7 @@ SCWM_PROC(warp_to_window, "warp-to-window", 0, 1, 0,
 {
   SCM_REDEFER_INTS;
   VALIDATE(win, "warp-to-window");
-  WarpOn(SCWMWINDOW(win), 0, 0, 0, 0);
+  WarpOn(PSWFROMSCMWIN(win), 0, 0, 0, 0);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -1251,7 +1251,7 @@ SCWM_PROC(raise_window, "raise-window", 0, 1, 0,
   SCM_REDEFER_INTS;
   VALIDATE(win, "raise-window");
 
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   RaiseWindow(psw);
   /* FIXMS darn, this is not going to do what we want it to -- must
@@ -1269,7 +1269,7 @@ SCWM_PROC(lower_window, "lower-window", 0, 1, 0,
 {
   SCM_REDEFER_INTS;
   VALIDATE(win, "lower-window");
-  LowerWindow(SCWMWINDOW(win));
+  LowerWindow(PSWFROMSCMWIN(win));
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -1298,7 +1298,7 @@ SCWM_PROC(restack_windows, "restack-windows", 1, 0, 0,
       scm_wrong_type_arg(s_restack_windows, 1, winlist);      
     }
 
-    psw=SCWMWINDOW(cur);
+    psw=PSWFROMSCMWIN(cur);
 
     cnt++;
 
@@ -1324,14 +1324,14 @@ SCWM_PROC(restack_windows, "restack-windows", 1, 0, 0,
 
   for (p=winlist, i=0; SCM_EOL!=p; p=SCM_CDR(p)) {
     SCM cur=SCM_CAR(p);
-    ScwmWindow *psw=SCWMWINDOW(cur);
+    ScwmWindow *psw=PSWFROMSCMWIN(cur);
 
     if (!WINDOWP(cur)) {
       FREEC(windows);
       scm_wrong_type_arg(s_restack_windows, 1, winlist);      
     }
 
-    windows[i++]=SCWMWINDOW(cur)->frame;    
+    windows[i++]=PSWFROMSCMWIN(cur)->frame;    
 
     if (psw->fIconified && !psw->fSuppressIcon) {
       if (!psw->fNoIconTitle) {
@@ -1363,7 +1363,7 @@ SCWM_PROC(raised_p, "raised?", 0, 1, 0,
   ScwmWindow *psw;
 
   VALIDATE(win, "raised?");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   return SCM_BOOL_FromBool(psw == Scr.LastWindowRaised ||
 			   psw->fVisible);
 }
@@ -1375,7 +1375,7 @@ SCWM_PROC(transient_p, "transient?", 0, 1, 0,
   ScwmWindow *psw;
 
   VALIDATE(win, "transient?");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   return SCM_BOOL_FromBool(psw->fTransient);
 }
 
@@ -1389,7 +1389,7 @@ SCWM_PROC(window_transient_for, "window-transient-for", 0, 1, 0,
   ScwmWindow *psw, *tpsw;
 
   VALIDATE(win, s_window_transient_for);
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   if (psw->fTransient && (psw->transientfor != None) &&
       (psw->transientfor != Scr.Root) &&
@@ -1410,7 +1410,7 @@ SCWM_PROC(iconify, "iconify", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "iconify");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   if (check_allowed_function(F_ICONIFY, psw) == 0) {
 
@@ -1428,7 +1428,7 @@ SCWM_PROC(deiconify, "deiconify", 0, 1, 0,
 {
   SCM_REDEFER_INTS;
   VALIDATE(win, "deiconify");
-  DeIconify(SCWMWINDOW(win));
+  DeIconify(PSWFROMSCMWIN(win));
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -1438,7 +1438,7 @@ SCWM_PROC(iconified_p, "iconified?", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "iconified?");
-  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fIconified);
+  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fIconified);
 }
 
 
@@ -1449,7 +1449,7 @@ SCWM_PROC(stick, "stick", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "stick");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   psw->fSticky = True;
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   SetTitleBar(psw, (Scr.Hilite == psw), True);
@@ -1465,7 +1465,7 @@ SCWM_PROC(unstick, "unstick", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "unstick");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   psw->fSticky = False;
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   SetTitleBar(psw, (Scr.Hilite == psw), True);
@@ -1477,7 +1477,7 @@ SCWM_PROC(sticky_p, "sticky?", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "sticky?");
-  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fSticky);
+  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fSticky);
 }
 
 
@@ -1497,7 +1497,7 @@ SCWM_PROC(window_shade, "window-shade", 0, 2, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "window-shade");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   if (!psw->fTitle || psw->fMaximized) {
     return SCM_BOOL_F;
@@ -1558,7 +1558,7 @@ SCWM_PROC(un_window_shade, "un-window-shade", 0, 2, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "un-window-shade");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
 #ifdef GJB_BE_ANAL_ABOUT_BOOLS
   /* FIXGJB: I took this code out so I can say:
@@ -1592,7 +1592,7 @@ SCWM_PROC(window_shaded_p, "window-shaded?", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "window-shaded?");
-  return SCM_BOOL_FromBool(SHADED_P(SCWMWINDOW(win)));
+  return SCM_BOOL_FromBool(SHADED_P(PSWFROMSCMWIN(win)));
 }
 
 
@@ -1717,7 +1717,7 @@ SCWM_PROC(move_to, "move-to", 2, 3, 0,
     /* This is the only sensible default */
     move_pointer_too_p = SCM_BOOL_F;
   }
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   w = psw->frame;
   if (psw->fIconified) {
     if (psw->icon_pixmap_w != None) {
@@ -1765,7 +1765,7 @@ SCWM_PROC(interactive_move, "interactive-move", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE_PRESS_ONLY(win, "interactive-move");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   w = psw->frame;
   if (psw->fIconified) {
     if (psw->icon_pixmap_w != None) {
@@ -1796,7 +1796,7 @@ SCWM_PROC(resize_to, "resize-to", 2, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATEN(win, 3, "resize-to");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   if (check_allowed_function(F_RESIZE, psw) == 0
       || SHADED_P(psw)) {
@@ -1857,7 +1857,7 @@ SCWM_PROC(interactive_resize, "interactive-resize", 0, 1, 0,
   Bool flags;
 
   VALIDATE_PRESS_ONLY(win, "interactive-resize");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
 
   if (check_allowed_function(F_RESIZE, psw) == 0
@@ -2036,7 +2036,7 @@ SCWM_PROC(refresh_window, "refresh-window", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "refresh-window");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   refresh_common(psw->fIconified ?
 		 (psw->icon_w) : (psw->frame));
@@ -2059,7 +2059,7 @@ SCWM_PROC(move_window_to_desk, "move-window-to-desk", 1, 1, 0,
   }
   VALIDATEN(win, 2, "move-window-to-desk");
 
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   val1 = gh_scm2int(which);
 
@@ -2095,7 +2095,7 @@ SCWM_PROC(window_position, "window-position", 0, 1, 0,
   ScwmWindow *psw;
 
   VALIDATE(win, "window-position");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   return scm_listify(SCM_MAKINUM(FRAME_X(psw)),
 		     SCM_MAKINUM(FRAME_Y(psw)),
@@ -2109,7 +2109,7 @@ SCWM_PROC(window_size, "window-size", 0, 1, 0,
   ScwmWindow *psw;
 
   VALIDATE(win, "window-size");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   return scm_listify(SCM_MAKINUM(FRAME_WIDTH(psw)),
 		     SCM_MAKINUM(FRAME_HEIGHT(psw)),
@@ -2121,7 +2121,7 @@ SCWM_PROC(window_id, "window-id", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "window-id");
-  return SCM_MAKINUM(SCWMWINDOW(win)->w);
+  return SCM_MAKINUM(PSWFROMSCMWIN(win)->w);
 }
 
 
@@ -2129,7 +2129,7 @@ SCWM_PROC(window_frame_id, "window-frame-id", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "window-frame-id");
-  return SCM_MAKINUM(SCWMWINDOW(win)->frame);
+  return SCM_MAKINUM(PSWFROMSCMWIN(win)->frame);
 }
 
 
@@ -2171,7 +2171,7 @@ SCWM_PROC(window_desk, "window-desk", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "window-desk");
-  return SCM_MAKINUM(SCWMWINDOW(win)->Desk);
+  return SCM_MAKINUM(PSWFROMSCMWIN(win)->Desk);
 }
 
 
@@ -2179,7 +2179,7 @@ SCWM_PROC(window_title, "window-title", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "window-title");
-  return gh_str02scm(SCWMWINDOW(win)->name);
+  return gh_str02scm(PSWFROMSCMWIN(win)->name);
 }
 
 
@@ -2187,7 +2187,7 @@ SCWM_PROC(window_class, "window-class", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "window-class");
-  return gh_str02scm(SCWMWINDOW(win)->classhint.res_class);
+  return gh_str02scm(PSWFROMSCMWIN(win)->classhint.res_class);
 }
 
 
@@ -2195,7 +2195,7 @@ SCWM_PROC(window_resource, "window-resource", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "window-resource");
-  return gh_str02scm(SCWMWINDOW(win)->classhint.res_name);
+  return gh_str02scm(PSWFROMSCMWIN(win)->classhint.res_name);
 }
 
 
@@ -2220,7 +2220,7 @@ SCWM_PROC(keep_on_top, "keep-on-top", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "keep-on-top");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   psw->fOnTop = True;
   /* is this needed? */
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
@@ -2237,7 +2237,7 @@ SCWM_PROC(un_keep_on_top, "un-keep-on-top", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "un-keep-on-top");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   psw->fOnTop = False;
   /* is this needed? */
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
@@ -2250,7 +2250,7 @@ SCWM_PROC(kept_on_top_p, "kept-on-top?", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "kept-on-top?");
-  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fOnTop);
+  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fOnTop);
 }
 
 
@@ -2266,7 +2266,7 @@ SCWM_PROC(show_titlebar, "show-titlebar", 0, 1, 0,
   SCM_REDEFER_INTS;
 
   VALIDATE(win, "show-titlebar");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   fl = psw->fl ? psw->fl : &Scr.DefaultDecor;
 
 
@@ -2293,7 +2293,7 @@ SCWM_PROC(hide_titlebar, "hide-titlebar", 0, 1, 0,
   SCM_REDEFER_INTS;
 
   VALIDATE(win, "hide-titlebar");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   fl = psw->fl ? psw->fl : &Scr.DefaultDecor;
 
   if (psw->fTitle) {
@@ -2314,7 +2314,7 @@ SCWM_PROC(titlebar_shown_p, "titlebar-shown?", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "titlebar-shown?");
-  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fTitle);
+  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fTitle);
 }
 
 
@@ -2329,7 +2329,7 @@ SCWM_PROC(normal_border, "normal-border", 0, 1, 0,
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   VALIDATE(win, "normal-border");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   psw->fBorder = True;
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   for (i = 0; i < 4; i++) {
@@ -2353,7 +2353,7 @@ SCWM_PROC(plain_border, "plain-border", 0, 1, 0,
   SCM_REDEFER_INTS;
 
   VALIDATE(win, "plain-border");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   psw->fBorder = False;
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 
@@ -2373,7 +2373,7 @@ SCWM_PROC(border_normal_p, "border-normal?", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "border-normal?");
-  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fBorder);
+  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fBorder);
 }
 
 
@@ -2393,7 +2393,7 @@ SCWM_PROC(set_border_width_x, "set-border-width!", 1, 1, 0,
   w = gh_scm2int(width);
 
   VALIDATEN(win, 2, "set-border-width!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   oldw = psw->boundary_width;
   psw->boundary_width = w;
 
@@ -2414,7 +2414,7 @@ SCWM_PROC(stick_icon, "stick-icon", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "stick-icon");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   psw->fStickyIcon = True;
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   SCM_REALLOW_INTS;
@@ -2429,7 +2429,7 @@ SCWM_PROC(unstick_icon, "unstick-icon", 0, 1, 0,
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "unstick-icon");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   psw->fStickyIcon = False;
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   SCM_REALLOW_INTS;
@@ -2441,7 +2441,7 @@ SCWM_PROC(icon_sticky_p, "icon-sticky?", 0, 1, 0,
           (SCM win))
 {
   VALIDATE(win, "icon-sticky?");
-  return SCM_BOOL_FromBool(SCWMWINDOW(win)->fStickyIcon);
+  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fStickyIcon);
 }
 
 
@@ -2465,7 +2465,7 @@ SCWM_PROC(set_icon_box_x, "set-icon-box!", 4, 1, 0,
     scm_wrong_type_arg("set-icon-box!", 4, sh);
   }
   VALIDATEN(win, 5, "set-icon-box!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   x = gh_scm2int(sx);
   y = gh_scm2int(sy);
   w = gh_scm2int(sw);
@@ -2487,7 +2487,7 @@ SCWM_PROC(set_window_focus_x, "set-window-focus!", 1, 1, 0,
     scm_wrong_type_arg("set-window-focus!", 1, sym);
   }
   VALIDATEN(win, 2, "set-window-focus!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   if (gh_eq_p(sym, sym_mouse)) {
     psw->fClickToFocus = False;
@@ -2516,7 +2516,7 @@ SCWM_PROC(set_window_foreground_x, "set-window-foreground!", 1, 1, 0,
   VALIDATE_COLOR(fg, "set-window-foreground!", 1);
 
   VALIDATEN(win, 2, "set-window-foreground!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   psw->TextColor = fg;
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
@@ -2534,7 +2534,7 @@ SCWM_PROC(set_window_background_x, "set-window-background!", 1, 1, 0,
   VALIDATE_COLOR(bg, "set-window-background!", 1);
 
   VALIDATEN(win, 2, "set-window-background!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   fl = psw->fl ? psw->fl : &Scr.DefaultDecor;
 
 
@@ -2553,9 +2553,9 @@ SCWM_PROC(set_random_placement_x, "set-random-placement!", 1, 1, 0,
 {
   VALIDATEN(win, 2, "set-random-placement!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fRandomPlace = True;
+    PSWFROMSCMWIN(win)->fRandomPlace = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fRandomPlace = False;
+    PSWFROMSCMWIN(win)->fRandomPlace = False;
   } else {
     scm_wrong_type_arg("set-random-placement!", 1, val);
   }
@@ -2568,9 +2568,9 @@ SCWM_PROC(set_smart_placement_x, "set-smart-placement!", 1, 1, 0,
 {
   VALIDATEN(win, 2, "set-smart-placement!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fSmartPlace = True;
+    PSWFROMSCMWIN(win)->fSmartPlace = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fSmartPlace = False;
+    PSWFROMSCMWIN(win)->fSmartPlace = False;
   } else {
     scm_wrong_type_arg("set-smart-placment!", 1, val);
   }
@@ -2583,9 +2583,9 @@ SCWM_PROC(set_window_button_x, "set-window-button!", 2, 1, 0,
 {
   VALIDATEN(win, 2, "set-window-button!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->buttons &= ~(1 << (butt - 1));
+    PSWFROMSCMWIN(win)->buttons &= ~(1 << (butt - 1));
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->buttons |= (1 << (butt - 1));
+    PSWFROMSCMWIN(win)->buttons |= (1 << (butt - 1));
   } else {
     scm_wrong_type_arg("set-window-button!", 1, val);
   }
@@ -2603,12 +2603,12 @@ SCWM_PROC(set_mwm_buttons_x, "set-mwm-buttons!", 1, 1, 0,
   ScwmWindow *psw;
 
   VALIDATEN(win, 2, "set-mwm-buttons!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fMWMButtons = True;
+    PSWFROMSCMWIN(win)->fMWMButtons = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fMWMButtons = False;
+    PSWFROMSCMWIN(win)->fMWMButtons = False;
   } else {
     scm_wrong_type_arg("set-mwm-buttons!", 1, val);
   }
@@ -2624,12 +2624,12 @@ SCWM_PROC(set_mwm_border_x, "set-mwm-border!", 1, 1, 0,
   ScwmWindow *psw;
 
   VALIDATEN(win, 2, "set-mwm-border!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fMWMBorders = True;
+    PSWFROMSCMWIN(win)->fMWMBorders = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fMWMBorders = False;
+    PSWFROMSCMWIN(win)->fMWMBorders = False;
   } else {
     scm_wrong_type_arg("set-mwm-border!", 1, val);
   }
@@ -2660,7 +2660,7 @@ SCWM_PROC(set_icon_title_x, "set-icon-title!", 1, 1, 0,
   /* Should changing the icon title string be allowed? */
 
   VALIDATEN(win, 2, "set-icon-title!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   if (title == SCM_BOOL_F) {
     psw->fNoIconTitle = True;
@@ -2682,7 +2682,7 @@ SCWM_PROC(set_force_icon_x, "set-force-icon!", 1, 1, 0,
   ScwmWindow *psw;
 
   VALIDATEN(win, 2, "set-force-icon!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   if (flag== SCM_BOOL_F) {
     psw->fForceIcon=False; 
@@ -2703,7 +2703,7 @@ SCWM_PROC(set_show_icon_x, "set-show-icon!", 1, 1, 0,
   ScwmWindow *psw;
 
   VALIDATEN(win, 2, "set-show-icon!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   if (flag== SCM_BOOL_F) {
     psw->fSuppressIcon = True;
@@ -2725,7 +2725,7 @@ SCWM_PROC(set_icon_x, "set-icon!", 1, 1, 0,
   ScwmWindow *psw;
 
   VALIDATEN(win, 2, "set-icon!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   if (gh_string_p(picture)) {
     psw->icon_req_image = make_image(picture);
   } else if (IMAGE_P(picture) || picture == SCM_BOOL_F) {
@@ -2745,7 +2745,7 @@ SCWM_PROC(set_mini_icon_x, "set-mini-icon!", 1, 1, 0,
   ScwmWindow *psw;
 
   VALIDATEN(win, 2, "set-mini-icon!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   if (image == SCM_BOOL_F) {
     psw->mini_icon_image = SCM_BOOL_F;
   } else if (gh_string_p(image)) {
@@ -2779,9 +2779,9 @@ SCWM_PROC(set_hint_override_x, "set-hint-override!", 1, 1, 0,
 {
   VALIDATEN(win, 2, "set-hint-override!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fHintOverride = True;
+    PSWFROMSCMWIN(win)->fHintOverride = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fHintOverride = False;
+    PSWFROMSCMWIN(win)->fHintOverride = False;
   } else {
     scm_wrong_type_arg("set-hint-override!", 1, val);
   }
@@ -2794,9 +2794,9 @@ SCWM_PROC(set_decorate_transient_x, "set-decorate-transient!", 1, 1, 0,
 {
   VALIDATEN(win, 2, "set-decorate-transient!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fDecorateTransient = True;
+    PSWFROMSCMWIN(win)->fDecorateTransient = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fDecorateTransient = False;
+    PSWFROMSCMWIN(win)->fDecorateTransient = False;
   } else {
     scm_wrong_type_arg("set-decorate-transient!", 1, val);
   }
@@ -2809,9 +2809,9 @@ SCWM_PROC(set_mwm_decor_hint_x, "set-mwm-decor-hint!", 1, 1, 0,
 {
   VALIDATEN(win, 2, "set-mwm-decor-hint!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fMWMDecor = True;
+    PSWFROMSCMWIN(win)->fMWMDecor = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fMWMDecor = False;
+    PSWFROMSCMWIN(win)->fMWMDecor = False;
   } else {
     scm_wrong_type_arg("set-mwm-decor-hint!", 1, val);
   }
@@ -2824,9 +2824,9 @@ SCWM_PROC(set_mwm_func_hint_x, "set-mwm-func-hint!", 1, 1, 0,
 {
   VALIDATEN(win, 2, "set-mwm-func-hint!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fMWMFunctions = True;
+    PSWFROMSCMWIN(win)->fMWMFunctions = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fMWMFunctions = False;
+    PSWFROMSCMWIN(win)->fMWMFunctions = False;
   } else {
     scm_wrong_type_arg("set-mwm-func-hint!", 1, val);
   }
@@ -2839,9 +2839,9 @@ SCWM_PROC(set_PPosition_hint_x, "set-PPosition-hint!", 1, 1, 0,
 {
   VALIDATEN(win, 2, "set-PPosition-hint!");
   if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fNoPPosition = True;
+    PSWFROMSCMWIN(win)->fNoPPosition = True;
   } else if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fNoPPosition = False;
+    PSWFROMSCMWIN(win)->fNoPPosition = False;
   } else {
     scm_wrong_type_arg("set-PPosition-hint!", 1, val);
   }
@@ -2854,9 +2854,9 @@ SCWM_PROC(set_OL_decor_hint_x, "set-OL-decor-hint!", 1, 1, 0,
 {
   VALIDATEN(win, 2, "set-OL-decor-hint!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fOLDecorHint = True;
+    PSWFROMSCMWIN(win)->fOLDecorHint = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fOLDecorHint = False;
+    PSWFROMSCMWIN(win)->fOLDecorHint = False;
   } else {
     scm_wrong_type_arg("set-OL-decor-hint!", 1, val);
   }
@@ -2870,7 +2870,7 @@ SCWM_PROC(set_start_on_desk_x, "set-start-on-desk!", 1, 1, 0,
   ScwmWindow *psw;
 
   VALIDATEN(win, 2, "set-start-on-desk!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
   if (desk == SCM_BOOL_F) {
     psw->fStartsOnDesk = False;
   } else if (gh_number_p(desk)) {
@@ -2889,9 +2889,9 @@ SCWM_PROC(set_skip_mapping_x, "set-skip-mapping!", 1, 1, 0,
 {
   VALIDATEN(win, 2, "set-skip-mapping!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fShowOnMap = True;
+    PSWFROMSCMWIN(win)->fShowOnMap = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fShowOnMap = False;
+    PSWFROMSCMWIN(win)->fShowOnMap = False;
   } else {
     scm_wrong_type_arg("set-skip-mapping!", 1, val);
   }
@@ -2904,9 +2904,9 @@ SCWM_PROC(set_lenience_x, "set-lenience!", 1, 1, 0,
 {
   VALIDATEN(win, 2, "set-lenience!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->fLenience = True;
+    PSWFROMSCMWIN(win)->fLenience = True;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->fLenience = False;
+    PSWFROMSCMWIN(win)->fLenience = False;
   } else {
     scm_wrong_type_arg("set-lenience!", 1, val);
   }

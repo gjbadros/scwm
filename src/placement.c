@@ -439,7 +439,7 @@ SCWM_PROC (smart_place_window, "smart-place-window", 1, 0, 0,
     scm_wrong_type_arg(s_smart_place_window, 1, win);
   }
 
-  psw=SCWMWINDOW(win);
+  psw=PSWFROMSCMWIN(win);
 
   /* FIXMS: hackish workaround for now to not mess with the smart
      placement function itself, but make it not call CleverPlacement
@@ -483,7 +483,7 @@ SCWM_PROC (clever_place_window, "clever-place-window", 1, 0, 0,
     scm_wrong_type_arg(s_clever_place_window, 1, win);
   }
 
-  psw=SCWMWINDOW(win);
+  psw=PSWFROMSCMWIN(win);
 
   CleverPlacement(psw, &x, &y);
 
@@ -517,7 +517,7 @@ SCWM_PROC (random_place_window, "random-place-window", 1, 0, 0,
     scm_wrong_type_arg(s_random_place_window, 1, win);
   }
 
-  psw=SCWMWINDOW(win);
+  psw=PSWFROMSCMWIN(win);
   
   /* plase window in a random location */
   if ((Scr.randomx += GetDecor(psw, TitleHeight)) > Scr.MyDisplayWidth / 2) {
@@ -556,7 +556,7 @@ SCWM_PROC (default_placement_proc, "default-placement-proc", 1, 0, 0,
     scm_wrong_type_arg(s_default_placement_proc, 1, win);
   }
 
-  psw=SCWMWINDOW(win);
+  psw=PSWFROMSCMWIN(win);
 
   if (PPosOverride ||
       (psw->hints.flags & USPosition) ||
@@ -600,7 +600,7 @@ SCWM_PROC (default_transient_placement_proc, "default-transient-placement-proc",
     scm_wrong_type_arg(s_default_transient_placement_proc, 1, win);
   }
 
-  psw=SCWMWINDOW(win);
+  psw=PSWFROMSCMWIN(win);
 
 #if 0
   psw->xdiff = psw->attr.x;

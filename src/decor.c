@@ -280,7 +280,7 @@ the window context in the usual way. */
   }
 
   VALIDATEN(win, 2, "set-window-decor!");
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   old_height = psw->fl->TitleHeight;
 

@@ -80,7 +80,7 @@ SCWM_PROC(marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0,
   int i;
 
   VALIDATE(win, s_marshal_fvwm2_config_info);
-  psw = SCWMWINDOW(win);
+  psw = PSWFROMSCMWIN(win);
 
   info[i=0] = psw->w;
   info[++i] = psw->frame;

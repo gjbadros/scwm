@@ -29,7 +29,7 @@ WIN is a window objects */
     scm_wrong_type_arg(s_add_stays_on_window, iarg++, win);
   }
   
-  ScwmWindow const *const psw = PSWFROMWIN(win);
+  ScwmWindow const *const psw = PSWFROMSCMWIN(win);
   const ClVariable &clvX = psw->frame_x;
   const ClVariable &clvY = psw->frame_y;
   const ClVariable &clvW = psw->frame_width;
@@ -57,8 +57,8 @@ WINA and WINB are both window objects */
     scm_wrong_type_arg(s_keep_tops_even, iarg++, winB);
   }
   
-  ScwmWindow const *const pswA = PSWFROMWIN(winA);
-  ScwmWindow const *const pswB = PSWFROMWIN(winB);
+  ScwmWindow const *const pswA = PSWFROMSCMWIN(winA);
+  ScwmWindow const *const pswB = PSWFROMSCMWIN(winB);
   const ClVariable &clvY_A = pswA->frame_y;
   const ClVariable &clvY_B = pswB->frame_y;
   solver.addVar(clvY_A).addVar(clvY_B);
@@ -88,8 +88,8 @@ WINA and WINB are both window objects */
     scm_wrong_type_arg(s_keep_to_left_of, iarg++, winB);
   }
   
-  ScwmWindow const *const pswA = PSWFROMWIN(winA);
-  ScwmWindow const *const pswB = PSWFROMWIN(winB);
+  ScwmWindow const *const pswA = PSWFROMSCMWIN(winA);
+  ScwmWindow const *const pswB = PSWFROMSCMWIN(winB);
   const ClVariable &clvX_A = pswA->frame_x;
   const ClVariable &clvW_A = pswA->frame_width;
   const ClVariable &clvX_B = pswB->frame_x;

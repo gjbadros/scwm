@@ -122,7 +122,7 @@ SCWM_PROC (set_window_text_property, "set-window-text-property", 3, 0, 0,
     Atom propname = XInternAtom(dpy, szName, False);
     char *szValue = gh_scm2newstr(value, NULL);
     XTextProperty *ptextprop = PNewXTextPropertyFromSz(szValue);
-    XSetTextProperty(dpy, SCWMWINDOW(win)->w, ptextprop, propname);
+    XSetTextProperty(dpy, PSWFROMSCMWIN(win)->w, ptextprop, propname);
     FREE(szName); szName = NULL;
     FREE(szValue); szValue = NULL;
     FREE(ptextprop); ptextprop = NULL;
@@ -161,7 +161,7 @@ SCWM_PROC (window_xproperty, "window-xproperty", 2, 1, 0,
   
   len = 32;			/* try a small size first */
   while (True) {
-    XGetWindowProperty(dpy, SCWMWINDOW(win)->w, prop, 0, len,
+    XGetWindowProperty(dpy, PSWFROMSCMWIN(win)->w, prop, 0, len,
 		       del, AnyPropertyType, &type, &format, &nitems,
 		       &bytes_left, &data);
     if (bytes_left)

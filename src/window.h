@@ -239,9 +239,9 @@ EXTERN SCM cannot_grab_hook;
 
 #define WINDOWP(X) (SCM_NIMP(X) && (SCM_CAR(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)SCM_CDR(X))
-/* SCWMWINDOW should disappear-- PSWFROMWIN is a better name, IMO--07/17/98 gjb*/
-#define SCWMWINDOW(X) (((scwm_window *)SCM_CDR(X))->psw)
-#define PSWFROMWIN(X) (((scwm_window *)SCM_CDR(X))->psw)
+/* SCWMWINDOW should disappear-- PSWFROMSCMWIN is a better name, IMO--07/17/98 gjb*/
+/* #define SCWMWINDOW(X) (((scwm_window *)SCM_CDR(X))->psw) */
+#define PSWFROMSCMWIN(X) (((scwm_window *)SCM_CDR(X))->psw)
 #define VALIDWINP(X) (((scwm_window *)SCM_CDR(X))->valid)
 
 #define set_window_context(X) window_context=X;
