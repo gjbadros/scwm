@@ -220,6 +220,8 @@ Returns a string."
 ;;;###autoload
 (defun scwm-complete-symbol-insert ()
   (interactive)
+  (if (null scwm-obarray)
+      (setq scwm-obarray (scwm-make-obarray)))
   (let* ((end (point)) (beg (save-excursion (backward-sexp) (point)))
 	 (pat (buffer-substring-no-properties beg end))
 	 (comp (try-completion pat (scwm-obarray))))
@@ -283,7 +285,7 @@ Returns a string."
       (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
       (goto-char (point-max))   ; kill `#<unspecified>'
       (delete-region (point) (progn (beginning-of-line) (point)))
-      (goto-char 1) (forward-line 3)
+      (goto-char 1) (forward-line 4)  ;; was 3, but that highlighted a nl for gjb
       (sort-lines nil (point) (point-max))
       (let ((props '(action scwm-documentation mouse-face highlight
                      face italic)) p0 p1 p2)
