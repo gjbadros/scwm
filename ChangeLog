@@ -1,5 +1,22 @@
 1998-07-21  Greg Badros  <gjb@cs.washington.edu>
 
+	* utilities/dev/extract-docs: Add sections for the per-file
+	sorting of function names.  Remove extra spaces in refpurpose,
+	improve some debug support.  Fixed bug whereby parameter names
+	which were subsequences of each caused problems.
+
+	* utilities/dev/extract-docs: Add second chapter w/ prims sorted
+	by function name, and deal with `procedure' convention.  Should
+	really be linked much better than it is, but I don't know the
+	docbook DTD at all.
+
+	* utilities/dev/extract-docs: Actually generate .sgml file using
+	docbook format.  Also, treat the first line of the comment
+	docstring specially like Emacs docstrings (I should've made this
+	explicit before -- the docstrings need editing to make the first
+	line a better "purpose" statement -- extract-docs gives warnings
+	to help find such strings)
+
 	* utilities/dev/extract-docs: Check the expected primitive name,
 	and warn if it doesn't match the c function name.  Handle _to_
 	turning into -> optionally.  Also handle mis-parses better
