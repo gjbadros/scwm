@@ -52,6 +52,7 @@
 ;;
 ;; The format for an UI-CONSTRAINT-CLASS object is:
 ;; (obid-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC PIXMAP-NAME MENUNAME-PROC)
+;;
 
 ;; make-ui-constraint-class
 
@@ -104,6 +105,23 @@ SIDE-EFFECT: removes class object from the global class list."
   "Returns a boolean: true if UI-CONSTRAINT-CLASS is a vector and starts with the
 correct obid.  False otherwise."
   (and (vector? ui-constraint-class) (eq? (vector-ref ui-constraint-class 0) obid-ui-constraint-class)))
+
+
+;; get-ui-constraint-class-by-name
+;; returns the ui-constraint-class object with the passed in name
+;; could probably generalize this to fetch a class by any property
+
+(define (constraint-list-search name list)
+  (if (null? list)
+      #f
+      (let* ((class (car list))
+	     (cname (ui-constraint-class-name class)))
+	(if (equal? name cname)
+	    class
+	    (constraint-list-search name (cdr list))))))
+
+(define-public (get-ui-constraint-class-by-name name)
+  (constraint-list-search name global-constraint-class-list))
 
 
 ;; ui-constraint-class-name
@@ -224,7 +242,7 @@ the toggle menu.  Errors if object is not a ui-constraint-class object."
 ;; SIDE-EFFECT: adds new instance object to the global list
 ;; Returned objects are (obid-ui-constraint . (CLASS (CN) ENABLED? LIST-OF-WINDOWS OPTS))
 
-(define-public (make-ui-constraint ui-constraint-class arg-list)
+(define*-public (make-ui-constraint ui-constraint-class arg-list #&key (visible? #t))
   "UI-CONSTRAINT-CLASS specified the type of constraint to be created.
 WIN-LIST specifies the windows to be constrained.  Returns a new constraint
 object that is NOT enabled.  errors if UI-CONSTRAINT-CLASS is not valid.
@@ -243,9 +261,11 @@ SIDE-EFFECT: adds new instance object to the global list."
 	     (win-list (cadr vars))
 	     (opts (cddr vars))
 	     (uc (vector obid-ui-constraint ui-constraint-class cn #f win-list opts #f '())))
-	(set! global-constraint-instance-list (cons uc global-constraint-instance-list))
-	(call-hook-procedures constraint-add-hook-list (list uc))
-	(call-hook-procedures constraint-composition-record-hook-list (list uc arg-list))
+	(if visible?
+	    (begin
+	      (set! global-constraint-instance-list (cons uc global-constraint-instance-list))
+	      (call-hook-procedures constraint-add-hook-list (list uc))
+	      (call-hook-procedures constraint-composition-record-hook-list (list uc arg-list))))
 	uc)
       (error "Argument must be a UI-CONSTRAINT-CLASS object")))
 
