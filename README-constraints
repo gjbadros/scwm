@@ -1,7 +1,8 @@
 Scwm Constraint Solver Readme
 -----------------------------
 
-By Greg J. Badros -- 14 August 1998; updated 18 March 1999, 12 July 1999
+By Greg J. Badros -- 14 August 1998
+updated 18 March 1999, 12 July 1999, 26 October 1999
 
 
 For any of you interested in playing the the constraint-solving
@@ -12,15 +13,16 @@ available from:
 
 http://www.cs.washington.edu/research/constraints/cassowary/
 
-The latest version is v0.51. It's C++ code, and it builds
-using egcs-1.01 or newer, or gcc-2.8.1, and hopefully other C++
-compilers that support the STL reasonably well.  Cassowary does
-(as of v0.4) support autoconf and automake, so you should just 
-be able to "./configure; make" and go.  See the README file included
-with the Cassowary distribution for more details.  In particular, you
-might need to give with --with-guile-prefix=DIR option to configure to
-tell it where your installation of Guile is.  Also, you might want to
-set --prefix=$HOME if you do not have superuser privileges.
+The latest version is v0.51. It's C++ code, and it builds using
+egcs-1.01 or newer, or gcc-2.8.1, and hopefully other C++ compilers that
+support the STL reasonably well.  Cassowary does (as of v0.4) support
+autoconf and automake, so you should just be able to "./configure; make"
+and go.  See the README file included with the Cassowary distribution
+for more details.  In particular, you will need to give configure the
+--enable-guile-build option and might need to give it the
+--with-guile-prefix=DIR option to tell it where your installation of
+Guile is.  Also, you might want to set --prefix=$HOME if you do not have
+superuser privileges.
 
 After building Cassowary, trying running "ClTests" (in the c++/
 subdirectory of the distribution) to do a quick test.  If the program
@@ -71,6 +73,24 @@ constraints, and use C-M-S-c to bring up a menu to list/enable/disable
 constraints you've already added.  Hover over a constraint menu item to
 get more information about which windows are involved in each
 constraint.
+
+If Scwm has problems finding the libconstraints module, consider setting
+the GUILE_LOAD_PATH environment variable.  It can contain a
+colon-separated list of directories that are the bases of directory
+hierarchies that contain dynamically-loadable Guile modules.  E.g., if
+libconstraints.a (from the cassowary/guile directory) is installed in
+
+/usr/share/guile/site/cassowary/libconstraints.a
+
+then GUILE_LOAD_PATH could contain:
+
+/usr/share/guile/site/
+
+the "cassowary" subdirectory is not needed since the full module name
+is "(cassowary constraints)".  Setting GUILE_LOAD_PATH (or its
+Scwm-specific cousin, SCWM_LOAD_PATH) is not necessary if Cassowary and
+Scwm are both installed with the same prefix.
+
 
 See also the code in scheme/*constraints*.scm
 
