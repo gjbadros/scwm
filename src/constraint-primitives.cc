@@ -52,6 +52,7 @@ ScwmResolve(ClSimplexSolver *psolver)
     const ScwmWindow *psw = *it;
     psw->pswci->CopyStateToPswVars();
     MovePswToCurrentPosition(psw);
+    ResizePswToCurrentSize(psw);
   }
   rgpswDirty.clear();
 }
