@@ -46,6 +46,7 @@
 ;;; print some information
 (for-each (lambda (d) (debug-display d)) 
 	 (list " *** Reading `scwmrc'...\nScwm " (scwm-version) "\n"
+	       (scwm-version-date) "\n"
 	       (if (scwm-is-constraint-enabled?) "With Cassowary Constraint Solver\n"
 		   "")
 	       "Display Size: " (display-size)
@@ -264,7 +265,9 @@
 
 (define (show-xterm-window-list-menu)
   (show-window-list-menu #:only (lambda (w) (string=? (window-class w) "XTerm")) 
-			 #:warp-to-first #t))
+			 #:warp-to-first #t
+			 #:flash-window-proc flash-window
+			 #:unflash-window-proc unflash-window))
 
 
 ;;(select-window-from-window-list)
