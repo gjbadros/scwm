@@ -435,6 +435,10 @@ This is initially the default behaviour when WIN is selected from the window lis
 	(let ((p (warp-placement win))) 
 	  (move-pointer (w%x (car p) win) (w%y (cadr p) win))))))
 
+;; GJB:FIXME:: this is ugly, but works around a problem
+;; with cyclic dependences
+(set! window-list-proc focus-change-warp-pointer)
+
 ;; warp-placement is from Ken Pizzini
 (define-public (warp-placement win)
   "Return a list, (%x %y), for the desired pointer placement for WIN.

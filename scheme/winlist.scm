@@ -173,12 +173,15 @@ determining the result."
 
 (define*-public (next-window #&key (window (get-window #f #f))
 			     (only '()) (except '()) (proc window-list-proc))
-  "Circulate to the next matching window.
-If WINDOW is given, circulate to that window.
+  "Switch to the next matching window.
+If WINDOW is given, switch to that window.
 ONLY and EXCEPT control which windows match --- see `list-windows' for 
 details.
 PROC is a procedure of one argument which does the work after the
-windows are circulated.  PROC defaults to `window-list-proc'.
+window list is re-ordered.  PROC defaults to `window-list-proc'.
+By specifiying, e.g., \"#:proc focus-change-warp-pointer\" the
+new window will be raised, focussed, and the pointer will be warped
+to the window.
 See also `prev-window'."
   (circulate #f window only except proc))
 
