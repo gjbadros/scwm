@@ -1,8 +1,16 @@
+Mon Mar 23 15:47:45 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Added flux.scm: Pulled out a bunch of
+	functions from gjb.scwmrc (many originally from sds.scwmrc) and
+	put here so we could share them better as we decide how to
+	migrate the functionality into standard functionality (or do
+	something different).
+
 Wed Mar 11 21:05:11 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* fvwm-compat.scm, bincomm.scm, fvwm-module.scm: Use close-port
  	instead of close for guile 1.2 compatablility. Bug report from
-	Bucky LaDieu <nega@vt.edu>.
+ 	Bucky LaDieu <nega@vt.edu>.
 
 Tue Mar 10 22:39:58 1998  Greg Badros  <gjb@cs.washington.edu>
 	
