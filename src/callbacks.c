@@ -21,7 +21,7 @@
 
 #include <sys/time.h>
 #include <unistd.h>
-#include <values.h>
+#include <limits.h>
 #include <guile/gh.h>
 #include <config.h>
 #include <libguile.h>
@@ -459,14 +459,14 @@ void update_timer_hooks()
   usdelta = tmp.tv_usec - last_timeval.tv_usec;
 
   /* Be careful to avoid overflow. */
-  if (sdelta > MAXLONG / 1000000) {
-    sdelta = MAXLONG;
+  if (sdelta > LONG_MAX / 1000000) {
+    sdelta = LONG_MAX;
   } else {
     sdelta = sdelta * 1000000;
   }
 
-  if (MAXLONG - sdelta < usdelta) {
-    usdelta = MAXLONG;
+  if (LONG_MAX - sdelta < usdelta) {
+    usdelta = LONG_MAX;
   } else {
     usdelta = usdelta + sdelta;
   }

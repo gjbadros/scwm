@@ -1,3 +1,9 @@
+Mon Jul 13 15:20:11 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* callbacks.c: Use limits.h and LONG_MAX instead of values.h and
+ 	MAXLONG; as Perry E. Metzger <perry@piermont.com> reported, this
+ 	is the POSIX way of doing things, and thus more portable.
+
 1998-07-10  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (DeferExecution): Clean up of DeferExecution, inspired
@@ -14,7 +20,6 @@ Fri Jul 10 10:45:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	* syscompat.c: #define setlinebuf in terms of setvbuf or
  	(approximating) setbuf. Based on a patch from Stephen Tell
  	<tell@cs.unc.edu>.
-	
 
 1998-07-08  Greg Badros  <gjb@cs.washington.edu>
 
