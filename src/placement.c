@@ -101,11 +101,11 @@ GetGravityOffsets(ScwmWindow *psw)
 void
 SetPswGravity(ScwmWindow *psw, int g)
 {
-  /* GJB:FIXME:NOW: need to update the X Property, too! */
   psw->hints.flags |= PWinGravity;
   assert(g >= ForgetGravity && g <= StaticGravity);
   psw->hints.win_gravity = g;
   psw->grav = grav_table[g];
+  XSetWMNormalHints(dpy, psw->w, &psw->hints);
 }
 
 /* Return -1 for no match */
