@@ -17,6 +17,8 @@ numerous scwmdoc script fixes and improvements.
 * GTk+ windows are not allowed to have destroy action applied by Scwm
 ** Requires guile-gtk-0.16's `gdk-get-leader-window-id' primitive
 
+* Bindings now ignore num lock, scroll lock modifiers
+
 * Constraints
 ** Much, much improved user-interface
 *** toolbar for adding constraints
@@ -151,7 +153,9 @@ deprecated `SM-client-id'.
 ** `force-reset-window-frame!' -- force redraw of frame
 ** `select-viewport-position' (returns pointer position and selected window)
 ** `bind-keycode' -- lower level interface to binding keys, allows release procs
-** `keymask-keycode->string', `keysym->keycode', `mod-mask-control', `mod-mask-shift', `mod-mask-hyper', `mod-mask-super'
+** `keymask-keycode->string', `keysym->keycode'
+** `mod-mask-control', `mod-mask-shift', `mod-mask-hyper', `mod-mask-super', `mod-mask-numlock', `mod-mask-scrolllock'
+** `set-mod-mask-numlock!', `set-mod-mask-scrolllock!'
 ** `animated-resize-window', `animated-resize-frame'
 ** `force_segv_for_testing', `set-reset-on-segv!', `set-handles-segv!'
 ** `scwm-last-timestamp'

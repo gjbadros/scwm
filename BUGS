@@ -22,16 +22,6 @@ Bob Pepin bob@sendar.prophecy.lu
 Animated resizes of Emacs frames interact strangely with emacs resulting
 in the resize animating twice.
 -------
-Really smart placement (i.e., clever placement) has an off my one bug.
-
-Try starting a couple of xterms in the viewport one below the home viewport,
-then move back to the home viewport -- you can see one row of pixels at the
-bottom of the screen.
---04/14/99 gjb
--------
-xload windows (among others, probably) move and resize on restarts --
-gravity related?
--------
 Backtrace:
  0* [#<procedure (win)> #<window 109051918: "img2.gif (/home/wharvey/tmp)">]
  1* [apply-hint-style (#(#<procedure always? #> # #) #(#<procedure always? #> # 
@@ -92,22 +82,11 @@ tried finding some quick fixes but they cause segfaults, thus this is
 something to fix by reconsidering all this code and implementing true
 layers functionality.
 -------------
-make-color can return #f, we should have make-closest-color that is
-guaranteed to work and return the closest color to the requested one.
--------------
 Graeme.Cross@sci.monash.edu.au reports problems using ApplixWare's windows
 and Scwm (perhaps related to bitmaps that Applixware puts on the windows)
 -------------
-Hooks which take wrong number of params cause seg faults!
---07/04/98 gjb
--------------
-Squashed titlebar problems
-  they should resize (width) when title changes, but they don't
-  they should take effect immediately, but require a window resize to notice
-     (can fix this with using set-window-property)
-  they don't have an extra thin border line drawn in the rest of the title
-     bar area to the right of the squashed titlebar
-  it'd also be nice if they could be squashed to the right, or centered,
+Squashed titlebar feature:
+  it'd be nice if they could be squashed to the right, or centered,
      instead of always only left-justified.
 -------------
 Incorrect usage of keyword arguments by a scheme function fails silently.
@@ -145,10 +124,6 @@ Test with bad image path-- lots of things could be done better
 when images are missing.
 -------------
 Visual bugs in boundaries of windows with some configurations of options.
--------------
-wildcard-matcher in wininfo doesn't permit distinguishing based on title,
-class, and resource name separately.  This is essential for window styles
-to do the right thing (a misfeature compared to fvwm2)
 -------------
 icon-box not honoured correctly?
 -------------
@@ -207,6 +182,27 @@ outside the callback handler - the code would lose big on this -ms]
 
 ----------------------------------------------------------------------
 RESOLVED:
+----------------------------------------------------------------------
+xload windows (among others, probably) move and resize on restarts --
+gravity related? 
+Res'd --07/17/99 gjb
+-------------
+wildcard-matcher in wininfo doesn't permit distinguishing based on title,
+class, and resource name separately.  This is essential for window styles
+to do the right thing (a misfeature compared to fvwm2)
+----------------------------------------------------------------------
+Really smart placement (i.e., clever placement) has an off my one bug.
+
+Try starting a couple of xterms in the viewport one below the home viewport,
+then move back to the home viewport -- you can see one row of pixels at the
+bottom of the screen. --04/14/99 gjb
+Res'd--07/17/99 gjb
+----------------------------------------------------------------------
+make-color can return #f, we should have make-closest-color that is
+guaranteed to work and return the closest color to the requested one.
+-------------
+Hooks which take wrong number of params cause seg faults!
+--07/04/98 gjb
 ----------------------------------------------------------------------
 windows having a different border-width than the default (6) are
 placed incorrectly if they have SE gravity. They are several pixels
