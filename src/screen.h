@@ -275,7 +275,6 @@ typedef struct ScreenInfo {
   /*  PackedBool(fMWMMenus);        MWM menu style (not really --07/26/98 gjb */
   PackedBool(fColormapFollowsMouse);
   /* these global options might better be window-specific options */
-  PackedBool(fSmartPlacementIsClever);
   PackedBool(fClickToFocusPassesClick);
   PackedBool(fClickToFocusRaises);
   PackedBool(fMouseFocusClickRaises);

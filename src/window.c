@@ -3788,36 +3788,6 @@ for WIN).  See also `get-window-highlight-colors'.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_random_placement_x, "set-random-placement!", 1, 1, 0,
-          (SCM flag, SCM win),
-"Set the random-placement flag of WIN to boolean FLAG.\n\
-This flag only matters if the default placement procedure is\n\
-being used. WIN defaults to the window context in the usual way if not\n\
-specified.")
-#define FUNC_NAME s_set_random_placement_x
-{
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fRandomPlace);
-  return SCM_UNSPECIFIED;
-}
-#undef FUNC_NAME
-
-
-SCWM_PROC(set_smart_placement_x, "set-smart-placement!", 1, 1, 0,
-          (SCM flag, SCM win),
-"Set the smart-placement flag of WIN to boolean FLAG.\n\
-This flag only matters if the default placement procedure is\n\
-being used. WIN defaults to the window context in the usual way if not\n\
-specified.")
-#define FUNC_NAME s_set_smart_placement_x
-{
-  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fSmartPlace);
-  return SCM_UNSPECIFIED;
-}
-#undef FUNC_NAME
-
-
 SCWM_PROC(set_window_button_x, "set-window-button!", 2, 1, 0,
           (SCM n, SCM flag, SCM win),
 "Set the visibility of button number N on window WIN.\n\

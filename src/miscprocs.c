@@ -293,35 +293,6 @@ SCWM_IPROC(beep, "beep", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!",1, 0, 0,
-          (SCM flag),
-"Determine whether or not `clever-place-window' will be used when smart-placing.\n\
-If FLAG is #t, then `clever-place-window' will be used instead of\n\
-`smart-place-window' when the default placement procedure is used, and\n\
-the window's smart-placement flag is on.")
-#define FUNC_NAME s_set_smart_placement_is_really_smart_x
-{
-  VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fSmartPlacementIsClever);
-  return SCM_UNSPECIFIED;
-}
-#undef FUNC_NAME
-
-/* MS:FIXME:: this returns true or false always, give it a predicate name? */
-
-SCWM_PROC(smart_placement_is_really_smart_p, "smart-placement-is-really-smart?", 0, 0, 0,
-          (),
-"Return whether or not `clever-place-window' will be used when smart-placing.\n\
-If the value is #t, then `clever-place-window' will be used instead of\n\
-smart-place-window when the default placement procedure is used, and\n\
-the window's smart-placement flag is on.")
-#define FUNC_NAME s_smart_placement_is_really_smart_p
-{
-  return SCM_BOOL_FromBool(Scr.fSmartPlacementIsClever);
-}
-#undef FUNC_NAME
-
-
-
 /* MS:FIXME:: - the functionality related to the next six procedures
    should be implemented by adding new event bindings eventually */
 

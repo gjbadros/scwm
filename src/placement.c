@@ -39,10 +39,10 @@
 
 #undef DEBUG_PLACE_WINDOW
 
-Bool CleverPlacement(ScwmWindow * psw, int *x, int *y);
-
 extern Bool PPosOverride;
 
+static SCM *pscm_default_placement_proc;
+static SCM *pscm_default_transient_placement_proc;
 SCM_SYMBOL(sym_placement_proc,"placement-proc");
 SCM_SYMBOL(sym_transient_placement_proc,"transient-placement-proc");
 
@@ -147,9 +147,6 @@ SmartPlacement(ScwmWindow *psw, int width, int height, int *x, int *y)
   int loc_ok = False, tw, tx, ty, th;
   ScwmWindow *pswTest;
 
-  if (Scr.fSmartPlacementIsClever) {	/* call clever placement instead? */
-    return CleverPlacement(psw, x, y);
-  }
   temp_h = height;
   temp_w = width;
 
@@ -452,10 +449,6 @@ effect. That is, it tries to place the window so that it does not\n\
 overlap any other. If it fails to do so, it returns #f; otherwise it\n\
 returns #t.\n\
 \n\
-This is called as part of `default-placement-proc'.  It could also be\n\
-used in user-defined placement procedures (see \n\
-`set-window-placement-proc!').\n\
-\n\
 If NO-MOVE is #t, then the position is returned instead of\n\
 actually moving the window to that position.  This can\n\
 be useful for finding a new location for an existing window.\n\
@@ -473,18 +466,8 @@ may try to use as a preferred location for WIN.")
   VALIDATE_ARG_INT_COPY_USE_DEF(3,x_sugg,x,0);
   VALIDATE_ARG_INT_COPY_USE_DEF(4,y_sugg,y,0);
 
-  /* MS:FIXME:: hackish workaround for now to not mess with the smart
-     placement function itself, but make it not call CleverPlacement
-     when called from here.. */
-
-  { /* scope */
-    /* save state of fSmartPlacementIsClever */
-    Bool fSmartPlacementIsClever = Scr.fSmartPlacementIsClever;
-    Scr.fSmartPlacementIsClever = False;
-    fPlacedOk = SmartPlacement(psw, FRAME_WIDTH(psw) + 2 * psw->bw,
-                               FRAME_HEIGHT(psw) + 2 * psw->bw, &x, &y);
-    Scr.fSmartPlacementIsClever = fSmartPlacementIsClever;
-  }
+  fPlacedOk = SmartPlacement(psw, FRAME_WIDTH(psw) + 2 * psw->bw,
+                             FRAME_HEIGHT(psw) + 2 * psw->bw, &x, &y);
 
   if (fNoMove) {
     return gh_list(gh_int2scm(x),gh_int2scm(y),SCM_UNDEFINED);
@@ -514,10 +497,6 @@ overlap with other windows. Several parameters give different\n\
 weight to various kinds of windows, but they are not tunable\n\
 at runtime currently. If it fails to place the window, it\n\
 returns #f; otherwise it returns #t.\n\
-\n\
-This is called as part of `default-placement-proc'.  It could also be\n\
-used in user-defined placement procedures (see \n\
-`set-window-placement-proc!').\n\
 \n\
 If NO-MOVE is #t, then the position is returned instead of\n\
 actually moving the window to that position.  This can\n\
@@ -565,10 +544,6 @@ around once a window would be forced off the screen. The placement is\n\
 fairly arbitrary, but always succeeds, and so avoids user\n\
 interaction. #t is always returned.\n\
 \n\
-This is called as part of `default-placement-proc'.  It could also be\n\
-used in user-defined placement procedures (see \n\
-`set-window-placement-proc!').\n\
-\n\
 If NO-MOVE is #t, then just return the new position but do not\n\
 move WIN. X-SUGG and Y-SUGG are ignored.")
 #define FUNC_NAME s_random_place_window
@@ -603,20 +578,14 @@ move WIN. X-SUGG and Y-SUGG are ignored.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(default_placement_proc, "default-placement-proc", 1, 0, 0, 
+SCWM_PROC(initial_place_window, "initial-place-window", 1, 0, 0, 
           (SCM win),
-"Use various flags to call an appropriate placement function.\n\
-This is the default placement procedure for non-transient windows. It\n\
-tries `smart-place-window', `clever-place-window',\n\
-`random-place-window', or `interactive-move' (to achieve interactive\n\
-placement) on WIN depending on several style flags. (See\n\
-`set-smart-placement-is-really-smart!', `set-smart-placement!',\n\
-and `set-random-placement!'.) However, if one of the following \n\
-factors holds, the window will instead be placed exactly as \n\
-requested by the program: the position was specified by the user, \n\
-the position was specified by the program and #:no-PPosition-hint \n\
-is not set, or the window starts iconic.")
-#define FUNC_NAME s_default_placement_proc
+"Pick a desk for WIN and return #t iff WIN should be placed.
+N.B. the return value is different from the return value
+of the various placement procedures.  This return values
+is #f to signify that no further placement is necessary
+according to the various positioning hints attached to WIN.")
+#define FUNC_NAME s_initial_place_window
 { 
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY(1,win,psw);
@@ -633,75 +602,66 @@ is not set, or the window starts iconic.")
        (psw->wmhints->flags & StateHint) &&
        (psw->wmhints->initial_state == IconicState))) {
     /* Do nothing. */
-#ifdef DEBUG_PLACE_WINDOW
-    scwm_msg(DBG,"PlaceWindow","doing no placement");
-#endif
-  } else {
-    SCM result=SCM_BOOL_F;
-
-    if (psw->fSmartPlace) {
-      if (Scr.fSmartPlacementIsClever) {
-#ifdef DEBUG_PLACE_WINDOW
-        scwm_msg(DBG,"PlaceWindow","clever placing");
-#endif        
-	result=clever_place_window(win, SCM_UNDEFINED, SCM_UNDEFINED, SCM_UNDEFINED);
-      } else {
-#ifdef DEBUG_PLACE_WINDOW
-        scwm_msg(DBG,"PlaceWindow","smart placing");
-#endif
-	result=smart_place_window(win, SCM_UNDEFINED, SCM_UNDEFINED, SCM_UNDEFINED);
-      }
-    }
-    
-    if (SCM_BOOL_F==result) {
-      if (psw->fRandomPlace) {
-#ifdef DEBUG_PLACE_WINDOW
-        scwm_msg(DBG,"PlaceWindow","random placing");
-#endif
-	random_place_window(win, SCM_UNDEFINED, SCM_UNDEFINED, SCM_UNDEFINED);
-      } else {
-        int finalx, finaly;     /* unused for now */
-        extern Bool have_orig_position;
-        extern int orig_x, orig_y;
-#ifdef DEBUG_PLACE_WINDOW
-        scwm_msg(DBG,"PlaceWindow","interactive placing");
-#endif
-        /* GJB:FIXME:: ugh! passing args thru globals */
-        have_orig_position = True;
-        FXGetWindowTopLeft(WFrameOrIcon(psw), &orig_x, &orig_y);
-	InteractiveMove(psw, False, &finalx, &finaly);
-        /*        move_finalize(psw->frame,psw,finalx,finaly); */
-        MovePswToCurrentPosition(psw);
-      }
-    }
+    return SCM_BOOL_F;
   }
   return SCM_BOOL_T;
 }
 #undef FUNC_NAME
 
-SCWM_PROC(default_transient_placement_proc, "default-transient-placement-proc", 1, 0, 0, 
-          (SCM win),
-"This is the default placement procedure for transient windows.\n\
-It simply leaves the window WIN in place, exactly as requested.")
-#define FUNC_NAME s_default_transient_placement_proc
-{
+
+SCWM_PROC(interactive_place_window, "interactive-place-window", 1, 3, 0, 
+          (SCM win, SCM no_move, SCM x_sugg, SCM y_sugg),
+"Interactively place WIN.\n\
+Start at X-SUGG, Y-SUGG. If NO-MOVE is #t, just return the\n\
+final resting place instead of actually moving the window there.")
+#define FUNC_NAME s_interactive_place_window
+{ 
   ScwmWindow *psw;
+  Bool fNoMove;
+  Bool fPlacedOk = False;
+  int finalx, finaly;
+  int x, y;
+
   VALIDATE_ARG_WIN_COPY(1,win,psw);
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,no_move,fNoMove);
 
-  if (!PPosOverride && !psw->fShowOnMap)
-    changeDesks(0, psw->Desk);
+  { /* scope */
+    /* GJB:FIXME:: ugh! passing args thru globals */
+    extern Bool have_orig_position;
+    extern int orig_x, orig_y;
+    Bool old_have_orig_pos = have_orig_position;
+    have_orig_position = True;
+    if (UNSET_SCM(x_sugg) || UNSET_SCM(y_sugg))
+      FXGetWindowTopLeft(WFrameOrIcon(psw), &x, &y);
+    VALIDATE_ARG_INT_COPY_USE_DEF(3,x_sugg,orig_x,x);
+    VALIDATE_ARG_INT_COPY_USE_DEF(4,y_sugg,orig_y,y);
+    fPlacedOk = InteractiveMove(psw, False, &finalx, &finaly);
+    have_orig_position = old_have_orig_pos;
+  }
 
-  default_select_desk(psw);
+  if (!fPlacedOk)
+    return SCM_BOOL_F;
 
-  /* Just doing nothing should dtrt. */
-
+  if (fNoMove) {
+    return gh_list(gh_int2scm(finalx),gh_int2scm(finaly),SCM_UNDEFINED);
+  } else {
+    /* move_finalize(psw->frame,psw,finalx,finaly); */
+    MovePswToCurrentPosition(psw);
+  }
   return SCM_BOOL_T;
 }
 #undef FUNC_NAME
 
-
-
-
+SCWM_PROC(null_place_window, "null-place-window", 1, 0, 0, 
+          (SCM win),
+"This is simplest, fallback placement procedure for windows.\n\
+It simply leaves the window WIN in place, exactly as requested.")
+#define FUNC_NAME s_null_place_window
+{
+  initial_place_window(win);
+  return SCM_BOOL_T;
+}
+#undef FUNC_NAME
 
 /*
  * Handles initial placement and sizing of a new window
@@ -739,35 +699,56 @@ PlaceWindow(ScwmWindow *psw)
 #ifdef DEBUG_PLACE_WINDOW
     scwm_msg(DBG,"PlaceWindow","%s is a transient window",psw->name);
 #endif
-    place_proc=scm_object_property(win,sym_transient_placement_proc);
     /* we need to use the default placement procedure 
        if we're doing the initial window capture, otherwise we get into
        a deadlock --12/07/99 gjb */
-    if (!Scr.fWindowsCaptured ||
-        SCM_BOOL_F == place_proc || 
-	SCM_BOOL_F == scwm_safe_call1(place_proc, win)) {
-#ifdef DEBUG_PLACE_WINDOW
-    scwm_msg(DBG,"PlaceWindow","using default_transient_placement_proc");
-#endif
-      default_transient_placement_proc(win);
+    if (!Scr.fWindowsCaptured)
+      return SCM_BOOL_F != null_place_window(win);
+    else {
+      place_proc = scm_object_property(win,sym_transient_placement_proc);
+
+      return
+        /* either use the place_proc ... */
+        ((gh_procedure_p(place_proc) && 
+          SCM_BOOL_F != scwm_safe_call1(place_proc, win)) ||
+         
+         /* or the default_transient_placement_proc ... */
+         (gh_procedure_p(*pscm_default_transient_placement_proc) &&
+          SCM_BOOL_F != scwm_safe_call1(*pscm_default_transient_placement_proc, win)) ||
+         
+         /* or the null placement_proc */
+         SCM_BOOL_F != null_place_window(win));
     }
   } else {
-    place_proc=scm_object_property(win,sym_placement_proc);
-    if (SCM_BOOL_F == place_proc || 
-	SCM_BOOL_F == scwm_safe_call1(place_proc, win)) {
-#ifdef DEBUG_PLACE_WINDOW
-    scwm_msg(DBG,"PlaceWindow","using default_placement_proc");
-#endif
-      default_placement_proc(win);
+    if (!Scr.fWindowsCaptured )
+      return SCM_BOOL_F != null_place_window(win);
+    else {
+      place_proc = scm_object_property(win,sym_placement_proc);
+
+      return
+        /* either use the place_proc ... */
+        ((gh_procedure_p(place_proc) && 
+          SCM_BOOL_F != scwm_safe_call1(place_proc, win)) ||
+         
+         /* or the default_transient_placement_proc ... */
+         (gh_procedure_p(*pscm_default_placement_proc) &&
+          SCM_BOOL_F != scwm_safe_call1(*pscm_default_placement_proc, win)) ||
+         
+         /* or the null placement_proc */
+         SCM_BOOL_F != null_place_window(win));
     }
   }
-
-  return True;
 }
 
 
 void init_placement()
 {
+  SCWM_VAR_INIT(default_placement_proc,"default-placement-proc",SCM_BOOL_F);
+  /** The default procedure to use to place windows 
+      that do not have a placement proc. */
+  SCWM_VAR_INIT(default_transient_placement_proc,"default-transient-placement-proc",SCM_BOOL_F);
+  /** The default procedure to use to place transient windows 
+      that do not have a transient placement proc. */
 #ifndef SCM_MAGIC_SNARFER
 #include "placement.x"
 #endif
@@ -781,4 +762,3 @@ void init_placement()
 /* End: */
 /* vim:ts=8:sw=2:sta 
  */
-

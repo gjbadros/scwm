@@ -528,7 +528,6 @@ InitVariables(void)
 
   Scr.DefaultDecor.tag = strdup("default");
 
-  Scr.fSmartPlacementIsClever = False;
   Scr.fClickToFocusPassesClick = True;
   Scr.fClickToFocusRaises = True;
   Scr.fMouseFocusClickRaises = False;

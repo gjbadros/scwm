@@ -271,8 +271,6 @@ struct ScwmWindow {
   PackedBool(fDecorateTransient);
   PackedBool(fWindowShaded);
   PackedBool(fStartsOnDesk);
-  PackedBool(fRandomPlace);
-  PackedBool(fSmartPlace);
   PackedBool(fOLDecorHint);
   PackedBool(fNoPPosition);
   PackedBool(fForceIcon);       
