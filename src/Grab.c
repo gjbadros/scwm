@@ -32,7 +32,7 @@
 
 static int xgrabcount = 0;
 
-int CServerGrabs() { return xgrabcount; };
+int CServerGrabs() { return xgrabcount; }
 
 void 
 XGrabServer_withSemaphore(Display * disp)
