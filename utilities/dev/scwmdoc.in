@@ -477,7 +477,6 @@ $usage
 - $module
 $comment
 [From $file:$line]
-
 
 EOC
   ;
