@@ -1,4 +1,5 @@
-;;;; 	Copyright (C) 1997-1998 Maciej Stachowiak and Greg J. Badros
+;;;; $Id$
+;;;; Copyright (C) 1997-1998 Maciej Stachowiak and Greg J. Badros
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -27,14 +28,16 @@
 ;; on-desk?
 
 
-(define*-public (on-desk? n #&optional (w (get-window)))
-  (if w (= n (window-desk w))))
+(define*-public (on-desk? n #&optional (win (get-window)))
+  "Return #t if WIN is on desk N, else #f."
+  (if win (= n (window-desk win))))
 
-(define*-public ((on-desk-n? n) #&optional (w (get-window)))
-  (on-desk? n w))
+(define*-public ((on-desk-n? n) #&optional (win (get-window)))
+  (on-desk? n win))
 
-(define*-public (on-current-desk? #&optional (w (get-window)))
-  (on-desk? (current-desk) w))
+(define*-public (on-current-desk? #&optional (win (get-window)))
+  "Return #t if WIN is on the current desk."
+  (on-desk? (current-desk) win))
 
 (define (rectangle-overlap? x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
   (> (intersection-area x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2) 0))

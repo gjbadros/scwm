@@ -27,23 +27,48 @@
 ;; returning whether an opaque move/resize is desired
 
 (define-public (interactive-move-window-with-focus)
+  "Interactively move the window which currently has the focus.
+`interactive-move-maybe-opaque' is used to control whether a rubberband
+outline or the window itself is moved."
   (let ((w (current-window-with-focus))) (and w (interactive-move-maybe-opaque w))))
 
 (define-public (interactive-resize-window-with-focus)
+  "Interactively resize the window which currently has the focus.
+`interactive-resize-maybe-opaque' is used to control whether a rubberband
+outline or the window itself is resized."
   (let ((w (current-window-with-focus))) (and w (interactive-resize-maybe-opaque w))))
 
 (define-public (interactive-move-window-with-pointer)
+  "Interactively move the window which currently contains the pointer.
+`interactive-move-maybe-opaque' is used to control whether a rubberband
+outline or the window itself is moved."
   (let ((w (current-window-with-pointer))) (and w (interactive-move-maybe-opaque w))))
 
 (define-public (interactive-resize-window-with-pointer)
+  "Interactively resize the window which currently contains the pointer.
+`interactive-resize-maybe-opaque' is used to control whether a rubberband
+outline or the window itself is resized."
   (let ((w (current-window-with-pointer))) (and w (interactive-resize-maybe-opaque w))))
 
-(define-public (toggle-max-vert) (toggle-maximize 0 (%y 100)))
-(define-public (toggle-max-horz) (toggle-maximize (%x 100) 0))
-(define-public (toggle-max-both) (toggle-maximize (%x 100) (%y 100)))
-(define-public (toggle-max-vert-part) (toggle-maximize 0 (%y 95)))
+(define-public (toggle-max-vert) 
+  "Toggle the current window's maximized-vertically state."
+  (toggle-maximize 0 (%y 100)))
+
+(define-public (toggle-max-horz) 
+  "Toggle the current window's maximized-horizontally state."
+  (toggle-maximize (%x 100) 0))
+
+(define-public (toggle-max-both)
+  "Toggle the current window's maximization (both vertically and horizontally)."
+  (toggle-maximize (%x 100) (%y 100)))
+
+(define-public (toggle-max-vert-part)
+  "Toggle the current window's maximization-vertically to 95% of the screen height."
+  (toggle-maximize 0 (%y 95)))
 
 (define-public (wiggle-window)
+  "Animatedly window shade and then unshade the current window.
+Just a toy--- perhaps could be useful to call attention to a window."
   (let ((w (get-window))) (window-shade w #t) (un-window-shade w #t)))
 
 (define-public (write-all port . lst)
@@ -90,13 +115,16 @@ Use `show-system-info' to display it in a window."
      (map (lambda (st) (string-append "\t" st "\n")) image-load-path))))
 
 (define-public (make-file-menu file . rest)
+  "Return a menu-object for viewing or editing FILE.
+REST is a list of other menu-items to include in the returned menu."
   (menu (append! (list (menuitem "View" #:action (show-file file))
 		       (menuitem "Edit" #:action
-				 (string-append (or (getenv "EDITOR") "gvim")
+				 (string-append (or (getenv "EDITOR") "vi")
 						" " file)))
 		 rest)))
 
 (define-public (quotify-single-quotes str)
+  "Return a string that has single quote characters backslashified."
   (regexp-substitute/global #f "'" str 'pre "'\"'\"'" 'post))
 
 ;;; FIXGJB: how set width of an xmessage?

@@ -1,4 +1,5 @@
-;; $Id$
+;;;; $Id$
+;;;; Copyright (C) 1997-1998 Maciej Stachowiak and Greg J. Badros
 
 (define-module (app scwm module-types))
 
@@ -61,4 +62,5 @@
 
 ;; Usage e.g.: (module-event-name-from-number 8192)
 (define-public (module-event-name-from-number num)
+  "Return the string module event name for event number NUM."
   (cdr (assoc num module-event-number-to-name-alist)))

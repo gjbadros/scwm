@@ -1,4 +1,5 @@
-;;;; 	Copyright (C) 1997 Maciej Stachowiak
+;;;; $Id$
+;;;; Copyright (C) 1997-1998 Maciej Stachowiak
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by

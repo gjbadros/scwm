@@ -1,6 +1,6 @@
+;;;; $Id$
 ;;; File: <prefs-menu.scm - 1998-08-04 Tue 13:26:00 EDT sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
-;;;	$Id$
 
 ;;; This program is free software; you can redistribute it and/or modify
 ;;; it under the terms of the GNU General Public License as published by

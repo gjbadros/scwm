@@ -1,4 +1,5 @@
-;;;; 	Copyright (C) 1998 Maciej Stachowiak
+;;;; $Id$
+;;;; Copyright (C) 1997-1998 Maciej Stachowiak and Greg J. Badros
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -159,10 +160,12 @@
 
 ;; writes the string as binary data to the port
 (define*-public (binary-write str #&optional (port (current-input-port)))
+  "Writes STR as binary data to PORT."
   (uniform-array-write str port))
 
 ;; reads length bytes of binary data and returns it as a string
 (define*-public (binary-read length #&optional (port (current-input-port)))
+  "Reads LENGTH bytes of binary data from PORT and return it as a string."
   (let* ((s (make-string length))
 	 (result (uniform-array-read! s port)))
     (if (< result length)

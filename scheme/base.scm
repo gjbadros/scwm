@@ -97,9 +97,10 @@ Returns #f otherwise."
 ;;(define*-public (set-window-background! bg #&optional (w (get-window)))
 ;;  (set-window-colors! #f bg w))
 
-(define*-public (set-window-colors! #&optional (bg #f) (fg #f) (w (get-window)))
-  (if bg (set-window-background! bg w))
-  (if fg (set-window-foreground! fg w)))
+(define*-public (set-window-colors! #&optional (bg #f) (fg #f) (win (get-window)))
+  "Set WIN's background color to BG, foreground color to FG."
+  (if bg (set-window-background! bg win))
+  (if fg (set-window-foreground! fg win)))
 
 ;; relative versions of absolute move procedures.
 (define-public (move-pointer x y)
@@ -138,8 +139,9 @@ creation of individual menus."
 
 (define*-public (simple-title-style #&key font height justify)
   "Set the style for titlebars.
-FONT is a font, HEIGHT is a number, JUSTIFY is a legal argument
-to `set-title-justify' such as 'left, 'right, or 'center."
+FONT is a font object or a string, HEIGHT is a number of points,
+JUSTIFY is a legal argument to `set-title-justify' such as 'left,
+'right, or 'center."
   (if (bound? font)
       (set-title-font! font))
   (if (bound? height)

@@ -1,4 +1,5 @@
-;;;; 	Copyright (C) 1997 Maciej Stachowiak
+;;;; $Id$
+;;;; Copyright (C) 1997-1998 Maciej Stachowiak and Greg J. Badros
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -29,6 +30,11 @@
 			     (active-up '()) 
 			     (active-down '()) 
 			     (inactive '()) . rest)
+  "Set the current title style to use FONT, HEIGHT, and JUSTIFY.
+FONT is the window title font, a font object or a string.
+HEIGHT is the height of the title bar, in points.
+JUSTIFY is one of 'left, 'right, or 'center.
+FIXMS: What are? ACTIVE-UP, ACTIVE-DOWN, INACTIVE."
   (if (bound? font)
       (set-title-font! font))
   (if (bound? height) 
@@ -42,6 +48,7 @@
 
 (define*-public (border-style #&key (active '())  
 			      (inactive '()) . rest)
+  "Set the current border style."
   (act-on-face-specs (lambda* (active #&optional ignore inactive)
 			      (if (bound? inactive)
 				  (set-border-face! active inactive)
@@ -54,6 +61,7 @@
 			      (active-up '()) 
 			      (active-down '()) 
 			      (inactive '()) . rest)
+  "Set the current button style for button number BUTTON."
   (if (bound? mwm)
       (set-button-mwm-flag! mwm))
   (act-on-face-specs (lambda args
