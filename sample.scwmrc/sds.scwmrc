@@ -396,7 +396,7 @@
                                (menuitem "Clock (&A)" #:image-left clock-i
                                          #:action "oclock"))))
               ;; menu-separator
-              ;; (menuitem "Desks" #:action menu-desk)
+              ;; (menuitem "Desks" #:submenu menu-desk)
               menu-separator
               (menuitem "Exit scwm" #:image-left "mini-exit.xpm"
 			#:action menu-quit-verify))

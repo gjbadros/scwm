@@ -1,4 +1,4 @@
-;;;; $Id$
+;;; $Id$
 ;;;; system.scwmrc -- Scwm System Default initialization file
 ;;;; (from gjb.scwmrc, at release of Scwm-0.99.2)
 ;;;;
@@ -362,17 +362,17 @@
 (define* (popup-applications)
   "Popup the applications menu."
   (interactive)
-  (popup-menu 'menu-applications #t))
+  (popup-menu menu-applications #t))
 
 (define* (popup-applications-no-warp)
   "Popup the applications menu without warping to the first menu item."
   (interactive)
-  (popup-menu 'menu-applications))
+  (popup-menu menu-applications))
 
 (define* (popup-multimedia)
   "Popup the multimedia applications menu."
   (interactive)
-  (popup-menu 'menu-multimedia #t))
+  (popup-menu menu-multimedia #t))
 
 (define* (popup-root-start)
   "Popup the root window start menu."
@@ -380,7 +380,7 @@
   (with-window 
    #f  ;; ensure that the window context is empty, so that, e.g.,
        ;; window operations menu always prompts for a window
-   (popup-menu 'menu-root-start #t)))
+   (popup-menu menu-root-start #t)))
 
 (define* (popup-root-start-no-warp)
   "Popup the root window start menu without warping to the first menu item."
@@ -388,7 +388,7 @@
   (with-window 
    #f  ;; ensure that the window context is empty, so that, e.g.,
        ;; window operations menu always prompts for a window
-   (popup-menu 'menu-root-start)))
+   (popup-menu menu-root-start)))
 
 
 (define* (popup-window-ops)
@@ -399,7 +399,7 @@
 (define* (popup-desk)
   "Popup the desk operations menu."
   (interactive)
-  (popup-menu 'menu-desk))
+  (popup-menu menu-desk))
 
 (define* (popup-favorite-hosts-menu)
   "Popup the favorite hosts menu."
@@ -644,19 +644,6 @@ from other processes.
 (define (exec-xlock)
   (execute xlock-command))
 
-(define menu-quit-verify
-  (menu 
-   (list
-    (menu-title "Really quit Scwm?")
-    menu-separator
-    (menuitem "&Restart scwm" #:image-left "mini-turn.xpm" 
-	       #:action (lambda () (restart "scwm")))
-    (menuitem "Restart &development scwm" #:image-left "mini-turn.xpm" 
-	       #:action (lambda () (restart 
-				    (string-append scwmdir "/src/scwm"))))
-    menu-separator
-    (menuitem "&Yes" #:image-left "mini-exclam.xpm" #:action quit)
-    (menuitem "&No"  #:image-left "mini-cross.xpm" #:action noop))))
 
 (define* (quit-verify)
   "Popup the restart/quit/verify menu."
@@ -744,7 +731,7 @@ from other processes.
 				    "New background color"
 				    (lambda (c) (set-background-color! c))
 				    #:title "Background color?")))
-	      (menuitem "Change global theme" #:submenu (lambda () (menu-global-theme #t)))
+	      (menuitem "Change global theme" #:submenu (lambda () (make-menu-global-theme #t)))
 	      (menuitem "Reload .Xresources" #:action
 			(exe "xrdb -merge ${HOME}/.Xresources"))
 	      (menuitem "Reload .Xresources-cpp" #:action
@@ -755,6 +742,26 @@ from other processes.
 
 (define menu-screensaver
   (make-xlock-menu #f))
+
+(define menu-constraints
+  (menu
+   (list
+    (menuitem "&Constraints"
+	      #:submenu (lambda () (ui-constraints-toggle-menu)))
+    (menuitem "Constraint &investigator"
+	      #:action (thunk start-constraint-investigator))
+    (menuitem "Turn &on Constraint Solver"
+	      #:action (thunk enable-constraint-solver)))))
+
+(define (enable-constraint-solver)
+  (if (scwm-is-constraint-enabled?)
+      (begin
+	(use-scwm-modules constraints)
+	(start-constraints))
+      (error "Scwm is not built to support constraints\n\
+Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/")))
+
+
 ;; (start-xterm)
 (define menu-root-start
   (menu
@@ -764,15 +771,15 @@ from other processes.
     (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
 	      #:action start-xterm)
     (menuitem "&Applications" #:image-left "mini-x2.xpm" 
-	      #:submenu 'menu-applications)
+	      #:submenu menu-applications)
     (menuitem "&Utilities" #:image-left "mini-hammer.xpm" 
-	      #:submenu 'menu-utilities)
+	      #:submenu menu-utilities)
     (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm" 
-	      #:submenu 'menu-multimedia)
+	      #:submenu menu-multimedia)
     (menuitem "&Games" #:image-left "mini-happy.xpm" 
-	      #:submenu 'menu-games)
+	      #:submenu menu-games)
     (menuitem "Constraint sol&ver" #:image-left pic-lambda-mini
-	      #:submenu 'menu-constraints)
+	      #:submenu menu-constraints)
     menu-separator
     (menuitem "H&osts - Servers" #:image-left "mini-term.xpm" 
 	      #:submenu menu-hosts-servers)
@@ -792,7 +799,7 @@ from other processes.
     menu-separator
     (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
     (menuitem "Other &Preferences" #:image-left "mini-prefs.xpm" 
-	      #:action 'menu-preferences)
+	      #:action menu-preferences)
     (menuitem "A&bout Scwm" #:image-left "mini-exclam.xpm" 
 	      #:action (thunk scwm-about-message))
     (menuitem "&Help Scwm" #:image-left "mini-question.xpm" 
@@ -801,36 +808,11 @@ from other processes.
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
 	      #:action (thunk exec-xlock))
     (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
-	      #:action 'menu-quit-verify))
+	      #:submenu menu-quit-verify))
    #:image-side "scwm-gnu-linux.xpm"
    #:image-align 'bottom
    #:color-bg-image-side "blue"))
-
-(define menu-constraints
-  (menu
-   (list
-    (menuitem "&Constraints"
-	      #:submenu (lambda () (ui-constraints-toggle-menu)))
-    (menuitem "Constraint &investigator"
-	      #:action (thunk start-constraint-investigator))
-    (menuitem "Turn &on Constraint Solver"
-	      #:action (thunk enable-constraint-solver)))))
-
-(define (enable-constraint-solver)
-  (if (scwm-is-constraint-enabled?)
-      (begin
-	(use-scwm-modules constraints)
-	(start-constraints))
-      (error "Scwm is not built to support constraints\nGet Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/")))
-
-(define menu-desk 
-  (menu 
-   (list (menu-title "Desks")
-	 menu-separator
-	 (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
-	 (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
-	 (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
-	 (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
+;; (popup-menu menu-root-start)
 
 ;;; now set some mouse and key bindings ;;
 

@@ -835,7 +835,7 @@
     ;;  as tar.gz files that Scwm reads automagically
     (menuitem "Change global theme" 
               #:submenu 
-              (lambda () (menu-global-theme #t)))
+              (lambda () (make-menu-global-theme #t)))
 
     (menuitem "Scwm interaction" #:action
               (run-in-xterm "scwmrepl"))
