@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3378]
+[From scwm/window.c:3384]
 
 
 Fonts
@@ -306,7 +306,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:811]
+[From scwm/callbacks.c:818]
 
 
 Key Specifier
@@ -392,7 +392,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:648]
+[From scwm/scwm.c:653]
 
 
 SCWMEXEC Protocol
@@ -410,7 +410,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From scwm/events.c:587]
+[From scwm/events.c:584]
 
 
 Shadow and Highlight Factors
@@ -451,7 +451,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:2073]
+[From scwm/window.c:2079]
 
 
 Themes
@@ -474,7 +474,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From scwm/callbacks.c:666]
+[From scwm/callbacks.c:673]
 
 
 Viewports
@@ -506,7 +506,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:960]
+[From scwm/window.c:964]
 
 
 Window Style
@@ -586,7 +586,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From scwm/window.c:422]
+[From scwm/window.c:426]
 
 
 X atoms
