@@ -43,6 +43,7 @@
 	     (app scwm fvwm-module)
 	     (app scwm path-cache)
 	     (app scwm animation)
+	     (app scwm themes)
 	     (app scwm message-window)
 	     (app scwm animated-iconify)
 	     )
@@ -73,9 +74,13 @@
 
 
 ;; (set! doc-files '("/scratch/gjb/scwm/doc/scwm-procedures.txt"))
-(define-public doc-files        ; '("/usr/src/scwm/doc/scwm-procedures.txt")
+(set! doc-files        ; '("/usr/src/scwm/doc/scwm-procedures.txt")
   (list (string-append (scwm-path-prefix) "/share/scwm/scwm-procedures.txt")
 	(string-append (scwm-path-prefix) "/share/scwm/cassowary_scm-procedures.txt")))
+
+;; (use-modules (app scwm themes))
+(set! *theme-path*
+      (append (list (string-append (getenv "SCWMDIR") "/themes")) *theme-path*))
 
 
 ;;;(documentation "make-menuitem")
@@ -717,7 +722,8 @@
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
     (menuitem "&Print" #:action (thunk print-window))
     menu-separator
-    (menuitem "Change theme" #:submenu (lambda () (menu-window-theme #t)))
+    (menuitem "Change theme" #:submenu (lambda () (menu-window-theme)))
+    (menuitem "Reload and change theme" #:submenu (lambda () (menu-window-theme #t)))
     menu-separator
     (menuitem "&Delete" #:action (thunk delete-window))
     (menuitem "&Close" #:image-left "mini-cross.xpm" 
@@ -749,21 +755,26 @@
     (un-window-shade w #t)))
 
 (define (scwm-help)
-  (netscape-goto-url "http://vicarious-existence.mit.edu/scwm" #f 'netscape-new-windwo))
+  (netscape-goto-url "http://vicarious-existence.mit.edu/scwm" #f 'netscape-new-window))
 
 (define (scwm-about-message)
   (message "Scwm TheNextLevel
 (C) 1999 Greg J. Badros
 
 This is a re-work of the fvwm2 TheNextLevel and its successor
-AnotherLevel.
+AnotherLevel. Most importantly, the underlying window manager
+is Scwm, the Scheme Constraints Window Manager.
+
+Gone is the ugly and impossible to maintain m4 preprocessing.
+Here to stay is beautiful scheme, and more features than the
+union of all other window managers!
 "))
 
 (define (start-xlogo)
   (execute "xlogo"))
 
 (define (exec-xlock)
-  (execute "xlock -nice -19 -mode blank"))
+  (execute "xlock -remote -nice -19 -mode blank"))
 
 (define menu-quit-verify
   (menu 
@@ -896,8 +907,11 @@ AnotherLevel.
 
 (define menu-prefs-gjb
   (menu (list (menuitem "Preferences" #f) menu-title menu-separator
-	      (menuitem "Reload X resources" #:action
+	      (menuitem "Change global theme" #:submenu (lambda () (menu-global-theme #t)))
+	      (menuitem "Reload .Xresources" #:action
 			(exe "xrdb -merge ${HOME}/.Xresources"))
+	      (menuitem "Reload .Xresources-cpp" #:action
+			(exe "xrdbcpp -merge ${HOME}/.Xresources-cpp"))
 	      (menuitem "View all icons" #:action
 			(exe (apply string-append "xv "
 				    (map (lambda (st) (string-append st "/* "))
@@ -973,8 +987,6 @@ AnotherLevel.
 	      #:action 'menu-screensaver)
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
 	      #:action (thunk exec-xlock))
-    menu-separator
-    (menuitem "Change global theme" #:submenu (lambda () (menu-global-theme #t)))
     menu-separator
     (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
 	      #:action (thunk scwm-about-message))
@@ -1310,7 +1322,7 @@ AnotherLevel.
 (if want-autoraise
     (begin
       (use-modules (app scwm auto-raise))
-      (window-style "*" #:auto-raise #f)))
+      (window-style "*" #:auto-raise #t)))
 
 (if want-fvwm2-pager-module
     (begin

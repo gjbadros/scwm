@@ -253,7 +253,7 @@
        image-load-path))
 
 
-(set! theme-path (cons "/home/mstx/working/scwm/themes" theme-path))
+(set! *theme-path* (cons "/home/mstx/working/scwm/themes" theme-path))
 	
 
 ;;;;-------------------------------;;;;
