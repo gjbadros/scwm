@@ -1,3 +1,11 @@
+Tue Sep 14 15:06:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Fix typo -- et. al. -> et al.
+
+Tue Sep 14 14:33:35 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in, NEWS: Release 0.99.2
+
 Mon Sep 13 13:31:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* README: Call it a beta, not pre-stable, release
