@@ -237,3 +237,24 @@ times in the resulting list. E.g. (repeat 3 'a 2 'b 1 'c) => (a a a b b c)"
 	((zero? (car args)) (apply repeat (cddr args)))
 	(else (cons (cadr args) (apply repeat (append! (list (1- (car args)))
 						       (cdr args)))))))
+
+;; From Springer & Friedman, Scheme and the Art of Programming
+;; Program 4.14, p. 111
+(define-public (flatten list-of-lists)
+  "Return LIST-OF-LISTS as a single flat list."
+  (cond ((null? list-of-lists) '())
+	((pair? (car list-of-lists))
+	 (append (flatten (car list-of-lists)) (flatten (cdr list-of-lists))))
+	(else (cons (car list-of-lists) (flatten (cdr list-of-lists))))))
+
+#!
+(use-scwm-modules test-case)
+(test-case "Empty"
+	   (flatten '()) => '())
+(test-case "Simple"
+	   (flatten '(1)) => '(1))
+(test-case "Linear"
+	   (flatten '(1 2 3)) => '(1 2 3))
+(test-case "Nested"
+	   (flatten '((1 2 (3 4)) (5 6))) => '(1 2 3 4 5 6))
+!#

@@ -211,13 +211,11 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
     (popup-menu (menu
 		 (append 
 		  (list 
-		   (make-menuitem 
+		   (menu-title
 		    (if enumerate-hotkeys
 			"	Window list"
-			"Window list")
-		    #f (if show-geometry "Geometry" #f)
-		    #f #f #f #f #f)
-		   menu-title)
+			"Window list") #:extra-label (if show-geometry "Geometry" #f))
+		   menu-separator)
 		  (if split-by-resource
 		      (fold-menu-list-by-group menuitems-with-window-resource)
 		      (map (lambda (x) (cdr x)) menuitems-with-window-resource)))

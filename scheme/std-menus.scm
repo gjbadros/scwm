@@ -77,7 +77,7 @@ To use this, add the following to the menu of your choice:
    (menuitem \"Screensaver\" #:action (make-xlock-menu #f))
 or (menuitem \"Lock Screen\" #:action (make-xlock-menu #t))"
   (menu (append!
-	 (list (menuitem "Lock Screen" #f) menu-title menu-separator
+	 (list (menu-title (if lock? "Lock Screen" "Screensaver")) menu-separator
 	       (menuitem "Random!" #:action (run-xlock "random" lock?))
 	       (menuitem "Blank" #:action (run-xlock "blank" lock?))
 	       (menuitem "Bomb" #:action (run-xlock "bomb" lock?)))

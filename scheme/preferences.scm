@@ -180,7 +180,7 @@
 			#:action noop ;; need this to make the hover-action work
 			;; GJB:FIXME:: need a menu popdown proc as part of menu object
 			)
-	      menu-title
+	      menu-separator
 	      (menuitem "Set..." 
 			#:action (lambda () (gui-set sym))))
 	     (if fav
@@ -210,8 +210,7 @@
 (define-public (scwm-options-menu)
   (menu (append
 	 (list
-	  (menuitem "All options" #f)
-	  menu-title
+	  (menu-title "All options")
 	  menu-separator)
 	 (map (lambda (sym)
 		(let ((fav (scwm-option-favorites sym))

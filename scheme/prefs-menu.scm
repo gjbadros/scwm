@@ -206,7 +206,7 @@ FUNCS should be a list of strings."
   "Generate the `Preferences' menu.
 All the arguments are passed directly to the `menu' function."
   (apply
-   menu (list (menuitem "Preferences" #f) menu-title menu-separator
+   menu (list (menu-title "Preferences") menu-separator
               (menuitem "View All Icons" #:action
                         (apply string-append "xv "
                                (map (lambda (st) (string-append st "/* "))

@@ -186,22 +186,21 @@ See also `message'."
   "Return a list of menu-items from a list of detailed programs list.
 The format is subject to change.  See sample.scwmrc/gjb.scwmrc for
 example usage."
-  (cons menu-title
-	(cons menu-separator
-	      (map (lambda (elem)
-		     (let ((title (car elem))
-			   (mini-icon (cadr elem))
-			   (icon (caddr elem))
-			   (exename (cadddr elem)))
-		       (if (cached-program-exists? (first-word exename))
-			   (menuitem
-                            title #:action exename #:image-left
-                            (if mini-icon
-                                (string-append "mini-" mini-icon ".xpm") #f)
-                            ;; #:icon (if icon (string-append icon ".xpm") #f)
-			    )
-			   #f)))
-		   menu-info-list))))
+  (cons menu-separator
+	(map (lambda (elem)
+	       (let ((title (car elem))
+		     (mini-icon (cadr elem))
+		     (icon (caddr elem))
+		     (exename (cadddr elem)))
+		 (if (cached-program-exists? (first-word exename))
+		     (menuitem
+		      title #:action exename #:image-left
+		      (if mini-icon
+			  (string-append "mini-" mini-icon ".xpm") #f)
+		      ;; #:icon (if icon (string-append icon ".xpm") #f)
+		      )
+		     #f)))
+	     menu-info-list)))
 
 
 (define-public (sleep-ms ms)
@@ -265,7 +264,7 @@ returned list can be used to un-highlight the windows:
 						     h " -l " u))))))
       )
     (ap (menuitem ".rhosts" #f))
-    (ap menu-title)
+    (ap menu-separator)
     (do ((l (read-line p 'trim) (read-line p 'trim)))
 	((eof-object? l) ret)
       (cond ((string-match "([^ \t]+)[ \t]+([^ \t]+)" l)
@@ -273,7 +272,7 @@ returned list can be used to un-highlight the windows:
 		  (ap (mm (match:substring m 1)   ; machine name
 			  (match:substring m 2))) ; user name
 		  ))))
-    (ap menu-title)
+    (ap menu-separator)
     (ap (menuitem "reread .rhosts file" #:action
 	    (lambda () (set! rhosts-menu (make-rhosts-menu)))))
     (menu ret)

@@ -21,6 +21,7 @@
 (define menu-text-color (make-color "black"))
 (define menu-stipple-color (make-color "grey60"))
 (define menu-font (make-font "fixed"))
+(define menu-title-font (make-font "fixed"))
 (define menu-side-image #f)
 (define menu-side-bg-color menu-bg-color)
 (define menu-side-bg-color-set #f)
@@ -79,6 +80,14 @@ scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
   #:group 'menu
   #:setter (lambda (font) (set! menu-font font))
   #:getter (lambda () menu-font))
+
+(define-scwm-option *menu-title-font* (make-font "*helvetica*bold-r*12*")
+  "The default menu title font."
+  #:type 'font
+  #:group 'menu
+  #:setter (lambda (font) (set! menu-title-font font))
+  #:getter (lambda () menu-title-font))
+
 
 (define-scwm-option *menu-text-color* (make-color "black")
   "The default menu text color."
@@ -207,6 +216,9 @@ version of this."
 (define-public (set-default-menu-font! font)
   "Set the default font for menu text to FONT."
   (set! menu-font (if (font? font) font (make-font font))))
+(define-public (set-default-menu-title-font! font)
+  "Set the default font for menu title text to FONT."
+  (set! menu-title-font (if (font? font) font (make-font font))))
 (define-public (set-default-menu-side-image! image)
   "Set the default menu side image to IMAGE."
   (set! menu-side-image (if (image? image) image (make-image image))))
@@ -224,6 +236,12 @@ If BG is #f, use the default menu background"
 (define-public (set-default-menu-look! look)
   "Set the default menu look to LOOK."
   (if (menu-look? look) (set! menu-look look) (error "bad look")))
+(define-public (set-default-menu-hl-fg-color! fg)
+  "Set the default menu highlight foreground color to FG."
+  (set! menu-hl-fg-color (if (color? fg) fg (make-color fg))))
+(define-public (set-default-menu-hl-bg-color! bg)
+  "Set the default menu highlight background color to BG."
+  (set! menu-hl-bg-color (if (color? bg) bg (make-color bg))))
 
 ;;(define*-public (set-window-foreground! fg #&optional (w (get-window)))
 ;;  (set-window-colors! fg #f w))
@@ -326,16 +344,22 @@ negative, and Y pixels vertically, down if positive, up if negative."
 (define*-public (menu-style #&key
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
+		     (hl-fg #f) (hl-foreground #f)
+		     (hl-bg #f) (hl-background #f)
 		     (bg-image #f)
 		     (stipple #f) (font #f)
+		     (title-font #f)
 		     (look #f)
 		     (side-image #f) (side-bg 'unset))
   "Set various properites for the menus.
 See `make-menu' for options on creation of individual menus."
   (if (or fg foreground) (set-default-menu-foreground! (or fg foreground)))
   (if (or bg background) (set-default-menu-background! (or bg background)))
+  (if (or hl-fg hl-foreground) (set-default-menu-hl-fg-color! (or hl-fg hl-foreground)))
+  (if (or hl-bg hl-background) (set-default-menu-hl-bg-color! (or hl-bg hl-background)))
   (if stipple (set-default-menu-stipple! stipple))
   (if font (set-default-menu-font! font))
+  (if title-font (set-default-menu-title-font! title-font))
   (if look (set-default-menu-look! look))
   (if side-image (set-default-menu-side-image! side-image))
   (if (not (eq? side-bg 'unset)) (set-default-menu-side-background! side-bg))
@@ -361,10 +385,6 @@ JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 (define-public menu-separator
   (make-menuitem "" #f))
 
-;; menu-title is an alias for menu-separator
-(define-public menu-title
-  menu-separator)
-
 ;; should this be public?
 (define (hotkeys-from-name label)
   (let ((char-list (string->list label))
@@ -381,6 +401,13 @@ JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 	   (set! char-list (cdr char-list)))
     (list (list->string (reverse return-label-char-list))
 	  (list->string (reverse return-key-char-list)))))
+
+(define-public (menu-title label . rest)
+  "Return a menuitem object that is a title.
+All arguments that `menuitem' takes are accepted as usual,
+except the font defaults to `*menu-title-font*' instead of
+`*menu-font*'."
+  (apply menuitem (append (list label #:font (optget *menu-title-font*) rest))))
 
 (define*-public (menuitem label #&key image-above image-left
 			  (fg #f) (bg #f) (font #f)

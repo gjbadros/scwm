@@ -31,10 +31,10 @@
   (menu
    (append
     (list
-     (make-menuitem "Constraints" #f "Enabled?" #f #f #f #f #f)
-     menu-title
-     (make-menuitem "Disable all constraints" disable-all-constraints #f #f #f #f #f "d")
-     (make-menuitem "Enable all constraints" enable-all-constraints #f #f #f #f #f "e")
+     (menu-title "Constraints" #:extra-label "Enabled?")
+     menu-separator
+     (menuitem "&Disable all constraints" #:action disable-all-constraints)
+     (menuitem "&Enable all constraints" #:action enable-all-constraints)
      menu-separator)
     (map (lambda (x)
 	   (let* ((class (ui-constraint-class x))
