@@ -409,6 +409,8 @@ AC_CHECK_LIB(guile, scm_internal_parse_path, AC_DEFINE(HAVE_SCM_INTERNAL_PARSE_P
 
 AC_CHECK_LIB(guile, scm_load_startup_files, AC_DEFINE(HAVE_SCM_LOAD_STARTUP_FILES), ,$GUILE_LIBS)
 
+AC_CHECK_LIB(guile, scm_make_hook, AC_DEFINE(HAVE_SCM_MAKE_HOOK), ,$GUILE_LIBS)
+
 dnl check for scm_the_last_fluid in place of scm_the_last_stack_var
 
 saved_LIBS="${LIBS}"

@@ -83,6 +83,10 @@
    and even dangerous. */
 #undef HAVE_SCM_LOAD_STARTUP_FILES
 
+/* Define this if your libguile has scm_make_hook, indicating
+   C-level support for hooks. */
+#undef HAVE_SCM_MAKE_HOOK
+
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 

@@ -1,5 +1,8 @@
 Sun Dec  6 02:50:53 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* scwm.c (scwm_main): Make sure to supress guile hooks on
+ 	old-style hooks from newer post-1.3 snapshots.
+
 	* window.c (un_keep_on_top): Call KeepOnTop after changing the
  	flag, in case this window was on top of other kept-on-top windows.
 
