@@ -121,6 +121,9 @@ SCWM_SYMBOL(sym_desk_release,"desk-release");
 SCWM_SYMBOL(sym_desk_click,"desk-click");
 
 
+SCWM_HOOK(x_selectionnotify_hook,"X-SelectionNotify-hook", 0,
+"Called when there is no selection after a `X-convert-selection' request.");
+
 SCWM_HOOK(x_configurerequest_hook,"X-ConfigureRequest-hook", 6,
 "This hook is invoked upon ConfigureRequest events.
 The arguments are: '(win icon? x y width height) where win
@@ -138,7 +141,9 @@ for a window scwm is managing. This indicates that an X window
 property has changed. Watching for window property changes can be used
 to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
-that changed (as a string) and the window that it changed for.");
+that changed (as a string) and the window that it changed for. See also
+`X-root-PropertyNotify-hook' but beware it gets passed different
+arguments.");
 
 SCWM_HOOK(x_root_propertynotify_hook,"X-root-PropertyNotify-hook", 2,
 "This hook is invoked whenever a PropertyNotify event is received
@@ -237,6 +242,7 @@ Window last_event_window = 0;
 extern int ShapeEventBase;
 static void HandleShapeNotify();
 static void HandleMotionNotify();
+static void HandleSelectionNotify();
 
 Window PressedW;
 
@@ -283,6 +289,7 @@ InitEventHandlerJumpTable(void)
   EventHandlerJumpTable[ColormapNotify] = HandleColormapNotify;
   EventHandlerJumpTable[MappingNotify] = HandleMappingNotify;
   EventHandlerJumpTable[MotionNotify] = HandleMotionNotify;
+  EventHandlerJumpTable[SelectionNotify] = HandleSelectionNotify;
 
   if (ShapesSupported)
     EventHandlerJumpTable[ShapeEventBase + ShapeNotify] = HandleShapeNotify;
@@ -1880,6 +1887,13 @@ HandleShapeNotify(void)
   }
 #endif
 }
+
+void
+HandleSelectionNotify(void)
+{
+  call0_hooks(x_selectionnotify_hook);
+}
+
 
 /*
  * HandleVisibilityNotify - record fully visible windows for

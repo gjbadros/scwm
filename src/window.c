@@ -9,6 +9,8 @@
  */
 
 /* #define SCWM_DEBUG_MSGS */
+/* #define SCWM_DEBUG_MAKE_FREE_WIN */
+/* #define SCWM_NO_DEBUG_BAD_MARKWIN */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -54,7 +56,6 @@
 #include "xproperty.h"
 #include "cursor.h"
 #include "placement.h"
-
 
 SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0,
 "This hook is invoked with no arguments when the user hits an invalid
@@ -863,9 +864,23 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
   Bool fNeedResize = (psw->frame_width != w || psw->frame_height != h);
   Bool fNeedMove = (psw->frame_x != x || psw->frame_y != y);
   if (fNeedMove || fNeedResize) {
+    int oldw = w;
+    int oldh = h;
+    int grav_x = psw->grav.x;
+    int grav_y = psw->grav.y;
+    int dx, dy;
+    ConstrainSize(psw, 0, 0, &w, &h);
+    /* use gravity to correct for any tweaks that ConstrainSize makes */
+    dx = (oldw - w) * (double) grav_x/2.0;
+    dy = (oldh - h) * (double) grav_y/2.0;
+#if 0
+    fprintf(stderr,"oldw = %d, w = %d, diff = %d, dx = %d, x = %d, x+dx = %d\n",
+            oldw, w, (oldw - w), dx, x, x+dx);
+#endif
+    x += dx;
+    y += dy;
     SET_CVALUE(psw,frame_x,x);
     SET_CVALUE(psw,frame_y,y);
-    ConstrainSize(psw, 0, 0, &w, &h);
     SET_CVALUE(psw,frame_width,w);
     SET_CVALUE(psw,frame_height,h);
     if (!fOpaque) {

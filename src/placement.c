@@ -481,10 +481,12 @@ used in user-defined placement procedures (see
   if (x < 0) {
     return SCM_BOOL_F;
   } else {
+    /* GJB:FIXME:MS: Why fix for bw diffs when clever placement is placing frame,
+       not client window?  This is not cst w/ the below. */
     psw->attr.x = x = x - psw->old_bw + psw->bw;
     psw->attr.y = y = y - psw->old_bw + psw->bw;
 
-    move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
+    move_finalize(psw->frame, psw, x, y);
     return SCM_BOOL_T;
   }
 }
@@ -517,11 +519,11 @@ used in user-defined placement procedures (see
     return SCM_BOOL_F;
   } else {
     /* GJB:FIXME:MS: Why fix for bw diffs when clever placement is placing frame,
-       not client window? */
-    psw->attr.x = x; /*  = x - psw->old_bw + psw->bw; */
-    psw->attr.y = y; /*  = y - psw->old_bw + psw->bw; */
+       not client window?  This is not cst w/ the above. */
+    psw->attr.x = x - psw->old_bw + psw->bw;
+    psw->attr.y = y - psw->old_bw + psw->bw;
 
-    move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
+    move_finalize(psw->frame,psw, x, y);
     return SCM_BOOL_T;
   }
 }
@@ -546,7 +548,9 @@ used in user-defined placement procedures (see
 
   VALIDATE_ARG_WIN_COPY(1,win,psw);
   
-  /* place window in a random location */
+  /* place window in a random location;
+     uses Scr.randomx, Scr.randomy as holders of the
+     last pseudo-random location */
   if ((Scr.randomx += GET_DECOR(psw, TitleHeight)) > Scr.DisplayWidth / 2) {
     Scr.randomx = GET_DECOR(psw, TitleHeight);
   }
@@ -555,10 +559,10 @@ used in user-defined placement procedures (see
     Scr.randomy = 2 * GET_DECOR(psw, TitleHeight);
   }
 
-  psw->attr.x = Scr.randomx - psw->old_bw;
-  psw->attr.y = Scr.randomy - psw->old_bw;
+  psw->attr.x = Scr.randomx - psw->old_bw + psw->bw;
+  psw->attr.y = Scr.randomy - psw->old_bw + psw->bw;
 
-  move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
+  move_finalize(psw->frame,psw, Scr.randomx, Scr.randomy);
   return SCM_BOOL_T; 
 }
 #undef FUNC_NAME

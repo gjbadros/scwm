@@ -67,15 +67,23 @@ makemult(int a, int b)
   return a - (a % b);
 }
 
-void
-ComputeDeltaForResize(ScwmWindow *psw, int *pdx, int *pdy, int width, int height)
+__inline__ void
+ComputeDeltaForResizeWithOrigSize(ScwmWindow *psw, int *pdx, int *pdy, int width, int height, 
+                                  int orig_width, int orig_height)
 {
   int grav_x = psw->grav.x;
   int grav_y = psw->grav.y;
-  int dx = width - FRAME_WIDTH(psw);   /* wider => positive */
-  int dy = height - FRAME_HEIGHT(psw); /* taller => positive */
+  int dx = width - orig_width;   /* wider => positive */
+  int dy = height - orig_height; /* taller => positive */
   *pdx = dx * (double) grav_x/2.0;
   *pdy = dy * (double) grav_y/2.0;
+}
+
+
+void
+ComputeDeltaForResize(ScwmWindow *psw, int *pdx, int *pdy, int width, int height)
+{
+  ComputeDeltaForResizeWithOrigSize(psw, pdx, pdy, width, height, FRAME_WIDTH(psw), FRAME_HEIGHT(psw));
 }
 
 /* *px and *py and in/out parameters

@@ -100,15 +100,15 @@ extern SCM sym_click, sym_root_window;
 
 #define VALIDATE_WINVALID_COPY(arg,psw) VALIDATE_ARG_WINVALID_COPY(1,(arg),(psw))
 
-#define VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(pos,arg,w) \
-  do {  if (arg == sym_root_window) w = Scr.Root;                 \
+#define VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(pos,arg,cvar) \
+  do {  if (arg == sym_root_window) cvar = Scr.Root;              \
         else if (gh_number_p(arg)) {                              \
           assert(sizeof(Window) == sizeof(unsigned long));        \
-          w = gh_scm2ulong(arg);                                  \
+          cvar = gh_scm2ulong(arg);                               \
         } else if (WINDOWP(arg) && VALIDWINP(arg)) {              \
-          w = PSWFROMSCMWIN(arg)->w;                              \
+          cvar = PSWFROMSCMWIN(arg)->w;                           \
         } else {                                                  \
-          w = None;                                               \
+          cvar = None;                                            \
           SCWM_WRONG_TYPE_ARG(pos, arg);                          \
         }                                                         \
   } while (0)

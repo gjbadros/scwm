@@ -319,18 +319,13 @@ WIN is the window to check, an X window id, or 'root-window.
 NAME is a string. The return value is unspecified.")
 #define FUNC_NAME s_X_property_delete_x
 {
-  char *sz;
   Atom aprop;
   Window w;
 
   VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
-  VALIDATE_ARG_STR_NEWCOPY(2,name,sz);
-
-  aprop=XInternAtom(dpy, sz, False);
-  gh_free(sz);
+  VALIDATE_ARG_ATOM_OR_STRING_COPY(2,name,aprop);
 
   XDeleteProperty(dpy, w, aprop);
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -405,6 +400,51 @@ Returns #f, if the X atom was not known.")
   answer = gh_str02scm(sz);
   XFree(sz);
   return answer;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(X_get_selection_owner,"X-get-selection-owner", 1, 0, 0,
+          (SCM atom),
+"Return the window that owns the selection denoted by ATOM.
+ATOM is likely one of the atoms: \"PRIMARY\" or \"SECONDARY\".
+See also `string->X-atom'.  Return value is either a window
+object, 'root-window, or an integer window ID.")
+#define FUNC_NAME s_X_get_selection_owner
+{
+  Atom aSelection;
+  Window w;
+  VALIDATE_ARG_ATOM_OR_STRING_COPY(1,atom,aSelection);
+  w = XGetSelectionOwner(dpy,aSelection);
+  if (w == Scr.Root) {
+    return sym_root_window;
+  } else {
+    ScwmWindow *psw = PswFromWindow(dpy, w);
+    if (psw)
+      return psw->schwin;
+    else
+      return gh_long2scm(w);
+  }
+}
+#undef FUNC_NAME
+
+SCWM_PROC(X_convert_selection,"X-convert-selection", 4, 0, 0,
+          (SCM selection, SCM target, SCM property, SCM requestor_window),
+"Ask the owner of selection SELECTION to provide its value.
+The owner should convert the selection to type TARGET and put set
+the X property PROPERTY on REQUESTOR-WINDOW when it is transferred.
+SELECTION, TARGET, and PROPERTY are each atoms.  REQUESTOR-WINDOW
+is a window object or 'root-window.")
+#define FUNC_NAME s_X_get_selection_owner
+{
+  Atom aSelection, aTarget, aProperty;
+  Window reqwin;
+  VALIDATE_ARG_ATOM_OR_STRING_COPY(1,selection,aSelection);
+  VALIDATE_ARG_ATOM_OR_STRING_COPY(2,target,aTarget);
+  VALIDATE_ARG_ATOM_OR_STRING_COPY(3,property,aProperty);
+  VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(4,requestor_window,reqwin);
+  XConvertSelection(dpy, aSelection, aTarget, aProperty, reqwin, CurrentTime);
+  return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
 
