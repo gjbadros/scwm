@@ -1,3 +1,15 @@
+Fri Sep 24 11:39:09 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* gtk.scm: Added `image->gtk-pixmap'
+
+	* gtk-menu.scm: Added `scwm-gtk-menuitem' to honour image-left
+ 	attribute of menuitems.  Now gtk-menus can have mini-icons.
+
+Fri Sep 24 11:14:15 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added menu-window-move, and include it in the small
+	window ops menu.
+
 Fri Sep 24 09:26:47 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* wavplay.scm: Use (getenv "SCWMDIR") instead of scwmdir.
