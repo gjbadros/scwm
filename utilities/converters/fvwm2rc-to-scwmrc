@@ -493,7 +493,7 @@ print <<"PRESCRIPT"
 ;;; fvwm2rc-to-scwmrc converter is 
 ;;; Copyright (C) 1999 Greg J. Badros <gjb\@cs.washington.edu>
 ;;; Use at your own risk!
-;;; http://serveuse.mit.edu/scwm
+;;; http://scwm.mit.edu/scwm
 ;;; http://www.cs.washington.edu/homes/gjb
 ;;;
 ;;; Generated $date
