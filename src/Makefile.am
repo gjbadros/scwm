@@ -19,7 +19,6 @@ scwm_SOURCES =  string_token.c \
                 scwm.c \
                 xproperty.c \
                 icons.c \
-                misc.c \
                 xmisc.c \
                 move.c \
                 placement.c \
@@ -44,7 +43,7 @@ scwm_SOURCES =  string_token.c \
                 callbacks.c \
                 shutdown.c \
                 init_scheme_string.c \
-		constraint-primitives.cc \
+		constraint-primitives.c \
                 guile-compat.c \
                 syscompat.c \
 		getopt.c \
@@ -53,7 +52,7 @@ scwm_SOURCES =  string_token.c \
 noinst_HEADERS = Grab.h ICCCM.h add_window.h binding.h borders.h \
 callbacks.h color.h colormaps.h colors.h complex.h decor.h \
 decorations.h deskpage.h drawmenu.h errors.h events.h face.h focus.h \
-font.h getopt.h guile-compat.h icons.h image.h menuitem.h misc.h \
+font.h getopt.h guile-compat.h icons.h image.h menuitem.h \
 miscprocs.h module-interface.h module-types.h move.h mwmcom.h \
 placement.h resize.h scmtypes.h screen.h scwm.h \
 scwm-constraints.h constraint-primitives.h \
@@ -84,10 +83,6 @@ SUFFIXES = .x
 # for C++ prototype extraction
 %.x: %.c
 	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
-
-%.x: %.cc
-	guile-snarf -D__cplusplus $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
-
 
 ## FIXMS: This really sucks, but it's the best we can do until
 ## Automake gets a way to compute dependencies with -MG
