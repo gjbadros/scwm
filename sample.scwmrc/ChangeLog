@@ -1,3 +1,8 @@
+Sat May  1 18:16:14 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Go back to nicer window-font, instead of just using
+	default "fixed".
+
 Sat May  1 17:58:32 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Add auto-raise to the use-modules list, Added
