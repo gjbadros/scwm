@@ -55,5 +55,7 @@ then attempts to load it as such."
 (define-public (support-image-conversion)
   "Set things up to try to load arbitrary images.
 Works by setting `try-everything-loader' as the image loader for
-unknown extensions."
-  (register-image-loader "default" try-everything-loader))
+unknown extensions.  Generally not needed with ImLib."
+  (if (not (defined? 'load-imlib-image))
+      (register-image-loader "default" try-everything-loader)))
+

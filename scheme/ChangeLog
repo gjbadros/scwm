@@ -1,3 +1,9 @@
+1999-04-11  Todd Larason  <jtl@molehill.org>
+
+	* image-loaders.scm ((support-image-conversion)): don't actually
+	do anything if ImLib is being used - it's not needed, and it won't 
+	work, since xpm-load won't be there.
+
 Mon Apr 12 08:16:42 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Fixed some leftover hl-color-text (renamed to hl-color-fg)
