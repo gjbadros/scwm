@@ -994,6 +994,8 @@
 
 (bind-key 'all "C-M-S-n" (lambda () (write (get-window)) (newline)))
 
+(bind-key 'all "C-M-S-s" (lambda () (toggle-stick)))
+
 ;; Hyper-w
 (bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
 ;; Alt-w
