@@ -1,58 +1,58 @@
 Scwm Constraint Solver Readme
 -----------------------------
 
-By Greg J. Badros -- 14 August 1998, Last updated 7 October 1998
+By Greg J. Badros -- 14 August 1998, Last updated 18 March 1999
 
 
 For any of you interested in playing the the constraint-solving
-extension to SCWM, here are some brief instructions on getting started.
+extension to Scwm, here are some brief instructions on getting started.
 
 First, you'll need my Cassowary constraint solving toolkit. It's
 available from:
 
 http://www.cs.washington.edu/research/constraints/cassowary/
 
-The latest version is v0.2. It's C++ code, and it builds
+The latest version is v0.4. It's C++ code, and it builds
 using egcs-1.01 or newer, or gcc-2.8.1, and hopefully other C++
-compilers that support the STL reasonably well. There's no fancy
-automake/autoconf stuff with Cassowary, so you'll have to edit the
-Makefile by hand. So far I've only tried building it on Linux (and
-Windows95), because those are the only platforms where I've had a
-C++ compiler recent enough to handle the code (I'll be building egcs-1.1 
-on a couple other platforms when it is released).
+compilers that support the STL reasonably well.  Cassowary does
+(as of v0.4) support autoconf and automake, so you should just 
+be able to "./configure; make" and go.  See the README file included
+with the Cassowary distribution for more details.  In particular, you
+might need to give with --with-guile-prefix=DIR option to configure to
+tell it where your installation of Guile is.  Also, you might want to
+set --prefix=$HOME if you do not have superuser privileges.
 
-Note that it does not build with some pre1.1 snapshots of egcs.
-Hopefully this will be fixed either by the released egcs1.1, or by a
-patch to Cassowary.
+After building Cassowary, trying running "ClTests" (in the c++/
+subdirectory of the distribution) to do a quick test.  If the program
+fails in any way, please let me know!
 
-After building Cassowary (in the c++/ subdirectory of the distribution),
-trying running "ClTests" if it seg faults, let me know -- there are
-definitely bugs in the Cassowary toolkit, but there are fewer and fewer
-each week. In the c++ directory, make an extra symlink to tell scwm
-which libcassowary to use:
+If ClTests runs successfully for you, you should also test the
+Guile/Scheme wrapper of Cassowary.  To do this, cd to the "guile"
+subdirectory of the distribution, and "make test" or run "guile -s
+cltests.scm".  Again, if this fails in any way, please let me know.
+(You may just need to tweak your GUILE_LOAD_PATH environment variable.)
 
-cd cassowary/c++
-ln -s libcassowary-notrace.a libcassowary.a
-ln -s libcassowary.a libcassowary-scwm.a
+If the tests succeeded, do a "make install".
 
+Also included with Cassowary is cassowary_scm.sgml and
+cassowary_scm-procedures.txt for documentation.  The latter integrates
+smoothly w/ scwm.el and scwm-procedures.txt -- just set your scwm
+`doc-files' variable to point at both.
 
-If ClTests runs successfully for you (the last test is a benchmark that
-takes a couple of minutes), then you should build the guile-wrapper in
-the guile/ subdirectory of Cassowary. There is also a cassowary_scm.sgml
-and cassowary_scm-procedures.txt for documentation (the latter
-integrates smoothly w/ scwm.el and scwm-procedures.txt -- just set your
-scwm `doc-files' variable to point at both).
+Then you need to rebuild Scwm w/ constraint-solver support. Do this
+using a recent dev snapshot (18-March-1999 or later should be fine;
+earlier may work).  When you configure Scwm be sure to give at least
+the --with-cassowary=CASSOWARY_INSTALLATION_PREFIX an argument to Scwm's
+configure.  I use "--with-cassowary=/usr/contrib" for Scwm's configure
+after building Cassowary with "--prefix=/usr/contrib" and installing.
 
-Then you need to rebuild scwm w/ constraint-solver support. Do this
-using a recent dev snapshot or v0.8 by giving
---with-cassowary=/path/to/cassowary/c++ as an argument to scwm's
-configure. Then do a clean build of scwm, using:
+Now do a clean build of Scwm with:
 
 make clean
 make all
 
 
-All the normal scwm files will build with the C compiler, but the couple 
+All the normal Scwm files will build with the C compiler, but the couple 
 of .cc files must be built with the same C++ compiler as you used to
 build Cassowary, and the link step must be done by a C++ compiler, too.
 
@@ -63,21 +63,30 @@ configure. (This is necessary with egcs-1.1b under Linux for me).  You can
 do "patch <libtool.patch" to perform the edits automatically.
 
 If all has gone well, you should be able to run the new binary just as
-you would an ordinary scwm binary. Then try evaluating some of the
-S-expressions from scheme/tests/constraints.scm for a demonstration of
-some of what the solver and scwm can do together.
+you would an ordinary Scwm binary.  You should then evaluate
+"(use-modules (app scwm constraints))" to start the UI for the
+constraint solver.  The interface is still under development, but it's a
+place to start.  Use the button bar (w/ tooltip help) to add
+constraints, and use C-M-S-c to bring up a menu to list/enable/disable
+constraints you've already added.  Hover over a constraint menu item to
+get more information about which windows are involved in each
+constraint.
+
+See also the code in scheme/*constraints*.scm
 
 Note that when the constraint solver is in use, all interactive resizes
 and moves are done opaquely, no matter what options you give to the
 interactive-move or interactive-resize primitives.
 
 Please let me know of successes and failures. Consider the constraint
-code alpha. My main wm now has the constraint solver embedded, but I
-only turn on the solver (using the scwm-set-master-solver primitive) on
-my testing X server. The behaviour of scwm built w/ constraints w/o ever
-using the constraint primitives should be nearly identical to scwm w/o
-constraints.  The procedure `scwm-is-constraint-enabled?' will return #t
-if the running scwm was built with csontraint support, and #f otherwise.
+code beta. My main wm has had the constraint solver embedded for many
+months now, and I do turn on the constraint solver w/o fear of losing
+work (but your mileage may vary, of course).  The behaviour of Scwm
+built w/ constraints w/o ever using the constraint primitives should be
+nearly identical to Scwm w/o constraints.  The procedure
+`scwm-is-constraint-enabled?' will return #t if the running Scwm was
+built with csontraint support, and #f otherwise.
 
 Good luck.
 Greg J. Badros
+http://www.cs.washington.edu/homes/gjb
