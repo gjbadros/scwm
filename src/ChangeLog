@@ -1,5 +1,11 @@
 Wed Nov  5 09:24:21 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* miscprocs.c: Change wait-for-window to take a predicate rather
+ 	than a name string, so we don't have to use matchWildcards. You
+ 	can pass (wildcard-matcher NAME) to get the old effect (and for
+ 	that matter, you could just bind the 'new-window event, so
+ 	wait-for-window will go away entirely sometime).
+
 	* builtins.c: Deleted all the Decor stuff, it is not needed any
  	more.
 
