@@ -82,6 +82,13 @@ my $fQuiet = FALSE;
 my $fReallyQuiet = FALSE;
 my $fWarnIfNoComment = TRUE;
 
+# Text from sgml files making up the book
+my $ref_header_sgml;
+my $ref_concepts_intro_sgml;
+my $ref_hooks_intro_sgml;
+my $ref_vars_intro_sgml;
+my $ref_proc_bygroup_intro_sgml;
+
 use Getopt::Std;
 getopts($getopts_option_letters);
 
@@ -287,48 +294,23 @@ my $sgml_name = ""; # "$pkg_name.sgml";
 if ($opt_o) {
   $sgml_name = $opt_o;
   $sgml_name .= ".sgml" if ($sgml_name !~ /\..+ml$/);
+  my $dir = dirname $sgml_name;
 
   open (MARKUP_OUT,">$sgml_name") or die "Could not write to $sgml_name: $!";
   chop (my $date = `date +"%d %B %Y"`);
   chop (my $year = `date +"%Y"`);
+
+  $ref_header_sgml = ReadSgml("$dir/src/ref-header.sgml");
+  $ref_concepts_intro_sgml = ReadSgml("$dir/src/ref-concepts-intro.sgml");
+  $ref_hooks_intro_sgml = ReadSgml("$dir/src/ref-hooks-intro.sgml");
+  $ref_vars_intro_sgml = ReadSgml("$dir/src/ref-vars-intro.sgml");
+  $ref_proc_bygroup_intro_sgml = ReadSgml("$dir/src/ref-proc-bygroup-intro.sgml");
+
+  $ref_header_sgml =~ s/\@DATE\@/$date/g;
+  $ref_header_sgml =~ s/\@YEAR\@/$year/g;
+  $ref_header_sgml =~ s/\@VERSION\@/$scwm_version/g;
   
-  print MARKUP_OUT <<END_HEADER
-<!DOCTYPE Book PUBLIC "-//Davenport//DTD DocBook V3.0//EN">
-<book>
-  <bookinfo>
-    <title>
-      <productname>Scwm Reference Manual</productname>
-    </title>
-    <authorgroup>
-      <author>
-  	<firstname>Maciej</firstname>
-  	<surname>Stachowiak</surname>
-  	<affiliation>
-  	  <address>
-  	    <email>mstachow\@alum.mit.edu</email>
-  	  </address>
-  	</affiliation>
-      </author>
-      <author>
-  	<firstname>Greg</firstname>
-  	<othername>J.</othername>
-  	<surname>Badros</surname>
-  	<affiliation>
-  	  <address>
-  	    <email>gjb\@cs.washington.edu</email>
-  	  </address>
-  	</affiliation>
-      </author>
-    </authorgroup>
-    <releaseinfo>Release $scwm_version</releaseinfo>
-    <pubdate>$date</pubdate>
-    <copyright>
-      <year>1997-$year</year>
-      <holder>Maciej Stachowiak and Greg J. Badros</holder>
-    </copyright>
-  </bookinfo>
-END_HEADER
-  ;
+  print MARKUP_OUT "$ref_header_sgml";
 }
 
 
@@ -340,7 +322,7 @@ if ($opt_o) {
   <chapter>
     <title>Concepts</title>
       <sect1 id="Concepts-Introduction"><title>Introduction</title>
-	<para>This chapter discusses some high level concepts in Scwm.</para>
+	$ref_concepts_intro_sgml
       </sect1>
 START_CONCEPTS_CHAPTER
    ;
@@ -365,8 +347,7 @@ if ($opt_o) {
   <chapter>
     <title>Hooks</title>
       <sect1 id="Hooks-Introduction"><title>Introduction</title>
-	<para>This chapter lists the hooks provided by Scwm
-	      ordered alphabetically by name.</para>
+	$ref_hooks_intro_sgml
       </sect1>
 START_HOOKS_CHAPTER
   ;
@@ -392,7 +373,7 @@ if ($opt_o) {
   <chapter>
     <title>User variables</title>
       <sect1 id="Vars-Introduction"><title>Introduction</title>
-	<para>This chapter lists the user options defined by Scwm.</para>
+	$ref_vars_intro_sgml
       </sect1>
 START_VARS_CHAPTER
   ;
@@ -417,8 +398,7 @@ if ($opt_o) {
   <chapter>
     <title>Procedure Synopses by Group</title>
       <sect1 id="Procs-ByGroup-Introduction"><title>Introduction</title>
-	<para>This chapter lists the procedures supplied by Scwm
-	      grouped and ordered by the source file that they are defined in.</para>
+	$ref_proc_bygroup_intro_sgml
       </sect1>
 START_PROC_BY_FILE
   ;
@@ -437,7 +417,7 @@ START_PROC_BY_FILE
 	my $primname = $procedure{$proc}{primname};
 	my $purpose = $procedure{$proc}{purpose};
 	my $markup_purpose = $procedure{$proc}{markup_purpose};
-	print MARKUP_OUT "      <listitem><para><link linkend=\"$target\"><function>$proc</function></link> &mdash; $markup_purpose</para></listitem>\n";
+	print MARKUP_OUT "      <listitem><para><link linkend=\"$target\"><function>$proc</function></link> -- $markup_purpose</para></listitem>\n";
       }
       print MARKUP_OUT "    </itemizedlist> </sect1>\n";
     }
@@ -451,10 +431,6 @@ if ($opt_o) {
   print MARKUP_OUT <<END_CHAP_HEAD
   <chapter>
     <title>Procedures in Alphabetical Order</title>
-      <sect1 id="Procs-Alphabetical-Introduction"><title>Introduction</title>
-	<para>This chapter lists the procedures supplied by Scwm
-	      ordered alphabetically by name.</para>
-      </sect1>
 END_CHAP_HEAD
   ;
 }
@@ -1098,4 +1074,14 @@ sub CNameMatchesSchemeName( $$ ) {
   $expected_primname2 =~ s/-to-/->/g;
 
   return ($primname eq $expected_primname || $primname eq $expected_primname2);
+}
+
+sub ReadSgml( $ ) {
+  my ($filename) = @_;
+
+  open(IN,"<$filename") || die "Could not open $filename: $!";
+  undef $/;
+  my $answer = <IN>;
+  close IN;
+  return $answer;
 }
