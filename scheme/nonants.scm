@@ -84,7 +84,7 @@ window-selection and constraints modules."
 (define-scwm-option *nonant-highlight-color* (make-color "green")
   "The color to use when highlighting window nonants during selection."
   #:type 'color
-  #:group 'nonant
+  #:group 'winops
   #:setter (lambda (c) (set-nonant-highlight-color! c))
   #:getter (lambda () (nonant-highlight-color)))
 

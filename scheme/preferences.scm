@@ -150,14 +150,14 @@ See also `prompt-string'."
     (gtk-widget-show-all hbox)
     (list hbox (lambda () initval) entry)))
 
-
+;; (option-widget-and-getter '*nonant-highlight-color*)
+;; (scwm-option-type '*nonant-highlight-color*)
 (define-public (option-widget-and-getter sym)
   (let* ((name (scwm-option-name sym))
 	 (value (scwm-option-symget sym))
 	 (type (scwm-option-type sym))
 	 (range (scwm-option-range sym))
 	 (favorites (scwm-option-favorites sym))
-	 (var (eval sym))
 	 (prompt name))
     (case type
       ('string
@@ -195,31 +195,29 @@ See also `prompt-string'."
 ;; (gui-set '*theme-path*)   ;; a path (uses prompt-string for now)
 
 (define*-public (option-menu sym)
-  (let ((var (eval sym)))
-    (let ((doc (scwm-option-short-documentation sym))
-	  (fav (scwm-option-favorites sym))
-	  (group (scwm-option-group sym))
-	  (type (scwm-option-type sym))
-	  (name (scwm-option-name sym))
-	  (range (scwm-option-range sym))
-	  (var (eval sym)))
-      (menu (append
-	     (list
-	      (menuitem (string-append name " = " (printable (scwm-option-symget sym))) 
-			#:hover-action (lambda () (popup-docs-for sym))
-			#:unhover-action (lambda () (message-window-hide! mw-docs))
-			#:action noop ;; need this to make the hover-action work
-			;; GJB:FIXME:: need a menu popdown proc as part of menu object
-			)
-	      menu-separator
-	      (menuitem "Set..." 
-			#:action (lambda () (gui-set sym))))
-	     (if fav
-		 (map (lambda (val) (menuitem (printable val)
-					      #:action (lambda () (scwm-option-symset! sym val))))
-		      (scwm-option-favorites sym))
-		 '()))
-	    #:hover-delay 100))))
+  (let ((doc (scwm-option-short-documentation sym))
+	(fav (scwm-option-favorites sym))
+	(group (scwm-option-group sym))
+	(type (scwm-option-type sym))
+	(name (scwm-option-name sym))
+	(range (scwm-option-range sym)))
+    (menu (append
+	   (list
+	    (menuitem (string-append name " = " (printable (scwm-option-symget sym))) 
+		      #:hover-action (lambda () (popup-docs-for sym))
+		      #:unhover-action (lambda () (message-window-hide! mw-docs))
+		      #:action noop ;; need this to make the hover-action work
+		      ;; GJB:FIXME:: need a menu popdown proc as part of menu object
+		      )
+	    menu-separator
+	    (menuitem "Set..." 
+		      #:action (lambda () (gui-set sym))))
+	   (if fav
+	       (map (lambda (val) (menuitem (printable val)
+					    #:action (lambda () (scwm-option-symset! sym val))))
+		    (scwm-option-favorites sym))
+	       '()))
+	  #:hover-delay 100)))
 
 (define-public (popup-option-menu sym)
   (popup-menu (option-menu sym) #t)
@@ -486,18 +484,19 @@ modules are not loaded, those options will not be included.
 The returned string will contain multiple S-expressions, one for each Scwm preference
 value."
   (apply string-append
-       (map (lambda (s) (string-append 
-			 "(eval-after-load '" 
-			 (with-output-to-string 
-			   (lambda () (display (scwm-option-module s))))
-			 " (lambda ()\n"
-			 "  (scwm-option-set! " (symbol->string s) " "
-			 (with-output-to-string 
-			   (lambda ()
-			     (let ((value (scwm-option-symget s)))
-			       (if (or (list? value) (symbol? value)) (display "'"))
-			       (write value))))
-			 ")))\n"))
+       (map (lambda (s) 
+	      (let ((module-name (with-output-to-string 
+				   (lambda () (display (scwm-option-module s))))))
+		(string-append 
+		 "(eval-after-load '" module-name
+		 " (lambda ()\n"
+		 "  (scwm-option-set! " (symbol->string s) " "
+		 (with-output-to-string 
+		   (lambda ()
+		     (let ((value (scwm-option-symget s)))
+		       (if (or (list? value) (symbol? value)) (display "'"))
+		       (write value))))
+		 ")))\n")))
 	    syms)))
 	       
 
