@@ -1,3 +1,8 @@
+1998-12-04  Sam Steingold  <sds@goems.com>
+
+	* doc.scm (documentation): cleaned up.
+	(doc-files): added more files.
+
 Thu Dec  3 10:28:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* doc.scm, base.scm: Make no attempt to define user-settable
@@ -21,14 +26,14 @@ Thu Dec  3 10:28:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	so they will work right automagically if you use this
  	module. Don't attempt to define any variables in the root
  	module. Various reordering and commenting.
-	
+
 	* minimal.scm: Use hack-interactive-move and
  	hack-interactive-resize, temporarily defined to the rubber-band
 	versions, in complex operations.
- 	
+
 	* tile.scm: Use raise parameter instead of restack; change default
  	to 'restack-only; fix documentation to say "tile" instead of
- 	"cascade"; thanks to Eli Barzilay <eli@CS.Cornell.EDU>.	
+ 	"cascade"; thanks to Eli Barzilay <eli@CS.Cornell.EDU>.
 
 Wed Dec  2 08:42:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
