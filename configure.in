@@ -72,8 +72,6 @@ AC_AIX
 #-------------------------------------------------------------------
 
 AC_PROG_CPP
-AC_PROG_YACC
-AC_PROG_LEX
 AC_PROG_INSTALL
 AC_PROG_LN_S
 

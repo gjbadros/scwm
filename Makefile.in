@@ -13,7 +13,8 @@ SHELL=/bin/sh
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
-subdirs=libs scwm sample.scwmrc icons mini-icons
+subdirs=libs scwm sample.scwmrc 
+# icons mini-icons
 
 CFLAGS = -O
 
