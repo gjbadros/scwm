@@ -295,6 +295,8 @@ SCM sym_motion,sym_click,sym_one_and_a_half_clicks,sym_double_click;
 
 SCM mouse_ev_type = SCM_BOOL_F;
 
+int have_orig_position=0;
+int orig_x,orig_y;
 
 void find_mouse_event_type()
 {
@@ -303,15 +305,16 @@ void find_mouse_event_type()
 
   gh_defer_ints();
   XQueryPointer( dpy, Scr.Root, &JunkRoot, &JunkChild,
-		&x,&y,&JunkX, &JunkY, &JunkMask);
+		&orig_x,&orig_y,&JunkX, &JunkY, &JunkMask);
+  have_orig_position=1;
 
   mouse_ev_type=sym_motion;
-  if(IsClick(x,y,ButtonReleaseMask,&d)) {
+  if(IsClick(orig_x,orig_y,ButtonReleaseMask,&d)) {
     mouse_ev_type = sym_click;
     /* If it was a click, wait to see if its a double click */
-    if(IsClick(x,y,ButtonPressMask, &d)) {
+    if(IsClick(orig_x,orig_y,ButtonPressMask, &d)) {
       mouse_ev_type = sym_one_and_a_half_clicks;
-      if(IsClick(x,y,ButtonReleaseMask, &d)) {
+      if(IsClick(orig_x,orig_y,ButtonReleaseMask, &d)) {
 	mouse_ev_type = sym_double_click;
       }
     }
@@ -321,6 +324,7 @@ void find_mouse_event_type()
 
 void clear_mouse_event_type()
 {
+  have_orig_position=0;
   mouse_ev_type=SCM_BOOL_F;
 }
 
