@@ -1,0 +1,6 @@
+#!/bin/sh
+echo -n "const char *" $1 = \"
+sed -e 's/;.*$//g' -e 's/"/\\"/g' -e "s/'/\\\\'/g"
+echo \"\;
+
+
