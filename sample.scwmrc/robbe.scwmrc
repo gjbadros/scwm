@@ -176,7 +176,7 @@
 	      #:focus 'sloppy
 	      #:random-placement #f #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
-	      #:hint-override #t #:decorate-transient #f
+	      #:hint-override #f #:decorate-transient #f
 	      #:PPosition-hint #t
 	      #:lenience #t)
 
@@ -422,6 +422,13 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (define (popup-softs)
   (popup-menu softs-menu))
 
+(define (xprop-window)
+  (execute (string-append "xprop -id " (number->string (window-id))
+			  " | xmessage -nearmouse -file -")))
+
+(define (xwininfo-window)
+  (execute (string-append "xwininfo -id " (number->string (window-id))
+			  " | xmessage -nearmouse -file -")))
 (define window-ops-menu
   (menu
    (list
@@ -439,6 +446,9 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
     (menuitem "(Un)&Stick" #:extra-label "Return" #:action toggle-stick)
     (menuitem "(Un)Keep On &Top" #:extra-label "Home" #:action toggle-on-top)
     (menuitem "(Un)S&kip" #:extra-label "Ins" #:action toggle-circulate-skip)
+    menu-separator
+    (menuitem "Properties" #:action xprop-window)
+    (menuitem "Info" #:action xwininfo-window)
     menu-separator
     (menuitem "&Close" #:extra-label "Del" #:action close-window)
     (menuitem "&Delete" #:action delete-window)
@@ -479,10 +489,13 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 		(menuitem (if (circulate-skip? w)
 			      "Hit"
 			      "Skip") #:extra-label "Ins"
-			      #:action toggle-circulate-skip))))
+			      #:action toggle-circulate-skip)
+		menu-separator
+		(menuitem "Properties" #:action xprop-window)
+		(menuitem "Info" #:action xwininfo-window))))
     menu-separator
     (menuitem "Close" #:extra-label "Del" #:action close-window)
-    (menuitem "Destroy" #:action destroy-window))))	
+    (menuitem "Destroy" #:action destroy-window))))
 
 (define (popup-small-ops)
   (popup-menu (make-small-window-ops-menu (get-window))))
@@ -490,21 +503,17 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (define (popup-winlist)
   (show-window-list-menu #:show-geometry #t))
 
-(define last-window-with-focus #f)
-
-; redefine warp-to-window to set last-window-with-focus
-(define original-warp-to-window warp-to-window)
-(define (warp-to-window . rest)
-  (set! last-window-with-focus (current-window-with-focus))
-  (apply original-warp-to-window rest)
-  (apply raise-window rest))
-
-; FIXME: does not work consistently, needs C level support for some things.
+(define (last-focussed win)
+  (if (equal? win (current-window-with-focus))
+      0
+      (window-last-focus-time win)))
+  
 (define (toggle-focus)
   "Focus window that had the focus before the current one."
-  (if last-window-with-focus
-      (warp-to-window last-window-with-focus)
-      (next-window #:only visible? #:except iconified? #:proc warp-to-window)))
+  (warp-to-window (extreme (lambda (win1 win2) (> (last-focussed win1)
+						  (last-focussed win2)))
+			   (list-all-windows))))
+
 
 ;; Key Bindings
 ; mouse emulation
@@ -638,8 +647,6 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (bind-mouse 'all (super "3") resize-or-raise)
 
 ;; Styles for various apps
-(define Terminal
-  (make-style #:fg "black" #:bg "#a3a3c4"))
 (define FixedSize
   (make-style #:border-width 0 #:no-button 2))
 (define NoFocus
@@ -658,7 +665,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 							   (window-size win))))
 						    win))
 				#:start-lowered #t #:use-style NoFocus)
-(window-style "GTimeTracker*"	#:focus 'none)
+(window-style "GTimeTracker 0*"	#:focus 'none #:start-lowered #t)
 (window-style "UAE"		#:icon "amiga.xpm.gz"
 				#:placement-proc (lambda (win)
 						   (move-to 0 0 win)))
@@ -680,13 +687,8 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 				#:use-style NoFocus)
 (window-style "xman"		#:icon "xman.xpm.gz" #:random-placement #t
 				#:use-style NoFocus)
-(window-style "xsm:*"		#:focus 'none
-				#:placement-proc (lambda (win)
-						   (move-to
-						    (x-
-						     (car (window-size win)))
-						    0 win)))
-(window-style "xterm*"		#:icon "xterm-linux.xpm"
+(window-style "xsm:*"		#:focus 'none) 
+(window-style "xterm*"		#:icon "xterm-linux.xpm.gz"
 				#:use-style Terminal)
 (window-style "xv controls"	#:icon "xv.color.xpm.gz" #:use-style FixedSize
 				#:use-style NoFocus)
