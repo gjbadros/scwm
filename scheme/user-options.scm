@@ -3,7 +3,6 @@
 
 ;; Each element of the list is '(var-name comment setter getter)
 (define-public user-options (list
-'(construct-menu-primitive)
 '(default-auto-raise-delay)
 '(default-auto-raise-focus-proc)
 '(default-auto-raise-unfocus-delay)
@@ -15,6 +14,7 @@
 '(opaque-move-percent)
 '(opaque-resize-percent)
 '(remote-shell-command)
+'(scwm-menu-look)
 '(shadow-factor)
 '(use-scwm-system-proc)
 '(xterm-command)
