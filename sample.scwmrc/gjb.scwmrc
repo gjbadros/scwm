@@ -625,6 +625,9 @@
 ;; NOTE: you can use a string or a (make-image "filename.xpm")
 ;; after #:icon and #:mini-icon
 ;; MSFIX: important! window-style's argument 
+
+(window-style (resource-match?? "ScwmUIConstraintsButtons") 
+	      #:use-style desk-widget-on-top-no-titlebar)
 (window-style "FvwmPager" #:use-style desk-widget-on-top-no-titlebar)
 (window-style "zwgc" #:use-style desk-widget-on-top)
 (window-style "*lock" #:use-style desk-widget)
