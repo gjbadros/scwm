@@ -1,0 +1,49 @@
+If you get lots of warnings like the below:
+scwm-screen-ci.hpp:41: warning: volatile qualifier ignored on asm
+
+-> fix line 292 of guile-1.3/libguile/__scm.h:
+/* should comment out volatile (fixed in newer [unreleased] versions of guile) */
+#ifdef __GNUC__
+#define SCM_FENCE asm /* volatile */ ("")
+#else
+#define SCM_FENCE
+#endif
+
+
+Guile/scwm starts up *really* slowly ( >10 seconds on a PPro200 or
+better):
+
+You are missing the tiny patch to guile-1.3 (also available from the web 
+page):
+
+--- libguile/ports.h    1998/10/30 08:22:50     1.33
++++ libguile/ports.h    1998/11/05 16:02:55     1.34
+@@ -93,7 +93,7 @@
+ #define SCM_CRDY       (32L<<16) /* Should char-ready? return #t? */
+ 
+ /* A mask used to clear the char-ready port flag. */
+-#define SCM_CUC                0x001fffffL
++#define SCM_CUC                (~SCM_CRDY)
+ 
+ #define SCM_PORTP(x) (SCM_TYP7(x)==scm_tc7_port)
+ #define SCM_OPPORTP(x) (((0x7f | SCM_OPN) & SCM_CAR(x))==(scm_tc7_port | SCM_OP
+N))
+
+
+
+Problems building on Redhat 6.0 because there is no guile-config or guile-snarf script?
+You need to install the guile-devel rpm -- see scwm web page or just grab it from
+a Redhat mirror such as:
+
+ftp://ftp.rge.com/pub/systems/linux/redhat/redhat-6.0/i386/RedHat/RPMS/
+
+
+Core dump in _IO_setvbug?  You probably have a guile/glibc/scwm library
+mismatch of some sort. If you're on Redhat 6.0, the guile and
+guile-devel rpms should work fine with Scwm.  Otherwise, it's probably
+most prudent to grab the guile-1.3 sources from the Scwm web page, get
+the local patch and apply it, then re-build guile and re-install.  Be
+sure to remove any old installations of guile, too, or at least be sure
+that Scwm links against the new build of guile.
+
+
