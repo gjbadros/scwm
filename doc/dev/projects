@@ -19,11 +19,28 @@ something that you are interested in and skilled with.
 
 ** XEmacs widget embedding
 
+** Improve esound wrapper with a more natural, complete interface
+
+** Improve ViaVoice wrapper with more complete interface
+
+** Layers support a la newer fvwm2, or Enlightenment
+
+** Icon placement bug (at startup) with GNOME's gmc
+
+** separate frame-size and client-size; introduce client-offset window parameter (kinda like fvwmscroll)
+
+** overlay plane support module
+
+/////////////////////
+* C/Guile hacking
+** Better display of errors into a widget somewhere, or the panel
+
 
 /////////////////////
 * Scheme hacking
 ** scwmmenu->gtkmenu, for better support for pinnable menus
 
+** Improve stylist module and make more like the preferences work.
 
 /////////////////////
 * Software-engineering 
@@ -34,6 +51,8 @@ something that you are interested in and skilled with.
 
 /////////////////////
 * Documentation
+** documentation for all scheme procedures
+
 ** fix bugs in output SGML
 
 ** integrate links to guile functions somehow
