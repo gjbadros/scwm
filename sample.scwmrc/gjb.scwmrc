@@ -987,13 +987,12 @@
 (bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
 (if want-autoraise
-    (define broadcast-hook
-      (lambda
-	  (event num-datum a1 a2 a3 a4 a5 a6 a7)
-	(if (= event M_FOCUS_CHANGE)
-	    (let ((window (window-from-window-id a1)))
-	      (if window (raise-window window)))))))
-
+    (add-hook! broadcast-hook
+	       (lambda	
+		   (event num-datum a1 a2 a3 a4 a5 a6 a7)
+		 (if (= event M_FOCUS_CHANGE)
+		     (let ((window (window-from-window-id a1)))
+		       (if window (raise-window window)))))))
 
 (define fvwm-pager (run-fvwm-module  
 	    ;; path to the module
