@@ -2829,55 +2829,37 @@ the topmost window, the last is the bottommost */
 #undef FUNC_NAME
 
 
-/* From Paul Sheer */
+static int compare_focus_time(ScwmWindow **a, ScwmWindow **b)
+{
+  return (int)((*a)->ttLastFocussed - (*b)->ttLastFocussed);
+}
+
 SCWM_PROC(list_focus_order, "list-focus-order", 0, 0, 0,
            ())
      /** Return a list of all the top-level window objects in focus order.
-The order is from most recently focussed to least recently focussed. 
-This function also reorders the windows. */
+The order is from most recently focussed to least recently focussed. */ 
 #define FUNC_NAME s_list_focus_order
 {
   ScwmWindow *psw, **rgpsw;
-  int cwin = 0, i = 0, focus_window;
+  int cwin = 0, i = 0;
   SCM result = SCM_EOL;
 
-  SCM_REDEFER_INTS;
   /* count windows : */
   for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
     cwin++;
   }
   if (cwin) {
-    focus_window = cwin - 1; /* defaults to the last (most recent) window  */
     rgpsw = NEWC(cwin,ScwmWindow *);
     for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
-      rgpsw[i] = psw;
-      /* record the index of the focussed window : */
-      if ((unsigned long) psw == (unsigned long) Scr.Hilite) {
-        focus_window = i;
-      }
-      i++;
+      rgpsw[i++] = psw;
     }
-    psw = &Scr.ScwmRoot;
-    /* add the focussed window to the beginning (top) of the list : */
-    psw->next = rgpsw[focus_window];
-    psw->next->prev = psw;
-    psw = psw->next;
+    qsort(rgpsw, cwin, sizeof(rgpsw[0]),
+	  (int (*)(const void *, const void *))compare_focus_time);
     for (i = 0; i < cwin; i++) {
-      /* omit the focussed window : */
-      if (i != focus_window) {
-        psw->next = rgpsw[i];
-        psw->next->prev = psw;
-        psw = psw->next;
-      }
+      result = scm_cons(rgpsw[i]->schwin, result); 
     }
-    psw->next = 0;       /* terminate the list */
     FREEC(rgpsw);
-    
-    for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
-      result = scm_cons(psw->schwin, result);
-    }
   }
-  SCM_REALLOW_INTS;
   return result;
 }
 #undef FUNC_NAME
