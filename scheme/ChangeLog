@@ -1,3 +1,10 @@
+Thu Apr  2 18:08:09 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* minimal.scm: Set the rubber band mask to something better so the
+ 	rubber band actually shows up on 16bpp and higher systems by
+ 	default. Bug report from Francesco Tapparo
+ 	<f.tapparo@vi.nettuno.it>.
+
 Mon Mar 30 15:38:00 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* auto-raise.scm: New auto-raise module. The #:auto-raise,

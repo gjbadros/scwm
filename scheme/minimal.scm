@@ -15,7 +15,7 @@
 (define SLATEGRAY (make-color "slategray"))
 
 ;;; Set some global options
-(set-rubber-band-mask! 1)
+(set-rubber-band-mask! 30)
 (set-menu-foreground! BLACK)
 (set-menu-background! GRAY)
 (set-menu-stipple! SLATEGRAY)
