@@ -25,6 +25,10 @@
   :use-module (app scwm optargs))
 
 
+;; (use-modules (app scwm string-prompt))
+;;(define e (string-prompt "Enter: " (lambda (txt) (display (string-append "Got: " txt "\n")))))
+
+
 
 (define-public (string-prompt prompt proc)
   "Use PROMPT as prompt in text entry widget and call PROC with the entered string.
@@ -49,6 +53,4 @@ E.g., (string-prompt \"Enter new name\" (lambda (nm) (set-window-title! w nm)))"
       (if (not (gtk-widget-destroyed toplevel))
 	  (gtk-widget-hide toplevel)
 	  (gtk-widget-destroy toplevel)))))
-
-;;(define e (string-prompt "Enter: " (lambda (txt) (display (string-append "Got: " txt "\n")))))
 
