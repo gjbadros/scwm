@@ -1,5 +1,8 @@
 Sun Nov 15 14:35:03 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* wininfo.scm (define-string-matcher): Try another way to pass
+ 	regexp/icase properly (whee).
+
 	* shutdown-opts.scm: New module which exports shutdown-options
  	procedure, a way to configure whether you want scwm to switch to
  	viewport (0 0) and/or move all windows to the current viewport at

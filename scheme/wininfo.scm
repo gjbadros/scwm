@@ -249,7 +249,7 @@ instead of a shell-like wildcard."
 	  (let ((match-regexp 
 		 (make-regexp string (if case-sensitive
 					 '()
-					 '(,regexp/icase)))))
+					 (list regexp/icase)))))
 	    (lambda (win)
 	      (let* ((target (,accessor win))
 		     (result (regexp-exec match-regexp target)))
