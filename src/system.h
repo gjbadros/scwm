@@ -30,6 +30,7 @@
 #endif
 
 void *safemalloc(int length);
+char *xgetcwd(char *, int);
 
 /* FIXGJB: must handle a couple realloc-s too */
 

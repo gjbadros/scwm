@@ -61,6 +61,30 @@ safemalloc(int length)
   return ptr;
 }
 
+/*
+ * xgetcwd - like getcwd, but reserves new space if buffer is NULL
+ *	     size is ignored in that case
+ */
+char *
+xgetcwd(char *buffer, int size)
+{
+  char *value;
+
+  if (!buffer) {
+    size = 100;
+    buffer = NEWC(size, char);
+  }
+
+  while (1) {
+    value = getcwd (buffer, size);
+    if (value)
+      return buffer;
+    size *= 2;
+    FREE(buffer);
+    buffer = NEWC(size, char);
+  }
+}
+
 
 /* Local Variables: */
 /* tab-width: 8 */
