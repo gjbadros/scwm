@@ -1,9 +1,11 @@
 ;; $Id$
 
 ;; see if interactive move/size window reconfigures itself after this
-(set-menu-font! (make-font "*helvetica*medium-r*12*"))
+(set-message-window-attributes!
+ (make-font "*helvetica*medium-r*12*") "black" "gray70")
 
-(set-menu-font! (make-font "*helvetica*medium-r*18*"))
+(set-message-window-attributes!
+ (make-font "*helvetica*medium-r*18*") "red" "red")
 
 (set-menu-font! (make-font "*helvetica*medium-r*24*"))
 
