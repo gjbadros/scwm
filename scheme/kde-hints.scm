@@ -139,7 +139,7 @@
 	     (set! i (+ 1 i))))
 	 desktop-names)))
 
-(define (kwm-client-message-handler atom format data)
+(define (kwm-client-message-handler win atom format data)
   (if (eq? atom KWM_MODULE)
       (let ((winid (vector-ref data 0)))
 	(set! kwm-module-winids (cons winid kwm-module-winids))
@@ -152,7 +152,7 @@
 	(focus win))))
       
 
-(define (client-message-debug-handler a f d)
+(define (client-message-debug-handler win a f d)
   (display "c-m-h\n")
   (display (X-atom->string a))
   (display ": ")
@@ -223,8 +223,8 @@
   ;; (reset-hook! X-UnmapNotify-hook)
   (add-hook! X-UnmapNotify-hook kwm-remove-window-handler)
 
-  ;; (reset-hook! X-DestroyNotify-hook)
-  (add-hook! X-DestroyNotify-hook kwm-remove-window-handler)
+  ;; (reset-hook! window-close-hook-hook)
+  (add-hook! window-close-hook kwm-remove-window-handler)
 
   ;; (reset-hook! after-new-window-hook)
   (add-hook! after-new-window-hook kwm-after-new-window-handler)
@@ -256,14 +256,14 @@
 (define-public (kwm-emulation-reset)
   (remove-hook! X-UnmapNotify-hook kwm-remove-window-handler)
 
-  (remove-hook! X-DestroyNotify-hook kwm-remove-window-handler)
+  (remove-hook! window-close-hook kwm-remove-window-handler)
 
   (remove-hook! after-new-window-hook kwm-after-new-window-handler)
 
   (remove-hook! iconify-hook kwm-iconify-window-handler)
 
   (remove-hook! deiconify-hook kwm-deiconify-window-handler)
-
+1<
   (remove-hook! change-desk-hook kwm-change-desk-handler)
 
   ;; (remove-hook! client-message-hook client-message-debug-handler)

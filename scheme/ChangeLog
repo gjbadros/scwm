@@ -1,5 +1,12 @@
-1999-02-08  Maciej Stachowiak  <mstachow@racerx.viewlogic.com>
+1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* kde-hints.scm: Minor bugfixes: use `window-close-hook' rather
+	than `X-DestroyNotify hook', since windows may be closed without
+	being destroyed. Make `client-message-hook' expect a window as its
+	first argument. (Untested - I don't have KDE installed)
+
+1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
+	
 	* kde-hints.scm: Renamed from kwm-emulation.scm
 	* animated-iconify.scm: Renamed from animate-iconify-window.scm
 	* path-cache.scm: Renamed from cached-program-exists.scm
