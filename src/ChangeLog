@@ -1,3 +1,14 @@
+Tue Aug 24 23:40:37 1999    <gjb@cs.washington.edu>
+
+	* binding.h, binding.c: Added const modifiers to func_name parameter
+
+Tue Aug 24 14:17:19 1999    <gjb@cs.washington.edu>
+
+	* binding.c: Added set-ignore-dubious-modifiers primitive to
+	revert to the old (dumber) behaviour of treating all of the
+	modifiers separately, even numlock/scrolllock.  This can be useful 
+	for performance reasons.
+
 Tue Aug 24 13:52:04 1999    <gjb@cs.washington.edu>
 
 	* binding.c (init_modifiers): Don't include 0 in mask_mod_combos
