@@ -73,7 +73,7 @@
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
 		     (stipple #f) font mwm mwm-style)
-  (set-menu-colors! (or fg foreground) (or bg backgroung) stipple)
+  (set-menu-colors! (or fg foreground) (or bg background) stipple)
   (if (bound? font)
       (set-menu-font! font))
   (if (bound? mwm)
