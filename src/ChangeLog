@@ -1,5 +1,55 @@
 1998-07-26  Greg Badros  <gjb@cs.washington.edu>
 
+	* resize.c, resize.h, scwm.c: Added init_resize_gcs() and call it
+	  after the X11 stuff has been initialized
+
+1998-07-26  Greg Badros  <gjb@cs.washington.edu>
+
+	* Pretty massive cleanup of interfaces.  Removed unneeded
+	  prototypes from header files -- in particular the primitives
+	  are no longer exposed in the header files unless they are used
+	  directly by C code (such instances are marked as encapsulation
+	  violations to be cleaned up at some point).  Also, use
+	  window_fwd.h instead of including window.h, where possible.
+	  Note that the init_MODULE function prototypes for SMOBs are
+	  all put in scm_init_funcs.h by the build procedure, so they
+	  are no longer listed in the .h files.  In particular, this
+	  means that some header files are nearly empty, but I've chosen 
+	  to keep them around since at some point a public C interface
+	  may be added for them.  Sometimes macros that were in the
+	  header file have been moved into the top of the .c file if
+	  they are just implementation details hiding behind the public
+	  interface of the module.  Also note that the mark_, print_,
+	  free_ functions are no longer prototyped-- they hide behind
+	  init_XXXX's registering of the SMOB type.
+
+	* window.c: rearrange ordering of some funcs to avoid forward
+	  decls.
+
+	* placement.c: use move_finalize instead of move_to-- the former 
+	  is part of the C interface of ScwmWindows, while the latter is 
+	  a primitive that does unnecessary work;  Also use
+	  InteractiveMove instead of interactive-move for the same
+	  reason.
+
+	* move.h, move.c: Simplify interface to InteractiveMove, and
+	  make it know all about finding the button-click mouse position 
+	  and dealing with icons (moved the code from the one call to
+	  InteractiveMove into the function, and then added another call 
+	  to InteractiveMove from placement.c)
+
+	* events.c: Use Iconify (C public-interface function) instead of
+	  iconify (primitive)
+
+	* binding.c: have_orig_position is now a Bool, not an int
+
+	* window_fwd.h: Added, for use by header files that only need
+	  pointers to the ScwmWindow struct (must use struct ScwmWindow, 
+	  or "#define ScwmWindow  struct ScwmWindow" -- be sure to
+	  #undef at end of header file
+
+1998-07-26  Greg Badros  <gjb@cs.washington.edu>
+
 	* screen.h: Pruned and cleaned up the ScreenInfo struct a lot.
 	  MyDisplayXXX is now DisplayXXX -- Fixed uses of DisplayXXXX
 	  throughout;  use PackedBool macro and expand flags bitmasked
