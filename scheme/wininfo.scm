@@ -53,7 +53,7 @@
 		(window-position w)
 		(window-size w)
 		(list 0 0)
-		(display-size)))))
+		(map (lambda (p) (- p 1)) (display-size))))))
 
 (define*-public (visible? #&optional (w (get-window)))
   (if w (and (on-current-desk? w)
