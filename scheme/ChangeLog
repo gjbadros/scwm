@@ -1,3 +1,8 @@
+Tue Sep  8 17:12:59 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* doc.scm: Added use of scwm-variables.txt, don't print "trying
+	..." messages for each file -- comment out
+
 Tue Sep  8 13:55:35 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Fix typo in close-window -- Thanks Dale Smith!

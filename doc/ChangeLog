@@ -1,3 +1,7 @@
+Tue Sep  8 17:14:54 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added -O option for scwm-variables.txt output
+
 Sun Sep  6 16:16:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Use -V option to output user-option variables to

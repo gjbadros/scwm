@@ -1,6 +1,9 @@
 Hooks which take wrong number of params cause seg faults!
 --07/04/98 gjb
 -------------
+xterm-s started from scwm die when scwm dies.... why?  
+The controlling tty may be the controlling influence... not sure--09/08/98 gjb
+-------------
 Incorrect usage of keyword arguments by a scheme function fails silently.
 Both wrong keyword names and missing arguments should be reported.
 -------------
@@ -32,15 +35,13 @@ wildcard-matcher in wininfo doesn't permit distinguishing based on title,
 class, and resource name separately.  This is essential for window styles
 to do the right thing (a misfeature compared to fvwm2)
 -------------
-Some error messages are looked up in a table that is distant from the error.
----------------
-icon-box not honoured, moving icons moves windows
+icon-box not honoured correctly?
 -------------
 popup-menus attached to decorations come up centered over the click, instead of 
-flush with the window edge
+flush with the window edge  -- use of popup-menu-from-decoration is a bit hackish
 ---------------
 xdvorak's change mapping should cause all keybindings to be reset and
-new keycodes to be gotten
+new keycodes to be gotten (waiting for event rewrite)
 ---------------
 Windows still aren't positioning correctly for me at startup.  They're
 starting too low (when positioned with -0, as in:
@@ -96,12 +97,8 @@ shaded make the wm lose. [ reported by Oleg Tihnov ]
    want to have focus.
 
 Jens
-
-
-Possibly stop making resizes account for decorations, so that maximize
-is happier.
-
-callbacks should run from a new dynamic root. [ huh? --11/08/97 gjb ]
+-------
+callbacks should run from a new dynamic root.
 [ this would prevent them from calling continuations that escape
 outside the callback handler - the code would lose big on this -ms]
 

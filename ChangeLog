@@ -1,3 +1,8 @@
+Tue Sep  8 17:14:20 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs:  Added -O option for
+	scwm-variables.txt 
+
 Mon Sep  7 11:15:05 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Added some debug code, and fix bug
