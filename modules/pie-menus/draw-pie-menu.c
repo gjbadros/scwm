@@ -73,7 +73,7 @@ extern SCM sym_top, sym_center, sym_bottom;
 #define MENU_LABEL_RADIUS_EXTRA 6
 
 /* Extra border to leave on all borders */
-#define MENU_PIE_BORDER 2
+#define MENU_PIE_BORDER 6
 
 /* added size for Relief Rectangle around label area */
 #define MENU_ITEM_RR_SPACE 2
@@ -100,9 +100,9 @@ struct MenuDrawingInfo_tag
   
 #if 0
   int cpixLeftPicWidth;		/* how wide is the left image */
+#endif
   int cpixSideImage;		/* how wide is the side image */
   Pixel SideBGColor;		/* the side image bg color */
-#endif
   Pixel BGColor;		/* the background color */
   Pixel TextColor;		/* the text color */
   Pixel StippleColor;		/* the stipple color */
@@ -254,7 +254,6 @@ PscwmFontForMenuItem(SCM scmFont)
   return scfont;
 }
 
-#if 0
 static void
 PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg,
 	       SCM align)
@@ -302,6 +301,7 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg,
 	       psimg->width, height,
 	       NULL);
 }
+#if 0
 
 /*
  * RelieveHalfRectangle - add relief lines to the sides only of a
@@ -383,8 +383,8 @@ PaintMenuItemLabel(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   GC ReliefGC = Scr.d_depth<2? MenuShadowGC: MenuReliefGC;
   GC currentGC;
 #if 0
-  scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
-  scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
+  scwm_image *psimgLeft = DYNAMIC_SAFE_IMAGE(pmi->scmImgLeft);
+  scwm_image *psimgAbove = DYNAMIC_SAFE_IMAGE(pmi->scmImgAbove);
 #endif
   menu_item_state mis = pmiim->mis;
   int cpixExtraYOffset;
@@ -544,18 +544,15 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
     }
   }
 
-  /* FIXJTL: score lines */
-#if 0
-  { /* scope */
-    scwm_image *psimgSide = SAFE_IMAGE(pmd->pmenu->scmImgSide);
+  if (pmd->pmdi->cpixSideImage) {
+    scwm_image *psimgSide = DYNAMIC_SAFE_IMAGE(pmd->pmenu->scmImgSide);
     if (psimgSide) {
       DBUG((DBG,__FUNCTION__,"Painting side image"));
-      PaintSideImage(w,pmdi->SideBGColor,pmd->cpixHeight,psimgSide,
+      PaintSideImage(w, pmdi->SideBGColor, pmd->cpixHeight, psimgSide,
 		     pmd->pmenu->scmSideAlign);
     }
   }
-#endif
-
+  
 #if 0 || SCWM_DEBUG_MSGS
   /* FIXJTL: I can't decide if this looks good or not */
   XFillArc(dpy, pmd->w, MenuShadowGC,
@@ -898,6 +895,7 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
   MenuItemInMenu **rgpmiim, *pmiim, *pmiimLast;
   MenuItemDrawingInfo * pmidi, * pmidiLast;
   scwm_font *scfont;
+  scwm_image *psimgSide, *psimgBackground;
   float rSliceCenter, rAngle;
   float rSubtendUnit, rSubtend;
   float fDx, fDy, fDxEdge, fDyEdge, fDxLast, fDyLast, fNumerator, fDenominator;
@@ -905,7 +903,7 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
   int cpixWidth, cpixHeight, cpixWidthLast, cpixHeightLast;
   int cpixX, cpixY, cpixXLast, cpixYLast;
   int cpixLeftMax, cpixTopMax, cpixRightMin, cpixBottomMin;
-  int cpixXCenter, cpixYCenter;
+  int cpixXCenter, cpixYCenter, cpixSideImage;
   int total_units;
   int imiim, cmiim;
   int iQuadrant;
@@ -914,8 +912,8 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
   InitGCs();
   
 #if 0
-  scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
-  scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
+  scwm_image *psimgAbove = DYNAMIC_SAFE_IMAGE(pmi->scmImgAbove);
+  scwm_image *psimgLeft = DYNAMIC_SAFE_IMAGE(pmi->scmImgLeft);
   int extra_text_width = 0;
 #endif
   
@@ -933,7 +931,6 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
   for (imiim = 0; imiim < cmiim; imiim++) {
     pmiim = rgpmiim[imiim];
     pmi = pmiim->pmi;
-    
     if (pmi->fIsSeparator)
       total_units += MENU_SEPARATOR_UNITS;
     else
@@ -1133,12 +1130,20 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
 
   /* FIXJTL: title */
 
+  cpixSideImage = 0;
+
   if (menu_look == circle_pie_menu_look) {
     cpixOuterRadius = (int) (sqrt(cpixOuterRadius) + .5);
     cpixOuterRadius += MENU_PIE_BORDER;
     cpixXCenter = cpixOuterRadius;
     cpixYCenter = cpixOuterRadius;
   } else {
+    psimgSide = DYNAMIC_SAFE_IMAGE(pmd->pmenu->scmImgSide);
+    if (psimgSide) {
+      cpixSideImage = psimgSide->width;
+      cpixXMin -= cpixSideImage + MENU_ITEM_RR_SPACE;
+    }
+
     cpixXMin -= MENU_PIE_BORDER;
     cpixYMin -= MENU_PIE_BORDER;
     cpixXMax += MENU_PIE_BORDER;
@@ -1147,7 +1152,7 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
     cpixXCenter = -cpixXMin;
     cpixYCenter = cpixYMax; /* Y is flipped */
   }
-  
+
   /* And ONE MORE TIME, with emphasis - rearrange coordinates, in
      relation to center */
   for (imiim = 0; imiim < cmiim; imiim++) {
@@ -1169,9 +1174,10 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
   pmdi->cpixLabelRadius = cpixLabelRadius;
   pmdi->cpixInactiveRadius = MENU_INACTIVE_RADIUS;
   pmdi->BGColor = DYNAMIC_SAFE_COLOR(pmenu->scmBGColor);
-/*SideBGColor = DYNAMIC_SAFE_COLOR(pmenu->scmSideBGColor); */
+  pmdi->SideBGColor = DYNAMIC_SAFE_COLOR(pmenu->scmSideBGColor);
   pmdi->TextColor = DYNAMIC_SAFE_COLOR(pmenu->scmTextColor);
   pmdi->StippleColor = DYNAMIC_SAFE_COLOR(pmenu->scmStippleColor);
+  pmdi->cpixSideImage = cpixSideImage;
   pmdi->scfont = scfont;
 
   pmd->pmdv = pmdv;
@@ -1184,6 +1190,8 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
     pmd->cpixWidth = cpixXMax - cpixXMin;
     pmd->cpixHeight = cpixYMax - cpixYMin;
   }
+
+  psimgBackground = DYNAMIC_SAFE_IMAGE(pmenu->scmImgBackground);
   
   /* Now create the window */
   { /* scope */
@@ -1196,11 +1204,9 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
     pmd->w = XCreateWindow(dpy, Scr.Root, 0, 0, pmd->cpixWidth,
 			   pmd->cpixHeight, 0, CopyFromParent, InputOutput,
 			   CopyFromParent, valuemask, &attributes);
-#if 0
     if (psimgBackground) {
       XSetWindowBackgroundPixmap(dpy, pmd->w, psimgBackground->image);
     }
-#endif
   }
 
   if (menu_look == circle_pie_menu_look) {
