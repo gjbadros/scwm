@@ -200,6 +200,8 @@ PchModifiersToModmask(const char *pch, int *pmodifier, const char *func_name, Bo
 	modmask |= AnyModifier;
       }
       break;
+    case 'i': case 'I': /* ignore- */
+      return pch;
     default:
       scwm_msg(WARN,func_name,"Unrecognized modifier %c-",pch[0]);
       return NULL;
@@ -263,8 +265,12 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, const char *func
     if (fShowError) {
       if (ispunct(pch[0]))
         scwm_msg(WARN,func_name,"No symbol `%s' -- punctuation must be spelled out as a keysym",pch);
-      else
-        scwm_msg(WARN,func_name,"No symbol `%s'",pch);
+      else {
+        /* print warning message only if binding does not start with "ignore-" */
+        if (strncasecmp(pch,"ignore-",7) != 0) {
+          scwm_msg(WARN,func_name,"No symbol `%s'",pch);
+        }
+      }
     }
     fOk = False; 
   }
@@ -376,7 +382,9 @@ FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, const char *func_
     *pbnum = BnumFromSz(PchModifiersToModmask(button_name, pmodifier, func_name, 
 					      allow_any_p));
     if (*pbnum < 0) {
-      scwm_msg(WARN,func_name,"No button `%s'",button_name);
+      if (strncasecmp(button_name,"ignore-",7) != 0) {
+        scwm_msg(WARN,func_name,"No button `%s'",button_name);
+      }
       fOk=False;
     }
     if (*pmodifier < 0) {
@@ -1065,7 +1073,10 @@ invoked when the key is released.  The contexts include:
    */
   if (keysym ==  NoSymbol || !fOkayKey) {
     char *keyname = gh_scm2newstr(key,&len);
-    scwm_msg(WARN,FUNC_NAME,"Ignoring key binding `%s'",keyname);
+    /* do not print warning message if the binding starts with "ignore-" */
+    if (strncasecmp(keyname,"ignore-",7) != 0) {
+      scwm_msg(WARN,FUNC_NAME,"Ignoring key binding `%s'",keyname);
+    }
     gh_free(keyname);
     return SCM_BOOL_F;
   }
