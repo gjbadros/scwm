@@ -44,6 +44,7 @@
 
 (use-modules 
 	     (app scwm auto-raise)
+	     (app scwm themes)
 	     (app scwm preferences)
 	     (app scwm primopts)
 	     (app scwm prompt-proc)
