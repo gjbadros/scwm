@@ -49,6 +49,9 @@
 #include "dmalloc.h"
 #endif
 
+#ifdef USE_IMLIB
+ImlibData *imlib_data;
+#endif
 
 
 static Colormap ImageColorMap;
@@ -188,6 +191,9 @@ make_empty_image(SCM name)
 
   ci = NEW(scwm_image);
   ci->full_name = name;
+#ifdef USE_IMLIB
+  ci->im = 0;
+#endif  
   ci->image = None;
   ci->mask = None;
   ci->height = 0;
@@ -204,12 +210,13 @@ make_empty_image(SCM name)
 
 /**CONCEPT: Image Loaders 
   Different loaders are available for various images types. `load-xbm'
-and `load-xpm' load X pixmaps and X bitmaps respectively. The user may
+and `load-xpm' load X bitmaps and X pixmaps respectively. The user may
 register other image loaders using the extension or the special string
 "default" for the loader to be tried for an image that cannot be
 loaded any other way.
 */
 
+#ifndef USE_IMLIB
 SCWM_PROC(load_xbm, "load-xbm", 1, 0, 0,
            (SCM full_path))
      /** Load an X Bitmap file identified by the pathname FULL-PATH. */
@@ -290,6 +297,55 @@ SCWM_PROC(load_xpm, "load-xpm", 1, 0, 0,
   return result;
 }
 #undef FUNC_NAME
+#else /* USE_IMLIB */
+
+SCWM_PROC(load_imlib_image, "load-imlib-image", 1, 0, 0,
+           (SCM full_path))
+     /** Load an image file using imlib identified by the pathname FULL-PATH. */
+#define FUNC_NAME s_load_imlib_image
+{
+  SCM result;
+  scwm_image *ci;
+  int ignore;
+  char *c_path;
+
+  result=make_empty_image(full_path);
+  ci=IMAGE(result);
+
+  c_path=gh_scm2newstr(full_path,&ignore);
+
+  ci->im = Imlib_load_image(imlib_data, c_path);
+  if(ci->im == 0)
+  {
+    scwm_msg(WARN, FUNC_NAME, "Could not load(with imlib) image `%s'", c_path);
+    result = SCM_BOOL_F;
+  }
+  else
+  {
+    ci->width = ci->im->rgb_width;
+    ci->height = ci->im->rgb_height;
+    
+    if(!Imlib_render(imlib_data, ci->im, ci->width, ci->height))
+    {
+      scwm_msg(WARN, FUNC_NAME, "Imlib unable to render pixmaps from "
+               "image `%s'", c_path);
+      result = SCM_BOOL_F;
+    }
+    else
+    {
+      ci->image = Imlib_move_image(imlib_data, ci->im);
+      ci->mask = Imlib_move_mask(imlib_data, ci->im);
+      ci->depth = imlib_data->x.depth;
+    }
+  }
+
+  FREE(c_path);
+  return result;
+  
+}
+#undef FUNC_NAME
+
+#endif /* USE_IMLIB */
 
 
 SCWM_PROC(register_image_loader, "register-image-loader", 2, 0, 0,
@@ -572,8 +628,12 @@ MAKE_SMOBFUNS(image);
 
 void init_image() 
 {
+#ifdef USE_IMLIB
+  SCM val_load_imlib_image;
+#else /* !USE_IMLIB */  
   SCM val_load_xbm, val_load_xpm;
-
+#endif
+  
   REGISTER_SCWMSMOBFUNS(image);
 
   /* Save a convenient Scheme "default" string */
@@ -598,7 +658,23 @@ void init_image()
   scm_permanent_object(image_loader_hash_table);
 
   /* Register the standard loaders. */
+#ifdef USE_IMLIB
 
+  /* init imlib */
+  imlib_data = Imlib_init(dpy);
+  
+  val_load_imlib_image = gh_lookup("load-imlib-image");
+  if(val_load_imlib_image == SCM_UNDEFINED)
+  {
+    scwm_msg(ERR,"init_image","load-imlib-image not defined -- "
+             "probable build error\n consider 'rm *.x' and rebuild");
+    abort();
+  }
+
+  register_image_loader (str_empty, val_load_imlib_image);
+  register_image_loader (gh_str02scm("default"), val_load_imlib_image);
+
+#else /* !USE_IMLIB */  
   val_load_xbm = gh_lookup("load-xbm");
   val_load_xpm = gh_lookup("load-xpm");
 
@@ -616,7 +692,8 @@ consider 'rm *.x' and rebuild");
   register_image_loader (gh_str02scm(".xpm"), val_load_xpm);
   register_image_loader (gh_str02scm(".xpm.gz"), val_load_xpm);
   register_image_loader (str_default, val_load_xbm);
-
+#endif /* USE_IMLIB */
+  
   /* Make the image-load-path Scheme variable easily accessible from C,
      and load it with a nice default value. */
   

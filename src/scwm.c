@@ -574,7 +574,8 @@ scwm_main(int argc, char **argv)
   init_screen();
   init_callbacks();
   init_add_window();
-  init_image();
+  /* GJB:FIXME:: init_image() was here before imlib patch needed
+     it to go later if we are using imlib */
   init_color();
   init_module_interface();
   init_miscprocs();
@@ -778,6 +779,8 @@ Repository Timestamp: %s\n",
   }
   Scr.screen = DefaultScreen(dpy);
   Scr.NumberOfScreens = ScreenCount(dpy);
+
+  init_image();
   
   master_pid = getpid();
 

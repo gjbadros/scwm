@@ -41,6 +41,9 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
+#ifdef USE_IMLIB
+#include <Imlib.h>
+#endif
 
 /* GJB:FIXME:MS:: It'd be really nice to get full pathname of
    the picture into the image object for debugging of scwmrc-s;
@@ -51,6 +54,9 @@ typedef struct
   SCM full_name;
   Pixmap image;
   Pixmap mask;
+#ifdef USE_IMLIB
+  ImlibImage *im;
+#endif
   int foreign;
   unsigned int depth;
   unsigned int width;
