@@ -507,7 +507,7 @@ HandleKeyEvent(Bool fPress)
     
     Event.xkey.keycode = keycode;
     
-    pbnd = PBindingFromKey(Event.xkey.keycode, modifier, Context);
+    pbnd = PBndFromKey(Event.xkey.keycode, modifier, Context);
   }
   
   if (pbnd) {
@@ -1457,7 +1457,7 @@ HandleButtonPress()
 
   modifier = (Event.xbutton.state & mods_used);
 
-  pbnd = PBindingFromMouse(Event.xbutton.button,modifier,Context);
+  pbnd = PBndFromMouse(Event.xbutton.button,modifier,Context);
 
   if (pbnd) {
     SCM done = SCM_BOOL_F;

@@ -613,21 +613,21 @@ ungrab_button_all_windows(int button, int modifier)
    for mouse binding lines though, like when context is a title bar button).
 */
 void 
-remove_binding(int context, unsigned int mods, int button, KeyCode keycode,
+remove_binding(int context, unsigned int mods, int bnum_or_keycode,
 	       int mouse_binding)
 {
   Binding *pbnd = Scr.AllBindings, *pbndNext, *prev = NULL;
 
   if (!mouse_binding) {
-    ungrab_key_all_windows(keycode, mods);
+    ungrab_key_all_windows(bnum_or_keycode, mods);
   } else if (context & C_WINDOW) {
-    ungrab_button_all_windows(button,mods);
+    ungrab_button_all_windows(bnum_or_keycode,mods);
   }
 
   while (pbnd) {
     pbndNext = pbnd->NextBinding;
     if (pbnd->IsMouse == mouse_binding) {
-      if ((pbnd->Button_Key == ((mouse_binding) ? (button) : (keycode))) &&
+      if ((pbnd->Button_Key == bnum_or_keycode) &&
 	  (pbnd->Context == context) &&
 	  (pbnd->Modifier == mods)) {
 	/* we found it, remove it from list */
@@ -656,7 +656,7 @@ void
 remove_binding_keysym(int context, unsigned int mods, KeySym keysym)
 {
   KeyCode keycode = XKeysymToKeycode(dpy, keysym);
-  remove_binding(context,mods,0,keycode,False);
+  remove_binding(context,mods,keycode,False);
 }
 
 
@@ -664,7 +664,10 @@ void
 add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p, 
 	    SCM proc, SCM release_proc, char *name)
 {
-  Binding *prev_binding = Scr.AllBindings;
+  Binding *pbndPrev = Scr.AllBindings;
+
+  remove_binding(context,modmask,bnum_or_keycode,mouse_p);
+
   Scr.AllBindings = NEW(Binding);
 
   Scr.AllBindings->IsMouse = mouse_p;
@@ -674,7 +677,7 @@ add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p,
   Scr.AllBindings->Modifier = modmask;
   Scr.AllBindings->Thunk = proc;
   Scr.AllBindings->ReleaseThunk = release_proc;
-  Scr.AllBindings->NextBinding = prev_binding;
+  Scr.AllBindings->NextBinding = pbndPrev;
 
   /* have to protect these objects so they do not get GCd --
      will not need this when bindings are first class and they
@@ -784,8 +787,8 @@ compute_contexts(SCM contexts, char *func_name)
 
 /* Return NULL if no binding is applicable */
 Binding *
-PBindingFromKey(KeyCode keycode,
-                unsigned int modifier, int context)
+PBndFromKey(KeyCode keycode,
+            unsigned int modifier, int context)
 {
   Binding *pbnd;
   const unsigned int mask =
@@ -806,8 +809,8 @@ PBindingFromKey(KeyCode keycode,
 
 /* Return NULL if no binding is applicable */
 Binding *
-PBindingFromMouse(int button,
-                  unsigned int modifier, int context)
+PBndFromMouse(int button,
+              unsigned int modifier, int context)
 {
   Binding *pbnd;
   const unsigned int mask =
@@ -884,7 +887,7 @@ if there is no matching binding. */
   XDisplayKeycodes(dpy, &min, &max);
   for (i = min; i <= max; i++) {
     if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
-      pbnd = PBindingFromKey(i,modmask,context);
+      pbnd = PBndFromKey(i,modmask,context);
       break;
     }
   }
@@ -988,7 +991,7 @@ BUTTON is a string or integer giving the mouse button number */
     SCWM_WRONG_TYPE_ARG(2,button);
   }
 
-  remove_binding(context,modmask,bnum,0,True /* Mouse binding */);
+  remove_binding(context,modmask,bnum,True /* Mouse binding */);
 
   return SCM_UNSPECIFIED;
 }
@@ -1115,7 +1118,7 @@ KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
   VALIDATE_ARG_INT_RANGE_COPY(3,modifier_mask,0,255,modmask);
 
   context = compute_contexts(contexts, FUNC_NAME);
-  remove_binding(context, modmask, 0, keycd, False);
+  remove_binding(context, modmask, keycd, False);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -1219,7 +1222,7 @@ matching binding. */
   context = compute_contexts(contexts, FUNC_NAME);
   fButtonOK = FButtonToBnumModifiers(button, &bnum, &modmask, FUNC_NAME, True);
 
-  pbnd = PBindingFromMouse(bnum, modmask, context);
+  pbnd = PBndFromMouse(bnum, modmask, context);
 
   if (pbnd) {
     return gh_list(pbnd->Thunk,pbnd->ReleaseThunk,SCM_UNDEFINED);
@@ -1371,6 +1374,13 @@ to determine, e.g., whether the user single clicked or double clicked. */
 {
   return mouse_ev_type;
 }
+#undef FUNC_NAME
+
+
+SCWM_PROC(number_of_mouse_buttons,"number-of-mouse-buttons", 0, 0, 0, ())
+     /** Return the number of mouse buttons of the current mouse. */
+#define FUNC_NAME s_number_of_mouse_buttons
+{ return gh_int2scm(cMouseButtons); }
 #undef FUNC_NAME
 
 
