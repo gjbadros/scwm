@@ -1,4 +1,4 @@
-;;; File: <prefs-menu.scm - 1998-03-30 Mon 13:38:29 EST sds@mute.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-03-31 Tue 13:39:41 EST sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 ;;;	$Id$
 
@@ -40,13 +40,17 @@
 	 (if (eof-object? ll) (write-all fd save-header "\n"))))
     (truncate-file fd (ftell fd))
     (write-all fd "(set-edge-scroll! 0 0)\n(set-opaque-move-size! 0)\n"
-	       "(set-desk-size! " (size->str (desk-size) " ")
-	       ")\n(set-hilight-factor! " (number->string (hilight-factor))
-	       ")\n(set-shadow-factor! " (number->string (shadow-factor))
-	       ")\n(set-menu-hilihght-factor! "
-	       (number->string (menu-hilite-factor))
-	       ")\n(set-menu-shadow-factor! "
-	       (number->string (menu-shadow-factor)) ")\n")
+	       "(set-desk-size! " (size->str (desk-size) " "))
+    (for-each
+     (lambda (ll)
+       (let ((getter (cadddr ll)) (setter (caddr ll)))
+	 (display ")\n(" fd)
+	 (if getter () (display "set! " fd))
+	 (write setter fd) (display " " fd)
+	 (write (if getter ((symbol-binding #f getter))
+		    (symbol-binding #f setter)) fd)))
+     settable-object-list)
+    (display ")\n" fd)
     (close-port fd)))
 
 (define-public (mod-desk-size! dx dy)
@@ -102,39 +106,38 @@ Current desk size is " (size->str (desk-size)) ".")))))
   ;; this is a list of lists of: ("title" "help" set-fn get-fn)
   ;; load this file, add to this variable whatever you want,
   ;; then call (menu-prefs)
-  (list
-   (list "Shadow Factor" "Shadow Factor -\\n\
+  '(("Shadow Factor" "Shadow Factor -\\n\
 the factor that is used by windows with the current decor to generate\\n\
 the relief \"shadow\" color for the regular and hilight background."
-	 set-shadow-factor! shadow-factor)
-    (list "Menu Shadow Factor" "Menu Shadow Factor -\\n\
+     set-shadow-factor! shadow-factor)
+    ("Menu Shadow Factor" "Menu Shadow Factor -\\n\
 the factor that is used by menus to generate\\n\
 the relief \"hilight\" color for the regular and hilight background."
-	  set-menu-shadow-factor! menu-shadow-factor)
-    (list "Highlight Factor" "Highlight Factor -\\n\
+     set-menu-shadow-factor! menu-shadow-factor)
+    ("Highlight Factor" "Highlight Factor -\\n\
 the factor that is used by windows with the current decor to generate\\n\
 the relief \"shadow\" color for the regular and hilight background."
-	  set-hilight-factor! hilight-factor)
-    (list "Menu Highlight Factor" "Menu Highlight Factor -\\n\
+     set-hilight-factor! hilight-factor)
+    ("Menu Highlight Factor" "Menu Highlight Factor -\\n\
 the factor that is used by menus to generate\\n\
 the relief \"shadow\" color for the regular and h ilight background."
-	  set-menu-hilight-factor! menu-hilight-factor)
-    (list "XTerm Command" "The command used for starting XTerm,\\n\
-\(like `xterm' or `rxvt')."
-	  (lambda (z) (set! xterm-command z)) (lambda () xterm-command))
+     set-menu-hilight-factor! menu-hilight-factor)
+    ("XTerm Command" "The command used for starting XTerm,\\n\
+\(like `xterm' or `rxvt')." xterm-command #f)
     ;; (list "Icon Font" "The font for icons" set-icon-font! icon-font)
-    (list "Animation Delay" "??" (lambda (z) (set! animation-ms-delay z))
-	  (lambda () animation-ms-delay))))
+    ("Animation Delay" "??" animation-ms-delay #f)))
 
-(define (settable-object-menuitem title help set-fn get-fn)
-  (let ((cur (to-string (apply get-fn ()))))
+(define* (settable-object-menuitem title help set-fn get-fn)
+  (let ((cur (to-string (if get-fn ((symbol-binding #f get-fn))
+			    (symbol-binding #f set-fn))))
+	(stt (if get-fn set-fn (lambda (zz) (symbol-set! #f set-fn zz)))))
     (menuitem title #:action
 	      (menu (list (menuitem "Set" #:action
 				    (lambda ()
 				      (ask-string
 				       (string-append "New value for "
 						      title " (" cur "):")
-				       set-fn)))
+				       stt)))
 			  menu-separator
 			  (menuitem
 			   "Help" #:action
