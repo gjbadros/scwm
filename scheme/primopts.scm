@@ -19,6 +19,7 @@
 
 (define-module (app scwm primopts)
   :use-module (app scwm optargs)
+  :use-module (app scwm time-convert)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
   :use-module (app scwm style)
@@ -67,6 +68,29 @@
   #:setter (lambda (y) (set-edge-y-scroll! (%y y)))
   #:getter (lambda () (pix->%y (edge-y-scroll)))
   )
+
+(define-scwm-option *edge-scroll-delay* (edge-scroll-delay)
+  "The edge scroll delay in milliseconds.
+See `set-edge-scroll-delay!'. "
+  #:type 'integer
+  #:range '(0 . 5000)
+  #:group 'virtual
+  #:favorites '(0 250 500 1000)
+  #:setter set-edge-scroll-delay!
+  #:getter edge-scroll-delay
+  )
+
+(define-scwm-option *edge-move-threshold* (edge-move-threshold)
+  "The edge move threshold in pixels.
+See `set-edge-move-threshold!'. "
+  #:type 'integer
+  #:range '(0 . 200)
+  #:group 'virtual
+  #:favorites '(0 2 5 10 25)
+  #:setter set-edge-move-threshold!
+  #:getter edge-move-threshold
+  )
+
 
 ;; this is not a primitive option,
 ;; but I want a boolean test case --this really should be a delay, anyway

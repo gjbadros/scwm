@@ -98,7 +98,7 @@
 	 (type (scwm-option-type sym))
 	 (range (scwm-option-range sym))
 	 (var (eval sym))
-	 (prompt (string-append "Set " name)))
+	 (prompt name))
     (case type
       (('string 'directory)
        (prompt-string-hbox prompt value))

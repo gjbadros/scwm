@@ -22,6 +22,7 @@
 (define-module (app scwm ScwmClock)
   :use-module (app scwm gtk)
   :use-module (gtk gtk)
+  :use-module (app scwm time-convert)
   :use-module (app scwm optargs))
 
 

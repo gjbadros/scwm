@@ -90,7 +90,7 @@ TITLE is a window title."
 
 
 
-(define-public (prompt-range-hbox prompt range initval)
+(define*-public (prompt-range-hbox prompt range initval #&optional (digits 1))
   "Create and return a range-prompting hbox and scale, label.
 PROMPT is the prompt, RANGE is the allowed rane, and INITVAL is the initial string.
 The returned value is a list: (hbox getter).
@@ -104,7 +104,7 @@ See also `prompt-range'."
 	 (scale (gtk-hscale-new adjustment)))
     (gtk-widget-set-usize scale 150 30)
     (gtk-range-set-update-policy scale 'delayed)
-    (gtk-scale-set-digits scale (+ 1 (log10 (cdr range))))
+    (gtk-scale-set-digits scale digits)
     (gtk-scale-set-draw-value scale #t)
     (gtk-box-pack-start hbox label #t #t)
     (gtk-box-pack-start hbox scale #t #t)
@@ -118,7 +118,7 @@ See also `prompt-range'."
 PROMPT is the prompt, RANGE is the allowed rane, and INITVAL is the initial string.
 The returned value is a list: (hbox getter).
 See also `prompt-range', `prompt-integer-range', `prompt-range-hbox'."
-  (let* ((answer (prompt-range-hbox prompt range initval))
+  (let* ((answer (prompt-range-hbox prompt range initval 0))
 	 (hbox (car answer))
 	 (getter (cadr answer)))
     (list hbox (lambda () (inexact->exact (getter))))))

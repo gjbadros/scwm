@@ -13,6 +13,7 @@
 (define-module (app scwm flux)
   :use-module (ice-9 regex)
   :use-module (app scwm base)
+  :use-module (app scwm time-convert)
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
   :use-module (app scwm message-window)
@@ -443,19 +444,6 @@ WIN is a Scwm window object. The \"WM_COMMAND\" X-Property is the application's
 notion of what the command line was used to run the application."
   (let ((prop (X-property-get win "WM_COMMAND")))
     (and (list? prop) (car prop))))
-
-(define-public (sec->usec sec)
-  "Convert SEC seconds into an equivalent number of microseconds.
-Especially useful for add-hook! and other timing related procedures
-that take microseconds."
-  (* 1000000 sec))
-
-(define-public (ms->usec ms)
-  "Convert MS milliseconds into an equivalent number of microseconds.
-Especially useful for add-hook! and other timing related procedures
-that take microseconds."
-  (* 1000 sec))
-
 
 ;; We need accessors for window background information,
 ;; and window-hilight background information
