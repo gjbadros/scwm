@@ -83,8 +83,14 @@ unsigned long Globalgcm;
  * Redraws the windows borders
  *
  ****************************************************************************/
-void SetBorder (ScwmWindow *t, Bool onoroff,Bool force,Bool Mapped, 
-		Window expose_win)
+inline void SetBorder (ScwmWindow *t, Bool onoroff,Bool force,Bool Mapped, 
+		       Window expose_win)
+{
+  SetBorderX (t,onoroff,force,Mapped,expose_win,False);
+}
+
+void SetBorderX (ScwmWindow *t, Bool onoroff,Bool force,Bool Mapped, 
+		Window expose_win, Bool really_force)
 {
   int y, i, x;
   GC ReliefGC,ShadowGC;
@@ -118,6 +124,10 @@ void SetBorder (ScwmWindow *t, Bool onoroff,Bool force,Bool Mapped,
     if(Scr.Hilite != t)
       NewColor = True;
       
+    if (really_force) {
+      NewColor = True;
+    }
+
     /* make sure that the previously highlighted window got unhighlighted */
     if((Scr.Hilite != t)&&(Scr.Hilite != NULL))
       SetBorder(Scr.Hilite,False,False,True,None);
@@ -153,6 +163,10 @@ void SetBorder (ScwmWindow *t, Bool onoroff,Bool force,Bool Mapped,
     if(Scr.Hilite == t)
     {
       Scr.Hilite = NULL;
+      NewColor = True;
+    }
+    
+    if(really_force) {
       NewColor = True;
     }
 
@@ -556,6 +570,7 @@ void SetBorder (ScwmWindow *t, Bool onoroff,Bool force,Bool Mapped,
     
 }
 
+
 /****************************************************************************
  *
  *  Redraws buttons (veliaa@rpi.edu)
@@ -587,7 +602,10 @@ void DrawButton(ScwmWindow *t, Window win, int w, int h,
     case VectorButton:
 	if((t->flags & MWMButtons)
 	   && (stateflags & MWMButton)
-	   && (t->flags & MAXIMIZED))
+	   && ((t->flags & MAXIMIZED)  || (SCM_NFALSEP
+					  (scm_object_property
+					   (t->schwin,
+					    gh_symbol2scm("maximized"))))))
 	    DrawLinePattern(win,
 			    ShadowGC, ReliefGC,
 			    &bf->vector,
