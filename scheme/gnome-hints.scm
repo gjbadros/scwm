@@ -39,6 +39,7 @@
   "Set true to enable debugging messages for the gnome-hints module."
   #:type 'boolean
   #:group 'gnome)
+;;(set! *debug-gnome-hints* #t)
 
 ;; Hint properties
 (define-scwm-option *gnome-desktop-number* 4
@@ -469,6 +470,8 @@ Used in `enable-gnome-hints'."
                    (vector bpress_win_id) "CARDINAL" 32)
   (X-property-set! 'root-window "_WIN_DESKTOP_BUTTON_PROXY" 
 		   (vector bpress_win_id) "CARDINAL" 32)
+  (X-property-set! bpress_win_id "_WIN_SUPPORTING_WM_CHECK"
+                   (vector bpress_win_id) "CARDINAL" 32)
   (X-property-set! bpress_win_id "_WIN_DESKTOP_BUTTON_PROXY" 
 		   (vector bpress_win_id) "CARDINAL" 32)
 
