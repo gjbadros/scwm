@@ -1,3 +1,11 @@
+Thu Mar 25 18:45:26 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use #:submenu to make the (lambda ()
+	(menu-window-theme)) work as intended.  Use 94% instead of 95
+	percent for vertical-toggle-maximize-partial.  random example code 
+	changed in comments.  Use set! to set resize-opaquely?
+	user-function.
+
 1999-03-22  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* robbe.scwmrc (separate-fields-discarding-char): Removed.

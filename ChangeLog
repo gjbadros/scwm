@@ -1,3 +1,8 @@
+Thu Mar 25 18:36:44 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Bump version to 0.99.1 since it should not be
+	0.9.1-snap any longer.
+
 1999-03-23  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* autogen.sh: Add --copy to libtoolize call, as we don't want to

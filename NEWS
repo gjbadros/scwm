@@ -2,7 +2,99 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997, 1998, 1999 Maciej Stachowiak and Greg J. Badros
 See the end for copying conditions.
 
-Changes to scwm-0.9 (since 0.8)
+Changes for scwm-0.99.1 (not yet released)
+
+* Lots of documentation improvements, revamp of Scwm web page, 
+numerous bug-fixes, code cleanup
+
+* Constraints
+** Much improved user-interface
+** more accessible via (use-modules (app scwm constraints))
+** Uses Cassowary-0.41 or better
+
+* Change resize-window's message window to use client units
+
+* KWM Support
+** `kwm-emulation-initialize', `kwm-emulation-reset', `kwm-send-window-list'
+
+* IMLib support as a compile time option (to-replace libXpm, ultimately)
+
+* Themes, Theme Menus (app scwm themes) (app scwm std-menus)
+** Various themes in new themes directory
+** `theme-names'
+** `menu-window-theme', `menu-global-theme', #:use-theme window style option
+
+* Snap attraction (app scwm snap)
+** `snap-initialize', `snap-reset'
+
+* ICCCM Group support (app scwm group)
+** `group->windows', `interactive-move-group', `lower-group', `raise-group'
+** `move-group', `move-group-to-desk', `move-group-relative'
+
+* New window style options
+** #:squashed-titlebar, #:no-side-decorations, #:use-theme (see Themes, above)
+
+* New menu style options
+** #:hover-delay, #:popup-delay (in ms)
+
+* Better xclients script support
+** `run-dot-xclients-at-startup'
+
+* Added menuitem option #:submenu (like #:action) that forces an item to 
+be interpreted as a menu item; e.g., lambdas can be used here, they
+will be evaluated and then the result is expected to be a menu --
+permits very dynamic menus.
+
+* Changed printable format for menu-item objects.
+
+* Added 'frame-corners and 'frame-sides as the supported names for
+binding contexts, and deprecate 'corners and 'borders as names for them.
+
+* Session management changes.  Added `SM-register' to register with the SM;
+deprecated `SM-client-id'.
+
+* Simple xlib drawing support w/o gtk
+** `xlib-draw-arc', `xlib-draw-line!', `xlib-draw-rectangle!', etc.
+
+* Misc. new primitives
+** `send-client-message'
+** `icon-size'
+** `force-reset-window-frame!' -- force redraw of frame
+** `select-viewport-position' (returns pointer position and selected window)
+** `bind-keycode' -- lower level interface to binding keys, allows release procs
+** `keysym->keycode', `mod-mask-control', `mod-mask-shift'
+** `animated-resize-window', `animated-resize-frame'
+
+* Removed primitives
+** dangerous and unnecessary `wait-for-window' procedure
+** `select-window' is now a proc in base.scm (replaced with `select-viewport-position'
+
+* Misc. changed primitives
+** `bind-keycode' allow release procs like new `bind-keycode'
+
+* Misc. new procedures
+** `fold-menu-list-by-group', `rename-window-interactively'
+** `netscape-goto-url'
+** `output-of-system-command', `read-until-eof', `chop-newline'
+** `animated-iconify', `animated-deiconify', `animated-toggle-iconify'
+** `delete-multiple-windows-interactively'
+** `bind-two-modifier-key-events', `bind-three-modifier-key-events'
+** `current-viewport-offset-xx', `current-viewport-offset-yy'
+** `intersection-area', `rectangle-overlap'
+** `window-center-top', `window-center-bottom', etc.
+
+* New hooks
+** `window-enter-hook', `window-leave-hook'
+** `edge-enter-hook', `edge-leave-hook', `edge-scroll-hook'
+** `window-property-change-hook'
+** `desk-size-change-hook', `viewport-position-change-hook'
+** `close-window-hook'
+** `X-MapRequest-hook'
+
+
+
+
+Changes for scwm-0.9 (released 27-Jan-1999)
 
 * Numerous documentation fixes.
 
@@ -223,7 +315,8 @@ window-unshade, move-window and move-to, as well as set-animation!.
 
 * Numerous other bug fixes.
 
-Changes to scwm-0.8 (released 14-August-1998)
+
+Changes for scwm-0.8 (released 14-August-1998)
 
 * extract-docs documentation extraction system
 
@@ -287,7 +380,7 @@ Changes to scwm-0.8 (released 14-August-1998)
   Use SCWM_PROC, SCWM_SYMBOL throughout, and fixed lots of bugs that
   extract-docs found relating to mis-identifier argument requirements.
 
-Changes to scwm-0.7 (released 22-June-1998; 0.7a 26-June-1998)
+Changes for scwm-0.7 (released 22-June-1998; 0.7a 26-June-1998)
 
 * The start of a TexInfo manual.
 
@@ -460,7 +553,7 @@ resulting from evaluation of commands are now displayed.
 
 * Numerous bug fixes.
 
-Changes to scwm-0.6
+Changes for scwm-0.6 (released 6-March-1998)
 
 * Changes to installation: Scwm no longer installs it's scheme modules
 in the guile install locations; instead, it installs them in its own
@@ -698,17 +791,17 @@ same --prefix passed to configure.
 
 * Many bug fixes and general clean-up.
 
-
-Changes to scwm-0.5
+
+Changes for scwm-0.5 (released 18-November-1997)
 
 Many bug fixes to the build process and the program itself.
 
 Integrated the icon distribution.
 
-The documentation ahs been updaed to roughly reflect current reality.
+The documentation has been updated to roughly reflect current reality.
 
-
-Changes to scwm-0.4
+
+Changes to scwm-0.4 (released 4-November-1997)
 
 set-xor-value! has been renamed to set-rubber-band-mask!.
 
@@ -761,8 +854,8 @@ correctly.
 
 Many bug fixes.
 
-
-Changes to scwm-0.3
+
+Changes for scwm-0.3 (released 18-October-1997)
 
 Fixed prev-window and next-window to deal with windows that do not
 accept the window focus. 
@@ -778,7 +871,8 @@ the srcdir/VPATH mechanism works.
 Assorted fixes to the C files, including a fix of the longstanding bug
 in interactive move that made moves start in the wrong place.
 
-Changes to scwm-0.2
+
+Changes for scwm-0.2 (released ?????)
 
 Autoconf configurability. No more futzing with imake, now you can just
 ./configure; make; make install.
@@ -797,7 +891,8 @@ the (app scwm style) module.
 Improvements to the system.scwmrc file enabled by the implementation
 of styles, and from user suggestions.
 
-Changes to scwm-0.1
+
+Changes to scwm-0.1 (released ?????)
 
 All fvwm2 functionality except styles, decors and modules is
 implemented. 
@@ -806,7 +901,8 @@ Many bugs/limitations from the last release were fixed.
 
 Scheme modules that provide extra useful operations are now available.
 
-Initial release: scwm-0.0.0
+
+Initial release: scwm-0.0.0 (released ????)
 
 Nearly all fvwm functionality is available, but a number of useful
 things are missing.
