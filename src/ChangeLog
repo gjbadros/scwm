@@ -1,3 +1,12 @@
+Fri Jul 23 21:48:05 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* callbacks.c (s_set_load_processing_frequency_x): Use /** instead 
+	of just /* so doc extractor notices the comment.
+
+	* validate.h (VALIDATE_ARG_LISTNONEMPTY): use gh_pair_p, not
+	gh_car to check if a list is not empty.  Fixes seg fault reported
+	by Francesco Tapparo.
+
 Tue Jul 20 08:23:24 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* callbacks.c (s_set_load_processing_frequency_x): Added

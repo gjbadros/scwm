@@ -1,3 +1,15 @@
+Fri Jul 23 21:44:31 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* AUTHORS: Updated and organized into more categories;
+	alphabetized Maciej and me, as ok'd by him.
+
+	* configure.in (DL_SUPPORT): Check for dlopen in libc, too, not
+	just in libdl.  For NetBSD-- thanks Perry Metzger!
+
+Thu Jul 22 08:12:17 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in (DL_SUPPORT): Make DL_SUPPORT an AM_CONDITIONAL.
+
 Sun Jul 18 17:33:34 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	For Stephen Tell's scwm/3 bug.  Thanks!
