@@ -1,3 +1,46 @@
+1998-10-27  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* session-manager.c: Legalese added.
+	(hton32): New macro, puts 32-bit-quantity into network byte order.
+	(ntoh32): New macro, inverse to `hton32'.
+	(SMWindowData): New type.
+	(SMData): New variable.
+	(writeI32, readI32, writeString, readString, writeWindow,
+	readWindow, statefile, loadMyself): New functions.
+	(saveYourself2): Renamed from `saveYourselfPhase2Proc'. Actually
+	save to the state file.
+	(saveYourself, shutdownCancelled, saveComplet, die): Removed
+	redundant `Proc' suffix from the name.
+	(setSMProperties): Don't shorten SmProgram.
+	Add new SmCurrentDirectory so that restart/clone can actually
+	work.
+	Add new SmDiscardCommand that removes state file.
+	(initSM): Initialize XA_SM_CLIENT_ID.
+	Call `loadMyself' if we were reincarnated.
+	(restoreWindowState): New function. Yet empty.
+	* session-manager.h: Prototype it.
+	(XA_SM_CLIENT_ID): New variable.
+
+	* xproperty.c (X-property-set!): assert(0) impossible case.
+	Give up on error.
+	(X-property-get): Return #f in impossible case.
+
+	* xproperty.c (GetXProperty): New function.
+	(X-property-get): Use it.
+	* xproperty.h: Prototype it.
+
+	* scwm.c (InitUserData): Initialize user, home to NULL.
+
+	* events.c (NextScwmEvent): Remove debug message.
+
+	* system.c (xgetcwd): New function.
+	* system.h: Prototype it.
+
+	* session-manager.c (doneSM): Do nothing unless we're connected.
+	Would segfault because `SmcSetProperties' needs SmcProp**, not
+ 	SmProp*. The segfault was catched and `doneSM' was called again
+ 	... nasty!
+
 1998-10-24  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* scwm.c: Move `main_prog_t' from here ...
