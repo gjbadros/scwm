@@ -1,3 +1,8 @@
+Fri Apr 19 00:36:08 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* synth-events.scm: Added commentary to doc noting that the synthetic
+	events sent are ignored by some applications.
+
 Wed Apr 10 00:21:08 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* modifier-key-bindings.scm:
