@@ -397,6 +397,7 @@ AC_ARG_ENABLE(esd, [  --disable-esd       Do not use ESD even if it exists],
 
 if test x"$enable_esd" = x"no"; then
 	AC_MSG_RESULT(Not using ESD due to --disable-esd option)
+	AM_CONDITIONAL(HAVE_ESD, false)
 else
 	AM_PATH_ESD(0.2.7, HAVE_ESD=yes, HAVE_ESD=no)
 	AM_CONDITIONAL(HAVE_ESD, test "$HAVE_ESD" = yes)
