@@ -125,7 +125,7 @@ module packet for WIN and returns it as a Scheme string. */
 
 SCWM_PROC(marshal_fvwm2_iconify_info, "marshal-fvwm2-iconify-info", 1, 0, 0,
           (SCM win))
-     /** This procedure constructs the contents of an M_ICONIFY fvwm
+     /** This procedure constructs the contents of an "M_ICONIFY" fvwm
 module packet for WIN and returns it as a Scheme string. */
 #define FUNC_NAME s_marshal_fvwm2_iconify_info
 {
