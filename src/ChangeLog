@@ -1,3 +1,28 @@
+1998-11-09  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* session-manager.c (STATE_FILE_SERIAL): New macro.
+	(saveYourself2): Put it at the beginning of the state file.
+	(loadMyself): Ignore state files with different serial.
+	Use __FUNCTION__ instead of FUNC_NAME in all places.
+
+	* window.c (FlagsBitsFromSw): Two typos fixed.
+	(PswUpdateFlags): New function, inverse of `FlagsBitsFromSw'.
+	* window.h: Prototype it.
+	* session-manager.c: Use these functions to save/restore various
+	window flags. Also save the desk nr - restoring it does not yet
+	work.
+
+	* resize.c (InteractiveResize): Display FRAME_WIDTH/FRAME_HEIGHT
+	in message window, as `FXGetWindowSize' returns wrong values in
+	rubberband mode.
+
+	* move.c (moveLoop): Display FRAME_X_VP/FRAME_Y_VP in message
+	window, as `FXGetWindowTopLeft' returns wrong valuse in rubberband 
+	mode.
+
+	* window.c (compare_focus_time): New function.
+	(list-focus-order): Did not work. Reimplemented.
+
 1998-11-02  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* session-manager.h (XA_WM_CLIENT_LEADER): New variable.
