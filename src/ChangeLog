@@ -1,5 +1,23 @@
 Fri Mar 27 12:26:18 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* callbacks.c, callbacks.h: New system for hooks - allows scwm to
+ 	set up distinguished Scheme variables that contain a list of
+ 	procedures to be invoked on certain actions, possibly with
+ 	arguments. Guile's usual add-hook! macro can be used. So far only
+ 	used for errors, but will be used throughout soon. For some fun
+ 	try, with flux.scm loaded: 
+
+	(define (message-show-error . args)
+	  (message (with-output-to-string
+		     (lambda ()
+		       (display "scwm error: ")
+		       (map (lambda (arg)
+			      (write arg)
+			      (display " ")) args)
+		       (newline)))))
+
+	(add-hook! error-hook message-show-error)
+ 	
 	* events.c: Include callacks.h.
 
 Thu Mar 26 19:04:00 1998  Greg Badros  <gjb@cs.washington.edu>

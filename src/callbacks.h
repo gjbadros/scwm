@@ -4,12 +4,25 @@
 
 #include <guile/gh.h>
 
+SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args);
+SCM scwm_safe_apply_message_only (SCM proc, SCM args);
+
+/* Individual callbacks. */
 SCM scwm_safe_apply (SCM proc, SCM args);
 SCM scwm_safe_call0 (SCM thunk);
 SCM scwm_safe_call1 (SCM proc, SCM arg);
 SCM safe_load (SCM fname);
 SCM scwm_safe_load (char *filename);
 SCM scwm_safe_eval_str (char *string);
+
+/* Hooks. */
+
+#define DEFINE_HOOK(var, name) var=scm_sysintern(name, SCM_EOL)
+
+SCM call0_hooks (SCM hook);
+SCM call1_hooks (SCM hook_type, SCM arg);
+SCM apply_hooks (SCM hook_type, SCM args);
+SCM apply_hooks_message_only (SCM hook_type, SCM args);
 
 void init_callbacks();
 

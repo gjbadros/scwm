@@ -32,11 +32,20 @@
 #include <guile/gh.h>
 #include "callbacks.h"
 
+SCM error_hook;
 
 struct scwm_body_apply_data {
   SCM proc;
   SCM args;
 };
+
+
+SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args)
+{
+  puts("Inside error handler.");
+  scm_handle_by_message_noexit(handler_data, tag, throw_args);
+  return apply_hooks_message_only(error_hook, gh_cons(tag, throw_args));
+}
 
 static SCM
 scwm_body_apply (void *body_data)
@@ -54,6 +63,21 @@ scwm_body_apply (void *body_data)
 
 SCM
 scwm_safe_apply (SCM proc, SCM args)
+{
+  SCM_STACKITEM stack_item;
+  struct scwm_body_apply_data apply_data;
+
+  apply_data.proc = proc;
+  apply_data.args = args;
+
+  return scm_internal_cwdr(scwm_body_apply, &apply_data,
+			   scwm_handle_error, "scwm",
+			   &stack_item);
+}
+
+
+SCM
+scwm_safe_apply_message_only (SCM proc, SCM args)
 {
   SCM_STACKITEM stack_item;
   struct scwm_body_apply_data apply_data;
@@ -100,7 +124,7 @@ scwm_body_eval_x (void *body_data)
 inline static SCM 
 scwm_catching_eval_x (SCM expr) {
   return scm_internal_catch (SCM_BOOL_T, scwm_body_eval_x, &expr,
-			     scm_handle_by_message_noexit, "scwm");
+			     scwm_handle_error, "scwm");
 }
 
 inline static SCM 
@@ -146,7 +170,7 @@ SCM safe_load (SCM fname)
   }
 
   return scm_internal_cwdr(scwm_body_load, &fname,
-			   scm_handle_by_message_noexit, "scwm", 
+			   scwm_handle_error, "scwm", 
 			   &stack_item);
 }
 
@@ -155,18 +179,118 @@ SCM scwm_safe_load (char *filename)
   return safe_load(gh_str02scm(filename));
 }
 
-
 SCM scwm_safe_eval_str (char *string)
 {
   SCM_STACKITEM stack_item;
   return scm_internal_cwdr(scwm_body_eval_str, string,
-			   scm_handle_by_message_noexit, "scwm", 
+			   scwm_handle_error, "scwm", 
 			   &stack_item);
 }
+
+SCM call0_hooks (SCM hook)
+{
+  SCM p;
+  SCM hook_name;
+  SCM hook_list;
+  /* Ensure hook list is a list. */
+
+  hook_name = SCM_CAR(hook);
+  hook_list = SCM_CDR(hook);
+
+  if (!gh_list_p(hook_list)) {
+    /* Warn that hook list is not a list. */
+    SCM_SETCAR(hook, SCM_EOL);
+    hook_list=SCM_EOL;
+  }
+
+  for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
+    scwm_safe_call0 (SCM_CAR(p));
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+
+SCM call1_hooks (SCM hook, SCM arg)
+{
+  SCM p;
+  SCM hook_name;
+  SCM hook_list;
+  /* Ensure hook list is a list. */
+
+  hook_name = SCM_CAR(hook);
+  hook_list = SCM_CDR(hook);
+
+  if (!gh_list_p(hook_list)) {
+    /* Warn that hook list is not a list. */
+    SCM_SETCAR(hook, SCM_EOL);
+    hook_list=SCM_EOL;
+  }
+
+  for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
+    scwm_safe_call1 (SCM_CAR(p), arg);
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+
+SCM apply_hooks (SCM hook, SCM args)
+{
+  SCM p;
+  SCM hook_name;
+  SCM hook_list;
+
+  hook_name = SCM_CAR(hook);
+  hook_list = SCM_CDR(hook);
+
+  /* Ensure hook list is a list. */
+  if (!gh_list_p(hook_list)) {
+    /* Warn that hook list is not a list. */
+    SCM_SETCAR(hook, SCM_EOL);
+    hook_list=SCM_EOL;
+  }
+
+  for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
+    scwm_safe_apply (SCM_CAR(p), args);
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+
+/* This is needed for running error hooks - if an error hook throws an
+   error, we really don't want to invoke the standard handler (which
+   would invoke the error hooks again), we should just fall through
+   and assume the caller is catching errors and doing something
+   appropriate. */
+
+SCM apply_hooks_message_only (SCM hook, SCM args)
+{
+  SCM p;
+  SCM hook_name;
+  SCM hook_list;
+
+  hook_name = SCM_CAR(hook);
+  hook_list = SCM_CDR(hook);
+
+  /* Ensure hook list is a list. */
+  if (!gh_list_p(hook_list)) {
+    /* Warn that hook list is not a list. */
+    SCM_SETCDR(hook, SCM_EOL);
+    hook_list=SCM_EOL;
+  }
+
+  for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
+    scwm_safe_apply_message_only (SCM_CAR(p), args);
+  }
+    
+  return SCM_UNSPECIFIED;
+}
+
 
 
 void init_callbacks()
 {
+  DEFINE_HOOK(error_hook, "error-hook");
+  
 #ifndef SCM_MAGIC_SNARFER
 #include "callbacks.x"
 #endif
