@@ -162,7 +162,7 @@ current decor. */
 
 SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
           ())
-/** Returns true if scwm is being restarted by itself */
+/** Returns true if scwm is being restarted by itself. */
 #define FUNC_NAME s_restarted_p
 {
   return SCM_BOOL_FromBool(Restarting);
