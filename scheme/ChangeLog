@@ -1,3 +1,16 @@
+Mon Jan 10 14:04:03 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* prompt-binding.scm: Change the way copy and insert work so that
+	subsequent deletes delete the right row.  For some reason,
+	delete's notion of the selected row didn't match with what was
+	highlighted on screen.  The current situation is unsurprising, but 
+	less than ideal, since a copy/insert leaves the copied line
+	highlighted instead of switching to the copy of that line.
+
+Mon Jan 10 13:16:33 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Document `bell'
+
 Sun Jan  9 20:51:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* style.scm: Added more docs to `window-style', and let it take a
