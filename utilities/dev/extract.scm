@@ -439,7 +439,7 @@ exec guile -l $0 -- --run-from-shell "$@"
   (cond ((null? io) '())
 	(else (case (string-ref (car io) 0)
 		((#\* #\+ #\-) (ispell-report (cdr io)))
-		((#\&) (cons (cons "Misspelling       : "
+		((#\&) (cons (cons "Misspelling : "
 				   (ispell-find-word (car io)))
 			     (ispell-report (cdr io))))
 		((#\? #\#) (cons (cons "Unrecognized word : "
@@ -1004,6 +1004,7 @@ exec guile -l $0 -- --run-from-shell "$@"
                            file:line_number:.
     -l, --ispell           Run ispell on documentation.  Currently
                            hangs when given full SCWM source code set.
+    -w, --words  'word word ...' More words for ispell to ignore.
     -h, -? --help          Display this info.
 
   If no flags are given, the default action is to check the files.
@@ -1062,6 +1063,15 @@ exec guile -l $0 -- --run-from-shell "$@"
 		    (process-arg 1 docs->text (car args) (cdr args) files actions))
 		   ((-a --annotated-text)
 		    (process-arg 1 docs->annotated-text (car args) (cdr args) files actions))
+		   ((-w --words)
+		    (cond ((null? (cdr args))
+			   (displayl (car args)
+				     " flag given without arguments.  Ignored.\n")
+			   (process-cmd-line (cdr args) files actions))
+			  (else (set! *scwm-ok-words*
+				      (append (extract-words (cadr args))
+					      *scwm-ok-words*))
+				(process-cmd-line (cddr args) files actions))))
 		   ((-h -? --help)
 		    (usage)
 		    (ret '()))
