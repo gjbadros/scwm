@@ -1,3 +1,16 @@
+Sat Dec  4 21:15:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Update the tooltip help to be laid
+	out a little bit narrower (just by adding blanks to end of first
+	line).
+
+	* ui-constraints-buttons.scm: Turn off animations by default (use
+	new global public variable to decide).
+
+Sat Dec  4 20:19:17 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* constraint-investigator.scm: Make only enabled constraints get drawn.
+
 Sat Dec  4 19:53:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints.scm: Fix typo -- it's delete-ui-constraint!
