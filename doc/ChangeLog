@@ -1,3 +1,8 @@
+Sun Oct 17 19:21:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Use scwm_doc_DATA for documentation files.  Thanks
+	Francesco Tapparo!
+
 Wed Oct  6 17:41:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: fix for scwm/ -> src/ directory renaming.

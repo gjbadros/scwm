@@ -1,3 +1,12 @@
+Sun Oct 17 19:01:35 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* message-window.scm: Use window-visible-frame-size to pick
+	location of message-window.  Fixes bug reported by Tessa Lau re:
+	the message window being mis-placed for shaded windows.  Thanks
+	Tessa!
+
+	* base.scm: Added `window-visible-frame-size'
+
 Sun Oct 17 16:11:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* style-options.scm: Added `add-window-both-option'

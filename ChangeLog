@@ -1,3 +1,8 @@
+Sun Oct 17 19:21:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Added --with-docdir option for specifying which
+	Scwm documentation files should go.  Thanks Francesco Tapparo!
+
 Sun Oct 17 11:37:02 1999    <gjb@cs.washington.edu>
 
 	* Makefile.common (ETAGS_ARGS): Fix to allow SCWM_[IW]?PROC, not
