@@ -401,8 +401,6 @@ SCM wait_for_window(SCM name)
            (matchWildcards(n,Tmp_win->class.res_name)==True))
           done = True;
       }
-    } else {
-      scm_yield();
     }
   }
   return SCM_UNSPECIFIED;
