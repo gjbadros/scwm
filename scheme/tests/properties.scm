@@ -18,3 +18,7 @@
 (set-window-text-property (current-window-with-focus) "WM_FOO" "Testing GJB")
 
 (xproperty->string (window-xproperty (current-window-with-focus) "WM_FOO"))
+
+;;; these two lines cause a core dump --07/05/98 gjb
+(add-hook! X-PropertyNotify-hook (lambda (sz w EXTRA-ARG) (write sz) (write w) (display "\n")))
+(set-window-text-property (current-window-with-focus) "WM_FOO" "Testing GJB")
