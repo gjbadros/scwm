@@ -1,3 +1,7 @@
+Tue Nov 17 02:28:08 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* procedures: Remove this ancient thing.
+
 Mon Nov 16 17:11:43 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* scwm.texi: Made minor changes so it gets processed correctly;
