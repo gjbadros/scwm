@@ -1,3 +1,12 @@
+Sun Sep 19 16:12:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice/Makefile.am: Move BUILT_SOURCES into the if/endif so
+	nothing gets exec'd when not HAVE_VIAVOICE.
+
+Sun Sep 19 15:41:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice/scwmviavoice.c: Update documentation a bit.
+
 Sat Sep 18 13:50:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* viavoice/scwmgrammar.bnf: Added lots of phrases.  Far more

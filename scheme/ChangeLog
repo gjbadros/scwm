@@ -1,3 +1,7 @@
+Sun Sep 19 16:18:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added `window-background-color'
+
 Sun Sep 19 14:15:40 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* nonants.scm: Added `nonant-decoration',
