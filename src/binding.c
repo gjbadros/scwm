@@ -44,6 +44,52 @@ struct symnum binding_contexts[] =
 };
 
 
+char *
+PchModifiersToModmask(const char *pch, int *pmodifier)
+{
+  int modmask = 0;
+
+  while (True) {
+    if (pch[1] != '-') {
+      break;
+    }
+    switch (pch[0]) {
+    case 'C':
+      modmask |= ControlMask;
+      break;
+    case 'M':
+      modmask |= Mod1Mask;
+      break;
+    case 'S':
+      modmask |= ShiftMask;
+      break;
+    default:
+      scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier %c-",pch[0]);
+      break;
+    }
+    pch += 2;
+  }
+
+  *pmodifier = modmask;
+  return STATIC_CAST(char *,pch);
+}
+
+
+Bool 
+FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
+{
+  Bool fOk;
+  int len;
+  char *keyname = gh_scm2newstr(key,&len);
+  char *pch = PchModifiersToModmask(keyname,pmodifier);
+  
+  fOk = !((*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
+	   (XKeysymToKeycode(dpy, *pkeysym)) == 0);
+  free(keyname);
+  return fOk;
+}
+
+
 /*
    ** to remove a binding from the global list (probably needs more processing
    ** for mouse binding lines though, like when context is a title bar button).
@@ -122,11 +168,9 @@ SCM
 unbind_key(SCM contexts, SCM key)
 {
   KeySym keysym;
-  char *keyname, *okey;
-  int len;
+  Bool fOkayKey;
   int modmask = 0;
   int context = 0;
-  int l = 0;
 
   SCM_REDEFER_INTS;
   if (!gh_string_p(key)) {
@@ -151,39 +195,20 @@ unbind_key(SCM contexts, SCM key)
   default:
   }
 
-  /* FIXGJB: abstract this out */
-  okey = (keyname = gh_scm2newstr(key, &len));
-  do {
-    l = 0;
-    if (!strncmp("C-", keyname, 2)) {
-      modmask |= ControlMask;
-      keyname += 2;
-      l = 1;
-    } else if (!strncmp("M-", keyname, 2)) {
-      modmask |= Mod1Mask;
-      keyname += 2;
-      l = 1;
-    } else if (!strncmp("S-", keyname, 2)) {
-      modmask |= ShiftMask;
-      keyname += 2;
-      l = 1;
-    }
-  } while (l);
+  fOkayKey = FKeyToKeysymModifiers(key, &keysym, &modmask);
 
   /*
    * Don't let a 0 keycode go through, since that means AnyKey to the
    * XGrabKey call in GrabKeys().
    */
-  if ((keysym = XStringToKeysym(keyname)) == NoSymbol ||
-      (XKeysymToKeycode(dpy, keysym)) == 0) {
-    free(okey);
+  if (keysym == NoSymbol || !fOkayKey) {
     gh_allow_ints();
     SCM_ALLOW_INTS;
-    scwm_error(__FUNCTION__, 4);
+    /* FIXGJB: scheme warning? show "key" object */
+    scwm_msg(WARN,__FUNCTION__, "Bad key binding");
+  } else {
+    remove_binding(context,modmask,0,keysym,False);
   }
-  remove_binding(context,modmask,0,keysym,False);
-
-  free(okey);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -192,12 +217,11 @@ unbind_key(SCM contexts, SCM key)
 SCM 
 unbind_mouse(SCM contexts, SCM button)
 {
-  char *keyname, *okey;
-  int len;
+  char *keyname;
   int modmask = 0;
   int context = 0;
   int bnum = 0;
-  int l = 0;
+  int len = 0;
 
   SCM_REDEFER_INTS;
   if (!gh_string_p(button)) {
@@ -223,28 +247,12 @@ unbind_mouse(SCM contexts, SCM button)
   }
 
   /* FIXGJB: abstract this out */
-  okey = (keyname = gh_scm2newstr(button, &len));
-  do {
-    l = 0;
-    if (!strncmp("C-", keyname, 2)) {
-      modmask |= ControlMask;
-      keyname += 2;
-      l = 1;
-    } else if (!strncmp("M-", keyname, 2)) {
-      modmask |= Mod1Mask;
-      keyname += 2;
-      l = 1;
-    } else if (!strncmp("S-", keyname, 2)) {
-      modmask |= ShiftMask;
-      keyname += 2;
-      l = 1;
-    }
-  } while (l);
+  keyname = gh_scm2newstr(button, &len);
   bnum = strtol(keyname, NULL, 10);
 
   remove_binding(context,modmask,bnum,0,True /* Mouse binding */);
 
-  free(okey);
+  free(keyname);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
@@ -299,14 +307,13 @@ grab_button_all_windows(int button, int modifier)
 SCM 
 bind_key(SCM contexts, SCM key, SCM proc)
 {
-  Binding *temp;
   KeySym keysym;
+  int len = 0;
+  Bool fOkayKey = False;
   Bool fBoundKey = False;	/* for error checking */
-  char *keyname, *okey;
-  int len, i, min, max;
+  int i, min, max;
   int modmask = 0;
   int context = 0;
-  int l = 0;
 
   SCM_REDEFER_INTS;
   if (!gh_string_p(key)) {
@@ -335,67 +342,46 @@ bind_key(SCM contexts, SCM key, SCM proc)
   default:
   }
 
-  okey = (keyname = gh_scm2newstr(key, &len));
-  do {
-    l = 0;
-    if (!strncmp("C-", keyname, 2)) {
-      modmask |= ControlMask;
-      keyname += 2;
-      l = 1;
-    } else if (!strncmp("M-", keyname, 2)) {
-      modmask |= Mod1Mask;
-      keyname += 2;
-      l = 1;
-    } else if (!strncmp("S-", keyname, 2)) {
-      modmask |= ShiftMask;
-      keyname += 2;
-      l = 1;
-    }
-  } while (l);
+  fOkayKey = FKeyToKeysymModifiers(key,&keysym,&modmask);
 
   /*
    * Don't let a 0 keycode go through, since that means AnyKey to the
    * XGrabKey call in GrabKeys().
    */
-  if ((keysym = XStringToKeysym(keyname)) == NoSymbol ||
-      (XKeysymToKeycode(dpy, keysym)) == 0) {
-    free(okey);
+  if (keysym ==  NoSymbol || !fOkayKey) {
     gh_allow_ints();
     SCM_ALLOW_INTS;
-    scwm_error("bind", 4);
-  }
-  /*
-     ** why wasn't XKeysymToKeycode used instead of this for loop?
-   */
-  /* 
-   * Because more than one keycode might map to the same keysym -MS
-   */
-
-  XDisplayKeycodes(dpy, &min, &max);
-  for (i = min; i <= max; i++)
-    if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
-      temp = Scr.AllBindings;
-      Scr.AllBindings = (Binding *) safemalloc(sizeof(Binding));
-      Scr.AllBindings->IsMouse = 0;
-      Scr.AllBindings->Button_Key = i;
-      Scr.AllBindings->key_name = strdup(keyname);
-      Scr.AllBindings->Context = context;
-      Scr.AllBindings->Modifier = modmask;
-      Scr.AllBindings->Action = "Scheme";
-      Scr.AllBindings->Thunk = proc;
-      Scr.AllBindings->NextBinding = temp;
-      scm_protect_object(proc);
-      if (Scr.flags & WindowsCaptured) {
-	/* only grab the key if we have already captured,
-	   otherwise it's a waste of time since we will grab
-	   them all later when we do the initial capture;
-	   this is good, since initialization probably defines
-	   lots of key bindings */
-	grab_key_all_windows(i,modmask);
+    scwm_msg(WARN,__FUNCTION__,"Bad key binding");
+  } else {
+    /* 
+     * One keycode might map to the same keysym -MS
+     */
+    
+    XDisplayKeycodes(dpy, &min, &max);
+    for (i = min; i <= max; i++)
+      if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
+	Binding *prev_binding = Scr.AllBindings;
+	Scr.AllBindings = (Binding *) safemalloc(sizeof(Binding));
+	Scr.AllBindings->IsMouse = 0;
+	Scr.AllBindings->Button_Key = i;
+	Scr.AllBindings->key_name = gh_scm2newstr(key,&len);
+	Scr.AllBindings->Context = context;
+	Scr.AllBindings->Modifier = modmask;
+	Scr.AllBindings->Action = "Scheme";
+	Scr.AllBindings->Thunk = proc;
+	Scr.AllBindings->NextBinding = prev_binding;
+	scm_protect_object(proc);
+	if (Scr.flags & WindowsCaptured) {
+	  /* only grab the key if we have already captured,
+	     otherwise it's a waste of time since we will grab
+	     them all later when we do the initial capture;
+	     this is good, since initialization probably defines
+	     lots of key bindings */
+	  grab_key_all_windows(i,modmask);
+	}
+	fBoundKey = True;
       }
-      fBoundKey = True;
-    }
-  free(okey);
+  }
   SCM_REALLOW_INTS;
   if (!fBoundKey) {
     /* FIXGJB: prefer a better error mechanism allowing better
