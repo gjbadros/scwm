@@ -107,7 +107,7 @@ See also `prompt-color'."
 			(lambda ()
 			  (let* ((dialog (gtk-color-selection-dialog-new
 					  "Color Selection Dialog"))
-				 ((c (gdk-color-parse (gtk-entry-get-text entry)))))
+				 (c (gdk-color-parse (gtk-entry-get-text entry))))
 			    (if c
 				(gtk-color-selection-set-color
 				 (gtk-color-selection-dialog-colorsel dialog) c))
@@ -124,4 +124,4 @@ See also `prompt-color'."
 			     (gtk-color-selection-dialog-cancel-button dialog)
 			     "clicked" (lambda () (gtk-widget-destroy dialog)))
 			    (gtk-widget-show dialog))))
-    (list hbox (lambda () (make-color (gtk-entry-get-text entry))) entry)))
+    (list hbox (lambda () (maybe-make-color (gtk-entry-get-text entry))) entry)))
