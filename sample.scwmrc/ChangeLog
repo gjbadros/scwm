@@ -1,3 +1,8 @@
+Sat May  1 14:58:38 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use primopts. Comment out focus-change-warp-pointer
+	stuff since the race is too annoying.
+
 Fri Apr 30 16:52:34 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added focus-change-warp-pointer to warp the pointer
