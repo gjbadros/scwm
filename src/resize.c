@@ -731,25 +731,19 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   return True;
 }
 
-
-SCWM_PROC(interactive_resize, "interactive-resize", 0, 2, 0,
-          (SCM win, SCM opaque_p))
-     /** Resize WIN interactively.
+SCWM_PROC(rubber_band_resize, "rubber-band-resize", 0, 1, 0,
+          (SCM win))
+     /** Resize WIN interactively, using a rubber band frame.
 This allows the user to drag a rubber band frame to set the size of
 the window. WIN defaults to the window context in the usual way if not
-specified. If OPAQUE? is #t, the resize will be done
-"opaquely", moving the actual X window, if #f a rubberband will be
-used instead to save on server computation (note that the rubberband
-requires a server "grab" which means that nothing else changes on
-screen while the non-opaque resize takes place. */
-#define FUNC_NAME s_interactive_resize
+specified. */
+#define FUNC_NAME s_rubber_band_resize
 {
   ScwmWindow *psw;
   int width, height;            /* not used, now */
   Bool fOpaque;
 
   VALIDATE_PRESS_ONLY(win, FUNC_NAME);
-  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fOpaque,opaque_p,2,FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
   if (check_allowed_function(F_RESIZE, psw) == 0
@@ -761,7 +755,40 @@ screen while the non-opaque resize takes place. */
     return SCM_BOOL_F;
   }
 
-  InteractiveResize(psw, fOpaque, &width, &height);
+  InteractiveResize(psw, False, &width, &height);
+  /* FIXGJB: return the new size */
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+
+SCWM_PROC(opaque_resize, "opaque-resize", 0, 1, 0,
+          (SCM win))
+     /** Resize WIN interactively, opaquely.
+This allows the user to drag the boundaries of the window to set its
+size. WIN defaults to the window context in the usual way if not
+specified. The window is updated immediately as the size changes take
+place. */
+
+#define FUNC_NAME s_opaque_resize
+{
+  ScwmWindow *psw;
+  int width, height;            /* not used, now */
+
+  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  if (check_allowed_function(F_RESIZE, psw) == 0
+      || SHADED_P(psw)) {
+    return SCM_BOOL_F;
+  }
+
+  if (psw->fIconified) {
+    return SCM_BOOL_F;
+  }
+
+  InteractiveResize(psw, True, &width, &height);
   /* FIXGJB: return the new size */
   return SCM_UNSPECIFIED;
 }

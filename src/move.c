@@ -623,26 +623,36 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
 }
 
 
-SCWM_PROC(interactive_move, "interactive-move", 0, 2, 0,
-          (SCM win, SCM opaque_p))
-     /** Move WIN interactively.
-This allows the user to drag a rubber band frame or the window itself
-around the screen. WIN defaults to the window context in the
-usual way if not specified.  If OPAQUE? is #t, the move will be done
-"opaquely", moving the actual X window, if #f a rubberband will be
-used instead to save on server computation (note that the rubberband
-requires a server "grab" which means that nothing else changes on
-screen while the non-opaque move takes place. */
-#define FUNC_NAME s_interactive_move
+SCWM_PROC(rubber_band_move, "rubber-band-move", 0, 1, 0,
+          (SCM win))
+     /** Move WIN interactively, using a rubber band frame.
+This allows the user to drag a rubber band frame around the
+screen. WIN defaults to the window context in the usual way if not
+specified. */
+#define FUNC_NAME s_rubber_band_move
 {
-  ScwmWindow *psw;
   int x, y;                     /* not used now */
-  Bool fOpaque;
 
   VALIDATE_PRESS_ONLY(win, FUNC_NAME);
-  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fOpaque,opaque_p,2,FUNC_NAME);
-  psw = PSWFROMSCMWIN(win);
-  InteractiveMove(psw, fOpaque, &x, &y);
+  InteractiveMove(PSWFROMSCMWIN(win), False, &x, &y);
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(opaque_move, "opaque-move", 0, 1, 0,
+          (SCM win))
+     /** Move WIN interactively, opaquely.
+This allows the user to drag the window itself around the screen. WIN
+defaults to the window context in the usual way if not specified.  
+*/
+#define FUNC_NAME s_opaque_move
+{
+  int x, y;                     /* not used now */
+
+  VALIDATE_PRESS_ONLY(win, FUNC_NAME);
+  InteractiveMove(PSWFROMSCMWIN(win), True, &x, &y);
 
   return SCM_UNSPECIFIED;
 }
