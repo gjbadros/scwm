@@ -337,8 +337,14 @@ This positions the popup menu appropriately."
 ;; We need accessors for window background information,
 ;; and window-hilight background information
 (define*-public (flash-window win #&optional (color (make-color "red")))
-  (set-window-background! color win)
-  (add-timer-hook! (sec->usec .5) (lambda () (set-window-background! "grey76" win))))
+  (let ((old-bg (cadr (get-window-colors win)))
+	(old-hi-bg (cadr (get-window-highlight-colors win))))
+    (set-window-background! color win)
+    (set-window-highlight-background! color win)
+    (add-timer-hook! (sec->usec .5) 
+		     (lambda () 
+		       (set-window-background! old-bg win)
+		       (set-window-highlight-background! old-hi-bg win)))))
 
 
 (define-public (make-string-usable-for-resource-key string)
