@@ -1,3 +1,8 @@
+Fri Aug  6 12:26:55 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use flash-window-on, not flash-window, for
+	show-xterm-window-list-menu. 
+
 Sat Jul 31 19:33:32 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added some snippets from Bruno Daniel for wheel mice.

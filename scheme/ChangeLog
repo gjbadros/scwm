@@ -1,3 +1,8 @@
+Fri Aug  6 12:24:17 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm: Make hover-delay default to 0, not #f, in
+	show-window-list-menu.
+
 Tue Aug  3 16:31:48 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* modifier-key-bindings.scm: Added unbind-* procedures to undo the 

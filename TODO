@@ -29,14 +29,12 @@ See also doc/dev/scwm-1.0-release-todo
 
 * window style options dialog ala KDE
 
-* multi-window animated move/resize
+* multi-window animated move/resize; scheme level slower, not-synchronous, anim. move/resize
 
 * separate frame-size and client-size; introduce client-offset window parameter
 -> like fvwmscroll
 
 * make gravity of windows visible somehow
-
-* permit normal bindings to move groups
 
 * Why did I have to do "cd libtool-1.3.2; cp libtool.m4 /usr/share/aclocal" to get "aclocal" to run on alpha? -- aclocal running gave "AM_PROG_LIBTOOL not found"
 
@@ -55,12 +53,10 @@ See also doc/dev/scwm-1.0-release-todo
 
 * WM_HINTS update on gravity change
 
-* bug fixes -- especially test on Solaris/ Solaris displays...
-
 * beta testing
 Maciej has access to ensure it builds and runs on Linux, NetBSD, Irix,
 Solaris and SunOS.  On each of this try compiling and running guile-1.3.1
-(should we test both w/ and w/o threads?)
+(should we test both w/ and w/o threads?);  see BUILD-PLATFORMS
 
 After Scwm 1.0:
 
