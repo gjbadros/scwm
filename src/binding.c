@@ -136,6 +136,7 @@ possibly no modifiers. *- may not be combined with any other modifier.  */
 static const char *
 PchModifiersToModmask(const char *pch, int *pmodifier, const char *func_name, Bool allow_any_p)
 {
+  static char szUnboundModifiers[17] = "";
   int modmask = 0;
   Bool fError = False;
   Bool fShowError = False;
@@ -202,8 +203,14 @@ PchModifiersToModmask(const char *pch, int *pmodifier, const char *func_name, Bo
       return NULL;
     }
     if (fShowError) {
-      scwm_msg(WARN,func_name,"Unbound modifier %c-",
-	       pch[0]);
+      /* Only report unbound modifiers once */
+      if (NULL == strchr(szUnboundModifiers,pch[0])) {
+        int cch = strlen(szUnboundModifiers);
+        scwm_msg(WARN,func_name,"Unbound modifier %c-",
+                 pch[0]);
+        szUnboundModifiers[cch++] = pch[0];
+        szUnboundModifiers[cch] = '\0';
+      }
       fShowError = False;
     }
     /* go to next char, skipping over '-' if necessary */
@@ -1653,6 +1660,7 @@ init_pointer_mapping(void)
 
 void
 init_modifiers(void)
+#define FUNC_NAME "init_modifiers"
 {
   int i, j, num;
   XModifierKeymap *mod;
@@ -1714,10 +1722,10 @@ init_modifiers(void)
         }
       }
       if (numlock_mask == 0) {
-        scwm_msg(INFO,"init_modifiers", "No numlock_mask was found.");
+        scwm_msg(INFO,FUNC_NAME, "No numlock_mask was found.");
       }
       if (scrollock_mask == 0) {
-        scwm_msg(INFO,"init_modifiers", "No scrollock_mask was found.");
+        scwm_msg(INFO,FUNC_NAME, "No scrollock_mask was found.");
       }
       mask_mod_combos[im++] = LockMask;
       if (numlock_mask) {
@@ -1739,6 +1747,7 @@ init_modifiers(void)
     XFreeModifiermap(mod);
   }
 }
+#undef FUNC_NAME
 
 void 
 init_binding(void)
