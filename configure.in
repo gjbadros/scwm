@@ -130,8 +130,16 @@ AC_SUBST(READLINE_LIB)
 
 dnl # Guile checks #
 
-GUILE_LIBS_PRE="-L${exec_prefix}/lib"
-GUILE_INCLUDES="-I${prefix}/include"
+if test "x$exec_prefix" = "xNONE"; then
+	GUILE_LIBS_PRE="-L$ac_default_prefix/lib"
+else
+	GUILE_LIBS_PRE="-L$exec_prefix/lib"
+fi
+if test "x$prefix" = "xNONE"; then
+	GUILE_INCLUDES="-L$ac_default_prefix/include"
+else
+	GUILE_INCLUDES="-L$prefix/include"
+fi
 
 AC_ARG_WITH(guile-prefix,
 [  --with-guile-prefix=DIR Expect guile to be installed in DIR [optional]],
