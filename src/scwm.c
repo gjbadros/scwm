@@ -154,6 +154,7 @@ ScwmWindow *FocusOnNextTimeStamp = NULL;
 
 Bool debugging = False, PPosOverride = False, Blackout = False;
 Bool fDisableBacktrace = False;
+Bool fDocumentPrimitiveFormals = True;
 Bool segvs_to_reset = 100;
 Bool fHandleSegv = True;
 
@@ -685,6 +686,9 @@ instead of reading from ".scwmrc" or "system.scwmrc". Multiple -e and
 will be processed in the order in which they were specified.</seg>
 </seglistitem><seglistitem>
 
+<seg/-N or --no-document-formals/ <seg/do not document formal parameters of primitives./
+</seglistitem><seglistitem>
+
 <seg/-h or --help/ <seg/prints a usage message and exits./
 </seglistitem><seglistitem>
 
@@ -715,6 +719,7 @@ is probably of no use to you unless you're a session manager or debbuging.
       {"help", 0, NULL, 'h'},
       {"blackout", 0, NULL, 'b'},
       {"version", 0, NULL, 'V'},
+      {"no-document-formals", 0, NULL, 'N'},
       {"segv-reset-count", 1, NULL, 'p'},
       {"segv-just-stop", 0, NULL, 'P'},
       {"nobacktrace", 0, NULL, 'n'}, /* turns off guile backtraces */
@@ -752,6 +757,8 @@ is probably of no use to you unless you're a session manager or debbuging.
       }
     case 'n':
       fDisableBacktrace = True; break;
+    case 'N':
+      fDocumentPrimitiveFormals = False; break;
     case 'f':
       if(optarg == NULL) {
         option_error=True;
@@ -1591,16 +1598,11 @@ scwm_make_gsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char 
     sym_arglist = scm_permanent_object(((scm_cell *)scm_intern0("arglist"))->car);
   { /* scope */
   SCM p = scm_make_gsubr(name,req,opt,var,fcn);
-#ifdef HAVE_SCM_MAKE_HOOK
-  /* GJB:FIXME:: a hack since only newer versions of guile get this
-     right-- with guile-1.3, I get a 
-ERROR: In expression (quote (vector)):
-ERROR: Unbound variable: quote
-     when loading the c-animation module */
-  SCM arglist = gh_eval_str(szArgList);
-  scm_permanent_object(arglist);
-  scm_set_procedure_property_x(p,sym_arglist,arglist);
-#endif
+  if (fDocumentPrimitiveFormals) {
+    SCM arglist = gh_eval_str(szArgList);
+    scm_permanent_object(arglist);
+    scm_set_procedure_property_x(p,sym_arglist,arglist);
+  }
   return p;
   }
 }
