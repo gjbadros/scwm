@@ -16,6 +16,7 @@
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
   :use-module (app scwm winops)
+  :use-module (app scwm cached-program-exists)
   :use-module (app scwm optargs))
 
 
@@ -194,6 +195,13 @@ Use the optional second argument as the separator."
   "Display the `system-info-string' system details in a window."
   (message (system-info-string)))
 
+;; FIXGJB: stop at tabs, too
+(define (first-word s)
+  "Return the first word of S (up to but not including first space char."
+  (let ((i (string-index s #\space)))
+    (if i (substring s 0 i) s)))
+;;(first-word "foo bar") => "foo"
+
 (define-public (make-menuitems-from-menu-information-list menu-info-list)
   "Return a list of menu-items from a list of detailed programs list.
 The format is subject to change.  See sample.scwmrc/gjb.scwmrc for
@@ -205,7 +213,7 @@ example usage."
 			   (mini-icon (cadr elem))
 			   (icon (caddr elem))
 			   (exename (cadddr elem)))
-		       (if (program-exists? exename)
+		       (if (cached-program-exists? (first-word exename))
 			   (menuitem
                             title #:action exename #:image-left
                             (if mini-icon
