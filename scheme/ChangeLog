@@ -1,3 +1,13 @@
+Sun Jul 18 01:31:32 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Get rid of add-timer-hook for describe-key;  fixed
+	`get-key-event' primitive instead.
+
+Sun Jul 18 00:33:42 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added `add-ms-timer-hook!' for convenience since usec
+	are almost never what I want.
+
 Sat Jul 17 23:58:52 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* dir-focus.scm: Some tweaks to make work better (some bugfixes,

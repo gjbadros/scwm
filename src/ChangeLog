@@ -1,3 +1,24 @@
+Sun Jul 18 01:41:54 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* add_window.c (AddWindow): Move the windows to their correct
+	viewport (from last shutdown) later than before so that sticky
+	windows are correctly identified.
+
+	* binding.c (s_lookup_procedure_bindings): Permit #f as PROC to
+ 	return all bindings (really simple generalization). Provide better
+ 	warning regarding punctuation when a binding fails because of an
+ 	unmatched keysym name.
+
+	* scwm.c (SigResetLoop): UngrabServer, Pointer, Keyboard when
+	resetting to the event handler.
+
+	* miscprocs.c: Added `get-mouse-event'.  Change `get-key-event' to
+ 	look for a KeyPress of a non-modifier key, not a KeyRelease, so
+ 	that I don't need to use a timer hook to test (and because it
+ 	seems better that way, anyway-- it's probably going to be bound to
+ 	a keystroke which needs to be released and we don't want the
+ 	release event.)
+
 Sat Jul 17 23:04:49 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xproperty.c (s_X_property_get): Fix bug in that GetXProperty
