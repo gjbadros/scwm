@@ -1,3 +1,9 @@
+Thu Dec  3 20:42:19 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* gjb.scwmrc, sds.scwmrc: Replace us of
+ 	interactive-move-maybe-opaque with interactive-move and
+ 	interactive-resize-maybe-opaque with interactive-resize.
+
 1998-11-21  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* robbe.scwmrc: Highlight colors changed once again.

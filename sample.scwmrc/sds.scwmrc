@@ -577,7 +577,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;; some stuff for icons
 (define (move-or-deiconify)
   (case (mouse-event-type)
-    ((motion) (interactive-move-maybe-opaque))
+    ((motion) (interactive-move))
     ((double-click) (deiconify))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
@@ -585,8 +585,8 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (bind-mouse 'icon 3 popup-small-ops)
 
 (bind-mouse 'all "H-1" toggle-raise)
-(bind-mouse 'all "H-2" interactive-move-maybe-opaque)
-(bind-mouse 'all "H-3" interactive-resize-maybe-opaque)
+(bind-mouse 'all "H-2" interactive-move)
+(bind-mouse 'all "H-3" interactive-resize)
 
 ;;; -----------------
 ;;; Title bar buttons
