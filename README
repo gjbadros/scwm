@@ -1,5 +1,5 @@
 
-SCWM 0.1
+SCWM 0.2
 
 This is an alpha release of scwm, the Scheme Configurable Window
 Manager. SCWM is (currently) a hack of FVWM 2 with the fvwm
@@ -10,15 +10,17 @@ eventually get the base binary smaller than fvwm2's, by removing the
 redundant functionality and replacing it with simpler primitives, and
 also by placing some features in dynamically loadable shared libraries.
 
-This second alpha release implements nearly all useful fvwm2
-functions, and fixes most of the serious bugs with the last
-release. The only major functionality still missing is: most of the
-style commands, all of the decor commands, and everything related to
-modules. Modules will probably never be implemented, because I have
-better ways to provide the same functionality. Styles and Decors will
-be supported by the next release. This release, although labelled
-alpha, should be pretty stable and moderately useful. I regularly use
-scwm as my window manager now.
+This third alpha release implements nearly all useful fvwm2 functions,
+and fixes some of the bugs from the last release. The only major
+functionality still missing is: the button, title and border style
+commands, all of the decor commands, and everything related to
+modules. FVWM Modules will probably never be implemented, because I
+have better ways to provide similar functionality. The other style
+stuff and Decors will be supported in the near future. An interactive
+repl is available through the -i command-line option. This release,
+although labelled alpha, should be pretty stable and moderately
+useful. I've regularly used scwm as my window manager for about a
+month now.
 
 I've only tried compiling it on i386-unknown-linux, but any platform
 that both fvwm2 and guile will build on should work. You need to have
@@ -33,9 +35,14 @@ However, the system.scwmrc is not very interesting right now. If you
 think of neat hacks for it, pass them along to me. If people even want
 to work on the windowmanager itself, that's cool too.
 
+Things to look for in the near future include: a start on cleaning up
+the many leftover fvwm-isms in the code, more style and decor stuff,
+and a start on integrating guile-gtk so that you can create your own
+arbitrary gui elements.
+
 The copyright for the code in the scwm and libs subdirectories is the
 fvwm copyright, which may be found in COPYING.FVWM. Several files may
-have a slightly different copyright, or have be copyright by me. The
+have a slightly different copyright, or be under my copyright. The
 files in the scheme directory are under GPL (see scheme/COPYING). The
 files in the doc directory are all under the copyright specified by
 doc/COPYRIGHT.DOC.

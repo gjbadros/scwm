@@ -2,6 +2,25 @@ Guile NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997 Maciej Stachowiak.
 See the end for copying conditions.
 
+Changes to scwm-0.2
+
+Autoconf configurability. No more futzing with imake, now you can just
+./configure; make; make install.
+
+Command line option support including interactive mode (scwm -i) which
+reads your .scwrc and then gives you a read-eval-print loop with the
+window manager. A recent snapshot of guile is needed for this to work
+(but that should no longer be necessary in the next scwm release).
+
+Fvwm2 Style command implemented (in a way that lets you change
+[almost] any style option dynamically per window). User extensions to
+the style command are also possible. Several non-fvwm style options
+(e.g. start-maximize, start-window-shaded) are already available. See
+the (app scwm style) module.
+
+Improvements to the system.scwmrc file enabled by the implementation
+of styles, and from user suggestions.
+
 Changes to scwm-0.1
 
 All fvwm2 functionality except styles, decors and modules is
