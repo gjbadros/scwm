@@ -1,3 +1,7 @@
+1999-10-27  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* xprop-extras.scm (X-properties->string): Harmful line deleted.
+
 Tue Oct 26 17:13:37 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwm_common_scheme): Added snap-constraints.scm
