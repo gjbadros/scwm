@@ -380,8 +380,10 @@ MoveViewport_internal(int newx, int newy, Bool grab)
   for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
     /* do not bother with moving windows not on the current desk */
     if (psw->Desk == Scr.CurrentDesk) {
-      MovePswToCurrentPosition(psw);
-      MovePswIconToCurrentPosition(psw);
+      if (psw->fIconified)
+        MovePswIconToCurrentPosition(psw);
+      else
+        MovePswToCurrentPosition(psw);
     } else {
       BroadcastConfig(M_CONFIGURE_WINDOW, psw);
     }
@@ -430,6 +432,7 @@ changeDesks(int val1, int val2)
 	  psw->FocusDesk = -1;
 	UnmapScwmWindow(psw);
       } else if (psw->Desk == Scr.CurrentDesk) {
+        MovePswToCurrentPosition(psw);
 	MapIt(psw);
 	if (psw->FocusDesk == Scr.CurrentDesk) {
 	  FocusWin = psw;
@@ -447,12 +450,13 @@ changeDesks(int val1, int val2)
   XUngrabServer_withSemaphore(dpy);
   for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
     /* If its an icon, and its sticking, autoplace it so
-     * that it doesn'psw wind up on top a a stationary
-     * icon */
+       that it doesn't wind up on top of a stationary icon */
     if ((psw->fSticky || psw->fStickyIcon) &&
 	psw->fIconified && !psw->fIconMoved && 
   	!psw->fIconUnmapped) {
       AutoPlace(psw);
+    } else if (psw->fIconified) {
+      MovePswIconToCurrentPosition(psw);
     }
   }
 
