@@ -637,8 +637,7 @@ SCWM_PROC(interactive_move, "interactive-move", 0, 2, 0,
           (SCM win, SCM opaque_p))
      /** Move WIN interactively.
 This allows the user to drag a rubber band frame or the window itself
-around the screen (depending on the setting of `set-opaque-move-size!'
-and drop it where desired). WIN defaults to the window context in the
+around the screen. WIN defaults to the window context in the
 usual way if not specified.  If OPAQUE? is #t, the move will be done
 "opaquely", moving the actual X window, if #f a rubberband will be
 used instead to save on server computation (note that the rubberband

@@ -129,31 +129,58 @@ SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC (window_clv_x, "window-clv-x", 1, 0, 0,
+SCWM_PROC (window_clv_xl, "window-clv-xl", 1, 0, 0,
            (SCM window))
-     /** Return the cl-variable object for the X coordinate of WINDOW.
+     /** Return the cl-variable object for the left X coordinate of WINDOW.
       */
-#define FUNC_NAME s_window_clv_x
+#define FUNC_NAME s_window_clv_xl
 {
   if (!WINDOWP(window)) scm_wrong_type_arg(FUNC_NAME,1,window);
   ScwmWindow const *const psw = PSWFROMSCMWIN(window); assert(psw);
   ScwmWindowConstraintInfo const *const pswci = psw->pswci; assert(pswci);
-  return pswci->_scmX;
+  return pswci->_scmXL;
 }
 #undef FUNC_NAME
 
-SCWM_PROC (window_clv_y, "window-clv-y", 1, 0, 0,
+SCWM_PROC (window_clv_yt, "window-clv-yt", 1, 0, 0,
            (SCM window))
-     /** Return the cl-variable object for the Y coordinate of WINDOW.
+     /** Return the cl-variable object for the top Y coordinate of WINDOW.
       */
-#define FUNC_NAME s_window_clv_y
+#define FUNC_NAME s_window_clv_yt
 {
   if (!WINDOWP(window)) scm_wrong_type_arg(FUNC_NAME,1,window);
   ScwmWindow const *const psw = PSWFROMSCMWIN(window); assert(psw);
   ScwmWindowConstraintInfo const *const pswci = psw->pswci; assert(pswci);
-  return pswci->_scmY;
+  return pswci->_scmYT;
 }
 #undef FUNC_NAME
+
+SCWM_PROC (window_clv_xr, "window-clv-xr", 1, 0, 0,
+           (SCM window))
+     /** Return the cl-expression object for the right X coordinate of WINDOW.
+      */
+#define FUNC_NAME s_window_clv_xr
+{
+  if (!WINDOWP(window)) scm_wrong_type_arg(FUNC_NAME,1,window);
+  ScwmWindow const *const psw = PSWFROMSCMWIN(window); assert(psw);
+  ScwmWindowConstraintInfo const *const pswci = psw->pswci; assert(pswci);
+  return pswci->_scmXR;
+}
+#undef FUNC_NAME
+
+SCWM_PROC (window_clv_yb, "window-clv-yb", 1, 0, 0,
+           (SCM window))
+     /** Return the cl-expression object for the bottom Y coordinate of WINDOW.
+      */
+#define FUNC_NAME s_window_clv_yb
+{
+  if (!WINDOWP(window)) scm_wrong_type_arg(FUNC_NAME,1,window);
+  ScwmWindow const *const psw = PSWFROMSCMWIN(window); assert(psw);
+  ScwmWindowConstraintInfo const *const pswci = psw->pswci; assert(pswci);
+  return pswci->_scmYB;
+}
+#undef FUNC_NAME
+
 
 SCWM_PROC (window_clv_width, "window-clv-width", 1, 0, 0,
            (SCM window))

@@ -50,10 +50,19 @@ public:
       _frame_width.setPv(psw);
       _frame_height.setPv(psw);
       SCM_DEFER_INTS;
-      scm_protect_object(_scmX = ScmMakeClVariable(&_frame_x));
-      scm_protect_object(_scmY = ScmMakeClVariable(&_frame_y));
+      scm_protect_object(_scmXL = ScmMakeClVariable(&_frame_x));
+      scm_protect_object(_scmYT = ScmMakeClVariable(&_frame_y));
       scm_protect_object(_scmWidth = ScmMakeClVariable(&_frame_width));
       scm_protect_object(_scmHeight = ScmMakeClVariable(&_frame_height));
+
+      ClLinearExpression *pexprXR = new ClLinearExpression(_frame_x);
+      pexprXR->addVariable(_frame_width);
+      scm_protect_object(_scmXR = ScmMakeClLinearExpression(pexprXR));
+
+      ClLinearExpression *pexprYB = new ClLinearExpression(_frame_y);
+      pexprYB->addVariable(_frame_height);
+      scm_protect_object(_scmYB = ScmMakeClLinearExpression(pexprYB));
+
       SCM_ALLOW_INTS;
     }
 
@@ -143,8 +152,8 @@ public:
   ClVariable _frame_y;
   ClVariable _frame_width;
   ClVariable _frame_height;
-  SCM _scmX;
-  SCM _scmY;
+  SCM _scmXL, _scmXR;
+  SCM _scmYT, _scmYB;
   SCM _scmWidth;
   SCM _scmHeight;
 };

@@ -1897,11 +1897,13 @@ not specified. */
     /* need to reset the client window offset so that if
        if it's un-window-shaded w/o animation, things are ok */
     XMoveWindow(dpy,psw->w,0,0);
-  } else {
+  } /* else { FIXGJB: ideally, avoid this call when animated,
+     but we need it to ensure that different combinations of 
+     animated/unanimated shading do the right thing */
     SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), FRAME_WIDTH(psw),
                psw->title_height + psw->boundary_width, False, 
                NOT_MOVED, WAS_RESIZED);
-  }
+    /*  } */
 
   CoerceEnterNotifyOnCurrentWindow();
   Broadcast(M_WINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
@@ -1945,11 +1947,13 @@ window context in the usual way if not specified. */
   SET_UNSHADED(psw);
   if (fAnimated) {
     AnimatedShadeWindow(psw,False /* !roll up */, -1, NULL);
-  } else {
+  } /* else { FIXGJB: ideally, avoid this call when animated,
+     but we need it to ensure that different combinations of 
+     animated/unanimated shading do the right thing */
     SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), 
                psw->orig_width, psw->orig_height, True,
                NOT_MOVED, WAS_RESIZED);
-  }
+    /*  } */
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
