@@ -55,5 +55,5 @@
 (bind-event 'new-window-hint (lambda () (set-random-placement!
 					 #t)
 				     (set-smart-placement! #t)))
-(bind-mouse 'root 1 (lambda () (popup default-menu)))
+(bind-mouse 'root 1 (lambda () (popup-menu default-menu)))
 
