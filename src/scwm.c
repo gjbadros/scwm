@@ -1311,12 +1311,18 @@ CaptureAllWindows(void)
 	}
       }
     }
-    /* map all of the non-override, non-icon windows */
+    /* map all of the non-override, non-icon windows,
+       non message-window windows */
     for (i = 0; i < (int) nchildren; i++) {
       if (children[i] && MappedNotOverride(children[i])) {
-	XUnmapWindow(dpy, children[i]);
-	Event.xmaprequest.window = children[i];
-	HandleMapRequestKeepRaised(BlackoutWin);
+        XPointer msg = NULL;
+        /* only continue if not a message window */
+        if ( XFindContext(dpy, children[i],
+                          MsgWindowContext, &msg) != 0 || msg == NULL ) {
+          XUnmapWindow(dpy, children[i]);
+          Event.xmaprequest.window = children[i];
+          HandleMapRequestKeepRaised(BlackoutWin);
+        }
       }
     }
     Scr.fWindowsCaptured = True;

@@ -5,6 +5,7 @@
 
 (define-module (app scwm lambda-startup-logo)
   :use-module (app scwm optargs)
+  :use-module (app scwm base)
   :use-module (app scwm message-window))
 
 (define scwm-logo (make-image "scwm-logo-0.xpm"))
@@ -24,7 +25,7 @@
 
 (define*-public (logo-setup #&optional (should-rotate #f))
   (if (not scwm-logo)
-      (error "Scwm logo image not found!"))
+      (image-not-found-message "scwm-logo-0.xpm"))
   (set! scwm-logo-msgwin 
 	(make-message-window-with-image scwm-logo #t))
   (set-X-server-synchronize! #t)

@@ -66,7 +66,7 @@
 	      ))
 
 (define linux-hosts
-  '( uni oz saba awabi hirmae nishin sake pugsly squiggy kani))
+  '( uni oz saba awabi hirmae nishin sake pugsly squiggy kani sodium))
 
 (define solaris-hosts
   '( tolt elwha chiwawa demille fielder froggie hammahamma hoobes hoh rhodes twain))
@@ -694,7 +694,7 @@ from other processes.
 	 )))
 
 ;; (popup-menu menu-hosts #t)
-(define (make-hosts-menu-gjb hosts)
+(define (make-hosts-menu hosts)
   (cons menu-separator
 	(fold-menu-list
 	 (map
@@ -702,25 +702,25 @@ from other processes.
 	    (menuitem elem #:image-left "mini-display.xpm" #:action (xterm-other-host elem)))
 	  hosts))))
 
-(define menu-hosts-servers
+(define (menu-hosts-servers)
   (menu (cons
 	 (menu-title "Hosts (Servers)") 
-	 (make-hosts-menu-gjb server-hosts))))
+	 (make-hosts-menu server-hosts))))
 
-(define menu-hosts-linux
+(define (menu-hosts-linux)
   (menu (cons
 	 (menu-title "Hosts (Linux)") 
-	 (make-hosts-menu-gjb linux-hosts))))
+	 (make-hosts-menu linux-hosts))))
 
-(define menu-hosts-solaris
+(define (menu-hosts-solaris)
   (menu (cons
 	 (menu-title "Hosts (Solaris)") 
-	 (make-hosts-menu-gjb solaris-hosts))))
+	 (make-hosts-menu solaris-hosts))))
 
-(define menu-hosts-other
+(define (menu-hosts-other)
   (menu (cons
 	 (menu-title "Hosts (Other)") 
-	 (make-hosts-menu-gjb other-hosts))))
+	 (make-hosts-menu other-hosts))))
 
 (define menu-preferences-scroll
   (menu (list
@@ -733,9 +733,7 @@ from other processes.
 	 (menuitem "&Partial 1/2" #:action (lambda () (set-edge-scroll 50 50)))
 	 (menuitem "Partial 1/&4" #:action (lambda () (set-edge-scroll 25 25))))))
 
-;; (popup-menu (menu-prefs) #t)
-
-(define menu-prefs-gjb
+(define menu-preferences
   (menu (list (menu-title "Preferences") menu-separator
 	      (menuitem "Change background color..."
 			#:action (lambda () 
@@ -752,8 +750,6 @@ from other processes.
 			(run-in-xterm "scwmrepl"))
 	      (menuitem "Info on a window" #:action window-info))))
 
-(define menu-preferences menu-prefs-gjb)
-
 (define menu-screensaver
   (make-xlock-menu #f))
 
@@ -765,35 +761,35 @@ from other processes.
     (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
 	      #:action 'start-xterm)
     (menuitem "&Applications" #:image-left "mini-x2.xpm" 
-	      #:action 'menu-applications)
+	      #:submenu 'menu-applications)
     (menuitem "&Utilities" #:image-left "mini-hammer.xpm" 
-	      #:action 'menu-utilities)
+	      #:submenu 'menu-utilities)
     (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm" 
-	      #:action 'menu-multimedia)
+	      #:submenu 'menu-multimedia)
     (menuitem "&Games" #:image-left "mini-happy.xpm" 
-	      #:action 'menu-games)
+	      #:submenu 'menu-games)
     (menuitem "Constraint sol&ver" #:image-left pic-lambda-mini
 	      #:submenu 'menu-constraints)
     menu-separator
     (menuitem "H&osts - Servers" #:image-left "mini-term.xpm" 
-	      #:action 'menu-hosts-servers)
+	      #:submenu menu-hosts-servers)
     (menuitem "Hosts - Linux" #:image-left "mini-term.xpm" 
-	      #:action 'menu-hosts-linux)
+	      #:submenu menu-hosts-linux)
     (menuitem "Hosts - Solaris" #:image-left "mini-term.xpm" 
-	      #:action 'menu-hosts-solaris)
+	      #:submenu menu-hosts-solaris)
     (menuitem "Hosts - Other" #:image-left "mini-term.xpm" 
-	      #:action 'menu-hosts-other)
+	      #:submenu menu-hosts-other)
     menu-separator
     (menuitem "&Window Operations" #:image-left "mini-zoom.xpm" 
 	      #:submenu menu-window-ops)
     (menuitem "Windows lis&t" #:image-left "mini-windows.xpm" 
-	      #:submenu (lambda () (make-window-list-menu)))
+	      #:submenu make-window-list-menu)
     (menuitem "Windows by &resource" #:image-left "mini-windows.xpm" 
 	      #:submenu (lambda () (make-window-list-menu #:by-resource #t)))
     menu-separator
     (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
     (menuitem "Other &Preferences" #:image-left "mini-prefs.xpm" 
-	      #:action 'menu-prefs-gjb)
+	      #:action 'menu-preferences)
     (menuitem "A&bout Scwm" #:image-left "mini-exclam.xpm" 
 	      #:action (thunk scwm-about-message))
     (menuitem "&Help Scwm" #:image-left "mini-question.xpm" 

@@ -345,7 +345,8 @@
 	          (write mask)
 	          (newline)
 		  (display "(logand type mask): ")
-		  (write (logand type mask))))
+		  (write (logand type mask))
+		  (newline)))
 
 	   (if (not (zero? (logand type mask)))
 	       (fvwm2-module-send-packet 

@@ -840,3 +840,10 @@ which case the height is just the titlebar height."
     (if (shaded-window? win)
 	(list (car size) (cadr (window-decoration-size win)))
 	(window-frame-size win))))
+
+(define-public (image-not-found-message filename)
+  "Report a missing image filename, but do not error."
+  (display (string-append "Could not find image `" filename 
+			  "' --- perhaps your image-load-path is wrong "
+			  "or you need to install scwm/pixmaps or the "
+			  "scwm-icons package?")))

@@ -60,7 +60,12 @@ window-selection and constraints modules."
   (newline))
 
 (define interactive-mark-nonant-msgwin
-  (make-message-window-with-image (make-image "anchor.xpm")))
+  (let ((img (make-image "anchor.xpm")))
+    (if img
+	(make-message-window-with-image img)
+	(begin
+	  (image-not-found-message "anchor.xpm")
+	  (make-message-window-clone-default "<>")))))
 
 ;;(message-window-show! interactive-mark-nonant-msgwin)
 ;;(message-window-hide! interactive-mark-nonant-msgwin)

@@ -398,7 +398,7 @@ of procedures that are needed by the Emacs interface to Scwm."
 ;; ----------
 
 (defun scwm-use-session ()
-  "Have Scwm use the ice-9 session module.
+  "Have Scwm use the modules it needs for Emacs interaction.
 This is needed for some commands such as apropos and apropos-internal.
 apropos-internal is used for completion, too"
   (scwm-eval "(use-scwm-modules (ice-9 session) doc session reflection)" nil))
@@ -462,7 +462,7 @@ Returns a string which is present in the `scwm-obarray'."
   (save-excursion
     (search-forward mail-header-separator nil t) (forward-line 1)
     (call-process "uname" nil t nil "-a")
-    (scwm-eval "(use-modules (app scwm session reflection))" nil)
+    (scwm-use-session)
     (let ((pos (point)))
       (scwm-eval "(system-info-string)" t)
       (delete-char -1) (goto-char pos) (delete-char 1))))

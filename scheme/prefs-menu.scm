@@ -39,6 +39,9 @@
 
 
 
+(display "The prefs-menu module is deprecated... \
+use the preferences module instead!\n")
+
 (define-public save-header
   ";; text from here to the EOF is overwritten by `save-settings'.")
 ;; ignore above string -- it refers to text occurring elsewhere
