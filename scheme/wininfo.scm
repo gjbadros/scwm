@@ -269,7 +269,7 @@ See `wildcard-matcher' for the meanings of FULL-REGEXP and REGEXP-OPTIONS."
 
 (define-string-matcher title-match?? 
   "Return a predicate that tests a window's title.  
-When applied to a window, this precicate will return true if the title
+When applied to a window, this predicate will return true if the title
 matches STRING in the manner specified by the optional argument TYPE,
 which may be 'exact, 'regexp, or 'wildcard. The optional
 CASE-SENSITIVE argument determines whether the matching is
@@ -278,7 +278,7 @@ case-sensitive or not."
 
 (define-string-matcher class-match?? 
   "Return a predicate that tests a window's resource class.  
-When applied to a window, this precicate will return true if the
+When applied to a window, this predicate will return true if the
 resource class matches STRING in the manner specified by the optional
 argument TYPE, which may be 'exact, 'regexp, or 'wildcard. The
 optional CASE-SENSITIVE argument determines whether the matching is
@@ -287,7 +287,7 @@ case-sensitive or not."
 
 (define-string-matcher resource-match?? 
   "Return a predicate that tests a window's resource instance.  
-When applied to a window, this precicate will return true if the
+When applied to a window, this predicate will return true if the
 resource instance matches STRING in the manner specified by the
 optional argument TYPE, which may be 'exact, 'regexp, or
 'wildcard. The optional CASE-SENSITIVE argument determines whether the
@@ -296,7 +296,7 @@ matching is case-sensitive or not."
 
 (define-string-matcher icon-title-match?? 
   "Return a predicate that tests a window's icon title.  
-When applied to a window, this precicate will return true if the icon
+When applied to a window, this predicate will return true if the icon
 title matches STRING in the manner specified by the optional argument
 TYPE, which may be 'exact, 'regexp, or 'wildcard. The optional
 CASE-SENSITIVE argument determines whether the matching is
@@ -305,7 +305,7 @@ case-sensitive or not."
 
 (define-string-matcher client-hostname-match?? 
   "Return a predicate that tests a window's client hostname.  
-When applied to a window, this precicate will return true if the
+When applied to a window, this predicate will return true if the
 client hostname matches STRING in the manner specified by the optional
 argument TYPE, which may be 'exact, 'regexp, or 'wildcard. The
 optional CASE-SENSITIVE argument determines whether the matching is
