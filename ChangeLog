@@ -1,5 +1,7 @@
 Tue Nov 17 01:56:17 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* Version 0.9beta1 released.
+
 	* configure.in: Bumped version to 0.9beta1
 
 	* ANNOUNCE, NEWS: Updated for 0.9beta1
