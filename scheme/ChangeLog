@@ -1,3 +1,14 @@
+Tue Sep 28 13:16:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* register.scm: Fix type "Emacs"->"Scwm".
+
+	* flux.scm: Move `add-left-button', `add-right-button' from
+	system.scwmrc, added `reset-buttons!'
+
+	* stylist.scm: Use hbutton-box for widgets along bottom, fix
+	`run-hooks' to `run-hook'.  Add a menu-separator to the menu.  Now 
+	this is functional again.
+
 Mon Sep 27 15:19:41 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* undo.scm: Move bindings into system.scwmrc; they shouldn't be in 

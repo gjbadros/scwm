@@ -1,3 +1,7 @@
+Tue Sep 28 13:18:51 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Update name and copyright.
+
 Tue Sep 28 09:53:40 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* face.c: Update `set-button-face!'s docs to refer to
