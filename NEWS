@@ -4,24 +4,30 @@ See the end for copying conditions.
 
 Changes to scwm-0.9 (since 0.8)
 
-* New session-management-related primitives: (SM-client-id)(SM-error-message)
+* Numerous documentation fixes.
 
-* Numerous documentation fixes
+* Changed handling of window placement and desk selection. Placement
+procedures are now responsible for selecting the window's desktop and
+virtual position.
 
-* changed handling of window placement and desk selection
+* First-class message windows - it is now possible to use multiple
+persistent message windows with individual styling.
 
-* New virtual desktop utility functions
+* high-level interface to backgrounds in (app scwm desk-background)
+module.
 
-* First-class message windows
-
-* high-level interface to backgrounds
-
-* interactive-move/resize opaqueness handiling
-
-* tile
+* Interactive-move/resize opaqueness handling improved - it is now
+possible to specify a predicate on a window or a threshold size for 
 
 * Experimental quality interface with guile-gtk, plus a few incomplete
 sample modules for using it.
+
+* New session-management-related primitives, SM-client-id and
+SM-error-message.
+
+* New virtual desktop utility functions in (app scwm virtual)
+module. Snap-align desktops, moves window completely inside the
+current viewport, and more.
 
 * Extensive session management support for use with xsm or
 gnome-session; see doc/session-management.
@@ -124,6 +130,14 @@ atomicity, for instance).
 
 * (app scwm file) and (app scwm listops) modules added to abstract out
 common file and list operations.
+
+* (app scwm tile) module added to support tile rearangement.
+    tile-windows WINDOWS #&key START-POS END-POS RESIZE RAISE
+      MAX-WINDOWS ORDER
+			  
+    tile #&key ONLY EXCEPT BY-STACKING BY-FOCUS REVERSE ALL-VIEWPORTS
+      DESK IGNORE-DEFAULT-EXCEPTIONS START-POS END-POS RESIZE RESTACK
+      MAX-WINDOWS ORDER
 
 * (app scwm cascade) module added to let you cascade your windows
 automatically:

@@ -1,12 +1,12 @@
 Name: scwm
 Summary: A Scheme Configurable Window Manager.
-Version: 19990117
-Release: 1hjs
-Source: ftp://huis-clos.mit.edu/pub/scwm/scwm-%{PACKAGE_VERSION}.tar.gz
+Version: 0.9
+Release: 1
+Source: ftp://vicarious.mit.edu/pub/scwm/scwm-%{PACKAGE_VERSION}.tar.gz
 Group: X11/Window Managers
 BuildRoot: /tmp/scwmbuild
-Copyright: Copyright (C) 1997 Maciej Stachowiak.
-Packager: Harvey J. Stein <hjstein@bfr.co.il>
+Copyright: Copyright (C) 1997,1998,1999 Maciej Stachowiak, Greg J. Badros, et. al.
+Packager: Maciej Stachowiak <mstachow@alum.mit.edu>
 URL: http://vicarious-existence.mit.edu/scwm/
 
 %description
@@ -21,6 +21,10 @@ window manager while it is running.
 
 
 %changelog
+* Wed Jan 27 1999  Maciej Stachowiak  <mstachow@mit.edu>
+
+- Devolved for scwm 0.9 release.
+	
 * Thu Jul 31 1998 Harvey J. Stein <hjstein@bfr.co.il>
 
 - Updated Kjetil's release.
