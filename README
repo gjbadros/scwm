@@ -4,6 +4,11 @@ This is a beta release of
 
 Scwm, The Scheme Constraints Window Manager.
 
+  Written and maintained by:
+    Greg J. Badros <gjb@cs.washington.edu> and
+    Maciej Stachowiak <mstachow@alum.mit.edu>
+    and other (see AUTHORS)
+
 Web site: http://scwm.mit.edu/
 Ftp directory: ftp://scwm.mit.edu/pub/scwm/
 Online manual: http://www.cs.washington.edu/homes/gjb/scwm-doc/
@@ -18,9 +23,16 @@ specify constraints among top-level window sizes and positions.  Nearly
 all decorations can be changed at run-time on a per-window basis.
 Dynamic loading of C modules is supported.  Scwm is self-documenting and
 provides A powerful protocol for interacting with the window manager
-from other processes
+from other processes.
 
-Features scwm provides include:
+If you're reading this before 15-October-1999, please take time to
+submit your vote for Scwm as your favorite window manager at the Linux
+Journal's Reader's Choice awards:
+
+http://207.178.22.52/contest/readchoice.html
+
+
+Features Scwm provides include:
 
  o GNOME compatibility
  o GUI configurability
@@ -41,6 +53,7 @@ Features scwm provides include:
    (see README-constraints for more details and
     see http://www.cs.washington.edu/research/constraints/cassowary/
     for information about the solver)
+ o IBM ViaVoice voice recognition capabilities (only on x86 GNU/Linux)
 
 This release, although labeled beta, is reasonably stable and
 exceedingly useful.  Many individuals, including the developers, have
@@ -73,7 +86,3 @@ have a slightly different copyright, or be under our copyright. The
 files in the scheme directory are under GPL (see scheme/COPYING). The
 files in the doc directory are all under the copyright specified by
 doc/COPYRIGHT.DOC.
-
- - Greg J. Badros <gjb@cs.washington.edu> and
-   Maciej Stachowiak <mstachow@alum.mit.edu>
-
