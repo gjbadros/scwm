@@ -1209,8 +1209,10 @@ Repository Timestamp: %s\n",
      behaviour in scwmgtkhelper.c's restore_scwm_handlers */
   newhandler_doreset(SIGHUP);
   newhandler_doreset(SIGFPE);
-#ifdef SCWM_CATCH_SIGINT
+#ifdef SCWM_RESET_ON_SIGINT
   newhandler_doreset(SIGINT);
+#else
+  newhandler(SIGINT);
 #endif
   HandleEvents();
   DBUG((DBG,"main", "Back from HandleEvents loop?  Exitting..."));
