@@ -45,6 +45,8 @@ install:
 	${INSTALL_DATA} wininfo.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} winlist.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} winops.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} std-menus.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} wmconfig-menu.scm ${scwm_scheme_dir} 
 
 mostlyclean:
 	${RM} *~ core *.bak
