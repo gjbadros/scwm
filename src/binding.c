@@ -7,6 +7,7 @@
 #include <config.h>
 
 #include <guile/gh.h>
+#include <X11/keysym.h>
 #include "scwm.h"
 #include "screen.h"
 #include "window.h"
@@ -46,16 +47,18 @@ struct symnum binding_contexts[] =
   {SCM_UNDEFINED, 0}
 };
 
+static int MetaMask, AltMask, HyperMask, SuperMask;
 
 static char *
 PchModifiersToModmask(const char *pch, int *pmodifier)
 {
-  int modmask = 0;
+  int error, modmask = 0;
 
   while (True) {
     if (pch[1] != '-') {
       break;
     }
+    error = 0;
     switch (pch[0]) {
     case 'S': /* Shift */
       modmask |= ShiftMask;
@@ -64,21 +67,31 @@ PchModifiersToModmask(const char *pch, int *pmodifier)
       modmask |= ControlMask;
       break;
     case 'M': /* Meta */
-      modmask |= Mod1Mask;
+      if (!MetaMask)
+	error++;
+      modmask |= MetaMask;
       break;
     case 'A': /* Alt */
-      modmask |= Mod2Mask;
+      if (!AltMask)
+	error++;
+      modmask |= AltMask;
       break;
     case 'H': /* Hyper */
-      modmask |= Mod3Mask;
+      if (!HyperMask)
+	error++;
+      modmask |= HyperMask;
       break;
     case 'P': /* suPer modifier [0x40] (emacs uses "s") */
-      modmask |= Mod4Mask;
+      if (!SuperMask)
+	error++;
+      modmask |= SuperMask;
       break;
     default:
       scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier %c-",pch[0]);
       return NULL;
     }
+    if (error)
+      scwm_msg(WARN,__FUNCTION__,"Unbound modifier %c- ignored",pch[0]);
     pch += 2;
   }
 
@@ -764,6 +777,48 @@ init_binding(void)
      sym_new_window=gh_symbol2scm("edge");
      scm_protect_object(sym_edge);
    */
+}
+
+void
+init_modifiers(void)
+{
+  int i, j, num;
+  XModifierKeymap *mod;
+  KeyCode *codes;
+  KeySym *syms;
+
+  mod = XGetModifierMapping(dpy);
+  if (mod) {
+    codes = mod->modifiermap;
+    for (i = 0; i < 8; i++)
+      for (j = 0; j < mod->max_keypermod; j++, codes++)
+	if (*codes) {
+	  syms = XGetKeyboardMapping(dpy, *codes, 1, &num);
+	  if (syms) {
+	    while (num--)
+	      switch (syms[num]) {
+	      case XK_Meta_L:
+	      case XK_Meta_R:
+		MetaMask = 1<<i;
+		break;
+	      case XK_Alt_L:
+	      case XK_Alt_R:
+		AltMask = 1<<i;
+		break;
+	      case XK_Super_L:
+	      case XK_Super_R:
+		SuperMask = 1<<i;
+		break;
+	      case XK_Hyper_L:
+	      case XK_Hyper_R:
+		HyperMask = 1<<i;
+		break;
+	      }
+	    XFree(syms);
+	  }
+	}
+    XFreeModifiermap(mod);
+  }
 }
 
 /* Local Variables: */

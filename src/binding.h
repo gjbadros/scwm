@@ -46,6 +46,7 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc);
 SCM unbind_mouse(SCM contexts, SCM button);
 
 void init_binding();
+void init_modifiers();
 void find_mouse_event_type();
 void clear_mouse_event_type();
 
