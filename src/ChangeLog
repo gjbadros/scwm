@@ -1,3 +1,8 @@
+1998-07-07  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c: Added comments for primitives, in an extractable
+	format.  See utilities/dev/extract-docs for prototype extractor.
+
 Mon Jul  6 19:53:46 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* miscprocs.c: Fixed SCWM_PROC macro for
