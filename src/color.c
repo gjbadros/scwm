@@ -41,7 +41,7 @@
 #endif
 
 
-#define COLOR_HASH_SIZE 7
+#define COLOR_HASH_SIZE 20
 
 static SCM color_hash_table = SCM_UNDEFINED;
 static SCM protected_colors = SCM_UNDEFINED;
@@ -128,6 +128,7 @@ make_color (SCM cname)
 
   cn = gh_scm2newstr(cname, &len);
   color.pixel = 0;
+
 
   /* MSFIX: for now just throw errors for the sake of robustness (!)
      make it nicer later. */
@@ -358,7 +359,7 @@ make_relief_color (SCM color, SCM factor)
 
   VALIDATE_COLOR (color, s_make_relief_color, 1);
 
-  if (SCM_FALSEP(scm_number_p(factor)) || ((f=gh_scm2double(factor)) < 0.0)) {
+  if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(s_make_relief_color, 1, factor);
   }
 
@@ -421,7 +422,7 @@ set_hilight_factor_x (SCM factor)
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (SCM_FALSEP(scm_number_p(factor)) || ((f=gh_scm2double(factor)) < 0.0)) {
+  if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(s_set_hilight_factor_x, 1, factor);
   }
 
@@ -455,7 +456,7 @@ set_shadow_factor_x (SCM factor)
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (SCM_FALSEP(scm_number_p(factor)) || ((f=gh_scm2double(factor)) < 0.0)) {
+  if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(s_set_shadow_factor_x, 1, factor);
   }
 
@@ -490,7 +491,7 @@ SCM
 set_menu_hilight_factor_x (SCM factor)
 {
   double f;
-  if (SCM_FALSEP(scm_number_p(factor)) || ((f=gh_scm2double(factor)) < 0.0)) {
+  if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(s_set_menu_hilight_factor_x, 1, factor);
   }
 
@@ -516,7 +517,7 @@ SCM
 set_menu_shadow_factor_x (SCM factor)
 {
   double f;
-  if (SCM_FALSEP(scm_number_p(factor)) || ((f=gh_scm2double(factor)) < 0.0)) {
+  if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     scm_wrong_type_arg(s_set_menu_shadow_factor_x, 1, factor);
   }
 
