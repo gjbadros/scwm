@@ -502,13 +502,22 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
       0
       (window-last-focus-time win)))
 
-(define (warp-raise win)
-  (warp-to-window win)
-  (raise-window win))
+(define (rb:focus win)
+  (cond
+   (win (deiconify win)
+	(raise-window win)
+	(focus win))))
+
+(define (rb:warp win)
+  (cond
+   (win (deiconify win)
+	(raise-window win)
+	(warp-to-window win)
+	(focus win))))
 
 (define (toggle-focus)
   "Focus window that had the focus before the current one."
-  (warp-raise (extreme (lambda (win1 win2) (> (last-focussed win1)
+  (rb:warp (extreme (lambda (win1 win2) (> (last-focussed win1)
 						  (last-focussed win2)))
 			   (list-all-windows))))
 
@@ -558,9 +567,6 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (define (iconified-or-unfocusable? w)
   (or (iconified? w)
       (unfocusable? w)))
-(define (focus-raise . args)
-  (apply focus args)
-  (apply raise-window args))
 
 (define (bind-circulate fwd bwd . args)
   (bind-key 'all fwd (lambda () (apply next-window args)))
@@ -572,9 +578,9 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 		#:only xterm? #:except iconified-or-unfocusable?)
 (bind-circulate (super-kp "Left") (super-kp "Right") 
 		#:only visible? #:except iconified-or-unfocusable?
-		#:proc warp-raise)
+		#:proc rb:warp)
 (bind-circulate (super-kp "Up") (super-kp "Down")
-		#:only visible? #:except unfocusable? #:proc focus-raise)
+		#:only visible? #:except unfocusable? #:proc rb:focus)
 
 (bind-key 'all (super "space") toggle-focus)
 
