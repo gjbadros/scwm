@@ -100,20 +100,18 @@ isn't now).
 * X Selection support
 
 * Other useful primitives/procedures --08/02/98 gjb (inspired by GWM, other wms)
-** (elapsed-time) ; get running time of scwm
 ** (meminfo) ; Return string describing memory usage information
 ** (current-screen), (screen-count)
 ** (list-of-screens) ; list of managed screens (multi-screen support is iffy?)
-** (invert-color COLOR) ; return a new color by inverting COLOR
 ** (last-key) ; return last key pressed
 ** (keycode->keysym KEYCODE), (keysym->keycode KEYSYM)
 ** window closing hook? (upon removal of the window?)
-** (rotate-cut-buffers)
 ** window-group feature (at scheme level)
 ** (set-mouse-acceleration! ACCEL), (set-mouse-acceleration-threshold! PIXELS)
 ** (set-colormap-focus! WINDOW) -- rename set-colormap-focus! and colormap-focus to [set-]colormap-focus-policy
-** (window-shaped? WINDOW)
-** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive
+** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive 
+  - Maybe should have set-window-context! and get-window-context routines
+    that with-window is just a syntax around --09/02/98 gjb
 ** (window-client-size) (window-client-position) (window-client-borderwidth) ;dimensions for the client (application top-level window, not the wm frame) 
 ** (window-user-set-position? WIN), (window-user-set-size? WIN) ; tell if user specified position/size on command line
 ** (window-program-set-position? WIN), (window-program-set-size? WIN) ; tell if client programmatically specified position/size on command line
@@ -123,6 +121,10 @@ isn't now).
 ** visibility change hooks (fully-obscured, partially-obscured, unobscured) -- subsumed by event rewrite --08/07/98 gjb
 
 ** DONE ONES
+*** (window-shaped? WINDOW), (window-icon-shaped? WIN) --done 09/02/98 gjb
+*** (rotate-cut-buffers) --done 09/02/98 gjb
+*** (invert-color COLOR) ; return a new color by inverting COLOR --done 09/02/98 gjb
+*** (elapsed-time) ; get running time of scwm --done 09/02/98 gjb
 *** (X-resource-get NAME CLASS), (X-resource-put NAME VALUE) --done 08/07/98 gjb
 *** (window-client-machine-name WINDOW) ; name of host on which client is running -- done --08/05/98 gjb
 *** (make-string-usable-for-resource-key STRING) ; replace [.*& ] with _'s -- use regexp --done [in flux] 08/05/98 gjb
