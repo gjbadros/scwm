@@ -8,3 +8,8 @@ Possibly stop making resizes account for decorations, so that maximize
 is happier.
 
 there needs to be a way to remove bindings.
+
+should initially focus/hilight some window (also a bug in fvwm2).
+
+set-hilight-colors! does not deal w/ current hilighted window correctly.
+
