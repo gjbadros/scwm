@@ -110,16 +110,13 @@ typedef struct ScwmWindow {
   PackedBool(fMWMBorders);
   PackedBool(fWindowShaded);
 #endif
-  /* Might as well add new flags the right way staright off - MS 2-20-98 */
+  /* Might as well add new flags the right way straight off - MS 2-20-98 */
 
   PackedBool(fForceIcon);       
 
   unsigned long flags;
   SCM mini_icon_image;          /* A Scheme image object to use for the 
 				   mini-icon. */
-  char *szIconSavedFile;        /* save the filename here when we change
-				   to no icon, so it can be restored 
-				   properly */
   SCM icon_req_image;		/* the icon picture requested */
   SCM icon_image;               /* the icon picture used */
 
@@ -140,7 +137,9 @@ typedef struct ScwmWindow {
   Pixel BackPixel;
   unsigned long buttons;
   int IconBox[4];
-  int BoxFillMethod;
+  /* Not used, but I'm not sure what it used to mean, so leaving it
+     commented for now - MS 3-14-98 */
+  /* int BoxFillMethod; */
   SCM schwin;
 } ScwmWindow;
 
