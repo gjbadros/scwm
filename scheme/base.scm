@@ -206,18 +206,21 @@ negative, and Y pixels vertically, down if positive, up if negative."
   (let ((pos (viewport-position)))
     (set-viewport-position! (+ x (car pos)) (+ y (cadr pos)))))
 
+;; FIXJTL: if everybody uses this interface, remove the set-menu-*
+;; functions, set the variables directly here, and free those names
+;; for use for setting a single menu's attributes
 (define*-public (menu-style #&key
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
-		     (stipple #f) font)
+		     (stipple #f) (font #f)
+		     (look #f))
   "Set various properites for the menus.
-Many of these are ignored.  See `make-menu' for options on
-creation of individual menus."
+See `make-menu' for options on creation of individual menus."
   (if (or fg foreground) (set-menu-foreground! (or fg foreground)))
   (if (or bg background) (set-menu-background! (or bg background)))
   (if stipple (set-menu-stipple! stipple))
-  (if (bound? font)
-      (set! menu-font font)))
+  (if font (set-menu-font! font))
+  (if look (set-menu-look! look)))
 
 ;; A subset of the real title-style which is here so people don't have
 ;; to load all of face.scm to get at it; will probably go away in the
@@ -292,8 +295,6 @@ the shortcut key for the menu item."
   (make-menuitem label action extra-label image-above image-left
 		  hover-action unhover-action hotkey-prefs))
 
-; FIXJTL: why do we deal with default colors both here and in make-menu?
-; the code in make-menu is good enough, no?
 (define*-public (menu list-of-menuitems #&key
 		      image-side
 		      (image-align 'top)

@@ -1,3 +1,8 @@
+1998-10-07  Todd Larason  <jtl@teeny.molehill.org>
+
+	* base.scm (menu-style): treat #:font the same as the other options; 
+	new option #:look
+
 1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
 
 	* tests/menus.scm: update tests for new make-menu argument order
