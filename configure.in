@@ -298,7 +298,8 @@ SCWM_ARG_PATH_MAYBE_EMPTY(cassowary,
 	"no")  cas_lib_path="-L${cassolibdir} -R ${cassolibdir}" ;;
 	*)     cas_lib_path="-L${cassolibdir}" ;;
 	esac
-	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++ ${GTL_LIB}"
+	## Was ${GTL_LIB} below
+	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++ -lGTL"
 	CASSOWARY_OBJECTS='$(cassowary_objs)'
 ])
 
@@ -608,7 +609,7 @@ scwm_themedir=${datadir}/${PACKAGE}/themes
 scwm_bin_load_path=${libdir}/${PACKAGE}/modules
 scwm_moduledir=${scwm_bin_load_path}/app/scwm
 scwm_utildir=${libdir}/${PACKAGE}/util
-scwm_pixmapdir=${datadir}/pixmaps/${PACKAGE}
+scwm_pixmapdir=${datadir}/${PACKAGE}/pixmaps
 
 
 SCWM_ARG_PATH(scwmrcdir,
