@@ -13,7 +13,7 @@ AC_CONFIG_HEADER(include/config.h)
 # e.g., 
 # CFLAGS="-g -O -I/uns/include" LDFLAGS=-L/uns/lib ./configure  --prefix=/uns
 if test "$CFLAGS" = ""; then
-  CFLAGS="-O -g"
+  CFLAGS="-O -g -Wall"
 fi
 
 
