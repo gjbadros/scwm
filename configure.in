@@ -410,6 +410,8 @@ dnl ## Define directories ##
 
 scwm_load_path=${datadir}/${PACKAGE}-modules
 scwm_schemedir=${scwm_load_path}/app/scwm
+scwm_bin_load_path=${libdir}/${PACKAGE}-modules
+scwm_moduledir=${scwm_bin_load_path}/app/scwm
 
 
 SCWM_ARG_PATH(scwmrcdir,
@@ -427,7 +429,9 @@ SCWM_ARG_PATH(scwmrcdir,
 scwm_image_load_path="(\\\"${x_includes}/X11/bitmaps\\\" \\\"${x_includes}/X11/pixmaps\\\" \\\"${orig_x_libs}/X11/mini-icons\\\" \\\"${includedir}/X11/pixmaps\\\" \\\"${includedir}/X11/bitmaps\\\" \\\"${libdir}/X11/mini-icons\\\")"
 
 AC_SUBST(scwm_load_path)
+AC_SUBST(scwm_bin_load_path)
 AC_SUBST(scwm_schemedir)
+AC_SUBST(scwm_moduledir)
 AC_SUBST(scwmrcdir)
 AC_SUBST(scwm_image_load_path)
 
@@ -463,7 +467,9 @@ AC_OUTPUT(Makefile \
           sample.scwmrc/Makefile \
           scwm/Makefile \
           scheme/Makefile \
-         app/Makefile \
+          app/Makefile \
+	  modules/Makefile \
+	  modules/xpm-menus/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
