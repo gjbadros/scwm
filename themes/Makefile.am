@@ -55,3 +55,11 @@ twm.@TAR_SUFFIX@: $(srcdir)/twm $(srcdir)/twm/*
 	echo 'make[99]: Entering directory `'$$abs_srcdir_themes"'"; \
 	$(TAR_CF) $${abs_builddir_themes}/twm.@TAR_SUFFIX@ twm
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
+
+afterstep.@TAR_SUFFIX@: $(srcdir)/afterstep $(srcdir)/afterstep/*
+	abs_builddir_themes=`pwd`; \
+	cd $(srcdir); \
+	abs_srcdir_themes=`pwd`; \
+	echo 'make[99]: Entering directory `'$$abs_srcdir_themes"'"; \
+	$(TAR_CF) $${abs_builddir_themes}/afterstep.@TAR_SUFFIX@ afterstep
+	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
