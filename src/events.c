@@ -496,10 +496,10 @@ SCM
 scwm_error_handler (void *data, SCM tag, SCM throw_args)
 {
   fprintf (stderr, "\nScwm got an error; tag is\n        ");
-  scm_display (tag, scm_current_output_port ());
-  scm_newline (scm_current_output_port ());
-  scm_display (throw_args,scm_current_output_port ());
-  scm_newline (scm_current_output_port ());
+  scm_display (tag, scm_current_error_port ());
+  scm_newline (scm_current_error_port ());
+  scm_display (throw_args,scm_current_error_port ());
+  scm_newline (scm_current_errpr_port ());
 
   return SCM_BOOL_F;
 }
@@ -513,10 +513,10 @@ SCM
 gh_standard_handler (void *data, SCM tag, SCM throw_args)
 {
   fprintf (stderr, "\nScwm got an error; tag is\n        ");
-  scm_display (tag, scm_current_output_port ());
-  scm_newline (scm_current_output_port ());
+  scm_display (tag, scm_current_error_port ());
+  scm_newline (scm_current_error_port ());
   scm_display (throw_args,scm_current_output_port ());
-  scm_newline (scm_current_output_port ());
+  scm_newline (scm_current_error_port ());
 
   return SCM_BOOL_F;
 }
@@ -594,7 +594,7 @@ HandleScwmExec()
 			     0, bytes_after*4, False, XA_STRING, 
 			     &type_ret, &form_ret, &nitems, &bytes_after,
 			     &req)==Success) {
-	SCM val;
+	SCM val;<
 	SCM str_val;
 	char *ret;
 	int len;
