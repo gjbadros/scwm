@@ -58,21 +58,19 @@ typedef struct MenuItem_tag
 
 struct DynamicMenu_tag;
 
+typedef struct MenuItemDrawingInfo_tag MenuItemDrawingInfo;
+
 typedef struct MenuItemInMenu_tag
 {
   MenuItem *pmi;		/* pointer to the menu item this is for */
+  MenuItemDrawingInfo * pmidi;	/* extra info needed by drawing/hit detection */
   struct DynamicMenu_tag *pmd;	/* the dynamic menu it is in */
   int ipmiim;			/* the item number in the dynamic menu */
-  int cpixOffsetY;		/* top y offset of the item */
-  int cpixItemHeight;		/* height for item */
   menu_item_state mis;		/* current state of item */
-  Bool fOnTopEdge;		/* is this item on the top edge? */
-  Bool fOnBottomEdge;		/* is this item on the bottom edge?  */
   Bool fShowPopupArrow;		/* should we show a popup arrow */
   char chShortcut;		/* FIXGJB: make this a key event */
   int ichShortcutOffset;	/* For drawing */
 } MenuItemInMenu;
-
 
 #define MENUITEM_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_menuitem)
 #define MENUITEM(X)  ((MenuItem *)gh_cdr(X))

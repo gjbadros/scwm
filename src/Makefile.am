@@ -18,6 +18,7 @@ scwm_SOURCES =  Grab.c \
                 decorations.c \
                 deskpage.c \
                 drawmenu.c \
+		draw-xpm-menu.c \
                 errors.c \
                 events.c \
                 face.c \
@@ -32,6 +33,7 @@ scwm_SOURCES =  Grab.c \
 		log-usage.c \
                 menu.c \
                 menuitem.c \
+		menulook.c \
                 miscprocs.c \
                 module-interface.c \
                 move.c \
@@ -49,6 +51,7 @@ scwm_SOURCES =  Grab.c \
                 xmisc.c \
                 xproperty.c \
 		xrm.c
+#		draw-pie-menu.c \
 
 session_manager_srcs = session-manager.c
 session_manager_headers = session-manager.h
@@ -67,7 +70,7 @@ noinst_HEADERS = Grab.h ICCCM.h add_window.h binding.h borders.h \
 callbacks.h color.h colormaps.h colors.h complex.h decor.h \
 decorations.h deskpage.h drawmenu.h errors.h events.h face.h focus.h \
 font.h getopt.h guile-compat.h log-usage.h icons.h image.h menu.h menuitem.h \
-miscprocs.h module-interface.h module-types.h move.h mwmcom.h \
+menulook.h miscprocs.h module-interface.h module-types.h move.h mwmcom.h \
 placement.h resize.h screen.h scwm.h \
 scwm-snarf.h shutdown.h string_token.h syscompat.h system.h \
 util.h virtual.h window.h xmisc.h
@@ -85,7 +88,9 @@ INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 guile_snarfs = Grab.x add_window.x binding.x callbacks.x color.x \
 decor.x deskpage.x events.x face.x font.x image.x menu.x menuitem.x \
 miscprocs.x module-interface.x move.x placement.x resize.x \
-screen.x shutdown.x window.x xproperty.x xrm.x constraint-primitives.x
+screen.x shutdown.x window.x xproperty.x xrm.x constraint-primitives.x \
+drawmenu.x draw-xpm-menu.x menulook.x
+# draw-pie-menu.x 
 # FIXME:casso
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \

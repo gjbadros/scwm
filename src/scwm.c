@@ -530,7 +530,9 @@ scwm_main(int argc, char **argv)
   init_miscprocs();
   init_menuitem();
   init_menu();
-/*  init_draw_pie_menu(); */
+  init_menulook();
+  init_drawmenu();
+  init_draw_xpm_menu();
   init_binding();
   init_window();
   init_resize();
@@ -796,7 +798,6 @@ Repository Timestamp: %s\n",
   ShapesSupported = XShapeQueryExtension(dpy, &ShapeEventBase, &ShapeErrorBase);
   
   /* Need to do this after Scr.Root gets set */
-  drawmenu_init_gcs();
   InternUsefulAtoms();
   ResetScwmexecProtocol();
   init_modifiers();

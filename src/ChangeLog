@@ -1,3 +1,38 @@
+1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
+
+	* scwm.c (scwm_main): init_menulook, init_drawmenu and
+	init_draw_xpm_menu added; drawmenu_init_gcs removed
+
+	* screen.h: menu_look added to Screen struct
+
+	* screen.c (mark_screen): mark menu_look object
+
+	* menulook.c,menulook.h: New files, for a new 'menulook' type,
+	encapsulates menu look & feel.  set-menu-look! primitive for
+	settingi current menu look
+
+	* menuitem.h (MenuItemInMenu_tag): menulook-specific
+	MenuItemDrawingInfo pointer added; scwm-style information moved to 
+	drawmenu.c's MenuItemDrawingInfo struct
+
+	* menu.h: all the menu drawing specific information removed.
+	scmStippleColor and scmMenuLook added; MenuDrawingVtable added to
+	DynamicMenu struct; window, location and size moved from
+	MenuDrawingInfo struct to DynamicMenu struct
+
+	* menu.c: include "menulook.h" instead of "drawmenu.h".
+	scmStippleColor and scmMenuLook menu attributes added.
+	drawing-style specific code modularized through the menulook
+	type.  MIS_Grayed menu item status supported.
+
+	* drawmenu.h: drawmenu_init_gcs and no longer correct comment removed
+
+	* drawmenu.c: modularized, more separated from menu.c.  defines
+	all the drawing structures and creates `scwm-menu-look' to
+	represent this menu look.  drawmenu_init_gcs removed.
+
+	* Makefile.am: draw-xpm-menu[cx], menulook.[ch], drawmenu.x added
+
 Tue Sep 29 11:18:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* xmisc.h: Fix name of prototype for SetGCBg (was SetGCFb)

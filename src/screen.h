@@ -229,6 +229,7 @@ typedef struct ScreenInfo {
   SCM schscreen;                /* back pointer to the scheme-level screen obj */
 
   SCM menu_font;                /* font structure for menus, resize/move gadgets */
+  SCM menu_look;		/* current default menu look */
   SCM icon_font;                /* for icon labels */
   SCM msg_window_font;          /* font for the size/position window */
   SCM msg_window_fg;            /* fg color for the size/position window */

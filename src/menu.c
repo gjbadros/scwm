@@ -28,7 +28,7 @@
 #include "scwm.h"
 #include "font.h"
 #include "events.h"
-#include "drawmenu.h"
+#include "menulook.h"
 #include "colormaps.h"
 #include "xmisc.h"
 #include "screen.h"
@@ -62,8 +62,9 @@ scwm_safe_call0_sym(SCM thunk)
 static const char *
 SzFirstItemFromPmd(const DynamicMenu *pmd)
 {
-  SCM scmFirstMenuItem = gh_car(pmd->pmenu->scmMenuItems);
-  MenuItem *pmi = SAFE_MENUITEM(scmFirstMenuItem);
+  SCM scmItem = gh_car(pmd->pmenu->scmMenuItems);
+  MenuItem *pmi = SAFE_MENUITEM(scmItem);;
+
   if (pmi)
     return pmi->szLabel;
   else
@@ -84,10 +85,11 @@ mark_menu(SCM obj)
   GC_MARK_SCM_IF_SET(pmenu->scmSideBGColor);
   GC_MARK_SCM_IF_SET(pmenu->scmBGColor);
   GC_MARK_SCM_IF_SET(pmenu->scmTextColor);
+  GC_MARK_SCM_IF_SET(pmenu->scmStippleColor);
   GC_MARK_SCM_IF_SET(pmenu->scmImgBackground);
   GC_MARK_SCM_IF_SET(pmenu->scmFont);
   GC_MARK_SCM_IF_SET(pmenu->scmExtraOptions);
-
+  GC_MARK_SCM_IF_SET(pmenu->scmMenuLook);
   return SCM_BOOL_F;
 }
 
@@ -186,8 +188,8 @@ SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
           (SCM menu))
 /** Returns the a list of the menu properties of MENU, a menu object.
 The properties returned are: 
-'(menu-items side-image side-bg-color bg-color text-color image-bg
-font extra-options used-shortcut-keys) */
+'(menu-items side-image side-bg-color bg-color text-color stipple-color
+image-bg font extra-options menu-look used-shortcut-keys) */
 #define FUNC_NAME s_menu_properties
 {
   Menu *pmenu = SAFE_MENU(menu);
@@ -199,29 +201,36 @@ font extra-options used-shortcut-keys) */
 		 pmenu->scmSideBGColor,
 		 pmenu->scmBGColor,
 		 pmenu->scmTextColor,
+		 pmenu->scmStippleColor,
 		 pmenu->scmImgBackground,
 		 pmenu->scmFont,
 		 pmenu->scmExtraOptions,
+		 pmenu->scmMenuLook,
 		 gh_str02scm(pmenu->pchUsedShortcutKeys),
                  SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
 
-SCWM_PROC(make_menu, "make-menu", 1, 8, 0,
-          (SCM list_of_menuitems,
+/* FIXJTL: guile has a limit of 10 arguments?  Either raise the limit
+   somehow, or restructure hwo make-menu works.  Maybe it's time to move
+   side picture stuff into extra_options?  Or maybe an alist or keyword list
+   for all the args? */
+SCWM_PROC(make_menu, "make-menu", 1, 9, 0,
+          (SCM list_of_menuitems, 
            SCM picture_side, SCM picture_align, SCM side_bg_color,
-           SCM bg_color, SCM text_color,
-           SCM picture_bg, SCM font, SCM extra_options))
+           SCM bg_color, SCM text_color, SCM stipple_color,
+           SCM picture_bg, SCM font, SCM extra_options /*, SCM menu_look */))
 /** Make and return a menu object from the given arguments.
 LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
+PICTURE-SIDE is an image object to draw on the left side of the menu;
 PICTURE-ALIGN is one of 'top, 'center, or 'bottom;
-PICTURE-SIDE is an image object;
-SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR;
+SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects;
 PICTURE-BG is an image object;
 FONT is a font object;
-EXTRA-OPTIONS can be anything understood by the menu-specific
-drawing code (not used currently).
+EXTRA-OPTIONS can be anything understood by the menu-look
+drawing code;
+MENU-LOOK is a menulook object (not currently implemented).
 */
 #define FUNC_NAME s_make_menu
 {
@@ -282,6 +291,14 @@ drawing code (not used currently).
   pmenu->scmTextColor = text_color;
 
   iarg++;
+  if (UNSET_SCM(stipple_color)) {
+    stipple_color = Scr.MenuStippleColors.fg;
+  } else if (!COLOR_OR_SYMBOL_P(stipple_color)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg,stipple_color);
+  }
+  pmenu->scmStippleColor = stipple_color;
+  
+  iarg++;
   if (UNSET_SCM(picture_bg)) {
     picture_bg = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_bg)) {
@@ -294,13 +311,26 @@ drawing code (not used currently).
      the menu -- is there a better default -- maybe we should just
      always have some font object for "fixed" */
   if (UNSET_SCM(font) && Scr.menu_font != SCM_UNDEFINED) {
+    /* FIXJTL: this can't be right; this is overriden right after this */
     pmenu->scmFont = Scr.menu_font;
   } else if (!FONT_OR_SYMBOL_P(font)) {
     scm_wrong_type_arg(FUNC_NAME,iarg,font);
   }
   pmenu->scmFont = font;
 
+  iarg++;
   pmenu->scmExtraOptions = extra_options;
+
+  /* FIXJTL:
+  iarg++;
+  if (UNSET_SCM(menu_look)) {
+    menu_look = Scr.menu_look;
+  } else if (!MENULOOK_P(font)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg,menu_look);
+  }
+  pmenu->scmMenuLook = menu_look;
+  */
+  pmenu->scmMenuLook = Scr.menu_look;
 
   pmenu->pchUsedShortcutKeys = NULL;
 
@@ -338,23 +368,11 @@ drawing code (not used currently).
 }
 #undef FUNC_NAME
 
-
-/* return the appropriate x offset from the prior menu to
-   use as the location of a popup menu */
-/* FIXGJB: this should be a callback function, perhaps */
-static
-int 
-PopupPositionOffset(DynamicMenu *pmd)
-{
-  return pmd->pmdi->cpixWidth - 5;
-}
-
 /*
  * GetPreferredPopupPosition
  * Given x,y and the menu to popup, return the coords
  * that should be used for the upper left
  */
-/* FIXGJB: this should be a callback function, perhaps */
 static
 void 
 GetPreferredPopupPosition(DynamicMenu *pmd,
@@ -362,17 +380,19 @@ GetPreferredPopupPosition(DynamicMenu *pmd,
 			  int *pxReturn, int *pyReturn)
 {
   if (pmdPoppedFrom) {
-    *pxReturn = pmdPoppedFrom->pmdi->x + PopupPositionOffset(pmdPoppedFrom);
+    *pxReturn = x;
     *pyReturn = y;
+    pmdPoppedFrom->pmdv->fnGetChildPopupPosition(pmdPoppedFrom, pxReturn, pyReturn);
   } else {
-    *pxReturn = x - pmd->pmdi->cpixWidth/2;
-    *pyReturn = y - pmd->rgpmiim[0]->cpixItemHeight/2;
+    *pxReturn = x;
+    *pyReturn = y;
+    pmd->pmdv->fnGetPreferredPopupPosition(pmd, pxReturn, pyReturn);
   }
-  if (*pyReturn + pmd->pmdi->cpixHeight > Scr.DisplayHeight) {
-    *pyReturn = Scr.DisplayHeight-pmd->pmdi->cpixHeight;
+  if (*pyReturn + pmd->cpixHeight > Scr.DisplayHeight) {
+    *pyReturn = Scr.DisplayHeight-pmd->cpixHeight;
   }
-  if (*pxReturn + pmd->pmdi->cpixWidth > Scr.DisplayWidth) {
-    *pxReturn = Scr.DisplayWidth-pmd->pmdi->cpixWidth;
+  if (*pxReturn + pmd->cpixWidth > Scr.DisplayWidth) {
+    *pxReturn = Scr.DisplayWidth-pmd->cpixWidth;
   }
   if (*pxReturn < 0) *pxReturn = 0;
   if (*pyReturn < 0) *pyReturn = 0;
@@ -388,37 +408,9 @@ SetPopupMenuPosition(DynamicMenu *pmd, int x_pointer, int y_pointer)
   int y;
   GetPreferredPopupPosition(pmd, pmdPoppedFrom, x_pointer, y_pointer,
 			    &x, &y);
-  pmd->pmdi->x = x;
-  pmd->pmdi->y = y;
+  pmd->x = x;
+  pmd->y = y;
 }
-
-/* FIXGJB: this could be a callback */
-static
-void
-SetPopupMenuPositionFromMenuItem(DynamicMenu *pmd, 
-				 MenuItemInMenu *pmiimSelected)
-{
-  MenuDrawingInfo *pmdi = pmiimSelected->pmd->pmdi;
-  int cpixXmenu = pmdi->x;
-  int cpixYmenu = pmdi->y;
-  int cpixWidthMenu = pmdi->cpixWidth;
-  MenuDrawingInfo *pmdiNew = pmd->pmdi;
-  int cpixWidthNewMenu = pmdiNew->cpixWidth;
-
-  if (cpixXmenu + cpixWidthMenu + pmdiNew->cpixWidth <= Scr.DisplayWidth) {
-    pmd->pmdi->x = cpixXmenu + cpixWidthMenu - 2;
-  } else {
-    /* pop to the left */
-    pmd->pmdi->x = cpixXmenu - cpixWidthNewMenu + pmdi->cpixSideImage;
-  }
-  pmd->pmdi->y = cpixYmenu + pmiimSelected->cpixOffsetY - 2;
-  if (pmd->pmdi->y + pmdiNew->cpixHeight > Scr.DisplayHeight) {
-    /* would go off the bottom edge of the screen;
-       force it up from the bottom of the screen */
-    pmd->pmdi->y = Scr.DisplayHeight-pmdiNew->cpixHeight;
-  }
-}
-
 
 static
 DynamicMenu *
@@ -437,23 +429,6 @@ PmdFromWindow(Display *dpy, Window w)
   return pmd;
 }
 
-/* FIXGJB this may need to be dynamically loadable for more
-   flexible menu types (like pie menus) */
-static
-MenuItemInMenu *
-PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
-{
-  int ipmiim;
-  for (ipmiim = 0; ipmiim < pmd->cmiim; ipmiim++) {
-    MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim];
-    int item_y_offset = pmiim->cpixOffsetY;
-    if (y > item_y_offset && y <= item_y_offset + pmiim->cpixItemHeight) {
-      DBUG((DBG,__FUNCTION__,"pmiim->pmi->szLabel = %s @ %d,%d", pmiim->pmi->szLabel,x,y));
-      return pmiim;
-    }
-  }
-  return NULL;
-}
 
 #ifdef FIXGJB_UNUSED
 static
@@ -467,14 +442,14 @@ PmdFromPointerLocation(Display *dpy)
 
 /* PmiimFromPointerLocation
  * Find the MenuItemInMenu that the pointer is at now
- * Return a pointer to the MenuItemInMenu, and *px_offset,
- * the x offset within the item -- pass px_offset = NULL
- * to ignore that return value
+ * Return a pointer to the MenuItemInMenu, *px_offset, and *py_offset
+ * the x and y offsets within the item -- pass px_offset = NULL
+ * or py_offset = NULL to ignore those return values
  * Returns NULL if pointer not pointing at a menu item
  */
 static
 MenuItemInMenu *
-PmiimFromPointerLocation(Display *dpy, int *px_offset)
+PmiimFromPointerLocation(Display *dpy, int *px_offset, int *py_offset)
 {
   int root_x, root_y;
   int x,y;
@@ -499,11 +474,12 @@ PmiimFromPointerLocation(Display *dpy, int *px_offset)
 
   DBUG((DBG,__FUNCTION__,"Now root = %d,%d; window = %d, %d",root_x,root_y, x,y));
 
-  /* set the return value for the x_offset */
+  /* set the return value for the offsets */
   if (px_offset) *px_offset = x;
-
+  if (py_offset) *py_offset = y;
+  
   /* look for the entry that the mouse is in */
-  return PmiimFromPmdXY(pmd,x,y);
+  return pmd->pmdv->fnPmiimFromPmdXY(pmd,x,y);
 }
 
 static
@@ -527,8 +503,8 @@ RepaintMenuItem(MenuItemInMenu *pmiim)
 {
 /*  MenuItem *pmi = pmiim->pmi; */
   DynamicMenu *pmd = pmiim->pmd;
-  Window w = pmd->pmdi->w;
-  pmd->fnPaintMenuItem(w,pmd,pmiim);
+  Window w = pmd->w;
+  pmd->pmdv->fnPaintMenuItem(w,pmd,pmiim);
 }
 
 MenuItemInMenu *
@@ -563,6 +539,11 @@ UnselectAndRepaintSelectionForPmd(DynamicMenu *pmd)
     return;
   }
 
+  if (pmiim->mis == MIS_Grayed) {
+    DBUG((DBG,__FUNCTION__,"pmiimSelected is grayed"));
+    return;
+  }
+  
   if (pmiim->mis != MIS_Selected) {
     scwm_msg(DBG,__FUNCTION__,"pmiim->mis != MIS_Selected");
   }
@@ -618,13 +599,12 @@ static
 void
 PopupMenu(DynamicMenu *pmd)
 {
-  MenuDrawingInfo *pmdi = pmd->pmdi;
 /*  DynamicMenu *pmdPoppedFrom = pmd->pmdPrior; */
-  Window w = pmdi->w;
+  Window w = pmd->w;
   pmd->fHoverActionInvoked = False;
 
   InstallRootColormap();
-  XMoveWindow(dpy, w, pmdi->x, pmdi->y);
+  XMoveWindow(dpy, w, pmd->x, pmd->y);
   XMapRaised(dpy, w);
 }
 
@@ -639,9 +619,9 @@ PopdownMenu(DynamicMenu *pmd)
   }
   InvokeUnhoverAction(pmd);
   pmd->fHoverActionInvoked = False;
-  XUnmapWindow(dpy, pmd->pmdi->w);
+  XUnmapWindow(dpy, pmd->w);
   /* unconnect the window from the dynamic menu */
-  XSaveContext(dpy, pmd->pmdi->w,MenuContext,(caddr_t)NULL);
+  XSaveContext(dpy, pmd->w,MenuContext,(caddr_t)NULL);
   UninstallRootColormap();
   XFlush(dpy);
 }
@@ -843,7 +823,7 @@ PmdPrepopFromPmiim(MenuItemInMenu *pmiim)
 	scwm_msg(WARN,__FUNCTION__,"pmdNext != NULL! Why?\n");
       }
       pmd->pmdNext = pmdNew;
-      SetPopupMenuPositionFromMenuItem(pmdNew,pmiim);
+      pmd->pmdv->fnSetPopupMenuPositionFromMenuItem(pmdNew,pmiim);
       PopupMenu(pmdNew);
     }
   }
@@ -870,25 +850,6 @@ XPutBackKeystrokeEvent(Display *dpy, Window w, KeySym keysym)
   
 
 
-static
-void
-WarpPointerToPmiim(MenuItemInMenu *pmiim)
-{
-  DynamicMenu *pmd; 
-  MenuDrawingInfo *pmdi;
-  int x, y;
-
-  if (!pmiim)
-    return;
-
-  pmd = pmiim->pmd;
-  pmdi = pmd->pmdi;
-
-  /* FIXGJB: make fraction of menu that pointer goes to configurable */
-  x = 2*(pmdi->cpixWidth - pmdi->cpixItemOffset)/3;
-  y = pmiim->cpixOffsetY + pmiim->cpixItemHeight/2;
-  XWarpPointer(dpy, 0, pmdi->w, 0, 0, 0, 0, x, y);
-}
 
 static
 SCM
@@ -898,14 +859,18 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
   SCM scmAction = SCM_UNDEFINED;
   MenuItemInMenu *pmiim = NULL;
   int cpixXoffsetInMenu = 0;
+  int cpixYoffsetInMenu = 0;
   Bool fGotMouseMove = False;
   Bool fHotkeyUsed = False;
 
   /* Warp the pointer to the first menu item
      (perhaps selected if the keyboard was used to pop up this menu) */
   if (fWarpToFirst)
-    WarpPointerToPmiim(PmiimStepItems(pmd->rgpmiim[0],0,+1));
+    pmiim->pmd->pmdv->fnWarpPointerToPmiim(PmiimStepItems(pmd->rgpmiim[0],0,+1));
 
+  /* Don't assume all menu types pop up with the pointer on the first
+     item; pie menus for instance will pop up with nothing selected */
+  UnselectAndRepaintSelectionForPmd(pmd);
   /* FIXGJB: need to make initial item selection */
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
@@ -942,7 +907,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
     }
     
     /* get the item the pointer is at */
-    pmiim = PmiimFromPointerLocation(dpy,&cpixXoffsetInMenu);
+    pmiim = PmiimFromPointerLocation(dpy,&cpixXoffsetInMenu,&cpixYoffsetInMenu);
 
     if (Event.type == MotionNotify) {
       fGotMouseMove = True;
@@ -1008,7 +973,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
       } else if (ms == MENUSTATUS_NOP) {
 	break;
       }
-      WarpPointerToPmiim(pmiim);
+      pmiim->pmd->pmdv->fnWarpPointerToPmiim(pmiim);
       /* no break -- fall through to MotionNotify */
     }
       
@@ -1037,7 +1002,8 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 	      /* it's not the one that we had selected before,
 		 so we need to pop down everything */
 	      DBUG((DBG,__FUNCTION__,"Moved back to different item of %s, %d", 
-                   SzFirstItemFromPmd(pmiim->pmd),c10ms_delays));
+		    SzFirstItemFromPmd(pmiim->pmd),c10ms_delays));
+	      /* FIXJTL: this requires scanning for selecte pmiid again */
 	      UnselectAndRepaintSelectionForPmd(pmd);
 	    } else {
               DBUG((DBG,__FUNCTION__,"Moving back within chain of dynamic menus to %s, unselect %s, %d", 
@@ -1064,12 +1030,13 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
             DBUG((DBG,__FUNCTION__,"Same item, %d", c10ms_delays));
           }
 	}
-	if (pmiim && pmiim->mis != MIS_Selected) {
+	if (pmiim && pmiim->mis != MIS_Selected && pmiim->mis != MIS_Grayed) {
 	  DBUG((DBG,__FUNCTION__,"New selection, %d", c10ms_delays));
 	  SelectAndRepaintPmiim(pmiim);
 	  c10ms_delays = 0;
 	}
-	if (cpixXoffsetInMenu > pmd->pmdi->cpixWidth*3/4 || fHotkeyUsed) {
+	if (fHotkeyUsed ||
+	    pmd->pmdv->fnInPopupZone(pmiim, cpixXoffsetInMenu, cpixYoffsetInMenu)) {
 	  /* we're at the right edge of the menu so be sure we popup
 	     the cascade menu if any */
 	  if (pmd->pmdNext == NULL) {
@@ -1089,7 +1056,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
       pmdNeedsPainting = PmdFromWindow(dpy,Event.xany.window);
       if (pmdNeedsPainting) {
 	DBUG((DBG,__FUNCTION__,"Trying to paint menu"));
-	pmdNeedsPainting->fnPaintDynamicMenu(pmdNeedsPainting,&Event);
+	pmdNeedsPainting->pmdv->fnPaintDynamicMenu(pmdNeedsPainting,&Event);
       }
     }
     continue;
@@ -1107,7 +1074,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
     /* FIXGJB this doesn't work -- we'd like to be able to jump to
        the first item of the next menu if a shortcut key was used to popup a new menu */
     if (fHotkeyUsed)
-      XPutBackKeystrokeEvent(dpy,pmiim->pmd->pmdi->w,XK_Right);
+      XPutBackKeystrokeEvent(dpy,pmiim->pmd->w,XK_Right);
   } /* while true */
  MENU_INTERACTION_RETURN:
   return scmAction;
@@ -1120,10 +1087,11 @@ FreeDynamicMenu(DynamicMenu *pmd)
   int ipmiim = 0;
   int cmiim = pmd->cmiim;
   for ( ; ipmiim < cmiim; ipmiim++) {
+    pmd->pmdv->fnFreePmidi(pmd->rgpmiim[ipmiim]->pmidi);
     FREE(pmd->rgpmiim[ipmiim]);
   }
   FREEC(pmd->rgpmiim);
-  FREE(pmd->pmdi);
+  pmd->pmdv->fnFreePmdi(pmd->pmdi);
 }  
   
   
@@ -1166,14 +1134,12 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     pmiim->chShortcut = '\0';
     pmiim->ichShortcutOffset = -1;
 
-    pmiim->cpixItemHeight = -1;	/* just init: gets set in drawing code */
-    pmiim->cpixOffsetY = -1;	/* just init: gets set in drawing code */
-    pmiim->fOnTopEdge = False;	/* just init: gets set in drawing code */
-    pmiim->fOnBottomEdge = False; /* just init: gets set in drawing code */
-
     pmiim->fShowPopupArrow = (DYNAMIC_MENU_P(pmiim->pmi->scmAction));
 
-    pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
+    if (pmiim->pmi->scmAction == SCM_BOOL_F)
+      pmiim->mis = MIS_Grayed;
+    else
+      pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
     ipmiim++;
   NEXT_MENU_ITEM:
     rest = gh_cdr(rest);
@@ -1192,13 +1158,11 @@ InitializeDynamicMenu(DynamicMenu *pmd)
   pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
 }
 
-PfnConstructDynamicMenu fnConstructDynamicMenuCurrent;
-static SCM *pscm_construct_menu_primitive;
-
 static
 DynamicMenu *
 NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom) 
 {
+
   DynamicMenu *pmd = NEW(DynamicMenu);
   pmd->pmenu = pmenu;
   pmd->pmdNext = NULL;
@@ -1210,27 +1174,17 @@ NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom)
   /* FIXGJB: this ConstructDynamicMenu needs to possibly call a different
      ConstructDynamicMenu == should be through a function pointer */
 
-  if (*pscm_construct_menu_primitive != SCM_BOOL_F)
-    {
-    fnConstructDynamicMenuCurrent = (PfnConstructDynamicMenu) 
-      scm_num2ulong (*pscm_construct_menu_primitive, (char *)SCM_ARG1, "NewDynamicMenu" );
-    }
-  else
-    {
-    fnConstructDynamicMenuCurrent = ConstructDynamicMenu;
-    }
-
-  fnConstructDynamicMenuCurrent(pmd);	/* update/create pmd->pmdi */
+  MENULOOK(pmenu->scmMenuLook)->mdvt->fnConstructDynamicMenu(pmd);
 
   { /* scope */
     /* Get the right events -- don't trust the drawing code to do this */
     XSetWindowAttributes attributes;
     attributes.event_mask = menu_event_mask;
-    XChangeWindowAttributes(dpy,pmd->pmdi->w,CWEventMask, &attributes);
+    XChangeWindowAttributes(dpy,pmd->w,CWEventMask, &attributes);
   }
-
+  
   /* Connect the window to the dynamic menu, pmd */
-  XSaveContext(dpy,pmd->pmdi->w,MenuContext,(caddr_t)pmd);
+  XSaveContext(dpy,pmd->w,MenuContext,(caddr_t)pmd);
 
   return pmd;
 }
@@ -1258,20 +1212,20 @@ SetPopupMenuPositionFromDecoration(DynamicMenu *pmd, int x, int y, int corner)
 {
   switch (corner) {
   case 0: /* NW */
-    pmd->pmdi->x = x;
-    pmd->pmdi->y = y;
+    pmd->x = x;
+    pmd->y = y;
     break;
   case 1: /* NE */
-    pmd->pmdi->x = x - pmd->pmdi->cpixWidth;
-    pmd->pmdi->y = y;
+    pmd->x = x - pmd->cpixWidth;
+    pmd->y = y;
     break;
   case 2: /* SE */
-    pmd->pmdi->x = x - pmd->pmdi->cpixWidth;
-    pmd->pmdi->y = y - pmd->pmdi->cpixHeight;
+    pmd->x = x - pmd->cpixWidth;
+    pmd->y = y - pmd->cpixHeight;
     break;
   case 3: /* SW */
-    pmd->pmdi->x = x;
-    pmd->pmdi->y = y - pmd->pmdi->cpixHeight;
+    pmd->x = x;
+    pmd->y = y - pmd->cpixHeight;
     break;
   }
   return;
@@ -1352,8 +1306,6 @@ void
 init_menu()
 {
   REGISTER_SCWMSMOBFUNS(menu);
-
-  SCWM_VAR_INIT(construct_menu_primitive,"construct-menu-primitive", SCM_BOOL_F);
   /** The function to call to construct a menu.
 This is only useful for testing dynamically-loaded menu drawing code,
 and should normally be left at its default of #f. */
