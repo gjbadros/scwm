@@ -1,3 +1,10 @@
+1999-08-04  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-composition.scm: Fixed an existing bug which 
+	prevented the composition code from working since constructors
+	were modified to take a window list parameter instead of several
+	window parameters.
+
 1999-08-02  Greg Badros  <gjb@cs.washington.edu>
 
 	* number-convert.scm, menus-extras.scm,
