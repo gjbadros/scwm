@@ -1,3 +1,7 @@
+Thu Sep 16 16:05:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Move some code into the flux.scm module.
+
 Thu Sep 16 13:12:34 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use new animated-edge-moves module.
