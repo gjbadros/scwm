@@ -39,6 +39,9 @@
     (apply-style new-style win)))
 
 (define-public (window-style condition . args) 
+  "Specify various properties for windows matching CONDITION.
+See the `Face Specification Flags' and `Window Style' sections
+for details."
   (let ((new-style (apply make-conditional-style condition args)))
     (for-each (lambda (w) (apply-style new-style w)) (list-all-windows))
     (set! global-conditional-style

@@ -33,7 +33,7 @@
 	 (menu-font-height (assoc-ref (font-properties menu-font) 'height)))
     (round/ (cadr (display-size)) (+ 7 menu-font-height))))
 
-(define (sorted-by-car-string l)
+(define-public (sorted-by-car-string l)
   (sort l (lambda (a b) (string>? (car a) (car b)))))
 
 ;;; ----------------------------------------------
