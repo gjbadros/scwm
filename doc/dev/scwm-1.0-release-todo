@@ -4,20 +4,24 @@ These notes are compiled from a discussion between Maciej and Sam on
 scwm-discuss, with some organizational and pseudo-executive decisions
 made by me :-) --03/18/99 gjb
 
+Revised after a talk session with Maciej --07/11/99 gjb
+
 
 Web-page related
 ----------------
 
-* Add a search engine to Scwm web (esp. for mailing list)
-** glimpse based?
+* anonymous rsync server for mirrors of web/cvs/ftp -- maciej
 
-* Add a bug tracking facility to the web page
-** which one?
+* domain name: www.scwm.net -- maciej & Todd L.
+
+* MhonArc mail archiver (w/ search) -- maciej
+
+* Link to GNATS bug tracking facility to the web page  -- gjb
 ** we need to enter the BUGS file into the database
 ** also, gjb has some marked messages from the mailing list that should
 go in the bug database
 
-* Add a projects list page
+* Add a projects list page --gjb
 
 DONE * Add a link to the auto-faq to the web page
 ** we need to enter Arturo Perez's list

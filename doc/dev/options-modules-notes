@@ -1,0 +1,20 @@
+From Maciej and Greg Talk session, Sunday, 11-July-1999
+(Maciej wrote below)
+
+OK, here is an idea that involves several changes.
+
+1) Extract all the options stuff in some way such that it would be possible
+for the GUI config module to know about the metainfo without necessarily
+having the module loaded.
+
+2) For each module, have some special option indicating wether that module
+should be used at all.
+
+3) If you have made settings for a module but you are not currently using it,
+they are saved commented out in .scmw-options.
+
+4) .scwm-options handles the use-modules for modules you said you want.
+
+Greg notes:
+Mention to Jim about the asymmetry re: unloading (or un-using) a module.
+
