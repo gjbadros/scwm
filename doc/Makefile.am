@@ -13,7 +13,10 @@ scwm.sgml scwm-procedures.txt: $(scwm_SOURCES)
 	echo Outputting to directory: $$outdir; \
 	cd $(top_builddir); abs_top_builddir=`pwd`; \
 	cd $$abs_builddir_doc; cd $(top_srcdir); \
-	perl $$abs_top_builddir/utilities/dev/scwmdoc -o $$outdir/scwm.sgml -O $$outdir/scwm-variables.txt -V scheme/user-options.scm </dev/null scwm/*.c modules/*/*.c scheme/*.scm > $$outdir/scwm-procedures.txt
+	abs_top_srcdir=`pwd`; \
+	echo 'make[99]: Entering directory `'$$abs_top_srcdir"'"; \
+	perl $$abs_top_builddir/utilities/dev/scwmdoc -o $$outdir/scwm.sgml -O $$outdir/scwm-variables.txt -V scheme/user-options.scm -d $${SCWMDIR:-$${abs_top_srcdir}} </dev/null scwm/*.c modules/*/*.c scheme/*.scm > $$outdir/scwm-procedures.txt; \
+	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"
 
 html: scwm.sgml
 	mkdir -p $@ && cd $@ && \
