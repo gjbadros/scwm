@@ -52,6 +52,7 @@ install:
 	${INSTALL_DATA} bincomm.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} fvwm-eval.scm ${scwm_scheme_dir} 
 	${INSTALL_DATA} fvwm-module.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} module-types.scm ${scwm_scheme_dir} 
 
 mostlyclean:
 	${RM} *~ core *.bak
