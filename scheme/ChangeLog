@@ -1,3 +1,10 @@
+Tue Mar 24 14:15:16 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* fvwm-module.scm: Append newlines to the configuration strings;
+ 	this is needed to make the pager happy with geometry
+ 	specifications and maybe other things. Bug report and patch from
+ 	Bucky LaDieu <nega@vt.edu>.
+
 Mon Mar 23 15:47:45 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Added flux.scm: Pulled out a bunch of
