@@ -8,8 +8,6 @@ made by me :-) --03/18/99 gjb
 Web-page related
 ----------------
 
-DONE * Fix Scwm mailing list archive -- 1999 is not included --04/14/99 ms
-
 * Add a search engine to Scwm web (esp. for mailing list)
 ** glimpse based?
 
@@ -19,10 +17,12 @@ DONE * Fix Scwm mailing list archive -- 1999 is not included --04/14/99 ms
 ** also, gjb has some marked messages from the mailing list that should
 go in the bug database
 
+* Add a projects list page
+
 DONE * Add a link to the auto-faq to the web page
 ** we need to enter Arturo Perez's list
 
-* Add a projects list page
+DONE * Fix Scwm mailing list archive -- 1999 is not included --04/14/99 ms
 
 DONE * Mirror all the files needed to build a full-featured scwm
 DONE ** Gtk-1.2, guile-gtk-0.15, cassowary-0.4
@@ -42,22 +42,33 @@ easier to build source rpms, binary rpms, and debian packages
 
 * Add a scwm-icons-...-noarch.rpm
 
+* Get --enable-cflags, --enable-cppflags, etc. in configure.in to work
 
 Scwm-core related
 -----------------
-DONE * Update all copyrights to include 1999 --04/7/99 gjb
+* guile jump buffer memory leak bug
+
+* GUI options/configuration (Making progress on this...)
 
 * Have a really polished and useful system.scwmrc that showcases some of
 the nicer features, but remains eminently usable. Each of the
 sample.scwmrc-s  is better than the system.scwmrc.  
 
-HACKED... * A bit of work to ensure destroying guile-gtk windows won't kill the
-window manager.
-
 * Further testing of session manager support
 
 * Further testing of Gnome, KDE interoperability, especially ensuring
 that the pagers work
+
+DONE? * Fix only the most awful API stupidity - a lot of the available
+procedures have silly argument orders or are generally poorly
+designed.  We shouldn't do a lot of this as it'll break stuff
+internally and necessitate lots of testing, but if there are really dumb 
+things we've done we should fix them now.
+
+HACKED... * A bit of work to ensure destroying guile-gtk windows won't kill the
+window manager.  (Should still gray out the "destroy" menuitem on guile-gtk windows
+
+DONE * Update all copyrights to include 1999 --04/7/99 gjb
 
 DONE via imlib * Color limiting capability. Right now using scwm on an 8-bit display can eat a lot of images or lead to excessive color allocation failures.
 
@@ -71,33 +82,17 @@ DONE * Move most useful stuff from flux.scm out to fully-supported modules --04/
 
 DONE * closest-color code
 
-* Fix only the most awful API stupidity - a lot of the available
-procedures have silly argument orders or are generally poorly
-designed.  We shouldn't do a lot of this as it'll break stuff
-internally and necessitate lots of testing, but if there are really dumb 
-things we've done we should fix them now.
-
-* GUI options/configuration (Making progress on this...)
-
 DONE * first-class cursor objects
 
 
 Post-1.0 features
 -----------------
 
-* Improve gravity handling
-
 * event rewrite
-
-* window groups feature (integration with constraints)
-
-* improved API for constraint solver
 
 * decoration rewrite
 
 * rest of API cleanup
-
-* pixmap cursors
 
 * Finish up the theme stuff (native theme mode at least, loading foreign
 theme formats would require more generalization of our decoration code),
@@ -112,3 +107,12 @@ occasionally.
 * Maybe a bit more visual generalization and/or polish based on work
 already done in fvwm2 since the fork (e.g. diagonal gradients, non-tiled
 titlebar images, NeXT-looking menu style, snap attraction)
+
+PARTIALLY-DONE * window groups feature (integration with constraints)
+
+PARTIALLY-DONE * improved API for constraint solver
+
+DONE * Improve gravity handling
+
+DONE * pixmap cursors
+
