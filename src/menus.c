@@ -29,6 +29,7 @@
 #include "misc.h"
 #include "parse.h"
 #include "screen.h"
+#include "menu.h"
 
 int menu_on=0;
 
@@ -661,7 +662,9 @@ int UpdateMenu(int sticks)
 	    {
 	      done = 1;
 	      if (!strcmp(ActiveItem->action,"Scheme")) {
-		gh_call0(ActiveItem->thunk);
+		call_thunk_with_message_handler(ActiveItem->thunk);
+	      } else if (!strcmp(ActiveItem->action,"SchemeMenu")) {
+		popup(ActiveItem->thunk);
 	      } else {
 		ExecuteFunction(ActiveItem->action,
 				ButtonWindow, &Event, Context,-1);
@@ -1273,6 +1276,9 @@ void AddToMenu(MenuRoot *menu, char *item, char *action)
   tmp->next = NULL;
   tmp->state = 0;
   tmp->func_type = find_func_type(tmp->action);
+  if (!strcmp(tmp->action,"SchemeMenu")) {
+    tmp->func_type=F_POPUP;
+  }
   tmp->item_num = menu->items++;
 }
 
