@@ -281,6 +281,52 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name,
 }
 #undef FUNC_NAME
 
+/* No not free the returned char * */
+const char *
+SzKeysymForKeyCode(KeyCode code, int index)
+{
+  KeySym keysym = XKeycodeToKeysym(dpy,code,index);
+  return XKeysymToString(keysym);
+}
+
+/* must FREE the returned string */
+char *
+SzNewModifierStringForModMask(int modmask)
+{
+  /* 6 modifiers, each M-, + NULL byte */
+  char *sz = NEWC(6*2+1,char);
+  *sz = 0;
+  if (modmask & ShiftMask) strcat(sz,"S-");
+  if (modmask & ControlMask) strcat(sz,"C-");
+  if (modmask & MetaMask) strcat(sz,"M-");
+  if (modmask & AltMask) strcat(sz,"A-");
+  if (modmask & HyperMask) strcat(sz,"H-");
+  if (modmask & SuperMask) strcat(sz,"s-");
+  return sz;
+}
+
+/* must FREE the returned string */
+char *
+SzNewForModMaskKeyCode(int modmask, KeyCode code)
+{
+  char *sz = SzNewModifierStringForModMask(modmask);
+  KeySym keysym = XKeycodeToKeysym(dpy,code,0);
+  /* GJB:FIXME:: is this portable? Want to not list modifier
+     keys as keysym strings */
+  if (keysym >= XK_Shift_L && keysym <= XK_Hyper_R) {
+    /* Just return, e.g., "S-C-M-" */
+    return sz;
+  } else {
+    const char *szKeysym = SzKeysymForKeyCode(code,0);
+    char *szFull = NEWC(strlen(sz)+strlen(szKeysym)+1,char);
+    *szFull = 0;
+    strcat(szFull,sz);
+    strcat(szFull,szKeysym);
+    FREE(sz);
+    return szFull;
+  }
+}
+
 
 /* Permit "Mouse-1", "1", "M1", "Mouse1", "mouse1" all to
    be acceptable */
@@ -1139,6 +1185,27 @@ physical button acts as logical button 1, and the leftmost acts as button 3. */
   return mapping;
 }
 #undef FUNC_NAME
+
+SCWM_PROC (keymask_keycode_to_string, "keymask-keycode->string", 2, 0, 0,
+           (SCM keymask, SCM keycode))
+     /** Return a string representing the key press with mask KEYMASK, code KEYCODE
+E.g., (keymask-keycode->string 4 44) => "C-j". */
+#define FUNC_NAME s_keymask_keycode_to_string
+{
+  int mask;
+  KeyCode code;
+  VALIDATE_ARG_INT_RANGE_COPY(1,keymask,0,255,mask);
+  VALIDATE_ARG_INT_RANGE_COPY(2,keycode,0,255,code);
+  
+  { /* scope */
+    char *sz = SzNewForModMaskKeyCode(mask,code);
+    SCM answer = gh_str02scm(sz);
+    FREE(sz);
+    return answer;
+  }
+}
+#undef FUNC_NAME
+
 
 void
 init_pointer_mapping(void)

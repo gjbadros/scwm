@@ -721,36 +721,52 @@ SCWM_PROC(x_connection_number, "x-connection-number", 0, 0, 0,
 }
 #undef FUNC_NAME
 
-#if 0
-SCWM_PROC(get_key_event, "get-key-event", 0, 2, 0,
-          (SCM async_mouse, SCM async_keyboard))
+SCWM_PROC(get_key_event, "get-key-event", 0, 0, 0,
+          ())
      /** Return a string representing the next key event.
-If ASYNC-MOUSE is #t, mouse events are treated asynchronously.
-If ASYNC-KEYBOARD is #t, keyboard events are treated asynchronously.
-A non-modifier key must be pressed before it is considered an event. 
-This has never been functioning and needs work to make right.
+The string is usable as a key binding string.  Modifiers 
+are listed first, separated by "-" followed by a "-" and the
+keysym name.  E.g., "S-C-M-z" is Shift+Control+Meta + 'z' key.
+If the event is only modifier keys, then the string will
+end in a "-"; e.g., "S-C-M-"
 */
 #define FUNC_NAME s_get_key_event
 {
-  Bool fAsyncMouse;
-  Bool fAsyncKeyboard;
+  Bool fAsyncMouse = False;
+  Bool fAsyncKeyboard = True;
   XEvent ev;
-  VALIDATE_ARG_BOOL_COPY_USE_F(1,async_mouse,fAsyncMouse);
-  VALIDATE_ARG_BOOL_COPY_USE_F(2,async_keyboard,fAsyncKeyboard);
+  XEvent evDiscard;
+
   XSync(dpy,True);
-  XGrabKeyboard(dpy, Scr.Root, False, 
-                fAsyncMouse? GrabModeAsync: GrabModeSync, 
-                fAsyncKeyboard? GrabModeAsync: GrabModeSync,
-                CurrentTime);
-  while (True) {
-    XNextEvent(dpy, &ev);
-    if (ev.type == KeyRelease)
-      break;
+  
+  /* discard events on the no focus win */
+  while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask, &evDiscard));
+
+  XSelectInput(dpy,Scr.NoFocusWin,KeyReleaseMask);
+
+  if (XGrabKeyboard(dpy, Scr.NoFocusWin, False /* no owneer events */, 
+                    fAsyncMouse? GrabModeAsync: GrabModeSync, 
+                    fAsyncKeyboard? GrabModeAsync: GrabModeSync,
+                    CurrentTime) != Success) {
+    XSelectInput(dpy,Scr.NoFocusWin,0);
+    return SCM_BOOL_F;
   }
+    
+  XWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask, &ev);
+
+  while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask|KeyPressMask, &evDiscard));
+
+  XSelectInput(dpy,Scr.NoFocusWin,0);
   XUngrabKeyboard(dpy, CurrentTime);
-  return gh_list(gh_long2scm(ev.xkey.state),gh_long2scm(ev.xkey.keycode),SCM_UNDEFINED);
+
+  { /* scope */
+    char *sz = SzNewForModMaskKeyCode(ev.xkey.state,
+                                      ev.xkey.keycode);
+    SCM answer = gh_str02scm(sz);
+    FREE(sz);
+    return answer;
+  }
 }
-#endif
 
 void 
 init_miscprocs()
