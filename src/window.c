@@ -2545,6 +2545,34 @@ and height in resize units (e.g., characters for an xterm).  */
 #undef FUNC_NAME
 
 
+SCWM_PROC (window_title_size, "window-title-size", 0, 1, 0,
+           (SCM win))
+     /** Return a list with the width and height of WIN's titlebar. */
+#define FUNC_NAME s_window_title_size
+{
+  ScwmWindow *psw;
+  VALIDATE(win, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+  return gh_list(gh_int2scm(psw->title_width),
+                 gh_int2scm(psw->title_height),
+                 SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC (window_frame_border_width, "window-frame-border-width", 0, 1, 0,
+           (SCM win))
+     /** Return the width of WIN's frame's border. */
+#define FUNC_NAME s_window_frame_border_width
+{
+  ScwmWindow *psw;
+  VALIDATE(win, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+  return gh_int2scm(psw->boundary_width);
+}
+#undef FUNC_NAME
+
+
 SCWM_PROC(window_id, "window-id", 0, 1, 0,
           (SCM win))
      /** Return the X window id for WIN.
