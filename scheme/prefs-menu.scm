@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;; File: <prefs-menu.scm - 1998-08-04 Tue 13:26:00 EDT sds@mute.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-09-09 Wed 12:36:46 EDT sds@eho.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 
 ;;; This program is free software; you can redistribute it and/or modify
@@ -25,11 +25,11 @@
   :use-module (app scwm base)
   :use-module (app scwm std-menus)
   :use-module (app scwm optargs)
+  :use-module (app scwm user-options)
+  :use-module (app scwm doc)
   :use-module (app scwm flux))
 
 
-
-(define-public animation-ms-delay 50)
 
 (define-public save-header
   ";; text from here to the EOF is overwritten by `save-settings'.")
@@ -38,19 +38,19 @@
   (let ((fd (open user-init-file (logior O_RDWR O_CREAT))))
     ;; (logior S_IRWXU S_IRGRP S_IXGRP S_IROTH S_IXOTH)))
     (do ((ll (read-line fd) (read-line fd)))
-	((or (eof-object? ll) (equal? ll save-header))
-	 (if (eof-object? ll) (write-all fd save-header "\n"))))
+        ((or (eof-object? ll) (equal? ll save-header))
+         (if (eof-object? ll) (write-all fd save-header "\n"))))
     (truncate-file fd (ftell fd))
     (write-all fd "(set-edge-scroll! 0 0)\n"
-	       "(set-desk-size! " (size->str (desk-size) " "))
+               "(set-desk-size! " (size->str (desk-size) " "))
     (for-each
      (lambda (ll)
        (let ((getter (cadddr ll)) (setter (caddr ll)))
-	 (display ")\n(" fd)
-	 (if getter () (display "set! " fd))
-	 (write setter fd) (display " " fd)
-	 (write (if getter ((symbol-binding #f getter))
-		    (symbol-binding #f setter)) fd)))
+         (display ")\n(" fd)
+         (if getter () (display "set! " fd))
+         (write setter fd) (display " " fd)
+         (write (if getter ((symbol-binding #f getter))
+                    (symbol-binding #f setter)) fd)))
      settable-object-list)
     (display ")\n" fd)
     (close-port fd)))
@@ -66,36 +66,36 @@
 
 (define scroll-menu
   (menu (list (menuitem "Full" #:action (lambda () (set-edge-scroll! 100 100)))
-	      (menuitem "50%" #:action (lambda () (set-edge-scroll! 50 50)))
-	      (menuitem "20%" #:action (lambda () (set-edge-scroll! 20 20)))
-	      (menuitem "5%" #:action (lambda () (set-edge-scroll! 5 5)))
-	      (menuitem "1%" #:action (lambda () (set-edge-scroll! 1 1)))
-	      (menuitem "Off" #:action (lambda () (set-edge-scroll! 0 0)))
-	      menu-separator
-	      (menuitem "Help" #:action (help-mesg "set-edge-scroll!")))))
+              (menuitem "50%" #:action (lambda () (set-edge-scroll! 50 50)))
+              (menuitem "20%" #:action (lambda () (set-edge-scroll! 20 20)))
+              (menuitem "5%" #:action (lambda () (set-edge-scroll! 5 5)))
+              (menuitem "1%" #:action (lambda () (set-edge-scroll! 1 1)))
+              (menuitem "Off" #:action (lambda () (set-edge-scroll! 0 0)))
+              menu-separator
+              (menuitem "Help" #:action (help-mesg "set-edge-scroll!")))))
 
 ;; FIXGJB: windows can be bigger than the viewport so "all" is not accurate
 (define opaque-move-menu
   (menu (list (menuitem "All" #:action
                         (lambda () (set! opaque-move-percent 100)))
-	      (menuitem "50%" #:action
+              (menuitem "50%" #:action
                         (lambda () (set! opaque-move-percent 50)))
-	      (menuitem "20%" #:action
+              (menuitem "20%" #:action
                         (lambda () (set! opaque-move-percent 20)))
-	      (menuitem "Never" #:action
-			(lambda () (set! opaque-move-percent 0)))
-	      menu-separator
-	      (menuitem "Help" #:action (help-mesg "opaque-move-percent")))))
+              (menuitem "Never" #:action
+                        (lambda () (set! opaque-move-percent 0)))
+              menu-separator
+              (menuitem "Help" #:action (help-mesg "opaque-move-percent")))))
 
 (define desk-size-menu
   (menu (list (menuitem "2x2" #:action (lambda () (set-desk-size! 2 2)))
-	      (menuitem "3x3" #:action (lambda () (set-desk-size! 3 3)))
-	      (menuitem "x+1" #:action (lambda () (mod-desk-size! 0 1)))
-	      (menuitem "x-1" #:action (lambda () (mod-desk-size! -1 0)))
-	      (menuitem "y+1" #:action (lambda () (mod-desk-size! 0 1)))
-	      (menuitem "y-1" #:action (lambda () (mod-desk-size! -1 0)))
-	      menu-separator
-	      (menuitem "Help" #:action (help-mesg "mod-desk-size!"
+              (menuitem "3x3" #:action (lambda () (set-desk-size! 3 3)))
+              (menuitem "x+1" #:action (lambda () (mod-desk-size! 0 1)))
+              (menuitem "x-1" #:action (lambda () (mod-desk-size! -1 0)))
+              (menuitem "y+1" #:action (lambda () (mod-desk-size! 0 1)))
+              (menuitem "y-1" #:action (lambda () (mod-desk-size! -1 0)))
+              menu-separator
+              (menuitem "Help" #:action (help-mesg "mod-desk-size!"
                                                    "set-desk-size!")))))
 
 ;;; FIX this is a bit more complex than this, since we don't want all of
@@ -104,90 +104,117 @@
 ;;; scwm-exec command (i.e., pass the continuation [the
 ;;; set-shadow-factor!  e.g.] to the ask-string, and have it run
 ;;; scwm-exec after getting the value from the user
-(define-public (ask-string prompt set-fn)
-  (message "Cannot ask for `" prompt "' yet! Sorry..."))
+(define-public (ask-string prompt)
+  "Ask for a string with PROMPT."
+  (message prompt "New value: ?!")
+  "")
 
-(define-public settable-object-list
-  ;; this is a list of lists of: ("title" "help" set-fn get-fn)
-  ;; load this file, add to this variable whatever you want,
-  ;; then call (menu-prefs)
-  '(("Shadow Factor" "Shadow Factor -\\n\
-the factor that is used by windows with the current decor to generate\\n\
-the relief \"shadow\" color for the regular and hilight background."
-     set-shadow-factor! shadow-factor)
-    ("Menu Shadow Factor" "Menu Shadow Factor -\\n\
-the factor that is used by menus to generate\\n\
-the relief \"hilight\" color for the regular and hilight background."
-     set-menu-shadow-factor! menu-shadow-factor)
-    ("Highlight Factor" "Highlight Factor -\\n\
-the factor that is used by windows with the current decor to generate\\n\
-the relief \"shadow\" color for the regular and hilight background."
-     set-hilight-factor! hilight-factor)
-    ("Menu Highlight Factor" "Menu Highlight Factor -\\n\
-the factor that is used by menus to generate\\n\
-the relief \"shadow\" color for the regular and h ilight background."
-     set-menu-hilight-factor! menu-hilight-factor)
-    ("XTerm Command" "The command used for starting XTerm,\\n\
-\(like `xterm' or `rxvt')." xterm-command #f)
-    ;; (list "Icon Font" "The font for icons" set-icon-font! icon-font)
-    ("Animation Delay" "??" animation-ms-delay #f)))
+; (define-public settable-object-list
+;   ;; this is a list of lists of: ("title" "help" set-fn get-fn)
+;   ;; load this file, add to this variable whatever you want,
+;   ;; then call (menu-prefs)
+;   '(("Shadow Factor" "Shadow Factor -\\n\
+; the factor that is used by windows with the current decor to generate\\n\
+; the relief \"shadow\" color for the regular and hilight background."
+;      set-shadow-factor! shadow-factor)
+;     ("Menu Shadow Factor" "Menu Shadow Factor -\\n\
+; the factor that is used by menus to generate\\n\
+; the relief \"hilight\" color for the regular and hilight background."
+;      set-menu-shadow-factor! menu-shadow-factor)
+;     ("Highlight Factor" "Highlight Factor -\\n\
+; the factor that is used by windows with the current decor to generate\\n\
+; the relief \"shadow\" color for the regular and hilight background."
+;      set-hilight-factor! hilight-factor)
+;     ("Menu Highlight Factor" "Menu Highlight Factor -\\n\
+; the factor that is used by menus to generate\\n\
+; the relief \"shadow\" color for the regular and h ilight background."
+;      set-menu-hilight-factor! menu-hilight-factor)
+;     ("XTerm Command" "The command used for starting XTerm,\\n\
+; \(like `xterm' or `rxvt')." xterm-command #f)
+;     ;; (list "Icon Font" "The font for icons" set-icon-font! icon-font)
+;     ("Animation Delay" "??" animation-ms-delay #f)))
 
-(define* (settable-object-menuitem title help set-fn get-fn)
-  (let ((cur (to-string (if get-fn ((symbol-binding #f get-fn))
-			    (symbol-binding #f set-fn))))
-	(stt (if get-fn set-fn (lambda (zz) (symbol-set! #f set-fn zz)))))
-    (menuitem title #:action
-	      (menu (list (menuitem "Set" #:action
-				    (lambda ()
-				      (ask-string
-				       (string-append "New value for "
-						      title " (" cur "):")
-				       stt)))
-			  menu-separator
-			  (menuitem
-			   "Help" #:action
-			   (show-mesg help "\n\nCurrent-value:\t" cur)))))))
+; (define* (settable-object-menuitem title help set-fn get-fn)
+;   (let ((cur (to-string (if get-fn ((symbol-binding #f get-fn))
+;                           (symbol-binding #f set-fn))))
+;       (stt (if get-fn set-fn (lambda (zz) (symbol-set! #f set-fn zz)))))
+;     (menuitem title #:action
+;             (menu (list (menuitem "Set" #:action
+;                                   (lambda ()
+;                                     (ask-string
+;                                      (string-append "New value for "
+;                                                     title " (" cur "):")
+;                                      stt)))
+;                         menu-separator
+;                         (menuitem
+;                          "Help" #:action
+;                          (show-mesg help "\n\nCurrent-value:\t" cur)))))))
+
+(define (reset-user-variable symbol) ; return lambda
+  (lambda ()
+    (let ((nm (symbol->string symbol)))
+      (if (not (symbol-bound? #f symbol))
+          (message "Symbol `" nm "' is not bound.")
+          (let* ((setter (string->symbol (string-append "set-" nm "!")))
+                 (res (eval-string
+                       (ask-string (call-with-output-string
+                                    (lambda (out)
+                                      (display "Symbol: `" out)
+                                      (display nm out)
+                                      (display "'\n\n Value:\n\n " out)
+                                      (write (if (symbol-bound? #f setter)
+                                                 ((symbol-binding #f symbol))
+                                                 (symbol-binding #f symbol))
+                                             out)
+                                      (display "\n\n" out)
+                                      (help symbol out)
+                                      (if (symbol-bound? #f setter)
+                                          (help setter out))))))))
+            (if (symbol-bound? #f setter)
+                ((symbol-binding #f setter) res)
+                (symbol-set! #f symbol res)))))))
+
+(define-public (user-option-menuitem symbol)
+  "Create a menuaitem for the option."
+  (menuitem (symbol->string symbol) #:action (reset-user-variable symbol)))
 
 (define-public (menu-prefs . opts)
   (apply
    menu (list (menuitem "Preferences" #f) menu-title menu-separator
-	      (menuitem "View All Icons" #:action
-			(apply string-append "xv "
-			       (map (lambda (st) (string-append st "/* "))
-				    image-load-path)))
-	      (menuitem "Select Font" #:action "xfontsel")
-	      (menuitem "View All Fonts" #:action (show-com "xlsfonts"))
-	      menu-separator
-	      (menuitem "Info on a Window" #:action window-info)
-	      (menuitem "Window Properties" #:action (show-com "xprop"))
-	      (menuitem "General Info" #:action show-system-info)
-	      menu-separator
-	      (menuitem "SCWM interaction" #:action
-			(run-in-xterm "/usr/local/bin/scwmrepl"))
-	      (menuitem "Specific parameters" #:action
-			(menu (append!
-			       (list
-				(menuitem "Opaque Move" #:action
-					  (if 
-					   (scwm-is-constraint-enabled?)
-					   #f
-					   opaque-move-menu))
-				(menuitem "Desk Size" #:action desk-size-menu)
-				(menuitem "Scrolling" #:action scroll-menu))
-			       (map (lambda (item)
-				      (apply settable-object-menuitem item))
-				    settable-object-list))))
-	      menu-separator
-	      (menuitem
-	       "X resources" #:action
-	       (make-file-menu (string-append HOME "/.Xresources")
-			       (menuitem "Reload" #:action
-					 "xrdb -merge ${HOME}/.Xresources")))
-	      (menuitem
-	       "User Init File" #:action
-	       (make-file-menu user-init-file
-			       (menuitem "Reload" #:action
-					 (lambda () (load user-init-file)))))
-	      menu-separator
-	      (menuitem "Save settings" #:action save-settings))
+              (menuitem "View All Icons" #:action
+                        (apply string-append "xv "
+                               (map (lambda (st) (string-append st "/* "))
+                                    image-load-path)))
+              (menuitem "Select Font" #:action "xfontsel")
+              (menuitem "View All Fonts" #:action (show-com "xlsfonts"))
+              menu-separator
+              (menuitem "Info on a Window" #:action window-info)
+              (menuitem "Window Properties" #:action (show-com "xprop"))
+              (menuitem "General Info" #:action show-system-info)
+              menu-separator
+              (menuitem "SCWM interaction" #:action
+                        (run-in-xterm "/usr/local/bin/scwmrepl"))
+              (menuitem "Specific parameters" #:action
+                        (menu (append!
+                               (list
+                                (menuitem "Opaque Move" #:action
+                                          opaque-move-menu)
+                                (menuitem "Desk Size" #:action desk-size-menu)
+                                (menuitem "Scrolling" #:action scroll-menu))
+                               (map (lambda (item)
+                                      (apply user-option-menuitem item))
+                                    user-options))))
+              menu-separator
+              (menuitem
+               "X resources" #:action
+               (make-file-menu (string-append HOME "/.Xresources")
+                               (menuitem "Reload" #:action
+                                         "xrdb -merge ${HOME}/.Xresources")))
+              (menuitem
+               "User Init File" #:action
+               (make-file-menu user-init-file
+                               (menuitem "Reload" #:action
+                                         (lambda () (load user-init-file)))))
+              menu-separator
+              (menuitem "Save settings" #:action save-settings))
    opts))
