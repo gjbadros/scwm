@@ -1,3 +1,124 @@
+Sat Oct 18 00:04:40 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* miscprocs.c, miscprocs.h, scmprocs.c: Fixed scm-quit to take any
+ 	number of arguments. Patch from Mikael Djurfeldt <mdj@nada.kth.se>
+
+	* virtual.c: Commented out: changeDesks_func, changeWindowsDesk,
+ 	scroll, goto_page_func.
+
+	* Makefile.in: Removed bindings.c from the build process.
+
+	* bindings.c: Commented this whole file with #if
+ 	MS_DELETION_COMMENT
+
+	* window.c: Added another optional argument to get_window which
+ 	can be used to supress selecting a window.
+	
+	Added handling to the interactive-move procedure to start moves in
+ 	the right place.
+	
+	Changed show_titlebar and hide_titlebar to check the current state
+ 	of the titlebar before asking.
+	
+	Added set-lenience! procedure which sets the lenience flag.
+
+Fri Oct 17 19:30:20 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.h: Changed header for get_window.
+
+	* scwm.h: Added macros for Broadcast, BroadcastConfig and
+ 	BroadcastName which do nothing.
+
+	* scwm.c: Commented out several portions of unused code, including
+ 	the StartupStuff function.
+
+	* windows.c: Commented the whole file; it is gone from the build
+ 	process.
+	
+	* style.c: Commented the whole file; it is gone from the build
+ 	process.
+
+	* resize.c: Comented out the move_window function, which is no
+ 	longer used.
+	
+	* move.c: Comented out the move_window function, which is no
+ 	longer used, and fixed InteractiveMove so that moves are started
+ 	where the motion begins, not where the mouse cursor is when a move
+ 	is detected.
+
+	* module.c: Commented out the whole file. It is no longer in the
+ 	build process so this is redundant, but it is a useful reminder.
+
+	* misc.h: Commented out some of the prototypes for module
+ 	functions; several have been replaced by macros.
+
+	* menus.c: events.c: Commented out some no longer used code with
+ 	pairs of "#ifdef MS_DELETION_COMMENT" and "#endif /*
+ 	MS_DELETION_COMMENT */" for easy removal later. Also explicitly
+ 	undefined MS_DELETION_COMMENT at the top of the file just in
+ 	case. One deletion is in HandleKey and HandleButton, where
+ 	ExecuteFunction used to be called. It is no longer possible for
+ 	flow control to reach this point, and ExecuteFunction no longer
+ 	exists. Also, the DestroyMenu function was removed.
+
+	* functions.c: Commented out some no longer used code with pairs
+ 	of "#ifdef MS_DELETION_COMMENT" and "#endif /* MS_DELETION_COMMENT
+ 	*/" for easy removal later. Also explicitly undefined
+ 	MS_DELETION_COMMENT at the top of the file just in case. The
+ 	function ExecuteFunction and most entries in the func_config array
+ 	were removed.
+
+	* focus.c: Changed SetFocus to correctly handle windows with a
+ 	focus style of 'none.
+
+	* events.c: Commented out some no longer used code with pairs of
+ 	"#ifdef MS_DELETION_COMMENT" and "#endif /* MS_DELETION_COMMENT
+ 	*/" for easy removal later. Also explicitly undefined
+ 	MS_DELETION_COMMENT at the top of the file just in case. The two
+ 	deletions are in HandleKey and HandleButton, where ExecuteFunction
+ 	used to be called. It is no longer possible for flow control to
+ 	reach those points, and ExecuteFunction no longer exists.
+
+	* complex.c: Commented out a lot of no longer used code with
+        pairs of "#ifdef MS_DELETION_COMMENT" and "#endif /*
+        MS_DELETION_COMMENT */" for easy removal later. Also explicitly
+        undefined MS_DELETION_COMMENT at the top of the file just in
+        case. Functions removed are:
+
+        ComplexFunction,expand
+
+	
+	* builtins.c: Commented out a lot of no longer used code with
+ 	pairs of "#ifdef MS_DELETION_COMMENT" and "#endif /*
+ 	MS_DELETION_COMMENT */" for easy removal later. Also explicitly
+ 	undefined MS_DELETION_COMMENT at the top of the file just in
+ 	case. Functions and variables removed are:
+	
+	Maximize, WindowShade, Bell, add_item_to_menu, add_another_item,
+ 	destroy_menu, add_item_to_func, movecursor, iconify_function,
+ 	raise_function, lower_function, destroy_function, delete_function,
+ 	close_function, restart_function, exec_setup, strerror,
+ 	exec_function, refresh_function, refresh_win_function,
+ 	stick_function, wait_func, focus_func, warp_func, echo_func,
+ 	raiselower_func, SetEdgeScroll, SetEdgeResistance,
+ 	SetColormapFocus, SetClick, SetXOR, SetOpaque, SetDeskSize,
+ 	setPixmapPath, setIconPath, ModulePath, setModulePath, SetHiColor,
+ 	SetMenuStyle, LoadIconFont, LoadWindowFont, Circulate, PrevFunc,
+ 	NextFunc, NoneFunc, WindowIdFunc, module_zapper, Reborder.
+
+	* Makefile.in: Added VPATH support.
+
+	* add_window.c: AddWindow: eplace the call to resize_window with a
+ 	call to interactive_resize since resize_window is gone now.
+
+	* binding.c: find_mouse_event_type: also store the location of the
+ 	original event for use by interactive moves.
+
+Thu Oct 16 00:36:06 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.in: Removed read.c, module.c, windows.c and style.c
+ 	from the build process.
+
 Tue Oct 14 01:13:59 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c: Added many new procedures to support window styles:

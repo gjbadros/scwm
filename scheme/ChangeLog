@@ -1,3 +1,9 @@
+Sat Oct 18 02:19:58 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* wininfo.scm: wildcard-matcher: reversed the order of the if and
+ 	then clauses in (if full-regexp ...). Patch from Mikael
+ 	Djurfeldt <mdj@nada.kth.se>
+
 Fri Oct 17 18:18:55 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* style.scm: The 'new-window and 'new-window-hint event handlers
