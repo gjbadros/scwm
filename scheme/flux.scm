@@ -272,7 +272,48 @@ Return the selected window object, or #f if none was selected"
 ;;  (deiconify w) (move-to 0 0 w))
 
 (define-public (color->string color)
+  "Convert scwm color object COLOR into an X11 name of that color.
+The resulting string can, e.g., be used in command lines for executing
+other applications."
   (color-property color 'name))
 
 (define-public (set-window-title! win title)
+  "Change the window title X-Property of WIN to TITLE.
+WIN is a Scwm window object, TITLE is a string.  This procedure alters the
+window title by changing the WM_NAME X-Property."
   (set-window-text-property win "WM_NAME" title))
+
+(define-public (sec->usec sec)
+  "Convert SEC seconds into an equivalent number of microseconds.
+Especially useful for add-hook! and other timing related procedures
+that take microseconds."
+  (* 1000000 sec))
+
+(define-public (ms->usec ms)
+  "Convert MS milliseconds into an equivalent number of microseconds.
+Especially useful for add-hook! and other timing related procedures
+that take microseconds."
+  (* 1000 sec))
+
+;;; FIXGJB: this is an ugly hack, and doesn't work
+;;; anyway -- I just want to know the height of the title
+;;; bar for WIN
+(define-public (window-title-height win)
+  (let ((old-decor (current-decor))
+	(answer 1))
+    (set-current-decor! (window-decor win))
+    (set! answer (title-height))
+    (set-current-decor! old-decor)
+    answer))
+
+;; FIXGJB: a hack for now
+(define-public (window-border-width win) 2)
+
+(define-public (popup-menu-from-decoration menu win button-number)
+  "Popup MENU from WIN's decoration numbered BUTTON-NUMBER.
+This positions the popup menu appropriately."
+  (let* ((pos (window-position win))
+	 (x-ne (car pos))
+	 (y (+ (cadr pos) (+ 1 (* 2 (window-border-width win)) (window-title-height win))))
+	 (x (if (odd? button-number) x-ne (+ 1 x-ne (car (window-size))))))
+    (popup-menu menu #f x y (odd? button-number))))
