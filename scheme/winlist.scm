@@ -67,7 +67,7 @@ This is initially the default behaviour when WIN is selected from the window lis
 
 (define-public window-list-proc focus-change-warp-pointer)
 
-(define (filter-only-except l only except)
+(define-public (filter-only-except l only except)
   (filter (lambda (item)
 	    (and
 	     (and-map (lambda (pred) (pred item)) 

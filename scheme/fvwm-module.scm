@@ -325,13 +325,31 @@
 ;; 1) Shouldn't it be some sort of "and" instead of "or"?
 ;; 2) logior will never return #f, so the "true" branch will always be taken...
 ;; (There are several other functions in this file with the same problem.)
+
+;; Alexander Vorobiev: It seems (not (zero? (logand type mask))) should
+;; be used. I corrected all relevant functions.
+
 (define (module-broadcast type num-data arg1 arg2 arg3 arg4 arg5 arg6 arg7)
+  (if (scwm-option-get *debug-fvwm-module*)
+      (begin
+	   (display "broadcasting message of type: ")
+	   (write type)
+	   (newline)))
+  
   (map (lambda (fmod)
 	 (let ((to-module-write (car fmod))
 	       (mask (cadr fmod))
 	       (args (list arg1 arg2 arg3 arg4 arg5 arg6 arg7)))
 	   (set-cdr! (list-tail args (- num-data 1)) '())
-	   (if (logior type mask)
+	   (if (scwm-option-get *debug-fvwm-module*)
+   	       (begin
+	          (display "mask: ")
+	          (write mask)
+	          (newline)
+		  (display "(logand type mask): ")
+		  (write (logand type mask))))
+
+	   (if (not (zero? (logand type mask)))
 	       (fvwm2-module-send-packet 
 		type
 		(apply string-append
@@ -345,7 +363,7 @@
   (map (lambda (fmod)
 	 (let ((to-module-write (car fmod))
 	       (mask (cadr fmod)))
-	   (if (logior type mask)
+	   (if (not (zero? (logand type mask)))
 	       (fvwm2-module-send-packet 
 		type
 		(marshal-fvwm2-config-info window)
@@ -358,7 +376,7 @@
   (map (lambda (fmod)
 	 (let ((to-module-write (car fmod))
 	       (mask (cadr fmod)))
-	   (if (logior type mask)
+	   (if (not (zero? (logand type mask)))
 	       (fvwm2-module-send-packet 
 		type
 		(pad-string-to-long
@@ -376,7 +394,7 @@
   (map (lambda (fmod)
 	 (let ((to-module-write (car fmod))
 	       (mask (cadr fmod)))
-	   (if (logior type mask)
+	   (if (not (zero? (logand type mask)))
 	       (send-mini-icon-packet window to-module-write))))
        active-modules))
 

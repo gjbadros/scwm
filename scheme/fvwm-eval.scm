@@ -56,7 +56,13 @@
     (string->number 
      (sans-surrounding-whitespace (car s-args)))))
 
-
+(define (get-one-string-arg args)
+  (let* ((s-args (split-after-char
+                  #\space
+                  (sans-leading-whitespace args)
+    		  (lambda args args))))
+    (sans-surrounding-whitespace (car s-args))))
+				    
 (define fvwm-command-hash-table
   (make-hash-table 10))
 
@@ -363,7 +369,10 @@
 
 (define (extract-command s)
   (sans-surrounding-whitespace
-   (substring s (+ 1 (string-index s #\])) (string-length s))))
+      (let ((end-of-conditions (string-index s #\])))
+           (if end-of-conditions
+	       (substring s (+ 1 end-of-conditions) (string-length s))
+	       s))))
 
 (define (parse-flag s)
   (let* (
@@ -417,10 +426,10 @@
 	       #:only (car c) #:except (cdr c))))
 
 (define-fvwm-command "Current"
-  (let ((c (parse-conditions args)))
-    (if (null? (filter-only-except (list (window-with-focus))
-				   #:only (car c) #:except (cdr c)))
-	(eval-fvwm-command (extract-command args) fmod))))
+  (let ((c (parse-conditions args))
+        (w (window-with-focus)))
+    (if (filter-only-except (list w) (car c) (cdr c))
+	(eval-fvwm-command (extract-command args) fmod w))))
 
 (define-fvwm-command "IconFont"
   (set-icon-font! (sans-surrounding-whitespace args)))
@@ -522,6 +531,11 @@
 	      (lambda()
 		(eval-fvwm-command command-string fmod))))
   )
+		    
+(define-fvwm-command "ChangeDecor"
+      (if window
+            (let* ((arg (get-one-string-arg args)))
+	        (set-window-decor! window (eval (string->symbol arg))))))
 
 
 
