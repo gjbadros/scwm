@@ -536,6 +536,7 @@ scwm_themedir=${datadir}/${PACKAGE}-themes
 scwm_bin_load_path=${libdir}/${PACKAGE}-modules
 scwm_moduledir=${scwm_bin_load_path}/app/scwm
 scwm_utildir=${libdir}/${PACKAGE}-util
+scwm_pixmapdir=${libdir}/${PACKAGE}-pixmaps
 
 
 SCWM_ARG_PATH(scwmrcdir,
@@ -551,7 +552,7 @@ SCWM_ARG_PATH(scwmrcdir,
 ])
 
 # open the parentheses
-scwm_image_load_path="(";
+scwm_image_load_path="(\\\"${libdir}/${PACKAGE}-pixmaps\\\" ";
 
 for i in \
    ${x_includes}/X11/bitmaps \
@@ -578,6 +579,7 @@ AC_SUBST(scwm_load_path)
 AC_SUBST(scwm_bin_load_path)
 AC_SUBST(scwm_schemedir)
 AC_SUBST(scwm_themedir)
+AC_SUBST(scwm_pixmapdir)
 AC_SUBST(scwm_moduledir)
 AC_SUBST(scwmrcdir)
 AC_SUBST(scwm_image_load_path)
