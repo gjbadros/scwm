@@ -20,7 +20,8 @@
 
 ;; See also guile's (ice-9 session) module
 (define-module (app scwm reflection)
-  :use-module (ice-9 session))
+  :use-module (ice-9 session)
+  :use-module (app scwm listops))
 
 (define-public (procedure-arity proc)
   "Return the arity values for PROC.
@@ -41,7 +42,11 @@ Three values are returned in a list: (num-required num-optional rest-argument-p)
 
 (define-public (procedure-formals proc)
   "Return a list of the formal arguments for PROC.
-Returns #f if PROC is a primitive."
+Returns #f if PROC is a primitive.  If PROC was
+created using an optargs *-format macro, this 
+procedure will not provide much useful information.
+See instead `procedure-keyword-arguments' and 
+`procedure-optional-arguments'."
   (let ((source (procedure-source proc)))
     (if source
 	(cadr source)
@@ -54,4 +59,25 @@ arguments (this includes procedures defined using standard . rest
 syntax).  Otherwise returns a list such as '(foo #&optional bar).
 Note that these currently do not display in their expected format"
   (procedure-property proc 'optargs-arglist))
+
+
+(define-public (procedure-keyword-arguments proc)
+  "Returns an a-list of the optargs keyword arguments and default values for PROC."
+  (let ((got-key #f))
+    (filter-map (lambda (i) (if (eq? i '#&key)
+				(set! got-key #t))
+			(and got-key 
+			     (pair? i) i)) (procedure-optargs-arglist proc))))
+
+(define-public (procedure-optional-arguments proc)
+  "Returns a list of the optargs optional arguments for PROC."
+  (let ((in-optional #f))
+    (filter-map (lambda (i) (case i
+			      ('#&optional
+			       (set! in-optional #t))
+			      ('#&key
+			       (set! in-optional #f)))
+			(and in-optional
+			     (pair? i)
+			     (car i))) (procedure-optargs-arglist proc))))
 
