@@ -1,3 +1,11 @@
+Sat Jan 23 16:35:02 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xrm.c, xproperty.c, window.c, message-window.c, menulook.c,
+	menuitem.c, menu.c, image.c, face.c, decor.c, color.c,
+	callbacks.c, binding.c, ICCCM.c:  Replace uses of iarg with
+	literal numbers, and fixed numerous bugs of mismatching argument
+	number and name.
+
 Sat Jan 23 10:48:39 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* menu.c (PopdownMenu): Only invoked the unhover-action if the

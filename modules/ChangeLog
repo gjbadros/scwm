@@ -1,3 +1,12 @@
+Sat Jan 23 16:33:16 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* c-animation/c-animation.c: Replace uses of iarg with literal
+	numbers since they were buggy, and scwmdoc now does some checking
+	on the numbers.
+
+	* background/background.c:  Clean up argument mismatches, added /* 
+	scope */ comment on bare brace
+
 Sat Jan 23 14:23:27 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* xlib-drawing/drawing.c (xlib_point_pair_p,

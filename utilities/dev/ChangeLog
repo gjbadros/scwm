@@ -1,7 +1,12 @@
+Sat Jan 23 16:41:21 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Check scm_wrong_type_arg and VALIDATE_COLOR lines to
+ 	ensure that their argument index and argument name match
+
 1998-12-04  Todd Larason  <jtl@molehill.org>
 
-	* scwmdoc.in: fix to display escaped quotes inside C documentation 
-	strings properly - patch from Carl Witty
+	* scwmdoc.in: fix to display escaped quotes inside C documentation
+ 	strings properly - patch from Carl Witty
 
 Tue Nov 24 08:15:27 1998  Greg Badros  <gjb@cs.washington.edu>
 
