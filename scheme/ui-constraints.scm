@@ -570,16 +570,16 @@ an ui-constraint."
 ;; draw-constraints-of-window
 
 (define*-public (draw-constraints-of-window #&optional (win (get-window)))
-  "Draw all constraints associated with a window.
-If a window is not specified, the window with the focus is used."
+  "Draw all constraints associated with WIN.
+If WIN is not specified, the user is prompted to select a window."
   (map draw-constraint (ui-constraints-involving-window win)))
 
 
 ;; undraw-constraints-of-window
 
 (define*-public (undraw-constraints-of-window #&optional (win (get-window)))
-  "Undraw all constraints associated with a window.
-If a window is not specified, the window with the focus is used."
+  "Undraw all constraints associated with WIN.
+If WIN is not specified, the user is prompted to select a window."
   (map undraw-constraint (ui-constraints-involving-window win)))
 
 

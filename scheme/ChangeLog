@@ -1,5 +1,10 @@
 1999-09-16  Jeff Nichols  <jwnichls@cs.washington.edu>
 
+	* ui-constraints.scm: Fixed doc strings associated with 
+	recently added functions (see below entry). 
+
+1999-09-16  Jeff Nichols  <jwnichls@cs.washington.edu>
+
 	* ui-constraints.scm: Added draw-constraints-of-window and 
 	undraw-constraints-of-window functions.
 
