@@ -1,3 +1,17 @@
+Tue Dec  7 16:26:37 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c (s_handle_pending_events): Do not dispatch events when
+	still capturing the windows.  Avoids possible deadlocks.
+
+Tue Dec  7 16:18:00 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* callbacks.c (scwm_safe_call1): Only warn when using
+	call-interactively to invoke *named* procedures that do not have
+	interactive specifications.
+
+	* placement.c (PlaceWindow): Do not use a placement procedure when 
+	doing the initial capture of windows.  Avoids a deadlock.
+
 Tue Dec  7 14:56:20 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* callbacks.c: Fix arg mismatch caught by scwmdoc.
