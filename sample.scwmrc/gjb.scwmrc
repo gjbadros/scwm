@@ -1738,11 +1738,6 @@ union of all other window managers!
 (if (and (not (restarted?)) (not suppress-xclients))
     (run-dot-xclients-at-startup))
 
-(define scwm-messages-window (find-window-by-name "SCWM Messages...."))
-
-(if scwm-messages-window
-    (iconify scwm-messages-window))
-
 (debug-display " *** `scwmrc' processed.\n")
 
 ;; Remove the windows that are showing tail -f's on 
