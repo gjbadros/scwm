@@ -145,7 +145,8 @@
 
 
 (define mail-spool-dir (getenv "MAIL"))
-(define sounds-dir (or (getenv "SCWMSOUNDS") "/scratch/gjb/Media"))
+(define sounds-dir (or (getenv "MEDIA") (string-append scwmdir "/Media/")))
+;;(set! sounds-dir "/usr/contrib/Media/")
 (set! doc-files
   (append (map (lambda (s) (string-append scwmdir "/doc/" s ))
 	     (list "scwm-procedures.txt" "scwm-variables.txt" "scwm-hooks.txt"))
@@ -623,7 +624,7 @@
     (define (wavplay filename)
       (system (string-append "wavplay " filename "&"))))
 
-(define download-closed-wav (string-append sounds-dir "tada.wav")) 
+(define download-closed-wav (string-append sounds-dir "/tada.wav"))
 
 ;; GJB:FIXME:: make the time below (5) an option
 (define (netscape-download-closed-action win)
@@ -1309,9 +1310,10 @@ union of all other window managers!
 ;;(bind-mouse 'all "C-S-M-2" #f interactive-move)
 (bind-mouse 'all "C-S-M-2" #f interactive-move-selected-group-or-window)
 (bind-mouse 'all "C-S-M-3" #f interactive-resize)
-;; These always do rubberband moves (except when constraint solver is active)
-(bind-mouse 'all "H-2" #f interactive-move-rubberband)
-(bind-mouse 'all "H-3" #f interactive-resize-rubberband)
+;; These always do rubberband moves (except when built for constraint-solver--
+;; with cn solver builds all move/resize operations must be opaque)
+(bind-mouse 'window "H-2" #f interactive-move-rubberband)
+(bind-mouse 'window "H-3" #f interactive-resize-rubberband)
 
 (bind-mouse 'all "H-1" #f select-window-add-selection)
 (bind-mouse 'all "H-S-1" #f select-window-add-selection)
