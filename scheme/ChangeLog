@@ -1,4 +1,12 @@
+Wed Dec  2 08:42:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* tile.scm: New procedures `tile-windows' and `tile'. Similar to
+ 	cascade.scm, inspired by Andrew Veliath's FvwmTile.
+
 Tue Dec  1 21:24:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* cascade.scm (cascade-windows): Don't nest a let* immediately in
+ 	a let, just use a let*.
 
 	* Makefile.am (scwm_common_scheme): Make sure to install all
  	Scheme files (other than minimal.scm). Bug report from Carl

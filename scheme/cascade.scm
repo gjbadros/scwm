@@ -80,21 +80,21 @@ sum of the window's border width and title height."
 	     (cur-x (car start-pos))
 	     (cur-y (cadr start-pos)))
     (if (not (null? windows))
-	(let ((win (car windows)))
-	  (let* ((fs (window-frame-size win))
-		 (new-size (case resize
-			     ((always) max-size)
-			     ((shrink-only)
-			      (list (min (car fs) (car max-size))
-				    (min (cadr fs) (cadr max-size))))
+	(let* ((win (car windows))
+	       (fs (window-frame-size win))
+	       (new-size (case resize
+			   ((always) max-size)
+			   ((shrink-only)
+			    (list (min (car fs) (car max-size))
+				  (min (cadr fs) (cadr max-size))))
 			   ;;; MS:FIXME:: check for bad values
-			     (else fs))))
-	    (if (not (equal? new-size fs))
-		(resize-frame-to (car new-size) (cadr new-size) win)))
+			   (else fs))))
+	  (if (not (equal? new-size fs))
+	      (resize-frame-to (car new-size) (cadr new-size) win))
 	  (move-to cur-x cur-y win)
 	  (loop (cdr windows) (+ cur-x (num-or-apply x-increment win))
 		(+ cur-y (num-or-apply y-increment win)))))))
-			  
+  
 (define*-public (cascade #&key (only ()) (except ()) 
 			 (by-stacking #f) (by-focus #f)
 			 (reverse #f)
@@ -115,7 +115,7 @@ is cascaded.
 The options ONLY, EXCEPT, BY-STACKING, BY-FOCUS and REVERSE indicate
 the windows to use and the order to use them in, as with
 `list-windows'. However, unless IGNORE-DEFAULT-EXCEPTIONS is #t,
-transient, maximized sticky and iconified windows will be always be
+transient, maximized, sticky and iconified windows will be always be
 excluded.
 
 START-POS, MAX-SIZE, RESIZE, RAISE, X-INCREMENT and Y-INCREMENT
@@ -135,4 +135,10 @@ control the cascading options as for `cascade-windows'."
     #:by-stacking by-stacking #:by-focus by-focus #:reverse reverse)
    #:start-pos start-pos #:max-size max-size #:raise raise 
    #:resize resize #:x-increment x-increment #:y-increment y-increment))
+
+
+
+
+
+
 
