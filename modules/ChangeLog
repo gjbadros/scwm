@@ -1,3 +1,8 @@
+2000-01-09  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* viavoice/Makefile.am (INCLUDES): Would not find (generated)
+	"scwmpath.h" if srcdir!=builddir.
+
 Fri Dec  3 13:21:14 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* **/*.c:  Updated SCWM_*PROC and SCWM_*HOOK
