@@ -42,8 +42,6 @@ scwm_SOURCES =  string_token.c \
                 callbacks.c \
                 shutdown.c \
                 init_scheme_string.c \
-		constraint-primitives.c \
-		scwm-constraints.c \
                 guile-compat.c \
                 syscompat.c \
 		getopt.c \
@@ -65,7 +63,7 @@ scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XPM_LIB@ @x_libs@ @GUILE_LIBS@ @CASSOWARY_L
 INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h \
-binding.x callbacks.x color.x constraint-primitives.x \
+binding.x callbacks.x color.x \
 decor.x deskpage.x events.x face.x font.x image.x menuitem.x \
 miscprocs.x module-interface.x placement.x scwmmenu.x shutdown.x xproperty.x window.x
 
