@@ -172,10 +172,13 @@ Use the optional second argument as the separator."
     (if (equal? y 'y) (set! y oldy))
     ;; MS: see base.scm for x- and y-, which I think are a more genric
     ;; way to handle negative positions in the traditional X11 way.
-    (if (< x 0) (set! x (- root-size-x (abs x) width)))
-    (if (< y 0) (set! y (- root-size-y (abs y) height)))
+    (if (< x 0) (set! x (- root-size-x (+ (abs x) 1) width)))
+    (if (< y 0) (set! y (- root-size-y (+ (abs y) 1) height)))
     (raise-window w)
     (move-to x y w 'animated 'move-pointer-too)))
+
+;; (animated-move-to -1 'y)
+;; (animated-move-to 'x -1)
 
 (define-public (key-mouse-moves modifiers pct-of-screen left down up right)
   (bind-key 'all (string-append modifiers "-" left)
