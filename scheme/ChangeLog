@@ -1,3 +1,8 @@
+Sat Oct 10 14:25:29 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added `use-change-desk-commands' and make
+	make-rhosts-menu a public function
+
 1998-10-09  Sam Steingold  <sds@goems.com>
 
 	* std-menus.scm (make-hosts-menu): accept a (host . command) as an

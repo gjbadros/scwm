@@ -1,3 +1,18 @@
+Sat Oct 10 15:30:53 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use add-hook! for image-not-found-hook.  Fix
+	float->integer to use truncate.  Remove set!-s of
+	menu-{bg,text}-color since they're redundant w/ menu-style. Thanks 
+	Todd Larason!
+
+Sat Oct 10 14:26:27 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use cached-program-exists module to speed
+	startup. Turn off debug-fvwm-module switch.  Add binding of A-Tab
+	to the fancier show-window-list-menu w/ the last-focus-time.
+	Example use of `use-change-desk-commands'.  Try to get .xclients
+	running to be reliable-- still something wrong.
+
 1998-09-30  Jens-Ulrik Petersen  <petersen@kurims.kyoto-u.ac.jp>
 
 	* juhp.scwmrc: Added messages for start and end of file, and
