@@ -1,3 +1,9 @@
+Tue Jul  9 00:10:32 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* test-case.scm:
+	Made test-case display the title of the test that failed when a test
+	fails.
+
 Sun Apr 21 00:11:29 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* property-respond.scm:
