@@ -61,6 +61,13 @@ typedef struct
 #define IMAGE_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_image)
 #define IMAGE(X)  ((scwm_image *)gh_cdr(X))
 #define SAFE_IMAGE(X)  (IMAGE_P((X))? IMAGE((X)) : NULL)
+#define DYNAMIC_IMAGE_P(X) (gh_symbol_p(X)? \
+                            IMAGE_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
+                            IMAGE_P(X))
+#define IMAGE_OR_SYMBOL_P(X) (IMAGE_P(X) || gh_symbol_p(X))
+#define DYNAMIC_SAFE_IMAGE(X) (gh_symbol_p(X)? \
+                               SAFE_IMAGE(scm_symbol_binding(SCM_BOOL_F,(X))):\
+                               SAFE_IMAGE(X))
 
 EXTERN long scm_tc16_scwm_image;
 

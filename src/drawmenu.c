@@ -295,8 +295,8 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   GC ShadowGC;
   GC ReliefGC;
   GC currentGC;
-  scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
-  scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
+  scwm_image *psimgLeft = DYNAMIC_SAFE_IMAGE(pmi->scmImgLeft);
+  scwm_image *psimgAbove = DYNAMIC_SAFE_IMAGE(pmi->scmImgAbove);
   menu_item_state mis = pmiim->mis;
 
   /* code for FVWM menu look here -- should abstract for other options */
@@ -452,7 +452,7 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
   }
 
   { /* scope */
-    scwm_image *psimgSide = SAFE_IMAGE(pmd->pmenu->scmImgSide);
+    scwm_image *psimgSide = DYNAMIC_SAFE_IMAGE(pmd->pmenu->scmImgSide);
     if (psimgSide) {
       DBUG((DBG,__FUNCTION__,"Painting side image"));
       PaintSideImage(w,pmdi->SideBGColor,pmd->cpixHeight,psimgSide,
@@ -581,8 +581,8 @@ ConstructDynamicMenu(DynamicMenu *pmd)
   
   { /* scope */
     Menu *pmenu = pmd->pmenu;
-    scwm_image *psimgSide = SAFE_IMAGE(pmenu->scmImgSide);
-    scwm_image *psimgBackground = SAFE_IMAGE(pmenu->scmImgBackground);
+    scwm_image *psimgSide = DYNAMIC_SAFE_IMAGE(pmenu->scmImgSide);
+    scwm_image *psimgBackground = DYNAMIC_SAFE_IMAGE(pmenu->scmImgBackground);
     scwm_font *scfont;
     MenuItemInMenu **rgpmiim = pmd->rgpmiim;
 
@@ -618,8 +618,8 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     for (imiim = 0; imiim < cmiim; imiim++) {
       MenuItemInMenu *pmiim = rgpmiim[imiim];
       MenuItem *pmi = pmiim->pmi;
-      scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
-      scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
+      scwm_image *psimgAbove = DYNAMIC_SAFE_IMAGE(pmi->scmImgAbove);
+      scwm_image *psimgLeft = DYNAMIC_SAFE_IMAGE(pmi->scmImgLeft);
       int text_width;
       int extra_text_width = 0;
       int item_height = MENU_ITEM_EXTRA_VERT_SPACE * 2;

@@ -302,7 +302,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   iarg++;
   if (UNSET_SCM(picture_side)) {
     picture_side = SCM_BOOL_F;
-  } else if (!IMAGE_P(picture_side)) {
+  } else if (!IMAGE_OR_SYMBOL_P(picture_side)) {
     scm_wrong_type_arg(FUNC_NAME,iarg,picture_side);
   } 
   pmenu->scmImgSide = picture_side;
@@ -333,7 +333,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   iarg++;
   if (UNSET_SCM(picture_bg)) {
     picture_bg = SCM_BOOL_F;
-  } else if (!IMAGE_P(picture_bg)) {
+  } else if (!IMAGE_OR_SYMBOL_P(picture_bg)) {
     scm_wrong_type_arg(FUNC_NAME,iarg,picture_bg);
   } 
   pmenu->scmImgBackground = picture_bg;
