@@ -85,7 +85,11 @@
 /usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
 /usr/local/icons:\
 /uns/share/include/X11/pixmaps:/uns/share/include/X11/bitmaps:\
-/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
+/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons:."))
+
+(set! image-load-path (cons "/usr/local/icons" image-load-path))
+(set! image-load-path (cons "/uns/share/include/X11/pixmaps" image-load-path))
+(set! image-load-path (cons "/uns/share/include/X11/bitmaps" image-load-path))
 
 (define pic-system-button
   (make-image "mini-sys3d-full.xpm"))
