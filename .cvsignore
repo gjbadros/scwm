@@ -10,3 +10,5 @@ libtool
 ltconfig
 ltmain.sh
 scwm.spec
+*.tar.gz
+*.rpm
