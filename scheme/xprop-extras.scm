@@ -37,6 +37,12 @@ Do nothing if the cut buffer does not contain a string."
   (let ((t (X-cut-buffer-string)))
     (if t (set-window-title! window t))))
 
+(define*-public (propagate-selection-to-cut-buffer #&optional (selection "PRIMARY"))
+  "Make the cut-buffer contain the current selection."
+  (interactive)
+  (X-handle-selection-string selection
+			     (lambda (str) (X-set-cut-buffer-string! str))))
+
 (define*-public (X-handle-selection-string selection value-handler)
   "Run VALUE-HANDLER on the selection SELECTION after retrieving it.
 The VALUE-HANDLER should take a single argument, the string value

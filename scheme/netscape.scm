@@ -125,13 +125,14 @@ It defaults to `*netscape-new-window*'."
 		 (execute (string-append "netscape " (uri-escapify-comma url))))))))
 
 (define*-public (netscape-goto-selection-url 
-		 #&optional (new *netscape-new-window*))
-  "Goto the url that is held in the X11 PRIMARY selection.
+		 #&optional (new *netscape-new-window*) (selection "PRIMARY"))
+  "Goto the url that is held in the X11 selection, SELECTION.
 Uses the cut buffer instead if no selection exists.
 See `X-handle-selection-string' and `netscape-goto-url'.  NEW can be #f to
-not open a new netscape frame."
+not open a new netscape frame. SELECTION defaults to \"PRIMARY\" if not given.
+"
   (interactive)
-  (X-handle-selection-string "PRIMARY" 
+  (X-handle-selection-string selection
 			     (lambda (str)
 			       (netscape-goto-url 
 				(if str str (X-cut-buffer-string)) display-message-briefly new))))
@@ -180,7 +181,16 @@ See `netscape-download-closed-action'."
   (netscape-goto-url (string-append url-google (cgi-escapify-space word))))
 
 (define*-public (netscape-google-search-cut-buffer)
-  "Use netscape to do a Google search of the `X-cut-buffer-string'."
+  "Use Netscape to do a Google search of the `X-cut-buffer-string'."
   (interactive)
   (let ((s (X-cut-buffer-string)))
     (and s (netscape-google-search s))))
+
+
+(define*-public (netscape-google-search-selection-url #&optional (selection "PRIMARY"))
+  "Use Netscape to do a Google search of the selection, SELECTION.
+SELECTION defaults to \"PRIMARY\" if not specified."
+  (interactive)
+  (X-handle-selection-string selection
+			     (lambda (str)
+			       (netscape-google-search str))))
