@@ -32,33 +32,44 @@
 
 ;; Convenience procedures for specifying positions and sizes.
 (define-public (%x x)
+  "Return the number of pixels that is X percent of the display width."
   (inexact->exact (truncate (/ (* x (car (display-size))) 100))))
 
 (define-public (%y y)
+  "Return the number of pixels that is Y percent of the display height."
   (inexact->exact (truncate (/ (* y (cadr (display-size))) 100))))
 
 (define-public (x- x)
+  "Return the pixel coordinate that is X pixels left from the right display edge."
   (- (car (display-size)) x))
 
 (define-public (y- y)
+  "Return the pixel coordinate that is Y pixels up from the bottom display edge."
   (- (cadr (display-size)) y))
 
 (define-public (%x- x)
+  "Return the pixel coordinate X percent of the width away from the right edge."
   (inexact->exact (truncate (/ (* (- 100 x) (car (display-size))) 100))))
 
 (define-public (%y- y)
+  "Return the pixel coordinate Y percent of the height away from the bottom edge."
   (inexact->exact (truncate (/ (* (- 100 y) (cadr (display-size))) 100))))
 
 (define*-public (w%x x #&optional (w (get-window)))
+  "Return a pixel width X percent of the width of window W."
   (inexact->exact (truncate (/ (* x (car (window-frame-size w))) 100))))
 
 (define*-public (w%y y #&optional (w (get-window)))
+  "Return a pixel height Y percent of the height of window W."
   (inexact->exact (truncate (/ (* y (cadr (window-frame-size w))) 100))))
 
 (define-public (execute command) 
+  "Execute COMMAND in the background."
   (system (string-append "exec " command " &")))
 
 (define-public (program-exists? program-name)
+  "Return #t if PROGRAM-NAME is found as an executable in the current $PATH.
+Returns #f otherwise."
   (= 0 (system (string-append "which " program-name " >/dev/null" ))))
 
 
@@ -91,10 +102,15 @@
 
 ;; relative versions of absolute move procedures.
 (define-public (move-pointer x y)
+  "Move the X11 pointer X pixels to the right, and Y pixels down.
+If X is negative, moves to the left.  If Y is negative moves up."
   (let ((pos (pointer-position)))
     (move-pointer-to (+ x (car pos)) (+ y (cadr pos)))))
 
 (define-public (move-viewport x y)
+  "Move the viewport onto the virtual desktop relatively.
+Moves X pixels horizontally, to the right if positive, to the left if
+negative, and Y pixels vertically, down if positive, up if negative."
   (let ((pos (viewport-position)))
     (set-viewport-position! (+ x (car pos)) (+ y (cadr pos)))))
 
@@ -102,6 +118,9 @@
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
 		     (stipple #f) font mwm mwm-style)
+  "Set various properites for the menus.
+Many of these are ignored.  See `make-menu' for options on
+creation of individual menus."
   (if (or fg foreground) (set-menu-foreground! (or fg foreground)))
   (if (or bg background) (set-menu-background! (or bg background)))
   (if stipple (set-menu-stipple! stipple))
@@ -117,6 +136,9 @@
 ;; future.
 
 (define*-public (simple-title-style #&key font height justify)
+  "Set the style for titlebars.
+FONT is a font, HEIGHT is a number, JUSTIFY is a legal argument
+to `set-title-justify' such as 'left, 'right, or 'center."
   (if (bound? font)
       (set-title-font! font))
   (if (bound? height) 
@@ -124,10 +146,13 @@
   (if (bound? justify)
       (set-title-justify! justify)))
 
+;; Create an empty menu-item which is drawn as a separator line in menus.
 (define-public menu-separator
   (make-menuitem "" #f))
 
-(define-public menu-title menu-separator)
+;; menu-title is an alias for menu-separator
+(define-public menu-title
+  menu-separator)
 
 ;; should this be public?
 (define (hotkeys-from-name label)
@@ -147,6 +172,21 @@
 (define*-public (menuitem label #&key image-above image-left
 			  extra-label action hover-action unhover-action
 			  hotkey-prefs)
+  "Return a menuitem object with the given attributes.
+LABEL is a string for the name on the item.
+IMAGE-ABOVE is an image object to show above the label.
+IMAGE-LEFT is an image object to show to the left of the label.
+EXTRA_LABEL is a second label shown on the item.
+ACTION is a menu object or a procedure; if it is a menu object,
+the item will popup ACTION as a sub-menu, if it is a procedure,
+the procedure will be invoked when the item is selected.
+HOVER-ACTION is an procedure to be invoked when the item is
+highlighted but not invoked for a moment; UNHOVER-ACTION is 
+a procedure to be invoked after the HOVER-ACTION is invoked
+when the item is unhighlighted.  HOTKEY-PREFS is a string listing
+the characters which are appropriate shortcut-keys for the item;
+the first not-yet-used-in-this-menu character will be used for
+the shortcut key for the menu item."
   (if (or (bound? hotkey-prefs)
 	  (string=? label ""))
       ()
@@ -171,6 +211,14 @@
 		      (color-text 'menu-text-color)
 		      (color-bg 'menu-bg-color)
 		      (font 'menu-font))
+  "Return a menu object with the given attributes.
+LIST-OF-MENUITEMS is a list of menuitem objects (each created with
+`make-menuitem' or `menuitem').  IMAGE-SIDE is an image object to be
+displayed along the left edge of the menu.  COLOR-BG-IMAGE-SIDE is the
+background color for that image object.  COLOR-TEXT is a color object
+or string for the foreground text color of menu items.  COLOR-BG is a
+color object or string for the background color for the menu and menu
+items.  FONT is a font object for the font of the menu items."
   (if (string? image-side)
       (set! image-side (make-image image-side)))
   (if (string? color-bg)
@@ -183,12 +231,18 @@
 	     color-bg color-text image-bg font))
 
 (define-public (image-property image key)
+  "Return the KEY property of IMAGE.
+See `image-properties' for a list of the keys."
   (cdr (assoc key (image-properties image))))
 
 (define-public (font-property font key)
+  "Return the KEY property of FONT.
+See `font-properties' for a list of the keys."
   (cdr (assoc key (font-properties font))))
 
 (define-public (color-property color key)
+  "Return the KEY property of COLOR.
+See `color-properties' for a list of the keys."
   (cdr (assoc key (color-properties color))))
 
 ;; for compatability
@@ -198,7 +252,7 @@
 ;;; General functionality for splitting long menus
 ;;; ----------------------------------------------
 ; the max number of lines in a menu
-(define-public default-max-fold-lines 30)		
+(define-public default-max-fold-lines 30)
 
 (define (split-list ls max)
   (let ((le (length ls)) (tt ()) (t1 ()))
@@ -208,6 +262,8 @@
 
 (define*-public (fold-menu-list 
 		ml #&optional (max-lines default-max-fold-lines))
+  "Split ML into chained menus of no more than MAX-LINES items.
+ML is a list of menuitem objects. MAX-LINES is a number."
   ; split the menu list into groups of max-lines
   (if (<= (length ml) max-lines) ml
       (map (lambda (lm) (menuitem "more..." #:action (menu lm)))
@@ -216,10 +272,17 @@
 ;; Convenience function to return a precedure that will run a system
 ;; command.
 (define-public (exe command) 
+  "Return a procedure that runs the system command COMMAND."
   (lambda () (execute command)))
 
-(define-public xterm-command "xterm ")
-(define-public (run-in-xterm cmd) (exe (string-append xterm-command cmd)))
+(define-public xterm-command "xterm -e ")
+
+(define-public (run-in-xterm cmd)
+  "Return a procedure that runs CMD in an xterm.
+Uses the variable \"xterm-command\" to determine how
+to run an xterm.  CMD must be simply the name of an
+executable (i.e., no options permitted)."
+  (exe (string-append xterm-command cmd)))
 
 ;; MSFIX:
 ;; this is redundant w/ below
@@ -254,13 +317,24 @@
 
 
 (define-public (set-edge-resistance! s m)
+  "Set the edge scroll delay to S, and the edge move threshold to M.
+See also `set-edge-scroll-delay!' and `set-edge-move-threshold!'."
   (set-edge-scroll-delay! s)
   (set-edge-move-threshold! m))
 
 (define-public (set-edge-wrap! x y)
+  "Set the edge x and y wrap values to X and Y, respectively.
+These values should be #t to mean that the pointer should
+wrap in the given direction, or #f to not wrap around.
+See also `set-edge-x-wrap!' and `set-edge-y-wrap!'."
   (set-edge-x-wrap! x)
   (set-edge-y-wrap! y))
 
 (define-public (set-edge-scroll! x y)
+  "Set the edge scroll values to X and Y, respectively.
+These values are the number of pixels that the viewport
+moves when the pointer hits the edge of the screen.  Use
+`%x' and `%y' to convert from a percentage of a screen
+dimension to a number of pixels."
   (set-edge-x-scroll! x)
   (set-edge-y-scroll! y))
