@@ -14,12 +14,14 @@
 ;; (use-modules (app scwm ui-constraints-toggle-menu))
 ;; (use-modules (app scwm modifier-key-bindings))
 
+(define-public solver #f)
+
 (define-public (reset-constraints)
   "Reset the constraint solving system.
 This switches to a fresh new master solver object, and resets
 the global list of ui-constraint instances (so the menu of
 constraints is reset to empty)."
-  (define-public solver (make-cl-solver))
+  (set! solver (make-cl-solver))
   (scwm-set-master-solver! solver)
   (set! global-constraint-instance-list '()))
 

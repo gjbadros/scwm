@@ -103,6 +103,21 @@ order in which they appear in HOOK-LIST"
 			   (newline))))
 		hook-list)))
 
+
+(if (not (defined? 'reset-hook!))
+    (defmacro-public reset-hook! (hook)
+      `(set! ,hook ())))
+
+(if (not (defined? 'make-hook))
+    (begin
+      ;; guile-1.3
+      (define-public (make-hook . n) ())
+      (define-public hook? list?))
+    ;; guile-1.3.2 and later
+    (define-public (hook? h) 
+      (and (pair? h) (eq? (car h) 'hook))))
+
+
 ;; GJB:FIXME:: this should not be public,
 ;; but I leave it public for now for easier debugging --07/03/99 gjb
 (define-public *scwm-modules* '())

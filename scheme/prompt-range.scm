@@ -107,11 +107,13 @@ See also `prompt-range'."
 					 (car range) (cdr range)
 					 1.0 page-inc 0.0))
 	 (scale (gtk-hscale-new adjustment)))
-    (gtk-widget-set-usize scale 300 30)
+    ;; GJB:FIXME:: these numbers are lame-- should be based on 
+    ;; the width of the parent and the height of the font
+    (gtk-widget-set-usize scale 500 30)
     (gtk-range-set-update-policy scale 'delayed)
     (gtk-scale-set-digits scale digits)
     (gtk-scale-set-draw-value scale #t)
-    (gtk-box-pack-start hbox label #t #f)
+    (gtk-box-pack-start hbox label #t #f 5)
     (gtk-box-pack-start hbox scale #f #f)
     (gtk-widget-show label)
     (gtk-widget-show scale)

@@ -30,19 +30,6 @@
 (define menu-hl-fg-color #f) ;; (make-color "yellow"))
 (define menu-hl-bg-color #f) ;; (make-color "black"))
 
-
-
-(if (<= (string->number (minor-version)) 3)
-    (begin
-      ;; HACK: GJB:FIXME:: This needs to be done in the root module
-      ;; to replace the primitive in more recent guile snapshots
-      (defmacro-public reset-hook! (hook)
-	`(set! ,hook ()))
-      (define-public (make-hook . n) ())
-      (define-public hook? list?))
-    (define-public (hook? h) (and (pair? h) (eq? (car h) 'hook))))
-    
-
 
 
 (define-module (app scwm base)

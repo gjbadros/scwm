@@ -54,10 +54,14 @@ See instead `procedure-keyword-arguments' and
 `procedure-optional-arguments'."
   (and (symbol? proc) (set! proc (eval proc)))
   (or (procedure-property proc 'arglist)
-      (let ((source (procedure-source proc)))
-	(if source
-	    (cadr source)
-	    #f))))
+      (catch #t
+	     (lambda ()
+	       (let ((source (procedure-source proc)))
+		 (if source
+		     (cadr source)
+		     #f)))
+	     (lambda (key . args)
+	       #f))))
 
 (define-public (procedure-required-formals proc)
   "Return a list of the required formal arguments for PROC.
@@ -66,10 +70,8 @@ any \"lambda*\" formals generated using optargs. See also
 `procedure-keyword-arguments' and `procedure-optional-arguments'."
   (and (symbol? proc) (set! proc (eval proc)))
   (let ((formals (procedure-formals proc)))
-    (if (symbol? formals)
-	(if (string-match "^lambda\\*:" (symbol->string formals))
-	    '()
-	    formals)
+    (if (or (not formals) (symbol? formals))
+	'()
 	(begin
 	  (filter-map (lambda (f) (if (string-match "^lambda\\*:" 
 						    (symbol->string f))
@@ -117,12 +119,89 @@ Note that these currently do not display in their expected format"
 				    (and in-optional
 					 (pair? i)
 					 (car i))) optargs-arglist))
-	      #f)))))
+	      (let ((formals (procedure-formals proc)))
+		(if formals
+		    (list-tail formals (procedure-num-required-args proc))
+		    '() )))))))
 
 
+;; very slightly changed from ice-9 session's apropos-internal
+(define-public (apropos-internal-with-modules rgx)
+  "Return a list of accessible variable names and the modules they are defined in."
+  (let ((match (make-regexp rgx))
+	(modules (cons (current-module)
+		       (module-uses (current-module))))
+	(recorded (make-vector 61 '()))
+	(vars (cons '() '())))
+    (let ((last vars))
+      (for-each
+       (lambda (module)
+	 (for-each
+	  (lambda (obarray)
+	    (array-for-each
+	     (lambda (oblist)
+	       (for-each
+		(lambda (x)
+		  (if (and (regexp-exec match (car x))
+			   (not (hashq-get-handle recorded (car x))))
+		      (begin
+			(set-cdr! last (cons (cons (module-name module) (car x)) '()))
+			(set! last (cdr last))
+			(hashq-set! recorded (car x) #t))))
+		oblist))
+	     obarray))
+	  (if (or (eq? module the-scm-module)
+		  (eq? module the-root-module))
+	      (list (builtin-weak-bindings)
+		    (builtin-bindings))
+	      (list (module-obarray module)))))
+       modules))
+    (cdr vars)))
+
+(define-public (procedure-is-interactive? proc)
+  "Return #t iff PROC can take no arguments."
+  (let ((arity (procedure-arity proc)))
+    (and 
+     (eqv? (car arity) 0)
+     (eqv? (cadr arity) 0))))
+
+;; (procedure-apropos-with-modules "n")
+(define-public (procedure-apropos-with-modules rgx)
+  "Returns a list of procedures that match RGX along with defined-in modules.
+The returned list contains pairs (modulesym . procsym)"
+  (filter-map (lambda (p) (let ((m-p (eval (cdr p)))) 
+			    (if (procedure? m-p) p #f)))
+	      (apropos-internal-with-modules rgx)))
+
+;; (procedure-apropos "n")
 (define-public (procedure-apropos rgx)
   "Returns a list of procedures that match RGX.
-Unlike `apropos-internal', this procedure returns
-the procedures themself, not a list of symbols."
-  (filter-map (lambda (p) (let ((proc (eval p))) (if (procedure? proc) proc #f)))
-	      (apropos-internal rgx)))
+This returns a simple list of procedure objects."
+  (map (lambda (p) (eval (cdr p))) (procedure-apropos-with-modules rgx)))
+
+;; (interactive-procedure-apropos-with-modules "n")
+(define-public (interactive-procedure-apropos-with-modules rgx)
+  "Returns a list of procedures that match RGX and that can take no arguments.
+I.e., they are interactive procedures useful for bindings.
+The returned list contains pairs (modulesym . procsym)"
+  (filter-map (lambda (p) (let ((m-p (eval (cdr p)))) 
+			    (if (and (procedure? m-p) 
+				     (procedure-is-interactive? m-p))
+				p
+				#f)))
+	      (apropos-internal-with-modules rgx)))
+
+;; (interactive-procedure-apropos "n")
+(define-public (interactive-procedure-apropos rgx)
+  "Returns a list of interactive procedures that match RGX.
+This returns a simple list of procedure objects."
+  (map (lambda (p) (eval (cdr p))) (interactive-procedure-apropos-with-modules rgx)))
+
+;(map procedure-required-formals (procedure-apropos "n"))
+;(map procedure-optional-formals (procedure-apropos "n"))
+;(map procedure-keyword-formals (procedure-apropos "n"))
+
+;(procedure-source current-module)
+;(procedure-formals current-module)
+
+;(procedure? current-module)
