@@ -1367,11 +1367,15 @@ union of all other window managers!
 
 (key-mouse-moves "C-M-S" 1 "y" "u" "i" "o")
 
-(key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
-(key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
-
 ;; avoid lots of warnings.... test for this first...
-(define have-kp-keysyms (and (keysym->keycode "KP_Left") #t))
+(define have-kp-keysyms (not (null? (keysym->keycode "KP_Left"))))
+(define have-kp-num-keysyms (not (null? (keysym->keycode "KP_4"))))
+
+(if have-kp-keysyms
+    (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right"))
+
+(if have-kp-num-keysyms
+    (key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6"))
 
 (if have-kp-keysyms
     (key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right"))

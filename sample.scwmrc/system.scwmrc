@@ -460,7 +460,7 @@
 (debug-display "After setting image-load-path\n")
 
 (define (suggest-image-path-for name)
-  (let ((found-if-0 (system (string-append "locate " name))))
+  (let ((found-if-0 (system (string-append "locate '*/" name "'"))))
     (if (= 0 found-if-0)
 	(display (string-append "Perhaps try adding above path to image-load-path\n")))))
 
@@ -1364,12 +1364,11 @@ union of all other window managers!
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
 
 ;; avoid lots of warnings.... test for this first...
-(define have-kp-keysyms (and (keysym->keycode "KP_Left") #t))
+(define have-kp-keysyms (not (null? (keysym->keycode "KP_Left"))))
+(define have-kp-num-keysyms (not (null? (keysym->keycode "KP_4"))))
 
 (if have-kp-keysyms
     (key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right"))
-
-(define have-kp-num-keysyms (and (keysym->keycode "KP_4") #t))
 
 (if have-kp-num-keysyms
     (key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6"))
