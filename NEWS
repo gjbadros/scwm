@@ -2,7 +2,26 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
 See the end for copying conditions.
 
-Changes to scwm-0.9beta1 (since 0.8)
+Changes to scwm-0.9 (since 0.8)
+
+* New session-management-related primitives: (SM-client-id)(SM-error-message)
+
+* Numerous documentation fixes
+
+* changed handling of window placement and desk selection
+
+* New virtual desktop utility functions
+
+* First-class message windows
+
+* high-level interface to backgrounds
+
+* interactive-move/resize opaqueness handiling
+
+* tile
+
+* Experimental quality interface with guile-gtk, plus a few incomplete
+sample modules for using it.
 
 * Extensive session management support for use with xsm or
 gnome-session; see doc/session-management.

@@ -1,4 +1,9 @@
-1999-01-07  Todd Larason  <jtl@molehill.org>
+Mon Jan 11 18:19:58 1999  Maciej Stachowiak  <mstx@VICARIOUS-EXISTENCE.MIT.EDU>
+
+	* NEWS: Updated for 0.9 (only rough outline of changes - still
+ 	needs editing).
+
+x1999-01-07  Todd Larason  <jtl@molehill.org>
 
 	* autogen.sh: Add libtoolize call
 	* ltmain.sh, ltconfig: remove
