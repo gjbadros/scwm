@@ -90,16 +90,16 @@ is filled with BGCOLOR. */
 {
   int nw;
   int nh;
+  SCM img;
 
-  {
-    SCM i = image;
-    if (gh_string_p(image)) {
-      image = make_image(image);
-    }
+  if (gh_string_p(image)) {
+    img = make_image(image);
+  } else {
+    img = image;
+  }
     
-    if (!IMAGE_P(image)) {
-      scm_wrong_type_arg(FUNC_NAME, 1, i);
-    }
+  if (!IMAGE_P(img)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, image);
   }
 
   if (!gh_number_p(width)) {
@@ -116,36 +116,36 @@ is filled with BGCOLOR. */
 
   VALIDATE_COLOR_OR_UNDEFINED(bgcolor, FUNC_NAME, 4);
 
-  if (IMAGE(image)->width==nw && IMAGE(image)->height==nh) {
-    return image;
+  if (IMAGE(img)->width==nw && IMAGE(img)->height==nh) {
+    return img;
   }
   
-  {
+  { /* scope */
     SCM retval;
     int ox, oy, nx, ny, nnw, nnh;
     XGCValues gcv;
     GC gc;
-    Pixmap pix = IMAGE(image)->image;
-    Pixmap bit = IMAGE(image)->mask;
+    Pixmap pix = IMAGE(img)->image;
+    Pixmap bit = IMAGE(img)->mask;
     
     Pixmap npix = XCreatePixmap(dpy, Scr.Root, nw, nh, Scr.d_depth);
 
-    if (IMAGE(image)->height <= nh) {
+    if (IMAGE(img)->height <= nh) {
       oy = 0;
-      ny = (nh - IMAGE(image)->height)/2;
-      nnh = IMAGE(image)->height;
+      ny = (nh - IMAGE(img)->height)/2;
+      nnh = IMAGE(img)->height;
     } else {
-      oy = (IMAGE(image)->height - nh)/2;
+      oy = (IMAGE(img)->height - nh)/2;
       ny = 0;
       nnh = nh;   
     }
 
-    if (IMAGE(image)->width <= nw) {
+    if (IMAGE(img)->width <= nw) {
       ox = 0;
-      nx = (nw - IMAGE(image)->width)/2;
-      nnw = IMAGE(image)->width;
+      nx = (nw - IMAGE(img)->width)/2;
+      nnw = IMAGE(img)->width;
     } else {
-      ox = (IMAGE(image)->width - nw)/2;
+      ox = (IMAGE(img)->width - nw)/2;
       nx = 0;
       nnw = nw;   
     }
@@ -189,15 +189,16 @@ STYLE can be either 'centered or 'tiled. */
 {
   Pixmap dummy = 0;
 
-  {
-    SCM i = image;
-    if (gh_string_p(image)) {
-      image = make_image(image);
-    }
+  SCM img;
 
-    if (!IMAGE_P(image)) {
-      scm_wrong_type_arg(FUNC_NAME, 1, i);
-    }
+  if (gh_string_p(image)) {
+    img = make_image(image);
+  } else {
+    img = image;
+  }
+
+  if (!IMAGE_P(img)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, image);
   }
  
   if (style==SCM_UNDEFINED) {
@@ -210,21 +211,21 @@ STYLE can be either 'centered or 'tiled. */
 
 
   if (style==sym_centered) {
-    image=make_resized_image(image, gh_ulong2scm(Scr.DisplayWidth),
+    img=make_resized_image(img, gh_ulong2scm(Scr.DisplayWidth),
 			     gh_ulong2scm(Scr.DisplayHeight),
 			     gh_vector_ref(protected_objs, SCM_MAKINUM(0)));
   };
 
-  gh_vector_set_x(protected_objs, SCM_MAKINUM(1), image);
-  XSetWindowBackgroundPixmap(dpy, Scr.Root, IMAGE(image)->image);
+  gh_vector_set_x(protected_objs, SCM_MAKINUM(1), img);
+  XSetWindowBackgroundPixmap(dpy, Scr.Root, IMAGE(img)->image);
   XClearWindow(dpy, Scr.Root);
 
   XChangeProperty(dpy, Scr.Root, atom_XROOTCOLOR_PIXEL, XA_CARDINAL, 32, PropModeReplace,
 		  (char *)&dummy, 1);
   XChangeProperty(dpy, Scr.Root, atom_XROOTPMAP_ID, XA_PIXMAP, 32, PropModeReplace,
-		  (char *)&(IMAGE(image)->image), 1);
+		  (char *)&(IMAGE(img)->image), 1);
   XChangeProperty(dpy, Scr.Root, atom_XSETROOT_ID, XA_PIXMAP, 32, PropModeReplace,
-		  (char *)&(IMAGE(image)->image), 1);
+		  (char *)&(IMAGE(img)->image), 1);
 
   return SCM_UNSPECIFIED;
 }
