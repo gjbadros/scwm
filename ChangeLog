@@ -1,5 +1,7 @@
 Sat Oct 18 02:29:34 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* configure: Regenerated from configure.in.
+
 	* configure.in: Added -g to the list of default build
  	flags. Suggested by Mikael Djurfeldt <mdj@nada.kth.se> to comply
  	with GNU coding standards.
