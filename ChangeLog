@@ -1,3 +1,10 @@
+Thu Apr 15 20:04:41 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* libtool-deps.patch: Added -- I need this patch to my generated
+	libtool to work around the inter-library dependence bug (see
+	libtool web page for more information).  Our snapshot script
+	should run this to patch libtool before packaging up.
+
 Thu Apr 15 19:54:07 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* acconfig.h: Added USE_PROPLIST #define -- not used right now
