@@ -6,6 +6,7 @@
 ;;;; In a sense, these are compiled-in primitives implemented in scheme
 ;;;; (these can get overridden later, of course)
 
+(use-modules (app scwm optargs))
 
 (define-public guile-version (+ (string->number (major-version)) 
 				(/ (string->number (minor-version)) 10)))
@@ -41,21 +42,23 @@
 
 
 ;;; Some functions for decoration bindings
-(define (resize-or-raise)
+(define* (resize-or-raise)
   "Perform a resize, raise, or lower based on the mouse-event-type.
 To be bound to a window decoration: click does `raise-window',
 motion does `interactive-resize', and double-click does
 `lower-window'."
+  (interactive)
   (case (mouse-event-type)
     ((click) (raise-window))
     ((motion) (hack-interactive-resize))
     ((double-click) (lower-window))))
 
-(define (move-or-raise)
+(define* (move-or-raise)
   "Perform a move, raise, or lower based on the mouse-event-type.
 To be bound to a window decoration: click does `raise-window',
 motion does `interactive-move', and double-click does
 `lower-window'."
+  (interactive)
   (case (mouse-event-type)
     ((click) (raise-window))
     ((motion) (hack-interactive-move))
