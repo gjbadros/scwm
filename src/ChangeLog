@@ -1,3 +1,26 @@
+Fri Jul  2 15:08:24 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* image.c (s_clone_scaled_image): Added `clone-scaled-image'
+	primitive (when compiled with imlib) for resizing image objects.
+
+Fri Jul  2 10:03:11 1999  Greg Badros  <gjb@cs.washington.edu>
+
+ 	Various bugs and doc problems from documentation extractor:
+	
+	* window.c: Fix FUNC_NAME for any-id->win.
+
+	* virtual.c: Added docs for scroll-region variable.
+
+	* miscprocs.c: Rename X-connection-number to x-connection-number.
+
+	* message-window.c: Fix args params to message-window-set-size!
+
+	* image.c: doc fixes for `window->image'.
+
+	* cursor.c: Fix args params to `create-pixmap-cursor'
+
+	* callbacks.c: doc,args fix to `reset-input-hook!'
+
 Fri Jul  2 08:40:31 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* message-window.h, message-window.c: Drop the message field of

@@ -1,3 +1,8 @@
+Fri Jul  2 09:54:59 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Change install directories from scwm-foo, to
+	scwm/foo for /modules, /themes, /pixmaps, and /util.
+
 Thu Jul  1 22:02:48 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Try to make --enable-c-flags option work by

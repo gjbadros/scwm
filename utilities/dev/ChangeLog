@@ -1,3 +1,8 @@
+Fri Jul  2 10:07:07 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Ignore the word "X11" even though it is all caps
+	(i.e., do not require it to match an argument).
+
 Fri Apr 23 17:12:33 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Added back in -V, -O options, but mark -V as
