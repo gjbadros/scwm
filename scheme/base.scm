@@ -23,6 +23,7 @@
 
 
 
+;; Convenience procedures for specifying positions and sizes.
 (define-public (%x x)
   (inexact->exact (truncate (/ (* x (car (display-size))) 100))))
 
@@ -60,7 +61,7 @@
 (define*-public (set-window-background! bg #&optional (w (get-window))) 
   (set-window-colors! #f bg w))
 
-
+;; relative versions of absolute move procedures.
 (define-public (move-pointer x y)
   (let ((pos (pointer-position)))
     (move-pointer-to (+ x (car pos)) (+ y (cadr pos)))))
@@ -81,11 +82,17 @@
   (if (bound? mwm-style)
       (set-menu-mwm-style! mwm-style)))
 
-(define*-public (title-style #&key font height justify)
+;; A subset of the real title-style which is here so people don't have
+;; to load all of face.scm to get at it; will probably go away in the
+;; future.
+
+(define*-public (simple-title-style #&key font height justify)
   (if (bound? font)
       (set-window-font! font))
   (if (bound? height) 
       (set-title-height! height))
   (if (bound? justify)
       (set-title-justify! justify)))
+
+
 
