@@ -62,8 +62,8 @@ size_t free_menuitem(SCM obj);
 int print_menuitem(SCM obj, SCM port, scm_print_state * pstate);
 SCM menuitem_p(SCM obj);
 
-SCM make_menuitem(SCM label, SCM extra_label, SCM picture_above,
-		  SCM picture_left, SCM action, SCM hover_action,
+SCM make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
+		  SCM picture_left, SCM hover_action,
 		  SCM hotkey_prefs);
 
 #endif
