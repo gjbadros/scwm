@@ -686,6 +686,12 @@
 	   (send-key-press (substring str i (+ 1 i)) w)
 	   (set! i (+ 1 i)))))
 
+;;; menu-item test cases
+;(define move-menu-item (make-menu-item "Move" interactive-move "C-S-F7" (make-image "mini-move.xpm")))
+;(define resize-menu-item (make-menu-item "Resize" interactive-resize "C-S-F8" (make-image "mini-resize.xpm")))
+;(define a-menu (make-scwm-menu (list move-menu-item resize-menu-item)))
+;
+
 
 ;(recapture)
 
