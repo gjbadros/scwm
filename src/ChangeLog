@@ -1,3 +1,9 @@
+Wed Feb 25 16:55:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwm.c: Added scwm_gh_launch_pad and scwm_gh_enter to guarantee
+ 	proper loading of boot-9.scm once and only once across guile
+ 	versions. This is a hack until a real solution is available.
+
 Fri Feb 20 03:22:23 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* add_window.c, events.c, icons.c, move.c, placement.c, scmprocs.c
