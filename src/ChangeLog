@@ -1,3 +1,12 @@
+Sat Jan 15 12:48:01 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Need errors.h.
+
+	* menu.c: Remove unused var decl.
+
+	* callbacks.h, callbacks.c: Move static fn prototypes into .c
+	file, need errors.h.
+
 Fri Jan 14 21:53:51 2000    <gjb@cs.washington.edu>
 
 	* guile-compat.c, window.h: Replace an #if 0 with an #ifdef NDEBUG.

@@ -1,3 +1,12 @@
+Sat Jan 15 15:18:10 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* base.scm, winlist.scm: Move window-list-proc into base.scm from
+ 	winlist.scm.  Reduces some circular dependency issues.
+
+Sat Jan 15 12:38:56 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* netscape.scm: Fix bogus docs for `cgi-escapify-space'.
+
 Wed Jan 12 00:28:56 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops-menu.scm: Added `make-menu-focus-options'
