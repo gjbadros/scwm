@@ -1,3 +1,24 @@
+Fri Sep  4 08:44:31 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Make display-area a variable, and use display-width, 
+	display-height
+
+	* fvwm-module.scm: Added debug-fvwm-module var, turn on
+	non-blocking, make more public function for debugging.
+
+	* fvwm-eval.scm: Use move-window-viewport-position synonym instead
+	of move-to. Use display-width, display-height vars
+
+	* fvwm-compat.scm: Use display-width, display-height vars
+
+	* doc.scm: put doc-files in the root module
+
+	* bincomm.scm: binary-write was using default port of
+	current-input-port, not current-output-port. fixed.
+
+	* base.scm: Define vars display-width, display-height and use
+	them. 
+
 Thu Sep  3 15:21:17 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Fix docs of move-to -- it uses a viewport position;
