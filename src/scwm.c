@@ -1,6 +1,6 @@
 /* $Id$
  * scwm.c
- * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ * (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
  */
 
 /****************************************************************************
@@ -576,8 +576,6 @@ scwm_main(int argc, char **argv)
   init_screen();
   init_callbacks();
   init_add_window();
-  /* GJB:FIXME:: init_image() was here before imlib patch needed
-     it to go later if we are using imlib */
   init_color();
   init_module_interface();
   init_miscprocs();
@@ -1039,7 +1037,7 @@ Repository Timestamp: %s\n",
   scwm_maybe_send_thankyou_packet();
 
   DBUG((DBG,"main", "Entering HandleEvents loop..."));
-  setjmp(envHandleEventsLoop);
+  sigsetjmp(envHandleEventsLoop,1);
   HandleEvents();
   DBUG((DBG,"main", "Back from HandleEvents loop?  Exitting..."));
   return;
@@ -1200,11 +1198,11 @@ CaptureAllWindows(void)
 SIGNAL_T
 SigResetLoop(int ignored)
 {
-  /* re-install signal handler */
   newhandler_doreset(SIGNAL_FOR_RESET);
-  scwm_msg(INFO,"SigResetLoop","Got a reset signal, so longjmp-ing to event handler");
-  if (envHandleEventsLoop)
-    longjmp(envHandleEventsLoop,0 /* ret. val for setjmp */);
+  if (envHandleEventsLoop) {
+    scwm_msg(INFO,"SigResetLoop","Got a reset signal, so longjmp-ing to event handler");
+    siglongjmp(envHandleEventsLoop,1 /* ret. val for setjmp */);
+  }
   SIGNAL_RETURN;
 }
 
@@ -1225,8 +1223,11 @@ newhandler(int sig)
 void 
 newhandler_doreset(int sig)
 {
-  if (signal(sig, SIG_IGN) != SIG_IGN)
-    signal(sig, SigResetLoop);
+  if (signal(sig, SIG_IGN) != SIG_IGN) {
+    int d = signal(sig, SigResetLoop);
+    if (d == SIG_ERR) 
+      scwm_msg(WARN,"newhandler_doreset","signal returned SIG_ERR for SigResetLoop",d);
+  }
 }
 
 /*

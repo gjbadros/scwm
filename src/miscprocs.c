@@ -463,6 +463,17 @@ SCWM_PROC (elapsed_time, "elapsed-time", 0, 0, 0,
 #undef FUNC_NAME
 
 
+SCWM_PROC(scwm_last_timestamp, "scwm-last-timestamp", 0, 0, 0,
+          ())
+     /** Return the timestamp of the last event Scwm handled. */
+#define FUNC_NAME s_last_timestamp
+{
+  extern Time lastTimestamp;
+  return gh_long2scm(lastTimestamp);
+}
+#undef FUNC_NAME
+
+
 SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
           ())
      /** Return the version of scwm running. */

@@ -1280,11 +1280,15 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
 
   while (!fFinished) {
     fDone = False;
-    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
-	       ExposureMask | KeyPressMask | VisibilityChangeMask |
-	       ButtonMotionMask | PointerMotionMask, eventp);
+    while (XCheckMaskEvent(dpy,
+                           ButtonPressMask | ButtonReleaseMask |
+                           ExposureMask | KeyPressMask | VisibilityChangeMask |
+                           ButtonMotionMask | PointerMotionMask, 
+                           eventp) == False)
+      NoEventsScwmUpdate();
+    /* fallen through, so we got an event we're interested in */
     StashEventTime(eventp);
-
+    
     if (eventp->type == KeyPress) {
       Keyboard_shortcuts(eventp, FinishEvent, 0, False);
     }
@@ -2138,7 +2142,7 @@ specified. */
 }
 #undef FUNC_NAME
 
-
+/* Return values are in virtual coordinates */
 SCM 
 convert_move_data(SCM x, SCM y, SCM win, const char *func_name, 
                   /* output params follow */

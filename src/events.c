@@ -1762,15 +1762,8 @@ CoerceEnterNotifyOnCurrentWindow()
 }
 
 
-/*
- * Waits for next X event, 
- * or for a timer timeout
- * or for an ICE message (for session management)
- * or for input from an input hook (e.g., the fvwm2 module pipe)
- */
-int 
-NextScwmEvent(Display * dpy, XEvent * event)
-#define FUNC_NAME "NextScwmEvent"
+int
+NoEventsScwmUpdate()
 {
   extern int fd_width, x_fd;
   fd_set in_fdset, out_fdset;
@@ -1779,19 +1772,6 @@ NextScwmEvent(Display * dpy, XEvent * event)
   struct timeval *tp;
   int usec;
 
-  DBUG((DBG,FUNC_NAME, "Entered"));
-
-  /* Do this IMMEDIATELY prior to select, to prevent any nasty
-   * queued up X events from just hanging around waiting to be
-   * flushed */
-  XFlush(dpy);
-  if (XPending(dpy)) {
-    DBUG((DBG,FUNC_NAME, "taking care of queued up events & returning"));
-    XNextEvent(dpy, event);
-    StashEventTime(event);
-    return 0;
-  }
-  DBUG((DBG,FUNC_NAME, "no X events waiting - about to reap children"));
   /* Zap all those zombies! */
   /* If we get to here, then there are no X events waiting to be processed.
    * Just take a moment to check for dead children. */
@@ -1863,7 +1843,34 @@ NextScwmEvent(Display * dpy, XEvent * event)
         run_input_hooks(&in_fdset);
       }
   }
+  return retval;
+}
 
+/*
+ * Waits for next X event, 
+ * or for a timer timeout
+ * or for an ICE message (for session management)
+ * or for input from an input hook (e.g., the fvwm2 module pipe)
+ */
+int 
+NextScwmEvent(Display * dpy, XEvent * event)
+#define FUNC_NAME "NextScwmEvent"
+{
+  DBUG((DBG,FUNC_NAME, "Entered"));
+
+  /* Do this IMMEDIATELY prior to select, to prevent any nasty
+   * queued up X events from just hanging around waiting to be
+   * flushed */
+  XFlush(dpy);
+  if (XPending(dpy)) {
+    DBUG((DBG,FUNC_NAME, "taking care of queued up events & returning"));
+    XNextEvent(dpy, event);
+    StashEventTime(event);
+    DBUG((DBG,FUNC_NAME, "leaving -- got event"));
+    return 0;
+  }
+  DBUG((DBG,FUNC_NAME, "no X events waiting - calling NoEventsScwmUpdate"));
+  NoEventsScwmUpdate();
   DBUG((DBG,FUNC_NAME, "leaving"));
   return 1;
 }

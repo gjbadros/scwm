@@ -974,9 +974,6 @@ XPutBackKeystrokeEvent(Display *dpy, Window w, KeySym keysym)
 }
 #undef FUNC_NAME
 
-  
-
-
 
 static
 MenuItem *
@@ -1009,6 +1006,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
 
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
+      NoEventsScwmUpdate();
       ms_sleep(10);
       ++c10ms_delays;
 

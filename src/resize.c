@@ -474,9 +474,12 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   /* loop to resize */
   while (!finished) {
     XEvent ResizeEvent;
-    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask | KeyPressMask |
-	       ButtonMotionMask | PointerMotionMask | ExposureMask, 
-               &ResizeEvent);
+    while (XCheckMaskEvent(dpy,
+                           ButtonPressMask | ButtonReleaseMask | KeyPressMask |
+                           ButtonMotionMask | PointerMotionMask | ExposureMask,
+                           &ResizeEvent) == False)
+      NoEventsScwmUpdate();
+    /* fallen through, so we got an event we're interested in */
     StashEventTime(&ResizeEvent);
 
     if (ResizeEvent.type == MotionNotify)

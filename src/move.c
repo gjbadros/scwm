@@ -149,9 +149,12 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 	      gh_int2scm(saved_x), gh_int2scm(saved_y));
 
   while (!finished) {
-    /* block until there is an interesting event */
-    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask | KeyPressMask |
-	       PointerMotionMask | ButtonMotionMask | ExposureMask, &Event);
+    while (XCheckMaskEvent(dpy, 
+                        ButtonPressMask | ButtonReleaseMask | KeyPressMask |
+                        PointerMotionMask | ButtonMotionMask | ExposureMask, 
+                        &Event) == False)
+      NoEventsScwmUpdate();
+    /* fallen through, so we got an event we're interested in */
     StashEventTime(&Event);
 
     /* discard any extra motion events before a logical release */
