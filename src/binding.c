@@ -1331,22 +1331,31 @@ IsClick(int x, int y, unsigned EndMask, XEvent * d)
   ycurrent = y;
   t0 = lastTimestamp;
 
+  XGrabPointer(dpy, Scr.Root, True, ButtonMotionMask | PointerMotionMask,
+               GrabModeAsync, GrabModeAsync, Scr.Root,
+               None, CurrentTime);
+                                          
   while ((total < Scr.ClickTime) &&
 	 (x - xcurrent < 3) && (x - xcurrent > -3) &&
 	 (y - ycurrent < 3) && (y - ycurrent > -3) &&
 	 ((lastTimestamp - t0) < Scr.ClickTime)) {
-    ms_sleep(20);
-    total += 20;
+    DBUG((scwm_msg(DBG,"IsClick","sleeping 5 -- %d vs %d, %d vs %d",
+             x, xcurrent, y, ycurrent)));
+    ms_sleep(5);
+    total += 5;
     if (XCheckMaskEvent(dpy, EndMask, d)) {
       StashEventTime(d);
+      XUngrabPointer(dpy,CurrentTime);
       return True;
     }
     if (XCheckMaskEvent(dpy, ButtonMotionMask | PointerMotionMask, d)) {
       xcurrent = d->xmotion.x_root;
       ycurrent = d->xmotion.y_root;
       StashEventTime(d);
+      DBUG((scwm_msg(DBG,"IsClick","got %d %d",xcurrent, ycurrent)));
     }
   }
+  XUngrabPointer(dpy,CurrentTime);
   return False;
 }
 
