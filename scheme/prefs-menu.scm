@@ -21,7 +21,7 @@
 ;; returns a menu object.  Use it like this:
 ;; (prefs-menu . #:image-side img #:color-bg-image-side color etc)
 
-(define-module (app scwm prefs-menus)
+(define-module (app scwm prefs-menu)
   :use-module (app scwm base)
   :use-module (app scwm std-menus)
   :use-module (app scwm optargs)
@@ -90,6 +90,12 @@ No saving yet!")))))
 			(show-mesg "Set/change the size of the desk.\\n\
 Current desk size is " (size->str (desk-size)) ".")))))
 
+;;; FIX this is a bit more complex than this, since we don't want
+;;; all of scwm to stall waiting for the response -- the hack
+;;; we could currently use is use xprompt and have it run the
+;;; apropriate scwm-exec command (i.e., pass the continuation [the set-shadow-factor!
+;;; e.g.] to the ask-string, and have it run scwm-exec after getting the value
+;;; from the user
 (define-public (ask-string prompt)
   (message "Cannot ask for `" prompt "' yet! Sorry..."))
 
