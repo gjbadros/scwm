@@ -1110,6 +1110,7 @@ from other processes.
 
 ;; I reserve M-Tab for emacs, but Alt-Tab is fine
 (bind-key 'all "A-Tab" window-task-switcher-menu)
+(bind-key 'all "A-S-Tab" window-task-switcher-menu-backwards)
 
 ;; rotate the current window with the keyboard
 (bind-key 'all "M-S-Tab" next-visible-non-iconified-window)
