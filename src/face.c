@@ -550,8 +550,7 @@ set_button_face_x (SCM button, SCM active_up, SCM active_down, SCM inactive)
     fl->right_buttons[n].state[Inactive]=BUTTONFACE(inactive);    
   }
 
-  /* FIXMS should redraw borders, but SetBorderX is broken. */
-  /* redraw_borders(fl); */  
+  redraw_borders(fl); 
 
   return SCM_UNSPECIFIED;
 }
@@ -577,8 +576,7 @@ set_button_mwm_flag_x(SCM button, SCM flag)
     scm_wrong_type_arg("set-button-mwm-flag!",1,flag);
   }
 
-  /* FIXMS should redraw borders, but SetBorderX is broken. */
-  /* redraw_borders(fl); */  
+  redraw_borders(fl);
 
   return SCM_UNSPECIFIED;
 }
@@ -601,8 +599,7 @@ set_border_face_x(SCM active, SCM inactive)
   fl->BorderStyle.active=BUTTONFACE(active);
   fl->BorderStyle.inactive=BUTTONFACE(inactive);
 
-  /* FIXMS should redraw borders, but SetBorderX is broken. */
-  /* redraw_borders(fl); */  
+  redraw_borders(fl); 
 
   return SCM_UNSPECIFIED;
 }
