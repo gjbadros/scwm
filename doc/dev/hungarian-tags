@@ -20,7 +20,7 @@ d   = a difference
 
 Scwm tags
 ---------
-scm   = a scheme object (sometimes obj is used instead)
+scm   = a scheme value (sometimes obj is used instead, often when expecting a SMOB)
 sw    = a ScwmWindow structure -- `psw's are used *everywhere*
 menu  = a Menu object (the wrapped object, not the wrapping scheme object)
 mi    = a MenuItem object (")

@@ -15,7 +15,8 @@ Dieing in malloc()?
 
 Be sure not to use, e.g., menu_p() as a C boolean -- use MENU_P() instead
   - the object_p() functions return SCM_BOOL_F or SCM_BOOL_T both of which
-    evaluate as true in a C expression
+    evaluate as true in a C expression. This is also true for the gh_foo_p()
+    functions such as gh_string_p and gh_number_p
 
 When type checking, consider using, e.g., FONT_OR_SYMBOL_P to permit
   using a symbol when the value is actually used.  Then when you want the

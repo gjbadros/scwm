@@ -19,6 +19,10 @@ lot nicer than the command line or even the vc-mode keybindings.
 
 Other files to read:
 
+* smobs
+
+* dynamic-modules
+
 * common-primitive-mistakes
 
 * guile-gc-notes

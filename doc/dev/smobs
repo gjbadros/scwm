@@ -1,0 +1,522 @@
+SMOBs -- SMall OBjects for Guile/Scheme
+(C) 1999 Greg J. Badros <gjb@cs.washington.edu>
+14 April 1999
+
+INTRODUCTION
+
+When you want a new primitive object type in Guile/Scheme
+or Scwm, you need to create a new SMOB -- SMall OBject (or
+ScheMe OBject).  Guile/Scheme and Scwm provide a nice
+layer of abstraction over creating SMOBs, so it's reasonably
+easy to build a new primitive object type, but there are
+lots of places things can go wrong.  This document
+tries to explain the details of SMOBs, and how to create
+and use them effectively.
+
+
+REPRESENTATION OF SMOB INSTANCES
+
+A SMOB is represented in Guile as a normal scheme CONS cell. The CAR of
+the CONS cell is an identification number. This number is dynamically
+assigned to the SMOB when it is registered via scm_newsmob (or
+REGISTER_SCWMSMOBFUNS for Scwm).  The identification number is distinct
+from all other legal Scheme values so that the Guile interpreter can tell 
+unambiguously what type of object it is strictly from looking at the CAR 
+of the CONS cell.  The CDR of the CONS cell is a pointer to the C
+structure which contains the internal information for that type of
+primitive object.  Pictorially, it looks something like this:
+
+
+SMOB CONS cell 
+(CAR is the left value, CDR is the right value)
+-------------------------------------
+|                 |                 |
+|                 |                 |
+|                 |                 |
+| scm_tc_16_IDNUM |                 |
+|                 |       |         |
+|                 |       |         |
+|                 |       |         |
+--------------------------|----------
+                          |	      ____________________
+			  |	      |                  |
+			  |---------->|	 Arbitrary C     |
+				      |	 struct	         |
+				      |	        	 |
+				      --------------------
+
+The arbitrary C struct just contains fields like any C struct, except
+some of them may by SCM values.  For example, the color SMOB uses
+scwm_color as the struct:
+
+typedef struct {
+  Pixel pixel;
+  SCM name;
+} scwm_color;
+
+Note that embedded SCM values must be handled by the mark procedure --
+more on this below.
+
+
+CREATING A SMOB CLASS
+
+SMOB objects are made visible to the Guile interpreter by registering
+them via scm_newsmob.  Scwm wraps this with the REGISTER_SCWMSMOBFUNS
+macro.  The REGISTER_SCWMSMOBFUNS macro takes only one argument, 
+the short SMOB name (e.g., color):
+
+#define REGISTER_SCWMSMOBFUNS(T) \
+  do { scm_tc16_scwm_ ## T = scm_newsmob(& T ## _smobfuns); } while (0)
+
+It saves the assigned ID into a global variable that must be defined and 
+declared (use the EXTERN macro in your header file).  The global
+variable's name is constructed via cpp's "pasting" operator, ##.  If
+your SMOB is named color, then the ID variable constant is
+scm_tc16_scwm_color (by convention, enforced by the
+REGISTER_SCWMSMOBFUNS).
+
+The Guile scm_newsmob registration function also takes only one
+argument-- a pointer to the "scm_smobfuns" structure for the new object
+type.  This structure is similar to a vtable in C++: it is a four
+element array of pointers to system-level functionality for the new
+object type.  The first three functions in the array are the GC mark
+function, the GC free function, and the print function.  In Scwm, you
+allocate and initialize the structure using the MAKE_SMOBFUNS macro:
+
+#define MAKE_SMOBFUNS(T) \
+static scm_smobfuns T ## _smobfuns = { \
+  &mark_ ## T, \
+  &free_ ## T, \
+  &print_ ## T,  0 }
+
+As you can see, MAKE_SMOBFUNS requires a certain convention for the
+names of the system-level object functions.  The names must be
+"mark_", "free_", and "print_" each followed by the short SMOB name
+(e.g., mark_color, mark_free, mark_print).  You will never need to call
+these functions explicitly-- the Guile interpreter manages invoking
+them as necessary.  E.g., when you evaluate `(make-color "red")' using
+scwmrepl or Emacs' scwm-mode, the Scheme procedure make-color returns
+a color SMOB.  To display that object (to show you the printable form
+of the response), Guile will invoke print_color (more precisely, it
+will invoke the function pointed to by the third element of the
+scm_smobfuns structure that was pointed to when you registered the
+object type "color" [remember Guile knows it's a color object because
+of the ID stored in the CAR of the cons cell representing the SMOB
+instance]).  See SMOB SYSTEM FUNCTIONS, below.
+
+Like REGISTER_SCWMSMOBFUNS, the MAKE_SMOBFUNS macro takes only the short
+SMOB name.  However, while REGISTER_SCWMSMOBFUNS is a macro that
+expands to code (and thus needs to be in your init_SMOBNAME function),
+MAKE_SMOBFUNS expands to a static struct definition, and can thus be
+expanded outside of any function.  By convention, the MAKE_SMOBFUNS
+macro call occurs just before the init_SMOBNAME function:
+
+MAKE_SMOBFUNS(color);
+
+void init_color() {
+  REGISTER_SCWMSMOBFUNS(color);
+  /* code omitted */
+#ifndef SCM_MAGIC_SNARFER
+#include "color.x"   /* color.x (gen'd by the build process) contains
+			code to register the scheme primitive procedures 
+ 			defined in this .c file */
+#endif
+}
+
+After the init_color() function is executed, Guile will know how to deal 
+with any color objects floating around its heap.  It is important,
+therefore, that you register the SMOB before you create any instances
+of the SMOB.  Also note that init_color() is explicitly invoked in
+scwm_main() in scwm.c;  for dynamically loaded modules, the module
+system invokes a function named scm_init_app_scwm_foo_module() defined
+in the library, and that function will call scm_register_module_xxx
+(literal xxx's) with the module name and the initialization function for 
+the module.  Thus, if the color object were a dynamically loaded module, 
+color.c would have:
+
+void scm_init_app_scwm_color_module() {
+  scm_register_module_xxx("app scwm color", init_color);
+}
+
+in it initialize the color SMOB class.  See the documentation in the
+file "dynamic-modules" for more information.
+
+
+MAKING AN INSTANCE OF A SMOB
+
+So, after registering our SMOB, the Guile interpreter knows how to deal
+with SMOBs of that type, but we still have not seen how to create a new
+object of a SMOB class.  We did, however, see what a SMOB object is
+stored internally in an earlier section.  In fact, Guile has no special
+help for constructing SMOB instances--- you simply write a primitive
+procedure that builds a CONS cell with the appropriate id field and a
+pointer to just C structure, and return that SCM object.  Since this is
+error-prone, Scwm provides a helper macro, SCWM_NEWCELL_SMOB:
+
+#define SCWM_NEWCELL_SMOB(ANSWER,ID,PSMOB) \
+   do { \
+     SCM_NEWCELL((ANSWER)); \
+     SCM_SETCAR((ANSWER),(ID)); \
+     SCM_SETCDR((ANSWER),(SCM) (PSMOB)); \
+   } while (0)
+
+As you can see, the macro takes three arguments, the SCM variable to
+hold the "answer" object (i.e., the object you're constructing), the ID
+number of the type of SMOB you're creating (i.e., the value that goes in 
+the CAR of the CONS cell that SCM_NEWCELL creates), and the pointer to
+the C structure containing the details of the object instance (i.e., the 
+value that goes in the CDR of that same CONS cell).  To create a color
+SMOB instance, we would write a C function like this (simplified from
+the actual code):
+
+SCM ScmMakeColor(const char *szColorName, XColor xcolor) {
+   SCM answer;         /* the object we will build */
+   scwm_color *psc = NEW(scwm_color);
+   /* initialize the fields of the C scwm_color structure */
+   psc->scmName = gh_str02scm(szColorName);
+   psc->pixel = color.pixel;
+   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_color, psc);
+   return answer;
+}
+
+ScmMakeColor returns a SCM (Scwm uses the Hungarian notation tag "scm"
+to mean a Scheme value -- see the documentation file
+"hungarian-tags").  The C structure can contain other embedded
+SCM values (such as the scmName field, above -- gh_str02scm converts
+a null-terminated C string [a str0] into a scm), and arbitrary
+other data (such as the pixel value for the XColor passed in.  We use
+Scwm's NEW macro to simplify the dynamic allocation of memory.
+
+However ScmMakeColor() is a low-level C function for building the SMOB
+SCM value.  We still need to write an exported primitive procedure to
+allow Scheme code to create color SMOBs.  The reason why it's best to
+write a low-level C function to do the actual building of the SMOB is
+that it's often useful to have multiple primitive procedures that may
+return an instance of a new SMOB type.  For colors, we will call one of
+the primitive constructors `make-color' and it could look like this
+(simplified from the actual code):
+
+SCWM_PROC(make_color, "make-color", 1, 0, 0,
+           (SCM name))
+     /** Return the color object corresponding to the X color specifier NAME. */
+#define FUNC_NAME s_make_color
+{
+  SCM answer;
+  char *szName;
+  XColor xcolor;
+  VALIDATE_ARG_STR_NEWCOPY(1,name,szName); /* stores C string in szName */
+  xcolor = XColorFromSz(szName);
+  answer = ScmMakeColor(szName,xcolor);
+  FREE(szName);  /* release the C string the _NEWCOPY macro allocated */
+  return answer;
+}
+#undef FUNC_NAME
+
+This is an ordinary primitive that happens to create the answer that it
+returns using the C function that builds the CONS cell to contain a new
+SMOB instance.  The other conventions in the above primitive definition
+are explained in the next section, as they are not specific to SMOB
+constructor primitives.
+
+
+A BRIEF DIVERSION -- SCWM PRIMITIVE PROCEDURES
+
+Defining a new primitive procedure to be available from Scheme is what
+makes Scwm so powerful and exciting.  Consider the above `make-color'
+definition, above. This primitive uses the SCWM_PROC macro (a wrapper
+over the SCM_PROC macro that Guile provides -- see scwm-snarf.h,
+libguile/snarf.h, and the guile-snarf script) and conforms to Scwm
+documentation conventions.  Since the primitive is exposed to the Scheme
+language, all arguments to the C function implementing the primitive are
+of C type SCM, and the return value of the C function must also be by of 
+type SCM.
+
+To make argument conversion easier, the VALIDATE_ARG_STR_NEWCOPY
+macro is used to ensure that the "name" argument to the procedure is a
+SCM string, and to convert it to a C string for internal use.  That
+macro name contains the substring "NEW" to remind the programmer to free
+the string (or else a memory leak will result).  The
+VALIDATE_ARG_STR_NEWCOPY macro relies on the macro FUNC_NAME being
+defined to be the current function name (as a C string).  The function
+name is used for error reporting, along with the first argument to the
+VALIDATE_* macro which gives the position of the argument to check, and
+the second argument to the macro which is the function argument
+variable.  (The documentation extraction systems will, e.g., verify that
+the first argument of the current function is named "name").
+
+The SCWM_PROC macro introduces a C variable that contains the name of
+the primitive (i.e., the second argument to the SCWM_PROC macro --
+"make-color" above).  The C variable's name is made to be the C function
+name with a "s_" prefix: s_make_color, above.  Also note that the C
+function name, make_color, and the Scheme primitive "make-color" must
+match.  Since C identifiers and Scheme identifiers have different
+lexical rules and conventions, their is a conventional transformation to
+go from the C function name to the Scheme name:
+
+               "_p"  changes to "?"
+               "_x"  changes to "!"
+             "_to_"  changes to "->"
+   underscore ("_")  changes to hyphen ("-")
+
+Though there is nothing in C that can enforce these conventions, the
+Scwm documentation extractor (cd scwm/doc; rm scwm.sgml; make scwm.sgml) 
+will warn you if the names do not match up properly (it also checks
+the #define FUNC_NAME line, and ensures documentation comments exist
+and mentions all of the arguments by name (see "new-devs" and the
+scwmdoc perl script).  It is essential that you build the documentation
+to ensure that code you are writing is free from the common bugs that it 
+will catch for you.  Errors from the documentation extractor are output
+in a format that integrates nicely with Emacs's compile mode, so fixing
+your mistakes should be very easy.
+
+The three numbers following the name of the Scheme primitive (the text
+enclosed in quotes on the SCWM_PROC line) specify what the arguments to
+the primitive will be.  The first number is how many required arguments
+there are, the second number is how many optional arguments there are,
+and the third number is 1 if the primitive takes a "rest" arg, and 0 if
+not.  All three numbers must be non-negative (the third cannot anything
+but 0 or 1), and Guile has a limit of 10 total arguments specified
+(i.e., the sum of the three numbers).  A "rest" argument corresponds to
+the use of the " . rest" construct at the Scheme level--- it is similar
+to the varargs C function passing mechanism.  The number of formal
+arguments listed on the following line must equal the sum of the three
+numbers (this is enforced only by the Scwm documentation system).  E.g., 
+each of these is fine:
+
+SCWM_PROC(make_color, "make-color", 1, 0, 0,
+           (SCM name))
+
+SCWM_PROC(make_color, "make-color", 1, 1, 0,
+           (SCM name, SCM other_color))
+
+SCWM_PROC(make_color, "make-color", 1, 2, 0,
+           (SCM name, SCM other_color, SCM use_cache_p))
+
+SCWM_PROC(make_color, "make-color", 1, 2, 1,
+           (SCM name, SCM other_color, SCM use_cache_p, SCM other_colors))
+
+but these are both wrong:
+
+SCWM_PROC(make_color, "make-color", 1, 2, 0,
+           (SCM name, SCM other_color, SCM use_cache_p, SCM other_colors))
+/* above has too many formals */
+
+SCWM_PROC(make_color, "make-color", 1, 1, 0,
+           (SCM name))
+/* above has too few formals */
+
+And the Scwm documentation extraction tool will warn you about the
+mismatch.
+
+
+
+MANIPULATING NEW SMOB INSTANCES IN C CODE
+
+Since you will probably want to use the SMOB instances you create, you
+need to be able to tell of an SCM is of a specific type, and you need to
+be able to get at the C structure containing the guts of the type.  In
+Scwm, we do this conventionally with two macros named FOO_P and FOO.
+E.g., for color SMOB instances:
+
+/* COLOR_P(X) is True iff X is an instance of the color SMOB type */
+#define COLOR_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_color)
+
+/* COLOR(X) returns the scwm_color * with the guts of the X instance;
+   it assumes X is a color SMOB instance, and could crash if it is not */
+#define COLOR(X)  ((scwm_color *)(gh_cdr(X)))
+
+Since COLOR(X) can be dangerous if X is not a color object, we also have 
+a SAFE_COLOR macro:
+
+#define SAFE_COLOR(X) (COLOR_P((X))?XCOLOR((X)):NULL)
+
+that returns the NULL pointer if X is not a color (instead of crashing).
+
+N.B. The wrapping in Scwm for window SMOBs is not typical.  WINDOW(obj)
+returns the "scwm_window *" corresponding to obj, but the C level code
+uses "ScwmWindow *"s throughout, and the PSWFROMSCMWIN macro returns
+this pointer (the ScwmWindow * is actually a field in the scwm_window
+struct).  This is not important for wrapping your own primitive objects, 
+but matters if you're trying to understand the rest of the Scwm source.
+
+If instances of a SMOB type are frequently used as arguments to
+primitives, it's useful to also define VALIDATE_ARG_FOO_* macros to
+check the type, copy to a C variable, etc.  Many examples of such macros 
+appear in color.h (for color SMOB instances) and validate.h (for the
+built-in guile primitive objects).
+
+
+STANDARD PRIMITIVES YOU SHOULD WRITE FOR ALL SMOB TYPES
+
+For any SMOB type `foo' you create, you need something that constructs
+the type (like a constructor in C++, but it is not special-- more like 
+in Smalltalk);  see the "MAKING AN INSTANCE OF A SMOB" section above.
+The other standard primitive all SMOB types should expose to the Scheme
+level is a predicate testing if an arbitrary object is of the SMOB
+type: `foo?' is the standard name of this predicate for a SMOB named
+foo.  For color, it looks like this:
+
+SCWM_PROC(color_p, "color?", 1, 0, 0, 
+           (SCM obj))
+     /** Returns #t if OBJ is a color object, otherwise #f. */
+#define FUNC_NAME s_color_p
+{
+  return gh_bool2scm(COLOR_P(obj));
+}
+#undef FUNC_NAME
+
+It is just a simple wrapper around the COLOR_P macro just discussed.
+Note that the C function name is "color_p" which matches the Scheme
+primitive name "color?" (the _p stands for predicate).  Also note the
+use of gh_bool2scm() which converts a C integer expression (interpreted
+as a boolean value in the usual way) to a proper SCM bool value.  Its
+inverse is gh_scm2bool(obj) -- gh_scm2bool returns a C boolean
+corresponding to obj's value (where obj == SCM_BOOL_F or 
+obj == SCM_BOOL_T).  (See the guile-ref info pages section on
+"Converting data between C and scheme).
+
+The other standard functions you'll need to write are the SMOB system
+functions discussed briefly early, and in more detail below.  As
+mentioned previously, these functions are not primitives -- they are not 
+invoked explicitly, but are instead run by the Guile interpreter as
+needed throughout execution.
+
+
+
+SMOB SYSTEM FUNCTIONS
+
+Now that we are able to create instances of SMOBs, the Guile system is
+going to start calling our SMOB system functions as necessary.
+Remember, these functions are associated with a SMOB via the
+REGISTER_SCWMSMOBFUNS and have the conventional names (enforced by
+macros) of print_foo, mark_foo, and free_foo for a SMOB with the short
+name "foo".
+
+PRINT
+
+The print function must take three arguments: the SMOB object to print,
+the SCM port to output the printable representation to, and a pointer
+to a scm_print_state structure (this is always unused in Scwm -- I'm not 
+sure what it's for or why you'd want to use it).  For colors,
+print_color() looks like this (simplified a bit from the code).
+
+int print_color(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
+{
+  scwm_color *psc = COLOR(obj);
+  scm_puts("#<color ", port);
+  scm_write(psc->name, port);
+  scm_putc('>', port);
+  return 1;
+}
+
+The above code uses the Scwm ARG_IGNORE macro to suppress the warning
+about the unused variable.  If you do choose to use the pstate formal
+argument, you need to remove the ARG_IGNORE macro since it renames the
+argument to "pstate_ignore" so you will get an error if you try to use
+it.  (For GNU gcc compilers, the formal is marked with the unused
+attribute pragma.)
+
+All that the print_color function must do is write the printable
+representation of the "obj" object onto "port".  scm_puts writes a C
+string to a port, scm_write writes a printable form of an SCM value onto 
+the port (invoking that object's "print_*" SMOB system function), and
+scm_putc writes a single C character to a port.  You should not print a
+newline.  When convenient, you should try to make the printable object
+contain enough information to reproduce the object when read in.  It
+should at least contain some lightweight debugging information to help
+differentiate this specific instance from other instances of the same
+SMOB type.  The return value of 1 indicates success.
+
+We used the COLOR macro to get at the scwm_color C struct of "obj" to
+then access the "name" field of that structure (an SCM).  We did not
+need to use SAFE_COLOR or COLOR_P to ensure that "obj" is a color
+because the Guile system would not have invoked print_color on obj if it 
+were not color SMOB instance (it would've instead invoked a different
+print function).
+
+MARK
+
+The Guile Scheme interpreter uses a simple mark and sweep garbage
+collection algorithm.  GC algorithms are beyond the scope of this
+document--- all you must understand is that you must recursively mark
+any SCM object you embed in a SMOB's C structure in that SMOB's mark
+function.  For color, we had a single SCM value embedded in the
+scwm_color struct: the color's name (as a Scheme string, not a C
+string).   Thus, color's mark function must mark that object to ensure
+that it does not get freed prematurely by Guile's garbage collector:
+
+SCM mark_color(SCM obj) {
+  scmw_color *psc = COLOR(obj);
+  SCM_SETGC8MARK(obj);
+  GC_MARK_SCM_IF_SET(psc->name);
+
+  return SCM_BOOL_F;
+}
+
+This function does only two things: the macro SCM_SETGC8MARK sets the
+marked bit of the object obj (you must mark the object the mark function
+is passed), and then marks the embedded SCM name field.  The
+GC_MARK_SCM_IF_SET macro is used to ensure that psc->name is not NULL
+and is not SCM_UNDEFINED as trying to mark either of those would result
+in a crash.  The return value of the mark function is either SCM_BOOL_F, 
+or another object to be marked.  mark_color could nearly (modulo the
+error handling of GC_MARK_SCM_IF_SET) equivalently be written:
+
+SCM mark_color(SCM obj) {
+  scmw_color *psc = COLOR(obj);
+  SCM_SETGC8MARK(obj);
+  return psc->name;
+}
+
+This is just a convenience, and is rarely employed in the Scwm source
+code.  See "guile-gc-notes" for more information on the Guile garbage
+collector.
+
+FREE
+
+For some SMOB types you create, you need to free other system resources
+when an instance of the SMOB is no longer accessible. E.g., if you
+stored the color name as a dynamically allocated C string, you need to
+free that memory when the SMOB instance is collected and freed from the
+heap. (Storing the string as a Scheme string, though, does not require
+any special handling in the free function -- it instead requires marking 
+in the mark function, see the preceding section).
+
+For the color smob, we must release the X color using XFreeColors:
+
+size_t free_color(SCM obj)
+{
+  scwm_color *psc=COLOR(obj);
+  XFreeColors(dpy, Scr.ScwmRoot.attr.colormap, &psc->pixel, 1, 0);
+  FREE(sc);
+  return 0;
+}
+
+the return value of the free special function is the number of bytes
+freed. (I think.... What is this used for? Scwm almost always just
+returns 0).  Basically, memory allocated in your constructor
+primitive(s) (or the C constructor functions they call) should be freed
+in the free function.
+
+
+SUMMARY
+
+You should now be able to wrap a C structure as a Guile SMOB and
+understand how Guile uses the SMOB and the conventions that Scwm uses to 
+make wrapping objects easier and less error-prone.
+
+
+QUESTIONS
+
+Please feel free to write me with your questions at
+<gjb@cs.washington.edu>.  Also, <guile@cygnus.com> and <scwm@ph.mit.edu> 
+are mailing lists with helpful people listening.
+
+
+FURTHER REFERENCES
+
+See also the other documentation included in scwm/doc/dev with the Scwm
+documentation, the guile-ref info page, Greg Harvey's Quick and Dirty
+Guile Scheme documentation (http://home.thezone.net/~gharvey/guile/guile.html),
+the Scwm web page: http://vicarious-existence.mit.edu/scwm/, and the
+links it references.

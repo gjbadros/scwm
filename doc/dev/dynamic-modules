@@ -56,7 +56,8 @@ void scm_init_app_scwm_foo_module()
   scm_register_module_xxx("app scwm foo", init_bar);
 }
 
-the 'foo' in the name and string need to match the module name.
+the 'foo' in the name and string need to match the module name,
+and also needs to match the library name given in Makefile.am.
 The init_bar is a pointer to your old initialization function.
 The _xxx is literal, not standing for anything else.  Note that
 dashes in the module name turn into underscores in the init function
@@ -70,6 +71,7 @@ something broken in the modules system, but something broken in
 general.
 
 That's it, you have a dynamically loaded module!
+
 -----------------------------------------------------
 Now, for some miscellaneous amplifications and explanations.
 
@@ -139,4 +141,4 @@ There's no reason you can't have more than one source file to implement
 the module.  Just add any aditional .c files to the libfoo_la_SOURCES
 line, and they'll get linked in.  If they define any scheme symbols,
 add a .x entry for them in libfoo_snarfs, and their init funcs need to
-be called, directly or indirectly, under the scm_regiset_module_xxx.
+be called, directly or indirectly, under the scm_register_module_xxx.
