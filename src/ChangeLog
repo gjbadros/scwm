@@ -1,5 +1,7 @@
 1998-09-18  Todd Larason  <jtl@teeny.molehill.org>
 
+	* xproperty.c: Added X-atomic-property-set-if-unset!
+
 	* xmisc.c (DrawSubImage): Offset the clip origin so masked images
 	drawn at non-0,0 position are masked properly.
 

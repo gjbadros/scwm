@@ -200,6 +200,113 @@ value. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC(X_atomic_property_set_if_unset_x, "X-atomic-property-set-if-unset!", 3, 2, 0,
+	  (SCM win, SCM name, SCM value, SCM type, SCM format))
+     /** Set X property NAME on window WIN to VALUE if it isn't already set.
+WIN is the window to set the X property on, or 'root-window.
+NAME and TYPE are strings. TYPE defaults to "STRING".
+FORMAT may be one of the integers 8, 16, and 32, defining the element size
+of the VALUE. It is 8 by default.
+VALUE may be a string, if FORMAT is 8, and may always be a vector
+of FORMAT-bit integers.
+
+If NAME is already set, returns #f and doesn't change NAME.  If not,
+sets NAME to VALUE and return #f.  The server is grabbed during the
+checking and setting, so this can be used for locking.
+*/
+#define FUNC_NAME s_X_atomic_property_set_if_unset_x
+{
+  int fmt, len, mode, fmtJunk;
+  unsigned long nitemsJunk, leftJunk;
+  void *val;
+  char *str;
+  unsigned char *propJunk;
+  Atom aprop, atype, atypeJunk;
+  Window w;
+
+  if (win == sym_root_window) {
+    w = Scr.Root;
+  } else if (WINDOWP(win)) {
+    w = PSWFROMSCMWIN(win)->w;
+  } else {
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
+  }
+  if (!gh_string_p(name)) {
+    scm_wrong_type_arg(FUNC_NAME, 2, name);
+  }
+  if (format == SCM_UNDEFINED) {
+    fmt=8;
+  } else if (gh_number_p(format)) {
+    fmt=gh_scm2int(format);
+    if (fmt != 8 && fmt != 16 && fmt != 32) {
+      scwm_error(FUNC_NAME, "FORMAT must be 8, 16, or 32.");
+      return SCM_UNSPECIFIED;
+    }
+  } else {
+    scm_wrong_type_arg(FUNC_NAME, 5, format);
+  }
+  if (fmt == 8 && gh_string_p(value)) {
+    val=gh_scm2newstr(value, &len);
+  } else if (gh_vector_p(value)) {
+    int i;
+    int (*setter)(void **, long);
+    void *v;
+    switch (fmt) {
+    case 8:
+      setter=&Set8Value;
+      break;
+    case 16:
+      setter=&Set16Value;
+      break;
+    case 32:
+      setter=&Set32Value;
+      break;
+    }
+    len=gh_vector_length(value);
+    v=val=safemalloc(len*fmt/8);
+    for (i=0; i<len; i++) {
+      SCM el=gh_vector_ref(value, gh_int2scm(i));
+      if (!gh_number_p(el) || !setter(&v, gh_scm2long(el))) {
+	scm_wrong_type_arg(FUNC_NAME, 3, value);
+      }
+    }
+  } else {
+    scm_wrong_type_arg(FUNC_NAME, 3, value);
+  }
+  if (type == SCM_UNDEFINED) {
+    atype=XA_STRING;
+  } else if (gh_string_p(type)) {
+    str=gh_scm2newstr(type, NULL);
+    atype=XInternAtom(dpy, str, False);
+    FREE(str);
+  } else {
+    FREE(val);
+    scm_wrong_type_arg(FUNC_NAME, 4, value);
+  }
+
+  str=gh_scm2newstr(name, NULL);
+  aprop=XInternAtom(dpy, str, False);
+  FREE(str);
+
+  /* FIXJTL: do we need REDEFER_INTS here? */
+  XGrabServer_withSemaphore(dpy);
+
+  XGetWindowProperty(dpy, w, aprop, 0, 0, False, AnyPropertyType,
+		     &atypeJunk, &fmtJunk, &nitemsJunk, &leftJunk, &propJunk);
+  if (atypeJunk != None || fmtJunk != 0 || leftJunk != 0) {
+    XUngrabServer_withSemaphore(dpy);
+    return SCM_BOOL_F;
+  }
+  
+  /* Should this check return code? My man page is silent about possible
+     return values. */
+  XChangeProperty(dpy, w, aprop, atype, fmt, PropModeReplace, val, len);
+  FREE(val);
+  XUngrabServer_withSemaphore(dpy);
+  return SCM_BOOL_T;
+}
+#undef FUNC_NAME
+
 SCWM_PROC(X_property_get, "X-property-get", 2, 1, 0,
 	  (SCM win, SCM name, SCM consume))
      /** Get X property NAME of window WIN.
