@@ -1,5 +1,6 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
+## GJB:FIXME:: adding a new theme here is error-prone
 
 ## Distribute and install
 scwm_theme_DATA = fvwm2.@TAR_SUFFIX@ mwm.@TAR_SUFFIX@ win95.@TAR_SUFFIX@ \
@@ -37,4 +38,20 @@ woven.@TAR_SUFFIX@: $(srcdir)/woven $(srcdir)/woven/*
 	abs_srcdir_themes=`pwd`; \
 	echo 'make[99]: Entering directory `'$$abs_srcdir_themes"'"; \
 	$(TAR_CF) $${abs_builddir_themes}/woven.@TAR_SUFFIX@ woven
+	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
+
+gjb.@TAR_SUFFIX@: $(srcdir)/gjb $(srcdir)/gjb/*
+	abs_builddir_themes=`pwd`; \
+	cd $(srcdir); \
+	abs_srcdir_themes=`pwd`; \
+	echo 'make[99]: Entering directory `'$$abs_srcdir_themes"'"; \
+	$(TAR_CF) $${abs_builddir_themes}/gjb.@TAR_SUFFIX@ gjb
+	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
+
+twm.@TAR_SUFFIX@: $(srcdir)/twm $(srcdir)/twm/*
+	abs_builddir_themes=`pwd`; \
+	cd $(srcdir); \
+	abs_srcdir_themes=`pwd`; \
+	echo 'make[99]: Entering directory `'$$abs_srcdir_themes"'"; \
+	$(TAR_CF) $${abs_builddir_themes}/twm.@TAR_SUFFIX@ twm
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
