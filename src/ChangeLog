@@ -1,3 +1,8 @@
+1998-11-02  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* menu.c (print_menu): But using SAFE_MENUITEM is wasteful, use
+	MENUITEM_P instead.
+
 1998-10-27  Todd Larason  <jtlmolehill.org>
 
 	* menu.c (print_menu): be careful not to crash when printing a
