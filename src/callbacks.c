@@ -228,8 +228,6 @@ scwm_safe_call7 (SCM proc, SCM arg1, SCM arg2, SCM arg3, SCM arg4, SCM arg5, SCM
   return scwm_safe_apply (proc, gh_list(arg1, arg2, arg3, arg4, arg5, arg6, arg7, SCM_UNDEFINED));
 }
 
-
-
 /* Slightly tricky - we want to catch errors per expression, but only
    establish a new dynamic root per load operation, as it's perfectly
    OK for a file to invoke a continuation created by a different
@@ -553,6 +551,7 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
     
   return SCM_UNSPECIFIED;
 }
+
 
 /* Timer hooks. */
 
