@@ -860,6 +860,46 @@ button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1. */
 #undef FUNC_NAME
 
 
+SCWM_PROC(X_fetch_bytes, "X-fetch-bytes", 0, 0, 0,
+	  ())
+     /** Returns a string representing the value of the cut buffer.
+XFetchBytes is called. */
+#define FUNC_NAME s_X_fetch_bytes
+{
+  char *str;
+  int len;
+  SCM result;
+
+  str = XFetchBytes(dpy, &len);
+  if (str == NULL)
+    return SCM_BOOL_F;
+
+  /* EJB:FIXME:: XStoreBytes allows embedded NULLs.  Does this? Do we care? */
+  result = gh_str02scm(str);
+  XFree(str);
+  return result;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(X_store_bytes, "X-store-bytes", 1, 0, 0,
+	  (SCM string))
+     /** Set the cut buffer by calling XStoreBytes. */
+#define FUNC_NAME s_X_store_bytes
+{
+  char *sz;
+
+  VALIDATE_ARG_STR_NEWCOPY(1,string,sz);
+  sz=gh_scm2newstr(string, NULL);
+  /* EJB:FIXME:: XStoreBytes allows embedded NULLs.  This doesn't.
+   * Do we care? */
+  XStoreBytes(dpy, sz, strlen(sz));
+  gh_free(sz);
+  XSetSelectionOwner(dpy, XA_PRIMARY, None, CurrentTime);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
 void 
 init_miscprocs()
 {

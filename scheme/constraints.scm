@@ -47,12 +47,14 @@ Can restart with a fresh solver by using `start-constraints'."
 (define ui-constraints-draw-disabled #t)  ;; used by drawing functions
 
 (define (install-constraints-ui-features draw-with-focus draw-disabled)
+#!
   (and XKM_CONTROL_L XKM_ALT_L XKM_SHIFT_L XKM_HYPER_L
        (bind-four-modifier-key-events 
 	XKM_CONTROL_L  XKM_ALT_L  XKM_SHIFT_L XKM_HYPER_L
 	;; (37 . 4) (115 . 16) (50 . 1)
 	(if draw-with-focus draw-constraints-with-focus (lambda () (draw-all-constraints #:draw-disabled draw-disabled)))
 	(if draw-with-focus undraw-constraints-with-focus (lambda () (undraw-all-constraints #:draw-disabled draw-disabled)))))
+!#
   (set! ui-constraints-draw-disabled draw-disabled)
   (bind-key 'all "C-M-S-c" popup-ui-constraints-toggle-menu))
 

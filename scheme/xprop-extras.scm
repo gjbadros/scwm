@@ -17,18 +17,15 @@ window title by changing the WM_NAME X-Property."
   (X-property-set! win "WM_NAME" title))
 
 (define-public (X-cut-buffer-string)
-  "Return the text of the CUT_BUFFER0 property of the root window.
+  "Return the text of the primary cut buffer.
 This is the cut text selected by X clients.  Returns #f if the
-CUT_BUFFER0 property is not a string."
-  (let ((l (X-property-get 'root-window "CUT_BUFFER0")))
-    (if (string=? (cadr l) "STRING")
-	(car l)
-	#f)))
+cut buffer is empty or is not a string."
+  (X-fetch-bytes))
 
 (define-public (X-set-cut-buffer-string! string)
-  "Set the text of the CUT_BUFFER0 property of the root window.
+  "Set the text of the primary cut buffer.
 This is the cut text selected by X clients."
-  (X-property-set! 'root-window "CUT_BUFFER0" string))
+  (X-store-bytes string))
 
 (define*-public (copy-window-title-to-cut-buffer0 #&optional (window (get-window)))
   "Set CUT_BUFFER0 to be a string that is the title of WINDOW."

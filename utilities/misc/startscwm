@@ -104,10 +104,8 @@ if [ -r $HOME/.Xkeyboard-$HOST ]; then
   . $HOME/.Xkeyboard-$HOST
 fi
 
-userresources=$HOME/.Xresources-cpp
-
 # merge in X resources
-for f in $userresources $HOME/.Xresources-local; do
+for f in $HOME/.Xresources $HOME/.Xresources-cpp $HOME/.Xresources-local; do
   if [ -r $f ]; then
     echo "Merging in $f" 1>&2
     xrdb -cpp cpp-sed-nl -merge $f
