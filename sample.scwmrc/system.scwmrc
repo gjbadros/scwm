@@ -224,8 +224,8 @@
 (bind-key 'all "M-F1" popup-util)
 (bind-key 'all "M-F2" popup-ops)
 
-;; in case of emergency, hit Control-Meta-Q
-(bind-key 'all "C-M-q" quit)
+;; in case of emergency, hit Control-Meta-Shift-Q
+(bind-key 'all "C-M-S-q" quit)
 
 ;; some stuff for icons
 (define (move-or-deiconify)
