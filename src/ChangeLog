@@ -1,3 +1,10 @@
+1998-06-29  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* binding.c: If a unbound modifier is given, generate more
+	consistent error messages.
+
+	* events.c (send_key_press): Ditto.
+
 1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-21.ix.netcom.com>
 
 	* Makefile.am, Makefile.in: Add GUILE_INCLUDES to INCLUDES

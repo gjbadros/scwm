@@ -1742,7 +1742,10 @@ send_key_press(SCM key, SCM win,
       DBUG(__FUNCTION__,"New Sent keyrelease of %s at %d, %d; time = %ld\n",szKeysym,x,y,lastTimestamp);
     }
   } else {
-    scwm_msg(WARN,__FUNCTION__,"Bad keysym");
+    int len;
+    char *keyname = gh_scm2newstr(key,&len);
+    scwm_msg(WARN,__FUNCTION__,"Bad keysym `%s' not sent",keyname);
+    free(keyname);
   }
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
