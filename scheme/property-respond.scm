@@ -74,7 +74,7 @@ See also `X-PropertyNotify-hook'."
 
 (define (handle-alert-property win value)
   (if (or (not value)
-	  (not (eq? win (current-window-with-focus))))
+	  (not (eq? win (window-with-focus))))
       (handle-flashing-property win value)))
 
 (define-public property-responses
@@ -83,9 +83,9 @@ See also `X-PropertyNotify-hook'."
     (flash ,handle-flash-property)
     (alert ,handle-alert-property)))
 
-;; ((cadr (assoc 'flashing property-responses)) (current-window-with-focus) (list "true"))
-;; ((cadr (assoc 'flashing property-responses)) (current-window-with-focus) #f)
-;; ((cadr (assoc 'alert property-responses)) (current-window-with-focus) (list "true"))
+;; ((cadr (assoc 'flashing property-responses)) (window-with-focus) (list "true"))
+;; ((cadr (assoc 'flashing property-responses)) (window-with-focus) #f)
+;; ((cadr (assoc 'alert property-responses)) (window-with-focus) (list "true"))
 
 (define-public (property-changed-respond prop win)
   "Handle various property changes of PROP on WIN.

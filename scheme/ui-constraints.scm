@@ -506,7 +506,7 @@ errors if UI-CONSTRAINT is not an ui-constraint."
 (define (window-in-list-in-focus? win-list)
   (if (null? win-list) 
       #f 
-      (if (equal? (car win-list) (current-window-with-focus))
+      (if (equal? (car win-list) (window-with-focus))
 	  #t
 	  (window-in-list-in-focus? (cdr win-list)))))
 

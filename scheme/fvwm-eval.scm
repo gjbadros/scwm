@@ -418,7 +418,7 @@
 
 (define-fvwm-command "Current"
   (let ((c (parse-conditions args)))
-    (if (null? (filter-only-except (list (current-window-with-focus))
+    (if (null? (filter-only-except (list (window-with-focus))
 				   #:only (car c) #:except (cdr c)))
 	(eval-fvwm-command (extract-command args) fmod))))
 

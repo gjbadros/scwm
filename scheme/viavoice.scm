@@ -113,7 +113,7 @@ longer in use by another process."
   (define (matches-command? substring)
     (string-match substring command))
   (if accepted?
-      (let ((win (or (current-window-with-pointer))))
+      (let ((win (or (window-with-pointer))))
 	(display "got accepted command ")
 	(display command)
 	(newline)

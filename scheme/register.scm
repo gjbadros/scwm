@@ -54,11 +54,11 @@
 
 (define*-public (focus-to-register #&optional (register (get-register-name)))
   (if register
-      (let ((win (current-window-with-focus)))
+      (let ((win (window-with-focus)))
 	(set-register register win))))
 
 (define*-public (window-configuration-to-register 
-		 #&optional (win (or (current-window-with-focus) (get-window)))
+		 #&optional (win (or (window-with-focus) (get-window)))
 		 (register (get-register-name)))
   (if (and win register)
       (set-register register (window-configuration win))))

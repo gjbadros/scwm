@@ -55,25 +55,25 @@
   "Interactively move the window which currently has the focus.
 `*move-opaquely-proc*' is used to control whether a rubberband
 outline or the window itself is moved."
-  (let ((w (current-window-with-focus))) (and w (interactive-move w))))
+  (let ((w (window-with-focus))) (and w (interactive-move w))))
 
 (define-public (interactive-resize-window-with-focus)
   "Interactively resize the window which currently has the focus.
 `*resize-opaquely-proc*' is used to control whether a rubberband
 outline or the window itself is resized."
-  (let ((w (current-window-with-focus))) (and w (interactive-resize w))))
+  (let ((w (window-with-focus))) (and w (interactive-resize w))))
 
 (define-public (interactive-move-window-with-pointer)
   "Interactively move the window which currently contains the pointer.
 `move-opaquely?' is used to control whether a rubberband
 outline or the window itself is moved."
-  (let ((w (current-window-with-pointer))) (and w (interactive-move w))))
+  (let ((w (window-with-pointer))) (and w (interactive-move w))))
 
 (define-public (interactive-resize-window-with-pointer)
   "Interactively resize the window which currently contains the pointer.
 `resize-opaquely?' is used to control whether a rubberband
 outline or the window itself is resized."
-  (let ((w (current-window-with-pointer))) (and w (interactive-resize w))))
+  (let ((w (window-with-pointer))) (and w (interactive-resize w))))
 
 (define*-public (toggle-max-vert #&optional (win (get-window)))
   "Toggle the current window's maximized-vertically state."
@@ -724,14 +724,14 @@ that corner fixed."
 (define-public (bind-wheel-mouse-prior-next matching-proc)
   (bind-mouse 'window 4
 	      (lambda ()
-		(if (matching-proc (current-window-with-pointer))
+		(if (matching-proc (window-with-pointer))
 		    (send-key-press-prior)
 		    (begin
 		      (xtest-fake-button-event 4 #t)
 		      (xtest-fake-button-event 4 #f 10)))))
   (bind-mouse 'window 5
 	      (lambda ()
-		(if (matching-proc (current-window-with-pointer))
+		(if (matching-proc (window-with-pointer))
 		    (send-key-press-next)
 		    (begin
 		      (xtest-fake-button-event 5 #t)
@@ -760,7 +760,7 @@ that corner fixed."
 
 
 (define*-public (window-background-color #&optional (win (get-window)))
-  (if (eq? win (current-window-with-focus))
+  (if (eq? win (window-with-focus))
       (or (cadr (get-window-highlight-colors win)) (highlight-background))
       (cadr (get-window-colors win))))
 
@@ -837,17 +837,17 @@ that corner fixed."
 
 (define-public (resize-quarterscreen)
   "Resize the current window with the pointer to 1/4 of the screen."
-  (let ((w (current-window-with-pointer)))
+  (let ((w (window-with-pointer)))
     (animated-resize-window (%x 49) (%y 49))))
 
 (define-public (resize-halfscreen)
   "Resize the current window with the pointer to full height and half the screen size in width."
-  (let ((w (current-window-with-pointer)))
+  (let ((w (window-with-pointer)))
     (animated-resize-window (%x 49) (%y 90))))
 
 (define-public (resize-fullscreen)
   "Resize the current window with the pointer to 90% of the full screen size."
-  (let ((w (current-window-with-pointer)))
+  (let ((w (window-with-pointer)))
     (animated-resize-window (%x 90) (%y 90))))
 
 
@@ -904,3 +904,7 @@ Use `add-hook!' to attach this to `X-ConfigureRequest-hook'."
 	    (animated-resize-window width height win x y)
 	    (animated-move-window x y win))
 	(set! configure-request-handled #t))))
+
+(define-public (focus-window-with-pointer)
+  "Set the focus to be the window containing the pointer."
+  (focus (window-with-pointer)))

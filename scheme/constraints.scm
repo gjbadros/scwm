@@ -59,7 +59,7 @@ Can restart with a fresh solver by using `start-constraints'."
   (bind-key 'all "C-M-S-c" popup-ui-constraints-toggle-menu))
 
 
-;; drawing constraints on only the current-window-with-focus
+;; drawing constraints on only the window-with-focus
 ;; (need to take into account focus changes)
 
 ;; hooks
@@ -71,13 +71,13 @@ Can restart with a fresh solver by using `start-constraints'."
   (undraw-constraints-of-window win #:draw-disabled ui-constraints-draw-disabled))
 
 (define (draw-constraints-with-focus)
-  (let ((win (current-window-with-focus)))
+  (let ((win (window-with-focus)))
     (if win (draw-constraints-of-window win #:draw-disabled ui-constraints-draw-disabled))
     (add-hook! window-focus-change-hook draw-focus-change-hook)
     (add-hook! window-focus-lost-hook   draw-focus-lost-hook)))
 
 (define (undraw-constraints-with-focus)
-  (let ((win (current-window-with-focus)))
+  (let ((win (window-with-focus)))
     (if win (undraw-constraints-of-window win #:draw-disabled ui-constraints-draw-disabled))
     (remove-hook! window-focus-change-hook draw-focus-change-hook)
     (remove-hook! window-focus-lost-hook   draw-focus-lost-hook)))

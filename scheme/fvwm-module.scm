@@ -254,7 +254,7 @@
 			(* (- (cadr (desk-size)) 1) display-height))))
    port)
 
-  (let ((focus-win (current-window-with-focus)))
+  (let ((focus-win (window-with-focus)))
     (fvwm2-module-send-packet
      M_FOCUS_CHANGE
      (longs->string
