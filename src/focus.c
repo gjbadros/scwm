@@ -220,3 +220,5 @@ StashEventTime(XEvent * ev)
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
+/* vim:ts=8:sw=2:sta */
+

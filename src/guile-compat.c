@@ -225,3 +225,5 @@ scwm_gh_enter (int argc, char *argv[], main_prog_t c_main_prog)
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
+/* vim:ts=8:sw=2:sta */
+

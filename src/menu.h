@@ -121,3 +121,5 @@ SCM popup_menu(SCM menu, SCM warp_to_first, SCM x_pos, SCM y_pos, SCM left_side_
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
+/* vim:ts=8:sw=2:sta */
+

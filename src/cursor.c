@@ -20,7 +20,7 @@
 
 static
 SCM
-mark_cursor(SCM obj) 
+mark_cursor(SCM ARG_IGNORE(obj)) 
 {
   return SCM_BOOL_F;
 }
@@ -246,3 +246,12 @@ init_cursor()
 #include "cursor.x"
 #endif
 }
+
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */
+/* vim:ts=8:sw=2:sta */
+
+
