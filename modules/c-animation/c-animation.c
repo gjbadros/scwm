@@ -322,7 +322,7 @@ the window context in the usual way if not specified. */
   ScwmWindow *psw;
   Bool old;
 
-  VALIDATE(win, FUNC_NAME);
+  VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
   old = psw->fWindowShaded;
 
@@ -381,7 +381,7 @@ not specified. See also `window-unshade', `animated-window-shade'. */
   ScwmWindow *psw;
   Bool old;
 
-  VALIDATE(win, FUNC_NAME);
+  VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
   old = psw->fWindowShaded;
 
@@ -452,12 +452,14 @@ way if not specified. */
 
 
 SCM 
-animated_resize_common (SCM w, SCM h, SCM win, const char *func_name, Bool frame_p)
+animated_resize_common(SCM w, SCM h, SCM win, const char *func_name, Bool frame_p)
 {
   ScwmWindow *psw;
   int width, height;
 
-  VALIDATEN(win, 3, func_name);
+#define FUNC_NAME func_name
+  VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
+#undef FUNC_NAME
   psw = PSWFROMSCMWIN(win);
 
   if (check_allowed_function(F_RESIZE, psw) == 0
