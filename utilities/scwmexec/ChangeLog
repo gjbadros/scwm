@@ -1,3 +1,10 @@
+Fri Aug 14 09:35:32 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmexec.c:
+	  Don't send the error or result as the second arg to fprintf
+	  since then special character interpretation is done -- use %s,
+	  and send the result as the third argument.
+
 1998-06-21  Maciej Stachowiak  <maciej@localhost.localdomain>
 
 	* scwmexec.c: Add copyright notice.
