@@ -60,6 +60,7 @@ init_scwm_procs(void)
   gh_new_procedure("set-xor-value!", set_xor_value, 1, 0, 0);
   gh_new_procedure("set-animation!", set_animation_x, 1,1,0);
   gh_new_procedure("send-button-press", send_button_press, 2,4,0);
+  gh_new_procedure("send-key-press", send_key_press, 1,4,0);
   gh_new_procedure("bind-key", bind_key, 3, 0, 0);
   gh_new_procedure("unbind-key", unbind_key, 2, 0, 0);
   gh_new_procedure("bind-mouse", bind_mouse, 3, 0, 0);
