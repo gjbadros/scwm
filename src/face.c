@@ -651,6 +651,7 @@ SCWM_SYMBOL(sym_tiled , "tiled");
    scm_wrong_type_arg.  Not sure what the right fix is now, but
    as you are planning on revisiting the code, I'll let you figure
    it out! :-) */
+/*SCWM_VALIDATE: face, spec, arg*/
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 #define FUNC_NAME "add_spec_to_face_x"
 {
@@ -688,7 +689,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       bf->style |= VectorButton;
     } else {
       /* FIXMS give a better error message */
-      scm_wrong_type_arg(FUNC_NAME,3,arg);
+      SCWM_WRONG_TYPE_ARG(3,arg);
     }
 
   } else if (spec==sym_solid) {
@@ -719,7 +720,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
       if (nsegs < 1 || nsegs > 128) {
 	/* FIXMS give a better error message */
-	scm_wrong_type_arg(FUNC_NAME,3,arg);
+	SCWM_WRONG_TYPE_ARG(3,arg);
       }
       perc = NEWC(nsegs,int);
       s_colors = NEWC(nsegs+1,char *);
@@ -747,7 +748,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	FREEC(s_colors);
 	FREEC(perc);
 	/* FIXMS give a better error message */
-	scm_wrong_type_arg(FUNC_NAME,3,arg);
+	SCWM_WRONG_TYPE_ARG(3,arg);
       }
 
       pixels = AllocNonlinearGradient(s_colors, perc, nsegs, npixels);
@@ -760,7 +761,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       if (!pixels) {
 	/* error: couldn't allocate gradient */
 	/* FIXMS give a better error message */
-	scm_wrong_type_arg(FUNC_NAME,3,arg);
+	SCWM_WRONG_TYPE_ARG(3,arg);
       }
 
       /* fully destructive, so free the face and 
@@ -778,7 +779,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       }
     } else {
       /* FIXMS give a better error message */
-      scm_wrong_type_arg(FUNC_NAME,3,arg);
+      SCWM_WRONG_TYPE_ARG(3,arg);
     }
   } else if (spec==sym_pixmap) {
     int tiled_p;
@@ -837,7 +838,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
     }
   } else {
     /* FIXMS give a better error message */
-    scm_wrong_type_arg(FUNC_NAME,2,arg);
+    SCWM_WRONG_TYPE_ARG(3,arg);
   }
 
 }

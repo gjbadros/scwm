@@ -2152,16 +2152,16 @@ specified. */
 #undef FUNC_NAME
 
 /* Return values are in virtual coordinates */
+/*SCWM_VALIDATE: x, y, win */
 SCM 
 convert_move_data(SCM x, SCM y, SCM win, const char *func_name, 
                   /* output params follow */
 		  int *pStartX, int *pStartY, /* the current position of win */
 		  int *pDestX, int *pDestY, /* the converted destination position for win */
 		  ScwmWindow **ppsw, Window *pw) /* the ScwmWindow, and X11 window */
-{
 #define FUNC_NAME func_name
+{
   VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
-#undef FUNC_NAME
 
   if (x != SCM_BOOL_F && !gh_number_p(x)) {
     scm_wrong_type_arg(func_name, 1, x);
@@ -2196,6 +2196,7 @@ convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
 
   return SCM_BOOL_T;
 }
+#undef FUNC_NAME
  
 
 SCWM_PROC(move_window, "move-window", 2, 1, 0,
@@ -3918,6 +3919,7 @@ ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
 
    GJB:FIXME:MS: so make them static, too */
 
+/*SCWM_VALIDATE: win, flag */
 static void
 set_squashed_titlebar_x(SCM win, SCM flag)
 #define FUNC_NAME "set_squashed_titlebar_x!"
@@ -3934,6 +3936,7 @@ set_squashed_titlebar_x(SCM win, SCM flag)
 }
 #undef FUNC_NAME
 
+/*SCWM_VALIDATE: win */
 static SCM
 squashed_titlebar_p(SCM win)
 #define FUNC_NAME "squashed_titlebar_p"

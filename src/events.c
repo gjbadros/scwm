@@ -2056,7 +2056,7 @@ this unless you know what it means. */
   Window w;
   Window pointer_win;
 
-  VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
+  VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
   w = psw->w;
 
