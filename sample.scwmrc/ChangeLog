@@ -1,3 +1,9 @@
+Thu Jul  1 09:23:39 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added gnome-hints; fix system-utilities menu to have 
+	title "System utilities", but then don't include the menu anyway.
+	Update vicarious-existence to serveuse.mit.edu. 
+
 Sat Jun 26 16:58:54 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Drop prefs-menu stuff.

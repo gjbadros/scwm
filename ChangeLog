@@ -1,3 +1,18 @@
+Thu Jul  1 09:36:23 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Added scwm_pixmapdir, and have pixmaps go in
+	$libdir/scwm-pixmaps now.  Make sure that directory is in
+	scwm_image_load_path by putting it first.  Do the AC_SUBST on
+	scwm_pixmapdir so pixmaps/Makefile.am works.
+
+Thu Jul  1 09:03:53 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* pixmaps/Makefile.in: removed
+
+	* pixmaps/Makefile.am: added (replacing Makefile.in, so make dist
+	will work for this directory).  Now pixmaps get installed in
+	$(libdir)/scwm-pixmaps;  e.g., /usr/lib/scwm-pixmaps/.
+
 Wed Jun 30 09:38:12 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Updated all refs to vicarious-existence.mit.edu to serveuse.mit.edu
