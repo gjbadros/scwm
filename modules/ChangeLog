@@ -1,5 +1,8 @@
 1998-10-07  Todd Larason  <jtl@teeny.molehill.org>
 
+	* xpm-menus/Makefile.am (INCLUDES): include proper include
+	directories -- thanks to Craig Struble
+
 	* xpm-menus/draw-xpm-menu.c: comments added to all the spacing defines;
 	(PaintMenuItem): move right side of RR over one to improve
 	appearance; move text right by half of MENU_TEXT_SPACING to
