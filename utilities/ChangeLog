@@ -1,0 +1,20 @@
+Thu Apr 22 16:47:43 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* pidproperty/scwm_set_pid_property.c: Factor out some code into a 
+	function, and look for SCWM_OTHER_ID environment variable and set
+	the X property to the env var's value, if the var is set in the env.
+
+Thu Apr 22 12:59:09 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* pidproperty/Makefile.am.broken: An automake attempt,
+	but doesn't work.
+
+Thu Apr 22 12:58:05 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* pidproperty/Makefile.in: Added install targets, make
+	work better with automake.
+
+Wed Apr 21 14:34:37 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* pidproperty/Makefile.in: Added clean target for
+	recursive builds.
