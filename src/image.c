@@ -3,11 +3,11 @@
  * This module is all original code 
  * by Maciej Stachowiak and Greg J. Badros.
  * It may be used or distributed under either the FVWM license 
- * (see COPYING.fvwm) or the GNU General Public License (see COPYING.GPL and
+ * (see COPYING.FVWM) or the GNU General Public License (see COPYING.GPL and
  * the description below)
  * Copyright 1997, Maciej Stachowiak and Greg J. Badros
  ****************************************************************************/
-/*      Copyright (C) 1997, Maciej Stachowiak
+/*      Copyright (C) 1997, Maciej Stachowiak abd Greg J. Badros
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -90,18 +91,25 @@ static SCM image_loader_hash_table = SCM_UNDEFINED;
 static SCM *loc_image_load_path;
 
 static SCM str_default;
+static SCM str_empty;
 
+SCM_SYMBOL (sym_filename,"filename");
+SCM_SYMBOL (sym_width,"width");
+SCM_SYMBOL (sym_height,"height");
+SCM_SYMBOL (sym_depth,"depth");
 
 size_t 
 free_image(SCM obj)
 {
   scwm_image *si = IMAGE(obj);
 
-  if (si->image != None) {
-    XFreePixmap(dpy, si->image);
-  }
-  if (si->mask != None) {
-    XFreePixmap(dpy, si->mask);
+  if (!si->foreign) {
+    if (si->image != None) {
+      XFreePixmap(dpy, si->image);
+    }
+    if (si->mask != None) {
+      XFreePixmap(dpy, si->mask);
+    }
   }
 
   free(si);
@@ -112,8 +120,6 @@ int
 print_image(SCM obj, SCM port, scm_print_state * pstate)
 {
   scm_puts("#<image ", port);
-  scm_write(IMAGE(obj)->name, port);
-  scm_puts(" from ", port);
   scm_write(IMAGE(obj)->full_name, port);
   scm_putc('>', port);
   return 1;
@@ -122,17 +128,10 @@ print_image(SCM obj, SCM port, scm_print_state * pstate)
 SCM
 mark_image(SCM obj)
 {
-  scwm_image *psimg;
-  if (SCM_GC8MARKP (obj)) {
-    return SCM_BOOL_F;
-  }
-  psimg = IMAGE(obj);
   SCM_SETGC8MARK(obj);
-  GC_MARK_SCM_IF_SET(psimg->name);
-  GC_MARK_SCM_IF_SET(psimg->full_name);
+  scm_gc_mark (IMAGE(obj)->full_name);
   return SCM_BOOL_F;
 }
-
 
 SCM_PROC (s_image_p, "image?", 1, 0, 0, image_p);
 
@@ -141,6 +140,8 @@ image_p(SCM obj)
 {
   return (IMAGE_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
 }
+
+
 
 SCM_PROC (s_image_properties, "image-properties", 1, 0, 0, image_properties);
 
@@ -151,17 +152,17 @@ image_properties(SCM image)
   if (!psimg) {
     scm_wrong_type_arg(s_image_properties, 1, image);
   } 
-  return gh_list(psimg->name,
-		 psimg->full_name,
-		 gh_int2scm(psimg->width),
-		 gh_int2scm(psimg->height),
-		 gh_int2scm(psimg->depth),
+  return gh_list(gh_cons(sym_filename,psimg->full_name),
+		 gh_cons(sym_width,gh_int2scm(psimg->width)),
+		 gh_cons(sym_height,gh_int2scm(psimg->height)),
+		 gh_cons(sym_depth,gh_int2scm(psimg->depth)),
 		 SCM_UNDEFINED);
   /* FIXGJB: why SCM_UNDEFINED -- GH_EOL? SCM_EOL does not work! */
+  /* MS: because SCM_EOL is the empty list, which is a valid list item
+     - you can have '() as a member of a list. However, SCM_UNDEFINED
+     should never be part of a valid Scheme object. */
 }
 
-/* used by C code to create image objects for images not loaded from
-   files, e.g. app-provided icon bitmaps or window. */
 
 SCM
 make_empty_image(SCM name)
@@ -170,13 +171,13 @@ make_empty_image(SCM name)
   scwm_image *ci;
 
   ci = safemalloc(sizeof(scwm_image));
-  ci->name = name;
   ci->full_name = name;
   ci->image = None;
   ci->mask = None;
   ci->height = 0;
   ci->width = 0;
   ci->depth = 0;
+  ci->foreign = 0;
 
   SCM_DEFER_INTS;
   SCM_NEWCELL(result);
@@ -190,11 +191,8 @@ make_empty_image(SCM name)
 /* These get exported as Scheme procedures on their own, but are also
    registered as image loaders for the specified types of images. It's
    done this way to provide for extending the available image loaders
-   with ones written in either C or Scheme. For instance, I can
-   envision a Scheme loader function for the .gz suffix which
-   decompresses the file into /tmp, calls make-image on that, and then
-   deletes the image in /tmp so you can keep all of your images gzipped. 
-   */
+   with ones written in either C or Scheme. Scheme-based loaders could
+   call external conversion programs for instance. */
 
 SCM_PROC (s_load_xbm, "load-xbm", 1, 0, 0, load_xbm);
 
@@ -262,24 +260,9 @@ load_xpm (SCM full_path)
 				   c_path, &ci->image, &ci->mask, 
 				   &xpm_attributes);
   if (xpm_return  == XpmSuccess) {
-    static Bool fShowedBadDepthAttributeMessageAlready = False;
     ci->width = xpm_attributes.width;
     ci->height = xpm_attributes.height;
-    ci->depth = xpm_attributes.depth; /* the Xpm manual implies this should
-					work, if not, fall back to the
-					code below.
-				      I can't find where it describes this...
-				      --12/16/97 gjb */
-    if (ci->depth > 32) {
-      ci->depth = DefaultDepthOfScreen(DefaultScreenOfDisplay(dpy));
-#ifdef FIXGJB_ALWAYS_BAD_NOT_SUPPOSED_TO_RETURN_DEPTH
-      if (!fShowedBadDepthAttributeMessageAlready) {
-	fShowedBadDepthAttributeMessageAlready = True;
-	scwm_msg(WARN,__FUNCTION__,
-		 "Bad depths are returned from libXpm's XpmReadFileToPixmap -- using screen depth\nPlease report your Xpm library version to the scwm authors");
-      }
-#endif
-    }
+    ci->depth = DefaultDepthOfScreen(DefaultScreenOfDisplay(dpy));
   } else {
     /* warn that the image could not be loaded, then drop the result
        on the floor and let GC clean it up. */
@@ -289,6 +272,7 @@ load_xpm (SCM full_path)
   free(c_path);
   return result;
 }
+
 
 SCM_PROC (s_register_image_loader, "register-image-loader", 2, 0, 0, register_image_loader);
 
@@ -323,34 +307,36 @@ unregister_image_loader(SCM extension)
   return SCM_UNSPECIFIED;
 }
 
+
+
 SCM
-load_image(SCM name)
+path_expand_image_fname(SCM name)
 {
-  SCM loader;
-  SCM result;
-  SCM full_name, extension;
-  char *c_name, *c_fname, *c_ext;
+  char *c_name, *c_fname;
   int length;
-  int max_path_len = 0;
-  int default_tried = 0;
+  SCM result;
 
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg("load-image", 1, name);
+    scm_wrong_type_arg(__FUNCTION__, 1, name);
   }
 
   c_name = gh_scm2newstr(name, &length);
-  
-  if (length > 0 && c_name[0]=='/') {
+
+  if ((length > 0 && c_name[0]=='/') ||
+      (length > 1 && c_name[0]=='.' &&
+       (c_name[1]=='/' || (length > 2 && c_name[1]=='.' 
+			   && c_name[2]=='/')))) {
     /* absolute path */
+
     if(access(c_name, R_OK)==0) {
       c_fname=c_name;
-      c_name=NULL;
     } else {
       free(c_name);
       return(SCM_BOOL_F);
     }
   } else {
     SCM p;
+    int max_path_len= 0;
 
     /* relative path */ 
     if (!gh_list_p(*loc_image_load_path)) {
@@ -362,18 +348,21 @@ load_image(SCM name)
        need. */
     /* MSFIX: FIXGJB: ideally, we'd like to do this only after 
      *loc_image_load_path changes */
+    /* GJBFIX: I don't think there is a way to know that... */
+
     for (p = *loc_image_load_path; p != SCM_EOL; p = SCM_CDR(p)) {
       SCM elt = SCM_CAR(p);
       if (!gh_string_p(elt)) {
 	/* Warning, non-string in image-load-path */
 	scwm_msg(WARN,__FUNCTION__,"Non-string in image-load-path");
-/* 	return SCM_BOOL_F;  Why bail? just skip it--gjb 11/28/97  */
+ 	return SCM_BOOL_F; /* Why bail? just skip it--gjb 11/28/97  */
+	/* Assuming path is list of strings simplifies code below. */
       } else {
 	int l=SCM_ROLENGTH(elt);
 	max_path_len= (l > max_path_len) ? l : max_path_len;
       }
     }
-	  
+    
     /* Add 2, one for the '/', one for the final NULL */
     c_fname = safemalloc(sizeof(char) *(max_path_len + length + 2));
     
@@ -390,98 +379,121 @@ load_image(SCM name)
       }
     }
     
+    free(c_name);
+
     if (p==SCM_EOL) {
       /* warn that the file is not found. */
-      free(c_name);
       free(c_fname);
       return SCM_BOOL_F;
     }
-
-    free(c_name);
   }
 
-  c_ext=strrchr(c_fname,'.');
-
-  /* Construct a scheme string for the full name. */
-  full_name=gh_str02scm(c_fname);
-  /* Similarly for the extension. */
-  extension=gh_str02scm(c_ext != NULL ? c_ext : "");
+  result = gh_str02scm(c_fname);
   free(c_fname);
-
-  /* Find the right loader based on the extension. */
-  loader=scm_hash_ref(image_loader_hash_table, extension, SCM_BOOL_F);
-
-  if (loader==SCM_BOOL_F) {
-    /* try the default loader; */
-    default_tried=1;
-    loader=scm_hash_ref(image_loader_hash_table, str_default, SCM_BOOL_F);
-    if (loader==SCM_BOOL_F) {
-      /* Warn: unknown imge type. */
-      return SCM_BOOL_F;
-    }
-  }
-  
-  result=gh_call1(loader,full_name);
-
-  if (result==SCM_BOOL_F && !default_tried) {
-    /* try the default loader if not already tried */
-    loader=scm_hash_ref(image_loader_hash_table, str_default, SCM_BOOL_F);
-    if (loader==SCM_BOOL_F) {
-      /* Warn: unknown imge type. */
-      return SCM_BOOL_F;
-   } 
-    result=gh_call1(loader,full_name);
-  }
-
-  if (IMAGE_P(result)) {
-    IMAGE(result)->name=name;
-    IMAGE(result)->full_name = full_name;
-    return result;
-  }
-
-  if (result != SCM_BOOL_F) {
-    /* Warn: invalid return value from image loader. */
-    scwm_msg(WARN,__FUNCTION__,"Invalid return from image loader");
-  }
-
-  return SCM_BOOL_F;
+  return result;
 }
 
-SCM_PROC (s_make_image, "make-image", 1, 0, 0, make_image);
 
-/* FIXMS: maybe add an optional arg to explicitly specify the type,
-   rather than guessing from the extension? */
+SCM
+get_image_loader(SCM name)
+{
+  char *c_name;
+  char *c_ext;
+  int length;
+  SCM result = SCM_BOOL_F;
+  
+  c_name=gh_scm2newstr(name,&length);
+
+  c_ext = strchr (c_name,'.');
+  if (c_ext==NULL) {
+    scm_hash_ref (image_loader_hash_table, str_empty, SCM_BOOL_F);  
+  } else {
+    while (c_ext != NULL && result == SCM_BOOL_F) {
+      result = scm_hash_ref (image_loader_hash_table, 
+			     gh_str02scm(c_ext), SCM_BOOL_F);
+      c_ext = strchr (c_ext+1,'.');
+    }
+  }
+
+  free (c_name);
+  if (result == SCM_BOOL_F) {
+    result = scm_hash_ref(image_loader_hash_table, str_default,
+			  SCM_BOOL_F);
+  }
+  return result;
+}
+
+
+SCM_PROC (s_make_image, "make-image", 1, 0, 0, make_image);
 
 SCM
 make_image(SCM name)
 {
   SCM result;
+  SCM full_path;
+  SCM loader;
 
   if (!gh_string_p(name)) {
     scm_wrong_type_arg(s_make_image,1,name);
   }
 
   /* First check the hash table for this image.  */
-  result=scm_hash_ref(image_hash_table,name, SCM_BOOL_F);
-  
+  result=scm_hash_ref(image_hash_table, name, SCM_BOOL_F);
   if (result != SCM_BOOL_F) {
     /* FIXMS: should really check for up-to-date-ness here */
+    /* Never mind, let's just rely on the cache clear stuff */
     return(result);
   }
 
-  /* OK, it wasn't in the hash table so we need to load it.
+  /* OK, it wasn't in the hash table - we need to expand the filename.
    */
+  full_path = path_expand_image_fname(name);
 
-  result=load_image(name);
-  
-  if (result == SCM_BOOL_F) {
-    /* the load failed; warn and return #f */
-    return SCM_BOOL_F;
+  if (full_path==SCM_BOOL_F) {
+    return (SCM_BOOL_F);
   }
 
+  /* Check the cache again */
+  result=scm_hash_ref(image_hash_table, full_path, SCM_BOOL_F);
+  if (result != SCM_BOOL_F) {
+    scm_hash_set_x(image_hash_table, name, result);
+    return result;
+  }
+
+  /* still not there, find the right loader, and load it up. */
+  loader = get_image_loader(name);
+  if (loader != SCM_BOOL_F) {
+    result = gh_call1(loader, full_path);
+  }
+
+  if (result == SCM_BOOL_F) {
+    /* the load failed; try the default loader */
+    loader = scm_hash_ref(image_loader_hash_table, str_default, SCM_BOOL_F);
+    if (loader != SCM_BOOL_F) {
+      result = gh_call1(loader, full_path);
+    }
+    if (result == SCM_BOOL_F) {
+      /* Still failed, return #f and possibly warn. */
+      return SCM_BOOL_F;
+    }
+  }
+
+  IMAGE(result)->full_name=full_path;
+
+  /* Put it in the hash table under both the full name and the given name. */
   scm_hash_set_x(image_hash_table, name, result);
+  scm_hash_set_x(image_hash_table, full_path, result);
 
   return result;
+}
+
+
+SCM_PROC (s_clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0, clear_image_cache_entry);
+
+SCM clear_image_cache_entry(SCM name)
+{
+  scm_hash_remove_x(image_hash_table, name);
+  return SCM_UNSPECIFIED;
 }
 
 
@@ -497,8 +509,7 @@ make_image_from_pixmap(char *szDescription,
   ci->width = width;
   ci->height = height;
   ci->depth = depth;
-  scwm_msg(DBG,__FUNCTION__,"Usage %dx%dx%d for %s\n",
-	   width,height,depth,szDescription);
+
   return result;
 }
 
@@ -528,6 +539,10 @@ void init_image()
   str_default=gh_str02scm("default");
   scm_protect_object(str_default);
 
+  /* Do the same for "" */
+  str_empty=gh_str02scm("");
+  scm_protect_object(str_empty);
+
   /* Include registration of procedures and other things. */
 # include "image.x"
 
@@ -550,7 +565,7 @@ void init_image()
   val_load_xbm = gh_lookup("load-xbm");
   val_load_xpm = gh_lookup("load-xpm");
 
-  register_image_loader (gh_str02scm(""), val_load_xbm);
+  register_image_loader (str_empty, val_load_xbm);
   register_image_loader (gh_str02scm(".icon"), val_load_xbm);
   register_image_loader (gh_str02scm(".bitmap"), val_load_xbm);
   register_image_loader (gh_str02scm(".xbm"), val_load_xbm);
@@ -564,3 +579,4 @@ void init_image()
     (scm_sysintern("image-load-path", 
 		   gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH)));
 }
+
