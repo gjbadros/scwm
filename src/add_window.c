@@ -262,14 +262,14 @@ AddWindow(Window w)
   CassowaryInitClVarsInPsw(psw);
   gh_allow_ints();
 
+  psw->fl = &Scr.DefaultDecor;
+
   call1_hooks(before_new_window_hook, psw->schwin);
 
   if (psw->fStartsOnDesk) {
     DBUG((DBG,__FUNCTION__,"fStartsOnDesk is true"));
     Desk = psw->StartDesk;
   }
-
-  psw->fl = &Scr.DefaultDecor;
 
   GetMwmHints(psw);
   GetOlHints(psw);
