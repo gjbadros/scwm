@@ -30,8 +30,7 @@
 (set-xor-value! 127)
 
 
-(define HOME ;(getenv "HOME")
-  "/u1/mstachow")
+(define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 
 (define user-pixmap-path (string-append HOME "/pixmaps"))
