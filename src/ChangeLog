@@ -1,3 +1,16 @@
+1998-12-13  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* Makefile.am (guile_snarfs): Snarf "session-manager.c".
+
+	* session-manager.c (SMerror): New static variable.
+	(restoreWindowState): Do nothing if SM is not active.
+	(SM-client-id): New primitive.
+	(SM-error-message): New primitive.
+	(initSM): Include snarfed stuff.
+	Don't emit warning, save it in SMerror.
+
+	* shutdown.c: Properly include "session-manager.h".
+
 1998-12-10  Sam Steingold  <sds@goems.com>
 
 	* scwm.c:499: fixed #ifdef capitalization.

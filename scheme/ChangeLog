@@ -1,3 +1,7 @@
+1998-12-13  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* tests/session.scm: New file for SM tests.
+
 1998-12-09  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* flux.scm (take-screenshot): New function.
