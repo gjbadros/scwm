@@ -1,5 +1,7 @@
 ;; $Id$ -*- scwm -*-
 
+(use-modules (app scwm stacking))
+
 (define swi select-window-interactively)
 
 ;;(defmacro swi ()
@@ -10,6 +12,8 @@
 (raise-window (swi))
 
 (restack-windows)
+
+(lower-by-one (current-window-with-pointer))
 
 (list-all-windows)
 
