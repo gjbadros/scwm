@@ -1,4 +1,6 @@
-Sun Feb 20 18:46:07 2000  Greg J. Badros  <gjb@cs.washington.edu>
+Sun Feb 20 18:50:41 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* README-COOL-EXAMPLES: Added
 
 	* Makefile.am: Added README-COOL-EXAMPLES
 
