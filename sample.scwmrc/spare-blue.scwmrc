@@ -1,22 +1,34 @@
-;;; $Id$ -*- scwm -*-
-;;; spare-blue.scwmrc
+;;;;;;;;;;;;;;;; ~/spare-blue.scwmrc ;;;;;;;;;;;;;;;;    -*- scwm -*-
+;;;;;;;;;;;;;;;; ------------------- ;;;;;;;;;;;;;;;;
 
-;;; This is a .scwmrc configuration file for SCWM, a window manager. 
+;;; This is a .scwmrc configuration file for SCWM, a window manager.
 ;;; Called `spare-blue', this has a simple, spare theme and blue backgrounds.
 
 ;;; Robert J. Chassell
-;;; 1999 Aug 21, 1999 Sep  8
+;;; 1999 Aug 21, 1999 Sep  8, 1999 Nov 13, 1999 Dec  9
 
-;;; Released under the GPL.
-
-;; ==> Note that font sizes are for a 1280x1024 screen.  
+;; ==> Note that font sizes are for a 1280x1024 screen.
 ;;     You may have to adjust sizes for your resolution.
 
     ;;--------------;;
     ;; CVS snapshot ;;
     ;;--------------;;
 
-;; This file was tested with the CVS snapshot of 1999 Sep  8 
+;; This file was tested with the CVS snapshot of 1999 Sep  8
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ;; To obtain a CVS snapshot of the SCWM development sources
 ;; execute the following at your shell prompt.
@@ -40,12 +52,27 @@
 ;;        ## type `anoncvs' as the password at the `CVS password:' prompt
 ;;     cvs update -Pd
 
-;; Run these compile commands to build scwm:
+;; Try these compile commands to build scwm:
 
-;;     ./autogen.sh; 
+;;     ./autogen.sh;
 ;;     ./ltconfig --cache-file=./config.cache --with-gcc --with-gnu-ld ;
 ;;     ./ltmain.sh i686-pc-linux-gnu; ./configure --enable-maintainer-mode ;
 ;;     env CFLAGS='-Wall -W' make -k"
+;;  [su root]
+;;     make install
+
+;; or try:
+;;
+;;     ./configure --enable-permissive --prefix=/usr/local && make -k
+;;  [su root]
+;;     make install
+
+;; or try:
+;;
+;;     ./configure --enable-maintainer-mode --prefix=/usr \
+;;     --enable-permissive --with-cassowary && make -k
+;;  [su root]
+;;     make install
 
 ;; On my system, SCWM-related files are in:
 ;;
@@ -88,10 +115,15 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;; Or run a trace when you start SCWM; use this `exec' command:
+;; 
+;; exec strace -etrace=open /usr/bin/scwm -f ~scwm/spare-blue.scwmrc \
+;; --segv-just-stop
+
 ;; then run `startx' from your shell prompt.
 
 ;; If you wish to use X windows display :0,
-;; set your color depth to 32, 
+;; set your color depth to 32,
 ;; and record errors and other information in a file called X-log,
 ;; run:
 ;;            startx -- :0 -bpp 32 > X-log 2>&1
@@ -99,30 +131,51 @@
 
 ;; On my system, this SCWM configuration takes 30 seconds to start.
 
+    ;;-------;;
+    ;; Gnome ;;
+    ;;-------;;
+
+;; If you want to use the gnome panel, stick
+;; "panel &" in your $HOME/.xclients file (and be sure it is u+x)
+
+;; import scwm modules we need for the startup animation
+(use-scwm-modules base message-window gnome-hints)
+
+;; do this early, since gnome times out in 10 seconds
+(enable-gnome-hints)
+
+;; Initialize various window styles for GNOME support.
+;; This handles desktop icons, splash screens, and the panel.
+(gnome-install-window-styles)
+
 
     ;;---------------------------;;
     ;; display a startup message ;;
     ;;---------------------------;;
 
-;; Do this very early so people do not wait too long.  
+;; Do this very early so people do not wait too long.
 ;; This message takes ten seconds to appear on my machine.
 
 ;; First we must import the scwm modules that provide the requisit services.
 ;; The message-window module imports base.scm and three other modules.
+
 (use-scwm-modules message-window)
 
+(define font12
+  (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+(set-icon-font! font12)
+(scwm-option-set! *window-font* "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*")
+
 ;; Set message-window-style
-;; The colors come into effect only at the last moment; perhaps never.
 (message-window-style default-message-window
-		      #:font font12 
-                      #:fg "white" 
+		      #:font *message-window-font*
+                      #:fg "white"
                       #:bg "blue")
 
 ;; Display startup message for 15 seconds, after which it goes away
 ;; If you have a faster machine, you may want to shorten the time.
 (display-message-briefly
- "Starting SCWM  ...  this takes thirty seconds on my machine  ...  "
-15)
+ "Starting SCWM  ...  this takes thirty seconds on my machine  ...  " 15)
 
 
 
@@ -145,39 +198,107 @@
 ;; The use-scwm-modules command presumes the desired modules are in the
 ;; /usr/local/share/scwm/modules/app/scwm/  directory.
 
-(use-scwm-modules  base message-window gnome-hints
-                   defoption optargs primopts 
-                   winops winlist wininfo listops placement
-                   style stylist face time-convert menus-extras
-                   std-menus doc virtual
-                   flux flux-gtk flash-window key-mover
-                   fvwm-module path-cache animation 
-                   themes
-                   animated-iconify
-                   modifier-key-bindings window-selection
-                   group preferences gnome-hints
-                   send-string quote background
-                   property-respond highlight-current-window
-                   dir-focus tile undo
-                   decor auto-raise
-                  )
+;; List modules in alphabetical order, so it is easier to keep track of them.
+;; Am probably loading more than I need.
+(use-scwm-modules
+ advice
+ animated-edge-moves
+ animated-iconify
+ animation
+ auto-raise
+ background
+ base
+ basic-styles
+ constraint-investigator
+ constraints
+ decor
+ defoption
+ describe
+ dir-focus
+ doc
+ face
+ file
+ flash-window
+ flux
+ flux-gtk
+ fvwm-compat
+ fvwm-eval
+ fvwm-module
+ gnome-hints
+ group
+ gtk
+ highlight-current-window
+ image-path-suggestor
+ key-mover
+ last-mapped-window
+ listops
+ menus-extras
+ message-window
+ modifier-key-bindings
+;; netscape
+ optargs
+ path-cache
+ placement
+ preferences
+ primopts
+ prompt-color
+ property-respond
+ quote
+ register
+ register
+ send-string
+ shove-window
+ simple-constraints
+ snap-constraints
+ std-menus
+ stringops
+ style
+ stylist
+ synth-events
+ task-switcher
+ theme-impl
+ themes
+ tile
+ time-convert
+ titlebar-buttons
+ ui-constraints
+ ui-constraints-buttons
+ ui-constraints-classes
+ ui-constraints-composition
+ ui-constraints-gdk-drawing
+ ui-constraints-gtk-toggle-menu
+ ui-constraints-toggle-menu
+ undo
+ virtual
+ wavplay
+ window-configuration
+ window-selection
+ wininfo
+ winlist
+ winlist-menu
+ winops
+ winops-menu
+ xlock-menus
+ xprop-extras
+ )
 
-;; Example of `use-modules' command 
-;; (This example does not load as many modules as the command above.)
-;; (use-modules (app scwm base)
-;;           (app scwm winops)
-;;           (app scwm winlist)
-;;           (app scwm wininfo)
-;;           (app scwm style)
-;;           (app scwm face)
-;;           (app scwm flux)
-;;           (app scwm decor)
-;;           (app scwm desk-background)
-;;           (app scwm module-types)
-;;           (app scwm auto-raise)
-;;           (app scwmp references)
-;;           (app scwm themes)
-;;           (app scwm fvwm-module))
+;; Example of `use-modules' command
+;; [This example does not load as many modules as the command above.]
+;; (use-modules
+;;  (app scwm auto-raise)
+;;  (app scwm base)
+;;  (app scwm decor)
+;;  (app scwm desk-background)
+;;  (app scwm face)
+;;  (app scwm flux)
+;;  (app scwm fvwm-module)
+;;  (app scwm module-types)
+;;  (app scwm style)
+;;  (app scwm themes)
+;;  (app scwm wininfo)
+;;  (app scwm winlist)
+;;  (app scwm winops)
+;;  (app scwmp references))
 
 
     ;;-------------------------------------;;
@@ -185,9 +306,9 @@
     ;;-------------------------------------;;
 
 ;; These commands replace most of what goes into a ~/.xinitrc or ~/.xsession
-;; file.  
+;; file.
 
-;; ==> Note that font sizes are for a 1280x1024 screen.  
+;; ==> Note that font sizes are for a 1280x1024 screen.
 ;;     You may have to adjust sizes for your resolution.
 
 ;; Blue is restful on my eyes; shows less flicker (to which I am sensitive).
@@ -205,24 +326,43 @@
 (scwm-system "TZ=GMT0 xclock -digital -bg navy -fg white -hd white -hl white \
               -update 1 -geometry +202+0&")
 
-;; Other clock information is located in: 
+;; Other clock information is located in:
 ;; /usr/local/share/scwm/modules/app/scwm/ScwmClock.scm
 
-;; Create some xterms.  Note the name for the tall xterm; 
+;; Create some xterms.  Note the name for the tall xterm;
 ;; that is so it is easy for me to pick from an icon list.
 
 (execute "xterm -T 80x24 -n 80x24 -bg mediumblue \
-               -fg white -geometry 80x24+0+75")
+               -fg white -cr white -geometry 80x24+0+75")
 
 (execute "xterm -T 80x74 -n '|| 80x74 ||' -bg mediumblue \
-      -fg white -geometry 80x74+450+10 -iconic")
+      -fg white -cr white -geometry 80x74+450+10 -iconic")
 
 ;; Here are other programs that are usually run from ~/.xinitrc
 
 (execute "xrdb ~/.Xresources > /dev/null")
 
+;; The contents of my .Xresources file are:
+;;
+;; *Label*shadowWidth: 3
+;;
+;; XTerm*jumpScroll:	true
+;; XTerm*scrollBar:	true
+;; XTerm*cutToBeginningOfLine: false
+;; XTerm*cursorColor:	white
+;; XTerm*saveLines:	800
+;;
+;; Emacs*background:	darkblue
+;; Emacs*foreground:	white
+;; Emacs*cursorColor:	white
+;; Emacs*pointerColor:  white
+;; Emacs*bold.AttributeBackground: dodger blue
+;; Emacs*bold.AttributeForeground: white
+;; Emacs.MenuBar:       on
+
+
 ;; My preferred keymap is:  /usr/share/keymaps/i386/qwerty/emacs2.map.gz
-;; This emulates it X
+;; This emulates it in X
 (execute "xmodmap -e 'clear Lock'")
 (execute "xmodmap -e 'add Control = Caps_Lock'")
 (execute "xmodmap -e 'keysym Tab = Tab'")
@@ -236,7 +376,8 @@
 ;;   Asian Chinese-BIG Chinese Ethiopic Japanese-BIG Japanese Korean
 ;; For the GIMP, put Type 1 and Speedo fonts first.
 
-(execute "xset fp+ /usr/X11R6/lib/X11/fonts/Type1,/usr/X11R6/lib/X11/fonts/Speedo,/usr/X11R6/lib/X11/fonts/100dpi,/usr/X11R6/lib/X11/fonts/75dpi,/usr/X11R6/lib/X11/fonts/misc,/usr/X11R6/lib/X11/fonts/freefont/,/usr/X11R6/lib/X11/fonts/sharefont/,/usr/X11R6/lib/X11/fonts/URW/,/usr/local/src/intlfonts/European,/usr/local/src/intlfonts/Misc")
+(execute "xset fp+ /usr/X11R6/lib/X11/fonts/Type1/,/usr/X11R6/lib/X11/fonts/Speedo/,/usr/X11R6/lib/X11/fonts/misc/,/usr/X11R6/lib/X11/fonts/75dpi/,/usr/X11R6/lib/X11/fonts/100dpi/,/usr/X11R6/lib/X11/fonts/freefont/,/usr/X11R6/lib/X11/fonts/sharefont/,/usr/local/src/intlfonts/European,/usr/local/src/intlfonts/Asian,/usr/local/src/intlfonts/Misc")
+
 
 (execute "xset fp rehash")
 
@@ -254,7 +395,7 @@
 (define HOME (getenv "HOME"))
 
 ;; You can define USER this way
-;; (define USER (getenv "USER"))  
+;; (define USER (getenv "USER"))
 
 
 ;; If you are loading both local and system settings, you can do this:
@@ -284,7 +425,7 @@
 ;;  ~/.scwm/settings      -*- scwm -*-
 ;; basic configuration parameters for scwm
 ;; ATTENTION!!!: THE FOLLOWING VARIABLES MUST BE DEFINED!!!
-;; user-image-path, menu-font, icon-font,
+;; user-image-path, menu-font, title-font, icon-font,
 ;; focus-type, restart-function, init-function,
 ;; window-toggle-maximize
 
@@ -307,27 +448,20 @@
 
 
 ;; ==> Note: image-load-path also defines where images are located.
-;; this defines the path where a user can put own images 
+;; this defines the path where a user can put own images
 (define user-image-path '())
-
-;; now we define the font for menus, titles and icons
-(define helvetica12
-  (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
-
-(define menu-font helvetica12)
-(define icon-font helvetica12)
 
 ;; ==> Note: Apparently, this two functions serve as `hooks' --
 ;; `restart-function' is run before (restart "scwm")
 ;; and `init-function' is run at the end of this file.
 ;; Here, these two functions are defined to do nothing.
 
-;; this is the function, scwm calls when you restart it 
+;; this is the function, scwm calls when you restart it
 (define (restart-function)
   ())
 
 ;; init-function is the function, scwm calls after the initialisation.
-(define (init-function) 
+(define (init-function)
   ())
 
 ;;; now we define the maximize function
@@ -337,7 +471,16 @@
 ;; way to the top of the screen.  This is because I always like some
 ;; visible root screen space.
 
-(define (vertical-toggle-maximize) 
+(use-scwm-modules animation)
+(use-modules (app scwm c-animation))
+
+;; This should make the window appear at the initial position, 1/4 of the
+;; way, 1/2 of the way, 3/4 of the way, and finally slide into place.
+(set-animation! #(0.0 -0.05 -0.1 -0.15 -0.2 -0.25 -0.2 -0.15 -0.1 -0.05
+0.0 0.25 0.5 0.75 1.0
+1.05 1.1 1.15 1.2 1.25 1.2 1.15 1.1 1.05 1.0))
+
+(define (vertical-toggle-maximize)
   (toggle-maximize 0 (%y 95)))
 
 ;; use this function, if you want a vertical-and-horizontal maximize function
@@ -345,9 +488,20 @@
 ;; (define (window-toggle-maximize)
 ;;   (toggle-maximize (%x 99) (%y 99))
 ;;   (move-to 7 7))
-    
+
 ;;;;;;;;;;;;;;;;   end copy of   ~/.scwm/settings    ;;;;;;;;;;;;;;;;
 
+    ;; ------------;;
+    ;; constraints ;;
+    ;; ------------;;
+
+(define (enable-constraint-solver)
+  (if (scwm-is-constraint-enabled?)
+      (begin
+	(use-scwm-modules constraints)
+	(start-constraints))
+      (error "Scwm is not built to support constraints\n\
+Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/")))
 
 
     ;; -------;;
@@ -360,32 +514,47 @@
 
 (define std-d (make-decor "std"))
 (with-decor std-d
-            (title-style #:font helvetica12 #:justify 'left #:relief 'raised)
+            (title-style
+;;             #:font helvetica12
+             #:justify 'left
+             #:relief 'raised)
             (border-style #:hidden-handles #f #:no-inset #t))
 
 (define lizard-d (make-decor))
 (with-decor lizard-d
-            (title-style #:font helvetica12 #:justify 'left #:relief 'raised)
-            (border-style #:hidden-handles #f 
+            (title-style
+;;             #:font helvetica12
+             #:justify 'left
+             #:relief 'raised)
+            (border-style #:hidden-handles #f
                           #:no-inset #t
                           #:inactive
                           (list #:hidden-handles #f #:no-inset #t)))
 
 (define grad-d (make-decor))
 (with-decor grad-d
-            (set-rubber-band-mask! 127)
-            (title-style 
-             #:font helvetica12 
-             #:justify 'left 
+            (set-rubber-band-mask! 110)
+
+            (title-style
+;;             #:font helvetica12
+             #:font font12
+             #:justify 'left
              #:relief 'flat
-             #:h-gradient (list 
+             #:h-gradient (list
                            20 (list "OrangeRed3" 20) "OrangeRed3" "#3cb21c")
-             #:inactive (list 
-                         #:h-gradient
-                         (list 40 (list "grey50" 20) "grey50" "grey25")))
-            (border-style 
-             #:no-inset #f 
+             #:inactive
+             (list
+              #:h-gradient
+             ;; (list 40 (list "grey75" 20) "grey75" "grey25")
+             ;; (list 40 (list "CornflowerBlue" 5) "CornflowerBlue" "navyblue")
+              ;; #0000c3 is decimal 0 0 195 and is between
+              ;; navyblue, 0 0 128, and mediumblue, 0 0 205
+              (list 40 (list "#0000c3" 50) "#0000c3" "CornflowerBlue")
+                 ))
+            (border-style
+             #:no-inset #f
              #:hidden-handles #f))
+
 
 (define decor-list (list (cons "Standard" std-d) (cons "Lizard" lizard-d)
                          (cons "Gradient" grad-d)))
@@ -405,7 +574,7 @@
 
 (append! image-load-path
      (list
-      "/usr/X11R6/include/X11/pixmaps" 
+      "/usr/X11R6/include/X11/pixmaps"
       "/usr/X11R6/include/X11/bitmaps"
       "~/pixmaps"
       "~/bitmaps"
@@ -430,7 +599,7 @@
     ;;----------------------------------;;
 
 ;; Create the image form used in various menus
-;; Not all of these images are used in this ~/.scwmrc file, 
+;; Not all of these images are used in this ~/.scwmrc file,
 ;; but are kept because the might be useful in the future.
 
 ;; These must be loaded before the window styles, which use them.
@@ -460,7 +629,8 @@
 (define lower-i   (make-image "mini-lower.xpm"))
 (define man-i     (make-image "mini-manual.xpm"))
 (define max1-i    (make-image "mini-max1.xpm"))
-(define nscape-i  (make-image "mini-nscape.xpm"))
+(define mini-fractal-i (make-image "mini-fractal.xpm"))
+;; (define nscape-i  (make-image "mini-netscape.xpm"))
 (define pdf-i     (make-image "mini-pdf.xpm"))
 (define quest-i   (make-image "mini-question.xpm"))
 (define raise-i   (make-image "mini-raise.xpm"))
@@ -497,45 +667,48 @@
 
 ;; Define a style for the clock and other such items
 (define desk-widget
-  (make-style #:plain-border #t 
-              #:sticky #t 
+  (make-style #:plain-border #t
+              #:sticky #t
               #:winlist-skip #t
-              #:border-width 3 
+              #:border-width 3
               #:focus 'none))
 
     ;;---------------------------;;
     ;; specific window styles    ;;
     ;;---------------------------;;
 
-(window-style "*" #:use-decor grad-d)
-
 ;; I don't like to see icons for my main programs when a window is
 ;; iconified, only the text with its name, so I commented out those
 ;; icons.
 
-(window-style "xterm" 
+(window-style "xterm"
 ;;              #:icon "/usr/X11R6/lib/X11/twm/images/xterm.xpm"
-              #:mini-icon term-i 
+              #:mini-icon term-i
               #:use-decor grad-d)
 
-(window-style "emacs" 
+(window-style "emacs"
 ;;              #:icon "gnu-animal.xpm"
               #:icon-box (list (x- 35) 1 35 (y- 141))
               #:use-decor grad-d)
 
-(window-style "netscape" 
-;;              #:icon "netscape.xpm"
-              #:placement-proc place-at-point
-              #:use-decor grad-d)
+;;(window-style "netscape"
+;; ;;              #:icon "netscape.xpm"
+;;              #:placement-proc place-at-point
+;;              #:use-decor grad-d)
 
-(window-style "gimp" 
+(window-style "gimp"
 ;;              #:icon "wilber.xpm"
               #:mini-icon gimp-i
               #:use-decor grad-d)
 
-(window-style "xclock*" 
-              #:no-titlebar #t 
-              #:circulate-skip #t 
+(window-style "sketch"
+;;              #:icon "wilber.xpm"
+              #:mini-icon mini-fractal-i
+              #:use-decor grad-d)
+
+(window-style "xclock*"
+              #:no-titlebar #t
+              #:circulate-skip #t
               #:use-style desk-widget
               #:fg "yellow"
               #:bg "red")
@@ -557,7 +730,7 @@
 ;; This sets the window style for attributes not mentioned in specific
 ;; window styles for specific windows.
 
-(window-style "*" 
+(window-style "*"
 
               #:icon #f      ;; this turns off icons, but leaves icon titles
               #:show-icon #t ;; show text of titles for icon, not images
@@ -581,19 +754,21 @@
               #:icon-box (list (x- 35) 1 35 (y- 141))
 
               #:focus 'mouse
-              #:border-width 3 
+              #:border-width 3
 
 ;;              #:placement-proc place-at-point
 ;;              #:transient-placement-proc place-at-point
-;;              #:random-placement #t 
+;;              #:random-placement #t
 ;;              #:smart-placement #t
 
-              #:mwm-func-hint #t 
+              #:mwm-func-hint #t
               #:mwm-decor-hint #t
-              #:hint-override #t 
+              #:hint-override #t
               #:decorate-transient #t
               #:PPosition-hint #f
-              #:lenience #t)
+              #:lenience #t
+
+              #:use-decor grad-d)
 
 
     ;;-------;;
@@ -601,7 +776,7 @@
     ;;-------;;
 
 ;; This pager is adapted by the scwm developers from that for Fvwm;
-;; hence the references to "FvwmPager" 
+;; hence the references to "FvwmPager"
 
 (set-desk-size! 2 2)
 
@@ -612,27 +787,16 @@
 (set-edge-resistance! 150 150)
 
 
-(window-style "FvwmPager" 
-              #:no-titlebar #t 
+(window-style "FvwmPager"
+              #:no-titlebar #t
               #:use-style desk-widget)
-
-;; for a pager for a specific desk, try the following (untested)
-;;   see  /usr/local/src/scwmdoc.pdf
-;; (define First_Desk 1)
-;; (define Second_Desk 2)
-;; (window-style "Second_Pager" 
-;;               #:start-on-desk  Second_Desk
-;;               #:no-titlebar #t 
-;;               #:use-style desk-widget)
-
-;; (window-style "SecondPager" #:use-style desk-widget-on-top)
 
 (register-fvwm2-module-config "FvwmPager"
  "*FvwmPagerGeometry -220+4"
  "*FvwmPagerDeskTopScale 40"
  "*FvwmPagerHilight NavajoWhite2"            ; active window
  "*FvwmPagerBack burlywood3"                 ; non-active windows
- ;; FvwmPagerFore is used for the dashed lines separating 
+ ;; FvwmPagerFore is used for the dashed lines separating
  ;; workspaces in the pager
  "*FvwmPagerFore DarkSlateBlue"
  "*FvwmPagerFont none"
@@ -646,10 +810,37 @@
 ;; (define fvwm2-pager (run-fvwm2-module "FvwmPager" '("0" "1")))
 
 ;; The following shows only the first desktop, not desk two.
-;; I don't know why.
-;; However, windows on the second desktop are visible in the window list.
-;; Also, you can use the Desk menu to go to any desk.
-(define fvwm2-pager (run-fvwm2-module "FvwmPager" '("Top" "Bottom")))
+(define fvwm2-pager (run-fvwm2-module "FvwmPager" '("0" "0")))
+
+;; ;;;;;;;;;;;;;;;;; Second Pager ;;;;;;;;;;;;;;;;
+;;
+;; How to create a pager for a second desktop
+;; The pager itself appears on both desktops
+;;   see  /usr/local/src/scwmdoc.pdf
+;; Create a second FVWM executable:
+;;   cd /usr/lib/X11/fvwm2; cp -p FvwmPager FvwmPager-2-
+;;
+;; Evaluate the following:
+;;
+;; (window-style "FvwmPager-2-"
+;;               #:no-titlebar #t
+;;               #:use-style desk-widget)
+;;
+;; (register-fvwm2-module-config "FvwmPager-2-"
+;;  "*FvwmPager-2-Geometry -330+4"        ; put pager to left of other
+;;  "*FvwmPager-2-DeskTopScale 40"
+;;  "*FvwmPager-2-Hilight NavajoWhite2"   ; active window
+;;  "*FvwmPager-2-Back burlywood3"        ; non-active windows
+;;  "*FvwmPager-2-Fore DarkSlateBlue"
+;;  "*FvwmPager-2-Font none"
+;;  "*FvwmPager-2-SmallFont 5x8"
+;;  "*FvwmPager-2-InterPageLineStyle solid"
+;;  "*FvwmPager-2-Label 0 Top"
+;;  "*FvwmPager-2-Label 1 Bottom")
+;;
+;; (define fvwm2-pager-2 (run-fvwm2-module "FvwmPager-2-" '("1" "1")))
+;;
+;; ;;;;;;;;;;;;;;;; end second pager ;;;;;;;;;;;;;;;;
 
     ;;;; End Pager ;;;;
 
@@ -665,15 +856,15 @@
 
 ;; The steps are:
 ;;  1. create menus used by main root menu (done in this section)
-;;  2. create main menu 
+;;  2. create main menu
 ;;  3. bind the menu to an action such as a mouse click (done below)
 
 ;; quit-verify is used by the main root menu
 (define quit-verify
-  (menu 
-   (list 
+  (menu
+   (list
     (menuitem "Really quit scwm?" #f)
-    menu-title
+;    menu-title
     (menuitem "Yes" #:action quit)
     (menuitem "No" #:action #f)
     menu-separator
@@ -681,14 +872,14 @@
                                         (restart-function)
                                         (restart "scwm"))))))
 
-;; desk-menu is used by the main root menu  
+;; desk-menu is used by the main root menu
 ;; and is also bound to meta-mouse-3 in the root window
 
 (define desk-menu
-  (menu 
+  (menu
    (list
     (menuitem "Desks" #f)
-    menu-title
+;    menu-title
     (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
     (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
     (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
@@ -707,7 +898,7 @@
 
 ;; You can load the Debian menus file here by uncommenting this command:
 
-;;     (load (string-append (getenv "HOME") "/.scwm/scwm_menus"))
+;;      (load (string-append (getenv "HOME") "/.scwm/scwm_menus"))
 
 ;; (Change the name of the file as needed for your system.)
 
@@ -723,7 +914,6 @@
 ;;    /Debian/WindowManagers
 ;;    /Debian/XShells
 
-
 ;;; main root menu ;;;
 
 ;; left button mouse menu on root window
@@ -731,58 +921,99 @@
   (popup-menu main-root-menu))
 
 (define main-root-menu
-  (menu 
+  (menu
    (list
-    (menuitem "Main Menu" 
-              #:image-left "mini-penguin.xpm" 
+    (menuitem "Main Menu"
+              #:image-left "mini-penguin.xpm"
               ;; #:image-left "jline.xpm" "mini-penguin.xpm"  "jline.xpm"
               #f)
 
     menu-separator
     (menuitem
-     "&80x24 Window" 
-     #:image-left 
-     "mini.xterm.xpm" 
-     #:action (lambda () 
+     "&80x24 Window"
+     #:image-left
+     "mini.xterm.xpm"
+     #:action (lambda ()
                 (execute "xterm -bg darkblue -fg white -cr orchid \
                            -geometry 80x24+2+130 -name '80x24 xterm' \
                            -title xterm -e /bin/bash -login")))
     (menuitem
-     "&80x74 Window" 
-     #:image-left 
-     "mini.xterm.xpm" 
-     #:action (lambda () 
+     "&80x74 Window"
+     #:image-left
+     "mini.xterm.xpm"
+     #:action (lambda ()
                 (execute "xterm -bg darkblue -fg white -cr orchid \
                            -geometry 80x74+530+2 -name '80x74 xterm' \
                            -title xterm -e /bin/bash -login")))
 
     menu-separator
 
-    (menuitem 
-     "&GNU Emacs" 
-     #:image-left "mini.emacs.xpm" 
-     #:action (lambda () 
+    (menuitem
+     "&GNU Emacs"
+     #:image-left "mini.emacs.xpm"
+     #:action (lambda ()
                 (execute "/usr/bin/emacs20 -fn 7x14 -bg darkblue \
-                 -fg white -geometry 81x62-534+95 -name 'GNU Emacs'")))
+                 -fg white -geometry 81x62-150+100 -name 'GNU Emacs'")))
+
+;;     (menuitem
+;;      "&Emacs 21"
+;;      #:image-left "mini.emacs.xpm"
+;;      #:action (lambda ()
+;;                 (execute "/usr/local/bin/emacs -fn 7x14 -q -l ~bob/.emacs-21 \
+;;                 -bg  darkblue -fg white -geometry 80x63+635+86 \
+;;                 --icon-type -name 'Emacs 21'")))
 
     menu-separator
 
-    (menuitem 
-     "Gzilla" 
+;;     (menuitem
+;;      "Netscape 4.7"
+;;      #:image-left "mini-netscape.xpm"
+;;      #:action (lambda ()
+;;                 (execute "/usr/local/netscape/netscape -no-about-splash \
+;;                           -no-install -geometry 740x900+350+20")))
+;; 
+;;     (menuitem
+;;      "Netscape 3.04"
+;;      #:image-left "mini-netscape.xpm"
+;;      #:action (lambda ()
+;;   (execute "/usr/local/src/netscape-304/netscape -geometry 740x900+350+20")))
+
+
+    (menuitem
+     "Gzilla"
      #:image-left "mini-gzilla.xpm"
      #:action (lambda () (execute "gzilla")))
 
-    (menuitem "The Gimp" 
+    menu-separator
+
+    (menuitem "The Gimp"
               #:image-left "mini-wilbur.xpm"
-              #:action (lambda () (execute "gimp")))
+;; was
+;;              #:action (lambda () (execute "gimp")))
+              #:action (lambda () (execute "~/.gimp-script")))
+
+    (menuitem "Sketch"
+              #:image-left "mini-fractal.xpm"
+              #:action (lambda () (execute "sketch")))
 
     menu-separator
 
-    (menuitem "&xcolors" 
-              #:image-left "mini.rainbow.xpm" 
+    (menuitem "&xcolors"
+              #:image-left "mini.rainbow.xpm"
               #:action (lambda () (execute "xcolors")))
 
-;;;; Uncomment the following Debian menus 
+    menu-separator
+
+    (menuitem "&Constraints"
+	      #:submenu (lambda () (ui-constraints-toggle-menu)))
+
+    (menuitem "Constraint &investigator"
+	      #:action (thunk start-constraint-investigator))
+
+    (menuitem "Turn &on Constraint Solver"
+	      #:action (thunk enable-constraint-solver))
+
+;;;; Uncomment the following Debian menus
 ;;;; only if you have loaded the file that contains them.
 ;;;; See above for how to load that file.
 
@@ -796,23 +1027,22 @@
 ;;     (menuitem "&WindowManagers" #:action /Debian/WindowManagers)
 ;;     (menuitem "&XShells"        #:action /Debian/XShells)
 
-
     menu-separator
 
-    (menuitem "Desks" 
+    (menuitem "Desks"
               #:image-left "/usr/X11R6/lib/tkdesk/images/ficons16/desk.xpm"
               #:action desk-menu)
 
     menu-separator
 
-    (menuitem 
-     "Restart scwm" 
+    (menuitem
+     "Restart scwm"
      #:image-left "mini-start.xpm"
      #:action (lambda () (restart-function) (restart "scwm")))
 
     menu-separator
-    (menuitem 
-     "Quit scwm" 
+    (menuitem
+     "Quit scwm"
      #:image-left "mini-cross.xpm"
      #:action quit-verify))))
 
@@ -821,38 +1051,46 @@
 
 ;;; middle mouse root menu ;;;
 
+;; need this to run scwmrepl
+(define (run-scwm-in-xterm) (execute "xterm -e scwmrepl"))
 
 ;; menu-for-preferences  is used by the middle mouse root menu
 (define menu-for-preferences
-  (menu 
-   (list 
-    (menu-title "Preferences" #f) 
-    menu-title
+  (menu
+   (list
+    (menu-title "Preferences" #f)
     menu-separator
+
+    (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
+
+    (menuitem "Change background color..."
+              #:action (lambda ()
+                         (prompt-color
+                          "New background color"
+                          (lambda (c) (set-background-color! c))
+                          #:title "Background color?")))
 
     ;; global themes are in
     ;;     /usr/local/share/scwm/themes
     ;;  as tar.gz files that Scwm reads automagically
-    (menuitem "Change global theme" 
-              #:submenu 
-              (lambda () (make-menu-global-theme #t)))
+    (menuitem "Change global theme"
+              #:submenu
+              (lambda () (menu-global-theme #t)))
 
-    (menuitem "Scwm interaction" #:action
-              (run-in-xterm "scwmrepl"))
+    (menuitem "Scwm interaction"
+              #:action run-scwm-in-xterm)
 
-    (menuitem "Info on a window" 
+    (menuitem "Info on a window"
               #:action window-info))))
-
 
 ;; middle mouse button on root window
 (define (popup-ops) (popup-menu window-ops-menu))
 
 ;; middle mouse button on root window; bound to popup-ops
 (define window-ops-menu
-  (menu 
+  (menu
    (list
-    (menuitem "Window Ops" #f)
-    menu-title
+    (menu-title "Window Ops" #f)
     menu-separator
     (menuitem "Move" #:action interactive-move)
     (menuitem "Resize" #:action interactive-resize)
@@ -865,7 +1103,7 @@
     (menuitem "(Un)Stick" #:action toggle-stick)
     (menuitem "(Un)Keep On Top" #:action toggle-on-top)
     menu-separator
-    (menuitem "&Preferences" #:image-left "mini-prefs.xpm" 
+    (menuitem "&Preferences" #:image-left "mini-prefs.xpm"
               #:action 'menu-for-preferences)
     menu-separator
     (menuitem "Close" #:action close-window)
@@ -884,7 +1122,7 @@
 ;;; titlebar mouse menu ;;;
 
 ;;  bindings for mouse buttons on the title bar
-;;  are created in a section below 
+;;  are created in a section below
 
 ;; leftmost button on title bar
 (define (popup-small-ops)
@@ -899,24 +1137,26 @@
                    #:action interactive-resize)
          menu-separator
          (menuitem "Info" #:image-left quest-i
-                   #:action (lambda () (window-info ww)))
-         (menuitem "More" 
+              #:action  window-info)
+
+         (menuitem "More"
                    #:action
                    (menu (list
                           (menuitem "&Raise"
                                     #:action raise-window)
                           (menuitem "&Lower"
                                     #:action lower-window)
-                          (menuitem (if (sticky-window? ww) "Un&stick" "&Stick")
-                                    #:action toggle-stick)
-                          (menuitem (if (shaded-window? ww)
-                                        "Unwindow-S&hade" "Window-S&hade")
-                                    #:action toggle-window-shade)
-                          (menuitem (if (kept-on-top? ww)
-                                        "UnKeep On Top" "Keep On Top")
-                                    #:action toggle-on-top))))
-         (menuitem "Decorations" 
-                   #:image-left decor-i 
+;;                           (menuitem (if (sticky? ww) "Un&stick" "&Stick")
+;;                                     #:action toggle-stick)
+;;                           (menuitem (if (window-shaded? ww)
+;;                                         "Unwindow-S&hade" "Window-S&hade")
+;;                                     #:action toggle-window-shade)
+;;                           (menuitem (if (kept-on-top? ww)
+;;                                         "UnKeep On Top" "Keep On Top")
+;;                                     #:action toggle-on-top)
+)))
+         (menuitem "Decorations"
+                   #:image-left decor-i
                    #:action
                    (menu (map (lambda (dec)
                                 (menuitem
@@ -938,6 +1178,21 @@
 (define edit-face (make-face '((relief raised)) '((pixmap "mini-edit.xpm"))))
 (define term-face (make-face '((relief raised)) '((pixmap "mini-term.xpm"))))
 
+(define iconify-face
+;;  (make-face '((relief raised)) '((pixmap "mini.iconify.xpm")))
+
+
+;;  (make-face '((relief flat))
+;; 	     '((pixmap "mini-shrink-windows-full.xpm")))
+  (make-face '((relief raised))
+ ;;; 3 stacked square panels like stills of a window being minimized
+	     '((relief-pattern
+		((80 20 #f) (80 60 #f) (60 60 #f) (60 40 #f) (60 70 #f)
+			    (40 70 #f) (40 60 #f) (40 85 #f) (15 85 #f)
+			    (15 60 #t) (40 60 #t) (30 60 #t) (30 40 #t)
+			    (60 40 #t) (45 40 #t) (45 20 #t) (80 20 #t)))))
+)
+
 (define stylized-X-face         ; Stylized X for closing window
   (make-face '((relief raised))
              '((relief-pattern
@@ -954,71 +1209,53 @@
                  (50 10 #f) (50 10 #t))))))
 
 
-    ;; -----------------------------------;;
-    ;; how to put buttons on the titlebar ;;
-    ;; -----------------------------------;;
-
-(define button-numbers (cons 1 2)) ; (left . right)
-
-;; This creates the add-button command which when used multiple times
-;; in sequence adds buttons in the correct location.  
-
-;; The first use with third arg #t creates the left most button, the
-;; second use with third arg #t creates the second left most button,
-;; and so on.
-
-(define (add-button face hook left) ; in all decors
-  (let ((num (if left (car button-numbers) (cdr button-numbers))))
-    (map (lambda (decor) (with-decor (cdr decor) (set-button-face! num face)))
-         decor-list)
-    (bind-mouse (string->symbol (string-append "button-" (number->string num)))
-                1 hook)
-    (if left (set-car! button-numbers (+ 2 num))
-        (set-cdr! button-numbers (+ 2 num)))))
-
-
-    ;; ------------------------;;
-    ;; add buttons to titlebar ;;
-    ;; ------------------------;;
-
-;;; Now add the buttons to the titlebar, using add-button command:
-
-;; left-most button
-(add-button prog-face popup-small-ops #t)
-(add-button up-down-arrow-face vertical-toggle-maximize #t)
-
-;; right-most button --  3rd arg to add-button is whether on left side
-(add-button stylized-X-face delete-window #f)
-
-
-
 
     ;; ----------------------------------------;;
     ;; how to bind a mouse button to an action ;;
     ;; ----------------------------------------;;
 
+;; As of 1999 Sep 28, title bar buttons are numbered in two different
+;; ways, depending on which functions are called.
 
-;;; Finally, bind the bottons to an action for a mouse click
+;; The old way, now deprecated, referred to button-1, button-2,
+;; button-3,  and so on.  The sequence on the title bar went like this:
 
-;; buttons are numbered:  left: 1  3  5              6  4  2: right
+;;    left side            right side
+;;    1  3  5                 6  4  2
 
-;; !!! except that for titlebar button contexts for `bind-mouse'
-;; !!! the numbers are 
-;; !!! left-button-1 left-button-2 ... right-button-2 right-button-1
+;; This sequence is used by  `set-button-face!' to determine which
+;; button location receives which face
 
-;; !!! This appears inconsistent, but it does work.
+;; However, titlebar buttons are now labeled `left-button-1',
+;; `left-button-2', `right-button-2',`right-button-1', and so on.
 
-;;     bind-mouse CONTEXTS          MOUSE-BUTTON PROCEDURE-INVOKED
-;; in this case
-;;     bind-mouse TITLE-BAR-BUTTON  MOUSE-BUTTON PROCEDURE-INVOKED
+;; The sequence on the title bar goes like this:
 
+;; left side                                            right side
+;; left-button-1 left-button-2       right-button-2 right-button-1
 
-;; CONTEXTS is a list of event-contexts
-;; MOUSE-BUTTON is a string or integer giving the mouse button number
-;; PROC is a procedure that will be invoked (with no arguments)
+;; This sequence is used by `bind-mouse' to determine which button
+;; location carries out which action when pressed.
+
+;; The `set-button-face!' function takes the arguments:
 ;;
-;; CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides)) 
-;; 
+;;    BUTTON-NUMBER  ACTION
+;;
+;; where the BUTTON-NUMBER is 1, 3, 5 for the left side and 6, 4, 2
+;; for the right side of the titlebar.
+
+
+;; In a titlebar, the `bind-mouse' function takes the arguments:
+;;
+;;    TITLE-BAR-BUTTON-NAME  MOUSE-BUTTON  PROCEDURE-INVOKED
+;;
+;; where TITLE-BAR-BUTTON-NAME is a string giving the mouse button number
+;; MOUSE-BUTTON is the left, middle, or right mouse button,
+;; numbered 1, 2, 3
+;;
+;; More generally speaking,  TITLE-BAR-BUTTON-NAME  is  CONTEXTS
+;; and is a list of event-contexts (e.g., '(left-button-1 frame-sides))
+;;
 ;; The contexts include:
 ;; 'window
 ;; 'title
@@ -1031,8 +1268,32 @@
 ;; 'left-button-N  (N=1-5)
 ;; 'right-button-N (N=1-5)
 
-    ;;;; end of explanation: how to bind a mouse button to an action ;;;;
 
+    ;; -----------------------------;;
+    ;; set button faces on titlebar ;;
+    ;; -----------------------------;;
+
+;; This adds the button faces to the titlebar, in all decors.
+
+;; left-most button, the action of which is a menu
+(map (lambda (decor)
+       (with-decor (cdr decor) (set-button-face! 1 prog-face )))
+     decor-list)
+
+;; second to left-most button, the action of which is to toggle size
+(map (lambda (decor)
+       (with-decor (cdr decor) (set-button-face! 3 up-down-arrow-face)))
+     decor-list)
+
+;; second to right-most button, the action of which is to iconify
+(map (lambda (decor)
+       (with-decor (cdr decor) (set-button-face! 4 iconify-face)))
+     decor-list)
+
+;; right-most button, the action of which to delete the window
+(map (lambda (decor)
+       (with-decor (cdr decor) (set-button-face! 2 stylized-X-face)))
+     decor-list)
 
     ;; -------------------------------;;
     ;; titlebar button mouse bindings ;;
@@ -1043,18 +1304,15 @@
 ;; procedure invoked:  popup-small-ops
 (bind-mouse 'left-button-1 1 popup-small-ops)
 
-;; !!! why does left mouse button also work in following situation??
-
 ;; context:            second to left-most titlebar button
-;; mouse button:       number two, which is middle mouse button
+;; mouse button:       number one, which is left mouse button
 ;; procedure invoked:  vertical-toggle-maximize
-(bind-mouse 'left-button-2 2 vertical-toggle-maximize)
-
+(bind-mouse 'left-button-2 1 vertical-toggle-maximize)
 
 ;; context:            second to right-most titlebar button
 ;; mouse button:       number one, which is left mouse button
 ;; procedure invoked:  iconify
-(bind-mouse 'right-button-2 1 iconify-window)
+(bind-mouse 'right-button-2 1 animated-iconify)
 
 ;; context:            right-most titlebar button
 ;; mouse button:       number one, which is left mouse button
@@ -1062,7 +1320,6 @@
 (bind-mouse 'right-button-1 1 delete-window)
 
     ;;;; end titlebar button mouse bindings ;;;;
-
 
 
     ;; -------------------------------------;;
@@ -1084,9 +1341,9 @@
 ;; context:            root window
 ;; mouse button:       number three, which is right mouse button
 ;; procedure invoked:  show-window-list-menu
-(bind-mouse 'root 3 
-            (lambda () 
-              (show-window-list-menu 1 #f
+(bind-mouse 'root 3
+            (lambda ()
+              (show-window-list-menu #t
                                      #:by-resource #t
                                      #:show-last-focus-time #t
                                      #:show-geometry #t)))
@@ -1127,7 +1384,7 @@
 ;; procedure invoked:  toggle-raise
 (bind-mouse 'title 2 toggle-raise)
 
-;;; Bind mouse button to one action for single click, 
+;;; Bind mouse button to one action for single click,
 ;;; second action for double click
 
 ;; First define the action using double-click as one mouse-event-type
@@ -1155,7 +1412,7 @@
 ;; procedure invoked:  move-or-shade
 (bind-mouse 'window "M-3" move-or-shade)
 
-;; Meta-Mouse-2 closes a window 
+;; Meta-Mouse-2 closes a window
 ;; either by deleting (friendly) or destroying it.
 ;; context:            window
 ;; mouse button:       Meta (e.g., ALT) key and middle mouse button, together
@@ -1173,7 +1430,10 @@
 (define (move-or-deiconify)
   (case (mouse-event-type)
     ((motion) (interactive-move))
-    ((double-click) (deiconify-window))))
+    ((double-click) (deiconify))))
+
+;; /usr/local/share/scwm/modules/app/scwm/
+;; /u/scwm/scheme
 
 (bind-mouse 'icon 1 deiconify-window)
 (bind-mouse 'icon 2 move-or-deiconify)
@@ -1181,13 +1441,16 @@
     ;;;; end mouse button bindings for icons ;;;;
 
 
+;; (use-modules
+;;  (app scwm  fvwm-compat) (app scwm  fvwm-eval) (app scwm  fvwm-module))
+
 
     ;;--------------------------------;;
     ;; key binding for window context ;;
     ;;--------------------------------;;
 
 ;; I find I use this key binding all the time!
-(bind-key 'window "M-z" iconify-window)
+(bind-key 'window "M-z" animated-iconify)
 
     ;;;; end key binding for window context ;;;;
 
@@ -1206,11 +1469,11 @@
 ;; I don't use these because I usually have too many windows for this
 ;; to be efficient.
 
-;; (bind-key 'all "M-Tab" 
-;;           (lambda () (next-window #:only visible? #:except iconified-window?)))
-;; 
-;; (bind-key 'all "M-S-Tab" 
-;;           (lambda () (prev-window #:only visible? #:except iconified-window?)))
+;; (bind-key 'all "M-Tab"
+;;           (lambda () (next-window #:only visible? #:except iconified?)))
+;;
+;; (bind-key 'all "M-S-Tab"
+;;           (lambda () (prev-window #:only visible? #:except iconified?)))
 
     ;;;; end key binding to move the viewport ;;;;
 
@@ -1234,6 +1497,13 @@
 
 
 
+    ;;--------------------------------------;;
+    ;; Preferences from scwm-options-dialog ;;
+    ;;--------------------------------------;;
+
+(load-preferences)
+
+
     ;;----------------------------------;;
     ;; init-function: last item in file ;;
     ;;----------------------------------;;
@@ -1247,3 +1517,4 @@
 ;; (make-message-window "Starting SCWM ... done ")
 
 ;;;;;;;;;;;;;;;; end of ~/spare-blue.scwmrc  file ;;;;;;;;;;;;;;;;
+
