@@ -70,7 +70,9 @@
 #include "icons.h"
 #include "placement.h"
 #include "callbacks.h"
+#ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"
+#endif
 #include "xmisc.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
