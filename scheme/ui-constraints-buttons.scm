@@ -70,7 +70,8 @@
     (set-object-property! class 'gtk-button button)
     (gtk-signal-connect button "clicked"
 			(lambda ()
-			  (enable-ui-constraint (make-ui-constraint-interactively class))))
+			  (let ((uic (make-ui-constraint-interactively class)))
+			    (and uic (enable-ui-constraint uic)))))
     (gtk-container-add buttons-box button)
     (gtk-widget-show button)
     button))
