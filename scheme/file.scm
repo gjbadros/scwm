@@ -19,12 +19,11 @@
 
 
 
+(define-module (app scwm file)
+  :use-module (ice-9 string-fun))
+
 (if (> guile-version 1.3)
-    (define-module (app scwm file)
-      :use-module (ice-9 string-fun)
-      :use-module (ice-9 popen))
-    (define-module (app scwm file)
-      :use-module (ice-9 string-fun)))
+    (use-modules (ice-9 popen)))
 
 
 ;;;;

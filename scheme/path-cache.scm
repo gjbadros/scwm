@@ -2,12 +2,11 @@
 ;; Copyright (C) 1998-1999 Greg J. Badros
 ;; 4-October-1998
 
+(define-module (app scwm path-cache)
+  :use-module (ice-9 string-fun))
+
 (if (> guile-version 1.3)
-    (define-module (app scwm path-cache)
-      :use-module (ice-9 popen)
-      :use-module (ice-9 string-fun))
-    (define-module (app scwm path-cache)
-      :use-module (ice-9 string-fun)))
+    (use-modules (ice-9 popen)))
 
 ;; Switch this to #t if you're having problems
 (define-public debug-program-cache #f)

@@ -19,26 +19,18 @@
 
 
 
+(define-module (app scwm std-menus)
+  :use-module (app scwm base)
+  :use-module (app scwm optargs)
+  :use-module (app scwm defoption)
+  :use-module (app scwm menus-extras)
+  :use-module (app scwm flux)
+  :use-module (app scwm style)
+  :use-module (app scwm themes)
+  :use-module (ice-9 regex))
+
 (if (> guile-version 1.3)
-    (define-module (app scwm std-menus)
-      :use-module (ice-9 popen)
-      :use-module (app scwm base)
-      :use-module (app scwm optargs)
-      :use-module (app scwm defoption)
-      :use-module (app scwm menus-extras)
-      :use-module (app scwm flux)
-      :use-module (app scwm style)
-      :use-module (app scwm themes)
-      :use-module (ice-9 regex))
-    (define-module (app scwm std-menus)
-      :use-module (app scwm base)
-      :use-module (app scwm optargs)
-      :use-module (app scwm defoption)
-      :use-module (app scwm menus-extras)
-      :use-module (app scwm flux)
-      :use-module (app scwm style)
-      :use-module (app scwm themes)
-      :use-module (ice-9 regex)))
+    (use-modules (ice-9 popen)))
 
 
 
