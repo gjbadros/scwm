@@ -22,6 +22,9 @@
   :use-module (ice-9 string-fun)
   :use-module (app scwm base)
   :use-module (app scwm optargs)
+  :use-module (app scwm fvwm-compat)
+  :use-module (app scwm wininfo)
+  :use-module (app scwm winlist)
   :use-module (app scwm winops))
 
 
@@ -137,7 +140,7 @@
   (eval-string args))
 
 (define-fvwm-command "Exec"
-  (execute args))
+  (fvwm-exec (apply string-append args)))
 
 (define-fvwm-command "Restart"
   (restart))
@@ -167,6 +170,346 @@
     (warp-to-window window)
     (warp-to-window)))
 
+(define-fvwm-command "Delete"
+  (if window
+      (delete-window window)
+      (delete-window)))
+ 
+(define-fvwm-command "Destroy"
+  (if window
+      (destroy-window window)
+      (destroy-window)))
+ 
+(define-fvwm-command "Close"
+  (if window
+      (close-window window)
+      (close-window)))
+ 
+(define-fvwm-command "Maximize"
+  (get-two-numeric-args
+   args
+   (lambda(x y)
+     (if (and x y)
+         (if window
+	     (toggle-maximize (%x x) (%y y) window)
+	     (toggle-maximize (%x x) (%y y)))
+         (if window
+	     (toggle-maximize (%x 100) (%y 100) window)
+	     (toggle-maximize (%x 100) (%y 100)))))))
+ 
+(define-fvwm-command "WindowShade"
+  (let ((x (get-one-numeric-arg args)))
+    (if x
+	(cond
+         ((= x 1) (if window (window-shade window) (window-shade)))
+         ((= x 2) (if window (un-window-shade window) (un-window-shade))))
+	(if window (toggle-window-shade window)(toggle-window-shade)))))
+ 
+(define-fvwm-command "RaiseLower"
+  (if window
+      (toggle-raise window)
+      (toggle-raise)))
+ 
+(define-fvwm-command "CursorMove"
+  (get-two-numeric-args
+   args
+   (lambda(x y)
+     (if (and x y)
+         (move-pointer (%x x) (%y y))))))
+ 
+(define-fvwm-command "Refresh"
+  (refresh))     
+ 
+(define-fvwm-command "RefreshWindow"
+  (if window
+      (refresh-window window)
+      (refresh-window)))
+ 
+(define-fvwm-command "Stick"
+  (if window
+      (toggle-stick window)
+      (toggle-stick)))
+ 
+(define-fvwm-command "Beep"
+  (beep))
+ 
+(define-fvwm-command "Echo"
+  (write args))
+ 
+(define-fvwm-command "EdgeScroll"
+  (get-two-numeric-args
+   args
+   (lambda(x y)
+     (if (and x y)
+         (set-edge-scroll! x y)))))
+ 
+(define-fvwm-command "ExecUseShell"
+  (if args
+      (fvwm-exec-use-shell args)
+      (fvwm-exec-use-shell)))
+
+(define-fvwm-command "DeskTopSize"
+ ;;; abit of a pain, since the arg to DeskTopSize is XxY and not X Y
+  (if args
+      (let* (
+	     (s-args (split-after-char
+		      #\x
+		      (sans-leading-whitespace args)
+		      (lambda a a)))
+	     (x (if (< (string-length (car s-args)) 1)
+		    #f
+		    (string->number (sans-leading-whitespace 
+				     (substring (car s-args) 0 (- (string-length (car s-args)) 1))))))
+	     (y (string->number (sans-surrounding-whitespace (cadr s-args))))
+	     )
+	(if (and x y)
+	    (set-desk-size! x y)))))
+ 
+(define-fvwm-command "EdgeResistance"
+  (get-two-numeric-args
+   args
+   (lambda(x y)
+     (if (and x y)
+         (set-edge-resistance! x y)))))
+ 
+(define-fvwm-command "XORvalue"
+  (let ((x (get-one-numeric-arg args)))
+    (if x
+	(set-rubber-band-mask! x))))
+ 
+(define (clean l)
+  (if (null? l) '()
+      (if (car l)
+	  (cons (car l)(clean (cdr l)))
+	  (clean (cdr l)))))
+ 
+(define (words s)
+  (clean (separate-fields-discarding-char #\space s (lambda a a))))
+ 
+(define-fvwm-command "SetAnimation"
+  (set-animation!
+   (list->vector 
+    (clean
+     (words args)))))
+ 
+;; FIXMS: set-opaque-move-size is broken! for now.
+
+;;(define-fvwm-command "OpaqueMoveSize"
+;;  (let ((x (get-one-numeric-arg args)))
+;;    (if x
+;;	(set-opaque-move-size! x))))
+ 
+
+(define-fvwm-command "ClickTime"
+  (let ((x (get-one-numeric-arg args)))
+    (if x
+	(set-click-time! x))))
+ 
+(define-fvwm-command "HiLightColor"
+ ;;; HilightColor textcolour bgcolour
+ ;;; lets assume colournames are spaceless
+  (let (
+	(s-args (separate-fields-discarding-char
+		 #\space
+		 (sans-leading-whitespace args)
+		 (lambda a a)))
+	)
+    (set-hilight-foreground! (car s-args))
+       (set-hilight-background! (cadr s-args))))
+ 
+(define-fvwm-command "Recapture"
+ ;;; running this seems to screw my display up
+  (recapture))
+ 
+(define fvwm-flags-table
+  (make-hash-table 7))
+ 
+(define (add-flag s fn)
+  (hash-set! fvwm-flags-table (string-downcase! (string-copy s)) fn))
+ 
+(add-flag "Iconic" iconified?)
+(add-flag "Visible" visible?)
+(add-flag "Sticky" sticky?)
+(add-flag "Maximized" maximized?)
+(add-flag "Transient" transient?)
+(add-flag "Raised" raised?)
+(add-flag "CurrentDesk" on-current-desk?)
+(add-flag "CurrentPage" visible?)
+(add-flag "CurrentPageAnyDesk" in-viewport-any-desk?)
+ 
+(define (extract-conditions s)
+  (let (
+	(x (string-index s #\[))
+	(y (string-index s #\]))
+	)
+    (if (and x y)
+	(substring s (+ x 1) y)
+	#f)))
+ 
+(define (extract-command s)
+  (sans-surrounding-whitespace
+   (substring s (+ 1 (string-index s #\])) (string-length s))))
+
+(define (parse-flag s)
+  (let* (
+	 (invert (equal? #\! (string-ref s 0)))
+	 (reals (if invert (substring s 1 (string-length s)) s))
+	 (lc-reals (string-downcase! (string-copy reals)))
+	 (tr (hash-ref fvwm-flags-table lc-reals))
+	 )
+    (cons
+     (not invert)
+     (if tr
+	 tr
+	 (wildcard-matcher reals)))))
+ 
+(define (parse-conditions s)
+  (define (just l a)
+    (if (null? l) '()
+	(if (equal? a (caar l))
+	    (cons (cdr (car l))
+		  (just (cdr l) a))
+	    (just (cdr l) a))))
+  (let* (
+	 (c (extract-conditions s))
+	 (flags (if c (words c) '()))
+	 (fns (map parse-flag flags))
+	 (o (just fns #t))
+	 (e (just fns #f))
+	 )
+    (cons
+     (if (not (null? o)) o '())
+     (if (not (null? e)) e '()))
+    )
+  )
+ 
+(define-fvwm-command "Next"
+  (let ((c (parse-conditions args)))
+    (next-window #:only (car c) #:except (cdr c)
+		 #:proc (lambda(x)(eval-fvwm-command
+				   (extract-command args) fmod x)))))
+ 
+(define-fvwm-command "Prev"
+  (let ((c (parse-conditions args)))
+    (prev-window #:only (car c) #:except (cdr c)
+		 #:proc (lambda(x)(eval-fvwm-command
+				   (extract-command args) fmod x)))))
+ 
+(define-fvwm-command "None"
+  (let ((c (parse-conditions args)))
+    (fvwm-none (lambda () 
+		 (eval-fvwm-command (extract-command args) fmod))
+	       #:only (car c) #:except (cdr c))))
+
+(define-fvwm-command "Current"
+  (let ((c (parse-conditions args)))
+    (if (null? (filter-only-except (list (current-window-with-focus))
+				   #:only (car c) #:except (cdr c)))
+	(eval-fvwm-command (extract-command args) fmod))))
+
+(define-fvwm-command "IconFont"
+  (set-icon-font! (sans-surrounding-whitespace args)))
+
+(define-fvwm-command "WindowFont"
+  (set-window-font! (sans-surrounding-whitespace args)))
+
+(define (parse-context s)
+  (define (parse-a-context c)
+    (cond
+     ((equal? c #\R) 'root)
+     ((equal? c #\W) 'window)
+     ((equal? c #\T) 'title)
+     ((equal? c #\S) 'sidebar)
+     ((equal? c #\F) 'frame)
+     ((equal? c #\I) 'icon)
+ ;;;sod it..lets just do the button numbers the long way..
+     ((equal? c #\0) 'button-0)
+     ((equal? c #\1) 'button-1)
+     ((equal? c #\2) 'button-2)
+     ((equal? c #\3) 'button-3)
+     ((equal? c #\4) 'button-4)
+     ((equal? c #\5) 'button-5)
+     ((equal? c #\6) 'button-6)
+     ((equal? c #\7) 'button-7)
+     ((equal? c #\8) 'button-8)
+     ((equal? c #\9) 'button-9)
+     ((equal? c #\0) 'button-10)
+     ((equal? c #\A) 'all) ; not sure of thats the correct mapping
+     ))
+  (map parse-a-context (string->list s))
+  )
+ 
+(define (flatten l)
+  (if (null? l)
+      '()
+      (append (car l)(flatten (cdr l)))))
+
+(define (parse-modifier s)
+;;; C Control S Shift M Meta A Any N None
+;;; C-        S-      A-     ?-    ?-
+  (list->string
+   (flatten
+    (map
+     (lambda(x)
+       (cond
+	((equal? x #\C) (list #\C #\-))
+	((equal? x #\S) (list #\S #\-))
+	((equal? x #\M) (list #\A #\-))
+	((equal? x #\A) '())
+	((equal? x #\N) '())))
+     (string->list s)))))
+
+(define-fvwm-command "Mouse"
+ ;;; Mouse Mouse-button region modifier command
+ ;;; (bind-mouse CONTEXTS MOUSE-SPECIFIER PROC)
+  (let* (
+	 (largs (map sans-surrounding-whitespace
+		     (separate-fields-discarding-char
+		      #\space
+		      (sans-surrounding-whitespace args)
+		      (lambda a a))))
+	 (button-string (car largs))
+	 (context-string (cadr largs))
+	 (contexts (parse-context context-string))
+	 (modifier-string (caddr largs))
+	 (modifier (parse-modifier modifier-string))
+	 (command-string (cadddr largs))
+	 )
+    (display 'mouse) (write contexts)(newline) (write modifier)(newline)
+    (write button-string)(newline) (write command-string)(newline)
+    (bind-mouse contexts (string-append modifier button-string)
+ ;;; do we get a window??
+		(lambda()
+		  (eval-fvwm-command command-string fmod))))
+  )
+ 
+(define-fvwm-command "Key"
+ ;;; Key keyname Context Modifiers Function
+ ;;; (bind-key CONTEXTS KEY PROC)
+  (let* (
+	 (largs (map sans-surrounding-whitespace
+		     (separate-fields-discarding-char
+		      #\space
+		      (sans-surrounding-whitespace args)
+		      (lambda a a))))
+	 (key-string (car largs))
+	 (context-string (cadr largs))
+	 (contexts (map (lambda(x)(if (equal? x 'any) 'all x))
+			(parse-context context-string)))
+	 (modifier-string (caddr largs))
+	 (modifier (parse-modifier modifier-string))
+	 (command-string (cadddr largs))
+	 )
+    (display 'key) (write contexts)(newline) (write modifier)(newline)
+    (write key-string)(newline) (write command-string)(newline)
+    (bind-key contexts (string-append modifier key-string)
+ ;;; do we get a window??
+	      (lambda()
+		(eval-fvwm-command command-string fmod))))
+  )
+ 
+
+
 (define*-public (eval-fvwm-command command #&optional (fmod #f) 
 				   (window #f))
   (let* ((split-result (split-before-char #\space command 
@@ -176,5 +519,34 @@
 	 (args (cadr split-result)))
     ((hash-ref fvwm-command-hash-table lc-cmd) args fmod window)))
 
+;;; Implemented and Tested:
+;;; Beep       EdgeResistance  Maximize        Resize          WarpToWindow
+;;; ClickTime  EdgeScroll      Move            Restart         WindowsDesk
+;;; Close      Exec            Quit            Scroll          WindowShade
+;;; CursorMove GotoPage        OpaqueMoveSize  Send_ConfigInfo XORValue
+;;; Delete     HilightColor    Raise           Send_WindowList
+;;; Desk       Focus           RaiseLower      set_mask
+;;; DesktopSize        Iconify         Refresh         SetAnimation
+;;; Destroy    Lower           RefreshWindow   Stick
 
+;;; Implemented and Untested or broken:
+;;; Current            IconFont        Next            Recapture
+;;; Echo               Key             None            WindowFont
+;;; ExecUseSHELL       Mouse           Prev
 
+;;; Unimplemented:
+;;; AddButtonStyle     DestroyMenu             QuitScreen
+;;; AddModuleConfig    DestroyModuleConfig     Read
+;;; AddTitleStyle      FlipFocus               SendToModule
+;;; AddToDecor         Function                SetEnv
+;;; AddToFunc          GlobalOpts              SetMenuDelay
+;;; AddToMenu          IconPath                Style
+;;; AnimatedMove       KillModule              Title
+;;; BorderStyle                Menu                    TitleStyle
+;;; ButtonStyle                Menustyle               UpdateDecor
+;;; ChangeDecor                Module                  Wait
+;;; ColorLimit         ModulePath              WindowId
+;;; ColormapFocus      Nop                     WindowList
+;;; CursorStyle                PipeRead                +
+;;; DestroyDecor       PixmapPath
+;;; DestroyFunc                PopUp
