@@ -1,3 +1,8 @@
+Sat Jul 24 19:57:04 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-buttons.scm: Only enable a constraint if
+	make-ui-constraint-interactively returns non-#f.
+
 Sat Jul 24 19:02:58 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints.scm: Use message-window.  Fix mis-naming of
