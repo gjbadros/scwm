@@ -1,3 +1,9 @@
+Adding a key binding interactively doesn't make it work (failed for
+C-S-M-{E,F} for emacs/fullscreen resizing)
+
+xdvorak's change mapping should cause all keybindings to be reset and
+new keycodes to be gotten
+
 Hooks which take wrong number of params cause seg faults!
 --07/04/98 gjb
 
