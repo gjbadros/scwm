@@ -1,3 +1,22 @@
+1998-10-24  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* decor.scwmrc, gjb.scwmrc, juhp.scwmrc, robbe.scwmrc, sds.scwmrc, 
+	system.scwmrc:  Use `user-name' instead of `USER', `user-home'
+	instead of `HOME'.
+
+	* robbe.scwmrc (xlock-query-modes): Was moved to std-menus.scm.
+	Increase edge threshold.
+	Add shadow factor.
+	Use PPosition-hint.
+	Increase border-width to one - zero was too confusing.
+	Reindented many window-styles.
+	Add window-styles for GTimeTracker, xsm.
+
+	* robbe.scwmrc (unfocusable?): New predicate.
+	(iconified-or-unfocusable?): New predicate.
+	(bind-circulate): New function.
+	Use them to define all circulations.
+
 Sat Oct 10 15:30:53 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use add-hook! for image-not-found-hook.  Fix
