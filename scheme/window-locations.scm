@@ -1,0 +1,67 @@
+;; $Id$
+;; (C) 1999 Greg J. Badros
+
+(define-module (app scwm window-locations))
+
+(define-public (window-center-top win)
+  (let* ((pos (window-position win))
+	 (size (window-size win))
+	 (xl (car pos))
+	 (yt (cadr pos))
+	 (w (car size)))
+    (list (+ xl (/ w 2)) yt)))
+
+
+(define-public (window-center-bottom win)
+  (let* ((pos (window-position win))
+	 (size (window-size win))
+	 (xl (car pos))
+	 (yt (cadr pos))
+	 (w (car size))
+	 (h (cadr size)))
+    (list (+ xl (/ w 2)) (+ yt h))))
+
+(define-public (window-left-middle win)
+  (let* ((pos (window-position win))
+	 (size (window-size win))
+	 (xl (car pos))
+	 (yt (cadr pos))
+	 (h (cadr size)))
+    (list xl (+ yt (/ h 2)))))
+
+(define-public (window-right-middle win)
+  (let* ((pos (window-position win))
+	 (size (window-size win))
+	 (xl (car pos))
+	 (yt (cadr pos))
+	 (w (car size))
+	 (h (cadr size)))
+    (list (+ xl w) (+ yt (/ h 2)))))
+
+(define-public (window-left-top win)
+  (window-position win))
+
+(define-public (window-left-bottom win)
+  (let* ((pos (window-position win))
+	 (size (window-size win))
+	 (xl (car pos))
+	 (yt (cadr pos))
+	 (h (cadr size)))
+    (list xl (+ yt h))))
+
+(define-public (window-right-top win)
+  (let* ((pos (window-position win))
+	 (size (window-size win))
+	 (xl (car pos))
+	 (yt (cadr pos))
+	 (w (car size)))
+    (list (+ xl w) yt)))
+
+(define-public (window-right-bottom win)
+  (let* ((pos (window-position win))
+	 (size (window-size win))
+	 (xl (car pos))
+	 (yt (cadr pos))
+	 (w (car size))
+	 (h (cadr size)))
+    (list (+ xl w) (+ yt h))))
