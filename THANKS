@@ -13,7 +13,7 @@ Thanks to:
   Dale Smith - Converting some of the random documentation in the doc/
   directory into a TexInfo manual and a man page.
 
-  Danius Michaelides - fvwm2 module and compatibility support
+  Danius Michaelides - fvwm2 module and compatibility support, snap attraction module
 
   Harvey Stein - Guile implementation of the document extractor, RPM packaging
 
