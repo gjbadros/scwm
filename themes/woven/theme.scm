@@ -16,7 +16,7 @@
 				  #:icon #f #:force-icon #t #:show-icon #t ;; icon titles only
 				  #:button 3
 				  #:button 6
-				  #:border-width 6 
+				  #:border-width 5 
 				  #:use-decor woven-decor))
 	 (ghost-x (load-theme-image         "mini-x-ghost.xpm"))
 	 (antique-x (load-theme-image       "mini-x-antique.xpm"))
@@ -38,29 +38,49 @@
 		(set-hilight-background! "#600000")
 		(set-rubber-band-mask! 127)
 		(title-style #:justify 'left #:font helvetica-12-font
-			     #:relief 'flat #:height 18)
+			     #:relief 'flat #:height 20)
 		(set-shadow-factor! .7)
 		(set-hilight-factor! 1.2)
 		
 		(button-style 1 #:relief 'flat
 			      #:solid "#600000" #:pixmap ghost-x
-			      #:inactive (list #:solid "#300000"
+                              #:active-down (list #:relief 'raised
+                                                  #:solid "#600000" 
+                                                  #:pixmap ghost-x)
+			      #:inactive (list #:relief 'flat
+                                               #:solid "#300000"
 					       #:pixmap antique-x))
 		(button-style 3 #:relief 'flat
 			      #:solid "#600000" #:pixmap ghost-t-weave
-			      #:inactive (list #:solid "#300000"
-					       #:pixmap antique-t-weave))
+                              #:active-down (list #:relief 'raised
+                                                  #:solid "#600000" 
+                                                  #:pixmap ghost-t-weave)
+			      #:inactive (list  #:relief 'raised
+                                                #:solid "#300000"
+                                                #:pixmap antique-t-weave))
 		(button-style 2 #:relief 'flat
 			      #:solid "#600000" #:pixmap ghost-l-weave
-			      #:inactive (list #:solid "#300000"
+                              #:active-down (list #:relief 'raised
+                                                  #:solid "#600000" 
+                                                  #:pixmap ghost-l-weave)
+			      #:inactive (list #:relief 'flat
+                                               #:solid "#300000"
 					       #:pixmap antique-l-weave))
 		(button-style 4 #:relief 'flat #:solid "#600000"
 			      #:pixmap ghost-s-weave
-			      #:inactive (list #:solid "#300000"
+                              #:active-down (list #:relief 'raised
+                                                  #:solid "#600000" 
+                                                  #:pixmap ghost-s-weave)
+		      #:inactive (list #:relief 'flat
+                                               #:solid "#300000"
 					       #:pixmap antique-s-weave))
   		(button-style 6 #:relief 'flat #:solid "#600000"
   			      #:pixmap ghost-w-weave
-  			      #:inactive (list #:solid "#300000"
+                              #:active-down (list #:relief 'raised
+                                                  #:solid "#600000" 
+                                                  #:pixmap ghost-w-weave)
+  			      #:inactive (list #:relief 'flat
+                                               #:solid "#300000"
   					       #:pixmap antique-w-weave))
 		(border-style #:no-inset #t #:hidden-handles #t))
     

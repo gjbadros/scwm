@@ -1,3 +1,9 @@
+1999-02-14  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* theme.scm: Make title buttons press in when clicked, raise title
+	height a bit so the relief comes out better and lower border width
+	a bit to compensate.
+
 1999-02-13  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* Makefile.am, woven, woven/*: Added "woven" theme, which is what
