@@ -334,9 +334,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
       break;
     case ButtonPress:
       XAllowEvents(dpy, ReplayPointer, CurrentTime);
-      if (((Event.xbutton.button == 2) && !Scr.fMWMMenus) ||
-	  ((Event.xbutton.button == 1) && Scr.fMWMMenus &&
-	   (Event.xbutton.state & ShiftMask))) {
+      if (Event.xbutton.button == 2 ||
+          (Event.xbutton.button == 1 && (Event.xbutton.state & ShiftMask))) {
 	/* FIXGJB: this hack removed: NeedToResizeToo = True; */
 	/* Fallthrough to button-release */
       } else {
