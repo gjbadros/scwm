@@ -27,7 +27,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release pre-1.0</releaseinfo>
-    <pubdate>24 October 1999</pubdate>
+    <pubdate>26 October 1999</pubdate>
     <copyright>
       <year>1997-1999</year>
       <holder>Greg J. Badros and Maciej Stachowiak</holder>
@@ -1236,6 +1236,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="window-class"><function>window-class</function></link> -- Return the window resources class of WIN.</para></listitem>
       <listitem><para><link linkend="window-resource"><function>window-resource</function></link> -- Return the window resource instance of WIN.</para></listitem>
       <listitem><para><link linkend="window-visible-frame-size"><function>window-visible-frame-size</function></link> -- Return the visible frame size of WIN.</para></listitem>
+      <listitem><para><link linkend="make-image-or-warn"><function>make-image-or-warn</function></link> -- Return an image object for FILENAME and report a warning if it fails.</para></listitem>
       <listitem><para><link linkend="image-not-found-message"><function>image-not-found-message</function></link> -- Report a missing image filename, but do not error.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/bincomm.scm</title> <itemizedlist>
@@ -1363,9 +1364,6 @@ The shaped XPM menu look.
       <listitem><para><link linkend="window-background-color"><function>window-background-color</function></link> -- No documentation supplied.</para></listitem>
       <listitem><para><link linkend="float-to-integer"><function>float->integer</function></link> -- No documentation supplied.</para></listitem>
       <listitem><para><link linkend="make-X-geometry"><function>make-X-geometry</function></link> -- No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="toggle-focus"><function>toggle-focus</function></link> -- Focus window that had the focus before the current one.</para></listitem>
-      <listitem><para><link linkend="move-or-shade"><function>move-or-shade</function></link> -- Move the window on a drag, shade on a double-click.</para></listitem>
-      <listitem><para><link linkend="move-or-deiconify"><function>move-or-deiconify</function></link> -- Move the icon on a drag, de-iconify on a double click.</para></listitem>
       <listitem><para><link linkend="interactive-move-rubberband"><function>interactive-move-rubberband</function></link> -- Move interactively, using the rubberband (unless constraint solver is active.</para></listitem>
       <listitem><para><link linkend="interactive-resize-rubberband"><function>interactive-resize-rubberband</function></link> -- Resize interactively, using the rubberband (unless constraint solver is active.</para></listitem>
       <listitem><para><link linkend="config-request-animate"><function>config-request-animate</function></link> -- A procedure for <link linkend="X-ConfigureRequest-hook"><function>X-ConfigureRequest-hook</function></link> to do window configuration animatedly.</para></listitem>
@@ -1424,6 +1422,8 @@ The shaped XPM menu look.
       <listitem><para><link linkend="deiconify-group-or-window"><function>deiconify-group-or-window</function></link> -- Deiconify WIN, and perhaps all members of its group.</para></listitem>
       <listitem><para><link linkend="iconify-group"><function>iconify-group</function></link> -- Iconify GROUP into one icon.</para></listitem>
       <listitem><para><link linkend="make-window-group-menu"><function>make-window-group-menu</function></link> -- Return a menu for window group operations.</para></listitem>
+      <listitem><para><link linkend="popup-window-group-menu"><function>popup-window-group-menu</function></link> -- Popup the window group menu.</para></listitem>
+      <listitem><para><link linkend="popup-window-group-menu-no-warp"><function>popup-window-group-menu-no-warp</function></link> -- Popup the window group menu without warping to the first menu item.</para></listitem>
       <listitem><para><link linkend="interactive-move-selected-group-or-window"><function>interactive-move-selected-group-or-window</function></link> -- Interactively move either the selected windows or the current window.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/gtk-menu.scm</title> <itemizedlist>
@@ -1475,6 +1475,7 @@ The shaped XPM menu look.
     </itemizedlist> </sect1>
     <sect1><title>scheme/lambda-startup-logo.scm</title> <itemizedlist>
       <listitem><para><link linkend="logo-setup"><function>logo-setup</function></link> -- Setup to display the startup logo.</para></listitem>
+      <listitem><para><link linkend="logo-remove"><function>logo-remove</function></link> -- Remove the Scwm lambda startup logo.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/last-mapped-window.scm</title> <itemizedlist>
       <listitem><para><link linkend="last-mapped-window"><function>last-mapped-window</function></link> -- Return the window that was mapped most recently.</para></listitem>
@@ -1781,6 +1782,12 @@ The shaped XPM menu look.
       <listitem><para><link linkend="simplebiff"><function>simplebiff</function></link> -- Run a simple xbiff-like notification system.</para></listitem>
       <listitem><para><link linkend="stop-simplebiff"><function>stop-simplebiff</function></link> -- Call this with the object returned from <link linkend="simplebiff"><function>simplebiff</function></link> to turn off the notifier</para></listitem>
     </itemizedlist> </sect1>
+    <sect1><title>scheme/snap-constraints.scm</title> <itemizedlist>
+      <listitem><para><link linkend="edges-to-nonant"><function>edges->nonant</function></link> -- Return a nonant number from a list of edges that are involved.</para></listitem>
+      <listitem><para><link linkend="invert-nonant"><function>invert-nonant</function></link> -- Return the opposite nonant from NONANT.</para></listitem>
+      <listitem><para><link linkend="snap-reset"><function>snap-reset</function></link> -- Turn off auto-snapping during interactive moves.</para></listitem>
+      <listitem><para><link linkend="snap-initialize"><function>snap-initialize</function></link> -- Turn on auto-snapping during interactive moves.</para></listitem>
+    </itemizedlist> </sect1>
     <sect1><title>scheme/snap.scm</title> <itemizedlist>
       <listitem><para><link linkend="snap-reset"><function>snap-reset</function></link> -- Turn off auto-snapping during interactive moves.</para></listitem>
       <listitem><para><link linkend="snap-initialize"><function>snap-initialize</function></link> -- Turn on auto-snapping during interactive moves.</para></listitem>
@@ -1948,7 +1955,9 @@ The shaped XPM menu look.
       <listitem><para><link linkend="constraint-satisfied-p"><function>constraint-satisfied?</function></link> -- Returns the status of whether a UI-CONSTRAINT is satisfied.</para></listitem>
       <listitem><para><link linkend="constrained-window-in-focus-p"><function>constrained-window-in-focus?</function></link> -- Returns <literal>#t</literal> if one of the windows in the constraint is in focus.</para></listitem>
       <listitem><para><link linkend="ui-constraints-involving-window"><function>ui-constraints-involving-window</function></link> -- Returns the list of ui-constraint objects that involve WIN.</para></listitem>
+      <listitem><para><link linkend="ui-constraints-involving-two-windows"><function>ui-constraints-involving-two-windows</function></link> -- Returns the list of ui-constraint objects that involve WIN1 and WIN2.</para></listitem>
       <listitem><para><link linkend="delete-ui-constraints-involving-window-x"><function>delete-ui-constraints-involving-window!</function></link> -- Delete all the ui-constraint objects that involve WIN.</para></listitem>
+      <listitem><para><link linkend="delete-inferred-ui-constraints-involving-window-x"><function>delete-inferred-ui-constraints-involving-window!</function></link> -- Delete all the ui-constraint objects that involve WIN.</para></listitem>
       <listitem><para><link linkend="draw-constraint"><function>draw-constraint</function></link> -- Draw the UI-CONSTRAINT.</para></listitem>
       <listitem><para><link linkend="undraw-constraint"><function>undraw-constraint</function></link> -- Undraw the UI-CONSTRAINT.</para></listitem>
       <listitem><para><link linkend="draw-constraints-of-window"><function>draw-constraints-of-window</function></link> -- Draw all constraints associated with WIN.</para></listitem>
@@ -1960,6 +1969,8 @@ The shaped XPM menu look.
       <listitem><para><link linkend="ui-constraint-add-enable-hook"><function>ui-constraint-add-enable-hook</function></link> -- Adds a HOOK proc which will be called when UI-CONSTRAINT enable state changes.</para></listitem>
       <listitem><para><link linkend="ui-constraint-remove-enable-hook"><function>ui-constraint-remove-enable-hook</function></link> -- Removes a HOOK proc from the list in UI-CONSTRAINT.</para></listitem>
       <listitem><para><link linkend="ui-constraint-enable-hooks"><function>ui-constraint-enable-hooks</function></link> -- Returns a list of the enable-hook functions added to the UI-CONSTRAINT.</para></listitem>
+      <listitem><para><link linkend="move-after-deleting-constraints"><function>move-after-deleting-constraints</function></link> -- Move WIN after deleting all constraints that involve it.</para></listitem>
+      <listitem><para><link linkend="move-after-deleting-inferred-constraints"><function>move-after-deleting-inferred-constraints</function></link> -- Move WIN after deleting all inferred constraints that involve it.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/undo.scm</title> <itemizedlist>
       <listitem><para><link linkend="reset-undo-x"><function>reset-undo!</function></link> -- Reset the undo system.</para></listitem>
@@ -2136,11 +2147,15 @@ The shaped XPM menu look.
       <listitem><para><link linkend="maximize-both"><function>maximize-both</function></link> -- Maximize WIN both horizontally and vertically.</para></listitem>
       <listitem><para><link linkend="focus-change-warp-pointer"><function>focus-change-warp-pointer</function></link> -- Deiconify, focus, raise, and warp-to WIN.</para></listitem>
       <listitem><para><link linkend="warp-placement"><function>warp-placement</function></link> -- Return a list, (%x %y), for the desired pointer placement for WIN.</para></listitem>
+      <listitem><para><link linkend="toggle-focus"><function>toggle-focus</function></link> -- Focus window that had the focus before the current one.</para></listitem>
+      <listitem><para><link linkend="move-or-shade"><function>move-or-shade</function></link> -- Move the window on a drag, shade on a double-click.</para></listitem>
+      <listitem><para><link linkend="move-or-deiconify"><function>move-or-deiconify</function></link> -- Move the icon on a drag, de-iconify on a double click.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/wmconfig-menu.scm</title> <itemizedlist>
       <listitem><para><link linkend="make-wmconfig-menu"><function>make-wmconfig-menu</function></link> -- Return a menu object for the window-manager configuration menu.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/xlock-menus.scm</title> <itemizedlist>
+      <listitem><para><link linkend="xlock-query-modes"><function>xlock-query-modes</function></link> -- Returns a list of mode names queried from the given XLOCK program.</para></listitem>
       <listitem><para><link linkend="make-xlock-menu"><function>make-xlock-menu</function></link> -- Create an xlock menu.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/xprop-extras.scm</title> <itemizedlist>
@@ -3669,7 +3684,7 @@ possibly none.
   <title>Implementation Notes</title>
   <para> Module: (app scwm prefs-menu)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
-  at line 137 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/prefs-menu.scm">CVS log</ulink>)</para> </refsect2>
+  at line 138 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/prefs-menu.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -3737,7 +3752,7 @@ Returns the child-pid, or <literal>#f</literal> if the fork fails.
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 750 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 751 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4035,7 +4050,7 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 368 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 370 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4954,7 +4969,7 @@ be more than desired.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 263 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 265 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5218,7 +5233,7 @@ Use <link linkend="add-hook-x"><function>add-hook!</function></link> to attach t
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 463 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 443 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5240,7 +5255,7 @@ Returns <literal>#f</literal> otherwise or if UI-CONSTRAINT is not a ui-constrai
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 513 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 514 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5262,7 +5277,7 @@ errors if UI-CONSTRAINT is not an ui-constraint.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 491 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 492 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5906,6 +5921,28 @@ all other instances are removed.
   </refsect1>
 </refentry>
 
+<refentry id="delete-inferred-ui-constraints-involving-window-x">
+  <refnamediv>
+    <refname>delete-inferred-ui-constraints-involving-window!</refname>
+    <refpurpose>Delete all the ui-constraint objects that involve WIN.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(delete-inferred-ui-constraints-involving-window! win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Delete all the ui-constraint objects that involve WIN.
+This removes the constraints from the global-constraint-instance-list.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm ui-constraints)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
+  at line 547 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="delete-multiple-windows-interactively">
   <refnamediv>
     <refname>delete-multiple-windows-interactively</refname>
@@ -5923,7 +5960,7 @@ all other instances are removed.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 343 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 345 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5945,7 +5982,7 @@ SIDE-EFFECT: removes instance object from the global list
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 333 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 334 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5967,7 +6004,7 @@ SIDE-EFFECT: removes class object from the global class list.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 108 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 109 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5989,7 +6026,7 @@ This removes the constraints from the global-constraint-instance-list.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 531 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 542 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6282,7 +6319,7 @@ DIR must be one of the symbols 'north, 'south, 'east, or 'west.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 614 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 632 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6329,7 +6366,7 @@ returns the constraint
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 473 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 474 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6351,7 +6388,7 @@ See <link linkend="display-message"><function>display-message</function></link> 
   <title>Implementation Notes</title>
   <para> Module: (app scwm message-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 272 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 276 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6419,7 +6456,7 @@ Returns <literal>#t</literal> if any documentation was found, <literal>#f</liter
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 600 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 618 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6441,7 +6478,7 @@ an ui-constraint.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 556 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 574 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6463,7 +6500,7 @@ If WIN is not specified, the user is prompted to select a window.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 584 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 602 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6639,6 +6676,29 @@ See also <link linkend="prompt-string"><function>prompt-string</function></link>
   </refsect1>
 </refentry>
 
+<refentry id="edges-to-nonant">
+  <refnamediv>
+    <refname>edges->nonant</refname>
+    <refpurpose>Return a nonant number from a list of edges that are involved.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(edges->nonant horiz vert)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a nonant number from a list of edges that are involved.
+HORIZ can be 'left, 'right. or 'none (or <literal>#f</literal>).
+VERT can be 'top, 'bottom, or 'none (or <literal>#f</literal>).
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm snap-constraints)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/snap-constraints.scm"><filename>scheme/snap-constraints.scm</filename></ulink>
+  at line 142 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/snap-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="elapsed-time">
   <refnamediv>
     <refname>elapsed-time</refname>
@@ -6677,7 +6737,7 @@ See also <link linkend="prompt-string"><function>prompt-string</function></link>
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 620 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 638 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6769,7 +6829,7 @@ returns the constraint.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 454 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 455 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7000,7 +7060,7 @@ to the process id.
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 735 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 736 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7066,7 +7126,7 @@ of LST not equal to e. E.g. `(extreme &lt; ...)' returns the lowest number.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 295 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 297 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7371,7 +7431,7 @@ window to its normal colors.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 408 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 410 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7503,7 +7563,7 @@ specified. Note that <parameter>win</parameter> is not raised by giving it the f
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 473 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 453 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7537,7 +7597,7 @@ its X11 hints do not permit it to receive the focus.
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(fold-menu-list
-		ml #&amp;optional (max-lines (scwm-option-get *menu-max-fold-lines*)))</synopsis>
+		ml #&amp;optional (max-lines (optget *menu-max-fold-lines*)))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -8229,7 +8289,7 @@ button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 148 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 149 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8327,7 +8387,7 @@ squares x,y is in of WIN. x,y are root-window relative viewport positions.
   <title>Implementation Notes</title>
   <para> Module: (app scwm nonants)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/nonants.scm"><filename>scheme/nonants.scm</filename></ulink>
-  at line 146 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/nonants.scm">CVS log</ulink>)</para> </refsect2>
+  at line 144 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/nonants.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8376,7 +8436,7 @@ for use with the window-selection and constraints modules.
   <title>Implementation Notes</title>
   <para> Module: (app scwm nonants)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/nonants.scm"><filename>scheme/nonants.scm</filename></ulink>
-  at line 111 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/nonants.scm">CVS log</ulink>)</para> </refsect2>
+  at line 109 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/nonants.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8702,7 +8762,7 @@ or spelled-out versions of these.
   <title>Implementation Notes</title>
   <para> Module: (app scwm message-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 20 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 23 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9134,7 +9194,7 @@ of a long computation.
   <title>Implementation Notes</title>
   <para> Module: (app scwm prefs-menu)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
-  at line 75 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/prefs-menu.scm">CVS log</ulink>)</para> </refsect2>
+  at line 76 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/prefs-menu.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9613,7 +9673,7 @@ window on your X/11 display.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 305 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 308 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9700,7 +9760,7 @@ See <link linkend="set-ignore-dubious-modifiers-x"><function>set-ignore-dubious-
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 849 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 859 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10042,7 +10102,7 @@ See also <link linkend="push-undo-global"><function>push-undo-global</function><
   <refsynopsisdiv>
     <synopsis>(interactive-move 
 		 #&amp;optional (win (get-window #t #f #f))
-		 (opaquely? (if win ((scwm-option-get *move-opaquely-proc*) win))))</synopsis>
+		 (opaquely? (if win ((optget *move-opaquely-proc*) win))))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -10101,7 +10161,7 @@ will move along.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 453 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 433 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10258,7 +10318,7 @@ The returned list contains pairs (modulesym . procsym)
   <refsynopsisdiv>
     <synopsis>(interactive-resize 
 		 #&amp;optional (win (get-window #t #f #f))
-		 (opaquely? (if win ((scwm-option-get *resize-opaquely-proc*) win))))</synopsis>
+		 (opaquely? (if win ((optget *resize-opaquely-proc*) win))))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -10295,7 +10355,7 @@ moves opaquely if that returns <literal>#t</literal> and uses a rubber-band if i
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 458 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 438 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10389,6 +10449,28 @@ X2,Y2 and W2 x H2 are the position and size of the second rectangle.
   <para> Module: (app scwm wininfo)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
   at line 52 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/wininfo.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="invert-nonant">
+  <refnamediv>
+    <refname>invert-nonant</refname>
+    <refpurpose>Return the opposite nonant from NONANT.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(invert-nonant nonant)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the opposite nonant from NONANT.
+E.g., passing 0 answers 8, passing 1 answers 7, etc.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm snap-constraints)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/snap-constraints.scm"><filename>scheme/snap-constraints.scm</filename></ulink>
+  at line 168 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/snap-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10928,7 +11010,7 @@ of the directions.
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 820 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 821 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11515,6 +11597,29 @@ tar file with extension .tar, .tar.gz, or .tgz.
   </refsect1>
 </refentry>
 
+<refentry id="logo-remove">
+  <refnamediv>
+    <refname>logo-remove</refname>
+    <refpurpose>Remove the Scwm lambda startup logo.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(logo-remove)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Remove the Scwm lambda startup logo.
+This is added to <link linkend="startup-hook"><function>startup-hook</function></link> by <link linkend="logo-setup"><function>logo-setup</function></link> and
+usually will not need to be invoked directly.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: </para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/lambda-startup-logo.scm"><filename>scheme/lambda-startup-logo.scm</filename></ulink>
+  at line 51 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/lambda-startup-logo.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="logo-setup">
   <refnamediv>
     <refname>logo-setup</refname>
@@ -11837,7 +11942,7 @@ REST is a list of other menu-items to include in the returned menu.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 88 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 90 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11912,6 +12017,30 @@ appropriate file.
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
   at line 569 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="make-image-or-warn">
+  <refnamediv>
+    <refname>make-image-or-warn</refname>
+    <refpurpose>Return an image object for FILENAME and report a warning if it fails.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-image-or-warn filename)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return an image object for FILENAME and report a warning if it fails.
+See <link linkend="make-image"><function>make-image</function></link> for details.  Return value is <literal>#f</literal> on failure,
+but no error is thrown; <link linkend="image-not-found-message"><function>image-not-found-message</function></link> is used to 
+write a warning instead.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm base)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
+  at line 850 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12024,7 +12153,7 @@ example usage.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 172 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 174 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12047,7 +12176,7 @@ Uses defaults from the ScreenInfo struct for the other values.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 259 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 262 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12070,7 +12199,7 @@ the variable <link linkend="default-message-window"><function>default-message-wi
   <title>Implementation Notes</title>
   <para> Module: (app scwm message-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 248 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 252 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12093,7 +12222,7 @@ as WIN.
   <title>Implementation Notes</title>
   <para> Module: (app scwm message-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 280 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 284 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12115,7 +12244,7 @@ Initially the message window is centered in the display.
   <title>Implementation Notes</title>
   <para> Module: (app scwm message-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 239 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 242 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12186,7 +12315,7 @@ from "gray50".
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 230 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 232 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12332,7 +12461,7 @@ SIDE-EFFECT: adds new instance object to the global list.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 276 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 277 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12366,7 +12495,7 @@ SIDE-EFFECT: addes new class obj to the global class list.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 79 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 80 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12389,7 +12518,7 @@ not a ui-constraint-class.  Calls make-ui-constraint (see above).
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 312 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 313 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12521,7 +12650,7 @@ WIN is the window to style and defaults to the window-context.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/wmconfig-menu.scm"><filename>scheme/wmconfig-menu.scm</filename></ulink>
-  at line 95 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/wmconfig-menu.scm">CVS log</ulink>)</para> </refsect2>
+  at line 97 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/wmconfig-menu.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12542,7 +12671,7 @@ WIN is the window to style and defaults to the window-context.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 413 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 415 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12566,7 +12695,7 @@ or (menuitem "Lock Screen" #:action (make-xlock-menu <literal>#t</literal>))
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/xlock-menus.scm"><filename>scheme/xlock-menus.scm</filename></ulink>
-  at line 74 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/xlock-menus.scm">CVS log</ulink>)</para> </refsect2>
+  at line 73 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/xlock-menus.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13044,7 +13173,7 @@ All the arguments are passed directly to the <link linkend="menu"><function>menu
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
-  at line 212 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/prefs-menu.scm">CVS log</ulink>)</para> </refsect2>
+  at line 213 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/prefs-menu.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13363,7 +13492,7 @@ Requires the program <link linkend="xmessage"><function>xmessage</function></lin
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 102 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 104 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13385,7 +13514,7 @@ These are returned in a list of the form (fg_color,bg_color).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 661 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 664 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13407,7 +13536,7 @@ Returns a list of the font, fg-color, bg-color of msgwin-source
   <title>Implementation Notes</title>
   <para> Module: (app scwm message-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 256 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 260 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13428,7 +13557,7 @@ Returns a list of the font, fg-color, bg-color of msgwin-source
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 639 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 642 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13450,7 +13579,7 @@ See also <link linkend="message-window-show"><function>message-window-show</func
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 553 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 556 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13471,7 +13600,7 @@ See also <link linkend="message-window-show"><function>message-window-show</func
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 650 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 653 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13492,7 +13621,7 @@ See also <link linkend="message-window-show"><function>message-window-show</func
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 593 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 596 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13513,7 +13642,7 @@ See also <link linkend="message-window-show"><function>message-window-show</func
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 582 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 585 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13563,7 +13692,7 @@ These options are cumulative for repeated calls to
   <title>Implementation Notes</title>
   <para> Module: (app scwm message-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 49 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 52 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13585,7 +13714,7 @@ This is returned as a four element list: (x y x-align y-align).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 604 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 607 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13606,7 +13735,7 @@ This is returned as a four element list: (x y x-align y-align).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 673 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 676 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13628,7 +13757,7 @@ The foreground color will be <parameter>fg-color</parameter> and the background 
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 417 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 420 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13650,7 +13779,7 @@ The font will be <parameter>fnt</parameter>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 393 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 396 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13674,7 +13803,7 @@ is used for <parameter>mwn</parameter>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 350 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 353 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13696,7 +13825,7 @@ The message will be <parameter>message</parameter>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 329 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 332 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13724,7 +13853,7 @@ excep <parameter>mwn</parameter> can be <literal>#f</literal> to mean not to cha
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 456 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 459 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13746,7 +13875,7 @@ Relief will be drawn if and only if <parameter>draw-relief?</parameter> is <lite
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 508 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 511 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13770,7 +13899,7 @@ is used to display an image.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 483 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 486 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13794,7 +13923,7 @@ the window will not ever disappear).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 525 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 528 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13816,7 +13945,7 @@ Returns as a two element list: (width height).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 620 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 623 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13839,7 +13968,7 @@ background color.
   <title>Implementation Notes</title>
   <para> Module: (app scwm message-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 231 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 234 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13861,7 +13990,7 @@ See also <link linkend="message-window-show"><function>message-window-show</func
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/message-window.c"><filename>src/message-window.c</filename></ulink>
-  at line 569 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
+  at line 572 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/message-window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13903,7 +14032,7 @@ See also <link linkend="message-window-show"><function>message-window-show</func
   <title>Implementation Notes</title>
   <para> Module: (app scwm prefs-menu)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
-  at line 70 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/prefs-menu.scm">CVS log</ulink>)</para> </refsect2>
+  at line 71 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/prefs-menu.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14180,6 +14309,50 @@ to determine, e.g., whether the user single clicked or double clicked.
   </refsect1>
 </refentry>
 
+<refentry id="move-after-deleting-constraints">
+  <refnamediv>
+    <refname>move-after-deleting-constraints</refname>
+    <refpurpose>Move WIN after deleting all constraints that involve it.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(move-after-deleting-constraints #&amp;optional (win (get-window)))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Move WIN after deleting all constraints that involve it.
+See also <link linkend="delete-ui-constraints-involving-window-x"><function>delete-ui-constraints-involving-window!</function></link>.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm ui-constraints)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
+  at line 708 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="move-after-deleting-inferred-constraints">
+  <refnamediv>
+    <refname>move-after-deleting-inferred-constraints</refname>
+    <refpurpose>Move WIN after deleting all inferred constraints that involve it.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(move-after-deleting-inferred-constraints #&amp;optional (win (get-window)))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Move WIN after deleting all inferred constraints that involve it.
+See also <link linkend="delete-inferred-ui-constraints-involving-window-x"><function>delete-inferred-ui-constraints-involving-window!</function></link>.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: </para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
+  at line 715 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="move-group">
   <refnamediv>
     <refname>move-group</refname>
@@ -14351,7 +14524,7 @@ See `move-window-relative.'
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 350 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 352 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14370,9 +14543,9 @@ See `move-window-relative.'
   </para>
   <refsect2>
   <title>Implementation Notes</title>
-  <para> Module: (app scwm flux)</para>
-  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 446 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  <para> Module: </para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
+  at line 466 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14391,9 +14564,9 @@ See `move-window-relative.'
   </para>
   <refsect2>
   <title>Implementation Notes</title>
-  <para> Module: (app scwm flux)</para>
-  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 438 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  <para> Module: (app scwm winops)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
+  at line 459 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14986,7 +15159,7 @@ E.g., an argument of 1 returns <link linkend="N"><function>N</function></link>.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/nonants.scm"><filename>scheme/nonants.scm</filename></ulink>
-  at line 164 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/nonants.scm">CVS log</ulink>)</para> </refsect2>
+  at line 162 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/nonants.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15008,7 +15181,7 @@ E.g., NONANT == 0 will answer the id of the northwest corner window.
   <title>Implementation Notes</title>
   <para> Module: (app scwm nonants)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/nonants.scm"><filename>scheme/nonants.scm</filename></ulink>
-  at line 73 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/nonants.scm">CVS log</ulink>)</para> </refsect2>
+  at line 71 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/nonants.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15934,6 +16107,48 @@ See also <link linkend="constraint-toggle-menu"><function>constraint-toggle-menu
   </refsect1>
 </refentry>
 
+<refentry id="popup-window-group-menu">
+  <refnamediv>
+    <refname>popup-window-group-menu</refname>
+    <refpurpose>Popup the window group menu.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(popup-window-group-menu)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Popup the window group menu.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm group)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/group.scm"><filename>scheme/group.scm</filename></ulink>
+  at line 234 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/group.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="popup-window-group-menu-no-warp">
+  <refnamediv>
+    <refname>popup-window-group-menu-no-warp</refname>
+    <refpurpose>Popup the window group menu without warping to the first menu item.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(popup-window-group-menu-no-warp)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Popup the window group menu without warping to the first menu item.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm group)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/group.scm"><filename>scheme/group.scm</filename></ulink>
+  at line 239 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/group.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="position-message-window-x">
   <refnamediv>
     <refname>position-message-window!</refname>
@@ -15953,7 +16168,7 @@ or spelled-out versions of these. See also `gravity->alignments'.
   <title>Implementation Notes</title>
   <para> Module: (app scwm message-window)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 37 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 40 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -17969,7 +18184,7 @@ the current position in the undo-list, undo-index.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 323 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 325 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18054,7 +18269,7 @@ See also <link linkend="set-quote-key-events-x"><function>set-quote-key-events!<
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 97 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 99 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18924,7 +19139,7 @@ if your Emacs hangs when you try evaluating a scwm expression).
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 116 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 117 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19358,7 +19573,7 @@ Uses the <link linkend="startup-hook"><function>startup-hook</function></link> a
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 815 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 816 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19379,7 +19594,7 @@ Uses the <link linkend="startup-hook"><function>startup-hook</function></link> a
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 811 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 812 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19453,7 +19668,7 @@ The rest of the arguments are passed as options to the xterm command.
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 619 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 620 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19601,7 +19816,7 @@ The string written is generated by <link linkend="scwm-options-string"><function
   <title>Implementation Notes</title>
   <para> Module: (app scwm prefs-menu)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/prefs-menu.scm"><filename>scheme/prefs-menu.scm</filename></ulink>
-  at line 49 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/prefs-menu.scm">CVS log</ulink>)</para> </refsect2>
+  at line 50 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/prefs-menu.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19852,7 +20067,7 @@ to the main event loop
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 710 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 711 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20458,7 +20673,7 @@ This may be a bug (not meeting POSIX.2 specifications).
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 714 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 715 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20630,7 +20845,7 @@ Returns <literal>#f</literal> if no window was selected.
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 781 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 782 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20704,7 +20919,7 @@ returned list can be used to un-highlight the windows:
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 192 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 194 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20727,7 +20942,7 @@ a new message window.
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 795 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 796 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20967,7 +21182,7 @@ this unless you know what it means.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 390 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 392 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20988,7 +21203,7 @@ this unless you know what it means.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 398 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 400 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21009,7 +21224,7 @@ this unless you know what it means.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 394 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 396 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21030,7 +21245,7 @@ this unless you know what it means.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 386 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 388 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21811,7 +22026,7 @@ See also <link linkend="set-edge-scroll-delay-x"><function>set-edge-scroll-delay
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 682 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 683 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21836,7 +22051,7 @@ dimension to a number of pixels.
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 696 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 697 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -21885,7 +22100,7 @@ See also <link linkend="set-edge-x-wrap-x"><function>set-edge-x-wrap!</function>
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 688 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 689 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24023,7 +24238,7 @@ determining the result.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 118 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 120 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24044,7 +24259,7 @@ determining the result.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 114 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 116 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24088,7 +24303,7 @@ See also <link linkend="message"><function>message</function></link>.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 109 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 111 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24151,7 +24366,7 @@ See also <link linkend="message"><function>message</function></link>.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 148 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 150 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24220,7 +24435,7 @@ the same position as before the call.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux-gtk.scm"><filename>scheme/flux-gtk.scm</filename></ulink>
-  at line 35 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux-gtk.scm">CVS log</ulink>)</para> </refsect2>
+  at line 37 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux-gtk.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24236,7 +24451,7 @@ the same position as before the call.
   <title>Description</title>
   <para>
   Popup a window list menu.
-Warps the pointer to the first menu item iff WARP-TO-FIRST is <literal>#t</literal>.
+Warps the pointer to the WARP-TO-INDEX menu item iff it is an integer.
 If PERMIT-ALT-RELEASE-SELECTION? is <literal>#t</literal>, then the release of the Alt/Meta
 modifier will select the item (this is a bit of a hack to make a nicer
 task-switching menu).
@@ -24268,7 +24483,7 @@ WIN is a window object, an X window id, or 'root-window.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 360 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 362 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24569,7 +24784,7 @@ the window's smart-placement flag is on.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/snap.scm"><filename>scheme/snap.scm</filename></ulink>
-  at line 176 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/snap.scm">CVS log</ulink>)</para> </refsect2>
+  at line 178 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/snap.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24853,7 +25068,7 @@ See also <link linkend="end-highlighting-current-window"><function>end-highlight
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 164 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 166 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24917,7 +25132,7 @@ See <link linkend="property-changed-respond"><function>property-changed-respond<
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 167 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 169 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -24938,7 +25153,7 @@ See <link linkend="property-changed-respond"><function>property-changed-respond<
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 629 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 630 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -25427,7 +25642,7 @@ in the user's home directory.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 303 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 305 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -25887,9 +26102,9 @@ specified.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
-  <para> Module: (app scwm flux)</para>
-  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 432 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  <para> Module: (app scwm winops)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
+  at line 453 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26149,7 +26364,7 @@ Errors if UI-CONSTRAINT is not a ui-constraint object.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 664 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 682 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26171,7 +26386,7 @@ Returns <literal>#f</literal> if the gtk toggle menu feature is not in use.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 417 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 418 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26193,7 +26408,7 @@ errors if UI-CONSTRAINT is not an ui-constraint.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 382 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 383 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26215,7 +26430,7 @@ if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 191 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 192 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26237,7 +26452,7 @@ Erors if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 165 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 166 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26259,7 +26474,7 @@ errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 217 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 218 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26281,7 +26496,7 @@ the toggle menu.  Errors if object is not a ui-constraint-class object.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 248 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 249 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26303,7 +26518,7 @@ Errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 157 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 158 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26325,7 +26540,7 @@ class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 178 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 179 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26347,7 +26562,7 @@ Errors if object is not a ui-constraint-class object.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 239 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 240 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26369,7 +26584,7 @@ constraint class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 230 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 231 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26391,7 +26606,7 @@ errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 204 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 205 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26413,7 +26628,7 @@ correct obid.  False otherwise.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 129 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 130 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26435,7 +26650,7 @@ errors if UI-CONSTRAINT is not a ui-constraint.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 357 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 358 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26457,7 +26672,7 @@ Errors if UI-CONSTRAINT is not a ui-constraint object.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 681 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 699 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26479,7 +26694,7 @@ errors if UI-CONSTRAINT is not an ui-constraint.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 370 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 371 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26501,7 +26716,7 @@ Returns <literal>#f</literal> if no such data exists.  errors if UI-CONSTRAINT i
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 407 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 408 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26523,7 +26738,7 @@ Errors if UI-CONSTRAINT is not a ui-constraint object.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 673 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 691 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26545,7 +26760,7 @@ Errors if UI-CONSTRAINT is not a ui-constraint.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 427 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 428 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26567,7 +26782,7 @@ errors if UI-CONSTRAINT is not an ui-constraint.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 395 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 396 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26589,7 +26804,7 @@ returns <literal>#f</literal> otherwise.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 346 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 347 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26659,6 +26874,28 @@ the construction of a composition.
   </refsect1>
 </refentry>
 
+<refentry id="ui-constraints-involving-two-windows">
+  <refnamediv>
+    <refname>ui-constraints-involving-two-windows</refname>
+    <refpurpose>Returns the list of ui-constraint objects that involve WIN1 and WIN2.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(ui-constraints-involving-two-windows win1 win2)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Returns the list of ui-constraint objects that involve WIN1 and WIN2.
+The entire global-constraint-instance-list is checked.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm ui-constraints)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
+  at line 532 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="ui-constraints-involving-window">
   <refnamediv>
     <refname>ui-constraints-involving-window</refname>
@@ -26677,7 +26914,7 @@ The entire global-constraint-instance-list is checked.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 521 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 522 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26991,7 +27228,7 @@ a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 607 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 625 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -27013,7 +27250,7 @@ an ui-constraint.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 564 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 582 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -27035,7 +27272,7 @@ If WIN is not specified, the user is prompted to select a window.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 592 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 610 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -27210,7 +27447,7 @@ PROC might be one of <link linkend="resource-match--p"><function>resource-match?
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 705 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 706 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -27329,7 +27566,7 @@ the first element for changes to desk 1, etc.  Changes to desks which are
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 275 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 277 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -28163,7 +28400,7 @@ you can do something like:
   </para>
   <refsect2>
   <title>Implementation Notes</title>
-  <para> Module: </para>
+  <para> Module: (app scwm winops)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/winops.scm"><filename>scheme/winops.scm</filename></ulink>
   at line 437 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/winops.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
@@ -28382,7 +28619,7 @@ WIN is the window, DX and DY are positions relative to the top-left of WIN.
   <title>Implementation Notes</title>
   <para> Module: (app scwm nonants)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/nonants.scm"><filename>scheme/nonants.scm</filename></ulink>
-  at line 137 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/nonants.scm">CVS log</ulink>)</para> </refsect2>
+  at line 135 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/nonants.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -28403,7 +28640,7 @@ WIN is the window, DX and DY are positions relative to the top-left of WIN.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 403 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 405 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -28513,7 +28750,7 @@ See also <link linkend="window-class-hint"><function>window-class-hint</function
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 824 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 825 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -29142,7 +29379,7 @@ the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 122 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 124 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -29551,7 +29788,7 @@ See also <link linkend="window-resource-hint"><function>window-resource-hint</fu
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 832 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 833 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -30050,7 +30287,7 @@ which case the height is just the titlebar height.
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 840 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 841 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -30225,7 +30462,7 @@ THUNK, then removes the message window.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
-  at line 291 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
+  at line 298 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -30355,7 +30592,7 @@ TYPE and FORMAT are as in X-property-set!
   <title>Implementation Notes</title>
   <para> Module: (app scwm flux)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 328 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
+  at line 330 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -31004,6 +31241,30 @@ be given as <parameter>style</parameter>.
   </refsect1>
 </refentry>
 
+<refentry id="xlock-query-modes">
+  <refnamediv>
+    <refname>xlock-query-modes</refname>
+    <refpurpose>Returns a list of mode names queried from the given XLOCK program.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(xlock-query-modes #&amp;optional (xlock *xlock-query-program*))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Returns a list of mode names queried from the given XLOCK program.
+Special modes "random", "bomb", and "blank" are not included in this list.
+Use *xlock-query-program* to specify what program's output we should
+read to compute the list of modes.  See also <link linkend="make-xlock-menu"><function>make-xlock-menu</function></link>.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm xlock-menus)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/xlock-menus.scm"><filename>scheme/xlock-menus.scm</filename></ulink>
+  at line 49 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/xlock-menus.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="xterm-other-host">
   <refnamediv>
     <refname>xterm-other-host</refname>
@@ -31025,7 +31286,7 @@ start the shell remotely.
   <title>Implementation Notes</title>
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 634 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
+  at line 635 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 

@@ -296,7 +296,7 @@ Return a list of accessible variable names and the modules they are defined in.
 (ask-string prompt)
 - (app scwm prefs-menu)
 Ask for a string with PROMPT.
-[From scheme/prefs-menu.scm:137]
+[From scheme/prefs-menu.scm:138]
 
 (at-point-placement #&key (offset '(0 0))
 			       (proportional-offset '(-0.5 -0.5))
@@ -332,7 +332,7 @@ that it may permit signals on the controlling tty to be seen
 by children (observed on Linux, Free/NetBSD, but not on Solaris or HP/UX.
 This may be a bug (not meeting POSIX.2 specifications).
 Returns the child-pid, or #f if the fork fails.
-[From scheme/base.scm:750]
+[From scheme/base.scm:751]
 
 (beep)
 - Built-in Primitive
@@ -438,7 +438,7 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
 (bind-wheel-mouse-prior-next matching-proc)
 - (app scwm flux)
 No documentation supplied.
-[From scheme/flux.scm:368]
+[From scheme/flux.scm:370]
 
 (bool->string arg)
 - (app scwm stringops)
@@ -765,7 +765,7 @@ Close each window with class == XLogo.
 Greg uses XLogo windows as a sample window, so this
 is useful for clearing the xlogos away when there get to
 be more than desired.
-[From scheme/flux.scm:263]
+[From scheme/flux.scm:265]
 
 (close-ScwmBiff sb)
 - (app scwm ScwmBiff)
@@ -837,19 +837,19 @@ colormap focus.
 - (app scwm flux)
 A procedure for `X-ConfigureRequest-hook' to do window configuration animatedly.
 Use `add-hook!' to attach this to `X-ConfigureRequest-hook'.
-[From scheme/flux.scm:463]
+[From scheme/flux.scm:443]
 
 (constrained-window-in-focus? ui-constraint)
 - (app scwm ui-constraints)
 Returns #t if one of the windows in the constraint is in focus.
 Returns #f otherwise or if UI-CONSTRAINT is not a ui-constraint.
-[From scheme/ui-constraints.scm:513]
+[From scheme/ui-constraints.scm:514]
 
 (constraint-satisfied? ui-constraint)
 - (app scwm ui-constraints)
 Returns the status of whether a UI-CONSTRAINT is satisfied.
 errors if UI-CONSTRAINT is not an ui-constraint.
-[From scheme/ui-constraints.scm:491]
+[From scheme/ui-constraints.scm:492]
 
 (containing-aligned-viewport pos)
 - (app scwm virtual)
@@ -1043,28 +1043,34 @@ The first instance of any alement that appears more than once is retained,
 all other instances are removed.
 [From scheme/listops.scm:215]
 
+(delete-inferred-ui-constraints-involving-window! win)
+- (app scwm ui-constraints)
+Delete all the ui-constraint objects that involve WIN.
+This removes the constraints from the global-constraint-instance-list.
+[From scheme/ui-constraints.scm:547]
+
 (delete-multiple-windows-interactively)
 - (app scwm flux)
 Delete multiple windows as they are interactively clicked on.
-[From scheme/flux.scm:343]
+[From scheme/flux.scm:345]
 
 (delete-ui-constraint! ui-constraint)
 - (app scwm ui-constraints)
 Removes the UI-CONSTRAINT permanently.
 SIDE-EFFECT: removes instance object from the global list
-[From scheme/ui-constraints.scm:333]
+[From scheme/ui-constraints.scm:334]
 
 (delete-ui-constraint-class! ui-constraint-class)
 - (app scwm ui-constraints)
 Removes UI-CONSTRAINT-CLASS from the global class list.
 SIDE-EFFECT: removes class object from the global class list.
-[From scheme/ui-constraints.scm:108]
+[From scheme/ui-constraints.scm:109]
 
 (delete-ui-constraints-involving-window! win)
 - (app scwm ui-constraints)
 Delete all the ui-constraint objects that involve WIN.
 This removes the constraints from the global-constraint-instance-list.
-[From scheme/ui-constraints.scm:531]
+[From scheme/ui-constraints.scm:542]
 
 (delete-window  #&optional win)
 - Built-in Primitive
@@ -1149,7 +1155,7 @@ Switch focus to the window to the west.
 (disable-all-constraints)
 - (app scwm ui-constraints)
 Disable all constraints in the global instance list.
-[From scheme/ui-constraints.scm:614]
+[From scheme/ui-constraints.scm:632]
 
 (disable-gnome-hints)
 - (app scwm gnome-hints)
@@ -1164,13 +1170,13 @@ pager applet. Reverses the effect of `enable-gnome-hints'.
 Disables the constraint in the constraint solver
 errors if UI-CONSTRAINT is not a ui-constraint
 returns the constraint
-[From scheme/ui-constraints.scm:473]
+[From scheme/ui-constraints.scm:474]
 
 (display-message-briefly msg #&optional (sec-timeout 3))
 - (app scwm message-window)
 Display MSG in the message window for SEC-TIMEOUT seconds.
 See `display-message' for details about MSG.
-[From scheme/message-window.scm:272]
+[From scheme/message-window.scm:276]
 
 (display-size)
 - Built-in Primitive
@@ -1190,19 +1196,19 @@ Returns #t if any documentation was found, #f otherwise.
 (draw-all-constraints #&key (draw-disabled #t))
 - (app scwm ui-constraints)
 Draw all constraints in the global instance list.
-[From scheme/ui-constraints.scm:600]
+[From scheme/ui-constraints.scm:618]
 
 (draw-constraint ui-constraint)
 - (app scwm ui-constraints)
 Draw the UI-CONSTRAINT.  error if UI-CONSTRAINT is not
 an ui-constraint.
-[From scheme/ui-constraints.scm:556]
+[From scheme/ui-constraints.scm:574]
 
 (draw-constraints-of-window win #&key (draw-disabled #t))
 - (app scwm ui-constraints)
 Draw all constraints associated with WIN.
 If WIN is not specified, the user is prompted to select a window.
-[From scheme/ui-constraints.scm:584]
+[From scheme/ui-constraints.scm:602]
 
 (draw-overlay-plane)
 - Primitive from (app scwm overlay-plane)
@@ -1248,6 +1254,13 @@ Return the vertical edge scroll increment as set by `set-edge-y-scroll!'.
 Return the current vertical edge wrap setting as set by `set-edge-y-wrap!'.
 [From src/deskpage.c:225]
 
+(edges->nonant horiz vert)
+- (app scwm snap-constraints)
+Return a nonant number from a list of edges that are involved.
+HORIZ can be 'left, 'right. or 'none (or #f).
+VERT can be 'top, 'bottom, or 'none (or #f).
+[From scheme/snap-constraints.scm:142]
+
 (elapsed-time)
 - Built-in Primitive
 Return the elapsed time in milliseconds since O.S. has been up.
@@ -1256,7 +1269,7 @@ Return the elapsed time in milliseconds since O.S. has been up.
 (enable-all-constraints)
 - (app scwm ui-constraints)
 Enable all constraints in the global instance list.
-[From scheme/ui-constraints.scm:620]
+[From scheme/ui-constraints.scm:638]
 
 (enable-dynamic-netscape-actions)
 - (app scwm netscape)
@@ -1284,7 +1297,7 @@ are lots of missing images.
 Enables the constraint in the constraint solver.
 errors if UI-CONSTRAINT is not a ui-constraint.
 returns the constraint.
-[From scheme/ui-constraints.scm:454]
+[From scheme/ui-constraints.scm:455]
 
 (enclosing-rectangle wins)
 - 
@@ -1355,7 +1368,7 @@ See also `execute-with-pidprop' if you want to know the
 process id of COMMAND and want to use `window-id' to be
 able to map back from the windows the process creates
 to the process id.
-[From scheme/base.scm:735]
+[From scheme/base.scm:736]
 
 (execute-on-selection command)
 - (app scwm std-menus)
@@ -1373,7 +1386,7 @@ Returns the PID of COMMAND.
 Find extreme value e of PRED in LST.
 If PRED defines a semi-ordering, `(PRED e x)' will hold for all members x
 of LST not equal to e. E.g. `(extreme < ...)' returns the lowest number.
-[From scheme/flux.scm:295]
+[From scheme/flux.scm:297]
 
 (filename-is-complete? fname)
 - (app scwm file)
@@ -1470,7 +1483,7 @@ Return LIST-OF-LISTS as a single flat list.
 (float->integer x)
 - (app scwm flux)
 No documentation supplied.
-[From scheme/flux.scm:408]
+[From scheme/flux.scm:410]
 
 (focus-change-warp-pointer #&optional (win (get-window)))
 - (app scwm winops)
@@ -1506,7 +1519,7 @@ specified. Note that WIN is not raised by giving it the focus;  see
 (focus-window-with-pointer)
 - (app scwm flux)
 Set the focus to be the window containing the pointer.
-[From scheme/flux.scm:473]
+[From scheme/flux.scm:453]
 
 (focussable-window?  #&optional win)
 - Built-in Primitive
@@ -1516,7 +1529,7 @@ its X11 hints do not permit it to receive the focus.
 [From src/focus.c:79]
 
 (fold-menu-list
-		ml #&optional (max-lines (scwm-option-get *menu-max-fold-lines*)))
+		ml #&optional (max-lines (optget *menu-max-fold-lines*)))
 - (app scwm menus-extras)
 Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
@@ -1704,7 +1717,7 @@ Return the timer-hooks list.
 (get-ui-constraint-class-by-name name)
 - (app scwm ui-constraints)
 No documentation supplied.
-[From scheme/ui-constraints.scm:148]
+[From scheme/ui-constraints.scm:149]
 
 (get-window  #&optional select? release? cursor)
 - Built-in Primitive
@@ -1738,7 +1751,7 @@ SELECT-LIST is a list of (win x y), returns the nonant selected.
 The nonant is a number in [0,8] referring to which of the tic-tac-toe board
 squares x,y is in of WIN. x,y are root-window relative viewport positions.
 `select-viewport-position' returns lists of the form needed by this procedure.
-[From scheme/nonants.scm:146]
+[From scheme/nonants.scm:144]
 
 (get-window-with-nonant #&optional (window #f) (nonant 4))
 - (app scwm nonants)
@@ -1755,7 +1768,7 @@ window-selection and constraints modules.
 Interactively select a window and a nonant.
 The nonant is stored as an object-property of the window
 for use with the window-selection and constraints modules.
-[From scheme/nonants.scm:111]
+[From scheme/nonants.scm:109]
 
 (get-wm-command win)
 - (app scwm xprop-extras)
@@ -1841,7 +1854,7 @@ This handles desktop icons, splash screens, and the panel.
 Return a list of two numeric alignments corresponding to a GRAVITY.
 GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
 or spelled-out versions of these.
-[From scheme/message-window.scm:20]
+[From scheme/message-window.scm:23]
 
 (gravity->string gravity)
 - (app scwm stringops)
@@ -1953,7 +1966,7 @@ Print all possible documentation for string or symbol.
 (help-mesg . funcs)
 - (app scwm prefs-menu)
 No documentation supplied.
-[From scheme/prefs-menu.scm:75]
+[From scheme/prefs-menu.scm:76]
 
 (hex number)
 - (app scwm number-convert)
@@ -2096,7 +2109,7 @@ Return the message-window of an X/11 window id (a long integer).
 Returns #f if WINID does not correspond to a message-window.
 You can use the xwininfo program to get the window id of an arbitrary
 window on your X/11 display.
-[From src/message-window.c:305]
+[From src/message-window.c:308]
 
 (id->window window-id)
 - Built-in Primitive
@@ -2119,7 +2132,7 @@ Return a gtk-pixmap widget for IMG for use in BUTTON.
 (image-not-found-message filename)
 - 
 Report a missing image filename, but do not error.
-[From scheme/base.scm:849]
+[From scheme/base.scm:859]
 
 (image-properties image)
 - Built-in Primitive
@@ -2213,7 +2226,7 @@ Insert STATE into the undo list at undo-index.
 
 (interactive-move 
 		 #&optional (win (get-window #t #f #f))
-		 (opaquely? (if win ((scwm-option-get *move-opaquely-proc*) win))))
+		 (opaquely? (if win ((optget *move-opaquely-proc*) win))))
 - (app scwm winops)
 Move WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
@@ -2232,7 +2245,7 @@ will move along.
 (interactive-move-rubberband #&optional (win (get-window)))
 - (app scwm flux)
 Move interactively, using the rubberband (unless constraint solver is active.
-[From scheme/flux.scm:453]
+[From scheme/flux.scm:433]
 
 (interactive-move-selected-group-or-window)
 - 
@@ -2285,7 +2298,7 @@ The returned list contains pairs (modulesym . procsym)
 
 (interactive-resize 
 		 #&optional (win (get-window #t #f #f))
-		 (opaquely? (if win ((scwm-option-get *resize-opaquely-proc*) win))))
+		 (opaquely? (if win ((optget *resize-opaquely-proc*) win))))
 - (app scwm winops)
 Resize WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
@@ -2298,7 +2311,7 @@ moves opaquely if that returns #t and uses a rubber-band if it returns
 (interactive-resize-rubberband #&optional (win (get-window)))
 - (app scwm flux)
 Resize interactively, using the rubberband (unless constraint solver is active.
-[From scheme/flux.scm:458]
+[From scheme/flux.scm:438]
 
 (interactive-resize-window-with-focus)
 - (app scwm winops)
@@ -2328,6 +2341,12 @@ Returns the size of the intersection of two rectangles.
 X1,Y1 and W1 x H1 are the position and size of the first rectangle.
 X2,Y2 and W2 x H2 are the position and size of the second rectangle.
 [From scheme/wininfo.scm:52]
+
+(invert-nonant nonant)
+- (app scwm snap-constraints)
+Return the opposite nonant from NONANT.
+E.g., passing 0 answers 8, passing 1 answers 7, etc.
+[From scheme/snap-constraints.scm:168]
 
 (iota n)
 - (app scwm listops)
@@ -2467,7 +2486,7 @@ of the directions.
 (keycode->keysym keycode)
 - (app scwm base)
 Return a string containing the X11 keysym for key with code KEYCODE.
-[From scheme/base.scm:820]
+[From scheme/base.scm:821]
 
 (keymask->string keymask)
 - Built-in Primitive
@@ -2636,6 +2655,13 @@ Load an X Bitmap file identified by the pathname FULL-PATH.
 Load an X Pixmap file identified by the pathname FULL-PATH.
 [From src/image.c:306]
 
+(logo-remove)
+- 
+Remove the Scwm lambda startup logo.
+This is added to `startup-hook' by `logo-setup' and
+usually will not need to be invoked directly.
+[From scheme/lambda-startup-logo.scm:51]
+
 (logo-setup #&optional (should-rotate #f))
 - (app scwm lambda-startup-logo)
 Setup to display the startup logo.
@@ -2736,7 +2762,7 @@ SPECS is a list of face specifiers.
 - (app scwm flux)
 Return a menu-object for viewing or editing FILE.
 REST is a list of other menu-items to include in the returned menu.
-[From scheme/flux.scm:88]
+[From scheme/flux.scm:90]
 
 (make-font fname)
 - Built-in Primitive
@@ -2763,6 +2789,14 @@ needed. If NAME starts with "/", "./" or "../", it is treated as a
 fully qualified pathname; otherwise, the image path is searched for an
 appropriate file.
 [From src/image.c:569]
+
+(make-image-or-warn filename)
+- (app scwm base)
+Return an image object for FILENAME and report a warning if it fails.
+See `make-image' for details.  Return value is #f on failure,
+but no error is thrown; `image-not-found-message' is used to 
+write a warning instead.
+[From scheme/base.scm:850]
 
 (make-list n . init)
 - (app scwm listops)
@@ -2811,34 +2845,34 @@ For a higher-level interface to this function, see `menuitem'.
 Return a list of menu-items from a list of detailed programs list.
 The format is subject to change.  See sample.scwmrc/gjb.scwmrc for
 example usage.
-[From scheme/flux.scm:172]
+[From scheme/flux.scm:174]
 
 (make-message-window message)
 - Built-in Primitive
 Returns a newly created message window object with string MESSAGE.
 MESSAGE is the initial string for the message window.
 Uses defaults from the ScreenInfo struct for the other values.
-[From src/message-window.c:259]
+[From src/message-window.c:262]
 
 (make-message-window-clone-default str)
 - (app scwm message-window)
 Return a new message window that has the default style.
 This is done by cloning the style (see `message-window-style') of
 the variable `default-message-window'.
-[From scheme/message-window.scm:248]
+[From scheme/message-window.scm:252]
 
 (make-message-window-win-copy #&optional (win 'root-window))
 - (app scwm message-window)
 Return a message window with a background that is a copy of the image in WIN.
 The message-window will have no text and no relief, and be the same size
 as WIN.
-[From scheme/message-window.scm:280]
+[From scheme/message-window.scm:284]
 
 (make-message-window-with-image img #&optional (shaped? #f))
 - (app scwm message-window)
 Return a new message window with IMG as a background, sized appropriately.
 Initially the message window is centered in the display.
-[From scheme/message-window.scm:239]
+[From scheme/message-window.scm:242]
 
 (make-relief-color color factor)
 - Built-in Primitive
@@ -2861,7 +2895,7 @@ from "gray50".
 (make-rhosts-menu)
 - (app scwm flux)
 Returns a menu which lets you rlogin to each host mentioned in your .rhosts
-[From scheme/flux.scm:230]
+[From scheme/flux.scm:232]
 
 (make-small-window-ops-menu w)
 - (app scwm winops-menu)
@@ -2911,7 +2945,7 @@ toggle menu if that feature is in use.
 DHOOKS is a list of hook procedures that should be called when the enable is changed on this
 constraint.  These hook functions may only be added after an instance is created.
 SIDE-EFFECT: adds new instance object to the global list.
-[From scheme/ui-constraints.scm:276]
+[From scheme/ui-constraints.scm:277]
 
 (make-ui-constraint-class name description num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
 - (app scwm ui-constraints)
@@ -2929,14 +2963,14 @@ MENUNAME-PROC is a proc that takes a UI-CONSTRAINT as an arg and returns the nam
 for the constraint in the toggle menu.  
 This routine returns a new constraint class object based on the parameters.
 SIDE-EFFECT: addes new class obj to the global class list.
-[From scheme/ui-constraints.scm:79]
+[From scheme/ui-constraints.scm:80]
 
 (make-ui-constraint-interactively ui-constraint-class)
 - (app scwm ui-constraints)
 Uses the UI constructor of the constraint class to prompt the user to
 specify options for the constraint.  errors if UI-CONSTRAINT-CLASS is 
 not a ui-constraint-class.  Calls make-ui-constraint (see above).
-[From scheme/ui-constraints.scm:312]
+[From scheme/ui-constraints.scm:313]
 
 (make-window-group-menu w)
 - (app scwm group)
@@ -3004,12 +3038,12 @@ WIN is the window to style and defaults to the window-context.
 		 (wmconfig-dir default-wmconfig-dir))
 - 
 Return a menu object for the window-manager configuration menu.
-[From scheme/wmconfig-menu.scm:95]
+[From scheme/wmconfig-menu.scm:97]
 
 (make-X-geometry #&key (x-size #f) (y-size #f) (x-offset #f) (y-offset #f))
 - (app scwm flux)
 No documentation supplied.
-[From scheme/flux.scm:413]
+[From scheme/flux.scm:415]
 
 (make-xlock-menu #&optional (lock? #f))
 - 
@@ -3017,7 +3051,7 @@ Create an xlock menu.
 To use this, add the following to the menu of your choice:
    (menuitem "Screensaver" #:action (make-xlock-menu #f))
 or (menuitem "Lock Screen" #:action (make-xlock-menu #t))
-[From scheme/xlock-menus.scm:74]
+[From scheme/xlock-menus.scm:73]
 
 (map-in-order proc first . rest)
 - (app scwm listops)
@@ -3159,7 +3193,7 @@ See `set-menu-popup-delay!'.
 - 
 Generate the `Preferences' menu.
 All the arguments are passed directly to the `menu' function.
-[From scheme/prefs-menu.scm:212]
+[From scheme/prefs-menu.scm:213]
 
 (menu-properties menu)
 - Built-in Primitive
@@ -3270,45 +3304,45 @@ Return #t if and only if OBJ is a menu item object.
 - (app scwm flux)
 Display the string arguments STR in a message window.
 Requires the program `xmessage'.
-[From scheme/flux.scm:102]
+[From scheme/flux.scm:104]
 
 (message-window-colors mwn)
 - Built-in Primitive
 Returns the colors that the message window MWN is displayed with.
 These are returned in a list of the form (fg_color,bg_color).
-[From src/message-window.c:661]
+[From src/message-window.c:664]
 
 (message-window-copy-style! msgwin msgwin-source)
 - (app scwm message-window)
 Copy the visual style of MSGWIN-SOURCE to the style for MSGWIN.
 Returns a list of the font, fg-color, bg-color of msgwin-source
-[From scheme/message-window.scm:256]
+[From scheme/message-window.scm:260]
 
 (message-window-font mwn)
 - Built-in Primitive
 Returns the font that the message window MWN uses for displaying text.
-[From src/message-window.c:639]
+[From src/message-window.c:642]
 
 (message-window-hide! mwn)
 - Built-in Primitive
 Hide the message window MWN.
 See also `message-window-show'.
-[From src/message-window.c:553]
+[From src/message-window.c:556]
 
 (message-window-id mwn)
 - Built-in Primitive
 Returns the X11 id of message window MWN.
-[From src/message-window.c:650]
+[From src/message-window.c:653]
 
 (message-window-image mwn)
 - Built-in Primitive
 Returns the image that message window MWN displays.
-[From src/message-window.c:593]
+[From src/message-window.c:596]
 
 (message-window-message mwn)
 - Built-in Primitive
 Returns the message that message window MWN displays.
-[From src/message-window.c:582]
+[From src/message-window.c:585]
 
 (message-window-options action #&key enable
 					follow-window 
@@ -3342,30 +3376,30 @@ place the message window.
 
 These options are cumulative for repeated calls to
 `message-window-options' for the same action.
-[From scheme/message-window.scm:49]
+[From scheme/message-window.scm:52]
 
 (message-window-position mwn)
 - Built-in Primitive
 Returns the position that message window MWN is/will be displayed at.
 This is returned as a four element list: (x y x-align y-align).
-[From src/message-window.c:604]
+[From src/message-window.c:607]
 
 (message-window-relief? mwn)
 - Built-in Primitive
 Returns the relief setting for the message window MWN.
-[From src/message-window.c:673]
+[From src/message-window.c:676]
 
 (message-window-set-colors! mwn fg-color bg-color)
 - Built-in Primitive
 Set the fore- and background colors to be used for the message window MWN.
 The foreground color will be FG-COLOR and the background color will be BG-COLOR.
-[From src/message-window.c:417]
+[From src/message-window.c:420]
 
 (message-window-set-font! mwn fnt)
 - Built-in Primitive
 Set the font to be used for the message window MWN.
 The font will be FNT.
-[From src/message-window.c:393]
+[From src/message-window.c:396]
 
 (message-window-set-image! mwn image #&optional fg-color bg-color shaped?)
 - Built-in Primitive
@@ -3373,13 +3407,13 @@ Changes the background image for the message window MWN to IMAGE.
 FG-COLOR, BG-COLOR are the colors for the image, SHAPED? is whether it
 should use a shaped message window. If IMAGE is #f, then no image
 is used for MWN.
-[From src/message-window.c:350]
+[From src/message-window.c:353]
 
 (message-window-set-message! mwn message)
 - Built-in Primitive
 Changes the message displayed by the message window MWN.
 The message will be MESSAGE.
-[From src/message-window.c:329]
+[From src/message-window.c:332]
 
 (message-window-set-position! mwn x y #&optional x-align y-align)
 - Built-in Primitive
@@ -3391,13 +3425,13 @@ X-ALIGN and Y-ALIGN should each be in the range [-1,0].  E.g.,
 If X-ALIGN and Y-ALIGN are both -0.5, the window will be
 centered at viewport pixel position X, Y.  Any of the parameters
 excep MWN can be #f to mean not to change the existing value.
-[From src/message-window.c:456]
+[From src/message-window.c:459]
 
 (message-window-set-relief! mwn draw-relief?)
 - Built-in Primitive
 Sets the relief for the window MWN.
 Relief will be drawn if and only if DRAW-RELIEF? is #t.
-[From src/message-window.c:508]
+[From src/message-window.c:511]
 
 (message-window-set-size! mwn width height)
 - Built-in Primitive
@@ -3405,7 +3439,7 @@ Set the size of message window MWN to WIDTH pixels by HEIGHT pixels.
 If WIDTH or HEIGHT is #f, that direction is automatically sized
 based on the message content. This procedure is especially useful when a message window
 is used to display an image.
-[From src/message-window.c:483]
+[From src/message-window.c:486]
 
 (message-window-show! mwn)
 - Built-in Primitive
@@ -3413,26 +3447,26 @@ Displays the message window MWN on the screen.
 Be sure to keep the displayed message window somewhere
 do that you can call `message-window-hide!' (otherwise
 the window will not ever disappear).
-[From src/message-window.c:525]
+[From src/message-window.c:528]
 
 (message-window-size mwn)
 - Built-in Primitive
 Returns the size of message window MWN in pixels.
 Returns as a two element list: (width height).
-[From src/message-window.c:620]
+[From src/message-window.c:623]
 
 (message-window-style msgwin #&key (font #f) (fg #f) (bg #f))
 - (app scwm message-window)
 Set visual style of MSGWIN.
 FONT specifies the font, FG the foreground color, and BG the
 background color.
-[From scheme/message-window.scm:231]
+[From scheme/message-window.scm:234]
 
 (message-window-visible? mwn)
 - Built-in Primitive
 Return #t if the message window MWN is visible, #f otherwise.
 See also `message-window-show', `message-window-hide'.
-[From src/message-window.c:569]
+[From src/message-window.c:572]
 
 (message-window? mwn)
 - Built-in Primitive
@@ -3442,7 +3476,7 @@ Returns #t if MWN is a msgwindow object, otherwise #f.
 (mod-desk-size! dx dy)
 - (app scwm prefs-menu)
 Modify the current desktop size by the given parameter.
-[From scheme/prefs-menu.scm:70]
+[From scheme/prefs-menu.scm:71]
 
 (mod-mask-alt)
 - Built-in Primitive
@@ -3525,6 +3559,18 @@ to determine, e.g., whether the user single clicked or double clicked.
 Returns a boolean value indicating whether a mouse-focus-click will raise the window.
 [From src/miscprocs.c:395]
 
+(move-after-deleting-constraints #&optional (win (get-window)))
+- (app scwm ui-constraints)
+Move WIN after deleting all constraints that involve it.
+See also `delete-ui-constraints-involving-window!'.
+[From scheme/ui-constraints.scm:708]
+
+(move-after-deleting-inferred-constraints #&optional (win (get-window)))
+- 
+Move WIN after deleting all inferred constraints that involve it.
+See also `delete-inferred-ui-constraints-involving-window!'.
+[From scheme/ui-constraints.scm:715]
+
 (move-group x y #&optional (group (get-window)))
 - (app scwm group)
 Move GROUP to virtual coordinates X, Y.
@@ -3570,17 +3616,17 @@ X and Y are given in pixels.
 - (app scwm flux)
 Move all windows right X, down Y pixels.
 See `move-window-relative.'
-[From scheme/flux.scm:350]
+[From scheme/flux.scm:352]
 
 (move-or-deiconify)
-- (app scwm flux)
+- 
 Move the icon on a drag, de-iconify on a double click.
-[From scheme/flux.scm:446]
+[From scheme/winops.scm:466]
 
 (move-or-shade)
-- (app scwm flux)
+- (app scwm winops)
 Move the window on a drag, shade on a double-click.
-[From scheme/flux.scm:438]
+[From scheme/winops.scm:459]
 
 (move-pointer x y)
 - (app scwm base)
@@ -3773,13 +3819,13 @@ See also `get-window-nonant'.
 - 
 Return the brief string name for NONANT, an integer.
 E.g., an argument of 1 returns `N'.
-[From scheme/nonants.scm:164]
+[From scheme/nonants.scm:162]
 
 (nonant-decoration win nonant)
 - (app scwm nonants)
 Return the window id numbers of the decoration for WIN corresponding to NONANT.
 E.g., NONANT == 0 will answer the id of the northwest corner window.
-[From scheme/nonants.scm:73]
+[From scheme/nonants.scm:71]
 
 (nonant-highlight-color)
 - Built-in Primitive
@@ -4047,12 +4093,22 @@ Popup a menu that can be used to turn added constraints on and off.
 See also `constraint-toggle-menu'.
 [From scheme/ui-constraints-toggle-menu.scm:67]
 
+(popup-window-group-menu)
+- (app scwm group)
+Popup the window group menu.
+[From scheme/group.scm:234]
+
+(popup-window-group-menu-no-warp)
+- (app scwm group)
+Popup the window group menu without warping to the first menu item.
+[From scheme/group.scm:239]
+
 (position-message-window! msgwin x y gravity)
 - (app scwm message-window)
 Move the move/resize message window's GRAVITY point to (X,Y).
 GRAVITY can be one of 'nw, 'n, 'ne, 'w, 'center, 'e, 'sw, 's, 'se
 or spelled-out versions of these. See also `gravity->alignments'.
-[From scheme/message-window.scm:37]
+[From scheme/message-window.scm:40]
 
 (prev-visible-non-iconified-window)
 - (app scwm winops)
@@ -4628,7 +4684,7 @@ No documentation supplied.
 (put-string-in-palm-clipboard str)
 - (app scwm flux)
 No documentation supplied.
-[From scheme/flux.scm:323]
+[From scheme/flux.scm:325]
 
 (quote-key-event)
 - (app scwm quote)
@@ -4649,7 +4705,7 @@ Quote the next mouse event and let it pass to the application.
 (quotify-single-quotes str)
 - (app scwm flux)
 Return a string that has single quote characters backslashified.
-[From scheme/flux.scm:97]
+[From scheme/flux.scm:99]
 
 (raise-and-stop-flashing #&optional (win (get-window)))
 - 
@@ -4911,7 +4967,7 @@ Remove all timer-hook procedures.
 (reset-ui-constraint-classes!)
 - (app scwm ui-constraints)
 Empty the global list of ui-constraint-classes.
-[From scheme/ui-constraints.scm:116]
+[From scheme/ui-constraints.scm:117]
 
 (reset-undo!)
 - (app scwm undo)
@@ -5041,12 +5097,12 @@ specified.
 - (app scwm base)
 After done reading your startup file, run your ~/.xclients script.
 Uses the `startup-hook' and `run-dot-xclients-script' to do so.
-[From scheme/base.scm:815]
+[From scheme/base.scm:816]
 
 (run-dot-xclients-script)
 - (app scwm base)
 Runs the ~/.xclients script.
-[From scheme/base.scm:811]
+[From scheme/base.scm:812]
 
 (run-fvwm2-module module-name #&optional
 				  (other-args '())	       
@@ -5072,7 +5128,7 @@ Return a procedure that runs CMD in an xterm.
 Uses the variable `*xterm-command*' to determine how
 to run an xterm.  CMD may include options to the command.
 The rest of the arguments are passed as options to the xterm command.
-[From scheme/base.scm:619]
+[From scheme/base.scm:620]
 
 (run-ScwmButtons button-item-list #&key (orientation 'horizontal)
 				 (name "ScwmButtons") (auto-orient #t)
@@ -5124,7 +5180,7 @@ The string written is generated by `scwm-options-string'.
 (save-settings)
 - (app scwm prefs-menu)
 No documentation supplied.
-[From scheme/prefs-menu.scm:49]
+[From scheme/prefs-menu.scm:50]
 
 (scwm-gdk-X-fdes)
 - Primitive from (app scwm scwmgtkhelper)
@@ -5199,7 +5255,7 @@ to the main event loop
 (scwm-is-constraint-enabled?)
 - (app scwm base)
 Return #t if scwm has the constraint solver primitives, #f otherwise.
-[From scheme/base.scm:710]
+[From scheme/base.scm:711]
 
 (scwm-last-timestamp)
 - Built-in Primitive
@@ -5357,7 +5413,7 @@ use a trailing "&" character.  See also guile's `system', but note
 that it may permit signals on the controlling tty to be seen
 by children (observed on Linux, Free/NetBSD, but not on Solaris or HP/UX.
 This may be a bug (not meeting POSIX.2 specifications).
-[From scheme/base.scm:714]
+[From scheme/base.scm:715]
 
 (scwm-version)
 - Built-in Primitive
@@ -5417,7 +5473,7 @@ operations like delete-window and destroy-window).
 The optional argument RELEASE? indicates whether to wait
 for a mouse release or act immediately on the click. 
 Returns #f if no window was selected.
-[From scheme/base.scm:781]
+[From scheme/base.scm:782]
 
 (select-window-add #&optional (w (get-window-with-nonant)))
 - (app scwm window-selection)
@@ -5443,14 +5499,14 @@ Windows are highlighted (see `flash-window') as they are selected.  The
 returned list can be used to un-highlight the windows:
  (let ((winlist (select-window-group)))
    (for-each (lambda (w) (unflash-window w)) winlist))
-[From scheme/flux.scm:192]
+[From scheme/flux.scm:194]
 
 (select-window-interactively #&optional (msg #f) (message-window #f))
 - (app scwm base)
 Return an interactively-selected window after prompting (optionally) with MSG.
 If given, use message window MESSAGE-WINDOW to display the message, otherwise create
 a new message window.
-[From scheme/base.scm:795]
+[From scheme/base.scm:796]
 
 (select-window-remove #&optional (w (get-window-with-nonant)))
 - (app scwm window-selection)
@@ -5530,22 +5586,22 @@ this unless you know what it means.
 (send-key-press-down)
 - (app scwm flux)
 Send a synthetic "Down" keypress.
-[From scheme/flux.scm:390]
+[From scheme/flux.scm:392]
 
 (send-key-press-next)
 - (app scwm flux)
 Send a synthetic "Next" keypress.
-[From scheme/flux.scm:398]
+[From scheme/flux.scm:400]
 
 (send-key-press-prior)
 - (app scwm flux)
 Send a synthetic "Prior" keypress.
-[From scheme/flux.scm:394]
+[From scheme/flux.scm:396]
 
 (send-key-press-up)
 - (app scwm flux)
 Send a synthetic "Up" keypress.
-[From scheme/flux.scm:386]
+[From scheme/flux.scm:388]
 
 (set-*-procedure-properties proc arglist interactive-spec)
 - (app scwm optargs)
@@ -5782,7 +5838,7 @@ fewer than PIXELS pixels will leave the window entirely onscreen.
 - (app scwm base)
 Set the edge scroll delay to S, and the edge move threshold to M.
 See also `set-edge-scroll-delay!' and `set-edge-move-threshold!'.
-[From scheme/base.scm:682]
+[From scheme/base.scm:683]
 
 (set-edge-scroll! x y)
 - (app scwm base)
@@ -5791,7 +5847,7 @@ These values are the number of pixels that the viewport
 moves when the pointer hits the edge of the screen.  Use
 `%x' and `%y' to convert from a percentage of a screen
 dimension to a number of pixels.
-[From scheme/base.scm:696]
+[From scheme/base.scm:697]
 
 (set-edge-scroll-delay! ms)
 - Built-in Primitive
@@ -5808,7 +5864,7 @@ Set the edge x and y wrap values to X and Y, respectively.
 These values should be #t to mean that the pointer should
 wrap in the given direction, or #f to not wrap around.
 See also `set-edge-x-wrap!' and `set-edge-y-wrap!'.
-[From scheme/base.scm:688]
+[From scheme/base.scm:689]
 
 (set-edge-x-scroll! pixels)
 - Built-in Primitive
@@ -6474,12 +6530,12 @@ Display prompt to shove the current window to an edge or center.
 (show-com com)
 - (app scwm flux)
 Return a lambda to show the stdout generated by the COM shell pipeline.
-[From scheme/flux.scm:118]
+[From scheme/flux.scm:120]
 
 (show-file filename)
 - (app scwm flux)
 Return a lambda to display the contents of filename in a window.
-[From scheme/flux.scm:114]
+[From scheme/flux.scm:116]
 
 (show-icon-list-menu)
 - (app scwm winlist-menu)
@@ -6491,7 +6547,7 @@ The selection procedure deiconifies the window and gives it focus.
 - (app scwm flux)
 Return a lambda to display the string arguments STR in a message window.
 See also `message'.
-[From scheme/flux.scm:109]
+[From scheme/flux.scm:111]
 
 (show-selected-nonants)
 - (app scwm window-selection)
@@ -6506,7 +6562,7 @@ No documentation supplied.
 (show-system-info)
 - (app scwm flux)
 Display the `system-info-string' system details in a window.
-[From scheme/flux.scm:148]
+[From scheme/flux.scm:150]
 
 (show-titlebar  #&optional win in-place?)
 - Built-in Primitive
@@ -6527,12 +6583,12 @@ the same position as before the call.
 (show-window-list-matching-interactively)
 - 
 Prompt for a wildcard, and popup a list of matching windows (by title).
-[From scheme/flux-gtk.scm:35]
+[From scheme/flux-gtk.scm:37]
 
 (show-window-list-menu warp-to-index permit-alt-release-selection? #&rest rest)
 - (app scwm winlist-menu)
 Popup a window list menu.
-Warps the pointer to the first menu item iff WARP-TO-FIRST is #t.
+Warps the pointer to the WARP-TO-INDEX menu item iff it is an integer.
 If PERMIT-ALT-RELEASE-SELECTION? is #t, then the release of the Alt/Meta
 modifier will select the item (this is a bit of a hack to make a nicer
 task-switching menu).
@@ -6543,7 +6599,7 @@ Accepts all keyword arguments that `make-window-list-menu' takes.
 - (app scwm flux)
 Displays the X properties of WIN in a message window.
 WIN is a window object, an X window id, or 'root-window.
-[From scheme/flux.scm:360]
+[From scheme/flux.scm:362]
 
 (show-xterm-window-list-menu)
 - 
@@ -6652,7 +6708,7 @@ the window's smart-placement flag is on.
 (snap-initialize #&optional (sw 25))
 - 
 Turn on auto-snapping during interactive moves.
-[From scheme/snap.scm:176]
+[From scheme/snap.scm:178]
 
 (snap-reset)
 - (app scwm snap)
@@ -6728,7 +6784,7 @@ Highlight the current window during window selections.
 (start-program-in-xterm binary title resources)
 - (app scwm flux)
 No documentation supplied.
-[From scheme/flux.scm:164]
+[From scheme/flux.scm:166]
 
 (start-property-respond)
 - (app scwm property-respond)
@@ -6744,12 +6800,12 @@ No documentation supplied.
 (start-xlogo)
 - (app scwm flux)
 Start an XLogo window.
-[From scheme/flux.scm:167]
+[From scheme/flux.scm:169]
 
 (start-xterm #&optional (opt (optget *xterm-user-shell-options*)))
 - (app scwm base)
 Start an xterm using `*xterm-command*' and `*xterm-user-shell-options*'.
-[From scheme/base.scm:629]
+[From scheme/base.scm:630]
 
 (stick-icon  #&optional win)
 - Built-in Primitive
@@ -6886,7 +6942,7 @@ The screenshot will be saved in xwd format in the filename constructed from
 TEMPLATE. %-escapes in TEMPLATE will be replaced by time-elements, according
 to strftime rules. TEMPLATE defaults to the file "screenshot%y%m%d%H%M%S.xwd"
 in the user's home directory.
-[From scheme/flux.scm:303]
+[From scheme/flux.scm:305]
 
 (theme-names)
 - 
@@ -7058,9 +7114,9 @@ No documentation supplied.
 [From scheme/preferences.scm:85]
 
 (toggle-focus)
-- (app scwm flux)
+- (app scwm winops)
 Focus window that had the focus before the current one.
-[From scheme/flux.scm:432]
+[From scheme/winops.scm:453]
 
 (toggle-maximize nw nh #&optional (win (get-window)))
 - (app scwm winops)
@@ -7128,127 +7184,127 @@ No documentation supplied.
 Adds a HOOK proc which will be called when UI-CONSTRAINT enable state changes.
 HOOK should take one argument which is the new state of the UI-CONSTRAINT.
 Errors if UI-CONSTRAINT is not a ui-constraint object.
-[From scheme/ui-constraints.scm:664]
+[From scheme/ui-constraints.scm:682]
 
 (ui-constraint-button ui-constraint)
 - (app scwm ui-constraints)
 Returns the a reference to panel representing the UI-CONSTRAINT in the toggle menu.
 Returns #f if the gtk toggle menu feature is not in use.
-[From scheme/ui-constraints.scm:417]
+[From scheme/ui-constraints.scm:418]
 
 (ui-constraint-class ui-constraint)
 - (app scwm ui-constraints)
 Returns the UI-CONSTRAINT-CLASS from the ui-constraint object UI-CONSTRAINT.
 errors if UI-CONSTRAINT is not an ui-constraint.
-[From scheme/ui-constraints.scm:382]
+[From scheme/ui-constraints.scm:383]
 
 (ui-constraint-class-ctr ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the constructor for instance of the constraint class.  errors
 if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
-[From scheme/ui-constraints.scm:191]
+[From scheme/ui-constraints.scm:192]
 
 (ui-constraint-class-description ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the description for the constraint class.  
 Erors if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
-[From scheme/ui-constraints.scm:165]
+[From scheme/ui-constraints.scm:166]
 
 (ui-constraint-class-draw-proc ui-constraint-class)
 - (app scwm ui-constraints)
 returns the drawing procedure for instances of the constraint class.
 errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
-[From scheme/ui-constraints.scm:217]
+[From scheme/ui-constraints.scm:218]
 
 (ui-constraint-class-menuname-proc ui-constraint-class)
 - (app scwm ui-constraints)
 Return the proc for determining the name for the constraint in
 the toggle menu.  Errors if object is not a ui-constraint-class object.
-[From scheme/ui-constraints.scm:248]
+[From scheme/ui-constraints.scm:249]
 
 (ui-constraint-class-name ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the name of the constraint class.
 Errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
-[From scheme/ui-constraints.scm:157]
+[From scheme/ui-constraints.scm:158]
 
 (ui-constraint-class-num-windows ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the number of windows constrainable by instances of the constraint 
 class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class.
-[From scheme/ui-constraints.scm:178]
+[From scheme/ui-constraints.scm:179]
 
 (ui-constraint-class-pixmap-name ui-constraint-class)
 - (app scwm ui-constraints)
 Return the pixmap-name of UI-CONSTRAINT-CLASS.
 Errors if object is not a ui-constraint-class object.
-[From scheme/ui-constraints.scm:239]
+[From scheme/ui-constraints.scm:240]
 
 (ui-constraint-class-satisfied-proc ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the satisfaction checking procedure for instances of the
 constraint class.  errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
-[From scheme/ui-constraints.scm:230]
+[From scheme/ui-constraints.scm:231]
 
 (ui-constraint-class-ui-ctr ui-constraint-class)
 - (app scwm ui-constraints)
 Returns the UI constructor for instances of the constraint class.
 errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
-[From scheme/ui-constraints.scm:204]
+[From scheme/ui-constraints.scm:205]
 
 (ui-constraint-class? ui-constraint-class)
 - (app scwm ui-constraints)
 Returns a boolean: true if UI-CONSTRAINT-CLASS is a vector and starts with the
 correct obid.  False otherwise.
-[From scheme/ui-constraints.scm:129]
+[From scheme/ui-constraints.scm:130]
 
 (ui-constraint-cn ui-constraint)
 - (app scwm ui-constraints)
 Returns the CN list from the ui-constraint object UI-CONSTRAINT.
 errors if UI-CONSTRAINT is not a ui-constraint.
-[From scheme/ui-constraints.scm:357]
+[From scheme/ui-constraints.scm:358]
 
 (ui-constraint-enable-hooks ui-constraint)
 - (app scwm ui-constraints)
 Returns a list of the enable-hook functions added to the UI-CONSTRAINT.
 Errors if UI-CONSTRAINT is not a ui-constraint object.
-[From scheme/ui-constraints.scm:681]
+[From scheme/ui-constraints.scm:699]
 
 (ui-constraint-enabled? ui-constraint)
 - (app scwm ui-constraints)
 Returns the ENABLE from the ui-constraint object UI-CONSTRAINT.
 errors if UI-CONSTRAINT is not an ui-constraint.
-[From scheme/ui-constraints.scm:370]
+[From scheme/ui-constraints.scm:371]
 
 (ui-constraint-opts ui-constraint)
 - (app scwm ui-constraints)
 Returns the list of optional data that may be added by the constraint class.
 Returns #f if no such data exists.  errors if UI-CONSTRAINT is not a ui-constraint.
-[From scheme/ui-constraints.scm:407]
+[From scheme/ui-constraints.scm:408]
 
 (ui-constraint-remove-enable-hook ui-constraint hook)
 - (app scwm ui-constraints)
 Removes a HOOK proc from the list in UI-CONSTRAINT.
 Errors if UI-CONSTRAINT is not a ui-constraint object.
-[From scheme/ui-constraints.scm:673]
+[From scheme/ui-constraints.scm:691]
 
 (ui-constraint-set-button! ui-constraint button)
 - (app scwm ui-constraints)
 Sets the reference to the gtk button for this instance in the toggle menu.
 Errors if UI-CONSTRAINT is not a ui-constraint.
-[From scheme/ui-constraints.scm:427]
+[From scheme/ui-constraints.scm:428]
 
 (ui-constraint-windows ui-constraint)
 - (app scwm ui-constraints)
 Returns the LIST-OF-WINDOWS from the ui-constraint object UI-CONSTRAINT.
 errors if UI-CONSTRAINT is not an ui-constraint.
-[From scheme/ui-constraints.scm:395]
+[From scheme/ui-constraints.scm:396]
 
 (ui-constraint? ui-constraint)
 - (app scwm ui-constraints)
 Returns #t if UI-CONSTRAINT is a ui-constraint.
 returns #f otherwise.
-[From scheme/ui-constraints.scm:346]
+[From scheme/ui-constraints.scm:347]
 
 (ui-constraints-composition-begin)
 - (app scwm ui-constraints-composition)
@@ -7268,11 +7324,17 @@ the construction of a composition.
 Displays the GTK version of the constraints toggle menu.
 [From scheme/ui-constraints-gtk-toggle-menu.scm:216]
 
+(ui-constraints-involving-two-windows win1 win2)
+- (app scwm ui-constraints)
+Returns the list of ui-constraint objects that involve WIN1 and WIN2.
+The entire global-constraint-instance-list is checked.
+[From scheme/ui-constraints.scm:532]
+
 (ui-constraints-involving-window win)
 - (app scwm ui-constraints)
 Returns the list of ui-constraint objects that involve WIN.
 The entire global-constraint-instance-list is checked.
-[From scheme/ui-constraints.scm:521]
+[From scheme/ui-constraints.scm:522]
 
 (ui-constraints-toggle-menu)
 - (app scwm ui-constraints-toggle-menu)
@@ -7362,19 +7424,19 @@ Apply the state from the undo-list contained at INDEX.
 (undraw-all-constraints #&key (draw-disabled #t))
 - (app scwm ui-constraints)
 Undraw all constraints in the global instance list.
-[From scheme/ui-constraints.scm:607]
+[From scheme/ui-constraints.scm:625]
 
 (undraw-constraint ui-constraint)
 - (app scwm ui-constraints)
 Undraw the UI-CONSTRAINT.  error if UI-CONSTRAINT is not
 an ui-constraint.
-[From scheme/ui-constraints.scm:564]
+[From scheme/ui-constraints.scm:582]
 
 (undraw-constraints-of-window win #&key (draw-disabled #t))
 - (app scwm ui-constraints)
 Undraw all constraints associated with WIN.
 If WIN is not specified, the user is prompted to select a window.
-[From scheme/ui-constraints.scm:592]
+[From scheme/ui-constraints.scm:610]
 
 (unflash-window #&optional (win (get-window)))
 - (app scwm flash-window)
@@ -7421,7 +7483,7 @@ PROC might be one of `resource-match??', `class-match??', etc.
 (unset-message-window-position!)
 - (app scwm base)
 Move the message window back to the default screen-center position.
-[From scheme/base.scm:705]
+[From scheme/base.scm:706]
 
 (unshade-window  #&optional win)
 - Built-in Primitive
@@ -7460,7 +7522,7 @@ Execute one of the VECTOR-OF-COMMANDS shell commands when the desk changes.
 The 0th element of the vector is used for changes to desk 0,
 the first element for changes to desk 1, etc.  Changes to desks which are
 "off the end" of the vector do nothing.
-[From scheme/flux.scm:275]
+[From scheme/flux.scm:277]
 
 (use-placement-hint win)
 - (app scwm base)
@@ -7695,7 +7757,7 @@ Return a pixel height Y percent of the height of window W.
 [From scheme/base.scm:234]
 
 (warp-placement win)
-- 
+- (app scwm winops)
 Return a list, (%x %y), for the desired pointer placement for WIN.
 The percentages are of the window size, and are gotten by using
 the 'warp-placement object-property of WIN;  they default to (20 20)
@@ -7777,12 +7839,12 @@ does.
 - (app scwm nonants)
 Return a nonant number in [0,8] from a window position and an offset.
 WIN is the window, DX and DY are positions relative to the top-left of WIN.
-[From scheme/nonants.scm:137]
+[From scheme/nonants.scm:135]
 
 (window-background-color #&optional (win (get-window)))
 - (app scwm flux)
 No documentation supplied.
-[From scheme/flux.scm:403]
+[From scheme/flux.scm:405]
 
 (window-center-bottom win)
 - (app scwm window-locations)
@@ -7812,7 +7874,7 @@ Return the window resources class of WIN.
 WIN defaults to the window context in the usual way if not specified. 
 Returns "NoClass" if the window has not set its class.
 See also `window-class-hint'.
-[From scheme/base.scm:824]
+[From scheme/base.scm:825]
 
 (window-class-hint  #&optional win)
 - Built-in Primitive
@@ -7993,7 +8055,7 @@ the window context in the usual way if not specified.
 (window-info #&optional (win (get-window)))
 - (app scwm flux)
 Display information about WIN in a message window.
-[From scheme/flux.scm:122]
+[From scheme/flux.scm:124]
 
 (window-is-selected? #&optional (w (get-window)))
 - (app scwm window-selection)
@@ -8130,7 +8192,7 @@ Return the window resource instance of WIN.
 WIN defaults to the window context in the usual way if not specified. 
 Returns "NoResource" if the window has not set its resource name.
 See also `window-resource-hint'.
-[From scheme/base.scm:832]
+[From scheme/base.scm:833]
 
 (window-resource-hint  #&optional win)
 - Built-in Primitive
@@ -8277,7 +8339,7 @@ current viewport.
 Return the visible frame size of WIN.
 This is just the `window-frame-size' unless WIN is shaded in
 which case the height is just the titlebar height.
-[From scheme/base.scm:840]
+[From scheme/base.scm:841]
 
 (window-with-focus)
 - Built-in Primitive
@@ -8324,7 +8386,7 @@ Execute THUNK with a frozen root window.
 Creates an image containing the root window, and displays that
 image in a message window covering the entire screen.  Executes
 THUNK, then removes the message window.
-[From scheme/message-window.scm:291]
+[From scheme/message-window.scm:298]
 
 (write-all port . lst)
 - (app scwm stringops)
@@ -8358,7 +8420,7 @@ Return the X connection file descriptor number.
 (X-cut-buffer->palm-clipboard)
 - (app scwm flux)
 No documentation supplied.
-[From scheme/flux.scm:328]
+[From scheme/flux.scm:330]
 
 (X-cut-buffer-string)
 - (app scwm xprop-extras)
@@ -8573,6 +8635,14 @@ One of 'solid (default), 'on-off-dash, or 'double-dash should
 be given as STYLE.
 [From modules/xlib-drawing/drawing.c:154]
 
+(xlock-query-modes #&optional (xlock *xlock-query-program*))
+- (app scwm xlock-menus)
+Returns a list of mode names queried from the given XLOCK program.
+Special modes "random", "bomb", and "blank" are not included in this list.
+Use *xlock-query-program* to specify what program's output we should
+read to compute the list of modes.  See also `make-xlock-menu'.
+[From scheme/xlock-menus.scm:49]
+
 (xterm-other-host hostname)
 - (app scwm base)
 Run an xterm on machine HOSTNAME.
@@ -8580,7 +8650,7 @@ Starts the XTerm with resource "remotexterm" and uses
 `*xterm-command*' to determine which terminal program
 to use and `*remote-shell-command*' to determine how to
 start the shell remotely.
-[From scheme/base.scm:634]
+[From scheme/base.scm:635]
 
 (xtest-fake-button-event button is-press? #&optional ms-delay)
 - Primitive from (app scwm xtest)
