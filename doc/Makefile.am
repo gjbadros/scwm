@@ -17,7 +17,7 @@ scwm.sgml scwm-procedures.txt scwm-variables.txt scwm-hooks.txt scwm-concepts.tx
 	cd $$abs_builddir_doc; cd $(top_srcdir); \
 	abs_top_srcdir=`pwd`; \
 	echo 'make[99]: Entering directory `'$$abs_top_srcdir"'"; \
-	perl $$abs_top_builddir/utilities/dev/scwmdoc $$SCWMDOC_TEST_OPTIONS -G -o $$outdir/scwm.sgml -O $$outdir/scwm-variables.txt -H $$outdir/scwm-hooks.txt -N $$outdir/scwm-concepts.txt -V scheme/user-options.scm </dev/null $$SCWMDOC_ARGS scwm/*.c modules/*/*.c scheme/*.scm > $$outdir/scwm-procedures.txt; \
+	perl $$abs_top_builddir/utilities/dev/scwmdoc $$SCWMDOC_TEST_OPTIONS -o $$outdir/scwm.sgml -O $$outdir/scwm-variables.txt -H $$outdir/scwm-hooks.txt -N $$outdir/scwm-concepts.txt -V scheme/user-options.scm </dev/null $$SCWMDOC_ARGS scwm/*.c modules/*/*.c scheme/*.scm > $$outdir/scwm-procedures.txt; \
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"
 
 html: scwm.sgml
