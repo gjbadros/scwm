@@ -74,6 +74,9 @@
    it's part of guile */
 #define UNSET_SCM(x) ((x) == SCM_UNDEFINED || (x) == SCM_BOOL_F)
 
+#define GC_MARK_SCM_IF_SET(scm) do { if (!UNSET_SCM((scm))) \
+     { scm_gc_mark((scm)); } } while (0);
+
 /* use PanFrames! this replaces the 3 pixel margin with PanFrame windows
    it should not be an option, once it works right. HEDU 2/2/94 */
 #define PAN_FRAME_THICKNESS 2	/* or just 1 ? */

@@ -20,9 +20,6 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
-#define GC_MARK_SCM_IF_SET(scm) do { if (!UNSET_SCM((scm))) \
-     { scm_gc_mark((scm)); } } while (0);
-
 EXTERN long scm_tc16_scwm_menuitem;
 
 /* menu item states are associated with items in a menu's list of

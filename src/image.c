@@ -111,7 +111,7 @@ int
 print_image(SCM obj, SCM port, scm_print_state * pstate)
 {
   scm_puts("#<image ", port);
-  scm_write(IMAGE(obj)->name, port);
+  scm_write(IMAGE(obj)->full_name, port);
   scm_putc('>', port);
   return 1;
 }
@@ -119,11 +119,18 @@ print_image(SCM obj, SCM port, scm_print_state * pstate)
 SCM
 mark_image(SCM obj)
 {
+#ifdef MSFIX_I_DONT_UNDERSTAND_THIS /* --gjb 11/28/97 */
   if (SCM_GC8MARKP (obj)) {
     return SCM_BOOL_F;
   }
-  SCM_SETGC8MARK(obj);
+  /* MSFIX: why not marking name?  we need to mark full_name, too */
   return IMAGE(obj)->name;  
+#endif
+  scwm_image *psimg = IMAGE(obj);
+  SCM_SETGC8MARK(obj);
+  GC_MARK_SCM_IF_SET(psimg->name);
+  GC_MARK_SCM_IF_SET(psimg->full_name);
+  return SCM_BOOL_F;
 }
 
 
@@ -140,13 +147,15 @@ SCM_PROC (s_image_properties, "image-properties", 1, 0, 0, image_properties);
 SCM
 image_properties(SCM image)
 {
-  if (!IMAGE_P(image)) {
+  scwm_image *psimg = SAFE_IMAGE(image);
+  if (!psimg) {
     scm_wrong_type_arg(s_image_properties, 1, image);
   } 
-  return gh_list(IMAGE(image)->name,
-		 gh_int2scm(IMAGE(image)->width),
-		 gh_int2scm(IMAGE(image)->height),
-		 gh_int2scm(IMAGE(image)->depth),
+  return gh_list(psimg->name,
+		 psimg->full_name,
+		 gh_int2scm(psimg->width),
+		 gh_int2scm(psimg->height),
+		 gh_int2scm(psimg->depth),
 		 SCM_UNDEFINED);
   /* FIXGJB: why SCM_UNDEFINED -- GH_EOL? SCM_EOL does not work! */
 }
@@ -162,6 +171,7 @@ make_empty_image(SCM name)
 
   ci = safemalloc(sizeof(scwm_image));
   ci->name = name;
+  ci->full_name = name;
   ci->image = None;
   ci->mask = None;
   ci->height = 0;
@@ -421,6 +431,7 @@ load_image(SCM name)
 
   if (IMAGE_P(result)) {
     IMAGE(result)->name=name;
+    IMAGE(result)->full_name = full_name;
     return result;
   }
 
