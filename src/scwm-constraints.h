@@ -12,6 +12,7 @@
 #ifdef USE_CASSOWARY
 
 #include "ClVariable.h"
+#include "ClSimplexSolver.h"
 
 typedef ClVariable ScwmClVariable;
 
@@ -19,8 +20,6 @@ typedef ClVariable ScwmClVariable;
 #define FRAME_Y(psw) ((psw)->frame_y.intValue())
 #define FRAME_WIDTH(psw) ((psw)->frame_width.intValue())
 #define FRAME_HEIGHT(psw) ((psw)->frame_height.intValue())
-
-class ClSimplexSolver;
 
 /* defined in scwm.c for now */
 extern ClSimplexSolver solver;
