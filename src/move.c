@@ -123,7 +123,7 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
   Window w = sw->w;
   Window wFrame = sw->frame;
   int width = sw->frame_width;
-  int shaded_height = sw->title_height + sw->boundary_width;
+  int shaded_height = sw->title_height + 2 * (sw->boundary_width + sw->bw);
   /* FIXGJB: using orig_ht doesn't seem right -- does it interact
      correctly w/ maximization? */
   int normal_height = sw->orig_ht;
@@ -140,7 +140,7 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
 		    shaded_height + client_height * (1 - *ppctMovement));
       XFlush(dpy);
       sleep_ms(cmsDelay);
-    } while (*ppctMovement != 1.0 && ppctMovement++);
+    } while (*ppctMovement < 1.0 && ppctMovement++);
     XMoveWindow(dpy,w,0,-client_height);
     XResizeWindow(dpy,wFrame,width,shaded_height);
   } else {  /* roll down the window shade */
