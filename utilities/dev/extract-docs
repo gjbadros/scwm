@@ -30,10 +30,6 @@
 # or from Emacs, for warnings only
 # ./utilities/dev/extract-docs scwm/*.c > /dev/null
 #
-# TODO:
-# /** CONCEPT :  comment weaving
-# Links in DocBook output
-#
 # BUGS:
 # This should probably be written in guile-scheme instead of perl
 # (perhaps the guile folks will do this if they want to use a similar
@@ -252,7 +248,8 @@ START_PROC_BY_FILE
 	my $target = $procedure{$proc}{sgml_id};
 	my $primname = $procedure{$proc}{primname};
 	my $purpose = $procedure{$proc}{purpose};
-	print MARKUP_OUT "      <listitem><para><link linkend=\"$target\"><function>$proc</function></link> &mdash; $purpose</para></listitem>\n";
+	my $markup_purpose = $procedure{$proc}{markup_purpose};
+	print MARKUP_OUT "      <listitem><para><link linkend=\"$target\"><function>$proc</function></link> &mdash; $markup_purpose</para></listitem>\n";
       }
       print MARKUP_OUT "    </itemizedlist> </sect1>\n";
     }
@@ -487,9 +484,11 @@ sub ProcessHeader( $ ) {
 
   # Just do simple markup of the usage
   my $markup_usage = $usage;
-  $markup_usage =~ s%&%&amp;%g;
+  $markup_usage =~ s%(\s+)&(\s+)%$1&amp;$2%g;
   $markup_usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
   $markup_usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
+
+  my $markup_purpose = MarkupComment($purpose);
 
   # FIXGJB: use some sgml perl library!
 
@@ -502,7 +501,7 @@ sub ProcessHeader( $ ) {
 "<refentry id=\"$sgml_id\">
   <refnamediv>
     <refname>$primname</refname>
-    <refpurpose>$purpose</refpurpose>
+    <refpurpose>$markup_purpose</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>$markup_usage</synopsis>
@@ -536,6 +535,7 @@ EOC
 			    comment => $comment,
 			    purpose => $purpose,
 			    sgml_id => $sgml_id,
+			    markup_purpose => $markup_purpose,
 			    markup_usage => $markup_usage,
 			    markup => $markup,
 			    file => $filename,
@@ -552,6 +552,7 @@ sub ScmIdToSgmlId ( $ ) {
   $id =~ s/\?$/-p/;
   $id =~ s/!$/-x/;
   $id =~ s/->/-to-/g;
+  $id =~ s/_/-/;
   return $id;
 }
 
