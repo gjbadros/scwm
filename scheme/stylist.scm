@@ -150,7 +150,7 @@ random window that matches PREDICATE."
 			  (if (eq? action Cancel)
 			      (add-hook! apply-hook
 					 (lambda ()
-					   (gtk-label-set
+					   (gtk-label-set-text
 					    (gtk-button-child button)
 					    "Close"))))
 			  button)
@@ -164,7 +164,7 @@ random window that matches PREDICATE."
 	(gtk-widget-show box))
       (gtk-widget-show top))))
 
-(define* (popup-style-menu #&optional (win (get-window)))
+(define*-public (popup-style-menu #&optional (win (get-window)))
   "Offer a choice to style the window, like named windows, or a whole class.
 WIN is the window to style and defaults to the window-context."
   (let ((resource (window-resource win))
@@ -193,7 +193,7 @@ WIN is the window to style and defaults to the window-context."
 				      #:title (string-append "Style `" class
 							     "' class")))))))))
 #! for testing
-(bind-mouse 'button-1 3 popup-style-menu)
+(bind-mouse 'left-button-1 3 popup-style-menu)
 !#
 
 #! Styles to do:
