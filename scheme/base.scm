@@ -49,7 +49,7 @@
 
 (define-public (y- y)
   "Return the pixel coordinate that is Y pixels up from the bottom display edge."
-  (- display-height) y)
+  (- display-height y)
 
 (define-public (%x- x)
   "Return the pixel coordinate X percent of the width away from the right edge."
