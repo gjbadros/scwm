@@ -156,6 +156,40 @@ CopyCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
   psw->fShowOnMap = pswSrc->fShowOnMap;
 }
 
+
+/* Copy only the set common flags from pswSrc into psw
+   i.e., this will not reset any of psw's flags */
+void
+CopySetCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
+{
+  if (pswSrc->fStartIconic)
+    psw->fStartIconic = True;
+  if (pswSrc->fOnTop)
+    psw->fOnTop = True;
+  if (pswSrc->fSticky)
+    psw->fSticky = True;
+  if (pswSrc->fWindowListSkip)
+    psw->fWindowListSkip = True;
+  if (pswSrc->fSuppressIcon)
+    psw->fSuppressIcon = True;
+  if (pswSrc->fNoIconTitle)
+    psw->fNoIconTitle = True;
+  if (pswSrc->fLenience)
+    psw->fLenience = True;
+  if (pswSrc->fStickyIcon)
+    psw->fStickyIcon = True;
+  if (pswSrc->fCirculateSkip)
+    psw->fCirculateSkip = True;
+  if (pswSrc->fCirculateSkipIcon)
+    psw->fCirculateSkipIcon = True;
+  if (pswSrc->fClickToFocus)
+    psw->fClickToFocus = True;
+  if (pswSrc->fSloppyFocus)
+    psw->fSloppyFocus = True;
+  if (pswSrc->fShowOnMap)
+    psw->fShowOnMap = True;
+}
+
 void
 CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
 {

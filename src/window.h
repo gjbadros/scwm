@@ -161,6 +161,7 @@ void ResetCommonFlags(ScwmWindow *psw);
 void ResetAllFlags(ScwmWindow *psw);
 void CopyCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
 void CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
+void CopySetCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
 unsigned long FlagsBitsFromSw(ScwmWindow *psw);
 
 #define SHADED_P(sw) ((sw)->fWindowShaded)
