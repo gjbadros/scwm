@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-14 Fri 18:31:25 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-08-18 Tue 10:15:38 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -86,10 +86,7 @@
    (autoload 'inferior-scheme-mode "cmuscheme"))
  (unless (fboundp 'ignore-errors) (autoload 'ignore-errors "cl" nil nil t))
  (unless (fboundp 'compose-mail) (defun compose-mail (to) (mail nil to)))
- (unless (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos"))
- ;; cater to the inferior emacs implementations :-)
- (unless (fboundp 'save-current-buffer)
-   (defalias 'save-current-buffer 'save-excursion)))
+ (unless (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos")))
 (eval-when-compile
  (require 'cl)                  ; for `gensym'
  (defvar Info-history)          ; defined in info.el
@@ -99,6 +96,10 @@
  (defvar inferior-scheme-mode-map) ; defined in cmuscheme.el
  (defvar scwm-mode-map)         ; kill warnings
  (defvar scwm-mode-syntax-table) ; kill warnings
+ ;; cater to the inferior emacs implementations :-)
+ (unless (fboundp 'save-current-buffer)
+   (defmacro save-current-buffer (&rest body)
+     `(save-excursion ,@body)))
  (unless (fboundp 'with-current-buffer)
    (defmacro with-current-buffer (buffer &rest body)
      "Execute the forms in BODY with BUFFER as the current buffer.
