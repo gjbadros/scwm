@@ -1,3 +1,10 @@
+Wed Sep  1 10:27:07 1999    <gjb@cs.washington.edu>
+
+	* scwmgtkhelper/scwmgtkhelper.c (ScwmGdkErrorHandler): Added this
+	function, and use it as the ScwmErrorHandler when gdk is loaded--
+	it copies the error_code into the global gdk_error_code that gdk
+	needs for some error testing.
+
 1999-08-30  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* background/Makefile.am, c-animation/Makefile.am,

@@ -1,3 +1,8 @@
+Wed Sep  1 10:29:48 1999    <gjb@cs.washington.edu>
+
+	* ScwmButtons.scm: Change some define-s to letrec to avoid "Bad
+	define placement".
+
 Wed Sep  1 00:37:52 1999    <gjb@cs.washington.edu>
 
 	* themes.scm: Fix theme-names to not use a define after a begin to 
