@@ -53,9 +53,10 @@ It is called with one argument, WINDOW. */
 
 SCWM_HOOK(interactive_move_new_position_hook,"interactive-move-new-position-hook", 3);
   /** This hook is invoked during an interactive move.
-It is called with three arguments, WINDOW, NEW-X, and NEW-Y,
+It is called with three arguments, WINDOW, NEW-VP-X, and NEW-VP-Y,
 whenever the window is moved to a new location. The position refers
-to the position of the frame window (not the client window). */
+to the position of the frame window (not the client window) in
+viewport coordinates. */
 
 SCWM_HOOK(interactive_move_finish_hook,"interactive-move-finish-hook", 1);
   /** This hook is invoked at the end of an interactive move.
@@ -508,7 +509,9 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
 
   call1_hooks(interactive_move_start_hook, psw->schwin);
   moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY, fOpaque);
-  call3_hooks(interactive_move_new_position_hook, psw->schwin, gh_int2scm(*FinalX), gh_int2scm(*FinalY) );
+  /* same hook is called above, before the iterations begin, and during the iterations */
+  call3_hooks(interactive_move_new_position_hook, psw->schwin,
+              FRAME_X_VP(psw), FRAME_Y_VP(psw));
   call1_hooks(interactive_move_finish_hook, psw->schwin);
 
   if (psw->fIconified) {

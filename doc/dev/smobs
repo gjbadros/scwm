@@ -244,14 +244,24 @@ the second argument to the macro which is the function argument
 variable.  (The documentation extraction systems will, e.g., verify that
 the first argument of the current function is named "name").
 
-The SCWM_PROC macro introduces a C variable that contains the name of
-the primitive (i.e., the second argument to the SCWM_PROC macro --
-"make-color" above).  The C variable's name is made to be the C function
-name with a "s_" prefix: s_make_color, above.  Also note that the C
-function name, make_color, and the Scheme primitive "make-color" must
-match.  Since C identifiers and Scheme identifiers have different
-lexical rules and conventions, their is a conventional transformation to
-go from the C function name to the Scheme name:
+The SCWM_PROC macro should be used for the header for all primitive
+procedures.  Due to guile's extraction system (i.e., the script that
+creates the .x files that list all of the primitives defined in the
+corresponding .c file), all of the first five arguments must go on the
+same line as the SCWM_PROC macro name.  Do *not* get creative with
+indentation and spacing.  Our tags generation process knows about the
+SCWM_PROC macro, so your tags in Emacs or vi should still work fine
+despite the somewhat lexically-hidden function header.
+
+In addition to creating the function header listing the formals and the
+return type of SCM, the SCWM_PROC macro introduces a C variable that
+contains the name of the primitive (i.e., the second argument to the
+SCWM_PROC macro -- "make-color" above).  The C variable's name is made
+to be the C function name with a "s_" prefix: s_make_color, above.  Also
+note that the C function name, make_color, and the Scheme primitive
+"make-color" must match.  Since C identifiers and Scheme identifiers
+have different lexical rules and conventions, their is a conventional
+transformation to go from the C function name to the Scheme name:
 
                "_p"  changes to "?"
                "_x"  changes to "!"
@@ -479,8 +489,13 @@ when an instance of the SMOB is no longer accessible. E.g., if you
 stored the color name as a dynamically allocated C string, you need to
 free that memory when the SMOB instance is collected and freed from the
 heap. (Storing the string as a Scheme string, though, does not require
-any special handling in the free function -- it instead requires marking 
-in the mark function, see the preceding section).
+any special handling in the free function -- it instead requires marking
+in the mark function, see the preceding section).  The SMOB free special
+function serves the same purpose as Java finalization methods (both are
+distinct from C++ destructors, though-- destructors correspond exactly
+to the end of an object's lifetime, whereas the SMOB `free' function is
+invoked during a garbage collection at some arbitrary time after the
+object is no longer reachable).
 
 For the color smob, we must release the X color using XFreeColors:
 

@@ -47,12 +47,19 @@ to the main event loop"
 
 (add-input-hook! (fdopen (scwm-gdk-X-fdes) "w+") scwm-gtk-sync)
 
+(define-public scwm-gtk-timer-hook-enabled? #t)
+
 (define sync-and-add-timer-hook
   (lambda () 
     (scwm-gtk-sync)
-    (add-timer-hook! 50000 sync-and-add-timer-hook)))
+    (if scwm-gtk-timer-hook-enabled?
+	(add-timer-hook! 50000 sync-and-add-timer-hook))))
 
-(sync-and-add-timer-hook) 
+;; (remove-timer-hook! ((@ app scwm gtk) 'sync-and-add-timer-hook))
+
+(sync-and-add-timer-hook)
+;;(((@ app scwm gtk) 'sync-and-add-timer-hook))
+;;(set! scwm-gtk-timer-hook-enabled? #f)
 
 (define-public (gtk-pixmap-new-search-scwm-path pixmap-name button)
   "Return the new pixmap object as `gtk-pixmap-new' does, but search Scwm's image-load-path for it."

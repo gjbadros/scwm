@@ -36,9 +36,11 @@
 		  fvwm-module path-cache animation themes netscape
 		  message-window animated-iconify
 		  modifier-key-bindings window-selection
-		  group
+		  group preferences
 ;;		  string-ops send-string
 		  )
+
+;;(use-scwm-modules gtk)
 
 ;;(load "/home/gjb/scwm/scheme/constraints.scm")
 ;;(load "/home/gjb/scwm/scheme/ui-constraints-buttons.scm")
@@ -1449,4 +1451,4 @@ union of all other window managers!
 ;;(load "/scratch/gjb/scwm/scheme/style.scm")
 ;;(load "/scratch/gjb/scwm/scheme/cached-program-exists.scm")
 
-;;(set-handle-segv #f)
+;;(set-handle-segv! #f)

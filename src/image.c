@@ -121,9 +121,13 @@ size_t
 free_image(SCM obj)
 {
   scwm_image *si = IMAGE(obj);
+  if (!si)
+    return 0;
 #ifdef USE_IMLIB 
-  Imlib_free_pixmap(imlib_data, si->image); 
-  Imlib_destroy_image(imlib_data, si->im); 
+  if (si->image != None)
+    Imlib_free_pixmap(imlib_data, si->image); 
+  if (si->im)
+    Imlib_destroy_image(imlib_data, si->im); 
 #else   
   if (!si->foreign) {
     if (si->image != None) {

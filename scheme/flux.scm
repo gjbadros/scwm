@@ -386,3 +386,7 @@ See `move-window-relative.'"
 ;; (use-modules (app scwm flux))
 ;; (move-all-windows-relative 0 display-height)
 ;; (move-all-windows-relative display-width 0)
+
+(defmacro-public @ args
+  `(lambda (sym)
+     (variable-ref (module-variable (resolve-module ',args) sym))))
