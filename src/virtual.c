@@ -39,7 +39,7 @@ SCWM_SYMBOL(sym_east,"east");
 SCWM_SYMBOL(sym_south,"south");
 SCWM_SYMBOL(sym_west,"west");
 
-#define SCROLL_REGION (gh_scm2int(*pscm_cpix_scroll_region))
+#define SCROLL_REGION (gh_scm2int(*pscm_scroll_region))
 
 SCWM_HOOK(change_desk_hook,"change-desk-hook", 2);
 /** This hook is invoked whenever the current desktop is changed.
@@ -70,11 +70,11 @@ Procedures in the hook are called with no arguments. */
 
 static Edge in_edge = EDGE_NONE;
 
-static SCM *pscm_cpix_scroll_region;
+static SCM *pscm_scroll_region;
 
 int CpixScrollRegion()
 {
-  return gh_scm2int(*pscm_cpix_scroll_region);
+  return gh_scm2int(*pscm_scroll_region);
 }
 
 
@@ -617,7 +617,7 @@ changeDesks(int val1, int val2)
 void
 init_virtual()
 {
-  SCWM_VAR_INIT(cpix_scroll_region, "scroll-region", 2);
+  SCWM_VAR_INIT(scroll_region, "scroll-region", 2);
   /** The number of pixels at the edge of the screen within which virtual scrolling will occur. */
 
 #ifndef SCM_MAGIC_SNARFER
