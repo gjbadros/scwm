@@ -103,6 +103,9 @@
 /* Define this if your system has the usleep function. */
 #undef HAVE_USLEEP
 
+/* Define this if you want multibyte support. */
+#undef I18N
+
 /* Define if you have the gethostname function.  */
 #undef HAVE_GETHOSTNAME
 

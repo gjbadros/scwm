@@ -1,3 +1,7 @@
+Tue Jul  7 23:58:03 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* include/config.h.in: Really regenerated for I18N changes.
+
 Mon Jul  6 04:05:43 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* THANKS: Thank ITANI Eiichiro for multibyte support
