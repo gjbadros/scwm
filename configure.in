@@ -406,6 +406,11 @@ fi
 AM_PATH_GTK(1.0.0, HAVE_GTK=yes, HAVE_GTK=no)
 
 AM_CONDITIONAL(HAVE_GTK, test $HAVE_GTK = yes)
+
+AC_ARG_ENABLE(gnome-corba, [  --enable-gnome-corba       Use GNOME Corba ]
+		    HAVE_GNOME_CORBA=no,
+		    HAVE_GNOME_CORBA=yes)
+
 AM_CONDITIONAL(HAVE_GNOME_CORBA, test "$HAVE_GNOME_CORBA" = yes)
 
 AC_SUBST(SESSION_MANAGER_OBJECTS)
