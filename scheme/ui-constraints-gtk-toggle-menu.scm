@@ -52,17 +52,17 @@
 
 ;; window flashing code from ui-constraints-toggle-menu
 
-(define (flash-windows-of-constraint cn)
+(define (flash-windows-of-constraint win-list)
   (let ((color "red"))
     (for-each 
      (lambda (w) (flash-window w #:color color #:unflash-delay #f)) 
-     (cl-windows-of-constraint cn))))
+     win-list)))
 
 
-(define (unflash-windows-of-constraint cn)
+(define (unflash-windows-of-constraint win-list)
   (for-each 
    (lambda (w) (unflash-window w))
-   (cl-windows-of-constraint cn)))
+   win-list))
 
 
 ;; make the button for a particular constraint
@@ -75,7 +75,7 @@
 	 (class (ui-constraint-class n))
 	 (mproc (ui-constraint-class-menuname-proc class))
 	 (name (mproc n))
-	 (cn (ui-constraint-cn n))
+	 (win-list (ui-constraint-windows n))
 	 (enabled? (ui-constraint-enabled? n))
 	 (but (gtk-button-new-with-label name)))
     (gtk-signal-connect but "clicked" 
@@ -86,10 +86,12 @@
 			  (if close? (gtk-widget-hide toplevel))))
     (gtk-signal-connect but "enter"
 			(lambda ()
-			  (map (lambda (c) (flash-windows-of-constraint c)) cn)))
+			  (flash-windows-of-constraint win-list)
+			  (draw-constraint n)))
     (gtk-signal-connect but "leave"
 			(lambda ()
-			  (map (lambda (c) (unflash-windows-of-constraint c)) cn)))
+			  (undraw-constraint n)
+			  (unflash-windows-of-constraint win-list)))
     (gtk-container-add box but)
     (gtk-widget-show but)
     (ui-constraint-set-button! n but)

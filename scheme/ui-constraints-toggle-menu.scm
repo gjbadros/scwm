@@ -14,16 +14,16 @@
 ;; (set-current-module the-root-module)
 ;; (popup-ui-constraints-toggle-menu)
 
-(define (flash-windows-of-constraint cn)
+(define (flash-windows-of-constraint win-list)
   (let ((color "red"))
     (for-each 
      (lambda (w) (flash-window w #:color color #:unflash-delay #f)) 
-     (cl-windows-of-constraint cn))))
+     win-list)))
 
-(define (unflash-windows-of-constraint cn)
+(define (unflash-windows-of-constraint win-list)
   (for-each 
    (lambda (w) (unflash-window w))
-   (cl-windows-of-constraint cn)))
+   win-list))
 
 
 (define-public (ui-constraints-toggle-menu)
@@ -40,6 +40,7 @@
 	   (let* ((class (ui-constraint-class x))
 		  (name ((ui-constraint-class-menuname-proc class) x))
 		  (cn (ui-constraint-cn x))
+		  (win-list (ui-constraint-windows x))
 ;;		  (strength (cl-constraint-strength cn))
 		  (pixmap (ui-constraint-class-pixmap-name class))
 		  (enabled? (ui-constraint-enabled? x)))
@@ -50,11 +51,11 @@
 			    (if enabled? "Yes" "No")
 			    #f #f
 			    (lambda ()
-			      (map (lambda (c) (flash-windows-of-constraint c)) cn)
+			      (flash-windows-of-constraint win-list)
 			      (draw-constraint x))
 			    (lambda () 
 			      (undraw-constraint x)
-			      (map (lambda (c) (unflash-windows-of-constraint c)) cn))
+			      (unflash-windows-of-constraint win-list))
 			    #f)))
 	 global-constraint-instance-list))
    #:hover-delay 100))
