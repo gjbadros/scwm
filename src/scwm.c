@@ -59,6 +59,7 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 #include "xmisc.h"
 #include "colormaps.h"
 #include "module-interface.h"
+#include "log-usage.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
@@ -369,6 +370,24 @@ InitVariables(void)
 
   return;
 }
+
+static void
+scwm_log_usage()
+{
+  char buf[256];
+  extern char *szRepoLastChanged;
+  SCM no_log_usage = gh_lookup("scwm-do-not-log-usage");
+
+  /* use (define scwm-do-not-log-usage #t) to turn off sending
+     the packet to let us know you're using scwm.
+     Or set the environment variable SCWM_DO_NOT_LOG_USAGE to anything */
+  if (no_log_usage == SCM_BOOL_T)
+    return;
+  
+  sprintf(buf, "%s, %s: STARTED", VERSION, szRepoLastChanged);
+  SendUsagePacket(0, 0, "scwm", 0, buf);
+}
+
 
 
 
@@ -843,6 +862,9 @@ scwm_main(int argc, char **argv)
   /* set the focus to the current window if appropriate */
   CoerceEnterNotifyOnCurrentWindow();
   run_startup_hook();
+
+  scwm_log_usage();
+
   DBUG("main", "Entering HandleEvents loop...");
   HandleEvents();
   DBUG("main", "Back from HandleEvents loop?  Exitting...");

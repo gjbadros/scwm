@@ -9,6 +9,7 @@ scwm_SOURCES =  Grab.c \
                 binding.c \
                 borders.c \
                 callbacks.c \
+		changed.c \
                 color.c \
                 colormaps.c \
                 colors.c \
@@ -28,6 +29,7 @@ scwm_SOURCES =  Grab.c \
                 icons.c \
                 image.c \
                 init_scheme_string.c \
+		log-usage.c \
                 menu.c \
                 menuitem.c \
                 miscprocs.c \
@@ -51,7 +53,7 @@ scwm_SOURCES =  Grab.c \
 noinst_HEADERS = Grab.h ICCCM.h add_window.h binding.h borders.h \
 callbacks.h color.h colormaps.h colors.h complex.h decor.h \
 decorations.h deskpage.h drawmenu.h errors.h events.h face.h focus.h \
-font.h getopt.h guile-compat.h icons.h image.h menuitem.h \
+font.h getopt.h guile-compat.h log-usage.h icons.h image.h menuitem.h \
 miscprocs.h module-interface.h module-types.h move.h mwmcom.h \
 placement.h resize.h screen.h scwm.h \
 scwm-constraints.h constraint-primitives.h \

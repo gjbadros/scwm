@@ -768,7 +768,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   if (fChangedNumButtons && Scr.fWindowsCaptured) {
   /* FIXGJB - we should redraw the titlebars if necessary to reflect the new
      buttons */
-#ifdef FIXGJB /* this doesn't work, just want to redraw buttons on all windows */
+#if 1 /* FIXGJB this doesn't work, just want to redraw buttons on all windows */
     ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
     redraw_borders(fl);
 #else
