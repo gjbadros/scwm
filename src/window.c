@@ -865,6 +865,9 @@ See also `with-window'. */
 }
 #undef FUNC_NAME
 
+/* GJB:FIXME:: Generates a doc extraction warning, but cannot
+   use the name window_context for this function because that's
+   a variable */
 SCWM_PROC(get_window_context, "window-context", 0, 0, 0,
           ())
      /** Returns the current window context, or #f if there is none.
