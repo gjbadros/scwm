@@ -228,3 +228,12 @@ Uses `eq?' for testing equality with E."
   (cond ((null? l) l)
 	((eq? (car l) e) (cdr l))
 	(else (cons (car l) (list-without-elem (cdr l) e)))))
+
+(define-public (repeat . args)
+  "Builds a list of repeating values.
+ARGS must contain NUMBERs followed by VALUEs. Each VALUE is repeated NUMBER
+times in the resulting list. E.g. (repeat 3 'a 2 'b 1 'c) => (a a a b b c)"
+  (cond ((null? args) ())
+	((zero? (car args)) (apply repeat (cddr args)))
+	(else (cons (cadr args) (apply repeat (append! (list (1- (car args)))
+						       (cdr args)))))))

@@ -36,6 +36,27 @@ other applications."
 Use the optional second argument as the separator."
   (string-append (number->string (car sz)) sep (number->string (cadr sz))))
 
+(define-public (number->hex-string n)
+  "A convenience wrapper around `number->string' that returns N in base-16."
+  (number->string n 16))
+
+(define WindowStates #("Withdrawn" "Normal" "Zoom" "Iconic" "Inactive"))
+
+(define-public (window-state->string win-state)
+  "Returns a string representation of the numerical WIN-STATE"
+  (if (array-in-bounds? WindowStates win-state)
+      (array-ref WindowStates win-state)
+      "Invalid"))
+
+(define Gravities #("Forget" "NorthWest" "North" "NorthEast" "West" "Center"
+			     "East" "SouthWest" "South" "SouthEast" "Static"))
+
+(define-public (gravity->string gravity)
+  "Returns a string representation of the numerical GRAVITY"
+  (if (array-in-bounds? Gravities gravity)
+      (array-ref Gravities gravity)
+      "Invalid"))
+
 ;; GJB:FIXME:: sans-final-newline exists in (ice-9 string-fun)
 (define-public (chop-newline str)
   "Return STR up to but not including the first newline character."
@@ -53,3 +74,15 @@ Use the optional second argument as the separator."
 (define-public (to-string . rest)
   "Dump all arguments into a string."
   (with-output-to-string (lambda () (apply write-all #t rest))))
+
+(define-public (string-join delimit strings)
+  "Concatenates the list STRINGS into a single string.
+DELIMIT is put between every two elements of STRINGS."
+  (let ((result #f))
+    (map (lambda (el)
+	   (if (not (equal? el ""))
+	       (if result
+		   (set! result (string-append result delimit el))
+		   (set! result el))))
+	 strings)
+    result))
