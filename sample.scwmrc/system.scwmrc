@@ -642,19 +642,6 @@
 ;; MS has a wrapper planned for this
 (border-style #:hidden-handles #t #:no-inset #t)
 
-;; Some wrappers for button functions
-(define (vertical-toggle-maximize)
-  (toggle-maximize 0 (%y 100)))
-
-(define (horizontal-toggle-maximize)
-  (toggle-maximize (%x 100) 0))
-
-(define (both-toggle-maximize)
-  (toggle-maximize (%x 100) (%y 100)))
-
-(define (vertical-toggle-maximize-partial)
-  (toggle-maximize 0 (%y 94)))
-
 
 ;;; I'm not changing these for now to use the new style
 ;;; because of the way add-left-button and add-right-button work and
@@ -1462,7 +1449,7 @@ union of all other window managers!
 (bind-key 'all "C-M-Return" toggle-raise)
 (bind-key 'all "M-F1" toggle-raise)   ;; like SGI's 4dwm
 
-(bind-key 'all "C-S-Up" vertical-toggle-maximize-partial)
+(bind-key 'all "C-S-Up" vertical-toggle-maximize)
 (bind-key 'all "C-S-Right" horizontal-toggle-maximize)
 (bind-key 'all "C-S-Left" both-toggle-maximize)
 
