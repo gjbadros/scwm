@@ -90,6 +90,8 @@ include_HEADERS = scwmexec.h
 
 libscwmexec_la_SOURCES = libmain.c
 libscwmexec_la_LDFLAGS = -version-info 0:0:0 @x_ldflags@ @x_libs@
+
+INCLUDES = @x_cflags@
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../include/config.h
 CONFIG_CLEAN_FILES = 
@@ -117,7 +119,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/libmain.P
 SOURCES = $(libscwmexec_la_SOURCES)

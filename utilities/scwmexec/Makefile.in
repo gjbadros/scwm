@@ -89,6 +89,7 @@ bin_PROGRAMS = scwmexec
 scwmexec_SOURCES = scwmexec.c
 scwmexec_LDADD = $(top_builddir)/utilities/libscwmexec/libscwmexec.la \
                   @x_ldflags@ @x_libs@
+INCLUDES = @x_cflags@
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../include/config.h
 CONFIG_CLEAN_FILES = 
@@ -116,7 +117,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/scwmexec.P
 SOURCES = $(scwmexec_SOURCES)

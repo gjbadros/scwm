@@ -89,6 +89,7 @@ bin_PROGRAMS = scwmrepl
 scwmrepl_SOURCES = scwmrepl.c
 scwmrepl_LDADD = $(top_builddir)/utilities/libscwmexec/libscwmexec.la \
                   @x_ldflags@ @x_libs@ @READLINE_LIB@
+INCLUDES = @x_cflags@
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../include/config.h
 CONFIG_CLEAN_FILES = 
@@ -116,7 +117,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP = --best
 DEP_FILES =  .deps/scwmrepl.P
 SOURCES = $(scwmrepl_SOURCES)
