@@ -1,4 +1,4 @@
-;;; File: <prefs-menu.scm - 1998-03-25 Wed 17:06:42 EST sds@mute.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-03-26 Thu 17:53:22 EST sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 ;;;	$Id$
 
@@ -152,25 +152,25 @@ the relief \"shadow\" color for the regular and hilight background.")))))
 (define-public (menu-prefs . opts)
   (apply
    menu (list (menuitem "Preferences" #f) menu-title menu-separator
-	      (menuitem "Reload X resources" #:action
-			"xrdb -merge ${HOME}/.Xresources")
 	      (menuitem "View all icons" #:action
 			(apply string-append "xv "
 			       (map (lambda (st) (string-append st "/* "))
 				    image-load-path)))
 	      (menuitem "SCWM interaction" #:action
 			(run-in-xterm "-e /usr/local/bin/scwmrepl"))
-	      (menuitem "Info on a window" #:action window-info)
+	      (menuitem "Info on a Window" #:action window-info)
+	      (menuitem "General Info" #:action show-system-info)
 	      (menuitem "Specific parameters" #:action parameters-menu)
 	      menu-separator
+	      (menuitem "X resources" #:action
+			(make-file-menu
+			 (string-append HOME "/.Xresources")
+			 (menuitem "Reload" #:action
+				   "xrdb -merge ${HOME}/.Xresources")))
 	      (menuitem
 	       "User Init File" #:action
-	       (menu (list
-		      (menuitem "Reload" #:action
-				(lambda () (load user-init-file)))
-		      (menuitem "View" #:action (show-file user-init-file))
-		      (menuitem "Edit" #:action
-				(string-append (or (getenv "EDITOR") "gvim")
-					       " " user-init-file)))))
+	       (make-file-menu user-init-file
+			       (menuitem "Reload" #:action
+					 (lambda () (load user-init-file)))))
 	      (menuitem "Save settings" #:action save-settings))
    opts))
