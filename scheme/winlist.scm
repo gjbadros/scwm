@@ -85,6 +85,8 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 (define*-public (show-window-list-menu #&key (only '()) (except '())
 				       (by-stacking #f)
 				       (proc window-list-proc)
+				       (flash-window-proc #f)
+				       (unflash-window-proc #f)
 				       (show-geometry #f)
 				       (warp-to-first #f)
 				       (show-mini-icon #t))
@@ -116,7 +118,9 @@ menuitem (see `popup-menu').
 				      #f 
 				      (if show-mini-icon
 					  (window-mini-icon x) #f)
-				      #f #f #f))
+				      (lambda () (flash-window-proc x))
+				      (lambda () (unflash-window-proc x))
+				      #f))
 		     (list-windows #:only only #:except 
 				   (cons 
 				    winlist-skip?
