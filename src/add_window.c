@@ -329,19 +329,8 @@ AddWindow(Window w)
     DBUG(__FUNCTION__,"fStartsOnDesk is true");
     Desk = tmp_win->StartDesk;
   }
-  /* search for a UseDecor tag in the Style */
-  tmp_win->fl = NULL;
-  if (decor != NULL) {
-    ScwmDecor *fl = &Scr.DefaultDecor;
 
-    for (; fl; fl = fl->next)
-      if (strcasecmp(decor, fl->tag) == 0) {
-	tmp_win->fl = fl;
-	break;
-      }
-  }
-  if (tmp_win->fl == NULL)
-    tmp_win->fl = &Scr.DefaultDecor;
+  tmp_win->fl = &Scr.DefaultDecor;
 
   GetMwmHints(tmp_win);
   GetOlHints(tmp_win);
