@@ -1661,7 +1661,7 @@ send_button_press(SCM button, SCM modifier, SCM win,
     DBUG(__FUNCTION__,"New Sent button release of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
   }
   SCM_REALLOW_INTS;
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 
 SCM
@@ -1718,5 +1718,10 @@ send_key_press(SCM key, SCM win,
     scwm_msg(WARN,__FUNCTION__,"Bad keysym");
   }
   SCM_REALLOW_INTS;
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
+
+
+
+
+
