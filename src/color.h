@@ -157,6 +157,7 @@ Pixel adjust_pixel_brightness(Pixel pixel, double factor);
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
-/* vim:ts=8:sw=2:sta */
+/* vim:ts=8:sw=2:sta 
+ */
 
 

@@ -140,5 +140,6 @@ AllocNonlinearGradient(char *s_colors[], int clen[],
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
-/* vim:ts=8:sw=2:sta */
+/* vim:ts=8:sw=2:sta 
+ */
 

@@ -465,5 +465,6 @@ init_xproperty()
 /* c-hanging-braces-alist: ((brace-list-open) (brace-list-close) (substatement-open after) (block-close . c-snug-do-while) (extern-lang-open before after)) */
 /* c-cleanup-list: (brace-else-brace brace-elseif-brace scope-operator list-close-comma defun-close-semi) */
 /* End: */
-/* vim:ts=8:sw=2:sta */
+/* vim:ts=8:sw=2:sta 
+ */
 
