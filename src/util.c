@@ -51,6 +51,34 @@ redraw_titlebars(ScwmDecor * fl, int extra_height)
 }
 
 
+/* FIXMS This doesn't do what it should; SetBorderX must be
+   broken. */
+void
+redraw_borders(ScwmDecor *fl) 
+{
+  int x, w, y, h;
+  ScwmWindow *tmp, *hi;
+
+  tmp = Scr.ScwmRoot.next;
+  hi = Scr.Hilite;
+  while (tmp != NULL) {
+    if (tmp->fl != fl) {
+      tmp = tmp->next;
+      continue;
+    }
+    x = tmp->frame_x;
+    y = tmp->frame_y;
+    w = tmp->frame_width;
+    h = tmp->frame_height;
+    tmp->frame_x = 0;
+    tmp->frame_y = 0;
+    tmp->frame_height = 0;
+    tmp->frame_width = 0;
+    puts("Redrawing a border.");
+    SetBorderX(tmp, tmp==hi, True, True, None, True);
+    tmp = tmp->next;
+  }
+}
 
 void 
 refresh_common(Window win_or_root)
@@ -90,3 +118,4 @@ call_thunk_with_message_handler(SCM thunk)
   return scm_internal_catch(SCM_BOOL_T, scm_body_thunk, &thunk_data,
 			    scm_handle_by_message_noexit, "scwm");
 }
+
