@@ -34,6 +34,8 @@
  *
  ****************************************************************************/
 
+/* #define SCWM_DEBUG_MSGS */
+
 #include <config.h>
 
 #include <stdio.h>
@@ -304,8 +306,8 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
 
   /* Selected the mwm-decor field, now trim down, based on
    * .scwmrc entries */
-  if (!t->fTitle ||
-      (!t->fDecorateTransient && t->fTransient)) {
+  if (!SHOW_TITLE_P(t)) {
+    t->fTitle = False;
     decor &= ~MWM_DECOR_TITLE;
   }
 
@@ -325,7 +327,6 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
   /* Assume no decorations, and build up */
   /* FIXGJB: should these get reset */
   t->fBorder = False;
-  t->fTitle = False;
 
   t->boundary_width = 0;
   t->corner_width = 0;
@@ -411,6 +412,7 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     t->title_height += t->bw;
   if (t->boundary_width == 0)
     t->fBorder = False;
+
 }
 
 /****************************************************************************
