@@ -9,14 +9,15 @@
 	     (app scwm face))
 
 
-(define HOME (getenv "HOME"))
+(define HOME ;(getenv "HOME"))
+  "/u1/mstachow")
 (define USER (getenv "USER"))
 (define xterm-user-shell-options "-e start-zsh")
 (define xterm-other-host-use-local-xterm #t)
 (define mail-spool-dir (string-append "/var/spool/mail/" USER))
 
 
-(define user-picture-path (string-append HOME "/pixmaps:" HOME "/bitmaps" ))
+(define user-image-path (string-append HOME "/pixmaps:" HOME "/bitmaps"))
 
 (define want-close-button #t) ;; was #f
 
@@ -70,26 +71,26 @@
 (title-style #:font font12 #:justify 'left #:relief 'raised)
 
 (set-icon-font! font12)
-(set-xor-value! 255)  ;; FIXGJB: rename to rubber-band-mask?
+(set-rubber-band-mask! 255)  
 
 ;;-------------------------------;;
 ;; set some paths                ;;
 ;;
 
-(set-picture-path! (string-append user-picture-path 
+(set-image-path! (string-append user-image-path 
 				 ":/usr/X11/include/X11/bitmaps:\
 /usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
 /uns/include/X11/pixmaps:\
 /usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
 
 (define pic-system-button
-  (make-picture "mini-sys3d-full.xpm"))
+  (make-image "mini-sys3d-full.xpm"))
 
 (define pic-xterm-mini
-  (make-picture "mini-term.xpm"))
+  (make-image "mini-term.xpm"))
 
 (define pic-unknown
-  (make-picture "unknown1.xpm"))
+  (make-image "unknown1.xpm"))
 
 
 ;;-------------------------------;;
@@ -155,7 +156,7 @@
 ;;(set-button-face! 3 sticky-button-face)
 
 
-;; But can also use a (make-picture  "file.xpm")
+;; But can also use a (make-image  "file.xpm")
 (define sysutils-button-face
   (make-face '((relief flat))
 	     '((pixmap "mini-lightbolt-full.xpm"))))
@@ -249,7 +250,7 @@
 (define desk-widget-on-top
   (make-style #:use-style desk-widget #:stays-on-top #t))
 
-;; NOTE: you can use a string or a (make-picture "filename.xpm")
+;; NOTE: you can use a string or a (make-image "filename.xpm")
 ;; after #:icon and #:mini-icon
 ;; MSFIX: important! window-style's argument 
 (window-style "zwgc" #:use-style desk-widget-on-top)
