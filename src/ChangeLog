@@ -1,3 +1,19 @@
+Thu Sep  2 17:53:14 1999    <gjb@cs.washington.edu>
+
+	* window.c: Use ComputePositionForResize() in ResizeTo().  Use
+ 	VALIDATE_ARG_INT_OR_UNDEF in convert_move_data(), and check for
+ 	UNSET_SCM, not == SCM_BOOL_F.
+
+	* validate.h: Added VALIDATE_ARG_INT_OR_UNDEF, some assignments
+	for warning suppression (and a comment about why they're there).
+
+	* resize.h, resize.c: Added ComputePositionForResize().
+
+Thu Sep  2 15:38:58 1999    <gjb@cs.washington.edu>
+
+	* binding.c: Only display warning message about unbound modifier
+	once.  Use FUNC_NAME in init_modifiers.
+
 Thu Sep  2 13:45:32 1999    <gjb@cs.washington.edu>
 
 	* window.c: Added `select-window-done-hook', and call it.

@@ -1,3 +1,16 @@
+Thu Sep  2 17:56:09 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use new animated-resize-window to move and resize 
+	the scwm-messages-window in one fell swoop.
+
+Thu Sep  2 15:39:47 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Do not suppress .xclients.  Use
+	find-window-by-class-resource to get at scwmmessages window, and
+	use it to move and resize it to the bottom left.  Give names to
+	window-task-switcher-menu, next-visible-non-iconified-window,
+	prev-visible-non-iconified-window.
+
 Thu Sep  2 14:18:10 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added a window-style for the GNOME Panel.

@@ -1,3 +1,8 @@
+Thu Sep  2 15:37:55 1999    <gjb@cs.washington.edu>
+
+	* misc/startscwm: Delay for 3 seconds, not 1.  Use -name for the
+	SCWM messages xterm.
+
 Tue Aug 31 23:50:48 1999    <gjb@cs.washington.edu>
 
 	* misc/guile-gtk.spec: Bump release to 2gjb, since it now links
