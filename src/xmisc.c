@@ -187,3 +187,28 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
       XSync(dpy, 0);
   }
 }
+
+void 
+SetGCFg(GC gc, Pixel pix)
+{
+  Globalgcv.foreground = pix;
+  Globalgcm = GCForeground;
+  XChangeGC(dpy,gc,Globalgcm,&Globalgcv);
+}
+
+void 
+SetGCBg(GC gc, Pixel pix)
+{
+  Globalgcv.background = pix;
+  Globalgcm = GCBackground;
+  XChangeGC(dpy,gc,Globalgcm,&Globalgcv);
+}
+
+void 
+SetGCColors(GC gc, Pixel pixFG, Pixel pixBG)
+{
+  Globalgcv.foreground = pixFG;
+  Globalgcv.background = pixBG;
+  Globalgcm = GCForeground | GCBackground;
+  XChangeGC(dpy,gc,Globalgcm,&Globalgcv);
+}

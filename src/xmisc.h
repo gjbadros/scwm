@@ -26,5 +26,7 @@ void DrawImage(Window w, scwm_image *psimg, int cpixXoffset, int cpixYoffset, GC
 XTextProperty *PNewXTextPropertyFromSz(const char *sz);
 int flush_expose(Window w);
 void RestoreWithdrawnLocation(ScwmWindow *, Bool);
-
+void SetGCColors(GC gc, Pixel pix, Pixel pixBG);
+void SetGCFg(GC gc, Pixel pix);
+void SetGCFb(GC gc, Pixel pix);
 #endif
