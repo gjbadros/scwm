@@ -85,6 +85,15 @@ extern int g_argc;
 
 #define STREQ(a,b) (!strcmp(a,b))
 
+#ifdef HAVE_SCM_MAKE_SMOB_TYPE_MFPE
+/* new-style SMOBs -- this gives smobs names, too */
+#define MAKE_SMOBFUNS(T) /* nothing */
+#define REGISTER_SCWMSMOBFUNS(T) \
+ do { \
+    scm_tc16_scwm_ ## T = scm_make_smob_type_mfpe( #T, 0, &(mark_ ##T), &(free_ ## T), &(print_ ## T), NULL); \
+  } while (0)
+#else
+/* old-style SMOBs */
 #define MAKE_SMOBFUNS(T) \
 static scm_smobfuns T ## _smobfuns = { \
   &mark_ ## T, \
@@ -92,6 +101,7 @@ static scm_smobfuns T ## _smobfuns = { \
   &print_ ## T,  0 }
 
 #define REGISTER_SCWMSMOBFUNS(T) do { scm_tc16_scwm_ ## T = scm_newsmob(& T ## _smobfuns); } while (0)
+#endif
 
 
 #ifndef SCWM_EXTRACT_COMMENTS

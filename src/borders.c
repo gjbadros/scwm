@@ -70,13 +70,12 @@ extern SCM sym_maximized, sym_no_side_decorations;
 
 
 /* macro to change window background color/pixmap */
-#define ChangeWindowColor(window,valuemask) {				\
-        if(NewColor)							\
-        {								\
-          XChangeWindowAttributes(dpy,(window),(valuemask), &attributes);\
-          XClearWindow(dpy,(window));					\
-        }								\
-      }
+#define ChangeWindowColor(window,valuemask) \
+    do { if (NewColor) { \
+           XChangeWindowAttributes(dpy,(window),(valuemask), &attributes); \
+           XClearWindow(dpy,(window)); \
+          } \
+    } while(0)
 
 /*
  * Sets up the shaped window borders 
