@@ -1,3 +1,10 @@
+Thu Mar 26 18:15:59 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* events.c: Fix error redirection to deal with the standard guile
+ 	error handler - it's necessary to redirect the default error port
+ 	as well as the current error port. Also remove some dead code from
+ 	the old scwmsend error handling.
+
 Thu Mar 26 13:59:14 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* misc.h: Removed a bunch of unused #define of FLAG variables from
