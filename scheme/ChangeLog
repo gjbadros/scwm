@@ -1,3 +1,10 @@
+Sat Sep  5 14:39:40 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* sort.scm: Added -- This may just be temporary until we start packaging
+	some other useful procs from, e.g., slib
+
+	* bincomm.scm, decor.scm, winops.scm: Document more procedures
+
 Sat Sep  5 13:21:02 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Fix typo of extra paren -- thanks Juha Pohjalainen!
