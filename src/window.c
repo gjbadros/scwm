@@ -2767,6 +2767,20 @@ the window context in the usual way if not specified. */
 #undef FUNC_NAME
 
 
+SCWM_PROC (window_last_focus_time, "window-last-focus-time", 0, 1, 0,
+           (SCM win))
+     /** Return the time that WIN was last focussed in seconds since 1/1/70.
+This currently uses time_t-s, but should probably use X server
+times. */
+#define FUNC_NAME s_window_last_focus_time
+{
+  VALIDATE(win, FUNC_NAME);
+  return gh_long2scm(PSWFROMSCMWIN(win)->ttLastFocussed);
+}
+#undef FUNC_NAME
+
+
+
 SCWM_PROC(list_all_windows, "list-all-windows", 0, 0, 0,
           ())
      /** Return a list of all of the top-level window objects. 
@@ -2815,6 +2829,58 @@ the topmost window, the last is the bottommost */
 #undef FUNC_NAME
 
 
+/* From Paul Sheer */
+SCWM_PROC(list_focus_order, "list-focus-order", 0, 0, 0,
+           ())
+     /** Return a list of all the top-level window objects in focus order.
+The order is from most recently focussed to least recently focussed. 
+This function also reorders the windows. */
+#define FUNC_NAME s_list_focus_order
+{
+  ScwmWindow *psw, **rgpsw;
+  int cwin = 0, i = 0, focus_window;
+  SCM result = SCM_EOL;
+
+  SCM_REDEFER_INTS;
+  /* count windows : */
+  for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
+    cwin++;
+  }
+  if (cwin) {
+    focus_window = cwin - 1; /* defaults to the last (most recent) window  */
+    rgpsw = NEWC(cwin,ScwmWindow *);
+    for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
+      rgpsw[i] = psw;
+      /* record the index of the focussed window : */
+      if ((unsigned long) psw == (unsigned long) Scr.Hilite) {
+        focus_window = i;
+      }
+      i++;
+    }
+    psw = &Scr.ScwmRoot;
+    /* add the focussed window to the beginning (top) of the list : */
+    psw->next = rgpsw[focus_window];
+    psw->next->prev = psw;
+    psw = psw->next;
+    for (i = 0; i < cwin; i++) {
+      /* omit the focussed window : */
+      if (i != focus_window) {
+        psw->next = rgpsw[i];
+        psw->next->prev = psw;
+        psw = psw->next;
+      }
+    }
+    psw->next = 0;       /* terminate the list */
+    FREEC(rgpsw);
+    
+    for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
+      result = scm_cons(psw->schwin, result);
+    }
+  }
+  SCM_REALLOW_INTS;
+  return result;
+}
+#undef FUNC_NAME
 
 
 SCWM_PROC(keep_on_top, "keep-on-top", 0, 1, 0,

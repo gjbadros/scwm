@@ -43,6 +43,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xresource.h>
@@ -174,6 +175,7 @@ AddWindow(Window w)
   ResetAllFlags(psw);
 
   psw->cmap_windows = NULL;
+  psw->ttLastFocussed = time(NULL);
 
   if (!PPosOverride && !FXWindowAccessible(dpy,psw->w)) {
     FREE(psw);

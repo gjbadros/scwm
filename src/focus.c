@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <string.h>
+#include <time.h>
 
 #include "scwm.h"
 #include "ICCCM.h"
@@ -49,6 +50,8 @@ void
 SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
 {
   int i = 0;
+  if (Fw)
+    Fw->ttLastFocussed = time(NULL);
 
   /* ClickToFocus focus queue manipulation - only performed for
    * Focus-by-mouse type focus events */
@@ -149,7 +152,6 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
   if (Fw && Fw->fDoesWmTakeFocus) {
     send_clientmessage(dpy, w, XA_WM_TAKE_FOCUS, lastTimestamp);
   }
-
   XSync(dpy, 0);
 
 }

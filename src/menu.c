@@ -576,7 +576,7 @@ SelectAndRepaintPmiim(MenuItemInMenu *pmiim)
 
 /* FIXGJB : Need EnterWindowMask? */
 static const long menu_event_mask = (ButtonPressMask | ButtonReleaseMask | 
-				     ExposureMask | KeyPressMask | 
+				     ExposureMask | KeyPressMask | KeyReleaseMask |
 				     VisibilityChangeMask | ButtonMotionMask |
 				     PointerMotionMask );
 
@@ -678,11 +678,13 @@ PmiimStepItems(MenuItemInMenu *pmiim, int n, int direction)
 static
 MenuItemInMenu *
 PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_status, 
-		   Bool *pfHotkeyUsed)
+		   Bool *pfHotkeyUsed, Bool *pfPermitAltReleaseToSelect)
 {
   Bool fControlKey = Event->xkey.state & ControlMask? True : False;
   Bool fShiftedKey = Event->xkey.state & ShiftMask? True: False;
+  Bool fAltedKey = Event->xkey.state & (Mod1Mask | Mod2Mask)? True: False;
   Bool fNeedControl = False;
+  Bool fWrapAround = False;
   KeySym keysym;
   int cch;
   char ch;
@@ -713,6 +715,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   /* Fell through here, so it didn't match a shortcut key */
 
   fNeedControl = True;
+  fWrapAround = False;
   switch(keysym)		/* Other special keyboard handling	*/
     {
     case XK_Escape:		/* Escape key pressed. Abort		*/
@@ -777,6 +780,10 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
       return pmiimNewItem;
       break;
 
+    case XK_Tab:
+      fWrapAround = True;
+      if (fAltedKey)
+        *pfPermitAltReleaseToSelect = True;
     case XK_Down:
       fNeedControl = False;
       /* fall through */
@@ -796,7 +803,10 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
 	  pmiimSelected = pmd->rgpmiim[0];
 	  cmiimToMove--;
 	}
-	pmiimNewItem = PmiimStepItems(pmiimSelected,cmiimToMove,+1);
+        if (fWrapAround && pmiimSelected->ipmiim == pmd->cmiim - 1)
+          pmiimNewItem = PmiimStepItems(pmd->rgpmiim[0],0,+1);
+        else
+          pmiimNewItem = PmiimStepItems(pmiimSelected,cmiimToMove,+1);
       }
       *pmenu_status = MENUSTATUS_NEWITEM;
       return pmiimNewItem;
@@ -856,7 +866,7 @@ XPutBackKeystrokeEvent(Display *dpy, Window w, KeySym keysym)
 
 static
 SCM
-MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
+MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSelect)
 {
   int c10ms_delays = 0;
   SCM scmAction = SCM_UNDEFINED;
@@ -936,12 +946,25 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
     case VisibilityNotify:
     case ButtonPress:
       continue;
+
+    case KeyRelease:
+      if (fPermitAltReleaseToSelect) {
+        KeySym keysym;
+        char ch;
+        int cch = XLookupString(&Event.xkey,&ch,1,&keysym,NULL);
+        if (keysym == XK_Meta_L || keysym == XK_Meta_R ||
+            keysym == XK_Alt_L || keysym == XK_Alt_R) {
+          scmAction = pmiim->pmi->scmAction;
+          goto MENU_INTERACTION_RETURN;
+        }
+      }
+      break;
       
     case KeyPress:
     {
       enum menu_status ms = MENUSTATUS_NOP;
       /* Handle a key press events to allow mouseless operation */
-      pmiim = PmiimMenuShortcuts(pmd,&Event,&ms,&fHotkeyUsed);
+      pmiim = PmiimMenuShortcuts(pmd,&Event,&ms,&fHotkeyUsed,&fPermitAltReleaseToSelect);
       if (ms == MENUSTATUS_ABORTED) {
 	goto MENU_INTERACTION_RETURN;
       } else if (ms == MENUSTATUS_ITEM_SELECTED) {
@@ -1242,7 +1265,8 @@ SetPopupMenuPositionFromDecoration(DynamicMenu *pmd, int x, int y, int corner)
    corner is 0 for NW, 1 for NE, 2 for SE, 3 for SW  (clockwise) */
 static 
 SCM
-PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst,
+PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, 
+              Bool fWarpToFirst, Bool fPermitAltReleaseToSelect,
               int x, int y, int corner)
 {
   DynamicMenu *pmd = NewDynamicMenu(pmenu,pmdPoppedFrom);
@@ -1259,7 +1283,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst,
 
   PopupMenu(pmd);
   GrabEm(CURSOR_MENU);
-  scmAction = MenuInteraction(pmd, fWarpToFirst);
+  scmAction = MenuInteraction(pmd, fWarpToFirst, fPermitAltReleaseToSelect);
   UngrabEm();
   PopdownMenu(pmd);
   PopdownAllPriorMenus(pmd);
@@ -1285,6 +1309,8 @@ right justified against X-POS. */
 {
   Bool fWarpToFirst = False;
   Bool fLeftSide = True;
+  Bool fPermitAltReleaseToSelect = False;
+  /* FIXGJB: above needs to be true if we're doing the window list */
   int x = -1, y = -1;
   int iarg = 1;
   /* permit 'menu to be used, and look up dynamically */
@@ -1302,7 +1328,7 @@ right justified against X-POS. */
 
   COPY_BOOL_OR_ERROR_DEFAULT_TRUE(fLeftSide,left_side_p,iarg++,FUNC_NAME);
 
-  return PopupGrabMenu(MENU(menu),NULL,fWarpToFirst,
+  return PopupGrabMenu(MENU(menu),NULL,fWarpToFirst,fPermitAltReleaseToSelect,
                        x,y, fLeftSide?0:1);
 }
 #undef FUNC_NAME

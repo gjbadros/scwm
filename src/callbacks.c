@@ -100,7 +100,7 @@ struct cwssdr_data
   SCM tag;
   scm_catch_body_t body;
   void *data;
-  SCM handler;
+  scm_catch_handler_t handler;
 };
 
 static SCM

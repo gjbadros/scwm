@@ -136,6 +136,7 @@ struct ScwmWindow {
   int FocusDesk;		/* Where (if at all) was it focussed */
   int DeIconifyDesk;		/* Desk to deiconify to, for StubbornIcons */
   Window transientfor;
+  time_t ttLastFocussed;        /* when the window was last focussed */
 
   /* FIXMS: We need to add comments to document what all these darned
      flags mean. */

@@ -822,7 +822,7 @@ Repository Timestamp: %s\n",
   XSetIOErrorHandler((XIOErrorHandler) CatchFatal);
   XSelectInput(dpy, Scr.Root,
 	       LeaveWindowMask | EnterWindowMask | PropertyChangeMask |
-	       SubstructureRedirectMask | KeyPressMask |
+	       SubstructureRedirectMask | KeyPressMask | KeyReleaseMask |
 	       SubstructureNotifyMask |
 	       ButtonPressMask | ButtonReleaseMask);
   XSync(dpy, 0);
@@ -923,7 +923,7 @@ Repository Timestamp: %s\n",
     /* create a window which will accept the keyboard focus when no other 
        windows have it */
     XSetWindowAttributes attributes;	/* attributes for create windows */
-    attributes.event_mask = KeyPressMask | FocusChangeMask;
+    attributes.event_mask = KeyPressMask | KeyReleaseMask | FocusChangeMask;
     attributes.override_redirect = True;
     Scr.NoFocusWin = XCreateWindow(dpy, Scr.Root, -10, -10, 10, 10, 0, 0,
                                    InputOnly, CopyFromParent,
