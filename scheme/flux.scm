@@ -14,6 +14,7 @@
   :use-module (ice-9 regex)
   :use-module (app scwm base)
   :use-module (app scwm time-convert)
+  :use-module (app scwm defoption)
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
   :use-module (app scwm message-window)
@@ -643,25 +644,25 @@ otherwise; it is an error if NETWIN refers to a non-Netscape window."
     (get-mozilla-hook)
     #t))
 
-(define-public netscape-new-window
-;;;**VAR
-;;; If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window.
-  #f)
+(define-scwm-option *netscape-new-window* #f
+  "If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window."
+  #:type 'boolean
+  #:group 'system)
 
 (define*-public (netscape-goto-url url 
                 #&optional
 		(completion #f)
-		(new netscape-new-window))
+		(new *netscape-new-window*))
   "Make netscape go to the location URL.
 Calls COMPLETION when done.
 The optional argument specifies whether a new window should be opened.
-It defaults to `netscape-new-window'."
+It defaults to `*netscape-new-window*'."
   (run-in-netscape
    (string-append "openURL(" url (if new ",new-window)" ")"))
    completion))
 
 (define*-public (netscape-goto-cut-buffer-url 
-		 #&optional (new netscape-new-window))
+		 #&optional (new *netscape-new-window*))
   "Goto the url that is held in the X11 cut buffer.
 See `X-cut-buffer' and `netscape-goto-url'.  NEW can be #f to
 not open a new netscape frame."
@@ -788,3 +789,12 @@ of this function, as a string."
     (if (not ich)
 	str
 	(substring str 0 ich))))
+
+
+(define-public (move-all-windows-relative x y)
+  "Move all windows right X, down Y pixels.
+See `move-window-relative.'"
+  (for-each (lambda (w) (move-window-relative x y w)) (list-all-windows)))
+
+;; Recapture sometimes requires me to use this -- WHY? GJB:FIXME::
+;; (move-all-windows-relative 0 display-height)

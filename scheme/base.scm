@@ -35,7 +35,9 @@
 
 
 (define-module (app scwm base)
-  :use-module (app scwm optargs))
+  :use-module (app scwm optargs)
+  :use-module (app scwm defoption)
+  )
 
 
 
@@ -46,15 +48,15 @@
   "Reaturn the closest integer to X divided by Y."
   (inexact->exact (round (/ x y))))
 
-(define-public use-scwm-system-proc
-;;;**VAR
-;;; If #t, `execute' will use `scwm-system' instead of guile's `system'.
-;;; This works around a problem observed on pre-glibc Linux 2.0.34 i386
-;;; where SIGINT on the controlling tty (i.e., the one that started
-;;; scwm) propagates to the child processes.  The end result of the
-;;; possible bug is that xterms started by scwm are terminated if the
-;;; scwm that started them is terminated using a Ctrl-C to send it a SIGINT.
-  #f)
+(define-scwm-option *use-scwm-system-proc* #f
+  "If #t, `execute' will use `scwm-system' instead of guile's `system'.
+This works around a problem observed on pre-glibc Linux 2.0.34 i386
+where SIGINT on the controlling tty (i.e., the one that started
+scwm) propagates to the child processes.  The end result of the
+possible bug is that xterms started by scwm are terminated if the
+scwm that started them is terminated using a Ctrl-C to send it a SIGINT."
+  #:type 'boolean
+  #:group 'system)
 
 (define-public display-width (car (display-size)))
 (define-public display-height (cadr (display-size)))
@@ -203,6 +205,15 @@ See `move-window' if you wish to move a window to a virtual position."
 ;; Give move-to a better name, too
 ;; GJB:FIXME:DOC: Can this have a doc string?
 (define-public move-window-viewport-position move-to)
+
+(define*-public (move-window-relative x y #&optional (win (get-window)))
+  "Move WIN X, Y pixels from where it is currently.
+Positive X moves right, negative moves left.
+Positive Y moves down, negative moves up."
+  (let* ((old-pos (window-position win))
+	 (old-x (car old-pos))
+	 (old-y (cadr old-pos)))
+    (move-to (+ old-x x) (+ old-y y) win)))
 
 (define*-public (window-title-height #&optional (win (get-window)))
   "Return WIN's titlebar's height.
@@ -434,27 +445,29 @@ See `color-properties' for a list of the keys."
   "Return a procedure that, when invoked, executes COMMAND in the background."
   (lambda () (execute command)))
 
-(define-public xterm-command
-;;;**VAR
-;;; The command to run when a new xterm window is requested.
-;;; The string given should refer to a binary or script in the
-;;; path and should take a "-e" argument of what to run.
-  "xterm")
+(define-scwm-option *xterm-command* "xterm"
+  "The command to run when a new xterm window is requested.
+The string given should refer to a binary or script in the
+path and should take a \"-e\" argument of what to run."
+  #:type 'command
+  #:group 'system
+  #:favorites '("xterm" "color_xterm" "nxterm"))
 
-(define-public remote-shell-command 
-;;;**VAR
-;;; The command to use to start a remote shell.
-;;; It should take a first (non-option) argument of
-;;; the hostname to connect to.  "ssh" "rsh" and "telnet"
-;;; are each reasonable choices.
-  "telnet")
+(define-scwm-option *remote-shell-command* "telnet"
+  "The command to use to start a remote shell.
+It should take a first (non-option) argument of
+the hostname to connect to.  \"ssh\" \"rsh\" and \"telnet\"
+are each reasonable choices."
+  #:type 'command
+  #:group 'system
+  #:favorites '("telnet" "rsh" "ssh"))
 
 (define-public (run-in-xterm cmd . opts)
   "Return a procedure that runs CMD in an xterm.
-Uses the variable `xterm-command' to determine how
+Uses the variable `*xterm-command*' to determine how
 to run an xterm.  CMD may include options to the command.
 The rest of the arguments are passed as options to the xterm command."
-  (exe (string-append xterm-command
+  (exe (string-append *xterm-command*
                       (apply string-append
                              (map (lambda (st) (string-append " " st)) opts))
                       " -e " cmd)))
@@ -525,11 +538,6 @@ dimension to a number of pixels."
   (apply set-message-window-position!
 	 (append (map (lambda (x) (/ x 2)) (display-size)) (list -.5 -.5))))
 
-(defmacro-public scwm-user-var (sym)
-  "Lookup sym in the scwm user variable environment.
-Currently, this means in the-root-module."
-  `(variable-ref (module-variable the-root-module ',sym)))
-
 (define-public (scwm-is-constraint-enabled?)
   "Return #t if scwm has the constraint solver primitives, #f otherwise."
   (bound? scwm-set-master-solver!))
@@ -556,7 +564,7 @@ This may be a bug (not meeting POSIX.2 specifications)."
 
 (define-public (execute command)
   "Execute COMMAND in the background."
-  ((if use-scwm-system-proc scwm-system system) (string-append "exec " command " &")))
+  ((if *use-scwm-system-proc* scwm-system system) (string-append "exec " command " &")))
 
 ;; GJB:FIXME:: switch to this after testing it
 ;; From Jim Blandy -- his [better] version of 

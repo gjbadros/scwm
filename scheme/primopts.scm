@@ -99,7 +99,7 @@ See `set-edge-move-threshold!'. "
 (define-scwm-option *auto-raise* #f
   "Whether to auto-raise windows"
   #:type 'boolean
-  #:group 'focus-behaviour
+  #:group 'focus
   #:setter (lambda (auto-raise?)
 	     (if auto-raise? (begin 
 			       (use-modules (app scwm auto-raise))

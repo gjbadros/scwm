@@ -21,6 +21,7 @@
 
 (define-module (app scwm winops)
   :use-module (app scwm optargs)
+  :use-module (app scwm defoption)
   :use-module (app scwm base)
   :use-module (app scwm style-options))
 
@@ -174,16 +175,15 @@ If NW or NH is 0, that dimension is not changed."
 ;;; (with automatic selection of opaque or rubber-band move)
 
 
-(define-public opaque-move-percent 
-;;;**VAR
-;;; Percent of display area below which windows are moved opaquely.
-  50)
+(define-scwm-option *opaque-move-percent* 50
+  "Percent of display area below which windows are moved opaquely."
+  #:type 'percent  ;; #GJB:FIXME:: 'percent-or-on-off
+  #:group 'winops)
 
-(define-public opaque-resize-percent 
-;;;**VAR
-;;; Percent of display area below which windows are resized opaquely.
-  35)
-
+(define-scwm-option *opaque-resize-percent* 35
+  "Percent of display area below which windows are resized opaquely."
+  #:type 'percent  ;; #GJB:FIXME:: 'percent-or-on-off
+  #:group 'winops)
 
 (define-public (window-frame-area win)
   "Return the area of WIN's frame in square pixels."
@@ -195,18 +195,18 @@ If NW or NH is 0, that dimension is not changed."
 (define display-area (* display-width display-height))
 
 (define-public (default-resize-opaquely? win)
-  "Return #t if WIN has area <= opaque-resize-percent of the screen, else #f.
-If opaque-resize-percent is a boolean, not a number, just return it."
-  (let ((p (scwm-user-var opaque-resize-percent)))
+  "Return #t if WIN has area <= *opaque-resize-percent* of the screen, else #f.
+If *opaque-resize-percent* is a boolean, not a number, just return it."
+  (let ((p *opaque-resize-percent*))
     (if (boolean? p)
 	p
 	(<= (window-frame-area win) 
 	    (* display-area (/ p 100))))))
 
 (define-public (default-move-opaquely? win)
-  "Return #t if WIN has area <= opaque-move-percent of the screen, else #f.
-If opaque-move-percent is a boolean, not a number, just return it."
-  (let ((p (scwm-user-var opaque-resize-percent)))
+  "Return #t if WIN has area <= *opaque-move-percent* of the screen, else #f.
+If *opaque-move-percent* is a boolean, not a number, just return it."
+  (let ((p *opaque-move-percent*))
     (if (boolean? p)
 	p
 	(<= (window-frame-area win)
@@ -225,8 +225,7 @@ If opaque-move-percent is a boolean, not a number, just return it."
 
 (define*-public (interactive-move 
 		 #&optional (win (get-window #f #t #f))
-		 (opaquely? (if win 
-				((scwm-user-var move-opaquely?) win))))
+		 (opaquely? (if win (move-opaquely? win))))
   "Move WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
 should be moved opaquely, or using a rubber-band. If it is not
@@ -236,8 +235,7 @@ opaquely if that returns #t and uses a rubber-band if it returns #f."
 
 (define*-public (interactive-resize 
 		 #&optional (win (get-window #f #t #f))
-		 (opaquely? (if win 
-				((scwm-user-var resize-opaquely?) win))))
+		 (opaquely? (if win (resize-opaquely? win))))
   "Resize WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
 should be resized opaquely, or using a rubber-band. If it is not

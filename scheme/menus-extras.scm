@@ -60,7 +60,7 @@ defaults to `default-menu-max-fold-lines'."
       (map (lambda (lm) (menuitem "more..." #:action (menu lm)))
 	   (split-list ml max-lines))))
 
-(define (split-list-by-group ls rest)
+(define*-public (split-list-by-group ls #&optional (rest #f))
   (cond ((null? ls) rest)
 	((and rest (string=? (caar ls) (caar rest)))
 	 (begin
@@ -83,4 +83,4 @@ group, and the cdr is a list of the menuitems for that group.
 The list must be sorted by GROUP.  Returns a list of menu items
 for each group, popping up the group's MENUITEMs."
   (map (lambda (lm) (menuitem (car lm) #:action (menu (cdr lm))))
-       (split-list-by-group ml-cons #f)))
+       (split-list-by-group ml-cons)))

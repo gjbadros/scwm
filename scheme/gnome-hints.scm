@@ -21,6 +21,7 @@
 
 (define-module (app scwm gnome-hints)
   :use-module (app scwm base)
+  :use-module (app scwm defoption)
   :use-module (app scwm winops))
 
 
@@ -28,23 +29,24 @@
 ;;; user variables.
 ;;; set them in ~/.scwmrc, then call (enable-gnome-hints)
 
-(define-public debug-gnome-hints 
-;;;**VAR
-;;; Set true to enable debugging messages for the gnome-hints module
-  #f)
-
+(define-scwm-option *debug-gnome-hints* #f
+  "Set true to enable debugging messages for the gnome-hints module."
+  #:type 'boolean
+  #:group 'gnome)
 
 ;; Hint properties
-(define-public gnome-desktop-number
-;;;**VAR
-;;; The number of desktops to show in the GNOME pager.
-;;; Used in `enable-gnome-hints'.
-  4)
+(define-scwm-option *gnome-desktop-number* 4
+  "The number of desktops to show in the GNOME pager.
+Used in `enable-gnome-hints'."
+  #:type 'integer
+  #:group 'gnome
+  #:range '(1 . 10)
+  #:favorites '(1 2 3 4 5))
 
-(define-public gnome-shade-animated
-;;;**VAR
-;;; Should the shading be animated or not?
-  #f)
+(define-scwm-option *gnome-shade-animated* #f
+  "Should the shading be animated or not?"
+  #:type 'boolean
+  #:group 'gnome)
 
 ;;; Hint properties
 
@@ -299,10 +301,10 @@
   (if (nonzero? (logand mask WIN_STATE_SHADED))
       (if (nonzero? (logand new-state WIN_STATE_SHADED))
 	  (if (not (window-shaded? win))
-              (if gnome-shade-animated
+              (if *gnome-shade-animated*
                   (animated-window-shade win) (window-shade win)))
 	  (if (window-shaded? win)
-              (if gnome-shade-animated
+              (if *gnome-shade-animated*
                   (animated-window-unshade win) (window-unshade win)))))
 
   ;; ignore WIN_STATE_HID_WORKSPACE  (poorly specified)
@@ -390,7 +392,7 @@
 
 (define (gnome-window-property-change-hook win property newval oldval)
   (cond
-   (debug-gnome-hints
+   (*debug-gnome-hints*
     (write (list 'window 'property 'change: win property newval oldval))
     (newline)))
   (case property
@@ -401,7 +403,7 @@
 
 (define (gnome-client-message-hook win type format data)
   (cond
-   (debug-gnome-hints
+   (*debug-gnome-hints*
     (write (list 'Client 'message: win (X-atom->string type) format data))
     (newline)))
   (cond
@@ -437,7 +439,7 @@ pager applet. See also `disable-gnome-hints'."
   (map (lambda (win)
 	 (gnome-init-window-from-props win))
        (list-all-windows))
-  (gnome-init-workspace-params gnome-desktop-number)
+  (gnome-init-workspace-params *gnome-desktop-number*)
   (gnome-init-area-params)
   (set! client-window-id-list (map window-id (list-all-windows)))
   (gnome-set-client-list! client-window-id-list)

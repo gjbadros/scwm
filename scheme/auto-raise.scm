@@ -22,6 +22,7 @@
 
 (define-module (app scwm auto-raise)
   :use-module (app scwm optargs)
+  :use-module (app scwm defoption)
   :use-module (app scwm style-options)
   :use-module (app scwm module-types))
 
@@ -67,15 +68,23 @@
 ;;;; it is based on the window getting focus, not on the window being
 ;;;; entered. That may change in the future.
 
-(define-public default-auto-raise-delay 300)
-;;;**VAR
-;;; Number of ms to delay before raising the window the mouse pointer entered.
-;;; This can be overridden on a per-window basis using `set-auto-raise-delay!'.
+(define-scwm-option *default-auto-raise-delay* 300
+  "Number of ms to delay before raising the window the mouse pointer entered.
+This can be overridden on a per-window basis using `set-auto-raise-delay!'"
+  #:type 'integer
+  #:group 'focus
+  #:range '(0 . 10000)
+  #:favorites '(0 100 300 500 1000 2000 3000))
 
-(define-public default-auto-raise-unfocus-delay 300)
-;;;**VAR
-;;; Number of ms to delay before running the unfocus proc for a raised window.
-;;; This can be overridden on a per-window basis using `set-auto-raise-unfocus-delay!'
+(define-scwm-option *default-auto-raise-unfocus-delay* 300
+  "Number of ms to delay before raising the unfocs proc for a raised window.
+This can be overridden on a per-window basis using 
+`set-auto-raise-unfocus-delay!'"
+  #:type 'integer
+  #:group 'focus
+  #:range '(0 . 10000)
+  #:favorites '(0 100 300 500 1000 2000 3000))
+
 
 (define-public default-auto-raise-focus-proc raise-window)
 ;;;**VAR
@@ -152,12 +161,12 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
 (define (auto-delay win)
   (* 1000 
      (or (object-property win 'auto-raise-delay)
-	 default-auto-raise-delay)))
+	 *default-auto-raise-delay*)))
 
 (define (auto-unfocus-delay win)
   (* 1000 
      (or (object-property win 'auto-raise-unfocus-delay)
-	 default-auto-raise-unfocus-delay)))
+	 *default-auto-raise-unfocus-delay*)))
   
 (define (auto-raise-hook-proc window)
   (remove-timer-hook! last-focus-handle)

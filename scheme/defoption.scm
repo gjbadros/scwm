@@ -34,7 +34,8 @@
 (defmacro-public define-scwm-option (sym default docstring . rest)
   "Define VAR to be a new scwm user option with DEFAULT as its default value.
 DOCSTRING documents the option.  REST includes keyword arguments including:
-#:type - one of 'boolean, 'integer, 'percent, 'real, 'string, 'directory, 'path.
+#:type - one of 'boolean, 'integer, 'percent, 'percent-or-on-off, 
+         'real, 'string, 'directory, 'path, 'command.
 #:group - an option group, or a list of group, subgroup, subsubgroup
 #:range - a cons cell (low . high), both inclusive with low <= high.
 #:favorites - a list of favorite possibilities for this variable.

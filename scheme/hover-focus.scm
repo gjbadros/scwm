@@ -21,6 +21,7 @@
 
 (define-module (app scwm hover-focus)
   :use-module (app scwm flux)
+  :use-module (app scwm defoption)
   :use-module (app scwm module-types)
   :use-module (app scwm optargs)
   :use-module (app scwm style-options) )
@@ -51,11 +52,13 @@
 
 ;;; hover-focus-delay: default, setter, and style options
 
-(define-public default-hover-focus-delay 300)
-;;;**VAR
-;;; Number of ms to delay before focusing the window that the mouse
-;;; pointer entered.  This can be overridden on a per-window basis
-;;; using `set-hover-focus-delay!'.
+(define-scwm-option *default-hover-focus-delay* 300
+  "Number of ms to delay before focusing the window that the pointer enters.
+This can be overridden on a per-window basis using `set-hover-focus-delay!'."
+  :type 'integer
+  :group 'focus
+  :range '(0 . 10000)
+  :favorites '(0 100 300 500 1000 2000 3000))
 
 (define*-public (set-hover-focus-delay! delay #&optional (win (get-window)))
   "Set the hover-focus delay to DELAY (in ms) for WIN.

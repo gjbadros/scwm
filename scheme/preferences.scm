@@ -22,6 +22,7 @@
   :use-module (app scwm base)
   :use-module (app scwm file)
   :use-module (app scwm defoption)
+  :use-module (app scwm menus-extras)
   :use-module (app scwm message-window)
   :use-module (app scwm gtk)
   :use-module (gtk gtk)
@@ -34,8 +35,8 @@
 ;; (use-modules (app scwm preferences))
 ;; (use-modules (app scwm prompt-string))
 
-(define mw-curval (make-message-window-clone-default ""))
-(define mw-docs (make-message-window-clone-default ""))
+(define-public mw-curval (make-message-window-clone-default ""))
+(define-public mw-docs (make-message-window-clone-default ""))
 (message-window-style mw-curval #:fg "black" #:bg "yellow") ;; old
 (message-window-style mw-docs #:fg "black" #:bg "grey70")
 
@@ -49,17 +50,33 @@
 	(t (error ("Printable cannot handle this value.")))))
 ;; (printable *theme-path*)
 ;; (string-with-colons->path-list (printable *theme-path*))
+;; (scwm-option-documentation '*use-scwm-system-proc*)
 
 ;; (show-current-value '*desk-width*)
+;; (string-index "foo" #\b)
+(define-public (scwm-option-short-documentation sym)
+  (let* ((doc (scwm-option-documentation sym))
+	 (i (string-index doc #\newline)))
+    (if i
+	(make-shared-substring doc 0 i)
+	doc)))
+  
+
 (define (show-current-value sym)
   (message-window-set-message! mw-curval (printable (scwm-option-symget sym)))
   (apply message-window-set-position! mw-curval (map (lambda (x) (- x 10)) (pointer-position)))
   (message-window-show! mw-curval))
 
 (define-public (popup-docs-for var)
-  (message-window-set-message! mw-docs (scwm-option-documentation var))
+  (message-window-set-message! mw-docs (scwm-option-short-documentation var))
   (apply message-window-set-position! mw-docs (map (lambda (x) (- x 40)) (pointer-position)))
   (message-window-show! mw-docs))
+
+(define-public (toggle-docs-for var)
+  (let ((docs (scwm-option-short-documentation var)))
+    (if (and (message-window-visible? mw-docs) (string=? docs (message-window-message mw-docs)))
+	(message-window-hide! mw-docs)
+	(popup-docs-for var))))
 
 ;;(path-list->string-with-colons (scwm-option-get *theme-path*))
 
@@ -68,15 +85,15 @@
 ;; (gui-set '*desk-width*)
 (define-public (gui-set sym)
   (let* ((name (scwm-option-name sym))
-	(value (scwm-option-symget sym))
-	(type (scwm-option-type sym))
-	(range (scwm-option-range sym))
-	(var (eval sym))
-	(prompt (string-append "Set " name))
-	(title (string-append "Set " name))
-	(set-proc (lambda (v) (scwm-option-symset! sym v))))
+	 (value (scwm-option-symget sym))
+	 (type (scwm-option-type sym))
+	 (range (scwm-option-range sym))
+	 (var (eval sym))
+	 (prompt (string-append "Set " name))
+	 (title (string-append "Set " name))
+	 (set-proc (lambda (v) (scwm-option-symset! sym v))))
     (case type
-      (('string 'directory)
+      ((string directory command) ;; GJB:FIXME:: separate these
        (prompt-string prompt set-proc #:initval value #:title title))
       ('path
        (prompt-string prompt (lambda (v) (set-proc (string-with-colons->path-list v)))
@@ -86,12 +103,17 @@
        (prompt-integer-range prompt range set-proc #:initval value #:title title))
       ('real
        (prompt-range prompt range set-proc #:initval value #:title title))
-      ('percent
+      ((percent percent-or-on-off) ;; GJB:FIXME:: separate percent-or-on-off
        (prompt-integer-range prompt '(0 . 100) set-proc #:initval value #:title title))
       ('boolean
        (prompt-bool prompt set-proc #:initval value #:title title))
       (else
        (error "Cannot yet handle type " (symbol->string type))))))
+
+(define-public (prompt-from-name name)
+  (make-shared-substring name 1 (- (string-length name) 1)))
+
+;;(prompt-from-name "*foo*")
 
 (define-public (option-widget-and-getter sym)
   (let* ((name (scwm-option-name sym))
@@ -99,9 +121,9 @@
 	 (type (scwm-option-type sym))
 	 (range (scwm-option-range sym))
 	 (var (eval sym))
-	 (prompt name))
+	 (prompt (prompt-from-name name)))
     (case type
-      (('string 'directory)
+      ((string directory command) ;; GJB:FIXME:: separate these
        (prompt-string-hbox prompt value))
       ('path
        (prompt-path-hbox prompt value))
@@ -109,7 +131,7 @@
        (prompt-integer-range-hbox prompt range value))
       ('real
        (prompt-range-hbox prompt range value))
-      ('percent
+      ((percent percent-or-on-off) ;; GJB:FIXME:: separate percent-or-on-off
        (prompt-integer-range-hbox prompt '(0 . 100) value))
       ('boolean
        (prompt-bool-hbox prompt value))
@@ -124,7 +146,7 @@
 
 (define*-public (option-menu sym)
   (let ((var (eval sym)))
-    (let ((doc (scwm-option-documentation sym))
+    (let ((doc (scwm-option-short-documentation sym))
 	  (fav (scwm-option-favorites sym))
 	  (group (scwm-option-group sym))
 	  (type (scwm-option-type sym))
@@ -187,68 +209,30 @@
 ;; (use-modules (app scwm primopts))
 ;; (scwm-options-dialog)
 ;; (define tooltip (gtk-tooltips-new))
+
 (define-public (scwm-options-dialog)
   "Popup a scwm options dialog box.
-NOTE: Not quite functional, but I'm outta time!
-GJB:FIXME::."
-  (let* ((toplevel (gtk-window-new 'dialog))
+You may need to use-modules all the modules that contain
+scwm-options to have this work for now."
+  (let* ((toplevel (gtk-window-new 'toplevel))
 	 (tooltip (gtk-tooltips-new))
-	 (vbox (gtk-vbox-new #f 10))
-	 (widgets-and-applyers
-	  (map (lambda (s) 
-		 (let* ((widget-and-getter (option-widget-and-getter s))
-			(widget (car widget-and-getter)))
-		   ;; GJB:FIXME:: this doesn't work -- any tooltip examples out there?
-		   ;; what can one attach a tooltip to?
-		   (gtk-tooltips-set-tip tooltip widget (scwm-option-documentation s) "")
-		   (list widget
-			 (lambda () 
-			   (scwm-option-symset! 
-			    s ((cadr widget-and-getter))))
-			 s)))
-	       scwm-options))
-	 (widgets (map (lambda (x) (let ((hbox (car x))
-					 (helpbut (gtk-button-new-with-label "Help"))
-					 (sym (caddr x)))
-				     (gtk-signal-connect helpbut "pressed"
-							 (lambda () 
-							   (popup-docs-for sym)))
-				     (gtk-widget-show helpbut)
-				     (gtk-box-pack-start hbox helpbut #f #f)
-				     hbox)) widgets-and-applyers))
-	 (applyers (map cadr widgets-and-applyers))
-	 (apply-action (lambda ()
-		  (for-each (lambda (a) (a)) applyers)))
-	 (hbox (gtk-hbox-new 0 0))
-	 (applybut (gtk-button-new-with-label "Apply"))
-	 (okbut (gtk-button-new-with-label "Ok"))
-	 (cancelbut (gtk-button-new-with-label "Cancel")))
+	 (vbox (gtk-vbox-new #f 0))
+	 (hbox (gtk-hbox-new #f 10))
+	 (nb (scwm-options-notebook))
+	 (cancelbut (gtk-button-new-with-label "Dismiss"))
+	 )
     (gtk-window-set-title toplevel "Scwm Options")
-
-    (map (lambda (w) (gtk-box-pack-start vbox w #t #t) (gtk-widget-show w))
-	 widgets)
-    (map (lambda (w) (gtk-box-pack-start hbox w #t #t) (gtk-widget-show w))
-	 (list applybut okbut cancelbut))
+    (gtk-box-pack-start hbox cancelbut #t #t)
+    (gtk-widget-show cancelbut)
+    (gtk-box-pack-start vbox nb #t #t)
+    (gtk-widget-show vbox)
+    (gtk-box-pack-start vbox hbox #t #t)
     (gtk-widget-show hbox)
     (gtk-container-add toplevel vbox)
     (gtk-tooltips-enable tooltip)
-    (gtk-box-pack-start vbox hbox #t #t)
-    (gtk-widget-show vbox)
     (let ((pp (pointer-position)))
       (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
     (gtk-widget-show toplevel)
-    (gtk-signal-connect applybut "pressed" 
-			(lambda () (apply-action)))
-    (gtk-signal-connect okbut "pressed" 
-			(lambda () 
-			  (apply-action)
-			  (message-window-hide! mw-docs)
-			  (gtk-widget-destroy toplevel)))
-    (gtk-signal-connect okbut "pressed" 
-			(lambda () 
-			  (message-window-hide! mw-docs)
-			  (gtk-widget-destroy toplevel)))
-;;			  (proc (getter))))
     (gtk-signal-connect cancelbut "pressed"
 			(lambda ()
 			  (message-window-hide! mw-docs)
@@ -256,3 +240,76 @@ GJB:FIXME::."
     (lambda ()
       (gtk-widget-hide toplevel)
       (gtk-widget-destroy toplevel))))
+
+(define-public (sort-options-by-type symlist)
+  (sort symlist (lambda (a b) (string<? (symbol->string (scwm-option-type a))
+					(symbol->string (scwm-option-type b))))))
+
+;;(sort-options-by-type scwm-options)
+
+
+(define-public (scwm-options-notebook)
+  (let* ((nb (gtk-notebook-new))
+	 (sorted-options (sort (map (lambda (s) (cons (scwm-option-group s) s)) scwm-options)
+			       (lambda (a b) (string<? (symbol->string (car a))
+						       (symbol->string (car b))))))
+	 (by-group (split-list-by-group sorted-options)))
+    (map (lambda (page) (scwm-options-notebook-page nb (symbol->string (car page)) 
+						    (sort-options-by-type (cdr page))))
+	 by-group)
+    (gtk-widget-show nb)
+    nb))
+
+
+(define-public (scwm-options-notebook-page nb title syms)
+  "Popup a scwm options dialog box.
+NOTE: Not quite functional, but I'm outta time!
+GJB:FIXME::."
+  (let* ((label (gtk-label-new title))
+	 (vbox (gtk-vbox-new #f 10))
+	 (hbox (gtk-hbox-new #t 50))
+	 (widgets-and-applyers
+	  (map (lambda (s) 
+		 (let* ((widget-and-getter (option-widget-and-getter s))
+			(widget (car widget-and-getter)))
+		   (list widget
+			 (lambda () 
+			   (scwm-option-symset! 
+			    s ((cadr widget-and-getter))))
+			 s)))
+	       syms))
+	 (widgets (map (lambda (x) (let ((hbox (car x))
+					 (helpbut (gtk-button-new-with-label "Help"))
+					 (sym (caddr x)))
+				     (gtk-signal-connect helpbut "pressed"
+							 (lambda () 
+							   (toggle-docs-for sym)))
+				     (gtk-widget-show helpbut)
+				     (gtk-box-pack-start hbox helpbut #f #f 20)
+				     hbox)) widgets-and-applyers))
+	 (applyers (map cadr widgets-and-applyers))
+	 (apply-action (lambda ()
+		  (for-each (lambda (a) (a)) applyers)))
+	 (applybut (gtk-button-new-with-label "Apply"))
+;;	 (okbut (gtk-button-new-with-label "Ok"))
+;;	 (cancelbut (gtk-button-new-with-label "Cancel"))
+	 )
+    (map (lambda (w) (gtk-box-pack-start vbox w #t #f) (gtk-widget-show w))
+	 widgets)
+    (map (lambda (w) (gtk-box-pack-start hbox w #t #t) (gtk-widget-show w))
+	 (list applybut))
+    (gtk-widget-show hbox)
+    (gtk-box-pack-start vbox hbox #f 0)
+    (gtk-widget-show vbox)
+    (gtk-signal-connect applybut "pressed" 
+			(lambda () (apply-action)))
+;;    (gtk-signal-connect okbut "pressed" 
+;;			(lambda () 
+;;			  (apply-action)
+;;			  (message-window-hide! mw-docs)))
+;;    (gtk-signal-connect cancelbut "pressed"
+;;			(lambda ()
+;;			  (message-window-hide! mw-docs)))
+    (gtk-widget-show label)
+    (gtk-notebook-append-page nb vbox label)
+    nb))
