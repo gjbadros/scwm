@@ -24,7 +24,6 @@
 #include <string.h>
 #include <X11/keysym.h>
 #include "scwm.h"
-#include "menus.h"
 #include "misc.h"
 #include "move.h"
 #include "screen.h"
@@ -454,11 +453,6 @@ InteractiveMove(Window * win, ScwmWindow * tmp_win,
   w = *win;
 
   InstallRootColormap();
-  if (menuFromFrameOrWindowOrTitlebar) {
-    /* warp the pointer to the cursor position from before menu appeared */
-    XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, Stashed_X, Stashed_Y);
-    XFlush(dpy);
-  }
   DragX = eventp->xbutton.x_root;
   DragY = eventp->xbutton.y_root;
 

@@ -4,7 +4,6 @@
 #define _MISC_
 
 #include <ctype.h>
-#include "menus.h"
 #include "system.h"
 
 /************************************************************************
@@ -127,8 +126,6 @@ void HandleHardFocus(ScwmWindow * t);
 /* FIXGJB: BELOW ARE NOT DEFINED IN misc.h */
 
 void FetchWmProtocols(ScwmWindow *);
-void PaintEntry(MenuRoot *, MenuItem *);
-void PaintMenu(MenuRoot *, XEvent *);
 void InitEventHandlerJumpTable(void);
 void DispatchEvent(void);
 void HandleEvents(void);
@@ -159,9 +156,6 @@ void SwitchPages(Bool, Bool);
 void NextPage(void);
 void PrevPage(void);
 
-MenuRoot *NewMenuRoot(char *name, int function_or_popup);
-void AddToMenu(MenuRoot *, char *, char *);
-void MakeMenu(MenuRoot *);
 void CaptureAllWindows(void);
 void SetTimer(int);
 void RaiseThisWindow(int);
@@ -179,20 +173,16 @@ void usage(void);
 
 void GetMwmHints(ScwmWindow * t);
 void SelectDecor(ScwmWindow *, unsigned long, int, int);
-Bool PopUpMenu(MenuRoot *, int, int);
 int DeferExecution(XEvent *, Window *, ScwmWindow **, unsigned long *, int, int);
 
 void SetStickyProp(ScwmWindow *, int, int, int);
 void SetClientProp(ScwmWindow *);
-void PopDownMenu(void);
 void show_panner(void);
 void WaitForButtonsUp(void);
 void FocusOn(ScwmWindow * t, int DeIconifyOnly);
 void WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit);
 Bool PlaceWindow(ScwmWindow * tmp_win, unsigned long flags, int Desk);
 
-int do_menu(MenuRoot * menu, int style);
-int check_allowed_function(MenuItem * mi);
 int check_allowed_function2(int function, ScwmWindow * t);
 void MapIt(ScwmWindow * t);
 void do_save(void);
@@ -202,8 +192,6 @@ void initPanFrames(void);
 int XNextEvent_orTimeout(Display * dpy, XEvent * event);
 
 void changeDesks(int val1, int val2);
-
-void MakeMenus(void);
 
 #ifdef BROKEN_SUN_HEADERS
 #include "sun_headers.h"

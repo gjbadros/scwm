@@ -12,7 +12,6 @@
 #include "system.h"
 #include "screen.h"
 #include "font.h"
-#include "menus.h"
 #include <guile/gh.h>
 #include "xmisc.h"
 
@@ -178,7 +177,6 @@ PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg)
   DrawImage(w,psimg,MENU_SIDE_IMAGE_SPACING,MENU_SIDE_IMAGE_SPACING,NULL);
 }
 
-#ifdef FIXGJB_NEED_THIS_WHEN_NO_MENUS_C
 /*
  * RelieveRectangle - add relief lines to a rectangular window
  */
@@ -207,6 +205,33 @@ RelieveHalfRectangle(Window win,int x,int y,int w,int h,
   XDrawLine(dpy, win, Shadow, w+x-2, y, w+x-2, h+y-1);
 }
 
+/*
+ *  Draws two horizontal lines to form a separator
+ */
+static
+void 
+DrawSeparator(Window w, GC TopGC, GC BottomGC, int x1, int y1, int x2, int y2,
+	      int extra_off)
+{
+  XDrawLine(dpy, w, TopGC, x1, y1, x2, y2);
+  XDrawLine(dpy, w, BottomGC, x1 - extra_off, y1 + 1, x2 + extra_off, y2 + 1);
+}
+
+/*
+ *  Draws a little Triangle pattern within a window
+ */
+static
+void 
+DrawTrianglePattern(Window w, GC GC1, GC GC2, GC GC3, int l, int u, int r, int b)
+{
+  int m;
+  m = (u + b) / 2;
+  XDrawLine(dpy, w, GC1, l, u, l, b);
+  XDrawLine(dpy, w, GC2, l, b, r, m);
+  XDrawLine(dpy, w, GC3, r, m, l, u);
+}
+
+
 /****************************************************************************
  * Procedure:
  *	DrawUnderline() - Underline a character in a string (pete@tecc.co.uk)
@@ -224,7 +249,7 @@ void  DrawUnderline(Window w, GC gc, int x, int y, char *txt, int posn)
   int off2 = XTextWidth(Scr.StdFont.font, txt, posn + 1) - 1;
   XDrawLine(dpy, w, gc, x + off1, y + 2, x + off2, y + 2);
 }
-#else
+#ifdef FIXNOWGJB
 void RelieveRectangle(Window win, int x, int y, int w, int h, GC Hilite, GC Shadow);
 void RelieveHalfRectangle(Window win, int x, int y, int w, int h, GC Hilite, GC Shadow);
 void DrawTrianglePattern(Window, GC, GC, GC, int, int, int, int);

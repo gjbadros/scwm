@@ -36,7 +36,7 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include "misc.h"
-#include "menus.h"
+#include "binding.h"
 
 #define SIZE_HINDENT 5
 #define SIZE_VINDENT 3
@@ -206,8 +206,6 @@ typedef struct ScreenInfo {
   Pixmap sticky_gray_pixmap;	/* light gray pattern for sticky borders */
 
   Binding *AllBindings;
-  MenuRoot *AllMenus;
-  MenuRoot *SchemeMenus;
 
   int root_pushes;		/* current push level to install root
 				   colormap windows */

@@ -23,7 +23,6 @@
 
 #include "scwm.h"
 #include "ICCCM.h"
-#include "menus.h"
 #include "misc.h"
 #include "screen.h"
 

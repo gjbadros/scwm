@@ -59,7 +59,6 @@
 
 #include "scwm.h"
 #include <X11/Xatom.h>
-#include "menus.h"
 #include "misc.h"
 #include "icons.h"
 #include "screen.h"

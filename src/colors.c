@@ -24,7 +24,6 @@
 
 
 #include "scwm.h"
-#include "menus.h"
 #include "misc.h"
 #include "screen.h"
 #include "colors.h"

@@ -20,7 +20,6 @@
 #include <string.h>
 
 #include "scwm.h"
-#include "menus.h"
 #include "misc.h"
 #include "icons.h"
 #include "screen.h"

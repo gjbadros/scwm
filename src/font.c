@@ -215,7 +215,6 @@ set_menu_font(SCM font)
   XChangeGC(dpy, Scr.MenuShadowGC, gcm, &gcv);
   XChangeGC(dpy, Scr.MenuGC, gcm, &gcv);
   XChangeGC(dpy, Scr.MenuStippleGC, gcm, &gcv);
-  MakeMenus();
 
   SCM_REALLOW_INTS;
   return (font);

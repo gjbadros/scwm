@@ -44,9 +44,7 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 /* do something here to replace getopt.h */
 #endif /* END HAVE_GETOPT_H */
 #include "scwm.h"
-#include "menu.h"
 #include "scwmmenu.h"
-#include "menus.h"
 #include "misc.h"
 #include "screen.h"
 #include "window.h"
@@ -209,7 +207,6 @@ scwm_main(int argc, char **argv)
   init_scwm_types();
   init_image();
   init_miscprocs();
-  init_menu();
   init_menuitem();
   init_scwm_menu();
   init_binding();
@@ -491,6 +488,8 @@ scwm_main(int argc, char **argv)
   }
   ShapesSupported = XShapeQueryExtension(dpy, &ShapeEventBase, &ShapeErrorBase);
 
+  /* Need to do this after Scr.Root gets set */
+  menu_init_gcs();
   InternUsefulAtoms();
 
   /* Make sure property priority colors is empty */
@@ -518,7 +517,6 @@ scwm_main(int argc, char **argv)
   Scr.gray_bitmap =
     XCreateBitmapFromData(dpy, Scr.Root, g_bits, g_width, g_height);
 
-  init_menus();
   DBUG("main", "Setting up rc file defaults...");
   SetRCDefaults();
 
@@ -543,7 +541,6 @@ scwm_main(int argc, char **argv)
   free(s_cmd_config);
 
   CaptureAllWindows();
-  MakeMenus();
 
   DBUG("main", "Done running config_commands");
 
@@ -1196,8 +1193,6 @@ InitVariables(void)
 
   /* initialize some lists */
   Scr.AllBindings = NULL;
-  Scr.AllMenus = NULL;
-  Scr.SchemeMenus = NULL;
   Scr.TheList = NULL;
 
   Scr.DefaultIcon = NULL;
@@ -1280,9 +1275,6 @@ InitVariables(void)
   Scr.ClickToFocusRaises = True;
   Scr.MouseFocusClickRaises = False;
 
-  /* Not the right place for this, should only be called once somewhere .. */
-  /* FIXGJB: why not the right place? */
-  InitPictureCMap(dpy, Scr.Root);
   init_image_colormap();
   return;
 }

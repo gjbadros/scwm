@@ -53,7 +53,6 @@ HEADERS = $(wildcard *.h)
 SRCS = \
         string_token.c \
 	ICCCM.c \
-	Picture.c \
 	system.c \
 	Grab.c \
 	add_window.c \
@@ -66,7 +65,6 @@ SRCS = \
 	focus.c \
 	scwm.c \
 	icons.c \
-	menus.c \
 	misc.c \
 	xmisc.c \
 	move.c \
@@ -82,7 +80,6 @@ SRCS = \
 	errors.c \
 	util.c \
 	window.c \
-	menu.c \
 	scwmmenu.c \
 	drawmenu.c \
 	menuitem.c \

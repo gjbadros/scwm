@@ -35,12 +35,10 @@
 #include "font.h"
 #include "color.h"
 #include "window.h"
-#include "menu.h"
 #include "menuitem.h"
 #include "scwmmenu.h"
 #include "decor.h"
 #include "face.h"
-#include "Picture.h"
 
 static scm_smobfuns font_smobfuns =
 {
@@ -66,14 +64,6 @@ static scm_smobfuns window_smobfuns =
   0
 };
 
-static scm_smobfuns menu_smobfuns =
-{
-  &mark_menu,
-  &free_menu,
-  &print_menu,
-  0
-};
-
 static scm_smobfuns decor_smobfuns =
 {
   &mark_decor,
@@ -87,14 +77,6 @@ static scm_smobfuns face_smobfuns =
   &mark_face,
   &free_face,
   &print_face,
-  0
-};
-
-static scm_smobfuns picture_smobfuns =
-{
-  &scm_mark0,
-  &free_picture,
-  &print_picture,
   0
 };
 
@@ -121,10 +103,8 @@ init_scwm_types(void)
   scm_tc16_scwm_font = scm_newsmob(&font_smobfuns);
   scm_tc16_scwm_color = scm_newsmob(&color_smobfuns);
   scm_tc16_scwm_window = scm_newsmob(&window_smobfuns);
-  scm_tc16_scwm_menu = scm_newsmob(&menu_smobfuns);
   scm_tc16_scwm_decor = scm_newsmob(&decor_smobfuns);
   scm_tc16_scwm_face = scm_newsmob(&face_smobfuns);
-  scm_tc16_scwm_picture = scm_newsmob(&picture_smobfuns);
   scm_tc16_scwm_menuitem = scm_newsmob(&menuitem_smobfuns);
   scm_tc16_scwm_scwmmenu = scm_newsmob(&scwmmenu_smobfuns);
 }

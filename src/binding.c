@@ -8,7 +8,6 @@
 
 #include <guile/gh.h>
 #include "scwm.h"
-#include "menus.h"
 #include "screen.h"
 #include "window.h"
 #include "decor.h"
@@ -18,6 +17,7 @@
 #include "misc.h"
 #include "miscprocs.h"
 #include "add_window.h"
+#include "binding.h"
 
 struct symnum {
   SCM sym;

@@ -240,7 +240,6 @@ set_menu_colors(SCM fg, SCM bg, SCM stipple)
     gcv.background = Scr.MenuStippleColors.back;
   }
   XChangeGC(dpy, Scr.MenuStippleGC, gcm, &gcv);
-  MakeMenus();
 
   SCM_REALLOW_INTS;
   return (SCM_UNSPECIFIED);

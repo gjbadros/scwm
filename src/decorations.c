@@ -45,7 +45,6 @@
 #include "misc.h"
 #include "screen.h"
 #include "parse.h"
-#include "menus.h"
 #include "mwmcom.h"
 
 extern Atom _XA_MwmAtom;
@@ -412,104 +411,6 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
   if (t->boundary_width == 0)
     t->flags &= ~BORDER;
 }
-
-/****************************************************************************
- * 
- * Checks the function described in menuItem mi, and sees if it
- * is an allowed function for window swCurrent,
- * according to the motif way of life.
- * 
- * This routine is used to determine whether or not to grey out menu items.
- *
- ****************************************************************************/
-int 
-check_allowed_function(MenuItem * mi)
-{
-  /* Complex functions are a little tricky... ignore them for now */
-
-  if ((swCurrent) &&
-    (!(swCurrent->flags & DoesWmDeleteWindow)) && (mi->func_type == F_DELETE))
-    return 0;
-
-  /* Move is a funny hint. Keeps it out of the menu, but you're still allowed
-   * to move. */
-  if ((mi->func_type == F_MOVE) && (swCurrent) && (!(swCurrent->functions & MWM_FUNC_MOVE)))
-    return 0;
-
-  if ((mi->func_type == F_RESIZE) && (swCurrent) &&
-      (!(swCurrent->functions & MWM_FUNC_RESIZE)))
-    return 0;
-
-  if ((mi->func_type == F_ICONIFY) && (swCurrent) &&
-      (!(swCurrent->flags & ICONIFIED)) &&
-      (!(swCurrent->functions & MWM_FUNC_MINIMIZE)))
-    return 0;
-
-  if ((mi->func_type == F_MAXIMIZE) && (swCurrent) &&
-      (!(swCurrent->functions & MWM_FUNC_MAXIMIZE)))
-    return 0;
-
-  if ((mi->func_type == F_DELETE) && (swCurrent) &&
-      (!(swCurrent->functions & MWM_FUNC_CLOSE)))
-    return 0;
-
-  if ((mi->func_type == F_CLOSE) && (swCurrent) &&
-      (!(swCurrent->functions & MWM_FUNC_CLOSE)))
-    return 0;
-
-  if ((mi->func_type == F_DESTROY) && (swCurrent) &&
-      (!(swCurrent->functions & MWM_FUNC_CLOSE)))
-    return 0;
-
-  if (mi->func_type == F_FUNCTION) {
-    /* Hard part! What to do now? */
-    /* Hate to do it, but for lack of a better idea,
-     * check based on the menu entry name */
-    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_MOVE)) &&
-	(strncasecmp(mi->item, MOVE_STRING, strlen(MOVE_STRING)) == 0))
-      return 0;
-
-    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_RESIZE)) &&
-     (strncasecmp(mi->item, RESIZE_STRING1, strlen(RESIZE_STRING1)) == 0))
-      return 0;
-
-    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_RESIZE)) &&
-     (strncasecmp(mi->item, RESIZE_STRING2, strlen(RESIZE_STRING2)) == 0))
-      return 0;
-
-    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_MINIMIZE)) &&
-	(!(swCurrent->flags & ICONIFIED)) &&
-    (strncasecmp(mi->item, MINIMIZE_STRING, strlen(MINIMIZE_STRING)) == 0))
-      return 0;
-
-    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_MINIMIZE)) &&
-	(strncasecmp(mi->item, MINIMIZE_STRING2, strlen(MINIMIZE_STRING2)) == 0))
-      return 0;
-
-    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_MAXIMIZE)) &&
-    (strncasecmp(mi->item, MAXIMIZE_STRING, strlen(MAXIMIZE_STRING)) == 0))
-      return 0;
-
-    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_CLOSE)) &&
-	(strncasecmp(mi->item, CLOSE_STRING1, strlen(CLOSE_STRING1)) == 0))
-      return 0;
-
-    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_CLOSE)) &&
-	(strncasecmp(mi->item, CLOSE_STRING2, strlen(CLOSE_STRING2)) == 0))
-      return 0;
-
-    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_CLOSE)) &&
-	(strncasecmp(mi->item, CLOSE_STRING3, strlen(CLOSE_STRING3)) == 0))
-      return 0;
-
-    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_CLOSE)) &&
-	(strncasecmp(mi->item, CLOSE_STRING4, strlen(CLOSE_STRING4)) == 0))
-      return 0;
-
-  }
-  return 1;
-}
-
 
 /****************************************************************************
  * 

@@ -1105,11 +1105,6 @@ interactive_resize(SCM win)
 
 
   InstallRootColormap();
-  if (menuFromFrameOrWindowOrTitlebar) {
-    /* warp the pointer to the cursor position from before menu appeared */
-    XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, Stashed_X, Stashed_Y);
-    XFlush(dpy);
-  }
   if (!GrabEm(MOVE)) {
     XBell(dpy, Scr.screen);
     SCM_REALLOW_INTS;
