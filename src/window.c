@@ -2034,11 +2034,11 @@ set_random_placement_x(SCM val, SCM win)
 SCM 
 set_smart_placement_x(SCM val, SCM win)
 {
-  VALIDATEN(win, 2, "set-smart-pacement!");
+  VALIDATEN(win, 2, "set-smart-placement!");
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= MWM_OVERRIDE_FLAG;
+    SCWMWINDOW(win)->flags |= SMART_PLACE_FLAG;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~MWM_OVERRIDE_FLAG;
+    SCWMWINDOW(win)->flags &= ~SMART_PLACE_FLAG;
   } else {
     scm_wrong_type_arg("set-smart-placment!", 1, val);
   }
