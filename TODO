@@ -36,7 +36,16 @@ and add convenient ways to match on certain other things.
 
 * Promote generally useful things from flux.scm to somewhere supported
 
+* add and use real hook for auto-raise module
+
 * bug fixes
+
+* Try some beta testing
+Maciej has access to ensure it builds and runs on Linux, NetBSD, Irix,
+Solaris and SunOS.  On each of this try compiling and running with both
+guile 1.2 and the latest snap, and try with and without threads.
+
+After scwm 0.9:
 
 * event rewrite
 ** Read about Tk's multi-event sequences:
@@ -46,15 +55,9 @@ and add convenient ways to match on certain other things.
 > events.  The implementation is in tkBind.c:Tk_BindEvent().
   -- says Carl Witty
 
-
 * decorations rewrite
 
 * split into on-demand loaded modules of primitives
-
-* Try some beta testing
-Maciej has access to ensure it builds and runs on Linux, NetBSD, Irix,
-Solaris and SunOS.  On each of this try compiling and running with both
-guile 1.2 and the latest snap, and try with and without threads.
 
 
 Other Stuff
