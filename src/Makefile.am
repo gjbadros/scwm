@@ -13,7 +13,6 @@ scwm_SOURCES =  Grab.c \
                 color.c \
                 colormaps.c \
                 colors.c \
-                complex.c \
                 cursor.c \
                 decor.c \
                 decorations.c \
@@ -72,7 +71,7 @@ noinst_HEADERS = Grab.h events.h placement.h ICCCM.h face.h resize.h \
 add_window.h focus.h screen.h binding.h font.h scwm-constraints.h \
 borders.h getopt.h scwm-snarf.h callbacks.h guile-compat.h scwm.h \
 color.h cursor.h icons.h session-manager.h colormaps.h image.h shutdown.h \
-colors.h log-usage.h string_token.h complex.h menu.h syscompat.h \
+colors.h log-usage.h string_token.h menu.h syscompat.h \
 constraint-primitives.h menuitem.h system.h decor.h menulook.h util.h \
 decorations.h miscprocs.h virtual.h deskpage.h module-interface.h window.h \
 drawmenu.h module-types.h xmisc.h errors.h move.h window_fwd.h deskpage.h \
