@@ -1,3 +1,20 @@
+Sun May  2 15:26:01 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.h: Re-introduce SCWMWINDOW to just be an accessor, and
+	make PSWFROMSCMWIN return NULL if the valid flag is 0.  SCWMWINDOW 
+	is used only as an lvalue right now, and should probably stay that 
+	way.  This and the below fix a nasty race condition that I was
+	finally able to reproduce reliably while playing with tooltips for 
+	XEmacs.
+
+	* window.c (ScwmSaveContextPsw): Introduce this fn as a partial
+ 	layer of abstraction over the setting of ScwmContext.  Make it
+	store the scwm_window *, not the ScwmWindow*.  This fixes a nasty, 
+	pervasive race condition. Update PswFromWindow and
+	PswFromAnyWindow to return NULL if the window is no longer valid.
+
+	* add_window.c, icons.c: Use ScwmSaveContextPsw.
+
 Sat May  1 17:49:50 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.c: Fix `stick' primitive again-- need to have sticky set

@@ -1,3 +1,7 @@
+Sun May  2 15:31:19 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added style for tooltip windows of XEmacs.
+
 Sat May  1 18:16:14 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Go back to nicer window-font, instead of just using
