@@ -813,7 +813,6 @@ void
 DestroyScwmWindow(ScwmWindow *psw)
 {
   int i;
-  extern ScwmWindow *colormap_win;
   extern Bool PPosOverride;
 
   /*

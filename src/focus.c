@@ -93,7 +93,7 @@ its X11 hints do not permit it to receive the focus. */
  * Sets the input focus to the indicated window.
  */
 void 
-SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
+SetFocus(Window w, ScwmWindow * psw, Bool ARG_UNUSED(FocusByMouse))
 {
   int i = 0;
   DBUG_EVENT((DBG,"SetFocus", "Entered (give `%s' the focus)",psw?psw->name:"<none>"));

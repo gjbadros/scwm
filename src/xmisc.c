@@ -30,6 +30,14 @@ unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
 XGCValues Globalgcv;
 unsigned long Globalgcm;
 
+void
+SetXWindowGravity(Window w, int win_gravity)
+{
+  XSetWindowAttributes attrib;
+  attrib.win_gravity = win_gravity;
+  XChangeWindowAttributes(dpy,w,CWWinGravity,&attrib);
+}
+
 /*
  * Example Usage: 
  * child = WXGetPointerWindowOffsets(Scr.Root,&pixRootXOffset,&pixRootYOffset)

@@ -472,7 +472,7 @@ mark_window(SCM obj)
     GC_MARK_SCM_IF_SET(psw->HiShadowColor);
     GC_MARK_SCM_IF_SET(psw->HiTextColor);
     GC_MARK_SCM_IF_SET(psw->HiBackColor);
-    scm_gc_mark(psw->other_properties);
+    GC_MARK_SCM_IF_SET(psw->other_properties);
   }
 
   return SCM_BOOL_F;
@@ -516,7 +516,6 @@ make_window(ScwmWindow * win)
 
   /* Warning, arbitrary constant, we really need growable hash
      tables. */
-
   win->other_properties = gh_make_vector(SCM_MAKINUM(5), SCM_EOL);
   scm_protect_object(answer);
 
@@ -672,10 +671,42 @@ ResizePswToCurrentSize(ScwmWindow *psw)
   if (SHADED_P(psw)) {
     h = psw->title_height + psw->boundary_width;
   }
+
+#if 0
+  { /* scope */
+    unsigned int ow, oh;
+    int ox, oy;
+    int win_gravity = CenterGravity;
+    XGetGeometry(dpy,psw->frame,&JunkRoot,&ox,&oy,&ow,&oh,&JunkBW,&JunkDepth);
+    if (ox == x && oy == y) {
+      win_gravity = NorthWestGravity;
+    } else if (ox+ow == x+w && oy+oh == y+h) {
+      win_gravity = SouthEastGravity;
+    } else if (ox == x && oy+oh == y+h) {
+      win_gravity = SouthWestGravity;
+    } else if (ox+ow == x+w && oy == y) {
+      win_gravity = NorthEastGravity;
+    } else if (ox == x) {
+      win_gravity = EastGravity;
+    } else if (ox+ow == x+w) {
+      win_gravity = WestGravity;
+    } else if (oy == y) {
+      win_gravity = NorthGravity;
+    } else if (oy+oh == y+h) {
+      win_gravity = SouthGravity;
+    }
+    fprintf(stderr,"gravity = %d\n", win_gravity);
+    SetXWindowGravity(psw->w, win_gravity);
+  }
+#endif
+
   /* GJB:FIXME:: this is overkill for just resizing a window;
      it'd be nice to do an optimized version of this--- plan
      for that in the decoration rewrite! */
   SetupFrame(psw,x,y,w,h,WAS_MOVED,WAS_RESIZED);
+#if 0
+  SetXWindowGravity(psw->w, NorthWestGravity);
+#endif
 }
 
 /* Similar to SetScwmWindowGeometry, below -- normal scwm functions

@@ -20,6 +20,7 @@ extern XGCValues Globalgcv;
 extern unsigned long Globalgcm;
 extern XEvent Event;
 
+void SetXWindowGravity(Window w, int win_gravity);
 Window WXGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn);
 Window WXGetPointerOffsets(Window w, int *pxRoot, int *pyRoot, int *pxReturn, int *pyReturn);
 Window WXGetPointerChild(Window wParent);
