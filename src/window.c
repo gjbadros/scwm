@@ -3303,7 +3303,7 @@ instead. Soon, some properties will have magical meanings, altering
 particular fields in the window structure. Also, a
 window-property-change-hook mechanism will soon be implemented for
 notification of all window property changes. This is not yet done. The
-window property API should be considered in flux. */
+window property primitives should be considered in flux. */
 #define FUNC_NAME s_set_window_property_x
 {
   if (!WINDOWP(win) || !VALIDWINP(win)) {
@@ -3331,14 +3331,15 @@ window property API should be considered in flux. */
 SCWM_PROC(window_property, "window-property", 2, 0, 0,
           (SCM win, SCM prop))
      /** Retrieve window property PROP of WIN.
+
 PROP should be a symbol. #f will be returned if the property does not
 exist (wether set by `set-window-property!' or otherwise). Soon, some
 properties will have magical meanings, accessing particular fields in
 the window structure. Also, a window-property-change-hook mechanism
 will soon be implemented for notification of all window property
-changes. This is not yet done. The window property API should be
-considered in flux. */
-#define FUNC_NAME s_set_window_property_x
+changes. This is not yet done. The window property primitives should
+be considered in flux. */
+#define FUNC_NAME s_window_property
 {
   if (!WINDOWP(win) || !VALIDWINP(win)) {
     scm_wrong_type_arg (FUNC_NAME, 1, win);

@@ -191,9 +191,9 @@ right edge, and vice-versa. See also `set-edge-y-wrap!' */
 }
 #undef FUNC_NAME
 
-SCWM_PROC(edge_x_wrap, "edge-x-wrap", 1, 0, 0,
+SCWM_PROC(edge_x_wrap, "edge-x-wrap", 0, 0, 0,
           ())
-     /** Return the current horizonatal edge wrap setting as set by `set-edge-x-wrap!' */
+     /** Return the current horizonatal edge wrap setting as set by `set-edge-x-wrap!'. */
 #define FUNC_NAME s_edge_x_wrap
 {
   return SCM_BOOL_FromBool(Scr.fEdgeWrapX);
@@ -218,7 +218,7 @@ bottom edge, and vice-versa. See also `set-edge-x-wrap!' */
 
 SCWM_PROC(edge_y_wrap, "edge-y-wrap", 0, 0, 0,
           ())
-     /** Return the current vertical edge wrap setting as set by `set-edge-y-wrap!' */
+     /** Return the current vertical edge wrap setting as set by `set-edge-y-wrap!'. */
 #define FUNC_NAME s_edge_y_wrap
 {
   return SCM_BOOL_FromBool(Scr.fEdgeWrapY);

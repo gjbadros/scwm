@@ -721,8 +721,7 @@ SCWM_PROC(set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
 
 SCWM_PROC (menu_foreground, "menu-foreground", 0, 0, 0,
            () )
-     /** Return the default foreground color for menus.
-      */
+     /** Return the default foreground color for menus. */
 #define FUNC_NAME s_menu_foreground
 { 
   return (Scr.MenuColors.fg);
@@ -786,8 +785,7 @@ SCWM_PROC(set_menu_background_x, "set-menu-background!", 1, 0, 0,
 
 SCWM_PROC (menu_background, "menu-background", 0, 0, 0,
            () )
-     /** Return the default background color for menus.
-      */
+     /** Return the default background color for menus. */
 #define FUNC_NAME s_menu_background
 { 
   return (Scr.MenuColors.bg);
@@ -834,8 +832,7 @@ May not be used any longer. */
 SCWM_PROC (menu_stipple, "menu-stipple", 0, 0, 0,
            () )
      /** Return the default stipple color for menus.
-May not be used any more.
-      */
+May not be used any more. */
 #define FUNC_NAME s_menu_stipple
 { 
   return (Scr.MenuStippleColors.fg);
