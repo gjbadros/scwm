@@ -496,6 +496,11 @@ SendClientConfigureNotify(const ScwmWindow *psw)
   XSendEvent(dpy, psw->w, False, StructureNotifyMask, &client_event);
 }
 
+
+/* Note that this will Broadcast the window information
+   which will remove the icon window from the pager
+   and display the window instead -- probably should
+   be called only if !psw->fIconified */
 void 
 MovePswToCurrentPosition(const ScwmWindow *psw)
 {
@@ -506,6 +511,10 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
 }
 
 
+/* Note that this will Broadcast the icon information
+   which will remove the real mapped window from the pager
+   and display the icon instead -- probably should
+   be called only if psw->fIconified */
 void 
 MovePswIconToCurrentPosition(const ScwmWindow *psw)
 {

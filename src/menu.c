@@ -223,8 +223,11 @@ drawing code (not used currently).
   SCM answer;
   int iarg = 1;
 
-  if (!gh_list_p(list_of_menuitems) || gh_length(list_of_menuitems) < 1) {
+  if (!gh_list_p(list_of_menuitems)) {
     scm_wrong_type_arg(FUNC_NAME,iarg,list_of_menuitems);
+  }
+  if (SCM_IMP(list_of_menuitems) || (gh_car(list_of_menuitems) == SCM_EOL)) {
+    scm_misc_error(FUNC_NAME,"LIST-OF-MENUITEMS cannot be empty",SCM_EOL);
   }
   pmenu->scmMenuItems = list_of_menuitems;
 
