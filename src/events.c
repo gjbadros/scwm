@@ -1032,11 +1032,16 @@ HandleButtonPress()
     if (Tmp_win) {
       SetFocus(Tmp_win->w, Tmp_win, 1);
 /* #ifdef CLICKY_MODE_1 */
-      if (Scr.ClickToFocusRaises ||
+      if (Scr.ClickToFocusRaises 
+	  /* MS - these other conditions seem wrong to me. */
+#if 0
+	  ||
 	  ((Event.xany.window != Tmp_win->w) &&
 	   (Event.xbutton.subwindow != Tmp_win->w) &&
 	   (Event.xany.window != Tmp_win->Parent) &&
-	   (Event.xbutton.subwindow != Tmp_win->Parent)))
+	   (Event.xbutton.subwindow != Tmp_win->Parent))
+#endif
+)
 /* #endif */
       {
 	RaiseWindow(Tmp_win);
