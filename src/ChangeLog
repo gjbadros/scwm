@@ -1,3 +1,14 @@
+Mon Nov 17 21:07:44 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* string_token.h: Only give prototypes for strcasecmp and
+ 	strncasecmp if they are not already defined.
+
+	* string_token.c: Only define strcasecmp and strncasecmp if they
+ 	are not already available.
+
+	* system.c: Changed sleep_ms to use usleep() where available,
+ 	otherwise fall back to select().
+
 Sat Nov 15 00:18:22 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menuitem.[ch]:  Added;  the beginnings of an scm object for menu
