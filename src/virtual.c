@@ -35,7 +35,7 @@ FNeedsPaging(int HorWarpSize, int VertWarpSize, int xl, int yt)
 {
   int x, y;
 
-  if ((Scr.ScrollResistance >= 10000) ||
+  if ((Scr.ScrollResistance < 0) ||
       ((HorWarpSize == 0) && (VertWarpSize == 0)))
     return False;
 

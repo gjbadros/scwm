@@ -504,6 +504,10 @@ ResizePswToCurrentSize(ScwmWindow *psw)
   int x = FRAME_X(psw), y = FRAME_Y(psw);
 
   SendClientConfigureNotify(psw);
+
+  if (SHADED_P(psw)) {
+    h = psw->title_height + psw->boundary_width;
+  }
   SetupFrame(psw,x,y,w,h,WAS_MOVED,WAS_RESIZED);
 }
 
@@ -522,10 +526,14 @@ SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque)
     if (fOpaque) 
       MovePswToCurrentPosition(psw);
     else {
+      int h = FRAME_HEIGHT(psw);
+      if (SHADED_P(psw)) {
+        h = psw->title_height + psw->boundary_width;
+      }
       RemoveRubberbandOutline(Scr.Root);
       RedrawOutlineAtNewPosition(Scr.Root, 
                                  FRAME_X(psw), FRAME_Y(psw),
-                                 FRAME_WIDTH(psw), FRAME_HEIGHT(psw));
+                                 FRAME_WIDTH(psw), h);
     }
   }
 }

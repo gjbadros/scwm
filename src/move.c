@@ -645,7 +645,11 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
     /* enlarge the draw rubberband to include the border width */
     DragWidth += border_width;
     DragHeight += border_width;
+    if (SHADED_P(psw)) {
+      DragHeight = psw->title_height + psw->boundary_width;
+    }
   }
+
 
   XOffset = origDragX - DragX;
   YOffset = origDragY - DragY;

@@ -156,10 +156,10 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
   if (FXGetWindowTopLeft(psw->w, &xwc.x, &xwc.y )) {
     int a, b, w2, h2;
     unsigned int mask;
-    #if 0
+#if 0 /* FIXGJB */
     XTranslateCoordinates(dpy, psw->frame, Scr.Root, xwc.x, xwc.y,
 			  &a, &b, &JunkChild);
-    #endif
+#endif
     /* Undo gravity adjustments. */
     xwc.x = psw->frame_x - GRAV_X_ADJUSTMENT(psw);
     xwc.y = psw->frame_y - GRAV_Y_ADJUSTMENT(psw);
