@@ -13,7 +13,7 @@ kde-hints.scm key-mover.scm listops.scm message-window.scm \
 minimal.scm modifier-key-bindings.scm module-types.scm menus-extras.scm \
 nonants.scm netscape.scm number-convert.scm optargs.scm \
 path-cache.scm placement.scm preferences.scm prefs-menu.scm primopts.scm \
-property-respond.scm quote.scm register.scm report-usage.scm \
+property-respond.scm quote.scm reflection.scm register.scm report-usage.scm \
 rgb-database.scm send-string.scm \
 shutdown-opts.scm simplebiff.scm simple-constraints.scm snap.scm sort.scm stacking.scm \
 std-menus.scm stringops.scm style-options.scm style.scm stylist.scm \
