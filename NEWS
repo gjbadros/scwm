@@ -8,6 +8,8 @@ Changes for scwm-0.99.2
 
 * an evolved gjb.scwmrc is now system.scwmrc
 
+* Added startscwm, scwm-conf scripts
+
 * Lots of documentation improvements, revamp of Scwm web page, many,
 many bug-fixes (compiles warning free with virtually all warnings turned
 on!), lots of code cleanup (especially primitive argument validation),
@@ -77,6 +79,8 @@ numerous scwmdoc script fixes and improvements.
 * message-window objects now support a background image and explicit sizing
 ** `message-window-set-image!', `message-window-image'
 ** `message-window-set-size!', `message-window-size'
+** Also added `message-window-id' so you can use message-windows for
+   setting X11 properties (e.g., for GNOME button proxying)
 
 * ICCCM Group support (app scwm group)
 ** `group->windows', `interactive-move-group', `lower-group', `raise-group'
@@ -108,6 +112,9 @@ permits very dynamic menus.
 
 * Added #:by-resource window-list menu option for more intelligent
 splitting of really long window-list menus
+
+* Added `make-window-list-menu' separate from `show-window-list-menu'
+  and changed arguments to show-window-list-menu
 
 * Added support for handling Scwm events w/o returning to the main loop
 ** `handle-pending-events'
@@ -194,6 +201,8 @@ deprecated `SM-client-id'.
 ** `send-client-message' now takes a rest argument with up to four long integers, instead of just one
 
 * Misc. new procedures
+** `make-window-list-menu'
+** `center-placement'
 ** `fold-menu-list-by-group', `rename-window-interactively'
 ** `netscape-goto-url'
 ** `output-of-system-command', `read-until-eof', `chop-newline'

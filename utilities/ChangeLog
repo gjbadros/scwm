@@ -1,3 +1,9 @@
+Sat Sep  4 00:13:09 1999    <gjb@cs.washington.edu>
+
+	* misc/Makefile.am: Install scwm-conf script.
+
+	* misc/scwm-conf: Added -- just use scwm-exec to run scwm-options-dialog.
+
 Thu Sep  2 15:37:55 1999    <gjb@cs.washington.edu>
 
 	* misc/startscwm: Delay for 3 seconds, not 1.  Use -name for the

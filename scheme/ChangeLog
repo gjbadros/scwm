@@ -1,3 +1,17 @@
+Sat Sep  4 00:22:10 1999    <gjb@cs.washington.edu>
+
+	* base.scm: Added `half' to simplify integer division by 2.
+
+	* gnome-hints.scm: Implement button-proxying support.  Added
+	`gnome-desktop-press' and related procedures.  Use message-window
+	to be the button-proxy window, and announce support for it.
+
+	* placement.scm: Added `center-placement'
+
+	* winlist.scm: Change `show-window-list-menu' to
+	`make-window-list-menu' and add a `show-window-list-menu' on top
+	of that.
+
 Thu Sep  2 13:41:09 1999    <gjb@cs.washington.edu>
 
 	* window-selection.scm: Move nonant markers closer to edge.  Still

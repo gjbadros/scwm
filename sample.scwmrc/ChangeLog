@@ -1,3 +1,18 @@
+Sat Sep  4 00:23:12 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Much better support for GNOME, including earlier
+	announcing of gnome-hints (before loading the other modules, now), 
+	and button proxying support.  Also use the `placement' module now
+	for center placement, and add more gnome window styles.  Set
+	`gnome-sm' variable for whether we're running under
+	gnome-session, and alter root mouse bindings if so to conform to GNOME.
+
+Fri Sep  3 11:02:05 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Drop the workman-menu, clean up setting of
+	doc-files.  Drop unused use-complete-host-menu,
+	xterm-other-host-use-local-xterm. Thanks Dirk Hermann!
+
 Fri Sep  3 09:07:59 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Turn off buffering of stdout.  Fix some
