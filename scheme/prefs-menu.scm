@@ -1,4 +1,4 @@
-;;; File: <prefs-menu.scm - 1998-03-23 Mon 16:53:53 EST sds@mute.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-03-24 Tue 19:45:50 EST sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 ;;;	$Id$
 
@@ -22,42 +22,10 @@
 ;; (prefs-menu . #:image-side img #:color-bg-image-side color etc)
 
 (define-module (app scwm prefs-menus)
-  :use-module (app scwm std-menus))
+  :use-module (app scwm std-menus)
+  :use-module (app scwm flux))
 
 
-
-(define-public (message . str)
-  (execute (string-append "echo -e \'" (apply string-append str)
-			  "\'| xmessage -file - -default okay -nearmouse")))
-
-(define-public (show-mesg . str) (lambda () (apply message str)))
-
-(define-public (show-file fl)	; return lambda
-  (exe (string-append
-	"xmessage -buttons ok:0 -default ok -nearmouse -file " fl)))
-
-(define-public (bool->str arg) (if arg "true" "false"))
-
-(define-public* (size->str sz #&optional (sep "x"))
-  (let ((xx (car sz)) (yy (cadr sz)))
-    (string-append (number->string xx) sep (number->string yy))))
-
-(define-public* (window-info #&optional (ww (get-window)))
-  (message
-   "Window ID:\t\t" (number->string (window-id ww))
-   "\nTitle:\t\t\t\"" (window-title ww) "\"\nGeometry:\t\t"
-   (window-geometry-string ww) "\nDesk:\t\t\t"
-   (number->string (window-desk ww)) "\nClass:\t\t\t\""
-   (window-class ww) "\"\nResource:\t\t\"" (window-resource ww)
-   "\"\nBorder normal:\t\t" (bool->str (border-normal? ww))
-   "\nDeletable:\t\t" (bool->str (window-deletable? ww))
-   "\nIconified:\t\t" (bool->str (iconified? ww))
-   "\nKept on top:\t\t" (bool->str (kept-on-top? ww))
-   "\nRaised:\t\t\t" (bool->str (raised? ww))
-   "\nShaded:\t\t\t" (bool->str (window-shaded? ww))
-   "\nSticky Icon:\t\t" (bool->str (icon-sticky? ww))
-   "\nSticky:\t\t\t" (bool->str (sticky? ww))
-   "\nTitle bar shown:\t" (bool->str (titlebar-shown? ww))))
 
 (define-public save-header
   ";; text from here to the EOF is overwritten by save-settings")
