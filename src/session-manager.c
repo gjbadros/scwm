@@ -41,6 +41,12 @@
 #include <string.h>
 #include <netinet/in.h>
 
+/* from gnome-core/gsm/session.h */
+#define GsmPriority              "_GSM_Priority"
+
+/* requested priority; before the panel (40), but after the capplets (20) */
+#define ScwmPriority	30
+
 /* a serial number uniquely identifying the state file's version */
 #define STATE_FILE_SERIAL sizeof(SMWindowData)
 
@@ -215,12 +221,7 @@ void restoreWindowState(ScwmWindow *psw)
     psw->icon_y_loc = d->icon_y;
     psw->fIconMoved = True;
     if (psw->fIconified) {
-      if (!psw->wmhints) {
-	psw->wmhints = XAllocWMHints();
-	psw->wmhints->flags = 0;
-      }
-      psw->wmhints->initial_state = isIconicState = IconicState;
-      psw->wmhints->flags |= StateHint;
+      psw->fStartIconic = True;
     } 
     *p = d->next;		/* remove from list */
     FREE(d);
@@ -330,11 +331,13 @@ void die(SmcConn conn, SmPointer client_data)
 static void setSMProperties()
 {
   CARD8 restartStyle = SmRestartImmediately;
+  CARD8 priority = ScwmPriority;
   SmPropValue userIDVal;
   SmPropValue cwdVal;
   SmPropValue *restartVal;
   SmPropValue restartStyleVal;
   SmPropValue discardVal[] = { { 2, "rm" }, { 2, "-f" }, { 0, NULL } };
+  SmPropValue priorityVal;
   SmProp userIDProp;
   SmProp cwdProp;
   SmProp programProp;
@@ -342,7 +345,8 @@ static void setSMProperties()
   SmProp cloneProp;
   SmProp discardProp;
   SmProp restartStyleProp;
-  SmProp *props[7];
+  SmProp priorityProp;
+  SmProp *props[8];
   int i, j;
 
   userIDVal.length = strlen(UserName);
@@ -350,6 +354,8 @@ static void setSMProperties()
   restartVal = NEWC(g_argc+2, SmPropValue);
   restartStyleVal.length = 1;
   restartStyleVal.value = (SmPointer)&restartStyle;
+  priorityVal.length = 1;
+  priorityVal.value = (SmPointer)&priority;
   userIDProp.name = SmUserID;
   userIDProp.type = SmARRAY8;
   userIDProp.num_vals = 1;
@@ -378,6 +384,10 @@ static void setSMProperties()
   restartStyleProp.type = SmCARD8;
   restartStyleProp.num_vals = 1;
   restartStyleProp.vals = &restartStyleVal;
+  priorityProp.name = GsmPriority;
+  priorityProp.type = SmCARD8;
+  priorityProp.num_vals = 1;
+  priorityProp.vals = &priorityVal;
   props[0] = &cwdProp;
   props[1] = &programProp;
   props[2] = &userIDProp;
@@ -385,6 +395,7 @@ static void setSMProperties()
   props[4] = &cloneProp;
   props[5] = &discardProp;
   props[6] = &restartStyleProp;
+  props[7] = &priorityProp;
   
   cwdVal.value = xgetcwd(NULL, 0);
   cwdVal.length = strlen(cwdVal.value);
