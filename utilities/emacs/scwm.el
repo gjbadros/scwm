@@ -1,4 +1,4 @@
-;;; File: <scwm.el - 1998-03-23 Mon 16:23:02 EST sds@mute.eaglets.com>
+;;; File: <scwm.el - 1998-03-25 Wed 14:30:57 EST sds@mute.eaglets.com>
 ;;;
 ;;; Copyright (c) 1998 by Sam Shteingold <sds@usa.net>
 ;;; $Id$
@@ -70,7 +70,7 @@
 ;;; XEmacs doesn't have thingatpt. Too bad.
 (unless (fboundp 'thing-at-point)
   (defun thing-at-point (what)
-    "Return the thing at point."
+    "Return the thing at point (crippled: symbols only!)."
     (unless (eq what 'symbol)
       (error "crippled `thing-at-point' - symbols only"))
     (let ((zz (id-select-symbol (point))))
@@ -84,7 +84,12 @@
   "Run scwm interaction or pop to an existing one.
 Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (interactive)
-  (pop-to-buffer (setq scheme-buffer (make-comint "scwm" scwm-repl))))
+  (unless (fboundp 'inferior-scheme-mode)
+    (let ((ff (symbol-function 'run-scheme)))
+      (if (and (consp ff) (eq (car ff) 'autoload)) (load (second ff))
+	  (error "no `inferior-scheme-mode' and no place to get it from."))))
+  (pop-to-buffer (setq scheme-buffer (make-comint "scwm" scwm-repl)))
+  (inferior-scheme-mode))
 
 (defsubst scwm-eval (sexp out)
   "Evaluate the SEXP with scwm-exec and print the results to OUT."
