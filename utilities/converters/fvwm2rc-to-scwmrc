@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
-# (C) 1999 Greg J. Badros
-# 21-March-1999
+# (C) 1999 Greg J. Badros, Doug McNaught
+# March-1999
 # Distributed under the GNU GPL
 # See the PRESCRIPT text below for more
 # details and warnings.
@@ -45,6 +45,9 @@ FvwmWinList );
 
 
 my ($ct_function,$ct_menu,$ct_decor) = (0..2);
+
+# regex fragment to match an identifier
+my $id_char_seq = '[\w\d._-]+';
 
 my %funcs = ();  # names -> text
 my %decors = ();  # names -> text
@@ -114,7 +117,7 @@ my %rules =
    ],
    "addtofunc" =>
    [
-    '\s+"?([\w\d_-]+)"?\s+(.*)',
+    '\s+"?(' . $id_char_seq . ')"?\s+(.*)',
     sub { my $text;
 	  ($last_context_name,$text) = (@_);
 	  my $answer = "";
@@ -130,12 +133,12 @@ my %rules =
    ],
    "addtomenu" =>
    [
-    '\s+"?([\w\d_-]+)"?\s+(.*)',
+    '\s+"?(' . $id_char_seq . ')"?\s+(.*)',
     sub { my $text;
 	  ($last_context_name,$text) = (@_);
 	  my $answer = "";
 	  $last_context_type = $ct_menu;
-	  if (! exists ($funcs{$last_context_name})) {
+	  if (! exists ($menus{$last_context_name})) {
 	    $menus{$last_context_name} = "";
 	    $answer = ";;; Start of fvwm2 Menu $last_context_name\n" .
         	      ";;; [[@@&&menu-$last_context_name&&@@]]";
@@ -146,7 +149,7 @@ my %rules =
    ],
    "addtodecor" =>
    [
-    '\s+"?([\w\d_-]+)"?\s+(.*)',
+    '\s+"?(' . $id_char_seq . ')"?\s+(.*)',
     sub { my $text;
 	  ($last_context_name,$text) = (@_);
 	  my $answer = "";
@@ -238,25 +241,25 @@ my %rules =
 	   },
    ],
    "module" =>
-   [    '\s+\"?([\w\d_-]+)\"?',
+   [    '\s+\"?(' . $id_char_seq . ')\"?',
 	sub { my ($m) = (@_);
 	      return "(define fvwm2-module-$m (run-fvwm2-module " . dquoted($m) . "))";
 	    },
    ],
    "function" =>
-   [    '\s+\"?([\w\d_-]+)\"?',
+   [    '\s+\"?(' . $id_char_seq . ')\"?',
 	sub { my ($funcname) = (@_);
 	      return "(fvwm2-func-$funcname)";
 	    },
    ],
    "popup" =>
-   [    '\s+\"?([\w\d_-]+)\"?',
+   [    '\s+\"?(' . $id_char_seq . ')\"?',
 	sub { my ($menuname) = (@_);
 	      return "(popup-menu 'fvwm2-menu-$menuname)";
 	    },
    ],
    "menu" =>
-   [    '\s+\"?([\w\d_-]+)\"?',
+   [    '\s+\"?(' . $id_char_seq . ')\"?',
 	sub { my ($menuname) = (@_);
 	      return "(popup-menu 'fvwm2-menu-$menuname)";
 	    },
@@ -356,7 +359,7 @@ my %rules =
    "exec" =>
    [    '\s+(.*)',
 	sub { my ($rest) = (@_);
-	      return "(exe " . dquoted($rest) . ")";
+	      return "(execute " . dquoted($rest) . ")";
 	    },
    ],
    "restart" =>
@@ -869,8 +872,19 @@ sub convert_function {
   
   # GJB:FIXME:: does not handle arguments properly yet
   # need to use "arg0", "arg1", etc for "$0", "$1", ...
-  # and use "win-id" for "$w"  GJB:FIXME:: may need hex-win-id
-  # procedure
+  # and use "win-id" for "$w"  
+  
+  # Handling arguments (DAM):
+  #  AFIACS, arguments will always be evaluated in a quoted-string context. 
+  #  Therefore, we need make the substitution
+  #    "foo bar $<digit> baz" => (string-append "foo bar " arg<digit> " baz")
+  #  This is where we miss the Scheme equivalent of string interpolation
+  #  or the '.' operator.
+
+  # GJB:FIXME:: may need hex-win-id procedure
+  # DAM:FIXME:GJB: 'xev', at least, takes window IDs in c-style 
+  # int notation, so decimal works OK.  Don't know what else you'd 
+  # use it for.
   
   my @lines = (split /\n/,$text);
   # first handle "I" functions
@@ -882,13 +896,24 @@ sub convert_function {
   }
   # now handle the "M", "C", and "D" triggers
   my $responses = "";
+  my %triggers;
   for my $l (@lines) {
     if ($l =~ m/^\s*"(\w)"\s+(.*)/) {
       my ($trigger, $rest) = ($1,$2);
       next if $trigger =~ m/"?I"?/i;
-      $responses .= "    (" . convert_trigger($trigger) .
-	" " . convert_action($rest) . ")\n";
+      if (! exists $triggers{$trigger}) {
+	$triggers{$trigger} = [ $rest ];
+      } else {
+	push @ {$triggers{$trigger}}, $rest;
+      }
     }
+  }
+  for my $t (keys %triggers) {
+    $responses .= "    (" . convert_trigger($t);  
+    for my $a (@ {$triggers{$t}}) {
+      $responses .= "\n      " . convert_action($a);
+    }
+    $responses .= ")\n";
   }
   if ($responses ne "") {
     $answer .= "  (case (mouse-event-type)\n$responses";
@@ -900,6 +925,27 @@ sub convert_function {
     $answer .= ")";		# close the "let"
   }
   $answer .= ")";
+
+#  return $answer;
+
+  # (DAM) Now, handle the arguments.  We assume (to make the regex
+  # easier) that the Scheme string we generate will not be split
+  # across line boundaries, which I'm pretty sure that this script
+  # doesn't do.
+  
+  @lines = split(/\n/, $answer);
+  for my $l (@lines) {
+    next unless $l =~ /\$[w\d]/;  # may false-positive?
+    $l =~ s!([^\\])"\$(\d)"!$1arg$2!g;  # special case
+    $l =~ s!("[^"\\]*(\\.[^"\\]*)*")!(string-append $1)!g or next;#) SYNTAXFIX 
+    $l =~ s!\$(\d)!" arg$1 "!g;
+    $l =~ s!\$w!" win-id "!g;
+    $l =~ s!\(string-append\s+("[^"\\]*(\\.[^"\\]*)*")\)!$1!g; # clean up
+    $l =~ s! ""!!g;  # and clean up some more
+  }
+  $answer = join("\n", @lines);
+
+  return $answer;
 }
 
 
@@ -1026,7 +1072,7 @@ sub prepare_for_menuitem {
     return "";
   }
 
-  if ($sexp =~ m/^\(popup-menu '(fvwm2-menu-[\w\d-_]+)/) { #SYNTAXFIX'
+  if ($sexp =~ m/^\(popup-menu '(fvwm2-menu-$id_char_seq)/o) { #SYNTAXFIX'
     return "'$1";
   } else {
     return "(lambda () $sexp)";
