@@ -587,7 +587,8 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
     if (!fOpaque) {
       RemoveRubberbandOutline(Scr.Root);
       RedrawOutlineAtNewPosition(Scr.Root, 
-                                 FRAME_X_VP(psw) - psw->bw, FRAME_Y_VP(psw) - psw->bw,
+                                 FRAME_X_VP(psw) - psw->bw, 
+                                 FRAME_Y_VP(psw) - psw->bw,
                                  FRAME_WIDTH(psw) + 2 * psw->bw,
                                  FRAME_HEIGHT(psw) + 2 * psw->bw);
     } else {
@@ -609,11 +610,11 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
 void 
 move_finalize(Window w, ScwmWindow * psw, int x, int y)
 {
-  scwm_msg(DBG,__FUNCTION__,"%d,%s, %d,%d",
-           (w==psw->frame), psw->name, x,y);
+  DBUG((DBG,__FUNCTION__,"%d,%s, %d,%d",
+        (w==psw->frame), psw->name, x,y));
   x += WIN_VP_OFFSET_X(psw);
   y += WIN_VP_OFFSET_Y(psw);
-  scwm_msg(DBG,__FUNCTION__,"adjusted to %d,%d", x,y);
+  DBUG((DBG,__FUNCTION__,"adjusted to %d,%d", x,y));
   if (w == psw->frame) {
     MoveTo(psw,x,y);
   } else {			/* icon window */
@@ -833,6 +834,18 @@ KeepOnTop()
   }
 }
 
+static
+Bool
+FIsPartiallyInViewport(const ScwmWindow *psw)
+{
+  return ! (((FRAME_X_VP(psw) + FRAME_HEIGHT(psw)) < 0) ||
+            (FRAME_Y_VP(psw) + FRAME_WIDTH(psw) < 0) ||
+            (FRAME_X_VP(psw) > Scr.DisplayWidth) || 
+            (FRAME_Y_VP(psw) > Scr.DisplayHeight));
+}
+     
+
+
 /**************************************************************************
  *
  * Moves focus to specified window 
@@ -846,8 +859,6 @@ FocusOn(ScwmWindow *psw, int DeIconifyOnly)
   int cx, cy;
 
 #endif
-  int x, y;
-
   if (!psw)
     return;
 
@@ -859,31 +870,33 @@ FocusOn(ScwmWindow *psw, int DeIconifyOnly)
     cx = psw->icon_xl_loc + psw->icon_w_width / 2;
     cy = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
   } else {
-    cx = FRAME_X(psw) + FRAME_WIDTH(psw) / 2;
-    cy = FRAME_Y(psw) + FRAME_HEIGHT(psw) / 2;
+    cx = FRAME_X_VP(psw) + FRAME_WIDTH(psw) / 2;
+    cy = FRAME_Y_VP(psw) + FRAME_HEIGHT(psw) / 2;
   }
 
-  dx = (cx + Scr.Vx) / Scr.DisplayWidth * Scr.DisplayWidth;
-  dy = (cy + Scr.Vy) / Scr.DisplayHeight * Scr.DisplayHeight;
+  /* go to an even multiple viewport */
+  dx = ((cx + Scr.Vx) / Scr.DisplayWidth) * Scr.DisplayWidth;
+  dy = ((cy + Scr.Vy) / Scr.DisplayHeight) * Scr.DisplayHeight;
 
   MoveViewport(dx, dy, True);
 #endif
 
-  if (psw->fIconified) {
-    x = psw->icon_xl_loc + psw->icon_w_width / 2;
-    y = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
-  } else {
-    x = FRAME_X(psw);
-    y = FRAME_Y(psw);
+#if 0 /* FIXGJB: what is this supposed to do? */
+  { /* scope */
+    int x, y;
+    if (psw->fIconified) {
+      x = psw->icon_xl_loc + psw->icon_w_width / 2;
+      y = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
+    } else {
+      x = FRAME_X(psw);
+      y = FRAME_Y(psw);
+    }
   }
+#endif
   KeepOnTop();
 
-  /* If the window is still not visible, make it visible! */
-  if (((FRAME_X(psw) + FRAME_HEIGHT(psw)) < 0) ||
-      (FRAME_Y(psw) + FRAME_WIDTH(psw) < 0) ||
-      (FRAME_X(psw) > Scr.DisplayWidth) || 
-      (FRAME_Y(psw) > Scr.DisplayHeight)) {
-    MoveTo(psw,0,0);
+  if (!FIsPartiallyInViewport(psw)) {
+    move_finalize(psw->frame,psw,0,0);
     if (!psw->fClickToFocus)
       XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
@@ -920,8 +933,8 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
     cx = psw->icon_xl_loc + psw->icon_w_width / 2;
     cy = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
   } else {
-    cx = FRAME_X(psw) + FRAME_WIDTH(psw) / 2;
-    cy = FRAME_Y(psw) + FRAME_HEIGHT(psw) / 2;
+    cx = FRAME_X_VP(psw) + FRAME_WIDTH(psw) / 2;
+    cy = FRAME_Y_VP(psw) + FRAME_HEIGHT(psw) / 2;
   }
 
   dx = (cx + Scr.Vx) / Scr.DisplayWidth * Scr.DisplayWidth;
@@ -935,25 +948,21 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
     y = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2 + 2;
   } else {
     if (x_unit != Scr.DisplayWidth)
-      x = FRAME_X(psw) + 2 + warp_x;
+      x = FRAME_X_VP(psw) + 2 + warp_x;
     else
-      x = FRAME_X(psw) + 2 + (FRAME_WIDTH(psw) - 4) * warp_x / 100;
+      x = FRAME_X_VP(psw) + 2 + (FRAME_WIDTH(psw) - 4) * warp_x / 100;
     if (y_unit != Scr.DisplayHeight)
-      y = FRAME_Y(psw) + 2 + warp_y;
+      y = FRAME_Y_VP(psw) + 2 + warp_y;
     else
-      y = FRAME_Y(psw) + 2 + (FRAME_HEIGHT(psw) - 4) * warp_y / 100;
+      y = FRAME_Y_VP(psw) + 2 + (FRAME_HEIGHT(psw) - 4) * warp_y / 100;
   }
   if (warp_x >= 0 && warp_y >= 0) {
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, x, y);
   }
   KeepOnTop();
 
-  /* If the window is still not visible, make it visible! */
-  if (((FRAME_X(psw) + FRAME_HEIGHT(psw)) < 0) || 
-      (FRAME_Y(psw) + FRAME_WIDTH(psw) < 0) ||
-      (FRAME_X(psw) > Scr.DisplayWidth) || 
-      (FRAME_Y(psw) > Scr.DisplayHeight)) {
-    MoveTo(psw,0,0);
+  if (!FIsPartiallyInViewport(psw)) {
+    move_finalize(psw->frame,psw,0,0);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
   UngrabEm();

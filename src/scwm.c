@@ -517,7 +517,6 @@ scwm_main(int argc, char **argv)
   init_face();
   init_shutdown();
   init_xproperty();
-  init_xrm();
   init_events();
   init_deskpage();
   init_placement();
@@ -813,6 +812,7 @@ will be processed in the order in which they were specified.</seg>
   init_borders();
   init_resize_gcs();
   XrmInitialize();
+  init_xrm();
 
   /* must come after variables are init'd */
   Scr.MsgWindow = CreateMessageWindow( BlackPixel(dpy,Scr.screen), 
