@@ -338,6 +338,7 @@ bind_key(SCM contexts, SCM key, SCM proc)
   case -2:
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("bind-key", 1, contexts);
+    
     break;
   default:
   }
@@ -349,44 +350,51 @@ bind_key(SCM contexts, SCM key, SCM proc)
    * XGrabKey call in GrabKeys().
    */
   if (keysym ==  NoSymbol || !fOkayKey) {
+    char *keyname = gh_scm2newstr(key,&len);
     gh_allow_ints();
     SCM_ALLOW_INTS;
-    scwm_msg(WARN,__FUNCTION__,"Bad key binding");
-  } else {
-    /* 
-     * One keycode might map to the same keysym -MS
-     */
-    
-    XDisplayKeycodes(dpy, &min, &max);
-    for (i = min; i <= max; i++)
-      if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
-	Binding *prev_binding = Scr.AllBindings;
-	Scr.AllBindings = (Binding *) safemalloc(sizeof(Binding));
-	Scr.AllBindings->IsMouse = 0;
-	Scr.AllBindings->Button_Key = i;
-	Scr.AllBindings->key_name = gh_scm2newstr(key,&len);
-	Scr.AllBindings->Context = context;
-	Scr.AllBindings->Modifier = modmask;
-	Scr.AllBindings->Action = "Scheme";
-	Scr.AllBindings->Thunk = proc;
-	Scr.AllBindings->NextBinding = prev_binding;
-	scm_protect_object(proc);
-	if (Scr.flags & WindowsCaptured) {
-	  /* only grab the key if we have already captured,
-	     otherwise it's a waste of time since we will grab
-	     them all later when we do the initial capture;
-	     this is good, since initialization probably defines
-	     lots of key bindings */
-	  grab_key_all_windows(i,modmask);
-	}
-	fBoundKey = True;
-      }
+    scwm_msg(WARN,__FUNCTION__,"Bad key binding -- no symbol `%s'",keyname);
+    free(keyname);
+    return SCM_UNDEFINED;  /* Using SCM_UNDEFINED for an error -- MSFIX: is this ok? */
   }
+  /* 
+   * One keycode might map to the same keysym -MS
+   */
+  
+  XDisplayKeycodes(dpy, &min, &max);
+  for (i = min; i <= max; i++)
+    if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
+      Binding *prev_binding = Scr.AllBindings;
+      Scr.AllBindings = (Binding *) safemalloc(sizeof(Binding));
+      Scr.AllBindings->IsMouse = 0;
+      Scr.AllBindings->Button_Key = i;
+      Scr.AllBindings->key_name = gh_scm2newstr(key,&len);
+      Scr.AllBindings->Context = context;
+      Scr.AllBindings->Modifier = modmask;
+      Scr.AllBindings->Action = "Scheme";
+      Scr.AllBindings->Thunk = proc;
+      Scr.AllBindings->NextBinding = prev_binding;
+      scm_protect_object(proc);
+      if (Scr.flags & WindowsCaptured) {
+	/* only grab the key if we have already captured,
+	   otherwise it's a waste of time since we will grab
+	   them all later when we do the initial capture;
+	   this is good, since initialization probably defines
+	   lots of key bindings */
+	grab_key_all_windows(i,modmask);
+      }
+      fBoundKey = True;
+    }
   SCM_REALLOW_INTS;
   if (!fBoundKey) {
-    /* FIXGJB: prefer a better error mechanism allowing better
-       descriptions -- would like to display the keysym/keycode */
-    scwm_error_imm("bind-key", "No matching keycode!");
+    char *keyname = gh_scm2newstr(key,&len);
+    gh_allow_ints();
+    SCM_ALLOW_INTS;
+    scwm_msg(WARN,__FUNCTION__,"No matching keycode for symbol `%s'",keyname);
+    free(keyname);
+    /* FIXGJB: is there a guile-specific way to warn? This shouldn't be fatal */
+/*    scwm_error_imm("bind-key", "No matching keycode!"); */
+    return SCM_UNDEFINED; /* use SCM_UNDEFINED for error */
   }
   return SCM_UNSPECIFIED;
 }
