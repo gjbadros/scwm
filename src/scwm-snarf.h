@@ -17,14 +17,25 @@
 gcc -DHAVE_CONFIG_H -I. -I. -I../include -I/usr/X11R6/include -I/uns/include -E -C -DSCWM_EXTRACT_COMMENTS binding.c
 */
 
+#if defined(__cplusplus) || defined(GUILE_CPLUSPLUS_SNARF)
+SCM scwm_make_gsubr(const char *name, int req, int opt, int rst, SCM (*fcn)(...), char *szArgList);
+#else
+SCM scwm_make_gsubr(const char *name, int req, int opt, int rst, SCM (*fcn)(), char *szArgList);
+#endif
+
 #ifndef SCWM_EXTRACT_COMMENTS
 #ifndef SCM_MAGIC_SNARFER
 #define SCWM_PROC(fname,primname, req, opt, var, ARGLIST) \
 	SCM_PROC(s_ ## fname, primname, req, opt, var, fname); \
 SCM fname ARGLIST
 #else
+#if defined(__cplusplus) || defined(GUILE_CPLUSPLUS_SNARF)
 #define SCWM_PROC(fname,primname, req, opt, var, ARGLIST) \
-	SCM_PROC(s_ ## fname, primname, req, opt, var, fname);
+%%%	scwm_make_gsubr(s_ ## fname, req, opt, var, (SCM (*)(...))fname, %/%/ #ARGLIST);
+#else
+#define SCWM_PROC(fname,primname, req, opt, var, ARGLIST) \
+%%%	scwm_make_gsubr(s_ ## fname, req, opt, var, (SCM (*)())   fname, %/%/ #ARGLIST);
+#endif
 #endif
 #endif
 

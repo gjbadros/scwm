@@ -113,7 +113,6 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 #include <X11/extensions/XTest.h>
 #endif
 
-
 #define MAXHOSTNAME 255
 
 void init_borders(); /* borders.c */
@@ -1583,6 +1582,21 @@ UnBlackoutScreen()
   }
 }				/* UnBlackoutScreen */
 
+
+SCM
+scwm_make_gsubr(const char *name, int req, int opt, int var, SCM (*fcn)(), char *szArgList)
+{
+  static SCM sym_arglist = SCM_UNDEFINED;
+  if (SCM_UNDEFINED == sym_arglist)
+    sym_arglist = scm_permanent_object(((scm_cell *)scm_intern0("arglist"))->car);
+  { /* scope */
+  SCM p = scm_make_gsubr(name,req,opt,var,fcn);
+  SCM arglist = gh_eval_str(szArgList);
+  scm_permanent_object(arglist);
+  scm_set_procedure_property_x(p,sym_arglist,arglist);
+  return p;
+  }
+}
 
 void init_scwm_load_path()
 {

@@ -1,0 +1,7 @@
+#!/bin/sh -
+# (C) 1999 Greg J. Badros
+# Handle snarfs with embedded %/%/ separating the arglist of procedures
+# from the rest.
+# See scwm-snarf.h for what expands SCWM_PROC macros to what we process here.
+guile-snarf "$@" | \
+  awk -F"%/%/" '{ gsub(/SCM /,"",$2); gsub(/,/,"",$2); gsub(/"\(/, "\"'"'"'(", $$2); print $1 $2;}'
