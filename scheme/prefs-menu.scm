@@ -29,6 +29,8 @@
 
 
 
+(define-public animation-ms-delay 50)
+
 (define-public save-header
   ";; text from here to the EOF is overwritten by save-settings")
 
