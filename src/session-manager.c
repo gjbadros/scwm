@@ -115,7 +115,7 @@ static unsigned char *getWindowClientId(ScwmWindow *psw)
   }
   if (leader)
     win = *(Window *)leader;
-  else if (psw->wmhints->flags & WindowGroupHint)
+  else if (psw->wmhints && (psw->wmhints->flags & WindowGroupHint))
     win = psw->wmhints->window_group;
   else if (psw->fTransient)
     win = psw->transientfor;
