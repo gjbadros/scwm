@@ -919,6 +919,12 @@ sub ProcessHeader( $$$ ) {
   my $sgml_id = $cprimname;
   $sgml_id =~ s/_/-/g;
 
+  # Remove trailing \n\ lines from the C source's comments that
+  # were embedded in literal strings to make the strings ANSI-compliant
+  # Those need to be removed because we're reading the unprocessed
+  # source code;  the .doc files can be handled differently
+  $comment =~ s/\\n\\$//mg;
+
   # Now want to do the markup of $comment, and set $markup_comment
   # FIXGJB: fold into testing, above
   my $markup_comment = MarkupComment($comment);
