@@ -1,3 +1,19 @@
+Tue Sep 14 13:02:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Invert sense of switch -- now --document-formals, and by 
+	default they are undocumented.
+
+	* events.c: Use scm_empty_hook_p, not FEmptyHook.
+	(HandleClientMessage) Use PswFromAnyWindow, not PswFromWindow --
+	this fixes the spurious selection problem with gnome-hints when
+	collapsing the gnome pager. Thanks Jay Belanger for bug report!
+
+	* callbacks.h: Added proto for scm_empty_hook_p, drop it for
+	FEmptyHook(). 
+
+	* callbacks.c: Drop FEmptyHook(), write scm_empty_hook_p for old
+	guiles.
+
 Mon Sep 13 22:45:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.c ("init_modifiers"): Drop the "Doing n XGrabKey

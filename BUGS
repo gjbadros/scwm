@@ -1,4 +1,6 @@
 -------
+quote undefined problem w/ guile
+-------
 *preferences-use-notebook* set to #f causes a seg fault in the gc
 from guile-gtk code, it seems. --09/13/99 gjb
 -------
