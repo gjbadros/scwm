@@ -34,6 +34,7 @@
              (app scwm style)
 	     (app scwm face)
 	     (app scwm optargs)
+	     (app scwm menus-extras)
 	     (app scwm std-menus)
 	     (app scwm prefs-menu)
 	     (app scwm doc)
@@ -99,7 +100,7 @@
 
 (define xterm-user-shell-options "-e start-zsh")
 (define xterm-other-host "bowman")
-(define xterm-program-name "color-xterm")
+(define xterm-program-name "nxterm")
 
 (define use-complete-host-menu #t)
 (define xterm-other-host-use-local-xterm #t)
@@ -123,7 +124,7 @@
   (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 (define window-font
   (make-font "*helvetica*bold-r*12*"))
-(define menu-font
+(define basic-menu-font
   (make-font "*helvetica*medium-r*12*"))
 (define bold-menu-font
   (make-font "*helvetica*bold-r*9*"))
@@ -242,7 +243,7 @@
 ;; (color-properties (make-color "#cc88ff"))
 
 (menu-style #:fg "black" #:bg "gray80" #:stipple "grey35" 
-	    #:font menu-font)
+	    #:font basic-menu-font)
 
 ;; (select-window-interactively "Pick window #1")
 
@@ -755,8 +756,8 @@
     (menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
 	       #:action (lambda () (restart "scwm")))
     menu-separator
-    (menuitem "Yes" #:image-left "mini-exclam.xpm" #:action quit)
-    (menuitem "No"  #:image-left "mini-cross.xpm" #:action noop))))
+    (menuitem "&Yes" #:image-left "mini-exclam.xpm" #:action quit)
+    (menuitem "&No"  #:image-left "mini-cross.xpm" #:action noop))))
 
 (define (quit-verify)
   (popup-menu menu-quit-verify #t))
@@ -1021,8 +1022,7 @@
     menu-separator
     (menuitem "Desks" #:action menu-desk)
     menu-separator
-    (menuitem "Exit scwm" menu-quit-verify))
-   #:font bold-menu-font))
+    (menuitem "Exit scwm" menu-quit-verify))))
 
 (define (make-small-window-ops-menu w)
   (menu
@@ -1070,11 +1070,10 @@
 
 ;;; first our root menus
 (bind-mouse 'root 1 popup-root-start)
-(bind-mouse 'root 2 (lambda () 
-		      (show-window-list-menu #:show-geometry #t)))
-;;(bind-mouse 'all 2 (lambda () (show-window-list-menu #:show-geometry #t)))
+(bind-mouse 'root 2 (lambda () (show-window-list-menu #:by-focus #t #:show-geometry #t)))
 (bind-mouse 'root "M-3" (lambda () (popup-menu 'menu-desk)))
 (bind-mouse 'root 3 popup-applications)
+(bind-mouse 'all "H-1" (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
 
 ;;; operations on parts of the window
 (bind-mouse '(frame sidebar) 2 popup-small-ops)
@@ -1207,6 +1206,7 @@
 (bind-key 'all "C-S-Return" show-icon-list-menu)
 
 (bind-key 'all "C-S-M-z" (thunk popup-menu-root-start))
+(bind-key 'all "H-z" (thunk popup-menu-root-start))
 
 (set-click-delay! 150)
 
@@ -1221,7 +1221,7 @@
 ;; Fluid, cartoon-like, overshoots target
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
 
-(let ((p (lambda () animated-move-to 0 0)))
+(let ((p (lambda () (animated-move-to 0 0))))
   (bind-key 'all "C-M-KP_7" p)
   (bind-key 'all "C-M-KP_Home" p))
 
@@ -1247,8 +1247,8 @@
 
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to (x- (w%x 100)) #f)))))
- (bind-key 'all "C-M-KP_6" p)
- (bind-key 'all "C-M-KP_Right" p))
+  (bind-key 'all "C-M-KP_6" p)
+  (bind-key 'all "C-M-KP_Right" p))
 
 (let ((p (lambda () (with-window (get-window) 
 				 (animated-move-to #f (y- (w%y 100)))))))
