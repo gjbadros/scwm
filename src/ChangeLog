@@ -1,3 +1,9 @@
+Tue Nov 24 08:17:06 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (s_get_window_context): Add FIXME note regarding the
+	acceptable doc-extraction warning (window_context cannot be the C
+	name of the window-context function because it is a variable)
+
 1998-11-24  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* borders.c, events.c, scwm.c, scwm.h, xproperty.c: Changed all

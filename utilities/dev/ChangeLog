@@ -1,3 +1,8 @@
+Tue Nov 24 08:15:27 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Added -H, -N options to output hooks and concepts
+	documentation to text files.  Thanks Carl Witty!
+
 Mon Nov 16 22:12:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.am: Don't redundantly distribute X-error-describe
