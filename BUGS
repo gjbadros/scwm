@@ -1,4 +1,6 @@
 -------
+XEmacs pixmap icon doesn't survive after a restart (James Achtung Crippe) --09/15/99 gjb
+-------
 quote undefined problem w/ guile
 -------
 *preferences-use-notebook* set to #f causes a seg fault in the gc

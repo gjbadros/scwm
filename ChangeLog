@@ -1,3 +1,14 @@
+Thu Sep 16 12:12:20 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Bump to 0.99.2post.  Test for viavoice. Drop
+ 	corba/Makefile from output list (real corba interface is in
+ 	modules/corba-- the corba/ directory is obsoleted), add
+ 	modules/viavoice/Makefile to the list.
+
+	* acconfig.h: Added HAVE_VIAVOICE
+
+	* Makefile.am: Drop corba subdir (module/corba is the right dir).
+
 Tue Sep 14 15:06:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Fix typo -- et. al. -> et al.

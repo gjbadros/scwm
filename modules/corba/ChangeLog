@@ -1,3 +1,11 @@
+Thu Sep 16 12:09:55 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-corba-exec.c: Use new names, fix macros NAME and VERSION so 
+	they are less likely to collide.
+
+	* scwm_scheme_evaluator.idl: Change module name to "scwm", and
+	interface name to "scheme_evaluator"
+
 Sun Sep  5 21:33:21 1999    <gjb@cs.washington.edu>
 
 	* scwmcorba.c: Added, and moved everything into modules/corba

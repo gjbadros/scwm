@@ -1,3 +1,13 @@
+Thu Sep 16 12:10:58 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added viavoice to SUBDIRS.
+
+Thu Sep 16 11:27:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice/Makefile.am, viavoice/scwmgrammar.bnf,
+	viavoice/scwmviavoice.c: Added -- simple interface to IBM ViaVoice 
+	voice recognition technology!
+
 Thu Sep  2 17:57:00 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c: Drop some bogus code testing for

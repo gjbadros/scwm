@@ -1,3 +1,13 @@
+Thu Sep 16 11:54:45 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added prompting-shell.scm, viavoice.scm
+
+	* prompt-range.scm, prompt-font.scm, prompt-enum.scm,
+	prompt-color.scm, prompt-bool.scm: Use prompt-shell module to
+	reduce amount of redundant code.
+
+	* viavoice.scm, prompting-shell.scm: Added.
+
 1999-09-16  Jeff Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints.scm: Fixed doc strings associated with 

@@ -2,15 +2,15 @@ Scwm 0.99.2 is released.
 
 * What Scwm is:
 
-Scwm is the Scheme Constraints Window Manager. This is a highly
-dynamic and extensible window manager and scripting facility for the X
-Window System (based originally on fvwm2, but now much enhanced) with
-Guile Scheme as the configuration/extension language. Nearly all
-decorations can be changed at run-time or per-window, and eventually
-many decoration styles and additional features will be supported
-through dynamically loaded code. A powerful protocol is provided for
-interacting with the window manager while it is running.
-
+Scwm is the Scheme Constraints Window Manager, a highly dynamic and
+extensible window manager for the X Window System.  Scwm embeds Guile
+Scheme as the configuration and extension language, and includes a
+sophisticated constraint solver for permitting the user to interactively
+specify constraints among top-level window sizes and positions.  Nearly
+all decorations can be changed at run-time on a per-window basis.
+Dynamic loading of C modules is supported.  Scwm is self-documenting and
+provides A powerful protocol for interacting with the window manager
+from other processes
 
 * Primary Authors:
 
