@@ -1,5 +1,8 @@
 Some error messages are looked up in a table that is distant from the error.
 ---------------
+popup-menus attached to decorations come up centered over the click, instead of 
+flush with the window edge
+---------------
 xdvorak's change mapping should cause all keybindings to be reset and
 new keycodes to be gotten
 ---------------
