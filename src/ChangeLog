@@ -1,3 +1,10 @@
+Tue Sep 15 13:37:36 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* menu.c:  Use XLookupString to convert a key event into a string
+	when looking up menu shortcuts so that keypad numbers can be used
+	in a menu.  Scwm-ified version of Tim Phipps's patch to my fvwm2
+	menu code.
+
 Tue Sep 15 09:30:45 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	These changes all by Todd Larason -- thanks Todd!

@@ -10,7 +10,7 @@
 			   (make-menuitem "bip" #f)
 			   (make-menuitem "bom" #f)
 			   (make-menuitem "bal" #f)
-			   (make-menuitem "biz" #f))
+			   (make-menuitem "biz 123" #f #f #f #f #f #f "123"))
 		     (make-image "linux-menu.xpm") 'top (make-color "blue")))
 (popup-menu m)
 

@@ -1,3 +1,9 @@
+Tue Sep 15 13:40:59 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* libmain.c (scwmexec_exec_full): Fix race condition-- must select 
+	for PropertyChange events before changing the properties!  Added
+	$Id$
+
 1998-06-21  Maciej Stachowiak  <maciej@localhost.localdomain>
 
 	* libmain.c: Add copyright notice.
