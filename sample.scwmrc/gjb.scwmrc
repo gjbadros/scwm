@@ -234,17 +234,26 @@
   ())
 
 (define (popup-util)
-  (popup-menu 'menu-util))
+  (popup-menu (thunk menu-util)))
 
 (define (popup-applications)
-  (popup-menu 'menu-applications))
+  (popup-menu (thunk menu-applications)))
 
 
 (define (popup-root-start)
-  (popup-menu 'menu-root-start))
+  (popup-menu (thunk menu-root-start)))
 
 (define (show-icon-list-menu)
   (show-window-list-menu #:only iconified? #:warp-to-first #t))
+
+(define (show-xterm-window-list-menu)
+  (show-window-list-menu #:only (lambda (w) (string=? (window-class w) "XTerm")) 
+			 #:warp-to-first #t))
+
+
+;;(select-window-from-window-list)
+;;(select-window-interactively)
+;;(restack-windows (select-multiple-windows-interactively))
 
 (debug-display "Before setting image-load-path\n")
 
@@ -278,7 +287,7 @@
 
 (define pic-unknown
   (make-image "unknown1.xpm"))
-
+;; (reset-scwm-exec-protocol)
 
 ;;-------------------------------;;
 ;; set some window styles        ;;
@@ -306,6 +315,12 @@
 	      #:icon-box (list 0 1 69 (y- 141)))
 
 (window-style "xlogo" #:no-titlebar #t #:normal-border #t)
+
+;; (set-object-property! (select-window-interactively) 'squashed-titlebar #t)
+
+;; This gets my netscape bookmarks windows to do the right thing
+;; and stay on screen (instead of being half off screen when mapped)
+(set-smart-placement-is-really-smart! #t)
 
 ;; (normal-border (current-window-with-pointer))
 
@@ -572,37 +587,39 @@
     (menuitem "&Resize" #:image-left "mini-resize.xpm" 
 	       #:action opaque-interactive-resize)
     (menuitem "R&aise" #:image-left "mini-raise.xpm" 
-	       #:action 'raise-window)
+	       #:action (thunk raise-window))
     (menuitem "&Lower" #:image-left "mini-lower.xpm" 
-	       #:action 'lower-window)
+	       #:action (thunk lower-window))
     (menuitem "&Iconify/Restore" #:image-left "mini-iconify.xpm" 
-	       #:action 'toggle-iconify)
+	       #:action (thunk toggle-iconify))
     (menuitem "&Stick/Unstick" #:image-left "mini-stick.xpm" 
-	       #:action 'toggle-stick)
-    (menuitem "Ma&ximize/Reset" #:action 'both-toggle-maximize)
+	       #:action (thunk toggle-stick))
+    (menuitem "Ma&ximize/Reset" #:action (thunk both-toggle-maximize))
     (menuitem "Ma&ximize &Tall/Reset" #:image-left "mini-maxtall.xpm" 
-	       #:action 'vertical-toggle-maximize)
+	       #:action (thunk vertical-toggle-maximize))
     (menuitem "Maximize &Wide/Reset" #:image-left "mini-maxwide.xpm"
-	       #:action 'horizontal-toggle-maximize)
-    (menuitem "S&hade/Reset" 
-	       #:action 'toggle-window-shade)
+	       #:action (thunk horizontal-toggle-maximize))
+    (menuitem "Animated S&hade/Reset" 
+	       #:action (thunk toggle-window-shade-animated))
+    (menuitem "Shade/Reset" 
+	       #:action (thunk toggle-window-shade))
     menu-separator
-    (menuitem "Keep-&on-top/Reset" #:action 'toggle-on-top)
-    (menuitem "&Print" #:action 'print-window)
+    (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
+    (menuitem "&Print" #:action (thunk print-window))
     menu-separator
-    (menuitem "&Delete" #:action 'delete-window)
+    (menuitem "&Delete" #:action (thunk delete-window))
     (menuitem "&Close" #:image-left "mini-cross.xpm" 
 	       #:action (lambda () (close-window (get-window))))
     (menuitem "&Kill" #:image-left "mini-bomb.xpm" 
-	       #:action 'destroy-window)
+	       #:action (thunk destroy-window))
     menu-separator
     (menuitem "Switch to..." #:action
 	       (lambda () 
 		 (show-window-list-menu #:show-geometry #t)))
     (menuitem "Re&fresh Screen" #:image-left "mini-ray.xpm" 
-	       #:action 'refresh))))
+	       #:action (thunk refresh)))))
 
-;;(popup-menu 'menu-window-ops)
+;;(popup-menu (thunk menu-window-ops))
 ;;(menu-properties menu-window-ops)
 
 (defmacro menuitem-for-exec (name pixmap . body)
@@ -828,54 +845,54 @@
     (menuitem "Start" #:image-left "mini-exp.xpm")
     menu-title
     (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
-	      #:action 'start-xterm)
+	      #:action (thunk start-xterm))
     (menuitem "&Applications" #:image-left "mini-x2.xpm" 
-	      #:action 'menu-applications)
+	      #:action (thunk menu-applications))
     (menuitem "&Utilities" #:image-left "mini-hammer.xpm" 
-	      #:action 'menu-utilities)
+	      #:action (thunk menu-utilities))
     (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm" 
-	      #:action 'menu-multimedia)
+	      #:action (thunk menu-multimedia))
     (menuitem "&Games" #:image-left "mini-happy.xpm" 
-	      #:action 'menu-games)
+	      #:action (thunk menu-games))
     menu-separator
     (menuitem "H&osts - Servers" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-hosts-servers)
+	      #:action (thunk menu-hosts-servers))
     (menuitem "Hosts - Linux" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-hosts-linux)
+	      #:action (thunk menu-hosts-linux))
     (menuitem "Hosts - Solaris" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-hosts-solaris)
+	      #:action (thunk menu-hosts-solaris))
     (menuitem "Hosts - Other" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-hosts-other)
+	      #:action (thunk menu-hosts-other))
     (menuitem "&System Utilities" #:image-left "mini-connect.xpm" 
-	      #:action 'menu-system-utilities)
+	      #:action (thunk menu-system-utilities))
     (menuitem "&Window Operations" #:image-left "mini-windows.xpm" 
-	      #:action 'menu-window-ops)
+	      #:action (thunk menu-window-ops))
     (menuitem "&Preferences" #:image-left "mini-prefs.xpm" 
 	      #:action (menu-prefs))
 ;;	      #:action menu-prefs-gjb)
     menu-separator
     (menuitem "S&creensaver" #:image-left "mini-display.xpm" 
-	      #:action 'menu-screensaver)
+	      #:action (thunk menu-screensaver))
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
-	      #:action 'exec-xlock)
+	      #:action (thunk exec-xlock))
     menu-separator
     (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
-	      #:action 'scwm-about-message)
+	      #:action (thunk scwm-about-message))
     (menuitem "&Help ScwmTNL" #:image-left "mini-question.xpm" 
-	      #:action 'scwm-help)
+	      #:action (thunk scwm-help))
     (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
-	      #:action 'menu-quit-verify))
+	      #:action (thunk menu-quit-verify)))
    #:image-side "linux-menu.xpm"
    #:color-bg-image-side "blue"))
 
 (debug-display "before-popup-menu-root-start\n")
 
 (define (popup-menu-root-start)
-  (popup-menu 'menu-root-start))
+  (popup-menu (thunk menu-root-start)))
 
 
 (define (popup-window-ops)
-  (popup-menu 'menu-window-ops))
+  (popup-menu (thunk menu-window-ops)))
 
 (define menu-desk 
   (menu 
@@ -904,14 +921,14 @@
     (menuitem "Desks" #:action menu-desk)
     menu-separator
     (menuitem "Exit scwm" menu-quit-verify))
-   #:font 'bold-menu-font))
+   #:font bold-menu-font))
 
 
 (define (popup-util)
-  (popup-menu 'menu-util))
+  (popup-menu (thunk menu-util)))
 
 (define (popup-root-start)
-  (popup-menu 'menu-root-start))
+  (popup-menu (thunk menu-root-start)))
 
 (define (make-small-window-ops-menu w)
   (menu
@@ -942,7 +959,7 @@
 		 (menuitem (if (window-shaded? w)
 			       "Unwindow-S&hade"
 			       "Window-S&hade")
-			   #:action toggle-window-shade)
+			   #:action toggle-window-shade-animated)
 		 (menuitem (if (kept-on-top? w)
 			       "UnKeep On Top"
 				   "Keep On Top") 
@@ -961,7 +978,7 @@
 (bind-mouse 'root 1 popup-root-start)
 (bind-mouse 'root 2 (lambda () 
 		      (show-window-list-menu #:show-geometry #t)))
-(bind-mouse 'root "M-3" (lambda () (popup-menu 'menu-desk)))
+(bind-mouse 'root "M-3" (lambda () (popup-menu (thunk menu-desk))))
 (bind-mouse 'root 3 popup-applications)
 
 ;;; operations on parts of the window
@@ -975,6 +992,7 @@
     (else (move-or-raise))))
 (bind-mouse 'title 1 move-or-shade)
 (bind-mouse 'title 2 lower-window)
+(bind-mouse 'title 3 popup-window-ops)
 
 
 ;; key bindings for the menus
@@ -1188,3 +1206,7 @@
 ;; Remove the windows that are showing tail -f's on 
 ;; scwm error messages and .Xsession errors
 (system "test -r ${HOME}/.tracepids && { kill `cat ${HOME}/.tracepids`; rm -f ${HOME}/.tracepids }")
+
+;;(hide-titlebar (current-window-with-pointer))
+;;(show-titlebar (current-window-with-pointer))
+;;(load "/scratch/gjb/scwm/scheme/flux.scm")
