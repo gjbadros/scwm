@@ -2,7 +2,7 @@ Scwm 0.99.2 is released.
 
 * What Scwm is:
 
-Scwm is the Scheme Configurable Window Manager. This is a highly
+Scwm is the Scheme Constraints Window Manager. This is a highly
 dynamic and extensible window manager and scripting facility for the X
 Window System (based originally on fvwm2, but now much enhanced) with
 Guile Scheme as the configuration/extension language. Nearly all
@@ -15,11 +15,13 @@ interacting with the window manager while it is running.
 * Primary Authors:
 
 Greg J. Badros <gjb@cs.washington.edu>
-Maciej Stachowiak <mstachow@mit.edu> 
+Maciej Stachowiak <mstachow@alum.mit.edu> 
 
-Other substantial contributors include Robert Bihlmeyer
-<robbe@orcus.priv.at>, Todd Larason <jtl@molehill.org>, Jeff
-Nichols<jwnichls@cs.washington.edu>, and Sam Steingold <sds@goems.com>.
+Other substantial contributors include:
+  Robert Bihlmeyer <robbe@orcus.priv.at>, 
+  Todd Larason <jtl@molehill.org>, 
+  Jeff Nichols <jwnichls@cs.washington.edu>, and
+  Sam Steingold <sds@goems.com>.
 
 Many more people have contributed bug reports, bug fixes, or smaller
 changes; see AUTHORS and THANKS in the distribution.
@@ -53,33 +55,28 @@ buttons, etc. Some of these images are not available otherwise.
 You will also need to download and install the guile library. You can
 get the latest release from:
 
-ftp://prep.ai.mit.edu/pub/gnu/guile-1.3.2.tar.gz
+ftp://prep.ai.mit.edu/pub/gnu/guile
 
 or any archive that has GNU source packages available.
 
 You can get the latest guile snapshot from:
 
-ftp://red-bean.com/pub/guile
+http://www.gnu.org/software/guile/guile.html
 
 The snapshots are officially alpha but they generally work pretty
-well; however, 1.3.2 is reccomended for now since it is the most 
+well; however, 1.3.2a is reccomended for now since it is the most 
 recent. Guile 1.2 is no longer supported.
 
 
-* Binary packages
+* Packages
 
-An RPM package for Red Hat Linux 5.2/i386 is avaialble at
+Various binary RPMs are available at:
 
-ftp://scwm.mit.edu/pub/scwm/scwm-0.99.2-1.i386.rpm
+ftp://scwm.mit.edu/pub/scwm/RPMS/
 
-The source RPM is at 
+Various source RPMs are available at:
 
-ftp://scwm.mit.edu/pub/scwm/scwm-0.99.2-1.src.rpm
-
-This package requires guile-1.3 or guile-1.3.2 RPMs available
-from RedHat.
-
-Other binary packages of this release may become available over time.
+ftp://scwm.mit.edu/pub/scwm/SRPMS
 
 See the NEWS file in the distribution for a complete list
 of all that has changed since the previous version of Scwm.

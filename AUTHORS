@@ -59,6 +59,19 @@ Primary author of the following files under the modules directory:
    pie-menus/draw-pie-menu.c xpm-menus/draw-xpm-menu.c
 
 
+
+Jeff Nichols, jwnichls@cs.washington.edu>:
+
+much of the work on the constraints user interface was written by
+Jeff. Is largely responsible (with Greg, mostly) for scheme/:
+
+   message-window.scm nonants.scm
+   ui-constraints-buttons.scm ui-constraints-classes.scm
+   ui-constraints-composition.scm
+   ui-constraints-gdk-drawing.scm
+   ui-constraints-gtk-toggle-menu.scm
+
+
 
 Legacy Authors of Code from which Scwm originally derived
 =========================================================
