@@ -345,6 +345,8 @@
 ;;(set-color-map-focus! 'follows-mouse)
 ;;(set-desk-size! 3 3)
 ;;(set-window-focus! 'click (get-window))
+;;(window-style "*" #:focus 'click)
+;;(window-style "*" #:focus 'mouse)
 ;;(set-window-focus! 'mouse (get-window))
 
 (set-edge-resistance! 500 10)
@@ -447,7 +449,7 @@
 				   (string=? (window-class w) "NXTerm")) )
 			 #:warp-to-first #t
 			 #:proc animated-deiconify-to-viewport-focus-raise
-			 #:flash-window-proc flash-window
+			 #:flash-window-proc flash-window-on
 			 #:unflash-window-proc unflash-window))
 
 
