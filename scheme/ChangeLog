@@ -1,3 +1,21 @@
+Sat Apr 10 17:06:19 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* hover-focus.scm: Fixed the : -> #: in the define-scwm-option,
+	and added the define of the hover-focus-window variable.  Also
+	make hover-focus windows default to 'click focus style, and revert 
+	when hover-focus is turned off on them.  Added exported 
+	`uninstall-hover-focus' proc, too.
+
+	* base.scm: Added fg, bg, font keyword args to menuitem proc, and
+	set them using new setters.
+
+	* style.scm: Change default-style-condition-handler from
+	window-match?? to resource-match?? as matching on titles really is
+	the wrong behaviour (and I finally got annoyed enough by this
+	because an xterm started up sticky w/ nofocus just because the
+	last program I started in it was an "xload" [I make my xterm title 
+	display the last program it was running for more than 5 seconds]).
+
 1999-04-09  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* prompt-color.scm (prompt-color-hbox): Initialize the color
