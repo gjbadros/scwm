@@ -143,7 +143,7 @@
 ;;; over this more.
 
 (define mini-icon-button-face 
-  (make-face '((relief raised))
+  (make-face '((relief flat))
 	     '((pixmap mini-program-icon))))
 
 ;; Can use strings as arg to pixmap
@@ -230,8 +230,6 @@
 		  (lambda () (vertical-toggle-maximize)))
 (add-right-button iconify-button-face
 		  (lambda () (iconify)))
-
-
 
 ;;(set-button-face! 1 mini-icon-button-face)
 ;;(set-button-face! 1 tall-maximize-button-face)
@@ -527,6 +525,13 @@
 (bind-mouse 'all "C-S-M-2" interactive-move)
 (bind-mouse 'all "C-S-M-3" interactive-resize)
 
+;; Just for test bind, unbind-mouse
+;;(unbind-mouse 'all "C-S-Mouse1")
+;;(unbind-mouse 'all "C-S-M-2")
+;;(bind-mouse 'all "C-S-Mouse-1" show-icon-list-menu)
+
+
+
 (bind-key 'all "C-S-F7" interactive-move)
 (bind-key 'all "C-S-F8" interactive-resize)
 
@@ -608,9 +613,6 @@
 
 (set-click-time! 150)
 
-(unbind-mouse 'all "C-S-M-1")
-(unbind-mouse 'all "C-S-M-2")
-
 (define (animated-move-to x y)
   (let* ((w (get-window))
 	 (size (window-size w))
@@ -669,6 +671,10 @@
 
 (bind-key 'all "C-M-S-n" (lambda () (write (get-window)) (newline)))
 
+;; Hyper-w
+(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
+;; Alt-w
+(bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
 (define (sleep-ms ms)
   (select '() '() '() 0 (* 1000 ms)))
