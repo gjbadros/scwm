@@ -1,0 +1,12 @@
+	 sym_filename  = scm_permanent_object ((((scm_cell *)((  scm_intern0 ( "filename" )  ) ))->car) ) ;
+	 sym_width  = scm_permanent_object ((((scm_cell *)((  scm_intern0 ( "width" )  ) ))->car) ) ;
+	 sym_height  = scm_permanent_object ((((scm_cell *)((  scm_intern0 ( "height" )  ) ))->car) ) ;
+	 sym_depth  = scm_permanent_object ((((scm_cell *)((  scm_intern0 ( "depth" )  ) ))->car) ) ;
+	scm_make_gsubr ( s_image_p ,   1 ,   0 ,   0 ,   image_p ) ;
+	scm_make_gsubr ( s_image_properties ,   1 ,   0 ,   0 ,   image_properties ) ;
+	scm_make_gsubr ( s_load_xbm ,   1 ,   0 ,   0 ,   load_xbm ) ;
+	scm_make_gsubr ( s_load_xpm ,   1 ,   0 ,   0 ,   load_xpm ) ;
+	scm_make_gsubr ( s_register_image_loader ,   2 ,   0 ,   0 ,   register_image_loader ) ;
+	scm_make_gsubr ( s_unregister_image_loader ,   1 ,   0 ,   0 ,   unregister_image_loader ) ;
+	scm_make_gsubr ( s_make_image ,   1 ,   0 ,   0 ,   make_image ) ;
+	scm_make_gsubr ( s_clear_image_cache_entry ,   1 ,   0 ,   0 ,   clear_image_cache_entry ) ;

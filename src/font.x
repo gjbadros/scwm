@@ -1,0 +1,9 @@
+	 sym_name  = scm_permanent_object ((((scm_cell *)((  scm_intern0 ( "name" )  ) ))->car) ) ;
+	 sym_height  = scm_permanent_object ((((scm_cell *)((  scm_intern0 ( "height" )  ) ))->car) ) ;
+	scm_make_gsubr ( s_make_font ,   1 ,   0 ,   0 ,   make_font ) ;
+	scm_make_gsubr ( s_font_p ,   1 ,   0 ,   0 ,   font_p ) ;
+	scm_make_gsubr ( s_font_properties ,   1 ,   0 ,   0 ,   font_properties ) ;
+	scm_make_gsubr ( s_set_icon_font_x ,   1 ,   0 ,   0 ,   set_icon_font_x ) ;
+	scm_make_gsubr ( s_set_window_font_x ,   1 ,   0 ,   0 ,   set_window_font_x ) ;
+	scm_make_gsubr ( s_set_menu_font_x ,   1 ,   0 ,   0 ,   set_menu_font_x ) ;
+	scm_make_gsubr ( s_clear_image_cache_entry ,   1 ,   0 ,   0 ,   clear_font_cache_entry ) ;
