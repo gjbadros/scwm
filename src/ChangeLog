@@ -1,3 +1,16 @@
+Tue Jul 21 14:09:11 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* constraint-primitives.cc: Added window-clv-{x,y,width,height} to 
+	get at the constraint variable objects.  Don't call addVar in the
+	obsoleted functions-- it's redundant with using the
+	add-stays-on-window primitive.
+
+	* scwm-constraints.hpp: Added scheme objects to hold the
+	ClVariable-s attached to the window.
+
+	* scwm.c: Use protos for the two cassowary functions I need,
+	instead of including whole header files
+
 Tue Jul 21 10:38:35 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.hpp: Add psolver argument to AddStays, add
