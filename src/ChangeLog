@@ -1,3 +1,7 @@
+Fri Jul 30 16:15:33 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* placement.c: Simplify some over-parenthesization.
+
 1999-07-27  Jeff W. Nichols  <jwnichls@cs.washington.edu>
 
 	* virtual.c: Modified viewport-position-change-hook to
