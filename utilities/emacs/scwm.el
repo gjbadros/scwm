@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-23 Thu 19:53:38 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-23 Thu 20:31:48 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -212,9 +212,9 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 
 (defun scwm-complete-symbol (&optional sym)
   "Complete the current symbol or SYM by querying scwm using apropos-internal.
-Returns a string."
+Returns a string which is present in the `scwm-obarray'."
   ;; removed the last arg, `sym', for backward compatibility with e19.
-  (completing-read "SCWM symbol: " (scwm-obarray) nil nil
+  (completing-read "SCWM symbol: " (scwm-obarray) nil t
                    (or sym (scwm-symbol-at-point)) 'scwm-history))
 
 ;;;###autoload
@@ -267,6 +267,12 @@ Returns a string."
       (with-face 'highlight
         (princ "SCWM documentation for `") (princ pat) (princ "'"))
       (princ ":\n\n ")
+      (with-face 'highlight (princ "value"))
+      (princ ":\n\n ")
+      (scwm-eval (concat "(if (bound? '" pat ") " pat
+                         " (display \"not bound\"))")
+                 standard-output)
+      (princ "\n\n ")
       (with-face 'highlight (princ "documentation"))
       (princ ":\n\n")
       (scwm-safe-call "documentation" (concat "\"" pat "\"") standard-output)
@@ -275,7 +281,7 @@ Returns a string."
       (princ ":\n\n")
       (scwm-safe-call "procedure-documentation" pat standard-output)
       (when (fboundp 'help-xref-button)
-        (goto-char 1) (forward-line 1)
+        (goto-char 1) (forward-line 8) ; skip the header and value
         (while (re-search-forward "`\\(\\sw\\(\\sw\\|\\s_\\)+\\)'" nil t)
           (help-xref-button 1 #'scwm-documentation (match-string 1))))
       (help-mode) (goto-char 1))))
