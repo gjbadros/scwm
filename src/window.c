@@ -600,8 +600,6 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
   }
 }
 
-
-
 /* This will involve cassowary as needed, through
    use of MoveTo 
    Same as MoveTo, except it knows about icons as well 
@@ -612,9 +610,27 @@ move_finalize(Window w, ScwmWindow * psw, int x, int y)
 {
   DBUG((DBG,__FUNCTION__,"%d,%s, %d,%d",
         (w==psw->frame), psw->name, x,y));
-  x += WIN_VP_OFFSET_X(psw);
-  y += WIN_VP_OFFSET_Y(psw);
+  if (w == psw->frame) {
+    x += WIN_VP_OFFSET_X(psw);
+    y += WIN_VP_OFFSET_Y(psw);
+  } else {
+    x += ICON_VP_OFFSET_X(psw);
+    y += ICON_VP_OFFSET_Y(psw);
+  }
   DBUG((DBG,__FUNCTION__,"adjusted to %d,%d", x,y));
+  move_finalize_virt(w,psw,x,y);
+}
+
+
+
+/* This will involve cassowary as needed, through
+   use of MoveTo 
+   Same as MoveTo, except it knows about icons as well 
+   x, y are virtual coordinates
+*/
+void 
+move_finalize_virt(Window w, ScwmWindow * psw, int x, int y)
+{
   if (w == psw->frame) {
     MoveTo(psw,x,y);
   } else {			/* icon window */
@@ -2233,7 +2249,7 @@ specified. */
 		 Scr.DisplayHeight, x + destX - startX, y + destY - startY);
   }
 
-  move_finalize(w, psw, destX, destY);
+  move_finalize_virt(w, psw, destX, destY);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }

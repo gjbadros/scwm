@@ -74,22 +74,6 @@
 SCM before_new_window_hook;
 SCM after_new_window_hook;
 
-/* Used to parse command line of clients for specific desk requests. */
-/* Todo: check for multiple desks. */
-XrmDatabase db;
-
-static XrmOptionDescRec table[] =
-{
-  /* Want to accept "-workspace N" or -xrm "scwm*desk:N" as options
-   * to specify the desktop. I have to include dummy options that
-   * are meaningless since Xrm seems to allow -w to match -workspace
-   * if there would be no ambiguity. */
-  {"-workspacf", "*junk", XrmoptionSepArg, (caddr_t) NULL},
-  {"-workspace", "*desk", XrmoptionSepArg, (caddr_t) NULL},
-  {"-xrn", NULL, XrmoptionResArg, (caddr_t) NULL},
-  {"-xrm", NULL, XrmoptionResArg, (caddr_t) NULL},
-};
-
 /* FIXGJB: instead of placeholder empty functions,
    pointers to functions should be used, and init_constraint_primitives should
    set the pointers to point to functions that it dynamically loads */
@@ -123,6 +107,18 @@ void CassowaryEndEdit(ScwmWindow *psw) {
 #endif
 
 
+/* Used by Xrm */
+static XrmOptionDescRec table[] =
+{
+  /* Want to accept "-workspace N" or -xrm "scwm*desk:N" as options
+   * to specify the desktop. I have to include dummy options that
+   * are meaningless since Xrm seems to allow -w to match -workspace
+   * if there would be no ambiguity. */
+  {"-workspacf", "*junk", XrmoptionSepArg, (caddr_t) NULL},
+  {"-workspace", "*desk", XrmoptionSepArg, (caddr_t) NULL},
+  {"-xrn", NULL, XrmoptionResArg, (caddr_t) NULL},
+  {"-xrm", NULL, XrmoptionResArg, (caddr_t) NULL},
+};
 
 
 /*
@@ -295,6 +291,9 @@ AddWindow(Window w)
 
   /* Find out if the client requested a specific desk on the command line. */
   if (XGetCommand(dpy, psw->w, &client_argv, &client_argc)) {
+    /* Used to parse command line of clients for specific desk requests. */
+    /* Todo: check for multiple desks. */
+    XrmDatabase db = NULL;
     XrmParseCommand(&db, table, 4, "scwm", &client_argc, client_argv);
     status = XrmGetResource(db, "scwm.desk", "Scwm.Desk", &str_type, &rm_value);
     if ((status == True) && (rm_value.size != 0)) {
@@ -302,7 +301,6 @@ AddWindow(Window w)
       psw->fStartsOnDesk = True;
     }
     XrmDestroyDatabase(db);
-    db = NULL;
   }
 
   /*

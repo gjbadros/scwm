@@ -82,6 +82,7 @@
 #include "guile-compat.h"
 #include "syscompat.h"
 #include "xmisc.h"
+#include "xrm.h"
 #include "dbug_resize.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -630,6 +631,9 @@ HandlePropertyNotify()
     return;
 
   switch (Event.xproperty.atom) {
+  case XA_RESOURCE_MANAGER:
+    IntegrateNewResourceManagerProperty(dpy);
+    break;
   case XA_WM_NAME:
     if (!XGetWMName(dpy, pswCurrent->w, &text_prop))
       return;

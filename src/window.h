@@ -330,6 +330,7 @@ void UngrabEm(void);
 void invalidate_window(SCM schwin);
 SCM make_window(ScwmWindow *psw);
 void move_finalize(Window w, ScwmWindow * psw, int x, int y);
+void move_finalize_virt(Window w, ScwmWindow * psw, int x, int y);
 
 void set_window_internal_title_height(ScwmWindow *psw, int nh);
 
