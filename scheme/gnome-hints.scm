@@ -25,8 +25,21 @@
 
 
 
+;;; user variables.
+;;; set them in ~/.scwmrc, then call (enable-gnome-hints)
 
-;; Hint properties
+(define-public gnome-desktop-number
+;;;**VAR
+;;; The number of desktops to show in the GNOME pager.
+;;; Used in `enable-gnome-hints'.
+  4)
+
+(define-public gnome-shade-animated
+;;;**VAR
+;;; Should the shading be animated or not?
+  #f)
+
+;;; Hint properties
 
 ;;;; Supported protocols:
 (define _WIN_PROTOCOLS           (string->X-atom "_WIN_PROTOCOLS"))
@@ -281,8 +294,12 @@
 
   (if (nonzero? (logand mask WIN_STATE_SHADED))
       (if (nonzero? (logand new-state WIN_STATE_SHADED))
-	  (if (not (window-shaded? win)) (window-shade win))
-	  (if (window-shaded? win) (window-unshade win))))
+	  (if (not (window-shaded? win))
+              (if gnome-shade-animated
+                  (animated-window-shade win) (window-shade win)))
+	  (if (window-shaded? win)
+              (if gnome-shade-animated
+                  (animated-window-unshade win) (window-unshade win)))))
 
   ;; ignore WIN_STATE_HID_WORKSPACE  (poorly specified)
   ;; ignore WIN_STATE_HID_TRANSIENT  (poorly specified)
@@ -410,12 +427,6 @@
 (define (unannounce-gnome-hint-support)
   (X-property-delete! 'root-window "_WIN_SUPPORTING_WM_CHECK")
   (X-property-delete! 'root-window "_WIN_PROTOCOLS"))
-
-(define-public gnome-desktop-number
-;;;**VAR
-;;; The number of desktops to show in the GNOME pager.
-;;; Used in `enable-gnome-hints'.
-  4)
 
 (define-public (enable-gnome-hints)
   "Hook up SCWM with GNOME.

@@ -1,8 +1,11 @@
 1999-02-09  Sam Steingold  <sds@goems.com>
 
 	* gnome-hints.scm: new user variable - `gnome-desktop-number'.
-	Use it in `enable-gnome-hints'.  Do not enable by default, wait
-	for the user to set the user options.
+	Use it in `enable-gnome-hints'.
+	new user variable - `gnome-shade-animated'.  Use it in
+	`gnome-update-state'.
+	Do not enable gnome hints by default, wait for the user to set the
+	user options.
 
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
