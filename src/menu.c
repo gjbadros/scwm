@@ -61,6 +61,22 @@ size_t free_menu (SCM obj)
   return(0);
 }
 
+
+SCM mark_menu (SCM obj) {
+  SCM_SETGC8MARK (obj);
+  MenuItem *mi,*tmp2;
+  MenuRoot *mr = MENUROOT(obj);
+
+  mi = mr->first;
+  while(mi != NULL) {
+    if (mi->thunk != SCM_UNDEFINED) {
+      gc_set_mark(mit->thunk);
+    }
+    mi = mi->next;
+  }
+  return SCM_BOOL_F;
+}
+
 int print_menu (SCM obj, SCM port, scm_print_state *pstate) {
   scm_gen_puts(scm_regular_port, "#<menu \"", port);
   scm_gen_puts(scm_regular_port, MENUROOT(obj)->name, port);
@@ -110,9 +126,11 @@ SCM make_menu(SCM title, SCM args)
     if (gh_eq_p(centry,sym_title)) {
       AddToMenu(MENUROOT(answer), 
 		MENUROOT(answer)->name,"Title");
+      MENUROOT(answer)->last->thunk=SCM_UNDEFINED;
     } else if (gh_eq_p(centry,sym_separator)) {
       AddToMenu(MENUROOT(answer), 
 		"", "Nop");
+      MENUROOT(answer)->last->thunk=SCM_UNDEFINED);
     } else if (gh_pair_p(centry) && gh_string_p(SCM_CAR(centry)) &&
 	       gh_pair_p(SCM_CDR(centry)) && 
 	       ((procp=gh_procedure_p(gh_cadr(centry)))
@@ -138,7 +156,7 @@ SCM popup(SCM menu, SCM sticks) {
     scm_wrong_type_arg("popup",1,menu);
   }
   if (sticks==SCM_UNDEFINED) {
-    sticks=SCM_BOOL_T;
+    sticks=SCM_BOOL_F;
   }
   if (!gh_boolean_p(sticks)) {
     scm_wrong_type_arg("popup",2,sticks);
