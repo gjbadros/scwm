@@ -26,6 +26,7 @@ void
 main(int argc, char **argv)
 {
   Window w;
+  char *result, *output, *error;
   
   if (argc != 2)
     die("Usage: scwmexec expression\n");
@@ -37,7 +38,18 @@ main(int argc, char **argv)
   if (w==None)
     die ("Unable to establish scwmexec connection.\n");
 
-  printf("%s\n",scwmexec_exec(display,w,argv[1]));
+  result=scwmexec_exec_full(display,w,argv[1],&output,&error);
+  printf(output);
+  if (strlen(error)!=0) {
+    fprintf(stderr,error);
+  } else {
+    fprintf(stdout,result);
+  }
+  
+  XFree(result);
+  XFree(error);
+  XFree(output);
+
 
   XCloseDisplay (display);
   
