@@ -721,12 +721,15 @@ SCWM_PROC(x_connection_number, "X-connection-number", 0, 0, 0,
 }
 #undef FUNC_NAME
 
+#if 0
 SCWM_PROC(get_key_event, "get-key-event", 0, 2, 0,
           (SCM async_mouse, SCM async_keyboard))
      /** Return a string representing the next key event.
 If ASYNC-MOUSE is #t, mouse events are treated asynchronously.
 If ASYNC-KEYBOARD is #t, keyboard events are treated asynchronously.
-A non-modifier key must be pressed before it is considered an event. */
+A non-modifier key must be pressed before it is considered an event. 
+This has never been functioning and needs work to make right.
+*/
 #define FUNC_NAME s_get_key_event
 {
   Bool fAsyncMouse;
@@ -747,6 +750,7 @@ A non-modifier key must be pressed before it is considered an event. */
   XUngrabKeyboard(dpy, CurrentTime);
   return gh_list(gh_long2scm(ev.xkey.state),gh_long2scm(ev.xkey.keycode),SCM_UNDEFINED);
 }
+#endif
 
 void 
 init_miscprocs()
