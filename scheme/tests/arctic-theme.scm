@@ -4,7 +4,7 @@
 
 (define theme-dir "/home/jtl/.pixmaps/kde_themes/")  ;; needs trailing slash
 ;;(define theme-dir "/scratch/gjb/themes/")  ;; needs trailing slash
-;;(define theme-dir "/home/gjb/themes/")
+;;(define theme-dir "/home/gjb/scwm-themes/")
 
 (define* (list-of-theme-images prefix #&optional 
 			       (list-of-image-names '("topleft"
@@ -34,7 +34,7 @@
 ;; (use-modules (app scwm xpm-menus))
 (set-default-menu-look! xpm-shaped-menu-look)
 
-(define menu-root
+(define menu-test
   (menu
    (list
     (menuitem "Root Menu" #f) menu-title
@@ -57,7 +57,13 @@
 ;  #:color-text "yellow"
    #:extra (menu-decor-arctic)))
 
-(popup-menu menu-root)
+(menu-hl-fg-color)
+(menu-hl-g-color)
+(set-menu-highlight-colors! menu-test (make-color "green") "grey50")
+(set-menu-highlight-colors! menu-test #f #f)
+(menu-highlight-colors menu-test)
+
+(popup-menu menu-test)
 
 (set-menu-look! scwm-menu-look)
 (popup-menu menu-root)
