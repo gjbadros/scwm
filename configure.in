@@ -8,12 +8,13 @@ dnl (C) 1998, 1999, 2000 Greg J. Badros and Maciej Stachowiak
 
 dnl ## Initialize autoconf ##
 AC_INIT(src/scwm.c)
+. $srcdir/SCWM-VERSION
 AC_PREREQ(2.4)
 
 dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.99.6post)
+AM_INIT_AUTOMAKE(scwm, $VERSION, no-define)
 AM_MAINTAINER_MODE
-AM_CONFIG_HEADER(include/config.h)
+AM_CONFIG_HEADER(include/scwmconfig.h)
 
 ## This will try to create the named directory if it does not exist
 AC_DEFUN(SCWM_ARG_PATH,
@@ -701,7 +702,7 @@ SCWM_ARG_PATH(docdir,
        AC_MSG_RESULT("${scwm_docdir}")
 ],
 [
-       scwm_docdir="${datadir}/${PACKAGE}"
+       scwm_docdir="${datadir}/doc/${PACKAGE}"
 ])
 
 
@@ -742,6 +743,9 @@ AC_SUBST(scwm_utildir)
 AC_SUBST(scwm_viavoice_grammardir)
 AC_SUBST(scwm_docdir)
 
+AC_SUBST(SCWM_MAJOR_VERSION)
+AC_SUBST(SCWM_MINOR_VERSION)
+AC_SUBST(SCWM_VERSION)
 
 dnl # Check for optional settings #
 
@@ -787,6 +791,7 @@ AC_OUTPUT([Makefile \
           sample.scwmrc/Makefile \
           src/Makefile \
           src/scwm-doc-snarf \
+          src/scwm-versiondat.h \
           scheme/Makefile \
           pixmaps/Makefile \
           app/Makefile \

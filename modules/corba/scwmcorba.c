@@ -2,7 +2,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 #include <orb/orbit.h>
@@ -20,6 +20,9 @@
 
 #include "scwm_scheme_evaluator.h"
 #include "scwm_scheme_evaluator-impl.c"
+
+#define SCWM_CORBA_VERSION "0.01"
+
 
 /* decleration to avoid compiler error.  Many of these functions would be 
  * in a header in a normal application. */
@@ -68,7 +71,7 @@ scwm_scheme_evaluator_corba_gtk_init(int argc, char *argv[])
 
   CORBA_exception_init(&ev);
 
-  orb = gnome_CORBA_init(NAME,VERSION,&argc, argv, 
+  orb = gnome_CORBA_init(NAME,SCWM_CORBA_VERSION,&argc, argv, 
                          GNORBA_INIT_SERVER_FUNC, &ev);
 
   root_poa = (PortableServer_POA) 

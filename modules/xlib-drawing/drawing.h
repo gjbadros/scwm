@@ -7,7 +7,7 @@
 #define DRAWING_H
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "scwmconfig.h"
 #endif
 
 /* No externally exported functions-- just relies
