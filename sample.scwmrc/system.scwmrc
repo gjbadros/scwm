@@ -1278,12 +1278,12 @@ from other processes.
 
 (bind-key 'all "C-M-S-s" toggle-stick)
 
-
-(bind-key 'all "H-j" jump-to-register)
+(bind-key 'all "H-g" jump-to-register)
 (bind-key 'all "H-f" focus-to-register)
 (bind-key 'all "H-c" window-configuration-to-register)
 (bind-key 'all "H-x" global-window-configuration-to-register)
 
+(bind-key 'all "H-d" focus-window-with-pointer)
 
 ;; Hyper-w
 ;;(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
