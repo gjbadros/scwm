@@ -96,55 +96,80 @@ pulling down a window shade on a window."
   (make-toggling-winop icon-sticky? unstick-icon stick-icon))
 
 (define*-public (maximize nw nh #&optional (win (get-window)))
-  "Maximize WIN to new width NW and new height NH.
+"Maximize WIN to new pixel width NW and new pixel height NH.
 If NW or NH is 0, that dimension is not changed."
-  (if win (let* ((pos (window-viewport-position win))
-		 (size (window-frame-size win))
-		 (x (car pos))
-		 (y (cadr pos))
-		 (width (car size))
-		 (height (cadr size)))
-	    (resize-frame-to (if (> nw 0) nw width)
-			     (if (> nh 0) nh height) win)
-	    ;; above is just a hint, get the actual...
-	    ;; FIXGJB: race condition?
-	    (let* ((new-size (window-frame-size win))
-		   (nw (car new-size))
-		   (nh (cadr new-size))
-		   (nx (cond
-			((> display-width (+ x nw)) x)
-			((> display-width nw) (- display-width nw))
-			(#t 0)))
-		   (ny (cond
-			((> display-height (+ y nh)) y)
-			((> display-height nh) (- display-height nh))
-			(#t 0))))
-	      (move-window-viewport-position nx ny win)
-	      (if (not (maximized? win))
-		  (set-object-property! win 'maximized
-					(list x y width height nx ny)))))))
+(if win (let* ((pos (window-viewport-position win))
+	     (x (car pos))
+	     (y (cadr pos))
+	     (frame-size (window-frame-size win))
+	     (pix-width (car frame-size))
+	     (pix-height (cadr frame-size))
+	     (cli-size (window-size win))
+	     (cli-width (caddr cli-size))
+	     (cli-height (cadddr cli-size)))
+	(resize-frame-to (if (> nw 0) nw pix-width)
+			 (if (> nh 0) nh pix-height) win)
+	;; above is just a hint, get the actual...
+	;; FIXGJB: race conditions?
+	(let* ((new-frame-size (window-frame-size win))
+	       (new-client-size (window-size win))
+	       (nfw (car new-frame-size))
+	       (nfh (cadr new-frame-size))
+	       (ncw (caddr new-client-size))
+	       (nch (cadddr new-client-size))
+	       (nx (cond
+		    ((> display-width (+ x nfw)) x)
+		    ((> display-width nfw) (- display-width nfw))
+		    (#t 0)))
+	       (ny (cond
+		    ((> display-height (+ y nfh)) y)
+		    ((> display-height nfh) (- display-height nfh))
+		    (#t 0))))
+	  (move-window-viewport-position nx ny win)
+	  (if (not (maximized? win))
+	      (set-object-property!
+	       win 'maximized (list x y cli-width cli-height
+				    nx ny ncw nch)))))))
 
 
 (define*-public (maximized? #&optional (win (get-window)))
   "Return #t if WIN is maximized, #f otherwise."
   (->bool (object-property win 'maximized)))
 
-;; FIXGJB: use client units
+;; uses client units
 (define*-public (unmaximize #&optional (win (get-window)))
-  "Unmaximize WIN so it returns to its size/position before maximization.
-This should use client units, but currently uses frame-size in pixels."
-  (if win (let* ((max-prop (object-property win 'maximized))
-		 (pos (window-viewport-position win))
-		 (cur-x (car pos))
-		 (cur-y (cadr pos)))
-	    (cond
-	     (max-prop
-	      (let ((maxed-x (car (cddddr max-prop)))
-		    (maxed-y (cadr (cddddr max-prop))))
-		(if (and (= cur-x maxed-x) (= cur-y maxed-y))
-		    (move-window-viewport-position (car max-prop) (cadr max-prop) win))
-		(resize-frame-to (caddr max-prop) (cadddr max-prop) win)
-		(set-object-property! win 'maximized #f)))))))
+  "Unmaximize WIN so it returns to its size/position before maximization."
+  (if win (let ((max-prop (object-property win 'maximized)))
+	       (cond
+		(max-prop
+		 (let* ((maxed-dims (cddddr max-prop))
+			(maxed-x (car maxed-dims))
+			(maxed-y (cadr maxed-dims))
+			(maxed-width (caddr maxed-dims))
+			(maxed-height (cadddr maxed-dims))
+			(cur-pos (window-viewport-position win))
+			(cur-size (window-size win))
+			(cur-x (car cur-pos))
+			(cur-y (cadr cur-pos))
+			(cur-width (caddr cur-size))
+			(cur-height (cadddr cur-size))
+			(size-hints (cddr (window-size-hints win))))
+		       (if (and (= cur-x maxed-x) (= cur-y maxed-y))
+			   (move-window-viewport-position
+			    (car max-prop) (cadr max-prop) win))
+		       (resize-to
+			(+ (* (if (= maxed-width cur-width)
+				  (caddr max-prop)
+				  cur-width)
+			      (caar size-hints))
+			   (caadr size-hints))
+			(+ (* (if (= maxed-height cur-height)
+				  (cadddr max-prop)
+				  cur-height)
+			      (cdar size-hints))
+			   (cdadr size-hints))
+			win)
+		       (set-object-property! win 'maximized #f)))))))
 
 
 (define-public (window-frame-area win)
