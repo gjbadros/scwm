@@ -111,8 +111,6 @@ in the same relative positions to this window."
 See `move-window-to-desk'."
   (for-each (lambda (w) (move-window-to-desk desk w)) (group->windows group)))
 
-(delete 1 '(1 2 3 4))
-
 (define*-public (interactive-move-group #&optional (group (get-window #t #f #f)))
   "Move GROUP interactively.
 You can drag around the window GROUP represents. The other windows in GROUP

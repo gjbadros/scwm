@@ -65,8 +65,13 @@ accessed via `selected-windows-list'."
 
 (define-public (unselect-all-windows)
   "Unselect all windows selected via `select-window-add-selecttion'."
-  (for-each unflash-window selected-windows)
-  (for-each (lambda (w) (call-hook-procedures window-selection-remove-hook (list w))) selected-windows)
+  (for-each (lambda (w) (if (window-valid? w) (unflash-window w))) selected-windows)
+  (catch #t 
+	 (lambda ()
+	   (for-each (lambda (w) 
+		       (call-hook-procedures window-selection-remove-hook (list w)))
+		     selected-windows))
+	 (lambda args noop))
   (set! selected-windows '()))
 
 ;; (bind-mouse 'all "H-1" (thunk select-window-add-selection))
