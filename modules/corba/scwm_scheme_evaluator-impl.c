@@ -5,64 +5,65 @@
 
 #include <stdio.h>
 #include "guile-compat.h"
+#include "arg_unused.h"
 
 #include "scwm_scheme_evaluator.h"
 
 /*** App-specific servant structures ***/
 typedef struct {
-  POA_scwm_scheme_evaluator_object servant;
+  POA_scwm_scheme_evaluator servant;
   PortableServer_POA poa;
 
-} impl_POA_scwm_scheme_evaluator_object;
+} impl_POA_scwm_scheme_evaluator;
 
 
 
 
 /*** Implementation stub prototypes ***/
-static void impl_scwm_scheme_evaluator_object__destroy(impl_POA_scwm_scheme_evaluator_object *servant,
+static void impl_scwm_scheme_evaluator__destroy(impl_POA_scwm_scheme_evaluator *servant,
                                                        CORBA_Environment *ev);
 static void
-impl_scwm_scheme_evaluator_object_evaluate_sexp(impl_POA_scwm_scheme_evaluator_object *servant,
-                                                CORBA_char * expr,
-                                                CORBA_char ** answer,
-                                                CORBA_char ** output,
-                                                CORBA_char ** error_output,
-                                                CORBA_Environment *ev);
+impl_scwm_scheme_evaluator_evaluate_sexp(impl_POA_scwm_scheme_evaluator *servant,
+                                         CORBA_char * expr,
+                                         CORBA_char ** answer,
+                                         CORBA_char ** output,
+                                         CORBA_char ** error_output,
+                                         CORBA_Environment *ev);
 
 
 
 
 /*** epv structures ***/
-static PortableServer_ServantBase__epv impl_scwm_scheme_evaluator_object_base_epv = {
+static PortableServer_ServantBase__epv impl_scwm_scheme_evaluator_base_epv = {
   NULL, /* _private data */
   NULL, /* finalize routine */
   NULL, /* default_POA routine */
 };
-static POA_scwm_scheme_evaluator_object__epv impl_scwm_scheme_evaluator_object_epv = {
+static POA_scwm_scheme_evaluator__epv impl_scwm_scheme_evaluator_epv = {
   NULL, /* _private */
-  (gpointer)&impl_scwm_scheme_evaluator_object_evaluate_sexp,
+  (gpointer)&impl_scwm_scheme_evaluator_evaluate_sexp,
 
 };
 
 
 /*** vepv structures ***/
-static POA_scwm_scheme_evaluator_object__vepv impl_scwm_scheme_evaluator_object_vepv = {
-  &impl_scwm_scheme_evaluator_object_base_epv,
-  &impl_scwm_scheme_evaluator_object_epv,
+static POA_scwm_scheme_evaluator__vepv impl_scwm_scheme_evaluator_vepv = {
+  &impl_scwm_scheme_evaluator_base_epv,
+  &impl_scwm_scheme_evaluator_epv,
 };
 
 
 /*** Stub implementations ***/
-static scwm_scheme_evaluator_object impl_scwm_scheme_evaluator_object__create(PortableServer_POA poa, CORBA_Environment *ev)
+static scwm_scheme_evaluator impl_scwm_scheme_evaluator__create(PortableServer_POA poa, CORBA_Environment *ev)
 {
-  scwm_scheme_evaluator_object retval;
-  impl_POA_scwm_scheme_evaluator_object *newservant;
+  scwm_scheme_evaluator retval;
+  impl_POA_scwm_scheme_evaluator *newservant;
   PortableServer_ObjectId *objid;
 
-  newservant = g_new0(impl_POA_scwm_scheme_evaluator_object, 1);
-  newservant->servant.vepv = &impl_scwm_scheme_evaluator_object_vepv;
+  newservant = g_new0(impl_POA_scwm_scheme_evaluator, 1);
+  newservant->servant.vepv = &impl_scwm_scheme_evaluator_vepv;
   newservant->poa = poa;
-  POA_scwm_scheme_evaluator_object__init((PortableServer_Servant)newservant, ev);
+  POA_scwm_scheme_evaluator__init((PortableServer_Servant)newservant, ev);
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
   CORBA_free(objid);
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
@@ -71,7 +72,7 @@ static scwm_scheme_evaluator_object impl_scwm_scheme_evaluator_object__create(Po
 }
 
 static void
-impl_scwm_scheme_evaluator_object__destroy(impl_POA_scwm_scheme_evaluator_object *servant, CORBA_Environment *ev)
+impl_scwm_scheme_evaluator__destroy(impl_POA_scwm_scheme_evaluator *servant, CORBA_Environment *ev)
 {
   PortableServer_ObjectId *objid;
 
@@ -79,19 +80,19 @@ impl_scwm_scheme_evaluator_object__destroy(impl_POA_scwm_scheme_evaluator_object
   PortableServer_POA_deactivate_object(servant->poa, objid, ev);
   CORBA_free(objid);
 
-  POA_scwm_scheme_evaluator_object__fini((PortableServer_Servant)servant, ev);
+  POA_scwm_scheme_evaluator__fini((PortableServer_Servant)servant, ev);
   g_free(servant);
 }
 
 static void
-impl_scwm_scheme_evaluator_object_evaluate_sexp(impl_POA_scwm_scheme_evaluator_object *servant,
-                                                CORBA_char * expr,
-                                                CORBA_char ** answer,
-                                                CORBA_char ** output,
-                                                CORBA_char ** error_output,
-                                                CORBA_Environment *ev)
+impl_scwm_scheme_evaluator_evaluate_sexp(impl_POA_scwm_scheme_evaluator *ARG_UNUSED(servant),
+                                         CORBA_char * expr,
+                                         CORBA_char ** answer,
+                                         CORBA_char ** output,
+                                         CORBA_char ** error_output,
+                                         CORBA_Environment *ARG_UNUSED(ev))
 {
-#define FUNC_NAME "impl_scwm_scheme_evaluator_object_evaluate_sexp"
+#define FUNC_NAME "impl_scwm_scheme_evaluator_evaluate_sexp"
   SCM val, str_val;
   SCM o_port, e_port;
   SCM saved_def_e_port;

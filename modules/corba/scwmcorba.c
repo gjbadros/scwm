@@ -25,7 +25,7 @@ void scwm_scheme_evaluator_corba_gtk_init(int argc, char *argv[]);
 
 static CORBA_ORB orb = NULL;
 static CORBA_Environment ev;
-static scwm_scheme_evaluator_object evaluator_object;
+static scwm_scheme_evaluator evaluator_object;
 static SCM scmIOR;
 
 /* Shutdown the orb interface, and shut down GTK */
@@ -73,7 +73,7 @@ scwm_scheme_evaluator_corba_gtk_init(int argc, char *argv[])
     CORBA_ORB_resolve_initial_references(orb, "RootPOA", &ev);
   Exception(&ev);
   
-  evaluator_object = impl_scwm_scheme_evaluator_object__create(root_poa, &ev);
+  evaluator_object = impl_scwm_scheme_evaluator__create(root_poa, &ev);
   Exception(&ev);
   
   pm = PortableServer_POA__get_the_POAManager(root_poa, &ev);
@@ -99,7 +99,7 @@ scwm_scheme_evaluator_corba_gtk_init(int argc, char *argv[])
  * Note that I'm not going to comment this part, as I'll assume you know
  * how GTK works */
 
-gint delete_event(GtkWidget *widget, GdkEvent *event, gpointer data)
+gint delete_event(GtkWidget *ARG_UNUSED(widget), GdkEvent *ARG_UNUSED(event), gpointer ARG_UNUSED(data))
 {
   scwm_scheme_evaluator_corba_gtk_main_quit();
   return (FALSE);
