@@ -1,3 +1,11 @@
+Wed Nov 12 15:41:28 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwm.c: Use getopt_long when available for argument parsing,
+ 	otherwise accept both long and short options by
+ 	hand-parsing. Patch from James LewisMoss <dres@dimensional.com>,
+ 	slightly reformated, and changed to provide both long and short
+ 	options for everything.
+
 Wed Nov 12 00:36:21 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	* events.c (HandlePropertyNotify): don't resize shaded windows;
 	this improves upon my prior bug fix which had an unfortunate
