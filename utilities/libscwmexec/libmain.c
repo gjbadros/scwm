@@ -78,7 +78,7 @@ char *scwmexec_exec(Display *dpy, Window w, char *req)
 		     &prop);
 
   XGetWindowProperty(dpy, w, XA_SCWMEXEC_REPLY,
-		     0, bytes_after*4, True, type_ret, 
+		     0, bytes_after*4, False, type_ret, 
 		     &type_ret, &form_ret, &nitems, &bytes_after,
 		     &prop);
   
