@@ -1,90 +1,5 @@
 
 
-(defmacro parse-keywords (args . actions)
-  `(let* ((args ,args)
-	  (get-arg (lambda () (let ((a (car args))) 
-		      (set! args (cdr args)) 
-		      a)))
-	  (peek-arg (lambda () (car args))))
-     (while (and (not (null? args)) (keyword? (peek-arg)))
-	    (let ((key (get-arg)))
-	      (case key
-		,@actions
-		(else (throw 'bad-keyword key args)))))
-     args))
-
-(define (set-menu-foreground! fg) (set-menu-colors! fg))
-(define (set-menu-background! bg) (set-menu-colors! #f bg))
-(define (set-menu-stipple! st) (set-menu-colors! #f #f st))
-
-(define (menu-style . args)
-  (parse-keywords args
-		  ((#:fg #:foreground) 
-		   (set-menu-foreground! (get-arg)))
-		  ((#:bg #:background)
-		   (set-menu-background! (get-arg)))
-		  ((#:stipple) 
-		   (set-menu-stipple! (get-arg)))
-		  ((#:font) (set-menu-font! (get-arg)))
-		  ((#:mwm #:mwm-style) (set-mwm-font! (get-arg)))))
-
-
-
-
-
-
-;;--------------------------;;
-;; needed Scheme procedures ;;
-
-(define (close-window . args)
-  (let ((w (if (null? args) 
-	       (get-window)
-	       (car args))))
-    (if (window-deletable? w)
-	(delete-window w)
-	(destroy-window w))))
-
-
-(define (toggle-raise . args)
-  (let ((w (if (null? args) 
-	       (get-window)
-	       (car args))))
-    (if (raised? w)
-	(lower-window w)
-      (raise-window w))))
-
-(define (toggle-iconify . args)
-  (let ((w (if (null? args) 
-	       (get-window)
-	       (car args))))
-    (if (iconified? w)
-	(deiconify w)
-	(iconify w))))
-
-(define (toggle-stick . args)
-  (let ((w (if (null? args) 
-	       (get-window)
-	       (car args))))
-    (if (sticky? w)
-	(unstick-window w)
-	(stick-window w))))
-
-(define (toggle-window-shade . args)
-  (let ((w (if (null? args) 
-	       (get-window)
-	       (car args))))
-    (if (window-shaded? w)
-	(un-window-shade w)
-	(window-shade w))))
-
-
-;; maybe make it a subr in terms of XBell...
-(define (beep) (display ""))
-
-(define (execute command) 
-  (system (string-append "exec " command " &")))
-
-
 Move
 
 (relative-move-to X Y [W])
@@ -104,3 +19,5 @@ Resize
 Maximize
 (maximize [W])
 ;; just a special case of resize, perhaps?
+
+

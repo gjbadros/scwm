@@ -5,7 +5,9 @@ SCWM Scheme function documentation :
 The scwm configuration file is a Guile Scheme program. All of the
 usual Guile procedures are available. In addition, the following
 windowmanager-sepcific procedures have been implemented. See the
-sample system.scwmrc file for examples.
+sample system.scwmrc file for examples. The fvwm2 man page may be
+helpful for understanding some of the procedures or especially style
+options until I write better documentation.
 
 Documentation style:
 
@@ -111,6 +113,29 @@ event. This functionality may go away in favor of being able to bind
 any kind of mouse event type separately.
 
 
+(bind-event EVENT PROC)
+
+Binds a special windowmanager event to some special action. Currently
+defined events are:
+
+'new-window - the procedure is called whenever a new window is created
+with no arguments and with the new window as the current window
+context. It is useful for specifying initial style options and
+parameters and such. It is not reccomended to use this event directly;
+instead, see the window-style procedure in the (app scwm style) module.
+
+'new-window-hint - this event works much like 'new-window except that
+the procedure is called much earlier in the window creation
+process. At this point most normal window procedures won't
+work. However, some, such as those that specify which position hints
+to obey and what type of placement to use must be used this early in
+the creation process so that the window can be put in the right
+place. This dichotomy is somewhat bogus and will probably be fixed
+later. If you access this functionality through the window-style
+procedure you shouldn't have to worry about this.
+
+
+
 MISCELLANEOUS SETTINGS:
 
 (set-menu-mwm-style! BOOL)
@@ -155,7 +180,7 @@ MISCELLANEOUS OPERATIONS:
 
 Refreshes the whole screen.
 
-(get-pointer-position)
+(pointer-position)
 
 Returns a list of the current x and y coordinates of the mouse cursor.
 
@@ -168,6 +193,11 @@ Moves the pointer to the absolute position X,Y.
 (restart NEW-WM)
 
 (wait-for-window NAME)
+
+(beep)
+
+My suggested definition in Scheme is not adequate for remote displays - the
+new (tiny) C implementation using XBell should take care of this.
 
 WINDOWS: 
 
@@ -267,6 +297,82 @@ up to date and properly displayed.
 (move-window-to-desk DESK #&optional W)
 Moves the window to a new desk, specified by an integer.
 
+(keep-on-top #&optional W)
+Will raise the specified window and keep it on top of all other windows 
+unless it is explicitly lowered.
+
+(un-keep-on-top #&optional W)
+Negates the effects of keep-on-top.
+
+(kept-on-top? #&optional W)
+Determines if a window is under the influence of keep-on-top.
+
+WINDOW INFORMATION PROCEDURES:
+
+These procedures return various kinds of information about windows.
+They can be useful in selecting only particular windows
+
+(window-position #&optioonal W)
+(window-size #&optioonal W)
+(window-id #&optioonal W)
+(window-desk #&optioonal W)
+(window-title #&optioonal W)
+(window-class #&optioonal W)
+(window-resource #&optioonal W)
+
+(list-all-windows)
+This returns a list of all of the windows currently being managed.
+
+WINDOW STYLE OPERATIONS:
+
+For most of these procedures, it is reccomended to access the relevant
+functionality through the window-style or style-one-window procedures
+rather than the given procedures. The working and arguments can generally
+be deduced from the corresponding style option. Further 
+
+(show-titlebar #&optional W)
+(hide-titlebar #&optional W)
+(titlebar-shown? #&optional W)
+(normal-border #&optional W)
+(plain-border #&optional W)
+(border-normal? #&optional W)
+(set-border-width! WIDTH #&optional W)
+(stick-icon #&optional W)
+(unstick-icon #&optional W)
+(icon-sticky? #&optional W)
+
+(set-icon-box! X Y W H BOOL #&optional W)
+
+(set-window-focus! SYM #&optional W) 
+available are:
+ 'click - must click on the window to focus.
+ 'mouse - the window gains focus as the mouse enters or leaves.
+ 'sloppy - the window gains focus as the mouse enters, but does not
+           lose it if the pointer enters the root window, or a window
+           with 'click or 'none focus.
+ 'none - don't ever give this window focus, even if it is clicked.
+
+(set-window-colors! #&optinal FG BG W)
+(set-icon-title! STRING #&optional W)
+(set-random-placement! BOOL #&optional W)
+(set-smart-placement! BOOL #&optional W)
+(set-window-button! NUM BOOL #&optional W)
+(set-mwm-buttons! BOOL #&optional W)
+(set-mwm-border! BOOL #&optional W)
+(set-icon! BOOL-OR-STRING #&optional W)
+(set-mini-icon! BOOL-OR-STRING #&optional W)
+
+(set-hint-override! BOOL #&optional W)
+(set-decorate-transient! BOOL #&optional W)
+(set-mwm-decor-hint! BOOL #&optional W)
+(set-mwm-func-hint! BOOL #&optional W)
+(set-PPosition-hint! BOOL #&optional W)
+(set-OL-decor-hint! BOOL #&optional W)
+(set-start-on-desk! DESK #&optional W)
+(set-skip-mapping! BOOL #&optional W)
+
+
+
 MENUS:
 
 (menu? OBJ)
@@ -294,6 +400,10 @@ response to a mouse click. The default is #f.
 
 PATHS:
 
+Paths are specified as strings that contain a colon-delimited list of
+directories. This will change, as they obviously should be lists in
+ordinary scheme variables.
+
 (set-icon-path! PATH)
 (set-pixmap-path! PATH)
 
@@ -310,10 +420,6 @@ VIRTUAL DESKTOP:
 (desk-size)
 (viewport-position)
 (current-desk)
-
-
-
-
 
 
 
@@ -351,7 +457,14 @@ placement.
 
 (%y y)
 
-Kust like %x, but for the vertical direction.
+Just like %x, but for the vertical direction.
+
+(w%x x #&optional w) 
+(w%y y #&optional w)
+
+These work like %x and %y but give a percentage of the dimensions of
+the given window.
+
 
 (execute command) 
 
@@ -366,10 +479,17 @@ Executes a shell command as a separate process, for example (execute
 These set only one of the menu color components. They may go away
 since the menu-style interface is more useful.
 
+(set-window-foreground! fg #&optional w)
+(set-window-background! bg #&optional w)
 
 (move-pointer x y) 
+
 Moves the mouse pointer relative to the current position
 (move-pointer-to moves it absolutely).
+
+(move-viewport x y)
+
+Moves the viewport relatively (set-viewport-position! does it absolutely)
 
 (menu-style #&key fg foreground bg background stipple font mwm mwm-style) 
 
@@ -477,6 +597,9 @@ by a predicate or list of predicates. The windows returned are those
 that satisfy all of the #:only predicates but none of the #:except
 predicates. 
 
+(winlist-skip)
+(winlist-hit)
+(winlist-skip?)
 
 (show-window-list-menu #&key only except proc show-geometry)
 
@@ -493,6 +616,13 @@ selected. Here is the meaning of the keywords:
 #:show-geometry - If #t, will show the window geometry in addition to
                   titles. Defaults to #f.
 
+(circulate-skip #&optional w)
+(circulate-hit #&optional w)
+(circulate-skip? #&optional w)
+(circulate-skip-icon #&optional w)
+(circulate-hit-icon #&optional w)
+(circulate-skip-icon? #&optional w)
+(should-circulate-skip? #&optional w)
 
 (next-window #&key window only except proc)
 (prev-window #&key window only except proc)
@@ -511,28 +641,203 @@ the window list with the keyboard. Here is the meaning of the keywords:
          defaults to window-list-proc.
 
 
-
 MODULE (app scwm wininfo)
 
 This module provides additional predicates and generally informative
 procedures for finding out stuff about windows.
 
-(on-desk? n #&optional (w (get-window)))
+(on-desk? n #&optional w)
 
-((on-desk-n? n) #&optional (w (get-window)))
+((on-desk-n? n) #&optional w)
 
-(on-current-desk? #&optional (w (get-window)))
+(on-current-desk? #&optional w)
 
-(in-viewport-any-desk? #&optional (w (get-window)))
+(in-viewport-any-desk? #&optional w)
 
-(visible? #&optional (w (get-window)))
+(visible? #&optional w)
 
 (geometry-string #&optional w)
 
+(wildcard-matcher wildcard #&key full-regexp regexp-oprions) 
+Returns a procedure that takes one optional window argument (which
+defaults to the current window context) and which will determine
 
+(wildcard-match? wildcard #&optional w)
 
 
 MODULE (app scwm optargs)
 
 This module provides the interface for optional and keyword arguments
-used by the other modules.
+used by the other modules. It does not rely on any scwm-specific
+functionality and can be used by any Guile script - in theory. I do
+not reccomend using it in random programs because Guile will probably
+have its own interface for optional and keyword arguments to Scheme
+procedures some day. For this reason, the only complete documentation
+is in the file optargs.scm itself. If you really want procedures with
+optional or keyword arguments, take a look at some of the scheme
+modules to see how it's done.
+
+
+MODULE (app scwm style)
+
+Styles let you specify how the look and feel of given windows starts
+out. Most of the styles (those dealing with initial placement and
+windowmanager hints) can also be set with interactive procedures. In
+some cases,
+
+(make-style . args)
+
+This creates a style that can be used with the #:use-style option of
+the style commands. It's really just a cons cell but it's poor to
+depend on that. The arguments can be any of the options accepted by
+the window-style command (see below).
+
+(style-one-window w . args)
+
+This applies a style to a single window. The arguments can be any of
+the options accepted by the window-style command (see below).
+
+(window-style condition . args)
+
+This establishes a style that is applied to current and future
+windows, much like the fvwm Style command. condition can be a
+predicate that takes a window as an argument in which case all current
+and future windows that satisfy the predicate will be styled; a
+string, in which case all present and future windows that
+wildcard-match the string (see wildcard-match above) will be styled;
+or #t, in which case all future and present windows will be matched.
+Of course, "*" has the same effect as #t, and is even special-cased to
+be equally efficient, so the choice between these is a matter of
+style. The remaining args are keywords alternating with values. The
+available keywords can be extended by the user, but many standard ones
+are defined. Styles defined by window-style are applied to new windows
+in the order in which they are defined. Also, unlike most procedures
+that take keyword options, the same key may be specified more than
+once. The keys are processed in order, so the last one of a
+conflicting pair is the one that will take effect.
+
+(add-window-style-option key handler)
+(add-boolean-style-option key t-handler f-handler)
+(add-window-hint-option key handler)
+(add-boolean-hint-option key t-handler f-handler)
+
+These procedures let you define your own style options. The following
+style options are predefined:
+
+#:border-width - the number given will be used as the width of the window's
+                 border - a small or 0 border-width, possible combined with
+                 #:no-titlebar or #:plain-border can make "utility" windows
+                 that you don't want to move around or resize very much 
+                 relatively unobtrusive.
+
+#:background - specify a color or string
+
+#:bg - synonym for #:background
+
+#:foreground - specify a color or string that will be used as the forground
+               color of windows using this style.
+
+#:fg - synonym for #:foreground
+
+#:circulate-skip - #t/#f, skip this window when circulating with 
+                   next-window or prev-window, or not.
+
+#:circulate-skip-icon - #t/#f, skip this window when circulating with 
+                   	next-window or prev-window, or not.
+
+#:focus - sets the window's focus style, 'click, 'mouse, 'sloppy or 'none.
+
+#:plain-border - if #t, makes the window have a plain border with no resize 
+                 handles in the corner - like NoHandles
+
+#:icon-title - sets the title of the window's icon to the specified string.
+
+#:icon-box - a list of four numbers represents the x, y, width and height
+             parameters of the icon box used for this window.
+
+#:sticky-icon - #t/#f makes the window's icon (only) sticky or not.
+
+#:start-iconified - #t/#f, makes the window start iconified or not.
+
+#:kept-on-top - if #t, makes the window start as if keep-on-top had been 
+		called on it, in other words, it stays on top, 
+
+#:sticky - #t or #f, determines if the window starts sticky or not.
+
+#:no-titlebar - #t/#f, makes the window lack or have a titlebar 
+                respectively.
+
+#:winlist-skip - skip this window in the window list menu
+
+#:mwm-buttons - use mwm buttons - particular buttons should have their 
+                beveling inverted when the window is maximized. This does
+                not currently work.
+
+#:mwm-border - #t or #f, determines if the border is mwm style or not.
+               An mwm-style border has shallower insets than a normal one.
+
+#:icon - #t, #f or a string that specifies an icon. If #f, the window will 
+         have no icon. If #t, it will have one, but what it will be is
+         unspecified. If a string, the bitmap or pixmap specified will be
+         used as the icon.
+
+#:mini-icon - #t or #f or a string that specifies a mini-icon. As above.
+
+#:random-placement - if #t, windows with this style will always be placed
+                     non-interactively, otherwise they will be sometimes
+                     placed interactively if the placement algorithms fail.
+
+#:smart-placement - if #t, windows with this style will be placed in an
+                    empty place on the screen if they'd require user
+                    interaction to place, if no such place is found they
+                    are placed according to the value of smart-placement.
+
+#:button - specifies that the button identified by the given number will
+           be drawn for the window. Currently doesn't really work very well.
+
+#:no-button - specifies that the button identified by the given number will
+              not be drawn for the window. Currently doesn't really work very 
+              well.
+
+#:hint-override - if mwm-function hints are used, this
+
+#:decorate-transient - #t or #f, decorate transient windows or not.
+
+#:mwm-decor-hint - #t or #f, follow mwm decoration hints or not.
+
+#:mwm-func-hint #t or #f, follow mwm function hints or not.
+
+#:PPosition-hint - #t/#f, use the PPosition hint or not.
+
+#:OL-decor-hint - #t/#f, use the OpenLook window manager hints or not.
+
+#:start-on-desk - makes the window start on the specified desk. If #f, it
+                  can start on any desk.
+
+#:skip-mapping - #t or #f, change to the windows's desk while it is mapping
+                 or not.
+
+#:use-style - use a style created with make-style.
+
+;; use-decor not implemented for now
+
+Here are some extra style options not available in fvwm:
+
+#:start-maximized - takes #f or a list of two numbers. In the former case,
+                    the window does not start maximized, in the latter
+                    case it is maximized horizontally and/or vertically as
+                    specified by the numbers.
+
+#:start-lowered - #t or #f - sick of your windows starting on top of 
+                  everything? Make them start out lowered with this handy 
+                  option.
+
+#:start-window-shaded - #t or #f, make the window start window-shaded (as per
+                        window-shade) or not.
+
+#:other-proc - lets you specify an additional procedure to apply to the window
+               after it is created.
+
+#:other-hint-proc - lets you specify an additional procedure to apply to the
+                    window when hints are being processed.
+

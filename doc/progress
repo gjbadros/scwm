@@ -185,16 +185,16 @@ GotoPage				set-viewport-position!,
 EdgeResistance				set-edge-resistance!
 EdgeScroll				set-edge-scroll!, set-edge-wrap!
 Scroll					set-viewport-position!, 
-					get-viewport-position
+					viewport-position
 WindowId				window-id
 Maximize				written in terms of resize-to
-
 None					window-list,etc
 Next					window-list,etc
 Prev					window-list,etc
 WindowList				window-list,window-title,etc
+Style					(implemented as many procedures)
 
-48 total
+49 total
 
 
 Intentionally Omitted:
@@ -210,12 +210,11 @@ FlipFocus
 
 
 
-6 styles:
+5 styles:
 AddButtonStyle 
 AddTitleStyle 
 BorderStyle
 ButtonStyle
-Style
 TitleStyle
 
 4 decors:
