@@ -2,6 +2,8 @@
 
 See also doc/dev/scwm-1.0-release-todo
 
+* face.c (add_spec_to_face_x) should use color objects, not strings, for gradients; see also colors.c (AllocLinearGradient)
+
 * sticky-icons -- does it deiconify to the current viewport? (Hubert Canon's bug from 22-Mar-99)
 
 * better dynamic linking test for platforms like HP/UX?
