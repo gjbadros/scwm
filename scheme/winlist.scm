@@ -71,7 +71,8 @@
 (define*-public (show-window-list-menu #&key (only '()) (except '())
 				       (proc window-list-proc)
 				       (show-geometry #f)
-				       (warp-to-first #f))
+				       (warp-to-first #f)
+				       (show-mini-icon #t))
   (popup-menu (menu
 	       (append 
 		(list 
@@ -83,7 +84,10 @@
 				      (lambda () (proc x))
 				      (if show-geometry
 					  (window-geometry-string x) #f)
-				      #f #f #f #f #f))
+				      #f 
+				      (if show-mini-icon
+					  (window-mini-icon x) #f)
+				      #f #f #f))
 		     (list-windows #:only only #:except 
 				   (cons 
 				    winlist-skip?
