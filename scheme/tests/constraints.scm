@@ -1,6 +1,11 @@
 ;; keep two windows at same y coord
-(define w2 (get-window))
+(proc
+ (define w2 (get-window))
+ (add-stays-on-window w2)
+ (add-stays-on-window (current-window-with-focus)))
+
 (keep-tops-even (current-window-with-focus) w2)
+(keep-to-left-of (current-window-with-focus) w2)
 
 ;; can use window-list menu to see positions easily, but this works too
 (window-position (current-window-with-focus))
