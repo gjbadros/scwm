@@ -218,7 +218,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 (defun scwm-eval (sexp out)
   "Evaluate the SEXP with scwm-exec and print the results to OUT.
 All evaluation goes through this procedure."
-  (when (string-match "(\\s *\\(define\\|use-modules\\|load\\)" sexp)
+  (when (string-match "(\\s *\\(define\\|use-\\(scwm-\\)?modules\\|load\\)" sexp)
     (setq scwm-obarray nil))
   (call-process scwm-exec nil out nil sexp))
 
@@ -320,7 +320,7 @@ meaning of the second argument is reversed."
   "Have Scwm use the ice-9 session module.
 This is needed for some commands such as apropos and apropos-internal.
 apropos-internal is used for completion, too"
-  (scwm-eval "(use-modules (ice-9 session))" nil))
+  (scwm-eval "(use-modules (ice-9 session) (app scwm documentation))" nil))
 
 (defun scwm-make-obarray ()
   "Create and return an obarray of scwm symbols."
