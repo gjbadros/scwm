@@ -204,11 +204,12 @@ SCWM_ARG_PATH_MAYBE_EMPTY(cassowary,
 	   AC_MSG_RESULT(using the prefix = )
 	   withval=${prefix}
 	fi
-	CASSOWARY_INCLUDES="-I${withval}"
+	CASSOWARY_INCLUDES="-I${withval}/include"
+	cassolibdir="${withval}/lib"
 	case "$ac_R_nospace" in
-	"yes") cas_lib_path="-L${withval} -R${withval}" ;;
-	"no")  cas_lib_path="-L${withval} -R ${withval}" ;;
-	*)     cas_lib_path="-L${withval}" ;;
+	"yes") cas_lib_path="-L${cassolibdir} -R${cassolibdir}" ;;
+	"no")  cas_lib_path="-L${cassolibdir} -R ${cassolibdir}" ;;
+	*)     cas_lib_path="-L${cassolibdir}" ;;
 	esac
 	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++"
 	CASSOWARY_OBJECTS='$(cassowary_objs)'
