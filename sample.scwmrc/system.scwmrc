@@ -48,7 +48,7 @@
 ;; SCWMDIR is mostly used for testing and running Scwm w/o installing
 ;; use (scwm-path-prefix) and (scwm-path-exec-prefix) if
 ;; you want the installation locations
-(define scwmdir (or (getenv "SCWMDIR") "/usr/share/scwm"))
+(define scwmdir (or (getenv "SCWMDIR") (string-append (scwm-path-prefix) "/share/scwm")))
 
 ;;; set path to use for image searches
 (append! image-load-path
@@ -158,23 +158,23 @@
 
 (define mail-spool-dir (getenv "MAIL"))
 (define sounds-dir (or (getenv "MEDIA") (string-append scwmdir "/Media/")))
-;;(set! sounds-dir "/usr/contrib/Media/")
-(set! doc-files
-  (append (map (lambda (s) (string-append scwmdir "/doc/" s ))
-	     (list "scwm-procedures.txt" "scwm-variables.txt" "scwm-hooks.txt"))
-	  (list 
-	   (string-append (getenv "HOME") "/cassowary/guile/cassowary_scm-procedures.txt"))))
 
+;; prefer doc files in scwmdir/doc
+(set! doc-files
+      (map (lambda (s) (string-append scwmdir "/doc/" s))
+	   (list "scwm-procedures.txt"
+		 "scwm-variables.txt"
+		 "scwm-hooks.txt"
+		 "cassowary_scm-procedures.txt")))
+
+;; but be sure we look for the installed ones too
 (set! doc-files
       (append doc-files
-	      (list (string-append (scwm-path-prefix)
-				   "/share/scwm/scwm-procedures.txt")
-		    (string-append (scwm-path-prefix)
-				   "/share/scwm/scwm-variables.txt")
-		    (string-append (scwm-path-prefix)
-				   "/share/scwm/scwm-hooks.txt")
-		    (string-append (scwm-path-prefix) 
-				   "/share/scwm/cassowary_scm-procedures.txt"))))
+	      (map (lambda (s) (string-append (scwm-path-prefix) "/share/scwm/" s))
+		   (list "scwm-procedures.txt"
+			 "scwm-variables.txt"
+			 "scwm-hooks.txt"
+			 "cassowary_scm-procedures.txt"))))
 
 (append! *theme-path*
 	 (list (string-append (scwm-path-prefix) "/share/scwm/themes")
@@ -206,9 +206,6 @@
   (if (cached-program-exists? "start-zsh")
       "-e start-zsh" ""))
 (define xterm-program-name (or (getenv "XTERM_PROGRAM_NAME") "xterm"))
-
-(define use-complete-host-menu #t)
-(define xterm-other-host-use-local-xterm #t)
 
 ;; Want a Win95-like "X" button at top right of window decoration
 ;; to immediately close the window?
@@ -1134,31 +1131,6 @@ union of all other window managers!
 
 (define menu-screensaver
   (make-xlock-menu #f))
-
-(if want-workman-menu
-    (define (tell-workman command)
-      (execute (string-append "workman -s " command)))
-    (define menu-workman
-      (menu (list
-	     (menuitem "&Pause" #:image-left "mini-wm-pause.xpm"
-		       #:action (lambda () (tell-workman "pause")))
-	     (menuitem "P&lay" #:image-left "mini-wm-play.xpm"
-		       #:action (lambda () (tell-workman "play")))
-	     (menuitem "&Next" #:image-left "mini-wm-next.xpm"
-		       #:action (lambda () (tell-workman "fwd")))
-	     (menuitem "P&rev" #:image-left "mini-wm-prev.xpm"
-		       #:action (lambda () (tell-workman "back")))
-	     (menuitem "&Stop" #:image-left "mini-wm-stop.xpm"
-		       #:action (lambda () (tell-workman "stop")))
-	     (menuitem "&Eject" #:image-left "mini-wm-eject.xpm"
-		       #:action (lambda () (tell-workman "eject")))))))
-
-#!
-(define menu-test
-  (menu
-   (list
-    (menuitem "Foo" #:action 'bar))))
-!#
 
 (define menu-root-start
   ;;  (menu "RootStart" "Start %mini-exp.xpm%"
