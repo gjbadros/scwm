@@ -1,3 +1,9 @@
+Wed Nov 12 11:23:50 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* configure.in, configure: Don't try too create a Makefile in libs
+ 	any more during the configure process. configure regenerated from
+ 	configure.in. 
+
 Mon Nov 10 06:20:42 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* version.h: Bumped version to 0.4.
