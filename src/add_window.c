@@ -425,19 +425,6 @@ AddWindow(Window w)
     valuemask |= CWBackPixel;
   }
 
-  if (!psw->fSticky) {
-#if 0    
-    scwm_msg(WARN,FUNC_NAME,"Moving %s by %d,%d to to correct for restart_vp_offset",
-             psw->name,restart_vp_offset_x,restart_vp_offset_y);
-#endif
-    psw->attr.x += restart_vp_offset_x;
-    psw->attr.y += restart_vp_offset_y;
-#if 0
-    scwm_msg(WARN,FUNC_NAME,"Now %s is set to be at %d,%d",
-             psw->name,psw->attr.x,psw->attr.y);
-#endif
-  }
-
   attributes.border_pixel = SAFE_COLOR(psw->ShadowColor);
 
   psw->frame_cursor = get_scm_cursor_by_number(XC_top_left_arrow);
@@ -777,6 +764,16 @@ AddWindow(Window w)
   InstallWindowColormaps(colormap_win);
 
   call1_hooks(after_new_window_hook, psw->schwin);
+
+
+  if (!psw->fSticky) {
+#if 1
+    scwm_msg(WARN,FUNC_NAME,"Moving %s by %d,%d to to correct for restart_vp_offset",
+             psw->name,restart_vp_offset_x,restart_vp_offset_y);
+#endif
+    MoveTo(psw, FRAME_X(psw)+restart_vp_offset_x, 
+           FRAME_Y(psw)+restart_vp_offset_y, False);
+  }
 
   CreateIconWindow(psw,ICON_X_VP(psw),ICON_Y_VP(psw));
 
