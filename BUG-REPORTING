@@ -1,6 +1,13 @@
 REPORTING BUGS IN SCWM
 
-Please send bug reports to scwm-discuss@mit.edu.
+Please try to use the bug reporting form at:
+
+http://scwm.mit.edu/cgi-bin/gnatsweb.pl
+
+or via GNATs' send-pr shell script or Emacs interface.
+
+You may also send bug reports to scwm-bugs@scwm.mit.edu.
+Discussion of a more general nature should be sent to scwm-discuss@scwmmit.edu.
 
 If you use the scwm-mode for Emacs from utilities/emacs/scwm.el,
 please use M-x scwm-bug RET to send a bug report.
