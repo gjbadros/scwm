@@ -1,0 +1,10 @@
+/* <initials of commenter>:FIXME:<initials of specific person addressed, if not commenter>: <comment body> */
+
+For example:
+
+/* MS:FIXME:: Review this comment format. */
+
+Or (to put words in Greg's mouth):
+
+/* GJB:FIXME:MS: Why is this code so boneheaded, Maciej? */
+
