@@ -1,3 +1,47 @@
+Mon Jul 20 18:03:11 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm-constraints.cc, constraint-primitives.cc: renamed from .c,
+	since they are C++ code
+
+	* Makefile.am: removed the above files, and
+	constraint-primitives.x from mention
+
+	* makefile.cassowary: added -- use `make -f makefile.cassowary
+	scwm_cl' to build after running configure with
+	--with-cassowary=/path/to/cassowary
+
+	* scwm-constraints.hpp: added -- the c++ header file for
+	scwm-constraints.cc; this gets included by
+	constraints-primitives.cc, but not by the rest of scwm.
+
+	* utilities/dev/extract-docs: improved, added more warnings --
+	you should run extract-docs on your souce files from now on to at
+	least get warnings (some very useful for diagnosing problems with
+	the source code, not just the comments)
+
+	* window.h: go back to simply embedding frame_{x,y,width,height},
+	but add a pointer to an opaque ScwmWindowConstraintInfo
+	unconditionally (this will be replaced by whatever window
+	extension mechanism comes into existence)
+
+	* scwm.c: do not define a global solver object
+
+	* scwm-constraints.h: Do not use ScwmClVariables any longer --
+	simplify accessing cassowary from scwm into a simple interface and 
+	stub those functions.  #define SET_CVALUE for use when assigning
+	values to constrained vars (vars which are shadowed by
+	constrained variables)
+
+	* window.c, add_window.c, borders.c placement.c, move.c: use the
+ 	new cleaner interface from scwm-constraints.h -- reduces #ifdef
+ 	USE_CASSOWARY a lot!  add_window.c has the empty stubs for the
+ 	prototypes that may be turned into real hooks later.
+	
+	* system.h: do not use new and delete unless __cplusplus is
+	defined and USE_CASSOWARY is defined (nothing uses this now)
+
+	* image.c: fix a warning due to a constness bug in guile
+
 Mon Jul 20 15:03:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleScwmExec): Fixed long-time probable bug that I
