@@ -60,9 +60,9 @@ void invalidate_window(SCM schwin)
 }
 
 
-SCM ensure_valid(SCM win, int n, char *subr) {
+SCM ensure_valid(SCM win, int n, char *subr, SCM kill_p) {
   if (win==SCM_UNDEFINED) {
-    win=get_window();
+    win=get_window(kill_p);
     if (win==SCM_BOOL_F) {
       return SCM_BOOL_F;
     }
@@ -77,9 +77,11 @@ SCM ensure_valid(SCM win, int n, char *subr) {
   return(win);
 }
 
-#define VALIDATE(win,subr)  if(((win=ensure_valid(win,1,subr)))==SCM_BOOL_F) return SCM_BOOL_F
+#define VALIDATE(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
 
-#define VALIDATEN(win,n,subr)  if(((win=ensure_valid(win,n,subr)))==SCM_BOOL_F) return SCM_BOOL_F
+#define VALIDATEKILL(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_T)))==SCM_BOOL_F) return SCM_BOOL_F
+
+#define VALIDATEN(win,n,subr)  if(((win=ensure_valid(win,n,subr,SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
 
 
 
@@ -87,26 +89,121 @@ SCM window_p(SCM obj) {
   return  ((SCM_NIMP(obj) && WINDOWP(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
-SCM get_window(void) 
+SCM get_window(SCM kill_p) 
 {
   if (window_context==SCM_UNDEFINED) {
-    return select_window();
+    return select_window(kill_p);
   }
   return window_context;
 }
 
 
-/* XXX implement this, probably in terms of DeferExecution */
-SCM select_window(void) 
+int ModDeferExecution(int cursor, int FinishEvent)
 {
+  int done;
+  int finished = 0;
+  Window dummy;
+  Window original_w;
+  XEvent event;
+  Window w;
+  ScwmWindow *tw;
+  ScwmWindow *t;
+
+  tw=(ScwmWindow *)calloc(1,sizeof(ScwmWindow));
+  if(!GrabEm(cursor))
+  {
+    XBell(dpy,Scr.screen);
+    return SCM_BOOL_F;
+  }
+  
+  while (!finished)
+  {
+    done = 0;
+    /* block until there is an event */
+    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
+               ExposureMask |KeyPressMask | VisibilityChangeMask |
+               ButtonMotionMask| PointerMotionMask/* | EnterWindowMask | 
+                                                     LeaveWindowMask*/, &event);
+    StashEventTime(&event);
+
+    if(event.type == KeyPress)
+      Keyboard_shortcuts(&event,FinishEvent);	
+    if(event.type == FinishEvent)
+      finished = 1;
+    if(event.type == ButtonPress)
+    {
+      XAllowEvents(dpy,ReplayPointer,CurrentTime);
+      done = 1;
+    }
+    if(event.type == ButtonRelease)
+      done = 1;
+    if(event.type == KeyPress)
+      done = 1;
+    if(!done)
+    {
+      DispatchEvent();
+    }
+
+  }
+
+  
+  w = event.xany.window;
+  if(((w == Scr.Root)||(w == Scr.NoFocusWin))
+     && (event.xbutton.subwindow != (Window)0))
+  {
+    w = event.xbutton.subwindow;
+    event.xany.window = w;
+  }
+  if (w == Scr.Root)
+  {
+    XBell(dpy,Scr.screen);
+    UngrabEm();
+    return SCM_BOOL_F;
+  }
+  if (XFindContext (dpy, w, ScwmContext, (caddr_t *)tw) == XCNOENT)
+  {
+    XBell(dpy,Scr.screen);
+    UngrabEm();
+    return SCM_BOOL_F;
+  }
+  
+  if(w == tw->Parent) {
+    w = tw->w;
+  }
+  
+  UngrabEm();
+
+  printf("%d\n",w);
+  for (t=Scr.ScwmRoot.next; NULL!=t; t=t->next) {
+    if (t->w==w) {
+      puts("returning something real from select-window.");
+      return(t->schwin);
+    }
+  }
+  puts("Didn't find anything.");
+
   return SCM_BOOL_F;
+
+}
+
+
+/* XXX implement this, probably in terms of DeferExecution */
+SCM select_window(SCM kill_p) 
+{
+  if (kill_p==SCM_UNDEFINED) {
+    kill_p=SCM_BOOL_F;
+  } else if (!gh_boolean_p(kill_p)) {
+    scm_wrong_type_arg("select-window",1,kill_p);
+  }
+  return(ModDeferExecution((kill_p != SCM_BOOL_F ? DESTROY : SELECT)
+			   ,ButtonRelease));
 }
 
 
 SCM delete_window(SCM win)
 {
   ScwmWindow *tmp_win;
-  VALIDATE(win,"delete-window");
+  VALIDATEKILL(win,"delete-window");
 
   tmp_win=SCWMWINDOW(win);
   if(check_allowed_function2(F_DELETE,tmp_win) == 0) {
@@ -122,7 +219,7 @@ SCM delete_window(SCM win)
 SCM destroy_window(SCM win)
 {
   ScwmWindow *tmp_win;
-  VALIDATE(win,"destroy-window");
+  VALIDATEKILL(win,"destroy-window");
   tmp_win=SCWMWINDOW(win);
   if(check_allowed_function2(F_DESTROY,tmp_win) == 0) {
     return SCM_BOOL_F;
@@ -139,7 +236,7 @@ SCM destroy_window(SCM win)
 
 SCM window_deletable_p(SCM win)
 {
-  VALIDATE(win,"window-deletable?");
+  VALIDATEKILL(win,"window-deletable?");
   return (SCWMWINDOW(win)->flags & DoesWmDeleteWindow) ? 
     SCM_BOOL_T : SCM_BOOL_F;
 }
@@ -709,10 +806,10 @@ SCM move_window_to_desk(SCM which, SCM win)
 }
 
 
-SCM get_window_position(SCM win) {
+SCM window_position(SCM win) {
   ScwmWindow *tmp_win;
 
-  VALIDATE(win,"get-window-position");
+  VALIDATE(win,"window-position");
   tmp_win=SCWMWINDOW(win);
 
   return scm_listify(SCM_MAKINUM(tmp_win->frame_x),
@@ -720,10 +817,10 @@ SCM get_window_position(SCM win) {
 		     SCM_UNDEFINED);
 }
 
-SCM get_window_size(SCM win) {
+SCM window_size(SCM win) {
   ScwmWindow *tmp_win;
 
-  VALIDATE(win,"get-window-size");
+  VALIDATE(win,"window-size");
   tmp_win=SCWMWINDOW(win);
 
   return scm_listify(SCM_MAKINUM(tmp_win->frame_width),
@@ -731,30 +828,30 @@ SCM get_window_size(SCM win) {
 		     SCM_UNDEFINED);
 }
 
-SCM get_window_id(SCM win) {
+SCM window_id(SCM win) {
   ScwmWindow *tmp_win;
 
-  VALIDATE(win,"get-window-id");
+  VALIDATE(win,"window-id");
   tmp_win=SCWMWINDOW(win);
 
   return SCM_MAKINUM(tmp_win->w);
 }
 
-SCM get_window_desk(SCM win) {
+SCM window_desk(SCM win) {
   ScwmWindow *tmp_win;
 
-  VALIDATE(win,"get-window-desk");
+  VALIDATE(win,"window-desk");
   return SCM_MAKINUM(SCWMWINDOW(win)->Desk);
 }
 
-SCM get_window_title(SCM win) {
+SCM window_title(SCM win) {
   ScwmWindow *tmp_win;
 
   VALIDATE(win,"get-window-title");
   return gh_str02scm(SCWMWINDOW(win)->name);
 }
 
-SCM get_window_list() {
+SCM list_all_windows() {
   ScwmWindow *t;
   SCM result=SCM_EOL;
 
