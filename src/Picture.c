@@ -239,12 +239,13 @@ make_picture(SCM picture_filename)
   }
 
   pic = CachePicture(dpy,Scr.Root,szPicturePath,szName);
-  free(szName);
 
   if (!pic) {
     scwm_msg(ERR,__FUNCTION__,"Could not load pixmap %s",szName);
-    return SCM_UNDEFINED;
+    free(szName);
+    return SCM_BOOL_F;
   }
+  free(szName);
   return pic2scm(pic);
 }
 
