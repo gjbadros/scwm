@@ -92,6 +92,9 @@ my %concepts = ();
 my %hooks = ();
 my %vars = ();
 
+# Current scheme environment
+# i.e., the last define-module seen, reset at new files
+my $current_module = "";
 
 use FileHandle;
 use IPC::Open2;
@@ -106,8 +109,10 @@ ISPELL->autoflush();
 while (<>) {
   if (eof) {
     close(ARGV);
+    $current_module = "";
     next;
   }
+  my $fScheme = ($ARGV =~ /.scm$/);
   if (m/^SCWM_PROC/) {
     my $header = $_;
     my $filename = $ARGV;
@@ -117,7 +122,9 @@ while (<>) {
     }
     $header .= $_;
     ProcessHeader($filename, $line, $header);
-  } elsif ($ARGV =~ /\.scm$/ && m%^\(define\*?-public\s+\(([^\s\)]+)%) {
+  } elsif ($fScheme && m%^\(define-module\s+(\([^\)]*\))%) {
+    $current_module = $1;
+  } elsif ($fScheme && m%^\(define\*?-public\s+\(([^\s\)]+)%) {
     my $scheme_header = $_;
     my $proc_name = $1;
     my $filename = $ARGV;
@@ -126,7 +133,7 @@ while (<>) {
     while (defined($_ = <>) && $_ !~ m/^\(/) {
       $scheme_header .= $_;
     }
-    ProcessSchemeHeader($filename, $proc_name, $line, $scheme_header);
+    ProcessSchemeHeader($filename, $current_module, $proc_name, $line, $scheme_header);
     redo if (defined($_)); # start loop over w/o reading next line
   } elsif (m%/\*\*\s*(\w[^:]*):\s*(.*?)\s*$%) {
     # matches a /** CHAPTER: DESCRIPTION (e.g., CONCEPT) comment
@@ -228,7 +235,7 @@ if ($opt_C) {
 if ($opt_o) {
   print MARKUP_OUT <<END_CHAP_HEAD
   <chapter>
-    <title>Primitives in Alphabetical Order</title>
+    <title>Procedures in Alphabetical Order</title>
 END_CHAP_HEAD
   ;
 }
@@ -240,8 +247,10 @@ foreach my $proc (sort { lc($a) cmp lc($b) } keys %procedure) {
   my $file = $procedure{$proc}{file};
   my $line = $procedure{$proc}{line};
   my $markup = $procedure{$proc}{markup};
+  my $module = $procedure{$proc}{module};
   print <<EOC
 $usage
+- $module
 $comment
 [From $file:$line]
 
@@ -263,7 +272,7 @@ if ($opt_o) {
 if ($opt_o) {
   print MARKUP_OUT <<START_PROC_BY_FILE
   <chapter>
-    <title>Primitives By Defined-in File</title>
+    <title>Procedures By Defined-in File</title>
 START_PROC_BY_FILE
   ;
   
@@ -359,8 +368,8 @@ END_TRAILER
 
 use Balanced;
 
-sub ProcessSchemeHeader( $$$$ ) {
-  my ($filename, $proc_name, $line, $header) = @_;
+sub ProcessSchemeHeader( $$$$$ ) {
+  my ($filename, $module, $proc_name, $line, $header) = @_;
   my @arglist;
   my ($type,$rest) = ($header =~ m%^\((define\*?-public)\s+(.*)%s);
   #  print STDERR "HEAD: $header\n";
@@ -401,7 +410,7 @@ sub ProcessSchemeHeader( $$$$ ) {
   my $markup_purpose = MarkupComment($purpose);
   my $markup_usage = MarkupUsage($usage);
   my $markup_comment = MarkupComment($comment);
-  my $markup = CreateMarkupBody($proc_name, $sgml_id, 
+  my $markup = CreateMarkupBody($proc_name, $sgml_id, $module,
 				$markup_usage, $markup_purpose, $markup_comment,
 				$filename, $line);
 
@@ -409,6 +418,7 @@ sub ProcessSchemeHeader( $$$$ ) {
 			     comment => $comment,
 			     purpose => $purpose,
 			     sgml_id => $sgml_id,
+			     module => $module,
 			     markup_purpose => $markup_purpose,
 			     markup_usage => $markup_usage,
 			     markup => $markup,
@@ -570,7 +580,9 @@ sub ProcessHeader( $$$ ) {
 
   my $markup_purpose = MarkupComment($purpose);
 
-  my $markup = CreateMarkupBody($primname, $sgml_id, 
+  my $module = "Built-in Primitive";
+
+  my $markup = CreateMarkupBody($primname, $sgml_id, $module,
 				$markup_usage, $markup_purpose, $markup_comment,
 				$filename, $line);
 
@@ -589,6 +601,7 @@ EOC
 			    comment => $comment,
 			    purpose => $purpose,
 			    sgml_id => $sgml_id,
+			    module => $module,
 			    markup_purpose => $markup_purpose,
 			    markup_usage => $markup_usage,
 			    markup => $markup,
@@ -694,7 +707,7 @@ sub ProcessVarComment ( $$$$ ) {
 
 
 sub CreateMarkupBody ( $$$$$$$ ) {
-  my ($primname, $sgml_id, $markup_usage, $markup_purpose, $markup_comment,
+  my ($primname, $sgml_id, $module, $markup_usage, $markup_purpose, $markup_comment,
       $filename, $line) = @_;
   # Use <refentry>, <refname>, <refpurpose>, <synopsis>
   
@@ -715,6 +728,10 @@ sub CreateMarkupBody ( $$$$$$$ ) {
   <para>
   $markup_comment
   </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>$module</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
