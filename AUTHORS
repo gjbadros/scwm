@@ -32,16 +32,26 @@ animated moves and windowshades, and many, many other features. Also
 wrote code that evolved into and/or inspired the scwmexec program and
 the fvwm module support. Greg started working on scwm only weeks after
 Maciej began the rewrite and has been involved throughout the project.
-He is the primary author or maintainer of at least the following files,
-in the directory scwm:
+Greg designed the in-source markup system and developed the initial perl
+version of the documentation extraction system. He has implemented many
+software engineering improvements throughout the system, and is the
+primary author or maintainer of at least the following files, in the
+directory scwm:
     Grab.c      ICCCM.c            draw-pie-menu.c drawmenu.c 
     menuitem.c  module-interface.c scwmenu.c       string_token.c 
     system.c    xrm.c              xmisc.c         miscprocs.c
     log-usage.c
 in the directory scheme:
-    flux.scm minimal.scm module-types.scm xlock-menu.scm
+    flux.scm minimal.scm module-types.scm xlock-menu.scm sort.scm
+    cached-program-exists.scm
 in the directory utilities/dev:
-    X-error-describe extract-docs
+    X-error-describe.in convert-file-to-c-string-variable
+    convert-dependency-dot-graph.in
+    scwm-usage-counter.in
+in the directory modules/c-animation:
+    c-animation.c
+in the directory modules/overlay-plane:
+    get_color.c overlay-plane.c
 
 
 Sam Steingold:
