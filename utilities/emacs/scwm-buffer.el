@@ -46,6 +46,56 @@
 ;;  (lisp-mode-commands scwm-interaction-mode-map) ;;; commented out --gjb
   (define-key scwm-interaction-mode-map "\n" 'scwm-eval-last-sexp))
 
+;; This part requires that the scwmsend program is built and is in your path
+(defun scwm-send (start end)
+  (shell-command-on-region start end "scwmsend -i"))
+
+(defvar X-dpy-for-scwm nil)
+(defvar X-property-scwm-exec nil)
+(defvar X-display-number 0)
+(defvar X-root-window nil)
+
+(defun string-to-list (string)
+  (if (> (length string) 0)
+      (append (list (string-to-char string)) (string-to-list (substring string 1)))
+    nil))
+
+;;; If you have Eric Ludlam's X for emacs package, this should
+;;; work for you.  Be sure that scwm has already started (so that
+;;; the SCWM_EXECUTE atom has already been interned) and that
+;;; the display is accessible to the emacs process (easiest way to
+;;; do this is xhost +<machinename-running-emacs>, but this is
+;;; a giant security hole, too
+;;; The advantage of this is that you don't have to wait 2 seconds
+;;; for scwmsend to exec a new process every time you want to eval
+;;; something
+;;; Eric Ludlam's <zappo@gnu.ai.mit.edu> X for emacs is available from
+;;; his home page at http://www.ultranet.com/~zappo/fsf.shtml
+;;; This requires the patch in the scwm-buffer.el to be applied 
+;;; to X-0.1.tar.gz in order to get the extra argument to XOpenDisplay
+;;; and to get the XChangeProperty that takes a string as data
+(condition-case nil
+    (progn
+      (require 'xlib)
+      (setq X-dpy-for-scwm (XOpenDisplay "uni" X-display-number))
+      (setq X-property-scwm-exec (XInternAtom X-dpy-for-scwm "SCWM_EXECUTE" t))
+      (setq X-root-window (X-window-alloc (X-RootWindow X-dpy-for-scwm 0) X-dpy-for-scwm))
+      (defun scwm-send (start end) 
+	(let ((string (buffer-substring-no-properties start end)))
+	  (XChangeProperty X-dpy-for-scwm X-root-window
+			   X-property-scwm-exec  
+			   XA-string X-format-8 X-PropModeReplace (string-to-list string))
+	  (message "Sent %s" string))))
+  (error (message "Could not load xlib library; will try using scwmsend -i")))
+
+(defun scwm-send (start end) 
+  (let ((string (buffer-substring-no-properties start end)))
+    (XChangeProperty X-dpy-for-scwm X-root-window
+		     X-property-scwm-exec  
+		     XA-string X-format-8 X-PropModeReplace string)
+    (message "Sent %s" string)))
+
+
 ;; This can probably done using a set-property command in XEmacs/Epoch
 (defun scwm-execute (arg)
   (interactive "s")
@@ -53,12 +103,12 @@
     (switch-to-buffer
      (get-buffer-create "*new-scwm-command*"))
     (insert-string arg)
-    (shell-command-on-region (point-min) (point-max) "scwmsend -i")
+    (scwm-send (point-min) (point-max))
     (kill-buffer "*new-scwm-command*")))
 
 (defun scwm-execute-region  ()
   (interactive)
-  (shell-command-on-region (region-beginning) (region-end) "scwmsend -i"))
+  (scwm-send (region-beginning) (region-end)))
 
 (defun scwm-eval-last-sexp (arg)
   "Sends sexp before point to SCWM via the SCWM_EXECUTE property of the
