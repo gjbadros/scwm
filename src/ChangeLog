@@ -1,4 +1,16 @@
-Thu Jul 16 09:59:02 1998  Greg Badros  <gjb@cs.washington.edu>
+Thu Jul 16 16:19:38 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* module-interface.c, xmisc.c, constraints.h: include <config.h>
+
+	* constraint-primitives.c: return SCM_UNSPECIFIED
+
+	* add_window.c (AddWindow): Better constraints debugging support
+	-- give the variables a reasonable name
+
+	* menuitem.c, scwmmenu.c: Use SCM_UNDEFINED to end gh_list call
+
+	* window.c (DestroyScwmWindow): Fix memory leak -- XFree is now
+	called on psw->name before deallocating psw.
 
 	* binding.c (FKeyToKeysymModifiers): Fix bug in handling of
 	uppercase single keystrokes (e.g., C-M-S-E) -- the keysym that was 
