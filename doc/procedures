@@ -116,7 +116,7 @@ specifiers:
 "mouse-3"
 "S-mouse-1"
 
-(unbind-mouse CONTEXTS KEY-SPECIFIER)
+(unbind-mouse CONTEXTS BUTTON-SPECIFIER)
 
 Removes the binding set for the specified mouse event in the specified
 set of contexts.
