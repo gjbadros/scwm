@@ -1,3 +1,14 @@
+Mon Jul  5 20:26:08 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* *.c, *.h: Updated copyrights to include 1999.
+
+	* binding.c: Removed duplicate copy of "icon" (for C_ICON) in the
+	binding_contexts array. Rename local variables in remove_binding
+	(they were called temp and temp2).  Added scm_unprotect_object()
+	calls in remove_binding (and remove comment about them leaking
+	since they shouldn't any longer-- not a big leak anyway, but this
+	is better).
+
 Mon Jul  5 19:33:37 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* validate.h (VALIDATE_ARG_DBL_MIN_COPY): Added a missing SCM_EOL
