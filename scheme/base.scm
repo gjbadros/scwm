@@ -16,6 +16,13 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;; 
 
+
+;;; FIXMS: disgusting hack for now to get these in the root module.
+
+(define menu-bg-color (load-color "gray80"))
+(define menu-text-color (load-color "black"))
+(define menu-font (make-font "fixed"))
+
 
 
 (define-module (app scwm base)
@@ -54,8 +61,10 @@
 (define-public (program-exists? program-name)
   (= 0 (system (string-append "which " program-name " >/dev/null" ))))
 
-(define-public (set-menu-foreground! fg) (set-menu-colors! fg))
-(define-public (set-menu-background! bg) (set-menu-colors! #f bg))
+(define-public (set-menu-foreground! fg) (set! menu-text-color fg))
+;; (define-public (set-menu-foreground! fg) (set-menu-colors! fg))
+(define-public (set-menu-background! bg) (set! menu-bg-color bg))
+;; (define-public (set-menu-background! bg) (set-menu-colors! #f bg))
 (define-public (set-menu-stipple! st) (set-menu-colors! #f #f st))
 
 (define*-public (set-window-foreground! fg #&optional (w (get-window)))
@@ -79,7 +88,7 @@
 		     (stipple #f) font mwm mwm-style)
   (set-menu-colors! (or fg foreground) (or bg background) stipple)
   (if (bound? font)
-      (set-menu-font! font))
+      (set! menu-font font))
   (if (bound? mwm)
       (set-menu-mwm-style! mwm))
   (if (bound? mwm-style)
@@ -136,9 +145,6 @@
   (make-menuitem label action extra-label image-above image-left
 		  hover-action unhover-action hotkey-prefs))
 
-(define-public menu-bg-color (load-color "gray80"))
-(define-public menu-text-color (load-color "black"))
-(define-public menu-font (make-font "fixed"))
 
 (define*-public (menu list-of-menuitems #&key
 		      image-side 
@@ -193,4 +199,3 @@
 
 (define-public xterm-command "xterm ")
 (define-public (run-in-xterm cmd) (exe (string-append xterm-command cmd)))
-
