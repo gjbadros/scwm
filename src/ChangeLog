@@ -1,3 +1,23 @@
+Fri Oct 22 09:18:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* add_window.c, borders.c, events.c, focus.c, scwm.c, shutdown.c,
+ 	window.c: Use False as second arg to XSync, not 0.
+
+	* focus.c, shutdown.c: Use RevertToPointerRoot as third arg to
+ 	XSetInputFocus, not RevertToParent
+
+	* screen.h: Drop UnknownWinFocused since it seems superfluous.
+	May break colormap stuff, but there's gotta be a more appropriate
+	way to do this stuff.
+
+	* add_window.c, events.c: Simplify some focus handling (no
+ 	noticeable effect to me, but I could have broken something, of
+ 	course).
+
+	* colormaps.c (InstallRootColormap): Use psw, not tmp.
+	(HandleColormapNotify) Drop test of Scr.UnknownWinFocused since
+	that variable is now gone.
+	
 Wed Oct 20 17:58:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c (scwm_main): Handle SIGINTs always so that the focus is
