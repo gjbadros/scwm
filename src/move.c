@@ -33,6 +33,7 @@
 #include "borders.h"
 #include "colormaps.h"
 #include "font.h"
+#include "syscompat.h"
 
 
 extern XEvent Event;
@@ -90,7 +91,7 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
     /* handle expose events as we're animating the window move */
     while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
       DispatchEvent();
-    sleep_ms(cmsDelay);
+    usleep(cmsDelay);
 #ifdef FIXGJB_ALLOW_ABORTING_ANIMATED_MOVES
     /* this didn't work for me -- maybe no longer necessary since
        we warn the user when they use > .5 seconds as a between-frame delay
@@ -145,7 +146,7 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
       /* handle expose events as we're rolling up the window shade */
       while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
 	DispatchEvent();
-      sleep_ms(cmsDelay);
+      usleep(cmsDelay);
     } while (*ppctMovement < 1.0 && ppctMovement++);
     XMoveWindow(dpy,w,0,-client_height);
     XResizeWindow(dpy,wFrame,width,shaded_height);
@@ -155,7 +156,7 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
 		    shaded_height + client_height * (*ppctMovement));
       XMoveWindow(dpy, w, 0, -client_height * (1 - *ppctMovement));
       XFlush(dpy);
-      sleep_ms(cmsDelay);
+      usleep(cmsDelay);
     } while (*ppctMovement < 1.0 && ppctMovement++);
     XResizeWindow(dpy,wFrame,width,shaded_height+client_height);
     XMoveWindow(dpy,w,0,0);

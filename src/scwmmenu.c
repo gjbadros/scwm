@@ -35,6 +35,7 @@
 #include "misc.h"
 #include "string_token.h"
 #include "guile-compat.h"
+#include "syscompat.h"
 
 static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);
@@ -812,7 +813,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
   /* FIXGJB: need to make initial item selection */
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
-      sleep_ms(10);
+      usleep(10);
 
       if (c10ms_delays++ == MENU_POPUP_DELAY_MS/10) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);

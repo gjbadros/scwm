@@ -56,6 +56,7 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #include "miscprocs.h"
 #include "font.h"
 #include "module-interface.h"
+#include "syscompat.h"
 
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
@@ -80,9 +81,9 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #include "callbacks.h"
 #include "add_window.h"
 #include "shutdown.h"
-
 #include "scwmpaths.h"
 #include "guile-compat.h"
+#include "syscompat.h"
 
 #define MAXHOSTNAME 255
 
@@ -474,7 +475,7 @@ scwm_main(int argc, char **argv)
     }
   }
   x_fd = XConnectionNumber(dpy);
-  fd_width = GetFdWidth();
+  fd_width = 0;
   
   if (fcntl(x_fd, F_SETFD, 1) == -1) {
     scwm_msg(ERR, "main", "close-on-exec failed");

@@ -17,6 +17,7 @@
 #include "scwm.h"
 #include "misc.h"
 #include "screen.h"
+#include "syscompat.h"
 
 /*****************************************************************************
  *
@@ -41,7 +42,7 @@ IsClick(int x, int y, unsigned EndMask, XEvent * d)
 	 (x - xcurrent < 3) && (x - xcurrent > -3) &&
 	 (y - ycurrent < 3) && (y - ycurrent > -3) &&
 	 ((lastTimestamp - t0) < Scr.ClickTime)) {
-    sleep_ms(20);
+    usleep(20);
     total += 20;
     if (XCheckMaskEvent(dpy, EndMask, d)) {
       StashEventTime(d);

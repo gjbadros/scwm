@@ -127,7 +127,8 @@ scwm_SOURCES =  string_token.c \
                 callbacks.c \
                 shutdown.c \
                 init_scheme_string.c \
-                guile-compat.c
+                guile-compat.c \
+                syscompat.c
 
 scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XPM_LIB@ @x_libs@ @GUILE_LIBS@
 
@@ -161,7 +162,7 @@ scwm.o icons.o misc.o xmisc.o move.o placement.o resize.o virtual.o \
 scmprocs.o scmtypes.o font.o color.o miscprocs.o binding.o errors.o \
 util.o window.o scwmmenu.o drawmenu.o menuitem.o deskpage.o decor.o \
 face.o module-interface.o image.o callbacks.o shutdown.o \
-init_scheme_string.o guile-compat.o
+init_scheme_string.o guile-compat.o syscompat.o
 scwm_DEPENDENCIES = 
 scwm_LDFLAGS = 
 CFLAGS = @CFLAGS@
@@ -185,8 +186,8 @@ DEP_FILES =  .deps/Grab.P .deps/ICCCM.P .deps/add_window.P \
 .deps/misc.P .deps/miscprocs.P .deps/module-interface.P .deps/move.P \
 .deps/placement.P .deps/resize.P .deps/scmprocs.P .deps/scmtypes.P \
 .deps/scwm.P .deps/scwmmenu.P .deps/shutdown.P .deps/string_token.P \
-.deps/system.P .deps/util.P .deps/virtual.P .deps/window.P \
-.deps/xmisc.P
+.deps/syscompat.P .deps/system.P .deps/util.P .deps/virtual.P \
+.deps/window.P .deps/xmisc.P
 SOURCES = $(scwm_SOURCES)
 OBJECTS = $(scwm_OBJECTS)
 

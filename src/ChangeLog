@@ -1,3 +1,22 @@
+1998-06-19  Maciej Stachowiak  <maciej@roc-ny3-25.ix.netcom.com>
+
+	* syscompat.c, syscompat.h: Move functions that may or may not be
+	in libc here. Also rename sleep_ms to usleep.
+
+	string_token.c, string_token.h, system.c, system.h, misc.h: Remove
+	the above mentioned functions.
+
+	binding.c, complex.c, events.c, misc.c, move.c, scwm.c,
+	scwmmenu.c, shutdown.c, virtual.c: include syscompat.h, replace
+	calls to sleep_ms with usleep.
+	
+	Makefile.am, Makefile.in: compile syscompat.c
+
+	* scwm.c: Remove call to GetFdWidth (no longer useful or
+	necessary).
+
+	system.c: Remove GetFdWidth.
+
 1998-06-19  Maciej Stachowiak  <maciej@localhost.localdomain>
 
 	* misc.h: Remove conditional includes of sun_headers.h and

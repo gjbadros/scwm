@@ -19,6 +19,7 @@
 #include "miscprocs.h"
 #include "add_window.h"
 #include "binding.h"
+#include "syscompat.h"
 
 struct symnum {
   SCM sym;

@@ -77,6 +77,7 @@
 #include "color.h"
 #include "callbacks.h"
 #include "guile-compat.h"
+#include "syscompat.h"
 
 #ifndef WithdrawnState
 #define WithdrawnState 0

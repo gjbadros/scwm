@@ -43,46 +43,6 @@
 
 #include <config.h>
 
-/* FIXMS looking at this file, it's clear we need to do autoconf tests
-   for a lot of this stuff. */
-
-#if HAVE_UNAME
-#include <sys/utsname.h>
-#endif
-
-#ifndef HAVE_GETHOSTNAME
-/* define gethostname() by using uname() */
-int 
-gethostname(char *client, size_t length)
-{
-  struct utsname sysname;
-
-#ifdef HAVE_UNAME
-  uname(&sysname);
-  strncpy(client, sysname.nodename, length);
-  return 1;
-#else /* do not even have uname */
-  *client = 0;
-  return -1;
-#endif 
-}
-#endif
-
-int 
-GetFdWidth(void)
-{
-  int system_says;
-#ifdef HAVE_SYSCONF
-  system_says = sysconf(_SC_OPEN_MAX);
-#else
-  system_says = getdtablesize();
-#endif
-  if (system_says > 2048)
-    return 2048;
-  return system_says;
-}
-
-
 /***********************************************************************
  *
  *  Procedure:
@@ -104,30 +64,6 @@ safemalloc(int length)
     exit(1);
   }
   return ptr;
-}
-
-/**************************************************************************
- * 
- * Sleep for n milliseconds using select
- *
- *************************************************************************/
-
-void 
-sleep_ms(int n)
-{
-#ifdef HAVE_USLEEP
-  usleep((unsigned long) n);
-#else /* !HAVE_USLEEP */
-  struct timeval value;
-
-  if (n <= 0)
-    return;
-
-  value.tv_usec = n % 1000;
-  value.tv_sec = n / 1000;
-
-  (void) select(1, 0, 0, 0, &value);
-#endif /* HAVE_USLEEP */
 }
 
 

@@ -7,17 +7,6 @@
 #include "system.h"
 #include "window.h"
 
-/************************************************************************
- * ReapChildren - wait() for all dead child processes
- ************************************************************************/
-#include <sys/wait.h>
-#ifdef HAVE_WAITPID
-#define ReapChildren()  while ((waitpid(-1, NULL, WNOHANG)) > 0);
-#else
-#define ReapChildren()  while ((wait3(NULL, WNOHANG, NULL)) > 0);
-#endif
-
-
 /* Cursor types */
 enum cursor {
  CURSOR_POSITION,		/* upper Left corner cursor */
@@ -88,6 +77,7 @@ Bool FXWindowAccessible(Display *dpy, Window w);
 Bool XGetGeometryPositionOnly(Display *dpy, Window w, int *x_ret, int *y_ret);
 Bool XGetGeometryCacheIt(Display *dpy, Window w);
 
+#endif _MISC_
 
 /* Local Variables: */
 /* tab-width: 8 */

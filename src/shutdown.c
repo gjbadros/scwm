@@ -11,6 +11,7 @@
 #include "virtual.h"
 #include "callbacks.h"
 #include "shutdown.h"
+#include "syscompat.h"
 
 SCM shutdown_hook;
 
