@@ -234,9 +234,6 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 (add-window-style-option #:icon set-icon!)
 (add-window-style-option #:mini-icon set-mini-icon!)
 
-(add-window-hint-option #:random-placement set-random-placement!)
-(add-window-hint-option #:smart-placement set-smart-placement!)
-
 ;; MS:FIXME:: Figure out a better way to do this
 (add-window-hint-option #:button (lambda (n w) (set-window-button! n #t w))
 			#t) ; cumulative
@@ -268,8 +265,7 @@ for a way to make sure this function is called at the correct time."
   (set-object-property! win 'placement-proc proc))
 
 (define-public (set-window-transient-placement-proc! proc win)
-  "Like `set-window-placement-proc!' (which see), but for transient
-windows."
+  "Like `set-window-placement-proc!', but for transient windows."
   (set-object-property! win 'transient-placement-proc proc))
 
 ;; placement

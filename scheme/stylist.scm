@@ -200,8 +200,6 @@ WIN is the window to style and defaults to the window-context."
 #:force-icon
 #:icon
 #:mini-icon
-#:random-placement
-#:smart-placement
 #:button
 #:no-button
 #:hint-override

@@ -199,3 +199,19 @@ list instead of the module."
 
 (X-property-set! 'root-window "_WIN_WM_NAME" "scwm")
 (X-property-set! 'root-window "_WIN_WM_VERSION" (scwm-version))
+
+(define-public (standard-place-window win)
+  "Do an ordinary placement of a window.
+First try `smart-place-window', then `clever-place-window',
+then `random-place-window', and finally `interactive-place-window'."
+  (if 
+   (initial-place-window win)
+   (or
+    (smart-place-window win)
+    (clever-place-window win)
+    (random-place-window win)
+    (interactive-place-window win))))
+
+;; Use the above as the default placement procedure
+(set! default-placement-proc standard-place-window)
+(set! default-transient-placement-proc null-place-window)
