@@ -688,6 +688,7 @@ start the shell remotely."
       (lambda () (and (message-window? msgwin) (message-window-hide! msgwin))))))
   
 (define-public (bell)
+  "Ring the X11 bell (just calls `beep')."
   (beep))
 
 (define-public (set-edge-resistance! s m)
