@@ -165,7 +165,7 @@ be given as STYLE. */
   int iWidth;
   int iStyle = 0;
   VALIDATE_ARG_INT_COPY_USE_DEF(1,width,iWidth,0);
-  if (SCM_BOOL_F == style) iStyle = LineSolid; /* default */
+  if (UNSET_SCM(style)) iStyle = LineSolid; /* default */
   else if (sym_solid == style) iStyle = LineSolid;
   else if (sym_on_off_dash == style) iStyle = LineOnOffDash;
   else if (sym_double_dash == style) iStyle = LineDoubleDash;
