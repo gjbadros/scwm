@@ -154,10 +154,7 @@
 	       (scwm-version-date) "\n"
 	       (if (scwm-is-constraint-enabled?) "With Cassowary Constraint Solver\n"
 		   "")
-	       "Display Size: " (display-size)
-	       "\nDesk Size: " (desk-size) "\nViewport Position: "
-	       (viewport-position) "\nCurrent Desk: " (current-desk) "\n"))
-
+	       "Display Size: " (display-size) "\n"))
 
 (define mail-spool-dir (getenv "MAIL"))
 (define sounds-dir (or (getenv "MEDIA") (string-append scwmdir "/Media/")))
@@ -194,16 +191,10 @@
 (define want-fvwm2-pager-module #t)
 (define want-fvwm2-winlist-module #f)
 
-;; below variables used if the default predicates are used, 
-;; but the above make my system always do opaque moves and resizes
-;;(scwm-option-set! *opaque-move-percent* 20)
-;;(scwm-option-set! *opaque-resize-percent* 20)
-;; (interactive-move)
 ;; Disabled autoraise by default; 
 ;; would give an instant autoraise with no timeout, which 
 ;; is not all that useful
 (define want-autoraise #f)
-(define want-workman-menu #t)
 
 (define xterm-user-shell-options
   (if (cached-program-exists? "start-zsh")
@@ -226,9 +217,6 @@
 (define font12
   (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 (set-icon-font! font12)
-
-(define icon-font
-  (make-font "fixed"))
 
 (define (start-program-in-xterm binary title resources)
   (string-append binary " -T" title " -name " resources))
