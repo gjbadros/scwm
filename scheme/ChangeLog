@@ -1,3 +1,12 @@
+1997-10-24  Jens-Ulrik Holger Petersen  <petersen@kurims.kyoto-u.ac.jp>
+
+	* Makefile.in (mostlyclean): New target.
+
+	* wininfo.scm (window-geometry-string): Format geometry output
+	in standard way.
+
+	* winlist.scm (winlist-skip?): Fixed; was constant #f.
+
 Thu Oct 23 20:03:30 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* decor.scm: Added some basic support for decors: the

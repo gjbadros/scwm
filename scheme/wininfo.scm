@@ -64,10 +64,10 @@
 	      (pos (window-position w))
 	      (size (window-size w)))
 	  (string-append (if i "(" "")
+			 (number->string (car size))
+			 "x" (number->string (cadr size))
 			 "+" (number->string (car pos)) 
 			 "+" (number->string (cadr pos))
-			 "x" (number->string (car size))
-			 "x" (number->string (cadr size))
 			 (if i ")" "")))))
 
 
