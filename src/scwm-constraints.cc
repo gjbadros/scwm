@@ -22,8 +22,7 @@ extern "C" {
 #include "scwm-constraints.hpp"
 #include "scwm-screen-ci.hpp"
 #include <strstream.h>
-#include "ClVariable.h"
-#include "ClSimplexSolver.h"
+#include "Cl.h"
 
 extern ClSimplexSolver *psolver;
 

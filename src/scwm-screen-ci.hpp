@@ -22,9 +22,8 @@
 #include "xmisc.h"
 #include <strstream>
 #include <string>
-#include "ClVariable.h"
-#include "ClSimplexSolver.h"
-#include "../guile/cassowary_scm.hpp"
+#include "Cl.h"
+#include "cassowary_scm.hpp"
 
 class ScwmScreenConstraintInfo {
 public:

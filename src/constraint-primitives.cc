@@ -1,9 +1,7 @@
 /* $Id$
  * constraint-primitives.cc
  *
- * Temporary until I get the full general cassowary wrapped in guile nicely
- *
- * (C) 1998 Greg J. Badros
+ * (C) 1998,1999 Greg J. Badros
  */
 
 #ifdef HAVE_CONFIG_H
@@ -23,11 +21,9 @@ extern "C" {
 #include "scwm-constraints.h"
 #include "scwm-constraints.hpp"
 #include "scwm-screen-ci.hpp"
-#include "ClLinearEquation.h"
-#include "ClLinearInequality.h"
-#include "ClSimplexSolver.h"
-#include "../guile/cassowary_scm.hpp"
-#include "../guile/cassowary_scm.h"
+#include "Cl.h"
+#include "cassowary_scm.hpp"
+#include "cassowary_scm.h"
 #include "screen.h" /* to be able to add stays to all the windows */
 #include <strstream>
 #include <set>
