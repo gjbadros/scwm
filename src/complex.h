@@ -12,7 +12,7 @@
 
 #include "scwm.h"
 
-Bool IsClick(int x, int y, unsigned EndMask, XEvent * d);
+Bool IsClick (int x, int y, unsigned EndMask, XEvent * d);
 
 #endif
 

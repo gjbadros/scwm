@@ -51,7 +51,7 @@ IsClick(int x, int y, unsigned EndMask, XEvent * d)
       return True;
     }
     if (XCheckMaskEvent(dpy, ButtonMotionMask | PointerMotionMask, d)) {
-      xcurrent = d->xmotion.x_root;
+       xcurrent = d->xmotion.x_root;
       ycurrent = d->xmotion.y_root;
       StashEventTime(d);
     }
