@@ -104,7 +104,9 @@ borders.x errors.x
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
 	$(guile_snarfs)
 
-EXTRA_DIST = ChangeLog generate_scm_init_funcs scwm-snarf scwm-doc-snarf
+EXTRA_DIST = ChangeLog generate_scm_init_funcs scwm-snarf scwm-doc-snarf.in
+
+bin_SCRIPTS = scwm_doc_snarf
 
 init_scheme_string.c: ../scheme/minimal.scm
 	( echo "char *init_scheme_string = \"\\" ; \

@@ -10,5 +10,5 @@
 # s/"(/"'(/g  # add the Scheme quote to the list -- tricky shell quoting below
 # AND we need these to only happen *after* the %/%/ marker on the input lines
 # so we use two sed's to do it.
-test -n "${CPP+set}" || CPP="gcc -E"
+test -n "${CPP+set}" || CPP="@CPP@"
 ${CPP} -DSCM_MAGIC_SNARFER "$@" | tee | perl -e 'BEGIN {undef $/; $_ = <>} while (m/\$\$\$\s*(\S+)\s+(\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s*\@\@\@\s*(.*?) \@\!\!\!/gs) { print "$1, $2, $3, $4, $5, $6\n\n"; }'
