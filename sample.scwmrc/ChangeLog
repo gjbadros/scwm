@@ -1,3 +1,8 @@
+Thu Mar  5 03:15:48 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* decor.scwmrc, system.scwmrc, gjb.scwmrc, juhp.scwmrc: General
+ 	improvements to make them work and be generally usable.
+
 1998-03-04  Jens-Ulrik Petersen  <petersen@kurims.kyoto-u.ac.jp>
 
 	* juhp.scwmrc: Latest version with wooden decor!  Brought back

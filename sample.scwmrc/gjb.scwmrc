@@ -11,7 +11,10 @@
 ;; Need M_FOCUS_CHANGE for auto-raise
 (use-modules (app scwm module-types))
 
-(define want-autoraise #t)
+;; Disabled for now - the instant autoraise with no timeout is not
+;; very usable.
+(define want-autoraise #f)
+;; (define want-autoraise #t)
 (define want-workman-menu #t)
 
 (define HOME (getenv "HOME"))
@@ -545,30 +548,27 @@
     menu-separator
     (menuitem "More" 
 	       #:action 
-	       (lambda ()
-		 (popup-menu
-		  (menu 
-		   (list
-		    (menuitem "More" #f)
-		    (menuitem "&Raise" #:action raise-window)
-		    (menuitem "&Lower" #:action lower-window)
-		    (menuitem (if (sticky? w)
-				   "Un&stick"
-				   "&Stick") 
-			       #:action toggle-stick)
-		    (menuitem (if (window-shaded? w)
-				   "Unwindow-S&hade"
-				   "Window-S&hade")
-			       #:action toggle-window-shade)
-		    (menuitem (if (kept-on-top? w)
-				   "UnKeep On Top"
+	       (menu 
+		(list
+		 (menuitem "&Raise" #:action raise-window)
+		 (menuitem "&Lower" #:action lower-window)
+		 (menuitem (if (sticky? w)
+			       "Un&stick"
+			       "&Stick") 
+			   #:action toggle-stick)
+		 (menuitem (if (window-shaded? w)
+			       "Unwindow-S&hade"
+			       "Window-S&hade")
+			   #:action toggle-window-shade)
+		 (menuitem (if (kept-on-top? w)
+			       "UnKeep On Top"
 				   "Keep On Top") 
-			       #:action toggle-on-top))))))
+			   #:action toggle-on-top))))
     menu-separator
     (menuitem "Close" #:image-left "mini-cross.xpm" 
-	       #:action close-window)
+	      #:action close-window)
     (menuitem "Destroy" #:image-left "mini-bomb.xpm" 
-	       #:action destroy-window))))
+	      #:action destroy-window))))
   
 
 ;;; now set some mouse and key bindings ;;

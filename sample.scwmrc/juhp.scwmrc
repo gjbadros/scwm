@@ -48,14 +48,39 @@
 
 (set-opaque-move-size! 100)
 
+(define HOME (getenv "HOME"))
+(define USER (getenv "USER"))
+
+(define user-image-path 
+  (list (string-append HOME "/pixmaps") 
+	(string-append HOME "/bitmaps")
+	(string-append HOME "/icons")
+	(string-append HOME "/mini-icons")))
+
+
 ;;-------------------------------;;
 ;; set some paths                ;;
 ;;
 
-(set! image-load-path '("/home/petersen/work/scwm-icons/icons"
-			"/home/petersen/work/scwm-icons/mini-icons"
+;; these are OK for my system, but may need to be changed for
+;; yours. This should probably be eventually autoconfed or something.
+
+(set! image-load-path (append user-image-path
+			      '("/usr/X11/include/X11/bitmaps"
+				"/usr/local/X11/include/X11/pixmaps"
+				"/usr/local/lib/icons"
+				"/uns/include/X11/pixmaps"
+				"/usr/lib/icons"
+				"/usr/X11/include/X11/pixmaps"
+				"/usr/X11/lib/X11/mini-icons")
+				image-load-path))
+
+(set! image-load-path (append 
+		       '("/home/petersen/work/scwm-icons/icons"
+			 "/home/petersen/work/scwm-icons/mini-icons"
 			"/usr/local/X11R6.1/include/X11/pixmaps"
-			"/usr/local/X11R6.1/include/X11/bitmaps"))
+			"/usr/local/X11R6.1/include/X11/bitmaps")
+		       image-load-path))
 
 ;;; decor
 (define initial-decor (default-decor))

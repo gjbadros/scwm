@@ -19,7 +19,6 @@
 
 (menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue"
 	    #:font font14 #:mwm #f)
-
 (define menu-bg-color (load-color "blueviolet"))
 (define menu-text-color (load-color "white"))
 
@@ -33,7 +32,7 @@
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 
-(define user-image-load-list 
+(define user-image-load-path 
   (list (string-append HOME "/pixmaps")
 	(string-append HOME "/bitmaps")))
 
@@ -46,16 +45,14 @@
 ;; yours. This should probably be eventually autoconfed or something.
 
 ;;; set path to use for image searches
-(set! image-load-path (cons "/usr/X11/lib/X11/mini-icons" image-load-path))
-(set! image-load-path (cons "/usr/X11/include/X11/pixmaps" image-load-path))
-(set! image-load-path (cons "/usr/lib/icons" image-load-path))
-(set! image-load-path (cons "/usr/local/X11/include/X11/pixmaps" image-load-path))
-(set! image-load-path (cons "/usr/local/lib/icons" image-load-path))
-(set! image-load-path (cons "/usr/local/icons" image-load-path))
-(set! image-load-path (cons "/uns/share/include/X11/pixmaps" image-load-path))
-(set! image-load-path (cons "/uns/share/include/X11/bitmaps" image-load-path))
-(set! image-load-path (append user-image-load-list image-load-path))
-
+(set! image-load-path 
+      (append 
+       user-image-load-path 
+       '("/usr/X11/lib/X11/mini-icons" "/usr/X11/include/X11/pixmaps" 
+	 "/usr/lib/icons" "/usr/local/X11/include/X11/pixmaps"
+	 "/usr/local/lib/icons" "/usr/local/icons"
+	 "/uns/share/include/X11/pixmaps" "/uns/share/include/X11/bitmaps")
+       image-load-path))
 
 ;;-------------------------------;;
 ;; set some window styles        ;;
@@ -154,9 +151,9 @@
     (menuitem "xcalc" #:action (lambda () (execute "xcalc")))
     (menuitem "xmag" #:action (lambda () (execute "xmag")))
     menu-separator
-    (menuitem "Desks" #:action (lambda () (popup-menu desk-menu)))
+    (menuitem "Desks" #:action 'desk-menu)
     menu-separator
-    (menuitem "Exit scwm" #:action (lambda () (popup-menu quit-verify))))))
+    (menuitem "Exit scwm" #:action quit-verify))))
 
 (define (popup-util)
   (popup-menu util-menu))
@@ -172,32 +169,29 @@
     (menuitem "Lower" #:action lower-window)
     (menuitem "Iconify" #:action iconify)
     menu-separator
-    (menuitem "More" #:action 
-	       (popup-menu 
-		(menu 
-		 (list
-		  (menuitem "More" #f)
-		  (menuitem (if (maximized? w)
-				 "Unmaximize"
-				 "Maximize") 
-			     #:action vertical-toggle-maximize)
-		  (menuitem (if (sticky? w)
-				 "Unstick"
-				 "Stick") #:action toggle-stick)
-		  (menuitem (if (window-shaded? w)
-				 "UnWindow-Shade"
-				 "Window-Shade") 
-			     #:action toggle-window-shade)
-		  (menuitem (if (kept-on-top? w)
-				 "UnKeep On Top"
-				 "Keep On Top") #:action toggle-on-top))))
-	       menu-separator
-	       (menuitem "Close" #:action close-window)
-	       (menuitem "Destroy" #:action destroy-window)))))
+    (menuitem "More..." #:action 
+	      (menu 
+	       (list
+		(menuitem (if (maximized? w)
+			      "Unmaximize"
+			      "Maximize") 
+			  #:action vertical-toggle-maximize)
+		(menuitem (if (sticky? w)
+			      "Unstick"
+			      "Stick") #:action toggle-stick)
+		(menuitem (if (window-shaded? w)
+			      "UnWindow-Shade"
+			      "Window-Shade") 
+			  #:action toggle-window-shade)
+		(menuitem (if (kept-on-top? w)
+			      "UnKeep On Top"
+			      "Keep On Top") #:action toggle-on-top)))
+	      menu-separator
+	      (menuitem "Close" #:action close-window)
+	      (menuitem "Destroy" #:action destroy-window)))))
 
 (define (popup-small-ops)
   (popup-menu (make-small-window-ops-menu (get-window))))
-
 
 
 ;; now set some mouse and key bindings ;;
@@ -265,3 +259,6 @@
 (bind-key 'all "M-S-Tab" 
 	  (lambda ()
 	    (prev-window #:only visible? #:except iconified?)))
+
+
+

@@ -23,6 +23,8 @@
 
 (menu-style #:fg "black" #:bg "grey76" #:stipple "blue"
 	    #:font font14 #:mwm #f)
+(define menu-bg-color (load-color "gray76"))
+(define menu-text-color (load-color "black"))
 
 (title-style #:font font12 #:justify 'left)
 
@@ -34,7 +36,11 @@
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 
-(define user-image-path (string-append HOME "/pixmaps:" HOME "/bitmaps"))
+(define user-image-path 
+  (list (string-append HOME "/pixmaps") 
+	(string-append HOME "/bitmaps")
+	(string-append HOME "/icons")
+	(string-append HOME "/mini-icons")))
 
 
 ;;-------------------------------;;
@@ -44,12 +50,16 @@
 ;; these are OK for my system, but may need to be changed for
 ;; yours. This should probably be eventually autoconfed or something.
 
-(set! image-load-path (string-append user-image-path
-			       ":/usr/X11/include/X11/bitmaps:\
-/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
-/uns/include/X11/pixmaps:\
-/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
-
+(set! image-load-path (append user-image-path
+			      '("/usr/X11/include/X11/bitmaps"
+				"/usr/local/X11/include/X11/pixmaps"
+				"/usr/local/lib/icons"
+				"/uns/include/X11/pixmaps"
+				"/usr/lib/icons"
+				"/usr/X11/include/X11/pixmaps"
+				"/usr/X11/lib/X11/mini-icons")
+				image-load-path))
+			      
 
 ;;-------------------------------;;
 ;; set up a couple of various    ;;
@@ -85,7 +95,7 @@
 	    (set-hilight-colors! "black" "salmon"))
 
 (define fvwm-style 
-  (make-style #:fg "black" #:bg "tan" #:icon #t
+  (make-style #:fg "black" #:bg "tan" #:show-icon #t
 	      #:border-width 4 #:mwm-border #f
 	      #:mwm-buttons #f
 	      #:use-decor fvwm-decor))
@@ -99,7 +109,7 @@
 	    (set-hilight-colors! "black" "cadet blue"))
 
 (define mwm-style 
-  (make-style #:fg "black" #:bg "gray" #:icon #t
+  (make-style #:fg "black" #:bg "gray" #:show-icon #t
 	      #:border-width 6 #:mwm-border #t
 	      #:mwm-buttons #t
 	      #:use-decor mwm-decor))
@@ -131,7 +141,7 @@
 	    (set-hilight-colors! "white" "grey76"))
 
 (define win95-style
-  (make-style #:fg "grey76" #:bg "grey76" #:icon #f
+  (make-style #:fg "grey76" #:bg "grey76" #:show-icon #f
 	      #:border-width 4 #:mwm-border #f
 	      #:mwm-buttons #f
 	      #:use-decor win95-decor))
@@ -167,7 +177,7 @@
 	    (set-hilight-colors! "white" "grey76"))
 
 (define win95-grad-style
-  (make-style #:fg "grey76" #:bg "grey76" #:icon #f
+  (make-style #:fg "grey76" #:bg "grey76" #:show-icon #f
 	      #:border-width 4 #:mwm-border #f
 	      #:mwm-buttons #f
 	      #:use-decor win95-grad-decor))
@@ -202,7 +212,7 @@
 	    (set-hilight-colors! "white" "#3cb21c"))
 
 (define tile-style (make-style #:fg "white" #:bg "#a63823"
-			       #:icon #t
+			       #:show-icon #t
 			       #:border-width 6
 			       #:use-decor tile-decor))
 
@@ -220,59 +230,61 @@
 	    )
 
 (define twm-style (make-style #:border-width 1  #:fg "light gray" #:bg "black"
-			      #:icon #f #:icon #t #:use-decor twm-decor))
+			      #:show-icon #f #:icon #t #:use-decor twm-decor))
 
 
 (define win-decoration-menu
-  (make-menu "Decorations"
-	     (list "Fvwm"
-		   (lambda () 
-		     (style-one-window (get-window)
-				       #:use-style fvwm-style)))
-	     (list "Mwm" 
-		   (lambda () 
-		     (style-one-window (get-window)
-				       #:use-style mwm-style)))
-	     (list "Fvwm95" 
-		   (lambda () 
-		     (style-one-window (get-window)
-				       #:use-style win95-style)))
-	     (list "Fvwm95 (With Gradients)" 
-		   (lambda () 
-		     (style-one-window (get-window)
-				       #:use-style win95-grad-style)))
-	     (list "Lizard Texture" 
-		   (lambda () 
-		     (style-one-window (get-window)
-				       #:use-style tile-style)))
-	     (list "Twm (Inaccurate)"
-		   (lambda () 
-		     (style-one-window (get-window)
-				       #:use-style twm-style)))))
+  (menu 
+   (list
+    (menuitem "Fvwm" 
+	      #:action (lambda () 
+			 (style-one-window (get-window)
+					   #:use-style fvwm-style)))
+    (menuitem "Mwm" 
+	      #:action (lambda () 
+			 (style-one-window (get-window)
+					   #:use-style mwm-style)))
+    (menuitem "Fvwm95"
+	      #:action (lambda () 
+			 (style-one-window (get-window)
+					   #:use-style win95-style)))
+    (menuitem "Fvwm95 (With Gradients)" 
+	      #:action (lambda () 
+			 (style-one-window (get-window)
+					   #:use-style win95-grad-style)))
+    (menuitem "Lizard Texture" 
+	      #:action (lambda () 
+			 (style-one-window (get-window)
+					   #:use-style tile-style)))
+    (menuitem "Twm (Inaccurate)"
+	      #:action (lambda () 
+			 (style-one-window (get-window)
+					   #:use-style twm-style))))))
 
-	
 
 (define global-decorations-menu
-  (make-menu "Global Decorations Settings"
-	     'title
-	     (list "Fvwm" 
-		   (lambda ()
-		     (window-style "*" #:use-style fvwm-style)))
-	     (list "Mwm" 
-		   (lambda ()
-		     (window-style "*" #:use-style mwm-style)))
-	     (list "Fvwm95" 
-		   (lambda ()
-		     (window-style "*" #:use-style win95-style)))
-	     (list "Fvwm95 (With Gradients)" 
-		   (lambda ()
-		     (window-style "*" #:use-style win95-grad-style)))
-	     (list "Lizard Texture" 
-		   (lambda () 
-		     (window-style "*" #:use-style tile-style)))
-	     (list "Twm (Inaccurate)"
-		   (lambda () 
-		     (window-style "*" #:use-style twm-style)))))
+  (menu 
+   (list
+    (menuitem "Global Decorations Settings" #f)
+    menu-title
+    (menuitem "Fvwm" 
+	      #:action (lambda ()
+			 (window-style "*" #:use-style fvwm-style)))
+    (menuitem "Mwm" 
+	      #:action (lambda ()
+			 (window-style "*" #:use-style mwm-style)))
+    (menuitem "Fvwm95" 
+	      #:action (lambda ()
+			 (window-style "*" #:use-style win95-style)))
+    (menuitem "Fvwm95 (With Gradients)" 
+	      #:action (lambda ()
+			 (window-style "*" #:use-style win95-grad-style)))
+    (menuitem "Lizard Texture" 
+	      #:action (lambda () 
+			 (window-style "*" #:use-style tile-style)))
+    (menuitem "Twm (Inaccurate)"
+	      #:action (lambda () 
+			 (window-style "*" #:use-style twm-style))))))
 
 
 
@@ -314,92 +326,104 @@
 
 
 (define window-ops-menu
-  (make-menu "Window Ops"
-	     'title
-	     (list "Move" interactive-move)
-	     (list "Resize" interactive-resize)
-	     (list "Raise" raise-window)
-	     (list "Lower" lower-window)
-	     (list "Print" print-window)
-	     (list "(Un)Window-Shade" toggle-window-shade)
-	     (list "(De)Iconify" toggle-iconify)
-	     (list "(Un)Maximize" vertical-toggle-maximize)
-	     (list "(Un)Stick" toggle-stick)
-	     (list "(Un)Keep On Top" toggle-on-top)
-	     'separator
-	     (list "Close" close-window)
-	     (list "Delete" delete-window)
-	     (list "Destroy" destroy-window)
-	     'separator
-	     (list "Refresh Screen" refresh)))
+  (menu
+   (list
+    (menuitem "Window Ops" #f)
+    menu-title
+    (menuitem "Move" interactive-move)
+    (menuitem "Resize" #:action interactive-resize)
+    (menuitem "Raise" #:action raise-window)
+    (menuitem "Lower" #:action lower-window)
+    (menuitem "Print" #:action print-window)
+    (menuitem "(Un) Window-Shade" #:action toggle-window-shade)
+    (menuitem "(De) Iconify" #:action toggle-iconify)
+    (menuitem "(Un) Maximize" #:action vertical-toggle-maximize)
+    (menuitem "(Un)Stick" #:action toggle-stick)
+    (menuitem "(Un)Keep On Top" #:action toggle-on-top)
+    menu-separator
+    (menuitem "Close" #:action close-window)
+    (menuitem "Delete" #:action delete-window)
+    (menuitem "Destroy" #:action destroy-window)
+    menu-separator
+    (menuitem "Refresh Screen" #:action refresh))))
+
 (define (popup-ops)
-  (popup window-ops-menu))
+  (popup-menu window-ops-menu))
 
 (define quit-verify
-  (make-menu "Really quit scwm?"
-	     'title
-	     (list "Yes" quit)
-	     (list "No" noop)
-	     'separator
-	     (list "Restart scwm" (lambda () (restart "scwm")))))
+  (menu 
+   (list 
+    (menuitem "Really quit scwm?" #f)
+    menu-title
+    (menuitem "Yes" #:action quit)
+    (menuitem "No" #:action noop)
+    menu-separator
+    (menuitem "Restart scwm" #:action (lambda () (restart "scwm"))))))
 
 (define desk-menu 
-  (make-menu "Desks"
-	     'title
-	     (list "Desk 1" (lambda () (set-current-desk! 0)))
-	     (list "Desk 2" (lambda () (set-current-desk! 1)))
-	     (list "Desk 3" (lambda () (set-current-desk! 2)))
-	     (list "Desk 4" (lambda () (set-current-desk! 3)))))
+  (make-menu 
+   (list
+    (menuitem "Desks" #f)
+    menu-title
+    (menuitem "Desk 1" (lambda () (set-current-desk! 0)))
+    (menuitem "Desk 2" (lambda () (set-current-desk! 1)))
+    (menuitem "Desk 3" (lambda () (set-current-desk! 2)))
+    (menuitem "Desk 4" (lambda () (set-current-desk! 3))))))
 
 (define util-menu 
-  (make-menu "Utilities"
-	     'title
-	     (list "xterm" (lambda () (execute "xterm")))
-	     (list "rxvt" (lambda () (execute "rxvt")))
-	     (list "emacs" (lambda () (execute "emacs")))
-	     (list "top" (lambda () (execute "rxvt -T Top -n Top -e top")))
-	     (list "xcalc" (lambda () (execute "xcalc")))
-	     (list "xmag" (lambda () (execute "xmag")))
-	     'separator
-	     (list "Globally Set Decorations"
-		   global-decorations-menu)
-	     (list "Desks" desk-menu)
-	     'separator
-	     (list "Exit scwm" quit-verify)))
-
+  (menu
+   (list
+    (menuitem "Utilities")
+    menu-title
+    (menuitem "xterm" #:action (lambda () (execute "xterm")))
+    (menuitem "rxvt" #:action (lambda () (execute "rxvt")))
+    (menuitem "emacs" #:action (lambda () (execute "emacs")))
+    (menuitem "top" #:action (lambda () (execute "rxvt -T Top -n Top -e top")))
+    (menuitem "xcalc" #:action (lambda () (execute "xcalc")))
+    (menuitem "xmag" #:action (lambda () (execute "xmag")))
+    menu-separator
+    (menuitem "Globally Set Decorations" #:action
+	  global-decorations-menu)
+    (menuitem "Desks" #:action desk-menu)
+    menu-separator
+    (menuitem "Exit scwm" #:action quit-verify))))
+  
 (define (popup-util)
-  (popup util-menu))
+  (popup-menu util-menu))
 
 
 (define (make-small-window-ops-menu w)
-  (make-menu "Window Ops2"
-	     (list "Move" interactive-move)
-	     (list "Resize" interactive-resize)
-	     (list "Raise" raise-window)
-	     (list "Lower" lower-window)
-	     (list "Iconify" iconify)
-	     'separator
-	     (list "More" (make-menu "More"
-			    (list (if (maximized? w)
-				      "Unmaximize"
-				      "Maximize") vertical-toggle-maximize)
-			    (list (if (sticky? w)
-				      "Unstick"
-				      "Stick") toggle-stick)
-			    (list (if (window-shaded? w)
-				      "UnWindow-Shade"
-				      "Window-Shade") toggle-window-shade)
-			    (list (if (kept-on-top? w)
-				      "UnKeep On Top"
-				      "Keep On Top") toggle-on-top)))
-	     (list "Set Decorations"
-		   win-decoration-menu)
-             'separator
-	     (list "Close" close-window)
-	     (list "Destroy" destroy-window)))
+  (menu 
+   (list
+    (menuitem "Move" #:action interactive-move)
+    (menuitem "Resize" #:action interactive-resize)
+    (menuitem "Raise" #:action raise-window)
+    (menuitem "Lower" #:action lower-window)
+    (menuitem "Iconify" #:action iconify)
+    menu-separator
+    (menuitem "More" #:action 
+	      (menu 
+	       (list
+		(menuitem (if (maximized? w)
+			      "Unmaximize"
+			      "Maximize") vertical-toggle-maximize)
+		(menuitem (if (sticky? w)
+			      "Unstick"
+			      "Stick") toggle-stick)
+		(menuitem (if (window-shaded? w)
+			      "UnWindow-Shade"
+			      "Window-Shade") toggle-window-shade)
+		(menuitem (if (kept-on-top? w)
+			      "UnKeep On Top"
+			      "Keep On Top") toggle-on-top))))
+    (menuitem "Set Decorations" #:action
+	      win-decoration-menu)
+    menu-separator
+    (menuitem "Close" #:action close-window)
+    (menuitem "Destroy" #:action destroy-window))))
 
 (define (popup-small-ops)
-  (popup (make-small-window-ops-menu (get-window))))
+  (popup-menu (make-small-window-ops-menu (get-window))))
 
 
 
@@ -410,7 +434,7 @@
 (bind-mouse 'root 2 popup-ops)
 (bind-mouse 'root 3 (lambda () 
 		      (show-window-list-menu #:show-geometry #t)))
-(bind-mouse 'root "M-3" (lambda () (popup desk-menu)))
+(bind-mouse 'root "M-3" (lambda () (popup-menu desk-menu)))
 
 
 ;; window buttons
