@@ -51,20 +51,20 @@ that deal with the window list."
 	(cdr memq-result)
 	())))
 
-;; CRW:FIXME:: The following two procedures are misnamed; `lower-window-below'
-;; doesn't necessarily lower the window (it could raise it);
-;; `raise-window-above' doesn't necessarily raise the window (it could
-;; lower it).  Should they be renamed?
-(define-public (lower-window-below w w2)
+(define-public (restack-window-below w w2)
   "Restack window W immediately below W2."
   (restack-windows (list w2 w)))
 
-(define-public (raise-window-above w w2)
+(define-public (restack-window-above w w2)
   "Restack window W immediately above W2."
   (let ((windows-above-w2 (list-windows-above w2)))
     (if (null? windows-above-w2)
 	(raise-window w)
 	(restack-windows (list (car windows-above-w2) w)))))
+
+;; Deprecated as of post 0.99.6.2
+(define-public lower-window-below restack-window-below)
+(define-public raise-window-above restack-window-above)
 
 (define*-public (lower-by-one #&optional (w (get-window)))
   "Lower window W below the next window down that overlaps it.
@@ -72,7 +72,7 @@ W defaults to the window context in the usual way."
   (let ((windows-below  (list-windows-below w #:only 
 					    (window-overlaps-window? w))))
     (if (not (null? windows-below))
-	(lower-window-below w (car windows-below)))))
+	(restack-window-below w (car windows-below)))))
 
 (define*-public (raise-by-one #&optional (w (get-window)))
   "Raise window W above the next window up that overlaps it.
@@ -81,4 +81,4 @@ W defaults to the window context in the usual way."
 					   (window-overlaps-window? w))))
 
     (if (not (null? windows-above))
-	(raise-window-above w (car windows-above)))))
+	(restack-window-above w (car windows-above)))))

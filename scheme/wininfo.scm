@@ -84,13 +84,11 @@ X2,Y2 and W2 x H2 are the position and size of the second rectangle."
   "Return #t if WIN and WIN2 overlap at all, else #f.
 I.e., returns #t if the intersection of the windows' areas
 is non-empty.  If either WIN or WIN2 is iconified this
-will definitely return #f.  Also will return #f if WIN and
-WIN2 are bound to the same window."
+will definitely return #f."
   (->bool
    (and
     (= (window-desk win) (window-desk win2))
     (not (iconified-window? win)) (not (iconified-window? win2))
-    (not (eq? win win2))
     (apply rectangle-overlap?
 	   (append (window-virtual-position win) (window-frame-size win)
 		   (window-virtual-position win2) (window-frame-size win2))))))

@@ -1,3 +1,15 @@
+Sun Feb 17 06:05:59 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* wininfo.scm: Changed windows-overlap? to consider a window as
+	overlapping itself.  This changes the effect of 
+	window-overlaps-window? and list-overlapping-windows.
+
+	* stacking.scm: Changed name of lower-window-below to
+	restack-window-below and raise-window-above to restack-window-above.
+	Added compatability defines for the old names with a deprecated
+	comment.  The change in the behavior of windows-overlap? fixes the
+	restack-window-below/above routines so that they actually work.
+
 Sun Feb 17 05:42:42 2002  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* easyraise.scm: Added FIXME for very slow memory leak potential.
