@@ -1,3 +1,16 @@
+Thu Aug 20 12:16:34 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Rewrite one line description of Scwm:
+	A highly dynamic and extensible X11 window manager embedding guile
+	scheme.
+
+	* icons.c: Change AutoPlace behaviour for fStickyIcon -- do not
+	put on same page in center of the window -- use non-sticky icon
+	code instead.
+
+	* window.c: Remove RaiseWindow calls from FocusOn and WarpOn.
+	Thanks Danius Michaelides!
+
 Fri Aug 14 20:40:17 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Remove FIXDOC comment:  Yes: WIN's gets marked-up
