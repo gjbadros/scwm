@@ -243,10 +243,14 @@ drawn.  POINT is of the form (X . Y)."
 		  (nonant (object-property win 'nonant)))
 	     (list win (nonant->dirvector nonant))))))))
 
+;; (object-property #f 'nonant)
+
 ;; (nonant->dirvector (get-window-nonant (select-viewport-position)))
 ;; (cnctr-anchor (select-window-interactively) #(#t #f #f #f) #t)
 ;; constructor
 (define* (cnctr-anchor w1 nonant #&optional (enable? #f))
+  (if (not (window? w1))
+      (error "No window selected"))
   (let ((top (cdr (window-center-top w1)))
 	(bot (cdr (window-center-bottom w1)))
 	(rgt (car (window-right-middle w1)))

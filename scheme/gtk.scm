@@ -50,7 +50,7 @@ to the main event loop"
 
 (define-public scwm-gtk-timer-hook-enabled? #t)
 
-(define sync-and-add-timer-hook
+(define-public sync-and-add-timer-hook
   (lambda () 
     (scwm-gtk-sync)
     (if scwm-gtk-timer-hook-enabled?
