@@ -59,6 +59,9 @@ CreateMessageWindow(Pixel fg, Pixel bg) {
   return w;
 }
 
+const double message_hilight_factor = 1.2;
+const double message_shadow_factor = 0.5;
+
 SCWM_PROC(set_message_window_attributes_x, "set-message-window-attributes!", 3, 0, 0,
           (SCM font, SCM fg_color, SCM bg_color))
     /** Set the attributes to be used for the message window.
@@ -79,6 +82,10 @@ being moved or resized interactively. */
   Scr.msg_window_font=font;
   Scr.msg_window_fg = fg_color;
   Scr.msg_window_bg = bg_color;
+  Scr.msg_window_shadow=
+    adjust_brightness(Scr.msg_window_bg, message_shadow_factor);
+  Scr.msg_window_hilite=
+    adjust_brightness(Scr.msg_window_bg, message_hilight_factor);
 
   XSetWindowBorder(dpy,Scr.MsgWindow,XCOLOR(Scr.msg_window_fg));
   XSetWindowBackground(dpy,Scr.MsgWindow,XCOLOR(Scr.msg_window_bg));

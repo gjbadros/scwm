@@ -1,5 +1,14 @@
 Mon Nov 16 17:41:54 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* resize.c (set_message_window_attributes_x): Allocate shadow and
+ 	hilight colors here.
+
+	move.c:(DisplayMessage): Don't allocate them here.
+	
+	* screen.h: Add msg_window_hilite and msg_window_shadow fields.
+	screen.c: Protect them.
+	scwm.c: Initialize them.
+
 	* Makefile.am: Make sure all headers are in noinst_HEADERS; put
  	generate_scm_init_funcs in EXTRA_DIST.
 

@@ -61,6 +61,8 @@ mark_screen(SCM obj)
   GC_MARK_SCM_IF_SET(psi->msg_window_font);
   GC_MARK_SCM_IF_SET(psi->msg_window_fg);
   GC_MARK_SCM_IF_SET(psi->msg_window_bg);
+  GC_MARK_SCM_IF_SET(psi->msg_window_hilite);
+  GC_MARK_SCM_IF_SET(psi->msg_window_shadow);
 
   return SCM_BOOL_F;
 }

@@ -327,8 +327,6 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 
 
 
-const double message_hilight_factor = 1.2;
-const double message_shadow_factor = 0.5;
 
 /* FIXGJB: It'd be nice to make this facility available at the scheme level */
 
@@ -350,15 +348,16 @@ DisplayMessage(const char *sz, Bool fRelief)
   GC gcHilite = Scr.ScratchGC2;
   GC gcShadow = Scr.ScratchGC3;
   SCM scmFgRelief, scmBgRelief;
-  scmBgRelief = adjust_brightness(Scr.msg_window_bg, message_shadow_factor);
-  scmFgRelief = adjust_brightness(Scr.msg_window_bg, message_hilight_factor);
+  scmBgRelief = Scr.msg_window_shadow;
+  scmFgRelief = Scr.msg_window_hilite;
 
-  if (scmFgRelief)
+  
+  if (scmFgRelief!=SCM_BOOL_F)
     SetGCFg(gcHilite,XCOLOR(scmFgRelief));
   else
     SetGCFg(gcHilite,WhitePixel(dpy,Scr.screen));
 
-  if (scmBgRelief)
+  if (scmBgRelief!=SCM_BOOL_F)
     SetGCFg(gcShadow,XCOLOR(scmBgRelief));
   else
     SetGCFg(gcShadow,BlackPixel(dpy,Scr.screen));

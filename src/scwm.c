@@ -331,6 +331,8 @@ InitVariables(void)
   Scr.msg_window_font = make_font(str_fixed);
   Scr.msg_window_fg = BLACK_COLOR;
   Scr.msg_window_bg = WHITE_COLOR;
+  Scr.msg_window_hilite = WHITE_COLOR;
+  Scr.msg_window_shadow = WHITE_COLOR;
   Scr.msg_window_x = Scr.DisplayWidth/2;
   Scr.msg_window_y = Scr.DisplayHeight/2;
   Scr.msg_window_x_align = -.5;
