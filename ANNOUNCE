@@ -1,0 +1,48 @@
+
+Scwm 0.5 is released.
+
+* What scwm is:
+
+Scwm is the Scheme Configurable Window Manager. This is a highly
+dynamic and extensible window manager (based originally on fvwm, but
+now much enhanced) with Guile Scheme as the configuration/extension
+language. Nearly all decorations can be changed at run-time or
+per-window, and eventually many decoration styles and additional
+features will be supported through dynamically loaded code.
+
+* Where you can find more info:
+
+Some information about scwm is available at:
+
+http://web.mit.edu/mstachow/www/scwm.html
+
+There are also scwm-discuss and scwm-announce mailing lists for
+disscussion and release announcements repsectively. Send mail to
+Maciej Stachowiak <mstachow@mit.edu> to be added to either or both
+lists.
+
+
+* Where you can get it:
+
+You can download the latest scwm package from:
+
+http://web.mit.edu/mstachow/www/scwm-0.5.tar.gz
+
+You will also need to download and install the guile library. You can
+get the latest release from:
+
+ftp://prep.ai.mit.edu/pub/gnu/guile-1.2.tar.gz
+
+or any archive that has GNU source packages available.
+
+You can get the latest guile snapshot (required for --interactive
+mode) from:
+
+ftp://red-bean.com/pub/guile
+
+The snapshots are officially alpha but they generally work pretty
+well.
+
+
+* New with this release:
+
