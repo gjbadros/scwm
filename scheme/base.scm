@@ -346,9 +346,8 @@ If X is negative, moves to the left.  If Y is negative moves up."
   (let ((pos (pointer-position)))
     (move-pointer-to (+ x (car pos)) (+ y (cadr pos)))))
 
-;; Horrible name kept for now for backward compatibility.
-;; move-window is the preferred name, and it uses virtual coordinates
-(define*-public (move-to x y 
+;; Give move-to a better name, too
+(define*-public (move-window-viewport-position x y 
 			#&optional (win (get-window)))
   "Move WIN to viewport position X, Y.
 If X or Y is #f, then do not move along that axis (use existing
@@ -361,9 +360,9 @@ See `move-window' if you wish to move a window to a virtual position."
 	  (if y (set! y (+ y (cadr pos)))))))
   (move-window x y win))
 
-;; Give move-to a better name, too
-;; GJB:FIXME:DOC: Can this have a doc string?
-(define-public move-window-viewport-position move-to)
+;; Horrible name kept for now for backward compatibility.
+;; move-window is the preferred name, and it uses virtual coordinates
+(define-public move-to move-window-viewport-position)
 
 (define-public (delta-position xy-list dx dy)
   "Return a new coordinate list that is DX,DY offset from XY-LIST.

@@ -1,3 +1,10 @@
+Sun Feb 17 05:01:09 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* base.scm: Moved doc and implementation to
+	move-window-viewport-position from compatibility name of
+	move-to.  Both names are still valid but docs should now
+	show up under preferred name.
+
 Sun Feb 17 04:55:55 2002  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* easyraise.scm: Fixed bug in set-easyraise-window! which
