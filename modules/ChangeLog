@@ -1,3 +1,8 @@
+1998-11-03  Todd Larason  <jtlmolehill.org>
+
+	* pie-menus/draw-pie-menu.c (PaintMenuItemLabel): fix renamed
+	variables in I18N version; Thanks Shuji NARAZAKI!
+
 1998-10-27  Todd Larason  <jtlmolehill.org>
 
 	* applefile: added directory, and Makefile.am, README,

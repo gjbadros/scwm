@@ -455,8 +455,9 @@ PaintMenuItemLabel(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
     if (pmi->szLabel) {
 #ifdef I18N
       XmbDrawString(dpy, w, scfont->fontset, currentGC,
-		  x_offset,y_offset + label_font_height + cpixExtraYOffset, 
-		  pmi->szLabel, pmi->cchLabel);
+		    label_x_offset,
+		    label_y_offset + label_font_height + cpixExtraYOffset, 
+		    pmi->szLabel, pmi->cchLabel);
 #else
       XDrawString(dpy, w, currentGC,
 		  label_x_offset,
