@@ -4,24 +4,49 @@ something that you are interested in and skilled with.
 
 --09/18/99 Greg J. Badros
 
+/////////////////////
 * Comprehensive (these are hard -- do not attack alone)
+
 ** decoration rewrite (see doc/dev/decorations)
+
 ** event rewrite (see doc/dev/events*)
 
+** multithread support
+
+
+/////////////////////
 * X11 hacking
 
 
+/////////////////////
 * Scheme hacking
+** scwmmenu->gtkmenu, for better support for pinnable menus
 
 
+/////////////////////
 * Software-engineering 
+** docstrings into strings, instead of comments
+
+** revisit all :FIXME: comments
 
 
+/////////////////////
+* Documentation
+** fix bugs in output SGML
+
+** integrate links to guile functions somehow
+
+** write the manual
+
+
+/////////////////////
 * Configuration, building
 
 ** Rewrite configure.in from scratch, use macros directory like gnome projects
    (this would be *really* useful!)
 
 
+/////////////////////
 * Testing 
+
 ** Write a scwm/scheme/primitive-tests/*.scm for each .c file that tests the primitives.
