@@ -62,12 +62,12 @@ Add PROC to HOOK only if it does not contain PROC already.
 
 (add-input-hook! port proc)
 - Built-in Primitive
-Add an input hook to run PROC on input from PORT.\n\
-Whenever input becomes available on PORT, procedure PROC will be called\n\
-with no arguments repeatedly until no unprocessed input remains on\n\
-PORT. PORT must be open, it must be an input port, and it must be a\n\
-file port (this includes pipes and sockets, but not string ports or\n\
-soft ports). A handle suitable for passing to `remove-input-hook!' is\n\
+Add an input hook to run PROC on input from PORT.
+Whenever input becomes available on PORT, procedure PROC will be called
+with no arguments repeatedly until no unprocessed input remains on
+PORT. PORT must be open, it must be an input port, and it must be a
+file port (this includes pipes and sockets, but not string ports or
+soft ports). A handle suitable for passing to `remove-input-hook!' is
 returned.
 [From src/callbacks.c:702]
 
@@ -78,8 +78,8 @@ Add a left button to the current decor.
 
 (add-motion-handler! proc)
 - Built-in Primitive
-Call PROC on XMotionEvents.\n\
-This can considerably slow Scwm down so use it only when\n\
+Call PROC on XMotionEvents.
+This can considerably slow Scwm down so use it only when
 necessary.  See `remove-motion-handler' and `reset-motion-handlers'.
 [From src/events.c:2173]
 
@@ -96,9 +96,9 @@ Add a right button to the current decor.
 
 (add-timer-hook! msec proc)
 - Built-in Primitive
-Add a timer hook to call PROC once sometime after MSEC milliseconds.\n\
-When at least MSEC milliseconds have passed, procedure PROC will be\n\
-called with no arguments. A handle suitable for passing to\n\
+Add a timer hook to call PROC once sometime after MSEC milliseconds.
+When at least MSEC milliseconds have passed, procedure PROC will be
+called with no arguments. A handle suitable for passing to
 `remove-timer-hook!' is returned.
 [From src/callbacks.c:553]
 
@@ -133,7 +133,7 @@ much as `map' would do it. If proc never returns a false value, return
 
 (animate-windows xforms #&optional move-pointer-too?)
 - Primitive from (app scwm c-animation)
-Animate multiple windows.
+Animate multiple windows. 
 XFORMS is a list of transform operations where each xform operation
 describes how a single window should move and resize by giving its
 old and new configuration.  Each xfrom element of the XFORMS list
@@ -223,7 +223,7 @@ Move WIN to the west edge and update its gravity.
 (animated-move-window x y #&optional win move-pointer-too?)
 - Primitive from (app scwm c-animation)
 Move WIN to virtual coordinates X, Y with animation.
-If X or Y is #f, then do not change that coordinate during the move.
+If X or Y is #f, then do not change that coordinate during the move. 
 If MOVE-POINTER-TOO? is specified and true, move the mouse pointer by
 the same amount as the window, animating the motion of the pointer
 along with the window. WIN defaults to the window context in the usual
@@ -274,8 +274,8 @@ not specified. See also `window-unshade', `animated-window-shade'.
 
 (any-id->window window-id)
 - Built-in Primitive
-Return the window object that contains the window with id WINDOW-ID.\n\
-WINDOW-ID can be the X id of any child window in the application. If there is no\n\
+Return the window object that contains the window with id WINDOW-ID.
+WINDOW-ID can be the X id of any child window in the application. If there is no
 such window object, return #f.
 [From src/window.c:2822]
 
@@ -424,50 +424,50 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked.
 
 (bind-key contexts key proc #&optional release-proc)
 - Built-in Primitive
-Bind the given KEY within the CONTEXTS to invoke PROC.\n\
-Return value is #t if the binding was made successfully, #f otherwise\n\
-(e.g., if unbound modifiers or an unknown keysym is used, the binding will fail).\n\
-CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides)) KEY is\n\
-a string giving the key-specifier (e.g., M-Delete for Meta+Delete)\n\
-PROC is a procedure that will be invoked (with no arguments) when the\n\
-specified key is pressed in the specified context. The optional\n\
-argument RELEASE-PROC, if specified, is a procedure that will be\n\
-invoked when the key is released.  The contexts include:\n\
-\n\
-'window\n\
-'title\n\
-'icon\n\
-'root\n\
-'frame-corners\n\
-'frame-sides\n\
-'client-window\n\
-'root-window\n\
-'left-button-N  (N=1-5)\n\
-'right-button-N (N=1-5)\n\
+Bind the given KEY within the CONTEXTS to invoke PROC.
+Return value is #t if the binding was made successfully, #f otherwise
+(e.g., if unbound modifiers or an unknown keysym is used, the binding will fail).
+CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides)) KEY is
+a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
+PROC is a procedure that will be invoked (with no arguments) when the
+specified key is pressed in the specified context. The optional
+argument RELEASE-PROC, if specified, is a procedure that will be
+invoked when the key is released.  The contexts include:
+
+'window
+'title
+'icon
+'root
+'frame-corners
+'frame-sides
+'client-window
+'root-window
+'left-button-N  (N=1-5)
+'right-button-N (N=1-5)
 [From src/binding.c:1031]
 
 (bind-keycode contexts keycode modifier-mask proc #&optional release-proc)
 - Built-in Primitive
-Bind the given KEYCODE within the CONTEXTS to invoke PROC.\n\
-CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))\n\
-KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers,\n\
-PROC is a procedure that will be invoked (with no arguments) when the \n\
-specified key is pressed in the specified context. \n\
-RELEASE-PROC is a procedure that will be invoked (with no arguments) when the\n\
-specified key is released in the specified context, or #f or omitted if \n\
+Bind the given KEYCODE within the CONTEXTS to invoke PROC.
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers,
+PROC is a procedure that will be invoked (with no arguments) when the 
+specified key is pressed in the specified context. 
+RELEASE-PROC is a procedure that will be invoked (with no arguments) when the
+specified key is released in the specified context, or #f or omitted if 
 nothing should be done on key release.
 [From src/binding.c:1107]
 
 (bind-mouse contexts button proc #&optional immediate-proc)
 - Built-in Primitive
-Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.\n\
-CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))\n\
-BUTTON is a string or integer giving the mouse button number\n\
-PROC is a procedure that will be invoked (with no arguments) when the \n\
-specified button is pressed in the specified context. See `bind-key'\n\
-for a list of the contexts. If IMMEDIATE-PROC is given, it will be\n\
-executed immediately on a button-click.  If IMMEDIATE-PROC returns\n\
-#f, then PROC will still get executed after determining the mouse click\n\
+Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+BUTTON is a string or integer giving the mouse button number
+PROC is a procedure that will be invoked (with no arguments) when the 
+specified button is pressed in the specified context. See `bind-key'
+for a list of the contexts. If IMMEDIATE-PROC is given, it will be
+executed immediately on a button-click.  If IMMEDIATE-PROC returns
+#f, then PROC will still get executed after determining the mouse click
 type.
 [From src/binding.c:1161]
 
@@ -501,9 +501,9 @@ Return the string "false" if ARG is #f, "true" otherwise.
 
 (border-normal?  #&optional win)
 - Built-in Primitive
-Return #t if WIN has a normal border, #f if it has a plain border.\n\
-WIN defaults to the window context in the\n\
-usual way if not specified.  See `normal-border' and\n\
+Return #t if WIN has a normal border, #f if it has a plain border.
+WIN defaults to the window context in the
+usual way if not specified.  See `normal-border' and
 `plain-border'.
 [From src/window.c:3295]
 
@@ -554,9 +554,9 @@ it reverts to the (inefficient) implementation of `program-exists?'.
 
 (call-interactively thunk #&optional debug)
 - Built-in Primitive
-Invoke THUNK interactively.\n\
-THUNK can be either a procedure or a symbol.\n\
-If it is a symbol it is dereferenced.\n\
+Invoke THUNK interactively.
+THUNK can be either a procedure or a symbol.
+If it is a symbol it is dereferenced.
 Write a debug message if DEBUG is #t.
 [From src/callbacks.c:853]
 
@@ -567,10 +567,10 @@ Eval THUNK using DECOR as the current decor.
 
 (capturing?)
 - Built-in Primitive
-Returns #t when the windows are being captured.\n\
-This happens at two times: during initial startup, or during a\n\
-recapture operation. In either case, placement procedures should\n\
-probably avoid interaction and perhaps avoid moving the window being\n\
+Returns #t when the windows are being captured.
+This happens at two times: during initial startup, or during a
+recapture operation. In either case, placement procedures should
+probably avoid interaction and perhaps avoid moving the window being
 placed at all.
 [From src/miscprocs.c:149]
 
@@ -732,20 +732,20 @@ case-sensitive or not.
 
 (clear-color-cache-entry name)
 - Built-in Primitive
-Colors are cached by name. It is remotely possible that the\n\
-meaning of a particular string as a color will change in your X\n\
-server, if you try hard enough. For this unlikely eventuality,\n\
-`clear-color-cache-entry' is provided - it removes the color\n\
+Colors are cached by name. It is remotely possible that the
+meaning of a particular string as a color will change in your X
+server, if you try hard enough. For this unlikely eventuality,
+`clear-color-cache-entry' is provided - it removes the color
 associated with NAME from the color cache
 [From src/color.c:272]
 
 (clear-font-cache-entry name)
 - Built-in Primitive
-Fonts are cached by name. It is remotely possible that the\n\
-meaning of a particular string as a fonts will change in your X\n\
-server, if you try hard enough (perhaps if you add or remove font\n\
-servers). For this unlikely eventuality, `clear-font-cache-entry' is\n\
-provided - it removes the font associated with NAME from the font\n\
+Fonts are cached by name. It is remotely possible that the
+meaning of a particular string as a fonts will change in your X
+server, if you try hard enough (perhaps if you add or remove font
+servers). For this unlikely eventuality, `clear-font-cache-entry' is
+provided - it removes the font associated with NAME from the font
 cache
 [From src/font.c:306]
 
@@ -756,11 +756,11 @@ No documentation supplied.
 
 (clear-image-cache-entry name)
 - Built-in Primitive
-Images are cached by both name and full pathname. It is\n\
-remotely possible that the file that should be used for a particular\n\
-name will change, for example if you alter the image file or change\n\
-your image path. For this unlikely eventuality,\n\
-`clear-image-cache-entry' is provided - it removes the image\n\
+Images are cached by both name and full pathname. It is
+remotely possible that the file that should be used for a particular
+name will change, for example if you alter the image file or change
+your image path. For this unlikely eventuality,
+`clear-image-cache-entry' is provided - it removes the image
 associated with NAME from the image cache
 [From src/image.c:633]
 
@@ -771,23 +771,23 @@ No documentation supplied.
 
 (clever-place-window win)
 - Built-in Primitive
-Places WIN using fvwm2's "ReallySmart" algorithm.\n\
-The placement is just as if being placed by fvwm2's SmartPlacement,\n\
-as if SmartPlacementIsReallySmart were in effect. That is, it\n\
-tries to place the window so as to minimize its area of\n\
-overlap with other windows. Several parameters give different\n\
-weight to various kinds of windows, but they are not tunable\n\
-at runtime currently. If it fails to place the window, it\n\
-returns #f; otherwise it returns #t.\n\
-\n\
-This is called as part of `default-placement-proc'.  It could also be\n\
-used in user-defined placement procedures (see \n\
+Places WIN using fvwm2's "ReallySmart" algorithm.
+The placement is just as if being placed by fvwm2's SmartPlacement,
+as if SmartPlacementIsReallySmart were in effect. That is, it
+tries to place the window so as to minimize its area of
+overlap with other windows. Several parameters give different
+weight to various kinds of windows, but they are not tunable
+at runtime currently. If it fails to place the window, it
+returns #f; otherwise it returns #t.
+
+This is called as part of `default-placement-proc'.  It could also be
+used in user-defined placement procedures (see 
 `set-window-placement-proc!').
 [From src/placement.c:495]
 
 (click-delay)
 - Built-in Primitive
-Returns the delay used in identifying mouse clicks and drags, in milliseconds. \n\
+Returns the delay used in identifying mouse clicks and drags, in milliseconds. 
 See also `set-click-delay!'
 [From src/miscprocs.c:191]
 
@@ -829,12 +829,12 @@ COLS is a list of strings.
 Makes a new image from IMAGE of the given WIDTH and HEIGHT.
 It does not scale IMAGE.  If the resized image is smaller than the
 original, it is cropped; if larger, the extra space in the new image
-is filled with BGCOLOR. See also `clone-scaled-image'
+is filled with BGCOLOR. See also `clone-scaled-image'.
 [From modules/background/background.c:76]
 
 (clone-scaled-image image width height)
 - Built-in Primitive
-Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT. \n\
+Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT. 
 See also `clone-resized-image' from the background module.
 [From src/image.c:683]
 
@@ -892,8 +892,8 @@ other applications.
 
 (color-properties color)
 - Built-in Primitive
-Return an association list giving some properties of COLOR.\n\
-Currently defined properties are 'name, the string name of the\n\
+Return an association list giving some properties of COLOR.
+Currently defined properties are 'name, the string name of the
 color, and 'pixel, the X pixel value it uses.
 [From src/color.c:122]
 
@@ -910,10 +910,10 @@ Returns #t if OBJ is a color object, otherwise #f.
 
 (colormap-focus)
 - Built-in Primitive
-Return the colormap focus policy, as set by `set-colormap-focus!'. \n\
-The value can be either be 'mouse, indicating that the window under\n\
-the mouse pointer will always colormap installed, or 'focus to\n\
-indicate that the window with the input focus should also get the\n\
+Return the colormap focus policy, as set by `set-colormap-focus!'. 
+The value can be either be 'mouse, indicating that the window under
+the mouse pointer will always colormap installed, or 'focus to
+indicate that the window with the input focus should also get the
 colormap focus.
 [From src/miscprocs.c:225]
 
@@ -958,10 +958,10 @@ No documentation supplied.
 
 (copy-menu-look original-menu-look name #&optional extra)
 - Built-in Primitive
-Copy menu look ORIGINAL-MENU-LOOK with a new NAME and optional EXTRA.\n\
-If EXTRA is not given, the EXTRA information from the original menu is\n\
-used. The form and purpose of the EXTRA information varies with the\n\
-menu look, and is documented with the original menu looks; currently,\n\
+Copy menu look ORIGINAL-MENU-LOOK with a new NAME and optional EXTRA.
+If EXTRA is not given, the EXTRA information from the original menu is
+used. The form and purpose of the EXTRA information varies with the
+menu look, and is documented with the original menu looks; currently,
 only the Xpm menu look uses the EXTRA information.
 [From src/menulook.c:93]
 
@@ -982,10 +982,10 @@ Returns the "IOR" string for the scwm-scheme-evaluator servant.
 
 (create-pixmap-cursor image #&optional fg-color bg-color x-hotspot y-hotspot)
 - Built-in Primitive
-Create and return a new cursor object from the pixmap image.\n\
-IMAGE specifies the look of the cursor that will be returned.\n\
-FG-COLOR and BG-COLOR specify the foreground and background colors\n\
-respectively.  X-HOTSPOT, Y-HOTSPOT give the x and y offset for the\n\
+Create and return a new cursor object from the pixmap image.
+IMAGE specifies the look of the cursor that will be returned.
+FG-COLOR and BG-COLOR specify the foreground and background colors
+respectively.  X-HOTSPOT, Y-HOTSPOT give the x and y offset for the
 cursor's hot spot (from the top-left of the cursor).
 [From src/cursor.c:269]
 
@@ -1044,16 +1044,16 @@ If *opaque-move-percent* is a boolean, not a number, just return it.
 
 (default-placement-proc win)
 - Built-in Primitive
-Use various flags to call an appropriate placement function.\n\
-This is the default placement procedure for non-transient windows. It\n\
-tries `smart-place-window', `clever-place-window',\n\
-`random-place-window', or `interactive-move' (to achieve interactive\n\
-placement) on WIN depending on several style flags. (See\n\
-`set-smart-placement-is-really-smart!', `set-smart-placement!',\n\
-and `set-random-placement!'.) However, if one of the following \n\
-factors holds, the window will instead be placed exactly as \n\
-requested by the program: the position was specified by the user, \n\
-the position was specified by the program and #:no-PPosition-hint \n\
+Use various flags to call an appropriate placement function.
+This is the default placement procedure for non-transient windows. It
+tries `smart-place-window', `clever-place-window',
+`random-place-window', or `interactive-move' (to achieve interactive
+placement) on WIN depending on several style flags. (See
+`set-smart-placement-is-really-smart!', `set-smart-placement!',
+and `set-random-placement!'.) However, if one of the following 
+factors holds, the window will instead be placed exactly as 
+requested by the program: the position was specified by the user, 
+the position was specified by the program and #:no-PPosition-hint 
 is not set, or the window starts iconic.
 [From src/placement.c:571]
 
@@ -1065,7 +1065,7 @@ If *opaque-resize-percent* is a boolean, not a number, just return it.
 
 (default-transient-placement-proc win)
 - Built-in Primitive
-This is the default placement procedure for transient windows.\n\
+This is the default placement procedure for transient windows.
 It simply leaves the window WIN in place, exactly as requested.
 [From src/placement.c:647]
 
@@ -1108,15 +1108,15 @@ De-iconify WIN and make it visible in the current viewport.
 
 (deiconify-window  #&optional win x y)
 - Built-in Primitive
-Deiconify WIN.\n\
-Hides its icon, and shows its regular window.\n\
-WIN defaults to the window context in the usual way if not\n\
-specified.\n\
-If X and Y are given, then move WIN to virtual position (X . Y)\n\
-before de-iconifying.  If X is specified, Y must be specified, too.\n\
-These arguments are useful since `move-window' and `move-to' will\n\
-refer to the icon window (not the frame window) if a window is iconified.\n\
-Without being able to specify a position on de-iconification, the window\n\
+Deiconify WIN.
+Hides its icon, and shows its regular window.
+WIN defaults to the window context in the usual way if not
+specified.
+If X and Y are given, then move WIN to virtual position (X . Y)
+before de-iconifying.  If X is specified, Y must be specified, too.
+These arguments are useful since `move-window' and `move-to' will
+refer to the icon window (not the frame window) if a window is iconified.
+Without being able to specify a position on de-iconification, the window
 cannot, e.g., cleanly be brought back onto the current viewport.
 [From src/window.c:2076]
 
@@ -1163,9 +1163,9 @@ This removes the constraints from the global-constraint-instance-list.
 
 (delete-window  #&optional win)
 - Built-in Primitive
-Request that WIN remove itself from the display.\n\
-This is the friendly way of closing a window, but it will not work if\n\
-the application does not cooperate. WIN defaults to the window context\n\
+Request that WIN remove itself from the display.
+This is the friendly way of closing a window, but it will not work if
+the application does not cooperate. WIN defaults to the window context
 in the usual way if not specified.
 [From src/window.c:1733]
 
@@ -1207,16 +1207,16 @@ The default may be set by setting the background for DESK #t.
 
 (desk-size)
 - Built-in Primitive
-Returns the size of the current desk.\n\
-The returned value is in units of the physical screen size, as a list\n\
+Returns the size of the current desk.
+The returned value is in units of the physical screen size, as a list
 of the width and the height.
 [From src/deskpage.c:327]
 
 (destroy-window  #&optional win)
 - Built-in Primitive
-Forcibly remove WIN from the screen.\n\
-This will kill the application without giving it a chance to save its\n\
-state or do any other shutdown, but is guaranteed to work. WIN\n\
+Forcibly remove WIN from the screen.
+This will kill the application without giving it a chance to save its
+state or do any other shutdown, but is guaranteed to work. WIN
 defaults to the window context in the usual way if not specified.
 [From src/window.c:1758]
 
@@ -1251,6 +1251,11 @@ Switch focus to the window to the west.
 Disable all constraints in the global instance list.
 [From scheme/ui-constraints.scm:665]
 
+(disable-auto-unobscure)
+- (app scwm auto-unobscure)
+No documentation supplied.
+[From scheme/auto-unobscure.scm:62]
+
 (disable-autosave-netscape-dialog)
 - (app scwm netscape)
 Disable the netscape autosaving "Save as..." dialog.
@@ -1263,6 +1268,11 @@ GNOME hint support allows for better integration with the GNOME
 desktop environment, including support for the GNOME panel and 
 pager applet. Reverses the effect of `enable-gnome-hints'.
 [From scheme/gnome-hints.scm:540]
+
+(disable-timed-autoshrink-windows)
+- 
+Turn off auto-shrinking window behaviour.
+[From scheme/auto-shrink.scm:64]
 
 (disable-ui-constraint ui-constraint)
 - (app scwm ui-constraints)
@@ -1279,9 +1289,9 @@ See `display-message' for details about MSG.
 
 (display-size)
 - Built-in Primitive
-Returns the size of the physical screen in pixels.\n\
-The return value is list of the width and the height. The\n\
-width is the `car', the height is the `cadr' of the returned list. \n\
+Returns the size of the physical screen in pixels.
+The return value is list of the width and the height. The
+width is the `car', the height is the `cadr' of the returned list. 
 See also the variables "display-width" and "display-height".
 [From src/deskpage.c:341]
 
@@ -1294,8 +1304,8 @@ Returns #t if any documentation was found, #f otherwise.
 
 (done-startup?)
 - Built-in Primitive
-Return #t iff Scwm is fully initialized, else #f.\n\
-Windows must all be captured and the `startup-hook' must have\n\
+Return #t iff Scwm is fully initialized, else #f.
+Windows must all be captured and the `startup-hook' must have
 already run for this to return #t.
 [From src/miscprocs.c:646]
 
@@ -1334,6 +1344,16 @@ PROMPT is the prompt, and INITVAL is the initial string.
 The returned value is a list: (hbox getter entry).
 See also `prompt-string'.
 [From scheme/preferences.scm:137]
+
+(easyraise-window-is-hidden?)
+- (app scwm easyraise)
+No documentation supplied.
+[From scheme/easyraise.scm:47]
+
+(easyraise-window? #&optional (win (get-window)))
+- (app scwm easyraise)
+
+[From scheme/easyraise.scm:21]
 
 (edge-move-threshold)
 - Built-in Primitive
@@ -1382,6 +1402,11 @@ Return the elapsed time in milliseconds since O.S. has been up.
 Enable all constraints in the global instance list.
 [From scheme/ui-constraints.scm:671]
 
+(enable-auto-unobscure)
+- (app scwm auto-unobscure)
+No documentation supplied.
+[From scheme/auto-unobscure.scm:58]
+
 (enable-autosave-netscape-dialog)
 - (app scwm netscape)
 Enable the netscape autosaving "Save as..." dialog.
@@ -1407,6 +1432,11 @@ Turn on the image path suggestor.
 This can substantially slow down loading of a .scwmrc if there
 are lots of missing images.
 [From scheme/image-path-suggestor.scm:15]
+
+(enable-timed-autoshrink-windows)
+- (app scwm auto-shrink)
+Turn on auto-shrinking window behaviour.
+[From scheme/auto-shrink.scm:58]
 
 (enable-ui-constraint ui-constraint)
 - (app scwm ui-constraints)
@@ -1455,7 +1485,12 @@ unknown.
 - 
 Run PROC after MODULE is loaded.
 Run PROC immediately if MODULE has already been loaded.
-[From scheme/minimal.scm:158]
+[From scheme/minimal.scm:165]
+
+(eval-expression-interactively)
+- 
+Prompt for an expression and evaluate it interactively.
+[From scheme/flux.scm:475]
 
 (eval-fvwm-command command #&optional (fmod #f) 
 				   (window #f))
@@ -1609,7 +1644,7 @@ No documentation supplied.
 - (app scwm winops)
 Deiconify, focus, raise, and warp-to WIN.
 This is initially the default behaviour when WIN is selected from the window list.
-[From scheme/winops.scm:432]
+[From scheme/winops.scm:433]
 
 (focus-last-mapped-window)
 - 
@@ -1629,10 +1664,10 @@ Save the currently-focused window to REGISTER.
 
 (focus-window  #&optional win)
 - Built-in Primitive
-Give WIN the keyboard input focus.\n\
-This will typically result in drawing WIN's frame in a special style\n\
-as well. WIN defaults to the window context in the usual way if not\n\
-specified. Note that WIN is not raised by giving it the focus;  see\n\
+Give WIN the keyboard input focus.
+This will typically result in drawing WIN's frame in a special style
+as well. WIN defaults to the window context in the usual way if not
+specified. Note that WIN is not raised by giving it the focus;  see
 `raise-window' if that is your intent.
 [From src/window.c:1818]
 
@@ -1643,8 +1678,8 @@ Set the focus to be the window containing the pointer.
 
 (focussable-window?  #&optional win)
 - Built-in Primitive
-Return #t iff WIN may receive the keyboard focus.\n\
-This will return #f, e.g., if WIN's focus style is 'none, or\n\
+Return #t iff WIN may receive the keyboard focus.
+This will return #f, e.g., if WIN's focus style is 'none, or
 its X11 hints do not permit it to receive the focus.
 [From src/focus.c:79]
 
@@ -1667,8 +1702,8 @@ for each group, popping up the group's MENUITEMs.
 
 (font-properties font)
 - Built-in Primitive
-Return an association list giving some properties of FONT.\n\
-Currently defined properties are 'name, the string name of the\n\
+Return an association list giving some properties of FONT.
+Currently defined properties are 'name, the string name of the
 color, and 'height, its total height in pixels.
 [From src/font.c:232]
 
@@ -1695,21 +1730,21 @@ No documentation supplied.
 
 (force-reset-window-frame!  #&optional win)
 - Built-in Primitive
-This redraws the window frame and decorations of WIN.\n\
-Ideally it would never be necessary, but it is useful for debugging\n\
+This redraws the window frame and decorations of WIN.
+Ideally it would never be necessary, but it is useful for debugging
 and for new window objects set via object properties.
 [From src/window.c:1087]
 
 (force-segv-for-testing)
 - Built-in Primitive
-Cause a segmentation violation.\n\
+Cause a segmentation violation.
 Do not do this unless you are testing segv handling!
 [From src/miscprocs.c:658]
 
 (frame-id->window window-id)
 - Built-in Primitive
-Return the window object corresponding to a frame WINDOW-ID.\n\
-WINDOW-ID should be the X id of a scwm frame window. If there is no\n\
+Return the window object corresponding to a frame WINDOW-ID.
+WINDOW-ID should be the X id of a scwm frame window. If there is no
 such window object, return #f.
 [From src/window.c:2805]
 
@@ -1794,41 +1829,41 @@ Return the input-hooks list.
 
 (get-key-event)
 - Built-in Primitive
-Return a represention of the next key event.\n\
-The return value is (string modmask keycode). The\n\
-`cdr' of the return value can be used as the arguments to \n\
-`undo-passive-grab' and `redo-passive-grab'.\n\
-The string is usable as a key binding string.  Modifiers \n\
-are listed first, separated by "-" followed by a "-" and the\n\
-keysym name.  E.g., "S-C-M-z" is Shift+Control+Meta + 'z' key.\n\
-If the event is only modifier keys, then the string will\n\
+Return a represention of the next key event.
+The return value is (string modmask keycode). The
+`cdr' of the return value can be used as the arguments to 
+`undo-passive-grab' and `redo-passive-grab'.
+The string is usable as a key binding string.  Modifiers 
+are listed first, separated by "-" followed by a "-" and the
+keysym name.  E.g., "S-C-M-z" is Shift+Control+Meta + 'z' key.
+If the event is only modifier keys, then the string will
 end in a "-"; e.g., "S-C-M-".  See also `get-next-event'.
 [From src/miscprocs.c:858]
 
 (get-mouse-event)
 - Built-in Primitive
-Return a represention of the next mouse event.\n\
-The return value is (string modmask button-number #t).  The\n\
-`cdr' of the return value can be used as the arguments to \n\
-`undo-passive-grab' and `redo-passive-grab'.\n\
-The string is usable as a mouse binding string.  Modifiers \n\
-are listed first, separated by "-" followed by a "-" and the\n\
-button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1.\n\
+Return a represention of the next mouse event.
+The return value is (string modmask button-number #t).  The
+`cdr' of the return value can be used as the arguments to 
+`undo-passive-grab' and `redo-passive-grab'.
+The string is usable as a mouse binding string.  Modifiers 
+are listed first, separated by "-" followed by a "-" and the
+button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1.
 See also `get-next-event'.
 [From src/miscprocs.c:923]
 
 (get-next-event)
 - Built-in Primitive
-Return a represention of the next key or mouse event.\n\
-The return value is (string modmask keycode) for key events\n\
-or (string modmask button-number #t). The\n\
-`cdr' of the return value can be used as the arguments to \n\
-`undo-passive-grab' and `redo-passive-grab'.\n\
-The string is usable as a key binding string.  Modifiers \n\
-are listed first, separated by "-" followed by a "-" and the\n\
-keysym name.  E.g., "S-C-M-z" is Shift+Control+Meta + 'z' key.\n\
-If the event is only modifier keys, then the string will\n\
-end in a "-"; e.g., "S-C-M-".\n\
+Return a represention of the next key or mouse event.
+The return value is (string modmask keycode) for key events
+or (string modmask button-number #t). The
+`cdr' of the return value can be used as the arguments to 
+`undo-passive-grab' and `redo-passive-grab'.
+The string is usable as a key binding string.  Modifiers 
+are listed first, separated by "-" followed by a "-" and the
+keysym name.  E.g., "S-C-M-z" is Shift+Control+Meta + 'z' key.
+If the event is only modifier keys, then the string will
+end in a "-"; e.g., "S-C-M-".
 See also `get-mouse-event' and `get-key-event'.
 [From src/miscprocs.c:761]
 
@@ -1864,16 +1899,16 @@ No documentation supplied.
 
 (get-window  #&optional select? release? cursor)
 - Built-in Primitive
-Retrieve the window context or select interactively.\n\
-If there is no window context, a window is selected interactively.\n\
-The boolean SELECT? argument (default #t) determines whether or not a\n\
-window should be selected interactively if there is no current window\n\
-context. The RELEASE? argument (default #t) determines whether or not\n\
-interactive selection (if any) should wait for a mouse release event\n\
-or just a press. The latter behavior is useful if the action being\n\
-performed on the window is an interactive one involving mouse\n\
-drags. The CURSOR argument is either a cursor object or #t to use\n\
-the "skull and crossbones" cursor, or #f to use the standard\n\
+Retrieve the window context or select interactively.
+If there is no window context, a window is selected interactively.
+The boolean SELECT? argument (default #t) determines whether or not a
+window should be selected interactively if there is no current window
+context. The RELEASE? argument (default #t) determines whether or not
+interactive selection (if any) should wait for a mouse release event
+or just a press. The latter behavior is useful if the action being
+performed on the window is an interactive one involving mouse
+drags. The CURSOR argument is either a cursor object or #t to use
+the "skull and crossbones" cursor, or #f to use the standard
 circle cursor.
 [From src/window.c:1046]
 
@@ -1884,7 +1919,7 @@ Return a two-element list, '(fg bg), the colors for WIN.
 
 (get-window-highlight-colors  #&optional win)
 - Built-in Primitive
-Return a two-element list, '(fg bg), the highlight colors for WIN.\n\
+Return a two-element list, '(fg bg), the highlight colors for WIN.
 fg or bg may be #f, which means that the color is inherited from the decor.
 [From src/window.c:3521]
 
@@ -1925,11 +1960,11 @@ notion of what the command line was used to run the application.
 
 (get-x-cursor name-or-number)
 - Built-in Primitive
-Return the cursor object corresponding to NAME-OR-NUMBER.\n\
-NAME-OR-NUMBER can be either a string naming an X11 cursor (e.g.,\n\
-"trek") or a number specifying the cursor number.  See \n\
-<file>X11/cursorfont.h</file> for the standard cursors.  Note\n\
-that the "XC_" macro prefix should be omitted when used with\n\
+Return the cursor object corresponding to NAME-OR-NUMBER.
+NAME-OR-NUMBER can be either a string naming an X11 cursor (e.g.,
+"trek") or a number specifying the cursor number.  See 
+<file>X11/cursorfont.h</file> for the standard cursors.  Note
+that the "XC_" macro prefix should be omitted when used with
 this procedure..
 [From src/cursor.c:244]
 
@@ -2125,8 +2160,8 @@ Return the closest integer to half of X.
 
 (handle-pending-events)
 - Built-in Primitive
-Handle all pending Scwm events, returns number of dispatched events.\n\
-This is useful to maintain responsiveness of Scwm when in the middle\n\
+Handle all pending Scwm events, returns number of dispatched events.
+This is useful to maintain responsiveness of Scwm when in the middle
 of a long computation.
 [From src/events.c:343]
 
@@ -2168,10 +2203,10 @@ No documentation supplied.
 
 (hide-titlebar  #&optional win in-place?)
 - Built-in Primitive
-Cause WIN not to be decorated with a titlebar.\n\
-Keeps the client window at its current location if IN-PLACE? is #t.\n\
-See also `show-titlebar'.\n\
-WIN defaults to the window context in the usual way if not\n\
+Cause WIN not to be decorated with a titlebar.
+Keeps the client window at its current location if IN-PLACE? is #t.
+See also `show-titlebar'.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:3199]
 
@@ -2184,8 +2219,8 @@ the same position as before the call.
 
 (highlight-background)
 - Built-in Primitive
-Return the default background color for windows with the input focus.\n\
-Applies to the current decor. This is used only for windows that don't\n\
+Return the default background color for windows with the input focus.
+Applies to the current decor. This is used only for windows that don't
 have their own background color.
 [From src/color.c:883]
 
@@ -2201,8 +2236,8 @@ Return the current highlight factor.
 
 (highlight-foreground)
 - Built-in Primitive
-Return the default foreground color for windows with the input focus.\n\
-Applies to the current decor. This is used only for windows that don't\n\
+Return the default foreground color for windows with the input focus.
+Applies to the current decor. This is used only for windows that don't
 have their own foreground color.
 [From src/color.c:808]
 
@@ -2218,25 +2253,25 @@ Return the font used for drawing icon titles.
 
 (icon-position  #&optional win)
 - Built-in Primitive
-Return the position of the icon for WIN.\n\
-The position is returned as a list of the x coordinate and the y\n\
-coordinate in pixels.  If the icon is sticky, the position will\n\
-always be in the 0,0 viewport. WIN defaults to the window context in the usual\n\
+Return the position of the icon for WIN.
+The position is returned as a list of the x coordinate and the y
+coordinate in pixels.  If the icon is sticky, the position will
+always be in the 0,0 viewport. WIN defaults to the window context in the usual
 way if not specified.
 [From src/window.c:2615]
 
 (icon-size  #&optional win)
 - Built-in Primitive
-Return the size of the icon for WIN.\n\
-The position is returned as a list of the width and height in pixels.\n\
-WIN defaults to the window context in the usual way if not\n\
+Return the size of the icon for WIN.
+The position is returned as a list of the width and height in pixels.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:2635]
 
 (icon-sticky?  #&optional win)
 - Built-in Primitive
-Return #t if WIN is "sticky", #f otherwise.\n\
-See `stick-icon' and `stick-window'. WIN defaults to the window context in\n\
+Return #t if WIN is "sticky", #f otherwise.
+See `stick-icon' and `stick-window'. WIN defaults to the window context in
 the usual way if not specified.
 [From src/window.c:3389]
 
@@ -2260,8 +2295,8 @@ way if not specified.  See also `icon-position'.
 
 (iconified-window?  #&optional win)
 - Built-in Primitive
-Return #t if WIN is iconified, otherwise return #f.\n\
-WIN defaults to the window context in the usual way if not\n\
+Return #t if WIN is iconified, otherwise return #f.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:2103]
 
@@ -2274,30 +2309,30 @@ The icon is that of the window GROUP represents.
 
 (iconify-window  #&optional win)
 - Built-in Primitive
-Iconify WIN.\n\
-Iconifying hides the regular window, and shows the window's icon.\n\
-WIN defaults to the window context in the usual way if not\n\
+Iconify WIN.
+Iconifying hides the regular window, and shows the window's icon.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:2056]
 
 (id->message-window winid)
 - Built-in Primitive
-Return the message-window of an X/11 window id (a long integer).\n\
-Returns #f if WINID does not correspond to a message-window.\n\
-You can use the xwininfo program to get the window id of an arbitrary\n\
+Return the message-window of an X/11 window id (a long integer).
+Returns #f if WINID does not correspond to a message-window.
+You can use the xwininfo program to get the window id of an arbitrary
 window on your X/11 display.
 [From src/message-window.c:306]
 
 (id->window window-id)
 - Built-in Primitive
-Return the window object corresponding to an application WINDOW-ID.\n\
-WINDOW-ID should be the X id of the application window. If there is no\n\
+Return the window object corresponding to an application WINDOW-ID.
+WINDOW-ID should be the X id of the application window. If there is no
 such window object, return #f.
 [From src/window.c:2788]
 
 (ignore-dubious-modifiers?)
 - Built-in Primitive
-Return the status of the ignore-dubious-modifiers flag.\n\
+Return the status of the ignore-dubious-modifiers flag.
 See `set-ignore-dubious-modifiers!'.
 [From src/binding.c:1552]
 
@@ -2319,9 +2354,9 @@ Report a missing image filename, but do not error.
 
 (image-properties image)
 - Built-in Primitive
-Return an association list giving some properties of IMAGE.\n\
-Currently defined properties are 'filename, the fully expanded\n\
-pathname of the image, 'width, its width, 'height, its height, and\n\
+Return an association list giving some properties of IMAGE.
+Currently defined properties are 'filename, the fully expanded
+pathname of the image, 'width, its width, 'height, its height, and
 depth, its color depth.
 [From src/image.c:172]
 
@@ -2333,8 +2368,8 @@ See `image-properties' for a list of the keys.
 
 (image-short-name image)
 - Built-in Primitive
-Return the short name of IMAGE. \n\
-Use `image-properties' to access other properties of IMAGE\n\
+Return the short name of IMAGE. 
+Use `image-properties' to access other properties of IMAGE
 including its full name.
 [From src/image.c:206]
 
@@ -2615,8 +2650,8 @@ Keep W1 and W2 aligned at the left.
 
 (keep-on-top  #&optional win)
 - Built-in Primitive
-Ensure that WIN is kept on top of all other windows.\n\
-Obviously, other windows that are also on-top may obscure WIN.\n\
+Ensure that WIN is kept on top of all other windows.
+Obviously, other windows that are also on-top may obscure WIN.
 WIN defaults to the window context in the usual way if not specified.
 [From src/window.c:3058]
 
@@ -2649,8 +2684,8 @@ Keep W1 and W2 aligned at the top.
 
 (kept-on-top?  #&optional win)
 - Built-in Primitive
-Return #t if WIN is an on-top window, #f otherwise.\n\
-WIN defaults to the window context in the usual way if not\n\
+Return #t if WIN is an on-top window, #f otherwise.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:3116]
 
@@ -2679,20 +2714,20 @@ Return a string containing the X11 keysym for key with code KEYCODE.
 
 (keymask->string keymask)
 - Built-in Primitive
-Return a string representing KEYMASK.\n\
+Return a string representing KEYMASK.
 E.g., (keymask->string 4) => "C-". Returns #f on an error.
 [From src/binding.c:1658]
 
 (keymask-keycode->string keymask keycode)
 - Built-in Primitive
-Return a string representing the key press with mask KEYMASK, code KEYCODE.\n\
+Return a string representing the key press with mask KEYMASK, code KEYCODE.
 E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error.
 [From src/binding.c:1678]
 
 (keysym->keycode keysym-name)
 - Built-in Primitive
-Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.\n\
-KEYSYM-NAME should be a string.  E.g., "Control_L".  Return #f if KEYSYM-NAME\n\
+Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
+KEYSYM-NAME should be a string.  E.g., "Control_L".  Return #f if KEYSYM-NAME
 is not a valid keysym.
 [From src/binding.c:966]
 
@@ -2740,14 +2775,19 @@ No documentation supplied.
 
 (list-all-windows)
 - Built-in Primitive
-Return a list of all of the top-level window objects.\n\
-The list is in a semi-arbitrary order that is convenient for the sake\n\
+Return a list of all of the top-level window objects.
+The list is in a semi-arbitrary order that is convenient for the sake
 of circulation
 [From src/window.c:2963]
 
+(list-easyraise-windows)
+- (app scwm easyraise)
+No documentation supplied.
+[From scheme/easyraise.scm:28]
+
 (list-focus-order)
 - Built-in Primitive
-Return a list of all the top-level window objects in focus order.\n\
+Return a list of all the top-level window objects in focus order.
 The order is from most recently focussed to least recently focussed.
 [From src/window.c:3027]
 
@@ -2771,8 +2811,8 @@ are not included.  See also `windows-overlap?'.
 
 (list-stacking-order)
 - Built-in Primitive
-Return a list of all non-iconified the top-level window objects, from top to bottom.\n\
-The order is the stacking order of the windows. The first element is\n\
+Return a list of all non-iconified the top-level window objects, from top to bottom.
+The order is the stacking order of the windows. The first element is
 the topmost window, the last is the bottommost
 [From src/window.c:2982]
 
@@ -2879,34 +2919,34 @@ as startup can be longer than ideal).
 
 (lookup-key contexts key)
 - Built-in Primitive
-Return the procedures bound to KEY within the CONTEXTS.\n\
-KEY is a modifiers and keysym string.\n\
-CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))\n\
-The return value is a list: (press-proc release-proc), or #f\n\
+Return the procedures bound to KEY within the CONTEXTS.
+KEY is a modifiers and keysym string.
+CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
+The return value is a list: (press-proc release-proc), or #f
 if there is no matching binding.
 [From src/binding.c:880]
 
 (lookup-mouse contexts button)
 - Built-in Primitive
-Return the procedure bound to mouse BUTTON within the CONTEXTS.\n\
-BUTTON is a string that may contain modifier prefixes, e.g.,\n\
-"C-S-M-1". \n\
-CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))\n\
-BUTTON is a string or integer giving the mouse button number and any\n\
-modifiers as a prefix.\n\
-The return values is the procedure object, or #f if there is no\n\
+Return the procedure bound to mouse BUTTON within the CONTEXTS.
+BUTTON is a string that may contain modifier prefixes, e.g.,
+"C-S-M-1". 
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+BUTTON is a string or integer giving the mouse button number and any
+modifiers as a prefix.
+The return values is the procedure object, or #f if there is no
 matching binding.
 [From src/binding.c:1236]
 
 (lookup-procedure-bindings  #&optional proc context)
 - Built-in Primitive
-Return any bindings that invoke PROC in context CONTEXT.\n\
-If PROC is omitted or #f, match all bindings in context CONTEXT.\n\
-If CONTEXT is omitted or #f, match bindings regardless of context.\n\
-If both PROC and CONTEXT are omitted or #f, return all bindings.\n\
-The return value is a list of binding descriptions.  Each binding\n\
-description is a list: (mouse? contexts modmask keycode-or-butnum press-proc\n\
-release-or-immediate-proc).  mouse? is a boolean, contexts is a list of\n\
+Return any bindings that invoke PROC in context CONTEXT.
+If PROC is omitted or #f, match all bindings in context CONTEXT.
+If CONTEXT is omitted or #f, match bindings regardless of context.
+If both PROC and CONTEXT are omitted or #f, return all bindings.
+The return value is a list of binding descriptions.  Each binding
+description is a list: (mouse? contexts modmask keycode-or-butnum press-proc
+release-or-immediate-proc).  mouse? is a boolean, contexts is a list of
 symbols.
 [From src/binding.c:1294]
 
@@ -2915,6 +2955,11 @@ symbols.
 Lower window W below the next window down that overlaps it.
 W defaults to the window context in the usual way.
 [From scheme/stacking.scm:69]
+
+(lower-easyraise-windows)
+- (app scwm easyraise)
+
+[From scheme/easyraise.scm:39]
 
 (lower-fvwm2-pager)
 - 
@@ -2929,7 +2974,7 @@ Keeps the relative stacking order of the members intact.
 
 (lower-window  #&optional win)
 - Built-in Primitive
-Lower WIN to the bottom of the window stack. WIN defaults to\n\
+Lower WIN to the bottom of the window stack. WIN defaults to
 the window context in the usual way if not specified.
 [From src/window.c:1890]
 
@@ -2945,8 +2990,8 @@ No documentation supplied.
 
 (make-color cname)
 - Built-in Primitive
-Return the color object corresponding to the X color specifier CNAME.\n\
-If CNAME is not a valid X color name, or cannot be\n\
+Return the color object corresponding to the X color specifier CNAME.
+If CNAME is not a valid X color name, or cannot be
 allocated, an error results.
 [From src/color.c:236]
 
@@ -2976,15 +3021,15 @@ The rest of the arguments are passed to the menu procedure
 
 (make-decor  #&optional name)
 - Built-in Primitive
-Create a new decor object. NAME optionally provides a string\n\
-that is used to name the decor, and is displayed when the decor is\n\
+Create a new decor object. NAME optionally provides a string
+that is used to name the decor, and is displayed when the decor is
 printed.
 [From src/decor.c:209]
 
 (make-face flags specs)
 - Built-in Primitive
-Create a new face.\n\
-FLAGS is a list of face flags (see concept) and\n\
+Create a new face.
+FLAGS is a list of face flags (see concept) and
 SPECS is a list of face specifiers.
 [From src/face.c:442]
 
@@ -2996,8 +3041,8 @@ REST is a list of other menu-items to include in the returned menu.
 
 (make-font fname)
 - Built-in Primitive
-Return the font object for the X font specifier FNAME.\n\
-If FNAME is not a valid X font name, or cannot be\n\
+Return the font object for the X font specifier FNAME.
+If FNAME is not a valid X font name, or cannot be
 allocated, an error results.
 [From src/font.c:97]
 
@@ -3013,10 +3058,10 @@ used) or a cons of (host . command).
 
 (make-image name)
 - Built-in Primitive
-Loads an image from the file NAME.\n\
-To load the image, the appropriate image loaders will be invoked as\n\
-needed. If NAME starts with "/", "./" or "../", it is treated as a\n\
-fully qualified pathname; otherwise, the image path is searched for an\n\
+Loads an image from the file NAME.
+To load the image, the appropriate image loaders will be invoked as
+needed. If NAME starts with "/", "./" or "../", it is treated as a
+fully qualified pathname; otherwise, the image path is searched for an
 appropriate file.
 [From src/image.c:565]
 
@@ -3043,14 +3088,14 @@ use the empty list as the element.
 
 (make-menu list-of-menuitems bg-color text-color stipple-color font #&optional picture-side side-picture-align side-bg-color picture-bg extra-options)
 - Built-in Primitive
-Make and return a menu object from the given arguments.\n\
-LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';\n\
-BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects or symbols;\n\
-FONT is a font object or symbol;\n\
-PICTURE-SIDE is an image object to draw on the left side of the menu;\n\
-SIDE-PICTURE-ALIGN is one of 'top, 'center, or 'bottom;\n\
-SIDE-BG-COLOR is a color object or symbol;\n\
-PICTURE-BG is an image object;\n\
+Make and return a menu object from the given arguments.
+LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
+BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects or symbols;
+FONT is a font object or symbol;
+PICTURE-SIDE is an image object to draw on the left side of the menu;
+SIDE-PICTURE-ALIGN is one of 'top, 'center, or 'bottom;
+SIDE-BG-COLOR is a color object or symbol;
+PICTURE-BG is an image object;
 EXTRA-OPTIONS can be anything understood by the menu-look
 [From src/menu.c:237]
 
@@ -3113,23 +3158,23 @@ If FORCE? is #t, then the cached theme file is reloaded.
 
 (make-menuitem label action #&optional extra-label picture-above picture-left hover-action unhover-action hotkey-prefs submenu?)
 - Built-in Primitive
-Return a newly created menuitem object using the given arguments.\n\
-LABEL is a string giving the main text label of the menu item;\n\
-ACTION is a procedure or menu object -- if it is a procedure, it gets\n\
-invoked when the menuitem is selected, if it is a menu object, that\n\
-menu is attached as a submenu from the enclosing menu that the created \n\
-menuitem is put in.  You can also force ACTION to be treated as a\n\
-submenu by setting SUBMENU? to #t.\n\
-EXTRA-LABEL is extra text describing the menu item -- often this\n\
-contains a shortcut key description, or some other descriptive text.\n\
-PICTURE-ABOVE and PICTURE-LEFT are picture objects which correspond to \n\
-images to display within the bounding region of the menuitem.\n\
-HOVER-ACTION and UNHOVER-ACTION are procedures to be invoked when the\n\
-mouse pointer hovers over the item and is moved away after hovering\n\
-over the item, respectively.\n\
-HOTKEY-PREFS is a string listing preferred alphanumeric shortcut-keys\n\
-for the given menu-item; the menu creation routine uses these as hints \n\
-for assigning shortcut keys to the various menuitems.\n\
+Return a newly created menuitem object using the given arguments.
+LABEL is a string giving the main text label of the menu item;
+ACTION is a procedure or menu object -- if it is a procedure, it gets
+invoked when the menuitem is selected, if it is a menu object, that
+menu is attached as a submenu from the enclosing menu that the created 
+menuitem is put in.  You can also force ACTION to be treated as a
+submenu by setting SUBMENU? to #t.
+EXTRA-LABEL is extra text describing the menu item -- often this
+contains a shortcut key description, or some other descriptive text.
+PICTURE-ABOVE and PICTURE-LEFT are picture objects which correspond to 
+images to display within the bounding region of the menuitem.
+HOVER-ACTION and UNHOVER-ACTION are procedures to be invoked when the
+mouse pointer hovers over the item and is moved away after hovering
+over the item, respectively.
+HOTKEY-PREFS is a string listing preferred alphanumeric shortcut-keys
+for the given menu-item; the menu creation routine uses these as hints 
+for assigning shortcut keys to the various menuitems.
 For a higher-level interface to this function, see `menuitem'.
 [From src/menuitem.c:128]
 
@@ -3142,8 +3187,8 @@ example usage.
 
 (make-message-window message)
 - Built-in Primitive
-Returns a newly created message window object with string MESSAGE.\n\
-MESSAGE is the initial string for the message window. \n\
+Returns a newly created message window object with string MESSAGE.
+MESSAGE is the initial string for the message window. 
 Uses defaults from the ScreenInfo struct for the other values.
 [From src/message-window.c:260]
 
@@ -3169,19 +3214,19 @@ Initially the message window is centered in the display.
 
 (make-relief-color color factor)
 - Built-in Primitive
-Convert a color into a new color appropriate for a relief.\n\
-Multiplies the luminosity and saturation of COLOR by the\n\
-positive floating point number FACTOR. Using a FACTOR smaller than 1\n\
-will result in a dimmer color, suitable for use as a darker\n\
-relief. Using a factor greater than 1 will result in a brighter color\n\
+Convert a color into a new color appropriate for a relief.
+Multiplies the luminosity and saturation of COLOR by the
+positive floating point number FACTOR. Using a FACTOR smaller than 1
+will result in a dimmer color, suitable for use as a darker
+relief. Using a factor greater than 1 will result in a brighter color
 which is suitable for use as a highlight.
 [From src/color.c:586]
 
 (make-reversed-color color)
 - Built-in Primitive
-Return a new color that is opposite COLOR.\n\
-Note that the returned color will not necessarily contrast with\n\
-COLOR; (make-reversed-color "gray50") is almost indistinguishable\n\
+Return a new color that is opposite COLOR.
+Note that the returned color will not necessarily contrast with
+COLOR; (make-reversed-color "gray50") is almost indistinguishable
 from "gray50".
 [From src/color.c:606]
 
@@ -3355,15 +3400,15 @@ order in which they appear in the lists.
 
 (marshal-fvwm2-config-info win)
 - Built-in Primitive
-Constructs a fvwm2 BroadcastInfo module packet.\n\
-The return value is the contents of a BroadcastInfo fvwm2\n\
+Constructs a fvwm2 BroadcastInfo module packet.
+The return value is the contents of a BroadcastInfo fvwm2
 module packet for WIN as a Scheme string.
 [From src/module-interface.c:133]
 
 (marshal-fvwm2-iconify-info win)
 - Built-in Primitive
-Constructs a fvwm2 "M_ICONIFY" module packet.\n\
-The return value is the contents of an "M_ICONIFY" fvwm\n\
+Constructs a fvwm2 "M_ICONIFY" module packet.
+The return value is the contents of an "M_ICONIFY" fvwm
 module packet for WIN as a Scheme string.
 [From src/module-interface.c:176]
 
@@ -3381,17 +3426,17 @@ If NW or NH is 0, that dimension is not changed.
 (maximize-both #&optional (win (get-window)))
 - (app scwm winops)
 Maximize WIN both horizontally and vertically.
-[From scheme/winops.scm:427]
+[From scheme/winops.scm:428]
 
 (maximize-horizontal #&optional (win (get-window)))
 - (app scwm winops)
 Maximize WIN horizontally.
-[From scheme/winops.scm:422]
+[From scheme/winops.scm:423]
 
 (maximize-vertical #&optional (win (get-window)))
 - (app scwm winops)
 Maximize WIN vertically.
-[From scheme/winops.scm:417]
+[From scheme/winops.scm:418]
 
 (maximized? #&optional (win (get-window)))
 - (app scwm winops)
@@ -3456,7 +3501,7 @@ Return #t if hotkeys invoke item, #f if they just select the item.
 
 (menu-hover-delay menu)
 - Built-in Primitive
-Return MENU's hover action delay.\n\
+Return MENU's hover action delay.
 See `set-menu-hover-delay!'.
 [From src/menu.c:359]
 
@@ -3472,7 +3517,7 @@ Return an approximation of the number of menuitems that will fit vertically on s
 
 (menu-popup-delay menu)
 - Built-in Primitive
-Return MENU's submenu popup delay.\n\
+Return MENU's submenu popup delay.
 See `set-menu-popup-delay!'.
 [From src/menu.c:334]
 
@@ -3484,10 +3529,10 @@ All the arguments are passed directly to the `menu' function.
 
 (menu-properties menu)
 - Built-in Primitive
-Returns the a list of the menu properties of MENU, a menu object.\n\
-The properties returned are: \n\
-'(menu-title menu-items side-image side-image-align side-bg-color bg-color\n\
-text-color stipple-color\n\
+Returns the a list of the menu properties of MENU, a menu object.
+The properties returned are: 
+'(menu-title menu-items side-image side-image-align side-bg-color bg-color
+text-color stipple-color
 image-bg font extra-options used-shortcut-keys popup-delay hover-delay)
 [From src/menu.c:199]
 
@@ -3553,26 +3598,26 @@ No documentation supplied.
 
 (menuitem-colors menuitem)
 - Built-in Primitive
-Returns a list of the fg and bg colors for MENUITEM.\n\
-Will return #f for either/both components if MENUITEM inherits its color from\n\
+Returns a list of the fg and bg colors for MENUITEM.
+Will return #f for either/both components if MENUITEM inherits its color from
 the menu in which it is embedded.
 [From src/menuitem.c:226]
 
 (menuitem-font menuitem)
 - Built-in Primitive
-Returns the font of MENUITEM.\n\
-Returns #f if MENUITEM inherits its font\n\
+Returns the font of MENUITEM.
+Returns #f if MENUITEM inherits its font
 from the menu in which it is embedded.
 [From src/menuitem.c:256]
 
 (menuitem-properties menu-item)
 - Built-in Primitive
-Return a list of the properties of the given MENU-ITEM.\n\
-MENU-ITEM is a menuitem object, created by `make-menuitem'.  The\n\
-returned list contains the following, in this order:\n\
-'(label action extra-label picture-above picture-left hover-action\n\
-unhover-action hotkey-preferences force-submenu?)\n\
-Note that this is the same as the arguments to the `make-menuitem'\n\
+Return a list of the properties of the given MENU-ITEM.
+MENU-ITEM is a menuitem object, created by `make-menuitem'.  The
+returned list contains the following, in this order:
+'(label action extra-label picture-above picture-left hover-action
+unhover-action hotkey-preferences force-submenu?)
+Note that this is the same as the arguments to the `make-menuitem'
 primitive.
 [From src/menuitem.c:101]
 
@@ -3589,7 +3634,7 @@ Requires the program `xmessage'.
 
 (message-window-colors mwn)
 - Built-in Primitive
-Returns the colors that the message window MWN is displayed with.  \n\
+Returns the colors that the message window MWN is displayed with.  
 These are returned in a list of the form (fg_color,bg_color).
 [From src/message-window.c:662]
 
@@ -3606,7 +3651,7 @@ Returns the font that the message window MWN uses for displaying text.
 
 (message-window-hide! mwn)
 - Built-in Primitive
-Hide the message window MWN.\n\
+Hide the message window MWN.
 See also `message-window-show'.
 [From src/message-window.c:554]
 
@@ -3661,7 +3706,7 @@ These options are cumulative for repeated calls to
 
 (message-window-position mwn)
 - Built-in Primitive
-Returns the position that message window MWN is/will be displayed at. \n\
+Returns the position that message window MWN is/will be displayed at. 
 This is returned as a four element list: (x y x-align y-align).
 [From src/message-window.c:605]
 
@@ -3672,67 +3717,67 @@ Returns the relief setting for the message window MWN.
 
 (message-window-set-colors! mwn fg-color bg-color)
 - Built-in Primitive
-Set the fore- and background colors to be used for the message window MWN.\n\
+Set the fore- and background colors to be used for the message window MWN.
 The foreground color will be FG-COLOR and the background color will be BG-COLOR
 [From src/message-window.c:418]
 
 (message-window-set-font! mwn fnt)
 - Built-in Primitive
-Set the font to be used for the message window MWN.\n\
+Set the font to be used for the message window MWN.
 The font will be FNT
 [From src/message-window.c:394]
 
 (message-window-set-image! mwn image #&optional fg-color bg-color shaped?)
 - Built-in Primitive
-Changes the background image for the message window MWN to IMAGE. \n\
-FG-COLOR, BG-COLOR are the colors for the image, SHAPED? is whether it\n\
-should use a shaped message window. If IMAGE is #f, then no image\n\
+Changes the background image for the message window MWN to IMAGE. 
+FG-COLOR, BG-COLOR are the colors for the image, SHAPED? is whether it
+should use a shaped message window. If IMAGE is #f, then no image
 is used for MWN.
 [From src/message-window.c:351]
 
 (message-window-set-message! mwn message)
 - Built-in Primitive
-Changes the message displayed by the message window MWN.\n\
+Changes the message displayed by the message window MWN.
 The message will be MESSAGE
 [From src/message-window.c:330]
 
 (message-window-set-position! mwn x y #&optional x-align y-align)
 - Built-in Primitive
-Set the position to be used for the message window MWN.\n\
-X and Y specify the position of the control point of the window,\n\
-while X-ALIGN and Y-ALIGN specify a fraction of the width and\n\
-height of the message window to offset it from the specified position.\n\
-X-ALIGN and Y-ALIGN should each be in the range [-1,0].  E.g.,\n\
-If X-ALIGN and Y-ALIGN are both -0.5, the window will be\n\
-centered at viewport pixel position X, Y.  Any of the parameters\n\
+Set the position to be used for the message window MWN.
+X and Y specify the position of the control point of the window,
+while X-ALIGN and Y-ALIGN specify a fraction of the width and
+height of the message window to offset it from the specified position.
+X-ALIGN and Y-ALIGN should each be in the range [-1,0].  E.g.,
+If X-ALIGN and Y-ALIGN are both -0.5, the window will be
+centered at viewport pixel position X, Y.  Any of the parameters
 excep MWN can be #f to mean not to change the existing value.
 [From src/message-window.c:457]
 
 (message-window-set-relief! mwn draw-relief?)
 - Built-in Primitive
-Sets the relief for the window MWN.\n\
+Sets the relief for the window MWN.
 Relief will be drawn if and only if DRAW-RELIEF? is #t.
 [From src/message-window.c:509]
 
 (message-window-set-size! mwn width height)
 - Built-in Primitive
-Set the size of message window MWN to WIDTH pixels by HEIGHT pixels.\n\
-If WIDTH or HEIGHT is #f, that direction is automatically sized\n\
-based on the message content. This procedure is especially useful when a message window\n\
+Set the size of message window MWN to WIDTH pixels by HEIGHT pixels.
+If WIDTH or HEIGHT is #f, that direction is automatically sized
+based on the message content. This procedure is especially useful when a message window
 is used to display an image.
 [From src/message-window.c:484]
 
 (message-window-show! mwn)
 - Built-in Primitive
-Displays the message window MWN on the screen. \n\
-Be sure to keep the displayed message window somewhere\n\
-do that you can call `message-window-hide!' (otherwise\n\
+Displays the message window MWN on the screen. 
+Be sure to keep the displayed message window somewhere
+do that you can call `message-window-hide!' (otherwise
 the window will not ever disappear).
 [From src/message-window.c:526]
 
 (message-window-size mwn)
 - Built-in Primitive
-Returns the size of message window MWN in pixels.\n\
+Returns the size of message window MWN in pixels.
 Returns as a two element list: (width height).
 [From src/message-window.c:621]
 
@@ -3745,7 +3790,7 @@ background color.
 
 (message-window-visible? mwn)
 - Built-in Primitive
-Return #t if the message window MWN is visible, #f otherwise.\n\
+Return #t if the message window MWN is visible, #f otherwise.
 See also `message-window-show', `message-window-hide'.
 [From src/message-window.c:570]
 
@@ -3766,57 +3811,57 @@ Modify the current desktop size by the given parameter.
 
 (mod-mask-alt)
 - Built-in Primitive
-Return the bit-mask for the Alt modifier key, or #f.\n\
-Returns #f if and only if there is no key bound to act as Alt, otherwise\n\
+Return the bit-mask for the Alt modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Alt, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
 [From src/binding.c:1468]
 
 (mod-mask-control)
 - Built-in Primitive
-Return the bit-mask for the Control modifier key, or #f.\n\
-Returns #f if and only if there is no key bound to act as Control, otherwise\n\
+Return the bit-mask for the Control modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Control, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
 [From src/binding.c:1452]
 
 (mod-mask-hyper)
 - Built-in Primitive
-Return the bit-mask for the Hyper modifier key, or #f.\n\
-Returns #f if and only if there is no key bound to act as Hyper, otherwise\n\
+Return the bit-mask for the Hyper modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Hyper, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
 [From src/binding.c:1476]
 
 (mod-mask-meta)
 - Built-in Primitive
-Return the bit-mask for the Meta modifier key, or #f.\n\
-Returns #f if and only if there is no key bound to act as Meta, otherwise\n\
+Return the bit-mask for the Meta modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Meta, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
 [From src/binding.c:1460]
 
 (mod-mask-numlock)
 - Built-in Primitive
-Return the bit-mask for the NumLock modifier key, or #f.\n\
-Returns #f if and only if there is no key bound to act as NumLock, otherwise\n\
+Return the bit-mask for the NumLock modifier key, or #f.
+Returns #f if and only if there is no key bound to act as NumLock, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
 [From src/binding.c:1494]
 
 (mod-mask-scrolllock)
 - Built-in Primitive
-Return the bit-mask for the ScrollLock modifier key, or #f.\n\
-Returns #f if and only if there is no key bound to act as ScrollLock, otherwise\n\
+Return the bit-mask for the ScrollLock modifier key, or #f.
+Returns #f if and only if there is no key bound to act as ScrollLock, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
 [From src/binding.c:1503]
 
 (mod-mask-shift)
 - Built-in Primitive
-Return the bit-mask for the Shift modifier key, or #f.\n\
-Returns #f if and only if there is no key bound to act as Shift, otherwise\n\
+Return the bit-mask for the Shift modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Shift, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
 [From src/binding.c:1444]
 
 (mod-mask-super)
 - Built-in Primitive
-Return the bit-mask for the Super modifier key, or #f.\n\
-Returns #f if and only if there is no key bound to act as Super, otherwise\n\
+Return the bit-mask for the Super modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Super, otherwise
 returns a power of two corresponding to the bit-mask of the modifier
 [From src/binding.c:1485]
 
@@ -3834,9 +3879,9 @@ Return the string module event name for event number NUM.
 
 (mouse-event-type)
 - Built-in Primitive
-Return a symbol corresponding to the type of the most recent mouse event.\n\
-Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.\n\
-You can `case' on this symbol in a procedure bound to a mouse event\n\
+Return a symbol corresponding to the type of the most recent mouse event.
+Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.
+You can `case' on this symbol in a procedure bound to a mouse event
 to determine, e.g., whether the user single clicked or double clicked.
 [From src/binding.c:1424]
 
@@ -3941,10 +3986,10 @@ negative, and Y pixels vertically, down if positive, up if negative.
 
 (move-window x y #&optional win)
 - Built-in Primitive
-Move WIN to virtual coordinates X, Y.\n\
-If X is #f, then X defaults to the current X position of WIN.\n\
-If Y is #f, then Y defaults to the current Y position of WIN.\n\
-WIN defaults to the window context in the usual way if not\n\
+Move WIN to virtual coordinates X, Y.
+If X is #f, then X defaults to the current X position of WIN.
+If Y is #f, then Y defaults to the current Y position of WIN.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:2376]
 
@@ -3957,7 +4002,7 @@ Positive Y moves down, negative moves up.
 
 (move-window-to-desk desk #&optional win)
 - Built-in Primitive
-Move WIN to DESK. DESK is an integer desk identifier. WIN\n\
+Move WIN to DESK. DESK is an integer desk identifier. WIN
 defaults to the window context in the usual way if not specified.
 [From src/window.c:2504]
 
@@ -4155,10 +4200,15 @@ Return the color used for highlighting nonants.
 
 (normal-border  #&optional win)
 - Built-in Primitive
-Cause WIN to be decorated with a normal border.\n\
-This means that there will be resize handles in the corners. WIN\n\
+Cause WIN to be decorated with a normal border.
+This means that there will be resize handles in the corners. WIN
 defaults to the window context in the usual way if not specified.
 [From src/window.c:3239]
+
+(not-focussed-for? seconds #&optional (win (get-window)))
+- (app scwm auto-shrink)
+No documentation supplied.
+[From scheme/auto-shrink.scm:37]
 
 (not-menu-background)
 - Built-in Primitive
@@ -4225,19 +4275,19 @@ No documentation supplied.
 
 (opaque-move  #&optional win)
 - Built-in Primitive
-Move WIN interactively, opaquely.\n\
-Returns a list '(X Y) which is the new viewport position of WIN.\n\
-This allows the user to drag the window itself around the screen. WIN\n\
+Move WIN interactively, opaquely.
+Returns a list '(X Y) which is the new viewport position of WIN.
+This allows the user to drag the window itself around the screen. WIN
 defaults to the window context in the usual way if not specified.
 [From src/move.c:576]
 
 (opaque-resize  #&optional win)
 - Built-in Primitive
-Resize WIN interactively, opaquely.\n\
-Returns a list '(width height) that is the new size of WIN.\n\
-This allows the user to drag the boundaries of the window to set its\n\
-size. WIN defaults to the window context in the usual way if not\n\
-specified. The window is updated immediately as the size changes take\n\
+Resize WIN interactively, opaquely.
+Returns a list '(width height) that is the new size of WIN.
+This allows the user to drag the boundaries of the window to set its
+size. WIN defaults to the window context in the usual way if not
+specified. The window is updated immediately as the size changes take
 place.
 [From src/resize.c:723]
 
@@ -4349,13 +4399,13 @@ Place a nonant marker on W.
 
 (place-on-default-desk win)
 - Built-in Primitive
-Place WIN on a desk according to the default algorithm.\n\
-Place a window with it's window group, with a window it is transient\n\
-for, on the desk it was on previous to a restart, on the desk\n\
-specified with the starts-on-desk flag,\n\
-\n\
-This is called as part of `default-placement-proc'.  It could also be\n\
-used in user-defined placement procedures (see \n\
+Place WIN on a desk according to the default algorithm.
+Place a window with it's window group, with a window it is transient
+for, on the desk it was on previous to a restart, on the desk
+specified with the starts-on-desk flag,
+
+This is called as part of `default-placement-proc'.  It could also be
+used in user-defined placement procedures (see 
 `set-window-placement-proc!').
 [From src/placement.c:430]
 
@@ -4368,14 +4418,14 @@ differently for clarity and convenience.
 
 (plain-border  #&optional win)
 - Built-in Primitive
-Cause WIN to be decorated with a plain border.\n\
-This means that there will be no resize handles in the corners. WIN\n\
+Cause WIN to be decorated with a plain border.
+This means that there will be no resize handles in the corners. WIN
 defaults to the window context in the usual way if not specified.
 [From src/window.c:3268]
 
 (pointer-position)
 - Built-in Primitive
-Return the current position of the mouse pointer in pixels.\n\
+Return the current position of the mouse pointer in pixels.
 The return value is a two-element list of the x and y coordinates.
 [From src/miscprocs.c:238]
 
@@ -4391,10 +4441,10 @@ No documentation supplied.
 
 (popup-menu menu #&optional warp-to-index x-pos y-pos left-side? permit-alt-release-selection?)
 - Built-in Primitive
-Popup MENU, a menu object, and warp to the item WARP-TO-INDEX if it is a number.\n\
-X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be\n\
-#t if the menu should be left justified against X-POS, or #f if it should be\n\
-right justified against X-POS. If PERMIT-ALT-RELEASE-SELECTION? is #t, then releasing\n\
+Popup MENU, a menu object, and warp to the item WARP-TO-INDEX if it is a number.
+X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be
+#t if the menu should be left justified against X-POS, or #f if it should be
+right justified against X-POS. If PERMIT-ALT-RELEASE-SELECTION? is #t, then releasing
 the Alt/Meta modifier select a menu item.
 [From src/menu.c:1648]
 
@@ -4561,7 +4611,7 @@ Return #t iff PROC take a rest argument.
 Returns a list of all the modules loaded in successfully.
 Modules that failed to load have #f in their place in the
 list instead of the module.
-[From scheme/minimal.scm:184]
+[From scheme/minimal.scm:191]
 
 (program-exists? program-name)
 - (app scwm path-cache)
@@ -5020,7 +5070,7 @@ Quote the next key event and let it pass to the application.
 
 (quote-key-events?)
 - Built-in Primitive
-Return #t iff key events are being qutoed.\n\
+Return #t iff key events are being qutoed.
 See also `set-quote-key-events!'.
 [From src/binding.c:868]
 
@@ -5051,6 +5101,11 @@ Raise window W above the next window up that overlaps it.
 W defaults to the window context in the usual way.
 [From scheme/stacking.scm:77]
 
+(raise-easyraise-windows)
+- (app scwm easyraise)
+
+[From scheme/easyraise.scm:31]
+
 (raise-fvwm2-pager)
 - (app scwm fvwm-module)
 Raise a fvwm2 pager window in the stacking order.
@@ -5064,8 +5119,8 @@ Keeps the relative stacking order of the members intact.
 
 (raise-window  #&optional win)
 - Built-in Primitive
-Raise WIN to the top of the window stack.\n\
-Stays-on-top windows still take priority. WIN defaults to the window\n\
+Raise WIN to the top of the window stack.
+Stays-on-top windows still take priority. WIN defaults to the window
 context in the usual way if not specified.
 [From src/window.c:1866]
 
@@ -5076,24 +5131,24 @@ Restack window W immediately above W2.
 
 (raised?  #&optional win)
 - Built-in Primitive
-Return #t if WIN is currently raised, #f if not.\n\
-WIN defaults to the window context in the usual way if not\n\
-specified. A window is considered to be raised if the application\n\
-window (not the frame) is unobscured (or if this was the last\n\
+Return #t if WIN is currently raised, #f if not.
+WIN defaults to the window context in the usual way if not
+specified. A window is considered to be raised if the application
+window (not the frame) is unobscured (or if this was the last
 window you called `raise-window' on).
 [From src/window.c:1995]
 
 (random-place-window win)
 - Built-in Primitive
-Places WIN just as if being placed by fvwm2's RandomPlacement.\n\
-This placement is not truly random; it is based on two state variables\n\
-which are incremented for the x and y coordinates, and which wrap\n\
-around once a window would be forced off the screen. The placement is\n\
-fairly arbitrary, but always succeeds, and so avoids user\n\
-interaction. #t is always returned.\n\
-\n\
-This is called as part of `default-placement-proc'.  It could also be\n\
-used in user-defined placement procedures (see \n\
+Places WIN just as if being placed by fvwm2's RandomPlacement.
+This placement is not truly random; it is based on two state variables
+which are incremented for the x and y coordinates, and which wrap
+around once a window would be forced off the screen. The placement is
+fairly arbitrary, but always succeeds, and so avoids user
+interaction. #t is always returned.
+
+This is called as part of `default-placement-proc'.  It could also be
+used in user-defined placement procedures (see 
 `set-window-placement-proc!').
 [From src/placement.c:533]
 
@@ -5121,8 +5176,8 @@ IN should be a newline-terminated Ascii input port.
 
 (recapture)
 - Built-in Primitive
-Recapture all the windows.\n\
-This destroys all the current frame windows and recreate them from\n\
+Recapture all the windows.
+This destroys all the current frame windows and recreate them from
 scratch. This is hopefully not necessary during normal operation.
 [From src/miscprocs.c:269]
 
@@ -5141,18 +5196,18 @@ This re-applyiesthe state at undo-index - 1.
 
 (redo-all-passive-grabs)
 - Built-in Primitive
-Re-instate all passive grabs of keys and buttons of bindings.\n\
-See `undo-all-passive-grabs' for temporarily removing those bindings.\n\
-This procedure might be useful for re-establishing bindings after\n\
-quoting numerous keystrokes or mouse events.  Beware that it can\n\
-take several seconds to execute. \n\
+Re-instate all passive grabs of keys and buttons of bindings.
+See `undo-all-passive-grabs' for temporarily removing those bindings.
+This procedure might be useful for re-establishing bindings after
+quoting numerous keystrokes or mouse events.  Beware that it can
+take several seconds to execute. 
 This procedure considers the state of `ignore-dubious-modifiers?'
 [From src/binding.c:1579]
 
 (redo-passive-grab modmask keycode-or-butnum #&optional mouse?)
 - Built-in Primitive
-Re-instate the passive grab of KEYCODE-OR-BUTNUM with MODMASK on all windows. \n\
-If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove\n\
+Re-instate the passive grab of KEYCODE-OR-BUTNUM with MODMASK on all windows. 
+If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove
 a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.
 [From src/binding.c:1616]
 
@@ -5167,17 +5222,17 @@ list is empty, in which case INIT is returned. Compare to
 
 (refresh)
 - Built-in Primitive
-Make sure all windows and their decorations are up to date.\n\
-This forces a redraw of the entire current viewport. Should not be\n\
+Make sure all windows and their decorations are up to date.
+This forces a redraw of the entire current viewport. Should not be
 necessary during normal operation.
 [From src/miscprocs.c:163]
 
 (refresh-window  #&optional win)
 - Built-in Primitive
-Refresh the decorations on window WIN.\n\
-Refreshing ensuring that everything, including the decorations is up\n\
-to date. `refresh' does this in a more efficient way for all windows,\n\
-as well as the root. WIN defaults to the window context in the usual\n\
+Refresh the decorations on window WIN.
+Refreshing ensuring that everything, including the decorations is up
+to date. `refresh' does this in a more efficient way for all windows,
+as well as the root. WIN defaults to the window context in the usual
 way if not specified.
 [From src/window.c:2473]
 
@@ -5188,25 +5243,25 @@ No documentation supplied.
 
 (register-image-loader extension proc)
 - Built-in Primitive
-Register PROC as the loader to use for images ending in EXTENSION.\n\
-EXTENSION must be a string beginning with a period, the\n\
-empty string (for files with no extension), or the string "default"\n\
-(for files that no other image loader succeeds in loading). PROC will\n\
-be called with the full pathname of the image and should return an\n\
+Register PROC as the loader to use for images ending in EXTENSION.
+EXTENSION must be a string beginning with a period, the
+empty string (for files with no extension), or the string "default"
+(for files that no other image loader succeeds in loading). PROC will
+be called with the full pathname of the image and should return an
 image object, or #f if it succeeds.
 [From src/image.c:407]
 
 (remove-input-hook! handle)
 - Built-in Primitive
-Remove an input hook identified by HANDLE.\n\
-HANDLE should be an object that was returned by `add-input-hook!'. An\n\
+Remove an input hook identified by HANDLE.
+HANDLE should be an object that was returned by `add-input-hook!'. An
 input hook may safely remove itself.
 [From src/callbacks.c:730]
 
 (remove-motion-handler! proc)
 - Built-in Primitive
-No longer call PROC on XMotionEvents.\n\
-Handling motion events can considerably slow Scwm down so use it only when\n\
+No longer call PROC on XMotionEvents.
+Handling motion events can considerably slow Scwm down so use it only when
 necessary.  See `add-motion-handler' and `reset-motion-handlers'.
 [From src/events.c:2186]
 
@@ -5222,9 +5277,9 @@ Return STR with trailing SUFFIX removed if it exists.
 
 (remove-timer-hook! handle)
 - Built-in Primitive
-Remove a timer hook identified by HANDLE.\n\
-The HANDLE should be an object that was returned by\n\
-`add-timer-hook!'. No warning or error will occur if HANDLE is for a\n\
+Remove a timer hook identified by HANDLE.
+The HANDLE should be an object that was returned by
+`add-timer-hook!'. No warning or error will occur if HANDLE is for a
 timer hook that has already been triggered.
 [From src/callbacks.c:587]
 
@@ -5281,24 +5336,24 @@ Remove all procedures from the input hook.
 
 (reset-motion-handlers!)
 - Built-in Primitive
-Call no procedures on XMotionEvents.\n\
-Handling motion events can considerably slow Scwm down so use it only when\n\
+Call no procedures on XMotionEvents.
+Handling motion events can considerably slow Scwm down so use it only when
 necessary.  See `add-motion-handler' and `remove-motion-handler'.
 [From src/events.c:2202]
 
 (reset-on-segv)
 - Built-in Primitive
-Return the number of segv signals Scwm will reset on.\n\
+Return the number of segv signals Scwm will reset on.
 See `set-reset-on-segv!'.
 [From src/miscprocs.c:684]
 
 (reset-scwmexec-protocol)
 - Built-in Primitive
-Reset the scwmexec protocol.\n\
-This procedure removes the "XA_SCWMEXEC_REQUEST" property on the\n\
-root window.  It should not be necessary but may be useful in case\n\
-your X server goes awry (and otherwise you would have to restart your\n\
-X server).  Use if scwmexec or scwmrepl are not returning (e.g.,\n\
+Reset the scwmexec protocol.
+This procedure removes the "XA_SCWMEXEC_REQUEST" property on the
+root window.  It should not be necessary but may be useful in case
+your X server goes awry (and otherwise you would have to restart your
+X server).  Use if scwmexec or scwmrepl are not returning (e.g.,
 if your Emacs hangs when you try evaluating a scwm expression).
 [From src/events.c:637]
 
@@ -5320,12 +5375,12 @@ Clears the list of states.
 
 (resize-frame w h #&optional win x y)
 - Built-in Primitive
-Resize WIN to a size of W by H in pixels.\n\
-Also moves WIN to virtual coordinates X, Y if both of them are specified.\n\
-The size includes the window decorations. WIN defaults to the window\n\
-context in the usual way if not specified.  The resulting size\n\
-of the frame may not be W by H due to rounding to the nearest\n\
-acceptable size for the client window (e.g., Emacs windows can\n\
+Resize WIN to a size of W by H in pixels.
+Also moves WIN to virtual coordinates X, Y if both of them are specified.
+The size includes the window decorations. WIN defaults to the window
+context in the usual way if not specified.  The resulting size
+of the frame may not be W by H due to rounding to the nearest
+acceptable size for the client window (e.g., Emacs windows can
 only be sizes that are multiples of the basic character size)
 [From src/window.c:2403]
 
@@ -5352,6 +5407,12 @@ application size. WIN defaults to the window context in the usual way
 if not specified.
 [From scheme/winops.scm:275]
 
+(resize-xdvi-full-page-100% #&optional (win (get-window)))
+- (app scwm flux)
+Resize an Xdvi window to be full-page, 100%.
+Then you must use various mouse bindings to pan the page around.
+[From scheme/flux.scm:467]
+
 (resource-match?? STRING TYPE CASE-SENSITIVE?)
 - (app scwm wininfo)
 Return a predicate that tests a window's resource instance.  
@@ -5364,18 +5425,18 @@ matching is case-sensitive or not.
 
 (restack-windows winlist)
 - Built-in Primitive
-Restack the windows in WINLIST from front to back.\n\
-The first element of WINLIST will be kept in its current stacking\n\
-order, the remainder will be stacked immediately below it in the order\n\
-given. (Note: This will currently confuse the heck out of the pager\n\
+Restack the windows in WINLIST from front to back.
+The first element of WINLIST will be kept in its current stacking
+order, the remainder will be stacked immediately below it in the order
+given. (Note: This will currently confuse the heck out of the pager
 and possibly other legacy fvwm2 modules).
 [From src/window.c:1905]
 
 (restart  #&optional command)
 - Built-in Primitive
-Restart the window manager. \n\
-If COMMAND is specified, use that, as the new window manager to\n\
-run. If COMMAND is not specified or is exactly equal to "scwm",\n\
+Restart the window manager. 
+If COMMAND is specified, use that, as the new window manager to
+run. If COMMAND is not specified or is exactly equal to "scwm",
 restart scwm with the same command-line arguments as given previously.
 [From src/shutdown.c:179]
 
@@ -5420,19 +5481,19 @@ Return the closest integer to X divided by Y.
 
 (rubber-band-move  #&optional win)
 - Built-in Primitive
-Move WIN interactively, using a rubber band frame.\n\
-Returns a list '(X Y) which is the new viewport position of WIN.\n\
-This allows the user to drag a rubber band frame around the\n\
-screen. WIN defaults to the window context in the usual way if not\n\
+Move WIN interactively, using a rubber band frame.
+Returns a list '(X Y) which is the new viewport position of WIN.
+This allows the user to drag a rubber band frame around the
+screen. WIN defaults to the window context in the usual way if not
 specified.
 [From src/move.c:557]
 
 (rubber-band-resize  #&optional win)
 - Built-in Primitive
-Resize WIN interactively, using a rubber band frame.\n\
-Returns a list '(width height) that is the new size of WIN.\n\
-This allows the user to drag a rubber band frame to set the size of\n\
-the window. WIN defaults to the window context in the usual way if not\n\
+Resize WIN interactively, using a rubber band frame.
+Returns a list '(width height) that is the new size of WIN.
+This allows the user to drag a rubber band frame to set the size of
+the window. WIN defaults to the window context in the usual way if not
 specified.
 [From src/resize.c:691]
 
@@ -5505,10 +5566,10 @@ is used in `close-ScwmDeskButtons' to close the window.
 
 (safe-load fname)
 - Built-in Primitive
-Load file FNAME while trapping and displaying errors.\n\
-Each individual top-level-expression is evaluated separately and all\n\
-errors are trapped and displayed.  You should use this procedure if\n\
-you need to make sure most of a file loads, even if it may contain\n\
+Load file FNAME while trapping and displaying errors.
+Each individual top-level-expression is evaluated separately and all
+errors are trapped and displayed.  You should use this procedure if
+you need to make sure most of a file loads, even if it may contain
 errors.
 [From src/callbacks.c:505]
 
@@ -5730,11 +5791,10 @@ Return the <envar>$EXEC_PREFIX</envar> directory path that scwm was installed wi
 Return the <envar>$PREFIX</envar> directory path that scwm was installed with.
 [From src/miscprocs.c:490]
 
-(scwm-quit  . args)
+(scwm-quit)
 - Built-in Primitive
-Exit scwm cleanly. `quit' is redefined as this within scwm.\n\
-ARGS is ignored
-[From src/shutdown.c:201]
+Exit scwm cleanly. `quit' is redefined as this within scwm.
+[From src/shutdown.c:200]
 
 (scwm-run-test-hook-0 count)
 - Built-in Primitive
@@ -5806,18 +5866,18 @@ PROC-WHEN-SELECTED will be run on each window as it is selected.
 
 (select-viewport-position  #&optional cursor release?)
 - Built-in Primitive
-Select a viewport position and return the window there.  \n\
-Use a special cursor and let the user click to select a viewport\n\
-position Returns a list of three items: (selected-window viewport-x\n\
-viewport-y).  selected-window is either the window object\n\
-corresponding to the selected window, a window id as an integer, \n\
-or #f if no window was selected.\n\
-viewport-x and viewport-y give the position in the viewport that the\n\
-cursor was located when the selection was finalized.  RELEASE?\n\
-indicates whether to whether to wait for a mouse release or act\n\
-immediately on the click.  CURSOR is the cursor object to use, or\n\
-#t for the "skull and cross-bones" kill cursor\n\
-(recommended for destructive operations like delete-window and\n\
+Select a viewport position and return the window there.  
+Use a special cursor and let the user click to select a viewport
+position Returns a list of three items: (selected-window viewport-x
+viewport-y).  selected-window is either the window object
+corresponding to the selected window, a window id as an integer, 
+or #f if no window was selected.
+viewport-x and viewport-y give the position in the viewport that the
+cursor was located when the selection was finalized.  RELEASE?
+indicates whether to whether to wait for a mouse release or act
+immediately on the click.  CURSOR is the cursor object to use, or
+#t for the "skull and cross-bones" kill cursor
+(recommended for destructive operations like delete-window and
 destroy-window), or #f or omitted for the standard circle cursor.
 [From src/window.c:981]
 
@@ -5886,18 +5946,18 @@ Returns the list of windows selected by `select-window-interactively-and-highlig
 
 (send-button button #&optional win kind propagate? dx dy)
 - Built-in Primitive
-Send a synthetic mouse button/release event.\n\
-Create a synthetic event of a press of mouse button BUTTON. The usual\n\
-mouse button specification format (with modifiers) is used. Send the\n\
-event to window WIN if specified; otherwise the window to be used\n\
-defaults to the window context in the usual way. By default, both a\n\
-press and a release are sent---a click. KIND can be one of 'press, 'release,\n\
-'click, 'desk-press, 'desk-release, or 'desk-click.\n\
-If DX or DY is set, that value is used as the offset within WIN for\n\
-the button events to occur.  If one is not specified or #f, then the\n\
-pointer offset of that coordinate is used instead.\n\
-PROPAGATE? indicates whether the propagate flag is set\n\
-on the event; the default is #f. You should not have to worry about\n\
+Send a synthetic mouse button/release event.
+Create a synthetic event of a press of mouse button BUTTON. The usual
+mouse button specification format (with modifiers) is used. Send the
+event to window WIN if specified; otherwise the window to be used
+defaults to the window context in the usual way. By default, both a
+press and a release are sent---a click. KIND can be one of 'press, 'release,
+'click, 'desk-press, 'desk-release, or 'desk-click.
+If DX or DY is set, that value is used as the offset within WIN for
+the button events to occur.  If one is not specified or #f, then the
+pointer offset of that coordinate is used instead.
+PROPAGATE? indicates whether the propagate flag is set
+on the event; the default is #f. You should not have to worry about
 this unless you know what it means.
 [From src/events.c:2265]
 
@@ -5918,26 +5978,26 @@ Send a mouse-3 button press and release event.
 
 (send-client-message win atom . data)
 - Built-in Primitive
-Send WIN the message "ATOM DATA".\n\
-WIN can be 'root-window or an X window identification number.\n\
-Useful for supporting other WMs module communication protocols. \n\
-ATOM is the X11 atom representing the message type (e.g.,\n\
-"XA_WM_PROTOCOLS") and DATA is up to 4 32-bit integers of data.\n\
-for the message. DATA will be the used to create the message data, \n\
-and the lastTimestamp will be appended as the last integer in\n\
+Send WIN the message "ATOM DATA".
+WIN can be 'root-window or an X window identification number.
+Useful for supporting other WMs module communication protocols. 
+ATOM is the X11 atom representing the message type (e.g.,
+"XA_WM_PROTOCOLS") and DATA is up to 4 32-bit integers of data.
+for the message. DATA will be the used to create the message data, 
+and the lastTimestamp will be appended as the last integer in
 the data message.
 [From src/ICCCM.c:68]
 
 (send-key key #&optional win key-press? key-release? propagate?)
 - Built-in Primitive
-Send a synthetic press/release of KEY.  \n\
-The usual key specification format (with modifiers) is used. The event\n\
-is sent to window WIN if specified; otherwise the window to be used\n\
-defaults to the window context in the usual way. By default, both a\n\
-press and a release are sent. However, the boolean parameters\n\
-KEY-PRESS? and KEY-RELEASE?  allow you to specify which are sent\n\
-individually. PROPAGATE? indicates whether the propagate flag is set\n\
-on the event; the default is #f. You should not have to worry about\n\
+Send a synthetic press/release of KEY.  
+The usual key specification format (with modifiers) is used. The event
+is sent to window WIN if specified; otherwise the window to be used
+defaults to the window context in the usual way. By default, both a
+press and a release are sent. However, the boolean parameters
+KEY-PRESS? and KEY-RELEASE?  allow you to specify which are sent
+individually. PROPAGATE? indicates whether the propagate flag is set
+on the event; the default is #f. You should not have to worry about
 this unless you know what it means.
 [From src/events.c:2218]
 
@@ -6017,6 +6077,20 @@ The auto-raise-unfocus-proc is the procedure which is invoked
 after the auto-raise-unfocus-delay after the pointer leaves WIN's frame.
 [From scheme/auto-raise.scm:130]
 
+(set-auto-unobscure! auto-unobscure? #&optional (win (get-window)))
+- (app scwm auto-unobscure)
+Turn auto-unobscure on (#t) or off (#f) for WIN.
+Auto-unobscure makes a window automatically move when it becomes
+fully obscured.
+[From scheme/auto-unobscure.scm:37]
+
+(set-auto-unobscure-proc! fproc #&optional (win (get-window)))
+- (app scwm auto-unobscure)
+Set the auto-unobscure-proc for WIN.
+The auto-unobscure-proc is the procedure which is invoked
+when WIN is fully obscured if auto-unobscuring is set for the window.
+[From scheme/auto-unobscure.scm:43]
+
 (set-background-color! color)
 - Primitive from (app scwm background)
 Sets the color of the root window to COLOR.
@@ -6030,93 +6104,93 @@ STYLE can be either 'centered or 'tiled.
 
 (set-border-face! active #&optional inactive)
 - Built-in Primitive
-Set the face for the border In the current decor.\n\
-Use ACTIVE as the face for the border when the window is active. Use\n\
-INACTIVE when the window is inactive. INACTIVE defaults to the same as\n\
+Set the face for the border In the current decor.
+Use ACTIVE as the face for the border when the window is active. Use
+INACTIVE when the window is inactive. INACTIVE defaults to the same as
 ACTIVE when not specified.
 [From src/face.c:957]
 
 (set-border-width! width #&optional win)
 - Built-in Primitive
-Set the border width of WIN's border to WIDTH pixels.\n\
+Set the border width of WIN's border to WIDTH pixels.
 WIN defaults to the window context in the usual way if not specified.
 [From src/window.c:3308]
 
 (set-button-face! button active-up #&optional active-down inactive)
 - Built-in Primitive
-Set the button faces for the various window states.\n\
-See `set-left-button-face!' and `set-right-button-face!' for a\n\
-more natural interface for this.\n\
-In the current decor, use ACTIVE-UP as the face for the\n\
-button specified by the integer BUTTON when active and not pressed\n\
-in. Use ACTIVE-DOWN when BUTTON is active and pressed in, and INACTIVE\n\
-when the window is inactive. Both INACTIVE and ACTIVE-DOWN default to\n\
-ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically\n\
-reverse the sense of the relief flag, so if the button is raised in\n\
-the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by\n\
+Set the button faces for the various window states.
+See `set-left-button-face!' and `set-right-button-face!' for a
+more natural interface for this.
+In the current decor, use ACTIVE-UP as the face for the
+button specified by the integer BUTTON when active and not pressed
+in. Use ACTIVE-DOWN when BUTTON is active and pressed in, and INACTIVE
+when the window is inactive. Both INACTIVE and ACTIVE-DOWN default to
+ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically
+reverse the sense of the relief flag, so if the button is raised in
+the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by
 default.
 [From src/face.c:884]
 
 (set-button-mwm-flag! button flag)
 - Built-in Primitive
-Specify the Mwm flag for BUTTON.\n\
-If FLAG is #t, the button's relief pattern (if any) will appear to\n\
-reverse in depth sense (i.e., flip from sunken in to extruding out)\n\
-when the window is maximized (has a non-#f "maximized" window\n\
+Specify the Mwm flag for BUTTON.
+If FLAG is #t, the button's relief pattern (if any) will appear to
+reverse in depth sense (i.e., flip from sunken in to extruding out)
+when the window is maximized (has a non-#f "maximized" window
 property).
 [From src/face.c:930]
 
 (set-click-delay! msec)
 - Built-in Primitive
-Set the delay used in identifying mouse clicks and drags.\n\
-MSEC is specified in milliseconds. After MSEC milliseconds, a mouse-down\n\
-without a mouse-up is considered a drag.  Also, after MSEC milliseconds, a\n\
+Set the delay used in identifying mouse clicks and drags.
+MSEC is specified in milliseconds. After MSEC milliseconds, a mouse-down
+without a mouse-up is considered a drag.  Also, after MSEC milliseconds, a
 single click is definitively identified as not a double click.
 [From src/miscprocs.c:176]
 
 (set-click-to-focus-passes-click! flag)
 - Built-in Primitive
-Determine whether a click-to-focus window receives the click.\n\
-If FLAG is #t, the window will receive the event, if #f, scwm\n\
+Determine whether a click-to-focus window receives the click.
+If FLAG is #t, the window will receive the event, if #f, scwm
 will not pass the event on to the client.
 [From src/miscprocs.c:328]
 
 (set-click-to-focus-raises! flag)
 - Built-in Primitive
-Determine whether a click to focus raises the clicked-on window.\n\
-If FLAG is #t, clicks which transfer focus will also raise the target \n\
+Determine whether a click to focus raises the clicked-on window.
+If FLAG is #t, clicks which transfer focus will also raise the target 
 window.
 [From src/miscprocs.c:352]
 
 (set-colormap-focus! ftype)
 - Built-in Primitive
-Set the colormap focus policy to FTYPE. \n\
-FTYPE can either be 'mouse, indicating that the window under the mouse\n\
-pointer should always have its colormap installed, or 'focus to\n\
-indicate that the window with the input focus should also get the\n\
-colormap focus. This makes a difference only when using focus policies\n\
+Set the colormap focus policy to FTYPE. 
+FTYPE can either be 'mouse, indicating that the window under the mouse
+pointer should always have its colormap installed, or 'focus to
+indicate that the window with the input focus should also get the
+colormap focus. This makes a difference only when using focus policies
 other than 'mouse.
 [From src/miscprocs.c:201]
 
 (set-current-decor! decor)
 - Built-in Primitive
-Set the current decor to DECOR. Operations described as\n\
-setting options "in the current decor" will now operate on this\n\
+Set the current decor to DECOR. Operations described as
+setting options "in the current decor" will now operate on this
 one.
 [From src/decor.c:240]
 
 (set-current-desk! desk)
 - Built-in Primitive
-Change the current desk to DESK. DESK should be an integer\n\
+Change the current desk to DESK. DESK should be an integer
 small enough to fit in one machine word.
 [From src/deskpage.c:67]
 
 (set-decorate-transient! flag #&optional win)
 - Built-in Primitive
-Set decoration of transients property on WIN.\n\
-If FLAG is #t, then if WIN is transient it will be fully\n\
-decorated. Transient windows that are not fully decorated will be\n\
-given only a border and no titlebar regardless of other settings. WIN\n\
+Set decoration of transients property on WIN.
+If FLAG is #t, then if WIN is transient it will be fully
+decorated. Transient windows that are not fully decorated will be
+given only a border and no titlebar regardless of other settings. WIN
 defaults to the window context in the usual way if not specified.
 [From src/window.c:4092]
 
@@ -6178,17 +6252,22 @@ Set the default font for menu title text to FONT.
 
 (set-desk-size! width height)
 - Built-in Primitive
-Sets the desk size to WIDTH, HEIGHT.\n\
-Both numbers are given in units of the physical screen size.  For\n\
-example <informalexample><programlisting>(set-desk-size! 3 3)\n\
-</programlisting></informalexample> creates a virtual world 9 times the\n\
+Sets the desk size to WIDTH, HEIGHT.
+Both numbers are given in units of the physical screen size.  For
+example <informalexample><programlisting>(set-desk-size! 3 3)
+</programlisting></informalexample> creates a virtual world 9 times the
 size of the physical display.
 [From src/deskpage.c:294]
 
+(set-easyraise-window! easyraise? #&optional (win (get-window)))
+- (app scwm easyraise)
+
+[From scheme/easyraise.scm:17]
+
 (set-edge-move-threshold! pixels)
 - Built-in Primitive
-Set the edge move threshold to PIXELS.\n\
-Attempts to move a window so that it is off the edge of the screen by\n\
+Set the edge move threshold to PIXELS.
+Attempts to move a window so that it is off the edge of the screen by
 fewer than PIXELS pixels will leave the window entirely onscreen.
 [From src/deskpage.c:267]
 
@@ -6209,10 +6288,10 @@ dimension to a number of pixels.
 
 (set-edge-scroll-delay! ms)
 - Built-in Primitive
-Set the edge scroll delay to MS milliseconds.\n\
-When the mouse pointer hits the edge of the screen, it must stay there\n\
-for at least the edge scroll delay amount before the desktop will be\n\
-scrolled. If this parameter is #f, the viewport will not scroll at all\n\
+Set the edge scroll delay to MS milliseconds.
+When the mouse pointer hits the edge of the screen, it must stay there
+for at least the edge scroll delay amount before the desktop will be
+scrolled. If this parameter is #f, the viewport will not scroll at all
 at the screen edge.
 [From src/deskpage.c:235]
 
@@ -6226,64 +6305,64 @@ See also `set-edge-x-wrap!' and `set-edge-y-wrap!'.
 
 (set-edge-x-scroll! pixels)
 - Built-in Primitive
-Set the horizontal edge scroll increment to PIXELS.\n\
-The horizontal edge scroll setting is the amount by which the viewport\n\
-will scroll when the mouse hits the left or right edge. Use `%x' to\n\
+Set the horizontal edge scroll increment to PIXELS.
+The horizontal edge scroll setting is the amount by which the viewport
+will scroll when the mouse hits the left or right edge. Use `%x' to
 convert from a percent of screen size to pixels.
 [From src/deskpage.c:130]
 
 (set-edge-x-wrap! flag)
 - Built-in Primitive
-Set whether to wrap pointer around horizontal edges.\n\
-If the boolean value FLAG is #t, the pointer will wrap from the right\n\
-edge of the desktop to the left of the display as it moves off the\n\
+Set whether to wrap pointer around horizontal edges.
+If the boolean value FLAG is #t, the pointer will wrap from the right
+edge of the desktop to the left of the display as it moves off the
 right edge, and vice-versa. See also `set-edge-y-wrap!'
 [From src/deskpage.c:186]
 
 (set-edge-y-scroll! pixels)
 - Built-in Primitive
-Set the vertical edge scroll increment to PIXELS.\n\
-The vertical edge scroll setting is the amount by which the viewport\n\
-will scroll when the mouse hits the top or bottom edge. Use `%y' to\n\
+Set the vertical edge scroll increment to PIXELS.
+The vertical edge scroll setting is the amount by which the viewport
+will scroll when the mouse hits the top or bottom edge. Use `%y' to
 convert from a percent of screen size to pixels.
 [From src/deskpage.c:157]
 
 (set-edge-y-wrap! flag)
 - Built-in Primitive
-Set whether to wrap pointer around vertical edges.\n\
-If the boolean value FLAG is #t, the pointer will wrap from the bottom\n\
-edge of the desktop to the top of the display as it moves off the very\n\
+Set whether to wrap pointer around vertical edges.
+If the boolean value FLAG is #t, the pointer will wrap from the bottom
+edge of the desktop to the top of the display as it moves off the very
 bottom edge, and vice-versa. See also `set-edge-x-wrap!'
 [From src/deskpage.c:210]
 
 (set-face-flag! face flag flagval)
 - Built-in Primitive
-Set the given FLAG to the given FLAGVAL for face FACE.\n\
+Set the given FLAG to the given FLAGVAL for face FACE.
 See the section on the `Face Flags' concept.
 [From src/face.c:345]
 
 (set-force-icon! flag #&optional win)
 - Built-in Primitive
-Set the window-manager-overriding property for WIN to boolean FLAG.\n\
-If #t, the icon specified for WIN by the user through scwm will override an\n\
-application-provided icon.  WIN defaults to the window context in the usual\n\
+Set the window-manager-overriding property for WIN to boolean FLAG.
+If #t, the icon specified for WIN by the user through scwm will override an
+application-provided icon.  WIN defaults to the window context in the usual
 way if not specified.
 [From src/window.c:3924]
 
 (set-handle-segv! flag)
 - Built-in Primitive
-If FLAG, tell Scwm to catch segv signals.\n\
-This is the default, but if you catch a segv and really need it to \n\
-dump right away to figure out what is wrong then use this.  No\n\
-cleanup is done if handling segv is #f.  Be sure to have an extra\n\
-terminal handy on a console or separate X server.\n\
+If FLAG, tell Scwm to catch segv signals.
+This is the default, but if you catch a segv and really need it to 
+dump right away to figure out what is wrong then use this.  No
+cleanup is done if handling segv is #f.  Be sure to have an extra
+terminal handy on a console or separate X server.
 For developers and hackers only.
 [From src/miscprocs.c:697]
 
 (set-highlight-background! bg)
 - Built-in Primitive
-Use BG as the background color for a window with the input focus.\n\
-Applies to the current decor. This is used only for windows that don't\n\
+Use BG as the background color for a window with the input focus.
+Applies to the current decor. This is used only for windows that don't
 have their own background color.
 [From src/color.c:828]
 
@@ -6295,23 +6374,23 @@ The "highlight window" is the window with the current input focus.
 
 (set-highlight-factor! factor)
 - Built-in Primitive
-Use FACTOR to generate highlight colors for the current decor.\n\
+Use FACTOR to generate highlight colors for the current decor.
 FACTOR is a positive floating point number.
 [From src/color.c:654]
 
 (set-highlight-foreground! fg)
 - Built-in Primitive
-Use FG for the foreground color of a window with the input focus.\n\
-Applies to the current decor. This is used only for windows that don't\n\
+Use FG for the foreground color of a window with the input focus.
+Applies to the current decor. This is used only for windows that don't
 have their own foreground color.
 [From src/color.c:783]
 
 (set-hint-override! flag #&optional win)
 - Built-in Primitive
-Set whether or not Mwm and Open Look function hints are used.\n\
-If FLAG is #t, the hints, which indicate what operations should be\n\
-allowed on a window, will be ignored for WIN.  If FLAG is #f, the hints will\n\
-be honoured. WIN defaults to the window context in the usual way if\n\
+Set whether or not Mwm and Open Look function hints are used.
+If FLAG is #t, the hints, which indicate what operations should be
+allowed on a window, will be ignored for WIN.  If FLAG is #f, the hints will
+be honoured. WIN defaults to the window context in the usual way if
 not specified.
 [From src/window.c:4074]
 
@@ -6333,17 +6412,17 @@ hover-focus on or off for a given window.
 
 (set-icon! image #&optional win)
 - Built-in Primitive
-Set the image to use for the icon of WIN to IMAGE.\n\
-As usual, an image object or a filename string may be given. #f May\n\
-also be specified, indicating no icon image. WIN defaults to the window\n\
+Set the image to use for the icon of WIN to IMAGE.
+As usual, an image object or a filename string may be given. #f May
+also be specified, indicating no icon image. WIN defaults to the window
 context in the usual way if not specified.
 [From src/window.c:3961]
 
 (set-icon-box! x y w h #&optional win)
 - Built-in Primitive
-Set the icon box in which WIN's icon will be placed.\n\
-This set the box to the rectangle at coordinates X, Y with width W and\n\
-height H. WIN defaults to the window context in the usual way if not\n\
+Set the icon box in which WIN's icon will be placed.
+This set the box to the rectangle at coordinates X, Y with width W and
+height H. WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:3402]
 
@@ -6354,16 +6433,16 @@ Set the font used for drawing icon titles to FONT.
 
 (set-icon-title! flag #&optional win)
 - Built-in Primitive
-Set the visibility of WIN's icon title according to FLAG. WIN\n\
+Set the visibility of WIN's icon title according to FLAG. WIN
 defaults to the window context in the usual way if not specified.
 [From src/window.c:3908]
 
 (set-ignore-dubious-modifiers! flag)
 - Built-in Primitive
-If FLAG is #t, ignore scoll/num/lock modifiers on all bindings made.\n\
-Otherwise do not.  If dubious locks are being ignored, multiple XGrabKey invocations\n\
-must occur for each binding made;  this can result in a noticeable delay when, e.g.,\n\
-a new window is created.  If this bothers you, call this procedure with FLAG set\n\
+If FLAG is #t, ignore scoll/num/lock modifiers on all bindings made.
+Otherwise do not.  If dubious locks are being ignored, multiple XGrabKey invocations
+must occur for each binding made;  this can result in a noticeable delay when, e.g.,
+a new window is created.  If this bothers you, call this procedure with FLAG set
 to #f. The default is #t.
 [From src/binding.c:1538]
 
@@ -6378,17 +6457,17 @@ ACTIVE-DOWN, and INACTIVE.
 
 (set-lenience! flag #&optional win)
 - Built-in Primitive
-Set or reset the input focus lenience flag.\n\
-Determine whether or not to try to give WIN the input focus\n\
-when asked, even if the window claims according to hints that it\n\
-cannot receive the input focus, according to the boolean value\n\
-FLAG. WIN defaults to the window context in the usual way if not\n\
+Set or reset the input focus lenience flag.
+Determine whether or not to try to give WIN the input focus
+when asked, even if the window claims according to hints that it
+cannot receive the input focus, according to the boolean value
+FLAG. WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:4205]
 
 (set-load-processing-frequency! num-lines)
 - Built-in Primitive
-Invoke hooks on `load-processing-hook' every NUM-LINES lines. \n\
+Invoke hooks on `load-processing-hook' every NUM-LINES lines. 
 Returns the old value.
 [From src/callbacks.c:530]
 
@@ -6404,8 +6483,8 @@ Use PICTURE as the background image for MENU.
 
 (set-menu-colors! menu text-color bg-color #&optional stipple-color)
 - Built-in Primitive
-Use TEXT-COLOR and BG-COLOR as the colors for MENU.\n\
-STIPPLE-COLOR is optional, and if given will be used for the\n\
+Use TEXT-COLOR and BG-COLOR as the colors for MENU.
+STIPPLE-COLOR is optional, and if given will be used for the
 stipple color for the MENU.
 [From src/menu.c:399]
 
@@ -6421,32 +6500,32 @@ Use FONT as the font for MENU.
 
 (set-menu-highlight-colors! menu text-color bg-color)
 - Built-in Primitive
-Use TEXT-COLOR and BG-COLOR as the highlight colors for MENU.\n\
+Use TEXT-COLOR and BG-COLOR as the highlight colors for MENU.
 These colors will be used for the selected item.
 [From src/menu.c:425]
 
 (set-menu-highlight-factor! factor)
 - Built-in Primitive
-Use FACTOR to generate highlight colors for menus. \n\
+Use FACTOR to generate highlight colors for menus. 
 FACTOR is a positive floating point number
 [From src/color.c:726]
 
 (set-menu-highlight-relief! menu highlight-relief?)
 - Built-in Primitive
-If HIGHLIGHT-RELIEF? is #t, then draw a relief on selected items in MENU.\n\
+If HIGHLIGHT-RELIEF? is #t, then draw a relief on selected items in MENU.
 Otherwise, do not.  See also `set-menu-highlight-colors!'.
 [From src/menu.c:446]
 
 (set-menu-hotkeys-activate-item! activate?)
 - Built-in Primitive
-If ACTIVATE? is #t, let menu hotkeys invoke the item.\n\
-If #f, a menuitem hotkey just makes that item selected and still requires\n\
+If ACTIVATE? is #t, let menu hotkeys invoke the item.
+If #f, a menuitem hotkey just makes that item selected and still requires
 a Return or Space keypress to activate the item.
 [From src/menu.c:1626]
 
 (set-menu-hover-delay! menu hover-delay)
 - Built-in Primitive
-Set MENU's hover delay to HOVER-DELAY.\n\
+Set MENU's hover delay to HOVER-DELAY.
 HOVER-DELAY is the number of ms to wait before invoking the hover action.
 [From src/menu.c:347]
 
@@ -6457,20 +6536,20 @@ Use MENU-LOOK as the menu-look for MENU.
 
 (set-menu-popup-delay! menu popup-delay)
 - Built-in Primitive
-Set MENU's submenu popup delay to POPUP-DELAY.\n\
+Set MENU's submenu popup delay to POPUP-DELAY.
 POPUP-DELAY is the number of ms to wait before popping up submenus.
 [From src/menu.c:321]
 
 (set-menu-shadow-factor! factor)
 - Built-in Primitive
-Use FACTOR to generate shadow colors for menus. \n\
+Use FACTOR to generate shadow colors for menus. 
 FACTOR is a positive floating point number
 [From src/color.c:749]
 
 (set-menu-side-picture! menu picture #&optional align bg-color)
 - Built-in Primitive
-Use PICTURE as the side picture for MENU.\n\
-Set its alignment to ALIGN, and its background\n\
+Use PICTURE as the side picture for MENU.
+Set its alignment to ALIGN, and its background
 color to BG-COLOR.
 [From src/menu.c:499]
 
@@ -6481,76 +6560,76 @@ Use MENU-TITLE as the title for MENU.
 
 (set-menuitem-colors! menuitem fg bg)
 - Built-in Primitive
-Sets the fg and bg colors of MENUITEM to FG and BG respectively.\n\
-Use #f for either/both component to have MENUITEM inherit that color\n\
+Sets the fg and bg colors of MENUITEM to FG and BG respectively.
+Use #f for either/both component to have MENUITEM inherit that color
 from the menu in which it is embedded.
 [From src/menuitem.c:205]
 
 (set-menuitem-font! menuitem font)
 - Built-in Primitive
-Sets the font of MENUITEM to FONT.\n\
-Use #f to have MENUITEM inherit its font\n\
+Sets the font of MENUITEM to FONT.
+Use #f to have MENUITEM inherit its font
 from the menu in which it is embedded.
 [From src/menuitem.c:239]
 
 (set-mini-icon! image #&optional win)
 - Built-in Primitive
-Set the image to use for the mini-icon of WIN to IMAGE. As\n\
-usual, an image object or a filename string may be given. WIN defaults\n\
+Set the image to use for the mini-icon of WIN to IMAGE. As
+usual, an image object or a filename string may be given. WIN defaults
 to the window context in the usual way if not specified.
 [From src/window.c:4005]
 
 (set-mod-mask-numlock! mask)
 - Built-in Primitive
-Set the bit-mask for the NumLock modifier key.\n\
-MASK must be a power of 2. The NumLock modifier mask is\n\
-set automatically, but you can use this procedure if you\n\
+Set the bit-mask for the NumLock modifier key.
+MASK must be a power of 2. The NumLock modifier mask is
+set automatically, but you can use this procedure if you
 need to override the built-in algorithm.
 [From src/binding.c:1511]
 
 (set-mod-mask-scrolllock! mask)
 - Built-in Primitive
-Set the bit-mask for the ScrollLock modifier key.\n\
-MASK must be a power of 2. The ScrollLock modifier mask is\n\
-set automatically, but you can use this procedure if you\n\
+Set the bit-mask for the ScrollLock modifier key.
+MASK must be a power of 2. The ScrollLock modifier mask is
+set automatically, but you can use this procedure if you
 need to override the built-in algorithm.
 [From src/binding.c:1524]
 
 (set-mouse-focus-click-raises! flag)
 - Built-in Primitive
-Determine whether a mouse-focus-click will raise the window.\n\
-If FLAG is #t it will raise the window. Not sure if this function\n\
+Determine whether a mouse-focus-click will raise the window.
+If FLAG is #t it will raise the window. Not sure if this function
 makes sense any more.
 [From src/miscprocs.c:384]
 
 (set-mwm-border! flag #&optional win)
 - Built-in Primitive
-Set the mwm-border style flag of WIN to boolean FLAG.\n\
-The Mwm style has shallower bevels than the default scwm/fvwm2 style.\n\
-WIN defaults to the window context in the usual way if not\n\
+Set the mwm-border style flag of WIN to boolean FLAG.
+The Mwm style has shallower bevels than the default scwm/fvwm2 style.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:3864]
 
 (set-mwm-buttons! flag #&optional win)
 - Built-in Primitive
-Set the mwm-buttons flag of WIN to boolean FLAG.\n\
-The mwm-buttons flag controls whether any of this window's\n\
-flags obey their mwm-flags. See `set-button-mwm-flag!'. WIN defaults\n\
+Set the mwm-buttons flag of WIN to boolean FLAG.
+The mwm-buttons flag controls whether any of this window's
+flags obey their mwm-flags. See `set-button-mwm-flag!'. WIN defaults
 to the window context in the usual way if not specified.
 [From src/window.c:3848]
 
 (set-mwm-decor-hint! flag #&optional win)
 - Built-in Primitive
-Set whether or not Motif decoration hints are used for WIN.\n\
-If FLAG is #t, the Mwm decor hint will be given for WIN.  WIN defaults\n\
+Set whether or not Motif decoration hints are used for WIN.
+If FLAG is #t, the Mwm decor hint will be given for WIN.  WIN defaults
 to the window context in the usual way if not specified.
 [From src/window.c:4108]
 
 (set-mwm-func-hint! flag #&optional win)
 - Built-in Primitive
-Set whether or not Motif function hints are used for WIN.\n\
-If FLAG is #t, the Motif function hints are respected for WIN.\n\
-WIN defaults to the window context in the usual way if not\n\
+Set whether or not Motif function hints are used for WIN.
+If FLAG is #t, the Motif function hints are respected for WIN.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:4122]
 
@@ -6571,18 +6650,18 @@ Use FG as the default foreground color for icons, titlebars, etc.
 
 (set-OL-decor-hint! flag #&optional win)
 - Built-in Primitive
-Determine whether or not to respect Open Look decoration hints.\n\
-If FLAG is #t, the decoration hints will be respected for WIN. WIN\n\
+Determine whether or not to respect Open Look decoration hints.
+If FLAG is #t, the decoration hints will be respected for WIN. WIN
 defaults to the window context in the usual way if not specified.
 [From src/window.c:4154]
 
 (set-PPosition-hint! flag #&optional win)
 - Built-in Primitive
-Set or reset the program-specified position hint for WIN.\n\
-If FLAG is #t, the hint will be set, otherwise reset.  This only\n\
-matters when using the default placement procedure. Some programs\n\
-allegedly set this hint to a useless value like (0,0) always, so\n\
-ignoring it is recommended. WIN defaults to the window context in the\n\
+Set or reset the program-specified position hint for WIN.
+If FLAG is #t, the hint will be set, otherwise reset.  This only
+matters when using the default placement procedure. Some programs
+allegedly set this hint to a useless value like (0,0) always, so
+ignoring it is recommended. WIN defaults to the window context in the
 usual way if not specified.
 [From src/window.c:4137]
 
@@ -6593,9 +6672,9 @@ Set key event quoting to QUOTING-ON?.
 
 (set-random-placement! flag #&optional win)
 - Built-in Primitive
-Set the random-placement flag of WIN to boolean FLAG.\n\
-This flag only matters if the default placement procedure is\n\
-being used. WIN defaults to the window context in the usual way if not\n\
+Set the random-placement flag of WIN to boolean FLAG.
+This flag only matters if the default placement procedure is
+being used. WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:3782]
 
@@ -6606,9 +6685,9 @@ Set contents of Scwm register named REGISTER to VALUE.  Returns VALUE.
 
 (set-reset-on-segv! number-to-reset)
 - Built-in Primitive
-Reset Scwm to the main event loop on the next NUMBER-TO-RESET segv signals.\n\
-The default is 100, but if you catch a segv and and are willing to \n\
-track it or send in a bug report, use this to permit a C-level backtrace\n\
+Reset Scwm to the main event loop on the next NUMBER-TO-RESET segv signals.
+The default is 100, but if you catch a segv and and are willing to 
+track it or send in a bug report, use this to permit a C-level backtrace
 by setting it to 0.  See also `set-handle-segv!'.
 [From src/miscprocs.c:670]
 
@@ -6623,65 +6702,65 @@ ACTIVE-DOWN, and INACTIVE.
 
 (set-rubber-band-mask! value)
 - Built-in Primitive
-Set the rubber band mask used when dragging or resizing.\n\
-VALUE is XORed with the background when dragging non-opaque move or\n\
+Set the rubber band mask used when dragging or resizing.
+VALUE is XORed with the background when dragging non-opaque move or
 resize frames. VALUE should be an integer.
 [From src/resize.c:334]
 
 (set-shadow-factor! factor)
 - Built-in Primitive
-Use FACTOR to generate shadow colors in the current decor. \n\
+Use FACTOR to generate shadow colors in the current decor. 
 FACTOR is a positive floating point number
 [From src/color.c:690]
 
 (set-show-icon! flag #&optional win)
 - Built-in Primitive
-Set whether or not the icon of WIN will be visible.  If FLAG\n\
-is #t, the icon will be displayed, if #f, it will not appear when the\n\
-window is iconified (it will still be in the window list, of course).\n\
-WIN defaults to the window context in the usual way if not\n\
+Set whether or not the icon of WIN will be visible.  If FLAG
+is #t, the icon will be displayed, if #f, it will not appear when the
+window is iconified (it will still be in the window list, of course).
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:3942]
 
 (set-skip-mapping! flag #&optional win)
 - Built-in Primitive
-Set or reset whether scwm should not change desktops on a map.\n\
-This only affect the behaviour upon initial mapping of WIN. If FLAG is\n\
-#t, the virtual desktop will not be changed when WIN is mapped.  WIN\n\
+Set or reset whether scwm should not change desktops on a map.
+This only affect the behaviour upon initial mapping of WIN. If FLAG is
+#t, the virtual desktop will not be changed when WIN is mapped.  WIN
 defaults to the window context in the usual way if not specified.
 [From src/window.c:4190]
 
 (set-smart-placement! flag #&optional win)
 - Built-in Primitive
-Set the smart-placement flag of WIN to boolean FLAG.\n\
-This flag only matters if the default placement procedure is\n\
-being used. WIN defaults to the window context in the usual way if not\n\
+Set the smart-placement flag of WIN to boolean FLAG.
+This flag only matters if the default placement procedure is
+being used. WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:3797]
 
 (set-smart-placement-is-really-smart! flag)
 - Built-in Primitive
-Determine whether or not `clever-place-window' will be used when smart-placing.\n\
-If FLAG is #t, then `clever-place-window' will be used instead of\n\
-`smart-place-window' when the default placement procedure is used, and\n\
+Determine whether or not `clever-place-window' will be used when smart-placing.
+If FLAG is #t, then `clever-place-window' will be used instead of
+`smart-place-window' when the default placement procedure is used, and
 the window's smart-placement flag is on.
 [From src/miscprocs.c:296]
 
 (set-start-on-desk! desk #&optional win)
 - Built-in Primitive
-Make WIN start on DESK when first mapped. WIN defaults to the\n\
+Make WIN start on DESK when first mapped. WIN defaults to the
 window context in the usual way if not specified.
 [From src/window.c:4168]
 
 (set-title-face! active-up #&optional active-down inactive)
 - Built-in Primitive
-Set the titlebar faces for the various window states.\n\
-In the current decor, use ACTIVE-UP as the face for the title\n\
-bar when active and not pressed in. Use ACTIVE-DOWN when the title bar\n\
-is active and pressed in, and INACTIVE when the window is\n\
-inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not\n\
-specified. Note that ACTIVE-DOWN will magically reverse the sense of\n\
-the relief flag, so if your titlebar bar is raised in the ACTIVE-UP\n\
+Set the titlebar faces for the various window states.
+In the current decor, use ACTIVE-UP as the face for the title
+bar when active and not pressed in. Use ACTIVE-DOWN when the title bar
+is active and pressed in, and INACTIVE when the window is
+inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not
+specified. Note that ACTIVE-DOWN will magically reverse the sense of
+the relief flag, so if your titlebar bar is raised in the ACTIVE-UP
 state, it will be sunk in the ACTIVE-DOWN state by default.
 [From src/face.c:856]
 
@@ -6692,39 +6771,39 @@ Set the font for window titles In the current decor to FONT.
 
 (set-title-height! height)
 - Built-in Primitive
-Set the height of the titlebar in pixels to HEIGHT.\n\
+Set the height of the titlebar in pixels to HEIGHT.
 Applies to the current decor.
 [From src/miscprocs.c:99]
 
 (set-title-justify! just)
 - Built-in Primitive
-Set the justification for the title to JUST.\n\
-JUST should be one of 'right, 'left, or 'center. Applies to the\n\
+Set the justification for the title to JUST.
+JUST should be one of 'right, 'left, or 'center. Applies to the
 current decor.
 [From src/miscprocs.c:51]
 
 (set-viewport-position! x y)
 - Built-in Primitive
-Position the upper left corner of the viewport at coordinates X, Y.\n\
+Position the upper left corner of the viewport at coordinates X, Y.
 X and Y are given in pixels.  Does not affect the current desk.
 [From src/deskpage.c:102]
 
 (set-window-background! bg #&optional win)
 - Built-in Primitive
-Set the background color of WIN to BG.\n\
-This color is used to draw most of the window decorations, along with\n\
-the relief colors generated from it, which are used to draw the\n\
-window's 3-D bevels.  WIN defaults to the window context in the usual\n\
+Set the background color of WIN to BG.
+This color is used to draw most of the window decorations, along with
+the relief colors generated from it, which are used to draw the
+window's 3-D bevels.  WIN defaults to the window context in the usual
 way if not specified. See also `get-window-colors'.
 [From src/window.c:3694]
 
 (set-window-button! n flag #&optional win)
 - Built-in Primitive
-Set the visibility of button number N on window WIN.\n\
-If FLAG is #t, the button will be visible, otherwise it won't be\n\
-drawn.  WIN defaults to the window context in the usual way if not\n\
-specified. (Note: the titlebar will not expand if you disable\n\
-a button via this procedure -- the decoration code is still\n\
+Set the visibility of button number N on window WIN.
+If FLAG is #t, the button will be visible, otherwise it won't be
+drawn.  WIN defaults to the window context in the usual way if not
+specified. (Note: the titlebar will not expand if you disable
+a button via this procedure -- the decoration code is still
 far from perfect.)
 [From src/window.c:3812]
 
@@ -6735,17 +6814,17 @@ Set WIN's background color to BG, foreground color to FG.
 
 (set-window-context! win)
 - Built-in Primitive
-Set the current window context to WIN and return the old context.\n\
-WIN can be either a window, or #f, to reset the current window-context.\n\
+Set the current window context to WIN and return the old context.
+WIN can be either a window, or #f, to reset the current window-context.
 See also `with-window' and `get-window'.
 [From src/window.c:1101]
 
 (set-window-cursor! win cursor)
 - Built-in Primitive
-Set the default cursor for WIN to CURSOR. \n\
-If CURSOR is #f, this undefines the cursor for WIN and\n\
-makes that window use its parent window's cursor.\n\
-See `get-x-cursor', and `create-pixmap-cursor' for ways\n\
+Set the default cursor for WIN to CURSOR. 
+If CURSOR is #f, this undefines the cursor for WIN and
+makes that window use its parent window's cursor.
+See `get-x-cursor', and `create-pixmap-cursor' for ways
 to create cursor objects.
 [From src/cursor.c:222]
 
@@ -6756,63 +6835,63 @@ Set WIN's decor to DECOR, updating its decorations appropriately.
 
 (set-window-focus! sym #&optional win)
 - Built-in Primitive
-Set the focus style of WIN to SYM. SYM may be 'click, 'mouse,\n\
-'sloppy or 'none. WIN defaults to the window context in the usual way\n\
+Set the focus style of WIN to SYM. SYM may be 'click, 'mouse,
+'sloppy or 'none. WIN defaults to the window context in the usual way
 if not specified.
 [From src/window.c:3450]
 
 (set-window-foreground! fg #&optional win)
 - Built-in Primitive
-Set the foreground color of WIN to FG.\n\
-This color is used to draw the title text currently. In the future, it\n\
-may have other uses as well. WIN defaults to the window context in the\n\
+Set the foreground color of WIN to FG.
+This color is used to draw the title text currently. In the future, it
+may have other uses as well. WIN defaults to the window context in the
 usual way if not specified. See also `get-window-colors'
 [From src/window.c:3672]
 
 (set-window-gravity! gravity #&optional win)
 - Built-in Primitive
-Sets the gravity for WIN to GRAVITY.\n\
-GRAVITY must be one of the following: \n\
-'forget, 'northwest, 'north, 'northeast,\n\
-'west, 'center, 'east, 'southwest 'south, 'southeast,\n\
+Sets the gravity for WIN to GRAVITY.
+GRAVITY must be one of the following: 
+'forget, 'northwest, 'north, 'northeast,
+'west, 'center, 'east, 'southwest 'south, 'southeast,
 'static.
 [From src/window.c:2570]
 
 (set-window-highlight-background! bg #&optional win)
 - Built-in Primitive
-Set the highlighted background color of WIN to BG.\n\
-This color is used when WIN has the focus to draw most of the window\n\
-decorations, along with the relief colors generated from it, which are\n\
-used to draw the window's 3-D bevels.  WIN defaults to the window context\n\
-in the usual way if not specified. If BG is #f, then lets the decor\n\
-highlight background color be used (turns off a special highlight color\n\
+Set the highlighted background color of WIN to BG.
+This color is used when WIN has the focus to draw most of the window
+decorations, along with the relief colors generated from it, which are
+used to draw the window's 3-D bevels.  WIN defaults to the window context
+in the usual way if not specified. If BG is #f, then lets the decor
+highlight background color be used (turns off a special highlight color
 for WIN).  See also `get-window-highlight-colors'.
 [From src/window.c:3747]
 
 (set-window-highlight-foreground! fg #&optional win)
 - Built-in Primitive
-Set the highlighted foreground color of WIN to FG.\n\
-This color is used to draw the title text when WIN has the focus.\n\
-In the future, it may have other uses\n\
-as well. WIN defaults to the window context in the usual way\n\
-if not specified. If FG is #f, then lets the decor highlight\n\
-foreground color be used (turns off a special highlight\n\
+Set the highlighted foreground color of WIN to FG.
+This color is used to draw the title text when WIN has the focus.
+In the future, it may have other uses
+as well. WIN defaults to the window context in the usual way
+if not specified. If FG is #f, then lets the decor highlight
+foreground color be used (turns off a special highlight
 color for WIN). See also `get-window-highlight-colors'.
 [From src/window.c:3723]
 
 (set-window-highlighted-nonant! nonant #&optional win)
 - Built-in Primitive
-Highlight NONANT for WIN.\n\
-NONANT is a number between 0 and 8, inclusive, or #f to unhighlight.\n\
-Also, NONANT can be 'left, 'hcenter, 'right, 'top, 'vmiddle, 'bottom\n\
+Highlight NONANT for WIN.
+NONANT is a number between 0 and 8, inclusive, or #f to unhighlight.
+Also, NONANT can be 'left, 'hcenter, 'right, 'top, 'vmiddle, 'bottom
 to highlight each of those window regions.
 [From src/window.c:3608]
 
 (set-window-id-background! bg #&optional winid)
 - Built-in Primitive
-Set the background color of X11 window with id WINID to BG. \n\
-This is not necessarily persistent.  In particular, if you set \n\
-the background color of a window decoration, that decoration\n\
+Set the background color of X11 window with id WINID to BG. 
+This is not necessarily persistent.  In particular, if you set 
+the background color of a window decoration, that decoration
 will revert to its usual color.  See also `window-decoration-ids'.
 [From src/window.c:3564]
 
@@ -6827,14 +6906,14 @@ for a way to make sure this function is called at the correct time.
 
 (set-window-property! win prop val)
 - Built-in Primitive
-Set window property PROP of WIN to VAL.\n\
-PROP should be a symbol. VAL may be any Scheme object. This name/value\n\
-pair will be associated with the window, and may be retrieved with\n\
-`window-property'. Passing #f as the value will delete the property\n\
-instead. Soon, some properties will have magical meanings, altering\n\
-particular fields in the window structure. Also, a\n\
-window-property-change-hook mechanism will soon be implemented for\n\
-notification of all window property changes. This is not yet done. The\n\
+Set window property PROP of WIN to VAL.
+PROP should be a symbol. VAL may be any Scheme object. This name/value
+pair will be associated with the window, and may be retrieved with
+`window-property'. Passing #f as the value will delete the property
+instead. Soon, some properties will have magical meanings, altering
+particular fields in the window structure. Also, a
+window-property-change-hook mechanism will soon be implemented for
+notification of all window property changes. This is not yet done. The
 window property primitives should be considered in flux.
 [From src/winprop.c:84]
 
@@ -6853,26 +6932,26 @@ windows.
 
 (set-X-server-synchronize! flag)
 - Built-in Primitive
-Set X server sychronization flag to FLAG.\n\
-If FLAG is #t, then Scwm will turn on synchronous X behaviour; if FLAG \n\
-is #f, Scwm will turn off synchronous behaviour.  Scwm is slower in\n\
+Set X server sychronization flag to FLAG.
+If FLAG is #t, then Scwm will turn on synchronous X behaviour; if FLAG 
+is #f, Scwm will turn off synchronous behaviour.  Scwm is slower in
 synchronous mode, but can be easier to debug.
 [From src/miscprocs.c:510]
 
 (shade-window  #&optional win)
 - Built-in Primitive
-Cause WIN to become "window-shaded".\n\
-That is, to roll up into just a titlebar. By default, the change takes\n\
-place instantaneously. WIN defaults to the window context in the usual\n\
-way if not specified. See also `window-unshade'.\n\
-A shaded window has the "WM_STATE" hint set to WithdrawnState, since \n\
+Cause WIN to become "window-shaded".
+That is, to roll up into just a titlebar. By default, the change takes
+place instantaneously. WIN defaults to the window context in the usual
+way if not specified. See also `window-unshade'.
+A shaded window has the "WM_STATE" hint set to WithdrawnState, since 
 the client application window is not visible.
 [From src/window.c:2226]
 
 (shaded-window?  #&optional win)
 - Built-in Primitive
-Return #t if WIN is shaded.\n\
-WIN defaults to the window context in the usual way if not\n\
+Return #t if WIN is shaded.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:2304]
 
@@ -6938,10 +7017,10 @@ Display the `system-info-string' system details in a window.
 
 (show-titlebar  #&optional win in-place?)
 - Built-in Primitive
-Cause WIN to be decorated with a titlebar.\n\
-Keeps the client window at its current location if IN-PLACE? is #t.\n\
-See also `hide-titlebar'.\n\
-WIN defaults to the window context in the usual way if not\n\
+Cause WIN to be decorated with a titlebar.
+Keeps the client window at its current location if IN-PLACE? is #t.
+See also `hide-titlebar'.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:3171]
 
@@ -6980,6 +7059,17 @@ WIN is a window object, an X window id, or 'root-window.
 Show a window list of only xterms.
 The selection procedure deiconifies the window and gives it focus.
 [From scheme/winlist-menu.scm:172]
+
+(shrink-inactive-windows delay-seconds)
+- (app scwm auto-shrink)
+No documentation supplied.
+[From scheme/auto-shrink.scm:42]
+
+(shrink-window #&key (frac .99) (min-width 30) (min-height 45) (win (get-window)))
+- (app scwm auto-shrink)
+Shrink the window WIN to FRAC * its old size.
+Never let it get smaller than MIN-WIDTH by MIN-HEIGHT.
+[From scheme/auto-shrink.scm:22]
 
 (shutdown-options #&key switch-to-home-viewport
 				  move-windows-to-current-viewport)
@@ -7046,37 +7136,37 @@ cases.  See `add-timer-hook!'.
 
 (SM-error-message)
 - Built-in Primitive
-Return a string, describing why session management is not available.\n\
+Return a string, describing why session management is not available.
 Only valid, if `SM-register' returned #f.
 [From src/session-manager.c:477]
 
 (SM-register)
 - Built-in Primitive
-Register Scwm with the session manager, and return the client id.\n\
-The return value is either an id string, or #f if the session manager could not be\n\
-initialized - `SM-error-message' can be used to get more information in this\n\
-case.\n\
+Register Scwm with the session manager, and return the client id.
+The return value is either an id string, or #f if the session manager could not be
+initialized - `SM-error-message' can be used to get more information in this
+case.
 If Scwm is already registered, this function just returns the client id.
 [From src/session-manager.c:487]
 
 (smart-place-window win)
 - Built-in Primitive
-Places WIN using fvwm2's SmartPlacement algorithm.\n\
-The placement is just as if SmartPlacementIsReallySmart were not in\n\
-effect. That is, it tries to place the window so that it does not\n\
-overlap any other. If it fails to do so, it returns #f; otherwise it\n\
-returns #t.\n\
-\n\
-This is called as part of `default-placement-proc'.  It could also be\n\
-used in user-defined placement procedures (see \n\
+Places WIN using fvwm2's SmartPlacement algorithm.
+The placement is just as if SmartPlacementIsReallySmart were not in
+effect. That is, it tries to place the window so that it does not
+overlap any other. If it fails to do so, it returns #f; otherwise it
+returns #t.
+
+This is called as part of `default-placement-proc'.  It could also be
+used in user-defined placement procedures (see 
 `set-window-placement-proc!').
 [From src/placement.c:450]
 
 (smart-placement-is-really-smart?)
 - Built-in Primitive
-Return whether or not `clever-place-window' will be used when smart-placing.\n\
-If the value is #t, then `clever-place-window' will be used instead of\n\
-smart-place-window when the default placement procedure is used, and\n\
+Return whether or not `clever-place-window' will be used when smart-placing.
+If the value is #t, then `clever-place-window' will be used instead of
+smart-place-window when the default placement procedure is used, and
 the window's smart-placement flag is on.
 [From src/miscprocs.c:311]
 
@@ -7201,24 +7291,24 @@ Start an xterm using `*xterm-command*' and `*xterm-user-shell-options*'.
 
 (stick-icon  #&optional win)
 - Built-in Primitive
-Cause WIN's icon to become "sticky". \n\
-A sticky window stays at its current viewport position\n\
-no matter how where the viewport is in the virtual desktop.\n\
-See `stick-window'. \n\
+Cause WIN's icon to become "sticky". 
+A sticky window stays at its current viewport position
+no matter how where the viewport is in the virtual desktop.
+See `stick-window'. 
 WIN defaults to the window context in the usual way if not specified.
 [From src/window.c:3348]
 
 (stick-window  #&optional win)
 - Built-in Primitive
-Make WIN "sticky" so that it stays stationary in the viewport.\n\
-WIN defaults to the window context in the usual way if not\n\
+Make WIN "sticky" so that it stays stationary in the viewport.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:2123]
 
 (sticky-window?  #&optional win)
 - Built-in Primitive
-Return #t if WIN is "sticky", #f otherwise.\n\
-See `stick-window' for an explanation. WIN defaults to the\n\
+Return #t if WIN is "sticky", #f otherwise.
+See `stick-window' for an explanation. WIN defaults to the
 window context in the usual way if not specified.
 [From src/window.c:2191]
 
@@ -7263,7 +7353,7 @@ Format may be any of "base", "app scwm base", or
 
 (string->X-atom string)
 - Built-in Primitive
-Returns an X atom representing STRING.\n\
+Returns an X atom representing STRING.
 If STRING contains NULL-characters, the behaviour is undefined.
 [From src/xproperty.c:384]
 
@@ -7451,14 +7541,14 @@ Return the font used for drawing window titles in the current decor.
 
 (title-height)
 - Built-in Primitive
-Return the height of the titlebar in pixels, as set by `set-title-height!'.\n\
+Return the height of the titlebar in pixels, as set by `set-title-height!'.
 Applies to the current decor.
 [From src/miscprocs.c:126]
 
 (title-justify)
 - Built-in Primitive
-Return the current justification for the title, as set by `set-title-justify!'.\n\
-The return value will be one of 'right, 'left, or 'center. Applies to the\n\
+Return the current justification for the title, as set by `set-title-justify!'.
+The return value will be one of 'right, 'left, or 'center. Applies to the
 current decor.
 [From src/miscprocs.c:77]
 
@@ -7498,9 +7588,9 @@ to their default state.
 
 (titlebar-shown?  #&optional win)
 - Built-in Primitive
-Return #t if WIN is decorated with a titlebar, #f otherwise.\n\
-\n\
-WIN defaults to the window context in the usual way if not\n\
+Return #t if WIN is decorated with a titlebar, #f otherwise.
+
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:3225]
 
@@ -7514,10 +7604,15 @@ Dump all arguments into a string.
 No documentation supplied.
 [From scheme/preferences.scm:85]
 
+(toggle-easyraise-windows)
+- 
+
+[From scheme/easyraise.scm:50]
+
 (toggle-focus)
 - 
 Focus window that had the focus before the current one.
-[From scheme/winops.scm:465]
+[From scheme/winops.scm:466]
 
 (toggle-maximize nw nh #&optional (win (get-window)))
 - (app scwm winops)
@@ -7527,7 +7622,7 @@ Maximize to width NW, height NH if not maximized, or unmaximize.
 (toggle-maximize-both #&optional (win (get-window)))
 - (app scwm winops)
 Toggle the WIN's maximization (both vertically and horizontally).
-[From scheme/winops.scm:407]
+[From scheme/winops.scm:408]
 
 (toggle-maximize-horizontal #&optional (win (get-window)))
 - (app scwm winops)
@@ -7542,12 +7637,12 @@ Toggle the current window's maximized-vertically state.
 (toggle-maximize-vertical-part #&optional (win (get-window)))
 - (app scwm winops)
 Toggle the WIN's maximization-vertically to 95% of the screen height.
-[From scheme/winops.scm:412]
+[From scheme/winops.scm:413]
 
 (transient?  #&optional win)
 - Built-in Primitive
-Return #t if WIN is transient, #f if not.\n\
-WIN defaults to the window context in the usual way if not\n\
+Return #t if WIN is transient, #f if not.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:2014]
 
@@ -7758,8 +7853,8 @@ Return a menu of constraints that permits toggling their enabled? state.
 
 (un-keep-on-top  #&optional win)
 - Built-in Primitive
-Remove the on-top property from WIN, if it has it.\n\
-See `keep-on-top'. WIN defaults to the window context in the usual\n\
+Remove the on-top property from WIN, if it has it.
+See `keep-on-top'. WIN defaults to the window context in the usual
 way if not specified.
 [From src/window.c:3088]
 
@@ -7775,32 +7870,32 @@ have the same arguments as the analagous binding operation.
 
 (unbind-key contexts key #&optional ignored-proc1 ignored-proc2)
 - Built-in Primitive
-Remove any bindings attached to KEY in given CONTEXTS.\n\
-CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))\n\
-KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete).\n\
-The return value is #t if the binding was removed successfully, #f \n\
-otherwise. \n\
-IGNORED-PROC1 and IGNORED-PROC2 can both be given, but are\n\
-ignored;  they permit the identical arguments to be used\n\
+Remove any bindings attached to KEY in given CONTEXTS.
+CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
+KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete).
+The return value is #t if the binding was removed successfully, #f 
+otherwise. 
+IGNORED-PROC1 and IGNORED-PROC2 can both be given, but are
+ignored;  they permit the identical arguments to be used
 as for `bind-mouse'.
 [From src/binding.c:928]
 
 (unbind-keycode contexts keycode modifier-mask #&optional ignored-proc1 ignored-proc2)
 - Built-in Primitive
-Unbind the given KEYCODE within the CONTEXTS.\n\
-KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.\n\
-IGNORED-PROC1 and IGNORED-PROC2 can both be given, but are\n\
-ignored;  they permit the identical arguments to be used\n\
+Unbind the given KEYCODE within the CONTEXTS.
+KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
+IGNORED-PROC1 and IGNORED-PROC2 can both be given, but are
+ignored;  they permit the identical arguments to be used
 as for `bind-keycode'.
 [From src/binding.c:1136]
 
 (unbind-mouse contexts button #&optional ignored-proc1 ignored-proc2)
 - Built-in Primitive
-Remove any bindings attached to mouse BUTTON in given CONTEXTS.\n\
-CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))\n\
-BUTTON is a string or integer giving the mouse button number.\n\
-IGNORED-PROC1 and IGNORED-PROC2 can both be given, but are\n\
-ignored;  they permit the identical arguments to be used\n\
+Remove any bindings attached to mouse BUTTON in given CONTEXTS.
+CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
+BUTTON is a string or integer giving the mouse button number.
+IGNORED-PROC1 and IGNORED-PROC2 can both be given, but are
+ignored;  they permit the identical arguments to be used
 as for `bind-mouse'.
 [From src/binding.c:1001]
 
@@ -7829,17 +7924,17 @@ before they perform their action.
 
 (undo-all-passive-grabs)
 - Built-in Primitive
-Remove all passive grabs of keys and buttons of bindings.\n\
-See `redo-all-passive-grabs' for re-establishing those bindings.\n\
-This procedure can be useful for quoting numerous keystrokes or\n\
-mouse events. Beware that it can take several seconds to execute. \n\
+Remove all passive grabs of keys and buttons of bindings.
+See `redo-all-passive-grabs' for re-establishing those bindings.
+This procedure can be useful for quoting numerous keystrokes or
+mouse events. Beware that it can take several seconds to execute. 
 This procedure considers the state of `ignore-dubious-modifiers?'
 [From src/binding.c:1564]
 
 (undo-passive-grab modmask keycode-or-butnum #&optional mouse?)
 - Built-in Primitive
-Remove the passive grabs of KEYCODE-OR-BUTNUM with MODMASK on all windows. \n\
-If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove\n\
+Remove the passive grabs of KEYCODE-OR-BUTNUM with MODMASK on all windows. 
+If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove
 a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.
 [From src/binding.c:1595]
 
@@ -7900,9 +7995,9 @@ Unmaximize WIN so it returns to its size/position before maximization.
 
 (unregister-image-loader extension)
 - Built-in Primitive
-Unregister the loader, if any, for images ending in EXTENSION.\n\
-EXTENSION must be a string beginning with a period, the\n\
-empty string (for files with no extension), or the string "default"\n\
+Unregister the loader, if any, for images ending in EXTENSION.
+EXTENSION must be a string beginning with a period, the
+empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading).
 [From src/image.c:428]
 
@@ -7924,27 +8019,27 @@ Move the message window back to the default screen-center position.
 
 (unshade-window  #&optional win)
 - Built-in Primitive
-Reverse the effect of `shade-window' on WIN.\n\
-The change takes place instantaneously. WIN defaults to the window\n\
-context in the usual way if not specified.\n\
-A shaded window has the "WM_STATE" hint set to WithdrawnState, since \n\
+Reverse the effect of `shade-window' on WIN.
+The change takes place instantaneously. WIN defaults to the window
+context in the usual way if not specified.
+A shaded window has the "WM_STATE" hint set to WithdrawnState, since 
 the client application window is not visible.
 [From src/window.c:2269]
 
 (unstick-icon  #&optional win)
 - Built-in Primitive
-Cause WIN's icon to no longer be "sticky". \n\
-A sticky window stays at its current viewport position\n\
-no matter how where the viewport is in the virtual desktop.\n\
-See `stick-icon' and `stick-window'. \n\
-WIN defaults to the window context in the usual way if\n\
+Cause WIN's icon to no longer be "sticky". 
+A sticky window stays at its current viewport position
+no matter how where the viewport is in the virtual desktop.
+See `stick-icon' and `stick-window'. 
+WIN defaults to the window context in the usual way if
 not specified.
 [From src/window.c:3368]
 
 (unstick-window  #&optional win)
 - Built-in Primitive
-Cause a window to no longer be "sticky", if it is.\n\
-See `stick-window' for an explanation. WIN defaults to the window context in\n\
+Cause a window to no longer be "sticky", if it is.
+See `stick-window' for an explanation. WIN defaults to the window context in
 the usual way if not specified.
 [From src/window.c:2157]
 
@@ -7995,19 +8090,19 @@ of themes have yet to be implemented.)
 
 (user-home)
 - Built-in Primitive
-Return the current user's home directory.\n\
-This is set to one of the following (in order of relevance):\n\
-<envar>$HOME</envar>,\n\
-the directory field of the current uid's entry in the password file,\n\
+Return the current user's home directory.
+This is set to one of the following (in order of relevance):
+<envar>$HOME</envar>,
+the directory field of the current uid's entry in the password file,
 the constant string "/tmp".
 [From src/miscprocs.c:630]
 
 (user-name)
 - Built-in Primitive
-Return the current user's name.\n\
-This is set to one of the following (in order of relevance):\n\
-<envar>$USER</envar>, <envar>$LOGNAME</envar>,\n\
-the name field of the current uid's entry in the password file,\n\
+Return the current user's name.
+This is set to one of the following (in order of relevance):
+<envar>$USER</envar>, <envar>$LOGNAME</envar>,
+the name field of the current uid's entry in the password file,
 the constant string "nobody".
 [From src/miscprocs.c:617]
 
@@ -8028,7 +8123,7 @@ Return the y coordinate of the center of the current viewport.
 
 (viewport-position)
 - Built-in Primitive
-Returns the current position of the viewport in pixels.\n\
+Returns the current position of the viewport in pixels.
 The returned value is a list of the x and y positions.
 [From src/deskpage.c:117]
 
@@ -8165,7 +8260,7 @@ PROC is invoked with the response code when the asynchronous procedure completes
 
 (vv-turn-microphone-on  #&optional proc)
 - Primitive from (app scwm viavoice)
-Turn the microphone on to start recognizing commands.
+Turn the microphone on to start recognizing commands. 
 See also `vv-initialize'.
 PROC is invoked with the response code when the asynchronous procedure completes.
 [From modules/viavoice/scwmviavoice.c:629]
@@ -8221,16 +8316,16 @@ you can do something like:
   (add-hook! after-new-window-hook 
     (lambda (win) 
       (set-object-property! win 'warp-placement '(80 20))))
-[From scheme/winops.scm:449]
+[From scheme/winops.scm:450]
 
 (warp-to-window  #&optional win)
 - Built-in Primitive
-Move the mouse pointer to the upper left corner of WIN.\n\
-If WIN is on a different desk or in a different viewport, these will\n\
-be changed appropriately so that the window is visible. WIN defaults\n\
-to the window context in the usual way if not specified.  Note that\n\
-the target window is not raised, so if the target window's upper\n\
-left corner is under another window, that other window may end up\n\
+Move the mouse pointer to the upper left corner of WIN.
+If WIN is on a different desk or in a different viewport, these will
+be changed appropriately so that the window is visible. WIN defaults
+to the window context in the usual way if not specified.  Note that
+the target window is not raised, so if the target window's upper
+left corner is under another window, that other window may end up
 with the keyboard focus.
 [From src/window.c:1848]
 
@@ -8276,9 +8371,9 @@ of the window.
 
 (window->image win #&optional x-offset y-offset width height)
 - Built-in Primitive
-Return an image with the contents of window WIN.\n\
-WIN can be a window id (as a long), a window object, or\n\
-the symbol 'root-window. Captures the rectangle of the window\n\
+Return an image with the contents of window WIN.
+WIN can be a window id (as a long), a window object, or
+the symbol 'root-window. Captures the rectangle of the window
 at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT.
 [From src/image.c:650]
 
@@ -8333,8 +8428,8 @@ See also `window-class-hint'.
 
 (window-class-hint  #&optional win)
 - Built-in Primitive
-DEPRECATED. Return the window resource class of WIN.\n\
-WIN defaults to the window context in the usual way if not\n\
+DEPRECATED. Return the window resource class of WIN.
+WIN defaults to the window context in the usual way if not
 specified. You should prefer `window-class'.
 [From src/window.c:2877]
 
@@ -8368,7 +8463,7 @@ Return #t if WCFG is a window configuration.
 
 (window-context)
 - Built-in Primitive
-Returns the current window context, or #f if there is none.\n\
+Returns the current window context, or #f if there is none.
 See also `with-window' and `set-window-context!'
 [From src/window.c:1117]
 
@@ -8393,29 +8488,29 @@ Return WIN's decor.
 
 (window-decoration-ids  #&optional win)
 - Built-in Primitive
-Returns a list of long integer window ids of the decoration windows for WIN.\n\
-Returned list is ( frame title_w (side-n side-e side-s side-w)\n\
+Returns a list of long integer window ids of the decoration windows for WIN.
+Returned list is ( frame title_w (side-n side-e side-s side-w)
 (corner-nw corner-ne corner-se corner-sw) ).
 [From src/window.c:3537]
 
 (window-decoration-size win)
 - Built-in Primitive
-Return (decor-width decor-height) for WIN.\n\
-These are the extra width/height (in pixels) of the frame\n\
+Return (decor-width decor-height) for WIN.
+These are the extra width/height (in pixels) of the frame
 beyond that of the client window width/height.
 [From src/window.c:2361]
 
 (window-deletable?  #&optional win)
 - Built-in Primitive
-Return #t if WIN is able to be deleted, #f otherwise.\n\
-If this procedure returns #f, then a call to `delete-window' on WIN\n\
-will do nothing.  WIN defaults to the window context in the usual way if not\n\
+Return #t if WIN is able to be deleted, #f otherwise.
+If this procedure returns #f, then a call to `delete-window' on WIN
+will do nothing.  WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:1804]
 
 (window-desk  #&optional win)
 - Built-in Primitive
-Return the desk that WIN is currently on.\n\
+Return the desk that WIN is currently on.
 WIN defaults to the window context in the usual way if not specified.
 [From src/window.c:2842]
 
@@ -8426,7 +8521,7 @@ Return #t iff WIN is currently flashing, #f otherwise.
 
 (window-focus-style  #&optional win)
 - Built-in Primitive
-Get the focus style of WIN.\n\
+Get the focus style of WIN.
 Returns one of 'mouse, 'click, 'sloppy, or 'none.
 [From src/window.c:3483]
 
@@ -8437,30 +8532,30 @@ Return the area of WIN's frame in square pixels.
 
 (window-frame-border-width  #&optional win)
 - Built-in Primitive
-Return the width of WIN's frame's border.\n\
+Return the width of WIN's frame's border.
 WIN defaults to the window context in the usual way if not specified.
 [From src/window.c:2745]
 
 (window-frame-id  #&optional win)
 - Built-in Primitive
-Return the X window id for the outermost frame window of WIN.\n\
-WIN defaults to the window context in the usual way if not\n\
+Return the X window id for the outermost frame window of WIN.
+WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:2775]
 
 (window-frame-size  #&optional win)
 - Built-in Primitive
-Return the size of the frame of WIN.\n\
-The position is returned as a list of the width and the height in\n\
-pixels. WIN defaults to the window context in the usual way if not\n\
-specified. See `window-size' if you want the size of the application\n\
+Return the size of the frame of WIN.
+The position is returned as a list of the width and the height in
+pixels. WIN defaults to the window context in the usual way if not
+specified. See `window-size' if you want the size of the application
 (client) window.
 [From src/window.c:2657]
 
 (window-fully-constructed? win)
 - Built-in Primitive
-Returns #t if WIN is a fully-constructed window, otherwise #f.\n\
-In the `before-new-window-hook' windows are not yet fully constructed, and only\n\
+Returns #t if WIN is a fully-constructed window, otherwise #f.
+In the `before-new-window-hook' windows are not yet fully constructed, and only
 a subset of procedures can be successfully called on them.
 [From src/window.c:943]
 
@@ -8474,10 +8569,10 @@ returned is in parentheses.
 
 (window-gravity  #&optional win)
 - Built-in Primitive
-Return the gravity for WIN as a symbol.\n\
-Return value is one of the following: \n\
-'forget, 'northwest, 'north, 'northeast,\n\
-'west, 'center, 'east, 'southwest 'south, 'southeast,\n\
+Return the gravity for WIN as a symbol.
+Return value is one of the following: 
+'forget, 'northwest, 'north, 'northeast,
+'west, 'center, 'east, 'southwest 'south, 'southeast,
 'static.
 [From src/window.c:2551]
 
@@ -8488,28 +8583,28 @@ Returnt the highlighted nonant for WIN, or #f if none highlighted.
 
 (window-icon  #&optional win)
 - Built-in Primitive
-Get the icon image being used for WIN.\n\
-Returns #f if none is being used. WIN defaults to the window context\n\
+Get the icon image being used for WIN.
+Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified.
 [From src/window.c:3991]
 
 (window-icon-shaped? win)
 - Built-in Primitive
-Return #t if WIN has shaped icon, #f otherwise.\n\
+Return #t if WIN has shaped icon, #f otherwise.
 WIN defaults to the window context in the usual way if not specified.
 [From src/window.c:4060]
 
 (window-icon-title  #&optional win)
 - Built-in Primitive
-Return the icon window title of WIN.\n\
-This is the title as requested by the application. WIN defaults to\n\
+Return the icon window title of WIN.
+This is the title as requested by the application. WIN defaults to
 the window context in the usual way if not specified.
 [From src/window.c:2865]
 
 (window-id  #&optional win)
 - Built-in Primitive
-Return the X window id for WIN.\n\
-This is the X id for the actual application window. WIN defaults to\n\
+Return the X window id for WIN.
+This is the X id for the actual application window. WIN defaults to
 the window context in the usual way if not specified.
 [From src/window.c:2759]
 
@@ -8536,8 +8631,8 @@ Return a string corresponding to the last focus time for WIN.
 
 (window-last-focus-x-time  #&optional win)
 - Built-in Primitive
-Return the X11 time that WIN was last focussed. \n\
-These are not reliable to compare over long times since they wrap\n\
+Return the X11 time that WIN was last focussed. 
+These are not reliable to compare over long times since they wrap
 too frequenly.
 [From src/window.c:2916]
 
@@ -8561,8 +8656,8 @@ relative to the current viewport.
 
 (window-map-pending? win)
 - Built-in Primitive
-Returns #t if the mapping of WIN is pending, otherwise returns #f.\n\
-The map is pending from the moment the MapRequest is entered until the\n\
+Returns #t if the mapping of WIN is pending, otherwise returns #f.
+The map is pending from the moment the MapRequest is entered until the
 map is actually performed.
 [From src/window.c:967]
 
@@ -8573,8 +8668,8 @@ Returns #t if WIN is mapped, otherwise returns #f.
 
 (window-mini-icon  #&optional win)
 - Built-in Primitive
-Get the mini-icon image being used for WIN.\n\
-Returns #f if none is being used. WIN defaults to the window context\n\
+Get the mini-icon image being used for WIN.
+Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified.
 [From src/window.c:4033]
 
@@ -8619,10 +8714,10 @@ SCWM_OTHER_ID.
 
 (window-position  #&optional win)
 - Built-in Primitive
-Return the position of WIN in pixels.\n\
-The position is returned as a list of the x coordinate and the y\n\
-coordinate in pixels. If the window is sticky, the position will\n\
-always be in the 0,0 viewport. WIN defaults to the window context in the usual\n\
+Return the position of WIN in pixels.
+The position is returned as a list of the x coordinate and the y
+coordinate in pixels. If the window is sticky, the position will
+always be in the 0,0 viewport. WIN defaults to the window context in the usual
 way if not specified.  See also `window-viewport-position'.
 [From src/window.c:2594]
 
@@ -8637,13 +8732,13 @@ the position that `move-window-to-viewport' moves the window to.
 
 (window-property win prop)
 - Built-in Primitive
-Retrieve window property PROP of WIN.\n\
-PROP should be a symbol. #f will be returned if the property does not\n\
-exist (whether set by `set-window-property!' or otherwise). Soon, some\n\
-properties will have magical meanings, accessing particular fields in\n\
-the window structure. Also, a window-property-change-hook mechanism\n\
-will soon be implemented for notification of all window property\n\
-changes. This is not yet done. The window property primitives should\n\
+Retrieve window property PROP of WIN.
+PROP should be a symbol. #f will be returned if the property does not
+exist (whether set by `set-window-property!' or otherwise). Soon, some
+properties will have magical meanings, accessing particular fields in
+the window structure. Also, a window-property-change-hook mechanism
+will soon be implemented for notification of all window property
+changes. This is not yet done. The window property primitives should
 be considered in flux.
 [From src/winprop.c:127]
 
@@ -8657,8 +8752,8 @@ See also `window-resource-hint'.
 
 (window-resource-hint  #&optional win)
 - Built-in Primitive
-DEPRECATED. Return the window resource instance of WIN. \n\
-WIN defaults to the window context in the usual way if not specified. \n\
+DEPRECATED. Return the window resource instance of WIN. 
+WIN defaults to the window context in the usual way if not specified. 
 You should prefer `window-resource'.
 [From src/window.c:2890]
 
@@ -8687,25 +8782,25 @@ No documentation supplied.
 
 (window-shaped?  #&optional win)
 - Built-in Primitive
-Return #t if WIN is a shaped window, #f otherwise.\n\
+Return #t if WIN is a shaped window, #f otherwise.
 WIN defaults to the window context in the usual way if not specified.
 [From src/window.c:4047]
 
 (window-size  #&optional win)
 - Built-in Primitive
-Return the size of the application window of WIN.\n\
-WIN defaults to the window context in the usual way if not specified.\n\
-The position is returned as a list of four numbers. The first two are\n\
-the width and the height in pixels, the third and fourth are the width\n\
-and height in resize units (e.g., characters for an xterm).  See\n\
+Return the size of the application window of WIN.
+WIN defaults to the window context in the usual way if not specified.
+The position is returned as a list of four numbers. The first two are
+the width and the height in pixels, the third and fourth are the width
+and height in resize units (e.g., characters for an xterm).  See
 `window-frame-size' if you want the size of the frame window.
 [From src/window.c:2699]
 
 (window-size-hints win)
 - Built-in Primitive
-Return a list of the window size hints associated with WIN.\n\
-The list returned contains 4 cons pairs containing:\n\
-'((min-width . max-width) (min-height . max-height)\n\
+Return a list of the window size hints associated with WIN.
+The list returned contains 4 cons pairs containing:
+'((min-width . max-width) (min-height . max-height)
 (width-inc . height-inc) (base-width . base-height))
 [From src/window.c:2444]
 
@@ -8740,7 +8835,7 @@ Start out on the window that had the focus longest ago.
 
 (window-title  #&optional win)
 - Built-in Primitive
-Return the window title of WIN, as requested by the application.\n\
+Return the window title of WIN, as requested by the application.
 WIN defaults to the window context in the usual way if not specified.
 [From src/window.c:2854]
 
@@ -8763,11 +8858,11 @@ See also `window-title-size', `window-title-height'.
 
 (window-transient-for  #&optional win)
 - Built-in Primitive
-Return the window for which WIN is transient.\n\
-If WIN is transient, and the window it is transient for is\n\
-not the root window and is being managed by scwm, this returns the window\n\
-object of the window that WIN is transient for, otherwise return\n\
-#f. WIN defaults to the window context in the usual way if not\n\
+Return the window for which WIN is transient.
+If WIN is transient, and the window it is transient for is
+not the root window and is being managed by scwm, this returns the window
+object of the window that WIN is transient for, otherwise return
+#f. WIN defaults to the window context in the usual way if not
 specified.
 [From src/window.c:2029]
 
@@ -8779,8 +8874,8 @@ STYLE must be given exactly the same way as on invocation of `window-style'.
 
 (window-valid? obj)
 - Built-in Primitive
-Returns #t if OBJ is window object and is still valid, otherwise returns #f.\n\
-A window is no longer valid when it is destroyed or closed.  An iconified\n\
+Returns #t if OBJ is window object and is still valid, otherwise returns #f.
+A window is no longer valid when it is destroyed or closed.  An iconified
 window that can be deiconified is still represented by a valid window object.
 [From src/window.c:932]
 
@@ -8807,7 +8902,7 @@ current viewport.
 
 (window-visibility  #&optional win)
 - Built-in Primitive
-Return the visibility state for WIN.\n\
+Return the visibility state for WIN.
 Returns either 'partially-obscured, 'fully-obscured, or 'unobscured.
 [From src/window.c:2939]
 
@@ -8879,7 +8974,7 @@ Return the viewport pixel coordinate X pixels left of the right display edge.
 
 (X-atom->string atom)
 - Built-in Primitive
-Returns the string represented by ATOM.\n\
+Returns the string represented by ATOM.
 Returns #f, if the X atom was not known.
 [From src/xproperty.c:400]
 
@@ -8898,10 +8993,10 @@ Return the X connection file descriptor number.
 
 (X-convert-selection selection target property requestor-window)
 - Built-in Primitive
-Ask the owner of selection SELECTION to provide its value.\n\
-The owner should convert the selection to type TARGET and put set\n\
-the X property PROPERTY on REQUESTOR-WINDOW when it is transferred.\n\
-SELECTION, TARGET, and PROPERTY are each atoms.  REQUESTOR-WINDOW\n\
+Ask the owner of selection SELECTION to provide its value.
+The owner should convert the selection to type TARGET and put set
+the X property PROPERTY on REQUESTOR-WINDOW when it is transferred.
+SELECTION, TARGET, and PROPERTY are each atoms.  REQUESTOR-WINDOW
 is a window object or 'root-window.
 [From src/xproperty.c:444]
 
@@ -8919,38 +9014,38 @@ cut buffer is empty or is not a string.
 
 (X-display-information)
 - Built-in Primitive
-Return some information about the screen. In particular,\n\
-return a list of the horizontal resolution, the vertical resolution,\n\
-the number of planes on the current screen (i.e. the bit depth), the\n\
-bits per color supported by the hardware, the visual class (one of\n\
-"StaticGray", "GrayScale", "StaticColor", "PseudoColor", "DirectColor"\n\
-or "TrueColor") and a boolean indicating whether the display is color.\n\
-The resolutions mentioned above should in theory be pixels per\n\
-centimeter, rounded to the nearest integer. These parameters can be\n\
-used for various workarounds or conditional decisions in a scwmrc to\n\
+Return some information about the screen. In particular,
+return a list of the horizontal resolution, the vertical resolution,
+the number of planes on the current screen (i.e. the bit depth), the
+bits per color supported by the hardware, the visual class (one of
+"StaticGray", "GrayScale", "StaticColor", "PseudoColor", "DirectColor"
+or "TrueColor") and a boolean indicating whether the display is color.
+The resolutions mentioned above should in theory be pixels per
+centimeter, rounded to the nearest integer. These parameters can be
+used for various workarounds or conditional decisions in a scwmrc to
 be shared among multiple machines.
 [From src/miscprocs.c:547]
 
 (X-fetch-bytes)
 - Built-in Primitive
-Returns a string representing the value of the cut buffer.\n\
+Returns a string representing the value of the cut buffer.
 XFetchBytes is called.
 [From src/miscprocs.c:981]
 
 (X-get-selection-owner atom)
 - Built-in Primitive
-Return the window that owns the selection denoted by ATOM.\n\
-ATOM is likely one of the atoms: "PRIMARY" or "SECONDARY".\n\
-See also `string->X-atom'.  Return value is either a window\n\
+Return the window that owns the selection denoted by ATOM.
+ATOM is likely one of the atoms: "PRIMARY" or "SECONDARY".
+See also `string->X-atom'.  Return value is either a window
 object, 'root-window, or an integer window Id.
 [From src/xproperty.c:420]
 
 (X-grab-server)
 - Built-in Primitive
-Grab the X server.\n\
-This is very risky; you should almost definitely use\n\
-`with-grabbed-server' instead.  This must be paired with\n\
-X-ungrab-server.  This primitive is undefined at startup\n\
+Grab the X server.
+This is very risky; you should almost definitely use
+`with-grabbed-server' instead.  This must be paired with
+X-ungrab-server.  This primitive is undefined at startup
 to make it hard to access directly. See also `X-server-grabs'
 [From src/Grab.c:70]
 
@@ -8964,16 +9059,16 @@ asynchronous, so so must this procedure be.
 
 (X-pointer-mapping)
 - Built-in Primitive
-Return the mapping of physical->logical pointer buttons as a list.\n\
-The length of the returned list is the number of buttons available.  Each\n\
-element in the list is an integer.  E.g., '(1 2 3) is a normally mapped\n\
-3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost\n\
+Return the mapping of physical->logical pointer buttons as a list.
+The length of the returned list is the number of buttons available.  Each
+element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
+3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
 physical button acts as logical button 1, and the leftmost acts as button 3.
 [From src/binding.c:1639]
 
 (X-properties win)
 - Built-in Primitive
-Returns a list of WIN's X property names.\n\
+Returns a list of WIN's X property names.
 WIN is the window to query, an X window id, or 'root-window.
 [From src/xproperty.c:348]
 
@@ -8987,71 +9082,71 @@ If RECURSE is non-#f, also list properties of referenced windows.
 
 (X-property-delete! win name)
 - Built-in Primitive
-Delete X property NAME of window WIN.\n\
-WIN is the window to check, an X window id, or 'root-window.\n\
+Delete X property NAME of window WIN.
+WIN is the window to check, an X window id, or 'root-window.
 NAME is a string. The return value is unspecified.
 [From src/xproperty.c:330]
 
 (X-property-get win name #&optional consume?)
 - Built-in Primitive
-Get X property NAME of window WIN.\n\
-WIN is the window to check, an X window id, or 'root-window.\n\
-NAME is a string or an X/11 atom (long).\n\
-If CONSUME? is #t, the X property is deleted after getting it. Default is\n\
-not to delete.\n\
-If the X property could not be found, #f is returned.\n\
-If the X property could be found, a list '(value type format) is returned.\n\
-"type" is a string.\n\
-"format" is either 8, 16, or 32, giving the size of the elements of "value".\n\
+Get X property NAME of window WIN.
+WIN is the window to check, an X window id, or 'root-window.
+NAME is a string or an X/11 atom (long).
+If CONSUME? is #t, the X property is deleted after getting it. Default is
+not to delete.
+If the X property could not be found, #f is returned.
+If the X property could be found, a list '(value type format) is returned.
+"type" is a string.
+"format" is either 8, 16, or 32, giving the size of the elements of "value".
 "value" is a string, if "format" is 8, or a vector of integers otherwise.
 [From src/xproperty.c:263]
 
 (X-property-set! win name value #&optional type format action)
 - Built-in Primitive
-Set X property NAME on window WIN to VALUE.\n\
-WIN is the window to set the X property on, an X window id, or 'root-window.\n\
-NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to "STRING".\n\
-FORMAT may be one of the integers 8, 16, and 32, defining the element size\n\
-of the VALUE. It is 8 by default.\n\
-If FORMAT is 8, VALUE may be a string or a list of null-terminated strings.\n\
-Otherwise it will be a vector of FORMAT-bit integers.\n\
-ACTION may be one of the symbols 'replace, 'prepend, or 'append signifying\n\
-how the new VALUE should be merged (if at all) with the existing\n\
+Set X property NAME on window WIN to VALUE.
+WIN is the window to set the X property on, an X window id, or 'root-window.
+NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to "STRING".
+FORMAT may be one of the integers 8, 16, and 32, defining the element size
+of the VALUE. It is 8 by default.
+If FORMAT is 8, VALUE may be a string or a list of null-terminated strings.
+Otherwise it will be a vector of FORMAT-bit integers.
+ACTION may be one of the symbols 'replace, 'prepend, or 'append signifying
+how the new VALUE should be merged (if at all) with the existing
 value.
 [From src/xproperty.c:112]
 
 (X-resource-database-save filename)
 - Built-in Primitive
-Save the Scwm resource database to FILENAME. \n\
-Only the settings set or changed via `X-resource-put' go into\n\
+Save the Scwm resource database to FILENAME. 
+Only the settings set or changed via `X-resource-put' go into
 the file.
 [From src/xrm.c:90]
 
 (X-resource-get name #&optional xclass)
 - Built-in Primitive
-Get X resource specified by NAME and XCLASS from Xrm database.\n\
-Both NAME and XCLASS are strings, as is the returned value.  If\n\
-XCLASS is omitted, it defaults to the same string as NAME.\n\
+Get X resource specified by NAME and XCLASS from Xrm database.
+Both NAME and XCLASS are strings, as is the returned value.  If
+XCLASS is omitted, it defaults to the same string as NAME.
 If there is no resource under the given key, #f is returned.
 [From src/xrm.c:61]
 
 (X-resource-put resource value)
 - Built-in Primitive
-Stores string VALUE as X resource RESOURCE (also a string).\n\
+Stores string VALUE as X resource RESOURCE (also a string).
 Later, the value can be retrieved using `X-resource-get'.
 [From src/xrm.c:42]
 
 (X-rotate-cut-buffers n)
 - Built-in Primitive
-Rotate the X cut buffers by N positions.\n\
-This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,\n\
+Rotate the X cut buffers by N positions.
+This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,
 and so on.  This cut buffer numbering is global to the display.
 [From src/miscprocs.c:408]
 
 (X-server-grabs)
 - Built-in Primitive
-Return the number of nested server grabs.\n\
-Nonzero means the server is currently grabbed. \n\
+Return the number of nested server grabs.
+Nonzero means the server is currently grabbed. 
 See also `with-grabbed-server', `X-grab-server' and `X-ungrab-server'
 [From src/Grab.c:99]
 
@@ -9076,17 +9171,17 @@ honour synthetic key events as they are a security hole.
 
 (X-ungrab-server)
 - Built-in Primitive
-Ungrab the X server.\n\
-Using `X-grab-server' and `X-ungrab-server' directly is risky; you \n\
-should almost definitely use `with-grabbed-server' instead. This \n\
-primitive is undefined at startup to make it hard to access directly. \n\
+Ungrab the X server.
+Using `X-grab-server' and `X-ungrab-server' directly is risky; you 
+should almost definitely use `with-grabbed-server' instead. This 
+primitive is undefined at startup to make it hard to access directly. 
 See also `X-server-grabs'
 [From src/Grab.c:84]
 
 (X-version-information)
 - Built-in Primitive
-Return some information about the version of the running X server.\n\
-Return value is a list of the X protocol version, the X protocol\n\
+Return some information about the version of the running X server.
+Return value is a list of the X protocol version, the X protocol
 revision, the X server vendor, and the vendor release number.
 [From src/miscprocs.c:527]
 
@@ -9096,14 +9191,14 @@ Draws a arc to the screen using the Xlib call XDrawArc.
 The arc is specified in terms of a rectangle, in which it is wholly
 enclosed.  TOP-LEFT is a point pair for the upper left corner of the rectangle.  The
 rectangle is of size WIDTH by HEIGHT.  The arc is drawn from ANGLE1 to
-ANGLE2. Angles are specified in degrees (0.0 to 360.0)
+ANGLE2. Angles are specified in degrees (0.0 to 360.0).
 [From modules/xlib-drawing/drawing.c:125]
 
 (xlib-draw-line! p1 p2)
 - Primitive from (app scwm xlib-drawing)
 Draws a line using the Xlib call XDrawLine.
 The line is drawn from P1 to P2.
-Both P1 and P2 are pairs (X . Y) representing a poin
+Both P1 and P2 are pairs (X . Y) representing points.
 [From modules/xlib-drawing/drawing.c:107]
 
 (xlib-draw-rectangle! top-left width height)
@@ -9163,7 +9258,7 @@ MS-DELAY is ommitted or is not a number, no delay is used
 - Primitive from (app scwm xtest)
 Fake an X event of key KEYCODE after a delay of MS-DELAY.
 The event is a key press if IS-PRESS? is #t, or a release otherwise. If
-MS-DELAY is ommitted or is not a number, no delay is used
+MS-DELAY is ommitted or is not a number, no delay is used.
 [From modules/xtest/scwmxtest.c:71]
 
 (xtest-fake-modmask mask delay press?)
@@ -9185,7 +9280,7 @@ No documentation supplied.
 - Primitive from (app scwm xtest)
 Fake an X motion event to X,Y after a delay of MS-DELAY on SCREEN.
 If SCREEN is ommitted, 0 is used.
-If MS-DELAY is ommitted or is not a number, no delay is used
+If MS-DELAY is ommitted or is not a number, no delay is used.
 [From modules/xtest/scwmxtest.c:95]
 
 (xtest-fake-relative-motion-event dx dy #&optional ms-delay)

@@ -1,3 +1,7 @@
+Wed Feb 16 18:26:37 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c: Added xref of obscured-hooks to window-visibility proc.
+
 Sat Feb 12 20:32:09 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Grab.c: Fix typo in trailing semicolon on CServerGrabs().

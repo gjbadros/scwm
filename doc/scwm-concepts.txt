@@ -571,6 +571,9 @@ auto-raise-delay (window-style) from scheme/auto-raise.scm:139
 auto-raise-unfocus-delay (window-style) from scheme/auto-raise.scm:140
 auto-raise-focus-proc (window-style) from scheme/auto-raise.scm:142
 auto-raise-unfocus-proc (window-style) from scheme/auto-raise.scm:143
+auto-unobscure (window-style) from scheme/auto-unobscure.scm:65
+auto-unobscure-proc (window-style) from scheme/auto-unobscure.scm:66
+easyraise (window-style) from scheme/easyraise.scm:26
 hover-focus-delay (window-style) from scheme/hover-focus.scm:73
 hover-focus (window-style) from scheme/hover-focus.scm:95
 border-width (window-style) from scheme/style.scm:203

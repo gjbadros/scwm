@@ -342,7 +342,7 @@ the second two are the change in x and y from the previous position.
 
 vv-recognition-hook (3 args)
 - 
-This hook is invoked when ViaVoice recognizes a phrase. 
+This hook is invoked when ViaVoice recognizes a phrase. \n\
 Called with 3 arguments: (was-accepted? phrase-string annotations-vector)
 [From modules/viavoice/scwmviavoice.c:65]
 
@@ -386,7 +386,7 @@ window-fully-obscured-hook (1 args)
 - 
 Invoked when window receives a VisibilityFullyObscured event.\n\
 The hook procedures are invoked with one argument, the window object\n\
-of the window that is now fully obscured.
+of the window that is now fully obscured. See also `window-visibility'.
 [From src/events.c:197]
 
 
@@ -405,7 +405,7 @@ event.  The hook procedures are invoked with one argument, the window\n\
 object of the window that is now partially obscured.  Beware that this\n\
 event happens more often than you might expect and an action procedure\n\
 attached here should be very careful about manipulating windows in a way\n\
-that might cause more Visibility events.
+that might cause more Visibility events. See also `window-visibility'.
 [From src/events.c:202]
 
 
@@ -425,7 +425,7 @@ The hook procedures are invoked with one argument, the window object\n\
 of the window that is now fully visible. Beware that this\n\
 event happens more often than you might expect and an action procedure\n\
 attached here should be very careful about manipulating windows in a way\n\
-that might cause more Visibility events.
+that might cause more Visibility events. See also `window-visibility'.
 [From src/events.c:210]
 
 

@@ -1,3 +1,8 @@
+Wed Feb 16 18:27:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in (ProcessHeader): Drop \n\ from end of C
+	literal-string comment lines.
+
 Sun Dec  5 17:29:14 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Handle SCWM_HOOK's extra docstring argument now.
