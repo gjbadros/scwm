@@ -1,3 +1,26 @@
+Sun Aug  2 16:37:31 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* xmisc.h, xmisc.c, draw_menu.c: Patches from ITANI Eiichiro
+	  <emu@ceres.dti.ne.jp> for I18N ComputeXTextWidth problems.
+
+	* window.c: Pass no psw to Keyboard_shortcuts in DeferExecution;
+	  clean up some comments
+
+	* shutdown.c: Fixed reorganization problem so segfault still tries 
+	  to clean up the display if the display is already successfully
+	  opened.
+
+	* scwm-screen-ci.hpp, scwm-constraints.hpp: Do not add
+	  automatically-destroyed constraints into the solver.  Really
+	  need to do the handle wrappers of constraints, expressions, and
+	  vars!  Use new ClConstraint->Pv() to point at the scheme object
+	  that is that constraint.
+
+	* resize.c, move.c: Try to get paging during a resize/move right
+	  even with Cassowary in use; Fix Keyboard_shortcuts to ignore a
+	  NULL psw for DeferExecution
+	
+
 1998-08-01  Maciej Stachowiak  <maciej@localhost.localdomain>
 
 	* icons.c (CreateIconWindow): Check if psw->icon_pixmap_w is None
@@ -163,7 +186,7 @@ Thu Jul 30 20:08:25 1998  Greg Badros  <gjb@cs.washington.edu>
 	execution to support the select-window-from-window-list
 	functionality. 
 
-	* font.c: patch from Iko for I18N.
+	* font.c: patch from Itani for I18N.
 
 	* borders.c: Fix bug in corner_width too small when no title width 
 	-- make corners be at least 12 pixels.
