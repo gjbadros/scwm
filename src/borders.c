@@ -46,14 +46,21 @@
 
 extern Window PressedW;
 
+SCWM_SYMBOL(sym_squashed_titlebar, "squashed-titlebar");
+SCWM_SYMBOL(sym_no_top_border_decoration, "no-top-border-decoration");
+
+/* Also used in window.c */
+extern SCM sym_maximized, sym_no_side_decorations;
+
+
 #define SQUASHED_TITLEBAR_P(psw) \
-  SCM_NFALSEP( scm_object_property((psw)->schwin, gh_symbol2scm("squashed-titlebar")))
+  SCM_NFALSEP( scm_object_property((psw)->schwin, sym_squashed_titlebar))
 
 #define NO_SIDE_DECORATIONS_P(psw) \
-  SCM_NFALSEP( scm_object_property((psw)->schwin, gh_symbol2scm("no-side-decorations")))
+  SCM_NFALSEP( scm_object_property((psw)->schwin, sym_no_side_decorations))
 
 #define NO_TOP_BORDER_DECORATION_P(psw) \
-  SCM_NFALSEP( scm_object_property((psw)->schwin, gh_symbol2scm("no-top-border-decoration")))
+  SCM_NFALSEP( scm_object_property((psw)->schwin, sym_no_top_border_decoration))
 
 
 /* macro rules to get button state */
@@ -197,14 +204,12 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
 
 
     /* FIXGJB: using an object property below */
-    /* CRW:FIXME:: Don't use gh_symbol2scm; make a static symbol. */
   case VectorButton:
     if ((psw->fMWMButtons)
 	&& (stateflags & MWMButton)
 	&& (SCM_NFALSEP
 	    (scm_object_property
-	     (psw->schwin,
-	      gh_symbol2scm("maximized")))))
+	     (psw->schwin, sym_maximized))))
       DrawLinePattern(win,
 		      ShadowGC, ReliefGC,
 		      &bf->vector,
@@ -1619,6 +1624,10 @@ init_borders()
                           Scr.Root, 
                           GCFunction | GCPlaneMask | GCGraphicsExposures | GCLineWidth,
                           &gcv);
+
+#ifndef SCM_MAGIC_SNARFER
+#include "borders.x"
+#endif
 }
 
 /* Local Variables: */

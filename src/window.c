@@ -66,6 +66,14 @@ SCWM_SYMBOL(sym_shaded , "shaded");
 SCWM_SYMBOL(sym_on_top , "on-top");
 SCWM_SYMBOL(sym_desk   , "desk");
 
+SCWM_SYMBOL(sym_winlist_skip, "winlist-skip");
+SCWM_SYMBOL(sym_circulate_skip_icon, "circulate-skip-icon");
+SCWM_SYMBOL(sym_circulate_skip, "circulate-skip");
+
+/* Also used by borders.c */
+SCWM_GLOBAL_SYMBOL(sym_maximized, "maximized");
+SCWM_GLOBAL_SYMBOL(sym_no_side_decorations, "no-side-decorations");
+
 
 SCM window_close_hook;
 
@@ -85,7 +93,7 @@ FlagsBitsFromSw(ScwmWindow *psw)
 #define SET_BIT_FOR_OBJ_PROP(s) \
 do { \
   if (SCM_NFALSEP(scm_object_property(psw->schwin, \
-                                     gh_symbol2scm(s)))) { \
+                                      s))) { \
 /*    scwm_msg(DBG,FUNC_NAME,"fWinListSkip for %s",psw->name); */ \
     flags |= (1 << i); \
   } \
@@ -95,13 +103,13 @@ do { \
   SET_BIT_FOR(fStartIconic);
   SET_BIT_FOR(fOnTop);
   SET_BIT_FOR(fSticky);
-  SET_BIT_FOR_OBJ_PROP("winlist-skip");
+  SET_BIT_FOR_OBJ_PROP(sym_winlist_skip);
   SET_BIT_FOR(fSuppressIcon);
   SET_BIT_FOR(fNoIconTitle);
   SET_BIT_FOR(fLenience);
   SET_BIT_FOR(fStickyIcon);
-  SET_BIT_FOR_OBJ_PROP("circulate-skip-icon");
-  SET_BIT_FOR_OBJ_PROP("circulate-skip");
+  SET_BIT_FOR_OBJ_PROP(sym_circulate_skip_icon);
+  SET_BIT_FOR_OBJ_PROP(sym_circulate_skip);
   SET_BIT_FOR(fClickToFocus);
   SET_BIT_FOR(fSloppyFocus);
   SET_BIT_FOR(fShowOnMap);
@@ -115,7 +123,7 @@ do { \
   SET_BIT_FOR(fIconOurs);
   SET_BIT_FOR(fPixmapOurs);
   SET_BIT_FOR(fShapedIcon);
-  SET_BIT_FOR_OBJ_PROP("maximized");
+  SET_BIT_FOR_OBJ_PROP(sym_maximized);
   SET_BIT_FOR(fDoesWmTakeFocus);
   SET_BIT_FOR(fDoesWmDeleteWindow);
   SET_BIT_FOR(fIconMoved);
@@ -136,20 +144,20 @@ void PswUpdateFlags(ScwmWindow *psw, unsigned long flags)
 {
 #define UPDATE_FLAG(f) do { psw->f = flags & 1; flags>>=1; } while(0)
 #define UPDATE_OBJ_PROP(p) \
-	do { scm_set_object_property_x(psw->schwin, gh_symbol2scm(p), \
+	do { scm_set_object_property_x(psw->schwin, p, \
 				       gh_bool2scm(flags & 1)); \
 	     flags>>=1; } while(0)
 
   UPDATE_FLAG(fStartIconic);			/* 00000001 */
   UPDATE_FLAG(fOnTop);
   UPDATE_FLAG(fSticky);
-  UPDATE_OBJ_PROP("winlist-skip");
+  UPDATE_OBJ_PROP(sym_winlist_skip);
   UPDATE_FLAG(fSuppressIcon);			/* 00000010 */
   UPDATE_FLAG(fNoIconTitle);
   UPDATE_FLAG(fLenience);
   UPDATE_FLAG(fStickyIcon);
-  UPDATE_OBJ_PROP("circulate-skip-icon");	/* 00000100 */
-  UPDATE_OBJ_PROP("circulate-skip");
+  UPDATE_OBJ_PROP(sym_circulate_skip_icon);	/* 00000100 */
+  UPDATE_OBJ_PROP(sym_circulate_skip);
   UPDATE_FLAG(fClickToFocus);
   UPDATE_FLAG(fSloppyFocus);
   UPDATE_FLAG(fShowOnMap);			/* 00001000 */
@@ -163,7 +171,7 @@ void PswUpdateFlags(ScwmWindow *psw, unsigned long flags)
   UPDATE_FLAG(fIconOurs);			/* 00100000 */
   UPDATE_FLAG(fPixmapOurs);
   UPDATE_FLAG(fShapedIcon);
-  UPDATE_OBJ_PROP("maximized");
+  UPDATE_OBJ_PROP(sym_maximized);
   UPDATE_FLAG(fDoesWmTakeFocus);		/* 01000000 */
   UPDATE_FLAG(fDoesWmDeleteWindow);
   UPDATE_FLAG(fIconMoved);
@@ -3072,7 +3080,7 @@ WIN defaults to the window context in the usual way if not specified. */
   oldyadj = GRAV_Y_ADJUSTMENT(psw);
 
 #define NO_SIDE_DECORATIONS_P(psw) \
-  SCM_NFALSEP( scm_object_property((psw)->schwin, gh_symbol2scm("no-side-decorations")))
+  SCM_NFALSEP( scm_object_property((psw)->schwin, sym_no_side_decorations))
 
   psw->boundary_width = cpix;
   if (!NO_SIDE_DECORATIONS_P(psw))

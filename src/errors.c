@@ -23,16 +23,28 @@
 #include <config.h>
 #endif
 
+#include "scwm.h"
+
 #include <guile/gh.h>
 
 #include "errors.h"
 
+SCWM_GLOBAL_SYMBOL(sym_scwm_error, "scwm-error");
+
 void 
 scwm_error(const char *subr, const char *szErr)
 {
-  scm_error(gh_symbol2scm("scwm-error"), (char *) subr, "%s",
+  scm_error(sym_scwm_error, (char *) subr, "%s",
 	    gh_list(gh_str02scm((char *)szErr), SCM_UNDEFINED),
 	    gh_list(gh_str02scm((char *)szErr), SCM_UNDEFINED));
+}
+
+void
+init_error()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "errors.x"
+#endif
 }
 
 

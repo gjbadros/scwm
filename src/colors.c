@@ -31,6 +31,8 @@
 #include "dmalloc.h"
 #endif
 
+/* Defined in error.c */
+extern SCM sym_scwm_error;
 
 static void 
 nocolor(char *note, char *name)
@@ -40,7 +42,7 @@ nocolor(char *note, char *name)
   /* Do it by hand until we come up w/ a better error API. */
 
   sprintf(err, "can't %s color %s", note, name);
-  scm_error(gh_symbol2scm("scwm-error"), "[color allocation]", "%s",
+  scm_error(sym_scwm_error, "[color allocation]", "%s",
 	    gh_list(gh_str02scm(err), SCM_UNDEFINED),
 	    gh_list(gh_str02scm(err), SCM_UNDEFINED));
 }

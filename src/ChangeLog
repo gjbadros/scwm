@@ -1,5 +1,10 @@
 1999-02-09  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* borders.c, colors.c, errors.c, window.c: Do not use
+	gh_symbol2scm, instead declare appropriate sym_ variables wherever
+	appropriate.
+	* Makefile.am: Handle borders.x, errors.x
+	
 	* borders.c: Fix numerous visual inconsistencies when using
 	`no-side-decorations'. Nearly all should be fixed, a handful
 	remain in the case where both mwm-border and no-side-decorations
