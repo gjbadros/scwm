@@ -110,20 +110,25 @@ If X is negative, moves to the left.  If Y is negative moves up."
     (move-pointer-to (+ x (car pos)) (+ y (cadr pos)))))
 
 ;; Horrible name kept for now for backward compatibility.
-;; move-window is the pr
+;; move-window is the preferred name, and it uses virtual coordinates
 (define*-public (move-to x y 
 			#&optional (win (get-window))
 			(animated? #f)
 			(move-pointer-too? #f))
-  "Move WIN to virtual position X, Y.
+  "Move WIN to viewport position X, Y.
 If X or Y is #f, then do not move along that axis (use existing
 value for that coordinate).
 If ANIMATED? is #t, then animate the window there.
-If MOVE-POINTER-TOO? is #t then also move the pointer as the window is moved."
+If MOVE-POINTER-TOO? is #t then also move the pointer as the window is moved.
+See `move-window' if you wish to move a window to a virtual position."
   (let ((pos (viewport-position)))
     (if x (set! x (+ x (car pos))))
     (if y (set! y (+ y (cadr pos))))
     (move-window x y win animated? move-pointer-too?)))
+
+;; Give move-to a better name, too
+;; FIXGJB: Can this have a doc string?
+(define-public move-window-viewport-position move-to)
 
 (define*-public (window-viewport-position #&optional (win (get-window)))
   "Return the position of WIN in pixels within the viewport.
