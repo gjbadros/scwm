@@ -8,6 +8,7 @@
 ;;
 
 (define-module (app scwm ui-constraints)
+  :use-module (app scwm base)
   :use-module (app scwm optargs)
 ;;  :use-module (cassowary constraints))
   )
@@ -198,25 +199,13 @@ the toggle menu.  Errors if object is not a ui-constraint-class object."
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
-;; ui-constraint-class-disable-hook?
-
-(define-public (ui-constraint-class-disable-hook? ui-constraint-class)
-  "Returns a boolean denoting whether or not the UI-CONSTRAINT-CLASS has a
-valid disable-hook procedure defined."
-  (if (ui-constraint-class? ui-constraint-class)
-      (not (eq? (vector-ref ui-constraint-class 9) #f))
-      (error "Argument to tester must be a UI-CONSTRAINT-CLASS object")))
-
-
 ;; ui-constraint-class-disable-hook
 
 (define-public (ui-constraint-class-disable-hook ui-constraint-class)
   "Returns the disable-hook procedure if one exists in the UI-CONSTRAINT-CLASS.
-Errors if one does not exist."
+Returns #f if one does not exist."
   (if (ui-constraint-class? ui-constraint-class)
-;;      (if (ui-constraint-class-disable-hook? ui-constraint-class)
       (vector-ref ui-constraint-class 9)
-;;	  (error "No disable-hook defined for this ui-constraint-class"))
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -256,6 +245,7 @@ SIDE-EFFECT: adds new instance object to the global list."
 	     (opts (cddr vars))
 	     (uc (vector obid-ui-constraint ui-constraint-class cn #f win-list opts)))
 	(set! global-constraint-instance-list (cons uc global-constraint-instance-list))
+	(call-hook-procedures constraint-add-hook-list (list uc))
 	uc)
       (error "Argument must be a UI-CONSTRAINT-CLASS object")))
 
@@ -287,7 +277,8 @@ not a ui-constraint-class.  Calls make-ui-constraint (see above)."
 (define-public (delete-ui-constraint! ui-constraint)
   "Removes the UI-CONSTRAINT permanently.
 SIDE-EFFECT: removes instance object from the global list"
-  (set! global-constraint-instance-list (delq ui-constraint global-constraint-instance-list)))
+  (set! global-constraint-instance-list (delq ui-constraint global-constraint-instance-list))
+  (call-hook-procedures constraint-delete-hook-list (list ui-constraint)))
 
 
 ;; ui-constraint?
@@ -390,7 +381,7 @@ returns the constraint."
 	     (class (ui-constraint-class ui-constraint))
 	     (dhook (ui-constraint-class-disable-hook class)))
 	(map (lambda (c) (cl-add-constraint (scwm-master-solver) c)) cn)
-	(if (ui-constraint-class-disable-hook? class) (dhook ui-constraint #t))
+	(if dhook (dhook ui-constraint #t))
 	(set-enable! ui-constraint #t))
       (error "Argument must be a UI-CONSTRAINT object")))
 
@@ -410,7 +401,7 @@ returns the constraint"
 	     (class (ui-constraint-class ui-constraint))
 	     (dhook (ui-constraint-class-disable-hook class)))
 	(map (lambda (c) (cl-remove-constraint (scwm-master-solver) c)) cn)
-	(if (ui-constraint-class-disable-hook? class) (dhook ui-constraint #f))
+	(if dhook (dhook ui-constraint #f))
 	(set-enable! ui-constraint #f))
       (error "Argument must be a UI-CONSTRAINT object")))
 
@@ -507,3 +498,40 @@ an ui-constraint."
 (define-public (enable-all-constraints)
   "Enable all constraints in the global instance list."
   (map enable-ui-constraint global-constraint-instance-list))
+
+
+;; HOOKS
+
+;; This code handles the hook functions which are called when 
+;; a constraint is added or deleted.
+
+;; The lists of hook functions
+
+(define-public constraint-add-hook-list '())
+(define-public constraint-delete-hook-list '())
+
+
+;; add a hook procedures
+
+(define-public (add-constraint-add-hook! hook)
+  "Add a procedure HOOK to be called when a constraint is added.
+HOOK should be a procedure which takes a ui-constraint-instance as
+an argument."
+  (set! constraint-add-hook-list (cons hook constraint-add-hook-list)))
+
+(define-public (add-constraint-delete-hook! hook)
+  "Add a procedure HOOK to be called when a constraint is deleted.
+HOOK should be a procedure which takes a ui-constraint-instance as
+an argument."
+  (set! constraint-delete-hook-list (cons hook constraint-delete-hook-list)))
+
+
+;; remove a hook procedures
+  
+(define-public (remove-constraint-add-hook! hook)
+  "Remove a procedure HOOK from the list of constraint-add hooks."
+  (set! constraint-add-hook-list (delq hook constraint-add-hook-list)))
+
+(define-public (remove-constraint-delete-hook! hook)
+  "Remove a procedure HOOK from the list of constraint-delete hooks."
+  (set! constraint-delete-hook-list (delq hook constraint-delete-hook-list)))
