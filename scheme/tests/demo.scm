@@ -8,6 +8,7 @@
 (select-window-interactively)
 
 (move-window-relative 25 25 (select-window-interactively))
+(move-window-relative -25 -25 (select-window-interactively))
 
 ;; like with-current-buffer
 (with-window (select-window-interactively)
@@ -32,7 +33,6 @@
 
 (animated-window-shade)
 ;; also by double-clicking on titlebar
-
 
 (define w
   (select-window-interactively "Pick an XTerm" default-message-window))
@@ -64,6 +64,14 @@
 	      (lambda (w) (equal? (window-viewport-position w) '(0 0))))
 ;; window-list deiconify
 
+(define w (select-window-interactively))
+
+(define wid (car (window-size w)))
+(define height (car (cdr (window-size w))))
+wid
+height
+(resize-to wid height w)
+(resize-to (* wid 2) (* height 2) w)
 
 ;;;; VIRTUAL DESKTOP, STICKINESS, PAGER
 
