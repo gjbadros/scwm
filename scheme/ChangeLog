@@ -1,3 +1,11 @@
+1998-08-31  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* flux.scm, wininfo.scm: Scheme sources adapted to new X property
+	interface.
+
+	* tests/properties.scm, tests/window-opns.scm: Removed tests for
+	old X property interface, added some for the new one. 
+
 Tue Aug 25 14:37:43 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* optargs.scm: Preserve docstrings for precedures defined by

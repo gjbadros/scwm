@@ -287,13 +287,14 @@ other applications."
   "Change the window title X-Property of WIN to TITLE.
 WIN is a Scwm window object, TITLE is a string.  This procedure alters the
 window title by changing the WM_NAME X-Property."
-  (set-window-text-property win "WM_NAME" title))
+  (X-property-set! win "WM_NAME" title))
 
 (define-public (get-wm-command win)
   "Get the "WM_COMMAND" X-Property of WIN and return that string.
 WIN is a Scwm window object. The "WM_COMMAND" X-Property is the application's
 notion of what the command line was used to run the application."
-  (get-window-text-property win "WM_COMMAND"))
+  (let ((prop (X-property-get win "WM_COMMAND")))
+    (and (list? prop) (car prop))))
 
 (define-public (sec->usec sec)
   "Convert SEC seconds into an equivalent number of microseconds.

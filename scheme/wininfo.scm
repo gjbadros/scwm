@@ -123,7 +123,9 @@
 
 (define*-public (window-client-machine-name #&optional (win (get-window)))
   "Return the name of the client machine on which WIN is running."
-  (if win (xproperty->string (window-xproperty win "WM_CLIENT_MACHINE"))
+  (if win
+      (let ((prop (X-property-get win "WM_CLIENT_MACHINE")))
+	(and (list? prop) (car prop)))
       #f))
 
 (define*-public (wildcard-matcher wildcard #&key (full-regexp #f)

@@ -1,10 +1,51 @@
-(define xp (string->xproperty "GJBProp"))
 
-(xproperty->string xp)
+; a string property
+(X-property-get (current-window-with-focus) "WM_NAME")
 
-(xproperty->string (window-xproperty (current-window-with-focus) "WM_PROTOCOLS"))
+; a format-32 property
+(X-property-get (current-window-with-focus) "WM_PROTOCOLS")
 
-(xproperty->string (window-xproperty (current-window-with-focus) "WM_CLIENT_MACHINE"))
+; likewise, get the icon window id
+(vector-ref (car (X-property-get (current-window-with-focus) "WM_STATE")) 1)
+
+; a list of strings
+(separate-fields-discarding-char #\null
+				 (car (X-property-get
+				       (current-window-with-focus)
+				       "WM_COMMAND"))
+				 list)
+
+; set a property
+(X-property-set! 'root-window "WM_FOO" "Testing ... 1 ... 2")
+
+; consume it
+(X-property-get 'root-window "WM_FOO" #t)
+
+; should return #f
+(X-property-get 'root-window "WM_FOO")
+
+(X-property-set! 'root-window "WM_FOO" #(-2 3) "WM_FOO" 16)
+
+(X-property-get 'root-window "WM_FOO")
+
+(X-property-set! 'root-window "WM_FOO" #(1) "WM_FOO" 16 'prepend)
+
+(X-property-get 'root-window "WM_FOO" #f)
+
+(X-property-set! 'root-window "WM_FOO" #(4 -5 6) "WM_FOO" 16 'append)
+
+(X-property-get 'root-window "WM_FOO" #t)
+
+; errors should result from these:
+(X-property-set! 'root-window "WM_FOO" #(1) "WM_FOO" 16 'root-window)
+
+(X-property-set! 'root-window "WM_FOO" #(500 0) "WM_FOO" 8)
+
+(X-property-set! 'root-window "WM_FOO" #(-100000 0) "WM_FOO" 16)
+
+(X-property-set! 'root-window "WM_FOO" #(500 0) "WM_FOO" 8)
+
+;; hooks
 
 (add-hook! X-PropertyNotify-hook (lambda (sz w) (write sz) (write w) (display "\n")))
 
@@ -15,15 +56,6 @@
 
 (set! X-PropertyNotify-hook #f)
 
-(set-window-text-property (current-window-with-focus) "WM_FOO" "Testing GJB")
 
-(xproperty->string (window-xproperty (current-window-with-focus) "WM_FOO"))
-
-;;; these two lines cause a core dump --07/05/98 gjb
+;;; causes a core dump --07/05/98 gjb
 (add-hook! X-PropertyNotify-hook (lambda (sz w EXTRA-ARG) (write sz) (write w) (display "\n")))
-(set-window-text-property (current-window-with-focus) "WM_FOO" "Testing GJB")
-
-(window-xproperty (current-window-with-focus) "WM_CLIENT_MACHINE")
-(window-xproperty (select-window-interactively) "WM_COMMAND")
-
-(string->xproperty "hello world")

@@ -24,7 +24,7 @@
 			    (string=? (window-class w) "Emacs"))))
 
 
-(set-window-text-property (current-window-with-pointer) "WM_NAME" "Foo")
+(X-property-set! (current-window-with-pointer) "WM_NAME" "Foo")
 
 (set-window-title! (current-window-with-pointer) "Foo")
 
