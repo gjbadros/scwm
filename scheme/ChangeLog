@@ -1,3 +1,11 @@
+1999-03-01  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* bincomm.scm: Fixed remaining obvious 64-bit bugs. Probably more
+	remain.
+
+	* fvwm-module.scm: Send auxiliary config info like fvwm
+	does. Patch from Danius Michaelides.
+
 1999-02-27  John Kodis  <kodis@jagunet.com>
  
         * Makefile.am: Added hover-focus.scm to the scwm_common_scheme

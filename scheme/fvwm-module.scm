@@ -400,12 +400,25 @@
 	    (substring str ix)
 	    str))))
 
+(define (aux-config-info)
+  (define (insert-colons l)
+    (if (null? (cdr l))
+	l
+	(append (list (car l)) '(":") (insert-colons (cdr l)))))
+  (let ((path (insert-colons image-load-path)))
+    (list
+     (list->string (append '("IconPath ") path))
+     (list->string (append '("PixmapPath ") path))
+     "ColorLimit 0"
+     "ClickTime 150")))
+
 (define*-public (run-fvwm2-module module-name #&optional
 				  (other-args '())	       
 				  (config-file "~/.fvwm2rc")
 				  (config-info
-				   (get-fvwm2-module-config
-				    (basename module-name))))
+				   (append (aux-config-info)
+                                           (get-fvwm2-module-config
+					    (basename module-name)))))
   (let ((module-file (find-file-in-path module-name
 					fvwm2-module-path)))
     (if module-file

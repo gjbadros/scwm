@@ -152,7 +152,7 @@
       ;; 64 bit
       (lambda (str)
 	(let* ((length (* 8 (+ 1 (inexact->exact 
-				  (floor (/ (string-length str) 4))))))
+				  (floor (/ (string-length str) 8))))))
 	       (pad (- length (string-length str))))
 	  (string-append 
 	   str 
