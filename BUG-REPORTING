@@ -1,3 +1,6 @@
+If you use the scwm-mode for Emacs from utilities/emacs/scwm.el,
+you should send bugs w/ M-x scwm-bug to send a bug report. --08/07/98 gjb
+
 This is the information we need when someone reports a bug.  We should
 have a scheme function which accumulates it and mails it to us, perhaps.
 For now, we should just ask for this information all at once; we should

@@ -1,6 +1,12 @@
 Hooks which take wrong number of params cause seg faults!
 --07/04/98 gjb
 -------------
+Incorrect usage of keyword arguments by a scheme function fails silently.
+Both wrong keyword names and missing arguments should be reported.
+-------------
+Race conditions cause scwm to hang when talking to fvwm2 modules when, e.g.,
+recapturing.
+-------------
 1. I pop up an xterm
 2. I do a horizontal-toggle-maximize
 3. I change to a smaller font.
@@ -20,8 +26,6 @@ recall correctly, that's what fvwm does.
 wildcard-matcher in wininfo doesn't permit distinguishing based on title,
 class, and resource name separately.  This is essential for window styles
 to do the right thing (a misfeature compared to fvwm2)
--------------
-Incorrect usage of keyword arguments by a scheme function fails silently.
 -------------
 Some error messages are looked up in a table that is distant from the error.
 ---------------

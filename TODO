@@ -22,8 +22,6 @@ things on NetBSD.
 ** Respect gravity on resize-to
 ** Let user get/set gravity.
 
-* Perhaps add some of the easier to add features from below.
-
 * Fix more bugs.
 
 * Fix up style handling a bit; make more convenient ways to match
@@ -104,14 +102,12 @@ isn't now).
 ** (keycode->keysym KEYCODE), (keysym->keycode KEYSYM)
 ** window closing hook? (upon removal of the window?)
 ** (rotate-cut-buffers)
-** (X-resource-get NAME CLASS), (X-resource-put NAME VALUE)
 ** window-group feature (at scheme level)
 ** (save-yourself WINDOW) ; send ICCCM WM_SAVE_YOURSELF to window to update WM_COMMAND X property -- maybe in terms of a send-client-message primitive?
  - We should add proper X Session Management support instead of these, IMO
  - (needed for Hnome compliance anyway)
 ** (set-mouse-acceleration! ACCEL), (set-mouse-acceleration-threshold! PIXELS)
 ** (set-colormap-focus! WINDOW) -- rename set-colormap-focus! and colormap-focus to [set-]colormap-focus-policy
-** visibility change hooks (fully-obscured, partially-obscured, unobscured)
 ** (window-shaped? WINDOW)
 ** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive
 ** (window-client-size) (window-client-position) (window-client-borderwidth) ;dimensions for the client (application top-level window, not the wm frame) 
@@ -120,8 +116,10 @@ isn't now).
  - I thought I added these! Will fix ASAP - Maciej
 ** (windows-at-position X Y), (windows-at-virtual-position X Y)  ; return in stacking order 
  - Could just be an abstraction on top of get-stacking-order (see above) - MS
+** visibility change hooks (fully-obscured, partially-obscured, unobscured) -- subsumed by event rewrite --08/07/98 gjb
 
 ** DONE ONES
+*** (X-resource-get NAME CLASS), (X-resource-put NAME VALUE) --done 08/07/98 gjb
 *** (window-client-machine-name WINDOW) ; name of host on which client is running -- done --08/05/98 gjb
 *** (make-string-usable-for-resource-key STRING) ; replace [.*& ] with _'s -- use regexp --done [in flux] 08/05/98 gjb
 *** (lower-window-below LOWERWINDOW BELOWWINDOW) ; lower LOWERWINDOW to just below BELOWWINDOW done --08/02/98 gjb
