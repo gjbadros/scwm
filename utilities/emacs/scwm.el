@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-08 Sat 13:15:59 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-08-10 Mon 12:02:56 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -78,6 +78,7 @@
  (or (and (fboundp 'cadr) (fboundp 'unless)) (require 'cl))
  ;; this is for those who load this uncompiled.
  (unless (fboundp 'ignore-errors) (autoload 'ignore-errors "cl" nil nil t))
+ (unless (fboundp 'compose-mail) (defalias 'compose-mail 'mail))
  (unless (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos")))
 (eval-when-compile
  (require 'cl)                  ; for `gensym'
