@@ -138,7 +138,7 @@
   #:group 'fvwm2-module)
 
 
-;; FIXMS: Maybe scwm should always ignore sigpipes?
+;; FIXME: Maybe scwm should always ignore sigpipes?
 (sigaction SIGPIPE SIG_IGN)
 
 (define app-window "0")
@@ -159,33 +159,33 @@
 		 (lambda args (error 
                                (string-append "Could not get window id:\n"
                                               (call-with-output-string
-                                               (lambda ()
-                                                 (write args)
-                                                 (newline))))))))
+                                               (lambda (port)
+                                                 (write args port)
+                                                 (newline port))))))))
 	 (msglen
 	  (catch #t (lambda () (binary-read-long port))
 		 (lambda args (error 
                                (string-append "Could not get msglen:\n"
                                               (call-with-output-string
-                                               (lambda ()
-                                                 (write args)
-                                                 (newline))))))))
+                                               (lambda (port)
+                                                 (write args port)
+                                                 (newline port))))))))
 	 (command
 	  (catch #t (lambda () (binary-read msglen port))
 		 (lambda args (error 
                                (string-append "Could not get command:\n"
                                               (call-with-output-string
-                                               (lambda ()
-                                                 (write args)
-                                                 (newline))))))))
+                                               (lambda (port)
+                                                 (write args port)
+                                                 (newline port))))))))
 	 (keepgoing
 	  (catch #t (lambda () (binary-read-long port))
 		 (lambda args (error 
                                (string-append "Could not keepgoing:\n"
                                               (call-with-output-string
-                                               (lambda ()
-                                                 (write args)
-                                                 (newline)))))))))
+                                               (lambda (port)
+                                                 (write args port)
+                                                 (newline port)))))))))
     (list window msglen command keepgoing)))
 
 (define (fvwm2-module-send-config-info config-info port)
@@ -477,18 +477,21 @@
 	  (cond
 	   ((= pid 0)
 	    ;; child process
+            (if *debug-fvwm-module*
+                (map (lambda (x) (write x)) (list to-module-write from-module-read from-module-write to-module-read))
+                (newline))
 	    (close-port to-module-write)
 	    (close-port from-module-read)
 	    (let ((write-fd (number->string (fileno from-module-write)))
 		  (read-fd (number->string (fileno to-module-read))))
-	      ;;	(display (string-append 
-	      ;;  "child: " module-file " " write-fd " " read-fd " " 
-	      ;;  config-file " " app-window " " context " " 
-	      ;; (apply string-append
-	      ;;	(map (lambda (x) (string-apppend " " x)) 
-	      ;; other-args) "\n") 
-	      ;;	(current-output-port))
-	      (catch #t
+              ;(display (string-append 
+              ;          "child: " module-file " " write-fd " " read-fd " " 
+              ;          config-file " " app-window " " context " ")
+              ;          ;(string-append
+              ;          ; (map (lambda (x) (string-append " " x))
+              ;          ;      other-args) "\n"))
+              ;         (current-output-port))
+              (catch #t
 		     (lambda () (apply execl module-file module-file 
 				       write-fd read-fd config-file 
 				       app-window context other-args))
@@ -549,10 +552,13 @@
 							     (id->window 
 							      window-id))))
 				    ;; GJB:FIXME:MS: Can we get a better error?
-				    (lambda args (display 
-						  "Error evaling packet: ")
-					    (write packet)
-					    (newline))
+				    (lambda args 
+                                      (display "Error evaling packet: ")
+                                      (write packet)
+                                      (newline)
+                                      (display "Error was:")
+                                      (write args)
+                                      (newline))
 				    )
 			     (if (not (list-ref fmod 4))
 				 (remove-input-hook! input-hook-handle))))

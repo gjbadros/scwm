@@ -79,7 +79,7 @@
 ;; arg1 [ arg2 ] [ min max ]
 ;; arg1==0; desk=arg2
 ;; arg1!=0; desk=+arg1
-;; need to deal with arg3 and arg4
+;; SRL:FIXME::(SRL made fixme)need to deal with arg3 and arg4
   (get-two-numeric-args args
     (lambda (arg1 arg2)
       (if (= arg1 0) arg2 (+ arg1 (current-desk))))))
@@ -313,7 +313,7 @@
     (clean
      (words args)))))
 
-;; FIXMS: set-opaque-move-size is broken! for now.
+;; FIXME: set-opaque-move-size is broken! for now.
 
 ;;(define-fvwm-command "OpaqueMoveSize"
 ;;  (let ((x (get-one-numeric-arg args)))

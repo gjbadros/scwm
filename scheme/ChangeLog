@@ -1,3 +1,16 @@
+Sun Nov 11 02:30:29 2001  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* bincomm.scm: Fixed bug in long->string that output 0 for high
+	byte if the high bit of the high byte is set.
+
+	* fvwm-eval.scm: Improved commenting of some things for FIXMEs.
+
+	* fvwm-module.scm: Fixed catches using call-with-output-string to
+	take the port to output to like they are supposed to.  Added debug
+	output to show the file descriptors used to talk to the fvwm
+	module.  Improved the reporting of errors encountered while
+	executing an fvwm command for a module.
+
 Sat Jun 24 14:22:58 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-gtk-pager.scm: Set default width/height to 10/10, since it

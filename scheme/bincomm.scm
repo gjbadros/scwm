@@ -30,6 +30,7 @@
 
 (define old-integer->char integer->char)
 
+;; SRL:FIXME::Is this necessary any more?  Was it ever?
 (define (integer->char i)
   (if (< i 0) (set! i 0))
   (old-integer->char i))
@@ -71,8 +72,9 @@
 		   (intx (if (> int 2147483647)
 			     (- int 4294967296)
 			     int)))
+              ; SRL:FIXME::Use a loop!
 	      (string-set! s 3 
-			   (integer->char (ash intx -24)))
+			   (integer->char (logand #x000000ff (ash intx -24))))
 	      (string-set! s 2 
 			   (integer->char (logand #x000000ff (ash intx -16))))
 	      (string-set! s 1 
@@ -87,7 +89,7 @@
 			     (- int 4294967296)
 			     int)))
 	      (string-set! s 0 
-			   (integer->char (ash intx -24)))
+			   (integer->char (logand #x000000ff (ash intx -24))))
 	      (string-set! s 1 
 			   (integer->char (logand #x000000ff (ash intx -16))))
 	      (string-set! s 2 
@@ -103,7 +105,7 @@
 			     (- int 18446744073709551616)
 			     int)))
 	      (string-set! s 7 
-			   (integer->char (ash intx -56)))
+			   (integer->char (logand #x000000ff (ash intx -56))))
 	      (string-set! s 6 
 			   (integer->char (logand #x000000ff (ash intx -48))))
 	      (string-set! s 5 
@@ -126,7 +128,7 @@
 			     (- int 18446744073709551616)
 			     int)))
 	      (string-set! s 0 
-			   (integer->char (ash intx -56)))
+			   (integer->char (logand #x000000ff (ash intx -56))))
 	      (string-set! s 1 
 			   (integer->char (logand #x000000ff (ash intx -48))))
 	      (string-set! s 2 
