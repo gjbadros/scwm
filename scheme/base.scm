@@ -275,8 +275,8 @@ E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17)."
 Positive X moves right, negative moves left.
 Positive Y moves down, negative moves up."
   (with-window win
-	       (let ((pos (window-position)))
-		 (apply move-window (delta-position pos dx dy)))))
+	       (let ((pos (window-viewport-position)))
+		 (apply move-to (delta-position pos x y)))))
 
 (define*-public (window-title-height #&optional (win (get-window)))
   "Return WIN's titlebar's height.

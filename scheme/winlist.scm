@@ -25,6 +25,7 @@
   :use-module (app scwm base)
   :use-module (app scwm menus-extras)
   :use-module (app scwm style-options)
+  :use-module (app scwm flash-window)
   :use-module (app scwm listops))
 
 
