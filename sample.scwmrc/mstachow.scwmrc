@@ -1,0 +1,800 @@
+;;;; $Id$
+;;;;
+;;;; This is Maciej Stachowiak's scwm configuration file.
+;;;; It is hereby placed in the public domain.
+;;
+;; This scwmrc shows off a number of neat features. 
+;;
+;; Here are some hilights:
+;;
+;; - Uses a theme for the look so someone could easily change
+;; the theme to get a different look but keep the same useful
+;; bindings and menus, or vice versa.
+;;
+;; - Uses animated operations for everything for which they
+;; are available (still working on animated maximize).
+;;
+;; - For all window operation buttons, try to provide useful
+;; actions on both single and double click, and on hold or
+;; right click, drop down a menu that shows more options, as
+;; well as the key bindings for each one.
+;;
+;; - Use lower-by-one as the common-case lower, since I find
+;; this more useful; normal lower-window is still available
+;; through double clicks or other key bindings.
+;;
+;; - Interoperates nicely with Gnome (what can I say, I like it,
+;; if you prefer KDE substitute the analogous KDE functionality)
+;;
+;; - Provide key bindings for everything, but also try to make a
+;; lot of functionality accessible through the mouse.
+;;
+;; - For key bindings, bind per-window operations to combinations
+;; with Hyper, and global operations to combinations with Super.
+;;
+;; One important thing to note is that you will need Hyper and Super
+;; keys for the key bindings in this scwmrc to work. Here is the
+;; .xmodmaprc I use to set up my keys in X on a win95 keyboard.
+;; This one is actually kind of extreme, it sets Caps Lock to
+;; Control, left Control to Alt, the windows keys to Hyper, the Alt
+;; keys to Meta, and the menu key to Super. It also disables NumLock
+;; and ScrollLock. For less extreme key remappings, see the other
+;; example scwmrcs.
+;;
+;; clear lock
+;; clear control
+;; clear mod1
+;; clear mod2
+;; clear mod3
+;; clear mod4
+;; clear mod5
+;;
+;; keycode 66 = Control_L
+;; keycode 37 = Alt_L
+;; keycode 115 = Hyper_L
+;; keycode 64 = Meta_L
+;; keycode 113 = Meta_R
+;; keycode 116 = Hyper_R
+;; keycode 117 = Super_R
+;;
+;; add control = Control_L Control_R
+;; add mod1 = Alt_L
+;; add mod2 = Meta_L Meta_R
+;; add mod3 = Hyper_L Hyper_R
+;; add mod4 = Super_R
+;;
+;;
+;; The following less extreme xmodmaprc will just make the windows
+;; keys into hyper and the menu key into Super (assuming mod4 and mod5
+;; are free)
+;;
+;; clear mod4
+;; clear mod5
+;;
+;; keycode 115 = Hyper_L
+;; keycode 116 = Hyper_R
+;; keycode 117 = Super_R
+;;
+;; add mod4 = Hyper_L Hyper_R
+;; add mod5 = Super_R
+;;
+
+
+;;;;---------------------------;;;;
+;;;; import scwm modules       ;;;;
+
+(use-modules (app scwm base)
+	     (app scwm winops)
+	     (app scwm wininfo)
+             (app scwm stacking)
+             (app scwm optargs)
+             (app scwm placement)
+             (app scwm shutdown-opts)
+             (app scwm style)
+             (app scwm winlist)
+             (app scwm animation)
+             (app scwm animated-iconify)
+	     (app scwm themes)
+             (app scwm gnome-hints))
+
+;;;;-------------------------------;;;;
+;;;; utility procedures            ;;;;
+
+(define* (bind-direction-keys modifier move-proc #&key (percent 100)
+                              (no-move-val 0)
+                              (direction-keys '("Left" "Right" "Up" "Down"))
+                              (diagonal-keys 
+			       '("KP_Home" "KP_Page_Up" 
+				 "KP_End" "KP_Page_Down"))
+                              (bind-diagonals #f))
+  (bind-key 'all (string-append modifier 
+                                (list-ref direction-keys 0))
+            (lambda () (move-proc (%x (- percent)) no-move-val)))
+  (bind-key 'all (string-append modifier 
+                                (list-ref direction-keys 1))
+            (lambda () (move-proc (%x percent) no-move-val)))
+  (bind-key 'all (string-append modifier 
+                                (list-ref direction-keys 2))
+            (lambda () (move-proc no-move-val (%y (- percent)))))
+  (bind-key 'all (string-append modifier
+                                (list-ref direction-keys 3))
+            (lambda () (move-proc no-move-val (%y percent))))
+  (cond
+   (bind-diagonals
+    (bind-key 'all (string-append modifier 
+                                  (list-ref diagonal-keys 0))
+              (lambda () (move-proc (%x (- percent)) (%y (- percent)))))
+    (bind-key 'all (string-append modifier 
+                                  (list-ref diagonal-keys 1))
+              (lambda () (move-proc (%x 100) (%y (- percent)))))
+    (bind-key 'all (string-append modifier 
+                                  (list-ref diagonal-keys 2))
+              (lambda () (move-proc (%x (- percent)) (%y percent))))
+    (bind-key 'all (string-append modifier
+                                  (list-ref diagonal-keys 3))
+              (lambda () (move-proc (%x percent) (%y percent)))))))
+
+(define (desk-setter n)
+  (lambda ()
+    (set-current-desk! n)))
+
+(define (desk-setter/with-pointer-window n)
+  (lambda ()
+    (cond
+     ((current-window-with-pointer) =>
+      (lambda (win) (move-window-to-desk n win))))
+    (set-current-desk! n)))
+
+
+(define (desk-shifter n)
+  (lambda ()
+    (set-current-desk! (+ (current-desk) n))))
+
+(define (desk-shifter/with-pointer-window n)
+  (lambda ()
+    (cond
+     ((current-window-with-pointer) =>
+      (lambda (win)
+        (move-window-to-desk (+ (current-desk) n) win))))                     
+    (set-current-desk! (+ (current-desk) n))))
+
+(define (animated-move-to/relative/keep-inside win x y)
+  (let ((coords (map (lambda (ss ws wp sp)
+                       (and sp (max 0 (min (+ wp sp) (- ss ws)))))
+                     (display-size) (window-frame-size win)
+                     (window-viewport-position win) (list x y))))
+    (animated-move-to (car coords) (cadr coords) win #t)))
+
+(define (move-window-relative win x y)
+  (let ((coords (map + (window-position win) (list x y))))
+    (move-window (car coords) (cadr coords) win)))
+
+(define (move-viewport-and-pointer-window x y)
+  (let ((win (current-window-with-pointer)))
+    (if (not (sticky? win)) 
+        (move-window-relative win x y)))
+  (move-viewport x y))
+
+(define (move-or-raise-or-shade)
+  (case (mouse-event-type)
+    ((click) (raise-window))
+    ((motion) (opaque-move))
+    ((one-and-a-half-clicks) (raise-window) (opaque-move))
+    ((double-click) (animated-toggle-window-shade))))
+
+(define (resize-or-raise-or-iconify)
+  (case (mouse-event-type)
+    ((click) (raise-window))
+    ((motion) (opaque-resize))
+    ((one-and-a-half-clicks) (raise-window) (opaque-resize))
+    ((double-click) (animated-toggle-iconify))))
+
+(define (lower-by-one-or-lower)
+  (case (mouse-event-type)
+    ((click) (lower-by-one))
+    ((double-click) (lower-window))))
+
+(define* (vertical-maximize #&optional (win (get-window)))
+  (maximize 0 (%y 100) win))
+
+(define* (horizontal-maximize #&optional (win (get-window)))
+  (maximize (%x 100) 0 win))
+
+(define* (both-maximize #&optional (win (get-window)))
+  (maximize (%x 100) (%y 100) win))
+
+(define* (vertical-toggle-maximize #&optional (win (get-window)))
+  (toggle-maximize 0 (%y 100) win))
+
+(define* (horizontal-toggle-maximize #&optional (win (get-window)))
+  (toggle-maximize (%x 100) 0 win))
+
+(define* (both-toggle-maximize #&optional (win (get-window)))
+  (toggle-maximize (%x 100) (%y 100) win))
+
+(define* (toggle-stick-and-on-top #&optional (win (get-window)))
+  (cond
+   ((and (sticky? win) (kept-on-top? win))
+    (unstick win)
+    (un-keep-on-top win))
+   (else
+    (stick win)
+    (keep-on-top win))))
+
+;;;;-------------------------------;;;;
+;;;; global settings               ;;;;
+
+(shutdown-options #:switch-to-home-viewport #t)
+
+(set-edge-resistance! 500 10)
+(set-edge-scroll! (%x 100) (%y 100))
+
+
+;;;;-------------------------------;;;;
+;;;; paths                         ;;;;
+
+
+(define user-image-load-path 
+  (list (string-append (user-home) "/pixmaps")
+	(string-append (user-home) "/bitmaps")))
+
+
+;; these are OK for my system, but may need to be changed for
+;; yours. This should probably be eventually autoconfed or something.
+
+;;; set path to use for image searches
+(set! image-load-path 
+      (append 
+       user-image-load-path 
+       '("/usr/X11/lib/X11/mini-icons" "/usr/X11/include/X11/pixmaps" 
+	 "/usr/lib/icons" "/usr/local/X11/include/X11/pixmaps"
+	 "/usr/local/lib/icons" "/usr/local/icons"
+	 "/uns/share/include/X11/pixmaps" "/uns/share/include/X11/bitmaps")
+       image-load-path))
+
+
+(set! theme-path (cons "/home/mstx/working/scwm/themes" theme-path))
+	
+
+;;;;-------------------------------;;;;
+;;;; window styles                 ;;;;
+
+(use-theme "woven")
+
+(define helvetica-12-font 
+  (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+
+(menu-style #:fg "GhostWhite" #:bg "#600000" #:stipple "blue"
+	    #:font helvetica-12-font)
+
+
+(window-style "*" 
+	      #:icon-box (list (x- 70) 1 69 (y- 141))
+	      #:focus 'mouse
+	      #:random-placement #t #:smart-placement #t
+              #:transient-placement-proc place-at-point
+	      #:mwm-func-hint #t #:mwm-decor-hint #t
+	      #:hint-override #t #:decorate-transient #t
+	      #:PPosition-hint #f
+	      #:lenience #t)
+
+(define desk-widget
+  (make-style #:sticky #t #:winlist-skip #t
+	      #:border-width 3 #:focus 'none))
+
+(window-style "*lock" #:use-style desk-widget)
+(window-style "xload" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xscreensaver" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xbiff" #:no-titlebar #t #:use-style desk-widget)
+
+
+
+;;;;-------------------------------;;;;
+;;;; useful menus                  ;;;;
+
+
+(define window-ops-menu
+  (menu 
+   (list
+    (menuitem "Window Ops" #f)
+    menu-title
+    (menuitem "Move" #:action opaque-move)
+    (menuitem "Resize" #:action opaque-resize)
+    (menuitem "Raise" #:action raise-window)
+    (menuitem "Lower" #:action lower-window)
+    (menuitem "(Un)Window-Shade" #:action animated-toggle-window-shade)
+    (menuitem "(De)Iconify" #:action animated-toggle-iconify)
+    (menuitem "(Un)Maximize" #:action vertical-toggle-maximize)
+    (menuitem "(Un)Stick" #:action toggle-stick)
+    (menuitem "(Un)Keep On Top" #:action toggle-on-top)
+    menu-separator
+    (menuitem "Close" #:action close-window)
+    (menuitem "Delete" #:action delete-window)
+    (menuitem "Destroy" #:action destroy-window)
+    menu-separator
+    (menuitem "Refresh Screen" #:action refresh))))
+
+(define (popup-ops)
+  (popup-menu window-ops-menu))
+
+(define menu-quit-verify
+  (menu 
+   (list
+    (menuitem "Really quit scwm?" #f)
+    menu-title
+    (menuitem "Yes" #:action quit)
+    (menuitem "No" #:action #f)
+    menu-separator
+    (menuitem "Restart scwm" #:action (lambda () (restart "scwm"))))))
+
+(define (quit-verify)
+  (popup-menu menu-quit-verify))
+
+(define desk-menu 
+  (menu 
+   (list
+    (menuitem "Desks" #f)
+    menu-title
+    (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
+    (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
+    (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
+    (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
+
+(define (popup-desk-menu)
+  (popup-menu desk-menu))
+
+(define (window-desk-menu win) 
+  (menu 
+   (list
+    (menuitem "Move To Desk 1" 
+	      #:extra-label "(H-S-F1)"
+	      #:action (lambda () (move-window-to-desk 0 win)))
+    (menuitem "Move To Desk 2" 
+	      #:extra-label "(H-S-F2)"
+	      #:action (lambda () (move-window-to-desk 1 win)))
+    (menuitem "Move To Desk 3"
+	      #:extra-label "(H-S-F3)"
+	      #:action (lambda () (move-window-to-desk 2 win)))
+    (menuitem "Move To Desk 4"
+	      #:extra-label "(H-S-F4)"
+	      #:action (lambda () (move-window-to-desk 3 win))))))
+
+  
+(define util-menu 
+  (menu 
+   (list
+    (menuitem "Utilities" #f)
+    menu-title
+    (menuitem "xterm" #:action (lambda () (execute "xterm")))
+    (menuitem "rxvt" #:action (lambda () (execute "rxvt")))
+    (menuitem "emacs" #:action (lambda () (execute "emacs")))
+    (menuitem "top" #:action 
+	       (lambda () (execute "rxvt -T Top -n Top -e top")))
+    (menuitem "xcalc" #:action (lambda () (execute "xcalc")))
+    (menuitem "xmag" #:action (lambda () (execute "xmag")))
+    menu-separator
+    (menuitem "Desks" #:action desk-menu)
+    menu-separator
+    (menuitem "Exit scwm" #:action menu-quit-verify))))
+
+(define (popup-util)
+  (popup-menu util-menu))
+
+(define (make-small-window-ops-menu w)
+  (menu 
+   (list
+    (menuitem "Move" 
+	      #:extra-label "(H-M)"
+	      #:action opaque-move)
+    (menuitem "Resize" 
+	      #:extra-label "(H-S)"
+	      #:action opaque-resize)
+    (menuitem "Raise" 
+	      #:extra-label "(H-r)"
+	      #:action raise-window)
+    (menuitem "Lower By One" 
+	      #:extra-label "(H-l)"
+	      #:action lower-window)
+    (menuitem "Lower" 
+	      #:extra-label "(H-L)"
+	      #:action lower-window)
+    menu-separator
+    (menuitem "More" #:action 
+	      (menu 
+	       (list
+		(menuitem (if (iconified? w) "Deiconify" "Iconify")
+			  #:extra-label "(H-i)"
+			  #:action animated-toggle-iconify)
+		(menuitem (if (maximized? w)
+			      "Unmaximize"
+			      "Maximize") 
+			  #:extra-label "(H-m)"
+			  #:action vertical-toggle-maximize)
+		(menuitem "Vertical Maximize" 
+			  #:extra-label "(H-v)"
+			  #:action vertical-maximize)
+		(menuitem "Horizontal Maximize" 
+			  #:extra-label "(H-h)"
+			  #:action horizontal-maximize)
+		(menuitem (if (window-shaded? w)
+			      "Window-Unshade"
+			      "Window-Shade") 
+			  #:extra-label "(H-w)"
+			  #:action animated-toggle-window-shade)
+		(menuitem (if (sticky? w)
+			      "Unstick"
+			      "Stick") 
+			  #:extra-label "(H-s)"
+			  #:action toggle-stick)
+		(menuitem (if (kept-on-top? w)
+			      "UnKeep On Top"
+			      "Keep On Top")
+			  #:extra-label "(H-o)"
+			  #:action toggle-on-top))))
+    (menuitem "Move To Desk" #:action (window-desk-menu w))
+    menu-separator
+    (menuitem "Close" 
+	      #:extra-label "(H-c)"
+	      #:action close-window)
+    (menuitem "Destroy" #:action destroy-window))))
+
+(define (popup-small-ops)
+  (popup-menu (make-small-window-ops-menu (get-window))))
+
+
+(define (window-stick-menu win)
+  (menu 
+   (list
+    (menuitem (if (sticky? win)
+		  "Unstick"
+		  "Stick")
+	      #:extra-label "(H-s)"
+	      #:action toggle-stick)
+    (menuitem (if (kept-on-top? win)
+		  "UnKeep On Top"
+		  "Keep On Top") 
+	      #:extra-label "(H-o)"
+	      #:action toggle-on-top)
+    (menuitem (if (and (sticky? win) (kept-on-top? win))
+		  "Unstick and UnKeep On Top"
+		  "Stick and Keep On Top") 
+	      #:extra-label "(H-t)"
+	      #:action toggle-stick-and-on-top))))
+	      
+(define (window-maximize-menu win)
+  (let ((tail
+	 (list
+	  (menuitem "Vertical Maximize" 
+		    #:extra-label "(H-v)"
+		    #:action vertical-maximize)
+	  (menuitem "Horizontal Maximize" 
+		    #:extra-label "(H-h)"
+		    #:action vertical-maximize))))
+    (menu 
+     (if (maximized? win)
+	 (cons (menuitem "Unmaximize" 
+			 #:extra-label "(H-m)"
+			 #:action unmaximize)
+	       tail)
+	 (append 
+	  tail
+	  (list (menuitem "Maximize" 
+			  #:extra-label "(H-m)"
+			  #:action both-maximize)))))))
+
+(define (window-shade-menu win)
+  (menu
+   (list
+    (menuitem (if (window-shaded? win)
+		  "Window-Unshade"
+		  "Window-Shade")
+	      #:extra-label "(H-w)"
+	      #:action animated-toggle-window-shade))))
+
+(define (window-iconify-menu win)
+  (menu
+   (list
+    (menuitem (if (iconified? win)
+		  "Deiconify"
+		  "Iconify")
+	      #:extra-label "(H-i)"
+	      #:action animated-toggle-iconify))))
+
+
+
+(define util-menu 
+  (menu 
+   (list
+    (menuitem "Utilities" #f)
+    menu-title
+    (menuitem "xterm" #:action (lambda () (execute "xterm")))
+    (menuitem "rxvt" #:action (lambda () (execute "rxvt")))
+    (menuitem "emacs" #:action (lambda () (execute "emacs")))
+    (menuitem "top" #:action 
+	       (lambda () (execute "rxvt -T Top -n Top -e top")))
+    (menuitem "xcalc" #:action (lambda () (execute "xcalc")))
+    (menuitem "xmag" #:action (lambda () (execute "xmag")))
+    menu-separator
+    (menuitem "Desks" #:action desk-menu)
+    menu-separator
+    (menuitem "Exit scwm" #:action menu-quit-verify))))
+
+
+(define (popup-util)
+  (popup-menu util-menu))
+
+
+;;;;-------------------------------;;;;
+;;;; More utility procs (buttons)  ;;;;
+
+; Return a proc that will close the window on a double click, 
+; and popup the window ops menu from the specified button on a 
+; single click or hold/drag, 
+
+(define (system-button-action bnum)
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((double-click) (close-window win))
+	     ((click motion) (popup-menu-from-decoration 
+			      (make-small-window-ops-menu win)
+			      win bnum)))))
+
+; Return a proc that will show the window
+
+(define (system-button-right-action bnum)
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((click motion) (popup-menu-from-decoration 
+			      (make-small-window-ops-menu win)
+			      win bnum)))))
+
+
+(define (stick-button-action bnum)
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((click) (toggle-stick))
+	     ((double-click) (toggle-stick-and-on-top))
+	     ((motion) (popup-menu-from-decoration 
+			(window-stick-menu win)
+			win bnum)))))
+
+(define (stick-button-right-action bnum)
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((click motion) (popup-menu-from-decoration 
+			      (window-stick-menu win)
+			      win bnum)))))
+  
+
+(define (maximize-button-action bnum)
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((click) (vertical-toggle-maximize))
+	     ((double-click) (both-toggle-maximize))
+	     ((motion) (popup-menu-from-decoration 
+			(window-maximize-menu win)
+			win bnum)))))
+
+(define (maximize-button-right-action bnum)
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((click motion) (popup-menu-from-decoration 
+			      (window-maximize-menu win)
+			      win bnum)))))
+
+
+(define (shade-button-action bnum)
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((click) (animated-toggle-window-shade))
+	     ((motion) (popup-menu-from-decoration 
+			(window-shade-menu win)
+			win bnum)))))
+
+(define (shade-button-right-action bnum)
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((click motion) (popup-menu-from-decoration 
+			      (window-shade-menu win)
+			      win bnum)))))
+
+(define (iconify-button-action bnum)
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((click) (animated-toggle-iconify))
+	     ((motion) (popup-menu-from-decoration 
+			(window-iconify-menu win)
+			win bnum)))))
+
+(define (iconify-button-right-action bnum)
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((click motion) (popup-menu-from-decoration 
+			      (window-iconify-menu win)
+			      win bnum)))))
+
+(define icon-action
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((motion) (opaque-move))
+	     ((double-click) (animated-deiconify))
+	     ((click) (popup-menu (window-iconify-menu win))))))
+
+(define icon-right-action
+  (lambda* (#&optional (win (get-window)))
+	   (case (mouse-event-type)
+	     ((click motion) (popup-menu
+			      (window-iconify-menu win))))))
+
+
+
+;;;;-------------------------------;;;;
+;;;; Key bindings                  ;;;;
+
+
+;;; Various movement key bindings
+
+;; move viewport, in small and large increments
+(bind-direction-keys "s-" move-viewport  #:bind-diagonals #t)
+(bind-direction-keys "s-S-" move-viewport #:percent 10 #:bind-diagonals #t)
+
+
+;; move viewport and current window in large and small increments
+(bind-direction-keys "H-" move-viewport-and-pointer-window
+                     #:bind-diagonals #t)
+(bind-direction-keys "H-S-" move-viewport-and-pointer-window
+                     #:percent 10 #:bind-diagonals #t)
+
+
+;; move mouse pointer in large, medium and tiny increments
+(bind-direction-keys "s-M-C-" move-pointer #:bind-diagonals #t)
+(bind-direction-keys "s-M-" move-pointer #:percent 10 #:bind-diagonals #t)
+(bind-direction-keys "s-M-S-" move-pointer  #:percent 1 #:bind-diagonals #t)
+
+
+;; move pointer and window, in small and large increments, keeping on screen
+(bind-direction-keys "H-M-C-" (lambda (x y) 
+                             (animated-move-to/relative/keep-inside 
+                              (get-window) x y))
+                     #:bind-diagonals #t)
+(bind-direction-keys "H-M-" (lambda (x y) 
+                                (animated-move-to/relative/keep-inside 
+                                 (get-window) x y))
+                     #:percent 10 #:bind-diagonals #t)
+(bind-direction-keys "H-M-S-" (lambda (x y) 
+                                (animated-move-to/relative/keep-inside 
+                                 (get-window) x y))
+                     #:percent 1 #:bind-diagonals #t)
+
+
+;;; changing virtual desktops
+(bind-key 'all "s-F1"  (desk-setter 0))
+(bind-key 'all "s-F2"  (desk-setter 1))
+(bind-key 'all "s-F3"  (desk-setter 3))
+(bind-key 'all "s-F4"  (desk-setter 4))
+
+(bind-key 'all "s-S-period"  (desk-shifter 1))
+(bind-key 'all "s-S-comma"  (desk-shifter -1))
+
+
+
+;;; changing virtual desktops, taking current window with you
+(bind-key 'all "H-F1"  (desk-setter/with-pointer-window 0))
+(bind-key 'all "H-F2"  (desk-setter/with-pointer-window 1))
+(bind-key 'all "H-F3"  (desk-setter/with-pointer-window 3))
+(bind-key 'all "H-F4"  (desk-setter/with-pointer-window 4))
+
+;;; move window to another virtual desktop
+(bind-key 'all "H-S-F1"  (lambda () (move-window-to-desk 0)))
+(bind-key 'all "H-S-F2"  (lambda () (move-window-to-desk 1)))
+(bind-key 'all "H-S-F3"  (lambda () (move-window-to-desk 3)))
+(bind-key 'all "H-S-F4"  (lambda () (move-window-to-desk 4)))
+
+
+(bind-key 'all "H-S-period"  (desk-shifter/with-pointer-window 1))
+(bind-key 'all "H-S-comma"  (desk-shifter/with-pointer-window -1))
+
+
+
+
+;;; useful window ops
+
+(bind-key 'all "H-c" close-window)
+
+(bind-key 'all "H-w" animated-toggle-window-shade)
+
+(bind-key 'all "H-s" toggle-stick)
+(bind-key 'all "H-o" toggle-on-top)
+(bind-key 'all "H-t" toggle-stick-and-on-top)
+
+(bind-key 'all "H-i" animated-toggle-iconify)
+(bind-key 'all "H-m" both-maximize)
+(bind-key 'all "H-v" vertical-maximize)
+(bind-key 'all "H-h" horizontal-maximize)
+
+(bind-key 'all "H-M" opaque-move)
+(bind-key 'all "H-S" opaque-resize)
+
+(bind-key 'all "H-r" raise-window)
+(bind-key 'all "H-R" raise-by-one)
+(bind-key 'all "H-L" lower-window)
+(bind-key 'all "H-l" lower-by-one)
+
+
+(bind-key 'all "s-l" 
+          (lambda ()
+            (show-window-list-menu #:show-geometry #t #:only 
+                                   on-current-desk?)))
+
+(bind-key 'all "s-L" 
+          (lambda ()
+            (show-window-list-menu #:show-geometry #t #:only 
+                                   (list iconified? on-current-desk?))))
+
+(bind-key 'all "s-i" 
+          (lambda ()
+            (show-window-list-menu #:show-geometry #t #:only 
+                                   (list iconified? on-current-desk?))))
+
+(bind-key 'all "s-o" popup-ops)
+
+
+(bind-key 'all "s-M-q" quit-verify)
+
+
+;;;;-------------------------------;;;;
+;;;; Mouse Bindings                ;;;;
+
+
+;; root menus
+(bind-mouse 'root 1 popup-util)
+(bind-mouse 'root 2 popup-ops)
+(bind-mouse 'root 3 (lambda () 
+		      (show-window-list-menu #:show-geometry #t 
+                                             #:only on-current-desk?)))
+
+;; titlebar
+(bind-mouse 'title 1 move-or-raise-or-shade)
+(bind-mouse 'title 2 resize-or-raise-or-iconify)
+(bind-mouse 'title 3 lower-by-one-or-lower)
+
+;; corners/sides
+(bind-mouse '(frame sidebar) 1 resize-or-raise-or-iconify)
+(bind-mouse '(frame sidebar) 2 move-or-raise-or-shade)
+(bind-mouse '(frame sidebar) 3 popup-small-ops)
+
+;; window buttons
+(bind-mouse 'button-1 1 (system-button-action 1))
+(bind-mouse 'button-1 3 (system-button-right-action 1))
+
+(bind-mouse 'button-3 1 (stick-button-action 3))
+(bind-mouse 'button-3 3 (stick-button-right-action 3))
+
+(bind-mouse 'button-2 1 (maximize-button-action 2))
+(bind-mouse 'button-2 3 (maximize-button-right-action 2))
+
+(bind-mouse 'button-4 1 (iconify-button-action 4))
+(bind-mouse 'button-4 3 (iconify-button-right-action 4))
+
+(bind-mouse 'button-6 1 (shade-button-action 6))
+(bind-mouse 'button-6 3 (shade-button-right-action 6))
+
+
+(bind-mouse 'icon 1 icon-action)
+(bind-mouse 'icon 3 icon-right-action)
+
+
+(bind-mouse 'all "H-1" popup-small-ops)
+
+;; (bind-mouse 'all "H-2")
+
+
+;;;;-------------------------------;;;;
+;;;; Interesting behaviors         ;;;;
+
+
+;;;; Always place netscape find dialogs at the cursor
+
+(window-style (win-and?? (resource-match?? "findDialog_popup")
+                         (class-match?? "Netscape"))
+              #:placement-proc (at-point-placement))

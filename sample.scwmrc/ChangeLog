@@ -1,3 +1,13 @@
+1999-02-13  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* mstachow.scwmrc: Added my personal scwmrc which has a number of
+	cool features, including hold and right-click menus on all the
+	buttons, and key bindings displayed in all the menus. Still to do:
+	make it portable to setups that have no Hyper or Super key, and
+	make the button 1 and 2 root menus more useful (included somewhere
+	should be a gnome apps menu, an xlock mode menu, and keybindings
+	wherever possible.
+
 1999-02-10  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added some paths to image-load-path; added some
