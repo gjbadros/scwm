@@ -986,7 +986,10 @@
 (debug-display "before-popup-menu-root-start\n")
 
 (define (popup-menu-root-start)
-  (popup-menu 'menu-root-start))
+  (with-window 
+   #f  ;; ensure that the window context is empty, so that, e.g.,
+       ;; window operations menu always prompts for a window
+   (popup-menu 'menu-root-start)))
 
 
 (define (popup-window-ops)
@@ -1203,7 +1206,7 @@
 ;; to add geometry strings to this as well.
 (bind-key 'all "C-S-Return" show-icon-list-menu)
 
-(bind-key 'all "C-S-M-z" (lambda () (popup-menu 'menu-root-start #t)))
+(bind-key 'all "C-S-M-z" (thunk popup-menu-root-start))
 
 (set-click-delay! 150)
 
