@@ -377,6 +377,7 @@ x_display_information()
   int Mscreen = DefaultScreen(dpy);
   Screen *screen = ScreenOfDisplay(dpy, Mscreen);
   Visual *visual = DefaultVisualOfScreen(screen);
+  /* RESOLUTION returns the pixels per cm, rounded */
 #define RESOLUTION(pixels, mm) ((((pixels) * 100000 / (mm)) + 50) / 100)
   int xres = RESOLUTION(screen->width, screen->mwidth);
   int yres = RESOLUTION(screen->height, screen->mheight);
