@@ -3004,6 +3004,8 @@ specified, ndicating no icon image. WIN defaults to the window context
 in the usual way if not specified. */
 {
   ScwmWindow *psw;
+  char *icon_name;
+  int length;
 
   VALIDATEN(win, 2, "set-icon!");
   psw = PSWFROMSCMWIN(win);
@@ -3014,6 +3016,15 @@ in the usual way if not specified. */
   } else {
     scm_wrong_type_arg("set-icon!", 1, image);
   }
+
+  if (IMAGE_P(image)) {
+    icon_name=gh_scm2newstr(IMAGE(psw->icon_req_image)->full_name);
+    /* FIXMS: This can't deal properly with app-specified icons! */
+    BroadcastName(M_ICON_FILE, psw->w, psw->frame,
+		  (unsigned long) psw, icon_name);   
+    free (icon_name);
+  }
+
 
   force_icon_redraw (psw);
   return SCM_UNSPECIFIED;

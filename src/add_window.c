@@ -785,6 +785,10 @@ AddWindow(Window w)
      the picture into the image object for debugging of scwmrc-s;
      then this could go back in, too, though I imagine it's
      rarely used --gjb 11/28/97  */
+
+  /* This could be made to work with the current stuff, but under our
+     model now, the icon won't get set until later, at which point (I
+     think) the right broadcast will happen. -MS */
   /*if (psw->szIconFile != NULL &&
       psw->szIconFile != Scr.DefaultIcon)
     BroadcastName(M_ICON_FILE, psw->w, psw->frame,

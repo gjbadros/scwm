@@ -1,3 +1,9 @@
+1998-07-20  Maciej Stachowiak  <maciej@localhost.localdomain>
+
+	* add_window.c (AddWindow): Add an explanatory comment.
+
+	* window.c (set_icon_x): Broadcast the new icon filename.
+
 Sun Jul 19 14:18:48 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* xproperty.c, window.c, scwmmenu.c, image.c, font.c, color.c,
