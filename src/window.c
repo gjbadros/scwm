@@ -527,7 +527,11 @@ set_animation_x(SCM vector)
   */
   citems = gh_vector_length(vector);
   for (i=0; i<citems; i++) {
+#ifdef HAVE_GH_VECTOR_REF
+    SCM val = gh_vector_ref(vector,gh_int2scm(i));    
+#else /* HAVE_GH_VECTOR_REF */
     SCM val = gh_vref(vector,gh_int2scm(i));
+#endif
     if (!gh_number_p(val)) {
       scm_wrong_type_arg(__FUNCTION__,iarg-1,vector);
     }
