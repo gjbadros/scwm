@@ -1,3 +1,17 @@
+Tue Jan 19 13:11:46 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* events.c:  Added X-root-PropertyNotify-hook and invoke it as
+	appropriate.  This provides some missing low-level support for
+	managing communication w/ kwm modules.
+
+	* menu.c: Added fMenuHotkeysActivateItems,
+ 	set-menu-hotkeys-activate-item! menu-hotkeys-activate-item?
+  	primitives, and honour them when handling shortcut keys during
+ 	menu-interaction "mode".  Permit XK_space to activate a menu item,
+ 	too.  Default behaviour has changed so that the keypress activates
+ 	the item (ala fvwm2, Win95, etc.). Thanks Juha Pohjalainen, Sam
+ 	Falkner for the feedback leading to this change.
+
 Mon Jan 18 20:13:54 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* ICCCM.c (s_send_client_message): Added send-client-message
