@@ -37,7 +37,7 @@ Both SWITCH-TO-HOME-VIEWPORT and MOVE-WINDOWS-TO-CURRENT-VIEWPORT may
 be be any of #f, #t, 'shutdown-only or 'restart-only. These options
 indicate when scwm should switch to the (0 0) viewport on shutdown,
 and whether all windows are moved to to the current viewport on
-shutdown, respectively.
+shutdown, respectively.  The default is #f.
 
 The possible settings mean never, always, only when shutting down or
 only when restarting, respectively.

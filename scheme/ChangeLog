@@ -1,3 +1,8 @@
+Sun Mar 31 18:24:13 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* shutdown-opts.scm: Added mention of the default value to
+	'shutdown-options'.
+
 Sun Mar 31 17:45:49 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* virtual.scm: Various doc fixes/improvements.
