@@ -50,16 +50,16 @@ Window scwmexec_init(Display *dpy)
   return(XCreateSimpleWindow(dpy, root, 3, 4, 2, 2, 1, 0, 0));
 }
 
-char *scwmexec_exec(Display *dpy, Window w, char *req)
+char *scwmexec_exec(Display *dpy, Window w, unsigned char *req)
 {
-  char *result, *out, *err;
+  unsigned char *result, *out, *err;
   scwmexec_exec_full(dpy, w, req, &out, &err);
   XFree (out);
   XFree (err);
   return result;
 }
 
-Bool predicate(Display *dpy, XEvent *ev, Window *w)
+Bool FPropertyNotifyOnWindow(Display *dpy, XEvent *ev, Window *w)
 {
   if (ev->type==PropertyNotify && ev->xproperty.window== *w) {
     return True;
@@ -68,8 +68,10 @@ Bool predicate(Display *dpy, XEvent *ev, Window *w)
   }
 }
 
-char *scwmexec_exec_full(Display *dpy, Window w, char *req,
-			 char **output, char **error)
+typedef Bool (*PredicateFn)();
+
+char *scwmexec_exec_full(Display *dpy, Window w, unsigned char *req,
+			 unsigned char **output, unsigned char **error)
 {
   Atom type_ret;
   int form_ret;
@@ -87,14 +89,14 @@ char *scwmexec_exec_full(Display *dpy, Window w, char *req,
 		  8, PropModeReplace, req, strlen(req)+1);
 
   XChangeProperty(dpy, root, XA_SCWMEXEC_REQWIN, 1,
-		  32, PropModeAppend, &w, 1);
+		  32, PropModeAppend, (unsigned char *) &w, 1);
 
   /* X event handling - wait for XA_SCWMEXEC_REPLY on w */
   XSelectInput(dpy,w,PropertyChangeMask);
 
 
   do {
-    XIfEvent (dpy, &ev, predicate, &w);
+    XIfEvent (dpy, &ev, (PredicateFn) FPropertyNotifyOnWindow, (XPointer) &w);
     if (ev.xproperty.state == PropertyNewValue) {
       if (ev.xproperty.atom == XA_SCWMEXEC_REPLY) {
 	got_reply = 1;
