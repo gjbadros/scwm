@@ -33,7 +33,7 @@ void *safemalloc(int length);
 
 /* FIXGJB: must handle a couple realloc-s too */
 
-#ifdef USE_CASSOWARY
+#if defined(USE_CASSOWARY) && defined(__cplusplus)
 #define NEWCPP(x) (new x)
 #define NEWCPPC(c,x) (new x[c])
 #define FREECPP(x) (delete x)
