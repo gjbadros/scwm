@@ -116,6 +116,7 @@ clean: mostlyclean
 
 distclean: clean
 
+image.d image.o: image.x
 
 image.x: image.c
 	guile-snarf $(CFLAGS) $< >tmp && mv tmp $@
