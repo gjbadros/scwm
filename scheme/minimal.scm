@@ -141,11 +141,18 @@ order in which they appear in HOOK-LIST"
   (let ((entry (assoc module *scwm-modules*))) 
     (and entry (null? (cdr entry)))))
 
-;;; GJB:FIXME:G1.3.2:  This might work in guile-1.3.2
+;;; GJB:FIXME::  This might work in guile-1.3.2
 ;;  (environment-bound? module-environment name))
 
+;; To debug module loading, use:
+;; (add-hook! module-loaded-hook display-module-loaded)
+(define (display-module-loaded module)
+  (display "loaded ") (write module) (newline))
+
+(define module-loaded-hook (make-hook 1))
 
 (define (use-scwm-module-note-success module)
+  (run-hook module-loaded-hook module)
   (let ((entry (assoc module *scwm-modules*)))
     (if (not entry)
 	(set! *scwm-modules* (cons (cons module '()) *scwm-modules*))
