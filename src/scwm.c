@@ -79,7 +79,7 @@
 #include "syscompat.h"
 #include "scwm-constraints.h"
 #ifdef USE_CASSOWARY
-#include "Cl/ClSimplexSolver.h"
+#include "ClSimplexSolver.h"
 #include "constraint-primitives.h"
 #endif
 
