@@ -1037,7 +1037,8 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
 	     the mouse, and release. Commenting out for now. */
 	  DBUG((DBG,FUNC_NAME,"Pointer not in selected item -- weird!"));
 	} else {
-	  scmAction = pmiim->pmi->scmAction;
+          if (pmiim && pmiim->pmi)
+            scmAction = pmiim->pmi->scmAction;
 	}
       }
       goto MENU_INTERACTION_RETURN;
@@ -1055,7 +1056,8 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
         /* int cch = */ XLookupString(&Event.xkey,&ch,1,&keysym,NULL);
         if (keysym == XK_Meta_L || keysym == XK_Meta_R ||
             keysym == XK_Alt_L || keysym == XK_Alt_R) {
-          scmAction = pmiim->pmi->scmAction;
+          if (pmiim && pmiim->pmi)
+            scmAction = pmiim->pmi->scmAction;
           goto MENU_INTERACTION_RETURN;
         }
       }
@@ -1075,7 +1077,8 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
 	  if (pmiim != pmiimSelected) {
 	    scwm_msg(WARN,FUNC_NAME,"Pointer not in selected item -- weird!");
 	  } else {
-	    scmAction = pmiim->pmi->scmAction;
+            if (pmiim && pmiim->pmi)
+              scmAction = pmiim->pmi->scmAction;
 	    goto MENU_INTERACTION_RETURN;
 	  }
 	}
@@ -1100,7 +1103,8 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
       } else if (ms == MENUSTATUS_NOP) {
 	break;
       }
-      pmiim->pmd->pmdv->fnWarpPointerToPmiim(pmiim);
+      if (pmiim)
+        pmiim->pmd->pmdv->fnWarpPointerToPmiim(pmiim);
       /* no break -- fall through to MotionNotify */
     }
       
