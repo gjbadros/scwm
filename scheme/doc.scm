@@ -7,7 +7,8 @@
   :use-module (app scwm base)
   :use-module (app scwm flux)
   :use-module (app scwm stringops)
-  :use-module (app scwm optargs))
+  :use-module (app scwm optargs)
+  :use-module (app scwm defoption))
 
 
 
@@ -83,8 +84,7 @@ Returns #t if any documentation was found, #f otherwise."
       (procedure-documentation evalsym))
      ((hook? evalsym)
       (hook-documentation evalsym))
-     (else (begin (use-modules (app scwm defoption))
-		  (scwm-option-documentation sym))))))
+     (else (scwm-option-documentation sym)))))
       
 ;; For testing...
 ;; (documentation "window-position")
