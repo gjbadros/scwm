@@ -1,5 +1,9 @@
 Tue Nov 17 01:56:17 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* configure.in: Bumped version to 0.9beta1
+
+	* ANNOUNCE, NEWS: Updated for 0.9beta1
+
 	* app/Makefile.am: Add scwm to DISTCLEANFILES to comply with GNU
  	Makefile standards. Patch from Francesco Tapparo.
 
