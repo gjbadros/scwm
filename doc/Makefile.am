@@ -4,9 +4,9 @@
 
 info_TEXINFOS=scwm.texi
 man_MANS=scwm.1 scwmexec.1 scwmrepl.1
-pkgdata_DATA=scwm-procedures.txt scwm-variables.txt scwm-hooks.txt scwm-concepts.txt scwm.sgml
+scwm_doc_DATA=scwm-procedures.txt scwm-variables.txt scwm-hooks.txt scwm-concepts.txt scwm.sgml
 EXTRA_DIST=scwm-faq scwm-intro-tutorial.scm session-management smproxy.patch \
-	theme-howto scwm.1 scwmexec.1 scwmrepl.1 $(pkgdata_DATA)
+	theme-howto scwm.1 scwmexec.1 scwmrepl.1 $(doc_DATA)
 
 # Use scwmdoc to build the documentation files
 # Set envvar $SCWMDOC_TEST_OPTIONS to  "-F" for a faster test

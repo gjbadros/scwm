@@ -664,6 +664,21 @@ SCWM_ARG_PATH(scwmrcdir,
 	scwmrcdir="${datadir}/${PACKAGE}/scwmrc"
 ])
 
+ 
+SCWM_ARG_PATH(docdir,
+[  --with-docdir=DIR      Install documentation files in DIR 
+                          [DATADIR/doc/PACKAGE]],
+[
+       AC_MSG_CHECKING(where documentation files should go)
+       scwm_docdir="${withval}"
+       AC_MSG_RESULT("${scwm_docdir}")
+],
+[
+       scwm_docdir="${datadir}/${PACKAGE}"
+])
+
+
+
 # open the parentheses
 scwm_image_load_path="(\\\"${scwm_pixmapdir}\\\" ";
 
@@ -698,6 +713,7 @@ AC_SUBST(scwmrcdir)
 AC_SUBST(scwm_image_load_path)
 AC_SUBST(scwm_utildir)
 AC_SUBST(scwm_viavoice_grammardir)
+AC_SUBST(scwm_docdir)
 
 
 dnl # Check for optional settings #
