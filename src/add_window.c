@@ -96,7 +96,7 @@ static XrmOptionDescRec table[] =
 #ifndef USE_CASSOWARY
 void CassowarySetCValuesAndSolve(ScwmWindow *psw, int fSolve)  { /* empty */ }
 void CassowaryInitClVarsInPsw(ScwmWindow *psw) { /* empty */ }
-void CassowaryInitClVarsInPscreen(Screen *pscreen) { /* empty */ }
+void CassowaryInitClVarsInPscreen(ScreenInfo *pscreen) { /* empty */ }
 void CassowaryNewWindow(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditPosition(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditSize(ScwmWindow *psw) { /* empty */ }
