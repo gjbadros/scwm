@@ -326,7 +326,7 @@ SzNewForModMaskKeyCode(int modmask, KeyCode code)
 
 
 /* Permit "Mouse-1", "1", "M1", "Mouse1", "mouse1" all to
-   be acceptable */
+   be acceptable, as well as "Button1", "Butt1", etc.  */
 static
 int
 BnumFromSz(const char *sz)
@@ -339,7 +339,8 @@ BnumFromSz(const char *sz)
     return 0;
   } else {
     int ichFirstDigit = strcspn(sz,"0123456789");
-    if (strncasecmp(sz,"mouse-",ichFirstDigit) != 0) {
+    if ((strncasecmp(sz,"mouse-",ichFirstDigit) != 0) &&
+        (strncasecmp(sz,"button-",ichFirstDigit) != 0)) {
       return -1; /* no match */
     } else {
       if (strlen(sz+ichFirstDigit) != 1) return -1;
@@ -915,13 +916,16 @@ if there is no matching binding.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
-          (SCM contexts, SCM key),
+SCWM_PROC(unbind_key, "unbind-key", 2, 2, 0,
+          (SCM contexts, SCM key, SCM ARG_IGNORE(ignored_proc1), SCM ARG_IGNORE(ignored_proc2)),
 "Remove any bindings attached to KEY in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
 KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete).
 The return value is #t if the binding was removed successfully, #f 
-otherwise. ")
+otherwise. 
+IGNORED-PROC1 and IGNORED-PROC2 can both be given, but are
+ignored;  they permit the identical arguments to be used
+as for `bind-mouse'.")
 #define FUNC_NAME s_unbind_key
 {
   KeySym keysym;
@@ -985,11 +989,14 @@ is not a valid keysym.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 0, 0,
-          (SCM contexts, SCM button),
+SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 2, 0,
+          (SCM contexts, SCM button, SCM ARG_IGNORE(ignored_proc1), SCM ARG_IGNORE(ignored_proc2)),
 "Remove any bindings attached to mouse BUTTON in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))
-BUTTON is a string or integer giving the mouse button number")
+BUTTON is a string or integer giving the mouse button number.
+IGNORED-PROC1 and IGNORED-PROC2 can both be given, but are
+ignored;  they permit the identical arguments to be used
+as for `bind-mouse'.")
 #define FUNC_NAME s_unbind_mouse
 {
   int bnum = 0;

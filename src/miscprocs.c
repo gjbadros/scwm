@@ -741,6 +741,103 @@ SCWM_IPROC(scwm_run_test_hook_1, "scwm-run-test-hook-1", 2, 0, 0,
 #endif
 
 
+SCWM_PROC(get_next_event, "get-next-event", 0, 0, 0,
+          (),
+"Return a represention of the next key or mouse event.
+The return value is (string modmask keycode) for key events
+or (string modmask button-number #t). The
+`cdr' of the return value can be used as the arguments to 
+`undo-passive-grab' and `redo-passive-grab'.
+The string is usable as a key binding string.  Modifiers 
+are listed first, separated by \"-\" followed by a \"-\" and the
+keysym name.  E.g., \"S-C-M-z\" is Shift+Control+Meta + 'z' key.
+If the event is only modifier keys, then the string will
+end in a \"-\"; e.g., \"S-C-M-\".
+See also `get-mouse-event' and `get-key-event'.")
+#define FUNC_NAME s_get_next_event
+{
+  Bool fAsyncMouse = True;
+  Bool fAsyncKeyboard = True;
+  XEvent ev;
+  XEvent evDiscard;
+  Bool fGotPress = False;
+  Bool fKey = False;
+
+  XSync(dpy,True);
+
+  if (XGrabKeyboard(dpy, Scr.NoFocusWin, False /* no owner events */, 
+                    fAsyncMouse? GrabModeAsync: GrabModeSync, 
+                    fAsyncKeyboard? GrabModeAsync: GrabModeSync,
+                    CurrentTime) != Success) {
+    return SCM_BOOL_F;
+  }
+
+  if (XGrabPointer(dpy, Scr.NoFocusWin, False /* no owner events */, 
+                   (ButtonPressMask | ButtonReleaseMask),
+                   fAsyncMouse? GrabModeAsync: GrabModeSync, 
+                   fAsyncKeyboard? GrabModeAsync: GrabModeSync,
+                   False,XCURSOR_ICON,
+                   CurrentTime) != Success) {
+    return SCM_BOOL_F;
+  }
+    
+  while (True) {
+    KeySym keysym;
+    XWindowEvent(dpy, Scr.NoFocusWin, (ButtonPressMask | KeyPressMask | KeyReleaseMask), &ev);
+    if (ev.type == ButtonPress) 
+      break;
+    keysym = XKeycodeToKeysym(dpy,ev.xkey.keycode,0);
+    if (ev.type == KeyPress) {
+      fGotPress = True;
+      continue;
+    }
+#ifdef DEBUG_GET_KEY_EVENT
+    scwm_msg(WARN,FUNC_NAME,"Got keycode = %d, keysym = %d",
+             ev.xkey.keycode,keysym);
+#endif
+    /* GJB:FIXME:: is this portable? Want to not list modifier
+       keys as keysym strings */
+    if (!(keysym >= XK_Shift_L && keysym <= XK_Hyper_R)
+        &&(ev.type == KeyRelease && fGotPress)) {
+      fKey = True;
+      break; /* got a real key, not a modifier, so exit the loop */
+    }
+  }
+
+  /* GJB:FIXME:: race? */
+  while (XCheckWindowEvent(dpy, Scr.NoFocusWin, 
+                           ButtonPressMask|ButtonReleaseMask|KeyReleaseMask|KeyPressMask, 
+                           &evDiscard)) {
+    scwm_msg(WARN,FUNC_NAME,"Discarding with state %d",evDiscard.xbutton.state);
+  }
+
+  XUngrabKeyboard(dpy, CurrentTime);
+  XUngrabPointer(dpy, CurrentTime);
+
+  if (fKey) {
+    char *sz = SzNewForModMaskKeyCode(ev.xkey.state,
+                                      ev.xkey.keycode);
+    SCM answer = gh_str02scm(sz);
+    FREE(sz);
+    return gh_list(answer,gh_int2scm(ev.xkey.state),
+                   gh_int2scm(ev.xkey.keycode), SCM_UNDEFINED);
+  } else {
+    /* mouse button */
+    char *sz = SzNewModifierStringForModMask(ev.xbutton.state);
+    char *szFull = NEWC(strlen(sz)+4,char);
+    SCM answer;
+    sprintf(szFull,"%sButton%d",sz,ev.xbutton.button);
+    answer = gh_str02scm(szFull);
+    FREE(sz);
+    FREE(szFull);
+    return gh_list(answer,gh_int2scm(ev.xbutton.state),
+                   gh_int2scm(ev.xbutton.button),SCM_BOOL_T,
+                   SCM_UNDEFINED);
+  }
+}
+#undef FUNC_NAME
+
+
 SCWM_PROC(get_key_event, "get-key-event", 0, 0, 0,
           (),
 "Return a represention of the next key event.
@@ -751,7 +848,7 @@ The string is usable as a key binding string.  Modifiers
 are listed first, separated by \"-\" followed by a \"-\" and the
 keysym name.  E.g., \"S-C-M-z\" is Shift+Control+Meta + 'z' key.
 If the event is only modifier keys, then the string will
-end in a \"-\"; e.g., \"S-C-M-\"")
+end in a \"-\"; e.g., \"S-C-M-\".  See also `get-next-event'.")
 #define FUNC_NAME s_get_key_event
 {
   Bool fAsyncMouse = False;
@@ -814,7 +911,8 @@ The return value is (string modmask button-number #t).  The
 `undo-passive-grab' and `redo-passive-grab'.
 The string is usable as a mouse binding string.  Modifiers 
 are listed first, separated by \"-\" followed by a \"-\" and the
-button number.  E.g., \"S-C-M-1\" is Shift+Control+Meta + button 1.")
+button number.  E.g., \"S-C-M-1\" is Shift+Control+Meta + button 1.
+See also `get-next-event'.")
 #define FUNC_NAME s_get_mouse_event
 {
   Bool fAsyncMouse = True;
@@ -851,7 +949,7 @@ button number.  E.g., \"S-C-M-1\" is Shift+Control+Meta + button 1.")
     char *sz = SzNewModifierStringForModMask(ev.xbutton.state);
     char *szFull = NEWC(strlen(sz)+4,char);
     SCM answer;
-    sprintf(szFull,"%s%d",sz,ev.xbutton.button);
+    sprintf(szFull,"%sButton%d",sz,ev.xbutton.button);
     answer = gh_str02scm(szFull);
     FREE(sz);
     FREE(szFull);

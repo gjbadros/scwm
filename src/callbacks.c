@@ -1101,7 +1101,11 @@ Write a debug message if DEBUG is #t.")
 void init_callbacks()
 {
   SCWM_VAR_INIT(this_command,"this-command",SCM_BOOL_F);
+  /** The current command when executing the `pre-command-hook';  may be mutated to affect 
+      what command is run.  See also `this-command-args'. */
   SCWM_VAR_INIT(this_command_args,"this-command-args",SCM_EOL);
+  /** The arguments to the current command when executing the `post-command-hook'; may be
+      mutated to affect the arguments when the command is run.  See also `this-command'. */
 
   gettimeofday(&last_timeval, NULL);
 
