@@ -87,7 +87,7 @@ SCM_PROC (s_color_p, "color?", 1, 0, 0, color_p);
 SCM 
 color_p (SCM obj)
 {
-  return (COLOR_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
+  return SCM_BOOL_FromBool(COLOR_P(obj));
 }
 
 /* FIXMS: Should we extend this to return r, g and b values? Should we

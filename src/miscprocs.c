@@ -390,7 +390,7 @@ x_display_information()
 		     SCM_MAKINUM(planes),
 		     SCM_MAKINUM(bits_per_rgb),
 		     gh_str02scm(vc), /* class */
-		     fColor? SCM_BOOL_T : SCM_BOOL_F,
+		     SCM_BOOL_FromBool(fColor),
 		     SCM_UNDEFINED);
 }
 

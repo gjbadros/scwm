@@ -165,7 +165,7 @@ SCM_PROC (s_font_p, "font?", 1, 0, 0, font_p);
 SCM 
 font_p(SCM obj)
 {
-  return (FONT_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
+  return SCM_BOOL_FromBool(FONT_P(obj));
 }
 
 

@@ -97,7 +97,7 @@ SCM_PROC(s_menu_p,"menu?", 1,0,0, menu_p);
 SCM 
 menu_p(SCM obj)
 {
-  return (MENU_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
+  return SCM_BOOL_FromBool(MENU_P(obj));
 }
 
 

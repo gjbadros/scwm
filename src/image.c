@@ -141,7 +141,7 @@ SCM_PROC (s_image_p, "image?", 1, 0, 0, image_p);
 SCM 
 image_p(SCM obj)
 {
-  return (IMAGE_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
+  return SCM_BOOL_FromBool(IMAGE_P(obj));
 }
 
 
