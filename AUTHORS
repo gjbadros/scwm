@@ -1,3 +1,5 @@
+Authors of Scwm
+===============
 
 Maciej Stachowiak, mstachow@mit.edu:
 originally modified fvwm to use guile as the configuration language,
@@ -31,11 +33,12 @@ He is the primary author or maintainer of at least the following files,
 in the directory scwm:
     Grab.c      ICCCM.c            draw-pie-menu.c drawmenu.c 
     menuitem.c  module-interface.c scwmenu.c       string_token.c 
-    system.c    xrm.c xmisc.c
+    system.c    xrm.c              xmisc.c         miscprocs.c
+    log-usage.c
 in the directory scheme:
     flux.scm minimal.scm module-types.scm xlock-menu.scm
 in the directory utilities/dev:
-    X-error-describe
+    X-error-describe extract-docs
 
 
 Sam Steingold:
@@ -56,11 +59,11 @@ scheme. Is to blame for the following files in the directory scwm:
     xproperty.c
 
 
-
 Tom LaStrange: 
 wrote Twm, from which Scwm is indirectly derived. The following files
 in the subdirectory scwm still supposedly have traces of twm code:
     add_window.c events.c
+
 
 Robert Nation:
 originally wrote Fvwm, from which Scwm is (currently) derived. The
@@ -70,9 +73,10 @@ subdirectory scwm:
     binding.c     borders.c     color.c       colormaps.c
     colors.c      complex.c     decor.c       deskpage.c  
     decorations.c events.c      face.c        focus.c
-    icons.c       misc,c        miscprocs.c   move.c
+    icons.c       misc.c        miscprocs.c   move.c
     placement.c   resize.c      scwm.c        util.c
     window.c
+
 
 Charles Hines:
 continued maintenance of Fvwm after the retirement of Robert Nation as
