@@ -31,6 +31,7 @@
 #include "move.h"
 #include "virtual.h"
 #include "events.h"
+#include "xmisc.h"
 
 
 /* Create the small window to show the interactively-moved/resized window's
@@ -79,6 +80,56 @@ being moved or resized interactively. */
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
+
+
+
+SCWM_PROC (display_message, "display-message", 1, 0, 0,
+           (SCM msg))
+     /** Show MSG (a string) as a single line in the message window.
+Note that MSG should not contain newline characters as they will
+not be honoured.  See also `hide-message'.  These primitives
+may disappear when GTk support is sufficiently mature. */
+#define FUNC_NAME s_display_message
+{
+  char *sz = NULL;
+  if (!UNSET_SCM(msg) && !gh_string_p(msg)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, msg);
+  }
+  MapMessageWindow();
+  if (gh_string_p(msg)) {
+    sz = gh_scm2newstr(msg,NULL);
+    DisplayMessage(sz, True);
+  }
+  if (sz) FREE(sz);
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC (hide_message, "hide-message", 0, 0, 0,
+           ())
+     /** Hide the message window.
+See also `display-message'.  These primitives may disappear when GTk
+support is sufficiently mature.  */
+#define FUNC_NAME s_hide_message
+{
+  UnmapMessageWindow();
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC (message_window_mapped_p, "message-window-mapped?", 0, 0, 0,
+           ())
+     /** Return #t if the message window is mapped, #f otherwise.
+See also `display-message', `hide-message'.  These primitives may disappear when GTk
+support is sufficiently mature.  */
+#define FUNC_NAME s_hide_message
+{
+  return SCM_BOOL_FromBool(FXIsWindowMapped(dpy,Scr.MsgWindow));
+}
+#undef FUNC_NAME
+
 
 
 /*
