@@ -412,11 +412,13 @@
 ;;(define ns-win (select-window-interactively))
 ;;(define (netscape-win) ns-win)
 
+(define w (select-window-interactively))
+
 (define (move-next-to-netscape-win w)
   (let* ((ns-pos (window-viewport-position (netscape-win)))
 	 (x (+ (car ns-pos) 300))
 	 (y (- (cadr ns-pos) 30)))
-    (move-to x y w #f #f)
+    (move-to x y w)
     (move-pointer-to (+ x 30) (+ y 55))))
 ;;    (write-all #t "moving next to netscape window " x ", " y "\n")))
 
@@ -851,7 +853,7 @@
 	      (menuitem "SCWM interaction" #:action
 			(run-in-xterm "/usr/local/bin/scwmrepl"))
 	      (menuitem "Info on a window" #:action window-info)
-	      (menuitem "Other preferences" #:action (menu-prefs))
+	      (menuitem "Other preferences" #:action (menu-prefs)))))
 ;	      menu-separator
 ;	      (menuitem "Opaque Move" #:action opaque-move-menu)
 ;	      (menuitem "Desk Size" #:action desk-size-menu)
@@ -868,7 +870,7 @@
 ;				      (or (getenv "EDITOR") "gvim")
 ;				      " " user-init-file))))))
 ;	      (menuitem "Save settings" #:action save-settings))))
-	      )))
+;	      ))
 
 (define menu-preferences menu-prefs-gjb)
 
@@ -1185,21 +1187,21 @@
 (bind-key 'all "C-M-KP_7" (lambda () (animated-move-to 0 0)))
 (bind-key 'all "C-M-KP_9"
  	  (lambda () (with-window (get-window)
-		       (animated-move-to (x- (w%x 100)) 0)))))
+		       (animated-move-to (x- (w%x 100)) 0))))
 (bind-key 'all "C-M-KP_1" 
 	  (lambda () (with-window (get-window)
 		       (animated-move-to 0 (y- (w%y 100))))))
 (bind-key 'all "C-M-KP_3" (lambda ()
  	  (lambda () (with-window (get-window)
-		       (animated-move-to (x- (w%x 100)) (y- (w%y 100))))))
+		       (animated-move-to (x- (w%x 100)) (y- (w%y 100)))))))
 
 (bind-key 'all "C-M-KP_8" (lambda () (animated-move-to #f 0)))
 (bind-key 'all "C-M-KP_6" 
- 	  (lambda () (with-window (get-window
-		       (animated-move-to (x- (w%x 100)) #f)))))
+ 	  (lambda () (with-window (get-window)
+		       (animated-move-to (x- (w%x 100)) #f))))
 (bind-key 'all "C-M-KP_2"  
 	  (lambda () (with-window (get-window) 
-		       (animated-move-to #f (y- (w%y 100)))))
+		       (animated-move-to #f (y- (w%y 100))))))
 (bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 #f)))
 
 
