@@ -1,3 +1,12 @@
+Wed Sep  8 09:37:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Set HAVE_ESD conditional to false when
+	--disable-esd. (Thanks to Hubert Canon for bug report!).
+
+	* Makefile.common: Use || {rm $@; false} in building .x files so
+	faulty .x files do not stick around (inspired by similar change
+	using a subshell in the guile sources).
+
 Tue Sep  7 23:47:16 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Use cassowary-config script if it is installed to
