@@ -1,3 +1,11 @@
+Wed Sep  9 15:16:21 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Initialize buttons2grab using XSERVER_MAX_BUTTONS
+
+	* focus.c, add_window.c, binding.c: Use XSERVER_MAX_BUTTONS, not 3
+
+	* resize.c: Fix FUNC_NAME bug in message_window_mapped_p
+
 Wed Sep  9 14:18:18 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* resize.c: Added display-message, hide-message,
