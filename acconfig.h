@@ -18,3 +18,9 @@
    meaning that gh_vref should no longer be used. This should be
    true of snapshots newer than 971012.  */
 #undef HAVE_GH_VECTOR_REF
+
+/* Define this if your libguile has readline support. This should be
+   true of snapshots newer than 971023.  */
+#undef HAVE_SCM_READLINE
+
+
