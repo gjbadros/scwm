@@ -1310,7 +1310,7 @@ E.g., (keymask-keycode->string 4 44) => "C-j". */
   int mask;
   KeyCode code;
   VALIDATE_ARG_INT_RANGE_COPY(1,keymask,0,255,mask);
-  VALIDATE_ARG_INT_RANGE_COPY(2,keycode,0,255,code);
+  VALIDATE_ARG_INT_COPY(2,keycode,code);
   
   { /* scope */
     char *sz = SzNewForModMaskKeyCode(mask,code);

@@ -742,13 +742,10 @@ end in a "-"; e.g., "S-C-M-"
   /* discard events on the no focus win */
   while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask, &evDiscard));
 
-  XSelectInput(dpy,Scr.NoFocusWin,KeyReleaseMask);
-
   if (XGrabKeyboard(dpy, Scr.NoFocusWin, False /* no owneer events */, 
                     fAsyncMouse? GrabModeAsync: GrabModeSync, 
                     fAsyncKeyboard? GrabModeAsync: GrabModeSync,
                     CurrentTime) != Success) {
-    XSelectInput(dpy,Scr.NoFocusWin,0);
     return SCM_BOOL_F;
   }
     
@@ -756,7 +753,6 @@ end in a "-"; e.g., "S-C-M-"
 
   while (XCheckWindowEvent(dpy, Scr.NoFocusWin, KeyReleaseMask|KeyPressMask, &evDiscard));
 
-  XSelectInput(dpy,Scr.NoFocusWin,0);
   XUngrabKeyboard(dpy, CurrentTime);
 
   { /* scope */

@@ -516,6 +516,8 @@ MoveViewport_internal(int newx, int newy)
         MovePswToCurrentPosition(psw);
     } else {
       BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+      if (psw->fIconified)
+        BroadcastIconInfo(M_ICON_LOCATION, psw);
     }
   }
 
@@ -596,21 +598,9 @@ changeDesks(int val1, int val2)
     }
   }
 
-  if (FocusWin && FocusWin->fClickToFocus) {
-    /* GJB:FIXME:: this should be a runtime option */
-#ifndef NO_REMEMBER_FOCUS
-    SetFocus(FocusWin->w, FocusWin, 0);
-  /* OK, someone beat me up, but I don't like this. If you are a predominantly
-   * focus-follows-mouse person, but put in one sticky click-to-focus window
-   * (typically because you don't really want to give focus to this window),
-   * then the following lines are screwed up. */
-  /* GJB:FIXME:: what's going on here? --03/25/98 gjb */
-/*  else if (StickyWin && StickyWin->fSticky)
-   SetFocus(StickyWin->w, StickyWin,1); */
-  } else {
-#endif
-    SetFocus(Scr.NoFocusWin, NULL, 1);
-  }
+  /* be sure the correct window gets focus
+     if we are in focus-follow-mouse mode */
+  CoerceEnterNotifyOnCurrentWindow();
 }
 
 
