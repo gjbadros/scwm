@@ -134,14 +134,14 @@ make_color (SCM cname)
   if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, cn, &color)) {
     free(cn);
     scwm_error("make-color",2);
-#ifdef 0   
+#if 0   
     scwm_msg(WARN,s_make_color,"Unable to parse color `%s'",cn);
     fBad = True;
 #endif
   } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
     free(cn);
     scwm_error("make-color",3);
-#ifdef 0
+#if 0
     scwm_msg(WARN,s_make_color,"Unable to allocate color `%s'",cn);
     fBad = True;
 #endif
