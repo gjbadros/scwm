@@ -1,3 +1,13 @@
+Thu Dec  9 07:35:08 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* spare-blue.scwmrc: New version from Robert Chassell.
+
+Wed Dec  8 11:02:39 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Fix a define -> define* as needed to recognize
+	(interactive) declaration.  Change desk1 to have a gray4
+	background instead of lightgreen.
+
 Tue Dec  7 13:35:07 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Decorate transients since otherwise they are hard 
