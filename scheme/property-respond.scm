@@ -58,8 +58,10 @@ See also `X-PropertyNotify-hook'."
 ;; (reset-hook! X-PropertyNotify-hook)
 
 (define (handle-flash-property win value)
+  (let* ((color-name (and value (car value)))
+	 (color (and color-name (maybe-make-color color-name))))
   (if value
-      (flash-window win #:color color)))
+      (flash-window win #:color color))))
 
 (define (handle-flashing-property win value)
   (let* ((color-name (and value (car value)))
@@ -77,11 +79,13 @@ See also `X-PropertyNotify-hook'."
 	  (not (eq? win (window-with-focus))))
       (handle-flashing-property win value)))
 
+;;; Association list of properties that can change to handlers to run.
+;;; Used by 'property-changed-response'.
 (define-public property-responses
   `(
     (flashing ,handle-flashing-property)
-    (flash ,handle-flash-property)
-    (alert ,handle-alert-property)))
+    (flash    ,handle-flash-property)
+    (alert    ,handle-alert-property)))
 
 ;; ((cadr (assoc 'flashing property-responses)) (window-with-focus) (list "true"))
 ;; ((cadr (assoc 'flashing property-responses)) (window-with-focus) #f)
@@ -98,12 +102,13 @@ See also `X-PropertyNotify-hook'.  Currently handles
 
 (define-public (start-property-respond)
   "Turn on property-change responses.
-See `property-changed-respond' and `X-PropertyNotify-hook'."
+See `property-changed-respond','property-change-debug', and `X-PropertyNotify-hook'."
+  (add-hook! X-PropertyNotify-hook property-changed-debug)
   (add-hook! X-PropertyNotify-hook property-changed-respond))
 
 (define-public (stop-property-respond)
   "Turn off property-change responses.
-See `property-changed-respond' and `X-PropertyNotify-hook'."
+See `property-changed-respond','property-change-debug', and `X-PropertyNotify-hook'."
   (if (bound? property-changed-debug)
       (remove-hook! X-PropertyNotify-hook property-changed-debug))
   (if (bound? property-changed-respond)

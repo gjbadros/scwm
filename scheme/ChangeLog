@@ -1,3 +1,13 @@
+Sun Apr 21 00:11:29 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* property-respond.scm:
+	Made 'handle-flash-property' work when the color is not specified.
+	Added comment to property-responses.
+	Added 'property-changed-debug' to hooks inserted by
+	  'start-property-respond' to be consistent with 'stop-property-respond'.
+	Improved docs for 'start-property-respond' and 'stop-property-respond'.
+	Improved code formatting.
+
 Sat Apr 20 22:16:25 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* quote.scm:
