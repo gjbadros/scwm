@@ -1,0 +1,4 @@
+Fri Oct 17 18:18:55 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.in: Added VPATH support.
+
