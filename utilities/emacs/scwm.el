@@ -558,29 +558,31 @@ Procedure Index or in another manual found via the variable
 
 ;; fontifications
 ;; --------------
-(require 'cl)                   ; for assoc*
-(let ((font-keywds
-       (cond ((boundp 'running-xemacs)
-              (put 'scwm-mode 'font-lock-defaults
-                   (get 'scheme-mode 'font-lock-defaults))
-              scheme-font-lock-keywords)
-             ((and (string-lessp emacs-version "20.3")
-                   (boundp 'font-lock-defaults-alist))
-              (cdr
-               (or (assq 'scwm-mode font-lock-defaults-alist)
-                   (car (setq font-lock-defaults-alist
-                              (cons (cons 'scwm-mode
-                                          (cdr (assq
-                                                'scheme-mode
-                                                font-lock-defaults-alist)))
-                                    font-lock-defaults-alist))))))
-             (scheme-font-lock-keywords-2))))
-  ;; dirty hack!!!
-  (when (and font-keywds
-             (not (assoc* "&" font-keywds :test 'string-match)))
-    (nconc font-keywds
-           (list (cons "\\<&\\sw+\\>"
-                       (cdr (assoc* ":" font-keywds :test 'string-match)))))))
+(if (featurep 'font-lock)
+    (progn
+      (require 'cl)                   ; for assoc*
+      (let ((font-keywds
+	     (cond ((boundp 'running-xemacs)
+		    (put 'scwm-mode 'font-lock-defaults
+			 (get 'scheme-mode 'font-lock-defaults))
+		    scheme-font-lock-keywords)
+		   ((and (string-lessp emacs-version "20.3")
+			 (boundp 'font-lock-defaults-alist))
+		    (cdr
+		     (or (assq 'scwm-mode font-lock-defaults-alist)
+			 (car (setq font-lock-defaults-alist
+				    (cons (cons 'scwm-mode
+						(cdr (assq
+						      'scheme-mode
+						      font-lock-defaults-alist)))
+					  font-lock-defaults-alist))))))
+		   (scheme-font-lock-keywords-2))))
+	;; dirty hack!!!
+	(when (and font-keywds
+		   (not (assoc* "&" font-keywds :test 'string-match)))
+	  (nconc font-keywds
+		 (list (cons "\\<&\\sw+\\>"
+			     (cdr (assoc* ":" font-keywds :test 'string-match)))))))))
 
 (provide 'scwm)
 ;;; scwm ends here
