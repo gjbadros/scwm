@@ -223,7 +223,7 @@ to some change I made in the pixmap code --11/08/97 gjb
 Not reproducible any longer --08/02/98 gjb
 
 
-- Animated window-shade bug, reported by Sam Steingold <sds@usa.net>,
+- Animated window-shade bug, reported by Sam Steingold <sds@gnu.org>,
 exploit confirmed by MS, but I have no clue how to fix it right now:
 Open 2 windows, one (1) partially obscuring the other's (2) title bar.
 Double click on the (1)'s title bar, shading it.  You can see that the
