@@ -1,9 +1,8 @@
 /* $Id$
- * drawmenu.c
- * By Greg J. Badros -- Nov 22, 1997
- * This is the default menu drawing code.
- * Later we can make this interface be implemented by
- * dynamically loaded functions
+ * draw-xpm-menu.c
+ * By Todd Larason -- Sep 30, 1998
+ * Modified from the original menu drawing code
+ *  implemented by Greg J. Badros -- Nov 22, 1997
  */
 
 #ifdef HAVE_CONFIG_H

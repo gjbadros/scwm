@@ -315,8 +315,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
      the menu -- is there a better default -- maybe we should just
      always have some font object for "fixed" */
   if (UNSET_SCM(font) && Scr.menu_font != SCM_UNDEFINED) {
-    /* FIXJTL: this can't be right; this is overriden right after this */
-    pmenu->scmFont = Scr.menu_font;
+    font = Scr.menu_font;
   } else if (!FONT_OR_SYMBOL_P(font)) {
     scm_wrong_type_arg(FUNC_NAME,iarg,font);
   }
@@ -1024,11 +1023,15 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 	} else {
 	  /* same menu as we were on */
 	  if (pmiim != PmiimSelectedFromPmd(pmd)) {
+#ifdef SCWM_DEBUG_MSGS
             MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	    /* and it's not the one we've already got selected */
-            DBUG((DBG,__FUNCTION__,"Moved off old selection from %s onto %s vs. %s, %d", 
-                 SzFirstItemFromPmd(pmd), pmiim->pmi->szLabel, pmiimSelected?pmiimSelected->pmi->szLabel: "NULL",
-                 c10ms_delays));
+            scwm_msg(DBG,__FUNCTION__,
+                     "Moved off old selection from %s onto %s vs. %s, %d", 
+                     SzFirstItemFromPmd(pmd), pmiim->pmi->szLabel, 
+                     pmiimSelected?pmiimSelected->pmi->szLabel: "NULL",
+                     c10ms_delays);
+#endif
 	    UnselectAndRepaintSelectionForPmd(pmd);
 	  } else {
             DBUG((DBG,__FUNCTION__,"Same item, %d", c10ms_delays));

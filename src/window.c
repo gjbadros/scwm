@@ -406,7 +406,7 @@ make_window(ScwmWindow * win)
   /* Warning, arbitrary constant, we really need growable hash
      tables. */
 
-  win->other_properties=scm_make_vector(SCM_MAKINUM(5), SCM_EOL);
+  win->other_properties = gh_make_vector(SCM_MAKINUM(5), SCM_EOL);
   scm_protect_object(answer);
 
   gh_allow_ints();

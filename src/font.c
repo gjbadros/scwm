@@ -393,7 +393,7 @@ void init_font()
   scm_permanent_object(font_hash_table);
 
   protected_fonts =
-    scm_make_vector (SCM_MAKINUM(2), SCM_EOL);
+    gh_make_vector (SCM_MAKINUM(2), SCM_EOL);
   scm_permanent_object(protected_fonts);
 
   gh_allow_ints();

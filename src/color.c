@@ -835,7 +835,7 @@ init_color()
     scm_make_weak_value_hash_table (gh_int2scm(COLOR_HASH_SIZE));
   scm_protect_object(color_hash_table);
 
-  protected_colors = scm_make_vector (gh_int2scm(6), SCM_EOL);
+  protected_colors = gh_make_vector (gh_int2scm(6), SCM_EOL);
   scm_protect_object(protected_colors);
 
   scm_protect_object(str_black=gh_str02scm("black"));

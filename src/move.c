@@ -776,7 +776,7 @@ It is called with one argument, WINDOW. */
 It is called with three arguments, WINDOW, NEW_X, and NEW_Y,
 whenever the window is moved to a new location. */
 
-SCWM_HOOK(interactive_move_finish_hook,"interactive-move-finish-hook");
+  SCWM_HOOK(interactive_move_finish_hook,"interactive-move-finish-hook");
   /** This hook is invoked at the end of an interactive move.
 It is called with one argument, WINDOW. */
 
