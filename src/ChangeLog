@@ -1,3 +1,10 @@
+Tue Nov 11 12:49:37 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c: Use SCM_BOOL_F to report a bad key binding
+
+	* icons.c: Fix bug wrt application icond window; Thanks Andrei
+ 	Tcherepanov <tandr@ptc.com>.
+
 Mon Nov 10 20:41:21 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* move.c, window.c: Fix AnimatedShadeWindow()'s handling of
