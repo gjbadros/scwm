@@ -57,25 +57,37 @@
   "Return the viewport pixel coordinate X pixels left of the right display edge."
   (- display-width x))
 
-(define-public (viewport-x-position)
-  "Return the x coordinate of the current viewport."
-  (car (viewport-position)))
-
-(define-public (vx- x)
-  "Return the virtual pixel coordinate X pixels left of the right display edge."
-  (- (+ (viewport-x-position) display-width) x))
-
 (define-public (y- y)
   "Return the viewport pixel coordinate Y pixels up from the bottom display edge."
   (- display-height y))
+
+(define-public (viewport-x-position)
+  "Return the x coordinate of the current viewport."
+  (car (viewport-position)))
 
 (define-public (viewport-y-position)
   "Return the y coordinate of the current viewport"
   (cadr (viewport-position)))
 
+(define-public (viewport->virtual x y)
+  "Return the virtual coordinates for viewport X,Y."
+  (map + (viewport-position) (list x y)))
+
+(define-public (virtual->viewport x y)
+  "Return the viewport coordinates for virtual X,Y."
+  (map - (list x y) (viewport-position)))
+
+(define-public (virtual-size)
+  "Return the size of the virtual screen in pixels."
+  (map * (desk-size) (display-size)))
+
+(define-public (vx- x)
+  "Return the virtual coordinate X pixels left of the right virtual edge."
+  (- (car (virtual-size) x)))
+
 (define-public (vy- y)
-  "Return the virtual pixel coordinate Y pixels up from the bottom display edge."
-  (- (+ (viewport-y-position) display-width) y))
+  "Return the virtual coordinate Y pixels up from the bottom virtual edge."
+  (- (cadr (virtual-size) y)))
 
 (define-public (%x- x)
   "Return the pixel coordinate X percent of the width away from the right edge."

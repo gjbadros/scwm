@@ -220,7 +220,7 @@ motion does `interactive-move-maybe-opaque', and double-click does
   "Move WIN to viewport position x, y animatedly.
 If X or Y is 'x or 'y, respectively (or #f), then do not change
 that coordinate during the move.  At least one of X and Y must be
-a number."
+a number.  This moves the pointer with the window."
   (let* ((size (window-frame-size win))
 	 (width (car size))
 	 (height (cadr size)))
@@ -230,6 +230,24 @@ a number."
 	(if (and (number? y) (< y 0)) (set! y (y- height))))
     (raise-window win)
     (move-to x y win 'animated 'move-pointer-too)))
+
+(define*-public (animated-move-window x y #&optional (win (get-window)))
+  "Move WIN to virtual position x, y animatedly.
+If X or Y is 'x or 'y, respectively (or #f), then do not change
+that coordinate during the move.  At least one of X and Y must be
+a number.  This does not move the pointer with the window."
+  (let* ((size (window-frame-size win))
+	 (width (car size))
+	 (height (cadr size)))
+    (if (equal? x 'x) (set! x #f)
+	(if (and (number? x) (< x 0)) (set! x (vx- width))))
+    (if (equal? y 'y) (set! y #f)
+	(if (and (number? y) (< y 0)) (set! y (vy- height))))
+    (raise-window win)
+    (display (string-append "moving to " (number->string x) 
+			    "," (number->string y)))
+    (newline)
+    (move-window x y win 'animated #f)))
 
 ;; (animated-move-to -1 'y)
 ;; (animated-move-to 0 'y)
