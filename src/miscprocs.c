@@ -304,7 +304,7 @@ SCM set_opaque_move_size_x(SCM size)
   return SCM_UNSPECIFIED;
 }
 
-SCM scwm_quit() {
+SCM scwm_quit(SCM args) {
   SCM_REDEFER_INTS;
   if (master_pid != getpid())
     kill(master_pid, SIGTERM);

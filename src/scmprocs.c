@@ -96,7 +96,7 @@ void init_scwm_procs(void)
   gh_new_procedure1_0("color?",color_p);
   gh_new_procedure1_0("font?",font_p);
   gh_new_procedure1_0("window?",window_p);
-  gh_new_procedure0_0("scwm-quit",scwm_quit);
+  gh_new_procedure("scwm-quit",scwm_quit,0,0,1);
   gh_new_procedure0_0("pointer-position",pointer_position);
   gh_new_procedure2_0("move-pointer-to",move_pointer_to);
   gh_new_procedure0_0("recapture",recapture);
