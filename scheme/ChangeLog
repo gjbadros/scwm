@@ -1,3 +1,18 @@
+Thu Sep  2 13:41:09 1999    <gjb@cs.washington.edu>
+
+	* window-selection.scm: Move nonant markers closer to edge.  Still
+ 	problems with accidentally selecting the markers -- big problem if
+ 	you click on the nonant marker, then the window returned is #f.
+
+	* nonants.scm: Added motion-handler and make
+	`get-window-with-nonant-interactively' use it so that there is
+	some feedback that where you click matters.  Still needs a better
+	icon, and perhaps a better marking mechanism than a message
+	window.
+
+	* highlight-current-window.scm: Added
+	start-highlighting-selected-window, end-highlighting-selected-window
+
 Wed Sep  1 19:11:01 1999    <gjb@cs.washington.edu>
 
 	* ui-constraints.scm: Added a description field to

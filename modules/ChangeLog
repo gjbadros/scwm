@@ -1,3 +1,10 @@
+Wed Sep  1 19:15:45 1999    <gjb@cs.washington.edu>
+
+	* scwmgtkhelper/scwmgtkhelper.c (ScwmGdkErrorHandler): Only call
+	ScwmErrorHandler if gdk_error_warnings is set.  This avoids a
+	spurious (and uninteresting) XShm_Attach BadAccess error from
+	being displayed.
+
 Wed Sep  1 10:27:07 1999    <gjb@cs.washington.edu>
 
 	* scwmgtkhelper/scwmgtkhelper.c (ScwmGdkErrorHandler): Added this

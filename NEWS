@@ -149,6 +149,7 @@ deprecated `SM-client-id'.
 
 * Misc. new primitives not discussed above
 ** `resent-input-hook!'
+** `add-motion-handler!', `remove-motion-handler!', `reset-motion-handlers!'
 ** `window-creation-time' returns the time that a window was created
 ** `get-key-event' returns the next arbitrary key w/ modifiers that the user hits
 ** `get-mouse-event' returns the next arbitrary mouse button w/ modifiers that the user hits
@@ -205,11 +206,11 @@ deprecated `SM-client-id'.
 ** `flash-window', `unflash-window', `stop-flashing-window'
 
 * New hooks
-** `window-focus-lost-hook'
+** `window-focus-lost-hook', `window-focus-change-hook'
 ** `load-processing-hook'
 ** `window-unobscured-hook', `window-partially-obscured-hook', `window-unobscured-hook'
 ** `window-enter-hook', `window-leave-hook'
-** `select-window-enter-hook', `select-window-leave-hook'
+** `select-window-enter-hook', `select-window-leave-hook', `select-window-done-hook'
 ** `edge-enter-hook', `edge-leave-hook', `edge-scroll-hook'
 ** `window-property-change-hook'
 ** `desk-size-change-hook', `viewport-position-change-hook'

@@ -1,3 +1,23 @@
+Thu Sep  2 13:45:32 1999    <gjb@cs.washington.edu>
+
+	* window.c: Added `select-window-done-hook', and call it.
+
+	* scwm.c: Set basic_event_mask variable and use it or (it |
+	MotionMask) for XSelectInput depending on whether there is a
+	motion handler.
+
+	* events.c: Added support for a MotionHandler, update comments.
+	Added `add-motion-handler!', `remove-motion-handler!',
+	`reset-motion-handler!'.
+
+	* callbacks.h: Added SCWM_MAKE_HOOK macro.  Delete old #define impls 
+	of calln_hooks in #if 0 (use inline defns in callbacks.c).
+
+	* callbacks.c: Use scwm_run_hook, not scm_run_hook if
+	HAVE_SCM_MAKE_HOOK. Write scwm_run_hook using
+	scwm_safe_apply. This fixes bug where errors in hook procedures
+	would terminate Scwm.
+
 Wed Sep  1 14:43:59 1999    <gjb@cs.washington.edu>
 
 	* placement.c (SetPswGravity): Call XSetWMNormalHints so that
