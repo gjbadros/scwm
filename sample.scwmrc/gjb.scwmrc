@@ -29,7 +29,49 @@
       (display arg)
       ()))
 
+(use-scwm-modules base message-window)
+
+(define logo-image-sequence
+  (list->vector
+   (map (lambda (deg) (make-image
+		       (string-append "/scratch/gjb/scwm/pixmaps/scwm-logo"
+				      deg ".xpm")))
+	'("" "-45" "-90" "-135" "-180" "-225" "-270" "-315"))))
+
+
+(define scwm-logo-msgwin 
+  (make-message-window-with-image 
+   (make-image "/scratch/gjb/scwm/pixmaps/scwm-logo.xpm")))
+(set-X-server-synchronize! #t)
+(message-window-show! scwm-logo-msgwin)
+(set-X-server-synchronize! #f)
+
+(define next-logo-image
+  (let ((i 0))
+    (lambda ()
+      (set! i (modulo (+ i 1) 8))
+      (message-window-set-image! scwm-logo-msgwin 
+				 (vector-ref logo-image-sequence i)))))
+
+(define (next-logo-image-timer)
+  (next-logo-image)
+  (add-timer-hook! 500000 next-logo-image))
+
+;; (add-timer-hook! 500000 next-logo-image-timer)
+
+(define (next-logo-image-n n) (next-logo-image))
+
+(add-hook! load-processing-hook next-logo-image-n)
+
+#!
+(define (move-scwm-logo-msgwin n)
+  (message-window-set-position!
+   scwm-logo-msgwin 
+   (+ (/ display-width 2) n) #f))
+!#
+
 (debug-display "Starting reading scwm modules\n")
+
 
 (use-scwm-modules base defoption optargs primopts 
 		  winops winlist wininfo
@@ -293,11 +335,14 @@
 (define (popup-sysutils)
   ())
 
-(define (popup-util)
-  (popup-menu 'menu-util #t))
+(define (popup-utilities)
+  (popup-menu 'menu-utilities #t))
 
 (define (popup-applications)
   (popup-menu 'menu-applications #t))
+
+(define (popup-multimedia)
+  (popup-menu 'menu-multimedia #t))
 
 (define (popup-root-start)
   (with-window 
@@ -307,6 +352,13 @@
 
 (define (popup-window-ops)
   (popup-menu 'menu-window-ops))
+
+(define (popup-desk)
+  (popup-menu 'menu-desk))
+
+(define (popup-favorite-hosts-menu)
+  (popup-menu (make-hosts-menu-gjb favorite-hosts) #t))
+
 
 (define*-public (animated-deiconify-to-current-viewport-focus-raise #&optional (win (get-window)))
   (cond
@@ -391,6 +443,9 @@
 (define pic-xterm-mini
   (make-image "mini-term.xpm"))
 
+(define pic-lambda-mini
+  (make-image "lambda.xpm"))
+
 (define pic-unknown
   (make-image "unknown1.xpm"))
 ;; (reset-scwm-exec-protocol)
@@ -416,7 +471,8 @@
 	      #:mwm-border #t
 	      #:hint-override #t #:decorate-transient #f
 	      #:PPosition-hint #f
-	      #:mini-icon pic-xterm-mini)
+;;	      #:mini-icon pic-xterm-mini)
+	      #:mini-icon pic-lambda-mini)
 
 (window-style "*" 
 	      #:icon-box (list 0 1 69 (y- 141)))
@@ -523,14 +579,17 @@
 ;; (scwm-module-loaded? '(app scwm esdsound))
 (if (scwm-module-loaded? '(app scwm esdsound))
     (define (wavplay filename)
-      (system (string-append "wavplay " filename "&")))
+      (sound-play (sound-load filename)))
     (define (wavplay filename)
-      (sound-play (sound-load filename))))
+      (system (string-append "wavplay " filename "&"))))
 
 (define download-closed-wav "/scratch/gjb/Media/tada.wav")
 
+;; GJB:FIXME:: make the time below (5) an option
 (define (netscape-download-closed-action win)
-  (wavplay download-closed-wav))
+  (let ((time-up (- (current-time) (window-creation-time win))))
+    (if (> time-up 5)
+	(wavplay download-closed-wav))))
 ;;  (message "Download finished"))
 
 (define (call-netscape-download-closed-action win)
@@ -1103,7 +1162,7 @@ union of all other window managers!
 	 (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
 	 (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
 
-(define menu-util 
+(define menu-utilities 
   (menu 
    (list
     (menu-title "Utilities")
@@ -1167,13 +1226,19 @@ union of all other window managers!
 
 ;;; now set some mouse and key bindings ;;
 
+(define (show-window-list-by-focus-with-geometry)
+  (show-window-list-menu #:by-focus #t #:show-geometry #t))
+
+(define (show-window-list-by-resource-with-geometry)
+  (show-window-list-menu #:by-resource #t #:show-geometry #t))
+
 ;;; first our root menus
-(bind-mouse 'root 1 #f (lambda () (popup-menu 'menu-root-start)))
-(bind-mouse 'root 2 #f (lambda () (show-window-list-menu #:by-focus #t #:show-geometry #t)))
-(bind-mouse 'root "M-3" #f (lambda () (popup-menu 'menu-desk)))
+(bind-mouse 'root 1 #f popup-root-start)
+(bind-mouse 'root 2 #f show-window-list-by-focus-with-geometry)
+(bind-mouse 'root "M-3" #f popup-desk)
 (bind-mouse 'root 3 #f popup-applications)
 (bind-mouse 'all "H-1" #f select-window-add-selection)
-(bind-mouse 'all "A-2" #f (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
+(bind-mouse 'all "A-2" #f show-window-list-by-resource-with-geometry)
 
 (bind-key 'all "H-r" rename-window-interactively)
 ;; (lookup-key 'all "H-r")
@@ -1200,13 +1265,20 @@ union of all other window managers!
   (case (mouse-event-type)
     ((double-click) (animated-toggle-window-shade))
     (else (move-or-raise))))
-(bind-mouse 'title 1 move-or-shade)
+
+(define* (raise-and-stop-flashing #&optional (win (get-window)))
+  (if (window-flashing? win)
+      (stop-flashing-window win))
+  (raise-window win)
+  #f)
+
+(bind-mouse 'title 1 move-or-shade raise-and-stop-flashing)
 (bind-mouse 'title 2 #f lower-window)
 (bind-mouse 'title 3 #f popup-window-ops)
 
 
 ;; key bindings for the menus
-(bind-key 'all "M-S-F1" popup-util)
+(bind-key 'all "M-S-F1" popup-utilities)
 (bind-key 'all "M-S-F2" popup-window-ops)
 
 ;; C-S-M-t makes netscape go to the url specified by cut buffer 0
@@ -1227,12 +1299,18 @@ union of all other window managers!
 
 (bind-mouse 'all "C-S-M-1" #f toggle-raise)
 
+(define* (interactive-move-rubberband #&optional (win (get-window)))
+  (interactive-move (get-window) #f))
+
+(define* (interactive-resize-rubberband #&optional (win (get-window)))
+  (interactive-resize (get-window) #f))
+
 ;; These always do opaque moves
 (bind-mouse 'all "C-S-M-2" #f interactive-move)
 (bind-mouse 'all "C-S-M-3" #f interactive-resize)
 ;; These always do rubberband moves (except when constraint solver is active)
-(bind-mouse 'all "H-2" #f (lambda () (interactive-move (get-window) #f)))
-(bind-mouse 'all "H-3" #f (lambda () (interactive-resize (get-window) #f)))
+(bind-mouse 'all "H-2" #f interactive-move-rubberband)
+(bind-mouse 'all "H-3" #f interactive-resize-rubberband)
 
 (define (resize-halfscreen)
   (let ((w (current-window-with-pointer)))
@@ -1279,11 +1357,14 @@ union of all other window managers!
 (if have-kp-keysyms
     (key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right"))
 
-(bind-key 'all "C-M-S-Home" (lambda () (set-current-desk! 0)))
-(bind-key 'all "C-M-S-End" (lambda () (set-current-desk! 1)))
+
+(define (switch-to-first-desk) (set-current-desk! 0))
+(define (switch-to-second-desk) (set-current-desk! 0))
+
+(bind-key 'all "C-M-S-Home" switch-to-first-desk)
+(bind-key 'all "C-M-S-End" switch-to-second-desk)
 
 (bind-key 'all "C-M-S-a" popup-applications)
-;;(bind-key 'all "C-M-S-u" popup-util)  ;;; do not use this, since the key is bound to a mouse movement
 
 (bind-key 'all "C-M-S-r" refresh)
 (bind-key 'all "C-M-S-5" recapture)
@@ -1292,10 +1373,10 @@ union of all other window managers!
 
 (bind-key 'all "C-S-F1" popup-small-ops)
 (bind-key 'all "C-S-F2" show-window-list-menu)
-;;(bind-key 'all "C-S-F3" (lambda () (popup-menu (make-hosts-menu-gjb favorite-hosts) #t)))
-(bind-key 'all "C-S-F4" (lambda () (popup-menu 'menu-applications #t)))
-(bind-key 'all "C-S-F5" (lambda () (popup-menu 'menu-utilities #t)))
-(bind-key 'all "C-S-F6" (lambda () (popup-menu 'menu-multimedia #t)))
+;;(bind-key 'all "C-S-F3" popup-favorite-hosts-menu)
+(bind-key 'all "C-S-F4" popup-applications)
+(bind-key 'all "C-S-F5" popup-utilities)
+(bind-key 'all "C-S-F6" popup-multimedia)
 
 (define (float->integer x)
   (inexact->exact (truncate x)))
@@ -1426,13 +1507,16 @@ union of all other window managers!
   (bind-key 'all "C-M-KP_5" p))
 
 
+(define (send-button-press-1) (send-button-press 1))
+(define (send-button-press-2) (send-button-press 2))
+(define (send-button-press-3) (send-button-press 3))
 
 ;; GJB:FIXME:: modifiers interface could be better... mimic off Emacs?
 ;; GJB:FIXME:: keys should be first class
 ;; GJB:FIXME:: bindings and menus should perhaps have a syntax that makes the lambda implicit
-(bind-key 'all "C-M-S-7" (lambda () (send-button-press 1)))
-(bind-key 'all "C-M-S-8" (lambda () (send-button-press 2)))
-(bind-key 'all "C-M-S-9" (lambda () (send-button-press 3)))
+(bind-key 'all "C-M-S-7" send-button-press-1)
+(bind-key 'all "C-M-S-8" send-button-press-2)
+(bind-key 'all "C-M-S-9" send-button-press-3)
 
 ;; Need to allow SendEvents in XTerm before synthetic events will work
 ;;(bind-mouse 'window 1 (lambda () (raise-window) (send-button-press 1 (get-window) #t #f)))
@@ -1443,15 +1527,23 @@ union of all other window managers!
 ;; (set-window-focus! 'click (get-window))
 
 
-;;(bind-key 'all "C-M-S-4" (lambda () (send-key-press "Return")))
-(bind-key 'all "C-M-S-4" (lambda () (X-synthetic-send-string "hello world")))
+(define (send-key-press-up) (send-key-press "Up"))
+(define (send-key-press-down) (send-key-press "Down"))
+(define (send-key-press-prior) (send-key-press "Prior"))
+(define (send-key-press-next) (send-key-press "Next"))
+;; These would be better if they repeated, but they are useful, e.g.,
+;; in a netscape window
+(bind-mouse 'window "C-A-S-1" #f send-key-press-up)
+(bind-mouse 'window "C-A-S-3" #f send-key-press-down)
+(bind-mouse 'window "C-A-H-1" #f send-key-press-prior)
+(bind-mouse 'window "C-A-H-3" #f send-key-press-next)
 
 ;; This one is experimental-- sends only the buttonpress event, no buttonrelease
 (bind-key 'all "C-M-S-0" (lambda () (send-button-press 2 (get-window) #t #f)))
 
-(bind-key 'all "C-M-S-n" (lambda () (write (get-window)) (newline)))
+;; (bind-key 'all "C-M-S-n" (lambda () (write (get-window)) (newline)))
 
-(bind-key 'all "C-M-S-s" (lambda () (toggle-stick)))
+(bind-key 'all "C-M-S-s" toggle-stick)
 
 ;; Hyper-w
 ;;(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
@@ -1464,7 +1556,6 @@ union of all other window managers!
 ;;	   (lambda (w) (if (string=? (window-class w) "Gsubrc")
 ;;			   (add-timer-hook! (sec->usec (* 60 60) (thunk (close-window w)))))))
 ;; (reset-hook! after-new-window-hook)
-
 
 
 (if want-autoraise
@@ -1528,20 +1619,27 @@ union of all other window managers!
 
 (add-hook! change-desk-hook show-desk-name)
 
+(define current-highlighted-window #f)
+
 (define* (unflash-window-if-not-selected #&optional (win (window-context)))
   (if (and win (not (window-is-selected? win)))
-      (unflash-window win)))
+      (begin (unflash-window win)
+	     (set! current-highlighted-window #f))))
+
+(define (flash-window-on-and-update-current-highlighted win)
+  (set! current-highlighted-window (flash-window-on win)))
 
 (define* (start-highlighting-current-window #&optional (win (window-context)))
-  (and win (flash-window-on win))
-  (add-hook! window-enter-hook flash-window-on)
+  (and win (set! current-highlighted-window (flash-window-on win)))
+  (add-hook! window-enter-hook flash-window-on-and-update-current-highlighted)
   (add-hook! window-leave-hook unflash-window-if-not-selected))
 
 ;; window-leave-hook  window-enter-hook
 
-(define* (end-highlighting-current-window #&optional (win (window-context)))
+(define* (end-highlighting-current-window 
+	  #&optional (win current-highlighted-window))
   (and win (unflash-window-if-not-selected win))
-  (remove-hook! window-enter-hook flash-window-on)
+  (remove-hook! window-enter-hook flash-window-on-and-update-current-highlighted)
   (remove-hook! window-leave-hook unflash-window-if-not-selected))
 
 ;; enable xterm patch's window flashing behaviour
@@ -1552,12 +1650,14 @@ union of all other window managers!
  start-highlighting-current-window
  end-highlighting-current-window)
 
+(define (interactive-move-selected-group)
+  (interactive-move-group (selected-windows-list))
+  (end-highlighting-current-window)
+  (unselect-all-windows))
+
 (bind-mouse 'all "H-S-1" #f select-window-add-selection)
 (bind-mouse 'all "H-A-1" #f select-window-add-selection)
-(bind-mouse 'all "H-S-2" #f (lambda () 
-			      (interactive-move-group (selected-windows-list))
-			      (end-highlighting-current-window)
-			      (unselect-all-windows)))
+(bind-mouse 'all "H-S-2" #f interactive-move-selected-group)
 
 ;; send 100 presses of button 1
 ;; for benchmarking amaya's reload
@@ -1619,3 +1719,11 @@ union of all other window managers!
 ;; Get my preferences from ~/.scwm-options --
 ;; let them take priority over anything I do in here
 (load-preferences)
+
+(define (next-logo-image) #f)
+(message-window-hide! scwm-logo-msgwin)
+
+(remove-hook! load-processing-hook next-logo-image-n)
+#!
+(remove-hook! load-processing-hook move-scwm-logo-msgwin)
+!#
