@@ -17,6 +17,8 @@ things on NetBSD.
 * Add a `get-stacking-order' primitive -- renamed `list-all-windows-in-stacking-order'
 ** returns the window list in the stacking order. done --08/03/98 gjb
 
+* WM_ATTENTION patch for xterms (from Robert Bihlmeyer), integration with zsh instead?
+
 * Improve the gravity handling stuff.
 ** Respect gravity on program resize
 ** Respect gravity on resize-to
