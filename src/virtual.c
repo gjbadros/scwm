@@ -504,6 +504,10 @@ MoveViewport_internal(int newx, int newy)
   Scr.Vx = newx;
   Scr.Vy = newy;
 
+  /* These properties are used upon restart to move windows back
+     to their appropriate place since the current viewport is kept
+     visible when Scwm is shut down.  (Making all the windows above and to
+     the left the current viewport have negative positions). */
   XChangeProperty(dpy, Scr.Root, XA_SCWM_VIEWPORT_OFFSET_X,
 		  XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &Scr.Vx, 1);
   XChangeProperty(dpy, Scr.Root, XA_SCWM_VIEWPORT_OFFSET_Y,

@@ -1374,6 +1374,32 @@ returns a power of two corresponding to the bit-mask of the modifier */
 { return scrollock_mask == 0? SCM_BOOL_F : gh_int2scm (scrollock_mask); }
 #undef FUNC_NAME
 
+SCWM_PROC(set_mod_mask_numlock_x, "set-mod-mask-numlock!", 1, 0, 0, 
+          (SCM mask))
+     /** Set the bit-mask for the NumLock modifier key.
+MASK must be a power of 2. The NumLock modifier mask is
+set automatically, but you can use this procedure if you
+need to override the built-in algorithm. */
+#define FUNC_NAME s_set_mod_mask_numlock_x
+{
+  VALIDATE_ARG_BOOL_COPY(1,mask,numlock_mask);
+  return SCM_UNSPECIFIED;
+} 
+#undef FUNC_NAME
+
+SCWM_PROC(set_mod_mask_scrolllock_x, "set-mod-mask-scrolllock!", 1, 0, 0, 
+          (SCM mask))
+     /** Set the bit-mask for the ScrollLock modifier key.
+MASK must be a power of 2. The ScrollLock modifier mask is
+set automatically, but you can use this procedure if you
+need to override the built-in algorithm. */
+#define FUNC_NAME s_set_mod_mask_scrolllock_x
+{
+  VALIDATE_ARG_BOOL_COPY(1,mask,scrollock_mask);
+  return SCM_UNSPECIFIED;
+} 
+#undef FUNC_NAME
+
 
 SCWM_PROC(X_pointer_mapping, "X-pointer-mapping", 0, 0, 0,
           ())

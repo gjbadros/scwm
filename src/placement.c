@@ -512,8 +512,10 @@ used in user-defined placement procedures (see
   if (x < 0) {
     return SCM_BOOL_F;
   } else {
-    psw->attr.x = x = x - psw->old_bw + psw->bw;
-    psw->attr.y = y = y - psw->old_bw + psw->bw;
+    /* GJB:FIXME:MS: Why fix for bw diffs when clever placement is placing frame,
+       not client window? */
+    psw->attr.x = x; /*  = x - psw->old_bw + psw->bw; */
+    psw->attr.y = y; /*  = y - psw->old_bw + psw->bw; */
 
     move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
     return SCM_BOOL_T;

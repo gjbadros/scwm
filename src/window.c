@@ -979,10 +979,11 @@ circle cursor. */
   VALIDATE_ARG_CURSOR_COPY_USE_KILLORCIRCLE(3,cursor,xcursor);
 
   if (UNSET_SCM(scm_window_context)) {
-    if (select_p == SCM_BOOL_T) {
+    if (fSelect) {
       SCM win = gh_car(select_viewport_position(cursor,release_p));
-      if (SCM_BOOL_F == win)
+      if (!WINDOWP(win)) {
         call0_hooks(invalid_interaction_hook);
+      }
       return win;
     } else {
       return SCM_BOOL_F;
