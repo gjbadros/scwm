@@ -68,7 +68,8 @@ o Fully documented all primitives
 o Integrated documentation into scwm.el Emacs interaction mode
 -- apropos and procedure documentation help
 
-o Lots of bug fixes, cleaned-up API for consistency, multibyte character support
+o Lots of bug fixes, cleaned-up API for consistency, multibyte 
+  character support
 
 o Squashed titlebar style
 
