@@ -1,3 +1,16 @@
+Thu Sep 17 16:18:55 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* wininfo.scm (windows-overlap?): Use window-virtual-position, not
+ 	window-position, to take sticky windows into account, and for
+	window-geometry-string
+
+	* flux.scm: Fix move-window-to-viewport to be an absolute
+	viewport, not a relative one, update docs.  Update
+	window-info string to give both virtual and viewport information
+
+	* base.scm: Added window-virtual-position, to give a virtual
+	position even for sticky windows
+
 Thu Sep 17 12:07:41 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Fix uses of WIN to be win.  Duh.

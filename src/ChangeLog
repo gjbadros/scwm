@@ -1,3 +1,22 @@
+Thu Sep 17 15:51:48 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Make stick use FRAME_[XY]_VP even though slightly
+	redundant, make icon-position use ICON_[XY] accessor macro
+
+	* scwm.c: Drop reparenting debug message
+
+	* module-interface.c (BroadcastIconInfo): Undo last change to this 
+	-- should use ICON_[XY]_VP, not _VIRT.
+
+	* icons.c: Use ICON_[XY]_VIRT instead of icon_[xy]_loc in
+	CreateIconWindow.  Pass ICON_[XY]_VP to CreateIconWindow, instead
+	of icon_[xy]_loc
+
+	* add_window.c: Pass ICON_[XY]_VP to CreateIconWindow, instead of
+ 	icon_[xy]_loc
+
+	* events.c: Use ICON_[XY]_VP instead of icon_[xy]_loc
+
 Thu Sep 17 12:08:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c: Added X-DestroyNotify-hook and X-UnmapNotify-hook.
