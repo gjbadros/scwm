@@ -668,9 +668,9 @@ SCM refresh_window(SCM win)
 }
 
 
-move_window_to_desk(SCM which, SCM win)
+SCM move_window_to_desk(SCM which, SCM win)
 {
-  ScwmWindow t;
+  ScwmWindow *t;
   int val1;
 
   if (which) {
@@ -678,6 +678,7 @@ move_window_to_desk(SCM which, SCM win)
   }
 
   VALIDATEN(win,2,"move-window-to-desk");
+
   t=SCWMWINDOW(win);
 
   val1=gh_scm2int(which);
@@ -701,4 +702,36 @@ move_window_to_desk(SCM which, SCM win)
       } 
     }
   BroadcastConfig(M_CONFIGURE_WINDOW,t);
+}
+
+
+SCM get_window_position(SCM win) {
+  ScwmWindow *tmp_win;
+
+  VALIDATE(win,"get-window-position");
+  tmp_win=SCWMWINDOW(win);
+
+  return scm_listify(SCM_MAKINUM(tmp_win->frame_x),
+		     SCM_MAKINUM(tmp_win->frame_y),
+		     SCM_UNDEFINED);
+}
+
+SCM get_window_size(SCM win) {
+  ScwmWindow *tmp_win;
+
+  VALIDATE(win,"get-window-size");
+  tmp_win=SCWMWINDOW(win);
+
+  return scm_listify(SCM_MAKINUM(tmp_win->frame_width),
+		     SCM_MAKINUM(tmp_win->frame_height),
+		     SCM_UNDEFINED);
+}
+
+SCM get_window_id(SCM win) {
+  ScwmWindow *tmp_win;
+
+  VALIDATE(win,"get-window-id");
+  tmp_win=SCWMWINDOW(win);
+
+  return SCM_MAKINUM(tmp_win->w);
 }
