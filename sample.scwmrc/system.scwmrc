@@ -116,7 +116,7 @@
 ;; import the rest of the scwm modules
 (use-scwm-modules defoption optargs primopts 
 		  describe task-switcher
-		  winops winlist wininfo listops placement
+		  winops winlist winlist-menu wininfo listops placement
 		  style stylist basic-styles
 		  face time-convert menus-extras
 		  std-menus xlock-menus doc virtual prompt-color
