@@ -1,3 +1,19 @@
+Tue Mar 26 23:40:09 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* window-configuration.scm: Added storing state of iconified?,
+	sticky-window?, icon-sticky?, and shaded?.  The code to save
+	and restore all this state is there but some of it is non-functional
+	due to problems with the C routines.  Only recommended using for
+	saving/restoring position/size in non-iconified state, stickiness,
+	and iconification state until C routines can be fixed.  It is now
+	pretty safe to run
+	(restore-global-configuration (global-window-configuration)) as a
+	noop.
+
+	Added wrapper functions to extract the interesting bits from a saved
+	window configuration.  This will allow the format to change in the
+	future without breaking backwards compatibility.
+
 Sun Feb 17 06:05:59 2002  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* wininfo.scm: Changed windows-overlap? to consider a window as
