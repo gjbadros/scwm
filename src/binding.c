@@ -564,15 +564,12 @@ compute_contexts(SCM contexts, char *func_name)
 
   switch (retval) {
   case 0:
-    /* FIXGJBERROR: do not error by number */
-    scwm_error(func_name, 8);
+    scwm_error(func_name, "No binding contexts specified.");
     break;
   case -1:
-    /* FIXGJBERROR: do not error by number */
-    scwm_error(func_name, 9);
+    scwm_error(func_name, "Invalid binding context.");
     break;
   case -2:
-    /* FIXGJBERROR: do not error by number */
     scm_wrong_type_arg(func_name, 1, contexts);
     break;
   default:

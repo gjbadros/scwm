@@ -205,7 +205,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 	/* center psimgAbove vertically in the item_height */
 	y_offset += (item_height - psimgAbove->height)/2;
       }
-      DBUG(__FUNCTION__,"Drawing psimgAbove");
+      DBUG((DBG,__FUNCTION__,"Drawing psimgAbove"));
       DrawImage(w, psimgAbove, x, y_offset, gcImage);
       y_offset += psimgAbove->height;
     }
@@ -350,7 +350,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
       int item_height = MENU_ITEM_EXTRA_VERT_SPACE * 2;
       pmiim->cpixOffsetY = total_height;
 
-      DBUG(__FUNCTION__,"`%s' has width %d (%d chars)\n",
+      DBUG((DBG,__FUNCTION__,"`%s' has width %d (%d chars))\n",
 	   pmi->szLabel,text_width,pmi->cchLabel);
 
       if (pmi->fIsSeparator) {
@@ -418,9 +418,9 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     pmdi->cpixWidth = pmdi->cpixItemOffset + max_item_width +  
       MENU_ITEM_RR_SPACE*2 + MENU_EDGE_HORIZ_SPACING*2;
 
-    DBUG(__FUNCTION__,"LeftPic = %d, Text = %d, ExtraText = %d, RightImage = %d; above = %d\n",
+    DBUG((DBG,__FUNCTION__,"LeftPic = %d, Text = %d, ExtraText = %d, RightImage = %d; above = %d\n",
 	 pmdi->cpixLeftPicWidth,pmdi->cpixTextWidth,pmdi->cpixExtraTextWidth,
-	 max_right_image_width,max_above_image_width);
+	 max_right_image_width,max_above_image_width));
 
     /* Now create the window */
     { /* scope */

@@ -306,7 +306,7 @@ SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
 
 SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
           (SCM win, SCM decor))
-     /** Set WIN's decor to DECOR, updating it's decorations appropriately. */
+     /** Set WIN's decor to DECOR, updating its decorations appropriately. */
 #define FUNC_NAME s_set_window_decor_x
 {
   int old_height, extra_height;

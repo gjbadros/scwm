@@ -40,7 +40,7 @@ ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
 {
   ScwmWindow *psw = static_cast<ScwmWindow *>(pclv->Pv());
   if (!psw) {
-    DBUG(__FUNCTION__,"No struct ScwmWindow attached to var: %s", pclv->name().data());
+    DBUG((DBG,__FUNCTION__,"No struct ScwmWindow attached to var: %s", pclv->name().data()));
     return;
   }
   if (!psolver) {
@@ -62,11 +62,11 @@ ScwmResolve(ClSimplexSolver *psolver)
     psw->pswci->CopyStateToPswVars(&fMoved, &fResized);
 #ifndef NDEBUG
     if (fMoved && fResized) {
-      DBUG(__FUNCTION__,"Move and resize of %s",psw->name);
+      DBUG((DBG,__FUNCTION__,"Move and resize of %s",psw->name));
     } else if (fMoved) {
-      DBUG(__FUNCTION__,"Move of %s",psw->name);
+      DBUG((DBG,__FUNCTION__,"Move of %s",psw->name));
     } else if (fResized) {
-      DBUG(__FUNCTION__,"Resize of %s",psw->name);
+      DBUG((DBG,__FUNCTION__,"Resize of %s",psw->name));
     }
 #endif
     /* resize subsumes a move, so check for it first */

@@ -527,7 +527,7 @@ scwm_main(int argc, char **argv)
   g_argv = argv;
   g_argc = argc;
 
-  DBUG("main", "Entered, about to parse args");
+  DBUG((DBG,"main", "Entered, about to parse args"));
   
   getopt_opts = "Dsd:f:e:hibV";
   
@@ -620,9 +620,9 @@ scwm_main(int argc, char **argv)
     exit(-1);
   }
   
-  DBUG("main", "Done parsing args");
+  DBUG((DBG,"main", "Done parsing args"));
   
-  DBUG("main", "Installing signal handlers");
+  DBUG((DBG,"main", "Installing signal handlers"));
   
   newhandler(SIGINT);
   newhandler(SIGHUP);
@@ -780,7 +780,7 @@ scwm_main(int argc, char **argv)
   
   init_scwm_load_path();
   
-  DBUG("main", "Setting up rc file defaults...");
+  DBUG((DBG,"main", "Setting up rc file defaults..."));
 
   /* the compiled-in .scwmrc comes from minimal.scm,
      built into init_scheme_string.c by the make file */
@@ -789,7 +789,7 @@ scwm_main(int argc, char **argv)
   scwm_safe_eval_str(init_scheme_string);
   } /* end scope */
 
-  DBUG("main", "Running config_commands...");
+  DBUG((DBG,"main", "Running config_commands..."));
   
 #ifndef SCWMRC
 #define SCWMRC ".scwmrc"
@@ -831,7 +831,7 @@ scwm_main(int argc, char **argv)
   
   CaptureAllWindows();
   
-  DBUG("main", "Done running config_commands");
+  DBUG((DBG,"main", "Done running config_commands"));
 
   if (Scr.d_depth < 2) {
     Scr.gray_pixmap =
@@ -883,9 +883,9 @@ scwm_main(int argc, char **argv)
 
   scwm_maybe_send_thankyou_packet();
 
-  DBUG("main", "Entering HandleEvents loop...");
+  DBUG((DBG,"main", "Entering HandleEvents loop..."));
   HandleEvents();
-  DBUG("main", "Back from HandleEvents loop?  Exitting...");
+  DBUG((DBG,"main", "Back from HandleEvents loop?  Exitting..."));
   return;
 }
 
@@ -1245,7 +1245,7 @@ BlackoutScreen()
   unsigned long valuemask;
 
   if (Blackout && (BlackoutWin == None) && !debugging) {
-    DBUG("BlackoutScreen", "Blacking out screen during init...");
+    DBUG((DBG,"BlackoutScreen", "Blacking out screen during init..."));
     /* blackout screen */
     attributes.border_pixel = BlackPixel(dpy, Scr.screen);
     attributes.background_pixel = BlackPixel(dpy, Scr.screen);
@@ -1270,7 +1270,7 @@ void
 UnBlackoutScreen()
 {
   if (Blackout && (BlackoutWin != None) && !debugging) {
-    DBUG("UnBlackoutScreen", "UnBlacking out screen");
+    DBUG((DBG,"UnBlackoutScreen", "UnBlacking out screen"));
     XDestroyWindow(dpy, BlackoutWin);	/* unblacken the screen */
     XSync(dpy, 0);
     BlackoutWin = None;

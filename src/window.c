@@ -482,7 +482,7 @@ SendClientConfigureNotify(const ScwmWindow *psw)
   /* what if we don't have a title ????? */
   client_event.xconfigure.above = psw->frame;
   client_event.xconfigure.override_redirect = False;
-  DBUG_RESIZE(__FUNCTION__, "Sending configure event");
+  DBUG_RESIZE((dbg,__FUNCTION__, "Sending configure event"));
   XSendEvent(dpy, psw->w, False, StructureNotifyMask, &client_event);
 }
 
@@ -3034,7 +3034,7 @@ if not specified. */
     psw->fClickToFocus = True;
     psw->fSloppyFocus = True;
   } else {
-    scwm_error(FUNC_NAME, 13);
+    scwm_error(FUNC_NAME, "Window focus must be \'click, \'mouse, \'sloppy or \'none.");
   }
   return sym;
 }
@@ -3483,7 +3483,7 @@ window context in the usual way if not specified. */
   if (desk == SCM_BOOL_F) {
     psw->fStartsOnDesk = False;
   } else if (gh_number_p(desk)) {
-    DBUG(__FUNCTION__,"setting fStartsOnDesk");
+    DBUG((DBG,__FUNCTION__,"setting fStartsOnDesk"));
     psw->fStartsOnDesk = True;
     psw->StartDesk = gh_scm2int(desk);
   } else {
@@ -3605,7 +3605,7 @@ ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
   }
   if (!VALIDWINP(win)) {
     SCM_ALLOW_INTS;
-    scwm_error(subr, 6);
+    scwm_error(subr, "Window no longer valid.");
     /* maybe should just return SCM_BOOL_F; */
   }
   return (win);

@@ -26,7 +26,7 @@
 #include <config.h>
 #endif
 
-void scwm_error(char *subr, int err);
+void scwm_error(const char *subr, const char *szErr);
 
 #define ERROR_LOAD_PICTURE 14
 

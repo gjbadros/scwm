@@ -74,7 +74,7 @@ current decor */
   } else if (gh_eq_p(just, sym_right)) {
     fl->titlebar.flags |= HOffCenter | HRight;
   } else {
-    scwm_error(FUNC_NAME, 5);
+    scwm_error(FUNC_NAME, "Justification must be \'left, \'right or \'center.");
   }
   /* XXX should redraw the title bars */
   redraw_titlebars(fl, 0);
@@ -121,7 +121,7 @@ Applies to the current decor. */
   }
   th = gh_scm2int(height);
   if (th <= 4 || th > 256) {
-    scwm_error(FUNC_NAME, 7);
+    scwm_error(FUNC_NAME, "Bad height argument; must be from 5 to 256.");
   }
   extra_height = th - fl->TitleHeight;
   fl->TitleHeight = th;
@@ -232,7 +232,7 @@ other than 'mouse. */
   } else if (gh_eq_p(ftype, sym_mouse)) {
     Scr.fColormapFollowsMouse = True;
   } else {
-    scwm_error(FUNC_NAME, 10);
+    scwm_error(FUNC_NAME, "Colormap focus must be \'focus or \'mouse.");
   }
 
   return SCM_UNSPECIFIED;

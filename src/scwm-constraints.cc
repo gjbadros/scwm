@@ -165,10 +165,10 @@ SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
     .suggestValue(pswci->_frame_height,h)
     .resolve();
 
-  DBUG(__FUNCTION__,
-       "Now clv-width,height are %d x %d",
-       pswci->_frame_width.intValue(),
-       pswci->_frame_height.intValue());
+  DBUG((DBG,__FUNCTION__,
+        "Now clv-width,height are %d x %d",
+        pswci->_frame_width.intValue(),
+        pswci->_frame_height.intValue()));
 }
 
 void

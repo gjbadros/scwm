@@ -156,7 +156,7 @@ allocated, an error results. */
   } 
   if (NULL == fontset) {
     FREE(fn);
-    scwm_error(FUNC_NAME, 1);
+    scwm_error(FUNC_NAME, "Unable to load `fixed' font.");
   }
 
   font = NEW(scwm_font);
@@ -188,7 +188,7 @@ allocated, an error results. */
   } 
   if (NULL == xfs) {
     FREE(fn);
-    scwm_error(FUNC_NAME, 1);
+    scwm_error(FUNC_NAME, "Unable to load `fixed' font.");
   }
 
   font = NEW(scwm_font);

@@ -254,7 +254,7 @@ AddWindow(Window w)
   call1_hooks(before_new_window_hook, psw->schwin);
 
   if (psw->fStartsOnDesk) {
-    DBUG(__FUNCTION__,"fStartsOnDesk is true");
+    DBUG((DBG,__FUNCTION__,"fStartsOnDesk is true"));
     Desk = psw->StartDesk;
   }
 
@@ -265,7 +265,7 @@ AddWindow(Window w)
 
   SelectDecor(psw, border_width, resize_width);
 
-  DBUG(__FUNCTION__,"fTitle = %d, th = %d", psw->fTitle, psw->title_height);
+  DBUG((DBG,__FUNCTION__,"fTitle = %d, th = %d", psw->fTitle, psw->title_height));
 
   /* FIXGJB: need to provide more flexibility in how the
      icon gets selected */
@@ -362,11 +362,11 @@ AddWindow(Window w)
     valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
   }
 
-  DBUG(__FUNCTION__,"Now fTitle = %d, th = %d", psw->fTitle, psw->title_height);
+  DBUG((DBG,__FUNCTION__,"Now fTitle = %d, th = %d", psw->fTitle, psw->title_height));
 
   /* What the heck, we'll always reparent everything from now on! */
-  DBUG(__FUNCTION__,"Creating child of root window: %d %d, %d x %d, %d",
-       frame_x,frame_y,frame_width,frame_height,psw->bw);
+  DBUG((DBG,__FUNCTION__,"Creating child of root window: %d %d, %d x %d, %d",
+       frame_x,frame_y,frame_width,frame_height,psw->bw));
 
   psw->frame =
     XCreateWindow(dpy, Scr.Root, frame_x, frame_y,
@@ -390,9 +390,9 @@ AddWindow(Window w)
      happy).  This Parent window is the child of the frame window, and
      holds the client window. --07/27/98 gjb */
   attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
-  DBUG(__FUNCTION__,"Creating child of frame: %d %d, %d x %d, %d",
+  DBUG((DBG,__FUNCTION__,"Creating child of frame: %d %d, %d x %d, %d",
        psw->boundary_width, psw->boundary_width + psw->title_height,
-       psw->attr.width, psw->attr.height, psw->bw);
+       psw->attr.width, psw->attr.height, psw->bw));
   psw->Parent =
     XCreateWindow(dpy, psw->frame,
 		  psw->boundary_width, 
@@ -414,13 +414,13 @@ AddWindow(Window w)
   psw->title_height = 1;
   if (SHOW_TITLE_P(psw)) {
     psw->title_height = GET_DECOR(psw, TitleHeight) + psw->bw;
-    DBUG(__FUNCTION__,"Set height to %d",psw->title_height);
+    DBUG((DBG,__FUNCTION__,"Set height to %d",psw->title_height));
     if (psw->title_height < 1)
       psw->title_height = 1;
   }
 
   if (psw->fBorder) {
-    DBUG(__FUNCTION__,"Has border");
+    DBUG((DBG,__FUNCTION__,"Has border"));
 
     if (TexturePixmap) {
       TexturePixmapSave = attributes.background_pixmap;
@@ -451,9 +451,9 @@ AddWindow(Window w)
   psw->title_x = psw->boundary_width + psw->title_height + 1;
   psw->title_y = psw->boundary_width;
   attributes.cursor = Scr.ScwmCursors[CURSOR_TITLE];
-  DBUG(__FUNCTION__,"Creating title window: %d %d, %d x %d",
+  DBUG((DBG,__FUNCTION__,"Creating title window: %d %d, %d x %d",
        psw->title_x, psw->title_y,
-       psw->title_width, psw->title_height);
+       psw->title_width, psw->title_height));
   psw->title_w =
     XCreateWindow(dpy, psw->frame, psw->title_x, psw->title_y,
                   psw->title_width, psw->title_height, 0,
@@ -471,7 +471,7 @@ AddWindow(Window w)
         valuemask_save = valuemask;
         valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
       }
-      DBUG(__FUNCTION__,"Creating left button %d",i);
+      DBUG((DBG,__FUNCTION__,"Creating left button %d",i));
       psw->left_w[i] =
         XCreateWindow(dpy, psw->frame, psw->title_height * i, 0,
                       psw->title_height, psw->title_height, 0,
@@ -496,7 +496,7 @@ AddWindow(Window w)
         valuemask_save = valuemask;
         valuemask = (valuemask & ~CWBackPixel) | CWBackPixmap;
       }
-      DBUG(__FUNCTION__,"Creating right button %d",i);
+      DBUG((DBG,__FUNCTION__,"Creating right button %d",i));
       psw->right_w[i] =
         XCreateWindow(dpy, psw->frame,
                       psw->title_width -
@@ -526,7 +526,7 @@ AddWindow(Window w)
     }
     for (i = 0; i < 4; i++) {
       attributes.cursor = Scr.ScwmCursors[CURSOR_TOP + i];
-      DBUG(__FUNCTION__,"Creating side %d",i);
+      DBUG((DBG,__FUNCTION__,"Creating side %d",i));
       psw->sides[i] =
 	XCreateWindow(dpy, psw->frame, 0, 0, psw->boundary_width,
 		      psw->boundary_width, 0, CopyFromParent,

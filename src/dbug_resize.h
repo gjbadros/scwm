@@ -9,32 +9,11 @@
 #ifndef DBUG_RESIZE_H__
 #define DBUG_RESIZE_H__
 
-
-#ifdef __GNUC__
-#  ifdef SCWM_DEBUG_RESIZE_MSGS
-#    define DBUG_RESIZE(x,y...) scwm_msg(DBG,x,## y)
-#  else
-#    define DBUG_RESIZE(x,y...)		/* no messages */
-#  endif
+#ifdef SCWM_DEBUG_RESIZE_MSGS
+#  define DBUG_RESIZE(X) scwm_msg X
 #else
-/* Not GNUC, so no varargs macros */
-#  ifdef SCWM_DEBUG_RESIZE_MSGS
-#    define DBUG_RESIZE(x,y) scwm_msg(DBG,x,y)
-#    define DBUG_RESIZE(x,y,a) scwm_msg(DBG,x,y,a)
-#    define DBUG_RESIZE(x,y,a,b) scwm_msg(DBG,x,y,a,b)
-#    define DBUG_RESIZE(x,y,a,b,c) scwm_msg(DBG,x,y,a,b,c)
-#    define DBUG_RESIZE(x,y,a,b,c,d) scwm_msg(DBG,x,y,a,b,c,d)
-#    define DBUG_RESIZE(x,y,a,b,c,d,e) scwm_msg(DBG,x,y,a,b,c,d,e)
-#  else
-#    define DBUG_RESIZE(x,y)
-#    define DBUG_RESIZE(x,y,a)
-#    define DBUG_RESIZE(x,y,a,b)
-#    define DBUG_RESIZE(x,y,a,b,c)
-#    define DBUG_RESIZE(x,y,a,b,c,d)
-#    define DBUG_RESIZE(x,y,a,b,c,d,e)
-#  endif
+#  define DBUG_RESIZE(X)		/* no messages */
 #endif
-
 
 #endif /* DBUG_RESIZE_H__ */
 

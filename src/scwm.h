@@ -171,34 +171,15 @@ enum wm_client_functions {
 
 #define PackedBool(x) unsigned short x:1
 
-/*
-   ** if you would like to see lots of debug messages from scwm, for debugging
-   ** purposes, uncomment the next line
- */
+/* if you would like to see lots of debug messages from scwm, for debugging
+   purposes, uncomment the next line */
+
 /* #define SCWM_DEBUG_MSGS */
-#ifdef __GNUC__
-#  ifdef SCWM_DEBUG_MSGS
-#    define DBUG(x,y...) scwm_msg(DBG,x,## y)
-#  else
-#    define DBUG(x,y...)		/* no messages */
-#  endif
+
+#ifdef SCWM_DEBUG_MSGS
+#  define DBUG(X) scwm_msg X
 #else
-/* Not GNUC, so no varargs macros */
-#  ifdef SCWM_DEBUG_MSGS
-#    define DBUG(x,y) scwm_msg(DBG,x,y)
-#    define DBUG(x,y,a) scwm_msg(DBG,x,y,a)
-#    define DBUG(x,y,a,b) scwm_msg(DBG,x,y,a,b)
-#    define DBUG(x,y,a,b,c) scwm_msg(DBG,x,y,a,b,c)
-#    define DBUG(x,y,a,b,c,d) scwm_msg(DBG,x,y,a,b,c,d)
-#    define DBUG(x,y,a,b,c,d,e) scwm_msg(DBG,x,y,a,b,c,d,e)
-#  else
-#    define DBUG(x,y)
-#    define DBUG(x,y,a)
-#    define DBUG(x,y,a,b)
-#    define DBUG(x,y,a,b,c)
-#    define DBUG(x,y,a,b,c,d)
-#    define DBUG(x,y,a,b,c,d,e)
-#  endif
+#  define DBUG(X)		/* no messages */
 #endif
 
 #ifndef NDEBUG
@@ -209,8 +190,6 @@ enum wm_client_functions {
 #else
 #define GDB_STOP
 #endif
-
-
 
 
 /*

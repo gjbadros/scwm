@@ -172,7 +172,7 @@ DispatchEvent()
 {
   Window w = Event.xany.window;
 
-  DBUG("DispatchEvent", "Routine Entered");
+  DBUG((DBG,"DispatchEvent", "Routine Entered"));
 
   StashEventTime(&Event);
 
@@ -183,7 +183,7 @@ DispatchEvent()
   if (EventHandlerJumpTable[Event.type])
     (*EventHandlerJumpTable[Event.type]) ();
 
-  DBUG("DispatchEvent", "Leaving Routine");
+  DBUG((DBG,"DispatchEvent", "Leaving Routine"));
   return;
 }
 
@@ -198,7 +198,7 @@ void
 HandleEvents(void)
 {
 
-  DBUG("HandleEvents", "Routine Entered");
+  DBUG((DBG,"HandleEvents", "Routine Entered"));
 
   while (True) {
     last_event_type = 0;
@@ -212,7 +212,7 @@ HandleEvents(void)
 void
 HandleMappingNotify()
 {
-  DBUG(__FUNCTION__,"Calling mapping notify hook (maybe empty)");
+  DBUG((DBG,__FUNCTION__,"Calling mapping notify hook (maybe empty)"));
   init_modifiers();
   init_pointer_mapping();
   call0_hooks(x_mappingnotify_hook);
@@ -319,7 +319,7 @@ HandleFocusIn()
   XEvent d;
   Window w;
 
-  DBUG("HandleFocusIn", "Routine Entered");
+  DBUG((DBG,"HandleFocusIn", "Routine Entered"));
 
   w = Event.xany.window;
   while (XCheckTypedEvent(dpy, FocusIn, &d)) {
@@ -375,7 +375,7 @@ HandleKeyPress()
   modifier = (Event.xkey.state & mods_used);
   ButtonWindow = pswCurrent;
 
-  DBUG("HandleKeyPress", "Routine Entered");
+  DBUG((DBG,"HandleKeyPress", "Routine Entered"));
 
   Context = GetContext(pswCurrent, &Event, &PressedW);
   PressedW = None;
@@ -511,7 +511,7 @@ HandleScwmExec()
       /* Save an indication of whether we need to read more or not. */
       saved_bytes_after=bytes_after;
       
-      DBUG(__FUNCTION__,"Trying to get request from %ld",w);
+      DBUG((DBG,__FUNCTION__,"Trying to get request from %ld",w));
 
       /* Get and delete its SCWMEXEC_REQUEST property. We do
          XGetWindowProperty twice, once to get the length, and again
@@ -595,7 +595,7 @@ HandlePropertyNotify()
 {
   XTextProperty text_prop;
 
-  DBUG("HandlePropertyNotify", "Routine Entered");
+  DBUG((DBG,"HandlePropertyNotify", "Routine Entered"));
 
   if (Event.xproperty.atom == XA_SCWMEXEC_REQWIN) {
     HandleScwmExec();
@@ -740,7 +740,7 @@ HandlePropertyNotify()
       if (NULL != pswCurrent) {
 	set_window_context(pswCurrent->schwin);
       }
-      DBUG(__FUNCTION__,"Calling hook (maybe empty)");
+      DBUG((DBG,__FUNCTION__,"Calling hook (maybe empty)"));
       call2_hooks(x_propertynotify_hook, gh_str02scm(szName), window_context);
       if (NULL != pswCurrent) {
 	unset_window_context();
@@ -763,7 +763,7 @@ HandleClientMessage()
 {
   XEvent button;
 
-  DBUG("HandleClientMessage", "Routine Entered");
+  DBUG((DBG,"HandleClientMessage", "Routine Entered"));
 
   if ((Event.xclient.message_type == XA_WM_CHANGE_STATE) &&
       (Event.xclient.data.l[0] == IconicState) &&
@@ -800,7 +800,7 @@ HandleExpose()
   if (Event.xexpose.count != 0)
     return;
 
-  DBUG("HandleExpose", "Routine Entered");
+  DBUG((DBG,"HandleExpose", "Routine Entered"));
 
   if (pswCurrent) {
     if ((Event.xany.window == pswCurrent->title_w)) {
@@ -821,7 +821,7 @@ HandleExpose()
 void 
 HandleDestroyNotify()
 {
-  DBUG("HandleDestroyNotify", "Routine Entered");
+  DBUG((DBG,"HandleDestroyNotify", "Routine Entered"));
 
   DestroyScwmWindow(pswCurrent);
 }
@@ -836,7 +836,7 @@ HandleDestroyNotify()
 void 
 HandleMapRequest()
 {
-  DBUG("HandleMapRequest", "Routine Entered");
+  DBUG((DBG,"HandleMapRequest", "Routine Entered"));
 
   HandleMapRequestKeepRaised(None);
 }
@@ -934,7 +934,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
 void 
 HandleMapNotify()
 {
-  DBUG("HandleMapNotify", "Routine Entered");
+  DBUG((DBG,"HandleMapNotify", "Routine Entered"));
 
   if (!pswCurrent) {
     if ((Event.xmap.override_redirect == True) &&
@@ -1011,7 +1011,7 @@ HandleUnmapNotify()
   extern ScwmWindow *colormap_win;
   int weMustUnmap;
 
-  DBUG("HandleUnmapNotify", "Routine Entered");
+  DBUG((DBG,"HandleUnmapNotify", "Routine Entered"));
 
   /*
    * Don't ignore events as described below.
@@ -1129,7 +1129,7 @@ HandleButtonPress()
   Window x;
   int LocalContext;
 
-  DBUG("HandleButtonPress", "Routine Entered");
+  DBUG((DBG,"HandleButtonPress", "Routine Entered"));
 
   /* click to focus stuff goes here */
   if (pswCurrent && pswCurrent->fClickToFocus
@@ -1240,7 +1240,7 @@ HandleEnterNotify()
   XEnterWindowEvent *ewp = &Event.xcrossing;
   XEvent d;
 
-  DBUG("HandleEnterNotify", "Routine Entered");
+  DBUG((DBG,"HandleEnterNotify", "Routine Entered"));
 
   /* look for a matching leaveNotify which would nullify this enterNotify */
   if (XCheckTypedWindowEvent(dpy, ewp->window, LeaveNotify, &d)) {
@@ -1305,7 +1305,7 @@ HandleEnterNotify()
 void 
 HandleLeaveNotify()
 {
-  DBUG("HandleLeaveNotify", "Routine Entered");
+  DBUG((DBG,"HandleLeaveNotify", "Routine Entered"));
 
   /* If we leave the root window, then we're really moving
    * another screen on a multiple screen display, and we
@@ -1336,7 +1336,7 @@ HandleConfigureRequest()
   XConfigureRequestEvent *cre = &Event.xconfigurerequest;
   Bool sendEvent = False;
 
-  DBUG_RESIZE(__FUNCTION__, "Routine Entered");
+  DBUG_RESIZE((dbg,__FUNCTION__, "Routine Entered"));
 
   /*
    * Event.xany.window is Event.xconfigurerequest.parent, so pswCurrent will
@@ -1470,7 +1470,7 @@ HandleConfigureRequest()
 void 
 HandleShapeNotify(void)
 {
-  DBUG("HandleShapeNotify", "Routine Entered");
+  DBUG((DBG,"HandleShapeNotify", "Routine Entered"));
 
   if (ShapesSupported) {
     XShapeEvent *sev = (XShapeEvent *) & Event;
@@ -1496,7 +1496,7 @@ HandleVisibilityNotify()
 {
   XVisibilityEvent *vevent = (XVisibilityEvent *) & Event;
 
-  DBUG("HandleVisibilityNotify", "Routine Entered");
+  DBUG((DBG,"HandleVisibilityNotify", "Routine Entered"));
 
   if (pswCurrent) {
     pswCurrent->fVisible = (vevent->state == VisibilityUnobscured);
@@ -1556,19 +1556,19 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
   int usec;
   Bool repeat;
 
-  DBUG(__FUNCTION__, "Entered");
+  DBUG((DBG,__FUNCTION__, "Entered"));
 
   /* Do this IMMEDIATELY prior to select, to prevent any nasty
    * queued up X events from just hanging around waiting to be
    * flushed */
   XFlush(dpy);
   if (XPending(dpy)) {
-    DBUG(__FUNCTION__, "taking care of queued up events & returning");
+    DBUG((DBG,__FUNCTION__, "taking care of queued up events & returning"));
     XNextEvent(dpy, event);
     StashEventTime(event);
     return 0;
   }
-  DBUG(__FUNCTION__, "no X events waiting - about to reap children");
+  DBUG((DBG,__FUNCTION__, "no X events waiting - about to reap children"));
   /* Zap all those zombies! */
   /* If we get to here, then there are no X events waiting to be processed.
    * Just take a moment to check for dead children. */
@@ -1625,7 +1625,7 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
     run_input_hooks(&in_fdset);
   }
 
-  DBUG(__FUNCTION__, "leaving");
+  DBUG((DBG,__FUNCTION__, "leaving"));
   return 1;
 }
 
@@ -1762,13 +1762,11 @@ should not have to worry about this unless you know what it means. */
       fill_x_keypress_event(&event, KeyPress, keysym, mod_mask, w);
       XSendEvent(dpy, w, fPropagate, KeyPressMask, 
 		 (XEvent *) &event);
-      DBUG(FUNC_NAME,"New Sent keypress of %s at %d, %d; time = %ld\n",szKeysym,x,y,lastTimestamp);
     }
     if (fRelease) {
       fill_x_keypress_event(&event, KeyRelease, keysym, mod_mask, w);
       XSendEvent(dpy, w, fPropagate, KeyReleaseMask, 
 		 (XEvent *) &event);
-      DBUG(FUNC_NAME,"New Sent keyrelease of %s at %d, %d; time = %ld\n",szKeysym,x,y,lastTimestamp);
     }
   } else {
     int len;
@@ -1845,14 +1843,16 @@ this unless you know what it means. */
 			x, y, x_root, y_root, child, 0);
     XSendEvent(dpy, child, fPropagate, ButtonPressMask, 
 	       (XEvent *) &event);
-    DBUG(FUNC_NAME,"New Sent button press of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
+    DBUG((DBG,FUNC_NAME,"New Sent button press of %d at %d, %d; time = %ld\n",
+          bnum,x,y,lastTimestamp));
   }
   if (fRelease) {
     fill_x_button_event(&event, ButtonRelease, bnum, mod_mask | (1 << (bnum+7)),
 			x, y, x_root, y_root, child, 0);
     XSendEvent(dpy, child, fPropagate, ButtonReleaseMask, 
 	       (XEvent *) &event);
-    DBUG(FUNC_NAME,"New Sent button release of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
+    DBUG((DBG,FUNC_NAME,"New Sent button release of %d at %d, %d; time = %ld\n",
+          bnum,x,y,lastTimestamp));
   }
 
   return SCM_UNSPECIFIED;
