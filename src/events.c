@@ -851,22 +851,23 @@ HandlePropertyNotify()
 	Scr.Focus = NULL;
 	SetFocus(pswCurrent->w, pswCurrent, 0);
       }
-    } else if (Event.xproperty.state != PropertyDelete) {
-      char *szName = XGetAtomName(dpy,Event.xproperty.atom);
-      
-      /* FIXMS: window context shouldn't even be set here. */
-
-      if (NULL != pswCurrent) {
-	set_window_context(pswCurrent->schwin);
-      }
-      DBUG((DBG,FUNC_NAME,"Calling hook (maybe empty)"));
-      call2_hooks(x_propertynotify_hook, gh_str02scm(szName), scm_window_context);
-      if (NULL != pswCurrent) {
-	unset_window_context();
-      }
-      XFree(szName);
     }
     break;
+  }
+  if (Event.xproperty.state != PropertyDelete) {
+    char *szName = XGetAtomName(dpy,Event.xproperty.atom);
+    
+    /* FIXMS: window context shouldn't even be set here. */
+    /* GJB:FIXME:MS: what is this for? */
+    
+    if (NULL != pswCurrent) {
+      set_window_context(pswCurrent->schwin);
+    }
+    call2_hooks(x_propertynotify_hook, gh_str02scm(szName), scm_window_context);
+    if (NULL != pswCurrent) {
+      unset_window_context();
+    }
+    XFree(szName);
   }
 }
 #undef FUNC_NAME
