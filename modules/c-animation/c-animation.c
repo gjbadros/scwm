@@ -29,6 +29,8 @@
 #include "scwm.h"
 #include "screen.h"
 #include "borders.h"
+#include "decorations.h"
+#include "resize.h"
 #include "xmisc.h"
 #include "util.h"
 #include "events.h"

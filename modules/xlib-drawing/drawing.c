@@ -218,7 +218,7 @@ SCWM_PROC(xlib_set_line_width_x, "xlib-set-line-width!", 1, 0, 0,
      /** Sets the line width of the DrawingGC to WIDTH. */
 #define FUNC_NAME s_xlib_set_line_width_x
 {
-  int iWidth;
+  int iWidth = 0;
 
   SCM_REDEFER_INTS;
 

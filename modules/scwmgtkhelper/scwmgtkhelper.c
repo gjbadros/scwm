@@ -64,6 +64,7 @@ after the (gtk gtk) module. */
   signal(SIGUSR1, Restart);
 
   XSetErrorHandler((XErrorHandler) ScwmErrorHandler);
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME 
 

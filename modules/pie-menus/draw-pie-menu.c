@@ -679,7 +679,8 @@ PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
   MenuItemInMenu * pmiimLast;
   int cpixRadius;
   float numerator, denominator;
-  int quadrant, order, last_order;
+  int quadrant, last_order;
+  int order = 0;
   
   /* Translate x and y to pie coordinants */
   /* FIXJTL: piewm has x +1 and y -1; why? */
@@ -910,7 +911,8 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
   int cpixWidth, cpixHeight, cpixWidthLast, cpixHeightLast;
   int cpixX, cpixY, cpixXLast, cpixYLast;
   int cpixLeftMax, cpixTopMax, cpixRightMin, cpixBottomMin;
-  int cpixXCenter, cpixYCenter, cpixSideImage;
+  int cpixXCenter = 0, cpixYCenter = 0;
+  int cpixSideImage;
   int total_units;
   int imiim, cmiim;
   int iQuadrant;

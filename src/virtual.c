@@ -64,6 +64,10 @@ notify_edge_enter(Edge e)
   case EDGE_BOTTOM:
     edge_sym = sym_south;
     break;
+  case EDGE_NONE:
+    /* this should not happen */
+    assert(False);
+    break;
   }
 
   call1_hooks(edge_enter_hook, edge_sym);
@@ -88,6 +92,10 @@ notify_edge_leave(Edge e)
     break;
   case EDGE_BOTTOM:
     edge_sym = sym_south;
+    break;
+  case EDGE_NONE:
+    /* this should not happen */
+    assert(False);
     break;
   }
 
@@ -328,12 +336,8 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 void 
 checkPanFrames()
 {
-  Bool fWrapX = Scr.fEdgeWrapX;
-  Bool fWrapY = Scr.fEdgeWrapY;
-
   if (!(Scr.fWindowsCaptured))
     return;
-
   
   XMapRaised(dpy, Scr.PanFrameLeft.win);
   Scr.PanFrameLeft.isMapped = True;
