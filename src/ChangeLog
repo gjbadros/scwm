@@ -1,3 +1,11 @@
+Thu Aug 20 14:41:28 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* borders.c (SetupFrame): Call UnsetShapedTitlebar if
+	!fSquashedTitlebar, and add that routine.
+
+	* util.c: Remove #ifdef-d out call to SetTitleBar in
+	redraw_titlebars that seemed redundant.
+
 Thu Aug 20 13:50:38 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c (scwm_main): Use scm_setlocale, #include X11/Xlocale if
