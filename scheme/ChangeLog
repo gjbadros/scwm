@@ -1,3 +1,16 @@
+1999-08-02  Greg Badros  <gjb@cs.washington.edu>
+
+	* number-convert.scm, menus-extras.scm,
+	highlight-current-window.scm, flash-window.scm, face.scm,
+	dir-focus.scm, base.scm, animated-iconify.scm, ScwmClock.scm,
+	ScwmButtons.scm, ScwmBiff.scm: Documented a bunch of public
+	functions (dir-focus.scm, also made some functions private instead 
+	of documenting them).
+
+1999-08-01  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Added some FIXME comments.
+
 Sat Jul 31 20:10:56 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraints.scm: Use bind-four-modifier-key-events; was
