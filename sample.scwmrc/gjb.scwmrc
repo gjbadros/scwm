@@ -61,7 +61,7 @@
 
 (set! fvwm2-module-path (append fvwm2-module-path '("/uns/lib/fvwm2")))
 (define want-fvwm2-pager-module #t)
-(define want-fvwm2-winlist-module #t)
+(define want-fvwm2-winlist-module #f)
 
 (set! opaque-move-percent 100)
 ;;(set! opaque-move-percent 20)
@@ -229,9 +229,7 @@
 ;;(set-color-map-focus! 'follows-mouse)
 ;;(set-desktop-size! 3 3)
 
-(set-edge-scroll-delay! 500)
-(set-edge-move-threshold! 10)
-
+(set-edge-resistance! 500 10)
 (set-edge-scroll! (%x 100) (%y 100))
 
 (title-style #:font font12 #:justify 'left #:relief 'raised)
