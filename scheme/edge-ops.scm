@@ -57,7 +57,7 @@ If #f, then this never happens.  If #t, then this always happens.  If
  (lambda (dir)
    (cond
     ((not current-edge-ops-scroll-delay)
-     (set! current-edge-ops-scroll-delay (scwm-option-get *edge-ops-scroll-delay*))))
+     (set! current-edge-ops-scroll-delay (optget *edge-ops-scroll-delay*))))
    (let* ((dtime current-edge-ops-scroll-delay)
 	  (pointer-pos (pointer-position))
 	  (p-x (car pointer-pos))
@@ -108,7 +108,7 @@ If #f, then this never happens.  If #t, then this always happens.  If
       (add-timer-hook!
        edge-ops-scroll-backoff (lambda () (edge-ops-delay-reset))))
      (#t
-      (set! current-edge-ops-scroll-delay (scwm-option-get *edge-ops-scroll-delay*))))))
+      (set! current-edge-ops-scroll-delay (optget *edge-ops-scroll-delay*))))))
 
 (add-hook!
  edge-leave-hook

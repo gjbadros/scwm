@@ -76,7 +76,7 @@ See also `prompt-color'."
       (set! favorites 
 	    (list "inherit" "white" "grey20" "grey50" "grey75" "black" 
 		  "blue" "red" "green" "purple" "yellow" "orange")))
-;;(scwm-option-get *favorite-colors*)
+;;(optget *favorite-colors*)
   (let* ((hbox (gtk-hbox-new #f 0))
 	 (cb (if (list? favorites) (gtk-combo-new) #f))
 	 (entry (if cb (gtk-combo-entry cb) (gtk-entry-new)))

@@ -173,6 +173,8 @@
   (remove-hook! interactive-move-finish-hook imeh)
   )
 
+
+;; (snap-initialize)
 (define*-public (snap-initialize #&optional (sw 25))
   "Turn on auto-snapping during interactive moves."
   (set! current-windows '())

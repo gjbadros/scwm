@@ -232,7 +232,7 @@ The procedure should take a single argument, the window."
 
 (define*-public (interactive-move 
 		 #&optional (win (get-window #t #f #f))
-		 (opaquely? (if win ((scwm-option-get *move-opaquely-proc*) win))))
+		 (opaquely? (if win ((optget *move-opaquely-proc*) win))))
   "Move WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
 should be moved opaquely, or using a rubber-band. If it is not
@@ -242,7 +242,7 @@ opaquely if that returns #t and uses a rubber-band if it returns #f."
 
 (define*-public (interactive-resize 
 		 #&optional (win (get-window #t #f #f))
-		 (opaquely? (if win ((scwm-option-get *resize-opaquely-proc*) win))))
+		 (opaquely? (if win ((optget *resize-opaquely-proc*) win))))
   "Resize WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
 should be resized opaquely, or using a rubber-band. If it is not
@@ -450,3 +450,22 @@ you can do something like:
 ;;(set-object-property! (select-window-interactively) 'warp-placement '(80 25))
 ;;(warp-placement (select-window-interactively))
 
+(define*-public (toggle-focus)
+  "Focus window that had the focus before the current one."
+  (interactive)
+  (focus-change-warp-pointer
+   (cadr (list-windows #:by-focus #t))))
+
+(define*-public (move-or-shade)
+  "Move the window on a drag, shade on a double-click."
+  (interactive)
+  (case (mouse-event-type)
+    ((double-click) (animated-toggle-window-shade))
+    (else (move-or-raise))))
+
+(define*-public (move-or-deiconify)
+  "Move the icon on a drag, de-iconify on a double click."
+  (interactive)
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((double-click) (animated-deiconify))))

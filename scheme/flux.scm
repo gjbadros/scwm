@@ -63,7 +63,9 @@ Use `show-system-info' to display it in a window."
   (let ((vv (X-version-information)) (dd (X-display-information)))
     (apply
      to-string "Guile verion:\t\t" (version)
-     "\nLibguile timestamp:\t" (libguile-config-stamp)
+     (if (bound? libguile-config-stamp)
+	 (string-append "\nLibguile timestamp:\t" (libguile-config-stamp))
+	 "")
      "\nSCWM version:\t\t" (scwm-version)
      "\nFrom repository date:\t" (scwm-version-date)
      "\nRestarted:\t\t" (bool->string (restarted?))
@@ -427,28 +429,6 @@ WIN is a window object, an X window id, or 'root-window."
 	   ""))))
 
 ;; (make-X-geometry #:x-size 50 #:y-size 20 #:x-offset 10 #:y-offset -20)
-
-
-(define*-public (toggle-focus)
-  "Focus window that had the focus before the current one."
-  (interactive)
-  (focus-change-warp-pointer
-   (cadr (list-windows #:by-focus #t))))
-
-(define*-public (move-or-shade)
-  "Move the window on a drag, shade on a double-click."
-  (interactive)
-  (case (mouse-event-type)
-    ((double-click) (animated-toggle-window-shade))
-    (else (move-or-raise))))
-
-;; some stuff for icons
-(define*-public (move-or-deiconify)
-  "Move the icon on a drag, de-iconify on a double click."
-  (interactive)
-  (case (mouse-event-type)
-    ((motion) (interactive-move))
-    ((double-click) (animated-deiconify))))
 
 (define*-public (interactive-move-rubberband #&optional (win (get-window)))
   "Move interactively, using the rubberband (unless constraint solver is active."

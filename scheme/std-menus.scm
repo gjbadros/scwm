@@ -105,7 +105,7 @@ The selection must contain a single full pathname."
 			     (if (and (regexp-exec (car entry) file))
 				 (list (apply menuitem (cdr entry)))
 				 ()))
-			   (scwm-option-get *context-map*)))
+			   (optget *context-map*)))
 	       ())))))
 
 

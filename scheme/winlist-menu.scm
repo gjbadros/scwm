@@ -132,7 +132,7 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
 
 (define*-public (show-window-list-menu warp-to-index permit-alt-release-selection? #&rest rest)
   "Popup a window list menu.
-Warps the pointer to the first menu item iff WARP-TO-FIRST is #t.
+Warps the pointer to the WARP-TO-INDEX menu item iff it is an integer.
 If PERMIT-ALT-RELEASE-SELECTION? is #t, then the release of the Alt/Meta
 modifier will select the item (this is a bit of a hack to make a nicer
 task-switching menu).

@@ -231,12 +231,12 @@ The icon is that of the window GROUP represents.
 	  ()
 	  )))))
 
-(define* (popup-window-group-menu)
+(define*-public (popup-window-group-menu)
   "Popup the window group menu."
   (interactive)
   (popup-menu (make-window-group-menu (get-window))) #t)
 
-(define* (popup-window-group-menu-no-warp)
+(define*-public (popup-window-group-menu-no-warp)
   "Popup the window group menu without warping to the first menu item."
   (interactive)
   (popup-menu (make-window-group-menu (get-window))))

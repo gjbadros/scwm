@@ -149,13 +149,13 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
 
 (define (make-auto-focus-func win)
   (let ((proc (or (object-property win 'auto-raise-focus-proc)
-		  (scwm-option-get *default-auto-raise-focus-proc*))))
+		  (optget *default-auto-raise-focus-proc*))))
     (lambda ()
       (proc win))))
 
 (define (make-auto-unfocus-func win)
   (let ((proc (or (object-property win 'auto-raise-unfocus-proc)
-		  (scwm-option-get *default-auto-raise-unfocus-proc*))))
+		  (optget *default-auto-raise-unfocus-proc*))))
     (lambda ()
       (proc win))))
 

@@ -588,7 +588,8 @@ See `color-properties' for a list of the keys."
 
 (define-public (exe command)
   "Return a procedure that, when invoked, executes COMMAND in the background."
-  (lambda* () (interactive) (execute command)))
+  (lambda* () "Created by `exe' higher-order function" 
+	   (interactive) (execute command)))
 
 (define-scwm-option *xterm-command* (or (getenv "XTERM_PROGRAM_NAME") "xterm")
   "The command to run when a new xterm window is requested.
@@ -621,7 +622,7 @@ For example, to start a different interactive shell, you would use
 Uses the variable `*xterm-command*' to determine how
 to run an xterm.  CMD may include options to the command.
 The rest of the arguments are passed as options to the xterm command."
-  (exe (string-append *xterm-command*
+  (exe (string-append (optget *xterm-command*)
                       (apply string-append
                              (map (lambda (st) (string-append " " st)) opts))
                       " -e " cmd)))
@@ -639,7 +640,7 @@ to use and `*remote-shell-command*' to determine how to
 start the shell remotely."
   (exe (string-append (optget *xterm-command*)
 		      " -name remotexterm -T " hostname " -n " hostname 
-		      " -e sh -c '" *remote-shell-command* hostname "'")))
+		      " -e sh -c '" *remote-shell-command* " " hostname "'")))
 
 (defmacro-public thunk (proc)
   `(lambda args (apply ,proc args)))

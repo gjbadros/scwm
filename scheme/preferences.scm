@@ -91,7 +91,7 @@
 (define-public (choices-from-favorites fav)
   (map (lambda (f) (cons f (symbol->string f))) fav))
 
-;;(path-list->string-with-colons (scwm-option-get *theme-path*))
+;;(path-list->string-with-colons (optget *theme-path*))
 ;; (use-modules (app scwm prompt-string))
 ;; (use-modules (gtk gtk))
 ;; (gui-set '*desk-width*)
@@ -234,7 +234,7 @@ See also `prompt-string'."
 ;; (gui-set '*desk-width*)
 ;; (gui-set '*edge-x-scroll*)
 ;; (gui-set '*theme-path*)
-;; (scwm-option-get *edge-x-scroll*)
+;; (optget *edge-x-scroll*)
 
 (define-public (scwm-options-menu)
   (menu (append

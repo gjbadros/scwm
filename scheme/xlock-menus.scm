@@ -46,12 +46,11 @@ conform to the standard xlock output format."
 ;;; The screen saver and screen lock menus
 ;;; --------------------------------------
 
-;; Returns a list of mode names queried from the given XLOCK program.
-;; Special modes "random", "bomb", and "blank" are not included in this list.
-;; Use xlock-query-program to specify what program's output we should
-;; read to compute the list of modes, e.g.,
-;; (define xlock-query-program "xlock-stdout")
-(define* (xlock-query-modes #&optional (xlock *xlock-query-program*))
+(define*-public (xlock-query-modes #&optional (xlock *xlock-query-program*))
+  "Returns a list of mode names queried from the given XLOCK program.
+Special modes \"random\", \"bomb\", and \"blank\" are not included in this list.
+Use *xlock-query-program* to specify what program's output we should
+read to compute the list of modes.  See also `make-xlock-menu'."
   (let ((pipe (open-input-pipe (string-append xlock " -help 2>&1"))))
     (do ((line (read-line pipe) (read-line pipe))
          (start-re (make-regexp "where mode is one of:" regexp/icase)))

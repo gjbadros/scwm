@@ -328,7 +328,7 @@
 ;; be used. I corrected all relevant functions.
 
 (define (module-broadcast type num-data arg1 arg2 arg3 arg4 arg5 arg6 arg7)
-  (if (scwm-option-get *debug-fvwm-module*)
+  (if (optget *debug-fvwm-module*)
       (begin
 	   (display "broadcasting message of type: ")
 	   (write type)
@@ -339,7 +339,7 @@
 	       (mask (cadr fmod))
 	       (args (list arg1 arg2 arg3 arg4 arg5 arg6 arg7)))
 	   (set-cdr! (list-tail args (- num-data 1)) '())
-	   (if (scwm-option-get *debug-fvwm-module*)
+	   (if (optget *debug-fvwm-module*)
    	       (begin
 	          (display "mask: ")
 	          (write mask)
@@ -535,7 +535,7 @@
 					   from-module-read))
 				  (window-id (car packet))
 				  (command (caddr packet)))	
-			     (if (scwm-option-get *debug-fvwm-module*)
+			     (if (optget *debug-fvwm-module*)
 				 (begin
 				   (display "packet: ")
 				   (write packet)

@@ -128,7 +128,7 @@ scwm-options-groups
 
 ;; These two are macro syntaxes
 (scwm-option-set! *desk-width* 5)
-(scwm-option-get *desk-width*)
+(optget *desk-width*)
 
 ;; the rest are procs-- must quote the option symbol
 (scwm-option-symset! '*desk-width* 9)

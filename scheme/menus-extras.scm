@@ -57,7 +57,7 @@
 	      (set-cdr! tt ()) (cons ls (split-list t1 max))))))
 
 (define*-public (fold-menu-list
-		ml #&optional (max-lines (scwm-option-get *menu-max-fold-lines*)))
+		ml #&optional (max-lines (optget *menu-max-fold-lines*)))
   "Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
 defaults to `default-menu-max-fold-lines'."
