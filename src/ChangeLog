@@ -1,3 +1,13 @@
+1999-01-30  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* borders.c (SetBorderX): Do not try to draw when the border width
+	is zero, to avoid certain visual glitces.
+
+	* decorations.c (SelectDecor): Correct handling of "no titlebar" hints.
+
+	* events.c: Add `X-MapRequest-hook' - various protocols require
+	updates from various hints each time the window maps.
+
 1999-01-27  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* session-manager.c (SavePhase): New variable.

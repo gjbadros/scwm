@@ -968,7 +968,7 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	    if (psw->boundary_width > 1)
 	      RelieveParts(psw, i | HH_HILITE,
 			   ((i / 2) ? rgc : sgc), (vertical ? rgc : sgc));
-	    else
+	    else if (psw->boundary_width > 0)
 	      RelieveParts(psw, i | HH_HILITE,sgc,sgc);
           }
 	} else {
@@ -977,7 +977,7 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 			rgc, sgc, corners[i]);
 	  if (psw->boundary_width > 1)
 	    RelieveParts(psw, i, ((i / 2) ? rgc : sgc), (vertical ? rgc : sgc));
-	  else
+	  else if (psw->boundary_width > 0)
 	    RelieveParts(psw, i, sgc,sgc);
 	}
       }

@@ -339,6 +339,7 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
   t->boundary_width = 0;
   t->corner_width = 0;
   t->title_height = 0;
+  t->fTitle = False;
 
   if (decor & MWM_DECOR_BORDER) {
     /* A narrow border is displayed (5 pixels - 2 relief, 1 top,

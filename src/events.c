@@ -105,6 +105,7 @@ SCM x_root_propertynotify_hook;
 SCM x_mappingnotify_hook;
 SCM x_destroynotify_hook;
 SCM x_unmapnotify_hook;
+SCM x_maprequest_hook;
 SCM window_focus_change_hook;
 SCM client_message_hook;
 
@@ -981,6 +982,8 @@ HandleMapRequestKeepRaised(Window KeepRaised)
   /* If it's not merely iconified, and we have hints, use them. */
   if (!pswCurrent->fIconified || pswCurrent->fStartIconic) {
     int state;
+
+    call1_hooks(x_maprequest_hook, pswCurrent->schwin);
 
     if (pswCurrent->wmhints && (pswCurrent->wmhints->flags & StateHint))
       state = pswCurrent->wmhints->initial_state;
@@ -2057,6 +2060,12 @@ The WIN is still valid during the hook procedures. */
 window is being unmapped (removed from display).  The hook procedures
 are invoked with one argument, WIN, the window being destroyed.  The
 WIN is still valid during the hook procedures. */
+
+  SCWM_HOOK(x_maprequest_hook,"X-MapRequest-hook");
+  /** This hook is invoked upon MapRequest X events.  It indicates a
+window is trying to map itself (add itself to the display).  The hook 
+procedures are invoked with one argument, WIN, the window being mapped.  
+The WIN is valid during the hook procedures. */
 
   SCWM_HOOK(window_focus_change_hook,"window-focus-change-hook");
   /** This hook is invoked whenever the keyboard focus is changed.
