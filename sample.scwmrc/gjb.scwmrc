@@ -201,6 +201,8 @@
 (menu-style #:fg "black" #:bg "gray80" #:stipple "grey35" 
 	    #:font menu-font #:mwm #f)
 
+(set-size-and-pos-window-attributes! menu-font "black" "gray80")
+
 ;;(set-click-time! 150)
 ;;(set-color-map-focus! 'follows-mouse)
 ;;(set-desktop-size! 3 3)
@@ -296,6 +298,18 @@
 	      #:int-override #t #:decorate-transient #f
 	      #:PPosition-hint #f
 	      #:mini-icon pic-xterm-mini)
+
+
+(define (place-near-pointer w)
+  (let* ((posn (pointer-position))
+	 (x (car posn))
+	 (y (cadr posn)))
+    (display "placing at pointer...")
+    (display x) (display ",") (display y) (display "\n")
+    (move-to x y w)))
+
+;;(window-style "Netscape: Find" #:other-proc place-near-pointer)
+
 
 ;; FIXGJB: make-face's style of argument passing
 ;; is different from the window-style method; I imagine
