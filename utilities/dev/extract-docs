@@ -375,18 +375,20 @@ sub ProcessSchemeHeader( $$$$ ) {
 #  print STDERR "---------------\n";
   if ($match ne $proc_name) {
     print STDERR "$filename:$line:**** $match not same as $proc_name\n";
+    $proc_name = $match;
     undef $comment;
   }
   if ($match =~ m%^\(%) {
     print STDERR "$filename:$line:**** $match is not an ordinary define\n";
-    $match = substr($match,1);
+    $proc_name = substr($match,1);
   }
   if (!defined($comment)) {
     print STDERR "$filename:$line:**** $proc_name: could not find comment\n";
     $comment = "No documentation supplied.";
   }
-  my $usage = sprintf "(%s%s%s)", $proc_name, ($#arglist >= 0? " ":""),
-         join(" ",@arglist);
+#  my $usage = sprintf "(%s%s%s)", $proc_name, ($#arglist >= 0? " ":""),
+ #        join(" ",@arglist);
+  my $usage = $name_and_args;
   # Remove leading and trailing quote
   $comment =~ s/^\"(.*)\"$/$1/ms;
 #  print STDERR "Scheme Proc: $proc_name\nArgs: @arglist\n$header\n";
