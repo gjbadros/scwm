@@ -1,0 +1,203 @@
+From: Owen Taylor <otaylor@redhat.com>
+Subject: Suggestion: Gravity and resizing from the left
+To: wm-spec-list@gnome.org
+Date: 17 Nov 1999 15:30:55 -0500
+Resent-From: wm-spec-list@gnome.org
+Reply-To: wm-spec-list@gnome.org
+X-From-Line: wm-spec-list-request@redhat.com  Wed Nov 17 12:32:33 1999
+Received: from lists.redhat.com (lists.redhat.com [199.183.24.247])
+	by june.cs.washington.edu (8.9.3/8.9.3/0.3j) with SMTP id MAA15614
+	for <gjb@cs.washington.edu>; Wed, 17 Nov 1999 12:32:29 -0800
+	(envelope-from wm-spec-list-request@redhat.com)
+Received: (qmail 4989 invoked by uid 501); 17 Nov 1999 20:32:27 -0000
+Resent-Date: 17 Nov 1999 20:32:27 -0000
+Resent-Cc: recipient list not shown: ;
+MBOX-Line: From wm-spec-list-request@gnome.org  Wed Nov 17 15:32:27 1999
+Message-ID: <ybe1z9o508w.fsf@fresnel.labs.redhat.com>
+User-Agent: Gnus/5.070088 (Pterodactyl Gnus v0.88) Emacs/20.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Resent-Message-ID: <"E_svq.0.nD1.R3nCu"@lists.redhat.com>
+X-Mailing-List: <wm-spec-list@gnome.org> archive/latest/147
+X-Loop: wm-spec-list@gnome.org
+Precedence: list
+Resent-Sender: wm-spec-list-request@gnome.org
+X-URL: http://www.redhat.com
+Lines: 53
+Xref: clavicle.cs.washington.edu wmspeclist:437
+
+
+This is somewhat off-topic on the list, but I'm mailing
+it here because the audience of this message is window
+manager authors; I'll pretend that it is relevant by
+saying that if people agree with my suggestion it could
+be added to the spec as "advice to implementors".
+
+
+When opaque-resizing a window from the left, one frequently
+sees "jumping" as center or right-aligned subwindows
+are translated to the left and then repositioned into
+place. X has a mechanism for controlling such behavior -
+window gravity. By using either static gravity or
+the appropriate gravity for an aligned element, this
+artifact should be controllable.
+
+However, the way most reparenting window managers implement
+resizing defeats window gravity. Such window managers
+first XMoveResizeWindow() the frame window into the right
+place, and then XResizeWindow() the client window to 
+the right size.
+
+The correct behavior (in my opinion) is to set 
+window gravity for the client window to StaticGravity,
+then when a resize occurs. 
+
+ - If the resize makes the window bigger:
+   
+   1) XMoveResizeWindow the client window to the new size and position
+   2) XMoveResizeWindow the frame window to the new size and position
+
+ - If the resize makes the window smaller:
+
+   1) XMoveResizeWindow the frame window to the new size and position
+   2) XMoveResizeWindow the client window to the new size and position
+
+ - If the resize does opposite things in the two dimensions, 
+   do one of the above sequences arbitrarily - you'll get a bit 
+   of flashing around the border, as regions are temporarily exposed, 
+   just as you would when doing things the "old-fashioned" way.
+
+Do any window managers do this already? (I've seen the 
+"incorrect" behavior with some versions of Fvwm, 
+Enlightenment, and Sawmill, so it is pretty common.)
+
+Hope this is useful,
+                                        Owen
+
+
+-- 
+To unsubscribe: mail wm-spec-list-request@gnome.org with "unsubscribe"
+as the Subject.
+
+
+
+From: Owen Taylor <otaylor@redhat.com>
+Subject: Re: Suggestion: Gravity and resizing from the left
+To: dominik.vogt@gmx.de
+Cc: wm-spec-list@gnome.org
+Date: 21 Nov 1999 21:49:24 -0500
+Resent-From: wm-spec-list@gnome.org
+Reply-To: wm-spec-list@gnome.org
+X-From-Line: wm-spec-list-request@redhat.com  Sun Nov 21 20:06:11 1999
+Received: from lists.redhat.com (lists.redhat.com [199.183.24.247])
+	by june.cs.washington.edu (8.9.3/8.9.3/0.3j) with SMTP id TAA06997
+	for <gjb@cs.washington.edu>; Sun, 21 Nov 1999 19:47:32 -0800
+	(envelope-from wm-spec-list-request@redhat.com)
+Received: (qmail 16074 invoked by uid 501); 22 Nov 1999 03:47:28 -0000
+Resent-Date: 22 Nov 1999 03:47:27 -0000
+Resent-Cc: recipient list not shown: ;
+MBOX-Line: From wm-spec-list-request@gnome.org  Sun Nov 21 22:47:27 1999
+References: <ybe1z9o508w.fsf@fresnel.labs.redhat.com> <19991121123115.A13988@gmx.de>
+In-Reply-To: Dominik Vogt's message of "Sun, 21 Nov 1999 12:31:15 +0100"
+Message-ID: <ybeso1zi6kr.fsf@fresnel.labs.redhat.com>
+User-Agent: Gnus/5.070088 (Pterodactyl Gnus v0.88) Emacs/20.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Resent-Message-ID: <"mgAmz.0.hw3.FpBEu"@lists.redhat.com>
+X-Mailing-List: <wm-spec-list@gnome.org> archive/latest/160
+X-Loop: wm-spec-list@gnome.org
+Precedence: list
+Resent-Sender: wm-spec-list-request@gnome.org
+X-URL: http://www.redhat.com
+Lines: 89
+Xref: clavicle.cs.washington.edu wmspeclist:450
+
+
+Dominik Vogt <dominik.vogt@fvwm.org> writes:
+
+> On Wed, Nov 17, 1999 at 03:30:55PM -0500, Owen Taylor wrote:
+> > 
+> > This is somewhat off-topic on the list, but I'm mailing
+> > it here because the audience of this message is window
+> > manager authors; I'll pretend that it is relevant by
+> > saying that if people agree with my suggestion it could
+> > be added to the spec as "advice to implementors".
+> 
+> I don't see such stuff as part of the spec.  If someone wants
+> to write a 'guideline for WM authors' that's fine, but it
+> has little to do with interclient communication.
+
+Little, but not nothing. It's a recommendation about
+how a window manager should behave in order that its
+clients can count on certain code (using window
+gravity) working properly.
+
+But I'd freely admit that the main reason I posted
+here is the audience of window manager authors.
+ 
+> > When opaque-resizing a window from the left, one frequently
+> > sees "jumping" as center or right-aligned subwindows
+> > are translated to the left and then repositioned into
+> > place. X has a mechanism for controlling such behavior -
+> > window gravity. By using either static gravity or
+> > the appropriate gravity for an aligned element, this
+> > artifact should be controllable.
+> > 
+> > However, the way most reparenting window managers implement
+> > resizing defeats window gravity. Such window managers
+> > first XMoveResizeWindow() the frame window into the right
+> > place, and then XResizeWindow() the client window to 
+> > the right size.
+> > 
+> > The correct behavior (in my opinion) is to set 
+> > window gravity for the client window to StaticGravity,
+> > then when a resize occurs. 
+> > 
+> >  - If the resize makes the window bigger:
+> >    
+> >    1) XMoveResizeWindow the client window to the new size and position
+> >    2) XMoveResizeWindow the frame window to the new size and position
+> > 
+> >  - If the resize makes the window smaller:
+> > 
+> >    1) XMoveResizeWindow the frame window to the new size and position
+> >    2) XMoveResizeWindow the client window to the new size and position
+> > 
+> >  - If the resize does opposite things in the two dimensions, 
+> >    do one of the above sequences arbitrarily - you'll get a bit 
+> >    of flashing around the border, as regions are temporarily exposed, 
+> >    just as you would when doing things the "old-fashioned" way.
+> 
+> I've spent the morning experimenting with this in fvwm.  Your
+> approach suffers from the same problem: if you resize the frame
+> window first when the window gets bigger, you will se the WM
+> border flashing instead of e.g. a scrollbar.  That's nor any
+> better.  
+
+The ordering of resizes is rather incidental to my 
+recommendation. The important part is using a MoveResize
+on the client window instead of moving the frame window
+and then reszing the client window.
+
+That is, the appearance of the borders during opaque 
+resizing depends on the resize sequence, and the best
+sequence there probably depends on the exact geometry
+of the frame windows and decorations, but using 
+MoveResizeWindow and static gravity to move the client
+window should be relatively universal.
+
+(As an addition to what I said earlier, it's probably
+good to only set win_gravity on the client window
+during the resize operation and restore it afterwards
+so if the window manager is killed it is less likely
+to confuse other window managers that may not expect
+this.)
+
+Regards,
+                                        Owen
+
+
+-- 
+To unsubscribe: mail wm-spec-list-request@gnome.org with "unsubscribe"
+as the Subject.
+
