@@ -179,24 +179,25 @@
 
 (use-scwm-modules cascade tile undo)
 
-(bind-key 'all "H-M-C-u" undo)
+;; H-s is insert-undo-global
 
 ;; (reset-undo!)
 
-(save-window-configuration)
-(save-window-configuration)
+;; (insert-undo-global)
 
 (begin
-  (save-window-configuration)
+  (insert-undo-global)
   (cascade-windows (list-windows #:only (class-match?? "XTerm"))))
 
-(undo)
+;; H-/ is undo
+;; H-M-/ is redo
+;; (undo)
 
 (begin
-  (save-window-configuration)
+  (insert-undo-global)
   (tile-windows (list-windows #:only (win-not?? sticky?))))
 
-(undo)
+;; (undo)
 
 ;;;; SCWM-BUTTONS (GTK)
 
@@ -216,7 +217,6 @@
   (button-item "mini-nscape.xpm" #:action "netscape" #:tooltip "Netscape"))
  #:auto-orient #t
  #:orientation 'vertical)
-
 
 ;; big icons
 (run-ScwmButtons
