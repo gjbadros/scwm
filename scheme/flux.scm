@@ -28,27 +28,27 @@
 
 (define-public (interactive-move-window-with-focus)
   "Interactively move the window which currently has the focus.
-`interactive-move-maybe-opaque' is used to control whether a rubberband
+`interactive-move' is used to control whether a rubberband
 outline or the window itself is moved."
-  (let ((w (current-window-with-focus))) (and w (interactive-move-maybe-opaque w))))
+  (let ((w (current-window-with-focus))) (and w (interactive-move w))))
 
 (define-public (interactive-resize-window-with-focus)
   "Interactively resize the window which currently has the focus.
-`interactive-resize-maybe-opaque' is used to control whether a rubberband
+`interactive-resize' is used to control whether a rubberband
 outline or the window itself is resized."
-  (let ((w (current-window-with-focus))) (and w (interactive-resize-maybe-opaque w))))
+  (let ((w (current-window-with-focus))) (and w (interactive-resize w))))
 
 (define-public (interactive-move-window-with-pointer)
   "Interactively move the window which currently contains the pointer.
 `interactive-move-maybe-opaque' is used to control whether a rubberband
 outline or the window itself is moved."
-  (let ((w (current-window-with-pointer))) (and w (interactive-move-maybe-opaque w))))
+  (let ((w (current-window-with-pointer))) (and w (interactive-move w))))
 
 (define-public (interactive-resize-window-with-pointer)
   "Interactively resize the window which currently contains the pointer.
 `interactive-resize-maybe-opaque' is used to control whether a rubberband
 outline or the window itself is resized."
-  (let ((w (current-window-with-pointer))) (and w (interactive-resize-maybe-opaque w))))
+  (let ((w (current-window-with-pointer))) (and w (interactive-resize w))))
 
 (define-public (toggle-max-vert)
   "Toggle the current window's maximized-vertically state."

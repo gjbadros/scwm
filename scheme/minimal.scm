@@ -26,6 +26,12 @@
 (set-title-font! FIXED-FONT)
 (set-title-justify! 'center)
 
+;; temporary definitions for bootstrapping, use winops.scm to
+;; redefine properly.
+(define hack-interactive-move rubber-band-move)
+(define hack-interactive-resize rubber-band-resize)
+
+
 ;;; Some functions for decoration bindings
 (define (resize-or-raise)
   "Perform a resize, raise, or lower based on the mouse-event-type.
@@ -34,7 +40,7 @@ motion does `interactive-resize', and double-click does
 `lower-window'."
   (case (mouse-event-type)
     ((click) (raise-window))
-    ((motion) (interactive-resize))
+    ((motion) (hack-interactive-resize))
     ((double-click) (lower-window))))
 
 (define (move-or-raise)
@@ -44,7 +50,7 @@ motion does `interactive-move', and double-click does
 `lower-window'."
   (case (mouse-event-type)
     ((click) (raise-window))
-    ((motion) (interactive-move))
+    ((motion) (hack-interactive-move))
     ((double-click) (lower-window))))
 
 ;;; Initialize the decoration bindings to

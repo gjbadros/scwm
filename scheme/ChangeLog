@@ -1,5 +1,26 @@
 Thu Dec  3 10:28:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* flux.scm: Replace uses of interactive-resize-maybe-opaque and
+ 	interactive-move-maybe-opaque with interactive-move and
+ 	interactive-resize respectively.
+
+	* winops.scm: Replace interactive-resize-maybe-opaque and
+ 	interactive-move-maybe-opaque with interactive-move and
+ 	interactive-resize which take a optional boolean `opaquely?'
+  	argument which defaults to the result of calling `move-opaquely?'
+  	or `resize-opaquely?' on the argument. The former definitions of
+ 	those two predicates have been prefixed with `default-' and the
+ 	original names were defined as the `default-' versions; this is to
+ 	facilitate user documentation. set! hack-interactive-move and
+ 	hack-interactive-resize from minimal.scm to the non-hack versions
+ 	so they will work right automagically if you use this
+ 	module. Don't attempt to define any variables in the root
+ 	module. Various reordering and commenting.
+	
+	* minimal.scm: Use hack-interactive-move and
+ 	hack-interactive-resize, temporarily defined to the rubber-band
+	versions, in complex operations.
+ 	
 	* tile.scm: Use raise parameter instead of restack; change default
  	to 'restack-only; fix documentation to say "tile" instead of
  	"cascade"; thanks to Eli Barzilay <eli@CS.Cornell.EDU>.	

@@ -18,19 +18,6 @@
 ;;;; 
 
 
-;;; FIXMS: disgusting hack for now to get these in the root module.
-
-
-(define-public opaque-move-percent 
-;;;**VAR
-;;; Percent of display area below which windows are moved opaquely.
-  50)
-
-(define-public opaque-resize-percent 
-;;;**VAR
-;;; Percent of display area below which windows are resized opaquely.
-  35)
-
 
 (define-module (app scwm winops)
   :use-module (app scwm optargs)
@@ -38,6 +25,10 @@
   :use-module (app scwm style-options))
 
 
+
+
+
+;;; Toggling operations
 
 (define*-public ((make-toggling-winop pred neg pos) 
 		 #&optional (w (get-window)))
@@ -76,6 +67,9 @@ WIN is only destroyed if it is not deleteable."
 
 (define-public toggle-stick-icon
   (make-toggling-winop icon-sticky? unstick-icon stick-icon))
+
+
+;;; Maximization
 
 (define*-public (maximize nw nh #&optional (win (get-window)))
 "Maximize WIN to new pixel width NW and new pixel height NH.
@@ -156,71 +150,6 @@ If NW or NH is 0, that dimension is not changed."
 		       (set-object-property! win 'maximized #f)))))))
 
 
-(define-public (window-frame-area win)
-  "Return the number of square pixels of area that WIN is."
-  (let* ((frame-size (window-frame-size win))
-	 (width (car frame-size))
-	 (height (cadr frame-size)))
-    (* width height)))
-
-(define display-area (* display-width display-height))
-
-(define-public (resize-opaquely? win)
-  "Return #t if WIN has area < opaque-resize-percent of the screen, else #f."
-  (< (window-frame-area win) 
-     (* display-area (/ (scwm-user-var opaque-resize-percent) 100))))
-
-(define-public (move-opaquely? win)
-  "Return #t if WIN has area < opaque-move-percent of the screen, else #f."
-  (< (window-frame-area win)
-     (* display-area (/ (scwm-user-var opaque-move-percent) 100))))
-
-(define*-public (interactive-move-maybe-opaque #&optional (win (get-window)))
-  "Move WINDOW interactively and possibly opaquely.
-Calls `move-opaquely?' and moves opaquely if that returns #,
-uses a rubberband if it returns #f."
-  (if win (interactive-move win (move-opaquely? win))))
-
-(define*-public (interactive-resize-maybe-opaque #&optional (win (get-window)))
-  "Move WINDOW interactively and opaquely.
-Calls `resize-opaquely?' and moves opaquely if that returns #,
-uses a rubberband if it returns #f."
-  (if win (interactive-resize win (resize-opaquely? win))))
-
-;; (move-opaquely? (select-window-interactively))
-;; (resize-opaquely? (select-window-interactively))
-;; (interactive-move-maybe-opaque)
-
-;;; Some functions for decoration bindings
-(define-public (resize-or-raise-maybe-opaque)
-  "Perform a resize, raise, or lower based on the mouse-event-type.
-To be bound to a window decoration: click does `raise-window',
-motion does `interactive-resize-maybe-opaque', and double-click does
-`lower-window'."
-  (case (mouse-event-type)
-    ((click) (raise-window))
-    ((motion) (interactive-resize-maybe-opaque))
-    ((double-click) (lower-window))))
-
-(define-public (move-or-raise-maybe-opaque)
-  "Perform a move, raise, or lower based on the mouse-event-type.
-To be bound to a window decoration: click does `raise-window',
-motion does `interactive-move-maybe-opaque', and double-click does
-`lower-window'."
-  (case (mouse-event-type)
-    ((click) (raise-window))
-    ((motion) (interactive-move-maybe-opaque))
-    ((double-click) (lower-window))))
-
-
-(define*-public (opaque-interactive-move #&optional (win (get-window)))
-  "Move WINDOW interactively and opaquely."
-  (if win (interactive-move win #t)))
-  
-(define*-public (opaque-interactive-resize #&optional (win (get-window)))
-  "Resize WINDOW interactively and opaquely."
-  (if win (interactive-resize win #t)))
-
 (define*-public (toggle-maximize nw nh #&optional (win (get-window)))
   "Maximize to width NW, height NH if not maximized, or unmaximize."
   (if win (if (maximized? win)
@@ -235,13 +164,88 @@ motion does `interactive-move-maybe-opaque', and double-click does
 				(unmaximize w))))
 
 
+;;; Interactive Moves and Resizes
+;;; (with automatic selection of opaque or rubber-band move)
 
+
+(define-public opaque-move-percent 
+;;;**VAR
+;;; Percent of display area below which windows are moved opaquely.
+  50)
+
+(define-public opaque-resize-percent 
+;;;**VAR
+;;; Percent of display area below which windows are resized opaquely.
+  35)
+
+
+(define-public (window-frame-area win)
+  "Return the number of square pixels of area that WIN is."
+  (let* ((frame-size (window-frame-size win))
+	 (width (car frame-size))
+	 (height (cadr frame-size)))
+    (* width height)))
+
+(define display-area (* display-width display-height))
+
+(define-public (default-resize-opaquely? win)
+  "Return #t if WIN has area < opaque-resize-percent of the screen, else #f."
+  (< (window-frame-area win) 
+     (* display-area (/ (scwm-user-var opaque-resize-percent) 100))))
+
+(define-public (default-move-opaquely? win)
+  "Return #t if WIN has area < opaque-move-percent of the screen, else #f."
+  (< (window-frame-area win)
+     (* display-area (/ (scwm-user-var opaque-move-percent) 100))))
+
+
+(define-public move-opaquely?
+;;;**VAR
+;;; User-settable predicate to determine if windows should be moved opaquely.
+ default-move-opaquely?)
+
+(define-public resize-opaquely?
+;;;**VAR
+;;; User-settable predicate to determine if windows should be resized opaquely.
+ default-resize-opaquely?)
+
+(define*-public (interactive-move #&optional (win (get-window #f #t #f))
+				  (opaquely? (if win (move-opaquely? win))))
+  "Move WINDOW interactively and possibly opaquely. 
+If OPAQUELY? is specified, it is used to determine if the window
+should be moved opaquely, or using a rubber-band. If it is not
+spcified, `interactive-move' calls `move-opaquely?' on WIN and moves
+opaquely if that returns #t and uses a rubber-band if it returns #f."
+  (if win ((if opaquely? opaque-move rubber-band-move) win)))
+
+(define*-public (interactive-resize #&optional (win (get-window #f #t #f))
+				    (opaquely? (if win 
+						   (resize-opaquely? win))))
+  "Resize WINDOW interactively and possibly opaquely. 
+If OPAQUELY? is specified, it is used to determine if the window
+should be resized opaquely, or using a rubber-band. If it is not
+spcified, `interactive-resize' calls `resize-opaquely?' on WIN and
+moves opaquely if that returns #t and uses a rubber-band if it returns
+#f."
+  (if win ((if opaquely? opaque-resize rubber-band-resize) win)))
+
+;;; hack to work with minimal.scm
+(set! hack-interactive-move interactive-move)
+(set! hack-interactive-resize interactive-resize)
+
+
+;; (move-opaquely? (select-window-interactively))
+;; (resize-opaquely? (select-window-interactively))
+;; (interactive-move)
+
+
+
+;; Printing
 (define*-public (print-window #&optional (win (get-window)))
   "Print WIN using xpr and lpr."
   (if win (execute (string-append "xwd -id " 
 				(number->string (window-id win))
 				" | xpr | lpr"))))
-
 
 
 
