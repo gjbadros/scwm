@@ -161,7 +161,7 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
   KeySym keysym;
   char *keyname,*okey;
   int bnum,bset=0;
-  int len,i,min,max;
+  int len,i,min,max,j,k;
   int modmask = 0;
   int context = 0;
   
@@ -218,29 +218,29 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
   if((context != C_ALL) && (context & C_LALL))
   {
     /* check for nr_left_buttons */
-    i=0;
+    k=0;
     j=(context &C_LALL)/C_L1;
     while(j>0)
     {
-      i++;
+      k++;
       j=j>>1;
     }
-    if(Scr.nr_left_buttons <i)
-      Scr.nr_left_buttons = i;
+    if(Scr.nr_left_buttons <k)
+      Scr.nr_left_buttons = k;
   }
 
   if((context != C_ALL) && (context & C_RALL))
   {
     /* check for nr_right_buttons */
-    i=0;
+    k=0;
     j=(context&C_RALL)/C_R1;
     while(j>0)
     {
-      i++;
+      k++;
       j=j>>1;
     }
-    if(Scr.nr_right_buttons <i)
-      Scr.nr_right_buttons = i;
+    if(Scr.nr_right_buttons <k)
+      Scr.nr_right_buttons = k;
   }
 
 
@@ -258,6 +258,9 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
   Scr.AllBindings->Action = "Scheme";
   Scr.AllBindings->Thunk = proc;
   Scr.AllBindings->NextBinding = temp;
+
+  scm_protect_object(proc);
+
   if (!bset) {
     free(okey);
   }
