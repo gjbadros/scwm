@@ -1,3 +1,17 @@
+Mon Jan 24 14:27:55 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c (ensure_valid): Added return SCM_BOOL_F to be safe in
+	case of change in using scwm_error.
+
+	* scwm.c: Call init_error() so that scwm_error now works!
+
+	* errors.c: Change the ARGS argument to scm_error to just be
+	SCM_UNDEFINED, instead of redunadant.  Bug fix was calling
+	init_error(), above, though, as sym_scwm_error was #f and was
+	causing Bad arg in position 1 errors when trying to convert that
+	"symbol" to a string.  Thanks to Stefan Saroui for the bug report!
+	
+
 Sat Jan 22 16:11:07 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xproperty.c (s_X_property_get): Use gh_free or FREE depending on 
