@@ -506,7 +506,7 @@ add_input_hook_x (SCM port, SCM proc)
 SCM_PROC(s_remove_input_hook_x, "remove-input-hook!", 1, 0, 0, remove_input_hook_x);
 
 SCM 
-remove_timer_hook_x(SCM handle)
+remove_input_hook_x(SCM handle)
 {
   SCM_SETCDR(input_hooks,scm_delq_x (handle, SCM_CDR(input_hooks)));
 
@@ -542,7 +542,7 @@ force_new_input_hooks()
     SCM item = SCM_CAR(cur);
     SCM port = SCM_CAR(item);
     SCM proc = SCM_CDR(item);
-    while (SCM_BOOL_T==gh_memq(item, inout_hooks) && 
+    while (SCM_BOOL_T==gh_memq(item, input_hooks) && 
 	   SCM_BOOL_T==scm_char_ready_p(port)) {
       scwm_safe_call0(proc);
     }
@@ -566,7 +566,7 @@ run_input_hooks(fd_set *in_fdset)
       scwm_safe_call0(SCM_CDR(item));
       while(SCM_BOOL_T==scm_char_ready_p(port) 
 	    && SCM_CDR(prev)==cur) {
-	scm_safe_call0(proc);
+	scwm_safe_call0(proc);
       }
     }
   }

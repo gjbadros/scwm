@@ -249,7 +249,6 @@ scwm_main(int argc, char **argv)
   init_binding();
   init_window();
   init_face();
-  init_input_hooks();
   init_shutdown();
   init_scwm_procs();
 #ifdef USE_CASSOWARY
