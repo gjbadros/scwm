@@ -33,10 +33,9 @@
       (bind-keycode 'all keycode3 all-mods #f proc-release)
       )))
 
-(define (car-or-255 l)
-  (if (and (list? l) (not (eq? l '()))) (car l) 255))
-
 (begin
+  (define (car-or-255 l)
+    (if (and (list? l) (not (eq? l '()))) (car l) 255))
   (define XKM_CONTROL_L (cons (car-or-255 (keysym->keycode "Control_L")) (mod-mask-control)))
   (define XKM_META_L (cons (car-or-255 (keysym->keycode "Meta_L")) (mod-mask-meta)))
   (define XKM_ALT_L (cons (car-or-255 (keysym->keycode "Alt_L")) (mod-mask-alt)))
@@ -55,8 +54,8 @@
 (bind-three-modifier-key-events 
  XKM_CONTROL_L  XKM_ALT_L  XKM_SHIFT_L
 ;; (37 . 4) (115 . 16) (50 . 1)
- (lambda () (move-window 30 30 (current-window-with-focus)))
- (lambda () (move-window 50 50 (current-window-with-focus))))
+ draw-all-constraints
+ undraw-all-constraints)
 
 ;; Highlight the window about to be effected by the mouse move/resize
 (bind-three-modifier-key-events 
