@@ -28,6 +28,7 @@
  *
  */
 
+#include <config.h>
 #include <stdio.h>
 #include <guile/gh.h>
 #include <libguile.h>
@@ -128,7 +129,7 @@ void init_scwm_procs(void)
   gh_new_procedure0_1("titlebar-shown?",titlebar_shown_p);
   gh_new_procedure0_1("normal-border",normal_border);
   gh_new_procedure0_1("plain-border",plain_border);
-  gh_new_procedure0_1("normal-border?",normal_border_p);
+  gh_new_procedure0_1("border-normal?",border_normal_p);
   gh_new_procedure1_1("set-border-width!",set_border_width_x);
   gh_new_procedure0_1("stick-icon",stick_icon);
   gh_new_procedure0_1("unstick-icon",unstick_icon);
@@ -138,7 +139,27 @@ void init_scwm_procs(void)
   gh_new_procedure("set-window-colors!",set_window_colors_x,0,3,0);
   gh_new_procedure1_1("set-icon-title!",set_icon_title_x);
   gh_new_procedure2_0("bind-event",bind_event);
+  gh_new_procedure1_1("set-random-placement!",set_random_placement_x);
+  gh_new_procedure1_1("set-smart-placement!",set_smart_placement_x);
+  gh_new_procedure2_1("set-window-button!",set_window_button_x);
+  gh_new_procedure1_1("set-mwm-buttons!",set_mwm_buttons_x);
+  gh_new_procedure1_1("set-mwm-border!",set_mwm_border_x);
+  gh_new_procedure1_1("set-icon!",set_icon_x);
+  gh_new_procedure1_1("set-mini-icon!",set_mini_icon_x);
+  gh_new_procedure1_1("set-hint-override!",set_hint_override_x);
+  gh_new_procedure1_1("set-decorate-transient!",set_decorate_transient_x);
+  gh_new_procedure1_1("set-mwm-decor-hint!",set_mwm_decor_hint_x);
+  gh_new_procedure1_1("set-mwm-func-hint!",set_mwm_func_hint_x);
+  gh_new_procedure1_1("set-PPosition-hint!",set_PPosition_hint_x);
+  gh_new_procedure1_1("set-OL-decor-hint!",set_OL_decor_hint_x);
+  gh_new_procedure1_1("set-start-on-desk!",set_start_on_desk_x);
+  gh_new_procedure1_1("set-skip-mapping!",set_skip_mapping_x);
+  gh_new_procedure0_1("window-class",window_class);
+  gh_new_procedure0_1("window-resource",window_resource);
+  gh_new_procedure0_0("beep",beep);
 }
+
+
 
 
 

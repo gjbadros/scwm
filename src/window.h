@@ -66,6 +66,10 @@ SCM window_size(SCM win);
 SCM window_id(SCM win);
 SCM window_desk(SCM win);
 SCM window_title(SCM win);
+
+SCM window_class(SCM win);
+SCM window_resource(SCM win);
+
 SCM list_all_windows();
 
 SCM keep_on_top(SCM win);
@@ -78,18 +82,34 @@ SCM titlebar_shown_p(SCM win);
 
 SCM normal_border(SCM win);
 SCM plain_border(SCM win);
-SCM normal_border_p(SCM win);
+SCM border_normal_p(SCM win);
 
 SCM set_border_width_x(SCM width, SCM win);
 SCM stick_icon(SCM win);
 SCM unstick_icon(SCM win);
 SCM icon_sticky_p(SCM win);
 
+SCM set_random_placement_x(SCM val, SCM win);
+SCM set_smart_placement_x(SCM val, SCM win);
+SCM set_window_button_x(SCM butt, SCM val, SCM win);
+
 SCM set_icon_box_x(SCM sx, SCM sy, SCM sw, SCM sh, SCM win);
 SCM set_window_focus_x(SCM sym, SCM win);
 SCM set_window_colors_x(SCM fg, SCM bg, SCM win);
 SCM set_icon_title_x(SCM title, SCM win);
 
+SCM set_mwm_buttons_x(SCM val, SCM win);
+SCM set_mwm_border_x(SCM val, SCM win);
+SCM set_icon_x(SCM val, SCM win);
+SCM set_mini_icon_x(SCM val, SCM win);
+SCM set_hint_override_x(SCM val, SCM w);
+SCM set_decorate_transient_x(SCM val, SCM w);
+SCM set_mwm_decor_hint_x(SCM val, SCM w);
+SCM set_mwm_func_hint_x(SCM val, SCM w);
+SCM set_PPosition_hint_x(SCM val, SCM w);
+SCM set_OL_decor_hint_x(SCM val, SCM w);
+SCM set_start_on_desk_x(SCM desk, SCM w);
+SCM set_skip_mapping_x(SCM val, SCM w);
 
 #endif /* WINDOW_H */
 

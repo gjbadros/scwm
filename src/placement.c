@@ -342,8 +342,9 @@ Bool PlaceWindow(ScwmWindow *tmp_win, unsigned long tflag,int Desk)
   tmp_win->Desk = Scr.CurrentDesk;
   if (tflag & STICKY_FLAG)
     tmp_win->Desk = Scr.CurrentDesk;
-  else if (tflag & STARTSONDESK_FLAG)
+  else if (tflag & STARTSONDESK_FLAG) {
     tmp_win->Desk = Desk;
+  }
   else
   {
     Atom atype;

@@ -1,3 +1,27 @@
+Tue Oct 14 01:13:59 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c: Added many new procedures to support window styles:
+ 	set-mwm-buttons!, set-mwm-border!, set-icon!, set-mini-icon!,
+ 	set-hint-override!, set-decorate-transient!, set-mwm-decor-hint!,
+ 	set-mwm-func-hint!, set-PPosition-hint!, set-OL-decor-hint!,
+ 	set-start-on-desk!, set-skip-mapping!
+
+	* miscprocs.c: Added Scheme beep procedure which encapsulates
+ 	XBell.
+
+	* borders.c: Added SetBorderX and redefined SetBorder in terms of
+ 	it to allow the border and title to be redrawn correcly on
+ 	interactive options changes.
+
+	* add_window.c: Made several changes to AddWindow to support
+ 	Scheme callbacks upon the creation of a new window. Specifically,
+ 	run_new_window_hint_hook and run_new_window_hook are run at the
+ 	appropriate places.
+
+	* binding.c: Added the 'new-window-hint event to take care of
+	some issues relating to creating new windows and the time at
+	which hint settings must be available.
+
 Sun Oct  5 16:20:26 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c: Added many new procedures that should be useful for

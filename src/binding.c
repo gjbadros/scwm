@@ -259,6 +259,8 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
       Scr.nr_right_buttons = k;
   }
 
+  /* XXX - we should redraw the titlebars if necessary to reflect the new
+     buttons, prehaps? */
 
   if((contexts & C_WINDOW)&&(((modmask==0)||modmask == AnyModifier))) {
     Scr.buttons2grab &= ~(1<<(bnum-1));
@@ -290,11 +292,6 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
 /* to distringuish click, double-click, move */
 
 SCM sym_motion,sym_click,sym_one_and_a_half_clicks,sym_double_click;
-
-
-
-
-
 
 SCM mouse_ev_type = SCM_BOOL_F;
 
@@ -333,10 +330,14 @@ SCM mouse_event_type()
 }
 
 
-SCM sym_new_window
+SCM sym_new_window,
+  sym_new_window_hint
 /*,sym_enter_window.sym_leave_window,sym_edge_hook */;
 
+
 static SCM new_window_hook=SCM_BOOL_F;
+static SCM new_window_hint_hook=SCM_BOOL_F;
+
 /* static SCM window_enter_hook=SCM_UNDEFINED;
    static SCM window_leave_hook=SCM_UNDEFINED;
    static SCM edge_hook=SCM_UNDEFINED;
@@ -355,12 +356,15 @@ SCM bind_event(SCM ev_sym,SCM proc)
 
   if (gh_eq_p(ev_sym,sym_new_window)) {
     old_handler=new_window_hook;
-    scm_unprotect_object(old_handler);
     new_window_hook=proc;
-    scm_protect_object(proc);
+  } else if (gh_eq_p(ev_sym,sym_new_window_hint)) {
+    old_handler=new_window_hint_hook;
+    new_window_hint_hook=proc;
   } else {
     scwm_error("bind-event",12);
   }
+  scm_unprotect_object(old_handler);
+  scm_protect_object(proc);
   return old_handler;
 }
 
@@ -370,6 +374,16 @@ void run_new_window_hook(SCM w)
   if (new_window_hook!=SCM_BOOL_F) {
     set_window_context(w);
     call_thunk_with_message_handler(new_window_hook);
+    unset_window_context();
+  }
+}
+
+
+void run_new_window_hint_hook(SCM w)
+{
+  if (new_window_hint_hook!=SCM_BOOL_F) {
+    set_window_context(w);
+    call_thunk_with_message_handler(new_window_hint_hook);
     unset_window_context();
   }
 }
@@ -411,8 +425,13 @@ void init_binding(void)
   scm_protect_object(sym_one_and_a_half_clicks);
   sym_double_click=gh_symbol2scm("double-click");
   scm_protect_object(sym_double_click);
+
   sym_new_window=gh_symbol2scm("new-window");
   scm_protect_object(sym_new_window);
+
+  sym_new_window_hint=gh_symbol2scm("new-window-hint");
+  scm_protect_object(sym_new_window_hint);
+
   /*
   sym_new_window=gh_symbol2scm("enter-window");
   scm_protect_object(sym_enter_window);

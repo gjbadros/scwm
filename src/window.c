@@ -1327,9 +1327,13 @@ SCM set_icon_x(SCM val, SCM win) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |=  ICON_FLAG;
     /* XXX -This is silly, we really should have an "icon" or "image" type. */
-    tmp_win->icon_bitmap_file=gh_scm2newstr(val,&dummy);
-    XDestroyWindow(dpy,tmp_win->icon_w);
-    tmp_win->icon_w=None;
+    if(!((tmp_win->wmhints)
+		  &&(tmp_win->wmhints->flags & 
+		     (IconWindowHint|IconPixmapHint)))) {
+      tmp_win->icon_bitmap_file=gh_scm2newstr(val,&dummy);
+      XDestroyWindow(dpy,tmp_win->icon_w);
+      tmp_win->icon_w=None;
+    }
   } else {
     scm_wrong_type_arg("set-icon!",1,val);
   }

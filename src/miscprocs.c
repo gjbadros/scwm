@@ -411,4 +411,5 @@ SCM wait_for_window(SCM name)
 SCM beep()
 {
   XBell(dpy,0);
+  return SCM_UNSPECIFIED;
 }

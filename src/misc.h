@@ -281,6 +281,8 @@ extern Bool PopUpMenu(MenuRoot *, int, int);
 void ComplexFunction(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		     unsigned long context, char *action, int *Module);
 extern int DeferExecution(XEvent *, Window *,ScwmWindow **, unsigned long *, int, int);
+void SetBorderX (ScwmWindow *, Bool,Bool,Bool, Window, Bool);
+
 void SetBorder (ScwmWindow *, Bool,Bool,Bool, Window);
 void move_window(XEvent *eventp,Window w,ScwmWindow *tmp_win,
 		 unsigned long context,char *action, int *Module);

@@ -728,11 +728,11 @@ void HandleMapRequestKeepRaised(Window KeepRaised)
     {
       /* Add decorations. */
       Tmp_win = AddWindow(Event.xany.window);
+      if (Tmp_win == NULL)
+	return;
       if (Tmp_win->flags & ICONIFIED) {
 	Tmp_win->flags |= STARTICONIC;
       }
-      if (Tmp_win == NULL)
-	return;
     }
 
   if(KeepRaised != None)
@@ -767,7 +767,7 @@ void HandleMapRequestKeepRaised(Window KeepRaised)
 	      Tmp_win->flags |= MAP_PENDING;
 	      SetMapStateProp(Tmp_win, NormalState);
 	      if((Tmp_win->flags & ClickToFocus)&&
-		 /*		 !(Tmp_win->flags & SloppyFocus) && */
+		 /* !(Tmp_win->flags & SloppyFocus) && */
 		 ((!Scr.Focus)||(Scr.Focus->flags & ClickToFocus)))
 		{
 		  SetFocus(Tmp_win->w,Tmp_win,1);
@@ -824,14 +824,15 @@ void HandleMapNotify()
 	  XSelectInput(dpy,Event.xmap.window,FocusChangeMask);
 	  Scr.UnknownWinFocused = Event.xmap.window;
 	}      
-      return;
+     return;
     }
 
   /* Except for identifying over-ride redirect window mappings, we
    * don't need or want windows associated with the sunstructurenotifymask */
-  if(Event.xmap.event != Event.xmap.window)
+  if(Event.xmap.event != Event.xmap.window) {
     return;
-   
+  }   
+
   /*
    * Need to do the grab to avoid race condition of having server send
    * MapNotify to client before the frame gets mapped; this is bad because

@@ -186,6 +186,7 @@ typedef struct ScwmWindow
     XWMHints *wmhints;		/* WM hints */
     XClassHint class;
     int Desk;                   /* Tells which desktop this window is on */
+    int StartDesk;              /* Tells which desktop this window is on */
     int FocusDesk;		/* Where (if at all) was it focussed */
     int DeIconifyDesk;          /* Desk to deiconify to, for StubbornIcons */
     Window transientfor;
