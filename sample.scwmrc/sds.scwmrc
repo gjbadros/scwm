@@ -298,7 +298,7 @@
 ;; To later shut down the module, use kill-fvwm-module:
 ;; (kill-fvwm2-module fvwm-pager)
 
-;;(set! fvwm2-module-path (append fvwm2-module-path
+;;(set! *fvwm2-module-path* (append *fvwm2-module-path*
 ;;      '("/usr/X11/lib/X11/fvwm2")))
 
 ; (register-fvwm2-module-config "FvwmPager"

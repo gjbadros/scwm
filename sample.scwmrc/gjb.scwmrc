@@ -56,8 +56,6 @@
 ;;(use-modules (app scwm ui-constraints-buttons))
 ;;(start-ui-constraints-buttons)
 
-(set! debug-fvwm-module #f)
-
 (set! *use-scwm-system-proc* #t)
 
 ;;; print some information
@@ -87,7 +85,7 @@
 ;;;(documentation "make-menuitem")
 ;;;(apropos-internal "*")
 
-(set! fvwm2-module-path (append fvwm2-module-path '("/uns/lib/fvwm2")))
+(set! *fvwm2-module-path* (append fvwm2-module-path '("/uns/lib/fvwm2")))
 (define want-fvwm2-pager-module #t)
 (define want-fvwm2-winlist-module #f)
 

@@ -462,8 +462,8 @@
 
 ;;-------------------------------;;
 ;; fvwm modules                  ;;
-; (set! fvwm2-module-path (append '("/usr/local/X11R6.1/lib/X11/fvwm2")
-;				fvwm2-module-path))
+; (set! *fvwm2-module-path* (append '("/usr/local/X11R6.1/lib/X11/fvwm2")
+;				*fvwm2-module-path*))
 
 (register-fvwm2-module-config "FvwmPager"
 			      "*FvwmPagerBack grey70"
