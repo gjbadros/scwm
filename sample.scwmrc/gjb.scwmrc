@@ -316,7 +316,7 @@
 	      #:focus 'mouse
 ;	      #:plain-border #t
 	      #:sticky-icon #t
-	      #:random-placement #f #:smart-placement #f
+	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:mwm-border #t
 	      #:int-override #t #:decorate-transient #f
