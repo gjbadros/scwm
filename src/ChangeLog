@@ -1,3 +1,9 @@
+Fri Sep  4 12:28:33 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (stick, unstick): Sandwich SuggestMoveWindowTo-s
+	between CassowaryEdit.. EndEdit;  also add FIXGJB: rename comments 
+	regarding API renaming of some functions
+
 Fri Sep  4 11:58:33 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* session-manager.h: Fix multiple-inclusion guard, and include

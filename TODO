@@ -69,6 +69,7 @@ Other Stuff
 ** virtual desktop and sticky interaction with the constraint variables
 ** rubberband-resizing fixes -- generalization of the rubberband
 ** z-order stacking constraints to replace add-hoc stays-on-top, raisewindow, lowerwindow
+** See also cassowary/local/TODO
 
 * WM_ATTENTION patch for xterms (from Robert Bihlmeyer), integration with zsh instead?
 
