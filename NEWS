@@ -9,6 +9,9 @@ Changes for scwm-0.99.4 (released )
 
 * Minor overhaul of system.scwmrc, rearranged menus, eliminated half-working features, etc.
 
+* system.scwmrc by default now uses the guile-gtk error message window in addition to
+  writing errors to stderr (uses changed error-hook)
+
 * New modules
 ** last-mapped-window.scm for remembering the last window that got mapped
 
@@ -23,11 +26,13 @@ Changes for scwm-0.99.4 (released )
 ** Rename paste-window-title-from-cut-buffer0 to paste-window-title-from-cut-buffer
 
 * New primitives
-** `X-fetch-bytes', `X-store-bytes' for better primary cut buffer handling
+** `X-fetch-bytes', `X-store-bytes' for better primary cut buffer handling. Thanks E. Jay Berkenbilt!
 
 * Changed primitives
 ** `animated-deiconify-to-last-viewport-position' to `animated-deiconify-to-viewport'
 ** Drop `animated-deiconify-to-current-viewport'
+** Renamed `current-window-with-focus' to `window-with-focus'
+** Renamed `current-window-with-pointer' to `window-with-pointer'
 
 * New hooks
 ** X-ConfigureRequest-hook

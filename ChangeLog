@@ -1,3 +1,9 @@
+Sun Oct  3 16:25:47 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* autogen.sh: Added "-I ." when running aclocal -- suggested by
+	Mikael Djurfeldt (for Guile's autogen.sh).  Drop some old
+	commented old lines.
+
 Mon Sep 27 15:19:12 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in (Docdir): Use info/scwm.info, not info/.  Thanks

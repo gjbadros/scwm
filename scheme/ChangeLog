@@ -1,3 +1,12 @@
+Sun Oct  3 15:44:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice.scm, ui-constraints.scm, register.scm,
+ 	property-respond.scm, fvwm-module.scm, fvwm-eval.scm, flux.scm,
+	dir-focus.scm, constraints.scm, animation.scm:
+ 	Use new names window-with-pointer, window-with-focus
+
+	* flux.scm: Added `focus-window-with-pointer'
+
 Sat Oct  2 00:30:30 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `resize-quarterscreen'

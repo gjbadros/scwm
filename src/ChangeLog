@@ -1,3 +1,17 @@
+Sun Oct  3 15:41:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c: Rename current-window-with-{focus,pointer} to just
+	window-with-{focus,pointer}
+
+1999-10-03  E. Jay Berkenbilt  <ejb@ql.org>
+
+	* resize.c (makemult): Always round down.
+	(ConstrainSize): Always round down when making size a multiple of
+	the client's resize increment.  The old code rounded up if the
+	pixel size was more than half way between two increments.  This
+	may give the wrong answer when resizing windows to fit within a
+	given area (such as the display).
+
 Sat Oct  2 12:41:17 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* callbacks.c: Make error-hook call procs using the string error
