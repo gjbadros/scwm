@@ -1,3 +1,22 @@
+Thu Jan  6 18:04:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c, callbacks.c: added -g option to force gc'ing at all c hooks.  Slows
+	stuff down nicely for debugging (but is prohibitive on a slow
+	machine. 
+
+	* move.c, events.c, binding.h, binding.c: Fix bugs in interactive
+ 	moves; make sure the click position is where the offsets are
+ 	calculated from, and discard motion events up to a button press
+ 	event.
+
+Thu Jan  6 08:45:19 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.inl: Always add the decoration sizes for
+	{Min,Max}Frame{Width,Height}.
+
+	* resize.c: Subtract out decoration sizes before doing the base +
+	increment computations, but after doing the max/min computations.
+
 Wed Jan  5 15:54:34 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.h: Added some enums for SCWM_NONANT_* to describe whole
