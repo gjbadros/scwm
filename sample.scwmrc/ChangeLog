@@ -1,3 +1,12 @@
+Tue Oct 26 11:44:31 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Do not xsetroot at end of startup.
+
+	* spare-blue.scwmrc, simple.scwmrc, sds.scwmrc, robbe.scwmrc,
+	mstachow.scwmrc, juhp.scwmrc, gnome.scwmrc, decor.scwmrc:  Lots of 
+	bug fixes for updating changed proc/prim names, requiring new
+	use-modules, etc.
+
 Sat Oct 23 15:09:26 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Update for rename to send-button, added

@@ -1,3 +1,28 @@
+Tue Oct 26 11:48:17 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* wmconfig-menu.scm: Do not try to process directories as files.
+
+	* xlock-menus.scm: Make `xlock-query-modes' public.
+
+	* flux.scm, winops.scm: Moved `toggle-focus', `move-or-shade',
+	`move-or-deiconify' from flux.scm to winops.scm
+
+	* flux.scm: Do not require libguile-config-stamp to be bound.
+
+	* base.scm: Fix bug in `exe' -- was causing (interactive)
+	declaration to be eval'd.  Fix bug in xterm-other-host.  Thanks
+	Anders Vinjar!
+
+	* *.scm: Use optget, not scwm-option-get, for brevity.
+
+	* winlist-menu.scm: Updated docs for `show-window-list-menu'.
+
+	* prefs-menu.scm: Needs flux.scm, drop "Specify Parameters"
+	submenu.
+
+	* group.scm: Make `popup-window-group-menu',
+	`popup-window-group-menu-no-warp' both public.
+
 Mon Oct 25 12:23:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-composition.scm: Give a better description to

@@ -1,3 +1,8 @@
+Tue Oct 26 11:21:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* message-window.c: Avoid using pimg->mask if it is NULL.  Fixes
+	some X11 errors on startup.
+
 Mon Oct 25 12:23:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* message-window.c (MapMessageWindow): Do not use CWSaveUnder flag 
