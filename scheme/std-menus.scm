@@ -42,6 +42,15 @@
 
 
 
+
+(define-scwm-option *xlock-query-program* "xlock"
+  "The name of a program to run to output a list of available xlock modes.
+It will be run with the -help option, and its output should
+conform to the standard xlock output format."
+  #:type 'command
+  #:group 'system
+  )
+
 (define-public (execute-on-selection command)
   "Run COMMAND in the background, with arguments supplied by the X selection."
   (execute (string-append command " '" (X-cut-buffer-string) "'")))
@@ -72,9 +81,6 @@
       (set! match (regexp-exec mode-re line))
       (if match (set! ml (cons (match:substring match 1) ml))))))
 
-(define-public screensaver-modes
-  (xlock-query-modes))
-
 (define-public xlock-options
   "-nice 19 +mousemotion +timeelapsed -lockdelay 600 -timeout 30")
 
@@ -94,7 +100,7 @@ or (menuitem \"Lock Screen\" #:action (make-xlock-menu #t))"
 	       (menuitem "Bomb" #:action (run-xlock "bomb" lock?)))
 	 (fold-menu-list
 	  (map (lambda (str) (menuitem str #:action (run-xlock str lock?)))
-	       screensaver-modes)))))
+	       (xlock-query-modes))))))
 
 (define*-public (make-hosts-menu host-list #&optional (user (user-name)))
   "Create a telnet menu.
@@ -123,16 +129,6 @@ used) or a cons of (host . command)."
 (define-public exe-on-selection-gimp (exe-on-selection "gimp"))
 (define-public exe-on-selection-mpeg_play (exe-on-selection "mpeg_play -dither color"))
 (define-public exe-on-selection-mpg3 (exe-on-selection "mpg123"))
-
-
-
-(define-scwm-option *xlock-query-program* "xlock"
-  "The name of a program to run to output a list of available xlock modes.
-It will be run with the -help option, and its output should
-conform to the standard xlock output format."
-  #:type 'command
-  #:group 'system
-  )
 
 (define-scwm-option *context-map*
   `(("\.(txt|pl|c|cc|h)$" "Edit (emacs)"
