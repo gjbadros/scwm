@@ -1,4 +1,9 @@
-1999-02-09  Maciej Stachowiak  <mstachow@alu.mit.edu>
+1999-02-09  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* borders.c: Fix numerous visual inconsistencies when using
+	`no-side-decorations'. Nearly all should be fixed, a handful
+	remain in the case where both mwm-border and no-side-decorations
+	are on.
 
 	* xproperty.c (s_X_property_set_x): Deal apropriately with
 	zero-length property values (D'oh!). Bug report from Sam Steingold.

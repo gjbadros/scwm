@@ -446,7 +446,7 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
   if (psw->fMWMBorders || (psw->boundary_width < 3)) {
     switch (i) {
     case 0:
-      seg[0].x1 = psw->boundary_width - 1;
+      seg[0].x1 = psw->xboundary_width - 1;
       seg[0].x2 = psw->corner_width;
       seg[0].y1 = psw->boundary_width - 1;
       seg[0].y2 = psw->boundary_width - 1;
@@ -454,13 +454,13 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
       break;
     case 1:
       seg[0].x1 = 0;
-      seg[0].x2 = psw->corner_width - psw->boundary_width /* -1 */ ;
+      seg[0].x2 = psw->corner_width - psw->xboundary_width /* -1 */ ;
       seg[0].y1 = psw->boundary_width - 1;
       seg[0].y2 = psw->boundary_width - 1;
       n = 1;
       break;
     case 2:
-      seg[0].x1 = psw->boundary_width - 1;
+      seg[0].x1 = psw->xboundary_width - 1;
       seg[0].x2 = psw->corner_width - (hh ? 1 : 2);
       seg[0].y1 = psw->corner_width - psw->boundary_width + psw->bw;
       seg[0].y2 = psw->corner_width - psw->boundary_width + psw->bw;
@@ -468,7 +468,7 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
       break;
     case 3:
       seg[0].x1 = 0;
-      seg[0].x2 = psw->corner_width - psw->boundary_width;
+      seg[0].x2 = psw->corner_width - psw->xboundary_width;
       seg[0].y1 = psw->corner_width - psw->boundary_width + psw->bw;
       seg[0].y2 = psw->corner_width - psw->boundary_width + psw->bw;
       n = 1;
@@ -479,29 +479,29 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
     case 0:
       seg[0].y1 = psw->boundary_width - 1;
       seg[0].y2 = psw->corner_width;
-      seg[0].x1 = psw->boundary_width - 1;
-      seg[0].x2 = psw->boundary_width - 1;
+      seg[0].x1 = psw->xboundary_width - 1;
+      seg[0].x2 = psw->xboundary_width - 1;
       n = 1;
       break;
     case 1:
       seg[0].y1 = psw->boundary_width - 1;
       seg[0].y2 = psw->corner_width - (hh ? 0 : 2);
-      seg[0].x1 = psw->corner_width - psw->boundary_width;
-      seg[0].x2 = psw->corner_width - psw->boundary_width;
+      seg[0].x1 = psw->corner_width - psw->xboundary_width;
+      seg[0].x2 = psw->corner_width - psw->xboundary_width;
       n = 1;
       break;
     case 2:
       seg[0].y1 = 0;
       seg[0].y2 = psw->corner_width - psw->boundary_width;
-      seg[0].x1 = psw->boundary_width - 1;
-      seg[0].x2 = psw->boundary_width - 1;
+      seg[0].x1 = psw->xboundary_width - 1;
+      seg[0].x2 = psw->xboundary_width - 1;
       n = 1;
       break;
     case 3:
       seg[0].y1 = 0;
       seg[0].y2 = psw->corner_width - psw->boundary_width + psw->bw;
-      seg[0].x1 = psw->corner_width - psw->boundary_width;
-      seg[0].x2 = psw->corner_width - psw->boundary_width;
+      seg[0].x1 = psw->corner_width - psw->xboundary_width;
+      seg[0].x2 = psw->corner_width - psw->xboundary_width;
       n = 1;
       break;
     }
@@ -509,12 +509,12 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
   } else {
     switch (i) {
     case 0:
-      seg[0].x1 = psw->boundary_width - 2;
+      seg[0].x1 = psw->xboundary_width - 2;
       seg[0].x2 = psw->corner_width;
       seg[0].y1 = psw->boundary_width - 2;
       seg[0].y2 = psw->boundary_width - 2;
 
-      seg[1].x1 = psw->boundary_width - 2;
+      seg[1].x1 = psw->xboundary_width - 2;
       seg[1].x2 = psw->corner_width;
       seg[1].y1 = psw->boundary_width - 1;
       seg[1].y2 = psw->boundary_width - 1;
@@ -522,24 +522,24 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
       break;
     case 1:
       seg[0].x1 = (hh ? 0 : 1);
-      seg[0].x2 = psw->corner_width - psw->boundary_width;
+      seg[0].x2 = psw->corner_width - psw->xboundary_width;
       seg[0].y1 = psw->boundary_width - 2;
       seg[0].y2 = psw->boundary_width - 2;
 
       seg[1].x1 = 0;
-      seg[1].x2 = psw->corner_width - psw->boundary_width - 1;
+      seg[1].x2 = psw->corner_width - psw->xboundary_width - 1;
       seg[1].y1 = psw->boundary_width - 1;
       seg[1].y2 = psw->boundary_width - 1;
       n = 2;
       break;
     case 2:
-      seg[0].x1 = psw->boundary_width - 1;
+      seg[0].x1 = psw->xboundary_width - 1;
       seg[0].x2 = psw->corner_width - (hh ? 1 : 2);
       seg[0].y1 = psw->corner_width - psw->boundary_width;
       seg[0].y2 = psw->corner_width - psw->boundary_width;
       n = 1;
       if (psw->boundary_width > 3) {
-	seg[1].x1 = psw->boundary_width - 2;
+	seg[1].x1 = psw->xboundary_width - 2;
 	seg[1].x2 = psw->corner_width - (hh ? 1 : 3);
 	seg[1].y1 = psw->corner_width - psw->boundary_width + 1;
 	seg[1].y2 = psw->corner_width - psw->boundary_width + 1;
@@ -548,15 +548,19 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
       break;
     case 3:
       seg[0].x1 = 0;
-      seg[0].x2 = psw->corner_width - psw->boundary_width;
+      seg[0].x2 = psw->corner_width - 
+        (psw->xboundary_width ? psw->xboundary_width : 2);
+
       seg[0].y1 = psw->corner_width - psw->boundary_width;
       seg[0].y2 = psw->corner_width - psw->boundary_width;
       n = 1;
       if (psw->boundary_width > 3) {
-	seg[0].x2 = psw->corner_width - psw->boundary_width + 1;
+	seg[0].x2 = psw->corner_width - 
+          (psw->xboundary_width ? psw->xboundary_width + 1 : 2);
 
 	seg[1].x1 = 0;
-	seg[1].x2 = psw->corner_width - psw->boundary_width + 1;
+	seg[1].x2 = psw->corner_width - 
+          (psw->xboundary_width ? psw->xboundary_width + 1 : 3);
 	seg[1].y1 = psw->corner_width - psw->boundary_width + 1;
 	seg[1].y2 = psw->corner_width - psw->boundary_width + 1;
 	n = 2;
@@ -568,57 +572,57 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
     case 0:
       seg[0].y1 = psw->boundary_width - 2;
       seg[0].y2 = psw->corner_width;
-      seg[0].x1 = psw->boundary_width - 2;
-      seg[0].x2 = psw->boundary_width - 2;
+      seg[0].x1 = psw->xboundary_width - 2;
+      seg[0].x2 = psw->xboundary_width - 2;
 
       seg[1].y1 = psw->boundary_width - 2;
       seg[1].y2 = psw->corner_width;
-      seg[1].x1 = psw->boundary_width - 1;
-      seg[1].x2 = psw->boundary_width - 1;
+      seg[1].x1 = psw->xboundary_width - 1;
+      seg[1].x2 = psw->xboundary_width - 1;
       n = 2;
       break;
     case 1:
       seg[0].y1 = psw->boundary_width - 1;
       seg[0].y2 = psw->corner_width - (hh ? 1 : 2);
-      seg[0].x1 = psw->corner_width - psw->boundary_width;
-      seg[0].x2 = psw->corner_width - psw->boundary_width;
+      seg[0].x1 = psw->corner_width - psw->xboundary_width;
+      seg[0].x2 = psw->corner_width - psw->xboundary_width;
       n = 1;
       if (psw->boundary_width > 3) {
 	seg[1].y1 = psw->boundary_width - 2;
 	seg[1].y2 = psw->corner_width - (hh ? 1 : 3);
-	seg[1].x1 = psw->corner_width - psw->boundary_width + 1;
-	seg[1].x2 = psw->corner_width - psw->boundary_width + 1;
+	seg[1].x1 = psw->corner_width - psw->xboundary_width + 1;
+	seg[1].x2 = psw->corner_width - psw->xboundary_width + 1;
 	n = 2;
       }
       break;
     case 2:
       seg[0].y1 = (hh ? 0 : 1);
       seg[0].y2 = psw->corner_width - psw->boundary_width + 1;
-      seg[0].x1 = psw->boundary_width - 2;
-      seg[0].x2 = psw->boundary_width - 2;
+      seg[0].x1 = psw->xboundary_width - 2;
+      seg[0].x2 = psw->xboundary_width - 2;
       n = 1;
 
       if (psw->boundary_width > 3) {
 	seg[1].y1 = 0;
 	seg[1].y2 = psw->corner_width - psw->boundary_width;
-	seg[1].x1 = psw->boundary_width - 1;
-	seg[1].x2 = psw->boundary_width - 1;
+	seg[1].x1 = psw->xboundary_width - 1;
+	seg[1].x2 = psw->xboundary_width - 1;
 	n=2;
       }
       break;
     case 3:
       seg[0].y1 = 0;
       seg[0].y2 = psw->corner_width - psw->boundary_width;
-      seg[0].x1 = psw->corner_width - psw->boundary_width;
-      seg[0].x2 = psw->corner_width - psw->boundary_width;
+      seg[0].x1 = psw->corner_width - psw->xboundary_width;
+      seg[0].x2 = psw->corner_width - psw->xboundary_width;
       n = 1;
 
       if (psw->boundary_width > 3) {
 	seg[0].y2 = psw->corner_width - psw->boundary_width + 1;
 	seg[1].y1 = 0;
 	seg[1].y2 = psw->corner_width - psw->boundary_width + 1;
-	seg[1].x1 = psw->corner_width - psw->boundary_width + 1;
-	seg[1].x2 = psw->corner_width - psw->boundary_width + 1;
+	seg[1].x1 = psw->corner_width - psw->xboundary_width + 1;
+	seg[1].x2 = psw->corner_width - psw->xboundary_width + 1;
 	n = 2;
       }
       break;
@@ -1399,7 +1403,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     DBUG((DBG,FUNC_NAME,"Resized to x=%d, y=%d;  w=%d,h=%d",x,y,w,h));
 
     psw->title_width = (w - (left + right) * button_width
-                        - 2 * psw->boundary_width + psw->bw);
+                        - 2 * psw->xboundary_width + psw->bw);
 
     if (psw->title_width < 1)
       psw->title_width = 1;
@@ -1407,7 +1411,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     tbar_right = w;
     if (psw->fTitle && fSquashedTitlebar) {
       int tw = ComputeXTextWidth(XFONT(GET_DECOR(psw, window_font)), psw->name, -1);
-      tw += 2*psw->boundary_width + psw->bw + 18;
+      tw += 2*psw->xboundary_width + psw->bw + 18;
       if (psw->title_width > tw) {
 	tbar_right = w - (psw->title_width - tw);
 	psw->title_width = tw;
@@ -1415,8 +1419,8 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     }
 
     if (SHOW_TITLE_P(psw)) {
-      psw->title_x = psw->boundary_width + (left * button_width);
-      if (psw->title_x >= w - psw->boundary_width)
+      psw->title_x = psw->xboundary_width + (left * button_width);
+      if (psw->title_x >= w - psw->xboundary_width)
 	psw->title_x = -10;
       psw->title_y = psw->boundary_width;
 
@@ -1429,7 +1433,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       xwc.height = psw->title_height;
       xwc.width = button_width;
       xwc.y = psw->boundary_width;
-      xwc.x = psw->boundary_width;
+      xwc.x = psw->xboundary_width;
       for (i = 0; i < Scr.nr_left_buttons; i++) {
 	if (psw->left_w[i] != None) {
 	  if (xwc.x + button_width < w - psw->boundary_width)
@@ -1443,7 +1447,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
 	}
       }
 
-      xwc.x = tbar_right - psw->boundary_width + psw->bw;
+      xwc.x = tbar_right - psw->xboundary_width + psw->bw;
       for (i = 0; i < Scr.nr_right_buttons; i++) {
 	if (psw->right_w[i] != None) {
 	  xwc.x -= button_width;
@@ -1531,10 +1535,6 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       xwcm = CWX | CWY | CWWidth | CWHeight;
       xwc.width = psw->corner_width;
       xwc.height = psw->corner_width;
-
-      if (fNoSideDecorations) {
-        xwc.height = psw->boundary_width;
-      }
 
       /* now position the four corners 
          0 = NW, 1 = NE, 2 = SW, 3 = SE */
