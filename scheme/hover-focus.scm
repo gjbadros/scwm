@@ -20,7 +20,6 @@
 
 
 (define-module (app scwm hover-focus)
-  :use-module (app scwm flux)
   :use-module (app scwm defoption)
   :use-module (app scwm module-types)
   :use-module (app scwm optargs)
@@ -107,7 +106,7 @@ the delay before the window gets focus."
 
 (define (window-is-hoverable? window)
   (and window
-       (not (iconified? window))
+       (not (iconified-window? window))
        (not (eq? (get-window-focus window) 'none))
        (object-property window 'hover-focus)))
 
@@ -124,7 +123,7 @@ the delay before the window gets focus."
         (let ((delay (or (object-property window 'hover-focus-delay)
                                  *default-hover-focus-delay*)))
           (set! hover-focus-timer
-                (add-timer-hook! delay (lambda () (focus window))))))))
+                (add-timer-hook! delay (lambda () (focus-window window))))))))
 
 (add-hook! window-enter-hook hover-focus-enter-proc)
 

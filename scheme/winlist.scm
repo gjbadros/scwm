@@ -23,6 +23,8 @@
   :use-module (app scwm optargs)
   :use-module (app scwm wininfo)
   :use-module (app scwm base)
+  :use-module (app scwm winops)
+  :use-module (app scwm animated-iconify)
   :use-module (app scwm menus-extras)
   :use-module (app scwm style-options)
   :use-module (app scwm flash-window)
@@ -48,19 +50,20 @@ you can do something like:
 ;;(set-object-property! (select-window-interactively) 'warp-placement '(80 25))
 ;;(warp-placement (select-window-interactively))
 
+(define (listify-if-atom l)
+  (if (or (pair? l) (null? l)) l (list l)))
+
 (define*-public (focus-change-warp-pointer #&optional (win (get-window)))
   "Deiconify, focus, raise, and warp-to WIN.
 This is initially the default behaviour when WIN is selected from the window list."
+  (interactive)
   (cond
-   (win (deiconify win)
-	(focus win)
+   (win (deiconify-window win)
+	(focus-window win)
 	(raise-window win)
 	(warp-to-window win)
 	(let ((p (warp-placement win))) 
 	  (move-pointer (w%x (car p) win) (w%y (cadr p) win))))))
-
-(define (listify-if-atom l)
-  (if (or (pair? l) (null? l)) l (list l)))
 
 (define-public window-list-proc focus-change-warp-pointer)
 
@@ -262,8 +265,8 @@ Return the selected window object, or #f if none was selected"
 			 #:ignore-winlist-skip ignore-winlist-skip #:proc (lambda (w) w)))
 
 ;; e.g.
-;; (let ((w (select-window-from-window-list #:only iconified?)))
-;;  (deiconify w) (move-to 0 0 w))
+;; (let ((w (select-window-from-window-list #:only iconified-window?)))
+;;  (deiconify-window w) (move-to 0 0 w))
 ;; (select-window-from-window-list)
 ;; (unflash-window (get-window))
 
@@ -301,13 +304,14 @@ Otherwise return #f."
   (if win (object-property win 'circulate-skip-icon) #f))
 
 ;; CRW:FIXME:MS: Shouldn't this be:
-;; ((if (iconified? win) circulate-skip? circulate-skip-icon?) win)
+;; ((if (iconified-window? win) circulate-skip? circulate-skip-icon?) win)
 (define*-public (should-circulate-skip? #&optional (win (get-window)))
   "Return #t if WIN should now be skipped when circulating, #f otherwise.
 Uses the current state of WIN (whether it is iconified or not) in
 determining the result."
   (if win 
-      (or (circulate-skip? win) (and (iconified? win) (circulate-skip-icon? win)))
+      (or (circulate-skip? win) 
+	  (and (iconified-window? win) (circulate-skip-icon? win)))
       #f))
 
 ;; add style options for #:circulate-skip and #:circulate-skip-icon
@@ -358,3 +362,21 @@ windows are circulated.  PROC defaults to `window-list-proc'.
 See also `next-window'."
   (circulate #t window only except proc))
 
+(define*-public (show-icon-list-menu)
+  "Show a window list of only iconfied programs.
+The selection procedure deiconifies the window and gives it focus."
+  (interactive)
+  (show-window-list-menu 1 #f
+			 #:only iconified-window?
+			 #:proc animated-deiconify-to-vp-focus))
+
+(define*-public (show-xterm-window-list-menu)
+  "Show a window list of only xterms.
+The selection procedure deiconifies the window and gives it focus."
+  (interactive)
+  (show-window-list-menu 1 #f
+			 #:only (lambda (w)
+				  (or 
+				   (string=? (window-class w) "XTerm")
+				   (string=? (window-class w) "NXTerm")))
+			 #:proc animated-deiconify-to-vp-focus))

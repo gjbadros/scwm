@@ -68,4 +68,24 @@ DIR must be one of the symbols 'north, 'south, 'east, or 'west."
 	  (raise-window best-win)
 	  (warp-to-window best-win)))))
 
+(define*-public (dir-focus-west)
+  "Switch focus to the window to the west."
+  (interactive)
+  (dir-focus 'west))
+
+(define*-public (dir-focus-south)
+  "Switch focus to the window to the south."
+  (interactive)
+  (dir-focus 'south))
+
+(define*-public (dir-focus-north)
+  "Switch focus to the window to the north."
+  (interactive)
+  (dir-focus 'north))
+
+(define*-public (dir-focus-east)
+  "Switch focus to the window to the east."
+  (interactive)
+  (dir-focus 'east))
+
 ;;; end of file

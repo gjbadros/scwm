@@ -104,7 +104,7 @@ is non-empty."
 Note that this just checks if WIN is in the current viewport
 and on the current desk.  It may still return #t if WIN is completely
 obscured by other windows."
-  (if win (and (not (iconified? win))
+  (if win (and (not (iconified-window? win))
 	       (on-current-desk? win)
 	       (in-viewport-any-desk? win))))
 
@@ -138,7 +138,7 @@ if it were on top (unobscured)."
 The virtual position and the frame size are used.  The resulting string
 looks like \"157x133+200+306\".  If WIN is iconified, the string
 returned is in parentheses."
-  (if win (let ((i (iconified? win))
+  (if win (let ((i (iconified-window? win))
 		(pos (window-virtual-position win))
 		(size (window-size win)))
 	    (string-append (if i "(" "")

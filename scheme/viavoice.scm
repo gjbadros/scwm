@@ -25,7 +25,6 @@
   :use-module (app scwm optargs)
   :use-module (ice-9 regex)
   :use-module (app scwm base)
-  :use-module (app scwm flux)
   :use-module (app scwm winlist)
   :use-module (app scwm tile)
   :use-module (app scwm cascade)
@@ -143,7 +142,7 @@ longer in use by another process."
 	       ((matches-command? "window select") (select-window-toggle win))
 	       ((matches-command? "minimize") (animated-iconify win))
 	       ((matches-command? "shade") (animated-toggle-window-shade win))
-	       ((matches-command? "maximize") (vertical-toggle-maximize win)))
+	       ((matches-command? "maximize") (toggle-maximize-vertical win)))
 	      (if do-animation
 		  (begin
 		    (for-each display 

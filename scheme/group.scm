@@ -20,6 +20,8 @@
 (define-module (app scwm group)
   :use-module (app scwm winops)
   :use-module (app scwm optargs)
+  :use-module (app scwm listops)
+  :use-module (app scwm window-selection)
   :use-module (app scwm base)
   :use-module (app scwm winlist))
 
@@ -65,8 +67,8 @@ all the group action procedures to be used on lists of windows, too."
 	  '(iconify-group-individually window-shade-group window-unshade-group
 	    stick-group unstick-group keep-group-on-top un-keep-group-on-top
 	    close-group delete-group destroy-group)
-	  '(iconify window-shade window-unshade
-	    stick unstick keep-on-top un-keep-on-top
+	  '(iconify-window shade-window unshade-window
+	    stick-window unstick-window keep-on-top un-keep-on-top
 	    close-window delete-window destroy-window))
 
 (define (seperate-group-windows windows leader members non-members)
@@ -142,7 +144,7 @@ will move along."
 (define*-public (deiconify-group #&optional (group (get-window)) x y)
   "Deiconify all members of GROUP."
   (for-each (lambda (w)
-	      (deiconify w x y)
+	      (deiconify-window w x y)
 	      (set-show-icon! #t w)
 	      (set-object-property! w 'group-deiconify #f))
 	    (group->windows group)))
@@ -153,7 +155,7 @@ If WIN's icon was the result of an `iconify-group', all members of the group
 are deiconified; otherwise, only WIN is affected."
   (cond ((object-property win 'group-deiconify)
 	 (deiconify-group win x y))
-	(else (deiconify win x y))))
+	(else (deiconify-window win x y))))
 
 (define*-public (iconify-group #&optional (group (get-window)))
   "Iconify GROUP into one icon.
@@ -162,5 +164,87 @@ The icon is that of the window GROUP represents.
   (set-object-property! group 'group-deiconify #t)
   (for-each (lambda (w)
 	      (set-show-icon! (equal? w group) w)
-	      (iconify w))
+	      (iconify-window w))
 	    (group->windows group)))
+
+
+(define-public (make-window-group-menu w)
+  "Return a menu for window group operations."
+  (let* ((swl (selected-windows-list))
+	 (wla? (pair? swl)) ;; wla? -- winlist-active?
+	 (n (length swl))
+	 (nstr (number->string n))
+	 (sel? (window-is-selected? w))
+	 (wop (if sel? "Unselect" "Select"))
+	 (resource (if w (window-resource w) #f))
+	 (class (if w (window-class w) #f)))
+    (menu
+     (append
+      (filter-map 
+       noop
+       (list
+	(menu-title "Window Group") menu-separator
+	(menuitem 
+	 (string-append "&" wop (if w " this" " a") " window")
+	 #:action select-window-toggle)
+	(if resource
+	    (menuitem
+	     (string-append wop " windows &named `" resource "'")
+	     #:action (lambda () ((if sel? unselect-matching-windows select-matching-windows)
+				  (resource-match?? resource))))
+	    #f)
+	(if class
+	    (menuitem
+	     (string-append wop " windows of &class `" class "'")
+	     #:action (lambda () ((if sel? unselect-matching-windows select-matching-windows)
+				  (class-match?? class))))
+	    #f)
+	(if wla? (menuitem "Unselect &all windows" 
+			   #:action unselect-all-windows)
+	    #f)))
+      (if (and wla? (> n 1))
+	  (list
+	   (menuitem (string-append 
+		      "&Tile " nstr
+		      " windows") #:action tile-windows-interactively)
+	   (menuitem (string-append "&Close " nstr " windows")
+		     #:action (lambda () (delete-group swl) (unselect-all-windows)))
+	   (menuitem (string-append "&Iconify " nstr " windows")
+		     #:action (lambda () (iconify-group swl)))
+	   (menuitem (string-append "&Shade " nstr " windows")
+		     #:action (lambda () (window-shade-group swl)))
+	   (menuitem (string-append "&Unshade " nstr " windows")
+		     #:action (lambda () (window-unshade-group swl)))
+	   (menuitem (string-append "Stic&k " nstr " windows")
+		     #:action (lambda () (stick-group swl)))
+	   (menuitem (string-append "U&nstick " nstr " windows")
+		     #:action (lambda () (unstick-group swl)))
+	   (menuitem (string-append "Kee&p on top " nstr " windows")
+		     #:action (lambda () (keep-group-on-top swl)))
+	   (menuitem (string-append "Unk&eep on top " nstr " windows")
+		     #:action (lambda () (un-keep-group-on-top swl)))
+	   (menuitem (string-append "Destroy group " nstr " windows")
+		     #:action (lambda () (destroy-group swl) (unselect-all-windows))))
+	  ()
+	  )))))
+
+(define* (popup-window-group-menu)
+  "Popup the window group menu."
+  (interactive)
+  (popup-menu (make-window-group-menu (get-window))) #t)
+
+(define* (popup-window-group-menu-no-warp)
+  "Popup the window group menu without warping to the first menu item."
+  (interactive)
+  (popup-menu (make-window-group-menu (get-window))))
+
+(define*-public (interactive-move-selected-group-or-window)
+  "Interactively move either the selected windows or the current window.
+The current window alone is moved if no windows are selected."
+  (interactive)
+  (let ((wingroup (selected-windows-list)))
+    (if (pair? wingroup)
+	(interactive-move-group (selected-windows-list))
+	(interactive-move (get-window))))
+  (unselect-all-windows))
+

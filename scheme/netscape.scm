@@ -125,13 +125,16 @@ It defaults to `*netscape-new-window*'."
   "Goto the url that is held in the X11 cut buffer.
 See `X-cut-buffer' and `netscape-goto-url'.  NEW can be #f to
 not open a new netscape frame."
+  (interactive)
   (netscape-goto-url (X-cut-buffer-string) display-message-briefly new))
 
 ;; GJB:FIXME:: this is a bit unintuitive-- must use transient-placement-proc
 ;; instead of just placement-proc, even though I've explicitly
 ;; named the window
 (window-style "findDialog_popup" #:transient-placement-proc 
-	      (near-window-placement netscape-win #:proportional-offset '(-1 0) #:relative-to 'northeast))
+	      (near-window-placement netscape-win
+				     #:proportional-offset '(-1 0)
+				     #:relative-to 'northeast))
 
 (define-public (netscape-download-closed-action win)
   (let ((time-up (- (current-time) (window-creation-time win))))
@@ -155,6 +158,8 @@ not open a new netscape frame."
 (define-public (netscape-google-search word)
   (netscape-goto-url (string-append (cgi-escapify-space url-google word))))
 
-(define-public (netscape-google-search-cut-buffer)
+(define*-public (netscape-google-search-cut-buffer)
+  "Use netscape to do a Google search of the `X-cut-buffer-string'."
+  (interactive)
   (let ((s (X-cut-buffer-string)))
     (and s (netscape-google-search s))))

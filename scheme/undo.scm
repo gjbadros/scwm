@@ -30,9 +30,10 @@
 (define-public undo-max-entries 100)
 (define-public undo-index 0)
 
-(define-public (reset-undo!)
+(define*-public (reset-undo!)
   "Reset the undo system.
 Clears the list of states."
+  (interactive)
   (set! undo-list '())
   (set! undo-num-entries 0)
   (set! undo-index 0))
@@ -57,15 +58,17 @@ Clears the list of states."
   "Increment the undo-index."
   (set! undo-index (increment-in-range undo-index undo-num-entries)))
 
-(define-public (push-undo-global)
+(define*-public (push-undo-global)
   "Push the global state onto the undo list.
 See also `insert-undo-global' which honours
 the current position in the undo-list, undo-index."
+  (interactive)
   (push-undo-state (global-window-configuration)))
 
-(define-public (insert-undo-global)
+(define*-public (insert-undo-global)
   "Insert the global state into the undo list at undo-index.
 See also `push-undo-global'."
+  (interactive)
   (insert-undo-state (global-window-configuration)))
 
 (define-public (push-undo-state state)
@@ -90,10 +93,11 @@ See also `push-undo-global'."
 
 (define last-not-redo #t)
 
-(define-public (undo)
+(define*-public (undo)
   "Undo the last operation that was undoable.
 Undoable operations save changed state using `insert-undo-global'
 before they perform their action."
+  (interactive)
   (if (and last-not-redo (= 0 undo-index))
       (begin (push-undo-global)
 	     (set! undo-index 1))) ;; save the state to redo the undo
@@ -104,9 +108,10 @@ before they perform their action."
 	(restore-global-window-configuration state)))
   undo-index)
 
-(define-public (redo)
+(define*-public (redo)
   "Redo the last undone operation.
 This re-applyiesthe state at undo-index - 1."
+  (interactive)
   (if (= undo-num-entries undo-index)
       (decrement-undo-index))  ;; do not redo the same state we just undid
   (set! last-not-redo #f)

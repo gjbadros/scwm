@@ -128,7 +128,8 @@ control the cascading options as for `cascade-windows'."
 			 only))
     #:except (append (if ignore-default-exceptions
 			 ()
-			 (list transient? maximized? sticky? iconified?
+			 (list transient? maximized? 
+			       sticky-window? iconified-window?
 			       (lambda (w) 
 				 (= (window-title-height w) 0))))
 		     except)

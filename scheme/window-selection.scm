@@ -54,6 +54,7 @@ See also `select-window-add', `select-window-remove', and `selected-windows-list
 (define*-public (select-window-toggle #&optional (w (get-window-with-nonant)))
   "Toggle the selectedness of W.
 See `select-window-add' and `select-window-remove'."
+  (interactive)
   (if (window-is-selected? w)
       (select-window-remove w)
       (select-window-add w)))
@@ -65,6 +66,7 @@ The selected window is returned and will remain highlighted
 until `unflash-window' is called on that window.  The selected
 window is also added to a selected-windows list that can be
 accessed via `selected-windows-list'."
+  (interactive)
   (if (not (object-property w 'nonant)) (set-object-property! w 'nonant 4))
   (if (not (window-is-selected? w))
       (begin
@@ -78,6 +80,7 @@ accessed via `selected-windows-list'."
   "Unselect a single window, de-highlight it, and remove it from the selected-windows-list.
 The selected window is removed from the selected-windows list that can be
 accessed via `selected-windows-list'."
+  (interactive)
   (if (not (object-property w 'nonant)) (set-object-property! w 'nonant 4))
   (if (window-is-selected? w)
       (begin
@@ -107,6 +110,7 @@ PROC might be one of `resource-match??', `class-match??', etc."
 
 (define-public (unselect-all-windows)
   "Unselect all windows selected via `select-window-add'."
+  (interactive)
   (for-each (lambda (w) (if (window-valid? w) (unflash-window w))) selected-windows)
   (catch #t 
 	 (lambda ()

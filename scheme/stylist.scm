@@ -111,13 +111,13 @@ random window that matches PREDICATE."
 				(flash-window-on w)
 				col)
 			      (highlight-background)))
-		  sticky? icon-sticky? kept-on-top?
+		  sticky-window? icon-sticky? kept-on-top?
 		  titlebar-shown?
 		  (lambda (w) (window-property w 'squashed-titlebar))
 		  border-normal?
 		  (lambda (w)
 		    (not (object-property w 'no-side-decorations)))
-		  iconified? (lambda (w) #f) window-shaded?)
+		  iconified-window? (lambda (w) #f) shaded-window?)
 	    (list id id id id
 		  id id id
 		  not id not

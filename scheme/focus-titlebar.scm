@@ -49,7 +49,9 @@ commands)."
   #:group 'focus
   #:setter (lambda (v)
 	     (or
-	      (and v (not *only-focus-window-has-titlebar*) (turn-on-only-focus-window-has-titlebar))
-	      (and (not v) *only-focus-window-has-titlebar* (turn-off-only-focus-window-has-titlebar)))
+	      (and v (not *only-focus-window-has-titlebar*) 
+		   (turn-on-only-focus-window-has-titlebar))
+	      (and (not v) *only-focus-window-has-titlebar* 
+		   (turn-off-only-focus-window-has-titlebar)))
 	     (set! *only-focus-window-has-titlebar* v))
   #:getter (lambda () *only-focus-window-has-titlebar*))

@@ -302,7 +302,7 @@ If X or Y is #f, then do not move along that axis (use existing
 value for that coordinate).
 See `move-window' if you wish to move a window to a virtual position."
   (let ((pos (viewport-position)))
-    (if (not (sticky? win))
+    (if (not (sticky-window? win))
 	(begin
 	  (if x (set! x (+ x (car pos))))
 	  (if y (set! y (+ y (cadr pos)))))))
@@ -342,7 +342,7 @@ The position is returned as a list of the x coordinate and the y
 coordinate in pixels. WIN defaults to the window context in the usual
 way if not specified.  See also `window-position'."
   (let ((pos (window-position win)))
-    (if (sticky? win) pos
+    (if (sticky-window? win) pos
 	(apply virtual->viewport pos))))
 
 (define*-public (window-virtual-position #&optional (win (get-window)))
@@ -350,7 +350,7 @@ way if not specified.  See also `window-position'."
 If WIN is sticky, this returns the position of the window in the
 current viewport."
   (let ((pos (window-position win)))
-    (if (sticky? win) (apply viewport->virtual pos)
+    (if (sticky-window? win) (apply viewport->virtual pos)
 	pos)))
 
 (define*-public (icon-viewport-position #&optional (win (get-window)))
@@ -582,9 +582,9 @@ See `color-properties' for a list of the keys."
 
 (define-public (exe command)
   "Return a procedure that, when invoked, executes COMMAND in the background."
-  (lambda () (execute command)))
+  (lambda* () (interactive) (execute command)))
 
-(define-scwm-option *xterm-command* "xterm"
+(define-scwm-option *xterm-command* (or (getenv "XTERM_PROGRAM_NAME") "xterm")
   "The command to run when a new xterm window is requested.
 The string given should refer to a binary or script in the
 path and should take a \"-e\" argument of what to run."
@@ -601,6 +601,15 @@ are each reasonable choices."
   #:group 'system
   #:favorites '("telnet" "rsh" "ssh"))
 
+
+(define-scwm-option *xterm-user-shell-options* ""
+  "Any extra options to give to xterm for a standard user xterm process.
+For example, to start a different interactive shell, you would use
+\"-e zsh\"."
+  #:type 'command
+  #:group 'system
+  #:favorites '("-e zsh" "-e tcsh" "-e start-zsh"))
+
 (define-public (run-in-xterm cmd . opts)
   "Return a procedure that runs CMD in an xterm.
 Uses the variable `*xterm-command*' to determine how
@@ -610,6 +619,16 @@ The rest of the arguments are passed as options to the xterm command."
                       (apply string-append
                              (map (lambda (st) (string-append " " st)) opts))
                       " -e " cmd)))
+
+(define*-public (start-xterm #&optional (opt (optget *xterm-user-shell-options*)))
+  "Start an xterm using `*xterm-command*' and `*xterm-user-shell-options*'."
+  (interactive)
+  (execute (string-append (optget *xterm-command*) " " opt)))
+
+(define*-public (xterm-other-host hostname)
+  (exe (string-append (optget *xterm-command*)
+		      " -name remotexterm -T " hostname " -n " hostname 
+		      " -e sh -c '" *remote-shell-command* hostname "'")))
 
 (defmacro-public thunk (proc)
   `(lambda args (apply ,proc args)))

@@ -26,7 +26,7 @@
 
 (define-public (procedure->string proc)
   (if (and proc (procedure? proc))
-      (symbol->string (or (procedure-name proc) 'anonymous-procedure))
+      (symbol->string (or (procedure-name proc) '<anonymous-procedure>))
       "<none>"))
 
 (define-public (procedure-string->procedure proc-name)
@@ -167,12 +167,13 @@ Note that these currently do not display in their expected format"
        modules))
     (cdr vars)))
 
-;; (procedure-arity get-window)
 ;; (procedure-is-interactive? get-window)
+(define-public (procedure-interactive-spec proc)
+  (procedure-property proc 'interactive))
+
 (define-public (procedure-is-interactive? proc)
-  "Return #t iff PROC can take no arguments."
-  (let ((arity (procedure-arity proc)))
-     (eqv? (car arity) 0)))
+  "Return #t iff PROC is interactive."
+  (->bool (procedure-interactive-spec proc)))
 
 ;; (procedure-apropos-with-modules "get-window")
 (define-public (procedure-apropos-with-modules rgx)
@@ -215,3 +216,39 @@ This returns a simple list of procedure objects."
 
 ;(procedure? current-module)
 
+(define-public (context->brief-context context)
+  (cond ((memq 'all context) 'all)
+	((= 1 (length context)) (car context))
+	(else context)))
+
+(define-public (context->string context)
+  (with-output-to-string (lambda () (write context))))
+
+(define-public (raw-binding->string raw-binding)
+  (let ((mouse? (list-ref raw-binding 0))
+	(context (list-ref raw-binding 1))
+	(modmask (list-ref raw-binding 2))
+	(keybut (list-ref raw-binding 3))
+	(proc1 (list-ref raw-binding 4))
+	(proc2 (list-ref raw-binding 5)))
+    (let ((brief-context (context->brief-context context))
+	  (descriptor
+	   (if mouse?
+	       (string-append "mouse: "
+			      (keymask->string modmask)
+			      (number->string keybut))
+	       (string-append "key: "
+			      (keymask-keycode->string modmask keybut))))
+	  (proc1nm (procedure->string proc1))
+	  (proc2nm (procedure->string proc2)))
+      (string-append "Context " (context->string brief-context) ":: "
+		     descriptor " -> " proc1nm ", " proc2nm))))
+
+(define-public (procedure->bindings-description proc)
+  (apply
+   string-append
+   (map (lambda (bnd) (string-append (raw-binding->string bnd) "\n"))
+	(lookup-procedure-bindings proc))))
+
+;; (procedure->bindings-description describe-key)
+;; (procedure->bindings-description popup-root-start)

@@ -83,7 +83,7 @@
 
 (define-fvwm-command "Focus"
   (if window
-      (focus window)))
+      (focus-window window)))
 
 (define-fvwm-command "GotoPage"
   (get-two-numeric-args 
@@ -96,8 +96,8 @@
   (let* ((arg (get-one-numeric-arg args))
          (fn (cond 
 	      ((or (not arg) (= arg 0)) toggle-iconify)
-	      ((< arg 0) deiconify)
-	      (else iconify))))
+	      ((< arg 0) deiconify-window)
+	      (else iconify-window))))
     (if window
 	(fn window)
 	(fn))))
@@ -216,9 +216,9 @@
   (let ((x (get-one-numeric-arg args)))
     (if x
 	(cond
-         ((= x 1) (if window (window-shade window) (window-shade)))
-         ((= x 2) (if window (un-window-shade window) (un-window-shade))))
-	(if window (toggle-window-shade window)(toggle-window-shade)))))
+         ((= x 1) (if window (shade-window window) (shade-window)))
+         ((= x 2) (if window (unshade-window window) (unshade-window))))
+	(if window (toggle-window-shade window) (toggle-window-shade)))))
 
 (define-fvwm-command "RaiseLower"
   (if window
@@ -342,9 +342,9 @@
 (define (add-flag s fn)
   (hash-set! fvwm-flags-table (string-downcase! (string-copy s)) fn))
 
-(add-flag "Iconic" iconified?)
+(add-flag "Iconic" iconified-window?)
 (add-flag "Visible" visible?)
-(add-flag "Sticky" sticky?)
+(add-flag "Sticky" sticky-window?)
 (add-flag "Maximized" maximized?)
 (add-flag "Transient" transient?)
 (add-flag "Raised" raised?)

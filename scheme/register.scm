@@ -53,6 +53,8 @@
 ;; (jump-to-register)
 
 (define*-public (focus-to-register #&optional (register (get-register-name)))
+  "Save the currently-focused window to REGISTER."
+  (interactive)
   (if register
       (let ((win (window-with-focus)))
 	(set-register register win))))
@@ -60,19 +62,26 @@
 (define*-public (window-configuration-to-register 
 		 #&optional (win (or (window-with-focus) (get-window)))
 		 (register (get-register-name)))
+  "Save the configuration of WIN to REGISTER."
+  (interactive)
   (if (and win register)
       (set-register register (window-configuration win))))
 
-(define*-public (global-window-configuration-to-register #&optional (register (get-register-name)))
+(define*-public (global-window-configuration-to-register
+		 #&optional (register (get-register-name)))
+  "Save the global configuration of windows to REGISTER."
+  (interactive)
   (if register
       (set-register register (global-window-configuration))))
 
 (define*-public (jump-to-register #&optional (register (get-register-name)))
+  "Restore the state saved in REGISTER."
+  (interactive)
   (let ((val (get-register register)))
     (cond
-     ((window? val) (focus val))
+     ((window? val) (focus-window val))
      ((window-configuration? val) (copy-window-configuration val (car val))
-				  (focus (car val)))
+				  (focus-window (car val)))
      (val (restore-global-window-configuration val)))))
 
 #!

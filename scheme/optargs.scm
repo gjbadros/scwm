@@ -281,50 +281,69 @@
 ;; MIT-Scheme and Kawa among others, as well as for refugees from other
 ;; Lisp dialects.
 
+(define-public (set-*-procedure-properties proc arglist interactive-spec)
+  (set-procedure-property! proc 'optargs-arglist arglist)
+  (set-procedure-property! proc 'interactive interactive-spec))
 
 (defmacro-public lambda* (ARGLIST . BODY)
-  (parse-arglist 
-   ARGLIST
-   (lambda (non-optional-args optionals keys aok? rest-arg)
+  (let ((interactive-spec #f))
+    (catch #t
+	   (lambda ()
+	     (if (eq? (caadr BODY) 'interactive)
+		 (begin
+		   (set! interactive-spec (cdadr BODY))
+		   (set-cdr! BODY (cddr BODY)))))
+	   (lambda args
+	     #f))
+    (parse-arglist 
+     ARGLIST
+     (lambda (non-optional-args optionals keys aok? rest-arg)
 					; Check for syntax errors.
-     (if (not (every? symbol? non-optional-args))
-	 (error "Syntax error in fixed argument declaration."))
-     (if (not (every? ext-decl? optionals))
-	 (error "Syntax error in optional argument declaration."))
-     (if (not (every? ext-decl? keys))
-	 (error "Syntax error in keyword argument declaration."))
-     (if (not (or (symbol? rest-arg) (eq? #f rest-arg)))
-	 (error "Syntax error in rest argument declaration."))
-     ;; generate the code.
-     (let ((rest-gensym (or rest-arg (gensym "lambda*:G")))
-	   (proc-gensym (or rest-arg (gensym "proc*:P"))))
-       (if (not (and (null? optionals) (null? keys)))
-	   `(let ((,proc-gensym
-		   (lambda (,@non-optional-args . ,rest-gensym)
-		     ;; Make sure that if the proc had a docstring, we put it
-		     ;; here where it will be visible.
-		     ,@(if (and (not (null? BODY))
-				(string? (car BODY)))
-			   (list (car BODY))
-			   '())
-		     (let-optional* 
-		      ,rest-gensym
-		      ,optionals
-		      (let-keywords* ,rest-gensym
-				     ,aok?
-				     ,keys
-				     ,@(if (and (not rest-arg) (null? keys))
-					   `((if (not (null? ,rest-gensym))
-						 (error "Too many arguments.")))
-					   '())
-				     ,@BODY)))))
-	      (set-procedure-property! ,proc-gensym 'optargs-arglist '(,@ARGLIST))
-	      ,proc-gensym)
-	   `(let ((,proc-gensym
-		   (lambda (,@non-optional-args . ,(if rest-arg rest-arg '())) 
-		     ,@BODY)))
-	      (set-procedure-property! ,proc-gensym 'optargs-arglist '(,@ARGLIST))
-	      ,proc-gensym))))))
+       (if (not (every? symbol? non-optional-args))
+	   (error "Syntax error in fixed argument declaration."))
+       (if (not (every? ext-decl? optionals))
+	   (error "Syntax error in optional argument declaration."))
+       (if (not (every? ext-decl? keys))
+	   (error "Syntax error in keyword argument declaration."))
+       (if (not (or (symbol? rest-arg) (eq? #f rest-arg)))
+	   (error "Syntax error in rest argument declaration."))
+       ;; generate the code.
+       (let ((rest-gensym (or rest-arg (gensym "lambda*:G")))
+	     (proc-gensym (or rest-arg (gensym "proc*:P")))
+	     (interactive-gensym (gensym "interactive-spec*:I")))
+	 (if (not (and (null? optionals) (null? keys)))
+	     `(let* ((,interactive-gensym
+		      ',interactive-spec)
+		     (,proc-gensym
+		     (lambda (,@non-optional-args . ,rest-gensym)
+		       ;; Make sure that if the proc had a docstring, we put it
+		       ;; here where it will be visible.
+		       ,@(if (and (not (null? BODY))
+				  (string? (car BODY)))
+			     (list (car BODY))
+			     '())
+		       (let-optional* 
+			,rest-gensym
+			,optionals
+			(let-keywords* ,rest-gensym
+				       ,aok?
+				       ,keys
+				       ,@(if (and (not rest-arg) (null? keys))
+					     `((if (not (null? ,rest-gensym))
+						   (error "Too many arguments.")))
+					     '())
+				       ,@BODY)))))
+		(set-*-procedure-properties ,proc-gensym '(,ARGLIST)
+					    ,interactive-gensym)
+		,proc-gensym)
+	     `(let ((,interactive-gensym
+		     ',interactive-spec)
+		    (,proc-gensym
+		     (lambda (,@non-optional-args . ,(if rest-arg rest-arg '())) 
+		       ,@BODY)))
+		(set-*-procedure-properties ,proc-gensym '(,ARGLIST)
+					    ,interactive-gensym)
+		,proc-gensym)))))))
 
 (define (every? pred lst)
   (or (null? lst)

@@ -25,6 +25,7 @@
 (define*-public (rename-window-interactively #&optional (win (get-window)))
   "Prompt for a new name for WIN and change its title.
 WIN defaults as usual to the current window context."
+  (interactive)
   (prompt-string (string-append "Rename \"" (window-title win) "\" to: ") (lambda (new-name)
 				 (set-window-title! win new-name))
 		 "Rename-window"))
@@ -32,6 +33,7 @@ WIN defaults as usual to the current window context."
 
 (define*-public (show-window-list-matching-interactively)
   "Prompt for a wildcard, and popup a list of matching windows (by title)."
+  (interactive)
   (prompt-string "Window wildcard? "
 		 (lambda (wildcard)
 		   (add-timer-hook! 200 handle-pending-events)

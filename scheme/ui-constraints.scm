@@ -545,7 +545,7 @@ This removes the constraints from the global-constraint-instance-list."
 (define (do-draw-constraint ui-constraint mode)
   (if (ui-constraint? ui-constraint)
       (let ((enable (ui-constraint-enabled? ui-constraint)) 
-	    (focus (constrained-window-in-focus? ui-constraint))
+	    (focus-window (constrained-window-in-focus? ui-constraint))
 	    (drawme (ui-constraint-class-draw-proc (ui-constraint-class ui-constraint))))
 	(drawme ui-constraint enable focus mode))
       (error "do-draw-constraint first argument must be a UI-CONSTRAINT object")))

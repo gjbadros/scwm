@@ -137,7 +137,8 @@ The viewport selected will be an integral multiple of the desk size."
   "De-iconify WIN and make it visible in the current viewport."
   (let ((vpx (current-viewport-offset-xx))
 	(vpy (current-viewport-offset-yy)))
-    (apply deiconify (append (list win) (window-position-in-viewport vpx vpy win)))))
+    (apply deiconify-window
+	   (append (list win) (window-position-in-viewport vpx vpy win)))))
 
 ;;;
 ;;; Higher-level operations for setting the current viewport.
@@ -194,3 +195,12 @@ BODY, and restored on each exit, including non-local exits."
 	  (set-current-desk! ,desk)
 	  (apply set-viewport-position! ,vpos))))))
 
+(define*-public (switch-to-first-desk)
+  "Switch to the first desktop."
+  (interactive)
+  (set-current-desk! 0))
+
+(define*-public (switch-to-second-desk) 
+  "Switch to the second desktop."
+  (interactive)
+  (set-current-desk! 1))

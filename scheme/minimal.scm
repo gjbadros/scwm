@@ -67,7 +67,7 @@ motion does `interactive-move', and double-click does
 
 (bind-mouse '(title frame-sides) 1 move-or-raise)
 
-(bind-mouse 'icon 1 deiconify)
+(bind-mouse 'icon 1 deiconify-window)
 
 (let ((default-menu (make-menu 
 		     (list

@@ -26,6 +26,7 @@
   :use-module (app scwm base)
   :use-module (app scwm path-cache)
   :use-module (app scwm style-options)
+  :use-module (app scwm window-selection)
   :use-module (app scwm sort))
 
 
@@ -40,6 +41,7 @@
 PRED, NEG, and POS should be functions which take a window and
 check whether the property holds for the window, reset the property
 on the window, and set the property on the window, respectively."
+  (interactive)
   (if win (if (pred win)
 	      (neg win)
 	      (pos win))))
@@ -47,6 +49,7 @@ on the window, and set the property on the window, respectively."
 (define*-public (close-window #&optional (win (get-window #t #t #t)))
   "Close WIN either by deleting it or destroying it.
 WIN is only destroyed if it is not deleteable."
+  (interactive)
   (if win (if (window-deletable? win)
 	      (delete-window win)
 	      (destroy-window win))))
@@ -55,13 +58,13 @@ WIN is only destroyed if it is not deleteable."
   (make-toggling-winop raised? lower-window raise-window))
 
 (define-public toggle-iconify
-  (make-toggling-winop iconified? deiconify iconify))
+  (make-toggling-winop iconified-window? deiconify-window iconify-window))
 
 (define-public toggle-stick 
-  (make-toggling-winop sticky? unstick stick))
+  (make-toggling-winop sticky-window? unstick-window stick-window))
 
 (define-public toggle-window-shade 
-  (make-toggling-winop window-shaded? window-unshade window-shade))
+  (make-toggling-winop shaded-window? unshade-window shade-window))
 
 (define-public toggle-on-top
   (make-toggling-winop kept-on-top? un-keep-on-top keep-on-top))
@@ -278,3 +281,127 @@ if not specified."
     (map (lambda (t) (cadr t)) sortedlist)))
 
 
+(define*-public (next-visible-non-iconified-window)
+  "Switch focus to the next visible and not iconified window."
+  (interactive)
+  (next-window #:only (lambda (win) 
+			(and (visible? win) 
+			     (focussable-window? win)
+			     (not (shaded-window? win))))
+	       #:except iconified-window?))
+
+(define*-public (prev-visible-non-iconified-window)
+  "Switch focus to the previous visible and not iconified window."
+  (interactive)
+  (prev-window #:only (lambda (win) 
+			(and (visible? win) (focussable-window? win)
+			     (not (shaded-window? win))))
+	       #:except iconified-window?))
+
+(define*-public (resize-quarterscreen)
+  "Resize the current window with the pointer to 1/4 of the screen."
+  (interactive)
+  (let ((w (window-with-pointer)))
+    (animated-resize-window (%x 49) (%y 49))))
+
+(define*-public (resize-halfscreen)
+  "Resize the current window with the pointer to full height and half the screen size in width."
+  (interactive)
+  (let ((w (window-with-pointer)))
+    (animated-resize-window (%x 49) (%y 90))))
+
+(define*-public (resize-fullscreen)
+  "Resize the current window with the pointer to 90% of the full screen size."
+  (interactive)
+  (let ((w (window-with-pointer)))
+    (animated-resize-window (%x 90) (%y 90))))
+
+(define anchor-cursor #f)
+(let ((acimage (make-image "anchor-cursor.xpm")))
+  (if acimage (set! anchor-cursor (create-pixmap-cursor acimage))))
+
+(define*-public (interactive-set-window-gravity!)
+  "Permit user to click on an area of a window and anchor that nonant.
+E.g., if the user clicks on the northeast corner of a window, that
+window will be set to have northeast gravity so future resizes keep
+that corner fixed."
+  (interactive)
+  (let* ((win-pos (select-viewport-position anchor-cursor))
+	 (win (car win-pos)))
+    (if win
+	(set-window-gravity! 
+	 (nonant->gravity (get-window-nonant win-pos))
+	 win))))
+
+(define gravities #(northwest north northeast west center
+			      east southwest south southeast))
+
+(define-public (nonant->gravity nonant)
+  "Return a gravity symbol given NONANT in [0,8].
+0 is northwest, 1 is north, 2 is northeast, etc.
+See also `get-window-nonant'."
+  (if (array-in-bounds? gravities nonant)
+      (array-ref gravities nonant)
+      #f))
+
+(define*-public (interactive-move-window-with-focus)
+  "Interactively move the window which currently has the focus.
+`*move-opaquely-proc*' is used to control whether a rubberband
+outline or the window itself is moved."
+  (interactive)
+  (let ((w (window-with-focus))) (and w (interactive-move w))))
+
+(define*-public (interactive-resize-window-with-focus)
+  "Interactively resize the window which currently has the focus.
+`*resize-opaquely-proc*' is used to control whether a rubberband
+outline or the window itself is resized."
+  (interactive)
+  (let ((w (window-with-focus))) (and w (interactive-resize w))))
+
+(define*-public (interactive-move-window-with-pointer)
+  "Interactively move the window which currently contains the pointer.
+`move-opaquely?' is used to control whether a rubberband
+outline or the window itself is moved."
+  (interactive)
+  (let ((w (window-with-pointer))) (and w (interactive-move w))))
+
+(define*-public (interactive-resize-window-with-pointer)
+  "Interactively resize the window which currently contains the pointer.
+`resize-opaquely?' is used to control whether a rubberband
+outline or the window itself is resized."
+  (interactive)
+  (let ((w (window-with-pointer))) (and w (interactive-resize w))))
+
+(define*-public (toggle-maximize-vertical #&optional (win (get-window)))
+  "Toggle the current window's maximized-vertically state."
+  (interactive)
+  (toggle-maximize 0 (%y 100) win))
+
+(define*-public (toggle-maximize-horizontal #&optional (win (get-window)))
+  "Toggle the WIN's maximized-horizontally state."
+  (toggle-maximize (%x 100) 0 win))
+
+(define*-public (toggle-maximize-both #&optional (win (get-window)))
+  "Toggle the WIN's maximization (both vertically and horizontally)."
+  (interactive)
+  (toggle-maximize (%x 100) (%y 100) win))
+
+(define*-public (toggle-maximize-vertical-part #&optional (win (get-window)))
+  "Toggle the WIN's maximization-vertically to 95% of the screen height."
+  (interactive)
+  (toggle-maximize 0 (%y 95) win))
+
+(define*-public (maximize-vertical #&optional (win (get-window)))
+  "Maximize WIN vertically."
+  (interactive)
+  (maximize 0 (%y 100) win))
+
+(define*-public (maximize-horizontal #&optional (win (get-window)))
+  "Maximize WIN horizontally."
+  (interactive)
+  (maximize (%x 100) 0 win))
+
+(define*-public (maximize-both #&optional (win (get-window)))
+  "Maximize WIN both horizontally and vertically."
+  (interactive)
+  (maximize (%x 100) (%y 100) win))

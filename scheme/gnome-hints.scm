@@ -20,10 +20,15 @@
 
 
 (define-module (app scwm gnome-hints)
+  :use-module (app scwm optargs)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
   :use-module (app scwm message-window)
   :use-module (app scwm animation)
+  :use-module (app scwm style)
+  :use-module (app scwm placement)
+  :use-module (app scwm basic-styles)
+  :use-module (app scwm styles)
   :use-module (app scwm winops))
 
 
@@ -186,20 +191,20 @@ Used in `enable-gnome-hints'."
 (define (gnome-set-state! win)
   (let* ((cur-state (or (X-property-numeric-value win _WIN_STATE) 0))
          (or-mask (logior
-                   (if (sticky? win) WIN_STATE_STICKY 0)
+                   (if (sticky-window? win) WIN_STATE_STICKY 0)
                    (if (maximized? win) WIN_STATE_MAXIMIZED_VERT 0)
                    (if (maximized? win) WIN_STATE_MAXIMIZED_HORIZ 0)
-                   (if (window-shaded? win) WIN_STATE_SHADED 0)
+                   (if (shaded-window? win) WIN_STATE_SHADED 0)
                    (if (object-property win 'arrange-skip)
                        WIN_STATE_ARRANGE_IGNORE 0)))
          (and-mask (logand 
                     WIN_STATE_ALL
-                    (if (sticky? win) WIN_STATE_ALL (lognot WIN_STATE_STICKY))
+                    (if (sticky-window? win) WIN_STATE_ALL (lognot WIN_STATE_STICKY))
                     (if (maximized? win) 
                         WIN_STATE_ALL (lognot WIN_STATE_MAXIMIZED_VERT))
                     (if (maximized? win) 
                         WIN_STATE_ALL (lognot WIN_STATE_MAXIMIZED_HORIZ))
-                    (if (window-shaded? win) 
+                    (if (shaded-window? win) 
                         WIN_STATE_ALL (lognot WIN_STATE_SHADED))
                     (if (object-property win 'arrange-skip) 
                         WIN_STATE_ALL (lognot WIN_STATE_ARRANGE_IGNORE)))))
@@ -284,8 +289,8 @@ Used in `enable-gnome-hints'."
 ;;  (write-line new-state)
   (if (nonzero? (logand mask WIN_STATE_STICKY))
       (if (nonzero? (logand new-state WIN_STATE_STICKY))
-	  (if (not (sticky? win)) (stick win))
-	  (if (sticky? win) (unstick win))))
+	  (if (not (sticky-window? win)) (stick-window win))
+	  (if (sticky-window? win) (unstick-window win))))
 
   ;; ignore WIN_STATE_MINIMIZED  - apparently deprecated
 
@@ -318,14 +323,14 @@ Used in `enable-gnome-hints'."
 
   (if (nonzero? (logand mask WIN_STATE_SHADED))
       (if (nonzero? (logand new-state WIN_STATE_SHADED))
-	  (if (not (window-shaded? win))
+	  (if (not (shaded-window? win))
 	      (if (equal? (window-class win) "Panel")
 		  (write-line "FIXME: *not* window-shading the panel")
 		  (if *gnome-shade-animated*
-		      (animated-window-shade win) (window-shade win))))
-	  (if (window-shaded? win)
+		      (animated-window-shade win) (shade-window win))))
+	  (if (shaded-window? win)
               (if *gnome-shade-animated*
-                  (animated-window-unshade win) (window-unshade win)))))
+                  (animated-window-unshade win) (unshade-window win)))))
 
   ;; ignore WIN_STATE_HID_WORKSPACE  (poorly specified)
   ;; ignore WIN_STATE_HID_TRANSIENT  (poorly specified)
@@ -447,28 +452,39 @@ Used in `enable-gnome-hints'."
   "Send a button-press N to the gnome desktop manager."
   (send-button-press n bpress_win_id 'desk-click))
 
-(define-public (gnome-desktop-press-1)
-  "Send a button-press 1 to the gnome desktop manager."
-  (gnome-desktop-press 1))
-
-(define-public (gnome-desktop-press-2)
-  "Send a button-press 1 to the gnome desktop manager."
-  (gnome-desktop-press 2))
-
-(define-public (gnome-desktop-press-3)
-  "Send a button-press 1 to the gnome desktop manager."
+(define*-public (gnome-desktop-menu)
+  "Pop-up the gnome desktop menu."
+  (interactive)
   (gnome-desktop-press 3))
 
-(define-public (gnome-desktop-click-1)
-  "Send a button-press 1 and button-release 1 to the gnome desktop manager."
+(define*-public (gnome-desktop-press-1)
+  "Send a button-press 1 to the gnome desktop manager."
+  (interactive)
   (gnome-desktop-press 1))
 
-(define-public (gnome-desktop-click-2)
-  "Send a button-press 1 and button-release 2 to the gnome desktop manager."
+(define*-public (gnome-desktop-press-2)
+  "Send a button-press 1 to the gnome desktop manager."
+  (interactive)
   (gnome-desktop-press 2))
 
-(define-public (gnome-desktop-click-3)
+(define*-public (gnome-desktop-press-3)
+  "Send a button-press 1 to the gnome desktop manager."
+  (interactive)
+  (gnome-desktop-press 3))
+
+(define*-public (gnome-desktop-click-1)
+  "Send a button-press 1 and button-release 1 to the gnome desktop manager."
+  (interactive)
+  (gnome-desktop-press 1))
+
+(define*-public (gnome-desktop-click-2)
+  "Send a button-press 1 and button-release 2 to the gnome desktop manager."
+  (interactive)
+  (gnome-desktop-press 2))
+
+(define*-public (gnome-desktop-click-3)
   "Send a button-press 1 and button-release 3 to the gnome desktop manager."
+  (interactive)
   (gnome-desktop-press 3))
 
 (define-public bpress_win #f)
@@ -553,3 +569,26 @@ pager applet. Reverses the effect of `enable-gnome-hints'."
 ;;; Do not enable by default - let the user reset some parameters first
 ;;; (enable-gnome-hints)
 
+(define-public gnome-sm
+  (->bool (X-property-get 'root-window "GNOME_SM_PROXY")))
+
+(define-public (gnome-install-window-styles)
+;;; gmc desktop icons
+  (window-style "desktop_icon" 
+		#:use-style desk-icon 
+		#:placement-proc use-placement-hint)
+  
+  (window-style "panel"
+		#:use-style desk-widget #:border-width 0 #:no-titlebar #t)
+  
+  (for-each (lambda (resource)
+	      (window-style resource
+			    #:use-style desk-widget #:no-titlebar #t
+			    #:placement-proc place-at-center))
+	    (list 
+	     "gnome-splash"
+	     "guname"))
+  
+  (window-style "wm-properties-capplet"
+		#:use-style desk-widget #:no-titlebar #t
+		#:transient-placement-proc (at-point-placement #:offset '(60 45))))

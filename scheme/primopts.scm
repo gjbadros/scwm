@@ -102,3 +102,17 @@ See `set-window-focus!'."
   #:group 'focus
   #:favorites '(click mouse sloppy)  ;; none is an option for windows, but stupid as a default
   #:setter (lambda (v) (window-style "*" #:focus v) (set! *default-focus-style* v)))
+
+(define-scwm-option *highlight-foreground* "white"
+  "The foreground (text) color for the titlebar of the window with the keyboard focus."
+  #:type 'color
+  #:group 'face
+  #:setter (lambda (v) (set-highlight-foreground! v))
+  #:getter (lambda () (highlight-foreground)))
+
+(define-scwm-option *highlight-background* "navy"
+  "The background color for the titlebar of the window with the keyboard focus."
+  #:type 'color
+  #:group 'face
+  #:setter (lambda (v) (set-highlight-background! v))
+  #:getter (lambda () (highlight-background)))

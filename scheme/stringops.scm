@@ -1,5 +1,5 @@
 ;;; $Id$
-;;; flux.scm
+;;; stringops.scm
 ;;; Copyright (C) 1999 Greg J. Badros
 ;;;
 ;;; Various useful string operations.

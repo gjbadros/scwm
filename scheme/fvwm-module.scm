@@ -301,7 +301,7 @@
     (send-win-string M_RES_CLASS (window-class win))
     (send-win-string M_RES_NAME (window-resource win))
   
-    (if (iconified? win)
+    (if (iconified-window? win)
     	(fvwm2-module-send-packet 
     	 M_ICONIFY 
     	 (marshal-fvwm2-iconify-info win)

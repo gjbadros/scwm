@@ -212,11 +212,13 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 				      (apply set-icon-box! (append args 
 								   (list w)))))
 (add-boolean-style-option #:sticky-icon stick-icon unstick-icon)
-(add-boolean-style-option #:start-iconified iconify deiconify)
+(add-boolean-style-option #:start-iconified iconify-window deiconify-window)
 (add-boolean-style-option #:kept-on-top keep-on-top un-keep-on-top)
-(add-boolean-style-option #:sticky stick unstick)
+(add-boolean-style-option #:sticky stick-window unstick-window)
 
-(add-boolean-hint-option #:no-titlebar hide-titlebar show-titlebar)
+;;; GJB:FIXME:NOW: The -both- option does not seem to make a difference
+;;; right yet. --10/16/99 gjb
+(add-boolean-both-option #:no-titlebar hide-titlebar show-titlebar)
 (add-boolean-style-option #:no-side-decorations hide-side-decorations show-side-decorations)
 (add-property-style-option #:squashed-titlebar 'squashed-titlebar)
 
@@ -275,11 +277,8 @@ windows."
 
 ;; random stuff
 (add-boolean-style-option #:start-lowered lower-window raise-window)
-(add-boolean-style-option #:start-window-shaded window-shade window-unshade)
+(add-boolean-style-option #:start-window-shaded shade-window unshade-window)
 (add-window-style-option #:other-proc (lambda (val w) (val w))
 			 #t) ; cumulative
 (add-window-hint-option #:other-hint-proc (lambda (val w) (val w))
 			#t) ; cumulative
-			
-
-

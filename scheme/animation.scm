@@ -36,7 +36,7 @@
 (export animation-delay)
 
 (define-public animated-toggle-window-shade
-  (make-toggling-winop window-shaded?
+  (make-toggling-winop shaded-window?
 		       animated-window-unshade
 		       animated-window-shade))
 
@@ -50,7 +50,7 @@ the move. At least one of X and Y must be a number. This
 moves the pointer with the window unless MOVE-POINTER-TOO? 
 is #f."
   (let ((pos (viewport-position)))
-    (if (not (sticky? win))
+    (if (not (sticky-window? win))
 	(begin
 	  (if x (set! x (+ x (car pos))))
 	  (if y (set! y (+ y (cadr pos)))))))

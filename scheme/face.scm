@@ -222,5 +222,3 @@ as the ACTIVE-UP, ACTIVE-DOWN, or INACTIVE arguments."
 	    (setter-proc (make-face active-up-flags active-up-specs)
 			 (make-face active-down-flags active-down-specs)
 			 (make-face inactive-flags inactive-specs))))))
-
-

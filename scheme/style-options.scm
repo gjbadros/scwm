@@ -46,6 +46,11 @@
 (define*-public (add-boolean-hint-option key th fh #&optional (cumulative? #f))
   (add-window-hint-option key (make-bool-handler th fh) cumulative?))
 
+(define*-public (add-boolean-both-option key th fh #&optional (cumulative? #f))
+  (add-window-style-option key (make-bool-handler th fh) 'normal cumulative?)
+  (add-window-hint-option key (make-bool-handler th fh) cumulative?))
+
+
 (define ((make-property-handler property) val win)
   (set-window-property! win property val))
 

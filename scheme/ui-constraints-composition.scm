@@ -99,30 +99,32 @@ the construction of a composition."
 				 (cons classname winnumlist)))
 			     cnlist))
 	     (msgwin ui-constraint-prompter-msgwin))
-
+	
 	(remove-hook! constraint-composition-record-hook add-constraint-to-composition)
 	(remove-hook! constraint-delete-hook remove-constraint-from-composition)
-
+	
 	;; determine windows within constraint (in order they were chosen by the user)
-
-	(prompt-string "Enter name: " 
-		       (lambda (name) 
-			 (make-ui-constraint-class name (length winlist) composition-ctr 
-						   (lambda () 
-						     (if (eqv? (length (selected-windows-list)) (length winlist))
-							 (list (selected-windows-list) classlist)
-							 (let ((winlst '())
-							       (win #t))
-							   (if (do ((i 1 (+ i 1)))
-								   ((or (> i (length winlist)) (not win)) win)
-								 (set! win (select-window-interactively (string-append "Select window #" (number->string i) ": ") msgwin))
-								 (set! winlst (cons win winlst)))
-							       (list winlst classlist)
-							       #f))))
-						     composition-draw-proc
-						     cl-is-constraint-satisfied?
-						     "composition.xpm"
-						     composition-menuname))))))
+	
+	(prompt-string 
+	 "Enter name: " 
+	 (lambda (name) 
+	   (make-ui-constraint-class 
+	    name "Composition-recorded" (length winlist) composition-ctr 
+	    (lambda () 
+	      (if (eqv? (length (selected-windows-list)) (length winlist))
+		  (list (selected-windows-list) classlist)
+		  (let ((winlst '())
+			(win #t))
+		    (if (do ((i 1 (+ i 1)))
+			    ((or (> i (length winlist)) (not win)) win)
+			  (set! win (select-window-interactively (string-append "Select window #" (number->string i) ": ") msgwin))
+			  (set! winlst (cons win winlst)))
+			(list winlst classlist)
+			#f))))
+	    composition-draw-proc
+	    cl-is-constraint-satisfied?
+	    "composition.xpm"
+	    composition-menuname))))))
     
 ;; (use-scwm-modules constraints ui-constraints ui-constraints-composition ui-constraints-buttons ui-constraints-gtk-toggle-menu ui-constraints-classes)
 ;; (start-constraints)

@@ -24,6 +24,8 @@
   :use-module (app scwm base)
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
+  :use-module (app scwm window-selection)
+  :use-module (app scwm rectangle)
   :use-module (app scwm winops)
   :use-module (app scwm animation))
 
@@ -153,10 +155,33 @@ control the tiling options as for `tile-windows'."
 			 only))
     #:except (append (if ignore-default-exceptions
 			 ()
-			 (list transient? maximized? sticky? iconified?
+			 (list transient? maximized? 
+			       sticky-window? iconified-window?
 			       (lambda (w) 
 				 (= (window-title-height w) 0))))
 		     except)
     #:by-stacking by-stacking #:by-focus by-focus #:reverse reverse)
    #:start-pos start-pos #:end-pos end-pos #:raise raise 
    #:resize resize #:max-windows max-windows #:order order))
+
+
+(define*-public (tile-windows-interactively #&optional (order 'vertical))
+  "Tile a set of selected windows either vertically or horizontally.
+ORDER can be either 'horizontal or 'vertical.
+The windows used are selected either by `selected-windows-list' or 
+`select-window-group'.
+If `selected-windows-list' is empty, then `select-window-group' is used.
+See also the undo module and `insert-undo-global' to save the window 
+configuration before executing this in case the effect is not what you
+expected."
+  (interactive)
+  (let* ((winlist (selected-windows-list))
+	 (wins (if (pair? winlist) winlist (select-window-group)))
+	 (r (enclosing-rectangle wins)))
+    (if (pair? winlist)
+	(unselect-all-windows)
+	(for-each unflash-window wins))
+    (tile-windows wins
+		  #:start-pos (rect-nw r)
+		  #:end-pos (rect-se r)
+		  #:order order)))

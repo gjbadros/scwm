@@ -148,8 +148,8 @@
   (if (eq? atom KWM_ACTIVATE_WINDOW)
       (let* ((winid (vector-ref data 0))
 	     (win (id->window winid)))
-	(if (iconified? win) (deiconify win))
-	(focus win))))
+	(if (iconified-window? win) (deiconify-window win))
+	(focus-window win))))
       
 
 (define (client-message-debug-handler win a f d)
@@ -170,7 +170,7 @@
   (cond 
    ((string=? name "KWM_WIN_ICONIFIED")
     (let ((f (kwm-win-numeric-property-get win "WIN_ICONIFIED")))
-      (if (= f 1) (iconify win) (deiconify win))))))
+      ((if (= f 1) iconify-window deiconify-window) win)))))
 
 (define (property-notify-debug-handler prop-name win)
   (display "Property changed: ")

@@ -32,9 +32,9 @@
 
 ;; public drawing variables
 
-(define-public ui-constraint-in-focus-width 3)
-(define-public ui-constraint-out-focus-width 1)
-
+(define-public ui-constraint-in-focus-width 4)
+(define-public ui-constraint-out-focus-width 2)
+;; (set! ui-constraint-out-focus-width 2)
 
 ;; alias for internal use
 (define msgwin ui-constraint-prompter-msgwin)
@@ -1086,10 +1086,10 @@ Keep one window wholly to the left of another."
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (if (not (= (length win-list) 2))
 	(error "Expected at least two windows in win-list of cn for an relative inverse size constraint"))
-    (let* ((w1ctr (translate-point (window-center-middle (car win-list)) width))
+    (let* ((w1ctr (translate-point (window-center-middle (car win-list)) width 0))
 	   (w1lm (window-left-middle (car win-list)))
 	   (w1rm (window-right-middle (car win-list)))
-	   (wctrlist (map (lambda (w) (translate-point (window-center-middle w) width)) (cdr win-list))) 
+	   (wctrlist (map (lambda (w) (translate-point (window-center-middle w) width 0)) (cdr win-list))) 
 	   (wlmlist (map (lambda (w) (window-left-middle w)) (cdr win-list)))
 	   (wrmlist (map (lambda (w) (window-right-middle w)) (cdr win-list))))
       (xlib-set-line-attributes! width)

@@ -30,14 +30,18 @@
 ;;; These are the two main features of this module:
 ;;; `quote-key-event' and `quote-mouse-event'
 
-(define-public (quote-key-event)
+(define*-public (quote-key-event)
+  "Quote the next key event and let it pass to the application."
+  (interactive)
   (let ((k (get-key-event)))
     (dynamic-wind
      (lambda () (apply undo-passive-grab (cdr k)))
      (lambda () (apply xtest-fake-modmask-key (cdr k)))
      (lambda () (apply redo-passive-grab (cdr k))))))
 
-(define-public (quote-mouse-event)
+(define*-public (quote-mouse-event)
+  "Quote the next mouse event and let it pass to the application."
+  (interactive)
   (let ((m (get-mouse-event)))
     (dynamic-wind
      (lambda () (apply undo-passive-grab (cdr m)))
