@@ -1,5 +1,5 @@
 Event Rewrite Proposal for Scwm
-Greg J. Badros, 6-Aug-1998, revised 2-Sep-1998
+Greg J. Badros, 6-Aug-1998, revised 2-Sep-1998, 3-Sep-1998
 (Inspired by conversations w/ Maciej and his "events" proposal in this
  same directory)
 
@@ -20,83 +20,97 @@ o Quoting mechanism for turning off scwm's handling of events
 o Unifying X-events and user events
 
 
-As you write, event maps and event objects should be exposed to the
+As you wrote, event maps and event objects should be exposed to the
 scheme layer as SMOBs (first class objects).  The event maps will
 contain event objects which are bound to procedures to be invoked.
 Event maps will be attached to X windows (via Xlib's SaveContext
-mechanism) and scheme window objects (for top-level, per-window events).
+mechanism) and scheme window objects (using their top-level frame
+window).  E.g., an event map can be attached to a titlebar button
+window, or to the titlebar window, etc.
 
 
 Overview:
 ---------
 1 - Event Objects
 2 - Event Map Objects
-3 - Binding of Event Maps
+3 - Dispatch of Events
+4 - Binding of Event Maps
 
 
 1 - Event objects:
 ------------------
-(make-key-event KEY-SPECIFIER)
+(make-key-event KEYSYM-NAME #&optional MODIFIER-SPECIFIER)
 e.g.:
 (make-key-event "F1")
-KEY-SPECIFIER can be a string where modifiers are prefixes, e.g., "C-S-M-Up"
-or can be a vector or list of modifier symbols and a keysym string in any order,
-e.g. #(control shift meta "x")  or '("x" control shift meta)
-The special pseudo-keysyms "KeyPress" and "KeyRelease" will permit
+(make-key-event "Return" (with-modifier 'control 'shift 'meta))
+KEYSYM-NAME is the name of a keysym (e.g., "x", "BackSpace", etc.).
+It cannot have prefixed modifiers -- a convenience function can provide
+conversions from (e.g., "C-S-M-Return" to the 2nd example above).
+[[ The special pseudo-keysyms "KeyPress" and "KeyRelease" permit
 events being bound to some combination of modifier keys just being
-depressed or released.  We could also permit modifier symbols 'mod1,
-'mod2, etc., to mean specifically that modifier mask bit (as opposed to
-the more flexible but less explicit symbolic names).
+depressed or released.  (These may not be necessary thanks to make-x-event)]]
 
-QUESTION: Perhaps the keysym string should be required to be first
-          in the vector/list
+MODIFIER-SPECIFIER is an cons pair of bitmasks for the modifier bits of
+the event: (MUST-BE-ON . MUST-BE-OFF).  E.g., if bit 2 corresponds to
+the meta modifier, (4 . 0) would match events with at least the Meta
+modifier depressed, while (0 . 4) would match only events without the
+Meta modifier depressed.  `with-modifier' and other convenience
+functions will be provided to simplify the writing of the
+MODIFIER-SPECIFIER.  They will permit using logical modifiers using
+symbols (e.g., 'control 'meta 'hyper 'super, etc.) and physical
+modifiers by numbers (e.g., 1 refers to whatever mod1 is).  Call the
+modifiers of the key event: MOD.  The event matches the
+MODIFIER-SPECIFIER iff:
+  ((MOD | OnMask == MOD) && (MOD & ~OffMask == MOD)).
 
-QUESTION: Perhaps the KEY-SPECIFIER should be split into KEYSYM-SPECIFIER
-          and MODIFIER-SPECIFIER
 
 
-(make-mouse-event MOUSE-SPECIFIER)
+(make-mouse-event BUTTON-SPECIFIER X-EVENT-SPECIFIER 
+                  #&optional MODIFIER-SPECIFIER)
 e.g.,
-(make-mouse-event '(1 release))
-(make-mouse-event '(#(1 control meta shift) motion))
+(make-mouse-event 1 'release)
+(make-mouse-event 3 'double-click (with-modifier 'control 'meta 'shift))
 
-MOUSE-SPECIFIER is a list of two elements [or a cons pair -- use '(1
-. release) ?].  The car is a button number, or a list or vector for the button
-number and modifiers.  If the car is a vector or list, it must contain
-exactly one number corresponding to the button number; the other elements are
-modifier symbols.  The button number 0 means any button.
-The cadr [or cdr] is one of 'motion, 'press, 'release, 'click, or
+BUTTON-SPECIFIER is the physical number of the button (a level of
+indirection could easily be provided by variables named e.g., select
+drag and menu, corresponding to buttons 1 2 and 3).  Button number 0
+matches any/all buttons.  Chorded buttons are not specifiable directly -- the
+attached proc will have to check the event if they are desired (their
+complexity for user interaction is worth discouraging).
+
+X-EVENT-SPECIFIER is one of 'motion, 'press, 'release, 'click, or
 'double-click.  ('click may be the same as 'release, but 'double-click
 gets manufactured by scwm).  E.g., the below are valid MOUSE_SPECIFIERs
 
-QUESTION: Perhaps the button number should be required to be first 
-          in the vector/list
-
-QUESTION: Perhaps the MOUSE-SPECIFIER should be split into MOUSE-SPECIFIER
-          MODIFIER-SPECIFIER
-
-QUESTION: Should the button number instead be a list of 'left 'middle 'right
-	  symbols to permit chording and automatic flipping of chirality?
+MODIFIER-SPECIFIER is as described above.
 
 
-(make-x-event X-EVENT-SPECIFIER MODIFIER-SPECIFIER)
+(make-x-event X-EVENT-SPECIFIER #&optional MODIFIER-SPECIFIER)
 e.g.,
 (make-x-event 'enter-notify)
-X-EVENT-SPECIFIER is a symbol referring to an X11 event.  enter-notify,
-leave-notify, pointer-motion, property-notify, colormap-notify,
-focus-in, focus-out, etc. could be supported (see include/X11/X.h for
-list).  Binding procedures to these events could replace some of the
-ad-hoc mechanisms for property-notification, etc., that we currently
-have in scwm.
+(make-x-event 'keypress (with-modifer 'control 'shift 'meta))
+(make-x-event 'pointer-motion (with-modifier 'hyper))
 
-MODIFIER-SPECIFIER is a vector or list of modifier symbols.  Perhaps it
-should use Xrm-like descriptions so we can say "exactly Hyper" (!Hyper)
-or "not Shift" (~Shift).
+X-EVENT-SPECIFIER is a symbol referring to an X11 event.  keypress,
+keyrelease, enter-notify, leave-notify, pointer-motion, property-notify,
+colormap-notify, focus-in, focus-out, etc. could be supported (see
+include/X11/X.h for list).  Binding procedures to these events could
+replace some of the ad-hoc mechanisms for property-notification, etc.,
+that we currently have in scwm.
+
+MODIFIER-SPECIFIER is as described above.  It is included
+mostly for completeness and orthogonality.  'keypress events may test
+for modifiers using the current state of the modifiers, not the state
+under which the key was pressed.  E.g., if Ctrl-Shift-Meta is depressed, 
+whichever of the three modifier keys that is physically registered last
+will not be in the modifier bitmask for that keypress, but we might like 
+to bind something (e.g., a help menu) to those three keys being held
+down.
 
 Note that make-x-event is the most primitive case, and the other two
 procedures can be seen as adding a C-level filter on top of the actual
-X-event.  E.g., (make-mouse-event '(1 release)) is applicable if there
-is a x-event "ButtonRelease" *and* the button number is 1.
+X-event.  E.g., (make-mouse-event 1 'release) is applicable if there
+is a x-event "ButtonRelease" and the button number is 1.
 
 
 2 - Event Map Objects:
@@ -120,7 +134,7 @@ that this mechanism should not be necessary for the geometry-based
 chaining that X11 commonly uses.  E.g., an event in a window decoration
 (say, a button on the titlebar) will first dispatch based on the event
 map (if any) attached to the decoration, then on the event map for that
-client window, then on the global event map.  Each of these event maps
+top-level window, then on the global event map.  Each of these event maps
 would be built with the PARENT argument omitted or #f.  A special
 primitive or symbol can be bound to an event to permit preventing the
 event from propagating, and instead letting it pass to the application.
@@ -153,6 +167,10 @@ event-map-global
 (list-event-bindings EVENT-MAP)
 ;; return a list of all the event bindings added to EVENT-MAP
 ;; as a cons parent of (EVENT-OBJECT . PROC-OR-SYMOBL)
+
+
+3 - Dispatch of Events
+----------------------
 
 (dispatch-event EVENT-MAP EVENT)
 ;; EVENT-MAP is an event-map object, EVENT is an event-object
@@ -189,7 +207,7 @@ event-map-global
 ;; control using this primitive.
 
 
-3 - Binding of Event Maps:
+4 - Binding of Event Maps:
 --------------------------
 
 Event maps can be attached to any X Window by its X Id.  We can add
