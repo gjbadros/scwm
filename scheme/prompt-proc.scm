@@ -39,9 +39,10 @@
 INITVAL is a default initial proc as a string.
 TITLE is a window title."
   (let* ((toplevel (gtk-window-new 'dialog))
-	 (hbox-and-getter (prompt-proc-hbox prompt initval favorites))
-	 (hbox (car hbox-and-getter))
-	 (getter (cadr hbox-and-getter))
+	 (hbox-getter-and-entry (prompt-proc-hbox prompt initval favorites))
+	 (hbox (car hbox-getter-and-entry))
+	 (getter (cadr hbox-getter-and-entry))
+	 (entry (caddr hbox-getter-and-entry))
 	 (hbox-buttons (gtk-hbox-new #f 5))
 	 (okbut (gtk-button-new-with-label "Ok"))
 	 (cancelbut (gtk-button-new-with-label "Cancel")))
@@ -61,6 +62,10 @@ TITLE is a window title."
 			(lambda () 
 			  (gtk-widget-destroy toplevel)
 			  (proc (getter))))
+    (gtk-signal-connect entry "activate" 
+			(lambda () 
+			  (gtk-widget-destroy toplevel)
+			  (proc (getter))))
     (gtk-signal-connect cancelbut "pressed"
 			(lambda ()
 			  (gtk-widget-destroy toplevel)))
@@ -71,7 +76,7 @@ TITLE is a window title."
 (define*-public (prompt-proc-hbox prompt initval #&optional favorites)
   "Create and return a proc-prompting hbox, complete with link to full proc dialog.
 PROMPT is the prompt, INITVAL is the initial proc as a string.
-The returned value is a list: (hbox getter).
+The returned value is a list: (hbox getter entry).
 See also `prompt-proc'."
   (let* ((hbox (gtk-hbox-new #f 0))
 	 (cb (if (list? favorites) (gtk-combo-new) #f))
@@ -110,9 +115,10 @@ See also `prompt-proc'."
 			     "clicked" (lambda () (gtk-widget-destroy dialog)))
 			    (gtk-widget-show dialog))))
     (list hbox (lambda () 
-		 (let ((procname (gtk-entry-get-text entry))
-		       (proc (eval (string->symbol procname))))
-		   (if (procedure? proc) proc #f))))))
+		 (let* ((procname (gtk-entry-get-text entry))
+			(proc (eval (string->symbol procname))))
+		   (if (procedure? proc) proc #f)))
+	  entry)))
 
 (define-public (gtk-proc-selection-new title)
   "Returns a new procedure-selecting dialog box."
