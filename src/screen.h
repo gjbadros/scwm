@@ -139,8 +139,8 @@ typedef struct {
 } TitleButton;
 
 typedef struct ColorPair {
-  Pixel fore;
-  Pixel back;
+  SCM fg;
+  SCM bg;
 } ColorPair;
 
 typedef struct ScwmDecor {
@@ -202,9 +202,6 @@ typedef struct ScreenInfo {
   ColorPair MenuColors;
   ColorPair MenuStippleColors;
   ColorPair MenuRelief;
-
-  ColorPair StdColors;		/* standard fore/back colors */
-  ColorPair StdRelief;
 
   SCM menu_font;		 /* font structure for menus, resize/move gadgets */
   SCM icon_font;                 /* for icon labels */
