@@ -1,6 +1,6 @@
 # $Id$ -*- outline -*-
 
-For scwm 0.9:
+See also doc/dev/scwm-1.0-release-todo
 
 * Add session manager support
 ** TEST IT!  Add hooks to scheme code for various messages, etc.
@@ -33,8 +33,6 @@ provide some example uses of guile-gtk for scwm.
 
 * generalize select-window to permit proc to be called when would-be-selected win changes
 
-* 
-
 * Support for custom cursors
 
 * Improve the gravity handling stuff.
@@ -59,7 +57,7 @@ Maciej has access to ensure it builds and runs on Linux, NetBSD, Irix,
 Solaris and SunOS.  On each of this try compiling and running with both
 guile 1.2 and the latest snap, and try with and without threads.
 
-After scwm 0.9:
+After Scwm 1.0:
 
 * event rewrite
 ** Read about Tk's multi-event sequences:
