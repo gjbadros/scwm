@@ -17,6 +17,7 @@ scwm_SOURCES =  string_token.c \
                 events.c \
                 focus.c \
                 scwm.c \
+                xproperty.c \
                 icons.c \
                 misc.c \
                 xmisc.c \
@@ -64,7 +65,7 @@ INCLUDES = @x_cflags@ @GUILE_INCLUDES@
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h \
 binding.x callbacks.x color.x deskpage.x events.x face.x font.x image.x menuitem.x \
-miscprocs.x module-interface.x scwmmenu.x shutdown.x window.x
+miscprocs.x module-interface.x scwmmenu.x shutdown.x xproperty.x window.x
 
 ##OMIT_DEPENDENCIES = $(BUILT_SOURCES)
 
