@@ -1,3 +1,10 @@
+Fri Sep  3 09:07:59 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Turn off buffering of stdout.  Fix some
+	comments.  Added reposition-scwm-messages-window and use it as a
+	startup-hook (finally works now).  Fix typo in use of
+	solaris-hosts instead of other-hosts (Thanks Dirk Hermann).
+
 Thu Sep  2 17:56:09 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use new animated-resize-window to move and resize 
