@@ -193,13 +193,13 @@ If NW or NH is 0, that dimension is not changed."
 (define display-area (* display-width display-height))
 
 (define-public (default-resize-opaquely? win)
-  "Return #t if WIN has area < opaque-resize-percent of the screen, else #f."
-  (< (window-frame-area win) 
+  "Return #t if WIN has area <= opaque-resize-percent of the screen, else #f."
+  (<= (window-frame-area win) 
      (* display-area (/ (scwm-user-var opaque-resize-percent) 100))))
 
 (define-public (default-move-opaquely? win)
-  "Return #t if WIN has area < opaque-move-percent of the screen, else #f."
-  (< (window-frame-area win)
+  "Return #t if WIN has area <= opaque-move-percent of the screen, else #f."
+  (<= (window-frame-area win)
      (* display-area (/ (scwm-user-var opaque-move-percent) 100))))
 
 
