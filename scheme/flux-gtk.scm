@@ -27,8 +27,10 @@
   "Prompt for a new name for WIN and change its title.
 WIN defaults as usual to the current window context."
   (interactive)
-  (prompt-string (string-append "Rename \"" (window-title win) "\" to: ") (lambda (new-name)
-				 (set-window-title! win new-name))
+  (prompt-string (string-append "Rename window to: ") 
+		 (lambda (new-name)
+		   (set-window-title! win new-name))
+		 #:initval (window-title win)
 		 "Rename-window"))
 
 
