@@ -226,49 +226,53 @@
 (define (remove-active-module! fmod)
   (set! active-modules (delq! fmod active-modules)))
 
-(set! broadcast-hook 
-      (lambda (type num-data . args)
-	(map (lambda (fmod)
-	       (let ((to-module-write (car fmod))
-		     (mask (cadr fmod)))
-		 (if (logior type mask)
-		     (fvwm2-module-send-packet 
-		      type
-		      (apply string-append
-			     (map (lambda (x y) 
-				    (long->string x)) 
-				  args (iota num-data))) 
-		      to-module-write))))
-	     active-modules)))
+(define (module-broadcast type num-data . args)
+  (map (lambda (fmod)
+	 (let ((to-module-write (car fmod))
+	       (mask (cadr fmod)))
+	   (if (logior type mask)
+	       (fvwm2-module-send-packet 
+		type
+		(apply string-append
+		       (map (lambda (x y) 
+			      (long->string x)) 
+			    args (iota num-data))) 
+		to-module-write))))
+       active-modules))
 
-(set! broadcast-config-hook 
-      (lambda (type window)
-	(map (lambda (fmod)
-	       (let ((to-module-write (car fmod))
-		     (mask (cadr fmod)))
-		 (if (logior type mask)
-		     (fvwm2-module-send-packet 
-		      type
-		      (marshal-fvwm2-config-info window)
-		      to-module-write))))
-	     active-modules)))
+(add-hook! broadcast-hook module-broadcast) 
 
-(set! broadcast-name-hook
-      (lambda (type data1 data2 data3 name)
-	(map (lambda (fmod)
-	       (let ((to-module-write (car fmod))
-		     (mask (cadr fmod)))
-		 (if (logior type mask)
-		     (fvwm2-module-send-packet 
-		      type
-		      (pad-string-to-long
-		       (string-append
-			(long->string data1) 
-			(long->string data2) 
-			(long->string data3)
-			name))
-		      to-module-write))))
-	     active-modules)))
+(define (module-broadcast-config type window)
+  (map (lambda (fmod)
+	 (let ((to-module-write (car fmod))
+	       (mask (cadr fmod)))
+	   (if (logior type mask)
+	       (fvwm2-module-send-packet 
+		type
+		(marshal-fvwm2-config-info window)
+		to-module-write))))
+       active-modules))
+
+(add-hook! broadcast-config-hook module-broadcast-config)
+
+(define (module-broadcast-name type data1 data2 data3 name)
+  (map (lambda (fmod)
+	 (let ((to-module-write (car fmod))
+	       (mask (cadr fmod)))
+	   (if (logior type mask)
+	       (fvwm2-module-send-packet 
+		type
+		(pad-string-to-long
+		 (string-append
+		  (long->string data1) 
+		  (long->string data2) 
+		  (long->string data3)
+		  name))
+		to-module-write))))
+       active-modules))
+
+(add-hook! broadcast-name-hook module-broadcast-name)
+
 
 (define*-public (run-fvwm-module module-file config-file config-info
 				#&optional (other-args '()))
