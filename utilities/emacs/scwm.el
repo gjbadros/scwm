@@ -2,7 +2,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-10 Fri 17:22:27 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-13 Mon 18:28:31 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -78,6 +78,8 @@
 (eval-and-compile
  (or (and (fboundp 'cadr) (fboundp 'unless)) (require 'cl))
  (or (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos"))
+ (or (fboundp 'ignore-errors) (autoload 'ignore-errors "cl-macs" nil nil t)))
+(eval-when-compile
  (unless (fboundp 'with-output-to-string)
    (defmacro with-output-to-string (&rest body)
      "Execute BODY, return the text it sent to `standard-output', as a string."
@@ -129,6 +131,8 @@ you have to (require 'font-lock) first.  Sorry.")
 (define-key scwm-mode-map [(control x) (control j)] 'scwm-eval-to-minibuffer)
 (define-key scwm-mode-map [(control h) (control s)] 'scwm-documentation)
 (define-key scwm-mode-map [(control h) (control a)] 'scwm-apropos)
+(define-key scwm-mode-map [(control h) (control f)]
+  'scwm-goto-guile-procedure-node)
 (define-key scwm-mode-map [(meta tab)] 'scwm-complete-symbol-insert)
 
 ;;;###autoload
@@ -181,7 +185,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (let ((obarray (make-vector 67 0)) (pos 2)
 	(tb (get-buffer-create " *scwm-obarray*")))
     (set-buffer tb) (erase-buffer)
-    (scwm-eval "(apropos-internal \"*\")" tb)
+    (scwm-eval "(apropos-internal \".*\")" tb)
     (goto-char 1)
     (while (search-forward " " nil t)
       (intern (buffer-substring-no-properties pos (1- (point))) obarray)
@@ -193,7 +197,8 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 Returns a string."
   (setq sym (or sym (thing-at-point 'symbol))
 	scwm-obarray (or scwm-obarray (scwm-make-obarray)))
-  (completing-read "SCWM symbol: " scwm-obarray nil nil sym scwm-history sym))
+  ;; removed the lst arg, `sym', for backward compatibility with e19.
+  (completing-read "SCWM symbol: " scwm-obarray nil nil sym scwm-history))
 
 ;;;###autoload
 (defun scwm-complete-symbol-insert ()
@@ -208,6 +213,20 @@ Returns a string."
 	     (with-output-to-temp-buffer "*Completions*"
 	       (display-completion-list (all-completions pat scwm-obarray)))
 	     (message "Making completion list...done")))))
+
+
+;; fontifications
+;; --------------
+(cond ((boundp 'running-xemacs)
+       (put 'scwm-mode 'font-lock-defaults
+            (get 'scheme-mode 'font-lock-defaults)))
+      ((and (string-lessp emacs-version "20.3")
+            (boundp 'font-lock-defaults-alist))
+       (unless (assq 'scwm-mode font-lock-defaults-alist)
+         (setq font-lock-defaults-alist
+               (cons (cons 'scwm-mode
+                           (cdr (assq 'scheme-mode font-lock-defaults-alist)))
+                     font-lock-defaults-alist)))))
 
 ;; help
 ;; ----
@@ -237,18 +256,68 @@ Returns a string."
     (scwm-eval (concat "(apropos \"" pat "\")") standard-output)
     (set-buffer standard-output) (apropos-mode)))
 
-;; fontifications
+;; info interface
+(defvar scwm-info-file-list
+  '(("r4rs" . "Index")
+    ("guile-ref" . "Procedure Index")
+    ("guile-ref" . "Variable Index")
+    ("scwm" . "Function Index")
+    ("scwm" . "Variable Index"))
+  "AssocList of Info files that describe Guile procedures.
+An element is of the form (FILE . NODE).")
 
-(cond ((boundp 'running-xemacs)
-       (put 'scwm-mode 'font-lock-defaults
-            (get 'scheme-mode 'font-lock-defaults)))
-      ((and (string-lessp emacs-version "20.3")
-            (boundp 'font-lock-defaults-alist))
-       (unless (assq 'scwm-mode font-lock-defaults-alist)
-         (setq font-lock-defaults-alist
-               (cons (cons 'scwm-mode
-                           (cdr (assq 'scheme-mode font-lock-defaults-alist)))
-                     font-lock-defaults-alist)))))
+(defun scwm-find-guile-procedure-nodes (procedure)
+  "Return a list of locations documenting PROCEDURE.
+The variable `scwm-info-file-list' defines heuristics for which Info
+manual to try.  The locations are of the format used in Info-history,
+i.e. (FILENAME NODENAME BUFFERPOS)"
+  (let ((where '())
+	(cmd-desc (concat "^\\* " (regexp-quote procedure)
+			  ":\\s *\\(.*\\)\\.$"))
+	(file-list scwm-info-file-list))
+    (while file-list
+      (let ((file (car (car file-list)))
+            (index (cdr (car file-list))))
+	(setq file-list (cdr file-list))
+	(save-excursion
+	  (ignore-errors
+            (Info-find-node file index)
+            ;; Take the index node off the Info history.
+            (setq Info-history (cdr Info-history))
+            (goto-char (point-max))
+            (while (re-search-backward cmd-desc nil t)
+              (setq where (cons (list Info-current-file
+                                      (buffer-substring
+                                       (match-beginning 1)
+                                       (match-end 1))
+                                      0)
+                                where)))))))
+    where))
+
+;;;###autoload
+(defun scwm-goto-guile-procedure-node (procedure)
+  "Go to the Info node in the Guile manual for procedure PROCEDURE.
+The procedure is found by looking up in the Guile Reference manual's
+Procedure Index or in another manual found via the variable
+`scwm-info-file-list'."
+  (interactive (list (scwm-complete-symbol)))
+  (let ((where (scwm-find-guile-procedure-nodes procedure)))
+    (unless where (error "Couldn't find documentation for %s" procedure))
+    (let ((num-matches (length where)))
+      ;; Get Info running, and pop to it in another window.
+      (save-window-excursion (info))
+      (pop-to-buffer "*info*")
+      ;; (filename nodename bufferpos)
+      (Info-find-node (car (car where)) (car (cdr (car where))))
+      (when (> num-matches 1)
+        ;; Info-find-node already pushed (car where) onto
+        ;; Info-history.  Put the other nodes that were found on
+        ;; the history.
+        (setq Info-history (nconc (cdr where) Info-history))
+        (message "Found %d other entr%s.  Use %s to see %s."
+                 (1- num-matches) (if (> num-matches 2) "ies" "y")
+                 (substitute-command-keys "\\[Info-last]")
+                 (if (> num-matches 2) "them" "it"))))))
 
 (provide 'scwm)
 ;;; scwm ends here
