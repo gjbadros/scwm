@@ -7,6 +7,7 @@
   :use-module (app scwm ui-constraints)
   :use-module (app scwm message-window)
   :use-module (app scwm window-locations)
+  :use-module (app scwm highlight-current-window)
   :use-module (app scwm nonants)
   :use-module (app scwm window-selection)
   :use-module (app scwm winops)
@@ -20,6 +21,8 @@
 ;;; but cannot w/o using an overlay plane;  Also,
 ;;; the draw functions should get passed semantic parameters
 ;;; e.g., is-enabled? and is-in-focus? instead of color, width
+
+(start-highlighting-selected-window)
 
 (define-public ui-constraint-prompter-msgwin (make-message-window ""))
 

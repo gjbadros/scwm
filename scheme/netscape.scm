@@ -165,7 +165,7 @@ See `netscape-download-closed-action'."
 ;; (netscape-google-search "glade")
 ;; (netscape-google-search "gtk")
 (define-public (netscape-google-search word)
-  (netscape-goto-url (string-append (cgi-escapify-space url-google word))))
+  (netscape-goto-url (string-append url-google (cgi-escapify-space word))))
 
 (define*-public (netscape-google-search-cut-buffer)
   "Use netscape to do a Google search of the `X-cut-buffer-string'."

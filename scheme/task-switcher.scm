@@ -25,4 +25,4 @@ Start out on the window that last had the focus."
   "Popup a task-switcher window list.
 Start out on the window that had the focus longest ago."
   (interactive)
-  (apply window-task-switch-menu (cons #t rest)))
+  (apply window-task-switcher-menu (cons #t rest)))
