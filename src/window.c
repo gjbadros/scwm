@@ -2316,6 +2316,20 @@ convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
 }
 #undef FUNC_NAME
 
+SCWM_PROC(window_decoration_size, "window-decoration-size", 1, 0, 0,
+          (SCM win))
+     /** Return (decor-width decor-height) for WIN.
+These are the extra width/height (in pixels) of the frame
+beyond that of the client window width/height. */
+#define FUNC_NAME s_window_decoration_size
+{
+  ScwmWindow *psw;
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
+  return gh_list(gh_int2scm(DecorationWidth(psw)),
+                 gh_int2scm(DecorationHeight(psw)),
+                 SCM_UNDEFINED);
+}
+#undef FUNC_NAME
 
 SCWM_PROC(move_window, "move-window", 2, 1, 0,
           (SCM x, SCM y, SCM win))
@@ -2344,66 +2358,27 @@ specified. */
 #undef FUNC_NAME
 
 
-/* GJB:FIXME:: either resize-to or resize-frame-to should be written
-   in scheme using the other */
-/* GJB:FIXME:: See resize-window  -- this primitive should be renamed to that */
-
-SCWM_PROC(resize_to, "resize-to", 2, 1, 0,
-          (SCM w, SCM h, SCM win))
-     /** Resize WIN's client area to a size of W by H in pixels.
-The size does not include the window decorations -- only the client
-application size. WIN defaults to the window
-context in the usual way if not specified.*/
-#define FUNC_NAME s_resize_to
-{
-  int width, height;
-  ScwmWindow *psw;
-
-  SCM_REDEFER_INTS;
-  VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
-  psw = PSWFROMSCMWIN(win);
-
-  if (check_allowed_function(F_RESIZE, psw) == 0
-      || SHADED_P(psw)) {
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
-  }
-
-  /* can't resize icons */
-  if (psw->fIconified) {
-    SCM_REALLOW_INTS;
-    return SCM_BOOL_F;
-  }
-  width = gh_scm2int(w);
-  height = gh_scm2int(h);
-
-  width += DecorationWidth(psw);
-  height += DecorationHeight(psw);
-  ConstrainSize(psw, 0, 0, &width, &height);
-  ResizeTo(psw,width,height);
-
-  SCM_REALLOW_INTS;
-  return SCM_BOOL_T;
-}
-#undef FUNC_NAME
-
-
-SCWM_PROC(resize_frame_to, "resize-frame-to", 2, 1, 0,
-          (SCM w, SCM h, SCM win))
+SCWM_PROC(resize_frame, "resize-frame", 2, 3, 0,
+          (SCM w, SCM h, SCM win, SCM x, SCM y))
      /** Resize WIN to a size of W by H in pixels.
+Also moves WIN to virtual coordinates X, Y if both of them are specified.
 The size includes the window decorations. WIN defaults to the window
 context in the usual way if not specified.  The resulting size
 of the frame may not be W by H due to rounding to the nearest
 acceptable size for the client window (e.g., Emacs windows can
 only be sizes that are multiples of the basic character size).*/
-#define FUNC_NAME s_resize_frame_to
+#define FUNC_NAME s_resize_frame
 {
   int width, height;
+  int cpix_x = 0, cpix_y = 0;
   ScwmWindow *psw;
 
   SCM_REDEFER_INTS;
-  VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_ARG_INT_COPY(1,w,width);
+  VALIDATE_ARG_INT_COPY(2,h,height);
+  VALIDATE_ARG_WIN_COPY_USE_CONTEXT(3, win, psw);
+  if (!UNSET_SCM(x)) VALIDATE_ARG_INT_COPY(4,x,cpix_x);
+  if (!UNSET_SCM(y)) VALIDATE_ARG_INT_COPY(5,y,cpix_y);
 
   if (check_allowed_function(F_RESIZE, psw) == 0
       || SHADED_P(psw)) {
@@ -2416,11 +2391,12 @@ only be sizes that are multiples of the basic character size).*/
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
-  width = gh_scm2int(w);
-  height = gh_scm2int(h);
 
-  ConstrainSize(psw, 0, 0, &width, &height);
-  ResizeTo(psw,width,height);
+  if (!UNSET_SCM(x) && !UNSET_SCM(y)) {
+    MoveResizeTo(psw,cpix_x,cpix_y,width,height);
+  } else {
+    ResizeTo(psw,width,height);
+  }
 
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;

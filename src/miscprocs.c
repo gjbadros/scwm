@@ -31,6 +31,7 @@
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
 extern Bool Restarting, PPosOverride;
+extern Bool fHandleSegv;
 
 SCWM_SYMBOL(sym_focus, "focus");
 
@@ -678,9 +679,8 @@ terminal handy on a console or separate X server.
 For developers and hackers only. */
 #define FUNC_NAME s_set_handle_segv_x
 {
-  Bool f;
-  VALIDATE_ARG_BOOL_COPY(1,flag,f);
-  if (f) {
+  VALIDATE_ARG_BOOL_COPY(1,flag,fHandleSegv);
+  if (fHandleSegv) {
     newsegvhandler(SIGSEGV);
   } else {
     reset_signal_handler(SIGSEGV);
