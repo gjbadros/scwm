@@ -237,6 +237,20 @@ SCM  ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p);
 
 #define VALIDATE_PRESS_ONLY(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F, SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
 
+#define COPY_BOOL_OR_ERROR(var,flag,pos,func) \
+  do { \
+  if (flag == SCM_BOOL_T) var = True; \
+  else if (flag == SCM_BOOL_F) var = False; \
+  else scm_wrong_type_arg(func,pos,flag); \
+  } while (0)
+
+#define COPY_INVERT_BOOL_OR_ERROR(var,flag,pos,func) \
+  do { \
+  if (flag == SCM_BOOL_F) var = True; \
+  else if (flag == SCM_BOOL_T) var = False; \
+  else scm_wrong_type_arg(func,pos,flag); \
+  } while (0)
+
 typedef struct {
   ScwmWindow *psw;
   int valid;

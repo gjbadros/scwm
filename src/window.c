@@ -2947,13 +2947,7 @@ specified. */
 #define FUNC_NAME s_set_random_placement_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fRandomPlace = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fRandomPlace = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
+  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fRandomPlace,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2968,13 +2962,7 @@ specified. */
 #define FUNC_NAME s_set_smart_placement_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fSmartPlace = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fSmartPlace = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
+  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fSmartPlace,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3012,20 +3000,9 @@ flags obey their mwm-flags. See `set-button-mwm-flag!'. WIN defaults
 to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_buttons_x
 {
-  ScwmWindow *psw;
-
   VALIDATEN(win, 2, FUNC_NAME);
-  psw = PSWFROMSCMWIN(win);
-
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fMWMButtons = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fMWMButtons = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
-
-  /* SetBorder(psw,(Scr.Hilite==psw),True,True,None); */
+  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fMWMButtons,flag,1,FUNC_NAME);
+  /* FIXGJB: why here? SetBorder(psw,(Scr.Hilite==psw),True,True,None); */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3033,7 +3010,6 @@ to the window context in the usual way if not specified. */
 
 SCWM_PROC(set_mwm_border_x, "set-mwm-border!", 1, 1, 0,
           (SCM flag, SCM win))
-
      /** Set wether or not the decorations of WIN will be drawn in the
 Mwm style rather than the Fvwm style according to the boolean value
 FLAG. The Mwm style has shallower bevels. WIN defaults to the window
@@ -3041,20 +3017,10 @@ context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_border_x
 {
   ScwmWindow *psw;
-
   VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
-
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fMWMBorders = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fMWMBorders = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
-
+  COPY_BOOL_OR_ERROR(psw->fMWMBorders,flag,1,FUNC_NAME);
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3079,22 +3045,11 @@ defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_icon_title_x
 {
   ScwmWindow *psw;
-
   /* Should changing the icon title string be allowed? */
-
   VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
-
-  if (flag == SCM_BOOL_F) {
-    psw->fNoIconTitle = True;
-  } else if (flag == SCM_BOOL_T) {
-    psw->fNoIconTitle = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
-
+  COPY_INVERT_BOOL_OR_ERROR(psw->fNoIconTitle,flag,1,FUNC_NAME);
   force_icon_redraw (psw);
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3134,20 +3089,10 @@ window context in the usual way if not specified. */
 #define FUNC_NAME s_set_show_icon_x
 { 
   ScwmWindow *psw;
-
   VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
-
-  if (flag== SCM_BOOL_F) {
-    psw->fSuppressIcon = True;
-  } else if (flag == SCM_BOOL_T) {
-    psw->fSuppressIcon = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
-
+  COPY_INVERT_BOOL_OR_ERROR(psw->fSuppressIcon,flag,1,FUNC_NAME);
   force_icon_redraw (psw);
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3266,13 +3211,7 @@ window context in the usual way if not specified. */
 #define FUNC_NAME s_set_hint_override_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fHintOverride = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fHintOverride = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
+  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fHintOverride,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3289,13 +3228,7 @@ window context in the usual way if not specified. */
 #define FUNC_NAME s_set_decorate_transient_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fDecorateTransient = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fDecorateTransient = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
+  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fDecorateTransient,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3309,13 +3242,7 @@ context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_decor_hint_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fMWMDecor = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fMWMDecor = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
+  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fMWMDecor,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3329,13 +3256,7 @@ context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_func_hint_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fMWMFunctions = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fMWMFunctions = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
+  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fMWMFunctions,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3352,13 +3273,7 @@ usual way if not specified. */
 #define FUNC_NAME s_set_PPosition_hint_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fNoPPosition = True;
-  } else if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fNoPPosition = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
+  COPY_INVERT_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fNoPPosition,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3372,13 +3287,7 @@ window context in the usual way if not specified. */
 #define FUNC_NAME s_set_OL_decor_hint_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fOLDecorHint = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fOLDecorHint = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
+  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fOLDecorHint,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3416,13 +3325,7 @@ defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_skip_mapping_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fShowOnMap = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fShowOnMap = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
+  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fShowOnMap,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3438,13 +3341,7 @@ specified. */
 #define FUNC_NAME s_set_lenience_x
 {
   VALIDATEN(win, 2, FUNC_NAME);
-  if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->fLenience = True;
-  } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->fLenience = False;
-  } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
-  }
+  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fLenience,flag,1,FUNC_NAME);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
