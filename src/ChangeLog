@@ -1,3 +1,10 @@
+1998-10-20  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* scwm.c (InitUserData): UserHome was not set in all cases.
+
+	* miscprocs.c (user-name, user-home): New primitives, providing
+	access to UserName and UserHome, respectively.
+
 1998-10-19  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* scwm.h (CLIENT_ID_STRING): Split into two versions:

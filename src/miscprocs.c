@@ -637,6 +637,32 @@ be shared among multiple machines. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC(user_name, "user-name", 0, 0, 0,
+	  ())
+     /** Return the current user's name.
+This is set to one of the following (in order of relevance):
+<envar>$USER</envar>, <envar>$LOGNAME</envar>,
+the name field of the current uid's entry in the password file,
+the constant string "nobody". */
+#define FUNC_NAME s_user_name
+{
+  return gh_str02scm(UserName);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(user_home, "user-home", 0, 0, 0,
+	  ())
+     /** Return the current user's home directory.
+This is set to one of the following (in order of relevance):
+<envar>$HOME</envar>,
+the directory field of the current uid's entry in the password file,
+the constant string "/tmp". */
+#define FUNC_NAME s_user_home
+{
+  return gh_str02scm(UserHome);
+}
+#undef FUNC_NAME
+
 void 
 init_miscprocs()
 {

@@ -425,24 +425,25 @@ InitUserData()
   struct passwd *pw;
   char *user, *home;
 
-  home = getenv("HOME");
-  if (!(user = getenv("USER"))) {
-    if (!(user = getenv("LOGNAME"))) {
-      pw = getpwuid(getuid());
-      if (pw) {
+  if (!(home = getenv("HOME"))
+      || (!(user = getenv("USER")) && !(user = getenv("LOGNAME")))) {
+    /* if setting either user or home from env failed, we need passwd */
+    pw = getpwuid(getuid());
+    if (pw) {
+      if (!user)
 	user = pw->pw_name;
-	if (!home)
-	  home = pw->pw_dir;
-      }
-      else {
+      if (!home)
+	home = pw->pw_dir;
+    } else {
+      if (!user) {
 	user = "nobody";
 	scwm_msg(WARN, "InitUserData", "Could not determine user name "
 		 "- assuming `nobody'");
-	if (!home) { 
-	  home = "/tmp";
-	  scwm_msg(WARN, "InitUserData", "Could not determine home directory "
-		   "- assuming `/tmp'");
-	}
+      }
+      if (!home) { 
+	home = "/tmp";
+	scwm_msg(WARN, "InitUserData", "Could not determine home directory "
+		 "- assuming `/tmp'");
       }
     }
   }
