@@ -144,17 +144,37 @@
   (wait-for-input)
   (let* ((window
 	  (catch #t (lambda () (binary-read-long port))
-		 (lambda args (error "Could not get window id"))))
+		 (lambda args (error 
+                               (string-append "Could not get window id:\n"
+                                              (call-with-output-string
+                                               (lambda ()
+                                                 (write args)
+                                                 (newline))))))))
 	 (msglen
 	  (catch #t (lambda () (binary-read-long port))
-		 (lambda args (error "Could not get msglen"))))
+		 (lambda args (error 
+                               (string-append "Could not get msglen:\n"
+                                              (call-with-output-string
+                                               (lambda ()
+                                                 (write args)
+                                                 (newline))))))))
 	 (command
 	  (catch #t (lambda () (binary-read msglen port))
-		 (lambda args (error "Could not get command"))))
+		 (lambda args (error 
+                               (string-append "Could not get command:\n"
+                                              (call-with-output-string
+                                               (lambda ()
+                                                 (write args)
+                                                 (newline))))))))
 	 (keepgoing
 	  (catch #t (lambda () (binary-read-long port))
-		 (lambda args (error "Could not get keepgoing")))))
-	 (list window msglen command keepgoing)))
+		 (lambda args (error 
+                               (string-append "Could not keepgoing:\n"
+                                              (call-with-output-string
+                                               (lambda ()
+                                                 (write args)
+                                                 (newline)))))))))
+    (list window msglen command keepgoing)))
 
 (define (fvwm2-module-send-config-info config-info port)
   (map (lambda (x) (send-config-info x port))
@@ -498,8 +518,10 @@
 			     (if (not (list-ref fmod 4))
 				 (remove-input-hook! input-hook-handle))))
 			 (lambda args
-			   (display "scwm: Error communicating with module ")
+			   (display "scwm: Error communicating with module: \n")
 			   (write fmod)
+                           (display "error is: \n")
+                           (write args)
 			   (display ";\n terminating connection.\n")
 			   (kill-fvwm2-module fmod))))))
 	    

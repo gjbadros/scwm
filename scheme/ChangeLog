@@ -1,5 +1,7 @@
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* fvwm-module.scm: Enhance error output on a communication error.
+
 	* bincomm.scm: Fix some obvious problems with 64-bit
 	versions. Patch from Janne Sinkkonen
 	<janne@avocado.pc.helsinki.fi>.
