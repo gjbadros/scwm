@@ -216,7 +216,13 @@ typedef struct ScwmWindow {
 
   /* Not used, but I'm not sure what it used to mean, so leaving it
      commented for now - MS 3-14-98 MSFIX: Can we blast this yet?--07/26/98 gjb*/
+  /* How about we check what fvwm2 used it for first? --08/31/98 ms*/
+
   /* int BoxFillMethod; */
+
+
+  SCM other_properties;
+
   SCM schwin;
 } ScwmWindow;
 

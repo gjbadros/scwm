@@ -1,5 +1,12 @@
 1998-07-30  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
 
+	* window.h, window.c: Window structure changes, phase 1. Added
+	other_properties member to window structure; GC protect it and
+	initialize it to an empty hash table. Add set-window-property! and
+	window-property primitives. Right now they only get and set
+	properties in this hash table. "Magical" properties and change
+	notification will come in later, as will other planned changes.
+ 
 	ICCCM compliant gravity handling:
 	
 	* window.h: Define gravity_info type, used to encode gravity

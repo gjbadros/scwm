@@ -331,14 +331,15 @@ mark_window(SCM obj)
   /* FIXGJB: revisit this */
   if (VALIDWINP(obj) && PSWFROMSCMWIN(obj)->fl != NULL) {
     ScwmWindow *psw = PSWFROMSCMWIN(obj);
-    GC_MARK_SCM_IF_SET(psw->fl->scmdecor);
-    GC_MARK_SCM_IF_SET(psw->mini_icon_image);
-    GC_MARK_SCM_IF_SET(psw->icon_req_image);
-    GC_MARK_SCM_IF_SET(psw->icon_image);
-    GC_MARK_SCM_IF_SET(psw->ReliefColor);
-    GC_MARK_SCM_IF_SET(psw->ShadowColor);
-    GC_MARK_SCM_IF_SET(psw->TextColor);
-    GC_MARK_SCM_IF_SET(psw->BackColor);
+    scm_gc_mark(psw->fl->scmdecor);
+    scm_gc_mark(psw->mini_icon_image);
+    scm_gc_mark(psw->icon_req_image);
+    scm_gc_mark(psw->icon_image);
+    scm_gc_mark(psw->ReliefColor);
+    scm_gc_mark(psw->ShadowColor);
+    scm_gc_mark(psw->TextColor);
+    scm_gc_mark(psw->BackColor);
+    scm_gc_mark(psw->other_properties);
   }
 
   return SCM_BOOL_F;
@@ -381,6 +382,11 @@ make_window(ScwmWindow * win)
   SCM_SETCDR(answer, (SCM) schwin);
   PSWFROMSCMWIN(answer) = win;
   VALIDWINP(answer) = 1;
+
+  /* Warning, arbitrary constant, we really need growable hash
+     tables. */
+
+  win->other_properties=scm_make_vector(SCM_MAKINUM(5), SCM_EOL);
   scm_protect_object(answer);
 
   SCM_ALLOW_INTS;
@@ -3286,6 +3292,66 @@ specified. */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+SCWM_PROC(set_window_property_x, "set-window-property!", 3, 0, 0,
+          (SCM win, SCM prop, SCM val))
+     /** Set window property PROP of WIN to VAL.
+PROP should be a symbol. VAL may be any Scheme object. This name/value
+pair will be associated with the window, and may be retrieved with
+`window-property'. Passing #f as the value will delete the property
+instead. Soon, some properties will have magical meanings, altering
+particular fields in the window structure. Also, a
+window-property-change-hook mechanism will soon be implemented for
+notification of all window property changes. This is not yet done. The
+window property API should be considered in flux. */
+#define FUNC_NAME s_set_window_property_x
+{
+  if (!WINDOWP(win) || !VALIDWINP(win)) {
+    scm_wrong_type_arg (FUNC_NAME, 1, win);
+  }
+
+  if (!gh_symbol_p(prop)) {
+    scm_wrong_type_arg (FUNC_NAME, 2, prop);
+  }
+
+  if (val==SCM_BOOL_F) {
+    scm_hashq_remove_x(PSWFROMSCMWIN(win)->other_properties, prop);
+  } else {
+    scm_hashq_set_x(PSWFROMSCMWIN(win)->other_properties, prop, val);
+  }
+
+  /* FIXMS: notification needs to go here. */
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+
+SCWM_PROC(window_property, "window-property", 2, 0, 0,
+          (SCM win, SCM prop))
+     /** Retrieve window property PROP of WIN.
+PROP should be a symbol. #f will be returned if the property does not
+exist (wether set by `set-window-property!' or otherwise). Soon, some
+properties will have magical meanings, accessing particular fields in
+the window structure. Also, a window-property-change-hook mechanism
+will soon be implemented for notification of all window property
+changes. This is not yet done. The window property API should be
+considered in flux. */
+#define FUNC_NAME s_set_window_property_x
+{
+  if (!WINDOWP(win) || !VALIDWINP(win)) {
+    scm_wrong_type_arg (FUNC_NAME, 1, win);
+  }
+
+  if (!gh_symbol_p(prop)) {
+    scm_wrong_type_arg (FUNC_NAME, 2, prop);
+  }
+
+  return scm_hashq_ref(PSWFROMSCMWIN(win)->other_properties, prop, SCM_BOOL_F);
+}
+#undef FUNC_NAME
+
 
 
 MAKE_SMOBFUNS(window);
