@@ -991,7 +991,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="sound-load"><function>sound-load</function></link> -- Load sound from FILE, tagging it with NAME.</para></listitem>
       <listitem><para><link linkend="sound-unload"><function>sound-unload</function></link> -- Unload SOUND, freeing any resources it occupies.</para></listitem>
       <listitem><para><link linkend="sound-play"><function>sound-play</function></link> -- Play SOUND.</para></listitem>
-      <listitem><para><link linkend="esd-reconnect"><function>esd-reconnect</function></link> -- Connect to ESD on HOST.</para></listitem>
+      <listitem><para><link linkend="esd-reconnect"><function>esd-reconnect</function></link> -- Connect to the ESound daemon on the machine named HOST.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>modules/overlay-plane/overlay-plane.c</title> <itemizedlist>
       <listitem><para><link linkend="has-overlay-plane-p"><function>has-overlay-plane?</function></link> -- Return <literal>#t</literal> if the current screen has an overlay plane, <literal>#f</literal> otherwise.</para></listitem>
@@ -999,47 +999,47 @@ The shaped XPM menu look.
       <listitem><para><link linkend="hide-overlay-plane"><function>hide-overlay-plane</function></link> -- Draw a box in the overlay plane.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>modules/proplist/scwmproplist.c</title> <itemizedlist>
-      <listitem><para><link linkend="proplist-make-array-from-elements"><function>proplist-make-array-from-elements</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-make-dictionary-from-entries"><function>proplist-make-dictionary-from-entries</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-remove-array-element"><function>proplist-remove-array-element</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-insert-array-element"><function>proplist-insert-array-element</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-append-array-element"><function>proplist-append-array-element</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-insert-dictionary-entry"><function>proplist-insert-dictionary-entry</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-remove-dictionary-entry"><function>proplist-remove-dictionary-entry</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-merge-dictionaries"><function>proplist-merge-dictionaries</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-shallow-copy"><function>proplist-shallow-copy</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-deep-copy"><function>proplist-deep-copy</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-is-equal"><function>proplist-is-equal</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-set-string-cmp-hook"><function>proplist-set-string-cmp-hook</function></link> -- </para></listitem>
-      <listitem><para><link linkend="string-to-proplist"><function>string->proplist</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-make-data"><function>proplist-make-data</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-container"><function>proplist-get-container</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-array-element"><function>proplist-get-array-element</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-number-of-elements"><function>proplist-get-number-of-elements</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-all-dictionary-keys"><function>proplist-get-all-dictionary-keys</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-dictionary-entry"><function>proplist-get-dictionary-entry</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-string-description"><function>proplist-get-string-description</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-data-description"><function>proplist-get-data-description</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-data"><function>proplist-get-data</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-string"><function>proplist-get-string</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-is-string"><function>proplist-is-string</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-is-data"><function>proplist-is-data</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-is-array"><function>proplist-is-array</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-is-dictionary"><function>proplist-is-dictionary</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-is-simple"><function>proplist-is-simple</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-is-compound"><function>proplist-is-compound</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-unregister"><function>proplist-unregister</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-register"><function>proplist-register</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-set-domain"><function>proplist-set-domain</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-delete-domain"><function>proplist-delete-domain</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-domain"><function>proplist-get-domain</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-domainnames"><function>proplist-get-domainnames</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-get-filename"><function>proplist-get-filename</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-set-filename"><function>proplist-set-filename</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-save"><function>proplist-save</function></link> -- </para></listitem>
-      <listitem><para><link linkend="proplist-synchronize"><function>proplist-synchronize</function></link> -- </para></listitem>
-      <listitem><para><link linkend="get-proplist-with-path"><function>get-proplist-with-path</function></link> -- </para></listitem>
-      <listitem><para><link linkend="get-proplist-with-description"><function>get-proplist-with-description</function></link> -- </para></listitem>
+      <listitem><para><link linkend="proplist-make-array-from-elements"><function>proplist-make-array-from-elements</function></link> -- Return a newly created array object populated with elements ITEMS.</para></listitem>
+      <listitem><para><link linkend="proplist-make-dictionary-from-entries"><function>proplist-make-dictionary-from-entries</function></link> -- Return a newly created dictionary object with elements ITEMS.</para></listitem>
+      <listitem><para><link linkend="proplist-remove-array-element"><function>proplist-remove-array-element</function></link> -- Return PL-ARRAY after deleting the element at position INDEX.</para></listitem>
+      <listitem><para><link linkend="proplist-insert-array-element"><function>proplist-insert-array-element</function></link> -- Return the PL-ARRAY after inserting ITEM at offset INDEX.</para></listitem>
+      <listitem><para><link linkend="proplist-append-array-element"><function>proplist-append-array-element</function></link> -- Return the PL-ARRAY after appending ITEM to the end.</para></listitem>
+      <listitem><para><link linkend="proplist-insert-dictionary-entry"><function>proplist-insert-dictionary-entry</function></link> -- Return PL-DICT after inserting (KEY,VALUE) into it.</para></listitem>
+      <listitem><para><link linkend="proplist-remove-dictionary-entry"><function>proplist-remove-dictionary-entry</function></link> -- Return PL-DICT after removing (KEY,VALUE) from it.</para></listitem>
+      <listitem><para><link linkend="proplist-merge-dictionaries"><function>proplist-merge-dictionaries</function></link> -- Return PL-DICT-DEST after merging in all entries from PL-DICT-SOURCE.</para></listitem>
+      <listitem><para><link linkend="proplist-shallow-copy"><function>proplist-shallow-copy</function></link> -- Return a shallow copy of property list PL.</para></listitem>
+      <listitem><para><link linkend="proplist-deep-copy"><function>proplist-deep-copy</function></link> -- Return a deep copy of property list PL.</para></listitem>
+      <listitem><para><link linkend="proplist-is-equal"><function>proplist-is-equal</function></link> -- Return <literal>#t</literal> iff PLA is equal to PLB.</para></listitem>
+      <listitem><para><link linkend="proplist-set-string-cmp-hook"><function>proplist-set-string-cmp-hook</function></link> -- Use PRED as a predicate for doing proplist string comparisons.</para></listitem>
+      <listitem><para><link linkend="string-to-proplist"><function>string->proplist</function></link> -- Return a proplist object containing STRING.</para></listitem>
+      <listitem><para><link linkend="proplist-make-data"><function>proplist-make-data</function></link> -- Return a proplist argument containing arbitrary data from DATA.</para></listitem>
+      <listitem><para><link linkend="proplist-get-container"><function>proplist-get-container</function></link> -- Return the array or dictionary of which PL is an element.</para></listitem>
+      <listitem><para><link linkend="proplist-get-array-element"><function>proplist-get-array-element</function></link> -- Return the element at INDEX offset of PL.</para></listitem>
+      <listitem><para><link linkend="proplist-get-number-of-elements"><function>proplist-get-number-of-elements</function></link> -- Return the number of elements in PL.</para></listitem>
+      <listitem><para><link linkend="proplist-get-all-dictionary-keys"><function>proplist-get-all-dictionary-keys</function></link> -- Return a proplist array object that contains all the keys of PL-DICT.</para></listitem>
+      <listitem><para><link linkend="proplist-get-dictionary-entry"><function>proplist-get-dictionary-entry</function></link> -- Return the proplist dictionary entry associated with entry KEY in PL-DICT.</para></listitem>
+      <listitem><para><link linkend="proplist-get-string-description"><function>proplist-get-string-description</function></link> -- Retuns a description of PL (a string proplist object) in GNUstep format.</para></listitem>
+      <listitem><para><link linkend="proplist-get-data-description"><function>proplist-get-data-description</function></link> -- Returns a description of PL (a data proplist object) in GNUstep format.</para></listitem>
+      <listitem><para><link linkend="proplist-get-data"><function>proplist-get-data</function></link> -- Returns the raw data from PL (a data proplist object) as a string.</para></listitem>
+      <listitem><para><link linkend="proplist-get-string"><function>proplist-get-string</function></link> -- Returns the string from PL (a string proplist object).</para></listitem>
+      <listitem><para><link linkend="proplist-is-string"><function>proplist-is-string</function></link> -- Return <literal>#t</literal> iff PL is a string proplist object, <literal>#f</literal> otherwise.</para></listitem>
+      <listitem><para><link linkend="proplist-is-data"><function>proplist-is-data</function></link> -- Return <literal>#t</literal> iff PL is a data proplist object, <literal>#f</literal> otherwise.</para></listitem>
+      <listitem><para><link linkend="proplist-is-array"><function>proplist-is-array</function></link> -- Return <literal>#t</literal> iff PL is an array proplist object, <literal>#f</literal> otherwise.</para></listitem>
+      <listitem><para><link linkend="proplist-is-dictionary"><function>proplist-is-dictionary</function></link> -- Return <literal>#t</literal> iff PL is a dictionary proplist object, <literal>#f</literal> otherwise.</para></listitem>
+      <listitem><para><link linkend="proplist-is-simple"><function>proplist-is-simple</function></link> -- Return <literal>#t</literal> iff PL is a string or data proplist object, <literal>#f</literal> otherwise.</para></listitem>
+      <listitem><para><link linkend="proplist-is-compound"><function>proplist-is-compound</function></link> -- Return <literal>#t</literal> iff PL is a dictionary or array proplist object, <literal>#f</literal> otherwise.</para></listitem>
+      <listitem><para><link linkend="proplist-unregister"><function>proplist-unregister</function></link> -- No longer invoke callback when domain associated with PL-DOMAIN-NAME is changed.</para></listitem>
+      <listitem><para><link linkend="proplist-register"><function>proplist-register</function></link> -- Register thunk CALLBACK to be called when PL-DOMAIN-NAME changes.</para></listitem>
+      <listitem><para><link linkend="proplist-set-domain"><function>proplist-set-domain</function></link> -- Set PL-DOMAIN-NAME to have VALUE.</para></listitem>
+      <listitem><para><link linkend="proplist-delete-domain"><function>proplist-delete-domain</function></link> -- Delete domain PL-DOMAIN-NAME.</para></listitem>
+      <listitem><para><link linkend="proplist-get-domain"><function>proplist-get-domain</function></link> -- Return a property list represeting the domain PL-DOMAIN-NAME.</para></listitem>
+      <listitem><para><link linkend="proplist-get-domainnames"><function>proplist-get-domainnames</function></link> -- Return a array proplist containing all registered domain names.</para></listitem>
+      <listitem><para><link linkend="proplist-get-filename"><function>proplist-get-filename</function></link> -- Return the filename of PL.</para></listitem>
+      <listitem><para><link linkend="proplist-set-filename-x"><function>proplist-set-filename!</function></link> -- Set the filename for PL to be FILENAME.</para></listitem>
+      <listitem><para><link linkend="proplist-save"><function>proplist-save</function></link> -- Save PL, atomically if ATOMICALLY? is <literal>#t</literal>.</para></listitem>
+      <listitem><para><link linkend="proplist-synchronize"><function>proplist-synchronize</function></link> -- Synchronize the in-memory proplist PL with the disk contents </para></listitem>
+      <listitem><para><link linkend="get-proplist-with-path"><function>get-proplist-with-path</function></link> -- Return the proplist from path FILENAME.</para></listitem>
+      <listitem><para><link linkend="get-proplist-with-description"><function>get-proplist-with-description</function></link> -- Return a property list by parsing DESC in GNUstep proplist format.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>modules/scwmgtkhelper/scwmgtkhelper.c</title> <itemizedlist>
       <listitem><para><link linkend="scwm-gdk-X-fdes"><function>scwm-gdk-X-fdes</function></link> -- Return the integer connection number of the gdk_display.</para></listitem>
@@ -1930,6 +1930,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="make-image"><function>make-image</function></link> -- Loads an image from the file NAME.</para></listitem>
       <listitem><para><link linkend="clear-image-cache-entry"><function>clear-image-cache-entry</function></link> -- Images are cached by both name and full pathname.</para></listitem>
       <listitem><para><link linkend="window-to-image"><function>window->image</function></link> -- Return an image with the contents of window WIN.</para></listitem>
+      <listitem><para><link linkend="clone-scaled-image"><function>clone-scaled-image</function></link> -- Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scwm/menu.c</title> <itemizedlist>
       <listitem><para><link linkend="menu-p"><function>menu?</function></link> -- Return <literal>#t</literal> if and only if OBJ is a menu object.</para></listitem>
@@ -2029,7 +2030,7 @@ The shaped XPM menu look.
       <listitem><para><link linkend="set-reset-on-segv-x"><function>set-reset-on-segv!</function></link> -- Reset Scwm to the main event loop on the next NUMBER-TO-RESET segv signals.</para></listitem>
       <listitem><para><link linkend="reset-on-segv"><function>reset-on-segv</function></link> -- Return the number of segv signals Scwm will reset on.</para></listitem>
       <listitem><para><link linkend="set-handle-segv-x"><function>set-handle-segv!</function></link> -- If FLAG, tell Scwm to catch segv signals.</para></listitem>
-      <listitem><para><link linkend="x-connection-number"><function>X-connection-number</function></link> -- Return the X connection file descriptor number.</para></listitem>
+      <listitem><para><link linkend="x-connection-number"><function>x-connection-number</function></link> -- Return the X connection file descriptor number.</para></listitem>
       <listitem><para><link linkend="get-key-event"><function>get-key-event</function></link> -- Return a string representing the next key event.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scwm/module-interface.c</title> <itemizedlist>
@@ -4057,6 +4058,27 @@ case-sensitive or not.
   </refsect1>
 </refentry>
 
+<refentry id="clone-scaled-image">
+  <refnamediv>
+    <refname>clone-scaled-image</refname>
+    <refpurpose>Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(clone-scaled-image image width height)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Returns a copy of <parameter>image</parameter> scaled to have dimensions <parameter>width</parameter> by <parameter>height</parameter>.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Built-in Primitive</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/image.c"><filename>scwm/image.c</filename></ulink>
+  at line 651 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="close-all-xlogo-windows">
   <refnamediv>
     <refname>close-all-xlogo-windows</refname>
@@ -5594,7 +5616,7 @@ Can restart with a fresh solver by using <link linkend="start-constraints"><func
 <refentry id="esd-reconnect">
   <refnamediv>
     <refname>esd-reconnect</refname>
-    <refpurpose>Connect to ESD on HOST.</refpurpose>
+    <refpurpose>Connect to the ESound daemon on the machine named HOST.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(esd-reconnect  #&amp;optional host)</synopsis>
@@ -5602,8 +5624,8 @@ Can restart with a fresh solver by using <link linkend="start-constraints"><func
   <refsect1>
   <title>Description</title>
   <para>
-  Connect to ESD on <parameter>host</parameter>.
-If <parameter>host</parameter> is not set, the ESPEAKER environmental variable will be used. If this
+  Connect to the ESound daemon on the machine named <parameter>host</parameter>.
+If <parameter>host</parameter> is not set, the $ESPEAKER environmental variable will be used. If this
 is unset too, localhost is contacted.
 The esdsound module normally connects at startup. This function is useful
 if the connection was lost, esd was not running at startup, or its location
@@ -6608,42 +6630,42 @@ This has never been functioning and needs work to make right.
 <refentry id="get-proplist-with-description">
   <refnamediv>
     <refname>get-proplist-with-description</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return a property list by parsing DESC in GNUstep proplist format.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(get-proplist-with-description Desc)</synopsis>
+    <synopsis>(get-proplist-with-description desc)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return a property list by parsing <parameter>desc</parameter> in GNUstep proplist format.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 873 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 890 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="get-proplist-with-path">
   <refnamediv>
     <refname>get-proplist-with-path</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return the proplist from path FILENAME.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(get-proplist-with-path Filename)</synopsis>
+    <synopsis>(get-proplist-with-path filename)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return the proplist from path <parameter>filename</parameter>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 855 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 872 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13406,204 +13428,58 @@ See also <link linkend="X-PropertyNotify-hook"><function>X-PropertyNotify-hook</
 <refentry id="proplist-append-array-element">
   <refnamediv>
     <refname>proplist-append-array-element</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return the PL-ARRAY after appending ITEM to the end.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-append-array-element Array Pl)</synopsis>
+    <synopsis>(proplist-append-array-element pl-array item)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return the <parameter>pl-array</parameter> after appending <parameter>item</parameter> to the end.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 299 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 300 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-deep-copy">
   <refnamediv>
     <refname>proplist-deep-copy</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return a deep copy of property list PL.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-deep-copy Pl)</synopsis>
+    <synopsis>(proplist-deep-copy pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return a deep copy of property list <parameter>pl</parameter>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 375 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 376 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-delete-domain">
   <refnamediv>
     <refname>proplist-delete-domain</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Delete domain PL-DOMAIN-NAME.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-delete-domain Name Kick-me)</synopsis>
+    <synopsis>(proplist-delete-domain pl-domain-name kick-me?)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: Primitive from (app scwm proplist)</para>
-  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 742 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
-<refentry id="proplist-get-all-dictionary-keys">
-  <refnamediv>
-    <refname>proplist-get-all-dictionary-keys</refname>
-    <refpurpose></refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(proplist-get-all-dictionary-keys Dict)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: Primitive from (app scwm proplist)</para>
-  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 499 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
-<refentry id="proplist-get-array-element">
-  <refnamediv>
-    <refname>proplist-get-array-element</refname>
-    <refpurpose></refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(proplist-get-array-element Pl Index)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: Primitive from (app scwm proplist)</para>
-  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 471 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
-<refentry id="proplist-get-container">
-  <refnamediv>
-    <refname>proplist-get-container</refname>
-    <refpurpose></refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(proplist-get-container Pl)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: Primitive from (app scwm proplist)</para>
-  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 458 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
-<refentry id="proplist-get-data">
-  <refnamediv>
-    <refname>proplist-get-data</refname>
-    <refpurpose></refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(proplist-get-data Pl)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: Primitive from (app scwm proplist)</para>
-  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 573 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
-<refentry id="proplist-get-data-description">
-  <refnamediv>
-    <refname>proplist-get-data-description</refname>
-    <refpurpose></refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(proplist-get-data-description Pl)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: Primitive from (app scwm proplist)</para>
-  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 550 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
-<refentry id="proplist-get-dictionary-entry">
-  <refnamediv>
-    <refname>proplist-get-dictionary-entry</refname>
-    <refpurpose></refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(proplist-get-dictionary-entry Dict Key)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: Primitive from (app scwm proplist)</para>
-  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 513 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
-<refentry id="proplist-get-domain">
-  <refnamediv>
-    <refname>proplist-get-domain</refname>
-    <refpurpose></refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(proplist-get-domain Name)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  
+  Delete domain <parameter>pl-domain-name</parameter>.
+If <parameter>kick-me?</parameter> is <literal>#f</literal>, any callback registered for the domain will not be called.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -13613,10 +13489,158 @@ See also <link linkend="X-PropertyNotify-hook"><function>X-PropertyNotify-hook</
   </refsect1>
 </refentry>
 
+<refentry id="proplist-get-all-dictionary-keys">
+  <refnamediv>
+    <refname>proplist-get-all-dictionary-keys</refname>
+    <refpurpose>Return a proplist array object that contains all the keys of PL-DICT.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(proplist-get-all-dictionary-keys pl-dict)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a proplist array object that contains all the keys of <parameter>pl-dict</parameter>.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Primitive from (app scwm proplist)</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
+  at line 509 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="proplist-get-array-element">
+  <refnamediv>
+    <refname>proplist-get-array-element</refname>
+    <refpurpose>Return the element at INDEX offset of PL.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(proplist-get-array-element pl index)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the element at <parameter>index</parameter> offset of <parameter>pl</parameter>.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Primitive from (app scwm proplist)</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
+  at line 478 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="proplist-get-container">
+  <refnamediv>
+    <refname>proplist-get-container</refname>
+    <refpurpose>Return the array or dictionary of which PL is an element.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(proplist-get-container pl)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the array or dictionary of which <parameter>pl</parameter> is an element.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Primitive from (app scwm proplist)</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
+  at line 465 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="proplist-get-data">
+  <refnamediv>
+    <refname>proplist-get-data</refname>
+    <refpurpose>Returns the raw data from PL (a data proplist object) as a string.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(proplist-get-data pl)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Returns the raw data from <parameter>pl</parameter> (a data proplist object) as a string.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Primitive from (app scwm proplist)</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
+  at line 586 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="proplist-get-data-description">
+  <refnamediv>
+    <refname>proplist-get-data-description</refname>
+    <refpurpose>Returns a description of PL (a data proplist object) in GNUstep format.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(proplist-get-data-description pl)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Returns a description of <parameter>pl</parameter> (a data proplist object) in GNUstep format.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Primitive from (app scwm proplist)</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
+  at line 563 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="proplist-get-dictionary-entry">
+  <refnamediv>
+    <refname>proplist-get-dictionary-entry</refname>
+    <refpurpose>Return the proplist dictionary entry associated with entry KEY in PL-DICT.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(proplist-get-dictionary-entry pl-dict key)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the proplist dictionary entry associated with entry <parameter>key</parameter> in <parameter>pl-dict</parameter>.
+Returns <literal>#f</literal> if <parameter>key</parameter> is not in <parameter>pl-dict</parameter>.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Primitive from (app scwm proplist)</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
+  at line 523 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="proplist-get-domain">
+  <refnamediv>
+    <refname>proplist-get-domain</refname>
+    <refpurpose>Return a property list represeting the domain PL-DOMAIN-NAME.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(proplist-get-domain pl-domain-name)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a property list represeting the domain <parameter>pl-domain-name</parameter>.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Primitive from (app scwm proplist)</para>
+  <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
+  at line 775 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="proplist-get-domainnames">
   <refnamediv>
     <refname>proplist-get-domainnames</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return a array proplist containing all registered domain names.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(proplist-get-domainnames)</synopsis>
@@ -13624,301 +13648,310 @@ See also <link linkend="X-PropertyNotify-hook"><function>X-PropertyNotify-hook</
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return a array proplist containing all registered domain names.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 771 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 788 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-get-filename">
   <refnamediv>
     <refname>proplist-get-filename</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return the filename of PL.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-get-filename Proplist)</synopsis>
+    <synopsis>(proplist-get-filename pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return the filename of <parameter>pl</parameter>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 783 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 800 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-get-number-of-elements">
   <refnamediv>
     <refname>proplist-get-number-of-elements</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return the number of elements in PL.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-get-number-of-elements Pl)</synopsis>
+    <synopsis>(proplist-get-number-of-elements pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return the number of elements in <parameter>pl</parameter>.
+If <parameter>pl</parameter> is a string or data objects, this returns 0.  If it
+is an array or dictionary, it is the number of elements
+or pairs.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 487 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 494 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-get-string">
   <refnamediv>
     <refname>proplist-get-string</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Returns the string from PL (a string proplist object).</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-get-string Pl)</synopsis>
+    <synopsis>(proplist-get-string pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Returns the string from <parameter>pl</parameter> (a string proplist object).
+Note that numerous procedures automatically convert string
+proplist objects into Guile strings, so this may not often be necessary.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 599 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 612 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-get-string-description">
   <refnamediv>
     <refname>proplist-get-string-description</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Retuns a description of PL (a string proplist object) in GNUstep format.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-get-string-description Pl)</synopsis>
+    <synopsis>(proplist-get-string-description pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Retuns a description of <parameter>pl</parameter> (a string proplist object) in GNUstep format.
+If the string contains whitespace or special characters, the string returned will
+be enclosed in quotes.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 528 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 539 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-insert-array-element">
   <refnamediv>
     <refname>proplist-insert-array-element</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return the PL-ARRAY after inserting ITEM at offset INDEX.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-insert-array-element Array Pl Index)</synopsis>
+    <synopsis>(proplist-insert-array-element pl-array item index)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return the <parameter>pl-array</parameter> after inserting <parameter>item</parameter> at offset <parameter>index</parameter>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 281 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 282 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-insert-dictionary-entry">
   <refnamediv>
     <refname>proplist-insert-dictionary-entry</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return PL-DICT after inserting (KEY,VALUE) into it.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-insert-dictionary-entry Dict Key Value)</synopsis>
+    <synopsis>(proplist-insert-dictionary-entry pl-dict key Value)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <parameter>pl-dict</parameter> after inserting (<parameter>key</parameter>,<parameter>value</parameter>) into it.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 315 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 316 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-is-array">
   <refnamediv>
     <refname>proplist-is-array</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return <literal>#t</literal> iff PL is an array proplist object, <literal>#f</literal> otherwise.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-is-array Pl)</synopsis>
+    <synopsis>(proplist-is-array pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <literal>#t</literal> iff <parameter>pl</parameter> is an array proplist object, <literal>#f</literal> otherwise.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 643 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 658 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-is-compound">
   <refnamediv>
     <refname>proplist-is-compound</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return <literal>#t</literal> iff PL is a dictionary or array proplist object, <literal>#f</literal> otherwise.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-is-compound Pl)</synopsis>
+    <synopsis>(proplist-is-compound pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <literal>#t</literal> iff <parameter>pl</parameter> is a dictionary or array proplist object, <literal>#f</literal> otherwise.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 679 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 694 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-is-data">
   <refnamediv>
     <refname>proplist-is-data</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return <literal>#t</literal> iff PL is a data proplist object, <literal>#f</literal> otherwise.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-is-data Pl)</synopsis>
+    <synopsis>(proplist-is-data pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <literal>#t</literal> iff <parameter>pl</parameter> is a data proplist object, <literal>#f</literal> otherwise.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 631 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 646 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-is-dictionary">
   <refnamediv>
     <refname>proplist-is-dictionary</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return <literal>#t</literal> iff PL is a dictionary proplist object, <literal>#f</literal> otherwise.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-is-dictionary Pl)</synopsis>
+    <synopsis>(proplist-is-dictionary pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <literal>#t</literal> iff <parameter>pl</parameter> is a dictionary proplist object, <literal>#f</literal> otherwise.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 655 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 670 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-is-equal">
   <refnamediv>
     <refname>proplist-is-equal</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return <literal>#t</literal> iff PLA is equal to PLB.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-is-equal PlA PlB)</synopsis>
+    <synopsis>(proplist-is-equal plA plB)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <literal>#t</literal> iff <parameter>pla</parameter> is equal to <parameter>plb</parameter>.
+This does a case sensitive comparison by default.
+See <link linkend="proplist-set-string-cmp-hook"><function>proplist-set-string-cmp-hook</function></link> for changing the behaviour.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 388 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 389 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-is-simple">
   <refnamediv>
     <refname>proplist-is-simple</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return <literal>#t</literal> iff PL is a string or data proplist object, <literal>#f</literal> otherwise.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-is-simple Pl)</synopsis>
+    <synopsis>(proplist-is-simple pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <literal>#t</literal> iff <parameter>pl</parameter> is a string or data proplist object, <literal>#f</literal> otherwise.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 667 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 682 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-is-string">
   <refnamediv>
     <refname>proplist-is-string</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return <literal>#t</literal> iff PL is a string proplist object, <literal>#f</literal> otherwise.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-is-string Pl)</synopsis>
+    <synopsis>(proplist-is-string pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <literal>#t</literal> iff <parameter>pl</parameter> is a string proplist object, <literal>#f</literal> otherwise.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 619 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 634 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-make-array-from-elements">
   <refnamediv>
     <refname>proplist-make-array-from-elements</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return a newly created array object populated with elements ITEMS.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-make-array-from-elements  . List)</synopsis>
+    <synopsis>(proplist-make-array-from-elements  . items)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return a newly created array object populated with elements <parameter>items</parameter>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -13931,273 +13964,279 @@ See also <link linkend="X-PropertyNotify-hook"><function>X-PropertyNotify-hook</
 <refentry id="proplist-make-data">
   <refnamediv>
     <refname>proplist-make-data</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return a proplist argument containing arbitrary data from DATA.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-make-data Data)</synopsis>
+    <synopsis>(proplist-make-data data)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return a proplist argument containing arbitrary data from <parameter>data</parameter>.
+This is often unnecessary as the proplist procedures will
+permit Guile strings to be used anywhere a string proplist object is expected.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 437 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 444 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-make-dictionary-from-entries">
   <refnamediv>
     <refname>proplist-make-dictionary-from-entries</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return a newly created dictionary object with elements ITEMS.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-make-dictionary-from-entries  . List)</synopsis>
+    <synopsis>(proplist-make-dictionary-from-entries  . items)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return a newly created dictionary object with elements <parameter>items</parameter>.
+The elements in <parameter>items</parameter> should be a flat list (key1 value1 key2 value2 ...).
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 221 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 222 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-merge-dictionaries">
   <refnamediv>
     <refname>proplist-merge-dictionaries</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return PL-DICT-DEST after merging in all entries from PL-DICT-SOURCE.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-merge-dictionaries Dest Source)</synopsis>
+    <synopsis>(proplist-merge-dictionaries pl-dict-dest pl-dict-source)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <parameter>pl-dict-dest</parameter> after merging in all entries from <parameter>pl-dict-source</parameter>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 347 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 348 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-register">
   <refnamediv>
     <refname>proplist-register</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Register thunk CALLBACK to be called when PL-DOMAIN-NAME changes.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-register Name Callback)</synopsis>
+    <synopsis>(proplist-register pl-domain-name callback)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Register thunk <parameter>callback</parameter> to be called when <parameter>pl-domain-name</parameter> changes.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 704 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 719 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-remove-array-element">
   <refnamediv>
     <refname>proplist-remove-array-element</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return PL-ARRAY after deleting the element at position INDEX.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-remove-array-element Array Index)</synopsis>
+    <synopsis>(proplist-remove-array-element pl-array index)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <parameter>pl-array</parameter> after deleting the element at position <parameter>index</parameter>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 264 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 266 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-remove-dictionary-entry">
   <refnamediv>
     <refname>proplist-remove-dictionary-entry</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return PL-DICT after removing (KEY,VALUE) from it.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-remove-dictionary-entry Dict Key)</synopsis>
+    <synopsis>(proplist-remove-dictionary-entry pl-dict key)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return <parameter>pl-dict</parameter> after removing (<parameter>key</parameter>,VALUE) from it.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 332 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 333 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-save">
   <refnamediv>
     <refname>proplist-save</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Save PL, atomically if ATOMICALLY? is <literal>#t</literal>.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-save Proplist Atomically)</synopsis>
+    <synopsis>(proplist-save pl atomically?)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Save <parameter>pl</parameter>, atomically if <parameter>atomically?</parameter> is <literal>#t</literal>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 827 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 844 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-set-domain">
   <refnamediv>
     <refname>proplist-set-domain</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Set PL-DOMAIN-NAME to have VALUE.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-set-domain Name Value Kick-me)</synopsis>
+    <synopsis>(proplist-set-domain pl-domain-name value kick-me?)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Set <parameter>pl-domain-name</parameter> to have <parameter>value</parameter>.
+If <parameter>kick-me?</parameter> is <literal>#f</literal>, any callback registered for the domain will not be called.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 724 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 739 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
-<refentry id="proplist-set-filename">
+<refentry id="proplist-set-filename-x">
   <refnamediv>
-    <refname>proplist-set-filename</refname>
-    <refpurpose></refpurpose>
+    <refname>proplist-set-filename!</refname>
+    <refpurpose>Set the filename for PL to be FILENAME.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-set-filename Proplist Filename)</synopsis>
+    <synopsis>(proplist-set-filename! pl filename)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Set the filename for <parameter>pl</parameter> to be <parameter>filename</parameter>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 796 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 813 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-set-string-cmp-hook">
   <refnamediv>
     <refname>proplist-set-string-cmp-hook</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Use PRED as a predicate for doing proplist string comparisons.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-set-string-cmp-hook Hook)</synopsis>
+    <synopsis>(proplist-set-string-cmp-hook pred)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Use <parameter>pred</parameter> as a predicate for doing proplist string comparisons.
+<parameter>pred</parameter> should take two proplist objects and return <literal>#t</literal> or <literal>#f</literal> to answer
+whether they are equal in whatever sense it chooses.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 402 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 405 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-shallow-copy">
   <refnamediv>
     <refname>proplist-shallow-copy</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return a shallow copy of property list PL.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-shallow-copy Pl)</synopsis>
+    <synopsis>(proplist-shallow-copy pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return a shallow copy of property list <parameter>pl</parameter>.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 362 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 363 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-synchronize">
   <refnamediv>
     <refname>proplist-synchronize</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Synchronize the in-memory proplist PL with the disk contents </refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-synchronize Proplist)</synopsis>
+    <synopsis>(proplist-synchronize pl)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Synchronize the in-memory proplist <parameter>pl</parameter> with the disk contents
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 842 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 859 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
 <refentry id="proplist-unregister">
   <refnamediv>
     <refname>proplist-unregister</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>No longer invoke callback when domain associated with PL-DOMAIN-NAME is changed.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(proplist-unregister Name)</synopsis>
+    <synopsis>(proplist-unregister pl-domain-name)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  No longer invoke callback when domain associated with <parameter>pl-domain-name</parameter> is changed.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 691 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 706 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20037,21 +20076,23 @@ See <link linkend="property-changed-respond"><function>property-changed-respond<
 <refentry id="string-to-proplist">
   <refnamediv>
     <refname>string->proplist</refname>
-    <refpurpose></refpurpose>
+    <refpurpose>Return a proplist object containing STRING.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(string->proplist Data)</synopsis>
+    <synopsis>(string->proplist string)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  
+  Return a proplist object containing <parameter>string</parameter>.
+This is often unnecessary as the proplist procedures will
+permit Guile strings to be used anywhere a string proplist object is expected.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
   <para> Module: Primitive from (app scwm proplist)</para>
   <para> Defined in <ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~/modules/proplist/scwmproplist.c"><filename>modules/proplist/scwmproplist.c</filename></ulink>
-  at line 420 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
+  at line 425 (<ulink url="http://serveuse.mit.edu/cgi-bin/cvsweb.new/modules/proplist/scwmproplist.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -23887,11 +23928,11 @@ TYPE and FORMAT are as in X-property-set!
 
 <refentry id="x-connection-number">
   <refnamediv>
-    <refname>X-connection-number</refname>
+    <refname>x-connection-number</refname>
     <refpurpose>Return the X connection file descriptor number.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(X-connection-number)</synopsis>
+    <synopsis>(x-connection-number)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>

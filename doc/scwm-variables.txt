@@ -59,7 +59,7 @@ The default number of items that menus are split into by `fold-menu-list'.
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
-[From scwm/image.c:749]
+[From scwm/image.c:775]
 
 
 locale-fullname

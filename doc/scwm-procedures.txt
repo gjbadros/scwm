@@ -695,6 +695,12 @@ case-sensitive or not.
 [From scheme/wininfo.scm:315]
 
 
+(clone-scaled-image image width height)
+- Built-in Primitive
+Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT.
+[From scwm/image.c:651]
+
+
 (close-all-xlogo-windows)
 - (app scwm flux)
 Close each window with class == XLogo.
@@ -1211,8 +1217,8 @@ Can restart with a fresh solver by using `start-constraints'.
 
 (esd-reconnect  #&optional host)
 - Primitive from (app scwm esdsound)
-Connect to ESD on HOST.
-If HOST is not set, the ESPEAKER environmental variable will be used. If this
+Connect to the ESound daemon on the machine named HOST.
+If HOST is not set, the $ESPEAKER environmental variable will be used. If this
 is unset too, localhost is contacted.
 The esdsound module normally connects at startup. This function is useful
 if the connection was lost, esd was not running at startup, or its location
@@ -1548,16 +1554,16 @@ This has never been functioning and needs work to make right.
 [From scwm/miscprocs.c:725]
 
 
-(get-proplist-with-description Desc)
+(get-proplist-with-description desc)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:873]
+Return a property list by parsing DESC in GNUstep proplist format.
+[From modules/proplist/scwmproplist.c:890]
 
 
-(get-proplist-with-path Filename)
+(get-proplist-with-path filename)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:855]
+Return the proplist from path FILENAME.
+[From modules/proplist/scwmproplist.c:872]
 
 
 (get-timer-hooks-list)
@@ -3921,232 +3927,249 @@ See also `X-PropertyNotify-hook'.  Currently handles
 [From scheme/property-respond.scm:51]
 
 
-(proplist-append-array-element Array Pl)
+(proplist-append-array-element pl-array item)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:299]
+Return the PL-ARRAY after appending ITEM to the end.
+[From modules/proplist/scwmproplist.c:300]
 
 
-(proplist-deep-copy Pl)
+(proplist-deep-copy pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:375]
+Return a deep copy of property list PL.
+[From modules/proplist/scwmproplist.c:376]
 
 
-(proplist-delete-domain Name Kick-me)
+(proplist-delete-domain pl-domain-name kick-me?)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:742]
-
-
-(proplist-get-all-dictionary-keys Dict)
-- Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:499]
-
-
-(proplist-get-array-element Pl Index)
-- Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:471]
-
-
-(proplist-get-container Pl)
-- Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:458]
-
-
-(proplist-get-data Pl)
-- Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:573]
-
-
-(proplist-get-data-description Pl)
-- Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:550]
-
-
-(proplist-get-dictionary-entry Dict Key)
-- Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:513]
-
-
-(proplist-get-domain Name)
-- Primitive from (app scwm proplist)
-
+Delete domain PL-DOMAIN-NAME.
+If KICK-ME? is #f, any callback registered for the domain will not be called.
 [From modules/proplist/scwmproplist.c:758]
+
+
+(proplist-get-all-dictionary-keys pl-dict)
+- Primitive from (app scwm proplist)
+Return a proplist array object that contains all the keys of PL-DICT.
+[From modules/proplist/scwmproplist.c:509]
+
+
+(proplist-get-array-element pl index)
+- Primitive from (app scwm proplist)
+Return the element at INDEX offset of PL.
+[From modules/proplist/scwmproplist.c:478]
+
+
+(proplist-get-container pl)
+- Primitive from (app scwm proplist)
+Return the array or dictionary of which PL is an element.
+[From modules/proplist/scwmproplist.c:465]
+
+
+(proplist-get-data pl)
+- Primitive from (app scwm proplist)
+Returns the raw data from PL (a data proplist object) as a string.
+[From modules/proplist/scwmproplist.c:586]
+
+
+(proplist-get-data-description pl)
+- Primitive from (app scwm proplist)
+Returns a description of PL (a data proplist object) in GNUstep format.
+[From modules/proplist/scwmproplist.c:563]
+
+
+(proplist-get-dictionary-entry pl-dict key)
+- Primitive from (app scwm proplist)
+Return the proplist dictionary entry associated with entry KEY in PL-DICT.
+Returns #f if KEY is not in PL-DICT.
+[From modules/proplist/scwmproplist.c:523]
+
+
+(proplist-get-domain pl-domain-name)
+- Primitive from (app scwm proplist)
+Return a property list represeting the domain PL-DOMAIN-NAME.
+[From modules/proplist/scwmproplist.c:775]
 
 
 (proplist-get-domainnames)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:771]
-
-
-(proplist-get-filename Proplist)
-- Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:783]
+Return a array proplist containing all registered domain names.
+[From modules/proplist/scwmproplist.c:788]
 
 
-(proplist-get-number-of-elements Pl)
+(proplist-get-filename pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:487]
+Return the filename of PL.
+[From modules/proplist/scwmproplist.c:800]
 
 
-(proplist-get-string Pl)
+(proplist-get-number-of-elements pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:599]
+Return the number of elements in PL.
+If PL is a string or data objects, this returns 0.  If it
+is an array or dictionary, it is the number of elements
+or pairs.
+[From modules/proplist/scwmproplist.c:494]
 
 
-(proplist-get-string-description Pl)
+(proplist-get-string pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:528]
+Returns the string from PL (a string proplist object).
+Note that numerous procedures automatically convert string
+proplist objects into Guile strings, so this may not often be necessary.
+[From modules/proplist/scwmproplist.c:612]
 
 
-(proplist-insert-array-element Array Pl Index)
+(proplist-get-string-description pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:281]
+Retuns a description of PL (a string proplist object) in GNUstep format.
+If the string contains whitespace or special characters, the string returned will
+be enclosed in quotes.
+[From modules/proplist/scwmproplist.c:539]
 
 
-(proplist-insert-dictionary-entry Dict Key Value)
+(proplist-insert-array-element pl-array item index)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:315]
+Return the PL-ARRAY after inserting ITEM at offset INDEX.
+[From modules/proplist/scwmproplist.c:282]
 
 
-(proplist-is-array Pl)
+(proplist-insert-dictionary-entry pl-dict key Value)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:643]
+Return PL-DICT after inserting (KEY,VALUE) into it.
+[From modules/proplist/scwmproplist.c:316]
 
 
-(proplist-is-compound Pl)
+(proplist-is-array pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:679]
+Return #t iff PL is an array proplist object, #f otherwise.
+[From modules/proplist/scwmproplist.c:658]
 
 
-(proplist-is-data Pl)
+(proplist-is-compound pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:631]
+Return #t iff PL is a dictionary or array proplist object, #f otherwise.
+[From modules/proplist/scwmproplist.c:694]
 
 
-(proplist-is-dictionary Pl)
+(proplist-is-data pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:655]
+Return #t iff PL is a data proplist object, #f otherwise.
+[From modules/proplist/scwmproplist.c:646]
 
 
-(proplist-is-equal PlA PlB)
+(proplist-is-dictionary pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:388]
+Return #t iff PL is a dictionary proplist object, #f otherwise.
+[From modules/proplist/scwmproplist.c:670]
 
 
-(proplist-is-simple Pl)
+(proplist-is-equal plA plB)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:667]
+Return #t iff PLA is equal to PLB.
+This does a case sensitive comparison by default.
+See `proplist-set-string-cmp-hook' for changing the behaviour.
+[From modules/proplist/scwmproplist.c:389]
 
 
-(proplist-is-string Pl)
+(proplist-is-simple pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:619]
+Return #t iff PL is a string or data proplist object, #f otherwise.
+[From modules/proplist/scwmproplist.c:682]
 
 
-(proplist-make-array-from-elements  . List)
+(proplist-is-string pl)
 - Primitive from (app scwm proplist)
+Return #t iff PL is a string proplist object, #f otherwise.
+[From modules/proplist/scwmproplist.c:634]
 
+
+(proplist-make-array-from-elements  . items)
+- Primitive from (app scwm proplist)
+Return a newly created array object populated with elements ITEMS.
 [From modules/proplist/scwmproplist.c:189]
 
 
-(proplist-make-data Data)
+(proplist-make-data data)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:437]
+Return a proplist argument containing arbitrary data from DATA.
+This is often unnecessary as the proplist procedures will
+permit Guile strings to be used anywhere a string proplist object is expected.
+[From modules/proplist/scwmproplist.c:444]
 
 
-(proplist-make-dictionary-from-entries  . List)
+(proplist-make-dictionary-from-entries  . items)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:221]
+Return a newly created dictionary object with elements ITEMS.
+The elements in ITEMS should be a flat list (key1 value1 key2 value2 ...).
+[From modules/proplist/scwmproplist.c:222]
 
 
-(proplist-merge-dictionaries Dest Source)
+(proplist-merge-dictionaries pl-dict-dest pl-dict-source)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:347]
+Return PL-DICT-DEST after merging in all entries from PL-DICT-SOURCE.
+[From modules/proplist/scwmproplist.c:348]
 
 
-(proplist-register Name Callback)
+(proplist-register pl-domain-name callback)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:704]
+Register thunk CALLBACK to be called when PL-DOMAIN-NAME changes.
+[From modules/proplist/scwmproplist.c:719]
 
 
-(proplist-remove-array-element Array Index)
+(proplist-remove-array-element pl-array index)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:264]
+Return PL-ARRAY after deleting the element at position INDEX.
+[From modules/proplist/scwmproplist.c:266]
 
 
-(proplist-remove-dictionary-entry Dict Key)
+(proplist-remove-dictionary-entry pl-dict key)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:332]
+Return PL-DICT after removing (KEY,VALUE) from it.
+[From modules/proplist/scwmproplist.c:333]
 
 
-(proplist-save Proplist Atomically)
+(proplist-save pl atomically?)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:827]
+Save PL, atomically if ATOMICALLY? is #t.
+[From modules/proplist/scwmproplist.c:844]
 
 
-(proplist-set-domain Name Value Kick-me)
+(proplist-set-domain pl-domain-name value kick-me?)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:724]
+Set PL-DOMAIN-NAME to have VALUE.
+If KICK-ME? is #f, any callback registered for the domain will not be called.
+[From modules/proplist/scwmproplist.c:739]
 
 
-(proplist-set-filename Proplist Filename)
+(proplist-set-filename! pl filename)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:796]
+Set the filename for PL to be FILENAME.
+[From modules/proplist/scwmproplist.c:813]
 
 
-(proplist-set-string-cmp-hook Hook)
+(proplist-set-string-cmp-hook pred)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:402]
+Use PRED as a predicate for doing proplist string comparisons.
+PRED should take two proplist objects and return #t or #f to answer
+whether they are equal in whatever sense it chooses.
+[From modules/proplist/scwmproplist.c:405]
 
 
-(proplist-shallow-copy Pl)
+(proplist-shallow-copy pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:362]
+Return a shallow copy of property list PL.
+[From modules/proplist/scwmproplist.c:363]
 
 
-(proplist-synchronize Proplist)
+(proplist-synchronize pl)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:842]
+Synchronize the in-memory proplist PL with the disk contents
+[From modules/proplist/scwmproplist.c:859]
 
 
-(proplist-unregister Name)
+(proplist-unregister pl-domain-name)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:691]
+No longer invoke callback when domain associated with PL-DOMAIN-NAME is changed.
+[From modules/proplist/scwmproplist.c:706]
 
 
 (push-undo-global)
@@ -6202,10 +6225,12 @@ No documentation supplied.
 [From scheme/simplebiff.scm:76]
 
 
-(string->proplist Data)
+(string->proplist string)
 - Primitive from (app scwm proplist)
-
-[From modules/proplist/scwmproplist.c:420]
+Return a proplist object containing STRING.
+This is often unnecessary as the proplist procedures will
+permit Guile strings to be used anywhere a string proplist object is expected.
+[From modules/proplist/scwmproplist.c:425]
 
 
 (string->X-atom string)
@@ -7533,7 +7558,7 @@ TYPE and FORMAT are as in X-property-set!
 [From scheme/xprop-extras.scm:35]
 
 
-(X-connection-number)
+(x-connection-number)
 - Built-in Primitive
 Return the X connection file descriptor number.
 [From scwm/miscprocs.c:714]
