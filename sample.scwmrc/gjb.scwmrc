@@ -31,7 +31,7 @@
 
 (use-scwm-modules base winops defoption winlist wininfo
 		  style face time-convert optargs menus-extras
-		  std-menus prefs-menu doc virtual
+		  std-menus doc virtual
 		  flux flux-gtk flash-window key-mover
 		  fvwm-module path-cache animation themes netscape
 		  message-window animated-iconify
@@ -952,8 +952,7 @@ union of all other window managers!
 					 image-load-path))))
 	      (menuitem "Scwm interaction" #:action
 			(run-in-xterm "scwmrepl"))
-	      (menuitem "Info on a window" #:action window-info)
-	      (menuitem "Other preferences" #:action (menu-prefs)))))
+	      (menuitem "Info on a window" #:action window-info))))
 
 (define menu-preferences menu-prefs-gjb)
 
