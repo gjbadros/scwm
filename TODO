@@ -95,6 +95,10 @@ isn't now).
 * StayOnBottom style
 ** constraints will do this really cleanly
 
+* XSM (X Session Manager) support (as a nested server?)  Look at ICEWM, specs
+
+* X Selection support
+
 * Other useful primitives/procedures --08/02/98 gjb (inspired by GWM, other wms)
 ** (elapsed-time) ; get running time of scwm
 ** (meminfo) ; Return string describing memory usage information
@@ -106,9 +110,6 @@ isn't now).
 ** window closing hook? (upon removal of the window?)
 ** (rotate-cut-buffers)
 ** window-group feature (at scheme level)
-** (save-yourself WINDOW) ; send ICCCM WM_SAVE_YOURSELF to window to update WM_COMMAND X property -- maybe in terms of a send-client-message primitive?
- - We should add proper X Session Management support instead of these, IMO
- - (needed for Gnome compliance anyway)
 ** (set-mouse-acceleration! ACCEL), (set-mouse-acceleration-threshold! PIXELS)
 ** (set-colormap-focus! WINDOW) -- rename set-colormap-focus! and colormap-focus to [set-]colormap-focus-policy
 ** (window-shaped? WINDOW)

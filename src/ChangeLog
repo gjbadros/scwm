@@ -1,10 +1,17 @@
+Wed Sep  2 10:42:45 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* xproperty.c: Update the docs -- mention 'root-window for
+ 	X-property-get, and use e.g.  "value" instead of VALUE when
+ 	referring to the list of items returned
+	(arguments are in uppercase and are marked up differently).
+
 Wed Sep  2 09:53:29 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Use FRAME_[XY]_VP in SetScwmWindowGeometry,
  	SetScwmWindowPosition; also for calls to SetupFrame,
  	RedrawOutlineAtNewPosition.  Fixed comment of resize-to (does
  	*not* include window decoration size).  Added comments re:
-	viewport vs. virtual positionness
+ 	viewport vs. virtual positionness
 
 	* scwm-constraints.cc, borders.c, add_window.c: Added comments re:
  	viewport vs. virtual positionness
