@@ -2441,6 +2441,15 @@ defaults to the window context in the usual way if not specified. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC(window_icon_title, "window-icon-title", 0, 1, 0,
+          (SCM win))
+     /** Return the icon window title of WIN, as requested by the
+app. WIN defaults to the window context in the usual way if not
+specified. */
+{
+  VALIDATE(win, "window-icon-title");
+  return gh_str02scm(PSWFROMSCMWIN(win)->icon_name);
+}
 
 SCWM_PROC(window_class, "window-class", 0, 1, 0,
           (SCM win))
@@ -3165,7 +3174,7 @@ in the usual way if not specified. */
   }
 
   if (IMAGE_P(image)) {
-    icon_name=gh_scm2newstr(IMAGE(psw->icon_req_image)->full_name,NULL);
+    icon_name=gh_scm2newstr(IMAGE(psw->icon_req_image)->full_name, &length);
     /* FIXMS: This can't deal properly with app-specified icons! */
     BroadcastName(M_ICON_FILE, psw->w, psw->frame,
 		  (unsigned long) psw, icon_name);   
@@ -3174,6 +3183,22 @@ in the usual way if not specified. */
 
   force_icon_redraw (psw);
   return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(window_icon, "window-icon", 1, 0, 0,
+          (SCM win))
+     /** Get the icon image being used for WIN, or #f if none is being
+used. WIN defaults to the window context in the usual way if not
+specified. */
+#define FUNC_NAME s_window_icon
+{
+  ScwmWindow *psw;
+
+  VALIDATEN(win, 2, "window-icon");
+  psw = PSWFROMSCMWIN(win);
+
+  return psw->icon_req_image;
 }
 #undef FUNC_NAME
 
@@ -3199,21 +3224,33 @@ to the window context in the usual way if not specified. */
     scm_wrong_type_arg(FUNC_NAME, 1, image);
   }
 
+  /* FIXMS: this isn't right, fvwm2 has a separate SendMiniIcon which
+     sends more info than that! */
+
   /* Broadcast the new mini-icon or something? */
   if (psw->mini_icon_image != SCM_BOOL_F) {
-    Broadcast(M_MINI_ICON, 6,
-	      psw->w,	/* Watch Out ! : I reduced the set of infos... */
-	      IMAGE(psw->mini_icon_image)->image,
-	      IMAGE(psw->mini_icon_image)->mask,
-	      IMAGE(psw->mini_icon_image)->width,
-	      IMAGE(psw->mini_icon_image)->height,
-	      IMAGE(psw->mini_icon_image)->depth, 0);
+    BroadcastMiniIcon(M_MINI_ICON, psw);
   }
 
   SetBorderX(psw, Scr.Hilite == psw, True, psw->fMapped, None, True);
 
   return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
 
+SCWM_PROC(window_mini_icon, "window-mini-icon", 1, 0, 0,
+          (SCM win))
+#define FUNC_NAME s_window_mini_icon
+     /** Get the mini-icon image being used for WIN, or #f if none is
+being used. WIN defaults to the window context in the usual way if not
+specified. */
+{
+  ScwmWindow *psw;
+
+  VALIDATEN(win, 2, "window-mini-icon");
+  psw = PSWFROMSCMWIN(win);
+
+  return psw->mini_icon_image;
 }
 #undef FUNC_NAME
 

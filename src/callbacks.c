@@ -648,9 +648,12 @@ run_input_hooks(fd_set *in_fdset)
     SCM port = SCM_CAR(item);
     SCM proc = SCM_CDR(item);
 
-    if (FD_ISSET(gh_scm2int(scm_fileno(SCM_CAR(item))), in_fdset)) {
-      scwm_safe_call0(SCM_CDR(item));
-      while(SCM_BOOL_T==scm_char_ready_p(port) 
+    if (SCM_OPINFPORTP(port) &&
+	FD_ISSET(gh_scm2int(scm_fileno(port)), in_fdset)) {
+      scwm_safe_call0(proc);
+      while(SCM_OPINFPORTP(port) &&
+	    SCM_BOOL_T==scm_char_ready_p(port) 
+	    /* FIXMS: Is this safe enough? */
 	    && SCM_CDR(prev)==cur) {
 	scwm_safe_call0(proc);
       }

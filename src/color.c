@@ -605,6 +605,20 @@ the current decor. */
 #undef FUNC_NAME
 
 
+SCWM_PROC (hilight_foreground, "hilight-foreground", 0, 0, 0,
+           () )
+     /** Return the foreground color being used for windows with the
+input focus in the current decor. */
+#define FUNC_NAME s_hilight_foreground
+{ 
+  ScwmDecor *fl;
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+
+  return (fl->HiColors.fg);
+}
+#undef FUNC_NAME
+
+
 /* FIXMS: eventually add option to pass background relief, shadow? */
 
 /* FIXMS: the more I do this, the more I wish we had a nice GC
@@ -663,6 +677,19 @@ the current decor. */
 }
 #undef FUNC_NAME
 
+
+SCWM_PROC (hilight_background, "hilight-background", 0, 0, 0,
+           () )
+     /** Return the background color being used for windows with the
+input focus in the current decor. */
+#define FUNC_NAME s_hilight_background
+{ 
+  ScwmDecor *fl;
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+
+  return (fl->HiColors.bg);
+}
+#undef FUNC_NAME
 
 
 SCWM_PROC(set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,

@@ -306,9 +306,6 @@ AddWindow(Window w)
   psw->fTransient =
     (XGetTransientForHint(dpy, psw->w, &psw->transientfor));
 
-  /* MSFIX: this should switch to DBUG */
-  scwm_msg(WARN,__FUNCTION__,"Got transient hint: %d\n", psw->fTransient);
-
   psw->old_bw = psw->attr.border_width;
 
   if (ShapesSupported) {
@@ -785,13 +782,7 @@ AddWindow(Window w)
   BroadcastName(M_RES_NAME, psw->w, psw->frame,
 		(unsigned long) psw, psw->classhint.res_name);
   if (psw->mini_icon_image != SCM_BOOL_F) {
-    Broadcast(M_MINI_ICON, 6,
-	      psw->w,	/* Watch Out ! : I reduced the set of infos... */
-	      IMAGE(psw->mini_icon_image)->image,
-	      IMAGE(psw->mini_icon_image)->mask,
-	      IMAGE(psw->mini_icon_image)->width,
-	      IMAGE(psw->mini_icon_image)->height,
-	      IMAGE(psw->mini_icon_image)->depth, 0);
+    BroadcastMiniIcon(M_MINI_ICON, psw);
   }
 
   FetchWmProtocols(psw);

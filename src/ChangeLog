@@ -1,3 +1,43 @@
+1998-07-20  Maciej Stachowiak  <maciej@roc-ny5-21.ix.netcom.com>
+
+	* callbacks.c (run_input_hooks): Make sure port is still open
+	before checking if it has characters ready. I could have sworn I
+	made this change already (it is definitely there for
+	force_new_input_hooks). Am I on crack, or did it somehow get
+	reverted?
+
+1998-07-20  Maciej Stachowiak  <maciej@localhost.localdomain>
+
+	* add_window.c (AddWindow): Removed pointless debugging message.
+
+	* module-interface.c (marshal_fvwm2_iconify_info): Added new
+	primitive `marshal-fvwm2-iconify-info'. This procedure constructs
+	the contents of an M_ICONIFY fvwm module packet for WIN and
+	returns it as a Scheme string.
+
+	* add_window.c, window.c: Use the new BroadcastMiniIcon
+
+	* module-interface.c (BroadcastMiniIcon): Added BroadcastMiniIcon
+	and a broadcast-mini-icon-hook. I've simplified it to only take
+	(and pass) the window structure; I figure Scheme code can do the
+	marshalling out of that.
+	
+	* image.c (image_properties): Added 'pixmap and 'mask properties
+	to image-properties return value. These are needed for the
+	fvwm-module stuff, and could be useful for communicating with
+	other X programs as well.
+
+	* color.c (hilight_foreground, hilight_background): New primitives
+	hilight-foreground and hilight-background which get the foreground
+	and background colors in the current decor. Needed for fvwm-module
+	stuff, and probably generally useful.
+
+	* window.c (window_icon_title, window_icon, window_mini_icon):
+	Added new primitives window-icon-title, window-icon and
+	window-mini-icon to get the icon title, icon image and mini-icon
+	of a window respectively. Needed for fvwm-module stuff, and
+	probably generally useful.
+	
 Mon Jul 20 18:03:11 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.cc, constraint-primitives.cc: renamed from .c,

@@ -98,6 +98,8 @@ SCM_SYMBOL (sym_filename,"filename");
 SCM_SYMBOL (sym_width,"width");
 SCM_SYMBOL (sym_height,"height");
 SCM_SYMBOL (sym_depth,"depth");
+SCM_SYMBOL (sym_pixmap,"pixmap");
+SCM_SYMBOL (sym_mask,"mask");
 
 /**CONCEPT: Images 
   Images are first-class objects. However, anywhere that a font is
@@ -171,6 +173,8 @@ depth, it's color depth.
 		 gh_cons(sym_width,gh_int2scm(psimg->width)),
 		 gh_cons(sym_height,gh_int2scm(psimg->height)),
 		 gh_cons(sym_depth,gh_int2scm(psimg->depth)),
+		 gh_cons(sym_pixmap,gh_int2scm(psimg->image)),
+		 gh_cons(sym_mask,gh_int2scm(psimg->mask)),
 		 SCM_UNDEFINED);
   /* FIXGJB: why SCM_UNDEFINED -- GH_EOL? SCM_EOL does not work! */
   /* MS: because SCM_EOL is the empty list, which is a valid list item

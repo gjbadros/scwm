@@ -25,6 +25,7 @@
 SCM broadcast_hook;
 SCM broadcast_config_hook;
 SCM broadcast_name_hook;
+SCM broadcast_mini_icon_hook;
 
 void
 Broadcast(unsigned long event_type, unsigned long num_datum,
@@ -68,6 +69,13 @@ void BroadcastName(unsigned long event_type, unsigned long data1,
 		       SCM_UNDEFINED));
 }
 
+void BroadcastMiniIcon(unsigned long event_type, ScwmWindow *psw)
+{
+  apply_hooks (broadcast_mini_icon_hook, 
+	       gh_list(gh_ulong2scm(event_type), 
+		       psw->schwin,
+		       SCM_UNDEFINED));
+}
 
 /* This and other fvwm-module-related stuff should go in a dynamically
    loadable module once I figure that stuff out. */
@@ -114,6 +122,39 @@ module packet for WIN and returns it as a Scheme string. */
 }
 #undef FUNC_NAME
 
+
+SCWM_PROC(marshal_fvwm2_iconify_info, "marshal-fvwm2-iconify-info", 1, 0, 0,
+          (SCM win))
+     /** This procedure constructs the contents of an M_ICONIFY fvwm
+module packet for WIN and returns it as a Scheme string. */
+#define FUNC_NAME s_marshal_fvwm2_iconify_info
+{
+  ScwmWindow *psw;
+  unsigned long info[8];
+
+  VALIDATE(win, s_marshal_fvwm2_iconify_info);
+  psw = PSWFROMSCMWIN(win);
+
+  info[0] = 7;
+  info[1] = psw->w;
+  info[2] = psw->frame;
+  info[3] = 0; /* Was psw itself - BROKEN! */
+  if((psw->fIconUnmapped)) {
+    info[4] = 0;
+    info[5] = 0;
+    info[6] = 0;
+    info[7] = 0;
+  } else {
+    info[4] = psw->icon_x_loc;
+    info[5] = psw->icon_y_loc;
+    info[6] = psw->icon_w_width;
+    info[7] = psw->icon_w_height+psw->icon_p_height;
+  }
+
+  return gh_str2scm((char *)info,sizeof(info));
+}
+#undef FUNC_NAME
+
 void init_module_interface()
 {
 #ifndef SCM_MAGIC_SNARFER
@@ -151,6 +192,15 @@ far. The procedures in this hook are passed an event type, three
 numeric data arguments, and a string.  
   */
   SCWM_DEFINE_HOOK(broadcast_name_hook, "broadcast-name-hook");
+
+  /** HOOK: boradcast-mini-icon-hook This hook is invoked whenever
+BroadcastMiniIcon would be called in fvwm2. This hook is principlally
+of use in implementing the fvwm2 module interface and for stuff that
+needs to be notified in ways that can't be done with the proper hooks
+that have been included so far. The procedures The procedures in this
+hook are passed a window structure as the sole argument.  
+  */
+  SCWM_DEFINE_HOOK(broadcast_mini_icon_hook, "broadcast-mini-icon-hook");
 }
 
 
