@@ -1,3 +1,7 @@
+Sun Aug 22 14:25:30 1999    <gjb@cs.washington.edu>
+
+	* Makefile.am (EXTRA_SCRIPTS): Added X-error-describe.
+
 Sat Jul 17 22:24:33 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Update to scwm.mit.edu.

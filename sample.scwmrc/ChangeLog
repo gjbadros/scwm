@@ -1,3 +1,15 @@
+Sun Aug 22 11:42:08 1999    <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added suppress-xclients variable for controlling
+	whether .Xclients gets run at startup.   Only use start-zsh
+	command if it exists.  Use XTERM_PROGRAM_NAME env var for setting
+	xterm-program-name variable.  Do not bind-mouse 'window 4/5 for
+	Mathematica by default (until I use XTest to pass along the events 
+	or do the event rewrite-- don't want those buttons to be synthetic 
+	on all windows just to make Mathematica work).  Iconify the
+	scwm-messages-window at startup.  Do not kill the ~/.tracepids
+	processes (just iconify the now-one window)
+
 Fri Aug  6 12:26:55 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use flash-window-on, not flash-window, for

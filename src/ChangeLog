@@ -1,3 +1,23 @@
+Sun Aug 22 11:39:49 1999    <gjb@cs.washington.edu>
+
+	* window.c (window_pixel_size_to_client_units):  Do not
+	subtract-out the base_width/base_height if the
+	width_inc/height_inc is 1.  This fixes a bug whereby, e.g., gimp's 
+	main toolbar window had the size reported incorrectly when
+	resizing the frame.  It would report 0x0 when at its minimum size, 
+	now it properly reports its frame size.
+
+Sun Aug 22 11:33:16 1999    <gjb@cs.washington.edu>
+
+	* guile-compat.c (scm_internal_cwdr_no_unwind): Reduce the leaking
+ 	by about 75% (tested when doing focus switches and opaque moves of
+ 	windows); process image still grows a bit, but it's better.
+	Something else must be leaking too.  All I did to eliminate the
+	leak of 176 bytes per each call was explicitly scm_must_free the
+	pRootContinuation, and always reset that field in the scm_rootcont 
+	object to NULL so the gc does not try to take care of it, too (and 
+	re-free already freed memory)
+
 Fri Aug  6 10:35:10 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (DeferExecution), resize.c (InteractiveResize), move.c

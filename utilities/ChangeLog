@@ -1,3 +1,20 @@
+Sun Aug 22 14:30:10 1999    <gjb@cs.washington.edu>
+
+	* misc/Makefile.am, misc/Xresources-cpp, misc/Xsession.patch,
+	gnome-session-Scwm: Handy files for making Scwm more complete and
+	usable.  Still not integrated these files into the build/rpm processes.
+
+Sun Aug 22 14:27:41 1999    <gjb@cs.washington.edu>
+
+	* pidproperty/Makefile.am, pidproperty/Makefile.in.works: Added
+ 	.am so make dist would work, etc., but Makefile.in.works is the
+	only Makefile.in that currently builds the directory's software
+	properly. 
+
+Sun Aug 22 14:25:43 1999    <gjb@cs.washington.edu>
+
+	* Makefile.am (SUBDIRS): Added misc subdirectory.
+
 Fri Jul 23 17:53:36 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (SUBDIRS): Only build pidproperty subdir if

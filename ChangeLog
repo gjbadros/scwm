@@ -1,3 +1,23 @@
+Sun Aug 22 14:25:06 1999    <gjb@cs.washington.edu>
+
+	* */Makefile.am: Updated initial comments.
+
+Sun Aug 22 14:21:53 1999    <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Updated description, use some definitions to ease
+	maintenance.  Update URL.
+
+	* configure.in: Added utilities/misc/Makefile to files to
+	generate.
+
+	* autogen.sh: Run configure, not config.status, at conclusion;
+ 	added some smarts about grabbing the last configure line that
+ 	works for me but might not in the general case.
+
+	* Makefile.am: Put include/arg_unused.h in EXTRA_DIST
+
+	* HACKING: Added note about doc/dev/scwm-packaging-rpm.txt
+
 Sat Jul 31 19:28:58 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* include/arg_unused.h: Macros ARG_IGNORE and ARG_UNUSED that were 

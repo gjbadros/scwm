@@ -1,3 +1,9 @@
+Sun Aug 22 11:38:18 1999    <gjb@cs.washington.edu>
+
+	* group.scm: Added a FIXME about invoking the
+	interactive-move-new-position-hook when moving windows within a
+	group.
+
 Fri Aug  6 17:33:29 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* animated-iconify.scm
