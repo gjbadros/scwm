@@ -1,3 +1,16 @@
+Tue Aug 24 13:52:04 1999    <gjb@cs.washington.edu>
+
+	* binding.c (init_modifiers): Don't include 0 in mask_mod_combos
+	array (wastes an XGrabKey call) and use c_mask_mod_combos to
+	control how much of the array is initialized (currently always
+	7).  Print warnings if unable to determine numlock_mask and/or
+	scrollock_mask.
+
+Tue Aug 24 13:51:10 1999    <gjb@cs.washington.edu>
+
+	* scwm.c: Fix very small memory leak in not freeing an X11
+	property after XGetWindowProperty.
+
 Sun Aug 22 17:15:58 1999    <gjb@cs.washington.edu>
 
 	* binding.c: Use 0 == AnyButton as argument to
