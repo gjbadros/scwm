@@ -31,6 +31,7 @@
 #include "font.h"
 #include "events.h"
 #include "menulook.h"
+#include "drawmenu.h"
 #include "colormaps.h"
 #include "xmisc.h"
 #include "screen.h"
@@ -50,9 +51,6 @@ extern SCM sym_top, sym_center, sym_bottom;
 static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);
 static void FreeDynamicMenu(DynamicMenu *pmd);
-
-/* from drawmenu.c; the backup dynamic menu construction routine */
-void ConstructDynamicMenu(DynamicMenu *pmd);
 
 static
 SCM
