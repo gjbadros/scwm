@@ -94,24 +94,22 @@
 
 (define-public (option-widget-and-getter sym)
   (let* ((name (scwm-option-name sym))
-	(value (scwm-option-symget sym))
-	(type (scwm-option-type sym))
-	(range (scwm-option-range sym))
-	(var (eval sym))
-	(prompt (string-append "Set " name))
-	(title (string-append "Set " name))
-	(set-proc (lambda (v) (scwm-option-symset! sym v))))
+	 (value (scwm-option-symget sym))
+	 (type (scwm-option-type sym))
+	 (range (scwm-option-range sym))
+	 (var (eval sym))
+	 (prompt (string-append "Set " name)))
     (case type
       (('string 'directory)
        (prompt-string-hbox prompt value))
       ('path
-       (prompt-string-hbox prompt (path-list->string-with-colons value)))
+       (prompt-path-hbox prompt value))
       ('integer 
-       (prompt-range-hbox prompt range value))
+       (prompt-integer-range-hbox prompt range value))
       ('real
        (prompt-range-hbox prompt range value))
       ('percent
-       (prompt-range-hbox prompt '(0 . 100) value))
+       (prompt-integer-range-hbox prompt '(0 . 100) value))
       ('boolean
        (prompt-bool-hbox prompt value))
       (else
@@ -193,23 +191,41 @@ NOTE: Not quite functional, but I'm outta time!
 GJB:FIXME::."
   (let* ((toplevel (gtk-window-new 'dialog))
 	 (vbox (gtk-vbox-new #f 10))
-	 (option-widgets (map (lambda (s) (car (option-widget-and-getter s))) scwm-options))
+	 (widgets-and-applyers
+	  (map (lambda (s) 
+		 (let ((widget-and-getter (option-widget-and-getter s)))
+		   (cons (car widget-and-getter)
+			 (lambda () 
+			   (scwm-option-symset! 
+			    s ((cadr widget-and-getter)))))))
+	       scwm-options))
+	 (widgets (map car widgets-and-applyers))
+	 (applyers (map cdr widgets-and-applyers))
+	 (apply-action (lambda ()
+		  (for-each (lambda (a) (a)) applyers)))
 	 (hbox (gtk-hbox-new 0 0))
+	 (applybut (gtk-button-new-with-label "Apply"))
 	 (okbut (gtk-button-new-with-label "Ok"))
 	 (cancelbut (gtk-button-new-with-label "Cancel")))
     (gtk-window-set-title toplevel "Scwm Options")
 
     (map (lambda (w) (gtk-box-pack-start vbox w #t #t) (gtk-widget-show w))
-	 option-widgets)
-    (gtk-box-pack-start hbox okbut #t #t)
-    (gtk-box-pack-start hbox cancelbut #t #t)
+	 widgets)
+    (map (lambda (w) (gtk-box-pack-start hbox w #t #t) (gtk-widget-show w))
+	 (list applybut okbut cancelbut))
+    (gtk-widget-show hbox)
     (gtk-container-add toplevel vbox)
-    (map gtk-widget-show (list okbut cancelbut hbox))
     (gtk-box-pack-start vbox hbox #t #t)
     (gtk-widget-show vbox)
     (let ((pp (pointer-position)))
       (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
     (gtk-widget-show toplevel)
+    (gtk-signal-connect applybut "pressed" 
+			(lambda () (apply-action)))
+    (gtk-signal-connect okbut "pressed" 
+			(lambda () 
+			  (apply-action)
+			  (gtk-widget-destroy toplevel)))
     (gtk-signal-connect okbut "pressed" 
 			(lambda () 
 			  (gtk-widget-destroy toplevel)))

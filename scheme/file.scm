@@ -63,13 +63,20 @@ file. If the file is found, the full pathname to it is returned; if not,
 
 (define-public (path-list->string-with-colons l)
   (define (insert-colons l)
-    (if (null? (cdr l))
-	l
-	(append (list (car l)) '(":") (insert-colons (cdr l)))))
+    (cond ((not (pair? l)) '())
+	  ((null? (cdr l)) l)
+	  (#t
+	   (append (list (car l)) '(":") (insert-colons (cdr l))))))
   (list->string (insert-colons l)))
 
 ;; (use-modules (ice-9 string-fun))
 ;; (use-modules (app scwm file))
 ;; (string-with-colons->path-list "this:is:a:test")
+;; (string-with-colons->path-list "")
+;; (path-list->string-with-colons '())
+;; (path-list->string-with-colons '("foo"))
+;; (path-list->string-with-colons '("foo" "bar"))
+;; (insert-colons '("foo"))
+;; (insert-colons '("foo" "bar"))
 (define-public (string-with-colons->path-list s)
   (separate-fields-discarding-char #\: s list))

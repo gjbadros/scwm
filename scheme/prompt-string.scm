@@ -21,6 +21,7 @@
 
 (define-module (app scwm prompt-string)
   :use-module (app scwm gtk)
+  :use-module (app scwm file)
   :use-module (gtk gtk)
   :use-module (app scwm optargs))
 
@@ -71,3 +72,15 @@ See also `prompt-string'."
     (gtk-widget-show label)
     (gtk-widget-show hbox)
     (list hbox (lambda () (gtk-entry-get-text entry)) entry)))
+
+(define-public (prompt-path-hbox prompt initval)
+  "Create and return a path-prompting hbox and entry.
+PROMPT is the prompt, and INITVAL is the initial path (a list of strings).
+The returned value is a list: (hbox getter entry).
+See also `prompt-string'."
+  (let* ((answer (prompt-string-hbox prompt (path-list->string-with-colons initval)))
+	 (hbox (car answer))
+	 (getter (cadr answer))
+	 (entry (caddr answer)))
+    (list hbox (lambda () (string-with-colons->path-list (getter))) entry)))
+

@@ -112,3 +112,14 @@ See also `prompt-range'."
     (gtk-widget-show scale)
     (gtk-widget-show hbox)
     (list hbox (lambda () (gtk-adjustment-value adjustment)))))
+
+(define-public (prompt-integer-range-hbox prompt range initval)
+  "Create and return an integer-range-prompting hbox and scale, label.
+PROMPT is the prompt, RANGE is the allowed rane, and INITVAL is the initial string.
+The returned value is a list: (hbox getter).
+See also `prompt-range', `prompt-integer-range', `prompt-range-hbox'."
+  (let* ((answer (prompt-range-hbox prompt range initval))
+	 (hbox (car answer))
+	 (getter (cadr answer)))
+    (list hbox (lambda () (inexact->exact (getter))))))
+
