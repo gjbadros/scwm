@@ -1,3 +1,20 @@
+Mon Sep  6 17:17:37 1999    <gjb@cs.washington.edu>
+
+	* test-case.scm: Display error message on failures so I can just
+	load in a whole file -- optional via display-test-case-errors
+	variable. 
+
+	* reflection.scm: Improved significantly... works with primitives
+	now, too, thanks to fancier scwm-snarf extraction process
+
+	* optargs.scm: Re-instate reverted changes, and fix bug that
+	caused me to revert them (was returning #<unspecified> from second 
+	branch of lambda* macro.
+
+	* face.scm: Use #&rest, not .;  the docs in optargs say that the
+	. is okay, but it fails for me.
+	
+
 Mon Sep  6 12:28:46 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window-selection.scm, ui-constraints.scm, property-respond.scm:

@@ -24,6 +24,7 @@ numerous scwmdoc script fixes and improvements.
 ** Requires guile-gtk-0.16's `gdk-get-leader-window-id' primitive
 
 * Bindings now ignore num lock, scroll lock modifiers
+** see also `set-ignore-dubious-modifiers!' and `ignore-dubious-modifiers?' procs
 
 * Constraints
 ** Much, much improved user-interface
@@ -230,6 +231,7 @@ deprecated `SM-client-id'.
 ** `X-MapRequest-hook'
 
 * New scheme modules
+** reflection.scm: Support for better introspecting on procedures, including C primitives!
 ** quote.scm: Support for quoting arbitrary keystrokes that might have a scwm binding
    so that an application can receive any keystroke
 ** dir-focus.scm: Support for switching to a window that is a certain direction from the pointer

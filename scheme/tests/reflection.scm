@@ -2,11 +2,13 @@
 
 (use-scwm-modules test-case)
 
+(set! display-test-case-errors #t)
+
 ;; move-group-relative has required and optional arguments
 (test-case 
  ""
  (procedure-required-formals move-group-relative)
- => '(dx dy))
+ => '(dz dy))
 
 (test-case
  ""

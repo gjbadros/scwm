@@ -1,3 +1,27 @@
+Mon Sep  6 17:23:33 1999    <gjb@cs.washington.edu>
+
+	* Makefile.am (EXTRA_DIST): added scwm-snarf.
+
+Mon Sep  6 17:07:14 1999    <gjb@cs.washington.edu>
+
+	* scwm.c (scwm_make_gsubr): Added this proc for more sophisticated 
+	snarfing that saves a list of the formal parameter names.
+
+	* scwm-snarf.h: More sophisticated snarfing of SCWM_PROC macros -- 
+	needs new scwm-snarf script.
+
+	* scwm-snarf: The new script that does better snarfing of
+	SCWM_PROC macros to preserve the argument list (when combined with 
+	macros in scwm-snarf.h, and scwm_make_gsubr in scwm.c).  See also
+	the new ../Makefile.common for the rules for building .x files
+
+Mon Sep  6 13:08:38 1999    <gjb@cs.washington.edu>
+
+	* validate.h (VALIDATE_ARG_SYM_USE_DEF): Added this macro.
+
+	* events.c: Use VALIDATE_ARG_SYM_USE_DEF in `send-button-press' to 
+	default to a 'click operation (as it used to behave)
+
 Sun Sep  5 21:25:13 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* guile-compat.h, guile-compat.c, events.c: #define gh_free, move
