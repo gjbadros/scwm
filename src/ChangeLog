@@ -1,3 +1,25 @@
+Tue Jul 21 10:38:35 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm-constraints.hpp: Add psolver argument to AddStays, add
+	Psw() memfn, CopyStateToPswVars() memfn
+
+	* scwm-constraints.cc: guard everything with if (!psolver), and do 
+	a regular move window in SuggestMoveWindowTo if !psolver, since if 
+	there is a psolver, its callbacks result in moving the window
+
+	* constraint-primitives.h: extern "C" sandwich
+
+	* constraint-primitives.cc: extern "C" protect inclusions of
+	scwm-proper files scwm.h, window.h.  Added ScwmClvChanged and
+	ScwmResolve callbacks, to manage the new rgpswDirty container so
+	windows only move once when any of their settings change.  Set the 
+	callbacks in scwm_set_master_solver
+
+Tue Jul 21 10:30:43 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (MovePswToCurrentPosition): Make ScwmWindow * a const
+	ScwmWindow.
+
 1998-07-20  Maciej Stachowiak  <maciej@roc-ny5-21.ix.netcom.com>
 
 	* callbacks.c (run_input_hooks): Make sure port is still open
