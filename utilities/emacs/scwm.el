@@ -454,18 +454,13 @@ Returns a string which is present in the `scwm-obarray'."
                          " (display \"not defined\"))")
                  standard-output)
       (princ "\n\n ")
-      (with-face 'highlight (princ "documentation"))
+      (with-face 'highlight (princ "external documentation"))
       (princ ":\n\n")
       (scwm-safe-call "documentation" (concat "\"" pat "\"") standard-output)
       (princ "\n\n ")
-      (with-face 'highlight (princ "procedure/option-documentation"))
+      (with-face 'highlight (princ "documentation attached to object"))
       (princ ":\n\n")
-      (scwm-eval (concat "(if (defined? 'procedure-documentation) "
-                         "(if (procedure? " pat ") (procedure-documentation "
-                         pat ") (begin (use-modules (app scwm defoption)) "
-			 "(scwm-option-documentation '" pat ")))"
-			 " (display \"this guile version lacks "
-                         "`procedure-documentation'.\n\"))")
+      (scwm-eval (concat "(object-documentation '" pat ")")
 		 standard-output)
       ;; add buttons to the help message
       (let ((st (syntax-table)))
