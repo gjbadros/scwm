@@ -1503,6 +1503,11 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       XMoveResizeWindow(dpy, psw->title_w,
 			psw->title_x, psw->title_y,
 			psw->title_width, psw->title_height);
+      /* GJB:FIXME:: this reduces flicker a bit,
+         but it'd be better to make resizing a frame not go through
+         all of the SetupFrame routine and instead be optimized to change
+         only what needs to be changed */
+      SetTitleBar(psw,(Scr.Hilite==psw),False);
       XMapWindow(dpy,psw->title_w);
 
       xwcm = CWX | CWY | CWHeight | CWWidth;

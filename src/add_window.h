@@ -14,7 +14,7 @@
 #include "window_fwd.h"
 
 void SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque);
-void SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque);
+Bool SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque);
 
 ScwmWindow *AddWindow(Window w);
 void DestroyScwmWindow(ScwmWindow *psw);

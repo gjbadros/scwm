@@ -149,8 +149,8 @@ void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y, Bool fOpaque) {
   SetScwmWindowPosition(psw,x,y,fOpaque);
 }
 /* x,y are virtual positions */
-void SuggestSizeWindowTo(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque) {
-  SetScwmWindowGeometry(psw,x,y,w,h, fOpaque);
+Bool SuggestSizeWindowTo(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque) {
+  return SetScwmWindowGeometry(psw,x,y,w,h, fOpaque);
 }
 /* from virtual.h */
 void MoveViewport_internal(int newx, int newy);

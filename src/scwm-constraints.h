@@ -59,7 +59,7 @@ void CassowarySetCValuesAndSolve(PScwmWindow psw, int fSolve);
 void CassowaryEditPosition(PScwmWindow psw);
 void CassowaryEditSize(PScwmWindow psw);
 void SuggestMoveWindowTo(PScwmWindow psw, int x, int y, Bool fOpaque);
-void SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque);
+Bool SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque);
 void CassowaryEndEdit(PScwmWindow psw);
 void ChangeVirtualPosition(int vx, int vy);
 void CassowaryModifyOpaqueFlag(Bool *pfOpaque);

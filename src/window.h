@@ -395,7 +395,7 @@ void ResizePswToCurrentSize(ScwmWindow *psw);
 
 /* do not call these functions -- they are exported for cassowary to call,
    and used in the non-cassowary standin "Suggest..." functions */
-void SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, 
+Bool SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, 
                            Bool fOpaque);
 void SetScwmWindowPosition(ScwmWindow *psw, int x, int y, 
                            Bool fOpaque);

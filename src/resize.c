@@ -535,11 +535,10 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                                  x, y, &xmotion, &ymotion, 
                                  &dragx, &dragy, &dragWidth, &dragHeight);
 
-      SuggestSizeWindowTo(psw,
-                          WIN_VP_OFFSET_X(psw) + dragx, 
-                          WIN_VP_OFFSET_Y(psw) + dragy,
-                          dragWidth,dragHeight, fOpaque);
-      { /* scope */
+      if (SuggestSizeWindowTo(psw,
+                              WIN_VP_OFFSET_X(psw) + dragx, 
+                              WIN_VP_OFFSET_Y(psw) + dragy,
+                              dragWidth,dragHeight, fOpaque)) {
         int x_units, y_units;
         window_pixel_size_to_client_units(psw, 
                                           dragWidth - DecorationWidth(psw),

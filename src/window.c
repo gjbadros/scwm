@@ -720,6 +720,9 @@ ResizePswToCurrentSize(ScwmWindow *psw)
   if (SHADED_P(psw)) {
     h = psw->title_height + psw->boundary_width;
   }
+  /* GJB:FIXME:: this is overkill for just resizing a window;
+     it'd be nice to do an optimized version of this--- plan
+     for that in the decoration rewrite! */
   SetupFrame(psw,x,y,w,h,WAS_MOVED,WAS_RESIZED);
 }
 
@@ -761,8 +764,11 @@ SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque)
    needed.
 
    x,y are virtual positions
+
+   Returns True if the windows size or position has really changed,
+   False otherwise
   */
-void
+Bool
 SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
                       Bool fOpaque)
 {
@@ -785,7 +791,9 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
       else
         MovePswToCurrentPosition(psw);
     }
+    return True;
   }
+  return False;
 }
 
 /* This will involve cassowary as needed, through
