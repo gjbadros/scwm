@@ -933,11 +933,13 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   fNeedControl = True;
   fWrapAround = False;
 
+#ifdef XK_ISO_Left_Tab
   /* let shift-tab be XK_ISO_Left_Tab
      and below it'll do the same thing as up-arrow */
   if (XK_Tab == keysym && fShiftedKey) {
     keysym = XK_ISO_Left_Tab;
   }
+#endif
 
   switch(keysym)		/* Other special keyboard handling	*/
     {
@@ -979,6 +981,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
       /* GJB:FIXME:: Don't let keyboard movements go to
 	 unenabled items */
 
+#ifdef XK_ISO_Left_Tab
     case XK_ISO_Left_Tab:
       fWrapAround = True;
       if (fAltedKey) {
@@ -986,6 +989,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
         fShiftedKey = False;
       }
       /* fall through */
+#endif
     case XK_Up:
       fNeedControl = False;
       /* fall through */

@@ -39,6 +39,12 @@
 #include "dmalloc.h"
 #endif
 
+#if 0
+#define SCWM_DEBUG_SAFE_APPLY
+#define SCWM_DEBUG_RUN_HOOK
+#endif
+
+
 SCWM_HOOK(error_hook, "error-hook", 5);
   /** Called on all kinds of errors and exceptions.
 Whenever an error or other uncaught throw occurs on any callback,
@@ -95,6 +101,20 @@ cwssdr_body (void *data)
 				  NULL);
 }
 
+#ifdef SCWM_DEBUG_SAFE_APPLY
+char *SzNameOfProcedureNew(SCM proc)
+{
+  SCM sym = scm_procedure_name(proc);
+  if (SCM_BOOL_F != sym) {
+    SCM str = scm_symbol_to_string(sym);
+    if (gh_string_p(str)) 
+      return gh_scm2newstr(str,NULL);
+  }
+  return strdup("<anonymous proc>");
+}
+#endif
+
+
 SCM
 scm_internal_stack_cwdr (scm_catch_body_t body,
 			 void *body_data,
@@ -112,6 +132,10 @@ scm_internal_stack_cwdr (scm_catch_body_t body,
 }
 
 
+#ifdef HAVE_SCM_MAKE_HOOK
+static SCM run_hook_proc;
+#endif
+
 
 SCM
 scwm_safe_apply (SCM proc, SCM args)
@@ -121,6 +145,17 @@ scwm_safe_apply (SCM proc, SCM args)
 
   apply_data.proc = proc;
   apply_data.args = args;
+
+#ifdef SCWM_DEBUG_SAFE_APPLY
+#ifdef HAVE_SCM_MAKE_HOOK
+  if (proc != run_hook_proc) 
+#endif
+    { /* scope, or if above */
+    char *sz = SzNameOfProcedureNew(proc);
+    scwm_msg(DBG,"scwm_safe_apply","Calling %s",sz);
+    gh_free(sz);
+    }
+#endif
 
   return scm_internal_stack_cwdr(scwm_body_apply, &apply_data,
 				 scwm_handle_error, "scwm",
@@ -136,6 +171,17 @@ scwm_safe_apply_message_only (SCM proc, SCM args)
 
   apply_data.proc = proc;
   apply_data.args = args;
+
+#ifdef SCWM_DEBUG_SAFE_APPLY
+#ifdef HAVE_SCM_MAKE_HOOK
+  if (proc != run_hook_proc) 
+#endif
+    { /* scope, or if above */
+    char *sz = SzNameOfProcedureNew(proc);
+    scwm_msg(DBG,"scwm_safe_apply_message_only","Calling %s",sz);
+    gh_free(sz);
+  }
+#endif
 
   return scm_internal_cwdr_no_unwind(scwm_body_apply, &apply_data,
 			   scm_handle_by_message_noexit, "scwm",
@@ -229,15 +275,23 @@ are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 
 #ifdef HAVE_SCM_MAKE_HOOK
 
-static SCM run_hook_proc;
-
 __inline__ SCM scwm_run_hook(SCM hook, SCM args)
 {
+#ifdef SCWM_DEBUG_RUN_HOOK
+  scwm_msg(DBG,"scwm_run_hook","Calling:");
+  scm_write(hook,scm_current_error_port());
+  scm_newline(scm_current_error_port());
+#endif
   return scwm_safe_apply(run_hook_proc, gh_cons(hook,args));
 }
 
 __inline__ SCM scwm_run_hook_message_only(SCM hook, SCM args)
 {
+#ifdef SCWM_DEBUG_RUN_HOOK
+  scwm_msg(DBG,"scwm_run_hook","Calling hook:");
+  scm_write(hook,scm_current_error_port());
+  scm_newline(scm_current_error_port());
+#endif
   return scwm_safe_apply_message_only(run_hook_proc, gh_cons(hook,args));
 }
 

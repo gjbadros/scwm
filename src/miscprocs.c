@@ -28,12 +28,17 @@
 #include "xmisc.h"
 #include "scwmpaths.h"
 #include "cursor.h"
+#ifdef SCWM_TEST_HOOK_PROCS
+#include "callbacks.h"
+#endif
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
 extern Bool Restarting, PPosOverride;
 extern Bool fHandleSegv;
 
 SCWM_SYMBOL(sym_focus, "focus");
+SCWM_HOOK(scwm_test_hook_0,"scwm-test-hook-0",0);
+SCWM_HOOK(scwm_test_hook_1,"scwm-test-hook-1",1);
 
 SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
           (SCM just))
@@ -699,6 +704,39 @@ SCWM_PROC(x_connection_number, "x-connection-number", 0, 0, 0,
   return gh_int2scm(c);
 }
 #undef FUNC_NAME
+
+#ifdef SCWM_TEST_HOOK_PROCS
+
+SCWM_PROC(scwm_run_test_hook_0, "scwm-run-test-hook-0", 1, 0, 0,
+          (SCM count))
+     /** Invoke `scwm-test-hook-0' COUNT times. */
+#define FUNC_NAME s_scwm_run_test_hook_0
+{
+  int c, i;
+  VALIDATE_ARG_INT_COPY(1,count,c);
+  for (i=0; i<c; ++i) {
+    call0_hooks(scwm_test_hook_0);
+  }
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(scwm_run_test_hook_1, "scwm-run-test-hook-1", 2, 0, 0,
+          (SCM count, SCM arg))
+     /** Invoke `scwm-test-hook-1' COUNT times with ARG as the single argument. */
+#define FUNC_NAME s_scwm_run_test_hook_1
+{
+  int c, i;
+  VALIDATE_ARG_INT_COPY(1,count,c);
+  for (i=0; i<c; ++i) {
+    call1_hooks(scwm_test_hook_1,arg);
+  }
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+
+#endif
+
 
 SCWM_PROC(get_key_event, "get-key-event", 0, 0, 0,
           ())
