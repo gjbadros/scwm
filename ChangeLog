@@ -1,3 +1,8 @@
+Sun Feb 20 09:34:47 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.common: Use `basename $< .c` (or .cc) instead of GNU
+	Make's $(basename $<) construct.  Helps for compiling w/ vendor makes.
+
 Sun Feb 13 11:15:49 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* SCWM-VERSION: Bump to 0.99.6.1post.

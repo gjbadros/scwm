@@ -1,3 +1,10 @@
+Sat Feb 19 19:33:29 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c (MovePswToCurrentPosition): Don't force a sticky window 
+	to stay on screen using MoveTo();  was causing a segfault in the
+	constraint solver when a window not being edited was having its
+	position forceably changed.
+
 Wed Feb 16 18:26:37 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* events.c: Added xref of obscured-hooks to window-visibility proc.
