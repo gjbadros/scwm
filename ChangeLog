@@ -1,3 +1,7 @@
+Fri Aug 14 10:43:47 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in, configure: Scwm-0.8 released!
+
 Fri Aug 14 10:19:42 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* INSTALL: Added note about using ./configure --help for list of
