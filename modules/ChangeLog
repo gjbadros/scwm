@@ -1,3 +1,9 @@
+Thu Oct 15 08:01:57 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* overlay-plane/overlay-plane.c: Use GXcopy, not GXset for the GC
+	function, and set the foreground color of the clear_gc to 0 before 
+	trying to clear.  Still only partial success.
+
 Wed Oct 14 11:08:46 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* xpm-menus/draw-xpm-menu.c: Added comment re: removing #include

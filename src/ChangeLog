@@ -1,3 +1,9 @@
+Thu Oct 15 08:04:47 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* add_window.c (AddWindow): Set psw->fl before calling
+	before_new_window_hook so that psw is in a valid state for GC
+	while the code runs.  Thanks Lieven Marchand for backtrace!
+
 1998-10-15  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* session-manager.c (setSMProperties): Include all normal options

@@ -1,3 +1,9 @@
+Thu Oct 15 08:03:03 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm (maximize): Patch from Ken Pizzini to handle
+ 	partially off the left and top windows by moving them wholly on
+ 	screen when maximized
+
 1998-10-13  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* std-menus.scm (context-map): New variable.
