@@ -124,6 +124,8 @@ enum wm_client_functions {
 #define RESTP_SCM 1
 
 
+#define SCM_BOOL_FromBool(x) ((x)? SCM_BOOL_T: SCM_BOOL_F)
+
 /*
    ** if you would like to see lots of debug messages from scwm, for debugging
    ** purposes, uncomment the next line
