@@ -6,7 +6,7 @@ Thanks to:
   Jens-Ulrik Holger Petersen - improved functionality of window list
   operations, contributed his .scwmrc to be distributed as a sample
 
-  James LewisMoss - argument handling through getopt_long()
+  James LewisMoss - argument handling through getopt_long(), imlib support
 
   ITANI Eiichiro - Support for multibyte character sets.
 

@@ -113,3 +113,6 @@
 
 /* Define tihs if you want to turn debug support off for cassowary */
 #undef CL_NO_TRACE
+
+/* Define this if you want to use imlib pixmap/bitmap support */
+#undef USE_IMLIB
