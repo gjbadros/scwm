@@ -1,3 +1,19 @@
+Fri Jul 17 18:46:18 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am, scwm-constraints.c: Added scwm_constraints.c
+
+	* scwm-constraints.h: Added more functional ScwmClVariable, with
+	pointer to enclosing _psw
+
+	* window.h, window.c (MovePswToCurrentPosition): Added; made move_finalize static.
+
+	* constraint-primitives.c: add keep_to_left_of,
+	add_stays_on_window primitives, better debugging
+
+	* add_window.c (AddWindow): attach ScwmClVariable-s to the psw w/ set_psw
+
+	* move.c (moveLoop): Use cassowary's beginEdit, resolve, endEdit construct
+
 Fri Jul 17 13:33:17 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* all-files: Eliminate #includes of misc.h (gone), and system.h
