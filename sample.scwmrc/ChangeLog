@@ -1,3 +1,8 @@
+Fri Aug 28 16:50:43 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* *.scwmrc: Use quit-verify to popup the menu-quit-verify, and
+	bind C-S-M-q to it (instead of just C-M-q)
+
 Fri Aug 14 17:32:47 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* decor.scwmrc: Do not bind anything to M-tab -- bad news for

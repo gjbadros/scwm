@@ -1,3 +1,15 @@
+Fri Aug 28 16:58:40 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* move.c, menu.c, complex.c, window.c, virtual.c: Use new ms_sleep instead of
+	usleep.
+
+	* util.c: Write ms_sleep to call usleep and possibly sleep (if
+	for more than 1 second)
+
+	* syscompat.h, syscompat.c: Fix prototype and defintion for usleep 
+	-- was treating arg as milli instead of micro seconds.
+ 	Thanks Perry E. Metzger!
+
 Fri Aug 21 13:14:12 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* ALL, scwm.h: Replace SCM_DEFER_INTS with gh_defer_ints(),

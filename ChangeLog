@@ -1,3 +1,8 @@
+Fri Aug 28 17:03:57 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: S. Inverted sense of ac_R_nospace (from S.Senda -- 
+	fix to earlier change)
+
 Fri Aug 21 18:05:10 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Track the current_module, and output 
