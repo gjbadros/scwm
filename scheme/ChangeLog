@@ -1,3 +1,26 @@
+Tue Oct 19 11:31:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): Added winlist-menu.scm
+
+	* winlist.scm: Move some code out into new winlist-menu.scm
+
+	* winlist-menu.scm: Added (using code that was in winlist.scm)
+
+	* wininfo.scm: Use winlist again.
+
+	* window-configuration.scm: Do not use winlist.
+
+	* highlight-current-window.scm: Do not use window-selection.
+
+	* group.scm: Use winlist.
+
+	* flux.scm: Drop sleep-ms -- now in base.scm
+
+	* base.scm: Added sleep-ms (was in flux.scm)
+
+	* animated-iconify.scm: Drop half, sleep-ms (they are elsewhere),
+	move-point-pair (was unused).
+
 Tue Oct 19 09:22:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* group.scm: Needs wininfo.

@@ -1,3 +1,8 @@
+Tue Oct 19 09:15:43 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmgtkhelper/scwmgtkhelper.c (s_restore_scwm_handlers): Only
+	catch SIGINTs when SCWM_CATCH_SIGINT.
+
 Sun Oct 17 10:09:58 1999    <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c: Use SCWM_VAR_INIT for

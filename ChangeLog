@@ -1,3 +1,8 @@
+Tue Oct 19 09:16:19 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* pixmaps/scwm-freebsd.xpm: Added.  Contributed by Douglas
+	K. Rand.
+
 Sun Oct 17 19:21:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added --with-docdir option for specifying which
