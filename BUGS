@@ -1,3 +1,6 @@
+Hooks which take wrong number of params cause seg faults!
+--07/04/98 gjb
+
 -------------
 windows having a different border-width than the default (6) are
 placed incorrectly if they have SE gravity. They are several pixels
