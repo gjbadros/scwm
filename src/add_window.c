@@ -248,7 +248,7 @@ AddWindow(Window w)
   }
   psw->w = w;
   ResetAllFlags(psw);
-  psw->boundary_width = -1;
+  psw->fBorderWidthSet = False;
 
   psw->icon_cursor=SCM_UNDEFINED;
 
