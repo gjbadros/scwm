@@ -348,7 +348,7 @@ XTST_LIB="-lXtst"
 AC_DEFINE(HAVE_XTEST)
 have_xtest=yes
 ], AC_MSG_WARN(libXtst not found -- simulated events will not be supported)
-, $x_libs)
+,$x_libs $XEXT_LIB)
 AM_CONDITIONAL(HAVE_XTEST, test "$have_xtest" = yes)
 
 
@@ -385,7 +385,7 @@ AC_CHECK_LIB(SM, SmcOpenConnection, [
     , $x_libs)
   ], AC_MSG_WARN(SMlib.h not found -- no session manager support))
 ], AC_MSG_WARN(libSM not found -- no session manager support)
-, $x_libs)
+, $x_libs -lICE)
 
 AC_ARG_ENABLE(esd, [  --disable-esd       Do not use ESD even if it exists],
 		    enable_esd=no,
