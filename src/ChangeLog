@@ -1,5 +1,8 @@
 Thu Nov  6 10:59:36 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* window.c: Change set-mini-icon! to load the mini-icon file when
+ 	appropriate. This makes the #:mini-icon style option work.
+
 	* paths.c, Makefile.in, envvar.c: Stop using the code in envvar.c
  	for environment variable expansion in paths and remove it from the
  	build process as well as from the repository.
