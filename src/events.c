@@ -441,7 +441,7 @@ SzGetWindowProperty(Window w, const char *szPropertyName, Bool fDelete)
 				  &bytes_after, &pchReturn);
 
   if (retval != Success || xproptype != XA_STRING) {
-    scwm_msg(WARN, __FUNCTION__, "did not get string property!")
+    scwm_msg(WARN, __FUNCTION__, "did not get string property!");
     return NULL;
   }
   return (char *) pchReturn;
@@ -1618,3 +1618,5 @@ send_button_press(SCM button, SCM modifier, SCM win,
   }
   return SCM_UNDEFINED;
 }
+
+
