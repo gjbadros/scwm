@@ -1,3 +1,7 @@
+1998-06-23  Maciej Stachowiak  <maciej@roc-ny1-07.ix.netcom.com>
+
+	* std-menus.scm: Use the (ice-9 regex) module. 
+
 1998-06-20  Maciej Stachowiak  <maciej@localhost.localdomain>
 
 	* fvwm-module.scm: Use the new input hook system (add-input-hook!
