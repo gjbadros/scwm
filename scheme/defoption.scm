@@ -46,7 +46,7 @@ DOCSTRING documents the option.  REST contains keyword arguments including:
                 'enum
                 'position, 'position-delta
                 'time 'time-delta
-                'string, 'directory, 'path, 'command, 'hostname
+                'string, 'sound, 'directory, 'path, 'command, 'hostname
                 'string-list
                 'interactive-proc, 'proc
                 'color

@@ -109,7 +109,7 @@
     (case type
       ('string 
        (prompt-string prompt set-proc #:initval value #:title title))
-      ((command file directory)
+      ((command file directory sound)
        (prompt-file prompt set-proc #:initval value #:title title #:favorites favorites))
       ('path
        (prompt-string prompt (lambda (v) (set-proc (string-with-colons->path-list v)))
@@ -162,7 +162,7 @@ See also `prompt-string'."
     (case type
       ('string
        (prompt-string-hbox prompt value))
-      ((command directory file)
+      ((command directory file sound)
        (prompt-file-hbox prompt value favorites))
       ('path
        (prompt-path-hbox prompt value))
