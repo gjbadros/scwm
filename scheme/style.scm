@@ -116,19 +116,20 @@
 (set! old-new-window-handler 
       (bind-event 'new-window
 		  (lambda ()
+		    (if old-new-window-handler
+			(old-new-window-handler))
 		    (for-each (lambda (hook) 
 				(hook (get-window)))
-			 window-style-hooks)
-		    (if old-new-window-handler
-			(old-new-window-handler)))))
+			      window-style-hooks))))
 
 (set! old-new-window-hint-handler 
       (bind-event 'new-window-hint
 		  (lambda ()
-		    (for-each (lambda (hook) (hook (get-window))) 
-			 window-hint-hooks)
 		    (if old-new-window-hint-handler
-			(old-new-window-hint-handler)))))
+			(old-new-window-hint-handler))
+		    (for-each (lambda (hook) 
+				(hook (get-window))) 
+			      window-hint-hooks))))
 
 
 ;; some useful style options
@@ -171,6 +172,7 @@
 
 (add-window-hint-option #:start-on-desk set-start-on-desk!)
 (add-window-hint-option #:skip-mapping set-skip-mapping!)
+(add-window-hint-option #:lenience set-lenience!)
 
 
 (add-window-style-option #:use-style 
@@ -190,4 +192,10 @@
 (add-boolean-style-option #:start-window-shaded window-shade un-window-shade)
 (add-window-style-option #:other-proc (lambda (val w) (val w)))
 (add-window-hint-option #:other-hint-proc (lambda (val w) (val w)))
+
+
+
+
+
+
 
