@@ -80,7 +80,7 @@
 	     (if auto-raise? (begin 
 			       (use-modules (app scwm auto-raise))
 			       (window-style "*" #:auto-raise #t))
-		 (if (feature? 'auto-raise)
+		 (if (feature? 'scwm-auto-raise)
 		     (begin
 		       (use-modules (app scwm style))
 		       (window-style "*" #:auto-raise #f))))
