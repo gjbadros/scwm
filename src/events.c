@@ -1155,7 +1155,9 @@ HandleMapRequestKeepRaised(Window KeepRaised)
        scwm_run_hook manages the complexity */
     ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
 
-    call1_hooks(x_maprequest_hook, SCM_FROM_PSW(pswCurrent));
+    if (Scr.fWindowsCaptured) {
+      call1_hooks(x_maprequest_hook, SCM_FROM_PSW(pswCurrent));
+    }
 
     pswCurrent = psw; /* restore from value before hooks were invoked */
 

@@ -98,31 +98,37 @@ BroadcastIconInfo(unsigned long event_type, const ScwmWindow *psw)
 void
 BroadcastConfig(unsigned long event_type, const ScwmWindow *psw)
 {
-  scwm_run_hook(broadcast_config_hook, 
-                gh_list(gh_ulong2scm(event_type), 
-                        SCM_FROM_PSW(psw),
-                        SCM_UNDEFINED));
+  if (Scr.fWindowsCaptured) {
+    scwm_run_hook(broadcast_config_hook, 
+                  gh_list(gh_ulong2scm(event_type), 
+                          SCM_FROM_PSW(psw),
+                          SCM_UNDEFINED));
+  }
 }
 
 void BroadcastName(unsigned long event_type, unsigned long data1,
 		   unsigned long data2, unsigned long data3, char *szName)
 {
   SCM name = gh_str02scm(szName);
-  scwm_run_hook(broadcast_name_hook, 
-                gh_list(gh_ulong2scm(event_type), 
-                        gh_ulong2scm(data1),
-                        gh_ulong2scm(data2),
-                        gh_ulong2scm(data3),
-                        name,
-                        SCM_UNDEFINED));
+  if (Scr.fWindowsCaptured) {
+    scwm_run_hook(broadcast_name_hook, 
+                  gh_list(gh_ulong2scm(event_type), 
+                          gh_ulong2scm(data1),
+                          gh_ulong2scm(data2),
+                          gh_ulong2scm(data3),
+                          name,
+                          SCM_UNDEFINED));
+  }
 }
 
 void BroadcastMiniIcon(unsigned long event_type, ScwmWindow *psw)
 {
-  scwm_run_hook(broadcast_mini_icon_hook, 
-                gh_list(gh_ulong2scm(event_type), 
-                        SCM_FROM_PSW(psw),
-                        SCM_UNDEFINED));
+  if (Scr.fWindowsCaptured) {
+    scwm_run_hook(broadcast_mini_icon_hook, 
+                  gh_list(gh_ulong2scm(event_type), 
+                          SCM_FROM_PSW(psw),
+                          SCM_UNDEFINED));
+  }
 }
 
 /* This and other fvwm-module-related stuff should go in a dynamically

@@ -1145,9 +1145,9 @@ Repository Timestamp: %s\n",
      and guile-1.3.2;  only the first clause is needed when 
      we drop support for guile-1.3.2 */
   if (!fDisableBacktrace) {
-    gh_eval_str("(debug-enable 'debug) (read-enable 'positions)");
+    gh_eval_str("(debug-enable 'debug) (debug-enable 'backtrace) (read-enable 'positions)");
   } else {
-    gh_eval_str("(debug-disable 'debug) (read-disable 'positions)");
+    gh_eval_str("(debug-disable 'debug) (debug-disable 'backtrace) (read-disable 'positions)");
   }
   
   /* the compiled-in .scwmrc comes from minimal.scm,
