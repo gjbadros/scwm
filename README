@@ -1,31 +1,36 @@
-SCWM 0.7
+SCWM 0.8
 
-This is a beta release of SCWM, the Scheme Configurable Window
-Manager. 
+This is a beta release of
 
-SCWM descends from fvwm2 and replaces its ad-hoc configuration language
-with Guile Scheme. It supports virtually all fvwm2 functionality (module 
-support is still alpha-quality), and is far more powerful thanks
-to the embedded Scheme interpreter, and all its features and libraries.
+SCWM, the Scheme Configurable Window Manager.
+
+SCWM is a dynamic and extensible window manager based on Guile Scheme.
+It descends loosely from fvwm2 and supports virtually all fvwm2
+functionality (module support is still only beta-quality), and is far more
+powerful thanks to the embedded Scheme interpreter, and all of its features
+and libraries.
 
 Other additional features scwm provides are:
 
  o sophisticated window decoration system
+ o integrated interaction and documentation system 
+   (Emacs or readline based)
+ o integration with guile-gtk widget bindings
+ o extensible window manager hooks, placement procedures,
+   and more to provide the ultimate in behaviour configurability
  o flexible menu system, permitting dynamically loadable 
-   menu drawing primitives
- o animated window movements
- o animated window shading
+   menu drawing primitives (alpha)
+ o animated window movements, and shading
  o synthetic key press events (no more mouse needed to click on
    URLs in netscape!)
- o an interactive read-eval-print loop (repl)
- o scwmexec, and scwm.el, for interactively evaluating and testing
-   new window manager functions from your shell or within emacs
+ o alpha-quality optional constraint-based window layout
+   see http://www.cs.washington.edu/research/constraints/cassowary/
 
-This release, although labelled beta, should be pretty stable and
-moderately useful. Numerous individuals have reported using SCWM 
-as their main window manager for several months.  We make every effort
-to eliminate segmentation faults and other bugs, but make no guarantees
--- use at your own risk, as always.
+This release, although labeled beta, is reasonably stable and
+exceedingly useful.  Many individuals, including the developers, have
+been using SCWM as their primary window manager for several months.  We
+make every effort to eliminate segmentation faults and other bugs, but
+make no guarantees -- use at your own risk, as always.
 
 SCWM builds on i386-pc-linux, i386-pc-freebsd, sparc-sun-solaris,
 mips-sgi-irix, and generally any platform where both fvwm2 and guile
@@ -36,15 +41,14 @@ tweaking). See the file INSTALL for further instructions.
 There's various kinds of documentation and random info in the doc
 directory, and you can see some examples of what might be done in the
 startup files included in the sample.scwmrc/ directory.  Also consider
-browsing the SCWM modules in the scheme/ directory.
+browsing the SCWM modules in the scheme/ and the example/test code in
+the scheme/tests/ directory, 
 
-Things to look for in the near future include: more cleaning up of the
-leftover fvwm-isms in the code, restruccturing of the internal data
-structures, a more complete external interface, and a start on
-integrating guile-gtk and/or guile-tk so that you can create your own
-arbitrary gui elements.  We are also working on adding a window layout
-constraint solver to SCWM; stay tuned for details, as this should be one 
-highly nifty feature!
+Things to look for in the near future include: an event-binding system
+rewrite, better support for the Cassowary constraint solving toolkit,
+better support for using guile-gtk (and perhaps support for guile-tk),
+dynamically loadable primitives (separating Scwm into smaller pieces for
+a leaner memory footprint), and much much more.
 
 The copyright for the code in the SCWM and libs subdirectories is the
 fvwm copyright, which may be found in COPYING.FVWM. Several files may
@@ -55,4 +59,3 @@ doc/COPYRIGHT.DOC.
 
  - Maciej Stachowiak <mstachow@mit.edu>    and
    Greg J. Badros <gjb@cs.washington.edu>
-
