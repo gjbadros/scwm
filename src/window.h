@@ -214,7 +214,7 @@ struct ScwmWindow {
   SCM HiShadowColor;            /* only partially used now */
   SCM HiTextColor;
   SCM HiBackColor;
-  unsigned long buttons;
+  unsigned long buttons;        /* bitmask of *disabled* buttons; 1==button is off */
   int IconBox[4];
 
   SCM other_properties;
@@ -359,6 +359,9 @@ void window_pixel_size_to_client_units(const ScwmWindow *psw,
                                        int *py_units);
 
 void notify_new_desk(ScwmWindow *psw, int desk, int old);
+
+__inline__ int DecorationWidth(const ScwmWindow *psw);
+__inline__ int DecorationHeight(const ScwmWindow *psw);
 
 
 #endif /* WINDOW_H__ */

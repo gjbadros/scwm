@@ -56,6 +56,10 @@ enum border_hilite_flags {
   HH_HILITE = 1 << 4
 };
 
+int CLeftButtons(const ScwmWindow *psw);
+int CRightButtons(const ScwmWindow *psw);
+
+
 #endif
 
 /* Local Variables: */

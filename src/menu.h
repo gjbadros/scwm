@@ -53,6 +53,8 @@ typedef struct Menu_tag
   SCM scmExtraOptions;		/* extra list of options for the drawing code */
   SCM scmMenuLook;		/* menu look */
   char *pchUsedShortcutKeys;	/* list of characters that are shortcut keys */
+  int cmsPopupDelay;            /* delay in ms before submenu popup */
+  int cmsHoverDelay;            /* delay in ms before hover action is invoked */
 } Menu;
 
 struct DynamicMenu_tag

@@ -109,7 +109,7 @@ X and Y are given in pixels.  Does not affect the current desk. */
   if (!gh_number_p(y)) {
     scm_wrong_type_arg(FUNC_NAME, 2, y);
   }
-  MoveViewport(gh_scm2int(x), gh_scm2int(y), True);
+  MoveViewport(gh_scm2int(x), gh_scm2int(y));
 
   return (SCM_UNSPECIFIED);
 }

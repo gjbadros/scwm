@@ -123,7 +123,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 
 
   if (!opaque_move) {
-    RedrawOutlineAtNewPosition(Scr.Root, xl, yt, OutlineWidth, OutlineHeight);
+    RedrawOutlineAtNewPosition(xl, yt, OutlineWidth, OutlineHeight);
   }
 
   if (psw->fIconified) {
@@ -220,8 +220,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
           if (opaque_move) {
             MovePswIconToCurrentPosition(psw);
           } else {
-            RedrawOutlineAtNewPosition(Scr.Root, 
-                                       ICON_X_VP(psw), ICON_Y_VP(psw),
+            RedrawOutlineAtNewPosition(ICON_X_VP(psw), ICON_Y_VP(psw),
                                        OutlineWidth, OutlineHeight);
           }
 	  real_x = ICON_X_VP(psw);
@@ -272,7 +271,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
     }
   }
   if (!opaque_move)
-    RemoveRubberbandOutline(Scr.Root);
+    RemoveRubberbandOutline();
 
   SnapCoordsToEdges(&xl, &yt, psw->frame_width, psw->frame_height,
 		    psw->bw, Scr.MoveResistance);

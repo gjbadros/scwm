@@ -71,8 +71,13 @@ print_menuitem(SCM obj, SCM port, scm_print_state * pstate)
 {
   scm_puts("#<menuitem ", port);
   if (MENUITEM_P(obj)) {
-    MenuItem *mi = MENUITEM(obj);
-    scm_write(gh_str02scm(mi->szLabel),port);
+    MenuItem *pmi = MENUITEM(obj);
+    scm_puts("\"",port);
+    scm_puts(pmi->szLabel,port);
+    scm_puts("\"",port);
+    if (pmi->fIsForcedSubmenu) {
+      scm_puts(" (forced-submenu)",port);
+    }
   } else {
     scm_puts("(invalid)", port);
   }
@@ -116,16 +121,17 @@ primitive. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(make_menuitem, "make-menuitem", 2,6,0,
+SCWM_PROC(make_menuitem, "make-menuitem", 2,7,0,
           (SCM label, SCM action, SCM extra_label, SCM picture_above,
            SCM picture_left, SCM hover_action, SCM unhover_action,
-           SCM hotkey_prefs))
+           SCM hotkey_prefs, SCM submenu_p))
      /** Return a newly created menuitem object using the given arguments.
 LABEL is a string giving the main text label of the menu item;
 ACTION is a procedure or menu object -- if it is a procedure, it gets
 invoked when the menuitem is selected, if it is a menu object, that
 menu is attached as a submenu from the enclosing menu that the created 
-menuitem is put in.
+menuitem is put in.  You can also force ACTION to be treated as a
+submenu by setting SUBMENU? to #t.
 EXTRA-LABEL is extra text describing the menu item -- often this
 contains a shortcut key description, or some other descriptive text.
 PICTURE-ABOVE and PICTURE-LEFT are picture objects which correspond to 
@@ -199,6 +205,8 @@ For a higher-level interface to this function, see `menuitem'. */
     pmi->pchHotkeyPreferences = 
       gh_scm2newstr(hotkey_prefs,&pmi->cchHotkeyPreferences);
   }
+
+  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(pmi->fIsForcedSubmenu,submenu_p,9,FUNC_NAME);
 
   if (action == SCM_BOOL_F && pmi->cchLabel == 0 && pmi->cchExtra == 0 &&
       picture_left == SCM_BOOL_F && picture_above == SCM_BOOL_F) {

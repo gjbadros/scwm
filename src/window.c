@@ -657,7 +657,6 @@ ResizePswToCurrentSize(ScwmWindow *psw)
   SetupFrame(psw,x,y,w,h,WAS_MOVED,WAS_RESIZED);
 }
 
-
 /* Similar to SetScwmWindowGeometry, below -- normal scwm functions
    don't call this -- it is called when cassowary is not re-solving
    for this window, so we must be sure that the window has really
@@ -678,9 +677,8 @@ SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque)
       if (SHADED_P(psw)) {
         h = psw->title_height + psw->boundary_width;
       }
-      RemoveRubberbandOutline(Scr.Root);
-      RedrawOutlineAtNewPosition(Scr.Root, 
-                                 FRAME_X_VP(psw), FRAME_Y_VP(psw),
+      RemoveRubberbandOutline();
+      RedrawOutlineAtNewPosition(FRAME_X_VP(psw), FRAME_Y_VP(psw),
                                  FRAME_WIDTH(psw), h);
     }
   }
@@ -710,9 +708,8 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
     SET_CVALUE(psw,frame_width,w);
     SET_CVALUE(psw,frame_height,h);
     if (!fOpaque) {
-      RemoveRubberbandOutline(Scr.Root);
-      RedrawOutlineAtNewPosition(Scr.Root, 
-                                 FRAME_X_VP(psw) - psw->bw, 
+      RemoveRubberbandOutline();
+      RedrawOutlineAtNewPosition(FRAME_X_VP(psw) - psw->bw, 
                                  FRAME_Y_VP(psw) - psw->bw,
                                  FRAME_WIDTH(psw) + 2 * psw->bw,
                                  FRAME_HEIGHT(psw) + 2 * psw->bw);
@@ -788,10 +785,10 @@ SCWM_PROC(select_viewport_position, "select-viewport-position", 0, 2, 0,
           (SCM kill_p, SCM release_p))
      /** Select a viewport position and return the window there.
 Use a special cursor and let the user click to select a viewport position
-Returns a list of three items: (SELECTED-WINDOW VIEWPORT-X VIEWPORT-Y).
-SELECTED-WINDOW is either the window object corresponding to the selected
+Returns a list of three items: (selected-window viewport-x viewport-y).
+selected-window is either the window object corresponding to the selected
 window or #f if no window was selected.
-VIEWPORT-X and VIEWPORT-Y give the position in the viewport that the
+viewport-x and viewport-y give the position in the viewport that the
 cursor was located when the selection was finalized.
 The optional arguments KILL? and RELEASE? indicate whether to use the
 "skull and cross-bones" kill cursor (recommended for destructive
@@ -899,6 +896,22 @@ mouse drags. */
     }
   }
   return window_context;
+}
+#undef FUNC_NAME
+
+
+/* GJB:FIXME:: we'd like to not need this, though 
+   it might be nice to leave in just in case */
+SCWM_PROC (force_reset_window_frame_x, "force-reset-window-frame!", 1, 0, 0,
+           (SCM win))
+     /** This redraws the window frame and decorations of WIN.
+Ideally it would never be necessary, but it is useful for debugging
+and for new window objects set via object properties. */
+#define FUNC_NAME s_force_reset_window_frame_x
+{
+  VALIDATE(win, FUNC_NAME);
+  ResizePswToCurrentSize(PSWFROMSCMWIN(win));
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -1078,7 +1091,7 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
   if (!FIsPartiallyInViewport(psw)) {
     int dx, dy;
     GetSnappedViewportPositionFor(cx,cy,&dx,&dy);
-    MoveViewport(dx, dy, True);
+    MoveViewport(dx, dy);
   }
 
   if (psw->fIconified) {
@@ -2209,7 +2222,10 @@ SCWM_PROC(resize_frame_to, "resize-frame-to", 2, 1, 0,
           (SCM w, SCM h, SCM win))
      /** Resize WIN to a size of W by H in pixels. 
 The size includes the window decorations. WIN defaults to the window
-context in the usual way if not specified.*/
+context in the usual way if not specified.  The resulting size
+of the frame may not be W by H due to rounding to the nearest
+acceptable size for the client window (e.g., Emacs windows can
+only be sizes that are multiples of the basic character size).*/
 #define FUNC_NAME s_resize_frame_to
 {
   int width, height;
@@ -3369,24 +3385,35 @@ SCWM_PROC(set_window_button_x, "set-window-button!", 2, 1, 0,
      /** Set the visibility of button number N on window WIN.
 If FLAG is #t, the button will be visible, otherwise it won't be
 drawn.  WIN defaults to the window context in the usual way if not
-specified. (Note: this code may be broken right now.) */
+specified. (Note: the titlebar will not expand if you disable
+a button via this procedure -- the decoration code is still 
+far from perfect.) */
 #define FUNC_NAME s_set_window_button_x
 {
+  ScwmWindow *psw;
+
   VALIDATEN(win, 3, FUNC_NAME);
   if (!gh_number_p(n)) {
     scm_wrong_type_arg(FUNC_NAME, 1, n);
   }
+
+  psw = PSWFROMSCMWIN(win);
+
   if (flag == SCM_BOOL_T) {
-    PSWFROMSCMWIN(win)->buttons &= ~(1 << (gh_scm2int(n) - 1));
+    psw->buttons &= ~(1 << (gh_scm2int(n) - 1));
   } else if (flag == SCM_BOOL_F) {
-    PSWFROMSCMWIN(win)->buttons |= (1 << (gh_scm2int(n) - 1));
+    psw->buttons |= (1 << (gh_scm2int(n) - 1));
   } else {
     scm_wrong_type_arg(FUNC_NAME, 2, flag);
   }
   /* XXX - This won't really work for any case unless it is a hint.
      Handling of the number of buttons is kind of broken in
      general for now, but will be fixed. */
-  
+
+  /* Force a redraw */
+  /* GJB:FIXME:: this is overkill */
+  ResizePswToCurrentSize(psw);
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

@@ -876,11 +876,7 @@ nothing should be done on key release.
 */
 #define FUNC_NAME s_bind_keycode
 {
-  KeySym keysym;
-  int len = 0;
-  Bool fOkayKey = False;
-  Bool fBoundKey = False;	/* for error checking */
-  int i, min, max;
+  int min, max;
   int keycd = 0;
   int modmask = 0;
   int context = 0;

@@ -50,7 +50,7 @@ static Edge in_edge = EDGE_NONE;
 static void 
 notify_edge_enter(Edge e)
 {
-  SCM edge_sym;
+  SCM edge_sym = SCM_BOOL_F;
 
   switch (e) {
   case EDGE_TOP:
@@ -66,6 +66,7 @@ notify_edge_enter(Edge e)
     edge_sym = sym_south;
     break;
   case EDGE_NONE:
+  default:
     /* this should not happen */
     assert(False);
     break;
@@ -79,7 +80,7 @@ notify_edge_enter(Edge e)
 static void 
 notify_edge_leave(Edge e)
 {
-  SCM edge_sym;
+  SCM edge_sym = SCM_BOOL_F;
 
   switch (e) {
   case EDGE_TOP:
@@ -95,6 +96,7 @@ notify_edge_leave(Edge e)
     edge_sym = sym_south;
     break;
   case EDGE_NONE:
+  default:
     /* this should not happen */
     assert(False);
     break;
@@ -232,7 +234,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 
   WXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
-  RemoveRubberbandOutline(Scr.Root);
+  RemoveRubberbandOutline();
 
   /* Move the viewport */
   /* and/or move the cursor back to the approximate correct location */
@@ -309,7 +311,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     if (Grab)
       XGrabServer_withSemaphore(dpy);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, *xl, *yt);
-    MoveViewport(Scr.Vx + *delta_x, Scr.Vy + *delta_y, False);
+    MoveViewport(Scr.Vx + *delta_x, Scr.Vy + *delta_y);
     WXGetPointerWindowOffsets(Scr.Root, xl, yt);
     if (Grab)
       XUngrabServer_withSemaphore(dpy);
@@ -433,7 +435,7 @@ initPanFrames()
  *  Moves the viewport within the virtual desktop
  */
 void 
-MoveViewport_internal(int newx, int newy, Bool grab)
+MoveViewport_internal(int newx, int newy)
 {
   ScwmWindow *psw;
 
@@ -474,9 +476,9 @@ MoveViewport_internal(int newx, int newy, Bool grab)
 
 
 void 
-MoveViewport(int newx, int newy, Bool grab)
+MoveViewport(int newx, int newy)
 {
-  ChangeVirtualPosition(newx,newy,grab);
+  ChangeVirtualPosition(newx,newy);
 }
 
 

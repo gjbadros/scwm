@@ -225,7 +225,7 @@ SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
 The properties returned are: 
 '(menu-title menu-items side-image side-image-align side-bg-color bg-color
 text-color stipple-color
-image-bg font extra-options used-shortcut-keys) */
+image-bg font extra-options used-shortcut-keys popup-delay hover-delay) */
 #define FUNC_NAME s_menu_properties
 {
   Menu *pmenu = SAFE_MENU(menu);
@@ -245,6 +245,8 @@ image-bg font extra-options used-shortcut-keys) */
 		 pmenu->scmExtraOptions,
 /*		 pmenu->scmMenuLook, */
 		 gh_str02scm(pmenu->pchUsedShortcutKeys),
+                 gh_scm2int(pmenu->cmsPopupDelay),
+                 gh_scm2int(pmenu->cmsHoverDelay),
                  SCM_UNDEFINED);
 }
 #undef FUNC_NAME
@@ -262,7 +264,8 @@ SCWM_PROC(make_menu, "make-menu", 5, 5, 0,
           (SCM list_of_menuitems,
            SCM bg_color, SCM text_color, SCM stipple_color, SCM font,
            SCM picture_side, SCM side_picture_align, SCM side_bg_color,
-           SCM picture_bg, SCM extra_options))
+           SCM picture_bg, 
+           SCM extra_options))
 /** Make and return a menu object from the given arguments.
 LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
 BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects or symbols;
@@ -277,6 +280,8 @@ EXTRA-OPTIONS can be anything understood by the menu-look
 {
   Menu *pmenu = NEW(Menu);
   SCM answer;
+  pmenu->cmsPopupDelay = 900;
+  pmenu->cmsHoverDelay = 500;
 
   /* LIST-OF-MENUITEMS: Required */
   if (!gh_list_p(list_of_menuitems)) {
@@ -356,43 +361,62 @@ EXTRA-OPTIONS can be anything understood by the menu-look
 
   pmenu->pchUsedShortcutKeys = NULL;
 
-#if 0
-  /* GJB:FIXME:: we currently defer testing of menuitems
-     until later so that the menus can be more dynamic */
-  rest = pmenu->scmMenuItems;
-
-  while (True) {
-    item = gh_car(rest);
-    pmi = SAFE_MENUITEM(item);
-    /* warn for a bad menu item, but permit #f menuitems
-       for easier skipping of missing applications, e.g. */
-    if (!pmi && item != SCM_BOOL_F) {
-      scwm_msg(WARN,FUNC_NAME,"Bad menu item %d",ipmiim);
-    }
-    if (pmi && pmi->pchHotkeyPreferences) {
-      char *pchDesiredChars = pmi->pchHotkeyPreferences;
-      char ch;
-      while ((ch = *pchDesiredChars++) != '\0') {
-	if (!strchr(pch,ch)) {
-	  /* Found the char to use */
-	  rgpmiim[ipmiim]->chShortcut = ch;
-	  pch[ich++] = tolower(ch);
-	  rgpmiim[ipmiim]->ichShortcutOffset = IchIgnoreCaseInSz(pmi->szLabel,ch);
-	  break;
-	}
-      }
-    }
-    ipmiim++;
-    rest = gh_cdr(rest);
-    if (SCM_NULLP(rest))
-      break;
-  }
-#endif
+  
 
   SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_menu, pmenu);
   return answer;
 }
 #undef FUNC_NAME
+
+SCWM_PROC(set_menu_popup_delay_x, "set-menu-popup-delay!", 2, 0, 0,
+          (SCM menu, SCM popup_delay))
+     /** Set MENU's submenu popup delay to POPUP-DELAY.
+POPUP-DELAY is the number of ms to wait before popping up submenus. */
+#define FUNC_NAME s_set_menu_popup_delay_x
+{
+  if (!MENU_P(menu)) scm_wrong_type_arg(FUNC_NAME,1,menu);
+  COPY_INTEGER_OR_ERROR(MENU(menu)->cmsPopupDelay,popup_delay,10,FUNC_NAME);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(menu_popup_delay, "menu-popup-delay", 1, 0, 0,
+          (SCM menu))
+     /** Return MENU's submenu popup delay.
+See `set-menu-popup-delay!'. */
+#define FUNC_NAME s_menu_popup_delay
+{
+  if (!MENU_P(menu)) scm_wrong_type_arg(FUNC_NAME,1,menu);
+  return gh_int2scm(MENU(menu)->cmsPopupDelay);
+}
+#undef FUNC_NAME
+
+
+
+SCWM_PROC(set_menu_hover_delay_x, "set-menu-hover-delay!", 2, 0, 0,
+          (SCM menu, SCM hover_delay))
+     /** Set MENU's hover delay to HOVER-DELAY.
+HOVER-DELAY is the number of ms to wait before invoking the hover action. */
+#define FUNC_NAME s_set_menu_hover_delay_x
+{
+  if (!MENU_P(menu)) scm_wrong_type_arg(FUNC_NAME,1,menu);
+  COPY_INTEGER_OR_ERROR(MENU(menu)->cmsHoverDelay,hover_delay,11,FUNC_NAME);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(menu_hover_delay, "menu-hover-delay", 1, 0, 0,
+          (SCM menu))
+     /** Return MENU's hover action delay.
+See `set-menu-hover-delay!'. */
+#define FUNC_NAME s_menu_hover_delay
+{
+  if (!MENU_P(menu)) scm_wrong_type_arg(FUNC_NAME,1,menu);
+  return gh_int2scm(MENU(menu)->cmsPopupDelay);
+}
+#undef FUNC_NAME
+
 
 /* FIXJTL: this is a very unfortunate naming system; maybe all the
    set-menu-* funcs should be set-default-menu-*?  Or something like
@@ -657,10 +681,6 @@ static const long menu_event_mask = (ButtonPressMask | ButtonReleaseMask |
 				     PointerMotionMask );
 
 
-/* GJB:FIXME:: make these configurable */
-static int HOVER_DELAY_MS = 500;
-static int MENU_POPUP_DELAY_MS = 900;
-
 static
 SCM
 InvokeUnhoverAction(DynamicMenu *pmd)
@@ -916,6 +936,10 @@ PmdPrepopFromPmiim(MenuItemInMenu *pmiim)
     if (!pmenu) {
       pmenu = DYNAMIC_SAFE_MENU(pmiim->pmi->scmHover);
     }
+    if (!pmenu && pmiim->pmi->fIsForcedSubmenu) {
+      SCM scmMenu = scwm_safe_call0(pmiim->pmi->scmAction);
+      pmenu = DYNAMIC_SAFE_MENU(scmMenu);
+    }
     if (pmenu) {
       pmd = pmiim->pmd;
       pmdNew = NewDynamicMenu(pmenu,pmd);
@@ -955,12 +979,12 @@ XPutBackKeystrokeEvent(Display *dpy, Window w, KeySym keysym)
 
 
 static
-SCM
+MenuItem *
 MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSelect)
 #define FUNC_NAME "MenuInteraction"
 {
   int c10ms_delays = 0;
-  SCM scmAction = SCM_UNDEFINED;
+  MenuItem *pmiSelected = NULL; /* we return this selected menu item */
   MenuItemInMenu *pmiim = NULL;
   int cpixXoffsetInMenu = 0;
   int cpixYoffsetInMenu = 0;
@@ -975,20 +999,27 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
   /* Don't assume all menu types pop up with the pointer on the first
      item; pie menus for instance will pop up with nothing selected */
   UnselectAndRepaintSelectionForPmd(pmd);
-  /* GJB:FIXME:: need to make initial item selection */
+
+  /* get the item the pointer is at */
+  pmiim = PmiimFromPointerLocation(dpy,&cpixXoffsetInMenu,&cpixYoffsetInMenu);
+
+  Event.type = MotionNotify;
+  /* GJB:FIXME:: This is ugly, but this whole crap needs rewriting anyway */
+  goto START_MENU_INTERACTION_LOOP;
+
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
       ms_sleep(10);
       ++c10ms_delays;
 
-      if (c10ms_delays == MENU_POPUP_DELAY_MS/10) {
+      if (c10ms_delays == pmd->pmenu->cmsPopupDelay/10) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	if (pmd->pmdNext == NULL) {
 	  PmdPrepopFromPmiim(pmiimSelected);
 	}
       }
 
-      if (c10ms_delays == HOVER_DELAY_MS/10 ) {
+      if (c10ms_delays == pmd->pmenu->cmsHoverDelay/10) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	if (pmiimSelected) {
 	  SCM scmHover = pmiimSelected->pmi->scmHover;
@@ -998,10 +1029,6 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
 	    scwm_safe_call0_sym(scmHover);
 	  }
 	}
-	/* block until there is an interesting event */
-	XMaskEvent(dpy, menu_event_mask, &Event);
-	break; /* skip out of the while loop since we just blocked 
-		  for an event and got one */
       }
     }
     if (Event.type == MotionNotify) {
@@ -1017,6 +1044,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
       fGotMouseMove = True;
     }
 
+  START_MENU_INTERACTION_LOOP:
     switch(Event.type) {
     case ButtonRelease:
     { /* scope */
@@ -1028,7 +1056,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
 	  DBUG((DBG,FUNC_NAME,"Pointer not in selected item -- weird!"));
 	} else {
           if (pmiim && pmiim->pmi)
-            scmAction = pmiim->pmi->scmAction;
+            pmiSelected = pmiim->pmi;
 	}
       }
       goto MENU_INTERACTION_RETURN;
@@ -1047,7 +1075,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
         if (keysym == XK_Meta_L || keysym == XK_Meta_R ||
             keysym == XK_Alt_L || keysym == XK_Alt_R) {
           if (pmiim && pmiim->pmi)
-            scmAction = pmiim->pmi->scmAction;
+            pmiSelected = pmiim->pmi;
           goto MENU_INTERACTION_RETURN;
         }
       }
@@ -1074,7 +1102,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
 	    scwm_msg(WARN,FUNC_NAME,"Pointer not in selected item -- weird!");
 	  } else {
             if (pmiim && pmiim->pmi)
-              scmAction = pmiim->pmi->scmAction;
+              pmiSelected = pmiim->pmi;
 	    goto MENU_INTERACTION_RETURN;
 	  }
 	}
@@ -1212,7 +1240,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
       XPutBackKeystrokeEvent(dpy,pmiim->pmd->w,XK_Right);
   } /* while true */
  MENU_INTERACTION_RETURN:
-  return scmAction;
+  return pmiSelected;
 }
 #undef FUNC_NAME
 
@@ -1259,7 +1287,10 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
   pmiim->chShortcut = '\0';
   pmiim->ichShortcutOffset = -1;
 
-  pmiim->fShowPopupArrow = (DYNAMIC_MENU_P(pmiim->pmi->scmAction)) || (DYNAMIC_MENU_P(pmiim->pmi->scmHover));
+  pmiim->fShowPopupArrow = 
+    (DYNAMIC_MENU_P(pmiim->pmi->scmAction)) ||
+    (DYNAMIC_MENU_P(pmiim->pmi->scmHover)) ||
+    pmiim->pmi->fIsForcedSubmenu;
   
   if (pmiim->pmi->scmAction == SCM_BOOL_F)
     pmiim->mis = MIS_Grayed;
@@ -1399,6 +1430,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
               int x, int y, int corner)
 {
   DynamicMenu *pmd = NewDynamicMenu(pmenu,pmdPoppedFrom);
+  MenuItem *pmi = NULL;
   int cpixX_startpointer;
   int cpixY_startpointer;
   SCM scmAction = SCM_UNDEFINED;
@@ -1412,14 +1444,21 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
 
   PopupMenu(pmd);
   GrabEm(CURSOR_MENU);
-  scmAction = MenuInteraction(pmd, fWarpToFirst, fPermitAltReleaseToSelect);
+  pmi = MenuInteraction(pmd, fWarpToFirst, fPermitAltReleaseToSelect);
   UngrabEm();
   PopdownMenu(pmd);
   PopdownAllPriorMenus(pmd);
   FreeDynamicMenu(pmd);
+  if (!pmi)
+    return SCM_BOOL_F;
+
+  scmAction = pmi->scmAction;
   DEREF_IF_SYMBOL(scmAction);
+  if (pmi->fIsForcedSubmenu && DYNAMIC_PROCEDURE_P(scmAction)) {
+    scmAction = scwm_safe_call0(scmAction);
+  }
   if (DYNAMIC_PROCEDURE_P(scmAction)) {
-    return scwm_safe_call0_sym(scmAction);
+    return scwm_safe_call0(scmAction);
   } else if (DYNAMIC_MENU_P(scmAction)) {
     return popup_menu(scmAction, SCM_BOOL_FromBool(fWarpToFirst), 
                       SCM_BOOL_F, SCM_BOOL_F, SCM_BOOL_F);

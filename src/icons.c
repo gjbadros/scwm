@@ -57,7 +57,7 @@ static SCM deiconify_hook;
  *
  ***********************************************************************/
 static void 
-GrabIconButtons(ScwmWindow * psw, Window w)
+GrabIconButtons(ScwmWindow *psw, Window w)
 {
   Binding *MouseEntry;
 
@@ -512,12 +512,9 @@ RedoIconName(ScwmWindow *psw)
 }
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	AutoPlace - Find a home for an icon
- *
- ************************************************************************/
+/*
+ * AutoPlace - Find a home for an icon
+ */
 void 
 AutoPlace(ScwmWindow *psw)
 {
@@ -528,8 +525,6 @@ AutoPlace(ScwmWindow *psw)
   ScwmWindow *test_window;
   Bool loc_ok;
   int real_x = 10, real_y = 10;
-  int new_x, new_y;
-
 
   base_x = ((FRAME_X_VP(psw) + ICON_VP_OFFSET_X(psw) + (FRAME_WIDTH(psw)/2))
 	    / Scr.DisplayWidth) * Scr.DisplayWidth - ICON_VP_OFFSET_X(psw);

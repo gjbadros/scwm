@@ -198,10 +198,10 @@ CassowaryModifyOpaqueFlag(Bool *pfOpaque)
 }
 
 void 
-ChangeVirtualPosition(int vx, int vy, Bool fGrab)
+ChangeVirtualPosition(int vx, int vy)
 {
   if (!psolver) {
-    MoveViewport_internal(vx, vy, fGrab);
+    MoveViewport_internal(vx, vy);
     return;
   }
 
@@ -225,7 +225,7 @@ ChangeVirtualPosition(int vx, int vy, Bool fGrab)
   psolver->Resolve();
   psolver->EndEdit();
 
-  MoveViewport_internal(pssci->_vx.IntValue(),pssci->_vy.IntValue(),fGrab);
+  MoveViewport_internal(pssci->_vx.IntValue(),pssci->_vy.IntValue());
 }
 
 

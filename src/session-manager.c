@@ -197,7 +197,7 @@ void restoreWindowState(ScwmWindow *psw)
 {
   SMWindowData **p, *d;
   unsigned char *clientId;
-  extern long isIconicState;
+  /* FIXME  extern long isIconicState; */
   
   if (!SmcId)
     return;

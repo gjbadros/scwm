@@ -189,7 +189,8 @@ ComputeNewGeometryOnResize(ScwmWindow *psw,
 {
   Bool fChangedX = False;
   Bool fChangedY = False;
-  int dragx, dragy, dragWidth, dragHeight;
+  int dragx = x_root, dragy = y_root;
+  int dragWidth, dragHeight;
 
   if ((y_root <= y_orig) ||
       ((*psgnYmotion == 1) && (y_root < y_orig + h_orig - 1))) {
@@ -300,7 +301,6 @@ resize frames. VALUE should be an integer. */
  * RedrawOutlineAtNewPosition
  *
  *  Inputs:
- *	root	    - the window we are outlining
  *	x	    - upper left x coordinate
  *	y	    - upper left y coordinate
  * (x,y are viewport positions)
@@ -308,7 +308,7 @@ resize frames. VALUE should be an integer. */
  *	height	    - the height of the rectangle
  */
 void 
-RedrawOutlineAtNewPosition(Window root, int x, int y, int width, int height)
+RedrawOutlineAtNewPosition(int x, int y, int width, int height)
 {
   /* GJB:FIXME:: Ugh. no statics! */
   static int lastx = 0;
@@ -446,7 +446,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
 
   /* draw the rubber-band window */
   if (!fOpaque) {
-    RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
+    RedrawOutlineAtNewPosition(dragx - psw->bw, dragy - psw->bw,
                                dragWidth + 2 * psw->bw,
                                dragHeight + 2 * psw->bw);
   }
@@ -532,7 +532,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
           dragy -= delta_y;
           
           if (!fOpaque) {
-            RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
+            RedrawOutlineAtNewPosition(dragx - psw->bw, dragy - psw->bw,
                                        dragWidth + 2 * psw->bw, 
                                        dragHeight + 2 * psw->bw);
           }
@@ -556,7 +556,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   }
 
   if (!fOpaque) {
-    RemoveRubberbandOutline(Scr.Root);
+    RemoveRubberbandOutline();
   }
 
   /* pop down the size window */
@@ -579,13 +579,19 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   Scr.fEdgeWrapX = fEdgeWrapX;
   Scr.fEdgeWrapY = fEdgeWrapY;
 
+  if (pwidthReturn)
+    *pwidthReturn = dragWidth;
+
+  if (pheightReturn)
+    *pheightReturn = dragHeight;
+
   return True;
 }
 
 SCWM_PROC(rubber_band_resize, "rubber-band-resize", 0, 1, 0,
           (SCM win))
      /** Resize WIN interactively, using a rubber band frame.
-Returns a list '(WIDTH HEIGHT) that is the new size of WIN.
+Returns a list '(width height) that is the new size of WIN.
 This allows the user to drag a rubber band frame to set the size of
 the window. WIN defaults to the window context in the usual way if not
 specified.  */
@@ -617,7 +623,7 @@ specified.  */
 SCWM_PROC(opaque_resize, "opaque-resize", 0, 1, 0,
           (SCM win))
      /** Resize WIN interactively, opaquely.
-Returns a list '(WIDTH HEIGHT) that is the new size of WIN.
+Returns a list '(width height) that is the new size of WIN.
 This allows the user to drag the boundaries of the window to set its
 size. WIN defaults to the window context in the usual way if not
 specified. The window is updated immediately as the size changes take

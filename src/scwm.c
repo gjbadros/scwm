@@ -78,6 +78,7 @@
 #include "scm_init_funcs.h"
 #include "screen.h"
 #include "window.h"
+#include "add_window.h"
 #include "decor.h"
 #include "image.h"
 #include "menu.h"
@@ -152,6 +153,7 @@ int JunkX = 0, JunkY = 0;
 ScwmWindow *FocusOnNextTimeStamp = NULL;
 
 Bool debugging = False, PPosOverride = False, Blackout = False;
+Bool fDisableBacktrace = False;
 
 char **g_argv;
 int g_argc;
@@ -626,6 +628,8 @@ scwm_main(int argc, char **argv)
 <seg/-D or --debug/ <seg/enable lots of debugging messages./
 </seglistitem><seglistitem>
 
+<seg/-n or --nobacktrace/ <seg/disable guile's debugging backtraces./
+</seglistitem><seglistitem>
 
 <seg/-s or --single-screen/ <seg/run only on on the first screen of the display./
 </seglistitem><seglistitem>
@@ -662,7 +666,7 @@ is probably of no use to you unless you're a session manager or debbuging.
   while(1) {
     static struct option getopt_longopts[] =
     {
-      {"debug", 0, NULL, 'D'},
+      {"debug", 0, NULL, 'D'}, /* turns on Scwm debugging */
       {"single-screen", 0, NULL, 's'},
       {"display", 1, NULL, 'd'},
       {"file", 1, NULL, 'f'},
@@ -670,6 +674,7 @@ is probably of no use to you unless you're a session manager or debbuging.
       {"help", 0, NULL, 'h'},
       {"blackout", 0, NULL, 'b'},
       {"version", 0, NULL, 'V'},
+      {"nobacktrace", 0, NULL, 'n'}, /* turns off guile backtraces */
       {CLIENT_ID_STRING, required_argument, NULL, CLIENT_ID},
       {NULL, 0, NULL, 0}
     };
@@ -691,6 +696,8 @@ is probably of no use to you unless you're a session manager or debbuging.
         display_name = optarg;
         break;
       }
+    case 'n':
+      fDisableBacktrace = True; break;
     case 'f':
       if(optarg == NULL) {
         option_error=True;
@@ -924,6 +931,10 @@ Repository Timestamp: %s\n",
   init_scwm_load_path();
   
   DBUG((DBG,"main", "Setting up rc file defaults..."));
+
+  if (fDisableBacktrace) {
+    gh_eval_str("(debug-disable 'debug)");
+  }
 
   /* the compiled-in .scwmrc comes from minimal.scm,
      built into init_scheme_string.c by the make file */
@@ -1187,7 +1198,7 @@ CaptureAllWindows(void)
 }
 
 SIGNAL_T
-SigResetLoop(int nonsense)
+SigResetLoop(int ignored)
 {
   /* re-install signal handler */
   newhandler_doreset(SIGNAL_FOR_RESET);
@@ -1234,7 +1245,7 @@ newsegvhandler(int sig)
  * Restart on a signal
  ************************************************************************/
 void 
-Restart(int nonsense)
+Restart(int ignored)
 {
   Done(1, *g_argv);
   SIGNAL_RETURN;
@@ -1356,14 +1367,14 @@ Reborder(Bool fRestart)
  * that uses libraries in a signal handler!
  */
 SIGNAL_T
-SigDone(int nonsense)
+SigDone(int ignored)
 {
   Done(0, NULL);
   SIGNAL_RETURN;
 }
 
 SIGNAL_T
-SigDoneSegv(int nonsense)
+SigDoneSegv(int ignored)
 {
   Done(-1, NULL);
   SIGNAL_RETURN;
@@ -1554,7 +1565,6 @@ scwm_msg(scwm_msg_levels type, char *id, char *msg,...)
 
   if (type == ERR) {
     char *sz = malloc( (length_printed+2) * sizeof(char));
-    int ich = 0;
     sprintf(sz, "[Scwm][%s]: %s ", id, typestr);
     vsprintf(sz + strlen(sz), msg, args);
     strcat(sz,"\n");

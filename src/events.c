@@ -60,6 +60,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
+#include <assert.h>
 
 #include <guile/gh.h>
 
@@ -240,19 +241,16 @@ HandleMappingNotify()
 }
 #undef FUNC_NAME
 
-/***********************************************************************
- *
- *  Procedure:
- *	Find the Scwm context for the Event.
- *
- ************************************************************************/
+/*
+ * Return the Scwm context for the Event.
+ */
 static
 int 
-GetContext(ScwmWindow * t, XEvent * e, Window * w)
+GetContext(ScwmWindow * psw, XEvent * e, Window * w)
 {
   int Context, i;
 
-  if (!t)
+  if (!psw)
     return C_ROOT;
 
   Context = C_NO_CONTEXT;
@@ -268,40 +266,40 @@ GetContext(ScwmWindow * t, XEvent * e, Window * w)
     *w = e->xkey.subwindow;
 
   if ((e->type == ButtonPress) && (e->xbutton.subwindow != None) &&
-    ((e->xbutton.subwindow == t->w) || (e->xbutton.subwindow == t->Parent)))
+    ((e->xbutton.subwindow == psw->w) || (e->xbutton.subwindow == psw->Parent)))
     *w = e->xbutton.subwindow;
 
   if (*w == Scr.Root)
     Context = C_ROOT;
-  if (t) {
-    if (*w == t->title_w)
+  if (psw) {
+    if (*w == psw->title_w)
       Context = C_TITLE;
-    if ((*w == t->w) || (*w == t->Parent))
+    if ((*w == psw->w) || (*w == psw->Parent))
       Context = C_WINDOW;
-    if (*w == t->icon_w)
+    if (*w == psw->icon_w)
       Context = C_ICON;
-    if (*w == t->icon_pixmap_w)
+    if (*w == psw->icon_pixmap_w)
       Context = C_ICON;
-    if (*w == t->frame)
+    if (*w == psw->frame)
       Context = C_SIDEBAR;
     for (i = 0; i < 4; i++)
-      if (*w == t->corners[i]) {
+      if (*w == psw->corners[i]) {
 	Context = C_FRAME;
 	Button = i;
       }
     for (i = 0; i < 4; i++)
-      if (*w == t->sides[i]) {
+      if (*w == psw->sides[i]) {
 	Context = C_SIDEBAR;
 	Button = i;
       }
-    for (i = 0; i < Scr.nr_left_buttons; i++) {
-      if (*w == t->left_w[i]) {
+    for (i = 0; i < psw->nr_left_buttons; i++) {
+      if (*w == psw->left_w[i]) {
 	Context = (1 << i) * C_L1;
 	Button = i;
       }
     }
-    for (i = 0; i < Scr.nr_right_buttons; i++) {
-      if (*w == t->right_w[i]) {
+    for (i = 0; i < psw->nr_right_buttons; i++) {
+      if (*w == psw->right_w[i]) {
 	Context = (1 << i) * C_R1;
 	Button = i;
       }
@@ -846,7 +844,7 @@ HandleClientMessage()
 
   /* GJB:FIXME:: converting from C array to SCM vector is clumsy -- better way? */
   if (!FEmptyHook(client_message_hook)) {
-    SCM data;
+    SCM data = SCM_BOOL_F;
     switch (Event.xclient.format) {
     case 8: /* interpret as a string */
       data = gh_str02scm(Event.xclient.data.b);
@@ -874,6 +872,9 @@ HandleClientMessage()
           ++pl;
         }
       }
+    default:
+      /* should never get here */
+      assert(False);
       break;
     } /* end switch */
     if (Event.xclient.window == Scr.Root) {

@@ -62,7 +62,7 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
   scm_contregs static_jmpbuf;
 #endif
   int old_ints_disabled = scm_ints_disabled;
-  SCM old_rootcont, old_winds;
+  SCM old_rootcont;
   struct cwdr_no_unwind_handler_data my_handler_data;
   SCM answer;
 

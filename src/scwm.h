@@ -227,6 +227,20 @@ enum wm_client_functions {
   else scm_wrong_type_arg(func,pos,flag); \
   } while (0)
 
+#define COPY_INTEGER_WITH_DEFAULT_OR_ERROR(var,scm,pos,func,def) \
+  do { \
+  if (UNSET_SCM(scm)) var = def; \
+  else if (gh_number_p(scm)) var = gh_scm2int(scm); \
+  else scm_wrong_type_arg(func,pos,scm); \
+  } while (0)
+
+#define COPY_INTEGER_OR_ERROR(var,scm,pos,func) \
+  do { \
+  if (gh_number_p(scm)) var = gh_scm2int(scm); \
+  else scm_wrong_type_arg(func,pos,scm); \
+  } while (0)
+
+
 #define PackedBool(x) unsigned short x:1
 
 /* if you would like to see lots of debug messages from scwm, for debugging

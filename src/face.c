@@ -549,7 +549,13 @@ title and border faces, are indicated below.
 */
   
 
+/**CONCEPT: Window Style
+  Window styles encapsulate the behaviour and appearance of windows.
+They are applied to windows arbitrarily so different windows can
+use different styles at the same time.  Numerous options are permitted
+for window styles.  These include:
 
+*/
 
 ButtonFace *append_new_face(ButtonFace *bf);
 

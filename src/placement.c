@@ -407,6 +407,7 @@ used in user-defined placement procedures (see
   }
 
   default_select_desk(PSWFROMSCMWIN(win));
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 

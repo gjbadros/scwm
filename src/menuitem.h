@@ -54,6 +54,7 @@ typedef struct MenuItem_tag
 				/* This gets set true in make_menuitem,
 				   iff everything is empty strings
 				   or unset (SCM_BOOL_F or SCM_UNDEFINED) */
+  Bool fIsForcedSubmenu;        /* True iff we require that this be a submenu */
 } MenuItem;
 
 struct DynamicMenu_tag;

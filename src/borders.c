@@ -657,6 +657,45 @@ PixelHiBackFromPsw(const ScwmWindow *psw)
   else return XCOLOR(psw->HiBackColor);
 }
 
+
+int
+CLeftButtons(const ScwmWindow *psw)
+{
+#if 1
+  return Scr.nr_left_buttons;
+#else
+  unsigned long buttons = psw->buttons;
+  int c = 0;
+  while (buttons) {
+    if (buttons & 1 == 0) {
+      ++c;
+    }
+    buttons >>= 2;
+  }
+  return c;
+#endif
+}
+
+int
+CRightButtons(const ScwmWindow *psw)
+{
+#if 1
+  return Scr.nr_right_buttons;
+#else
+  unsigned long buttons = psw->buttons;
+  int c = 0;
+  buttons >>= 1;
+  while (buttons) {
+    if (buttons & 1 == 0) {
+      ++c;
+    }
+    buttons >>= 2;
+  }
+  return c;
+#endif
+}
+
+
 /* Set Border just calls SetBorderX with really_force == False */
 void
 SetBorder(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
@@ -800,9 +839,10 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
   }
 
   if (SHOW_TITLE_P(psw)) {
+    unsigned long buttons = psw->buttons;
     ChangeWindowColor(psw->title_w, valuemask);
-    for (i = 0; i < Scr.nr_left_buttons; ++i) {
-      if (psw->left_w[i] != None) {
+    for (i = 0; i < psw->nr_left_buttons; ++i) {
+      if (psw->left_w[i] != None && !(buttons & (1 << (i*2)))) {
 	enum ButtonState bs = GetButtonState(psw->left_w[i]);
 	ButtonFace *bf = GET_DECOR(psw, left_buttons[i].state[bs]);
 
@@ -849,8 +889,8 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	}
       }
     }
-    for (i = 0; i < Scr.nr_right_buttons; ++i) {
-      if (psw->right_w[i] != None) {
+    for (i = 0; i < psw->nr_right_buttons; ++i) {
+      if (psw->right_w[i] != None && !(buttons & (1 << (i*2+1)))) {
 	enum ButtonState bs = GetButtonState(psw->right_w[i]);
 	ButtonFace *bf = GET_DECOR(psw, right_buttons[i].state[bs]);
 
@@ -1058,14 +1098,13 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 }
 
 
-/****************************************************************************
- *
+/*
  *  Redraws just the title bar
- *
- ****************************************************************************/
+ */
 void 
-SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool NewTitle)
+SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool NewTitle) 
 {
+  /* GJB:FIXME:: NewTitle parameter is unused */
   int hor_off, w, i;
   enum ButtonState title_state;
   ButtonFaceStyle tb_style;
@@ -1391,19 +1430,23 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
 
 
 #ifndef NDEBUG
-  if ((w != FRAME_WIDTH(psw)) || ((h != FRAME_HEIGHT(psw)) && !fResized))
+  if ((w != FRAME_WIDTH(psw)) || ((h != FRAME_HEIGHT(psw)) && !fResized)) {
     DBUG((DBG,FUNC_NAME,"Width/height changed but not fResized"));
+    ;
+  }
 
-  if ((x != FRAME_X(psw) || y != FRAME_Y(psw)) && !fMoved)
+  if ((x != FRAME_X(psw) || y != FRAME_Y(psw)) && !fMoved) {
     DBUG((DBG,FUNC_NAME,"Coords changed but not fMoved"));
+    ;
+  }
 #endif
 
   if (fResized) {
     /* make the decoration buttons square */
     int button_width = psw->title_height;
 
-    int left = psw->nr_left_buttons;
-    int right = psw->nr_right_buttons;
+    int left = CLeftButtons(psw);
+    int right = CRightButtons(psw);
 
     DBUG((DBG,FUNC_NAME,"Resized to x=%d, y=%d;  w=%d,h=%d",x,y,w,h));
 
@@ -1424,6 +1467,8 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
     }
 
     if (SHOW_TITLE_P(psw)) {
+      unsigned long buttons = psw->buttons;
+
       psw->title_x = psw->xboundary_width + (left * button_width);
       if (psw->title_x >= w - psw->xboundary_width)
 	psw->title_x = -10;
@@ -1439,42 +1484,52 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       xwc.width = button_width;
       xwc.y = psw->boundary_width;
       xwc.x = psw->xboundary_width;
-      for (i = 0; i < Scr.nr_left_buttons; i++) {
+      for (i = 0; i < CLeftButtons(psw); i++) {
 	if (psw->left_w[i] != None) {
-	  if (xwc.x + button_width < w - psw->boundary_width)
-	    XConfigureWindow(dpy, psw->left_w[i], xwcm, &xwc);
-	  else {
-	    xwc.x = -button_width;
-	    XConfigureWindow(dpy, psw->left_w[i], xwcm, &xwc);
-	  }
-          XMapWindow(dpy,psw->left_w[i]);
-	  xwc.x += button_width;
-	}
+          if (buttons & (1 << (i*2))) {
+            /* suppress that button */
+            XUnmapWindow(dpy,psw->left_w[i]);
+          } else {
+            if (xwc.x + button_width < w - psw->boundary_width)
+              XConfigureWindow(dpy, psw->left_w[i], xwcm, &xwc);
+            else {
+              xwc.x = -button_width;
+              XConfigureWindow(dpy, psw->left_w[i], xwcm, &xwc);
+            }
+            XMapWindow(dpy,psw->left_w[i]);
+          }
+          xwc.x += button_width;
+        }
       }
 
       xwc.x = tbar_right - psw->xboundary_width + psw->bw;
-      for (i = 0; i < Scr.nr_right_buttons; i++) {
+      for (i = 0; i < CRightButtons(psw); i++) {
 	if (psw->right_w[i] != None) {
-	  xwc.x -= button_width;
-	  if (xwc.x > psw->boundary_width)
-	    XConfigureWindow(dpy, psw->right_w[i], xwcm, &xwc);
-	  else {
-	    xwc.x = -button_width;
-	    XConfigureWindow(dpy, psw->right_w[i], xwcm, &xwc);
-	  }
-          XMapWindow(dpy,psw->right_w[i]);
-	}
+            xwc.x -= button_width;
+          if (buttons & (1 << (i*2+1))) {
+            /* suppress that button */
+            XUnmapWindow(dpy,psw->right_w[i]);
+          } else {
+            if (xwc.x > psw->boundary_width)
+              XConfigureWindow(dpy, psw->right_w[i], xwcm, &xwc);
+            else {
+              xwc.x = -button_width;
+              XConfigureWindow(dpy, psw->right_w[i], xwcm, &xwc);
+            }
+            XMapWindow(dpy,psw->right_w[i]);
+          }
+        }
       }
     } else {
       /* no title bar, so unmap button windows! */
       XUnmapWindow(dpy,psw->title_w);
 
-      for (i = 0; i < Scr.nr_left_buttons; i++) {
+      for (i = 0; i < CLeftButtons(psw); i++) {
 	if (psw->left_w[i] != None) {
           XUnmapWindow(dpy,psw->left_w[i]);
         }
       }
-      for (i = 0; i < Scr.nr_right_buttons; i++) {
+      for (i = 0; i < CRightButtons(psw); i++) {
 	if (psw->right_w[i] != None) {
           XUnmapWindow(dpy,psw->right_w[i]);
         }

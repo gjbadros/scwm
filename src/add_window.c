@@ -62,8 +62,10 @@
 #include "decorations.h"
 #include "Grab.h"
 #include "colors.h"
+#include "events.h"
 #include "borders.h"
 #include "resize.h"
+#include "focus.h"
 #include "colormaps.h"
 #include "image.h"
 #include "module-interface.h"
@@ -106,10 +108,10 @@ void SuggestSizeWindowTo(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaq
   SetScwmWindowGeometry(psw,x,y,w,h, fOpaque);
 }
 /* from virtual.h */
-void MoveViewport_internal(int newx, int newy, Bool grab);
+void MoveViewport_internal(int newx, int newy);
 
-void ChangeVirtualPosition(int vx, int vy, Bool fGrab) {
-  MoveViewport_internal(vx,vy,fGrab);
+void ChangeVirtualPosition(int vx, int vy) {
+  MoveViewport_internal(vx,vy);
 }
 
 void CassowaryModifyOpaqueFlag(Bool *pfOpaque) { /* empty */ }
@@ -794,7 +796,8 @@ DestroyScwmWindow(ScwmWindow *psw)
   if (psw->fTitle) {
     XDeleteContext(dpy, psw->title_w, ScwmContext);
     for (i = 0; i < Scr.nr_left_buttons; i++)
-      XDeleteContext(dpy, psw->left_w[i], ScwmContext);
+      if (psw->left_w[i] != None)
+        XDeleteContext(dpy, psw->left_w[i], ScwmContext);
     for (i = 0; i < Scr.nr_right_buttons; i++)
       if (psw->right_w[i] != None)
 	XDeleteContext(dpy, psw->right_w[i], ScwmContext);
