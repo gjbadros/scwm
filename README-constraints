@@ -1,0 +1,73 @@
+Scwm Constraint Solver Readme
+-----------------------------
+
+By Greg J. Badros -- 14 August 1998
+
+
+For any of you interested in playing the the constraint-solving
+extension to SCWM, here are some brief instructions on getting started.
+
+First, you'll need my Cassowary constraint solving toolkit. It's
+available from:
+
+http://www.cs.washington.edu/research/constraints/cassowary/
+
+The latest version is v0.2. It's C++ code, and it builds
+using egcs-1.01 or newer, or gcc-2.8.1, and hopefully other C++
+compilers that support the STL reasonably well. There's no fancy
+automake/autoconf stuff with Cassowary, so you'll have to edit the
+Makefile by hand. So far I've only tried building it on Linux (and
+Windows95), because those are the only platforms where I've had a
+C++ compiler recent enough to handle the code (I'll be building egcs-1.1 
+on a couple other platforms when it is released).
+
+Note that it does not build with some pre1.1 snapshots of egcs.
+Hopefully this will be fixed either by the released egcs1.1, or by a
+patch to Cassowary.
+
+After building Cassowary (in the c++/ subdirectory of the distribution),
+trying running "ClTests" if it seg faults, let me know -- there are
+definitely bugs in the Cassowary toolkit, but there are fewer and fewer
+each week. In the c++ directory, make an extra symlink to tell scwm
+which libcassowary to use:
+
+cd cassowary/c++
+ln -s libcassowary-notrace.a libcassowary.a
+ln -s libcassowary.a libcassowary-scwm.a
+
+
+If ClTests runs successfully for you (the last test is a benchmark that
+takes a couple of minutes), then you should build the guile-wrapper in
+the guile/ subdirectory of Cassowary. There is also a cassowary_scm.sgml
+and cassowary_scm-procedures.txt for documentation (the latter
+integrates smoothly w/ scwm.el and scwm-procedures.txt -- just set your
+scwm `doc-files' variable to point at both).
+
+Then you need to rebuild scwm w/ constraint-solver support. Do this
+using a recent dev snapshot or v0.8 by giving
+--with-cassowary=/path/to/cassowary/c++ as an argument to scwm's
+configure. Then do a clean build of scwm_cl, but use the
+makefile.cassowary (which includes the scwm-generated Makefile):
+
+cd scwm/scwm
+
+make -f makefile.cassowary scwm_cl
+
+All the normal scwm files will build with the C compiler, but the couple 
+of .cc files must be built with the same C++ compiler as you used to
+build Cassowary, and the link step must be done by a C++ compiler, too.
+You may need to edit makefile.cassowary to specify the C++
+compiler/linker.
+
+If all has gone well, you should be able to run the new binary
+"./scwm_cl" just as you would an ordinary scwm binary. Then try
+evaluating some of the S-expressions from scheme/tests/constraints.scm
+for a demonstration of some of what the solver and scwm can do together.
+
+Please let me know of successes and failures. Consider the constraint
+code alpha. My main wm now has the constraint solver embedded, but I
+only turn on the solver (using the scwm-set-master-solver primitive) on
+my testing X server. The behaviour of scwm_cl w/o ever using the
+constraint primitives should be nearly identical to scwm w/o constraints.
+
+Good luck.
