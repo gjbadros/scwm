@@ -1,3 +1,23 @@
+Fri Aug 27 00:18:11 1999    <gjb@cs.washington.edu>
+
+	* misc/Makefile.am (EXTRA_DIST): Install Xsession.patch,
+	Xmodmap-win95keyboard
+
+	* misc/startscwm: Use $HOME/scwm-source as the default SCWMDIR, so 
+	we do not pick up $HOME/scwm by accident.  Reorder code to start X 
+	server before running xauth
+
+	* misc/guile-gtk.spec: Update %files section
+
+	* misc/Xsession.patch: Use a context diff instead of a unified
+	diff
+	
+	* misc/Xmodmap-win95keyboard: Added.
+
+Thu Aug 26 22:54:01 1999    <gjb@cs.washington.edu>
+
+	* misc/Makefile.am (EXTRA_DIST): Include Xsession.patch.
+
 Thu Aug 26 11:34:24 1999    <gjb@cs.washington.edu>
 
 	* misc/Makefile.am: Improve installation of scripts, distributed

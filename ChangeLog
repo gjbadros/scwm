@@ -1,3 +1,16 @@
+Fri Aug 27 00:19:19 1999    <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Do not use exec_prefix including X11R6-- just let
+	binaries go in /usr/bin.  Fix %post, %postun sections to use files 
+	from installed locations, not source locations.  Run ldconfig to
+	update for libraries (e.g., libscwmexec.so).  Updates to %files section.
+
+Thu Aug 26 22:55:17 1999    <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Require >= guile-1.3.2, fix %files list to include 
+	/usr/X11R6/lib stuff, use %{prefix}, not /usr.  Do some post
+	install actions to add a Scwm gnome session (hopefully-- untested).
+
 Thu Aug 26 12:15:35 1999    <gjb@cs.washington.edu>
 
 	* README: Constraints, not configurable.  Added PACKAGE TESTING
