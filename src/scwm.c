@@ -362,7 +362,7 @@ InitVariables(void)
 
   /* set major operating modes */
   Scr.randomx = Scr.randomy = 0;
-  Scr.buttons2grab = 7;
+  Scr.buttons2grab = (1 << XSERVER_MAX_BUTTONS) - 1;
 
   decor2scm(&Scr.DefaultDecor);
   DECORREF(Scr.DefaultDecor.scmdecor);

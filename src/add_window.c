@@ -630,7 +630,7 @@ AddWindow(Window w)
   if (psw->fClickToFocus) {
     /* need to grab all buttons for window that we are about to
        * unhighlight */
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < XSERVER_MAX_BUTTONS; i++)
       if (Scr.buttons2grab & (1 << i)) {
 	XGrabButton(dpy, (i + 1), 0, psw->frame, True,
 		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,

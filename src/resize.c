@@ -124,7 +124,7 @@ SCWM_PROC (message_window_mapped_p, "message-window-mapped?", 0, 0, 0,
      /** Return #t if the message window is mapped, #f otherwise.
 See also `display-message', `hide-message'.  These primitives may disappear when GTk
 support is sufficiently mature.  */
-#define FUNC_NAME s_hide_message
+#define FUNC_NAME s_message_window_mapped_p
 {
   return SCM_BOOL_FromBool(FXIsWindowMapped(dpy,Scr.MsgWindow));
 }

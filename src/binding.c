@@ -288,9 +288,10 @@ GrabButtonWithModifiers(int button, int modifier,
 		  Scr.ScwmCursors[CURSOR_DEFAULT]);
     }
   } else {
-    GrabButtonWithModifiers(1,modifier,psw);
-    GrabButtonWithModifiers(2,modifier,psw);
-    GrabButtonWithModifiers(3,modifier,psw);
+    int i = 1;
+    for ( ; i <= XSERVER_MAX_BUTTONS; ++i) {
+      GrabButtonWithModifiers(i,modifier,psw);
+    }
   }
 }
   

@@ -77,7 +77,7 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
       if ((Scr.Ungrabbed != NULL) && Scr.Ungrabbed->fClickToFocus) {
 	/* Need to grab buttons for focus window */
 	XSync(dpy, 0);
-	for (i = 0; i < 3; i++)
+	for (i = 0; i < XSERVER_MAX_BUTTONS; i++)
 	  if (Scr.buttons2grab & (1 << i)) {
 	    XGrabButton(dpy, (i + 1), 0, Scr.Ungrabbed->frame, True,
 			ButtonPressMask, GrabModeSync, GrabModeAsync,
@@ -102,7 +102,7 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
     /* need to grab all buttons for window that we are about to
      * unfocus */
     XSync(dpy, 0);
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < XSERVER_MAX_BUTTONS; i++)
       if (Scr.buttons2grab & (1 << i))
 	XGrabButton(dpy, (i + 1), 0, Scr.Ungrabbed->frame, True,
 		    ButtonPressMask, GrabModeSync, GrabModeAsync, None,
@@ -112,7 +112,7 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
   /* if we do click to focus, remove the grab on mouse events that
    * was made to detect the focus change */
   if (Fw && Fw->fClickToFocus && !Fw->fSloppyFocus) {
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < XSERVER_MAX_BUTTONS; i++)
       if (Scr.buttons2grab & (1 << i)) {
 	XUngrabButton(dpy, (i + 1), 0, Fw->frame);
 	XUngrabButton(dpy, (i + 1), LockMask, Fw->frame);
