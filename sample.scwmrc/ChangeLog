@@ -1,3 +1,7 @@
+Thu Feb 10 11:41:58 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Fix typo-- title XEmacs, not Emacs.
+
 Mon Feb  7 14:22:32 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added binding for H-M-x to `eval-expression-interactively'

@@ -1,3 +1,12 @@
+Mon Feb  7 17:06:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added auto-shrink.scm
+
+	* auto-shrink.scm: A module that auto-shrinks windows that haven't
+ 	received the focus in a while.  Very alpha right now.  Inspired by
+ 	a paper that I've not yet read --- thanks to Tessa Lau for
+	pointing me at it: http://www.elsevier.nl/gej-ng/10/23/72/31/29/27/abstract.html
+
 Mon Feb  7 14:10:35 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am, auto-unobscure.scm: Added.  Do cool stuff on

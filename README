@@ -30,6 +30,8 @@ Features Scwm provides include:
 
  o GNOME compatibility
  o GUI configurability
+ o Full programmability
+ o Theme support
  o sophisticated window decoration system
  o integrated interaction and documentation system 
    (Emacs or readline based)
