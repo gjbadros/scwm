@@ -501,6 +501,7 @@ dnl ## Checks for header files ##
 
 AC_STDC_HEADERS
 AC_CHECK_HEADERS(getopt.h, AC_DEFINE(HAVE_GETOPT_H))
+AC_CHECK_HEADERS(sys/select.h, AC_DEFINE(HAVE_SYS_SELECT_H))
 
 
 dnl ## Check for library functions ##

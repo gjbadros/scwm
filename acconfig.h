@@ -94,6 +94,9 @@
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
 
+/* Define this if your system has a <sys/select.h> header file. */
+#undef HAVE_SYS_SELECT_H
+
 /* Define this if your system has the getopt_long function. */
 #undef HAVE_GETOPT_LONG
 
