@@ -408,7 +408,7 @@ accoring to the boolean value FLAG.*/
   if (!gh_boolean_p(flag)) {
     scm_wrong_type_arg(FUNC_NAME,1,flag);
   }
-  Scr.ClickToFocusRaises =  SCM_NFALSEP(val) ? True : False;
+  Scr.ClickToFocusRaises =  SCM_NFALSEP(flag) ? True : False;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
