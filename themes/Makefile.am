@@ -11,7 +11,7 @@ EXTRA_DIST=$(srcdir)/fvwm2/* $(srcdir)/mwm/* $(srcdir)/win95/* \
 ## Themes must be removed by make distclean
 ## WARNING: this assume that the only files ending with
 ## .@TAR_SUFFIX@ are the themes files
-DISTCLEANFILES=*.@TAR_SFUFFIX@
+DISTCLEANFILES=*.@TAR_SUFFIX@
 
 
 fvwm2.@TAR_SUFFIX@: $(srcdir)/fvwm2 $(srcdir)/fvwm2/*
