@@ -1,4 +1,15 @@
 ;; $Id$
+;; system.scwmrc -- Scwm System Default initialization file
+;; (from gjb.scwmrc, at release of Scwm-0.99.2)
+;;
+;; Copyright (C) 1997-1999 Greg J. Badros
+;;
+;; Feel free to use and reuse code contained herein
+;; as permitted by the GNU GPL
+;; NO WARRANTIES OF ANY KIND -- USE AT YOUR OWN RISK
+;; It works for me and I like it, but you might not!
+;; Comments are appreciated -- email gjb@cs.washington.edu
+
 
 ;; Uncomment the below to send a single UDP packet to
 ;; the scwm usage counter machine at startup
@@ -6,260 +17,1753 @@
 ;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
 ;;(define thank-scwm-authors-with-usage-note #t)
 
+
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
-(use-scwm-modules base winops winlist wininfo 
-		  doc style message-window face)
+(define xlock-query-program "xlock-stdout")
+
+(define debug #t)
+(define suppress-xclients #t)
+
+(define (debug-display arg)
+  (if debug
+      (display arg)
+      ()))
+
+(use-scwm-modules base message-window)
+(define scwmdir (or (getenv "SCWMDIR") "/usr/share/scwm"))
+
+;;; set path to use for image searches
+(map (lambda (s) (set! image-load-path (cons s image-load-path)))
+     (list
+      "/uns/lib/X11/mini-icons"           ;; last checked
+      "/uns/lib/X11/pixmaps"
+      "/usr/X11/lib/X11/mini-icons"
+      "/usr/X11/include/X11/pixmaps"
+      "/uns/include/X11/pixmaps"
+      "/usr/lib/icons"
+      "/usr/local/X11/include/X11/pixmaps"
+      "/usr/local/lib/icons"
+      "/usr/local/icons"
+      "/uns/share/include/X11/pixmaps"
+      "/uns/share/include/X11/bitmaps"
+      "/usr/lib/TheNextLevel/pixmaps"
+      "/usr/share/icons/mini"
+      (string-append scwmdir "/pixmaps")   ;; first checked
+      ))
+
+(define scwm-logo (make-image "scwm-logo-0.xpm"))
+
+(if scwm-logo
+
+    (define scwm-logo-msgwin 
+      (make-message-window-with-image scwm-logo #t))
+
+    (set-X-server-synchronize! #t)
+    (message-window-show! scwm-logo-msgwin)
+    (set-X-server-synchronize! #f)
+    
+    (define logo-image-sequence
+      (list->vector
+       (map (lambda (deg) (make-image
+			   (string-append "scwm-logo-"
+					  (number->string deg) ".xpm")))
+	    (iota 24))))
+    
+    (define next-logo-image
+      (let ((i 0))
+	(lambda ()
+	  (set! i (modulo (+ i 1) (vector-length logo-image-sequence)))
+	  (message-window-set-image! scwm-logo-msgwin 
+				     (vector-ref logo-image-sequence i) #f #f #t))))
+    
+    (define (next-logo-image-timer)
+      (next-logo-image)
+      (add-timer-hook! 500000 next-logo-image-timer))
+    
+    (define (next-logo-image-n n) (next-logo-image))
+    
+    (add-hook! load-processing-hook next-logo-image-n)
+    
+    ;;(define (move-scwm-logo-msgwin n)
+    ;;  (message-window-set-position!
+    ;;   scwm-logo-msgwin 
+    ;;   (+ (/ display-width 2) n) #f))
+    )
+
+;; Use below lines for help when debugging a GC issue during startup
+;; (set-load-processing-frequency! 1)
+;; (add-hook! load-processing-hook (lambda (n) (display n) (newline) (gc)))
+
+(debug-display "Starting reading scwm modules\n")
+
+
+(use-scwm-modules base defoption optargs primopts 
+		  winops winlist wininfo listops
+		  style stylist face time-convert menus-extras
+		  std-menus doc virtual
+		  flux flux-gtk flash-window key-mover
+		  fvwm-module path-cache animation themes netscape
+		  message-window animated-iconify
+		  modifier-key-bindings window-selection
+		  group preferences gnome-hints
+		  send-string quote background
+		  property-respond highlight-current-window
+		  esdsound dir-focus tile undo
+		  )
+
+(debug-display "Done reading modules\n")
+
+;; do this early, since gnome times out in 10 seconds
+(enable-gnome-hints)
+
+;;(use-scwm-modules gtk)
+;;(use-scwm-modules send-string)
+;;(use-scwm-modules std-menus)
+
+;;(load "/home/gjb/scwm/scheme/constraints.scm")
+;;(load "/home/gjb/scwm/scheme/ui-constraints-buttons.scm")
+;;(set-current-module the-root-module)
+;;(use-scwm-modules constraints)
+
+(set! *use-scwm-system-proc* #t)
+
+;; defaults to sb_left_arrow, but that's a bit ugly
+(set! cursor-menu (get-x-cursor "right_ptr"))
+
+;;; print some information
+(for-each (lambda (d) (debug-display d)) 
+	 (list " *** Reading `scwmrc'...\nScwm " (scwm-version) "\n"
+	       (scwm-version-date) "\n"
+	       (if (scwm-is-constraint-enabled?) "With Cassowary Constraint Solver\n"
+		   "")
+	       "Display Size: " (display-size)
+	       "\nDesk Size: " (desk-size) "\nViewport Position: "
+	       (viewport-position) "\nCurrent Desk: " (current-desk) "\n"))
+
+
+(define mail-spool-dir (getenv "MAIL"))
+(define sounds-dir (or (getenv "MEDIA") (string-append scwmdir "/Media/")))
+;;(set! sounds-dir "/usr/contrib/Media/")
+(set! doc-files
+  (append (map (lambda (s) (string-append scwmdir "/doc/" s ))
+	     (list "scwm-procedures.txt" "scwm-variables.txt" "scwm-hooks.txt"))
+	  (list 
+	   (string-append (getenv "HOME") "/cassowary/guile/cassowary_scm-procedures.txt"))))
+
+(set! doc-files
+      (append doc-files
+	      (list (string-append (scwm-path-prefix)
+				   "/share/scwm/scwm-procedures.txt")
+		    (string-append (scwm-path-prefix)
+				   "/share/scwm/scwm-variables.txt")
+		    (string-append (scwm-path-prefix)
+				   "/share/scwm/scwm-hooks.txt")
+		    (string-append (scwm-path-prefix) 
+				   "/share/scwm/cassowary_scm-procedures.txt"))))
+
+
+(set! *theme-path*
+      (append (list (string-append scwmdir "/themes")) *theme-path*))
+
+;;; Lost window?  Get it back with:
+;; (move-to 0 0 (select-window-from-window-list #:ignore-winlist-skip #t))
+
+
+;;;(documentation "make-menuitem")
+;;;(apropos-internal "*")
+
+(set! *fvwm2-module-path* (append *fvwm2-module-path* '("/uns/lib/fvwm2")))
+(define want-fvwm2-pager-module #t)
+(define want-fvwm2-winlist-module #f)
+
+;; below variables used if the default predicates are used, 
+;; but the above make my system always do opaque moves and resizes
+;;(scwm-option-set! *opaque-move-percent* 20)
+;;(scwm-option-set! *opaque-resize-percent* 20)
+;; (interactive-move)
+;; Disabled autoraise by default; 
+;; would give an instant autoraise with no timeout, which 
+;; is not all that useful
+(define want-autoraise #f)
+(define want-workman-menu #t)
+
+(define xterm-user-shell-options
+  (if (cached-program-exists? "start-zsh")
+      "-e start-zsh" ""))
+(define xterm-program-name (or (getenv "XTERM_PROGRAM_NAME") "xterm"))
+
+(define use-complete-host-menu #t)
+(define xterm-other-host-use-local-xterm #t)
+
+;; Want a Win95-like "X" button at top right of window decoration
+;; to immediately close the window?
+;; (Generally, I find that that makes it too easy to accidentally
+;;  destroy a window, so the basic setting is #f)
+(define want-close-button #f)
+
+(define user-image-load-list 
+  (list (string-append (user-home) "/pixmaps")
+	(string-append (user-home) "/bitmaps")))
 
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
 
-
 (define font12
   (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
-(define font14 
-  (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
-
-(menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue"
-	    #:hl-fg "yellow"
-	    #:font font14)
-
-(title-style #:font font12 #:justify 'left)
-
 (set-icon-font! font12)
-(set-highlight-foreground! "white")
-(set-highlight-background! "blueviolet")
-(set-rubber-band-mask! 127)
+
+(define icon-font
+  (make-font "fixed"))
+
+(define (start-program-in-xterm binary title resources)
+  (string-append binary " -T" title " -name " resources))
+
+(define* (start-xterm #&optional (opt xterm-user-shell-options))
+  (execute (string-append xterm-program-name " " opt)))
+
+(define applications-available-program-information
+  `(
+    ("&Netscape" "nscape" "netscape_3d" "netscape")
+    ("GNU &Emacs" "edit" "emacs_3d" "xemacs")
+    ("Email (&Gnus)" #f #f "emailuw")
+;;    ("Calenda&r" "clock" "calendar.next" "PREFERRED_CALENDAR_BIN")
+    ("&Ical" "clock" "calendar.next" "ical")
+;;    ("&Plan" "clock" "calendar.next" "plan")
+    ("WindowsN&T" #f #f "start_nt")
+    ("&RedBaron" #f #f "redbaron")
+    ("Grail" #f #f "grail")
+    ("&Pine" "letter" "Mail" 
+	     ,(start-program-in-xterm "pine" "Pine" "pinexterm"))
+    ("Framema&ker" "book2" "book_3d" "framemkr")
+    ("Acroread (PDF Viewer)" #f #f "acroread")
+    ("&Answerbook" "book2" "book_3d" "answerbook")
+    ("Ghost&view" "gv" "view_3d" "ghostview")
+    ("X&Dvi" "doc" "xdvi.next" "xdvi")
+    ("Xvie&w" "xv" "xv.color" "xv")
+    ("Text&edit" "edit" "TextEditor" "textedit -geometry 630x490+95+5")
+    ("Xedit" "edit" "document_3d" "xedit")
+    ("GnuP&lot" "plot" "Chart" 
+		,(start-program-in-xterm "gnuplot" "GnuPlot" "gnuplotxterm"))
+    ("X&Fig" "pencil" "fig_3d" "xfig")
+    ("&XPaint" "paint" "paint_3d" "xpaint")
+    ("Mathematica" #f #f "frontend")
+    ("De&bugger" "bug2" "debug_3d" "debugger")
+    ("Xxgd&b" "bug2" "debug2_3d" "xxgdb")
+    ("gdb" "bug2" "debug2_3d" 
+	   ,(start-program-in-xterm "gdb" "GDB" "gdbxterm"))
+    ("XWpe" #f #f "xwpe")
+    ("Arena Browser" #f #f "arena")
+    ("XLispstat" #f #f 
+		 ,(start-program-in-xterm "xlispstat" "XLispStat" "xlispxterm"))
+    ("Chipmunk Basic" #f #f
+		      ,(start-program-in-xterm "basic" "Chipmunk Basic" "basicxterm"))
+    ("&Irc" #f #f ,(start-program-in-xterm "irc" "IRC" "ircxterm"))
+    ("&Minicom" #f #f ,(start-program-in-xterm "minicom -c on" "Minicom" "minicomxterm"))
+;;    ("Tin" #f #f ,(start-program-in-xterm "tin -r" "News (tin)" "tinxterm"))
+;;    ("T&rn" #f #f ,(start-program-in-xterm "trn" "News (trn)" "trnxterm"))
+    ("Athena" #f #f "athena")
+    ("XGopher" #f #f "xgopher")
+    ("XPdf" #f #f "xpdf") ;; used to have a get-file option
+    ("X&jed" #f #f "xjed")
+    ("Xedit" #f #f "xedit")
+    ))
+
+(define utilities-available-program-information
+  `(
+    ("&Control Panel" #f #f "control-panel")
+    ("&Glint" #f #f "glint")
+    ("Color &XTerm" "sh1" "XTERM_ICON" "COLOR_XTERM -cr blue")
+    ("&Manual pages" "book1" "manpage_3d" "xman")
+    ("XCa&lc" "calc" "Calculator" "xcalc")
+    ("Filemanager" "filemgr" "FileManager" "filemgr")
+    ("X&fm" "filemgr" "FileManager" "xfm")
+    ("XF&tp" "xftp" "ftp_3d" "xftp")
+    ("X&Quote" #f #f "Xquote")
+    ("Ma&gnifying glass" "zoom" "mag_glass_3d" "xmag")
+    ("XLo&ad" "run" "xload.next" "xload")
+    ("Xgrab" "camera" "camera_3d" "xgrab")
+    ("X&colormap" "colors" "colormap_3d" "xcolormap")
+    ("Font&sel" #f #f "xfontsel")
+    ("&Editres" #f #f "editres")
+    ("Clip&board" #f #f "xclipboard")
+    ("X&Osview" #f #f "xosview")
+    ("Cloc&k" #f "oclock_3d" "xclock")
+    ("XBiff" #f #f "xbiff -bg MENUBACK_COLOR")
+    ("Xev" #f #f "xev")
+    ))
+
+(define games-available-program-information
+  `(
+    ("X&Board" "slon" "chess_3d" "xboard -sze medium")
+    ("&Spider" #f "cards_3d" "spider")
+    ("X&Lander" #f #f "xlander")
+    ("X&Mahjongg" #f #f "xmahjongg")
+    ("X&Vier" #f #f "xvier")
+    ("XPat&ience" #f #f "xpat2")
+    ("XMo&rph" #f #f "xmorph")
+    ("XE&vil" #f #f "xevil")
+    ("&XBill" #f #f "xbill")
+    ("XBlock&out" #f #f "xbl")
+    ("XSnow" #f #f "xsnow")
+    ("X&Gammon" #f #f "xgammon")
+    ))
+
+(define multimedia-available-program-information
+  `(
+    ("XM&ix" "audiovol" "Multimedia" "xmix")
+    ("XMi&xer" "audiovol" "Multimedia" "xmixer")
+    ("&WorkMan" "cdlabel" "cdrom2_3d" "workman")
+    ("XPlay&Cd" "cdlabel" "cdrom2_3d" "xplaycd")
+;;    ("&Tracker" #f #f "tracker \\$(xgetfile -title 'Select a MOD file for Tracker' -path $MOD_SOUND_PATH -pattern '*.mod')" #f)
+;;    ("Play&midi" #f #f "xplaymidi \\$(xgetfile -title 'Select a MIDI file for PlayMidi' -path $MIDI_SOUND_PATH -pattern '*.mid')" #f)
+    ("Xm&play" #f #f "xmplay")
+    ))
+
+;;; These can change dynamically and the menus which 
+;;; used 'menu-bg-color [which is used by default]
+;;; will be drawn in the new color the next time they pop up
+;; These have no affect now that the menu-style does the right thing
+;; --10/10/98 gjb
+;; (set! menu-bg-color (make-color "gray80"))
+;; (set! menu-text-color (make-color "black"))
+
+;; (color-properties (make-color "#cc88ff"))
+
+(menu-style #:fg "black" #:bg "gray80" #:stipple "grey35" 
+	    #:font (optget *menu-font*))
+
+;; (select-window-interactively "Pick window #1")
+
+;;(message-window-style default-message-window #:font (optget *message-window-font*)
+;;					    #:fg "black" #:bg "gray80")
+
+(message-window-options 'interactive-move #:follow-window #t)
+(message-window-options 'interactive-resize #:follow-window #t)
 
 
-(define user-image-load-path 
-  (list (string-append (user-home) "/pixmaps")
-	(string-append (user-home) "/bitmaps")))
+;;(set-click-delay! 150)
+;;(set-color-map-focus! 'follows-mouse)
+;;(set-desk-size! 3 3)
+;;(set-window-focus! 'click (get-window))
+;;(window-style "*" #:focus 'click)
+;;(window-style "*" #:focus 'mouse)
+;;(set-window-focus! 'mouse (get-window))
+
+(set-edge-resistance! 500 10)
+;;(set-edge-scroll! (%x 20) (%y 20))
+;;(set-edge-scroll! 0 (%y 100))  ;; Use no X scroll so x2x works
+(set-edge-scroll! 0 0)  ;; Use no X/Y scroll so x2x works
+
+(scwm-option-set! *window-font* "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*")
+(title-style #:font (optget *window-font*) #:justify 'left #:relief 'raised)
+
+(set-rubber-band-mask! 255)  
+
+(define (popup-window-group-menu)
+  (popup-menu (make-window-group-menu (get-window))) #t)
+
+(define (popup-window-group-menu-no-warp)
+  (popup-menu (make-window-group-menu (get-window))))
+
+(define (popup-small-ops)
+  (popup-menu (make-small-window-ops-menu (get-window)) #t))
+
+(define (popup-sysutils)
+  ())
+
+(define (popup-utilities)
+  (popup-menu 'menu-utilities #t))
+
+(define (popup-utilities-no-warp)
+  (popup-menu 'menu-utilities))
+
+(define (popup-applications)
+  (popup-menu 'menu-applications #t))
+
+(define (popup-applications-no-warp)
+  (popup-menu 'menu-applications))
+
+(define (popup-multimedia)
+  (popup-menu 'menu-multimedia #t))
+
+(define (popup-root-start)
+  (with-window 
+   #f  ;; ensure that the window context is empty, so that, e.g.,
+       ;; window operations menu always prompts for a window
+   (popup-menu 'menu-root-start #t)))
+
+(define (popup-root-start-no-warp)
+  (with-window 
+   #f  ;; ensure that the window context is empty, so that, e.g.,
+       ;; window operations menu always prompts for a window
+   (popup-menu 'menu-root-start)))
 
 
-;;-------------------------------;;
-;; set some paths                ;;
-;;
+(define (popup-window-ops)
+  (popup-menu 'menu-window-ops))
 
-;; these are OK for my system, but may need to be changed for
-;; yours. This should probably be eventually autoconfed or something.
+(define (popup-desk)
+  (popup-menu 'menu-desk))
 
-;;; set path to use for image searches
-(set! image-load-path 
-      (append 
-       user-image-load-path 
-       '("/usr/X11/lib/X11/mini-icons" "/usr/X11/include/X11/pixmaps" 
-	 "/usr/lib/icons" "/usr/local/X11/include/X11/pixmaps"
-	 "/usr/local/lib/icons" "/usr/local/icons"
-	 "/uns/share/include/X11/pixmaps" "/uns/share/include/X11/bitmaps")
-       image-load-path))
+(define (popup-favorite-hosts-menu)
+  (popup-menu (make-hosts-menu-gjb favorite-hosts) #t))
+
+
+(define*-public (animated-deiconify-to-current-viewport-focus-raise #&optional (win (get-window)))
+  (cond
+   (win (animated-deiconify-to-current-viewport win)
+	(focus win)
+	(raise-window win)
+	(warp-to-window win)
+	(move-pointer (w%x 20 win) (w%y 20 win)))))
+
+(define*-public (animated-deiconify-to-viewport-focus-raise #&optional (win (get-window)))
+  (cond
+   (win (animated-deiconify-to-last-viewport-position win)
+	(focus win)
+	(raise-window win)
+	(warp-to-window win)
+	(move-pointer (w%x 20 win) (w%y 20 win)))))
+
+
+;;; there is a race condition with the mouse-focus
+;;; giving focus to the new window... 
+;;; we really need a new hook for this that is
+;;; for focus changing from an external program
+(define (focus-change-warp-pointer w)
+  (if (and w (not (eq? w (current-window-with-pointer))))
+      (warp-to-window w)))
+
+;;(reset-hook! window-focus-change-hook)
+;; this is nice with XEmacs's C-x 5 o (other-frame) and mouse-focus
+;;(add-hook! window-focus-change-hook focus-change-warp-pointer)
+
+(define (show-icon-list-menu)
+  (show-window-list-menu #:only iconified? #:warp-to-first #t 
+			 #:proc animated-deiconify-to-viewport-focus-raise))
+
+(define (show-xterm-window-list-menu)
+  (show-window-list-menu #:only (lambda (w)
+				  (or 
+				   (string=? (window-class w) "XTerm")
+				   (string=? (window-class w) "NXTerm")) )
+			 #:warp-to-first #t
+			 #:proc animated-deiconify-to-viewport-focus-raise))
+
+
+;;(select-window-from-window-list)
+;;(select-window-interactively)
+;;(restack-windows (select-multiple-windows-interactively))
+
+(debug-display "Before setting image-load-path\n")
+
+(set! image-load-path (append user-image-load-list image-load-path))
+;;(set! image-load-path '())
+
+(debug-display "After setting image-load-path\n")
+
+(define (suggest-image-path-for name)
+  (let ((found-if-0 (system (string-append "locate " name))))
+    (if (= 0 found-if-0)
+	(display (string-append "Perhaps try adding above path to image-load-path\n")))))
+
+
+(define (handle-image-not-found name) 
+  (display (string-append "Could not find image: " name "\n"))
+  (suggest-image-path-for name))
+
+(add-hook! image-not-found-hook handle-image-not-found)
+
+(define pic-system-button
+  (make-image "mini-sys3d-full.xpm"))
+
+(define pic-xterm-mini
+  (make-image "mini-term.xpm"))
+
+(define pic-lambda-mini
+  (make-image "lambda.xpm"))
+
+(define pic-unknown
+  (make-image "unknown1.xpm"))
+;; (reset-scwm-exec-protocol)
 
 ;;-------------------------------;;
 ;; set some window styles        ;;
 
+;;; MSFIX: I don't like the ordering dependence on the
+;;; window-style... I think that will go away when using
+;;; the XClass and/or Instance name tests, which I'd prefer
+;;; anyway...
 (window-style "*" 
-	      #:fg "white" #:bg "navy" 
-	      #:icon "unknown1.xpm" 
+	      #:fg "black" #:bg "grey76" 
+	      #:icon #f ;; this turns off icons, but leaves icon titles
+	      #:show-icon #f ;; this turns off both icon titles and icons
 	      #:icon-box (list (x- 70) 1 69 (y- 141))
-	      #:border-width 6 
+	      #:border-width 4
 	      #:focus 'mouse
+;	      #:plain-border #t
+	      #:sticky-icon #t
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
-	      #:hint-override #t #:decorate-transient #t
+	      #:mwm-border #t
+	      #:hint-override #t #:decorate-transient #f
 	      #:PPosition-hint #f
-	      #:lenience #t
-	      )
+;;	      #:mini-icon pic-xterm-mini)
+	      #:mini-icon pic-lambda-mini)
 
-(define desk-widget
-  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
-	      #:border-width 3 #:focus 'none))
+(window-style "*" 
+	      #:icon-box (list 0 1 69 (y- 141)))
 
-(window-style "*lock" #:use-style desk-widget)
-(window-style "xload" #:no-titlebar #t #:use-style desk-widget)
-(window-style "xscreensaver" #:no-titlebar #t #:use-style desk-widget)
-(window-style "xbiff" #:no-titlebar #t #:use-style desk-widget)
-(window-style "xcalc" #:icon "xcalc.xpm")
-(window-style "xman" #:icon "xman.xpm")
-(window-style "xmag" #:icon "mag_glass.xpm")
-(window-style "Emacs" #:icon "gnu-animal.xpm")
-(window-style "XTerm" #:icon "xterm.xpm")
+;; (window-style "*" #:show-icon #t #:sticky-icon #f)
+;; (window-style "*" #:show-icon #t #:sticky-icon #t)
+;; (window-style "xterm" #:use-theme (load-theme "gjb"))
+;; (window-style "xterm" #:show-icon #t)
+;; (window-style "*" #:show-icon #t)
+;; (window-style "*" #:show-icon #f)
+;; (window-style "*" #:sticky-icon #t)
+;; (window-style "*" #:random-placement #f #:smart-placement #f)
+
+;; (window-style "xclock" #:show-icon #t)
+;; (window-style "XTerm" #:show-icon #f)
+;; (window-style "XTerm" #:show-icon #f)
+;; (window-style "*xterm*" #:show-icon #f)
+
+;; (deiconify-to-current-viewport (select-window-interactively))
+
+;; (move-window-to-viewport 1 1 (select-window-from-window-list))
+
+;;(window-style "*" #:border-width 5 #:mwm-border #t)
+
+;;(window-style "xlogo" #:no-titlebar #t #:plain-border #f)
+;;(window-style "*" #:border-width 6)
+;;(resize-to 200 200)
+
+;;(window-style "*" #:squashed-titlebar #t)
+;;(window-style "*" #:squashed-titlebar #f)
+;;(window-style "xterm" #:squashed-titlebar #t)
+;;(window-style "xterm" #:squashed-titlebar #f)
+;;(interactive-resize)
+
+;;(window-style "*" #:bg "purple")
+;; (border-style #:hidden-handles #f #:no-inset #f)
+
+;; (window-style "foo" #:squashed-titlebar #t)
+
+;; (raise-window)
+;; (set-object-property! w 'no-side-decorations #t)
+;; (set-object-property! w 'no-side-decorations #f)
+;; (force-reset-window-frame! w)
+;; (window-style "*" #:no-side-decorations #f)
+;; (window-style "XTerm" #:no-side-decorations #t)
+;; (window-style "XTerm" #:no-side-decorations #f)
+;; (window-style "XTerm" #:squashed-titlebar #t)
+;; (window-style "XTerm" #:squashed-titlebar #f)
+;; (squash-titlebar-decoration w)
+;; (unsquash-titlebar-decoration w)
+;; (define w (select-window-interactively))
+
+;; This gets my netscape bookmarks windows to do the right thing
+;; and stay on screen (instead of being half off screen when mapped)
+(set-smart-placement-is-really-smart! #t)
+
+;; (normal-border (current-window-with-pointer))
 
 
-;; People seem to prefer move by full virtual desks
-(set-edge-resistance! 500 10)
-(set-edge-scroll! (%x 100) (%y 100))
+(define (place-near-pointer w)
+  (let* ((posn (pointer-position))
+	 (x (car posn))
+	 (y (cadr posn)))
+    (set! x (- x 60))
+    (set! y (- y 45))
+;;    (display "x = ") (display x)
+;;    (display ", y = ") (display y) (newline)
+    (move-to x y w)))
+
+(define (place-interactively win)
+  (let* ((posn (pointer-position))
+	 (size (window-size win))
+	 (w (car size))
+	 (h (cadr size))
+	 (x (- (car posn) (/ w 2)))
+	 (y (- (cadr posn) (/ h 2))))
+    (move-to x y win)
+    ;; don't use an opaque move, since window is
+    ;; not mapped before the placement-proc gets called
+    (interactive-move win #f)))
+
+;;(define ns-win (select-window-interactively))
+;;(define (netscape-win) ns-win)
+
+;; (define w (select-window-interactively))
+
+(define (move-next-to-netscape-win w)
+  (let* ((ns-pos (window-viewport-position (netscape-win)))
+	 (x (+ (car ns-pos) 300))
+	 (y (- (cadr ns-pos) 30)))
+    (move-to x y w)
+    (move-pointer-to (+ x 30) (+ y 55))))
+;;    (write-all #t "moving next to netscape window " x ", " y "\n")))
+
+;;(window-title (select-window-interactively))
+;;(move-next-to-netscape-win (select-window-interactively))
+
+;; GJB:FIXME:: this is a bit unintuitive-- must use transient-placement-proc
+;; instead of just placement-proc, even though I've explicitly
+;; named the window
+(window-style "Netscape: Find" #:transient-placement-proc move-next-to-netscape-win)
+;; (window-style "Reminder" #:placement-proc (lambda () (system "ring-bells")))
+
+;; (use-scwm-modules esdsound)
+;; (scwm-module-loaded? '(app scwm esdsound))
+(if (scwm-module-loaded? '(app scwm esdsound))
+    (define (wavplay filename)
+      (sound-play (sound-load (string-append sounds-dir filename))))
+    (define (wavplay filename)
+      (system (string-append "wavplay " sounds-dir filename "&"))))
+
+(define download-closed-wav "tada.wav")
+
+;; GJB:FIXME:: make the time below (5) an option
+(define (netscape-download-closed-action win)
+  (let ((time-up (- (current-time) (window-creation-time win))))
+    (if (> time-up 5)
+	(wavplay download-closed-wav))))
+;;  (message "Download finished"))
+
+(define (call-netscape-download-closed-action win)
+  (if (and (string=? (window-class win) "Netscape")
+	   (string=? (window-resource win) "Download"))
+      (netscape-download-closed-action win)))
+
+(add-hook! window-close-hook call-netscape-download-closed-action)
+
+;;(window-style "Netscape: Find" #:no-titlebar #t) ;; not needed -- it's a transient
+;;(window-style "findDialog_popup" #:placement-proc move-next-to-netscape-win)
+;; (move-next-to-netscape-win (select-window-interactively))
 
 
-;;-------------------------------;;
-;; define some useful menus      ;;
+;; GJB:FIXME:MS: make-face's style of argument passing
+;; is different from the window-style method; I imagine
+;; MS has a wrapper planned for this
+(border-style #:hidden-handles #t #:no-inset #t)
 
-
+;; Some wrappers for button functions
 (define (vertical-toggle-maximize)
   (toggle-maximize 0 (%y 100)))
 
-(define window-ops-menu
-  (menu 
+(define (horizontal-toggle-maximize)
+  (toggle-maximize (%x 100) 0))
+
+(define (both-toggle-maximize)
+  (toggle-maximize (%x 100) (%y 100)))
+
+(define (vertical-toggle-maximize-partial)
+  (toggle-maximize 0 (%y 94)))
+
+
+;;; I'm not changing these for now to use the new style
+;;; because of the way add-left-button and add-right-button work and
+;;; such; I think in general, though, setting the button appearance
+;;; should be more separated from setting its function. Will look
+;;; over this more. --MS
+;;; MSFIX: I think actions and conceptual appearance should go together
+;;; but that conceptual appearance and actual appearance should be separated.
+;;; Now that pixmaps are real objects, I get this by making, e.g.,
+;;; `sticky-button-face' and `(add-left-button sticky-button-face toggle-stick)'
+;;; I never want to say, `the third button from the right should do this action'.
+;;; Ideally, buttons should have some identifier which can be tested by the
+;;; event handling code for the callbacks
+
+(define mini-icon-button-face 
+  (make-face '((relief flat))
+	     '((pixmap mini-program-icon))))
+
+;; Can use strings as arg to pixmap
+(define sticky-button-face
+  (make-face '((relief flat))
+	     '((pixmap "mini-hbars-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; 4 Horizontal bars (sticky)
+;;	     '((relief-pattern
+;;		((10 23 #f) (90 23 #f) (90 28 #f) (10 28 #t) (10 47 #t) 
+;;			    (90 47 #f) (90 52 #f) (10 52 #t) (10 70 2) 
+;;			    (90 70 #f) (90 76 #f) (10 76 #t)))))
+)
+
+;; For testing
+;;(set-button-face! 3 sticky-button-face)
+
+
+;; But can also use a (make-image  "file.xpm")
+(define sysutils-button-face
+  (make-face '((relief flat))
+	     '((pixmap "mini-lightbolt-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; Big Lighting Bolt (Fat at top, comes to a point)
+;;	     '((relief-pattern
+;;		((35 15 #t) (20 50 #t) (40 50 #f) (30 80 #t) (75 40 #f) 
+;;			    (50 40 #t) (75 15 #f) (35 15 #t)))))
+)
+
+
+(define close-button-face
+  (make-face '((relief flat))
+	     '((pixmap  "mini-stylized-x-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; Stylized X
+;;	     '((relief-pattern
+;;		((20 20 #t) (30 20 #t) (50 40 #t) (70 20 #t) (80 20 #t) 
+;;			    (80 30 #f) (60 50 #f) (80 80 #f) (70 80 #f) 
+;;			    (50 60 #f) (30 80 #f) (20 80 #f) (20 70 #f) 
+;;			    (40 50 #t) (20 30 #f) (20 20 #t)))))
+)
+
+
+(define tall-maximize-button-face 
+  (make-face '((relief flat))
+	     '((pixmap "mini-exp-windows-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; tall box
+;;	     '((relief-pattern 
+;;		((40 25 #t) (60 25 #t) (60 75 #f) (40 75 #f) (40 25 #t)))))
+)
+
+(define iconify-button-face 
+  (make-face '((relief flat))
+	     '((pixmap "mini-shrink-windows-full.xpm")))
+;;  (make-face '((relief raised))
+;; ;;; 3 stacked square panels like stills of a window being minimized
+;;	     '((relief-pattern
+;;		((80 20 #f) (80 60 #f) (60 60 #f) (60 40 #f) (60 70 #f) 
+;;			    (40 70 #f) (40 60 #f) (40 85 #f) (15 85 #f) 
+;;			    (15 60 #t) (40 60 #t) (30 60 #t) (30 40 #t) 
+;;			    (60 40 #t) (45 40 #t) (45 20 #t) (80 20 #t)))))
+)
+
+
+(define left-button-number 1)
+(define right-button-number 1)
+
+;;(set-button-face! 1 mini-icon-button-face)
+;; (set! left-button-number 1)
+;; (set! right-button-number 1)
+
+(define* (add-left-button button-face hook #&optional (immed-hook #f))
+  (set-left-button-face! left-button-number button-face)
+  (bind-mouse (string->symbol 
+	       (string-append "left-button-" 
+			      (number->string left-button-number)))
+	      1 hook immed-hook)
+  (set! left-button-number (+ 1 left-button-number)))
+
+
+(define* (add-right-button button-face hook #&optional (immed-hook #f))
+  (set-right-button-face! right-button-number button-face)
+  (bind-mouse (string->symbol 
+	       (string-append "right-button-" 
+			      (number->string right-button-number)))
+	      1 hook immed-hook)
+  (set! right-button-number (+ 1 right-button-number)))
+
+;;(set-button-face! 1 mini-icon-button-face)
+;;(set-button-face! 1 tall-maximize-button-face)
+
+
+;;;(add-left-button system-button-face (lambda () (popup-small-ops)))
+(define (popup-small-ops-or-close)
+  (case (mouse-event-type)
+    ((double-click) (close-window))
+    (else (let ((w (get-window)))
+	    (popup-menu-from-decoration 
+	     (make-small-window-ops-menu w) w 1)
+	    #f))))
+
+(define (close-on-double-click)
+  (case (mouse-event-type)
+    ((double-click one-and-a-half-clicks) (close-window))))
+
+(define (popup-small-ops-from-decoration)
+  (let ((w (get-window)))
+    (popup-menu-from-decoration 
+     (make-small-window-ops-menu w) w 1))
+  #f)
+
+(define (popup-style-menu)
+  (let ((w (get-window)))
+    (popup-menu-from-decoration 
+     (window-style-menu w) w 1))
+  #f)
+	 
+
+;; the "1" at the end of the prior line is the button number from which 
+;; this is popped.
+
+(add-left-button mini-icon-button-face close-on-double-click popup-small-ops-from-decoration)
+;;(show-titlebar (select-window-interactively))
+
+;; MS: I presume this is the desired efffect.
+;; random thought: A nice extension would be buttons that change
+;; appearance with given window properties. This would be an extension of
+;; the fvwm2 "MWMButton" concept whereby a button reverses its vector 
+;; pattern when the window is maximized. It should be much more general, 
+;; of course.
+(add-left-button sticky-button-face #f toggle-stick)
+
+(add-left-button sysutils-button-face #f popup-sysutils)
+
+(if want-close-button
+    (add-right-button close-button-face close-window))
+
+(add-right-button tall-maximize-button-face #f vertical-toggle-maximize)
+(add-right-button iconify-button-face #f animated-iconify)
+
+;; (plain-border (get-window)) fixes the display problem for the selected window
+;; something must not be initialized correctly
+
+(set-highlight-foreground! "white")
+(set-highlight-background! "navyblue")
+
+(define desk-widget
+  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
+	      #:border-width 3 #:circulate-skip #t #:focus 'none))
+
+;;  This shows a bug in dealing with 0 bordered windows (from HJ Stein)
+;;(define desk-widget-hjs
+;;  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
+;;	      #:border-width 0 #:circulate-skip #t #:focus 'none))
+
+;; (window-style "XClock" #:no-titlebar #t #:use-style desk-widget-hjs)
+
+;; Inherit above style options and specialize
+(define desk-widget-on-top
+  (make-style #:use-style desk-widget #:kept-on-top #t))
+
+(define desk-widget-on-top-no-titlebar
+  (make-style #:use-style desk-widget-on-top #:no-titlebar #t))
+
+;; NOTE: you can use a string or a (make-image "filename.xpm")
+;; after #:icon and #:mini-icon
+;; MSFIX: important! window-style's argument 
+
+(window-style "tooltip" #:use-style desk-widget-on-top-no-titlebar #:border-width 0
+	      #:placement-proc place-near-pointer)
+(window-style (resource-match?? "ScwmUIConstraintsButtons") 
+	      #:use-style desk-widget-on-top-no-titlebar)
+(window-style "FvwmPager" #:use-style desk-widget-on-top-no-titlebar)
+(window-style "zwgc" #:use-style desk-widget-on-top)
+(window-style "*lock" #:use-style desk-widget)
+(window-style "xclock*" #:use-style desk-widget-on-top-no-titlebar)
+(window-style "xload" #:no-titlebar #t #:use-style desk-widget-on-top-no-titlebar)
+(window-style "xscreensaver" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xbiff" #:no-titlebar #t #:use-style desk-widget-on-top
+	      #:mini-icon "mini-xbiff.xpm")
+(window-style "xcalc" #:icon "xcalc.xpm"
+	              #:mini-icon "mini-calc.xpm")
+(window-style "xman" #:icon "xman.xpm")
+(window-style "xmag" #:icon "mag_glass.xpm")
+(window-style "XTerm" #:mini-icon pic-xterm-mini
+	              #:icon "xterm.xpm")
+(window-style "Emacs" #:mini-icon "mini-edit.xpm"
+	              #:icon "TextEditor.xpm")
+(window-style "x2x upintheair:0.0" #:kept-on-top #t) ;; does not give desired effect
+
+(debug-display "Before menu-window-ops\n")
+
+;;; define some useful menus
+(define menu-window-ops
+  (menu
    (list
     (menu-title "Window Ops") menu-separator
-    (menuitem "Move" #:action interactive-move)
-    (menuitem "Resize" #:action interactive-resize)
-    (menuitem "Raise" #:action raise-window)
-    (menuitem "Lower" #:action lower-window)
-    (menuitem "Print" #:action print-window)
-    (menuitem "(Un)Window-Shade" #:action toggle-window-shade)
-    (menuitem "(De)Iconify" #:action toggle-iconify)
-    (menuitem "(Un)Maximize" #:action vertical-toggle-maximize)
-    (menuitem "(Un)Stick" #:action toggle-stick)
-    (menuitem "(Un)Keep On Top" #:action toggle-on-top)
+    (menuitem "&Move" #:image-left "mini-move.xpm" 
+	       #:action interactive-move)
+    (menuitem "&Resize" #:image-left "mini-resize.xpm" 
+	       #:action interactive-resize)
+    (menuitem "R&aise" #:image-left "mini-raise.xpm" 
+	       #:action (thunk raise-window))
+    (menuitem "&Lower" #:image-left "mini-lower.xpm" 
+	       #:action (thunk lower-window))
+    (menuitem "&Iconify/Restore" #:image-left "mini-iconify.xpm" 
+	       #:action (thunk toggle-iconify))
+    (menuitem "&Stick/Unstick" #:image-left "mini-stick.xpm" 
+	       #:action (thunk toggle-stick))
+    (menuitem "Ma&ximize/Reset" #:action (thunk both-toggle-maximize))
+    (menuitem "Ma&ximize &Tall/Reset" #:image-left "mini-maxtall.xpm" 
+	       #:action (thunk vertical-toggle-maximize))
+    (menuitem "Maximize &Wide/Reset" #:image-left "mini-maxwide.xpm"
+	       #:action (thunk horizontal-toggle-maximize))
+    (menuitem "Animated S&hade/Reset" 
+	       #:action (thunk animated-toggle-window-shade))
+    (menuitem "Shade/Reset" 
+	       #:action (thunk toggle-window-shade))
+    (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
+	      #:action interactive-set-window-gravity!)
     menu-separator
-    (menuitem "Close" #:action close-window)
-    (menuitem "Delete" #:action delete-window)
-    (menuitem "Destroy" #:action destroy-window)
+    (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
+    (menuitem "&Print" #:action (thunk print-window))
     menu-separator
-    (menuitem "Refresh Screen" #:action refresh))))
+    (menuitem "Group" #:submenu (lambda () (make-window-group-menu (get-window))))
+    (menuitem "Change theme" #:submenu (lambda () (menu-window-theme)))
+    (menuitem "Reload and change theme" #:submenu (lambda () (menu-window-theme #t)))
+    menu-separator
+    (menuitem "&Delete" #:action (thunk delete-window))
+    (menuitem "&Close" #:image-left "mini-cross.xpm" 
+	       #:action (lambda () (close-window (get-window))))
+    (menuitem "&Kill" #:image-left "mini-bomb.xpm" 
+	       #:action (thunk destroy-window))
+    menu-separator
+    (menuitem "Switch to..." #:action
+	       (lambda () 
+		 (show-window-list-menu #:show-geometry #t)))
+    (menuitem "Re&fresh Screen" #:image-left "mini-ray.xpm" 
+	       #:action (thunk refresh)))))
 
-(define (popup-ops)
-  (popup-menu window-ops-menu))
+;;(popup-menu (thunk menu-window-ops))
+;;(menu-properties menu-window-ops)
+
+(defmacro menuitem-for-exec (name pixmap . body)
+  (if (cached-program-exists? name)
+      `(list ,name #:action (lambda () (execute ,name) ,@body)
+	     #:image-left ,pixmap)))
+
+;;(window-shade (get-window) #t)
+;;(un-window-shade (get-window) #t)
+
+;; wiggle-window just demonstrates 
+(define (wiggle-window)
+  (let ((w (get-window)))
+    (window-shade w #t)
+    (un-window-shade w #t)))
+
+(define (scwm-help)
+  (netscape-goto-url "http://scwm.mit.edu/scwm" #f 'netscape-new-window))
+
+(define (scwm-about-message)
+  (message "Scwm TheNextLevel
+(C) 1999 Greg J. Badros
+
+This is a re-work of the fvwm2 TheNextLevel and its successor
+AnotherLevel. Most importantly, the underlying window manager
+is Scwm, the Scheme Constraints Window Manager.
+
+Gone is the ugly and impossible to maintain m4 preprocessing.
+Here to stay is beautiful scheme, and more features than the
+union of all other window managers!
+"))
+
+(define (start-xlogo)
+  (execute "xlogo"))
+
+;;(define (exec-xlock)
+;;  (execute "xlock -remote -nice -19 -mode blank"))
+(define (exec-xlock)
+  (execute "xlock-both"))
 
 (define menu-quit-verify
   (menu 
    (list
-    (menu-title "Really quit scwm?") menu-separator
-    (menuitem "Yes" #:action quit)
-    (menuitem "No" #:action #f)
+    (menu-title "Really quit Scwm?")
     menu-separator
-    (menuitem "Restart scwm" #:action (lambda () (restart "scwm"))))))
+    (menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
+	       #:action (lambda () (restart "scwm")))
+    (menuitem "Restart development scwm" #:image-left "mini-turn.xpm" 
+	       #:action (lambda () (restart 
+				    (string-append scwmdir "/scwm/scwm"))))
+    menu-separator
+    (menuitem "&Yes" #:image-left "mini-exclam.xpm" #:action quit)
+    (menuitem "&No"  #:image-left "mini-cross.xpm" #:action noop))))
 
 (define (quit-verify)
-  (popup-menu menu-quit-verify))
+  (popup-menu menu-quit-verify #t))
 
-(define desk-menu 
+;;;(map (lambda (elem)
+;;;       (let ((menu-id (car elem))
+;;;	     (menu-title (cadr elem))
+;;;	     (menu-list (caddr elem)))
+;;;	 (define menu-id
+;;;	   (menu (cons menuitem menu-title)
+;;;		 (make-menuitems-from-menu-information-list menu-list)))))
+;;;     '(('menu-applications "Applications" applications-available-menu-information)
+;;;       ('menu-utilities "Utilities" utilities-available-menu-information)))
+
+;;;(defmacro (program-menu-maker str)
+;;;  `(define ,(intern-symbol (string-append "menu" str))
+;;;     (menu
+;;;      (cons
+;;;       (menuitem ,str)
+;;;       (make-menuitems-from-menu-information-list
+;;;	,(intern-symbol (string-append str "-available-menu-information")))))))
+     
+;;;(program-menu-maker "applications")
+
+(define menu-applications
+  (menu (cons
+	 (menu-title "Applications")
+	 (make-menuitems-from-menu-information-list
+	  applications-available-program-information)
+	 )))
+
+(define menu-utilities
+  (menu (cons
+	 (menu-title "Utilities")
+	 (make-menuitems-from-menu-information-list
+	  utilities-available-program-information)
+	 )))
+
+(define menu-multimedia
+  (menu (cons
+	 (menu-title "Multimedia")
+	 (make-menuitems-from-menu-information-list
+	  multimedia-available-program-information)
+	 )))
+
+(define menu-games
+  (menu (cons
+	 (menu-title "Games")
+	 (make-menuitems-from-menu-information-list
+	  games-available-program-information)
+	 )))
+
+(define (xterm-other-host hostname)
+  (exe (string-append xterm-program-name " -name remotexterm -T " hostname " -n " hostname 
+		      " -e sh -c '" *remote-shell-command* hostname "'")))
+
+(define server-hosts 
+  '(pahtoo glacier june amaebi bauhaus)
+  )
+
+(define other-hosts 
+  '( sturgeon thresher coho ;; Ultrix
+	      forbidden pinnacle copper ;; AIX
+	      pintail edgar bugs-bunny ;; DEC OSF
+	      fireweed anemone bugbane buttercup ;; IRIX
+	      ))
+
+(define linux-hosts
+  '( uni oz saba awabi hirmae nishin sake pugsly squiggy kani))
+
+(define solaris-hosts
+  '( tolt elwha chiwawa demille fielder froggie hammahamma hoobes hoh rhodes twain))
+
+(define favorite-hosts
+  '(bowman indy10 elwha.cs.washington.edu uni.cs.washington.edu scwm.mit.edu))
+
+;; (popup-menu menu-hosts #t)
+(define (make-hosts-menu-gjb hosts)
+  (cons menu-separator
+	(fold-menu-list
+	 (map
+	  (lambda (elem)
+	    (menuitem elem #:image-left "mini-display.xpm" #:action (xterm-other-host elem)))
+	  hosts))))
+
+(define menu-hosts-servers
+  (menu (cons
+	 (menu-title "Hosts (Servers)") 
+	 (make-hosts-menu-gjb server-hosts))))
+
+(define menu-hosts-linux
+  (menu (cons
+	 (menu-title "Hosts (Linux)") 
+	 (make-hosts-menu-gjb linux-hosts))))
+
+(define menu-hosts-solaris
+  (menu (cons
+	 (menu-title "Hosts (Solaris)") 
+	 (make-hosts-menu-gjb solaris-hosts))))
+
+(define menu-hosts-other
+  (menu (cons
+	 (menu-title "Hosts (Other)") 
+	 (make-hosts-menu-gjb solaris-hosts))))
+
+(define menu-preferences-scroll
+  (menu (list
+	 (menu-title "Change Scroll Behavior")
+	 menu-separator
+	 (menuitem "&On" #:action (lambda () (set-edge-scroll 100 100)))
+	 (menuitem "O&ff" #:action (lambda () (set-edge-scroll 0 0)))
+	 (menuitem "&Horizontal Only" #:action (lambda () (set-edge-scroll 100 0)))
+	 (menuitem "&Vertical Only" #:action (lambda () (set-edge-scroll 0 100)))
+	 (menuitem "&Partial 1/2" #:action (lambda () (set-edge-scroll 50 50)))
+	 (menuitem "Partial 1/&4" #:action (lambda () (set-edge-scroll 25 25))))))
+
+;; (popup-menu (menu-prefs) #t)
+
+(define menu-prefs-gjb
+  (menu (list (menu-title "Preferences") menu-separator
+	      (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
+	      (menuitem "Change global theme" #:submenu (lambda () (menu-global-theme #t)))
+	      (menuitem "Reload .Xresources" #:action
+			(exe "xrdb -merge ${HOME}/.Xresources"))
+	      (menuitem "Reload .Xresources-cpp" #:action
+			(exe "xrdbcpp -merge ${HOME}/.Xresources-cpp"))
+	      (menuitem "View all icons" #:action
+			(exe (apply string-append "xv "
+				    (map (lambda (st) (string-append st "/* "))
+					 image-load-path))))
+	      (menuitem "Scwm interaction" #:action
+			(run-in-xterm "scwmrepl"))
+	      (menuitem "Info on a window" #:action window-info))))
+
+(define menu-preferences menu-prefs-gjb)
+
+(define menu-system-utilities
+  (menu
+   (list
+    (menu-title "System utilities"))))
+
+(define menu-screensaver
+  (make-xlock-menu #f))
+
+(if want-workman-menu
+    (define (tell-workman command)
+      (execute (string-append "workman -s " command)))
+    (define menu-workman
+      (menu (list
+	     (menuitem "&Pause" #:image-left "mini-wm-pause.xpm"
+		       #:action (lambda () (tell-workman "pause")))
+	     (menuitem "P&lay" #:image-left "mini-wm-play.xpm"
+		       #:action (lambda () (tell-workman "play")))
+	     (menuitem "&Next" #:image-left "mini-wm-next.xpm"
+		       #:action (lambda () (tell-workman "fwd")))
+	     (menuitem "P&rev" #:image-left "mini-wm-prev.xpm"
+		       #:action (lambda () (tell-workman "back")))
+	     (menuitem "&Stop" #:image-left "mini-wm-stop.xpm"
+		       #:action (lambda () (tell-workman "stop")))
+	     (menuitem "&Eject" #:image-left "mini-wm-eject.xpm"
+		       #:action (lambda () (tell-workman "eject")))))))
+
+(define menu-root-start
+  ;;  (menu "RootStart" "Start %mini-exp.xpm%"
+  (menu
+   (list 
+    (menu-title "Start" #:image-left "mini-exp.xpm")
+    menu-separator
+    (menuitem "&New shell" #:image-left "mini-sh1.xpm" 
+	      #:action 'start-xterm)
+    (menuitem "&Applications" #:image-left "mini-x2.xpm" 
+	      #:action 'menu-applications)
+    (menuitem "&Utilities" #:image-left "mini-hammer.xpm" 
+	      #:action 'menu-utilities)
+    (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm" 
+	      #:action 'menu-multimedia)
+    (menuitem "&Games" #:image-left "mini-happy.xpm" 
+	      #:action 'menu-games)
+    menu-separator
+    (menuitem "H&osts - Servers" #:image-left "mini-windows.xpm" 
+	      #:action 'menu-hosts-servers)
+    (menuitem "Hosts - Linux" #:image-left "mini-windows.xpm" 
+	      #:action 'menu-hosts-linux)
+    (menuitem "Hosts - Solaris" #:image-left "mini-windows.xpm" 
+	      #:action 'menu-hosts-solaris)
+    (menuitem "Hosts - Other" #:image-left "mini-windows.xpm" 
+	      #:action 'menu-hosts-other)
+;;    (menuitem "&System Utilities" #:image-left "mini-connect.xpm" 
+;;	      #:action 'menu-system-utilities)
+    (menuitem "&Window Operations" #:image-left "mini-windows.xpm" 
+	      #:action 'menu-window-ops)
+    (menuitem "&Preferences" #:image-left "mini-prefs.xpm" 
+	      #:action 'menu-prefs-gjb)
+    menu-separator
+    (menuitem "S&creensaver" #:image-left "mini-display.xpm" 
+	      #:action 'menu-screensaver)
+    (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
+	      #:action (thunk exec-xlock))
+    menu-separator
+    (menuitem "Turn on Constraint Solver"
+	      #:action (thunk enable-constraint-solver))
+    menu-separator
+    (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
+	      #:action (thunk scwm-about-message))
+    (menuitem "&Help ScwmTNL" #:image-left "mini-question.xpm" 
+	      #:action (thunk scwm-help))
+    (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
+	      #:action 'menu-quit-verify))
+;;   #:image-side "linux-menu.xpm"
+   #:image-side "scwm-gnu-linux.xpm"
+   #:image-align 'bottom
+   #:color-bg-image-side "blue"))
+
+(debug-display "before enable-constraint-solver")
+
+(define (enable-constraint-solver)
+  (if (scwm-is-constraint-enabled?)
+      (begin
+	(use-scwm-modules constraints)
+	(start-constraints))
+      (error "Scwm is not built to support constraints\nGet Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/")))
+
+(define menu-desk 
+  (menu 
+   (list (menu-title "Desks")
+	 menu-separator
+	 (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
+	 (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
+	 (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
+	 (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
+
+(define menu-utilities 
   (menu 
    (list
-    (menu-title "Desks") menu-separator
-    (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
-    (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
-    (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
-    (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
-  
-(define util-menu 
-  (menu 
-   (list
-    (menu-title "Utilities") menu-separator
-    (menuitem "xterm" #:action (lambda () (execute "xterm")))
-    (menuitem "rxvt" #:action (lambda () (execute "rxvt")))
-    (menuitem "emacs" #:action (lambda () (execute "emacs")))
-    (menuitem "top" #:action 
-	       (lambda () (execute "rxvt -T Top -n Top -e top")))
+    (menu-title "Utilities")
+    menu-separator
+    (menuitem "xterm" #:image-left "mini-term.xpm" 
+	       #:action "color_xterm")
+    (menuitem "rxvt"
+	       #:action (lambda () (execute "rxvt")))
+    (menuitem "emacs" #:image-left "mini-edit.xpm" 
+	       #:action (lambda () (execute "emacs")))
+    (menuitem "top" #:action (lambda () (execute "rxvt -T Top -n Top -e top")))
     (menuitem "xcalc" #:action (lambda () (execute "xcalc")))
     (menuitem "xmag" #:action (lambda () (execute "xmag")))
     menu-separator
-    (menuitem "Desks" #:action desk-menu)
+    (menuitem "Desks" #:action menu-desk)
     menu-separator
-    (menuitem "Exit scwm" #:action menu-quit-verify))))
-
-(define (popup-util)
-  (popup-menu util-menu))
-
-(define (make-small-window-ops-menu w)
-  (menu 
-   (list
-;;    (menu-title "Window Ops2")
-;;    menu-separator
-    (menuitem "Move" #:action interactive-move)
-    (menuitem "Resize" #:action interactive-resize)
-    (menuitem "Raise" #:action raise-window)
-    (menuitem "Lower" #:action lower-window)
-    (menuitem "Iconify" #:action iconify)
-    menu-separator
-    (menuitem "More..." #:action 
-	      (menu 
-	       (list
-		(menuitem (if (maximized? w)
-			      "Unmaximize"
-			      "Maximize") 
-			  #:action vertical-toggle-maximize)
-		(menuitem (if (sticky? w)
-			      "Unstick"
-			      "Stick") #:action toggle-stick)
-		(menuitem (if (window-shaded? w)
-			      "UnWindow-Shade"
-			      "Window-Shade") 
-			  #:action toggle-window-shade)
-		(menuitem (if (kept-on-top? w)
-			      "UnKeep On Top"
-			      "Keep On Top") #:action toggle-on-top))))
-    menu-separator
-    (menuitem "Close" #:action close-window)
-    (menuitem "Destroy" #:action destroy-window))))
-
-(define (popup-small-ops)
-  (popup-menu (make-small-window-ops-menu (get-window))))
+    (menuitem "Exit scwm" menu-quit-verify))))
 
 
-;; now set some mouse and key bindings ;;
+;;; now set some mouse and key bindings ;;
 
-;; first our root menus
-(bind-mouse 'root 1 popup-util)
-(bind-mouse 'root 2 popup-ops)
-(bind-mouse 'root 3 (lambda () 
-		      (show-window-list-menu #:show-geometry #t)))
-(bind-mouse 'root "M-3" (lambda () (popup-menu desk-menu)))
+(define (show-window-list-by-focus-with-geometry)
+  (show-window-list-menu #:by-focus #t #:show-geometry #t))
+
+(define (show-window-list-by-resource-with-geometry)
+  (show-window-list-menu #:by-resource #t #:show-geometry #t))
+
+;;; first our root menus
+(bind-mouse 'root 1 #f popup-root-start-no-warp)
+(bind-mouse 'root 2 #f show-window-list-by-focus-with-geometry)
+(bind-mouse 'root "M-3" #f popup-desk)
+(bind-mouse 'root 3 #f popup-applications-no-warp)
+(bind-mouse 'all "A-2" #f show-window-list-by-resource-with-geometry)
+
+(bind-key 'all "H-r" rename-window-interactively)
+;; (lookup-key 'all "H-r")
+;; (add-timer-hook! (ms->usec 150) (lambda () (display (lookup-key 'all (get-key-event))) (newline)))
+;; (procedure-name rename-window-interactively)
 
 
-;; window buttons
-(bind-mouse 'left-button-1 1 popup-small-ops)
-(bind-mouse 'right-button-1 1 vertical-toggle-maximize)
-(bind-mouse 'right-button-2 1 iconify)
+(bind-key 'all "H-w" describe-key)
+(bind-key 'all "H-comma" describe-mouse)
+(bind-key 'all "C-M-S-g" interactive-set-window-gravity!)
 
-;; operations on parts of the window
+(bind-key 'all "C-A-S-t" toggle-titlebar-in-place)
+(bind-key 'all "C-A-S-m" show-window-list-matching-interactively)
+
+(bind-key 'all "H-A-M-C-d" delete-window)
+;; (lookup-key 'all "H-A-M-C-d")
+
+
+;;; operations on parts of the window
 (bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
 (bind-mouse 'frame-corners 1 resize-or-raise)
 (bind-mouse 'frame-sides 1 move-or-raise)
+
 (define (move-or-shade)
   (case (mouse-event-type)
-    ((double-click) (toggle-window-shade))
+    ((double-click) (animated-toggle-window-shade))
     (else (move-or-raise))))
-(bind-mouse 'title 1 move-or-shade)
-(bind-mouse 'title 3 lower-window)
+
+(define* (raise-and-stop-flashing #&optional (win (get-window)))
+  (if (window-flashing? win)
+      (stop-flashing-window win))
+  (raise-window win)
+  #f)
+
+(define (play-window-flashing-start-sound ignored)
+  (wavplay "Utopia Question.WAV"))
+
+(add-hook! window-flashing-start-hook play-window-flashing-start-sound)
+
+(bind-mouse 'title 1 move-or-shade raise-and-stop-flashing)
+(bind-mouse 'title 2 #f lower-window)
+(bind-mouse 'title 3 #f popup-window-ops)
 
 
 ;; key bindings for the menus
-(bind-key 'all "M-F1" popup-util)
-(bind-key 'all "M-F2" popup-ops)
+(bind-key 'all "M-S-F1" popup-utilities)
+(bind-key 'all "M-S-F2" popup-window-ops)
 
-;; in case of emergency, hit Control-Meta-Shift-Q
+;; C-S-M-t makes netscape go to the url specified by cut buffer 0
+(bind-key 'all "C-S-M-t" netscape-goto-cut-buffer-url)
+;; http://scwm.mit.edu/scwm    ;; highlight w/ mouse and try it!
+
+;; in case of emergency, hit Control-Meta-Q
 (bind-key 'all "C-M-S-q" quit-verify)
 
 ;; some stuff for icons
 (define (move-or-deiconify)
   (case (mouse-event-type)
     ((motion) (interactive-move))
-    ((double-click) (deiconify))))
+    ((double-click) (animated-deiconify))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
-(bind-mouse 'icon 2 deiconify)
+(bind-mouse 'icon 2 #f default-winlist-proc) ;; was deiconify
+
+(bind-mouse 'all "C-S-M-1" #f toggle-raise)
+
+(define* (interactive-move-rubberband #&optional (win (get-window)))
+  (interactive-move (get-window) #f))
+
+(define* (interactive-resize-rubberband #&optional (win (get-window)))
+  (interactive-resize (get-window) #f))
+
+;; These always do opaque moves
+;;(bind-mouse 'all "C-S-M-2" #f interactive-move)
+(bind-mouse 'all "C-S-M-2" #f interactive-move-selected-group-or-window)
+(bind-mouse 'all "C-S-M-3" #f interactive-resize)
+;; These always do rubberband moves (except when built for constraint-solver--
+;; with cn solver builds all move/resize operations must be opaque)
+(bind-mouse 'window "H-2" #f interactive-move-rubberband)
+(bind-mouse 'window "H-3" #f interactive-resize-rubberband)
+
+(bind-mouse 'all "H-1" #f select-window-add-selection)
+(bind-mouse 'all "H-S-1" #f select-window-add-selection)
+(bind-mouse 'all "H-A-1" #f select-window-add-selection)
+(bind-mouse 'all "H-S-2" #f interactive-move-selected-group-or-window)
+(bind-mouse 'title "C-1" #f select-window-add-selection)
+(bind-mouse 'title "C-3" #f popup-window-group-menu-no-warp)
+
+(bind-mouse 'all "H-M-3" #f popup-window-ops)
+(bind-mouse 'left-button-1 3 popup-style-menu)
 
 
+(define (resize-halfscreen)
+  (let ((w (current-window-with-pointer)))
+    (resize-to (%x 49) (%y 90))))
 
-;; move the pointer with the keyboard
-(bind-key 'all "M-Left" (lambda () (move-pointer (%x -1) 0)))
-(bind-key 'all "M-Right" (lambda () (move-pointer (%x 1) 0)))
-(bind-key 'all "M-Up" (lambda () (move-pointer 0 (%y -1))))
-(bind-key 'all "M-Down" (lambda () (move-pointer 0 (%y 1))))
+(define (resize-fullscreen)
+  (let ((w (current-window-with-pointer)))
+    (resize-to (%x 90) (%y 90))))
 
-;; move the viewport with the keyboard
-(bind-key 'all "C-M-Left" (lambda () (move-viewport (%x -100) 0)))
-(bind-key 'all "C-M-Right" (lambda () (move-viewport (%x 100) 0)))
-(bind-key 'all "C-M-Up" (lambda () (move-viewport 0 (%y -100))))
-(bind-key 'all "C-M-Down" (lambda () (move-viewport 0 (%y 100))))
+(bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
+(bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
+(bind-key 'all "C-S-F9" window-info)
+(bind-key 'all "C-M-S-e" resize-halfscreen)
+(bind-key 'all "C-M-S-f" resize-fullscreen)
+
+
+;; I reserve M-Tab for emacs, but Alt-Tab is fine
+(bind-key 'all "A-Tab"
+	  (lambda ()
+	    (show-window-list-menu #:by-focus #t #:show-last-focus-time #t
+				   #:show-geometry #t #:warp-to-first #t)))
 
 ;; rotate the current window with the keyboard
-(bind-key 'all "C-S-Tab"
+(bind-key 'all "M-S-Tab" 
 	  (lambda ()
 	    (next-window #:only visible? #:except iconified?)))
 
-(bind-key 'all "M-S-Tab" 
+(bind-key 'all "C-M-S-Tab" 
 	  (lambda ()
 	    (prev-window #:only visible? #:except iconified?)))
+
+(key-mouse-moves "C-M-S" 5 "h" "j" "k" "l")
+;; XInside's old X server steal C-M-h for prev virtual console, so use m too
+(key-mouse-moves "C-M-S" 5 "m" "j" "k" "l")
+
+(key-mouse-moves "C-M-S" 1 "y" "u" "i" "o")
+
+(key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
+(key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
+
+;; avoid lots of warnings.... test for this first...
+(define have-kp-keysyms (and (keysym->keycode "KP_Left") #t))
+
+(if have-kp-keysyms
+    (key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right"))
+
+
+(define (switch-to-first-desk) (set-current-desk! 0))
+(define (switch-to-second-desk) (set-current-desk! 1))
+
+(bind-key 'all "C-M-S-Home" switch-to-first-desk)
+(bind-key 'all "C-M-S-End" switch-to-second-desk)
+
+(bind-key 'all "C-M-S-a" popup-applications)
+
+(bind-key 'all "C-M-S-r" refresh)
+(bind-key 'all "C-M-S-5" recapture)
+(bind-key 'all "C-M-S-x" start-xterm)
+(bind-key 'all "C-M-S-p" start-xlogo)
+
+(bind-key 'all "C-S-F1" popup-small-ops)
+(bind-key 'all "C-S-F2" show-window-list-menu)
+;;(bind-key 'all "C-S-F3" popup-favorite-hosts-menu)
+(bind-key 'all "C-S-F4" popup-applications)
+(bind-key 'all "C-S-F5" popup-utilities)
+(bind-key 'all "C-S-F6" popup-multimedia)
+
+(define (float->integer x)
+  (inexact->exact (truncate x)))
+
+;; These are useful!
+(define root-size-x (car (display-size)))
+(define root-size-y (cadr (display-size)))
+
+(setenv "DISPLAY_HEIGHT" (number->string root-size-y))
+(setenv "DISPLAY_WIDTH" (number->string root-size-x))
+
+;; (define varstr "SSH_AUTH_SOCK")
+;; (define valstr "/tmp/ssh-gjb/agent-socket-26365")
+;; (setenv-for-sub-process-xterms "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK"))
+
+;; See also my reset-ssh-auth-sock-from-scwm emacs function
+;; along with copy-scwm-env-var-value.
+(define (setenv-for-sub-process-xterms varstr valstr)
+  (setenv varstr valstr)
+  (system (string-append "echo \"" varstr "=" valstr "\" > " 
+			 (getenv "HOME") "/private/.zsh-dynamic-source" )))
+
+;; this is better done from within the emacs that needs fixing.
+(define (fix-ssh-auth-for-xemacs-server)
+  (system "gnuclient -q -batch -f reset-ssh-auth-sock-from-scwm"))
+
+;; GJB:FIXME:: PLANES? SCWM_DIR? SCWM_VERSION?  want these exported too
+
+(define (percent-display x y)
+  (list (%x x) (%y y)))
+
+(bind-key 'all "C-S-Down" animated-iconify)
+(bind-key 'all "C-M-Return" toggle-raise)
+(bind-key 'all "M-F1" toggle-raise)   ;; like SGI's 4dwm
+
+(bind-key 'all "C-S-Up" vertical-toggle-maximize-partial)
+(bind-key 'all "C-S-Right" horizontal-toggle-maximize)
+(bind-key 'all "C-S-Left" both-toggle-maximize)
+
+;; See the binding for mouse button 2
+;; to add geometry strings to this as well.
+(bind-key 'all "C-S-Return" show-icon-list-menu)
+
+(bind-key 'all "C-S-M-z" popup-root-start)
+(bind-key 'all "H-z" popup-root-start)
+
+(set-click-delay! 150)
+
+;;(define animation-delay 5)
+
+;; Fluid, cartoon-like
+;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.0))
+
+;; Linear, mechanical
+;(set-animation! '#(0.1 0.2 0.3 0.4 0.6 0.7 0.8 0.9 1.0))
+
+;; Fluid, cartoon-like, overshoots target
+;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
+
+;; Northwest
+(let ((p (lambda () (with-window (get-window)
+				 (animated-move-to 0 0) 
+				 (set-window-gravity! 'northwest)))))
+  (bind-key 'all "C-M-KP_7" p)
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Home" p)))
+
+;; Northeast
+(let ((p (lambda () (with-window (get-window)
+				 (animated-move-to (x- (w%x 100)) 0)
+				 (set-window-gravity! 'northeast)))))
+  (bind-key 'all "C-M-KP_9" p)
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Prior" p)))
+
+;; Southwest
+(let ((p (lambda () (with-window (get-window)
+				 (animated-move-to 0 (y- (w%y 100)))
+				 (set-window-gravity! 'southwest)))))
+  (bind-key 'all "C-M-KP_1" p)
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_End" p)))
+
+;; SouthEast
+(let ((p (lambda () (with-window (get-window)
+				 (animated-move-to (x- (w%x 100)) 
+						   (y- (w%y 100)))
+				 (set-window-gravity! 'southeast)))))
+  (bind-key 'all "C-M-KP_3" p)
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Next" p)))
+
+;; North
+(let ((p (lambda () (with-window (get-window)
+				 (animated-move-to #f 0)
+				 (set-window-gravity! 'north)))))
+  (bind-key 'all "C-M-KP_8" p)
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Up" p)))
+
+;; East
+(let ((p (lambda () (with-window (get-window)
+				 (animated-move-to (x- (w%x 100)) #f)
+				 (set-window-gravity! 'east)))))
+  (bind-key 'all "C-M-KP_6" p)
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Right" p)))
+
+;; South
+(let ((p (lambda () (with-window (get-window) 
+				 (animated-move-to #f (y- (w%y 100)))
+				 (set-window-gravity! 'south)))))
+  (bind-key 'all "C-M-KP_2" p)
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Down" p)))
+
+;; West
+(let ((p (lambda () (with-window (get-window)
+				 (animated-move-to 0 #f)
+				 (set-window-gravity! 'west)))))
+  (bind-key 'all "C-M-KP_4" p)
+  (if have-kp-keysyms
+      (bind-key 'all "C-M-KP_Left" p)))
+
+;; Center -- just set gravity
+(let ((p (lambda () (with-window (get-window)
+				 (set-window-gravity! 'center)))))
+  (bind-key 'all "C-M-KP_5" p))
+
+
+(define (send-button-press-1) (send-button-press 1))
+;;(define (send-button-press-1) (xtest-fake-button-event 1 #t))
+(define (send-button-press-2) (send-button-press 2))
+;;(define (send-button-press-2) (xtest-fake-button-event 2 #t))
+(define (send-button-press-3) (send-button-press 3))
+;;(define (send-button-press-3) (xtest-fake-button-event 3 #t))
+
+;; GJB:FIXME:: modifiers interface could be better... mimic off Emacs?
+;; GJB:FIXME:: keys should be first class
+;; GJB:FIXME:: bindings and menus should perhaps have a syntax that makes the lambda implicit
+(bind-key 'all "C-M-S-7" send-button-press-1)
+(bind-key 'all "C-M-S-8" send-button-press-2)
+(bind-key 'all "C-M-S-9" send-button-press-3)
+
+;; Need to allow SendEvents in XTerm before synthetic events will work
+;;(bind-mouse 'window 1 (lambda () (raise-window) (send-button-press 1 (get-window) #t #f)))
+;;(bind-mouse 'window 3 (lambda () (lower-window) (send-button-press 3 (get-window) #t #t)))
+;; (unbind-mouse 'window 1)
+;; (unbind-mouse 'window 3)
+;; (bind-mouse 'window 1 raise-window)
+;; (set-window-focus! 'click (get-window))
+
+
+(define (send-key-press-up) (send-key-press "Up"))
+(define (send-key-press-down) (send-key-press "Down"))
+(define (send-key-press-prior) (send-key-press "Prior"))
+(define (send-key-press-next) (send-key-press "Next"))
+;; These would be better if they repeated, but they are useful, e.g.,
+;; in a netscape window
+(bind-mouse 'window "C-A-S-1" #f send-key-press-up)
+(bind-mouse 'window "C-A-S-3" #f send-key-press-down)
+(bind-mouse 'window "C-A-H-1" #f send-key-press-prior)
+(bind-mouse 'window "C-A-H-3" #f send-key-press-next)
+
+;; From Bruno Daniel
+;; GJB:FIXME:: proof that we need per-window event mappings
+;; since it is unfortunate we have to do things this way..
+;(bind-mouse 'window 4
+;            (lambda ()
+;              (if (wildcard-match? "XMathematica"
+;                                   (current-window-with-pointer))
+;                  (send-key-press "Prior"
+;                    (current-window-with-pointer) #t #t #t))
+;                  (send-button-press "4" #f #t #t)))
+
+;(bind-mouse 'window 5
+;            (lambda ()
+;              (if (wildcard-match? "XMathematica"
+;                                   (current-window-with-pointer))
+;                  (send-key-press "Next"
+;                     (current-window-with-pointer) #t #t #t)
+;                  (send-button-press "5" #f #t #t))))
+
+;; (unbind-mouse 'window 4)
+;; (unbind-mouse 'window 5)
+
+;; Permit vertical movement of windows via wheel mouse.
+;; kinda silly, but kinda cute, too!
+(bind-mouse 'window "H-4" (lambda () (move-window-relative 0 -5)))
+(bind-mouse 'window "H-C-4" (lambda () (move-window-relative 0 -1)))
+(bind-mouse 'window "H-M-4" (lambda () (move-window-relative 0 -25)))
+(bind-mouse 'window "H-5" (lambda () (move-window-relative 0 5)))
+(bind-mouse 'window "H-C-5" (lambda () (move-window-relative 0 1)))
+(bind-mouse 'window "H-M-5" (lambda () (move-window-relative 0 25)))
+
+;; This one is experimental-- sends only the buttonpress event, no buttonrelease
+(bind-key 'all "C-M-S-0" (lambda () (send-button-press 2 (get-window) #t #f)))
+
+;; (bind-key 'all "C-M-S-n" (lambda () (write (get-window)) (newline)))
+
+(bind-key 'all "C-M-S-s" toggle-stick)
+
+;; Hyper-w
+;;(bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
+;; Alt-w
+;;(bind-key 'all "A-w" (lambda () (display "alt-w\n")))
+
+(highlight-current-window XKM_HYPER_L XKM_SHIFT_L)
+
+;; Handle Gale popup windows--
+;; close them after 1 hour (GJB:FIXME:: should only do so if not directed to user)
+;; (add-hook! after-new-window-hook
+;;	   (lambda (w) (if (string=? (window-class w) "Gsubrc")
+;;			   (add-timer-hook! (sec->usec (* 60 60) (thunk (close-window w)))))))
+;; (reset-hook! after-new-window-hook)
+
+(if want-autoraise
+    (begin
+      (use-scwm-modules auto-raise)
+      (window-style "*" #:auto-raise #t)))
+
+(if want-fvwm2-pager-module
+    (begin
+      (register-fvwm2-module-config "FvwmPager"
+				    "*FvwmPagerBack grey76"
+				    "*FvwmPagerFore black"
+				    "*FvwmPagerHilight yellow"
+				    "*FvwmPagerFont none"
+				    "*FvwmPagerDeskTopScale 50"
+				    "*FvwmPagerGeometry -0-0"
+				    "*FvwmPagerLabel 0 Top"
+				    "*FvwmPagerLabel 1 Bottom"
+				    "*FvwmPagerSmallFont 5x8")
+      ;; Actually run the pager. Make it manage desktops 0-2. Save the
+      ;; module object in a variable so we can kill this specific pager
+      ;; later.
+      (define fvwm2-pager (run-fvwm2-module "FvwmPager"
+					    '("0" "1")))
+;; This shouldn't be necessary any longer
+;;      (add-hook! shutdown-hook (lambda () (kill-fvwm2-module fvwm2-pager))))
+      ))
+    
+(if want-fvwm2-winlist-module
+    (begin
+      (register-fvwm2-module-config 
+       "FvwmWinList"
+       "*FvwmWinListBack gray70"
+       "*FvwmWinListFore Black"
+       "*FvwmWinListFont -helvetica-bold-r-*-*-10-*-*-*-*-*-*-*"
+       "*FvwmWinListAction Click1 Iconify -1,Focus"
+       "*FvwmWinListAction Click2 Iconify"
+       "*FvwmWinListGeometry -0+0"
+       ;;     "*FvwmWinListAction Click3 Module FvwmIdent FvwmIdent"
+       "*FvwmWinListUseSkipList")
+      (define fvwm-winlist (run-fvwm2-module "FvwmWinList" '()))
+      ;; work around a race condition in decorating FvwmWinList
+      ;; and notifying FvwmWinList of the configure window event
+      (add-timer-hook! (* 1000000 5) 
+		       (lambda () 
+			 (window-style "FvwmWinList"
+				       #:use-style
+				       desk-widget-on-top-no-titlebar)))
+      ))
+
+(use-change-desk-commands
+ #(
+   "xsetroot -solid cyan4" 
+   "xsetroot -solid navyblue" 
+   ;;	  "xv -root -quit /home/satchell/kde_themes/Factory/gears.jpg"
+   ;;	  "xearth -once"
+   ))
+
+(define (show-desk-name new old)
+  (display-message-briefly (string-append "Desk: " (number->string new))))
+
+(add-hook! change-desk-hook show-desk-name)
+
+;; enable xterm patch's window flashing behaviour
+(start-property-respond)
+
+(define (select-message-window)
+  (id->message-window (car (select-viewport-position))))
+
+(define (select-and-hide-message-window)
+  (message-window-hide! (select-message-window)))
+
+(define (dir-focus-west) (dir-focus 'west))
+(define (dir-focus-south) (dir-focus 'south))
+(define (dir-focus-north) (dir-focus 'north))
+(define (dir-focus-east) (dir-focus 'east))
+
+(bind-key 'all "C-S-M-n" dir-focus-west)
+(bind-key 'all "C-S-M-m" dir-focus-south)
+(bind-key 'all "C-S-M-comma" dir-focus-north)
+(bind-key 'all "C-S-M-period" dir-focus-east)
+
+(bind-key 'all "H-q" quote-key-event)
+(bind-key 'all "H-m" quote-mouse-event)
+
+;; send 100 presses of button 1
+;; for benchmarking amaya's reload
+;;
+;;(bind-key 'all "C-S-M-b" (lambda ()
+;;			   (let loop ((i 0))
+;;			     (send-button-press 1)
+;;			     (if (< i 100)
+;;				 (loop (+ 1 i))))))
+
+;; 18 seconds
+;; vs. 25 seconds
+
+;; (unselect-all-windows)
+
+;;(kill-fvwm2-module fvwm-winlist)
+;;(kill-all-fvwm2-modules)
+
+;;; Dynamically loaded pie menus (just big regular menus now)
+;;; 
+;;;(define pie-menu-obj (dynamic-link "draw-pie-menu.so"))
+
+;;;(define construct-pie-menu 
+;;;  (dynamic-func "ConstructDynamicMenu" pie-menu-obj))
+
+;;;(set! construct-menu-primitive construct-pie-menu)
+
+(if (and (not (restarted?)) (not suppress-xclients))
+    (run-dot-xclients-at-startup))
+
+(define scwm-messages-window (find-window-by-name "SCWM Messages...."))
+
+(if scwm-messages-window
+    (iconify scwm-messages-window))
+
+(debug-display " *** `scwmrc' processed.\n")
+
+;; Remove the windows that are showing tail -f's on 
+;; scwm error messages and .Xsession errors
+;(system "test -r ${HOME}/.tracepids && ( kill `cat ${HOME}/.tracepids` ; rm -f ${HOME}/.tracepids )")
+
+;; This lets me find out which shell `system' is using
+;;(system "echo $ZSH_VERSION $version $BASH_VERSION")
+
+;; Be sure we have the users identity (scwm should be started
+;; as 'ssh-agent scwm ...')
+;;(system "ssh-add -l </dev/null | grep -q gjb || ssh-add </dev/null")
+
+;;(hide-titlebar (current-window-with-pointer))
+;;(show-titlebar (current-window-with-pointer))
+;;(load "/scratch/gjb/scwm/scheme/flux.scm")
+;;(load "/scratch/gjb/scwm/scheme/winops.scm")
+;;(load "/scratch/gjb/scwm/scheme/style.scm")
+;;(load "/scratch/gjb/scwm/scheme/cached-program-exists.scm")
+
+;;(set-handle-segv! #f)
+
+;;(add-hook! error-hook (lambda (tag op msg pos-and-arg extra) 
+;;			(display-message-briefly 
+;;			 (string-append (symbol->string tag) " error: " op))))
+;;
+
+;; Get my preferences from ~/.scwm-options --
+;; let them take priority over anything I do in here
+(load-preferences)
+
+(message-window-hide! scwm-logo-msgwin)
+(set! next-logo-image (lambda () #f))
+(set! logo-image-sequence #f)
+
+(remove-hook! load-processing-hook next-logo-image-n)
+;;(remove-hook! load-processing-hook move-scwm-logo-msgwin)
+
+(set-background-image! scwm-logo 'tiled)

@@ -1,0 +1,267 @@
+;; $Id$
+
+;; simple.scwmrc was system.scwmrc until Scwm-0.99.2
+
+;; Uncomment the below to send a single UDP packet to
+;; the scwm usage counter machine at startup
+;; The single packet just contains the hostname and version number
+;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
+;;(define thank-scwm-authors-with-usage-note #t)
+
+;;-------------------------------;;
+;; import the scwm modules       ;;
+
+(use-scwm-modules base winops winlist wininfo 
+		  doc style message-window face)
+
+;;-------------------------------;;
+;; set some basic styles info    ;;
+
+
+(define font12
+  (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+(define font14 
+  (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
+
+(menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue"
+	    #:hl-fg "yellow"
+	    #:font font14)
+
+(title-style #:font font12 #:justify 'left)
+
+(set-icon-font! font12)
+(set-highlight-foreground! "white")
+(set-highlight-background! "blueviolet")
+(set-rubber-band-mask! 127)
+
+
+(define user-image-load-path 
+  (list (string-append (user-home) "/pixmaps")
+	(string-append (user-home) "/bitmaps")))
+
+
+;;-------------------------------;;
+;; set some paths                ;;
+;;
+
+;; these are OK for my system, but may need to be changed for
+;; yours. This should probably be eventually autoconfed or something.
+
+;;; set path to use for image searches
+(set! image-load-path 
+      (append 
+       user-image-load-path 
+       '("/usr/X11/lib/X11/mini-icons" "/usr/X11/include/X11/pixmaps" 
+	 "/usr/lib/icons" "/usr/local/X11/include/X11/pixmaps"
+	 "/usr/local/lib/icons" "/usr/local/icons"
+	 "/uns/share/include/X11/pixmaps" "/uns/share/include/X11/bitmaps")
+       image-load-path))
+
+;;-------------------------------;;
+;; set some window styles        ;;
+
+(window-style "*" 
+	      #:fg "white" #:bg "navy" 
+	      #:icon "unknown1.xpm" 
+	      #:icon-box (list (x- 70) 1 69 (y- 141))
+	      #:border-width 6 
+	      #:focus 'mouse
+	      #:random-placement #t #:smart-placement #t
+	      #:mwm-func-hint #t #:mwm-decor-hint #t
+	      #:hint-override #t #:decorate-transient #t
+	      #:PPosition-hint #f
+	      #:lenience #t
+	      )
+
+(define desk-widget
+  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
+	      #:border-width 3 #:focus 'none))
+
+(window-style "*lock" #:use-style desk-widget)
+(window-style "xload" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xscreensaver" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xbiff" #:no-titlebar #t #:use-style desk-widget)
+(window-style "xcalc" #:icon "xcalc.xpm")
+(window-style "xman" #:icon "xman.xpm")
+(window-style "xmag" #:icon "mag_glass.xpm")
+(window-style "Emacs" #:icon "gnu-animal.xpm")
+(window-style "XTerm" #:icon "xterm.xpm")
+
+
+;; People seem to prefer move by full virtual desks
+(set-edge-resistance! 500 10)
+(set-edge-scroll! (%x 100) (%y 100))
+
+
+;;-------------------------------;;
+;; define some useful menus      ;;
+
+
+(define (vertical-toggle-maximize)
+  (toggle-maximize 0 (%y 100)))
+
+(define window-ops-menu
+  (menu 
+   (list
+    (menu-title "Window Ops") menu-separator
+    (menuitem "Move" #:action interactive-move)
+    (menuitem "Resize" #:action interactive-resize)
+    (menuitem "Raise" #:action raise-window)
+    (menuitem "Lower" #:action lower-window)
+    (menuitem "Print" #:action print-window)
+    (menuitem "(Un)Window-Shade" #:action toggle-window-shade)
+    (menuitem "(De)Iconify" #:action toggle-iconify)
+    (menuitem "(Un)Maximize" #:action vertical-toggle-maximize)
+    (menuitem "(Un)Stick" #:action toggle-stick)
+    (menuitem "(Un)Keep On Top" #:action toggle-on-top)
+    menu-separator
+    (menuitem "Close" #:action close-window)
+    (menuitem "Delete" #:action delete-window)
+    (menuitem "Destroy" #:action destroy-window)
+    menu-separator
+    (menuitem "Refresh Screen" #:action refresh))))
+
+(define (popup-ops)
+  (popup-menu window-ops-menu))
+
+(define menu-quit-verify
+  (menu 
+   (list
+    (menu-title "Really quit scwm?") menu-separator
+    (menuitem "Yes" #:action quit)
+    (menuitem "No" #:action #f)
+    menu-separator
+    (menuitem "Restart scwm" #:action (lambda () (restart "scwm"))))))
+
+(define (quit-verify)
+  (popup-menu menu-quit-verify))
+
+(define desk-menu 
+  (menu 
+   (list
+    (menu-title "Desks") menu-separator
+    (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
+    (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
+    (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
+    (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
+  
+(define util-menu 
+  (menu 
+   (list
+    (menu-title "Utilities") menu-separator
+    (menuitem "xterm" #:action (lambda () (execute "xterm")))
+    (menuitem "rxvt" #:action (lambda () (execute "rxvt")))
+    (menuitem "emacs" #:action (lambda () (execute "emacs")))
+    (menuitem "top" #:action 
+	       (lambda () (execute "rxvt -T Top -n Top -e top")))
+    (menuitem "xcalc" #:action (lambda () (execute "xcalc")))
+    (menuitem "xmag" #:action (lambda () (execute "xmag")))
+    menu-separator
+    (menuitem "Desks" #:action desk-menu)
+    menu-separator
+    (menuitem "Exit scwm" #:action menu-quit-verify))))
+
+(define (popup-util)
+  (popup-menu util-menu))
+
+(define (make-small-window-ops-menu w)
+  (menu 
+   (list
+;;    (menu-title "Window Ops2")
+;;    menu-separator
+    (menuitem "Move" #:action interactive-move)
+    (menuitem "Resize" #:action interactive-resize)
+    (menuitem "Raise" #:action raise-window)
+    (menuitem "Lower" #:action lower-window)
+    (menuitem "Iconify" #:action iconify)
+    menu-separator
+    (menuitem "More..." #:action 
+	      (menu 
+	       (list
+		(menuitem (if (maximized? w)
+			      "Unmaximize"
+			      "Maximize") 
+			  #:action vertical-toggle-maximize)
+		(menuitem (if (sticky? w)
+			      "Unstick"
+			      "Stick") #:action toggle-stick)
+		(menuitem (if (window-shaded? w)
+			      "UnWindow-Shade"
+			      "Window-Shade") 
+			  #:action toggle-window-shade)
+		(menuitem (if (kept-on-top? w)
+			      "UnKeep On Top"
+			      "Keep On Top") #:action toggle-on-top))))
+    menu-separator
+    (menuitem "Close" #:action close-window)
+    (menuitem "Destroy" #:action destroy-window))))
+
+(define (popup-small-ops)
+  (popup-menu (make-small-window-ops-menu (get-window))))
+
+
+;; now set some mouse and key bindings ;;
+
+;; first our root menus
+(bind-mouse 'root 1 popup-util)
+(bind-mouse 'root 2 popup-ops)
+(bind-mouse 'root 3 (lambda () 
+		      (show-window-list-menu #:show-geometry #t)))
+(bind-mouse 'root "M-3" (lambda () (popup-menu desk-menu)))
+
+
+;; window buttons
+(bind-mouse 'left-button-1 1 popup-small-ops)
+(bind-mouse 'right-button-1 1 vertical-toggle-maximize)
+(bind-mouse 'right-button-2 1 iconify)
+
+;; operations on parts of the window
+(bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
+(bind-mouse 'frame-corners 1 resize-or-raise)
+(bind-mouse 'frame-sides 1 move-or-raise)
+(define (move-or-shade)
+  (case (mouse-event-type)
+    ((double-click) (toggle-window-shade))
+    (else (move-or-raise))))
+(bind-mouse 'title 1 move-or-shade)
+(bind-mouse 'title 3 lower-window)
+
+
+;; key bindings for the menus
+(bind-key 'all "M-F1" popup-util)
+(bind-key 'all "M-F2" popup-ops)
+
+;; in case of emergency, hit Control-Meta-Shift-Q
+(bind-key 'all "C-M-S-q" quit-verify)
+
+;; some stuff for icons
+(define (move-or-deiconify)
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((double-click) (deiconify))))
+
+(bind-mouse 'icon 1 move-or-deiconify)
+(bind-mouse 'icon 2 deiconify)
+
+
+
+;; move the pointer with the keyboard
+(bind-key 'all "M-Left" (lambda () (move-pointer (%x -1) 0)))
+(bind-key 'all "M-Right" (lambda () (move-pointer (%x 1) 0)))
+(bind-key 'all "M-Up" (lambda () (move-pointer 0 (%y -1))))
+(bind-key 'all "M-Down" (lambda () (move-pointer 0 (%y 1))))
+
+;; move the viewport with the keyboard
+(bind-key 'all "C-M-Left" (lambda () (move-viewport (%x -100) 0)))
+(bind-key 'all "C-M-Right" (lambda () (move-viewport (%x 100) 0)))
+(bind-key 'all "C-M-Up" (lambda () (move-viewport 0 (%y -100))))
+(bind-key 'all "C-M-Down" (lambda () (move-viewport 0 (%y 100))))
+
+;; rotate the current window with the keyboard
+(bind-key 'all "C-S-Tab"
+	  (lambda ()
+	    (next-window #:only visible? #:except iconified?)))
+
+(bind-key 'all "M-S-Tab" 
+	  (lambda ()
+	    (prev-window #:only visible? #:except iconified?)))
