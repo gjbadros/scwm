@@ -672,15 +672,16 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
   /* GJB:FIXME:: do we want to ensure sticky windows stay in t;he viewport? */
   if (psw->fSticky && !FIsPartiallyInViewport(psw)) {
     int width = FRAME_WIDTH(psw), height = FRAME_HEIGHT(psw);
-    scwm_msg(ERR,FUNC_NAME,"Window %s is sticky but not on screen -- %d,%d\n\
-moving %s to 0,0.",
-             psw->name,x,y,psw->name);
+    int oldx = x, oldy = y;
     if (x < 0) x = 0;
     if (y < 0) y = 0;
     if (x + width > Scr.DisplayWidth)
       x = Scr.DisplayWidth - width;
     if (y + height > Scr.DisplayHeight)
       y = Scr.DisplayHeight - height;
+    scwm_msg(ERR,FUNC_NAME,"Window %s is sticky but not on screen at %d,%d\n\
+moving %s to %d,%d.",
+             psw->name,oldx,oldy,psw->name,x,y);
     MoveTo((ScwmWindow *)psw,x,y);
   }
 
