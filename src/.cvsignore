@@ -1,7 +1,9 @@
 *.d
 Makefile
+font.x
 image.x
 init_scheme_string.c
+makefile.depend
 menuitem.x
 scwm
 scwmmenu.x
