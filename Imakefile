@@ -35,7 +35,8 @@ BUILDSUBDIRS = \
           modules/FvwmWinList */
 
 SAMPLESUBDIRS = \
-	  sample.scwmrc
+	  sample.scwmrc \
+          scheme \
 /*	  utils \ */
 
 
