@@ -39,11 +39,11 @@ extern Bool fHandleSegv;
 SCWM_SYMBOL(sym_focus, "focus");
 
 SCWM_HOOK(scwm_test_hook_0,"scwm-test-hook-0",0,
-"Just a test hook that takes no arguments.
+"Just a test hook that takes no arguments.\n\
 See `scwm-run-test-hook-0'");
 
 SCWM_HOOK(scwm_test_hook_1,"scwm-test-hook-1",1,
-"Just a test hook that takes one argument.
+"Just a test hook that takes one argument.\n\
 See `scwm-run-test-hook-1'.");
 
 SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
@@ -160,8 +160,8 @@ placed at all.")
 
 SCWM_IPROC(refresh, "refresh", 0, 0, 0,
            (), NULL,
-"Make sure all windows and their decorations are up to date.
-This forces a redraw of the entire current viewport. Should not be
+"Make sure all windows and their decorations are up to date.\n\
+This forces a redraw of the entire current viewport. Should not be\n\
 necessary during normal operation.")
 #define FUNC_NAME s_refresh
 {
@@ -266,8 +266,8 @@ SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
 
 SCWM_IPROC(recapture, "recapture", 0, 0, 0,
            (), NULL,
-"Recapture all the windows.
-This destroys all the current frame windows and recreate them from
+"Recapture all the windows.\n\
+This destroys all the current frame windows and recreate them from\n\
 scratch. This is hopefully not necessary during normal operation.")
 #define FUNC_NAME s_recapture
 {
@@ -655,7 +655,7 @@ already run for this to return #t.")
 
 SCWM_IPROC(force_segv_for_testing, "force-segv-for-testing", 0, 0, 0,
            (), NULL,
-"Cause a segmentation violation.
+"Cause a segmentation violation.\n\
 Do not do this unless you are testing segv handling!")
 #define FUNC_NAME s_force_segv_for_testing
 {

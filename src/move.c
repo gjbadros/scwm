@@ -49,18 +49,18 @@ extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;
 
 SCWM_HOOK(interactive_move_start_hook,"interactive-move-start-hook", 1,
-"This hook is invoked at the start of an interactive move.
+"This hook is invoked at the start of an interactive move.\n\
 It is called with one argument, WINDOW.");
 
 SCWM_HOOK(interactive_move_new_position_hook,"interactive-move-new-position-hook", 3,
-"This hook is invoked during an interactive move.
-It is called with three arguments, WINDOW, NEW-VP-X, and NEW-VP-Y,
-whenever the window is moved to a new location. The position refers
-to the position of the frame window (not the client window) in
+"This hook is invoked during an interactive move.\n\
+It is called with three arguments, WINDOW, NEW-VP-X, and NEW-VP-Y,\n\
+whenever the window is moved to a new location. The position refers\n\
+to the position of the frame window (not the client window) in\n\
 viewport coordinates.");
 
 SCWM_HOOK(interactive_move_finish_hook,"interactive-move-finish-hook", 1,
-"This hook is invoked at the end of an interactive move.
+"This hook is invoked at the end of an interactive move.\n\
 It is called with one argument, WINDOW.");
 
 /* New version from Todd Larson */

@@ -47,15 +47,15 @@
 #include "cursor.h"
 
 SCWM_HOOK(iconify_hook, "iconify-hook", 2,
-"This hook is invoked when a window is iconified.
-It is called with two arguments: WINDOW, WAS-ICONIFIED?.
-WINDOW is the window iconfied, and WAS-ICONIFIED? is
+"This hook is invoked when a window is iconified.\n\
+It is called with two arguments: WINDOW, WAS-ICONIFIED?.\n\
+WINDOW is the window iconfied, and WAS-ICONIFIED? is\n\
 a boolean telling whether the window was iconified previously.");
 
 SCWM_HOOK(deiconify_hook, "deiconify-hook", 2,
-"This hook is invoked when a window is deiconified.
-It is called with two arguments: WINDOW, WAS-ICONIFIED?.
-WINDOW is the window iconfied, and WAS-ICONIFIED? is
+"This hook is invoked when a window is deiconified.\n\
+It is called with two arguments: WINDOW, WAS-ICONIFIED?.\n\
+WINDOW is the window iconfied, and WAS-ICONIFIED? is\n\
 a boolean telling whether the window was iconified previously.");
 
 

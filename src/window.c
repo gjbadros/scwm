@@ -58,33 +58,33 @@
 #include "placement.h"
 
 SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0,
-"This hook is invoked with no arguments when the user hits an invalid
-key or performs an invalid mouse action during an interactive
-operation like `interactive-resize' or `interactive-move'. `beep' is
+"This hook is invoked with no arguments when the user hits an invalid\n\
+key or performs an invalid mouse action during an interactive\n\
+operation like `interactive-resize' or `interactive-move'. `beep' is\n\
 one example of a procedure to use here.");
 
 SCWM_GLOBAL_HOOK(cannot_grab_hook,"cannot-grab-hook",0,
-"This hook is invoked with no arguments whenever scwm cannot
-successfully grab the X server. `beep' is one example of a procedure
+"This hook is invoked with no arguments whenever scwm cannot\n\
+successfully grab the X server. `beep' is one example of a procedure\n\
 to use here. ");
 
 SCWM_HOOK(select_window_enter_hook,"select-window-enter-hook",1,
-"This hook is invoked when a window is entered during window selection.
-The hook procedures are called with a single argument, the window just entered.
-This hook is invoked once `select-window-interactively-no-message' is
-called if the pointer is already in a window.  (But the
+"This hook is invoked when a window is entered during window selection.\n\
+The hook procedures are called with a single argument, the window just entered.\n\
+This hook is invoked once `select-window-interactively-no-message' is\n\
+called if the pointer is already in a window.  (But the\n\
 leave hook is not invoked similarly when the selection completes).");
 
 SCWM_HOOK(select_window_leave_hook,"select-window-leave-hook",1,
-"This hook is invoked when a window is left during window selection.
-The hook procedures are called with a single argument, the window just left.
-This hook is not invoked upon selection completion (unlike
-`select-window-enter-hook' that is called initially upon calling
+"This hook is invoked when a window is left during window selection.\n\
+The hook procedures are called with a single argument, the window just left.\n\
+This hook is not invoked upon selection completion (unlike\n\
+`select-window-enter-hook' that is called initially upon calling\n\
 `select-window-interactively-no-message'). See also `select-window-done-hook'.");
 
 SCWM_HOOK(select_window_done_hook,"select-window-done-hook",1,
-"This hooks is run when a window is selected.
-The hook procedures are called with a single argument, the window just left.
+"This hooks is run when a window is selected.\n\
+The hook procedures are called with a single argument, the window just left.\n\
 See also `select-window-enter-hook' and `select-window-leave-hook'.");
 
 /* also used by miscproc.c's set-colormap-focus! */
@@ -1118,8 +1118,8 @@ circle cursor.")
    it might be nice to leave in just in case */
 SCWM_IPROC (force_reset_window_frame_x, "force-reset-window-frame!", 0, 1, 0,
             (SCM win), "%W",
-"This redraws the window frame and decorations of WIN.
-Ideally it would never be necessary, but it is useful for debugging
+"This redraws the window frame and decorations of WIN.\n\
+Ideally it would never be necessary, but it is useful for debugging\n\
 and for new window objects set via object properties.")
 #define FUNC_NAME s_force_reset_window_frame_x
 {
@@ -1764,9 +1764,9 @@ free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
 
 SCWM_IPROC(delete_window, "delete-window", 0, 1, 0,
            (SCM win), "%K",
-"Request that WIN remove itself from the display.
-This is the friendly way of closing a window, but it will not work if
-the application does not cooperate. WIN defaults to the window context
+"Request that WIN remove itself from the display.\n\
+This is the friendly way of closing a window, but it will not work if\n\
+the application does not cooperate. WIN defaults to the window context\n\
 in the usual way if not specified.")
 #define FUNC_NAME s_delete_window
 {
@@ -1789,9 +1789,9 @@ in the usual way if not specified.")
 
 SCWM_IPROC(destroy_window, "destroy-window", 0, 1, 0,
            (SCM win), "%W",
-"Forcibly remove WIN from the screen.
-This will kill the application without giving it a chance to save its
-state or do any other shutdown, but is guaranteed to work. WIN
+"Forcibly remove WIN from the screen.\n\
+This will kill the application without giving it a chance to save its\n\
+state or do any other shutdown, but is guaranteed to work. WIN\n\
 defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_destroy_window
 {
@@ -1849,10 +1849,10 @@ specified.")
 
 SCWM_IPROC(focus_window, "focus-window", 0, 1, 0,
            (SCM win), "%W",
-"Give WIN the keyboard input focus.
-This will typically result in drawing WIN's frame in a special style
-as well. WIN defaults to the window context in the usual way if not
-specified. Note that WIN is not raised by giving it the focus;  see
+"Give WIN the keyboard input focus.\n\
+This will typically result in drawing WIN's frame in a special style\n\
+as well. WIN defaults to the window context in the usual way if not\n\
+specified. Note that WIN is not raised by giving it the focus;  see\n\
 `raise-window' if that is your intent.")
 #define FUNC_NAME s_focus_window
 {
@@ -1879,12 +1879,12 @@ SCWM_IPROC(unfocus, "unfocus", 0, 0, 0,
 
 SCWM_IPROC(warp_to_window, "warp-to-window", 0, 1, 0,
            (SCM win), "%W",
-"Move the mouse pointer to the upper left corner of WIN.
-If WIN is on a different desk or in a different viewport, these will
-be changed appropriately so that the window is visible. WIN defaults
-to the window context in the usual way if not specified.  Note that
-the target window is not raised, so if the target window's upper
-left corner is under another window, that other window may end up
+"Move the mouse pointer to the upper left corner of WIN.\n\
+If WIN is on a different desk or in a different viewport, these will\n\
+be changed appropriately so that the window is visible. WIN defaults\n\
+to the window context in the usual way if not specified.  Note that\n\
+the target window is not raised, so if the target window's upper\n\
+left corner is under another window, that other window may end up\n\
 with the keyboard focus.")
 #define FUNC_NAME s_warp_to_window
 {
@@ -1897,8 +1897,8 @@ with the keyboard focus.")
 
 SCWM_IPROC(raise_window, "raise-window", 0, 1, 0,
            (SCM win), "%W",
-"Raise WIN to the top of the window stack.
-Stays-on-top windows still take priority. WIN defaults to the window
+"Raise WIN to the top of the window stack.\n\
+Stays-on-top windows still take priority. WIN defaults to the window\n\
 context in the usual way if not specified.")
 #define FUNC_NAME s_raise_window
 {
@@ -1921,7 +1921,7 @@ context in the usual way if not specified.")
 
 SCWM_IPROC(lower_window, "lower-window", 0, 1, 0,
            (SCM win), "%W",
-"Lower WIN to the bottom of the window stack. WIN defaults to
+"Lower WIN to the bottom of the window stack. WIN defaults to\n\
 the window context in the usual way if not specified.")
 
 #define FUNC_NAME s_lower_window
@@ -2086,9 +2086,9 @@ specified.")
 
 SCWM_IPROC(iconify_window, "iconify-window", 0, 1, 0,
            (SCM win), "%W",
-"Iconify WIN.
-Iconifying hides the regular window, and shows the window's icon.
-WIN defaults to the window context in the usual way if not
+"Iconify WIN.\n\
+Iconifying hides the regular window, and shows the window's icon.\n\
+WIN defaults to the window context in the usual way if not\n\
 specified.")
 #define FUNC_NAME s_iconify_window
 {
@@ -2106,15 +2106,15 @@ specified.")
 
 SCWM_IPROC(deiconify_window, "deiconify-window", 0, 3, 0,
            (SCM win, SCM x, SCM y), "%W",
-"Deiconify WIN.
-Hides its icon, and shows its regular window.
-WIN defaults to the window context in the usual way if not
-specified.
-If X and Y are given, then move WIN to virtual position (X . Y)
-before de-iconifying.  If X is specified, Y must be specified, too.
-These arguments are useful since `move-window' and `move-to' will
-refer to the icon window (not the frame window) if a window is iconified.
-Without being able to specify a position on de-iconification, the window
+"Deiconify WIN.\n\
+Hides its icon, and shows its regular window.\n\
+WIN defaults to the window context in the usual way if not\n\
+specified.\n\
+If X and Y are given, then move WIN to virtual position (X . Y)\n\
+before de-iconifying.  If X is specified, Y must be specified, too.\n\
+These arguments are useful since `move-window' and `move-to' will\n\
+refer to the icon window (not the frame window) if a window is iconified.\n\
+Without being able to specify a position on de-iconification, the window\n\
 cannot, e.g., cleanly be brought back onto the current viewport.")
 #define FUNC_NAME s_deiconify_window
 {
@@ -2142,7 +2142,7 @@ specified.")
   VALIDATE_WIN_USE_CONTEXT(win);
   return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fIconified);
 }
-#undef FUNC_NAME,
+#undef FUNC_NAME
 
 /**CONCEPT: Sticky
 
@@ -2153,8 +2153,8 @@ desktop.*/
 
 SCWM_IPROC(stick_window, "stick-window", 0, 1, 0,
            (SCM win), "%W",
-"Make WIN \"sticky\" so that it stays stationary in the viewport.
-WIN defaults to the window context in the usual way if not
+"Make WIN \"sticky\" so that it stays stationary in the viewport.\n\
+WIN defaults to the window context in the usual way if not\n\
 specified.")
 #define FUNC_NAME s_stick_window
 {
@@ -2187,8 +2187,8 @@ specified.")
 
 SCWM_IPROC(unstick_window, "unstick-window", 0, 1, 0,
            (SCM win), "%W",
-"Cause a window to no longer be \"sticky\", if it is.
-See `stick-window' for an explanation. WIN defaults to the window context in
+"Cause a window to no longer be \"sticky\", if it is.\n\
+See `stick-window' for an explanation. WIN defaults to the window context in\n\
 the usual way if not specified.")
 #define FUNC_NAME s_unstick_window
 {
@@ -2256,11 +2256,11 @@ SCWM_PROPERTY_HANDLER(sticky_handler, sym_sticky, sticky_window_p, set_sticky);
 
 SCWM_IPROC(shade_window, "shade-window", 0, 1, 0,
            (SCM win), "%W",
-"Cause WIN to become \"window-shaded\".
-That is, to roll up into just a titlebar. By default, the change takes
-place instantaneously. WIN defaults to the window context in the usual
-way if not specified. See also `window-unshade'.
-A shaded window has the \"WM_STATE\" hint set to WithdrawnState, since 
+"Cause WIN to become \"window-shaded\".\n\
+That is, to roll up into just a titlebar. By default, the change takes\n\
+place instantaneously. WIN defaults to the window context in the usual\n\
+way if not specified. See also `window-unshade'.\n\
+A shaded window has the \"WM_STATE\" hint set to WithdrawnState, since \n\
 the client application window is not visible.")
 #define FUNC_NAME s_shade_window
 {
@@ -2299,10 +2299,10 @@ the client application window is not visible.")
 
 SCWM_IPROC(unshade_window, "unshade-window", 0, 1, 0,
            (SCM win), "%W",
-"Reverse the effect of `shade-window' on WIN.
-The change takes place instantaneously. WIN defaults to the window
-context in the usual way if not specified.
-A shaded window has the \"WM_STATE\" hint set to WithdrawnState, since 
+"Reverse the effect of `shade-window' on WIN.\n\
+The change takes place instantaneously. WIN defaults to the window\n\
+context in the usual way if not specified.\n\
+A shaded window has the \"WM_STATE\" hint set to WithdrawnState, since \n\
 the client application window is not visible.")
 #define FUNC_NAME s_unshade_window
 {
@@ -2503,10 +2503,10 @@ The list returned contains 4 cons pairs containing:\n\
 
 SCWM_IPROC(refresh_window, "refresh-window", 0, 1, 0,
            (SCM win), "%W",
-"Refresh the decorations on window WIN.
-Refreshing ensuring that everything, including the decorations is up
-to date. `refresh' does this in a more efficient way for all windows,
-as well as the root. WIN defaults to the window context in the usual
+"Refresh the decorations on window WIN.\n\
+Refreshing ensuring that everything, including the decorations is up\n\
+to date. `refresh' does this in a more efficient way for all windows,\n\
+as well as the root. WIN defaults to the window context in the usual\n\
 way if not specified.")
 #define FUNC_NAME s_refresh_window
 {
@@ -3086,8 +3086,8 @@ The order is from most recently focussed to least recently focussed.")
 
 SCWM_IPROC(keep_on_top, "keep-on-top", 0, 1, 0,
            (SCM win), "%W",
-"Ensure that WIN is kept on top of all other windows.
-Obviously, other windows that are also on-top may obscure WIN.
+"Ensure that WIN is kept on top of all other windows.\n\
+Obviously, other windows that are also on-top may obscure WIN.\n\
 WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_keep_on_top
 {
@@ -3116,8 +3116,8 @@ WIN defaults to the window context in the usual way if not specified.")
 
 SCWM_IPROC(un_keep_on_top, "un-keep-on-top", 0, 1, 0,
            (SCM win), "%W",
-"Remove the on-top property from WIN, if it has it.
-See `keep-on-top'. WIN defaults to the window context in the usual
+"Remove the on-top property from WIN, if it has it.\n\
+See `keep-on-top'. WIN defaults to the window context in the usual\n\
 way if not specified.")
 #define FUNC_NAME s_un_keep_on_top
 {
@@ -3199,10 +3199,10 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh, Bool fInPlace)
 
 SCWM_IPROC(show_titlebar, "show-titlebar", 0, 2, 0,
            (SCM win, SCM in_place_p), "%W",
-"Cause WIN to be decorated with a titlebar.
-Keeps the client window at its current location if IN-PLACE? is #t.
-See also `hide-titlebar'.
-WIN defaults to the window context in the usual way if not
+"Cause WIN to be decorated with a titlebar.\n\
+Keeps the client window at its current location if IN-PLACE? is #t.\n\
+See also `hide-titlebar'.\n\
+WIN defaults to the window context in the usual way if not\n\
 specified.")
 #define FUNC_NAME s_show_titlebar
 {
@@ -3227,10 +3227,10 @@ specified.")
 
 SCWM_IPROC(hide_titlebar, "hide-titlebar", 0, 2, 0,
            (SCM win, SCM in_place_p), "%W", 
-"Cause WIN not to be decorated with a titlebar.
-Keeps the client window at its current location if IN-PLACE? is #t.
-See also `show-titlebar'.
-WIN defaults to the window context in the usual way if not
+"Cause WIN not to be decorated with a titlebar.\n\
+Keeps the client window at its current location if IN-PLACE? is #t.\n\
+See also `show-titlebar'.\n\
+WIN defaults to the window context in the usual way if not\n\
 specified.")
 #define FUNC_NAME s_hide_titlebar
 {
@@ -3254,7 +3254,7 @@ specified.")
 SCWM_PROC(titlebar_shown_p, "titlebar-shown?", 0, 1, 0,
           (SCM win),
 "Return #t if WIN is decorated with a titlebar, #f otherwise.\n\
-
+\n\
 WIN defaults to the window context in the usual way if not\n\
 specified.")
 #define FUNC_NAME s_titlebar_shown_p
@@ -3267,8 +3267,8 @@ specified.")
 
 SCWM_IPROC(normal_border, "normal-border", 0, 1, 0,
            (SCM win), "%W",
-"Cause WIN to be decorated with a normal border.
-This means that there will be resize handles in the corners. WIN
+"Cause WIN to be decorated with a normal border.\n\
+This means that there will be resize handles in the corners. WIN\n\
 defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_normal_border
 {
@@ -3296,8 +3296,8 @@ defaults to the window context in the usual way if not specified.")
 
 SCWM_IPROC(plain_border, "plain-border", 0, 1, 0,
            (SCM win), "%W",
-"Cause WIN to be decorated with a plain border.
-This means that there will be no resize handles in the corners. WIN
+"Cause WIN to be decorated with a plain border.\n\
+This means that there will be no resize handles in the corners. WIN\n\
 defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_plain_border
 {
@@ -3376,10 +3376,10 @@ WIN defaults to the window context in the usual way if not specified.")
 
 SCWM_IPROC(stick_icon, "stick-icon", 0, 1, 0,
            (SCM win), "%W", 
-"Cause WIN's icon to become \"sticky\". 
-A sticky window stays at its current viewport position
-no matter how where the viewport is in the virtual desktop.
-See `stick-window'. 
+"Cause WIN's icon to become \"sticky\". \n\
+A sticky window stays at its current viewport position\n\
+no matter how where the viewport is in the virtual desktop.\n\
+See `stick-window'. \n\
 WIN defaults to the window context in the usual way if not specified.")
 #define FUNC_NAME s_stick_icon
 {
@@ -3396,11 +3396,11 @@ WIN defaults to the window context in the usual way if not specified.")
 
 SCWM_IPROC(unstick_icon, "unstick-icon", 0, 1, 0,
            (SCM win), "%W",
-"Cause WIN's icon to no longer be \"sticky\". 
-A sticky window stays at its current viewport position
-no matter how where the viewport is in the virtual desktop.
-See `stick-icon' and `stick-window'. 
-WIN defaults to the window context in the usual way if
+"Cause WIN's icon to no longer be \"sticky\". \n\
+A sticky window stays at its current viewport position\n\
+no matter how where the viewport is in the virtual desktop.\n\
+See `stick-icon' and `stick-window'. \n\
+WIN defaults to the window context in the usual way if\n\
 not specified.")
 #define FUNC_NAME s_unstick_icon
 {

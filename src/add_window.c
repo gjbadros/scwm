@@ -104,47 +104,47 @@
 
 
 SCWM_HOOK(before_new_window_hook, "before-new-window-hook", 1,
-"This hook is invoked when first creating a new window object.
-Its procedures are each called with a single argument, WIN, the new
-window.  Only a subset of the usual window parameters should be set
-here, in particular, those that control what hints will be respected
-for this window, and those that control how the window will be placed.
-
-This hook does not typically need to be used directly by the user;
-`window-style' from the \"(app scwm style)\" module provides a convenient
-interface to setting the relevant parameters when a new window is
-created.
-
+"This hook is invoked when first creating a new window object.\n\
+Its procedures are each called with a single argument, WIN, the new\n\
+window.  Only a subset of the usual window parameters should be set\n\
+here, in particular, those that control what hints will be respected\n\
+for this window, and those that control how the window will be placed.\n\
+\n\
+This hook does not typically need to be used directly by the user;\n\
+`window-style' from the \"(app scwm style)\" module provides a convenient\n\
+interface to setting the relevant parameters when a new window is\n\
+created.\n\
+\n\
 See also `before-place-new-window-hook' and `after-new-window-hook'. ");
 
 SCWM_HOOK(before_place_new_window_hook, "before-place-new-window-hook", 1,
-"This hook is invoked just before placing a new window.
-It comes after `before-new-window-hook', but before `after-new-window-hook'. 
-Its procedures are each called with a single argument, WIN, the new window.
-This hook may be removed later since it is mostly redundant with the other
-two hooks, despite being invoked at a slightly different time. 
-
+"This hook is invoked just before placing a new window.\n\
+It comes after `before-new-window-hook', but before `after-new-window-hook'. \n\
+Its procedures are each called with a single argument, WIN, the new window.\n\
+This hook may be removed later since it is mostly redundant with the other\n\
+two hooks, despite being invoked at a slightly different time. \n\
+\n\
 See also `before-new-window-hook' and `after-new-window-hook'.");
 
 SCWM_HOOK(after_new_window_hook, "after-new-window-hook", 1,
-"This hook is invoked after a window is created and placed.
-Its procedures are each called with a single argument, WIN, the new window.
-Any window operations may be performed at this time. However, it is
-recommended that placement-related operations, such as setting the
-position, desk, viewport location and z-ordering of a window be done
-in the placement procedure instead.  It should be used for setting
-window styles, as the window geometry needs to be fully and correctly
-specified before the window is placed.  The `window-style' mechanism
-from the \"(app scwm style)\" module provides a convenient interface to
-setting the relevant parameters when a new window is created. 
-
+"This hook is invoked after a window is created and placed.\n\
+Its procedures are each called with a single argument, WIN, the new window.\n\
+Any window operations may be performed at this time. However, it is\n\
+recommended that placement-related operations, such as setting the\n\
+position, desk, viewport location and z-ordering of a window be done\n\
+in the placement procedure instead.  It should be used for setting\n\
+window styles, as the window geometry needs to be fully and correctly\n\
+specified before the window is placed.  The `window-style' mechanism\n\
+from the \"(app scwm style)\" module provides a convenient interface to\n\
+setting the relevant parameters when a new window is created. \n\
+\n\
 See also `before-new-window-hook' and `before-place-new-window-hook'.");
        
 SCWM_HOOK(window_close_hook,"window-close-hook",1,
-"This hook is invoked whenever a scwm-managed window is closed.
-It is invoked on deletes, destroys, or for any reason that a window
-is closed. The hook procedures are invoked with one argument,
-WIN, the window being closed.  The WIN is still valid during the hook
+"This hook is invoked whenever a scwm-managed window is closed.\n\
+It is invoked on deletes, destroys, or for any reason that a window\n\
+is closed. The hook procedures are invoked with one argument,\n\
+WIN, the window being closed.  The WIN is still valid during the hook\n\
 procedures.");
 
 

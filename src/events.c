@@ -125,103 +125,103 @@ SCWM_HOOK(x_selectionnotify_hook,"X-SelectionNotify-hook", 0,
 "Called when there is no selection after a `X-convert-selection' request.");
 
 SCWM_HOOK(x_configurerequest_hook,"X-ConfigureRequest-hook", 6,
-"This hook is invoked upon ConfigureRequest events.
-The arguments are: '(win icon? x y width height) where win
-is the window requesting the configuration change, icon? is #t
-iff that window's icon is requesting the change, x, y, width,
-and height are either integers or #f to indicate that that
-aspect was not part of the configure request event. 
-If `configure-request-handled' is #t after execution of the
-hook procedures, then no C-level handling of the request
+"This hook is invoked upon ConfigureRequest events.\n\
+The arguments are: '(win icon? x y width height) where win\n\
+is the window requesting the configuration change, icon? is #t\n\
+iff that window's icon is requesting the change, x, y, width,\n\
+and height are either integers or #f to indicate that that\n\
+aspect was not part of the configure request event. \n\
+If `configure-request-handled' is #t after execution of the\n\
+hook procedures, then no C-level handling of the request\n\
 will be performed.");
 
 SCWM_HOOK(x_propertynotify_hook,"X-PropertyNotify-hook", 2,
-"This hook is invoked whenever a PropertyNotify event is received
-for a window scwm is managing. This indicates that an X window
-property has changed. Watching for window property changes can be used
-to construct your own custom window manager protocols. The hook
-procedures are invoked with two arguments, the name of the property
-that changed (as a string) and the window that it changed for. See also
-`X-root-PropertyNotify-hook' but beware it gets passed different
+"This hook is invoked whenever a PropertyNotify event is received\n\
+for a window scwm is managing. This indicates that an X window\n\
+property has changed. Watching for window property changes can be used\n\
+to construct your own custom window manager protocols. The hook\n\
+procedures are invoked with two arguments, the name of the property\n\
+that changed (as a string) and the window that it changed for. See also\n\
+`X-root-PropertyNotify-hook' but beware it gets passed different\n\
 arguments.");
 
 SCWM_HOOK(x_root_propertynotify_hook,"X-root-PropertyNotify-hook", 2,
-"This hook is invoked whenever a PropertyNotify event is received
-on the root window.  This indicates that an X window
-property has changed. Watching for window property changes can be used
-to construct your own custom window manager protocols, or interface
-to other desktop environments such as KDE or GNOME. The hook
-procedures are invoked with two arguments: the atom for the changed
-property and a boolean telling whether the property was deleted. 
-These arguments are different from those passed to
+"This hook is invoked whenever a PropertyNotify event is received\n\
+on the root window.  This indicates that an X window\n\
+property has changed. Watching for window property changes can be used\n\
+to construct your own custom window manager protocols, or interface\n\
+to other desktop environments such as KDE or GNOME. The hook\n\
+procedures are invoked with two arguments: the atom for the changed\n\
+property and a boolean telling whether the property was deleted. \n\
+These arguments are different from those passed to\n\
 X-PropertyNotify-hook's procedures.");
 
 SCWM_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook", 0,
-"This hook is invoked whenever a MappingNotify X event is
-received. A MappingNotify event indicates a change of keymapping - in
-particular, it may indicate a change of available modifiers or mouse
+"This hook is invoked whenever a MappingNotify X event is\n\
+received. A MappingNotify event indicates a change of keymapping - in\n\
+particular, it may indicate a change of available modifiers or mouse\n\
 buttons. The hook procedures are invoked with no arguments.");
 
 SCWM_HOOK(x_destroynotify_hook,"X-DestroyNotify-hook", 1,
-"This hook is invoked upon DestroyNotify X events.
-It indicates a window was destroyed.  The hook procedures are
-invoked with one argument, WINID, the X id of the window that was destroyed. 
-This hook is invoked for both the client window and the window frame
-IDs (i.e., twice per top-level window).  You probably want to use
+"This hook is invoked upon DestroyNotify X events.\n\
+It indicates a window was destroyed.  The hook procedures are\n\
+invoked with one argument, WINID, the X id of the window that was destroyed. \n\
+This hook is invoked for both the client window and the window frame\n\
+IDs (i.e., twice per top-level window).  You probably want to use\n\
 `window-close-hook' or `X-UnmapNotify-hook' instead.");
 
 SCWM_HOOK(x_unmapnotify_hook,"X-UnmapNotify-hook", 1,
-"This hook is invoked upon UnmapNotify X events.  It indicates a
-window is being unmapped (removed from display).  The hook procedures
-are invoked with one argument, WIN, the window being destroyed.  The
+"This hook is invoked upon UnmapNotify X events.  It indicates a\n\
+window is being unmapped (removed from display).  The hook procedures\n\
+are invoked with one argument, WIN, the window being destroyed.  The\n\
 WIN is still valid during the hook procedures.");
 
 SCWM_HOOK(x_maprequest_hook,"X-MapRequest-hook", 1,
-"This hook is invoked upon MapRequest X events.  It indicates a
-window is trying to map itself (add itself to the display).  The hook 
-procedures are invoked with one argument, WIN, the window being mapped.  
+"This hook is invoked upon MapRequest X events.  It indicates a\n\
+window is trying to map itself (add itself to the display).  The hook \n\
+procedures are invoked with one argument, WIN, the window being mapped.  \n\
 The WIN is valid during the hook procedures.");
 
 SCWM_HOOK(window_focus_change_hook,"window-focus-change-hook", 1,
-"This hook is invoked whenever the keyboard focus is changed.
-It is called with one argument, the window object of the window
-that now has the focus, or #f if no window now has the focus. 
+"This hook is invoked whenever the keyboard focus is changed.\n\
+It is called with one argument, the window object of the window\n\
+that now has the focus, or #f if no window now has the focus. \n\
 See also `window-focus-lost-hook'.");
 
 SCWM_HOOK(window_enter_hook, "window-enter-hook", 1,
-"This hook is invoked whenever the mouse pointer enters a top-level window.
-It is called with one argument, the window object of the window just
+"This hook is invoked whenever the mouse pointer enters a top-level window.\n\
+It is called with one argument, the window object of the window just\n\
 entered.");
 
 SCWM_HOOK(window_leave_hook, "window-leave-hook", 1,
-"This hook is invoked whenever the mouse pointer leaves a top-level window.
-The hook procedures are invoked with one argument, the window object
+"This hook is invoked whenever the mouse pointer leaves a top-level window.\n\
+The hook procedures are invoked with one argument, the window object\n\
 of the window just left.");
 
 SCWM_HOOK(window_fully_obscured_hook, "window-fully-obscured-hook", 1,
-"Invoked when window receives a VisibilityFullyObscured event.
-The hook procedures are invoked with one argument, the window object
+"Invoked when window receives a VisibilityFullyObscured event.\n\
+The hook procedures are invoked with one argument, the window object\n\
 of the window that is now fully obscured.");
 
 SCWM_HOOK(window_partially_obscured_hook, "window-partially-obscured-hook", 1,
-"Invoked when window receives a VisibilityPartiallyObscured
-event.  The hook procedures are invoked with one argument, the window
-object of the window that is now partially obscured.  Beware that this
-event happens more often than you might expect and an action procedure
-attached here should be very careful about manipulating windows in a way
+"Invoked when window receives a VisibilityPartiallyObscured\n\
+event.  The hook procedures are invoked with one argument, the window\n\
+object of the window that is now partially obscured.  Beware that this\n\
+event happens more often than you might expect and an action procedure\n\
+attached here should be very careful about manipulating windows in a way\n\
 that might cause more Visibility events.");
 
 SCWM_HOOK(window_unobscured_hook, "window-unobscured-hook", 1,
-"Invoked when window receives a VisibilityUnobscured event.
-The hook procedures are invoked with one argument, the window object
-of the window that is now fully visible. Beware that this
-event happens more often than you might expect and an action procedure
-attached here should be very careful about manipulating windows in a way
+"Invoked when window receives a VisibilityUnobscured event.\n\
+The hook procedures are invoked with one argument, the window object\n\
+of the window that is now fully visible. Beware that this\n\
+event happens more often than you might expect and an action procedure\n\
+attached here should be very careful about manipulating windows in a way\n\
 that might cause more Visibility events.");
 
 SCWM_HOOK(client_message_hook,"client-message-hook", 4,
-"This hook is invoked whenever Scwm receives an X/11 client message.
-It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), 
+"This hook is invoked whenever Scwm receives an X/11 client message.\n\
+It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), \n\
 and the vector of data.");
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |

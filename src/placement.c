@@ -433,7 +433,7 @@ SCWM_PROC(place_on_default_desk, "place-on-default-desk", 1, 0, 0,
 Place a window with it's window group, with a window it is transient\n\
 for, on the desk it was on previous to a restart, on the desk\n\
 specified with the starts-on-desk flag,\n\
-
+\n\
 This is called as part of `default-placement-proc'.  It could also be\n\
 used in user-defined placement procedures (see \n\
 `set-window-placement-proc!').")
@@ -454,7 +454,7 @@ The placement is just as if SmartPlacementIsReallySmart were not in\n\
 effect. That is, it tries to place the window so that it does not\n\
 overlap any other. If it fails to do so, it returns #f; otherwise it\n\
 returns #t.\n\
-
+\n\
 This is called as part of `default-placement-proc'.  It could also be\n\
 used in user-defined placement procedures (see \n\
 `set-window-placement-proc!').")
@@ -502,7 +502,7 @@ overlap with other windows. Several parameters give different\n\
 weight to various kinds of windows, but they are not tunable\n\
 at runtime currently. If it fails to place the window, it\n\
 returns #f; otherwise it returns #t.\n\
-
+\n\
 This is called as part of `default-placement-proc'.  It could also be\n\
 used in user-defined placement procedures (see \n\
 `set-window-placement-proc!').")
@@ -538,7 +538,7 @@ which are incremented for the x and y coordinates, and which wrap\n\
 around once a window would be forced off the screen. The placement is\n\
 fairly arbitrary, but always succeeds, and so avoids user\n\
 interaction. #t is always returned.\n\
-
+\n\
 This is called as part of `default-placement-proc'.  It could also be\n\
 used in user-defined placement procedures (see \n\
 `set-window-placement-proc!').")

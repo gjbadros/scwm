@@ -1038,7 +1038,7 @@ PROC is a procedure that will be invoked (with no arguments) when the\n\
 specified key is pressed in the specified context. The optional\n\
 argument RELEASE-PROC, if specified, is a procedure that will be\n\
 invoked when the key is released.  The contexts include:\n\
-
+\n\
 'window\n\
 'title\n\
 'icon\n\

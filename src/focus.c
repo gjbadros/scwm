@@ -45,8 +45,8 @@
 Time lastTimestamp = CurrentTime;	/* until Xlib does this for us */
 
 SCWM_HOOK(window_focus_lost_hook,"window-focus-lost-hook", 1,
-"This hook is invoked whenever the focus is lost on a window.
-It is called with one argument, the window object of the window
+"This hook is invoked whenever the focus is lost on a window.\n\
+It is called with one argument, the window object of the window\n\
 that just lost the keyboard focus. See also `window-focus-change-hook'.");
 
 

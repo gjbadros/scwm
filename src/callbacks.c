@@ -44,26 +44,26 @@
 /* #define SCWM_DEBUG_CALL_INTERACTIVELY */
 
 SCWM_HOOK(error_hook, "error-hook", 1,
-"Called on all kinds of errors and exceptions.
-Whenever an error or other uncaught throw occurs on any callback,
-whether a hook, a mouse binding, a key binding, a menu entry, a file
-being processed, or anything else, error-hook will be invoked. Each
-procedure in the hook will be called with the throw arguments; these
+"Called on all kinds of errors and exceptions.\n\
+Whenever an error or other uncaught throw occurs on any callback,\n\
+whether a hook, a mouse binding, a key binding, a menu entry, a file\n\
+being processed, or anything else, error-hook will be invoked. Each\n\
+procedure in the hook will be called with the throw arguments; these\n\
 will generally include information about the nature of the error. ");
 
 SCWM_HOOK(load_processing_hook,"load-processing-hook",1,
-"This hook is invoked for every several top-level s-exps in the startup file.
-The hook procedures are invoked with one argument, the count of the
+"This hook is invoked for every several top-level s-exps in the startup file.\n\
+The hook procedures are invoked with one argument, the count of the\n\
 s-expressions evaluated thus far. See also `set-load-processing-hook-frequency!'.");
 
 SCWM_HOOK(pre_command_hook,"pre-command-hook",2,
-"This hook is invoked with two arguments before every `call-interactively' execution.
-The arguments are the procedure to be called, and a list of the arguments passed.
-Global variable `this-command' and `this-command-args' can be modified to change 
+"This hook is invoked with two arguments before every `call-interactively' execution.\n\
+The arguments are the procedure to be called, and a list of the arguments passed.\n\
+Global variable `this-command' and `this-command-args' can be modified to change \n\
 either of these.");
 
 SCWM_HOOK(post_command_hook,"post-command-hook",2,
-"This hook is invoked with two arguments after every `call-interactively' execution.
+"This hook is invoked with two arguments after every `call-interactively' execution.\n\
 The arguments are the procedure just called, and the list of the arguments passed.");
 
 

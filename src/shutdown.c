@@ -31,16 +31,16 @@
 #endif
 
 SCWM_HOOK(shutdown_hook, "shutdown-hook",1,
-"The procedures in shutdown-hook are before scwm quits or restarts.
+"The procedures in shutdown-hook are before scwm quits or restarts.\n\
 A single boolean argument is passed that is #t iff scwm is restarting.");
 
 SCWM_HOOK(startup_hook, "startup-hook",0,
-"The procedures in startup-hook are called with no arguments after scwm
-has processed the scwmrc and captured all application windows, and
-right before it enters the main event loop.  Note that during
-processing of the .scwmrc startup file, windows have not already been
-captured, so the window-list (as reported by `list-all-windows') is
-empty.  To provide behviour conditioned on a property of an existing
+"The procedures in startup-hook are called with no arguments after scwm\n\
+has processed the scwmrc and captured all application windows, and\n\
+right before it enters the main event loop.  Note that during\n\
+processing of the .scwmrc startup file, windows have not already been\n\
+captured, so the window-list (as reported by `list-all-windows') is\n\
+empty.  To provide behviour conditioned on a property of an existing\n\
 window, this hook should be used instead.");
 
 

@@ -37,24 +37,24 @@
 #include "cursor.h"
 
 SCWM_HOOK(interactive_resize_start_hook,"interactive-resize-start-hook",3,
-"This hook is invoked at the start of an interactive resize.
-It is called with three arguments: WINDOW, XMOTION, YMOTION.
-XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
-can happen on the right/bottom side, not at all, or the top/left side,
+"This hook is invoked at the start of an interactive resize.\n\
+It is called with three arguments: WINDOW, XMOTION, YMOTION.\n\
+XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension\n\
+can happen on the right/bottom side, not at all, or the top/left side,\n\
 respectively.");
 
 SCWM_HOOK(interactive_resize_new_size_hook,"interactive-resize-new-size-hook",7,
-"This hook is invoked during an interactive resize.  
-It is called with seven arguments, WINDOW, X-POSITION, Y-POSITION,
-NEW-WIDTH-PIXELS, NEW-HEIGHT-PIXELS, NEW-WIDTH-UNITS, and
-NEW-HEIGHT-UNITS whenever the window is changed to a new size.  The
-first five arguments refer to the size and position of the frame
-window (not the client window). The -UNITS arguments refer to the size
-of the client window and are in client units (e.g., characters for
+"This hook is invoked during an interactive resize.  \n\
+It is called with seven arguments, WINDOW, X-POSITION, Y-POSITION,\n\
+NEW-WIDTH-PIXELS, NEW-HEIGHT-PIXELS, NEW-WIDTH-UNITS, and\n\
+NEW-HEIGHT-UNITS whenever the window is changed to a new size.  The\n\
+first five arguments refer to the size and position of the frame\n\
+window (not the client window). The -UNITS arguments refer to the size\n\
+of the client window and are in client units (e.g., characters for\n\
 Emacsen and XTerms). ");
 
 SCWM_HOOK(interactive_resize_finish_hook,"interactive-resize-finish-hook",1,
-"This hook is invoked at the end of an interactive resize.
+"This hook is invoked at the end of an interactive resize.\n\
 It is called with one argument, WINDOW.");
 
 extern SCM cannot_grab_hook;
@@ -678,10 +678,10 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
 
 SCWM_IPROC(rubber_band_resize, "rubber-band-resize", 0, 1, 0,
            (SCM win), "%W",
-"Resize WIN interactively, using a rubber band frame.
-Returns a list '(width height) that is the new size of WIN.
-This allows the user to drag a rubber band frame to set the size of
-the window. WIN defaults to the window context in the usual way if not
+"Resize WIN interactively, using a rubber band frame.\n\
+Returns a list '(width height) that is the new size of WIN.\n\
+This allows the user to drag a rubber band frame to set the size of\n\
+the window. WIN defaults to the window context in the usual way if not\n\
 specified. ")
 #define FUNC_NAME s_rubber_band_resize
 {
@@ -710,11 +710,11 @@ specified. ")
 
 SCWM_IPROC(opaque_resize, "opaque-resize", 0, 1, 0,
            (SCM win), "%W",
-"Resize WIN interactively, opaquely.
-Returns a list '(width height) that is the new size of WIN.
-This allows the user to drag the boundaries of the window to set its
-size. WIN defaults to the window context in the usual way if not
-specified. The window is updated immediately as the size changes take
+"Resize WIN interactively, opaquely.\n\
+Returns a list '(width height) that is the new size of WIN.\n\
+This allows the user to drag the boundaries of the window to set its\n\
+size. WIN defaults to the window context in the usual way if not\n\
+specified. The window is updated immediately as the size changes take\n\
 place.")
 #define FUNC_NAME s_opaque_resize
 {
