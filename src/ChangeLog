@@ -114,6 +114,11 @@ Fri Sep  4 08:46:43 1998  Greg Badros  <gjb@cs.washington.edu>
 	* deskpage.c (display_size): Added note about display-width,
 	display-height vars that base.scm sets
 
+1998-09-03  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* xproperty.c (X_property_set_x): Would always make TYPE equal to
+	NAME.
+
 Thu Sep  3 15:26:58 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* placement.c, window.h: Change name of struct _gravity_info to

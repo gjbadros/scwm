@@ -68,6 +68,13 @@ Fri Sep  4 08:44:31 1998  Greg Badros  <gjb@cs.washington.edu>
 	* base.scm: Define vars display-width, display-height and use
 	them. 
 
+1998-09-03  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* tests/test.scm (test-case): Add TITLE argument.
+
+	* tests/properties.scm: Use it.
+	Test `X-property-set!' with NAME != TYPE.
+
 Thu Sep  3 15:21:17 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Fix docs of move-to -- it uses a viewport position;
