@@ -1,3 +1,8 @@
+Tue Dec 22 03:04:05 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am (SUBDIRS): Remove applefile and imlib, since they
+ 	don't build and/or are not in the repository.
+
 1998-12-21  Todd Larason  <jtl@molehill.org>
 
 	* xpm-menus/Makefile.am, scwmgtkhelper/Makefile.am,
