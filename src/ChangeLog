@@ -1,3 +1,12 @@
+Tue Sep 28 09:53:40 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* face.c: Update `set-button-face!'s docs to refer to
+	`set-left-button-face!' and `set-right-button-face!'
+
+	* image.c: More fixes to avoid problems when libXpm is not present 
+	-- do not try to register that loaded if the primitive `load-xpm'
+	was not defined.
+
 Tue Sep 28 08:27:16 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Bug fix from Rusty Chris Holleman: use sigjmp_buf, not
