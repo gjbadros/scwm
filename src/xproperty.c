@@ -66,10 +66,8 @@ several procedures to get, set and manipulate them.
 SCM
 mark_xproperty(SCM obj)
 {
-  if (!SCM_GC8MARKP(obj)) {
-    SCM_SETGC8MARK(obj);
-    scm_gc_mark(XPROPERTYTYPE(obj));
-  }
+  SCM_SETGC8MARK(obj);
+  scm_gc_mark(XPROPERTYTYPE(obj));
 
   return SCM_BOOL_F;
 }

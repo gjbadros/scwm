@@ -63,10 +63,6 @@ SCM
 mark_menu(SCM obj)
 {
   Menu *pmenu;
-  if (SCM_GC8MARKP (obj)) {
-    return SCM_BOOL_F;
-  }
-
   pmenu = MENU(obj);
   SCM_SETGC8MARK(obj);
 

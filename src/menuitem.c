@@ -36,9 +36,6 @@ SCM
 mark_menuitem(SCM obj)
 {
   MenuItem *pmi;
-  if (SCM_GC8MARKP (obj)) {
-    return SCM_BOOL_F;
-  }
   pmi = MENUITEM(obj);
 
   SCM_SETGC8MARK(obj);
