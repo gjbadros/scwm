@@ -1,6 +1,9 @@
 #ifndef SCWMLIB_H
 #define SCWMLIB_H
 
+
+/* FIXGJB:  this whole file and the scwm/include/scwm directory
+   should get removed soon --11/04/97 */
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <ctype.h>
