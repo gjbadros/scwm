@@ -1,0 +1,93 @@
+{
+  NoDithering = No;
+  ClipMaxIcons = 25;
+  NoSound = No;
+  NoAnimations = No;
+  NoAutowrap = No;
+  WorkspaceChangeDelay = 700;
+  HorizontalResizeThreshold = 0;
+  NextMenuBehaviour = Yes;
+  MenuScrollDelay = 10;
+  MenuScrollStep = 5;
+  IconSlideDelay = 0;
+  IconSlideStep = 5;
+  IconSlideSlowDown = 50;
+  ShadeDelay = 0;
+  ShadeSteps = 15;
+  SClipColor = "#d2d9dd";
+  AClipColor = "#38f830";
+  IClipColor = "#008000";
+  WindowMenuKey = F10;
+  HideKey = "Shift+Mod1+h";
+  MiniaturizeKey = "Meta+M";
+  RaiseKey = "Meta+Up";
+  LowerKey = "Meta+Down";
+  MoveResizeKey = None;
+  FocusNextKey = "Meta+Tab";
+  FocusPrevKey = "Meta+Shift+Tab";
+  NextWorkspaceKey = "Meta+period";
+  PrevWorkspaceKey = "Meta+comma";
+  Workspace1Key = "Meta+1";
+  Workspace2Key = "Meta+2";
+  Workspace3Key = "Meta+3";
+  Workspace4Key = "Meta+4";
+  Workspace5Key = "Meta+5";
+  Workspace6Key = "Meta+6";
+  Workspace7Key = "Meta+7";
+  Workspace8Key = "Meta+8";
+  Workspace9Key = "Meta+9";
+  Workspace10Key = None;
+  WindowShortcut1Key = None;
+  WindowShortcut2Key = None;
+  WindowShortcut3Key = None;
+  WindowShortcut4Key = None;
+  ClipRaiseLowerKey = "Shift+Mod1+f";
+  DoubleClickTime = 245;
+  UseSaveUnders = YES;
+  DisableBlinking = YES;
+  ClipTitleFont = "-*-helvetica-bold-r-normal-*-10-*-*-*-*-*-*-*";
+  ClipTitleColor = white;
+  CClipTitleColor = gray20;
+  UTitleColor = gray20;
+  MenuDisabledColor = gray40;
+  MenuTitleBack = (dgradient, "rgb:00/00/10", "rgb:20/20/70");
+  UTitleBack = (dgradient, "rgb:70/70/70", "rgb:b0/b0/b0");
+  PTitleBack = (dgradient, "rgb:50/50/50", "rgb:80/80/80");
+  FTitleBack = (dgradient, "rgb:20/20/70", "rgb:00/00/20");
+  MenuTextBack = (dgradient, "rgb:70/70/70", "rgb:b0/b0/b0");
+  IconTitleColor = white;
+  IconTitleBack = "rgb:20/20/70";
+  WorkspaceBack = (
+    tpixmap,
+    "/home/tjs/GNUstep/Library/WindowMaker/Backgrounds/A/Analog-Wind-1.JPG",
+    gray20
+  );
+  NoWindowOverDock = NO;
+  ColormapMode = manual;
+  MenuScrollSpeed = ultrafast;
+  AutoArrangeIcons = YES;
+  ResizeDisplay = floating;
+  CirculateRaise = YES;
+  MiniwindowTitleBalloons = NO;
+  AppIconBalloons = NO;
+  IconPath = (
+    "~/GNUstep/Library/WindowMaker/Pixmaps",
+    "~/GNUstep/Library/WindowMaker/Backgrounds",
+    "/usr/local/contrib/windowmaker/share/WindowMaker/Icons",
+    "/usr/local/contrib/windowmaker/share/WindowMaker/Pixmaps",
+    "/usr/local/contrib/windowmaker/share/WindowMaker/Backgrounds",
+    "/usr/X11R6/include/X11/pixmaps",
+    "/usr/local/contrib/share/pixmaps"
+  );
+  PixmapPath = (
+    "~/GNUstep/Library/WindowMaker/Pixmaps",
+    "~/GNUstep/Library/WindowMaker/Backgrounds",
+    "/usr/local/contrib/windowmaker/share/WindowMaker/Pixmaps",
+    "/usr/local/contrib/windowmaker/share/WindowMaker/Backgrounds",
+    "/usr/X11R6/include/X11/pixmaps"
+  );
+  DontLinkWorkspaces = NO;
+  IconSlideSpeed = ultrafast;
+  ShadeSpeed = ultraslow;
+  Superfluous = YES;
+}
