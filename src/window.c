@@ -61,8 +61,6 @@ char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
 char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
 char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
 
-static Bool FIsPartiallyInViewport(const ScwmWindow *psw);
-
 unsigned long 
 FlagsBitsFromSw(ScwmWindow *psw)
 {
@@ -866,7 +864,6 @@ KeepOnTop()
   }
 }
 
-static
 Bool
 FIsPartiallyInViewport(const ScwmWindow *psw)
 {
@@ -3033,8 +3030,8 @@ WIN defaults to the window context in the usual way if not specified. */
   oldyadj = GRAV_Y_ADJUSTMENT(psw);
 
   MoveResizeTo(psw, 
-	       psw->frame_x + GRAV_X_ADJUSTMENT(psw) - oldxadj,
-	       psw->frame_y + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
+	       FRAME_X(psw) + GRAV_X_ADJUSTMENT(psw) - oldxadj,
+	       FRAME_Y(psw) + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
 	       FRAME_WIDTH(psw) + 2 * (psw->xboundary_width - oldxw),
 	       FRAME_HEIGHT(psw) + 2 * (psw->boundary_width - oldw));
 

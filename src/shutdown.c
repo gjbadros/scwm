@@ -71,7 +71,7 @@ Done(int restart_or_dump, char *command)
 
     MoveViewport(0, 0, False);
 
-    Reborder();
+    Reborder((restart_or_dump > 0));
 
     XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_LISTENER);
 

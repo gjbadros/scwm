@@ -365,12 +365,7 @@ InitVariables(void)
   Scr.buttons2grab = (1 << XSERVER_MAX_BUTTONS) - 1;
 
   scm_permanent_object(decor2scm(&Scr.DefaultDecor));
-#if 0
-  scm_permanent_object(Scr.DefaultDecor.scmdecor);
-  /* FIXGJB: is the above overkill? */
-#else
   DECORREF(Scr.DefaultDecor.scmdecor);
-#endif
 
   Scr.DefaultDecor.tag = strdup("default");
 
@@ -1157,11 +1152,86 @@ CreateCursors(void)
 }
 
 
+/* RestoreWithdrawnLocation
+ * 
+ *  Puts window back where it was before Scwm took over 
+ */
+void 
+RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
+{
+  XWindowChanges xwc;
+
+  if (!psw)
+    return;
+
+  if (FXGetWindowTopLeft(psw->w, &xwc.x, &xwc.y )) {
+    unsigned int mask;
+    /* Undo gravity adjustments. */
+    xwc.x = FRAME_X_VP(psw) - GRAV_X_ADJUSTMENT(psw);
+    xwc.y = FRAME_X_VP(psw) - GRAV_Y_ADJUSTMENT(psw);
+
+    xwc.border_width = psw->old_bw;
+    mask = (CWX | CWY | CWBorderWidth);
+
+    /* We can not assume that the window is currently on the screen.
+     * Although this is normally the case, it is not always true.  The
+     * most common example is when the user does something in an
+     * application which will, after some amount of computational delay,
+     * cause the window to be unmapped, but then switches screens before
+     * this happens.  The XTranslateCoordinates call above will set the
+     * window coordinates to either be larger than the screen, or negative.
+     * This will result in the window being placed in odd, or even
+     * unviewable locations when the window is remapped.  The followin code
+     * forces the "relative" location to be within the bounds of the display.
+     *
+     * gpw -- 11/11/93
+     *
+     * Also, fixed so that it only does this stuff if a window is more than
+     * half off the screen. (RN)
+     *
+     * Unfortunately, this does horrendous things during re-starts, 
+     * hence the "if(!fRestart)" clause (RN) 
+     */
+
+    if (!fRestart) {
+      /* Only fix it if its not partially on the screen now */
+      if (!FIsPartiallyInViewport(psw)) {
+	int w2 = FRAME_WIDTH(psw) / 2;
+	int h2 = FRAME_HEIGHT(psw) / 2;
+	if ((xwc.x < -w2) || (xwc.x > (Scr.DisplayWidth - w2))) {
+	  xwc.x %= Scr.DisplayWidth;
+	  if (xwc.x < -w2)
+	    xwc.x += Scr.DisplayWidth;
+	}
+	if ((xwc.y < -h2) || (xwc.y > (Scr.DisplayHeight - h2))) {
+	  xwc.y %= Scr.DisplayHeight;
+	  if (xwc.y < -h2)
+	    xwc.y += Scr.DisplayHeight;
+	}
+      }
+    }
+    scwm_msg(DBG,__FUNCTION__,"Reparenting %s to %d,%d",
+             psw->name, xwc.x, xwc.y);
+    XReparentWindow(dpy, psw->w, Scr.Root, xwc.x, xwc.y);
+
+    if (psw->fIconified && !(psw->fSuppressIcon)) {
+      if (psw->icon_w)
+	XUnmapWindow(dpy, psw->icon_w);
+      if (psw->icon_pixmap_w)
+	XUnmapWindow(dpy, psw->icon_pixmap_w);
+    }
+    XConfigureWindow(dpy, psw->w, mask, &xwc);
+    if (!fRestart)
+      XSync(dpy, 0);
+  }
+}
+
+
 /*
  * Reborder - Removes scwm border windows
  */
 void 
-Reborder(void)
+Reborder(Bool fRestart)
 {
   ScwmWindow *psw = NULL;		/* temp scwm window structure */
 
@@ -1170,7 +1240,7 @@ Reborder(void)
 
   InstallWindowColormaps(&Scr.ScwmRoot);	/* force reinstall */
   for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-    RestoreWithdrawnLocation(psw, True);
+    RestoreWithdrawnLocation(psw, fRestart);
     XUnmapWindow(dpy, psw->frame);
     XDestroyWindow(dpy, psw->frame);
   }
@@ -1178,7 +1248,6 @@ Reborder(void)
   XUngrabServer_withSemaphore(dpy);
   XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
   XSync(dpy, 0);
-
 }
 
 /*

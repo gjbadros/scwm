@@ -50,6 +50,7 @@
 #include <stdlib.h>
 #include "scwm-snarf.h"
 #include "system.h"
+#include "window_fwd.h"
 
 extern char **g_argv;
 extern int g_argc;
@@ -230,7 +231,8 @@ typedef enum scwm_msg_levels_tag { DBG = -1, INFO, WARN, ERR } scwm_msg_levels;
 /* Prototypes for functions in scwm.c */
 
 void scwm_msg(scwm_msg_levels type, char *id, char *msg,...);
-void Reborder(void);
+void Reborder(Bool fRestart);
+void RestoreWithdrawnLocation(struct ScwmWindow *psw, Bool fRestart);
 void SigDone(int);
 void SigDoneSegv(int);
 void Restart(int nonsense);

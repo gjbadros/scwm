@@ -338,6 +338,7 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh);
    but needs to be for resetting the relief decor, color.c */
 SCM set_window_background_x(SCM bg, SCM win);
 
+Bool FIsPartiallyInViewport(const ScwmWindow *psw);
 
 #endif /* WINDOW_H__ */
 
