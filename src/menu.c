@@ -737,6 +737,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
       break;
 
     case XK_Return:
+    case XK_KP_Enter:
       *pmenu_status = MENUSTATUS_ITEM_SELECTED;
       return PmiimSelectedFromPmd(pmd);
       break;

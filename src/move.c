@@ -559,30 +559,52 @@ Keyboard_shortcuts(XEvent *Event, int ReturnEvent,
   y_move = 0;
   switch (keysym) {
   case XK_Up:
+  case XK_KP_8:
   case XK_k:
   case XK_p:
     if (fResize && !fOnYBoundary) y_move = -y - ymove_size;
     else y_move = -ymove_size;
     break;
   case XK_Down:
+  case XK_KP_2:
   case XK_n:
   case XK_j:
     if (fResize && !fOnYBoundary) y_move = psw->frame_height - y + ymove_size;
     else y_move = ymove_size;
     break;
   case XK_Left:
+  case XK_KP_4:
   case XK_b:
   case XK_h:
     if (fResize && !fOnXBoundary) x_move = -x - xmove_size;
     else x_move = -xmove_size;
     break;
   case XK_Right:
+  case XK_KP_6:
   case XK_f:
   case XK_l:
     if (fResize && !fOnXBoundary) x_move = psw->frame_width - x + xmove_size;
     else x_move = xmove_size;
     break;
+  case XK_KP_1:
+    x_move = -xmove_size;
+    y_move = ymove_size;
+    break;
+  case XK_KP_3:
+    x_move = xmove_size;
+    y_move = ymove_size;
+    break;
+  case XK_KP_7:
+    x_move = -xmove_size;
+    y_move = -ymove_size;
+    break;
+  case XK_KP_9:
+    x_move = xmove_size;
+    y_move = -ymove_size;
+    break;
+     
   case XK_Return:
+  case XK_KP_Enter:
   case XK_space:
     /* beat up the event */
     Event->type = ReturnEvent;
