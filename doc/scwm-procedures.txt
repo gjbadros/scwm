@@ -262,7 +262,7 @@ name will change, for example if you alter the image file or change
 your image path. For this unlikely eventuality,
 `clear-image-cache-entry' is provided - it removes the image
 associated with NAME from the image cache.
-[From scwm/image.c:542]
+[From scwm/image.c:533]
 
 
 (clever-place-window win)
@@ -324,7 +324,7 @@ color, and 'pixel, the X pixel value it uses.
 - (app scwm base)
 Return the KEY property of COLOR.
 See `color-properties' for a list of the keys.
-[From scheme/base.scm:282]
+[From scheme/base.scm:283]
 
 
 (color? obj)
@@ -509,7 +509,7 @@ No documentation supplied.
 (exe command)
 - (app scwm base)
 Return a procedure that runs the system command COMMAND.
-[From scheme/base.scm:311]
+[From scheme/base.scm:312]
 
 
 (execute command)
@@ -548,7 +548,7 @@ specified. Note that WIN is not raised by giving it the focus;  see
 Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
 defaults to `default-max-fold-lines'.
-[From scheme/base.scm:302]
+[From scheme/base.scm:303]
 
 
 (font-properties font)
@@ -563,7 +563,7 @@ color, and 'height, it's total height in pixels.
 - (app scwm base)
 Return the KEY property of FONT.
 See `font-properties' for a list of the keys.
-[From scheme/base.scm:277]
+[From scheme/base.scm:278]
 
 
 (font? obj)
@@ -680,7 +680,7 @@ specified.
 - Built-in Primitive
 Return the background color for windows with the input focus.
 Applies to the current decor.
-[From scwm/color.c:700]
+[From scwm/color.c:704]
 
 
 (hilight-factor)
@@ -693,7 +693,7 @@ Return the current hilight factor.
 - Built-in Primitive
 Return the foreground color of the window with the input focus.
 Applies to the focus in the current decor.
-[From scwm/color.c:627]
+[From scwm/color.c:631]
 
 
 (icon-font)
@@ -757,7 +757,7 @@ depth, it's color depth.
 - (app scwm base)
 Return the KEY property of IMAGE.
 See `image-properties' for a list of the keys.
-[From scheme/base.scm:272]
+[From scheme/base.scm:273]
 
 
 (image? obj)
@@ -1046,7 +1046,7 @@ To load the image, the appropriate image loaders will be invoked as
 needed. If NAME starts with "/", "./" or "../", it is treated as a
 fully qualified pathname; otherwise, the image path is searched for an
 appropriate file.
-[From scwm/image.c:473]
+[From scwm/image.c:464]
 
 
 (make-menu list-of-menuitems #&optional picture-side side-bg-color bg-color text-color picture-bg font extra-options)
@@ -1191,13 +1191,13 @@ background color for that image object.  COLOR-TEXT is a color object
 or string for the foreground text color of menu items.  COLOR-BG is a
 color object or string for the background color for the menu and menu
 items.  FONT is a font object for the font of the menu items.
-[From scheme/base.scm:246]
+[From scheme/base.scm:247]
 
 
 (menu-background)
 - Built-in Primitive
 Return the default background color for menus.
-[From scwm/color.c:804]
+[From scwm/color.c:808]
 
 
 (menu-font)
@@ -1209,13 +1209,13 @@ Return the font used by default for drawing menus.
 (menu-foreground)
 - Built-in Primitive
 Return the default foreground color for menus.
-[From scwm/color.c:740]
+[From scwm/color.c:744]
 
 
 (menu-hilight-factor)
 - Built-in Primitive
 Return the current menu hilight factor.
-[From scwm/color.c:554]
+[From scwm/color.c:558]
 
 
 (menu-mwm-style)
@@ -1243,14 +1243,14 @@ font extra-options used-shortcut-keys)
 (menu-shadow-factor)
 - Built-in Primitive
 Return the current menu shadow factor.
-[From scwm/color.c:583]
+[From scwm/color.c:587]
 
 
 (menu-stipple)
 - Built-in Primitive
 Return the default stipple color for menus.
 May not be used any more.
-[From scwm/color.c:850]
+[From scwm/color.c:854]
 
 
 (menu-style #&key
@@ -1261,7 +1261,7 @@ May not be used any more.
 Set various properites for the menus.
 Many of these are ignored.  See `make-menu' for options on
 creation of individual menus.
-[From scheme/base.scm:155]
+[From scheme/base.scm:156]
 
 
 (menu? obj)
@@ -1289,7 +1289,7 @@ when the item is unhighlighted.  HOTKEY-PREFS is a string listing
 the characters which are appropriate shortcut-keys for the item;
 the first not-yet-used-in-this-menu character will be used for
 the shortcut key for the menu item.
-[From scheme/base.scm:211]
+[From scheme/base.scm:212]
 
 
 (menuitem-properties menu-item)
@@ -1388,7 +1388,7 @@ motion does `interactive-move-maybe-opaque', and double-click does
 - (app scwm base)
 Move the X11 pointer X pixels to the right, and Y pixels down.
 If X is negative, moves to the left.  If Y is negative moves up.
-[From scheme/base.scm:109]
+[From scheme/base.scm:110]
 
 
 (move-pointer-to sx sy)
@@ -1408,7 +1408,7 @@ value for that coordinate).
 If ANIMATED? is #t, then animate the window there.
 If MOVE-POINTER-TOO? is #t then also move the pointer as the window is moved.
 See `move-window' if you wish to move a window to a virtual position.
-[From scheme/base.scm:117]
+[From scheme/base.scm:118]
 
 
 (move-viewport x y)
@@ -1416,7 +1416,7 @@ See `move-window' if you wish to move a window to a virtual position.
 Move the viewport onto the virtual desktop relatively.
 Moves X pixels horizontally, to the right if positive, to the left if
 negative, and Y pixels vertically, down if positive, up if negative.
-[From scheme/base.scm:148]
+[From scheme/base.scm:149]
 
 
 (move-window x y #&optional win animated? move-pointer-too?)
@@ -1783,7 +1783,7 @@ Return a procedure that runs CMD in an xterm.
 Uses the variable `xterm-command' to determine how
 to run an xterm.  CMD may include options to the command.
 The rest of the arguments are passed as options to the xterm command.
-[From scheme/base.scm:319]
+[From scheme/base.scm:320]
 
 
 (safe-load fname)
@@ -1805,7 +1805,7 @@ No documentation supplied.
 (scwm-is-constraint-enabled?)
 - 
 Return #t if scwm has the constraint solver primitives, #f otherwise.
-[From scheme/base.scm:390]
+[From scheme/base.scm:391]
 
 
 (scwm-path-exec-prefix)
@@ -1892,7 +1892,7 @@ BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify which are sent
 individually. PROPAGATE? indicates whether the propagate flag is set
 on the event; the default is #f. You should not have to worry about
 this unless you know what it means.
-[From scwm/events.c:1807]
+[From scwm/events.c:1804]
 
 
 (send-key-press key #&optional win key-press? key-release? propagate?)
@@ -1905,7 +1905,7 @@ sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
 allow you to specify which are sent individually. PROPAGATE? indicates
 whether the propagate flag is set on the event; the default is #f. You
 should not have to worry about this unless you know what it means.
-[From scwm/events.c:1745]
+[From scwm/events.c:1742]
 
 
 (set-animation! vector)
@@ -1926,7 +1926,7 @@ Turn auto-raise on (#t) or off (#f) for WIN.
 Auto-raise makes a window automatically raise when the mouse pointer
 enters the window frame.  See `set-auto-raise-delay!' for controlling
 the delay before the window raises.
-[From scheme/auto-raise.scm:66]
+[From scheme/auto-raise.scm:92]
 
 
 (set-auto-raise-delay! delay #&optional (win (get-window)))
@@ -1935,7 +1935,7 @@ Set the auto-raise delay to DELAY (in ms) for WIN.
 DELAY is the number of milliseconds after the pointer enters
 WIN that WIN will be raised.  See `set-auto-raise!' to turn
 auto-raise on or off for a given window.
-[From scheme/auto-raise.scm:73]
+[From scheme/auto-raise.scm:99]
 
 
 (set-auto-raise-focus-proc! fproc #&optional (win (get-window)))
@@ -1943,7 +1943,7 @@ auto-raise on or off for a given window.
 Set the auto-raise-focus-proc for WIN.
 The auto-raise-focus-proc is the procedure which is invoked
 after the auto-raise-delay after the pointer enters WIN's frame.
-[From scheme/auto-raise.scm:87]
+[From scheme/auto-raise.scm:113]
 
 
 (set-auto-raise-unfocus-delay! delay #&optional 
@@ -1952,7 +1952,7 @@ after the auto-raise-delay after the pointer enters WIN's frame.
 Set the timeout to DELAY (in ms) for the unfocus-proc of WIN.
 After DELAY milliseconds after the pointer leaves WIN's frame,
 the auto-raise-unfocus-proc will be called.
-[From scheme/auto-raise.scm:80]
+[From scheme/auto-raise.scm:106]
 
 
 (set-auto-raise-unfocus-proc! ufproc 
@@ -1961,7 +1961,7 @@ the auto-raise-unfocus-proc will be called.
 Set the auto-raise-unfocus-proc for WIN.
 The auto-raise-unfocus-proc is the procedure which is invoked
 after the auto-raise-unfocus-delay after the pointer leaves WIN's frame.
-[From scheme/auto-raise.scm:93]
+[From scheme/auto-raise.scm:119]
 
 
 (set-border-face! active #&optional inactive)
@@ -1970,7 +1970,7 @@ Set the face for the border In the current decor.
 Use ACTIVE as the face for the border when the window is active. Use
 INACTIVE when the window is inactive. INACTIVE defaults to the same as
 ACTIVE when not specified.
-[From scwm/face.c:987]
+[From scwm/face.c:983]
 
 
 (set-border-width! width #&optional win)
@@ -1991,7 +1991,7 @@ ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically
 reverse the sense of the relief flag, so if the button is raised in
 the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by
 default.
-[From scwm/face.c:893]
+[From scwm/face.c:889]
 
 
 (set-button-mwm-flag! button flag)
@@ -2000,7 +2000,7 @@ Specify the Mwm flag for BUTTON.
 If FLAG is #t, the button's relief pattern (if any) will appear to
 reverse in depth sense (i.e., flip from sunken in to extruding out)
 when the window is maximized.
-[From scwm/face.c:954]
+[From scwm/face.c:950]
 
 
 (set-click-delay! usec)
@@ -2085,7 +2085,7 @@ must be moved before it will really move past the edge.
 - (app scwm base)
 Set the edge scroll delay to S, and the edge move threshold to M.
 See also `set-edge-scroll-delay!' and `set-edge-move-threshold!'.
-[From scheme/base.scm:361]
+[From scheme/base.scm:362]
 
 
 (set-edge-scroll! x y)
@@ -2095,7 +2095,7 @@ These values are the number of pixels that the viewport
 moves when the pointer hits the edge of the screen.  Use
 `%x' and `%y' to convert from a percentage of a screen
 dimension to a number of pixels.
-[From scheme/base.scm:375]
+[From scheme/base.scm:376]
 
 
 (set-edge-scroll-delay! usec)
@@ -2114,7 +2114,7 @@ Set the edge x and y wrap values to X and Y, respectively.
 These values should be #t to mean that the pointer should
 wrap in the given direction, or #f to not wrap around.
 See also `set-edge-x-wrap!' and `set-edge-y-wrap!'.
-[From scheme/base.scm:367]
+[From scheme/base.scm:368]
 
 
 (set-edge-x-scroll! pixels)
@@ -2173,7 +2173,7 @@ way if not specified.
 - Built-in Primitive
 Use BG as the background color for the window with input focus.
 Applies to the current decor.
-[From scwm/color.c:646]
+[From scwm/color.c:650]
 
 
 (set-hilight-factor! factor)
@@ -2187,7 +2187,7 @@ FACTOR is a positive floating point number.
 - Built-in Primitive
 Use FG for foreground color of the window with the input focus.
 Applies to the current decor.
-[From scwm/color.c:603]
+[From scwm/color.c:607]
 
 
 (set-hint-override! flag #&optional win)
@@ -2245,7 +2245,7 @@ specified.
 (set-menu-background! bg)
 - Built-in Primitive
 Use BG as the default foreground color for menus.
-[From scwm/color.c:750]
+[From scwm/color.c:754]
 
 
 (set-menu-font! font)
@@ -2257,14 +2257,14 @@ Set the default font used for drawing menus to FONT.
 (set-menu-foreground! fg)
 - Built-in Primitive
 Use FG as the default foreground color for menus.
-[From scwm/color.c:714]
+[From scwm/color.c:718]
 
 
 (set-menu-hilight-factor! factor)
 - Built-in Primitive
 Use FACTOR to generate hilight colors for menus.
 FACTOR is a positive floating point number
-[From scwm/color.c:535]
+[From scwm/color.c:539]
 
 
 (set-menu-mwm-style! flag)
@@ -2278,14 +2278,14 @@ This option is currently ignored.
 - Built-in Primitive
 Use FACTOR to generate shadow colors for menus.
 FACTOR is a positive floating point number
-[From scwm/color.c:564]
+[From scwm/color.c:568]
 
 
 (set-menu-stipple! st)
 - Built-in Primitive
 Use ST as the default stipple color for menus.
 May not be used any longer.
-[From scwm/color.c:815]
+[From scwm/color.c:819]
 
 
 (set-message-window-attributes! font fg-color bg-color)
@@ -2388,7 +2388,7 @@ resize frames. VALUE should be an integer.
 - Built-in Primitive
 Use FACTOR to generate shadow colors in the current decor.
 FACTOR is a positive floating point number
-[From scwm/color.c:493]
+[From scwm/color.c:497]
 
 
 (set-show-icon! flag #&optional win)
@@ -2445,7 +2445,7 @@ inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not
 specified. Note that ACTIVE-DOWN will magically reverse the sense of
 the relief flag, so if your titlebar bar is raised in the ACTIVE-UP
 state, it will be sunk in the ACTIVE-DOWN state by default.
-[From scwm/face.c:853]
+[From scwm/face.c:849]
 
 
 (set-title-font! font)
@@ -2498,7 +2498,7 @@ specified. (Note: this code may be broken right now.)
 (set-window-colors! #&optional (bg #f) (fg #f) (win (get-window)))
 - (app scwm base)
 Set WIN's background color to BG, foreground color to FG.
-[From scheme/base.scm:103]
+[From scheme/base.scm:104]
 
 
 (set-window-decor! win decor)
@@ -2582,7 +2582,7 @@ synchronous mode, but can be easier to debug.
 (shadow-factor)
 - Built-in Primitive
 Return the current shadow factor.
-[From scwm/color.c:517]
+[From scwm/color.c:521]
 
 
 (should-circulate-skip? #&optional (win (get-window)))
@@ -2654,9 +2654,9 @@ menuitem (see `popup-menu').
 - (app scwm base)
 Set the style for titlebars.
 FONT is a font object or a string, HEIGHT is a number of points,
-JUSTIFY is a legal argument to `set-title-justify' such as 'left,
+JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 'right, or 'center.
-[From scheme/base.scm:176]
+[From scheme/base.scm:177]
 
 
 (size->str sz #&optional (sep "x"))
@@ -3236,7 +3236,7 @@ Return the position of WIN in pixels within the viewport.
 The position is returned as a list of the x coordinate and the y
 coordinate in pixels. WIN defaults to the window context in the usual
 way if not specified.  See also `window-position'.
-[From scheme/base.scm:136]
+[From scheme/base.scm:137]
 
 
 (window? obj)
@@ -3341,7 +3341,7 @@ If the X property could be found, a list "(value type format)" is returned.
 - Built-in Primitive
 Set X property NAME on window WIN to VALUE.
 WIN is the window to set the X property on, or 'root-window.
-NAME and TYPE are strings. TYPE defaults to "XA_STRING".
+NAME and TYPE are strings. TYPE defaults to "STRING".
 FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
 VALUE may be a string, if FORMAT is 8, and may always be a vector
