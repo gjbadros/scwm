@@ -1,26 +1,39 @@
-;;; File: <scwm.el - 1998-04-16 Thu 17:10:41 EDT sds@mute.eaglets.com>
-;;;
-;;; Copyright (c) 1998 by Sam Shteingold <sds@usa.net>
+;;; scwm --- functions for editing and running SCWM code under Emacs
+ 
+;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
+ 
+;; File: <scwm.el - 1998-03-26 Thu 17:30:40 EST sds@mute.eaglets.com>
+;; Author: Sam Steingold <sds@usa.net>
+;; Version: $Revision$
+;; Keywords: language lisp scheme scwm
+ 
+;; LCD Archive Entry:
+;; scwm|Sam Steingold|sds@usa.net|
+;; Functions for editing and running SCWM code under Emacs|
+;; $Date$|$Revision$||
+ 
 ;;; $Id$
-;;;
-;;; Completion-support added by Greg J. Badros <gjb@cs.washington.edu>
-;;;    03/11/98 gjb
-;;;
-;;; Completition, help and apropos are completely re-worked by sds
-;;;	1998-03-13 Fri 13:58:16 EST	sds
-;;;
-;;; Fixed scwm-run to restart in the same buffer after a crash.
-;;;	1998-03-17 Tue 15:50:55 EST	sds
-;;;
-;;; Made into a major mode.
-;;;	1998-04-16 Thu 10:38:19 CEST	robbe@orcus.priv.at
-;;;
-;;; Added font-lock support for the major mode stuff.
-;;;	1998-04-16 Thu 17:04:43 EDT	sds
-;;;
-;;; This file is distributed under the GPL. See
-;;;	<URL:http://www.gnu.ai.mit.edu/copyleft/gpl.html>
-;;; for further details.
+ 
+;;; History:
+ 
+;; Completion-support added by Greg J. Badros <gjb@cs.washington.edu>
+;;    03/11/98 gjb
+;;
+;; Completition, help and apropos are completely re-worked by sds
+;;	1998-03-13 Fri 13:58:16 EST	sds
+;;
+;; Fixed scwm-run to restart in the same buffer after a crash.
+;;	1998-03-17 Tue 15:50:55 EST	sds
+;;
+;; Made into a major mode.
+;;	1998-04-16 Thu 10:38:19 CEST	robbe@orcus.priv.at
+;;
+;; Added font-lock support for the major mode stuff.
+;;	1998-04-16 Thu 17:04:43 EDT	sds
+;;
+;; This file is distributed under the GPL. See
+;;	<URL:http://www.gnu.ai.mit.edu/copyleft/gpl.html>
+;; for further details.
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -37,7 +50,8 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;; Instructions to the user:
+;;; Commentary:
+
 ;; Put this file somewhare in your load-path and add the following
 ;; lines to your .emacs file:
 
@@ -63,8 +77,10 @@
 ;; distribution contains the corrent version.  You can get the file from
 ;; http://sourcery.naggum.no.
 
-;;; user variables
-;;; ---- ---------
+;;; Code:
+
+;; user variables
+;; ---- ---------
 
 (defvar scwm-repl "scwmrepl" "The path to scwmrepl.")
 (defvar scwm-exec "scwmexec" "The path to scwmexec.")
@@ -84,8 +100,8 @@
     (let ((zz (id-select-symbol (point))))
       (buffer-substring-no-properties (car zz) (cdr zz)))))
 
-;;; user functions
-;;; ---- ---------
+;; user functions
+;; ---- ---------
 
 ;;;###autoload
 (define-derived-mode scwm-mode scheme-mode "Scwm"
@@ -140,8 +156,8 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 (defalias 'advertised-xscheme-send-previous-expression
     'scwm-eval-to-minibuffer)
 
-;;; completion
-;;; ----------
+;; completion
+;; ----------
 
 (defvar scwm-obarray nil "The obarray for scwm completion.")
 (defvar scwm-history nil "The input history of SCWM completions.")
@@ -160,7 +176,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
     obarray))
 
 (defun scwm-complete-symbol (&optional sym)
-  "Complete the current symbol by querying scwm using apropos-internal.
+  "Complete the current symbol or SYM by querying scwm using apropos-internal.
 Returns a string."
   (setq sym (or sym (thing-at-point 'symbol))
 	scwm-obarray (or scwm-obarray (scwm-make-obarray)))
@@ -180,12 +196,12 @@ Returns a string."
 	       (display-completion-list (all-completions pat scwm-obarray)))
 	     (message "Making completion list...done")))))
 
-;;; help
-;;; ----
+;; help
+;; ----
 
 ;;;###autoload
 (defun scwm-documentation (pat)
-  "Query scwm for documentation for the give symbol."
+  "Query scwm for documentation for the symbol PAT."
   (interactive (list (scwm-complete-symbol)))
   (with-output-to-temp-buffer "*Help*"
     (princ "SCWM documentation `") (princ pat) (princ "':\n\n")
@@ -194,7 +210,7 @@ Returns a string."
 
 ;;;###autoload
 (defun scwm-apropos (pat)
-  "Apropos an scwm symbol."
+  "List all scwm symbols matching PAT."
   ;; (interactive (interactive-token "SCWM Apropos"))
   (interactive
    (list (read-string
@@ -216,4 +232,4 @@ Returns a string."
 	      font-lock-defaults-alist)))
 
 (provide 'scwm)
-;; scwm.el ends here
+;;; scwm ends here
