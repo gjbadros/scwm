@@ -459,7 +459,6 @@ SCWM_PROC(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
 #undef FUNC_NAME
 
 
-
 SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
           ())
      /** Return the version of scwm running. */
