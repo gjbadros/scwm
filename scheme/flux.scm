@@ -767,3 +767,8 @@ that corner fixed."
 (define*-public (both-toggle-maximize #&optional (win (get-window)))
   (toggle-maximize (%x 100) (%y 100)) win)
 
+
+(define*-public (window-background-color #&optional (win (get-window)))
+  (if (eq? win (current-window-with-focus))
+      (or (cadr (get-window-highlight-colors win)) (highlight-background))
+      (cadr (get-window-colors win))))
