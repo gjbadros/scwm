@@ -1,3 +1,8 @@
+Sat Dec  5 18:45:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* HACKING: Add required perl, makeinfo, Parse-RecDescent package
+ 	versions for documentation hacking; split into named sections.
+
 1998-11-22  Todd Larason  <jtl@molehill.org>
 
 	* THANKS: remove myself from the thanks list, add Russell Nelson
