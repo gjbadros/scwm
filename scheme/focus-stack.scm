@@ -35,7 +35,7 @@ See `pop-focus-window'."
 	(set! focus-stack (cons w focus-stack)))))
 
 (define*-public (pop-focus-window)
-  "Restore the focus to the window on the top of the focus-stack"
+  "Restore the focus to the window on the top of the focus-stack."
   (interactive)
   (if (not (focus-stack-empty?))
       (let ((w (car focus-stack)))
@@ -53,4 +53,7 @@ See `pop-focus-window'."
   "Close WIN and pop the focus with `pop-focus-window'."
   (interactive)
   (delete-window win)
+  ;; SRL:FIXME:: This is a race condition, but doesn't cause too bad of stuff 
+  ;; to happen.  Should make window in focus stack act like invalid window and
+  ;; then run pop-focus-window or something similar.
   (add-timer-hook! 100 (lambda () (pop-focus-window))))

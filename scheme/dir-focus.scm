@@ -49,7 +49,7 @@
 
 ;; Moves focus to the closest window in the given direction
 (define*-public (dir-focus dir #&optional (win (window-with-pointer)))
-  "Move focus to the closest window in direction DIR.
+  "Move focus to the closest window to the pointer in direction DIR.
 DIR must be one of the symbols 'north, 'south, 'east, or 'west."
   (let ((cur win)
 	(best-score 0)

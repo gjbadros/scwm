@@ -1,3 +1,13 @@
+Sat Feb 16 02:01:31 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* dir-focus.scm: Improved doc string for dir-focus to mention
+	that this focus movement is relative to the location of the
+	pointer.
+
+	* focus-stack.scm: Added period to doc string.
+
+	Put FIXME comment on a minor race condition problem.
+
 Sat Feb 16 01:12:38 2002  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* hover-focus.scm: Moved the add-hook! calls into a 
