@@ -2,7 +2,8 @@
 ;; Copyright (C) 1998-1999 Greg J. Badros
 ;; 4-October-1998
 
-(define-module (app scwm path-cache))
+(define-module (app scwm path-cache)
+  :use-modules (ice-9 string-fun))
 
 ;; Switch this to #t if you're having problems
 (define-public debug-program-cache #f)
