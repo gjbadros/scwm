@@ -1,3 +1,35 @@
+Wed Mar 17 12:50:02 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* constraints.scm: Cleaned up a bit, added `start-constraints'. 
+
+	* base.scm: Added `select-window' written in terms of
+	`select-viewport-position' primitive (which used to be the
+	select-window primitive).
+
+Wed Mar 17 12:04:47 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* constraints.scm: Added `end-constraints' to stop using the
+	solver.
+
+Wed Mar 17 11:54:04 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm, ui-constraints-buttons.scm: Fiddle w/
+ 	comments to provide some more useful s-exp for interactive
+ 	evaluation.
+
+	* ui-constraints-classes.scm: Make cnctr-keep-top-at-value,
+	cnctr-keep-left-at-value, cnctr-keep-right-at-value to all table
+	option enable? arguments, and honour them.
+
+	* simple-constraints.scm:  Don't define solver in here, do it in
+	constraints.scm. Fixed missing test of enable? before adding
+	constraint in keep-tops-even.  Use (scwm-master-solver)
+	throughout, instead of "solver"
+
+	* constraints.scm:  Added `reset-scwm-constraints' and call it.
+	Perhaps I should add a menu item to gjb.scwmrc to reset the
+	constraint solver.
+
 Fri Mar 12 19:49:51 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* string-prompt.scm: Use dialog style instead of toplevel.  Set
