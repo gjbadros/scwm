@@ -3,7 +3,7 @@ REPORTING BUGS IN SCWM
 Please send bug reports to scwm-discuss@mit.edu.
 
 If you use the scwm-mode for Emacs from utilities/emacs/scwm.el,
-you should send bugs w/ M-x scwm-bug to send a bug report.
+please use M-x scwm-bug RET to send a bug report.
 
 If you have build difficulties, or do not use emacs, use the script
 ./scwm-bug-report-information (included with the distribution in the
