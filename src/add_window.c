@@ -97,9 +97,12 @@ void CassowarySetCValuesAndSolve(ScwmWindow *psw, int fSolve)  { /* empty */ }
 void CassowaryInitClVarsInPsw(ScwmWindow *psw) { /* empty */ }
 void CassowaryNewWindow(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditPosition(ScwmWindow *psw) { /* empty */ }
+void CassowaryEditSize(ScwmWindow *psw) { /* empty */ }
 void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y) 
 { XMoveWindow(dpy, psw->frame, x, y); }
-void CassowaryEndEditPosition(ScwmWindow *psw) { /* empty */ }
+void SuggestSizeWindowTo(ScwmWindow *psw, int w, int h) 
+{ XResizeWindow(dpy, psw->frame, w, h); }
+void CassowaryEndEdit(ScwmWindow *psw) { /* empty */ }
 #endif
 
 /*
@@ -230,10 +233,8 @@ AddWindow(Window w)
   unsigned long valuemask_save = 0;
 
   XSetWindowAttributes attributes;	/* attributes for create windows */
-  int i, width, height;
+  int i;
   int a, b;
-
-  char *decor = NULL;
 
   int Desk = 0, border_width = 0, resize_width = 0;
   extern Bool NeedToResizeToo;
@@ -999,6 +1000,10 @@ This hook does not typically need to be used directly by the user;
 interface to setting the relevant parameters when a new window is
 created. */
   SCWM_DEFINE_HOOK(after_new_window_hook, "after-new-window-hook");
+
+#ifndef SCM_MAGIC_SNARFER
+#include "add_window.x"
+#endif
 }
 
 
