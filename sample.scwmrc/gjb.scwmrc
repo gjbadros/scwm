@@ -43,7 +43,9 @@
 
 ;;; print some information
 (for-each (lambda (d) (debug-display d)) 
-	 (list " *** Reading `scwmrc'...\nScwm v" (scwm-version) "\n"
+	 (list " *** Reading `scwmrc'...\nScwm " (scwm-version) "\n"
+	       (if (scwm-is-constraint-enabled?) "With Cassowary Constraint Solver\n"
+		   "")
 	       "Display Size: " (display-size)
 	       "\nDesk Size: " (desk-size) "\nViewport Position: "
 	       (viewport-position) "\nCurrent Desk: " (current-desk) "\n"))
