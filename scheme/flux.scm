@@ -589,6 +589,16 @@ that corner fixed."
 (define-public (add-ms-timer-hook! ms proc)
   (add-timer-hook! (ms->usec ms) proc))
 
+;; contributed by Glenn Trig
+;; (this is close to basename, but keeps the path intact,
+;;  whereas basename strips the leading directories, too --03/27/99 gjb)
+(define-public (remove-suffix str suffix) 
+  (let ((sufl (string-length suffix)) 
+        (sl (string-length str))) 
+    (if (and (> sl sufl) 
+             (string=? (substring str (- sl sufl) sl) suffix)) 
+        (substring str 0 (- sl sufl)) str)))
+ 
 (define-public (interactive-move-selected-group-or-window)
   (let ((wingroup (selected-windows-list)))
     (if (pair? wingroup)

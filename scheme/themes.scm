@@ -39,7 +39,7 @@
 ;;; global settings.
 
 ;; this is not primitive either, but need string test case
-(define-scwm-option *theme-path* (list (string-append (scwm-path-prefix) "/share/scwm-themes"))
+(define-scwm-option *theme-path* (list (string-append (scwm-path-prefix) "/share/scwm/themes"))
   "The path (list of directory names as strings) to search for theme files."
   #:type 'path
   #:group 'file-locations)
@@ -185,22 +185,14 @@ tar file with extension .tar, .tar.gz, or .tgz."
 
 
 ;; contributed by Glenn Trig
-;; (this is close to basename, but keeps the path intact,
-;;  whereas basename strips the leading directories, too --03/27/99 gjb)
-(define (remove-suffix str suffix) 
-  (let ((sufl (string-length suffix)) 
-        (sl (string-length str))) 
-    (if (and (> sl sufl) 
-             (string=? (substring str (- sl sufl) sl) suffix)) 
-        (substring str 0 (- sl sufl)) str)))
- 
-;; contributed by Glenn Trig
 (define-public (theme-names) 
   (let ((path-items '())) 
     (for-each 
      (lambda (path) 
-       (if (and (and (string? path) (file-exists? path)) 
-                (file-is-directory? path)) 
+       (if (and (string? path) 
+		(file-exists? path)
+                (file-is-directory? path)
+		(access? path R_OK))
            (begin 
              (let ((dir (opendir path)))
 	       (let dirloop ((dirent (readdir dir)))
@@ -221,9 +213,9 @@ tar file with extension .tar, .tar.gz, or .tgz."
 				      (or (has-suffix? fullpath ".tar.gz") 
 					  (has-suffix? fullpath ".tgz"))))) 
 			     (begin 
-			       (set! dirent (remove-suffix dirent ".tar")) 
-			       (set! dirent (remove-suffix dirent ".tar.gz")) 
-			       (set! dirent (remove-suffix dirent ".tgz")) 
+			       (set! dirent (basename dirent ".tar")) 
+			       (set! dirent (basename dirent ".tar.gz")) 
+			       (set! dirent (basename dirent ".tgz")) 
 			       (if (not (there-exists? path-items 
 						       (lambda (x) (string=? dirent x)))) 
 				   (set! path-items 
