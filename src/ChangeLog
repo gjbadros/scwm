@@ -1,3 +1,9 @@
+Sun Oct 11 16:29:34 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* move.c (DisplayMessage): Fail more gracefully if cannot
+	allocate colors for the display message window.  Fall back to
+	White and Black pixel values.
+
 Sat Oct 10 10:30:19 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* virtual.c (init_virtual): Added change-desk-hook, and call it
