@@ -27,6 +27,10 @@
 (define menu-bg-image #f)
 (define menu-look scwm-menu-look)
 
+;; HACK: GJB:FIXME:: This needs to be done in the root module
+;; to replace the primitive in more recent guile snapshots
+(defmacro-public reset-hook! (hook)
+  `(set! ,hook ()))
 
 
 
@@ -449,11 +453,12 @@ The rest of the arguments are passed as options to the xterm command."
 
 
 ;; add-hook! and remove-hook! are defined in guile's boot-9.scm
-;; we still need a reset-hook! though, but only if HAVE_SCM_MAKE_HOOK is 0
+;; we still need a reset-hook! though, but only if HAVE_SCM_MAKE_HOOK is 1
 ;; (otherwise, in post guile-1.3, it's already a primitive)
-(if (not (defined? 'reset-hook!))
-    (defmacro-public reset-hook! (hook)
-      `(set! ,hook ())))
+;; GJB:FIXME:: we can use this code once we support new-style hooks
+;(if (not (defined? 'reset-hook!))
+;    (defmacro-public reset-hook! (hook)
+;      `(set! ,hook ())))
 
 (defmacro-public with-window (win . body)
 ;;;** Bind the window-context to WIN while evaluating BODY.
