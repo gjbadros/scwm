@@ -3,7 +3,6 @@ Maciej's goals for 0.7:
 Definitely:
 
  (infrastructure:)
- * better scheme wrappers for colors
  * use automake and libtool, and make use of autoconf more correct
  * fix error/warning system - provide useful error messages (with line
  numbers where feasible), support user hooks for displaying warnings,
@@ -47,8 +46,10 @@ Possibly:
  "Imlib" - this supports many image formats natively, supports many
  more non-natively, and dithers images nicely down to a uniform
  colormap shared with other apps.
-
+ * Scheme objects for GCs 
 
 Done:
  * Figure out what's going wrong with window shading.
  * Remove old scwmsend stuff.
+ * better scheme wrappers for colors
+
