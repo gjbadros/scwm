@@ -1815,6 +1815,13 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
   XMoveWindow(dpy, psw->frame, x, y);
 }
 
+void 
+ResizePswToCurrentSize(const ScwmWindow *psw)
+{
+  int w = FRAME_WIDTH(psw), h = FRAME_HEIGHT(psw);
+  XResizeWindow(dpy, psw->frame, w, h);
+}
+
 
 extern float rgpctMovementDefault[32];
 extern int cpctMovementDefault;
