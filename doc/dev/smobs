@@ -92,7 +92,7 @@ static scm_smobfuns T ## _smobfuns = { \
 As you can see, MAKE_SMOBFUNS requires a certain convention for the
 names of the system-level object functions.  The names must be
 "mark_", "free_", and "print_" each followed by the short SMOB name
-(e.g., mark_color, mark_free, mark_print).  You will never need to call
+(e.g., mark_color, free_color, print_color).  You will never need to call
 these functions explicitly-- the Guile interpreter manages invoking
 them as necessary.  E.g., when you evaluate `(make-color "red")' using
 scwmrepl or Emacs' scwm-mode, the Scheme procedure make-color returns
