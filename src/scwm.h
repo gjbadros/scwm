@@ -44,6 +44,7 @@
 #include <guile/gh.h>
 #include "Picture.h"
 #include "color.h"
+#include "module-types.h"
 
 #ifndef WithdrawnState
 #define WithdrawnState 0
@@ -56,9 +57,9 @@
    should go, and second there are a lot and I don't
    feel like commenting them all. */
 
-#define Broadcast(a,b,c,d,e,f,g,h,i)
-#define BroadcastConfig(a,b)
-#define BroadcastName(a,b,c,d,e)
+/* #define Broadcast(a,b,c,d,e,f,g,h,i) */
+/* #define BroadcastConfig(a,b) */
+/* #define BroadcastName(a,b,c,d,e) */
 
 #define STATIC_CAST(cast,val) ((cast) (val))
 #define min(a,b) (((a)<(b)) ? (a) : (b))

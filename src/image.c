@@ -399,7 +399,7 @@ load_image(SCM name)
   return SCM_BOOL_F;
 }
 
-SCM_PROC (s_make_image, "make-image-new", 1, 0, 0, make_image);
+SCM_PROC (s_make_image, "make-image", 1, 0, 0, make_image);
 
 /* FIXMS: maybe add an optional arg to explicitly specify the type,
    rather than guessing from the extension? */

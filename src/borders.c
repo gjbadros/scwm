@@ -122,7 +122,7 @@ DrawButton(ScwmWindow * t, Window win, int w, int h,
     if (type == PixmapButton)
       image = IMAGE (bf->u.image);
     else {
-      if (!t->mini_icon_image==SCM_BOOL_F)
+      if (t->mini_icon_image==SCM_BOOL_F)
 	break;
       image = IMAGE (t->mini_icon_image);
     }

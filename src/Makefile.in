@@ -90,6 +90,7 @@ SRCS = \
 	deskpage.c \
 	decor.c \
 	face.c \
+	module-interface.c \
 	image.c
 
 OBJS := $(SRCS:.c=.o) init_scheme_string.o
@@ -134,10 +135,14 @@ image.d image.o: image.x
 image.x: image.c
 	guile-snarf $(CFLAGS) $< >tmp && mv tmp $@
 
+#
+#%.d: %.c
+#	$(CC) -M $(CFLAGS) $< \
+#		| sed 's/$*\.o[ :]*/& $@/g' > $@
 
 %.d: %.c
-	$(SHELL) -ec '$(CC) -M $(CFLAGS) $< \
-		| sed '\''s/$*\\.o[ :]*/& $@/g'\'' > $@'
+	$(CC) -M $(CFLAGS) $< > $@
+
 
 # FIXGJB: how do we not remake the .d files for a clean build?
 # The leading - means do not error, but still creates the .d file

@@ -110,7 +110,8 @@ init_scwm_procs(void)
   gh_new_procedure("make-menu-item", make_menuitem, 2, 5, 0);
   gh_new_procedure("make-scwm-menu", make_scwmmenu, 1, 6, 0);
   gh_new_procedure("make-menu", make_menu, 1, 0, RESTP);
-  gh_new_procedure("make-image", make_picture, 1, 0, 0);
+  gh_new_procedure("make-picture", make_picture, 1, 0, 0); /*FIXGJB: should be removed 
+							     when Picture code is obsoleted */
   gh_new_procedure("popup", popup, 1, 1, 0);
   gh_new_procedure("popup-menu", popup_menu, 1, 0, 0);
   gh_new_procedure("menu?", menu_p, 1, 0, 0);

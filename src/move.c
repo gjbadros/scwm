@@ -114,6 +114,8 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
    note that the first argument to this is a ScwmWindow *, since
    the frame needs to be manipulated; the last two args are like
    AnimatedMoveWindow, above --11/09/97 gjb */
+/* Note that this does not allow animations to overshoot target-- it
+   stops at first pctMovement >= 1.0 --11/25/97 gjb */
 void 
 AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp, 
 		    int cmsDelay, float *ppctMovement)
@@ -148,7 +150,7 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
       XMoveWindow(dpy, w, 0, -client_height * (1 - *ppctMovement));
       XFlush(dpy);
       sleep_ms(cmsDelay);
-    } while (*ppctMovement != 1.0 && ppctMovement++);
+    } while (*ppctMovement < 1.0 && ppctMovement++);
     XResizeWindow(dpy,wFrame,width,shaded_height+client_height);
     XMoveWindow(dpy,w,0,0);
   }

@@ -776,7 +776,7 @@ window_shade(SCM win, SCM animated_p)
     XMoveWindow(dpy,sw->w,0,0);
   }
 
-  Broadcast(M_WINDOWSHADE, 1, tmp_win->w, 0, 0, 0, 0, 0, 0);
+  Broadcast(M_WINDOWSHADE, 1, sw->w, 0, 0, 0, 0, 0, 0);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }

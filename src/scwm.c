@@ -741,7 +741,7 @@ SetRCDefaults()
 {
   /* the compiled-in .scwmrc comes from minimal.scm,
      built into init_scheme_string.c by the make file */
-  extern const char *init_scheme_string;
+  extern char *init_scheme_string;
   gh_eval_str(init_scheme_string);
 }
 
