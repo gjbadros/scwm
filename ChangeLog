@@ -1,3 +1,9 @@
+Sat Sep  5 15:05:21 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Test for eof in all the places I
+	loop on <> so that the line numbers get reset properly (they
+	were incorrect for the scheme files)
+
 Sat Sep  5 13:22:14 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* doc/dev/: Added X*.ps.gz documentation for ICE and session
