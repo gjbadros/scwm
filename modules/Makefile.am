@@ -1,5 +1,6 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
-SUBDIRS = xpm-menus
+SUBDIRS = xpm-menus overlay-plane
+
 
 
