@@ -135,6 +135,7 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool all
 {
   int modmask = 0;
   Bool fError = False;
+  Bool fShowError = False;
   /* C-S-M-Left and CSM-Left should both be okay */
   char *pchLastDash = strrchr(pch,'-');
 
@@ -146,49 +147,49 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool all
     switch (pch[0]) {
     case 'S': /* Shift */
       if (modmask == AnyModifier) {
-	fError = True;
+	fError = fShowError = True;
       } else {
 	modmask |= ShiftMask;
       }
       break;
     case 'C': /* Control */
       if (modmask == AnyModifier) {
-	fError = True;
+	fError = fShowError = True;
       } else {	
 	modmask |= ControlMask;
       }
       break;
     case 'M': /* Meta */
       if (!MetaMask || modmask == AnyModifier) {
-	fError = True;
+	fError = fShowError = True;
       } else {	
 	modmask |= MetaMask;
       }
       break;
     case 'A': /* Alt */
       if (!AltMask|| modmask == AnyModifier) {
-	fError = True;
+	fError = fShowError = True;
       } else {	
 	modmask |= AltMask;
       }
       break;
     case 'H': /* Hyper */
       if (!HyperMask || modmask == AnyModifier) {
-	fError = True;
+	fError = fShowError = True;
       } else {
 	modmask |= HyperMask;
       }
       break;
     case 's': /* Super (emacs uses "s", so we do too) */
       if (!SuperMask || modmask == AnyModifier) {
-	fError = True;
+	fError = fShowError = True;
       } else {
 	modmask |= SuperMask;
       }
       break;
     case '*': /* AnyModifier */
       if (modmask != 0 || !allow_any_p) {
-	fError = True;
+	fError = fShowError = True;
       } else {
 	modmask |= AnyModifier;
       }
@@ -197,9 +198,11 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool all
       scwm_msg(WARN,func_name,"Unrecognized modifier %c-",pch[0]);
       return NULL;
     }
-    if (fError)
+    if (fShowError) {
       scwm_msg(WARN,func_name,"Unbound modifier %c-",
 	       pch[0]);
+      fShowError = False;
+    }
     /* go to next char, skipping over '-' if necessary */
     if (*(++pch) == '-')
       ++pch;
@@ -894,7 +897,9 @@ SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
           (SCM contexts, SCM key))
      /** Remove any bindings attached to KEY in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
-KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete) */
+KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete).
+The return value is #t if the binding was removed successfully, #f 
+otherwise.  */
 #define FUNC_NAME s_unbind_key
 {
   KeySym keysym;
@@ -914,10 +919,11 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete) */
     char *keyname = gh_scm2newstr(key,&len);
     scwm_msg(WARN,FUNC_NAME,"Ignoring key unbind request for `%s'",keyname);
     gh_free(keyname);
+    return SCM_BOOL_F;
   } else {
     remove_binding(context,modmask,0,keysym,False);
   }
-  return SCM_UNSPECIFIED;
+  return SCM_BOOL_T;
 }
 #undef FUNC_NAME
 
@@ -987,6 +993,8 @@ BUTTON is a string or integer giving the mouse button number */
 SCWM_PROC(bind_key, "bind-key", 3, 1, 0,
           (SCM contexts, SCM key, SCM proc, SCM release_proc))
      /** Bind the given KEY within the CONTEXTS to invoke PROC.
+Return value is #t if the binding was made successfully, #f otherwise
+(e.g., if unbound modifiers or an unknown keysym is used, the binding will fail).
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar)) KEY is
 a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 PROC is a procedure that will be invoked (with no arguments) when the
@@ -1051,7 +1059,7 @@ invoked when the key is released.  The contexts include:
     gh_free(keyname);
     return SCM_BOOL_F; /* Use False for error */
   }
-  return SCM_UNSPECIFIED;
+  return SCM_BOOL_T;
 }
 #undef FUNC_NAME
 

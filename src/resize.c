@@ -292,7 +292,7 @@ InitializeOutlineRects(XRectangle rects[], int lastx, int lasty, int lastWidth, 
 
 static GC DrawRubberBandGC;
 
-/* MSFIX: Can't easily be a color w/o overlay planes-- needs to be really 
+/* MS:FIXME:: Can't easily be a color w/o overlay planes-- needs to be really 
    fast to erase */
 SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
           (SCM value))
@@ -315,7 +315,7 @@ resize frames. VALUE should be an integer. */
     XFreeGC(dpy, DrawRubberBandGC);
   }
   DrawRubberBandGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-  return (value);
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
