@@ -6,9 +6,11 @@
 
 ## Distribute and install
 scwm_theme_DATA = fvwm2.@TAR_SUFFIX@ mwm.@TAR_SUFFIX@ win95.@TAR_SUFFIX@ \
-                  woven.@TAR_SUFFIX@ gjb.@TAR_SUFFIX@ twm.@TAR_SUFFIX@ afterstep.@TAR_SUFFIX@
+                  woven.@TAR_SUFFIX@ gjb.@TAR_SUFFIX@ twm.@TAR_SUFFIX@ afterstep.@TAR_SUFFIX@ \
+		  darkside.@TAR_SUFFIX@
 EXTRA_DIST= ChangeLog $(srcdir)/fvwm2/* $(srcdir)/mwm/* $(srcdir)/win95/* \
-           $(srcdir)/woven/* $(srcdir)/gjb/* $(srcdir)/twm/* $(srcdir)/afterstep/*
+           $(srcdir)/woven/* $(srcdir)/gjb/* $(srcdir)/twm/* $(srcdir)/afterstep/* \
+	   $(srcdir)/darkside/*
 
 ## Themes must be removed by make distclean
 ## WARNING: this assume that the only files ending with
@@ -70,4 +72,12 @@ afterstep.@TAR_SUFFIX@: $(srcdir)/afterstep $(srcdir)/afterstep/*
 	abs_srcdir_themes=`pwd`; \
 	echo 'make[99]: Entering directory `'$$abs_srcdir_themes"'"; \
 	$(TAR_CF) $${abs_builddir_themes}/afterstep.@TAR_SUFFIX@ afterstep
+	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
+
+darkside.@TAR_SUFFIX@: $(srcdir)/darkside $(srcdir)/darkside/*
+	abs_builddir_themes=`pwd`; \
+	cd $(srcdir); \
+	abs_srcdir_themes=`pwd`; \
+	echo 'make[99]: Entering directory `'$$abs_srcdir_themes"'"; \
+	$(TAR_CF) $${abs_builddir_themes}/darkside.@TAR_SUFFIX@ darkside
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
