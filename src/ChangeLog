@@ -1,3 +1,8 @@
+Mon Oct 20 15:40:48 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c: Changed set-mwm-buttons! to actually set the MWMButton
+ 	flag, not the MWMBorder flag.
+
 Sat Oct 18 00:04:40 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* miscprocs.c, miscprocs.h, scmprocs.c: Fixed scm-quit to take any
