@@ -348,8 +348,14 @@
 (define (popup-utilities)
   (popup-menu 'menu-utilities #t))
 
+(define (popup-utilities-no-warp)
+  (popup-menu 'menu-utilities))
+
 (define (popup-applications)
   (popup-menu 'menu-applications #t))
+
+(define (popup-applications-no-warp)
+  (popup-menu 'menu-applications))
 
 (define (popup-multimedia)
   (popup-menu 'menu-multimedia #t))
@@ -359,6 +365,13 @@
    #f  ;; ensure that the window context is empty, so that, e.g.,
        ;; window operations menu always prompts for a window
    (popup-menu 'menu-root-start #t)))
+
+(define (popup-root-start-no-warp)
+  (with-window 
+   #f  ;; ensure that the window context is empty, so that, e.g.,
+       ;; window operations menu always prompts for a window
+   (popup-menu 'menu-root-start)))
+
 
 (define (popup-window-ops)
   (popup-menu 'menu-window-ops))
@@ -1247,10 +1260,10 @@ union of all other window managers!
   (show-window-list-menu #:by-resource #t #:show-geometry #t))
 
 ;;; first our root menus
-(bind-mouse 'root 1 #f popup-root-start)
+(bind-mouse 'root 1 #f popup-root-start-no-warp)
 (bind-mouse 'root 2 #f show-window-list-by-focus-with-geometry)
 (bind-mouse 'root "M-3" #f popup-desk)
-(bind-mouse 'root 3 #f popup-applications)
+(bind-mouse 'root 3 #f popup-applications-no-warp)
 (bind-mouse 'all "A-2" #f show-window-list-by-resource-with-geometry)
 
 (bind-key 'all "H-r" rename-window-interactively)
