@@ -1,10 +1,13 @@
 ;; keep two windows at same y coord
+
 (begin
- (define w1 (get-window))
- (define w2 (get-window))
- (add-stays-on-window w1)
- (add-stays-on-window w2)
- (add-stays-on-window (current-window-with-focus)))
+  (define solver (make-cl-solver))
+  (scwm-set-master-solver solver)
+  (define w1 (get-window))
+  (define w2 (get-window))
+  (add-stays-on-window w1)
+  (add-stays-on-window w2)
+  (add-stays-on-window (current-window-with-focus)))
 
 (add-stays-on-window (get-window))
 
