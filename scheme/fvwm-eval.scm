@@ -96,7 +96,12 @@
   (if window
       (get-two-numeric-args
        args (lambda (x y)
-	      (move-to x y window)))))
+	      (if (and x y)
+		  (move-to x y window)
+		  (begin
+		    (if fmod (move-to (car (pointer-position))
+				      (cadr (pointer-position)) window))
+		    (interactive-move window)))))))
 
 (define-fvwm-command "Raise"
   (if window
@@ -115,7 +120,7 @@
   (set-car! (cdr fmod) (get-one-numeric-arg args)))
 
 (define-fvwm-command "WindowsDesk"
-  (move-window-to-desk (first-arg window)))
+  (move-window-to-desk (get-one-numeric-arg args) window))
 
 (define-fvwm-command "KillMe"
    ((list-ref 5 fmod)))
