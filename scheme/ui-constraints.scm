@@ -8,6 +8,7 @@
 ;;
 
 (define-module (app scwm ui-constraints))
+;;  :use-module (app scwm simple-constraints))
 
 
 ;; Object IDs
@@ -271,7 +272,7 @@ UI-CTR should return the arguments (as a list) for CTR to build the constraint w
 (define-public (enable-ui-constraint UI-CONSTRAINT)
   (if (ui-constraint? UI-CONSTRAINT)
       (let ((cn (ui-constraint-cn UI-CONSTRAINT)))
-	(cl-add-constraint solver cn)
+	(cl-add-constraint (scwm-master-solver) cn)
 	(set-enable! UI-CONSTRAINT #t))
       (error "Argument must be a UI-CONSTRAINT object")))
 
