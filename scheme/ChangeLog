@@ -1,3 +1,8 @@
+Fri Sep  4 11:52:12 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm (window-viewport-position):  Check for sticky windows
+	and handle them correctly.
+
 Fri Sep  4 08:44:31 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Make display-area a variable, and use display-width, 

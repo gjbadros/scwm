@@ -1,3 +1,17 @@
+Fri Sep  4 11:49:24 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Move the AC_PROG_CXX macro back out of the
+	with-cassowary branch so CXX always gets set.  Automake appears to 
+	output a $(CXXLINK) build rule when any source files are C++, so
+	we need CXX set.   Users w/o a C++ compiler who want to use scwm
+	w/o cassowary can build it using e.g., 
+	  CXX=$CC CXXFLAGS=$CFLAGS ./configure
+	or, more specifically
+	  CXX=gcc CXXFLAGS="-Wall -O2" ./configure
+
+	also separated out the session_manager_srcs so that the session
+	manager support is only built if libSM and libICE are found
+
 Thu Sep  3 14:15:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in, acconfig.h: Check for libSM, libICE and set

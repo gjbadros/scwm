@@ -1,3 +1,12 @@
+Fri Sep  4 11:58:33 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* session-manager.h: Fix multiple-inclusion guard, and include
+	config.h
+
+	* Makefile.am: separated out the session_manager_srcs so that the
+ 	session manager support is only built if libSM and libICE are
+ 	found
+
 Fri Sep  4 10:02:18 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.h: Added {WIN,ICON}_VP_OFFSET_{X,Y} to use instead of
