@@ -1,3 +1,9 @@
+1998-09-25  Todd Larason  <jtl@teeny.molehill.org>
+
+	* flux.scm: Added set-message-window-position-align! as a more
+	convenient interfact to set-message-window-position!.  A better
+	name would be appreciated.
+
 Thu Sep 24 12:07:09 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* style.scm: Go back to using after-new-window-hook instead of

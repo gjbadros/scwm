@@ -460,7 +460,6 @@ This positions the popup menu appropriately."
 	 (x (if (odd? button-number) x-ne (+ 1 x-ne (car (window-frame-size))))))
     (popup-menu menu #f x y (odd? button-number))))
 
-
 ;; We need accessors for window background information,
 ;; and window-hilight background information
 (define*-public (flash-window #&optional (win (get-window)) #&key
@@ -609,6 +608,9 @@ TYPE and FORMAT are as in X-property-set!"
 
 ;; from Todd Larason
 (define*-public (run-in-netscape command completion #&optional (netwin (netscape-win)))
+  "Runs COMMAND in a Netscape window, calling COMPLETION when done, if set.
+Uses Netscape window NETWIN if specifies, or one found by (netscape-win)
+otherwise; it is an error if NETWIN refers to a non-Netscape window."
   (letrec 
       ((get-mozilla-hook
 	(lambda ()
@@ -645,3 +647,20 @@ to go to that page."
 ;; (run-in-netscape "openUrl(http://huis-clos.mit.edu/scwm)" display-message-briefly)
 ;; (run-in-netscape "openUrl(http://www.cs.washington.edu/homes/gjb)" display-message-briefly)
 
+
+(define*-public (set-message-window-position-align! x y gravity)
+  "Move the message window's GRAVITY point to (X,Y)"
+  (apply
+   (lambda (xa ya)
+     (set-message-window-position! x y xa ya))
+   (case gravity
+     ((nw northwest north-west) '(  0    0))
+     ((n  north)                '(-.5    0))
+     ((ne northeast north-east) '( -1    0))
+     ((w  west)                 '(  0  -.5))
+     ((center)                  '(-.5  -.5))
+     ((e  east)                 '( -1  -.5))
+     ((sw southwest south-west) '(  0   -1))
+     ((s  south)                '(-.5   -1))
+     ((se southeast south-east) '( -1   -1))
+     (else (error "Invalid gravity specified.")))))
