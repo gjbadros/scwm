@@ -26,6 +26,7 @@
 #include "xmisc.h"
 #include "syscompat.h"
 #include "cursor.h"
+#include "focus.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -38,6 +39,7 @@ SCWM_GLOBAL_SYMBOL(sym_click,"click");
 
 SCWM_SYMBOL(sym_motion,"motion");
 SCWM_SYMBOL(sym_one_and_a_half_clicks,"one-and-a-half-clicks");
+SCWM_SYMBOL(sym_single_click,"single-click");
 SCWM_SYMBOL(sym_double_click,"double-click");
 
 SCWM_SYMBOL(sym_shift,"shift");
@@ -1184,6 +1186,44 @@ matching binding. */
 }
 #undef FUNC_NAME
 
+
+/*
+ * IsClick(...)
+ * Waits Scr.ClickTime, or until it is evident that the user is not
+ * clicking, but is moving the cursor
+ * This function is derived from code by Robert Nation
+ */
+
+/* GJB:FIXME:: a single, slow click with no movement should
+   still count as a single click */
+Bool 
+IsClick(int x, int y, unsigned EndMask, XEvent * d)
+{
+  int xcurrent, ycurrent, total = 0;
+  Time t0;
+
+  xcurrent = x;
+  ycurrent = y;
+  t0 = lastTimestamp;
+
+  while ((total < Scr.ClickTime) &&
+	 (x - xcurrent < 3) && (x - xcurrent > -3) &&
+	 (y - ycurrent < 3) && (y - ycurrent > -3) &&
+	 ((lastTimestamp - t0) < Scr.ClickTime)) {
+    ms_sleep(20);
+    total += 20;
+    if (XCheckMaskEvent(dpy, EndMask, d)) {
+      StashEventTime(d);
+      return True;
+    }
+    if (XCheckMaskEvent(dpy, ButtonMotionMask | PointerMotionMask, d)) {
+      xcurrent = d->xmotion.x_root;
+      ycurrent = d->xmotion.y_root;
+      StashEventTime(d);
+    }
+  }
+  return False;
+}
 
 
 /* to distinguish click, double-click, move */
