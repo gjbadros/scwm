@@ -770,6 +770,7 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
   if (fNeedMove || fNeedResize) {
     SET_CVALUE(psw,frame_x,x);
     SET_CVALUE(psw,frame_y,y);
+    ConstrainSize(psw, 0, 0, &w, &h);
     SET_CVALUE(psw,frame_width,w);
     SET_CVALUE(psw,frame_height,h);
     if (!fOpaque) {

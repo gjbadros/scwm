@@ -595,20 +595,12 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
       extern XEvent Event;
       Event = ResizeEvent;
       DispatchEvent();
-
-      /* limit ourselves to legitimate sizes */
-      ConstrainSize(psw, xmotion, ymotion, &dragWidth, &dragHeight);
-
-      SuggestSizeWindowTo(psw,WIN_VP_OFFSET_X(psw)+dragx,WIN_VP_OFFSET_Y(psw)+dragy,
-                          dragWidth,dragHeight, fOpaque);
     }
   }
 
   if (!fOpaque) {
     RemoveRubberbandOutline();
   }
-
-  /* pop down the size window */
 
   SuggestSizeWindowTo(psw,WIN_VP_OFFSET_X(psw)+dragx,WIN_VP_OFFSET_Y(psw)+dragy,
                       dragWidth,dragHeight, True);
