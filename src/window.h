@@ -198,9 +198,6 @@ typedef struct ScwmWindow {
 
   gravity_info grav;            /* Decoded gravity information. */
 
-#if 0
-  int xdiff, ydiff;		/* used to restore window position on exit */
-#endif
   int *mwm_hints;
   int ol_hints;
   int functions;                /* was enum wm_client_functions, 

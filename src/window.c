@@ -2887,10 +2887,6 @@ WIN defaults to the window context in the usual way if not specified. */
 	       FRAME_WIDTH(psw) + 2 * (psw->xboundary_width - oldxw),
 	       FRAME_HEIGHT(psw) + 2 * (psw->boundary_width - oldw));
 
-#if 0
-  /* FIXGJB: drop this -- SetupFrame does it! --07/26/98 gjb */
-  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-#endif
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

@@ -562,17 +562,10 @@ SCWM_PROC(menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
 #undef FUNC_NAME
 
 
-/* FIXMS: does this belong in util.c or something? 
-   note, this function is fvwm-derived.*/
-
-void 
+static void 
 redraw_hilight_window()
 {
   if (Scr.fWindowsCaptured && (Scr.Hilite != NULL)) {
-    /* FIXGJB: why two calls in a row */
-#if 0
-    SetBorder(Scr.Hilite, False, True, True, None);
-#endif
     SetBorderX(Scr.Hilite, True, True, True, None, True);
   }
 }
