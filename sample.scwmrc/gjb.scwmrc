@@ -16,15 +16,12 @@
 	     (app scwm face)
 	     (app scwm optargs)
 	     (app scwm std-menus)
+	     (app scwm flux)
 	     (app scwm fvwm-module)
 	     )
 ;; Need M_FOCUS_CHANGE for auto-raise
 (use-modules (app scwm module-types))
 
-(define (write-all port . lst)
-  (if (eq? port ()) (set! port (current-output-port)))
-  (do ((zz lst (cdr zz))) ((null? zz))
-    (if (string? (car zz)) (display (car zz) port) (write (car zz) port))))
 ;;; print some information
 (write-all () " *** Reading `scwmrc'...\nDisplay Size: " (display-size)
 	   "\nDesk Size: " (desk-size) "\nViewport Position: "
@@ -34,7 +31,8 @@
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 
-(define fvwm-pager-path "/usr/X11R6/lib/X11/fvwm2/FvwmPager")
+(define fvwm-pager-path "/uns/lib/fvwm2/FvwmPager")
+(define fvwm-winlist-path "/uns/lib/fvwm2/FvwmWinList")
 
 ;; Disabled autoraise by default; 
 ;; would give an instant autoraise with no timeout, which 
@@ -117,8 +115,8 @@
 		      ,(start-program-in-xterm "basic" "Chipmunk Basic" "basicxterm"))
     ("&Irc" #f #f ,(start-program-in-xterm "irc" "IRC" "ircxterm"))
     ("&Minicom" #f #f ,(start-program-in-xterm "minicom -c on" "Minicom" "minicomxterm"))
-    ("Tin" #f #f ,(start-program-in-xterm "tin -r" "News (tin)" "tinxterm"))
-    ("T&rn" #f #f ,(start-program-in-xterm "trn" "News (trn)" "trnxterm"))
+;;    ("Tin" #f #f ,(start-program-in-xterm "tin -r" "News (tin)" "tinxterm"))
+;;    ("T&rn" #f #f ,(start-program-in-xterm "trn" "News (trn)" "trnxterm"))
     ("Athena" #f #f "athena")
     ("XGopher" #f #f "xgopher")
     ("XPdf" #f #f "xpdf") ;; used to have a get-file option
@@ -175,45 +173,6 @@
     ("Play&midi" #f #f "xplaymidi $("xgetfile -title "Select a MIDI file for PlayMidi" -path MIDI_SOUND_PATH -pattern "*.mid*#f)")
     ("Xm&play" #f #f "xmplay")
     ))
-
-(define (quotify-single-quotes str)
-  (regexp-substitute/global #f "'" str 'pre "'\"'\"'" 'post))
-
-;;; FIXGJB: how set width of an xmessage?
-(define (message . str)		; return lambda
-  (execute (string-append "echo -e \'" 
-			  (quotify-single-quotes (apply string-append str))
-			   "\'| xmessage -file - -default okay -nearmouse")))
-#<unspecified>
-
-(define (show-mesg . str) (lambda () (apply message str)))
-(define (show-file fl)		; return lambda
-  (exe (string-append
-	"xmessage -buttons ok:0 -default ok -nearmouse -file " fl)))
-
-(define (bool->str arg) (if arg "true" "false"))
-(define* (size->str sz #&optional (sep "x"))
-  (let ((xx (car sz)) (yy (cadr sz)))
-    (string-append (number->string xx) sep (number->string yy))))
-
-(define* (window-info #&optional (ww (selected-window)))
-  (message
-   "Window ID:\t\t" (number->string (window-id ww))
-   "\nTitle:\t\t\t\"" (window-title ww) "\"\nPosition:\t\t"
-   (size->str (window-position ww)) "\nSize:\t\t\t"
-   (size->str (window-size ww))
-   "\nDesk:\t\t\t" (number->string (window-desk ww)) "\nClass:\t\t\t\""
-   (window-class ww) "\"\nResource:\t\t\"" (window-resource ww)
-   "\"\nBorder normal:\t\t" (bool->str (border-normal? ww))
-   "\nDeletable:\t\t" (bool->str (window-deletable? ww))
-   "\nIconified:\t\t" (bool->str (iconified? ww))
-   "\nKept on top:\t\t" (bool->str (kept-on-top? ww))
-   "\nRaised:\t\t\t" (bool->str (raised? ww))
-   "\nShaded:\t\t\t" (bool->str (window-shaded? ww))
-   "\nSticky Icon:\t\t" (bool->str (icon-sticky? ww))
-   "\nSticky:\t\t\t" (bool->str (sticky? ww))
-   "\nTitle bar shown:\t" (bool->str (titlebar-shown? ww))))
-
 
 ;;; These can change dynamically and the menus which 
 ;;; used 'menu-bg-color [which is used by default]
@@ -582,21 +541,6 @@
     (menuitem "Yes" #:image-left "mini-exclam.xpm" #:action quit)
     (menuitem "No"  #:image-left "mini-cross.xpm" #:action noop))))
 
-(define (make-menuitems-from-menu-information-list menu-info-list)
-  (cons menu-title
-	(map (lambda (elem) 
-	       (let ((title (car elem))
-		     (mini-icon (cadr elem))
-		     (icon (caddr elem))
-		     (exename (cadddr elem)))
-		 (if (program-exists? exename)
-		     (menuitem title
-			       #:image-left (if mini-icon (string-append "mini-" mini-icon ".xpm") #f)
-			       #:icon (if icon (string-append icon ".xpm") #f)
-			       #:action (lambda () (execute exename)))
-		     #f)))
-	     menu-info-list)))
-
 ;;;(map (lambda (elem)
 ;;;       (let ((menu-id (car elem))
 ;;;	     (menu-title (cadr elem))
@@ -948,26 +892,6 @@
 	  (lambda ()
 	    (next-window #:only visible? #:except iconified?)))
 
-(define (key-mouse-moves modifiers pct-of-screen left down up right)
-  (bind-key 'all (string-append modifiers "-" left) 
-	    (lambda () (move-pointer (%x (- pct-of-screen)) 0)))
-  (bind-key 'all (string-append modifiers "-" down) 
-	    (lambda () (move-pointer 0 (%y pct-of-screen))))
-  (bind-key 'all (string-append modifiers "-" up) 
-	    (lambda () (move-pointer 0 (%y (- pct-of-screen)))))
-  (bind-key 'all (string-append modifiers "-" right) 
-	    (lambda () (move-pointer (%x pct-of-screen) 0))))
-
-(define (key-viewport-moves modifiers pct-of-screen left down up right)
-  (bind-key 'all (string-append modifiers "-" left) 
-	    (lambda () (move-viewport (%x (- pct-of-screen)) 0)))
-  (bind-key 'all (string-append modifiers "-" down) 
-	    (lambda () (move-viewport 0 (%y pct-of-screen))))
-  (bind-key 'all (string-append modifiers "-" up) 
-	    (lambda () (move-viewport 0 (%y (- pct-of-screen)))))
-  (bind-key 'all (string-append modifiers "-" right) 
-	    (lambda () (move-viewport (%x pct-of-screen) 0))))
-
 (key-mouse-moves "C-M-S" 5 "h" "j" "k" "l")
 ;; XInside's old X server steal C-M-h for prev virtual console, so use m too
 (key-mouse-moves "C-M-S" 5 "m" "j" "k" "l")
@@ -1021,26 +945,6 @@
 
 (set-click-time! 150)
 
-(define (animated-move-to x y)
-  (let* ((w (get-window))
-	 (size (window-size w))
-	 (width (car size))
-	 (height (cadr size))
-	 (position (window-position w))
-	 (oldx (car position))
-	 (oldy (cadr position)))
-    ;;; FIXGJB: is there a better way to correct for width, height, etc
-    ;;; MS: perhaps we should make move-to take #f for either coordinate,
-    ;;; which means don't move along that coord?
-    (if (equal? x 'x) (set! x oldx))
-    (if (equal? y 'y) (set! y oldy))
-    ;; MS: see base.scm for x- and y-, which I think are a more genric
-    ;; way to handle negative positions in the traditional X11 way.
-    (if (< x 0) (set! x (- root-size-x (abs x) width)))
-    (if (< y 0) (set! y (- root-size-y (abs y) height)))
-    (raise-window w)
-    (move-to x y w 'animated 'move-pointer-too)))
-
 ;; FIXGJB: I don't think this gets used right yet
 (define animation-ms-delay 50)
 
@@ -1070,7 +974,7 @@
 (bind-key 'all "C-M-S-9" (lambda () (send-button-press 3 0)))
 
 ;;(bind-key 'all "C-M-S-4" (lambda () (send-key-press "Return")))
-(bind-key 'all "C-M-S-4" (lambda () (send-string "helloworld")))
+(bind-key 'all "C-M-S-4" (lambda () (X-synthetic-send-string "helloworld")))
 
 ;; This one is experimental-- sends only the buttonpress event, no buttonrelease
 (bind-key 'all "C-M-S-0" (lambda () (send-button-press 2 0 (get-window) #t #f)))
@@ -1081,18 +985,6 @@
 (bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
 ;; Alt-w
 (bind-key 'all "A-w" (lambda () (display "alt-w\n")))
-
-(define (sleep-ms ms)
-  (select '() '() '() 0 (* 1000 ms)))
-
-;; Does not work for arbitrary strings since, e.g,. ' ' needs
-;; to be sent as "space"  FIXGJB: Do we have a char->keysym fn?
-(define (send-string str)
-  (let ((w (get-window))
-	(i 0))
-    (while (< i (length str))
-	   (send-key-press (substring str i (+ 1 i)) w)
-	   (set! i (+ 1 i)))))
 
 (if want-autoraise
     (define broadcast-hook
@@ -1118,8 +1010,35 @@
 	      "*FvwmPagerSmallFont 5x8")
 	    '("0" "1")))
 
+;;; This does not work for me -- I get:
+;;; Xlib: unexpected async reply (sequence 0x13e0)!
+;;; 
+;;;(define fvwm-winlist (run-fvwm-module
+;;;	    ;; path to the module
+;;;	    fvwm-winlist-path
+;;;	    ;; your .fvwm2rc (does not need to exist for most modules)
+;;;	    "~/.fvwm2rc"
+;;;	    ;; list of configuration lines
+;;;	    '("*FvwmWinListBack #c3c3c3"
+;;;	      "*FvwmWinListFore Black"
+;;;	      "*FvwmWinListFont -helvetica-bold-r-*-*-10-*-*-*-*-*-*-*"
+;;;	      "*FvwmWinListAction Click1 Iconify -1,Focus"
+;;;	      "*FvwmWinListAction Click2 Iconify"
+;;;	      "*FvwmWinListAction Click3 Module FvwmIdent FvwmIdent"
+;;;	      "*FvwmWinListUseSkipList"
+;;;	      "*FvwmWinListGeometry +0-1")))
+
 ;; To later shut down the module, use kill-fvwm-module:
 ;; (kill-fvwm-module fvwm-pager)
+
+;;; Dynamically loaded pie menus (just big regular menus now)
+;;; 
+;;;(define pie-menu-obj (dynamic-link "draw-pie-menu.so"))
+
+;;;(define construct-pie-menu 
+;;;  (dynamic-func "ConstructDynamicMenu" pie-menu-obj))
+
+;;;(set! construct-menu-primitive construct-pie-menu)
 
 (display " *** `scwmrc' processed.\n")
 
