@@ -1,3 +1,10 @@
+Thu Apr  8 09:00:23 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gtk.scm: Use name `gdk-get-leader-window-id' for the proc that I 
+	hacked into gdk that I called `gdk-lead-window'.  guile-gtk-0.16
+	will have the new proc with its longer name (and also the needed
+	bug fixes)
+
 1999-04-07  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* Makefile.am (scwm_gtk_scheme): Some scm .files were omitted.
