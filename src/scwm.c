@@ -1522,6 +1522,7 @@ usage(void)
 	  "[--expression|-e expression]\n"
 	  "      [--file|-f rc_file] [--single-screen|-s]\n"
 	  "      [--nobacktrace|-n] [--segv-cleanup-and-stop|-p] [--segv-just-stop|-P]\n"
+          "      [--no-document-formals|-N]\n"
 	  "      [--blackout|-b] [--" CLIENT_ID_STRING " id]\n"
 	  "      [--version|-V] [--help|-h]\n"
 	  , g_argv[0]);
