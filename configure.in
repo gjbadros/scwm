@@ -154,6 +154,9 @@ AC_CHECK_LIB(guile, scm_puts,AC_DEFINE(HAVE_SCM_PUTS))
 dnl This checks if we have gh_vref or gh_vector_ref
 AC_CHECK_LIB(guile, gh_vector_ref,AC_DEFINE(HAVE_GH_VECTOR_REF))
 
+dnl This checks if we have gh_vref or gh_vector_set
+AC_CHECK_LIB(guile, gh_vector_set_x,AC_DEFINE(HAVE_GH_VECTOR_SET_X))
+
 dnl This checks if we have a guile with readline support
 AC_CHECK_LIB(guile, scm_readline,AC_DEFINE(HAVE_SCM_READLINE))
 
