@@ -52,6 +52,7 @@ struct symnum {
   int value;
 };
 
+/* this array is parallel to the below context_strings array */
 struct symnum binding_contexts[] =
 {
   {SCM_UNDEFINED, C_WINDOW},
@@ -89,6 +90,50 @@ struct symnum binding_contexts[] =
   {SCM_UNDEFINED, C_ALL},
   {SCM_UNDEFINED, 0}
 };
+
+/* FIXGJB: buttons should have symbolic names, not numbered
+   physically;
+   this array is parallel to the above binding_contexts array.
+*/
+static char *context_strings[] =
+{
+  "window",
+  "title",
+  "icon",
+  "root",
+  "frame",  /* really the corners -- 'frame-corners is the preferred sym */
+  "sidebar", /* the frame sidebars -- 'frame-sides is the preferred sym */
+  "client-window",
+  "titlebar",
+  "icon", /* GJB:FIXME:MS Why is icon repeated? */
+  "root-window",
+  "frame-corners",
+  "frame-sides",
+  "button-1",
+  "button-2",
+  "button-3",
+  "button-4",
+  "button-5",
+  "button-6",
+  "button-7",
+  "button-8",
+  "button-9",
+  "button-10",
+  "left-button-1",
+  "right-button-1",
+  "left-button-2",
+  "right-button-2",
+  "left-button-3",
+  "right-button-3",
+  "left-button-4",
+  "right-button-4",
+  "left-button-5",
+  "right-button-5",
+  "all",
+  NULL
+};
+
+
 
 static int MetaMask = 0,
   AltMask = 0,
@@ -600,6 +645,23 @@ add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p,
 
 /**CONCEPT: Event Contexts
 
+There are various event contexts that are used as arguments
+to the binding procedures.  Among these are:
+
+  'window
+  'titlebar (or 'title)
+  'icon
+  'root
+  'frame-corners (or 'frame)
+  'frame-sides (or 'sidebar)
+  'client-window
+  'root-window
+  'left-button-N  (N=1-5)
+  'right-button-N (N=1-5)
+  'button-N (N=1-10) [deprecated]
+
+GJB:FIXME:: This should be a definition list or a table, and give real
+explanations of what these contexts mean!
  */
 
 int 
@@ -1123,46 +1185,6 @@ void
 init_binding(void)
 {
   int i;
-  /* FIXGJB: buttons should have symbolic names, not numbered
-     physically */
-  static char *context_strings[] =
-  {
-    "window",
-    "title",
-    "icon",
-    "root",
-    "frame",
-    "sidebar",
-    "client-window",
-    "titlebar",
-    "icon",
-    "root-window",
-    "corners",
-    "border",
-    "button-1",
-    "button-2",
-    "button-3",
-    "button-4",
-    "button-5",
-    "button-6",
-    "button-7",
-    "button-8",
-    "button-9",
-    "button-10",
-    "left-button-1",
-    "right-button-1",
-    "left-button-2",
-    "right-button-2",
-    "left-button-3",
-    "right-button-3",
-    "left-button-4",
-    "right-button-4",
-    "left-button-5",
-    "right-button-5",
-    "all",
-    NULL
-  };
-
   for (i = 0; context_strings[i] != NULL; i++) {
     binding_contexts[i].sym = gh_symbol2scm(context_strings[i]);
     scm_permanent_object(binding_contexts[i].sym);
