@@ -214,6 +214,36 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
 
   gh_defer_ints();
 
+
+  if((context != C_ALL) && (context & C_LALL))
+  {
+    /* check for nr_left_buttons */
+    i=0;
+    j=(context &C_LALL)/C_L1;
+    while(j>0)
+    {
+      i++;
+      j=j>>1;
+    }
+    if(Scr.nr_left_buttons <i)
+      Scr.nr_left_buttons = i;
+  }
+
+  if((context != C_ALL) && (context & C_RALL))
+  {
+    /* check for nr_right_buttons */
+    i=0;
+    j=(context&C_RALL)/C_R1;
+    while(j>0)
+    {
+      i++;
+      j=j>>1;
+    }
+    if(Scr.nr_right_buttons <i)
+      Scr.nr_right_buttons = i;
+  }
+
+
   if((contexts & C_WINDOW)&&(((modmask==0)||modmask == AnyModifier))) {
     Scr.buttons2grab &= ~(1<<(bnum-1));
   }
@@ -235,34 +265,10 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
   return SCM_UNSPECIFIED;
 }
 
-#if 0
-{
- 
-
- if((contexts & C_WINDOW)&&(((mods==0)||mods == AnyModifier)))
-  {
-    Scr.buttons2grab &= ~(1<<(button-1));
-  }
-
-  temp = Scr.AllBindings;
-  Scr.AllBindings  = (Binding *)safemalloc(sizeof(Binding));
-  Scr.AllBindings->IsMouse = 1;
-  Scr.AllBindings->Button_Key = button;
-  Scr.AllBindings->key_name = NULL;
-  Scr.AllBindings->Context = context;
-  Scr.AllBindings->Modifier = mods;
-  Scr.AllBindings->Action = "Scheme";
-  Scr.AllBindings->Thunk = proc;
-  Scr.AllBindings->NextBinding = temp;
-  return;
-
-
-}
-#endif
 
 
 
-/* XXX - must implement these to distringuish click, double-click, move */
+/* to distringuish click, double-click, move */
 
 SCM sym_motion,sym_click,sym_one_and_a_half_clicks,sym_double_click;
 
