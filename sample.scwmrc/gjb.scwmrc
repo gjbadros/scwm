@@ -705,6 +705,8 @@
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
     (menuitem "&Print" #:action (thunk print-window))
     menu-separator
+    (menuitem "Change theme" #:action (lambda () (menu-window-theme)))
+    menu-separator
     (menuitem "&Delete" #:action (thunk delete-window))
     (menuitem "&Close" #:image-left "mini-cross.xpm" 
 	       #:action (lambda () (close-window (get-window))))
@@ -965,6 +967,8 @@ AnotherLevel.
 	      #:action 'menu-screensaver)
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
 	      #:action (thunk exec-xlock))
+    menu-separator
+    (menuitem "Change global theme" #:action (lambda () (menu-global-theme)))
     menu-separator
     (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
 	      #:action (thunk scwm-about-message))
