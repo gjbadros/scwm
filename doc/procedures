@@ -817,6 +817,9 @@ style options are predefined:
 #:skip-mapping - #t or #f, change to the windows's desk while it is mapping
                  or not.
 
+#:lenience - #t or #f; if #t, ignore window manager hints that say the window
+             should never get the input focus, otherwise obey them.
+
 #:use-style - use a style created with make-style.
 
 ;; use-decor not implemented for now
@@ -840,4 +843,5 @@ Here are some extra style options not available in fvwm:
 
 #:other-hint-proc - lets you specify an additional procedure to apply to the
                     window when hints are being processed.
+
 
