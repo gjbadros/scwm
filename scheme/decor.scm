@@ -36,4 +36,4 @@
 (defmacro-public with-decor (decor . body)
   `(call-with-decor ,decor (lambda () ,@body)))
 
-(add-window-style-option #:use-decor (lambda (d w) (set-window-decor! w d)))
+(add-window-hint-option #:use-decor (lambda (d w) (set-window-decor! w d)))
