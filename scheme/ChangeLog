@@ -1,3 +1,11 @@
+Sat Mar 30 22:19:55 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* placement.scm: Doc fix to 'interactive-placement'.
+	Doc addition to 'near-window-placement'.
+	Doc clarification for 'make-keep-winclass-centered'.
+	Added several FIXMEs about stuff that should be cleaned up eventually.
+	Fixed bug in 're-place-window'.
+
 Sat Mar 30 21:06:15 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* focus-stack.scm: Added FIXME about unbounded stack growth.  This is

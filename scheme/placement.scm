@@ -54,8 +54,7 @@ differently for clarity and convenience."
 
 (define*-public (place-interactively win #&key (resize #f))
   "Place WIN interactively.
-
-Firts WIN is moved interactively with a rubber-band style move, then,
+First WIN is moved interactively with a rubber-band style move, then,
 if the optional RESIZE argument is provided, it is resized
 interactively immediately after it is placed."
   (interactive-place-internal win resize))
@@ -91,6 +90,10 @@ centered at the mouse pointer position."
 ;;; -placement versions
 ;;;
 
+;;; SRL:FIXME:: We shouldn't need all these specialized functions.  If we make
+;;;   the argument order for stuff operating on windows consistent, we could
+;;;   just make one wrapping function to curry the arguments.
+
 (define-public (at-virtual-offset-placement x y)
   "Return a procedure that takes a window and places it at virtual offset X, Y.
 The procedure will act just like calling `move-window' on the
@@ -123,7 +126,7 @@ If the RESIZE argument is true, the resulting procedure will
 interactively resize the window immediately after placing it. If
 SWITCH is true, the returned procedure will switch to the virtual desk
 and viewport of its window argument before placing it. This is the
-default. If RETURN is false, the returned procedure will switch back
+default. If RETURN is true, the returned procedure will switch back
 to the previous desk and viewport after placing the window. The
 default is false.
 
@@ -170,11 +173,14 @@ keystroke to accept the dialog."
   (lambda (win)
     (add-timer-hook! delay (lambda () (send-key "Return" win)))))
 
+;;; SRL:FIXME:: Why is one of proportional-offset/relative-to numeric and
+;;;   the other one symbolic.  Very inconsistent.
 (define*-public (near-window-placement window-getter #&key (offset '(0 0))
 				       (proportional-offset '(-0.5 -0.5))
 				       (relative-to 'center)
 				       (auto-focus #f))
   "Return a procedure that places a window near the window returned by WINDOW-GETTER.
+WINDOW-GETTER is run anew each time the resulting procedure is called.
 
 If RELATIVE-TO is specified, it gives a symbolic location in the
 existing window returned by WINDOW-GETTER to use as the control point
@@ -209,6 +215,9 @@ centered at the control point of the existing window."
 
 ;; conveniences
 
+;;; SRL:FIXME:: Do we really need this level of indirection or could we just
+;;;   change all calls to wrap-switch-return with calls to 
+;;;   virtual-switch-placement
 (define*-public (virtual-switch-placement proc #&key (switch #t) (return #f))
   "Wrap placement procedure PROC with virtual switching code.
 PROC is a procedure that takes a single window argument. The return
@@ -219,6 +228,7 @@ desk and viewport, depending on the values of SWITCH and RETURN
 respectively."
   (wrap-switch-return switch return proc))
 
+;;; SRL:FIXME:: Incredibly specific.  Do we need this procedure?
 (define*-public (strict-relpos-placement proc #&key (anchor 'northeast))
   "Wrap placement procedure PROC with adding a contraint that the windows stay relatively where they are.
 PROC needs to return a list of two windows, ANCHOR chooses which nonant of the windows
@@ -231,7 +241,10 @@ are the anchored positions."
 
 (define-public (make-keep-winclass-centered class)
   "Return a procedure that keeps windows of CLASS centered in the viewport.
-The resulting procedure should be used put in the `X-ConfigureRequest-hook'."
+The resulting procedure should be used put in the `X-ConfigureRequest-hook'.
+This will cause the window to be centered whenever the application for this
+window requests a move/resize of the window.  Note this will not keep scwm
+from moving the window (for example interactively)."
   (lambda (win icon? x y width height)
     (if (and (not icon?)
 	     (string=? (window-class win) class))
@@ -280,7 +293,7 @@ The resulting procedure should be used put in the `X-ConfigureRequest-hook'."
 PROC defaults to `clever-place-window'.  The
 return value is the new position of the window,
 or #f if it was not moved."
-  (let* ((wp (window-position win))
+  (let* ((wp (window-viewport-position win))
 	 (x (car wp))
 	 (y (cadr wp))
 	 (newpos (proc win #t x y)))
