@@ -60,15 +60,11 @@ It is called with one argument, WINDOW. */
 extern SCM cannot_grab_hook;
 
 
-static int
+static __inline__
+int
 makemult(int a, int b)
 {
-  if (b==1)
-    return a;
-  else {
-    int t = a/b;
-    return t * (b + (a/b - t >= .5? 1: 0));
-  }
+  return a - (a % b);
 }
 
 void
@@ -149,12 +145,12 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
    * Second, fit to base + N * inc
    */
   if (xinc != 0) 
-    dwidth = ((dwidth + xinc/2 - baseWidth) / xinc * xinc) + baseWidth;
+    dwidth = ((dwidth - baseWidth) / xinc * xinc) + baseWidth;
   else
     scwm_msg(WARN,FUNC_NAME,"xinc == 0");
 
   if (yinc != 0)
-    dheight = ((dheight + yinc/2 - baseHeight) / yinc * yinc) + baseHeight;
+    dheight = ((dheight - baseHeight) / yinc * yinc) + baseHeight;
   else
     scwm_msg(WARN,FUNC_NAME,"yinc == 0");
 
