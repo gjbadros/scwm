@@ -1,0 +1,121 @@
+*** xc.el	Thu Aug 21 18:47:27 1997
+--- /homes/gws/gjb/emacs/xc.el	Mon Nov 10 13:41:11 1997
+***************
+*** 81,87 ****
+  	    nil)
+    (current-buffer))
+  
+! (defun X-open-connection (name)
+    "Start up x connection via lisp to machine NAME."
+    (interactive)
+    (if (string-match "\\(:\\)" name)
+--- 81,87 ----
+  	    nil)
+    (current-buffer))
+  
+! (defun X-open-connection (name &optional number)
+    "Start up x connection via lisp to machine NAME."
+    (interactive)
+    (if (string-match "\\(:\\)" name)
+***************
+*** 99,105 ****
+  				    ;; This string is the standard loopback
+  				    ;;"127.0.0.1"
+  				    name
+! 				    6000))
+        (set-process-filter Xp 'X-filter)
+        (set-process-sentinel Xp 'X-sentinel)
+        (message "X: Connection open...")
+--- 99,105 ----
+  				    ;; This string is the standard loopback
+  				    ;;"127.0.0.1"
+  				    name
+! 				    (+ 6000 (if (boundp 'number) number 0))))
+        (set-process-filter Xp 'X-filter)
+        (set-process-sentinel Xp 'X-sentinel)
+        (message "X: Connection open...")
+*** xhello.el	Thu Aug 21 18:48:27 1997
+--- /homes/gws/gjb/emacs/xhello.el	Mon Nov 10 13:41:56 1997
+***************
+*** 42,48 ****
+    "Do as much as I know so far.  Connect to HOST."
+  
+    (interactive "sHost: ")
+!   (let* ((dpy (XOpenDisplay host))
+  	 (w (if (aref dpy 0)
+  		(XCreateWindow dpy nil 20 20 100 100 20 nil nil nil
+  			       (X-attribute
+--- 42,48 ----
+    "Do as much as I know so far.  Connect to HOST."
+  
+    (interactive "sHost: ")
+!   (let* ((dpy (XOpenDisplay host 1))
+  	 (w (if (aref dpy 0)
+  		(XCreateWindow dpy nil 20 20 100 100 20 nil nil nil
+  			       (X-attribute
+*** xlib.el	Thu Aug 21 18:54:37 1997
+--- /homes/gws/gjb/emacs/xlib.el	Wed Nov 12 10:13:33 1997
+***************
+*** 56,65 ****
+        (setq lst (cdr lst)))
+      nv))
+  
+! (defun XOpenDisplay (name)
+    "Open an X connection to the display named NAME such as host:0."
+    ;; first, open a connection to name
+!   (let ((p (X-open-connection name)))
+      ;; send intro message to server
+      (X-send p (X-create-message X-client-to-open))
+      ;; Connection is open, and X-info contains connection informaion.
+--- 56,65 ----
+        (setq lst (cdr lst)))
+      nv))
+  
+! (defun XOpenDisplay (name &optional number)
+    "Open an X connection to the display named NAME such as host:0."
+    ;; first, open a connection to name
+!   (let ((p (X-open-connection name number)))
+      ;; send intro message to server
+      (X-send p (X-create-message X-client-to-open))
+      ;; Connection is open, and X-info contains connection informaion.
+***************
+*** 293,298 ****
+--- 293,330 ----
+  	(X-atom display (nth 2 r) name)))))
+  
+  (defun XChangeProperty (display window property type format mode data)
++   "On DISPLAY for WINDOW, change PROPERTY.
++ PROPERTY is changed based on a TYPE, FORMAT, and MODE with DATA.
++ There are NElements."
++   (X-dpy-p display 'XChangeProperty)
++   (X-window-p window 'XChangeProperty)
++   (X-atom-p property 'XChangeProperty)
++   (X-atom-p type 'XChangeProperty)
++   (let* ((n (* (length data) (/ format 8)))
++ 	 (p (X-pad n))
++ 	 (ListOfFields
++ 	  (list [1 18]			;opcode
++ 		[1 mode]		;Mode: Replace Prepend, Append
++ 		[2 (+ 6 (/ (+ n p) 4))]	;length
++ 		[4 (X-get-id window)]	;window
++ 		[4 (X-get-id property)]	;property atom
++ 		[4 (X-get-id type)]	;property type
++ 		[1 format]		;property format
++ 		[3 nil]
++ 		[4 (/ n (/ format 8))]	;length of the list-byte thing
++ 		)))
++     (if (and (= format 8) (stringp data))
++ 	(setq ListOfFields
++ 	      (append ListOfFields (list (vector (length data) data))))
++       (while data
++ 	(let ((d (if (X-generic-vector-p (car data))
++ 		     (X-get-id (car data)) (car data))))
++ 	  (setq ListOfFields
++ 		(append ListOfFields (list (vector (/ format 8) d )))
++ 		data (cdr data)))))
++     (X-send display (X-create-message ListOfFields))))
++ 
++ (defun XChangeProperty-orig (display window property type format mode data)
+    "On DISPLAY for WINDOW, change PROPERTY.
+  PROPERTY is changed based on a TYPE, FORMAT, and MODE with DATA.
+  There are NElements."
