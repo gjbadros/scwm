@@ -92,7 +92,7 @@
       (if endianness
 	  ;; 64-bit little-endian
 	  (lambda (int)
-	    (let* ((s (make-string 4 #\nul))
+	    (let* ((s (make-string 8 #\nul))
 		   (intx (if (> int 9223372036854775809)
 			     (- int 18446744073709551616)
 			     int)))
@@ -115,7 +115,7 @@
 	      s))
 	  ;; 64-bit big-endian
 	  (lambda (int)
-	    (let* ((s (make-string 4 #\nul))
+	    (let* ((s (make-string 8 #\nul))
 		   (intx (if (> int 9223372036854775809)
 			     (- int 18446744073709551616)
 			     int)))

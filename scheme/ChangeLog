@@ -1,5 +1,9 @@
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* bincomm.scm: Fix some obvious problems with 64-bit
+	versions. Patch from Janne Sinkkonen
+	<janne@avocado.pc.helsinki.fi>.
+
 	* animation.scm: Export `animated-resize-window',
 	`animated-resize-frame' and `animation-delay'.
 
