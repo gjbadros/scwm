@@ -1,0 +1,116 @@
+
+
+Event maps, which map user events to bindings, should be first class
+objects. These event maps can be used for top-level key and mouse
+bindings, multi-key bindings, a key quoting mechanism, and
+sub-environments for interactive commands such as menus, interactives
+moves and resizes, and so on.
+
+Event maps should be able to inherit from other event maps - if an
+event is not bound in the current event map, it should be possible to
+redirect it to another event map, redirect it to the app that owns the
+appropriate window, or ignore or delay it if the event map is intended
+for an interactive command's sub-environment.
+
+
+----
+
+Beginnings of a suggested low-level interface:
+
+
+(make-event-map #&optional PARENT)
+;; PARENT is an event-map object, #t to indicate that unbound events
+;; should be passed to the app that owns the window, or #f to indicate
+;; that unbound events should be delayed until an event map that
+;; allows them is intalled, or dropped on the floor, depending on
+;; which is more reasonable to implement.
+
+(event-map-parent EVENT-MAP)
+(set-event-map-parent! EVENT-MAP PARENT)
+;; maybe these should be combined into one proc that can be a getter
+;; or a setter>
+
+(current-event-map)
+(install-event-map EVENT-MAP)
+;; returns and sets the installed event map, respectively. Not
+;; implementable as a Scheme variable because installing a new event
+;; map requires grabbind and/or ungrabbing certain events.
+
+
+(add-event-hook EVENT-MAP EVENT-SPECIFIER HOOK)
+(remove-event-hook EVENT-MAP EVENT-SPECIFIER HOOK)
+;; These can add and remove hooks for a given event. The nature of
+;; event-specifiers has not been worked out yet. A hook is a
+;; procedure. Arguments, if any, have not been worked out yet. The
+;; hook return value should be used to determine what further
+;; processing is appropriate. A reasonable default would be that
+;; normally all the hooks in the current event map should run, but the
+;; events in the parent event map should not be run unless the last
+;; hook returns some special value.
+
+
+Other than some omitted details, I think this is all the low-level
+mechanism that is needed. It may be desirable to have different window
+parts have their own separate event maps, but it should be sufficient
+just to install or uninstall event maps on mouse-enter and mouse-leave
+events.
+
+----
+
+How event maps should be implemented internally:
+
+For typical window manager use, event maps will usually be sparse (in
+the sense that most keys will have no binding at all in a typical
+event map), but it is still desirable to have reasonably fast lookup
+even though a fair number of events may be bound. Thus, some sort of
+hash table may be more appropriate than either an association-style
+linked list or an exhaustive table.
+
+Event maps need to have an additional internal "installed" flag so
+that additional events bound in the currently installed event map
+result in appropriate grabs.
+
+----
+
+Events that should be supported:
+
+At minimum, key presses and mouse events should be supported. 
+
+* A key event would be specified by: a modifier mask and a keysym.
+There may be nice syntax for this, but those are the basic two
+components.
+
+* A mouse event would be specified by: a modifier mask, an event type
+(press, release, move, enter, leave, etc) and possibly a button number
+depending on the particular type.
+
+* There are also some special events that are basically hooks to
+initially configuring windows and being informed of their
+reconfiguration. I think new-window and window-reconfigure should
+mostly cover these (the current new-window-hint will probably be
+unified with new-window as soon as the window adding code gets
+rewritten), although the need for others may be discovered later. It
+is not clear wether making these be per-event-map is useful, but it is
+at least necessary to be able to delay their processing until an
+interactive operation completes, i.e. until its event map is replaced
+by another.
+
+* There should also be timer hooks (and maybe also idle hooks), but
+these almost certainly should not be linked to specific event
+maps. However, delaying them may again be desirable.
+
+
+----
+
+Multiple top-level event maps?:
+
+Currently, the fvwm code has, in effect, several top-level event maps,
+one for the root and one for each window decoration component. While
+it is possible to just install a new event map on each mouse enter or
+leave, that would probably be inefficient; there needs to be some
+better way to specify event maps attached to different window
+components. Perhaps there could be a mechanism for dispatching from
+one event map to another based on the window component to get a
+similar effect with similar efficiency.
+
+
