@@ -22,7 +22,10 @@ if [ ! -L scwm ]; then
 fi
 cd ..
 setopt extended_glob
-cp  **/lib*.so*~*lib/*(D) $libdir  # does not preserve symlinks, but who cares
+for i in **/lib*.so*~*lib/*(D); do
+   rm $libdir/${i:t}
+   cp $i $libdir  # does not preserve symlinks, but who cares
+done
 
 echo $SCWM_LOAD_PATH $GUILE_LOAD_PATH | grep -q $PWD  || 
   { print -u2 "Put `pwd`/$libdir in your SCWM_LOAD_PATH" }
