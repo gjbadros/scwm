@@ -24,7 +24,6 @@
 void 
 redraw_titlebars(ScwmDecor *fl, int extra_height)
 {
-  int x, w, y, h;
   ScwmWindow *psw = Scr.ScwmRoot.next;
 
   for ( ; psw; psw = psw->next) {

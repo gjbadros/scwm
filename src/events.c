@@ -982,6 +982,9 @@ HandleMapNotify()
       && (pswCurrent->boundary_width < 2)) {
     SetBorder(pswCurrent, False, True, True, pswCurrent->frame);
   }
+  SetupFrame(pswCurrent,FRAME_X(pswCurrent),FRAME_Y(pswCurrent),
+             FRAME_WIDTH(pswCurrent),FRAME_HEIGHT(pswCurrent),
+             WAS_MOVED,WAS_RESIZED);
   XSync(dpy, 0);
   XUngrabServer_withSemaphore(dpy);
   XFlush(dpy);
@@ -1732,7 +1735,6 @@ should not have to worry about this unless you know what it means. */
   Bool fPropagate = False;
   Bool fPress = True;
   Bool fRelease = True;
-  int iarg = 1;
   XKeyEvent event;
   ScwmWindow *psw;
   Window w;
@@ -1799,7 +1801,6 @@ this unless you know what it means. */
   Bool fPropagate = False;
   Bool fPress = True;
   Bool fRelease = True;
-  int iarg = 1;
   Window child;
   XButtonEvent event;
   int x = 0, y = 0, x_root = 0 , y_root = 0;
