@@ -177,6 +177,13 @@
     (set! gtk-toggle-close? close?)
     (gtk-container-add vbox vboxcn)
     (for-each (lambda (but) (gtk-container-add hbuttonbox but)) (list disable enable delete-all)) ;; close))
+    (for-each 
+     (lambda (but)
+       (gtk-signal-connect but "enter"
+			   (lambda () (draw-all-constraints)))
+       (gtk-signal-connect but "leave"
+			   (lambda () (undraw-all-constraints))))
+     (list enable disable))
     (gtk-signal-connect disable "clicked" 
 			(lambda () (disable-all-constraints) 
 				(if close? (gtk-widget-hide toplevel))))
