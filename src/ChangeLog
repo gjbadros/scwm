@@ -1,3 +1,23 @@
+Fri Oct 22 15:54:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandleUnmapNotify): Only give pointer-window focus after
+	an unmap of the focussed-window if the pointer-window is not click 
+	to focus.
+
+Fri Oct 22 15:46:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm_msg.h: Added SCWM_EVENT_DEBUG_MSGS define controlling new
+	DBUG_EVENT for better tracing of events.
+
+	* events.c, focus.c: Avoid giving focus to a window that already
+ 	has it (optimization, really).  Move the code that rearranges the
+ 	window list out of SetFocus() and put it into HandleFocusIn().
+  	use WXGetPointerChild() instead of a less-obvious XQueryPointer
+ 	call.  Added trace debugging code using new DBUG_EVENT.
+
+	* borders.c (SetBorderX): Be sure Scr.Focus (as well as
+	Scr.Hilite) is set to the window that gets highlighted.
+
 Fri Oct 22 09:18:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* add_window.c, borders.c, events.c, focus.c, scwm.c, shutdown.c,
