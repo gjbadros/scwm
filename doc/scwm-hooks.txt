@@ -159,7 +159,7 @@ Procedures in the hook are called with no arguments.
 [From scwm/virtual.c:75]
 
 
-error-hook (1 args)
+error-hook (5 args)
 - 
 Called on all kinds of errors and exceptions.
 Whenever an error or other uncaught throw occurs on any callback,

@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3368]
+[From scwm/window.c:3370]
 
 
 Fonts
@@ -266,7 +266,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 `reset-hook!', and `run-hook'. 
 
-[From scwm/callbacks.c:276]
+[From scwm/callbacks.c:221]
 
 
 Image Loaders
@@ -306,7 +306,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:818]
+[From scwm/callbacks.c:826]
 
 
 Key Specifier
@@ -375,6 +375,9 @@ file instead of ".scwmrc" or "system.scwmrc".</seg>
 instead of reading from ".scwmrc" or "system.scwmrc". Multiple -e and
 -f options may be specified on a single command line and in this case
 will be processed in the order in which they were specified.</seg>
+</seglistitem><seglistitem>
+
+<seg/-F or --document-formals/ <seg/document formal parameters of primitives./
 </seglistitem><seglistitem>
 
 <seg/-h or --help/ <seg/prints a usage message and exits./
@@ -461,7 +464,7 @@ Themes are still under development, but they are planned to
 affect window styles, menus, icons, backgrounds, and various
 global settings.
 
-[From scheme/themes.scm:35]
+[From scheme/themes.scm:36]
 
 
 Timer Hooks
@@ -474,7 +477,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From scwm/callbacks.c:673]
+[From scwm/callbacks.c:681]
 
 
 Viewports
@@ -519,11 +522,11 @@ for window styles.  For some of the below options you will
 need to use the appropriate module to make the options available. 
 The options include at least:
 
-auto-raise (window-style) from scheme/auto-raise.scm:136
-auto-raise-delay (window-style) from scheme/auto-raise.scm:137
-auto-raise-unfocus-delay (window-style) from scheme/auto-raise.scm:138
-auto-raise-focus-proc (window-style) from scheme/auto-raise.scm:140
-auto-raise-unfocus-proc (window-style) from scheme/auto-raise.scm:141
+auto-raise (window-style) from scheme/auto-raise.scm:138
+auto-raise-delay (window-style) from scheme/auto-raise.scm:139
+auto-raise-unfocus-delay (window-style) from scheme/auto-raise.scm:140
+auto-raise-focus-proc (window-style) from scheme/auto-raise.scm:142
+auto-raise-unfocus-proc (window-style) from scheme/auto-raise.scm:143
 hover-focus-delay (window-style) from scheme/hover-focus.scm:74
 hover-focus (window-style) from scheme/hover-focus.scm:96
 border-width (window-style) from scheme/style.scm:197
@@ -569,10 +572,10 @@ start-lowered (boolean-style) from scheme/style.scm:277
 start-window-shaded (boolean-style) from scheme/style.scm:278
 other-proc (window-style) from scheme/style.scm:279
 other-hint-proc (window-hint) from scheme/style.scm:281
-use-theme (window-style) from scheme/themes.scm:47
-winlist-skip (boolean-style) from scheme/winlist.scm:112
-circulate-skip (boolean-style) from scheme/winlist.scm:304
-circulate-skip-icon (boolean-style) from scheme/winlist.scm:305
+use-theme (window-style) from scheme/themes.scm:48
+winlist-skip (boolean-style) from scheme/winlist.scm:113
+circulate-skip (boolean-style) from scheme/winlist.scm:307
+circulate-skip-icon (boolean-style) from scheme/winlist.scm:308
 start-maximized (window-style) from scheme/winops.scm:188
 
 [From scwm/face.c:542]
@@ -599,7 +602,7 @@ often, these names are in fact X atoms.
 New X atoms can be created, or old ones retrieved simply by specifying
 the string the atom stands for. An X atom can also be converted back to a
 string. Scwm provides primitives for these actions. 
-[From scwm/xproperty.c:343]
+[From scwm/xproperty.c:365]
 
 
 X Properties
