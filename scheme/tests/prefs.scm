@@ -4,6 +4,11 @@
 	     (app scwm primopts)
 	     (app scwm preferences))
 
+
+(popup-menu (scwm-options-menu) #t)
+
+(scwm-options-dialog)
+
 scwm-options
 
 (scwm-option-get *edge-y-scroll*)
@@ -19,7 +24,6 @@ scwm-options
 (gui-set '*auto-raise*)
 (gui-set '*theme-path*)
 
-;; (popup-menu (scwm-options-menu) #t)
 ;; *auto-raise*
 ;; *edge-y-scroll*
 ;; *theme-path*
