@@ -128,7 +128,7 @@ respectively. The default is 'restack-only."
 			 (ignore-default-exceptions #f)
 			 (start-pos '(0 0)) 
 			 (end-pos (display-size)) (resize 'always)
-			 (restack #t)
+			 (raise 'restack-only)
 			 (max-windows #f)
 			 (order 'horizontal))
   "Tile the windows on the specified desk.
@@ -158,7 +158,7 @@ control the tiling options as for `tile-windows'."
 				 (= (window-title-height w) 0))))
 		     except)
     #:by-stacking by-stacking #:by-focus by-focus #:reverse reverse)
-   #:start-pos start-pos #:end-pos end-pos #:restack restack 
+   #:start-pos start-pos #:end-pos end-pos #:raise raise 
    #:resize resize #:max-windows max-windows #:order order))
 
 
