@@ -1,0 +1,11 @@
+--- libtool	Sat Oct 10 13:11:32 1998
++++ libtool.c++	Sat Oct 10 13:19:48 1998
+@@ -139,7 +139,7 @@
+ finish_eval=""
+ 
+ # Take the output of nm and produce a listing of raw symbols and C names.
+-global_symbol_pipe="sed -n -e 's/^.* [ABCDGISTUW] \\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 \\1/p'"
++global_symbol_pipe="grep -v __throw_type_match_rtti | sed -n -e 's/^.* [ABCDGISTUW] \\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 \\1/p'"
+ 
+ # This is the shared library runtime path variable.
+ runpath_var=LD_RUN_PATH
