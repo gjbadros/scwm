@@ -319,12 +319,17 @@ SzNewForModMaskKeyCode(int modmask, KeyCode code)
     return sz;
   } else {
     const char *szKeysym = SzKeysymForKeyCode(code,0);
-    char *szFull = NEWC(strlen(sz)+strlen(szKeysym)+1,char);
-    *szFull = 0;
-    strcat(szFull,sz);
-    strcat(szFull,szKeysym);
-    FREE(sz);
-    return szFull;
+    if (szKeysym) {
+      char *szFull = NEWC(strlen(sz)+strlen(szKeysym)+1,char);
+      *szFull = 0;
+      strcat(szFull,sz);
+      strcat(szFull,szKeysym);
+      FREE(sz);
+      return szFull;
+    } else {
+      /* error looking up the keysym */
+      return NULL;
+    }
   }
 }
 
@@ -1337,20 +1342,22 @@ physical button acts as logical button 1, and the leftmost acts as button 3. */
 SCWM_PROC (keymask_keycode_to_string, "keymask-keycode->string", 2, 0, 0,
            (SCM keymask, SCM keycode))
      /** Return a string representing the key press with mask KEYMASK, code KEYCODE.
-E.g., (keymask-keycode->string 4 44) => "C-j". */
+E.g., (keymask-keycode->string 4 44) => "C-j". Returns #f on an error. */
 #define FUNC_NAME s_keymask_keycode_to_string
 {
   int mask;
+  char *sz;
   KeyCode code;
   VALIDATE_ARG_INT_RANGE_COPY(1,keymask,0,255,mask);
   VALIDATE_ARG_INT_COPY(2,keycode,code);
   
-  { /* scope */
-    char *sz = SzNewForModMaskKeyCode(mask,code);
+  sz = SzNewForModMaskKeyCode(mask,code);
+  if (sz) {
     SCM answer = gh_str02scm(sz);
     FREE(sz);
     return answer;
   }
+  return SCM_BOOL_F;
 }
 #undef FUNC_NAME
 
