@@ -10,7 +10,7 @@
   :use-module (app scwm base)
   :use-module (app scwm optargs))
 
-
+(provide 'scwm-message-window)
 ;;; positioning a message window
 
 (define-public (gravity->alignments gravity)
@@ -211,6 +211,9 @@ background color."
   (message-window-set-colors! msgwin fg bg))
 
 (define-public (make-message-window-clone-default str)
+  "Return a new message window that has the default style.
+This is done by cloning the style (see `message-window-style') of
+the variable `default-message-window'."
   (let ((answer (make-message-window str)))
     (message-window-copy-style! answer default-message-window)
     answer))

@@ -62,6 +62,8 @@ file. If the file is found, the full pathname to it is returned; if not,
 
 
 (define-public (path-list->string-with-colons l)
+  "Convert L, a list of string directory names, to a single colon-separated string.
+Returns that string."
   (define (insert-colons l)
     (cond ((not (pair? l)) '())
 	  ((null? (cdr l)) l)
@@ -79,4 +81,6 @@ file. If the file is found, the full pathname to it is returned; if not,
 ;; (insert-colons '("foo"))
 ;; (insert-colons '("foo" "bar"))
 (define-public (string-with-colons->path-list s)
+  "Convert S, a colon-separated directory pathlist, into a list of directory strings.
+Returns that list."
   (separate-fields-discarding-char #\: s list))

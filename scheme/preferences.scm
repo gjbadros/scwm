@@ -30,6 +30,7 @@
   :use-module (app scwm prompt-range)
   )
 
+;; (use-modules (gtk gtk))
 ;; (use-modules (app scwm preferences))
 ;; (use-modules (app scwm prompt-string))
 
@@ -185,22 +186,37 @@
 ;; (use-modules (app scwm defoption))
 ;; (use-modules (app scwm primopts))
 ;; (scwm-options-dialog)
+;; (define tooltip (gtk-tooltips-new))
 (define-public (scwm-options-dialog)
   "Popup a scwm options dialog box.
 NOTE: Not quite functional, but I'm outta time!
 GJB:FIXME::."
   (let* ((toplevel (gtk-window-new 'dialog))
+	 (tooltip (gtk-tooltips-new))
 	 (vbox (gtk-vbox-new #f 10))
 	 (widgets-and-applyers
 	  (map (lambda (s) 
-		 (let ((widget-and-getter (option-widget-and-getter s)))
-		   (cons (car widget-and-getter)
+		 (let* ((widget-and-getter (option-widget-and-getter s))
+			(widget (car widget-and-getter)))
+		   ;; GJB:FIXME:: this doesn't work -- any tooltip examples out there?
+		   ;; what can one attach a tooltip to?
+		   (gtk-tooltips-set-tip tooltip widget (scwm-option-documentation s) "")
+		   (list widget
 			 (lambda () 
 			   (scwm-option-symset! 
-			    s ((cadr widget-and-getter)))))))
+			    s ((cadr widget-and-getter))))
+			 s)))
 	       scwm-options))
-	 (widgets (map car widgets-and-applyers))
-	 (applyers (map cdr widgets-and-applyers))
+	 (widgets (map (lambda (x) (let ((hbox (car x))
+					 (helpbut (gtk-button-new-with-label "Help"))
+					 (sym (caddr x)))
+				     (gtk-signal-connect helpbut "pressed"
+							 (lambda () 
+							   (popup-docs-for sym)))
+				     (gtk-widget-show helpbut)
+				     (gtk-box-pack-start hbox helpbut #f #f)
+				     hbox)) widgets-and-applyers))
+	 (applyers (map cadr widgets-and-applyers))
 	 (apply-action (lambda ()
 		  (for-each (lambda (a) (a)) applyers)))
 	 (hbox (gtk-hbox-new 0 0))
@@ -215,6 +231,7 @@ GJB:FIXME::."
 	 (list applybut okbut cancelbut))
     (gtk-widget-show hbox)
     (gtk-container-add toplevel vbox)
+    (gtk-tooltips-enable tooltip)
     (gtk-box-pack-start vbox hbox #t #t)
     (gtk-widget-show vbox)
     (let ((pp (pointer-position)))
@@ -225,13 +242,16 @@ GJB:FIXME::."
     (gtk-signal-connect okbut "pressed" 
 			(lambda () 
 			  (apply-action)
+			  (message-window-hide! mw-docs)
 			  (gtk-widget-destroy toplevel)))
     (gtk-signal-connect okbut "pressed" 
 			(lambda () 
+			  (message-window-hide! mw-docs)
 			  (gtk-widget-destroy toplevel)))
 ;;			  (proc (getter))))
     (gtk-signal-connect cancelbut "pressed"
 			(lambda ()
+			  (message-window-hide! mw-docs)
 			  (gtk-widget-destroy toplevel)))
     (lambda ()
       (gtk-widget-hide toplevel)

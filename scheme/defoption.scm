@@ -80,12 +80,14 @@ DOCSTRING documents the option.  REST includes keyword arguments including:
 !#
 
 (define*-public (define-scwm-option-proc var sym docstring default #&key
-	  (type 'integer)
-	  (range #f)
-	  (favorites #f)
-	  (group #f)
-	  (setter #f)
-	  (getter #f))
+		  (type 'integer)
+		  (range #f)
+		  (favorites #f)
+		  (group #f)
+		  (setter #f)
+		  (getter #f))
+  "Helper procedure for `define-scwm-option'.
+See `define-scwm-option'."
   (set-object-property! sym 'doc docstring)
   (set-object-property! sym 'name (symbol->string sym))
   (if setter (set-object-property! sym 'setter setter))

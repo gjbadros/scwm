@@ -351,6 +351,11 @@ will be returned."
 	(else (cons (car l) (list-without-elem (cdr l) e)))))
 
 (define-public (select-window-group)
+  "Prompt for multiple windows and return the list of selected windows.
+Windows are highlighted (see `flash-window') as they are selected.  The
+returned list can be used to un-highlight the windows:
+ (let ((winlist (select-window-group)))
+   (for-each (lambda (w) (unflash-window w)) winlist))"
   (do ((w #f)
        (wlist '())
        (cwin-selected 0)
@@ -373,10 +378,14 @@ will be returned."
 	      (set! cwin-selected (+ cwin-selected 1))))
 	(set! done #t))))
 ;; (define wg (select-window-group))
-;; (for-each (lambda (w) (unflash-window w)) wg)
+;; (object-properties (select-window-interactively))
+;; (for-each (lambda (w) (unflash-window w)) (list-all-windows))
 ;; (unflash-window)
 
 (define-public (select-window-interactively-and-highlight)
+  "Select a single window interactively and highlight it.
+The selected window is returned and will remain highlighted
+until `unflash-window' is called on that window."
   (let ((w (select-window-interactively)))
     (flash-window w #:unflash-delay #f)
     w))
@@ -461,15 +470,26 @@ color.  See `unflash-window'."
       (add-timer-hook! (sec->usec unflash-delay)
 		       (lambda ()
 			 (unflash-window win)))))
+;; (flash-window (get-window) #:unflash-delay #f)
+;; (unflash-window)
+;; (object-properties (get-window))
+;; (get-window-highlight-colors)
+;; (set-window-highlight-background! "navyblue")
+;; (set-window-background! "grey75")
+;; (set-window-highlight-background! (object-property win 'old-hi-bg) win)
+;; (color? (object-property win 'old-hi-bg))
+;; (define win (get-window))
 
 
 (define*-public (unflash-window #&optional (win (get-window)))
   "Revert WIN's titlebar and boundary color to state before a `flash-window'."
   (let ((old-bg (object-property win 'old-bg))
 	(old-hi-bg (object-property win 'old-hi-bg)))
-    (set-window-background! old-bg win)
+    ;; set-window-background! only takes colors
+    (if (color? old-bg)
+	(set-window-background! old-bg win))
+    ;; set-window-highlight-background! can take #f, too, so just do it
     (set-window-highlight-background! old-hi-bg win)))
-
 
 (define-public (make-string-usable-for-resource-key string)
   "Return a converted string from STRING that can be used as an X resource key.
@@ -641,7 +661,10 @@ It defaults to `netscape-new-window'."
    completion))
 
 (define*-public (netscape-goto-cut-buffer-url 
-                #&optional (new netscape-new-window))
+		 #&optional (new netscape-new-window))
+  "Goto the url that is held in the X11 cut buffer.
+See `X-cut-buffer' and `netscape-goto-url'.  NEW can be #f to
+not open a new netscape frame."
   (netscape-goto-url (X-cut-buffer-string) display-message-briefly new))
 
 

@@ -610,7 +610,7 @@ a new message window."
 			     (begin 
 			       (message-window-set-message! message-window msg)
 			       message-window))
-			(make-message-window msg)))
+			 (make-message-window msg)))
 	    (answer #f))
 	(message-window-show! msgwin)
 	(set! answer (select-window-interactively-no-message))
