@@ -1,3 +1,31 @@
+Wed Jul 29 12:24:49 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* util.c: Use idiomatic for loop for traversing ScwmWindow list,
+	  fixed a bug and some redundant code.
+
+	* font.c: Use scm_permanent_object, not scm_protect_object for
+	  str_fixed, and others.
+
+	* decor.c: Use UNSET_SCM instead of testing for equality with
+	  SCM_UNDEFINED so #f counts as undef'd also.
+
+Wed Jul 29 11:32:34 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm-constraints.hpp, scwm-constraints.cc, scwm.c, screen.h:
+	  Added pssci field of struct ScreenInfo and initialize it to NULL
+
+	* constraint-primitives.cc: Added accessors for screen-clv-vx,
+	  screen-clv-vy.
+
+	* borders.c, add_window.c: Remove the setting of title_height in
+	  SetupFrame -- do it in AddWindow instead. 
+
+	* makefile.cassowary: First go at a scwm_cl.static target.  Fails
+	  because other libraries aren't statically linked.
+
+	* scwm-screen-ci.hpp: Added, for ClVariables attached to scruct
+	  ScreenInfo.
+
 Mon Jul 27 20:45:24 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* {move,resize,window,scwm-constraints}.c: Got resizing and moving 
