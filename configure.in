@@ -186,7 +186,7 @@ SCWM_ARG_PATH(cassowary,
 	"no")  cas_lib_path="-L${withval} -R ${withval}" ;;
 	*)     cas_lib_path="-L${withval}" ;;
 	esac
-	CASSOWARY_LIBS="$cas_lib_path ${withval}/../guile/cassowary_scm.o -lcassowary-scwm"
+	CASSOWARY_LIBS="$cas_lib_path ${withval}/../guile/cassowary_scm.o -lcassowary-scwm -lstdc++"
 	CASSOWARY_OBJECTS='$(cassowary_objs)'
 	AC_MSG_RESULT("${withval}")
 ])
