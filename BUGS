@@ -1,3 +1,16 @@
+There seems to be a bug in window size (or allowable size) 
+communication between scwm & applications. 
+ 
+For example, bring up a netscape window.  Maximize its height.  It 
+very nicely stretches from the top of the window to the bottom.  Now 
+start giving it lots of Alt-Ns to pop up new netscape windows. 
+Netscape always starts up new windows the same size as the netscape 
+window last created or adjusted in size.  So, all the windows being 
+poped up should be the same size.  However, each window poped up ends 
+up one pixel larger in height. 
+
+--Harvey Stein
+-------
 Backtrace:
  0* [#<procedure (win)> #<window 109051918: "img2.gif (/home/wharvey/tmp)">]
  1* [apply-hint-style (#(#<procedure always? #> # #) #(#<procedure always? #> # 

@@ -1,3 +1,13 @@
+Wed Mar 17 10:45:50 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* virtual.c: Handle the EDGE_NONE case in notify_edge_enter,
+	notify_edge_leave.   Remove unused vars in HandlePaging.
+
+Wed Mar 17 10:45:16 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.h: Added list_stacking_order prototype as this is used by 
+	the rebordering code.
+
 Tue Mar 16 16:38:55 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* constraint-primitives.cc, scwm-constraints.cc,

@@ -1,3 +1,14 @@
+Wed Mar 17 11:17:38 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* acinclude.m4: Do not call AC_PATH_PROG macro for gtk-config if
+	its path has already been decided (through use, e.g., of the
+	--with-gtk-prefix option).  This lets me choose between gtk-1.2.0,
+	and gtk-1.0.6 at configure time.
+
+Wed Mar 17 10:37:20 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Fix spelling mistake, added --enable-warnings option.
+
 1999-02-12  Greg J Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added -lstdc++ to list for link line for

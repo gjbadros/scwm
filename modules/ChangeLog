@@ -1,3 +1,15 @@
+Wed Mar 17 10:47:52 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* c-animation/c-animation.c: Added includes of decorations.h,
+	resize.h to get some prototypes that were missing.
+
+	* pie-menus/draw-pie-menu.c: Initialize some vars.
+
+	* scwmgtkhelper/scwmgtkhelper.c (restore_scwm_handlers): Return
+	SCM_UNSPECIFIED (was missing a return value previously).
+
+	* xlib-drawing/drawing.c: Initialize a var that was warned about.
+
 Wed Mar 10 20:02:11 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmgtkhelper/Makefile.am: Put @GTK_CFLAGS@ before @CFLAGS@ in
