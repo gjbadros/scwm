@@ -223,7 +223,7 @@
 ;; (color-properties (make-color "#cc88ff"))
 
 (menu-style #:fg "black" #:bg "gray80" #:stipple "grey35" 
-	    #:font menu-font #:mwm #f)
+	    #:font menu-font)
 
 (set-message-window-attributes! (make-font "*helvetica*medium-r*18*")
 				"black" "gray80")
