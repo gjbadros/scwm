@@ -66,11 +66,10 @@ EXTRA_scwm_SOURCES = $(cassowary_srcs) $(session_manager_srcs)
 noinst_HEADERS = Grab.h ICCCM.h add_window.h binding.h borders.h \
 callbacks.h color.h colormaps.h colors.h complex.h decor.h \
 decorations.h deskpage.h drawmenu.h errors.h events.h face.h focus.h \
-font.h getopt.h guile-compat.h log-usage.h icons.h image.h menuitem.h \
+font.h getopt.h guile-compat.h log-usage.h icons.h image.h menu.h menuitem.h \
 miscprocs.h module-interface.h module-types.h move.h mwmcom.h \
 placement.h resize.h screen.h scwm.h \
-scwm-constraints.h constraint-primitives.h \
-menu.h shutdown.h string_token.h syscompat.h system.h \
+scwm-snarf.h shutdown.h string_token.h syscompat.h system.h \
 util.h virtual.h window.h xmisc.h
 
 noinst_HEADERS += $(cassowary_headers) $(session_manager_headers)
