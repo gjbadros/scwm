@@ -20,8 +20,16 @@
 
 ;;; FIXMS: disgusting hack for now to get these in the root module.
 
-(define-public opaque-move-percent 50)
-(define-public opaque-resize-percent 35)
+
+;;;**USER-VAR
+(define-public opaque-move-percent 
+;;  "Percent of display area below which windows are move opaquely."
+  50)
+
+;;;**USER-VAR
+(define-public opaque-resize-percent
+;;  "Percent of display area below which windows are resized opaquely."
+  35)
 
 
 (define-module (app scwm winops)
