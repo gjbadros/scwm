@@ -1,3 +1,13 @@
+1998-11-30  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* move.c (moveLoop): Restore original position when bailing out.
+
+	* resize.c (InteractiveResize): Restore original size/position when
+	bailing out.
+
+	* add_window.c (AddWindow): psw->fTitle may already be 0 through
+	SM, handle that.
+
 Tue Nov 24 08:17:06 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (s_get_window_context): Add FIXME note regarding the
