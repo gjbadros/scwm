@@ -321,15 +321,13 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
     scm_wrong_type_arg(FUNC_NAME, 1, decor);
   }
 
-
   old_height = psw->fl->TitleHeight;
 
   psw->fl = fl;
 
-  extra_height = (psw->fTitle) ?
-    (old_height - psw->fl->TitleHeight) : 0;
+  extra_height = old_height - psw->fl->TitleHeight;
 
-  ResizeTo(psw, FRAME_WIDTH(psw), FRAME_HEIGHT(psw) - extra_height);
+  set_window_internal_title_height(psw, psw->title_height + extra_height);
   SetBorder(psw, Scr.Hilite == psw, True, True, None);
 
   return SCM_UNSPECIFIED;

@@ -1,3 +1,14 @@
+1998-09-23  Todd Larason  <jtl@teeny.molehill.org>
+
+	* window.c (s_set_border_width_x): Save old gravity adjustment
+	before changing border width; the resize adjustment wasn't taking
+	gravity into account
+
+	* decor.c (s_set_window_decor_x): use
+	set_window_internal_title_height to resize titlebar, not ResizeTo; 
+	this fixes the shrinking-xterm-on-restart problem for me, and
+	looks like the right thing to do
+
 Wed Sep 23 11:03:41 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: (GrabEm) only try the XGrabPointer 5 times instead of

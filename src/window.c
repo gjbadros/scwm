@@ -3056,15 +3056,15 @@ WIN defaults to the window context in the usual way if not specified. */
   oldw = psw->boundary_width;
   oldxw = psw->xboundary_width;
 
+  oldxadj = GRAV_X_ADJUSTMENT(psw);
+  oldyadj = GRAV_Y_ADJUSTMENT(psw);
+
 #define NO_SIDE_DECORATIONS_P(psw) \
   SCM_NFALSEP( scm_object_property((psw)->schwin, gh_symbol2scm("no-side-decorations")))
 
   psw->boundary_width = cpix;
   if (!NO_SIDE_DECORATIONS_P(psw))
     psw->xboundary_width = psw->boundary_width;
-
-  oldxadj = GRAV_X_ADJUSTMENT(psw);
-  oldyadj = GRAV_Y_ADJUSTMENT(psw);
 
   MoveResizeTo(psw, 
 	       FRAME_X(psw) + GRAV_X_ADJUSTMENT(psw) - oldxadj,
