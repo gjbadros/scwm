@@ -1516,20 +1516,39 @@ fill_x_button_event(XButtonEvent *evt, int type, int button, int modifier,
 		    int x, int y, int x_root, int y_root, 
 		    Window child, Window sub_window)
 {
-    evt -> type = type;
-    evt -> display = dpy;
-    evt -> window = child;
-    evt -> subwindow = sub_window;
-    evt -> root = Scr.Root;
-    evt -> time = lastTimestamp + (type == ButtonPress? 0 : 5);
-    evt -> x = x;
-    evt -> y = y;
-    evt -> x_root = x_root;
-    evt -> y_root = y_root;
-    evt -> same_screen = 1;
-    evt -> button = button;
-    evt -> state = modifier;
+  evt->type = type;
+  evt->display = dpy;
+  evt->window = child;
+  evt->subwindow = sub_window;
+  evt->root = Scr.Root;
+  evt->time = lastTimestamp + (type == ButtonPress? 0 : 5);
+  evt->x = x;
+  evt->y = y;
+  evt->x_root = x_root;
+  evt->y_root = y_root;
+  evt->same_screen = 1;
+  evt->button = button;
+  evt->state = modifier;
 }
+
+void
+fill_x_keypress_event(XKeyEvent *evt, int type, KeySym keysym, int modifier, 
+		      Window child)
+{
+  int keycode = 0;
+  keycode = XKeysymToKeycode(dpy, keysym);
+
+  evt->type = type;
+  evt->display = dpy;
+  evt->window = child;
+  evt->subwindow = child;
+  evt->root = Scr.Root;
+  evt->time = lastTimestamp + (type == ButtonPress? 0 : 5);
+  evt->same_screen = 1;
+  evt->keycode = keycode;
+  evt->state = modifier;
+}
+
 
 Window
 WindowGettingButtonEvent(Window w, int x, int y)
@@ -1537,6 +1556,7 @@ WindowGettingButtonEvent(Window w, int x, int y)
     int x2, y2;
     Window child, w2 = w;
     XWindowAttributes wa;
+    int c = 0;
 
  find_window:
     XTranslateCoordinates(dpy, w, w2, x, y, &x2, &y2, &child);
@@ -1545,6 +1565,11 @@ WindowGettingButtonEvent(Window w, int x, int y)
 	y = y2;
 	w = w2;
 	w2 = child;
+	c++;
+	if (c>1000) {
+	  scwm_msg(ERR,__FUNCTION__,"Infinite loop");
+	  goto find_listener;
+	}
 	goto find_window;
     }
     x = x2;
@@ -1568,6 +1593,7 @@ WindowGettingButtonEvent(Window w, int x, int y)
 }
 
 /* Inspired by GWM 1.8c --gjb */
+/* FIXGJB: use button, not button + modifier */
 SCM
 send_button_press(SCM button, SCM modifier, SCM win,
 		  SCM button_press_p, SCM button_release_p,
@@ -1580,9 +1606,8 @@ send_button_press(SCM button, SCM modifier, SCM win,
   Bool fRelease = TRUE;
   int iarg = 1;
   Window child;
-  Window pointer_win;
   XButtonEvent event;
-  int x, y, x_root, y_root, x2, y2;
+  int x, y, x_root = 0 , y_root = 0, x2, y2;
   ScwmWindow *sw;
   Window w;
 
@@ -1611,29 +1636,87 @@ send_button_press(SCM button, SCM modifier, SCM win,
   }
   bnum = gh_scm2int(button);
   mod_mask = gh_scm2int(modifier);
+
+/*
   XQueryPointer( dpy, w, &JunkRoot, &pointer_win,
                  &x_root,&y_root,&x, &y, &JunkMask);
+		 */
 
-  child = WindowGettingButtonEvent(pointer_win,x,y);
+  child = WindowGettingButtonEvent(w,x,y);
   x2 = x; y2 = y;
 
-  XTranslateCoordinates(dpy, pointer_win, child, x2, y2,
-			  &x, &y, &JunkChild);
   if (fPress) {
     fill_x_button_event(&event, ButtonPress, bnum, mod_mask, 
 			x, y, x_root, y_root, child, 0);
-    XSendEvent(dpy, PointerWindow, fPropagate, ButtonPressMask, 
+    XSendEvent(dpy, child, fPropagate, ButtonPressMask, 
 	       (XEvent *) &event);
     DBUG(__FUNCTION__,"New Sent button press of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
   }
   if (fRelease) {
     fill_x_button_event(&event, ButtonRelease, bnum, mod_mask | (1 << (bnum+7)),
 			x, y, x_root, y_root, child, 0);
-    XSendEvent(dpy, PointerWindow, fPropagate, ButtonReleaseMask, 
+    /* FIXGJB: was PointerWindow before -- why did that work? */
+    XSendEvent(dpy, child, fPropagate, ButtonReleaseMask, 
 	       (XEvent *) &event);
     DBUG(__FUNCTION__,"New Sent button release of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
   }
+  SCM_REALLOW_INTS;
   return SCM_UNDEFINED;
 }
 
+SCM
+send_key_press(SCM key, SCM win,
+	       SCM button_press_p, SCM button_release_p,
+	       SCM propagate_p)
+{
+  KeySym keysym;
+  Bool fOkay;
+  int mod_mask;
+  Bool fPropagate = FALSE;
+  Bool fPress = TRUE;
+  Bool fRelease = TRUE;
+  int iarg = 1;
+  XKeyEvent event;
+  ScwmWindow *sw;
+  Window w;
 
+  SCM_REDEFER_INTS;
+
+  VALIDATEN(win, 2, __FUNCTION__);
+  sw = SCWMWINDOW(win);
+  w = sw->w;
+
+  if (!gh_string_p(key)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(__FUNCTION__, iarg++, key);
+  }
+  if (button_press_p != SCM_UNDEFINED) {
+    fPress = gh_scm2bool(button_press_p);
+  }
+  if (button_release_p != SCM_UNDEFINED) {
+    fRelease = gh_scm2bool(button_release_p);
+  }
+  if (propagate_p != SCM_UNDEFINED) {
+    fPropagate = gh_scm2bool(propagate_p);
+  }
+
+  fOkay = FKeyToKeysymModifiers(key,&keysym,&mod_mask);
+  if (fOkay) {
+    if (fPress) {
+      fill_x_keypress_event(&event, KeyPress, keysym, mod_mask, w);
+      XSendEvent(dpy, w, fPropagate, KeyPressMask, 
+		 (XEvent *) &event);
+      DBUG(__FUNCTION__,"New Sent keypress of %s at %d, %d; time = %ld\n",szKeysym,x,y,lastTimestamp);
+    }
+    if (fRelease) {
+      fill_x_keypress_event(&event, KeyRelease, keysym, mod_mask, w);
+      XSendEvent(dpy, w, fPropagate, KeyReleaseMask, 
+		 (XEvent *) &event);
+      DBUG(__FUNCTION__,"New Sent keyrelease of %s at %d, %d; time = %ld\n",szKeysym,x,y,lastTimestamp);
+    }
+  } else {
+    scwm_msg(WARN,__FUNCTION__,"Bad keysym");
+  }
+  SCM_REALLOW_INTS;
+  return SCM_UNDEFINED;
+}
