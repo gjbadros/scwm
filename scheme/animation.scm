@@ -60,8 +60,7 @@ is #f."
 		y)))
     (animated-move-window x y win move-pointer-too?)))
 
-
-;; (animated-move-to -1 'y)
-;; (animated-move-to 0 'y)
-;; (animated-move-to 'x -1 (current-window-with-pointer))
+;; (animated-move-window 0 0 (current-window-with-pointer))
+;; (animated-move-to -1 #f)
+;; (animated-move-to 0 #f)
 ;; (animated-move-to #f -1 (current-window-with-pointer))
