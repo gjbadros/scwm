@@ -1,3 +1,16 @@
+Fri Mar 19 14:34:11 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Added -S, -F options for specifying "skip all proc
+	chapters" and "Skip all not-starting-with F procs" -- these are
+	useful for debugging as generating HTML on the whole of scwm.sgml
+	is *really* slow.  Change -d option to take a URL prefix, not a
+	directory, and set it to use cvsweb.new's ~checkout~ cgi-bin
+	script by default.  Reorder the chapters so the procedure
+	documentation is at the end, not at the beginning (people were
+	missing the fact that there's more than just the reference manual
+	[even if the rest isn't yet very good]).  Add a separate link to
+	the CVS log of the files in the "Implementation Notes" section.
+
 1999-02-11  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Added -P argument for specifying a prefix other than

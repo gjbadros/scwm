@@ -1,3 +1,16 @@
+Fri Mar 19 15:09:18 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* binding.c: Make context_strings global so it can be closer to
+	its parallel array binding_contexts, and make frame-corners and
+	frame-sides the preferred symbol names for those contexts
+	('corners and 'border are no longer usable, but few, if any, were
+	using them).  Added some docs to the Event Contexts concept, but
+	they are horribly incomplete.
+
+Fri Mar 19 08:56:12 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* add_window.c: Updated docs for the hooks.
+
 Thu Mar 18 10:28:04 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleMapRequestKeepRaised): Restore pswCurrent's old
@@ -4317,7 +4330,7 @@ Wed Mar 25 22:42:42 1998  Greg J. Badros  <gjb@cs.washington.edu>
 	flags, and also *really* cleans up all kinds of expressions using
 	the flags. Also, added SCM_BOOL_FromBool(bool f) to convert a C
 	bool into a SCM_BOOL (instead of idiomatic ternary operator
-	expression). Farious other less severe clean ups.
+	expression). Various other less severe clean ups.
 
 	This still may not be the best & final way to do things, but it's
  	far closer, and makes a lot of the boolean guards testing window

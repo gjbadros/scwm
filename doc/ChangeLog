@@ -1,3 +1,15 @@
+Fri Mar 19 14:33:32 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Do not pass the -d <scwmdir> flag to running
+	scwmdoc-- use the canonical filename address now built into
+	scwmdoc to do checkouts via cvsweb.new.
+
+Thu Mar 18 19:42:56 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.1: Updated to point at current web pages, note clearly that 
+	the man page is not the definitive reference, updated date,
+	Maciej's email.
+
 Sat Jan 23 16:26:38 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added $$SCWMDOC_ARGS to invocation of scwmdoc so
