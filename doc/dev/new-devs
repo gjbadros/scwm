@@ -1,0 +1,30 @@
+Notes about documentation, checking in:
+
+o the first line of a doc string should be a brief synopsis sentence.  This
+is in keeping with Emacs tradition, and the synopses are used in overviews
+and treated slightly specially in places.
+
+o be sure to mention all formal argument names in the doc string;  in
+particular, running "rm -f scwm.sgml; make scwm.sgml" from doc/ will
+verify that this has been done (tries to ensure reasonably complete 
+documentation -- minimally users need to know what each formal is supposed
+to contain... those descriptions usually come after the synopsis line).
+
+o when you do check in, be sure to add a change log entry.  Emacs has
+add-change-log-entry which works great if you use it from the file and
+function in which you made the change.  If you're not using pcl-cvs mode 
+to do your CVS updates, consider it -- it works pretty well, and is a
+lot nicer than the command line or even the vc-mode keybindings.
+
+
+Other files to read:
+
+* common-primitive-mistakes
+
+* guile-gc-notes
+
+* hungarian-tags
+
+
+
+--09/16/98 gjb
