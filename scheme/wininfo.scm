@@ -83,21 +83,36 @@ X2,Y2 and W2 x H2 are the position and size of the second rectangle."
 (define-public (windows-overlap? win win2)
   "Return #t if WIN and WIN2 overlap at all, else #f.
 I.e., returns #t if the intersection of the windows' areas
-is non-empty."
-  (and
-   (= (window-desk win) (window-desk win2))
-   (apply rectangle-overlap?
-	  (append (window-virtual-position win) (window-frame-size win)
-		  (window-virtual-position win2) (window-frame-size win2)))))
+is non-empty.  If either WIN or WIN2 is iconified this
+will definitely return #f.  Also will return #f if WIN and
+WIN2 are bound to the same window."
+  (->bool
+   (and
+    (= (window-desk win) (window-desk win2))
+    (not (iconified-window? win)) (not (iconified-window? win2))
+    (not (eq? win win2))
+    (apply rectangle-overlap?
+	   (append (window-virtual-position win) (window-frame-size win)
+		   (window-virtual-position win2) (window-frame-size win2))))))
 
-;;; MSFIX: Why is this separate instead of having the above
-;;; have optional arguments.
-
-;;; The main point is the currying, not the optional arguments. - MS 10/7/98
 (define*-public ((window-overlaps-window? #&optional (win (get-window)))
 		 #&optional (win2 (get-window)))
-  "Return a function which takes WIN2 and returns #t if it overlaps WIN."
+  "Return a function that takes WIN2 and returns #t if it overlaps WIN."
   (windows-overlap? win win2))
+
+(define-public (list-overlapping-windows win)
+  "Return a list of windows that overlap WIN.
+Iconified windows that would overlap when deiconified
+are not included.  See also `windows-overlap?'."
+  (list-windows #:only (window-overlaps-window? win)))
+
+(define-public (list-non-overlapping-windows win)
+  "Return a list of windows that do not overlap WIN.
+Iconified windows are ignored. See also `windows-overlap?'."
+  (list-windows #:only (lambda (w) (and (not (windows-overlap? win w)) 
+					(not (eq? w win))
+					(not (iconified-window? w))))))
+
 
 (define*-public (visible? #&optional (win (get-window)))
   "Return #t if any of WIN is currently potentially visible, else #f.
