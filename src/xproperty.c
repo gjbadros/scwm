@@ -104,7 +104,7 @@ SCWM_PROC(X_property_set_x, "X-property-set!", 3, 3, 0,
 	  (SCM win, SCM name, SCM value, SCM type, SCM format, SCM action))
      /** Set X property NAME on window WIN to VALUE.
 WIN is the window to set the X property on, or 'root-window.
-NAME and TYPE are strings. TYPE defaults to "STRING".
+NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to "STRING".
 FORMAT may be one of the integers 8, 16, and 32, defining the element size
 of the VALUE. It is 8 by default.
 VALUE may be a string, if FORMAT is 8, and may always be a vector
@@ -127,9 +127,17 @@ value. */
   } else {
     scm_wrong_type_arg(FUNC_NAME, 1, win);
   }
-  if (!gh_string_p(name)) {
+
+  if (gh_number_p(name)) {
+    aprop = gh_scm2long(name);
+  } else if (gh_string_p(name)) {
+    str=gh_scm2newstr(name, NULL);
+    aprop=XInternAtom(dpy, str, False);
+    FREE(str);
+  } else {
     scm_wrong_type_arg(FUNC_NAME, 2, name);
   }
+
   if (format == SCM_UNDEFINED) {
     fmt=8;
   } else if (gh_number_p(format)) {
@@ -177,6 +185,8 @@ value. */
     str=gh_scm2newstr(type, NULL);
     atype=XInternAtom(dpy, str, False);
     FREE(str);
+  } else if (gh_number_p(type)) {
+    atype = gh_scm2long(type);
   } else {
     FREE(val);
     scm_wrong_type_arg(FUNC_NAME, 4, value);
@@ -193,9 +203,6 @@ value. */
 	       "'append");
     return SCM_UNSPECIFIED;
   }
-  str=gh_scm2newstr(name, NULL);
-  aprop=XInternAtom(dpy, str, False);
-  FREE(str);
 
   /* Should this check return code? My man page is silent about possible
      return values. */
@@ -233,7 +240,7 @@ SCWM_PROC(X_property_get, "X-property-get", 2, 1, 0,
 	  (SCM win, SCM name, SCM consume))
      /** Get X property NAME of window WIN.
 WIN is the window to check, or 'root-window.
-NAME is a string.
+NAME is a string or an X/11 atom (long).
 If CONSUME is #t, the X property is deleted after getting it. Default is
 not to delete.
 If the X property could not be found, #f is returned.
@@ -261,9 +268,17 @@ If the X property could be found, a list "(value type format)" is returned.
   } else {
     scm_wrong_type_arg(FUNC_NAME, 1, win);
   }
-  if (!gh_string_p(name)) {
+
+  if (gh_number_p(name)) {
+    aprop = gh_scm2long(name);
+  } else if (gh_string_p(name)) {
+    str=gh_scm2newstr(name, NULL);
+    aprop=XInternAtom(dpy, str, False);
+    FREE(str);
+  } else {
     scm_wrong_type_arg(FUNC_NAME, 2, name);
   }
+
   if (consume == SCM_UNDEFINED) {
     del=False;
   } else if (gh_boolean_p(consume)) {
@@ -271,10 +286,6 @@ If the X property could be found, a list "(value type format)" is returned.
   } else {
     scm_wrong_type_arg(FUNC_NAME, 3, consume);
   }
-
-  str=gh_scm2newstr(name, NULL);
-  aprop=XInternAtom(dpy, str, False);
-  FREE(str);
 
   val = GetXProperty(w, aprop, del, &atype, &fmt, &len);
 

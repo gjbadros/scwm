@@ -105,6 +105,7 @@ SCM x_mappingnotify_hook;
 SCM x_destroynotify_hook;
 SCM x_unmapnotify_hook;
 SCM window_focus_change_hook;
+SCM client_message_hook;
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask);
@@ -816,18 +817,59 @@ HandlePropertyNotify()
 void 
 HandleClientMessage()
 {
-  XEvent button;
 
   DBUG((DBG,"HandleClientMessage", "Routine Entered"));
 
   if ((Event.xclient.message_type == XA_WM_CHANGE_STATE) &&
       (Event.xclient.data.l[0] == IconicState) &&
       pswCurrent && !pswCurrent->fIconified) {
+    /* GJB:FIXME:: What was this code supposed to do?
+    XEvent button;
     WXGetPointerWindowOffsets(Scr.Root, &(button.xmotion.x_root), &(button.xmotion.y_root));
     button.type = 0;
+    */
     Iconify(pswCurrent,0,0);
     return;
   }
+
+  /* GJB:FIXME:: converting from C array to SCM vector is clumsy -- better way? */
+  if (!FEmptyHook(client_message_hook)) {
+    SCM data;
+    switch (Event.xclient.format) {
+    case 8: /* interpret as a string */
+      data = gh_str02scm(Event.xclient.data.b);
+      break;
+    case 16:
+      { /* scope */
+        short *ps = Event.xclient.data.s;
+        int i = 0;
+        data = gh_make_vector(gh_int2scm(10), SCM_BOOL_F);
+        while (i < 10) {
+          gh_vector_set_x(data,gh_int2scm(i),gh_int2scm(*ps));
+          ++i;
+          ++ps;
+        }
+      }
+      break;
+    case 32:
+      { /* scope */
+        long *pl = Event.xclient.data.l;
+        int i = 0;
+        data = gh_make_vector(gh_int2scm(5), SCM_BOOL_F);
+        while (i < 5) {
+          gh_vector_set_x(data,gh_int2scm(i),gh_long2scm(*pl));
+          ++i;
+          ++pl;
+        }
+      }
+      break;
+    } /* end switch */
+    call3_hooks(client_message_hook,
+                gh_long2scm(Event.xclient.message_type),
+                gh_int2scm(Event.xclient.format),
+                data);
+  }
+
   /*
      ** CKH - if we get here, it was an unknown client message, so send
      ** it to the client if it was in a window we know about.  I'm not so
@@ -2001,6 +2043,11 @@ WIN is still valid during the hook procedures. */
   /** This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
 that now has the focus, or #f if no window now has the focus. */
+
+  SCWM_HOOK(client_message_hook,"client-message-hook");
+  /** This hook is invoked whenever Scwm receives an X/11 client message.
+It is called with three arguments: the message-type atom, the format (8, 16, or 32), 
+and the vector of data. */
 
 
 #ifndef SCM_MAGIC_SNARFER

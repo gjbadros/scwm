@@ -43,6 +43,11 @@
 #include <X11/Xutil.h>
 
 #include "ICCCM.h"
+#include "scwm.h"
+#include "screen.h"
+
+extern SCM sym_root_window;
+extern Time lastTimestamp;
 
 Atom XA_WM_PROTOCOLS = None;
 
@@ -62,6 +67,60 @@ send_clientmessage(Display * disp, Window w, Atom a, Time timestamp)
   ev.data.l[1] = timestamp;
   XSendEvent(disp, w, False, 0L, (XEvent *) & ev);
 }
+
+SCWM_PROC(send_client_message, "send-client-message", 2, 1, 0,
+          (SCM win, SCM atom, SCM x))
+     /** Send WIN the message "ATOM X".
+WIN can be 'root-window or an X window ID number.
+Useful for supporting other WMs module communication protocols. 
+ATOM and X are both 32-bit integers. */
+#define FUNC_NAME s_send_client_message
+{
+  XClientMessageEvent ev;
+  long mask = 0L;
+  Window w;
+
+  memset(&ev, 0, sizeof(ev));
+
+  if (win == sym_root_window) {
+    w = Scr.Root;
+    /* use SubstructureRedirectMask if sending to root window */
+    mask = SubstructureRedirectMask;
+  } else if (WINDOWP(win)) {
+    w = PSWFROMSCMWIN(win)->w;
+  } else if (gh_number_p(win)) {
+    w = gh_scm2long(win);
+  } else {
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
+  }
+
+  if (!gh_number_p(atom)) {
+    scm_wrong_type_arg(FUNC_NAME, 2, win);
+  }
+
+  if (!gh_number_p(x)) {
+    scm_wrong_type_arg(FUNC_NAME, 3, win);
+  }
+
+  ev.type = ClientMessage;
+  ev.window = w;
+  ev.message_type = gh_scm2long(atom);
+  ev.format = 32;
+  ev.data.l[0] = gh_scm2long(x);
+  ev.data.l[1] = lastTimestamp;
+  XSendEvent(dpy, w, False, mask, (XEvent *) &ev);
+  return SCM_UNDEFINED;
+}
+
+void 
+init_ICCCM()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "ICCCM.x"
+#endif
+}
+
+
 
 /* Local Variables: */
 /* tab-width: 8 */

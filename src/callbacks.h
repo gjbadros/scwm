@@ -57,6 +57,8 @@ SCM call3_hooks (SCM hook_type, SCM arg1, SCM arg2, SCM arg3);
 SCM apply_hooks (SCM hook_type, SCM args);
 SCM apply_hooks_message_only (SCM hook_type, SCM args);
 
+int /* Bool */ FEmptyHook(SCM hook);
+
 /* Timer hooks. */
 
 SCM add_timer_hook_x(SCM usec, SCM proc);

@@ -572,6 +572,7 @@ scwm_main(int argc, char **argv)
   init_Grab();
   init_virtual();
   init_icons();
+  init_ICCCM();
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
 #endif
