@@ -1,3 +1,19 @@
+Fri Aug  6 10:35:10 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c (DeferExecution), resize.c (InteractiveResize), move.c
+ 	(InteractiveMove): Added False arg to NoEventsScwmUpdate() to let
+ 	that block (as it was doing anyway); Move the ms_sleep(10) into
+ 	the #else clause of the NOT_MORE_RESPONSIVE since if the
+ 	NoEventsScwmUpdate blocks, we don't need to sleep.
+
+	* menu.c: Fix bug in menu-hover-delay-- was returning
+	cmsPopupDelay, not cmsHoverDelay.
+
+	* menu.c (MenuInteraction): Use True as arg to
+	NoEventsScwmUpdate() so that it will not block, and we can call
+	the hover/popup procs as we should.  Thanks John Kodis for the
+	bug report!  Also finer-grain some of the debugging code.
+
 1999-08-04  Jeff W. Nichols  <jwnichls@cs.washington.edu>
 
 	* binding.c: Fixed a bug in which a reference to the binding list 
