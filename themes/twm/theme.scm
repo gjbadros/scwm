@@ -25,6 +25,7 @@
 				#:hint-override #t #:decorate-transient #f
 				#:PPosition-hint #f
 				#:mini-icon pic-xterm-mini
+				#:no-side-decorations #f
 				#:no-button 3 #:no-button 5 #:no-button 7
 				#:no-button 4 #:no-button 6 #:no-button 8
 				#:use-decor twm-decor))

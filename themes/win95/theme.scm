@@ -12,6 +12,7 @@
 	 (win95-style (make-style #:fg "grey76" #:bg "grey76" #:show-icon #f
 				  #:border-width 4 #:mwm-border #f
 				  #:mwm-buttons #f
+				  #:no-side-decorations #f
 				  #:mini-icon (load-theme-image "mini-x.xpm")
 				  #:use-decor win95-decor)))
     (with-decor win95-decor 

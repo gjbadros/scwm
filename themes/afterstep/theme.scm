@@ -47,7 +47,7 @@
 		(set-rubber-band-mask! color-mask)
 		(set-icon-font! helvetica-12-font)
 		(set-hilight-foreground! "white")
-		(set-hilight-background! "gray20")
+		(set-hilight-background! "gray30")
 		(set-rubber-band-mask! 255)
 		(title-style #:justify 'left #:font helvetica-12-font
 			     #:relief 'flat)

@@ -14,6 +14,7 @@
 	 (woven-style (make-style #:fg "AntiqueWhite" #:bg "#300000" 
 				  #:mwm-border #t
 				  #:icon #f #:force-icon #t #:show-icon #t ;; icon titles only
+				  #:no-side-decorations #f
 				  #:button 3
 				  #:button 6
 				  #:border-width 5 

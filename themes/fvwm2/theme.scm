@@ -12,6 +12,7 @@
 	 (fvwm2-style (make-style #:fg "black" #:bg "tan" #:show-icon #t
 				  #:border-width 4 #:mwm-border #f
 				  #:mwm-buttons #f
+				  #:no-side-decorations #f
 				  #:use-decor fvwm2-decor)))
     (with-decor fvwm2-decor
 		(title-style #:justify 'center #:relief 'raised

@@ -11,6 +11,7 @@
 	 (times-14-font "-adobe-times-bold-r-*-*-14-*-*-*-*-*-*-*")
 	 (mwm-style (make-style #:fg "black" #:bg "gray" #:show-icon #t
 				#:border-width 6 #:mwm-border #t
+				#:no-side-decorations #f
 				#:mwm-buttons #t
 				#:use-decor mwm-decor)))
     (with-decor mwm-decor

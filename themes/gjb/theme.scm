@@ -29,6 +29,7 @@
 				#:button 3 #:button 4
 				#:no-button 5 #:no-button 7
 				#:no-button 6 #:no-button 8
+				#:no-side-decorations #f
 				#:use-decor gjb-decor))
 	 (xpm-exp-win (load-theme-image          "mini-exp-windows-full.xpm"))
 	 (xpm-hbars (load-theme-image            "mini-hbars-full.xpm"))
