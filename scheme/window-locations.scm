@@ -8,16 +8,15 @@
   (truncate (/ n 2)))
 
 (define-public (pair-virtual->viewport pt)
-  "A version of virtual->viewport that works on the pair points used by this
-module."
+  "Convert a pair point from virtual to viewport coordinates.
+Return value is (viewport-x . viewport-y)."
   (let* ((x (car pt))
 	 (y (cdr pt))
 	 (newpt (virtual->viewport x y)))
     (cons (car newpt) (cadr newpt))))
 
 (define-public (window-center-middle win)
-  "Return a pair (X . Y) that is the pixel position of the middle of the WIN
-relative to current viewport."
+  "Return pair (viewport-x . viewport-y) that is the middle of WIN."
   (let* ((pos (window-viewport-position win))
 	 (size (window-frame-size win))
 	 (xl (car pos))
@@ -105,7 +104,7 @@ relative to the current viewport."
     (cons (+ xl w) (+ yt h))))
 
 (define-public (get-window-nonant select-list)
-  "SELECT-LIST is a list of (win x y); returns list (win nonant).
+  "SELECT-LIST is a list of (win x y), returns list (win nonant).
 The returned value window is the same as the car of SELECT-LIST, and the
 nonant is a number in [0,8] referring to which of the tic-tac-toe board
 squares x,y is in of WIN. x,y are viewport positions.

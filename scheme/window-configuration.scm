@@ -28,11 +28,12 @@
   :use-module (app scwm base)
   :use-module (app scwm winlist))
 
-(define*-public (window-configuration #&optional (w (get-window)))
+(define*-public (window-configuration #&optional (win (get-window)))
+  "Return a list containing the state of WIN."
   (with-window 
-   w
+   win
    (list
-    w					; 0
+    win					; 0
     (window-id)				; 1
     (window-position)			; 2
     (window-frame-size)))		; 3
@@ -40,25 +41,29 @@
 
 ;; (define c (window-configuration))
 
-(define*-public (copy-window-configuration configuration #&optional (w (get-window)))
+(define*-public (copy-window-configuration configuration #&optional (win (get-window)))
+  "Apply a saved state CONFIGURATION to window WIN."
   (with-window
-   w
+   win
    (apply move-window (list-ref configuration 2))
    (apply resize-frame-to (list-ref configuration 3))))
 
 ;; (copy-window-configuration c)
 
 (define*-public (restore-window-configuration global-configuration 
-					     #&optional (w (get-window)))
-  (let ((c (assoc w global-configuration)))
-    (if c (begin (copy-window-configuration c w) #t) #f)))
+					     #&optional (win (get-window)))
+  "Restore the state of WIN from GLOBAL-CONFIGURATION."
+  (let ((c (assoc win global-configuration)))
+    (if c (begin (copy-window-configuration c win) #t) #f)))
 
 (define-public (global-window-configuration)
+  "Return an object abstracting all of the current windows' states."
   (map window-configuration (list-stacking-order)))
 
 ;; (define gc (global-window-configuration))
 
 (define-public (restore-global-window-configuration global-configuration)
+  "Restore the states of all windows from GLOBAL-CONFIGURATION."
   (map (lambda (w) (restore-window-configuration global-configuration w))
        (list-stacking-order))
   (restack-windows (map car global-configuration)))

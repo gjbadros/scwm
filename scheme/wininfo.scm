@@ -43,25 +43,31 @@
   "Return #t if WIN is on the current desk."
   (on-desk? (current-desk) win))
 
-(define-public (rectangle-overlap? x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
-  (> (intersection-area x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2) 0))
+(define-public (rectangle-overlap? x1 y1 w1 h1 x2 y2 w2 h2)
+  "Returns #t iff the two specified rectangles overlap.
+X1,Y1 and W1 x H1 are the position and size of the first rectangle.
+X2,Y2 and W2 x H2 are the position and size of the second rectangle."
+  (> (intersection-area x1 y1 w1 h1 x2 y2 w2 h2) 0))
 
-(define-public (intersection-area x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
-  (let ((x1-2 (- (+ x1-1 w1) 1))
-	(y1-2 (- (+ y1-1 h1) 1))
-	(x2-2 (- (+ x2-1 w2) 1))
-	(y2-2 (- (+ y2-1 h2) 1)))
-    (if (or (< x1-2 x2-1)
-	    (< x2-2 x1-1)
-	    (< y1-2 y2-1)
-	    (< y2-2 y1-1)) 
+(define-public (intersection-area x1 y1 w1 h1 x2 y2 w2 h2)
+  "Returns the size of the intersection of two rectangles.
+X1,Y1 and W1 x H1 are the position and size of the first rectangle.
+X2,Y2 and W2 x H2 are the position and size of the second rectangle."
+  (let ((x1-r (- (+ x1 w1) 1))
+	(y1-r (- (+ y1 h1) 1))
+	(x2-r (- (+ x2 w2) 1))
+	(y2-r (- (+ y2 h2) 1)))
+    (if (or (< x1-r x2)
+	    (< x2-r x1)
+	    (< y1-r y2)
+	    (< y2-r y1))
 	0
-	(let ((x1 (max x1-1 x2-1))
-	      (x2 (min x1-2 x2-2))
-	      (y1 (max y1-1 y2-1))
-	      (y2 (min y1-2 y2-2)))
-	  (let ((w (+ (- x2 x1) 1))
-		(h (+ (- y2 y1) 1)))
+	(let ((xmax (max x1 x2))
+	      (xmin (min x1-r x2-r))
+	      (ymax (max y1 y2))
+	      (ymin (min y1-r y2-r)))
+	  (let ((w (+ (- xmin xmax) 1))
+		(h (+ (- ymin ymax) 1)))
 	    (* w h))))))
 
 (define*-public (in-viewport-any-desk? #&optional (win (get-window)))
