@@ -72,6 +72,7 @@
 
 
 SCM before_new_window_hook;
+SCM before_place_new_window_hook;
 SCM after_new_window_hook;
 
 /* FIXGJB: instead of placeholder empty functions,
@@ -604,6 +605,9 @@ AddWindow(Window w)
      and never fail - that's its current behaviour, but it still
      returns a Bool that's always just True... --07/27/98 gjb
   */
+
+  call1_hooks(before_place_new_window_hook, psw->schwin);
+
   if (!PlaceWindow(psw, Desk)) {
     scwm_msg(ERR,__FUNCTION__,"PlaceWindow failed for %s -- resources leaked!",psw->name);
     /* there is cleanup we would need to do (but what is the 
@@ -672,6 +676,7 @@ AddWindow(Window w)
   InstallWindowColormaps(colormap_win);
 
   call1_hooks(after_new_window_hook, psw->schwin);
+
   CreateIconWindow(psw,ICON_X_VP(psw),ICON_Y_VP(psw));
 
   return (psw);
@@ -804,6 +809,15 @@ This hook does not typically need to be used directly by the user;
 `window-style' from the "(app scwm style)" module provides a convenient
 interface to setting the relevant parameters when a new window is
 created. */
+
+  SCWM_HOOK(before_place_new_window_hook, "before-place-new-window-hook");
+  /** This hook is invoked just before placing a new window.
+It should be used for setting window styles, as the window geometry
+needs to be fully and correctly specified before the window is placed.
+The `window-style' mechanism from the "(app scwm style)" module provides a convenient
+interface to setting the relevant parameters when a new window is
+created. */
+
 
   SCWM_HOOK(after_new_window_hook, "after-new-window-hook");
   /** This hook is invoked when a new window has been completely created

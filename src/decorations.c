@@ -412,7 +412,7 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     t->bw = 0;
   } else {
     t->bw = BW;
-    t->boundary_width = t->boundary_width - 1;
+    --t->boundary_width;
   }
 
   if (t->title_height > 0)

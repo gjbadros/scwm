@@ -591,7 +591,6 @@ PlaceWindow(ScwmWindow *psw, int Desk)
 {
   SCM place_proc;
   SCM win;
-
   GetGravityOffsets(psw);
 
   
@@ -604,9 +603,14 @@ PlaceWindow(ScwmWindow *psw, int Desk)
   scwm_msg(DBG,"PlaceWindow","attr = (%d,%d)",psw->attr.x,psw->attr.y);
 #endif
 
-  move_finalize(psw->frame,psw, 
-		psw->attr.x + GRAV_X_ADJUSTMENT(psw), 
-		psw->attr.y + GRAV_Y_ADJUSTMENT(psw));
+  { /* scope */
+    int cpixX = GRAV_X_ADJUSTMENT(psw);
+    int cpixY = GRAV_Y_ADJUSTMENT(psw);
+    
+    move_finalize(psw->frame,psw, 
+                  psw->attr.x + cpixX,
+                  psw->attr.y + cpixY);
+  }
 
   win=psw->schwin;
 
