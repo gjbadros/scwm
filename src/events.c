@@ -924,6 +924,7 @@ HandleClientMessage()
           ++pl;
         }
       }
+      break;
     default:
       /* we should handle things when we get here */
       scwm_msg(WARN,"HandleClientMessage",
