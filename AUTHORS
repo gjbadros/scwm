@@ -1,13 +1,16 @@
 Authors of Scwm
 ===============
 
-Maciej Stachowiak, mstachow@mit.edu:
+Maciej Stachowiak, mstachow@alum.mit.edu:
+
 originally modified fvwm to use guile as the configuration language,
 yielding scwm. Many changes throughout, and wrote the following files
 in the subdirectory scwm (or mostly wrote the latest versions):
+
     callbacks.c color.c decor.c deskpage.c 
     errors.c    face.c  font.c  miscprocs.c 
     scmprocs.c  scmtypes.c image.c shutdown.c
+
 in the subdirectory scheme:
     auto-raise.scm  base.scm          bincomm.scm     decor.scm 
     fvwm-compat.scm fvwm-eval.scm     fvwm-module.scm image-loaders.scm
@@ -15,14 +18,20 @@ in the subdirectory scheme:
     winlist.scm     winops.scm        animation.scm   cascade.scm 
     file.scm        listops.scm       shutdown-opts.scm stacking.scm 
     theme-impl.scm  themes.scm
+
 in the subdirectory utilities/libscwmexec:
     libmain.c  scwmexec.h
+
 in the subdirectory utilities/scwmexec:
     scwmexec.c
+
 in the subdirectory utilities/scwmrepl:
     scwmrepl.c
+
 in the subdirectory modules/background:
     background.c
+
+
 
 Greg J. Badros, gjb@cs.washington.edu:
 
@@ -37,24 +46,31 @@ version of the documentation extraction system. He has implemented many
 software engineering improvements throughout the system, and is the
 primary author or maintainer of at least the following files, in the
 directory scwm:
+
     Grab.c      ICCCM.c            draw-pie-menu.c drawmenu.c 
     menuitem.c  module-interface.c scwmenu.c       string_token.c 
     system.c    xrm.c              xmisc.c         miscprocs.c
     log-usage.c
+
 in the directory scheme:
     flux.scm minimal.scm module-types.scm xlock-menu.scm sort.scm
     cached-program-exists.scm
+
 in the directory utilities/dev:
     X-error-describe.in convert-file-to-c-string-variable
     convert-dependency-dot-graph.in
     scwm-usage-counter.in
+
 in the directory modules/c-animation:
     c-animation.c
+
 in the directory modules/overlay-plane:
     get_color.c overlay-plane.c
 
 
+
 Sam Steingold:
+
 provided numerous bug fixes, added several useful Scheme modules, and
 wrote an emacs interaction mode for scwm. Wrote the following files
 in the directory scheme:
@@ -64,12 +80,15 @@ and in the directory utilities/emacs:
     scwm.el
 
 
+
 Robert Bihlmeyer:
+
 added some bits here, and there. Notable changes include support for
 session management, ICCCM-compliant modifier handling, querying xlock
 about available modes, readline-support in scwmrepl, and exposing
 X-properties to scheme. Takes responsibility for the following files
 in the directory scwm:
+
     session-manager.c  xproperty.c
 
 in the scheme directory:
@@ -77,29 +96,39 @@ in the scheme directory:
 
 
 Todd Larason, jtl@molehill.org:
+
 fiddled here and there, moving bugs from one place to another.  Finished
 Greg's work on pluggable menu looks, and added support for dynamically
 loaded modules.  added a few other smaller bits.  Is responsible for the 
 current shape the following files in the directory scwm:
+
    menu.c drawmenu.c 
+
 Is the primary author of the following file in the directory scwm:
    menulook.c
-Is responsible for the current menu interface in base.scm
+
+Is responsible for the current menu interface in base.scm.
+
 Primary author of the following files under the modules directory:
    pie-menus/draw-pie-menu.c xpm-menus/draw-xpm-menu.c
 
 
 Tom LaStrange: 
+
 wrote Twm, from which Scwm is indirectly derived. The following files
 in the subdirectory scwm still supposedly have traces of twm code:
+
     add_window.c events.c
 
 
+
 Robert Nation:
+
 originally wrote Fvwm, from which Scwm is (currently) derived. The
 following files in the subdirectory scwm bear his copyright, and thus
 presumably include at least some portions of his code, in the
 subdirectory scwm:
+
     binding.c     borders.c     color.c       colormaps.c
     colors.c      complex.c     decor.c       deskpage.c  
     decorations.c events.c      face.c        focus.c
@@ -109,6 +138,7 @@ subdirectory scwm:
 
 
 Charles Hines:
+
 continued maintenance of Fvwm after the retirement of Robert Nation as
 maintainer. Many other people added code at this point, but
 determining exactly who did what is difficult due to lack of accurate
