@@ -1,3 +1,8 @@
+Wed Feb 13 01:54:21 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* scwmdoc.in: Made work with new #define's for code for new
+	version of Guile.
+
 Wed Feb 16 18:27:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in (ProcessHeader): Drop \n\ from end of C

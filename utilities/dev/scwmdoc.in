@@ -75,7 +75,7 @@ sub script_usage ( ) {
 }
 
 
-my $prefix = "SCWM";
+my $prefix = "SCM";
 my $pkg_name = basename($ENV{PWD});
 my $fDebug = FALSE;
 my $fQuiet = FALSE;
@@ -108,7 +108,7 @@ $prefix = $opt_P if $opt_P;
 # I could even make this go to the version that the docs were generated
 # from, but I think it's better to look at the latest version for now
 # (at least until 1.0)
-my $scwmdir = $opt_d || "http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~";
+my $scwmdir = $opt_d || "http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/scwm/scwm";
 
 # maps from a procedure name to a hash
 # containing "usage", "purpose", "comment",  "markup", "file", "line"
@@ -153,7 +153,7 @@ while (<>) {
     next;
   }
   my $fScheme = ($ARGV =~ /.scm$/);
-  if (m/^${prefix}_[IW]?PROC/o) {
+  if (m/^${prefix}_DEFINE|SCWM_I?PROC/o) {
     my $header = $_;
     my $filename = $ARGV;
     my $line = $.;
@@ -185,8 +185,8 @@ while (<>) {
     my $argnum = $2; # 1-based
     my $argname = $3;
     check_arg_name_number_match($1,$2,$3,\@argnames);
-#  } elsif (m/${prefix}_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^\"]+)\"\s*,\s*(\d+)\s*,\s*(\".*?[^\\]\")\s*\)\s*;/o) {
-  } elsif (m/${prefix}_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^\"]+)\"\s*,\s*(\d+)\s*,\s*$/o) {
+#  } elsif (m/SCWM_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^\"]+)\"\s*,\s*(\d+)\s*,\s*(\".*?[^\\]\")\s*\)\s*;/o) {
+  } elsif (m/SCWM_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^\"]+)\"\s*,\s*(\d+)\s*,\s*$/o) {
     my $c_hookname = $1;
     my $scheme_hookname = $2;
     my $num_args = $3;
@@ -217,7 +217,7 @@ while (<>) {
           " $filename:$line body:\n$body\n";
     }
     ProcessHookComment($filename, $line, $scheme_hookname, $num_args, $body);
-  } elsif (m/${prefix}_VAR(?:_READ_ONLY|_INIT(?:_PERMANENT)?)\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"/o) {
+  } elsif (m/SCWM_VAR(?:_READ_ONLY|_INIT(?:_PERMANENT)?)\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"/o) {
     #FIXGJB: not ideal, since macro needs to end on same line
     # or else the comment will not get found --02/11/99 gjb
     my $c_varname = $1;
@@ -766,7 +766,7 @@ sub ProcessHeader( $$$ ) {
 #  print STDERR "header = $header\n";
 #  print STDERR "filename = $filename\n";
   my ($cprimname, $primname, $req, $opt, $var, $argslist,$space,$intspec,$comment_maybe) =
-    $header =~ m%^${prefix}_[IW]?PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([\d\s\w,()\n]*)\)(\s*),(?:[ \t]*([^\n]*?),\s*)?\s*(.*)$%so;
+    $header =~ m%^(?:${prefix}_DEFINE|SCWM_I?PROC)\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([\d\s\w,()\n]*)\)(\s*),(?:[ \t]*([^\n]*?),\s*)?\s*(.*)$%so;
 
 #  print STDERR "argslist = $argslist\n";
   if (!defined($comment_maybe)) { 
@@ -1294,10 +1294,11 @@ sub check_arg_name_number_match ( $$\@ ) {
   my $aref_argnames = shift;
 
   if ($fDebug) {
-    print STDERR "Checking ", $argname, " (arg ", $argnum, ") against list: ", join(" ",@$aref_argnames), "\n"
+    print STDERR "Checking ", $argname, " (arg ", $argnum, ") against list: ", join(" ",@$aref_argnames), "\n";
+    print STDERR "Data for check is:",$argnum," ",scalar(@$aref_argnames)," ",$$aref_argnames[$argnum-1]," ",$argname,"\n";
   }
   if ($argnum > scalar(@$aref_argnames) || 
-      $argnames[$argnum-1] ne $argname) {
+      $$aref_argnames[$argnum-1] ne $argname) {
     print STDERR "$ARGV:$.:**** Argument name/number mismatch in $validate_fn line\n";
   }
 }
