@@ -1,3 +1,11 @@
+Fri Aug 21 15:43:37 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Use Damian Conway's Text::Balanced
+	package (available from CPAN) to scan scheme procs more reliably.
+	Later that functionality will be folded into the script.  Clean up 
+	warnings to have a space after "****".  Add -d option to specify
+	root of source code.
+
 Thu Aug 20 13:53:19 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* acconfig.h, configure.in:  Test for X_LOCALE, add -R arguments
