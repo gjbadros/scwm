@@ -123,7 +123,7 @@ will move along."
 (define*-public (deiconify-group #&optional (group (get-window)) x y)
   "Deiconify all members of GROUP."
   (for-each (lambda (w)
-	      (deiconify-window w x y)
+	      (deiconify w x y)
 	      (set-show-icon! #t w)
 	      (set-object-property! w 'group-deiconify #f))
 	    (group->windows group)))
