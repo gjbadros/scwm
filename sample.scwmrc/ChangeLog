@@ -1,3 +1,8 @@
+Wed Sep  1 01:10:07 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use (window-context), not (get-window) when
+	building root menu (for group sub-menu).
+
 Mon Aug 30 20:22:21 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Guard a C-M-KP_5 with a (if have-kp-num-keysyms...)
