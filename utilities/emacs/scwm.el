@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-14 Fri 17:49:02 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-08-14 Fri 18:31:25 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -76,10 +76,20 @@
 
 (eval-and-compile
  (or (and (fboundp 'cadr) (fboundp 'unless)) (require 'cl))
- ;; this is for those who load this uncompiled.
+ ;; these three are dumped with e20.3
+ (unless (fboundp 'quit-window) (defalias 'quit-window 'ignore))
+ (unless (fboundp 'help-xref-button) (defalias 'help-xref-button 'ignore))
+ (unless (fboundp 'help-setup-xref) (defalias 'help-setup-xref 'ignore))
+ ;; why aren't these autoloaded by default?
+ (unless (fboundp 'Info-find-node) (autoload 'Info-find-node "info"))
+ (unless (fboundp 'inferior-scheme-mode)
+   (autoload 'inferior-scheme-mode "cmuscheme"))
  (unless (fboundp 'ignore-errors) (autoload 'ignore-errors "cl" nil nil t))
  (unless (fboundp 'compose-mail) (defun compose-mail (to) (mail nil to)))
- (unless (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos")))
+ (unless (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos"))
+ ;; cater to the inferior emacs implementations :-)
+ (unless (fboundp 'save-current-buffer)
+   (defalias 'save-current-buffer 'save-excursion)))
 (eval-when-compile
  (require 'cl)                  ; for `gensym'
  (defvar Info-history)          ; defined in info.el
@@ -89,16 +99,6 @@
  (defvar inferior-scheme-mode-map) ; defined in cmuscheme.el
  (defvar scwm-mode-map)         ; kill warnings
  (defvar scwm-mode-syntax-table) ; kill warnings
- ;; these three are dumped with e20.3
- (unless (fboundp 'quit-window) (defalias 'quit-window 'ignore))
- (unless (fboundp 'help-xref-button) (defalias 'help-xref-button 'ignore))
- (unless (fboundp 'help-setup-xref) (defalias 'help-setup-xref 'ignore))
- ;; why aren't these autoloaded by default?
- (autoload 'Info-find-node "info")
- (autoload 'inferior-scheme-mode "cmuscheme")
- ;; cater to the inferior emacs implementations :-)
- (unless (fboundp 'save-current-buffer)
-   (defalias 'save-current-buffer 'save-excursion))
  (unless (fboundp 'with-current-buffer)
    (defmacro with-current-buffer (buffer &rest body)
      "Execute the forms in BODY with BUFFER as the current buffer.
