@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1999-03-24 Wed 13:29:55 EST sds@eho.eaglets.com>
+;; File: <scwm.el - 1999-03-25 Thu 09:32:57 EST sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -207,7 +207,9 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (pop-to-buffer (setq scheme-buffer (make-comint "scwm" scwm-repl)))
   (inferior-scheme-mode)
   (define-key inferior-scheme-mode-map [(control h)]
-    (lookup-key scwm-mode-map [(control h)])))
+    (lookup-key scwm-mode-map [(control h)]))
+  (define-key inferior-scheme-mode-map [(meta tab)]
+    'scwm-complete-symbol-insert))
 
 ;;; service variables
 (defvar scwm-obarray nil "The obarray for scwm completion.")
@@ -350,7 +352,7 @@ Returns a string which is present in the `scwm-obarray'."
 	  ((null comp) (message "Cannot complete `%s'" pat) (ding))
 	  ((not (string= comp pat)) (delete-region beg end) (insert comp))
 	  (t (message "Making completion list...")
-	     (with-output-to-temp-buffer "*completions*"
+	     (with-output-to-temp-buffer "*Completions*"
 	       (display-completion-list (all-completions pat scwm-obarray)))
 	     (message "Making completion list...done")))))
 
