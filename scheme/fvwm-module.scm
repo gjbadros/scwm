@@ -239,8 +239,7 @@
   (end-window-list port))
 
 
-;; FIXGJB: not public
-(define-public (add-window win port)
+(define (add-window win port)
   (let* ((id (window-id win))
 	 (frame-id (window-frame-id win))
 	 (send-win-string 
@@ -472,8 +471,11 @@
 	  (fcntl to-module-write F_SETFD 1)
 	  (fcntl from-module-read F_SETFD 1)
 	  
-	  ;; FIXGJB: set o_nonblock for TO_MODULE_WR
-	  ;; GJBFIX: why is this necessary?
+	  ;; set o_nonblock for TO_MODULE_WR
+	  ;; w/o this scwm will block when writing to a module
+	  ;; pipe if that module is not reading;  observed
+	  ;; effect to scwm is a hang that can be eliminated
+	  ;; by killing the modules
 	  (fcntl to-module-write F_SETFL O_NONBLOCK)
 	  
 	  (add-active-module! fmod)

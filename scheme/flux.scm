@@ -432,3 +432,14 @@ See `display-message' for details about MSG."
   (display-message msg)
   (add-timer-hook! (sec->usec sec-timeout)
 		   (lambda () (hide-message))))
+
+(define-public (close-all-xlogo-windows)
+  "Close each window with class == XLogo.
+Greg uses XLogo windows as a sample window, so this
+is useful for clearing the xlogos away when there get to
+be more than desired."
+  (for-each (lambda (w) (close-window w)) 
+	    (list-windows #:only (lambda (w) (string=? (window-class w) "XLogo")))))
+
+;; useful for debugging/testing
+;;(set-X-server-synchronize! #t)

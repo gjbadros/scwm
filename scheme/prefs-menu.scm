@@ -178,7 +178,7 @@
             ;;     (symbol-set! #f symbol res)))))))
 
 (define-public (user-option-menuitem symbol)
-  "Create a menuaitem for the option."
+  "Create a menuitem for the option."
   (menuitem (symbol->string symbol) #:action (reset-user-variable symbol)))
 
 (define-public (menu-prefs . opts)

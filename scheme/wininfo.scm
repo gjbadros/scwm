@@ -62,11 +62,11 @@
 
 (define*-public (in-viewport-any-desk? #&optional (win (get-window)))
   (if win (apply rectangle-overlap? 
-	       (append
-		(window-position win)
-		(window-frame-size win)
-		(list 0 0)
-		(map (lambda (p) (- p 1)) (display-size))))))
+		 (append
+		  (window-position win)
+		  (window-frame-size win)
+		  (list 0 0)
+		  (map (lambda (p) (- p 1)) (display-size))))))
 
 
 (define-public (windows-overlap? win win2)
@@ -82,7 +82,7 @@
 
 (define*-public (visible? #&optional (win (get-window)))
   (if win (and (on-current-desk? win)
-	     (in-viewport-any-desk? win))))
+	       (in-viewport-any-desk? win))))
 
 (define*-public (percent-visible #&optional (win (get-window)))
   (/ (* 100 
@@ -93,17 +93,17 @@
 		(list 0 0)
 		(display-size))))
      (apply * (window-frame-size win))))
-	   
+
 (define*-public (window-geometry-string #&optional (win (get-window)))
   (if win (let ((i (iconified? win))
-	      (pos (window-position win))
-	      (size (window-size win)))
-	  (string-append (if i "(" "")
-			 (number->string (caddr size))
-			 "x" (number->string (cadddr size))
-			 "+" (number->string (car pos)) 
-			 "+" (number->string (cadr pos))
-			 (if i ")" "")))))
+		(pos (window-position win))
+		(size (window-size win)))
+	    (string-append (if i "(" "")
+			   (number->string (caddr size))
+			   "x" (number->string (cadddr size))
+			   "+" (number->string (car pos)) 
+			   "+" (number->string (cadr pos))
+			   (if i ")" "")))))
 
 
 ;; quote all regexp meta-characters, then turn \* and \? into
@@ -139,17 +139,18 @@ instead of a shell-like wildcard."
 		     wildcard
 		     (wildcard->regexp wildcard))
 		 regexp-options)))
-    (lambda* (#&optional (win (get-window)))
-      (or
-       (let* ((title (window-title win))
-	      (result (regexp-exec wc-rgx title)))
-	 (and result (= (match:end result) (string-length title))))
-       (let* ((class (window-class win))
-	      (result (regexp-exec wc-rgx class)))
-	 (and result (= (match:end result) (string-length class))))
-       (let* ((resource (window-resource win))
-	      (result (regexp-exec wc-rgx resource)))
-	 (and result (= (match:end result) (string-length resource))))))))
+    (lambda*
+     (#&optional (win (get-window)))
+     (or
+      (let* ((title (window-title win))
+	     (result (regexp-exec wc-rgx title)))
+	(and result (= (match:end result) (string-length title))))
+      (let* ((class (window-class win))
+	     (result (regexp-exec wc-rgx class)))
+	(and result (= (match:end result) (string-length class))))
+      (let* ((resource (window-resource win))
+	     (result (regexp-exec wc-rgx resource)))
+	(and result (= (match:end result) (string-length resource))))))))
 
 (define*-public (wildcard-match? wildcard #&optional (win (get-window))
 				 #&key (full-regexp #f)
