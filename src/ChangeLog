@@ -1,4 +1,38 @@
-Sat Nov 29 01:09:35 1997  unknown  <gjb@cs.washington.edu>
+Sun Nov 30 12:25:17 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Use enum cursor for cursors, and prefix the cursor names with CURSOR_
+
+	* Rename Scwm_MenuItem to MenuItem, Scwm_Menu to Menu -- the Scwm_
+ 	prefixes were just a hack to get around name conflicts with the
+ 	legacy menuing code. Various parallel renames, as well.
+
+	* window.c: mark the icon_image scm object, make DeferExecution a
+ 	static fn.
+
+	* drawmenu.c: Tweak some drawing constants a bit, add real
+ 	separators, make DrawSeparator only take 1 y-coord since it's for
+ 	horizontal lines
+	
+	* image.c: Output images as #<image [name] from [path]>, fix GC
+ 	code changes from bugs I introduced when I didn't understand the
+ 	GC idioms.
+	
+	* screen.h, misc.h: Moved the cursor types from screen.h into
+ 	here.
+	
+	* screen.h: Removed the name_list * "TheList" since this wasn't
+ 	used any more
+
+	* scmprocs.c: Rename make-menu-item to make-menuitem,
+ 	make-scwm-menu to make-menu, remove set-image-path!
+
+	* scwm.h: Fixed precedence problem in UNSET_SCM macro
+	
+	* scwmmenu.c: Handle elements in the scmMenuItems list that are
+ 	not menuitem-s better.  Add menu_init_gcs(), call it from scwm.c
+
+
+Sat Nov 29 01:09:35 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menu.c, menu.h, menus.c, menus.h: Removed since menuitem.c,
 	menuitem.h, scwmmenu.c, scwmmenu.h, drawmenu.c, drawmenu.h replace
