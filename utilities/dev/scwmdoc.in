@@ -68,7 +68,6 @@ sub script_usage ( ) {
 -n       No warning for functions without comments
 -d URL  Set scwmdir source code base to path (e.g., file:///usr/local/src/scwm)
 -P prefix Set package prefix (e.g., -PCL to use CL_PROC and CL_* instead of SCWM_*)
--G       Output procedures only by group (i.e., skip alphabetical listing)
 -S       Skip the procedures chapters-- makes it much faster to convert to HTML
 -F       Skip all procedures except those starting with \"F\" for fast check on output
 ";
@@ -89,6 +88,8 @@ my $ref_concepts_intro_sgml;
 my $ref_hooks_intro_sgml;
 my $ref_vars_intro_sgml;
 my $ref_proc_bygroup_intro_sgml;
+
+my $fAddedStyleHeader = FALSE;
 
 use Getopt::Std;
 getopts($getopts_option_letters);
@@ -244,7 +245,27 @@ while (<>) {
     }
     ProcessSchemeHeader($filename, $current_module, $proc_name, $line, $scheme_header);
     redo if (defined($_)); # start loop over w/o reading next line
+  } elsif ($fScheme && m%^\(define-string-matcher\s+(\S+)%) {
+    my $scheme_header = $_;
+    my $proc_name = $1;
+    my $filename = $ARGV;
+    my $line = $.;
+    # Keep reading lines until eof or a paren in leftmost column
+    while (defined($_ = <>) && $_ !~ m/^\(/) {
+      $scheme_header .= $_;
+      if (eof) {
+	close(ARGV);
+	$current_module = "";
+      }
+    }
+    ProcessSchemeExtension($filename, $current_module, $proc_name, $line, $scheme_header);
+    redo if (defined($_)); # start loop over w/o reading next line
+  } elsif ($fScheme && m%^\(add-(boolean-style|window-style|window-hint)-option\s+\#:(\S+)%) {
+    my $filename = $ARGV;
+    my $line = $.;
+    ProcessWindowStyleOption($filename,$line,$1,$2);
   } elsif ($fScheme && m%^\(define-public\s+([^\s\)]+)%) {
+    # this is for variables, so we don't need the optional * above
     $last_public_scheme_definition = $1;
   } elsif (m%(?:/|^;;;\s*)\*\*\s*(\w[^:\n\s]*)(?::\s*(.*?))?\s*$%) {
     # matches a /** CHAPTER: DESCRIPTION (e.g., CONCEPT) comment
@@ -319,6 +340,8 @@ CONCEPTS_CHAPTER:
 
 # Now output concepts chapter
 if ($opt_o) {
+  DoneWindowStyleOptions(); # close the markup for window styles
+
   print MARKUP_OUT <<START_CONCEPTS_CHAPTER
   <chapter>
     <title>Concepts</title>
@@ -609,7 +632,7 @@ sub ProcessSchemeHeader( $$$$$ ) {
 #  print STDERR "---------------\n";
 
   if ($fDebug) {
-    print STDERR "Handing $proc_name from $filename:$line\n";
+    print STDERR "Handling $proc_name from $filename:$line\n";
   }
 
   if ($match ne $proc_name) {
@@ -619,7 +642,7 @@ sub ProcessSchemeHeader( $$$$$ ) {
   }
   if ($match =~ m%^\(%) {
     $proc_name = substr($match,1);
-    print STDERR "$filename:$line:**** $proc_name is not an ordinary define -- returns a lambda?\n";
+    # print STDERR "$filename:$line:**** $proc_name is not an ordinary define -- returns a lambda?\n";
   }
   if (!defined($comment)) {
     if ($fWarnIfNoComment) {
@@ -664,6 +687,67 @@ sub ProcessSchemeHeader( $$$$$ ) {
   push @{$file_funcs{$filename}}, $proc_name;
 
 }
+
+
+# Currently only `define-string-matcher' is handled
+sub ProcessSchemeExtension( $$$$$ ) {
+  my ($filename, $module, $ext_name, $line, $header) = @_;
+  my @arglist;
+  my ($type,$rest) = ($header =~ m%^\(define-(string-matcher)\s+\S+\s+(.*)%s);
+  #  print STDERR "Rest = $rest\n";
+  my $comment = Text::Balanced::extract_delimited($rest,'"');
+
+  if ($fDebug) {
+    print STDERR "Handling extension $ext_name from $filename:$line\n";
+  }
+
+  if (!defined($comment)) {
+    if ($fWarnIfNoComment) {
+      print STDERR "$filename:$line:**** $ext_name: could not find comment\n";
+    }
+    $comment = "No documentation supplied.";
+  }
+
+  my $usage = "($ext_name)";
+
+  if ($type eq "string-matcher") {
+    $usage = "($ext_name STRING TYPE CASE-SENSITIVE?)";
+  }
+
+  # Remove leading and trailing quote
+  $comment =~ s/^\"(.*)\"$/$1/ms;
+  # Unquote quoted quotes (CRW:FIXME:GJB: are there other things we
+  # may need to unquote here?)
+  $comment =~ s/\\"/"/g;
+
+  my $purpose = PurposeFromComment($comment,$filename,$line,$ext_name);
+
+  my $sgml_id = ScmIdToSgmlId($ext_name);
+
+  my $markup_purpose = MarkupComment($purpose);
+  my $markup_usage = MarkupUsage($usage);
+  my $markup_comment = MarkupComment($comment);
+  my $markup = CreateMarkupBody($ext_name, $sgml_id, $module,
+				$markup_usage, $markup_purpose, $markup_comment,
+				$filename, $line);
+
+  $procedure{$ext_name} = { usage => $usage,
+			    comment => $comment,
+			    purpose => $purpose,
+			    sgml_id => $sgml_id,
+			    module => $module,
+			    markup_purpose => $markup_purpose,
+			    markup_usage => $markup_usage,
+			    markup => $markup,
+			    file => $filename,
+			    line => $line,
+			  };
+
+  push @{$file_funcs{$filename}}, $ext_name;
+
+}
+
+
 
 sub ProcessHeader( $$$ ) {
   my ($filename, $line, $header) = @_;
@@ -1082,4 +1166,46 @@ sub ReadSgml( $ ) {
   my $answer = <IN>;
   close IN;
   return $answer;
+}
+
+sub ProcessWindowStyleOption( $$ ) {
+  my ($file,$line,$kind,$option) = (@_);
+  if ($fDebug) {
+    print STDERR "Got window style option for $kind named $option\n";
+  }
+
+  my $winstyle = "Window Style"; # from face.c's embedded CONCEPT comment
+
+  my $comment = $concepts{$winstyle}{comment};
+  my $markup = $concepts{$winstyle}{markup};
+
+  if (!$fAddedStyleHeader) {
+$markup .= '
+<table>
+<title>window style options</title>
+<tgroup align="char" cols="3">
+<thead><row>
+ <entry>Option</entry>  <entry>Type</entry>  <entry>Implementation</entry>
+</row></thead>
+<tbody>
+';
+    $fAddedStyleHeader = TRUE;
+  }
+
+  $comment .= "$option ($kind) from $file:$line\n";
+  $markup .=
+    "<row>" .
+      "<entry/" . MarkupComment($option) . "/ " .
+	"<entry/" . MarkupComment($kind) . "/ " .
+	  "<entry>$file:$line</entry> " .
+	  " </row>\n";
+  
+  $concepts{$winstyle}{comment} = $comment;
+  $concepts{$winstyle}{markup} = $markup;
+}
+
+sub DoneWindowStyleOptions() {
+  my $winstyle = "Window Style"; # from face.c's embedded CONCEPT comment
+
+  $concepts{$winstyle}{markup} .= "</tbody></tgroup></table>\n";
 }
