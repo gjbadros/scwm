@@ -33,9 +33,10 @@
 
 ;;; print some information
 (for-each (lambda (d) (debug-display d)) 
-	 (list " *** Reading `scwmrc'...\nDisplay Size: " (display-size)
-	   "\nDesk Size: " (desk-size) "\nViewport Position: "
-	   (viewport-position) "\nCurrent Desk: " (current-desk) "\n"))
+	 (list " *** Reading `scwmrc'...\nScwm v" (scwm-version) "\n"
+	       "Display Size: " (display-size)
+	       "\nDesk Size: " (desk-size) "\nViewport Position: "
+	       (viewport-position) "\nCurrent Desk: " (current-desk) "\n"))
 
 
 (define HOME (getenv "HOME"))
@@ -52,8 +53,8 @@
 ;;;(apropos-internal "*")
 
 (set! fvwm2-module-path (append fvwm2-module-path '("/uns/lib/fvwm2")))
-(define want-fvwm2-pager-module #f)
-(define want-fvwm2-winlist-module #f)
+(define want-fvwm2-pager-module #t)
+(define want-fvwm2-winlist-module #t)
 
 ;; Disabled autoraise by default; 
 ;; would give an instant autoraise with no timeout, which 
@@ -202,6 +203,8 @@
 (set! menu-bg-color (make-color "gray80"))
 (set! menu-text-color (make-color "black"))
 
+;; (color-properties (make-color "#cc88ff"))
+
 (menu-style #:fg "black" #:bg "gray80" #:stipple "grey35" 
 	    #:font menu-font #:mwm #f)
 
@@ -241,7 +244,7 @@
   (popup-menu 'menu-root-start))
 
 (define (show-icon-list-menu)
-  (show-window-list-menu #:only iconified?))
+  (show-window-list-menu #:only iconified? #:warp-to-first #t))
 
 (debug-display "Before setting image-load-path\n")
 
@@ -616,6 +619,9 @@
 
 (define (start-xterm)
   (execute (string-append xterm-program-name " " xterm-user-shell-options)))
+
+(define (start-xlogo)
+  (execute "xlogo"))
 
 (define (exec-xlock)
   (execute "xlock -nice -19 -mode blank"))
@@ -1020,6 +1026,7 @@
 (bind-key 'all "C-M-S-r" refresh)
 (bind-key 'all "C-M-S-5" recapture)
 (bind-key 'all "C-M-S-x" start-xterm)
+(bind-key 'all "C-M-S-p" start-xlogo)
 
 (bind-key 'all "C-S-F1" popup-small-ops)
 (bind-key 'all "C-S-F2" show-window-list-menu)
@@ -1087,7 +1094,7 @@
 (bind-key 'all "C-M-S-9" (lambda () (send-button-press 3)))
 
 ;;(bind-key 'all "C-M-S-4" (lambda () (send-key-press "Return")))
-(bind-key 'all "C-M-S-4" (lambda () (X-synthetic-send-string "helloworld")))
+(bind-key 'all "C-M-S-4" (lambda () (X-synthetic-send-string "hello world")))
 
 ;; This one is experimental-- sends only the buttonpress event, no buttonrelease
 (bind-key 'all "C-M-S-0" (lambda () (send-button-press 2 (get-window) #t #f)))
@@ -1120,13 +1127,16 @@
       ;; Actually run the pager. Make it manage desktops 0-2. Save the
       ;; module object in a variable so we can kill this specific pager
       ;; later.
-      (define fvwm2-pager (run-fvwm2-module fvwm2-pager-path
-					    '("0" "1")))))
+      (define fvwm2-pager (run-fvwm2-module "FvwmPager"
+					    '("0" "1")))
+;; This shouldn't be necessary any longer
+;;      (add-hook! shutdown-hook (lambda () (kill-fvwm2-module fvwm2-pager))))
+      ))
     
 ;;; This does not work for me -- I get:
 ;;; Xlib: unexpected async reply (sequence 0x13e0)!
 ;;; 
-(if want-fvwm-winlist-module
+(if want-fvwm2-winlist-module
     (register-fvwm2-module-config 
      "FvwmWinList"
      "*FvwmWinListBack #c3c3c3"
@@ -1138,9 +1148,6 @@
      "*FvwmWinListUseSkipList"
      "*FvwmWinListGeometry +0-1")
     (define fvwm-winlist (run-fvwm2-module "FvwmWinList")))
-
-;; To later shut down the module, use kill-fvwm2-module:
-;; (kill-fvwm2-module fvwm2-pager)
 
 ;;; Dynamically loaded pie menus (just big regular menus now)
 ;;; 
