@@ -508,7 +508,7 @@ make_window(ScwmWindow * win)
 
   schwin = NEW(scwm_window);
 
-  gh_defer_ints();
+  scwm_defer_ints();
 
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_window, schwin);
   SCWMWINDOW(answer) = win;
@@ -520,7 +520,7 @@ make_window(ScwmWindow * win)
   win->other_properties = gh_make_vector(SCM_MAKINUM(5), SCM_EOL);
   scm_protect_object(answer);
 
-  gh_allow_ints();
+  scwm_allow_ints();
   return answer;
 }
 
@@ -1663,21 +1663,16 @@ in the usual way if not specified. */
 {
   ScwmWindow *psw;
 
-  SCM_REDEFER_INTS;
-
   VALIDATEKILL(win);
 
   psw = PSWFROMSCMWIN(win);
   if (check_allowed_function(F_DELETE, psw) == 0) {
-    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
   if (psw->fDoesWmDeleteWindow) {
     send_clientmessage(dpy, psw->w, XA_WM_DELETE_WINDOW, CurrentTime);
-    SCM_REALLOW_INTS;
     return SCM_BOOL_T;
   }
-  SCM_REALLOW_INTS;
   return SCM_BOOL_F;
 }
 #undef FUNC_NAME
@@ -1698,11 +1693,9 @@ defaults to the window context in the usual way if not specified. */
   int fmt;
   unsigned long len;
 
-  SCM_REDEFER_INTS;
   VALIDATEKILL(win);
   psw = PSWFROMSCMWIN(win);
   if (check_allowed_function(F_DESTROY, psw) == 0) {
-    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
 
@@ -1726,7 +1719,6 @@ defaults to the window context in the usual way if not specified. */
     XKillClient(dpy, psw->w);
   }
   XSync(dpy, 0);
-  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 #undef FUNC_NAME
@@ -1759,11 +1751,9 @@ specified. Note that WIN is not raised by giving it the focus;  see
 {
   ScwmWindow *psw;
 
-  SCM_REDEFER_INTS;
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
   FocusOn(psw);
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -1774,9 +1764,7 @@ SCWM_PROC(unfocus, "unfocus", 0, 0, 0,
      /** Remove the input focus from any window that may have it. */
 #define FUNC_NAME s_unfocus
 {
-  SCM_REDEFER_INTS;
   Unfocus();
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -1794,10 +1782,8 @@ left corner is under another window, that other window may end up
 with the keyboard focus. */
 #define FUNC_NAME s_warp_to_window
 {
-  SCM_REDEFER_INTS;
   VALIDATE_WIN_USE_CONTEXT(win);
   WarpOn(PSWFROMSCMWIN(win), 0, 0, 0, 0);
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -1812,7 +1798,6 @@ context in the usual way if not specified. */
 {
   ScwmWindow *psw;
 
-  SCM_REDEFER_INTS;
   VALIDATE_WIN_USE_CONTEXT(win);
 
   psw = PSWFROMSCMWIN(win);
@@ -1823,7 +1808,6 @@ context in the usual way if not specified. */
      top flag in the window struct, only the latter of which is
      changed by raises and lowers. */
   KeepOnTop();
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -1836,10 +1820,8 @@ the window context in the usual way if not specified. */
 
 #define FUNC_NAME s_lower_window
 {
-  SCM_REDEFER_INTS;
   VALIDATE_WIN_USE_CONTEXT(win);
   LowerWindow(PSWFROMSCMWIN(win));
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2008,17 +1990,13 @@ specified. */
 #define FUNC_NAME s_iconify
 {
   ScwmWindow *psw;
-
-  SCM_REDEFER_INTS;
-  VALIDATE_WIN_USE_CONTEXT(win);
-  psw = PSWFROMSCMWIN(win);
+  VALIDATE_WIN_COPY_USE_CONTEXT(win,psw);
 
   if (check_allowed_function(F_ICONIFY, psw) == 0) {
     return SCM_BOOL_F;
   }
   Iconify(psw, 0, 0);
 
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2374,7 +2352,6 @@ only be sizes that are multiples of the basic character size).*/
   int cpix_x = 0, cpix_y = 0;
   ScwmWindow *psw;
 
-  SCM_REDEFER_INTS;
   VALIDATE_ARG_INT_COPY(1,w,width);
   VALIDATE_ARG_INT_COPY(2,h,height);
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(3, win, psw);
@@ -2383,13 +2360,11 @@ only be sizes that are multiples of the basic character size).*/
 
   if (check_allowed_function(F_RESIZE, psw) == 0
       || SHADED_P(psw)) {
-    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
 
   /* can't resize icons */
   if (psw->fIconified) {
-    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
 
@@ -2399,7 +2374,6 @@ only be sizes that are multiples of the basic character size).*/
     ResizeTo(psw,width,height);
   }
 
-  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 #undef FUNC_NAME
@@ -2444,14 +2418,12 @@ way if not specified. */
 {
   ScwmWindow *psw;
 
-  SCM_REDEFER_INTS;
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
 
   refresh_common(psw->fIconified ?
 		 (psw->icon_w) : (psw->frame));
 
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3186,7 +3158,6 @@ defaults to the window context in the usual way if not specified. */
   ScwmDecor *fl;
   int i;
 
-  SCM_REDEFER_INTS;
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   VALIDATE_WIN_USE_CONTEXT(win);
@@ -3200,7 +3171,6 @@ defaults to the window context in the usual way if not specified. */
 
   redraw_border(psw);
 
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3216,8 +3186,6 @@ defaults to the window context in the usual way if not specified. */
   ScwmWindow *psw;
   int i;
 
-  SCM_REDEFER_INTS;
-
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
   psw->fBorder = False;
@@ -3230,7 +3198,6 @@ defaults to the window context in the usual way if not specified. */
 
   redraw_border(psw);
 
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3315,12 +3282,10 @@ not specified. */
 {
   ScwmWindow *psw;
 
-  SCM_REDEFER_INTS;
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
   psw->fStickyIcon = False;
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -4144,11 +4109,11 @@ ensure_valid(SCM win, int n, const char *func_name, SCM release_p, SCM cursor)
     }
   }
   if (!WINDOWP(win)) {
-    gh_allow_ints();
+    scwm_allow_ints();
     scm_wrong_type_arg(func_name, n, win);
   }
   if (!VALIDWINP(win)) {
-    gh_allow_ints();
+    scwm_allow_ints();
     scwm_error(func_name, "Window no longer valid.");
     /* maybe should just return SCM_BOOL_F; */
   }

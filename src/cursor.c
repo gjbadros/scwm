@@ -168,10 +168,12 @@ x_cursor_to_scm(Cursor xc,Bool is_x_cursor, const char *szName)
     sxp->szName = szName;
   else
     sxp->szName = NULL;
-  gh_defer_ints();
+
+  scwm_defer_ints();
   SCWM_NEWCELL_SMOB(result,scm_tc16_scwm_cursor,sxp);
   scm_permanent_object(result);
-  gh_allow_ints();
+  scwm_allow_ints();
+
   return result;
 }
 

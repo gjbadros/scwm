@@ -221,9 +221,7 @@ ScmMakeColor(const char *cn, int *perror_status)
   sc->name = gh_str02scm(cn);
   sc->borrowed = fBorrowedColor;
 
-  gh_defer_ints();
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_color, sc);
-  gh_allow_ints();
 
   /* GJB:FIXME:MS: why scm_string_copy? */
   scm_hash_set_x (color_hash_table, scm_string_copy(sc->name), answer);

@@ -69,10 +69,7 @@ SCM
 ScmFromPScreenInfo(ScreenInfo *psi)
 {
   SCM answer;
-
-  gh_defer_ints();
   SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_screen,psi);
-  gh_allow_ints();
   return answer;
 }
 

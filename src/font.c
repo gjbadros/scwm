@@ -190,7 +190,7 @@ allocated, an error results. */
   }
 #endif
 
-  SCM_REDEFER_INTS;
+  scwm_defer_ints();
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_font, font);
 #ifdef I18N  
   XFONT(answer) = fontset;
@@ -210,7 +210,7 @@ allocated, an error results. */
   FONT(answer)->height = XFONT(answer)->ascent + XFONT(answer)->descent;
 #endif
   FONTNAME(answer) = gh_str02scm(fn);
-  SCM_REALLOW_INTS;
+  scwm_allow_ints();
   FREE(fn);
 
   scm_hash_set_x(font_hash_table, FONTNAME(answer), answer);
@@ -329,7 +329,7 @@ void init_font()
   /* GJB:FIXME:: should make the font object containing
      the fixed font used throughout and made permanent.
      The string should not be used in C code --03/22/99 gjb */
-  gh_defer_ints();
+  scwm_defer_ints();
   str_fixed=gh_str02scm(XFIXEDFONTNAME);
   scm_permanent_object(str_fixed);
 
@@ -337,7 +337,7 @@ void init_font()
     scm_make_weak_value_hash_table (SCM_MAKINUM(FONT_HASH_SIZE));
   scm_permanent_object(font_hash_table);
 
-  gh_allow_ints();
+  scwm_allow_ints();
 #ifndef SCM_MAGIC_SNARFER
 #include "font.x"
 #endif

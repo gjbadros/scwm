@@ -69,9 +69,7 @@ make_menulook_internal(SCM name, SCM extra, MenuDrawingVtable * mdvt)
   pml->extra = extra;
   pml->mdvt = mdvt;
 
-  gh_defer_ints();
   SCWM_NEWCELL_SMOB(result, scm_tc16_scwm_menulook, pml);
-  gh_allow_ints();
 
   return result;
 }

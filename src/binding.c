@@ -1363,7 +1363,6 @@ find_mouse_event_type()
 {
   XEvent d;
 
-  gh_defer_ints();
   WXGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y);
   have_orig_position = True;
 
@@ -1378,7 +1377,6 @@ find_mouse_event_type()
       }
     }
   }
-  gh_allow_ints();
 }
 
 void 

@@ -67,7 +67,7 @@ public:
       _frame_y.SetPv(pvWin);
       _frame_width.SetPv(pvWin);
       _frame_height.SetPv(pvWin);
-      gh_defer_ints();
+      scwm_defer_ints();
       scm_protect_object(_scmXL = ScmMakeClVariable(&_frame_x));
       scm_protect_object(_scmYT = ScmMakeClVariable(&_frame_y));
       scm_protect_object(_scmWidth = ScmMakeClVariable(&_frame_width));
@@ -81,7 +81,7 @@ public:
       pexprYB->AddVariable(_frame_height);
       scm_protect_object(_scmYB = ScmMakeClLinearExpression(pexprYB));
 
-      gh_allow_ints();
+      scwm_allow_ints();
     }
 
   void

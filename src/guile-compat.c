@@ -26,6 +26,7 @@
 #include <guile/gh.h>
 
 #include "guile-compat.h"
+#include "scwm-guile.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,7 +74,7 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
   { /* scope */
     SCM new_rootcont;
     SCM_NEWCELL (new_rootcont);
-    SCM_REDEFER_INTS;
+    scwm_defer_ints();
 #ifdef USE_STACKJMPBUF
     SCM_SETJMPBUF (new_rootcont, &static_jmpbuf);
 #else
@@ -97,7 +98,7 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
 #endif
     old_rootcont = scm_rootcont;
     scm_rootcont = new_rootcont;
-    SCM_REALLOW_INTS;
+    scwm_allow_ints();
   }
 
 #ifdef DEBUG_EXTENSIONS
@@ -111,7 +112,7 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
                                body, body_data,
                                cwdr_no_unwind_handler, &my_handler_data);
 
-  SCM_REDEFER_INTS;
+  scwm_defer_ints();
 #if 0
   scwm_msg(DBG,"scm_internal_cwdr_no_unwind","-");
 #endif
@@ -121,7 +122,7 @@ scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
   scm_last_debug_frame = SCM_DFRAME (old_rootcont);
 #endif
   scm_rootcont = old_rootcont;
-  SCM_REALLOW_INTS;
+  scwm_allow_ints();
   scm_ints_disabled = old_ints_disabled;
 
   /* Now run the real handler iff the body did a throw. */
@@ -241,11 +242,11 @@ SCM scm_strport_to_string(SCM port)
 {
   SCM answer;
   { /* scope */
-    gh_defer_ints();
+    scwm_defer_ints();
     answer = scm_makfromstr (SCM_CHARS (gh_cdr (SCM_STREAM (port))),
 			     SCM_INUM (gh_car (SCM_STREAM (port))),
 			     0);
-    gh_allow_ints();
+    scwm_allow_ints();
   }
   return answer;
 }

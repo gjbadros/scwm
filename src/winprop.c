@@ -68,11 +68,7 @@ print_property_handler(SCM ARG_UNUSED(obj), SCM port, scm_print_state *ARG_IGNOR
 void set_property_handler(SCM prop, scwm_property_handler *handler)
 {
   SCM new_obj;
-
-  SCM_DEFER_INTS;
   SCWM_NEWCELL_SMOB(new_obj, scm_tc16_scwm_property_handler, handler);
-  SCM_ALLOW_INTS;
-
   scm_hashq_set_x (property_handler_hash_table, prop, new_obj);
 }
 

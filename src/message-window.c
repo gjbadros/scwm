@@ -295,9 +295,7 @@ Uses defaults from the ScreenInfo struct for the other values. */
   XSaveContext(dpy, msg->win, ExposeWindowProcContext, (caddr_t) OnExposeEvent);
   XSaveContext(dpy, msg->win, MsgWindowContext, (caddr_t) msg);
 
-  gh_defer_ints();
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_msgwindow, msg);
-  gh_allow_ints();
 
   return answer;
 }

@@ -458,12 +458,12 @@ SPECS is a list of face specifiers. */
   sf = NEW(scwm_face);
   sf->bf = bf = NEW(ButtonFace);
 
-  gh_defer_ints();
+  scwm_defer_ints();
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_face, sf);
   bf->sface = answer;
   bf->style = SimpleButton;
   bf->next = NULL;
-  gh_allow_ints();
+  scwm_allow_ints();
 
   for (p=flags; p!=SCM_EOL; p=gh_cdr(p)) {
     flag = gh_car(p);

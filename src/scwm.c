@@ -164,7 +164,7 @@ int g_argc;
 
 /* the jump buffer environment for the handle events loop
    to implement restarting the event loop */
-jmp_buf envHandleEventsLoop;
+sigjmp_buf envHandleEventsLoop;
 
 /* assorted gray bitmaps for decorative borders */
 #define g_width 2
@@ -430,10 +430,10 @@ InitVariables(void)
 
   CassowaryInitClVarsInPscreen(&Scr);
 
-  gh_defer_ints();
+  scwm_defer_ints();
   scm_protect_object(scmScreen = ScmFromPScreenInfo(&Scr));
   Scr.schscreen = scmScreen;
-  gh_allow_ints();
+  scwm_allow_ints();
 
   /* Sets the current desktop number from prior Scwm running */
   /* Multiple desks are available even in non-virtual
@@ -605,7 +605,7 @@ scwm_main(int argc, char **argv)
   setlinebuf(stderr);
   setlinebuf(stdout);
 
-  SCM_REDEFER_INTS;
+  scwm_defer_ints();
   init_font();
   init_decor();
   init_screen();
@@ -639,7 +639,7 @@ scwm_main(int argc, char **argv)
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
 #endif
-  gh_allow_ints();
+  scwm_allow_ints();
 
   InitUserData();
 
@@ -1123,11 +1123,7 @@ Repository Timestamp: %s\n",
 
   DBUG((DBG,"main", "Entering HandleEvents loop..."));
 
-#ifdef BSD
   sigsetjmp(envHandleEventsLoop,1);
-#else
-  setjmp(envHandleEventsLoop);
-#endif
   /* GJB:FIXME:: Hubert Canon reports that he needs
      this following line because sigsetjmp on Solaris
      is corrupting several of the global variable values!
@@ -1303,11 +1299,7 @@ SigResetLoop(int ARG_IGNORE(ignored))
     XUngrabServer_withSemaphore(dpy);
     XUngrabPointer(dpy,CurrentTime);
     XUngrabKeyboard(dpy,CurrentTime);
-#ifdef BSD
     siglongjmp(envHandleEventsLoop,1 /* ret. val for setjmp */);
-#else
-    longjmp(envHandleEventsLoop,1 /* ret. val for setjmp */);
-#endif
   }
   SIGNAL_RETURN;
 }
@@ -1471,11 +1463,7 @@ SigDoneSegv(int ARG_IGNORE(ignored))
              "please run with '--segv-just-stop' or '--segv-reset-count 0'\n"
              "and report a bug!\n"
              "Trying to continue... save your work if you still can!");
-#ifdef BSD
     siglongjmp(envHandleEventsLoop,1);
-#else
-    longjmp(envHandleEventsLoop,1);
-#endif
   } else {
     reset_signal_handler(SIGSEGV);
     scwm_msg(ERR, "SigDoneSegv","Doing some cleanup to restore sanity");

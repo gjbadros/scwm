@@ -62,7 +62,6 @@ current decor. */
   }
   /* XXX should redraw the title bars */
   redraw_titlebars(fl, 0);
-  SCM_REALLOW_INTS;
   return (just);
 }
 #undef FUNC_NAME

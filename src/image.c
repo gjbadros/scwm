@@ -256,10 +256,7 @@ make_empty_image(SCM name)
   ci->depth = 0;
   ci->foreign = 0;
 
-  gh_defer_ints();
   SCWM_NEWCELL_SMOB(result, scm_tc16_scwm_scwmimage, ci);
-  gh_allow_ints();
-
   return result;
 }
 
@@ -798,8 +795,7 @@ void init_image()
   val_load_xbm = gh_lookup("load-xbm");
   val_load_xpm = gh_lookup("load-xpm");
 
-  if (val_load_xpm == SCM_UNDEFINED ||
-      val_load_xbm == SCM_UNDEFINED) {
+  if (val_load_xbm == SCM_UNDEFINED) {
     scwm_msg(ERR,"init_image","load-xbm, load-xpm not defined -- probable build error\n\
 consider 'rm *.x' and rebuild");
     abort();

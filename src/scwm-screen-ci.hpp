@@ -38,12 +38,12 @@ public:
       _vy.SetPv(pvScr);
       _pointerx.SetPv(pvScr);
       _pointery.SetPv(pvScr);
-      gh_defer_ints();
+      scwm_defer_ints();
       scm_protect_object(_scmVx = ScmMakeClVariable(&_vx));
       scm_protect_object(_scmVy = ScmMakeClVariable(&_vy));
       scm_protect_object(_scmPointerX = ScmMakeClVariable(&_pointerx));
       scm_protect_object(_scmPointerY = ScmMakeClVariable(&_pointery));
-      gh_allow_ints();
+      scwm_allow_ints();
     }
 
 #if 0
