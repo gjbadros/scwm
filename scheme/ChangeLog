@@ -1,3 +1,9 @@
+Sun Oct  4 16:51:29 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Use cached-program-exists module and
+	cached-program-exists? procedure.  Also use new `first-word' on
+	exename so that options to the executable are ignored
+
 1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
 
 	* flux.scm: renamed set-message-window-position-align! to
