@@ -1,3 +1,7 @@
+Wed Sep  8 14:01:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-snarf: Rewritten sed script by Ken Pizzini. Thanks Ken!
+
 Tue Sep  7 17:51:28 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-snarf: Use sed instead of awk, since vendor awk-s do not
