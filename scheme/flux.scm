@@ -81,50 +81,6 @@ Just a toy--- perhaps could be useful to call attention to a window."
   "Dump all arguments into a string."
   (with-output-to-string (lambda () (apply write-all #t rest))))
 
-(define*-public (move-window-to-viewport xx yy #&optional win)
-  "Move WIN to the viewport numbered (XX,YY).
-The (0,0) viewport is the starting viewport.  XX and YY are
-full display-size increments (e.g., (1,0) is the viewport
-just to the right of the home (0,0) viewport)."
-  (let ((d-s (desk-size)))
-    (if (or (> xx (car d-s)) (> yy (cadr d-s)))
-	(error "viewport position outside range of desk-size")))
-  (let ((pos (window-position win)))
-    (move-window (+ (* xx display-width)
-		    (modulo (car pos) display-width))
-		 (+ (* yy display-height)
-		    (modulo (cadr pos) display-height)) win)))
-
-(define-public (in-viewport xx yy)
-  "Return a function which takes a window and moves it to the specified viewport.
-XX and YY are full display-size increments (e.g., (1,0) is the
-viewport just to the right of the home (0,0) viewport)."
-  (lambda (win) (move-window-to-viewport xx yy win)))
-
-(define-public (place-at-point win)
-  "Place the window at the mouse pointer.
-This is a valid value for various placement-procs in `make-style'."
-  (let ((pp (pointer-position)) (ws (window-size win)))
-    (move-to (- (car pp) (quotient (car ws) 2))
-             (- (cadr pp) (quotient (cadr ws) 2)) win))
-  (move-inside win))
-
-(define-public (move-inside win)
-  "Ensure that the window is entirely inside the viewport, if possible."
-  (let* ((vp (viewport-position)) (ds (display-size)) (ws (window-size win))
-         (wp (window-position win)) (xx (car wp))
-         (bw (window-frame-border-width win)))
-    (cond ((< (car wp) (car vp)) (set! xx (car vp))
-           (move-to xx (cadr wp) win))
-          ((> (+ (car wp) (car ws)) (+ (car vp) (car ds)))
-           (set! xx (- (+ (car vp) (car ds)) (car ws) bw bw))
-           (move-to xx (cadr wp) win)))
-    (cond ((< (cadr wp) (cadr vp)) (move-to xx (cadr vp) win))
-          ((> (+ (cadr wp) (cadr ws)) (+ (cadr vp) (cadr ds)))
-           (move-to xx (- (+ (cadr vp) (cadr ds)) (cadr ws)
-                          bw bw (title-height))
-                    win)))))
-
 (define-public (system-info-string)
   "Return a string with various system information.
 Use `show-system-info' to display it in a window."

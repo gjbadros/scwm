@@ -35,6 +35,10 @@
 
 
 
+(define-public (round/ x y)
+  "Reaturn the closest integer to X divided by Y."
+  (inexact->exact (round (/ x y))))
+
 (define-public use-scwm-system-proc
 ;;;**VAR
 ;;; If #t, `execute' will use `scwm-system' instead of guile's `system'.
@@ -51,11 +55,11 @@
 ;; Convenience procedures for specifying positions and sizes.
 (define-public (%x x)
   "Return the number of pixels that is X percent of the display width."
-  (inexact->exact (truncate (/ (* x display-width) 100))))
+  (round/ (* x display-width) 100))
 
 (define-public (%y y)
   "Return the number of pixels that is Y percent of the display height."
-  (inexact->exact (truncate (/ (* y display-height) 100))))
+  (round/ (* y display-height) 100))
 
 (define-public (x- x)
   "Return the viewport pixel coordinate X pixels left of the right display edge."
@@ -95,19 +99,19 @@
 
 (define-public (%x- x)
   "Return the pixel coordinate X percent of the width away from the right edge."
-  (inexact->exact (truncate (/ (* (- 100 x) display-width) 100))))
+  (round/ (* (- 100 x) display-width) 100))
 
 (define-public (%y- y)
   "Return the pixel coordinate Y percent of the height away from the bottom edge."
-  (inexact->exact (truncate (/ (* (- 100 y) display-height) 100))))
+  (round/ (* (- 100 y) display-height) 100))
 
 (define*-public (w%x x #&optional (w (get-window)))
   "Return a pixel width X percent of the width of window W."
-  (inexact->exact (truncate (/ (* x (car (window-frame-size w))) 100))))
+  (round/ (* x (car (window-frame-size w))) 100))
 
 (define*-public (w%y y #&optional (w (get-window)))
   "Return a pixel height Y percent of the height of window W."
-  (inexact->exact (truncate (/ (* y (cadr (window-frame-size w))) 100))))
+  (round/ (* y (cadr (window-frame-size w))) 100))
 
 (define-public (program-exists? program-name)
   "Return #t if PROGRAM-NAME is found as an executable in the current $PATH.

@@ -1,3 +1,37 @@
+Sun Dec 27 14:48:35 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* placement.scm: Several useful procedures that place windows
+ 	(place-in-viewport, place-on-desk, interactive-place,
+ 	place-at-point) and several that return placement procedures
+ 	according to various parameters (in-viewport-placement,
+ 	on-desk-placement, interactive-placement, at-point-placement,
+ 	virtual-switch-placement)
+
+	* virtual.scm: Various useful things for viewport/desktop
+ 	management. Procedures to compute useful aligned/integral viewport
+ 	coordinates (containing-aligned-viewport,
+ 	nearest-aligned-viewport, window-aligned-viewport win); useful
+ 	functions for moving windows around relative to virtual space
+	(move-window-to-viewport, move-inside-viewport,
+ 	move-inside-aligned-viewport, move-inside-current-viewport,
+ 	move-inside-own-viewport); procedures to set the current viewport
+ 	position in interesting higher-level ways (move-to-viewport,
+ 	align-viewport, warp-to-window-viewport); and a macro that saves
+ 	and restores teh current desktop and viewport
+ 	(save-virtual-excursion).
+	
+	* flux.scm (move-window-to-viewport, in-viewport, place-at-point,
+ 	move-inside): Removed; virtual.scm and placement.scm have more
+ 	general replacements (roughly bases on these).
+
+	* base.scm (round/): New procedure that divides one number by
+ 	another and returns the nearest integer, useful to implement
+ 	percentages and integer division for coordinates. All the
+ 	%-procedures have been converted to use round/.
+
+	* wininfo.scm (window-center-position): New procedure that returns
+ 	a list of the coordinates
+
 1998-12-23  Sam Steingold  <sds@goems.com>
 
 	* Makefile.am (scwm_common_scheme): reokaced
@@ -17,7 +51,6 @@ Tue Dec 22 04:05:39 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	standard-move-resize-message-window.scm,
  	move-with-message-window.scm: Removed (obsoleted by
  	message-window.scm)
-
 	* Makefile.am: install and distribute message-window.scm, do not
  	install or distribute resize-with-message-window.scm,
  	move-resize-message-window.scm,

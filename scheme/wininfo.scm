@@ -116,6 +116,13 @@ if it were on top (unobscured)."
 		    (display-size))))
 	 (apply * (window-frame-size win)))))
 
+(define-public (window-center-position win)
+  "Return the coordinates of the center of WIN as a list of the X and Y coordinate."
+  (map (lambda (wp ws) 
+	 (+ wp (round/ ws 2)))
+       (window-position win)
+       (window-size win)))
+
 (define*-public (window-geometry-string #&optional (win (get-window)))
   "Return a string corresponding to the geometry specifications for WIN.
 The virtual position and the frame size are used.  The resulting string
