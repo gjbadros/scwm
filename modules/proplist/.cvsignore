@@ -1,0 +1,8 @@
+.deps
+.libs
+Makefile
+Makefile.in
+libPropList.la
+libscwmproplist.la
+scwmproplist.lo
+scwmproplist.x

@@ -1,3 +1,19 @@
+Thu Apr 15 19:53:08 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added PROPLIST_SUBDIRS, conditional on
+	HAVE_PROPLIST AM_CONDITIONAL.
+
+Thu Apr 15 19:45:30 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* proplist/Makefile.am, proplist/scwmproplist.c,
+ 	proplist/proplistP.h: Added from Toby Sargeant.  Thanks Toby!
+  	Some minor cleanup, significant interface enhancements
+	(permit strings to be used as property lists transparently, and
+ 	return as strings transparently, more error checking, bug fixes,
+ 	etc.) by me before this commit.  Still not hugely tested, but this 
+	could be really useful for reading other wm-s and gnome data
+	structures from files.
+
 Mon Apr 12 10:53:19 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* xpm-menus/draw-xpm-menu.c: Made the rewrite changes as I did to
