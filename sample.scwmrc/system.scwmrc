@@ -65,7 +65,7 @@
 	      #:focus 'mouse
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
-	      #:int-override #t #:decroate-transient #t
+	      #:int-override #t #:decorate-transient #t
 	      #:PPosition-hint #f
 	      #:lenience #t
 	      )
@@ -250,7 +250,7 @@
 
 ;; move the viewport with the keyboard
 (bind-key 'all "C-M-Left" (lambda () (move-viewport (%x -100) 0)))
-(bind-key 'all "C-M-Right" (lambda () (move-pointer (%x 100) 0)))
+(bind-key 'all "C-M-Right" (lambda () (move-viewport (%x 100) 0)))
 (bind-key 'all "C-M-Up" (lambda () (move-viewport 0 (%y -100))))
 (bind-key 'all "C-M-Down" (lambda () (move-viewport 0 (%y 100))))
 
