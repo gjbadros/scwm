@@ -1,3 +1,8 @@
+Mon Oct 18 11:03:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (EXTRA_DIST): Stupid typo fix -- didn't change
+	reference to scwm_doc_DATA when I changed its name.
+
 Sun Oct 17 19:21:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Use scwm_doc_DATA for documentation files.  Thanks
