@@ -42,7 +42,6 @@ struct scwm_body_apply_data {
 
 SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args)
 {
-  puts("Inside error handler.");
   scm_handle_by_message_noexit(handler_data, tag, throw_args);
   return apply_hooks_message_only(error_hook, gh_cons(tag, throw_args));
 }
