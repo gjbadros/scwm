@@ -65,9 +65,13 @@ does."
   (containing-aligned-viewport (window-center-position win)))
 
 (define-public (current-viewport-offset-xx)
+  "Return the current viewport horizontal offset as a multiple of the display width.
+The returned value will be a non-negative real number."
   (/ (viewport-x-position) display-width))
 
 (define-public (current-viewport-offset-yy)
+  "Return the current viewport vertical offset as a multiple of the display height.
+The returned value will be a non-negative real number."
   (/ (viewport-y-position) display-height))
 
 ;;;
@@ -83,17 +87,22 @@ the position that `move-window-to-viewport' moves the window to."
   (let ((d-s (desk-size)))
     (if (or (> xx (- (car d-s) 1)) (> yy (- (cadr d-s) 1)))
 	(error "viewport position outside range of desk-size")))
-  (let ((pos (window-position win)))
+  (let* ((pos (window-position win))
+	 (w-f-s (window-frame-size win))
+	 (width (car w-f-s))
+	 (height (cadr w-f-s)))
     (list (+ (* xx display-width)
-	     (modulo (car pos) display-width))
+	     (modulo (car pos) (- display-width (round/ width 2))))
 	  (+ (* yy display-height)
-	     (modulo (cadr pos) display-height)))))
+	     (modulo (cadr pos) (- display-height (round/ height 2)))))))
 
 (define*-public (move-window-to-viewport xx yy #&optional (win (get-window)))
   "Move WIN to the viewport numbered (XX,YY).
 The (0,0) viewport is the starting viewport.  XX and YY are
 full display-size increments (e.g., (1,0) is the viewport
-just to the right of the home (0,0) viewport)."
+just to the right of the home (0,0) viewport).  Uses 
+`window-position-in-viewport' to select the position within
+the viewport."
   (apply move-window (append (window-position-in-viewport xx yy win) (list win))))
 
 (define-public (move-inside-viewport win x y)
