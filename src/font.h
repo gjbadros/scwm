@@ -50,6 +50,7 @@
 #endif
 
 EXTERN long scm_tc16_scwm_font;
+EXTERN SCM str_fixed;
 
 typedef struct {
 #ifdef I18N

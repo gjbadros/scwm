@@ -58,7 +58,6 @@ shared.
 static SCM font_hash_table = SCM_UNDEFINED;
 static SCM protected_fonts = SCM_UNDEFINED;
 
-static SCM str_fixed;
 SCM_SYMBOL (sym_name,"name");
 SCM_SYMBOL (sym_height,"height");
 
@@ -117,7 +116,7 @@ allocated, an error results. */
   XFontStruct *xfs;
 #endif
   char *fn;
-  int len,i;
+  int len;
 
   if (!gh_string_p(fname)) {
     SCM_ALLOW_INTS;
@@ -309,24 +308,14 @@ SCWM_PROC(set_window_font_x, "set-window-font!", 1, 0, 0,
 #undef FUNC_NAME
 
 
+
 static
 void
 menu_font_update()
 {
   XGCValues gcv;
   unsigned long gcm;
-#ifdef I18N
-  XRectangle dummy,log_ret;
 
-  XmbTextExtents(XFONT(Scr.menu_font),"WWWWWWWWWWWWWWW", 15,&dummy,&log_ret);
-  Scr.EntryHeight = log_ret.height + HEIGHT_EXTRA;
-  Scr.SizeStringWidth = log_ret.width;
-#else
-  Scr.EntryHeight = FONTHEIGHT(Scr.menu_font) + HEIGHT_EXTRA;
-  Scr.SizeStringWidth = XTextWidth(XFONT(Scr.menu_font),
-					 "WWWWWWWWWWWWWWW", 15);
-#endif
-				   
   gcm = GCFont;
 #ifdef I18N
   gcv.font = FONT(Scr.menu_font)->xfs->fid;
@@ -360,7 +349,7 @@ SCWM_PROC(set_menu_font_x, "set-menu-font!", 1, 0, 0,
   Scr.menu_font=font;
   menu_font_update();
 
-  return (font);
+  return font;
 }
 #undef FUNC_NAME
 
@@ -379,6 +368,8 @@ cache.*/
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+
 
 MAKE_SMOBFUNS(font);
 
