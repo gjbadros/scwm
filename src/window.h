@@ -31,7 +31,7 @@ SCM make_window(ScwmWindow *win);
 void invalidate_window(SCM schwin);
 SCM window_p(SCM obj);
 
-SCM get_window(SCM kill_p);
+SCM get_window(SCM kill_p, SCM select_p);
 SCM select_window(SCM kill_p); 
 SCM delete_window(SCM win);
 SCM destroy_window(SCM win);
@@ -110,6 +110,7 @@ SCM set_PPosition_hint_x(SCM val, SCM w);
 SCM set_OL_decor_hint_x(SCM val, SCM w);
 SCM set_start_on_desk_x(SCM desk, SCM w);
 SCM set_skip_mapping_x(SCM val, SCM w);
+SCM set_lenience_x(SCM val, SCM win);
 
 #endif /* WINDOW_H */
 
