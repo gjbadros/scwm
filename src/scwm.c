@@ -420,9 +420,9 @@ scwm_main(int argc, char **argv)
 
   XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, CurrentTime);
 
-  XSync(dpy, 0);
+  XSync(dpy, False);
   if (debugging)
-    XSynchronize(dpy, 1);
+    XSynchronize(dpy, True);
 
   Scr.SizeStringWidth = XTextWidth(Scr.StdFont.font,
 				   " +8888 x +8888 ", 15);

@@ -668,9 +668,17 @@ window_shade(SCM win, SCM animated_p)
   
   if (fAnimated) {
     AnimatedShadeWindow(sw,True /* roll up */, -1, NULL);
+    XSync(dpy,True);  /* Discard events so we don't propagate a resize
+			 event that will call setupframe again */
   }
   SetupFrame(sw, sw->frame_x, sw->frame_y, sw->frame_width,
 	     sw->title_height + sw->boundary_width, False);
+  if (fAnimated) {
+    /* need to reset the client window offset so that if
+       if it's un-window-shaded w/o animation, things are ok */
+    XMoveWindow(dpy,sw->w,0,0);
+  }
+
   Broadcast(M_WINDOWSHADE, 1, tmp_win->w, 0, 0, 0, 0, 0, 0);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
@@ -704,7 +712,7 @@ un_window_shade(SCM win, SCM animated_p)
   sw->buttons &= ~WSHADE;
   if (fAnimated) {
     AnimatedShadeWindow(sw,False /* !roll up */, -1, NULL);
-  } 
+  }
   SetupFrame(sw, sw->frame_x, sw->frame_y, 
 	     sw->orig_wd, sw->orig_ht, True);
   Broadcast(M_DEWINDOWSHADE, 1, sw->w, 0, 0, 0, 0, 0, 0);

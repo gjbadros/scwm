@@ -1,5 +1,6 @@
-
-
+/* $Id$
+ * move.c
+ */
 
 /*
  * This module is all original code 
@@ -123,8 +124,7 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
 /*  Bool shaded = sw->buttons & WSHADE; FIXGJB: unused for now
     int normal_height = shaded? sw->orig_ht : sw->frame_height; */
   int normal_height = sw->orig_ht;
-  int client_height = normal_height - shaded_height - sw->boundary_width;
-  int deltaY = normal_height - shaded_height;
+  int client_height = normal_height - shaded_height;
   /* set our defaults */
   if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
   if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
@@ -132,23 +132,26 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
   if (fRollUp) {
     XLowerWindow(dpy,w);
     do {
-      /* while (height > end_height)  */
-      XMoveWindow(dpy, w, 0, -deltaY * (*ppctMovement));
+      XMoveWindow(dpy, w, 0, -client_height * (*ppctMovement));
       XResizeWindow(dpy, wFrame, width, 
 		    shaded_height + client_height * (1 - *ppctMovement));
       XFlush(dpy);
       sleep_ms(cmsDelay);
     } while (*ppctMovement != 1.0 && ppctMovement++);
+    XMoveWindow(dpy,w,0,-client_height);
+    XResizeWindow(dpy,wFrame,width,shaded_height);
   } else {  /* roll down the window shade */
     do {
       XResizeWindow(dpy, wFrame, width, 
 		    shaded_height + client_height * (*ppctMovement));
-      XMoveWindow(dpy, w, 0, -deltaY * (1-*ppctMovement));
+      XMoveWindow(dpy, w, 0, -client_height * (1 - *ppctMovement));
       XFlush(dpy);
       sleep_ms(cmsDelay);
     } while (*ppctMovement != 1.0 && ppctMovement++);
+    XResizeWindow(dpy,wFrame,width,shaded_height+client_height);
+    XMoveWindow(dpy,w,0,0);
   }
-  XMoveWindow(dpy,w,0,0);
+  XFlush(dpy);
 }
 
 /****************************************************************************

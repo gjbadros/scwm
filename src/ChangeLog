@@ -1,3 +1,16 @@
+Mon Nov 10 20:41:21 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* move.c, window.c: Fix AnimatedShadeWindow()'s handling of
+	windows so that it works with Emacs windows;  bug was a result of
+	the resizing of the window causing an extra PropertyNotify event,
+	which caused scwm to think that the newly shaded window had been
+	resized, which then makes it call SetupFrame again and re-expose
+	part of the client window.
+
+	* borders.c: cleaned up SetupFrame a bit while tracking down the
+	above bug.  Even found an old bug in fvwm2 (of no obvious
+	consequence, though).
+
 Mon Nov 10 10:06:59 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* bindings.c: just warn when an unknown keysym is attempted to be
@@ -33,7 +46,7 @@ Mon Nov 10 00:13:29 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	boolean saying whether we want the (un-)window-shade-ing to be done
 	animatedly
 
-	* Borders.c: some general cleanup of formatting due to
+	* borders.c: some general cleanup of formatting due to
 	automatically removing the #ifdef-s
 
 	* events.c: removed unused macros MAX_NAME_LEN, MAX_ICON_NAME_LEN

@@ -1210,14 +1210,13 @@ void
 SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
 {
   XEvent client_event;
-  XWindowChanges frame_wc, xwc;
-  unsigned long frame_mask, xwcm;
+  XWindowChanges xwc;
+  unsigned long xwcm;
   int cx, cy, i;
   Bool Resized = False, Moved = False;
   int xwidth, ywidth, left, right;
 
   Bool shaded = tmp_win->buttons & WSHADE;
-
 
   /* if windows is not being maximized, save size in case of maximization */
   if (!(tmp_win->flags & MAXIMIZED) && !shaded) {
@@ -1260,25 +1259,19 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
       tmp_win->title_width = 1;
 
     if (tmp_win->flags & TITLE) {
-      xwcm = CWWidth | CWX | CWY | CWHeight;
       tmp_win->title_x = tmp_win->boundary_width +
 	(left) * tmp_win->title_height;
       if (tmp_win->title_x >= w - tmp_win->boundary_width)
 	tmp_win->title_x = -10;
       tmp_win->title_y = tmp_win->boundary_width;
 
-      xwc.width = tmp_win->title_width;
-
-      xwc.height = tmp_win->title_height;
-      xwc.x = tmp_win->title_x;
-      xwc.y = tmp_win->title_y;
-      XConfigureWindow(dpy, tmp_win->title_w, xwcm, &xwc);
-
+      XMoveResizeWindow(dpy, tmp_win->title_w,
+			tmp_win->title_x, tmp_win->title_y,
+			tmp_win->title_width, tmp_win->title_height);
 
       xwcm = CWX | CWY | CWHeight | CWWidth;
       xwc.height = tmp_win->title_height;
       xwc.width = tmp_win->title_height;
-
       xwc.y = tmp_win->boundary_width;
       xwc.x = tmp_win->boundary_width;
       for (i = 0; i < Scr.nr_left_buttons; i++) {
@@ -1331,9 +1324,8 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
 	} else if (i == 1) {
 	  xwc.x = w - tmp_win->boundary_width + tmp_win->bw;
 	  xwc.y = tmp_win->corner_width;
-	  xwc.width = tmp_win->boundary_width;
 	  xwc.height = ywidth;
-
+	  xwc.width = tmp_win->boundary_width;
 	} else if (i == 2) {
 	  xwc.x = tmp_win->corner_width;
 	  xwc.y = h - tmp_win->boundary_width + tmp_win->bw;
@@ -1345,7 +1337,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
 	  xwc.width = tmp_win->boundary_width;
 	  xwc.height = ywidth;
 	}
-	if (!shaded || (i != 2))
+	if (!shaded || (i < 2)) /* do top corners even when shaded */
 	  XConfigureWindow(dpy, tmp_win->sides[i], xwcm, &xwc);
       }
 
@@ -1353,20 +1345,17 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
       xwc.width = tmp_win->corner_width;
       xwc.height = tmp_win->corner_width;
       for (i = 0; i < 4; i++) {
-	if (i % 2)
+	if (i == 1 || i == 3)
 	  xwc.x = w - tmp_win->corner_width + tmp_win->bw;
 	else
 	  xwc.x = 0;
-
-	if (i / 2)
+	if (i == 2 || i == 3)
 	  xwc.y = h - tmp_win->corner_width;
 	else
 	  xwc.y = 0;
-
-	if (!shaded || (i == 0) || (i == 1))
+	if (!shaded || (i < 2)) /* do top corners even when shaded */
 	  XConfigureWindow(dpy, tmp_win->corners[i], xwcm, &xwc);
       }
-
     }
   }
   tmp_win->attr.width = w - 2 * tmp_win->boundary_width;
@@ -1386,20 +1375,18 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
   /* 
    * fix up frame and assign size/location values in tmp_win
    */
-  frame_wc.x = tmp_win->frame_x = x;
-  frame_wc.y = tmp_win->frame_y = y;
-  frame_wc.width = tmp_win->frame_width = w;
-  frame_wc.height = tmp_win->frame_height = h;
-  frame_mask = (CWX | CWY | CWWidth | CWHeight);
-  XConfigureWindow(dpy, tmp_win->frame, frame_mask, &frame_wc);
-
+  tmp_win->frame_x = x;
+  tmp_win->frame_y = y;
+  tmp_win->frame_width = w;
+  tmp_win->frame_height = h;
+  XMoveResizeWindow(dpy, tmp_win->frame, x, y, w, h);
 
   if (ShapesSupported) {
     if ((Resized) && (tmp_win->wShaped)) {
       SetShape(tmp_win, w);
     }
   }
-  XSync(dpy, 0);
+  XSync(dpy, False);
   if (sendEvent && !shaded) {
     client_event.type = ConfigureNotify;
     client_event.xconfigure.display = dpy;
