@@ -865,7 +865,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
   /* FIXGJB: need to make initial item selection */
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
-      usleep(10);
+      ms_sleep(10);
 
       if (c10ms_delays++ == MENU_POPUP_DELAY_MS/10) {
 	MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);

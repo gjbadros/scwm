@@ -17,6 +17,7 @@
 
 #include <guile/gh.h>
 #include "scwm.h"
+#include "syscompat.h"
 #include "screen.h"
 #include "borders.h"
 #include "window.h"
@@ -91,6 +92,17 @@ call_thunk_with_message_handler(SCM thunk)
   thunk_data.body_proc = thunk;
   return scm_internal_catch(SCM_BOOL_T, scm_body_thunk, &thunk_data,
 			    scm_handle_by_message_noexit, "scwm");
+}
+
+void
+ms_sleep(unsigned long ms)
+{
+  /* usleep is not guaranteed to work for us > 1,000,000 */
+  if (ms > 1000) {
+    sleep(ms/1000);
+    ms %= 1000;
+  }
+  usleep(ms*1000);
 }
 
 

@@ -950,7 +950,8 @@ GrabEm(enum cursor cursor)
     i++;
     /* If you go too fast, other windows may not get a change to release
      * any grab that they have. */
-    usleep(1);
+    /* FIXGJB: fvwm2 must be doing the wrong thing here! --08/28/98 gjb */
+    ms_sleep(1);
   }
 
   /* If we fall out of the loop without grabbing the pointer, its

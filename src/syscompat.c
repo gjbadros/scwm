@@ -52,7 +52,7 @@ gethostname(char *client, size_t length)
 
 
 #ifndef HAVE_USLEEP
-void 
+int 
 usleep(unsigned long n)
 {
   struct timeval value;
@@ -60,8 +60,8 @@ usleep(unsigned long n)
   if (n <= 0)
     return;
 
-  value.tv_usec = n % 1000;
-  value.tv_sec = n / 1000;
+  value.tv_usec = n % 1000000;
+  value.tv_sec = n / 1000000;
 
   (void) select(1, 0, 0, 0, &value);
 }

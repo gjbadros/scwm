@@ -79,7 +79,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     return;
 
   while (total < Scr.ScrollResistance) {
-    usleep(10);
+    ms_sleep(10);
     total += 10;
 
     WXGetPointerWindowOffsets(Scr.Root, &x, &y);

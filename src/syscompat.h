@@ -40,7 +40,7 @@ int gethostname(char *client, size_t length);
 #endif
 
 #ifndef HAVE_USLEEP
-void usleep(unsigned long n);
+int usleep(unsigned long n);
 #endif
 
 #ifndef HAVE_STRCASECMP

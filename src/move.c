@@ -97,7 +97,7 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
       DispatchEvent();
       }
 
-    usleep(cmsDelay);
+    ms_sleep(cmsDelay);
 #ifdef FIXGJB_ALLOW_ABORTING_ANIMATED_MOVES
     /* this didn't work for me -- maybe no longer necessary since
        we warn the user when they use > .5 seconds as a between-frame delay
@@ -151,7 +151,7 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
       /* handle expose events as we're rolling up the window shade */
       while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
 	DispatchEvent();
-      usleep(cmsDelay);
+      ms_sleep(cmsDelay);
     } while (*ppctMovement < 1.0 && ppctMovement++);
     XMoveWindow(dpy,w,0,-client_height);
     XResizeWindow(dpy,wFrame,width,shaded_height);
@@ -163,7 +163,7 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
       XFlush(dpy);
       while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
 	DispatchEvent();
-      usleep(cmsDelay);
+      ms_sleep(cmsDelay);
     } while (*ppctMovement < 1.0 && ppctMovement++);
     XResizeWindow(dpy,wFrame,width,shaded_height+client_height);
     XMoveWindow(dpy,w,0,0);
