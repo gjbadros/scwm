@@ -1,3 +1,12 @@
+Fri Aug 14 20:40:17 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Remove FIXDOC comment:  Yes: WIN's gets marked-up
+	  correctly with the perl extract-docs (not sure about the guile
+	  version -- it's worth testing)
+
+	* face.c: Convert the Face Flags and Face Specification Flags into 
+	  DocBook tables from plain text.
+
 Fri Aug 14 19:28:13 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* deskpage.c: Use <informalexample> tag instead of <code> (the

@@ -1,3 +1,8 @@
+Fri Aug 14 20:42:21 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Added -C option to only output
+	  concepts chapters (quicker testing of DocBook tables format)
+
 Fri Aug 14 19:29:11 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: First go at extracting comments from 
