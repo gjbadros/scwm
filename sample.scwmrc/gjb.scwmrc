@@ -85,13 +85,14 @@
 (define want-fvwm2-pager-module #t)
 (define want-fvwm2-winlist-module #f)
 
-(define (resize-opaquely? win) #t)
-(define (move-opaquely? win) #t)
+(set! resize-opaquely? (lambda (win) #t))
+(set! move-opaquely? (lambda (win) #f))
+
 ;; below variables used if the default predicates are used, 
 ;; but the above make my system always do opaque moves and resizes
 ;;(set! opaque-move-percent 20)
 ;;(set! opaque-resize-percent 20)
-
+;; (interactive-move)
 ;; Disabled autoraise by default; 
 ;; would give an instant autoraise with no timeout, which 
 ;; is not all that useful
@@ -393,6 +394,8 @@
 ;;(window-style "*" #:squashed-titlebar #t)
 ;;(window-style "*" #:squashed-titlebar #f)
 ;;(window-style "xterm" #:squashed-titlebar #t)
+;;(window-style "xterm" #:squashed-titlebar #f)
+;;(interactive-resize)
 
 ;;(window-style "*" #:bg "purple")
 ;; (border-style #:hidden-handles #f #:no-inset #f)
@@ -400,11 +403,18 @@
 ;; (window-style "foo" #:squashed-titlebar #t)
 
 ;; (raise-window)
-;; (set-object-property! (select-window-interactively) 'squashed-titlebar #t)
-;; (set-object-property! (select-window-interactively) 'no-side-decorations #t)
-;; (set-object-property! (select-window-interactively) 'no-side-decorations #f)
+;; (set-object-property! w 'squashed-titlebar #t)
+;; (set-object-property! w 'no-side-decorations #t)
+;; (set-object-property! w 'no-side-decorations #f)
+;; (force-reset-window-frame! w)
+;; (window-style "*" #:no-side-decorations #f)
+;; (window-style "XTerm" #:no-side-decorations #t)
+;; (window-style "XTerm" #:no-side-decorations #f)
+;; (window-style "XTerm" #:squashed-titlebar #t)
+;; (window-style "XTerm" #:squashed-titlebar #f)
+;; (squash-titlebar-decoration w)
+;; (unsquash-titlebar-decoration w)
 ;; (define w (select-window-interactively))
-
 
 ;; This gets my netscape bookmarks windows to do the right thing
 ;; and stay on screen (instead of being half off screen when mapped)
@@ -488,7 +498,7 @@
   (toggle-maximize (%x 100) (%y 100)))
 
 (define (vertical-toggle-maximize-partial)
-  (toggle-maximize 0 (%y 95)))
+  (toggle-maximize 0 (%y 94)))
 
 
 ;;; I'm not changing these for now to use the new style
@@ -705,7 +715,7 @@
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
     (menuitem "&Print" #:action (thunk print-window))
     menu-separator
-    (menuitem "Change theme" #:action (lambda () (menu-window-theme)))
+    (menuitem "Change theme" #:submenu (lambda () (menu-window-theme)))
     menu-separator
     (menuitem "&Delete" #:action (thunk delete-window))
     (menuitem "&Close" #:image-left "mini-cross.xpm" 
@@ -968,7 +978,7 @@ AnotherLevel.
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
 	      #:action (thunk exec-xlock))
     menu-separator
-    (menuitem "Change global theme" #:action (lambda () (menu-global-theme)))
+    (menuitem "Change global theme" #:submenu (lambda () (menu-global-theme)))
     menu-separator
     (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
 	      #:action (thunk scwm-about-message))
