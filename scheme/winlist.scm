@@ -28,13 +28,14 @@
 
 
 
-(define*-public (default-winlist-proc #&optional (w (get-window)))
+(define*-public (default-winlist-proc #&optional (win (get-window)))
+  "The default behaviour when WIN is selected from the window list."
   (cond
-   (w (deiconify w)
-      (focus w)
-      (raise-window w)
-      (warp-to-window w)
-      (move-pointer (w%x 20 w) (w%y 20 w)))))
+   (win (deiconify win)
+	(focus win)
+	(raise-window win)
+	(warp-to-window win)
+	(move-pointer (w%x 20 win) (w%y 20 win)))))
 
 (define (listify-if-atom l)
   (if (or (pair? l) (null? l)) l (list l)))
@@ -53,21 +54,29 @@
 
 (define*-public (list-windows #&key (only '()) (except '())
 			      (by-stacking #f))
-	(filter-only-except 
-	 (if by-stacking
-	     (list-stacking-order)
-	     (list-all-windows)) only except))
+  "Return the list of windows matching ONLY or not matching EXCEPT.
+The windows are returned their stacking order (top first) if
+BY-STACKING is #t.  ONLY and EXCEPT each are procedures which
+take a single window argument and returns #t if the window
+should be included (for ONLY) or excluded (for EXCEPT), or #f otherwise."
+  (filter-only-except 
+   (if by-stacking
+       (list-stacking-order)
+       (list-all-windows)) only except))
 
+(define*-public (winlist-hit #&optional (win (get-window)))
+  "Permit WIN to be displayed in the window list by default.
+This resets the 'winlist-skip property of WIN.  See also `winlist-skip'."
+  (if win (set-object-property! win 'winlist-skip #f)))
 
+(define*-public (winlist-skip #&optional (win (get-window)))
+  "Do not show WIN in the window list by default.
+This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
+  (if win (set-object-property! win 'winlist-skip #t)))
 
-(define*-public (winlist-hit #&optional (w (get-window)))
-  (if w (set-object-property! w 'winlist-skip #f)))
-
-(define*-public (winlist-skip #&optional (w (get-window)))
-  (if w (set-object-property! w 'winlist-skip #t)))
-
-(define*-public (winlist-skip? #&optional (w (get-window)))
-  (if w (object-property w 'winlist-skip) #f))
+(define*-public (winlist-skip? #&optional (win (get-window)))
+  "Return #t of WIN is skipped in the window list, #f otherwise."
+  (if win (object-property win 'winlist-skip) #f))
 
 ;; add style options for #:winlist-skip
 (add-boolean-style-option #:winlist-skip winlist-skip winlist-hit)
@@ -79,6 +88,20 @@
 				       (show-geometry #f)
 				       (warp-to-first #f)
 				       (show-mini-icon #t))
+  "Popup a window list menu and permit a selection to be made.
+ONLY and EXCEPT are procedures that control which windows will
+appear in the list -- see `list-windows' for details.
+PROC is the procedure which will be called on the selected window. 
+
+If SHOW-GEOMETRY is #t, the geometries of the windows will be listed
+in each menuitem.  
+
+If SHOW-MINI-ICON is #t, the mini-icon of the windows will be
+displayed with each menuitem.
+
+If WARP-TO-FIRST is #t, the mouse pointer will be warped to the first
+menuitem (see `popup-menu').  
+"
   (popup-menu (menu
 	       (append 
 		(list 
@@ -112,27 +135,44 @@
 	   (else '()))))
 
 
-(define*-public (circulate-hit #&optional (w (get-window)))
-  (if w (set-object-property! w 'circulate-skip #f)))
+(define*-public (circulate-hit #&optional (win (get-window)))
+  "Include WIN among the windows in the circulate list.
+This resets the 'circulate-skip property of WIN.  See also `circulate-skip'."
+  (if win (set-object-property! win 'circulate-skip #f)))
 
-(define*-public (circulate-skip #&optional (w (get-window)))
-  (if w (set-object-property! w 'circulate-skip #t)))
+(define*-public (circulate-skip #&optional (win (get-window)))
+  "Do not include WIN among the windows in the circulate list.
+This sets the 'circulate-skip property of WIN.  See also `circulate-hit'."
+  (if win (set-object-property! win 'circulate-skip #t)))
 
-(define*-public (circulate-skip? #&optional (w (get-window)))
-  (if w (object-property w 'circulate-skip) #f))
+(define*-public (circulate-skip? #&optional (win (get-window)))
+  "Return #t if WIN is not among the windows in the circulate list.
+Otherwise return #f."
+  (if win (object-property win 'circulate-skip) #f))
 
-(define*-public (circulate-hit-icon #&optional (w (get-window)))
-  (if w (set-object-property! w 'circulate-skip-icon #f)))
+(define*-public (circulate-hit-icon #&optional (win (get-window)))
+  "Include WIN's icon among the windows in the circulate list.
+This resets the 'circulate-skip-icon property of WIN.  
+See also `circulate-skip-icon'."
+  (if win (set-object-property! win 'circulate-skip-icon #f)))
 
-(define*-public (circulate-skip-icon #&optional (w (get-window)))
-  (if w (set-object-property! w 'circulate-skip-icon #t)))
+(define*-public (circulate-skip-icon #&optional (win (get-window)))
+  "Do not include WIN's icon among the windows in the circulate list.
+This sets the 'circulate-skip-icon property of WIN.  
+See also `circulate-hit-icon'."
+  (if win (set-object-property! win 'circulate-skip-icon #t)))
 
-(define*-public (circulate-skip-icon? #&optional (w (get-window)))
-  (if w (object-property w 'circulate-skip-icon) #f))
+(define*-public (circulate-skip-icon? #&optional (win (get-window)))
+  "Return #t if WIN's icon is not among the windows in the circulate list.
+Otherwise return #f."
+  (if win (object-property win 'circulate-skip-icon) #f))
 
-(define*-public (should-circulate-skip? #&optional (w (get-window)))
-  (if w 
-      (or (circulate-skip? w) (and (iconified? w) (circulate-skip-icon? w)))
+(define*-public (should-circulate-skip? #&optional (win (get-window)))
+  "Return #t if WIN should now be skipped when circulating, #f otherwise.
+Using the current state of WIN (whether it is iconified or not) in
+determining the result."
+  (if win 
+      (or (circulate-skip? win) (and (iconified? win) (circulate-skip-icon? win)))
       #f))
 
 ;; add style options for #:circulate-skip and #:circulate-skip-icon
@@ -140,6 +180,9 @@
 (add-boolean-style-option #:circulate-skip-icon 
 			  circulate-skip-icon circulate-hit-icon)
 
+;; MSFIX: these docs may not be the greatest... can you
+;; double check and document circulate a bit better? --09/05/98 gjb
+(define last-circulated #f)
 
 (define (circulate backwards? window only except proc)
   (let* ((window (or window last-circulated))
@@ -159,12 +202,23 @@
 
 (define*-public (next-window #&key (window (get-window #f #f))
 			     (only '()) (except '()) (proc window-list-proc))
+  "Circulate to the next matching window.
+If WINDOW is given, circulate to that window.
+ONLY and EXCEPT control which windows match --- see `list-windows' for 
+details.
+PROC is a procedure of one argument which does the work after the
+windows are circulated.  PROC defaults to `window-list-proc'.
+See also `prev-window'."
   (circulate #f window only except proc))
 
 
 (define*-public (prev-window #&key (window (get-window #f #f))
 			     (only '()) (except '()) (proc window-list-proc))
+  "Circulate to the previous matching window.
+If WINDOW is given, circulate to that window.
+ONLY and EXCEPT control which windows match --- see `list-windows' for 
+details.
+PROC is a procedure of one argument which does the work after the
+windows are circulated.  PROC defaults to `window-list-proc'.
+See also `next-window'."
   (circulate #t window only except proc))
-
-
-(define last-circulated #f)
