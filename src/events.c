@@ -597,6 +597,8 @@ HandlePropertyNotify()
   case XA_WM_NORMAL_HINTS:
     {
       int new_width, new_height;
+      /* Don't let shaded windows resize themselves */
+      if (SHADED_P(swCurrent)) break;
 
       GetWindowSizeHints(swCurrent);
       new_width = swCurrent->frame_width;
@@ -1320,8 +1322,10 @@ HandleConfigureRequest()
     y = cre->y - swCurrent->boundary_width - swCurrent->title_height - swCurrent->bw;
   if (cre->value_mask & CWWidth)
     width = cre->width + 2 * swCurrent->boundary_width;
+
   if (cre->value_mask & CWHeight)
     height = cre->height + swCurrent->title_height + 2 * swCurrent->boundary_width;
+
 
   /*
    * SetupWindow (x,y) are the location of the upper-left outer corner and
@@ -1332,7 +1336,6 @@ HandleConfigureRequest()
    */
   SetupFrame(swCurrent, x, y, width, height, sendEvent);
   KeepOnTop();
-
 }
 
 /***********************************************************************

@@ -123,8 +123,6 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
   int shaded_height = sw->title_height + sw->boundary_width;
   /* FIXGJB: using orig_ht doesn't seem right -- does it interact
      correctly w/ maximization? */
-/*  Bool shaded = sw->buttons & WSHADE; FIXGJB: unused for now
-    int normal_height = shaded? sw->orig_ht : sw->frame_height; */
   int normal_height = sw->orig_ht;
   int client_height = normal_height - shaded_height;
   /* set our defaults */

@@ -281,6 +281,10 @@ typedef struct ScwmWindow {
    since we don't want to use up any more flag bits */
 #define WSHADE	(1<<31)
 
+#define SHADED_P(sw) ((sw)->buttons & WSHADE)
+#define SET_UNSHADED(sw) do { (sw)->buttons &= ~WSHADE; } while (0)
+#define SET_SHADED(sw) do { (sw)->buttons |= WSHADE; } while (0)
+
 #include <stdlib.h>
 extern void Reborder(void);
 extern void SigDone(int);

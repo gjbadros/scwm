@@ -57,20 +57,23 @@ PchModifiersToModmask(const char *pch, int *pmodifier)
       break;
     }
     switch (pch[0]) {
-    case 'S':
+    case 'S': /* Shift */
       modmask |= ShiftMask;
       break;
-    case 'C':
+    case 'C': /* Control */
       modmask |= ControlMask;
       break;
-    case 'M':
+    case 'M': /* Meta */
       modmask |= Mod1Mask;
       break;
-    case 'A':
+    case 'A': /* Alt */
       modmask |= Mod2Mask;
       break;
-    case 'H':
+    case 'H': /* Hyper */
       modmask |= Mod3Mask;
+      break;
+    case 'P': /* suPer modifier [0x40] (emacs uses "s") */
+      modmask |= Mod4Mask;
       break;
     default:
       scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier %c-",pch[0]);

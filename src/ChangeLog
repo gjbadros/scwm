@@ -1,3 +1,13 @@
+Wed Nov 12 00:36:21 1997  Greg J. Badros  <gjb@cs.washington.edu>
+	* events.c (HandlePropertyNotify): don't resize shaded windows;
+	this improves upon my prior bug fix which had an unfortunate
+	timing dependence that I only caught after more testing.
+	This should be a reliable fix.
+
+	* Abstracted out SHADED_P, SET_SHADED and SET_UNSHADED, since it's
+ 	a gross field -- the shaded bit just gets thrown into the buttons
+ 	field's high-order bit; this should be fixed but not now.
+
 Tue Nov 11 22:14:02 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Fix bug with -f "" core dumping, fixed other bugs nearby

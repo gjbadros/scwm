@@ -699,12 +699,20 @@ window_shade(SCM win, SCM animated_p)
   }
   fAnimated = gh_scm2bool(animated_p);
 
-  sw->buttons |= WSHADE;
+  SET_SHADED(sw);
   
   if (fAnimated) {
     AnimatedShadeWindow(sw,True /* roll up */, -1, NULL);
     XSync(dpy,True);  /* Discard events so we don't propagate a resize
 			 event that will call setupframe again */
+    /* FIXGJB: the above XSync is timing dependent, sometimes the
+       event we're trying to discard won't be generated in time
+       for the above to discard it, so I had to hack the
+       HandleConfigureNotify() routine to avoid resizing the frame; I
+       left the XSync in for performance, since there's no reason to
+       propagate that event if we can avoid it;  perhaps substructure
+       redirection is a solution here, but I don't know much about it
+       --11/11/97 gjb */
   }
   SetupFrame(sw, sw->frame_x, sw->frame_y, sw->frame_width,
 	     sw->title_height + sw->boundary_width, False);
@@ -744,7 +752,7 @@ un_window_shade(SCM win, SCM animated_p)
   }
   fAnimated = gh_scm2bool(animated_p);
 
-  sw->buttons &= ~WSHADE;
+  SET_UNSHADED(sw);
   if (fAnimated) {
     AnimatedShadeWindow(sw,False /* !roll up */, -1, NULL);
   }
@@ -759,9 +767,8 @@ SCM
 window_shaded_p(SCM win)
 {
   VALIDATE(win, "window-shaded?");
-  return ((SCWMWINDOW(win)->buttons & WSHADE) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (SHADED_P(SCWMWINDOW(win))? SCM_BOOL_T : SCM_BOOL_F);
 }
-
 
 
 void 
@@ -968,8 +975,7 @@ resize_to(SCM w, SCM h, SCM win)
   tmp_win = SCWMWINDOW(win);
 
   if (check_allowed_function2(F_RESIZE, tmp_win) == 0
-      || (tmp_win->buttons & WSHADE)
-    ) {
+      || SHADED_P(tmp_win)) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
@@ -1030,8 +1036,7 @@ interactive_resize(SCM win)
 
 
   if (check_allowed_function2(F_RESIZE, tmp_win) == 0
-      || (tmp_win->buttons & WSHADE)
-    ) {
+      || SHADED_P(tmp_win)) {
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }

@@ -1197,8 +1197,7 @@ SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent)
   int cx, cy, i;
   Bool Resized = False, Moved = False;
   int xwidth, ywidth, left, right;
-
-  Bool shaded = tmp_win->buttons & WSHADE;
+  Bool shaded = SHADED_P(tmp_win);
 
   /* if windows is not being maximized, save size in case of maximization */
   if (!(tmp_win->flags & MAXIMIZED) && !shaded) {
