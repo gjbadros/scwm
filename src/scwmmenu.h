@@ -24,6 +24,13 @@
 EXTERN long scm_tc16_scwm_menu;
 EXTERN XContext MenuContext; /* context for new scwm menus --11/22/97 gjb*/
 
+typedef struct DynamicMenu_tag DynamicMenu;
+
+typedef void (*PfnConstructDynamicMenu)(DynamicMenu *pmd);
+typedef void (*PfnPaintMenuItem)(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim);
+typedef void (*PfnPaintDynamicMenu)(DynamicMenu *pmd, XEvent *pxe);
+
+
 typedef struct MenuDrawingInfo_tag
 {
   Window w;			/* the X window of the drawn menu */
@@ -61,7 +68,7 @@ typedef struct Menu_tag
   char *pchUsedShortcutKeys;	/* list of characters that are shortcut keys */
 } Menu;
 
-typedef struct DynamicMenu_tag
+struct DynamicMenu_tag
 {
   Menu *pmenu;		/* this menu */
   MenuItemInMenu **rgpmiim;	/* the menu item dynamic information */
@@ -72,7 +79,9 @@ typedef struct DynamicMenu_tag
   MenuDrawingInfo *pmdi;	/* extra info needed by the drawing/hit detection code */
   Bool fPinned;			/* is it not a popup? */
   Bool fHoverActionInvoked;	/* have we done the hover action */
-} DynamicMenu;
+  PfnPaintDynamicMenu fnPaintDynamicMenu; /* the function to paint the whole menu */
+  PfnPaintMenuItem fnPaintMenuItem; /* the function to paint a single menu item */
+};
 
 
 #define MENU_P(X) (SCM_NIMP((X)) && (SCM_CAR((X)) == (SCM)scm_tc16_scwm_menu))
@@ -106,5 +115,6 @@ void init_menu();
 void menu_init_gcs();
 
 SCM popup_menu(SCM menu, SCM warp_to_first);
+
 
 #endif
