@@ -7,6 +7,7 @@ Thu Dec  3 01:43:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	* resize.c (interactive_resize, rubber_band_resize,
  	opaque_resize): `interactive-resize' removed from here and
  	replaced with `rubber-band-resize' and `opaque-resize'.
+
 1998-12-03  Todd Larason  <jtl@molehill.org>
 
 	* scwm.c (scwm_main): call init_icons() to initialize the icon hooks
