@@ -9,6 +9,7 @@
 #include "decor.h"
 #include "color.h"
 #include "font.h"
+#include "face.h"
 
 long scm_tc16_scwm_decor;
 
@@ -50,6 +51,50 @@ print_decor(SCM obj, SCM port, scm_print_state * pstate)
 };
 
 
+SCM 
+mark_decor(SCM obj)
+{
+  ScwmDecor *fl;
+  int i,j;
+  
+  /* Mark the decor */
+  SCM_SETGC8MARK(obj);
+
+  fl=SCWMDECOR(obj);
+
+  /* also protect all of the face objects attached to this decor. */
+  for (i=0; i< 5; i++) {
+    /* protect the titlebar buttons */
+    for (j=0;j< MaxButtonState; j++) {
+      if (fl->right_buttons[i].state[j] != NULL) {
+	scm_gc_mark(fl->right_buttons[i].state[j]->sface);
+      }
+      if (fl->left_buttons[i].state[j] !=NULL) {
+	scm_gc_mark(fl->left_buttons[i].state[j]->sface);
+      }
+    }
+  }
+
+  /* Mark the titlebar faces */
+  for (j=0;j< MaxButtonState; j++) {
+    if (fl->titlebar.state[j] !=NULL) {
+      scm_gc_mark(fl->titlebar.state[j]->sface);
+    }
+  }
+
+  /* Mark the border faces */
+
+  if (fl->BorderStyle.inactive !=NULL) {
+    scm_gc_mark(fl->BorderStyle.inactive->sface);
+  }
+  if (fl->BorderStyle.active !=NULL) {
+    scm_gc_mark(fl->BorderStyle.active->sface);
+  }
+  
+  return SCM_BOOL_F;
+}
+
+
 #ifdef USEDECOR
 extern ScwmDecor *cur_decor;
 
@@ -62,6 +107,7 @@ decor2scm(ScwmDecor * fl)
   SCM answer;
   SCM tmpd;
   scwm_decor *dec;
+  int i,j;
 
   dec = (scwm_decor *) malloc(sizeof(scwm_decor));
   dec->refcnt = 0;
@@ -71,14 +117,38 @@ decor2scm(ScwmDecor * fl)
   SCM_SETCAR(answer, scm_tc16_scwm_decor);
   SCM_SETCDR(answer, (SCM) dec);
   fl->scmdecor = answer;
-  SCM_ALLOW_INTS;
 
+  InitScwmDecor(fl);
+
+  
   tmpd = current_decor();
   set_current_decor_x(answer);
   set_hilight_colors(gh_str02scm("black"),
 		     gh_str02scm("grey"));
   set_window_font(gh_str02scm("fixed"));
   set_current_decor_x(tmpd);
+
+  /* initialize buttons */
+  for (i = 0; i < 5; ++i) {
+    for (j = 0; j < MaxButtonState; ++j) {
+      fl->right_buttons[i].state[j] = BUTTONFACE(default_rbutton_face[i]);
+      fl->left_buttons[i].state[j] = BUTTONFACE(default_lbutton_face[i]);
+    }
+  }
+  fl->right_buttons[0].flags |= MWMButton;
+
+  /* initialize title-bar styles */
+  fl->titlebar.flags = 0;
+
+  for (i = 0; i < MaxButtonState; ++i) {
+    fl->titlebar.state[i] = BUTTONFACE(default_titlebar_face);
+  }
+
+  fl->BorderStyle.active=BUTTONFACE(default_border_face);
+  fl->BorderStyle.inactive=BUTTONFACE(default_border_face);
+
+
+  SCM_ALLOW_INTS;
 
   return (answer);
 };
@@ -101,7 +171,6 @@ make_decor(SCM name)
 
   /* make the decor */
   newdec = (ScwmDecor *) malloc(sizeof(ScwmDecor));
-  InitScwmDecor(newdec);
   newdec->tag = tag;
 
   return decor2scm(newdec);
