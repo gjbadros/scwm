@@ -81,11 +81,16 @@ PchModifiersToModmask(const char *pch, int *pmodifier)
 	error++;
       modmask |= HyperMask;
       break;
-    case 'P': /* suPer modifier [0x40] (emacs uses "s") */
+    case 's': /* super modifier [0x40] (emacs uses "s", so we do too) */
       if (!SuperMask)
 	error++;
       modmask |= SuperMask;
       break;
+    case 'P':
+      /* FIXGJB this can get pulled out later-- I used 'P' at first to avoid
+         confusion between 's-' and 'S-' (shift), but people didn't like it */
+      scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier P- (super is now 's-')");
+      return NULL;
     default:
       scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier %c-",pch[0]);
       return NULL;
