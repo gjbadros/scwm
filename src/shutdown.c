@@ -137,7 +137,7 @@ SCWM_PROC(restart, "restart", 0, 1, 0,
   return SCM_UNSPECIFIED;	
 }
 
-SCWM_PROC(scwm_quit, "scwm-quit", 0, 1, 1,
+SCWM_PROC(scwm_quit, "scwm-quit", 0, 0, 1,
           (SCM args))
 {
   if (master_pid != getpid())

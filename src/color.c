@@ -503,7 +503,7 @@ SCWM_PROC (set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0,
 }
 
 SCWM_PROC (menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
-           (SCM factor))
+           ())
 {
   return (gh_double2scm(menu_shadow_factor_val));
 }
