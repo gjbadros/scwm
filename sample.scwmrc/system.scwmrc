@@ -4,7 +4,8 @@
 (use-modules (app scwm base)
 	     (app scwm winops)
 	     (app scwm winlist)
-	     (app scwm wininfo))
+	     (app scwm wininfo)
+             (app scwm style))
 
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
@@ -12,18 +13,59 @@
 (define (vertical-toggle-maximize)
   (toggle-maximize 0 (%y 100)))
 
-(define helv12
+(define font12
   (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
-(define helv14 
+(define font14 
   (load-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 
-(menu-style #:fg "white" #:bg "navy" #:stipple "yellow" 
-	    #:font helv14 #:mwm #f)
-(title-style #:font helv12 #:justify 'left)
+(menu-style #:fg "white" #:bg "blueviolet" #:stipple "blue" 
+	    #:font font14 #:mwm #f)
 
-(set-icon-font! helv12)
-(set-hilight-colors! "white" "navy")
+(title-style #:font font12 #:justify 'left)
+
+(set-icon-font! font12)
+(set-hilight-colors! "white" "blueviolet")
 (set-xor-value! 127)
+
+;;-------------------------------;;
+;; set some paths                ;;
+;;
+
+;; these are OK for my (Red Hat Linux) system, but probably should
+;; be changed for yours. This should probably be eventually autoconfed
+;; or something.
+
+(set-icon-path! "/usr/X11/include/X11/bitmaps")
+(set-pixmap-path! "/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons")
+
+;;-------------------------------;;
+;; set some window styles        ;;
+
+(window-style "*" 
+	      #:fg "white" #:bg "navy" 
+	      #:icon "unknown1.xpm" 
+	      #:icon-box (list (x- 70) 1 69 (y- 141))
+	      #:border-width 6 
+	      #:focus 'mouse
+	      #:random-placement #t #:smart-placement #t
+	      #:mwm-func-hint #t #:mwm-decor-hint #t
+	      #:int-override #t #:decroate-transient #t
+	      #:PPosition-hint #f)
+
+(define desk-widget
+  (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
+	      #:border-width 3 #:focus 'none))
+
+(window-style "*lock" #:use-style desk-widget)
+(window-style "xload" #:no-title #t #:use-style desk-widget)
+(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
+(window-style "xbiff" #:no-title #t #:use-style desk-widget)
+(window-style "xcalc" #:icon "xcalc.xpm")
+(window-style "xman" #:icon "xman.xpm")
+(window-style "xmag" #:icon "mag_glass.xpm")
+(window-style "Emacs" #:icon "gnu-animal.bmp")
+(window-style "XTerm" #:icon "xterm.xpm")
+
 
 
 ;;-------------------------------;;
@@ -42,6 +84,7 @@
 	     (list "(De)Iconify" toggle-iconify)
 	     (list "(Un)Maximize" vertical-toggle-maximize)
 	     (list "(Un)Stick" toggle-stick)
+	     (list "(Un)Keep On Top" toggle-on-top)
 	     'separator
 	     (list "Close" close-window)
 	     (list "Delete" delete-window)
@@ -59,14 +102,25 @@
 	     'separator
 	     (list "Restart scwm" (lambda () (restart "scwm")))))
 
+(define desk-menu 
+  (make-menu "Desks"
+	     'title
+	     (list "Desk 1" (lambda () (set-current-desk! 0)))
+	     (list "Desk 2" (lambda () (set-current-desk! 1)))
+	     (list "Desk 3" (lambda () (set-current-desk! 2)))
+	     (list "Desk 4" (lambda () (set-current-desk! 3)))))
+
 (define util-menu 
   (make-menu "Utilities"
 	     'title
 	     (list "xterm" (lambda () (execute "xterm")))
 	     (list "rxvt" (lambda () (execute "rxvt")))
+	     (list "emacs" (lambda () (execute "emacs")))
 	     (list "top" (lambda () (execute "rxvt -T Top -n Top -e top")))
 	     (list "xcalc" (lambda () (execute "xcalc")))
 	     (list "xmag" (lambda () (execute "xmag")))
+	     'separator
+	     (list "Desks" desk-menu)
 	     'separator
 	     (list "Exit scwm" quit-verify)))
 
@@ -74,22 +128,34 @@
   (popup util-menu))
 
 
-(define small-window-ops-menu
+(define (make-small-window-ops-menu w)
   (make-menu "Window Ops2"
 	     (list "Move" interactive-move)
 	     (list "Resize" interactive-resize)
 	     (list "Raise" raise-window)
 	     (list "Lower" lower-window)
 	     (list "Iconify" iconify)
-	     (list "(Un)Maximize" vertical-toggle-maximize)
-	     (list "(Un)Stick" toggle-stick)
 	     'separator
+	     (list "More" (make-menu "More"
+			    (list (if (maximized? w)
+				      "Unmaximize"
+				      "Maximize") vertical-toggle-maximize)
+			    (list (if (sticky? w)
+				      "Unstick"
+				      "Stick") toggle-stick)
+			    (list (if (window-shaded? w)
+				      "UnWindow-Shade"
+				      "Window-Shade") toggle-window-shade)
+			    (list (if (kept-on-top? w)
+				      "UnKeep On Top"
+				      "Keep On Top") toggle-on-top)))
+             'separator
 	     (list "Close" close-window)
-	     (list "Delete" delete-window)
 	     (list "Destroy" destroy-window)))	
 
-(define (popup-small-ops)	
-  (popup small-window-ops-menu))
+(define (popup-small-ops)
+  (popup (make-small-window-ops-menu (get-window))))
+
 
 
 ;; now set some mouse and key bindings ;;
@@ -97,24 +163,33 @@
 ;; first our root menus
 (bind-mouse 'root 1 popup-util)
 (bind-mouse 'root 2 popup-ops)
-(bind-mouse 'root 3 
-	    (lambda () 
-	      (show-window-list-menu #:show-geometry #t)))
+(bind-mouse 'root 3 (lambda () 
+		      (show-window-list-menu #:show-geometry #t)))
+(bind-mouse 'root "M-3" (lambda () (popup desk-menu)))
 
+;; window buttons
 (bind-mouse 'button-1 1 popup-small-ops)
 (bind-mouse 'button-2 1 vertical-toggle-maximize)
 (bind-mouse 'button-4 1 iconify)
 
-
-(bind-mouse '(title frame sidebar) 2 popup-small-ops)
+;; operations on parts of the window
+(bind-mouse '(frame sidebar) 2 popup-small-ops)
 (bind-mouse 'frame 1 resize-or-raise)
-(bind-mouse '(title sidebar) 1 move-or-raise)
+(bind-mouse 'sidebar 1 move-or-raise)
+(define (move-or-shade)
+  (case (mouse-event-type)
+    ((double-click) (toggle-window-shade))
+    (else (move-or-raise))))
+(bind-mouse 'title 1 move-or-shade)
+(bind-mouse 'title 2 lower-window)
 
+
+;; key bindings for the menus
 (bind-key 'all "M-F1" popup-util)
 (bind-key 'all "M-F2" popup-ops)
 
-;; in case of emergency, hit Control-Shift-F9
-(bind-key 'all "C-S-F9" quit)
+;; in case of emergency, hit Control-Meta-Q
+(bind-key 'all "C-M-Q" quit)
 
 ;; some stuff for icons
 (define (move-or-deiconify)
@@ -130,6 +205,12 @@
 (bind-key 'all "M-Right" (lambda () (move-pointer (%x 1) 0)))
 (bind-key 'all "M-Up" (lambda () (move-pointer 0 (%y -1))))
 (bind-key 'all "M-Down" (lambda () (move-pointer 0 (%y 1))))
+
+;; move the viewport with the keyboard
+(bind-key 'all "C-M-Left" (lambda () (move-viewport (%x -100) 0)))
+(bind-key 'all "C-M-Right" (lambda () (move-pointer (%x 100) 0)))
+(bind-key 'all "C-M-Up" (lambda () (move-viewport 0 (%y -100))))
+(bind-key 'all "C-M-Down" (lambda () (move-viewport 0 (%y 100))))
 
 ;; rotate the current window with the keyboard
 (bind-key 'all "M-Tab"
