@@ -24,41 +24,12 @@ version, it is strongly reccomended that you run configure with the
 --enable-maintainer-mode flag - this will cause "make" to regenerate
 automatically generated files as needed, including Makefiles, thus
 largely removing the need to run the various "auto" tools by
-hand. However, it may sometimes be necessary to do things by hand
-anyway. In this case, you should follow the following steps (annotated
-with what they actually do, to explain the maze of automatically
-generated files):
+hand. However, it may sometimes be necessary to run them without
+having the Makefile or configure handy. In this case you can run
+autogen.sh, which will call all these programs for you. configure is
+also run - if you want to pass special arguments to configure, just
+give them to autogen.sh. Example: "./autogen.sh --prefix=/local/sw"
 
-## Generate aclocal.m4 from configure.in
-$ aclocal
-
-## Generate Makefile.in's from Makefile.am's and configure.in
-## (adding missing files that may be needed for proper operation)
-$ automake --add-missing
-
-## Generate include/config.h.in from acconfig.h and configure.in
-$ autoheader
-
-## Generate configure from configure.in and aclocal.m4
-$ autoconf
-
-## Detect system parameters and generate Makefiles from Makefile.in's
-## and include/config.h from include/config.h.in, enabling
-## maintainer-specific rules.
-./configure --enable-maintainer-mode
-
-## Actually build the system
-make
-
-Just to recap, the steps are:
-
-aclocal
-automake --add-missing
-autoheader
-autoconf
-./configure --enable-maintainer-mode
-make
-
-However, most of the time these steps should be unnecessary; as soon
-as you have configured once with --enable-maintainer-mode, make should
-do all of these automatically.
+Most of the time this should be unnecessary; as soon as you have
+configured once with --enable-maintainer-mode, make should rebuild
+those files automatically.
