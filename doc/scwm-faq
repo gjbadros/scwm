@@ -119,3 +119,20 @@ A:
 See Greg's Scheme lecture notes at:
 
 http://www.cs.washington.edu/education/courses/341/99su/lectures/scheme/
+
+
+Q: How do I change the SCWM_LOAD_PATH after Scwm has been started, say in
+my .scwmrc startup file?
+
+A:
+
+The SCWM_LOAD_PATH environment variable is only used at startup time to
+initialize the %load-path Guile variable.  You should edit this directly 
+using, e.g.,
+
+(set! %load-path (cons (string-append (getenv "HOME") "/.scwm/modules") %load-path))
+
+or 
+
+(append! %load-path (list (string-append (getenv "HOME") "/.scwm/modules")))
+
