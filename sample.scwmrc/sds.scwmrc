@@ -1,5 +1,5 @@
 ;;; -*- scheme -*-
-;;; File: <.scwmrc - 1998-03-27 Fri 14:22:08 EST sds@mute.eaglets.com>
+;;; File: <.scwmrc - 1998-04-14 Tue 17:48:01 EDT sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Purpose: to attract users.
@@ -7,9 +7,18 @@
 
 ;;; Major ideas:
 ;;; 1. look as nice as possible (e.g., if an item in the menu has
-;;; miniicon, all items will have one)
+;;;    mini-icon, all items will have one)
 ;;; 2. use as many features as possible (e.g., multiple decors etc), so
-;;; that the users will be able to customize this thing easily.
+;;;    that the users will be able to customize this thing easily.
+
+;;; Some keybindings use H (hyper key).  I have a w95 keyboard, so I use
+;;; the "windows key" between the left Control and left Alt as Hyper.
+;;; Put the following into ~/.xmodmaprc and call `xmodmap ~/.xmodmaprc`
+;;; from your ~/.xsession or ~/.xinitrc (depending on whether you use
+;;; xdm or xinit).
+;;; keycode 115 = Hyper_L
+;;; keycode 116 = Hyper_R
+;;; add mod4 = Hyper_L Hyper_R
 
 ;;; -----------------------
 ;;; import the scwm modules
@@ -17,9 +26,12 @@
 
 (use-modules
  (app scwm base) (app scwm face) (app scwm decor) (app scwm style)
- (app scwm winops) (app scwm winlist) (app scwm wininfo) (app scwm flux)
+ (app scwm winops) (app scwm winlist) (app scwm wininfo)
  (app scwm optargs) (app scwm std-menus) (app scwm wmconfig-menu)
- (app scwm prefs-menu) (app scwm fvwm-module))
+ (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module))
+
+;; user settable!
+(define want-pictures? #f)
 
 ;; initial desk size
 (set-desk-size! 2 2)		; X x Y
@@ -34,9 +46,7 @@
 	   "\nX Display:\t" (X-display-information)
 	   "\nDefault image-load-path:\t" image-load-path "\n")
 
-(define HOME (getenv "HOME"))
-(define USER (getenv "USER"))
-(define user-init-file (string-append HOME "/.scwmrc"))
+;; (load user-init-file)
 ;;(set! xterm-command "rxvt ")
 ;;(define mail-spool-dir (or (getenv "MAIL")
 ;;			   (string-append "/var/spool/mail/" USER)))
@@ -50,6 +60,8 @@
 (define (toggle-max-both) (toggle-maximize (%x 100) (%y 100)))
 (define (toggle-max-vert-part) (toggle-maximize 0 (%y 95)))
 
+;; FIXGJB: I don't think this gets used right yet
+(define animation-ms-delay 50)
 (define font12 (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 ;;(define font14 (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 ;;(define window-font (make-font "*helvetica*bold-r*12*"))
@@ -74,10 +86,10 @@
 ;;; paths and images
 ;;; ----------------
 
-(set! image-load-path
-      (append! image-load-path
-	       (list		; "/usr/share/icons/" "/usr/share/icons/mini/"
-		     "/opt/kde/share/icons")))
+;(set! image-load-path
+;      (append! image-load-path
+;	       (list		; "/usr/share/icons/" "/usr/share/icons/mini/"
+;		     "/opt/kde/share/icons")))
 ;; "/usr/local/lib/X11/mini-icons" "/usr/local/include/X11/pixmaps"
 ;; "/usr/X11/include/X11/bitmaps" "/usr/X11/include/X11/pixmaps"
 ;; "/usr/local/X11/include/X11/pixmaps" "/usr/local/lib/icons"
@@ -132,7 +144,7 @@
 (define xv-i (make-image "mini-xv.xpm"))
 (define xx-i (make-image "mini-x.xpm"))
 
-(define unknown-i (make-image "NoName.xpm"))
+(if want-pictures? (define unknown-i (make-image "NoName.xpm")))
 
 ;;; -------------------------
 ;;; window styles/decorations
@@ -176,8 +188,8 @@
 			 (cons "Gradient" grad-d)))
 
 (define std-style
-  (make-style #:fg "black" #:bg "grey76" ; #:icon #f ; no icon
- 	      #:icon unknown-i #:sticky-icon #t
+  (make-style #:fg "black" #:bg "grey76" #:sticky-icon #t
+	      #:icon (if want-pictures? unknown-i #f) ; #f: no pics, just text
 	      #:icon-box (list 500 1 (x- 500) 200) ; (x- 70) 1 69 (y- 141))
 	      #:border-width 3 #:mwm-border #t #:focus 'sloppy ; mouse
 	      #:random-placement #t #:smart-placement #t
@@ -212,11 +224,13 @@
 (window-style "gimp" #:icon "wilbur.xpm" #:mini-icon gimp-i)
 (window-style "XDosEmu" #:icon "dosemu.xpm" #:mini-icon dos-i)
 (window-style "xfig" #:icon "xpaint.xpm" #:mini-icon fig-i) ; Paint[1234]?.xpm
-(window-style "xterm" #:icon "xterm.xpm" #:mini-icon term-i
-	      #:use-decor grad-d)
-(window-style "Emacs" #:mini-icon "mini-edit.xpm" ; TextEditor.xpm ; emacs.xbm
-	      #:icon "gnu-animal.xpm" #:mini-icon edit-i
-	      #:PPosition-hint #t #:use-decor lizard-d)
+(window-style "xterm" #:icon (if want-pictures? "xterm.xpm" #f)
+	      #:mini-icon term-i #:use-decor grad-d)
+(window-style "Toplevel" #:icon "toolbox.xpm")
+(window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
+	      #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
+;TextEditor.xpm ; emacs.xbm
+;(window-style "emacs: *Minibuf" #:use-style desk-widget-on-top)
 
 ;;; -------------
 ;;; Various Menus
@@ -271,8 +285,8 @@
 	      (menuitem "Restart scwm" #:image-left turn-i
 			#:action (lambda () (restart "scwm")))
 	      menu-separator
-	      (menuitem "Start KDE" #:image-left xx-i #:action
-			(lambda () (restart "/opt/kde/bin/startkde")))
+	      ;;(menuitem "Start KDE" #:image-left xx-i #:action
+		;;	(lambda () (restart "/opt/kde/bin/startkde")))
 	      (menuitem "Start fvwm2" #:image-left "mini-fvwm.xpm"
 			#:action (lambda () (restart "fvwm2")))
 	      (menuitem "Start fvwm" #:image-left "mini-fvwm.xpm"
@@ -305,7 +319,7 @@
 					 #:action "ical")
 			       (menuitem "X&Biff" #:image-left biff-i
 					 #:action "xbiff")
-			       (menuitem "X&MailBoc" #:image-left biff-i
+			       (menuitem "X&MailBox" #:image-left biff-i
 					 #:action "xmailbox")
 			       (menuitem "Clock (&D)" #:image-left clock-i
 					 #:action "xclock -digital")
@@ -326,6 +340,8 @@
 			"/usr/local/Acrobat3/bin/acroread")
 	      (menuitem "Netscape" #:image-left nscape-i #:action
 			"/usr/local/netscape/netscape")
+	      (menuitem "Mozilla" #:image-left nscape-i #:action
+			"/usr/bin/mozilla")
 	      (menuitem "GhostView" #:image-left "mini-gv.xpm"
 			#:action "ghostview")
 	      (menuitem "VIM 5.0" #:image-left edit-i #:action "/usr/bin/gvim")
@@ -469,7 +485,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 	      menu-separator
 	      (menuitem "Help" #:image-left man-i #:action menu-help)
 	      (menuitem "E&xit scwm" #:image-left stop-i #:action quit-verify))
-	#:image-side "linux-menu.xpm" #:color-bg-image-side "blue"))
+	#:image-side "scwm-color.xpm" #:color-bg-image-side "grey50"))
 
 ;;; -----------
 ;;; keybindings
@@ -755,8 +771,11 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (bind-key 'all "H-S-Right" toggle-max-horz)
 (bind-key 'all "H-S-Left" toggle-max-both)
 
-;; FIXGJB: I don't think this gets used right yet
-(define animation-ms-delay 50)	; set!?
+;(define (message-show-error . args)
+;  (message "scwm error:"
+;	   (with-output-to-string
+;	     (lambda () (map (lambda (arg) (display " ") (write arg)) args)))))
+;(add-hook! error-hook message-show-error)
 
 ;; Fluid, cartoon-like
 (set-animation! '#(0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1))
@@ -790,7 +809,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;; Hyper-w
 (bind-key 'all "H-w" (lambda () (write (get-window)) (newline)))
 ;; Alt-w
-(bind-key 'all "A-w" (lambda () (display "alt-w\n")))
+;; (bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
 ;;; Need M_FOCUS_CHANGE for auto-raise
 ;;(use-modules (app scwm module-types))
@@ -813,4 +832,3 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;;; Local Variables:
 ;;; eval: (require 'scwm)
 ;;; End:
-
