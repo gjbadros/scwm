@@ -55,18 +55,18 @@ See also `before-new-window-hook' and `after-new-window-hook'.
 [From scwm/add_window.c:102]
 
 
-broadcast-config-hook (1 args)
+broadcast-config-hook (2 args)
 - 
 This hook is invoked whenever fvwm2 would call BroadcastConfig.
 This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways that
 can't be done with the proper hooks that have been included so
-far. The procedures in this hook are passed a window structure as the
-sole argument. 
+far. The procedures in this hook are passed two arguments: the event-type
+and the window object. 
 [From scwm/module-interface.c:40]
 
 
-broadcast-hook (8 args)
+broadcast-hook (9 args)
 - 
 This hook is invoked whenever fvwm2 would call Broadcast.
 This hook is principally of use in implementing the fvwm2
@@ -78,14 +78,14 @@ following data arguments are meaningful, and 7 numeric data arguments.
 [From scwm/module-interface.c:31]
 
 
-broadcast-mini-icon-hook (1 args)
+broadcast-mini-icon-hook (2 args)
 - 
 This hook is invoked whenever fvwm2 would call BroadcastMiniIcon.
 This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways that
 can't be done with the proper hooks that have been included so
-far. The procedures The procedures in this hook are passed a window
-structure as the sole argument. 
+far. The procedures The procedures in this hook are passed two arguments:
+the event-type and the window object. 
 [From scwm/module-interface.c:56]
 
 
@@ -109,10 +109,10 @@ called before the desk is changed.  See also `after-change-desk-hook'.
 [From scwm/virtual.c:45]
 
 
-client-message-hook (3 args)
+client-message-hook (4 args)
 - 
 This hook is invoked whenever Scwm receives an X/11 client message.
-It is called with three arguments: the message-type atom, the format (8, 16, or 32), 
+It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), 
 and the vector of data. 
 [From scwm/events.c:190]
 

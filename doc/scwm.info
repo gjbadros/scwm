@@ -1,9 +1,8 @@
-This is Info file scwm.info, produced by Makeinfo version 1.68 from the
-input file scwm.texi.
+This is scwm.info, produced by Makeinfo version 3.12f from scwm.texi.
 
 INFO-DIR-SECTION Scheme Programming
 START-INFO-DIR-ENTRY
-* scwm::                               The Scheme Configurable Window Manager
+* scwm::                               The Scheme Constraints Window Manager
 END-INFO-DIR-ENTRY
 
 
@@ -14,8 +13,9 @@ File: scwm.info,  Node: Top,  Next: Scheme Procedures
    This is the start of the scwm manual. It's not very complete or
 accurate yet, but hopefully that will change.
 
-   This documentation is pretty old. Look at the SGML documentation for
-now until we can figure out a way to generate texi from DocBook.
+   This documentation is completely out of date. Look at the SGML
+documentation for now until we can figure out a way to generate texi
+from DocBook.
 
 * Menu:
 
@@ -38,7 +38,7 @@ until I write better documentation.
 
    A procedure documented as
 
- - Function: foo BAR BAZ #&OPTIONAL QUUX XYZZY . ARGS
+ - Function: foo BAR BAZ #&optional QUUX XYZZY . ARGS
 
    is called `foo' and has required arguments BAR and BAZ, optional
 arguments QUUX and XYZZY, and accepts any variable number of arguments
@@ -73,11 +73,11 @@ COLORS
  - Function: color? OBJ
      Returns `#t' if OBJ is a color object, else `#f'.
 
- - Function: set-hilight-colors! #&OPTIONAL FG BG
+ - Function: set-hilight-colors! #&optional FG BG
      Sets the hilight FOREGROUND and BACKGROUND colors. If you pass
      `#f' for either one, it is left unchanged.
 
- - Function: set-menu-colors! #&OPTIONAL FG BG STIPPLE
+ - Function: set-menu-colors! #&optional FG BG STIPPLE
      This sets the menu FOREGROUND, BACKGROUND and STIPPLE colors.  As
      above, `#f' indicates that the relevant color should not be
      changed.
@@ -235,12 +235,12 @@ SYNTHETIC EVENTS
  - Function: move-pointer-to X Y
      Moves the pointer to the absolute position X, Y.
 
- - Function: send-button-press BUTTON MODIFIER #&OPTIONAL WIN
-          BUTTON_PRESS_P =
+ - Function: send-button-press button modifier #&optional win
+          button_press_p =
      button_release_p propagate_p
 
- - Function: send-key-press KEY #&OPTIONAL WIN BUTTON_PRESS_P
-          BUTTON_RELEASE_P=
+ - Function: send-key-press key #&optional win button_press_p
+          button_release_p=
      propagate_p Send synthetic button and key presses.
 
 WINDOWS
@@ -249,7 +249,7 @@ WINDOWS
  - Function: window? OBJ
      Returns `#t' if OBJ is a window object, else `#f'.
 
- - Function: get-window #&OPTIONAL USE_KILL_CURSOR USE_SELECT_WINDOW =
+ - Function: get-window #&optional USE_KILL_CURSOR USE_SELECT_WINDOW =
      WAIT_FOR_RELEASE Retrieves the current window context and returns
      the window object representing it. If no window context is set, it
      lets the user select a window by calling select-window. However,
@@ -275,92 +275,92 @@ operations to key or mouse events. It also means that in most cases,
 you won't need to use the optional W argument, but sometimes it is
 needed.
 
- - Function: focus #&OPTIONAL W
+ - Function: focus #&optional W
      Give W the keyboard focus.
 
- - Function: warp-to-window #&OPTIONAL W
+ - Function: warp-to-window #&optional W
      Warp the mouse pointer to the window W.
 
- - Function: delete-window #&OPTIONAL W
+ - Function: delete-window #&optional W
      Delete W, in other words, close it politely. This may not always
      work.
 
- - Function: destroy-window #&OPTIONAL W
+ - Function: destroy-window #&optional W
      Destroy W, in other words, close it rudely. This always works, but
      will not give the application the chance to do special shutdown
      actions, like asking for confirmation.
 
- - Function: window-deletable? #&OPTIONAL W
+ - Function: window-deletable? #&optional W
      Returns `#t' if delete-window will work on W, else `#f'.
 
- - Function: lower-window #&OPTIONAL W
+ - Function: lower-window #&optional W
      Lowers W to the bottom of the window stack.
 
- - Function: raise-window #&OPTIONAL W
+ - Function: raise-window #&optional W
      Raises W to the top of the window stack.
 
- - Function: raised? #&OPTIONAL W
+ - Function: raised? #&optional W
      Returns `#t' if W is currently raised, else `#f'.
 
- - Function: iconify #&OPTIONAL W
+ - Function: iconify #&optional W
      Iconifies window W.
 
- - Function: deiconify #&OPTIONAL W
+ - Function: deiconify #&optional W
      Deiconifies window W.
 
- - Function: iconified? #&OPTIONAL W
+ - Function: iconified? #&optional W
      Determines if W is iconified.
 
- - Function: stick #&OPTIONAL W
+ - Function: stick #&optional W
      "Sticks" window `W'. This makes it remain in the same position on
      the screen when desks or pages are switched.
 
- - Function: unstick #&OPTIONAL W
+ - Function: unstick #&optional W
      Reverses the effects of `stick'.
 
- - Function: sticky? #&OPTIONAL W
+ - Function: sticky? #&optional W
      Determines if a window is currently "sticky."
 
- - Function: window-shade #&OPTIONAL W ANIMATED_P
+ - Function: window-shade #&optional W ANIMATED_P
      Rolls up the window into just a title bar, like a window shade.
      Optionally animated.
 
- - Function: un-window-shade #&OPTIONAL W
+ - Function: un-window-shade #&optional W
      Reverses the effect of `window-shade'.
 
- - Function: window-shaded? #&OPTIONAL W
+ - Function: window-shaded? #&optional W
      Determines if the window is currently shaded.
 
- - Function: move-to X Y #&OPTIONAL W ANIMATED_P MOVE_POINTER_TOO_P
+ - Function: move-to X Y #&optional W ANIMATED_P MOVE_POINTER_TOO_P
      Moves the window to X,Y on the current screen. The move can
      optionally be animated and it is possible to also move the pointer.
 
- - Function: interactive-move #&OPTIONAL W
+ - Function: interactive-move #&optional W
      Begins an interactive move operation. The user can adjust the
      position of the window with the mouse or arrow keys.
 
- - Function: resize-to X Y #&OPTIONAL W
+ - Function: resize-to X Y #&optional W
      Resizes the window to X by Y.
 
- - Function: interactive-resize #&OPTIONAL W
+ - Function: interactive-resize #&optional W
      Begins an interactive resize operation. The user can adjust the
      position of the window with the mosue or arrow keys.
 
- - Function: refresh-window #&OPTIONAL W
+ - Function: refresh-window #&optional W
      Refreshes the window, ensuring that its contents and decorations
      are up to date and properly displayed.
 
- - Function: move-window-to-desk DESK #&OPTIONAL W
+ - Function: move-window-to-desk DESK #&optional W
      Moves the window to a new desk, specified by an integer.
 
- - Function: keep-on-top #&OPTIONAL W
+ - Function: keep-on-top #&optional W
      Will raise the specified window and keep it on top of all other
      windows unless it is explicitly lowered.
 
- - Function: un-keep-on-top #&OPTIONAL W
+ - Function: un-keep-on-top #&optional W
      Negates the effects of `keep-on-top'.
 
- - Function: kept-on-top? #&OPTIONAL W
+ - Function: kept-on-top? #&optional W
      Determines if a window is under the influence of `keep-on-top'.
 
 WINDOW INFORMATION PROCEDURES
@@ -369,13 +369,13 @@ WINDOW INFORMATION PROCEDURES
    These procedures return various kinds of information about windows.
 They can be useful in selecting only particular windows
 
- - Function: window-position #&OPTIONAL W
- - Function: window-size #&OPTIONAL W
- - Function: window-id #&OPTIONAL W
- - Function: window-desk #&OPTIONAL W
- - Function: window-title #&OPTIONAL W
- - Function: window-class #&OPTIONAL W
- - Function: window-resource #&OPTIONAL W
+ - Function: window-position #&optional W
+ - Function: window-size #&optional W
+ - Function: window-id #&optional W
+ - Function: window-desk #&optional W
+ - Function: window-title #&optional W
+ - Function: window-class #&optional W
+ - Function: window-resource #&optional W
 
  - Function: list-all-windows
      This returns a list of all of the windows currently being managed.
@@ -388,19 +388,19 @@ relevant functionality through the `window-style' or `style-one-window'
 procedures rather than the given procedures. The working and arguments
 can generally be deduced from the corresponding style option. Further
 
- - Function: show-titlebar #&OPTIONAL W
- - Function: hide-titlebar #&OPTIONAL W
- - Function: titlebar-shown? #&OPTIONAL W
- - Function: normal-border #&OPTIONAL W
- - Function: plain-border #&OPTIONAL W
- - Function: border-normal? #&OPTIONAL W
- - Function: set-border-width! WIDTH #&OPTIONAL W
- - Function: stick-icon #&OPTIONAL W
- - Function: unstick-icon #&OPTIONAL W
- - Function: icon-sticky? #&OPTIONAL W
- - Function: set-icon-box! X Y W H BOOL #&OPTIONAL W
+ - Function: show-titlebar #&optional W
+ - Function: hide-titlebar #&optional W
+ - Function: titlebar-shown? #&optional W
+ - Function: normal-border #&optional W
+ - Function: plain-border #&optional W
+ - Function: border-normal? #&optional W
+ - Function: set-border-width! WIDTH #&optional W
+ - Function: stick-icon #&optional W
+ - Function: unstick-icon #&optional W
+ - Function: icon-sticky? #&optional W
+ - Function: set-icon-box! X Y W H BOOL #&optional W
 
- - Function: set-window-focus! SYM #&OPTIONAL W
+ - Function: set-window-focus! SYM #&optional W
      available are:
     `'click'
           must click on the window to focus.
@@ -416,25 +416,25 @@ can generally be deduced from the corresponding style option. Further
     `'none'
           don't ever give this window focus, even if it is clicked.
 
- - Function: set-window-colors! #&OPTINAL FG BG W
- - Function: set-icon-title! STRING #&OPTIONAL W
- - Function: set-random-placement! BOOL #&OPTIONAL W
- - Function: set-smart-placement! BOOL #&OPTIONAL W
- - Function: set-window-button! NUM BOOL #&OPTIONAL W
- - Function: set-mwm-buttons! BOOL #&OPTIONAL W
- - Function: set-mwm-border! BOOL #&OPTIONAL W
- - Function: set-icon! BOOL-OR-STRING-OR-IMAGE #&OPTIONAL W
- - Function: set-mini-icon! BOOL-OR-STRING-OR-IMAGE #&OPTIONAL W
+ - Function: set-window-colors! #&optinal FG BG W
+ - Function: set-icon-title! STRING #&optional W
+ - Function: set-random-placement! BOOL #&optional W
+ - Function: set-smart-placement! BOOL #&optional W
+ - Function: set-window-button! NUM BOOL #&optional W
+ - Function: set-mwm-buttons! BOOL #&optional W
+ - Function: set-mwm-border! BOOL #&optional W
+ - Function: set-icon! BOOL-OR-STRING-OR-IMAGE #&optional W
+ - Function: set-mini-icon! BOOL-OR-STRING-OR-IMAGE #&optional W
 
- - Function: set-hint-override! BOOL #&OPTIONAL W
- - Function: set-decorate-transient! BOOL #&OPTIONAL W
- - Function: set-mwm-decor-hint! BOOL #&OPTIONAL W
- - Function: set-mwm-func-hint! BOOL #&OPTIONAL W
- - Function: set-PPosition-hint! BOOL #&OPTIONAL W
- - Function: set-OL-decor-hint! BOOL #&OPTIONAL W
- - Function: set-start-on-desk! DESK #&OPTIONAL W
- - Function: set-skip-mapping! BOOL #&OPTIONAL W
- - Function: set-lenience! BOOL #&OPTIONAL W
+ - Function: set-hint-override! BOOL #&optional W
+ - Function: set-decorate-transient! BOOL #&optional W
+ - Function: set-mwm-decor-hint! BOOL #&optional W
+ - Function: set-mwm-func-hint! BOOL #&optional W
+ - Function: set-PPosition-hint! BOOL #&optional W
+ - Function: set-OL-decor-hint! BOOL #&optional W
+ - Function: set-start-on-desk! DESK #&optional W
+ - Function: set-skip-mapping! BOOL #&optional W
+ - Function: set-lenience! BOOL #&optional W
 
 MENUS
 =====
@@ -442,7 +442,7 @@ MENUS
  - Function: menu? OBJ
      Returns `#t' if OBJ is a menu object, else `#f'.
 
- - Function: make-menu TITLE [(LIST NAME
+ - Function: make-menu TITLE [(list NAME
           PROC-OR-MENU)|`'title'|`'separator'] ...
      Creates a menu object.  The first argument is a string that is the
      menu title, however, the title is not necessarily displayed unless
@@ -455,7 +455,7 @@ MENUS
      rather than a procedure which uses popup to display the menu,
      because
 
- - Function: popup MENU #&OPTIONAL STICK?
+ - Function: popup MENU #&optional STICK?
      Pops up the menu. If STICK is specified, it determines if the menu
      stays up when the mouse is released, assuming it was started in
      response to a mouse click. The default is `#f'.
@@ -489,26 +489,26 @@ VIRTUAL DESKTOP
 DECORS
 ======
 
- - Function: make-decor #&OPTIONAL NAME
+ - Function: make-decor #&optional NAME
  - Function: default-decor
  - Function: set-current-decor! DECOR
  - Function: current-decor
- - Function: set-window-decor! DECOR #&OPTIONAL WINDOW
+ - Function: set-window-decor! DECOR #&optional WINDOW
 
 FACES
 =====
 
  - Function: make-face FLAGS SPECS
- - Function: set-title-face! ACTIVE_UP_FACE #&OPTIONAL ACTIVE_DOWN_FACE
+ - Function: set-title-face! ACTIVE_UP_FACE #&optional ACTIVE_DOWN_FACE
           =
      INACTIVE_FACE
 
- - Function: set-button-face! NUM ACTIVE_UP_FACE #&OPTIONAL
+ - Function: set-button-face! NUM ACTIVE_UP_FACE #&optional
           ACTIVE_DOWN_FACE =
      INACTIVE_FACE
 
  - Function: set-button-mwm-flag! NUM BOOLEAN
- - Function: set-border-face! ACTIVE_FACE #&OPTIONAL INACTIVE_FACE
+ - Function: set-border-face! ACTIVE_FACE #&optional INACTIVE_FACE
 
 PROCEDURES IN SCHEME
 ====================
@@ -538,50 +538,50 @@ prefaced with the proper module name.
 MODULE (app scwm base)
 ======================
 
- - Function: %x X
+ - Function: %x x
      X is treated as a precentage of the horizontal screen size and the
      proper value in pixels is returned. This is useful for writing `rc'
      files that don't depend too much on the display size for reasonable
      placement.
 
- - Function: %y Y
+ - Function: %y y
      Just like `%x', but for the vertical direction.
 
- - Function: x- X
- - Function: y- Y
- - Function: %x- X
- - Function: %y- Y
+ - Function: x- x
+ - Function: y- y
+ - Function: %x- x
+ - Function: %y- y
 
- - Function: w%x X #&OPTIONAL W
- - Function: w%y Y #&OPTIONAL W
+ - Function: w%x x #&optional w
+ - Function: w%y y #&optional w
      These work like `%x' and `%y' but give a percentage of the
      dimensions of the given window.
 
- - Function: execute COMMAND
+ - Function: execute command
      Executes a shell `command' as a separate process, for example
      `(execute "xterm")' or `(execute "cat ~/some-file | grep
      pattern")' or whatever.
 
- - Function: set-menu-foreground! FG
- - Function: set-menu-background! BG
- - Function: set-menu-stipple! ST
+ - Function: set-menu-foreground! fg
+ - Function: set-menu-background! bg
+ - Function: set-menu-stipple! st
      These set only one of the menu color components. They may go away
      since the `menu-style' interface is more useful.
 
- - Function: set-window-foreground! FG #&OPTIONAL W
+ - Function: set-window-foreground! fg #&optional w
 
- - Function: set-window-background! BG #&OPTIONAL W
+ - Function: set-window-background! bg #&optional w
 
- - Function: move-pointer X Y
+ - Function: move-pointer x y
      Moves the mouse pointer relative to the current position
      (`move-pointer-to' moves it absolutely).
 
- - Function: move-viewport X Y
+ - Function: move-viewport x y
      Moves the viewport relatively (`set-viewport-position!' does it
      absolutely)
 
- - Function: menu-style #&KEY FG FOREGROUND BG BACKGROUND STIPPLE FONT
-          MWM =
+ - Function: menu-style #&key fg foreground bg background stipple font
+          mwm =
      mwm-style This is a general-purpose interface for setting various
      things that relate to menus. It is called with keyword-value pairs
      like so:
@@ -608,7 +608,7 @@ MODULE (app scwm base)
           mwm style. If true, menus are "mwm style", else they are
           "fvwm = style".
 
- - Function: simple-title-style #&KEY FONT HEIGHT JUSTIFY
+ - Function: simple-title-style #&key font height justify
      This is a similar interface to the above. The available keywords
      are
 
@@ -628,59 +628,59 @@ MODULE (app scwm winops)
 window operations, they default to the current window context if the
 window is not specified.
 
- - Function: make-toggling-winop PRED NEG POS
+ - Function: make-toggling-winop pred neg pos
      This can be used to define toggling window operations easily. you
      pass a PREDICATE which determines if the window has been affected,
      then a PROCEDURE which undoes the operation, then one which does
      it, and a procedure is returned which will do a toggling version
      of the effect.
 
- - Function: close-window #&OPTIONAL W
+ - Function: close-window #&optional W
      Delete the window if possible, otherwise destroy it.
 
- - Function: toggle-raise #&OPTIONAL W
+ - Function: toggle-raise #&optional W
      Raise the window if it is not already on top. If it is, lower it.
 
- - Function: toggle-iconify #&OPTIONAL W
+ - Function: toggle-iconify #&optional W
      Iconify the window if it isn't already, else deiconify it.
 
- - Function: toggle-stick #&OPTIONAL W
+ - Function: toggle-stick #&optional W
      Stick the window if it isn't already, else unstick it.
 
- - Function: toggle-window-shade #&OPTIONAL W
+ - Function: toggle-window-shade #&optional W
      window-shade the window if it isn't already, else un-window-shade
      it.
 
- - Function: maximize NW NH #&OPTIONAL W
+ - Function: maximize nw nh #&optional W
      Maximizes the window to size nw by nh. If either of nw or nh is 0,
      the size in that direction will not be changed. Also, a window
      maximized vertically will be moved to the top edge of the display,
      and a window maximized horizontally will be moved to the left edge.
 
- - Function: maximized? #&OPTIONAL W
+ - Function: maximized? #&optional W
      Determines if the window is maximized.
 
- - Function: unmaximize #&OPTIONAL W
+ - Function: unmaximize #&optional W
      Unmaximizes the window if it is maximized, restoring it to its size
      and position previous to any maximize operations.
 
- - Function: toggle-maximize NW NH #&OPTIONAL W
+ - Function: toggle-maximize nw nh #&optional W
      A toggling version of maximize.
 
- - Function: print-window #&OPTIONAL W
+ - Function: print-window #&optional W
      Prints a screen dump of the selected window.
 
  - Function: menu-title
  - Function: menu-separator
- - Function: menu-item MENU-ITEM NAME #&KEY ABOVE-PIXMAP LEFT-PIXMAP
-          ACTION
+ - Function: menu-item menu-item name #&key above-pixmap left-pixmap
+          action
 
 MODULE (app scwm winlist)
 =========================
 
    This module includes procedures for manipulating the window list.
 
- - Function: default-winlist-proc #&OPTIONAL W
+ - Function: default-winlist-proc #&optional w
      This is the normal default window list procedure. It deiconifies,
      focuses and raises the window, then warps the pointer to a
      convenient point inside it.
@@ -691,7 +691,7 @@ MODULE (app scwm winlist)
      `default-winlist-proc', but you can `set!' it to something else to
      make that the default behavior.
 
- - Function: list-windows #&KEY ONLY EXCEPT
+ - Function: list-windows #&key only except
      This works like `list-all-windows' but allows you to specify
      additional conditions on the windows returned. The `#:only' and
      `#:except' keyword parameters may be specified to achieve this.
@@ -703,7 +703,7 @@ MODULE (app scwm winlist)
  - Function: winlist-hit
  - Function: winlist-skip?
 
- - Function: show-window-list-menu #&KEY ONLY EXCEPT PROC SHOW-GEOMETRY
+ - Function: show-window-list-menu #&key only except proc show-geometry
      This procedure shows a menu that lists the title of every suitable
      window, and takes an action on the appropriate window if one is
      selected. Here is the meaning of the keywords:
@@ -724,15 +724,15 @@ MODULE (app scwm winlist)
           If `#t', will show the window geometry in addition to titles.
           Defaults to `#f'.
 
- - Function: circulate-skip #&OPTIONAL W
- - Function: circulate-hit #&OPTIONAL W
- - Function: circulate-skip? #&OPTIONAL W
- - Function: circulate-skip-icon #&OPTIONAL W
- - Function: circulate-hit-icon #&OPTIONAL W
- - Function: circulate-skip-icon? #&OPTIONAL W
- - Function: should-circulate-skip? #&OPTIONAL W
- - Function: next-window #&KEY WINDOW ONLY EXCEPT PROC
- - Function: prev-window #&KEY WINDOW ONLY EXCEPT PROC
+ - Function: circulate-skip #&optional w
+ - Function: circulate-hit #&optional w
+ - Function: circulate-skip? #&optional w
+ - Function: circulate-skip-icon #&optional w
+ - Function: circulate-hit-icon #&optional w
+ - Function: circulate-skip-icon? #&optional w
+ - Function: should-circulate-skip? #&optional w
+ - Function: next-window #&key window only except proc
+ - Function: prev-window #&key window only except proc
      These procedures do something useful to the next or previous
      window in the window list. They are most useful for implementing
      circulation of the window list with the keyboard. Here is the
@@ -773,19 +773,19 @@ MODULE (app scwm wininfo)
    This module provides additional predicates and generally informative
 procedures for finding out stuff about windows.
 
- - Function: on-desk? N #&OPTIONAL W
- - Function: on-desk-n? N
- - Function: on-current-desk? #&OPTIONAL W
- - Function: in-viewport-any-desk? #&OPTIONAL W
- - Function: visible? #&OPTIONAL W
+ - Function: on-desk? n #&optional w
+ - Function: on-desk-n? n
+ - Function: on-current-desk? #&optional w
+ - Function: in-viewport-any-desk? #&optional w
+ - Function: visible? #&optional w
 
- - Function: geometry-string #&OPTIONAL W
+ - Function: geometry-string #&optional w
 
- - Function: wildcard-matcher WILDCARD #&KEY FULL-REGEXP REGEXP-OPRIONS
+ - Function: wildcard-matcher wildcard #&key full-regexp regexp-oprions
      Returns a procedure that takes one optional window argument (which
      defaults to the current window context) and which will determine
 
- - Function: wildcard-match? WILDCARD #&OPTIONAL W
+ - Function: wildcard-match? wildcard #&optional w
 
 MODULE (app scwm optargs)
 =========================
@@ -808,17 +808,17 @@ out. Most of the styles (those dealing with initial placement and
 windowmanager hints) can also be set with interactive procedures. In
 some cases,
 
- - Function: make-style . ARGS
+ - Function: make-style . args
      This creates a style that can be used with the `#:use-style' option
      of the style commands. It's really just a cons cell but it's poor
      to depend on that. The arguments can be any of the options
      accepted by the `window-style' command (see below).
 
- - Function: style-one-window W . ARGS
+ - Function: style-one-window w . args
      This applies a style to a single window. The arguments can be any
      of the options accepted by the `window-style' command (see below).
 
- - Function: window-style CONDITION . ARGS
+ - Function: window-style condition . args
      This establishes a style that is applied to current and future
      windows, much like the fvwm Style command. CONDITION can be a
      predicate that takes a window as an argument in which case all
@@ -837,10 +837,10 @@ some cases,
      The keys are processed in order, so the last one of a conflicting
      pair is the one that will take effect.
 
- - Function: add-window-style-option KEY HANDLER
- - Function: add-boolean-style-option KEY T-HANDLER F-HANDLER
- - Function: add-window-hint-option KEY HANDLER
- - Function: add-boolean-hint-option KEY T-HANDLER F-HANDLER
+ - Function: add-window-style-option key handler
+ - Function: add-boolean-style-option key t-handler f-handler
+ - Function: add-window-hint-option key handler
+ - Function: add-boolean-hint-option key t-handler f-handler
      These procedures let you define your own style options. The
      following style options are predefined:
 
@@ -997,26 +997,26 @@ some cases,
 MODULE (app scwm decor)
 =======================
 
- - Function: call-with-decor DECOR THUNK
+ - Function: call-with-decor decor thunk
 
- - Macro: with-decor DECOR . BODY
+ - Macro: with-decor decor . body
      Adds `#:use-decor' style option
 
 MODULE (app scwm face)
 ======================
 
- - Function: title-style . ARGS
- - Function: border-style . ARGS
- - Function: button-style NUM . ARGS
+ - Function: title-style . args
+ - Function: border-style . args
+ - Function: button-style num . args
 
 MODULE (app scwm fvwm-compat)
 =============================
 
- - Function: fvwm-exec-use-shell #&OPTIONAL SHELL
- - Function: fvwm-exec COMMAND
- - Function: fvwm-none THUNK #&KEY ONLY EXCEPT
- - Function: fvwm-pipe-read COMMAND
- - Function: fvwm-nop . ARGS
+ - Function: fvwm-exec-use-shell #&optional shell
+ - Function: fvwm-exec command
+ - Function: fvwm-none thunk #&key only except
+ - Function: fvwm-pipe-read command
+ - Function: fvwm-nop . args
 
 Variable Index
 **************
@@ -1131,6 +1131,8 @@ Function Index
 * select-window:                         Scheme Procedures.
 * send-button-press:                     Scheme Procedures.
 * send-key-press:                        Scheme Procedures.
+* set-OL-decor-hint!:                    Scheme Procedures.
+* set-PPosition-hint!:                   Scheme Procedures.
 * set-animation!:                        Scheme Procedures.
 * set-border-face!:                      Scheme Procedures.
 * set-border-width!:                     Scheme Procedures.
@@ -1167,9 +1169,7 @@ Function Index
 * set-mwm-buttons!:                      Scheme Procedures.
 * set-mwm-decor-hint!:                   Scheme Procedures.
 * set-mwm-func-hint!:                    Scheme Procedures.
-* set-OL-decor-hint!:                    Scheme Procedures.
 * set-opaque-move-size!:                 Scheme Procedures.
-* set-PPosition-hint!:                   Scheme Procedures.
 * set-random-placement!:                 Scheme Procedures.
 * set-rubber-band-mask!:                 Scheme Procedures.
 * set-skip-mapping!:                     Scheme Procedures.
@@ -1239,7 +1239,7 @@ Function Index
 
 
 Tag Table:
-Node: Top250
-Node: Scheme Procedures629
+Node: Top225
+Node: Scheme Procedures616
 
 End Tag Table
