@@ -679,6 +679,9 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
     WXGetPointerWindowOffsets(Scr.Root, &DragX, &DragY);
   }
 
+  /* reset the global so it only is set if explicitly
+     set before calling -- still a hack! FIXGJB --09/24/98 gjb */
+  have_orig_position = False;
   InstallRootColormap();
 
   if (!GrabEm(CURSOR_MOVE)) {

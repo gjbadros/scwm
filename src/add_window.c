@@ -812,12 +812,9 @@ created. */
 
   SCWM_HOOK(before_place_new_window_hook, "before-place-new-window-hook");
   /** This hook is invoked just before placing a new window.
-It should be used for setting window styles, as the window geometry
-needs to be fully and correctly specified before the window is placed.
-The `window-style' mechanism from the "(app scwm style)" module provides a convenient
-interface to setting the relevant parameters when a new window is
-created. */
-
+It comes after `before-new-window-hook', but before `after-new-window-hook'. 
+This hook may be removed later since it is mostly redundant with the other
+two hooks, despite being invoked at a slightly different time. */
 
   SCWM_HOOK(after_new_window_hook, "after-new-window-hook");
   /** This hook is invoked when a new window has been completely created
@@ -825,9 +822,9 @@ and placed on the screen. Any window operations may be performed at
 this time. However, it is recommended that placement-related
 operations, such as setting the position, desk, viewport location and
 z-ordering of a window be done in the placement procedure instead.
-
-This hook does not typically need to be used directly by the user;
-`window-style' from the (app scwm style) module provides a convenient
+It should be used for setting window styles, as the window geometry
+needs to be fully and correctly specified before the window is placed.
+The `window-style' mechanism from the "(app scwm style)" module provides a convenient
 interface to setting the relevant parameters when a new window is
 created. */
 
