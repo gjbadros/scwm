@@ -120,7 +120,7 @@ allocated, an error results. */
 
   if (!gh_string_p(fname)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, fname);
+    SCWM_WRONG_TYPE_ARG(1, fname);
   }
   
   answer=scm_hash_ref(font_hash_table, fname, SCM_BOOL_F);
@@ -244,7 +244,7 @@ color, and 'height, its total height in pixels. */
 {
   scwm_font *psfont = SAFE_FONT(font);
   if (!psfont) {
-    scm_wrong_type_arg(FUNC_NAME, 1, font);
+    SCWM_WRONG_TYPE_ARG(1, font);
   } 
   return gh_list(gh_cons(sym_name, FONTNAME(font)),
 		 gh_cons(sym_height, gh_int2scm(FONTHEIGHT(font))),
@@ -262,7 +262,7 @@ SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
   }
   if (!FONT_P(font)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, font);
+    SCWM_WRONG_TYPE_ARG(1, font);
   }
 
   Scr.icon_font = font;
@@ -299,7 +299,7 @@ SCWM_PROC(set_title_font_x, "set-title-font!", 1, 0, 0,
 
   if (!FONT_P(font)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, font);
+    SCWM_WRONG_TYPE_ARG(1, font);
   }
 
   fl->window_font = font;

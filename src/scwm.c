@@ -154,6 +154,7 @@ ScwmWindow *FocusOnNextTimeStamp = NULL;
 
 Bool debugging = False, PPosOverride = False, Blackout = False;
 Bool fDisableBacktrace = False;
+Bool fResetOnSegv = True;
 
 char **g_argv;
 int g_argc;
@@ -512,7 +513,6 @@ scwm_main(int argc, char **argv)
 
   /* getopt vars */
   int getopt_ret;
-  char *getopt_opts;
   extern char *optarg;
   extern int optind, opterr, optopt;
 
@@ -520,6 +520,7 @@ scwm_main(int argc, char **argv)
   char message[255];
   Bool single = False;
   Bool option_error = False;
+  Bool fHandleSegv = True;
 
 #ifdef I18N
   char *Lang,*territory,*tmp;
@@ -615,8 +616,6 @@ scwm_main(int argc, char **argv)
 
   DBUG((DBG,"main", "Entered, about to parse args"));
   
-  getopt_opts = "Dsd:f:e:hibV";
-
   /** CONCEPT: Run-time command-line options
 <segmentedlist>
 <segtitle/Option/
@@ -627,6 +626,12 @@ scwm_main(int argc, char **argv)
 </seglistitem><seglistitem>
 
 <seg/-n or --nobacktrace/ <seg/disable guile's debugging backtraces./
+</seglistitem><seglistitem>
+
+<seg/-p or --segv-cleanup-and-stop/ <seg/abort on segv signal, but cleanup first/
+</seglistitem><seglistitem>
+
+<seg/-P or --segv-just-stop/ <seg/abort on segv signal without catching signal at all/
 </seglistitem><seglistitem>
 
 <seg/-s or --single-screen/ <seg/run only on on the first screen of the display./
@@ -660,8 +665,11 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   */
+
+
   
   while(1) {
+    static const char *getopt_opts = "Dsd:f:e:hibVnpP";
     static struct option getopt_longopts[] =
     {
       {"debug", 0, NULL, 'D'}, /* turns on Scwm debugging */
@@ -672,6 +680,8 @@ is probably of no use to you unless you're a session manager or debbuging.
       {"help", 0, NULL, 'h'},
       {"blackout", 0, NULL, 'b'},
       {"version", 0, NULL, 'V'},
+      {"segv-cleanup-and-stop", 0, NULL, 'p'},
+      {"segv-just-stop", 0, NULL, 'P'},
       {"nobacktrace", 0, NULL, 'n'}, /* turns off guile backtraces */
       {CLIENT_ID_STRING, required_argument, NULL, CLIENT_ID},
       {NULL, 0, NULL, 0}
@@ -686,6 +696,12 @@ is probably of no use to you unless you're a session manager or debbuging.
       debugging = True; break;
     case 's':
       single = True; break;
+    case 'p':
+      /* still handle the segv, just do not reset to the main event handler */
+      fResetOnSegv = False; break;
+    case 'P':
+      /* do not even catch segv's */
+      fHandleSegv = False; break;
     case 'd':
       if(optarg == NULL) {
         option_error = True;
@@ -766,13 +782,14 @@ Repository Timestamp: %s\n",
   
 #define SIGNAL_FOR_RESET SIGHUP
 
-  newhandler_doreset(SIGNAL_FOR_RESET);
-  newhandler(SIGINT);
+  newhandler(SIGINT); /* later change this to do a reset
+                         don't want it to try to longjmp too soon, though */
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
   /* GJB:FIXME:: I seem to lose the last stack frame in my backtrace if this is
      set... do others not see this? --07/24/98 gjb */
-  newsegvhandler(SIGSEGV);
+  if (fHandleSegv)
+    newsegvhandler(SIGSEGV);
 
   signal(SIGUSR1, Restart);
   
@@ -1037,6 +1054,8 @@ Repository Timestamp: %s\n",
 
   DBUG((DBG,"main", "Entering HandleEvents loop..."));
   sigsetjmp(envHandleEventsLoop,1);
+  newhandler_doreset(SIGNAL_FOR_RESET);
+  newhandler_doreset(SIGINT);
   HandleEvents();
   DBUG((DBG,"main", "Back from HandleEvents loop?  Exitting..."));
   return;
@@ -1212,8 +1231,11 @@ SigResetLoop(int ARG_IGNORE(ignored))
 void 
 newhandler(int sig)
 {
-  if (signal(sig, SIG_IGN) != SIG_IGN)
-    signal(sig, SigDone);
+  if (signal(sig, SIG_IGN) != SIG_IGN) {
+    void *pv = signal(sig, SigDone);
+    if (pv == SIG_ERR) 
+      scwm_msg(WARN,"newhandler","signal returned SIG_ERR");
+  }
 }
 
 /*
@@ -1225,7 +1247,7 @@ newhandler_doreset(int sig)
   if (signal(sig, SIG_IGN) != SIG_IGN) {
     void *pv = signal(sig, SigResetLoop);
     if (pv == SIG_ERR) 
-      scwm_msg(WARN,"newhandler_doreset","signal returned SIG_ERR for SigResetLoop");
+      scwm_msg(WARN,"newhandler_doreset","signal returned SIG_ERR");
   }
 }
 
@@ -1236,9 +1258,23 @@ newhandler_doreset(int sig)
 void 
 newsegvhandler(int sig)
 {
-  if (signal(sig, SIG_IGN) != SIG_IGN)
-    signal(sig, SigDoneSegv);
+  if (signal(sig, SIG_IGN) != SIG_IGN) {
+    void *pv = signal(sig, SigDoneSegv);
+    if (pv == SIG_ERR) 
+      scwm_msg(WARN,"newsegvhandler","signal returned SIG_ERR");
+  }
 }
+
+void 
+reset_signal_handler(int sig)
+{
+  if (signal(sig, SIG_IGN) != SIG_IGN) {
+    void *pv = signal(sig, SIG_DFL);
+    if (pv == SIG_ERR) 
+      scwm_msg(WARN,"reset_signal_handler","signal returned SIG_ERR");
+  }
+}
+
 
 
 /*************************************************************************
@@ -1327,9 +1363,6 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
 /*
  * Reborder - Removes scwm border windows
  */
-/*
- * Reborder - Removes scwm border windows
- */
 void 
 Reborder(Bool fRestart)
 {
@@ -1376,7 +1409,14 @@ SigDone(int ARG_IGNORE(ignored))
 SIGNAL_T
 SigDoneSegv(int ARG_IGNORE(ignored))
 {
-  Done(-1, NULL);
+  scwm_msg(ERR, "SigDoneSegv","Caught seg fault... please run with --permit-segv and report a bug!");
+  if (fResetOnSegv) {
+    scwm_msg(ERR, "SigDoneSegv","Trying to continue... save your work if you still can!");
+    siglongjmp(envHandleEventsLoop,1);
+  } else {
+    scwm_msg(ERR, "SigDoneSegv","Doing some cleanup to restore sanity");
+    Done(-1, NULL);
+  }
   SIGNAL_RETURN;
 }
 
@@ -1440,8 +1480,9 @@ usage(void)
   fprintf(stderr, "\nScwm Version %s\n", VERSION);
   fprintf(stderr, "Usage: %s [--display|-d dpy] [--debug]"
 	  "[--expression|-e expression]\n"
-	  "      [--file|-f rc_file] [--single-screen|-s] \n"
-	  "      [--blackout|-b] [--client-id id]\n"
+	  "      [--file|-f rc_file] [--single-screen|-s]\n"
+	  "      [--nobacktrace|-n] [--segv-cleanup-and-stop|-p] [--segv-just-stop|-P]\n"
+	  "      [--blackout|-b] [--" CLIENT_ID_STRING " id]\n"
 	  "      [--version|-V] [--help|-h]\n"
 	  , g_argv[0]);
 }
@@ -1532,7 +1573,7 @@ void init_scwm_load_path()
    ** id -> name of function, or other identifier
  */
 void 
-scwm_msg(scwm_msg_levels type, char *id, char *msg,...)
+scwm_msg(scwm_msg_levels type, const char *id, const char *msg,...)
 {
   char *typestr;
   va_list args;

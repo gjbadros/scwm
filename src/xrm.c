@@ -45,9 +45,9 @@ Later, the value can be retrieved using `X-resource-get'. */
 #define FUNC_NAME s_X_resource_put
 {
   if (!gh_string_p(resource))
-    scm_wrong_type_arg(FUNC_NAME, 1, resource);
+    SCWM_WRONG_TYPE_ARG(1, resource);
   if (!gh_string_p(value))
-    scm_wrong_type_arg(FUNC_NAME, 2, value);
+    SCWM_WRONG_TYPE_ARG(2, value);
 
   { /* scope */
     char *szSpecifier = gh_scm2newstr(resource,NULL);
@@ -56,7 +56,7 @@ Later, the value can be retrieved using `X-resource-get'. */
     FREE(szSpecifier);
     FREE(szValue);
   }
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -72,9 +72,9 @@ If there is no resource under the given key, #f is returned. */
   SCM answer = SCM_BOOL_F;
 
   if (!gh_string_p(name))
-    scm_wrong_type_arg(FUNC_NAME, 1, name);
+    SCWM_WRONG_TYPE_ARG(1, name);
   if (!UNSET_SCM(xclass) && !gh_string_p(xclass))
-    scm_wrong_type_arg(FUNC_NAME, 2, xclass);
+    SCWM_WRONG_TYPE_ARG(2, xclass);
 
   { /* scope */
     char *szName = gh_scm2newstr(name,NULL);
@@ -102,11 +102,11 @@ the file. */
 {
   char *szFilename = NULL;
   if (!gh_string_p(filename))
-    scm_wrong_type_arg(FUNC_NAME, 1, filename);
+    SCWM_WRONG_TYPE_ARG(1, filename);
   szFilename = gh_scm2newstr(filename,NULL);
   XrmPutFileDatabase(db, szFilename);
   FREE(szFilename);
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 

@@ -88,15 +88,15 @@ ATOM and X are both 32-bit integers. */
   } else if (gh_number_p(win)) {
     w = gh_scm2long(win);
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   if (!gh_number_p(atom)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   if (!gh_number_p(x)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   ev.type = ClientMessage;
@@ -106,7 +106,7 @@ ATOM and X are both 32-bit integers. */
   ev.data.l[0] = gh_scm2long(x);
   ev.data.l[1] = lastTimestamp;
   XSendEvent(dpy, w, False, mask, (XEvent *) &ev);
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 
 void 

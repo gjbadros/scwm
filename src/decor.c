@@ -226,7 +226,7 @@ printed. */
   } else if (UNSET_SCM(name)) {
     tag = NULL;
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, name);
+    SCWM_WRONG_TYPE_ARG(1, name);
   }
 
   /* make the decor */
@@ -262,7 +262,7 @@ one. */
   } else if (DECORP(decor)) {
     new_cur = SCWMDECOR(decor);
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, decor);
+    SCWM_WRONG_TYPE_ARG(1, decor);
   }
 
   if (cur_decor != NULL) {
@@ -302,14 +302,14 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
   ScwmWindow *psw;
 
   if (!WINDOWP(win) || !VALIDWINP(win)) {
-    scm_wrong_type_arg (FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
   psw = PSWFROMSCMWIN(win);
 
   if (DECORP(decor)) {
     fl = SCWMDECOR(decor);
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 2, decor);
+    SCWM_WRONG_TYPE_ARG(2, decor);
   }
 
   old_height = psw->fl->TitleHeight;
@@ -334,7 +334,7 @@ SCWM_PROC(window_decor, "window-decor", 1, 0, 0,
   ScwmWindow *psw;
 
   if (!WINDOWP(win) || !VALIDWINP(win)) {
-    scm_wrong_type_arg (FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
   psw = PSWFROMSCMWIN(win);
 

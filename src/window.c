@@ -846,14 +846,14 @@ place-holder until we have proper cursor support in scwm. */
     kill_p = SCM_BOOL_F;
   } else if (!gh_boolean_p(kill_p)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, kill_p);
+    SCWM_WRONG_TYPE_ARG(1, kill_p);
   }
 
   if (release_p == SCM_UNDEFINED) {
     release_p = SCM_BOOL_T;
   } else if (!gh_boolean_p(release_p)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, release_p);
+    SCWM_WRONG_TYPE_ARG(2, release_p);
   }
 
 
@@ -907,17 +907,17 @@ mouse drags. */
   if (kill_p == SCM_UNDEFINED) {
     kill_p = SCM_BOOL_F;
   } else if (!gh_boolean_p(kill_p)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, kill_p);
+    SCWM_WRONG_TYPE_ARG(1, kill_p);
   }
   if (select_p == SCM_UNDEFINED) {
     select_p = SCM_BOOL_T;
   } else if (!gh_boolean_p(select_p)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, select_p);
+    SCWM_WRONG_TYPE_ARG(2, select_p);
   }
   if (release_p == SCM_UNDEFINED) {
     release_p = SCM_BOOL_T;
   } else if (!gh_boolean_p(release_p)) {
-    scm_wrong_type_arg(FUNC_NAME, 3, release_p);
+    SCWM_WRONG_TYPE_ARG(3, release_p);
   }
   if (UNSET_SCM(scm_window_context)) {
     if (select_p == SCM_BOOL_T) {
@@ -959,7 +959,7 @@ See also `with-window' and `get-window'. */
 {
   SCM answer = scm_window_context;
   if (win != SCM_BOOL_F && !WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME,1,win);
+    SCWM_WRONG_TYPE_ARG(1,win);
   }
   scm_window_context = win;
   if (answer == SCM_UNDEFINED)
@@ -1731,7 +1731,7 @@ and possibly other legacy fvwm2 modules). */
   int i, cnt;
 
   if (!gh_list_p(winlist)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, winlist);
+    SCWM_WRONG_TYPE_ARG(1, winlist);
   }
 
   /* FIXMS: Hmmm, do we really want to restack the icons of iconified
@@ -1742,7 +1742,7 @@ and possibly other legacy fvwm2 modules). */
     SCM cur=gh_car(p);
 
     if (!WINDOWP(cur)) {
-      scm_wrong_type_arg(FUNC_NAME, 1, winlist);      
+      SCWM_WRONG_TYPE_ARG(1, winlist);      
     }
 
     psw=PSWFROMSCMWIN(cur);
@@ -1776,7 +1776,7 @@ and possibly other legacy fvwm2 modules). */
       
       if (!WINDOWP(cur)) {
 	FREEC(windows);
-	scm_wrong_type_arg(FUNC_NAME, 1, winlist);      
+	SCWM_WRONG_TYPE_ARG(1, winlist);      
       }
 
       psw=PSWFROMSCMWIN(cur);
@@ -1918,10 +1918,10 @@ cannot, e.g., cleanly be brought back onto the current viewport.
   if (!UNSET_SCM(x)) {
     int x_virt, y_virt;
     if (!gh_number_p(x)) {
-      scm_wrong_type_arg(FUNC_NAME,2,x);
+      SCWM_WRONG_TYPE_ARG(2,x);
     }
     if (!gh_number_p(y)) {
-      scm_wrong_type_arg(FUNC_NAME,3,y);
+      SCWM_WRONG_TYPE_ARG(3,y);
     }
     x_virt = gh_scm2int(x);
     y_virt = gh_scm2int(y);
@@ -2164,10 +2164,10 @@ convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
   VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
 
   if (x != SCM_BOOL_F && !gh_number_p(x)) {
-    scm_wrong_type_arg(func_name, 1, x);
+    SCWM_WRONG_TYPE_ARG(1, x);
   }
   if (y != SCM_BOOL_F && !gh_number_p(y)) {
-    scm_wrong_type_arg(func_name, 2, y);
+    SCWM_WRONG_TYPE_ARG(2, y);
   }
 
   *ppsw = PSWFROMSCMWIN(win);
@@ -2320,7 +2320,7 @@ The list returned contains 4 cons pairs containing:
   SCM answer = SCM_EOL;
   ScwmWindow *psw = NULL;
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME,1,win);
+    SCWM_WRONG_TYPE_ARG(1,win);
   }
   psw = PSWFROMSCMWIN(win);
 
@@ -2386,7 +2386,7 @@ defaults to the window context in the usual way if not specified. */
 
   if (!gh_number_p(desk) && desk != SCM_BOOL_F) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, desk);
+    SCWM_WRONG_TYPE_ARG(1, desk);
   }
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
 
@@ -2621,7 +2621,7 @@ such window object, return #f. */
   Window w;
 
   if (!gh_number_p(window_id)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, window_id);
+    SCWM_WRONG_TYPE_ARG(1, window_id);
   }		   
 
   w =(Window) gh_scm2int(window_id);
@@ -2642,7 +2642,7 @@ such window object, return #f. */
   Window w;
 
   if (!gh_number_p(window_id)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, window_id);
+    SCWM_WRONG_TYPE_ARG(1, window_id);
   }
 
   w =(Window) gh_scm2int(window_id);
@@ -3059,7 +3059,7 @@ WIN defaults to the window context in the usual way if not specified. */
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!gh_number_p(width)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, width);
+    SCWM_WRONG_TYPE_ARG(1, width);
   }
   cpix = gh_scm2int(width);
 
@@ -3155,16 +3155,16 @@ specified. */
   ScwmWindow *psw;
 
   if (!gh_number_p(x)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, x);
+    SCWM_WRONG_TYPE_ARG(1, x);
   }
   if (!gh_number_p(y)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, y);
+    SCWM_WRONG_TYPE_ARG(2, y);
   }
   if (!gh_number_p(w)) {
-    scm_wrong_type_arg(FUNC_NAME, 3, w);
+    SCWM_WRONG_TYPE_ARG(3, w);
   }
   if (!gh_number_p(h)) {
-    scm_wrong_type_arg(FUNC_NAME, 4, h);
+    SCWM_WRONG_TYPE_ARG(4, h);
   }
   VALIDATE_ARG_WIN_USE_CONTEXT(5, win);
   psw = PSWFROMSCMWIN(win);
@@ -3212,7 +3212,7 @@ if not specified. */
   ScwmWindow *psw;
 
   if (!gh_symbol_p(sym)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, sym);
+    SCWM_WRONG_TYPE_ARG(1, sym);
   }
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
@@ -3449,7 +3449,7 @@ far from perfect.) */
 
   VALIDATE_ARG_WIN_USE_CONTEXT(3, win);
   if (!gh_number_p(n)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, n);
+    SCWM_WRONG_TYPE_ARG(1, n);
   }
 
   psw = PSWFROMSCMWIN(win);
@@ -3459,7 +3459,7 @@ far from perfect.) */
   } else if (flag == SCM_BOOL_F) {
     psw->buttons |= (1 << (gh_scm2int(n) - 1));
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 2, flag);
+    SCWM_WRONG_TYPE_ARG(2, flag);
   }
   /* XXX - This won't really work for any case unless it is a hint.
      Handling of the number of buttons is kind of broken in
@@ -3572,7 +3572,7 @@ way if not specified. */
   } else if (flag== SCM_BOOL_T) {
     psw->fForceIcon=True; 
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, flag);
+    SCWM_WRONG_TYPE_ARG(1, flag);
   }
 
   force_icon_redraw (psw);
@@ -3619,7 +3619,7 @@ context in the usual way if not specified. */
   } else if (IMAGE_P(image) || image == SCM_BOOL_F) {
     psw->icon_req_image = image;
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, image);
+    SCWM_WRONG_TYPE_ARG(1, image);
   }
 
   if (IMAGE_P(image)) {
@@ -3671,7 +3671,7 @@ to the window context in the usual way if not specified. */
   } else if (IMAGE_P(image)) {
     psw->mini_icon_image = image;
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, image);
+    SCWM_WRONG_TYPE_ARG(1, image);
   }
 
   /* FIXMS: this isn't right, fvwm2 has a separate SendMiniIcon which
@@ -3848,7 +3848,7 @@ window context in the usual way if not specified. */
     psw->fStartsOnDesk = True;
     psw->StartDesk = gh_scm2int(desk);
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, desk);
+    SCWM_WRONG_TYPE_ARG(1, desk);
   }
   return SCM_UNSPECIFIED;
 }
@@ -3891,7 +3891,9 @@ specified. */
 
 MAKE_SMOBFUNS(window);
 
-
+/* this function is part of the implementation of
+   VALIDATE_WIN_USE_CONTEXT, so do not have it use
+   that for argument checking --03/31/99 gjb */
 SCM 
 ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
 {

@@ -237,20 +237,20 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool all
    modifier prefixes.  Set *pmodifier to be the modifiers, and *pkeysym
    to the keysym.
 */
+/*SCWM_VALIDATE: key */
 Bool 
 FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name, 
-		      Bool allow_any_p)
+		      Bool allow_any_p, Bool fShowError)
+#define FUNC_NAME func_name
 {
   Bool fOk = True;
-  int len;
-  char *keyname;
   char *pch;
+  char *keyname;
 
-  if (!gh_string_p(key)) {
-    scm_wrong_type_arg(func_name, 2, key);
-  }
+  int ikey_arg = 2; /* GJB:FIXME:: HACK ALERT! */
 
-  keyname = gh_scm2newstr(key,&len);
+  VALIDATE_ARG_STR_NEWCOPY(ikey_arg,key,keyname);
+
   pch = (char *) PchModifiersToModmask(keyname,pmodifier, func_name, allow_any_p);
 
   if (pch == 0 || *pmodifier < 0) {
@@ -264,12 +264,14 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name,
 
   if ((*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
 	   (XKeysymToKeycode(dpy, *pkeysym)) == 0) { 
-    scwm_msg(WARN,func_name,"No symbol `%s'",keyname);
+    if (fShowError)
+      scwm_msg(WARN,func_name,"No symbol `%s'",keyname);
     fOk = False; 
   }
   FREE(keyname);
   return fOk;
 }
+#undef FUNC_NAME
 
 
 /* Permit "Mouse-1", "1", "M1", "Mouse1", "mouse1" all to
@@ -727,7 +729,7 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete) */
   int context = 0;
 
   context = compute_contexts(contexts, FUNC_NAME);
-  fOkayKey = FKeyToKeysymModifiers(key, &keysym, &modmask, FUNC_NAME, True);
+  fOkayKey = FKeyToKeysymModifiers(key, &keysym, &modmask, FUNC_NAME, True, True);
 
   /*
    * Don't let a 0 keycode go through, since that means AnyKey to the
@@ -758,10 +760,15 @@ is not a valid keysym. */
   KeySym keysym;
   int modmask;
   int i;
+  Bool fOkayKey;
+
+  /* GJB:FIXME:: check the arg here, since FKeyToKeysymModifiers will
+     report errors in position 2, not 1 */
+  VALIDATE_ARG_STR(1,keysym_name);
 
   /* GJB:FIXME:: This shouldn't really accept modifiers in front, but
      FKeyToKeysymModifiers does permit them */
-  Bool fOkayKey = FKeyToKeysymModifiers(keysym_name,&keysym,&modmask, FUNC_NAME, False);
+  fOkayKey = FKeyToKeysymModifiers(keysym_name,&keysym,&modmask, FUNC_NAME, False, False);
 
   if (!fOkayKey)
     return SCM_BOOL_F;
@@ -793,7 +800,7 @@ BUTTON is a string or integer giving the mouse button number */
 
   if (!fButtonOK) {
     /* Need a better error */
-    scm_wrong_type_arg(FUNC_NAME,2,button);
+    SCWM_WRONG_TYPE_ARG(2,button);
   }
 
   remove_binding(context,modmask,bnum,0,True /* Mouse binding */);
@@ -824,11 +831,11 @@ invoked when the key is released.
   int context = 0;
 
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(FUNC_NAME, 3, proc);
+    SCWM_WRONG_TYPE_ARG(3, proc);
   }
 
   if (!UNSET_SCM(release_proc) && !gh_procedure_p(release_proc)) {
-    scm_wrong_type_arg(FUNC_NAME, 4, release_proc);
+    SCWM_WRONG_TYPE_ARG(4, release_proc);
   }
 
   if (release_proc == SCM_UNDEFINED) {
@@ -837,7 +844,7 @@ invoked when the key is released.
 
   context = compute_contexts(contexts, FUNC_NAME);
 
-  fOkayKey = FKeyToKeysymModifiers(key,&keysym,&modmask, FUNC_NAME, True);
+  fOkayKey = FKeyToKeysymModifiers(key,&keysym,&modmask, FUNC_NAME, True, True);
 
   /*
    * Don't let a 0 keycode go through, since that means AnyKey to the
@@ -893,19 +900,19 @@ nothing should be done on key release.
   int context = 0;
 
   if (!gh_number_p(keycode)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, keycode);
+    SCWM_WRONG_TYPE_ARG(2, keycode);
   }
 
   if (!gh_number_p(modifier_mask)) {
-    scm_wrong_type_arg(FUNC_NAME, 3, modifier_mask);
+    SCWM_WRONG_TYPE_ARG(3, modifier_mask);
   }
 
   if (!UNSET_SCM(proc) && !gh_procedure_p(proc)) {
-    scm_wrong_type_arg(FUNC_NAME, 4, proc);
+    SCWM_WRONG_TYPE_ARG(4, proc);
   }
 
   if (!UNSET_SCM(release_proc) && !gh_procedure_p(release_proc)) {
-    scm_wrong_type_arg(FUNC_NAME, 5, release_proc);
+    SCWM_WRONG_TYPE_ARG(5, release_proc);
   }
 
   context = compute_contexts(contexts, FUNC_NAME);
@@ -947,7 +954,7 @@ specified button is pressed in the specified context. */
   int fButtonOK = True;
 
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(FUNC_NAME, 3, proc);
+    SCWM_WRONG_TYPE_ARG(3, proc);
   }
 
   context = compute_contexts(contexts, FUNC_NAME);

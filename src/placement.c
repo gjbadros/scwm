@@ -403,7 +403,7 @@ used in user-defined placement procedures (see
 #define FUNC_NAME s_place_on_default_desk
 {
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   default_select_desk(PSWFROMSCMWIN(win));
@@ -429,7 +429,7 @@ used in user-defined placement procedures (see
   int x, y;
 
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   psw=PSWFROMSCMWIN(win);
@@ -479,7 +479,7 @@ used in user-defined placement procedures (see
   int x, y;
 
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   psw=PSWFROMSCMWIN(win);
@@ -516,7 +516,7 @@ used in user-defined placement procedures (see
   ScwmWindow *psw;
 
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   psw=PSWFROMSCMWIN(win);
@@ -557,7 +557,7 @@ is not set, or the window starts iconic. */
   ScwmWindow *psw;
 
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   psw=PSWFROMSCMWIN(win);
@@ -613,7 +613,7 @@ It simply leaves the window WIN in place, exactly as requested. */
   ScwmWindow *psw;
 
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   psw=PSWFROMSCMWIN(win);

@@ -250,7 +250,7 @@ struct ScwmWindow;
 
 /* Prototypes for functions in scwm.c */
 
-void scwm_msg(scwm_msg_levels type, char *id, char *msg,...);
+void scwm_msg(scwm_msg_levels type, const char *id, const char *msg,...);
 void Reborder(Bool fRestart);
 void RestoreWithdrawnLocation(struct ScwmWindow *psw, Bool fRestart);
 void SigDone(int);
@@ -260,6 +260,9 @@ void BlackoutScreen(void);
 void UnBlackoutScreen(void);
 void init_scwm_load_path();
 void CaptureAllWindows(void);
+void newsegvhandler(int sig);
+void reset_signal_handler(int sig);
+
 
 /* Global variables */
 extern int master_pid;

@@ -302,7 +302,7 @@ errors. */
 {
   SCM_STACKITEM stack_item;
   if (!gh_string_p(fname)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, fname);
+    SCWM_WRONG_TYPE_ARG(1, fname);
   }
 
   return scm_internal_cwdr_no_unwind(scwm_body_load, &fname,
@@ -586,11 +586,11 @@ called with no arguments. A handle suitable for passing to
 
   if (!gh_number_p(usec) || 
       (gh_scm2long(usec) < 0)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, usec);
+    SCWM_WRONG_TYPE_ARG(1, usec);
   }
 
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, proc);
+    SCWM_WRONG_TYPE_ARG(2, proc);
   }
 
   th_list=gh_cdr(timer_hooks);
@@ -722,11 +722,11 @@ returned. */
   SCM newcell;
 
   if (!SCM_OPINFPORTP(port)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, port);
+    SCWM_WRONG_TYPE_ARG(1, port);
   }
 
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, proc);
+    SCWM_WRONG_TYPE_ARG(2, proc);
   }
 
   newcell=gh_cons(port, proc);

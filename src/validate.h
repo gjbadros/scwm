@@ -99,5 +99,23 @@ VALIDATE_...
   } while (0)
 
 
+#define VALIDATE_ARG_STR(pos,scm) \
+  do { \
+  if (!gh_string_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_STR_NEWCOPY(pos,scm,pch) \
+  do { \
+  if (gh_string_p(scm)) pch = gh_scm2newstr(scm,NULL); \
+  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+#define VALIDATE_ARG_STR_NEWCOPY_LEN(pos,scm,pch,len) \
+  do { \
+  if (gh_string_p(scm)) pch = gh_scm2newstr(scm,&len); \
+  else scm_wrong_type_arg(FUNC_NAME,pos,scm); \
+  } while (0)
+
+
 #endif
 

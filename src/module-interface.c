@@ -140,7 +140,7 @@ module packet for WIN as a Scheme string. */
   int i;
 
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME,1,win);
+    SCWM_WRONG_TYPE_ARG(1,win);
   }
   psw = PSWFROMSCMWIN(win);
 
@@ -185,7 +185,7 @@ module packet for WIN as a Scheme string. */
   unsigned long info[8];
 
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME,1,win);
+    SCWM_WRONG_TYPE_ARG(1,win);
   }
   psw = PSWFROMSCMWIN(win);
 

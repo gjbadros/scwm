@@ -43,7 +43,7 @@ current decor. */
 
   if (!gh_symbol_p(just)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, just);
+    SCWM_WRONG_TYPE_ARG(1, just);
   }
   if (gh_eq_p(just, sym_center)) {
     fl->titlebar.flags &= ~HOffCenter;
@@ -96,7 +96,7 @@ Applies to the current decor. */
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!gh_number_p(height)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, height);
+    SCWM_WRONG_TYPE_ARG(1, height);
   }
   th = gh_scm2int(height);
   if (th <= 4 || th > 256) {
@@ -176,7 +176,7 @@ single click is definitively identified as not a double click. */
 #define FUNC_NAME s_set_click_delay_x
 {
   if (!gh_number_p(msec)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, msec);
+    SCWM_WRONG_TYPE_ARG(1, msec);
   }
 
   Scr.ClickTime = gh_scm2long(msec);
@@ -205,7 +205,7 @@ other than 'mouse. */
 #define FUNC_NAME s_set_colormap_focus_x
 {
   if (!gh_symbol_p(ftype)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, ftype);
+    SCWM_WRONG_TYPE_ARG(1, ftype);
   }
   if (gh_eq_p(ftype, sym_focus)) {
     Scr.fColormapFollowsMouse = False;
@@ -255,10 +255,10 @@ SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
   int x, y;
 
   if (!gh_number_p(sx)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, sx);
+    SCWM_WRONG_TYPE_ARG(1, sx);
   }
   if (!gh_number_p(sy)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, sy);
+    SCWM_WRONG_TYPE_ARG(2, sy);
   }
   x = gh_scm2int(sx);
   y = gh_scm2int(sy);
@@ -417,13 +417,13 @@ and so on.  This cut buffer numbering is global to the display. */
 #define FUNC_NAME s_X_rotate_cut_buffers
 {
   if (!gh_number_p(n)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, n);
+    SCWM_WRONG_TYPE_ARG(1, n);
   }
   { /* scope */
     int num_to_rotate = gh_scm2int(n);
     XRotateBuffers(dpy,num_to_rotate);
   }
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -647,6 +647,56 @@ the constant string "/tmp". */
   return gh_str02scm(UserHome);
 }
 #undef FUNC_NAME
+
+SCWM_PROC(force_segv_for_testing, "force-segv-for-testing", 0, 0, 0,
+	  ())
+     /** Cause a segmentation violation.
+Do not do this unless you are testing segv handling! */
+#define FUNC_NAME s_force_segv_for_testing
+{
+  int *pn = 0;
+  *pn = 0;
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(set_reset_on_segv_x, "set-reset-on-segv!", 1, 0, 0,
+	  (SCM flag))
+     /** If FLAG, tell Scwm to try to continue when catching a segv signal.
+This is the default, but if you catch a segv and and are willing to 
+track it or send in a bug report, use this to permit a C-level backtrace. 
+See also `set-handle-segv!'.
+*/
+#define FUNC_NAME s_set_reset_on_segv_x
+{
+  extern Bool fResetOnSegv;
+  VALIDATE_ARG_BOOL_COPY(1,flag,fResetOnSegv);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(set_handle_segv_x, "set-handle-segv!", 1, 0, 0,
+	  (SCM flag))
+     /** If FLAG, tell Scwm to catch segv signals.
+This is the default, but if you catch a segv and really need it to 
+dump right away to figure out what is wrong then use this.  No
+cleanup is done if handling segv is #f.  Be sure to have an extra
+terminal handy on a console or separate X server.
+For developers and hackers only. */
+#define FUNC_NAME s_set_handle_segv_x
+{
+  Bool f;
+  VALIDATE_ARG_BOOL_COPY(1,flag,f);
+  if (f) {
+    newsegvhandler(SIGSEGV);
+  } else {
+    reset_signal_handler(SIGSEGV);
+  }
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
 
 void 
 init_miscprocs()

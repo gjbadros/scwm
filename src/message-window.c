@@ -249,7 +249,7 @@ Uses defaults from the ScreenInfo struct for the other values. */
   scwm_msgwindow* msg;
 
   if (!gh_string_p(message)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, message);
+    SCWM_WRONG_TYPE_ARG(1, message);
   }
 
   msg = NEW(scwm_msgwindow);
@@ -299,7 +299,7 @@ window on your X/11 display. */
   SCM answer = SCM_BOOL_F;
 
   if (!gh_number_p(winid)) {
-    scm_wrong_type_arg(FUNC_NAME,1,winid);
+    SCWM_WRONG_TYPE_ARG(1,winid);
   }
   w = (Window) gh_scm2ulong(winid);
   
@@ -320,18 +320,18 @@ The message will be MESSAGE.*/
   scwm_msgwindow* msg = MSGWINDOW(mwn);
 
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   if (!gh_string_p(message)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, message);
+    SCWM_WRONG_TYPE_ARG(2, message);
   }
 
   msg->message = message;
 
   ResizeMessageWindow( msg );
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -345,7 +345,7 @@ The font will be FNT.*/
   scwm_msgwindow* msg = MSGWINDOW(mwn);
 
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   if (gh_string_p(fnt)) {
@@ -353,13 +353,13 @@ The font will be FNT.*/
   }
 
   if (!FONT_P(fnt)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, fnt);
+    SCWM_WRONG_TYPE_ARG(2, fnt);
   }
   msg->font=fnt;
 
   ResizeMessageWindow( msg );
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -373,7 +373,7 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR.
   scwm_msgwindow* msg = MSGWINDOW(mwn);
 
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   if ( fg_color != SCM_BOOL_F ) {
@@ -396,7 +396,7 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR.
 
   DrawWindow(msg);
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -417,7 +417,7 @@ X-ALIGN and Y-ALIGN should each be in the range [0,-1].*/
   scwm_msgwindow* msg = MSGWINDOW(mwn);
 
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   SCM_REDEFER_INTS;
@@ -425,28 +425,28 @@ X-ALIGN and Y-ALIGN should each be in the range [0,-1].*/
   if ( !UNSET_SCM(x) ) {
     if (!gh_number_p(x)) {
       gh_allow_ints();
-      scm_wrong_type_arg(FUNC_NAME, 2, x);
+      SCWM_WRONG_TYPE_ARG(2, x);
     }
     msg->x = gh_scm2long(x);
   }
   if ( !UNSET_SCM(y) ) {
     if (!gh_number_p(y)) {
       gh_allow_ints();
-      scm_wrong_type_arg(FUNC_NAME, 3, y);
+      SCWM_WRONG_TYPE_ARG(3, y);
     }
     msg->y = gh_scm2long(y);
   }
   if ( !UNSET_SCM(x_align) ) {
     if (!gh_number_p(x_align)) {
       gh_allow_ints();
-      scm_wrong_type_arg(FUNC_NAME, 4, x_align);
+      SCWM_WRONG_TYPE_ARG(4, x_align);
     }
     msg->x_align = gh_scm2double(x_align);
   }
   if ( !UNSET_SCM(y_align) ) {
     if (!gh_number_p(y)) {
       gh_allow_ints();
-      scm_wrong_type_arg(FUNC_NAME, 5, y_align);
+      SCWM_WRONG_TYPE_ARG(5, y_align);
     }
     msg->y_align = gh_scm2double(y_align);
   }
@@ -455,7 +455,7 @@ X-ALIGN and Y-ALIGN should each be in the range [0,-1].*/
 
   ResizeMessageWindow(msg);
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -466,7 +466,7 @@ SCWM_PROC (message_window_set_relief_x, "message-window-set-relief!", 2, 0, 0,
 #define FUNC_NAME s_message_window_set_relief_x
 {
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   if ( gh_boolean_p(rlf) )
@@ -474,7 +474,7 @@ SCWM_PROC (message_window_set_relief_x, "message-window-set-relief!", 2, 0, 0,
 
   DrawWindow(MSGWINDOW(mwn));
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -488,7 +488,7 @@ the window will not ever disappear). */
 #define FUNC_NAME s_message_window_show_x
 {
   if (! MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME,1,mwn);
+    SCWM_WRONG_TYPE_ARG(1,mwn);
   }
 
   /* if it's already visible, we need do nothing;
@@ -496,7 +496,7 @@ the window will not ever disappear). */
      protections, and we want a single hide to
      eliminate the affects of all show!-s */
   if (FXIsWindowMapped(dpy,MSGWINDOW(mwn)->win))
-    return SCM_UNDEFINED;
+    return SCM_UNSPECIFIED;
 
   /* do not let GC collect the object when it is visible */
   scm_protect_object(mwn);
@@ -504,7 +504,7 @@ the window will not ever disappear). */
   MapMessageWindow(MSGWINDOW(mwn));
   ResizeMessageWindow( MSGWINDOW(mwn) );
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -516,14 +516,14 @@ See also `message-window-show'. */
 #define FUNC_NAME s_message_window_hide_x
 {
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   UnmapMessageWindow(MSGWINDOW(mwn));
   XFlush(dpy);
 
   scm_unprotect_object(mwn);
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -535,7 +535,7 @@ See also `message-window-show', `message-window-hide'. */
 #define FUNC_NAME s_message_window_visible_p
 {
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   return SCM_BOOL_FromBool(FXIsWindowMapped(dpy,MSGWINDOW(mwn)->win));
@@ -549,7 +549,7 @@ SCWM_PROC (message_window_message, "message-window-message", 1, 0, 0,
 #define FUNC_NAME s_message_window_message
 {
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   return MSGWINDOW_MESSAGE(mwn);
@@ -566,7 +566,7 @@ returned as a four element list of (x,y,x_align,y_align) */
   scwm_msgwindow* msg = MSGWINDOW(mwn);
 
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   return gh_list( msg->x, msg->y, msg->x_align, msg->y_align, SCM_UNDEFINED );
@@ -580,7 +580,7 @@ SCWM_PROC (message_window_font, "message-window-font", 1, 0, 0,
 #define FUNC_NAME s_message_window_font
 {
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   return MSGWINDOW(mwn)->font;
@@ -597,7 +597,7 @@ These are returned in a list of the form (fg_color,bg_color). */
   scwm_msgwindow* msg = NULL;
 
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   msg = MSGWINDOW(mwn);
@@ -612,7 +612,7 @@ SCWM_PROC (message_window_relief_p, "message-window-relief?", 1, 0, 0,
 #define FUNC_NAME s_message_window_relief_p
 {
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
+    SCWM_WRONG_TYPE_ARG(1, mwn);
   }
 
   return SCM_BOOL_FromBool(MSGWINDOW(mwn)->fRelief);

@@ -70,7 +70,7 @@ small enough to fit in one machine word. */
 #define FUNC_NAME s_set_current_desk_x
 {
   if (!gh_number_p(desk)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, desk);
+    SCWM_WRONG_TYPE_ARG(1, desk);
   }
   /* XXX - should do something useful if desk is out of range. */
   changeDesks(0, gh_scm2int(desk));
@@ -107,10 +107,10 @@ X and Y are given in pixels.  Does not affect the current desk. */
 #define FUNC_NAME s_set_viewport_position_x
 {
   if (!gh_number_p(x)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, x);
+    SCWM_WRONG_TYPE_ARG(1, x);
   }
   if (!gh_number_p(y)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, y);
+    SCWM_WRONG_TYPE_ARG(2, y);
   }
   MoveViewport(gh_scm2int(x), gh_scm2int(y));
 
@@ -140,7 +140,7 @@ convert from a percent of screen size to pixels. */
 #define FUNC_NAME s_set_edge_x_scroll_x
 {
   if (!gh_number_p(pixels)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, pixels);
+    SCWM_WRONG_TYPE_ARG(1, pixels);
   }
 
   Scr.EdgeScrollX = gh_scm2int(pixels);
@@ -169,7 +169,7 @@ convert from a percent of screen size to pixels. */
 #define FUNC_NAME s_set_edge_y_scroll_x
 {
   if (!gh_number_p(pixels)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, pixels);
+    SCWM_WRONG_TYPE_ARG(1, pixels);
   }
 
   Scr.EdgeScrollY = gh_scm2int(pixels);
@@ -280,7 +280,7 @@ fewer than PIXELS pixels will leave the window entirely onscreen. */
 {
   if (!gh_number_p(pixels)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, pixels);
+    SCWM_WRONG_TYPE_ARG(1, pixels);
   }
 
   Scr.MoveResistance = gh_scm2int(pixels);
@@ -313,11 +313,11 @@ size of the physical display. */
 
   if (!gh_number_p(width)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, width);
+    SCWM_WRONG_TYPE_ARG(1, width);
   }
   if (!gh_number_p(height)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, height);
+    SCWM_WRONG_TYPE_ARG(2, height);
   }
   Scr.VxMax = gh_scm2int(width);
   Scr.VyMax = gh_scm2int(height);

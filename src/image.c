@@ -173,7 +173,7 @@ depth, its color depth.
 {
   scwm_image *psimg = SAFE_IMAGE(image);
   if (!psimg) {
-    scm_wrong_type_arg(FUNC_NAME, 1, image);
+    SCWM_WRONG_TYPE_ARG(1, image);
   } 
   return gh_list(gh_cons(sym_filename,psimg->full_name),
 		 gh_cons(sym_width,gh_int2scm(psimg->width)),
@@ -362,13 +362,13 @@ image object, or #f if it succeeds. */
 #define FUNC_NAME s_register_image_loader
 {
   if (!gh_string_p(extension)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, extension);
+    SCWM_WRONG_TYPE_ARG(1, extension);
   }
   
   /* Sadly, there is no way to test the arity of a procedure. */
   /* MSFIX: Yes there is, but let's not use it yet. */
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, proc);
+    SCWM_WRONG_TYPE_ARG(2, proc);
   }
 
   scm_hash_set_x(image_loader_hash_table, extension, proc);
@@ -386,7 +386,7 @@ empty string (for files with no extension), or the string "default"
 #define FUNC_NAME s_unregister_image_loader
 {
   if (!gh_string_p(extension)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, extension);
+    SCWM_WRONG_TYPE_ARG(1, extension);
   }
 
   scm_hash_remove_x(image_loader_hash_table, extension);
@@ -395,19 +395,17 @@ empty string (for files with no extension), or the string "default"
 }
 #undef FUNC_NAME
 
+
+/*SCWM_VALIDATE: name*/
 SCM
 path_expand_image_fname(SCM name, const char *func_name)
-#define FUNC_NAME "path_expand_image_fname"
+#define FUNC_NAME func_name
 {
   char *c_name, *c_fname;
   int length;
   SCM result;
 
-  if (!gh_string_p(name)) {
-    scm_wrong_type_arg((char *) func_name, 1, name); /* GJB:FIXME:: guile const-ness bug */
-  }
-
-  c_name = gh_scm2newstr(name, &length);
+  VALIDATE_ARG_STR_NEWCOPY_LEN(1,name,c_name,length);
 
   if ((length > 0 && c_name[0]=='/') ||
       (length > 1 && c_name[0]=='.' &&
@@ -531,7 +529,7 @@ appropriate file. */
   SCM loader;
 
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg(FUNC_NAME,1,name);
+    SCWM_WRONG_TYPE_ARG(1,name);
   }
 
   /* First check the hash table for this image.  */

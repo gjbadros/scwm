@@ -230,7 +230,7 @@ image-bg font extra-options used-shortcut-keys popup-delay hover-delay) */
 {
   Menu *pmenu = SAFE_MENU(menu);
   if (!pmenu) {
-    scm_wrong_type_arg(FUNC_NAME,1,menu);
+    SCWM_WRONG_TYPE_ARG(1,menu);
   }
   return gh_list(pmenu->scmMenuTitle,
 		 pmenu->scmMenuItems,
@@ -285,7 +285,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
 
   /* LIST-OF-MENUITEMS: Required */
   if (!gh_list_p(list_of_menuitems)) {
-    scm_wrong_type_arg(FUNC_NAME,1,list_of_menuitems);
+    SCWM_WRONG_TYPE_ARG(1,list_of_menuitems);
   }
   if (SCM_IMP(list_of_menuitems) || (gh_car(list_of_menuitems) == SCM_EOL)) {
     scm_misc_error(FUNC_NAME,"LIST-OF-MENUITEMS cannot be empty",SCM_EOL);
@@ -294,25 +294,25 @@ EXTRA-OPTIONS can be anything understood by the menu-look
 
   /* BG-COLOR: Required */
   if (!COLOR_OR_SYMBOL_P(bg_color)) { /* why not DYNAMIC_COLOR_P? */
-    scm_wrong_type_arg(FUNC_NAME,2,bg_color);
+    SCWM_WRONG_TYPE_ARG(2,bg_color);
   }
   pmenu->scmBGColor = bg_color;
 
   /* TEXT-COLOR: Required */
   if (!COLOR_OR_SYMBOL_P(text_color)) { /* again */
-    scm_wrong_type_arg(FUNC_NAME,3,text_color);
+    SCWM_WRONG_TYPE_ARG(3,text_color);
   }
   pmenu->scmTextColor = text_color;
 
   /* STIPPLE-COLOR: Required */
   if (!COLOR_OR_SYMBOL_P(stipple_color)) { /* And again */
-    scm_wrong_type_arg(FUNC_NAME,4,stipple_color);
+    SCWM_WRONG_TYPE_ARG(4,stipple_color);
   }
   pmenu->scmStippleColor = stipple_color;
 
   /* FONT: Required */
   if (!FONT_OR_SYMBOL_P(font)) { /* DYNAMIC_FONT_P ? */
-    scm_wrong_type_arg(FUNC_NAME,5,font);
+    SCWM_WRONG_TYPE_ARG(5,font);
   }
   pmenu->scmFont = font;
 
@@ -321,7 +321,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   if (UNSET_SCM(picture_side)) {
     picture_side = SCM_BOOL_F;
   } else if (!IMAGE_OR_SYMBOL_P(picture_side)) {
-    scm_wrong_type_arg(FUNC_NAME,6,picture_side);
+    SCWM_WRONG_TYPE_ARG(6,picture_side);
   } 
   pmenu->scmImgSide = picture_side;
 
@@ -341,7 +341,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   if (UNSET_SCM(side_bg_color)) {
     side_bg_color = WHITE_COLOR;
   } else if (!COLOR_OR_SYMBOL_P(side_bg_color)) {
-    scm_wrong_type_arg(FUNC_NAME,8,side_bg_color);
+    SCWM_WRONG_TYPE_ARG(8,side_bg_color);
   }
   pmenu->scmSideBGColor = side_bg_color;
 
@@ -349,7 +349,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   if (UNSET_SCM(picture_bg)) {
     picture_bg = SCM_BOOL_F;
   } else if (!IMAGE_OR_SYMBOL_P(picture_bg)) {
-    scm_wrong_type_arg(FUNC_NAME,9,picture_bg);
+    SCWM_WRONG_TYPE_ARG(9,picture_bg);
   } 
   pmenu->scmImgBackground = picture_bg;
 
@@ -374,7 +374,7 @@ SCWM_PROC(set_menu_popup_delay_x, "set-menu-popup-delay!", 2, 0, 0,
 POPUP-DELAY is the number of ms to wait before popping up submenus. */
 #define FUNC_NAME s_set_menu_popup_delay_x
 {
-  if (!MENU_P(menu)) scm_wrong_type_arg(FUNC_NAME,1,menu);
+  if (!MENU_P(menu)) SCWM_WRONG_TYPE_ARG(1,menu);
   VALIDATE_ARG_INT_COPY(2,popup_delay,MENU(menu)->cmsPopupDelay);
   return SCM_UNSPECIFIED;
 }
@@ -387,7 +387,7 @@ SCWM_PROC(menu_popup_delay, "menu-popup-delay", 1, 0, 0,
 See `set-menu-popup-delay!'. */
 #define FUNC_NAME s_menu_popup_delay
 {
-  if (!MENU_P(menu)) scm_wrong_type_arg(FUNC_NAME,1,menu);
+  if (!MENU_P(menu)) SCWM_WRONG_TYPE_ARG(1,menu);
   return gh_int2scm(MENU(menu)->cmsPopupDelay);
 }
 #undef FUNC_NAME
@@ -400,7 +400,7 @@ SCWM_PROC(set_menu_hover_delay_x, "set-menu-hover-delay!", 2, 0, 0,
 HOVER-DELAY is the number of ms to wait before invoking the hover action. */
 #define FUNC_NAME s_set_menu_hover_delay_x
 {
-  if (!MENU_P(menu)) scm_wrong_type_arg(FUNC_NAME,1,menu);
+  if (!MENU_P(menu)) SCWM_WRONG_TYPE_ARG(1,menu);
   VALIDATE_ARG_INT_COPY(2,hover_delay,MENU(menu)->cmsHoverDelay);
   return SCM_UNSPECIFIED;
 }
@@ -412,7 +412,7 @@ SCWM_PROC(menu_hover_delay, "menu-hover-delay", 1, 0, 0,
 See `set-menu-hover-delay!'. */
 #define FUNC_NAME s_menu_hover_delay
 {
-  if (!MENU_P(menu)) scm_wrong_type_arg(FUNC_NAME,1,menu);
+  if (!MENU_P(menu)) SCWM_WRONG_TYPE_ARG(1,menu);
   return gh_int2scm(MENU(menu)->cmsPopupDelay);
 }
 #undef FUNC_NAME
@@ -427,11 +427,11 @@ SCWM_PROC(set_menu_menu_look_x, "set-menu-menu-look!", 2, 0, 0,
 #define FUNC_NAME s_set_menu_menu_look_x
 {
   if (!MENU_P(menu)) {
-    scm_wrong_type_arg(FUNC_NAME,1,menu);
+    SCWM_WRONG_TYPE_ARG(1,menu);
   }
 
   if (!MENULOOK_OR_SYMBOL_P(menu_look)) {
-    scm_wrong_type_arg(FUNC_NAME,2,menu_look);
+    SCWM_WRONG_TYPE_ARG(2,menu_look);
   }
 
   MENU(menu)->scmMenuLook = menu_look;
@@ -446,11 +446,11 @@ SCWM_PROC(set_menu_menu_title_x, "set-menu-menu-title!", 2, 0, 0,
 #define FUNC_NAME s_set_menu_menu_title_x
 {
   if (!MENU_P(menu)) {
-    scm_wrong_type_arg(FUNC_NAME,1,menu);
+    SCWM_WRONG_TYPE_ARG(1,menu);
   }
 
   if (!MENUITEM_P(menu_title)) {
-    scm_wrong_type_arg(FUNC_NAME,2,menu_title);
+    SCWM_WRONG_TYPE_ARG(2,menu_title);
   }
 
   MENU(menu)->scmMenuTitle = menu_title;
@@ -693,7 +693,7 @@ InvokeUnhoverAction(DynamicMenu *pmd)
   } else {
     DBUG((DBG,FUNC_NAME,"No unhover hook, %ld",pmiimSelected));
   }
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -1472,7 +1472,7 @@ a Return or Space keypress to activate the item. */
 #define FUNC_NAME s_set_menu_hotkeys_activate_item_x
 {
   VALIDATE_ARG_BOOL_COPY_USE_T(1,activate_p,fMenuHotkeysActivateItems);
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -1503,15 +1503,15 @@ right justified against X-POS. */
   /* permit 'menu to be used, and look up dynamically */
   DEREF_IF_SYMBOL(menu);
   if (!MENU_P(menu)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, menu);
+    SCWM_WRONG_TYPE_ARG(1, menu);
   }
   VALIDATE_ARG_BOOL_COPY_USE_F(2,warp_to_first_p,fWarpToFirst);
 
   if (!UNSET_SCM(x_pos) && !gh_number_p(x_pos)) 
-    scm_wrong_type_arg(FUNC_NAME, 3, x_pos);
+    SCWM_WRONG_TYPE_ARG(3, x_pos);
 
   if (!UNSET_SCM(y_pos) && !gh_number_p(y_pos)) 
-    scm_wrong_type_arg(FUNC_NAME, 4, y_pos);
+    SCWM_WRONG_TYPE_ARG(4, y_pos);
 
   if (gh_number_p(x_pos)) x = gh_scm2int(x_pos);
 

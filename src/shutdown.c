@@ -131,9 +131,9 @@ Done(int restart_or_dump, char *command)
 
     XCloseDisplay(dpy);
   }
-  /* GJB:FIXME:: Should restore cursor to original cursor before scwm started */
 
   if (restart_or_dump < 0) {
+    reset_signal_handler(SIGSEGV);
     /* force seg fault -- need to use as an argument to a function
        to be sure it doesn't get optimized away, so invoke a function
        we're sure exists -- this same function! --07/23/98 gjb */
@@ -189,7 +189,7 @@ arguments as given previously. */
   } else if (command == SCM_UNDEFINED) {
     sz = "scwm";
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, command);
+    SCWM_WRONG_TYPE_ARG(1, command);
   }
 
   Done(1, sz);  /* 1 == restart */

@@ -299,7 +299,7 @@ resize frames. VALUE should be an integer. */
 
   if (!gh_number_p(value)) {
     gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, value);
+    SCWM_WRONG_TYPE_ARG(1, value);
   }
   gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
   gcv.function = GXxor;

@@ -106,7 +106,7 @@ primitive. */
 {
   MenuItem *pmi = SAFE_MENUITEM(menu_item);
   if (!pmi) {
-    scm_wrong_type_arg(FUNC_NAME,1,menu_item);
+    SCWM_WRONG_TYPE_ARG(1,menu_item);
   }
   return gh_list(gh_str02scm(pmi->szLabel),
 		 pmi->scmAction,
@@ -148,14 +148,14 @@ For a higher-level interface to this function, see `menuitem'. */
   MenuItem *pmi = NEW(MenuItem);
   SCM answer;
   if (!gh_string_p(label)) {
-    scm_wrong_type_arg(FUNC_NAME,1,label);
+    SCWM_WRONG_TYPE_ARG(1,label);
   }
   pmi->szLabel = gh_scm2newstr(label,&pmi->cchLabel);
 
   if (UNSET_SCM(action)) {
     action = SCM_BOOL_F;
   } else if (!gh_symbol_p(action) && !gh_procedure_p(action) && !MENU_P(action)) {
-    scm_wrong_type_arg(FUNC_NAME,2,action);
+    SCWM_WRONG_TYPE_ARG(2,action);
   }
   pmi->scmAction = action;
 
@@ -163,7 +163,7 @@ For a higher-level interface to this function, see `menuitem'. */
     pmi->szExtra = NULL;
     pmi->cchExtra = 0;
   } else if (!gh_string_p(extra_label)) {
-    scm_wrong_type_arg(FUNC_NAME,3,extra_label);
+    SCWM_WRONG_TYPE_ARG(3,extra_label);
   } else {
     pmi->szExtra = gh_scm2newstr(extra_label,&pmi->cchExtra);
   }
@@ -171,28 +171,28 @@ For a higher-level interface to this function, see `menuitem'. */
   if (UNSET_SCM(picture_above)) {
     picture_above = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_above)) {
-    scm_wrong_type_arg(FUNC_NAME,4,picture_above);
+    SCWM_WRONG_TYPE_ARG(4,picture_above);
   }
   pmi->scmImgAbove = picture_above;
 
   if (UNSET_SCM(picture_left)) {
     picture_left = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_left)) {
-    scm_wrong_type_arg(FUNC_NAME,5,picture_left);
+    SCWM_WRONG_TYPE_ARG(5,picture_left);
   } 
   pmi->scmImgLeft = picture_left;
 
   if (UNSET_SCM(hover_action)) {
     pmi->scmHover = SCM_BOOL_F;
   } else if (!PROCEDURE_OR_SYMBOL_P(hover_action)) {
-    scm_wrong_type_arg(FUNC_NAME,6,hover_action);
+    SCWM_WRONG_TYPE_ARG(6,hover_action);
   }
   pmi->scmHover = hover_action;
 
   if (UNSET_SCM(unhover_action)) {
     pmi->scmUnhover = SCM_BOOL_F;
   } else if (!PROCEDURE_OR_SYMBOL_P(unhover_action)) {
-    scm_wrong_type_arg(FUNC_NAME,7,unhover_action);
+    SCWM_WRONG_TYPE_ARG(7,unhover_action);
   }
   pmi->scmUnhover = unhover_action;
 
@@ -200,7 +200,7 @@ For a higher-level interface to this function, see `menuitem'. */
     pmi->pchHotkeyPreferences = NULL;
     pmi->cchHotkeyPreferences = 0;
   } else if (!gh_string_p(hotkey_prefs)) {
-    scm_wrong_type_arg(FUNC_NAME,8,hotkey_prefs);
+    SCWM_WRONG_TYPE_ARG(8,hotkey_prefs);
   } else {
     pmi->pchHotkeyPreferences = 
       gh_scm2newstr(hotkey_prefs,&pmi->cchHotkeyPreferences);

@@ -65,7 +65,7 @@ to make it hard to access directly. */
 #define FUNC_NAME s_X_grab_server
 {
   XGrabServer_withSemaphore(dpy);
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -78,7 +78,7 @@ primitive is undefined at startup to make it hard to access directly. */
 #define FUNC_NAME s_X_ungrab_server
 {
   XUngrabServer_withSemaphore(dpy);
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 

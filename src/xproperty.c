@@ -125,7 +125,7 @@ value. */
   } else if (WINDOWP(win)) {
     w = PSWFROMSCMWIN(win)->w;
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   if (gh_number_p(name)) {
@@ -135,7 +135,7 @@ value. */
     aprop=XInternAtom(dpy, str, False);
     FREE(str);
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 2, name);
+    SCWM_WRONG_TYPE_ARG(2, name);
   }
 
   if (format == SCM_UNDEFINED) {
@@ -147,7 +147,7 @@ value. */
       return SCM_UNSPECIFIED;
     }
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 5, format);
+    SCWM_WRONG_TYPE_ARG(5, format);
   }
   if (fmt == 8 && gh_string_p(value)) {
     val=gh_scm2newstr(value, &len);
@@ -173,11 +173,11 @@ value. */
     for (i=0; i<len; i++) {
       SCM el=gh_vector_ref(value, gh_int2scm(i));
       if (!gh_number_p(el) || !setter(&v, gh_scm2long(el))) {
-	scm_wrong_type_arg(FUNC_NAME, 3, value);
+	SCWM_WRONG_TYPE_ARG(3, value);
       }
     }
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 3, value);
+    SCWM_WRONG_TYPE_ARG(3, value);
   }
   if (type == SCM_UNDEFINED) {
     atype=XA_STRING;
@@ -189,7 +189,7 @@ value. */
     atype = gh_scm2long(type);
   } else {
     FREE(val);
-    scm_wrong_type_arg(FUNC_NAME, 4, type);
+    SCWM_WRONG_TYPE_ARG(4, type);
   }
   if (action == SCM_UNDEFINED || action == sym_replace) {
     mode=PropModeReplace;
@@ -266,7 +266,7 @@ If the X property could be found, a list "(value type format)" is returned.
   } else if (WINDOWP(win)) {
     w = PSWFROMSCMWIN(win)->w;
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
 
   if (gh_number_p(name)) {
@@ -276,7 +276,7 @@ If the X property could be found, a list "(value type format)" is returned.
     aprop=XInternAtom(dpy, str, False);
     FREE(str);
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 2, name);
+    SCWM_WRONG_TYPE_ARG(2, name);
   }
 
   if (consume == SCM_UNDEFINED) {
@@ -284,7 +284,7 @@ If the X property could be found, a list "(value type format)" is returned.
   } else if (gh_boolean_p(consume)) {
     del=gh_scm2bool(consume);
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 3, consume);
+    SCWM_WRONG_TYPE_ARG(3, consume);
   }
 
   val = GetXProperty(w, aprop, del, &atype, &fmt, &len);
@@ -338,10 +338,10 @@ NAME is a string. The return value is unspecified. */
   } else if (WINDOWP(win)) {
     w = PSWFROMSCMWIN(win)->w;
   } else {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
+    SCWM_WRONG_TYPE_ARG(1, win);
   }
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, name);
+    SCWM_WRONG_TYPE_ARG(2, name);
   }
 
   str=gh_scm2newstr(name, NULL);
@@ -374,7 +374,7 @@ If STRING contains NULL-characters, the behaviour is undefined. */
   Atom a;
 
   if (!gh_string_p(string)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, string);
+    SCWM_WRONG_TYPE_ARG(1, string);
   }
   str=gh_scm2newstr(string, NULL);
   a=XInternAtom(dpy, str, False);
@@ -394,7 +394,7 @@ Returns #f, if the X atom was not known. */
   SCM ret;
 
   if (!gh_number_p(atom)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, atom);
+    SCWM_WRONG_TYPE_ARG(1, atom);
   }
   assert(sizeof(Atom) == sizeof(unsigned long));
   str=XGetAtomName(dpy, gh_scm2ulong(atom));

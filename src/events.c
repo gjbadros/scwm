@@ -555,7 +555,7 @@ if your Emacs hangs when you try evaluating a scwm expression). */
 {
   XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_REQUEST);
   scwm_msg(WARN,FUNC_NAME,"Deleted XA_SCWMEXEC_REQUEST property -- expect a protocol error");
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -2004,7 +2004,7 @@ should not have to worry about this unless you know what it means. */
     fPropagate = gh_scm2bool(propagate_p);
   }
 
-  fOkay = FKeyToKeysymModifiers(key,&keysym,&mod_mask, FUNC_NAME, False);
+  fOkay = FKeyToKeysymModifiers(key,&keysym,&mod_mask, FUNC_NAME, False, True);
 
   if (fOkay) {
     if (fPress) {
@@ -2073,7 +2073,7 @@ this unless you know what it means. */
   fButtonOK = FButtonToBnumModifiers(button, &bnum, &mod_mask, FUNC_NAME, False);
 
   if (!fButtonOK) {
-    scm_wrong_type_arg(FUNC_NAME,1,button);
+    SCWM_WRONG_TYPE_ARG(1,button);
   }
 
   /* First fill in x_root, y_root */

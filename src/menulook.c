@@ -100,12 +100,12 @@ only the Xpm menu look uses the EXTRA information. */
   scwm_menulook * pmlOrig;
   
   if (!DYNAMIC_MENULOOK_P(original_menu_look)) {
-    scm_wrong_type_arg(FUNC_NAME,1,original_menu_look);
+    SCWM_WRONG_TYPE_ARG(1,original_menu_look);
   }
   pmlOrig = DYNAMIC_SAFE_MENULOOK(original_menu_look);
 
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg(FUNC_NAME,2,name);
+    SCWM_WRONG_TYPE_ARG(2,name);
   }
   
   if (UNSET_SCM(extra)) {

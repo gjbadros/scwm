@@ -354,7 +354,7 @@ See the section on the `Face Flags' concept. */
   ButtonFace *bf;
 
   if (!FACEP(face)) {
-    scm_wrong_type_arg(FUNC_NAME,1,face);
+    SCWM_WRONG_TYPE_ARG(1,face);
   }
 
   bf=BUTTONFACE(face);
@@ -370,7 +370,7 @@ See the section on the `Face Flags' concept. */
     } 
     else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
+      SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
   } else if (flag==sym_vertical_justify) {
@@ -385,7 +385,7 @@ See the section on the `Face Flags' concept. */
     } 
     else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
+      SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
   } else if (flag==sym_relief) {
@@ -400,7 +400,7 @@ See the section on the `Face Flags' concept. */
       bf->style |= FlatButton;
     } else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
+      SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
   } else if (flag==sym_use_style_of) {
@@ -415,7 +415,7 @@ See the section on the `Face Flags' concept. */
     } 
     else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
+      SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
   } else if (flag==sym_hidden_handles) {
@@ -425,7 +425,7 @@ See the section on the `Face Flags' concept. */
       bf->style &= ~HiddenHandles;
     } else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
+      SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
   } else if (flag==sym_no_inset) {
@@ -435,12 +435,12 @@ See the section on the `Face Flags' concept. */
       bf->style &= ~NoInset;
     } else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(FUNC_NAME,3,flagval);    
+      SCWM_WRONG_TYPE_ARG(3,flagval);    
     }
 
   } else {
     /* FIXMS: use something more accurate. */
-    scm_wrong_type_arg(FUNC_NAME,3,flagval);    
+    SCWM_WRONG_TYPE_ARG(3,flagval);    
   }
   return SCM_UNSPECIFIED;
 }
@@ -459,11 +459,11 @@ SPECS is a list of face specifiers. */
   SCM p,flag,spec;
 
   if (!gh_list_p(flags)) {
-    scm_wrong_type_arg(FUNC_NAME,1,flags);
+    SCWM_WRONG_TYPE_ARG(1,flags);
   }
 
   if (!gh_list_p(specs)) {
-    scm_wrong_type_arg(FUNC_NAME,2,specs);
+    SCWM_WRONG_TYPE_ARG(2,specs);
   }
 
   sf = NEW(scwm_face);
@@ -482,7 +482,7 @@ SPECS is a list of face specifiers. */
       set_face_flag_x(answer,gh_car(flag),gh_cadr(flag));
     } else {
       /* Bad flag specifier error */
-      scm_wrong_type_arg(FUNC_NAME,1,flags);          
+      SCWM_WRONG_TYPE_ARG(1,flags);          
     }
   }
 
@@ -493,7 +493,7 @@ SPECS is a list of face specifiers. */
       add_spec_to_face_x(answer,gh_car(spec),gh_cadr(spec));
     } else {
       /* Bad flag specifier error */
-      scm_wrong_type_arg(FUNC_NAME,2,specs);
+      SCWM_WRONG_TYPE_ARG(2,specs);
     }
   }
 
@@ -646,11 +646,6 @@ SCWM_SYMBOL(sym_tiled , "tiled");
 /* MS:FIXME:: this function is horrible, functions should never be this
    huge, but I did not see an easier way to translate it. */
 
-/* GJB:FIXME:MS: This produces some argument name/number mismatches
-   because add_spec_to_face_x is not a primitive but calls
-   scm_wrong_type_arg.  Not sure what the right fix is now, but
-   as you are planning on revisiting the code, I'll let you figure
-   it out! :-) */
 /*SCWM_VALIDATE: face, spec, arg*/
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 #define FUNC_NAME "add_spec_to_face_x"
@@ -878,19 +873,19 @@ state, it will be sunk in the ACTIVE-DOWN state by default.  */
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!FACEP(active_up)) {
-    scm_wrong_type_arg(FUNC_NAME,1,active_up);
+    SCWM_WRONG_TYPE_ARG(1,active_up);
   }
 
   if (active_down==SCM_UNDEFINED) {
     active_down=active_up;
   } else if (!FACEP(active_down)) {
-    scm_wrong_type_arg(FUNC_NAME,2,active_down);
+    SCWM_WRONG_TYPE_ARG(2,active_down);
   }
 
   if (inactive==SCM_UNDEFINED) {
     inactive=active_up;
   } else if (!FACEP(inactive)) {
-    scm_wrong_type_arg(FUNC_NAME,3,inactive);
+    SCWM_WRONG_TYPE_ARG(3,inactive);
   }
 
   fl->titlebar.state[ActiveUp]=BUTTONFACE(active_up);
@@ -924,23 +919,23 @@ default.  */
   n=0;
 
   if (!gh_number_p(button) || (n=gh_scm2int(button)) < 1 || n > 10) {
-    scm_wrong_type_arg(FUNC_NAME,1,button);
+    SCWM_WRONG_TYPE_ARG(1,button);
   }
 
   if (!FACEP(active_up)) {
-    scm_wrong_type_arg(FUNC_NAME,2,active_up);
+    SCWM_WRONG_TYPE_ARG(2,active_up);
   }
 
   if (active_down==SCM_UNDEFINED) {
     active_down=active_up;
   } else if (!FACEP(active_down)) {
-    scm_wrong_type_arg(FUNC_NAME,3,active_down);
+    SCWM_WRONG_TYPE_ARG(3,active_down);
   }
 
   if (inactive==SCM_UNDEFINED) {
     inactive=active_up;
   } else if (!FACEP(inactive)) {
-    scm_wrong_type_arg(FUNC_NAME,4,inactive);
+    SCWM_WRONG_TYPE_ARG(4,inactive);
   }
 
   left_p = n % 2;
@@ -980,7 +975,7 @@ property). */
 
   if (!gh_number_p(button) || (n=gh_scm2int(button)) < 1 ||
       n > 10) {
-    scm_wrong_type_arg(FUNC_NAME,1,button);
+    SCWM_WRONG_TYPE_ARG(1,button);
   }
 
   if(flag==SCM_BOOL_T) {
@@ -988,7 +983,7 @@ property). */
   } else if (flag==SCM_BOOL_F) {
     fl->left_buttons[n].flags &= ~MWMButton;    
   } else {
-    scm_wrong_type_arg(FUNC_NAME,2,flag);
+    SCWM_WRONG_TYPE_ARG(2,flag);
   }
 
   redraw_borders(fl);
@@ -1009,13 +1004,13 @@ ACTIVE when not specified. */
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!FACEP(active)) {
-    scm_wrong_type_arg(FUNC_NAME,1,active);
+    SCWM_WRONG_TYPE_ARG(1,active);
   }
 
   if (inactive==SCM_UNDEFINED) {
     inactive=active;
   } else if (!FACEP(inactive)) {
-    scm_wrong_type_arg(FUNC_NAME,2,inactive);
+    SCWM_WRONG_TYPE_ARG(2,inactive);
   }
 
   fl->BorderStyle.active=BUTTONFACE(active);

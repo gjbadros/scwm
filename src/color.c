@@ -181,7 +181,7 @@ allocated, an error results. */
   int error_status;
 
   if (!gh_string_p(cname)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, cname);
+    SCWM_WRONG_TYPE_ARG(1, cname);
   }
 
   answer=scm_hash_ref(color_hash_table, cname, SCM_BOOL_F);
@@ -436,7 +436,7 @@ which is suitable for use as a hilight. */
   VALIDATE_ARG_COLOR(1,color);
 
   if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, factor);
+    SCWM_WRONG_TYPE_ARG(2, factor);
   }
 
   return adjust_brightness(color, f);
@@ -504,7 +504,7 @@ FACTOR is a positive floating point number. */
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, factor);
+    SCWM_WRONG_TYPE_ARG(1, factor);
   }
 
   fl->hilight_factor = f;
@@ -542,7 +542,7 @@ FACTOR is a positive floating point number */
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, factor);
+    SCWM_WRONG_TYPE_ARG(1, factor);
   }
 
   fl->shadow_factor = f;
@@ -576,7 +576,7 @@ FACTOR is a positive floating point number */
 {
   double f;
   if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, factor);
+    SCWM_WRONG_TYPE_ARG(1, factor);
   }
 
   menu_hilight_factor_val = f;
@@ -603,7 +603,7 @@ FACTOR is a positive floating point number */
 {
   double f;
   if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, factor);
+    SCWM_WRONG_TYPE_ARG(1, factor);
   }
 
   menu_shadow_factor_val = f;
