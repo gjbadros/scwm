@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;;; Copyright (C) 1999 Greg J. Badros
+;;;; Copyright (C) 1999 Greg J. Badros, Jeff W. Nichols
 ;;;; Modified from ScwmButtons.scm, Copyright (C) 1998 Maciej Stachowiak
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
@@ -67,6 +67,7 @@
 	(if pixmap (gtk-container-add button pixmap))
 	(gtk-container-add button label))
     (if pixmap (gtk-widget-show pixmap) (gtk-widget-show label))
+    (set-object-property! class 'gtk-button button)
     (gtk-signal-connect button "clicked"
 			(lambda ()
 			  (enable-ui-constraint (make-ui-constraint-interactively class))))
@@ -78,8 +79,13 @@
 ;; the simple hook function to add new constraints
 ;; (defined so we can remove it later)
 
-(define (hook-func class)
+(define (add-hook-func class)
   (make-class-button class toggle-pixmap))
+
+(define (remove-hook-func class)
+  (let ((button (object-property class 'gtk-button)))
+    (gtk-container-remove buttons-box button)
+    (gtk-widget-hide button)))
 
 ;; initialize the buttons window
 ;; it would be nice to add a constraint class remove options
@@ -93,8 +99,10 @@
     (set! buttons-box box)
     (set! toggle-pixmap pixmap)
     (set! toggle-vertical vertical)
-    (remove-constraint-class-add-hook! hook-func)
-    (add-constraint-class-add-hook! hook-func)
+    (remove-constraint-class-add-hook! add-hook-func)
+    (remove-constraint-class-delete-hook! remove-hook-func)
+    (add-constraint-class-add-hook! add-hook-func)
+    (add-constraint-class-delete-hook! remove-hook-func)
     (gtk-window-set-title toplevel "ScwmUIConstraintsButtons")
     (gtk-window-set-wmclass toplevel "ScwmUIConstraintsButtons" "Scwm")    
     (gtk-button-box-set-spacing box 0)
@@ -105,6 +113,7 @@
     (gtk-widget-show box)
     (gtk-signal-connect toplevel "delete_event" (lambda (args) (gtk-widget-hide toplevel)))
     (set! toggle-initialized #t)
+    (gtk-window-set-policy toplevel #t #t #t)
     (if show (gtk-widget-show toplevel))))
 	 
 

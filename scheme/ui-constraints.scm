@@ -74,7 +74,10 @@ MENUNAME-PROC is a proc that takes a UI-CONSTRAINT as an arg and returns the nam
 for the constraint in the toggle menu.  
 This routine returns a new constraint class object based on the parameters.
 SIDE-EFFECT: addes new class obj to the global class list."
-  (let ((obj (vector obid-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)))
+  (let ((obj (vector obid-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc))
+	(old (get-ui-constraint-class-by-name name)))
+    (if (ui-constraint-class? old)
+	(delete-ui-constraint-class! old))
     (set! global-constraint-class-list (cons obj global-constraint-class-list))
     (call-hook-procedures constraint-class-add-hook-list (list obj))
     obj))
@@ -224,7 +227,6 @@ the toggle menu.  Errors if object is not a ui-constraint-class object."
   (if (ui-constraint-class? ui-constraint-class)
       (vector-ref ui-constraint-class 8)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
-
 
 
 ;; UI-CONSTRAINT
