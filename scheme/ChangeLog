@@ -1,4 +1,6 @@
-Fri Jul 23 17:30:29 1999  Greg Badros  <gjb@cs.washington.edu>
+Fri Jul 23 23:32:16 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* path-cache.scm: Typo fix: :use-module, not :use-modules.
 
 	* ui-constraints-buttons.scm: Added newline at end of file.
 
