@@ -351,7 +351,7 @@
 ;; constructor
 (define* (cnctr-valign wlist qlist #&optional (enable? #f))
   (let* ((var1 (get-vcl-from-nonant (car wlist) (car qlist)))
-	 (varlist (map (lambda (w q) (get-hcl-from-nonant w q)) (cdr wlist) (cdr qlist)))
+	 (varlist (map (lambda (w q) (get-vcl-from-nonant w q)) (cdr wlist) (cdr qlist)))
 	 (cnlist (map (lambda (v) (make-cl-constraint var1 = v)) varlist)))
     (and enable? (for-each (lambda (cn) (cl-add-constraint (scwm-master-solver) cn)) cnlist))
     (list cnlist wlist qlist)))
@@ -553,7 +553,7 @@
    "min. horiz. size" 1 cnctr-minhsize
    ui-cnctr-minhsize draw-cn-minhsize
    cl-is-constraint-satisfied?
-   "cn-relative-hsize.xpm" menuname-as-class-name))
+   "cn-min-hsize.xpm" menuname-as-class-name))
 
 ;; vertical
 
@@ -589,7 +589,7 @@
    "min. vert. size" 1 cnctr-minvsize
    ui-cnctr-minvsize draw-cn-minvsize
    cl-is-constraint-satisfied?
-   "cn-relative-vsize.xpm" menuname-as-class-name))
+   "cn-min-vsize.xpm" menuname-as-class-name))
 
 
 ;;--------------------------------------------------------------------
@@ -630,7 +630,7 @@
    "max. horiz. size" 1 cnctr-maxhsize
    ui-cnctr-maxhsize draw-cn-maxhsize
    cl-is-constraint-satisfied?
-   "cn-relative-hsize.xpm" menuname-as-class-name))
+   "cn-max-hsize.xpm" menuname-as-class-name))
 
 ;; vertical
 
@@ -666,7 +666,7 @@
    "max. vert. size" 1 cnctr-maxvsize
    ui-cnctr-maxvsize draw-cn-maxvsize
    cl-is-constraint-satisfied?
-   "cn-relative-vsize.xpm" menuname-as-class-name))
+   "cn-max-vsize.xpm" menuname-as-class-name))
 
 
 ;;-----------------------------------------------------------
