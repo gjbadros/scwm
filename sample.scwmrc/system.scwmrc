@@ -97,7 +97,7 @@
   (menu 
    (list
     (menuitem "Window Ops" #f)
-    menu-separator
+    menu-title
     (menuitem "Move" #:action interactive-move)
     (menuitem "Resize" #:action interactive-resize)
     (menuitem "Raise" #:action raise-window)
