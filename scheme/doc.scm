@@ -24,8 +24,8 @@
 (define*-public (documentation func #&optional (port (current-output-port)))
   "Print the documentation for the string or symbol.
 Return #t if found anything, #f if no documentation."
-  (let* ((head (string-append
-                "(" (if (string? func) func (symbol->string func))))
+  (let* ((func (if (string? func) func (symbol->string func)))
+         (head (string-append "(" func))
          (len (string-length head))
          (delim? (lambda (st) (and (= 1 (string-length st))
                                    (char=? (string-ref st 0) #\np)))))
@@ -42,9 +42,10 @@ Return #t if found anything, #f if no documentation."
                (cond ((and (delim? ln)
                            (begin (set! ln (read-line fd))
                                   (not (eof-object? ln)))
-                           (< len (string-length ln))
-                           (string=? head (substring ln 0 len))
-                           (string-index " )" (string-ref ln len)))
+                           (or (and (< len (string-length ln))
+                                    (string=? head (substring ln 0 len))
+                                    (string-index " )" (string-ref ln len)))
+                               (string=? func ln)))
                       (set! done #t)
                       (display ln port) (newline port)
                       (do ((ln (read-line fd) (read-line fd)))
