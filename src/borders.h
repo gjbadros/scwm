@@ -23,7 +23,7 @@ void SetShape(ScwmWindow *psw, int w);
 
 void SetTitleBar(ScwmWindow *psw, Bool onoroff, Bool NewTitle);
 
-void SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent, 
+void SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, 
                 Bool fMoved, Bool fResized);
 
 

@@ -504,7 +504,7 @@ ResizePswToCurrentSize(ScwmWindow *psw)
   int x = FRAME_X(psw), y = FRAME_Y(psw);
 
   SendClientConfigureNotify(psw);
-  SetupFrame(psw,x,y,w,h,True,WAS_MOVED,WAS_RESIZED);
+  SetupFrame(psw,x,y,w,h,WAS_MOVED,WAS_RESIZED);
 }
 
 
@@ -1928,7 +1928,7 @@ not specified. */
      but we need it to ensure that different combinations of 
      animated/unanimated shading do the right thing */
     SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), FRAME_WIDTH(psw),
-               psw->title_height + psw->boundary_width, False, 
+               psw->title_height + psw->boundary_width, 
                NOT_MOVED, WAS_RESIZED);
     /*  } */
 
@@ -1978,7 +1978,7 @@ window context in the usual way if not specified. */
      but we need it to ensure that different combinations of 
      animated/unanimated shading do the right thing */
     SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), 
-               psw->orig_width, psw->orig_height, True,
+               psw->orig_width, psw->orig_height,
                NOT_MOVED, WAS_RESIZED);
     /*  } */
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
@@ -3054,7 +3054,7 @@ specified. */
     psw->boundary_width = psw->boundary_width - 1;
   }
   SetupFrame(psw,FRAME_X(psw),FRAME_Y(psw),FRAME_WIDTH(psw),FRAME_HEIGHT(psw),
-             False, WAS_MOVED, WAS_RESIZED);
+             WAS_MOVED, WAS_RESIZED);
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
   return SCM_UNSPECIFIED;
 }

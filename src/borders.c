@@ -335,6 +335,8 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
   else if (win == psw->corners[3])
     edge = 4;
 
+  DBUG(__FUNCTION__,"edge = %d",edge);
+
   if (draw & TOP_HILITE) {
     seg[i].x1 = x;
     seg[i].y1 = y;
@@ -368,6 +370,7 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
       seg[i++].y2 = y + h - 1 - ((edge == 1) || a ? 0 : 1);
     }
   }
+  DBUG(__FUNCTION__,"i = %d",i);
   XDrawSegments(dpy, win, ReliefGC, seg, i);
 
   i = 0;
@@ -402,6 +405,7 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
       seg[i++].y2 = y + h - 1 - ((edge == 2) || a ? 0 : 1);
     }
   }
+  DBUG(__FUNCTION__,"i = %d",i);
   XDrawSegments(dpy, win, ShadowGC, seg, i);
 }
 
@@ -966,9 +970,9 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	  RelieveWindow(psw, psw->frame, psw->boundary_width - 1 - psw->bw,
 			psw->boundary_width - 1 - psw->bw,
 			FRAME_WIDTH(psw) -
-			(psw->boundary_width << 1) + 2 + 3 * psw->bw,
+			(psw->boundary_width * 2) + 2 + 3 * psw->bw,
 			FRAME_HEIGHT(psw) -
-			(psw->boundary_width << 1) + 2 + 3 * psw->bw,
+			(psw->boundary_width * 2) + 2 + 3 * psw->bw,
 			sgc, rgc,
 			TOP_HILITE | LEFT_HILITE | RIGHT_HILITE |
 			BOTTOM_HILITE);
@@ -1166,10 +1170,11 @@ RelieveWindow(ScwmWindow *psw, Window win,
 	      GC ReliefGC, GC ShadowGC, int hilite)
 {
   XSegment seg[4];
-  int i;
-  int edge;
+  int i = 0;
+  int edge = 0;
 
-  edge = 0;
+  DBUG(__FUNCTION__,"x = %d, y = %d;   w = %d, h = %d",x,y,w,h);
+
   if ((win == psw->sides[0]) || (win == psw->sides[1]) ||
       (win == psw->sides[2]) || (win == psw->sides[3]))
     edge = -1;
@@ -1182,7 +1187,9 @@ RelieveWindow(ScwmWindow *psw, Window win,
   else if (win == psw->corners[3])
     edge = 4;
 
-  i = 0;
+
+  DBUG(__FUNCTION__,"edge = %d",edge);
+
   seg[i].x1 = x;
   seg[i].y1 = y;
   seg[i].x2 = w + x - 1;
@@ -1211,6 +1218,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
     seg[i].x2 = x + 1;
     seg[i++].y2 = y + h - 2;
   }
+  DBUG(__FUNCTION__,"i = %d",i);
   XDrawSegments(dpy, win, ReliefGC, seg, i);
 
   i = 0;
@@ -1242,6 +1250,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
     seg[i].x2 = x + w - 2;
     seg[i++].y2 = y + h - 2;
   }
+  DBUG(__FUNCTION__,"i = %d",i);
   XDrawSegments(dpy, win, ShadowGC, seg, i);
 }
 
@@ -1278,7 +1287,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
  */
 
 void 
-SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
+SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
            Bool fMoved, Bool fResized)
 {
   XWindowChanges xwc;
@@ -1325,14 +1334,6 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     DBUG(__FUNCTION__,"Coords changed but not fMoved");
 #endif
 
-  /*
-   * According to the July 27, 1988 ICCCM draft, we should send a
-   * "synthetic" ConfigureNotify event to the client if the window
-   * was moved but not resized.
-   */
-  if (fMoved && !fResized)
-    sendEvent = True;
-
   if (fResized) {
     /* make the decoration buttons square */
     int button_width = psw->title_height;
@@ -1340,7 +1341,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     int left = psw->nr_left_buttons;
     int right = psw->nr_right_buttons;
 
-    DBUG(__FUNCTION__,"Resized!");
+    DBUG(__FUNCTION__,"Resized to x=%d, y=%d;  w=%d,h=%d",x,y,w,h);
 
     psw->title_width = (w - (left + right) * button_width
                         - 2 * psw->boundary_width + psw->bw);
@@ -1369,6 +1370,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
       XMoveResizeWindow(dpy, psw->title_w,
 			psw->title_x, psw->title_y,
 			psw->title_width, psw->title_height);
+      XMapWindow(dpy,psw->title_w);
 
       xwcm = CWX | CWY | CWHeight | CWWidth;
       xwc.height = psw->title_height;
@@ -1383,6 +1385,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 	    xwc.x = -button_width;
 	    XConfigureWindow(dpy, psw->left_w[i], xwcm, &xwc);
 	  }
+          XMapWindow(dpy,psw->left_w[i]);
 	  xwc.x += button_width;
 	}
       }
@@ -1397,9 +1400,25 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 	    xwc.x = -button_width;
 	    XConfigureWindow(dpy, psw->right_w[i], xwcm, &xwc);
 	  }
+          XMapWindow(dpy,psw->right_w[i]);
 	}
       }
+    } else {
+      /* no title bar, so unmap button windows! */
+      XUnmapWindow(dpy,psw->title_w);
+
+      for (i = 0; i < Scr.nr_left_buttons; i++) {
+	if (psw->left_w[i] != None) {
+          XUnmapWindow(dpy,psw->left_w[i]);
+        }
+      }
+      for (i = 0; i < Scr.nr_right_buttons; i++) {
+	if (psw->right_w[i] != None) {
+          XUnmapWindow(dpy,psw->right_w[i]);
+        }
+      }
     }
+
     if (psw->fBorder) {
       DBUG(__FUNCTION__,"Has border!");
       psw->corner_width = psw->title_height + psw->bw + psw->boundary_width;
@@ -1449,13 +1468,11 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
               XConfigureWindow(dpy, psw->sides[i], xwcm, &xwc);
               /* make sure sides are mapped */
               XMapWindow(dpy,psw->sides[i]);
+            } else {
+              XUnmapWindow(dpy,psw->sides[i]);
             }
           }
         }
-      } else {
-        /* no boundary/border, so no side windows visible */
-        for (i=0; i<4; ++i) 
-          XUnmapWindow(dpy,psw->sides[i]);
       }
 
       xwcm = CWX | CWY | CWWidth | CWHeight;
@@ -1482,7 +1499,14 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 
 	if (!shaded || (i < 2)) { /* do top corners even when shaded */
 	  XConfigureWindow(dpy, psw->corners[i], xwcm, &xwc);
+          XMapWindow(dpy,psw->corners[i]);
         }
+      }
+    } else {
+      /* no boundary/border, so no side windows visible */
+      for (i=0; i<4; ++i) {
+        XUnmapWindow(dpy,psw->sides[i]);
+        XUnmapWindow(dpy,psw->corners[i]);
       }
     }
   }

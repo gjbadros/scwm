@@ -583,7 +583,6 @@ It simply leaves the window WIN in place, exactly as requested. */
 Bool 
 PlaceWindow(ScwmWindow *psw, int Desk)
 {
-  int gravx, gravy;		/* gravity signs for positioning */
   SCM place_proc;
   SCM win;
 
@@ -597,9 +596,8 @@ PlaceWindow(ScwmWindow *psw, int Desk)
 
   SetupFrame(psw, psw->attr.x + GRAV_X_ADJUSTMENT(psw), 
 	     psw->attr.y + GRAV_Y_ADJUSTMENT(psw), 
-	     FRAME_WIDTH(psw),
-	     FRAME_HEIGHT(psw),
-	     True, WAS_MOVED, WAS_RESIZED);
+	     FRAME_WIDTH(psw), FRAME_HEIGHT(psw),
+	     WAS_MOVED, WAS_RESIZED);
 
   move_finalize(psw->frame,psw, 
 		psw->attr.x + GRAV_X_ADJUSTMENT(psw), 
