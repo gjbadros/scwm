@@ -36,6 +36,7 @@ depend:
 # done
 install:
 	$(mkinstalldirs) ${scwm_scheme_dir}
+	${INSTALL_DATA} auto-raise.scm ${scwm_scheme_dir}
 	${INSTALL_DATA} base.scm ${scwm_scheme_dir}
 	${INSTALL_DATA} bincomm.scm ${scwm_scheme_dir}
 	${INSTALL_DATA} decor.scm ${scwm_scheme_dir}
