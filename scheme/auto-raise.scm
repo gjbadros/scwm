@@ -18,6 +18,32 @@
 ;;;; 
 
 
+;;; FIXGJB: hack to get in root module
+
+(define-public default-auto-raise-delay 300)
+;;;**VAR
+;;; Number of ms to delay before raising the window the mouse pointer entered.
+;;; This can be overridden on a per-window basis using `set-auto-raise-delay!'.
+
+(define-public default-auto-raise-unfocus-delay 300)
+;;;**VAR
+;;; Number of ms to delay before running the unfocus proc for a raised window.
+;;; This can be overridden on a per-window basis using `set-auto-raise-unfocus-delay!'
+
+(define-public default-auto-raise-focus-proc raise-window)
+;;;**VAR
+;;; The default procedure to invoke when raising the window.
+;;; This gets called after the auto-raise delay times out, and 
+;;; can be overwridden on a per-window basis using `set-auto-raise-focus-proc!'
+
+(define-public default-auto-raise-unfocus-proc noop)
+;;;**VAR
+;;; The default procedure to invoke when un-raising the window.
+;;; This gets called after the mouse pointer leaves an auto-raised window, and
+;;; can be overwridden on a per-window basis using `set-auto-raise-unfocus-proc!'
+
+
+
 
 (define-module (app scwm auto-raise)
   :use-module (app scwm optargs)
@@ -107,10 +133,6 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
 			 set-auto-raise-unfocus-proc!)
 
 
-(define-public default-auto-raise-delay 300)
-(define-public default-auto-raise-focus-proc raise-window)
-(define-public default-auto-raise-unfocus-proc noop)
-
 (define last-focus-handle '())
 (define last-focus-window #f)
 
@@ -135,8 +157,7 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
 (define (auto-unfocus-delay win)
   (* 1000 
      (or (object-property win 'auto-raise-unfocus-delay)
-	 (object-property win 'auto-raise-delay)
-	 default-auto-raise-delay)))
+	 default-auto-raise-unfocus-delay)))
   
 (define (auto-raise-hook-proc event num-datum a1 a2 a3 a4 a5 a6 a7)
   (cond
