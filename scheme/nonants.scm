@@ -64,19 +64,48 @@ window-selection and constraints modules."
 ;;(message-window-show! interactive-mark-nonant-msgwin)
 ;;(message-window-hide! interactive-mark-nonant-msgwin)
 
+(define-public (nonant-decoration win nonant)
+  (let* ((decoration-ids (window-decoration-ids win))
+	 (sides (caddr decoration-ids))
+	 (corners (cadddr decoration-ids)))
+    (case nonant
+      ((0) (list-ref corners 0))
+      ((2) (list-ref corners 1))
+      ((8) (list-ref corners 2))
+      ((6) (list-ref corners 3))
+      ((1) (list-ref sides 0))
+      ((5) (list-ref sides 1))
+      ((7) (list-ref sides 2))
+      ((3) (list-ref sides 3))
+      (else #f))))
+
+(define nonant-highlight-color (make-color "green"))
+
+(define-public (highlight-window-nonant win nonant)
+  (let ((winid (nonant-decoration win nonant)))
+    (if winid (set-window-id-background! nonant-highlight-color winid))))
+
+(define-public (unhighlight-window-nonant win nonant)
+  (let ((winid (nonant-decoration win nonant))
+	(colors (if (eq? win (current-window-with-focus)) 
+		    (get-window-highlight-colors win) 
+		    (get-window-colors win))))
+    (if winid (set-window-id-background! (cadr colors) winid))))
+
+
+(define last-nonant #f)
+
 (define (mark-nonant-motion-handler x_root y_root state win dx dy)
   (if win 
-      (let* ((pos (pointer-position))
-	     (xp  (car pos))
-	     (yp  (cadr pos))
-	     (nonant (window-and-offsets->nonant win xp yp)))
-	(if (eqv? 4 nonant) ;; do not display the marker if in center
-	    (message-window-hide! interactive-mark-nonant-msgwin)
+      (let ((nonant (window-and-offsets->nonant win dx dy)))
+	(if (not (eqv? last-nonant nonant))
 	    (begin
-	      (message-window-show! interactive-mark-nonant-msgwin)
-	      (set-markwin-offset! win nonant interactive-mark-nonant-msgwin))))
-      (message-window-hide! interactive-mark-nonant-msgwin)))
+	      (unhighlight-window-nonant win last-nonant)
+	      (highlight-window-nonant win nonant)
+	      (set! last-nonant nonant))))))
 
+
+;; nonants
 (define-public (get-window-with-nonant-interactively)
   "Interactively select a window and a nonant.
 The nonant is stored as an object-property of the window
@@ -85,18 +114,20 @@ for use with the window-selection and constraints modules."
    (lambda ()
      (start-highlighting-selected-window)
      (add-motion-handler! mark-nonant-motion-handler))
+;;     (add-motion-handler! motion-handler-debug))
    (lambda ()
      (let* ((selinf (select-viewport-position))
 	    (win (car selinf)))
        (if (window? win)
 	   (let ((nonant (get-window-nonant selinf)))
 	     (set-object-property! win 'nonant nonant)
+	     (unhighlight-window-nonant win nonant)
 	     win)
 	   #f)))
    (lambda ()
      (end-highlighting-selected-window)
-     (remove-motion-handler! mark-nonant-motion-handler)
-     (message-window-hide! interactive-mark-nonant-msgwin))))
+     (remove-motion-handler! mark-nonant-motion-handler))))
+;;     (remove-motion-handler! motion-handler-debug))))
 
 
 ;; determining the nonant from select-viewport-position
@@ -134,3 +165,4 @@ E.g., an argument of 1 returns `N'."
   (list-ref nonant-names nonant))
 
 ;; (nonant->string 4)
+;; (window-and-offsets->nonant w 700 300)
