@@ -158,6 +158,16 @@ then highlight the output."
                       (unless (bobp) (backward-char 1))
                       (thing-at-point 'symbol)) ""))
 
+;; Return number of screen lines between START and END in buffer B displayed in window W
+(defun count-screen-lines (start end b w)
+  (save-excursion
+    (save-restriction
+      (with-current-buffer b
+	(narrow-to-region start end)
+	(goto-char (point-min))
+	(+ 1 (vertical-motion (- (point-max) (point-min)) w))))))
+
+
 ;; user functions
 ;; ---- ---------
 
@@ -249,15 +259,27 @@ meaning of the second argument is reversed."
          (newline-and-indent)
          (scwm-eval sexp t)
          (newline))
-        (t (with-current-buffer (get-buffer-create scwm-eval-buffer)
-             (erase-buffer)
-             (scwm-eval sexp t)
-             (let ((lines (count-lines (point-min) (point-max))))
-               (cond ((= lines 0)
-                      (message "[scwm command completed wuth no output]"))
-                     ((= lines 1) (message "%s" (buffer-string)))
-                     (t (display-buffer (current-buffer)))))))))
+	(t (save-excursion
+	     (with-current-buffer (get-buffer-create scwm-eval-buffer)
+	       (erase-buffer)
+	       (scwm-eval sexp t)
+	       (let ((lines (count-lines (point-min) (point-max))))
+		 (cond ((= lines 0)
+			(message "[scwm command completed with no output]"))
+		       ((and (= lines 1) 
+			     (< (- (point-max) (point-min))
+				(frame-width)))
+			(message "%s" (buffer-string)))
+		       (t (message "%s" (buffer-string))
+			  (display-buffer-in-sized-window (current-buffer))))))))))
 
+(defun display-buffer-in-sized-window (buffer)
+  (let* ((w (display-buffer buffer))
+	 (lines (count-screen-lines (point-min) (point-max) buffer w))
+	 (h (- (max window-min-height (+ 2 lines)) (window-height w))))
+    (message "%d" lines)
+    (enlarge-window h nil w)))
+  
 ;;;###autoload
 (defun scwm-eval-last (mb-p)
   "Evaluate the last sexp with `scwm-eval-sexp'."
@@ -300,7 +322,8 @@ meaning of the second argument is reversed."
 (defun scwm-load-file (file mp-b)
   "Load the file."
   (interactive "fLoad file: \nP")
-  (scwm-eval-sexp (concat "(load \"" file "\")") mp-b))
+  (scwm-eval-sexp (concat "(load \"" file "\")") mp-b)
+  (setq scwm-obarray nil))
 
 (defalias 'advertised-xscheme-send-previous-expression
     'scwm-eval-last)
@@ -394,15 +417,15 @@ Returns a string which is present in the `scwm-obarray'."
       (princ ":\n\n")
       (scwm-safe-call "documentation" (concat "\"" pat "\"") standard-output)
       (princ "\n\n ")
-      (with-face 'highlight (princ "procedure-documentation"))
+      (with-face 'highlight (princ "procedure/option-documentation"))
       (princ ":\n\n")
       (scwm-eval (concat "(if (defined? 'procedure-documentation) "
                          "(if (procedure? " pat ") (procedure-documentation "
-                         pat ") (begin (display " pat ") (display "
-                         "\" is not a procedure\n\")))"
-                         " (display \"this guile version lacks "
+                         pat ") (begin (use-modules (app scwm defoption)) "
+			 "(scwm-option-documentation '" pat ")))"
+			 " (display \"this guile version lacks "
                          "`procedure-documentation'.\n\"))")
-                 standard-output)
+		 standard-output)
       ;; add buttons to the help message
       (let ((st (syntax-table)))
         (set-syntax-table scwm-mode-syntax-table)
