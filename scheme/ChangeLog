@@ -1,3 +1,9 @@
+Sat Jul  3 22:42:59 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* prompt-proc.scm: Fix let* bug in prompt-proc-hbox. Also, return
+	the entry, too, so that an "activate" signal on the text widget
+	can exit.
+
 Sat Jul  3 22:00:26 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* std-menus.scm: Use defoption module. make *context-map*'s
