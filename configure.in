@@ -86,22 +86,22 @@ SCWM_ARG_PATH(guile-exec-prefix,
 ])
 
 if test -z "${GUILE_BIN_DIR}"; then
-	AC_PATH_PROG(BUILD_GUILE, build-guile, no)
+	AC_PATH_PROG(GUILE_CONFIG, guile-config, build-guile, no)
 else
-	AC_PATH_PROG(BUILD_GUILE, build-guile, no, ${GUILE_BIN_DIR})
+	AC_PATH_PROG(GUILE_CONFIG, guile-config, build-guile, no, ${GUILE_BIN_DIR})
 fi
 
 
-if test "no" != "$BUILD_GUILE"; then
+if test "no" != "$GUILE_CONFIG"; then
   AC_MSG_CHECKING(whether build-guile works)
-  if (${BUILD_GUILE} link) >/dev/null 2>&1; then
-    build_guile_works=yes
+  if (${GUILE_CONFIG} link) >/dev/null 2>&1; then
+    GUILE_CONFIG_works=yes
   else
-    build_guile_works=no
+    GUILE_CONFIG_works=no
   fi
-  AC_MSG_RESULT($build_guile_works)
+  AC_MSG_RESULT($GUILE_CONFIG_works)
 else
-  build_guile_works=no
+  GUILE_CONFIG_works=no
 fi
 
 if test -z "${GUILE_BIN_DIR}"; then
@@ -292,9 +292,9 @@ case "$ac_R_nospace" in
 *)     GUILE_LIBS_PRE="-L${guile_lib_path}" ;;
 esac
 
-if test "yes" = "$build_guile_works"; then
+if test "yes" = "$GUILE_CONFIG_works"; then
   AC_MSG_CHECKING(for guile libraries)
-  GUILE_LIBS="${GUILE_LIBS_PRE} `${BUILD_GUILE} link`"
+  GUILE_LIBS="${GUILE_LIBS_PRE} `${GUILE_CONFIG} link`"
   AC_MSG_RESULT($GUILE_LIBS)
 else
   AC_CHECK_LIB(m, sin, GUILE_LIBS="-lm",, $GUILE_LIBS_PRE)

@@ -1,3 +1,10 @@
+Sun Oct  4 18:16:10 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* configure.in: Check for guile-config, the script formerly known
+ 	as build-guile, as well as build-guile; replace BUILD_GUILE with
+ 	GUILE_CONFIG throughout so this future anachronism doesn't confuse
+ 	people later.
+
 Wed Sep 30 19:15:15 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* configure.in: Process perl and guile script templates in
