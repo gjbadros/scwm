@@ -1,3 +1,34 @@
+1998-07-04  Greg Badros  <gjb@cs.washington.edu>
+
+	* xmisc.c (PNewXTextPropertyFromSz): Added this function to create 
+	a new XTextProperty struct for the set-window-text-property primitive
+
+	* shutdown.c: Make Done dump core if first arg is < 0, so SegV's
+	still give a core dump.
+
+	* events.c (HandlePropertyNotify): Add Robert Bihlmeyer's
+	mid-April patch to provide property notification hook.  Added
+	passing the window as the second argument, and change named of
+	hook to X-PropertyNotify-hook (lowercase "h" for consistency);
+	use FXWindowAccessible() instead of XGetGeometry w/ all dummies.
+
+	* deskpage.c: fix one line's indent
+
+	* callbacks.c callbacks.h: Added scwm_safe_call2, call2_hooks for
+ 	convenience, #include <assert.h>, factor out the WarnBadHook(SCM)
+ 	code, fix bugs in resetting the hook -- use SCM_SETCDR instead of
+ 	SCM_SETCAR to SCM_EOL
+
+	* misc.h, misc.c, scwm.h, scwm.c: Move scwm_msg from misc into
+	scwm, since it should be available everywhere
+
+	* Makefile.am: build xproperty
+
+	* xproperty.c, xproperty.h: Added from mid-April from Robert
+	Bihlmeyer.  Extended the print smob function to display the
+	strings value if the property's type is a string.  Also added
+	set-window-text-property primitive.
+
 Fri Jul  3 17:44:06 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am:
