@@ -1,8 +1,10 @@
 Thu Aug 20 15:57:22 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* ALL: Fix some C-portability problems with DBUG and DBUG_RESIZE
-	macros.  Now double-quote at call site, and give the DBG stream
-	argument as first arg.
+	* ALL, errors.h: Fix some C-portability problems with DBUG and
+ 	DBUG_RESIZE macros.  Now double-quote at call site, and give the
+ 	DBG stream argument as first arg.  Replace scwm_error's
+	number-based system w/ string based system until we decide to do
+	this the right way.
 
 Thu Aug 20 14:41:28 1998  Greg Badros  <gjb@cs.washington.edu>
 
