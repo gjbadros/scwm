@@ -67,6 +67,7 @@ struct functions {
   int type;
 };
 
+/* FIXGJB: these should use bit fields! */
 /* values for name_list flags */
 /* The first 13 items are mapped directly into the ScwmWindow structures
  * flag value, so they MUST correspond to the first 13 entries in scwm.h */
