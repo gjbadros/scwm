@@ -33,8 +33,8 @@
 #include "screen.h"
 #include "menu.h"
 #include "util.h"
+#include "string_token.h"
 
-#undef MS_DELETION_COMMENT
 
 int menu_on = 0;
 
@@ -641,10 +641,6 @@ UpdateMenu(int sticks)
 	} else if (!strcmp(ActiveItem->action, "SchemeMenu")) {
 	  popup(ActiveItem->thunk, SCM_UNDEFINED);
 	} else {
-#if MS_DELETION_COMMENT
-	  ExecuteFunction(ActiveItem->action,
-			  ButtonWindow, &Event, Context, -1);
-#endif /* MS_DELETION_COMMENT */
 	}
       }
       ActiveItem = NULL;
@@ -860,53 +856,6 @@ WaitForButtonsUp()
 
 
 
-#if MS_DELETION_COMMENT
-void 
-DestroyMenu(MenuRoot * mr)
-{
-  MenuItem *mi, *tmp2;
-  MenuRoot *tmp, *prev;
-
-  if (mr == NULL)
-    return;
-
-  tmp = Scr.AllMenus;
-  prev = NULL;
-  while ((tmp != NULL) && (tmp != mr)) {
-    prev = tmp;
-    tmp = tmp->next;
-  }
-  if (tmp != mr)
-    return;
-
-  if (prev == NULL)
-    Scr.AllMenus = mr->next;
-  else
-    prev->next = mr->next;
-
-  XDestroyWindow(dpy, mr->w);
-  XDeleteContext(dpy, mr->w, MenuContext);
-
-  /* need to free the window list ? */
-  mi = mr->first;
-  while (mi != NULL) {
-    tmp2 = mi->next;
-    if (mi->item != NULL)
-      free(mi->item);
-    if (mi->item2 != NULL)
-      free(mi->item2);
-    if (mi->action != NULL)
-      free(mi->action);
-    if (mi->picture)
-      DestroyPicture(dpy, mi->picture);
-    if (mi->lpicture)
-      DestroyPicture(dpy, mi->lpicture);
-    free(mi);
-    mi = tmp2;
-  }
-  free(mr);
-}
-#endif /* MS_DELETION_COMMENT */
 
 /****************************************************************************
  * 
@@ -1235,7 +1184,10 @@ AddToMenu(MenuRoot * menu, char *item, char *action)
   tmp->action = stripcpy(action);
   tmp->next = NULL;
   tmp->state = 0;
+#ifdef GJB_DELETION_COMMENT
   tmp->func_type = find_func_type(tmp->action);
+#endif
+  tmp->func_type = F_BEEP; /*FIXGJB: just cannot be F_NOP */
   if (!strcmp(tmp->action, "SchemeMenu")) {
     tmp->func_type = F_POPUP;
   }

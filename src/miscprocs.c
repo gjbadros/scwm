@@ -12,6 +12,7 @@
 #include "screen.h"
 #include "errors.h"
 #include "util.h"
+#include "wildcard.h"
 
 #ifdef USEDECOR
 extern ScwmDecor *last_decor, *cur_decor;
@@ -161,16 +162,16 @@ SetTitleStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 
   action = GetNextToken(action, &parm);
   while (parm && parm[0] != '\0') {
-    if (mystrncasecmp(parm, "centered", 8) == 0) {
+    if (strncasecmp(parm, "centered", 8) == 0) {
       fl->titlebar.flags &= ~HOffCenter;
-    } else if (mystrncasecmp(parm, "leftjustified", 13) == 0) {
+    } else if (strncasecmp(parm, "leftjustified", 13) == 0) {
       fl->titlebar.flags |= HOffCenter;
       fl->titlebar.flags &= ~HRight;
-    } else if (mystrncasecmp(parm, "rightjustified", 14) == 0) {
+    } else if (strncasecmp(parm, "rightjustified", 14) == 0) {
       fl->titlebar.flags |= HOffCenter | HRight;
     }
 #ifdef EXTENDED_TITLESTYLE
-    else if (mystrncasecmp(parm, "height", 6) == 0) {
+    else if (strncasecmp(parm, "height", 6) == 0) {
       int height, next;
 
       if (sscanf(action, "%d%n", &height, &next) > 0

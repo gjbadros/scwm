@@ -69,8 +69,8 @@
 #include "module.h"
 #include "util.h"
 #include "binding.h"
+#include "Grab.h"
 
-#undef MS_DELETION_COMMENT
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
 			  Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask);
@@ -411,9 +411,6 @@ HandleKeyPress()
 	  unset_window_context();
 	}
       } else {
-#if MS_DELETION_COMMENT
-	ExecuteFunction(key->Action, Tmp_win, &Event, Context, -1);
-#endif /* MS_DELETION_COMMENT */
       }
       return;
     }
@@ -776,7 +773,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
     if (isIconicState != DontCareState)
       state = isIconicState;
 
-    MyXGrabServer(dpy);
+    XGrabServer_withSemaphore(dpy);
     switch (state) {
     case DontCareState:
     case NormalState:
@@ -809,7 +806,7 @@ HandleMapRequestKeepRaised(Window KeepRaised)
     Tmp_win->flags &= ~STARTICONIC;
     if (!PPosOverride)
       XSync(dpy, 0);
-    MyXUngrabServer(dpy);
+    XUngrabServer_withSemaphore(dpy);
   }
   /* If no hints, or currently an icon, just "deiconify" */
   else {
@@ -850,7 +847,7 @@ HandleMapNotify()
    * the client would think that the window has a chance of being viewable
    * when it really isn't.
    */
-  MyXGrabServer(dpy);
+  XGrabServer_withSemaphore(dpy);
   if (Tmp_win->icon_w)
     XUnmapWindow(dpy, Tmp_win->icon_w);
   if (Tmp_win->icon_pixmap_w != None)
@@ -876,7 +873,7 @@ HandleMapNotify()
     SetBorder(Tmp_win, False, True, True, Tmp_win->frame);
   }
   XSync(dpy, 0);
-  MyXUngrabServer(dpy);
+  XUngrabServer_withSemaphore(dpy);
   XFlush(dpy);
   Tmp_win->flags |= MAPPED;
   Tmp_win->flags &= ~MAP_PENDING;
@@ -956,11 +953,11 @@ HandleUnmapNotify()
   if ((!(Tmp_win->flags & MAPPED) && !(Tmp_win->flags & ICONIFIED))) {
     return;
   }
-  MyXGrabServer(dpy);
+  XGrabServer_withSemaphore(dpy);
 
   if (XCheckTypedWindowEvent(dpy, Event.xunmap.window, DestroyNotify, &dummy)) {
     Destroy(Tmp_win);
-    MyXUngrabServer(dpy);
+    XUngrabServer_withSemaphore(dpy);
     return;
   }
   /*
@@ -1001,7 +998,7 @@ HandleUnmapNotify()
    EnterWindowMask | LeaveWindowMask, &dummy));
  */
   }				/* else window no longer exists and we'll get a destroy notify */
-  MyXUngrabServer(dpy);
+  XUngrabServer_withSemaphore(dpy);
 
   XFlush(dpy);
 }
@@ -1115,9 +1112,6 @@ HandleButtonPress()
 	  unset_window_context();
 	}
       } else {
-#if MS_DELETION_COMMENT
-	ExecuteFunction(MouseEntry->Action, Tmp_win, &Event, Context, -1);
-#endif /* MS_DELETION_COMMENT */
       }
       break;
     }
@@ -1421,10 +1415,6 @@ My_XNextEvent(Display * dpy, XEvent * event)
 {
   extern int fd_width, x_fd;
   fd_set in_fdset, out_fdset;
-#ifdef MS_DELETION_COMMENT
-  Window targetWindow;
-  int i;, count;
-#endif
   int retval;
   struct timeval timeout;
 
@@ -1482,30 +1472,6 @@ My_XNextEvent(Display * dpy, XEvent * event)
   if (interactive && FD_ISSET(repl_fd, &in_fdset)) {
     return 1;
   }
-#if MS_DELETION_COMMENT
-  /* Check for module input. */
-  for (i = 0; i < npipes; i++) {
-    if (readPipes[i] >= 0) {
-      if ((retval > 0) && (FD_ISSET(readPipes[i], &in_fdset))) {
-	if ((count =
-	     read(readPipes[i], &targetWindow, sizeof(Window))) > 0) {
-	  DBUG("My_XNextEvent", "calling HandleModuleInput");
-	  HandleModuleInput(targetWindow, i);
-	}
-	if (count <= 0) {
-	  DBUG("My_XNextEvent", "calling KillModule");
-	  KillModule(i, 10);
-	}
-      }
-    }
-    if (writePipes[i] >= 0) {
-      if ((retval > 0) && (FD_ISSET(writePipes[i], &out_fdset))) {
-	DBUG("My_XNextEvent", "calling FlushQueue");
-	FlushQueue(i);
-      }
-    }
-  }
-#endif
   DBUG("My_XNextEvent", "leaving My_XNextEvent");
   return 2;
 }
@@ -1607,7 +1573,7 @@ send_button_press(SCM button, SCM modifier, SCM win,
   int iarg = 1;
   Window child;
   XButtonEvent event;
-  int x, y, x_root = 0 , y_root = 0, x2, y2;
+  int x = 0, y = 0, x_root = 0 , y_root = 0, x2, y2;
   ScwmWindow *sw;
   Window w;
 

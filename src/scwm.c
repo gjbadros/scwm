@@ -33,6 +33,8 @@
 #include "parse.h"
 #include "module.h"
 #include "window.h"
+#include "Grab.h"
+#include "system.h"
 
 
 #include <X11/Xproto.h>
@@ -77,10 +79,6 @@ char *default_config_command = "Read .scwmrc";
 
 #endif
 #define MAX_CFG_CMDS 10
-#ifdef MS_DELETION_COMMENT
-static char *config_commands[MAX_CFG_CMDS];
-static int num_config_commands = 0;
-#endif
 char *s_cmd_config;
 int interactive = 0;
 
@@ -186,7 +184,7 @@ scwm_main(int argc, char **argv)
   init_face();
   init_scwm_procs();
 
-  s_cmd_config = malloc(1 * sizeof(char));
+  s_cmd_config = safemalloc(1 * sizeof(char));
 
   s_cmd_config[0] = '\0';
 
@@ -196,15 +194,15 @@ scwm_main(int argc, char **argv)
   DBUG("main", "Entered, about to parse args");
 
   for (i = 1; i < argc; i++) {
-    if (mystrncasecmp(argv[i], "-debug", 6) == 0) {
+    if (strncasecmp(argv[i], "-debug", 6) == 0) {
       debugging = True;
-    } else if (mystrncasecmp(argv[i], "-s", 2) == 0) {
+    } else if (strncasecmp(argv[i], "-s", 2) == 0) {
       single = True;
-    } else if (mystrncasecmp(argv[i], "-d", 2) == 0) {
+    } else if (strncasecmp(argv[i], "-d", 2) == 0) {
       if (++i >= argc)
 	usage();
       display_name = argv[i];
-    } else if (mystrncasecmp(argv[i], "-f", 2) == 0) {
+    } else if (strncasecmp(argv[i], "-f", 2) == 0) {
       if (++i >= argc) {
 	usage();
       }
@@ -217,7 +215,7 @@ scwm_main(int argc, char **argv)
       s_cmd_config = strcat(s_cmd_config, s_load_pre);
       s_cmd_config = strcat(s_cmd_config, argv[i]);
       s_cmd_config = strcat(s_cmd_config, s_load_post);
-    } else if (mystrncasecmp(argv[i], "-e", 4) == 0) {
+    } else if (strncasecmp(argv[i], "-e", 4) == 0) {
       if (++i >= argc) {
 	usage();
       }
@@ -225,14 +223,14 @@ scwm_main(int argc, char **argv)
 	        (strlen(s_cmd_config) + strlen(argv[i]) + 1));
 
       s_cmd_config = strcat(s_cmd_config, argv[i]);
-    } else if (mystrncasecmp(argv[i], "-i", 2) == 0) {
+    } else if (strncasecmp(argv[i], "-i", 2) == 0) {
       interactive = 1;
-    } else if (mystrncasecmp(argv[i], "-h", 2) == 0) {
+    } else if (strncasecmp(argv[i], "-h", 2) == 0) {
       usage();
       exit(0);
-    } else if (mystrncasecmp(argv[i], "-blackout", 9) == 0) {
+    } else if (strncasecmp(argv[i], "-blackout", 9) == 0) {
       Blackout = True;
-    } else if (mystrncasecmp(argv[i], "-v", 8) == 0) {
+    } else if (strncasecmp(argv[i], "-v", 8) == 0) {
       printf("Scwm Version %s compiled on %s at %s\nRCS_ID=%s",
 	     VERSION, __DATE__, __TIME__, rcsid);
       exit(0);
@@ -254,9 +252,6 @@ scwm_main(int argc, char **argv)
   newhandler(SIGQUIT);
   newhandler(SIGTERM);
   signal(SIGUSR1, Restart);
-#if MS_DELETION_COMMENT
-  signal(SIGPIPE, DeadPipe);
-#endif /* MS_DELETION_COMMENT */
 
   ReapChildren();
 
@@ -320,14 +315,14 @@ scwm_main(int argc, char **argv)
   if (strncmp(display_string, "DISPLAY=:", 9) == 0) {
     char client[MAXHOSTNAME], *rdisplay_string;
 
-    mygethostname(client, MAXHOSTNAME);
+    gethostname(client, MAXHOSTNAME);
     rdisplay_string = safemalloc(len + 14 + strlen(client));
     sprintf(rdisplay_string, "HOSTDISPLAY=%s:%s", client, &display_string[9]);
     putenv(rdisplay_string);
   } else if (strncmp(display_string, "DISPLAY=unix:", 13) == 0) {
     char client[MAXHOSTNAME], *rdisplay_string;
 
-    mygethostname(client, MAXHOSTNAME);
+    gethostname(client, MAXHOSTNAME);
     rdisplay_string = safemalloc(len + 14 + strlen(client));
     sprintf(rdisplay_string, "HOSTDISPLAY=%s:%s", client,
 	    &display_string[13]);
@@ -372,9 +367,6 @@ scwm_main(int argc, char **argv)
   CreateCursors();
   InitVariables();
   InitEventHandlerJumpTable();
-#if MS_DELETION_COMMENT
-  initModules();
-#endif /* MS_DELETION_COMMENT */
 
   Scr.gray_bitmap =
     XCreateBitmapFromData(dpy, Scr.Root, g_bits, g_width, g_height);
@@ -384,18 +376,6 @@ scwm_main(int argc, char **argv)
   SetRCDefaults();
 
   DBUG("main", "Running config_commands...");
-#if MS_DELETION_COMMENT
-  if (num_config_commands > 0) {
-    int i;
-
-    for (i = 0; i < num_config_commands; i++) {
-      ExecuteFunction(config_commands[i], NULL, &Event, C_ROOT, -1);
-      free(config_commands[i]);
-    }
-  } else {
-    ExecuteFunction(default_config_command, NULL, &Event, C_ROOT, -1);
-  }
-#endif /* MS_DELETION_COMMENT */
 
 #ifndef SCWMRC
 #define SCWMRC ".scwmrc"
@@ -486,12 +466,12 @@ scwm_main(int argc, char **argv)
   initPanFrames();
 #endif
 
-  MyXGrabServer(dpy);
+  XGrabServer_withSemaphore(dpy);
 
 #ifndef NON_VIRTUAL
   checkPanFrames();
 #endif
-  MyXUngrabServer(dpy);
+  XUngrabServer_withSemaphore(dpy);
   UnBlackoutScreen();		/* if we need to remove blackout window */
   DBUG("main", "Entering HandleEvents loop...");
   HandleEvents();
@@ -500,31 +480,6 @@ scwm_main(int argc, char **argv)
 }
 
 
-#if MS_DELETION_COMMENT
-/*
-   ** StartupStuff
-   **
-   ** Does initial window captures and runs init/restart function
- */
-void 
-StartupStuff(void)
-{
-  MenuRoot *mr;
-
-  CaptureAllWindows();
-  MakeMenus();
-
-  if (Restarting) {
-    mr = FindPopup("RestartFunction");
-    if (mr != NULL)
-      ExecuteFunction("Function RestartFunction", NULL, &Event, C_ROOT, -1);
-  } else {
-    mr = FindPopup("InitFunction");
-    if (mr != NULL)
-      ExecuteFunction("Function InitFunction", NULL, &Event, C_ROOT, -1);
-  }
-}				/* StartupStuff */
-#endif /* MS_DELETION_COMMENT */
 
 /***********************************************************************
  *
@@ -549,10 +504,10 @@ CaptureAllWindows(void)
   int aformat;
   unsigned long nitems, bytes_remain;
 
-  MyXGrabServer(dpy);
+  XGrabServer_withSemaphore(dpy);
 
   if (!XQueryTree(dpy, Scr.Root, &root, &parent, &children, &nchildren)) {
-    MyXUngrabServer(dpy);
+    XUngrabServer_withSemaphore(dpy);
     return;
   }
   PPosOverride = True;
@@ -631,7 +586,7 @@ CaptureAllWindows(void)
    * don't use PPosition */
   PPosOverride = False;
   KeepOnTop();
-  MyXUngrabServer(dpy);
+  XUngrabServer_withSemaphore(dpy);
   XSync(dpy, 0);		/* should we do this on initial capture? */
 }
 
@@ -644,21 +599,6 @@ void
 SetRCDefaults()
 {
   /* set up default colors, fonts, etc */
-#if MS_DELETION_COMMENT
-  char *defaults[] =
-  {
-  /* "TitleStyle -- Raised", */
-    "",
-    NULL
-  };
-
-  int i = 0;
-
-  while (defaults[i]) {
-    ExecuteFunction(defaults[i], NULL, &Event, C_ROOT, -1);
-    i++;
-  }
-#endif /* MS_DELETION_COMMENT */
 
   gh_eval_str("(define quit scwm-quit)"
 	      "(undefine scwm-quit)"
@@ -1108,22 +1048,6 @@ ResetAllButtons(ScwmDecor * fl)
 void 
 DestroyScwmDecor(ScwmDecor * fl)
 {
-  int i;
-
-#ifdef MS_DELETION_COMMENT
-  /* reset to default button set (frees allocated mem) */
-  ResetAllButtons(fl);
-  for (i = 0; i < 3; ++i) {
-    int j = 0;
-
-    for (; j < MaxButtonState; ++j)
-      FreeButtonFace(dpy, fl->titlebar.state[i]);
-  }
-#ifdef BORDERSTYLE
-  FreeButtonFace(dpy, fl->BorderStyle.active);
-  FreeButtonFace(dpy, fl->BorderStyle.inactive);
-#endif
-#endif /* MS_DELETION_COMMENT */
 
 #ifdef USEDECOR
   if (fl->tag) {
@@ -1157,72 +1081,9 @@ InitScwmDecor(ScwmDecor * fl)
   /*  fl->tag = NULL; */
   fl->next = NULL;
 
-#if MS_DELETION_COMMENT
-  if (fl != &Scr.DefaultDecor) {
-    extern void AddToDecor(ScwmDecor *, char *);
-
-    AddToDecor(fl, "HilightColor black grey");
-
-    AddToDecor(fl, "WindowFont fixed");
-  }
-#endif /* MS_DELETION_COMMENT */
 #endif
 
 
-#ifdef MS_DELETION_COMMENT
-  /* initialize title-bar button styles */
-  for (i = 0; i < 5; ++i) {
-    int j = 0;
-    tmpbf=calloc(1,sizeof(ButtonFace));
-    tmpbf->style = SimpleButton;
-#ifdef MULTISTYLE
-    tmpbf->next = NULL;
-#endif
-
-    for (; j < MaxButtonState; ++j) {
-      fl->right_buttons[i].state[j] = tmpbf;
-    }
-
-    tmpbf=calloc(1,sizeof(ButtonFace));
-    tmpbf->style = SimpleButton;
-#ifdef MULTISTYLE
-    tmpbf->next = NULL;
-#endif
-    for (j=0; j < MaxButtonState; ++j) {
-      fl->left_buttons[i].state[j] = tmpbf;
-    }
-  }
-
-  /* reset to default button set */
-  ResetAllButtons(fl);
-
-  /* initialize title-bar styles */
-  fl->titlebar.flags = 0;
-
-
-  for (i = 0; i < MaxButtonState; ++i) {
-
-    fl->titlebar.state[i]=calloc(1,sizeof(ButtonFace));
-    fl->titlebar.state[i]->style = SimpleButton;
-#ifdef MULTISTYLE
-    fl->titlebar.state[i]->next = NULL;
-#endif
-  }
-
-#ifdef BORDERSTYLE
-  /* initialize border texture styles */
-  fl->BorderStyle.active=calloc(1,sizeof(ButtonFace));
-  fl->BorderStyle.inactive=calloc(1,sizeof(ButtonFace));
-
-  fl->BorderStyle.active->style = SimpleButton;
-  fl->BorderStyle.inactive->style = SimpleButton;
-#ifdef MULTISTYLE
-  fl->BorderStyle.active->next = NULL;
-  fl->BorderStyle.inactive->next = NULL;
-#endif
-#endif
-
-#endif /* MS_DELETION_COMMENT */
 }
 
 /***********************************************************************
@@ -1343,7 +1204,7 @@ Reborder(void)
   ScwmWindow *tmp;		/* temp scwm window structure */
 
   /* put a border back around all windows */
-  MyXGrabServer(dpy);
+  XGrabServer_withSemaphore(dpy);
 
   InstallWindowColormaps(&Scr.ScwmRoot);	/* force reinstall */
   for (tmp = Scr.ScwmRoot.next; tmp != NULL; tmp = tmp->next) {
@@ -1352,7 +1213,7 @@ Reborder(void)
     XDestroyWindow(dpy, tmp->frame);
   }
 
-  MyXUngrabServer(dpy);
+  XUngrabServer_withSemaphore(dpy);
   XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
   XSync(dpy, 0);
 
@@ -1375,24 +1236,13 @@ SigDone(int nonsense)
 void 
 Done(int restart, char *command)
 {
-#ifdef MS_DELETION_COMMENT
-  MenuRoot *mr;
-#endif
 
 #ifndef NON_VIRTUAL
   MoveViewport(0, 0, False);
 #endif
 
-#if MS_DELETION_COMMENT
-  mr = FindPopup("ExitFunction");
-  if (mr != NULL)
-    ExecuteFunction("Function ExitFunction", NULL, &Event, C_ROOT, -1);
-#endif /* MS_DELETION_COMMENT */
 
   /* Close all my pipes */
-#if MS_DELETION_COMMENT
-  ClosePipes();
-#endif /* MS_DELETION_COMMENT */
 
   Reborder();
 
@@ -1458,9 +1308,6 @@ CatchFatal(Display * dpy)
   /* No action is taken because usually this action is caused by someone
      using "xlogout" to be able to switch between multiple window managers
    */
-#if MS_DELETION_COMMENT
-  ClosePipes();
-#endif /* MS_DELETION_COMMENT */
   exit(1);
 }
 

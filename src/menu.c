@@ -150,7 +150,7 @@ make_menu(SCM title, SCM args)
     scm_wrong_type_arg("make-menu", 1, title);
   }
   gh_defer_ints();
-  em = malloc(sizeof(scwm_menu));
+  em = (scwm_menu *)safemalloc(sizeof(scwm_menu));
   if (NULL == em) {
     gh_allow_ints();
     scm_memory_error("make-menu");
@@ -158,7 +158,7 @@ make_menu(SCM title, SCM args)
   SCM_NEWCELL(answer);
   SCM_SETCAR(answer, scm_tc16_scwm_menu);
   SCM_SETCDR(answer, (SCM) (em));
-  MENUROOT(answer) = (MenuRoot *) malloc(sizeof(MenuRoot));
+  MENUROOT(answer) = (MenuRoot *) safemalloc(sizeof(MenuRoot));
   if (NULL == MENUROOT(answer)) {
     free(em);
     gh_allow_ints();

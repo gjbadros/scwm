@@ -41,6 +41,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
+#include "Picture.h"
 
 #ifndef WithdrawnState
 #define WithdrawnState 0
@@ -58,6 +59,8 @@
 #define BroadcastName(a,b,c,d,e)
 
 #define STATIC_CAST(cast,val) ((cast) (val))
+#define min(a,b) (((a)<(b)) ? (a) : (b))
+#define max(a,b) (((a)>(b)) ? (a) : (b))
 
 /* use PanFrames! this replaces the 3 pixel margin with PanFrame windows
    it should not be an option, once it works right. HEDU 2/2/94 */
@@ -129,10 +132,6 @@ typedef struct ColorPair {
   Pixel fore;
   Pixel back;
 } ColorPair;
-
-#ifdef MINI_ICONS
-#include <scwm/scwmlib.h>
-#endif
 
 #ifdef USEDECOR
 struct ScwmDecor;		/* definition in screen.h */
@@ -382,6 +381,5 @@ extern Atom XA_SCWM_EXECUTE;
 #endif
 
 /* end of configure.h */
-
 
 #endif /* _SCWM_ */

@@ -20,13 +20,7 @@
 #include "misc.h"
 #include "parse.h"
 #include "screen.h"
-
-#ifndef MIN
-#define MIN(A,B) ((A)<(B)? (A):(B))
-#endif
-#ifndef MAX
-#define MAX(A,B) ((A)>(B)? (A):(B))
-#endif
+#include "Grab.h"
 
 int get_next_x(ScwmWindow * t, int x, int y);
 int get_next_y(ScwmWindow * t, int y);
@@ -165,7 +159,7 @@ get_next_x(ScwmWindow * t, int x, int y)
   xnew = Scr.MyDisplayWidth;
   xtest = Scr.MyDisplayWidth - (t->frame_width + 2 * t->bw);
   if (xtest > x)
-    xnew = MIN(xnew, xtest);
+    xnew = min(xnew, xtest);
   /* Test the values of the right edges of every window */
   for (testw = Scr.ScwmRoot.next; testw != NULL; testw = testw->next) {
     if ((testw->Desk != Scr.CurrentDesk) || (testw == t))
@@ -175,19 +169,19 @@ get_next_x(ScwmWindow * t, int x, int y)
 	  (testw->icon_y_loc < (t->frame_height + 2 * t->bw + y))) {
 	xtest = testw->icon_p_width + testw->icon_x_loc;
 	if (xtest > x)
-	  xnew = MIN(xnew, xtest);
+	  xnew = min(xnew, xtest);
 	xtest = testw->icon_x_loc - (t->frame_width + 2 * t->bw);
 	if (xtest > x)
-	  xnew = MIN(xnew, xtest);
+	  xnew = min(xnew, xtest);
       }
     } else if ((y < (testw->frame_height + 2 * testw->bw + testw->frame_y)) &&
 	       (testw->frame_y < (t->frame_height + 2 * t->bw + y))) {
       xtest = testw->frame_width + 2 * testw->bw + testw->frame_x;
       if (xtest > x)
-	xnew = MIN(xnew, xtest);
+	xnew = min(xnew, xtest);
       xtest = testw->frame_x - (t->frame_width + 2 * t->bw);
       if (xtest > x)
-	xnew = MIN(xnew, xtest);
+	xnew = min(xnew, xtest);
     }
   }
   return xnew;
@@ -203,7 +197,7 @@ get_next_y(ScwmWindow * t, int y)
   ynew = Scr.MyDisplayHeight;
   ytest = Scr.MyDisplayHeight - (t->frame_height + 2 * t->bw);
   if (ytest > y)
-    ynew = MIN(ynew, ytest);
+    ynew = min(ynew, ytest);
   /* Test the values of the bottom edge of every window */
   for (testw = Scr.ScwmRoot.next; testw != NULL; testw = testw->next) {
     if ((testw->Desk != Scr.CurrentDesk) || (testw == t))
@@ -211,17 +205,17 @@ get_next_y(ScwmWindow * t, int y)
     if (testw->flags & ICONIFIED) {
       ytest = testw->icon_p_height + testw->icon_w_height + testw->icon_y_loc;
       if (ytest > y)
-	ynew = MIN(ynew, ytest);
+	ynew = min(ynew, ytest);
       ytest = testw->icon_y_loc - (t->frame_height + 2 * t->bw);
       if (ytest > y)
-	ynew = MIN(ynew, ytest);
+	ynew = min(ynew, ytest);
     } else {
       ytest = testw->frame_height + 2 * testw->bw + testw->frame_y;
       if (ytest > y)
-	ynew = MIN(ynew, ytest);
+	ynew = min(ynew, ytest);
       ytest = testw->frame_y - (t->frame_height + 2 * t->bw);
       if (ytest > y)
-	ynew = MIN(ynew, ytest);
+	ynew = min(ynew, ytest);
     }
   }
   return ynew;
@@ -265,10 +259,10 @@ test_fit(ScwmWindow * t, int x11, int y11, int aoimin)
     if ((x11 < x22) && (x12 > x21) &&
 	(y11 < y22) && (y12 > y21)) {
       /* Windows interfere */
-      xl = MAX(x11, x21);
-      xr = MIN(x12, x22);
-      yt = MAX(y11, y21);
-      yb = MIN(y12, y22);
+      xl = max(x11, x21);
+      xr = min(x12, x22);
+      yt = max(y11, y21);
+      yb = min(y12, y22);
       anew = (xr - xl) * (yb - yt);
       if (testw->flags & ICONIFIED)
 	avoidance_factor = AVOIDICON;
@@ -426,13 +420,13 @@ PlaceWindow(ScwmWindow * tmp_win, unsigned long tflag, int Desk)
       if (xl < 0) {
 	if (GrabEm(POSITION)) {
 	  /* Grabbed the pointer - continue */
-	  MyXGrabServer(dpy);
+	  XGrabServer_withSemaphore(dpy);
 	  if (XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
 			   (unsigned int *) &DragWidth,
 			   (unsigned int *) &DragHeight,
 			   &JunkBW, &JunkDepth) == 0) {
 	    free((char *) tmp_win);
-	    MyXUngrabServer(dpy);
+	    XUngrabServer_withSemaphore(dpy);
 	    return False;
 	  }
 	  DragWidth = tmp_win->frame_width;
@@ -442,7 +436,7 @@ PlaceWindow(ScwmWindow * tmp_win, unsigned long tflag, int Desk)
 	  moveLoop(tmp_win, 0, 0, DragWidth, DragHeight,
 		   &xl, &yt, False, True);
 	  XUnmapWindow(dpy, Scr.SizeWindow);
-	  MyXUngrabServer(dpy);
+	  XUngrabServer_withSemaphore(dpy);
 	  UngrabEm();
 	} else {
 	  /* couldn't grab the pointer - better do something */

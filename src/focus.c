@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "scwm.h"
+#include "ICCCM.h"
 #include "menus.h"
 #include "misc.h"
 #include "parse.h"

@@ -468,44 +468,44 @@ check_allowed_function(MenuItem * mi)
     /* Hate to do it, but for lack of a better idea,
      * check based on the menu entry name */
     if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_MOVE)) &&
-	(mystrncasecmp(mi->item, MOVE_STRING, strlen(MOVE_STRING)) == 0))
+	(strncasecmp(mi->item, MOVE_STRING, strlen(MOVE_STRING)) == 0))
       return 0;
 
     if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_RESIZE)) &&
-     (mystrncasecmp(mi->item, RESIZE_STRING1, strlen(RESIZE_STRING1)) == 0))
+     (strncasecmp(mi->item, RESIZE_STRING1, strlen(RESIZE_STRING1)) == 0))
       return 0;
 
     if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_RESIZE)) &&
-     (mystrncasecmp(mi->item, RESIZE_STRING2, strlen(RESIZE_STRING2)) == 0))
+     (strncasecmp(mi->item, RESIZE_STRING2, strlen(RESIZE_STRING2)) == 0))
       return 0;
 
     if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_MINIMIZE)) &&
 	(!(Tmp_win->flags & ICONIFIED)) &&
-    (mystrncasecmp(mi->item, MINIMIZE_STRING, strlen(MINIMIZE_STRING)) == 0))
+    (strncasecmp(mi->item, MINIMIZE_STRING, strlen(MINIMIZE_STRING)) == 0))
       return 0;
 
     if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_MINIMIZE)) &&
-	(mystrncasecmp(mi->item, MINIMIZE_STRING2, strlen(MINIMIZE_STRING2)) == 0))
+	(strncasecmp(mi->item, MINIMIZE_STRING2, strlen(MINIMIZE_STRING2)) == 0))
       return 0;
 
     if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_MAXIMIZE)) &&
-    (mystrncasecmp(mi->item, MAXIMIZE_STRING, strlen(MAXIMIZE_STRING)) == 0))
+    (strncasecmp(mi->item, MAXIMIZE_STRING, strlen(MAXIMIZE_STRING)) == 0))
       return 0;
 
     if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_CLOSE)) &&
-	(mystrncasecmp(mi->item, CLOSE_STRING1, strlen(CLOSE_STRING1)) == 0))
+	(strncasecmp(mi->item, CLOSE_STRING1, strlen(CLOSE_STRING1)) == 0))
       return 0;
 
     if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_CLOSE)) &&
-	(mystrncasecmp(mi->item, CLOSE_STRING2, strlen(CLOSE_STRING2)) == 0))
+	(strncasecmp(mi->item, CLOSE_STRING2, strlen(CLOSE_STRING2)) == 0))
       return 0;
 
     if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_CLOSE)) &&
-	(mystrncasecmp(mi->item, CLOSE_STRING3, strlen(CLOSE_STRING3)) == 0))
+	(strncasecmp(mi->item, CLOSE_STRING3, strlen(CLOSE_STRING3)) == 0))
       return 0;
 
     if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_CLOSE)) &&
-	(mystrncasecmp(mi->item, CLOSE_STRING4, strlen(CLOSE_STRING4)) == 0))
+	(strncasecmp(mi->item, CLOSE_STRING4, strlen(CLOSE_STRING4)) == 0))
       return 0;
 
   }

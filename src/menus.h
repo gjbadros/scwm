@@ -56,7 +56,7 @@
 #define FUNC_NOP 3
 
 #include <guile/gh.h>
-#include <scwm/scwmlib.h>
+#include "Picture.h"
 
 typedef struct MenuItem {
   struct MenuItem *next;	/* next menu item */

@@ -69,7 +69,7 @@ make_face(SCM flags, SCM specs) {
   }
 
   bf=(ButtonFace *)calloc(1,sizeof(ButtonFace));
-  sf=(scwm_face *)malloc(sizeof(scwm_face));
+  sf=(scwm_face *)safemalloc(sizeof(scwm_face));
   sf->bf=bf;
 
   SCM_DEFER_INTS;
@@ -779,8 +779,8 @@ SetBorderStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 
   action = GetNextToken(action, &parm);
   while (parm && parm[0]) {
-    if (mystrncasecmp(parm, "active", 6) == 0
-	|| mystrncasecmp(parm, "inactive", 8) == 0) {
+    if (strncasecmp(parm, "active", 6) == 0
+	|| strncasecmp(parm, "inactive", 8) == 0) {
       int len;
       char *end, *tmp;
       ButtonFace tmpbf, *bf;
@@ -789,7 +789,7 @@ SetBorderStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 #ifdef MULTISTYLE
       tmpbf.next = NULL;
 #endif
-      if (mystrncasecmp(parm, "active", 6) == 0)
+      if (strncasecmp(parm, "active", 6) == 0)
 	bf = &fl->BorderStyle.active;
       else
 	bf = &fl->BorderStyle.inactive;
@@ -900,16 +900,16 @@ SetTitleStyle(XEvent * eventp, Window w, ScwmWindow * tmp_win,
 
   action = GetNextToken(action, &parm);
   while (parm && parm[0] != '\0') {
-    if (mystrncasecmp(parm, "centered", 8) == 0) {
+    if (strncasecmp(parm, "centered", 8) == 0) {
       fl->titlebar.flags &= ~HOffCenter;
-    } else if (mystrncasecmp(parm, "leftjustified", 13) == 0) {
+    } else if (strncasecmp(parm, "leftjustified", 13) == 0) {
       fl->titlebar.flags |= HOffCenter;
       fl->titlebar.flags &= ~HRight;
-    } else if (mystrncasecmp(parm, "rightjustified", 14) == 0) {
+    } else if (strncasecmp(parm, "rightjustified", 14) == 0) {
       fl->titlebar.flags |= HOffCenter | HRight;
     }
 #ifdef EXTENDED_TITLESTYLE
-    else if (mystrncasecmp(parm, "height", 6) == 0) {
+    else if (strncasecmp(parm, "height", 6) == 0) {
       int height, next;
 
       if (sscanf(action, "%d%n", &height, &next) > 0
@@ -1010,16 +1010,16 @@ ButtonStyle(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
     return;
   }
   if (!isdigit(*parm)) {
-    if (mystrcasecmp(parm, "left") == 0)
+    if (strcasecmp(parm, "left") == 0)
       multi = 1;		/* affect all left buttons */
-    else if (mystrcasecmp(parm, "right") == 0)
+    else if (strcasecmp(parm, "right") == 0)
       multi = 2;		/* affect all right buttons */
-    else if (mystrcasecmp(parm, "all") == 0)
+    else if (strcasecmp(parm, "all") == 0)
       multi = 3;		/* affect all buttons */
     else {
       /* we're either resetting buttons or
          an invalid button set was specified */
-      if (mystrcasecmp(parm, "reset") == 0)
+      if (strcasecmp(parm, "reset") == 0)
 	ResetAllButtons(fl);
       else
 	scwm_msg(ERR, "ButtonStyle", "Bad button style (2) in line %s", action);
@@ -1059,7 +1059,7 @@ ButtonStyle(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
 	  set = 0;
 	  ++tok;
 	}
-	if (mystrncasecmp(tok, "Clear", 5) == 0) {
+	if (strncasecmp(tok, "Clear", 5) == 0) {
 	  int i;
 
 	  if (multi) {
@@ -1079,7 +1079,7 @@ ButtonStyle(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
 	    tb->flags = 0;
 	  else
 	    tb->flags = ~0;
-	} else if (mystrncasecmp(tok, "MWMButton", 9) == 0) {
+	} else if (strncasecmp(tok, "MWMButton", 9) == 0) {
 	  if (!multi)
 	    if (set)
 	      tb->flags |= MWMButton;
@@ -1151,16 +1151,16 @@ AddButtonStyle(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
     return;
   }
   if (!isdigit(*parm)) {
-    if (mystrcasecmp(parm, "left") == 0)
+    if (strcasecmp(parm, "left") == 0)
       multi = 1;		/* affect all left buttons */
-    else if (mystrcasecmp(parm, "right") == 0)
+    else if (strcasecmp(parm, "right") == 0)
       multi = 2;		/* affect all right buttons */
-    else if (mystrcasecmp(parm, "all") == 0)
+    else if (strcasecmp(parm, "all") == 0)
       multi = 3;		/* affect all buttons */
     else {
       /* we're either resetting buttons or
          an invalid button set was specified */
-      if (mystrcasecmp(parm, "reset") == 0)
+      if (strcasecmp(parm, "reset") == 0)
 	ResetAllButtons(fl);
       else
 	scwm_msg(ERR, "ButtonStyle", "Bad button style (2) in line %s", action);
@@ -1268,15 +1268,15 @@ ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose)
       scwm_msg(ERR, "ReadButtonFace", "error in face: %s", action);
     return False;
   }
-  if (mystrncasecmp(style, "--", 2) != 0) {
+  if (strncasecmp(style, "--", 2) != 0) {
     s += offset;
 
     FreeButtonFace(dpy, bf);
 
     /* determine button style */
-    if (mystrncasecmp(style, "Simple", 6) == 0) {
+    if (strncasecmp(style, "Simple", 6) == 0) {
       bf->style = SimpleButton;
-    } else if (mystrncasecmp(style, "Default", 7) == 0) {
+    } else if (strncasecmp(style, "Default", 7) == 0) {
       int b = -1, n = sscanf(s, "%d%n", &b, &offset);
 
       if (n < 1) {
@@ -1299,14 +1299,14 @@ ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose)
       }
     }
 #ifdef VECTOR_BUTTONS
-    else if (mystrncasecmp(style, "Vector", 6) == 0 ||
+    else if (strncasecmp(style, "Vector", 6) == 0 ||
 	     (strlen(style) <= 2 && isdigit(*style))) {
       /* normal coordinate list button style */
       int i, num_coords, num;
       struct vector_coords *vc = &bf->vector;
 
       /* get number of points */
-      if (mystrncasecmp(style, "Vector", 6) == 0) {
+      if (strncasecmp(style, "Vector", 6) == 0) {
 	num = sscanf(s, "%d%n", &num_coords, &offset);
 	s += offset;
       } else
@@ -1336,7 +1336,7 @@ ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose)
       bf->style = VectorButton;
     }
 #endif
-    else if (mystrncasecmp(style, "Solid", 5) == 0) {
+    else if (strncasecmp(style, "Solid", 5) == 0) {
       s = GetNextToken(s, &file);
       if (file && *file) {
 	bf->style = SolidButton;
@@ -1351,8 +1351,8 @@ ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose)
       free(file);
     }
 #ifdef GRADIENT_BUTTONS
-    else if (mystrncasecmp(style, "HGradient", 9) == 0
-	     || mystrncasecmp(style, "VGradient", 9) == 0) {
+    else if (strncasecmp(style, "HGradient", 9) == 0
+	     || strncasecmp(style, "VGradient", 9) == 0) {
       char *item, **s_colors;
       int npixels, nsegs, i, sum, *perc;
       Pixel *pixels;
@@ -1434,15 +1434,15 @@ ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose)
       bf->u.grad.pixels = pixels;
       bf->u.grad.npixels = npixels;
 
-      if (mystrncasecmp(style, "H", 1) == 0)
+      if (strncasecmp(style, "H", 1) == 0)
 	bf->style = HGradButton;
       else
 	bf->style = VGradButton;
     }
 #endif /* GRADIENT_BUTTONS */
 #ifdef PIXMAP_BUTTONS
-    else if (mystrncasecmp(style, "Pixmap", 6) == 0
-	     || mystrncasecmp(style, "TiledPixmap", 11) == 0) {
+    else if (strncasecmp(style, "Pixmap", 6) == 0
+	     || strncasecmp(style, "TiledPixmap", 11) == 0) {
       s = GetNextToken(s, &file);
       bf->u.p = CachePicture(dpy, Scr.Root,
 			     IconPath,
@@ -1463,13 +1463,13 @@ ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose)
       free(file);
       file = NULL;
 
-      if (mystrncasecmp(style, "Tiled", 5) == 0)
+      if (strncasecmp(style, "Tiled", 5) == 0)
 	bf->style = TiledPixmapButton;
       else
 	bf->style = PixmapButton;
     }
 #ifdef MINI_ICONS
-    else if (mystrncasecmp(style, "MiniIcon", 8) == 0) {
+    else if (strncasecmp(style, "MiniIcon", 8) == 0) {
       bf->style = MiniIconButton;
       bf->u.p = NULL;		/* pixmap read in when the window is created */
     }
@@ -1496,54 +1496,54 @@ ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose)
 	set = 0;
 	++tok;
       }
-      if (mystrncasecmp(tok, "Clear", 5) == 0) {
+      if (strncasecmp(tok, "Clear", 5) == 0) {
 	if (set)
 	  bf->style &= ButtonFaceTypeMask;
 	else
 	  bf->style |= ~ButtonFaceTypeMask;	/* ? */
-      } else if (mystrncasecmp(tok, "Left", 4) == 0) {
+      } else if (strncasecmp(tok, "Left", 4) == 0) {
 	if (set) {
 	  bf->style |= HOffCenter;
 	  bf->style &= ~HRight;
 	} else
 	  bf->style |= HOffCenter | HRight;
-      } else if (mystrncasecmp(tok, "Right", 5) == 0) {
+      } else if (strncasecmp(tok, "Right", 5) == 0) {
 	if (set)
 	  bf->style |= HOffCenter | HRight;
 	else {
 	  bf->style |= HOffCenter;
 	  bf->style &= ~HRight;
 	}
-      } else if (mystrncasecmp(tok, "Centered", 8) == 0) {
+      } else if (strncasecmp(tok, "Centered", 8) == 0) {
 	bf->style &= ~HOffCenter;
 	bf->style &= ~VOffCenter;
-      } else if (mystrncasecmp(tok, "Top", 3) == 0) {
+      } else if (strncasecmp(tok, "Top", 3) == 0) {
 	if (set) {
 	  bf->style |= VOffCenter;
 	  bf->style &= ~VBottom;
 	} else
 	  bf->style |= VOffCenter | VBottom;
 
-      } else if (mystrncasecmp(tok, "Bottom", 6) == 0) {
+      } else if (strncasecmp(tok, "Bottom", 6) == 0) {
 	if (set)
 	  bf->style |= VOffCenter | VBottom;
 	else {
 	  bf->style |= VOffCenter;
 	  bf->style &= ~VBottom;
 	}
-      } else if (mystrncasecmp(tok, "Flat", 4) == 0) {
+      } else if (strncasecmp(tok, "Flat", 4) == 0) {
 	if (set) {
 	  bf->style &= ~SunkButton;
 	  bf->style |= FlatButton;
 	} else
 	  bf->style &= ~FlatButton;
-      } else if (mystrncasecmp(tok, "Sunk", 4) == 0) {
+      } else if (strncasecmp(tok, "Sunk", 4) == 0) {
 	if (set) {
 	  bf->style &= ~FlatButton;
 	  bf->style |= SunkButton;
 	} else
 	  bf->style &= ~SunkButton;
-      } else if (mystrncasecmp(tok, "Raised", 6) == 0) {
+      } else if (strncasecmp(tok, "Raised", 6) == 0) {
 	if (set) {
 	  bf->style &= ~FlatButton;
 	  bf->style &= ~SunkButton;
@@ -1553,7 +1553,7 @@ ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose)
 	}
       }
 #ifdef EXTENDED_TITLESTYLE
-      else if (mystrncasecmp(tok, "UseTitleStyle", 13) == 0) {
+      else if (strncasecmp(tok, "UseTitleStyle", 13) == 0) {
 	if (set) {
 	  bf->style |= UseTitleStyle;
 #ifdef BORDERSTYLE
@@ -1564,17 +1564,17 @@ ReadButtonFace(char *s, ButtonFace * bf, int button, int verbose)
       }
 #endif
 #ifdef BORDERSTYLE
-      else if (mystrncasecmp(tok, "HiddenHandles", 13) == 0) {
+      else if (strncasecmp(tok, "HiddenHandles", 13) == 0) {
 	if (set)
 	  bf->style |= HiddenHandles;
 	else
 	  bf->style &= ~HiddenHandles;
-      } else if (mystrncasecmp(tok, "NoInset", 7) == 0) {
+      } else if (strncasecmp(tok, "NoInset", 7) == 0) {
 	if (set)
 	  bf->style |= NoInset;
 	else
 	  bf->style &= ~NoInset;
-      } else if (mystrncasecmp(tok, "UseBorderStyle", 14) == 0) {
+      } else if (strncasecmp(tok, "UseBorderStyle", 14) == 0) {
 	if (set) {
 	  bf->style |= UseBorderStyle;
 #ifdef EXTENDED_TITLESTYLE
@@ -1614,7 +1614,7 @@ ReadTitleButton(char *s, TitleButton * tb, Boolean append, int button)
   while (isspace(*s))
     ++s;
   for (; i < MaxButtonState; ++i)
-    if (mystrncasecmp(button_states[i], s,
+    if (strncasecmp(button_states[i], s,
 		      strlen(button_states[i])) == 0) {
       bs = i;
       break;

@@ -13,10 +13,12 @@
 #include <stdio.h>
 #include <guile/gh.h>
 #include <X11/keysym.h>
+#include "ICCCM.h"
 #include "window.h"
 #include "color.h"
 #include "util.h"
 #include "errors.h"
+#include "Grab.h"
 
 #ifdef USEDECOR
 extern ScwmDecor *last_decor, *cur_decor;
@@ -80,7 +82,7 @@ make_window(ScwmWindow * win)
   scwm_window *schwin;
   SCM answer;
 
-  schwin = (scwm_window *) malloc(sizeof(scwm_window));
+  schwin = (scwm_window *) safemalloc(sizeof(scwm_window));
 
   if (schwin == NULL) {
     scm_memory_error("make_window");
@@ -770,7 +772,7 @@ interactive_resize(SCM win)
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
-  MyXGrabServer(dpy);
+  XGrabServer_withSemaphore(dpy);
 
   /* handle problems with edge-wrapping while resizing */
   flags = Scr.flags;
@@ -907,7 +909,7 @@ interactive_resize(SCM win)
   }
   UninstallRootColormap();
   ResizeWindow = None;
-  MyXUngrabServer(dpy);
+  XUngrabServer_withSemaphore(dpy);
   UngrabEm();
   xmotion = 0;
   ymotion = 0;

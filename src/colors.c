@@ -92,11 +92,6 @@ GetHilite(Pixel background)
   white_p.pixel = GetColor(white);
   XQueryColor(dpy, attributes.colormap, &white_p);
 
-#ifndef min
-#define min(a,b) (((a)<(b)) ? (a) : (b))
-#define max(a,b) (((a)>(b)) ? (a) : (b))
-#endif
-
   bg_color.red = max((white_p.red / 5), bg_color.red);
   bg_color.green = max((white_p.green / 5), bg_color.green);
   bg_color.blue = max((white_p.blue / 5), bg_color.blue);
@@ -104,11 +99,6 @@ GetHilite(Pixel background)
   bg_color.red = min(white_p.red, (bg_color.red * 140) / 100);
   bg_color.green = min(white_p.green, (bg_color.green * 140) / 100);
   bg_color.blue = min(white_p.blue, (bg_color.blue * 140) / 100);
-
-#undef min
-#ifdef max
-#undef max
-#endif
 
   if (!XAllocColor(dpy, attributes.colormap, &bg_color)) {
     nocolor("alloc hilight", "");

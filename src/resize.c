@@ -112,7 +112,7 @@ resize_window(XEvent * eventp, Window w, ScwmWindow * tmp_win,
     XBell(dpy, Scr.screen);
     return;
   }
-  MyXGrabServer(dpy);
+  XGrabServer_withSemaphore(dpy);
 
 
   /* handle problems with edge-wrapping while resizing */
@@ -250,7 +250,7 @@ resize_window(XEvent * eventp, Window w, ScwmWindow * tmp_win,
   }
   UninstallRootColormap();
   ResizeWindow = None;
-  MyXUngrabServer(dpy);
+  XUngrabServer_withSemaphore(dpy);
   UngrabEm();
   xmotion = 0;
   ymotion = 0;

@@ -1,3 +1,5 @@
+/* $Id$ */
+
 #include <config.h>
 
 #include <stdio.h>
@@ -12,6 +14,7 @@
 #include "parse.h"
 #include "screen.h"
 #include "module.h"
+#include "Grab.h"
 
 /***************************************************************************
  * 
@@ -150,13 +153,13 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 
   if ((*delta_x != 0) || (*delta_y != 0)) {
     if (Grab)
-      MyXGrabServer(dpy);
+      XGrabServer_withSemaphore(dpy);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, *xl, *yt);
     MoveViewport(Scr.Vx + *delta_x, Scr.Vy + *delta_y, False);
     XQueryPointer(dpy, Scr.Root, &JunkRoot, &JunkChild,
 		  xl, yt, &JunkX, &JunkY, &JunkMask);
     if (Grab)
-      MyXUngrabServer(dpy);
+      XUngrabServer_withSemaphore(dpy);
   }
 }
 
@@ -326,7 +329,7 @@ MoveViewport(int newx, int newy, Bool grab)
   int deltax, deltay;
 
   if (grab)
-    MyXGrabServer(dpy);
+    XGrabServer_withSemaphore(dpy);
 
 
   if (newx > Scr.VxMax)
@@ -389,26 +392,9 @@ MoveViewport(int newx, int newy, Bool grab)
   while (XCheckTypedEvent(dpy, MotionNotify, &Event))
     StashEventTime(&Event);
   if (grab)
-    MyXUngrabServer(dpy);
+    XUngrabServer_withSemaphore(dpy);
 }
 
-#if MS_DELETION_COMMENT
-/**************************************************************************
- * 
- * Move to a new desktop
- *
- *************************************************************************/
-void 
-changeDesks_func(XEvent * eventp, Window w, ScwmWindow * tmp_win,
-		 unsigned long context, char *action, int *Module)
-{
-  int n, val1, val1_unit, val2, val2_unit;
-
-  n = GetTwoArguments(action, &val1, &val2, &val1_unit, &val2_unit);
-  changeDesks(val1, val2);
-}
-
-#endif /* MS_DELETION_COMMENT */
 
 void 
 changeDesks(int val1, int val2)
@@ -430,7 +416,7 @@ changeDesks(int val1, int val2)
   Broadcast(M_NEW_DESK, 1, Scr.CurrentDesk, 0, 0, 0, 0, 0, 0);
   /* Scan the window list, mapping windows on the new Desk,
    * unmapping windows on the old Desk */
-  MyXGrabServer(dpy);
+  XGrabServer_withSemaphore(dpy);
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
     /* Only change mapping for non-sticky windows */
     if (!((t->flags & ICONIFIED) && (t->flags & StickyIcon)) &&
@@ -456,14 +442,14 @@ changeDesks(int val1, int val2)
       }
     }
   }
-  MyXUngrabServer(dpy);
+  XUngrabServer_withSemaphore(dpy);
   for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
     /* If its an icon, and its sticking, autoplace it so
      * that it doesn't wind up on top a a stationary
      * icon */
     if (((t->flags & STICKY) || (t->flags & StickyIcon)) &&
 	(t->flags & ICONIFIED) && (!(t->flags & ICON_MOVED)) &&
-	(!(t->flags & ICON_UNMAPPED)))
+  	(!(t->flags & ICON_UNMAPPED)))
       AutoPlace(t);
   }
 
@@ -480,130 +466,3 @@ changeDesks(int val1, int val2)
 #endif
     SetFocus(Scr.NoFocusWin, NULL, 1);
 }
-
-
-
-#if MS_DELETION_COMMENT
-/**************************************************************************
- * 
- * Move to a new desktop
- *
- *************************************************************************/
-void 
-changeWindowsDesk(XEvent * eventp, Window w, ScwmWindow * t,
-		  unsigned long context, char *action, int *Module)
-{
-  long val1, val2;
-  int val1_unit, val2_unit, n;
-
-  if (DeferExecution(eventp, &w, &t, &context, SELECT, ButtonRelease))
-    return;
-
-  if (t == NULL)
-    return;
-
-  n = GetTwoArguments(action, &val1, &val2, &val1_unit, &val2_unit);
-
-  if (n != 2) {
-    n = GetOneArgument(action, &val2, &val2_unit);
-    val1 = 0;
-  }
-  if (val1 != 0)
-    val1 += t->Desk;
-  else
-    val1 = val2;
-
-  if (val1 == t->Desk)
-    return;
-
-  /* Scan the window list, mapping windows on the new Desk,
-   * unmapping windows on the old Desk */
-  /* Only change mapping for non-sticky windows */
-  if (!((t->flags & ICONIFIED) && (t->flags & StickyIcon)) &&
-      (!(t->flags & STICKY)) && (!(t->flags & ICON_UNMAPPED))) {
-    if (t->Desk == Scr.CurrentDesk) {
-      t->Desk = val1;
-      UnmapIt(t);
-    } else if (val1 == Scr.CurrentDesk) {
-      t->Desk = val1;
-      /* If its an icon, auto-place it */
-      if (t->flags & ICONIFIED)
-	AutoPlace(t);
-      MapIt(t);
-    } else
-      t->Desk = val1;
-
-  }
-  BroadcastConfig(M_CONFIGURE_WINDOW, t);
-}
-#endif /* MS_DELETION_COMMENT */
-
-#if MS_DELETION_COMMENT
-void 
-scroll(XEvent * eventp, Window w, ScwmWindow * tmp_win, unsigned long context,
-       char *action, int *Module)
-{
-  int x, y;
-  int val1, val2, val1_unit, val2_unit, n;
-
-  n = GetTwoArguments(action, &val1, &val2, &val1_unit, &val2_unit);
-
-  if ((val1 > -100000) && (val1 < 100000))
-    x = Scr.Vx + val1 * val1_unit / 100;
-  else
-    x = Scr.Vx + (val1 / 1000) * val1_unit / 100;
-
-  if ((val2 > -100000) && (val2 < 100000))
-    y = Scr.Vy + val2 * val2_unit / 100;
-  else
-    y = Scr.Vy + (val2 / 1000) * val2_unit / 100;
-
-  if (((val1 <= -100000) || (val1 >= 100000)) && (x > Scr.VxMax)) {
-    x = 0;
-    y += Scr.MyDisplayHeight;
-    if (y > Scr.VyMax)
-      y = 0;
-  }
-  if (((val1 <= -100000) || (val1 >= 100000)) && (x < 0)) {
-    x = Scr.VxMax;
-    y -= Scr.MyDisplayHeight;
-    if (y < 0)
-      y = Scr.VyMax;
-  }
-  if (((val2 <= -100000) || (val2 >= 100000)) && (y > Scr.VyMax)) {
-    y = 0;
-    x += Scr.MyDisplayWidth;
-    if (x > Scr.VxMax)
-      x = 0;
-  }
-  if (((val2 <= -100000) || (val2 >= 100000)) && (y < 0)) {
-    y = Scr.VyMax;
-    x -= Scr.MyDisplayWidth;
-    if (x < 0)
-      x = Scr.VxMax;
-  }
-  MoveViewport(x, y, True);
-}
-#endif
-
-#if MS_DELETION_COMMENT
-void 
-goto_page_func(XEvent * eventp, Window w, ScwmWindow * tmp_win,
-	       unsigned long context, char *action, int *Module)
-{
-  int val1, val2, val1_unit, val2_unit, n, x, y;
-
-  n = GetTwoArguments(action, &val1, &val2, &val1_unit, &val2_unit);
-  if (n != 2) {
-    scwm_msg(ERR, "goto_page_func", "GotoPage requires two arguments");
-    return;
-  }
-  if ((val1_unit != Scr.MyDisplayWidth) ||
-      (val2_unit != Scr.MyDisplayHeight)) {
-    scwm_msg(ERR, "goto_page_func", "GotoPage arguments should be unitless");
-  }
-  x = val1 * Scr.MyDisplayWidth;
-  y = val2 * Scr.MyDisplayHeight;
-  MoveViewport(x, y, True);
-}
-#endif /* MS_DELETION_COMMENT  */

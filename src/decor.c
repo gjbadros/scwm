@@ -109,7 +109,7 @@ decor2scm(ScwmDecor * fl)
   scwm_decor *dec;
   int i,j;
 
-  dec = (scwm_decor *) malloc(sizeof(scwm_decor));
+  dec = (scwm_decor *) safemalloc(sizeof(scwm_decor));
   dec->refcnt = 0;
   dec->sd = fl;
   SCM_DEFER_INTS;
@@ -170,7 +170,7 @@ make_decor(SCM name)
   }
 
   /* make the decor */
-  newdec = (ScwmDecor *) malloc(sizeof(ScwmDecor));
+  newdec = (ScwmDecor *) safemalloc(sizeof(ScwmDecor));
   newdec->tag = tag;
 
   return decor2scm(newdec);
@@ -283,7 +283,7 @@ UpdateDecor(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
     /* search for tag */
     for (; fl; fl = fl->next)
       if (fl->tag)
-	if (mystrcasecmp(item, fl->tag) == 0) {
+	if (strcasecmp(item, fl->tag) == 0) {
 	  found = fl;
 	  break;
 	}

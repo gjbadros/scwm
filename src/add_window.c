@@ -53,6 +53,8 @@
 #include "binding.h"
 #include "window.h"
 #include "decorations.h"
+#include "Grab.h"
+#include "wildcard.h"
 
 /* Used to parse command line of clients for specific desk requests. */
 /* Todo: check for multiple desks. */
@@ -242,7 +244,7 @@ AddWindow(Window w)
     ScwmDecor *fl = &Scr.DefaultDecor;
 
     for (; fl; fl = fl->next)
-      if (mystrcasecmp(decor, fl->tag) == 0) {
+      if (strcasecmp(decor, fl->tag) == 0) {
 	tmp_win->fl = fl;
 	break;
       }
@@ -310,12 +312,12 @@ AddWindow(Window w)
    * reparented, so we'll get a DestroyNotify for it.  We won't have
    * gotten one for anything up to here, however.
    */
-  MyXGrabServer(dpy);
+  XGrabServer_withSemaphore(dpy);
   if (XGetGeometry(dpy, w, &JunkRoot, &JunkX, &JunkY,
 		   &JunkWidth, &JunkHeight,
 		   &JunkBW, &JunkDepth) == 0) {
     free((char *) tmp_win);
-    MyXUngrabServer(dpy);
+    XUngrabServer_withSemaphore(dpy);
     return (NULL);
   }
   XSetWindowBorderWidth(dpy, tmp_win->w, 0);
@@ -633,7 +635,7 @@ AddWindow(Window w)
   }
   RaiseWindow(tmp_win);
   KeepOnTop();
-  MyXUngrabServer(dpy);
+  XUngrabServer_withSemaphore(dpy);
 
   XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
 	       &JunkWidth, &JunkHeight, &JunkBW, &JunkDepth);

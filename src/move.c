@@ -28,8 +28,8 @@
 #include "parse.h"
 #include "screen.h"
 #include "module.h"
+#include "Grab.h"
 
-#undef MS_DELETION_COMMENT
 
 extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;
@@ -103,66 +103,6 @@ void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
   while (*ppctMovement != 1.0 && ppctMovement++);
  
 }
-#if MS_DELETION_COMMENT
-/****************************************************************************
- *
- * Start a window move operation
- *
- ****************************************************************************/
-void 
-move_window(XEvent * eventp, Window w, ScwmWindow * tmp_win,
-	    unsigned long context, char *action, int *Module)
-{
-  int FinalX, FinalY;
-  int val1, val2, val1_unit, val2_unit, n;
-
-  n = GetTwoArguments(action, &val1, &val2, &val1_unit, &val2_unit);
-
-  if (DeferExecution(eventp, &w, &tmp_win, &context, MOVE, ButtonPress))
-    return;
-
-  /* gotta have a window */
-  w = tmp_win->frame;
-  if (tmp_win->flags & ICONIFIED) {
-    if (tmp_win->icon_pixmap_w != None) {
-      XUnmapWindow(dpy, tmp_win->icon_w);
-      w = tmp_win->icon_pixmap_w;
-    } else
-      w = tmp_win->icon_w;
-  }
-  if (n == 2) {
-    FinalX = val1 * val1_unit / 100;
-    FinalY = val2 * val2_unit / 100;
-  } else
-    InteractiveMove(&w, tmp_win, &FinalX, &FinalY, eventp);
-
-
-  if (w == tmp_win->frame) {
-    SetupFrame(tmp_win, FinalX, FinalY,
-	       tmp_win->frame_width, tmp_win->frame_height, FALSE);
-  } else {			/* icon window */
-    tmp_win->flags |= ICON_MOVED;
-    tmp_win->icon_x_loc = FinalX;
-    tmp_win->icon_xl_loc = FinalX -
-      (tmp_win->icon_w_width - tmp_win->icon_p_width) / 2;
-    tmp_win->icon_y_loc = FinalY;
-    Broadcast(M_ICON_LOCATION, 7, tmp_win->w, tmp_win->frame,
-	      (unsigned long) tmp_win,
-	      tmp_win->icon_x_loc, tmp_win->icon_y_loc,
-	      tmp_win->icon_w_width, tmp_win->icon_w_height
-	      + tmp_win->icon_p_height);
-    XMoveWindow(dpy, tmp_win->icon_w,
-		tmp_win->icon_xl_loc, FinalY + tmp_win->icon_p_height);
-    if (tmp_win->icon_pixmap_w != None) {
-      XMapWindow(dpy, tmp_win->icon_w);
-      XMoveWindow(dpy, tmp_win->icon_pixmap_w, tmp_win->icon_x_loc, FinalY);
-      XMapWindow(dpy, w);
-    }
-  }
-
-  return;
-}
-#endif /* MS_DELETION_COMMENT */
 
 
 /****************************************************************************
@@ -487,7 +427,7 @@ InteractiveMove(Window * win, ScwmWindow * tmp_win, int *FinalX, int *FinalY, XE
       (Scr.OpaqueSize * Scr.MyDisplayWidth * Scr.MyDisplayHeight) / 100)
     opaque_move = True;
   else
-    MyXGrabServer(dpy);
+    XGrabServer_withSemaphore(dpy);
 
   if ((!opaque_move) && (tmp_win->flags & ICONIFIED))
     XUnmapWindow(dpy, w);
@@ -504,7 +444,7 @@ InteractiveMove(Window * win, ScwmWindow * tmp_win, int *FinalX, int *FinalY, XE
   UninstallRootColormap();
 
   if (!opaque_move)
-    MyXUngrabServer(dpy);
+    XUngrabServer_withSemaphore(dpy);
   UngrabEm();
 
 }

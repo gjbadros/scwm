@@ -5,7 +5,8 @@
 
 #include <ctype.h>
 #include "menus.h"
-#include <scwm/scwmlib.h>
+#include "Picture.h"
+#include "system.h"
 
 /************************************************************************
  * ReapChildren - wait() for all dead child processes
@@ -17,7 +18,6 @@
 #define ReapChildren()  while ((wait3(NULL, WNOHANG, NULL)) > 0);
 #endif
 
-#undef MS_DELETION_COMMENT
 
 typedef struct name_list_struct {
   struct name_list_struct *next;	/* pointer to the next name */
@@ -268,28 +268,6 @@ extern void GetIconBitmap(ScwmWindow * tmp_win);
 extern void SmartPlacement(ScwmWindow * t, int width, int height, int *x, int *y);
 extern void usage(void);
 
-#if MS_DELETION_COMMENT
-void Broadcast(unsigned long event_type, unsigned long num_datum,
-	       unsigned long data1, unsigned long data2,
-	       unsigned long data3, unsigned long data4,
-	       unsigned long data5, unsigned long data6,
-	       unsigned long data7);
-void BroadcastConfig(unsigned long event_type, ScwmWindow * t);
-void SendPacket(int channel, unsigned long event_type, unsigned long num_datum,
-		unsigned long data1, unsigned long data2,
-		unsigned long data3, unsigned long data4,
-		unsigned long data5, unsigned long data6,
-		unsigned long data7);
-void SendConfig(int Module, unsigned long event_type, ScwmWindow * t);
-void BroadcastName(unsigned long event_type, unsigned long data1,
-		   unsigned long data2, unsigned long data3, char *name);
-void SendName(int channel, unsigned long event_type, unsigned long data1,
-	      unsigned long data2, unsigned long data3, char *name);
-void SendStrToModule(XEvent * eventp, Window junk, ScwmWindow * tmp_win,
-		     unsigned long context, char *action, int *Module);
-void DeadPipe(int nonsense);
-
-#endif /* MS_DELETION_COMMENT */
 void GetMwmHints(ScwmWindow * t);
 void SelectDecor(ScwmWindow *, unsigned long, int, int);
 extern Bool PopUpMenu(MenuRoot *, int, int);

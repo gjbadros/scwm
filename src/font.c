@@ -97,7 +97,8 @@ load_font(SCM fname)
     SCM_ALLOW_INTS;
     scwm_error("load-font", 1);
   }
-  font = malloc(sizeof(*font));
+
+  font = (scwm_font *)safemalloc(sizeof(*font));
   if (NULL == font) {
     free(fn);
     XFreeFont(dpy, xfs);
