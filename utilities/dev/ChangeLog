@@ -1,3 +1,11 @@
+Thu Apr 15 19:41:23 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Do not warn about comments unless $fWarnIfNoComment
+	(i.e., now -n means turn off comment warnings).  Also, even when
+	warning about comments, only print one warning if there is no
+	comment (i.e., do not warn about no comment, and about no purpose
+	line, and about each formal being missing).
+
 Wed Apr  7 10:38:02 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Use 'Primitive from (app scwm foo)' for C modules in 
