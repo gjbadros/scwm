@@ -138,7 +138,7 @@
 
 (define-public menu-bg-color (load-color "gray80"))
 (define-public menu-text-color (load-color "black"))
-(define-public menu-font (load-font "fixed"))
+(define-public menu-font (make-font "fixed"))
 
 (define*-public (menu list-of-menuitems #&key
 		      image-side 
@@ -158,5 +158,16 @@
   (make-menu list-of-menuitems image-side color-bg-image-side
 	     color-bg color-text image-bg font))
 
-(define (image-property key image)
+(define-public (image-property key image)
   (cdr (assoc key (image-properties image))))
+
+(define-public (font-property key font)
+  (cdr (assoc key (font-properties font))))
+
+;; for compatability
+(define-public load-font make-font)
+
+
+
+
+
