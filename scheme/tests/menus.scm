@@ -43,4 +43,9 @@
 
 (move-viewport 0 0)
 
-(set-viewport-position! 0 0)
+(set-X-server-synchronize! #t)
+
+(set-viewport-position! 500 0)
+
+
+
