@@ -1775,7 +1775,7 @@ specified. */
 #undef FUNC_NAME
 
 
-
+/* FIXGJB: rename to window-iconify */
 
 SCWM_PROC(iconify, "iconify", 0, 1, 0,
           (SCM win))
@@ -1802,6 +1802,7 @@ specified. */
 }
 #undef FUNC_NAME
 
+/* FIXGJB: rename to window-deiconify */
 
 SCWM_PROC(deiconify, "deiconify", 0, 1, 0,
           (SCM win))
@@ -1820,6 +1821,8 @@ specified. */
 #undef FUNC_NAME
 
 
+/* FIXGJB: rename to window-iconified? */
+
 SCWM_PROC(iconified_p, "iconified?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is iconified, otherwise return #f.
@@ -1832,6 +1835,7 @@ specified. */
 }
 #undef FUNC_NAME
 
+/* FIXGJB: rename to window-stick */
 
 SCWM_PROC(stick, "stick", 0, 1, 0,
           (SCM win))
@@ -1849,10 +1853,12 @@ specified. */
   psw = PSWFROMSCMWIN(win);
   if (!psw->fSticky) {
     psw->fSticky = True;
+    CassowaryEditPosition(psw);
     SuggestMoveWindowTo(psw,
                         (FRAME_X(psw)-Scr.Vx) % Scr.DisplayWidth,
                         (FRAME_Y(psw)-Scr.Vy) % Scr.DisplayHeight,
                         True);
+    CassowaryEndEdit(psw);
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
     SetTitleBar(psw, (Scr.Hilite == psw), True);
   }
@@ -1861,6 +1867,8 @@ specified. */
 }
 #undef FUNC_NAME
 
+
+/* FIXGJB: rename to window-unstick */
 
 SCWM_PROC(unstick, "unstick", 0, 1, 0,
           (SCM win))
@@ -1876,10 +1884,12 @@ the usual way if not specified. */
   psw = PSWFROMSCMWIN(win);
   if (psw->fSticky) {
     psw->fSticky = False;
+    CassowaryEditPosition(psw);
     SuggestMoveWindowTo(psw,
                         (FRAME_X(psw)+Scr.Vx),
                         (FRAME_Y(psw)+Scr.Vy),
                         True);
+    CassowaryEndEdit(psw);
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
     SetTitleBar(psw, (Scr.Hilite == psw), True);
   }
@@ -1887,6 +1897,9 @@ the usual way if not specified. */
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+
+/* FIXGJB: rename to window-sticky? */
 
 SCWM_PROC(sticky_p, "sticky?", 0, 1, 0,
           (SCM win))
@@ -1984,6 +1997,7 @@ not specified. */
 }
 #undef FUNC_NAME
 
+/* FIXGJB: rename to window-unshade */
 
 SCWM_PROC(un_window_shade, "un-window-shade", 0, 2, 0,
           (SCM win, SCM animated_p))
