@@ -235,7 +235,7 @@ SCWM_PROC(call_interactively, "call-interactively", 1, 0, 0,
   interactive_spec = scm_procedure_property(thunk,sym_interactive);
   if (UNSET_SCM(interactive_spec)) {
     SCM procname = scm_procedure_name(thunk);
-    char *szProcname = "<anonymous procedure>";
+    char *szProcname = strdup("<anonymous procedure>");
     if (gh_string_p(procname))
       szProcname = gh_scm2newstr(procname, NULL);
     scwm_msg(WARN,FUNC_NAME,"Procedure %s is not interactive.", szProcname);
