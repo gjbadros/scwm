@@ -15,6 +15,13 @@
 	* dev/dynamic-modules: add note about updating AC_OUTPUT list in
 	configure.in
 
+Fri Oct 16 09:29:46 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Run scwmdoc from the top of the tree so the
+	filenames are passed to the script as scheme/base.scm, not
+	../scheme/base.scm (the latter is not ideal, and breaks the Emacs
+	interface).
+
 1998-10-10  Todd Larason  <jtl@teeny.molehill.org>
 
 	* Makefile.am (scwm.sgml): get documentation strings from module
