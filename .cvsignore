@@ -3,7 +3,6 @@
 ANNOUNCE
 Makefile
 Makefile.in
-README
 aclocal.m4
 config.cache
 config.guess
