@@ -102,15 +102,10 @@ window property primitives should be considered in flux. */
 {
   SCM old_val;
   SCM handler;
+  ScwmWindow *psw;
 
-  ScwmWindow *psw = NULL;
-  if (!WINDOWP(win) || !VALIDWINP(win)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  if (!gh_symbol_p(prop)) {
-    SCWM_WRONG_TYPE_ARG(2, prop);
-  }
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
+  VALIDATE_ARG_SYM(2,prop);
 
   psw = PSWFROMSCMWIN(win);
  
@@ -148,14 +143,10 @@ be considered in flux. */
 #define FUNC_NAME s_window_property
 {
   SCM handler;
+  ScwmWindow *psw;
 
-  if (!WINDOWP(win) || !VALIDWINP(win)) {
-    SCWM_WRONG_TYPE_ARG(1, win);
-  }
-
-  if (!gh_symbol_p(prop)) {
-    SCWM_WRONG_TYPE_ARG(2, prop);
-  }
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
+  VALIDATE_ARG_SYM(2,prop);
 
   handler = scm_hashq_ref(property_handler_hash_table, prop, SCM_BOOL_F);
 

@@ -492,7 +492,7 @@ make_window(ScwmWindow * win)
 
   SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_window, schwin);
   PSWFROMSCMWIN(answer) = win;
-  VALIDWINP(answer) = 1;
+  SET_VALIDWIN_FLAG(answer,True);
 
   /* Warning, arbitrary constant, we really need growable hash
      tables. */
@@ -507,7 +507,7 @@ make_window(ScwmWindow * win)
 void
 invalidate_window(SCM schwin)
 {
-  VALIDWINP(schwin) = 0;
+  SET_VALIDWIN_FLAG(schwin, False);
   PSWFROMSCMWIN(schwin) = NULL;
   scm_unprotect_object(schwin);
 }
@@ -613,8 +613,8 @@ ClientHeight(const ScwmWindow *psw)
 
 void
 SendClientConfigureNotify(const ScwmWindow *psw)
-#define FUNC_NAME "SendClientConfigureNotify"
 {
+#define FUNC_NAME "SendClientConfigureNotify"
   XEvent client_event;
 
   client_event.type = ConfigureNotify;
@@ -644,8 +644,8 @@ SendClientConfigureNotify(const ScwmWindow *psw)
    be called only if !psw->fIconified */
 void
 MovePswToCurrentPosition(const ScwmWindow *psw)
-#define FUNC_NAME "MovePswToCurrentPosition"
 {
+#define FUNC_NAME "MovePswToCurrentPosition"
   int x = FRAME_X_VP(psw), y = FRAME_Y_VP(psw);
 #ifndef NDEBUG
   if (psw->fSticky && !FIsPartiallyInViewport(psw)) {
@@ -768,8 +768,8 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h,
 */
 void
 move_finalize(Window w, ScwmWindow * psw, int x, int y)
-#define FUNC_NAME "move_finalize"
 {
+#define FUNC_NAME "move_finalize"
   DBUG((DBG,FUNC_NAME,"%d,%s, %d,%d",
         (w==psw->frame), psw->name, x,y));
   if (w == psw->frame) {
@@ -828,6 +828,45 @@ window that can be deiconified is still represented by a valid window object. */
 #define FUNC_NAME s_window_valid_p
 {
   return SCM_BOOL_FromBool(WINDOWP(obj) && VALIDWINP(obj));
+}
+#undef FUNC_NAME
+
+SCWM_PROC(window_fully_constructed_p, "window-fully-constructed?", 1, 0, 0,
+          (SCM win))
+     /** Returns #t if WIN is a fully-constructed window object, otherwise retur
+ns #f.
+In the `before-new-window-hook' windows are not yet fully constructed, and only
+a subset of procedures can be successfully called on them. */
+#define FUNC_NAME s_window_fully_constructed_p
+{
+  ScwmWindow *psw;
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
+  return SCM_BOOL_FromBool(psw->fFullyConstructed);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(window_mapped_p, "window-mapped?", 1, 0, 0,
+          (SCM win))
+     /** Returns #t if WIN is mapped, otherwise returns #f.*/
+#define FUNC_NAME s_window_mapped_p
+{
+  ScwmWindow *psw;
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
+  return SCM_BOOL_FromBool(psw->fMapped);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(window_map_pending_p, "window-map-pending?", 1, 0, 0,
+          (SCM win))
+     /** Returns #t if the mapping of WIN is pending, otherwise returns #f.
+The map is pending from the moment the MapRequest is entered until the
+map is actually performed.
+*/
+#define FUNC_NAME s_window_map_pending_p
+{
+  ScwmWindow *psw;
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
+  return SCM_BOOL_FromBool(psw->fMapPending);
 }
 #undef FUNC_NAME
 
@@ -2993,12 +3032,14 @@ void set_window_internal_title_height(ScwmWindow *psw, int nh)
 
     psw->title_height=nh;
 
-    MoveResizeTo(psw,
-		 FRAME_X(psw),
-		 FRAME_Y(psw) + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
-		 FRAME_WIDTH(psw),
-		 FRAME_HEIGHT(psw) + nh - oldh);
-    BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+    if (psw->fFullyConstructed) {
+      MoveResizeTo(psw,
+                   FRAME_X(psw),
+                   FRAME_Y(psw) + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
+                   FRAME_WIDTH(psw),
+                   FRAME_HEIGHT(psw) + nh - oldh);
+      BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+    }
   }
 }
 
@@ -3017,7 +3058,6 @@ specified. */
   VALIDATE_WIN_USE_CONTEXT(win);
   psw = PSWFROMSCMWIN(win);
   fl = psw->fl ? psw->fl : &Scr.DefaultDecor;
-
 
   if (!psw->fTitle) {
     psw->fTitle = True;
@@ -4020,8 +4060,8 @@ ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
 /*SCWM_VALIDATE: win, flag */
 static void
 set_squashed_titlebar_x(SCM win, SCM flag)
-#define FUNC_NAME "set_squashed_titlebar_x"
 {
+#define FUNC_NAME "set_squashed_titlebar_x"
   ScwmWindow *psw;
   SCM oldval;
 
@@ -4036,8 +4076,8 @@ set_squashed_titlebar_x(SCM win, SCM flag)
 /*SCWM_VALIDATE: win */
 static SCM
 squashed_titlebar_p(SCM win)
-#define FUNC_NAME "squashed_titlebar_p"
 {
+#define FUNC_NAME "squashed_titlebar_p"
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_COPY(1,win,psw);
   return SCM_BOOL_FromBool(psw->fSquashedTitlebar);

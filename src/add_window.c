@@ -195,8 +195,8 @@ static XrmOptionDescRec table[] =
  */
 ScwmWindow *
 AddWindow(Window w)
-#define FUNC_NAME "AddWindow"
 {
+#define FUNC_NAME "AddWindow"
   ScwmWindow *psw;		/* new scwm window structure */
   unsigned long valuemask;	/* mask for create windows */
   SCM schwin; /* To make sure it's on the stack to be marked. */
@@ -318,10 +318,12 @@ AddWindow(Window w)
   psw->fl = &Scr.DefaultDecor;
   psw->buttons = 0;
 
-  call1_hooks(before_new_window_hook, psw->schwin);
-
   GetMwmHints(psw);
   GetOlHints(psw);
+
+  GetWindowSizeHints(psw);
+
+  call1_hooks(before_new_window_hook, psw->schwin);
 
   SelectDecor(psw, border_width, resize_width);
 
@@ -338,8 +340,6 @@ AddWindow(Window w)
   /* GJB:FIXME:: need to provide more flexibility in how the
      icon gets selected */
   /* find a suitable icon pixmap */
-
-  GetWindowSizeHints(psw);
 
   psw->xboundary_width = psw->boundary_width;
   if (psw->fMWMBorders) psw->bw = 0;
@@ -688,9 +688,9 @@ AddWindow(Window w)
   RaiseWindow(psw);
   KeepOnTop();
 
+  /* Mark the window as fully constructed */
+  psw->fFullyConstructed = True;
   XUngrabServer_withSemaphore(dpy);
-
-
 
   if (psw->fClickToFocus) {
     /* need to grab all buttons for window that we are about to

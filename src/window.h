@@ -241,6 +241,7 @@ struct ScwmWindow {
   PackedBool(fNoPPosition);
   PackedBool(fForceIcon);       
   PackedBool(fSquashedTitlebar);
+  PackedBool(fFullyConstructed);
 
   SCM mini_icon_image;          /* A Scheme image object to use for the 
 				   mini-icon. */
@@ -322,7 +323,7 @@ SCM ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_
 
 typedef struct {
   ScwmWindow *psw;
-  int valid;
+  Bool valid;
 } scwm_window;
 
 EXTERN long scm_tc16_scwm_window;
@@ -338,7 +339,13 @@ EXTERN_SET(SCM scm_window_context,SCM_UNDEFINED);
 
 /* #define SCWMWINDOW(X) (((scwm_window *)gh_cdr(X))->psw) */
 #define PSWFROMSCMWIN(X) (((scwm_window *)gh_cdr(X))->psw)
+
+/* I tried making VALIDWINP ensure WINDOWP first, but that
+   failed miserably and strangely.... why? --04/12/99 gjb */
 #define VALIDWINP(X) (((scwm_window *)gh_cdr(X))->valid)
+
+
+#define SET_VALIDWIN_FLAG(X,f) do { ((scwm_window *)gh_cdr(X))->valid = f; } while (0)
 
 #define set_window_context(X) do { scm_window_context = (X); } while (0)
 #define unset_window_context() do { scm_window_context = SCM_UNDEFINED; } while (0)

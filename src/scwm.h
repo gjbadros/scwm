@@ -146,7 +146,7 @@ static scm_smobfuns T ## _smobfuns = { \
 #define UNSET_SCM(x) (((x) == SCM_UNDEFINED) || ((x) == SCM_BOOL_F))
 
 #define GC_MARK_SCM_IF_SET(scm) do { if (scm && !UNSET_SCM((scm))) \
-     { scm_gc_mark((scm)); } } while (0);
+     { scm_gc_mark((scm)); } } while (0)
 
 /* use PanFrames! this replaces the 3 pixel margin with PanFrame windows
    it should not be an option, once it works right. HEDU 2/2/94 */
