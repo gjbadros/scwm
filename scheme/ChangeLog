@@ -1,3 +1,32 @@
+1999-07-28  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* window-selection.scm: Added new code for nonant markers. 
+	The nonant selected at the time of the window is marked until
+	the window is deselected.  This feature will later be used 
+	by constraints.
+
+	* window-locations.scm: Removed get-window-nonant method and
+	moved it to nonants.scm.
+
+	* ui-constraints-classes.scm: Add import of nonants module.
+
+	* nonants.scm: Add import of base module.
+
+	* flux.scm: Removed window-locations import and added 
+	nonants import.  The get-window-nonant method moved between
+	these two modules.
+
+	* Makefile.am: Added nonants.scm to the list of modules.
+
+1999-07-27  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* nonants.scm: A new module containing the all of the general
+	purpose nonant methods.  The purpose of this was to get a 
+	couple nonant routines out of misc. other modules. 
+ 	
+	* gnome-hints.scm: Modified the viewport-position-change-hook 
+	use in this module to conform to the new four argument format.
+
 Sun Jul 25 15:40:00 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added a bunch of files that were missing.  Used
