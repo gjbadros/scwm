@@ -37,10 +37,11 @@
 		  message-window animated-iconify
 		  modifier-key-bindings window-selection
 		  group preferences
-;;		  string-ops send-string
+		  send-string
 		  )
 
 ;;(use-scwm-modules gtk)
+;;(use-scwm-modules send-string)
 
 ;;(load "/home/gjb/scwm/scheme/constraints.scm")
 ;;(load "/home/gjb/scwm/scheme/ui-constraints-buttons.scm")
@@ -64,13 +65,19 @@
 
 
 (set! doc-files
-  (list (string-append (getenv "SCWMDIR") "/doc/scwm-procedures.txt")
-	(string-append (getenv "HOME") "/cassowary/guile/cassowary_scm-procedures.txt")))
+  (append (map (lambda (s) (string-append (getenv "SCWMDIR") "/doc/" s ))
+	     (list "scwm-procedures.txt" "scwm-variables.txt" "scwm-hooks.txt"))
+	  (list 
+	   (string-append (getenv "HOME") "/cassowary/guile/cassowary_scm-procedures.txt"))))
 
 (set! doc-files
       (append doc-files
 	      (list (string-append (scwm-path-prefix)
 				   "/share/scwm/scwm-procedures.txt")
+		    (string-append (scwm-path-prefix)
+				   "/share/scwm/scwm-variables.txt")
+		    (string-append (scwm-path-prefix)
+				   "/share/scwm/scwm-hooks.txt")
 		    (string-append (scwm-path-prefix) 
 				   "/share/scwm/cassowary_scm-procedures.txt"))))
 
@@ -135,7 +142,7 @@
 (define applications-available-program-information
   `(
     ("&Netscape" "nscape" "netscape_3d" "netscape")
-    ("&Emacs" "edit" "emacs_3d" "xemacs")
+    ("GNU &Emacs" "edit" "emacs_3d" "emacs")
     ("Email (&Gnus)" #f #f "emailuw")
 ;;    ("Calenda&r" "clock" "calendar.next" "PREFERRED_CALENDAR_BIN")
     ("&Ical" "clock" "calendar.next" "ical")
@@ -245,8 +252,8 @@
 
 ;; (select-window-interactively "Pick window #1")
 
-(message-window-style default-message-window #:font (optget *message-window-font*)
-					    #:fg "black" #:bg "gray80")
+;;(message-window-style default-message-window #:font (optget *message-window-font*)
+;;					    #:fg "black" #:bg "gray80")
 
 ;;(set-click-delay! 150)
 ;;(set-color-map-focus! 'follows-mouse)
@@ -986,7 +993,8 @@ union of all other window managers!
 	      #:action (thunk scwm-help))
     (menuitem "E&xit Scwm" #:image-left "mini-stop.xpm" 
 	      #:action 'menu-quit-verify))
-   #:image-side "linux-menu.xpm"
+;;   #:image-side "linux-menu.xpm"
+   #:image-side "scwm-gnu-linux.xpm"
    #:image-align 'bottom
    #:color-bg-image-side "blue"))
 
@@ -1438,7 +1446,7 @@ union of all other window managers!
 
 ;;;(set! construct-menu-primitive construct-pie-menu)
 
-(run-dot-xclients-at-startup)
+;;(run-dot-xclients-at-startup)
 
 (debug-display " *** `scwmrc' processed.\n")
 
@@ -1458,3 +1466,13 @@ union of all other window managers!
 ;;(load "/scratch/gjb/scwm/scheme/cached-program-exists.scm")
 
 ;;(set-handle-segv! #f)
+
+#!
+(add-hook! error-hook (lambda (tag op msg pos-and-arg extra) 
+			(display-message-briefly 
+			 (string-append (symbol->string tag) " error: " op))))
+!#
+
+;; Get my preferences from ~/.scwm-options --
+;; let them take priority over anything I do in here
+;; (load-preferences)
