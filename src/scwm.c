@@ -78,6 +78,8 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #include "colormaps.h"
 #include "image.h"
 #include "callbacks.h"
+#include "add_window.h"
+#include "shutdown.h"
 
 #define MAXHOSTNAME 255
 
@@ -106,7 +108,6 @@ XErrorHandler CatchRedirectError(Display *, XErrorEvent *);
 void newhandler(int sig);
 void CreateCursors(void);
 void ChildDied(int nonsense);
-void SaveDesktopState(void);
 void SetMWM_INFO(Window window);
 void SetRCDefaults(void);
 void StartupStuff(void);
@@ -249,6 +250,7 @@ scwm_main(int argc, char **argv)
   init_window();
   init_face();
   init_input_hooks();
+  init_shutdown();
   init_scwm_procs();
 #ifdef USE_CASSOWARY
   cassowary();
@@ -1385,77 +1387,6 @@ SigDone(int nonsense)
   SIGNAL_RETURN;
 }
 
-void 
-Done(int restart, char *command)
-{
-
-#ifndef NON_VIRTUAL
-  MoveViewport(0, 0, False);
-#endif
-
-
-  /* Close all my pipes */
-
-  Reborder();
-
-  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_LISTENER);
-
-#ifdef FIXGJB /* these don't appear to be necessary */  
-  XDeleteProperty(dpy, Scr.Root, XA_SCWM_EXECUTE);
-  XDeleteProperty(dpy, Scr.Root, XA_SCWM_RESULT);
-  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN);
-  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_REQUEST);
-  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_REPLY);
-  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_NOTIFY);
-  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_OUTPUT);
-  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_ERROR);
-#endif
-
-  /* Pretty sure this should be done... */
-  XDeleteProperty(dpy, Scr.Root, _XA_MOTIF_WM);
-  
-  if (restart) {
-    SaveDesktopState();		/* I wonder why ... */
-
-    /* Really make sure that the connection is closed and cleared! */
-    XSelectInput(dpy, Scr.Root, 0);
-    XSync(dpy, 0);
-    XCloseDisplay(dpy);
-
-    { /* scope */
-      char *my_argv[10];
-      int i, done, j;
-
-      i = 0;
-      j = 0;
-      done = 0;
-      while ((g_argv[j] != NULL) && (i < 8)) {
-	if (!STREQ(g_argv[j], "-s")) {
-	  my_argv[i] = g_argv[j];
-	  i++;
-	  j++;
-	} else
-	  j++;
-      }
-      if (strstr(command, "scwm") != NULL)
-	my_argv[i++] = "-s";
-      while (i < 10)
-	my_argv[i++] = NULL;
-
-      /* really need to destroy all windows, explicitly,
-       * not sleep, but this is adequate for now */
-      sleep(1);
-      ReapChildren();
-      execvp(command, my_argv);
-    }
-    scwm_msg(ERR, "Done", "Call of '%s' failed!!!!", command);
-    execvp(g_argv[0], g_argv);	/* that _should_ work */
-    scwm_msg(ERR, "Done", "Call of '%s' failed!!!!", g_argv[0]);
-  } else {
-    XCloseDisplay(dpy);
-    exit(0);
-  }
-}
 
 XErrorHandler 
 CatchRedirectError(Display * dpy, XErrorEvent * event)
@@ -1519,29 +1450,6 @@ usage(void)
 	  , g_argv[0]);
 }
 
-/****************************************************************************
- *
- * Save Desktop State
- *
- ****************************************************************************/
-void 
-SaveDesktopState()
-{
-  ScwmWindow *t;
-  unsigned long data[1];
-
-  for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
-    data[0] = (unsigned long) t->Desk;
-    XChangeProperty(dpy, t->w, _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
-		    PropModeReplace, (unsigned char *) data, 1);
-  }
-
-  data[0] = (unsigned long) Scr.CurrentDesk;
-  XChangeProperty(dpy, Scr.Root, _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
-		  PropModeReplace, (unsigned char *) data, 1);
-
-  XSync(dpy, 0);
-}
 
 
 void 

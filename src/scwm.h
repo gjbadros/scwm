@@ -46,6 +46,8 @@
 #include "module-types.h"
 #include <stdlib.h>
 
+EXTERN char **g_argv;
+EXTERN int g_argc;
 
 #define STATIC_CAST(cast,val) ((cast) (val))
 #define min(a,b) (((a)<(b)) ? (a) : (b))
@@ -164,7 +166,6 @@ enum wm_client_functions {
 void Reborder(void);
 void SigDone(int);
 void Restart(int nonsense);
-void Done(int, char *);
 void BlackoutScreen(void);
 void UnBlackoutScreen(void);
 void init_scwm_load_path();
@@ -188,6 +189,7 @@ extern Window JunkRoot, JunkChild;
 extern int JunkX, JunkY;
 extern unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
 
+extern Atom _XA_MOTIF_WM;
 extern Atom _XA_MIT_PRIORITY_COLORS;
 extern Atom _XA_WM_CHANGE_STATE;
 extern Atom _XA_WM_STATE;
