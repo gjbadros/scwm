@@ -5,5 +5,6 @@ image.x
 init_scheme_string.c
 makefile.depend
 menuitem.x
+module-interface.x
 scwm
 scwmmenu.x
