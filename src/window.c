@@ -508,12 +508,6 @@ SCM
 raise_window(SCM win)
 {
   ScwmWindow *tmp_win;
-#ifdef FIXGJB_UNUSED_VARIABLES
-  char *junk;
-  char *junkC;
-  unsigned long junkN;
-  int junkD, method, BoxJunk[4];
-#endif
 
   SCM_REDEFER_INTS;
   VALIDATE(win, "raise-window");
@@ -1397,16 +1391,9 @@ SCM
 plain_border(SCM win)
 {
   ScwmWindow *tmp_win;
-#ifdef FIXGJB_UNUSED_VARIABLES
-  ScwmDecor *fl;
-#endif
   int i;
 
   SCM_REDEFER_INTS;
-  /* FIXGJB: what the heck does fl get used for?? */
-#ifdef FIXGJB_UNUSED_VARIABLES
-  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
-#endif
 
   VALIDATE(win, "plain-border");
   tmp_win = SCWMWINDOW(win);
@@ -1738,7 +1725,9 @@ set_icon_x(SCM picture, SCM win)
     tmp_win->szIconFile = NULL;
   } else if (picture == SCM_BOOL_T) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
-  } else if (PICTURE_P(picture)) {
+  } else if ((gh_string_p(picture) && 
+	      (picture=make_picture(picture))!=SCM_UNDEFUNED) ||
+	      (SCM_NIMP(picture) && PICTURE_P(picture))) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
     if (!((tmp_win->wmhints)
@@ -1772,7 +1761,9 @@ set_mini_icon_x(SCM picture, SCM win)
   sw = SCWMWINDOW(win);
   if (picture == SCM_BOOL_F) {
     sw->picMiniIcon = NULL;
-  } else if (PICTURE_P(picture)) {
+  } else if ((gh_string_p(picture) && 
+	      (picture=make_picture(picture))!=SCM_UNDEFINED) ||
+	      (SCM_NIMP(picture) && PICTURE_P(picture))) {
     sw->picMiniIcon = PICTURE(picture)->pic;
   } else {
     scm_wrong_type_arg("set-mini-icon!", 1, picture);
