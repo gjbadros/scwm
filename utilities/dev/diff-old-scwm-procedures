@@ -1,0 +1,4 @@
+#!/uns/bin/zsh -f
+# Usage: diff-old-scwm-procedure s-p.0.9.txt
+diff -u  =(grep -A1 '' $1 | egrep -v '^(--|)') \
+         =(grep -A1 '' scwm-procedures.txt | egrep -v '^(--|)')
