@@ -1,3 +1,9 @@
+Fri Feb 27 18:02:24 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* move.c: Fix problem with AnimatedShadeWindow which was making
+ 	the title bar get clobbered occasionally. Patch from Oleg Tihonov
+ 	<ost@benetnash.ffke-campus.mipt.ru>
+
 Thu Feb 26 22:00:17 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Rework all the code to make compile using g++, while still
