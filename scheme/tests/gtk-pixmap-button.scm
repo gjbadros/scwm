@@ -4,6 +4,11 @@
 (define b (gtk-button-new))
 (define p (gtk-pixmap-new "test.xpm" b))
 
+;; (use-scwm-modules (gtk gtk))
+;; (use-scwm-modules (gtk gdk))
+;; (use-scwm-modules preferences)
+;; (use-scwm-modules )
+
 (define-public (start-pixmap-button-window)
   (let* ((button (gtk-button-new))
 	 (toplevel (gtk-window-new 'toplevel))
