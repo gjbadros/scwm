@@ -20,8 +20,7 @@
 
 (define-module (app scwm style)
   :use-module (app scwm base)
-  :use-module (app scwm winlist)
-  :use-module (app scwm winops)
+  :use-module (app scwm style-options)
   :use-module (app scwm wininfo)
   :use-module (ice-9 common-list))
 
@@ -83,28 +82,6 @@
 	    (map-by-twos proc (cddr l)))))
 
 
-(define window-style-options (make-hash-table 40))
-(define window-hint-options (make-hash-table 10))
-
-(define-public (add-window-style-option key handler)
-  (hashq-set! window-style-options key handler))
-
-(define-public (add-boolean-style-option key t-handler f-handler)
-  (hashq-set! window-style-options key (lambda (val win)
-		    (if val
-			(t-handler win)
-			(f-handler win)))))
-
-(define-public (add-window-hint-option key handler)
-  (hashq-set! window-hint-options key handler))
-
-(define-public (add-boolean-hint-option key t-handler f-handler)
-  (hashq-set! window-hint-options key (lambda (val win)
-		    (if val
-			(t-handler win)
-			(f-handler win)))))
-
-
 
 (define old-new-window-handler #f)
 (define old-new-window-hint-handler #f)
@@ -138,9 +115,6 @@
 (add-window-style-option #:bg set-window-background!)
 (add-window-style-option #:foreground set-window-foreground!)
 (add-window-style-option #:fg set-window-foreground!)
-(add-boolean-style-option #:circulate-skip circulate-skip circulate-hit)
-(add-boolean-style-option #:circulate-skip-icon 
-			  circulate-skip-icon circulate-hit-icon)
 (add-window-style-option #:focus set-window-focus!)
 (add-boolean-style-option #:plain-border plain-border normal-border)
 (add-window-style-option #:icon-title set-icon-title!)
@@ -153,7 +127,6 @@
 (add-boolean-style-option #:sticky stick unstick)
 
 (add-boolean-style-option #:no-titlebar hide-titlebar show-titlebar)
-(add-boolean-style-option #:winlist-skip winlist-skip winlist-hit)
 
 ; clashes with maximized so make it hint-only for now
 (add-window-hint-option #:mwm-buttons set-mwm-buttons!)
@@ -177,28 +150,14 @@
 (add-window-hint-option #:skip-mapping set-skip-mapping!)
 (add-window-hint-option #:lenience set-lenience!)
 
-
 (add-window-style-option #:use-style 
 			 (lambda (the-style w) ((car the-style) w)))
 (add-window-hint-option #:use-style 			 
 			(lambda (the-style w) ((cdr the-style) w)))
 
-;; use-decor not implemented for now
-
 ;; some extra style options not available in fvwm
-(add-window-style-option #:start-maximized 
-			  (lambda (arg w) 
-			    (if arg
-				(apply maximize (append arg (list w)))
-				(unmaximize w))))
 (add-boolean-style-option #:start-lowered lower-window raise-window)
 (add-boolean-style-option #:start-window-shaded window-shade un-window-shade)
 (add-window-style-option #:other-proc (lambda (val w) (val w)))
 (add-window-hint-option #:other-hint-proc (lambda (val w) (val w)))
-
-
-
-
-
-
 

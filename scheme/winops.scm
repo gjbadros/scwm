@@ -19,7 +19,8 @@
 
 
 (define-module (app scwm winops)
-  :use-module (app scwm optargs))
+  :use-module (app scwm optargs)
+  :use-module (app scwm style-options))
 
 
 
@@ -90,12 +91,18 @@
 	    (unmaximize w)
 	    (maximize nw nh w))))
 
+;; add a style option for maximizing
+(add-window-style-option #:start-maximized 
+			  (lambda (arg w) 
+			    (if arg
+				(apply maximize (append arg (list w)))
+				(unmaximize w))))
+
+
+
 (define*-public (print-window #&optional (w (get-window)))
   (if w (execute (string-append "xwd -id " 
 				(number->string (window-id w))
 				" | xpr | lpr"))))
-
-
-
 
 

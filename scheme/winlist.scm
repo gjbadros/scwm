@@ -22,6 +22,7 @@
   :use-module (app scwm optargs)
   :use-module (app scwm wininfo)
   :use-module (app scwm base)
+  :use-module (app scwm style-options)
   :use-module (ice-9 common-list))
 
 
@@ -62,6 +63,9 @@
 
 (define*-public (winlist-skip? #&optional (w (get-window)))
   (if w (object-property w 'winlist-skip)) #f)
+
+;; add the #:winlist-skip style option
+(add-boolean-style-option #:winlist-skip winlist-skip winlist-hit)
 
 
 (define*-public (show-window-list-menu #&key (only '()) (except '())
@@ -116,6 +120,12 @@
   (if w 
       (or (circulate-skip? w) (and (iconified? w) (circulate-skip-icon? w)))
       #f))
+
+;; add style options for #:circulate-skip and #:circulate-skip-icon
+(add-boolean-style-option #:circulate-skip circulate-skip circulate-hit)
+(add-boolean-style-option #:circulate-skip-icon 
+			  circulate-skip-icon circulate-hit-icon)
+
 
 (define (circulate backwards? window only except proc)
   ;; not totally right... what if we just move the mouse to the
