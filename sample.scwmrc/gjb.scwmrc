@@ -42,6 +42,7 @@
 	     (app scwm doc)
 	     (app scwm virtual)
 	     (app scwm flux)
+	     (app scwm flux-gtk)
 	     (app scwm fvwm-module)
 	     (app scwm path-cache)
 	     (app scwm animation)
@@ -1081,6 +1082,7 @@ union of all other window managers!
 (bind-mouse 'root "M-3" (lambda () (popup-menu 'menu-desk)))
 (bind-mouse 'root 3 popup-applications)
 (bind-mouse 'all "H-1" (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
+(bind-key 'all "H-r" (lambda () (rename-window-interactively)))
 (bind-key 'all "H-r" (lambda () (rename-window-interactively)))
 
 ;;; operations on parts of the window
