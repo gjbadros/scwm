@@ -1,3 +1,8 @@
+Sat Jul 24 13:25:12 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.h: Added def of struct _ImlibData before using it in an
+	extern.  
+
 Fri Jul 23 23:39:03 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.h: Added extern of imlib_data (now needed by image.c) 
