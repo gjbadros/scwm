@@ -178,14 +178,13 @@
 (define wm-style 'squashed)
 
 (define (set-wm-style! style)
-  (set! wm-style style)
-  (case style
-    ((barebones) (window-style "*" #:border-width 1 #:no-titlebar #t
-			        #:squashed-titlebar #f))
-    ((squashed) (window-style "*" #:border-width 1 #:no-titlebar #f
-			      #:squashed-titlebar #t))
-    ((decorated) (window-style "*" #:border-width 4 #:no-titlebar #f
-			       #:squashed-titlebar #f))))
+  (let ((styles '((barebones #:border-width 1 #:no-titlebar #t
+			     #:squashed-titlebar #f)
+		  (squashed #:border-width 1 #:squashed-titlebar #t)
+		  (decorated #:border-width 4 #:squashed-titlebar #f))))
+    (apply window-unstyle (cons "*" (cdr (assq wm-style styles))))
+    (set! wm-style style)
+    (apply window-style (cons "*" (cdr (assq wm-style styles))))))
 
 ; set to default
 (set-wm-style! wm-style)
