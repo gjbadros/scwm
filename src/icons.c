@@ -180,8 +180,8 @@ GetIconWindow(ScwmWindow * psw)
  ****************************************************************************/
 static void 
 GetIconBitmap(ScwmWindow *psw)
-#define FUNC_NAME "GetIconBitmap"
 {
+#define FUNC_NAME "GetIconBitmap"
   Pixmap picture;
   Pixmap mask = None;
   unsigned int width;

@@ -174,8 +174,8 @@ SCWM_PROC(menu_p,"menu?", 1,0,0,
  */
 char *
 NewPchKeysUsed(DynamicMenu *pmd)
-#define FUNC_NAME "NewPchKeysUsed"
 {
+#define FUNC_NAME "NewPchKeysUsed"
   SCM list_of_menuitems = pmd->pmenu->scmMenuItems;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim;
   int ipmiim = 0;
@@ -634,8 +634,8 @@ SetPopupMenuPosition(DynamicMenu *pmd, int x_pointer, int y_pointer)
 static
 DynamicMenu *
 PmdFromWindow(Display *dpy, Window w)
-#define FUNC_NAME "PmdFromWindow"
 {
+#define FUNC_NAME "PmdFromWindow"
   DynamicMenu *pmd = NULL;
 
   if (w == None)
@@ -671,8 +671,8 @@ PmdFromPointerLocation(Display *dpy)
 static
 MenuItemInMenu *
 PmiimFromPointerLocation(Display *dpy, int *px_offset, int *py_offset)
-#define FUNC_NAME "PmiimFromPointerLocation"
 {
+#define FUNC_NAME "PmiimFromPointerLocation"
   int root_x, root_y;
   int x,y;
   Window wChild;
@@ -734,8 +734,8 @@ RepaintMenuItem(MenuItemInMenu *pmiim)
 
 MenuItemInMenu *
 PmiimSelectedFromPmd(DynamicMenu *pmd)
-#define FUNC_NAME "PmiimSelectedFromPmd"
 {
+#define FUNC_NAME "PmiimSelectedFromPmd"
   int ipmiimSelected;
   if (!pmd)
     return NULL;
@@ -757,8 +757,8 @@ static SCM InvokeUnhoverAction(DynamicMenu *pmd);
 static
 void
 UnselectAndRepaintSelectionForPmd(DynamicMenu *pmd)
-#define FUNC_NAME "UnselectAndRepaintSelectionForPmd"
 {
+#define FUNC_NAME "UnselectAndRepaintSelectionForPmd"
   MenuItemInMenu *pmiim = PmiimSelectedFromPmd(pmd);
 
   if (pmd->fHoverActionInvoked) {
@@ -793,8 +793,8 @@ UnselectAndRepaintSelectionForPmd(DynamicMenu *pmd)
 static
 void
 SelectAndRepaintPmiim(MenuItemInMenu *pmiim)
-#define FUNC_NAME "SelectAndRepaintPmiim"
 {
+#define FUNC_NAME "SelectAndRepaintPmiim"
   DynamicMenu *pmd = pmiim->pmd;
   if (pmiim->mis == MIS_Selected) {
     DBUG((DBG,FUNC_NAME,"Already selected"));
@@ -816,8 +816,8 @@ static const long menu_event_mask = (ButtonPressMask | ButtonReleaseMask |
 static
 SCM
 InvokeUnhoverAction(DynamicMenu *pmd)
-#define FUNC_NAME "InvokeUnhoverAction"
 {
+#define FUNC_NAME "InvokeUnhoverAction"
   MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
   /* invoke the un-hover action */
   if (pmiimSelected && pmiimSelected->pmi &&
@@ -1060,8 +1060,8 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
 static
 DynamicMenu *
 PmdPrepopFromPmiim(MenuItemInMenu *pmiim) 
-#define FUNC_NAME "PmdPrepopFromPmiim"
 {
+#define FUNC_NAME "PmdPrepopFromPmiim"
   DynamicMenu *pmd;
   DynamicMenu *pmdNew = NULL;
   if (pmiim) {
@@ -1091,8 +1091,8 @@ PmdPrepopFromPmiim(MenuItemInMenu *pmiim)
 static
 void
 XPutBackKeystrokeEvent(Display *dpy, Window w, KeySym keysym)
-#define FUNC_NAME "XPutBackKeystrokeEvent"
 {
+#define FUNC_NAME "XPutBackKeystrokeEvent"
   XKeyEvent ev;
   DBUG((DBG,FUNC_NAME,"entered"));
   ev.type = KeyPress;
@@ -1111,8 +1111,8 @@ XPutBackKeystrokeEvent(Display *dpy, Window w, KeySym keysym)
 static
 MenuItem *
 MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSelect)
-#define FUNC_NAME "MenuInteraction"
 {
+#define FUNC_NAME "MenuInteraction"
   int c10ms_delays = 0;
   MenuItem *pmiSelected = NULL; /* we return this selected menu item */
   MenuItemInMenu *pmiim = NULL;
@@ -1436,8 +1436,8 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
 static
 void
 InitializeDynamicMenu(DynamicMenu *pmd)
-#define FUNC_NAME "InitializeDynamicMenu"
 {
+#define FUNC_NAME "InitializeDynamicMenu"
   Menu *pmenu = pmd->pmenu;
   int cmiim = gh_length(pmenu->scmMenuItems);
   int ipmiim = 0;

@@ -49,8 +49,8 @@ SendUsagePacket(char *host, /* 0 -> REPORT_USAGE_HOST */
                 char *progName,   /* defines the log file */
                 char *origin,    /* 0 -> hostname */
                 char *msg)
-#define FUNC_NAME "SendUsagePacket"
 {
+#define FUNC_NAME "SendUsagePacket"
 #ifndef NO_REPORT_USAGE
   int rc;
 

@@ -80,8 +80,8 @@ makemult(int a, int b)
 void 
 ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion, 
               /* input and output to/from: */ int *widthp, int *heightp)
-#define FUNC_NAME "ConstrainSize"
 {
+#define FUNC_NAME "ConstrainSize"
   int minWidth, minHeight, maxWidth, maxHeight, xinc, yinc, delta;
   int baseWidth, baseHeight;
   int dwidth = *widthp, dheight = *heightp;
@@ -664,7 +664,6 @@ This allows the user to drag the boundaries of the window to set its
 size. WIN defaults to the window context in the usual way if not
 specified. The window is updated immediately as the size changes take
 place. */
-
 #define FUNC_NAME s_opaque_resize
 {
   ScwmWindow *psw;

@@ -651,8 +651,8 @@ SCWM_SYMBOL(sym_tiled , "tiled");
 
 /*SCWM_VALIDATE: face, spec, arg*/
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
-#define FUNC_NAME "add_spec_to_face_x"
 {
+#define FUNC_NAME "add_spec_to_face_x"
   ButtonFace *bf;
 
   bf=BUTTONFACE(face);

@@ -284,8 +284,8 @@ HandleEvents(void)
 /* keyboard remapping has occurred */
 void
 HandleMappingNotify()
-#define FUNC_NAME "HandleMappingNotify"
 {
+#define FUNC_NAME "HandleMappingNotify"
   DBUG((DBG,FUNC_NAME,"Calling mapping notify hook (maybe empty)"));
   init_modifiers();
   init_pointer_mapping();
@@ -567,8 +567,8 @@ Window w_for_scwmexec_response;
 
 void
 HandleScwmExec()
-#define FUNC_NAME "HandleScwmExec"
 {
+#define FUNC_NAME "HandleScwmExec"
   Window w;
   Window *pw;
   Atom type_ret;
@@ -701,8 +701,8 @@ HandleScwmExec()
 
 void 
 HandlePropertyNotify()
-#define FUNC_NAME "HandlePropertyNotify"
 {
+#define FUNC_NAME "HandlePropertyNotify"
   XTextProperty text_prop;
 
   DBUG((DBG,"HandlePropertyNotify", "Routine Entered"));
@@ -1321,8 +1321,8 @@ HandleUnmapNotify()
  ***********************************************************************/
 void 
 HandleButtonPress()
-#define FUNC_NAME "HandleButtonPress"
 {
+#define FUNC_NAME "HandleButtonPress"
   unsigned int modifier;
   Binding *MouseEntry;
   Window x;
@@ -1549,8 +1549,8 @@ HandleLeaveNotify()
  */
 void 
 HandleConfigureRequest()
-#define FUNC_NAME "HandleConfigureRequest"
 {
+#define FUNC_NAME "HandleConfigureRequest"
   XWindowChanges xwc;
   unsigned long xwcm;
   int x, y, width, height;
@@ -1776,8 +1776,8 @@ CoerceEnterNotifyOnCurrentWindow()
 
 int
 NoEventsScwmUpdate()
-#define FUNC_NAME "NoEventsScwmUpdate"
 {
+#define FUNC_NAME "NoEventsScwmUpdate"
   extern int fd_width, x_fd;
   fd_set in_fdset, out_fdset;
   int retval;
@@ -1877,8 +1877,8 @@ NoEventsScwmUpdate()
  */
 int 
 NextScwmEvent(Display * dpy, XEvent * event)
-#define FUNC_NAME "NextScwmEvent"
 {
+#define FUNC_NAME "NextScwmEvent"
   DBUG((DBG,FUNC_NAME, "Entered"));
 
   /* Do this IMMEDIATELY prior to select, to prevent any nasty
@@ -1942,8 +1942,8 @@ fill_x_keypress_event(XKeyEvent *evt, int type, KeySym keysym, int modifier,
 static
 Window
 WindowGettingButtonEvent(Window w, int x, int y)
-#define FUNC_NAME "WindowGettingButtonEvent"
 {
+#define FUNC_NAME "WindowGettingButtonEvent"
   int x2, y2;
   Window child, w2 = w;
   XWindowAttributes wa;

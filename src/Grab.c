@@ -36,8 +36,8 @@ int CServerGrabs() { return xgrabcount; };
 
 void 
 XGrabServer_withSemaphore(Display * disp)
-#define FUNC_NAME "XGrabServer_withSemaphore"
 {
+#define FUNC_NAME "XGrabServer_withSemaphore"
   /* should happen before we grab the server so that X-server-grabs
      conservatively reports that the Server is grabbed (not really an
      issue now, but could be with more asynch events --04/11/99 gjb) */
@@ -53,8 +53,8 @@ XGrabServer_withSemaphore(Display * disp)
 
 void 
 XUngrabServer_withSemaphore(Display * disp)
-#define FUNC_NAME "XUngrabServer_withSemaphore"
 {
+#define FUNC_NAME "XUngrabServer_withSemaphore"
   if (xgrabcount == 1) {
     DBUG((DBG,"XGrabServer_withSemaphore","ungrabbed!"));
     XUngrabServer(disp);

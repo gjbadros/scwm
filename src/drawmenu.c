@@ -175,8 +175,8 @@ PscwmFontForMenuItem(scwm_font *scfontDefault, SCM scmFont)
 static void
 PaintSideImage(Window w, Pixel bg, int cpixHeight, scwm_image *psimg,
 	       SCM align)
-#define FUNC_NAME "PaintSideImage"
 {
+#define FUNC_NAME "PaintSideImage"
   int cpixDstYoffset, cpixSrcYoffset;
   int height;
   
@@ -287,8 +287,8 @@ DrawUnderline(Window w, scwm_font *scfont, GC gc, char *sz, int x, int y, int po
 static
 void
 PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
-#define FUNC_NAME "PaintMenuItem"
 {
+#define FUNC_NAME "PaintMenuItem"
   MenuDrawingInfo *pmdi = pmd->pmdi;
   MenuItem *pmi = pmiim->pmi;
   MenuItemDrawingInfo *pmidi = pmiim->pmidi;
@@ -481,8 +481,8 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 static
 void 
 PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
-#define FUNC_NAME "PaintDynamicMenu"
 {
+#define FUNC_NAME "PaintDynamicMenu"
   Window w = pmd->w;
   MenuDrawingInfo *pmdi = pmd->pmdi;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim;
@@ -562,8 +562,8 @@ WarpPointerToPmiim(MenuItemInMenu *pmiim)
 static
 MenuItemInMenu *
 PmiimFromPmdXY(DynamicMenu *pmd, int ARG_UNUSED(x), int y)
-#define FUNC_NAME "PmiimFromPmdXY"
 {
+#define FUNC_NAME "PmiimFromPmdXY"
   int ipmiim;
   for (ipmiim = 0; ipmiim < pmd->cmiim; ipmiim++) {
     MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim];
@@ -624,8 +624,8 @@ FreePmidi(MenuItemDrawingInfo * pmidi)
    response to expose events */
 void
 ConstructDynamicMenu(DynamicMenu *pmd)
-#define FUNC_NAME "ConstructDynamicMenu"
 {
+#define FUNC_NAME "ConstructDynamicMenu"
   if (pmd->pmdi != NULL)
     return;
 

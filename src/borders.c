@@ -183,8 +183,8 @@ static void
 DrawButton(ScwmWindow *psw, Window win, int w, int h,
 	   ButtonFace * bf, GC ReliefGC, GC ShadowGC,
 	   Bool ARG_UNUSED(inverted), int stateflags)
-#define FUNC_NAME "DrawButton"
 {
+#define FUNC_NAME "DrawButton"
   register int type = bf->style & ButtonFaceTypeMask;
 
   scwm_image *image;
@@ -338,8 +338,8 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
 		int x, int y, int w, int h,
 		GC ReliefGC, GC ShadowGC,
 		int draw, int highlight)
-#define FUNC_NAME "RelieveWindowHH"
 {
+#define FUNC_NAME "RelieveWindowHH"
   XSegment seg[4];
   int i = 0;
   int edge = 0, a = 0, b = 0;
@@ -1286,8 +1286,8 @@ void
 RelieveWindow(ScwmWindow *psw, Window win,
 	      int x, int y, int w, int h,
 	      GC ReliefGC, GC ShadowGC, int highlight)
-#define FUNC_NAME "RelieveWindow"
 {
+#define FUNC_NAME "RelieveWindow"
   XSegment seg[4];
   int i = 0;
   int edge = 0;
@@ -1410,8 +1410,8 @@ RelieveWindow(ScwmWindow *psw, Window win,
 void 
 SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
            Bool fMoved, Bool fResized)
-#define FUNC_NAME "SetupFrame"
 {
+#define FUNC_NAME "SetupFrame"
   XWindowChanges xwc;
   unsigned long xwcm;
   int i;

@@ -248,8 +248,8 @@ static char *statefile()
 
 /* save the state of all windows */
 static void saveYourself2(SmcConn conn, SmPointer ARG_UNUSED(client_data))
-#define FUNC_NAME "saveYourself2"
 {
+#define FUNC_NAME "saveYourself2"
   ScwmWindow *psw;
   char *savename = statefile();
   FILE *save;
@@ -281,8 +281,8 @@ static void saveYourself2(SmcConn conn, SmPointer ARG_UNUSED(client_data))
 
 /* load a number of window states to be used for restarted clients */
 static void loadMyself()
-#define FUNC_NAME "loadMyself"
 {
+#define FUNC_NAME "loadMyself"
   SMWindowData *d;
   char *loadname = statefile();
   FILE *load;
@@ -455,8 +455,8 @@ static void setSMProperties()
 
 static void iceWatchFD(IceConn conn, IcePointer ARG_UNUSED(client_data),
 		       Bool opening, IcePointer *ARG_UNUSED(watch_data))
-#define FUNC_NAME "iceWatchFD"
 {
+#define FUNC_NAME "iceWatchFD"
   if (opening) {
     if (IceSMfd != -1) { /* shouldn't happen */
       scwm_msg(WARN, FUNC_NAME,

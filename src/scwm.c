@@ -1331,8 +1331,8 @@ CreateCursors(void)
  */
 void 
 RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
-#define FUNC_NAME "RestoreWithdrawnLocation"
 {
+#define FUNC_NAME "RestoreWithdrawnLocation"
   XWindowChanges xwc;
 
   if (!psw)
