@@ -46,8 +46,10 @@ To regenerate the documentation from source, you will need the
 following tools:
 
 perl 5.004 or higher (until we start using the Guile version).
-Parse-RecDescent package from CPAN, version 1.51 or hgher
-makeinfo 1.67 or higher (it's in Texinfo 3.9 for example)
+Parse-RecDescent package from CPAN, version 1.51 or higher
+(see http://www.metronet.com/perl/authors/Damian_Conway/ --
+ the package includes the Text::Balanced module which we use)
+makeinfo 1.67 or higher (it's in Texinfo 3.9 for example).
 
 
 PREFERRED PATCH FORMAT:
