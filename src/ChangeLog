@@ -1,3 +1,9 @@
+Sun Oct 26 01:05:27 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scmprocs.c: Eliminate use of gh_new_procedureX_X; instead use
+ 	gh_new_procedure throughout, since gh_new_procedureX_X will be
+ 	going away in guile.
+
 Sat Oct 25 21:42:36 1997  unknown  <gjb@cs.washington.edu>
 
 	* Added extra args to do animated moves to (move-to), also permit
