@@ -29,6 +29,7 @@
       :use-module (app scwm flash-window)
       :use-module (app scwm listops)
       :use-module (app scwm file)
+      :use-module (app scwm scwmxtest)
       :use-module (app scwm stringops)
       :use-module (app scwm group)
       :use-module (app scwm path-cache)
@@ -53,6 +54,7 @@
       :use-module (app scwm flash-window)
       :use-module (app scwm listops)
       :use-module (app scwm file)
+      :use-module (app scwm scwmxtest)
       :use-module (app scwm stringops)
       :use-module (app scwm group)
       :use-module (app scwm path-cache)
@@ -715,3 +717,41 @@ that corner fixed."
 		     #:action (lambda () (destroy-group swl) (unselect-all-windows))))
 	  ()
 	  )))))
+
+(define-public (next-visible-non-iconified-window)
+  (next-window #:only visible? #:except iconified?))
+
+(define-public (prev-visible-non-iconified-window)
+  (prev-window #:only visible? #:except iconified?))
+
+(define-public (window-task-switcher-menu)
+  (show-window-list-menu #t #:by-focus #t #:show-last-focus-time #t
+			 #:show-geometry #t))
+  
+
+(define-public (bind-wheel-mouse-prior-next matching-proc)
+  (bind-mouse 'window 4
+	      (lambda ()
+		(if (matching-proc (current-window-with-pointer))
+		    (send-key-press-prior)
+		    (begin
+		      (xtest-fake-button-event 4 #t)
+		      (xtest-fake-button-event 4 #f 10)))))
+  (bind-mouse 'window 5
+	      (lambda ()
+		(if (matching-proc (current-window-with-pointer))
+		    (send-key-press-next)
+		    (begin
+		      (xtest-fake-button-event 5 #t)
+		      (xtest-fake-button-event 5 #f 10))))))
+
+;; (bind-wheel-mouse-prior-next (class-match?? "AcroRead"))
+
+(define-public (send-key-press-up) 
+  (send-key-press "Up"))
+(define-public (send-key-press-down)
+  (send-key-press "Down"))
+(define-public (send-key-press-prior)
+  (send-key-press "Prior"))
+(define-public (send-key-press-next)
+  (send-key-press "Next"))

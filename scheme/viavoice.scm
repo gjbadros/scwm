@@ -23,6 +23,7 @@
   :use-module (app scwm scwmviavoice)
   :use-module (app scwm optargs)
   :use-module (app scwm base)
+  :use-module (app scwm flux)
   :use-module (app scwm animation)
   :use-module (app scwm animated-edge-moves)
   :use-module (app scwm defoption)
@@ -54,7 +55,7 @@
   (add-hook! vv-recognition-hook vv-move-window)
   (add-hook! vv-recognition-hook vv-recognition-debug))
 
-
+;; viavoice
 (define-public (vv-initialize)
   "Use this to start ViaVoice recognition."
   (vv-connect)
@@ -68,28 +69,34 @@
 	(let* ((pos (window-position win))
 	       (x (car pos))
 	       (y (cadr pos))
-	       (do-animation #t))
+	       (do-animation #f))
 	  (cond
-	   ((string=? dir "right") (set! x (+ x amount)))
-	   ((string=? dir "left") (set! x (- x amount)))
-	   ((string=? dir "down") (set! y (+ y amount)))
-	   ((string=? dir "up") (set! y (- y amount)))
-	   ((string=? dir "north") (set! do-animation #f) (animated-move-to-n win))
-	   ((string=? dir "north west") (set! do-animation #f) (animated-move-to-nw win))
-	   ((string=? dir "north east") (set! do-animation #f) (animated-move-to-ne win))
-	   ((string=? dir "west") (set! do-animation #f) (animated-move-to-w win))
-	   ((string=? dir "east") (set! do-animation #f) (animated-move-to-e win))
-	   ((string=? dir "south west") (set! do-animation #f) (animated-move-to-sw win))
-	   ((string=? dir "south east") (set! do-animation #f) (animated-move-to-se win))
-	   ((string=? dir "south") (set! do-animation #f) (animated-move-to-s win))
+	   ((string=? dir "right") (set! x (+ x amount)) (set! do-animation #t))
+	   ((string=? dir "left") (set! x (- x amount)) (set! do-animation #t))
+	   ((string=? dir "down") (set! y (+ y amount)) (set! do-animation #t))
+	   ((string=? dir "up") (set! y (- y amount)) (set! do-animation #t))
+	   ((string=? dir "north") (animated-move-to-n win))
+	   ((string=? dir "north west") (animated-move-to-nw win))
+	   ((string=? dir "north east") (animated-move-to-ne win))
+	   ((string=? dir "west") (animated-move-to-w win))
+	   ((string=? dir "east") (animated-move-to-e win))
+	   ((string=? dir "south west") (animated-move-to-sw win))
+	   ((string=? dir "south east") (animated-move-to-se win))
+	   ((string=? dir "south") (animated-move-to-s win))
+	   ((string=? dir "previous") (prev-visible-non-iconified-window))
+	   ((string=? dir "next") (next-visible-non-iconified-window))
+	   ((string=? dir "list") (window-task-switcher-menu))
+	   ((string=? dir "cotton") (animated-window-shade win))
 	   )
-	  (for-each display 
-		    (list "move window " win " "
-			  dir " to " x " " y " " amount "\n"))
-	  (if do-animation  (animated-move-window x y win #t))))))
+	  (if do-animation
+	      (begin
+		(for-each display 
+			  (list "move window " win " "
+				dir " to " x " " y " " amount "\n"))
+		(animated-move-window x y win #t)))))))
 
-(define-public (vv-recognition-debug dir amount)
-  (for-each display (list "Got dir = " dir ", amount = " amount "\n")))
+(define-public (vv-recognition-debug word annotation)
+  (for-each display (list "Got word = " word ", annotation = " annotation "\n")))
       
 ;;(add-hook! vv-recognition-hook vv-move-window)
 ;;(add-hook! vv-recognition-hook vv-recognition-debug)
