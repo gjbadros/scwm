@@ -1,3 +1,8 @@
+Mon Nov 23 22:41:02 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am: Minor fix from Harvey J. Stein: document the name
+ 	of the doc-extractor properly; fix dependencies a bit.
+
 Fri Nov 20 02:17:25 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* guile-gtk: Added a note about guile-gtk support.
