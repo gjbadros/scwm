@@ -2844,7 +2844,7 @@ scwm_image_load_path="(\\\\\\\"$x_includes/X11/bitmaps\\\\\\\" \\\\\\\"$x_includ
 
 scwm_icons="$x_includes/X11/bitmaps:$x_includes/X11/pixmaps:\${prefix}/icons"
 scwm_dir="\${prefix}/lib/X11/$scwm_name"
-scwm_scheme_mod_dir="\${prefix}/share/$scwm_name-modules/app/scwm"
+scwm_scheme_mod_dir="\${prefix}/share/${scwm_name}-modules"
 scwm_load_path=$scwm_scheme_mod_dir
 
 if test "x$x_libraries" != x ; then

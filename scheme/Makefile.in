@@ -11,7 +11,7 @@ exec_prefix=@exec_prefix@
 bin_dir=@exec_prefix@/bin
 scwm_rc=@scwm_rc@
 scwm_name=@scwm_name@
-scwm_scheme_dir=@scwm_scheme_mod_dir@
+scwm_scheme_dir=@scwm_scheme_mod_dir@/app/scwm
 
 mkinstalldirs=$(SHELL) $(top_srcdir)/mkinstalldirs
 
