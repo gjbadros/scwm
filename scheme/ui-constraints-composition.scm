@@ -1,6 +1,7 @@
 ;;;; $Id$
 ;;;; Copyright (C) 1999 Jeff W. Nichols
 
+;;; (use-scwm-modules ui-constraints-composition)
 (define-module (app scwm ui-constraints-composition)
   :use-module (app scwm base)
   :use-module (app scwm optargs)
