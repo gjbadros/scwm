@@ -1,3 +1,15 @@
+1998-10-13  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* std-menus.scm (context-map): New variable.
+	(make-context-menu): New function.
+
+	* flux.scm (execute-on-selection): New function.
+	(exe-on-selection): New function.
+
+	* advice.scm: Added a first shot at advising. This is probably not
+	very usable yet. Some kind scheme guru should improve/reimplement
+	this.
+
 Sat Oct 10 14:25:29 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `use-change-desk-commands' and make
