@@ -130,3 +130,6 @@
 
 /* Define this if you want to use imlib pixmap/bitmap support */
 #undef USE_IMLIB
+
+/* Define this if you have IBM ViaVoice installed with its smapi.h header */
+#undef HAVE_VIAVOICE

@@ -11,7 +11,7 @@ AC_INIT(scwm/scwm.c)
 AC_PREREQ(2.4)
 
 dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.99.2)
+AM_INIT_AUTOMAKE(scwm, 0.99.2post)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(include/config.h)
 
@@ -510,6 +510,12 @@ AC_STDC_HEADERS
 AC_CHECK_HEADERS(getopt.h, AC_DEFINE(HAVE_GETOPT_H))
 AC_CHECK_HEADERS(sys/select.h, AC_DEFINE(HAVE_SYS_SELECT_H))
 
+if test -r /usr/lib/ViaVoice/include/smapi.h; then
+   have_viavoice=true
+   AC_DEFINE(HAVE_VIAVOICE)
+fi
+
+AM_CONDITIONAL(HAVE_VIAVOICE, test x"true" = x$have_viavoice)
 
 dnl ## Check for library functions ##
 
@@ -708,7 +714,6 @@ AC_OUTPUT(Makefile \
           scheme/Makefile \
           pixmaps/Makefile \
           app/Makefile \
-	  corba/Makefile \
 	  modules/Makefile \
 	  modules/background/Makefile \
 	  modules/c-animation/Makefile \
@@ -721,6 +726,7 @@ AC_OUTPUT(Makefile \
 	  modules/xpm-menus/Makefile \
 	  modules/proplist/Makefile \
 	  modules/xtest/Makefile \
+	  modules/viavoice/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
