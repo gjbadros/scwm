@@ -136,7 +136,7 @@ int appending_fgets(char **sofar)
 #else
   char buffer [512];
 
-  puts("scwm> ");
+  fputs("scwm> ", stdio);
   do {
     fgets(buffer, 512, stdin);
     if (strlen(buffer)==0) {
