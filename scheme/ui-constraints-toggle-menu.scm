@@ -4,8 +4,8 @@
 (define-module (app scwm ui-constraints-toggle-menu)
 ;;  :use-module (cassowary constraints)
   :use-module (app scwm base)
-  :use-module (app scwm flux)
   :use-module (app scwm optargs)
+  :use-module (app scwm flash-window)
   :use-module (app scwm ui-constraints))
 
 
@@ -56,7 +56,8 @@
 			      (undraw-constraint x)
 			      (map (lambda (c) (unflash-windows-of-constraint c)) cn))
 			    #f)))
-	 global-constraint-instance-list))))
+	 global-constraint-instance-list))
+   #:hover-delay 100))
 
 (define-public (popup-ui-constraints-toggle-menu)
   "Popup a menu that can be used to turn added constraints on and off.
