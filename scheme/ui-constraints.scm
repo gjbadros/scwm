@@ -7,8 +7,9 @@
 ;; constraints on windows.
 ;;
 
-(define-module (app scwm ui-constraints))
-;;  :use-module (app scwm simple-constraints))
+(define-module (app scwm ui-constraints)
+;;  :use-module (cassowary constraints))
+  )
 
 ;; (use-modules (app scwm ui-constraints))
 ;; (use-modules (app scwm ui-constraints-classes))

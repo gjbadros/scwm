@@ -3,6 +3,7 @@
 
 (define-module (app scwm ui-constraints-classes)
   :use-module (app scwm base)
+  :use-module (app scwm optargs)
   :use-module (app scwm ui-constraints)
   :use-module (app scwm simple-constraints)
   :use-module (app scwm message-window)

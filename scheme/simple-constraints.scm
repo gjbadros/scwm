@@ -2,6 +2,7 @@
 ;; (C) 1999 Greg J. Badros
 
 (define-module (app scwm simple-constraints)
+;;  :use-module (cassowary constraints)
   :use-module (app scwm optargs))
 
 (define*-public (keep-tops-even w1 w2 #&optional (enable? #f))

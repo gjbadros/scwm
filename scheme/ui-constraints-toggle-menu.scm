@@ -2,6 +2,7 @@
 ;; (C) 1999 Greg J. Badros
 
 (define-module (app scwm ui-constraints-toggle-menu)
+;;  :use-module (cassowary constraints)
   :use-module (app scwm base)
   :use-module (app scwm flux)
   :use-module (app scwm optargs)

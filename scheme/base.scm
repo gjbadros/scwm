@@ -589,7 +589,7 @@ Returns the child-pid, or #f if the fork fails."
 	child-pid)))
 
 
-(define-public (select-window #&optional (kill? #f) (release? #f))
+(define*-public (select-window #&optional (kill? #f) (release? #f))
   "Select a window interactively, and return the specified window.
 Use a special cursor and let the user click to select the window. The
 optional arguments KILL? and RELEASE? indicate whether to use the
