@@ -82,7 +82,7 @@ static scm_smobfuns T ## _smobfuns = { \
   &free_ ## T, \
   &print_ ## T,  0 }
 
-#define REGISTER_SCWMSMOBFUNS(T) scm_tc16_scwm_ ## T = scm_newsmob(& T ## _smobfuns)
+#define REGISTER_SCWMSMOBFUNS(T) do { scm_tc16_scwm_ ## T = scm_newsmob(& T ## _smobfuns); } while (0)
 
 
 #ifndef SCWM_EXTRACT_COMMENTS
