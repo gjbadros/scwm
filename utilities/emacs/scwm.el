@@ -184,7 +184,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 
 (defsubst scwm-safe-call (func args out)
   "Call FUNC with ARGS and output to OUT, checking existence of FUNC first."
-  (scwm-eval (concat "(if (bound? " func ") (" func " " args ") "
+  (scwm-eval (concat "(if (defined? '" func ") (" func " " args ") "
                      "(display \"This Guile version lacks `" func "'.\n\"))")
              out))
 
@@ -288,8 +288,8 @@ Returns a string which is present in the `scwm-obarray'."
       (princ ":\n\n ")
       (with-face 'highlight (princ "value"))
       (princ ":\n\n ")
-      (scwm-eval (concat "(if (bound? '" pat ") " pat
-                         " (display \"not bound\"))")
+      (scwm-eval (concat "(if (defined? '" pat ") " pat
+                         " (display \"not defined\"))")
                  standard-output)
       (princ "\n\n ")
       (with-face 'highlight (princ "documentation"))
