@@ -59,6 +59,9 @@ SCWM_SYMBOL(sym_none , "none");
 
 extern SCM sym_click, sym_root_window;
 
+SCM window_close_hook;
+
+
 char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
 char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
 char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
@@ -556,7 +559,9 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
     scwm_msg(ERR,FUNC_NAME,"Window %s is sticky but not on screen --\n\
 correcting from %d,%d",
              psw->name,x,y);
+#if 0
     MoveTo((ScwmWindow *)psw,0,0);
+#endif
   }
 #endif
     
@@ -1444,6 +1449,8 @@ DestroyScwmWindow(ScwmWindow *psw)
   extern ScwmWindow *ButtonWindow;
   extern ScwmWindow *colormap_win;
   extern Bool PPosOverride;
+
+  call1_hooks(window_close_hook, psw->schwin);
 
   /*
    * Warning, this is also called by HandleUnmapNotify; if it ever needs to
@@ -3890,6 +3897,12 @@ void
 init_window()
 {
   REGISTER_SCWMSMOBFUNS(window);
+
+  SCWM_HOOK(window_close_hook,"window-close-hook");
+  /** This hook is invoked whenever a scwm-managed window is closed
+for any reason. The hook procedures are invoked with one argument,
+WIN, the window being closed.  The WIN is still valid during the hook
+procedures. */
 
   SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook");
   /** This hook is invoked with no arguments when the user hits an invalid

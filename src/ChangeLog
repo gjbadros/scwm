@@ -1,4 +1,7 @@
-1999-02-08  Maciej Stachowiak  <mstachow@racerx.viewlogic.com>
+1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* window.c: New hook `close-window-hook' invoked when a window
+	closes for any reason.
 
 	* events.c: Pass window (or 'root-window or #f if unrecognized)
 	based on Event.xclient.window to client-message-hook.
