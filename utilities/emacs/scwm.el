@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-10-27 Tue 15:47:05 EST sds@eho.eaglets.com>
+;; File: <scwm.el - 1998-12-03 Thu 11:53:51 EST sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -232,12 +232,12 @@ current buffer, otherwise it goes to the minibuffer.")
 
 ;;;###autoload
 (defun scwm-eval-sexp (sexp mb-p)
-  "Eval the SEXP.  Output to the current buffer or minibuffer.
-If the prefix argument (the second argument when called from lisp) is
+  "eval the sexp.  output to the current buffer or minibuffer.
+if the prefix argument (the second argument when called from lisp) is
 non-nil, the output goes to the minibuffer, otherwise it is inserted in
-the current buffer.  When `scwm-eval-to-minibuffer' is non-nil, the
+the current buffer.  when `scwm-eval-to-minibuffer' is non-nil, the
 meaning of the second argument is reversed."
-  (interactive "sEval in SCWM: \nP")
+  (interactive "seval in scwm: \np")
   (cond ((or (and mb-p scwm-eval-to-minibuffer)
              (not (or mb-p scwm-eval-to-minibuffer)))
          (newline-and-indent)
@@ -248,15 +248,15 @@ meaning of the second argument is reversed."
 
 ;;;###autoload
 (defun scwm-eval-last (mb-p)
-  "Evaluate the last sexp with `scwm-eval-sexp'."
-  (interactive "P")
+  "evaluate the last sexp with `scwm-eval-sexp'."
+  (interactive "p")
   (scwm-eval-sexp (buffer-substring-no-properties
                    (point) (save-excursion (backward-sexp) (point))) mb-p))
 
 ;;;###autoload
 (defun scwm-eval-region (beg end mb-p)
-  "Evaluate the region with `scwm-eval-sexp'."
-  (interactive "r\nP")
+  "evaluate the region with `scwm-eval-sexp'."
+  (interactive "r\np")
   (scwm-eval-sexp (buffer-substring-no-properties beg end) mb-p))
 
 (defalias 'advertised-xscheme-send-previous-expression
@@ -266,10 +266,10 @@ meaning of the second argument is reversed."
 ;; ----------
 
 (defun scwm-make-obarray ()
-  "Create and return an obarray of SCWM symbols."
+  "create and return an obarray of scwm symbols."
   ;; (setq scwm-obarray (scwm-make-obarray))
-  ;; Can't use `read' because "? " is read as 32.  Another problem is
-  ;; that the symbols will be interned in the standard ELisp obarray
+  ;; can't use `read' because "? " is read as 32.  another problem is
+  ;; that the symbols will be interned in the standard elisp obarray
   ;; `obarray', not in the obarray `scwm-obarray'.
   (let ((oa (make-vector 131 0)) (pos 2)) ; obarray
     (with-temp-buffer
@@ -277,7 +277,7 @@ meaning of the second argument is reversed."
       (scwm-eval "(use-modules (ice-9 session))" nil)
       (scwm-safe-call "apropos-internal" "\"\"" (current-buffer))
       (unless (= (char-after 1) ?\()
-        (error "Not a list: %s" (buffer-string)))
+        (error "not a list: %s" (buffer-string)))
       (goto-char pos)
       (while (re-search-forward "[ ()]" nil t)
         (intern (buffer-substring-no-properties pos (1- (point))) oa)
@@ -285,18 +285,18 @@ meaning of the second argument is reversed."
       oa)))
 
 (defun scwm-obarray ()
-  "Ensure `scwm-obarray' is initialized."
+  "ensure `scwm-obarray' is initialized."
   (setq scwm-obarray (or scwm-obarray (scwm-make-obarray))))
 
 (defun scwm-complete-symbol (&optional sym)
-  "Complete the current symbol or SYM by querying scwm using apropos-internal.
-Returns a string which is present in the `scwm-obarray'."
+  "complete the current symbol or sym by querying scwm using apropos-internal.
+returns a string which is present in the `scwm-obarray'."
   (when current-prefix-arg (setq scwm-obarray nil))
   (let ((oa (scwm-obarray)))
     ;; require a match only when the obarry is present
     ;; (in case guile lacks `apropos-internal')
     ;; to be removed when the situation stabilizes.
-    (completing-read "SCWM symbol: " oa nil oa
+    (completing-read "scwm symbol: " oa nil oa
                      (or sym (scwm-symbol-at-point)) 'scwm-history)))
 
 ;;;###autoload
@@ -306,22 +306,22 @@ Returns a string which is present in the `scwm-obarray'."
 	 (pat (buffer-substring-no-properties beg end))
 	 (comp (try-completion pat (scwm-obarray))))
     (cond ((eq comp t) (message "`%s' is complete" pat))
-	  ((null comp) (message "Cannot complete `%s'" pat) (ding))
+	  ((null comp) (message "cannot complete `%s'" pat) (ding))
 	  ((not (string= comp pat)) (delete-region beg end) (insert comp))
-	  (t (message "Making completion list...")
-	     (with-output-to-temp-buffer "*Completions*"
+	  (t (message "making completion list...")
+	     (with-output-to-temp-buffer "*completions*"
 	       (display-completion-list (all-completions pat scwm-obarray)))
-	     (message "Making completion list...done")))))
+	     (message "making completion list...done")))))
 
 ;; help
 ;; ----
 
 (defvar scwm-bug "scwm-discuss@huis-clos.mit.edu"
-  "The address to send bug reports on SCWM.")
+  "the address to send bug reports on scwm.")
 
 ;;;###autoload
 (defun scwm-bug ()
-  "Send a bug report about scwm."
+  "send a bug report about scwm."
   (interactive) (compose-mail scwm-bug)
   (save-excursion
     (search-forward mail-header-separator nil t) (forward-line 1)
@@ -333,12 +333,12 @@ Returns a string which is present in the `scwm-obarray'."
 
 ;;;###autoload
 (defun scwm-documentation (pat)
-  "Query scwm for documentation for the symbol PAT."
+  "query scwm for documentation for the symbol pat."
   (interactive (list (scwm-complete-symbol)))
   (help-setup-xref (list 'scwm-documentation pat) (interactive-p))
-  (with-output-to-temp-buffer "*Help*"
-    (with-current-buffer "*Help*"
-      (princ "SCWM documentation for `")
+  (with-output-to-temp-buffer "*help*"
+    (with-current-buffer "*help*"
+      (princ "scwm documentation for `")
       (with-face 'highlight (princ pat))
       (princ "':\n\n ")
       (with-face 'highlight (princ "value"))
@@ -357,7 +357,7 @@ Returns a string which is present in the `scwm-obarray'."
                          "(if (procedure? " pat ") (procedure-documentation "
                          pat ") (begin (display " pat ") (display "
                          "\" is not a procedure\n\")))"
-                         " (display \"This Guile version lacks "
+                         " (display \"this guile version lacks "
                          "`procedure-documentation'.\n\"))")
                  standard-output)
       ;; add buttons to the help message
@@ -378,13 +378,13 @@ Returns a string which is present in the `scwm-obarray'."
           (goto-char pt)
           ;; function definition in the source
           (while (re-search-forward
-                  (concat "^\\[From \\(\\([" scwm-file-name-chars
+                  (concat "^\\[from \\(\\([" scwm-file-name-chars
                           "\\]+\\):\\([0-9]+\\)\\)]$")
                   nil t)
             (help-xref-button 1 (lambda (fl pos)
                                   (let ((ff (concat scwm-source-path fl)))
                                     (unless (file-readable-p ff)
-                                      (error "File `%s' not found" ff))
+                                      (error "file `%s' not found" ff))
                                     (pop-to-buffer (find-file-noselect ff)))
                                   (goto-line pos))
                               (list (match-string 2)
@@ -394,12 +394,12 @@ Returns a string which is present in the `scwm-obarray'."
 
 ;;;###autoload
 (defun scwm-apropos (pat)
-  "List all scwm symbols matching PAT."
+  "list all scwm symbols matching pat."
   (interactive
-   (list (read-string "SCWM Apropos: " (format "%s" (scwm-symbol-at-point)))))
-  (with-output-to-temp-buffer "*Apropos*"
-    (with-current-buffer "*Apropos*"
-      (princ "Click mouse-2 for documentation.\n\nSCWM apropos `")
+   (list (read-string "scwm apropos: " (format "%s" (scwm-symbol-at-point)))))
+  (with-output-to-temp-buffer "*apropos*"
+    (with-current-buffer "*apropos*"
+      (princ "click mouse-2 for documentation.\n\nscwm apropos `")
       (with-face 'highlight (princ pat))
       (princ "':\n\n")
       (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
@@ -410,10 +410,10 @@ Returns a string which is present in the `scwm-obarray'."
       ;; make the symbols clickable
       (let ((props '(action scwm-documentation mouse-face highlight
                      face italic)) p0 p1 p2 str)
-        (while (not (eobp))
-          (setq p0 (point) p1 (search-forward ": ")
-                p2 (1- (re-search-forward "\\s "))
-                str (buffer-substring-no-properties p1 p2))
+        (while (progn (setq p0 (point) p1 (search-forward ": " nil t)
+                            p2 (1- (re-search-forward "\\s " nil t)))
+                      (and p1 p2))
+          (setq str (buffer-substring-no-properties p1 p2))
           (add-text-properties p0 p2 (cons 'item (cons str props)))
           (forward-char -1)     ; in case the line just ended
           (forward-line 1)))
