@@ -50,10 +50,10 @@
   (inexact->exact (truncate (/ (* (- 100 y) (cadr (display-size))) 100))))
 
 (define*-public (w%x x #&optional (w (get-window)))
-  (inexact->exact (truncate (/ (* x (car (window-size w))) 100))))
+  (inexact->exact (truncate (/ (* x (car (window-frame-size w))) 100))))
 
 (define*-public (w%y y #&optional (w (get-window)))
-  (inexact->exact (truncate (/ (* y (cadr (window-size w))) 100))))
+  (inexact->exact (truncate (/ (* y (cadr (window-frame-size w))) 100))))
 
 (define-public (execute command) 
   (system (string-append "exec " command " &")))
@@ -264,5 +264,3 @@
 (define-public (set-edge-scroll! x y)
   (set-edge-x-scroll! x)
   (set-edge-y-scroll! y))
-
-

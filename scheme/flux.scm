@@ -125,7 +125,7 @@ Use the optional second argument as the separator."
    "\nWindow Frame ID:\t" (number->string (window-frame-id ww))
    "\nTitle:\t\t\t\"" (window-title ww) "\"\nPosition:\t\t"
    (size->str (window-position ww)) "\nSize:\t\t\t"
-   (size->str (window-size ww))
+   (size->str (window-frame-size ww))
    "\nDesk:\t\t\t" (number->string (window-desk ww)) "\nClass:\t\t\t\""
    (window-class ww) "\"\nResource:\t\t\"" (window-resource ww)
    "\"\nBorder Normal:\t\t" (bool->str (border-normal? ww))
@@ -160,7 +160,7 @@ Use the optional second argument as the separator."
 
 (define-public (animated-move-to x y)
   (let* ((w (get-window))
-	 (size (window-size w))
+	 (size (window-frame-size w))
 	 (width (car size))
 	 (height (cadr size))
 	 (position (window-position w))
@@ -239,7 +239,7 @@ Use the optional second argument as the separator."
     (if (window? window)
 	(map +
 	     (window-position window)
-	     (window-size     window))
+	     (window-frame-size window))
 	#f)))
 
 
@@ -321,7 +321,7 @@ This positions the popup menu appropriately."
   (let* ((pos (window-position win))
 	 (x-ne (car pos))
 	 (y (+ (cadr pos) (+ 1 (* 2 (window-border-width win)) (window-title-height win))))
-	 (x (if (odd? button-number) x-ne (+ 1 x-ne (car (window-size))))))
+	 (x (if (odd? button-number) x-ne (+ 1 x-ne (car (window-frame-size))))))
     (popup-menu menu #f x y (odd? button-number))))
 
 

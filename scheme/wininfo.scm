@@ -1,4 +1,4 @@
-;;;; 	Copyright (C) 1997 Maciej Stachowiak
+;;;; 	Copyright (C) 1997-1998 Maciej Stachowiak and Greg J. Badros
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@
   (if w (apply rectangle-overlap? 
 	       (append
 		(window-position w)
-		(window-size w)
+		(window-frame-size w)
 		(list 0 0)
 		(map (lambda (p) (- p 1)) (display-size))))))
 
@@ -60,8 +60,8 @@
   (and
    (= (window-desk w) (window-desk w2))
    (apply rectangle-overlap?
-	  (append (window-position w) (window-size w)
-		  (window-position w2) (window-size w2)))))
+	  (append (window-position w) (window-frame-size w)
+		  (window-position w2) (window-frame-size w2)))))
 
 (define*-public ((window-overlaps-window? #&optional (w (get-window))) 
 		 #&optional (w2 (get-window)))
@@ -76,8 +76,8 @@
 	      (pos (window-position w))
 	      (size (window-size w)))
 	  (string-append (if i "(" "")
-			 (number->string (car size))
-			 "x" (number->string (cadr size))
+			 (number->string (caddr size))
+			 "x" (number->string (cadddr size))
 			 "+" (number->string (car pos)) 
 			 "+" (number->string (cadr pos))
 			 (if i ")" "")))))

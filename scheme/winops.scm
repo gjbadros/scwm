@@ -1,4 +1,4 @@
-;;;; 	Copyright (C) 1997 Maciej Stachowiak
+;;;; 	Copyright (C) 1997-1998 Maciej Stachowiak and Greg J. Badros
 ;;;; 
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@
 
 (define*-public (maximize nw nh #&optional (w (get-window)))
   (if w (let* ((pos (window-position w))
-	       (size (window-size w))
+	       (size (window-frame-size w))
 	       (x (car pos))
 	       (y (cadr pos))
 	       (width (car size))
@@ -82,8 +82,8 @@
 				    (list x y width height)))
 	  (move-to (if (> nw 0) 0 x)
 		   (if (> nh 0) 0 y) w)
-	  (resize-to (if (> nw 0) nw width)
-		     (if (> nh 0) nh height) w))))
+	  (resize-frame-to (if (> nw 0) nw width)
+			   (if (> nh 0) nh height) w))))
 
 (define*-public (maximized? #&optional (w (get-window)))
   (->bool (object-property w 'maximized)))
@@ -93,8 +93,8 @@
 	  (cond
 	   (max-prop (move-to (car max-prop)
 			      (cadr max-prop) w)
-		     (resize-to (caddr max-prop)
-				(cadddr max-prop) w)
+		     (resize-frame-to (caddr max-prop)
+				      (cadddr max-prop) w)
 		     (set-object-property! w 'maximized #f))))))
 
 (define*-public (opaque-interactive-move #&optional (win (get-window)))
