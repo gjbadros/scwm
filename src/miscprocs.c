@@ -31,8 +31,8 @@ SCM sym_focus;
 /* GJBFIX: Maybe the menus should do something w/ this? */
 SCWM_PROC(set_menu_mwm_style_x, "set-menu-mwm-style!", 0, 1, 0,
           (SCM flag))
-     /** Set the menu mwm style according to the boolean FLAG. This
-         option is currently ignored. */
+     /** Set the menu mwm style according to the boolean FLAG. 
+This option is currently ignored. */
 #define FUNC_NAME s_set_menu_mwm_style_x
 {
   SCM_REDEFER_INTS;
@@ -57,9 +57,9 @@ SCWM_PROC(set_menu_mwm_style_x, "set-menu-mwm-style!", 0, 1, 0,
    fast to erase */
 SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
           (SCM value))
-     /** Set the rubber band mask, the value XORed with the background
-when dragging non-opaque move or resize frames to VALUE. VALUE should
-be an integer. */
+     /** Set the rubber band mask used when dragging or resizing.
+VALUE is XORed with the background when dragging non-opaque move or
+resize frames. VALUE should be an integer. */
 #define FUNC_NAME s_set_rubber_band_mask_x
 {
   XGCValues gcv;
@@ -88,8 +88,9 @@ be an integer. */
 
 SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
           (SCM just))
-     /** Set the justification used for the title in the current decor
-to JUST. JUST should be one of 'right, 'left, or 'center. */
+     /** Set the justification for the title to JUST.
+JUST should be one of 'right, 'left, or 'center. Applies to the
+current decor */
 #define FUNC_NAME s_set_title_justify_x
 {
   ScwmDecor *fl;
@@ -122,8 +123,8 @@ to JUST. JUST should be one of 'right, 'left, or 'center. */
 
 SCWM_PROC(set_title_height_x, "set-title-height!", 1, 0, 0,
           (SCM height))
-     /** Set the height of the titlebar in pixels to HEIGHT in the
-current decor. */
+     /** Set the height of the titlebar in pixels to HEIGHT.
+Applies to the current decor. */
 #define FUNC_NAME s_set_title_height_x
 {
   int th, extra_height;
@@ -171,10 +172,11 @@ SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
 
 SCWM_PROC(capturing_p, "capturing?", 0, 0, 0,
           ())
-     /** Returns true when the windows are being caputured, either
-during initial startup, or during a recapture operation. In either
-case, placement procedures should probably avoid interaction and
-perhaps avoid moving the window being placed at all. */
+     /** Returns #t when the windows are being caputured.
+This happens at two times: both during initial startup, or during a
+recapture operation. In either case, placement procedures should
+probably avoid interaction and perhaps avoid moving the window being
+placed at all. */
 #define FUNC_NAME s_capturing_p
 {
   return SCM_BOOL_FromBool(PPosOverride);
@@ -196,9 +198,10 @@ this should not be needed. */
 
 SCWM_PROC(set_click_time_x, "set-click-time!", 1, 0, 0,
           (SCM ctime))
-     /** Set the delay before a mouse-down as considered a drag, and
-before a single click is definitively identified as not a double
-click, to CTIME microseconds. */
+     /** Set the delay used in identifying mouse clicks and drags.
+CTIME is specified in microseconds. After CTIME usecs, a mouse-down
+without a mouse-up is considered a drag.  Also, after CTIME usecs, a
+single click is definitively identified as not a double click. */
 #define FUNC_NAME s_set_click_time_x
 {
   SCM_REDEFER_INTS;
@@ -241,12 +244,13 @@ makes a difference onl when using focus policies other than 'mouse. */
 #undef FUNC_NAME
 
 
+/* FIXGJB: this should be determined more flexibly */
 SCWM_PROC(set_opaque_move_size_x, "set-opaque-move-size!", 1, 0, 0,
           (SCM size))
-     /** Set the opaque move size limit to SIZE, which is given as a
-percentage of the screen area. If the area of a window is greater than
-this percentage, the window will be moved with a rubber band
-instead. (FIXGJB: this should be determined more flexibly) */
+     /** Set the opaque move size limit to SIZE.
+SIZE is given as a percentage of the screen area. If the area of a
+window is greater than this percentage, the window will be moved with
+a rubber band instead. */
 #define FUNC_NAME s_set_opaque_move_size_x
 {
   SCM_REDEFER_INTS;
@@ -306,9 +310,9 @@ SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
 
 SCWM_PROC(recapture, "recapture", 0, 0, 0,
           ())
-     /** Recapture all the windows, in other words, destroy all the
-current frame windows and recreate them from scratch. This is
-hopefully not necessary during normal operation. */
+     /** Recapture all the windows.
+This destroys all the current frame windows and recreate them from
+scratch. This is hopefully not necessary during normal operation. */
 #define FUNC_NAME s_recapture
 {
   SCM_REDEFER_INTS;
@@ -365,10 +369,11 @@ SCWM_PROC(beep, "beep", 0, 0, 0,
 
 SCWM_PROC(set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!",1, 0, 0,
           (SCM flag))
-     /** Determine wether or not clever-place-window will be used in
-place of smart-place-window when the default placement procedure is
-used, and the window's smart-placement flag is on, according to the
-boolean value FLAG. */
+     /** Determine whether or not clever-place-window will be used.  If
+FLAG is #t, then clever-place-window will be used instead of
+smart-place-window when the default placement procedure is used, and
+the window's smart-placement flag is on, according to the boolean
+value FLAG. */
 #define FUNC_NAME s_set_smart_placement_is_really_smart_x
 {
   if (!gh_boolean_p(flag)) {
@@ -384,9 +389,9 @@ boolean value FLAG. */
 
 SCWM_PROC(set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0,
           (SCM flag))
-     /** Determine wether or not a click-to-focus window will actually
-receive the click event that causes it to gain focus, according to the
-boolean value FLAG. */
+     /** Determine whether a click-to-focus window receives the click.
+If FLAG is #t, the window will receive the event, if #f, the wm
+will not pass the event on to the client. */
 #define FUNC_NAME s_set_click_to_focus_passes_click_x
 {
   if (!gh_boolean_p(flag)) {
@@ -401,8 +406,9 @@ boolean value FLAG. */
 
 SCWM_PROC(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
           (SCM flag))
-     /** Determine whether a click to focus raises the clicked-on window
-accoring to the boolean value FLAG.*/
+     /** Determine whether a click to focus raises the clicked-on window.
+If FLAG is #t, clicks which transfer focus will also raise the target 
+window */
 #define FUNC_NAME s_set_click_to_focus_raises_x
 {
   if (!gh_boolean_p(flag)) {
@@ -422,8 +428,9 @@ accoring to the boolean value FLAG.*/
 
 SCWM_PROC(set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0, 0,
           (SCM flag))
-     /** Determine wether or not a mouse-focus window will always be
-raised by a click on the frame according to the boolean value FLAG.*/
+     /** Determine whether a mouse-focus-click will raise the window.
+If FLAG is #t it will raise the window. Not sure if this function
+makes sense any more.  FIXDOC. */
 #define FUNC_NAME s_set_mouse_focus_click_raises_x
 {
   if (!gh_boolean_p(flag)) {
@@ -447,10 +454,9 @@ SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
 /* FIXMS: this should probably be split into multiple procs. */
 SCWM_PROC(X_version_information, "X-version-information", 0, 0, 0,
           ())
-     /** Return some information about the version of the running X
-server.  In particular, return a list of the X protocol version, the X
-protocol revision, the X server vendor, and the vendor release
-number. */
+     /** Return some information about the version of the running X server.
+Return value is a list of the X protocol version, the X protocol
+revision, the X server vendor, and the vendor release number. */
 #define FUNC_NAME s_X_version_information
 {
   return scm_listify(SCM_MAKINUM(ProtocolVersion(dpy)),
@@ -473,7 +479,7 @@ return a list of the horizontal resolution, the vertical resolution,
 the number of planes on the current screen (i.e. the bit depth), the
 bits per color supported by the hadware, the visual class (one of
 "StaticGray", "GrayScale", "StaticColor", "PseudoColor", "DirectColor"
-or "TrueColor") and a boolean indicating wether the display is color.
+or "TrueColor") and a boolean indicating whether the display is color.
 The resolutions mentioned above should in theory be pixels per
 centimeter, rounded to the nearest integer. These parameters can be
 used for various workarounds or conditional decisions in a scwmrc to

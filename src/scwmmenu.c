@@ -114,7 +114,7 @@ print_menu(SCM obj, SCM port, scm_print_state * pstate)
 
 SCWM_PROC(menu_p,"menu?", 1,0,0,
           (SCM obj))
-/** Return true if OBJ is a menu object */
+/** Return #t if and only if OBJ is a menu object. */
 #define FUNC_NAME s_menu_p
 {
   return SCM_BOOL_FromBool(MENU_P(obj));

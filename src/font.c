@@ -99,8 +99,8 @@ print_font(SCM obj, SCM port, scm_print_state * pstate)
 
 SCWM_PROC(make_font, "make-font", 1, 0, 0,
            (SCM fname))
-     /** Return the font object corresponding to the X color
-specifier FNAME. If FNAME is not a valid X font name, or cannot be
+     /** Return the font object for the X font specifier FNAME.
+If FNAME is not a valid X font name, or cannot be
 allocated, an error results. */
 #define FUNC_NAME s_make_font
 {
@@ -241,8 +241,8 @@ SCWM_PROC(font_p, "font?", 1, 0, 0,
 
 SCWM_PROC(font_properties, "font-properties", 1, 0, 0,
            (SCM font))
-     /** Return an association list giving some properties of
-FONT. Currently defined properties are 'name, the string name of the
+     /** Return an association list giving some properties of FONT.
+Currently defined properties are 'name, the string name of the
 color, and 'height, it's total height in pixels. */
 #define FUNC_NAME s_font_properties
 {
@@ -280,8 +280,7 @@ SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
 
 SCWM_PROC(set_window_font_x, "set-window-font!", 1, 0, 0,
            (SCM font))
-     /** In the current decor, set the font used for drawing window
-titles to FONT. */
+	/** Set the font for window titles In the current decor to FONT. */
 #define FUNC_NAME s_set_window_font_x
 {
   int extra_height;

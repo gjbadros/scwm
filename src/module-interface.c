@@ -82,8 +82,9 @@ void BroadcastMiniIcon(unsigned long event_type, ScwmWindow *psw)
 
 SCWM_PROC(marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0,
           (SCM win))
-     /** This procedure constructs the contents of a BroadcastInfo fvwm
-module packet for WIN and returns it as a Scheme string. */
+     /** Constructs a fvwm2 BroadcastInfo module packet.
+The return value is the contents of a BroadcastInfo fvwm2
+module packet for WIN as a Scheme string. */
 #define FUNC_NAME s_marshal_fvwm2_config_info
 {
   ScwmWindow *psw;
@@ -125,8 +126,9 @@ module packet for WIN and returns it as a Scheme string. */
 
 SCWM_PROC(marshal_fvwm2_iconify_info, "marshal-fvwm2-iconify-info", 1, 0, 0,
           (SCM win))
-     /** This procedure constructs the contents of an "M_ICONIFY" fvwm
-module packet for WIN and returns it as a Scheme string. */
+     /** Constructs a fvwm2 "M_ICONIFY" module packet.
+The return value is the contents of an "M_ICONIFY" fvwm
+module packet for WIN as a Scheme string. */
 #define FUNC_NAME s_marshal_fvwm2_iconify_info
 {
   ScwmWindow *psw;

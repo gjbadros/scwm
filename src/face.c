@@ -321,8 +321,9 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg);
 
 SCWM_PROC(make_face, "make-face",2,0,0,
           (SCM flags, SCM specs) )
-	  /** Create a new face using FLAGS, a list of face flags and
-SPECS, a list of face specs. */
+	  /** Create a new face.
+FLAGS is a list of face flags (see concept) and
+SPECS is a list of face specifiers. */
 #define FUNC_NAME s_make_face
 {
   SCM answer;
@@ -542,7 +543,7 @@ be used for titlebars, and only tiled pixmaps may be used for borders.
                                             : cooridnates given as a 
                                             : percentage of the button size,
                                             : and a boolean value indicating
-                                            : wether to use the lighter or
+                                            : whether to use the lighter or
                                             : darker color. This spec is 
                                             : partially destructive.
  '(solid <COLOR>)                           : Use <COLOR> as the color for 
@@ -801,7 +802,8 @@ extern ScwmDecor *cur_decor;
 
 SCWM_PROC(set_title_face_x, "set-title-face!", 1 , 2, 0,
           (SCM active_up, SCM active_down, SCM inactive))
-     /** In the current decor, use ACTIVE-UP as the face for the title
+     /** Set the titlebar faces for the various window states.
+In the current decor, use ACTIVE-UP as the face for the title
 bar when active and not pressed in. Use ACTIVE-DOWN when the title bar
 is active and pressed in, and INACTIVE when the window is
 inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not
@@ -840,7 +842,8 @@ state, it will be sunk in the ACTIVE-DOWN state by default.  */
 
 SCWM_PROC(set_button_face_x, "set-button-face!", 2, 2, 0,
           (SCM button, SCM active_up, SCM active_down, SCM inactive) )
-     /** In the current decor, use ACTIVE-UP as the face for the
+     /** Set the button faces for the various window states.
+In the current decor, use ACTIVE-UP as the face for the
 button specified by the integer BUTTON when active and not pressed
 in. Use ACTIVE-DOWN when BUTTON is active and pressed in, and INACTIVE
 when the window is inactive. Both INACTIVE and ACTIVE-DOWN default to
@@ -900,9 +903,10 @@ default.  */
 
 SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
           (SCM button, SCM flag) )
-     /** Specify the Mwm flag for BUTTON, that is, specify wether or
-not it's relief pattern (if any) should reverse in depth sense when
-the window is maximized. This is specified by the boolean value FLAG.*/
+     /** Specify the Mwm flag for BUTTON.
+If FLAG is #t, the button's relief pattern (if any) will appear to
+reverse in depth sense (i.e., flip from sunken in to extruding out)
+when the window is maximized. */
 #define FUNC_NAME s_set_button_mwm_flag_x
 {
   int n;
@@ -932,10 +936,10 @@ the window is maximized. This is specified by the boolean value FLAG.*/
 
 SCWM_PROC(set_border_face_x, "set-border-face!", 1, 1, 0,
           (SCM active, SCM inactive) )
-     /** In the current decor, use ACTIVE as the face for the border
-when the window is active. Use INACTIVE when the window is
-inactive. INACTIVE defaults to the same as ACTIVE when not
-specified. */
+     /** Set the face for the border In the current decor.
+Use ACTIVE as the face for the border when the window is active. Use
+INACTIVE when the window is inactive. INACTIVE defaults to the same as
+ACTIVE when not specified. */
 #define FUNC_NAME s_set_border_face_x
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;

@@ -440,6 +440,7 @@ static SCM get_strport_string(SCM port)
 }
 
 
+
 /**CONCEPT: SCWMEXEC Protocol 
   Scwm supports a protocol for other programs to send commands to the
 window manager. Programs send ordinary configuration language
@@ -449,8 +450,26 @@ value, and the output and error output generated, if any.
   For more information on how to make use of this protocol, see the
 documentation for the scwmexec and scwmrepl programs, the scwm.el
 emacs interaction mode, the libscwmexec library, and the details of
-the SCWMEXEC protocol.
+the SCWMEXEC protocol.  Also see doc/scwmexec.proto.  FIXDOC: Link to file!
 */
+
+
+SCWM_PROC (reset_scwmexec_protocol, "reset-scwmexec-protocol", 0, 0, 0,
+           ())
+     /** Reset the scwmexec protocol.
+This procedure removes the "XA_SCWMEXEC_REQUEST" property on the
+root window.  It should not be necessary but may be useful in case
+your X server goes awry (and otherwise you would have to restart your
+X server).  Use if scwmexec or scwmrepl are not returning (e.g.,
+if your Emacs hangs when you try evaluating a scwm expression). */
+#define FUNC_NAME s_reset_scwmexec_protocol
+{
+  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_REQUEST);
+  scwm_msg(WARN,FUNC_NAME,"Deleted XA_SCWMEXEC_REQUEST property -- expect a protocol error");
+  return SCM_UNDEFINED;
+}
+#undef FUNC_NAME
+  
 
 void
 HandleScwmExec()
@@ -469,7 +488,11 @@ HandleScwmExec()
      from which the request will be read. There may be more than one
      (or fewer than one in some cases) by the time we get here. We
      will loop and keep reading until we have snarfed the whole
-     property, to make sure we can safely delete it. */
+     property, to make sure we can safely delete it. 
+
+     See also the doc/scwmexec.proto file for a high-level 
+     description of this protocol.
+  */
   do {
     /* Read a single request window from the queue. */
     if (XGetWindowProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN,
@@ -482,10 +505,12 @@ HandleScwmExec()
       /* Increment the offset at which to read within the property. It
 	 will not get deleted until we read the very last bytes at the
 	 end. */
-      ++last_offset;
-      /* Save an indication of wether we need to read more or not. */
+      last_offset += nitems * (form_ret/8);
+      /* Save an indication of whether we need to read more or not. */
       saved_bytes_after=bytes_after;
       
+      DBUG(__FUNCTION__,"Trying to get request from %ld",w);
+
       /* Get and delete its SCWMEXEC_REQUEST property. We do
          XGetWindowProperty twice, once to get the length, and again
          to read the whole length's worth. */
@@ -542,7 +567,8 @@ HandleScwmExec()
 	FREE(ret);
 	FREE(output);
 	FREE(error);
-	return;
+      } else {
+        scwm_msg(WARN,__FUNCTION__,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",w);
       }
     }
   } while (saved_bytes_after != 0);
@@ -551,8 +577,7 @@ HandleScwmExec()
      been re-created before we exit, but that doesn't matter because we'll
      get a PropertyNotify and re-enter, but the offset to use will correctly
      be 0. */
-  
-  /* scwm_msg(DBG, __FUNCTION__, "scwmexec protocol failure.\n"); */
+
   return;
 }
 
@@ -1722,12 +1747,13 @@ WindowGettingButtonEvent(Window w, int x, int y)
 SCWM_PROC(send_button_press, "send-button-press", 2, 4, 0,
           (SCM button, SCM modifier, SCM win, 
            SCM button_press_p, SCM button_release_p, SCM propagate_p))
-     /** Send a synthetic press of mouse button BUTTON, with modifier
-MODIFIER. The event is sent to window WIN if specified; otherwise the
+     /** Send a synthetic mouse press event.
+Create a synthetic event of a press of mouse button BUTTON, with modifier
+MODIFIER and send the eent to window WIN if specified; otherwise the
 window to be used defaults to the window context in the usual way. By
 default, both a press and a release are sent. However, the boolean
 parameters BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify
-which are sent individually. PROPAGATE? indicates wether the propagate
+which are sent individually. PROPAGATE? indicates whether the propagate
 flag is set on the event; the default is #f. You shouldn't have to
 worry about this unless you know what it means. */
 #define FUNC_NAME s_send_button_press
@@ -1815,7 +1841,7 @@ specified; otherwise the window to be used defaults to the window
 context in the usual way. By default, both a press and a release are
 sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
 allow you to specify which are sent individually. PROPAGATE? indicates
-wether the propagate flag is set on the event; the default is #f. You
+whether the propagate flag is set on the event; the default is #f. You
 shouldn't have to worry about this unless you know what it means. */
 #define FUNC_NAME s_send_key_press
 {

@@ -82,8 +82,8 @@ physical screen size, the viewport can move around the desk.
 
 SCWM_PROC(set_viewport_position_x, "set-viewport-position!", 2, 0, 0,
           (SCM x, SCM y))
-     /** Position the upper left corner of the viewport at coordinates X, Y
-(in pixels) on the current desk. */
+     /** Position the upper left corner of the viewport at coordinates X, Y.
+X and Y are given in pixels.  Does not affect the current desk. */
 #define FUNC_NAME s_set_viewport_position_x
 {
   SCM_REDEFER_INTS;
@@ -104,9 +104,11 @@ SCWM_PROC(set_viewport_position_x, "set-viewport-position!", 2, 0, 0,
 
 SCWM_PROC(set_edge_scroll_x, "set-edge-scroll!", 2, 0, 0,
           (SCM sx, SCM sy))
-     /** Set the amount, in pixels, by which the viewport will scroll
+     /** Set the edge scroll amount in pixels.
+The edge scroll setting is the amount by which the viewport will scroll
 when the mouse hits the edge. SX gives the amount at a time to scroll
-horizontally, while SY gives the amount to scroll vertically. */
+horizontally, while SY gives the amount to scroll vertically. Use `%x'
+and `%y' to convert from a percent of screen size to pixels. */
 #define FUNC_NAME s_set_edge_scroll_x
 {
   SCM_REDEFER_INTS;
@@ -130,10 +132,11 @@ horizontally, while SY gives the amount to scroll vertically. */
 
 SCWM_PROC(set_edge_wrap_x, "set-edge-wrap!", 2, 0, 0,
           (SCM wx, SCM wy))
-     /** Set wether or not the pointer will wrap around to the
-opposite edge of the desk when it hits the very edge. WX is a boolean
-value indicating wether horizontal wraparound is in effect, while WY
-indicates wether vertical wraparound is in effect. */
+     /** Set whether to wrap pointer around edges.
+If WX is #t, the pointer will wrap from the right edge of the
+display to the left of the display as it moves off the right edge,
+and vice-versa.  WY indicates whether the analogous vertical
+wraparound is in effect */
 #define FUNC_NAME s_set_edge_wrap_x
 {
   SCM_REDEFER_INTS;
@@ -165,7 +168,8 @@ indicates wether vertical wraparound is in effect. */
 /* FIXMS: this should probably be split into two procedures. */
 SCWM_PROC(set_edge_resistance_x, "set-edge-resistance!", 2, 0, 0,
           (SCM sr, SCM mr))
-     /** Set two parameters indicating how much resistance should be
+     /** Set the edge resistance parameters.
+Sets two parameters indicating how much resistance should be
 offered when scrolling things past the edge, in two different
 senses. SR is an amount in microseconds that indicates how long the
 mouse pointer must stay at the edge of the screen before the viewport
@@ -197,8 +201,10 @@ will really go past the edge. */
 
 SCWM_PROC(set_desk_size_x, "set-desk-size!", 2, 0, 0,
           (SCM width, SCM height))
-     /** Sets the desk size to WIDTH, HEIGHT (in units of the physical
-screen size) */
+     /** Sets the desk size to WIDTH, HEIGHT.
+Both numbers are given in units of the physical screen size.
+For example <code>(set-desk-size 3 3)</code> creates a
+virtual world 9 times the size of the physical display. */
 #define FUNC_NAME s_set_desk_size_x
 {
   SCM_REDEFER_INTS;
@@ -231,8 +237,9 @@ screen size) */
 
 SCWM_PROC(display_size, "display-size", 0, 0, 0,
           ())
-     /** Returns the size of the physical screen, in pixels, as a list of 
-the width and the height. */
+     /** Returns the size of the physical screen in pixels.
+The return value is list of the width and the height. The
+width is the `car', the height is the `cadr' of the returned list. */
 #define FUNC_NAME s_display_size
 {
   return scm_listify(SCM_MAKINUM(Scr.MyDisplayWidth),
@@ -244,8 +251,9 @@ the width and the height. */
 
 SCWM_PROC(desk_size, "desk-size", 0, 0, 0,
           ())
-     /** Returns the size of the current desk, in units of the
-physical screen size, as a list of the width and the height. */
+     /** Returns the size of the current desk.
+The returned value is in units of the physical screen size, as a list
+of the width and the height. */
 #define FUNC_NAME s_desk_size
 {
   return scm_listify(SCM_MAKINUM((int) (Scr.VxMax / Scr.MyDisplayWidth + 1)),
@@ -257,8 +265,8 @@ physical screen size, as a list of the width and the height. */
 
 SCWM_PROC(viewport_position, "viewport-position", 0, 0, 0,
           ())
-     /** Returns the current position of the viewport in pixels, as a
-list of the x and y positions. */
+     /** Returns the current position of the viewport in pixels.
+The returned value is a list of the x and y positions. */
 #define FUNC_NAME s_viewport_position
 {
   return scm_listify(SCM_MAKINUM(Scr.Vx),

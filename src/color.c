@@ -91,8 +91,8 @@ SCWM_PROC(color_p, "color?", 1, 0, 0,
 
 SCWM_PROC(color_properties, "color-properties", 1, 0, 0,
            (SCM color))
-     /** Return an association list giving some properties of
-COLOR. Currently defined properties are 'name, the string name of the
+     /** Return an association list giving some properties of COLOR.
+Currently defined properties are 'name, the string name of the
 color, and 'pixel, the X pixel value it uses. */
 #define FUNC_NAME s_color_properties
 {
@@ -109,8 +109,8 @@ color, and 'pixel, the X pixel value it uses. */
 
 SCWM_PROC(make_color, "make-color", 1, 0, 0,
            (SCM cname))
-     /** Return the color object corresponding to the X color
-specifier CNAME. If CNAME is not a valid X color name, or cannot be
+     /** Return the color object corresponding to the X color specifier CNAME.
+If CNAME is not a valid X color name, or cannot be
 allocated, an error results. */
 #define FUNC_NAME s_make_color
 {
@@ -362,7 +362,8 @@ adjust_brightness (SCM color, double factor) {
 
 SCWM_PROC(make_relief_color, "make-relief-color", 2, 0, 0,
            (SCM color, SCM factor))
-     /** Multiply the luminosity and saturation of COLOR by the
+     /** Convert a color into a new color appropriate for a relief.
+Multiplies the luminosity and saturation of COLOR by the
 positive floating point number FACTOR. Using a FACTOR smaller than 1
 will result in a dimmer color, suitable for use as a darker
 relief. Using a factor greater than 1 will result in a brighter color
@@ -429,8 +430,8 @@ static void reset_menu_relief()
 
 SCWM_PROC(set_hilight_factor_x, "set-hilight-factor!", 1, 0, 0,
            (SCM factor))
-     /** Use positive floating point number FACTOR to generate hilight
-colors in the current decor. */
+     /** Use FACTOR to generate highlight colors for the current decor.
+FACTOR is a positive floating point number. */
 #define FUNC_NAME s_set_hilight_factor_x
 {
   double f;
@@ -466,8 +467,8 @@ SCWM_PROC(hilight_factor, "hilight-factor", 0, 0, 0,
 
 SCWM_PROC(set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
            (SCM factor))
-     /** Use positive floating point number FACTOR to generate shadow
-colors in the current decor. */
+     /** Use FACTOR to generate shadow colors in the current decor. 
+FACTOR is a positive floating point number */
 #define FUNC_NAME s_set_shadow_factor_x
 {
   double f;
@@ -508,8 +509,8 @@ double menu_shadow_factor_val = 0.5;
 
 SCWM_PROC(set_menu_hilight_factor_x, "set-menu-hilight-factor!", 1, 0, 0,
            (SCM factor))
-     /** Use positive floating point number FACTOR to generate hilight
-colors for menus. */
+     /** Use FACTOR to generate hilight colors for menus. 
+FACTOR is a positive floating point number */
 #define FUNC_NAME s_set_menu_hilight_factor_x
 {
   double f;
@@ -537,8 +538,8 @@ SCWM_PROC(menu_hilight_factor, "menu-hilight-factor", 0, 0, 0,
 
 SCWM_PROC(set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0,
            (SCM factor))
-     /** Use positive floating point number FACTOR to generate shadow
-colors for menus. */
+     /** Use FACTOR to generate shadow colors for menus. 
+FACTOR is a positive floating point number */
 #define FUNC_NAME s_set_menu_shadow_factor_x
 {
   double f;
@@ -583,8 +584,8 @@ redraw_hilight_window()
 
 SCWM_PROC(set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0,
            (SCM fg) )
-     /** Use FG as the foreground color for the window with focus in
-the current decor. */
+     /** Use FG for foreground color of the window with the input focus.
+Applies to the current decor. */
 #define FUNC_NAME s_set_hilight_foreground_x
 { 
   ScwmDecor *fl;
@@ -607,8 +608,8 @@ the current decor. */
 
 SCWM_PROC (hilight_foreground, "hilight-foreground", 0, 0, 0,
            () )
-     /** Return the foreground color being used for windows with the
-input focus in the current decor. */
+     /** Return the foreground color of the window with the input focus.
+Applies to the focus in the current decor. */
 #define FUNC_NAME s_hilight_foreground
 { 
   ScwmDecor *fl;
@@ -626,8 +627,8 @@ input focus in the current decor. */
 
 SCWM_PROC(set_hilight_background_x, "set-hilight-background!", 1, 0, 0,
            (SCM bg))
-     /** Use BG as the background color for the window with focus in
-the current decor. */
+     /** Use BG as the background color for the window with input focus.
+Applies to the current decor. */
 #define FUNC_NAME s_set_hilight_background_x
 {
   XGCValues gcv;
@@ -680,8 +681,8 @@ the current decor. */
 
 SCWM_PROC (hilight_background, "hilight-background", 0, 0, 0,
            () )
-     /** Return the background color being used for windows with the
-input focus in the current decor. */
+     /** Return the background color for windows with the input focus.
+Applies to the current decor. */
 #define FUNC_NAME s_hilight_background
 { 
   ScwmDecor *fl;
@@ -773,10 +774,11 @@ SCWM_PROC(set_menu_background_x, "set-menu-background!", 1, 0, 0,
 #undef FUNC_NAME
 
 
+/* GJBFIX: I am not sure this is used for anything any more. */
 SCWM_PROC(set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0,
            (SCM st) )
      /** Use ST as the default stipple color for menus. 
-(GJBFIX: I am not sure this is used for anything any more. */
+May not be used any longer. */
 #define FUNC_NAME s_set_menu_stipple_x
 {
   XGCValues gcv;
