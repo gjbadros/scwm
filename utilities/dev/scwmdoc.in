@@ -190,7 +190,10 @@ while (<>) {
     my $filename = $ARGV;
     my $line = $.;
     my $body = <>;
-    if (!CNameMatchesSchemeName($c_hookname,$scheme_hookname)) {
+    if (!CNameMatchesSchemeName($c_hookname,$scheme_hookname) &&
+        ($c_hookname !~ m/^x_\S+_hook/ || 
+	 !CNameMatchesSchemeNameIgnoreCase($c_hookname,$scheme_hookname))) {
+      # We permit the X-foo-hook's to mismatch as long as only the case is different
       print STDERR "$ARGV:$.:**** Scheme hook name `$scheme_hookname' does not match `$c_hookname'\n";
     }
     if ($body !~ m%/\*\*\s*(.*)%) {
@@ -1141,6 +1144,12 @@ sub IspellText( $$$ ) {
   }
 }
 
+sub CNameMatchesSchemeNameIgnoreCase( $$ ) {
+  my ($a, $b) = @_;
+  $a =~ s/($a)/\L$1/;
+  $b =~ s/($b)/\L$1/;
+  CNameMatchesSchemeName($a,$b);
+}
 
 sub CNameMatchesSchemeName( $$ ) {
   my ($cprimname, $primname) = @_;
