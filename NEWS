@@ -3,6 +3,9 @@ Copyright (C) 1997, 1998, 1999, 2000 Greg J. Badros and Maciej Stachowiak
 See the end for copying conditions.
 
 Changes for scwm-0.99.7 (not yet released)
+* Bug fixes
+** More robust
+** Plugged two small but frequent memory leaks
 
 
 
