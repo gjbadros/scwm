@@ -1,3 +1,7 @@
+1997-10-31  Jens-Ulrik Holger Petersen  <petersen@kurims.kyoto-u.ac.jp>
+
+	* winlist.scm (#:winlist-skip): add-boolean-style-option
+
 1997-10-24  Jens-Ulrik Holger Petersen  <petersen@kurims.kyoto-u.ac.jp>
 
 	* Makefile.in (mostlyclean): New target.

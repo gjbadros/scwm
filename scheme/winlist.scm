@@ -64,6 +64,9 @@
 (define*-public (winlist-skip? #&optional (w (get-window)))
   (if w (object-property w 'winlist-skip) #f))
 
+;; add style options for #:winlist-skip
+(add-boolean-style-option #:winlist-skip winlist-skip winlist-hit)
+
 
 (define*-public (show-window-list-menu #&key (only '()) (except '())
 				       (proc window-list-proc)
