@@ -346,10 +346,12 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
 	       ButtonMotionMask | PointerMotionMask, eventp);
     StashEventTime(eventp);
 
-    if (eventp->type == KeyPress)
+    if (eventp->type == KeyPress) {
       Keyboard_shortcuts(eventp, FinishEvent);
-    if (eventp->type == FinishEvent)
+    }
+    if (eventp->type == FinishEvent) {
       fFinished = True;
+    }
     if (eventp->type == ButtonPress) {
       XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
 		 ExposureMask | KeyPressMask | VisibilityChangeMask |
@@ -361,6 +363,9 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
       fDone = True;
     }
     if (!fDone) {
+      /* copy the event to the global current event structure so the
+	 right event is dispatched on. */
+      Event = *eventp;
       DispatchEvent();
     }
   }
