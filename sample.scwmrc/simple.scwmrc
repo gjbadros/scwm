@@ -13,8 +13,8 @@
 
 (use-scwm-modules base winops winlist wininfo 
 		  doc style message-window face
-		  preferences
-		  winlist-menu)
+		  preferences style
+		  optargs winlist-menu)
 
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
@@ -120,7 +120,9 @@
     menu-separator
     (menuitem "Refresh Screen" #:action refresh))))
 
-(define (popup-ops)
+(define* (popup-ops)
+  ""
+  (interactive)
   (popup-menu window-ops-menu))
 
 (define menu-quit-verify
@@ -162,7 +164,9 @@
     menu-separator
     (menuitem "Exit scwm" #:action menu-quit-verify))))
 
-(define (popup-util)
+(define* (popup-util)
+  ""
+  (interactive)
   (popup-menu util-menu))
 
 (define (make-small-window-ops-menu w)
@@ -220,7 +224,9 @@
 (bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
 (bind-mouse 'frame-corners 1 resize-or-raise)
 (bind-mouse 'frame-sides 1 move-or-raise)
-(define (move-or-shade)
+(define* (move-or-shade)
+  ""
+  (interactive)
   (case (mouse-event-type)
     ((double-click) (toggle-window-shade))
     (else (move-or-raise))))

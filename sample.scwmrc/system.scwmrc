@@ -114,7 +114,7 @@
 	      ))
 
 (define linux-hosts
-  '( uni oz saba awabi hirmae nishin sake pugsly squiggy kani sodium))
+  '( uni oz saba awabi hirame nishin sake pugsly squiggy kani sodium))
 
 (define solaris-hosts
   '( tolt elwha chiwawa demille fielder froggie hammahamma hoobes hoh rhodes twain))
