@@ -1,3 +1,7 @@
+Tue May  4 12:42:43 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added C-A-S-m key to do show-window-list-matching-interactively.
+
 Sun May  2 15:31:19 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added style for tooltip windows of XEmacs.

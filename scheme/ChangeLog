@@ -1,3 +1,14 @@
+Tue May  4 14:29:23 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* flux-gtk.scm: Fix prompt in
+	show-window-list-matching-interactively, use time-convert module
+
+Tue May  4 12:41:59 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* flux-gtk.scm: Added `show-window-list-matching-interactively'.
+
+	* flash-window.scm: Convert from string colors to color objects.
+
 1999-05-03  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* stylist.scm: New file, GTK interface to the window-style system.
