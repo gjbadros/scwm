@@ -41,6 +41,8 @@
 	     (app scwm fvwm-module)
 	     )
 
+(set! use-scwm-system-proc #t)
+
 ;;; print some information
 (for-each (lambda (d) (debug-display d)) 
 	 (list " *** Reading `scwmrc'...\nScwm " (scwm-version) "\n"
@@ -825,6 +827,7 @@
 	      (menuitem "SCWM interaction" #:action
 			(run-in-xterm "/usr/local/bin/scwmrepl"))
 	      (menuitem "Info on a window" #:action window-info)
+	      (menuitem "Other preferences" #:action (menu-prefs))
 ;	      menu-separator
 ;	      (menuitem "Opaque Move" #:action opaque-move-menu)
 ;	      (menuitem "Desk Size" #:action desk-size-menu)
@@ -905,8 +908,7 @@
     (menuitem "&Window Operations" #:image-left "mini-windows.xpm" 
 	      #:action 'menu-window-ops)
     (menuitem "&Preferences" #:image-left "mini-prefs.xpm" 
-	      #:action 'menu-prefs)
-;;	      #:action menu-prefs-gjb)
+	      #:action 'menu-prefs-gjb)
     menu-separator
     (menuitem "S&creensaver" #:image-left "mini-display.xpm" 
 	      #:action 'menu-screensaver)
@@ -1069,6 +1071,10 @@
 (bind-key 'all "M-S-Tab" 
 	  (lambda ()
 	    (next-window #:only visible? #:except iconified?)))
+
+(bind-key 'all "C-M-S-Tab" 
+	  (lambda ()
+	    (prev-window #:only visible? #:except iconified?)))
 
 (key-mouse-moves "C-M-S" 5 "h" "j" "k" "l")
 ;; XInside's old X server steal C-M-h for prev virtual console, so use m too
