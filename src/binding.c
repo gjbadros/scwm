@@ -325,6 +325,7 @@ SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
      /** Remove any bindings attached to KEY in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 KEY is a string giving the key-specifier (e.g., M-Delete for META+Delete) */
+#define FUNC_NAME s_unbind_key
 {
   KeySym keysym;
   Bool fOkayKey;
@@ -342,12 +343,12 @@ KEY is a string giving the key-specifier (e.g., M-Delete for META+Delete) */
   case 0:
     SCM_ALLOW_INTS;
     /* FIXGJBERROR: do not error by number */
-    scwm_error(__FUNCTION__, 8);
+    scwm_error(FUNC_NAME, 8);
     break;
   case -1:
     SCM_ALLOW_INTS;
     /* FIXGJBERROR: do not error by number */
-    scwm_error(__FUNCTION__, 9);
+    scwm_error(FUNC_NAME, 9);
     break;
   case -2:
     SCM_ALLOW_INTS;
@@ -377,6 +378,7 @@ KEY is a string giving the key-specifier (e.g., M-Delete for META+Delete) */
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 0, 0,
@@ -384,6 +386,7 @@ SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 0, 0,
      /** Remove any bindings attached to mouse BUTTON in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number */
+#define FUNC_NAME s_unbind_mouse
 {
   char *szButton = NULL;
   int cchButton = 0;
@@ -402,7 +405,7 @@ BUTTON is a string or integer giving the mouse button number */
       }
     } else {
       SCM_ALLOW_INTS;
-      scm_wrong_type_arg("unbind-mouse", 2, button);
+      scm_wrong_type_arg(FUNC_NAME, 2, button);
     }
   } else { /* it is a string */
     szButton = gh_scm2newstr(button,&cchButton);
@@ -412,15 +415,15 @@ BUTTON is a string or integer giving the mouse button number */
   switch (context) {
   case 0:
     SCM_ALLOW_INTS;
-    scwm_error(__FUNCTION__, 8);
+    scwm_error(FUNC_NAME, 8);
     break;
   case -1:
     SCM_ALLOW_INTS;
-    scwm_error(__FUNCTION__, 9);
+    scwm_error(FUNC_NAME, 9);
     break;
   case -2:
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg(__FUNCTION__, 1, contexts);
+    scm_wrong_type_arg(FUNC_NAME, 1, contexts);
     break;
   default:
     break;
@@ -429,13 +432,13 @@ BUTTON is a string or integer giving the mouse button number */
   if (szButton) {
     bnum = BnumFromSz(PchModifiersToModmask(szButton,&modmask));
     if (bnum < 0) {
-      scwm_msg(WARN,__FUNCTION__,"No button `%s'",szButton);
+      scwm_msg(WARN,FUNC_NAME,"No button `%s'",szButton);
       SCM_ALLOW_INTS;
       FREE(szButton);
       return SCM_UNSPECIFIED;
     }
     if (modmask < 0) {
-      scwm_msg(WARN,__FUNCTION__,"Ignoring mouse unbind request for %s",
+      scwm_msg(WARN,FUNC_NAME,"Ignoring mouse unbind request for %s",
 	       szButton);
       SCM_ALLOW_INTS;
       FREE(szButton);
@@ -448,6 +451,7 @@ BUTTON is a string or integer giving the mouse button number */
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(bind_key, "bind-key", 3, 0, 0,
@@ -456,6 +460,7 @@ SCWM_PROC(bind_key, "bind-key", 3, 0, 0,
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 KEY is a string giving the key-specifier (e.g., M-Delete for META+Delete)
 PROC is a procedure (possibly a thunk) that should be invoked */
+#define FUNC_NAME s_bind_key
 {
   KeySym keysym;
   int len = 0;
@@ -468,26 +473,26 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   SCM_REDEFER_INTS;
   if (!gh_string_p(key)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-key", 2, key);
+    scm_wrong_type_arg(FUNC_NAME, 2, key);
   }
   if (!PROCEDURE_OR_SYMBOL_P(proc)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-key", 3, proc);
+    scm_wrong_type_arg(FUNC_NAME, 3, proc);
   }
   context = compute_contexts(contexts);
 
   switch (context) {
   case 0:
     SCM_ALLOW_INTS;
-    scwm_error("bind-key", 8);
+    scwm_error(FUNC_NAME, 8);
     break;
   case -1:
     SCM_ALLOW_INTS;
-    scwm_error("bind-key", 9);
+    scwm_error(FUNC_NAME, 9);
     break;
   case -2:
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-key", 1, contexts);
+    scm_wrong_type_arg(FUNC_NAME, 1, contexts);
     
     break;
   default:
@@ -504,7 +509,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     char *keyname = gh_scm2newstr(key,&len);
     gh_allow_ints();
     SCM_ALLOW_INTS;
-    scwm_msg(WARN,__FUNCTION__,"Ignoring key binding `%s'",keyname);
+    scwm_msg(WARN,FUNC_NAME,"Ignoring key binding `%s'",keyname);
     FREE(keyname);
     return SCM_BOOL_F;
   }
@@ -541,12 +546,13 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     char *keyname = gh_scm2newstr(key,&len);
     gh_allow_ints();
     SCM_ALLOW_INTS;
-    scwm_msg(WARN,__FUNCTION__,"No matching keycode for symbol `%s'",keyname);
+    scwm_msg(WARN,FUNC_NAME,"No matching keycode for symbol `%s'",keyname);
     FREE(keyname);
     return SCM_BOOL_F; /* Use False for error */
   }
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(bind_mouse, "bind-mouse", 3, 0, 0,
@@ -555,6 +561,7 @@ SCWM_PROC(bind_mouse, "bind-mouse", 3, 0, 0,
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
 PROC is a procedure (possibly a thunk) that should be invoked */
+#define FUNC_NAME s_bind_mouse
 {
   Binding *temp;
   char *szButton = 0;
@@ -572,34 +579,34 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     if (gh_number_p(button)) {
       bnum = gh_scm2int(button);
       if (bnum < 0 || bnum > cMouseButtons) {
-	scwm_msg(WARN,__FUNCTION__,"No button number `%d'",bnum);
+	scwm_msg(WARN,FUNC_NAME,"No button number `%d'",bnum);
 	SCM_ALLOW_INTS;
 	return SCM_UNSPECIFIED;
       }
     } else {
       SCM_ALLOW_INTS;
-      scm_wrong_type_arg("bind-mouse", 2, button);
+      scm_wrong_type_arg(FUNC_NAME, 2, button);
     }
   } else { /* it is a string */
     szButton = gh_scm2newstr(button,&cchButton);
   }
   if (!PROCEDURE_OR_SYMBOL_P(proc)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-mouse", 3, proc);
+    scm_wrong_type_arg(FUNC_NAME, 3, proc);
   }
   context = compute_contexts(contexts);
   switch (context) {
   case 0:
     SCM_ALLOW_INTS;
-    scwm_error("bind-mouse", 8);
+    scwm_error(FUNC_NAME, 8);
     break;
   case -1:
     SCM_ALLOW_INTS;
-    scwm_error("bind-mouse", 9);
+    scwm_error(FUNC_NAME, 9);
     break;
   case -2:
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("bind-mouse", 1, contexts);
+    scm_wrong_type_arg(FUNC_NAME, 1, contexts);
     break;
   default:
     break;
@@ -608,13 +615,13 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   if (szButton) {
     bnum = BnumFromSz(PchModifiersToModmask(szButton,&modmask));
     if (bnum < 0) {
-      scwm_msg(WARN,__FUNCTION__,"No button `%s'",szButton);
+      scwm_msg(WARN,FUNC_NAME,"No button `%s'",szButton);
       SCM_ALLOW_INTS;
       FREE(szButton);
       return SCM_UNSPECIFIED;
     }
     if (modmask < 0) {
-      scwm_msg(WARN,__FUNCTION__,"Ignoring mouse binding for %s",szButton);
+      scwm_msg(WARN,FUNC_NAME,"Ignoring mouse binding for %s",szButton);
       SCM_ALLOW_INTS;
       FREE(szButton);
       return SCM_UNSPECIFIED;
@@ -683,6 +690,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   }
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 
@@ -732,35 +740,45 @@ SCWM_PROC(mouse_event_type, "mouse-event-type", 0, 0, 0,
           ())
      /** Return a mouse-event-type corresponding to the most recent mouse event.
 Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-clicks */
+#define FUNC_NAME s_mouse_event_type
 {
   return mouse_ev_type;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(mod_mask_meta,"mod-mask-meta", 0, 0, 0, ())
      /** Return the bitmask for the META modifier key, or #f.
 Returns #f iff there is no key bound to act as META, otherwise
 returns a power of two corresponding to the bitmask of the modifier */
+#define FUNC_NAME s_mod_mask_meta
 { return MetaMask == 0? SCM_BOOL_F : gh_int2scm(MetaMask); }
+#undef FUNC_NAME
 
 SCWM_PROC(mod_mask_alt, "mod-mask-alt", 0, 0, 0, ())
      /** Return the bitmask for the ALT modifier key, or #f.
 Returns #f iff there is no key bound to act as ALT, otherwise
 returns a power of two corresponding to the bitmask of the modifier */
+#define FUNC_NAME s_mod_mask_alt
 { return AltMask == 0? SCM_BOOL_F : gh_int2scm(AltMask); }
+#undef FUNC_NAME
 
 SCWM_PROC(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, ())
      /** Return the bitmask for the HYPER modifier key, or #f.
 Returns #f iff there is no key bound to act as HYPER, otherwise
 returns a power of two corresponding to the bitmask of the modifier */
+#define FUNC_NAME s_mod_mask_hyper
 { return HyperMask == 0? SCM_BOOL_F : gh_int2scm (HyperMask); }
+#undef FUNC_NAME
 
 
 SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0,())
      /** Return the bitmask for the SUPER modifier key, or #f.
 Returns #f iff there is no key bound to act as SUPER, otherwise
 returns a power of two corresponding to the bitmask of the modifier */
+#define FUNC_NAME s_mod_mask_super
 { return SuperMask == 0? SCM_BOOL_F : gh_int2scm (SuperMask); }
+#undef FUNC_NAME
 
 
 SCWM_PROC(pointer_mapping, "X-pointer-mapping", 0, 0, 0,
@@ -770,6 +788,7 @@ The length of the returned list is the number of buttons available.  Each
 element in the list is an integer.  E.g., '(1 2 3) is a normally mapped
 3-button mouse, whereas '(3 2 1) is a 3-button mouse where the rightmost
 physical button acts as logical button 1, and the leftmost acts as button 3. */
+#define FUNC_NAME s_pointer_mapping
 {
   SCM mapping = SCM_EOL;
   int imap = cMouseButtons - 1;
@@ -779,6 +798,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3. */
   }
   return mapping;
 }
+#undef FUNC_NAME
 
 void
 init_pointer_mapping(void)

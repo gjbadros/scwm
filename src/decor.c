@@ -193,6 +193,7 @@ SCWM_PROC(make_decor, "make-decor", 0, 1, 0,
      /** Create a new decor object. NAME optionally provides a string
 that is used to name the decor, and is displayed when the decor is
 printed. */
+#define FUNC_NAME s_make_decor
 {
   char *tag;
   int dummy;
@@ -203,7 +204,7 @@ printed. */
   } else if (name == SCM_UNDEFINED) {
     tag = NULL;
   } else {
-    scm_wrong_type_arg("make-decor", 1, name);
+    scm_wrong_type_arg(FUNC_NAME, 1, name);
   }
 
   /* make the decor */
@@ -212,14 +213,17 @@ printed. */
 
   return decor2scm(newdec);
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(default_decor, "default-decor", 0, 0, 0,
           ())
      /** Return the default decor. */
+#define FUNC_NAME s_default_decor
 {
   return Scr.DefaultDecor.scmdecor;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(set_current_decor_x, "set-current-decor!", 1, 0, 0,
@@ -227,6 +231,7 @@ SCWM_PROC(set_current_decor_x, "set-current-decor!", 1, 0, 0,
      /** Set the current decor to DECOR. Operations described as
 setting options "in the current decor" will now operate on this
 one. */
+#define FUNC_NAME s_set_current_decor_x
 {
   ScwmDecor *new_cur;
 
@@ -235,7 +240,7 @@ one. */
   } else if (DECORP(decor)) {
     new_cur = SCWMDECOR(decor);
   } else {
-    scm_wrong_type_arg("set-current-decor!", 1, decor);
+    scm_wrong_type_arg(FUNC_NAME, 1, decor);
   }
 
   if (cur_decor != NULL) {
@@ -248,11 +253,13 @@ one. */
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
           ())
-     /* Return the current decor. */
+     /** Return the current decor. */
+#define FUNC_NAME s_current_decor
 {
   if (cur_decor == NULL) {
     return SCM_BOOL_F;
@@ -260,12 +267,14 @@ SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
     return cur_decor->scmdecor;
   }
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(set_window_decor_x, "set-window-decor!", 1, 1, 0,
           (SCM decor, SCM win))
      /** Set WIN's decor to DECOR. If WIN is not given, it defaults to
 the window context in the usual way. */
+#define FUNC_NAME s_set_window_decor_x
 {
   int x, y, width, height, old_height, extra_height;
   ScwmDecor *fl;
@@ -274,10 +283,10 @@ the window context in the usual way. */
   if (DECORP(decor)) {
     fl = SCWMDECOR(decor);
   } else {
-    scm_wrong_type_arg("set-window-decor!", 1, decor);
+    scm_wrong_type_arg(FUNC_NAME, 1, decor);
   }
 
-  VALIDATEN(win, 2, "set-window-decor!");
+  VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
   old_height = psw->fl->TitleHeight;
@@ -294,6 +303,7 @@ the window context in the usual way. */
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 MAKE_SMOBFUNS(decor);
 

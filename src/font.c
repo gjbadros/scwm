@@ -97,11 +97,12 @@ print_font(SCM obj, SCM port, scm_print_state * pstate)
    to load "fixed". Throw an error if this fails, else return
    a font object. */
 
-SCWM_PROC (make_font, "make-font", 1, 0, 0,
+SCWM_PROC(make_font, "make-font", 1, 0, 0,
            (SCM fname))
      /** Return the font object corresponding to the X color
 specifier FNAME. If FNAME is not a valid X font name, or cannot be
 allocated, an error results. */
+#define FUNC_NAME s_make_font
 {
   SCM answer;
   scwm_font *font;
@@ -120,7 +121,7 @@ allocated, an error results. */
 
   if (!gh_string_p(fname)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg(s_make_font, 1, fname);
+    scm_wrong_type_arg(FUNC_NAME, 1, fname);
   }
   
   answer=scm_hash_ref(font_hash_table, fname, SCM_BOOL_F);
@@ -131,12 +132,12 @@ allocated, an error results. */
   fn = gh_scm2newstr(fname, &len);
   if (NULL == fn) {
   allocation:
-    scm_memory_error(s_make_font);
+    scm_memory_error(FUNC_NAME);
   }
 #ifdef I18N
   fontset = XCreateFontSet(dpy,fn,&list_names,&missings,&defstrreturn);
   if (NULL == fontset) {
-    scwm_msg(WARN,s_make_font,"Could not load fontset`%s' -- trying `fixed'",fn);
+    scwm_msg(WARN,FUNC_NAME,"Could not load fontset`%s' -- trying `fixed'",fn);
     FREE(fn);
 
     answer=scm_hash_ref(font_hash_table, str_fixed, SCM_BOOL_F);
@@ -151,7 +152,7 @@ allocated, an error results. */
   } 
   if (NULL == fontset) {
     FREE(fn);
-    scwm_error(s_make_font, 1);
+    scwm_error(FUNC_NAME, 1);
   }
 
   font = NEW(*font);
@@ -161,7 +162,7 @@ allocated, an error results. */
     goto allocation;
   }
   for ( i = 0 ; i < missings ; i++ ) {
-    scwm_msg(WARN,s_make_font,"Missing charset in `%s' for `%s'.",
+    scwm_msg(WARN,FUNC_NAME,"Missing charset in `%s' for `%s'.",
 	     fn,list_names[i]);
   }
 
@@ -171,7 +172,7 @@ allocated, an error results. */
 #else
   xfs = XLoadQueryFont(dpy, fn);
   if (NULL == xfs) {
-    scwm_msg(WARN,s_make_font,"Could not load `%s' -- trying `fixed'",fn);
+    scwm_msg(WARN,FUNC_NAME,"Could not load `%s' -- trying `fixed'",fn);
     FREE(fn);
 
     answer=scm_hash_ref(font_hash_table, str_fixed, SCM_BOOL_F);
@@ -186,7 +187,7 @@ allocated, an error results. */
   } 
   if (NULL == xfs) {
     FREE(fn);
-    scwm_error(s_make_font, 1);
+    scwm_error(FUNC_NAME, 1);
   }
 
   font = NEW(scwm_font);
@@ -225,41 +226,47 @@ allocated, an error results. */
   scm_hash_set_x(font_hash_table, FONTNAME(answer), answer);
   return answer;
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (font_p, "font?", 1, 0, 0,
+SCWM_PROC(font_p, "font?", 1, 0, 0,
            (SCM obj))
      /** Returns #t if OBJ is a font object, otherwise #f. */
+#define FUNC_NAME s_font_p
 {
   return SCM_BOOL_FromBool(FONT_P(obj));
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (font_properties, "font-properties", 1, 0, 0,
+SCWM_PROC(font_properties, "font-properties", 1, 0, 0,
            (SCM font))
      /** Return an association list giving some properties of
 FONT. Currently defined properties are 'name, the string name of the
 color, and 'height, it's total height in pixels. */
+#define FUNC_NAME s_font_properties
 {
   scwm_font *psfont = SAFE_FONT(font);
   if (!psfont) {
-    scm_wrong_type_arg(s_font_properties, 1, font);
+    scm_wrong_type_arg(FUNC_NAME, 1, font);
   } 
   return gh_list(gh_cons(sym_name, FONTNAME(font)),
 		 gh_cons(sym_height, gh_int2scm(FONTHEIGHT(font))),
 		 SCM_UNDEFINED);
 }
+#undef FUNC_NAME
 
-SCWM_PROC (set_icon_font_x, "set-icon-font!", 1, 0, 0,
+SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
            (SCM font))
      /** Set the font used for drawing icon titles to FONT. */
+#define FUNC_NAME s_set_icon_font_x
 {
   if (gh_string_p(font)) {
     font = make_font(font);
   }
   if (!FONT_P(font)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg(s_set_icon_font_x, 1, font);
+    scm_wrong_type_arg(FUNC_NAME, 1, font);
   }
 
   gh_vector_set_x(protected_fonts,SCM_MAKINUM(0),font);
@@ -269,11 +276,13 @@ SCWM_PROC (set_icon_font_x, "set-icon-font!", 1, 0, 0,
   redraw_icon_titles();
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
-SCWM_PROC (set_window_font_x, "set-window-font!", 1, 0, 0,
+SCWM_PROC(set_window_font_x, "set-window-font!", 1, 0, 0,
            (SCM font))
      /** In the current decor, set the font used for drawing window
 titles to FONT. */
+#define FUNC_NAME s_set_window_font_x
 {
   int extra_height;
   ScwmDecor *fl;
@@ -286,7 +295,7 @@ titles to FONT. */
 
   if (!FONT_P(font)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg(s_set_window_font_x, 1, font);
+    scm_wrong_type_arg(FUNC_NAME, 1, font);
   }
 
   fl->window_font = font;
@@ -298,6 +307,7 @@ titles to FONT. */
   redraw_titlebars(fl, extra_height);
   return font;
 }
+#undef FUNC_NAME
 
 
 static
@@ -333,16 +343,17 @@ menu_font_update()
 }
 
 
-SCWM_PROC (set_menu_font_x, "set-menu-font!", 1, 0, 0,
+SCWM_PROC(set_menu_font_x, "set-menu-font!", 1, 0, 0,
            (SCM font))
      /** Set the default font used for drawing menus to FONT. */
+#define FUNC_NAME s_set_menu_font_x
 {
 
   if (gh_string_p(font)) {
     font = make_font(font);
   }
   if (!FONT_P(font)) {
-    scm_wrong_type_arg(s_set_menu_font_x, 1, font);
+    scm_wrong_type_arg(FUNC_NAME, 1, font);
   }
 
   gh_vector_set_x(protected_fonts,SCM_MAKINUM(1),font);
@@ -352,9 +363,10 @@ SCWM_PROC (set_menu_font_x, "set-menu-font!", 1, 0, 0,
 
   return (font);
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0,
+SCWM_PROC(clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0,
            (SCM name))
      /** Fonts are cached by name. It is remotely possible that the
 meaning of a particular string as a fonts will change in your X
@@ -362,10 +374,12 @@ server, if you try hard enough (perhaps if you add or remove font
 servers). For this unlikely eventuality, `clear-font-cache-entry' is
 provided - it removes the font associated with NAME from the font
 cache.*/
+#define FUNC_NAME s_clear_font_cache_entry
 {
   scm_hash_remove_x(font_hash_table, name);
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 MAKE_SMOBFUNS(font);
 

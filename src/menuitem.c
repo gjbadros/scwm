@@ -99,10 +99,11 @@ returned list contains the following, in this order:
   unhover-action hotkey-prefs)
 Note that this is the same as the arguments to the `make-menuitem'
 primitive */
+#define FUNC_NAME s_menuitem_properties
 {
   MenuItem *pmi = SAFE_MENUITEM(menu_item);
   if (!pmi) {
-    scm_wrong_type_arg(s_menuitem_properties,1,menu_item);
+    scm_wrong_type_arg(FUNC_NAME,1,menu_item);
   }
   return gh_list(gh_str02scm(pmi->szLabel),
 		 pmi->scmAction,
@@ -114,6 +115,7 @@ primitive */
 		 gh_str02scm(pmi->pchHotkeyPreferences),
 		 SCM_UNDEFINED);
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(make_menuitem, "make-menuitem", 2,6,0,
@@ -136,13 +138,14 @@ over the item, respectively.
 HOTKEY-PREFS is a string listing preferred alphanumeric shortcut-keys
 for the given menu-item; the menu creation routine uses these as hints 
 for assigning shortcut keys to the various menuitems. */
+#define FUNC_NAME s_make_menuitem
 {
   MenuItem *pmi = NEW(MenuItem);
   SCM answer;
   int iarg = 1;
 
   if (!gh_string_p(label)) {
-    scm_wrong_type_arg(s_make_menuitem,iarg,label);
+    scm_wrong_type_arg(FUNC_NAME,iarg,label);
   }
   pmi->szLabel = gh_scm2newstr(label,&pmi->cchLabel);
 
@@ -150,7 +153,7 @@ for assigning shortcut keys to the various menuitems. */
   if (UNSET_SCM(action)) {
     action = SCM_BOOL_F;
   } else if (!gh_symbol_p(action) && !gh_procedure_p(action) && !MENU_P(action)) {
-    scm_wrong_type_arg(s_make_menuitem,iarg,action);
+    scm_wrong_type_arg(FUNC_NAME,iarg,action);
   }
   pmi->scmAction = action;
 
@@ -159,7 +162,7 @@ for assigning shortcut keys to the various menuitems. */
     pmi->szExtra = NULL;
     pmi->cchExtra = 0;
   } else if (!gh_string_p(extra_label)) {
-    scm_wrong_type_arg(s_make_menuitem,iarg,extra_label);
+    scm_wrong_type_arg(FUNC_NAME,iarg,extra_label);
   } else {
     pmi->szExtra = gh_scm2newstr(extra_label,&pmi->cchExtra);
   }
@@ -168,7 +171,7 @@ for assigning shortcut keys to the various menuitems. */
   if (UNSET_SCM(picture_above)) {
     picture_above = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_above)) {
-    scm_wrong_type_arg(s_make_menuitem,iarg,picture_above);
+    scm_wrong_type_arg(FUNC_NAME,iarg,picture_above);
   }
   pmi->scmImgAbove = picture_above;
 
@@ -176,7 +179,7 @@ for assigning shortcut keys to the various menuitems. */
   if (UNSET_SCM(picture_left)) {
     picture_left = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_left)) {
-    scm_wrong_type_arg(s_make_menuitem,iarg,picture_left);
+    scm_wrong_type_arg(FUNC_NAME,iarg,picture_left);
   } 
   pmi->scmImgLeft = picture_left;
 
@@ -184,7 +187,7 @@ for assigning shortcut keys to the various menuitems. */
   if (UNSET_SCM(hover_action)) {
     pmi->scmHover = SCM_BOOL_F;
   } else if (!PROCEDURE_OR_SYMBOL_P(hover_action)) {
-    scm_wrong_type_arg(s_make_menuitem,iarg,hover_action);
+    scm_wrong_type_arg(FUNC_NAME,iarg,hover_action);
   }
   pmi->scmHover = hover_action;
 
@@ -192,7 +195,7 @@ for assigning shortcut keys to the various menuitems. */
   if (UNSET_SCM(unhover_action)) {
     pmi->scmUnhover = SCM_BOOL_F;
   } else if (!PROCEDURE_OR_SYMBOL_P(unhover_action)) {
-    scm_wrong_type_arg(s_make_menuitem,iarg,unhover_action);
+    scm_wrong_type_arg(FUNC_NAME,iarg,unhover_action);
   }
   pmi->scmUnhover = unhover_action;
 
@@ -201,7 +204,7 @@ for assigning shortcut keys to the various menuitems. */
     pmi->pchHotkeyPreferences = NULL;
     pmi->cchHotkeyPreferences = 0;
   } else if (!gh_string_p(hotkey_prefs)) {
-    scm_wrong_type_arg(s_make_menuitem,iarg,hotkey_prefs);
+    scm_wrong_type_arg(FUNC_NAME,iarg,hotkey_prefs);
   } else {
     pmi->pchHotkeyPreferences = 
       gh_scm2newstr(hotkey_prefs,&pmi->cchHotkeyPreferences);
@@ -219,6 +222,7 @@ for assigning shortcut keys to the various menuitems. */
   SCM_SETCDR(answer, (SCM) pmi);
   return answer;
 }
+#undef FUNC_NAME
 
 
 MAKE_SMOBFUNS(menuitem);

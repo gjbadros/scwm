@@ -59,11 +59,12 @@ SCWM_PROC(set_current_desk_x, "set-current-desk!", 1, 0, 0,
           (SCM desk))
      /** Change the current desk to DESK. DESK should be an integer
 small enough to fit in one machine word. */
-  { SCM_REDEFER_INTS;
+  #define FUNC_NAME s_set_current_desk_x
+{ SCM_REDEFER_INTS;
 
   if (!gh_number_p(desk)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-current-desk!", 1, desk);
+    scm_wrong_type_arg(FUNC_NAME, 1, desk);
   }
   /* XXX - should do something useful if desk is out of range. */
   changeDesks(0, gh_scm2int(desk));
@@ -71,6 +72,7 @@ small enough to fit in one machine word. */
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 /**CONCEPT: Viewports 
   The current viewport is the area of the current desk that may be
@@ -82,20 +84,22 @@ SCWM_PROC(set_viewport_position_x, "set-viewport-position!", 2, 0, 0,
           (SCM x, SCM y))
      /** Position the upper left corner of the viewport at coordinates X, Y
 (in pixels) on the current desk. */
+#define FUNC_NAME s_set_viewport_position_x
 {
   SCM_REDEFER_INTS;
   if (!gh_number_p(x)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-viewport-position!", 1, x);
+    scm_wrong_type_arg(FUNC_NAME, 1, x);
   }
   if (!gh_number_p(y)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-viewport-position!", 2, y);
+    scm_wrong_type_arg(FUNC_NAME, 2, y);
   }
   MoveViewport(gh_scm2int(x), gh_scm2int(y), True);
   SCM_REALLOW_INTS;
   return (SCM_UNSPECIFIED);
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(set_edge_scroll_x, "set-edge-scroll!", 2, 0, 0,
@@ -103,15 +107,16 @@ SCWM_PROC(set_edge_scroll_x, "set-edge-scroll!", 2, 0, 0,
      /** Set the amount, in pixels, by which the viewport will scroll
 when the mouse hits the edge. SX gives the amount at a time to scroll
 horizontally, while SY gives the amount to scroll vertically. */
+#define FUNC_NAME s_set_edge_scroll_x
 {
   SCM_REDEFER_INTS;
   if (!gh_number_p(sx)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-edge-scroll!", 1, sx);
+    scm_wrong_type_arg(FUNC_NAME, 1, sx);
   }
   if (!gh_number_p(sy)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-edge-scroll!", 2, sy);
+    scm_wrong_type_arg(FUNC_NAME, 2, sy);
   }
   Scr.EdgeScrollX = gh_scm2int(sx);
   Scr.EdgeScrollY = gh_scm2int(sy);
@@ -120,6 +125,7 @@ horizontally, while SY gives the amount to scroll vertically. */
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(set_edge_wrap_x, "set-edge-wrap!", 2, 0, 0,
@@ -128,15 +134,16 @@ SCWM_PROC(set_edge_wrap_x, "set-edge-wrap!", 2, 0, 0,
 opposite edge of the desk when it hits the very edge. WX is a boolean
 value indicating wether horizontal wraparound is in effect, while WY
 indicates wether vertical wraparound is in effect. */
+#define FUNC_NAME s_set_edge_wrap_x
 {
   SCM_REDEFER_INTS;
   if (!gh_boolean_p(wx)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-edge-wrap!", 1, wx);
+    scm_wrong_type_arg(FUNC_NAME, 1, wx);
   }
   if (!gh_boolean_p(wy)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-edge-wrap!", 2, wy);
+    scm_wrong_type_arg(FUNC_NAME, 2, wy);
   }
   if (wx == SCM_BOOL_T) {
     Scr.flags |= EdgeWrapX;
@@ -152,6 +159,7 @@ indicates wether vertical wraparound is in effect. */
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(set_edge_resistance_x, "set-edge-resistance!", 2, 0, 0,
@@ -166,16 +174,17 @@ indicate that.) MR is an amount in pixels that indicates how many
 pixels past the edge of the screen a window must be moved before it
 will really go past the edge. (NOTE: This should probably be split
 into two procedures.) */
+#define FUNC_NAME s_set_edge_resistance_x
 {
   SCM_REDEFER_INTS;
 
   if (!gh_number_p(sr)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-edge-resistence!", 1, sr);
+    scm_wrong_type_arg(FUNC_NAME, 1, sr);
   }
   if (!gh_number_p(mr)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-edge-resistance!", 2, mr);
+    scm_wrong_type_arg(FUNC_NAME, 2, mr);
   }
   Scr.ScrollResistance = gh_scm2int(sr);
   Scr.MoveResistance = gh_scm2int(mr);
@@ -183,22 +192,24 @@ into two procedures.) */
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(set_desk_size_x, "set-desk-size!", 2, 0, 0,
           (SCM width, SCM height))
      /** Sets the desk size to WIDTH, HEIGHT (in units of the physical
 screen size) */
+#define FUNC_NAME s_set_desk_size_x
 {
   SCM_REDEFER_INTS;
 
   if (!gh_number_p(width)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-desk-size!", 1, width);
+    scm_wrong_type_arg(FUNC_NAME, 1, width);
   }
   if (!gh_number_p(height)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg("set-desk-size!", 2, height);
+    scm_wrong_type_arg(FUNC_NAME, 2, height);
   }
   Scr.VxMax = gh_scm2int(width);
   Scr.VyMax = gh_scm2int(height);
@@ -215,47 +226,56 @@ screen size) */
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(display_size, "display-size", 0, 0, 0,
           ())
      /** Returns the size of the physical screen, in pixels, as a list of 
 the width and the height. */
+#define FUNC_NAME s_display_size
 {
   return scm_listify(SCM_MAKINUM(Scr.MyDisplayWidth),
 		     SCM_MAKINUM(Scr.MyDisplayHeight),
 		     SCM_UNDEFINED);
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(desk_size, "desk-size", 0, 0, 0,
           ())
      /** Returns the size of the current desk, in units of the
 physical screen size, as a list of the width and the height. */
+#define FUNC_NAME s_desk_size
 {
   return scm_listify(SCM_MAKINUM((int) (Scr.VxMax / Scr.MyDisplayWidth + 1)),
                      SCM_MAKINUM((int) (Scr.VyMax / Scr.MyDisplayHeight + 1)),
 		     SCM_UNDEFINED);
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(viewport_position, "viewport-position", 0, 0, 0,
           ())
      /** Returns the current position of the viewport in pixels, as a
 list of the x and y positions. */
+#define FUNC_NAME s_viewport_position
 {
   return scm_listify(SCM_MAKINUM(Scr.Vx),
 		     SCM_MAKINUM(Scr.Vy),
 		     SCM_UNDEFINED);
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(current_desk, "current-desk", 0, 0, 0,
           ())
      /** Returns the integer identifying the current desk. */
+#define FUNC_NAME s_current_desk
 {
   return SCM_MAKINUM(Scr.CurrentDesk);
 }
+#undef FUNC_NAME
 
 void
 init_deskpage()

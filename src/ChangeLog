@@ -1,3 +1,18 @@
+Mon Jul 20 11:09:43 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* *.c: Use #define FUNC_NAME, #undef FUNC_NAME to bracket
+	primitives, and use FUNC_NAME within the primitive -- error
+	handling code gets cut and pasted a lot, and an
+	incorrectly-specified function name could be really annoying to
+	track down.  extract-docs checks the #define -- we could automate
+	instead, but that would slow compile times more, and require an
+	extra build step
+
+	* Fixed a couple of doc strings that were mis-commented, added a
+	couple for primitives that were missing doc strings
+
+	* window.c (print_window): Print the windows name along with its id.
+
 1998-07-20  Maciej Stachowiak  <maciej@localhost.localdomain>
 
 	* add_window.c (AddWindow): Add an explanatory comment.

@@ -78,7 +78,7 @@ SCM load_pixmap(SCM full_path);
 SCM register_image_loader(SCM extension, SCM proc);
 SCM unregister_image_loader(SCM extension);
 
-SCM path_expand_image_fname(SCM name);
+SCM path_expand_image_fname(SCM name, const char *func_name);
 SCM get_image_loader(SCM name);
 SCM make_image(SCM name);
 

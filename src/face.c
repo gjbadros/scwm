@@ -107,6 +107,7 @@ SCWM_PROC(make_face, "make-face",2,0,0,
           (SCM flags, SCM specs) )
 	  /** Create a new face using FLAGS, a list of face flags and
 SPECS, a list of face specs. */
+#define FUNC_NAME s_make_face
 {
   SCM answer;
   scwm_face *sf;
@@ -114,11 +115,11 @@ SPECS, a list of face specs. */
   SCM p,flag,spec;
 
   if (!gh_list_p(flags)) {
-    scm_wrong_type_arg("make-face",1,flags);
+    scm_wrong_type_arg(FUNC_NAME,1,flags);
   }
 
   if (!gh_list_p(specs)) {
-    scm_wrong_type_arg("make-face",2,specs);
+    scm_wrong_type_arg(FUNC_NAME,2,specs);
   }
 
   sf = NEW(scwm_face);
@@ -139,7 +140,7 @@ SPECS, a list of face specs. */
       set_face_flag_x(answer,gh_car(flag),gh_cadr(flag));
     } else {
       /* Bad flag specifier error */
-      scm_wrong_type_arg("make-face",1,flags);          
+      scm_wrong_type_arg(FUNC_NAME,1,flags);          
     }
   }
 
@@ -150,12 +151,13 @@ SPECS, a list of face specs. */
       add_spec_to_face_x(answer,gh_car(spec),gh_cadr(spec));
     } else {
       /* Bad flag specifier error */
-      scm_wrong_type_arg("make-face",1,specs);          
+      scm_wrong_type_arg(FUNC_NAME,1,specs);          
     }
   }
 
   return answer;
 }
+#undef FUNC_NAME
 
 /* FIXDOC: I need to make a table. How do I do that? For now using
    ad-hoc formatting. */
@@ -212,8 +214,9 @@ pointers to functions that know how to set each individual flag, but
 this ugly code is almost certainly more compact and quite possibly
 faster. If only C had closures... */
 
-void set_face_flag_x(SCM face, SCM flag, SCM
-flagval) { ButtonFace *bf;
+void set_face_flag_x(SCM face, SCM flag, SCM flagval) 
+{
+  ButtonFace *bf;
 
   bf=BUTTONFACE(face);
 
@@ -228,7 +231,7 @@ flagval) { ButtonFace *bf;
     } 
     else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg("set_flag_in_face",3,flagval);    
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
     }
 
   } else if (flag==sym_vertical_justify) {
@@ -243,7 +246,7 @@ flagval) { ButtonFace *bf;
     } 
     else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg("set_flag_in_face",3,flagval);    
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
     }
 
   } else if (flag==sym_relief) {
@@ -258,7 +261,7 @@ flagval) { ButtonFace *bf;
       bf->style |= FlatButton;
     } else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg("set_flag_in_face",3,flagval);    
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
     }
 
   } else if (flag==sym_use_style_of) {
@@ -273,7 +276,7 @@ flagval) { ButtonFace *bf;
     } 
     else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg("set_flag_in_face",3,flagval);    
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
     }
 
   } else if (flag==sym_hidden_handles) {
@@ -283,7 +286,7 @@ flagval) { ButtonFace *bf;
       bf->style &= ~HiddenHandles;
     } else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg("set_flag_in_face",3,flagval);    
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
     }
 
   } else if (flag==sym_no_inset) {
@@ -293,12 +296,12 @@ flagval) { ButtonFace *bf;
       bf->style &= ~NoInset;
     } else {
       /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg("set_flag_in_face",3,flagval);    
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
     }
 
   } else {
     /* FIXMS: use something more accurate. */
-    scm_wrong_type_arg("set_flag_in_face",2,flagval);    
+    scm_wrong_type_arg(__FUNCTION__,2,flagval);    
   }
 }
 
@@ -407,12 +410,12 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       bf->style |= VectorButton;
     } else {
       /* FIXMS give a better error message */
-      scm_wrong_type_arg("add_spec_to_face_x",3,arg);
+      scm_wrong_type_arg(__FUNCTION__,3,arg);
     }
 
   } else if (spec==sym_solid) {
     /* FIXMS give a better error message */
-    VALIDATE_COLOR(arg, "add_spec_to_face_x", arg);
+    VALIDATE_COLOR(arg, __FUNCTION__, arg);
 
     /* fully destructive, so free the face and 
        mutate it */
@@ -438,7 +441,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
       if (nsegs < 1 || nsegs > 128) {
 	/* FIXMS give a better error message */
-	scm_wrong_type_arg("add_spec_to_face_x",3,arg);
+	scm_wrong_type_arg(__FUNCTION__,3,arg);
       }
       perc = NEWC(nsegs,int);
       s_colors = NEWC(nsegs+1,char *);
@@ -466,7 +469,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	FREEC(s_colors);
 	FREEC(perc);
 	/* FIXMS give a better error message */
-	scm_wrong_type_arg("add_spec_to_face_x",3,arg);
+	scm_wrong_type_arg(__FUNCTION__,3,arg);
       }
 
       pixels = AllocNonlinearGradient(s_colors, perc, nsegs, npixels);
@@ -479,7 +482,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       if (!pixels) {
 	/* error: couldn't allocate gradient */
 	/* FIXMS give a better error message */
-	scm_wrong_type_arg("add_spec_to_face_x",3,arg);
+	scm_wrong_type_arg(__FUNCTION__,3,arg);
       }
 
       /* fully destructive, so free the face and 
@@ -497,7 +500,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       }
     } else {
       /* FIXMS give a better error message */
-      scm_wrong_type_arg("add_spec_to_face_x",3,arg);
+      scm_wrong_type_arg(__FUNCTION__,3,arg);
     }
   } else if (spec==sym_pixmap) {
     int tiled_p;
@@ -528,7 +531,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	if (image==SCM_BOOL_F) {
 	  /* signal an error: couldn't load picture */
 	  /* FIXMS give a better error message */
-	  scwm_msg(WARN,"add_spec_to_face_x", "Image not found for argument #%d",3);
+	  scwm_msg(WARN,__FUNCTION__, "Image not found for argument #%d",3);
 	}
       }
       
@@ -552,11 +555,11 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       }
     } else {
       /* FIXMS give a better error message */
-      scwm_msg(WARN,"add_spec_to_face_x", "Image not found for argument #%d",3);
+      scwm_msg(WARN,__FUNCTION__, "Image not found for argument #%d",3);
     }
   } else {
     /* FIXMS give a better error message */
-    scm_wrong_type_arg("add_spec_to_face_x",2,arg);
+    scm_wrong_type_arg(__FUNCTION__,2,arg);
   }
 
 }
@@ -589,23 +592,24 @@ inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not
 specified. Note that ACTIVE-DOWN will magically reverse the sense of
 the relief flag, so if your titlebar bar is raised in the ACTIVE-UP
 state, it will be sunk in the ACTIVE-DOWN state by default.  */
+#define FUNC_NAME s_set_title_face_x
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!FACEP(active_up)) {
-    scm_wrong_type_arg("set-title-face!",1,active_up);
+    scm_wrong_type_arg(FUNC_NAME,1,active_up);
   }
 
   if (active_down==SCM_UNDEFINED) {
     active_down=active_up;
   } else if (!FACEP(active_down)) {
-    scm_wrong_type_arg("set-title-face!",2,active_down);
+    scm_wrong_type_arg(FUNC_NAME,2,active_down);
   }
 
   if (inactive==SCM_UNDEFINED) {
     inactive=active_up;
   } else if (!FACEP(inactive)) {
-    scm_wrong_type_arg("set-title-face!",3,inactive);
+    scm_wrong_type_arg(FUNC_NAME,3,inactive);
   }
 
   fl->titlebar.state[ActiveUp]=BUTTONFACE(active_up);
@@ -616,6 +620,7 @@ state, it will be sunk in the ACTIVE-DOWN state by default.  */
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 SCWM_PROC(set_button_face_x, "set-button-face!", 2, 2, 0,
           (SCM button, SCM active_up, SCM active_down, SCM inactive) )
@@ -627,6 +632,7 @@ ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically
 reverse the sense of the relief flag, so if the button is raised in
 the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by
 default.  */
+#define FUNC_NAME s_set_button_face_x
 {
   int n;
   int left_p;
@@ -636,23 +642,23 @@ default.  */
   n=0;
 
   if (!gh_number_p(button) || (n=gh_scm2int(button)) < 1 || n > 10) {
-    scm_wrong_type_arg("set-button-face!",1,button);
+    scm_wrong_type_arg(FUNC_NAME,1,button);
   }
 
   if (!FACEP(active_up)) {
-    scm_wrong_type_arg("set-button-face!",2,active_up);
+    scm_wrong_type_arg(FUNC_NAME,2,active_up);
   }
 
   if (active_down==SCM_UNDEFINED) {
     active_down=active_up;
   } else if (!FACEP(active_down)) {
-    scm_wrong_type_arg("set-button-face!",3,active_down);
+    scm_wrong_type_arg(FUNC_NAME,3,active_down);
   }
 
   if (inactive==SCM_UNDEFINED) {
     inactive=active_up;
   } else if (!FACEP(inactive)) {
-    scm_wrong_type_arg("set-button-face!",4,inactive);
+    scm_wrong_type_arg(FUNC_NAME,4,inactive);
   }
 
   left_p = n % 2;
@@ -673,6 +679,7 @@ default.  */
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
@@ -680,6 +687,7 @@ SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
      /** Specify the Mwm flag for BUTTON, that is, specify wether or
 not it's relief pattern (if any) should reverse in depth sense when
 the window is maximized. This is specified by the boolean value FLAG.*/
+#define FUNC_NAME s_set_button_mwm_flag_x
 {
   int n;
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -688,7 +696,7 @@ the window is maximized. This is specified by the boolean value FLAG.*/
 
   if (!gh_number_p(button) || (n=gh_scm2int(button)) < 1 ||
       n > 10) {
-    scm_wrong_type_arg("set-button-face!",1,button);
+    scm_wrong_type_arg(FUNC_NAME,1,button);
   }
 
   if(flag==SCM_BOOL_T) {
@@ -696,13 +704,14 @@ the window is maximized. This is specified by the boolean value FLAG.*/
   } else if (flag==SCM_BOOL_F) {
     fl->left_buttons[n].flags &= ~MWMButton;    
   } else {
-    scm_wrong_type_arg("set-button-mwm-flag!",1,flag);
+    scm_wrong_type_arg(FUNC_NAME,1,flag);
   }
 
   redraw_borders(fl);
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(set_border_face_x, "set-border-face!", 1, 1, 0,
@@ -711,17 +720,18 @@ SCWM_PROC(set_border_face_x, "set-border-face!", 1, 1, 0,
 when the window is active. Use INACTIVE when the window is
 inactive. INACTIVE defaults to the same as ACTIVE when not
 specified. */
+#define FUNC_NAME s_set_border_face_x
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!FACEP(active)) {
-    scm_wrong_type_arg("set-border-face!",1,active);
+    scm_wrong_type_arg(FUNC_NAME,1,active);
   }
 
   if (inactive==SCM_UNDEFINED) {
     inactive=active;
   } else if (!FACEP(inactive)) {
-    scm_wrong_type_arg("set-border-face!",2,inactive);
+    scm_wrong_type_arg(FUNC_NAME,2,inactive);
   }
 
   fl->BorderStyle.active=BUTTONFACE(active);
@@ -731,6 +741,7 @@ specified. */
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 

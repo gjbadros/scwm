@@ -211,8 +211,8 @@ main(int argc, char **argv)
 
 #ifdef USE_CASSOWARY
 ClSimplexSolver solver;
+void init_cassowary_scm();
 #endif
-  void init_cassowary_scm();
 
 /*
  * scwm_main - main routine for scwm
@@ -271,7 +271,6 @@ scwm_main(int argc, char **argv)
   setlinebuf(stdout);
   init_font();
   init_decor();
-  init_cassowary_scm();
   init_callbacks();
   init_add_window();
   init_image();

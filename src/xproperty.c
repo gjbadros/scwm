@@ -100,12 +100,14 @@ print_xproperty(SCM obj, SCM port, scm_print_state * pstate)
   return 1;
 }
 
-SCWM_PROC (xproperty_p, "xproperty?", 1, 0, 0,
+SCWM_PROC(xproperty_p, "xproperty?", 1, 0, 0,
            (SCM obj))
      /** Return #t if OBJ is an xproperty object, otherwise #f. */
+#define FUNC_NAME s_xproperty_p
 {
   return SCM_BOOL_FromBool(XPROPERTY_P(obj));
 }
+#undef FUNC_NAME
 
 /* Note: data passes into ownership of the xproperty and must not be free'd */
 static SCM
@@ -128,20 +130,21 @@ make_xproperty (char *type, unsigned len, void *data)
   return answer;
 }
 
-SCWM_PROC (set_window_text_property, "set-window-text-property", 3, 0, 0,
+SCWM_PROC(set_window_text_property, "set-window-text-property", 3, 0, 0,
            (SCM win, SCM propname, SCM value))
      /** Set a text property on WIN, with format 8 and type
 "XA_STRING", and VALUE as the data. */
+#define FUNC_NAME s_set_window_text_property
 {
   Status status;
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(s_set_window_text_property, 1, win);
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
   }
   if (!gh_string_p(propname)) {
-    scm_wrong_type_arg(s_set_window_text_property, 2, propname);
+    scm_wrong_type_arg(FUNC_NAME, 2, propname);
   }
   if (!gh_string_p(value)) {
-    scm_wrong_type_arg(s_set_window_text_property, 3, value);
+    scm_wrong_type_arg(FUNC_NAME, 3, value);
   }
   { /* scope */
     char *szName = gh_scm2newstr(propname, NULL);
@@ -156,13 +159,15 @@ SCWM_PROC (set_window_text_property, "set-window-text-property", 3, 0, 0,
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (window_xproperty, "window-xproperty", 2, 1, 0,
+SCWM_PROC(window_xproperty, "window-xproperty", 2, 1, 0,
            (SCM win, SCM name, SCM consume))
      /** Get the property called NAME from WIN if the boolean value
 CONSUME is specified and true, the property is also delted in one
 atomic operation. */
+#define FUNC_NAME s_window_xproperty
 {
   SCM answer;
   Atom type, prop;
@@ -173,10 +178,10 @@ atomic operation. */
   Boolean del;
   
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(s_window_xproperty, 1, win);
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
   }
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg(s_window_xproperty, 2, name);
+    scm_wrong_type_arg(FUNC_NAME, 2, name);
   }
   if (consume == SCM_UNDEFINED)
     del = False;
@@ -207,32 +212,37 @@ atomic operation. */
   
   return answer;
 }
+#undef FUNC_NAME
 
-SCWM_PROC (xproperty_to_string, "xproperty->string", 1, 0, 0,
+SCWM_PROC(xproperty_to_string, "xproperty->string", 1, 0, 0,
            (SCM prop))
      /** Convert that data portion of xproperty object PROP to a string. */
+#define FUNC_NAME s_xproperty_to_string
 {
   if (!XPROPERTY_P(prop)) {
-    scm_wrong_type_arg(s_xproperty_to_string, 1, prop);
+    scm_wrong_type_arg(FUNC_NAME, 1, prop);
   }
 
   return gh_str2scm((char *)XPROPERTYDATA(prop),XPROPERTYLEN(prop));
 }
+#undef FUNC_NAME
 
-SCWM_PROC (string_to_xproperty, "string->xproperty", 1, 0, 0,
+SCWM_PROC(string_to_xproperty, "string->xproperty", 1, 0, 0,
            (SCM str))
-     /* Create an xproperty object from STR. */
+/** Create an xproperty object from STR. */
+#define FUNC_NAME s_string_to_xproperty
 {
   char *string;
   int len;
   
   if (!gh_string_p(str)) {
-    scm_wrong_type_arg(s_string_to_xproperty, 1, str);
+    scm_wrong_type_arg(FUNC_NAME, 1, str);
   }
 
   string=gh_scm2newstr(str,&len);
   return make_xproperty("STRING",len,string);
 }
+#undef FUNC_NAME
 
 MAKE_SMOBFUNS(xproperty);
 

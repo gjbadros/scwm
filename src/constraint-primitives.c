@@ -25,10 +25,11 @@ SCWM_PROC(add_stays_on_window, "add-stays-on-window", 1, 0, 0,
           (SCM win))
   /** Add stay constraint on all window dimensions
 WIN is a window objects */
+#define FUNC_NAME s_add_stays_on_window
 {
   int iarg = 1;
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(s_add_stays_on_window, iarg++, win);
+    scm_wrong_type_arg(FUNC_NAME, iarg++, win);
   }
   
   ScwmWindow const *const psw = PSWFROMSCMWIN(win);
@@ -43,6 +44,7 @@ WIN is a window objects */
   /* FIXGJB: need to add hook to remove the stays if win disappears */
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 
@@ -50,13 +52,14 @@ SCWM_PROC(keep_tops_even, "keep-tops-even", 2, 0, 0,
           (SCM winA, SCM winB))
   /** Keep the tops of the frames of winA and winB at the same y position.
 WINA and WINB are both window objects */
+#define FUNC_NAME s_keep_tops_even
 {
   int iarg = 1;
   if (!WINDOWP(winA)) {
-    scm_wrong_type_arg(s_keep_tops_even, iarg++, winA);
+    scm_wrong_type_arg(FUNC_NAME, iarg++, winA);
   }
   if (!WINDOWP(winB)) {
-    scm_wrong_type_arg(s_keep_tops_even, iarg++, winB);
+    scm_wrong_type_arg(FUNC_NAME, iarg++, winB);
   }
   
   ScwmWindow const *const pswA = PSWFROMSCMWIN(winA);
@@ -75,19 +78,21 @@ WINA and WINB are both window objects */
      disappears */
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(keep_to_left_of, "keep-to-left-of", 2, 0, 0,
           (SCM winA, SCM winB))
   /** Keep the winA to the left of winB
 WINA and WINB are both window objects */
+#define FUNC_NAME s_keep_to_left_of
 {
   int iarg = 1;
   if (!WINDOWP(winA)) {
-    scm_wrong_type_arg(s_keep_to_left_of, iarg++, winA);
+    scm_wrong_type_arg(FUNC_NAME, iarg++, winA);
   }
   if (!WINDOWP(winB)) {
-    scm_wrong_type_arg(s_keep_to_left_of, iarg++, winB);
+    scm_wrong_type_arg(FUNC_NAME, iarg++, winB);
   }
   
   ScwmWindow const *const pswA = PSWFROMSCMWIN(winA);
@@ -109,17 +114,8 @@ WINA and WINB are both window objects */
      disappears */
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
-
-#if 0
-/* not needed -- can do in scheme */
-SCWM_PROC(resolve_and_reposition, "resolve-and-reposition", 0, 0, 0,
-          ())
-{
-  
-  return SCM_UNSPECIFIED;
-}
-#endif
 
 void
 init_constraint_primitives()

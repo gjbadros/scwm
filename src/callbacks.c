@@ -240,22 +240,24 @@ scwm_body_eval_str (void *body_data)
 
 
 
-SCWM_PROC (safe_load, "safe-load", 1, 0, 0,
+SCWM_PROC(safe_load, "safe-load", 1, 0, 0,
            (SCM fname))
      /** Load file FNAME, trapping and displaying errors on each
 	 individual top-level expression. Should be used if you need
 	 to make sure most of a file loads, even if it may contain
 	 errors. */
+#define FUNC_NAME s_safe_load
 {
   SCM_STACKITEM stack_item;
   if (!gh_string_p(fname)) {
-    scm_wrong_type_arg(s_safe_load, 1, fname);
+    scm_wrong_type_arg(FUNC_NAME, 1, fname);
   }
 
   return scm_internal_cwdr(scwm_body_load, &fname,
 			   scm_handle_by_message_noexit, "scwm", 
 			   &stack_item);
 }
+#undef FUNC_NAME
 
 SCM scwm_safe_load (char *filename)
 {
@@ -422,6 +424,7 @@ SCWM_PROC(add_timer_hook_x, "add-timer-hook!", 2, 0, 0,
 passed, procedure PROC will be called with no arguments. A
 handle suitable for passing to `remove-timer-hook!' is
 returned. */
+#define FUNC_NAME s_add_timer_hook_x
 {
   SCM newcell;
   SCM p, last;
@@ -429,12 +432,12 @@ returned. */
 
 
   if (!gh_number_p(usec) || 
-      (scm_num2long(usec, (char *) SCM_ARG1, s_add_timer_hook_x) < 0)) {
-    scm_wrong_type_arg(s_add_timer_hook_x, 1, usec);
+      (scm_num2long(usec, (char *) SCM_ARG1, FUNC_NAME) < 0)) {
+    scm_wrong_type_arg(FUNC_NAME, 1, usec);
   }
 
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(s_add_timer_hook_x, 2, proc);
+    scm_wrong_type_arg(FUNC_NAME, 2, proc);
   }
 
   th_list=SCM_CDR(timer_hooks);
@@ -455,6 +458,7 @@ returned. */
 
   return newcell;
 }
+#undef FUNC_NAME
 
 SCWM_PROC(remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0,
           (SCM handle))
@@ -462,11 +466,13 @@ SCWM_PROC(remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0,
 object that was returned by `add-timer-hook!'. No warning or
 error will occur if HANDLE is for a timer hook that has
 already been triggered. */
+#define FUNC_NAME s_remove_timer_hook_x
 {
   SCM_SETCDR(timer_hooks,scm_delq_x (handle, SCM_CDR(timer_hooks)));
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 long shortest_timer_timeout()
@@ -557,16 +563,17 @@ unprocessed input remains on PORT. PORT must be open, it must be an
 input port, and it must be a file port (this includes pipes and
 sockets, but not string ports or soft ports). A handle suitable for
 passing to `remove-input-hook!' is returned. */
+#define FUNC_NAME s_add_input_hook_x
 {
   SCM newcell;
   SCM p, last;
 
   if (!SCM_OPINFPORTP(port)) {
-    scm_wrong_type_arg(s_add_input_hook_x, 1, port);
+    scm_wrong_type_arg(FUNC_NAME, 1, port);
   }
 
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(s_add_input_hook_x, 2, proc);
+    scm_wrong_type_arg(FUNC_NAME, 2, proc);
   }
 
   newcell=gh_cons(port, proc);
@@ -576,17 +583,20 @@ passing to `remove-input-hook!' is returned. */
 
   return newcell;
 }
+#undef FUNC_NAME
 
 SCWM_PROC(remove_input_hook_x, "remove-input-hook!", 1, 0, 0,
           (SCM handle))
      /** Remove an input hook identified by HANDLE, which should be an
 object that was returned by `add-input-hook!'. An input hook may
 safely remove itself. */
+#define FUNC_NAME s_remove_input_hook_x
 {
   SCM_SETCDR(input_hooks,scm_delq_x (handle, SCM_CDR(input_hooks)));
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 void 

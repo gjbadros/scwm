@@ -76,12 +76,13 @@ SCWM_PROC(marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0,
           (SCM win))
      /** This procedure constructs the contents of a BroadcastInfo fvwm
 module packet for WIN and returns it as a Scheme string. */
+#define FUNC_NAME s_marshal_fvwm2_config_info
 {
   ScwmWindow *psw;
   unsigned long info[24];
   int i;
 
-  VALIDATE(win, s_marshal_fvwm2_config_info);
+  VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
   info[i=0] = psw->w;
@@ -111,6 +112,7 @@ module packet for WIN and returns it as a Scheme string. */
 
   return gh_str2scm((char *)info,sizeof(info));
 }
+#undef FUNC_NAME
 
 void init_module_interface()
 {

@@ -77,37 +77,42 @@ print_color(SCM obj, SCM port, scm_print_state * pstate)
   return 1;
 }
 
-SCWM_PROC (color_p, "color?", 1, 0, 0, 
+SCWM_PROC(color_p, "color?", 1, 0, 0, 
            (SCM obj))
      /** Returns #t if OBJ is a color object, otherwise #f. */
+#define FUNC_NAME s_color_p
 {
   return SCM_BOOL_FromBool(COLOR_P(obj));
 }
+#undef FUNC_NAME
 
 /* FIXMS: Should we extend this to return r, g and b values? Should we
    perhaps even store those in the color structure? */
 
-SCWM_PROC (color_properties, "color-properties", 1, 0, 0,
+SCWM_PROC(color_properties, "color-properties", 1, 0, 0,
            (SCM color))
      /** Return an association list giving some properties of
 COLOR. Currently defined properties are 'name, the string name of the
 color, and 'pixel, the X pixel value it uses. */
+#define FUNC_NAME s_color_properties
 {
-  VALIDATE_COLOR (color, s_color_properties, 1);
+  VALIDATE_COLOR (color, FUNC_NAME, 1);
 
   return gh_list(gh_cons(sym_name, COLORNAME(color)),
 		 gh_cons(sym_pixel, gh_int2scm(XCOLOR(color))),
 		 SCM_UNDEFINED);
 }
+#undef FUNC_NAME
 
 /* Not as inefficient as it looks - after the first time, this just
    amounts to a hash lookup. */
 
-SCWM_PROC (make_color, "make-color", 1, 0, 0,
+SCWM_PROC(make_color, "make-color", 1, 0, 0,
            (SCM cname))
      /** Return the color object corresponding to the X color
 specifier CNAME. If CNAME is not a valid X color name, or cannot be
 allocated, an error results. */
+#define FUNC_NAME s_make_color
 {
   SCM answer;
   XColor color;
@@ -117,7 +122,7 @@ allocated, an error results. */
   scwm_color *sc;
 
   if (!gh_string_p(cname)) {
-    scm_wrong_type_arg(s_make_color, 1, cname);
+    scm_wrong_type_arg(FUNC_NAME, 1, cname);
   }
 
   answer=scm_hash_ref(color_hash_table, cname, SCM_BOOL_F);
@@ -133,16 +138,16 @@ allocated, an error results. */
      make it nicer later. */
   if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, cn, &color)) {
     FREE(cn);
-    scwm_error(s_make_color,2);
+    scwm_error(FUNC_NAME,2);
 #if 0   
-    scwm_msg(WARN,s_make_color,"Unable to parse color `%s'",cn);
+    scwm_msg(WARN,FUNC_NAME,"Unable to parse color `%s'",cn);
     fBad = True;
 #endif
   } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
     FREE(cn);
-    scwm_error("make-color",3);
+    scwm_error(FUNC_NAME,3);
 #if 0
-    scwm_msg(WARN,s_make_color,"Unable to allocate color `%s'",cn);
+    scwm_msg(WARN,FUNC_NAME,"Unable to allocate color `%s'",cn);
     fBad = True;
 #endif
   }
@@ -167,19 +172,22 @@ allocated, an error results. */
   scm_hash_set_x (color_hash_table, scm_string_copy(cname), answer);
   return (answer);  
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (clear_color_cache_entry, "clear-color-cache-entry", 1, 0, 0,
+SCWM_PROC(clear_color_cache_entry, "clear-color-cache-entry", 1, 0, 0,
            (SCM name))
      /** Colors are cached by name. It is remotely possible that the
 meaning of a particular string as a color will change in your X
 server, if you try hard enough. For this unlikely eventuality,
 `clear-color-cache-entry' is provided - it removes the color
 associated with NAME from the color cache.*/
+#define FUNC_NAME s_clear_color_cache_entry
 {
   scm_hash_remove_x(color_hash_table, name);
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 
@@ -352,24 +360,26 @@ adjust_brightness (SCM color, double factor) {
 }
 
 
-SCWM_PROC (make_relief_color, "make-relief-color", 2, 0, 0,
+SCWM_PROC(make_relief_color, "make-relief-color", 2, 0, 0,
            (SCM color, SCM factor))
      /** Multiply the luminosity and saturation of COLOR by the
 positive floating point number FACTOR. Using a FACTOR smaller than 1
 will result in a dimmer color, suitable for use as a darker
 relief. Using a factor greater than 1 will result in a brighter color
 which is suitable for use as a hilight. */
+#define FUNC_NAME s_make_relief_color
 {
   double f;
 
-  VALIDATE_COLOR (color, s_make_relief_color, 1);
+  VALIDATE_COLOR (color, FUNC_NAME, 1);
 
   if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(s_make_relief_color, 1, factor);
+    scm_wrong_type_arg(FUNC_NAME, 1, factor);
   }
 
   return adjust_brightness(color, f);
 }
+#undef FUNC_NAME
 
 
 
@@ -417,10 +427,11 @@ static void reset_menu_relief()
 }
 
 
-SCWM_PROC (set_hilight_factor_x, "set-hilight-factor!", 1, 0, 0,
+SCWM_PROC(set_hilight_factor_x, "set-hilight-factor!", 1, 0, 0,
            (SCM factor))
      /** Use positive floating point number FACTOR to generate hilight
 colors in the current decor. */
+#define FUNC_NAME s_set_hilight_factor_x
 {
   double f;
   ScwmDecor *fl;
@@ -428,7 +439,7 @@ colors in the current decor. */
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(s_set_hilight_factor_x, 1, factor);
+    scm_wrong_type_arg(FUNC_NAME, 1, factor);
   }
 
   fl->hilight_factor = f;
@@ -437,10 +448,12 @@ colors in the current decor. */
   reset_decor_relief();
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
-SCWM_PROC (hilight_factor, "hilight-factor", 0, 0, 0,
+SCWM_PROC(hilight_factor, "hilight-factor", 0, 0, 0,
            ())
      /** Return the current hilight factor. */
+#define FUNC_NAME s_hilight_factor
 {
   ScwmDecor *fl;
 
@@ -448,12 +461,14 @@ SCWM_PROC (hilight_factor, "hilight-factor", 0, 0, 0,
 
   return (gh_double2scm(fl->hilight_factor));
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
+SCWM_PROC(set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
            (SCM factor))
      /** Use positive floating point number FACTOR to generate shadow
 colors in the current decor. */
+#define FUNC_NAME s_set_shadow_factor_x
 {
   double f;
   ScwmDecor *fl;
@@ -461,7 +476,7 @@ colors in the current decor. */
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(s_set_shadow_factor_x, 1, factor);
+    scm_wrong_type_arg(FUNC_NAME, 1, factor);
   }
 
   fl->shadow_factor = f;
@@ -470,11 +485,13 @@ colors in the current decor. */
   reset_decor_relief();
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (shadow_factor, "shadow-factor", 0, 0, 0,
+SCWM_PROC(shadow_factor, "shadow-factor", 0, 0, 0,
            ())
      /** Return the current shadow factor. */
+#define FUNC_NAME s_shadow_factor
 {
   ScwmDecor *fl;
 
@@ -482,20 +499,22 @@ SCWM_PROC (shadow_factor, "shadow-factor", 0, 0, 0,
 
   return (gh_double2scm(fl->shadow_factor));
 }
+#undef FUNC_NAME
 
 
 double menu_hilight_factor_val = 1.2;
 double menu_shadow_factor_val = 0.5;
 
 
-SCWM_PROC (set_menu_hilight_factor_x, "set-menu-hilight-factor!", 1, 0, 0,
+SCWM_PROC(set_menu_hilight_factor_x, "set-menu-hilight-factor!", 1, 0, 0,
            (SCM factor))
      /** Use positive floating point number FACTOR to generate hilight
 colors for menus. */
+#define FUNC_NAME s_set_menu_hilight_factor_x
 {
   double f;
   if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(s_set_menu_hilight_factor_x, 1, factor);
+    scm_wrong_type_arg(FUNC_NAME, 1, factor);
   }
 
   menu_hilight_factor_val = f;
@@ -504,23 +523,27 @@ colors for menus. */
   reset_menu_relief();
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
-SCWM_PROC (menu_hilight_factor, "menu-hilight-factor", 0, 0, 0,
+SCWM_PROC(menu_hilight_factor, "menu-hilight-factor", 0, 0, 0,
            ())
      /** Return the current menu hilight factor. */
+#define FUNC_NAME s_menu_hilight_factor
 {
   return (gh_double2scm(menu_hilight_factor_val));
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0,
+SCWM_PROC(set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0,
            (SCM factor))
      /** Use positive floating point number FACTOR to generate shadow
 colors for menus. */
+#define FUNC_NAME s_set_menu_shadow_factor_x
 {
   double f;
   if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
-    scm_wrong_type_arg(s_set_menu_shadow_factor_x, 1, factor);
+    scm_wrong_type_arg(FUNC_NAME, 1, factor);
   }
 
   menu_shadow_factor_val = f;
@@ -529,13 +552,16 @@ colors for menus. */
   reset_menu_relief();
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
-SCWM_PROC (menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
+SCWM_PROC(menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
            ())
      /** Return the current menu shadow factor. */
+#define FUNC_NAME s_menu_shadow_factor
 {
   return (gh_double2scm(menu_shadow_factor_val));
 }
+#undef FUNC_NAME
 
 
 /* FIXMS: does this belong in util.c or something? 
@@ -555,14 +581,15 @@ redraw_hilight_window()
 
 /* FIXMS: Need to protect color objects in the below! */
 
-SCWM_PROC (set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0,
+SCWM_PROC(set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0,
            (SCM fg) )
      /** Use FG as the foreground color for the window with focus in
 the current decor. */
+#define FUNC_NAME s_set_hilight_foreground_x
 { 
   ScwmDecor *fl;
 
-  VALIDATE_COLOR(fg, s_set_hilight_foreground_x, 1);
+  VALIDATE_COLOR(fg, FUNC_NAME, 1);
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
@@ -575,6 +602,7 @@ the current decor. */
   redraw_hilight_window();
   return (SCM_UNSPECIFIED);
 }
+#undef FUNC_NAME
 
 
 /* FIXMS: eventually add option to pass background relief, shadow? */
@@ -582,16 +610,17 @@ the current decor. */
 /* FIXMS: the more I do this, the more I wish we had a nice GC
    abstraction. */
 
-SCWM_PROC (set_hilight_background_x, "set-hilight-background!", 1, 0, 0,
+SCWM_PROC(set_hilight_background_x, "set-hilight-background!", 1, 0, 0,
            (SCM bg))
      /** Use BG as the background color for the window with focus in
 the current decor. */
+#define FUNC_NAME s_set_hilight_background_x
 {
   XGCValues gcv;
   unsigned long gcm;
   ScwmDecor *fl;
 
-  VALIDATE_COLOR(bg, s_set_hilight_background_x, 1);
+  VALIDATE_COLOR(bg, FUNC_NAME, 1);
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
@@ -632,17 +661,19 @@ the current decor. */
 
   return (SCM_UNSPECIFIED);
 }
+#undef FUNC_NAME
 
 
 
-SCWM_PROC (set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
+SCWM_PROC(set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
            (SCM fg) )
      /** Use FG as the default foreground color for menus. */
+#define FUNC_NAME s_set_menu_foreground_x
 { 
   XGCValues gcv;
   unsigned long gcm;
 
-  VALIDATE_COLOR(fg, s_set_menu_foreground_x, 1);
+  VALIDATE_COLOR(fg, FUNC_NAME, 1);
 
   if (Scr.d_depth > 2) {
     Scr.MenuColors.fg = fg;
@@ -658,16 +689,18 @@ SCWM_PROC (set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
 
   return (SCM_UNSPECIFIED);
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (set_menu_background_x, "set-menu-background!", 1, 0, 0,
+SCWM_PROC(set_menu_background_x, "set-menu-background!", 1, 0, 0,
            (SCM bg) )
      /** Use BG as the default foreground color for menus. */
+#define FUNC_NAME s_set_menu_background_x
 { 
   XGCValues gcv;
   unsigned long gcm;
 
-  VALIDATE_COLOR(bg, s_set_menu_background_x, 1);
+  VALIDATE_COLOR(bg, FUNC_NAME, 1);
 
   if (Scr.d_depth > 2) {
     Scr.MenuColors.bg = bg;
@@ -710,17 +743,19 @@ SCWM_PROC (set_menu_background_x, "set-menu-background!", 1, 0, 0,
 
   return (SCM_UNSPECIFIED);
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0,
+SCWM_PROC(set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0,
            (SCM st) )
      /** Use ST as the default stipple color for menus. (NOTE: I am
 not sure this is used for anything any more. */
+#define FUNC_NAME s_set_menu_stipple_x
 {
   XGCValues gcv;
   unsigned long gcm;
 
-  VALIDATE_COLOR(st, s_set_menu_stipple_x, 1);
+  VALIDATE_COLOR(st, FUNC_NAME, 1);
 
   if (Scr.d_depth > 2) {
     Scr.MenuStippleColors.fg = st;
@@ -744,6 +779,7 @@ not sure this is used for anything any more. */
   return (SCM_UNSPECIFIED);
 
 }
+#undef FUNC_NAME
 
 MAKE_SMOBFUNS(color);
 

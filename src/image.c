@@ -144,25 +144,28 @@ mark_image(SCM obj)
   return SCM_BOOL_F;
 }
 
-SCWM_PROC (image_p, "image?", 1, 0, 0,
+SCWM_PROC(image_p, "image?", 1, 0, 0,
            (SCM obj))
      /** Returns #t if OBJ is an image object, otherwise #f. */
+#define FUNC_NAME s_image_p
 {
   return SCM_BOOL_FromBool(IMAGE_P(obj));
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (image_properties, "image-properties", 1, 0, 0,
+SCWM_PROC(image_properties, "image-properties", 1, 0, 0,
            (SCM image))
      /** Return an association list giving some properties of
 IMAGES. Currently defined properties are 'filename, the fully expanded
 pathname of the image, 'width, it's width, 'height, it's height, and
 depth, it's color depth. 
 */
+#define FUNC_NAME s_image_properties
 {
   scwm_image *psimg = SAFE_IMAGE(image);
   if (!psimg) {
-    scm_wrong_type_arg(s_image_properties, 1, image);
+    scm_wrong_type_arg(FUNC_NAME, 1, image);
   } 
   return gh_list(gh_cons(sym_filename,psimg->full_name),
 		 gh_cons(sym_width,gh_int2scm(psimg->width)),
@@ -174,6 +177,7 @@ depth, it's color depth.
      - you can have '() as a member of a list. However, SCM_UNDEFINED
      should never be part of a valid Scheme object. */
 }
+#undef FUNC_NAME
 
 
 SCM
@@ -208,9 +212,10 @@ register other image loaders using the extension or the special string
 loaded any other way.
 */
 
-SCWM_PROC (load_xbm, "load-xbm", 1, 0, 0,
+SCWM_PROC(load_xbm, "load-xbm", 1, 0, 0,
            (SCM full_path))
      /** Load an X Bitmap file identified by the pathname FULL-PATH. */
+#define FUNC_NAME s_load_xbm
 {
   SCM result;
   scwm_image *ci;
@@ -232,17 +237,19 @@ SCWM_PROC (load_xbm, "load-xbm", 1, 0, 0,
   } else {
     /* warn that the image could not be loaded, then drop the result
        on the floor and let GC clean it up. */
-    scwm_msg(WARN,s_load_xbm,"Could not load bitmap `%s'",c_path);
+    scwm_msg(WARN,FUNC_NAME,"Could not load bitmap `%s'",c_path);
     result = SCM_BOOL_F;
   }
   FREE(c_path);
   return result;
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (load_xpm, "load-xpm", 1, 0, 0,
+SCWM_PROC(load_xpm, "load-xpm", 1, 0, 0,
            (SCM full_path))
      /** Load an X Pixmap file identified by the pathname FULL-PATH. */
+#define FUNC_NAME s_load_xpm
 {
   SCM result;
   scwm_image *ci;
@@ -278,15 +285,16 @@ SCWM_PROC (load_xpm, "load-xpm", 1, 0, 0,
   } else {
     /* warn that the image could not be loaded, then drop the result
        on the floor and let GC clean it up. */
-    scwm_msg(WARN,s_load_xpm,"Could not load pixmap `%s'",c_path);
+    scwm_msg(WARN,FUNC_NAME,"Could not load pixmap `%s'",c_path);
     result = SCM_BOOL_F;
   }
   FREE(c_path);
   return result;
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (register_image_loader, "register-image-loader", 2, 0, 0,
+SCWM_PROC(register_image_loader, "register-image-loader", 2, 0, 0,
            (SCM extension, SCM proc))
      /** Register PROC as the loader to use for images ending in
 EXTENSION. EXTENSION must be a string beginning with a period, the
@@ -294,37 +302,41 @@ empty string (for files with no extension), or the strting "default"
 (for files that no other image loader succeeds in loading). PROC will
 be called with the full pathname of the image and should return an
 image object, or #f if it succeeds. */
+#define FUNC_NAME s_register_image_loader
 {
   if (!gh_string_p(extension)) {
-    scm_wrong_type_arg(s_register_image_loader, 1, extension);
+    scm_wrong_type_arg(FUNC_NAME, 1, extension);
   }
   
   /* Sadly, there is no way to test the arity of a procedure. */
   /* MSFIX: Yes there is, but let's not use it yet. */
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(s_register_image_loader, 1, proc);
+    scm_wrong_type_arg(FUNC_NAME, 1, proc);
   }
 
   scm_hash_set_x(image_loader_hash_table, extension, proc);
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
-SCWM_PROC (unregister_image_loader, "unregister-image-loader", 1, 0, 0,
+SCWM_PROC(unregister_image_loader, "unregister-image-loader", 1, 0, 0,
            (SCM extension))
      /** Unregister the loader, if any, for images ending in
 EXTENSION. EXTENSION must be a string beginning with a period, the
 empty string (for files with no extension), or the strting "default"
 (for files that no other image loader succeeds in loading). */
+#define FUNC_NAME s_unregister_image_loader
 {
   if (!gh_string_p(extension)) {
-    scm_wrong_type_arg(s_unregister_image_loader, 1, extension);
+    scm_wrong_type_arg(FUNC_NAME, 1, extension);
   }
 
   scm_hash_remove_x(image_loader_hash_table, extension);
 
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 SCM
 InvokeHook1(SCM proc, SCM arg1)
@@ -337,14 +349,14 @@ InvokeHook1(SCM proc, SCM arg1)
 
 
 SCM
-path_expand_image_fname(SCM name)
+path_expand_image_fname(SCM name, const char *func_name)
 {
   char *c_name, *c_fname;
   int length;
   SCM result;
 
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg(__FUNCTION__, 1, name);
+    scm_wrong_type_arg(func_name, 1, name);
   }
 
   c_name = gh_scm2newstr(name, &length);
@@ -456,19 +468,20 @@ get_image_loader(SCM name)
 }
 
 
-SCWM_PROC (make_image, "make-image", 1, 0, 0,
+SCWM_PROC(make_image, "make-image", 1, 0, 0,
            (SCM name))
      /** Loads an image from the file NAME, invoking appropriate image
 loaders. If NAME starts with "/", "./" or "../", it is treated as a
 fully qulified pathname; otherwise, the image path is searched for an
 appropriate file. */
+#define FUNC_NAME s_make_image
 {
   SCM result;
   SCM full_path;
   SCM loader;
 
   if (!gh_string_p(name)) {
-    scm_wrong_type_arg(s_make_image,1,name);
+    scm_wrong_type_arg(FUNC_NAME,1,name);
   }
 
   /* First check the hash table for this image.  */
@@ -481,7 +494,7 @@ appropriate file. */
 
   /* OK, it wasn't in the hash table - we need to expand the filename.
    */
-  full_path = path_expand_image_fname(name);
+  full_path = path_expand_image_fname(name, FUNC_NAME);
 
   if (full_path==SCM_BOOL_F) {
     return (SCM_BOOL_F);
@@ -520,9 +533,10 @@ appropriate file. */
 
   return result;
 }
+#undef FUNC_NAME
 
 
-SCWM_PROC (clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0,
+SCWM_PROC(clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0,
            (SCM name))
      /** Images are cached by both name and full pathnme. It is
 remotely possible that the file that should be used for a particular
@@ -530,10 +544,12 @@ name will change, for example if you alter the image file or change
 your image path. For this unlikely eventuality,
 `clear-image-cache-entry' is provided - it removes the image
 associated with NAME from the image cache.*/
+#define FUNC_NAME s_clear_image_cache_entry
 {
   scm_hash_remove_x(image_hash_table, name);
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCM

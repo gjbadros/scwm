@@ -114,9 +114,12 @@ print_menu(SCM obj, SCM port, scm_print_state * pstate)
 
 SCWM_PROC(menu_p,"menu?", 1,0,0,
           (SCM obj))
+/** Return true if OBJ is a menu object */
+#define FUNC_NAME s_menu_p
 {
   return SCM_BOOL_FromBool(MENU_P(obj));
 }
+#undef FUNC_NAME
 
 
 /* NewPchKeysUsed:
@@ -168,11 +171,16 @@ NewPchKeysUsed(DynamicMenu *pmd)
 }
 
 SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
-          (SCM scmMenu))
+          (SCM menu))
+/** Returns the a list of the menu properties of MENU, a menu object.
+The properties returned are: 
+'(MENU-ITEMS SIDE-IMAGE SIDE-BG-COLOR BG-COLOR TEXT-COLOR IMAGE-BG
+FONT EXTRA-OPTIONS USED-SHORTCUTKEYS) */
+#define FUNC_NAME s_menu_properties
 {
-  Menu *pmenu = SAFE_MENU(scmMenu);
+  Menu *pmenu = SAFE_MENU(menu);
   if (!pmenu) {
-    scm_wrong_type_arg(s_menu_properties,1,scmMenu);
+    scm_wrong_type_arg(FUNC_NAME,1,menu);
   }
   return gh_list(pmenu->scmMenuItems,
 		 pmenu->scmImgSide,
@@ -185,6 +193,7 @@ SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
 		 gh_str02scm(pmenu->pchUsedShortcutKeys),
                  SCM_UNDEFINED);
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
@@ -192,13 +201,19 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
            SCM picture_side, SCM side_bg_color,
            SCM bg_color, SCM text_color,
            SCM picture_bg, SCM font, SCM extra_options))
+/** Make and return a menu object from the given arguments.
+LIST-OF-MENUITEMS is a scheme list of menu items -- see `make-menuitem'
+PICTURE-SIDE is an image object
+SIDE-BG-COLOR, BG-COLOR, TEXT-COLOR, PICTURE-BG are color objects
+FONT is a font object */
+#define FUNC_NAME s_make_menu
 {
   Menu *pmenu = NEW(Menu);
   SCM answer;
   int iarg = 1;
 
   if (!gh_list_p(list_of_menuitems)) {
-    scm_wrong_type_arg(s_make_menu,iarg,list_of_menuitems);
+    scm_wrong_type_arg(FUNC_NAME,iarg,list_of_menuitems);
   }
   pmenu->scmMenuItems = list_of_menuitems;
 
@@ -206,7 +221,7 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
   if (UNSET_SCM(picture_side)) {
     picture_side = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_side)) {
-    scm_wrong_type_arg(s_make_menu,iarg,picture_side);
+    scm_wrong_type_arg(FUNC_NAME,iarg,picture_side);
   } 
   pmenu->scmImgSide = picture_side;
 
@@ -214,7 +229,7 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
   if (UNSET_SCM(side_bg_color)) {
     side_bg_color = WHITE_COLOR;
   } else if (!COLOR_OR_SYMBOL_P(side_bg_color)) {
-    scm_wrong_type_arg(s_make_menu,iarg,side_bg_color);
+    scm_wrong_type_arg(FUNC_NAME,iarg,side_bg_color);
   }
   pmenu->scmSideBGColor = side_bg_color;
 
@@ -222,7 +237,7 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
   if (UNSET_SCM(bg_color)) {
     bg_color = Scr.MenuColors.bg; 
   } else if (!COLOR_OR_SYMBOL_P(bg_color)) {
-    scm_wrong_type_arg(s_make_menu,iarg,bg_color);
+    scm_wrong_type_arg(FUNC_NAME,iarg,bg_color);
   }
   pmenu->scmBGColor = bg_color;
 
@@ -230,7 +245,7 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
   if (UNSET_SCM(text_color)) {
     text_color =  Scr.MenuColors.fg;
   } else if (!COLOR_OR_SYMBOL_P(text_color)) {
-    scm_wrong_type_arg(s_make_menu,iarg,text_color);
+    scm_wrong_type_arg(FUNC_NAME,iarg,text_color);
   }
   pmenu->scmTextColor = text_color;
 
@@ -238,7 +253,7 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
   if (UNSET_SCM(picture_bg)) {
     picture_bg = SCM_BOOL_F;
   } else if (!IMAGE_P(picture_bg)) {
-    scm_wrong_type_arg(s_make_menu,iarg,picture_bg);
+    scm_wrong_type_arg(FUNC_NAME,iarg,picture_bg);
   } 
   pmenu->scmImgBackground = picture_bg;
 
@@ -249,7 +264,7 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
   if (UNSET_SCM(font) && Scr.menu_font != SCM_UNDEFINED) {
     pmenu->scmFont = Scr.menu_font;
   } else if (!FONT_OR_SYMBOL_P(font)) {
-    scm_wrong_type_arg(s_make_menu,iarg,font);
+    scm_wrong_type_arg(FUNC_NAME,iarg,font);
   }
   pmenu->scmFont = font;
 
@@ -264,7 +279,7 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
     item = gh_car(rest);
     pmi = SAFE_MENUITEM(item);
     if (!pmi) {
-      scwm_msg(WARN,s_make_menu,"Bad menu item %d",ipmiim);
+      scwm_msg(WARN,FUNC_NAME,"Bad menu item %d",ipmiim);
     }
     if (pmi && pmi->pchHotkeyPreferences) {
       char *pchDesiredChars = pmi->pchHotkeyPreferences;
@@ -291,6 +306,7 @@ SCWM_PROC(make_menu, "make-menu", 1, 7, 0,
   SCM_SETCDR(answer, (SCM) pmenu);
   return answer;
 }
+#undef FUNC_NAME
 
 
 /* return the appropriate x offset from the prior menu to
@@ -1218,20 +1234,23 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
 }
 
 SCWM_PROC(popup_menu,"popup-menu", 1,1,0,
-          (SCM menu, SCM warp_to_first))
+          (SCM menu, SCM warp_to_first_p))
+/** Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST-P is #t. */
+#define FUNC_NAME s_popup_menu
 {
   Bool fWarpToFirst = False;
   /* permit 'menu to be used, and look up dynamically */
   DEREF_IF_SYMBOL(menu);
   if (!MENU_P(menu)) {
-    scm_wrong_type_arg("popup-menu", 1, menu);
+    scm_wrong_type_arg(FUNC_NAME, 1, menu);
   }
-  if (warp_to_first == SCM_BOOL_T)
+  if (warp_to_first_p == SCM_BOOL_T)
     fWarpToFirst = True;
   /* FIXGJB: how can we tell if keybd was used to invoke this command? */
   PopupGrabMenu(MENU(menu),NULL,fWarpToFirst);
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 void 
 menu_init_gcs()

@@ -125,6 +125,7 @@ SCWM_PROC(restart, "restart", 0, 1, 0,
 that, as the new window manager to run. If COMMAND is not specified or
 is exactly equal to "scwm", restart scwm with the same command-line
 arguments as given previously. */
+#define FUNC_NAME s_restart
 {
   int dummy;
   char *sz;
@@ -134,18 +135,20 @@ arguments as given previously. */
   } else if (command == SCM_UNDEFINED) {
     sz = "scwm";
   } else {
-    scm_wrong_type_arg(s_restart, 1, command);
+    scm_wrong_type_arg(FUNC_NAME, 1, command);
   }
 
   Done(1, sz);  /* 1 == restart */
   FREE(sz); /* Done shouldn't return, but you never know... */
   return SCM_UNSPECIFIED;	
 }
+#undef FUNC_NAME
 
 SCWM_PROC(scwm_quit, "scwm-quit", 0, 0, 1,
           (SCM args))
      /** Exit scwm cleanly. `quit' is redefined as this within
 scwm. */
+#define FUNC_NAME s_scwm_quit
 {
   if (master_pid != getpid())
     kill(master_pid, SIGTERM);
@@ -153,6 +156,7 @@ scwm. */
 		    never know... */
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 void init_shutdown()

@@ -1713,6 +1713,7 @@ parameters BUTTON-PRESS? and BUTTON-RELEASE? allow you to specify
 which are sent individually. PROPAGATE? indicates wether the propagate
 flag is set on the event; the default is #f. You shouldn't have to
 worry about this unless you know what it means. */
+#define FUNC_NAME s_send_button_press
 {
   int bnum;
   int mod_mask;
@@ -1731,17 +1732,17 @@ worry about this unless you know what it means. */
 
   SCM_REDEFER_INTS;
 
-  VALIDATEN(win, 3, __FUNCTION__);
+  VALIDATEN(win, 3, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
   w = psw->w;
 
   if (!gh_number_p(button)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg(__FUNCTION__, iarg++, button);
+    scm_wrong_type_arg(FUNC_NAME, iarg++, button);
   }
   if (modifier != SCM_UNDEFINED && !gh_number_p(modifier)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg(__FUNCTION__, iarg++, modifier);
+    scm_wrong_type_arg(FUNC_NAME, iarg++, modifier);
   }
   if (button_press_p != SCM_UNDEFINED) {
     fPress = gh_scm2bool(button_press_p);
@@ -1785,6 +1786,7 @@ worry about this unless you know what it means. */
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
@@ -1798,6 +1800,7 @@ sent. However, the boolean parameters KEY-PRESS? and KEY-RELEASE?
 allow you to specify which are sent individually. PROPAGATE? indicates
 wether the propagate flag is set on the event; the default is #f. You
 shouldn't have to worry about this unless you know what it means. */
+#define FUNC_NAME s_send_key_press
 {
   KeySym keysym;
   Bool fOkay;
@@ -1812,13 +1815,13 @@ shouldn't have to worry about this unless you know what it means. */
 
   SCM_REDEFER_INTS;
 
-  VALIDATEN(win, 2, __FUNCTION__);
+  VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
   w = psw->w;
 
   if (!gh_string_p(key)) {
     SCM_ALLOW_INTS;
-    scm_wrong_type_arg(__FUNCTION__, iarg++, key);
+    scm_wrong_type_arg(FUNC_NAME, iarg++, key);
   }
   if (key_press_p != SCM_UNDEFINED) {
     fPress = gh_scm2bool(key_press_p);
@@ -1847,12 +1850,13 @@ shouldn't have to worry about this unless you know what it means. */
   } else {
     int len;
     char *keyname = gh_scm2newstr(key,&len);
-    scwm_msg(WARN,__FUNCTION__,"Bad keysym `%s' not sent",keyname);
+    scwm_msg(WARN,FUNC_NAME,"Bad keysym `%s' not sent",keyname);
     FREE(keyname);
   }
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 
 void 
