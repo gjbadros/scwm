@@ -1,5 +1,22 @@
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* winprop.c, winprop.h: New files, generic window property
+	handling moved here. Notification of window property changes set
+	up through `window-property-change-hook'. Eventually, notification
+	will be smarter and it will be possible to register for
+	notification on only a specific property or only a specific
+	window.
+
+	* window.c: Add change notification for `sticky', `shaded',
+	`on-top' and `desk' window properties through
+	`window-property-change-hook'. Others will be added over time.
+
+	* scwm.c: Call init_winprop()
+	
+	* Makefile.am: Handle winprop.c, winprop.h, winprop.x
+
+1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
 	* window.c (MovePswToCurrentPosition): Don't move windows that are
 	sticky but off screen, the gnome panel actually wants to do that
 	sometimes for some reason.

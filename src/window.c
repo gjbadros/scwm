@@ -49,18 +49,25 @@
 #include "callbacks.h"
 #include "add_window.h"
 #include "dbug_resize.h"
+#include "winprop.h"
+
 
 /* also used by miscproc.c's set-colormap-focus! */
 SCWM_GLOBAL_SYMBOL(sym_mouse , "mouse");
-
 
 SCWM_SYMBOL(sym_sloppy , "sloppy");
 SCWM_SYMBOL(sym_none , "none");
 
 extern SCM sym_click, sym_root_window;
 
-SCM window_close_hook;
 
+SCWM_SYMBOL(sym_sticky , "sticky");
+SCWM_SYMBOL(sym_shaded , "shaded");
+SCWM_SYMBOL(sym_on_top , "on-top");
+SCWM_SYMBOL(sym_desk   , "desk");
+
+
+SCM window_close_hook;
 
 char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
 char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
@@ -464,6 +471,10 @@ invalidate_window(SCM schwin)
   PSWFROMSCMWIN(schwin) = NULL;
   scm_unprotect_object(schwin);
 }
+
+
+
+
 
 
 /**** ResizeTo, MoveResizeTo, MoveTo
@@ -1988,10 +1999,12 @@ specified. */
 #define FUNC_NAME s_stick
 {
   ScwmWindow *psw;
+  Bool old; 
 
-  SCM_REDEFER_INTS;
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
+  old = psw->fSticky;
+
   if (!psw->fSticky) {
     psw->fSticky = True;
     CassowaryEditPosition(psw);
@@ -2003,7 +2016,11 @@ specified. */
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
     SetTitleBar(psw, (Scr.Hilite == psw), True);
   }
-  SCM_REALLOW_INTS;
+
+
+  signal_window_property_change(win, sym_sticky, SCM_BOOL_T,
+                               SCM_BOOL_FromBool(old));
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2019,10 +2036,12 @@ the usual way if not specified. */
 #define FUNC_NAME s_unstick
 {
   ScwmWindow *psw;
+  Bool old; 
 
-  SCM_REDEFER_INTS;
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
+  old = psw->fSticky;
+
   if (psw->fSticky) {
     psw->fSticky = False;
     CassowaryEditPosition(psw);
@@ -2034,7 +2053,10 @@ the usual way if not specified. */
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
     SetTitleBar(psw, (Scr.Hilite == psw), True);
   }
-  SCM_REALLOW_INTS;
+
+  signal_window_property_change(win, sym_sticky, SCM_BOOL_F,
+                               SCM_BOOL_FromBool(old));
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2075,9 +2097,11 @@ way if not specified. See also `window-unshade'.*/
 #define FUNC_NAME s_window_shade
 {
   ScwmWindow *psw;
+  Bool old;
 
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
+  old = psw->fWindowShaded;
 
   /* CRW:FIXME:MS: Should this refuse to shade maximized windows?
      (It used to try to do this by looking at the unused fMaximized
@@ -2094,6 +2118,11 @@ way if not specified. See also `window-unshade'.*/
   
   CoerceEnterNotifyOnCurrentWindow();
   Broadcast(M_WINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
+
+  signal_window_property_change(win, sym_shaded, SCM_BOOL_T,
+                                SCM_BOOL_FromBool(old));
+
+
 
   return SCM_UNSPECIFIED;
 }
@@ -2113,9 +2142,11 @@ context in the usual way if not specified. */
 #define FUNC_NAME s_window_unshade
 {
   ScwmWindow *psw;
+  Bool old;
 
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
+  old = psw->fWindowShaded;
 
   SET_UNSHADED(psw);
 
@@ -2124,6 +2155,12 @@ context in the usual way if not specified. */
 	     NOT_MOVED, WAS_RESIZED);
   
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
+
+
+  signal_window_property_change(win, sym_shaded, SCM_BOOL_F,
+                                SCM_BOOL_FromBool(old));
+
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2358,8 +2395,8 @@ defaults to the window context in the usual way if not specified. */
 {
   ScwmWindow *psw;
   int val1;
+  int old;
 
-  SCM_REDEFER_INTS;
   if (!gh_number_p(desk) && desk != SCM_BOOL_F) {
     gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, desk);
@@ -2367,6 +2404,7 @@ defaults to the window context in the usual way if not specified. */
   VALIDATEN(win, 2, FUNC_NAME);
 
   psw = PSWFROMSCMWIN(win);
+  old = psw->Desk;
 
   val1 = gh_scm2int(desk);
 
@@ -2391,7 +2429,12 @@ defaults to the window context in the usual way if not specified. */
     }
   }
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-  SCM_REALLOW_INTS;
+  
+  signal_window_property_change(win, sym_desk, desk,
+                                gh_int2scm(old));
+
+
+
   return SCM_UNSPECIFIED;;
 }
 #undef FUNC_NAME
@@ -2771,15 +2814,23 @@ WIN defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_keep_on_top
 {
   ScwmWindow *psw;
+  Bool old;
 
-  SCM_REDEFER_INTS;
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
+  old = psw->fOnTop;
+
+
   psw->fOnTop = True;
   /* is this needed? */
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+
+  signal_window_property_change(win, sym_on_top, SCM_BOOL_T,
+                               SCM_BOOL_FromBool(old));
+
+
   raise_window(win);
-  SCM_REALLOW_INTS;
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2793,12 +2844,19 @@ way if not specified. */
 #define FUNC_NAME s_un_keep_on_top
 {
   ScwmWindow *psw;
+  Bool old;
 
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
+  old = psw->fOnTop;
+
+
   psw->fOnTop = False;
   /* is this needed? */
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+
+  signal_window_property_change(win, sym_on_top, SCM_BOOL_F,
+                               SCM_BOOL_FromBool(old));
 
   KeepOnTop();
   return SCM_UNSPECIFIED;
@@ -3805,66 +3863,6 @@ specified. */
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_window_property_x, "set-window-property!", 3, 0, 0,
-          (SCM win, SCM prop, SCM val))
-     /** Set window property PROP of WIN to VAL.
-PROP should be a symbol. VAL may be any Scheme object. This name/value
-pair will be associated with the window, and may be retrieved with
-`window-property'. Passing #f as the value will delete the property
-instead. Soon, some properties will have magical meanings, altering
-particular fields in the window structure. Also, a
-window-property-change-hook mechanism will soon be implemented for
-notification of all window property changes. This is not yet done. The
-window property primitives should be considered in flux. */
-#define FUNC_NAME s_set_window_property_x
-{
-  ScwmWindow *psw = NULL;
-  if (!WINDOWP(win) || !VALIDWINP(win)) {
-    scm_wrong_type_arg (FUNC_NAME, 1, win);
-  }
-
-  if (!gh_symbol_p(prop)) {
-    scm_wrong_type_arg (FUNC_NAME, 2, prop);
-  }
-
-  psw = PSWFROMSCMWIN(win);
-  if (val==SCM_BOOL_F) {
-    scm_hashq_remove_x(psw->other_properties, prop);
-  } else {
-    scm_hashq_set_x(psw->other_properties, prop, val);
-  }
-
-  /* FIXMS: notification needs to go here. */
-
-  return SCM_UNSPECIFIED;
-}
-#undef FUNC_NAME
-
-
-
-SCWM_PROC(window_property, "window-property", 2, 0, 0,
-          (SCM win, SCM prop))
-     /** Retrieve window property PROP of WIN.
-PROP should be a symbol. #f will be returned if the property does not
-exist (whether set by `set-window-property!' or otherwise). Soon, some
-properties will have magical meanings, accessing particular fields in
-the window structure. Also, a window-property-change-hook mechanism
-will soon be implemented for notification of all window property
-changes. This is not yet done. The window property primitives should
-be considered in flux. */
-#define FUNC_NAME s_window_property
-{
-  if (!WINDOWP(win) || !VALIDWINP(win)) {
-    scm_wrong_type_arg (FUNC_NAME, 1, win);
-  }
-
-  if (!gh_symbol_p(prop)) {
-    scm_wrong_type_arg (FUNC_NAME, 2, prop);
-  }
-
-  return scm_hashq_ref(PSWFROMSCMWIN(win)->other_properties, prop, SCM_BOOL_F);
-}
-#undef FUNC_NAME
 
 
 

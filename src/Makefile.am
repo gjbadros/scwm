@@ -48,6 +48,7 @@ scwm_SOURCES =  Grab.c \
                 util.c \
                 virtual.c \
                 window.c \
+                winprop.c \
                 xmisc.c \
                 xproperty.c \
 		xrm.c
@@ -74,7 +75,7 @@ constraint-primitives.h menuitem.h system.h decor.h menulook.h util.h \
 decorations.h miscprocs.h virtual.h deskpage.h module-interface.h window.h \
 drawmenu.h module-types.h xmisc.h errors.h move.h window_fwd.h deskpage.h \
 move.h xmisc.h drawmenu.h placement.h xproperty.h errors.h resize.h xrm.h \
-events.h scm_init_funcs.h dbug_resize.h message-window.h \
+events.h scm_init_funcs.h dbug_resize.h message-window.h winprop.h\
 $(cassowary_headers) $(session_manager_headers)
 
 scwm_LDADD = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@ \
@@ -89,7 +90,7 @@ guile_snarfs = Grab.x ICCCM.x add_window.x binding.x callbacks.x color.x \
 constraint-primitives.x \
 decor.x deskpage.x drawmenu.x events.x face.x font.x icons.x image.x menu.x menuitem.x \
 menulook.x message-window.x miscprocs.x module-interface.x move.x placement.x resize.x \
-screen.x session-manager.x shutdown.x virtual.x window.x xproperty.x xrm.x
+screen.x session-manager.x shutdown.x virtual.x window.x xproperty.x xrm.x winprop.x
 
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
 	$(guile_snarfs)
