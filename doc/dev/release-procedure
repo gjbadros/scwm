@@ -86,7 +86,7 @@ To: scwm-discuss@mit.edu, guile@cygnus.com, scsh@ai.mit.edu, gnome-list@gnome.or
 Web Sites and/or Ftp Archives (getting volunteers to do these is sufficent):
 
 http://www.freshmeat.net
-ftp://ftp.red-bean.com/pub/guile/incoming 
+ftp://ftp.red-bean.com/pub/guile/contrib/incoming 
 (and send mail to Pat Eyler <pate@nortom.com> to update the guile
 contrib directory)
 
