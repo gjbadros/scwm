@@ -97,17 +97,17 @@ is filled with BGCOLOR. */
   }
     
   if (!IMAGE_P(img)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, image);
+    SCWM_WRONG_TYPE_ARG(1, image);
   }
 
   if (!gh_number_p(width)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, width);
+    SCWM_WRONG_TYPE_ARG(2, width);
   } else {
     nw=gh_scm2ulong(width);
   }
 
   if (!gh_number_p(height)) {
-    scm_wrong_type_arg(FUNC_NAME, 3, height);
+    SCWM_WRONG_TYPE_ARG(3, height);
   } else {
     nh=gh_scm2ulong(height);
   }
@@ -194,7 +194,7 @@ STYLE can be either 'centered or 'tiled. */
   }
 
   if (!IMAGE_P(img)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, image);
+    SCWM_WRONG_TYPE_ARG(1, image);
   }
  
   if (style==SCM_UNDEFINED) {
@@ -202,7 +202,7 @@ STYLE can be either 'centered or 'tiled. */
   }
 
   if (!(style == sym_tiled || style == sym_centered)) {
-    scm_wrong_type_arg (FUNC_NAME,2,style);
+    SCWM_WRONG_TYPE_ARG(2,style);
   }
 
 

@@ -282,10 +282,10 @@ animated window shades and animated moves. */
 /*
   FIXGJB: make a scheme-variable move-animation-delay get used instead
   if (!gh_int_p(delay) && !gh_boolean_p(delay)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,delay);
+    SCWM_WRONG_TYPE_ARG(arg,delay);
   } */
   if (!gh_vector_p(vector)) {
-    scm_wrong_type_arg(FUNC_NAME,1,vector);
+    SCWM_WRONG_TYPE_ARG(1,vector);
   }
 /*
   if (gh_int_p(delay)) {
@@ -296,7 +296,7 @@ animated window shades and animated moves. */
   for (i=0; i<citems; i++) {
     SCM val = gh_vector_ref(vector,gh_int2scm(i));    
     if (!gh_number_p(val)) {
-      scm_wrong_type_arg(FUNC_NAME,1,vector);
+      SCWM_WRONG_TYPE_ARG(1,vector);
     }
     /* FIXGJB: also check < 2, perhaps (don't want to
       check < 1, since we might want to overshoot and then come back) */
@@ -306,7 +306,7 @@ animated window shades and animated moves. */
   if (i>0 && rgpctMovementDefault[i-1] != 1.0) {
     rgpctMovementDefault[i++] = 1.0;
   }
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 

@@ -105,7 +105,7 @@ This is just for demonstration and testing purposes for now. */
   if (fHaveOverlayPlane) {
     place_overlay(Scr.Root, 200, 200);
   }
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -118,7 +118,7 @@ This is just for demonstration and testing purposes for now. */
   if (fHaveOverlayPlane) {
     remove_overlay(Scr.Root);
   }
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 

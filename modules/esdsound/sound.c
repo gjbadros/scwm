@@ -40,10 +40,10 @@ Returns a sound object usable with the other sound functions. */
   SCM r;
 
   if (!gh_string_p(file)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, file);
+    SCWM_WRONG_TYPE_ARG(1, file);
   }
   if (!UNSET_SCM(name) && !gh_string_p(name)) {
-      scm_wrong_type_arg(FUNC_NAME, 2, name);
+      SCWM_WRONG_TYPE_ARG(2, name);
   }
   if (ESD_CONNECTED_P) {
     char *path, *tag;
@@ -74,12 +74,12 @@ SOUND must be an object returned by `sound-load'. */
 {
   if (ESD_CONNECTED_P) {
     if (!gh_number_p(sound)) {
-      scm_wrong_type_arg(FUNC_NAME, 1, sound);
+      SCWM_WRONG_TYPE_ARG(1, sound);
     }
     esd_sample_free(esd, gh_scm2int(sound));
   } else {
     if (!gh_string_p(sound)) {
-      scm_wrong_type_arg(FUNC_NAME, 1, sound);
+      SCWM_WRONG_TYPE_ARG(1, sound);
     }
     /* no resources were allocated, do nothing */
   }
@@ -97,7 +97,7 @@ SOUND must be an object returned by `sound-load'. */
     int sample;
 
     if (!gh_number_p(sound)) {
-      scm_wrong_type_arg(FUNC_NAME, 1, sound);
+      SCWM_WRONG_TYPE_ARG(1, sound);
     }
     sample = gh_scm2int(sound);
     esd_sample_play(esd, sample);
@@ -105,7 +105,7 @@ SOUND must be an object returned by `sound-load'. */
     char *path;
 
     if (!gh_string_p(sound)) {
-      scm_wrong_type_arg(FUNC_NAME, 1, sound);
+      SCWM_WRONG_TYPE_ARG(1, sound);
     }
     path = gh_scm2newstr(sound, NULL);
     esd_play_file("scwm", path, 1);
@@ -131,7 +131,7 @@ unknown. */
     hostname = NULL;
   } else {
     if (!gh_string_p(host)) {
-      scm_wrong_type_arg(FUNC_NAME, 1, host);
+      SCWM_WRONG_TYPE_ARG(1, host);
     }
     hostname = gh_scm2newstr(host, NULL);
   }

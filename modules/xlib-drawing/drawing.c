@@ -54,11 +54,8 @@ resize frames. VALUE should be an integer. */
   XGCValues gcv;
   unsigned long gcm;
 
-  SCM_REDEFER_INTS;
-
   if (!gh_number_p(value)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, value);
+    SCWM_WRONG_TYPE_ARG(1, value);
   }
   gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
   gcv.function = GXxor;
@@ -69,7 +66,6 @@ resize frames. VALUE should be an integer. */
     XFreeGC(dpy, DrawingGC);
   }
   DrawingGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
-  SCM_REALLOW_INTS;
   return (value);
 }
 #undef FUNC_NAME
@@ -85,40 +81,32 @@ TOP-LEFT is a point pair: (X . Y). */
 {
   int iX, iY, iWidth, iHeight;
 
-  SCM_REDEFER_INTS;
-
   if (!xlib_point_pair_p(top_left)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, top_left);
+    SCWM_WRONG_TYPE_ARG(1, top_left);
   }
   xlib_point_pair_get_values(top_left, &iX, &iY);
 
   if (!gh_number_p(width)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, width);
+    SCWM_WRONG_TYPE_ARG(2, width);
   }
   iWidth = gh_scm2int(width);
 
   if (iWidth < 0) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, width);
+    SCWM_WRONG_TYPE_ARG(2, width);
   }
 
   if (!gh_number_p(height)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 3, height);
+    SCWM_WRONG_TYPE_ARG(3, height);
   }
   iHeight = gh_scm2int(height);
 
   if (iHeight < 0) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 3, height);
+    SCWM_WRONG_TYPE_ARG(3, height);
   }
-
-  SCM_REALLOW_INTS;
 
   XDrawRectangle(dpy, Scr.Root, DrawingGC, iX, iY, iWidth, iHeight);
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -133,18 +121,18 @@ Both P1 and P2 are pairs (X . Y) representing a point*/
   int iX1, iY1, iX2, iY2;
 
   if (!xlib_point_pair_p(p1)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, p1);
+    SCWM_WRONG_TYPE_ARG(1, p1);
   }
   xlib_point_pair_get_values(p1, &iX1, &iY1);
 
   if (!xlib_point_pair_p(p2)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, p2);
+    SCWM_WRONG_TYPE_ARG(2, p2);
   }
   xlib_point_pair_get_values(p2, &iX2, &iY2);
 
   XDrawLine(dpy, Scr.Root, DrawingGC, iX1, iY1, iX2, iY2);
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -161,45 +149,35 @@ ANGLE2. Angles are specified in degrees (0.0 to 360.0).*/
   int iX, iY, iWidth, iHeight;
   double nAngle1, nAngle2;
   
-
-  SCM_REDEFER_INTS;
-  
   if (!xlib_point_pair_p(top_left)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, top_left);
+    SCWM_WRONG_TYPE_ARG(1, top_left);
   }
   
   xlib_point_pair_get_values(top_left, &iX, &iY);
 
   if (!gh_number_p(width)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 2, width);
+    SCWM_WRONG_TYPE_ARG(2, width);
   }
   iWidth = gh_scm2int(width);
   if (iWidth < 0) {
-    gh_allow_ints();
     scm_misc_error(FUNC_NAME,"WIDTH must be non-negative",SCM_EOL);
   }
 
   if (!gh_number_p(height)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 3, height);
+    SCWM_WRONG_TYPE_ARG(3, height);
   }
   iHeight = gh_scm2int(height);
   if (iHeight < 0) {
-    gh_allow_ints();
     scm_misc_error(FUNC_NAME,"HEIGHT must be non-negative",SCM_EOL);
   }
 
   if (!gh_number_p(angle1)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 4, angle1);
+    SCWM_WRONG_TYPE_ARG(4, angle1);
   }
   nAngle1 = gh_scm2double(angle1);
 
   if (!gh_number_p(angle2)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 5, angle2);
+    SCWM_WRONG_TYPE_ARG(5, angle2);
   }
   nAngle2 = gh_scm2double(angle2);
 
@@ -208,7 +186,7 @@ ANGLE2. Angles are specified in degrees (0.0 to 360.0).*/
   XDrawArc(dpy, Scr.Root, DrawingGC, iX, iY, iWidth, iHeight, 
 	   (int) (nAngle1 * 64), (int) (nAngle2 * 64));
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -220,17 +198,13 @@ SCWM_PROC(xlib_set_line_width_x, "xlib-set-line-width!", 1, 0, 0,
 {
   int iWidth = 0;
 
-  SCM_REDEFER_INTS;
-
   if ( !UNSET_SCM(width) ) {
     if (!gh_number_p(width)) {
-      gh_allow_ints();
-      scm_wrong_type_arg(FUNC_NAME, 1, width);
+      SCWM_WRONG_TYPE_ARG(1, width);
     }
     iWidth = gh_scm2int(width);
     if (iWidth < 0) {
-      gh_allow_ints();
-      scm_wrong_type_arg(FUNC_NAME, 1, width);
+      SCWM_WRONG_TYPE_ARG(1, width);
     }
   }
 
@@ -238,7 +212,7 @@ SCWM_PROC(xlib_set_line_width_x, "xlib-set-line-width!", 1, 0, 0,
 
   XSetLineAttributes(dpy, DrawingGC, iWidth, LineSolid, CapButt, JoinMiter);
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
@@ -250,24 +224,18 @@ SCWM_PROC(xlib_set_fill_style_x, "xlib-set-fill-style!", 1, 0, 0,
 {
   int iStyle;
 
-  SCM_REDEFER_INTS;
-
   if (!gh_number_p(style)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, style);
+    SCWM_WRONG_TYPE_ARG(1, style);
   }
   iStyle = gh_scm2int(style);
   if (!(iStyle == FillSolid || iStyle == FillStippled ||
         iStyle == FillTiled || iStyle == FillOpaqueStippled)) {
-    gh_allow_ints();
-    scm_wrong_type_arg(FUNC_NAME, 1, style);
+    SCWM_WRONG_TYPE_ARG(1, style);
   }
-
-  gh_allow_ints();
 
   XSetFillStyle(dpy, DrawingGC, iStyle);
 
-  return SCM_UNDEFINED;
+  return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
