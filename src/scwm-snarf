@@ -1,6 +1,6 @@
 #!/bin/sh -
 # scwm-snarf
-# (C) 1999 Greg J. Badros
+# (C) 1999 Ken Pizzini and Greg J. Badros
 # Handle snarfs with embedded %/%/ separating the arglist of procedures
 # from the rest.
 # See scwm-snarf.h for what expands SCWM_PROC macros to what we process here.
@@ -11,13 +11,13 @@
 # AND we need these to only happen *after* the %/%/ marker on the input lines
 # so we use two sed's to do it.
 guile-snarf "$@" | \
-sed -e 's/%\/%\//\
-%%%/' | sed -e '/^%%%/  {
-s/%%%//g
-s/SCM //g
-s/,[ \t]*/ /g
-s/"(/"'"'"'(/
-}' 
-# | sed -e 's/\n[ \t]*"/ "/g'  this last bit would recombine into a single line per input line
-# but does not work on Solaris' vendor sed
-
+sed 's@%/%/@\
+@
+       /\n/!b
+       h
+       s/SCM //g
+       s/,[ 	]*/ /g
+       s/"(/"'\''(/
+       x
+       G
+       s/\n.*\n//' 
