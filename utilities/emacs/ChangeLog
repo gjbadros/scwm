@@ -1,3 +1,9 @@
+Fri Aug  6 17:02:02 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Added scwm-use-module, bind to C-c C-m;  this makes it
+	really easy to execute a use-scwm-modules on a module that the
+	point is after.
+
 Sat Jul 17 21:59:16 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.el: Update bug address.
