@@ -333,14 +333,14 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
     (let ((pp (pointer-position)))
       (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
     (gtk-widget-show-all toplevel)
-    (gtk-signal-connect okbut "pressed" 
+    (gtk-signal-connect okbut "clicked" 
 			(lambda () 
 			  (gtk-widget-destroy toplevel)
 			  (proc (getter))))
-;;    (gtk-signal-connect applybut "pressed" 
+;;    (gtk-signal-connect applybut "clicked" 
 ;;			(lambda () 
 ;;			  (proc (getter))))
-    (gtk-signal-connect cancelbut "pressed"
+    (gtk-signal-connect cancelbut "clicked"
 			(lambda ()
 			  (gtk-widget-destroy toplevel)))
     (lambda ()

@@ -81,7 +81,7 @@ TITLE is a window title."
     (let ((pp (pointer-position)))
       (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
     (gtk-widget-show-all toplevel)
-    (gtk-signal-connect okbut "pressed" 
+    (gtk-signal-connect okbut "clicked" 
 			(lambda () 
 			  (gtk-widget-destroy toplevel)
 			  (proc (getter))))
@@ -89,7 +89,7 @@ TITLE is a window title."
 			(lambda () 
 			  (gtk-widget-destroy toplevel)
 			  (proc (getter))))
-    (gtk-signal-connect cancelbut "pressed"
+    (gtk-signal-connect cancelbut "clicked"
 			(lambda ()
 			  (gtk-widget-destroy toplevel)))
     (lambda ()
@@ -119,7 +119,7 @@ See also `prompt-proc'."
     (gtk-box-pack-start hbox selbut #f #f 10)
     (gtk-widget-set-usize entry (min 450 (max 100 (* 10 (string-length entry-init)))) 30)
     (gtk-widget-show-all hbox)
-    (gtk-signal-connect selbut "pressed"
+    (gtk-signal-connect selbut "clicked"
 			(lambda ()
 			  (let* ((proc-selector (gtk-proc-selection-new "Procedure Selection Dialog"))
 				 (dialog (gtk-proc-selection-toplevel-widget proc-selector)))

@@ -412,10 +412,10 @@ want the saved preferences to take effect."
     (gtk-box-pack-start vbox hbox #f 0)
     (gtk-button-box-set-layout hbuttonbox 'spread)
     (gtk-widget-show-all vbox)
-    (gtk-signal-connect applybut "pressed" 
+    (gtk-signal-connect applybut "clicked" 
 			(lambda () (apply-action)))
-    (gtk-signal-connect okbut "pressed" (lambda () (apply-action) (done-action)))
-    (gtk-signal-connect cancelbut "pressed" cancel-action)
+    (gtk-signal-connect okbut "clicked" (lambda () (apply-action) (done-action)))
+    (gtk-signal-connect cancelbut "clicked" cancel-action)
     vbox))
 
 

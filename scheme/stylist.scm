@@ -139,7 +139,7 @@ random window that matches PREDICATE."
 		       (gtk-box-pack-start
 			bbox 
 			(let ((button (gtk-button-new-with-label label)))
-			  (gtk-signal-connect button "pressed" action)
+			  (gtk-signal-connect button "clicked" action)
 			  (if (eq? action Cancel)
 			      (add-hook! apply-hook
 					 (lambda ()

@@ -40,11 +40,11 @@
     (let ((pp (pointer-position)))
       (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
     (gtk-widget-show-all toplevel)
-    (gtk-signal-connect okbut "pressed" 
+    (gtk-signal-connect okbut "clicked" 
 			(lambda () 
 			  (gtk-widget-destroy toplevel)
 			  (proc (getter))))
-    (gtk-signal-connect cancelbut "pressed"
+    (gtk-signal-connect cancelbut "clicked"
 			(lambda ()
 			  (gtk-widget-destroy toplevel)))
     (lambda ()
