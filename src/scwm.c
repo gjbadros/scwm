@@ -656,12 +656,12 @@ scwm_main(int argc, char **argv)
   initPanFrames();
 #endif
   
-  XGrabServer_withSemaphore(dpy);
   
 #ifndef NON_VIRTUAL
+  XGrabServer_withSemaphore(dpy);
   checkPanFrames();
-#endif
   XUngrabServer_withSemaphore(dpy);
+#endif
   UnBlackoutScreen();         /* if we need to remove blackout window */
   /* set the focus to the current window if appropriate */
   CoerceEnterNotifyOnCurrentWindow();
@@ -767,6 +767,9 @@ CaptureAllWindows(void)
 	tmp = next;
       }
     }
+    /* We only need to XSync on a recapture, since the initial capture
+       calls XSync itself after we return */
+    XSync(dpy, 0);
   }
 
   isIconicState = DontCareState;
@@ -779,7 +782,7 @@ CaptureAllWindows(void)
   PPosOverride = False;
   KeepOnTop();
   XUngrabServer_withSemaphore(dpy);
-  XSync(dpy, 0);		/* should we do this on initial capture? */
+
 }
 
 /*
@@ -1395,9 +1398,20 @@ Done(int restart, char *command)
 
   XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_LISTENER);
 
+#ifdef FIXGJB /* these don't appear to be necessary */  
+  XDeleteProperty(dpy, Scr.Root, XA_SCWM_EXECUTE);
+  XDeleteProperty(dpy, Scr.Root, XA_SCWM_RESULT);
+  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_REQWIN);
+  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_REQUEST);
+  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_REPLY);
+  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_NOTIFY);
+  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_OUTPUT);
+  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_ERROR);
+#endif
+
   /* Pretty sure this should be done... */
   XDeleteProperty(dpy, Scr.Root, _XA_MOTIF_WM);
-
+  
   if (restart) {
     SaveDesktopState();		/* I wonder why ... */
 
