@@ -1855,6 +1855,11 @@ set_icon_x(SCM picture, SCM win)
     tmp_win->szIconFile = NULL;
   } else if (picture == SCM_BOOL_T) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
+    XDestroyWindow(dpy, tmp_win->icon_w);
+    tmp_win->icon_w = None;
+    if (tmp_win->picIcon!=NULL) {
+      tmp_win->szIconFile = tmp_win->picIcon->name;
+    }
   } else if (gh_string_p(picture)) {
     int len;
     char *name = gh_scm2newstr(picture, &len);
