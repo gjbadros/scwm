@@ -285,7 +285,7 @@ typedef struct ScreenInfo
 				 * window which REALLY has the focus */
   ScwmWindow *Focus;            /* Last window which Scwm gave the focus to 
                                  * NOT the window that really has the focus */
-  Window UnknownWinFocused;      /* None, if the focus is nowhere or on an scwm
+  Window UnknownWinFocused;      /* None, if the focus is nowhere or on a scwm
 				 * managed window. Set to id of otherwindow 
 				 * with focus otherwise */
   ScwmWindow *Ungrabbed;
