@@ -27,7 +27,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release pre-1.0</releaseinfo>
-    <pubdate>25 November 1999</pubdate>
+    <pubdate>30 November 1999</pubdate>
     <copyright>
       <year>1997-1999</year>
       <holder>Greg J. Badros and Maciej Stachowiak</holder>
@@ -1264,6 +1264,9 @@ The shaped XPM menu look.
     <sect1><title>scheme/corba.scm</title> <itemizedlist>
       <listitem><para><link linkend="publish-scwm-evaluator-servant"><function>publish-scwm-evaluator-servant</function></link> -- Publish the scwm-evaluator-servant by putting its IOR as a property on the root window.</para></listitem>
     </itemizedlist> </sect1>
+    <sect1><title>scheme/debianapps-menu.scm</title> <itemizedlist>
+      <listitem><para><link linkend="make-debianapps-menu"><function>make-debianapps-menu</function></link> -- Read the menu-generated file debian-menu-file, and return a menu with title </para></listitem>
+    </itemizedlist> </sect1>
     <sect1><title>scheme/decor.scm</title> <itemizedlist>
       <listitem><para><link linkend="call-with-decor"><function>call-with-decor</function></link> -- Eval THUNK using DECOR as the current decor.</para></listitem>
     </itemizedlist> </sect1>
@@ -1417,6 +1420,12 @@ The shaped XPM menu look.
       <listitem><para><link linkend="enable-gnome-hints"><function>enable-gnome-hints</function></link> -- Enable support for GNOME hints.</para></listitem>
       <listitem><para><link linkend="disable-gnome-hints"><function>disable-gnome-hints</function></link> -- Disable support for GNOME hints.</para></listitem>
       <listitem><para><link linkend="gnome-install-window-styles"><function>gnome-install-window-styles</function></link> -- Initialize various window styles for GNOME support.</para></listitem>
+    </itemizedlist> </sect1>
+    <sect1><title>scheme/gnome-panel-menus.scm</title> <itemizedlist>
+      <listitem><para><link linkend="make-menu-gnome-system"><function>make-menu-gnome-system</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="make-menu-another-level"><function>make-menu-another-level</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="make-menu-gnome-user"><function>make-menu-gnome-user</function></link> -- No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="make-menu-kde"><function>make-menu-kde</function></link> -- No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/group.scm</title> <itemizedlist>
       <listitem><para><link linkend="group-window"><function>group-window</function></link> -- Returns a distinguished window of GROUP.</para></listitem>
@@ -1817,8 +1826,8 @@ The shaped XPM menu look.
       <listitem><para><link linkend="exe-on-selection"><function>exe-on-selection</function></link> -- Return a procedure that runs COMMAND in the background on the X selection.</para></listitem>
       <listitem><para><link linkend="make-hosts-menu"><function>make-hosts-menu</function></link> -- Create a telnet menu.</para></listitem>
       <listitem><para><link linkend="make-context-menu"><function>make-context-menu</function></link> -- Create a menu of actions applicable to the filename in the X selection.</para></listitem>
-      <listitem><para><link linkend="menu-window-theme"><function>menu-window-theme</function></link> -- Return a menu that lets the user set the theme for a single window.</para></listitem>
-      <listitem><para><link linkend="menu-global-theme"><function>menu-global-theme</function></link> -- Return a menu that lets the user set the theme for all windows.</para></listitem>
+      <listitem><para><link linkend="make-menu-window-theme"><function>make-menu-window-theme</function></link> -- Return a menu that lets the user set the theme for a single window.</para></listitem>
+      <listitem><para><link linkend="make-menu-global-theme"><function>make-menu-global-theme</function></link> -- Return a menu that lets the user set the theme for all windows.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/stringops.scm</title> <itemizedlist>
       <listitem><para><link linkend="make-string-usable-for-resource-key"><function>make-string-usable-for-resource-key</function></link> -- Return a converted string from STRING that can be used as an X resource key.</para></listitem>
@@ -6912,7 +6921,7 @@ Can restart with a fresh solver by using <link linkend="start-constraints"><func
   <title>Implementation Notes</title>
   <para> Module: (app scwm constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/constraints.scm"><filename>scheme/constraints.scm</filename></ulink>
-  at line 41 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 42 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7953,7 +7962,7 @@ such window object, return <literal>#f</literal>.
   <title>Implementation Notes</title>
   <para> Module: </para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 601 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-module.scm">CVS log</ulink>)</para> </refsect2>
+  at line 591 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-module.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11155,7 +11164,7 @@ is not a valid keysym.
   <title>Implementation Notes</title>
   <para> Module: (app scwm fvwm-module)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 588 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-module.scm">CVS log</ulink>)</para> </refsect2>
+  at line 578 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-module.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11176,7 +11185,7 @@ is not a valid keysym.
   <title>Implementation Notes</title>
   <para> Module: (app scwm fvwm-module)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 585 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-module.scm">CVS log</ulink>)</para> </refsect2>
+  at line 575 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-module.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11197,7 +11206,7 @@ is not a valid keysym.
   <title>Implementation Notes</title>
   <para> Module: (app scwm fvwm-module)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 591 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-module.scm">CVS log</ulink>)</para> </refsect2>
+  at line 581 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-module.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11935,6 +11944,30 @@ The selection must contain a single full pathname.
   </refsect1>
 </refentry>
 
+<refentry id="make-debianapps-menu">
+  <refnamediv>
+    <refname>make-debianapps-menu</refname>
+    <refpurpose>Read the menu-generated file debian-menu-file, and return a menu with title </refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-debianapps-menu #&amp;optional 
+				      (debian-title default-title)
+				      (debian-menu-file default-menu-file))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Read the menu-generated file debian-menu-file, and return a menu with title 
+ menu title. This should work only on debian systems
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: </para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/debianapps-menu.scm"><filename>scheme/debianapps-menu.scm</filename></ulink>
+  at line 16 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/debianapps-menu.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="make-decor">
   <refnamediv>
     <refname>make-decor</refname>
@@ -12150,6 +12183,142 @@ use the empty list as the element.
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/menu.c"><filename>src/menu.c</filename></ulink>
   at line 245 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/menu.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="make-menu-another-level">
+  <refnamediv>
+    <refname>make-menu-another-level</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-menu-another-level #&amp;optional
+					 (path (string-append (getenv "HOME") "/.gnome/apps-redhat"))
+					 (title "AnotherLevel Menus"))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm gnome-panel-menus)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
+  at line 361 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="make-menu-global-theme">
+  <refnamediv>
+    <refname>make-menu-global-theme</refname>
+    <refpurpose>Return a menu that lets the user set the theme for all windows.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-menu-global-theme #&amp;optional force?)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a menu that lets the user set the theme for all windows.
+If FORCE? is <literal>#t</literal>, then the cached theme file is reloaded.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm std-menus)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/std-menus.scm"><filename>scheme/std-menus.scm</filename></ulink>
+  at line 126 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/std-menus.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="make-menu-gnome-system">
+  <refnamediv>
+    <refname>make-menu-gnome-system</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-menu-gnome-system #&amp;optional
+					(path "/usr/share/gnome/apps")
+					(title "System Menus"))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm gnome-panel-menus)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
+  at line 353 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="make-menu-gnome-user">
+  <refnamediv>
+    <refname>make-menu-gnome-user</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-menu-gnome-user #&amp;optional
+				      (path (string-append (getenv "HOME") "/.gnome/apps"))
+				      (title "User Menus"))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm gnome-panel-menus)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
+  at line 369 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="make-menu-kde">
+  <refnamediv>
+    <refname>make-menu-kde</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-menu-kde #&amp;optional
+			       (path "/usr/share/applnk")
+			       (title "KDE Menus"))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: </para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/gnome-panel-menus.scm"><filename>scheme/gnome-panel-menus.scm</filename></ulink>
+  at line 377 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/gnome-panel-menus.scm">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="make-menu-window-theme">
+  <refnamediv>
+    <refname>make-menu-window-theme</refname>
+    <refpurpose>Return a menu that lets the user set the theme for a single window.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(make-menu-window-theme #&amp;optional force?)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a menu that lets the user set the theme for a single window.
+If FORCE? is <literal>#t</literal>, then the cached theme file is reloaded.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: (app scwm std-menus)</para>
+  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/std-menus.scm"><filename>scheme/std-menus.scm</filename></ulink>
+  at line 113 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/std-menus.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13020,28 +13189,6 @@ specific to the menu look used for this menu.
   </refsect1>
 </refentry>
 
-<refentry id="menu-global-theme">
-  <refnamediv>
-    <refname>menu-global-theme</refname>
-    <refpurpose>Return a menu that lets the user set the theme for all windows.</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(menu-global-theme #&amp;optional force?)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  Return a menu that lets the user set the theme for all windows.
-If FORCE? is <literal>#t</literal>, then the cached theme file is reloaded.
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: </para>
-  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/std-menus.scm"><filename>scheme/std-menus.scm</filename></ulink>
-  at line 126 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/std-menus.scm">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
 <refentry id="menu-highlight-colors">
   <refnamediv>
     <refname>menu-highlight-colors</refname>
@@ -13332,28 +13479,6 @@ except the font defaults to `*menu-title-font*' instead of
   <para> Module: (app scwm base)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
   at line 448 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect2>
-  </refsect1>
-</refentry>
-
-<refentry id="menu-window-theme">
-  <refnamediv>
-    <refname>menu-window-theme</refname>
-    <refpurpose>Return a menu that lets the user set the theme for a single window.</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(menu-window-theme #&amp;optional force?)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  Return a menu that lets the user set the theme for a single window.
-If FORCE? is <literal>#t</literal>, then the cached theme file is reloaded.
-  </para>
-  <refsect2>
-  <title>Implementation Notes</title>
-  <para> Module: (app scwm std-menus)</para>
-  <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/std-menus.scm"><filename>scheme/std-menus.scm</filename></ulink>
-  at line 113 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/std-menus.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15129,7 +15254,7 @@ See also <link linkend="prev-window"><function>prev-window</function></link>.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints-classes)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-classes.scm"><filename>scheme/ui-constraints-classes.scm</filename></ulink>
-  at line 187 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-classes.scm">CVS log</ulink>)</para> </refsect2>
+  at line 188 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-classes.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15495,7 +15620,7 @@ window with the same DESK argument.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints-classes)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-classes.scm"><filename>scheme/ui-constraints-classes.scm</filename></ulink>
-  at line 131 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-classes.scm">CVS log</ulink>)</para> </refsect2>
+  at line 132 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-classes.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19020,7 +19145,7 @@ constraints is reset to empty).
   <title>Implementation Notes</title>
   <para> Module: (app scwm constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/constraints.scm"><filename>scheme/constraints.scm</filename></ulink>
-  at line 20 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 21 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19636,7 +19761,7 @@ Uses the <link linkend="startup-hook"><function>startup-hook</function></link> a
   <title>Implementation Notes</title>
   <para> Module: (app scwm fvwm-module)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/fvwm-module.scm"><filename>scheme/fvwm-module.scm</filename></ulink>
-  at line 440 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-module.scm">CVS log</ulink>)</para> </refsect2>
+  at line 430 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-module.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -25061,7 +25186,7 @@ are associated with the current focus window.
   <title>Implementation Notes</title>
   <para> Module: (app scwm constraints)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/constraints.scm"><filename>scheme/constraints.scm</filename></ulink>
-  at line 31 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/constraints.scm">CVS log</ulink>)</para> </refsect2>
+  at line 32 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/constraints.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26398,7 +26523,7 @@ commands).
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints-classes)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-classes.scm"><filename>scheme/ui-constraints-classes.scm</filename></ulink>
-  at line 116 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-classes.scm">CVS log</ulink>)</para> </refsect2>
+  at line 117 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-classes.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26419,7 +26544,7 @@ commands).
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints-classes)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-classes.scm"><filename>scheme/ui-constraints-classes.scm</filename></ulink>
-  at line 98 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-classes.scm">CVS log</ulink>)</para> </refsect2>
+  at line 99 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-classes.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26904,7 +27029,7 @@ End this recording by calling 'ui-constraints-composition-end'.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints-composition)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-composition.scm"><filename>scheme/ui-constraints-composition.scm</filename></ulink>
-  at line 46 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-composition.scm">CVS log</ulink>)</para> </refsect2>
+  at line 47 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-composition.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -26927,7 +27052,7 @@ the construction of a composition.
   <title>Implementation Notes</title>
   <para> Module: (app scwm ui-constraints-composition)</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/ui-constraints-composition.scm"><filename>scheme/ui-constraints-composition.scm</filename></ulink>
-  at line 86 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-composition.scm">CVS log</ulink>)</para> </refsect2>
+  at line 87 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/scheme/ui-constraints-composition.scm">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 

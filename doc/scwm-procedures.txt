@@ -1323,7 +1323,7 @@ That is, the returned list is: ((nw-x nw-y) se-x se-y).
 - (app scwm constraints)
 Terminate using the constraint solver.  
 Can restart with a fresh solver by using `start-constraints'.
-[From scheme/constraints.scm:41]
+[From scheme/constraints.scm:42]
 
 (end-highlighting-current-window 
 		 #&optional (win current-highlighted-window))
@@ -1628,7 +1628,7 @@ No documentation supplied.
 (fvwm2-pager-window)
 - 
 No documentation supplied.
-[From scheme/fvwm-module.scm:601]
+[From scheme/fvwm-module.scm:591]
 
 (gdk-draw-arc! top_left width height angle1 angle2)
 - 
@@ -2526,17 +2526,17 @@ is not a valid keysym.
 (kill-all-fvwm2-modules)
 - (app scwm fvwm-module)
 No documentation supplied.
-[From scheme/fvwm-module.scm:588]
+[From scheme/fvwm-module.scm:578]
 
 (kill-fvwm2-module fmod)
 - (app scwm fvwm-module)
 No documentation supplied.
-[From scheme/fvwm-module.scm:585]
+[From scheme/fvwm-module.scm:575]
 
 (kill-fvwm2-modules-by-name module-name)
 - (app scwm fvwm-module)
 No documentation supplied.
-[From scheme/fvwm-module.scm:591]
+[From scheme/fvwm-module.scm:581]
 
 (kwm-emulation-initialize)
 - (app scwm kde-hints)
@@ -2760,6 +2760,14 @@ Create a menu of actions applicable to the filename in the X selection.
 The selection must contain a single full pathname.
 [From scheme/std-menus.scm:92]
 
+(make-debianapps-menu #&optional 
+				      (debian-title default-title)
+				      (debian-menu-file default-menu-file))
+- 
+Read the menu-generated file debian-menu-file, and return a menu with title 
+ menu title. This should work only on debian systems
+[From scheme/debianapps-menu.scm:16]
+
 (make-decor  #&optional name)
 - Built-in Primitive
 Create a new decor object. NAME optionally provides a string
@@ -2833,6 +2841,46 @@ SIDE-BG-COLOR is a color object or symbol;
 PICTURE-BG is an image object;
 EXTRA-OPTIONS can be anything understood by the menu-look
 [From src/menu.c:245]
+
+(make-menu-another-level #&optional
+					 (path (string-append (getenv "HOME") "/.gnome/apps-redhat"))
+					 (title "AnotherLevel Menus"))
+- (app scwm gnome-panel-menus)
+No documentation supplied.
+[From scheme/gnome-panel-menus.scm:361]
+
+(make-menu-global-theme #&optional force?)
+- (app scwm std-menus)
+Return a menu that lets the user set the theme for all windows.
+If FORCE? is #t, then the cached theme file is reloaded.
+[From scheme/std-menus.scm:126]
+
+(make-menu-gnome-system #&optional
+					(path "/usr/share/gnome/apps")
+					(title "System Menus"))
+- (app scwm gnome-panel-menus)
+No documentation supplied.
+[From scheme/gnome-panel-menus.scm:353]
+
+(make-menu-gnome-user #&optional
+				      (path (string-append (getenv "HOME") "/.gnome/apps"))
+				      (title "User Menus"))
+- (app scwm gnome-panel-menus)
+No documentation supplied.
+[From scheme/gnome-panel-menus.scm:369]
+
+(make-menu-kde #&optional
+			       (path "/usr/share/applnk")
+			       (title "KDE Menus"))
+- 
+No documentation supplied.
+[From scheme/gnome-panel-menus.scm:377]
+
+(make-menu-window-theme #&optional force?)
+- (app scwm std-menus)
+Return a menu that lets the user set the theme for a single window.
+If FORCE? is #t, then the cached theme file is reloaded.
+[From scheme/std-menus.scm:113]
 
 (make-menuitem label action #&optional extra-label picture-above picture-left hover-action unhover-action hotkey-prefs submenu?)
 - Built-in Primitive
@@ -3157,12 +3205,6 @@ object for the font of the menu items.  EXTRA is an extra argument
 specific to the menu look used for this menu.
 [From scheme/base.scm:502]
 
-(menu-global-theme #&optional force?)
-- 
-Return a menu that lets the user set the theme for all windows.
-If FORCE? is #t, then the cached theme file is reloaded.
-[From scheme/std-menus.scm:126]
-
 (menu-highlight-colors menu)
 - Built-in Primitive
 Return list text-color, bg-color, the highlight colors for MENU.
@@ -3247,12 +3289,6 @@ All arguments that `menuitem' takes are accepted as usual,
 except the font defaults to `*menu-title-font*' instead of
 `*menu-font*'.
 [From scheme/base.scm:448]
-
-(menu-window-theme #&optional force?)
-- (app scwm std-menus)
-Return a menu that lets the user set the theme for a single window.
-If FORCE? is #t, then the cached theme file is reloaded.
-[From scheme/std-menus.scm:113]
 
 (menu? obj)
 - Built-in Primitive
@@ -3812,7 +3848,7 @@ See also `prev-window'.
 (nonant->dirvector nonant)
 - (app scwm ui-constraints-classes)
 No documentation supplied.
-[From scheme/ui-constraints-classes.scm:187]
+[From scheme/ui-constraints-classes.scm:188]
 
 (nonant->gravity nonant)
 - (app scwm winops)
@@ -3906,7 +3942,7 @@ Return #t if WIN is on desk N, else #f.
 (one-window-prompter name #&optional (p1 "select window"))
 - (app scwm ui-constraints-classes)
 No documentation supplied.
-[From scheme/ui-constraints-classes.scm:131]
+[From scheme/ui-constraints-classes.scm:132]
 
 (opaque-move  #&optional win)
 - Built-in Primitive
@@ -4935,7 +4971,7 @@ Reset the constraint solving system.
 This switches to a fresh new master solver object, and resets
 the global list of ui-constraint instances (so the menu of
 constraints is reset to empty).
-[From scheme/constraints.scm:20]
+[From scheme/constraints.scm:21]
 
 (reset-input-hook!)
 - Built-in Primitive
@@ -5119,7 +5155,7 @@ Runs the ~/.xclients script.
 					    (basename module-name)))))
 - (app scwm fvwm-module)
 No documentation supplied.
-[From scheme/fvwm-module.scm:440]
+[From scheme/fvwm-module.scm:430]
 
 (run-in-netscape command completion #&optional (netwin (netscape-win)))
 - (app scwm netscape)
@@ -6784,7 +6820,7 @@ Start using the constraint solver.
 DRAW-CONSTRAINTS-WITH-FOCUS is used to specify whether
 you'd like all constraints drawn or just the ones which
 are associated with the current focus window.
-[From scheme/constraints.scm:31]
+[From scheme/constraints.scm:32]
 
 (start-highlighting-current-window #&optional (win (window-context)))
 - (app scwm highlight-current-window)
@@ -7193,12 +7229,12 @@ commands).
 (two-window-or-more-prompter name p1 p2)
 - (app scwm ui-constraints-classes)
 No documentation supplied.
-[From scheme/ui-constraints-classes.scm:116]
+[From scheme/ui-constraints-classes.scm:117]
 
 (two-window-prompter name p1 p2)
 - (app scwm ui-constraints-classes)
 No documentation supplied.
-[From scheme/ui-constraints-classes.scm:98]
+[From scheme/ui-constraints-classes.scm:99]
 
 (ui-constraint-add-enable-hook ui-constraint hook)
 - (app scwm ui-constraints)
@@ -7331,14 +7367,14 @@ returns #f otherwise.
 - (app scwm ui-constraints-composition)
 Begin recording the constraints used for the creation of a composition.
 End this recording by calling 'ui-constraints-composition-end'.
-[From scheme/ui-constraints-composition.scm:46]
+[From scheme/ui-constraints-composition.scm:47]
 
 (ui-constraints-composition-end #&optional (cancel? #f))
 - (app scwm ui-constraints-composition)
 End the recording of a constraint composition.  NAME is the name to be 
 given to the new composition.  Optionally, CANCEL may be specified to cancel
 the construction of a composition.
-[From scheme/ui-constraints-composition.scm:86]
+[From scheme/ui-constraints-composition.scm:87]
 
 (ui-constraints-involving-two-windows win1 win2)
 - (app scwm ui-constraints)
