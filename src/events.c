@@ -1629,7 +1629,7 @@ send_button_press(SCM button, SCM modifier, SCM win,
   XButtonEvent event;
   int x = 0, y = 0, x_root = 0 , y_root = 0;
   int x2 = 0, y2 = 0;
-  ScwmWindow *sw;
+  ScwmWindow *psw;
   Window w;
   Window pointer_win;
 
@@ -1637,8 +1637,8 @@ send_button_press(SCM button, SCM modifier, SCM win,
   SCM_REDEFER_INTS;
 
   VALIDATEN(win, 3, __FUNCTION__);
-  sw = SCWMWINDOW(win);
-  w = sw->w;
+  psw = SCWMWINDOW(win);
+  w = psw->w;
 
   if (!gh_number_p(button)) {
     SCM_ALLOW_INTS;
@@ -1707,14 +1707,14 @@ send_key_press(SCM key, SCM win,
   Bool fRelease = True;
   int iarg = 1;
   XKeyEvent event;
-  ScwmWindow *sw;
+  ScwmWindow *psw;
   Window w;
 
   SCM_REDEFER_INTS;
 
   VALIDATEN(win, 2, __FUNCTION__);
-  sw = SCWMWINDOW(win);
-  w = sw->w;
+  psw = SCWMWINDOW(win);
+  w = psw->w;
 
   if (!gh_string_p(key)) {
     SCM_ALLOW_INTS;

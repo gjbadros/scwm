@@ -9,7 +9,7 @@
 
 #include "window.h"
 
-Bool PlaceWindow(ScwmWindow *tmp_win, int Desk);
+Bool PlaceWindow(ScwmWindow *psw, int Desk);
 
 #endif
 

@@ -44,15 +44,15 @@ SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
   /* ClickToFocus focus queue manipulation - only performed for
    * Focus-by-mouse type focus events */
   if ((FocusByMouse) && (Fw && Fw != Scr.Focus && Fw != &Scr.ScwmRoot)) {
-    ScwmWindow *tmp_win1, *tmp_win2;
+    ScwmWindow *pswPrev, *pswNext;
 
-    tmp_win1 = Fw->prev;
-    tmp_win2 = Fw->next;
+    pswPrev = Fw->prev;
+    pswNext = Fw->next;
 
-    if (tmp_win1)
-      tmp_win1->next = tmp_win2;
-    if (tmp_win2)
-      tmp_win2->prev = tmp_win1;
+    if (pswPrev)
+      pswPrev->next = pswNext;
+    if (pswNext)
+      pswNext->prev = pswPrev;
 
     Fw->next = Scr.ScwmRoot.next;
     if (Scr.ScwmRoot.next)

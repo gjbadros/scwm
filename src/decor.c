@@ -248,7 +248,7 @@ set_window_decor_x(SCM decor, SCM win)
 {
   int x, y, width, height, old_height, extra_height;
   ScwmDecor *fl;
-  ScwmWindow *tmp_win;
+  ScwmWindow *psw;
 
   if (DECORP(decor)) {
     fl = SCWMDECOR(decor);
@@ -257,24 +257,24 @@ set_window_decor_x(SCM decor, SCM win)
   }
 
   VALIDATEN(win, 2, "set-window-decor!");
-  tmp_win = SCWMWINDOW(win);
+  psw = SCWMWINDOW(win);
 
-  old_height = tmp_win->fl->TitleHeight;
+  old_height = psw->fl->TitleHeight;
 
-  tmp_win->fl = fl;
+  psw->fl = fl;
 
-  extra_height = (tmp_win->fTitle) ?
-    (old_height - tmp_win->fl->TitleHeight) : 0;
-  x = tmp_win->frame_x;
-  y = tmp_win->frame_y;
-  width = tmp_win->frame_width;
-  height = tmp_win->frame_height - extra_height;
-  tmp_win->frame_x = 0;
-  tmp_win->frame_y = 0;
-  tmp_win->frame_height = 0;
-  tmp_win->frame_width = 0;
-  SetupFrame(tmp_win, x, y, width, height, True);
-  SetBorder(tmp_win, Scr.Hilite == tmp_win, True, True, None);
+  extra_height = (psw->fTitle) ?
+    (old_height - psw->fl->TitleHeight) : 0;
+  x = psw->frame_x;
+  y = psw->frame_y;
+  width = psw->frame_width;
+  height = psw->frame_height - extra_height;
+  psw->frame_x = 0;
+  psw->frame_y = 0;
+  psw->frame_height = 0;
+  psw->frame_width = 0;
+  SetupFrame(psw, x, y, width, height, True);
+  SetBorder(psw, Scr.Hilite == psw, True, True, None);
 
   return SCM_UNSPECIFIED;
 }

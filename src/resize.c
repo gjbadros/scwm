@@ -50,11 +50,11 @@ extern Window PressedW;
  *  Inputs:
  *      x_root  - the X corrdinate in the root window
  *      y_root  - the Y corrdinate in the root window
- *      tmp_win - the current scwm window
+ *      psw - the current scwm window
  *
  ************************************************************************/
 void 
-DoResize(int x_root, int y_root, ScwmWindow * tmp_win)
+DoResize(int x_root, int y_root, ScwmWindow * psw)
 {
   int action = 0;
 
@@ -85,16 +85,16 @@ DoResize(int x_root, int y_root, ScwmWindow * tmp_win)
     xmotion = -1;
   }
   if (action) {
-    ConstrainSize(tmp_win, &dragWidth, &dragHeight);
+    ConstrainSize(psw, &dragWidth, &dragHeight);
     if (xmotion == 1)
       dragx = origx + origWidth - dragWidth;
     if (ymotion == 1)
       dragy = origy + origHeight - dragHeight;
 
-    MoveOutline(Scr.Root, dragx - tmp_win->bw, dragy - tmp_win->bw,
-		dragWidth + 2 * tmp_win->bw, dragHeight + 2 * tmp_win->bw);
+    MoveOutline(Scr.Root, dragx - psw->bw, dragy - psw->bw,
+		dragWidth + 2 * psw->bw, dragHeight + 2 * psw->bw);
   }
-  DisplaySize(tmp_win, dragWidth, dragHeight, False);
+  DisplaySize(psw, dragWidth, dragHeight, False);
 }
 
 
@@ -105,13 +105,13 @@ DoResize(int x_root, int y_root, ScwmWindow * tmp_win)
  *      DisplaySize - display the size in the dimensions window
  *
  *  Inputs:
- *      tmp_win - the current scwm window
+ *      psw - the current scwm window
  *      width   - the width of the rubber band
  *      height  - the height of the rubber band
  *
  ***********************************************************************/
 void 
-DisplaySize(ScwmWindow * tmp_win, int width, int height, Bool Init)
+DisplaySize(ScwmWindow * psw, int width, int height, Bool Init)
 {
   char str[100];
   int dwidth, dheight, offset;
@@ -122,13 +122,13 @@ DisplaySize(ScwmWindow * tmp_win, int width, int height, Bool Init)
   last_width = width;
   last_height = height;
 
-  dheight = height - tmp_win->title_height - 2 * tmp_win->boundary_width;
-  dwidth = width - 2 * tmp_win->boundary_width;
+  dheight = height - psw->title_height - 2 * psw->boundary_width;
+  dwidth = width - 2 * psw->boundary_width;
 
-  dwidth -= tmp_win->hints.base_width;
-  dheight -= tmp_win->hints.base_height;
-  dwidth /= tmp_win->hints.width_inc;
-  dheight /= tmp_win->hints.height_inc;
+  dwidth -= psw->hints.base_width;
+  dheight -= psw->hints.base_height;
+  dwidth /= psw->hints.width_inc;
+  dheight /= psw->hints.height_inc;
 
   (void) sprintf(str, " %4d x %-4d ", dwidth, dheight);
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
@@ -136,7 +136,7 @@ DisplaySize(ScwmWindow * tmp_win, int width, int height, Bool Init)
   if (Init) {
     XClearWindow(dpy, Scr.SizeWindow);
     if (Scr.d_depth >= 2)
-      RelieveWindow(tmp_win,
+      RelieveWindow(psw,
 	       Scr.SizeWindow, 0, 0, Scr.SizeStringWidth + SIZE_HINDENT * 2,
 		    FONTHEIGHT(Scr.menu_font) + SIZE_VINDENT * 2,
 		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
@@ -162,7 +162,7 @@ DisplaySize(ScwmWindow * tmp_win, int width, int height, Bool Init)
  ***********************************************************************/
 
 void 
-ConstrainSize(ScwmWindow * tmp_win, int *widthp, int *heightp)
+ConstrainSize(ScwmWindow * psw, int *widthp, int *heightp)
 {
 #define makemult(a,b) ((b==1) ? (a) : (((int)((a)/(b))) * (b)) )
 #define _min(a,b) (((a) < (b)) ? (a) : (b))
@@ -170,23 +170,23 @@ ConstrainSize(ScwmWindow * tmp_win, int *widthp, int *heightp)
   int baseWidth, baseHeight;
   int dwidth = *widthp, dheight = *heightp;
 
-  dwidth -= 2 * tmp_win->boundary_width;
-  dheight -= (tmp_win->title_height + 2 * tmp_win->boundary_width);
+  dwidth -= 2 * psw->boundary_width;
+  dheight -= (psw->title_height + 2 * psw->boundary_width);
 
-  minWidth = tmp_win->hints.min_width;
-  minHeight = tmp_win->hints.min_height;
+  minWidth = psw->hints.min_width;
+  minHeight = psw->hints.min_height;
 
-  baseWidth = tmp_win->hints.base_width;
-  baseHeight = tmp_win->hints.base_height;
+  baseWidth = psw->hints.base_width;
+  baseHeight = psw->hints.base_height;
 
-  maxWidth = tmp_win->hints.max_width;
-  maxHeight = tmp_win->hints.max_height;
+  maxWidth = psw->hints.max_width;
+  maxHeight = psw->hints.max_height;
 
 /*    maxWidth = Scr.VxMax + Scr.MyDisplayWidth;
    maxHeight = Scr.VyMax + Scr.MyDisplayHeight; */
 
-  xinc = tmp_win->hints.width_inc;
-  yinc = tmp_win->hints.height_inc;
+  xinc = psw->hints.width_inc;
+  yinc = psw->hints.height_inc;
 
   /*
    * First, clamp to min and max values
@@ -212,10 +212,10 @@ ConstrainSize(ScwmWindow * tmp_win, int *widthp, int *heightp)
   /*
    * Third, adjust for aspect ratio
    */
-#define maxAspectX tmp_win->hints.max_aspect.x
-#define maxAspectY tmp_win->hints.max_aspect.y
-#define minAspectX tmp_win->hints.min_aspect.x
-#define minAspectY tmp_win->hints.min_aspect.y
+#define maxAspectX psw->hints.max_aspect.x
+#define maxAspectY psw->hints.max_aspect.y
+#define minAspectX psw->hints.min_aspect.x
+#define minAspectY psw->hints.min_aspect.y
   /*
    * The math looks like this:
    *
@@ -231,7 +231,7 @@ ConstrainSize(ScwmWindow * tmp_win, int *widthp, int *heightp)
    * 
    */
 
-  if (tmp_win->hints.flags & PAspect) {
+  if (psw->hints.flags & PAspect) {
     if ((minAspectX * dheight > minAspectY * dwidth) && (xmotion == 0)) {
       /* Change width to match */
       delta = makemult(minAspectX * dheight / minAspectY - dwidth,
@@ -273,8 +273,8 @@ ConstrainSize(ScwmWindow * tmp_win, int *widthp, int *heightp)
   /*
    * Fourth, account for border width and title height
    */
-  *widthp = dwidth + 2 * tmp_win->boundary_width;
-  *heightp = dheight + tmp_win->title_height + 2 * tmp_win->boundary_width;
+  *widthp = dwidth + 2 * psw->boundary_width;
+  *heightp = dheight + psw->title_height + 2 * psw->boundary_width;
   return;
 }
 

@@ -17,11 +17,11 @@ void RelieveWindow(ScwmWindow * t, Window win,
 		   int x, int y, int w, int h,
 		   GC ReliefGC, GC ShadowGC, int hilite);
 
-void SetShape(ScwmWindow * tmp_win, int w);
+void SetShape(ScwmWindow *psw, int w);
 
-void SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle);
+void SetTitleBar(ScwmWindow *psw, Bool onoroff, Bool NewTitle);
 
-void SetupFrame(ScwmWindow * tmp_win, int x, int y, int w, int h, Bool sendEvent);
+void SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent);
 
 #endif
 

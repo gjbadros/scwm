@@ -336,14 +336,14 @@ test_fit(ScwmWindow * t, int x11, int y11, int aoimin)
  *
  **************************************************************************/
 Bool 
-PlaceWindow(ScwmWindow *tmp_win, int Desk)
+PlaceWindow(ScwmWindow *psw, int Desk)
 {
   ScwmWindow *t;
   int xl = -1, yt, DragWidth, DragHeight;
   int gravx, gravy;		/* gravity signs for positioning */
   extern Bool PPosOverride;
 
-  GetGravityOffsets(tmp_win, &gravx, &gravy);
+  GetGravityOffsets(psw, &gravx, &gravy);
 
 
   /* Select a desk to put the window on (in list of priority):
@@ -353,42 +353,42 @@ PlaceWindow(ScwmWindow *tmp_win, int Desk)
    * 4. Transients go on the same desk as their parents.
    * 5. Window groups stay together (completely untested)
    */
-  tmp_win->Desk = Scr.CurrentDesk;
-  if (tmp_win->fSticky)
-    tmp_win->Desk = Scr.CurrentDesk;
-  else if (tmp_win->fStartsOnDesk) {
-    tmp_win->Desk = Desk;
+  psw->Desk = Scr.CurrentDesk;
+  if (psw->fSticky)
+    psw->Desk = Scr.CurrentDesk;
+  else if (psw->fStartsOnDesk) {
+    psw->Desk = Desk;
   } else {
     Atom atype;
     int aformat;
     unsigned long nitems, bytes_remain;
     unsigned char *prop;
 
-    if ((tmp_win->wmhints) && (tmp_win->wmhints->flags & WindowGroupHint) &&
-	(tmp_win->wmhints->window_group != None) &&
-	(tmp_win->wmhints->window_group != Scr.Root)) {
+    if ((psw->wmhints) && (psw->wmhints->flags & WindowGroupHint) &&
+	(psw->wmhints->window_group != None) &&
+	(psw->wmhints->window_group != Scr.Root)) {
       /* Try to find the group leader or another window
        * in the group */
       for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
-	if ((t->w == tmp_win->wmhints->window_group) ||
+	if ((t->w == psw->wmhints->window_group) ||
 	    ((t->wmhints) && (t->wmhints->flags & WindowGroupHint) &&
-	     (t->wmhints->window_group == tmp_win->wmhints->window_group)))
-	  tmp_win->Desk = t->Desk;
+	     (t->wmhints->window_group == psw->wmhints->window_group)))
+	  psw->Desk = t->Desk;
       }
     }
-    if (tmp_win->fTransient && (tmp_win->transientfor != None) &&
-	(tmp_win->transientfor != Scr.Root)) {
+    if (psw->fTransient && (psw->transientfor != None) &&
+	(psw->transientfor != Scr.Root)) {
       /* Try to find the parent's desktop */
       for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
-	if (t->w == tmp_win->transientfor)
-	  tmp_win->Desk = t->Desk;
+	if (t->w == psw->transientfor)
+	  psw->Desk = t->Desk;
       }
     }
-    if ((XGetWindowProperty(dpy, tmp_win->w, _XA_WM_DESKTOP, 0L, 1L, True,
+    if ((XGetWindowProperty(dpy, psw->w, _XA_WM_DESKTOP, 0L, 1L, True,
 			    _XA_WM_DESKTOP, &atype, &aformat, &nitems,
 			    &bytes_remain, &prop)) == Success) {
       if (prop != NULL) {
-	tmp_win->Desk = *(unsigned long *) prop;
+	psw->Desk = *(unsigned long *) prop;
 	XFree(prop);
       }
     }
@@ -397,8 +397,8 @@ PlaceWindow(ScwmWindow *tmp_win, int Desk)
    * whenever a new window pops up, except during initialization */  
   /* FIXGJB: this should be a callback, not a forced switch to the new
      desk --03/26/98 gjb */
-  if ((!PPosOverride) && (!(tmp_win->fShowOnMap)))
-    changeDesks(0, tmp_win->Desk);
+  if ((!PPosOverride) && (!(psw->fShowOnMap)))
+    changeDesks(0, psw->Desk);
 
 
   /* Desk has been selected, now pick a location for the window */
@@ -413,77 +413,77 @@ PlaceWindow(ScwmWindow *tmp_win, int Desk)
    *   If RandomPlacement was specified,
    *       then place the window in a psuedo-random location
    */
-  if (!tmp_win->fTransient &&
-      !(tmp_win->hints.flags & USPosition) &&
-      ((tmp_win->fNoPPosition) ||
-       !(tmp_win->hints.flags & PPosition)) &&
+  if (!psw->fTransient &&
+      !(psw->hints.flags & USPosition) &&
+      ((psw->fNoPPosition) ||
+       !(psw->hints.flags & PPosition)) &&
       !(PPosOverride) &&
-      !((tmp_win->wmhints) &&
-	(tmp_win->wmhints->flags & StateHint) &&
-	(tmp_win->wmhints->initial_state == IconicState))) {
+      !((psw->wmhints) &&
+	(psw->wmhints->flags & StateHint) &&
+	(psw->wmhints->initial_state == IconicState))) {
     /* Get user's window placement, unless RandomPlacement is specified */
-    if (tmp_win->fRandomPlace) {
-      if (tmp_win->fSmartPlace) {
-	SmartPlacement(tmp_win, tmp_win->frame_width + 2 * tmp_win->bw,
-		       tmp_win->frame_height + 2 * tmp_win->bw,
+    if (psw->fRandomPlace) {
+      if (psw->fSmartPlace) {
+	SmartPlacement(psw, psw->frame_width + 2 * psw->bw,
+		       psw->frame_height + 2 * psw->bw,
 		       &xl, &yt);
       }
       if (xl < 0) {
 	/* plase window in a random location */
-	if ((Scr.randomx += GetDecor(tmp_win, TitleHeight)) > Scr.MyDisplayWidth / 2)
-	  Scr.randomx = GetDecor(tmp_win, TitleHeight);
-	if ((Scr.randomy += 2 * GetDecor(tmp_win, TitleHeight)) > Scr.MyDisplayHeight / 2)
-	  Scr.randomy = 2 * GetDecor(tmp_win, TitleHeight);
-	tmp_win->attr.x = Scr.randomx - tmp_win->old_bw;
-	tmp_win->attr.y = Scr.randomy - tmp_win->old_bw;
+	if ((Scr.randomx += GetDecor(psw, TitleHeight)) > Scr.MyDisplayWidth / 2)
+	  Scr.randomx = GetDecor(psw, TitleHeight);
+	if ((Scr.randomy += 2 * GetDecor(psw, TitleHeight)) > Scr.MyDisplayHeight / 2)
+	  Scr.randomy = 2 * GetDecor(psw, TitleHeight);
+	psw->attr.x = Scr.randomx - psw->old_bw;
+	psw->attr.y = Scr.randomy - psw->old_bw;
       } else {
-	tmp_win->attr.x = xl - tmp_win->old_bw + tmp_win->bw;
-	tmp_win->attr.y = yt - tmp_win->old_bw + tmp_win->bw;
+	psw->attr.x = xl - psw->old_bw + psw->bw;
+	psw->attr.y = yt - psw->old_bw + psw->bw;
       }
       /* patches 11/93 to try to keep the window on the
        * screen */
-      tmp_win->frame_x = tmp_win->attr.x + tmp_win->old_bw - tmp_win->bw;
-      tmp_win->frame_y = tmp_win->attr.y + tmp_win->old_bw - tmp_win->bw;
+      psw->frame_x = psw->attr.x + psw->old_bw - psw->bw;
+      psw->frame_y = psw->attr.y + psw->old_bw - psw->bw;
 
-      if (tmp_win->frame_x + tmp_win->frame_width +
-	  2 * tmp_win->boundary_width > Scr.MyDisplayWidth) {
-	tmp_win->attr.x = Scr.MyDisplayWidth - tmp_win->attr.width
-	  - tmp_win->old_bw + tmp_win->bw - 2 * tmp_win->boundary_width;
+      if (psw->frame_x + psw->frame_width +
+	  2 * psw->boundary_width > Scr.MyDisplayWidth) {
+	psw->attr.x = Scr.MyDisplayWidth - psw->attr.width
+	  - psw->old_bw + psw->bw - 2 * psw->boundary_width;
 	Scr.randomx = 0;
       }
-      if (tmp_win->frame_y + 2 * tmp_win->boundary_width + tmp_win->title_height
-	  + tmp_win->frame_height > Scr.MyDisplayHeight) {
-	tmp_win->attr.y = Scr.MyDisplayHeight - tmp_win->attr.height
-	  - tmp_win->old_bw + tmp_win->bw - tmp_win->title_height -
-	  2 * tmp_win->boundary_width;;
+      if (psw->frame_y + 2 * psw->boundary_width + psw->title_height
+	  + psw->frame_height > Scr.MyDisplayHeight) {
+	psw->attr.y = Scr.MyDisplayHeight - psw->attr.height
+	  - psw->old_bw + psw->bw - psw->title_height -
+	  2 * psw->boundary_width;;
 	Scr.randomy = 0;
       }
-      tmp_win->xdiff = tmp_win->attr.x - tmp_win->bw;
-      tmp_win->ydiff = tmp_win->attr.y - tmp_win->bw;
+      psw->xdiff = psw->attr.x - psw->bw;
+      psw->ydiff = psw->attr.y - psw->bw;
     } else {
       xl = -1;
       yt = -1;
-      if (tmp_win->fSmartPlace)
-	SmartPlacement(tmp_win, tmp_win->frame_width + 2 * tmp_win->bw,
-		       tmp_win->frame_height + 2 * tmp_win->bw,
+      if (psw->fSmartPlace)
+	SmartPlacement(psw, psw->frame_width + 2 * psw->bw,
+		       psw->frame_height + 2 * psw->bw,
 		       &xl, &yt);
       if (xl < 0) {
 	if (GrabEm(CURSOR_POSITION)) {
 	  /* Grabbed the pointer - continue */
 	  XGrabServer_withSemaphore(dpy);
-	  if (XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
+	  if (XGetGeometry(dpy, psw->w, &JunkRoot, &JunkX, &JunkY,
 			   (unsigned int *) &DragWidth,
 			   (unsigned int *) &DragHeight,
 			   &JunkBW, &JunkDepth) == 0) {
-	    free((char *) tmp_win);
+	    free((char *) psw);
 	    XUngrabServer_withSemaphore(dpy);
 	    return False;
 	  }
-	  DragWidth = tmp_win->frame_width;
-	  DragHeight = tmp_win->frame_height;
+	  DragWidth = psw->frame_width;
+	  DragHeight = psw->frame_height;
 
 	  XMapRaised(dpy, Scr.SizeWindow);
-	  moveLoop(tmp_win, 0, 0, DragWidth, DragHeight,
+	  moveLoop(psw, 0, 0, DragWidth, DragHeight,
 		   &xl, &yt, False, True);
 	  XUnmapWindow(dpy, Scr.SizeWindow);
 	  XUngrabServer_withSemaphore(dpy);
@@ -495,25 +495,25 @@ PlaceWindow(ScwmWindow *tmp_win, int Desk)
 	  yt = 0;
 	}
       }
-      tmp_win->attr.y = yt - tmp_win->old_bw + tmp_win->bw;
-      tmp_win->attr.x = xl - tmp_win->old_bw + tmp_win->bw;
-      tmp_win->xdiff = xl;
-      tmp_win->ydiff = yt;
+      psw->attr.y = yt - psw->old_bw + psw->bw;
+      psw->attr.x = xl - psw->old_bw + psw->bw;
+      psw->xdiff = xl;
+      psw->ydiff = yt;
     }
   } else {
     /* the USPosition was specified, or the window is a transient, 
      * or it starts iconic so place it automatically */
 
-    tmp_win->xdiff = tmp_win->attr.x;
-    tmp_win->ydiff = tmp_win->attr.y;
+    psw->xdiff = psw->attr.x;
+    psw->ydiff = psw->attr.y;
     /* put it where asked, mod title bar */
     /* if the gravity is towards the top, move it by the title height */
-    tmp_win->attr.y -= gravy * (tmp_win->bw - tmp_win->old_bw);
-    tmp_win->attr.x -= gravx * (tmp_win->bw - tmp_win->old_bw);
+    psw->attr.y -= gravy * (psw->bw - psw->old_bw);
+    psw->attr.x -= gravx * (psw->bw - psw->old_bw);
     if (gravy > 0)
-      tmp_win->attr.y -= 2 * tmp_win->boundary_width + tmp_win->title_height;
+      psw->attr.y -= 2 * psw->boundary_width + psw->title_height;
     if (gravx > 0)
-      tmp_win->attr.x -= 2 * tmp_win->boundary_width;
+      psw->attr.x -= 2 * psw->boundary_width;
   }
   return True;
 }

@@ -123,16 +123,16 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
 /* Note that this does not allow animations to overshoot target-- it
    stops at first pctMovement >= 1.0 --11/25/97 gjb */
 void 
-AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp, 
+AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp, 
 		    int cmsDelay, float *ppctMovement)
 {
-  Window w = sw->w;
-  Window wFrame = sw->frame;
-  int width = sw->frame_width;
-  int shaded_height = sw->title_height + 2 * (sw->boundary_width + sw->bw);
+  Window w = psw->w;
+  Window wFrame = psw->frame;
+  int width = psw->frame_width;
+  int shaded_height = psw->title_height + 2 * (psw->boundary_width + psw->bw);
   /* FIXGJB: using orig_ht doesn't seem right -- does it interact
      correctly w/ maximization? */
-  int normal_height = sw->orig_ht;
+  int normal_height = psw->orig_ht;
   int client_height = normal_height - shaded_height;
   /* set our defaults */
   if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
@@ -172,7 +172,7 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
  *
  ****************************************************************************/
 void 
-moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
+moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	 int Height, int *FinalX, int *FinalY, Bool opaque_move,
 	 Bool fAddWindow)
 {
@@ -187,7 +187,7 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
   if (((!opaque_move) && (!(Scr.flags & MWMMenus))) || (fAddWindow))
     MoveOutline(Scr.Root, xl, yt, Width, Height);
 
-  DisplayPosition(tmp_win, xl + Scr.Vx, yt + Scr.Vy, True);
+  DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
 
   while (!finished) {
     /* block until there is an interesting event */
@@ -215,8 +215,8 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
       if (XLookupKeysym(&(Event.xkey), 0) == XK_Escape) {
 	if (!opaque_move)
 	  MoveOutline(Scr.Root, 0, 0, 0, 0);
-	*FinalX = tmp_win->frame_x;
-	*FinalY = tmp_win->frame_y;
+	*FinalX = psw->frame_x;
+	*FinalY = psw->frame_y;
 	finished = True;
       }
       done = True;
@@ -241,12 +241,12 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
       /* Resist moving windows over the edge of the screen! */
       if (((xl + Width) >= Scr.MyDisplayWidth) &&
 	  ((xl + Width) < Scr.MyDisplayWidth + Scr.MoveResistance))
-	xl = Scr.MyDisplayWidth - Width - tmp_win->bw;
+	xl = Scr.MyDisplayWidth - Width - psw->bw;
       if ((xl <= 0) && (xl > -Scr.MoveResistance))
 	xl = 0;
       if (((yt + Height) >= Scr.MyDisplayHeight) &&
 	  ((yt + Height) < Scr.MyDisplayHeight + Scr.MoveResistance))
-	yt = Scr.MyDisplayHeight - Height - tmp_win->bw;
+	yt = Scr.MyDisplayHeight - Height - psw->bw;
       if ((yt <= 0) && (yt > -Scr.MoveResistance))
 	yt = 0;
 
@@ -269,12 +269,12 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
       /* Resist moving windows over the edge of the screen! */
       if (((xl + Width) >= Scr.MyDisplayWidth) &&
 	  ((xl + Width) < Scr.MyDisplayWidth + Scr.MoveResistance))
-	xl = Scr.MyDisplayWidth - Width - tmp_win->bw;
+	xl = Scr.MyDisplayWidth - Width - psw->bw;
       if ((xl <= 0) && (xl > -Scr.MoveResistance))
 	xl = 0;
       if (((yt + Height) >= Scr.MyDisplayHeight) &&
 	  ((yt + Height) < Scr.MyDisplayHeight + Scr.MoveResistance))
-	yt = Scr.MyDisplayHeight - Height - tmp_win->bw;
+	yt = Scr.MyDisplayHeight - Height - psw->bw;
       if ((yt <= 0) && (yt > -Scr.MoveResistance))
 	yt = 0;
 
@@ -285,22 +285,22 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
 	if (!opaque_move)
 	  MoveOutline(Scr.Root, xl, yt, Width, Height);
 	else {
-	  if (tmp_win->fIconified) {
-	    tmp_win->icon_x_loc = xl;
-	    tmp_win->icon_xl_loc = xl -
-	      (tmp_win->icon_w_width - tmp_win->icon_p_width) / 2;
-	    tmp_win->icon_y_loc = yt;
-	    if (tmp_win->icon_pixmap_w != None)
-	      XMoveWindow(dpy, tmp_win->icon_pixmap_w,
-			  tmp_win->icon_x_loc, yt);
-	    else if (tmp_win->icon_w != None)
-	      XMoveWindow(dpy, tmp_win->icon_w, tmp_win->icon_xl_loc,
-			  yt + tmp_win->icon_p_height);
+	  if (psw->fIconified) {
+	    psw->icon_x_loc = xl;
+	    psw->icon_xl_loc = xl -
+	      (psw->icon_w_width - psw->icon_p_width) / 2;
+	    psw->icon_y_loc = yt;
+	    if (psw->icon_pixmap_w != None)
+	      XMoveWindow(dpy, psw->icon_pixmap_w,
+			  psw->icon_x_loc, yt);
+	    else if (psw->icon_w != None)
+	      XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
+			  yt + psw->icon_p_height);
 
 	  } else
-	    XMoveWindow(dpy, tmp_win->frame, xl, yt);
+	    XMoveWindow(dpy, psw->frame, xl, yt);
 	}
-	DisplayPosition(tmp_win, xl + Scr.Vx, yt + Scr.Vy, False);
+	DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, False);
 
 /* prevent window from lagging behind mouse when paging - mab */
 	if (paged == 0) {
@@ -338,13 +338,13 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
  *      DisplayPosition - display the position in the dimensions window
  *
  *  Inputs:
- *      tmp_win - the current scwm window
+ *      psw - the current scwm window
  *      x, y    - position of the window
  *
  ************************************************************************/
 
 void 
-DisplayPosition(ScwmWindow * tmp_win, int x, int y, int Init)
+DisplayPosition(ScwmWindow * psw, int x, int y, int Init)
 {
   char str[100];
   int offset;
@@ -353,7 +353,7 @@ DisplayPosition(ScwmWindow * tmp_win, int x, int y, int Init)
   if (Init) {
     XClearWindow(dpy, Scr.SizeWindow);
     if (Scr.d_depth >= 2)
-      RelieveWindow(tmp_win, Scr.SizeWindow, 0, 0,
+      RelieveWindow(psw, Scr.SizeWindow, 0, 0,
 		    Scr.SizeStringWidth + SIZE_HINDENT * 2,
 		    FONTHEIGHT(Scr.menu_font) + SIZE_VINDENT * 2,
 		    Scr.MenuReliefGC, Scr.MenuShadowGC, FULL_HILITE);
@@ -449,7 +449,7 @@ Keyboard_shortcuts(XEvent * Event, int ReturnEvent)
 
 
 void 
-InteractiveMove(Window * win, ScwmWindow * tmp_win, 
+InteractiveMove(Window * win, ScwmWindow * psw, 
 		int *FinalX, int *FinalY, XEvent * eventp)
 {
   int origDragX, origDragY, DragX, DragY, DragWidth, DragHeight;
@@ -484,7 +484,7 @@ InteractiveMove(Window * win, ScwmWindow * tmp_win,
   else
     XGrabServer_withSemaphore(dpy);
 
-  if (!opaque_move && tmp_win->fIconified)
+  if (!opaque_move && psw->fIconified)
     XUnmapWindow(dpy, w);
 
   DragWidth += JunkBW;
@@ -492,7 +492,7 @@ InteractiveMove(Window * win, ScwmWindow * tmp_win,
   XOffset = origDragX - DragX;
   YOffset = origDragY - DragY;
   XMapRaised(dpy, Scr.SizeWindow);
-  moveLoop(tmp_win, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY,
+  moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY,
 	   opaque_move, False);
 
   XUnmapWindow(dpy, Scr.SizeWindow);

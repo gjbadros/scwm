@@ -380,7 +380,7 @@ make_relief_color (SCM color, SCM factor)
 static void reset_decor_relief()
 {
   ScwmDecor *fl;
-  ScwmWindow *sw;
+  ScwmWindow *psw;
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
@@ -388,9 +388,9 @@ static void reset_decor_relief()
     set_hilight_background_x(fl->HiColors.bg);
   }
 
-  for (sw=Scr.ScwmRoot.next; sw != NULL; sw=sw->next) {
-    if (sw->fl == fl) {
-      set_window_background_x(sw->BackColor, sw->schwin);
+  for (psw=Scr.ScwmRoot.next; psw != NULL; psw=psw->next) {
+    if (psw->fl == fl) {
+      set_window_background_x(psw->BackColor, psw->schwin);
     }
   }
 }

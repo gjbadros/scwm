@@ -167,11 +167,11 @@ void CopySetCommonFlags(ScwmWindow *psw, const ScwmWindow *pswSrc);
 unsigned long FlagsBitsFromSw(ScwmWindow *psw);
 
 
-#define SHOW_TITLE_P(sw) ((sw)->fTitle && (!(sw)->fTransient || (sw)->fDecorateTransient))
+#define SHOW_TITLE_P(psw) ((psw)->fTitle && (!(psw)->fTransient || (psw)->fDecorateTransient))
 
-#define SHADED_P(sw) ((sw)->fWindowShaded)
-#define SET_UNSHADED(sw) do { (sw)->fWindowShaded = False; } while (0)
-#define SET_SHADED(sw) do { (sw)->fWindowShaded = True; } while (0)
+#define SHADED_P(psw) ((psw)->fWindowShaded)
+#define SET_UNSHADED(psw) do { (psw)->fWindowShaded = False; } while (0)
+#define SET_SHADED(psw) do { (psw)->fWindowShaded = True; } while (0)
 
 /* flags to suppress/enable title bar buttons */
 #define BUTTON1     (1<<0)
@@ -196,7 +196,7 @@ SCM  ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p);
 #define VALIDATE_PRESS_ONLY(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F, SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
 
 typedef struct {
-  ScwmWindow *sw;
+  ScwmWindow *psw;
   int valid;
 } scwm_window;
 
@@ -205,7 +205,7 @@ EXTERN_SET(SCM window_context,SCM_UNDEFINED);
 
 #define WINDOWP(X) (SCM_NIMP(X) && (SCM_CAR(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)SCM_CDR(X))
-#define SCWMWINDOW(X) (((scwm_window *)SCM_CDR(X))->sw)
+#define SCWMWINDOW(X) (((scwm_window *)SCM_CDR(X))->psw)
 #define VALIDWINP(X) (((scwm_window *)SCM_CDR(X))->valid)
 
 

@@ -101,7 +101,7 @@ extern int g_argc;
 
 /* the set of functions that scwm perform on top 
    level windows;  
-   sw->functions is a bit mask of which such actions
+   psw->functions is a bit mask of which such actions
    are respected for a given window */
 enum wm_client_functions {
   F_RESIZE = 100, F_ICONIFY = 106, F_MAXIMIZE = 109, 

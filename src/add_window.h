@@ -8,15 +8,15 @@
 
 ScwmWindow *AddWindow(Window w);
 
-void GrabButtonWithModifiers(int button, int modifier, ScwmWindow *sw);
+void GrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw);
 
-void UngrabButtonWithModifiers(int button, int modifier, ScwmWindow *sw);
+void UngrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw);
 
-void GetWindowSizeHints(ScwmWindow * tmp);
+void GetWindowSizeHints(ScwmWindow *psw);
 
-void FetchWmProtocols(ScwmWindow * tmp);
+void FetchWmProtocols(ScwmWindow *psw);
 
-void GrabKeys(ScwmWindow * tmp_win);
+void GrabKeys(ScwmWindow *psw);
 
 void init_add_window();
 

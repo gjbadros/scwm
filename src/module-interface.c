@@ -38,11 +38,11 @@ Broadcast(unsigned long event_type, unsigned long num_datum,
 
 
 void
-BroadcastConfig(unsigned long event_type, ScwmWindow *sw)
+BroadcastConfig(unsigned long event_type, ScwmWindow *psw)
 {
   apply_hooks (broadcast_config_hook, 
 	       gh_list(gh_ulong2scm(event_type), 
-		       sw->schwin,
+		       psw->schwin,
 		       SCM_UNDEFINED));
 }
 
@@ -69,36 +69,36 @@ SCM_PROC(s_marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0, mars
 
 SCM marshal_fvwm2_config_info (SCM win)
 {
-  ScwmWindow *sw;
+  ScwmWindow *psw;
   unsigned long info[24];
 
   VALIDATE(win, s_marshal_fvwm2_config_info);
-  sw = SCWMWINDOW(win);
+  psw = SCWMWINDOW(win);
 
-  info[0] = sw->w;
-  info[1] = sw->frame;
+  info[0] = psw->w;
+  info[1] = psw->frame;
   info[2] = 0; /* modules shouldn't need to know this! was (unsigned long)t; */
-  info[3] = sw->frame_x;
-  info[4] = sw->frame_y;
-  info[5] = sw->frame_width;
-  info[6] = sw->frame_height;
-  info[7] = sw->Desk;
-  info[8] = FlagsBitsFromSw(sw);
-  info[9] = sw->title_height;
-  info[10] = sw->boundary_width;
-  info[11] = (sw->hints.flags & PBaseSize)?sw->hints.base_width:0;
-  info[12] = (sw->hints.flags & PBaseSize)?sw->hints.base_height:0;
-  info[13] = (sw->hints.flags & PResizeInc)?sw->hints.width_inc:1;
-  info[14] = (sw->hints.flags & PResizeInc)?sw->hints.height_inc:1;
-  info[15] = sw->hints.min_width;
-  info[16] = sw->hints.min_height;
-  info[17] = sw->hints.max_width;
-  info[18] = sw->hints.max_height;
-  info[19] = sw->icon_w;
-  info[20] = sw->icon_pixmap_w;
-  info[21] = sw->hints.win_gravity;
-  info[22] = XCOLOR(sw->TextColor);
-  info[23] = XCOLOR(sw->BackColor);
+  info[3] = psw->frame_x;
+  info[4] = psw->frame_y;
+  info[5] = psw->frame_width;
+  info[6] = psw->frame_height;
+  info[7] = psw->Desk;
+  info[8] = FlagsBitsFromSw(psw);
+  info[9] = psw->title_height;
+  info[10] = psw->boundary_width;
+  info[11] = (psw->hints.flags & PBaseSize)?psw->hints.base_width:0;
+  info[12] = (psw->hints.flags & PBaseSize)?psw->hints.base_height:0;
+  info[13] = (psw->hints.flags & PResizeInc)?psw->hints.width_inc:1;
+  info[14] = (psw->hints.flags & PResizeInc)?psw->hints.height_inc:1;
+  info[15] = psw->hints.min_width;
+  info[16] = psw->hints.min_height;
+  info[17] = psw->hints.max_width;
+  info[18] = psw->hints.max_height;
+  info[19] = psw->icon_w;
+  info[20] = psw->icon_pixmap_w;
+  info[21] = psw->hints.win_gravity;
+  info[22] = XCOLOR(psw->TextColor);
+  info[23] = XCOLOR(psw->BackColor);
 
   return (gh_str2scm((char *)info,24*sizeof(unsigned long)));
 }

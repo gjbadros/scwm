@@ -9,14 +9,6 @@
 
 #include "scwm.h"
 
-SCM send_button_press(SCM button, SCM modifier, SCM win,
-		      SCM button_press_p, SCM button_release_p,
-		      SCM propagate_p);
-
-SCM send_key_press(SCM key, SCM win,
-		   SCM button_press_p, SCM button_release_p,
-		   SCM propagate_p);
-
 void init_input_hooks();
 void run_input_hooks(fd_set *in_fdset);
 void add_hook_fds_to_set(fd_set *in_fdset, int *fd_width);
