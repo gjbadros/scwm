@@ -39,16 +39,18 @@ See `pop-focus-window'."
   (interactive)
   (if (not (focus-stack-empty?))
       (let ((w (car focus-stack)))
-	(set! focus-stack (cdr focus-stack))
-	(focus-change-warp-pointer w))
+        (set! focus-stack (cdr focus-stack))
+        (if (window-valid? w)
+            (focus-change-warp-pointer w)
+            (pop-focus-window)))
       (display-message-briefly "Empty focus stack")))
 
 (define*-public (focus-stack-empty?)
   "Return #t iff the focus-stack is empty, else #f."
   (null? focus-stack))
 
-(define*-public (close-window-and-pop-focus #&optional (win (or (window-with-focus) (window-with-pointer))))
+(define*-public (close-window-and-pop-focus #&optional (win (get-window)))
   "Close WIN and pop the focus with `pop-focus-window'."
   (interactive)
-  (if (and win (not (focus-stack-empty?))) (add-timer-hook! 100 (lambda () (and win (delete-window win)))))
-  (pop-focus-window))
+  (delete-window win)
+  (add-timer-hook! 100 (lambda () (pop-focus-window))))

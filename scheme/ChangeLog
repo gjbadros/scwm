@@ -1,3 +1,12 @@
+Sun Feb 10 03:53:04 2002  Scott Lenser  <slenser@cs.cmu.edu>
+
+	* focus-stack.scm: Changed pop-focus-window so that it skips
+	over windows that are no longer valid.  Changed 
+	close-window-and-pop-focus so that it uses get-window if the
+	window is not specified for consistency with other functions.
+	Changed close-window-and-pop-focus so that the window always
+	gets deleted even if the focus stack is empty.
+
 Sun Nov 11 02:30:29 2001  Scott Lenser  <slenser@cs.cmu.edu>
 
 	* bincomm.scm: Fixed bug in long->string that output 0 for high
