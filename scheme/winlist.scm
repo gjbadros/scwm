@@ -31,8 +31,6 @@
 
 
 
-(define-public window-list-proc focus-window)
-  
 (define-public (listify-if-atom l)
   "Make L into a list if it is not."
   (if (or (pair? l) (null? l)) l (list l)))

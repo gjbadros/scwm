@@ -896,3 +896,5 @@ write a warning instead."
 			  "' --- perhaps your image-load-path is wrong "
 			  "or you need to install scwm/pixmaps or the "
 			  "scwm-icons package?\n")))
+
+(define-public window-list-proc focus-window)
