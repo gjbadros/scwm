@@ -15,7 +15,8 @@ Name: "Scwm"
 Command: "scwm"
 Configuration command: "scwm-conf"
 
-Do *not* click "Window manager is session managed" -- Scwm is not yet!
+And click "Window manager is session managed" -- the default
+system.scwmrc turns on session management using the `SM-register' function.
 
 6) Click on the new scwm line in the list of window managers
 
