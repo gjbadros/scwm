@@ -6,6 +6,12 @@ Changes for scwm-0.99.3 (not yet released)
 
 * ViaVoice (IBM TM) module for permitting speech recognition actions
 
+* Turn on backtraces by default (still permit -n option to disable them)
+  (guile >= 1.3.2 turned this off)
+
+* Turn on source code position recording by default for line numbers in error messages
+  (guile >= 1.3.2 turned this off)
+
 * Constraint features
 ** Make animated moves and resizes resolve the system throughout the move/resize
    so the constraints are always maintained
@@ -16,6 +22,7 @@ Changes for scwm-0.99.3 (not yet released)
 * Improved preferences dialog support, cleaner internally, too.
 
 * New modules
+** prompt-binding -- for interrogating and changing key/mouse bindings
 ** image-path-suggestor -- for using `locate' to find images not in the load-path
 ** wavplay -- for abstracting different kinds of audio support
 ** gtk-menu -- for using GTK+'s menus
@@ -32,6 +39,7 @@ Changes for scwm-0.99.3 (not yet released)
 ** `focussable-window?'
 
 * Changed primitives
+** `lookup-procedure-bindings' takes a new second argument, CONTEXT, to filter returned bindings
 ** `xlib-set-line-width!' has been replaced by xlib-set-line-attributes! which now takes
 a width and a line style.
 ** Renamed `resize-to' to `resize-window', `resize-frame-to' to `resize-frame' and permit each to take X, Y for movement, to.
