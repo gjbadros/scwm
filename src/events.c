@@ -995,8 +995,11 @@ HandleMapRequestKeepRaised(Window KeepRaised)
   /* If it's not merely iconified, and we have hints, use them. */
   if (!pswCurrent->fIconified || pswCurrent->fStartIconic) {
     int state;
+    ScwmWindow *psw = pswCurrent; /* save this value before the hooks are invoked */
 
     call1_hooks(x_maprequest_hook, pswCurrent->schwin);
+
+    pswCurrent = psw; /* restore from value before hooks were invoked */
 
     if (pswCurrent->wmhints && (pswCurrent->wmhints->flags & StateHint))
       state = pswCurrent->wmhints->initial_state;
