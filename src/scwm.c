@@ -1,6 +1,6 @@
 /* $Id$
  * scwm.c
- * Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997-1999 Greg J. Badros and Maciej Stachowiak
  *
  * This module has been significantly modified from fvwm2
  * It may be used under the terms indicated by the copyright below.
@@ -14,10 +14,11 @@
  *     copyright remains in the source code and all documentation
  */
 
-/***********************************************************************
- * Scwm - "Scheme Configurable Window Manager"
- * A highly dynamic and extensible X11 window manager embedding guile scheme.
- ***********************************************************************/
+/*
+ * Scwm - "Scheme Constraints Window Manager"
+ * A highly dynamic, extensible and programmable
+ * X11 window manager embedding guile scheme.
+ */
 
 #define SCWM_IMPLEMENTATION
 
