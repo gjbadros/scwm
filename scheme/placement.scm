@@ -71,6 +71,15 @@ centered at the mouse pointer position."
   (place-at-point-internal win offset proportional-offset))
 
 
+(define-public (center-placement win)
+  "Place window in the center of the current viewport."
+  (let* ((sz (window-size win))
+	 (w (car sz))
+	 (h (cadr sz))
+	 (x (- (half display-width) (half w)))
+	 (y (- (half display-height) (half h))))
+    (move-to x y win)))
+
 ;;;
 ;;; -placement versions
 ;;;

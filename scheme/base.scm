@@ -61,6 +61,10 @@
   "Return the closest integer to X divided by Y."
   (inexact->exact (round (/ x y))))
 
+(define-public (half x)
+  "Return the closest integer to half of X."
+  (quotient x 2))
+
 (define-public (maybe-make-color obj)
   "Try to make OBJ into a color and return that color object.
 Returns #f if OBJ is not a color object or a string."

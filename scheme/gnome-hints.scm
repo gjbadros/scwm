@@ -22,6 +22,7 @@
 (define-module (app scwm gnome-hints)
   :use-module (app scwm base)
   :use-module (app scwm defoption)
+  :use-module (app scwm message-window)
   :use-module (app scwm animation)
   :use-module (app scwm winops))
 
@@ -422,16 +423,60 @@ Used in `enable-gnome-hints'."
     (if (eq? win 'root-window)
 	(gnome-update-area-from-client-message data)))))
 
+(define-public (gnome-desktop-press n)
+  "Send a button-press N to the gnome desktop manager."
+  (send-button-press n bpress_win_id 'desk-press))
+
+(define-public (gnome-desktop-click n)
+  "Send a button-press N to the gnome desktop manager."
+  (send-button-press n bpress_win_id 'desk-click))
+
+(define-public (gnome-desktop-press-1)
+  "Send a button-press 1 to the gnome desktop manager."
+  (gnome-desktop-press 1))
+
+(define-public (gnome-desktop-press-2)
+  "Send a button-press 1 to the gnome desktop manager."
+  (gnome-desktop-press 2))
+
+(define-public (gnome-desktop-press-3)
+  "Send a button-press 1 to the gnome desktop manager."
+  (gnome-desktop-press 3))
+
+(define-public (gnome-desktop-click-1)
+  "Send a button-press 1 and button-release 1 to the gnome desktop manager."
+  (gnome-desktop-press 1))
+
+(define-public (gnome-desktop-click-2)
+  "Send a button-press 1 and button-release 2 to the gnome desktop manager."
+  (gnome-desktop-press 2))
+
+(define-public (gnome-desktop-click-3)
+  "Send a button-press 1 and button-release 3 to the gnome desktop manager."
+  (gnome-desktop-press 3))
+
+(define-public bpress_win #f)
+(define-public bpress_win_id #f)
 
 (define (announce-gnome-hint-support)
+  (set! bpress_win (make-message-window ""))
+  (set! bpress_win_id (message-window-id bpress_win))
   (X-property-set! 'root-window _WIN_SUPPORTING_WM_CHECK
                    (vector (window-id 'root-window)) "CARDINAL" 32)
-  (gnome-set-protocols! gnome-supported-protocols))
 
+  (X-property-set! 'root-window "_WIN_DESKTOP_BUTTON_PROXY" 
+		   (vector bpress_win_id) "CARDINAL" 32)
+  (X-property-set! bpress_win_id "_WIN_DESKTOP_BUTTON_PROXY" 
+		   (vector bpress_win_id) "CARDINAL" 32)
+
+  (gnome-set-protocols! gnome-supported-protocols))
 
 (define (unannounce-gnome-hint-support)
   (X-property-delete! 'root-window "_WIN_SUPPORTING_WM_CHECK")
-  (X-property-delete! 'root-window "_WIN_PROTOCOLS"))
+  (X-property-delete! 'root-window "_WIN_PROTOCOLS")
+  (X-property-delete! 'root-window "_WIN_DESKTOP_BUTTON_PROXY")
+  (set! bpress_win_id #f)
+  (set! bpress_win #f))
 
 (define-public (enable-gnome-hints)
   "Enable support for GNOME hints.

@@ -111,7 +111,7 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 ;; add style options for #:winlist-skip
 (add-boolean-style-option #:winlist-skip winlist-skip winlist-hit)
 
-(define*-public (show-window-list-menu #&key (only '()) (except '())
+(define*-public (make-window-list-menu #&key (only '()) (except '())
 				       (by-stacking #f)
 				       (by-focus #f)
 				       (by-resource #f)
@@ -123,7 +123,6 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 				       (popup-delay #f)
 				       (show-geometry #f)
 				       (show-last-focus-time #f)
-				       (warp-to-first #f)
 				       (ignore-winlist-skip #f)
 				       (show-mini-icon #t)
 				       (enumerate-hotkeys #t))
@@ -208,20 +207,26 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
 				       (if enumerate-hotkeys
 					   hotkey #f)))))
 	      lw))))
-    (popup-menu (menu
-		 (append 
-		  (list 
-		   (menu-title
-		    (if enumerate-hotkeys
-			"	Window list"
-			"Window list") #:extra-label (if show-geometry "Geometry" #f))
-		   menu-separator)
-		  (if split-by-resource
-		      (fold-menu-list-by-group menuitems-with-window-resource)
-		      (map (lambda (x) (cdr x)) menuitems-with-window-resource)))
-		 #:popup-delay popup-delay
-		 #:hover-delay hover-delay)
-		warp-to-first)))
+    (menu
+     (append 
+      (list 
+       (menu-title
+	(if enumerate-hotkeys
+	    "	Window list"
+	    "Window list") #:extra-label (if show-geometry "Geometry" #f))
+       menu-separator)
+      (if split-by-resource
+	  (fold-menu-list-by-group menuitems-with-window-resource)
+	  (map (lambda (x) (cdr x)) menuitems-with-window-resource)))
+     #:popup-delay popup-delay
+     #:hover-delay hover-delay)))
+
+
+(define-public (show-window-list-menu warp-to-first . rest)
+  "Popup a window list menu.
+Warps the pointer to the first menu item iff WARP-TO-FIRST is #t.
+Accepts all keyword arguments that `make-window-list-menu' takes."
+  (popup-menu (make-window-list-menu rest) warp-to-first))
   
 (define (rotate-around w wl)
   (append (cond
