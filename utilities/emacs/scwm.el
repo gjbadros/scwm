@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-08-04 Tue 22:59:26 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-08-06 Thu 20:52:41 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -231,7 +231,6 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   "Create and return an obarray of SCWM symbols."
   ;; (setq scwm-obarray (scwm-make-obarray))
   ;; can't use read-from-string because "? " is read as 32
-  ;; should we make the hash table bigger than 67?
   (let ((oa (make-vector 131 0)) (pos 2)) ; obarray
     (with-temp-buffer
       (scwm-safe-call "apropos-internal" "\"\"" (current-buffer))
@@ -249,8 +248,12 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   "Complete the current symbol or SYM by querying scwm using apropos-internal.
 Returns a string which is present in the `scwm-obarray'."
   ;; removed the last arg, `sym', for backward compatibility with e19.
-  (completing-read "SCWM symbol: " (scwm-obarray) nil t
-                   (or sym (scwm-symbol-at-point)) 'scwm-history))
+  (let ((oa (scwm-obarray)))
+    ;; require a match only when the obarry is present
+    ;; (in case guile lacks `apropos-internal')
+    ;; to be removed when the situation stabilizes.
+    (completing-read "SCWM symbol: " oa nil oa
+                     (or sym (scwm-symbol-at-point)) 'scwm-history)))
 
 ;;;###autoload
 (defun scwm-complete-symbol-insert ()
@@ -265,19 +268,6 @@ Returns a string which is present in the `scwm-obarray'."
 	     (with-output-to-temp-buffer "*Completions*"
 	       (display-completion-list (all-completions pat scwm-obarray)))
 	     (message "Making completion list...done")))))
-
-;; fontifications
-;; --------------
-(cond ((boundp 'running-xemacs)
-       (put 'scwm-mode 'font-lock-defaults
-            (get 'scheme-mode 'font-lock-defaults)))
-      ((and (string-lessp emacs-version "20.3")
-            (boundp 'font-lock-defaults-alist))
-       (unless (assq 'scwm-mode font-lock-defaults-alist)
-         (setq font-lock-defaults-alist
-               (cons (cons 'scwm-mode
-                           (cdr (assq 'scheme-mode font-lock-defaults-alist)))
-                     font-lock-defaults-alist)))))
 
 ;; help
 ;; ----
@@ -433,6 +423,19 @@ Procedure Index or in another manual found via the variable
                  (1- num-matches) (if (> num-matches 2) "ies" "y")
                  (substitute-command-keys "\\[Info-last]")
                  (if (> num-matches 2) "them" "it"))))))
+
+;; fontifications
+;; --------------
+(cond ((boundp 'running-xemacs)
+       (put 'scwm-mode 'font-lock-defaults
+            (get 'scheme-mode 'font-lock-defaults)))
+      ((and (string-lessp emacs-version "20.3")
+            (boundp 'font-lock-defaults-alist))
+       (unless (assq 'scwm-mode font-lock-defaults-alist)
+         (setq font-lock-defaults-alist
+               (cons (cons 'scwm-mode
+                           (cdr (assq 'scheme-mode font-lock-defaults-alist)))
+                     font-lock-defaults-alist)))))
 
 (provide 'scwm)
 ;;; scwm ends here
