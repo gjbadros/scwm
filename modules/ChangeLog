@@ -1,3 +1,8 @@
+Thu Sep 23 17:55:12 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c (s_xlib_set_drawing_mask_x): Do not
+	create a new GC.
+
 Mon Sep 20 23:46:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xpm-menus/draw-xpm-menu.c: Synch this up a bit with drawmenu.c.
