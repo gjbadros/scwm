@@ -1,19 +1,19 @@
-INSTALLING BINARY RPMS --08/31/99 gjb
-(e.g., these lines are for binary x86 RPMs -- should work the same w/ alpha RPMs, too)
-
-rpm -Uvh --nodeps guile-1.3.3-1gjb.i386.rpm
-rpm -Uvh guile-devel-1.3.3-1gjb.i386.rpm
-rpm -ivh guile-gtk-26Aug99-2gjb.i386.rpm GTL-0.3.1-1.i386.rpm cassowary-0.51-3.i386.rpm
-rpm -ivh scwm-icons-0.99.2-2.i386.rpm
-rpm -ivh scwm-0.99.2-1.i386.rpm
-
-or just:
-
-rpm -Uvh --nodeps {guile,guile-devel}-*.i386.rpm
-rpm -ivh {guile-gtk,GTL,cassowary,scwm-icons,scwm}-*.i386.rpm
+INSTALLING BINARY RPMS --01/30/00 gjb
+(e.g., these lines are for binary x86 RPMs -- Alpha RPMS are no longer up to date)
 
 
-If you don't want to rely on the GTL library, you can try this instead:
+rpm -Uvh --nodeps guile-1.3.4-1gjb.i386.rpm
+rpm -Uvh guile-devel-1.3.4-1gjb.i386.rpm
+rpm -ivh guile-gtk-0.17-1.i386.rpm GTL-0.3.1-2.i386.rpm cassowary-0.55-1.i386.rpm
+rpm -ivh scwm-icons-0.99.2-3.noarch.rpm   # from the RPMS/noarch subdir of the FTP site
+rpm -ivh scwm-0.99.6.1-1.i386.rpm
 
-rpm -Uvh --nodeps {guile,guile-devel}-*.i386.rpm
-rpm -ivh {guile-gtk,cassowary-nofd,scwm-icons,scwm}-*.i386.rpm
+or just grab the right files from above into an empty directory and do:
+
+rpm -Uvh --nodeps *.rpm
+
+
+This should work with RedHat6 and RedHat6.1.
+If you have problems, please email scwm-discuss@scwm.mit.edu.
+
+Thanks!
