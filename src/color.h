@@ -54,7 +54,7 @@ EXTERN SCM str_black;
 EXTERN SCM str_white;
 
 /* FIXJTL: these should be private to menu.c I think */
-EXTERN_SET(double menu_hilight_factor_val, 1.2);
+EXTERN_SET(double menu_highlight_factor_val, 1.2);
 EXTERN_SET(double menu_shadow_factor_val, 0.5);
 
 typedef struct {
@@ -97,20 +97,20 @@ SCM clear_color_cache_entry(SCM name);
 
 SCM adjust_brightness (SCM color, double factor);
 
-SCM set_hilight_factor_x (SCM factor);
-SCM hilight_factor ();
+SCM set_highlight_factor_x (SCM factor);
+SCM highlight_factor ();
 
 SCM set_shadow_factor_x (SCM factor);
 SCM shadow_factor ();
 
-SCM set_menu_hilight_factor_x (SCM factor);
-SCM menu_hilight_factor ();
+SCM set_menu_highlight_factor_x (SCM factor);
+SCM menu_highlight_factor ();
 
 SCM set_menu_shadow_factor_x (SCM factor);
 SCM menu_shadow_factor ();
 
-SCM set_hilight_foreground_x(SCM fg);
-SCM set_hilight_background_x(SCM bg);
+SCM set_highlight_foreground_x(SCM fg);
+SCM set_highlight_background_x(SCM bg);
 SCM set_menu_foreground_x(SCM fg);
 SCM set_menu_background_x(SCM bg);
 SCM set_menu_stipple_x(SCM st);

@@ -3353,7 +3353,7 @@ way if not specified. */
 
   psw->BackColor = bg;
   psw->ShadowColor = adjust_brightness(psw->BackColor, fl->shadow_factor);
-  psw->ReliefColor = adjust_brightness(psw->BackColor, fl->hilight_factor);
+  psw->ReliefColor = adjust_brightness(psw->BackColor, fl->highlight_factor);
 
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
 
@@ -3415,7 +3415,7 @@ for WIN).   */
   psw->HiBackColor = bg;
 #if 0 /* GJB:FIXME:: these aren't used yet, and bg might be #f */
   psw->HiShadowColor = adjust_brightness(bg, fl->shadow_factor);
-  psw->HiReliefColor = adjust_brightness(bg, fl->hilight_factor);
+  psw->HiReliefColor = adjust_brightness(bg, fl->highlight_factor);
 #endif
 
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);

@@ -19,7 +19,7 @@ void SetBorder(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 
 void RelieveWindow(ScwmWindow * t, Window win,
 		   int x, int y, int w, int h,
-		   GC ReliefGC, GC ShadowGC, int hilite);
+		   GC ReliefGC, GC ShadowGC, int highlight);
 
 void SetShape(ScwmWindow *psw, int w);
 
@@ -46,7 +46,7 @@ void SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
    XChangeGC(dpy,GC,Globalgcm,&Globalgcv); \
 } while(0)
 
-enum border_hilite_flags {
+enum border_highlight_flags {
   NO_HILITE = 0,
   TOP_HILITE = 1 << 0,
   RIGHT_HILITE = 1 << 1,

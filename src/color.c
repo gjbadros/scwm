@@ -69,7 +69,6 @@ and a shadow factor which is greater than 1 (which makes the shadow
 color brighter than the decoration color); the effect is to reverse
 "raised" and "sunken" elements throughout the user interface.)
 
-NOTE: "highlight" is often (mis-)spelled "hilight" or even "hilite".
 */
 
 SCM_SYMBOL (sym_name,"name");
@@ -223,7 +222,7 @@ associated with NAME from the color cache.*/
 
 
 
-/* The hilight/shadow stuff should maybe be in a separate relief.c? */
+/* The highlight/shadow stuff should maybe be in a separate relief.c? */
 
 #define SCALE 65535.0
 #define HALF_SCALE (SCALE / 2)
@@ -428,7 +427,7 @@ Multiplies the luminosity and saturation of COLOR by the
 positive floating point number FACTOR. Using a FACTOR smaller than 1
 will result in a dimmer color, suitable for use as a darker
 relief. Using a factor greater than 1 will result in a brighter color
-which is suitable for use as a hilight. */
+which is suitable for use as a highlight. */
 #define FUNC_NAME s_make_relief_color
 {
   double f;
@@ -461,11 +460,11 @@ from "gray50". */
 
 
 /* Shadow and relief computation will now be similar to the way gtk
-   does it; for now, the hilight and shadow factors may be set
+   does it; for now, the highlight and shadow factors may be set
    globally so people can experiment, but this is an unsatisfying
    solution for the long term, it needs to be settable for everything
    that takes a color that it will then use to construct shadows and
-   hilights, and further, it should recompute these. For now, we'll
+   highlights, and further, it should recompute these. For now, we'll
    trigger a recompute of everything we know about by setting all
    colors to themesleves.
    
@@ -482,7 +481,7 @@ static void reset_decor_relief()
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (fl->HiColors.bg != SCM_UNDEFINED) {
-    set_hilight_background_x(fl->HiColors.bg);
+    set_highlight_background_x(fl->HiColors.bg);
   }
 
   for (psw=Scr.ScwmRoot.next; psw != NULL; psw=psw->next) {
@@ -492,11 +491,11 @@ static void reset_decor_relief()
   }
 }
 
-SCWM_PROC(set_hilight_factor_x, "set-hilight-factor!", 1, 0, 0,
+SCWM_PROC(set_highlight_factor_x, "set-highlight-factor!", 1, 0, 0,
            (SCM factor))
      /** Use FACTOR to generate highlight colors for the current decor.
 FACTOR is a positive floating point number. */
-#define FUNC_NAME s_set_hilight_factor_x
+#define FUNC_NAME s_set_highlight_factor_x
 {
   double f;
   ScwmDecor *fl;
@@ -507,24 +506,24 @@ FACTOR is a positive floating point number. */
     SCWM_WRONG_TYPE_ARG(1, factor);
   }
 
-  fl->hilight_factor = f;
+  fl->highlight_factor = f;
 
-  /* Redraw hilights. */
+  /* Redraw highlights. */
   reset_decor_relief();
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
-SCWM_PROC(hilight_factor, "hilight-factor", 0, 0, 0,
+SCWM_PROC(highlight_factor, "highlight-factor", 0, 0, 0,
            ())
-     /** Return the current hilight factor. */
-#define FUNC_NAME s_hilight_factor
+     /** Return the current highlight factor. */
+#define FUNC_NAME s_highlight_factor
 {
   ScwmDecor *fl;
 
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  return (gh_double2scm(fl->hilight_factor));
+  return (gh_double2scm(fl->highlight_factor));
 }
 #undef FUNC_NAME
 
@@ -568,29 +567,29 @@ SCWM_PROC(shadow_factor, "shadow-factor", 0, 0, 0,
 #undef FUNC_NAME
 
 /* FIXJTL: these should go away */
-SCWM_PROC(set_menu_hilight_factor_x, "set-menu-hilight-factor!", 1, 0, 0,
+SCWM_PROC(set_menu_highlight_factor_x, "set-menu-highlight-factor!", 1, 0, 0,
            (SCM factor))
-     /** Use FACTOR to generate hilight colors for menus. 
+     /** Use FACTOR to generate highlight colors for menus. 
 FACTOR is a positive floating point number */
-#define FUNC_NAME s_set_menu_hilight_factor_x
+#define FUNC_NAME s_set_menu_highlight_factor_x
 {
   double f;
   if (!gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
     SCWM_WRONG_TYPE_ARG(1, factor);
   }
 
-  menu_hilight_factor_val = f;
+  menu_highlight_factor_val = f;
 
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
-SCWM_PROC(menu_hilight_factor, "menu-hilight-factor", 0, 0, 0,
+SCWM_PROC(menu_highlight_factor, "menu-highlight-factor", 0, 0, 0,
            ())
-     /** Return the current menu hilight factor. */
-#define FUNC_NAME s_menu_hilight_factor
+     /** Return the current menu highlight factor. */
+#define FUNC_NAME s_menu_highlight_factor
 {
-  return (gh_double2scm(menu_hilight_factor_val));
+  return (gh_double2scm(menu_highlight_factor_val));
 }
 #undef FUNC_NAME
 
@@ -623,7 +622,7 @@ SCWM_PROC(menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
 
 
 static void 
-redraw_hilight_window()
+redraw_highlight_window()
 {
   if (Scr.fWindowsCaptured && (Scr.Hilite != NULL)) {
     SetBorderX(Scr.Hilite, True, True, True, None, True);
@@ -632,12 +631,12 @@ redraw_hilight_window()
 
 /* FIXMS: Need to protect color objects in the below! */
 
-SCWM_PROC(set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0,
+SCWM_PROC(set_highlight_foreground_x, "set-highlight-foreground!", 1, 0, 0,
            (SCM fg))
      /** Use FG for the foreground color of a window with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own foreground color. */
-#define FUNC_NAME s_set_hilight_foreground_x
+#define FUNC_NAME s_set_highlight_foreground_x
 { 
   ScwmDecor *fl;
 
@@ -651,18 +650,18 @@ have their own foreground color. */
     fl->HiColors.fg = BLACK_COLOR;
   }
 
-  redraw_hilight_window();
+  redraw_highlight_window();
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
 
-SCWM_PROC (hilight_foreground, "hilight-foreground", 0, 0, 0,
+SCWM_PROC (highlight_foreground, "highlight-foreground", 0, 0, 0,
            ())
      /** Return the default foreground color for windows with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own foreground color. */
-#define FUNC_NAME s_hilight_foreground
+#define FUNC_NAME s_highlight_foreground
 { 
   ScwmDecor *fl;
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -677,12 +676,12 @@ have their own foreground color. */
 /* FIXMS: the more I do this, the more I wish we had a nice GC
    abstraction. */
 
-SCWM_PROC(set_hilight_background_x, "set-hilight-background!", 1, 0, 0,
+SCWM_PROC(set_highlight_background_x, "set-highlight-background!", 1, 0, 0,
            (SCM bg))
      /** Use BG as the background color for a window with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own background color. */
-#define FUNC_NAME s_set_hilight_background_x
+#define FUNC_NAME s_set_highlight_background_x
 {
   XGCValues gcv;
   unsigned long gcm;
@@ -695,7 +694,7 @@ have their own background color. */
   if (Scr.d_depth > 2) {
     fl->HiColors.bg = bg;
     fl->HiRelief.bg = adjust_brightness(bg,fl->shadow_factor);
-    fl->HiRelief.fg = adjust_brightness(bg,fl->hilight_factor);
+    fl->HiRelief.fg = adjust_brightness(bg,fl->highlight_factor);
   } else {
     fl->HiColors.bg = WHITE_COLOR;
     fl->HiRelief.bg = BLACK_COLOR;
@@ -725,19 +724,19 @@ have their own background color. */
   }
   fl->HiShadowGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
 
-  redraw_hilight_window();
+  redraw_highlight_window();
 
   return (SCM_UNSPECIFIED);
 }
 #undef FUNC_NAME
 
 
-SCWM_PROC (hilight_background, "hilight-background", 0, 0, 0,
+SCWM_PROC (highlight_background, "highlight-background", 0, 0, 0,
            ())
      /** Return the default background color for windows with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own background color. */
-#define FUNC_NAME s_hilight_background
+#define FUNC_NAME s_highlight_background
 { 
   ScwmDecor *fl;
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -785,7 +784,7 @@ SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
   if (Scr.d_depth > 2) {
     Scr.NotMenuColors.bg = bg;
     Scr.NotMenuRelief.bg = adjust_brightness (bg, menu_shadow_factor_val);
-    Scr.NotMenuRelief.fg = adjust_brightness (bg, menu_hilight_factor_val);
+    Scr.NotMenuRelief.fg = adjust_brightness (bg, menu_highlight_factor_val);
   } else {
     Scr.NotMenuColors.bg = WHITE_COLOR;
     Scr.NotMenuRelief.bg = BLACK_COLOR;

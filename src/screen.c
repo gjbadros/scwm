@@ -56,12 +56,12 @@ mark_screen(SCM obj)
   /* Mark the screen object */
   SCM_SETGC8MARK(obj);
 
-  /* Mark the hilight colors and relief colors */
+  /* Mark the highlight colors and relief colors */
   GC_MARK_SCM_IF_SET(psi->icon_font);
   GC_MARK_SCM_IF_SET(psi->msg_window_font);
   GC_MARK_SCM_IF_SET(psi->msg_window_fg);
   GC_MARK_SCM_IF_SET(psi->msg_window_bg);
-  GC_MARK_SCM_IF_SET(psi->msg_window_hilite);
+  GC_MARK_SCM_IF_SET(psi->msg_window_highlight);
   GC_MARK_SCM_IF_SET(psi->msg_window_shadow);
 
   return SCM_BOOL_F;

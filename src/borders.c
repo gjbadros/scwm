@@ -343,7 +343,7 @@ static void
 RelieveWindowHH(ScwmWindow *psw, Window win,
 		int x, int y, int w, int h,
 		GC ReliefGC, GC ShadowGC,
-		int draw, int hilite)
+		int draw, int highlight)
 #define FUNC_NAME "RelieveWindowHH"
 {
   XSegment seg[4];
@@ -382,7 +382,7 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
     if (((psw->boundary_width > 2) || (edge == 0)) &&
 	((psw->boundary_width > 3) || (edge < 1)) &&
 	(!psw->fMWMBorders ||
-     (((edge == 0) || (psw->boundary_width > 3)) && (hilite & TOP_HILITE)))) {
+     (((edge == 0) || (psw->boundary_width > 3)) && (highlight & TOP_HILITE)))) {
       seg[i].x1 = x + ((edge == 2) || b ? 0 : 1);
       seg[i].y1 = y + 1;
       seg[i].x2 = x + w - 1 - ((edge == 1) || b ? 0 : 1);
@@ -399,7 +399,7 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
 	((psw->boundary_width > 3) || (edge < 1)) &&
 	(!psw->fMWMBorders ||
 	 (((edge == 0) || 
-	   (psw->boundary_width > 3)) && (hilite & LEFT_HILITE)))) {
+	   (psw->boundary_width > 3)) && (highlight & LEFT_HILITE)))) {
       seg[i].x1 = x + 1;
       seg[i].y1 = y + ((edge == 3) || a ? 0 : 1);
       seg[i].x2 = x + 1;
@@ -419,7 +419,7 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
 
     if (((psw->boundary_width > 2) || (edge == 0)) &&
 	(!psw->fMWMBorders ||
-	 (((edge == 0) || (psw->boundary_width > 3)) && (hilite & BOTTOM_HILITE)))) {
+	 (((edge == 0) || (psw->boundary_width > 3)) && (highlight & BOTTOM_HILITE)))) {
       seg[i].x1 = x + (b || (edge == 4) ? 0 : 1);
       seg[i].y1 = y + h - 2;
       seg[i].x2 = x + w - ((edge == 3) ? 0 : 1);
@@ -434,7 +434,7 @@ RelieveWindowHH(ScwmWindow *psw, Window win,
 
     if (((psw->boundary_width > 2) || (edge == 0)) &&
 	(!psw->fMWMBorders ||
-    (((edge == 0) || (psw->boundary_width > 3)) && (hilite & RIGHT_HILITE)))) {
+    (((edge == 0) || (psw->boundary_width > 3)) && (highlight & RIGHT_HILITE)))) {
       seg[i].x1 = x + w - 2;
       seg[i].y1 = y + (a || (edge == 4) ? 0 : 1);
       seg[i].x2 = x + w - 2;
@@ -1272,7 +1272,7 @@ SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool ARG_UNUSED(NewTitle))
 void 
 RelieveWindow(ScwmWindow *psw, Window win,
 	      int x, int y, int w, int h,
-	      GC ReliefGC, GC ShadowGC, int hilite)
+	      GC ReliefGC, GC ShadowGC, int highlight)
 #define FUNC_NAME "RelieveWindow"
 {
   XSegment seg[4];
@@ -1309,7 +1309,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
   if (((psw->boundary_width > 2) || (edge == 0)) &&
       ((psw->boundary_width > 3) || (edge < 1)) &&
       (!psw->fMWMBorders ||
-       (((edge == 0) || (psw->boundary_width > 3)) && (hilite & TOP_HILITE)))) {
+       (((edge == 0) || (psw->boundary_width > 3)) && (highlight & TOP_HILITE)))) {
     seg[i].x1 = x + 1;
     seg[i].y1 = y + 1;
     seg[i].x2 = x + w - 2;
@@ -1318,7 +1318,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
   if (((psw->boundary_width > 2) || (edge == 0)) &&
       ((psw->boundary_width > 3) || (edge < 1)) &&
       (!psw->fMWMBorders ||
-       (((edge == 0) || (psw->boundary_width > 3)) && (hilite & LEFT_HILITE)))) {
+       (((edge == 0) || (psw->boundary_width > 3)) && (highlight & LEFT_HILITE)))) {
     seg[i].x1 = x + 1;
     seg[i].y1 = y + 1;
     seg[i].x2 = x + 1;
@@ -1336,7 +1336,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
   if (((psw->boundary_width > 2) || (edge == 0)) &&
       (!psw->fMWMBorders ||
        (((edge == 0) ||
-	 (psw->boundary_width > 3)) && (hilite & BOTTOM_HILITE)))) {
+	 (psw->boundary_width > 3)) && (highlight & BOTTOM_HILITE)))) {
     seg[i].x1 = x + 1;
     seg[i].y1 = y + h - 2;
     seg[i].x2 = x + w - 2;
@@ -1350,7 +1350,7 @@ RelieveWindow(ScwmWindow *psw, Window win,
   if (((psw->boundary_width > 2) || (edge == 0)) &&
       (!psw->fMWMBorders ||
        (((edge == 0) || 
-	 (psw->boundary_width > 3)) && (hilite & RIGHT_HILITE)))) {
+	 (psw->boundary_width > 3)) && (highlight & RIGHT_HILITE)))) {
     seg[i].x1 = x + w - 2;
     seg[i].y1 = y + 1;
     seg[i].x2 = x + w - 2;

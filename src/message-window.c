@@ -38,7 +38,7 @@ mark_msgwindow(SCM obj)
   GC_MARK_SCM_IF_SET(msg->fg_color);
   GC_MARK_SCM_IF_SET(msg->bg_color);
   GC_MARK_SCM_IF_SET(msg->shadow_color);
-  GC_MARK_SCM_IF_SET(msg->hilight_color);
+  GC_MARK_SCM_IF_SET(msg->highlight_color);
   GC_MARK_SCM_IF_SET(msg->message);
 
   return SCM_BOOL_F;
@@ -78,7 +78,7 @@ SCWM_PROC(message_window_p, "message-window?", 1, 0, 0,
 
 /* Create the X window object for the message window */
 
-const double message_hilight_factor = 1.2;  /* defined like this from move.c */
+const double message_highlight_factor = 1.2;  /* defined like this from move.c */
 const double message_shadow_factor = 0.5;
 
 
@@ -101,7 +101,7 @@ DrawWindow( scwm_msgwindow* msg ) {
   int textheight = FONTHEIGHT(msg->font);
   int winheight = textheight + SIZE_VINDENT*2;
 
-  scmFgRelief = msg->hilight_color; 
+  scmFgRelief = msg->highlight_color; 
   scmBgRelief = msg->shadow_color; 
 
   if (msg->fRelief) {
@@ -269,7 +269,7 @@ Uses defaults from the ScreenInfo struct for the other values. */
   msg->fg_color = Scr.msg_window_fg;
   msg->bg_color = Scr.msg_window_bg;
   msg->shadow_color = SCM_BOOL_F;
-  msg->hilight_color = SCM_BOOL_F;
+  msg->highlight_color = SCM_BOOL_F;
 
   msg->font = Scr.msg_window_font;
   msg->fRelief = TRUE;
@@ -386,8 +386,8 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR.
     msg->bg_color = bg_color;
     msg->shadow_color = adjust_brightness(msg->bg_color, 
 					  message_shadow_factor);
-    msg->hilight_color = adjust_brightness(msg->bg_color, 
-					   message_hilight_factor);
+    msg->highlight_color = adjust_brightness(msg->bg_color, 
+                                             message_highlight_factor);
   }
 
 

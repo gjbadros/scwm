@@ -171,7 +171,7 @@ typedef struct ScwmDecor {
     ButtonFace *active, *inactive;
   } BorderStyle;
 
-  double hilight_factor;
+  double highlight_factor;
   double shadow_factor;
   struct ScwmDecor *next;	/* additional user-defined styles */
   SCM scmdecor;
@@ -230,7 +230,7 @@ typedef struct ScreenInfo {
   SCM msg_window_font;          /* font for the size/position window */
   SCM msg_window_fg;            /* fg color for the size/position window */
   SCM msg_window_bg;            /* bg color for the size/position window */
-  SCM msg_window_hilite;        /* hilite color for the size/position window */
+  SCM msg_window_highlight;        /* highlight color for the size/position window */
   SCM msg_window_shadow;        /* shadow color for the size/position window */
   int msg_window_x;		/* x position of the size/position window */
   int msg_window_y;		/* y position of the size/position window */

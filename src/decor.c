@@ -141,7 +141,7 @@ mark_decor(SCM obj)
   /* Mark the window font. */
   GC_MARK_SCM_IF_SET(fl->window_font);
 
-  /* Mark the hilight colors and relief colors */
+  /* Mark the highlight colors and relief colors */
   GC_MARK_SCM_IF_SET(fl->HiColors.fg);
   GC_MARK_SCM_IF_SET(fl->HiColors.bg);
   GC_MARK_SCM_IF_SET(fl->HiRelief.fg);
@@ -176,11 +176,11 @@ decor2scm(ScwmDecor * fl)
  
   tmpd = current_decor();
   set_current_decor_x(answer);
-  fl->hilight_factor = 1.2;
+  fl->highlight_factor = 1.2;
   fl->shadow_factor = 0.5;
 
-  set_hilight_foreground_x(BLACK_COLOR);
-  set_hilight_background_x(gh_str02scm("grey"));
+  set_highlight_foreground_x(BLACK_COLOR);
+  set_highlight_background_x(gh_str02scm("grey"));
   set_title_font_x(str_fixed);
   set_current_decor_x(tmpd);
 
