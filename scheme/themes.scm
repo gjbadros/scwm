@@ -202,39 +202,39 @@ tar file with extension .tar, .tar.gz, or .tgz."
        (if (and (and (string? path) (file-exists? path)) 
                 (file-is-directory? path)) 
            (begin 
-             (define dir (opendir path)) 
-             (let dirloop ((dirent (readdir dir))) 
-               (if (string? dirent) 
-                   (begin 
-                     (let ((fullpath (string-append path "/" 
-                                                    dirent))) 
-;;		       (display "Checking ")
-;;		       (display fullpath)
-;;		       (newline)
-                       (if (and 
-                            (not (eqv? (string-ref dirent 0) #\.) 
-                                 ) 
-                            (or (and (file-is-directory? fullpath) 
-                                     (file-exists? (string-append fullpath 
-                                                               "/theme.scm"))) 
-                                (or (has-suffix? fullpath ".tar") 
-                                    (or (has-suffix? fullpath ".tar.gz") 
-                                        (has-suffix? fullpath ".tgz"))))) 
-                           (begin 
-                             (set! dirent (remove-suffix dirent ".tar")) 
-                             (set! dirent (remove-suffix dirent ".tar.gz")) 
-                             (set! dirent (remove-suffix dirent ".tgz")) 
-                             (if (not (there-exists? path-items 
-                                                (lambda (x) (string=? dirent x)))) 
-                                 (set! path-items 
-                                       (append path-items 
-                                               (list dirent))) 
-                                 #f)) 
-                           #f)) 
-                     (dirloop (readdir dir))) 
-                   #f)) 
-             (closedir dir)) 
-           #f)) 
-     *theme-path*) 
-    (sort path-items string<?)) 
-  ) 
+             (let ((dir (opendir path)))
+	       (let dirloop ((dirent (readdir dir)))
+		 (if (string? dirent) 
+		     (begin 
+		       (let ((fullpath (string-append path "/" 
+						      dirent))) 
+;;			 (display "Checking ")
+;;			 (display fullpath)
+;;			 (newline)
+			 (if (and 
+			      (not (eqv? (string-ref dirent 0) #\.) 
+				   ) 
+			      (or (and (file-is-directory? fullpath) 
+				       (file-exists? (string-append fullpath 
+								    "/theme.scm"))) 
+				  (or (has-suffix? fullpath ".tar") 
+				      (or (has-suffix? fullpath ".tar.gz") 
+					  (has-suffix? fullpath ".tgz"))))) 
+			     (begin 
+			       (set! dirent (remove-suffix dirent ".tar")) 
+			       (set! dirent (remove-suffix dirent ".tar.gz")) 
+			       (set! dirent (remove-suffix dirent ".tgz")) 
+			       (if (not (there-exists? path-items 
+						       (lambda (x) (string=? dirent x)))) 
+				   (set! path-items 
+					 (append path-items 
+						 (list dirent))) 
+				   #f)) 
+			     #f)) 
+		       (dirloop (readdir dir))) 
+		     #f)) 
+	       (closedir dir)) 
+	     #f))) 
+       *theme-path*) 
+     (sort path-items string<?))
+    )
