@@ -1,3 +1,16 @@
+Fri Dec 12 16:12:17 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm/Makefile.in, utilities/scwmsend/Makefile.in: Added creation
+ 	of installation directories -- thanks to Simon Josefsson
+ 	<jas@pdc.kth.se>
+
+	* sample.scwmrc/{gjb.scwmrc,menu-test.scm}: Updated to use much
+	more dynamic features -- using 'foo as a procedure or a color or a 
+	menu or a font means delay getting the object that that symbol
+	contains until it is really needed so that it the actual object
+	can be defined or redefined later without recreating all the
+	objects.
+
 Thu Dec  4 18:45:48 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* doc/common-primitive-mistakes: Added -- notes for new scwm

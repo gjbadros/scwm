@@ -1,3 +1,55 @@
+Fri Dec 12 16:18:48 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* Rename COLORP to COLOR_P, and FONTP to FONT_P for consistency
+	and readability
+
+	* util.c (call_thunk_with_message_handler): use DEREF_IF_SYMBOL to 
+	permit 'iconify, e.g.
+
+	* scwmmenu.h: Added DYNAMIC_MENU_P, DYNAMIC_SAFE_MENU,
+	MENU_OR_SYMBOL_P, added void *p to MenuDrawingInfo for client
+	drawing code to use for extra information, added scmExtraOptions
+	to Menu for free-form client options
+
+	* scwmmenu.c: Fixed some memory leaks from not freeing pmdi,
+	rgpmiim, etc. when popping down menus -- wrote FreeDynamicMenu to
+	do this (if only this were C++!); use SCM_PROC for other
+	primitives in here; permit symbols for fonts, colors, and actions, 
+	and deref them as needed using the new macros; hide some debug
+	code in DBUG.
+
+	* scwm.h: Added DEREF_IF_SYMBOL, DYNAMIC_PROCEDURE_P,
+	PROCEDURE_OR_SYMBOL_P, RESTP_SCM
+
+	* scwm.c: Use primitive-load instead of load -- MS: is this any
+	better?
+
+	* scmprocs.c: Remove gh_new_procedure calls for stuff now done
+	with SCM_PROC
+
+	* menuitem.c: use SCM_PROC for other primitives in here; permit
+ 	symbols for fonts, colors, and actions, and deref them as needed
+ 	using the new macros.
+
+	* font.h: Added DYNAMIC_FONT_P, DYNAMIC_SAFE_FONT, rename FONT to
+	FONT_P
+
+	* font.c: Added warning message when a font cannot be loaded
+
+	* drawmenu.c: Rewrite DrawUnderline, add PxfsFontForMenuItem, use
+	DYNAMIC_SAFE_FONT, DYNAMIC_SAFE_COLOR in fixing up the gc;  these
+	changes fix the sizing bug (it was using the size of characters in 
+	fixed font, but then drawing using the selected proportional font)
+
+	* color.h: Added COLOR_OR_SYMBOL_P, DYNAMIC_COLOR_P,
+	DYNAMIC_SAFE_COLOR
+
+	* color.c: Added warning message when unable to parse or allocate
+	color, and return SCM_BOOL_F in those cases
+
+	* binding.c: Permit symbols using PROCEDURE_OR_SYMBOL_P
+
+
 Thu Dec  4 18:49:23 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmmenu.c: Lots of changes to the menuing code, including

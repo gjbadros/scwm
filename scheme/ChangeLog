@@ -1,3 +1,13 @@
+Fri Dec 12 16:15:28 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Permit a string action in a menuitem to mean (execute
+ 	string), permit string color-bg and color-text in a menu, use
+ 	'menu-text-color, 'menu-bg-color, and 'menu-font as the defaults
+ 	so they can be redefined later -- note that the user must still
+ 	define these variables in their .scwmrc before building menus or
+ 	else the quoted symbol doesn't work (symbol table scope issue due
+	to modules?)
+
 Sun Nov 30 11:56:30 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Use new menuing interface: menu-title and
