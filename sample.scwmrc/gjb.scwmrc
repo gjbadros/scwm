@@ -57,16 +57,16 @@
 ;;(set-click-time! 150)
 ;;(set-color-map-focus! 'follows-mouse)
 ;;(set-desktop-size! 3 3)
-;;; FIXGJB: should be a function returning whether it should do opaque move
-;;; or an integer for the percent (load might influence whether you want
-;;; to do an opaque move, e.g.)
+
+;;; FIXGJB: should be a function returning whether it should do opaque
+;;; move or an integer for the percent (server/net/cpu load might
+;;; influence whether you want to do an opaque move, e.g.)
+
 ;;(set-opaque-move-size! 30) 
 ;;(set-edge-resistance! 500 10)
 ;;(set-edge-scroll! 100 100)
 
 
-;;; FIXGJB: #:raised true 
-;;; MS: see below for the new right way 
 (title-style #:font font12 #:justify 'left #:relief 'raised)
 
 (set-icon-font! font12)
@@ -122,25 +122,20 @@
 ;; is different from the window-style method; I imagine
 ;; MS has a wrapper planned for this (MSFIX)
 
-;(define border-face (make-face '((hidden-handles #t) (no-inset #t)) '()))
-;(set-border-face! border-face)
-;;; GJBFIX: here's the new version
 (border-style #:hidden-handles #t #:no-inset #t)
 
-;(define title-face (make-face '((relief raised)) '()))
-;(set-title-face! title-face)
-;;; GJBFIX
-; this is already done (the #:relief 'raised entry in the call to
-; title-style
-
-;(define system-button-face (make-face '((relief flat))
-;				      '((pixmap pic-system-button))))
-
-;;; GJBFIX: I'm not changing these for now to use the new style
+;;; I'm not changing these for now to use the new style
 ;;; because of the way add-left-button and add-right-button work and
 ;;; such; I think in general, though, setting the button appearance
 ;;; should be more separated from setting its function. Will look
-;;; over this more.
+;;; over this more. --MS
+;;; MSFIX: I think actions and conceptual appearance should go together
+;;; but that conceptual appearance and actual appearance should be separated.
+;;; Now that pixmaps are real objects, I get this by making, e.g.,
+;;; `sticky-button-face' and `(add-left-button sticky-button-face toggle-stick)'
+;;; I never want to say, `the third button from the right should do this action'.
+;;; Ideally, buttons should have some identifier which can be tested by the
+;;; event handling code for the callbacks
 
 (define mini-icon-button-face 
   (make-face '((relief flat))
@@ -202,13 +197,8 @@
 ;;(bind-mouse 'button-2 1 vertical-toggle-maximize)
 ;;(bind-mouse 'button-4 1 iconify)
 
-;;; FIXGJB: how does the number of buttons to be displayed get
-;;; chosen;  is this dynamically changeable?
-;;; MS: Right now I think you need to recapture.
-
 ;;(add-left-button system-button-face (lambda () (popup-small-ops)))
 (add-left-button mini-icon-button-face (lambda () (popup-small-ops)))
-
 
 ;; MS: I presume this is the desired efffect.
 ;; random thought: A nice extension would be buttons that change
@@ -220,9 +210,6 @@
 
 (add-left-button sysutils-button-face (lambda () (display "sysutils")))
 
-;; MS: (lambda () close-window) was definitely not the right thing.
-;; I prefer just using close-window, but (lambda () (close-window))
-;; may be preferrable in some way.
 (if want-close-button
     (add-right-button close-button-face close-window))
 
@@ -601,9 +588,8 @@
 ;;(setenv "height" (number->string root-size-x))
 (putenv (string-append "height=" (number->string root-size-y)))
 (putenv (string-append "width=" (number->string root-size-x)))
-;; PLANES? FVWM_DIR? FVWM_VERSION?  want these exported too
+;; FIXGJB: PLANES? SCWM_DIR? SCWM_VERSION?  want these exported too
 
-;; Ahhhh now I get what (%x ..) does!
 (define (percent-display x y)
   (list (%x x) (%y y)))
 
@@ -647,6 +633,7 @@
     (raise-window w)
     (move-to x y w 'animated 'move-pointer-too)))
 
+;; FIXGJB: I don't think this gets used right yet
 (define animation-ms-delay 50)
 
 ;; Fluid, cartoon-like
@@ -657,10 +644,6 @@
 
 ;; Fluid, cartoon-like, overshoots target
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
-
-;; FIXMS: none of the KP_n keysyms work on my X server. I think
-;; Jens-Ulrik had the same complaint. Is there a more portable way to
-;; handle these?
 
 (bind-key 'all "C-M-KP_7" (lambda () (animated-move-to 0 0)))
 (bind-key 'all "C-M-KP_9" (lambda () (animated-move-to -1 0)))
@@ -673,6 +656,7 @@
 (bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 'y)))
 
 ;; FIXGJB: modifiers interface could be better... mimic off Emacs?
+;; FIXGJB: keys should be first class
 (bind-key 'all "C-M-S-7" (lambda () (send-button-press 1 0)))
 (bind-key 'all "C-M-S-8" (lambda () (send-button-press 2 0)))
 (bind-key 'all "C-M-S-9" (lambda () (send-button-press 3 0)))
