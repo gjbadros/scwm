@@ -72,7 +72,7 @@ void
 init_scwmgtkhelper()
 {
 #ifndef SCM_MAGIC_SNARFER
- #include "scwmgdkhelper.x"
+ #include "scwmgtkhelper.x"
 #endif
 }
 

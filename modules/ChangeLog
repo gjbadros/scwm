@@ -1,5 +1,8 @@
 1998-11-22  Todd Larason  <jtl@molehill.org>
 
+	* scwmgtkhelper/scwmgtkhelper.c (init_scwmgtkhelper): fix typo in
+	name of scwmgtkhelper.x
+
 	* pie-menus/draw-pie-menu.c: Support for a new menu-look,
 	shaped-pie-menu-look -- thanks to Russell Nelson.
 
