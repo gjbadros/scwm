@@ -44,6 +44,7 @@
       (clever-place-window win)))
 
 (add-hook! window-fully-obscured-hook fully-obscured-handler)
+;;(add-hook! window-partially-obscured-hook fully-obscured-handler)
 
 ;; cover up some windows
 
