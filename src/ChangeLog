@@ -1,5 +1,9 @@
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* window.c: Added new primitive icon-size which takes a window and
+	returns the size of the icon (including both the image and the
+	icon title).
+
 	* window.c: Fixed minor bug in `resize-to' in computation of size
 	adjustment (only was broken for no-side-decoration windows). Also
 	made sym_shaded and SendClientConfigurNotify have external linkage

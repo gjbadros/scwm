@@ -2498,6 +2498,27 @@ way if not specified. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC(icon_size, "icon-size", 0, 1, 0,
+          (SCM win))
+     /** Return the size of the icon for WIN.  
+The position is returned as a list of the width and height in pixels.
+WIN defaults to the window context in the usual way if not
+specified. */
+
+#define FUNC_NAME s_icon_size
+{
+  ScwmWindow *psw;
+
+  VALIDATE(win, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  return gh_list(SCM_MAKINUM(psw->icon_p_width),
+                 SCM_MAKINUM(psw->icon_p_height + psw->icon_w_height),
+                 SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
+
 
 SCWM_PROC(window_frame_size, "window-frame-size", 0, 1, 0,
           (SCM win))
