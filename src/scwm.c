@@ -716,6 +716,7 @@ scwm_main(int argc, char **argv)
 #define SCWMRC ".scwmrc"
 #endif
   
+  /* FIXMS: clean this ugly mess up. */
   if (strlen(szCmdConfig) == 0) {
 #ifdef I18N
       scwm_safe_eval_str(
@@ -829,6 +830,7 @@ scwm_main(int argc, char **argv)
   UnBlackoutScreen();         /* if we need to remove blackout window */
   /* set the focus to the current window if appropriate */
   CoerceEnterNotifyOnCurrentWindow();
+  run_startup_hook();
   DBUG("main", "Entering HandleEvents loop...");
   HandleEvents();
   DBUG("main", "Back from HandleEvents loop?  Exitting...");

@@ -1,3 +1,12 @@
+1998-07-21  Maciej Stachowiak  <maciej@roc-ny4-02.ix.netcom.com>
+
+	* shutdown.c, shutdown.h: Added startup-hook and
+	run_startup_hook() function. This is probably not the right place
+	for it, but I can't think of a better one at the moment; I don't
+	want to start a new file or clutter up scwm.c any further.
+
+	scwm.c: Call run_startup_hook() after all windows are captured.
+	
 Tue Jul 21 14:09:11 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraint-primitives.cc: Added window-clv-{x,y,width,height} to 

@@ -23,6 +23,7 @@
 
 
 SCM shutdown_hook;
+SCM startup_hook;
 
 static inline void
 run_restart_command(char *command) {
@@ -158,13 +159,26 @@ scwm. */
 }
 #undef FUNC_NAME
 
+void run_startup_hook()
+{
+  call0_hooks(startup_hook);
+}
 
 void init_shutdown()
 {
   /**HOOK: shutdown-hook
 The procedures in shutdown-hook are called with no arguments right
-before scwm quits or restarts . */
+before scwm quits or restarts. 
+  */
   SCWM_DEFINE_HOOK(shutdown_hook, "shutdown-hook");
+
+  /**HOOK: startup-hook 
+The procedures in startup-hook are called with no arguments after scwm
+has processed the scwmrc and captured all application windows, and
+right before it enters the main event loop.
+ */
+
+  SCWM_DEFINE_HOOK(startup_hook, "startup-hook");
 
 #ifndef SCM_MAGIC_SNARFER
 #include "shutdown.x"
