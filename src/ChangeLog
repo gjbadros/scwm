@@ -1,5 +1,9 @@
 Wed Mar 11 00:10:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* events.c: Handle shaded windows that are resized by the app
+ 	correctly. However, I discovered while fixing this that changing
+ 	the title height while some windows are shaded loses.
+
 	* scmprocs.c: Remove inclusion of paths.h
 
 Tue Mar 10 22:10:54 1998  Greg Badros  <gjb@cs.washington.edu>
