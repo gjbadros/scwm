@@ -1,3 +1,9 @@
+Wed Jan  5 12:46:59 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* constraint-investigator.scm: Make the enable/disable all
+	constraints buttons draw all the constraints.  (makes it easier to 
+	make the screenshot in the AAAI paper).
+
 Tue Jan  4 16:41:41 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added `set-highlight-colors!'
