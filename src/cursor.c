@@ -324,7 +324,7 @@ CreateScmGlobalCursors()
   SCWM_VAR_INIT(cursor_select,"cursor-select", get_scm_cursor_by_number(XC_dot));
   /** The cursor to use for selecting a window, defaults to dot. */
 
-  SCWM_VAR_INIT(cursor_menu,"cursor-menu", get_scm_cursor_by_number(XC_sb_right_arrow));
+  SCWM_VAR_INIT(cursor_menu,"cursor-menu", get_scm_cursor_by_number(XC_right_ptr));
   /** The cursor to use when in a menu, defaults to sb_left_arrow. */
 }
 
