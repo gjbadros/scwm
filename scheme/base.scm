@@ -156,7 +156,7 @@ negative, and Y pixels vertically, down if positive, up if negative."
 (define*-public (menu-style #&key
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
-		     (stipple #f) font mwm mwm-style)
+		     (stipple #f) font)
   "Set various properites for the menus.
 Many of these are ignored.  See `make-menu' for options on
 creation of individual menus."
@@ -164,11 +164,7 @@ creation of individual menus."
   (if (or bg background) (set-menu-background! (or bg background)))
   (if stipple (set-menu-stipple! stipple))
   (if (bound? font)
-      (set! menu-font font))
-  (if (bound? mwm)
-      (set-menu-mwm-style! mwm))
-  (if (bound? mwm-style)
-      (set-menu-mwm-style! mwm-style)))
+      (set! menu-font font)))
 
 ;; A subset of the real title-style which is here so people don't have
 ;; to load all of face.scm to get at it; will probably go away in the

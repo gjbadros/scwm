@@ -117,7 +117,9 @@
       (raise-window)))
 
 (define-fvwm-command "Scroll"
-  (get-two-numeric-args args move-viewport))
+  (get-two-numeric-args 
+   args ;; the args are percentage of display size
+   (lambda (x y) (move-viewport (%x x) (%y y)))))
 
 (define-fvwm-command "Send_ConfigInfo"
   ((caddr fmod)))

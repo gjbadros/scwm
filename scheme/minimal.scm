@@ -24,7 +24,6 @@
 (set-menu-stipple! SLATEGRAY)
 
 (set-menu-font! FIXED-FONT)
-(set-menu-mwm-style! #f)
 
 (set-hilight-foreground! BLACK)
 (set-hilight-background! GRAY)
