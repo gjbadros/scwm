@@ -77,6 +77,7 @@ AnimatedResizeWindows(SCM xforms,
   int pointerX, pointerY;
   int currentX, currentY;
   int lastX = 0, lastY = 0;
+  int cStepsAllowed = 100;
   Bool fFirstAnimationIteration = True;
 
   /* set our defaults */
@@ -84,6 +85,9 @@ AnimatedResizeWindows(SCM xforms,
   if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
 
   do {
+    float pctMovement = *ppctMovement;
+  window_loop:
+    { /* scope */
     SCM xform_iter = xforms;
     Bool fFirst = True;
     for (; xform_iter != SCM_EOL; xform_iter = gh_cdr(xform_iter)) {
@@ -97,7 +101,6 @@ AnimatedResizeWindows(SCM xforms,
       int endW, endH;
       int startX, startY, deltaX, deltaY;
       int endX, endY;
-      int grav_dx, grav_dy;
       
       psw = PSWFROMSCMWIN(gh_car(xform)); xform = gh_cdr(xform);
       fFrame = gh_scm2bool(gh_car(xform)); 
@@ -126,12 +129,23 @@ AnimatedResizeWindows(SCM xforms,
       fSetEndX = gh_scm2bool(gh_car(cns));
       fSetEndY = gh_scm2bool(gh_cdr(cns));
       
-      ComputeDeltaForResize(psw,&grav_dx,&grav_dy,endW,endH);
-      if (fSetEndX) {
-        deltaX += grav_dx;
-      }
-      if (fSetEndY) {
-        deltaY += grav_dy;
+#ifdef SCWM_DEBUG_ANIM_RESIZE
+      fprintf(stderr,"startX = %d, startY = %d, endX = %d, endY = %d, deltaX = %d, deltaY = %d\n",
+              startX, startY, endX, endY, deltaX, deltaY);
+#endif
+
+      if (!fSetEndX || !fSetEndY) {
+        int grav_dx, grav_dy;
+        ComputeDeltaForResizeWithOrigSize(psw,&grav_dx,&grav_dy,endW,endH,startW,startH);
+        if (!fSetEndX) {
+          deltaX -= grav_dx;
+        }
+        if (!fSetEndY) {
+          deltaY -= grav_dy;
+        }
+#ifdef SCWM_DEBUG_ANIM_RESIZE
+        fprintf(stderr,"now deltaX = %d, deltaY = %d\n", deltaX, deltaY);
+#endif
       }
 
       if (startW < 0 || startH < 0) {
@@ -144,12 +158,16 @@ AnimatedResizeWindows(SCM xforms,
           (deltaW == 0 && deltaH == 0))
         continue;
       
-      currentX = (int) (startX + deltaX * (*ppctMovement));
-      currentY = (int) (startY + deltaY * (*ppctMovement));
+      currentX = (int) (startX + deltaX * pctMovement);
+      currentY = (int) (startY + deltaY * pctMovement);
       
-      currentW = (int) (startW + deltaW * (*ppctMovement));
-      currentH = (int) (startH + deltaH * (*ppctMovement));
-      /* XResizeWindow(dpy, w, currentW, currentH); */
+      currentW = (int) (startW + deltaW * pctMovement);
+      currentH = (int) (startH + deltaH * pctMovement);
+
+#ifdef SCWM_DEBUG_ANIM_RESIZE
+      fprintf(stderr,"currentX = %d, currentY = %d, currentW = %d, currentH = %d\n",
+              currentX, currentY, currentW, currentH);
+#endif
 
       if (fUseSolver) {
         CassowaryEditSize(psw);
@@ -186,7 +204,7 @@ AnimatedResizeWindows(SCM xforms,
         lastX = currentX;
         lastY = currentY;
       }
-    }
+    } /* for each window */
 
     /* XFlush(dpy); */
     
@@ -196,18 +214,16 @@ AnimatedResizeWindows(SCM xforms,
     }
   
     ms_sleep(cmsDelay);
-    /* GJB:FIXME:NOW: 
-       this didn't work for me -- maybe no longer necessary since
-       we warn the user when they use > .5 seconds as a between-frame delay
-       time */
     if (XCheckMaskEvent(dpy, 
-			ButtonPressMask|ButtonReleaseMask|
 			KeyPressMask,
 			&Event)) {
       /* finish the move immediately */
-      break;
+      pctMovement = 1.0;
+      cStepsAllowed = 0;
+      goto window_loop;
     }
-  } while (*ppctMovement != 1.0 && ppctMovement++);
+    } /* scope */
+  } while (*ppctMovement != 1.0 && ppctMovement++ && --cStepsAllowed > 0);
 }
 
 
@@ -553,7 +569,6 @@ animated_resize_common(SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too
     };
 
     ConstrainSize(psw, 0, 0, &width, &height);
-    ComputePositionForResize(psw, &destX, &destY, width, height);
 
     /* use viewport coordinates */
     AnimatedResizeWindow(psw, psw->frame, 
