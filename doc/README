@@ -2,6 +2,12 @@ To build the html pages (i.e., for "make html") you need
 JADE (JAmes's DSSSL Engine) and the 
 DocBook DTD (Document Type Defintion) and html stylesheet.
 
+***All the software is available under "complementary links" from
+the scwm web page.
+
+What follows are possibly outdated notes about where to find
+related information.
+
 JADE is available from:
 
 http://www.jclark.com/jade/
@@ -35,10 +41,7 @@ and:
 
 http://www.gnome.org/devel/docs.shtml
 
-Improvements to this documentation are appreciated.  I'm a novice, 
-and got this working a while back after a bit of effort -- unfortunately 
-I can no longer remember the details, and cannot seem to find any
-more notes on what I did.
+Improvements to this documentation are appreciated.  
 
 Good luck,
 Greg
