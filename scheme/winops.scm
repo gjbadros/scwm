@@ -48,7 +48,7 @@
 (define*-public (close-window #&optional (win (get-window #t)))
   "Close WIN either by deleting it or destroying it.
 WIN is only destroyed if it is not deleteable."
-  (if w (if (window-deletable? win)
+  (if win (if (window-deletable? win)
 	    (delete-window win)
 	    (destroy-window win))))
  
