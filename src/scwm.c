@@ -84,7 +84,11 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 #endif
 
 #ifdef I18N
+#ifdef X_LOCALE
+#include <X11/Xlocale.h>
+#else
 #include <locale.h>
+#endif
 #endif
 
 #define MAXHOSTNAME 255
@@ -455,10 +459,20 @@ scwm_main(int argc, char **argv)
   gh_eval_str ("(define-module (guile))");  
 
 #ifdef I18N
+  /* setlocale in guile */
+  scm_setlocale( gh_lookup("LC_CTYPE"), gh_str02scm("") ); 
+  /* setlocale in X (system native locale or X_LOCALE) */
   if ((Lang = setlocale (LC_CTYPE,"")) == (char *)NULL) {
     scwm_msg(WARN,"main","Can't set specified locale.\n");
     Lang = "C";
   }
+  if (! XSupportsLocale()) {
+    scwm_msg(ERR, "main", "locale not supported by Xlib, locale set to C");
+    Lang = setlocale(LC_ALL, "C");
+  }
+  if (! XSetLocaleModifiers(""))
+    scwm_msg(ERR, "main", "X locale modifiers not supported, using default");
+
   tmp = index(Lang,'.');
   if (tmp) {
       territory = NEWC(tmp-Lang+1,char);
