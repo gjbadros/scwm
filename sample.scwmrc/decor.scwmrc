@@ -1,3 +1,4 @@
+;; -*- scheme -*-
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
@@ -84,7 +85,7 @@
 	    (set-hilight-colors! "black" "salmon"))
 
 (define fvwm-style 
-  (make-style #:fg "black" #:bg "tan" #:icon "unknown1.xpm"
+  (make-style #:fg "black" #:bg "tan" #:icon #t
 	      #:border-width 4 #:mwm-border #f
 	      #:mwm-buttons #f
 	      #:use-decor fvwm-decor))
@@ -98,7 +99,7 @@
 	    (set-hilight-colors! "black" "cadet blue"))
 
 (define mwm-style 
-  (make-style #:fg "black" #:bg "gray" #:icon "unknown1.xpm"
+  (make-style #:fg "black" #:bg "gray" #:icon #t
 	      #:border-width 6 #:mwm-border #t
 	      #:mwm-buttons #t
 	      #:use-decor mwm-decor))
@@ -201,6 +202,7 @@
 	    (set-hilight-colors! "white" "#3cb21c"))
 
 (define tile-style (make-style #:fg "white" #:bg "#a63823"
+			       #:icon #t
 			       #:border-width 6
 			       #:use-decor tile-decor))
 
