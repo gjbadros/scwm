@@ -1,3 +1,9 @@
+Fri Apr 23 17:12:33 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Added back in -V, -O options, but mark -V as
+	  obsoleted (by the preferences support).  -O never should've been 
+	  dropped yet.
+
 Thu Apr 15 19:41:23 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Do not warn about comments unless $fWarnIfNoComment

@@ -1,3 +1,7 @@
+Fri Apr 23 17:16:01 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* dev/scwmdoc.in: Added -O, -V options back in.
+
 Thu Apr 22 20:25:34 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* run-renamed/Makefile.am, run-renamed/run-renamed.c: Added --

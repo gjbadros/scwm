@@ -1,7 +1,7 @@
 circle-pie-menu-look
 - 
 A menu-look that gives pie menus in a circular window. 
-[From modules/pie-menus/draw-pie-menu.c:1355]
+[From modules/pie-menus/draw-pie-menu.c:1356]
 
 
 context-map
@@ -10,32 +10,68 @@ An alist mapping filename patterns to applicable menu entries.
 Whenever the car (a regexp) matches a filename, the cdr is used to
 build a menuitem which is then added to the context menu.
 
-[From scheme/std-menus.scm:102]
+[From scheme/std-menus.scm:110]
+
+
+cursor-icon
+- 
+The cursor to use for icon windows, defaults to top_left_arrow. 
+[From scwm/cursor.c:245]
+
+
+cursor-kill
+- 
+The cursor to use for selecting a window to kill, defaults to pirate. 
+[From scwm/cursor.c:248]
+
+
+cursor-menu
+- 
+The cursor to use when in a menu, defaults to sb_left_arrow. 
+[From scwm/cursor.c:254]
+
+
+cursor-move
+- 
+The cursor to use for move actions, defaults to fleur. 
+[From scwm/cursor.c:242]
+
+
+cursor-select
+- 
+The cursor to use for selecting a window, defaults to dot. 
+[From scwm/cursor.c:251]
+
+
+cursor-set-focus
+- 
+The cursor to use for set focus actions, defaults to hand2. 
+[From scwm/cursor.c:239]
 
 
 default-menu-max-fold-lines
 - (app scwm menus-extras)
 The default number of items that menus are split into by `fold-menu-list'.
 
-[From scheme/menus-extras.scm:44]
+[From scheme/menus-extras.scm:45]
 
 
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
-[From scwm/image.c:701]
+[From scwm/image.c:707]
 
 
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:561]
+[From scwm/scwm.c:556]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:564]
+[From scwm/scwm.c:559]
 
 
 move-opaquely?
@@ -48,7 +84,7 @@ User-settable predicate to determine if windows should be moved opaquely.
 pie-menu-look
 - 
 A menu-look that gives pie menus in a rectangular window 
-[From modules/pie-menus/draw-pie-menu.c:1346]
+[From modules/pie-menus/draw-pie-menu.c:1347]
 
 
 resize-opaquely?
@@ -72,18 +108,18 @@ scwm-menu-look
 - 
 The default menu look for Scwm.
 Used as an argument to `set-menu-look'. 
-[From scwm/drawmenu.c:757]
+[From scwm/drawmenu.c:807]
 
 
 shaped-pie-menu-look
 - 
 A menu-look that gives pie menus with only the labels visible 
-[From modules/pie-menus/draw-pie-menu.c:1363]
+[From modules/pie-menus/draw-pie-menu.c:1364]
 
 
 xpm-shaped-menu-look
 - 
 The shaped XPM menu look. 
-[From modules/xpm-menus/draw-xpm-menu.c:1000]
+[From modules/xpm-menus/draw-xpm-menu.c:1049]
 
 

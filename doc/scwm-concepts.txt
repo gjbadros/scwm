@@ -8,7 +8,7 @@ proper color object. Using the same color specifier string more than
 once is not inefficient, as caching ensures that color objects are
 shared.
 
-[From scwm/color.c:39]
+[From scwm/color.c:41]
 
 
 Creating themes
@@ -241,7 +241,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3339]
+[From scwm/window.c:3336]
 
 
 Fonts
@@ -441,7 +441,7 @@ color brighter than the decoration color); the effect is to reverse
 "raised" and "sunken" elements throughout the user interface.)
 
 
-[From scwm/color.c:48]
+[From scwm/color.c:50]
 
 
 Sticky
@@ -452,7 +452,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:2107]
+[From scwm/window.c:2104]
 
 
 Themes
@@ -462,7 +462,7 @@ Themes are still under development, but they are planned to
 affect window styles, menus, icons, backgrounds, and various
 global settings.
 
-[From scheme/themes.scm:34]
+[From scheme/themes.scm:35]
 
 
 Timer Hooks
@@ -507,7 +507,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:953]
+[From scwm/window.c:952]
 
 
 Window Style
@@ -570,10 +570,10 @@ start-lowered (boolean-style) from scheme/style.scm:279
 start-window-shaded (boolean-style) from scheme/style.scm:280
 other-proc (window-style) from scheme/style.scm:281
 other-hint-proc (window-hint) from scheme/style.scm:283
-use-theme (window-style) from scheme/themes.scm:46
-winlist-skip (boolean-style) from scheme/winlist.scm:113
-circulate-skip (boolean-style) from scheme/winlist.scm:302
-circulate-skip-icon (boolean-style) from scheme/winlist.scm:303
+use-theme (window-style) from scheme/themes.scm:47
+winlist-skip (boolean-style) from scheme/winlist.scm:112
+circulate-skip (boolean-style) from scheme/winlist.scm:301
+circulate-skip-icon (boolean-style) from scheme/winlist.scm:302
 start-maximized (window-style) from scheme/winops.scm:167
 
 [From scwm/face.c:551]
