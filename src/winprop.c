@@ -83,14 +83,14 @@ signal_window_property_change(SCM win, SCM prop, SCM new_val, SCM old_val)
 
 SCWM_PROC(set_window_property_x, "set-window-property!", 3, 0, 0,
           (SCM win, SCM prop, SCM val),
-"Set window property PROP of WIN to VAL.
-PROP should be a symbol. VAL may be any Scheme object. This name/value
-pair will be associated with the window, and may be retrieved with
-`window-property'. Passing #f as the value will delete the property
-instead. Soon, some properties will have magical meanings, altering
-particular fields in the window structure. Also, a
-window-property-change-hook mechanism will soon be implemented for
-notification of all window property changes. This is not yet done. The
+"Set window property PROP of WIN to VAL.\n\
+PROP should be a symbol. VAL may be any Scheme object. This name/value\n\
+pair will be associated with the window, and may be retrieved with\n\
+`window-property'. Passing #f as the value will delete the property\n\
+instead. Soon, some properties will have magical meanings, altering\n\
+particular fields in the window structure. Also, a\n\
+window-property-change-hook mechanism will soon be implemented for\n\
+notification of all window property changes. This is not yet done. The\n\
 window property primitives should be considered in flux.")
 #define FUNC_NAME s_set_window_property_x
 {
@@ -126,13 +126,13 @@ window property primitives should be considered in flux.")
 
 SCWM_PROC(window_property, "window-property", 2, 0, 0,
           (SCM win, SCM prop),
-"Retrieve window property PROP of WIN.
-PROP should be a symbol. #f will be returned if the property does not
-exist (whether set by `set-window-property!' or otherwise). Soon, some
-properties will have magical meanings, accessing particular fields in
-the window structure. Also, a window-property-change-hook mechanism
-will soon be implemented for notification of all window property
-changes. This is not yet done. The window property primitives should
+"Retrieve window property PROP of WIN.\n\
+PROP should be a symbol. #f will be returned if the property does not\n\
+exist (whether set by `set-window-property!' or otherwise). Soon, some\n\
+properties will have magical meanings, accessing particular fields in\n\
+the window structure. Also, a window-property-change-hook mechanism\n\
+will soon be implemented for notification of all window property\n\
+changes. This is not yet done. The window property primitives should\n\
 be considered in flux.")
 #define FUNC_NAME s_window_property
 {

@@ -261,8 +261,8 @@ MapMessageWindow(scwm_msgwindow* msg)
     the ScreenInfo struct */
 SCWM_PROC (make_message_window, "make-message-window", 1, 0, 0,
            (SCM message),
-"Returns a newly created message window object with string MESSAGE.
-MESSAGE is the initial string for the message window. 
+"Returns a newly created message window object with string MESSAGE.\n\
+MESSAGE is the initial string for the message window. \n\
 Uses defaults from the ScreenInfo struct for the other values.")
 #define FUNC_NAME s_make_message_window
 {
@@ -307,9 +307,9 @@ Uses defaults from the ScreenInfo struct for the other values.")
 
 SCWM_PROC(id_to_message_window, "id->message-window", 1, 0, 0,
           (SCM winid),
-"Return the message-window of an X/11 window id (a long integer).
-Returns #f if WINID does not correspond to a message-window.
-You can use the xwininfo program to get the window id of an arbitrary
+"Return the message-window of an X/11 window id (a long integer).\n\
+Returns #f if WINID does not correspond to a message-window.\n\
+You can use the xwininfo program to get the window id of an arbitrary\n\
 window on your X/11 display.")
 #define FUNC_NAME s_id_to_message_window
 {
@@ -331,7 +331,7 @@ window on your X/11 display.")
 
 SCWM_PROC(message_window_set_message_x, "message-window-set-message!", 2, 0, 0,
           (SCM mwn, SCM message),
-"Changes the message displayed by the message window MWN.
+"Changes the message displayed by the message window MWN.\n\
 The message will be MESSAGE")
 #define FUNC_NAME s_message_window_set_message_x
 {
@@ -352,9 +352,9 @@ The message will be MESSAGE")
 
 SCWM_PROC(message_window_set_image_x, "message-window-set-image!", 2, 3, 0,
           (SCM mwn, SCM image, SCM fg_color, SCM bg_color, SCM shaped_p),
-"Changes the background image for the message window MWN to IMAGE. 
-FG-COLOR, BG-COLOR are the colors for the image, SHAPED? is whether it
-should use a shaped message window. If IMAGE is #f, then no image
+"Changes the background image for the message window MWN to IMAGE. \n\
+FG-COLOR, BG-COLOR are the colors for the image, SHAPED? is whether it\n\
+should use a shaped message window. If IMAGE is #f, then no image\n\
 is used for MWN.")
 #define FUNC_NAME s_message_window_set_image_x
 {
@@ -395,7 +395,7 @@ is used for MWN.")
 
 SCWM_PROC(message_window_set_font_x, "message-window-set-font!", 2, 0, 0,
           (SCM mwn, SCM fnt),
-"Set the font to be used for the message window MWN.
+"Set the font to be used for the message window MWN.\n\
 The font will be FNT")
 #define FUNC_NAME s_message_window_set_font_x
 {
@@ -419,7 +419,7 @@ The font will be FNT")
 
 SCWM_PROC(message_window_set_colors_x, "message-window-set-colors!", 3, 0, 0,
           (SCM mwn, SCM fg_color, SCM bg_color),
-"Set the fore- and background colors to be used for the message window MWN.
+"Set the fore- and background colors to be used for the message window MWN.\n\
 The foreground color will be FG-COLOR and the background color will be BG-COLOR")
 #define FUNC_NAME s_message_window_set_colors_x
 {
@@ -458,13 +458,13 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR"
  */
 SCWM_PROC(message_window_set_position_x, "message-window-set-position!", 3, 2, 0,
           (SCM mwn, SCM x, SCM y, SCM x_align, SCM y_align),
-"Set the position to be used for the message window MWN.
-X and Y specify the position of the control point of the window,
-while X-ALIGN and Y-ALIGN specify a fraction of the width and
-height of the message window to offset it from the specified position.
-X-ALIGN and Y-ALIGN should each be in the range [-1,0].  E.g.,
-If X-ALIGN and Y-ALIGN are both -0.5, the window will be
-centered at viewport pixel position X, Y.  Any of the parameters
+"Set the position to be used for the message window MWN.\n\
+X and Y specify the position of the control point of the window,\n\
+while X-ALIGN and Y-ALIGN specify a fraction of the width and\n\
+height of the message window to offset it from the specified position.\n\
+X-ALIGN and Y-ALIGN should each be in the range [-1,0].  E.g.,\n\
+If X-ALIGN and Y-ALIGN are both -0.5, the window will be\n\
+centered at viewport pixel position X, Y.  Any of the parameters\n\
 excep MWN can be #f to mean not to change the existing value.")
 #define FUNC_NAME s_message_window_set_position_x
 {
@@ -485,9 +485,9 @@ excep MWN can be #f to mean not to change the existing value.")
 
 SCWM_PROC(message_window_set_size_x, "message-window-set-size!", 3, 0, 0,
           (SCM mwn, SCM width, SCM height),
-"Set the size of message window MWN to WIDTH pixels by HEIGHT pixels.
-If WIDTH or HEIGHT is #f, that direction is automatically sized
-based on the message content. This procedure is especially useful when a message window
+"Set the size of message window MWN to WIDTH pixels by HEIGHT pixels.\n\
+If WIDTH or HEIGHT is #f, that direction is automatically sized\n\
+based on the message content. This procedure is especially useful when a message window\n\
 is used to display an image.")
 #define FUNC_NAME s_message_window_set_size_x
 {
@@ -510,7 +510,7 @@ is used to display an image.")
 
 SCWM_PROC (message_window_set_relief_x, "message-window-set-relief!", 2, 0, 0,
            (SCM mwn, SCM draw_relief_p),
-"Sets the relief for the window MWN.
+"Sets the relief for the window MWN.\n\
 Relief will be drawn if and only if DRAW-RELIEF? is #t.")
 #define FUNC_NAME s_message_window_set_relief_x
 {
@@ -527,9 +527,9 @@ Relief will be drawn if and only if DRAW-RELIEF? is #t.")
 
 SCWM_PROC (message_window_show_x, "message-window-show!", 1, 0, 0,
            (SCM mwn),
-"Displays the message window MWN on the screen. 
-Be sure to keep the displayed message window somewhere
-do that you can call `message-window-hide!' (otherwise
+"Displays the message window MWN on the screen. \n\
+Be sure to keep the displayed message window somewhere\n\
+do that you can call `message-window-hide!' (otherwise\n\
 the window will not ever disappear).")
 #define FUNC_NAME s_message_window_show_x
 {
@@ -555,7 +555,7 @@ the window will not ever disappear).")
 
 SCWM_PROC (message_window_hide_x, "message-window-hide!", 1, 0, 0,
            (SCM mwn),
-"Hide the message window MWN.
+"Hide the message window MWN.\n\
 See also `message-window-show'.")
 #define FUNC_NAME s_message_window_hide_x
 {
@@ -571,7 +571,7 @@ See also `message-window-show'.")
 
 SCWM_PROC (message_window_visible_p, "message-window-visible?", 1, 0, 0,
            (SCM mwn),
-"Return #t if the message window MWN is visible, #f otherwise.
+"Return #t if the message window MWN is visible, #f otherwise.\n\
 See also `message-window-show', `message-window-hide'.")
 #define FUNC_NAME s_message_window_visible_p
 {
@@ -606,7 +606,7 @@ SCWM_PROC (message_window_image, "message-window-image", 1, 0, 0,
 
 SCWM_PROC (message_window_position, "message-window-position", 1, 0, 0,
            (SCM mwn),
-"Returns the position that message window MWN is/will be displayed at. 
+"Returns the position that message window MWN is/will be displayed at. \n\
 This is returned as a four element list: (x y x-align y-align).")
 #define FUNC_NAME s_message_window_position
 {
@@ -622,7 +622,7 @@ This is returned as a four element list: (x y x-align y-align).")
 
 SCWM_PROC (message_window_size, "message-window-size", 1, 0, 0,
            (SCM mwn),
-"Returns the size of message window MWN in pixels.
+"Returns the size of message window MWN in pixels.\n\
 Returns as a two element list: (width height).")
 #define FUNC_NAME s_message_window_size
 {
@@ -663,7 +663,7 @@ SCWM_PROC (message_window_id, "message-window-id", 1, 0, 0,
 
 SCWM_PROC (message_window_colors, "message-window-colors", 1, 0, 0,
            (SCM mwn),
-"Returns the colors that the message window MWN is displayed with.  
+"Returns the colors that the message window MWN is displayed with.  \n\
 These are returned in a list of the form (fg_color,bg_color).")
 #define FUNC_NAME s_message_window_colors
 {

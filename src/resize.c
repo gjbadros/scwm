@@ -327,8 +327,8 @@ static GC DrawRubberBandGC;
    fast to erase */
 SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
           (SCM value),
-"Set the rubber band mask used when dragging or resizing.
-VALUE is XORed with the background when dragging non-opaque move or
+"Set the rubber band mask used when dragging or resizing.\n\
+VALUE is XORed with the background when dragging non-opaque move or\n\
 resize frames. VALUE should be an integer.")
 #define FUNC_NAME s_set_rubber_band_mask_x
 {

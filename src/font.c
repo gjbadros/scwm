@@ -96,8 +96,8 @@ print_font(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 
 SCWM_PROC(make_font, "make-font", 1, 0, 0,
           (SCM fname),
-"Return the font object for the X font specifier FNAME.
-If FNAME is not a valid X font name, or cannot be
+"Return the font object for the X font specifier FNAME.\n\
+If FNAME is not a valid X font name, or cannot be\n\
 allocated, an error results.")
 #define FUNC_NAME s_make_font
 {
@@ -231,8 +231,8 @@ SCWM_PROC(font_p, "font?", 1, 0, 0,
 
 SCWM_PROC(font_properties, "font-properties", 1, 0, 0,
           (SCM font),
-"Return an association list giving some properties of FONT.
-Currently defined properties are 'name, the string name of the
+"Return an association list giving some properties of FONT.\n\
+Currently defined properties are 'name, the string name of the\n\
 color, and 'height, its total height in pixels.")
 #define FUNC_NAME s_font_properties
 {
@@ -305,11 +305,11 @@ SCWM_PROC(title_font, "title-font", 0, 0, 0,
 
 SCWM_PROC(clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0,
           (SCM name),
-"Fonts are cached by name. It is remotely possible that the
-meaning of a particular string as a fonts will change in your X
-server, if you try hard enough (perhaps if you add or remove font
-servers). For this unlikely eventuality, `clear-font-cache-entry' is
-provided - it removes the font associated with NAME from the font
+"Fonts are cached by name. It is remotely possible that the\n\
+meaning of a particular string as a fonts will change in your X\n\
+server, if you try hard enough (perhaps if you add or remove font\n\
+servers). For this unlikely eventuality, `clear-font-cache-entry' is\n\
+provided - it removes the font associated with NAME from the font\n\
 cache")
 #define FUNC_NAME s_clear_font_cache_entry
 {

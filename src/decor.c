@@ -210,8 +210,8 @@ decor2scm(ScwmDecor * fl)
 
 SCWM_PROC(make_decor, "make-decor", 0, 1, 0,
           (SCM name),
-"Create a new decor object. NAME optionally provides a string
-that is used to name the decor, and is displayed when the decor is
+"Create a new decor object. NAME optionally provides a string\n\
+that is used to name the decor, and is displayed when the decor is\n\
 printed.")
 #define FUNC_NAME s_make_decor
 {
@@ -241,8 +241,8 @@ SCWM_PROC(default_decor, "default-decor", 0, 0, 0,
 
 SCWM_PROC(set_current_decor_x, "set-current-decor!", 1, 0, 0,
           (SCM decor),
-"Set the current decor to DECOR. Operations described as
-setting options \"in the current decor\" will now operate on this
+"Set the current decor to DECOR. Operations described as\n\
+setting options \"in the current decor\" will now operate on this\n\
 one.")
 #define FUNC_NAME s_set_current_decor_x
 {

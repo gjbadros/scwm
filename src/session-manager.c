@@ -476,7 +476,7 @@ static void iceWatchFD(IceConn conn, IcePointer ARG_UNUSED(client_data),
 
 SCWM_PROC(SM_error_message, "SM-error-message", 0, 0, 0,
 	  (),
-"Return a string, describing why session management is not available.
+"Return a string, describing why session management is not available.\n\
 Only valid, if `SM-register' returned #f.")
 #define FUNC_NAME s_SM_error_message
 {
@@ -486,10 +486,10 @@ Only valid, if `SM-register' returned #f.")
 
 SCWM_PROC(SM_register, "SM-register", 0, 0, 0,
 	  (),
-"Register Scwm with the session manager, and return the client id.
-The return value is either an id string, or #f if the session manager could not be
-initialized - `SM-error-message' can be used to get more information in this
-case.
+"Register Scwm with the session manager, and return the client id.\n\
+The return value is either an id string, or #f if the session manager could not be\n\
+initialized - `SM-error-message' can be used to get more information in this\n\
+case.\n\
 If Scwm is already registered, this function just returns the client id.")
 #define FUNC_NAME s_SM_register
 {

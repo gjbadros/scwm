@@ -705,10 +705,10 @@ scwm_handle_error (void *data, SCM tag, SCM throw_args)
 
 SCWM_PROC(safe_load, "safe-load", 1, 0, 0,
           (SCM fname),
-"Load file FNAME while trapping and displaying errors.
-Each individual top-level-expression is evaluated separately and all
-errors are trapped and displayed.  You should use this procedure if
-you need to make sure most of a file loads, even if it may contain
+"Load file FNAME while trapping and displaying errors.\n\
+Each individual top-level-expression is evaluated separately and all\n\
+errors are trapped and displayed.  You should use this procedure if\n\
+you need to make sure most of a file loads, even if it may contain\n\
 errors.")
 #define FUNC_NAME s_safe_load
 {
@@ -735,7 +735,7 @@ SCM scwm_safe_eval_str (char *string)
 
 SCWM_PROC(set_load_processing_frequency_x, "set-load-processing-frequency!", 1, 0, 0,
           (SCM num_lines),
-"Invoke hooks on `load-processing-hook' every NUM-LINES lines. 
+"Invoke hooks on `load-processing-hook' every NUM-LINES lines. \n\
 Returns the old value.")
 #define FUNC_NAME s_set_load_processing_frequency_x
 {
@@ -758,9 +758,9 @@ removed.
 
 SCWM_PROC(add_timer_hook_x, "add-timer-hook!", 2, 0, 0,
           (SCM msec, SCM proc),
-"Add a timer hook to call PROC once sometime after MSEC milliseconds.
-When at least MSEC milliseconds have passed, procedure PROC will be
-called with no arguments. A handle suitable for passing to
+"Add a timer hook to call PROC once sometime after MSEC milliseconds.\n\
+When at least MSEC milliseconds have passed, procedure PROC will be\n\
+called with no arguments. A handle suitable for passing to\n\
 `remove-timer-hook!' is returned.")
 #define FUNC_NAME s_add_timer_hook_x
 {
@@ -792,9 +792,9 @@ called with no arguments. A handle suitable for passing to
 
 SCWM_PROC(remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0,
           (SCM handle),
-"Remove a timer hook identified by HANDLE.
-The HANDLE should be an object that was returned by
-`add-timer-hook!'. No warning or error will occur if HANDLE is for a
+"Remove a timer hook identified by HANDLE.\n\
+The HANDLE should be an object that was returned by\n\
+`add-timer-hook!'. No warning or error will occur if HANDLE is for a\n\
 timer hook that has already been triggered.")
 #define FUNC_NAME s_remove_timer_hook_x
 {
@@ -907,12 +907,12 @@ static SCM new_input_hooks;
 
 SCWM_PROC(add_input_hook_x, "add-input-hook!", 2, 0, 0,
           (SCM port, SCM proc),
-"Add an input hook to run PROC on input from PORT.
-Whenever input becomes available on PORT, procedure PROC will be called
-with no arguments repeatedly until no unprocessed input remains on
-PORT. PORT must be open, it must be an input port, and it must be a
-file port (this includes pipes and sockets, but not string ports or
-soft ports). A handle suitable for passing to `remove-input-hook!' is
+"Add an input hook to run PROC on input from PORT.\n\
+Whenever input becomes available on PORT, procedure PROC will be called\n\
+with no arguments repeatedly until no unprocessed input remains on\n\
+PORT. PORT must be open, it must be an input port, and it must be a\n\
+file port (this includes pipes and sockets, but not string ports or\n\
+soft ports). A handle suitable for passing to `remove-input-hook!' is\n\
 returned.")
 #define FUNC_NAME s_add_input_hook_x
 {
@@ -935,8 +935,8 @@ returned.")
 
 SCWM_PROC(remove_input_hook_x, "remove-input-hook!", 1, 0, 0,
           (SCM handle),
-"Remove an input hook identified by HANDLE.
-HANDLE should be an object that was returned by `add-input-hook!'. An
+"Remove an input hook identified by HANDLE.\n\
+HANDLE should be an object that was returned by `add-input-hook!'. An\n\
 input hook may safely remove itself.")
 #define FUNC_NAME s_remove_input_hook_x
 {
@@ -1058,7 +1058,7 @@ static SCM *pscm_this_command_args;
 
 SCWM_PROC(call_interactively, "call-interactively", 1, 1, 0,
           (SCM thunk, SCM debug),
-"Invoke THUNK interactively.
+"Invoke THUNK interactively.\n\
 Write a debug message if DEBUG is #t.")
 #define FUNC_NAME s_call_interactively
 {

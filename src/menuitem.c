@@ -100,12 +100,12 @@ SCWM_PROC(menuitem_p,"menuitem?",1,0,0,
 
 SCWM_PROC(menuitem_properties, "menuitem-properties", 1, 0, 0,
           (SCM menu_item),
-"Return a list of the properties of the given MENU-ITEM.
-MENU-ITEM is a menuitem object, created by `make-menuitem'.  The
-returned list contains the following, in this order:
-'(label action extra-label picture-above picture-left hover-action
-unhover-action hotkey-preferences force-submenu?)
-Note that this is the same as the arguments to the `make-menuitem'
+"Return a list of the properties of the given MENU-ITEM.\n\
+MENU-ITEM is a menuitem object, created by `make-menuitem'.  The\n\
+returned list contains the following, in this order:\n\
+'(label action extra-label picture-above picture-left hover-action\n\
+unhover-action hotkey-preferences force-submenu?)\n\
+Note that this is the same as the arguments to the `make-menuitem'\n\
 primitive.")
 #define FUNC_NAME s_menuitem_properties
 {
@@ -129,23 +129,23 @@ SCWM_PROC(make_menuitem, "make-menuitem", 2,7,0,
           (SCM label, SCM action, SCM extra_label, SCM picture_above,
            SCM picture_left, SCM hover_action, SCM unhover_action,
            SCM hotkey_prefs, SCM submenu_p),
-"Return a newly created menuitem object using the given arguments.
-LABEL is a string giving the main text label of the menu item;
-ACTION is a procedure or menu object -- if it is a procedure, it gets
-invoked when the menuitem is selected, if it is a menu object, that
-menu is attached as a submenu from the enclosing menu that the created 
-menuitem is put in.  You can also force ACTION to be treated as a
-submenu by setting SUBMENU? to #t.
-EXTRA-LABEL is extra text describing the menu item -- often this
-contains a shortcut key description, or some other descriptive text.
-PICTURE-ABOVE and PICTURE-LEFT are picture objects which correspond to 
-images to display within the bounding region of the menuitem.
-HOVER-ACTION and UNHOVER-ACTION are procedures to be invoked when the
-mouse pointer hovers over the item and is moved away after hovering
-over the item, respectively.
-HOTKEY-PREFS is a string listing preferred alphanumeric shortcut-keys
-for the given menu-item; the menu creation routine uses these as hints 
-for assigning shortcut keys to the various menuitems.
+"Return a newly created menuitem object using the given arguments.\n\
+LABEL is a string giving the main text label of the menu item;\n\
+ACTION is a procedure or menu object -- if it is a procedure, it gets\n\
+invoked when the menuitem is selected, if it is a menu object, that\n\
+menu is attached as a submenu from the enclosing menu that the created \n\
+menuitem is put in.  You can also force ACTION to be treated as a\n\
+submenu by setting SUBMENU? to #t.\n\
+EXTRA-LABEL is extra text describing the menu item -- often this\n\
+contains a shortcut key description, or some other descriptive text.\n\
+PICTURE-ABOVE and PICTURE-LEFT are picture objects which correspond to \n\
+images to display within the bounding region of the menuitem.\n\
+HOVER-ACTION and UNHOVER-ACTION are procedures to be invoked when the\n\
+mouse pointer hovers over the item and is moved away after hovering\n\
+over the item, respectively.\n\
+HOTKEY-PREFS is a string listing preferred alphanumeric shortcut-keys\n\
+for the given menu-item; the menu creation routine uses these as hints \n\
+for assigning shortcut keys to the various menuitems.\n\
 For a higher-level interface to this function, see `menuitem'.")
 #define FUNC_NAME s_make_menuitem
 {
@@ -204,8 +204,8 @@ For a higher-level interface to this function, see `menuitem'.")
 
 SCWM_PROC(set_menuitem_colors_x,"set-menuitem-colors!",3,0,0,
           (SCM menuitem, SCM fg, SCM bg),
-"Sets the fg and bg colors of MENUITEM to FG and BG respectively.
-Use #f for either/both component to have MENUITEM inherit that color
+"Sets the fg and bg colors of MENUITEM to FG and BG respectively.\n\
+Use #f for either/both component to have MENUITEM inherit that color\n\
 from the menu in which it is embedded.")
 #define FUNC_NAME s_set_menuitem_colors_x
 {
@@ -225,8 +225,8 @@ from the menu in which it is embedded.")
 
 SCWM_PROC(menuitem_colors,"menuitem-colors",1,0,0,
           (SCM menuitem),
-"Returns a list of the fg and bg colors for MENUITEM.
-Will return #f for either/both components if MENUITEM inherits its color from
+"Returns a list of the fg and bg colors for MENUITEM.\n\
+Will return #f for either/both components if MENUITEM inherits its color from\n\
 the menu in which it is embedded.")
 #define FUNC_NAME s_menuitem_colors
 {
@@ -238,8 +238,8 @@ the menu in which it is embedded.")
 
 SCWM_PROC(set_menuitem_font_x,"set-menuitem-font!",2,0,0,
           (SCM menuitem, SCM font),
-"Sets the font of MENUITEM to FONT.
-Use #f to have MENUITEM inherit its font
+"Sets the font of MENUITEM to FONT.\n\
+Use #f to have MENUITEM inherit its font\n\
 from the menu in which it is embedded.")
 #define FUNC_NAME s_set_menuitem_font_x
 {
@@ -255,8 +255,8 @@ from the menu in which it is embedded.")
 
 SCWM_PROC(menuitem_font,"menuitem-font",1,0,0,
           (SCM menuitem),
-"Returns the font of MENUITEM.
-Returns #f if MENUITEM inherits its font
+"Returns the font of MENUITEM.\n\
+Returns #f if MENUITEM inherits its font\n\
 from the menu in which it is embedded.")
 #define FUNC_NAME s_menuitem_font
 {

@@ -429,13 +429,13 @@ default_select_desk(ScwmWindow *psw)
 
 SCWM_PROC(place_on_default_desk, "place-on-default-desk", 1, 0, 0, 
           (SCM win),
-"Place WIN on a desk according to the default algorithm.
-Place a window with it's window group, with a window it is transient
-for, on the desk it was on previous to a restart, on the desk
-specified with the starts-on-desk flag,
+"Place WIN on a desk according to the default algorithm.\n\
+Place a window with it's window group, with a window it is transient\n\
+for, on the desk it was on previous to a restart, on the desk\n\
+specified with the starts-on-desk flag,\n\
 
-This is called as part of `default-placement-proc'.  It could also be
-used in user-defined placement procedures (see 
+This is called as part of `default-placement-proc'.  It could also be\n\
+used in user-defined placement procedures (see \n\
 `set-window-placement-proc!').")
 #define FUNC_NAME s_place_on_default_desk
 {
@@ -449,14 +449,14 @@ used in user-defined placement procedures (see
 
 SCWM_PROC(smart_place_window, "smart-place-window", 1, 0, 0, 
           (SCM win),
-"Places WIN using fvwm2's SmartPlacement algorithm.
-The placement is just as if SmartPlacementIsReallySmart were not in
-effect. That is, it tries to place the window so that it does not
-overlap any other. If it fails to do so, it returns #f; otherwise it
-returns #t.
+"Places WIN using fvwm2's SmartPlacement algorithm.\n\
+The placement is just as if SmartPlacementIsReallySmart were not in\n\
+effect. That is, it tries to place the window so that it does not\n\
+overlap any other. If it fails to do so, it returns #f; otherwise it\n\
+returns #t.\n\
 
-This is called as part of `default-placement-proc'.  It could also be
-used in user-defined placement procedures (see 
+This is called as part of `default-placement-proc'.  It could also be\n\
+used in user-defined placement procedures (see \n\
 `set-window-placement-proc!').")
 #define FUNC_NAME s_smart_place_window
 {
@@ -494,17 +494,17 @@ used in user-defined placement procedures (see
 
 SCWM_PROC(clever_place_window, "clever-place-window", 1, 0, 0, 
           (SCM win),
-"Places WIN using fvwm2's \"ReallySmart\" algorithm.
-The placement is just as if being placed by fvwm2's SmartPlacement,
-as if SmartPlacementIsReallySmart were in effect. That is, it
-tries to place the window so as to minimize its area of
-overlap with other windows. Several parameters give different
-weight to various kinds of windows, but they are not tunable
-at runtime currently. If it fails to place the window, it
-returns #f; otherwise it returns #t.
+"Places WIN using fvwm2's \"ReallySmart\" algorithm.\n\
+The placement is just as if being placed by fvwm2's SmartPlacement,\n\
+as if SmartPlacementIsReallySmart were in effect. That is, it\n\
+tries to place the window so as to minimize its area of\n\
+overlap with other windows. Several parameters give different\n\
+weight to various kinds of windows, but they are not tunable\n\
+at runtime currently. If it fails to place the window, it\n\
+returns #f; otherwise it returns #t.\n\
 
-This is called as part of `default-placement-proc'.  It could also be
-used in user-defined placement procedures (see 
+This is called as part of `default-placement-proc'.  It could also be\n\
+used in user-defined placement procedures (see \n\
 `set-window-placement-proc!').")
 #define FUNC_NAME s_clever_place_window
 {
@@ -532,15 +532,15 @@ used in user-defined placement procedures (see
 
 SCWM_PROC(random_place_window, "random-place-window", 1, 0, 0, 
           (SCM win),
-"Places WIN just as if being placed by fvwm2's RandomPlacement.
-This placement is not truly random; it is based on two state variables
-which are incremented for the x and y coordinates, and which wrap
-around once a window would be forced off the screen. The placement is
-fairly arbitrary, but always succeeds, and so avoids user
-interaction. #t is always returned.
+"Places WIN just as if being placed by fvwm2's RandomPlacement.\n\
+This placement is not truly random; it is based on two state variables\n\
+which are incremented for the x and y coordinates, and which wrap\n\
+around once a window would be forced off the screen. The placement is\n\
+fairly arbitrary, but always succeeds, and so avoids user\n\
+interaction. #t is always returned.\n\
 
-This is called as part of `default-placement-proc'.  It could also be
-used in user-defined placement procedures (see 
+This is called as part of `default-placement-proc'.  It could also be\n\
+used in user-defined placement procedures (see \n\
 `set-window-placement-proc!').")
 #define FUNC_NAME s_random_place_window
 {
@@ -570,16 +570,16 @@ used in user-defined placement procedures (see
 
 SCWM_PROC(default_placement_proc, "default-placement-proc", 1, 0, 0, 
           (SCM win),
-"Use various flags to call an appropriate placement function.
-This is the default placement procedure for non-transient windows. It
-tries `smart-place-window', `clever-place-window',
-`random-place-window', or `interactive-move' (to achieve interactive
-placement) on WIN depending on several style flags. (See
-`set-smart-placement-is-really-smart!', `set-smart-placement!',
-and `set-random-placement!'.) However, if one of the following 
-factors holds, the window will instead be placed exactly as 
-requested by the program: the position was specified by the user, 
-the position was specified by the program and #:no-PPosition-hint 
+"Use various flags to call an appropriate placement function.\n\
+This is the default placement procedure for non-transient windows. It\n\
+tries `smart-place-window', `clever-place-window',\n\
+`random-place-window', or `interactive-move' (to achieve interactive\n\
+placement) on WIN depending on several style flags. (See\n\
+`set-smart-placement-is-really-smart!', `set-smart-placement!',\n\
+and `set-random-placement!'.) However, if one of the following \n\
+factors holds, the window will instead be placed exactly as \n\
+requested by the program: the position was specified by the user, \n\
+the position was specified by the program and #:no-PPosition-hint \n\
 is not set, or the window starts iconic.")
 #define FUNC_NAME s_default_placement_proc
 { 
@@ -646,7 +646,7 @@ is not set, or the window starts iconic.")
 
 SCWM_PROC(default_transient_placement_proc, "default-transient-placement-proc", 1, 0, 0, 
           (SCM win),
-"This is the default placement procedure for transient windows.
+"This is the default placement procedure for transient windows.\n\
 It simply leaves the window WIN in place, exactly as requested.")
 #define FUNC_NAME s_default_transient_placement_proc
 {

@@ -221,10 +221,10 @@ XCursorByNumber(int cursor_num)
 
 SCWM_PROC(set_window_cursor_x,"set-window-cursor!",2,0,0,
           (SCM win, SCM cursor),
-"Set the default cursor for WIN to CURSOR. 
-If CURSOR is #f, this undefines the cursor for WIN and
-makes that window use its parent window's cursor.
-See `get-x-cursor', and `create-pixmap-cursor' for ways
+"Set the default cursor for WIN to CURSOR. \n\
+If CURSOR is #f, this undefines the cursor for WIN and\n\
+makes that window use its parent window's cursor.\n\
+See `get-x-cursor', and `create-pixmap-cursor' for ways\n\
 to create cursor objects.")
 #define FUNC_NAME s_set_window_cursor_x
 {
@@ -243,11 +243,11 @@ to create cursor objects.")
 
 SCWM_PROC(get_x_cursor,"get-x-cursor",1,0,0,
 	  (SCM name_or_number),
-"Return the cursor object corresponding to NAME-OR-NUMBER.
-NAME-OR-NUMBER can be either a string naming an X11 cursor (e.g.,
-\"trek\") or a number specifying the cursor number.  See 
-<file>X11/cursorfont.h</file> for the standard cursors.  Note
-that the \"XC_\" macro prefix should be omitted when used with
+"Return the cursor object corresponding to NAME-OR-NUMBER.\n\
+NAME-OR-NUMBER can be either a string naming an X11 cursor (e.g.,\n\
+\"trek\") or a number specifying the cursor number.  See \n\
+<file>X11/cursorfont.h</file> for the standard cursors.  Note\n\
+that the \"XC_\" macro prefix should be omitted when used with\n\
 this procedure..")
 #define FUNC_NAME s_get_x_cursor
 {
@@ -268,10 +268,10 @@ this procedure..")
 
 SCWM_PROC(create_pixmap_cursor,"create-pixmap-cursor",1,4,0,
           (SCM image, SCM fg_color, SCM bg_color, SCM x_hotspot, SCM y_hotspot),
-"Create and return a new cursor object from the pixmap image.
-IMAGE specifies the look of the cursor that will be returned.
-FG-COLOR and BG-COLOR specify the foreground and background colors
-respectively.  X-HOTSPOT, Y-HOTSPOT give the x and y offset for the
+"Create and return a new cursor object from the pixmap image.\n\
+IMAGE specifies the look of the cursor that will be returned.\n\
+FG-COLOR and BG-COLOR specify the foreground and background colors\n\
+respectively.  X-HOTSPOT, Y-HOTSPOT give the x and y offset for the\n\
 cursor's hot spot (from the top-left of the cursor).")
 #define FUNC_NAME s_create_pixmap_cursor
 {

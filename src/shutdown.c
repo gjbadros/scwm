@@ -177,9 +177,9 @@ SaveDesktopState()
 
 SCWM_PROC(restart, "restart", 0, 1, 0,
           (SCM command),
-"Restart the window manager. 
-If COMMAND is specified, use that, as the new window manager to
-run. If COMMAND is not specified or is exactly equal to \"scwm\",
+"Restart the window manager. \n\
+If COMMAND is specified, use that, as the new window manager to\n\
+run. If COMMAND is not specified or is exactly equal to \"scwm\",\n\
 restart scwm with the same command-line arguments as given previously.")
 #define FUNC_NAME s_restart
 {
@@ -199,7 +199,7 @@ restart scwm with the same command-line arguments as given previously.")
 /* GJB:FIXME:MS: what is args for, and why does this have it */
 SCWM_PROC(scwm_quit, "scwm-quit", 0, 0, 1,
           (SCM ARG_IGNORE(args)),
-"Exit scwm cleanly. `quit' is redefined as this within scwm.
+"Exit scwm cleanly. `quit' is redefined as this within scwm.\n\
 ARGS is ignored")
 #define FUNC_NAME s_scwm_quit
 {

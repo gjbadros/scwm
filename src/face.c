@@ -345,7 +345,7 @@ this ugly code is almost certainly more compact and quite possibly
 faster. If only C had closures... */
 SCWM_PROC(set_face_flag_x,"set-face-flag!", 3, 0, 0,
           (SCM face, SCM flag, SCM flagval),
-"Set the given FLAG to the given FLAGVAL for face FACE.
+"Set the given FLAG to the given FLAGVAL for face FACE.\n\
 See the section on the `Face Flags' concept.")
 #define FUNC_NAME s_set_face_flag_x
 {
@@ -442,8 +442,8 @@ See the section on the `Face Flags' concept.")
 
 SCWM_PROC(make_face, "make-face",2,0,0,
           (SCM flags, SCM specs),
-"Create a new face.
-FLAGS is a list of face flags (see concept) and
+"Create a new face.\n\
+FLAGS is a list of face flags (see concept) and\n\
 SPECS is a list of face specifiers.")
 #define FUNC_NAME s_make_face
 {
@@ -856,13 +856,13 @@ extern ScwmDecor *cur_decor;
 
 SCWM_PROC(set_title_face_x, "set-title-face!", 1 , 2, 0,
           (SCM active_up, SCM active_down, SCM inactive),
-"Set the titlebar faces for the various window states.
-In the current decor, use ACTIVE-UP as the face for the title
-bar when active and not pressed in. Use ACTIVE-DOWN when the title bar
-is active and pressed in, and INACTIVE when the window is
-inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not
-specified. Note that ACTIVE-DOWN will magically reverse the sense of
-the relief flag, so if your titlebar bar is raised in the ACTIVE-UP
+"Set the titlebar faces for the various window states.\n\
+In the current decor, use ACTIVE-UP as the face for the title\n\
+bar when active and not pressed in. Use ACTIVE-DOWN when the title bar\n\
+is active and pressed in, and INACTIVE when the window is\n\
+inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not\n\
+specified. Note that ACTIVE-DOWN will magically reverse the sense of\n\
+the relief flag, so if your titlebar bar is raised in the ACTIVE-UP\n\
 state, it will be sunk in the ACTIVE-DOWN state by default. ")
 #define FUNC_NAME s_set_title_face_x
 {
@@ -884,16 +884,16 @@ state, it will be sunk in the ACTIVE-DOWN state by default. ")
 
 SCWM_PROC(set_button_face_x, "set-button-face!", 2, 2, 0,
           (SCM button, SCM active_up, SCM active_down, SCM inactive),
-"Set the button faces for the various window states.
-See `set-left-button-face!' and `set-right-button-face!' for a
-more natural interface for this.
-In the current decor, use ACTIVE-UP as the face for the
-button specified by the integer BUTTON when active and not pressed
-in. Use ACTIVE-DOWN when BUTTON is active and pressed in, and INACTIVE
-when the window is inactive. Both INACTIVE and ACTIVE-DOWN default to
-ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically
-reverse the sense of the relief flag, so if the button is raised in
-the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by
+"Set the button faces for the various window states.\n\
+See `set-left-button-face!' and `set-right-button-face!' for a\n\
+more natural interface for this.\n\
+In the current decor, use ACTIVE-UP as the face for the\n\
+button specified by the integer BUTTON when active and not pressed\n\
+in. Use ACTIVE-DOWN when BUTTON is active and pressed in, and INACTIVE\n\
+when the window is inactive. Both INACTIVE and ACTIVE-DOWN default to\n\
+ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically\n\
+reverse the sense of the relief flag, so if the button is raised in\n\
+the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by\n\
 default. ")
 #define FUNC_NAME s_set_button_face_x
 {
@@ -930,10 +930,10 @@ default. ")
 
 SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
           (SCM button, SCM flag),
-"Specify the Mwm flag for BUTTON.
-If FLAG is #t, the button's relief pattern (if any) will appear to
-reverse in depth sense (i.e., flip from sunken in to extruding out)
-when the window is maximized (has a non-#f \"maximized\" window
+"Specify the Mwm flag for BUTTON.\n\
+If FLAG is #t, the button's relief pattern (if any) will appear to\n\
+reverse in depth sense (i.e., flip from sunken in to extruding out)\n\
+when the window is maximized (has a non-#f \"maximized\" window\n\
 property).")
 #define FUNC_NAME s_set_button_mwm_flag_x
 {
@@ -957,9 +957,9 @@ property).")
 
 SCWM_PROC(set_border_face_x, "set-border-face!", 1, 1, 0,
           (SCM active, SCM inactive),
-"Set the face for the border In the current decor.
-Use ACTIVE as the face for the border when the window is active. Use
-INACTIVE when the window is inactive. INACTIVE defaults to the same as
+"Set the face for the border In the current decor.\n\
+Use ACTIVE as the face for the border when the window is active. Use\n\
+INACTIVE when the window is inactive. INACTIVE defaults to the same as\n\
 ACTIVE when not specified.")
 #define FUNC_NAME s_set_border_face_x
 {

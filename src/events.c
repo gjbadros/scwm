@@ -344,8 +344,8 @@ HandleEvents(void)
 
 SCWM_PROC(handle_pending_events, "handle-pending-events", 0,0,0,
           (),
-"Handle all pending Scwm events, returns number of dispatched events.
-This is useful to maintain responsiveness of Scwm when in the middle
+"Handle all pending Scwm events, returns number of dispatched events.\n\
+This is useful to maintain responsiveness of Scwm when in the middle\n\
 of a long computation.")
 #define FUNC_NAME s_handle_pending_events
 {
@@ -638,11 +638,11 @@ FIXDOC: Link to file!
 
 SCWM_PROC (reset_scwmexec_protocol, "reset-scwmexec-protocol", 0, 0, 0,
            (),
-"Reset the scwmexec protocol.
-This procedure removes the \"XA_SCWMEXEC_REQUEST\" property on the
-root window.  It should not be necessary but may be useful in case
-your X server goes awry (and otherwise you would have to restart your
-X server).  Use if scwmexec or scwmrepl are not returning (e.g.,
+"Reset the scwmexec protocol.\n\
+This procedure removes the \"XA_SCWMEXEC_REQUEST\" property on the\n\
+root window.  It should not be necessary but may be useful in case\n\
+your X server goes awry (and otherwise you would have to restart your\n\
+X server).  Use if scwmexec or scwmrepl are not returning (e.g.,\n\
 if your Emacs hangs when you try evaluating a scwm expression).")
 #define FUNC_NAME s_reset_scwmexec_protocol
 {
@@ -2173,8 +2173,8 @@ extern long basic_event_mask;
 /* GJB:FIXME:: Only for newer guiles for now */
 SCWM_PROC(add_motion_handler_x, "add-motion-handler!", 1, 0, 0,
           (SCM proc),
-"Call PROC on XMotionEvents.
-This can considerably slow Scwm down so use it only when
+"Call PROC on XMotionEvents.\n\
+This can considerably slow Scwm down so use it only when\n\
 necessary.  See `remove-motion-handler' and `reset-motion-handlers'.")
 #define FUNC_NAME s_add_motion_handler_x
 {
@@ -2186,8 +2186,8 @@ necessary.  See `remove-motion-handler' and `reset-motion-handlers'.")
 
 SCWM_PROC(remove_motion_handler_x, "remove-motion-handler!", 1, 0, 0,
           (SCM proc),
-"No longer call PROC on XMotionEvents.
-Handling motion events can considerably slow Scwm down so use it only when
+"No longer call PROC on XMotionEvents.\n\
+Handling motion events can considerably slow Scwm down so use it only when\n\
 necessary.  See `add-motion-handler' and `reset-motion-handlers'.")
 #define FUNC_NAME s_remove_motion_handler_x
 {
@@ -2202,8 +2202,8 @@ necessary.  See `add-motion-handler' and `reset-motion-handlers'.")
 
 SCWM_PROC(reset_motion_handlers_x, "reset-motion-handlers!", 0, 0, 0,
           (),
-"Call no procedures on XMotionEvents.
-Handling motion events can considerably slow Scwm down so use it only when
+"Call no procedures on XMotionEvents.\n\
+Handling motion events can considerably slow Scwm down so use it only when\n\
 necessary.  See `add-motion-handler' and `remove-motion-handler'.")
 #define FUNC_NAME s_reset_motion_handlers_x
 {
@@ -2218,14 +2218,14 @@ necessary.  See `add-motion-handler' and `remove-motion-handler'.")
 
 SCWM_PROC(send_key, "send-key", 1,4,0,
           (SCM key, SCM win, SCM key_press_p, SCM key_release_p, SCM propagate_p),
-"Send a synthetic press/release of KEY.  
-The usual key specification format (with modifiers) is used. The event
-is sent to window WIN if specified; otherwise the window to be used
-defaults to the window context in the usual way. By default, both a
-press and a release are sent. However, the boolean parameters
-KEY-PRESS? and KEY-RELEASE?  allow you to specify which are sent
-individually. PROPAGATE? indicates whether the propagate flag is set
-on the event; the default is #f. You should not have to worry about
+"Send a synthetic press/release of KEY.  \n\
+The usual key specification format (with modifiers) is used. The event\n\
+is sent to window WIN if specified; otherwise the window to be used\n\
+defaults to the window context in the usual way. By default, both a\n\
+press and a release are sent. However, the boolean parameters\n\
+KEY-PRESS? and KEY-RELEASE?  allow you to specify which are sent\n\
+individually. PROPAGATE? indicates whether the propagate flag is set\n\
+on the event; the default is #f. You should not have to worry about\n\
 this unless you know what it means.")
 #define FUNC_NAME s_send_key
 {
@@ -2265,18 +2265,18 @@ this unless you know what it means.")
 
 SCWM_PROC(send_button, "send-button", 1, 5, 0,
           (SCM button, SCM win, SCM kind, SCM propagate_p, SCM dx, SCM dy),
-"Send a synthetic mouse button/release event.
-Create a synthetic event of a press of mouse button BUTTON. The usual
-mouse button specification format (with modifiers) is used. Send the
-event to window WIN if specified; otherwise the window to be used
-defaults to the window context in the usual way. By default, both a
-press and a release are sent---a click. KIND can be one of 'press, 'release,
-'click, 'desk-press, 'desk-release, or 'desk-click.
-If DX or DY is set, that value is used as the offset within WIN for
-the button events to occur.  If one is not specified or #f, then the
-pointer offset of that coordinate is used instead.
-PROPAGATE? indicates whether the propagate flag is set
-on the event; the default is #f. You should not have to worry about
+"Send a synthetic mouse button/release event.\n\
+Create a synthetic event of a press of mouse button BUTTON. The usual\n\
+mouse button specification format (with modifiers) is used. Send the\n\
+event to window WIN if specified; otherwise the window to be used\n\
+defaults to the window context in the usual way. By default, both a\n\
+press and a release are sent---a click. KIND can be one of 'press, 'release,\n\
+'click, 'desk-press, 'desk-release, or 'desk-click.\n\
+If DX or DY is set, that value is used as the offset within WIN for\n\
+the button events to occur.  If one is not specified or #f, then the\n\
+pointer offset of that coordinate is used instead.\n\
+PROPAGATE? indicates whether the propagate flag is set\n\
+on the event; the default is #f. You should not have to worry about\n\
 this unless you know what it means.")
 #define FUNC_NAME s_send_button
 {

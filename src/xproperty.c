@@ -111,15 +111,15 @@ Atom InternAtomFromScm(Display *dpy, SCM s, Bool f)
 
 SCWM_PROC(X_property_set_x, "X-property-set!", 3, 3, 0,
 	  (SCM win, SCM name, SCM value, SCM type, SCM format, SCM action),
-"Set X property NAME on window WIN to VALUE.
-WIN is the window to set the X property on, an X window id, or 'root-window.
-NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to \"STRING\".
-FORMAT may be one of the integers 8, 16, and 32, defining the element size
-of the VALUE. It is 8 by default.
-If FORMAT is 8, VALUE may be a string or a list of null-terminated strings.
-Otherwise it will be a vector of FORMAT-bit integers.
-ACTION may be one of the symbols 'replace, 'prepend, or 'append signifying
-how the new VALUE should be merged (if at all) with the existing
+"Set X property NAME on window WIN to VALUE.\n\
+WIN is the window to set the X property on, an X window id, or 'root-window.\n\
+NAME and TYPE are strings or X/11 atoms (longs). TYPE defaults to \"STRING\".\n\
+FORMAT may be one of the integers 8, 16, and 32, defining the element size\n\
+of the VALUE. It is 8 by default.\n\
+If FORMAT is 8, VALUE may be a string or a list of null-terminated strings.\n\
+Otherwise it will be a vector of FORMAT-bit integers.\n\
+ACTION may be one of the symbols 'replace, 'prepend, or 'append signifying\n\
+how the new VALUE should be merged (if at all) with the existing\n\
 value.")
 #define FUNC_NAME s_X_property_set_x
 {
@@ -253,15 +253,15 @@ ScmListOfStringsFromStringLen( char *pch, int cch)
 
 SCWM_PROC(X_property_get, "X-property-get", 2, 1, 0,
 	  (SCM win, SCM name, SCM consume_p),
-"Get X property NAME of window WIN.
-WIN is the window to check, an X window id, or 'root-window.
-NAME is a string or an X/11 atom (long).
-If CONSUME? is #t, the X property is deleted after getting it. Default is
-not to delete.
-If the X property could not be found, #f is returned.
-If the X property could be found, a list '(value type format) is returned.
-\"type\" is a string.
-\"format\" is either 8, 16, or 32, giving the size of the elements of \"value\".
+"Get X property NAME of window WIN.\n\
+WIN is the window to check, an X window id, or 'root-window.\n\
+NAME is a string or an X/11 atom (long).\n\
+If CONSUME? is #t, the X property is deleted after getting it. Default is\n\
+not to delete.\n\
+If the X property could not be found, #f is returned.\n\
+If the X property could be found, a list '(value type format) is returned.\n\
+\"type\" is a string.\n\
+\"format\" is either 8, 16, or 32, giving the size of the elements of \"value\".\n\
 \"value\" is a string, if \"format\" is 8, or a vector of integers otherwise.")
 #define FUNC_NAME s_X_property_get
 {
@@ -320,8 +320,8 @@ If the X property could be found, a list '(value type format) is returned.
 
 SCWM_PROC(X_property_delete_x, "X-property-delete!", 2, 0, 0,
 	  (SCM win, SCM name),
-"Delete X property NAME of window WIN.
-WIN is the window to check, an X window id, or 'root-window.
+"Delete X property NAME of window WIN.\n\
+WIN is the window to check, an X window id, or 'root-window.\n\
 NAME is a string. The return value is unspecified.")
 #define FUNC_NAME s_X_property_delete_x
 {
@@ -338,7 +338,7 @@ NAME is a string. The return value is unspecified.")
 
 SCWM_PROC(X_properties, "X-properties", 1, 0, 0,
 	  (SCM win),
-"Returns a list of WIN's X property names.
+"Returns a list of WIN's X property names.\n\
 WIN is the window to query, an X window id, or 'root-window.")
 #define FUNC_NAME s_X_properties
 {
@@ -374,7 +374,7 @@ string. Scwm provides primitives for these actions. */
 
 SCWM_PROC(string_to_X_atom, "string->X-atom", 1, 0, 0,
 	  (SCM string),
-"Returns an X atom representing STRING.
+"Returns an X atom representing STRING.\n\
 If STRING contains NULL-characters, the behaviour is undefined.")
 #define FUNC_NAME s_string_to_X_atom
 {
@@ -390,7 +390,7 @@ If STRING contains NULL-characters, the behaviour is undefined.")
 
 SCWM_PROC(X_atom_to_string, "X-atom->string", 1, 0, 0,
 	  (SCM atom),
-"Returns the string represented by ATOM.
+"Returns the string represented by ATOM.\n\
 Returns #f, if the X atom was not known.")
 #define FUNC_NAME s_X_atom_to_string
 {
@@ -410,9 +410,9 @@ Returns #f, if the X atom was not known.")
 
 SCWM_PROC(X_get_selection_owner,"X-get-selection-owner", 1, 0, 0,
           (SCM atom),
-"Return the window that owns the selection denoted by ATOM.
-ATOM is likely one of the atoms: \"PRIMARY\" or \"SECONDARY\".
-See also `string->X-atom'.  Return value is either a window
+"Return the window that owns the selection denoted by ATOM.\n\
+ATOM is likely one of the atoms: \"PRIMARY\" or \"SECONDARY\".\n\
+See also `string->X-atom'.  Return value is either a window\n\
 object, 'root-window, or an integer window Id.")
 #define FUNC_NAME s_X_get_selection_owner
 {
@@ -434,10 +434,10 @@ object, 'root-window, or an integer window Id.")
 
 SCWM_PROC(X_convert_selection,"X-convert-selection", 4, 0, 0,
           (SCM selection, SCM target, SCM property, SCM requestor_window),
-"Ask the owner of selection SELECTION to provide its value.
-The owner should convert the selection to type TARGET and put set
-the X property PROPERTY on REQUESTOR-WINDOW when it is transferred.
-SELECTION, TARGET, and PROPERTY are each atoms.  REQUESTOR-WINDOW
+"Ask the owner of selection SELECTION to provide its value.\n\
+The owner should convert the selection to type TARGET and put set\n\
+the X property PROPERTY on REQUESTOR-WINDOW when it is transferred.\n\
+SELECTION, TARGET, and PROPERTY are each atoms.  REQUESTOR-WINDOW\n\
 is a window object or 'root-window.")
 #define FUNC_NAME s_X_convert_selection
 {

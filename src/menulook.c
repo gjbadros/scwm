@@ -92,10 +92,10 @@ make_menulook(char * szName, SCM extra, MenuDrawingVtable * mdvt)
 
 SCWM_PROC(copy_menu_look, "copy-menu-look", 2, 1, 0,
 	  (SCM original_menu_look, SCM name, SCM extra),
-"Copy menu look ORIGINAL-MENU-LOOK with a new NAME and optional EXTRA.
-If EXTRA is not given, the EXTRA information from the original menu is
-used. The form and purpose of the EXTRA information varies with the
-menu look, and is documented with the original menu looks; currently,
+"Copy menu look ORIGINAL-MENU-LOOK with a new NAME and optional EXTRA.\n\
+If EXTRA is not given, the EXTRA information from the original menu is\n\
+used. The form and purpose of the EXTRA information varies with the\n\
+menu look, and is documented with the original menu looks; currently,\n\
 only the Xpm menu look uses the EXTRA information.")
 #define FUNC_NAME s_copy_menu_look
 {

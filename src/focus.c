@@ -78,8 +78,8 @@ FFocussableWin(ScwmWindow *psw)
 
 SCWM_PROC(focussable_window_p,"focussable-window?",0,1,0,
           (SCM win),
-"Return #t iff WIN may receive the keyboard focus.
-This will return #f, e.g., if WIN's focus style is 'none, or
+"Return #t iff WIN may receive the keyboard focus.\n\
+This will return #f, e.g., if WIN's focus style is 'none, or\n\
 its X11 hints do not permit it to receive the focus.")
 #define FUNC_NAME s_focussable_window_p
 {

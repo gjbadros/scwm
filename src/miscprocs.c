@@ -48,8 +48,8 @@ See `scwm-run-test-hook-1'.");
 
 SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
           (SCM just),
-"Set the justification for the title to JUST.
-JUST should be one of 'right, 'left, or 'center. Applies to the
+"Set the justification for the title to JUST.\n\
+JUST should be one of 'right, 'left, or 'center. Applies to the\n\
 current decor.")
 #define FUNC_NAME s_set_title_justify_x
 {
@@ -74,8 +74,8 @@ current decor.")
 
 SCWM_PROC(title_justify,"title-justify", 0, 0, 0,
           (),
-"Return the current justification for the title, as set by `set-title-justify!'.
-The return value will be one of 'right, 'left, or 'center. Applies to the
+"Return the current justification for the title, as set by `set-title-justify!'.\n\
+The return value will be one of 'right, 'left, or 'center. Applies to the\n\
 current decor.")
 #define FUNC_NAME s_title_justify
 {
@@ -96,7 +96,7 @@ current decor.")
 
 SCWM_PROC(set_title_height_x, "set-title-height!", 1, 0, 0,
           (SCM height),
-"Set the height of the titlebar in pixels to HEIGHT.
+"Set the height of the titlebar in pixels to HEIGHT.\n\
 Applies to the current decor.")
 #define FUNC_NAME s_set_title_height_x
 {
@@ -123,7 +123,7 @@ Applies to the current decor.")
 
 SCWM_PROC(title_height,"title-height", 0, 0, 0,
           (),
-"Return the height of the titlebar in pixels, as set by `set-title-height!'.
+"Return the height of the titlebar in pixels, as set by `set-title-height!'.\n\
 Applies to the current decor.")
 #define FUNC_NAME s_title_height
 {
@@ -146,10 +146,10 @@ SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
 
 SCWM_PROC(capturing_p, "capturing?", 0, 0, 0,
           (),
-"Returns #t when the windows are being captured.
-This happens at two times: during initial startup, or during a
-recapture operation. In either case, placement procedures should
-probably avoid interaction and perhaps avoid moving the window being
+"Returns #t when the windows are being captured.\n\
+This happens at two times: during initial startup, or during a\n\
+recapture operation. In either case, placement procedures should\n\
+probably avoid interaction and perhaps avoid moving the window being\n\
 placed at all.")
 #define FUNC_NAME s_capturing_p
 {
@@ -173,9 +173,9 @@ necessary during normal operation.")
 
 SCWM_PROC(set_click_delay_x, "set-click-delay!", 1, 0, 0,
           (SCM msec),
-"Set the delay used in identifying mouse clicks and drags.
-MSEC is specified in milliseconds. After MSEC milliseconds, a mouse-down
-without a mouse-up is considered a drag.  Also, after MSEC milliseconds, a
+"Set the delay used in identifying mouse clicks and drags.\n\
+MSEC is specified in milliseconds. After MSEC milliseconds, a mouse-down\n\
+without a mouse-up is considered a drag.  Also, after MSEC milliseconds, a\n\
 single click is definitively identified as not a double click.")
 #define FUNC_NAME s_set_click_delay_x
 {
@@ -188,7 +188,7 @@ single click is definitively identified as not a double click.")
 
 SCWM_PROC(click_delay, "click-delay", 0, 0, 0,
           (),
-"Returns the delay used in identifying mouse clicks and drags, in milliseconds. 
+"Returns the delay used in identifying mouse clicks and drags, in milliseconds. \n\
 See also `set-click-delay!'")
 #define FUNC_NAME s_click_delay
 {
@@ -198,11 +198,11 @@ See also `set-click-delay!'")
 
 SCWM_PROC(set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,
           (SCM ftype),
-"Set the colormap focus policy to FTYPE. 
-FTYPE can either be 'mouse, indicating that the window under the mouse
-pointer should always have its colormap installed, or 'focus to
-indicate that the window with the input focus should also get the
-colormap focus. This makes a difference only when using focus policies
+"Set the colormap focus policy to FTYPE. \n\
+FTYPE can either be 'mouse, indicating that the window under the mouse\n\
+pointer should always have its colormap installed, or 'focus to\n\
+indicate that the window with the input focus should also get the\n\
+colormap focus. This makes a difference only when using focus policies\n\
 other than 'mouse.")
 #define FUNC_NAME s_set_colormap_focus_x
 {
@@ -222,10 +222,10 @@ other than 'mouse.")
 
 SCWM_PROC(colormap_focus, "colormap-focus", 0, 0, 0,
           (),
-"Return the colormap focus policy, as set by `set-colormap-focus!'. 
-The value can be either be 'mouse, indicating that the window under
-the mouse pointer will always colormap installed, or 'focus to
-indicate that the window with the input focus should also get the
+"Return the colormap focus policy, as set by `set-colormap-focus!'. \n\
+The value can be either be 'mouse, indicating that the window under\n\
+the mouse pointer will always colormap installed, or 'focus to\n\
+indicate that the window with the input focus should also get the\n\
 colormap focus.")
 #define FUNC_NAME s_colormap_focus
 {
@@ -235,7 +235,7 @@ colormap focus.")
 
 SCWM_PROC(pointer_position, "pointer-position", 0, 0, 0,
           (),
-"Return the current position of the mouse pointer in pixels.
+"Return the current position of the mouse pointer in pixels.\n\
 The return value is a two-element list of the x and y coordinates.")
 #define FUNC_NAME s_pointer_position
 {
@@ -293,9 +293,9 @@ SCWM_IPROC(beep, "beep", 0, 0, 0,
 
 SCWM_PROC(set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!",1, 0, 0,
           (SCM flag),
-"Determine whether or not `clever-place-window' will be used when smart-placing.
-If FLAG is #t, then `clever-place-window' will be used instead of
-`smart-place-window' when the default placement procedure is used, and
+"Determine whether or not `clever-place-window' will be used when smart-placing.\n\
+If FLAG is #t, then `clever-place-window' will be used instead of\n\
+`smart-place-window' when the default placement procedure is used, and\n\
 the window's smart-placement flag is on.")
 #define FUNC_NAME s_set_smart_placement_is_really_smart_x
 {
@@ -308,9 +308,9 @@ the window's smart-placement flag is on.")
 
 SCWM_PROC(smart_placement_is_really_smart_p, "smart-placement-is-really-smart?", 0, 0, 0,
           (),
-"Return whether or not `clever-place-window' will be used when smart-placing.
-If the value is #t, then `clever-place-window' will be used instead of
-smart-place-window when the default placement procedure is used, and
+"Return whether or not `clever-place-window' will be used when smart-placing.\n\
+If the value is #t, then `clever-place-window' will be used instead of\n\
+smart-place-window when the default placement procedure is used, and\n\
 the window's smart-placement flag is on.")
 #define FUNC_NAME s_smart_placement_is_really_smart_p
 {
@@ -325,8 +325,8 @@ the window's smart-placement flag is on.")
 
 SCWM_PROC(set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0,
           (SCM flag),
-"Determine whether a click-to-focus window receives the click.
-If FLAG is #t, the window will receive the event, if #f, scwm
+"Determine whether a click-to-focus window receives the click.\n\
+If FLAG is #t, the window will receive the event, if #f, scwm\n\
 will not pass the event on to the client.")
 #define FUNC_NAME s_set_click_to_focus_passes_click_x
 {
@@ -349,8 +349,8 @@ SCWM_PROC(click_to_focus_passes_click_p, "click-to-focus-passes-click?", 0, 0, 0
 
 SCWM_PROC(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
           (SCM flag),
-"Determine whether a click to focus raises the clicked-on window.
-If FLAG is #t, clicks which transfer focus will also raise the target 
+"Determine whether a click to focus raises the clicked-on window.\n\
+If FLAG is #t, clicks which transfer focus will also raise the target \n\
 window.")
 #define FUNC_NAME s_set_click_to_focus_raises_x
 {
@@ -381,8 +381,8 @@ SCWM_PROC(click_to_focus_raises_p, "click-to-focus-raises?", 0, 0, 0,
 
 SCWM_PROC(set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0, 0,
           (SCM flag),
-"Determine whether a mouse-focus-click will raise the window.
-If FLAG is #t it will raise the window. Not sure if this function
+"Determine whether a mouse-focus-click will raise the window.\n\
+If FLAG is #t it will raise the window. Not sure if this function\n\
 makes sense any more.")
 #define FUNC_NAME s_set_mouse_focus_click_raises_x
 {
@@ -405,8 +405,8 @@ SCWM_PROC(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
 
 SCWM_PROC(X_rotate_cut_buffers, "X-rotate-cut-buffers", 1, 0, 0,
           (SCM n),
-"Rotate the X cut buffers by N positions.
-This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,
+"Rotate the X cut buffers by N positions.\n\
+This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,\n\
 and so on.  This cut buffer numbering is global to the display.")
 #define FUNC_NAME s_X_rotate_cut_buffers
 {
@@ -507,9 +507,9 @@ SCWM_PROC(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
 
 SCWM_PROC(set_X_server_synchronize_x, "set-X-server-synchronize!", 1, 0, 0,
           (SCM flag),
-"Set X server sychronization flag to FLAG.
-If FLAG is #t, then Scwm will turn on synchronous X behaviour; if FLAG 
-is #f, Scwm will turn off synchronous behaviour.  Scwm is slower in
+"Set X server sychronization flag to FLAG.\n\
+If FLAG is #t, then Scwm will turn on synchronous X behaviour; if FLAG \n\
+is #f, Scwm will turn off synchronous behaviour.  Scwm is slower in\n\
 synchronous mode, but can be easier to debug.")
 #define FUNC_NAME s_set_X_server_synchronize_x
 {
@@ -524,8 +524,8 @@ synchronous mode, but can be easier to debug.")
 /* MS:FIXME:: this should probably be split into multiple procs. */
 SCWM_PROC(X_version_information, "X-version-information", 0, 0, 0,
           (),
-"Return some information about the version of the running X server.
-Return value is a list of the X protocol version, the X protocol
+"Return some information about the version of the running X server.\n\
+Return value is a list of the X protocol version, the X protocol\n\
 revision, the X server vendor, and the vendor release number.")
 #define FUNC_NAME s_X_version_information
 {
@@ -544,15 +544,15 @@ revision, the X server vendor, and the vendor release number.")
 
 SCWM_PROC(X_display_information, "X-display-information", 0, 0, 0,
           (),
-"Return some information about the screen. In particular,
-return a list of the horizontal resolution, the vertical resolution,
-the number of planes on the current screen (i.e. the bit depth), the
-bits per color supported by the hardware, the visual class (one of
-\"StaticGray\", \"GrayScale\", \"StaticColor\", \"PseudoColor\", \"DirectColor\"
-or \"TrueColor\") and a boolean indicating whether the display is color.
-The resolutions mentioned above should in theory be pixels per
-centimeter, rounded to the nearest integer. These parameters can be
-used for various workarounds or conditional decisions in a scwmrc to
+"Return some information about the screen. In particular,\n\
+return a list of the horizontal resolution, the vertical resolution,\n\
+the number of planes on the current screen (i.e. the bit depth), the\n\
+bits per color supported by the hardware, the visual class (one of\n\
+\"StaticGray\", \"GrayScale\", \"StaticColor\", \"PseudoColor\", \"DirectColor\"\n\
+or \"TrueColor\") and a boolean indicating whether the display is color.\n\
+The resolutions mentioned above should in theory be pixels per\n\
+centimeter, rounded to the nearest integer. These parameters can be\n\
+used for various workarounds or conditional decisions in a scwmrc to\n\
 be shared among multiple machines.")
 #define FUNC_NAME s_X_display_information
 {
@@ -614,10 +614,10 @@ be shared among multiple machines.")
 
 SCWM_PROC(user_name, "user-name", 0, 0, 0,
 	  (),
-"Return the current user's name.
-This is set to one of the following (in order of relevance):
-<envar>$USER</envar>, <envar>$LOGNAME</envar>,
-the name field of the current uid's entry in the password file,
+"Return the current user's name.\n\
+This is set to one of the following (in order of relevance):\n\
+<envar>$USER</envar>, <envar>$LOGNAME</envar>,\n\
+the name field of the current uid's entry in the password file,\n\
 the constant string \"nobody\".")
 #define FUNC_NAME s_user_name
 {
@@ -627,10 +627,10 @@ the constant string \"nobody\".")
 
 SCWM_PROC(user_home, "user-home", 0, 0, 0,
 	  (),
-"Return the current user's home directory.
-This is set to one of the following (in order of relevance):
-<envar>$HOME</envar>,
-the directory field of the current uid's entry in the password file,
+"Return the current user's home directory.\n\
+This is set to one of the following (in order of relevance):\n\
+<envar>$HOME</envar>,\n\
+the directory field of the current uid's entry in the password file,\n\
 the constant string \"/tmp\".")
 #define FUNC_NAME s_user_home
 {
@@ -643,8 +643,8 @@ extern Bool fDoneStartup;
 
 SCWM_PROC(done_startup_p, "done-startup?", 0, 0, 0,
           (),
-"Return #t iff Scwm is fully initialized, else #f.
-Windows must all be captured and the `startup-hook' must have
+"Return #t iff Scwm is fully initialized, else #f.\n\
+Windows must all be captured and the `startup-hook' must have\n\
 already run for this to return #t.")
 #define FUNC_NAME s_done_startup_p
 {
@@ -667,9 +667,9 @@ Do not do this unless you are testing segv handling!")
 
 SCWM_PROC(set_reset_on_segv_x, "set-reset-on-segv!", 1, 0, 0,
 	  (SCM number_to_reset),
-"Reset Scwm to the main event loop on the next NUMBER-TO-RESET segv signals.
-The default is 100, but if you catch a segv and and are willing to 
-track it or send in a bug report, use this to permit a C-level backtrace
+"Reset Scwm to the main event loop on the next NUMBER-TO-RESET segv signals.\n\
+The default is 100, but if you catch a segv and and are willing to \n\
+track it or send in a bug report, use this to permit a C-level backtrace\n\
 by setting it to 0.  See also `set-handle-segv!'.")
 #define FUNC_NAME s_set_reset_on_segv_x
 {
@@ -681,7 +681,7 @@ by setting it to 0.  See also `set-handle-segv!'.")
 
 SCWM_PROC(reset_on_segv, "reset-on-segv", 0, 0, 0,
 	  (),
-"Return the number of segv signals Scwm will reset on.
+"Return the number of segv signals Scwm will reset on.\n\
 See `set-reset-on-segv!'.")
 #define FUNC_NAME s_reset_on_segv
 {
@@ -694,11 +694,11 @@ See `set-reset-on-segv!'.")
 
 SCWM_PROC(set_handle_segv_x, "set-handle-segv!", 1, 0, 0,
 	  (SCM flag),
-"If FLAG, tell Scwm to catch segv signals.
-This is the default, but if you catch a segv and really need it to 
-dump right away to figure out what is wrong then use this.  No
-cleanup is done if handling segv is #f.  Be sure to have an extra
-terminal handy on a console or separate X server.
+"If FLAG, tell Scwm to catch segv signals.\n\
+This is the default, but if you catch a segv and really need it to \n\
+dump right away to figure out what is wrong then use this.  No\n\
+cleanup is done if handling segv is #f.  Be sure to have an extra\n\
+terminal handy on a console or separate X server.\n\
 For developers and hackers only.")
 #define FUNC_NAME s_set_handle_segv_x
 {
@@ -758,16 +758,16 @@ SCWM_IPROC(scwm_run_test_hook_1, "scwm-run-test-hook-1", 2, 0, 0,
 
 SCWM_PROC(get_next_event, "get-next-event", 0, 0, 0,
           (),
-"Return a represention of the next key or mouse event.
-The return value is (string modmask keycode) for key events
-or (string modmask button-number #t). The
-`cdr' of the return value can be used as the arguments to 
-`undo-passive-grab' and `redo-passive-grab'.
-The string is usable as a key binding string.  Modifiers 
-are listed first, separated by \"-\" followed by a \"-\" and the
-keysym name.  E.g., \"S-C-M-z\" is Shift+Control+Meta + 'z' key.
-If the event is only modifier keys, then the string will
-end in a \"-\"; e.g., \"S-C-M-\".
+"Return a represention of the next key or mouse event.\n\
+The return value is (string modmask keycode) for key events\n\
+or (string modmask button-number #t). The\n\
+`cdr' of the return value can be used as the arguments to \n\
+`undo-passive-grab' and `redo-passive-grab'.\n\
+The string is usable as a key binding string.  Modifiers \n\
+are listed first, separated by \"-\" followed by a \"-\" and the\n\
+keysym name.  E.g., \"S-C-M-z\" is Shift+Control+Meta + 'z' key.\n\
+If the event is only modifier keys, then the string will\n\
+end in a \"-\"; e.g., \"S-C-M-\".\n\
 See also `get-mouse-event' and `get-key-event'.")
 #define FUNC_NAME s_get_next_event
 {
@@ -855,14 +855,14 @@ See also `get-mouse-event' and `get-key-event'.")
 
 SCWM_PROC(get_key_event, "get-key-event", 0, 0, 0,
           (),
-"Return a represention of the next key event.
-The return value is (string modmask keycode). The
-`cdr' of the return value can be used as the arguments to 
-`undo-passive-grab' and `redo-passive-grab'.
-The string is usable as a key binding string.  Modifiers 
-are listed first, separated by \"-\" followed by a \"-\" and the
-keysym name.  E.g., \"S-C-M-z\" is Shift+Control+Meta + 'z' key.
-If the event is only modifier keys, then the string will
+"Return a represention of the next key event.\n\
+The return value is (string modmask keycode). The\n\
+`cdr' of the return value can be used as the arguments to \n\
+`undo-passive-grab' and `redo-passive-grab'.\n\
+The string is usable as a key binding string.  Modifiers \n\
+are listed first, separated by \"-\" followed by a \"-\" and the\n\
+keysym name.  E.g., \"S-C-M-z\" is Shift+Control+Meta + 'z' key.\n\
+If the event is only modifier keys, then the string will\n\
 end in a \"-\"; e.g., \"S-C-M-\".  See also `get-next-event'.")
 #define FUNC_NAME s_get_key_event
 {
@@ -920,13 +920,13 @@ end in a \"-\"; e.g., \"S-C-M-\".  See also `get-next-event'.")
 
 SCWM_PROC(get_mouse_event, "get-mouse-event", 0, 0, 0,
           (),
-"Return a represention of the next mouse event.
-The return value is (string modmask button-number #t).  The
-`cdr' of the return value can be used as the arguments to 
-`undo-passive-grab' and `redo-passive-grab'.
-The string is usable as a mouse binding string.  Modifiers 
-are listed first, separated by \"-\" followed by a \"-\" and the
-button number.  E.g., \"S-C-M-1\" is Shift+Control+Meta + button 1.
+"Return a represention of the next mouse event.\n\
+The return value is (string modmask button-number #t).  The\n\
+`cdr' of the return value can be used as the arguments to \n\
+`undo-passive-grab' and `redo-passive-grab'.\n\
+The string is usable as a mouse binding string.  Modifiers \n\
+are listed first, separated by \"-\" followed by a \"-\" and the\n\
+button number.  E.g., \"S-C-M-1\" is Shift+Control+Meta + button 1.\n\
 See also `get-next-event'.")
 #define FUNC_NAME s_get_mouse_event
 {
@@ -978,7 +978,7 @@ See also `get-next-event'.")
 
 SCWM_PROC(X_fetch_bytes, "X-fetch-bytes", 0, 0, 0,
 	  (),
-"Returns a string representing the value of the cut buffer.
+"Returns a string representing the value of the cut buffer.\n\
 XFetchBytes is called.")
 #define FUNC_NAME s_X_fetch_bytes
 {

@@ -206,10 +206,10 @@ NewPchKeysUsed(DynamicMenu *pmd)
 
 SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
           (SCM menu),
-"Returns the a list of the menu properties of MENU, a menu object.
-The properties returned are: 
-'(menu-title menu-items side-image side-image-align side-bg-color bg-color
-text-color stipple-color
+"Returns the a list of the menu properties of MENU, a menu object.\n\
+The properties returned are: \n\
+'(menu-title menu-items side-image side-image-align side-bg-color bg-color\n\
+text-color stipple-color\n\
 image-bg font extra-options used-shortcut-keys popup-delay hover-delay)")
 #define FUNC_NAME s_menu_properties
 {
@@ -248,14 +248,14 @@ SCWM_PROC(make_menu, "make-menu", 5, 5, 0,
            SCM picture_side, SCM side_picture_align, SCM side_bg_color,
            SCM picture_bg, 
            SCM extra_options),
-"Make and return a menu object from the given arguments.
-LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
-BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects or symbols;
-FONT is a font object or symbol;
-PICTURE-SIDE is an image object to draw on the left side of the menu;
-SIDE-PICTURE-ALIGN is one of 'top, 'center, or 'bottom;
-SIDE-BG-COLOR is a color object or symbol;
-PICTURE-BG is an image object;
+"Make and return a menu object from the given arguments.\n\
+LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';\n\
+BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects or symbols;\n\
+FONT is a font object or symbol;\n\
+PICTURE-SIDE is an image object to draw on the left side of the menu;\n\
+SIDE-PICTURE-ALIGN is one of 'top, 'center, or 'bottom;\n\
+SIDE-BG-COLOR is a color object or symbol;\n\
+PICTURE-BG is an image object;\n\
 EXTRA-OPTIONS can be anything understood by the menu-look")
 #define FUNC_NAME s_make_menu
 {
@@ -328,7 +328,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look")
 
 SCWM_PROC(set_menu_popup_delay_x, "set-menu-popup-delay!", 2, 0, 0,
           (SCM menu, SCM popup_delay),
-"Set MENU's submenu popup delay to POPUP-DELAY.
+"Set MENU's submenu popup delay to POPUP-DELAY.\n\
 POPUP-DELAY is the number of ms to wait before popping up submenus.")
 #define FUNC_NAME s_set_menu_popup_delay_x
 {
@@ -341,7 +341,7 @@ POPUP-DELAY is the number of ms to wait before popping up submenus.")
 
 SCWM_PROC(menu_popup_delay, "menu-popup-delay", 1, 0, 0,
           (SCM menu),
-"Return MENU's submenu popup delay.
+"Return MENU's submenu popup delay.\n\
 See `set-menu-popup-delay!'.")
 #define FUNC_NAME s_menu_popup_delay
 {
@@ -354,7 +354,7 @@ See `set-menu-popup-delay!'.")
 
 SCWM_PROC(set_menu_hover_delay_x, "set-menu-hover-delay!", 2, 0, 0,
           (SCM menu, SCM hover_delay),
-"Set MENU's hover delay to HOVER-DELAY.
+"Set MENU's hover delay to HOVER-DELAY.\n\
 HOVER-DELAY is the number of ms to wait before invoking the hover action.")
 #define FUNC_NAME s_set_menu_hover_delay_x
 {
@@ -366,7 +366,7 @@ HOVER-DELAY is the number of ms to wait before invoking the hover action.")
 
 SCWM_PROC(menu_hover_delay, "menu-hover-delay", 1, 0, 0,
           (SCM menu),
-"Return MENU's hover action delay.
+"Return MENU's hover action delay.\n\
 See `set-menu-hover-delay!'.")
 #define FUNC_NAME s_menu_hover_delay
 {
@@ -406,8 +406,8 @@ SCWM_PROC(set_menu_title_x, "set-menu-title!", 2, 0, 0,
 
 SCWM_PROC(set_menu_colors_x, "set-menu-colors!", 3, 1, 0,
           (SCM menu, SCM text_color, SCM bg_color, SCM stipple_color),
-"Use TEXT-COLOR and BG-COLOR as the colors for MENU.
-STIPPLE-COLOR is optional, and if given will be used for the
+"Use TEXT-COLOR and BG-COLOR as the colors for MENU.\n\
+STIPPLE-COLOR is optional, and if given will be used for the\n\
 stipple color for the MENU.")
 #define FUNC_NAME s_set_menu_colors_x
 {
@@ -432,7 +432,7 @@ stipple color for the MENU.")
 
 SCWM_PROC(set_menu_highlight_colors_x, "set-menu-highlight-colors!", 3, 0, 0,
           (SCM menu, SCM text_color, SCM bg_color),
-"Use TEXT-COLOR and BG-COLOR as the highlight colors for MENU.
+"Use TEXT-COLOR and BG-COLOR as the highlight colors for MENU.\n\
 These colors will be used for the selected item.")
 #define FUNC_NAME s_set_menu_highlight_colors_x
 {
@@ -453,7 +453,7 @@ These colors will be used for the selected item.")
 
 SCWM_PROC(set_menu_highlight_relief_x, "set-menu-highlight-relief!", 2, 0, 0,
           (SCM menu, SCM highlight_relief_p),
-"If HIGHLIGHT-RELIEF? is #t, then draw a relief on selected items in MENU.
+"If HIGHLIGHT-RELIEF? is #t, then draw a relief on selected items in MENU.\n\
 Otherwise, do not.  See also `set-menu-highlight-colors!'.")
 #define FUNC_NAME s_set_menu_highlight_relief_x
 {
@@ -506,8 +506,8 @@ SCWM_PROC(set_menu_font_x, "set-menu-font!", 2, 0, 0,
 
 SCWM_PROC(set_menu_side_picture_x, "set-menu-side-picture!", 2, 2, 0,
           (SCM menu, SCM picture, SCM align, SCM bg_color),
-"Use PICTURE as the side picture for MENU.
-Set its alignment to ALIGN, and its background
+"Use PICTURE as the side picture for MENU.\n\
+Set its alignment to ALIGN, and its background\n\
 color to BG-COLOR.")
 #define FUNC_NAME s_set_menu_side_picture_x
 {
@@ -1639,8 +1639,8 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
 
 SCWM_PROC(set_menu_hotkeys_activate_item_x,"set-menu-hotkeys-activate-item!", 1, 0, 0,
           (SCM activate_p),
-"If ACTIVATE? is #t, let menu hotkeys invoke the item.
-If #f, a menuitem hotkey just makes that item selected and still requires
+"If ACTIVATE? is #t, let menu hotkeys invoke the item.\n\
+If #f, a menuitem hotkey just makes that item selected and still requires\n\
 a Return or Space keypress to activate the item.")
 #define FUNC_NAME s_set_menu_hotkeys_activate_item_x
 {
@@ -1661,10 +1661,10 @@ SCWM_PROC(menu_hotkeys_activate_item_p,"menu-hotkeys-activate-item?", 0, 0, 0,
 
 SCWM_PROC(popup_menu,"popup-menu", 1,5,0,
           (SCM menu, SCM warp_to_index, SCM x_pos, SCM y_pos, SCM left_side_p, SCM permit_alt_release_selection_p),
-"Popup MENU, a menu object, and warp to the item WARP-TO-INDEX if it is a number.
-X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be
-#t if the menu should be left justified against X-POS, or #f if it should be
-right justified against X-POS. If PERMIT-ALT-RELEASE-SELECTION? is #t, then releasing
+"Popup MENU, a menu object, and warp to the item WARP-TO-INDEX if it is a number.\n\
+X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be\n\
+#t if the menu should be left justified against X-POS, or #f if it should be\n\
+right justified against X-POS. If PERMIT-ALT-RELEASE-SELECTION? is #t, then releasing\n\
 the Alt/Meta modifier select a menu item.")
 #define FUNC_NAME s_popup_menu
 {
