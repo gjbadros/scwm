@@ -299,18 +299,22 @@ GJB:FIXME::."
 			    s ((cadr widget-and-getter))))
 			 s)))
 	       syms))
-	 (widgets (map (lambda (x) (let ((hbox (car x))
-					 (helpbut (gtk-button-new-with-label "Help"))
-					 (sym (caddr x)))
-				     (gtk-signal-connect helpbut "pressed"
-							 (lambda () 
-							   (toggle-docs-for sym)))
-				     (gtk-widget-show helpbut)
-				     (gtk-tooltips-set-tip tooltip hbox 
-							   (scwm-option-short-documentation sym)
-							   "")
-				     (gtk-box-pack-start hbox helpbut #f #f 20)
-				     hbox)) widgets-and-applyers))
+	 (widgets (map (lambda (x)
+			 (let ((hbox (car x))
+			       (sym (caddr x)))
+			   (define (frob c)
+			     (for-each
+			      (lambda (w)
+				(if (gtk-container? w)
+				    (frob w))
+				(gtk-tooltips-set-tip
+				 tooltip w
+				 (scwm-option-short-documentation
+				  sym)
+				 ""))
+			      (gtk-container-children c)))
+			   (frob hbox)
+			   hbox)) widgets-and-applyers))
 	 (applyers (map cadr widgets-and-applyers))
 	 (apply-action (lambda ()
 			 (for-each (lambda (a) (a)) applyers)))
@@ -318,7 +322,6 @@ GJB:FIXME::."
 ;;	 (okbut (gtk-button-new-with-label "Ok"))
 ;;	 (cancelbut (gtk-button-new-with-label "Cancel"))
 	 )
-    (gtk-tooltips-enable tooltip)
     (map (lambda (w) (gtk-box-pack-start vbox w #t #f) (gtk-widget-show w))
 	 widgets)
     (map (lambda (w) (gtk-box-pack-start hbox w #t #t) (gtk-widget-show w))
