@@ -125,6 +125,25 @@
 
 ;;(prompt-from-name "*foo*")
 
+(define-public (dummy-prompt-hbox prompt initval)
+  "Create and return a dummy-prompting hbox and entry.
+PROMPT is the prompt, and INITVAL is the initial string.
+The returned value is a list: (hbox getter entry).
+See also `prompt-string'."
+  (let* ((hbox (gtk-hbox-new #f 0))
+	 (entry (gtk-entry-new))
+	 (entry-init "dummy")
+	 (label (gtk-label-new prompt)))
+    (gtk-entry-set-text entry entry-init)
+    (gtk-box-pack-start hbox label #f #f 10)
+    (gtk-box-pack-start hbox entry #t #t)
+    (gtk-widget-set-usize entry (min 450 (max 100 (* 8 (string-length entry-init)))) 30)
+    (gtk-widget-show entry)
+    (gtk-widget-show label)
+    (gtk-widget-show hbox)
+    (list hbox (lambda () initval) entry)))
+
+
 (define-public (option-widget-and-getter sym)
   (let* ((name (scwm-option-name sym))
 	 (value (scwm-option-symget sym))
@@ -155,7 +174,10 @@
       ('boolean
        (prompt-bool-hbox prompt value))
       (else
-       (error "Cannot yet handle type " (symbol->string type))))))
+       (display "Cannot yet handle type ")
+       (display (symbol->string type))
+       (newline)
+       (dummy-prompt-hbox prompt value)))))
 
 
 ;; (gui-set '*desk-width*)   ;; an integer

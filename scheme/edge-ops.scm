@@ -25,21 +25,25 @@
 
 
 
-(define-public samf-edge-scroll-delay #f) ; XXX just edge-scroll-delay, please
-;;;**VAR
-;;; Delay in milliseconds for scrolling if the mouse cursor is on the edge.
-(define-public edge-ops-scroll-backoff #f)
-;;;**VAR
-;;; Allow edge scrolling with no delay, after an initial scroll.  If
-;;; #f, then this never happens.  If #t, then this always happens.  If
-;;; #a number, then it's the time in milliseconds which, after no
-;;; #scrolling has occured, the delay goes back to its original value.
+(define-scwm-option *edge-ops-scroll-delay* #f
+  "Delay in milliseconds for scrolling if the mouse cursor is on the edge."
+  #:type 'integer
+  #:group 'edge-ops
+  #:range '(0 . 10000)
+  #:setter (lambda (v)
+	     (set! *edge-ops-scroll-delay* v)
+	     (set! current-edge-ops-scroll-delay #f))
+  #:favorites '(0 100 300 500 1000 2000 3000))
 
-(define-public (set-edge-scroll-delay val)
-  "Set edge-scroll-delay.  Overrides any temporary value due to
-edge-ops-scroll-backoff."
-  (set! samf-edge-scroll-delay val)
-  (set! current-edge-ops-scroll-delay #f))
+(define-scwm-option *edge-ops-scroll-backoff* #t
+  "Allow edge scrolling with no delay, after an initial scroll.  
+If #f, then this never happens.  If #t, then this always happens.  If
+#a number, then it's the time in milliseconds which, after no
+#scrolling has occured, the delay goes back to its original value."
+  #:type 'boolean
+  #:group 'edge-ops
+  )
+
 
 (define current-edge-ops-scroll-delay #f)
 (define edge-ops-time-hook #f)
@@ -51,7 +55,7 @@ edge-ops-scroll-backoff."
  (lambda (dir)
    (cond
     ((not current-edge-ops-scroll-delay)
-     (set! current-edge-ops-scroll-delay samf-edge-scroll-delay)))
+     (set! current-edge-ops-scroll-delay (scwm-option-get *edge-ops-scroll-delay*))))
    (let* ((dtime current-edge-ops-scroll-delay)
 	  (pointer-pos (pointer-position))
 	  (p-x (car pointer-pos))
@@ -106,7 +110,7 @@ edge-ops-scroll-backoff."
        (* edge-ops-scroll-backoff 1000)
        (lambda () (edge-ops-delay-reset))))
      (#t
-      (set! current-edge-ops-scroll-delay samf-edge-scroll-delay)))))
+      (set! current-edge-ops-scroll-delay (scwm-option-get *edge-ops-scroll-delay*))))))
 
 (add-hook!
  edge-leave-hook

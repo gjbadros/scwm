@@ -38,13 +38,13 @@
 
 (define-public (interactive-move-window-with-focus)
   "Interactively move the window which currently has the focus.
-`move-opaquely?' is used to control whether a rubberband
+`*move-opaquely-proc*' is used to control whether a rubberband
 outline or the window itself is moved."
   (let ((w (current-window-with-focus))) (and w (interactive-move w))))
 
 (define-public (interactive-resize-window-with-focus)
   "Interactively resize the window which currently has the focus.
-`resize-opaquely?' is used to control whether a rubberband
+`*resize-opaquely-proc*' is used to control whether a rubberband
 outline or the window itself is resized."
   (let ((w (current-window-with-focus))) (and w (interactive-resize w))))
 

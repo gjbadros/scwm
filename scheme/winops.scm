@@ -212,34 +212,36 @@ If *opaque-move-percent* is a boolean, not a number, just return it."
 	(<= (window-frame-area win)
 	    (* display-area (/ p 100))))))
 
-(define-public move-opaquely?
-;;;**VAR
-;;;User-settable predicate to determine if windows should be moved opaquely.
- default-move-opaquely?)
+(define-scwm-option *move-opaquely-proc* default-move-opaquely?
+  "User-settable predicate to determine if windows should be moved opaquely.
+The procedure should take a single argument, the window."
+  #:type 'proc
+  #:group 'window-movement)
 
-(define-public resize-opaquely?
-;;;**VAR
-;;; User-settable predicate to determine if windows should be resized opaquely.
- default-resize-opaquely?)
+(define-scwm-option *resize-opaquely-proc* default-resize-opaquely?
+  "User-settable predicate to determine if windows should be resized opaquely..
+The procedure should take a single argument, the window."
+  #:type 'proc
+  #:group 'window-movement)
 
 
 (define*-public (interactive-move 
 		 #&optional (win (get-window #t #f #f))
-		 (opaquely? (if win (move-opaquely? win))))
+		 (opaquely? (if win ((scwm-option-get *move-opaquely-proc*) win))))
   "Move WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
 should be moved opaquely, or using a rubber-band. If it is not
-spcified, `interactive-move' calls `move-opaquely?' on WIN and moves
+spcified, `interactive-move' calls `*move-opaquely-proc*' on WIN and moves
 opaquely if that returns #t and uses a rubber-band if it returns #f."
   (if win ((if opaquely? opaque-move rubber-band-move) win)))
 
 (define*-public (interactive-resize 
 		 #&optional (win (get-window #t #f #f))
-		 (opaquely? (if win (resize-opaquely? win))))
+		 (opaquely? (if win ((scwm-option-get *resize-opaquely-proc*) win))))
   "Resize WINDOW interactively and possibly opaquely. 
 If OPAQUELY? is specified, it is used to determine if the window
 should be resized opaquely, or using a rubber-band. If it is not
-spcified, `interactive-resize' calls `resize-opaquely?' on WIN and
+spcified, `interactive-resize' calls `*resize-opaquely-proc*' on WIN and
 moves opaquely if that returns #t and uses a rubber-band if it returns
 #f."
   (if win ((if opaquely? opaque-resize rubber-band-resize) win)))
@@ -247,12 +249,6 @@ moves opaquely if that returns #t and uses a rubber-band if it returns
 ;;; hack to work with minimal.scm
 (set! hack-interactive-move interactive-move)
 (set! hack-interactive-resize interactive-resize)
-
-
-;; (move-opaquely? (select-window-interactively))
-;; (resize-opaquely? (select-window-interactively))
-;; (interactive-move)
-
 
 
 ;; Printing

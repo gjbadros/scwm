@@ -125,8 +125,6 @@ Run PROC immediately if MODULE has already been loaded."
 	 (lambda (key . args)
 	   (display "Error loading module: ")
 	   (display module) (newline)
-	   ;; GJB:FIXME:MS: want better error msgs, below does wrong thing
-	   ;; (apply handle-system-error key args)
 	   (catch #t
 		  (lambda () (apply handle-system-error (cons key args)))
 		  (lambda () #t))

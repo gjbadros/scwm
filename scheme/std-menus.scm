@@ -106,11 +106,7 @@ used) or a cons of (host . command)."
                                (string-append "-T telnet:_" hh) "-n telnet"))))
               host-list))))
 
-(define-public context-map
-;;;**VAR
-;;; An alist mapping filename patterns to applicable menu entries.
-;;; Whenever the car (a regexp) matches a filename, the cdr is used to
-;;; build a menuitem which is then added to the context menu.
+(define-scwm-option *context-map*
   `(("\.(txt|pl|c|cc|h)$" "Edit (emacs)"
 			  #:action ,(exe-on-selection "gnuclient -q"))
     ("\.ps$" "View (gv)" #:action ,(exe-on-selection "gv"))
@@ -119,7 +115,13 @@ used) or a cons of (host . command)."
 			       #:action ,(exe-on-selection "gimp"))
     ("\.mpe?g$" "Play (mpeg_play)"
 		#:action ,(exe-on-selection "mpeg_play -dither color"))
-    ("\.mp3$" "Play (mpg123)" #:action ,(exe-on-selection "mpg123"))))
+    ("\.mp3$" "Play (mpg123)" #:action ,(exe-on-selection "mpg123")))
+  "An alist mapping filename patterns to applicable menu entries.
+Whenever the car (a regexp) matches a filename, the cdr is used to
+build a menuitem which is then added to the context menu."
+  #:type 'alist:re->string
+  #:group 'app-associations
+  )
 
 (define-public (make-context-menu)
   "Create a menu of actions applicable to the filename in the X selection.
@@ -137,7 +139,7 @@ The selection must contain a single full pathname."
 			     (if (and (regexp-exec (car entry) file))
 				 (list (apply menuitem (cdr entry)))
 				 ()))
-			   context-map))
+			   (scwm-option-get *context-map*)))
 	       ())))))
 
 

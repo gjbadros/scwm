@@ -46,6 +46,7 @@ DOCSTRING documents the option.  REST includes keyword arguments including:
                 'string-list
                 'interactive-proc, 'proc
                 'color
+                'alist:re->string
      (numerous of these types are not yet supported)
 #:group - an option group, or a list of group, subgroup, subsubgroup, etc.
 #:permit-disable - string labels for the forced-on, forced-off states (#t/#f used as value)
