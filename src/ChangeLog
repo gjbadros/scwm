@@ -1,3 +1,42 @@
+Sun Mar 28 20:09:38 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* virtual.c (notify_edge_enter, leave): Fix bug 'east <->
+	'west. Thanks Eli Barzilay!
+
+Sun Mar 28 20:08:02 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* color.c: Separate make_color into ScmMakeColor, and argument
+	processor.   Have ScmMakeColor set an error status, but always
+	return a legitimate color if it returns.  Use ScmMakeColor from C
+	code instead of make_color.
+
+Sun Mar 28 18:23:21 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c (DeferExecution): Call NoEventsScwmUpdate() in the
+	local select-a-window event loop.  Comment for the return values
+	of convert_move_data.
+
+	* resize.c, move.c:  Call NoEventsScwmUpdate() in the local
+	move/resize event loops.
+
+	* menu.c: Call NoEventsScwmUpdate() in the local menu-interaction
+	event loop.
+
+	* events.h, events.c:  Split new NoEventsScwmUpdate() function out 
+	of NextScwmEvent function so other event loops can call it.  This
+	makes scwm more responsive during those local event loops.  E.g.,
+	timer hooks can get executed while a menu is popped up, or a
+	window is being resized, etc.  I expect some bugs will be exposed
+	by this change, but it's the right thing, and we might as well fix 
+	those bugs now as they'll be a problem for the post-1.0 event rewrite.
+
+	* scwm.c: Use sigsetjmp/siglongjmp to catch the SIGHUP signals
+	more reliably for me (has setjmp behaviour changed in the new
+	glibc?).  Warn on signal returning SIG_ERR.
+
+	* miscprocs.c:  Added a scwm_last_timestamp. (Was for debugging,
+	but very small and maybe worth having around).
+
 Fri Mar 26 14:21:06 1999  Maciej Stachowiak  <mstachow@racerx>
 
         * scwm-snarf.h (SCWM_PROPERTY_HANDLER): New snarf macro.
