@@ -56,6 +56,29 @@ AC_ARG_WITH(lispdir,
 	fi
 ])
 
+CASSOWARY_INCLUDES=""
+CASSOWARY_LIBS=""
+
+AC_ARG_WITH(cassowary,
+[  --with-cassowary=DIR   Use Cassowary constraint solver from DIR ],
+[
+	if test -n "$ac_prev"; then
+  		AC_MSG_ERROR(missing argument to --with-cassowary)
+	else
+		AC_DEFINE(USE_CASSOWARY)
+		AC_DEFINE(CL_NO_TRACE)
+		AC_MSG_CHECKING(where to expect to find cassowary headers and library)
+		CASSOWARY_INCLUDES="-I${withval}"
+		CASSOWARY_LIBS="-L${withval} -lcassowary-scwm"
+		AC_MSG_RESULT("${withval}")
+
+	fi
+])
+
+AC_SUBST(CASSOWARY_INCLUDES)
+AC_SUBST(CASSOWARY_LIBS)
+
+
 dnl ## Checks for libraries ##
 
 
@@ -103,6 +126,8 @@ AC_SUBST(x_ldflags)
 AC_SUBST(x_libs)
 AC_SUBST(XEXT_LIB)
 AC_SUBST(XPM_LIB)
+AC_SUBST(CASSOWARY_LIBS)
+AC_SUBST(CASSOWARY_INCLUDES)
 
 CFLAGS="$saved_cflags"
 LDFLAGS="$saved_ldflags"
@@ -302,9 +327,4 @@ AC_OUTPUT(Makefile \
           utilities/dev/Makefile \
           utilities/emacs/Makefile \
           doc/Makefile)
-
-
-
-
-
 
