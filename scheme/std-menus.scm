@@ -130,6 +130,8 @@ used) or a cons of (host . command)."
 (define-public exe-on-selection-mpeg_play (exe-on-selection "mpeg_play -dither color"))
 (define-public exe-on-selection-mpg3 (exe-on-selection "mpg123"))
 
+
+;; GJB:FIXME:: must handle alist:re->string
 (define-scwm-option *context-map*
   `(("\.(txt|pl|c|cc|h)$" "Edit (emacs)"
 			  #:action ,exe-on-selection-editor)

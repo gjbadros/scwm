@@ -5,7 +5,7 @@ scwm_common_scheme = \
 advice.scm animated-iconify.scm animation.scm auto-raise.scm \
 base.scm bincomm.scm cascade.scm constraints.scm decor.scm \
 defoption.scm desk-background.scm dir-focus.scm doc.scm edge-ops.scm \
-face.scm file.scm flash-window.scm flux.scm \
+face.scm file.scm flash-window.scm flux.scm focus-titlebar.scm \
 fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm \
 highlight-current-window.scm gnome-hints.scm \
 group.scm image-loaders.scm key-mover-xtest.scm \
