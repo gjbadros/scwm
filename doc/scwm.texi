@@ -1,6 +1,12 @@
 \input texinfo @c -*- texinfo -*-
 @setfilename scwm.info
 @settitle scwm
+
+@dircategory Scheme Programming
+@direntry
+* scwm::                               The Scheme Configurable Window Manager
+@end direntry
+
 @titlepage
 @title SCWM
 @subtitle The Scheme Configurable Window Manager

@@ -1,6 +1,11 @@
 This is Info file scwm.info, produced by Makeinfo version 1.68 from the
 input file scwm.texi.
 
+INFO-DIR-SECTION Scheme Programming
+START-INFO-DIR-ENTRY
+* scwm::                               The Scheme Configurable Window Manager
+END-INFO-DIR-ENTRY
+
 
 File: scwm.info,  Node: Top,  Next: Scheme Procedures
 
@@ -1231,7 +1236,7 @@ Function Index
 
 
 Tag Table:
-Node: Top95
-Node: Scheme Procedures336
+Node: Top250
+Node: Scheme Procedures491
 
 End Tag Table
