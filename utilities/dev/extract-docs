@@ -37,6 +37,8 @@
 #                    more and better abstractions in the scheme version
 #                    It uses guile (easier acceptance by guile-devs, perhaps)
 #
+# TODO: make concept section id-s use a prefix (e.g., shadow-factor user-option
+# variable's doc id conflicts with the shadow-factor getter primitive)
 
 require 5.004;  # uses "for my $var"
 use strict;
