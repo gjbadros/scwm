@@ -1,3 +1,15 @@
+Tue Dec  7 13:33:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Error in cnctr-anchor if window is
+	#f.
+
+	* gtk.scm: Make sync-and-add-timer-hook public.
+
+Mon Dec  6 16:27:22 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flash-window.scm: Fix position of interactive spec for
+	stop-flashing-window.
+
 Mon Dec  6 16:21:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* nonants.scm: Fix bug in calling set-window-highlighted-nonant!
