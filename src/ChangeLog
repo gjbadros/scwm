@@ -1,3 +1,11 @@
+Fri Jan  7 15:58:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c (HandleButtonPress): Use stash_orig_button_position,
+	not find_mouse_event_type in the immediate proc.
+
+	* binding.h, binding.c: Added stash_orig_button_position(),
+	separated from find_mouse_event_type.
+
 Fri Jan  7 13:41:15 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* callbacks.c (s_call_interactively): Added `pre-command-hook' and 
