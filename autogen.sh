@@ -8,7 +8,7 @@ cd `dirname $0`
 rm -f ltconfig ltmain.sh
 
 # Generate aclocal.m4 from configure.in
-aclocal
+aclocal -I .
 
 # Copy ltconfig and ltmain.sh for this version of libtool
 libtoolize --automake --copy
@@ -22,12 +22,6 @@ automake --add-missing --gnu
 
 # Generate configure from configure.in and aclocal.m4
 autoconf
-
-# Rerun ./config.status, if it exists,
-# to create new Makefiles under modules/* directories (e.g., modules/pie-menus)
-# (Note that this only is useful if builddir == scrdir, otherwise the
-#  user may need to run config.status from their builddir(s) manually)
-#test -x ./config.status && ./config.status || true
 
 cd $here
 
