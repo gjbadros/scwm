@@ -78,6 +78,7 @@ The returned value will be a non-negative real number."
 ;;; Higher-level operations for changing a window's viewport.
 ;;;
 
+;; GJB:FIXME:: rename to window-position-in-aligned-viewport
 (define*-public (window-position-in-viewport xx yy #&optional win)
   "Return a virtual position for WIN that is in viewport (XX,YY).
 The (0,0) viewport is the starting viewport.  XX and YY are
@@ -96,6 +97,7 @@ the position that `move-window-to-viewport' moves the window to."
 	  (+ (* yy display-height)
 	     (modulo (cadr pos) (- display-height (round/ height 2)))))))
 
+;; GJB:FIXME:: rename to move-window-to-aligned-viewport
 (define*-public (move-window-to-viewport xx yy #&optional (win (get-window)))
   "Move WIN to the viewport numbered (XX,YY).
 The (0,0) viewport is the starting viewport.  XX and YY are
