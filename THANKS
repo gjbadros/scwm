@@ -30,8 +30,9 @@ Thanks to:
 
   Doug McNaught - improvements to fvwm2rc-to-scwmrc converter  
 
-  Toby Sargeant - libPropList wrapper module
+  Toby Sargeant - Proper cursor object support, libPropList wrapper module
 
+
 Bug reports and/or fixes and/or code snippets have been contributed by:
 
   Aleksandar Bakic
