@@ -12,6 +12,18 @@
 
 #include <X11/Intrinsic.h>
 
+typedef enum {
+  EDGE_NONE,
+  EDGE_TOP,
+  EDGE_LEFT,
+  EDGE_RIGHT,
+  EDGE_BOTTOM
+} Edge;
+
+
+void GenerateEdgeEvents();
+
+
 #ifndef NON_VIRTUAL
 void checkPanFrames();
 void raisePanFrames();
@@ -22,6 +34,7 @@ void MoveViewport_internal(int newx, int newy, Bool grab);
 void HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
                   int *delta_x, int *delta_y, Bool Grab);
 Bool FNeedsPaging(int HorWarpSize, int VertWarpSize, int xl, int yt);
+
 #endif
 
 #endif

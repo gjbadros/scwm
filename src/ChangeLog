@@ -1,5 +1,14 @@
 1999-02-10  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* virtual.c (GenerateEdgeEvents): New function which checks the
+	pan frame state and generates appropriate invocations of
+	`edge-enter-hook' and/or `edge-leave-hook'.
+	(HandleEvents): Invoke `edge-scroll-hook' when edge scrolling 
+	happens. This hook is temporary.
+	(checkPanFrames): Always leave the pan frames mapped.
+	* virtual.h: prototype GenerateEdgeEvents
+	* events.c, move.c, resize.c: Vall GenerateEdgeEvents as appropriate.
+
 	* borders.c: Fix all remaining visual glitches when using
 	no-side-decorations, both mwm-border and regular. (As far as I can
 	tell).

@@ -508,6 +508,8 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                     gh_int2scm(x_units), gh_int2scm(y_units));
       }
       
+
+      GenerateEdgeEvents();
       if (FNeedsPaging(Scr.EdgeScrollX, Scr.EdgeScrollY, x, y)) {
         /* need to move the viewport */
         HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY, &x, &y,

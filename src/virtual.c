@@ -32,8 +32,102 @@
 #include "syscompat.h"
 #include "callbacks.h"
 
+SCWM_SYMBOL(sym_north,"north");
+SCWM_SYMBOL(sym_east,"east");
+SCWM_SYMBOL(sym_south,"south");
+SCWM_SYMBOL(sym_west,"west");
+
 static SCM change_desk_hook;
 static SCM viewport_position_change_hook;
+static SCM edge_enter_hook;
+static SCM edge_leave_hook;
+static SCM edge_scroll_hook;
+
+
+static Edge in_edge = EDGE_NONE;
+
+static void 
+notify_edge_enter(Edge e)
+{
+  SCM edge_sym;
+
+  switch (e) {
+  case EDGE_TOP:
+    edge_sym = sym_north;
+    break;
+  case EDGE_LEFT:
+    edge_sym = sym_east;
+    break;
+  case EDGE_RIGHT:
+    edge_sym = sym_west;
+    break;
+  case EDGE_BOTTOM:
+    edge_sym = sym_south;
+    break;
+  }
+
+  call1_hooks(edge_enter_hook, edge_sym);
+
+  in_edge = e;
+}
+
+static void 
+notify_edge_leave(Edge e)
+{
+  SCM edge_sym;
+
+  switch (e) {
+  case EDGE_TOP:
+    edge_sym = sym_north;
+    break;
+  case EDGE_LEFT:
+    edge_sym = sym_east;
+    break;
+  case EDGE_RIGHT:
+    edge_sym = sym_west;
+    break;
+  case EDGE_BOTTOM:
+    edge_sym = sym_south;
+    break;
+  }
+
+  call1_hooks(edge_leave_hook, edge_sym);
+
+  in_edge = EDGE_NONE;
+}
+
+
+void 
+GenerateEdgeEvents()
+{
+  Edge new_in_edge;
+  int xl, yt;
+
+  WXGetPointerWindowOffsets(Scr.Root, &xl, &yt);
+
+  if (yt <= SCROLL_REGION) {
+    new_in_edge = EDGE_TOP;
+  } else if (yt > Scr.DisplayHeight - SCROLL_REGION) {
+    new_in_edge = EDGE_BOTTOM;
+  } else if (xl <= SCROLL_REGION) {
+    new_in_edge = EDGE_LEFT;
+  } else if (xl > Scr.DisplayWidth - SCROLL_REGION) {
+    new_in_edge = EDGE_RIGHT;
+  } else {
+    new_in_edge = EDGE_NONE;
+  }
+
+  if (new_in_edge != in_edge) {
+    if (in_edge != EDGE_NONE) {
+      notify_edge_leave(in_edge);
+    }
+
+    if (new_in_edge != EDGE_NONE) {
+      notify_edge_enter(new_in_edge);
+    }
+  }
+}
+
 
 Bool
 FNeedsPaging(int HorWarpSize, int VertWarpSize, int xl, int yt)
@@ -41,23 +135,27 @@ FNeedsPaging(int HorWarpSize, int VertWarpSize, int xl, int yt)
   int x, y;
 
   if ((Scr.ScrollResistance < 0) ||
-      ((HorWarpSize == 0) && (VertWarpSize == 0)))
+      ((HorWarpSize == 0) && (VertWarpSize == 0))) {
     return False;
+  }
 
   /* need to move the viewport */
   if ((Scr.VxMax == 0 ||
        (xl >= SCROLL_REGION && xl < Scr.DisplayWidth - SCROLL_REGION)) &&
       (Scr.VyMax == 0 ||
-       (yt >= SCROLL_REGION && yt < Scr.DisplayHeight - SCROLL_REGION)))
+       (yt >= SCROLL_REGION && yt < Scr.DisplayHeight - SCROLL_REGION))) {
     return False;
+  }
 
   WXGetPointerWindowOffsets(Scr.Root, &x, &y);
   
   /* check actual pointer location since PanFrames can get buried under
      a window being moved or resized - mab */
   if ((x >= SCROLL_REGION) && (x < Scr.DisplayWidth - SCROLL_REGION) &&
-      (y >= SCROLL_REGION) && (y < Scr.DisplayHeight - SCROLL_REGION))
+      (y >= SCROLL_REGION) && (y < Scr.DisplayHeight - SCROLL_REGION)) {
+    GenerateEdgeEvents(Event.xcrossing.x_root, Event.xcrossing.y_root);
     return False;
+  }
 
   return True;
 }
@@ -80,8 +178,9 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
 
   total = 0;
 
-  if (!FNeedsPaging(HorWarpSize, VertWarpSize, *xl, *yt))
+  if (!FNeedsPaging(HorWarpSize, VertWarpSize, *xl, *yt)) {
     return;
+  }
 
   while (total < Scr.ScrollResistance) {
     ms_sleep(10);
@@ -92,28 +191,34 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     if (XCheckWindowEvent(dpy, Scr.PanFrameTop.win,
 			  LeaveWindowMask, &Event)) {
       StashEventTime(&Event);
+      GenerateEdgeEvents(Event.xcrossing.x_root, Event.xcrossing.y_root);
       return;
     }
     if (XCheckWindowEvent(dpy, Scr.PanFrameBottom.win,
 			  LeaveWindowMask, &Event)) {
       StashEventTime(&Event);
+      GenerateEdgeEvents(Event.xcrossing.x_root, Event.xcrossing.y_root);
       return;
     }
     if (XCheckWindowEvent(dpy, Scr.PanFrameLeft.win,
 			  LeaveWindowMask, &Event)) {
       StashEventTime(&Event);
+      GenerateEdgeEvents(Event.xcrossing.x_root, Event.xcrossing.y_root);
       return;
     }
     if (XCheckWindowEvent(dpy, Scr.PanFrameRight.win,
 			  LeaveWindowMask, &Event)) {
       StashEventTime(&Event);
+      GenerateEdgeEvents(Event.xcrossing.x_root, Event.xcrossing.y_root);
       return;
     }
     /* check actual pointer location since PanFrames can get buried under
        a window being moved or resized - mab */
     if ((x >= SCROLL_REGION) && (x < Scr.DisplayWidth - SCROLL_REGION) &&
-	(y >= SCROLL_REGION) && (y < Scr.DisplayHeight - SCROLL_REGION))
+	(y >= SCROLL_REGION) && (y < Scr.DisplayHeight - SCROLL_REGION)) {
+      GenerateEdgeEvents(Event.xcrossing.x_root, Event.xcrossing.y_root);
       return;
+    }
   }
 
   WXGetPointerWindowOffsets(Scr.Root, &x, &y);
@@ -199,6 +304,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     WXGetPointerWindowOffsets(Scr.Root, xl, yt);
     if (Grab)
       XUngrabServer_withSemaphore(dpy);
+    call0_hooks(edge_scroll_hook);
   }
 }
 
@@ -228,55 +334,18 @@ checkPanFrames()
   if (!(Scr.fWindowsCaptured))
     return;
 
-  /* Remove Pan frames if paging by edge-scroll is permanently or
-   * temporarily disabled */
-  if (Scr.EdgeScrollY == 0) {
-    XUnmapWindow(dpy, Scr.PanFrameTop.win);
-    Scr.PanFrameTop.isMapped = False;
-    XUnmapWindow(dpy, Scr.PanFrameBottom.win);
-    Scr.PanFrameBottom.isMapped = False;
-  }
-  if (Scr.EdgeScrollX == 0) {
-    XUnmapWindow(dpy, Scr.PanFrameLeft.win);
-    Scr.PanFrameLeft.isMapped = False;
-    XUnmapWindow(dpy, Scr.PanFrameRight.win);
-    Scr.PanFrameRight.isMapped = False;
-  }
-  if ((Scr.EdgeScrollX == 0) && (Scr.EdgeScrollY == 0))
-    return;
+  
+  XMapRaised(dpy, Scr.PanFrameLeft.win);
+  Scr.PanFrameLeft.isMapped = True;
 
-  /* LEFT, hide only if EdgeWrap is off */
-  if (Scr.Vx == 0 && Scr.PanFrameLeft.isMapped && !fWrapX) {
-    XUnmapWindow(dpy, Scr.PanFrameLeft.win);
-    Scr.PanFrameLeft.isMapped = False;
-  } else if (Scr.Vx > 0 && Scr.PanFrameLeft.isMapped == False) {
-    XMapRaised(dpy, Scr.PanFrameLeft.win);
-    Scr.PanFrameLeft.isMapped = True;
-  }
-  /* RIGHT, hide only if EdgeWrap is off */
-  if (Scr.Vx == Scr.VxMax && Scr.PanFrameRight.isMapped && !fWrapX) {
-    XUnmapWindow(dpy, Scr.PanFrameRight.win);
-    Scr.PanFrameRight.isMapped = False;
-  } else if (Scr.Vx < Scr.VxMax && Scr.PanFrameRight.isMapped == False) {
-    XMapRaised(dpy, Scr.PanFrameRight.win);
-    Scr.PanFrameRight.isMapped = True;
-  }
-  /* TOP, hide only if EdgeWrap is off */
-  if (Scr.Vy == 0 && Scr.PanFrameTop.isMapped && !fWrapY) {
-    XUnmapWindow(dpy, Scr.PanFrameTop.win);
-    Scr.PanFrameTop.isMapped = False;
-  } else if (Scr.Vy > 0 && Scr.PanFrameTop.isMapped == False) {
-    XMapRaised(dpy, Scr.PanFrameTop.win);
-    Scr.PanFrameTop.isMapped = True;
-  }
-  /* BOTTOM, hide only if EdgeWrap is off */
-  if (Scr.Vy == Scr.VyMax && Scr.PanFrameBottom.isMapped && !fWrapY) {
-    XUnmapWindow(dpy, Scr.PanFrameBottom.win);
-    Scr.PanFrameBottom.isMapped = False;
-  } else if (Scr.Vy < Scr.VyMax && Scr.PanFrameBottom.isMapped == False) {
-    XMapRaised(dpy, Scr.PanFrameBottom.win);
-    Scr.PanFrameBottom.isMapped = True;
-  }
+  XMapRaised(dpy, Scr.PanFrameRight.win);
+  Scr.PanFrameRight.isMapped = True;
+
+  XMapRaised(dpy, Scr.PanFrameTop.win);
+  Scr.PanFrameTop.isMapped = True;
+
+  XMapRaised(dpy, Scr.PanFrameBottom.win);
+  Scr.PanFrameBottom.isMapped = True;
 }
 
 /****************************************************************************
@@ -502,6 +571,25 @@ new desktop number, the second is the old desktop number. */
   /** This hook is invoked whenever the viewport position is changed.
 It is called with two argument, both integers, which are the x and y
 coordinates of the new viewport position in pixels. */
+
+  SCWM_HOOK(edge_enter_hook,"edge-enter-hook");
+  /** This hook is invoked whenever the mouse pointer enters a screen edge.
+Procedures in the hook are called with one argument, one of the
+symbols 'north, 'south, 'east or 'west indicating which edge was
+entered. */
+
+  SCWM_HOOK(edge_leave_hook,"edge-leave-hook");
+  /** This hook is invoked whenever the mouse pointer leaves a screen edge.
+Procedures in the hook are called with one argument, one of the
+symbols 'north, 'south, 'east or 'west indicating which edge was
+entered. */
+
+  SCWM_HOOK(edge_scroll_hook,"edge-scroll-hook");
+  /** This hook is invoked whenever an edge scroll takes place.
+Procedures in the hook are called with no arguments. */
+
+
+
 
 #ifndef SCM_MAGIC_SNARFER
 #include "virtual.x"

@@ -267,6 +267,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
 	  int ycenter = Event.xmotion.y_root;
           int delta_x = 0;
           int delta_y = 0;
+
+          GenerateEdgeEvents();
 	  HandlePaging(Scr.DisplayWidth, Scr.DisplayHeight, &xcenter, &ycenter,
 		       &delta_x, &delta_y, False);
 	  if ((delta_x != 0) || (delta_y == 0)) {

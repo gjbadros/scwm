@@ -1389,16 +1389,17 @@ HandleEnterNotify()
   }
 /* an EnterEvent in one of the PanFrameWindows activates the Paging */
 #ifndef NON_VIRTUAL
-  if (ewp->window == Scr.PanFrameTop.win
-      || ewp->window == Scr.PanFrameLeft.win
-      || ewp->window == Scr.PanFrameRight.win
-      || ewp->window == Scr.PanFrameBottom.win) {
+  if (ewp->window == Scr.PanFrameTop.win || 
+      ewp->window == Scr.PanFrameLeft.win ||
+      ewp->window == Scr.PanFrameRight.win ||
+      ewp->window == Scr.PanFrameBottom.win) {
     int delta_x = 0, delta_y = 0;
-
-    /* this was in the HandleMotionNotify before, HEDU */
+    
+    GenerateEdgeEvents();
+    
     HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY,
-		 &Event.xcrossing.x_root, &Event.xcrossing.y_root,
-		 &delta_x, &delta_y, True);
+                 &Event.xcrossing.x_root, &Event.xcrossing.y_root,
+                 &delta_x, &delta_y, True);
     return;
   }
 #endif /* NON_VIRTUAL */
@@ -1443,15 +1444,17 @@ HandleEnterNotify()
 void 
 HandleLeaveNotify()
 {
+  XEnterWindowEvent *ewp = &Event.xcrossing;
+
   DBUG((DBG,"HandleLeaveNotify", "Routine Entered"));
 
   /* If we leave the root window, then we're really moving
    * another screen on a multiple screen display, and we
    * need to de-focus and unhighlight to make sure that we
    * don't end up with more than one highlighted window at a time */
-  if (Event.xcrossing.window == Scr.Root) {
-    if (Event.xcrossing.mode == NotifyNormal) {
-      if (Event.xcrossing.detail != NotifyInferior) {
+  if (ewp->window == Scr.Root) {
+    if (ewp->mode == NotifyNormal) {
+      if (ewp->detail != NotifyInferior) {
 	if (Scr.Focus != NULL) {
 	  SetFocus(Scr.NoFocusWin, NULL, 1);
 	}
@@ -1459,8 +1462,14 @@ HandleLeaveNotify()
 	  SetBorder(Scr.Hilite, False, True, True, None);
       }
     }
-  }
+  } else if (ewp->window == Scr.PanFrameTop.win ||
+             ewp->window == Scr.PanFrameLeft.win ||
+             ewp->window == Scr.PanFrameRight.win ||
+             ewp->window == Scr.PanFrameBottom.win) {
+    GenerateEdgeEvents();
+  } 
 }
+
 
 /*
  * HandleConfigureRequest - ConfigureRequest event handler
