@@ -1,3 +1,10 @@
+Wed Feb 25 21:10:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* configure.in, acconfig.h: Check for gh_vector_set_x so that or 
+	gh_vset can be used as appropriate.
+
+	configure, include/config.h.in: regenerated
+
 Fri Dec 12 16:12:17 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm/Makefile.in, utilities/scwmsend/Makefile.in: Added creation
