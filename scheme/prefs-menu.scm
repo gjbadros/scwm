@@ -1,4 +1,4 @@
-;;; File: <prefs-menu.scm - 1998-03-31 Tue 13:39:41 EST sds@mute.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-08-04 Tue 13:26:00 EDT sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 ;;;	$Id$
 
@@ -32,7 +32,7 @@
 (define-public animation-ms-delay 50)
 
 (define-public save-header
-  ";; text from here to the EOF is overwritten by save-settings")
+  ";; text from here to the EOF is overwritten by `save-settings'.")
 
 (define-public (save-settings)
   (let ((fd (open user-init-file (logior O_RDWR O_CREAT))))
@@ -56,8 +56,13 @@
     (close-port fd)))
 
 (define-public (mod-desk-size! dx dy)
+  "Modify the current desktop size by the given parameter."
   (let* ((sz (desk-size)) (xx (car sz)) (yy (cadr sz)))
     (set-desk-size! (+ xx dx) (+ yy dx))))
+
+(define-public (help-mesg . funcs) ; return lambda
+  (lambda ()
+    (message (with-output-to-string (lambda () (for-each help funcs))))))
 
 (define scroll-menu
   (menu (list (menuitem "Full" #:action (lambda () (set-edge-scroll! 100 100)))
@@ -67,23 +72,21 @@
 	      (menuitem "1%" #:action (lambda () (set-edge-scroll! 1 1)))
 	      (menuitem "Off" #:action (lambda () (set-edge-scroll! 0 0)))
 	      menu-separator
-	      (menuitem "Help" #:action
-			(show-mesg "Set percentage of screen to scroll\\n\
-No saving yet!")))))
+	      (menuitem "Help" #:action (help-mesg "set-edge-scroll!")))))
 
 (define-public scwm-opaque-move-size 100)
 
 (define opaque-move-menu
-  (menu (list (menuitem "All" #:action (lambda () (set! scwm-opaque-move-size 100)))
-	      (menuitem "50%" #:action (lambda () (set! scwm-opaque-move-size 50)))
-	      (menuitem "20%" #:action (lambda () (set! scwm-opaque-move-size 20)))
+  (menu (list (menuitem "All" #:action
+                        (lambda () (set! scwm-opaque-move-size 100)))
+	      (menuitem "50%" #:action
+                        (lambda () (set! scwm-opaque-move-size 50)))
+	      (menuitem "20%" #:action
+                        (lambda () (set! scwm-opaque-move-size 20)))
 	      (menuitem "Never" #:action
-			(lambda () (set! scwm-opaque-move-size! 0)))
+			(lambda () (set! scwm-opaque-move-size 0)))
 	      menu-separator
-	      (menuitem "Help" #:action
-			(show-mesg "Set the max size of an opaquely\\n\
-moved window as percentage of the screen.\\n\
-No saving yet!")))))
+	      (menuitem "Help" #:action (help-mesg "scwm-opaque-move-size")))))
 
 (define desk-size-menu
   (menu (list (menuitem "2x2" #:action (lambda () (set-desk-size! 2 2)))
@@ -93,9 +96,8 @@ No saving yet!")))))
 	      (menuitem "y+1" #:action (lambda () (mod-desk-size! 0 1)))
 	      (menuitem "y-1" #:action (lambda () (mod-desk-size! -1 0)))
 	      menu-separator
-	      (menuitem "Help" #:action
-			(show-mesg "Set/change the size of the desk.\\n\
-Current desk size is " (size->str (desk-size)) ".")))))
+	      (menuitem "Help" #:action (help-mesg "mod-desk-size!"
+                                                   "set-desk-size!")))))
 
 ;;; FIX this is a bit more complex than this, since we don't want all of
 ;;; scwm to stall waiting for the response -- the hack we could
