@@ -45,6 +45,7 @@ color.  See `unflash-window'."
 ;; (stop-flashing-window)
 
 (define*-public (window-flashing? #&optional (win (get-window)))
+  "Return #t iff WIN is currently flashing, #f otherwise."
   (object-property win 'flashing))
 
 (define*-public (unflash-window #&optional (win (get-window)))
@@ -62,6 +63,11 @@ Return the window changed."
   win)
 
 (define*-public (stop-flashing-window #&optional (win (get-window)))
+  "Turn off window flashing of WIN.
+Has no effect if WIN is not flashing.
+N.B. flashing and highlight-selection of windows currently use the
+same mechanism, so turning off flashing will also visually un-select
+WIN."
   (set-object-property! win 'flashing #f)
   (unflash-window win)
   win)

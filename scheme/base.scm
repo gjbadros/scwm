@@ -749,10 +749,12 @@ a new message window."
 
 
 (define-public (run-dot-xclients-script)
-  "Runs the ~/.clients script."
+  "Runs the ~/.xclients script."
   (system "$HOME/.xclients &"))
 
 (define-public (run-dot-xclients-at-startup)
+  "After done reading your startup file, run your ~/.xclients script.
+Uses the `startup-hook' and `run-dot-xclients-script' to do so."
   (add-hook! startup-hook (lambda () (if (not (restarted?)) (run-dot-xclients-script)))))
 
 

@@ -36,6 +36,7 @@
     (round/ (cadr (display-size)) (+ 7 menu-font-height))))
 
 (define-public (sorted-by-car-string l)
+  "Sort the elements of list L based on the string value of their `car'."
   (sort l (lambda (a b) (string>? (car a) (car b)))))
 
 ;;; ----------------------------------------------

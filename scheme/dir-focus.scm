@@ -19,13 +19,13 @@
 (define-public dirlist-skip-proc winlist-skip?)
 
 ;; Score function
-(define-public (dir-score-function distance offset)
+(define (dir-score-function distance offset)
   (if (< distance 1)
       0
       (+ (/ (* 1000 (abs offset)) distance) distance)))
 
 ;; Calculates a score for a window.  The smaller the better.
-(define-public (dir-calculate-score win dir)
+(define (dir-calculate-score win dir)
   (let* ((pos (window-viewport-position win))
 	 (size (window-frame-size win))
 	 (window-x (car pos))
@@ -48,6 +48,8 @@
 
 ;; Moves focus to the closest window in the given direction
 (define*-public (dir-focus dir #&optional (win (current-window-with-pointer)))
+  "Move focus to the closest window in direction DIR.
+DIR must be one of the symbols 'north, 'south, 'east, or 'west."
   (let ((cur win)
 	(best-score 0)
 	(best-win #f))

@@ -54,6 +54,8 @@
     (set-X-server-synchronize! #f)))
 
 (define*-public (animated-iconify #&optional (win (get-window)))
+  "Iconify WIN using a simple animation of a shrinking rectangle.
+The rectangle moves towards the icon's location, if there is one."
   (cond
    ((not (iconified? win))
     (iconify win) ;; ensure a useful icon position the first time
@@ -67,6 +69,8 @@
 
 
 (define*-public (animated-deiconify #&optional (win (get-window)))
+  "Deiconify WIN using a simple animation of a growing rectangle.
+The rectangle grows outwards from the icon, if there is one."
   (if (iconified? win)
       (animate-iconify-or-deiconify  (icon-viewport-position win)
                                      (window-viewport-position win)
@@ -76,6 +80,7 @@
                                      '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0))))
 
 (define*-public (animated-deiconify-to-last-viewport-position #&optional (win (get-window)))
+  "Deiconify WIN with an animation to the same viewport position as it was iconified from."
   (if (iconified? win)
     (animate-iconify-or-deiconify (icon-viewport-position win)
 				  (or (window-property win 'last-viewport-position)
@@ -91,6 +96,7 @@
 
 
 (define*-public (animated-deiconify-to-current-viewport #&optional (win (get-window)))
+  "Deicionify WIN with an animation to the current viewport."
   (if (iconified? win)
     (animate-iconify-or-deiconify (icon-viewport-position win)
                                   (apply virtual->viewport 
@@ -104,6 +110,8 @@
                                   '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0))))
 
 (define*-public (animated-toggle-iconify #&optional (win (get-window)))
+  "Iconify WIN if not iconified, or de-iconify WIN if it is iconified.
+Uses animation, in either case."
   (if win
       (if (iconified? win)
           (animated-deiconify win)

@@ -68,6 +68,7 @@
 	(remove-hook)))))
 
 (define-public (close-ScwmClock sc)
+  "Close the ScwmClock with handle SC."
   (sc))
 
 #!

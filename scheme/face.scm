@@ -82,11 +82,19 @@ arguments can be used as the ACTIVE or INACTIVE arguments."
 
 (define*-public (set-left-button-face! button active-up #&optional
 				      (active-down #f) (inactive #f))
+  "Set the button face for the left-button numbered BUTTON.
+E.g., if BUTTON is 1, this will set the leftmost button of your
+titlebar.  See `set-button-face!' for a description of ACTIVE-UP,
+ACTIVE-DOWN, and INACTIVE."
   (set-button-face! (+ (* (- button 1) 2) 1)
 		    active-up active-down inactive))
 
 (define*-public (set-right-button-face! button active-up #&optional
 				       (active-down #f) (inactive #f))
+  "Set the button face for the right-button numbered BUTTON.
+E.g., if BUTTON is 1, this will set the rightmost button of your
+titlebar.  See `set-button-face!' for a description of ACTIVE-UP,
+ACTIVE-DOWN, and INACTIVE."
   (set-button-face! (+ (* (- button 1) 2) 2)
 		    active-up active-down inactive))
 

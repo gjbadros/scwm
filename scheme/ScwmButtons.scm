@@ -80,10 +80,9 @@
   :use-module (gtk gdk)
   :use-module (app scwm optargs))
 
-(define*-public
-  (run-ScwmButtons button-item-list #&key (orientation 'horizontal)
-		   (name "ScwmButtons") (auto-orient #t)
-		   (auto-orient-margin 100))
+(define*-public (run-ScwmButtons button-item-list #&key (orientation 'horizontal)
+				 (name "ScwmButtons") (auto-orient #t)
+				 (auto-orient-margin 100))
   (let* ((toplevel (gtk-window-new 'toplevel))
 	 (toolbar (case orientation
 		((horizontal) (gtk-toolbar-new 'horizontal 'icons))
@@ -177,9 +176,12 @@
     ))
 
 (define-public (close-ScwmButtons sb)
+  "Close the ScwmButtons window of SB.
+SB should be a handle returned from `run-ScwmButtons'."
   (sb 'quit))
 
 (define*-public (button-item pixmap-file #&key (action noop) (tooltip #f))
+  "Create a button item for a ScwmButtons window."
   (if (string? action)	;; permit "xterm" to mean (execute "xterm")
       (let ((program-name action))
 	(set! action (lambda () (execute program-name)))))

@@ -95,10 +95,13 @@
 	)))
 
 (define-public (close-ScwmBiff sb)
+  "Close the ScwmBiff notification window."
   (sb 'quit))
 
 (define-public (activate-ScwmBiff sb)
+  "Turn on the ScwmBiff notification service."
   (sb 'go-active))
 
 (define-public (deactivate-ScwmBiff sb)
+  "Make ScwmBiff no longer notify, but leave visible."
   (sb 'go-passive))

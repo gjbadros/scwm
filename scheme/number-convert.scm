@@ -18,12 +18,15 @@
 ;;;; 
 
 
-(define-module (app scwm number-convert))
+;; (use-scwm-modules number-convert)
+(define-module (app scwm number-convert)
+  :use-module (app scwm optargs))
 
 (define aval (char->integer #\A))
 (define 0val (char->integer #\0))
 
 (define-public (char-value ch)
+  "Return the integer that corresponds to the Ascii code for CH."
   (let ((i (char->integer (char-upcase ch))))
     (if (>= i aval)
 	(+ (- i aval) 10)
@@ -32,7 +35,9 @@
 ;; (char-value #\B)
 ;; (char-value #\1)
 
-(define-public (number-in-base number base value)
+(define*-public (number-in-base number base #&optional value)
+  "Return the integer that corresponds to string NUMBER in base BASE.
+VALUE is the optional value of any prefix to NUMBER."
   (let ((sl (string-length number)))
     (if (= sl 0) value
 	(number-in-base (substring number 1) base
@@ -47,10 +52,13 @@
 ;; (number-in-base "100" 16 0)
 
 (define-public (hex number)
-  (number-in-base number 16 0))
+  "Return the integer that corresponds to string NUMBER as a hexadecimal value."
+  (number-in-base number 16))
 
 (define-public (oct number)
-  (number-in-base number 8 0))
+  "Return the integer that corresponds to string NUMBER as an octal value."
+  (number-in-base number 8))
 
 (define-public (binary number)
-  (number-in-base number 2 0))
+  "Return the integer that corresponds to string NUMBER as a binary value."
+  (number-in-base number 2))
