@@ -17,11 +17,16 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;;
 
-(use-modules (app scwm flash-window)
-	     (app scwm gtk)
-	     (gtk gtk)
-	     (app scwm prompt-color)
-	     (app scwm prompt-bool))
+(define-module (app scwm stylist)
+  :use-module (app scwm base)
+  :use-module (app scwm optargs)
+  :use-module (app scwm winlist)
+  :use-module (app scwm style)
+  :use-module (app scwm flash-window)
+  :use-module (app scwm gtk)
+  :use-module (gtk gtk)
+  :use-module (app scwm prompt-bool)
+  :use-module (app scwm prompt-color))
 
 (define* (select-style-for predicate #&key (title "Style Selector")
 					    (template #f))
@@ -56,73 +61,83 @@ random window that matches PREDICATE."
       (gtk-window-set-title top title)
       (gtk-signal-connect top "delete_event" Cancel)
       (let ((box (gtk-vbox-new #f 5)))
-	(for-each
-	 (lambda (name getter style)
-	   (gtk-box-pack-start box
-			       (let* ((wg (prompt-color-hbox name (getter
-								   template)))
-				     (widget (car wg))
-				     (getter (cadr wg)))
-				 (add-hook!
-				  apply-hook
-				  (lambda ()
+	(gtk-box-pack-start
+	 box
+	 (let ((table (gtk-table-new 2 15 #f))
+	       (row 1))
+	   (gtk-table-attach
+	    table
+	    (let ((label (gtk-label-new "active")))
+	      (gtk-widget-show label)
+	      label)
+	    1 2 0 1 () () 2 5)
+	   (for-each
+	    (lambda (name prompter getter converter style)
+	      (let ((button (gtk-check-button-new)))
+		(gtk-widget-show button)
+		(gtk-table-attach
+		 table
+		 (let* ((wg (prompter name (getter template)))
+			(widget (car wg))
+			(getter (cadr wg)))
+		   (add-hook! apply-hook
+			      (lambda ()
+				(if (gtk-toggle-button-active button)
 				    (set! the-style
 					  (append! the-style
-						   (list style (getter))))))
-				 (gtk-box-pack-start
-				  widget
-				  (let ((button (gtk-check-button-new)))
-				    (gtk-widget-show button)
-				    button)
-				  #f #f)
-				 widget)
-			       #f #f))
-	 '("Foreground"
-	   "Background" "Highlight foreground" "Highlight background")
-	 (list (lambda (w) (car (get-window-colors w)))
-	       (lambda (w) (unflash-window w)
-		       (let ((col (cadr (get-window-colors w))))
-			 (flash-window-on w)
-			 col))
-	       (lambda (w) (or (car (get-window-highlight-colors w))
-			       (highlight-foreground)))
-	       (lambda (w) (unflash-window w)
-		       (or (let ((col (cadr (get-window-highlight-colors w))))
-			     (flash-window-on w)
-			     col)
-			   (highlight-background))))
-	 '(#:foreground
-	   #:background #:highlight-foreground #:highlight-background))
-	(for-each
-	 (lambda (name getter style)
-	   (gtk-box-pack-start
-	    box
-	    (let* ((wg (prompt-bool-hbox name (getter template)))
-		   (widget (car wg))
-		   (getter (cadr wg)))
-	      (add-hook! apply-hook
-			 (lambda ()
-			   (set! the-style
-				 (append! the-style
-					  (if (pair? style)
-					      (list (car style) (not (getter)))
-					      (list style (getter)))))))
-	      widget)
-	    #f #f))
-	 '("sticky" "sticky icon" "keep on top"
-		    "show title" "squash title" "show resize handles"
-		    "show side border"
-		    "start iconified" "start lowered" "start window-shaded")
-	 (list sticky? icon-sticky? kept-on-top?
-	       titlebar-shown?
-	       (lambda (w) (window-property w 'squashed-titlebar))
-	       border-normal?
-	       (lambda (w) (not (object-property w 'no-side-decorations)))
-	       iconified? (lambda (w) #f) window-shaded?)
-	 '(#:sticky #:sticky-icon #:kept-on-top
-		    (#:no-titlebar) #:squashed-titlebar (#:plain-border)
-		    (#:no-side-decorations)
-		    #:start-iconified #:start-lowered #:start-window-shaded))
+						   (list style (converter
+								(getter))))))))
+		   widget)
+		 0 1 row (1+ row) '(expand fill) '(expand fill) 2 2)
+		(gtk-table-attach table button
+				  1 2 row (1+ row) '(fill) '(fill) 2 2)
+		(set! row (1+ row))))
+	    '("Foreground"
+	      "Background" "Highlight foreground" "Highlight background"
+	      "sticky" "sticky icon" "keep on top"
+	      "show title" "squash title" "show resize handles"
+	      "show side border"
+	      "start iconified" "start lowered" "start window-shaded")
+	    (list prompt-color-hbox prompt-color-hbox
+		  prompt-color-hbox prompt-color-hbox
+		  prompt-bool-hbox prompt-bool-hbox prompt-bool-hbox
+		  prompt-bool-hbox prompt-bool-hbox prompt-bool-hbox
+		  prompt-bool-hbox
+		  prompt-bool-hbox prompt-bool-hbox prompt-bool-hbox)
+	    (list (lambda (w) (car (get-window-colors w)))
+		  (lambda (w) (unflash-window w)
+			  (let ((col (cadr (get-window-colors w))))
+			    (flash-window-on w)
+			    col))
+		  (lambda (w) (or (car (get-window-highlight-colors w))
+				  (highlight-foreground)))
+		  (lambda (w) (unflash-window w)
+			  (or (let ((col (cadr
+					  (get-window-highlight-colors w))))
+				(flash-window-on w)
+				col)
+			      (highlight-background)))
+		  sticky? icon-sticky? kept-on-top?
+		  titlebar-shown?
+		  (lambda (w) (window-property w 'squashed-titlebar))
+		  border-normal?
+		  (lambda (w)
+		    (not (object-property w 'no-side-decorations)))
+		  iconified? (lambda (w) #f) window-shaded?)
+	    (list id id id id
+		  id id id
+		  not id not
+		  not
+		  id id id)
+	    '(#:foreground
+	      #:background #:highlight-foreground #:highlight-background
+	      #:sticky #:sticky-icon #:kept-on-top
+	      #:no-titlebar #:squashed-titlebar #:plain-border
+	      #:no-side-decorations
+	      #:start-iconified #:start-lowered #:start-window-shaded))
+	   (gtk-widget-show table)
+	   table)
+	 #t #t)
 	(gtk-box-pack-start
 	 box
 	 (let ((bbox (gtk-hbox-new #f 0)))
@@ -144,7 +159,7 @@ random window that matches PREDICATE."
 		     (list Ok Apply Cancel))
 	   (gtk-widget-show bbox)
 	   bbox)
-	 #f #f)
+	 #f #f 5)
 	(gtk-container-add top box)
 	(gtk-widget-show box))
       (gtk-widget-show top))))
