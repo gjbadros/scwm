@@ -32,20 +32,21 @@
 ;; Supports running fvwm2 modules from scwm - this is mostly useful for
 ;; the pager. Here is an example of running a module in a scwmrc:
 ;;
-;;   (define m1 (run-fvwm-module  
-;;          ;; path to the module
-;;	      "/mit/windowmanagers/lib/X11/fvwm2/FvwmPager"
-;;          ;; your .fvwm2rc (does not need to exist for most modules)
-;;	      "~/.fvwm2rc"
-;;          ;; list of configuration lines
-;;	      '("*FvwmPagerBack grey76"
-;; 	        "*FvwmPagerFore black"
-;; 	        "*FvwmPagerHilight navyblue"
-;; 	        "*FvwmPagerFont none"
-;; 	        "*FvwmPagerDeskTopScale 40"
-;; 	        "*FvwmPagerLabel 0 Top"
-;; 	        "*FvwmPagerLabel 1 Bottom"
-;; 	        "*FvwmPagerSmallFont 5x8")))
+;;(define m1 (run-fvwm-module  
+;;	    ;; path to the module
+;;	    "/mit/windowmanagers/lib/X11/fvwm2/FvwmPager"
+;;	    ;; your .fvwm2rc (does not need to exist for most modules)
+;;	    "~/.fvwm2rc"
+;;	    ;; list of configuration lines
+;;	    '("*FvwmPagerBack grey76"
+;;	      "*FvwmPagerFore black"
+;;	      "*FvwmPagerHilight navyblue"
+;;	      "*FvwmPagerFont none"
+;;	      "*FvwmPagerDeskTopScale 40"
+;;	      "*FvwmPagerLabel 0 Top"
+;;	      "*FvwmPagerLabel 1 Bottom"
+;;	      "*FvwmPagerSmallFont 5x8")
+;;	    '("0" "2")))
 ;;
 ;; To later shut down the module, use kill-fvwm-module:
 ;;
@@ -59,8 +60,6 @@
 
 (define app-window "0")
 (define context "0") ; C_NO_CONTEXT
-(define first-desktop "0")
-(define last-desktop "1")
 
 (define display-width (car (display-size)))
 (define display-height (cadr (display-size)))
@@ -119,6 +118,25 @@
     (fvwm2-module-send-packet M_CONFIG_INFO data port)))
 
 (define (fvwm2-module-send-window-list port)
+  ;; XXX - sadly, it is necessary to do a gratuitous send of
+  ;; the desk and page info for the pager to work right. Icky!
+  ;; broadcasting an M_NEW_DESK first can fortunately be avoided.
+  (fvwm2-module-send-packet 
+   M_NEW_PAGE
+   (apply string-append
+	  (map (lambda (x) (long->string x)) 
+	       (append (viewport-position)
+		       (list (current-desk))
+		       (list (* (- (car (desk-size)) 1) display-width)
+			     (* (- (cadr (desk-size)) 1) display-height)))))
+   port)
+
+  ;; more stuff should really be sent here - an M_FOCUS_CHANGE for the
+  ;; focused win, per window: M_WINDOW_NAME, M_ICON_NAME, M_ICON_FILE
+  ;; (is this possible?)  M_RES_CLASS, M_RES_NAME, M_ICONIFY if
+  ;; iconfied and the icon is unmapped (???) M_MINI_ICON, and finally
+  ;; the focus win again according to fvwm source.
+
   (map (lambda (w) (add-window w port)) (list-all-windows))
   (end-window-list port))
 
@@ -197,7 +215,7 @@
 	     active-modules)))
 
 (define*-public (run-fvwm-module module-file config-file config-info
-				#&ooptional (other-args ""))
+				#&optional (other-args ""))
   (let* ((from-module-pipe (pipe))
 	 (from-module-read (car from-module-pipe))
 	 (from-module-write (cdr from-module-pipe))
@@ -220,8 +238,11 @@
 		     (cond 
 		      ((list-ref fmod 4)
 		       (remove-active-module! fmod)
-		       (close to-module-write)
-		       (close from-module-read)
+		       (catch #t
+			      (lambda ()
+				(close to-module-write)
+				(close from-module-read))
+			      (lambda args args))
 		       (list-set! fmod 4 #f))))))
 
     ;; actually, scwm waits on its children so it should be no problem.
@@ -272,16 +293,30 @@
 		   ;;(args (cadr split-result))
 		   )	
 	      
-	      ;; (display "packet: ")
-	      ;; (write packet)
-	      ;; (newline)
+	      (display "packet: ")
+	      (write packet)
+	      (newline)
 
 	      (eval-fvwm-command command fmod (id->window window-id))
 
 	    (if (list-ref fmod 4)
 		(add-input-hook-checking from-module-read packet-handler))))))
+      
+
+
       (add-input-hook-checking from-module-read packet-handler)
       fmod)))
 
 (define-public (kill-fvwm-module fmod)
   ((list-ref fmod 5)))
+
+
+
+
+
+
+
+
+
+
+
