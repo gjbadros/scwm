@@ -1,0 +1,28 @@
+#!/bin/sh -
+# Generate list of prototypes for .x files
+# By Greg J. Badros --07/23/98 gjb
+( for i in "$@"; do echo $i; done ) | \
+  sed -e 's/\.x$/();/' \
+      -e 's/-/_/' \
+      -e 's/^/void init_/'
+exit $?
+
+# Sample output:
+void init_binding();
+void init_callbacks();
+void init_color();
+void init_constraint_primitives();
+void init_decor();
+void init_deskpage();
+void init_events();
+void init_face();
+void init_font();
+void init_image();
+void init_menuitem();
+void init_miscprocs();
+void init_module_interface();
+void init_placement();
+void init_menu();
+void init_shutdown();
+void init_window();
+void init_xproperty();
