@@ -109,6 +109,11 @@
 void init_cassowary_scm();           /* from the cassowary distribution */
 #endif
 
+#ifdef HAVE_XTEST
+#include <X11/extensions/XTest.h>
+#endif
+
+
 #define MAXHOSTNAME 255
 
 void init_borders(); /* borders.c */

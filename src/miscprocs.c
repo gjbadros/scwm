@@ -800,7 +800,7 @@ button number.  E.g., "S-C-M-1" is Shift+Control+Meta + button 1. */
   while (True) {
     XWindowEvent(dpy, Scr.NoFocusWin, 
                  ButtonPressMask | KeyPressMask | KeyReleaseMask, &ev);
-    if (ev.type = ButtonPress)
+    if (ev.type == ButtonPress)
       break;
   }
 
