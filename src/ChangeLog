@@ -1,3 +1,9 @@
+Mon Jul  6 19:53:46 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* miscprocs.c: Fixed SCWM_PROC macro for
+ 	set_smart_placement_is_really_smart_x (was not getting snarfed
+ 	properly).
+
 1998-07-06  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added decor.x to $(BUILT_SOURCES)

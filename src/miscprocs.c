@@ -283,8 +283,7 @@ SCWM_PROC(beep, "beep", 0, 0, 0,
 }
 
 
-SCWM_PROC(set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!", 
-          1, 0, 0,
+SCWM_PROC(set_smart_placement_is_really_smart_x, "set-smart-placement-is-really-smart!",1, 0, 0,
           (SCM val))
 {
   if (!gh_boolean_p(val)) {
