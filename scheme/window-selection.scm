@@ -108,7 +108,7 @@ PROC might be one of `resource-match??', `class-match??', etc."
 
 ;; (begin (move-group-relative 10 10 selected-windows) (unselect-all-windows))
 
-(define-public (unselect-all-windows)
+(define*-public (unselect-all-windows)
   "Unselect all windows selected via `select-window-add'."
   (interactive)
   (for-each (lambda (w) (if (window-valid? w) (unflash-window w))) selected-windows)

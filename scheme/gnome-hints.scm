@@ -28,7 +28,7 @@
   :use-module (app scwm style)
   :use-module (app scwm placement)
   :use-module (app scwm basic-styles)
-  :use-module (app scwm styles)
+  :use-module (app scwm style)
   :use-module (app scwm winops))
 
 
@@ -45,15 +45,6 @@
   #:type 'boolean
   #:group 'gnome)
 ;;(set! *debug-gnome-hints* #t)
-
-;; Hint properties
-(define-scwm-option *gnome-desktop-number* 4
-  "The number of desktops to show in the GNOME pager.
-Used in `enable-gnome-hints'."
-  #:type 'integer
-  #:group 'gnome
-  #:range '(1 . 10)
-  #:favorites '(1 2 3 4 5))
 
 (define-scwm-option *gnome-shade-animated* #f
   "Should the shading be animated or not?"
@@ -592,3 +583,16 @@ pager applet. Reverses the effect of `enable-gnome-hints'."
   (window-style "wm-properties-capplet"
 		#:use-style desk-widget #:no-titlebar #t
 		#:transient-placement-proc (at-point-placement #:offset '(60 45))))
+
+
+;; Hint properties
+(define-scwm-option *gnome-desktop-number* 4
+  "The number of desktops to show in the GNOME pager.
+Used in `enable-gnome-hints'."
+  #:type 'integer
+  #:group 'gnome
+  #:range '(1 . 10)
+  #:setter (lambda (desks)
+	     (set! *gnome-desktop-number* desks)
+	     (gnome-init-workspace-params *gnome-desktop-number*))
+  #:favorites '(1 2 3 4 5))

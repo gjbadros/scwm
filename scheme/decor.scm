@@ -20,6 +20,7 @@
 
 
 (define-module (app scwm decor)
+  :use-module (app scwm style)
   :use-module (app scwm style-options))
 
 
