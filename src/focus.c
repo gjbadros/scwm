@@ -95,8 +95,10 @@ void
 SetFocus(Window w, ScwmWindow * psw, Bool FocusByMouse)
 {
   int i = 0;
-  if (psw)
+  if (psw) {
     psw->ttLastFocussed = time(NULL);
+    psw->timeLastFocussed = lastTimestamp;
+  }
 
   /* ClickToFocus focus queue manipulation - only performed for
    * Focus-by-mouse type focus events */

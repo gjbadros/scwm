@@ -54,6 +54,7 @@ static Bool fMenuHotkeysActivateItems = True;
 static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);
 static void FreeDynamicMenu(DynamicMenu *pmd);
+SCM popup_menu(SCM menu, SCM warp_to_first, SCM x_pos, SCM y_pos, SCM left_side_p, SCM permit_alt_release_selection_p);
 
 static
 SCM
@@ -1000,6 +1001,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
       fWrapAround = True;
       if (fAltedKey)
         *pfPermitAltReleaseToSelect = True;
+      /* fall through */
     case XK_Down:
       fNeedControl = False;
       /* fall through */
@@ -1089,7 +1091,7 @@ XPutBackKeystrokeEvent(Display *dpy, Window w, KeySym keysym)
 
 static
 MenuItem *
-MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSelect)
+MenuInteraction(DynamicMenu *pmd, int warp_to, Bool fPermitAltReleaseToSelect)
 {
 #define FUNC_NAME "MenuInteraction"
   int c10ms_delays = 0;
@@ -1100,10 +1102,10 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
   Bool fGotMouseMove = False;
   Bool fHotkeyUsed = False;
 
-  /* Warp the pointer to the first menu item
+  /* Warp the pointer to a specific menu item
      (perhaps selected if the keyboard was used to pop up this menu) */
-  if (fWarpToFirst)
-    pmd->pmdv->fnWarpPointerToPmiim(PmiimStepItems(pmd->rgpmiim[0],0,+1));
+  if (warp_to >= 1)
+    pmd->pmdv->fnWarpPointerToPmiim(PmiimStepItems(pmd->rgpmiim[0],0,+warp_to));
 
   /* Don't assume all menu types pop up with the pointer on the first
      item; pie menus for instance will pop up with nothing selected */
@@ -1561,7 +1563,7 @@ SetPopupMenuPositionFromDecoration(DynamicMenu *pmd, int x, int y, int corner)
 static 
 SCM
 PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, 
-              Bool fWarpToFirst, Bool fPermitAltReleaseToSelect,
+              int warp_to, Bool fPermitAltReleaseToSelect,
               int x, int y, int corner)
 {
   DynamicMenu *pmd = NewDynamicMenu(pmenu,pmdPoppedFrom);
@@ -1579,7 +1581,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
 
   PopupMenu(pmd);
   GrabEm(XCURSOR_MENU);
-  pmi = MenuInteraction(pmd, fWarpToFirst, fPermitAltReleaseToSelect);
+  pmi = MenuInteraction(pmd, warp_to, fPermitAltReleaseToSelect);
   UngrabEm();
   PopdownMenu(pmd);
   PopdownAllPriorMenus(pmd);
@@ -1595,8 +1597,9 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
   if (DYNAMIC_PROCEDURE_P(scmAction)) {
     return scwm_safe_call0(scmAction);
   } else if (DYNAMIC_MENU_P(scmAction)) {
-    return popup_menu(scmAction, SCM_BOOL_FromBool(fWarpToFirst), 
-                      SCM_BOOL_F, SCM_BOOL_F, SCM_BOOL_F);
+    /* this recurses indirectly back into PopupGrabMenu */
+    return popup_menu(scmAction, SCM_BOOL_F,
+                      SCM_BOOL_F, SCM_BOOL_F, SCM_BOOL_F, gh_bool2scm(fPermitAltReleaseToSelect));
   }
   return SCM_BOOL_F;
 }
@@ -1623,30 +1626,28 @@ SCWM_PROC(menu_hotkeys_activate_item_p,"menu-hotkeys-activate-item?", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(popup_menu,"popup-menu", 1,4,0,
-          (SCM menu, SCM warp_to_first_p, SCM x_pos, SCM y_pos, SCM left_side_p))
-/** Popup MENU, a menu object, and warp to the first item if WARP-TO-FIRST? is #t. 
+SCWM_PROC(popup_menu,"popup-menu", 1,5,0,
+          (SCM menu, SCM warp_to_index, SCM x_pos, SCM y_pos, SCM left_side_p, SCM permit_alt_release_selection_p))
+/** Popup MENU, a menu object, and warp to the item WARP-TO-INDEX if it is a number.
 X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be
 #t if the menu should be left justified against X-POS, or #f if it should be
-right justified against X-POS. */
+right justified against X-POS. If PERMIT-ALT-RELEASE-SELECTION? is #t, then releasing
+the Alt/Meta modifier select a menu item. */
 #define FUNC_NAME s_popup_menu
 {
-  Bool fWarpToFirst = False;
+  int warp_to;
   Bool fLeftSide = True;
-  Bool fPermitAltReleaseToSelect = False;
-  /* GJB:FIXME:: above needs to be true if we're doing the window list
-     (But this works now.... how? --03/22/99 gjb */
+  Bool fPermitAltReleaseToSelect;
   int x = -1, y = -1;
   /* permit 'menu to be used, and look up dynamically */
   DEREF_IF_SYMBOL(menu);
   VALIDATE_ARG_MENU(1,menu);
-  VALIDATE_ARG_BOOL_COPY_USE_F(2,warp_to_first_p,fWarpToFirst);
-
+  VALIDATE_ARG_INT_COPY_USE_DEF(2,warp_to_index,warp_to,-1);
   VALIDATE_ARG_INT_COPY_USE_DEF(3,x_pos,x,-1);
   VALIDATE_ARG_INT_COPY_USE_DEF(4,y_pos,y,-1);
   VALIDATE_ARG_BOOL_COPY_USE_T(5,left_side_p,fLeftSide);
-
-  return PopupGrabMenu(MENU(menu),NULL,fWarpToFirst,fPermitAltReleaseToSelect,
+  VALIDATE_ARG_BOOL_COPY_USE_F(6,permit_alt_release_selection_p,fPermitAltReleaseToSelect);
+  return PopupGrabMenu(MENU(menu),NULL,warp_to,fPermitAltReleaseToSelect,
                        x,y, fLeftSide?0:1);
 }
 #undef FUNC_NAME

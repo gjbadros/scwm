@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <X11/keysym.h>
+#include <limits.h>
 
 #include <guile/gh.h>
 
@@ -2869,7 +2870,19 @@ SCWM_PROC (window_last_focus_time, "window-last-focus-time", 0, 1, 0,
 #define FUNC_NAME s_window_last_focus_time
 {
   VALIDATE_WIN_USE_CONTEXT(win);
-  return gh_long2scm(PSWFROMSCMWIN(win)->ttLastFocussed);
+  return gh_ulong2scm(PSWFROMSCMWIN(win)->ttLastFocussed);
+}
+#undef FUNC_NAME
+
+SCWM_PROC (window_last_focus_x_time, "window-last-focus-x-time", 0, 1, 0,
+           (SCM win))
+     /** Return the X11 time that WIN was last focussed. 
+These are not reliable to compare over long times since they wrap
+too frequenly. */
+#define FUNC_NAME s_window_last_focus_x_time
+{
+  VALIDATE_WIN_USE_CONTEXT(win);
+  return gh_ulong2scm(PSWFROMSCMWIN(win)->timeLastFocussed);
 }
 #undef FUNC_NAME
 
@@ -2937,7 +2950,16 @@ the topmost window, the last is the bottommost */
 
 static int compare_focus_time(ScwmWindow **a, ScwmWindow **b)
 {
-  return (int)((*a)->ttLastFocussed - (*b)->ttLastFocussed);
+  time_t aTime = (*a)->ttLastFocussed;
+  time_t bTime = (*b)->ttLastFocussed;
+  int delta = aTime - bTime;
+  if (delta) return delta;
+  else {
+    /* use the X11 times to break ties */
+    Time aT = (*a)->timeLastFocussed;
+    Time bT = (*b)->timeLastFocussed;
+    return (aT - bT);
+  }
 }
 
 SCWM_PROC(list_focus_order, "list-focus-order", 0, 0, 0,

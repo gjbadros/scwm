@@ -103,8 +103,6 @@ struct DynamicMenu_tag
       NULL ) : \
     SAFE_MENU((X)))
 
-SCM popup_menu(SCM menu, SCM warp_to_first, SCM x_pos, SCM y_pos, SCM left_side_p);
-
 #define VALIDATE_ARG_MENU(pos,scm) \
   do { \
   if (!MENU_P(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \

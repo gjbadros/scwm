@@ -227,6 +227,7 @@ struct ScwmWindow {
   Window transientfor;
   time_t ttCreated;             /* when the window was created */
   time_t ttLastFocussed;        /* when the window was last focussed */
+  Time timeLastFocussed;          /* this wraps frequently but is finer granularity */
 
   /* MS:FIXME:: We need to add comments to document what all these darned
      flags mean. */

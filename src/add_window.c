@@ -241,6 +241,8 @@ AddWindow(Window w)
   psw->ttCreated = 
     psw->ttLastFocussed = time(NULL);
 
+  psw->timeLastFocussed = lastTimestamp;
+
   if (!PPosOverride && !FXWindowAccessible(dpy,psw->w)) {
     FREE(psw);
     return (NULL);
