@@ -155,7 +155,7 @@
 		  std-menus doc virtual prompt-color
 		  flux flux-gtk flash-window key-mover
 		  fvwm-module path-cache animation themes netscape
-		  message-window animated-iconify
+		  message-window animated-iconify last-mapped-window
 		  modifier-key-bindings window-selection
 		  group preferences animated-edge-moves
 		  send-string quote background
@@ -1220,17 +1220,6 @@ from other processes.
 	 )))))
 
 (bind-key 'all "H-p" shove-window-prefix)
-
-(define last-mapped-window #f)
-
-(define (save-last-mapped-window win)
-  (set! last-mapped-window win))
-
-(add-hook! X-MapRequest-hook save-last-mapped-window)
-
-(define (focus-last-mapped-window)
-  (and (window-valid? last-mapped-window)
-       (focus-change-warp-pointer last-mapped-window)))
 
 (bind-key 'all "H-e" focus-last-mapped-window)
 
