@@ -40,7 +40,7 @@ free_menulook(SCM scm)
 }
 
 int
-print_menulook(SCM scm, SCM port, scm_print_state *pstate)
+print_menulook(SCM scm, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<menulook ", port);
   scm_write(MENULOOK(scm)->name, port);

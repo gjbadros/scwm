@@ -24,6 +24,58 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
+
+/* See validate.h for a bit of description about these macros.
+   These macros use FUNC_NAME as the name of the function 
+   to report as being in error;  be sure that is correct.
+
+   Sample Usage:
+
+   VALIDATE_WIN_USE_CONTEXT(win);   
+   [assume arg position 1, default to window context]
+
+   VALIDATE_ARG_WIN(2, win);
+   [specify arg position explicitly]
+*/
+
+
+#define VALIDATE_WIN_USE_CONTEXT(win) \
+  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_T)) == SCM_BOOL_F) \
+          return SCM_BOOL_F; } while (0)
+
+#define VALIDATE_WIN_COPY_USE_CONTEXT(win,psw) \
+  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_T)) == SCM_BOOL_F) \
+          return SCM_BOOL_F; \
+       else psw = PSWFROMSCMWIN(win); } while (0)
+
+#define VALIDATEKILL(win) \
+  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_T)) == SCM_BOOL_F) \
+          return SCM_BOOL_F; } while (0)
+
+#define VALIDATE_ARG_WIN_USE_CONTEXT(n,win) \
+  do { if ((win = ensure_valid(win,n,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_T)) == SCM_BOOL_F) \
+           return SCM_BOOL_F; } while (0)
+
+
+#define VALIDATE_PRESS_ONLY(win) \
+  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_F)) == SCM_BOOL_F) \
+           return SCM_BOOL_F; } while (0)
+
+/* VALIDATE_ARG_WIN does *not* allow interactive selection of a window
+   like the above VALIDATE{,KILL,N,_PRESS_ONLY} macros, and it errors
+   if the argument is not a window (instead of just returning SCM_BOOL_F 
+   Also note that the order of arguments are reversed for VALIDATE_WIN_ARG
+   relative to the old VALIDATEN -- this is in accordance with a "gjb-new" convention
+   of the argument number being first in the argument checking macros --
+   like VALIDATE_ARG_COLOR */
+#define VALIDATE_ARG_WIN(pos,arg) \
+  do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); } while (0)
+
+#define VALIDATE_ARG_WIN_COPY(pos,arg,psw) \
+  do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); \
+       else psw = PSWFROMSCMWIN(arg); } while (0)
+
+
 struct ScwmDecor;		/* definition in screen.h */
 
 extern char NoName[];
@@ -266,48 +318,6 @@ void PswUpdateFlags(ScwmWindow *psw, unsigned long flags);
 #define BUTTON10    (1<<9)
 
 SCM ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p);
-
-#if 0
-/* VALIDATE macro is deprecated -- use VALIDATE_WIN_USE_CONTEXT */
-#define VALIDATE(win) \
-  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_T)) == SCM_BOOL_F) \
-          return SCM_BOOL_F; } while (0)
-#endif
-
-#define VALIDATE_WIN_USE_CONTEXT(win) \
-  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_T)) == SCM_BOOL_F) \
-          return SCM_BOOL_F; } while (0)
-
-#define VALIDATEKILL(win) \
-  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_T, SCM_BOOL_T)) == SCM_BOOL_F) \
-          return SCM_BOOL_F; } while (0)
-
-#if 0
-/* VALIDATEN macro is deprecated -- use VALIDATE_ARG_WIN_USE_CONTEXT */
-#define VALIDATEN(win,n) \
-  do { if ((win = ensure_valid(win,n,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_T)) == SCM_BOOL_F) \
-           return SCM_BOOL_F; } while (0)
-#endif
-
-#define VALIDATE_ARG_WIN_USE_CONTEXT(n,win) \
-  do { if ((win = ensure_valid(win,n,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_T)) == SCM_BOOL_F) \
-           return SCM_BOOL_F; } while (0)
-
-
-#define VALIDATE_PRESS_ONLY(win) \
-  do { if ((win = ensure_valid(win,1,FUNC_NAME, SCM_BOOL_F, SCM_BOOL_F)) == SCM_BOOL_F) \
-           return SCM_BOOL_F; } while (0)
-
-/* VALIDATE_ARG_WIN does *not* allow interactive selection of a window
-   like the above VALIDATE{,KILL,N,_PRESS_ONLY} macros, and it errors
-   if the argument is not a window (instead of just returning SCM_BOOL_F 
-   Also note that the order of arguments are reversed for VALIDATE_WIN_ARG
-   relative to the old VALIDATEN -- this is in accordance with a "gjb-new" convention
-   of the argument number being first in the argument checking macros --
-   like VALIDATE_ARG_COLOR */
-#define VALIDATE_ARG_WIN(pos,arg) \
-  do { if (!WINDOWP(arg)) scm_wrong_type_arg(FUNC_NAME,pos,arg); } while (0)
-
 
 typedef struct {
   ScwmWindow *psw;

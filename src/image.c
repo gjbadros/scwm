@@ -136,7 +136,7 @@ free_image(SCM obj)
 }
 
 int 
-print_image(SCM obj, SCM port, scm_print_state * pstate)
+print_image(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<image ", port);
   scm_write(IMAGE(obj)->full_name, port);

@@ -58,7 +58,7 @@ free_msgwindow(SCM obj)
 }
 
 int 
-print_msgwindow(SCM obj, SCM port, scm_print_state * pstate)
+print_msgwindow(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<msgwindow ", port);
   scm_write(MSGWINDOW_MESSAGE(obj), port);

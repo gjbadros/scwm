@@ -58,17 +58,15 @@ WINDOW is the window iconfied, and WAS-ICONIFIED? is
 a boolean telling whether the window was iconified previously. */
 
 
-/***********************************************************************
+/*
+ * GrabIconButtons - grab needed buttons for the icon window
  *
- *  Procedure:
- *	GrabIconButtons - grab needed buttons for the icon window
- *
- *  Inputs:
- *	psw - the scwm window structure to use
- *
- ***********************************************************************/
+ * psw - the scwm window structure to use 
+ * GJB:FIXME:: psw should be used -- the buttons needed to be
+ * grabbed might vary based on what kind of window it is.
+ */
 static void 
-GrabIconButtons(ScwmWindow *psw, Window w)
+GrabIconButtons(ScwmWindow *ARG_UNUSED(psw), Window w)
 {
   Binding *MouseEntry;
 
@@ -102,17 +100,16 @@ GrabIconButtons(ScwmWindow *psw, Window w)
 
 
 
-/***********************************************************************
+/*
+ * GrabIconKeys - grab needed keys for the icon window
  *
- *  Procedure:
- *	GrabIconKeys - grab needed keys for the icon window
+ * psw - the scwm window structure to use
  *
- *  Inputs:
- *	psw - the scwm window structure to use
- *
- ***********************************************************************/
+ * GJB:FIXME:: psw should be used -- the buttons needed to be
+ * grabbed might vary based on what kind of window it is.
+ */
 static void 
-GrabIconKeys(ScwmWindow * psw, Window w)
+GrabIconKeys(ScwmWindow *ARG_UNUSED(psw), Window w)
 {
   Binding *tmp;
 

@@ -58,7 +58,7 @@ CassowaryNewWindow(ScwmWindow *psw)
 }
 
 void
-CassowaryCloseWindow(ScwmWindow *psw)
+CassowaryCloseWindow(ScwmWindow *)
 {
 #if 0 // GJB:FIXME:: need to write these after I decide if it's the right thing
   if (psolver) {
@@ -233,7 +233,7 @@ ChangeVirtualPosition(int vx, int vy)
    edit that does not involve a window 
    (e.g., the virtual position) */
 void 
-CassowaryEndEdit(PScwmWindow psw)
+CassowaryEndEdit(PScwmWindow)
 {
   if (!psolver) {
     return;

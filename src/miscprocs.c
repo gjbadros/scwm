@@ -305,7 +305,7 @@ If FLAG is #t, then `clever-place-window' will be used instead of
 the window's smart-placement flag is on. */
 #define FUNC_NAME s_set_smart_placement_is_really_smart_x
 {
-  COPY_BOOL_OR_ERROR(Scr.fSmartPlacementIsClever,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fSmartPlacementIsClever);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -336,7 +336,7 @@ If FLAG is #t, the window will receive the event, if #f, scwm
 will not pass the event on to the client. */
 #define FUNC_NAME s_set_click_to_focus_passes_click_x
 {
-  COPY_BOOL_OR_ERROR(Scr.fClickToFocusPassesClick,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fClickToFocusPassesClick);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -360,7 +360,7 @@ If FLAG is #t, clicks which transfer focus will also raise the target
 window */
 #define FUNC_NAME s_set_click_to_focus_raises_x
 {
-  COPY_BOOL_OR_ERROR(Scr.fClickToFocusRaises,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fClickToFocusRaises);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -392,7 +392,7 @@ If FLAG is #t it will raise the window. Not sure if this function
 makes sense any more. */
 #define FUNC_NAME s_set_mouse_focus_click_raises_x
 {
-  COPY_BOOL_OR_ERROR(Scr.fMouseFocusClickRaises,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fMouseFocusClickRaises);
   return SCM_UNSPECIFIED;  
 }
 #undef FUNC_NAME
@@ -524,7 +524,7 @@ synchronous mode, but can be easier to debug. */
 #define FUNC_NAME s_set_X_server_synchronize_x
 {
   Bool fSynch;
-  COPY_BOOL_OR_ERROR(fSynch,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,fSynch);
   XSynchronize(dpy, fSynch);
   return SCM_UNSPECIFIED;
 }

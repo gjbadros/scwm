@@ -29,13 +29,13 @@
 #endif
 
 size_t 
-free_screen(SCM obj)
+free_screen(SCM ARG_IGNORE(obj))
 {
   return 0;
 };
 
 int 
-print_screen(SCM obj, SCM port, scm_print_state * pstate)
+print_screen(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   ScreenInfo *psi = SCREEN(obj);
 

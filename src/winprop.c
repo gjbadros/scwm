@@ -52,13 +52,15 @@ mark_property_handler(SCM obj)
 }
 
 size_t 
-free_property_handler(SCM obj)
+free_property_handler(SCM ARG_IGNORE(obj))
 {
   return 0;
 }
 
+/* GJB:FIXME:MS: Maybe we should register a descriptive string name with the
+   property handler and print that here? */
 int 
-print_property_handler(SCM obj, SCM port, scm_print_state * pstate)
+print_property_handler(SCM ARG_UNUSED(obj), SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<property-handler>", port);
   return 1;

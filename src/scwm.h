@@ -44,6 +44,28 @@
 #define __inline__ 
 #endif
 
+
+/* Can mark unused formals as ARG_IGNORE or ARG_UNUSED and avoid warning;
+   uses a gcc feature, but C++ also can do this by just
+   not giving a formal name.
+   ARG_IGNORE is for arguments that really won't be used.
+   whereas ARG_UNUSED just comments that the argument is not used at present
+     and might be worth revisiting to see if we can generalize the code
+     to use it. (Or if alternate implementations might use the variable) */
+#ifdef __GNUC__
+/* do not use the variable name as given-- paste an
+   "_unused" on to the end so we force an error if
+   it is used. */
+#define ARG_IGNORE(x) x ## _ignore __attribute__ ((unused))
+#define ARG_UNUSED(x) x ## _unused __attribute__ ((unused))
+#elif defined(__cplusplus)
+#define ARG_IGNORE(x) /* empty */
+#define ARG_UNUSED(x) /* empty */
+#else
+#define ARG_IGNORE(x) x ## _ignore
+#define ARG_UNUSED(x) x ## _unused
+#endif
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
@@ -55,6 +77,7 @@
 #include "module-types.h"
 #include <stdlib.h>
 #include "scwm-snarf.h"
+#include "validate.h"
 #include "system.h"
 #include "window_fwd.h"
 
@@ -193,57 +216,6 @@ enum wm_client_functions {
 
 #define SCM_BOOL_FromBool(x) ((x)? SCM_BOOL_T: SCM_BOOL_F)
 
-/* use gh_scm2bool() instead 
-#define FFromSCMBool(x) ((x) == SCM_BOOL_T)
-#define FInvertFromSCMBool(x) ((x) != SCM_BOOL_T)
-*/
-
-/* Use implied FUNC_NAME (cascaded macro) */
-#define SCWM_WRONG_TYPE_ARG(pos,formal) \
-   do { scm_wrong_type_arg(FUNC_NAME, pos, formal); } while (0)
-
-
-#define COPY_BOOL_OR_ERROR(var,flag,pos,func) \
-  do { \
-  if (flag == SCM_BOOL_T) var = True; \
-  else if (flag == SCM_BOOL_F) var = False; \
-  else scm_wrong_type_arg(func,pos,flag); \
-  } while (0)
-
-#define COPY_BOOL_OR_ERROR_DEFAULT_TRUE(var,flag,pos,func) \
-  do { \
-  if (flag == SCM_BOOL_T || flag == SCM_UNDEFINED) var = True; \
-  else if (flag == SCM_BOOL_F) var = False; \
-  else scm_wrong_type_arg(func,pos,flag); \
-  } while (0)
-
-#define COPY_BOOL_OR_ERROR_DEFAULT_FALSE(var,flag,pos,func) \
-  do { \
-  if (flag == SCM_BOOL_T) var = True; \
-  else if (flag == SCM_BOOL_F || flag == SCM_UNDEFINED) var = False; \
-  else scm_wrong_type_arg(func,pos,flag); \
-  } while (0)
-
-
-#define COPY_INVERT_BOOL_OR_ERROR(var,flag,pos,func) \
-  do { \
-  if (flag == SCM_BOOL_F) var = True; \
-  else if (flag == SCM_BOOL_T) var = False; \
-  else scm_wrong_type_arg(func,pos,flag); \
-  } while (0)
-
-#define COPY_INTEGER_WITH_DEFAULT_OR_ERROR(var,scm,pos,func,def) \
-  do { \
-  if (UNSET_SCM(scm)) var = def; \
-  else if (gh_number_p(scm)) var = gh_scm2int(scm); \
-  else scm_wrong_type_arg(func,pos,scm); \
-  } while (0)
-
-#define COPY_INTEGER_OR_ERROR(var,scm,pos,func) \
-  do { \
-  if (gh_number_p(scm)) var = gh_scm2int(scm); \
-  else scm_wrong_type_arg(func,pos,scm); \
-  } while (0)
 
 
 #define PackedBool(x) unsigned short x:1

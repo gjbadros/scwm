@@ -58,5 +58,3 @@ void set_property_handler(SCM prop, scwm_property_handler *handler);
 
 
 #endif /* WINPROP_H */
-
-

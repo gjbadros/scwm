@@ -134,7 +134,7 @@ free_menu(SCM obj)
 }
 
 int 
-print_menu(SCM obj, SCM port, scm_print_state * pstate)
+print_menu(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<menu ", port);
   if (MENU_P(obj)) {
@@ -375,7 +375,7 @@ POPUP-DELAY is the number of ms to wait before popping up submenus. */
 #define FUNC_NAME s_set_menu_popup_delay_x
 {
   if (!MENU_P(menu)) scm_wrong_type_arg(FUNC_NAME,1,menu);
-  COPY_INTEGER_OR_ERROR(MENU(menu)->cmsPopupDelay,popup_delay,10,FUNC_NAME);
+  VALIDATE_ARG_INT_COPY(2,popup_delay,MENU(menu)->cmsPopupDelay);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -401,7 +401,7 @@ HOVER-DELAY is the number of ms to wait before invoking the hover action. */
 #define FUNC_NAME s_set_menu_hover_delay_x
 {
   if (!MENU_P(menu)) scm_wrong_type_arg(FUNC_NAME,1,menu);
-  COPY_INTEGER_OR_ERROR(MENU(menu)->cmsHoverDelay,hover_delay,11,FUNC_NAME);
+  VALIDATE_ARG_INT_COPY(2,hover_delay,MENU(menu)->cmsHoverDelay);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -422,7 +422,7 @@ See `set-menu-hover-delay!'. */
    set-menu-* funcs should be set-default-menu-*?  Or something like
    the window (with-style (set-menu-look! ...)) system? */
 SCWM_PROC(set_menu_menu_look_x, "set-menu-menu-look!", 2, 0, 0,
-           (SCM menu, SCM menu_look) )
+           (SCM menu, SCM menu_look))
 /** Use MENU-LOOK as the menu-look for MENU. */
 #define FUNC_NAME s_set_menu_menu_look_x
 {
@@ -441,7 +441,7 @@ SCWM_PROC(set_menu_menu_look_x, "set-menu-menu-look!", 2, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(set_menu_menu_title_x, "set-menu-menu-title!", 2, 0, 0,
-           (SCM menu, SCM menu_title) )
+           (SCM menu, SCM menu_title))
 /** Use MENU-TITLE as the title for MENU. */
 #define FUNC_NAME s_set_menu_menu_title_x
 {
@@ -1471,7 +1471,7 @@ If #f, a menuitem hotkey just makes that item selected and still requires
 a Return or Space keypress to activate the item. */
 #define FUNC_NAME s_set_menu_hotkeys_activate_item_x
 {
-  COPY_BOOL_OR_ERROR_DEFAULT_TRUE(fMenuHotkeysActivateItems,activate_p,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY_USE_T(1,activate_p,fMenuHotkeysActivateItems);
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
@@ -1505,7 +1505,7 @@ right justified against X-POS. */
   if (!MENU_P(menu)) {
     scm_wrong_type_arg(FUNC_NAME, 1, menu);
   }
-  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fWarpToFirst,warp_to_first_p,2,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,warp_to_first_p,fWarpToFirst);
 
   if (!UNSET_SCM(x_pos) && !gh_number_p(x_pos)) 
     scm_wrong_type_arg(FUNC_NAME, 3, x_pos);
@@ -1517,7 +1517,7 @@ right justified against X-POS. */
 
   if (gh_number_p(y_pos)) y = gh_scm2int(y_pos);
 
-  COPY_BOOL_OR_ERROR_DEFAULT_TRUE(fLeftSide,left_side_p,5,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY_USE_T(5,left_side_p,fLeftSide);
 
   return PopupGrabMenu(MENU(menu),NULL,fWarpToFirst,fPermitAltReleaseToSelect,
                        x,y, fLeftSide?0:1);

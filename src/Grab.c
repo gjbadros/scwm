@@ -46,7 +46,7 @@ XUngrabServer_withSemaphore(Display * disp)
 #define FUNC_NAME "XUngrabServer_withSemaphore"
 {
   if (--xgrabcount < 0) {	/* should never happen */
-    fprintf(stderr,"%s: too many ungrabs!\n");
+    scwm_msg(ERR,FUNC_NAME,"More ungrabs than grabs!");
     xgrabcount = 0;
   }
   if (xgrabcount == 0) {

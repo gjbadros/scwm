@@ -1195,7 +1195,7 @@ CaptureAllWindows(void)
 }
 
 SIGNAL_T
-SigResetLoop(int ignored)
+SigResetLoop(int ARG_IGNORE(ignored))
 {
   newhandler_doreset(SIGNAL_FOR_RESET);
   if (envHandleEventsLoop) {
@@ -1223,9 +1223,9 @@ void
 newhandler_doreset(int sig)
 {
   if (signal(sig, SIG_IGN) != SIG_IGN) {
-    int d = signal(sig, SigResetLoop);
-    if (d == SIG_ERR) 
-      scwm_msg(WARN,"newhandler_doreset","signal returned SIG_ERR for SigResetLoop",d);
+    void *pv = signal(sig, SigResetLoop);
+    if (pv == SIG_ERR) 
+      scwm_msg(WARN,"newhandler_doreset","signal returned SIG_ERR for SigResetLoop");
   }
 }
 
@@ -1245,7 +1245,7 @@ newsegvhandler(int sig)
  * Restart on a signal
  ************************************************************************/
 void 
-Restart(int ignored)
+Restart(int ARG_IGNORE(ignored))
 {
   Done(1, *g_argv);
   SIGNAL_RETURN;
@@ -1367,14 +1367,14 @@ Reborder(Bool fRestart)
  * that uses libraries in a signal handler!
  */
 SIGNAL_T
-SigDone(int ignored)
+SigDone(int ARG_IGNORE(ignored))
 {
   Done(0, NULL);
   SIGNAL_RETURN;
 }
 
 SIGNAL_T
-SigDoneSegv(int ignored)
+SigDoneSegv(int ARG_IGNORE(ignored))
 {
   Done(-1, NULL);
   SIGNAL_RETURN;
@@ -1382,20 +1382,17 @@ SigDoneSegv(int ignored)
 
 
 XErrorHandler 
-CatchRedirectError(Display * dpy, XErrorEvent * event)
+CatchRedirectError(Display *ARG_IGNORE(dpy), XErrorEvent *ARG_IGNORE(event))
 {
   scwm_msg(ERR, "CatchRedirectError", "another WM is running");
   exit(1);
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	CatchFatal - Shuts down if the server connection is lost
- *
- ************************************************************************/
+/*
+ * CatchFatal - Shuts down if the server connection is lost
+ */
 XIOErrorHandler 
-CatchFatal(Display * dpy)
+CatchFatal(Display *ARG_IGNORE(dpy))
 {
   /* No action is taken because usually this action is caused by someone
      using "xlogout" to be able to switch between multiple window managers
@@ -1452,7 +1449,7 @@ usage(void)
 
 
 void 
-SetMWM_INFO(Window window)
+SetMWM_INFO(Window ARG_UNUSED(window))
 {
 /* GJB:FIXME:: make this a per-window runtime option */
 #ifdef MODALITY_IS_EVIL

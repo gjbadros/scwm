@@ -67,7 +67,7 @@ free_menuitem(SCM obj)
 }
 
 int 
-print_menuitem(SCM obj, SCM port, scm_print_state * pstate)
+print_menuitem(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<menuitem ", port);
   if (MENUITEM_P(obj)) {
@@ -206,7 +206,7 @@ For a higher-level interface to this function, see `menuitem'. */
       gh_scm2newstr(hotkey_prefs,&pmi->cchHotkeyPreferences);
   }
 
-  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(pmi->fIsForcedSubmenu,submenu_p,9,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY_USE_F(9,submenu_p,pmi->fIsForcedSubmenu);
 
   if (action == SCM_BOOL_F && pmi->cchLabel == 0 && pmi->cchExtra == 0 &&
       picture_left == SCM_BOOL_F && picture_above == SCM_BOOL_F) {

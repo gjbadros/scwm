@@ -95,7 +95,7 @@ free_color(SCM obj)
 }
 
 int 
-print_color(SCM obj, SCM port, scm_print_state * pstate)
+print_color(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<color ", port);
   scm_write(COLORNAME(obj), port);
@@ -633,7 +633,7 @@ redraw_hilight_window()
 /* FIXMS: Need to protect color objects in the below! */
 
 SCWM_PROC(set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0,
-           (SCM fg) )
+           (SCM fg))
      /** Use FG for the foreground color of a window with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own foreground color. */
@@ -658,7 +658,7 @@ have their own foreground color. */
 
 
 SCWM_PROC (hilight_foreground, "hilight-foreground", 0, 0, 0,
-           () )
+           ())
      /** Return the default foreground color for windows with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own foreground color. */
@@ -733,7 +733,7 @@ have their own background color. */
 
 
 SCWM_PROC (hilight_background, "hilight-background", 0, 0, 0,
-           () )
+           ())
      /** Return the default background color for windows with the input focus.
 Applies to the current decor. This is used only for windows that don't
 have their own background color. */
@@ -748,7 +748,7 @@ have their own background color. */
 
 
 SCWM_PROC(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
-           (SCM fg) )
+           (SCM fg))
      /** Use FG as the default foreground color for icons, titlebars, etc. */
 #define FUNC_NAME s_set_not_menu_foreground_x
 { 
@@ -767,7 +767,7 @@ SCWM_PROC(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC (not_menu_foreground, "not-menu-foreground", 0, 0, 0,
-           () )
+           ())
      /** Return the default foreground color for icons, titlebars, etc. */
 #define FUNC_NAME s_not_menu_foreground
 { 
@@ -776,7 +776,7 @@ SCWM_PROC (not_menu_foreground, "not-menu-foreground", 0, 0, 0,
 #undef FUNC_NAME
 
 SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
-           (SCM bg) )
+           (SCM bg))
      /** Use BG as the default background color for icons, window frames, etc. */
 #define FUNC_NAME s_set_not_menu_background_x
 { 
@@ -802,7 +802,7 @@ SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
 
 
 SCWM_PROC (not_menu_background, "not-menu-background", 0, 0, 0,
-           () )
+           ())
      /** Return the default background color for icons, window frames, etc. */
 #define FUNC_NAME s_not_menu_background
 { 

@@ -241,7 +241,7 @@ static char *statefile()
 }
 
 /* save the state of all windows */
-static void saveYourself2(SmcConn conn, SmPointer client_data)
+static void saveYourself2(SmcConn conn, SmPointer ARG_UNUSED(client_data))
 #define FUNC_NAME "saveYourself2"
 {
   ScwmWindow *psw;
@@ -298,27 +298,28 @@ static void loadMyself()
 #undef FUNC_NAME
 
 static
-void saveYourself(SmcConn conn, SmPointer client_data, int save_type,
-		  Bool shutdown, int interact_style, Bool fast)
+void saveYourself(SmcConn conn, SmPointer ARG_UNUSED(client_data), int ARG_UNUSED(save_type),
+		  Bool ARG_UNUSED(shutdown), int ARG_UNUSED(interact_style), 
+                  Bool ARG_UNUSED(fast))
 {
   SavePhase = 1;
   SmcRequestSaveYourselfPhase2(conn, &saveYourself2, NULL);
 }
 
 static
-void shutdownCancelled(SmcConn conn, SmPointer client_data)
+void shutdownCancelled(SmcConn conn, SmPointer ARG_UNUSED(client_data))
 {
   if (SavePhase == 1)		/* still waiting for Phase2? */
     SmcSaveYourselfDone(conn, False);
 }
 
 static
-void saveComplete(SmcConn conn, SmPointer client_data)
+void saveComplete(SmcConn ARG_UNUSED(conn), SmPointer ARG_UNUSED(client_data))
 {
 }
 
 static
-void die(SmcConn conn, SmPointer client_data)
+void die(SmcConn conn, SmPointer ARG_UNUSED(client_data))
 {
   SmcCloseConnection(conn, 0, NULL);
   if (conn == SMconn) {
@@ -421,8 +422,8 @@ static void setSMProperties()
   FREE(cwdVal.value);
 }
 
-static void iceWatchFD(IceConn conn, IcePointer client_data,
-		       Bool opening, IcePointer *watch_data)
+static void iceWatchFD(IceConn conn, IcePointer ARG_UNUSED(client_data),
+		       Bool opening, IcePointer *ARG_UNUSED(watch_data))
 #define FUNC_NAME "iceWatchFD"
 {
   if (opening) {

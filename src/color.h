@@ -29,6 +29,25 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
+/* Throw an error if X is not a color or a string. Usage here implies
+   that make_color should indeed throw an error if it fails to parse or
+   allocate the color. */
+
+#define VALIDATE_ARG_COLOR(pos,X)                            \
+  do {                                                       \
+    if (gh_string_p(X)) { X = make_color(X); }               \
+    if (!COLOR_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X);} \
+  } while (0)
+
+#define VALIDATE_ARG_COLOR_COPY_USE_BLACK(pos,X,xcolor)       \
+  do {                                                        \
+    if (UNSET_SCM(X)) { X = BLACK_COLOR; }                    \
+    if (gh_string_p(X)) { X = make_color(X); }                \
+    if (!COLOR_P(X)) { scm_wrong_type_arg(FUNC_NAME,pos,X); } \
+    xcolor = XCOLOR(X);                                       \
+  } while (0)
+
+
 EXTERN long scm_tc16_scwm_color;
 
 EXTERN SCM str_black;
@@ -53,17 +72,6 @@ typedef struct {
 
 #define BLACK_COLOR make_color(str_black)
 #define WHITE_COLOR make_color(str_white)
-
-/* Throw an error if X is not a color or a string. Usage here implies
-   that make_color should indeed throw an error if it fails to parse or
-   allocate the color. */
-
-#define VALIDATE_ARG_COLOR(pos,X)                            \
-  do {                                                       \
-    if (gh_string_p(X)) {X=make_color(X);};                  \
-    if (!COLOR_P(X)) {scm_wrong_type_arg(FUNC_NAME,pos,X);}; \
-  } while (0)
-
 
 #define SAFE_COLOR(X) (COLOR_P((X))?XCOLOR((X)):0)
 

@@ -56,7 +56,7 @@ struct scwm_body_apply_data {
 };
 
 SCM 
-scwm_handle_error (void *data, SCM tag, SCM throw_args)
+scwm_handle_error (void *ARG_IGNORE(data), SCM tag, SCM throw_args)
 {
   SCM port = scm_def_errp;
 

@@ -233,7 +233,10 @@ PchModifiersToModmask(const char *pch, int *pmodifier, char *func_name, Bool all
   return pch;
 }
 
-
+/* Returns True if KEY is a string holding a keysym name + possible
+   modifier prefixes.  Set *pmodifier to be the modifiers, and *pkeysym
+   to the keysym.
+*/
 Bool 
 FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name, 
 		      Bool allow_any_p)
@@ -477,6 +480,7 @@ GrabButtons(ScwmWindow * psw)
   return;
 }
 
+#if 0 /* GJB:FIXME:: we do not use this function, but maybe should */
 /* This grabs all the defined keys on all the windows */
 static void
 grab_all_keys_all_buttons_all_windows()
@@ -487,8 +491,10 @@ grab_all_keys_all_buttons_all_windows()
     GrabButtons(psw);
   }
 }
+#endif
 
 
+#if 0 /* GJB:FIXME:: we do not use this function, but maybe should */
 /* This grabs all the defined keys on all the windows */
 static void
 grab_all_buttons_all_windows()
@@ -498,6 +504,7 @@ grab_all_buttons_all_windows()
     GrabButtons(psw);
   }
 }
+#endif
 
 /* Just grab a single key + modifier on all windows
    This needs to be done after a new key binding */
@@ -742,7 +749,8 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete) */
 SCWM_PROC(keysym_to_keycode, "keysym->keycode", 1, 0, 0,
           (SCM keysym_name))
      /** Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
-KEYSYM-NAME should be a string.  E.g., "Control_L". */
+KEYSYM-NAME should be a string.  E.g., "Control_L".  Return #f if KEYSYM-NAME
+is not a valid keysym. */
 #define FUNC_NAME s_keysym_to_keycode
 {
   SCM answer = SCM_EOL;
@@ -754,6 +762,9 @@ KEYSYM-NAME should be a string.  E.g., "Control_L". */
   /* GJB:FIXME:: This shouldn't really accept modifiers in front, but
      FKeyToKeysymModifiers does permit them */
   Bool fOkayKey = FKeyToKeysymModifiers(keysym_name,&keysym,&modmask, FUNC_NAME, False);
+
+  if (!fOkayKey)
+    return SCM_BOOL_F;
 
   XDisplayKeycodes(dpy, &min, &max);
   for (i = max; i >= min; --i) {

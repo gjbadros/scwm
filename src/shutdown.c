@@ -200,7 +200,7 @@ arguments as given previously. */
 
 /* GJB:FIXME:MS: what is args for, and why does this have it */
 SCWM_PROC(scwm_quit, "scwm-quit", 0, 0, 1,
-          (SCM args))
+          (SCM ARG_IGNORE(args)))
      /** Exit scwm cleanly. `quit' is redefined as this within
 scwm. ARGS is ignored.*/
 #define FUNC_NAME s_scwm_quit

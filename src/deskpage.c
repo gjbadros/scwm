@@ -198,7 +198,7 @@ edge of the desktop to the left of the display as it moves off the
 right edge, and vice-versa. See also `set-edge-y-wrap!' */
 #define FUNC_NAME s_set_edge_x_wrap_x
 {
-  COPY_BOOL_OR_ERROR(Scr.fEdgeWrapX, flag, 1, FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fEdgeWrapX);
 
   return SCM_UNSPECIFIED;
 }
@@ -222,7 +222,7 @@ edge of the desktop to the top of the display as it moves off the very
 bottom edge, and vice-versa. See also `set-edge-x-wrap!' */
 #define FUNC_NAME s_set_edge_y_wrap_x
 {
-  COPY_BOOL_OR_ERROR(Scr.fEdgeWrapY, flag, 1, FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,Scr.fEdgeWrapY);
 
   return SCM_UNSPECIFIED;
 }
@@ -248,7 +248,7 @@ scrolled. If this parameter is #f, the viewport will not scroll at all
 at the screen edge. */
 #define FUNC_NAME s_set_edge_scroll_delay_x
 {
-  COPY_INTEGER_WITH_DEFAULT_OR_ERROR(Scr.ScrollResistance,ms,1,FUNC_NAME,-1);
+  VALIDATE_ARG_INT_COPY_USE_DEF(1,ms,Scr.ScrollResistance,-1);
   if (Scr.ScrollResistance >= 10000) { 
     scwm_msg(WARN, FUNC_NAME, "Possible deprecated use of "
              "`set-edge-scroll-delay!' detected. Give #f rather than ms "

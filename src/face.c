@@ -270,8 +270,9 @@ ResetAllButtons(ScwmDecor * fl)
 
 long scm_tc16_scwm_face;
 
+
 int 
-print_face(SCM obj, SCM port, scm_print_state * pstate)
+print_face(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<face ", port);
   scm_write(scwm_ptr2scm(FACE(obj)), port);
@@ -446,7 +447,7 @@ See the section on the `Face Flags' concept. */
 #undef FUNC_NAME
 
 SCWM_PROC(make_face, "make-face",2,0,0,
-          (SCM flags, SCM specs) )
+          (SCM flags, SCM specs))
 	  /** Create a new face.
 FLAGS is a list of face flags (see concept) and
 SPECS is a list of face specifiers. */
@@ -902,7 +903,7 @@ state, it will be sunk in the ACTIVE-DOWN state by default.  */
 #undef FUNC_NAME
 
 SCWM_PROC(set_button_face_x, "set-button-face!", 2, 2, 0,
-          (SCM button, SCM active_up, SCM active_down, SCM inactive) )
+          (SCM button, SCM active_up, SCM active_down, SCM inactive))
      /** Set the button faces for the various window states.
 In the current decor, use ACTIVE-UP as the face for the
 button specified by the integer BUTTON when active and not pressed
@@ -963,7 +964,7 @@ default.  */
 
 
 SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
-          (SCM button, SCM flag) )
+          (SCM button, SCM flag))
      /** Specify the Mwm flag for BUTTON.
 If FLAG is #t, the button's relief pattern (if any) will appear to
 reverse in depth sense (i.e., flip from sunken in to extruding out)
@@ -997,7 +998,7 @@ property). */
 
 
 SCWM_PROC(set_border_face_x, "set-border-face!", 1, 1, 0,
-          (SCM active, SCM inactive) )
+          (SCM active, SCM inactive))
      /** Set the face for the border In the current decor.
 Use ACTIVE as the face for the border when the window is active. Use
 INACTIVE when the window is inactive. INACTIVE defaults to the same as

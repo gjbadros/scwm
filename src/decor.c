@@ -81,7 +81,7 @@ free_decor(SCM obj)
 };
 
 int 
-print_decor(SCM obj, SCM port, scm_print_state * pstate)
+print_decor(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   char *name;
 

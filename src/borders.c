@@ -188,7 +188,7 @@ static GC TransMaskGC;
 static void 
 DrawButton(ScwmWindow *psw, Window win, int w, int h,
 	   ButtonFace * bf, GC ReliefGC, GC ShadowGC,
-	   Bool inverted, int stateflags)
+	   Bool ARG_UNUSED(inverted), int stateflags)
 #define FUNC_NAME "DrawButton"
 {
   register int type = bf->style & ButtonFaceTypeMask;
@@ -665,7 +665,7 @@ PixelHiBackFromPsw(const ScwmWindow *psw)
 
 
 int
-CLeftButtons(const ScwmWindow *psw)
+CLeftButtons(const ScwmWindow *ARG_UNUSED(psw))
 {
 #if 1
   return Scr.nr_left_buttons;
@@ -683,7 +683,7 @@ CLeftButtons(const ScwmWindow *psw)
 }
 
 int
-CRightButtons(const ScwmWindow *psw)
+CRightButtons(const ScwmWindow *ARG_UNUSED(psw))
 {
 #if 1
   return Scr.nr_right_buttons;
@@ -1108,7 +1108,7 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
  *  Redraws just the title bar
  */
 void 
-SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool NewTitle) 
+SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool ARG_UNUSED(NewTitle))
 {
   /* GJB:FIXME:: NewTitle parameter is unused */
   int hor_off, w, i;

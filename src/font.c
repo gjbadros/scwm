@@ -82,7 +82,7 @@ free_font(SCM obj)
 }
 
 int 
-print_font(SCM obj, SCM port, scm_print_state * pstate)
+print_font(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<font ", port);
   scm_write(FONTNAME(obj), port);

@@ -443,7 +443,7 @@ mark_window(SCM obj)
 
 
 int 
-print_window(SCM obj, SCM port, scm_print_state * pstate)
+print_window(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 {
   scm_puts("#<window ", port);
   if (VALIDWINP(obj)) {
@@ -1241,7 +1241,7 @@ PswFromPointerLocation(Display *dpy)
 }
 
 ScwmWindow *
-PswSelectInteractively(Display *dpy)
+PswSelectInteractively(Display *ARG_UNUSED(dpy))
 {
   /* GJB:FIXME:: this should be the primitive that select_window calls,
      and this should replace DeferExecution. --07/25/98 gjb */
@@ -3298,7 +3298,7 @@ usual way if not specified. */
 {
   ScwmWindow *psw;
 
-  VALIDATE_ARG_COLOR(2,fg);
+  VALIDATE_ARG_COLOR(1,fg);
 
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
@@ -3413,7 +3413,7 @@ specified. */
 #define FUNC_NAME s_set_random_placement_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fRandomPlace,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fRandomPlace);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3428,7 +3428,7 @@ specified. */
 #define FUNC_NAME s_set_smart_placement_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fSmartPlace,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fSmartPlace);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3484,7 +3484,7 @@ to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_buttons_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fMWMButtons,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fMWMButtons);
   /* GJB:FIXME:: why here? SetBorder(psw,(Scr.Hilite==psw),True,True,None); */
   return SCM_UNSPECIFIED;
 }
@@ -3502,7 +3502,7 @@ specified. */
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
-  COPY_BOOL_OR_ERROR(psw->fMWMBorders,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,psw->fMWMBorders);
   /* copied from SelectDecor */
   if (psw->fMWMBorders)
     psw->bw = 0;
@@ -3546,7 +3546,7 @@ defaults to the window context in the usual way if not specified. */
   /* Should changing the icon title string be allowed? */
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
-  COPY_INVERT_BOOL_OR_ERROR(psw->fNoIconTitle,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_INVERT(1,flag,psw->fNoIconTitle);
   force_icon_redraw (psw);
   return SCM_UNSPECIFIED;
 }
@@ -3592,7 +3592,7 @@ specified. */
   ScwmWindow *psw;
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
   psw = PSWFROMSCMWIN(win);
-  COPY_INVERT_BOOL_OR_ERROR(psw->fSuppressIcon,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_INVERT(1,flag,psw->fSuppressIcon);
   force_icon_redraw (psw);
   return SCM_UNSPECIFIED;
 }
@@ -3747,7 +3747,7 @@ not specified. */
 #define FUNC_NAME s_set_hint_override_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fHintOverride,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fHintOverride);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3764,7 +3764,7 @@ defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_decorate_transient_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fDecorateTransient,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fDecorateTransient);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3778,7 +3778,7 @@ to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_mwm_decor_hint_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fMWMDecor,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fMWMDecor);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3793,7 +3793,7 @@ specified. */
 #define FUNC_NAME s_set_mwm_func_hint_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fMWMFunctions,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fMWMFunctions);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3810,7 +3810,7 @@ usual way if not specified. */
 #define FUNC_NAME s_set_PPosition_hint_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_INVERT_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fNoPPosition,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_INVERT(1,flag,PSWFROMSCMWIN(win)->fNoPPosition);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3824,7 +3824,7 @@ defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_OL_decor_hint_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fOLDecorHint,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fOLDecorHint);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3863,7 +3863,7 @@ defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_set_skip_mapping_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fShowOnMap,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fShowOnMap);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3880,7 +3880,7 @@ specified. */
 #define FUNC_NAME s_set_lenience_x
 {
   VALIDATE_ARG_WIN_USE_CONTEXT(2, win);
-  COPY_BOOL_OR_ERROR(PSWFROMSCMWIN(win)->fLenience,flag,1,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY(1,flag,PSWFROMSCMWIN(win)->fLenience);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -3914,26 +3914,35 @@ ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
 
 
 
-/* The next two functions are _intentionally_ not exported. */
+/* The next two functions are _intentionally_ not exported. 
 
-void
+   GJB:FIXME:MS: so make them static, too */
+
+static void
 set_squashed_titlebar_x(SCM win, SCM flag)
+#define FUNC_NAME "set_squashed_titlebar_x!"
 {
   ScwmWindow *psw;
   SCM oldval;
 
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
   oldval = SCM_BOOL_FromBool(psw->fSquashedTitlebar);
   psw->fSquashedTitlebar = gh_scm2bool(flag);
   printf("psw->fSquashedTitlebar now: %d", psw->fSquashedTitlebar);
   ResizePswToCurrentSize(psw);
   signal_window_property_change(win, sym_squashed_titlebar, flag, oldval);
 }
+#undef FUNC_NAME
 
-SCM
+static SCM
 squashed_titlebar_p(SCM win)
+#define FUNC_NAME "squashed_titlebar_p"
 {
-  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fSquashedTitlebar);
+  ScwmWindow *psw;
+  VALIDATE_ARG_WIN_COPY(1,win,psw);
+  return SCM_BOOL_FromBool(psw->fSquashedTitlebar);
 }
+#undef FUNC_NAME
 
 SCWM_PROPERTY_HANDLER(squashed_titlebar_handler, sym_squashed_titlebar, squashed_titlebar_p, set_squashed_titlebar_x);
 
