@@ -1,3 +1,27 @@
+Sun Jul  4 21:36:47 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added @XTST_LIB@ to link scwm_LDADD
+
+Sun Jul  4 21:21:13 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.h, window.c: Added fInPlace argument to
+ 	set_window_internal_title_height.  Make windows that are shaded
+	have WM_STATE set to WithdrawnState (they were NormalState; it's
+	conceivably that they should go to IconicState, but that implies
+	to me that their icon is visible, which is not the case).
+
+	* util.c, decor.c: Pass False to fInPlace for
+	set_window_internal_title_height. 
+
+	* miscprocs.c: ws typo fix.
+
+	* events.c: Honour fQuotingKeystrokes flag, but do only a send
+	events sending of the key (it's a synthetic event).
+
+	* binding.c: Added `set-quote-key-events!' and `quote-key-events?'
+	to set fQuotingKeystrokes variable.
+	
+
 Sun Jul  4 18:40:04 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* virtual.h, scwm.c, screen.h, events.c: Eliminate NON_VIRTUAL

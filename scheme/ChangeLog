@@ -1,3 +1,10 @@
+Sun Jul  4 21:15:39 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Added toggle-titlebar-in-place toggling winop.
+
+	* flux.scm: Added `tile-windows-interactively',
+	`enclosing-rectangle', and `window-corners'.
+
 Sun Jul  4 19:01:13 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* prompt-color.scm: Make favorites default to
