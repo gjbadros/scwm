@@ -8,7 +8,7 @@ Sun Oct 26 01:05:27 1997  Maciej Stachowiak  <mstachow@mit.edu>
 	* window.c: Use the correct one of gh_vref or gh_vector_ref,
  	depending on what we have.
 
-Sat Oct 25 23:15:40 1997  unknown  <gjb@cs.washington.edu>
+Sat Oct 25 23:15:40 1997 Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Added send-button-press for synthetic keypress events like GWM
 
@@ -18,7 +18,7 @@ Sun Oct 26 01:05:27 1997  Maciej Stachowiak  <mstachow@mit.edu>
  	gh_new_procedure throughout, since gh_new_procedureX_X will be
  	going away in guile.
 
-Sat Oct 25 21:42:36 1997  unknown  <gjb@cs.washington.edu>
+Sat Oct 25 21:42:36 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Added extra args to do animated moves to (move-to), also permit
 	equivalent movement of the pointer as an option;  added
