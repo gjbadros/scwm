@@ -18,6 +18,8 @@
 (define user-pixmap-path (string-append HOME "/pixmaps"))
 (define user-bitmap-path (string-append HOME "/bitmaps"))
 
+(define want-close-button #f)
+
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
 
@@ -73,11 +75,13 @@
 (set-icon-path! (string-append user-bitmap-path 
 			       ":/usr/X11/include/X11/bitmaps:\
 /usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
+/uns/include/X11/pixmaps:\
 /usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
 
 (set-pixmap-path! (string-append user-pixmap-path 
 				 ":/usr/X11/include/X11/bitmaps:\
 /usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
+/uns/include/X11/pixmaps:\
 /usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
 
 ;;-------------------------------;;
@@ -96,7 +100,80 @@
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:int-override #t #:decorate-transient #t
-	      #:PPosition-hint #f)
+	      #:PPosition-hint #f
+	      ;;; FIXGJB: how do I do this?
+	      #:mini-icon "mini-term.xpm")
+
+(define border-face (make-face '((hidden-handles #t) (no-inset #t)) '()))
+(set-border-face! border-face)
+
+;; FIXGJB: wrong-type-arg in below
+(define title-face (make-face '((relief raised)) '()))
+(set-title-face! title-face)
+
+(define system-button-face (make-face '((relief flat))
+				      '((pixmap "mini-sys3d-full.xpm"))))
+
+(define mini-icon-button-face (make-face '((relief flat))
+					'((pixmap mini-icon))))
+
+(define sticky-button-face (make-face '((relief flat))
+				      '((pixmap "mini-hbars-full.xpm"))))
+(define sysutils-button-face (make-face '((relief flat))
+					'((pixmap "mini-lightbolt-full.xpm"))))
+(define close-button-face (make-face '((relief flat))
+				     '((pixmap "mini-stylized-x-full.xpm"))))
+(define tall-maximize-button-face (make-face '((relief flat))
+					     '((pixmap "mini-exp-windows-full.xpm"))))
+(define iconify-button-face (make-face '((relief flat))
+				       '((pixmap "mini-shrink-windows-full.xpm"))))
+
+(define left-button-number 1)
+(define right-button-number 2)
+
+(define (add-left-button button-face hook)
+  (set-button-face! left-button-number button-face)
+  (bind-mouse (string->symbol 
+	       (string-append "button-" 
+			      (number->string left-button-number)))
+	      1 hook)
+  (set! left-button-number (+ 2 left-button-number)))
+
+(define (add-right-button button-face hook)
+  (set-button-face! right-button-number button-face)
+  (bind-mouse (string->symbol 
+	       (string-append "button-" 
+			      (number->string right-button-number)))
+	      1 hook)
+  (set! right-button-number (+ 2 right-button-number)))
+
+;; window buttons
+;;(bind-mouse 'button-1 1 popup-small-ops)
+;;(bind-mouse 'button-2 1 vertical-toggle-maximize)
+;;(bind-mouse 'button-4 1 iconify)
+
+;;; FIXGJB: use mini-icon-button-face instead of system-button-face
+;;; but then I need to be able to associate mini-icons w/ different
+;;; windows
+;;; FIXGJB: how does the number of buttons to be displayed get
+;;; chosen;  is this dynamically changeable?
+(add-left-button system-button-face (lambda () (popup-small-ops)))
+;;(add-left-button mini-icon-button-face (lambda () (popup-small-ops)))
+(add-left-button sticky-button-face (lambda () (display "toggle sticky")))
+(add-left-button sysutils-button-face (lambda () (display "sysutils")))
+
+(if want-close-button
+    (add-right-button close-button-face (lambda () close-window)))
+
+(add-right-button tall-maximize-button-face
+		  (lambda () (vertical-toggle-maximize)))
+(add-right-button iconify-button-face
+		  (lambda () (iconify)))
+
+
+
+;;(set-button-face! 1 system-button-face)
+;;(set-button-face! 1 tall-maximize-button-face)
 
 ;; (plain-border (get-window)) fixes the display problem for the selected window
 ;; something must not be initialized correctly
@@ -114,10 +191,9 @@
   (make-style #:use-style desk-widget #:stays-on-top #t))
 
 
-;;; FIXGJB: this core dumps, seems to w/o the circulate-skip option I added, too
-;;; MS - hmmm, it works for me.
+;;; FIXGJB: these window-style-s cause memory-allocation errors or
+;;; core dumps from home (on oz), but not from school or for MS
 ;(window-style "zwgc" #:use-style desk-widget) ;; desk-widget-on-top
-;;; I get a memory-allocation-error on the *lock line, below --gjb
 ;(window-style "*lock" #:use-style desk-widget)
 ;(window-style "xload" #:no-title #t #:use-style desk-widget)
 ;(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
@@ -127,6 +203,7 @@
 ;(window-style "xmag" #:icon "mag_glass.xpm")
 ;(window-style "Emacs" #:icon "gnu-animal.bmp")
 ;(window-style "XTerm" #:icon "xterm.xpm")
+(window-style "XTerm" #:mini-icon "mini-term.xpm")
 
 
 ;;-------------------------------;;
@@ -166,7 +243,7 @@
 
 
 (define (start-xterm)
-  (execute "color-xterm"))
+  (execute (string-append "color-xterm " xterm-user-shell-options)))
 
 (define (exec-xlock)
   (execute "xlock -nice -16 -mode blank"))
@@ -306,11 +383,6 @@
 		      (show-window-list-menu #:show-geometry #t)))
 ;;(bind-mouse 'root 3 popup-applications)
 (bind-mouse 'root "M-3" (lambda () (popup menu-desk)))
-
-;; window buttons
-(bind-mouse 'button-1 1 popup-small-ops)
-(bind-mouse 'button-2 1 vertical-toggle-maximize)
-(bind-mouse 'button-4 1 iconify)
 
 ;; operations on parts of the window
 (bind-mouse '(frame sidebar) 2 popup-small-ops)
@@ -501,5 +573,5 @@
 ;(recapture)
 
 ;;; Local Variables:
-;;; eval: (load "scwm-buffer.el")
+;;; eval: (load "scwm-buffer")
 ;;; End:
