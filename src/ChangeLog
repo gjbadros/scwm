@@ -1,5 +1,16 @@
 1998-07-21  Greg Badros  <gjb@cs.washington.edu>
 
+	* window.c, window.h: Add COPY_BOOL_OR_ERROR and
+	COPY_INVERT_BOOL_OR_ERROR macro, and use throughout for error
+	checking in primitives that do simple assignment of a boolean to a 
+	C variable (simplifies a bunch of primitives)
+	
+	* miscprocs.c: Fix misuse of flag formal in
+	set_smart_placement_is_really_smart_x
+
+	* binding.c, miscprocs.c: fix mismatches between c func name and primitive
+	name, as warning by extract-docs
+
 	* module-interface.c: quote "M_ICONIFY" in the comment docstring
 	since it is not an argument.
 
