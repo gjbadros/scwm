@@ -1,3 +1,11 @@
+Sun Mar  1 02:16:56 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* module-interface.c: Pre-define the broadcast-hook,
+ 	broadcast-config-hook and broadcast-name-hook variables to #f to
+ 	make sure they are defined in the root module; also, access them
+ 	more efficiently by holding pointers to their value rather than
+ 	doing a gh_lookup each time.
+
 Sat Feb 28 00:57:52 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* module-interface.c (marshal_fvwm2_config_info,
