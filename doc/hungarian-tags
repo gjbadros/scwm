@@ -1,4 +1,5 @@
 Greg's list of Hungarian notation tags used in scwm
+(written around the menu rewrite time, so focusses on those tags)
 
 
 Standard tags
@@ -19,7 +20,8 @@ d   = a difference
 
 Scwm tags
 ---------
-scm   = a scheme object
+scm   = a scheme object (sometimes obj is used instead)
+sw    = a ScwmWindow structure -- `psw's are used *everywhere*
 menu  = a Menu object (the wrapped object, not the wrapping scheme object)
 mi    = a MenuItem object (")
 md    = a DynamicMenu object (a given instance of a menu object)
