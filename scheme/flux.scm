@@ -495,20 +495,15 @@ that corner fixed."
       "<none>"))
 
 (define-public (describe-key)
-  (add-timer-hook! 
-   (ms->usec 150) ; GJB:FIXME:: why do I have to do this for
-                  ; describe-key to work from emacs scwmrepl
-                  ; (otherwise I get the C-j keystroke)
-   (lambda ()
-     (let* ((key (get-key-event))
-	    (procs (lookup-key 'all key)))
-       (display-message-briefly
-	(string-append key " is bound to " 
-		       (if (pair? procs)
-			   (string-append (procedure->string (car procs))
-					  ", "
-					  (procedure->string (cadr procs)))
-			   "nothing")))))))
+  (let* ((key (get-key-event))
+	 (procs (lookup-key 'all key)))
+    (display-message-briefly
+     (string-append key " is bound to " 
+		    (if (pair? procs)
+			(string-append (procedure->string (car procs))
+				       ", "
+				       (procedure->string (cadr procs)))
+			"nothing")))))
 
 (define-public (context->brief-context context)
   (cond ((memq 'all context) 'all)
