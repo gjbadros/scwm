@@ -8,6 +8,7 @@
 ;;
 
 (define-module (app scwm ui-constraints)
+  :use-module (app scwm optargs)
 ;;  :use-module (cassowary constraints))
   )
 
@@ -56,17 +57,20 @@
 ;; returns a new constraint class object based on the parameters
 ;; SIDE-EFFECT: adds new class obj to the global list
 
-(define-public (make-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
+(define*-public (make-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc #&optional (disable-hook #f))
   "CTR takes NUM-WINDOWS windows and creates a constraint of this type.
 SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if it is satisfied
 UI-CTR should return the arguments (as a list) for CTR to build the constraint with.  UI-CTR should
 return #f if the user cancels the construction or fails to follow the interface correctly.  PIXMAP-NAME
 is the name of the pixmap to associate with this constraint-class in the user interface.
 MENUNAME-PROC is a proc that takes a UI-CONSTRAINT as an arg and returns the name that should be used
-for the constraint in the toggle menu.
+for the constraint in the toggle menu.  DISABLE-HOOK is a procedure that takes two arguments, the instance
+object and a boolean value, and is called whenever an instance is disable or enabled.  This mechanism is used
+to create anchors that re-anchor in a new location after being disable and re-enabled.
 This routine returns a new constraint class object based on the parameters.
 SIDE-EFFECT: addes new class obj to the global class list."
-  (let* ((obj (vector obid-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)))
+  (let* ((obj (vector obid-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc
+		      disable-hook)))
     (set! global-constraint-class-list (cons obj global-constraint-class-list))
     obj))
 
@@ -194,6 +198,28 @@ the toggle menu.  Errors if object is not a ui-constraint-class object."
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
+;; ui-constraint-class-disable-hook?
+
+(define-public (ui-constraint-class-disable-hook? ui-constraint-class)
+  "Returns a boolean denoting whether or not the UI-CONSTRAINT-CLASS has a
+valid disable-hook procedure defined."
+  (if (ui-constraint-class? ui-constraint-class)
+      (not (eq? (vector-ref ui-constraint-class 9) #f))
+      (error "Argument to tester must be a UI-CONSTRAINT-CLASS object")))
+
+
+;; ui-constraint-class-disable-hook
+
+(define-public (ui-constraint-class-disable-hook ui-constraint-class)
+  "Returns the disable-hook procedure if one exists in the UI-CONSTRAINT-CLASS.
+Errors if one does not exist."
+  (if (ui-constraint-class? ui-constraint-class)
+;;      (if (ui-constraint-class-disable-hook? ui-constraint-class)
+      (vector-ref ui-constraint-class 9)
+;;	  (error "No disable-hook defined for this ui-constraint-class"))
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
+
+
 ;; UI-CONSTRAINT
 
 ;; The UI-CONSTRAINT objects represents the instance of an active 
@@ -202,7 +228,7 @@ the toggle menu.  Errors if object is not a ui-constraint-class object."
 ;; solver.
 ;; 
 ;; The format for an UI-CONSTRAINT object is:
-;; (obid-ui-constraint CN ENABLE UI-CONSTRAINT-CLASS LIST-OF-WINDOWS)
+;; (obid-ui-constraint (CN1 CN2 ...) ENABLE UI-CONSTRAINT-CLASS LIST-OF-WINDOWS)
 
 
 ;; make-ui-constraint
@@ -212,9 +238,9 @@ the toggle menu.  Errors if object is not a ui-constraint-class object."
 ;; returns a new constraint instance objects that is NOT enabled.
 ;; errors if UI-CONSTRAINT-CLASS is not a ui-constraint-class
 ;; SIDE-EFFECT: adds new instance object to the global list
-;; Returned objects are (obid-ui-constraint . (CLASS CN ENABLED? LIST-OF-WINDOWS OPTS))
+;; Returned objects are (obid-ui-constraint . (CLASS (CN) ENABLED? LIST-OF-WINDOWS OPTS))
 
-(define-public (make-ui-constraint ui-constraint-class win-list)
+(define-public (make-ui-constraint ui-constraint-class arg-list)
   "UI-CONSTRAINT-CLASS specified the type of constraint to be created.
 WIN-LIST specifies the windows to be constrained.  Returns a new constraint
 object that is NOT enabled.  errors if UI-CONSTRAINT-CLASS is not valid.
@@ -224,10 +250,10 @@ constructor.  If data returns from that constructor in list form, the first elem
 the list is assumed to be the CN and the cdr is stuck in OPTS.
 SIDE-EFFECT: adds new instance object to the global list."
   (if (ui-constraint-class? ui-constraint-class)
-      (let* ((vars (apply (ui-constraint-class-ctr ui-constraint-class) win-list))
-	     (flag (pair? vars))
-	     (cn (if flag (car vars) vars))
-	     (opts (if flag (cdr vars) #f))
+      (let* ((vars (apply (ui-constraint-class-ctr ui-constraint-class) arg-list))
+	     (cn (car vars))
+	     (win-list (cadr vars))
+	     (opts (cddr vars))
 	     (uc (vector obid-ui-constraint ui-constraint-class cn #f win-list opts)))
 	(set! global-constraint-instance-list (cons uc global-constraint-instance-list))
 	uc)
@@ -248,8 +274,8 @@ specify options for the constraint.  errors if UI-CONSTRAINT-CLASS is
 not a ui-constraint-class.  Calls make-ui-constraint (see above)."
   (if (ui-constraint-class? ui-constraint-class)
       (let* ((ui-ctr (ui-constraint-class-ui-ctr ui-constraint-class))
-	     (win-list (ui-ctr)))
-	(if win-list (make-ui-constraint ui-constraint-class win-list)))
+	     (arg-list (ui-ctr)))
+	(if arg-list (make-ui-constraint ui-constraint-class arg-list)))
       (error "Argument must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -281,7 +307,7 @@ returns #f otherwise."
 ;; errors if UI-CONSTRAINT is not an ui-constraint
 
 (define-public (ui-constraint-cn ui-constraint)
-  "Returns the CN from the ui-constraint object UI-CONSTRAINT.
+  "Returns the CN list from the ui-constraint object UI-CONSTRAINT.
 errors if UI-CONSTRAINT is not a ui-constraint."
   (if (ui-constraint? ui-constraint)
       (vector-ref ui-constraint 2)
@@ -360,8 +386,11 @@ Returns #f if no such data exists.  errors if UI-CONSTRAINT is not a ui-constrai
 errors if UI-CONSTRAINT is not a ui-constraint.
 returns the constraint."
   (if (ui-constraint? ui-constraint)
-      (let ((cn (ui-constraint-cn ui-constraint)))
-	(cl-add-constraint (scwm-master-solver) cn)
+      (let* ((cn (ui-constraint-cn ui-constraint))
+	     (class (ui-constraint-class ui-constraint))
+	     (dhook (ui-constraint-class-disable-hook class)))
+	(map (lambda (c) (cl-add-constraint (scwm-master-solver) c)) cn)
+	(if (ui-constraint-class-disable-hook? class) (dhook ui-constraint #t))
 	(set-enable! ui-constraint #t))
       (error "Argument must be a UI-CONSTRAINT object")))
 
@@ -377,8 +406,11 @@ returns the constraint."
 errors if UI-CONSTRAINT is not a ui-constraint
 returns the constraint"
   (if (ui-constraint? ui-constraint)
-      (let ((cn (ui-constraint-cn ui-constraint)))
-	(cl-remove-constraint (scwm-master-solver) cn)
+      (let* ((cn (ui-constraint-cn ui-constraint))
+	     (class (ui-constraint-class ui-constraint))
+	     (dhook (ui-constraint-class-disable-hook class)))
+	(map (lambda (c) (cl-remove-constraint (scwm-master-solver) c)) cn)
+	(if (ui-constraint-class-disable-hook? class) (dhook ui-constraint #f))
 	(set-enable! ui-constraint #f))
       (error "Argument must be a UI-CONSTRAINT object")))
 

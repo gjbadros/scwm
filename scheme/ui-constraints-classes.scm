@@ -42,16 +42,15 @@
 ;; alias for internal use
 (define msgwin ui-constraint-prompter-msgwin)
 
+;; returns a generic constructor for use with simple-constraints
+;; simple-constraints return a cn value.. This must be
+;; converted to a list of a list of cn's
+(define (get-simple-2win-cnstr proc)
+  (lambda (w1 w2) (list (list (proc w1 w2)) (list w1 w2))))
+
 ;; generic menuname-proc's
 (define (menuname-as-class-name ui-constraint)
   (ui-constraint-class-name (ui-constraint-class ui-constraint)))
-
-;; all keep-at-value constraints store the clv in the first element of OPTS
-(define (menuname-keep-at-value ui-constraint)
-  (let* ((opts (ui-constraint-opts ui-constraint))
-	 (name (ui-constraint-class-name (ui-constraint-class ui-constraint)))
-	 (val  (cl-value (car opts))))
-    (string-append name ": " (number->string val))))
 
 ;; helpful draw utilities
 (define (draw-window-line-anchor point radius)
@@ -70,7 +69,7 @@
   (two-window-prompter "keep-lefts-even" "First window?" "Second window?"))
 
 (define (draw-cn-keep-lefts-even ui-constraint enable focus mode)
-  (let ((cn (ui-constraint-cn ui-constraint))
+  (let ((cn (car (ui-constraint-cn ui-constraint)))
 	(win-list (ui-constraint-windows ui-constraint))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (if (not (= (length win-list) 2))
@@ -88,7 +87,7 @@
 
 (define-public uicc-kle
   (make-ui-constraint-class 
-   "keep-lefts-even" 2 keep-lefts-even 
+   "keep-lefts-even" 2 (get-simple-2win-cnstr keep-lefts-even)
    ui-cnctr-keep-lefts-even draw-cn-keep-lefts-even 
    cl-is-constraint-satisfied? 
    "cn-keep-lefts-even.xpm" menuname-as-class-name))
@@ -98,7 +97,7 @@
   (two-window-prompter "keep-above" "Window on top?" "Window below?"))
 
 (define (draw-cn-keep-above ui-constraint enable focus mode)
-  (let ((cn (ui-constraint-cn ui-constraint))
+  (let ((cn (car (ui-constraint-cn ui-constraint)))
 	(win-list (ui-constraint-windows ui-constraint))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (if (not (= (length win-list) 2))
@@ -116,7 +115,7 @@
 
 (define-public uicc-ka
   (make-ui-constraint-class 
-   "keep-above" 2 keep-above 
+   "keep-above" 2 (get-simple-2win-cnstr keep-above)
    ui-cnctr-keep-above draw-cn-keep-above 
    cl-is-constraint-satisfied? 
    "cn-keep-above.xpm" menuname-as-class-name))
@@ -126,7 +125,7 @@
   (two-window-prompter "keep-to-left-of" "Window on left?" "Window on right?"))
 
 (define (draw-cn-keep-to-left-of ui-constraint enable focus mode)
-  (let ((cn (ui-constraint-cn ui-constraint))
+  (let ((cn (car (ui-constraint-cn ui-constraint)))
 	(win-list (ui-constraint-windows ui-constraint))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (if (not (= (length win-list) 2))
@@ -142,7 +141,7 @@
 
 (define-public uicc-klo
   (make-ui-constraint-class 
-   "keep-to-left-of" 2 keep-to-left-of
+   "keep-to-left-of" 2 (get-simple-2win-cnstr keep-to-left-of)
    ui-cnctr-keep-to-left-of draw-cn-keep-to-left-of
    cl-is-constraint-satisfied? 
    "cn-keep-to-left-of.xpm" menuname-as-class-name))
@@ -152,7 +151,7 @@
   (two-window-prompter "keep-rights-even" "First window?" "Second window?"))
 
 (define (draw-cn-keep-rights-even ui-constraint enable focus mode)
-  (let ((cn (ui-constraint-cn ui-constraint))
+  (let ((cn (car (ui-constraint-cn ui-constraint)))
 	(win-list (ui-constraint-windows ui-constraint))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (if (not (= (length win-list) 2))
@@ -170,7 +169,7 @@
 
 (define-public uicc-kre
   (make-ui-constraint-class 
-   "keep-rights-even" 2 keep-rights-even 
+   "keep-rights-even" 2 (get-simple-2win-cnstr keep-rights-even) 
    ui-cnctr-keep-rights-even draw-cn-keep-rights-even 
    cl-is-constraint-satisfied? 
    "cn-keep-rights-even.xpm" menuname-as-class-name))
@@ -180,7 +179,7 @@
   (two-window-prompter "keep-tops-even" "First window?" "Second window?"))
 
 (define (draw-cn-keep-tops-even ui-constraint enable focus mode)
-  (let ((cn (ui-constraint-cn ui-constraint))
+  (let ((cn (car (ui-constraint-cn ui-constraint)))
 	(win-list (ui-constraint-windows ui-constraint))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (if (not (= (length win-list) 2))
@@ -198,7 +197,7 @@
 
 (define-public uicc-kte
   (make-ui-constraint-class 
-   "keep-tops-even" 2 keep-tops-even 
+   "keep-tops-even" 2 (get-simple-2win-cnstr keep-tops-even)
    ui-cnctr-keep-tops-even draw-cn-keep-tops-even 
    cl-is-constraint-satisfied? 
    "cn-keep-tops-even.xpm" menuname-as-class-name))
@@ -208,7 +207,7 @@
   (two-window-prompter "keep-bottoms-even" "First window?" "Second window?"))
 
 (define (draw-cn-keep-bottoms-even ui-constraint enable focus mode)
-  (let ((cn (ui-constraint-cn ui-constraint))
+  (let ((cn (car (ui-constraint-cn ui-constraint)))
 	(win-list (ui-constraint-windows ui-constraint))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (if (not (= (length win-list) 2))
@@ -226,7 +225,7 @@
 
 (define-public uicc-kbe
   (make-ui-constraint-class 
-   "keep-bottoms-even" 2 keep-bottoms-even 
+   "keep-bottoms-even" 2 (get-simple-2win-cnstr keep-bottoms-even)
    ui-cnctr-keep-bottoms-even draw-cn-keep-bottoms-even 
    cl-is-constraint-satisfied? 
    "cn-keep-bottoms-even.xpm" menuname-as-class-name))
@@ -246,6 +245,26 @@
     (cons (+ x dx) (+ y dy))))
 
 ;; ------
+
+;; translates a quadrant vector into a string for display
+(define (quadvec->string vec)
+  (let*  ((str  
+	   (string-append 
+	    (if (eq? (vector-ref vec 0) 1) "N" "")
+	    (if (eq? (vector-ref vec 3) 1) "S" "")
+	    (if (eq? (vector-ref vec 1) 1) "W" "")
+	    (if (eq? (vector-ref vec 2) 1) "E" ""))))
+    str))
+
+;; the anchor constraint stores the clv in the first element of OPTS and 
+;; constraint quadrant in the second element
+(define (menuname-anchor ui-constraint)
+  (let* ((opts (ui-constraint-opts ui-constraint))
+	 (name (ui-constraint-class-name (ui-constraint-class ui-constraint)))
+	 (quad  (car opts))
+	 (val (quadvec->string quad)))
+    (string-append name ": " val)))
+
 
 (define (draw-vertical-anchor-symbol pt size)
   (let* ((upleft (translate-point pt (- size) (- size)))
@@ -268,88 +287,121 @@
     (xlib-draw-line! downleft upleft)))
 
 
-(define (ui-cnctr-keep-top-at-value)
-  (one-window-prompter "anchor-top" "Window to anchor?"))
+(define-public (quadrant->vector quad)
+  (let ((vec (make-vector 4 0)))
+    (case quad
+      ((0 1 2 4) (vector-set! vec 0 1))) ;; constrain top
+    (case quad
+      ((0 3 4 6) (vector-set! vec 1 1))) ;; constrain left
+    (case quad
+      ((2 4 5 8) (vector-set! vec 2 1))) ;; constrain right
+    (case quad
+      ((4 6 7 8) (vector-set! vec 3 1))) ;; constrain bottom
+    vec))
 
-(define* (cnctr-keep-top-at-value w1 #&optional (enable? #f))
-  (let* ((top (cadr (window-position w1)))
-	 (clv (make-cl-variable "clv" top))
-	 (sc  (make-cl-stay-constraint clv cls-required 10)))
-    (cl-add-constraint (scwm-master-solver) sc) ;; add the stay constraint in
-    (list (keep-top-at-v w1 clv enable?) clv sc)))
 
-(define (draw-cn-keep-top-at-value ui-constraint enable focus mode)
+(define (ui-cnctr-anchor)
+  (let ((msgwin ui-constraint-prompter-msgwin))
+    (message-window-set-message! msgwin "Select window to anchor")
+    (message-window-show! msgwin)
+    (let* ((winlist (select-viewport-position))
+	   (win (car winlist))
+	   (quad (get-window-quadrant winlist)))
+      (message-window-hide! msgwin)
+      (list win (quadrant->vector quad)))))
+
+      
+
+(define* (cnctr-anchor w1 quad #&optional (enable? #f))
+  (let* ((top (cdr (window-center-top w1)))
+	 (bot (cdr (window-center-bottom w1)))
+	 (rgt (car (window-right-middle w1)))
+	 (lft (car (window-left-middle w1)))
+	 (cn-list ())
+	 (sc-list ())
+	 (clv-list ()))
+
+    (if (eq? (vector-ref quad 0) 1)
+	(let* ((w1-yt (window-clv-yt w1))
+	       (clv (make-cl-variable "clvt" top))
+	       (cn (make-cl-constraint w1-yt = clv))
+	       (sc (make-cl-stay-constraint clv cls-required 10)))
+	  (cl-add-constraint (scwm-master-solver) cn)
+	  (and enable? (cl-add-constraint (scwm-master-solver) sc))
+	  (set! cn-list (cons cn cn-list))
+	  (set! sc-list (cons sc sc-list))
+	  (set! clv-list (cons clv clv-list))))
+
+    (if (eq? (vector-ref quad 1) 1)
+	(let* ((w1-xl (window-clv-xl w1))
+	       (clv (make-cl-variable "clvl" lft))
+	       (cn (make-cl-constraint w1-xl = clv))
+	       (sc (make-cl-stay-constraint clv cls-required 10)))
+	  (cl-add-constraint (scwm-master-solver) cn)
+	  (and enable? (cl-add-constraint (scwm-master-solver) sc))
+	  (set! cn-list (cons cn cn-list))
+	  (set! sc-list (cons sc sc-list))
+	  (set! clv-list (cons clv clv-list))))
+
+    (if (eq? (vector-ref quad 2) 1)
+	(let* ((w1-xr (window-clv-xr w1))
+	       (clv (make-cl-variable "clvr" rgt))
+	       (cn (make-cl-constraint w1-xr = clv))
+	       (sc (make-cl-stay-constraint clv cls-required 10)))
+	  (cl-add-constraint (scwm-master-solver) cn)
+	  (and enable? (cl-add-constraint (scwm-master-solver) sc))
+	  (set! cn-list (cons cn cn-list))
+	  (set! sc-list (cons sc sc-list))
+	  (set! clv-list (cons clv clv-list))))
+
+    (if (eq? (vector-ref quad 3) 1)
+	(let* ((w1-yb (window-clv-yb w1))
+	       (clv (make-cl-variable "clvb" bot))
+	       (cn (make-cl-constraint w1-yb = clv))
+	       (sc (make-cl-stay-constraint clv cls-required 10)))
+	  (cl-add-constraint (scwm-master-solver) cn)
+	  (and enable? (cl-add-constraint (scwm-master-solver) sc))
+	  (set! cn-list (cons cn cn-list))
+	  (set! sc-list (cons sc sc-list))
+	  (set! clv-list (cons clv clv-list))))
+
+    (list sc-list (list w1) quad cn-list clv-list)))
+
+;;    (list (keep-top-at-v w1 clv enable?) clv sc)))
+
+
+(define (draw-cn-anchor ui-constraint enable focus mode)
   (let ((win-list (ui-constraint-windows ui-constraint))
+	(opts (ui-constraint-opts ui-constraint))
 	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
     (if (not (= (length win-list) 1))
-	(error "Expected only one window in win-list of cn for draw-cn-keep-top-at-value"))
+	(error "Expected only one window in win-list of cn for anchor"))
+    (if (eq? opts #f)
+	(error "Expected some optional information for an anchor."))
     (let* ((w (car win-list))
-	   (wcen (window-center-top w)))
+	   (wt (window-center-top w))
+	   (wb (window-center-bottom w))
+	   (wl (window-left-middle w))
+	   (wr (window-right-middle w))
+	   (quad (car opts)))
+      (if (not (vector? quad))
+	  (error "Quadrant value in opts list should be a vector."))
       (xlib-set-line-width! width)
-      (draw-vertical-anchor-symbol wcen 10))))
+      (if (eq? (vector-ref quad 0) 1)
+	  (draw-vertical-anchor-symbol wt 10))
+      (if (eq? (vector-ref quad 1) 1)
+	  (draw-horizontal-anchor-symbol wl 10))
+      (if (eq? (vector-ref quad 2) 1)
+	  (draw-horizontal-anchor-symbol wr 10))
+      (if (eq? (vector-ref quad 3) 1)
+	  (draw-vertical-anchor-symbol wb 10)))))
 
-(define-public uicc-ktc
+
+(define-public uicc-anchor
   (make-ui-constraint-class 
-   "anchor-top" 1 cnctr-keep-top-at-value 
-   ui-cnctr-keep-top-at-value draw-cn-keep-top-at-value 
+   "anchor" 1 cnctr-anchor 
+   ui-cnctr-anchor draw-cn-anchor 
    cl-is-constraint-satisfied? 
-   "cn-anchor-top.xpm" menuname-keep-at-value))
-
-
-(define (ui-cnctr-keep-left-at-value)
-  (one-window-prompter "anchor-left" "Window to anchor?"))
-
-(define* (cnctr-keep-left-at-value w1 #&optional (enable? #f))
-  (let* ((left (car (window-position w1)))
-	 (clv (make-cl-variable "clv" left))
-	 (sc  (make-cl-stay-constraint clv cls-required 10)))
-    (cl-add-constraint (scwm-master-solver) sc) ;; add the stay constraint in
-    (list (keep-left-at-v w1 clv enable?) clv sc)))
-
-(define (draw-cn-keep-left-at-value ui-constraint enable focus mode)
-  (let ((win-list (ui-constraint-windows ui-constraint))
-	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
-    (if (not (= (length win-list) 1))
-	(error "Expected only one window in win-list of cn for draw-cn-keep-left-at-value"))
-    (let* ((w (car win-list))
-	   (wcen (window-left-middle w)))
-      (xlib-set-line-width! width)
-      (draw-horizontal-anchor-symbol wcen 10))))
-
-(define-public uicc-klc
-  (make-ui-constraint-class 
-   "anchor-left" 1 cnctr-keep-left-at-value 
-   ui-cnctr-keep-left-at-value draw-cn-keep-left-at-value 
-   cl-is-constraint-satisfied? 
-   "cn-anchor-left.xpm" menuname-keep-at-value))
-
-
-(define (ui-cnctr-keep-right-at-value)
-  (one-window-prompter "anchor-right" "Window to anchor?"))
-
-(define* (cnctr-keep-right-at-value w1 #&optional (enable? #f))
-  (let* ((right (+ (car (window-position w1)) (car (window-size w1))))
-	 (clv (make-cl-variable "clv" right))
-	 (sc  (make-cl-stay-constraint clv cls-required 10)))
-    (cl-add-constraint (scwm-master-solver) sc) ;; add the stay constraint in
-    (list (keep-right-at-v w1 clv enable?) clv sc)))
-
-(define (draw-cn-keep-right-at-value ui-constraint enable focus mode)
-  (let ((win-list (ui-constraint-windows ui-constraint))
-	(width (if focus ui-constraint-in-focus-width ui-constraint-out-focus-width)))
-    (if (not (= (length win-list) 1))
-	(error "Expected only one window in win-list of cn for draw-cn-keep-right-at-value"))
-    (let* ((w (car win-list))
-	   (wcen (window-right-middle w)))
-      (xlib-set-line-width! width)
-      (draw-horizontal-anchor-symbol wcen 10))))
-
-(define-public uicc-krc
-  (make-ui-constraint-class 
-   "anchor-right" 1 cnctr-keep-right-at-value 
-   ui-cnctr-keep-right-at-value draw-cn-keep-right-at-value 
-   cl-is-constraint-satisfied? 
-   "cn-anchor-right.xpm" menuname-keep-at-value))
-
+   "anchor.xpm" menuname-anchor))
 
 ;; global-constraint-instance-list

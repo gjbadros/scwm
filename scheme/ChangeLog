@@ -1,3 +1,39 @@
+1999-04-19  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Added an anchor constraint class.
+	This is a multi-purpose class which can anchor a window in any
+	way possible.  This replaces the former keep-top-at-value, 
+	keep-right-at-value, and keep-left-at-value constraints.
+	Also added a generic routine to generate a constructor function
+	for the existing constraints which matches the new return values
+	that are expected by the ui-constraint code.
+
+	* ui-constraints.scm: Added an optional disable-hook parameter 
+	to the ui-constraints-class object.  This hook is called whenever
+	an instance is enabled or disabled.
+	Modified the ui-constraint-instance format to have a list of cn
+	objects associated with it rather than a single cn value.  This
+	required modifications in make-ui-constraint and the enable and
+	disable functions.
+	Modified the expected return values of the instance constructors.
+	The ui-constructor is now expected to return the appropriate 
+	argument list for the regular constructor.  The regular constructor
+	can take any values, rather than just a window list as before.
+	The regular constructor is now expected to return a list of at 
+	least two elements, the cn-list and the window-list.  It may 
+	optionally put more items in this list.  Those items are placed
+	in the optional data section of the ui-constraint object.
+
+	* ui-constraints-toggle-menu.scm: Modified the window flashing 
+	code to look for a list of cn values rather than a single cn.
+	Makes the toggle menu conform to the new format for a 
+	ui-constraint object.
+
+	* window-locations.scm: Added 'get-window-quadrant' for getting 
+	the obtaining the location within a window in which the user 
+	clicked when using select-viewport-position.  Also fixed changed
+	window-size to window-frame-size in window-left-middle.
+
 1999-04-15  Sam Steingold  <sds@goems.com>
 
 	* flux.scm (window-info): added `get-window-focus'.

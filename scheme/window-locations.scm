@@ -40,7 +40,7 @@ relative to the current viewport."
   "Return a pair (X . Y) that is the pixel position of the left, middle of WIN
 relative to the current viewport."
   (let* ((pos (window-viewport-position win))
-	 (size (window-size win))
+	 (size (window-frame-size win))
 	 (xl (car pos))
 	 (yt (cadr pos))
 	 (h (cadr size)))
@@ -92,3 +92,20 @@ relative to the current viewport."
 	 (w (car size))
 	 (h (cadr size)))
     (cons (+ xl w) (+ yt h))))
+
+(define-public (get-window-quadrant select-list)
+  "Argument SELECT-LIST is a list of (WIN X Y) possibly returned from 
+select-viewport-position.  Return a list (WIN QUADRANT) which gives the WIN argument 
+and the quadrant of WIN in which the point (X, Y) resides.  X and Y are assumed to 
+be viewport relative."
+  (let* ((pos (window-viewport-position (car select-list)))
+         (size (window-frame-size (car select-list)))
+	 (dx (- (cadr select-list) (car pos)))
+	 (dy (- (caddr select-list) (cadr pos)))
+	 (qx (quotient dx (quotient (car size) 3)))
+	 (qy (quotient dy (quotient (cadr size) 3))))
+    (+ (* 3 qy) qx)))
+
+;; (get-window-quadrant (select-viewport-position))
+
+

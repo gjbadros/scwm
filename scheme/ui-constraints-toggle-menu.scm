@@ -50,11 +50,11 @@
 			    (if enabled? "Yes" "No")
 			    #f #f
 			    (lambda ()
-			      (flash-windows-of-constraint cn)
+			      (map (lambda (c) (flash-windows-of-constraint c)) cn)
 			      (draw-constraint x))
 			    (lambda () 
 			      (undraw-constraint x)
-			      (unflash-windows-of-constraint cn))
+			      (map (lambda (c) (unflash-windows-of-constraint c)) cn))
 			    #f)))
 	 global-constraint-instance-list))))
 
