@@ -121,7 +121,10 @@ size_t
 free_image(SCM obj)
 {
   scwm_image *si = IMAGE(obj);
-
+#ifdef USE_IMLIB 
+  Imlib_free_pixmap(imlib_data, si->image); 
+  Imlib_destroy_image(imlib_data, si->im); 
+#else   
   if (!si->foreign) {
     if (si->image != None) {
       XFreePixmap(dpy, si->image);
@@ -130,7 +133,7 @@ free_image(SCM obj)
       XFreePixmap(dpy, si->mask);
     }
   }
-
+#endif
   FREE(si);
   return (0);
 }
