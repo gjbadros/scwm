@@ -1,3 +1,24 @@
+Fri Sep  4 10:02:18 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.h: Added {WIN,ICON}_VP_OFFSET_{X,Y} to use instead of
+	Scr.Vx, Scr.Vy to account for sticky windows appropriately.
+
+	* window.c: Use FRAME_[XY]_VP instead of FRAME_[XY] in
+	SendClientConfigureNotify.  Improve docs on "stick" command.
+
+	* placement.c: Added debug code commented out
+
+	* move.c, resize.c, icons.c, borders.c: Use {WIN,ICON}_VP_OFFSET_{X,Y}
+
+	* miscprocs.c: Improve docs for refresh.
+
+	* add_window.c: Simplify a nested conditional
+
+Fri Sep  4 08:46:43 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* deskpage.c (display_size): Added note about display-width,
+	display-height vars that base.scm sets
+
 Thu Sep  3 15:26:58 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* placement.c, window.h: Change name of struct _gravity_info to
