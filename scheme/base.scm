@@ -31,30 +31,33 @@
 
 
 
+(define-public display-width (car (display-size)))
+(define-public display-height (cadr (display-size)))
+
 ;; Convenience procedures for specifying positions and sizes.
 (define-public (%x x)
   "Return the number of pixels that is X percent of the display width."
-  (inexact->exact (truncate (/ (* x (car (display-size))) 100))))
+  (inexact->exact (truncate (/ (* x display-width) 100))))
 
 (define-public (%y y)
   "Return the number of pixels that is Y percent of the display height."
-  (inexact->exact (truncate (/ (* y (cadr (display-size))) 100))))
+  (inexact->exact (truncate (/ (* y display-height) 100))))
 
 (define-public (x- x)
   "Return the pixel coordinate that is X pixels left from the right display edge."
-  (- (car (display-size)) x))
+  (- display-width x))
 
 (define-public (y- y)
   "Return the pixel coordinate that is Y pixels up from the bottom display edge."
-  (- (cadr (display-size)) y))
+  (- display-height) y)
 
 (define-public (%x- x)
   "Return the pixel coordinate X percent of the width away from the right edge."
-  (inexact->exact (truncate (/ (* (- 100 x) (car (display-size))) 100))))
+  (inexact->exact (truncate (/ (* (- 100 x) display-width) 100))))
 
 (define-public (%y- y)
   "Return the pixel coordinate Y percent of the height away from the bottom edge."
-  (inexact->exact (truncate (/ (* (- 100 y) (cadr (display-size))) 100))))
+  (inexact->exact (truncate (/ (* (- 100 y) display-height) 100))))
 
 (define*-public (w%x x #&optional (w (get-window)))
   "Return a pixel width X percent of the width of window W."

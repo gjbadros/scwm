@@ -20,6 +20,7 @@
 
 
 (define-module (app scwm fvwm-compat)
+  :use-module (app scwm base)
   :use-module (app scwm optargs)
   :use-module (app scwm winlist))
 
@@ -92,8 +93,8 @@
 (define-public REVISION (cadr X-version-info))
 (define-public VENDOR (caddr X-version-info))
 (define-public RELEASE (cadddr X-version-info))
-(define-public WIDTH (car (display-size)))
-(define-public HEIGHT (cadr (display-size)))
+(define-public WIDTH display-width)
+(define-public HEIGHT display-height)
 
 ;;(define (resolution pixels mm) 
 ;;  (/ (+ (/ (* pixels 100000) mm) 50) 100))

@@ -110,21 +110,17 @@
 	 (height (cadr frame-size)))
     (* width height)))
 
-(define-public (display-area)
-  (let* ((wh-list (display-size))
-	 (width (car wh-list))
-	 (height (cadr wh-list)))
-    (* width height)))
+(define display-area (* display-width display-height))
 
 (define-public (resize-opaquely? win)
   "Return #t if WIN has area < opaque-resize-percent of the screen, else #f."
   (< (window-frame-area win) 
-     (* (display-area) (/ (scwm-user-var opaque-resize-percent) 100))))
+     (* display-area (/ (scwm-user-var opaque-resize-percent) 100))))
 
 (define-public (move-opaquely? win)
   "Return #t if WIN has area < opaque-move-percent of the screen, else #f."
   (< (window-frame-area win)
-     (* (display-area) (/ (scwm-user-var opaque-move-percent) 100))))
+     (* display-area (/ (scwm-user-var opaque-move-percent) 100))))
 
 (define*-public (interactive-move-maybe-opaque #&optional (win (get-window)))
   "Move WINDOW interactively and possibly opaquely.

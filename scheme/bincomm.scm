@@ -159,7 +159,7 @@
 	   (apply string (make-list pad #\nul)))))))
 
 ;; writes the string as binary data to the port
-(define*-public (binary-write str #&optional (port (current-input-port)))
+(define*-public (binary-write str #&optional (port (current-output-port)))
   "Writes STR as binary data to PORT."
   (uniform-array-write str port))
 

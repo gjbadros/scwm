@@ -19,6 +19,9 @@
 
 
 
+;; FIXGJB: hack to get debug-fvwm-module in root environment
+(define debug-fvwm-module #t)
+
 (define-module (app scwm fvwm-module)
   :use-module (app scwm winlist)
   :use-module (app scwm base)
@@ -125,9 +128,6 @@
 (define app-window "0")
 (define context "0") ; C_NO_CONTEXT
 
-(define display-width (car (display-size)))
-(define display-height (cadr (display-size)))
-
 (define (fvwm2-module-read-packet port)
   (define (wait-for-input)
     (if (char-ready? port)
@@ -168,7 +168,9 @@
   (if (not (= (modulo (string-length body)  4) 0))
       (error "Bad packet length"))
   (binary-write 
-   (string-append (make-packet-header id (/ (string-length body) 4))
+   (string-append (make-packet-header 
+		   id 
+		   (inexact->exact (round (/ (string-length body) 4))))
 		  body) port)
   (force-output port))
 
@@ -202,7 +204,8 @@
 (define (send-config-info str port)
   (send-string-packet M_CONFIG_INFO 0 0 0 (string-append str "\n") port))
 
-(define (fvwm2-module-send-window-list port)
+;; FIXGJB: not public
+(define-public (fvwm2-module-send-window-list port)
   ;; XXX - sadly, it is necessary to do a gratuitous send of
   ;; the desk and page info for the pager to work right. Icky!
   ;; broadcasting an M_NEW_DESK first can fortunately be avoided.
@@ -236,7 +239,8 @@
   (end-window-list port))
 
 
-(define (add-window win port)
+;; FIXGJB: not public
+(define-public (add-window win port)
   (let* ((id (window-id win))
 	 (frame-id (window-frame-id win))
 	 (send-win-string 
@@ -271,7 +275,8 @@
     (send-mini-icon-packet win port)
     ))
 
-(define (end-window-list port)
+;; FIXGJB: not public
+(define-public (end-window-list port)
   (fvwm2-module-send-packet M_END_WINDOWLIST "" port))
 
 (define active-modules '())
@@ -469,7 +474,7 @@
 	  
 	  ;; FIXGJB: set o_nonblock for TO_MODULE_WR
 	  ;; GJBFIX: why is this necessary?
-	  ;; (fctl to-module-write F_SETFL O_NONBLOCK)
+	  (fcntl to-module-write F_SETFL O_NONBLOCK)
 	  
 	  (add-active-module! fmod)
 	  (list-set! fmod 4 #t)
@@ -483,10 +488,11 @@
 					   from-module-read))
 				  (window-id (car packet))
 				  (command (caddr packet)))	
-			     
-			     ;; (display "packet: ")
-			     ;; (write packet)
-			     ;; (newline)
+			     (if debug-fvwm-module
+				 (begin
+				   (display "packet: ")
+				   (write packet)
+				   (newline)))
 			     (catch #t
 				    (lambda()
 				      (if (= window-id 0)

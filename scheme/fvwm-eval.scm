@@ -37,9 +37,6 @@
 ;; however, it would be good to support more of the fvwm commands if other
 ;; modules need them.
 
-(define display-width (car (display-size)))
-(define display-height (cadr (display-size)))
-
 (define (get-two-numeric-args args cont)
   (let* ((s-args (split-after-char 
 		  #\space 
@@ -104,12 +101,13 @@
    (lambda (x y)
      (if (and x y)
 	 (if window
-	     (move-to x y window)
-	     (move-to x y))
+	     (move-window-viewport-position x y window)
+	     (move-window-viewport-position x y))
 	 (if window
 	     (begin
-	       (if fmod (move-to (car (pointer-position))
-				 (cadr (pointer-position)) window))
+	       (if fmod (move-window-viewport-position 
+			 (car (pointer-position))
+			 (cadr (pointer-position)) window))
 	       (interactive-move window))
              (interactive-move))))))
 
