@@ -1,3 +1,7 @@
+Fri Jan  7 10:27:09 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added commented-out `force-gc', binding for it.
+
 Mon Dec 20 15:13:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Define a `hyper' proc and use it as (hyper "s")
