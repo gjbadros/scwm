@@ -35,7 +35,9 @@
       ()))
 
 (if debug
-    (add-hook! module-loaded-hook display-module-loaded))
+    (begin
+      (add-hook! module-loaded-hook display-module-loaded)
+      (set! %load-verbosely #t)))
 
 (define-public (load-user-file filename)
   "Load user configuration from $HOME/.scwm/FILENAME."
