@@ -1,3 +1,13 @@
+1998-07-24  Greg Badros  <gjb@cs.washington.edu>
+
+	* extract-docs: Lowercase the known words.  Abstract out the
+	marking and the ispell-running into subroutines. Fix a bug in
+	IspellText -- it was not splitting on digits, but ispell does.
+
+	* utilities/dev/extract-docs: Added hooks and concepts chapters.
+	The markup within the source needs to be revised to use DocBook
+	tables, etc., but otherwise this is close to working
+
 1998-07-23  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Added id's to refentry's, and add

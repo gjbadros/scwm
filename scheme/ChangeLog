@@ -1,3 +1,7 @@
+1998-07-24  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Use string-append, duh.
+
 1998-07-23  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added new doc-files variable setting to use the new
