@@ -70,7 +70,6 @@ void BroadcastName(unsigned long event_type, unsigned long data1,
   if (proc != SCM_UNDEFINED) {
     if (gh_procedure_p(proc)) {
       SCM name = gh_str02scm(szName);
-      fprintf(stderr,"calling broadcast-name-hook\n");
       gh_apply(proc, gh_list(
 	gh_ulong2scm(event_type), 
 	gh_ulong2scm(data1),
@@ -85,3 +84,54 @@ void BroadcastName(unsigned long event_type, unsigned long data1,
     }
   }
 }
+
+
+/* This procedure constructs the contents of a BroadcastInfo fvwm
+   module packet and returns it as a Scheme string. This and other
+   fvwm-module-related stuff should go in a dynamically loadable
+   module once I figure that stuff out. */
+
+SCM_PROC(s_marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0, marshal_fvwm2_config_info);
+
+SCM marshal_fvwm2_config_info (SCM win)
+{
+  ScwmWindow *sw;
+  unsigned long info[24];
+
+  VALIDATE(win, s_marshal_fvwm2_config_info);
+  sw = SCWMWINDOW(win);
+
+  info[0] = sw->w;
+  info[1] = sw->frame;
+  info[2] = 0; /* modules shouldn't need to know this! was (unsigned long)t; */
+  info[3] = sw->frame_x;
+  info[4] = sw->frame_y;
+  info[5] = sw->frame_width;
+  info[6] = sw->frame_height;
+  info[7] = sw->Desk;
+  info[8] = sw->flags; /* eventually this will have to be constructed from
+			 the flag bitfield... */
+  info[9] = sw->title_height;
+  info[10] = sw->boundary_width;
+  info[11] = (sw->hints.flags & PBaseSize)?sw->hints.base_width:0;
+  info[12] = (sw->hints.flags & PBaseSize)?sw->hints.base_height:0;
+  info[13] = (sw->hints.flags & PResizeInc)?sw->hints.width_inc:1;
+  info[14] = (sw->hints.flags & PResizeInc)?sw->hints.height_inc:1;
+  info[15] = sw->hints.min_width;
+  info[16] = sw->hints.min_height;
+  info[17] = sw->hints.max_width;
+  info[18] = sw->hints.max_height;
+  info[19] = sw->icon_w;
+  info[20] = sw->icon_pixmap_w;
+  info[21] = sw->hints.win_gravity;
+  info[22] = sw->TextPixel;
+  info[23] = sw->BackPixel;
+
+  return (gh_str2scm((char *)info,24*sizeof(unsigned long)));
+}
+
+void init_module_interface()
+{
+#include "module-interface.x"
+}
+

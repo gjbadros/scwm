@@ -55,7 +55,7 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #include "virtual.h"
 #include "miscprocs.h"
 #include "font.h"
-
+#include "module-interface.h"
 
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
@@ -236,6 +236,7 @@ scwm_main(int argc, char **argv)
   init_scwm_types();
   init_image();
   init_font();
+  init_module_interface();
   init_miscprocs();
   init_menuitem();
   init_menu();

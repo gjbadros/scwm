@@ -19,4 +19,6 @@ void BroadcastConfig(unsigned long event_type, ScwmWindow *t);
 void BroadcastName(unsigned long event_type, unsigned long data1,
 		   unsigned long data2, unsigned long data3, char *name);
 
+SCM marshal_fvwm2_config_info (SCM win);
+
 #endif /* _MODULE_INTERFACE_H_ */

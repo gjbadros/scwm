@@ -1,5 +1,16 @@
 Sat Feb 28 00:57:52 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* module-interface.c (marshal_fvwm2_config_info,
+ 	init_module_interface): New procedure to generate the data needed
+ 	to send to fvwm modules on BroadcastConfig, and a new function to
+ 	initialize stuff.
+
+	module-interface.h: prototypes for the above functions.
+
+	scwm.c: call init_module_interface
+
+	Makefile.in: build module-interface.x
+	
 	* events.c: Fixed bug in HandleScwmExec that was causing random
  	crashes - strings should be sent with format 8, not 32, in
  	XGetWindowProperty.
