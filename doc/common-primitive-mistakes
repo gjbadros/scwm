@@ -1,0 +1,10 @@
+Garbage collection
+ - be sure to mark all contained scm objects
+
+Dieing in malloc()?
+ - free-d an already freed pointer; consider setting
+   the pointer to NULL immediately after freeing it
+
+Be sure not to use, e.g., menu_p() as a C boolean -- use MENU_P() instead
+  - the object_p() functions return SCM_BOOL_F or SCM_BOOL_T both of which
+    are evaluate as true in a C expression
