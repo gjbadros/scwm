@@ -17,7 +17,6 @@
 				#:border-width 4
 				#:focus 'sloppy
 				#:sticky-icon #t
-				#:random-placement #t #:smart-placement #t
 				#:mwm-func-hint #t #:mwm-decor-hint #t
 				#:mwm-border #f
 				#:hint-override #f #:decorate-transient #f

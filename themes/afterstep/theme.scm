@@ -22,7 +22,6 @@
 				#:border-width 6
 				#:focus 'mouse
 				#:sticky-icon #t
-				#:random-placement #t #:smart-placement #t
 				#:mwm-func-hint #t #:mwm-decor-hint #t
 				#:mwm-border #t
 				#:hint-override #t #:decorate-transient #f

@@ -1917,7 +1917,9 @@ SCWM_PROC(restack_windows, "restack-windows", 1, 0, 0,
 The first element of WINLIST will be kept in its current stacking\n\
 order, the remainder will be stacked immediately below it in the order\n\
 given. (Note: This will currently confuse the heck out of the pager\n\
-and possibly other legacy fvwm2 modules).")
+and possibly other legacy fvwm2 modules).  WINLIST should contain\n\
+only window objects; invalid (i.e., closed) window objects will\n\
+be ignored without signalling an error.")
 #define FUNC_NAME s_restack_windows
 {
   Window *windows;
@@ -1937,64 +1939,62 @@ and possibly other legacy fvwm2 modules).")
       SCWM_WRONG_TYPE_ARG(1, winlist);
     }
 
-    psw=PSWFROMSCMWIN(cur);
-
-    cnt++;
-
-    if (psw && psw->fIconified && !psw->fSuppressIcon) {
-      if (!psw->fNoIconTitle) {
-	cnt++;
-      }
-      if (!(psw->icon_pixmap_w)) {
-	cnt++;
+    if (VALIDWINP(cur)) {
+      psw = PSWFROMSCMWIN(cur);
+      if (psw) {
+        cnt++;
+        if (psw->fIconified && !psw->fSuppressIcon) {
+          if (!psw->fNoIconTitle) {
+            cnt++;
+          }
+          if (!(psw->icon_pixmap_w)) {
+            cnt++;
+          }
+        }
       }
     }
   }
 
-  if (cnt!=0) {
-    windows = NEWC(cnt,Window);
+  if (cnt == 0)
+    return SCM_UNSPECIFIED;
 
-    /* MS:FIXME:: This doesn't properly handle transient windows (the way
-       raise does), but I am unsure what the really right way to handle
-       those is. Need to see if ICCCM really requires them to always be
-       in front of the app. In fact, ICCCM says no such thing about
-       transients, so we should probably implement the RaiseTransients
-       functionality using a more general hook of some kind,
-       ultimately. */
+  windows = NEWC(cnt,Window);
 
-    for (p=winlist, i=0; SCM_EOL!=p; p=gh_cdr(p)) {
+  /* MS:FIXME:: This doesn't properly handle transient windows (the way
+     raise does), but I am unsure what the really right way to handle
+     those is. Need to see if ICCCM really requires them to always be
+     in front of the app. In fact, ICCCM says no such thing about
+     transients, so we should probably implement the RaiseTransients
+     functionality using a more general hook of some kind,
+     ultimately. */
+  
+  for (p = winlist, i=0; SCM_EOL!=p; p=gh_cdr(p)) {
       SCM cur=gh_car(p);
       ScwmWindow *psw;
 
-      if (!WINDOWP(cur)) {
-	FREEC(windows);
-	SCWM_WRONG_TYPE_ARG(1, winlist);
-      }
-
-      psw=PSWFROMSCMWIN(cur);
-      windows[i++]=psw->frame;
-
-      if (psw->fIconified && !psw->fSuppressIcon) {
-	if (!psw->fNoIconTitle) {
-	  windows[i++]=psw->icon_w;
-	}
-	if (!(psw->icon_pixmap_w)) {
-	  windows[i++]=psw->icon_pixmap_w;
-	}
+      if (VALIDWINP(cur)) {
+        psw = PSWFROMSCMWIN(cur);
+        if (psw) {
+          windows[i++]=psw->frame;
+          
+          if (psw->fIconified && !psw->fSuppressIcon) {
+            if (!psw->fNoIconTitle) {
+              windows[i++]=psw->icon_w;
+            }
+            if (!(psw->icon_pixmap_w)) {
+              windows[i++]=psw->icon_pixmap_w;
+            }
+          }
+        }
       }
     }
 
   /* This will interact badly with the fvwm pager, ultimately, we will
      want to fake an appropriate set of M_RAISE_WINDOW and
      M_LOWER_WINDOW broadcasts. */
-
-
-    XRestackWindows(dpy, windows, cnt);
-    FREEC(windows);
-
-    KeepOnTop();
-  }
-
+  XRestackWindows(dpy, windows, cnt);
+  FREEC(windows);
+  
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

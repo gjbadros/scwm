@@ -23,6 +23,7 @@
   :use-module (app scwm optargs)
   :use-module (app scwm base)
   :use-module (app scwm wininfo)
+  :use-module (app scwm undo)
   :use-module (app scwm winlist)
   :use-module (app scwm window-selection)
   :use-module (app scwm rectangle)
@@ -181,6 +182,7 @@ expected."
     (if (pair? winlist)
 	(unselect-all-windows)
 	(for-each unflash-window wins))
+    (insert-undo-global)
     (tile-windows wins
 		  #:start-pos (rect-nw r)
 		  #:end-pos (rect-se r)

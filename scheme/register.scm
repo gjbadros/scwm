@@ -5,6 +5,7 @@
   :use-module (app scwm optargs)
   :use-module (app scwm window-configuration)
   :use-module (app scwm message-window)
+  :use-module (app scwm winops)
   :use-module (app scwm window-selection)
   :use-module (app scwm modifier-key-bindings)
   :use-module (app scwm base))
@@ -92,13 +93,17 @@
   "Restore the state saved in REGISTER."
   (interactive)
   (let ((val (get-register register)))
-    (cond
-     ((window? val) (focus-window val))
-     ((window-configuration? val) (copy-window-configuration val (car val))
-				  (focus-window (car val)))
-     ((list-of-windows? val) (set-selected-windows-list! val))
-     (val (restore-global-window-configuration val)))))
-
+    (if val
+	(cond
+	 ((window? val) (focus-change-warp-pointer val))
+	 ((window-configuration? val) (copy-window-configuration val (car val))
+	  (focus-window (car val)))
+	 ((list-of-windows? val) (set-selected-windows-list! val))
+	 (val (restore-global-window-configuration val)))
+	(begin
+	  (display-message-briefly "Empty register")
+	  #f))))
+  
 #!
 register
 (bind-key 'all "H-j" jump-to-register)

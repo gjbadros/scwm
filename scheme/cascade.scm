@@ -22,7 +22,9 @@
 (define-module (app scwm cascade)
   :use-module (app scwm optargs)
   :use-module (app scwm base)
+  :use-module (app scwm window-selection)
   :use-module (app scwm wininfo)
+  :use-module (app scwm undo)
   :use-module (app scwm winlist)
   :use-module (app scwm winops))
 
@@ -139,7 +141,20 @@ control the cascading options as for `cascade-windows'."
 
 
 
-
-
-
-
+;; (cascade-windows-interactively)
+(define*-public (cascade-windows-interactively . args)
+  "Cascade a set of selected windows.
+The windows used are selected either by `selected-windows-list' or 
+`select-window-group'.
+If `selected-windows-list' is empty, then `select-window-group' is used.
+See also the undo module and `insert-undo-global' to save the window 
+configuration before executing this in case the effect is not what you
+expected."
+  (interactive)
+  (let* ((winlist (selected-windows-list))
+	 (wins (if (pair? winlist) winlist (select-window-group))))
+    (if (pair? winlist)
+	(unselect-all-windows)
+	(for-each unflash-window wins))
+    (insert-undo-global)
+    (apply cascade-windows (cons wins args))))

@@ -25,6 +25,7 @@
   :use-module (app scwm listops)
   :use-module (app scwm window-selection)
   :use-module (app scwm tile)
+  :use-module (app scwm cascade)
   :use-module (app scwm base)
   :use-module (app scwm winlist))
 
@@ -214,10 +215,11 @@ The icon is that of the window GROUP represents.
 	    #f)))
       (if (and wla? (> n 1))
 	  (list
-	   (menuitem (string-append 
-		      "&Tile " nstr
-		      " windows") #:action tile-windows-interactively)
-	   (menuitem (string-append "&Close " nstr " windows")
+	   (menuitem (string-append "&Tile " nstr " windows") 
+		     #:action tile-windows-interactively)
+	   (menuitem (string-append "&Cascade " nstr " windows") 
+		     #:action cascade-windows-interactively)
+	   (menuitem (string-append "C&lose " nstr " windows")
 		     #:action (lambda () (delete-group swl) (unselect-all-windows)))
 	   (menuitem (string-append "&Iconify " nstr " windows")
 		     #:action (lambda () (iconify-group swl)))
