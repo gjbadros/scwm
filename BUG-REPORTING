@@ -33,7 +33,7 @@ o core dump? backtrace from gdb or another debugger
 o image (picture) problems? give us an "ls -l" of pixmap directories
 
 
-If you send in a patch, please do so using "diff -ub".  Patches
+If you send in a patch, please do so using "diff -u".  Patches
 relative to the current head of the relevant CVS branch are the
 most useful.
 
