@@ -1,3 +1,33 @@
+Wed Jul 29 20:23:03 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* move.c, xmisc.c, font.c: Add a scope brace and use pxfs in
+	  ComputeXTextWidth; use XFONTID in DisplayMessage.  use
+	  XFIXEDFONTNAME, not XFIXEDFONTSET in font.c. All I18N
+	  fixes.
+
+	* face.c: Make set-face-flag! a primitive, reorder the function to 
+	  avoid a prototype.
+
+	* decorations.c: Don't turn off fBorder if boundary_width == 0;
+	  keep them orthogonal
+
+	* borders.h: Fix the FULL_HILITE enum value.  Fixes bug in the
+	  redraw of the corners
+
+	* borders.c: Clean up SetBorderX a bit.  Use SAFE_IMAGE in
+	  DrawButton, and bail if we fail to get the image.
+
+	* window.c: Fix docs of restack-windows
+
+	* resize.c, virtual.c: remove one, and ifdef out another probably
+	  spurious RemoveRubberbandOutline call. 
+	
+	* shutdown.c: Do not call0_hooks on a segfault.  Only do X stuff
+	  if dpy is non-null
+
+	* scwm.c: Use XmuPrintDefaultErrorMessage, if user has libXmu
+
+
 Wed Jul 29 12:24:49 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* util.c: Use idiomatic for loop for traversing ScwmWindow list,
