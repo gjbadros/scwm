@@ -116,7 +116,7 @@ install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/
 
 %doc ANNOUNCE AUTHORS BUG-REPORTING BUGS COPYING.FVWM COPYING.GPL ChangeLog
 %doc INSTALL NEWS README RH6-notes README-Gnome README-constraints THANKS TODO 
-%doc scwm/ChangeLog
+%doc src/ChangeLog
 %doc modules/ChangeLog
 %doc sample.scwmrc/ChangeLog
 %doc utilities/ChangeLog
