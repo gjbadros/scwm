@@ -1,3 +1,15 @@
+Sun Nov 30 11:56:30 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Use new menuing interface: menu-title and
+ 	menu-separator are new variables, (menu ..) and (menuitem ..) are
+ 	new public definitions
+
+	* minimal.scm: Use new primitive menu interface -- make-menu and
+ 	make-menuitem.
+
+	* winlist.scm: Make show-window-list-menu use new menuing
+ 	interface
+
 Mon Nov 10 05:43:11 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* fvwm-compat.scm: In fvwm-pipe-read, use dup to properly connect

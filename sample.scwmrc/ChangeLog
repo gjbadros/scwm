@@ -1,0 +1,22 @@
+Sun Nov 30 12:03:51 1997  unknown  <gjb@cs.washington.edu>
+
+	* system.scwmrc, gjb.scwmrc, menu-test.scm: Use new menuing code,
+	use image-load-path, not set-image-path!
+
+	* Highlights of user-level changes to menu stuff
+
+	** Use (menu ...) not (make-menu ...)
+
+	** first arg to menu is a real list [ use (list ...)  ]
+
+	** menu-title and menu-separator are variables now, not functions
+ 	-- e.g., use `menu-separator', not `(menu-separator)'
+
+	** menuitem no longer is spelled `menu-item'
+ 	
+	** keywords for menuitem are now #:image-left, #:image-above, not
+ 	#:left-pixmap #:above-pixmap 
+
+	** new keywords for menu include #:image-side (for new side image
+ 	feature) and #:color-bg-image-side.
+
