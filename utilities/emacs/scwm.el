@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-22 Wed 18:01:36 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-22 Wed 18:10:21 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -110,7 +110,7 @@
     (unless (eq what 'symbol)
       (error "crippled `thing-at-point' - symbols only"))
     (let ((zz (id-select-symbol (point))))
-      (buffer-substring-no-properties (car zz) (cdr zz)))))
+      (when zz (buffer-substring-no-properties (car zz) (cdr zz))))))
 
 (defun scwm-symbol-at-point ()
   "Return symbol at point; look back if not found."
