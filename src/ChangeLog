@@ -5,9 +5,6 @@ Sun Apr 11 19:23:26 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* menu.c: Doc fix.
 
-	* face.c: Added some docs for the styles that exist... these needs 
-	to be automated to stay in synch... I have some ideas about this.
-
 	* decorations.c: Just set ScwmWindow's nr_{left,right}_buttons to
 	Scr.nr_{left,right}_buttons for now. Not sure if we even use this
 	any longer.
