@@ -1,4 +1,4 @@
-;;; File: <.scwmrc - 1998-12-22 Tue 09:45:37 EST sds@eho.eaglets.com>
+;;; File: <sds.scwmrc - 1999-01-26 Tue 14:32:24 EST sds@eho.eaglets.com>
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Goal: to attract users.
@@ -37,7 +37,8 @@
  (app scwm winops) (app scwm winlist) (app scwm wininfo) (app scwm doc)
  (app scwm optargs) (app scwm std-menus) (app scwm wmconfig-menu)
  (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module)
- (app scwm animation) (app scwm message-window))
+ (app scwm animation) (app scwm placement) (app scwm virtual)
+ (app scwm message-window))
 
 ;; user settable!
 (define want-pictures? #f)
@@ -152,6 +153,7 @@
 (define run-i     (make-image "mini-run.xpm"))
 (define rxvt-i    (make-image "mini-term.xpm"))
 (define save-i    (make-image "mini-wm-save.xpm"))
+(define siag-i    (make-image "mini-desktop.xpm"))
 (define stick-i   (make-image "mini-stick.xpm"))
 (define stop-i    (make-image "mini-stop.xpm"))
 (define term-i    (make-image "mini-sh1.xpm"))
@@ -205,27 +207,6 @@
 (define decor-list (list (cons "Standard" std-d) (cons "Lizard" lizard-d)
                          (cons "Gradient" grad-d)))
 
-; (define (place-at-point win)
-;   (let ((pp (pointer-position)) (ws (window-size win)))
-;     (move-to (- (car pp) (quotient (car ws) 2))
-;              (- (cadr pp) (quotient (cadr ws) 2)) win))
-;   (move-inside win))
-
-; (define (move-inside win)
-;   (let* ((vp (viewport-position)) (ds (display-size)) (ws (window-size win))
-;          (wp (window-position win)) (xx (car wp))
-;          (bw (window-frame-border-width win)))
-;     (cond ((< (car wp) (car vp)) (set! xx (car vp))
-;            (move-to xx (cadr wp) win))
-;           ((> (+ (car wp) (car ws)) (+ (car vp) (car ds)))
-;            (set! xx (- (+ (car vp) (car ds)) (car ws) bw bw))
-;            (move-to xx (cadr wp) win)))
-;     (cond ((< (cadr wp) (cadr vp)) (move-to xx (cadr vp) win))
-;           ((> (+ (cadr wp) (cadr ws)) (+ (cadr vp) (cadr ds)))
-;            (move-to xx (- (+ (cadr vp) (cadr ds)) (cadr ws)
-;                           bw bw (title-height))
-;                     win)))))
-
 (define std-style
   (make-style #:fg "black" #:bg "grey76" #:sticky-icon #t
               #:icon (if want-pictures? unknown-i #f) ; #f: no pics, just text
@@ -236,6 +217,7 @@
               #:decorate-transient #t #:PPosition-hint #f #:mini-icon term-i
               ;; #:squashed-titlebar #t
               #:transient-placement-proc place-at-point))
+
 (define desk-widget
   (make-style #:focus 'none #:use-style std-style #:plain-border #t #:sticky #t
               #:winlist-skip #t #:border-width 1 #:circulate-skip #t
@@ -261,7 +243,7 @@
 (window-style "xamp" #:icon "Music.xpm" #:mini-icon audio-i)
 (window-style "xv" #:icon "xv.color.xpm" #:mini-icon xv-i)
 (window-style "Netscape" #:icon "nscape.xpm" #:mini-icon nscape-i
-              #:placement-proc (in-viewport 1 1))
+              #:placement-proc (in-viewport-placement 1 1))
 (window-style "gnuplot" #:icon "math4.xpm" #:mini-icon plot-i)
 (window-style "gimp" #:icon "wilbur.xpm" #:mini-icon gimp-i)
 (window-style "XDosEmu" #:icon "dosemu.xpm" #:mini-icon dos-i)
@@ -280,6 +262,7 @@
 (window-style "ee" #:mini-icon eyes-i)
 (window-style "Gnome*help*browser" #:mini-icon books-i)
 (window-style "helptool" #:mini-icon book2-i)
+(window-style "siag" #:mini-icon siag-i)
 (window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
               #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
 (window-style "emacs*mbf" #:focus 'sloppy #:use-style desk-widget-on-top)
@@ -349,7 +332,7 @@
                         (run-in-xterm "gnuplot"))
               (menuitem "Play &CD" #:image-left cd-i #:action "xplaycd")
               (menuitem "Play MP3" #:image-left audio-i #:action "xamp")
-              (menuitem "X &dos" #:image-left dos-i #:action "xdos")
+              (menuitem "X &dos" #:image-left dos-i #:action "/usr/bin/dos -X")
               (menuitem "GTKFind" #:image-left mag-i #:action "gtkfind")
               menu-separator
               (menuitem "&Lisps" #:image-left bolt-i #:action menu-lisps)
@@ -392,9 +375,17 @@
               (menuitem "GhostView" #:image-left "mini-gv.xpm"
                         #:action "ghostview")
               (menuitem "GNU Emacs" #:image-left edit-i #:action "emacs")
-              (menuitem "Emacs Pretest" #:image-left edit-i #:action
+              (menuitem "xxgdb/Emacs" #:image-left edit-i #:action
                         "xxgdb -i /usr/src/emacs/src/.gdbinit -cd=/usr/src/emacs/src emacs")
+              (menuitem "gdb/Emacs" #:image-left edit-i #:action
+                        "xterm -e gdb -cd=/usr/src/emacs/src emacs")
               (menuitem "vim 5" #:image-left edit-i #:action "gvim")
+              (menuitem "Siag Office" #:image-left siag-i #:action
+                        (menu (list (menuitem "siag" #:action "siag")
+                                    (menuitem "pw" #:action "pw")
+                                    (menuitem "egon" #:action "egon"))))
+              (menuitem "WordPerfect" #:image-left edit-i
+                        #:action "/usr/local/wp/wpbin/xwp")
               (menuitem "Xfig" #:image-left fig-i #:action "xfig")
               (menuitem "XPaint" #:image-left fig-i #:action "xpaint")
               (menuitem "The GIMP" #:image-left gimp-i #:action "gimp")
@@ -413,6 +404,7 @@
                                     (menuitem "Nethack" #:action "nethack")
                                     (menuitem "XBill" #:action "xbill")
                                     (menuitem "XBL" #:action "xbl")
+                                    (menuitem "Snow" #:action "xsnow")
                                     (menuitem "Gagaga" #:action "xgal"))))
               menu-separator
               (menuitem "Gnome" #:action
@@ -545,9 +537,12 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
               (menuitem "H&osts" #:image-left ctd-i #:action
                         (make-hosts-menu ; "stormbringer" "right.ml.org"
                          '(("mute" . "rlogin") ("eho" . "rlogin")
-                           ("delysid" . "rlogin") ("mescaline" . "rlogin")
-                           ("melange" . "rlogin") ("huis-clos" . "ssh")
-                           ("cellar" . "ssh -P") ("fatty" . "ssh -P")
+                           ("delysid.gnu.org" . "rlogin")
+                           ("mescaline.gnu.org" . "rlogin")
+                           ("melange.gnu.org" . "rlogin")
+                           ("huis-clos.mit.edu" . "ssh")
+                           ("cellar.goems.com" . "ssh -P")
+                           ("fatty.goems.com" . "ssh -P")
                            "central1" "eagle_one" "gandalf" "phish")))
               ;; (menuitem "&Multimedia" #:image-left "mini-audiovol.xpm"
               ;;                #:action menu-multimedia)
