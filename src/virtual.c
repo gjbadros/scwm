@@ -38,11 +38,31 @@ SCWM_SYMBOL(sym_east,"east");
 SCWM_SYMBOL(sym_south,"south");
 SCWM_SYMBOL(sym_west,"west");
 
-static SCM change_desk_hook;
-static SCM viewport_position_change_hook;
-static SCM edge_enter_hook;
-static SCM edge_leave_hook;
-static SCM edge_scroll_hook;
+  SCWM_HOOK(change_desk_hook,"change-desk-hook", 2);
+  /** This hook is invoked whenever the current desktop is changed.
+It is called with two argument, both integers.  The first is the
+new desktop number, the second is the old desktop number. */
+
+  SCWM_HOOK(viewport_position_change_hook,"viewport-position-change-hook", 2);
+  /** This hook is invoked whenever the viewport position is changed.
+It is called with two arguments, both integers, which are the x and y
+coordinates of the new viewport position in pixels. */
+
+  SCWM_HOOK(edge_enter_hook,"edge-enter-hook", 1);
+  /** This hook is invoked whenever the mouse pointer enters a screen edge.
+Procedures in the hook are called with one argument, one of the
+symbols 'north, 'south, 'east or 'west indicating which edge was
+entered. */
+
+  SCWM_HOOK(edge_leave_hook,"edge-leave-hook", 1);
+  /** This hook is invoked whenever the mouse pointer leaves a screen edge.
+Procedures in the hook are called with one argument, one of the
+symbols 'north, 'south, 'east or 'west indicating which edge was
+entered. */
+
+  SCWM_HOOK(edge_scroll_hook,"edge-scroll-hook", 0);
+  /** This hook is invoked whenever an edge scroll takes place.
+Procedures in the hook are called with no arguments. */
 
 
 static Edge in_edge = EDGE_NONE;
@@ -569,35 +589,6 @@ changeDesks(int val1, int val2)
 void
 init_virtual()
 {
-  SCWM_HOOK(change_desk_hook,"change-desk-hook", 2);
-  /** This hook is invoked whenever the current desktop is changed.
-It is called with two argument, both integers.  The first is the
-new desktop number, the second is the old desktop number. */
-
-  SCWM_HOOK(viewport_position_change_hook,"viewport-position-change-hook", 2);
-  /** This hook is invoked whenever the viewport position is changed.
-It is called with two arguments, both integers, which are the x and y
-coordinates of the new viewport position in pixels. */
-
-  SCWM_HOOK(edge_enter_hook,"edge-enter-hook", 1);
-  /** This hook is invoked whenever the mouse pointer enters a screen edge.
-Procedures in the hook are called with one argument, one of the
-symbols 'north, 'south, 'east or 'west indicating which edge was
-entered. */
-
-  SCWM_HOOK(edge_leave_hook,"edge-leave-hook", 1);
-  /** This hook is invoked whenever the mouse pointer leaves a screen edge.
-Procedures in the hook are called with one argument, one of the
-symbols 'north, 'south, 'east or 'west indicating which edge was
-entered. */
-
-  SCWM_HOOK(edge_scroll_hook,"edge-scroll-hook", 0);
-  /** This hook is invoked whenever an edge scroll takes place.
-Procedures in the hook are called with no arguments. */
-
-
-
-
 #ifndef SCM_MAGIC_SNARFER
 #include "virtual.x"
 #endif

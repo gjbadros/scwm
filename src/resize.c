@@ -35,9 +35,29 @@
 #include "events.h"
 #include "xmisc.h"
 
-static SCM interactive_resize_start_hook;
-static SCM interactive_resize_new_size_hook;
-static SCM interactive_resize_finish_hook;
+  SCWM_HOOK(interactive_resize_start_hook,"interactive-resize-start-hook",3);
+  /** This hook is invoked at the start of an interactive resize.
+It is called with three arguments: WINDOW, XMOTION, YMOTION.
+XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
+can happen on the right/bottom side, not at all, or the top/left side,
+respectively. */
+
+  SCWM_HOOK(interactive_resize_new_size_hook,"interactive-resize-new-size-hook",7);
+  /** This hook is invoked during an interactive resize.  
+It is called with seven arguments, WINDOW, X-POSITION, Y-POSITION,
+NEW-WIDTH-PIXELS, NEW-HEIGHT-PIXELS, NEW-WIDTH-UNITS, and
+NEW-HEIGHT-UNITS whenever the window is changed to a new size.  The
+first five arguments refer to the size and position of the frame
+window (not the client window). The -UNITS arguments refer to the size
+of the client window and are in client units (e.g., characters for
+Emacsen and XTerms).  */
+
+SCWM_HOOK(interactive_resize_finish_hook,"interactive-resize-finish-hook",1);
+  /** This hook is invoked at the end of an interactive resize.
+It is called with one argument, WINDOW. */
+
+extern SCM cannot_grab_hook;
+
 
 static int
 makemult(int a, int b)
@@ -668,27 +688,6 @@ init_resize_gcs()
 void 
 init_resize()
 {
-  SCWM_HOOK(interactive_resize_start_hook,"interactive-resize-start-hook",3);
-  /** This hook is invoked at the start of an interactive resize.
-It is called with three arguments: WINDOW, XMOTION, YMOTION.
-XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
-can happen on the right/bottom side, not at all, or the top/left side,
-respectively. */
-
-  SCWM_HOOK(interactive_resize_new_size_hook,"interactive-resize-new-size-hook",7);
-  /** This hook is invoked during an interactive resize.  
-It is called with seven arguments, WINDOW, X-POSITION, Y-POSITION,
-NEW-WIDTH-PIXELS, NEW-HEIGHT-PIXELS, NEW-WIDTH-UNITS, and
-NEW-HEIGHT-UNITS whenever the window is changed to a new size.  The
-first five arguments refer to the size and position of the frame
-window (not the client window). The -UNITS arguments refer to the size
-of the client window and are in client units (e.g., characters for
-Emacsen and XTerms).  */
-
-SCWM_HOOK(interactive_resize_finish_hook,"interactive-resize-finish-hook",1);
-  /** This hook is invoked at the end of an interactive resize.
-It is called with one argument, WINDOW. */
-
 #ifndef SCM_MAGIC_SNARFER
 #include "resize.x"
 #endif

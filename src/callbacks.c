@@ -39,8 +39,16 @@
 #include "dmalloc.h"
 #endif
 
+SCWM_HOOK(error_hook, "error-hook", 1);
+  /** Called on all kinds of errors and exceptions.
+Whenever an error or other uncaught throw occurs on any callback,
+whether a hook, a mouse binding, a key binding, a menu entry, a file
+being processed, or anything else, error-hook will be invoked. Each
+procedure in the hook will be called with the throw arguments; these
+will generally include information about the nature of the error. 
+*/
+
 SCM timer_hooks;
-SCM error_hook;
 
 struct scwm_body_apply_data {
   SCM proc;
@@ -809,14 +817,6 @@ run_input_hooks(fd_set *in_fdset)
 
 void init_callbacks()
 {
-  SCWM_HOOK(error_hook, "error-hook", 1);
-  /** Called on all kinds of errors and exceptions.
-Whenever an error or other uncaught throw occurs on any callback,
-whether a hook, a mouse binding, a key binding, a menu entry, a file
-being processed, or anything else, error-hook will be invoked. Each
-procedure in the hook will be called with the throw arguments; these
-will generally include information about the nature of the error. 
-*/
 
   gettimeofday(&last_timeval, NULL);
 

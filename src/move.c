@@ -49,10 +49,19 @@
 extern XEvent Event;
 extern int menuFromFrameOrWindowOrTitlebar;
 
-static SCM interactive_move_start_hook;
-static SCM interactive_move_new_position_hook;
-static SCM interactive_move_finish_hook;
+SCWM_HOOK(interactive_move_start_hook,"interactive-move-start-hook", 1);
+  /** This hook is invoked at the start of an interactive move.
+It is called with one argument, WINDOW. */
 
+SCWM_HOOK(interactive_move_new_position_hook,"interactive-move-new-position-hook", 3);
+  /** This hook is invoked during an interactive move.
+It is called with three arguments, WINDOW, NEW-X, and NEW-Y,
+whenever the window is moved to a new location. The position refers
+to the position of the frame window (not the client window). */
+
+SCWM_HOOK(interactive_move_finish_hook,"interactive-move-finish-hook", 1);
+  /** This hook is invoked at the end of an interactive move.
+It is called with one argument, WINDOW. */
 
 /* New version from Todd Larson */
 static void
@@ -554,20 +563,6 @@ defaults to the window context in the usual way if not specified.
 void 
 init_move()
 {
-  SCWM_HOOK(interactive_move_start_hook,"interactive-move-start-hook", 1);
-  /** This hook is invoked at the start of an interactive move.
-It is called with one argument, WINDOW. */
-
-  SCWM_HOOK(interactive_move_new_position_hook,"interactive-move-new-position-hook", 3);
-  /** This hook is invoked during an interactive move.
-It is called with three arguments, WINDOW, NEW-X, and NEW-Y,
-whenever the window is moved to a new location. The position refers
-to the position of the frame window (not the client window). */
-
-  SCWM_HOOK(interactive_move_finish_hook,"interactive-move-finish-hook", 1);
-  /** This hook is invoked at the end of an interactive move.
-It is called with one argument, WINDOW. */
-
 #ifndef SCM_MAGIC_SNARFER
 #include "move.x"
 #endif

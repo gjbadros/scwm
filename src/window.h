@@ -109,6 +109,7 @@ struct ScwmWindow {
   struct ScwmWindowConstraintInfo *pswci; /* Constraint information for this scheme window */
                                 /* NULL if built w/o cassowary support */
 
+  int saved_boundary_width;     /* the decoration vertical boundary's width, in pixels, if it had one */
   int boundary_width;           /* the decoration vertical boundary's width, in pixels */
   int xboundary_width;          /* the decoration horizontal boundary's width, in pixels */
   int corner_width;             /* the width of the decoration handles, in pixels */
@@ -281,9 +282,6 @@ typedef struct {
 
 EXTERN long scm_tc16_scwm_window;
 EXTERN_SET(SCM window_context,SCM_UNDEFINED);
-
-EXTERN SCM invalid_interaction_hook;
-EXTERN SCM cannot_grab_hook;
 
 #define WINDOWP(X) (SCM_NIMP(X) && (gh_car(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)gh_cdr(X))

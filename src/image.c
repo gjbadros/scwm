@@ -92,7 +92,10 @@ static SCM image_loader_hash_table = SCM_UNDEFINED;
 
 static SCM *pscm_image_load_path;
 
-static SCM image_not_found_hook;
+SCWM_HOOK(image_not_found_hook, "image-not-found-hook", 1);
+  /** Called with image name as a string when not found. */
+  
+
 
 static SCM str_default;
 static SCM str_empty;
@@ -700,10 +703,6 @@ consider 'rm *.x' and rebuild");
   SCWM_VAR_INIT(image_load_path,"image-load-path", gh_eval_str("\'"SCWM_IMAGE_LOAD_PATH));
   /** List of strings of directories in which to look for image files. */
 
-
-  SCWM_HOOK(image_not_found_hook, "image-not-found-hook", 1);
-  /** Called with image name as a string when not found. */
-  
 }
 
 

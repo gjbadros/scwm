@@ -46,7 +46,9 @@
 
 extern Window PressedW;
 
+#if 0
 SCWM_SYMBOL(sym_squashed_titlebar, "squashed-titlebar");
+#endif
 SCWM_SYMBOL(sym_no_top_border_decoration, "no-top-border-decoration");
 
 /* Also used in window.c */
@@ -54,7 +56,11 @@ extern SCM sym_maximized, sym_no_side_decorations;
 
 
 #define SQUASHED_TITLEBAR_P(psw) \
+  ((psw)->fSquashedTitlebar)
+
+#if 0
   SCM_NFALSEP( scm_object_property((psw)->schwin, sym_squashed_titlebar))
+#endif
 
 #define NO_SIDE_DECORATIONS_P(psw) \
   SCM_NFALSEP( scm_object_property((psw)->schwin, sym_no_side_decorations))
@@ -1401,6 +1407,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
   Bool fNoSideDecorations = NO_SIDE_DECORATIONS_P(psw);
   /*  Bool fNoTopDecoration = NO_TOP_BORDER_DECORATION_P(psw); */
   Bool fSquashedTitlebar = SQUASHED_TITLEBAR_P(psw);
+  if (fSquashedTitlebar) puts ("squashed");
 
   assert(!fMoved || fMoved == WAS_MOVED);
   assert(!fResized || fResized == WAS_RESIZED);
@@ -1648,6 +1655,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
         SetShape(psw, w);
       } else {
         if (fSquashedTitlebar) {
+          puts("Squashed all right.");
           SetShapedTitlebar(psw, tbar_right);
         } else {
           UnsetShapedTitlebar(psw);

@@ -1,3 +1,15 @@
+Fri Mar 26 12:56:31 1999  Maciej Stachowiak  (mstachow@alum.mit.edu)
+
+        * callbacks.h, scwm-snarf.h (SCWM_HOOK, SCWM_GLOBAL_HOOK):
+        SCMW_HOOK now lives in scwm-snarf.h and is a proper magical snarf
+        macro like SCWM_SYMBOL, SCWM_PROC, etc. This should reduce
+        unnecessary redundancy in the source and improve consistency.
+        * add_windows.c, borders.c, callbacks.c,
+        constraint-primitives.cc,, deskpage.c, events.c, icons.c, image.c,
+        module-interface.c, move.c, resize.c, shutdown.c, virtual.c,
+        window.c, window.h, winprop.c: Move instances of SCM_HOOK to the
+        tops of files, where they now belong.
+
 1999-03-26  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* window.c, window.h, events.c: Fix random brokenness from last

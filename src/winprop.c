@@ -34,7 +34,12 @@
 
 #define HANDLER_TABLE_SIZE 7
 
-SCM window_property_change_hook;
+SCWM_HOOK(window_property_change_hook,"window-property-change-hook",4);
+  /** This hook is invoked whenever a window property changes.
+The hook procedures are invoked with four arguments, the window whose
+property changed, the name of the changed property, the new value and
+the old value. */
+
 SCM property_handler_hash_table;
 
 
@@ -174,12 +179,6 @@ init_winprop()
     scm_make_vector (HANDLER_TABLE_SIZE, SCM_EOL);
 
   scm_permanent_object(property_handler_hash_table);
-
-  SCWM_HOOK(window_property_change_hook,"window-property-change-hook",4);
-  /** This hook is invoked whenever a window property changes.
-The hook procedures are invoked with four arguments, the window whose
-property changed, the name of the changed property, the new value and
-the old value. */
 
 #ifndef SCM_MAGIC_SNARFER
 #include "winprop.x"

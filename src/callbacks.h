@@ -44,16 +44,6 @@ SCM scwm_safe_eval_str (char *string);
 
 /* Hooks. */
 
-#ifndef SCWM_EXTRACT_COMMENTS
-/* do not define this macro if we are extracting comments since
-   the macro name is used as a lexical cue to the extractor */
-#if 0 /* GJB:FIXME:: new style hooks are not yet supported */
-#define SCWM_HOOK(var, name, args) do { var = scm_make_named_hook(name,args); } while (0)
-#else
-#define SCWM_HOOK(var, name, args) do { var = scm_sysintern(name, SCM_EOL); } while (0)
-#endif
-#endif
-
 SCM call0_hooks (SCM hook);
 SCM call1_hooks (SCM hook_type, SCM arg);
 SCM call2_hooks (SCM hook_type, SCM arg1, SCM arg2);

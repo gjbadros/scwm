@@ -52,6 +52,18 @@
 #include "winprop.h"
 
 
+SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0);
+  /** This hook is invoked with no arguments when the user hits an invalid
+key or performs an invalid mouse action during an interactive
+operation like `interactive-resize' or `interactive-move'. `beep' is
+one example of a procedure to use here. */
+
+SCWM_GLOBAL_HOOK(cannot_grab_hook,"cannot-grab-hook",0);
+  /** This hook is invoked with no arguments whenever scwm cannot
+successfully grab the X server. `beep' is one example of a procedure
+to use here.  */
+
+
 /* also used by miscproc.c's set-colormap-focus! */
 SCWM_GLOBAL_SYMBOL(sym_mouse , "mouse");
 
@@ -3878,8 +3890,6 @@ ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
     scm_wrong_type_arg(func_name, n, win);
   }
   if (!VALIDWINP(win)) {
-
-  set_property_handler (sym_sticky, &sticky_handler);
     gh_allow_ints();
     scwm_error(func_name, "Window no longer valid.");
     /* maybe should just return SCM_BOOL_F; */
@@ -3922,17 +3932,6 @@ void
 init_window()
 {
   REGISTER_SCWMSMOBFUNS(window);
-
-  SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0);
-  /** This hook is invoked with no arguments when the user hits an invalid
-key or performs an invalid mouse action during an interactive
-operation like `interactive-resize' or `interactive-move'. `beep' is
-one example of a procedure to use here. */
-
-  SCWM_HOOK(cannot_grab_hook,"cannot-grab-hook",0);
-  /** This hook is invoked with no arguments whenever scwm cannot
-successfully grab the X server. `beep' is one example of a procedure
-to use here.  */
 
 #ifndef SCM_MAGIC_SNARFER
 #include "window.x"
