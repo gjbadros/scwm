@@ -1,4 +1,35 @@
+Sat Feb 28 01:34:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* std-menus.scm: Renamed the former xlock-menu.scm to this and
+ 	added make-hosts-menu, a useful menu for a set of hosts to telnet
+ 	to.
+
+	* wmconfig-menu.scm: Added documentation and miscellaneous fixes
+ 	from Sam Steingold <sds@usa.net>.
+
 Wed Feb 25 21:39:58 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* wmconfig-menu.scm: New module contributed by Sam Steingold
+ 	<sds@usa.net> - this provides the function make-wmconfig-menu,
+ 	which parses the Red Hat 5.0 /etc/X11/wmconfig directory and
+ 	returns a mennu which reflects its contents. The title and name of
+ 	the menu, and the directory to scan, may optionally be specified
+ 	in that order. Appropriate defaults are provided.
+
+	* xlock-menu.scm: New module contributed by Sam Steingold - the
+ 	key exciting bit is the make-xlock-menu function which creates a
+ 	menu with several xlock screensaver choices. The optional argument
+ 	specifies wether or not to lock the screen when launching
+ 	screensavers; the default is #f.
+
+	* base.scm: Added fold-menu-list and exe, contributed by Sam
+ 	Steingold.
+	
+	fold-menu-list takes a menu and an optional number of lines, and
+ 	splits it at that number of lines (or 30 by default), adding
+ 	"more..."-labeled submenu entries. exe is just a wrapper around
+ 	execute that returns a procedure which will run the specified
+ 	command.
 
 	* minimal.scm: Changed load-font reference to make-font
 
