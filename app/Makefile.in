@@ -1,0 +1,41 @@
+#
+SHELL=/bin/sh
+
+@SET_MAKE@
+
+VPATH=@scrdir@
+top_srcdir=@top_srcdir@
+srcdir=@srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bin_dir=@exec_prefix@/bin
+scwm_rc=@scwm_rc@
+scwm_name=@scwm_name@
+scwm_scheme_dir=@guile_scheme_prefix@/app/scwm
+
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+RM=@RM@
+LN_S=@LN_S@
+
+RC=system${scwm_rc}
+
+all: scwm
+
+scwm: ../scheme
+	if [ "$(LN_S)" = "ln -s" ]; then \
+	   $(LN_S) ../scheme scwm ; \
+	else \
+	   mkdir scwm ; \
+	   (cd scwm ; $(LN_S) ../scheme/*.scm .) ; \
+	fi
+
+depend:
+
+install: 
+
+clean:
+	${RM} *~ core *.bak scwm
+
+distclean: clean
+
