@@ -1,3 +1,7 @@
+1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
+
+	* dev/common-primitive-mistakes: remove a typo doubled word
+
 Wed Sep 30 19:20:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.am: Use scwmdoc, not extract-docs. Note that because
