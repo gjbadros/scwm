@@ -26,7 +26,6 @@
 #include <assert.h>
 
 #include "scwm.h"
-#include "misc.h"
 #include "icons.h"
 #include "screen.h"
 #include "borders.h"
@@ -35,6 +34,7 @@
 #include <X11/extensions/shape.h>
 #include "module-interface.h"
 #include "font.h"
+#include "xmisc.h"
 #include "scwm-constraints.h"
 
 #ifdef USE_DMALLOC
@@ -42,8 +42,6 @@
 #endif
 
 extern Window PressedW;
-XGCValues Globalgcv;
-unsigned long Globalgcm;
 
 /* macro rules to get button state */
 #define GetButtonState(window)						\

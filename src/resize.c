@@ -20,7 +20,6 @@
 #include <stdio.h>
 #include <X11/keysym.h>
 #include "scwm.h"
-#include "misc.h"
 #include "screen.h"
 #include "resize.h"
 #include "borders.h"

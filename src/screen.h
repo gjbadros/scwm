@@ -1,7 +1,17 @@
-/****************************************************************************
- * This module is based on Twm, but has been siginificantly modified 
+/* $Id$
+ * screen.h
+ */
+
+/*
+ * scwm per-screen data include file
+ */
+
+
+/*
+ * This module derived from code based on Twm and siginificantly modified 
  * by Rob Nation
- ****************************************************************************/
+ */
+
 /*
  * Copyright 1989 Massachusetts Institute of Technology
  *
@@ -23,12 +33,6 @@
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/***********************************************************************
- *
- * scwm per-screen data include file
- *
- ***********************************************************************/
-
 #ifndef _SCREEN_
 #define _SCREEN_
 
@@ -36,7 +40,6 @@
 #include <X11/Xutil.h>
 #include <X11/cursorfont.h>
 #include "window.h"
-#include "misc.h"
 #include "binding.h"
 
 #define SIZE_HINDENT 5

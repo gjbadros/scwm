@@ -11,7 +11,6 @@
 #include <guile/gh.h>
 #include "scwm.h"
 #include "screen.h"
-#include "misc.h"
 #include "virtual.h"
 #include "callbacks.h"
 #include "shutdown.h"

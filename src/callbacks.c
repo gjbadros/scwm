@@ -29,7 +29,6 @@
 #include "scwm.h"
 #include "callbacks.h"
 #include "guile-compat.h"
-#include "system.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif

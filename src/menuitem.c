@@ -22,7 +22,6 @@
 
 #include <guile/gh.h>
 #include "scwm.h"
-#include "system.h"
 #include "scwmmenu.h"
 #include "menuitem.h"
 #include "guile-compat.h"

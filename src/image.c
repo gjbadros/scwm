@@ -36,7 +36,6 @@
 #include <guile/gh.h>
 #include "scwm.h"
 #include "screen.h"
-#include "system.h"
 #include "callbacks.h"
 #include "scwmpaths.h"
 #ifdef USE_DMALLOC

@@ -25,7 +25,6 @@
 #include <string.h>
 #include <X11/keysym.h>
 #include "scwm.h"
-#include "misc.h"
 #include "move.h"
 #include "events.h"
 #include "screen.h"
@@ -35,6 +34,7 @@
 #include "borders.h"
 #include "colormaps.h"
 #include "font.h"
+#include "focus.h"
 #include "syscompat.h"
 #include "virtual.h"
 #include "xmisc.h"
@@ -84,7 +84,7 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
     currentY = (int) (startY + deltaY * (*ppctMovement));
     XMoveWindow(dpy,w,currentX,currentY);
     if (fWarpPointerToo) {
-      XGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
+      FXGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
       pointerX += currentX - lastX;
       pointerY += currentY - lastY;
       XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
@@ -93,7 +93,10 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
     XFlush(dpy);
     /* handle expose events as we're animating the window move */
     while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
+      {
       DispatchEvent();
+      }
+
     usleep(cmsDelay);
 #ifdef FIXGJB_ALLOW_ABORTING_ANIMATED_MOVES
     /* this didn't work for me -- maybe no longer necessary since
@@ -181,7 +184,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
   Bool done;
   int xl, yt, delta_x, delta_y, paged;
 
-  XGetPointerWindowOffsets(Scr.Root, &xl, &yt);
+  FXGetPointerWindowOffsets(Scr.Root, &xl, &yt);
   xl += XOffset;
   yt += YOffset;
 

@@ -33,7 +33,6 @@
 #include "borders.h"
 #include "decor.h"
 #include "colors.h"
-#include "system.h"
 #include "guile-compat.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"

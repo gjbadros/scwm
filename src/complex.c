@@ -11,9 +11,10 @@
 #include <unistd.h>
 
 #include "scwm.h"
-#include "misc.h"
 #include "screen.h"
+#include "xmisc.h"
 #include "syscompat.h"
+#include "focus.h"
 
 /*
  * IsClick(...)
@@ -29,7 +30,6 @@ IsClick(int x, int y, unsigned EndMask, XEvent * d)
 {
   int xcurrent, ycurrent, total = 0;
   Time t0;
-  extern Time lastTimestamp;
 
   xcurrent = x;
   ycurrent = y;

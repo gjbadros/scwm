@@ -207,7 +207,7 @@ SCWM_PROC(pointer_position, "pointer-position", 0, 0, 0,
   int x, y;
 
   SCM_REDEFER_INTS;
-  XGetPointerWindowOffsets(Scr.Root, &x, &y);
+  FXGetPointerWindowOffsets(Scr.Root, &x, &y);
   SCM_REALLOW_INTS;
   return scm_listify(SCM_MAKINUM(x), SCM_MAKINUM(y), SCM_UNDEFINED);
 }

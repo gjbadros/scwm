@@ -11,7 +11,6 @@
 #include "scwm.h"
 #include "scwmmenu.h"
 #include "drawmenu.h"
-#include "system.h"
 #include "screen.h"
 #include "font.h"
 #include <guile/gh.h>

@@ -18,12 +18,12 @@
 #include "errors.h"
 #include "complex.h"
 #include "util.h"
-#include "misc.h"
 #include "miscprocs.h"
 #include "add_window.h"
 #include "binding.h"
 #include "xmisc.h"
 #include "syscompat.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -700,7 +700,7 @@ find_mouse_event_type()
   XEvent d;
 
   gh_defer_ints();
-  XGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y);
+  FXGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y);
   have_orig_position = 1;
 
   mouse_ev_type = sym_motion;

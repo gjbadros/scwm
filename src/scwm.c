@@ -37,11 +37,9 @@
 #endif /* END HAVE_GETOPT_H */
 #include "scwm.h"
 #include "scwmmenu.h"
-#include "misc.h"
 #include "screen.h"
 #include "window.h"
 #include "Grab.h"
-#include "system.h"
 #include "colors.h"
 #include "events.h"
 #include "virtual.h"
@@ -51,6 +49,7 @@
 #include "module-interface.h"
 #include "syscompat.h"
 #include "xproperty.h"
+#include "xmisc.h"
 
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
@@ -127,6 +126,8 @@ XContext ScwmContext;		/* context for scwm windows */
 Window JunkRoot, JunkChild;	/* junk window */
 int JunkX = 0, JunkY = 0;
 unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
+
+ScwmWindow *FocusOnNextTimeStamp = NULL;
 
 Boolean debugging = False, PPosOverride, Blackout = False;
 

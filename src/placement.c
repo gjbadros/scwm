@@ -23,7 +23,6 @@
 #include "placement.h"
 
 #include "scwm.h"
-#include "misc.h"
 #include "move.h"
 #include "screen.h"
 #include "Grab.h"

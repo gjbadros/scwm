@@ -12,7 +12,7 @@
 #include <guile/gh.h>
 #include <stdarg.h>
 #include "scwm.h"
-#include "misc.h"
+#include "window.h"
 #include "callbacks.h"
 #include "scwm-constraints.h"
 #ifdef USE_DMALLOC

@@ -20,7 +20,6 @@
 #include <assert.h>
 #include "scwm.h"
 #include "screen.h"
-#include "misc.h"
 #include "focus.h"
 #include "move.h"
 #include "icons.h"
@@ -47,6 +46,10 @@
 
 SCM sym_mouse, sym_sloppy, sym_none;
 extern SCM sym_click;
+
+char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
+char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
+char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
 
 unsigned long 
 FlagsBitsFromSw(ScwmWindow *psw)
@@ -450,6 +453,28 @@ SCWM_PROC(select_window_interactively, "select-window-interactively", 0, 0, 0,
 }
 
 
+/*
+ * Keeps the "StaysOnTop" windows on the top of the pile.
+ * This is achieved by clearing a flag for OnTop windows here, and waiting
+ * for a visibility notify on the windows. Exeption: OnTop windows which are
+ * obscured by other OnTop windows, which need to be raised here.
+ */
+void 
+KeepOnTop()
+{
+  ScwmWindow *psw = Scr.ScwmRoot.next;
+
+  /* flag that on-top windows should be re-raised */
+  for ( ; psw != NULL; psw = psw->next) {
+    if (psw->fOnTop && !psw->fVisible) {
+      RaiseWindow(psw);
+      psw->fRaised = False;
+    } else
+      psw->fRaised = True;
+  }
+}
+
+
 /**************************************************************************
  *
  * Moves focus to specified window 
@@ -509,6 +534,7 @@ FocusOn(ScwmWindow *psw, int DeIconifyOnly)
   UngrabEm();
   SetFocus(psw->w, psw, False);
 }
+
 
 
 
@@ -578,6 +604,67 @@ WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
   }
   UngrabEm();
 }
+
+
+/*
+ * Grab the pointer and keyboard
+ */
+Bool 
+GrabEm(enum cursor cursor)
+{
+  int i = 0, val = 0;
+  unsigned int mask;
+
+  XSync(dpy, 0);
+  /* move the keyboard focus prior to grabbing the pointer to
+   * eliminate the enterNotify and exitNotify events that go
+   * to the windows */
+  if (Scr.PreviousFocus == NULL)
+    Scr.PreviousFocus = Scr.Focus;
+  SetFocus(Scr.NoFocusWin, NULL, 0);
+  mask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask
+    | EnterWindowMask | LeaveWindowMask;
+  while ((i < 1000) && (val = XGrabPointer(dpy, Scr.Root, True, mask,
+				     GrabModeAsync, GrabModeAsync, Scr.Root,
+				    Scr.ScwmCursors[cursor], CurrentTime) !=
+			GrabSuccess)) {
+    i++;
+    /* If you go too fast, other windows may not get a change to release
+     * any grab that they have. */
+    usleep(1);
+  }
+
+  /* If we fall out of the loop without grabbing the pointer, its
+     time to give up */
+  XSync(dpy, 0);
+
+  return (val == GrabSuccess);
+}
+
+
+/*
+ * UnGrab the pointer and keyboard
+ */
+void 
+UngrabEm()
+{
+  Window w;
+
+  XSync(dpy, 0);
+  XUngrabPointer(dpy, CurrentTime);
+
+  if (Scr.PreviousFocus != NULL) {
+    w = Scr.PreviousFocus->w;
+
+    /* if the window still exists, focus on it */
+    if (w) {
+      SetFocus(w, Scr.PreviousFocus, 0);
+    }
+    Scr.PreviousFocus = NULL;
+  }
+  XSync(dpy, 0);
+}
+
 
 ScwmWindow *
 PswFromWindow(Display *dpy, Window w)
@@ -913,6 +1000,47 @@ LowerWindow(ScwmWindow * psw)
   }
   Scr.LastWindowRaised = NULL;
 }
+
+/*
+ * Releases dynamically allocated space used to store window/icon names
+ */
+void 
+free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
+{
+  if (!psw)
+    return;
+
+  if (nukename && nukeicon) {
+    if (psw->name == psw->icon_name) {
+      if (psw->name != NoName && psw->name != NULL)
+	XFree(psw->name);
+      psw->name = NULL;
+      psw->icon_name = NULL;
+    } else {
+      if (psw->name != NoName && psw->name != NULL)
+	XFree(psw->name);
+      psw->name = NULL;
+      if (psw->icon_name != NoName && psw->icon_name != NULL)
+	XFree(psw->icon_name);
+      psw->icon_name = NULL;
+    }
+  } else if (nukename) {
+    if (psw->name != psw->icon_name
+	&& psw->name != NoName
+	&& psw->name != NULL)
+      XFree(psw->name);
+    psw->name = NULL;
+  } else {			/* if (nukeicon) */
+    if (psw->icon_name != psw->name
+	&& psw->icon_name != NoName
+	&& psw->icon_name != NULL)
+      XFree(psw->icon_name);
+    psw->icon_name = NULL;
+  }
+
+  return;
+}
+
 
 /*
  * Handles destruction of a window 
@@ -1589,7 +1717,7 @@ SCWM_PROC(move_to, "move-to", 2, 3, 0,
   fMovePointer = gh_scm2bool(move_pointer_too_p);
   fAnimated = gh_scm2bool(animated_p);
   if (fMovePointer || fAnimated) {
-    XGetWindowTopLeft(w,&startX, &startY);
+    FXGetWindowTopLeft(w,&startX, &startY);
   }
   if (fAnimated) {
     SCM animation_ms_delay = gh_lookup("animation-ms-delay");
@@ -1602,7 +1730,7 @@ SCWM_PROC(move_to, "move-to", 2, 3, 0,
 		       fMovePointer,cmsDelay,NULL);
   } else if (fMovePointer) {
     int x, y;
-    XGetPointerWindowOffsets(Scr.Root, &x, &y);
+    FXGetPointerWindowOffsets(Scr.Root, &x, &y);
     XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
 		 Scr.MyDisplayHeight, x + destX - startX, y + destY - startY);
   }
@@ -1637,7 +1765,7 @@ SCWM_PROC(interactive_move, "interactive-move", 0, 1, 0,
     event.xbutton.x_root = orig_x;
     event.xbutton.y_root = orig_y;
   } else {
-    XGetPointerWindowOffsets(Scr.Root, &event.xbutton.x_root, &event.xbutton.y_root);
+    FXGetPointerWindowOffsets(Scr.Root, &event.xbutton.x_root, &event.xbutton.y_root);
   }
   InteractiveMove(&w, psw, &x, &y, &event);
   move_finalize(w, psw, x, y);
@@ -2066,8 +2194,6 @@ SCWM_PROC(list_all_windows, "list-all-windows", 0, 0, 0,
   for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
     result = scm_cons(psw->schwin, result);
   }
-
-  
 
   return result;
 }

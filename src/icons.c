@@ -10,11 +10,9 @@
  * as long as the copyright notice is preserved
  ****************************************************************************/
 
-/***********************************************************************
- *
+/*
  * scwm icon code
- *
- ***********************************************************************/
+ */
 
 #include <config.h>
 
@@ -30,7 +28,6 @@
 #include <X11/Intrinsic.h>
 #include <X11/xpm.h>
 #include "scwm.h"
-#include "misc.h"
 #include "screen.h"
 #include "icons.h"
 #include "borders.h"
@@ -39,6 +36,7 @@
 #include "font.h"
 #include "color.h"
 #include "focus.h"
+#include "xmisc.h"
 
 #include <X11/extensions/shape.h>
 

@@ -36,7 +36,6 @@
 #include <libguile.h>
 #include <X11/X.h>
 #include "scwm.h"
-#include "system.h"
 #include "window.h"
 #include "xproperty.h"
 #include "xmisc.h"

@@ -21,6 +21,34 @@
 
 struct ScwmDecor;		/* definition in screen.h */
 
+extern char NoName[];
+extern char NoClass[];
+extern char NoResource[];
+
+
+/* Cursor types */
+enum cursor {
+ CURSOR_POSITION,		/* upper Left corner cursor */
+ CURSOR_TITLE,			/* title-bar cursor */
+ CURSOR_DEFAULT,		/* cursor for apps to inherit */
+ CURSOR_SYS,			/* sys-menu and iconify boxes cursor */
+ CURSOR_MOVE,			/* resize cursor */
+ CURSOR_WAIT,			/* wait a while cursor */
+ CURSOR_MENU,			/* menu cursor */
+ CURSOR_SELECT,			/* dot cursor for f.move, etc. from menus */
+ CURSOR_DESTROY,		/* skull and cross bones, f.destroy */
+ /* Order dependency on these cursors! */
+ CURSOR_TOP,			/*  */
+ CURSOR_RIGHT,			/*  */
+ CURSOR_BOTTOM,			/*  */
+ CURSOR_LEFT,			/*  */
+ CURSOR_TOP_LEFT,		/*  */
+ CURSOR_TOP_RIGHT,		/*  */
+ CURSOR_BOTTOM_LEFT,		/*  */
+ CURSOR_BOTTOM_RIGHT,		/*  */
+ CURSOR_MAX_CURSORS		/*  */
+};
+
 /* for each window that is on the display, one of these structures
  * is allocated and linked into a list 
  */
@@ -228,17 +256,24 @@ ScwmWindow *PswFromWindow(Display *dpy, Window w);
 ScwmWindow *PswFromPointerLocation(Display *dpy);
 ScwmWindow *PswSelectInteractively(Display *dpy);
 
-void MapIt(ScwmWindow * t);
+void MapIt(ScwmWindow *psw);
 
-void DestroyScwmWindow(ScwmWindow *);
-void UnmapScwmWindow(ScwmWindow * t);
-void RaiseWindow(ScwmWindow * t);
-void LowerWindow(ScwmWindow * t);
+void free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon);
 
-void FocusOn(ScwmWindow * t, int DeIconifyOnly);
-void WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit);
+void DestroyScwmWindow(ScwmWindow *psw);
+void UnmapScwmWindow(ScwmWindow * psw);
+void RaiseWindow(ScwmWindow *psw);
+void LowerWindow(ScwmWindow *psw);
 
-SCM make_window(ScwmWindow * win);
+void KeepOnTop();
+
+void FocusOn(ScwmWindow *psw, int DeIconifyOnly);
+void WarpOn(ScwmWindow *psw, int warp_x, int x_unit, int warp_y, int y_unit);
+
+Bool GrabEm(enum cursor);
+void UngrabEm(void);
+
+SCM make_window(ScwmWindow *psw);
 void invalidate_window(SCM schwin);
 SCM window_p(SCM obj);
 

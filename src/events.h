@@ -41,6 +41,7 @@ void HandleClientMessage(void);
 void HandlePropertyNotify(void);
 void HandleKeyPress(void);
 void HandleVisibilityNotify(void);
+void CoerceEnterNotifyOnCurrentWindow();
 
 void init_events();
 

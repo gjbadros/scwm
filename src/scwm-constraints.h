@@ -14,7 +14,13 @@
 #include "ClVariable.h"
 #include "ClSimplexSolver.h"
 
-typedef ClVariable ScwmClVariable;
+class ScwmClVariable : public ClVariable {
+private: typedef ClVariable super;
+public:
+  ScwmClVariable() : ClVariable() { }
+  virtual void set_value(Number n) { super::set_value(n); fprintf(stderr,"set_value to %g\n",n); }
+};
+
 
 #define FRAME_X(psw) ((psw)->frame_x.intValue())
 #define FRAME_Y(psw) ((psw)->frame_y.intValue())

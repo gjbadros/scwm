@@ -15,7 +15,6 @@
 #include <unistd.h>
 
 #include "scwm.h"
-#include "misc.h"
 #include "window.h"
 #include "icons.h"
 #include "screen.h"
@@ -58,7 +57,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     usleep(10);
     total += 10;
 
-    XGetPointerWindowOffsets(Scr.Root, &x, &y);
+    FXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
     if (XCheckWindowEvent(dpy, Scr.PanFrameTop.win,
 			  LeaveWindowMask, &Event)) {
@@ -87,7 +86,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
       return;
   }
 
-  XGetPointerWindowOffsets(Scr.Root, &x, &y);
+  FXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
   /* Turn off the rubberband if its on */
   MoveOutline(Scr.Root, 0, 0, 0, 0);
@@ -166,7 +165,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
       XGrabServer_withSemaphore(dpy);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, *xl, *yt);
     MoveViewport(Scr.Vx + *delta_x, Scr.Vy + *delta_y, False);
-    XGetPointerWindowOffsets(Scr.Root, xl, yt);
+    FXGetPointerWindowOffsets(Scr.Root, xl, yt);
     if (Grab)
       XUngrabServer_withSemaphore(dpy);
   }

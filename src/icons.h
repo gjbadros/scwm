@@ -21,6 +21,8 @@ void redraw_icon_titles();
 #define ICON_P_HEIGHT(psw) (psw->icon_image != SCM_BOOL_F? \
 			   IMAGE(psw->icon_image)->height : 0)
 
+#define ICON_HEIGHT (FONTHEIGHT(Scr.icon_font)+6)
+
 #endif
 
 /* Local Variables: */

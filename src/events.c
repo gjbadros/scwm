@@ -61,7 +61,6 @@
 
 #include "scwm.h"
 #include <X11/Xatom.h>
-#include "misc.h"
 #include "icons.h"
 #include "screen.h"
 #include <X11/extensions/shape.h>
@@ -288,14 +287,14 @@ GetContext(ScwmWindow * t, XEvent * e, Window * w)
 
 
 void 
-HandleHardFocus(ScwmWindow * t)
+HandleHardFocus(ScwmWindow *psw)
 {
   int x, y;
 
-  FocusOnNextTimeStamp = t;
+  FocusOnNextTimeStamp = psw;
   Scr.Focus = NULL;
   /* Do something to guarantee a new time stamp! */
-  XGetPointerWindowOffsets(Scr.Root, &x, &y);
+  FXGetPointerWindowOffsets(Scr.Root, &x, &y);
   GrabEm(CURSOR_WAIT);
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
 	       Scr.MyDisplayHeight,
@@ -307,12 +306,10 @@ HandleHardFocus(ScwmWindow * t)
   UngrabEm();
 }
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *	HandleFocusIn - handles focus in events
- *
- ************************************************************************/
+ */
 void 
 HandleFocusIn()
 {
@@ -739,7 +736,7 @@ HandleClientMessage()
   if ((Event.xclient.message_type == _XA_WM_CHANGE_STATE) &&
       (Event.xclient.data.l[0] == IconicState) &&
       pswCurrent && !pswCurrent->fIconified) {
-    XGetPointerWindowOffsets(Scr.Root, &(button.xmotion.x_root), &(button.xmotion.y_root));
+    FXGetPointerWindowOffsets(Scr.Root, &(button.xmotion.x_root), &(button.xmotion.y_root));
     button.type = 0;
     iconify(pswCurrent->schwin);
     return;
@@ -1488,6 +1485,30 @@ HandleVisibilityNotify()
       RaiseWindow(pswCurrent);
       pswCurrent->fRaised = False;
     }
+  }
+}
+
+/* CoerceEnterNotifyOnCurrentWindow()
+ * Pretends to get a HandleEnterNotify on the
+ * window that the pointer currently is in so that
+ * the focus gets set correctly from the beginning
+ * Note that this presently only works if the current
+ * window is not click_to_focus;  I think that
+ * that behaviour is correct and desirable. --11/08/97 gjb */
+void
+CoerceEnterNotifyOnCurrentWindow()
+{
+  extern ScwmWindow *pswCurrent; /* from events.c */
+  Window child, root;
+  int root_x, root_y;
+  int win_x, win_y;
+  Bool f = XQueryPointer(dpy, Scr.Root, &root,
+			 &child, &root_x, &root_y, &win_x, &win_y, &JunkMask);
+  if (f && child != None) {
+    Event.xany.window = child;
+    pswCurrent = PswFromWindow(dpy,child);
+    HandleEnterNotify();
+    pswCurrent = None;
   }
 }
 

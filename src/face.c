@@ -18,7 +18,6 @@
 #include <config.h>
 #include <guile/gh.h>
 #include "scwm.h"
-#include "misc.h"
 #include "screen.h"
 #include "window.h"
 #include "face.h"

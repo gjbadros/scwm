@@ -44,7 +44,6 @@
 #include "scwm.h"
 #include <X11/Xatom.h>
 #include <X11/Xproto.h>
-#include "misc.h"
 #include "screen.h"
 #include "mwmcom.h"
 #ifdef USE_DMALLOC

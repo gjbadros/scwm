@@ -24,7 +24,6 @@
 #include <guile/gh.h>
 #include "scwm.h"
 #include "font.h"
-#include "system.h"
 #include "events.h"
 #include "scwmmenu.h"
 #include "drawmenu.h"
@@ -33,7 +32,6 @@
 #include "screen.h"
 #include "color.h"
 #include "util.h"
-#include "misc.h"
 #include "string_token.h"
 #include "guile-compat.h"
 #include "syscompat.h"
@@ -1196,7 +1194,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
   int cpixY_startpointer;
   SCM scmAction = SCM_UNDEFINED;
 
-  XGetPointerWindowOffsets(Scr.Root,&cpixX_startpointer,&cpixY_startpointer);
+  FXGetPointerWindowOffsets(Scr.Root,&cpixX_startpointer,&cpixY_startpointer);
   
   SetPopupMenuPosition(pmd, cpixX_startpointer, cpixY_startpointer);
   

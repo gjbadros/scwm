@@ -46,6 +46,7 @@
 #include "module-types.h"
 #include <stdlib.h>
 #include "scwm-snarf.h"
+#include "system.h"
 
 extern char **g_argv;
 extern int g_argc;
