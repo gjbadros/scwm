@@ -1,3 +1,31 @@
+Fri Jul  2 15:24:22 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.in: added $(scwm_HEADERS) and use to initialize
+	$(HEADERS) so tags target works.  Use ifeq to condition
+	guile-snarf line to do -D__cplusplus if using g++.  Removed
+	dependency for clean target on $(BUILT_SOURCES) and instead make
+	clean "rm *.x".
+
+	* All .[ch] files: Lots of software-engineering changes, many to
+	make scwm compile cleanly under the more stringent type-checking
+	of C++:
+		o Use SCM_PROC pervasively throughout -- this adds a couple .x files,
+		and eliminates scmprocs.[ch]
+		o Added appropriate init_MODULE functions, and moved some existing
+		ones to the very end of the .c file
+		o Fix unsigned int vs. int usage so the code type checks for C++
+		o Fix unsigned char * vs. char * usage so the code type checks for C++
+		o Put casts back in for the returned values from safemalloc for C++
+		o Added XGetWindowTopLeft, fixed XGetPointerWindowOffsets, use them
+		instead of XQueryPointer with dummy arguments in client code
+		o Fix uses of enum-s that were really broken (e.g., functions in
+		window.h) -- C++ is a lot pickier about enum-s, and the code was using
+		an enum type to hold a bit vector, really.  Now bit-vectors are done
+		using an int, and the enum just declares the symbolic constants.
+		o Rename formal tmp_win to sw in a couple places
+		o Use, e.g., SCMW_H__ not _SCWM_ for multiple inclusion prevention --
+		_Caps is reserved for implementation, officially
+
 1998-06-29  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* scwm.c (scwm_main): Handle SIGSEGV.
