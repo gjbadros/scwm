@@ -1,3 +1,9 @@
+Mon Sep 27 08:52:30 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use popup-style-menu for the 3rd button from the
+	left, not popup-sysutils (that did nothing).  The style menu is
+	broken now, perhaps, but this'll make me fix it! :-)
+
 Sat Sep 25 17:00:41 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Bind C-S-F2 to

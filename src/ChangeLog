@@ -1,3 +1,8 @@
+Mon Sep 27 08:49:10 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm.c: Separate out ScwmReportX11Error function so it's easier
+	to debug X11 errors/warnings.
+
 Sat Sep 25 12:32:21 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c:  Turn on backtraces w/ positioning by default
