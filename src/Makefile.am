@@ -2,6 +2,8 @@
 ## process this file with automake to create Makefile.in
 ## (You should run ./autogen.sh from the top level directory)
 
+include $(top_srcdir)/Makefile.common
+
 bin_PROGRAMS = scwm
 
 scwm_SOURCES =  Grab.c \
@@ -101,39 +103,7 @@ borders.x errors.x
 BUILT_SOURCES = init_scheme_string.c scwmpaths.h scm_init_funcs.h \
 	$(guile_snarfs)
 
-##OMIT_DEPENDENCIES = $(BUILT_SOURCES)
-
-## This is how guile does it:
-## (Sadly it does not work with Automake 1.2f)
-## Add -MG to make the .x magic work with auto-dep code.
-## MKDEP = gcc -M -MG $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-
 EXTRA_DIST=generate_scm_init_funcs ChangeLog
-
-SUFFIXES = .x
-
-
-# just use `make CC=g++' and the revised guile-snarf which uses ${CC} will work
-# for C++ prototype extraction
-%.x: %.c
-	guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
-
-%.x: %.cc
-	CC=$(CXX) \
-	guile-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CXXFLAGS) $< > $@
-
-## FIXMS: This really sucks, but it's the best we can do until
-## Automake gets a way to compute dependencies with -MG
-## scwm.o: scwmpaths.h
-## callbacks.o: callbacks.x
-## color.o: color.x
-## font.o: font.x
-## image.o: scwmpaths.h image.x
-## menuitem.o: menuitem.x
-## module-interface.o: module-interface.x
-## menu.o: menu.x
-## shutdown.o: shutdown.x
-
 
 init_scheme_string.c: ../scheme/minimal.scm
 	( echo "char *init_scheme_string = \"\\" ; \
@@ -158,8 +128,3 @@ scm_init_funcs.h: ../config.status
 	@$(srcdir)/generate_scm_init_funcs $(guile_snarfs) > $@
 
 CLEANFILES = scwmpaths.h init_scheme_string.c $(BUILT_SOURCES)
-
-# Want etags to mark SCM_SYMBOL macros and SCWM_PROC macros
-# Note that we mark through the 2nd argument to SCWM_PROC so we
-# get the scheme procedure name, too (not just the C function name)
-ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_PROC[ \t]*(\([^,]*\),[^,]*/\1/'

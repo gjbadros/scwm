@@ -2,6 +2,8 @@
 ## process this file with automake to create Makefile.in
 ## (You should run ./autogen.sh from the top level directory)
 
+include $(top_srcdir)/Makefile.common
+
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
 
 pkglib_LTLIBRARIES = libapplefile.la

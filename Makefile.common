@@ -1,0 +1,15 @@
+## $Id$
+
+# Want etags to mark SCM_SYMBOL macros and SCWM_PROC macros
+# Note that we mark through the 2nd argument to SCWM_PROC so we
+# get the scheme procedure name, too (not just the C function name)
+ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_PROC[ \t]*(\([^,]*\),[^,]*/\1/'
+
+SUFFIXES = .x
+
+%.x: %.c
+	$(top_srcdir)/scwm/scwm-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
+
+%.x: %.cc
+	CC=$(CXX) \
+	$(top_srcdir)/scwm/scwm-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
