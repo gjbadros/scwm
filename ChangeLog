@@ -1,3 +1,11 @@
+Tue Jul 13 23:04:20 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in:  export CFLAGS so --enable-cflags=XXX works.
+	Added --enable-cppflags, --enable-cxxflags.  Set PREFIX_INCLUDES
+	to the prefix/include directory.  Check for GTL library for
+	constraint solver (link against it only if found).  Set
+	DL_SUPPORT=true iff dlopen is found (not used elsewhere, yet).
+
 Fri Jul  9 15:05:04 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* INSTALL: Updated with notes about dynamically-linked files,

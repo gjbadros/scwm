@@ -1,3 +1,16 @@
+Tue Jul 13 23:11:55 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* message-window.scm: Added `make-message-window-with-image'
+	convenience procedure.
+
+	* flash-window.scm: Added `window-flashing?', docs. Have
+	`flash-window-on' return the window it flashed.
+
+	* minimal.scm, base.scm: Move `call-hook-procedures' into
+ 	minimal.scm from base.scm, and make the use-scwm-modules stuff
+ 	call the load-processing-hook
+ 	(for showing startup progress (e.g., animating spinning logo)).
+
 1999-07-13  Jeff Nichols  <jwnichls@cs.washington.edu>
 
 	* window-locations.scm: Added window-center-middle procedure for
