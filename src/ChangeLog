@@ -1,3 +1,25 @@
+Sun Mar 29 14:38:25 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* misc.h, lots of other files: clean up tons of prototypes, move
+ 	to appropriate files
+
+	* placement.h: Added, for protos for placement.c
+
+	* add_window.c: Call XGetGeometryCacheIt(..) to fix the bug where
+	window positions were forgotten every-other "restart" of scwm;
+	apparently the X server needs to be queried as to the geometry of
+	the windows in order to get this right
+
+	* misc.c: Added XGetGeometryCacheIt(..),
+	XGetGeometryPositionOnly(..), rename "restart" variable to
+	"fRestart" so it doesn't shadow the global fn named restart(..)
+
+	* miscprocs.c: Use SCM_BOOL_FromBool, instead of ternary
+	expression
+
+	* placement.c: Move GetGravityOffsets() to the top and make it
+	static since it's only used in this file
+
 Sun Mar 29 13:38:24 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* misc.c: simplify code for return value of GrabEm()
