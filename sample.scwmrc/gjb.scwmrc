@@ -1121,6 +1121,7 @@
 				    "*FvwmPagerHilight navyblue"
 				    "*FvwmPagerFont none"
 				    "*FvwmPagerDeskTopScale 50"
+				    "*FvwmPagerGeometry -0-0"
 				    "*FvwmPagerLabel 0 Top"
 				    "*FvwmPagerLabel 1 Bottom"
 				    "*FvwmPagerSmallFont 5x8")
@@ -1133,21 +1134,30 @@
 ;;      (add-hook! shutdown-hook (lambda () (kill-fvwm2-module fvwm2-pager))))
       ))
     
-;;; This does not work for me -- I get:
-;;; Xlib: unexpected async reply (sequence 0x13e0)!
-;;; 
 (if want-fvwm2-winlist-module
-    (register-fvwm2-module-config 
-     "FvwmWinList"
-     "*FvwmWinListBack #c3c3c3"
-     "*FvwmWinListFore Black"
-     "*FvwmWinListFont -helvetica-bold-r-*-*-10-*-*-*-*-*-*-*"
-     "*FvwmWinListAction Click1 Iconify -1,Focus"
-     "*FvwmWinListAction Click2 Iconify"
-     ;;     "*FvwmWinListAction Click3 Module FvwmIdent FvwmIdent"
-     "*FvwmWinListUseSkipList"
-     "*FvwmWinListGeometry +0-1")
-    (define fvwm-winlist (run-fvwm2-module "FvwmWinList")))
+    (begin
+      (register-fvwm2-module-config 
+       "FvwmWinList"
+       "*FvwmWinListBack gray70"
+       "*FvwmWinListFore Black"
+       "*FvwmWinListFont -helvetica-bold-r-*-*-10-*-*-*-*-*-*-*"
+       "*FvwmWinListAction Click1 Iconify -1,Focus"
+       "*FvwmWinListAction Click2 Iconify"
+       "*FvwmWinListGeometry -0+0"
+       ;;     "*FvwmWinListAction Click3 Module FvwmIdent FvwmIdent"
+       "*FvwmWinListUseSkipList")
+      (define fvwm-winlist (run-fvwm2-module "FvwmWinList" '()))
+      ;; work around a race condition in decorating FvwmWinList
+      ;; and notifying FvwmWinList of the configure window event
+      (add-timer-hook! (* 1000000 5) 
+		       (lambda () 
+			 (window-style "FvwmWinList"
+				       #:use-style
+				       desk-widget-on-top-no-titlebar)))
+      ))
+
+;;(kill-fvwm2-module fvwm-winlist)
+;;(kill-all-fvwm2-modules)
 
 ;;; Dynamically loaded pie menus (just big regular menus now)
 ;;; 
