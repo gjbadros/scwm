@@ -1,3 +1,29 @@
+Mon Jan 10 13:19:46 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xproperty.c, scwm-constraints.hpp, resize.c, placement.c,
+ 	move.c, module-interface.c, icons.c, focus.c, events.c, events.c,
+ 	constraint-primitives.cc, color.c, borders.h, borders.c,
+ 	add_window.c: use SCM_FROM_PSW(psw), not psw->schwin.
+
+	* window.h: Added SCM_FROM_PSW macro/inline function.  Rename
+	schwin field of ScwmWindow struct to _schwin to ensure no uses are 
+	left.
+
+	* window.c: Added 'bad-interactive-spec error symbol, and use it
+ 	w/ scm_error when reporting interactive_spec errors.  Fix bad
+ 	malloc/free bug in ScmArgsFromInteractiveSpec().
+
+	* scwm.c: Added SCWM_DEBUG_MALLOC #define, but leave it off.
+
+	* events.c: Make x_motionnotify_hook have name
+	"%X-MotionNotify-hook" for debugging.
+
+	* callbacks.h: Improve SCWM_MAKE_HOOK macro to take a name, too,
+	for x_motionnotify_hook.
+
+	* callbacks.c: Use scm_puts, not scwm_msg for debug output in
+	scwm_run_hook, print better debug output for call-interactively.
+
 Sun Jan  9 19:01:46 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Added fDoneStartup variable, and set it.
