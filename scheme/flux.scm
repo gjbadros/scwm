@@ -441,7 +441,23 @@ Greg uses XLogo windows as a sample window, so this
 is useful for clearing the xlogos away when there get to
 be more than desired."
   (for-each (lambda (w) (close-window w)) 
-	    (list-windows #:only (lambda (w) (string=? (window-class w) "XLogo")))))
+	    (list-windows #:only 
+			  (lambda (w)
+			    (string=? (window-class w) "XLogo")))))
+
+(define-public (delta-position xy-list dx dy)
+  "Return a new coordinate list that is DX,DY offset from XY-LIST.
+E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17)."
+  (map + xy-list (list dx dy)))
+;; (delta-position '(2 10) 5 7)
+
+(define*-public (move-window-relative dx dy #&optional (win (get-window))) 
+  "Move WIN from its current position by (dx,dy) pixels."
+  (with-window 
+   win
+   (let ((pos (window-viewport-position)))
+     (apply move-to (delta-position pos dx dy)))))
+;; (move-window-relative 10 10)
 
 ;; useful for debugging/testing
 ;;(set-X-server-synchronize! #t)

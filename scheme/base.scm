@@ -412,8 +412,16 @@ The rest of the arguments are passed as options to the xterm command."
 (defmacro-public reset-hook! (hook)
   `(set! ,hook ()))
 
-(defmacro-public bell ()
-  `(beep))
+(defmacro-public with-window (win . body)
+;;;** Bind the window-context to WIN while evaluating BODY.
+;;; All `get-window' calls within BODY will return WIN.
+  `(let ((old-window-context (window-context))
+	 (answer #f))
+     (set-window-context! ,win)
+     (begin ,@body)
+     (set-window-context! old-window-context)))
+
+(define-public bell beep)
 
 (add-hook! invalid-interaction-hook
 	   (lambda () (beep) (display "scwm: invalid interaction\n")))
