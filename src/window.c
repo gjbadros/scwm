@@ -1588,7 +1588,7 @@ SCWM_PROC(window_shaded_p, "window-shaded?", 0, 1, 0,
 }
 
 
-void 
+static void 
 move_finalize(Window w, ScwmWindow * psw, int x, int y)
 {
   if (w == psw->frame) {
@@ -1615,6 +1615,12 @@ move_finalize(Window w, ScwmWindow * psw, int x, int y)
   }
 }
 
+void 
+MovePswToCurrentPosition(ScwmWindow *psw)
+{
+  int x = FRAME_X(psw), y = FRAME_Y(psw);
+  XMoveWindow(dpy, psw->frame, x, y);
+}
 
 
 extern float rgpctMovementDefault[32];
