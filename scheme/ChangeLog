@@ -1,3 +1,14 @@
+1998-07-04  Greg Badros  <gjb@cs.washington.edu>
+
+	* std-menus.scm: Use xlock-query-program to decide what to run to
+	query the modes for the screensaver
+
+	* base.scm: comment out the remove-hook! macro, since there is
+	also code that defines the macro iff it's not already defined;
+	add reset-hook! macro
+	set invalid-interaction-hook and cannot-grab-hook to ring the bell 
+	with (beep)
+
 1998-06-26  Maciej Stachowiak  <maciej@roc-ny1-21.ix.netcom.com>
 
 	* fvwm-module.scm(run-fvwm-module): Add a few sanity checks to

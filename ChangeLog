@@ -1,8 +1,9 @@
 1998-07-04  Greg Badros  <gjb@cs.washington.edu>
 
-	* BUGS: Added callback bug note
+ 	* BUGS: Added callback bug note
 
 Fri Jul  3 17:46:16 1998  Greg Badros  <gjb@cs.washington.edu>
+
 
 	* INSTALL:  Added note about --with-guile-prefix
 
