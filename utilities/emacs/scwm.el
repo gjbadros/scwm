@@ -200,6 +200,7 @@ you have to (require 'font-lock) first.  Sorry."
 (define-key scwm-mode-map [(control c) (control u)] 'scwm-eval-uncommenting)
 (define-key scwm-mode-map [(control c) (control z)] 'scwm-run)
 (define-key scwm-mode-map [(control c) (control m)] 'scwm-use-module)
+(define-key scwm-mode-map [(control c) (control s)] 'scwm-set-module)
 (define-key scwm-mode-map [(control x) (control e)] 'scwm-eval-last)
 (define-key scwm-mode-map [(control h) (control s)] 'scwm-documentation)
 (define-key scwm-mode-map [(control h) (control a)] 'scwm-apropos)
@@ -334,6 +335,25 @@ meaning of the second argument is reversed."
 
 
 ;;;###autoload
+(defun scwm-set-module (mb-p)
+  "Set the current module to the module name that is just before the point.
+With a prefix arg, just reset to the-root-module.  GJB:FIXME:: This is
+not yet perfect since changing the module can affect the visibility
+of procedures that are needed by the Emacs interface to Scwm."
+  (interactive "P")
+  (if mb-p
+      (progn
+	(scwm-eval-sexp
+	 "(set-current-module the-root-module)" nil)
+	(message "Set Scwm to the-root-module."))
+    (scwm-eval-sexp 
+     (concat "(set-current-module (string->scwm-module \""
+	     (buffer-substring-no-properties
+	      (point) (save-excursion (backward-sexp) (point)))
+	     "\"))") mb-p)))
+
+
+;;;###autoload
 (defun scwm-eval-region (beg end mb-p)
   "Evaluate the region with `scwm-eval-sexp'."
   (interactive "r\nP")
@@ -381,7 +401,7 @@ meaning of the second argument is reversed."
   "Have Scwm use the ice-9 session module.
 This is needed for some commands such as apropos and apropos-internal.
 apropos-internal is used for completion, too"
-  (scwm-eval "(use-scwm-modules (ice-9 session) doc flux)" nil))
+  (scwm-eval "(use-scwm-modules (ice-9 session) doc session reflection)" nil))
 
 (defun scwm-make-obarray ()
   "Create and return an obarray of scwm symbols."
@@ -442,7 +462,7 @@ Returns a string which is present in the `scwm-obarray'."
   (save-excursion
     (search-forward mail-header-separator nil t) (forward-line 1)
     (call-process "uname" nil t nil "-a")
-    (scwm-eval "(use-modules (app scwm flux))" nil)
+    (scwm-eval "(use-modules (app scwm session reflection))" nil)
     (let ((pos (point)))
       (scwm-eval "(system-info-string)" t)
       (delete-char -1) (goto-char pos) (delete-char 1))))
