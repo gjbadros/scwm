@@ -1,3 +1,13 @@
+Sun Dec 27 13:55:09 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* guile-compat.c (scm_internal_cwdr_no_unwind): Temporarily add
+ 	this version of scm_internal_cwdr which does not unwind existing
+ 	winders. 
+	* callbacks.c: Use scm_internal_cwdr_no_unwind in place of
+ 	scm_internal_cwdr throughout. This allows `dynamic-wind's to
+ 	safely be wrapped around calls to primitives that make callbacks
+ 	or invoke hooks.
+
 Mon Dec 21 07:32:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* icons.c (AutoPlace): Stop treating sticky windows differently

@@ -123,7 +123,7 @@ scm_internal_stack_cwdr (scm_catch_body_t body,
   d.body = body;
   d.data = body_data;
   d.handler = handler;
-  return scm_internal_cwdr (cwssdr_body, &d, handler, handler_data, 
+  return scm_internal_cwdr_no_unwind (cwssdr_body, &d, handler, handler_data, 
 			    stack_item);
 }
 
@@ -153,7 +153,7 @@ scwm_safe_apply_message_only (SCM proc, SCM args)
   apply_data.proc = proc;
   apply_data.args = args;
 
-  return scm_internal_cwdr(scwm_body_apply, &apply_data,
+  return scm_internal_cwdr_no_unwind(scwm_body_apply, &apply_data,
 			   scm_handle_by_message_noexit, "scwm",
 			   &stack_item);
 }
@@ -258,9 +258,9 @@ errors. */
     scm_wrong_type_arg(FUNC_NAME, 1, fname);
   }
 
-  return scm_internal_cwdr(scwm_body_load, &fname,
-			   scm_handle_by_message_noexit, "scwm", 
-			   &stack_item);
+  return scm_internal_cwdr_no_unwind(scwm_body_load, &fname,
+				     scm_handle_by_message_noexit, "scwm", 
+				     &stack_item);
 }
 #undef FUNC_NAME
 
@@ -272,9 +272,9 @@ SCM scwm_safe_load (char *filename)
 SCM scwm_safe_eval_str (char *string)
 {
   SCM_STACKITEM stack_item;
-  return scm_internal_cwdr(scwm_body_eval_str, string,
-			   scm_handle_by_message_noexit, "scwm", 
-			   &stack_item);
+  return scm_internal_cwdr_no_unwind(scwm_body_eval_str, string,
+				     scm_handle_by_message_noexit, "scwm", 
+				     &stack_item);
 }
 
 /* Print warning message, and reset the hook */

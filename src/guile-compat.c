@@ -32,6 +32,95 @@ extern "C" {
 #endif
 
 
+
+#undef USE_STACKJMPBUF
+
+struct cwdr_no_unwind_handler_data {
+  int run_handler;
+  SCM tag, args;
+};
+
+static SCM
+cwdr_no_unwind_handler (void *data, SCM tag, SCM args)
+{
+  struct cwdr_no_unwind_handler_data *c = 
+    (struct cwdr_no_unwind_handler_data *) data;
+
+  c->run_handler = 1;
+  c->tag = tag;
+  c->args = args;
+  return SCM_UNSPECIFIED;
+}
+
+
+SCM 
+scm_internal_cwdr_no_unwind (scm_catch_body_t body, void *body_data,
+			     scm_catch_handler_t handler, void *handler_data,
+			     SCM_STACKITEM *stack_start)
+{
+#ifdef USE_STACKJMPBUF
+  scm_contregs static_jmpbuf;
+#endif
+  int old_ints_disabled = scm_ints_disabled;
+  SCM old_rootcont, old_winds;
+  struct cwdr_no_unwind_handler_data my_handler_data;
+  SCM answer;
+
+  /* Create a fresh root continuation.  */
+  {
+    SCM new_rootcont;
+    SCM_NEWCELL (new_rootcont);
+    SCM_REDEFER_INTS;
+#ifdef USE_STACKJMPBUF
+    SCM_SETJMPBUF (new_rootcont, &static_jmpbuf);
+#else
+    SCM_SETJMPBUF (new_rootcont,
+		   scm_must_malloc ((long) sizeof (scm_contregs),
+				    "inferior root continuation"));
+#endif
+    SCM_SETCAR (new_rootcont, scm_tc7_contin);
+    SCM_DYNENV (new_rootcont) = SCM_EOL;
+    SCM_BASE (new_rootcont) = stack_start;
+    SCM_SEQ (new_rootcont) = -1;
+#ifdef DEBUG_EXTENSIONS
+    SCM_DFRAME (new_rootcont) = 0;
+#endif
+    old_rootcont = scm_rootcont;
+    scm_rootcont = new_rootcont;
+    SCM_REALLOW_INTS;
+  }
+
+#ifdef DEBUG_EXTENSIONS
+  SCM_DFRAME (old_rootcont) = scm_last_debug_frame;
+  scm_last_debug_frame = 0;
+#endif
+
+  {
+    my_handler_data.run_handler = 0;
+    answer = scm_internal_catch (SCM_BOOL_T,
+				 body, body_data,
+				 cwdr_no_unwind_handler, &my_handler_data);
+  }
+
+  SCM_REDEFER_INTS;
+#ifdef USE_STACKCJMPBUF
+  SCM_SETJMPBUF (scm_rootcont, NULL);
+#endif
+#ifdef DEBUG_EXTENSIONS
+  scm_last_debug_frame = SCM_DFRAME (old_rootcont);
+#endif
+  scm_rootcont = old_rootcont;
+  SCM_REALLOW_INTS;
+  scm_ints_disabled = old_ints_disabled;
+
+  /* Now run the real handler iff the body did a throw. */
+  if (my_handler_data.run_handler)
+    return handler (handler_data, my_handler_data.tag, my_handler_data.args);
+  else
+    return answer;
+}
+
+
 #ifndef HAVE_SCM_PARSE_PATH
 SCM
 scm_parse_path (char *path, SCM tail)
