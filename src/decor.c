@@ -24,9 +24,7 @@
 #include "color.h"
 #include "font.h"
 #include "face.h"
-
-ScwmDecor *last_decor = NULL;
-ScwmDecor *cur_decor = NULL;
+#include "borders.h"
 
 size_t 
 free_decor(SCM obj)

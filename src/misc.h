@@ -111,19 +111,22 @@ extern char NoResource[];
 typedef enum scwm_msg_levels_tag { DBG = -1, INFO, WARN, ERR } scwm_msg_levels;
 void scwm_msg(scwm_msg_levels type, char *id, char *msg,...);
 
-unsigned long LookInList(name_list *, char *, XClassHint *,
-				char **value,
-				char **mini_value,
-				char **decor,
-				int *Desk, int *bw, int *nobw,
-				char **forecolor, char **backcolor,
-				unsigned long *buttons, int *IconBox,
-				int *BoxFillMethod);
-void MoveOutline(Window, int, int, int, int);
-void DoResize(int, int, ScwmWindow *);
-void DisplaySize(ScwmWindow *, int, int, Bool);
-void SetupFrame(ScwmWindow *, int, int, int, int, Bool);
-void CreateGCs(void);
+void free_window_names(ScwmWindow * tmp, Bool nukename, Bool nukeicon);
+void Destroy(ScwmWindow *);
+int flush_expose(Window w);
+void CoerceEnterNotifyOnCurrentWindow();
+void RestoreWithdrawnLocation(ScwmWindow *, Bool);
+Bool StashEventTime(XEvent * ev);
+Bool GrabEm(int);
+void UngrabEm(void);
+void KeepOnTop(void);
+void UnmapIt(ScwmWindow * t);
+void RaiseWindow(ScwmWindow * t);
+void LowerWindow(ScwmWindow * t);
+void HandleHardFocus(ScwmWindow * t);
+
+/* FIXGJB: BELOW ARE NOT DEFINED IN misc.h */
+
 void InstallWindowColormaps(ScwmWindow *);
 void InstallRootColormap(void);
 void UninstallRootColormap(void);
@@ -153,42 +156,23 @@ void HandlePropertyNotify(void);
 void HandleKeyPress(void);
 void HandleVisibilityNotify(void);
 void HandleColormapNotify(void);
-void SetTitleBar(ScwmWindow *, Bool, Bool);
-void RestoreWithdrawnLocation(ScwmWindow *, Bool);
-void Destroy(ScwmWindow *);
 void GetGravityOffsets(ScwmWindow *, int *, int *);
 void MoveViewport(int newx, int newy, Bool);
 ScwmWindow *AddWindow(Window w);
 int MappedNotOverride(Window w);
-void GrabButtons(ScwmWindow *);
 void GrabKeys(ScwmWindow *);
-void GrabButtonWithModifiers(int button, 
-				    int modifier, ScwmWindow *sw);
-void GetWindowSizeHints(ScwmWindow *);
 void SwitchPages(Bool, Bool);
 void NextPage(void);
 void PrevPage(void);
 
-inline void RelieveWindow(ScwmWindow *, Window,
-				 int, int, int, int, GC, GC, int);
-inline void RelieveWindowHH(ScwmWindow *, Window,
-				   int, int, int, int, GC, GC, int, int);
-void RelieveParts(ScwmWindow * t, int i, GC hor, GC vert);
-void RaiseWindow(ScwmWindow * t);
-void LowerWindow(ScwmWindow * t);
-Bool GrabEm(int);
-void UngrabEm(void);
 MenuRoot *NewMenuRoot(char *name, int function_or_popup);
 void AddToMenu(MenuRoot *, char *, char *);
 void MakeMenu(MenuRoot *);
 void CaptureAllWindows(void);
 void SetTimer(int);
-int flush_expose(Window w);
 void RaiseThisWindow(int);
 int GetContext(ScwmWindow *, XEvent *, Window * dummy);
-void ConstrainSize(ScwmWindow *, int *, int *);
 void HandlePaging(int, int, int *, int *, int *, int *, Bool);
-void SetShape(ScwmWindow *, int);
 void SetFocus(Window, ScwmWindow *, Bool FocusByMouse);
 void CheckAndSetFocus(void);
 void initModules(void);
@@ -203,47 +187,30 @@ void GetMwmHints(ScwmWindow * t);
 void SelectDecor(ScwmWindow *, unsigned long, int, int);
 Bool PopUpMenu(MenuRoot *, int, int);
 int DeferExecution(XEvent *, Window *, ScwmWindow **, unsigned long *, int, int);
-void SetBorderX(ScwmWindow *, Bool, Bool, Bool, Window, Bool);
 
-void SetBorder(ScwmWindow *, Bool, Bool, Bool, Window);
 void SetStickyProp(ScwmWindow *, int, int, int);
 void SetClientProp(ScwmWindow *);
 void PopDownMenu(void);
-void KeepOnTop(void);
 void show_panner(void);
 void WaitForButtonsUp(void);
 void FocusOn(ScwmWindow * t, int DeIconifyOnly);
 void WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit);
 Bool PlaceWindow(ScwmWindow * tmp_win, unsigned long flags, int Desk);
-void free_window_names(ScwmWindow * tmp, Bool nukename, Bool nukeicon);
 
 int do_menu(MenuRoot * menu, int style);
 int check_allowed_function(MenuItem * mi);
 int check_allowed_function2(int function, ScwmWindow * t);
 void ReInstallActiveColormap(void);
-Pixel GetShadow(Pixel);
-Pixel GetHilite(Pixel);
 void MapIt(ScwmWindow * t);
-void UnmapIt(ScwmWindow * t);
 void do_save(void);
 void checkPanFrames(void);
 void raisePanFrames(void);
 void initPanFrames(void);
-Bool StashEventTime(XEvent * ev);
 int XNextEvent_orTimeout(Display * dpy, XEvent * event);
 
 void changeDesks(int val1, int val2);
 
-Pixel GetColor(char *);
-
-Pixel *AllocLinearGradient(char *s_from, char *s_to, int npixels);
-Pixel *AllocNonlinearGradient(char *s_colors[], int clen[],
-			      int nsegs, int npixels);
-
-void nocolor(char *note, char *name);
 void MakeMenus(void);
-void HandleHardFocus(ScwmWindow * t);
-void CoerceEnterNotifyOnCurrentWindow();
 
 #ifdef BROKEN_SUN_HEADERS
 #include "sun_headers.h"

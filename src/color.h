@@ -1,4 +1,6 @@
-
+/* $Id$ 
+ * color.h
+ */
 
 
 #ifndef COLOR_H

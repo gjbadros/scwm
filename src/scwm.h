@@ -43,6 +43,7 @@
 #include <X11/Intrinsic.h> 
 #include <guile/gh.h>
 #include "Picture.h"
+#include "color.h"
 
 #ifndef WithdrawnState
 #define WithdrawnState 0

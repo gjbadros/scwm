@@ -30,6 +30,7 @@
 #include "screen.h"
 #include "Picture.h"
 #include "icons.h"
+#include "borders.h"
 
 #include <X11/extensions/shape.h>
 

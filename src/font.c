@@ -26,10 +26,7 @@
 #include "font.h"
 #include "util.h"
 #include "icons.h"
-
-extern ScwmDecor *last_decor, *cur_decor;
-
-
+#include "decor.h"
 
 long scm_tc16_scwm_font;
 SCM window_font = SCM_UNDEFINED, icon_font = SCM_UNDEFINED, menu_font = SCM_UNDEFINED;

@@ -4,10 +4,13 @@
 #define DECOR_H
 
 #undef EXTERN
+#undef EXTERN_SET
 #ifdef DECOR_IMPLEMENTATION
 #define EXTERN
+#define EXTERN_SET(x,y) x = y
 #else
 #define EXTERN extern
+#define EXTERN_SET(x,y) extern x
 #endif
 
 #include <libguile.h>
@@ -18,6 +21,9 @@ typedef struct {
   ScwmDecor *sd;
   int refcnt;
 } scwm_decor;
+
+EXTERN_SET(ScwmDecor *last_decor,NULL);
+EXTERN_SET(ScwmDecor *cur_decor,NULL);
 
 EXTERN long scm_tc16_scwm_decor;
 

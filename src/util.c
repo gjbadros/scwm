@@ -16,6 +16,7 @@
 #include <config.h>
 #include "scwm.h"
 #include "screen.h"
+#include "borders.h"
 
 void 
 redraw_titlebars(ScwmDecor * fl, int extra_height)
@@ -52,9 +53,6 @@ redraw_titlebars(ScwmDecor * fl, int extra_height)
 void
 redraw_borders(ScwmDecor *fl) 
 {
-#ifdef FIXGJB_UNUSED
-  int x, w, y, h;        /* FIXGJB: all unused... why? */
-#endif
   ScwmWindow *tmp, *hi;
 
   tmp = Scr.ScwmRoot.next;

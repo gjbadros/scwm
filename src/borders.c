@@ -24,23 +24,12 @@
 #include "misc.h"
 #include "icons.h"
 #include "screen.h"
+#include "borders.h"
 #include <X11/extensions/shape.h>
 
-void DrawButton(ScwmWindow * t,
-		Window win,
-		int W,
-		int H,
-		ButtonFace * bf,
-		GC ReliefGC, GC ShadowGC,
-		Boolean inverted,
-		int stateflags);
-
-void DrawLinePattern(Window win,
-		     GC ReliefGC,
-		     GC ShadowGC,
-		     struct vector_coords *coords,
-		     int w, int h);
-
+extern Window PressedW;
+XGCValues Globalgcv;
+unsigned long Globalgcm;
 
 /* macro rules to get button state */
 #define GetButtonState(window)						\
@@ -57,24 +46,480 @@ void DrawLinePattern(Window win,
         }								\
       }
 
-extern Window PressedW;
-XGCValues Globalgcv;
-unsigned long Globalgcm;
+/****************************************************************************
+ *
+ *  Draws a little pattern within a window (more complex)
+ *
+ ****************************************************************************/
+static void 
+DrawLinePattern(Window win,
+		GC ReliefGC,
+		GC ShadowGC,
+		struct vector_coords *coords,
+		int w, int h)
+{
+  int i = 1;
+
+  for (; i < coords->num; ++i) {
+    XDrawLine(dpy, win,
+	      coords->line_style[i] ? ReliefGC : ShadowGC,
+	      w * coords->x[i - 1] / 100,
+	      h * coords->y[i - 1] / 100,
+	      w * coords->x[i] / 100,
+	      h * coords->y[i] / 100);
+  }
+}
 
 /****************************************************************************
  *
- * Redraws the windows borders
+ *  Redraws buttons (veliaa@rpi.edu)
  *
  ****************************************************************************/
-void SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
-		Window expose_win, Bool really_force);
+static void 
+DrawButton(ScwmWindow * t, Window win, int w, int h,
+	   ButtonFace * bf, GC ReliefGC, GC ShadowGC,
+	   Boolean inverted, int stateflags)
+{
+  register int type = bf->style & ButtonFaceTypeMask;
 
-inline void 
+  Picture *p;
+  int border = 0;
+  int width, height, x, y;
+
+
+  switch (type) {
+  case SimpleButton:
+    break;
+
+  case SolidButton:
+    XSetWindowBackground(dpy, win, bf->u.back);
+    flush_expose(win);
+    XClearWindow(dpy, win);
+    break;
+
+  case VectorButton:
+    if ((t->flags & MWMButtons)
+	&& (stateflags & MWMButton)
+	&& ((t->flags & MAXIMIZED) || (SCM_NFALSEP
+				       (scm_object_property
+					(t->schwin,
+					 gh_symbol2scm("maximized"))))))
+      DrawLinePattern(win,
+		      ShadowGC, ReliefGC,
+		      &bf->vector,
+		      w, h);
+    else
+      DrawLinePattern(win,
+		      ReliefGC, ShadowGC,
+		      &bf->vector,
+		      w, h);
+    break;
+
+  case MiniIconButton:
+  case PixmapButton:
+    if (type == PixmapButton)
+      p = bf->u.p;
+    else {
+      if (!t->picMiniIcon)
+	break;
+      p = t->picMiniIcon;
+    }
+    if (bf->style & FlatButton)
+      border = 0;
+    else
+      border = t->flags & MWMBorders ? 1 : 2;
+    width = w - border * 2;
+    height = h - border * 2;
+
+    x = border;
+    if (bf->style & HOffCenter) {
+      if (bf->style & HRight)
+	x += (int) (width - p->width);
+    } else
+      x += (int) (width - p->width) / 2;
+
+    y = border;
+    if (bf->style & VOffCenter) {
+      if (bf->style & VBottom)
+	y += (int) (height - p->height);
+    } else
+      y += (int) (height - p->height) / 2;
+
+    if (x < border)
+      x = border;
+    if (y < border)
+      y = border;
+    if (width > p->width)
+      width = p->width;
+    if (height > p->height)
+      height = p->height;
+    if (width > w - x - border)
+      width = w - x - border;
+    if (height > h - y - border)
+      height = h - y - border;
+
+    XSetClipMask(dpy, Scr.TransMaskGC, p->mask);
+    XSetClipOrigin(dpy, Scr.TransMaskGC, x, y);
+    XCopyArea(dpy, p->picture, win, Scr.TransMaskGC,
+	      0, 0, width, height, x, y);
+    break;
+
+  case TiledPixmapButton:
+    XSetWindowBackgroundPixmap(dpy, win, bf->u.p->picture);
+    flush_expose(win);
+    XClearWindow(dpy, win);
+    break;
+
+  case HGradButton:
+  case VGradButton:
+    {
+      XRectangle bounds;
+
+      bounds.x = bounds.y = 0;
+      bounds.width = w;
+      bounds.height = h;
+      flush_expose(win);
+
+      XSetClipMask(dpy, Scr.TransMaskGC, None);
+      if (type == HGradButton) {
+	register int i = 0, dw = bounds.width
+	/ bf->u.grad.npixels + 1;
+
+	while (i < bf->u.grad.npixels) {
+	  unsigned short x = i * bounds.width / bf->u.grad.npixels;
+
+	  XSetForeground(dpy, Scr.TransMaskGC, bf->u.grad.pixels[i++]);
+	  XFillRectangle(dpy, win, Scr.TransMaskGC,
+			 bounds.x + x, bounds.y,
+			 dw, bounds.height);
+	}
+      } else {
+	register int i = 0, dh = bounds.height
+	/ bf->u.grad.npixels + 1;
+
+	while (i < bf->u.grad.npixels) {
+	  unsigned short y = i * bounds.height / bf->u.grad.npixels;
+
+	  XSetForeground(dpy, Scr.TransMaskGC, bf->u.grad.pixels[i++]);
+	  XFillRectangle(dpy, win, Scr.TransMaskGC,
+			 bounds.x, bounds.y + y,
+			 bounds.width, dh);
+	}
+      }
+    }
+    break;
+
+  default:
+    scwm_msg(ERR, "DrawButton", "unknown button type");
+    break;
+  }
+}
+
+/****************************************************************************
+ *
+ *  Draws the relief pattern around a window for HiddenHandle borders
+ *
+ *  (veliaa@rpi.edu)
+ *
+ ****************************************************************************/
+static void 
+RelieveWindowHH(ScwmWindow * t, Window win,
+		int x, int y, int w, int h,
+		GC ReliefGC, GC ShadowGC,
+		int draw, int hilite)
+{
+  XSegment seg[4];
+  int i = 0;
+  int edge = 0, a = 0, b = 0;
+
+  if (win == t->sides[0]) {
+    edge = 5;
+    b = 1;
+  } else if (win == t->sides[1]) {
+    a = 1;
+    edge = 6;
+  } else if (win == t->sides[2]) {
+    edge = 7;
+    b = 1;
+  } else if (win == t->sides[3]) {
+    edge = 8;
+    a = 1;
+  } else if (win == t->corners[0])
+    edge = 1;
+  else if (win == t->corners[1])
+    edge = 2;
+  else if (win == t->corners[2])
+    edge = 3;
+  else if (win == t->corners[3])
+    edge = 4;
+
+  if (draw & TOP_HILITE) {
+    seg[i].x1 = x;
+    seg[i].y1 = y;
+    seg[i].x2 = w + x - 1;
+    seg[i++].y2 = y;
+
+    if (((t->boundary_width > 2) || (edge == 0)) &&
+	((t->boundary_width > 3) || (edge < 1)) &&
+	(!(t->flags & MWMBorders) ||
+     (((edge == 0) || (t->boundary_width > 3)) && (hilite & TOP_HILITE)))) {
+      seg[i].x1 = x + ((edge == 2) || b ? 0 : 1);
+      seg[i].y1 = y + 1;
+      seg[i].x2 = x + w - 1 - ((edge == 1) || b ? 0 : 1);
+      seg[i++].y2 = y + 1;
+    }
+  }
+  if (draw & LEFT_HILITE) {
+    seg[i].x1 = x;
+    seg[i].y1 = y;
+    seg[i].x2 = x;
+    seg[i++].y2 = h + y - 1;
+
+    if (((t->boundary_width > 2) || (edge == 0)) &&
+	((t->boundary_width > 3) || (edge < 1)) &&
+	(!(t->flags & MWMBorders) ||
+    (((edge == 0) || (t->boundary_width > 3)) && (hilite & LEFT_HILITE)))) {
+      seg[i].x1 = x + 1;
+      seg[i].y1 = y + ((edge == 3) || a ? 0 : 1);
+      seg[i].x2 = x + 1;
+      seg[i++].y2 = y + h - 1 - ((edge == 1) || a ? 0 : 1);
+    }
+  }
+  XDrawSegments(dpy, win, ReliefGC, seg, i);
+
+  i = 0;
+
+  if (draw & BOTTOM_HILITE) {
+    seg[i].x1 = x;
+    seg[i].y1 = y + h - 1;
+    seg[i].x2 = w + x - 1;
+    seg[i++].y2 = y + h - 1;
+
+    if (((t->boundary_width > 2) || (edge == 0)) &&
+	(!(t->flags & MWMBorders) ||
+	 (((edge == 0) || (t->boundary_width > 3)) && (hilite & BOTTOM_HILITE)))) {
+      seg[i].x1 = x + (b || (edge == 4) ? 0 : 1);
+      seg[i].y1 = y + h - 2;
+      seg[i].x2 = x + w - ((edge == 3) ? 0 : 1);
+      seg[i++].y2 = y + h - 2;
+    }
+  }
+  if (draw & RIGHT_HILITE) {
+    seg[i].x1 = x + w - 1;
+    seg[i].y1 = y;
+    seg[i].x2 = x + w - 1;
+    seg[i++].y2 = y + h - 1;
+
+    if (((t->boundary_width > 2) || (edge == 0)) &&
+	(!(t->flags & MWMBorders) ||
+    (((edge == 0) || (t->boundary_width > 3)) && (hilite & RIGHT_HILITE)))) {
+      seg[i].x1 = x + w - 2;
+      seg[i].y1 = y + (a || (edge == 4) ? 0 : 1);
+      seg[i].x2 = x + w - 2;
+      seg[i++].y2 = y + h - 1 - ((edge == 2) || a ? 0 : 1);
+    }
+  }
+  XDrawSegments(dpy, win, ShadowGC, seg, i);
+}
+
+static void 
+RelieveParts(ScwmWindow * t, int i, GC hor, GC vert)
+{
+  XSegment seg[2];
+  int n = 0, hh = i & HH_HILITE;
+
+  i &= FULL_HILITE;
+
+  if ((t->flags & MWMBorders) || (t->boundary_width < 3)) {
+    switch (i) {
+    case 0:
+      seg[0].x1 = t->boundary_width - 1;
+      seg[0].x2 = t->corner_width;
+      seg[0].y1 = t->boundary_width - 1;
+      seg[0].y2 = t->boundary_width - 1;
+      n = 1;
+      break;
+    case 1:
+      seg[0].x1 = 0;
+      seg[0].x2 = t->corner_width - t->boundary_width /* -1 */ ;
+      seg[0].y1 = t->boundary_width - 1;
+      seg[0].y2 = t->boundary_width - 1;
+      n = 1;
+      break;
+    case 2:
+      seg[0].x1 = t->boundary_width - 1;
+      seg[0].x2 = t->corner_width - (hh ? 1 : 2);
+      seg[0].y1 = t->corner_width - t->boundary_width + t->bw;
+      seg[0].y2 = t->corner_width - t->boundary_width + t->bw;
+      n = 1;
+      break;
+    case 3:
+      seg[0].x1 = 0;
+      seg[0].x2 = t->corner_width - t->boundary_width;
+      seg[0].y1 = t->corner_width - t->boundary_width + t->bw;
+      seg[0].y2 = t->corner_width - t->boundary_width + t->bw;
+      n = 1;
+      break;
+    }
+    XDrawSegments(dpy, t->corners[i], hor, seg, n);
+    switch (i) {
+    case 0:
+      seg[0].y1 = t->boundary_width - 1;
+      seg[0].y2 = t->corner_width;
+      seg[0].x1 = t->boundary_width - 1;
+      seg[0].x2 = t->boundary_width - 1;
+      n = 1;
+      break;
+    case 1:
+      seg[0].y1 = t->boundary_width - 1;
+      seg[0].y2 = t->corner_width - (hh ? 0 : 2);
+      seg[0].x1 = t->corner_width - t->boundary_width;
+      seg[0].x2 = t->corner_width - t->boundary_width;
+      n = 1;
+      break;
+    case 2:
+      seg[0].y1 = 0;
+      seg[0].y2 = t->corner_width - t->boundary_width;
+      seg[0].x1 = t->boundary_width - 1;
+      seg[0].x2 = t->boundary_width - 1;
+      n = 1;
+      break;
+    case 3:
+      seg[0].y1 = 0;
+      seg[0].y2 = t->corner_width - t->boundary_width + t->bw;
+      seg[0].x1 = t->corner_width - t->boundary_width;
+      seg[0].x2 = t->corner_width - t->boundary_width;
+      n = 1;
+      break;
+    }
+    XDrawSegments(dpy, t->corners[i], vert, seg, 1);
+  } else {
+    switch (i) {
+    case 0:
+      seg[0].x1 = t->boundary_width - 2;
+      seg[0].x2 = t->corner_width;
+      seg[0].y1 = t->boundary_width - 2;
+      seg[0].y2 = t->boundary_width - 2;
+
+      seg[1].x1 = t->boundary_width - 2;
+      seg[1].x2 = t->corner_width;
+      seg[1].y1 = t->boundary_width - 1;
+      seg[1].y2 = t->boundary_width - 1;
+      n = 2;
+      break;
+    case 1:
+      seg[0].x1 = (hh ? 0 : 1);
+      seg[0].x2 = t->corner_width - t->boundary_width;
+      seg[0].y1 = t->boundary_width - 2;
+      seg[0].y2 = t->boundary_width - 2;
+
+      seg[1].x1 = 0;
+      seg[1].x2 = t->corner_width - t->boundary_width - 1;
+      seg[1].y1 = t->boundary_width - 1;
+      seg[1].y2 = t->boundary_width - 1;
+      n = 2;
+      break;
+    case 2:
+      seg[0].x1 = t->boundary_width - 1;
+      seg[0].x2 = t->corner_width - (hh ? 1 : 2);
+      seg[0].y1 = t->corner_width - t->boundary_width + 1;
+      seg[0].y2 = t->corner_width - t->boundary_width + 1;
+      n = 1;
+      if (t->boundary_width > 3) {
+	seg[1].x1 = t->boundary_width - 2;
+	seg[1].x2 = t->corner_width - (hh ? 1 : 3);
+	seg[1].y1 = t->corner_width - t->boundary_width + 2;
+	seg[1].y2 = t->corner_width - t->boundary_width + 2;
+	n = 2;
+      }
+      break;
+    case 3:
+      seg[0].x1 = 0;
+      seg[0].x2 = t->corner_width - t->boundary_width;
+      seg[0].y1 = t->corner_width - t->boundary_width + 1;
+      seg[0].y2 = t->corner_width - t->boundary_width + 1;
+      n = 1;
+      if (t->boundary_width > 3) {
+	seg[0].x2 = t->corner_width - t->boundary_width + 1;
+
+	seg[1].x1 = 0;
+	seg[1].x2 = t->corner_width - t->boundary_width + 1;
+	seg[1].y1 = t->corner_width - t->boundary_width + 2;
+	seg[1].y2 = t->corner_width - t->boundary_width + 2;
+	n = 2;
+      }
+      break;
+    }
+    XDrawSegments(dpy, t->corners[i], hor, seg, n);
+    switch (i) {
+    case 0:
+      seg[0].y1 = t->boundary_width - 2;
+      seg[0].y2 = t->corner_width;
+      seg[0].x1 = t->boundary_width - 2;
+      seg[0].x2 = t->boundary_width - 2;
+
+      seg[1].y1 = t->boundary_width - 2;
+      seg[1].y2 = t->corner_width;
+      seg[1].x1 = t->boundary_width - 1;
+      seg[1].x2 = t->boundary_width - 1;
+      n = 2;
+      break;
+    case 1:
+      seg[0].y1 = t->boundary_width - 1;
+      seg[0].y2 = t->corner_width - (hh ? 1 : 2);
+      seg[0].x1 = t->corner_width - t->boundary_width;
+      seg[0].x2 = t->corner_width - t->boundary_width;
+      n = 1;
+      if (t->boundary_width > 3) {
+	seg[1].y1 = t->boundary_width - 2;
+	seg[1].y2 = t->corner_width - (hh ? 1 : 3);
+	seg[1].x1 = t->corner_width - t->boundary_width + 1;
+	seg[1].x2 = t->corner_width - t->boundary_width + 1;
+	n = 2;
+      }
+      break;
+    case 2:
+      seg[0].y1 = (hh ? 0 : 1);
+      seg[0].y2 = t->corner_width - t->boundary_width + 1;
+      seg[0].x1 = t->boundary_width - 2;
+      seg[0].x2 = t->boundary_width - 2;
+      n = 1;
+
+      if (t->boundary_width > 3) {
+	seg[1].y1 = 0;
+	seg[1].y2 = t->corner_width - t->boundary_width;
+	seg[1].x1 = t->boundary_width - 1;
+	seg[1].x2 = t->boundary_width - 1;
+      }
+      break;
+    case 3:
+      seg[0].y1 = 0;
+      seg[0].y2 = t->corner_width - t->boundary_width + 1;
+      seg[0].x1 = t->corner_width - t->boundary_width;
+      seg[0].x2 = t->corner_width - t->boundary_width;
+      n = 1;
+
+      if (t->boundary_width > 3) {
+	seg[0].y2 = t->corner_width - t->boundary_width + 2;
+	seg[1].y1 = 0;
+	seg[1].y2 = t->corner_width - t->boundary_width + 2;
+	seg[1].x1 = t->corner_width - t->boundary_width + 1;
+	seg[1].x2 = t->corner_width - t->boundary_width + 1;
+	n = 2;
+      }
+      break;
+    }
+    XDrawSegments(dpy, t->corners[i], vert, seg, n);
+  }
+}
+
+void
 SetBorder(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 	  Window expose_win)
 {
   SetBorderX(t, onoroff, force, Mapped, expose_win, False);
 }
+
 
 void 
 SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
@@ -472,150 +917,6 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 }
 
 
-/****************************************************************************
- *
- *  Redraws buttons (veliaa@rpi.edu)
- *
- ****************************************************************************/
-void 
-DrawButton(ScwmWindow * t, Window win, int w, int h,
-	   ButtonFace * bf, GC ReliefGC, GC ShadowGC,
-	   Boolean inverted, int stateflags)
-{
-  register int type = bf->style & ButtonFaceTypeMask;
-
-  Picture *p;
-  int border = 0;
-  int width, height, x, y;
-
-
-  switch (type) {
-  case SimpleButton:
-    break;
-
-  case SolidButton:
-    XSetWindowBackground(dpy, win, bf->u.back);
-    flush_expose(win);
-    XClearWindow(dpy, win);
-    break;
-
-  case VectorButton:
-    if ((t->flags & MWMButtons)
-	&& (stateflags & MWMButton)
-	&& ((t->flags & MAXIMIZED) || (SCM_NFALSEP
-				       (scm_object_property
-					(t->schwin,
-					 gh_symbol2scm("maximized"))))))
-      DrawLinePattern(win,
-		      ShadowGC, ReliefGC,
-		      &bf->vector,
-		      w, h);
-    else
-      DrawLinePattern(win,
-		      ReliefGC, ShadowGC,
-		      &bf->vector,
-		      w, h);
-    break;
-
-  case MiniIconButton:
-  case PixmapButton:
-    if (type == PixmapButton)
-      p = bf->u.p;
-    else {
-      if (!t->picMiniIcon)
-	break;
-      p = t->picMiniIcon;
-    }
-    if (bf->style & FlatButton)
-      border = 0;
-    else
-      border = t->flags & MWMBorders ? 1 : 2;
-    width = w - border * 2;
-    height = h - border * 2;
-
-    x = border;
-    if (bf->style & HOffCenter) {
-      if (bf->style & HRight)
-	x += (int) (width - p->width);
-    } else
-      x += (int) (width - p->width) / 2;
-
-    y = border;
-    if (bf->style & VOffCenter) {
-      if (bf->style & VBottom)
-	y += (int) (height - p->height);
-    } else
-      y += (int) (height - p->height) / 2;
-
-    if (x < border)
-      x = border;
-    if (y < border)
-      y = border;
-    if (width > p->width)
-      width = p->width;
-    if (height > p->height)
-      height = p->height;
-    if (width > w - x - border)
-      width = w - x - border;
-    if (height > h - y - border)
-      height = h - y - border;
-
-    XSetClipMask(dpy, Scr.TransMaskGC, p->mask);
-    XSetClipOrigin(dpy, Scr.TransMaskGC, x, y);
-    XCopyArea(dpy, p->picture, win, Scr.TransMaskGC,
-	      0, 0, width, height, x, y);
-    break;
-
-  case TiledPixmapButton:
-    XSetWindowBackgroundPixmap(dpy, win, bf->u.p->picture);
-    flush_expose(win);
-    XClearWindow(dpy, win);
-    break;
-
-  case HGradButton:
-  case VGradButton:
-    {
-      XRectangle bounds;
-
-      bounds.x = bounds.y = 0;
-      bounds.width = w;
-      bounds.height = h;
-      flush_expose(win);
-
-      XSetClipMask(dpy, Scr.TransMaskGC, None);
-      if (type == HGradButton) {
-	register int i = 0, dw = bounds.width
-	/ bf->u.grad.npixels + 1;
-
-	while (i < bf->u.grad.npixels) {
-	  unsigned short x = i * bounds.width / bf->u.grad.npixels;
-
-	  XSetForeground(dpy, Scr.TransMaskGC, bf->u.grad.pixels[i++]);
-	  XFillRectangle(dpy, win, Scr.TransMaskGC,
-			 bounds.x + x, bounds.y,
-			 dw, bounds.height);
-	}
-      } else {
-	register int i = 0, dh = bounds.height
-	/ bf->u.grad.npixels + 1;
-
-	while (i < bf->u.grad.npixels) {
-	  unsigned short y = i * bounds.height / bf->u.grad.npixels;
-
-	  XSetForeground(dpy, Scr.TransMaskGC, bf->u.grad.pixels[i++]);
-	  XFillRectangle(dpy, win, Scr.TransMaskGC,
-			 bounds.x, bounds.y + y,
-			 bounds.width, dh);
-	}
-      }
-    }
-    break;
-
-  default:
-    scwm_msg(ERR, "DrawButton", "unknown button type");
-    break;
-  }
-}
 
 /****************************************************************************
  *
@@ -775,7 +1076,7 @@ SetTitleBar(ScwmWindow * t, Bool onoroff, Bool NewTitle)
  *  Draws the relief pattern around a window
  *
  ****************************************************************************/
-inline void 
+void 
 RelieveWindow(ScwmWindow * t, Window win,
 	      int x, int y, int w, int h,
 	      GC ReliefGC, GC ShadowGC, int hilite)
@@ -858,327 +1159,8 @@ RelieveWindow(ScwmWindow * t, Window win,
   XDrawSegments(dpy, win, ShadowGC, seg, i);
 }
 
-/****************************************************************************
- *
- *  Draws the relief pattern around a window for HiddenHandle borders
- *
- *  (veliaa@rpi.edu)
- *
- ****************************************************************************/
-inline void 
-RelieveWindowHH(ScwmWindow * t, Window win,
-		int x, int y, int w, int h,
-		GC ReliefGC, GC ShadowGC,
-		int draw, int hilite)
-{
-  XSegment seg[4];
-  int i = 0;
-  int edge = 0, a = 0, b = 0;
 
-  if (win == t->sides[0]) {
-    edge = 5;
-    b = 1;
-  } else if (win == t->sides[1]) {
-    a = 1;
-    edge = 6;
-  } else if (win == t->sides[2]) {
-    edge = 7;
-    b = 1;
-  } else if (win == t->sides[3]) {
-    edge = 8;
-    a = 1;
-  } else if (win == t->corners[0])
-    edge = 1;
-  else if (win == t->corners[1])
-    edge = 2;
-  else if (win == t->corners[2])
-    edge = 3;
-  else if (win == t->corners[3])
-    edge = 4;
 
-  if (draw & TOP_HILITE) {
-    seg[i].x1 = x;
-    seg[i].y1 = y;
-    seg[i].x2 = w + x - 1;
-    seg[i++].y2 = y;
-
-    if (((t->boundary_width > 2) || (edge == 0)) &&
-	((t->boundary_width > 3) || (edge < 1)) &&
-	(!(t->flags & MWMBorders) ||
-     (((edge == 0) || (t->boundary_width > 3)) && (hilite & TOP_HILITE)))) {
-      seg[i].x1 = x + ((edge == 2) || b ? 0 : 1);
-      seg[i].y1 = y + 1;
-      seg[i].x2 = x + w - 1 - ((edge == 1) || b ? 0 : 1);
-      seg[i++].y2 = y + 1;
-    }
-  }
-  if (draw & LEFT_HILITE) {
-    seg[i].x1 = x;
-    seg[i].y1 = y;
-    seg[i].x2 = x;
-    seg[i++].y2 = h + y - 1;
-
-    if (((t->boundary_width > 2) || (edge == 0)) &&
-	((t->boundary_width > 3) || (edge < 1)) &&
-	(!(t->flags & MWMBorders) ||
-    (((edge == 0) || (t->boundary_width > 3)) && (hilite & LEFT_HILITE)))) {
-      seg[i].x1 = x + 1;
-      seg[i].y1 = y + ((edge == 3) || a ? 0 : 1);
-      seg[i].x2 = x + 1;
-      seg[i++].y2 = y + h - 1 - ((edge == 1) || a ? 0 : 1);
-    }
-  }
-  XDrawSegments(dpy, win, ReliefGC, seg, i);
-
-  i = 0;
-
-  if (draw & BOTTOM_HILITE) {
-    seg[i].x1 = x;
-    seg[i].y1 = y + h - 1;
-    seg[i].x2 = w + x - 1;
-    seg[i++].y2 = y + h - 1;
-
-    if (((t->boundary_width > 2) || (edge == 0)) &&
-	(!(t->flags & MWMBorders) ||
-	 (((edge == 0) || (t->boundary_width > 3)) && (hilite & BOTTOM_HILITE)))) {
-      seg[i].x1 = x + (b || (edge == 4) ? 0 : 1);
-      seg[i].y1 = y + h - 2;
-      seg[i].x2 = x + w - ((edge == 3) ? 0 : 1);
-      seg[i++].y2 = y + h - 2;
-    }
-  }
-  if (draw & RIGHT_HILITE) {
-    seg[i].x1 = x + w - 1;
-    seg[i].y1 = y;
-    seg[i].x2 = x + w - 1;
-    seg[i++].y2 = y + h - 1;
-
-    if (((t->boundary_width > 2) || (edge == 0)) &&
-	(!(t->flags & MWMBorders) ||
-    (((edge == 0) || (t->boundary_width > 3)) && (hilite & RIGHT_HILITE)))) {
-      seg[i].x1 = x + w - 2;
-      seg[i].y1 = y + (a || (edge == 4) ? 0 : 1);
-      seg[i].x2 = x + w - 2;
-      seg[i++].y2 = y + h - 1 - ((edge == 2) || a ? 0 : 1);
-    }
-  }
-  XDrawSegments(dpy, win, ShadowGC, seg, i);
-}
-
-void 
-RelieveParts(ScwmWindow * t, int i, GC hor, GC vert)
-{
-  XSegment seg[2];
-  int n = 0, hh = i & HH_HILITE;
-
-  i &= FULL_HILITE;
-
-  if ((t->flags & MWMBorders) || (t->boundary_width < 3)) {
-    switch (i) {
-    case 0:
-      seg[0].x1 = t->boundary_width - 1;
-      seg[0].x2 = t->corner_width;
-      seg[0].y1 = t->boundary_width - 1;
-      seg[0].y2 = t->boundary_width - 1;
-      n = 1;
-      break;
-    case 1:
-      seg[0].x1 = 0;
-      seg[0].x2 = t->corner_width - t->boundary_width /* -1 */ ;
-      seg[0].y1 = t->boundary_width - 1;
-      seg[0].y2 = t->boundary_width - 1;
-      n = 1;
-      break;
-    case 2:
-      seg[0].x1 = t->boundary_width - 1;
-      seg[0].x2 = t->corner_width - (hh ? 1 : 2);
-      seg[0].y1 = t->corner_width - t->boundary_width + t->bw;
-      seg[0].y2 = t->corner_width - t->boundary_width + t->bw;
-      n = 1;
-      break;
-    case 3:
-      seg[0].x1 = 0;
-      seg[0].x2 = t->corner_width - t->boundary_width;
-      seg[0].y1 = t->corner_width - t->boundary_width + t->bw;
-      seg[0].y2 = t->corner_width - t->boundary_width + t->bw;
-      n = 1;
-      break;
-    }
-    XDrawSegments(dpy, t->corners[i], hor, seg, n);
-    switch (i) {
-    case 0:
-      seg[0].y1 = t->boundary_width - 1;
-      seg[0].y2 = t->corner_width;
-      seg[0].x1 = t->boundary_width - 1;
-      seg[0].x2 = t->boundary_width - 1;
-      n = 1;
-      break;
-    case 1:
-      seg[0].y1 = t->boundary_width - 1;
-      seg[0].y2 = t->corner_width - (hh ? 0 : 2);
-      seg[0].x1 = t->corner_width - t->boundary_width;
-      seg[0].x2 = t->corner_width - t->boundary_width;
-      n = 1;
-      break;
-    case 2:
-      seg[0].y1 = 0;
-      seg[0].y2 = t->corner_width - t->boundary_width;
-      seg[0].x1 = t->boundary_width - 1;
-      seg[0].x2 = t->boundary_width - 1;
-      n = 1;
-      break;
-    case 3:
-      seg[0].y1 = 0;
-      seg[0].y2 = t->corner_width - t->boundary_width + t->bw;
-      seg[0].x1 = t->corner_width - t->boundary_width;
-      seg[0].x2 = t->corner_width - t->boundary_width;
-      n = 1;
-      break;
-    }
-    XDrawSegments(dpy, t->corners[i], vert, seg, 1);
-  } else {
-    switch (i) {
-    case 0:
-      seg[0].x1 = t->boundary_width - 2;
-      seg[0].x2 = t->corner_width;
-      seg[0].y1 = t->boundary_width - 2;
-      seg[0].y2 = t->boundary_width - 2;
-
-      seg[1].x1 = t->boundary_width - 2;
-      seg[1].x2 = t->corner_width;
-      seg[1].y1 = t->boundary_width - 1;
-      seg[1].y2 = t->boundary_width - 1;
-      n = 2;
-      break;
-    case 1:
-      seg[0].x1 = (hh ? 0 : 1);
-      seg[0].x2 = t->corner_width - t->boundary_width;
-      seg[0].y1 = t->boundary_width - 2;
-      seg[0].y2 = t->boundary_width - 2;
-
-      seg[1].x1 = 0;
-      seg[1].x2 = t->corner_width - t->boundary_width - 1;
-      seg[1].y1 = t->boundary_width - 1;
-      seg[1].y2 = t->boundary_width - 1;
-      n = 2;
-      break;
-    case 2:
-      seg[0].x1 = t->boundary_width - 1;
-      seg[0].x2 = t->corner_width - (hh ? 1 : 2);
-      seg[0].y1 = t->corner_width - t->boundary_width + 1;
-      seg[0].y2 = t->corner_width - t->boundary_width + 1;
-      n = 1;
-      if (t->boundary_width > 3) {
-	seg[1].x1 = t->boundary_width - 2;
-	seg[1].x2 = t->corner_width - (hh ? 1 : 3);
-	seg[1].y1 = t->corner_width - t->boundary_width + 2;
-	seg[1].y2 = t->corner_width - t->boundary_width + 2;
-	n = 2;
-      }
-      break;
-    case 3:
-      seg[0].x1 = 0;
-      seg[0].x2 = t->corner_width - t->boundary_width;
-      seg[0].y1 = t->corner_width - t->boundary_width + 1;
-      seg[0].y2 = t->corner_width - t->boundary_width + 1;
-      n = 1;
-      if (t->boundary_width > 3) {
-	seg[0].x2 = t->corner_width - t->boundary_width + 1;
-
-	seg[1].x1 = 0;
-	seg[1].x2 = t->corner_width - t->boundary_width + 1;
-	seg[1].y1 = t->corner_width - t->boundary_width + 2;
-	seg[1].y2 = t->corner_width - t->boundary_width + 2;
-	n = 2;
-      }
-      break;
-    }
-    XDrawSegments(dpy, t->corners[i], hor, seg, n);
-    switch (i) {
-    case 0:
-      seg[0].y1 = t->boundary_width - 2;
-      seg[0].y2 = t->corner_width;
-      seg[0].x1 = t->boundary_width - 2;
-      seg[0].x2 = t->boundary_width - 2;
-
-      seg[1].y1 = t->boundary_width - 2;
-      seg[1].y2 = t->corner_width;
-      seg[1].x1 = t->boundary_width - 1;
-      seg[1].x2 = t->boundary_width - 1;
-      n = 2;
-      break;
-    case 1:
-      seg[0].y1 = t->boundary_width - 1;
-      seg[0].y2 = t->corner_width - (hh ? 1 : 2);
-      seg[0].x1 = t->corner_width - t->boundary_width;
-      seg[0].x2 = t->corner_width - t->boundary_width;
-      n = 1;
-      if (t->boundary_width > 3) {
-	seg[1].y1 = t->boundary_width - 2;
-	seg[1].y2 = t->corner_width - (hh ? 1 : 3);
-	seg[1].x1 = t->corner_width - t->boundary_width + 1;
-	seg[1].x2 = t->corner_width - t->boundary_width + 1;
-	n = 2;
-      }
-      break;
-    case 2:
-      seg[0].y1 = (hh ? 0 : 1);
-      seg[0].y2 = t->corner_width - t->boundary_width + 1;
-      seg[0].x1 = t->boundary_width - 2;
-      seg[0].x2 = t->boundary_width - 2;
-      n = 1;
-
-      if (t->boundary_width > 3) {
-	seg[1].y1 = 0;
-	seg[1].y2 = t->corner_width - t->boundary_width;
-	seg[1].x1 = t->boundary_width - 1;
-	seg[1].x2 = t->boundary_width - 1;
-      }
-      break;
-    case 3:
-      seg[0].y1 = 0;
-      seg[0].y2 = t->corner_width - t->boundary_width + 1;
-      seg[0].x1 = t->corner_width - t->boundary_width;
-      seg[0].x2 = t->corner_width - t->boundary_width;
-      n = 1;
-
-      if (t->boundary_width > 3) {
-	seg[0].y2 = t->corner_width - t->boundary_width + 2;
-	seg[1].y1 = 0;
-	seg[1].y2 = t->corner_width - t->boundary_width + 2;
-	seg[1].x1 = t->corner_width - t->boundary_width + 1;
-	seg[1].x2 = t->corner_width - t->boundary_width + 1;
-	n = 2;
-      }
-      break;
-    }
-    XDrawSegments(dpy, t->corners[i], vert, seg, n);
-  }
-}
-
-/****************************************************************************
- *
- *  Draws a little pattern within a window (more complex)
- *
- ****************************************************************************/
-void 
-DrawLinePattern(Window win,
-		GC ReliefGC,
-		GC ShadowGC,
-		struct vector_coords *coords,
-		int w, int h)
-{
-  int i = 1;
-
-  for (; i < coords->num; ++i) {
-    XDrawLine(dpy, win,
-	      coords->line_style[i] ? ReliefGC : ShadowGC,
-	      w * coords->x[i - 1] / 100,
-	      h * coords->y[i - 1] / 100,
-	      w * coords->x[i] / 100,
-	      h * coords->y[i] / 100);
-  }
-}
 
 
 /***********************************************************************

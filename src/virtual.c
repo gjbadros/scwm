@@ -14,6 +14,8 @@
 #include "icons.h"
 #include "screen.h"
 #include "Grab.h"
+#include "resize.h"
+#include "borders.h"
 
 /***************************************************************************
  * 

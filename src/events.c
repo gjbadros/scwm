@@ -67,6 +67,9 @@
 #include "util.h"
 #include "binding.h"
 #include "Grab.h"
+#include "add_window.h"
+#include "borders.h"
+#include "resize.h"
 
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |

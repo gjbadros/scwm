@@ -27,13 +27,88 @@
 #include "menus.h"
 #include "misc.h"
 #include "screen.h"
-#include "../version.h"
+#include "colors.h"
 
 char *white = "white";
 char *black = "black";
 
 extern char *Hiback;
 extern char *Hifore;
+
+static void 
+nocolor(char *note, char *name)
+{
+  scwm_msg(ERR, "nocolor", "can't %s color %s", note, name);
+}
+
+/****************************************************************************
+ * 
+ * Allocates a linear color gradient (veliaa@rpi.edu)
+ *
+ ****************************************************************************/
+static Pixel *
+AllocLinearGradient(char *s_from, char *s_to, int npixels)
+{
+  Pixel *pixels;
+  XColor from, to, c;
+  int r, dr, g, dg, b, db;
+  int i = 0, got_all = 1;
+
+  if (npixels < 1)
+    return NULL;
+  if (!s_from || !XParseColor(dpy, Scr.ScwmRoot.attr.colormap, s_from, &from)) {
+    nocolor("parse", s_from);
+    return NULL;
+  }
+  if (!s_to || !XParseColor(dpy, Scr.ScwmRoot.attr.colormap, s_to, &to)) {
+    nocolor("parse", s_to);
+    return NULL;
+  }
+  c = from;
+  r = from.red;
+  dr = (to.red - from.red) / npixels;
+  g = from.green;
+  dg = (to.green - from.green) / npixels;
+  b = from.blue;
+  db = (to.blue - from.blue) / npixels;
+  pixels = (Pixel *) safemalloc(sizeof(Pixel) * npixels);
+  c.flags = DoRed | DoGreen | DoBlue;
+  for (; i < npixels; ++i) {
+    if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &c))
+      got_all = 0;
+    pixels[i] = c.pixel;
+    c.red = (unsigned short) (r += dr);
+    c.green = (unsigned short) (g += dg);
+    c.blue = (unsigned short) (b += db);
+  }
+  if (!got_all) {
+    char s[256];
+
+    sprintf(s, "color gradient %s to %s", s_from, s_to);
+    nocolor("alloc", s);
+  }
+  return pixels;
+}
+
+
+/****************************************************************************
+ * 
+ * Loads a single color
+ *
+ ****************************************************************************/
+static Pixel 
+GetColor(char *name)
+{
+  XColor color;
+
+  color.pixel = 0;
+  if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, name, &color)) {
+    nocolor("parse", name);
+  } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
+    nocolor("alloc", name);
+  }
+  return color.pixel;
+}
 
 /****************************************************************************
  *
@@ -134,24 +209,6 @@ CreateGCs(void)
 }
 
 
-/****************************************************************************
- * 
- * Loads a single color
- *
- ****************************************************************************/
-Pixel 
-GetColor(char *name)
-{
-  XColor color;
-
-  color.pixel = 0;
-  if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, name, &color)) {
-    nocolor("parse", name);
-  } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
-    nocolor("alloc", name);
-  }
-  return color.pixel;
-}
 
 /****************************************************************************
  * 
@@ -194,59 +251,4 @@ AllocNonlinearGradient(char *s_colors[], int clen[],
   for (i = curpixel; i < npixels; ++i)
     pixels[i] = pixels[i - 1];
   return pixels;
-}
-
-/****************************************************************************
- * 
- * Allocates a linear color gradient (veliaa@rpi.edu)
- *
- ****************************************************************************/
-Pixel *
-AllocLinearGradient(char *s_from, char *s_to, int npixels)
-{
-  Pixel *pixels;
-  XColor from, to, c;
-  int r, dr, g, dg, b, db;
-  int i = 0, got_all = 1;
-
-  if (npixels < 1)
-    return NULL;
-  if (!s_from || !XParseColor(dpy, Scr.ScwmRoot.attr.colormap, s_from, &from)) {
-    nocolor("parse", s_from);
-    return NULL;
-  }
-  if (!s_to || !XParseColor(dpy, Scr.ScwmRoot.attr.colormap, s_to, &to)) {
-    nocolor("parse", s_to);
-    return NULL;
-  }
-  c = from;
-  r = from.red;
-  dr = (to.red - from.red) / npixels;
-  g = from.green;
-  dg = (to.green - from.green) / npixels;
-  b = from.blue;
-  db = (to.blue - from.blue) / npixels;
-  pixels = (Pixel *) safemalloc(sizeof(Pixel) * npixels);
-  c.flags = DoRed | DoGreen | DoBlue;
-  for (; i < npixels; ++i) {
-    if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &c))
-      got_all = 0;
-    pixels[i] = c.pixel;
-    c.red = (unsigned short) (r += dr);
-    c.green = (unsigned short) (g += dg);
-    c.blue = (unsigned short) (b += db);
-  }
-  if (!got_all) {
-    char s[256];
-
-    sprintf(s, "color gradient %s to %s", s_from, s_to);
-    nocolor("alloc", s);
-  }
-  return pixels;
-}
-
-void 
-nocolor(char *note, char *name)
-{
-  scwm_msg(ERR, "nocolor", "can't %s color %s", note, name);
 }

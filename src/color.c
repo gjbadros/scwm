@@ -28,10 +28,9 @@
 #include "screen.h"
 #include "color.h"
 #include "errors.h"
-#include "../version.h"
-
-extern ScwmDecor *last_decor, *cur_decor;
-
+#include "borders.h"
+#include "decor.h"
+#include "colors.h"
 
 /* XXX - these should be made visible as bindings */
 #define BLACK COLOR(load_color(gh_str02scm("black")))

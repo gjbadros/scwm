@@ -11,10 +11,13 @@
 #include "menus.h"
 #include "screen.h"
 #include "window.h"
+#include "decor.h"
 #include "errors.h"
 #include "complex.h"
 #include "util.h"
 #include "misc.h"
+#include "miscprocs.h"
+#include "add_window.h"
 
 struct symnum {
   SCM sym;
@@ -44,7 +47,7 @@ struct symnum binding_contexts[] =
 };
 
 
-char *
+static char *
 PchModifiersToModmask(const char *pch, int *pmodifier)
 {
   int modmask = 0;
@@ -54,14 +57,20 @@ PchModifiersToModmask(const char *pch, int *pmodifier)
       break;
     }
     switch (pch[0]) {
+    case 'S':
+      modmask |= ShiftMask;
+      break;
     case 'C':
       modmask |= ControlMask;
       break;
     case 'M':
       modmask |= Mod1Mask;
       break;
-    case 'S':
-      modmask |= ShiftMask;
+    case 'A':
+      modmask |= Mod2Mask;
+      break;
+    case 'H':
+      modmask |= Mod3Mask;
       break;
     default:
       scwm_msg(WARN,__FUNCTION__,"Unrecognized modifier %c-",pch[0]);
@@ -89,6 +98,84 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
   return fOk;
 }
 
+/* Permit "Mouse-1", "1", "M1", "Mouse1", "mouse1" all to
+   be acceptable */
+static
+inline int
+BnumFromSz(char *sz)
+{
+  if (tolower(*sz) == 'a'  && (strcasecmp(sz,"any") == 0 ||
+			       strcasecmp(sz,"all") == 0)) {
+    return 0;
+  } else {
+    int ichFirstDigit = strcspn(sz,"0123456789");
+    if (strncasecmp(sz,"mouse-",ichFirstDigit) != 0) {
+      return -1; /* no match */
+    } else {
+      if (strlen(sz+ichFirstDigit) != 1) return -1;
+      return strtol(sz + ichFirstDigit, NULL, 10);
+    }
+  }
+}
+
+#ifdef FIXGJB_NOTUSED
+/* This grabs all the defined keys on all the windows */
+/* FIXGJB: this is not used, but I'm sure it should be used */
+static void
+grab_all_keys_all_windows()
+{
+  ScwmWindow *swCurrent;
+
+  swCurrent = Scr.ScwmRoot.next;
+  while (swCurrent != NULL) {
+    GrabKeys(swCurrent);
+    swCurrent = swCurrent->next;
+  }
+}
+#endif
+
+/* Just grab a single key + modifier on all windows
+   This needs to be done after a new key binding */
+static void
+grab_key_all_windows(int key, int modifier)
+{
+  ScwmWindow *swCurrent;
+  swCurrent = Scr.ScwmRoot.next;
+  while (swCurrent != NULL) {
+    XGrabKey(dpy, key, modifier, swCurrent->frame, True, 
+	     GrabModeAsync, GrabModeAsync);
+    if (modifier != AnyModifier) {
+      XGrabKey(dpy, key, modifier | LockMask, swCurrent->frame, True,
+	       GrabModeAsync, GrabModeAsync);
+    }
+    swCurrent = swCurrent->next;
+  }
+}
+
+/* Just grab a mouse button + modifier on all windows
+   This needs to be done after a new mouse binding */
+static void
+grab_button_all_windows(int button, int modifier)
+{
+  ScwmWindow *swCurrent;
+  swCurrent = Scr.ScwmRoot.next;
+  while (swCurrent != NULL) {
+    GrabButtonWithModifiers(button,modifier,swCurrent);
+    swCurrent = swCurrent->next;
+  }
+}
+
+
+static void
+ungrab_button_all_windows(int button, int modifier)
+{
+  ScwmWindow *swCurrent;
+  swCurrent = Scr.ScwmRoot.next;
+  while (swCurrent != NULL) {
+    UngrabButtonWithModifiers(button,modifier,swCurrent);
+    swCurrent = swCurrent->next;
+  }
+}
 
 /*
    ** to remove a binding from the global list (probably needs more processing
@@ -101,8 +188,11 @@ remove_binding(int contexts, int mods, int button, KeySym keysym,
   Binding *temp = Scr.AllBindings, *temp2, *prev = NULL;
   KeyCode keycode = 0;
 
-  if (!mouse_binding)
+  if (!mouse_binding) {
     keycode = XKeysymToKeycode(dpy, keysym);
+  } else if (contexts & C_WINDOW) {
+    ungrab_button_all_windows(button,mods);
+  }
 
   while (temp) {
     temp2 = temp->NextBinding;
@@ -182,14 +272,17 @@ unbind_key(SCM contexts, SCM key)
   switch (context) {
   case 0:
     SCM_ALLOW_INTS;
+    /* FIXGJBERROR: do not error by number */
     scwm_error(__FUNCTION__, 8);
     break;
   case -1:
     SCM_ALLOW_INTS;
+    /* FIXGJBERROR: do not error by number */
     scwm_error(__FUNCTION__, 9);
     break;
   case -2:
     SCM_ALLOW_INTS;
+    /* FIXGJBERROR: do not error by number */
     scm_wrong_type_arg(__FUNCTION__, 1, contexts);
     break;
   default:
@@ -217,13 +310,28 @@ unbind_key(SCM contexts, SCM key)
 SCM 
 unbind_mouse(SCM contexts, SCM button)
 {
-  char *keyname;
+  char *szButton = NULL;
+  int cchButton = 0;
+  int bnum = 0;
   int modmask = 0;
   int context = 0;
-  int bnum = 0;
-  int len = 0;
 
   SCM_REDEFER_INTS;
+  if (!gh_string_p(button)) {
+    if (gh_number_p(button)) {
+      bnum = gh_scm2int(button);
+      if (bnum < 0 || bnum > 3) {
+	scwm_msg(WARN,__FUNCTION__,"No button number `%d'",bnum);
+	SCM_ALLOW_INTS;
+	return SCM_UNSPECIFIED;
+      }
+    } else {
+      SCM_ALLOW_INTS;
+      scm_wrong_type_arg("unbind-mouse", 2, button);
+    }
+  } else { /* it is a string */
+    szButton = gh_scm2newstr(button,&cchButton);
+  }
   if (!gh_string_p(button)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg(__FUNCTION__, 2, button);
@@ -246,62 +354,20 @@ unbind_mouse(SCM contexts, SCM button)
   default:
   }
 
-  /* FIXGJB: abstract this out */
-  keyname = gh_scm2newstr(button, &len);
-  bnum = strtol(keyname, NULL, 10);
+  if (szButton) {
+    bnum = BnumFromSz(PchModifiersToModmask(szButton,&modmask));
+    if (bnum < 0) {
+      scwm_msg(WARN,__FUNCTION__,"No button `%s'",szButton);
+      SCM_ALLOW_INTS;
+      return SCM_UNSPECIFIED;
+    }
+    free(szButton);
+  }
 
   remove_binding(context,modmask,bnum,0,True /* Mouse binding */);
-
-  free(keyname);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
-
-
-/* This grabs all the defined keys on all the windows */
-void
-grab_all_keys_all_windows()
-{
-  ScwmWindow *swCurrent;
-
-  swCurrent = Scr.ScwmRoot.next;
-  while (swCurrent != NULL) {
-    GrabKeys(swCurrent);
-    swCurrent = swCurrent->next;
-  }
-}
-
-/* Just grab a single key + modifier on all windows
-   This needs to be done after a new key binding */
-void
-grab_key_all_windows(int key, int modifier)
-{
-  ScwmWindow *swCurrent;
-  swCurrent = Scr.ScwmRoot.next;
-  while (swCurrent != NULL) {
-    XGrabKey(dpy, key, modifier, swCurrent->frame, True, 
-	     GrabModeAsync, GrabModeAsync);
-    if (modifier != AnyModifier) {
-      XGrabKey(dpy, key, modifier | LockMask, swCurrent->frame, True,
-	       GrabModeAsync, GrabModeAsync);
-    }
-    swCurrent = swCurrent->next;
-  }
-}
-
-/* Just grab a mouse button + modifier on all windows
-   This needs to be done after a new mouse binding */
-void
-grab_button_all_windows(int button, int modifier)
-{
-  ScwmWindow *swCurrent;
-  swCurrent = Scr.ScwmRoot.next;
-  while (swCurrent != NULL) {
-    GrabButtonWithModifiers(button,modifier,swCurrent);
-    swCurrent = swCurrent->next;
-  }
-}
-
 
 
 SCM 
@@ -403,29 +469,32 @@ bind_key(SCM contexts, SCM key, SCM proc)
 SCM 
 bind_mouse(SCM contexts, SCM button, SCM proc)
 {
-
   Binding *temp;
-  char *keyname = 0;
-  char *okey = 0;
+  char *szButton = 0;
+  int cchButton;
   int bnum = 0;
-  int bset = 0;
-  int len = 0;
   int j = 0;
   int k = 0;
   int modmask = 0;
   int context = 0;
-  Bool fGotModifer = False;
+  Bool fChangedNumButtons = False;
 
   SCM_REDEFER_INTS;
 
   if (!gh_string_p(button)) {
     if (gh_number_p(button)) {
       bnum = gh_scm2int(button);
-      bset = 1;
+      if (bnum < 0 || bnum > 3) {
+	scwm_msg(WARN,__FUNCTION__,"No button number `%d'",bnum);
+	SCM_ALLOW_INTS;
+	return SCM_UNSPECIFIED;
+      }
     } else {
       SCM_ALLOW_INTS;
       scm_wrong_type_arg("bind-mouse", 2, button);
     }
+  } else { /* it is a string */
+    szButton = gh_scm2newstr(button,&cchButton);
   }
   if (!gh_procedure_p(proc)) {
     SCM_ALLOW_INTS;
@@ -447,26 +516,15 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
     break;
   default:
   }
-
-  if (!bset) {
-    okey = (keyname = gh_scm2newstr(button, &len));
-    do {
-      fGotModifer = False;
-      if (!strncmp("C-", keyname, 2)) {
-	modmask |= ControlMask;
-	keyname += 2;
-	fGotModifer = True;
-      } else if (!strncmp("M-", keyname, 2)) {
-	modmask |= Mod1Mask;
-	keyname += 2;
-	fGotModifer = True;
-      } else if (!strncmp("S-", keyname, 2)) {
-	modmask |= ShiftMask;
-	keyname += 2;
-	fGotModifer = True;
-      }
-    } while (fGotModifer);
-    bnum = strtol(keyname, NULL, 10);
+  
+  if (szButton) {
+    bnum = BnumFromSz(PchModifiersToModmask(szButton,&modmask));
+    if (bnum < 0) {
+      scwm_msg(WARN,__FUNCTION__,"No button `%s'",szButton);
+      SCM_ALLOW_INTS;
+      return SCM_UNSPECIFIED;
+    }
+    free(szButton);
   }
   if ((context != C_ALL) && (context & C_LALL)) {
     /* check for nr_left_buttons */
@@ -476,8 +534,10 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
       k++;
       j = j >> 1;
     }
-    if (Scr.nr_left_buttons < k)
+    if (Scr.nr_left_buttons < k) {
       Scr.nr_left_buttons = k;
+      fChangedNumButtons = True;
+    }
   }
   if ((context != C_ALL) && (context & C_RALL)) {
     /* check for nr_right_buttons */
@@ -487,11 +547,11 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
       k++;
       j = j >> 1;
     }
-    if (Scr.nr_right_buttons < k)
+    if (Scr.nr_right_buttons < k) {
       Scr.nr_right_buttons = k;
+      fChangedNumButtons = True;
+    }
   }
-  /* XXX - we should redraw the titlebars if necessary to reflect the new
-     buttons, prehaps? */
 
   if ((contexts & C_WINDOW) && (((modmask == 0) || modmask == AnyModifier))) {
     Scr.buttons2grab &= ~(1 << (bnum - 1));
@@ -516,11 +576,16 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
   }
 
   scm_protect_object(proc);
-
-  if (!bset) {
-    free(okey);
-  }
   SCM_REALLOW_INTS;
+  if (fChangedNumButtons && Scr.flags & WindowsCaptured) {
+  /* FIXGJB - we should redraw the titlebars if necessary to reflect the new
+     buttons */
+#ifdef FIXGJB /* this doesn't work, just want to redraw buttons on all windows */
+    ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+    redraw_borders(fl);
+#endif
+    recapture(); /* this stinks, but'll have to do for now --11/11/97 gjb */
+  }
   return SCM_UNSPECIFIED;
 }
 
@@ -641,6 +706,8 @@ void
 init_binding(void)
 {
   int i;
+  /* FIXGJB: buttons should have symbolic names, not numbered
+     physically */
   static char *context_strings[] =
   {
     "window",

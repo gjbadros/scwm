@@ -30,6 +30,8 @@
 #include "screen.h"
 #include "Grab.h"
 #include "icons.h"
+#include "resize.h"
+#include "borders.h"
 
 
 extern XEvent Event;

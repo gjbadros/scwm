@@ -38,6 +38,7 @@
  **********************************************************************/
 #include <config.h>
 
+#define ADD_WINDOW_IMPLEMENTATION
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -51,7 +52,10 @@
 #include "window.h"
 #include "decorations.h"
 #include "Grab.h"
-
+#include "add_window.h"
+#include "colors.h"
+#include "borders.h"
+#include "resize.h"
 
 #undef MS_DELETION_COMMENT
 
@@ -69,6 +73,272 @@ static XrmOptionDescRec table[] =
   {"-xrn", NULL, XrmoptionResArg, (caddr_t) NULL},
   {"-xrm", NULL, XrmoptionResArg, (caddr_t) NULL},
 };
+
+
+/***********************************************************************
+ *
+ *  Procedure:
+ *	GrabButtons - grab needed buttons for the window
+ *
+ *  Inputs:
+ *	tmp_win - the scwm window structure to use
+ *
+ ***********************************************************************/
+
+/* FIXGJB: rewrite to use GrabButtonWithModifiers, above */
+static void 
+GrabButtons(ScwmWindow * tmp_win)
+{
+  Binding *MouseEntry;
+
+  MouseEntry = Scr.AllBindings;
+  while (MouseEntry != (Binding *) 0) {
+    if ((MouseEntry->Action != NULL) && (MouseEntry->Context & C_WINDOW)
+	&& (MouseEntry->IsMouse == 1)) {
+      if (MouseEntry->Button_Key > 0) {
+	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier,
+		    tmp_win->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[DEFAULT]);
+	if (MouseEntry->Modifier != AnyModifier) {
+	  XGrabButton(dpy, MouseEntry->Button_Key,
+		      (MouseEntry->Modifier | LockMask),
+		      tmp_win->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[DEFAULT]);
+	}
+      } else {
+	XGrabButton(dpy, 1, MouseEntry->Modifier,
+		    tmp_win->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[DEFAULT]);
+	XGrabButton(dpy, 2, MouseEntry->Modifier,
+		    tmp_win->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[DEFAULT]);
+	XGrabButton(dpy, 3, MouseEntry->Modifier,
+		    tmp_win->w,
+		    True, ButtonPressMask | ButtonReleaseMask,
+		    GrabModeAsync, GrabModeAsync, None,
+		    Scr.ScwmCursors[DEFAULT]);
+	if (MouseEntry->Modifier != AnyModifier) {
+	  XGrabButton(dpy, 1,
+		      (MouseEntry->Modifier | LockMask),
+		      tmp_win->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[DEFAULT]);
+	  XGrabButton(dpy, 2,
+		      (MouseEntry->Modifier | LockMask),
+		      tmp_win->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[DEFAULT]);
+	  XGrabButton(dpy, 3,
+		      (MouseEntry->Modifier | LockMask),
+		      tmp_win->w,
+		      True, ButtonPressMask | ButtonReleaseMask,
+		      GrabModeAsync, GrabModeAsync, None,
+		      Scr.ScwmCursors[DEFAULT]);
+	}
+      }
+    }
+    MouseEntry = MouseEntry->NextBinding;
+  }
+  return;
+}
+
+/***********************************************************************
+ *
+ *  Procedure:
+ *	LookInList - look through a list for a window name, or class
+ *
+ *  Returned Value:
+ *	the ptr field of the list structure or NULL if the name 
+ *	or class was not found in the list
+ *
+ *  Inputs:
+ *	list	- a pointer to the head of a list
+ *	name	- a pointer to the name to look for
+ *	class	- a pointer to the class to look for
+ *
+ ***********************************************************************/
+static unsigned long 
+LookInList(name_list * list, char *name, XClassHint * class,
+	   char **value,
+	   char **mini_value,
+	   char **decor,
+	   int *Desk, int *border_width,
+	   int *resize_width, char **forecolor, char **backcolor,
+	   unsigned long *buttons, int *IconBox,
+	   int *BoxFillMethod)
+{
+#ifdef MS_DELETION_COMMENT
+  name_list *nptr;
+#endif
+  unsigned long retval = 0;
+
+  *value = NULL;
+  *mini_value = NULL;
+  *decor = NULL;
+  *forecolor = NULL;
+  *backcolor = NULL;
+  *Desk = 0;
+  *buttons = 0;
+  *BoxFillMethod = 0;
+  *border_width = 0;
+  *resize_width = 0;
+  IconBox[0] = -1;
+  IconBox[1] = -1;
+  IconBox[2] = Scr.MyDisplayWidth;
+  IconBox[3] = Scr.MyDisplayHeight;
+
+  /* MS: The code commented below never does anything, because the style
+     list is always empty under the current possible execution paths.
+     This can be seen by uncommenting the code and watching for the
+     printf and puts statements in it. */
+#ifdef MS_DELETION_COMMENT
+  puts("Looking in list.");
+  /* look for the name first */
+  for (nptr = list; nptr != NULL; nptr = nptr->next) {
+    puts("Examining a list item.");
+    if (class) {
+      /* first look for the res_class  (lowest priority) */
+      if (matchWildcards(nptr->name, class->res_class) == TRUE) {
+	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
+	if (nptr->value != NULL)
+	  *value = nptr->value;
+	if (nptr->mini_value != NULL)
+	  *mini_value = nptr->mini_value;
+	if (nptr->Decor != NULL)
+	  *decor = nptr->Decor;
+	if (nptr->off_flags & STARTSONDESK_FLAG)
+	  *Desk = nptr->Desk;
+	if (nptr->off_flags & BW_FLAG)
+	  *border_width = nptr->border_width;
+	if (nptr->off_flags & FORE_COLOR_FLAG)
+	  *forecolor = nptr->ForeColor;
+	if (nptr->off_flags & BACK_COLOR_FLAG)
+	  *backcolor = nptr->BackColor;
+	if (nptr->off_flags & NOBW_FLAG)
+	  *resize_width = nptr->resize_width;
+	retval |= nptr->off_flags;
+	retval &= ~(nptr->on_flags);
+	*buttons |= nptr->off_buttons;
+	*buttons &= ~(nptr->on_buttons);
+	if (nptr->BoxFillMethod != 0)
+	  *BoxFillMethod = nptr->BoxFillMethod;
+	if (nptr->IconBox[0] >= 0) {
+	  IconBox[0] = nptr->IconBox[0];
+	  IconBox[1] = nptr->IconBox[1];
+	  IconBox[2] = nptr->IconBox[2];
+	  IconBox[3] = nptr->IconBox[3];
+	}
+      }
+      /* look for the res_name next */
+      if (matchWildcards(nptr->name, class->res_name) == TRUE) {
+	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
+	if (nptr->value != NULL)
+	  *value = nptr->value;
+	if (nptr->mini_value != NULL)
+	  *mini_value = nptr->mini_value;
+	if (nptr->Decor != NULL)
+	  *decor = nptr->Decor;
+	if (nptr->off_flags & STARTSONDESK_FLAG)
+	  *Desk = nptr->Desk;
+	if (nptr->off_flags & FORE_COLOR_FLAG)
+	  *forecolor = nptr->ForeColor;
+	if (nptr->off_flags & BACK_COLOR_FLAG)
+	  *backcolor = nptr->BackColor;
+	if (nptr->off_flags & BW_FLAG)
+	  *border_width = nptr->border_width;
+	if (nptr->off_flags & NOBW_FLAG)
+	  *resize_width = nptr->resize_width;
+	retval |= nptr->off_flags;
+	retval &= ~(nptr->on_flags);
+	*buttons |= nptr->off_buttons;
+	*buttons &= ~(nptr->on_buttons);
+	if (nptr->BoxFillMethod != 0)
+	  *BoxFillMethod = nptr->BoxFillMethod;
+	if (nptr->IconBox[0] >= 0) {
+	  IconBox[0] = nptr->IconBox[0];
+	  IconBox[1] = nptr->IconBox[1];
+	  IconBox[2] = nptr->IconBox[2];
+	  IconBox[3] = nptr->IconBox[3];
+	}
+      }
+    }
+    /* finally, look for name matches */
+    if (matchWildcards(nptr->name, name) == TRUE) {
+      if (nptr->value != NULL)
+	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
+	*value = nptr->value;
+      if (nptr->mini_value != NULL)
+	*mini_value = nptr->mini_value;
+      if (nptr->Decor != NULL)
+	*decor = nptr->Decor;
+      if (nptr->off_flags & STARTSONDESK_FLAG)
+	*Desk = nptr->Desk;
+      if (nptr->off_flags & FORE_COLOR_FLAG)
+	*forecolor = nptr->ForeColor;
+      if (nptr->off_flags & BACK_COLOR_FLAG)
+	*backcolor = nptr->BackColor;
+      if (nptr->off_flags & BW_FLAG)
+	*border_width = nptr->border_width;
+      if (nptr->off_flags & NOBW_FLAG)
+	*resize_width = nptr->resize_width;
+      retval |= nptr->off_flags;
+      retval &= ~(nptr->on_flags);
+      *buttons |= nptr->off_buttons;
+      *buttons &= ~(nptr->on_buttons);
+      if (nptr->BoxFillMethod != 0)
+	*BoxFillMethod = nptr->BoxFillMethod;
+      if (nptr->IconBox[0] >= 0) {
+	IconBox[0] = nptr->IconBox[0];
+	IconBox[1] = nptr->IconBox[1];
+	IconBox[2] = nptr->IconBox[2];
+	IconBox[3] = nptr->IconBox[3];
+      }
+    }
+  }
+#endif /* MS_DELETION_COMMENT */
+  return retval;
+}
+
+
+/***********************************************************************
+ *
+ *  Procedure:
+ *	GrabKeys - grab needed keys for the window
+ *
+ *  Inputs:
+ *	tmp_win - the scwm window structure to use
+ *
+ ***********************************************************************/
+void 
+GrabKeys(ScwmWindow * tmp_win)
+{
+  Binding *tmp;
+
+  for (tmp = Scr.AllBindings; tmp != NULL; tmp = tmp->NextBinding) {
+    if ((tmp->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) &&
+	(tmp->IsMouse == 0)) {
+      XGrabKey(dpy, tmp->Button_Key, tmp->Modifier, tmp_win->frame, True,
+	       GrabModeAsync, GrabModeAsync);
+      if (tmp->Modifier != AnyModifier) {
+	XGrabKey(dpy, tmp->Button_Key, tmp->Modifier | LockMask,
+		 tmp_win->frame, True,
+		 GrabModeAsync, GrabModeAsync);
+      }
+    }
+  }
+  return;
+}
+
 
 /***********************************************************************
  *
@@ -659,7 +929,7 @@ AddWindow(Window w)
 
 void
 GrabButtonWithModifiers(int button, int modifier, 
-				 ScwmWindow *sw)
+			ScwmWindow *sw)
 {
   if (button > 0) {
     XGrabButton(dpy, button, modifier, sw->w,
@@ -680,111 +950,24 @@ GrabButtonWithModifiers(int button, int modifier,
 }
   
 
-/***********************************************************************
- *
- *  Procedure:
- *	GrabButtons - grab needed buttons for the window
- *
- *  Inputs:
- *	tmp_win - the scwm window structure to use
- *
- ***********************************************************************/
-
-/* FIXGJB: rewrite to use GrabButtonWithModifiers, above */
-void 
-GrabButtons(ScwmWindow * tmp_win)
+void
+UngrabButtonWithModifiers(int button, int modifier, 
+			  ScwmWindow *sw)
 {
-  Binding *MouseEntry;
-
-  MouseEntry = Scr.AllBindings;
-  while (MouseEntry != (Binding *) 0) {
-    if ((MouseEntry->Action != NULL) && (MouseEntry->Context & C_WINDOW)
-	&& (MouseEntry->IsMouse == 1)) {
-      if (MouseEntry->Button_Key > 0) {
-	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier,
-		    tmp_win->w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
-	if (MouseEntry->Modifier != AnyModifier) {
-	  XGrabButton(dpy, MouseEntry->Button_Key,
-		      (MouseEntry->Modifier | LockMask),
-		      tmp_win->w,
-		      True, ButtonPressMask | ButtonReleaseMask,
-		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[DEFAULT]);
-	}
-      } else {
-	XGrabButton(dpy, 1, MouseEntry->Modifier,
-		    tmp_win->w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
-	XGrabButton(dpy, 2, MouseEntry->Modifier,
-		    tmp_win->w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
-	XGrabButton(dpy, 3, MouseEntry->Modifier,
-		    tmp_win->w,
-		    True, ButtonPressMask | ButtonReleaseMask,
-		    GrabModeAsync, GrabModeAsync, None,
-		    Scr.ScwmCursors[DEFAULT]);
-	if (MouseEntry->Modifier != AnyModifier) {
-	  XGrabButton(dpy, 1,
-		      (MouseEntry->Modifier | LockMask),
-		      tmp_win->w,
-		      True, ButtonPressMask | ButtonReleaseMask,
-		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[DEFAULT]);
-	  XGrabButton(dpy, 2,
-		      (MouseEntry->Modifier | LockMask),
-		      tmp_win->w,
-		      True, ButtonPressMask | ButtonReleaseMask,
-		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[DEFAULT]);
-	  XGrabButton(dpy, 3,
-		      (MouseEntry->Modifier | LockMask),
-		      tmp_win->w,
-		      True, ButtonPressMask | ButtonReleaseMask,
-		      GrabModeAsync, GrabModeAsync, None,
-		      Scr.ScwmCursors[DEFAULT]);
-	}
-      }
+  if (button > 0) {
+    XUngrabButton(dpy, button, modifier, sw->w);
+    if (modifier != AnyModifier) {
+      XUngrabButton(dpy, button, (modifier | LockMask), sw->w);
     }
-    MouseEntry = MouseEntry->NextBinding;
+  } else {
+    UngrabButtonWithModifiers(1,modifier,sw);
+    UngrabButtonWithModifiers(2,modifier,sw);
+    UngrabButtonWithModifiers(3,modifier,sw);
   }
-  return;
 }
+  
 
-/***********************************************************************
- *
- *  Procedure:
- *	GrabKeys - grab needed keys for the window
- *
- *  Inputs:
- *	tmp_win - the scwm window structure to use
- *
- ***********************************************************************/
-void 
-GrabKeys(ScwmWindow * tmp_win)
-{
-  Binding *tmp;
 
-  for (tmp = Scr.AllBindings; tmp != NULL; tmp = tmp->NextBinding) {
-    if ((tmp->Context & (C_WINDOW | C_TITLE | C_RALL | C_LALL | C_SIDEBAR)) &&
-	(tmp->IsMouse == 0)) {
-      XGrabKey(dpy, tmp->Button_Key, tmp->Modifier, tmp_win->frame, True,
-	       GrabModeAsync, GrabModeAsync);
-      if (tmp->Modifier != AnyModifier) {
-	XGrabKey(dpy, tmp->Button_Key, tmp->Modifier | LockMask,
-		 tmp_win->frame, True,
-		 GrabModeAsync, GrabModeAsync);
-      }
-    }
-  }
-  return;
-}
 
 /***********************************************************************
  *
@@ -908,162 +1091,6 @@ GetWindowSizeHints(ScwmWindow * tmp)
 }
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	LookInList - look through a list for a window name, or class
- *
- *  Returned Value:
- *	the ptr field of the list structure or NULL if the name 
- *	or class was not found in the list
- *
- *  Inputs:
- *	list	- a pointer to the head of a list
- *	name	- a pointer to the name to look for
- *	class	- a pointer to the class to look for
- *
- ***********************************************************************/
-unsigned long 
-LookInList(name_list * list, char *name, XClassHint * class,
-	   char **value,
-	   char **mini_value,
-	   char **decor,
-	   int *Desk, int *border_width,
-	   int *resize_width, char **forecolor, char **backcolor,
-	   unsigned long *buttons, int *IconBox,
-	   int *BoxFillMethod)
-{
-#ifdef MS_DELETION_COMMENT
-  name_list *nptr;
-#endif
-  unsigned long retval = 0;
-
-  *value = NULL;
-  *mini_value = NULL;
-  *decor = NULL;
-  *forecolor = NULL;
-  *backcolor = NULL;
-  *Desk = 0;
-  *buttons = 0;
-  *BoxFillMethod = 0;
-  *border_width = 0;
-  *resize_width = 0;
-  IconBox[0] = -1;
-  IconBox[1] = -1;
-  IconBox[2] = Scr.MyDisplayWidth;
-  IconBox[3] = Scr.MyDisplayHeight;
-
-  /* MS: The code commented below never does anything, because the style
-     list is always empty under the current possible execution paths.
-     This can be seen by uncommenting the code and watching for the
-     printf and puts statements in it. */
-#ifdef MS_DELETION_COMMENT
-  puts("Looking in list.");
-  /* look for the name first */
-  for (nptr = list; nptr != NULL; nptr = nptr->next) {
-    puts("Examining a list item.");
-    if (class) {
-      /* first look for the res_class  (lowest priority) */
-      if (matchWildcards(nptr->name, class->res_class) == TRUE) {
-	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
-	if (nptr->value != NULL)
-	  *value = nptr->value;
-	if (nptr->mini_value != NULL)
-	  *mini_value = nptr->mini_value;
-	if (nptr->Decor != NULL)
-	  *decor = nptr->Decor;
-	if (nptr->off_flags & STARTSONDESK_FLAG)
-	  *Desk = nptr->Desk;
-	if (nptr->off_flags & BW_FLAG)
-	  *border_width = nptr->border_width;
-	if (nptr->off_flags & FORE_COLOR_FLAG)
-	  *forecolor = nptr->ForeColor;
-	if (nptr->off_flags & BACK_COLOR_FLAG)
-	  *backcolor = nptr->BackColor;
-	if (nptr->off_flags & NOBW_FLAG)
-	  *resize_width = nptr->resize_width;
-	retval |= nptr->off_flags;
-	retval &= ~(nptr->on_flags);
-	*buttons |= nptr->off_buttons;
-	*buttons &= ~(nptr->on_buttons);
-	if (nptr->BoxFillMethod != 0)
-	  *BoxFillMethod = nptr->BoxFillMethod;
-	if (nptr->IconBox[0] >= 0) {
-	  IconBox[0] = nptr->IconBox[0];
-	  IconBox[1] = nptr->IconBox[1];
-	  IconBox[2] = nptr->IconBox[2];
-	  IconBox[3] = nptr->IconBox[3];
-	}
-      }
-      /* look for the res_name next */
-      if (matchWildcards(nptr->name, class->res_name) == TRUE) {
-	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
-	if (nptr->value != NULL)
-	  *value = nptr->value;
-	if (nptr->mini_value != NULL)
-	  *mini_value = nptr->mini_value;
-	if (nptr->Decor != NULL)
-	  *decor = nptr->Decor;
-	if (nptr->off_flags & STARTSONDESK_FLAG)
-	  *Desk = nptr->Desk;
-	if (nptr->off_flags & FORE_COLOR_FLAG)
-	  *forecolor = nptr->ForeColor;
-	if (nptr->off_flags & BACK_COLOR_FLAG)
-	  *backcolor = nptr->BackColor;
-	if (nptr->off_flags & BW_FLAG)
-	  *border_width = nptr->border_width;
-	if (nptr->off_flags & NOBW_FLAG)
-	  *resize_width = nptr->resize_width;
-	retval |= nptr->off_flags;
-	retval &= ~(nptr->on_flags);
-	*buttons |= nptr->off_buttons;
-	*buttons &= ~(nptr->on_buttons);
-	if (nptr->BoxFillMethod != 0)
-	  *BoxFillMethod = nptr->BoxFillMethod;
-	if (nptr->IconBox[0] >= 0) {
-	  IconBox[0] = nptr->IconBox[0];
-	  IconBox[1] = nptr->IconBox[1];
-	  IconBox[2] = nptr->IconBox[2];
-	  IconBox[3] = nptr->IconBox[3];
-	}
-      }
-    }
-    /* finally, look for name matches */
-    if (matchWildcards(nptr->name, name) == TRUE) {
-      if (nptr->value != NULL)
-	printf("Matched \"%s\" and \"%s\".\n",nptr->name,name);
-	*value = nptr->value;
-      if (nptr->mini_value != NULL)
-	*mini_value = nptr->mini_value;
-      if (nptr->Decor != NULL)
-	*decor = nptr->Decor;
-      if (nptr->off_flags & STARTSONDESK_FLAG)
-	*Desk = nptr->Desk;
-      if (nptr->off_flags & FORE_COLOR_FLAG)
-	*forecolor = nptr->ForeColor;
-      if (nptr->off_flags & BACK_COLOR_FLAG)
-	*backcolor = nptr->BackColor;
-      if (nptr->off_flags & BW_FLAG)
-	*border_width = nptr->border_width;
-      if (nptr->off_flags & NOBW_FLAG)
-	*resize_width = nptr->resize_width;
-      retval |= nptr->off_flags;
-      retval &= ~(nptr->on_flags);
-      *buttons |= nptr->off_buttons;
-      *buttons &= ~(nptr->on_buttons);
-      if (nptr->BoxFillMethod != 0)
-	*BoxFillMethod = nptr->BoxFillMethod;
-      if (nptr->IconBox[0] >= 0) {
-	IconBox[0] = nptr->IconBox[0];
-	IconBox[1] = nptr->IconBox[1];
-	IconBox[2] = nptr->IconBox[2];
-	IconBox[3] = nptr->IconBox[3];
-      }
-    }
-  }
-#endif /* MS_DELETION_COMMENT */
-  return retval;
-}
 
 
 

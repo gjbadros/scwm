@@ -12,9 +12,7 @@
 #include "screen.h"
 #include "errors.h"
 #include "util.h"
-
-extern ScwmDecor *last_decor, *cur_decor;
-
+#include "decor.h"
 
 SCM 
 set_menu_mwm_style(SCM should)

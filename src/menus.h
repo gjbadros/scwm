@@ -1,6 +1,6 @@
-
-
-
+/* $Id$ 
+ * menus.h
+ */
 
 /****************************************************************************
  * This module is based on Twm, but has been siginificantly modified 

@@ -20,6 +20,7 @@
 #include "window.h"
 #include "face.h"
 #include "color.h"
+#include "colors.h"
 #include "util.h"
 
 #ifndef HAVE_GH_LENGTH

@@ -26,8 +26,10 @@
 #include "util.h"
 #include "errors.h"
 #include "Grab.h"
-
-extern ScwmDecor *last_decor, *cur_decor;
+#include "resize.h"
+#include "borders.h"
+#include "decor.h"
+#include "colors.h"
 
 size_t 
 free_window(SCM obj)
@@ -141,7 +143,7 @@ get_window(SCM kill_p, SCM select_p, SCM release_p)
   }
   if (release_p == SCM_UNDEFINED) {
     release_p = SCM_BOOL_T;
-  } else if (!gh_boolean_p(select_p)) {
+  } else if (!gh_boolean_p(release_p)) {
     scm_wrong_type_arg("get-window", 3, release_p);
   }
   if (window_context == SCM_UNDEFINED) {
@@ -152,6 +154,13 @@ get_window(SCM kill_p, SCM select_p, SCM release_p)
     }
   }
   return window_context;
+}
+
+/* FIXGJB: write this */
+SCM
+current_window()
+{
+  return SCM_UNDEFINED;
 }
 
 

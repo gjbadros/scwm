@@ -36,6 +36,7 @@
 #include "window.h"
 #include "Grab.h"
 #include "system.h"
+#include "colors.h"
 
 
 #include <X11/Xproto.h>
@@ -197,12 +198,15 @@ scwm_main(int argc, char **argv)
     } else if (strncasecmp(argv[i], "-s", 2) == 0) {
       single = True;
     } else if (strncasecmp(argv[i], "-d", 2) == 0) {
-      if (++i >= argc)
+      if (++i >= argc) {
 	usage();
+	exit(-1);
+      }
       display_name = argv[i];
     } else if (strncasecmp(argv[i], "-f", 2) == 0) {
       if (++i >= argc) {
 	usage();
+	exit(-1);
       }
       s_cmd_config=realloc(s_cmd_config, sizeof(char) *
 	        (strlen(s_cmd_config) +
@@ -216,6 +220,7 @@ scwm_main(int argc, char **argv)
     } else if (strncasecmp(argv[i], "-e", 4) == 0) {
       if (++i >= argc) {
 	usage();
+	exit(-1);
       }
       s_cmd_config=realloc(s_cmd_config, sizeof(char) *
 	        (strlen(s_cmd_config) + strlen(argv[i]) + 1));
