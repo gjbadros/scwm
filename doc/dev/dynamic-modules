@@ -12,6 +12,9 @@ You would create a directory scwm/modules/foo, and put bar.c in it.
 Add 'foo' to the SUBDIRS in scwm/modules/Makefile.am (would be nice
 if that were automated).
 
+Add "modules/foo/Makefile" to the AC_OUTPUT list at the end of
+scwm/configure.in.
+
 Create a file scwm/modules/foo/Makefile.am like so:
 -----
 scwm_module_LTLIBRARIES = libfoo.la
