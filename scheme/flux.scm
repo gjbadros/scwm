@@ -96,10 +96,34 @@ just to the right of the home (0,0) viewport)."
 		    (modulo (cadr pos) display-height)) win)))
 
 (define-public (in-viewport xx yy)
-  "Return a function of single window argument, moving it to the viewport.
+  "Return a function of a single argument, a window, moving it to the viewport.
 XX and YY are full display-size increments (e.g., (1,0) is the
 viewport just to the right of the home (0,0) viewport)."
   (lambda (win) (move-window-to-viewport xx yy win)))
+
+(define-public (place-at-point win)
+  "Place the window at the mouse pointer.
+This is a valid value for various placement-procs in `make-style'."
+  (let ((pp (pointer-position)) (ws (window-size win)))
+    (move-to (- (car pp) (quotient (car ws) 2))
+             (- (cadr pp) (quotient (cadr ws) 2)) win))
+  (move-inside win))
+
+(define-public (move-inside win)
+  "Ensure that the window is entirely inside the viewport, if possible."
+  (let* ((vp (viewport-position)) (ds (display-size)) (ws (window-size win))
+         (wp (window-position win)) (xx (car wp))
+         (bw (window-frame-border-width win)))
+    (cond ((< (car wp) (car vp)) (set! xx (car vp))
+           (move-to xx (cadr wp) win))
+          ((> (+ (car wp) (car ws)) (+ (car vp) (car ds)))
+           (set! xx (- (+ (car vp) (car ds)) (car ws) bw bw))
+           (move-to xx (cadr wp) win)))
+    (cond ((< (cadr wp) (cadr vp)) (move-to xx (cadr vp) win))
+          ((> (+ (cadr wp) (cadr ws)) (+ (cadr vp) (cadr ds)))
+           (move-to xx (- (+ (cadr vp) (cadr ds)) (cadr ws)
+                          bw bw (title-height))
+                    win)))))
 
 (define-public (system-info-string)
   "Return a string with various system information.
