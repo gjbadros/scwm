@@ -730,6 +730,8 @@
 
 (define menu-preferences
   (menu (list (menu-title "Preferences") menu-separator
+	      (menuitem "Edit &bindings..."
+			#:action (lambda () (use-scwm-modules prompt-binding) (prompt-binding)))
 	      (menuitem "Change background color..."
 			#:action (lambda () 
 				   (prompt-color 
@@ -804,7 +806,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
     menu-separator
     (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
     (menuitem "Other &Preferences" #:image-left "mini-prefs.xpm" 
-	      #:action menu-preferences)
+	      #:submenu menu-preferences)
     (menuitem "A&bout Scwm" #:image-left "mini-exclam.xpm" 
 	      #:action gtk-about-scwm)
     (menuitem "&Help Scwm" #:image-left "mini-question.xpm" 
