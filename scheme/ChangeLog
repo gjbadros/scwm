@@ -1,3 +1,24 @@
+1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
+
+	* minimal.scm: set-menu-foreground! and set-menu-background!
+	primitives renamed set-not-menu-foreground! and
+	set-not-menu-background!; set-menu-stipple! removed;  default-menu 
+	passes colors and font to make-menu as they're now required arguments
+
+	* base.scm: 
+	new procedures: set-menu-stipple!, set-menu-font! and
+	set-menu-look!
+	(menu-stipple-color): new
+	(menu-look): new
+	(set-menu-foreground!): simplified; no need to wrap primitive
+	(set-menu-background!): simplified; no need to wrap primitive
+	(set-menu-stipple!): new
+	(set-menu-font!): new
+	(set-menu-look!): new
+	(menu): #:color-stipple defaults to 'menu-stipple-color;
+	#:menu-look added
+	
+
 1998-10-05  Todd Larason  <jtl@teeny.molehill.org>
 
 	* Makefile.am: install cached-programs-exists.scm

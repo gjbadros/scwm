@@ -1,3 +1,67 @@
+1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
+
+	* draw-xpm-menu.c: moved to modules/xpm-menus
+
+	* scwm.c (InitVariables): menu_font removed; MenuColors renamed
+	NotMenuColors 
+	(scwm_main): init_draw_xpm_menu removed
+	(scwm_main): MenuColors renamed NotMenuColors
+	(init_scwm_load_path): SCWM_BIN_LOAD_PATH added to %load-path
+
+	* screen.h: MenuColors renamed NotMenuColors; MenuRelief renamed
+	NotMenuRelief; MenuStippleColors removed
+
+	* screen.c (mark_screen): menu_font and menu_look removed
+
+	* menulook.h: MENULOOK_OR_SYMBOL_P, DYNAMIC_MENULOOK_P and
+	DYNAMIC_SAFE_MENULOOK added
+
+	* menulook.c (make_menulook_internal): new, most of the
+	functionality of the old make_menulook
+	(s_set_menu_look): removed
+	(make_menulook): use make_menulook_internal
+	(s_copy_menu_look): new function; copies the vtable from an
+	existing menulook, with a new name and possibly new extra list
+
+	* menu.c (s_make_menu): arguments reordered, and bg_color,
+	text_color, stipple_color and font made mandatory; picture-align
+	argument renamed side-picture-align; scmMenuLook set to SCM_BOOL_F 
+	instead of Scr.menu_look - the normal scwm look will be used
+	unless it's set explictely;
+	(s_set_menu_menu_look_x): new 
+	(NewDynamicMenu): allow scmMenuLook to be a symbol or an object,
+	or invalid; if invalid, use ConstructDynamicMenu to get the normal 
+	scwm look
+
+	* icons.c (CreateIconWindow): MenuColors renamed NotMenuColors;
+	being used here as background and border colors for icons
+
+	* font.c: protected_fonts removed; the icon font is protected
+	through the Scr structure, and the menu font is gone;
+	set-menu-font! and menu-font removed
+
+	* drawmenu.c (PscwmFontForMenuItem): use scmFixedFont as a
+	last-ditch default font, instead of Scr.MenuFont
+	(init_drawmenu): no longer set Scr.menu_look; each menu has a
+	menulook setting, and the standard ConstructDynamicMenu is
+	explicitely used if the per-menu setting isn't valid
+
+	* color.c: reset_menu_relief and calls to it removed; the menuing
+	code handles its own relief creation;
+	{set-,}menu-{foreground,background} renamed
+	{set-,}not-menu-{foreground,background}; 
+	Menu{Colors,Relief} renamed NotMenu{Colors,Relief};
+	MenuStippleColors and {set-,}menu-stipple-colors removed;
+	protected_colors shortened (it should probably be removed)
+
+	* add_window.c (AddWindow): Menu{Colors,Relief} renamed
+	NotMenu{Colors,Relief}; they're being used here for window text,
+	shadow, relief and background colors
+
+	* Makefile.am: draw-xpm-menu.[cx] removed; @x_ldflags@ moved from
+	_LDADD to _LDFLAGS; scwm_LDFLAGS includes -export-dynamic;
+	SCWM_BIN_LOAD_PATH added to scwmpaths.h
+
 1998-10-05  Todd Larason  <jtl@teeny.molehill.org>
 
 	* move.c (moveLoop): call the interactive-move-new-position hook

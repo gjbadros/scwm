@@ -1,3 +1,12 @@
+1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
+
+	* configure.in: define and substitute scwm_bin_load_path and 
+	scwm_moduledir for binary modules, analagous to scwm_load_path and 
+	scwm_schemedir; substitute in modules/Makefile and
+	modules/xpm-menus/Makefile
+
+	* Makefile.am: add 'modules' to SUBDIRS
+
 Sun Oct  4 18:16:10 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* configure.in: Check for guile-config, the script formerly known

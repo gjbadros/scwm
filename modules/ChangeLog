@@ -1,0 +1,13 @@
+1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
+
+	* xpm-menus/draw-xpm-menu.c: moved from scwm/;
+	(PscwmFontForMenuItem): use scmFixedFont as last-ditch font default
+	(ConstructDynamicXpmMenu): use DYNAMIC_SAFE_MENULOOK instead of
+	MENULOOK, so scmMenuLook can be a symbol naming a menulook; if
+	scmExtraOptions is a symbol, derefence it; if it still isn't a
+	list, use the menulook's extra object isntead of the menu's; all
+	together, allows easier global customization of menu looks
+	(init_draw_xpm_menu): now static
+	(scm_init_app_scwm_xpm_menus_module): new function, called to
+	register the (app scwm xpm-menus) module
+

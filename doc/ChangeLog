@@ -1,3 +1,8 @@
+1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
+
+	* scwm.texi,scwm.info: add @dircategory/@direntry so install-info
+	can add scwm.info to the info directory
+
 1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
 
 	* Makefile.am (scwm.sgml): find source via $(top_srcdir) instead
