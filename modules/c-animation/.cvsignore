@@ -1,0 +1,7 @@
+.deps
+.libs
+Makefile
+Makefile.in
+c-animation.lo
+c-animation.x
+libc-animation.la
