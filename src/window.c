@@ -349,6 +349,10 @@ mark_window(SCM obj)
     scm_gc_mark(psw->ShadowColor);
     scm_gc_mark(psw->TextColor);
     scm_gc_mark(psw->BackColor);
+    scm_gc_mark(psw->HiReliefColor);
+    scm_gc_mark(psw->HiShadowColor);
+    scm_gc_mark(psw->HiTextColor);
+    scm_gc_mark(psw->HiBackColor);
     scm_gc_mark(psw->other_properties);
   }
 
@@ -3075,12 +3079,40 @@ if not specified. */
 #undef FUNC_NAME
 
 
+SCWM_PROC(get_window_colors, "get-window-colors", 0, 1, 0,
+          (SCM win))
+     /** Return a two-element list, "(fg bg)", the colors for WIN. */
+#define FUNC_NAME s_get_window_colors
+{
+  ScwmWindow *psw;
+  VALIDATEN(win, 1, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  return gh_list(psw->TextColor, psw->BackColor, SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(get_window_highlight_colors, "get-window-highlight-colors", 0, 1, 0,
+          (SCM win))
+     /** Return a two-element list, "(fg bg)", the highlight colors for WIN. */
+#define FUNC_NAME s_get_window_highlight_colors
+{
+  ScwmWindow *psw;
+  VALIDATEN(win, 1, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  return gh_list(psw->HiTextColor, psw->HiBackColor, SCM_UNDEFINED);
+}
+#undef FUNC_NAME
+
+
 SCWM_PROC(set_window_foreground_x, "set-window-foreground!", 1, 1, 0,
           (SCM fg, SCM win))
-     /** Set the foreground color of WIN to FG. This color is used to
-draw the title text currently. In the future, it may have other uses
-as well. WIN defaults to the window context in the usual way
-if not specified. */
+     /** Set the foreground color of WIN to FG. 
+This color is used to draw the title text currently. In the future, it
+may have other uses as well. WIN defaults to the window context in the
+usual way if not specified. */
 #define FUNC_NAME s_set_window_foreground_x
 {
   ScwmWindow *psw;
@@ -3100,11 +3132,11 @@ if not specified. */
 
 SCWM_PROC(set_window_background_x, "set-window-background!", 1, 1, 0,
           (SCM bg, SCM win))
-     /** Set the foreground color of WIN to BG. This color is used to
-draw most of the window decorations, along with the relief colors
-generated from it, which are used to draw the window's 3-D bevels.
-WIN defaults to the window context in the usual way if not
-specified. */
+     /** Set the background color of WIN to BG. 
+This color is used to draw most of the window decorations, along with
+the relief colors generated from it, which are used to draw the
+window's 3-D bevels.  WIN defaults to the window context in the usual
+way if not specified. */
 #define FUNC_NAME s_set_window_background_x
 {
   ScwmDecor * fl;
@@ -3120,6 +3152,68 @@ specified. */
   psw->BackColor = bg;
   psw->ShadowColor = adjust_brightness(psw->BackColor, fl->shadow_factor);
   psw->ReliefColor = adjust_brightness(psw->BackColor, fl->hilight_factor);
+
+  SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_window_highlight_foreground_x, "set-window-highlight-foreground!", 1, 1, 0,
+          (SCM fg, SCM win))
+     /** Set the highlighted foreground color of WIN to FG.
+This color is used to draw the title text when WIN has the focus.
+In the future, it may have other uses
+as well. WIN defaults to the window context in the usual way
+if not specified. If FG is #f, then lets the decor highlight
+foreground color be used (turns off a special highlight
+color for WIN. */
+#define FUNC_NAME s_set_window_highlight_foreground_x
+{
+  ScwmWindow *psw;
+
+  if (fg != SCM_BOOL_F)
+    VALIDATE_COLOR(fg, FUNC_NAME, 1);
+
+  VALIDATEN(win, 2, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+
+  psw->HiTextColor = fg;
+  SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
+
+  return SCM_UNSPECIFIED;  
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(set_window_highlight_background_x, "set-window-highlight-background!", 1, 1, 0,
+          (SCM bg, SCM win))
+     /** Set the highlighted background color of WIN to BG.
+This color is used when WIN has the focus to draw most of the window
+decorations, along with the relief colors generated from it, which are
+used to draw the window's 3-D bevels.  WIN defaults to the window
+context in the usual way if not specified. If BG is #f, then lets the decor highlight
+background color be used (turns off a special highlight 
+color for WIN.   */
+#define FUNC_NAME s_set_window_highlight_background_x
+{
+  ScwmDecor * fl;
+  ScwmWindow *psw;
+
+  if (bg != SCM_BOOL_F)
+    VALIDATE_COLOR(bg, FUNC_NAME, 1);
+
+  VALIDATEN(win, 2, FUNC_NAME);
+  psw = PSWFROMSCMWIN(win);
+  fl = psw->fl ? psw->fl : &Scr.DefaultDecor;
+
+
+  psw->HiBackColor = bg;
+#if 0 /* FIXGJB: these aren't used yet, and bg might be #f */
+  psw->HiShadowColor = adjust_brightness(bg, fl->shadow_factor);
+  psw->HiReliefColor = adjust_brightness(bg, fl->hilight_factor);
+#endif
 
   SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
 

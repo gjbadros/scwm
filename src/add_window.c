@@ -247,6 +247,10 @@ AddWindow(Window w)
   psw->ReliefColor = Scr.MenuRelief.fg;
   psw->ShadowColor = Scr.MenuRelief.bg;
   psw->BackColor = Scr.MenuColors.bg;
+  psw->HiTextColor = SCM_BOOL_F;
+  psw->HiReliefColor = SCM_BOOL_F;
+  psw->HiShadowColor = SCM_BOOL_F;
+  psw->HiBackColor = SCM_BOOL_F;
 
   /* initialize constraint structure hanging off of psw */
   CassowaryInitClVarsInPsw(psw);

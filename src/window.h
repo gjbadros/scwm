@@ -76,6 +76,7 @@ typedef struct _gravity_info {
 
 /* for each window that is on the display, one of these structures
  * is allocated and linked into a list 
+ * AddWindow initializes parts of this struct
  */
 typedef struct ScwmWindow {
   struct ScwmWindow *next;	/* next scwm window */
@@ -209,6 +210,12 @@ typedef struct ScwmWindow {
   SCM ShadowColor;
   SCM TextColor;
   SCM BackColor;
+  /* Now colors for when this is the highlighted window
+     (i.e., for when it's got the focus) */
+  SCM HiReliefColor;            /* only partially used now */
+  SCM HiShadowColor;            /* only partially used now */
+  SCM HiTextColor;
+  SCM HiBackColor;
   unsigned long buttons;
   int IconBox[4];
 

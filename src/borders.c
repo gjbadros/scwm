@@ -617,6 +617,27 @@ RelieveParts(ScwmWindow *psw, int i, GC hor, GC vert)
   }
 }
 
+/* Return a window-specific highlight foreground color,
+   or use the decors if no window-specific one has been set */
+static Pixel
+PixelHiTextFromPsw(const ScwmWindow *psw)
+{
+  if (UNSET_SCM(psw->HiTextColor) || !COLOR_P(psw->HiTextColor))
+    return XCOLOR(GET_DECOR(psw, HiColors.fg));
+  else return XCOLOR(psw->HiTextColor);
+}
+
+
+/* Return a window-specific highlight foreground color,
+   or use the decors if no window-specific one has been set */
+static Pixel
+PixelHiBackFromPsw(const ScwmWindow *psw)
+{
+  if (UNSET_SCM(psw->HiBackColor) || !COLOR_P(psw->HiBackColor))
+    return XCOLOR(GET_DECOR(psw, HiColors.bg));
+  else return XCOLOR(psw->HiBackColor);
+}
+
 /* Set Border just calls SetBorderX with really_force == False */
 void
 SetBorder(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
@@ -683,9 +704,9 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
       w = psw->icon_w;
     Scr.Hilite = psw;
 
-    TextColor = XCOLOR(GET_DECOR(psw, HiColors.fg));
+    TextColor = PixelHiTextFromPsw(psw);
     BackPixmap = Scr.gray_pixmap;
-    BackColor = XCOLOR(GET_DECOR(psw, HiColors.bg));
+    BackColor = PixelHiBackFromPsw(psw);
     ReliefGC = GET_DECOR(psw, HiReliefGC);
     ShadowGC = GET_DECOR(psw, HiShadowGC);
     BorderColor = XCOLOR(GET_DECOR(psw, HiRelief.bg));
@@ -1014,7 +1035,6 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 }
 
 
-
 /****************************************************************************
  *
  *  Redraws just the title bar
@@ -1036,8 +1056,8 @@ SetTitleBar(ScwmWindow *psw, Bool fHighlightOn, Bool NewTitle)
     return;
 
   if (fHighlightOn) {
-    Forecolor = XCOLOR(GET_DECOR(psw, HiColors.fg));
-    BackColor = XCOLOR(GET_DECOR(psw, HiColors.bg));
+    Forecolor = PixelHiTextFromPsw(psw);
+    BackColor = PixelHiBackFromPsw(psw);
     ReliefGC = GET_DECOR(psw, HiReliefGC);
     ShadowGC = GET_DECOR(psw, HiShadowGC);
   } else {
