@@ -2,11 +2,22 @@
 
 See also doc/dev/scwm-1.0-release-todo
 
-* documentation of scheme-level hooks (not just c-level)
+* GNOME icons are not positioned
+
+* Leader windows and window groups could be made implicit
+
+* Improvements to ScwmButtons
+;;; o Extend ScwmButtons to permit animated icons when mouse is over button
+;;; o Extend ScwmButtons to have a right-click menu for
+;;;   -> turning on/off tooltips
+;;;   -> changing orientation
+;;;   -> changing auto-orientation
 
 * Error messages in a text window
 
 * layers support for GNOME
+
+* use ms, not usec for timer hooks
 
 * path-cache.scm -- test w/o zsh
 

@@ -44,13 +44,13 @@ Installation related
 * Add "srpm", "rpm" and "deb" targets to the makefile to make it
 easier to build source rpms, binary rpms, and debian packages
 
-* Add a scwm-icons-...-noarch.rpm
+DONE * Add a scwm-icons-...-noarch.rpm
 
 * Get --enable-cflags, --enable-cppflags, etc. in configure.in to work
 
 Scwm-core related
 -----------------
-* guile jump buffer memory leak bug
+PARTIAL DONE * guile jump buffer memory leak bug
 
 * GUI options/configuration (Making progress on this...)
 
