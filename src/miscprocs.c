@@ -395,14 +395,11 @@ wait_for_window(SCM predicate)
 {
   Bool done = False;
   extern ScwmWindow *Tmp_win;
-  char *n;
-  int dummy;
 
   if (!gh_procedure_p(predicate)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("wait-for-window", 1, name);
   }
-  n = gh_scm2newstr(name, &dummy);
   while (!done) {
     if (My_XNextEvent(dpy, &Event)) {
       SCM_DEFER_INTS;
