@@ -524,6 +524,11 @@ scwm_main(int argc, char **argv)
 #endif
 
   gh_eval_str ("(define-module (guile))");  
+  /* MS:FIXME:: remove once we deal w/ new-style hooks properly. */
+
+#ifdef HAVE_SCM_MAKE_HOOK
+  gh_eval_str("(set! *suppress-old-style-hook-warning* #t)");
+#endif
 
 #ifdef I18N
   /* setlocale in guile */
