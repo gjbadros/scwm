@@ -7,6 +7,4 @@ else
 PIDPROPERTY_SUBDIR = 
 endif
 
-SUBDIRS = dev emacs libscwmexec scwmexec scwmrepl run-renamed $(PIDPROPERTY_SUBDIR)
-
-
+SUBDIRS = dev emacs libscwmexec scwmexec scwmrepl run-renamed misc $(PIDPROPERTY_SUBDIR)
