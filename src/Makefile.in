@@ -84,7 +84,7 @@ SRCS = \
 	window.c \
 	menu.c \
 	scwmmenu.c \
-	scwmmenu.c \
+	drawmenu.c \
 	menuitem.c \
 	paths.c \
 	deskpage.c \
