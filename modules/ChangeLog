@@ -1,3 +1,8 @@
+Sat Dec  5 11:19:30 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* c-animation/c-animation.c: #include a bunch of headers so that
+	all the needed prototypes are seen
+
 Fri Dec  4 22:37:42 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* applefile/Makefile.am, background/Makefile.am,
