@@ -1,4 +1,19 @@
-1999-09-08    <jwnichls@cs.washington.edu>
+Mon Sep 13 11:48:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* std-menus.scm, flux.scm, file.scm, rgb-database.scm,
+	path-cache.scm: Use guile-version, not (minor-version) for testing 
+	guile versions.
+
+Mon Sep 13 11:48:11 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* minimal.scm: Define guile-version variable to be, e.g., 1.33 so
+	it's easier to use as a test.
+
+Sun Sep 12 21:44:16 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): Added reflection.scm.
+
+1999-09-08 Jeffrey Nichols   <jwnichls@cs.washington.edu>
 
 	* winops.scm: Optional parameters for show-titlebar-in-place
 	and hide-titlebar-in-place were missing some parens.
