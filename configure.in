@@ -817,5 +817,5 @@ AC_OUTPUT([Makefile \
 	  utilities/dev/scwm-usage-counter \
 	  utilities/dev/X-error-describe \
 	  utilities/dev/create-dependency-dot-graph \
-],[chmod +x src/scwm-doc-snarf src/scwm-snarf ] \
+],[chmod +x src/scwm-doc-snarf ] \
 )
