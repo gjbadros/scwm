@@ -1,3 +1,36 @@
+1998-07-24  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added screen.c, screen.x
+
+	* face.c: Fix the layout of the Face Specification flags concept
+
+	* move.c, scwm.c (InitVariables): Use msg_window_* not size_window_*
+
+	* screen.c: Rename size_window_* fields to msg_window_*
+
+	* constraint-primitives.cc: Added ResizePswToCurrentSize
+
+	* scwm.c: Added scmScreen object, and initialize it to be the SMOB 
+	for the global Scr. Init Scr.size_window_{fg,bg}. Call
+	init_screen. Use new name CreateMessageWindow() not
+	CreateSizeDisplayWindow().  
+	
+	* color.h: Added SAFE_XCOLOR_OR_{WHITE,BLACK} macros
+
+	* icons.c, borders.c, borders.h, drawmenu.c: use SetGCFg, new
+ 	version of NewFontAndColor that takes a GC as the first argument.
+
+	* resize.c, move.c: Rename CreateSizeDisplayWindow to
+	CreateMessageWindow, and rewrite DisplaySize and DisplayPosition
+	to use new DisplayMessage() that just puts a string in the window.
+
+	* xmisc.c (SetGCColors): Added, along with SetGCFg, SetGCBg
+
+	* window.c (ResizePswToCurrentSize): Added this function
+
+	* screen.c: Wrap ScreenInfo in a SMOB so marking of the SCM member 
+	fields works (this was a long-time latent bug)
+
 1998-07-23  Greg Badros  <gjb@cs.washington.edu>
 
 	* xproperty.c: Add parens to disambiguate (a>>2+1) [(a>>2)+1]
