@@ -16,6 +16,14 @@ Changes for scwm-0.99.6 (not yet released)
 *** Now changes in global state animate all windows simultaneously, instead of sequentially
 ** constraints.scm
 *** Now moves to new positions/sizes are animated instead of jumped-to
+** non-interactive procedures display a warning when invoked interactively
+
+* Improved GUI for constraints
+** toolbar now has a record button, that turns into a stop button
+** toolbar now supports animating different pictures of constraints to
+   give a better idea of the utility of a constraint class's button
+** constraint-investigator has a new "Delete all" button
+** newly-recorded compositions get added to the toolbar w/ their name in the button.
 
 * Changed procedures
 ** Rename menu-global-theme, menu-window-theme to
@@ -23,6 +31,7 @@ Changes for scwm-0.99.6 (not yet released)
 procs that return menus, not bound directly to menus.
 
 * New primitives
+** `call-interactively' (also invoked internally when dispatch key/mouse bindings)
 ** `window-visibility' for reporting on current visibility state of a window
 ** `animate-windows' for permitting animations of multiple windows simultaneously
 ** `cl-resolve-xforms', `cl-reset-dirty-windows' for use in scwm-resolve-hook to permit animation
