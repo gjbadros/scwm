@@ -221,6 +221,13 @@ Atom XA_SCWMEXEC_NOTIFY;
 Atom XA_SCWMEXEC_OUTPUT;
 Atom XA_SCWMEXEC_ERROR;
 
+/*
+#define GNOME_SUPPORT_IN_C
+*/
+
+#ifdef GNOME_SUPPORT_IN_C
+Atom XA_WIN_SUPPORTING_WM_CHECK;
+#endif
 
 static Window BlackoutWin = None; /* window to hide window captures */
 
@@ -270,6 +277,20 @@ InternUsefulAtoms(void)
   return;
 }
 
+#ifdef GNOME_SUPPORT_IN_C
+void
+AnnounceGnomeCompliancy(Window w)
+{
+  /* for announcing GNOME compliance */
+  XA_WIN_SUPPORTING_WM_CHECK=XInternAtom(dpy,"_WIN_SUPPORTING_WM_CHECK",False);
+  XChangeProperty(dpy, w, XA_WIN_SUPPORTING_WM_CHECK,
+                  XA_CARDINAL,32,PropModeReplace, 
+                  (unsigned char *) Scr.Root, 1);
+  XChangeProperty(dpy, Scr.Root, XA_WIN_SUPPORTING_WM_CHECK,
+                  XA_CARDINAL,32,PropModeReplace, 
+                  (unsigned char *) Scr.Root, 1);
+}
+#endif
 
 
 /* if the XA_SCWMEXEC_REQWIN window is already set at 
@@ -939,6 +960,27 @@ Repository Timestamp: %s\n",
 
   InitEventHandlerJumpTable();
 
+
+  { /* scope */
+    /* create a window which will accept the keyboard focus when no other 
+       windows have it */
+    XSetWindowAttributes attributes;	/* attributes for create windows */
+    attributes.event_mask = KeyPressMask | KeyReleaseMask | FocusChangeMask;
+    attributes.override_redirect = True;
+    Scr.NoFocusWin = XCreateWindow(dpy, Scr.Root, -10, -10, 10, 10, 0, 0,
+                                   InputOnly, CopyFromParent,
+                                   CWEventMask | CWOverrideRedirect,
+                                   &attributes);
+    XMapWindow(dpy, Scr.NoFocusWin);
+  
+    SetMWM_INFO(Scr.NoFocusWin);
+#ifdef GNOME_SUPPORT_IN_C
+    AnnounceGnomeCompliancy(Scr.NoFocusWin);
+#endif
+  
+    XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, CurrentTime);
+  } /* end scope */
+
   
   Scr.gray_bitmap =
     XCreateBitmapFromData(dpy, Scr.Root, g_bits, g_width, g_height);
@@ -1017,22 +1059,6 @@ Repository Timestamp: %s\n",
 				  XCOLOR(Scr.NotMenuColors.bg),
 				  Scr.d_depth);
   }
-  { /* scope */
-    /* create a window which will accept the keyboard focus when no other 
-       windows have it */
-    XSetWindowAttributes attributes;	/* attributes for create windows */
-    attributes.event_mask = KeyPressMask | KeyReleaseMask | FocusChangeMask;
-    attributes.override_redirect = True;
-    Scr.NoFocusWin = XCreateWindow(dpy, Scr.Root, -10, -10, 10, 10, 0, 0,
-                                   InputOnly, CopyFromParent,
-                                   CWEventMask | CWOverrideRedirect,
-                                   &attributes);
-    XMapWindow(dpy, Scr.NoFocusWin);
-  
-    SetMWM_INFO(Scr.NoFocusWin);
-  
-    XSetInputFocus(dpy, Scr.NoFocusWin, RevertToParent, CurrentTime);
-  } /* end scope */
   
   XSync(dpy, False);
   if (debugging)
