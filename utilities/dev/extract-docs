@@ -13,34 +13,60 @@
 #
 # extract-docs *.c
 #
-# Goal:
-# Ultimately, this should output tagged sgml suitable for sgml-doc
-# Right now, it just does the extraction into high-level elements w/o
-# adding the logical tags
+# Purpose:
+# Extract documentation from comments in C source files
+# and generate a plaintext listing of the procedures, and
+# DocBook SGML output to create parts of the SCWM manual.
 #
-# Note that it does lots of important error checking, and produces error and warning
-# messages that look like grep, so emacs' compile-mode (and probably grep-mode)
-# can be used to find problems with the documentation using M-x compile (C-x c)
-#   extract-docs *.c > /dev/null
-# then M-x next-error (C-x `)
+# Note that this script does lots of important error checking, and
+# produces error and warning messages that look like grep, so emacs'
+# compile-mode (and probably grep-mode) can be used to find problems
+# with the documentation using M-x compile (C-x c) extract-docs *.c >
+# /dev/null then M-x next-error (C-x `)
 #
 # TODO:
-# Generate DocBook output!
+# /** CONCEPT :  comment weaving
+# Links in DocBook output
 #
 # BUGS:
 # This should probably be written in guile-scheme instead of perl
+# (perhaps the guile folks will do this if they want to use a similar
+#  extraction system for guile-scheme)
 #
 
+require 5.004;  # uses "for my $var"
 use strict;
 use constant TRUE => (1==1);
 use constant FALSE => (1==0);
 use File::Basename;
 
-my $pkg_name = basename($ENV{PWD});
+my $getopts_option_letters = 'hqQD';
+use vars qw($opt_h $opt_q $opt_Q $opt_D);
 
-my $header = "";
-#my $fDebug = TRUE;
+sub script_usage ( ) {
+  print "@_\nUsage: $0 [-$getopts_option_letters]
+-q     Be reasonably quiet-- do not warn about spacing or purpose strings
+-Q     Be completely QUIET-- no warnings (still prints errors)
+-D     Debugging output on
+";
+  exit 0;
+}
+
+
+my $pkg_name = basename($ENV{PWD});
 my $fDebug = FALSE;
+my $fQuiet = FALSE;
+my $fReallyQuiet = FALSE;
+
+
+use Getopt::Std;
+getopts($getopts_option_letters);
+
+script_usage() if ($opt_h);
+
+$fDebug = TRUE if $opt_D;
+$fQuiet = TRUE if $opt_q || $opt_Q;
+$fReallyQuiet = TRUE if $opt_Q;
 
 # maps from a procedure name to a hash
 # containing "usage", "purpose", "comment",  "markup", "file", "line"
@@ -49,6 +75,7 @@ my %procedure = ();
 # primitives defined in that file
 my %file_funcs = ();
 
+my $header = "";
 while (<>) {
   close(ARGV) if (eof);
   if (m/^SCWM_PROC/) {
@@ -121,6 +148,7 @@ print MARKUP_OUT <<END_HEADER
 END_HEADER
 ;
 
+# This outputs the scwm-procedures.txt file to stdout
 foreach my $proc (sort { lc($a) cmp lc($b) } keys %procedure) {
   my $usage = $procedure{$proc}{usage};
   my $comment = $procedure{$proc}{comment};
@@ -132,6 +160,7 @@ $usage
 $comment
 [From $file:$line]
 
+
 EOC
   ;
   print MARKUP_OUT $markup, "\n";
@@ -213,7 +242,9 @@ sub ProcessHeader( $ ) {
   my %argnames = map { uc($_) => 1} @args;
 
   if ($primname ne $expected_primname && $primname ne $expected_primname2) {
-    print STDERR "$ARGV:$.:****$cprimname: expected scheme primitive named \`$expected_primname\'\n";
+    if (!$fReallyQuiet) {
+      print STDERR "$ARGV:$.:****$cprimname: expected scheme primitive named \`$expected_primname\'\n";
+    }
   }
 
   if ($cremovals != scalar(@args) ) {
@@ -229,7 +260,9 @@ sub ProcessHeader( $ ) {
   }
 
   if (!defined($comment) || $comment eq "") {
-    print STDERR "$ARGV:$.:****$cprimname: comment missing\n";
+    if (!$fReallyQuiet) {
+      print STDERR "$ARGV:$.:****$cprimname: comment missing\n";
+    }
     $comment = "";
   }
 
@@ -263,17 +296,19 @@ sub ProcessHeader( $ ) {
   foreach my $word (split /[^-+?!\w_\"]+/, $comment) {
     if ($word =~ /^[A-Z][-A-Z0-9_+?!]+$/) {
       if (!defined($argnames{$word})) {
-	print STDERR "$ARGV:$.:****$cprimname: all-uppercase word \`$word\' does not match an argument\n";
+	if (!$fReallyQuiet) {
+	  print STDERR "$ARGV:$.:****$cprimname: all-uppercase word \`$word\' does not match an argument\n";
+	}
       }
     }
   }
 
   # check to make sure all formals are referred to in the comment
-  # warning is #**** since these are less severe problems and one
-  # may choose to filter them
   foreach my $formal (keys %argnames) {
     if ($comment !~ /\Q$formal\E/) {
-      print STDERR "$ARGV:$.:\#***$cprimname: formal $formal not mentioned in comment\n";
+      if (!$fReallyQuiet) {
+	print STDERR "$ARGV:$.:****$cprimname: formal $formal not mentioned in comment\n";
+      }
     }
   }
 
@@ -284,8 +319,22 @@ sub ProcessHeader( $ ) {
   }
   chomp ($purpose); # in case it matched the newline
   if (!defined($purpose) || $purpose !~ /\.\s*$/) {
-    print STDERR "$ARGV:$.:****$cprimname: first line of comment should be a purpose sentence\n";
+    if (!$fQuiet) {
+      print STDERR "$ARGV:$.:****$cprimname: first line of comment should be a purpose sentence\n";
+    }
   }
+
+  # Clean up spacing in $comment
+  my $old_comment = $comment;
+  $comment =~ s/^\s+//mg;
+  if ($comment ne $old_comment) {
+    if (!$fQuiet) {
+      print STDERR "$ARGV:$.:****$cprimname: leading spaces (indentation) is being omitted\n";
+    }
+  }
+
+  # Clean up trailing space, but don't warn about it
+  $comment =~ s/\s+$//mg;
 
   # Now want to do the markup of $comment, and set $markup_comment
   # FIXGJB: fold into testing, above
