@@ -35,10 +35,14 @@
 
 ;;; Code:
 
+(display "[robbe.scwmrc] Loading modules ...\n")
+
 (use-scwm-modules base winops winlist wininfo style face flux optargs
 		  std-menus animation message-window pie-menus gnome-hints
-		  xlock-menus
+		  xlock-menus placement
 		  group (ice-9 string-fun) (ice-9 regex))
+
+(display "[robbe.scwmrc] Loading modules ... done.\n")
 
 ;; Gnome & SM
 (enable-gnome-hints)
@@ -112,8 +116,7 @@
       (append 
        user-image-load-path 
        '("/usr/X11R6/lib/X11/mini-icons"
-	 "/usr/X11R6/include/X11/pixmaps" 
-	 "/uns/X11R6/include/X11/bitmaps")
+	 "/usr/share/pixmaps")
        image-load-path))
 
 ; misc
@@ -166,7 +169,8 @@
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:hint-override #f #:decorate-transient #f
 	      #:PPosition-hint #t
-	      #:lenience #t)
+	      #:lenience #t
+	      #:transient-placement-proc place-at-point)
 
 (define wm-style 'squashed)
 
@@ -352,8 +356,8 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 		       ,(if (which "xemacs")
 			    '("X&Emacs" "xem" "emacs")
 			    '("&Emacs" "emacs" "emacs"))
-		       ("&Netscape" ("netscape4.08s" "netscape4.04s"
-						     "netscpape404" "netscape")
+		       ("&Netscape" ("netscape4.08s" "netscape4s"
+						     "netscpape4" "netscape")
 				    "Netscape")
 		       ("Gnome &Panel" ("gnome panel" "panel"))
 		       ,menu-separator
@@ -417,7 +421,8 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
     (menuitem "Re&size" #:extra-label "F6" #:action interactive-resize)
     (menuitem "&Raise" #:action raise-window)
     (menuitem "&Lower" #:action lower-window)
-;;    (menuitem "&Print" #:action print-window)
+    (if (defined? 'print-window)
+      (menuitem "&Print" #:action print-window))
     (menuitem "(Un)&Window-Shade" #:action toggle-window-shade)
     (menuitem "(De)&Iconify" #:extra-label "F4" #:action toggle-iconify)
     (menuitem "(Un)&Maximize" #:extra-label "F8"
@@ -438,41 +443,91 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (define (popup-window-ops)
   (popup-menu window-ops-menu))
 
+(define tooltip-window (make-message-window ""))
+(define (tooltip-show tip)
+  (message-window-set-message! tooltip-window tip)
+  (apply message-window-set-position! `(,tooltip-window ,@(pointer-position) -1 -1))
+  (message-window-show! tooltip-window))
+(define (tooltip-hide)
+  (message-window-hide! tooltip-window))
+
 (define (popup-small-ops)
   (let ((w (get-window)))
     (popup-menu
      (menu 
       (list
-       (menuitem "M" #:image-above "move.xpm"
-		 #:action interactive-move)
-       (menuitem "#" #:image-above "resize.xpm"
-		 #:action interactive-resize)
-       (menuitem "+" #:action raise-window)
-       (menuitem "-" #:action lower-window)
+       (menuitem "M" #:image-above "/usr/share/pixmaps/move.xpm"
+		 #:action interactive-move
+		 #:hover-action (lambda ()
+				  (tooltip-show "move"))
+		 #:unhover-action tooltip-hide)
+       (menuitem "#" #:image-left "/home/robbe/pixmaps/resize.xpm"
+		 #:action interactive-resize
+		 #:hover-action (lambda ()
+				  (tooltip-show "resize"))
+		 #:unhover-action tooltip-hide)
+       (menuitem "+" #:action raise-window
+		 #:hover-action (lambda ()
+				  (tooltip-show "raise"))
+		 #:unhover-action tooltip-hide)
+       (menuitem "-" #:action lower-window
+		 #:hover-action (lambda ()
+				  (tooltip-show "lower"))
+		 #:unhover-action tooltip-hide)
        (menuitem "v" #:image-left "minimize.xpm"
-		 #:action iconify)
+		 #:action toggle-iconify
+		 #:hover-action (lambda ()
+				  (tooltip-show "iconify"))
+		 #:unhover-action tooltip-hide)
        menu-separator
        (menuitem ">" #:action
 		 (menu
 		  (list
 		   (menuitem (if (maximized? w) "~^" "^")
 			     #:image-left "maximize.xpm"
-			     #:action toggle-maximize-vertical)
-		   (menuitem (if (sticky-window? w) "~*" "*")
-			     #:action toggle-stick)
-		   (menuitem (if (shaded-window? w) "~=" "=")
-			     #:action toggle-window-shade)
+			     #:action vertical-toggle-maximize
+			     #:hover-action (lambda () (tooltip-show
+							"vertical maximize"))
+			     #:unhover-action tooltip-hide)
+		   (menuitem (if (sticky? w) "~*" "*")
+			     #:action toggle-stick
+			     #:hover-action (lambda ()
+					      (tooltip-show "stick"))
+			     #:unhover-action tooltip-hide)
+		   (menuitem (if (window-shaded? w) "~=" "=")
+			     #:action toggle-window-shade
+			     #:hover-action (lambda ()
+					      (tooltip-show "shade"))
+			     #:unhover-action tooltip-hide)
 		   (menuitem (if (kept-on-top? w) "~T" "T")
-			     #:action toggle-on-top)
+			     #:action toggle-on-top
+			     #:hover-action (lambda ()
+					      (tooltip-show "keep on top"))
+			     #:unhover-action tooltip-hide)
 		   (menuitem (if (circulate-skip? w) "~S" "S")
-			     #:action toggle-circulate-skip)
+			     #:action toggle-circulate-skip
+			     #:hover-action (lambda ()
+					      (tooltip-show "circulate skip"))
+			     #:unhover-action tooltip-hide)
 		   menu-separator
-		   (menuitem "P" #:action show-X-properties)
-		   (menuitem "?" #:action xwininfo-window))
+		   (menuitem "P" #:action show-X-properties
+			     #:hover-action (lambda ()
+					      (tooltip-show "properties"))
+			     #:unhover-action tooltip-hide)
+		   (menuitem "?" #:action xwininfo-window
+			     #:hover-action (lambda ()
+					      (tooltip-show "win info"))
+			     #:unhover-action tooltip-hide))
 		  #:look circle-pie-menu-look))
        menu-separator
-       (menuitem "X" #:action close-window)
-       (menuitem "D" #:action destroy-window))
+       (menuitem "X" #:action close-window
+		 #:hover-action (lambda ()
+				  (tooltip-show "close"))
+		 #:unhover-action tooltip-hide)
+       (menuitem "D" #:action destroy-window
+		 #:hover-action (lambda ()
+				  (tooltip-show "destroy"))
+		 #:unhover-action tooltip-hide))
       #:look circle-pie-menu-look))))
 
 (define (popup-winlist)
@@ -483,18 +538,18 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
       0
       (window-last-focus-time win)))
 
+(define focus-locked #f)
+
 (define (rb:focus win)
-  (cond
-   (win (deiconify-window win)
-	(raise-window win)
-	(focus-window win))))
+  (cond ((and win (not focus-locked)) (deiconify-window win)
+				      (raise-window win)
+				      (focus-window win))))
 
 (define (rb:warp win)
-  (cond
-   (win (deiconify-window win)
-	(raise-window win)
-	(warp-to-window win)
-	(focus-window win))))
+  (cond ((and win (not focus-locked)) (deiconify-window win)
+				      (raise-window win)
+				      (warp-to-window win)
+				      (focus-window win))))
 
 (define (toggle-focus)
   "Focus window that had the focus before the current one."
@@ -602,7 +657,8 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (bind-mouse 'root 1 popup-softs)
 (bind-mouse 'root 2 popup-window-ops)
 (bind-mouse 'root 3 popup-winlist)
-(bind-mouse 'left-button-1 1 (lambda () (popup-small-ops)))
+#! -- "no buttons!" is my newest fad
+(bind-mouse 'left-button-1 1 popup-small-ops)
 (bind-mouse 'left-button-2 1 (lambda () (case (mouse-event-type)
 				     ('click (close-window))
 				     ('double-click (destroy-window)))))
@@ -612,6 +668,7 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 	    (lambda () (case (mouse-event-type)
 			 ('click (toggle-maximize-vertical))
 			 ('double-click (toggle-maximize (%x 100) (%y 100))))))
+!#
 (bind-mouse 'frame-corners 1 resize-or-raise)
 (bind-mouse 'frame-sides 1 move-or-raise)
 (define (move-or-shade)
@@ -655,6 +712,17 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 	      #:start-lowered #t)
 (window-style (class-match?? "Nethack")
 	      #:start-on-desk 3)
+
+(define (place-ns-find w)
+  (let* ((ns-pos (window-viewport-position (window-transient-for w)))
+	 (x (min (+ (car ns-pos) 300) (- display-width 378)))
+	 (y (max (- (cadr ns-pos) 30) 0)))
+    (move-to x y w)
+    (move-pointer-to (+ x 30) (+ y 55))))
+
+(window-style (title-match?? "Netscape: Find")
+	      #:transient-placement-proc place-ns-find)
+
 (window-style (title-match?? "UAE")
 	      #:icon "amiga.xpm.gz"
 	      #:placement-proc (lambda (win)
@@ -669,7 +737,13 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 	      #:icon "CompactDisc.xpm.gz"
 	      #:random-placement #t #:use-style FixedSize)
 (window-style (title-match?? "XZip Status")
-	      #:random-placement #t #:use-style FixedSize)
+	      #:placement-proc (lambda (win) (move-window-to-desk 1 win)
+				       (move-to 0 0 win))
+	      #:kept-on-top #t
+	      #:use-style FixedSize)
+(window-style (title-match?? "XZip")
+	      #:start-on-desk 1
+	      #:use-style FixedSize)
 (window-style (title-match?? "povray")
 	      #:icon "xpovicon.xpm.gz"
 	      #:random-placement #t #:use-style FixedSize)
