@@ -10,9 +10,10 @@
   :use-module (app scwm xlib-drawing))
 
 ;; (use-modules (app scwm ui-constraints-classes))
+;; (use-modules (app scwm xlib-drawing))
 
 
-;; (load "/scratch/gjb/scwm/scheme/ui-constraints-classes.scm")
+;; (load "/home/gjb/scwm/scheme/ui-constraints-classes.scm")
 ;; (set-current-module the-root-module)
 (reset-ui-constraint-classes!)
 
@@ -29,6 +30,7 @@
 
 ;; (select-window-interactively "Select one:" ui-constraint-prompter-msgwin)
 
+(xlib-set-drawing-mask! 2147483647)  ;; 2^31-1, nice for 32 bit displays
 
 ;; public drawing variables
 
@@ -266,7 +268,7 @@
 
 
 (define (ui-cnctr-keep-top-at-value)
-  (one-window-prompter "keep-top-at-value" "Window to anchor?"))
+  (one-window-prompter "anchor-top" "Window to anchor?"))
 
 (define (cnctr-keep-top-at-value w1)
   (let* ((top (cadr (window-position w1)))
@@ -287,14 +289,14 @@
 
 (define-public uicc-ktc
   (make-ui-constraint-class 
-   "keep-top-at-value" 1 cnctr-keep-top-at-value 
+   "anchor-top" 1 cnctr-keep-top-at-value 
    ui-cnctr-keep-top-at-value draw-cn-keep-top-at-value 
    cl-is-constraint-satisfied? 
-   "cn-keep-top-at-value.xpm" menuname-keep-at-value))
+   "cn-anchor-top.xpm" menuname-keep-at-value))
 
 
 (define (ui-cnctr-keep-left-at-value)
-  (one-window-prompter "keep-left-at-value" "Window to anchor?"))
+  (one-window-prompter "anchor-left" "Window to anchor?"))
 
 (define (cnctr-keep-left-at-value w1)
   (let* ((left (car (window-position w1)))
@@ -315,14 +317,14 @@
 
 (define-public uicc-klc
   (make-ui-constraint-class 
-   "keep-left-at-value" 1 cnctr-keep-left-at-value 
+   "anchor-left" 1 cnctr-keep-left-at-value 
    ui-cnctr-keep-left-at-value draw-cn-keep-left-at-value 
    cl-is-constraint-satisfied? 
-   "cn-keep-left-at-value.xpm" menuname-keep-at-value))
+   "cn-anchor-left.xpm" menuname-keep-at-value))
 
 
 (define (ui-cnctr-keep-right-at-value)
-  (one-window-prompter "keep-right-at-value" "Window to anchor?"))
+  (one-window-prompter "anchor-right" "Window to anchor?"))
 
 (define (cnctr-keep-right-at-value w1)
   (let* ((right (+ (car (window-position w1)) (car (window-size w1))))
@@ -343,10 +345,10 @@
 
 (define-public uicc-krc
   (make-ui-constraint-class 
-   "keep-right-at-value" 1 cnctr-keep-right-at-value 
+   "anchor-right" 1 cnctr-keep-right-at-value 
    ui-cnctr-keep-right-at-value draw-cn-keep-right-at-value 
    cl-is-constraint-satisfied? 
-   "cn-keep-right-at-value.xpm" menuname-keep-at-value))
+   "cn-anchor-right.xpm" menuname-keep-at-value))
 
 
 ;; global-constraint-instance-list
