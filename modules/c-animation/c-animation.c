@@ -31,6 +31,12 @@
 #include "scwm.h"
 #include "screen.h"
 #include "borders.h"
+#include "xmisc.h"
+#include "util.h"
+#include "events.h"
+#include "module-interface.h"
+#include "window.h"
+
 
 /* TODO: Animated resizes? Animated iconifies of various flavors? 
    what else could be animated? */
