@@ -1,4 +1,8 @@
-;;; ".scwmrc"   -*-scwm-*-
+;;; "juhp.scwmrc"   -*-scwm-*-
+
+(display "reading \".scwmrc\"...\n")
+(display (scwm-version-date))
+(newline)
 
 ;; Uncomment the below to send a single UDP packet to
 ;; the scwm usage counter machine at startup
@@ -10,15 +14,16 @@
 ;; import the scwm modules       ;;
 
 (use-modules (app scwm base)
-	     (app scwm winops)
-	     (app scwm winlist)
-	     (app scwm wininfo)
-	     (app scwm optargs)
-             (app scwm style)
+	     (app scwm decor)
 	     (app scwm doc)
 	     (app scwm face)
-	     (app scwm decor)
-	     )
+	     (app scwm flux)
+	     (app scwm fvwm-module)
+	     (app scwm optargs)
+             (app scwm style)
+	     (app scwm wininfo)
+	     (app scwm winlist)
+	     (app scwm winops))
 
 ;; menu compatibility
 (define (display-menu . rest)
@@ -51,10 +56,8 @@
 
 (set-icon-font! font12)
 
-(set-rubber-band-mask! 127)
-
-;; removed primitive --07/27/98 gjb
-;;(set-opaque-move-size! 100)
+(set! opaque-move-percent 100)
+(set! opaque-resize-percent 100)
 
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
@@ -150,7 +153,7 @@
 ;; (window-style "xmag" #:icon "mag_glass.xpm")
 ;; (window-style "Emacs" #:icon "gnu-animal.bmp")
 (window-style "XTerm" #:icon "xterm.xpm")
-(window-style "XBuffy" #:use-style desk-widget)
+(window-style "XBuffy" #:use-style desk-widget #:focus 'none)
 (window-style "*clock" #:use-style desk-widget)
 (window-style "swisswatch" #:use-style desk-widget)
 (window-style "perfmeter" #:use-style desk-widget)
@@ -159,6 +162,7 @@
 (window-style "balloon-help" #:use-style desk-widget)
 (window-style "* Properties" #:no-titlebar #f)
 (window-style "asmail" #:use-style desk-widget)
+(window-style "FvwmPager" #:use-style desk-widget)
 
 (set-edge-scroll! 0 0)
 
@@ -180,27 +184,28 @@
 	       (menuitem "More" #f)
 	       menu-title
 	       (menuitem "&Move" #:image-left "mini-move.xpm"
-			 #:action interactive-move)
+			 #:action interactive-move-maybe-opaque)
 	       (menuitem "Re&size" #:image-left "mini-resize.xpm"
-			 #:action interactive-resize)
+			 #:action interactive-resize-maybe-opaque)
 	       (menuitem "&Raise" #:image-left "mini-raise.xpm"
 			 #:action raise-window)
 	       (menuitem "&Lower" #:image-left "mini-lower.xpm"
 			 #:action lower-window)
+	       (menuitem "&Info" #:action window-info-menu)
 	       (menuitem "(Un)Window-Shade"
 			 #:action toggle-window-shade)
 	       (menuitem "(De)Iconify" #:image-left "mini-iconify.xpm"
 			 #:action toggle-iconify)
-	       (menuitem "(Un)Maximize" #:image-left "mini-maxtall.xpm" 
-			 #:action vertical-toggle-maximize)
+	       (menuitem "(Un)&Maximize" #:image-left "mini-maxtall.xpm" 
+			 #:action toggle-max-vert)
 	       (menuitem "(Un)Stick" #:image-left "mini-stick.xpm"
 			 #:action toggle-stick)
 	       (menuitem "(Un)Keep On Top"
 			 #:action toggle-on-top)
 	       menu-separator
-	       (menuitem "&Delete" #:image-left "mini-cross.xpm"
+	       (menuitem "Delete" #:image-left "mini-cross.xpm"
 			 #:action delete-window)
-	       (menuitem "&Close" #:image-left "mini-bomb.xpm"
+	       (menuitem "Close" #:image-left "mini-bomb.xpm"
 			 #:action close-window)
 	       (menuitem "Destroy" #:image-left "mini-bomb.xpm"
 			 #:action destroy-window))))
@@ -208,8 +213,7 @@
    (menuitem "&Switch to..." #:action
 	     (lambda () 
 	       (show-window-list-menu #:show-geometry #t)))
-   (menuitem "Re&fresh Screen" #:image-left "mini-ray.xpm" 
-	     #:action refresh)
+   (menuitem "Re&fresh Screen" #:action refresh)
    menu-separator
    (menuitem "&Restart scwm" #:action (lambda () (restart "scwm")))
    (menuitem "&Exit scwm" #:action quit-verify-menu)))
@@ -218,21 +222,23 @@
   (display-menu
    (menuitem "Window" #f)
    menu-title
-   (menuitem "Move" #:image-left "mini-move.xpm" #:action interactive-move)
-   (menuitem "Resize" #:image-left "mini-resize.xpm"
-	     #:action interactive-resize)
-   (menuitem "Raise" #:image-left "mini-raise.xpm" #:action raise-window)
-   (menuitem "Lower" #:image-left "mini-lower.xpm" #:action lower-window)
+   (menuitem "&Move" #:image-left "mini-move.xpm"
+	     #:action interactive-move-maybe-opaque)
+   (menuitem "Re&size" #:image-left "mini-resize.xpm"
+	     #:action interactive-resize-maybe-opaque)
+   (menuitem "&Raise" #:image-left "mini-raise.xpm" #:action raise-window)
+   (menuitem "&Lower" #:image-left "mini-lower.xpm" #:action lower-window)
+   (menuitem "&Info" #:action window-info-menu)
    menu-separator
    (menuitem (if (iconified? w)
 		  "Deiconify"
 		  "Iconify") 
 	      #:action toggle-iconify)
    (menuitem (if (maximized? w)
-		  "Unmaximize"
-		  "Maximize")
+		  "Un&maximize"
+		  "&Maximize")
 	     #:image-left "mini-maxtall.xpm"
-	     #:action vertical-toggle-maximize)
+	     #:action toggle-max-vert)
    (menuitem (if (sticky? w)
 		  "Unstick"
 		  "Stick")
@@ -319,22 +325,35 @@
 		  #:action (lambda () (window-list-proc x))))
 	       (list-windows #:except visible?)))))
 
-(define (focus-window-menu)
-  (display-menu
-   (menuitem "Window with focus:" #f)
-   menu-title
-   (let ((has-focus (current-window-with-focus)))
-     (menuitem (if has-focus
-		   (window-title has-focus)
-		   "none") #f))))
+(define (window-geometry w)
+  (let ((size (window-size w))
+	(pos (window-position w)))
+    (string-append (number->string (car size))
+		   "x"
+		   (number->string (cadr size))
+		   "+"
+		   (number->string (car pos))
+		   "+"
+		   (number->string (cadr pos)))))
+
+(define (window-info-menu)
+  (let ((focus-win (current-window-with-focus)))
+    (if focus-win
+	(display-menu
+	 (menuitem (string-append "Title: " (window-title focus-win)) #f)
+	 (menuitem (string-append "Class: " (window-class focus-win)) #f)
+	 (menuitem (string-append "Resource: " (window-resource focus-win)) #f)
+	 (menuitem (string-append "Geometry: " (window-geometry focus-win)) #f))
+	(display-menu
+	 (menuitem "No window has focus." #f)))))
 
 (bind-key 'all "A-Left" (lambda () (move-screen -1 0)))
 (bind-key 'all "A-Right" (lambda () (move-screen 1 0)))
 (bind-key 'all "A-Up" (lambda () (move-screen 0 -1)))
 (bind-key 'all "A-Down" (lambda () (move-screen 0 1)))
 
-(define* (move-window x y #&optional (w (current-window-with-focus)))
-  (let* ((amount 50)
+(define* (do-move-window x y #&optional (w (current-window-with-focus)))
+  (let* ((amount 25)
 	 (position (window-viewport-position w))
 	 (oldx (car position))
 	 (oldy (cadr position)))
@@ -342,42 +361,62 @@
 	     (+ oldy (* y amount))
 	     w 'animated)))
 
-(bind-key 'all "S-A-Left" (lambda () (move-window -1 0)))
-(bind-key 'all "S-A-Right" (lambda () (move-window 1 0)))
-(bind-key 'all "S-A-Up" (lambda () (move-window 0 -1)))
-(bind-key 'all "S-A-Down" (lambda () (move-window 0 1)))
+(bind-key 'all "S-A-Left" (lambda () (do-move-window -1 0)))
+(bind-key 'all "S-A-Right" (lambda () (do-move-window 1 0)))
+(bind-key 'all "S-A-Up" (lambda () (do-move-window 0 -1)))
+(bind-key 'all "S-A-Down" (lambda () (do-move-window 0 1)))
+
+(define (move-window-screen x y)
+  (let* ((old-screen (current-screen))
+	(new-screen (map + old-screen (list x y)))
+	(new-screen-x (car new-screen))
+	(new-screen-y (cadr new-screen))
+	(size (desk-size))
+	(size-x (car size))
+	(size-y (cadr size)))
+    (if (or (< new-screen-x 0) (> new-screen-x (- size-x 1))
+	    (< new-screen-y 0) (> new-screen-y (- size-y 1)))
+	(beep)
+	(begin
+	  (move-window-to-viewport  new-screen-x new-screen-y)
+	  (move-screen x y)))))
+
+(bind-key 'all "C-A-Left" (lambda () (move-window-screen -1 0)))
+(bind-key 'all "C-A-Right" (lambda () (move-window-screen 1 0)))
+(bind-key 'all "C-A-Up" (lambda () (move-window-screen 0 -1)))
+(bind-key 'all "C-A-Down" (lambda () (move-window-screen 0 1)))
 
 ;;; wm related bindings
 ;; (bind-key 'all "A-\`" popup-ops)  ;; Bad binding specifier
-(bind-key 'all "A-f" focus-window-menu)
+(bind-key 'all "A-i" window-info-menu)
 (bind-key 'all "A-l" refresh)
 (bind-key 'all "A-r" toggle-raise)
 (bind-key 'all "A-S-r" (lambda () (restart "scwm")))
 (bind-key 'all "A-q" quit-verify-menu)
-(bind-key 'all "C-A-S-q" quit)
-(bind-key 'all "A-s" toggle-window-shade)
+;; (bind-key 'all "C-A-S-q" quit)
+(bind-key 'window "A-s" toggle-window-shade)
 (bind-key 'all "A-w" windows-off-screen-menu)
 (bind-key '(window icon) "A-z" toggle-iconify)
 (bind-key 'all "A-F1" root-menu)
 (bind-key '(window icon) "A-F2" window-menu)
-;; (bind-key 'all "A-g" (lambda () (display (get-window #t #f))))
-;; (bind-mouse 'all "A-1" (lambda () (display (get-window #t #f))))
+
 (bind-mouse 'root 1 root-menu)
 (bind-mouse 'root 2 show-window-list-menu)
-(bind-mouse '(title frame sidebar) 3 window-menu)
-(bind-mouse '(frame sidebar) 2 resize-or-raise)
+
 (define (move-or-shade)
   (case (mouse-event-type)
     ((double-click) (toggle-window-shade))
-    (else (move-or-raise))))
-(bind-mouse 'title 1 move-or-shade)
-(bind-mouse 'title 2 lower-window)
+    (else (move-or-raise-maybe-opaque))))
+
+(bind-mouse '(title frame sidebar) 1 move-or-shade)
+(bind-mouse '(title frame sidebar) 2 resize-or-raise-maybe-opaque)
+(bind-mouse '(title frame sidebar) 3 window-menu)
 
 ;; some stuff for icons
 (define (move-or-deiconify)
   (case (mouse-event-type)
-    ((motion) (interactive-move))
-    ((click) (deiconify))))
+    ((click) (deiconify))
+    ((motion) (interactive-move-maybe-opaque))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
 (bind-mouse 'icon 2 deiconify)
@@ -394,7 +433,7 @@
 (bind-key 'all "A-m" (lambda ()
 		       (execute "mule -q --no-site-file")))
 (bind-key 'all "A-n" (lambda ()
-		       (execute "netscape -install")))
+		       (execute "netscape")))
 (bind-key 'all "A-c" (lambda ()
 		       (execute "communicator")))
 (bind-key 'all "A-t" (lambda ()
@@ -404,14 +443,14 @@
 (bind-key 'all "A-S-x" (lambda ()
 		       (execute "xemacs --vanilla")))
 
-(define (print-info thunk windows)
-	(if (not (null? windows))
-	    (begin
-	      (write (car windows))
-	      (display #\tab)
-	      (display (thunk (car windows)))
-	      (display #\newline)
-	      (print-info thunk (cdr windows)))))
+;(define (print-info thunk windows)
+;	(if (not (null? windows))
+;	    (begin
+;	      (write (car windows))
+;	      (display #\tab)
+;	      (display (thunk (car windows)))
+;	      (display #\newline)
+;	      (print-info thunk (cdr windows)))))
 
 ;; rotate the current window with the keyboard
 (bind-key 'all "A-Tab"
@@ -422,6 +461,22 @@
 	  (lambda ()
 	    (prev-window #:only visible? #:except iconified?)))
 
-(write-line "\n\".scwmrc\" parsed.")
 
+;;-------------------------------;;
+;; fvwm modules                  ;;
+; (set! fvwm2-module-path (append '("/usr/local/X11R6.1/lib/X11/fvwm2")
+;				fvwm2-module-path))
+
+(register-fvwm2-module-config "FvwmPager"
+			      "*FvwmPagerBack grey70"
+			      "*FvwmPagerFore black"
+			      "*FvwmPagerHilight lightyellow"
+			      "*FvwmPagerFont none"
+			      "*FvwmPagerDeskTopScale 35"
+			      "*FvwmPagerGeometry -5+145"
+			      "*FvwmPagerSmallFont 5x8")
+(run-fvwm2-module "FvwmPager" '("0" "0"))
+
+
+(display "reading \".scwmrc\"...done\n")
 ;;; end of ".scwmrc"
