@@ -1,3 +1,25 @@
+Wed Nov 26 11:07:51 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* Do not define away the Broadcast{,Name,Config} functions -- call
+ 	the ones in module-interface.c, include module-types.h where needed
+
+	* Makefile.in: Stop using $(SHELL) -ec to build dependencies as
+ 	quoting becomes a burden giving the new complex setting of
+ 	CFLAGS.... not sure what the ramifications of this are, and I
+ 	still appear to be getting problems building dependences
+
+	* borders.c: Changed check that had an extra "!" and was causing a
+ 	dereference of an image that was SCM_BOOL_F.  Fixes my core dump
+ 	problem.
+
+	* image.c: Rename make-image-new to make-image, and change old
+ 	make-image back to make-picture (to ultimately be removed)
+
+	* move.c: Remove overshooting target bug in AnimatedWindowShading
+	by just stopping once we're at least 100% to the target.
+
+	* scwm.c: init_scheme_string no longer const char *, just char *
+
 Wed Nov 26 00:38:50 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* image.c: Added support for registering a "default" image loader
