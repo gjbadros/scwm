@@ -36,8 +36,8 @@
 ;;; Code:
 
 (use-scwm-modules base winops winlist wininfo style face flux optargs
-		  std-menus animatio message-window pie-menus gnome-hints group 
-		  (ice-9 string-fun) (ice-9 regex))
+		  std-menus animation message-window pie-menus gnome-hints
+		  group (ice-9 string-fun) (ice-9 regex))
 
 ;; Gnome & SM
 (enable-gnome-hints)
@@ -407,7 +407,8 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 				      (menuitem "&Quit" #:extra-label "S-q"
 						#:action quit)
 				      menu-separator
-				      (menuitem "&Shutdown!" #:action #f)))))))
+				      (menuitem "Logout" #:action
+						(lambda () (system "save-session --kill &")))))))))
 
 (define (popup-softs)
   (popup-menu softs-menu))
