@@ -1,0 +1,8 @@
+#!/bin/sh
+# Extract the initialization actions for builtin things.
+
+# The guile-snarg I have with guile-1.2 is *wrong*! the below
+# fixes it -- be sure to install this instead of the guile-snarf
+# that is distributed w/ guile --gjb 11/28/97 
+#gcc -E -DSCM_MAGIC_SNARFER $* | grep "^ *% *% *%" | sed -e "s/^ *% *% *%//"
+gcc -E -DSCM_MAGIC_SNARFER "$@" | grep "^ *% *% *%" | sed -e "s/^ *% *% *%//"
