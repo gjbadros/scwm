@@ -12,5 +12,7 @@ if which cpp 2>/dev/null; then
 elif test -x /lib/cpp; then
     CPP=/lib/cpp
 fi
-$CPP "$@" | sed -e 's/@@/\
+# -P option inhibits generation of "# line "
+# lines that cause xrdb angst.
+$CPP -P "$@" | sed -e 's/@@/\
 /g' -e 's/[ \t]*$//g'
