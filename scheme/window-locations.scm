@@ -15,6 +15,17 @@ module."
 	 (newpt (virtual->viewport x y)))
     (cons (car newpt) (cadr newpt))))
 
+(define-public (window-center-middle win)
+  "Return a pair (X . Y) that is the pixel position of the middle of the WIN
+relative to current viewport."
+  (let* ((pos (window-viewport-position win))
+	 (size (window-frame-size win))
+	 (xl (car pos))
+	 (yt (cadr pos))
+	 (w (car size))
+	 (h (cadr size)))
+    (cons (+ xl (half w)) (+ yt (half h)))))
+
 (define-public (window-center-top win)
   "Return a pair (X . Y) that is the pixel position of the center, top of WIN
 relative to current viewport."

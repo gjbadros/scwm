@@ -58,7 +58,7 @@
 ;; returns a new constraint class object based on the parameters
 ;; SIDE-EFFECT: adds new class obj to the global list
 
-(define*-public (make-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
+(define-public (make-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
   "CTR takes NUM-WINDOWS windows and creates a constraint of this type.
 SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if it is satisfied
 UI-CTR should return the arguments (as a list) for CTR to build the constraint with.  UI-CTR should
@@ -68,8 +68,9 @@ MENUNAME-PROC is a proc that takes a UI-CONSTRAINT as an arg and returns the nam
 for the constraint in the toggle menu.  
 This routine returns a new constraint class object based on the parameters.
 SIDE-EFFECT: addes new class obj to the global class list."
-  (let* ((obj (vector obid-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)))
+  (let ((obj (vector obid-ui-constraint-class name num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)))
     (set! global-constraint-class-list (cons obj global-constraint-class-list))
+    (call-hook-procedures constraint-class-add-hook-list (list obj))
     obj))
 
 
@@ -81,12 +82,18 @@ SIDE-EFFECT: addes new class obj to the global class list."
 (define-public (delete-ui-constraint-class! ui-constraint-class)
   "Removes UI-CONSTRAINT-CLASS from the global class list.
 SIDE-EFFECT: removes class object from the global class list."
-  (set! global-constraint-class-list (delq ui-constraint-class global-constraint-class-list)))
+  (begin
+    (set! global-constraint-class-list (delq ui-constraint-class global-constraint-class-list))
+    (call-hook-procedures constraint-class-delete-hook-list (list ui-constraint-class))))
 
 
 (define-public (reset-ui-constraint-classes!)
   "Empty the global list of ui-constraint-classes."
-  (set! global-constraint-class-list '()))
+  (begin
+    (for-each (lambda (class) 
+		(call-hook-procedures constraint-class-remove-hook-list (list class))) 
+	      global-constraint-class-list)
+    (set! global-constraint-class-list '())))
 
 ;; ui-constraint-class?
 
@@ -238,6 +245,7 @@ SIDE-EFFECT: adds new instance object to the global list."
 	     (uc (vector obid-ui-constraint ui-constraint-class cn #f win-list opts #f '())))
 	(set! global-constraint-instance-list (cons uc global-constraint-instance-list))
 	(call-hook-procedures constraint-add-hook-list (list uc))
+	(call-hook-procedures constraint-composition-record-hook-list (list uc arg-list))
 	uc)
       (error "Argument must be a UI-CONSTRAINT-CLASS object")))
 
@@ -368,34 +376,6 @@ Errors if UI-CONSTRAINT is not a ui-constraint."
       (error "Argument must be a UI-CONSTRAINT object")))
 
 
-;; ui-constraint-enable-hooks
-
-(define-public (ui-constraint-enable-hooks ui-constraint)
-  "Returns a list of the enable-hook functions added to the UI-CONSTRAINT.
-Errors if UI-CONSTRAINT is not a ui-constraint object."
-  (if (ui-constraint? ui-constraint)
-      (vector-ref ui-constraint 7)
-      (error "Argument must be a UI-CONSTRAINT object")))
-
-
-;; ui-constraint-add-enable-hook
-
-(define-public (ui-constraint-add-enable-hook ui-constraint hook)
-  "Adds a HOOK proc which will be called when UI-CONSTRAINT enable state changes.
-HOOK should take one argument which is the new state of the UI-CONSTRAINT.
-Errors if UI-CONSTRAINT is not a ui-constraint object."
-  (let ((hlist (ui-constraint-enable-hooks ui-constraint)))
-      (vector-set! ui-constraint 7 (cons hook hlist))))
-    
-
-;; ui-constraint-remove-enable-hook
-
-(define-public (ui-constraint-remove-enable-hook ui-constraint hook)
-  "Removes a HOOK proc from the list in UI-CONSTRAINT.
-Errors if UI-CONSTRAINT is not a ui-constraint object."
-  (let ((hlist (ui-constraint-enable-hooks ui-constraint)))
-    (vector-set! ui-constraint 7 (delq hook hlist))))
-
 
 ;; set-enable!
 
@@ -420,8 +400,8 @@ Errors if UI-CONSTRAINT is not a ui-constraint object."
 errors if UI-CONSTRAINT is not a ui-constraint.
 returns the constraint."
   (if (ui-constraint? ui-constraint)
-      (let* ((cn (ui-constraint-cn ui-constraint))
-	     (hooks (ui-constraint-enable-hooks ui-constraint)))
+      (let ((cn (ui-constraint-cn ui-constraint))
+	    (hooks (ui-constraint-enable-hooks ui-constraint)))
 	(map (lambda (c) (cl-add-constraint (scwm-master-solver) c)) cn)
 	(set-enable! ui-constraint #t)
 	(call-hook-procedures hooks '(#t)))
@@ -439,8 +419,8 @@ returns the constraint."
 errors if UI-CONSTRAINT is not a ui-constraint
 returns the constraint"
   (if (ui-constraint? ui-constraint)
-      (let* ((cn (ui-constraint-cn ui-constraint))
-	     (hooks (ui-constraint-enable-hooks ui-constraint)))
+      (let ((cn (ui-constraint-cn ui-constraint))
+	    (hooks (ui-constraint-enable-hooks ui-constraint)))
 	(map (lambda (c) (cl-remove-constraint (scwm-master-solver) c)) cn)
 	(set-enable! ui-constraint #f)
 	(call-hook-procedures hooks '(#f)))
@@ -546,11 +526,50 @@ an ui-constraint."
 ;; This code handles the hook functions which are called when 
 ;; a constraint is added or deleted.
 
+;;----------------------------------------------
+;; Constraint Class Hooks
+
+;; The lists of hook functions
+
+(define-public constraint-class-add-hook-list '())
+(define-public constraint-class-delete-hook-list '())
+
+
+;; add a hook procedures
+
+(define-public (add-constraint-class-add-hook! hook)
+  "Add a procedure HOOK to be called when a constraint class is added.
+HOOK should be a procedure which takes a ui-constraint-class as
+an argument."
+  (set! constraint-class-add-hook-list (cons hook constraint-class-add-hook-list)))
+
+(define-public (add-constraint-class-delete-hook! hook)
+  "Add a procedure HOOK to be called when a constraint class is deleted.
+HOOK should be a procedure which takes a ui-constraint-class as
+an argument."
+  (set! constraint-class-delete-hook-list (cons hook constraint-class-delete-hook-list)))
+
+
+;; remove a hook procedures
+  
+(define-public (remove-constraint-class-add-hook! hook)
+  "Remove a procedure HOOK from the list of constraint-class-add hooks."
+  (set! constraint-class-add-hook-list (delq hook constraint-class-add-hook-list)))
+
+(define-public (remove-constraint-class-delete-hook! hook)
+  "Remove a procedure HOOK from the list of constraint-class-delete hooks."
+  (set! constraint-class-delete-hook-list (delq hook constraint-class-delete-hook-list)))
+
+;;----------------------------------------------
+;; Constraint Instance Hooks
+
 ;; The lists of hook functions
 
 (define-public constraint-add-hook-list '())
 (define-public constraint-delete-hook-list '())
+(define-public constraint-composition-record-hook-list '())
 
+;; Constraint Instance Construction/Destruction Hooks
 
 ;; add a hook procedures
 
@@ -576,3 +595,53 @@ an argument."
 (define-public (remove-constraint-delete-hook! hook)
   "Remove a procedure HOOK from the list of constraint-delete hooks."
   (set! constraint-delete-hook-list (delq hook constraint-delete-hook-list)))
+
+
+;; Constraint Instance (Un)Enable Hooks
+
+;; ui-constraint-add-enable-hook
+
+(define-public (ui-constraint-add-enable-hook ui-constraint hook)
+  "Adds a HOOK proc which will be called when UI-CONSTRAINT enable state changes.
+HOOK should take one argument which is the new state of the UI-CONSTRAINT.
+Errors if UI-CONSTRAINT is not a ui-constraint object."
+  (let ((hlist (ui-constraint-enable-hooks ui-constraint)))
+      (vector-set! ui-constraint 7 (cons hook hlist))))
+    
+;; ui-constraint-remove-enable-hook
+
+(define-public (ui-constraint-remove-enable-hook ui-constraint hook)
+  "Removes a HOOK proc from the list in UI-CONSTRAINT.
+Errors if UI-CONSTRAINT is not a ui-constraint object."
+  (let ((hlist (ui-constraint-enable-hooks ui-constraint)))
+    (vector-set! ui-constraint 7 (delq hook hlist))))
+
+;; ui-constraint-enable-hooks
+
+(define-public (ui-constraint-enable-hooks ui-constraint)
+  "Returns a list of the enable-hook functions added to the UI-CONSTRAINT.
+Errors if UI-CONSTRAINT is not a ui-constraint object."
+  (if (ui-constraint? ui-constraint)
+      (vector-ref ui-constraint 7)
+      (error "Argument must be a UI-CONSTRAINT object")))
+
+
+
+;; Constraint Instance Composition Recording Hooks
+
+;; These hooks may be of limited usefulness outside of the 
+;; ui-constraints-composition framework.
+
+(define-public (add-constraint-composition-record-hook! hook)
+  "Add a procedure HOOK to be called when a constraint is added.
+HOOK should be a procedure which takes a ui-constraint object and
+the list of arguments passed to the constructor for that 
+ui-constraint object.  It is used by the ui-constraint-composition
+system."
+  (set! constraint-composition-record-hook-list 
+	(cons hook constraint-composition-record-hook-list)))
+
+(define-public (remove-constraint-composition-record-hook! hook)
+  "Remove a procedure HOOK from the list of constraint-composition-record list."
+  (set! constraint-composition-record-hook-list 
+	(delq hook constraint-composition-record-hook-list)))
