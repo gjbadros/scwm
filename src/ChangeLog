@@ -1,3 +1,7 @@
+Wed Mar 11 00:10:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scmprocs.c: Remove inclusion of paths.h
+
 Tue Mar 10 22:10:54 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (window_shade): Fixed bugs w.r.t. not redrawing the
