@@ -2038,12 +2038,7 @@ void set_sticky (SCM win, SCM flag)
 }
 
 
-scwm_property_handler sticky_handler =
-{
-  &set_sticky,
-  &sticky_p
-};
-
+SCWM_PROPERTY_HANDLER(sticky_handler, sym_sticky, sticky_p, set_sticky);
 
 
 /*
@@ -3920,12 +3915,7 @@ squashed_titlebar_p(SCM win)
   return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fSquashedTitlebar);
 }
 
-scwm_property_handler squashed_titlebar_handler =
-{
-  &set_squashed_titlebar_x,
-  &squashed_titlebar_p
-};
-
+SCWM_PROPERTY_HANDLER(squashed_titlebar_handler, sym_squashed_titlebar, squashed_titlebar_p, set_squashed_titlebar_x);
 
 
 void 

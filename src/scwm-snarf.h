@@ -11,6 +11,7 @@
 #endif
 
 #include <libguile/snarf.h>
+#include "winprop.h"
 
 /* Can extract comment post-cpp using, e.g.:
 gcc -DHAVE_CONFIG_H -I. -I. -I../include -I/usr/X11R6/include -I/uns/include -E -C -DSCWM_EXTRACT_COMMENTS binding.c
@@ -58,6 +59,15 @@ SCM var
 %%%     do { var = scm_sysintern(name, SCM_EOL); } while (0)
 #endif
 
+#endif
+
+
+#ifndef SCM_MAGIC_SNARFER
+#define SCWM_PROPERTY_HANDLER(var, sym, getter, setter) \
+static scwm_property_handler var = { &setter, &getter }
+#else
+#define SCWM_PROPERTY_HANDLER(var, sym, getter, setter) \
+%%%     set_property_handler (sym, &var)
 #endif
 
 

@@ -1,4 +1,9 @@
-Fri Mar 26 12:56:31 1999  Maciej Stachowiak  (mstachow@alum.mit.edu)
+Fri Mar 26 14:21:06 1999  Maciej Stachowiak  <mstachow@racerx>
+
+        * scwm-snarf.h (SCWM_PROPERTY_HANDLER): New snarf macro.
+        * window.c: Use it.
+
+Fri Mar 26 12:56:31 1999  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
         * callbacks.h, scwm-snarf.h (SCWM_HOOK, SCWM_GLOBAL_HOOK):
         SCMW_HOOK now lives in scwm-snarf.h and is a proper magical snarf
