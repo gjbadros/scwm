@@ -1,4 +1,10 @@
-Sat Sep 25 11:17:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
+Sat Sep 25 13:11:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* prompt-binding.scm: Make insert/delete buttons insensitive until 
+	they do something useful.  Do signal connections at the end after
+	all widgets are defined.  Sort the commands and the bindings.
+
+Sat Sep 25 12:32:53 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* reflection.scm, flux.scm: Move procedure->string to reflection,
  	from flux.
@@ -6,6 +12,8 @@ Sat Sep 25 11:17:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
 	* prompt-proc.scm: Some cleanup.
 
 	* prompt-binding.scm: Added
+
+	* Makefile.am:  Added prompt-binding.scm
 
 Fri Sep 24 20:45:59 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
