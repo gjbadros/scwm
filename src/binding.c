@@ -9,6 +9,7 @@
 #include "scwm.h"
 #include "menus.h"
 #include "screen.h"
+#include "window.h"
 
 struct symnum {
   SCM sym;
@@ -77,10 +78,13 @@ SCM bind_key(SCM contexts, SCM key, SCM proc)
   int context = 0;
   int l = 0;
 
+  SCM_REDEFER_INTS;
   if(!gh_string_p(key)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("bind-key",2,key);
   }
   if(!gh_procedure_p(proc)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("bind-key",3,proc);
   }
 
@@ -88,12 +92,15 @@ SCM bind_key(SCM contexts, SCM key, SCM proc)
 
   switch (context) {
   case 0:
+    SCM_ALLOW_INTS;
     scwm_error("bind-key",8);
     break;
   case -1:
+    SCM_ALLOW_INTS;
     scwm_error("bind-key",9);
     break;
   case -2:
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("bind-key",1,contexts);
     break;
   default:
@@ -123,9 +130,9 @@ SCM bind_key(SCM contexts, SCM key, SCM proc)
    */
   if ((keysym = XStringToKeysym(keyname)) == NoSymbol ||
       (XKeysymToKeycode(dpy, keysym)) == 0) {
-    gh_defer_ints();
     free(okey);
     gh_allow_ints();
+    SCM_ALLOW_INTS;
     scwm_error("bind",4);
   }
 
@@ -136,7 +143,6 @@ SCM bind_key(SCM contexts, SCM key, SCM proc)
    * Because more than one keycode might map to the same keysym -MS
    */
 
-  gh_defer_ints();
   XDisplayKeycodes(dpy, &min, &max);
   for (i=min; i<=max; i++)
     if (XKeycodeToKeysym(dpy, i, 0) == keysym)
@@ -154,7 +160,7 @@ SCM bind_key(SCM contexts, SCM key, SCM proc)
       scm_protect_object(proc);
     }
   free(okey);
-  gh_allow_ints();
+  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 
@@ -169,6 +175,8 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
   int len,i,min,max,j,k;
   int modmask = 0;
   int context = 0;
+
+  SCM_REDEFER_INTS;
   
   if(!gh_string_p(button)) {
     if (gh_number_p(button)) 
@@ -176,22 +184,27 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
 	bnum=gh_scm2int(button);
 	bset=1;
       } else {
+	SCM_ALLOW_INTS;
 	scm_wrong_type_arg("bind-mouse",2,button);
       }
   }
   if(!gh_procedure_p(proc)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("bind-mouse",3,proc);
   }
 
   context=compute_contexts(contexts);
   switch (context) {
   case 0:
+    SCM_ALLOW_INTS;
     scwm_error("bind-mouse",8);
     break;
   case -1:
+    SCM_ALLOW_INTS;
     scwm_error("bind-mouse",9);
     break;
   case -2:
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("bind-mouse",1,contexts);
     break;
   default:
@@ -216,8 +229,6 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
     } while (0);
     bnum=strtol(keyname,NULL,10);
   }
-
-  gh_defer_ints();
 
 
   if((context != C_ALL) && (context & C_LALL))
@@ -269,7 +280,7 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
   if (!bset) {
     free(okey);
   }
-  gh_allow_ints();
+  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 
@@ -280,42 +291,6 @@ SCM bind_mouse(SCM contexts, SCM button, SCM proc)
 
 SCM sym_motion,sym_click,sym_one_and_a_half_clicks,sym_double_click;
 
-void init_binding(void) 
-{
-  int i;
-  static char *context_strings[] = {
-    "window",
-    "title",
-    "icon",
-    "root",
-    "frame",
-    "sidebar",
-    "button-1",
-    "button-2",
-    "button-3",
-    "button-4",
-    "button-5",
-    "button-6",
-    "button-7",
-    "button-8",
-    "button-9",
-    "button-10",
-    "all",
-    NULL
-  };
-  for (i=0;context_strings[i]!=NULL;i++) {
-    binding_contexts[i].sym=gh_symbol2scm(context_strings[i]);
-    scm_protect_object(binding_contexts[i].sym);
-  }
-  sym_motion=gh_symbol2scm("motion");
-  scm_protect_object(sym_motion);
-  sym_click= gh_symbol2scm("click");
-  scm_protect_object(sym_click);
-  sym_one_and_a_half_clicks=gh_symbol2scm("one-and-a-half-clicks");
-  scm_protect_object(sym_one_and_a_half_clicks);
-  sym_double_click=gh_symbol2scm("double-click");
-  scm_protect_object(sym_double_click);
-}
 
 
 
@@ -358,6 +333,95 @@ SCM mouse_event_type()
 }
 
 
+SCM sym_new_window
+/*,sym_enter_window.sym_leave_window,sym_edge_hook */;
+
+static SCM new_window_hook=SCM_BOOL_F;
+/* static SCM window_enter_hook=SCM_UNDEFINED;
+   static SCM window_leave_hook=SCM_UNDEFINED;
+   static SCM edge_hook=SCM_UNDEFINED;
+   */
+
+SCM bind_event(SCM ev_sym,SCM proc)
+{
+  SCM old_handler;
+  if (!gh_symbol_p(ev_sym)) {
+    scm_wrong_type_arg("bind-event",1,ev_sym);
+  }
+
+  if (!gh_procedure_p(proc) && (proc != SCM_BOOL_F)) {
+    scm_wrong_type_arg("bind-event",2,proc);
+  }
+
+  if (gh_eq_p(ev_sym,sym_new_window)) {
+    old_handler=new_window_hook;
+    scm_unprotect_object(old_handler);
+    new_window_hook=proc;
+    scm_protect_object(proc);
+  } else {
+    scwm_error("bind-event",12);
+  }
+  return old_handler;
+}
+
+
+void run_new_window_hook(SCM w)
+{
+  if (new_window_hook!=SCM_BOOL_F) {
+    set_window_context(w);
+    call_thunk_with_message_handler(new_window_hook);
+    unset_window_context();
+  }
+}
+
+
+
+void init_binding(void) 
+{
+  int i;
+  static char *context_strings[] = {
+    "window",
+    "title",
+    "icon",
+    "root",
+    "frame",
+    "sidebar",
+    "button-1",
+    "button-2",
+    "button-3",
+    "button-4",
+    "button-5",
+    "button-6",
+    "button-7",
+    "button-8",
+    "button-9",
+    "button-10",
+    "all",
+    NULL
+  };
+  for (i=0;context_strings[i]!=NULL;i++) {
+    binding_contexts[i].sym=gh_symbol2scm(context_strings[i]);
+    scm_protect_object(binding_contexts[i].sym);
+  }
+  sym_motion=gh_symbol2scm("motion");
+  scm_protect_object(sym_motion);
+  sym_click= gh_symbol2scm("click");
+  scm_protect_object(sym_click);
+  sym_one_and_a_half_clicks=gh_symbol2scm("one-and-a-half-clicks");
+  scm_protect_object(sym_one_and_a_half_clicks);
+  sym_double_click=gh_symbol2scm("double-click");
+  scm_protect_object(sym_double_click);
+  sym_new_window=gh_symbol2scm("new-window");
+  scm_protect_object(sym_new_window);
+  /*
+  sym_new_window=gh_symbol2scm("enter-window");
+  scm_protect_object(sym_enter_window);
+  sym_new_window=gh_symbol2scm("leave-window");
+  scm_protect_object(sym_leave_window);
+  sym_new_window=gh_symbol2scm("edge");
+  scm_protect_object(sym_edge);
+  */
+}
 
 
 
