@@ -1,0 +1,27 @@
+(ALL SCWM NUMBERS ARE W/ CASSOWARY COMPILE-TIME OPTION)
+16-April-1999
+
+./scwm -f /dev/null
+# with imlib
+gjb      24695  4.7  0.9  5752  3528  p2 S N  08:36   0:00 ./scwm -f /dev/null 
+
+./scwm -f /dev/null
+# without imlib
+gjb      31110 14.6  0.8  4948  3256  rf S N  09:34   0:00 ./scwm -f /dev/null 
+
+
+
+(use-modules gtk gdk)
+-> Increases by almost 2MB to ~ 6.8MB
+
+(use-modules app scwm gtk)
+-> Same: Increases by almost 2MB to ~ 6.8MB
+
+
+guile:
+(use-modules gtk gdk)
+-> Increases from 1872 to 5092 (kb) -- >3MB!
+
+guile:
+(use-modules cassowary constraints)
+-> Increases from 1872 to 2452 (kb) -- just > .5 MB
