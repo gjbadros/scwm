@@ -1,3 +1,12 @@
+Tue Apr  2 23:57:16 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* style-options.scm:
+	Made window-style-options public for debugging purposes (with comment).
+	Modified comment on add-window-style-option to add 'both type to list
+	  of type we use.
+	Added doc strings on all the public functions.
+	Slight formatting improvements to code.
+
 Tue Apr  2 22:16:22 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* face.scm: 
