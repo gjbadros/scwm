@@ -1098,8 +1098,10 @@ Ideally it would never be necessary, but it is useful for debugging\n\
 and for new window objects set via object properties.")
 #define FUNC_NAME s_force_reset_window_frame_x
 {
-  VALIDATE_WIN_USE_CONTEXT(win);
-  ResizePswToCurrentSize(PSWFROMSCMWIN(win));
+  ScwmWindow *psw;
+  VALIDATE_WIN_COPY_USE_CONTEXT(win,psw);
+  if (psw->fFullyConstructed)
+    ResizePswToCurrentSize(psw);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

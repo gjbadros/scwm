@@ -98,6 +98,20 @@ the same position as before the call."
   (interactive)
   (show-titlebar win #t))
 
+(define*-public (hide-side-decorations #&optional (win (get-window)))
+  "Do not display the sidebar decorations for WIN.
+See also `show-side-decorations'."
+  (interactive)
+  (set-object-property! win 'no-side-decorations #t)
+  (force-reset-window-frame! win))
+
+(define*-public (show-side-decorations #&optional (win (get-window)))
+  "Display the sidebar decorations for WIN.
+See also `hide-side-decorations'."
+  (interactive)
+  (set-object-property! win 'no-side-decorations #f)
+  (force-reset-window-frame! win))
+
 (define-public toggle-titlebar-in-place
   (make-toggling-winop titlebar-shown? hide-titlebar-in-place show-titlebar-in-place))
 

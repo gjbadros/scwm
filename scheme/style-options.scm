@@ -27,15 +27,21 @@
 (define window-style-options (make-hash-table 60))
 
 
-; 'normal 'hint 'splicing
+;;; Three typle are allowed: 'normal 'hint 'splicing
 
 (define*-public (add-window-style-option key handler #&optional 
 					 (type 'normal) (cumulative? #f))
   (hashq-set! window-style-options (keyword->symbol key) 
 	      (vector handler type cumulative?)))
 
-(define ((make-bool-handler t-handler f-handler) val win)
-  (if val (t-handler win) (f-handler win)))
+(define (make-bool-handler t-handler f-handler)
+  (let ((proc (lambda (val win)
+		(if val (t-handler win) (f-handler win)))))
+    (set-procedure-property! proc 'name (symbol-append (procedure-name t-handler)
+						       '-or-
+						       (procedure-name f-handler)
+						       '-handler))
+    proc))
 
 ;; Convenience wrappers for backwards-compatiblity
 (define*-public (add-boolean-style-option key th fh #&optional (cumulative? #f))
@@ -48,16 +54,19 @@
   (add-window-hint-option key (make-bool-handler th fh) cumulative?))
 
 (define*-public (add-window-both-option key handler #&optional (cumulative? #f))
-  (add-window-style-option key handler 'hint cumulative?)
-  (add-window-style-option key handler 'normal cumulative?))
+  (add-window-style-option key handler 'both cumulative?))
 
 (define*-public (add-boolean-both-option key th fh #&optional (cumulative? #f))
-  (add-window-style-option key (make-bool-handler th fh) 'normal cumulative?)
-  (add-window-hint-option key (make-bool-handler th fh) cumulative?))
+  (add-window-style-option key (make-bool-handler th fh) 'both cumulative?))
 
 
-(define ((make-property-handler property) val win)
-  (set-window-property! win property val))
+(define (make-property-handler property)
+  (let ((proc (lambda (val win)
+		(set-window-property! win property val))))
+    (set-procedure-property! proc 'name (symbol-append property
+						       '-style-handler))
+    proc))
+    
 
 (define*-public (add-property-style-option key property #&optional 
 					    (cumulative? #f))
@@ -77,4 +86,3 @@
   (and=> (hashq-ref window-style-options key) vector-second))
 (define-public (style-option:cumulative? window-style-options key)
   (and=> (hashq-ref window-style-options key) vector-third))
-

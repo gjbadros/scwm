@@ -22,6 +22,7 @@
 (define-module (app scwm style)
   :use-module (app scwm base)
   :use-module (app scwm style-options)
+  :use-module (app scwm winops)
   :use-module (app scwm wininfo))
 
 
@@ -32,7 +33,11 @@
 (define (style:style-entries style)
   style)
 
-(define global-conditional-style (x-make-style ()))
+;; Set this to #t for help with debugging
+(define-public debug-style-handler-applications #f)
+
+;; GJB:FIXME:: this is public only for debugging
+(define-public global-conditional-style (x-make-style ()))
 
 (define-public (style-one-window win . args)
   (let ((new-style (apply make-conditional-style always? args)))
@@ -96,6 +101,9 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 		((hint) 
 		 (loop (cddr l) style-accum (acons key value hint-accum)
 		       already))
+		((both)
+		 (loop (cddr l) (acons key value style-accum) (acons key value hint-accum)
+		       already))
 		((splicing) 
 		 (loop (cddr l) () ()
 		       (append already
@@ -137,6 +145,11 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
      (if ((style-entry:condition se) win) 
 	 (for-each 
 	  (lambda (o)
+	    (if debug-style-handler-applications
+		(begin
+		  (display "applying style handler: ")
+		  (write (style-option:handler (car o)))
+		  (newline)))
 	    ((style-option:handler (car o)) (cdr o) win))
 	  (stype se))))
    (style:style-entries style)))
@@ -152,16 +165,12 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 (define (make-style-entry condition window-options hint-options)
   (vector condition window-options hint-options))
 
-(define vector-first (lambda (v) (vector-ref v 0)))
-(define vector-second (lambda (v) (vector-ref v 1)))
-(define vector-third (lambda (v) (vector-ref v 2)))
-
 (define (style-entry:condition style-entry)
-  (vector-first style-entry))
+  (vector-ref style-entry 0))
 (define (style-entry:window-options style-entry) 
-  (vector-second style-entry))
+  (vector-ref style-entry 1))
 (define (style-entry:hint-options style-entry)
-  (vector-third style-entry))
+  (vector-ref style-entry 2))
 
 (define (objects->string . objs)
   (with-output-to-string 
@@ -169,10 +178,9 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 
 (define (merge-styles style1 style2)
   (x-make-style (append (style:style-entries style1)
-		      (style:style-entries style2))))
+			(style:style-entries style2))))
 
 ;; MS:FIXME:: Figure out what I meant by the comment below.
-
 ;; MS:FIXME:: add actual simplification later. Hack to make windows eq?
 (define (simplify-style style)
   style)
@@ -188,16 +196,6 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 				 (style-entry:hint-options s-entry)))
 			      (style:style-entries style))))
  'splicing)
-
-
-;; GJB:FIXME:: these should probably not be public
-(define-public (hide-side-decorations win)
-  (set-object-property! win 'no-side-decorations #t)
-  (force-reset-window-frame! win))
-
-(define-public (show-side-decorations win)
-  (set-object-property! win 'no-side-decorations #f)
-  (force-reset-window-frame! win))
 
 ;; some useful style options
 (add-window-style-option #:border-width set-border-width!)
@@ -222,10 +220,8 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
 (add-boolean-style-option #:kept-on-top keep-on-top un-keep-on-top)
 (add-boolean-style-option #:sticky stick-window unstick-window)
 
-;;; GJB:FIXME:NOW: The -both- option does not seem to make a difference
-;;; right yet. --10/16/99 gjb
 (add-boolean-both-option #:no-titlebar hide-titlebar show-titlebar)
-(add-boolean-style-option #:no-side-decorations hide-side-decorations show-side-decorations)
+(add-boolean-both-option #:no-side-decorations hide-side-decorations show-side-decorations)
 (add-property-style-option #:squashed-titlebar 'squashed-titlebar)
 
 ; clashes with maximized so make it hint-only for now

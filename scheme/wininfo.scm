@@ -271,7 +271,7 @@ See `wildcard-matcher' for the meanings of FULL-REGEXP and REGEXP-OPTIONS."
 (define-public default-matcher-type 'wildcard)
 (define-public default-matcher-case-sensitive #f)
 
-(defmacro* define-string-matcher
+(defmacro*-public define-string-matcher
   (name docstring-or-accessor #&optional accessor)
   (let ((docstring-list (if (bound? accessor) 
 			    (list docstring-or-accessor) '()))
