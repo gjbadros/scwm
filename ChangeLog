@@ -1,3 +1,10 @@
+Sun Sep  6 15:53:02 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Fix ReadRestOfComment for Scheme
+	comments by stripping leading ;;;s.  fDebug-guard some debugging 
+	output.  force single words after /** so that long comments
+	with /** prefixes don't get mistaken for /** special comments
+
 Sun Sep  6 15:19:26 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Track
