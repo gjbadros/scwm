@@ -38,12 +38,30 @@ a Redhat mirror such as:
 ftp://ftp.rge.com/pub/systems/linux/redhat/redhat-6.0/i386/RedHat/RPMS/
 
 
-Core dump in _IO_setvbug?  You probably have a guile/glibc/scwm library
-mismatch of some sort. If you're on Redhat 6.0, the guile and
-guile-devel rpms should work fine with Scwm.  Otherwise, it's probably
-most prudent to grab the guile-1.3 sources from the Scwm web page, get
-the local patch and apply it, then re-build guile and re-install.  Be
-sure to remove any old installations of guile, too, or at least be sure
-that Scwm links against the new build of guile.
+Core dump in _IO_setvbug?  You probably have a guile compiled with
+glibc2.0, trying to run by dynamically linking against glibc2.1.
 
+If you're on Redhat 6.0, the guile and guile-devel rpms should work fine
+with Scwm.  Otherwise, it's probably most prudent to grab the guile-1.3
+sources from the Scwm web page, get the local patch and apply it, then
+re-build guile and re-install.  Be sure to remove any old installations
+of guile, too, or at least be sure that Scwm links against the new build
+of guile.
+
+
+
+Lots of warnings like:
+
+constraint-primitives.x:2: warning: ANSI C++ prohibits conversion from `(SCM)' to `(...)'
+
+and
+
+color.c:221: warning: passing arg 1 of `gh_str02scm' discards `const' from pointer target type
+
+and
+
+image.c:414: warning: passing arg 1 of `scm_wrong_type_arg' discards `const' from pointer target type
+
+Just ignore them-- they are harmless (the latter can be fixed by adding
+const declarations to the prototypes in libguile/error.h).
 

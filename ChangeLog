@@ -1,3 +1,9 @@
+Thu Jul  1 10:08:15 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Let SCWM_ARG_PATH take a withval that is not a
+	pre-existing directory-- if so, create the directory and print a
+	warning, but use the value.  Thanks Francesco Tapparo!
+
 Thu Jul  1 09:36:23 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added scwm_pixmapdir, and have pixmaps go in
