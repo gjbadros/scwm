@@ -45,10 +45,12 @@
 	    (neg w)
 	    (pos w))))
 
-(define*-public (close-window #&optional (w (get-window #t)))
-  (if w (if (window-deletable? w)
-	    (delete-window w)
-	    (destroy-window w))))
+(define*-public (close-window #&optional (win (get-window #t)))
+  "Close WIN either by deleting it or destroying it.
+WIN is only destroyed if it is not deleteable."
+  (if w (if (window-deletable? win)
+	    (delete-window win)
+	    (destroy-window win))))
  
 (define-public toggle-raise
   (make-toggling-winop raised? lower-window raise-window))
@@ -62,11 +64,19 @@
 (define-public toggle-window-shade 
   (make-toggling-winop window-shaded? un-window-shade window-shade))
 
-(define-public (window-shade-animated w)
-  (window-shade w #t))
+(define-public (window-shade-animated win)
+  "Make WIN be window-shaded animatedly.
+This rolls the client window up into the titlebar, much as
+snapping up a window shade on a window."
+  (window-shade win #t))
 
-(define-public (un-window-shade-animated w)
-  (un-window-shade w #t))
+;; FIXGJB: rename to window-unshade-animated
+
+(define-public (un-window-shade-animated win)
+  "Make WIN be not window-shaded animatedly.
+This rolls the client window down out of the titlebar, much as
+pulling down a window shade on a window."
+  (un-window-shade win #t))
 
 (define-public toggle-window-shade-animated
   (make-toggling-winop window-shaded? 
@@ -85,34 +95,41 @@
 (define-public toggle-stick-icon
   (make-toggling-winop icon-sticky? unstick-icon stick-icon))
 
-(define*-public (maximize nw nh #&optional (w (get-window)))
-  (if w (let* ((pos (window-position w))
-	       (size (window-frame-size w))
+(define*-public (maximize nw nh #&optional (win (get-window)))
+  "Maximize WIN to new width NW and new height NH.
+If NW or NH is 0, that dimension is not changed."
+  (if win (let* ((pos (window-position win))
+	       (size (window-frame-size win))
 	       (x (car pos))
 	       (y (cadr pos))
 	       (width (car size))
 	       (height (cadr size)))
-	  (if (not (maximized? w))
-	      (set-object-property! w 'maximized 
+	  (if (not (maximized? win))
+	      (set-object-property! win 'maximized 
 				    (list x y width height)))
 	  (move-to (if (> nw 0) 0 x)
-		   (if (> nh 0) 0 y) w)
+		   (if (> nh 0) 0 y) win)
 	  (resize-frame-to (if (> nw 0) nw width)
-			   (if (> nh 0) nh height) w))))
+			   (if (> nh 0) nh height) win))))
 
-(define*-public (maximized? #&optional (w (get-window)))
-  (->bool (object-property w 'maximized)))
+(define*-public (maximized? #&optional (win (get-window)))
+  "Return #t if WIN is maximized, #f otherwise."
+  (->bool (object-property win 'maximized)))
 
-(define*-public (unmaximize #&optional (w (get-window)))
-  (if w (let ((max-prop (object-property w 'maximized)))
+;; FIXGJB: use client units
+(define*-public (unmaximize #&optional (win (get-window)))
+  "Unmaximize WIN so it returns to its size before maximization.
+This should use client units, but currently uses frame-size in pixels."
+  (if win (let ((max-prop (object-property win 'maximized)))
 	  (cond
 	   (max-prop (move-to (car max-prop)
-			      (cadr max-prop) w)
+			      (cadr max-prop) win)
 		     (resize-frame-to (caddr max-prop)
-				      (cadddr max-prop) w)
-		     (set-object-property! w 'maximized #f))))))
+				      (cadddr max-prop) win)
+		     (set-object-property! win 'maximized #f))))))
 
 (define-public (window-frame-area win)
+  "Return the number of square pixels of area that WIN is."
   (let* ((frame-size (window-frame-size win))
 	 (width (car frame-size))
 	 (height (cadr frame-size)))
@@ -192,9 +209,10 @@ motion does `interactive-move-maybe-opaque', and double-click does
 
 
 
-(define*-public (print-window #&optional (w (get-window)))
-  (if w (execute (string-append "xwd -id " 
-				(number->string (window-id w))
+(define*-public (print-window #&optional (win (get-window)))
+  "Print WIN using xpr and lpr."
+  (if win (execute (string-append "xwd -id " 
+				(number->string (window-id win))
 				" | xpr | lpr"))))
 
 

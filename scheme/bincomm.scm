@@ -175,6 +175,8 @@
 ;; reads the binary representation of a C long from the port and
 ;; returns it as a Scheme number.
 (define*-public (binary-read-long #&optional (port (current-input-port)))
+  "Reads a binary representation of a C long and return as a scheme number.
+The value is read from PORT, or the current-input-port."
   (let* ((u (make-uniform-array #xfffffff 1))
 	 (result (uniform-array-read! u port)))
     (if (< result 1)

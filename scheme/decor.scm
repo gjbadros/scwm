@@ -25,6 +25,7 @@
 
 
 (define-public (call-with-decor decor thunk)
+  "Eval THUNK using DECOR as the current decor."
   (let* ((old-decor (current-decor))
          (swap-in-decor (lambda () 
                           (set-current-decor! decor)))
