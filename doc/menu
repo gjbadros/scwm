@@ -1,0 +1,28 @@
+Menu Properties
+---------------
+ o Item list
+ o Drawing (layout, mostly) interface
+ Optionally, perhaps stored in an alist
+ * Title item (a regular menu item)
+ * Local keymap context (default to global menu keymap)
+ * Popup delay (could do this instead w/ a hook when a menu item becomes the
+                current selection, before mouse/key click)
+ * Side pixmap, color
+ * Font
+ * Other things interpreted specially by the arbitrary drawing code
+
+Menu Item Properties
+--------------------
+ o Identifier
+ o Hook (could be #f for a separator or a title)
+ o Drawing interface
+ Optionally:
+ * String(s) to display (identifier used if not given)
+ * Pixmap, and properties (e.g., location)
+ * Shortcut key list (just gets incorporated into the keymap of parent)
+ * States (hidden, grayed, selected)
+
+
+Need to be able to:
+  o change key bindings dynamically and arbitrarily
+  o dynamically load new drawing code
