@@ -6,6 +6,6 @@ bin_SCRIPTS = startscwm scwm-conf cpp-sed-nl
 
 pkgdata_DATA = gnome-session-Scwm Xsession.patch 
 
-examples_DATA = Xresources-cpp Xmodmap-win95keyboard Xsession
+scwm_examples_DATA = Xresources-cpp Xmodmap-win95keyboard Xsession
 
 EXTRA_DIST = $(bin_SCRIPTS) $(pkgdata_DATA) $(examples_DATA)
