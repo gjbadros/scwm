@@ -63,7 +63,7 @@ sub script_usage ( ) {
 -o file  Send sgml output to file -- no sgml output unless this is given
 -s       Run ispell on the comments and reports warnings for its responses
 -C       Only output concepts chapters
--n       No warning for functions without comments
+-n       No warning for problems with comments
 -d URL  Set scwmdir source code base to path (e.g., file:///usr/local/src/scwm)
 -P prefix Set package prefix (e.g., -PCL to use CL_PROC and CL_* instead of SCWM_*)
 -S       Skip the procedures chapters-- makes it much faster to convert to HTML
@@ -755,8 +755,11 @@ sub ProcessHeader( $$$ ) {
     print STDERR "$filename:$line:**** $cprimname: number of variable arguments == $var -- why?\n";
   }
 
+  my $fAlreadyWarnedAboutNoComment = FALSE;
+
   if (!defined($comment) || $comment eq "") {
-    if (!$fReallyQuiet) {
+    if (!$fReallyQuiet && $fWarnIfNoComment) {
+      $fAlreadyWarnedAboutNoComment = TRUE;
       print STDERR "$filename:$line:**** $cprimname: comment missing\n";
     }
     $comment = "";
@@ -803,7 +806,7 @@ sub ProcessHeader( $$$ ) {
   # check to make sure all formals are referred to in the comment
   foreach my $formal (keys %argnames) {
     if ($comment !~ /\Q$formal\E/) {
-      if (!$fReallyQuiet) {
+      if (!$fReallyQuiet && $fWarnIfNoComment && !$fAlreadyWarnedAboutNoComment) {
 	print STDERR "$filename:$line:**** $cprimname: formal $formal not mentioned in comment\n";
       }
     }
@@ -913,7 +916,7 @@ sub PurposeFromComment ( $$$$ ) {
   }
   chomp ($purpose); # in case it matched the newline
   if (!defined($purpose) || $purpose !~ /\.\s*$/) {
-    if (!$fQuiet) {
+    if (!$fQuiet && $fWarnIfNoComment && $purpose !~/^\s*$/) {
       print STDERR "$filename:$line:**** $primname: first line of comment should be a purpose sentence\n";
     }
   }
