@@ -1,3 +1,8 @@
+1998-08-07  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* style.scm: First shot at making squashed-titlebar available as
+	  a style option. s-t rocks.
+
 Thu Aug  6 19:26:36 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* wininfo.scm: Fix from Todd Larason <jtl@molehill.org> to use the
