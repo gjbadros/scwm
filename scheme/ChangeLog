@@ -1,3 +1,17 @@
+Wed Oct  6 17:30:34 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added corba.scm and viavoice-smrc.scm (make check
+	reported them as missing)
+
+Wed Oct  6 15:27:28 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-gtk-toggle-menu.scm: Use spacing of 1 between
+	constraint instances.  Use two-column table, with second column
+	hboxes containing enable checkboxes AND the delete buttons.  Give
+	that box right alignment so things line up better.  Give the whole 
+	ui some spacing, move the three standard buttons into a single
+	hbuttonbox at the button of the UI.  Much improved look!
+
 Mon Oct  4 22:50:47 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-classes.scm (one-window-prompter): Return just the

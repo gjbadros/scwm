@@ -1,3 +1,8 @@
+Wed Oct  6 17:23:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use nonant-keys-mwin (nonant-keys.xpm) image when 
+	shoving a window -- nice aid for remembering what keys go where.
+
 Mon Oct  4 17:15:20 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Turn off icons, turn off animated configure
