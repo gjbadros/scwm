@@ -1,5 +1,6 @@
 *.x
 .deps
+.libs
 Makefile
 Makefile.in
 err.log
