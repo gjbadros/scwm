@@ -1,3 +1,16 @@
+Mon Oct 20 06:10:38 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* winlist.scm: Circulate (and therefore prev-window and
+ 	next-window) were giving an error when no window in the window
+ 	list satisfied the given conditions.  This is now fixed. Bug
+ 	reported by Jens-Ulrik Holger Petersen
+ 	<petersen@kurims.kyoto-u.ac.jp>.
+
+	* wininfo.scm: in-viewport-any-desk? and visible? were not working
+ 	correctly when the viewport is away from 0,0; this is fixed. Bug
+ 	reported by Jens-Ulrik Holger Petersen
+ 	<petersen@kurims.kyoto-u.ac.jp>.
+
 Sun Oct 19 01:33:50 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.in: Use mkinstalldirs to create the scwm scheme
