@@ -1,3 +1,25 @@
+1998-09-07  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* robbe.scwmrc: `thank-scwm-authors-with-usage-note' moved to
+	"Expected Variables".
+	`set-edge-scroll-delay!' is no longer current.
+	Use medium fonts instead of bold ones.
+	Simplify color scheme: white/navy is hilight, black/grayblue otherwise.
+	Menus and message window are black on royal blue.
+	wm-style can be 'barebones, 'squashed, 'decorated. 'squashed is
+	default.
+	Documented `build-menu'.
+	Redefine `warp-to-window' to remember last-window-with-focus.
+	New function `toggle-focus' switches to last-window-with-focus.
+	Bind it to S-space.
+	New function `focus-raise' that focusses and raises.
+	Use it for S-up, S-down.
+	Add style for "GTimer".
+	Remove old `flash-window'.
+	New function `flash-window-start' that starts flashing a window
+	continously with timers.
+	New function `flash-window-stop' that stops the above.
+
 Fri Aug 28 16:50:43 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* *.scwmrc: Use quit-verify to popup the menu-quit-verify, and

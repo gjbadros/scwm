@@ -35,12 +35,6 @@
 
 ;;; Code:
 
-;; Uncomment the below to send a single UDP packet to
-;; the scwm usage counter machine at startup
-;; The single packet just contains the hostname and version number
-;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
-;;(define thank-scwm-authors-with-usage-note #t)
-
 (use-modules (app scwm base)
 	     (app scwm winops)
 	     (app scwm winlist)
@@ -112,6 +106,15 @@
 ;; Expected Variables & their defaults
 ;; Can be overridden by defining them before this point.
 
+;; Uncomment the below to send a single UDP packet to
+;; the scwm usage counter machine at startup
+;; The single packet just contains the hostname and version number
+;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
+; (define thank-scwm-authors-with-usage-note #t
+
+; default to off
+(defvar thank-scwm-authors-with-usage-note #f)
+
 ; prepend the proper super modifier (or whatever modifier(s) you want to use)
 (defvar super
   (lambda (key) (string-append "s-" key))) ; default is super ("s-")
@@ -147,24 +150,23 @@
 ; misc
 (set-desk-size! 1 1)			; desktops are good, paging is evil
 (set-colormap-focus! 'focus)
-(set-edge-scroll-delay! 0)
-(set-edge-move-threshold! 5)
-
+(set-edge-scroll-delay! #f)
 (set-rubber-band-mask! 255)
 (set-animation!
  '#(0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1))
 
 ;; style
 (define font12
-  (make-font "-adobe-times-bold-r-*-*-12-*-*-*-*-*-*-*"))
+  (make-font "-adobe-times-medium-r-*-*-12-*-*-*-*-*-*-*"))
 (define font14 
-  (make-font "-adobe-times-bold-r-*-*-14-*-*-*-*-*-*-*"))
+  (make-font "-adobe-times-medium-r-*-*-14-*-*-*-*-*-*-*"))
 
 (set-icon-font! font12)
 (set-hilight-foreground! "white")
-(set-hilight-background! "blueviolet")
+(set-hilight-background! "navy")
 
-(menu-style #:fg "grey30" #:bg "#a3a3c4" #:stipple "maroon"
+(set-message-window-attributes! font12 "black" "royal blue")
+(menu-style #:fg "black" #:bg "royal blue" #:stipple "maroon"
 	    #:font font14 #:mwm #f)
 (title-style #:font font12 #:justify 'left)
 
@@ -184,7 +186,8 @@
 					      (50 35 #t)))
 
 (window-style "*" 
-	      #:fg "white" #:bg "navy" 
+; highlight   #:fg "white" #:bg "navy"
+	      #:fg "black" #:bg "#a3a3c4"
 	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:focus 'sloppy
 	      #:random-placement #f #:smart-placement #t
@@ -199,11 +202,11 @@
   (set! wm-style style)
   (case style
     ((barebones) (window-style "*" #:border-width 0 #:no-titlebar #t
-			       #:squashed-titlebar #t))
+			        #:squashed-titlebar #f))
     ((squashed) (window-style "*" #:border-width 0 #:no-titlebar #f
 			      #:squashed-titlebar #t))
     ((decorated) (window-style "*" #:border-width 4 #:no-titlebar #f
-			       #:squashed-titlebar #t))))
+			       #:squashed-titlebar #f))))
 
 ; set to default
 (set-wm-style! wm-style)
@@ -333,8 +336,25 @@
     (and prog
 	 (apply string-append prog (cdr args)))))
 
-; FIXME: docs.
 (define (build-menu title template)
+  "Returns a menu named TITLE, built according to TEMPLATE.
+TEMPLATE is a list of item definitions. An item definition may be a list,
+a menuitem, or a menu.
+
+If a list, it is interpreted as follows:
+	(NAME COMMAND [CLASS])
+This results in a menuitem named NAME, executing COMMAND.
+If CLASS is not given, COMMAND is always executed.
+If CLASS is a string, COMMAND is executed, unless a window of
+class CLASS is already present.
+If CLASS is the symbol `term', COMMAND is executed inside a xterm titled NAME,
+unless a window titled NAME is already present.
+COMMAND may also be a list of strings, in which case the first found
+in the PATH is used. If COMMAND (or neither member therof) is not found,
+no menuitem is emitted.
+
+If a menuitem or menu, it is used verbatim. This includes, for example, the
+special menuitem `menu-separator', or submenus built with `build-menu'."
   (menu
    (append
     (list
@@ -487,6 +507,22 @@
 (define (popup-winlist)
   (show-window-list-menu #:show-geometry #t))
 
+(define last-window-with-focus #f)
+
+; redefine warp-to-window to set last-window-with-focus
+(define original-warp-to-window warp-to-window)
+(define (warp-to-window . rest)
+  (set! last-window-with-focus (current-window-with-focus))
+  (apply original-warp-to-window rest)
+  (apply raise-window rest))
+
+; FIXME: does not work consistently, needs C level support for some things.
+(define (toggle-focus)
+  "Focus window that had the focus before the current one."
+  (if last-window-with-focus
+      (warp-to-window last-window-with-focus)
+      (next-window #:only visible? #:except iconified? #:proc warp-to-window)))
+
 ;; Key Bindings
 ; mouse emulation
 (bind-key 'all (super "KP_Left")	(lambda () (move-pointer -1 0)))
@@ -531,10 +567,14 @@
 (bind-key 'all (super-kp "Right")
 	  (lambda () (next-window #:only visible? #:except iconified?
 				  #:proc warp-to-window)))
+(define (focus-raise . args)
+  (apply focus args)
+  (apply raise-window args))
 (bind-key 'all (super-kp "Up")
-	  (lambda () (prev-window #:only visible? #:proc focus)))
+	  (lambda () (prev-window #:only visible? #:proc focus-raise)))
 (bind-key 'all (super-kp "Down")
-	  (lambda () (next-window #:only visible? #:proc focus)))
+	  (lambda () (next-window #:only visible? #:proc focus-raise)))
+(bind-key 'all (super "space") toggle-focus)
 ; desk switching
 (define focused-windows ())
 
@@ -612,7 +652,7 @@
 
 ;; Styles for various apps
 (define Terminal
-  (make-style #:fg "black" #:bg "#a3a3c4"))	; FIXME: UseDecor XTerm
+  (make-style #:fg "black" #:bg "#a3a3c4"))
 (define FixedSize
   (make-style #:border-width 0 #:no-button 2))
 (define NoFocus
@@ -624,6 +664,14 @@
 (window-style "Color Mixer"	#:icon "colormap_3d.xpm.gz"
 	      #:use-style FixedSize #:use-style NoFocus)
 (window-style "Control"		#:icon "amiga.xpm.gz" #:use-style FixedSize)
+(window-style "GTimer"		#:placement-proc (lambda (win)
+						   (move-to
+						    0 (+ 27
+							 (y-
+							  (cadr
+							   (window-size win))))
+						    win))
+	      #:start-lowered #t #:use-style NoFocus)
 (window-style "UAE - Debuger"	#:icon "amiga.xpm.gz" #:use-style FixedSize)
 (window-style "UAE"		#:icon "amiga.xpm.gz")
 (window-style "XCd"		#:icon "CompactDisc.xpm.gz"
@@ -673,14 +721,50 @@
 (window-style "xvidtune"	#:icon "window3d.xpm.gz")
 (window-style "xwud"		#:icon "Viewer.xpm.gz")
 
-;; some complete junk - you may want to ignore this
-(define* (flash-window #&optional (win (get-window)))
-  (do ((start 0 (- 100 start))
-       (step 10 (- 0 step))
-       (n 0 (+ n 1)))
-      ((>= n 10))
-    (do ((color start (+ color step)))
-	((not (<= 0 color 100)))
-      (style-one-window win #:fg (string-append "grey" (number->string color)))
-      (sleep-ms 100))))
+; list of windows currently flashing
+(define flash-window-list ())
 
+(define* (flash-window-start
+	  #&optional (win (select-window-interactively "Flash what?")))
+  "Color-cycle WIN's title."
+  (if (not (member win flash-window-list))
+      (letrec ((n 0)
+	       (timestep 100000)
+	       (action
+		(lambda (col)
+		  (set-window-foreground!
+		   (string-append "grey" (number->string col)) win)))
+	       (schedule
+		(lambda (proc)
+		  (if (member win flash-window-list)
+		      (add-timer-hook! timestep proc)
+		      ; FIXME: should restore colors better
+		      (for-each
+		       (lambda (hook)
+			 (hook win))
+		       (variable-ref (module-variable
+				      (resolve-module '(app scwm style))
+				      'window-style-hooks))))))
+	       (count-up
+		(lambda ()
+		  (if (<= n 100)
+		      (begin
+			(action n)
+			(set! n (+ n 10))
+			(schedule count-up))
+		      (schedule count-down))))
+	       (count-down
+		(lambda ()
+		  (if (> n 0)
+		      (begin
+			(set! n (- n 10))
+			(action n)
+			(schedule count-down))
+		      (schedule count-up)))))
+	(set! flash-window-list (cons win flash-window-list))
+	(schedule count-up))))
+
+(define* (flash-window-stop
+	  #&optional (win (select-window-interactively "Stop flashing what?")))
+  "Stop color-cycling WIN's title."
+  (set! flash-window-list (delete win flash-window-list)))
