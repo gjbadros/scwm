@@ -173,9 +173,10 @@ while (<>) {
     if ($argnum-1 > $#argnames || $argnames[$argnum-1] ne $argname) {
       print STDERR "$ARGV:$.:**** Argument name/number mismatch in VALIDATE_COLOR_... line\n";
     }
-  } elsif (m/${prefix}_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"\s*\)/o) {
+  } elsif (m/${prefix}_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^\"]+)\"\s*,\s*(\d+)\s*\)/o) {
     my $c_hookname = $1;
     my $scheme_hookname = $2;
+    my $num_args = $3;
     my $filename = $ARGV;
     my $line = $.;
     my $body = <>;
@@ -192,7 +193,7 @@ while (<>) {
       print STDERR "GOT hook $c_hookname,$scheme_hookname at ",
           " $filename:$line body:\n$body\n";
     }
-    ProcessHookComment($filename, $line, $scheme_hookname, $body);
+    ProcessHookComment($filename, $line, $scheme_hookname, $num_args, $body);
   } elsif (m/${prefix}_VAR(?:_READ_ONLY|_INIT(?:_PERMANENT)?)\s*\(\s*([^,]+)\s*,\s*\"([^"]+)"/o) {
     #FIXGJB: not ideal, since macro needs to end on same line
     # or else the comment will not get found --02/11/99 gjb
@@ -261,7 +262,7 @@ while (<>) {
       my $line = $.;
       my $body = ReadRestOfComment("",$fScheme);
       print STDERR "**** $filename:$line: warning -- old-style HOOK documentation\n";
-      ProcessHookComment($filename, $line, $description,$body);
+      ProcessHookComment($filename, $line, $description,-1,$body);
     } elsif (uc($type) eq "CONCEPT") {
       my $filename = $ARGV;
       my $line = $.;
@@ -356,7 +357,7 @@ START_CONCEPTS_CHAPTER
    ;
   foreach my $concept (sort { lc($a) cmp lc($b) } keys %concepts ) {
     my $markup = $concepts{$concept}{markup};
-    my $concept_id = $concept;
+    my $concept_id = ScmIdToSgmlId($concept);
     $concept_id =~ tr/ _/--/;
     print MARKUP_OUT "    <sect1 id=\"$concept_id\"><title>$concept</title><para>\n$markup
     </para></sect1>\n";
@@ -378,7 +379,8 @@ START_HOOKS_CHAPTER
   ;
   foreach my $hook (sort { lc($a) cmp lc($b) } keys %hooks ) {
     my $markup = $hooks{$hook}{markup};
-    print MARKUP_OUT "    <sect1 id=\"$hook\"><title>$hook</title><para>\n$markup
+    my $numargs = $hooks{$hook}{numargs};
+    print MARKUP_OUT "    <sect1 id=\"$hook\"><title>$hook ($numargs args)</title><para>\n$markup
     </para></sect1>\n";
   }
   print MARKUP_OUT "  </chapter>\n";
@@ -394,7 +396,8 @@ START_VARS_CHAPTER
   ;
   foreach my $var (sort { lc($a) cmp lc($b) } keys %vars ) {
     my $markup = $vars{$var}{markup};
-    print MARKUP_OUT "    <sect1 id=\"$var\"><title>$var</title><para>\n$markup
+    my $sgmlid = ScmIdToSgmlId($var);
+    print MARKUP_OUT "    <sect1 id=\"$sgmlid\"><title>$var</title><para>\n$markup
     </para></sect1>\n";
   }
   print MARKUP_OUT "  </chapter>\n";
@@ -552,12 +555,13 @@ if ($opt_H) {
 
   foreach my $hook (sort { lc($a) cmp lc($b) } keys %hooks ) {
     my $comment = $hooks{$hook}{comment};
+    my $numargs = $hooks{$hook}{numargs};
     my $file = $hooks{$hook}{file};
     my $line = $hooks{$hook}{line};
     my $module = $hooks{$hook}{module};
 
     print HOOKS_OUT <<EOC;
-$hook
+$hook ($numargs args)
 - $module
 $comment
 [From $file:$line]
@@ -851,10 +855,12 @@ EOC
 # remember, no underscores in sgml ids
 sub ScmIdToSgmlId ( $ ) {
   my ($id) = @_;
-  $id =~ s/\?$/-p/;
-  $id =~ s/!$/-x/;
-  $id =~ s/%/pct/;
-  $id =~ s/[?!_$^&]/-/;
+  $id =~ s/\?$/-p/g;
+  $id =~ s/!$/-x/g;
+  $id =~ s/\/$/-d/g;
+  $id =~ s/:/--/g;
+  $id =~ s/%/pct/g;
+  $id =~ s/[\?\!\_\$\^\&\/]/-/g;
   $id =~ s/->/-to-/g;
   return $id;
 }
@@ -926,8 +932,8 @@ sub ProcessConceptComment ( $$$$ ) {
 			    };
 }
 
-sub ProcessHookComment ( $$$$ ) {
-  my ($filename,$line,$description,$comment) = @_;
+sub ProcessHookComment ( $$$$$ ) {
+  my ($filename,$line,$description,$num_args,$comment) = @_;
   $comment =~ s%\*/\s*$%%m;
   if ($fDebug) {
     print STDERR "Hook \`$description\' with body = \n$comment\n";
@@ -938,6 +944,7 @@ sub ProcessHookComment ( $$$$ ) {
   my $markup = MarkupComment($comment);
   $hooks{$description} = { comment => $comment,
 			   markup => $markup,
+			   numargs => $num_args,
 			   module => $current_module,
 			   file => $filename,
 			   line => $line,
@@ -1006,7 +1013,7 @@ sub CreateMarkupBody ( $$$$$$$ ) {
 
 sub MarkupUsage( $ ) {
   my ($markup_usage) = @_;
-  $markup_usage =~ s%&(optional|key)%&amp;$1%g;
+  $markup_usage =~ s%&(optional|key|allow-other-keys)%&amp;$1%g;
   $markup_usage =~ s%(\s+)&(\s+)%$1&amp;$2%g;
   $markup_usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
   $markup_usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
