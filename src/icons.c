@@ -533,8 +533,8 @@ AutoPlace(ScwmWindow *psw)
     base_x = 0;
     base_y = 0;
     /*Also, if its a stickyWindow, put it on the current page! */
-    new_x = FRAME_X(psw) % Scr.DisplayWidth;
-    new_y = FRAME_Y(psw) % Scr.DisplayHeight;
+    new_x = FRAME_X_VP(psw) % Scr.DisplayWidth;
+    new_y = FRAME_Y_VP(psw) % Scr.DisplayHeight;
     if (new_x < 0)
       new_x += Scr.DisplayWidth;
     if (new_y < 0)
@@ -542,22 +542,23 @@ AutoPlace(ScwmWindow *psw)
     move_finalize(psw->icon_w, psw, new_x, new_y);
     psw->Desk = Scr.CurrentDesk;
   } else {
-    base_x = ((FRAME_X(psw) + ICON_VP_OFFSET_X(psw) + (FRAME_WIDTH(psw) >> 1)) / Scr.DisplayWidth) *
-      Scr.DisplayWidth - ICON_VP_OFFSET_X(psw);
-    base_y = ((FRAME_Y(psw) + ICON_VP_OFFSET_Y(psw) + (FRAME_HEIGHT(psw) >> 1)) / Scr.DisplayHeight) *
-      Scr.DisplayHeight - ICON_VP_OFFSET_Y(psw);
+    base_x = ((FRAME_X_VP(psw) + ICON_VP_OFFSET_X(psw) + (FRAME_WIDTH(psw)/2))
+              / Scr.DisplayWidth) * Scr.DisplayWidth - ICON_VP_OFFSET_X(psw);
+    base_y = ((FRAME_Y_VP(psw) + ICON_VP_OFFSET_Y(psw) + (FRAME_HEIGHT(psw)/2))
+              / Scr.DisplayHeight) * Scr.DisplayHeight - ICON_VP_OFFSET_Y(psw);
   }
   if (psw->fIconMoved) {
-#if 0 /* FIXGJB: do not want this -- icons should be able to iconify
+    if (psw->fStickyIcon) {
+      /* FIXGJB: may not want this -- icons should be able to iconify
          to anywhere */
-    /* just make sure the icon is on this screen */
-    psw->icon_x_loc = psw->icon_x_loc % Scr.DisplayWidth + base_x;
-    psw->icon_y_loc = psw->icon_y_loc % Scr.DisplayHeight + base_y;
-    if (psw->icon_x_loc < ICON_VP_OFFSET_X(psw))
-      psw->icon_x_loc += Scr.DisplayWidth;
-    if (psw->icon_y_loc < ICON_VP_OFFSET_Y(psw))
-      psw->icon_y_loc += Scr.DisplayHeight;
-#endif
+      /* just make sure the icon is on this screen */
+      psw->icon_x_loc = psw->icon_x_loc % Scr.DisplayWidth + base_x;
+      psw->icon_y_loc = psw->icon_y_loc % Scr.DisplayHeight + base_y;
+      if (psw->icon_x_loc < ICON_VP_OFFSET_X(psw))
+        psw->icon_x_loc += Scr.DisplayWidth;
+      if (psw->icon_y_loc < ICON_VP_OFFSET_Y(psw))
+        psw->icon_y_loc += Scr.DisplayHeight;
+    }
   } else if (psw->wmhints && psw->wmhints->flags & IconPositionHint) {
     psw->icon_x_loc = psw->wmhints->icon_x;
     psw->icon_y_loc = psw->wmhints->icon_y;
@@ -600,15 +601,15 @@ AutoPlace(ScwmWindow *psw)
 	  real_y = base_y;
 	loc_ok = True;
 	test_window = Scr.ScwmRoot.next;
-	while ((test_window != (ScwmWindow *) 0) && (loc_ok == True)) {
+	while ((test_window != NULL) && (loc_ok == True)) {
 	  if (test_window->Desk == psw->Desk) {
 	    if (test_window->fIconified &&
 		(test_window->icon_w || test_window->icon_pixmap_w) &&
 		(test_window != psw)) {
 	      tw = test_window->icon_p_width;
 	      th = test_window->icon_p_height + test_window->icon_w_height;
-	      tx = test_window->icon_x_loc;
-	      ty = test_window->icon_y_loc;
+	      tx = ICON_X_VP(test_window);
+	      ty = ICON_Y_VP(test_window);
 
 	      if ((tx < (real_x + width + 3)) && ((tx + tw + 3) > real_x) &&
 		  (ty < (real_y + height + 3)) && ((ty + th + 3) > real_y)) {
@@ -624,8 +625,8 @@ AutoPlace(ScwmWindow *psw)
     }
     if (loc_ok == False)
       return;
-    psw->icon_x_loc = real_x;
-    psw->icon_y_loc = real_y;
+    psw->icon_x_loc = real_x + ICON_VP_OFFSET_X(psw);
+    psw->icon_y_loc = real_y + ICON_VP_OFFSET_Y(psw);
 
     psw->icon_w_width = psw->icon_p_width;
     psw->icon_xl_loc = psw->icon_x_loc;
