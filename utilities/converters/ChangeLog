@@ -1,3 +1,20 @@
+Fri Apr  2 15:23:36 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* fvwm2rc-to-scwmrc: Handle implied modules earlier than before,
+ 	to catch uses of e.g. "FvwmForm LogoutVerify".  Use new sub
+ 	HandleRunModule since that's now done in two places.  Drop
+ 	convert_action entirely -- use convert_fvwm_command for static and
+ 	dynamic commands.  Use with-window in the function templates.
+  	Added sub get_optional_two_num_args_and_win and make it understand
+ 	move, animatedmove function arguments.  Drop the p from move args
+ 	like "0p".  Drop the "N" binding modifier (it was a placeholder
+ 	for "None" in fvwm2).  Output looks pretty good after re-indenting
+ 	in Emacs.  Parentheses are balanced.  Only a few things are
+ 	ignored completely.  Have not tested by trying to load into Scwm.
+  	The "FrontAnd" fvwm function is the biggest complication I see
+ 	going forward.  Some fvwm2 functions (like FrontAnd) should be
+ 	expanded inline and then converted via convert_fvwm_command.
+
 Fri Apr  2 13:40:10 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* fvwm2rc-to-scwmrc: Handle arguments to functions. Use a
