@@ -465,6 +465,24 @@ dnl ## Checks for typedefs, structures, and compiler characteristics. ##
 AC_C_CONST
 AC_C_INLINE
 
+dnl check for imlib
+AM_PATH_IMLIB
+
+
+AC_ARG_ENABLE(imlib, [  --disable-imlib       Do not use IMLIB library even if it exists],
+		    enable_imlib=no,
+		    enable_imlib=yes)
+
+if test x"$enable_imlib" = x"no"; then
+	AC_MSG_RESULT(Not using imlib due to --disable-imlib option)
+elif test ! -z "$IMLIB_LIBS"  ; then
+        LIBS="$LIBS $IMLIB_LIBS"
+        CFLAGS="$CFLAGS $IMLIB_CFLAGS"
+        USE_IMLIB="true"
+	AC_DEFINE(USE_IMLIB)
+fi
+
+
 dnl ## Define directories ##
 
 scwm_load_path=${datadir}/${PACKAGE}-modules
@@ -549,9 +567,9 @@ AC_SUBST(I18N_LIB)
 
 CPPEXTRAFLAGS=""
 AC_ARG_ENABLE(warnings,
-[  --enable-warnings       Turn on most compiler warnings]
+[  --enable-warnings       Turn on most compiler warnings (may require gcc)]
 ,[if test "yes" = "$enableval"; then
-   CPPEXTRAFLAGS="-Wall -W"
+   CPPEXTRAFLAGS="-Wall -W -Wno-sign-compare"
   fi
 ])
 AC_SUBST(CPPEXTRAFLAGS)
