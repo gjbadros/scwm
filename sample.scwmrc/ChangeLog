@@ -1,3 +1,14 @@
+Sat Dec  5 12:31:46 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc, robbe.scwmrc, sds.scwmrc: Use module (app scwm
+	standard-move-resize-message-window) so behaviour remains the same 
+	despite the message-window changes.  Change calls to
+	set-message-window-attributes! to
+	set-move-resize-message-window-attributes!
+
+	* gjb.scwmrc: The above, plus clean up the opaque move changes,
+	comment out a rogue select-window-interactively
+
 Fri Dec  4 09:07:57 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Bug fix in move-next-to-netscape-win, random
