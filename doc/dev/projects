@@ -35,6 +35,7 @@ something that you are interested in and skilled with.
 * C/Guile hacking
 ** Better display of errors into a widget somewhere, or the panel
 
+** Leak detection using mpr or checker: http://metalab.unc.edu/pub/Linux/devel/lang/c/
 
 /////////////////////
 * Scheme hacking

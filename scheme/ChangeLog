@@ -1,3 +1,7 @@
+Sat Sep 25 17:26:09 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* wavplay.scm: Handle SCWMDIR not set w/o error.
+
 Sat Sep 25 15:16:52 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* stringops.scm, flux.scm: Added `string-has-prefix',

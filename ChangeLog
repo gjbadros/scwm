@@ -1,3 +1,7 @@
+Sun Sep 26 13:03:00 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Bump to 0.99.3post
+
 Sun Sep 26 12:58:48 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Generate README, ANNOUNCE from *.in
