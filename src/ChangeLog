@@ -1,3 +1,17 @@
+Wed Sep  8 18:11:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c: Renamed `window-class' to `window-class-hint' and
+	`window-resource' to `window-resource-hint'.  Implement old proc
+	names in scheme using WM_CLASS property.
+
+	* xproperty.c: Added ScmListOfStringsFromStringLen and use it in
+	X-property-get so that properties that have a bunch of strings in
+	a single property get a list of strings returned (e.g.,
+	WINDOW_CLASS).
+
+	* focus.c: Added an extra guard to protect against a surprising
+	seg fault.
+
 Wed Sep  8 14:01:13 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-snarf: Rewritten sed script by Ken Pizzini. Thanks Ken!

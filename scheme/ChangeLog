@@ -1,3 +1,8 @@
+Wed Sep  8 18:12:40 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Wrote `window-class', `window-resource' using
+	WM_CLASS (they were primitives, now renamed to *-hint).
+
 Tue Sep  7 16:39:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added `use-placement-hint' for use especially with

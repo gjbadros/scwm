@@ -1,3 +1,8 @@
+Wed Sep  8 18:18:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* misc/startscwm: Make bash-portable by adding missing semicolon
+	to complex conditional.  Thanks Ken Pizzini!
+
 Sun Sep  5 16:57:03 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/startscwm: Added some xauth calls to set up .Xauthority

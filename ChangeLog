@@ -1,3 +1,7 @@
+Wed Sep  8 18:17:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in: bump to pre9
+
 Wed Sep  8 09:37:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Set HAVE_ESD conditional to false when
