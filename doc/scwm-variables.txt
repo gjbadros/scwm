@@ -49,13 +49,13 @@ List of strings of directories in which to look for image files.
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:582]
+[From scwm/scwm.c:584]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:585]
+[From scwm/scwm.c:587]
 
 
 pie-menu-look
@@ -67,7 +67,7 @@ A menu-look that gives pie menus in a rectangular window
 scroll-region
 - 
 The number of pixels at the edge of the screen within which virtual scrolling will occur. 
-[From scwm/virtual.c:616]
+[From scwm/virtual.c:620]
 
 
 scwm-menu-look

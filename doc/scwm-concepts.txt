@@ -86,7 +86,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From scwm/binding.c:729]
+[From scwm/binding.c:696]
 
 
 Face Flags
@@ -241,7 +241,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3360]
+[From scwm/window.c:3366]
 
 
 Fonts
@@ -325,7 +325,7 @@ When a key specifier is being used to indicate a binding, the
 additional special modifier *- may be used; it indicates that the key
 should be bound with every possible modifier combination, including
 possibly no modifiers. *- may not be combined with any other modifier.  
-[From scwm/binding.c:151]
+[From scwm/binding.c:118]
 
 
 Menu Looks
@@ -393,7 +393,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:643]
+[From scwm/scwm.c:645]
 
 
 SCWMEXEC Protocol
@@ -452,7 +452,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:2076]
+[From scwm/window.c:2082]
 
 
 Themes
@@ -507,7 +507,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:947]
+[From scwm/window.c:952]
 
 
 Window Style
