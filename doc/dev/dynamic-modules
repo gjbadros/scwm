@@ -48,14 +48,17 @@ Your .c file, being a mostly-standard scwm .c file, already has a
 void init_bar() function.  This can be made static.  Create a new
 function:
 
-void scm_init_foo_module()
+void scm_init_app_scwm_foo_module()
 {
   scm_register_module_xxx("app scwm foo", init_bar);
 }
 
 the 'foo' in the name and string need to match the module name.
 The init_bar is a pointer to your old initialization function.
-The _xxx is literal, not standing for anything else.
+The _xxx is literal, not standing for anything else.  Note that
+dashes in the module name turn into underscores in the init function
+name (e.g., for (apps scwm xpm-menus) we use scm_init_app_scwm_xpm_menus_module)
+-- see below.
 
 re-autogen, and make and install as normal.  If you're compiling in an
 already-compiled-in tree, you may need to make twice for the .x file
