@@ -1,3 +1,24 @@
+Thu Sep 23 13:28:15 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm: Rename `default-winlist-proc' to
+	`focus-change-warp-pointer'. 
+
+	* flux.scm: Drop focus-change-warp-pointer, fix `toggle-focus'
+
+	* flux-gtk.scm: Bugfix on show-window-list-matching-interactively.
+
+Thu Sep 23 11:45:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm: Change `show-window-list-menu' to take warp-to-index 
+	(not warp-to-first) and have permit-alt-release-selection as
+	another argument.  Update uses.
+
+	* flux.scm: Update uses of `show-window-list-menu', make
+	window-task-switcher-menu go to the third item initially (the
+	window that second-most-recently had the focus)
+
+	* flux-gtk.scm: Update uses of `show-window-list-menu'
+
 Thu Sep 23 00:09:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* netscape.scm: Added `cgi-escapify-space'; this (and

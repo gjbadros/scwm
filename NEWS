@@ -26,6 +26,7 @@ Changes for scwm-0.99.3 (not yet released)
 ** `xlib-set-line-width!' has been replaced by xlib-set-line-attributes! which now takes
 a width and a line style.
 ** Renamed `resize-to' to `resize-window', `resize-frame-to' to `resize-frame' and permit each to take X, Y for movement, to.
+* `popup-menu' takes another argument, permit-alt-release-selection?, and warp-to-first? is now warp-to-index.
 
 * Changed procedures
 ** `interactive-place' renamed to `place-interactively' for consistency (all others start with place-*)

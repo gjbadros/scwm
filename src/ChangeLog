@@ -1,3 +1,20 @@
+Thu Sep 23 11:41:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* focus.c (SetFocus): Set psw->timeLastFocussed.
+
+	* add_window.c: Initilalize psw->timeLastFocussed;
+
+	* window.h: Added timeLastFocussed (X11 Time) for breaking ties
+	between windows with same ttLastFocussed.
+
+	* window.c: Added `window-last-focus-x-time', use timeLastFocussed 
+	as a tie breaker in compare_focus_time.
+
+	* menu.h, menu.c: Move popup_menu prototype into beginning of
+	menu.c since it is used only in menu.c.  Change fWarpToFirst to an 
+	int warp_to so that items other than the first can be warped to.
+	Add permit-alt-release-selection? to `popup-menu' primitive.
+
 Tue Sep 21 13:48:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c: Added `decoration-size', Drop `resize-to', rename
