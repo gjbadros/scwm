@@ -1,3 +1,40 @@
+Sun Jul  4 18:40:04 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* virtual.h, scwm.c, screen.h, events.c: Eliminate NON_VIRTUAL
+ 	compile-time option.
+
+	* events.c: Fix bug in xterm active icons whereby the xterm would
+	send configure notify events that Scwm incorrectly interpreted as
+	referring to the client window instead of as to the pixmap icon
+	window (added a check to see if the event's window was
+	icon_pixmap_w (used to only check for icon_w)). Thanks George
+	Hansper for the bug report!
+
+	* binding.c: Added list of contexts to the docs for bind-key, and
+	xref for bind-mouse.
+
+	* virtual.c: Fix bug in initializing the scroll-region variable
+	that was causing edge enter events to appear to do nothing.
+
+Sun Jul  4 14:52:32 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c: Eliminate harmless compiler warning.
+
+	* miscprocs.c (s_get_key_event): Do not change the event mask for
+	Scr.NoFocusWin -- it already is watching for KeyRelease events, so 
+	let it be (bug was that I was resetting the mask, thus
+	un-selecting events that should've been selected -- this made some 
+	bindings appear to not work, when actually X just wasn't passing
+	on the event.
+
+	* virtual.c: BroadcastIconInfo of icons on other desks so that
+	they don't appear to move (since the Fvwm modues use viewport
+	positions, they need to be told when the viewport location of an
+	icon changes, which corresponds to when the viewport-offset
+	changes). Also simplify handling of focus in changeDesks -- just
+	call CoerceEnterNotifyOnCurrentWindow, and let the EnterNotify
+	event do the right thing.
+
 Sat Jul  3 23:55:50 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c: Simplify HandleButtonPress and HandleKeyEvent by using 
