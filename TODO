@@ -6,24 +6,34 @@ In approximate order of priority:
   - keep trying on .scwmrc especially!
   - more consistent use, especially abstractions for argument type checking
 
+- Respond to scwmsend-s via some reasonable iccm
+
 - Use guile-snarf pervasively
 
-- Respond to scwmsend-s via some reasonable iccm
+- Add a hook to the scwm_error handler routine passing the request error and event type; provide a module to make these human readable -- see X-error-describe
+
+- color scheme wrappers need reference counting; whole rewrite like image?
 
 - replace ColorPair struct w/ scheme-object based
 
-- replace MyFont struct w/ scheme-object based
-
-- font scheme wrappers still use the MyFont garbage; clean this up
+- replace MyFont struct w/ scheme-object based -- font scheme wrappers
+still use the MyFont garbage; clean this up
 
 - Clean out all of the artifacts of the FVWM function system.
 
+- scwm.h has some stuff that belongs in window.h; separate these out better
+
+- add_window.c, borders.c seem to duplicate some functionality
+  - figure out what each should do and remove extraneous stuff
+  - modularize the window decorations as C functions
+
+- figure out dynamic loading issues
+  - what is guile's support for this?
+  - test with the drawmenu.c functions
+    -- menu objects should be able to specify a .o file containing
+       the functions they want to use to do the drawing
+
 - Write some graphical reconfiguration tools.
-
-- color scheme wrappers need reference counting
-
-- Change the guts to use LISPier data structures when possible, to
-ease integration with the scheme procedures.
 
 - Interactive move/resize should permit using a real color, not just
 an xor-value, as an option
@@ -32,16 +42,12 @@ an xor-value, as an option
 
 - Rename scwm/scwm directory to scwm/src
 
--- Add a hook to the scwm_error handler routine passing the request error and event type; provide a module to make these human readable
-
 - Quote key feature -- like C-q in Emacs, C-v in shells
-
-- Undo feature?
-
-- Modular window decoration system.
 
 - Eventually, a total rewrite will probably be needed to allow release
 under GPL and reorganize years of layered cruft.
+
+- Undo feature?
 
 Done:
 
