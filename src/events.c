@@ -475,7 +475,12 @@ if your Emacs hangs when you try evaluating a scwm expression). */
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
-  
+
+/* w_for_scwmexec_response is the window that is used by scwmexec
+   protocol -- shutdown.c's Done function uses this too in case
+   scwmexec executes a quit, or causes a segfault (which cases
+   the HandleScwmExec function to not complete as it should) */
+Window w_for_scwmexec_response;  
 
 void
 HandleScwmExec()
@@ -506,7 +511,7 @@ HandleScwmExec()
 			   &type_ret, &form_ret, &nitems, &bytes_after,
                           (unsigned char **) &pw)==Success && pw!=NULL) {
       /* This is the window we want to look at: */
-      w=*pw;
+      w = *pw;
       XFree(pw);
       /* Increment the offset at which to read within the property. It
 	 will not get deleted until we read the very last bytes at the
@@ -520,11 +525,13 @@ HandleScwmExec()
       /* Get and delete its SCWMEXEC_REQUEST property. We do
          XGetWindowProperty twice, once to get the length, and again
          to read the whole length's worth. */
-      if (XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
+      if (XGetWindowProperty(dpy, w,
+                             XA_SCWMEXEC_REQUEST,
 			     0, 0, False, XA_STRING, 
 			     &type_ret, &form_ret, &nitems, &bytes_after,
 			     &req)==Success && 
-	  XGetWindowProperty(dpy, w, XA_SCWMEXEC_REQUEST,
+	  XGetWindowProperty(dpy, w,
+                             XA_SCWMEXEC_REQUEST,
 			     0, (bytes_after / 4) +
 			     (bytes_after % 4 ? 1 : 0), True, XA_STRING, 
 			     &type_ret, &form_ret, &nitems, &bytes_after,
@@ -545,6 +552,10 @@ HandleScwmExec()
 	saved_def_e_port = scm_def_errp;
 	scm_def_errp = scm_current_error_port();
 
+        /* before we eval the request, record the window to respond
+           in a global, so Done can respond if necessary (in case
+           the eval-d expression calls `quit' or seg faults, etc.) */
+        w_for_scwmexec_response = w;
 	/* Evaluate the request expression and free it. */
 	val = scwm_safe_eval_str((char *) req);
 	XFree(req); 
@@ -563,18 +574,27 @@ HandleScwmExec()
 						&elen);
 	
 	/* Set the output, error and reply properties appropriately. */
-	XChangeProperty(dpy, w, XA_SCWMEXEC_OUTPUT, XA_STRING,
+	XChangeProperty(dpy, w_for_scwmexec_response,
+                        XA_SCWMEXEC_OUTPUT, XA_STRING,
 			8, PropModeReplace, output, olen);
-	XChangeProperty(dpy, w, XA_SCWMEXEC_ERROR, XA_STRING,
+	XChangeProperty(dpy, w_for_scwmexec_response,
+                        XA_SCWMEXEC_ERROR, XA_STRING,
 			8, PropModeReplace, error, elen);
-	XChangeProperty(dpy, w, XA_SCWMEXEC_REPLY, XA_STRING,
+	XChangeProperty(dpy, w_for_scwmexec_response,
+                        XA_SCWMEXEC_REPLY, XA_STRING,
 			8, PropModeReplace, ret, rlen);
+
+        /* Since we successfully reset the reply properties,
+           shutdown.c's Done no longer needs to, so reset
+           the global */
+        w_for_scwmexec_response = None;
 	
 	FREE(ret);
 	FREE(output);
 	FREE(error);
       } else {
-        scwm_msg(WARN,__FUNCTION__,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",w);
+        scwm_msg(WARN,__FUNCTION__,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
+                 w_for_scwmexec_response);
       }
     }
   } while (saved_bytes_after != 0);

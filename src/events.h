@@ -15,6 +15,8 @@
 
 #include "scwm.h"
 
+extern Window w_for_scwmexec_response;  
+
 void init_input_hooks();
 void run_input_hooks(fd_set *in_fdset);
 void add_hook_fds_to_set(fd_set *in_fdset, int *fd_width);

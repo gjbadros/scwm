@@ -785,7 +785,10 @@ will be processed in the order in which they were specified.</seg>
   /* Make sure property priority colors is empty */
   XChangeProperty(dpy, Scr.Root, XA_MIT_PRIORITY_COLORS,
 		  XA_CARDINAL, 32, PropModeReplace, NULL, 0);
-  
+
+  /* Initialize scwmexec response window (used in shutdown.c's Done,
+     as well as by HandleScwmExec) */
+  w_for_scwmexec_response = None;
   /* Announce support for scwmexec protocol. */
   XChangeProperty(dpy, Scr.Root, 
 		  XA_SCWMEXEC_LISTENER, XA_STRING,

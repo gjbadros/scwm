@@ -56,6 +56,8 @@ run_restart_command(char *command) {
 }
 
 
+extern Window w_for_scwmexec_response;
+
 /* restart_or_dump == 0 to just close
    > 0 for restart
    < 0 for dump core */
@@ -78,6 +80,20 @@ Done(int restart_or_dump, char *command)
 
     /* FIXGJB: this used to be done only on restart -- why? --07/31/98 gjb */
     SaveDesktopState();
+
+    if (None != w_for_scwmexec_response) {
+      /* give a response to libscwmexec in case we were in the middle of
+         a scwmexec when we quit or segfaulted */
+      XChangeProperty(dpy, w_for_scwmexec_response,
+                      XA_SCWMEXEC_OUTPUT, XA_STRING,
+                      8, PropModeReplace, "", 0);
+      XChangeProperty(dpy, w_for_scwmexec_response,
+                      XA_SCWMEXEC_ERROR, XA_STRING,
+                      8, PropModeReplace, "", 0);
+      XChangeProperty(dpy, w_for_scwmexec_response,
+                      XA_SCWMEXEC_REPLY, XA_STRING,
+                      8, PropModeReplace, "", 0);
+    }
 
     /* Really make sure that the connection is closed and cleared! */
     XSelectInput(dpy, Scr.Root, 0);
