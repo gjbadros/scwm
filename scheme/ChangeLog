@@ -1,3 +1,26 @@
+Sat Jul 24 19:02:58 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints.scm: Use message-window.  Fix mis-naming of
+	constraint-class-remove-hook-list to
+	constraint-class-delete-hook-list. Change error messages to
+	mention function name so it's easier to figure out what went
+	wrong.  Display a message window if a ui-constraint cannot be made 
+	interactively.
+
+	* ui-constraints-classes.scm: Change two-window-prompter to bail
+	once a window is not picked.  Use two-window-prompter only for
+	ui-cnctr-{[hv]size,strict-relpos}.  Added one-window-prompter, and 
+	use it.  Use eqv? not eq? for testing numbers.  Just use booleans
+	for their truth values instead of testing w/ eq?.
+
+	* base.scm: Ensure MWN is a message-window in
+	with-message-window-shown.  Clean up select-window-interactively.
+
+Sat Jul 24 14:47:44 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Fix some little cut and paste bugs.
+	Correct names of pixmaps for the min-[hv]size pictures.
+
 1999-07-24  Jeff W. Nichols  <jwnichls@cs.washington.edu>
 
 	* ui-constraints.scm: Added a check to 
