@@ -650,15 +650,15 @@
 ;; Jens-Ulrik had the same complaint. Is there a more portable way to
 ;; handle these?
 
-;(bind-key 'all "C-M-KP_7" (lambda () (animated-move-to 0 0)))
-;(bind-key 'all "C-M-KP_9" (lambda () (animated-move-to -1 0)))
-;(bind-key 'all "C-M-KP_1" (lambda () (animated-move-to 0 -1)))
-;(bind-key 'all "C-M-KP_3" (lambda () (animated-move-to -1 -1)))
+(bind-key 'all "C-M-KP_7" (lambda () (animated-move-to 0 0)))
+(bind-key 'all "C-M-KP_9" (lambda () (animated-move-to -1 0)))
+(bind-key 'all "C-M-KP_1" (lambda () (animated-move-to 0 -1)))
+(bind-key 'all "C-M-KP_3" (lambda () (animated-move-to -1 -1)))
 
-;(bind-key 'all "C-M-KP_8" (lambda () (animated-move-to 'x 0)))
-;(bind-key 'all "C-M-KP_6" (lambda () (animated-move-to -1 'y)))
-;(bind-key 'all "C-M-KP_2" (lambda () (animated-move-to 'x -1)))
-;(bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 'y)))
+(bind-key 'all "C-M-KP_8" (lambda () (animated-move-to 'x 0)))
+(bind-key 'all "C-M-KP_6" (lambda () (animated-move-to -1 'y)))
+(bind-key 'all "C-M-KP_2" (lambda () (animated-move-to 'x -1)))
+(bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 'y)))
 
 ;; FIXGJB: modifiers interface could be better... mimic off Emacs?
 (bind-key 'all "C-M-S-7" (lambda () (send-button-press 1 0)))
