@@ -15,6 +15,7 @@ scwm_icons=@scwm_icons@
 scwm_rc=@scwm_rc@
 scwm_name=@scwm_name@
 scwm_dir=@scwm_dir@
+LDFLAGS=@LDFLAGS@
 #
 # This is where the modules will be installed
 
