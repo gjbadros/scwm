@@ -6,9 +6,6 @@
 (define-module (app scwm modifier-key-bindings)
   :use-module (app scwm optargs))
 
-(define* (unbind-keycode-ignore-procs contexts keycode modmask ignore1 #&optional ignore2)
-  (unbind-keycode contexts keycode modmask))
-
 (define (do-two-modifier-key-events proc
 				    modkey1 modkey2 
 				    proc-press proc-release)
@@ -36,7 +33,7 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
 (define-public (unbind-two-modifier-key-events
 		modkey1 modkey2)
   "Unbind events attached to a multi-modifier key event."
-  (do-two-modifier-key-events unbind-keycode-ignore-procs modkey1 modkey2 
+  (do-two-modifier-key-events unbind-keycode modkey1 modkey2 
 			      #f #f))
 
 
@@ -71,10 +68,14 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
   (do-three-modifier-key-events bind-keycode modkey1 modkey2 modkey3
 				proc-press proc-release))
 
-(define-public (unbind-three-modifier-key-events
-		modkey1 modkey2 modkey3)
-  "Unbind events attached to a multi-modifier key event."
-  (do-three-modifier-key-events unbind-keycode-ignore-procs modkey1 modkey2 modkey3
+(define*-public (unbind-three-modifier-key-events
+		modkey1 modkey2 modkey3 #&optional ignore1 ignore2)
+  "Unbind events attached to a multi-modifier key event.
+MODKEY1, MODKEY2, MODKEY3 are the three modifiers that are having the binding
+eliminated for.  IGNORE1 and IGNORE2 can be anything, and are
+provided to conveniently allow an unbinding invocation to 
+have the same arguments as the analagous binding operation."
+  (do-three-modifier-key-events unbind-keycode modkey1 modkey2 modkey3
 				#f #f))
 
 
@@ -113,10 +114,14 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
   (do-four-modifier-key-events bind-keycode modkey1 modkey2 modkey3 modkey4
 			       proc-press proc-release))
 
-(define-public (unbind-four-modifier-key-events
-		modkey1 modkey2 modkey3 modkey4)
-  "Unbind events attached to a multi-modifier key event."
-  (do-four-modifier-key-events unbind-keycode-ignore-procs modkey1 modkey2 modkey3 modkey4
+(define*-public (unbind-four-modifier-key-events
+		modkey1 modkey2 modkey3 modkey4 #&optional ignore1 ignore2 )
+  "Unbind events attached to a multi-modifier key event.
+MODKEY1, MODKEY2, MODKEY3, MODKEY4 are the four modifiers that are having the binding
+eliminated for.  IGNORE1 and IGNORE2 can be anything, and are
+provided to conveniently allow an unbinding invocation to 
+have the same arguments as the analagous binding operation."
+  (do-four-modifier-key-events unbind-keycode modkey1 modkey2 modkey3 modkey4
 			       #f #f))
 
 

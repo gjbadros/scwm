@@ -593,7 +593,7 @@
   "Return a fvwm2 pager window, or #f if there is none."
   (let ((pagers
 	 (list-windows #:only (win-and?? (class-match?? "FvwmModule") 
-					  (resource-match?? "FvwmPager")))))
+					 (resource-match?? "FvwmPager")))))
     (and (pair? pagers) (car pagers))))
 
 (define-public (raise-fvwm2-pager)

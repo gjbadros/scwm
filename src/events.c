@@ -572,6 +572,7 @@ HandleKeyEvent(Bool fPress)
   }
   
   if (pbnd) {
+    XUngrabKeyboard(dpy, CurrentTime);
     if (NULL != pswCurrent) {
       set_window_context(pswCurrent->schwin);
     }

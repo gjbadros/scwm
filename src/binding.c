@@ -1121,10 +1121,13 @@ nothing should be done on key release.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(unbind_keycode, "unbind-keycode", 2, 1, 0,
-          (SCM contexts, SCM keycode, SCM modifier_mask),
+SCWM_PROC(unbind_keycode, "unbind-keycode", 3, 2, 0,
+          (SCM contexts, SCM keycode, SCM modifier_mask, SCM ARG_IGNORE(ignored_proc1), SCM ARG_IGNORE(ignored_proc2)),
 "Unbind the given KEYCODE within the CONTEXTS.
-KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.")
+KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.
+IGNORED-PROC1 and IGNORED-PROC2 can both be given, but are
+ignored;  they permit the identical arguments to be used
+as for `bind-keycode'.")
 #define FUNC_NAME s_unbind_keycode
 {
   int min, max;

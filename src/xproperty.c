@@ -409,7 +409,7 @@ SCWM_PROC(X_get_selection_owner,"X-get-selection-owner", 1, 0, 0,
 "Return the window that owns the selection denoted by ATOM.
 ATOM is likely one of the atoms: \"PRIMARY\" or \"SECONDARY\".
 See also `string->X-atom'.  Return value is either a window
-object, 'root-window, or an integer window ID.")
+object, 'root-window, or an integer window Id.")
 #define FUNC_NAME s_X_get_selection_owner
 {
   Atom aSelection;
@@ -435,7 +435,7 @@ The owner should convert the selection to type TARGET and put set
 the X property PROPERTY on REQUESTOR-WINDOW when it is transferred.
 SELECTION, TARGET, and PROPERTY are each atoms.  REQUESTOR-WINDOW
 is a window object or 'root-window.")
-#define FUNC_NAME s_X_get_selection_owner
+#define FUNC_NAME s_X_convert_selection
 {
   Atom aSelection, aTarget, aProperty;
   Window reqwin;

@@ -807,7 +807,7 @@ Returns #f if no window was selected."
   (let ((win (car (select-viewport-position cursor release?))))
     (if (window? win) win #f)))
 
-(define*-public (caught-error descriptor args)
+(define-public (caught-error descriptor args)
   "Display an error message for a caught error.
 DESCRIPTOR is a description to be printed, ARGS is the
 argument to the catch exception lambda.
