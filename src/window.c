@@ -136,7 +136,6 @@ SCM select_window(SCM kill_p)
 		    &context,
 		    (kill_p != SCM_BOOL_F ? DESTROY : SELECT)
 		    ,ButtonRelease)) {
-    puts("reeturned TRUE");
   }
   /* XXX - this needs to done right. */
   if (tmp_win->schwin!=NULL) {
@@ -514,9 +513,14 @@ SCM resize_to(SCM w, SCM h, SCM win)
   }
   width = gh_scm2int(w);
   height = gh_scm2int(h);
+
+  /* took the next two lines out because we can do that in scheme if we 
+     really want, and maximize gets broken otherwise. */
+  /*
   width += (2*tmp_win->boundary_width);
   height += (tmp_win->title_height + 2*tmp_win->boundary_width);
-  
+  */
+
   ConstrainSize (tmp_win, &width, &height);
   SetupFrame (tmp_win, tmp_win->frame_x, 
 	      tmp_win->frame_y , width, height,FALSE);
@@ -770,17 +774,17 @@ SCM move_window_to_desk(SCM which, SCM win)
   int val1;
 
   SCM_REDEFER_INTS;
-  if (!gh_number_p(which)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg("move-window-to-desk",1,which);
-  }
+  if (!gh_number_p(which) && which != SCM_BOOL_F) {
+      SCM_ALLOW_INTS;
+      scm_wrong_type_arg("move-window-to-desk",1,which);
+  }  
 
   VALIDATEN(win,2,"move-window-to-desk");
 
   t=SCWMWINDOW(win);
 
   val1=gh_scm2int(which);
-
+  
   /* Mapping window on its new Desk,
      unmapping it from the old Desk */
   /* Only change mapping for non-sticky windows */
@@ -831,27 +835,30 @@ SCM window_size(SCM win) {
 }
 
 SCM window_id(SCM win) {
-  ScwmWindow *tmp_win;
-
   VALIDATE(win,"window-id");
-  tmp_win=SCWMWINDOW(win);
-
-  return SCM_MAKINUM(tmp_win->w);
+  return SCM_MAKINUM(SCWMWINDOW(win)->w);
 }
 
 SCM window_desk(SCM win) {
-  ScwmWindow *tmp_win;
-
   VALIDATE(win,"window-desk");
   return SCM_MAKINUM(SCWMWINDOW(win)->Desk);
 }
 
 SCM window_title(SCM win) {
-  ScwmWindow *tmp_win;
-
-  VALIDATE(win,"get-window-title");
+  VALIDATE(win,"window-title");
   return gh_str02scm(SCWMWINDOW(win)->name);
 }
+
+SCM window_class(SCM win) {
+  VALIDATE(win,"window-class");
+  return gh_str02scm(SCWMWINDOW(win)->class.res_class);
+}
+
+SCM window_resource(SCM win) {
+  VALIDATE(win,"window-resource");
+  return gh_str02scm(SCWMWINDOW(win)->class.res_name);
+}
+
 
 SCM list_all_windows() {
   ScwmWindow *t;
@@ -983,7 +990,7 @@ SCM normal_border(SCM win)
    XMapWindow(dpy,tmp_win->sides[i]);
  }
  
- SetBorder(tmp_win,(Scr.Hilite==tmp_win),True,True,None);
+ SetBorderX(tmp_win,(Scr.Hilite==tmp_win),True,True,None,True);
 
  SCM_REALLOW_INTS;
  return SCM_BOOL_T;
@@ -1011,15 +1018,15 @@ SCM plain_border(SCM win)
     XUnmapWindow(dpy,tmp_win->sides[i]);
   }
 
-  SetBorder(tmp_win,(Scr.Hilite==tmp_win),True,True,None);
+  SetBorderX(tmp_win,(Scr.Hilite==tmp_win),True,True,None,True);
     
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
-SCM normal_border_p(SCM win)
+SCM border_normal_p(SCM win)
 {
-  VALIDATE(win,"normal-border?");
+  VALIDATE(win,"border-normal?");
   return (SCWMWINDOW(win)->flags & BORDER) ? SCM_BOOL_T : SCM_BOOL_F;
 }
 
@@ -1184,12 +1191,17 @@ SCM set_window_colors_x(SCM fg, SCM bg, SCM win)
   VALIDATEN(win,3,"set-window-colors!");
   tmp_win=SCWMWINDOW(win);
 
-  tmp_win->TextPixel=COLOR(fg);
-  tmp_win->BackPixel=COLOR(bg); 
-  tmp_win->ShadowPixel = GetShadow(tmp_win->BackPixel);
-  tmp_win->ReliefPixel = GetHilite(tmp_win->BackPixel);
+  if (fg != SCM_BOOL_F) {
+    tmp_win->TextPixel=COLOR(fg);
+  }
 
-  SetBorder(tmp_win,(Scr.Hilite==tmp_win),True,True,None);
+  if (bg != SCM_BOOL_F) {
+    tmp_win->BackPixel=COLOR(bg); 
+    tmp_win->ShadowPixel = GetShadow(tmp_win->BackPixel);
+    tmp_win->ReliefPixel = GetHilite(tmp_win->BackPixel);
+  }
+
+  SetBorderX(tmp_win,(Scr.Hilite==tmp_win),True,True,None,True);
 
   return SCM_BOOL_T;
 }
@@ -1219,6 +1231,239 @@ SCM set_icon_title_x(SCM title, SCM win)
   return SCM_BOOL_T;
 }
 
+
+
+SCM set_random_placement_x(SCM val, SCM win) {
+  VALIDATEN(win,2,"set-random-placement!");
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= RANDOM_PLACE_FLAG;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~RANDOM_PLACE_FLAG;
+  } else {
+    scm_wrong_type_arg("set-random-placement!",1,val);
+  }
+  return SCM_BOOL_T;
+}
+
+SCM set_smart_placement_x(SCM val, SCM win) {
+  VALIDATEN(win,2,"set-smart-pacement!");
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= MWM_OVERRIDE_FLAG;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~MWM_OVERRIDE_FLAG;
+  } else {
+    scm_wrong_type_arg("set-smart-placment!",1,val);
+  }
+  return SCM_BOOL_T;
+}
+
+
+SCM set_window_button_x(SCM butt, SCM val, SCM win) {
+  int x;
+  VALIDATEN(win,2,"set-smart-pacement!");
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->buttons &= ~(1<<(butt-1));
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->buttons |=(1<<(butt-1));
+  } else {
+    scm_wrong_type_arg("set-smart-placment!",1,val);
+  }
+  /* XXX - This won't really work for any case unless it is a hint.
+     Handling of the number of buttons is kind of broken in
+     general for now, but will be fixed. */
+
+  return SCM_BOOL_T; 
+}
+
+SCM set_mwm_buttons_x(SCM val, SCM win) {
+  ScwmWindow *t;
+  VALIDATEN(win,2,"set-mwm-buttons!");
+  t = SCWMWINDOW(win);
+
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= MWMBorders;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~MWMBorders;
+  } else {
+    scm_wrong_type_arg("set-mwm-buttons!",1,val);
+  }
+
+  SetBorder(t,(Scr.Hilite==t),True,True,None);
+  return SCM_BOOL_T;
+}
+
+SCM set_mwm_border_x(SCM val, SCM win) {
+  ScwmWindow *t;
+  int test;
+  VALIDATEN(win,2,"set-mwm-border!");
+  t = SCWMWINDOW(win);
+
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= MWMBorders;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~MWMBorders;
+  } else {
+    scm_wrong_type_arg("set-mwm-border!",1,val);
+  }
+
+  SetBorderX(t,(Scr.Hilite==t),True,True,None,True);
+
+  return SCM_BOOL_T;
+}
+
+SCM set_icon_x(SCM val, SCM win) {
+  ScwmWindow *tmp_win;
+  int dummy;
+  VALIDATEN(win,2,"set-icon!");
+  tmp_win = SCWMWINDOW(win);
+  if (val == SCM_BOOL_F) {
+    tmp_win->flags |= SUPPRESSICON_FLAG;
+    XDestroyWindow(dpy,tmp_win->icon_w);
+    tmp_win->icon_w=None;
+    tmp_win->icon_bitmap_file=NULL;
+  } else if (val == SCM_BOOL_T) {
+    tmp_win->flags &= ~SUPPRESSICON_FLAG;  
+  } else if (gh_string_p(val)) {
+    tmp_win->flags &= ~SUPPRESSICON_FLAG;
+    tmp_win->flags |=  ICON_FLAG;
+    /* XXX -This is silly, we really should have an "icon" or "image" type. */
+    tmp_win->icon_bitmap_file=gh_scm2newstr(val,&dummy);
+    XDestroyWindow(dpy,tmp_win->icon_w);
+    tmp_win->icon_w=None;
+  } else {
+    scm_wrong_type_arg("set-icon!",1,val);
+  }
+  /* also it should redraw automatically */
+  if (tmp_win->flags & ICONIFIED) {
+    Iconify(tmp_win,0,0);
+  }
+  return SCM_BOOL_T;
+}
+
+SCM set_mini_icon_x(SCM val, SCM win) {
+  ScwmWindow *tmp_win;
+  int dummy;
+  VALIDATEN(win,2,"set-mini-icon!");
+  tmp_win = SCWMWINDOW(win);
+  if (val == SCM_BOOL_F) {
+    tmp_win->mini_pixmap_file = NULL;
+  } else if (gh_string_p(val)) {
+    tmp_win->mini_pixmap_file=gh_scm2newstr(val,&dummy);
+  } else {
+    scm_wrong_type_arg("set-mini-icon!",1,val);
+  }
+
+  /* also it should redraw automatically */
+
+  return SCM_BOOL_T;
+
+}
+
+SCM set_hint_override_x(SCM val, SCM win)
+{
+  VALIDATEN(win,2,"set-hint-override!");
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= MWM_OVERRIDE_FLAG;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~MWM_OVERRIDE_FLAG;
+  } else {
+    scm_wrong_type_arg("set-hint-override!",1,val);
+  }
+  return SCM_BOOL_T;
+}
+
+SCM set_decorate_transient_x(SCM val, SCM win)
+{
+  VALIDATEN(win,2,"set-decorate-transient!");
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= DECORATE_TRANSIENT_FLAG;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~DECORATE_TRANSIENT_FLAG;
+  } else {
+    scm_wrong_type_arg("set-decorate-transient!",1,val);
+  }
+  return SCM_BOOL_T;
+}
+
+SCM set_mwm_decor_hint_x(SCM val, SCM win)
+{
+  VALIDATEN(win,2,"set-mwm-decor-hint!");
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= MWM_DECOR_FLAG;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~MWM_DECOR_FLAG;
+  } else {
+    scm_wrong_type_arg("set-mwm-decor-hint!",1,val);
+  }
+  return SCM_BOOL_T;
+}  
+
+SCM set_mwm_func_hint_x(SCM val, SCM win)
+{
+  VALIDATEN(win,2,"set-mwm-func-hint!");
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= MWM_FUNCTIONS_FLAG;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~MWM_FUNCTIONS_FLAG;
+  } else {
+    scm_wrong_type_arg("set-mwm-func-hint!",1,val);
+  }
+  return SCM_BOOL_T;
+}  
+
+SCM set_PPosition_hint_x(SCM val, SCM win)
+{
+  VALIDATEN(win,2,"set-PPosition-hint!");
+  if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags |= NO_PPOSITION_FLAG;
+  } else if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags &= ~NO_PPOSITION_FLAG;
+  } else {
+    scm_wrong_type_arg("set-PPosition-hint!",1,val);
+  }
+  return SCM_BOOL_T;
+}  
+
+SCM set_OL_decor_hint_x(SCM val, SCM win)
+{
+  VALIDATEN(win,2,"set-OL-decor-hint!");
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= OL_DECOR_FLAG;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~OL_DECOR_FLAG;
+  } else {
+    scm_wrong_type_arg("set-OL-decor-hint!",1,val);
+  }
+  return SCM_BOOL_T;
+}  
+
+SCM set_start_on_desk_x(SCM desk, SCM win) {
+  ScwmWindow *tmp_win;
+  VALIDATEN(win,2,"set-start-on-desk!");
+  tmp_win = SCWMWINDOW(win);
+  if (desk == SCM_BOOL_F) {
+    tmp_win->flags &= ~STARTSONDESK_FLAG;
+  } else if (gh_number_p(desk)) {
+    tmp_win->flags |= STARTSONDESK_FLAG;
+    tmp_win->StartDesk=gh_scm2int(desk);
+  } else {
+    scm_wrong_type_arg("set-start-on-desk!",1,desk);
+  }
+  return SCM_BOOL_T;
+}
+
+SCM set_skip_mapping_x(SCM val, SCM win)
+{
+  VALIDATEN(win,2,"set-skip-mapping!");
+  if (val == SCM_BOOL_T) {
+    SCWMWINDOW(win)->flags |= SHOW_MAPPING;
+  } else if (val == SCM_BOOL_F) {
+    SCWMWINDOW(win)->flags &= ~SHOW_MAPPING;
+  } else {
+    scm_wrong_type_arg("set-skip-mapping!",1,val);
+  }
+  return SCM_BOOL_T;
+}  
 
 
 
