@@ -1,3 +1,11 @@
+Wed Mar 10 20:02:11 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmgtkhelper/Makefile.am: Put @GTK_CFLAGS@ before @CFLAGS@ in
+	case the order of -I options matters
+
+	* */*.c: Removed extraneous #include of libguile/dynl.h that is no
+ 	longer needed in guile-1.3.
+
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* c-animation/c-animation.c (AnimatedResizeWindow): Use viewport

@@ -1,3 +1,11 @@
+Wed Mar 10 20:02:41 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Rewrite "SCWM" as "Scwm" throughout (less bothersome to
+ 	the eye).  Update the initial comments to reflect some more tips.
+  	Always autoload id-select-symbol, as it was causing problems for
+ 	XEmacs.  This results in a compile-time warning for Emacs, but at
+ 	least it doesn't result in a run-time error for XEmacs.
+
 1999-02-09  Sam Steingold  <sds@goems.com>
 
 	* scwm.el (scwm-load-file): new function, bound to C-c C-l

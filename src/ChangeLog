@@ -1,3 +1,19 @@
+Wed Mar 10 20:15:57 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* binding.c (s_bind_key): Replace RELEASE_PROC in documentation
+	with RELEASE-PROC (_'s in function args turn into dashes in
+	documentation of the primitive)
+
+Wed Mar 10 19:58:09 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* resize.c: Fix bugs in calls of interactive_resize_new_size_hook, 
+	interactive_resize_start_hook.  The wrong numbers were being
+	passed in.
+
+	* constraint-primitives.cc: Updated for version >= .3 of
+ 	Cassowary.  Use ClVariable-s as handles instead of using pointers
+ 	to ClVariable.
+
 1999-02-28  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* binding.c, binding.h: Allow release procedures with `bind-key'

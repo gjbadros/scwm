@@ -1,3 +1,12 @@
+Wed Mar 10 20:20:08 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added `run-dot-xclients-at-startup', `run-dot-xclients-script'
+
+Wed Mar 10 19:59:00 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* winlist.scm: fold-menu-list of the window-list in case it gets
+	too long.  Thanks to Warwick Harvey for the bug report!
+
 1999-03-01  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* bincomm.scm: Fixed remaining obvious 64-bit bugs. Probably more
