@@ -1,3 +1,25 @@
+Sun Sep  6 13:23:15 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Fix source and header targets to not duplicate
+	cassowary files, and to include scwm-snarf.h
+
+Sun Sep  6 13:06:54 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c, shutdown.c, module-interface.c, events.c,
+	constraint-primitives.c, callbacks.c, add_window.c: Use SCWM_HOOK
+	instead of old SCWM_DEFINE_HOOK, and move the documentation to a
+	bare /** comment immediately following the SCWM_HOOK macro.  This
+	is the new documentation format for hooks.  extract-docs has been
+	updated, too, and now checks for coincidence of C and scheme hook
+	names (providing a warning on mismatch -- caught 1 bug!)
+
+	* callbacks.h: Rename SCWM_DEFINE_HOOK to SCWM_HOOK, make more
+	robust, and do not expand the macro if SCWM_EXTRACT_COMMENTS is
+	defined (since the macro is a lexical cue to the extractor)
+
+	* scwm.c, menu.c, image.c: Mark vars and read-only vars with VAR
+ 	and RO-VAR comments (temporary until macro-based construct)
+
 Sat Sep  5 13:26:05 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Mark new SCM variables, fix the mark code for a bug in 
