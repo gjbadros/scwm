@@ -108,7 +108,7 @@ $prefix = $opt_P if $opt_P;
 # I could even make this go to the version that the docs were generated
 # from, but I think it's better to look at the latest version for now
 # (at least until 1.0)
-my $scwmdir = $opt_d || "http://serveuse.mit.edu/cgi-bin/cvsweb.new/~checkout~";
+my $scwmdir = $opt_d || "http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~";
 
 # maps from a procedure name to a hash
 # containing "usage", "purpose", "comment",  "markup", "file", "line"
