@@ -1,3 +1,11 @@
+Sun Sep 19 20:15:21 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* nonants.scm: Put *nonant-highlight-color* in winops, not own group.
+
+	* preferences.scm: Drop the stupid (eval sym) lines that were
+	causing an unbound variable warning. Clean up (and re-indent)
+	unrelated code.
+
 Sun Sep 19 18:42:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* nonants.scm: Use new C primitives, define option
