@@ -1,4 +1,4 @@
-;;; File: <prefs-menu.scm - 1998-03-24 Tue 19:45:50 EST sds@mute.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-03-25 Wed 17:06:42 EST sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 ;;;	$Id$
 
@@ -22,7 +22,9 @@
 ;; (prefs-menu . #:image-side img #:color-bg-image-side color etc)
 
 (define-module (app scwm prefs-menus)
+  :use-module (app scwm base)
   :use-module (app scwm std-menus)
+  :use-module (app scwm optargs)
   :use-module (app scwm flux))
 
 
@@ -42,9 +44,9 @@
 	       ")\n(set-hilight-factor! " (number->string (hilight-factor))
 	       ")\n(set-shadow-factor! " (number->string (shadow-factor))
 	       ")\n(set-menu-hilihght-factor! " (number->string
-						(menu-hilite-factor))
+						 (menu-hilite-factor))
 	       ")\n(set-menu-shadow-factor! " (number->string
-					      (menu-shadow-factor))
+					       (menu-shadow-factor))
 	       ")\n")
     (close-port fd)))
 
@@ -92,8 +94,9 @@ Current desk size is " (size->str (desk-size)) ".")))))
   (message "Cannot ask for `" prompt "' yet! Sorry..."))
 
 (define shadow-factor-menu
-  (menu (list (menuitem "Set" #:action (set-shadow-factor!
-					(ask-string "New shadow factor:")))
+  (menu (list (menuitem "Set" #:action
+			(lambda () (set-shadow-factor!
+				    (ask-string "New shadow factor:"))))
 	      menu-separator
 	      (menuitem "Help" #:action
 			(show-mesg "Set shadow factor -\\n\
@@ -102,8 +105,8 @@ the relief \"shadow\" color for the regular and hilight background.")))))
 
 (define menu-shadow-factor-menu
   (menu (list (menuitem "Set" #:action
-			(set-menu-shadow-factor!
-			 (ask-string "New menu shadow factor:")))
+			(lambda () (set-menu-shadow-factor!
+				    (ask-string "New menu shadow factor:"))))
 	      menu-separator
 	      (menuitem "Help" #:action
 			(show-mesg "Set menu shadow factor -\\n\
@@ -111,8 +114,9 @@ the factor that is used by menus to generate\\n\
 the relief \"hilight\" color for the regular and hilight background.")))))
 
 (define hilite-factor-menu
-  (menu (list (menuitem "Set" #:action (set-hilight-factor!
-					(ask-string "New highlight factor:")))
+  (menu (list (menuitem "Set" #:action
+			(lambda () (set-hilight-factor!
+				    (ask-string "New highlight factor:"))))
 	      menu-separator
 	      (menuitem "Help" #:action
 			(show-mesg "Set highlight factor -\\n\
@@ -121,8 +125,9 @@ the relief \"shadow\" color for the regular and hilight background.")))))
 
 (define menu-hilite-factor-menu
   (menu (list (menuitem "Set" #:action
-			(set-shadow-factor!
-			 (ask-string "New menu highlight factor:")))
+			(lambda ()
+			  (set-shadow-factor!
+			   (ask-string "New menu highlight factor:"))))
 	      menu-separator
 	      (menuitem "Help" #:action
 			(show-mesg "Set menu highlight factor -\\n\
