@@ -40,11 +40,16 @@
 (set-window-property! w 'squashed-titlebar #f)
 
 ;;;; ICONIFY, ICONS
+
+;; iconify 3rd xterm
+
 (window-style "xcalc" #:icon "xcalc.xpm"
 	              #:mini-icon "mini-calc.xpm"
 		      #:icon-box (list 0 (y- 100) (x- 200) (y- 0))
 		      #:show-icon #t)
 (execute "xcalc")
+
+;; iconify it via decoration button
 
 (list-windows)
 
@@ -53,6 +58,8 @@
 (list-windows #:only iconified?)
 ;; de-iconify via window list
 
+
+;; arbitrary predicate!
 (list-windows #:only 
 	      (lambda (w) (equal? (window-viewport-position w) '(0 0))))
 ;; window-list deiconify
@@ -173,7 +180,6 @@
 (use-scwm-modules cascade tile undo)
 
 (bind-key 'all "H-M-C-u" undo)
-(bind-key 'all "H-M-C-r" redo)
 
 ;; (reset-undo!)
 
@@ -188,7 +194,7 @@
 
 (begin
   (save-window-configuration)
-  (tile-windows (list-windows)))
+  (tile-windows (list-windows #:only (win-not?? sticky?))))
 
 (undo)
 
@@ -218,5 +224,19 @@
 (move-group-relative 20 20 (select-multiple-windows-interactively))
 
 
+;;;; LEARNING SCWM
+;; file:///home/gjb/scwm/doc/html/book1.htm
+
+;; Would love the docbook->info converter!
+
+;; tab-completion
+
+;; list-windows C-h C-s 
+
+;; window-enter-hook
+
+;; *theme-path*
+
+
 ;;; Local Variables:
 ;;; eval: (progn (set-default-font "10x20") (scwm-eval-sexp (concat "(with-window (id->window (- " (cdr (assq 'window-id (cadadr (current-frame-configuration)))) " 2)) (resize-frame-to 795 935) (move-to (x- (w%x 100)) 0))") t))
