@@ -462,12 +462,12 @@ SCWM_PROC(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
 
 
 
-SCWM_PROC (x_rotate_cut_buffers, "X-rotate-cut-buffers", 1, 0, 0,
+SCWM_PROC (X_rotate_cut_buffers, "X-rotate-cut-buffers", 1, 0, 0,
            (SCM n))
      /** Rotate the X cut buffers by N positions.
 This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,
 and so on.  This cut buffer numbering is global to the display. */
-#define FUNC_NAME s_x_rotate_cut_buffers
+#define FUNC_NAME s_X_rotate_cut_buffers
 {
   if (!gh_number_p(n)) {
     scm_wrong_type_arg(FUNC_NAME, 1, n);
@@ -484,8 +484,7 @@ and so on.  This cut buffer numbering is global to the display. */
 
 SCWM_PROC (elapsed_time, "elapsed-time", 0, 0, 0,
            ())
-     /** Return the elapsed time in milliseconds since O.S. has been up.
-      */
+     /** Return the elapsed time in milliseconds since O.S. has been up. */
 #define FUNC_NAME s_elapsed_time
 {
   /* code borrowed from GWM's wool_used_time */

@@ -226,6 +226,8 @@ typedef struct ScreenInfo {
   ColorPair MenuStippleColors;
   ColorPair MenuRelief;
 
+  SCM schscreen;                /* back pointer to the scheme-level screen obj */
+
   SCM menu_font;                /* font structure for menus, resize/move gadgets */
   SCM icon_font;                /* for icon labels */
   SCM msg_window_font;          /* font for the size/position window */

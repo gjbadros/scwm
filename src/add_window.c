@@ -251,10 +251,12 @@ AddWindow(Window w)
   psw->HiShadowColor = SCM_BOOL_F;
   psw->HiBackColor = SCM_BOOL_F;
 
-  /* initialize constraint structure hanging off of psw */
-  CassowaryInitClVarsInPsw(psw);
-  /* and create the scheme-level window */
+  /* create the scheme-level window */
   psw->schwin = schwin = make_window(psw);
+  /* and initialize constraint structure hanging off of psw
+     (uses the scheme window so must come after the make_window assignment
+     above) */
+  CassowaryInitClVarsInPsw(psw);
 
   call1_hooks(before_new_window_hook, psw->schwin);
 

@@ -26,6 +26,7 @@ extern "C" {
 #include "ClSimplexSolver.h"
 #include "../guile/cassowary_scm.hpp"
 #include "../guile/cassowary_scm.h"
+#include "callbacks.h"
 #include "screen.h" /* to be able to add stays to all the windows */
 #include <strstream>
 #include <set>
@@ -38,7 +39,15 @@ static set<ScwmWindow *> setpswDirty;
 static void
 ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
 {
-  ScwmWindow *psw = static_cast<ScwmWindow *>(pclv->Pv());
+  SCM obj = ScmFromPv(pclv->Pv());
+  if (obj && obj != SCM_UNDEFINED) {
+    SCM proc = scm_object_property(obj,
+                                   gh_symbol2scm("changed-proc"));
+    if (!UNSET_SCM(proc)) {
+      scwm_safe_call0(proc);
+    }
+  }
+  ScwmWindow *psw = PswFromClvPv(pclv->Pv());
   if (!psw) {
     DBUG((DBG,__FUNCTION__,"No struct ScwmWindow attached to var: %s", pclv->name().data()));
     return;
@@ -229,28 +238,28 @@ SCWM_PROC (screen_clv_vy, "screen-clv-vy", 0, 0, 0,
 */
 #define FUNC_NAME s_screen_clv_vy
 {
-  return Scr.pssci->_scmVx;
+  return Scr.pssci->_scmVy;
 }
 #undef FUNC_NAME
 
 SCWM_PROC (screen_clv_pointerx, "screen-clv-pointerx", 0, 0, 0,
            ())
-     /** Return the cl-variable object for the virtual screen X coordinate.
+     /** Return the cl-variable object for the pointer's X coordinate.
 */
 #define FUNC_NAME s_screen_clv_pointerx
 {
-  return Scr.pssci->_scmVx;
+  return Scr.pssci->_scmPointerX;
 }
 #undef FUNC_NAME
 
 
 SCWM_PROC (screen_clv_pointery, "screen-clv-pointery", 0, 0, 0,
            ())
-     /** Return the cl-variable object for the virtual screen Y coordinate.
+     /** Return the cl-variable object for the pointer's Y coordinate.
 */
 #define FUNC_NAME s_screen_clv_pointery
 {
-  return Scr.pssci->_scmVx;
+  return Scr.pssci->_scmPointerY;
 }
 #undef FUNC_NAME
 

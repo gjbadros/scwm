@@ -707,6 +707,8 @@ about passing around the window argument.
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. */
 
+/* FIXMS: consider reordering the arguments for get-window */
+
 SCWM_PROC(get_window, "get-window", 0, 3, 0,
           (SCM kill_p, SCM select_p, SCM release_p))
      /** Retrieve the context window or select interactively.
@@ -719,8 +721,7 @@ window. And finally the RELEASE? argument (default #t) determines
 whether or not interactive selection (if any) should wait for a mouse
 release event or just a press. The latter behavior is useful if the
 action being performed on the window is an interactive one involving
-mouse drags. (FIXMS: that's probably a bad order for the optional
-arguments) */
+mouse drags. */
 #define FUNC_NAME s_get_window
 {
   if (kill_p == SCM_UNDEFINED) {

@@ -30,18 +30,15 @@ class ScwmScreenConstraintInfo {
 public:
   ScwmScreenConstraintInfo(ScreenInfo *pscreen)
     {
+      void *pvScr = PvFromScm(pscreen->schscreen);
       _vx.setName("vx");
       _vy.setName("vy");
       _pointerx.setName("px");
       _pointery.setName("py");
-#if 0 /* FIXGJB: just leave the Pv()s at NULL for now */
-      /* will need to do something with this when supporting multiple
-         screens better */
-      _vx.setPv(pscreen);
-      _vy.setPv(pscreen);
-      _pointerx.setPv(pscreen);
-      _pointery.setPv(pscreen);
-#endif 
+      _vx.setPv(pvScr);
+      _vy.setPv(pvScr);
+      _pointerx.setPv(pvScr);
+      _pointery.setPv(pvScr);
       gh_defer_ints();
       scm_protect_object(_scmVx = ScmMakeClVariable(&_vx));
       scm_protect_object(_scmVy = ScmMakeClVariable(&_vy));

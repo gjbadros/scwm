@@ -332,12 +332,13 @@ InitVariables(void)
 
   gh_defer_ints();
   scm_protect_object(scmScreen = ScmFromPScreenInfo(&Scr));
+  Scr.schscreen = scmScreen;
   gh_allow_ints();
 
   /* Sets the current desktop number to zero */
   /* Multiple desks are available even in non-virtual
    * compilations */
-  {
+  { /* scope */
     Atom atype;
     int aformat;
     unsigned long nitems, bytes_remain;

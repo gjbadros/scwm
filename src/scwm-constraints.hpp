@@ -28,10 +28,29 @@
 #include "ClSimplexSolver.h"
 #include "../guile/cassowary_scm.hpp"
 
+inline ScwmWindow *PswFromClvPv(void *pv) {
+  if (!pv)
+    return NULL;
+  SCM obj = ScmFromPv(pv);
+  if (!WINDOWP(obj))
+    return NULL;
+  return PSWFROMSCMWIN(obj);
+}
+
+inline ClVariable *PclvFromClvPv(void *pv) {
+  if (!pv)
+    return NULL;
+  SCM obj = ScmFromPv(pv);
+  if (!FIsClVariableScm(obj))
+    return NULL;
+  return PclvFromScm(obj);
+}
+
 class ScwmWindowConstraintInfo {
 public:
   ScwmWindowConstraintInfo(ScwmWindow *psw)
     {
+      void *pvWin = PvFromScm(psw->schwin);
       if (psw->name != NoName) {
         int ich = strlen(psw->name);
         char *szNm = NEWC(ich+3,char);
@@ -45,10 +64,10 @@ public:
         szNm[ich] = 'h'; _frame_height.setName(szNm);
         free(szNm);
       }
-      _frame_x.setPv(psw);
-      _frame_y.setPv(psw);
-      _frame_width.setPv(psw);
-      _frame_height.setPv(psw);
+      _frame_x.setPv(pvWin);
+      _frame_y.setPv(pvWin);
+      _frame_width.setPv(pvWin);
+      _frame_height.setPv(pvWin);
       gh_defer_ints();
       scm_protect_object(_scmXL = ScmMakeClVariable(&_frame_x));
       scm_protect_object(_scmYT = ScmMakeClVariable(&_frame_y));
@@ -115,7 +134,7 @@ public:
         assert(False);
       }
 #endif
-      return static_cast<ScwmWindow *>(_frame_x.Pv());
+      return PswFromClvPv(_frame_x.Pv());
     }
 
   void CopyStateToPswVars(bool *pfMoved, bool *pfResized) const
