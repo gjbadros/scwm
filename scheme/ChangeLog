@@ -1,3 +1,15 @@
+Sun Nov  9 16:45:50 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* base.scm: Added a new more abstract syntax for menu items to
+ 	allow more flexibility in changing the menu implementation;
+ 	procedures menu-title, menu-separator and menu-item should be used
+ 	to specify menu items instead of explicitly passing symbols or
+ 	lists.
+
+	* style.scm: stop using set-icon-maybe-name! and
+ 	set-mini-icon-maybe-name! and comment them out; would rather have
+ 	string handling in the primitvs for now.
+
 Sat Nov  8 20:35:26 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* style.scm: allow pixmaps or strings in window styles
