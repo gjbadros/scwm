@@ -139,8 +139,8 @@ typedef struct {
 } TitleButton;
 
 typedef struct ColorPair {
-  SCM fg;
-  SCM bg;
+  Pixel fore;
+  Pixel back;
 } ColorPair;
 
 typedef struct ScwmDecor {
