@@ -77,14 +77,14 @@
 (condition-case nil
     (progn
       (require 'xlib)
-      (setq X-dpy-for-scwm (XOpenDisplay "uni" X-display-number))
+      (setq X-dpy-for-scwm (XOpenDisplay (getenv "HOSTNAME") X-display-number))
       (setq X-property-scwm-exec (XInternAtom X-dpy-for-scwm "SCWM_EXECUTE" t))
       (setq X-root-window (X-window-alloc (X-RootWindow X-dpy-for-scwm 0) X-dpy-for-scwm))
       (defun scwm-send (start end) 
 	(let ((string (buffer-substring-no-properties start end)))
 	  (XChangeProperty X-dpy-for-scwm X-root-window
 			   X-property-scwm-exec  
-			   XA-string X-format-8 X-PropModeReplace (string-to-list string))
+			   XA-string X-format-8 X-PropModeReplace string)
 	  (message "Sent %s" string))))
   (error (message "Could not load xlib library; will try using scwmsend -i")))
 
@@ -152,3 +152,10 @@ SCWM to be executed (by means of the SCWM_EXECUTE property).
 
 (load "scheme")
 (define-key scheme-mode-map [(control meta ?x)] 'scwm-eval-last-sexp)
+;; Use C-M-z to permit moving the mouse before sending the string
+;; (useful for testing current-window-with-{pointer,focus})
+(define-key scheme-mode-map [(control meta ?z)] 
+  (function (lambda ()
+	      (interactive)
+	      (sleep-for 1)
+	      (call-interactively 'scwm-eval-last-sexp))))

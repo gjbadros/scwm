@@ -530,10 +530,24 @@
 ;;(unbind-mouse 'all "C-S-M-2")
 ;;(bind-mouse 'all "C-S-Mouse-1" show-icon-list-menu)
 
+(define (interactive-move-window-with-focus)
+  (let ((w (current-window-with-focus)))
+    (and w (interactive-move w))))
 
+(define (interactive-resize-window-with-focus)
+  (let ((w (current-window-with-focus)))
+    (and w (interactive-resize w))))
 
-(bind-key 'all "C-S-F7" interactive-move)
-(bind-key 'all "C-S-F8" interactive-resize)
+(define (interactive-move-window-with-pointer)
+  (let ((w (current-window-with-pointer)))
+    (and w (interactive-move w))))
+
+(define (interactive-resize-window-with-pointer)
+  (let ((w (current-window-with-pointer)))
+    (and w (interactive-resize w))))
+
+(bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
+(bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
 
 ;; rotate the current window with the keyboard
 (bind-key 'all "M-S-Tab" 
