@@ -17,12 +17,11 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;;
 
-
-;;; FIXMS: disgusting hack for now to get these in the root module.
 (define menu-bg-color (make-color "gray80"))
 (define menu-text-color (make-color "black"))
+(define menu-stipple-color (make-color "grey60"))
 (define menu-font (make-font "fixed"))
-
+(define menu-look scwm-menu-look)
 (define-public use-scwm-system-proc
 ;;;**VAR
 ;;; If #t, `execute' will use `scwm-system' instead of guile's `system'.
@@ -110,23 +109,16 @@ Returns #f otherwise."
   (= 0 (system (string-append "which " program-name " >/dev/null" ))))
 
 
-;; FIXMS: gross hack alert!
-;; use advice macros when written or just clean up in general
-(let ((old-smfg! set-menu-foreground!))
-  (set! set-menu-foreground!
-	(lambda (fg)
-	  (old-smfg! fg)
-	  (set! menu-text-color (if (color? fg) fg (make-color fg))))))
-
-;; (define-public (set-menu-foreground! fg) (set-menu-colors! fg))
-(let ((old-smbg! set-menu-background!))
-  (set! set-menu-background!
-	(lambda (bg)
-	  (old-smbg! bg)
-	  (set! menu-bg-color (if (color? bg) bg (make-color bg))))))
-
-;; (define-public (set-menu-background! bg) (set-menu-colors! #f bg))
-;; (define-public (set-menu-stipple! st) (set-menu-colors! #f #f st))
+(define-public (set-menu-foreground! fg)
+  (set! menu-text-color (if (color? fg) fg (make-color fg))))
+(define-public (set-menu-background! bg)
+  (set! menu-bg-color (if (color? bg) bg (make-color bg))))
+(define-public (set-menu-stipple! stipple)
+  (set! menu-stipple-color (if (color? stipple) stipple (make-color stipple))))
+(define-public (set-menu-font! font)
+  (set! menu-font (if (font? font) font (make-font font))))
+(define-public (set-menu-look! look)
+  (if (menulook? look) (set! menu-look look) (error "bad look")))
 
 ;;(define*-public (set-window-foreground! fg #&optional (w (get-window)))
 ;;  (set-window-colors! fg #f w))
@@ -309,8 +301,9 @@ the shortcut key for the menu item."
 		      (image-bg #f)
 		      (color-text 'menu-text-color)
 		      (color-bg 'menu-bg-color)
-		      (color-stipple #f)
+		      (color-stipple 'menu-stipple-color)
 		      (font 'menu-font)
+		      (menu-look 'menu-look)
 		      (extra #f))
   "Return a menu object with the given attributes.
 LIST-OF-MENUITEMS is a list of menuitem objects (each created with
@@ -334,8 +327,12 @@ specific to the menu look used for this menu."
       (set! color-stipple (make-color color-stipple)))
   (if (string? color-bg-image-side)
       (set! color-bg-image-side (make-color color-bg-image-side)))
-  (make-menu list-of-menuitems image-side image-align color-bg-image-side
-	     color-bg color-text color-stipple image-bg font extra))
+  (let ((menu (make-menu list-of-menuitems color-bg color-text color-stipple 
+			 font 
+			 image-side image-align color-bg-image-side image-bg
+			 extra)))
+    (set-menu-menu-look! menu menu-look)
+    menu))
 
 (define-public (image-property image key)
   "Return the KEY property of IMAGE.

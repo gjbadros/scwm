@@ -19,11 +19,9 @@
 
 ;;; Set some global options
 (set-rubber-band-mask! 30)
-(set-menu-foreground! BLACK)
-(set-menu-background! GRAY)
-(set-menu-stipple! SLATEGRAY)
+(set-not-menu-foreground! BLACK)
+(set-not-menu-background! GRAY)
 
-(set-menu-font! FIXED-FONT)
 
 (set-hilight-foreground! BLACK)
 (set-hilight-background! GRAY)
@@ -35,7 +33,8 @@
 (define default-menu (make-menu 
 		      (list
 		       (make-menuitem "Default Menu" #f)
-		       (make-menuitem "Exit SCWM" quit))))
+		       (make-menuitem "Exit SCWM" quit))
+		      GRAY BLACK SLATEGRAY FIXED-FONT))
 
 ;;; Some functions for decoration bindings
 (define (resize-or-raise)
