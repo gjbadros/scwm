@@ -201,6 +201,18 @@ enum wm_client_functions {
 #  endif
 #endif
 
+#ifndef NDEBUG
+/* Use "handle SIGUSR2 stop nopass" as a gdb option (in .gdbinit, e.g.)
+   and then put this in functions that you change so you can single
+   step through them --08/05/98 gjb */
+#define GDB_STOP do { raise(12 /* SIGUSR2 */); } while (0)
+#else
+#define GDB_STOP
+#endif
+
+
+
+
 /*
    ** message levels for scwm_msg:
  */
@@ -268,6 +280,7 @@ extern Atom XA_SCWMEXEC_REPLY;
 extern Atom XA_SCWMEXEC_NOTIFY;
 extern Atom XA_SCWMEXEC_OUTPUT;
 extern Atom XA_SCWMEXEC_ERROR;
+
 
 #endif /* SCWM_H__ */
 

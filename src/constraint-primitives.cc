@@ -295,6 +295,7 @@ extern "C" {
 void
 init_constraint_primitives()
 {
+  init_cassowary_scm();
 #ifndef SCM_MAGIC_SNARFER
 #include "constraint-primitives.x"
 #endif

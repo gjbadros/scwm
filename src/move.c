@@ -202,6 +202,22 @@ DisplayPosition(ScwmWindow *psw, int x, int y, Bool fRelief)
 }
 
 
+static void
+SnapCoordsToEdges(int *px, int *py, int width, int height, int bw, int resistance)
+{
+  /* Resist moving windows over the edge of the screen! */
+  if (((*px + width) >= Scr.DisplayWidth) &&
+      ((*px + width) < Scr.DisplayWidth + resistance))
+    *px = Scr.DisplayWidth - width - bw*2;
+  if ((*px < 0) && (*px > -resistance))
+    *px = -bw;
+  if (((*py + height) >= Scr.DisplayHeight) &&
+      ((*py + height) < Scr.DisplayHeight + resistance))
+    *py = Scr.DisplayHeight - height - bw*2;
+  if ((*py < 0) && (*py > -resistance))
+    *py = -bw;
+}
+
 /*
   Move the window around, return with the new window location in
   Final[XY]
@@ -225,7 +241,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 {
   Bool finished = False;
   Bool done;
-  int xl, yt, delta_x, delta_y, paged;
+  int xl, yt, paged;
 
   /* show the size/position window */
   MapMessageWindow();
@@ -270,6 +286,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       if (XLookupKeysym(&(Event.xkey), 0) == XK_Escape) {
 	finished = True;
       }
+      SnapCoordsToEdges(&xl, &yt, Width, Height, psw->bw, Scr.MoveResistance);
       done = True;
       break;
     case ButtonPress:
@@ -287,17 +304,6 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       xl = Event.xmotion.x_root + XOffset;
       yt = Event.xmotion.y_root + YOffset;
 
-      /* Resist moving windows over the edge of the screen! */
-      if (((xl + Width) >= Scr.DisplayWidth) &&
-	  ((xl + Width) < Scr.DisplayWidth + Scr.MoveResistance))
-	xl = Scr.DisplayWidth - Width - psw->bw;
-      if ((xl <= 0) && (xl > -Scr.MoveResistance))
-	xl = 0;
-      if (((yt + Height) >= Scr.DisplayHeight) &&
-	  ((yt + Height) < Scr.DisplayHeight + Scr.MoveResistance))
-	yt = Scr.DisplayHeight - Height - psw->bw;
-      if ((yt <= 0) && (yt > -Scr.MoveResistance))
-	yt = 0;
 
       done = True;
       finished = True;
@@ -306,23 +312,11 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
     case MotionNotify:
       xl = Event.xmotion.x_root;
       yt = Event.xmotion.y_root;
-/*        HandlePaging(Scr.DisplayWidth,Scr.DisplayHeight,&xl,&yt,
-   &delta_x,&delta_y,False);  mab */
-      /* redraw the rubberband */
       xl += XOffset;
       yt += YOffset;
 
       /* Resist moving windows over the edge of the screen! */
-      if (((xl + Width) >= Scr.DisplayWidth) &&
-	  ((xl + Width) < Scr.DisplayWidth + Scr.MoveResistance))
-	xl = Scr.DisplayWidth - Width - psw->bw;
-      if ((xl <= 0) && (xl > -Scr.MoveResistance))
-	xl = 0;
-      if (((yt + Height) >= Scr.DisplayHeight) &&
-	  ((yt + Height) < Scr.DisplayHeight + Scr.MoveResistance))
-	yt = Scr.DisplayHeight - Height - psw->bw;
-      if ((yt <= 0) && (yt > -Scr.MoveResistance))
-	yt = 0;
+      SnapCoordsToEdges(&xl, &yt, Width, Height, psw->bw, Scr.MoveResistance);
 
       /* check Paging request once and only once after outline redrawn */
       /* redraw after paging if needed - mab */
@@ -352,23 +346,28 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 
         /* prevent window from lagging behind mouse when paging - mab */
 	if (paged == 0) {
-	  xl = Event.xmotion.x_root;
-	  yt = Event.xmotion.y_root;
+	  int xcenter = Event.xmotion.x_root;
+	  int ycenter = Event.xmotion.y_root;
+          int delta_x = 0;
+          int delta_y = 0;
           /* remove the move edit constraint so that we can do the virtual paging--
              without this, the endEdit on the virtual paging removes the edit
              variables for the window move */
+#if 0 /* FIXGJB: virtual paging may try to edit Scr.Vx,Vy -- nested
+         beginEdit calls are not supported by Cassowary yet. --08/05/98 gjb */
           if (!psw->fIconified) CassowaryEndEdit(psw);
-	  HandlePaging(Scr.DisplayWidth, Scr.DisplayHeight, &xl, &yt,
+	  HandlePaging(Scr.DisplayWidth, Scr.DisplayHeight, &xcenter, &ycenter,
 		       &delta_x, &delta_y, False);
           /* now re-establish the window edit constraint */
           if (!psw->fIconified) CassowaryEditPosition(psw);
-	  xl += XOffset;
-	  yt += YOffset;
-	  if ((delta_x == 0) && (delta_y == 0))
-	    break;		/* break from while paged */
+#endif
+	  if ((delta_x != 0) || (delta_y == 0)) {
+            xl += delta_x;
+            yt += delta_y;
+          }
 	}
 	paged++;
-      }				/* end while paged */
+      }
 
       done = True;
       break;
@@ -383,6 +382,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
   if (!opaque_move)
     RemoveRubberbandOutline(Scr.Root);
 
+  SnapCoordsToEdges(&xl, &yt, Width, Height, psw->bw, Scr.MoveResistance);
   if (!psw->fIconified) {
     SuggestMoveWindowTo(psw,xl,yt,True);
     CassowaryEndEdit(psw);

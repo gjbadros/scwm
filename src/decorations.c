@@ -326,7 +326,7 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     decor &= ~(MWM_DECOR_MAXIMIZE | MWM_DECOR_MINIMIZE);
   }
   if (ShapesSupported) {
-    if (t->wShaped) {
+    if (t->fShaped) {
       decor &= ~(MWM_DECOR_BORDER | MWM_DECOR_RESIZEH);
     }
   }

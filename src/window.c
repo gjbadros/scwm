@@ -168,8 +168,7 @@ ResetAllFlags(ScwmWindow *psw)
     psw->fStartsOnDesk =
     psw->fOLDecorHint =
     psw->fNoPPosition =
-    psw->fForceIcon = 
-    False;
+    psw->fForceIcon = False;
 }
 
 void
@@ -237,9 +236,8 @@ CopySetAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
     psw->fMapped = True;
   if ( pswSrc->fIconified )
     psw->fIconified = True;
-  if ( pswSrc->fTransient ) {
+  if ( pswSrc->fTransient )
     psw->fTransient = True;
-  }
   if ( pswSrc->fRaised )
     psw->fRaised = True;
   if ( pswSrc->fVisible )

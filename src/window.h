@@ -98,7 +98,7 @@ typedef struct ScwmWindow {
   struct ScwmDecor *fl;
   Window icon_w;		/* the icon window */
   Window icon_pixmap_w;		/* the icon window */
-  int wShaped;			/* is this a shaped window */
+  Bool fShaped;			/* is this a shaped window */
 
   int frame_x;                  /* x position of frame */
   int frame_y;                  /* y position of frame */

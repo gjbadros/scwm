@@ -473,11 +473,11 @@ scwm_main(int argc, char **argv)
   init_face();
   init_shutdown();
   init_xproperty();
+  init_xrm();
   init_events();
   init_deskpage();
   init_placement();
 #ifdef USE_CASSOWARY
-  init_cassowary_scm();
   init_constraint_primitives();
 #endif
   SCM_ALLOW_INTS;
@@ -721,6 +721,7 @@ scwm_main(int argc, char **argv)
   init_image_colormap();
   init_borders();
   init_resize_gcs();
+  XrmInitialize();
 
   /* must come after variables are init'd */
   Scr.MsgWindow = CreateMessageWindow( BlackPixel(dpy,Scr.screen), 

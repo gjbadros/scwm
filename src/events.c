@@ -1405,7 +1405,7 @@ HandleConfigureRequest()
 
     XShapeQueryExtents(dpy, pswCurrent->w, &boundingShaped, &xws, &yws, &wws,
 		       &hws, &clipShaped, &xbs, &ybs, &wbs, &hbs);
-    pswCurrent->wShaped = boundingShaped;
+    pswCurrent->fShaped = boundingShaped;
   }
 
   /* Don't modify frame_XXX fields before calling SetupWindow! */
@@ -1476,7 +1476,7 @@ HandleShapeNotify(void)
       return;
     if (sev->kind != ShapeBounding)
       return;
-    pswCurrent->wShaped = sev->shaped;
+    pswCurrent->fShaped = sev->shaped;
     SetShape(pswCurrent, FRAME_WIDTH(pswCurrent));
   }
 }

@@ -210,8 +210,6 @@ void
 CassowaryEndEdit(PScwmWindow psw)
 {
   if (!psolver) {
-    if (psw)
-      ResizePswToCurrentSize(psw);
     return;
   }
   psolver->endEdit();

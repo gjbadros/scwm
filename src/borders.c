@@ -42,6 +42,9 @@
 
 extern Window PressedW;
 
+#define SQUASHED_TITLEBAR_P(psw) \
+  SCM_NFALSEP( scm_object_property((psw)->schwin, gh_symbol2scm("squashed-titlebar")))
+
 /* macro rules to get button state */
 /* FIXGJB: ugh! dynamic scoping in a macro! --07/26/98 gjb */
 #define GetButtonState(window)						\
@@ -57,6 +60,61 @@ extern Window PressedW;
           XClearWindow(dpy,(window));					\
         }								\
       }
+
+/*
+ * Sets up the shaped window borders 
+ * This is used when psw->fShaped (i.e., client window is a shaped window)
+ */
+void 
+SetShape(ScwmWindow *psw, int w)
+{
+  if (ShapesSupported) {
+    XRectangle rect;
+
+    XShapeCombineShape(dpy, psw->frame, ShapeBounding,
+		       psw->boundary_width,
+		       psw->title_height + psw->boundary_width,
+		       psw->w,
+		       ShapeBounding, ShapeSet);
+    if (psw->title_w) {
+      /* windows w/ titles */
+      rect.x = psw->boundary_width;
+      rect.y = psw->title_y;
+      rect.width = w - 2 * psw->boundary_width + psw->bw;
+      rect.height = psw->title_height;
+
+      XShapeCombineRectangles(dpy, psw->frame, ShapeBounding,
+			      0, 0, &rect, 1, ShapeUnion, Unsorted);
+    }
+  }
+}
+
+void 
+SetShapedTitlebar(ScwmWindow *psw, int w)
+{
+  if (ShapesSupported) {
+    XRectangle rect;
+    rect.x = 0;
+    rect.y = 0;
+    rect.width = FRAME_WIDTH(psw);
+    rect.height = FRAME_HEIGHT(psw) - psw->title_height - psw->boundary_width;
+
+    XShapeCombineRectangles(dpy, psw->frame, ShapeBounding,
+                            0, psw->title_height + psw->boundary_width,
+                            &rect, 1, ShapeSet, Unsorted);
+    if (psw->title_w) {
+      /* windows w/ titles */
+      rect.x = 0;
+      rect.y = 0;
+      rect.width = w + psw->bw;
+      rect.height = psw->title_height + psw->boundary_width * 2;
+
+      XShapeCombineRectangles(dpy, psw->frame, ShapeBounding,
+			      0, 0, &rect, 1, ShapeUnion, Unsorted);
+    }
+  }
+}
+
 
 /*
  *  Draws an arbitrary sequence of lines within a window (more complex)
@@ -1220,6 +1278,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
   unsigned long xwcm;
   int cx, cy, i;
   int xwidth, ywidth, left, right;
+  int tbar_right;
   Bool shaded = SHADED_P(psw);
 
   assert(!fMoved || fMoved == WAS_MOVED);
@@ -1274,6 +1333,18 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     if (psw->title_width < 1)
       psw->title_width = 1;
 
+    { /* scope */
+      int tw = ComputeXTextWidth(XFONT(GET_DECOR(psw, window_font)), psw->name, -1);
+      tw += 2*psw->boundary_width + psw->bw + 10;
+      tbar_right = w;
+      if (psw->fTitle && (SQUASHED_TITLEBAR_P(psw))) {
+        if (psw->title_width > tw) {
+          tbar_right = w - (psw->title_width - tw);
+          psw->title_width = tw;
+        }
+      }
+    }
+
     if (SHOW_TITLE_P(psw)) {
       psw->title_x = psw->boundary_width +
 	(left * button_width);
@@ -1302,7 +1373,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 	}
       }
 
-      xwc.x = w - psw->boundary_width + psw->bw;
+      xwc.x = tbar_right - psw->boundary_width + psw->bw;
       for (i = 0; i < Scr.nr_right_buttons; i++) {
 	if (psw->right_w[i] != None) {
 	  xwc.x -= button_width;
@@ -1341,7 +1412,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 	  xwc.x = psw->corner_width;
 	  xwc.y = 0;
 	  xwc.height = psw->boundary_width;
-	  xwc.width = xwidth;
+	  xwc.width = tbar_right - 2 * psw->corner_width + psw->bw;
 	} else if (i == 1) { /* right side */
 	  xwc.x = w - psw->boundary_width + psw->bw;
 	  xwc.y = psw->corner_width;
@@ -1372,7 +1443,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
       for (i = 0; i < 4; i++) {
 
 	if (i == 1 || i == 3) /* Right corners: NE, SE */
-	  xwc.x = w - psw->corner_width + psw->bw;
+	  xwc.x = (i==1?tbar_right:w) - psw->corner_width + psw->bw;
 	else /* Left corners: NW, SW */
 	  xwc.x = 0;
 
@@ -1405,8 +1476,12 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
   XMoveResizeWindow(dpy, psw->frame, x, y, w, h);
 
   if (ShapesSupported) {
-    if (fResized && psw->wShaped) {
-      SetShape(psw, w);
+    if (fResized) {
+      if (psw->fShaped) {
+        SetShape(psw, w);
+      } else if (SQUASHED_TITLEBAR_P(psw)) {
+        SetShapedTitlebar(psw, tbar_right);
+      }
     }
   }
   XSync(dpy, False);
@@ -1433,37 +1508,6 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     XSendEvent(dpy, psw->w, False, StructureNotifyMask, &client_event);
   }
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-}
-
-
-/****************************************************************************
- *
- * Sets up the shaped window borders 
- * 
- ****************************************************************************/
-void 
-SetShape(ScwmWindow *psw, int w)
-{
-  if (ShapesSupported) {
-    XRectangle rect;
-
-    XShapeCombineShape(dpy, psw->frame, ShapeBounding,
-		       psw->boundary_width,
-		       psw->title_height + psw->boundary_width,
-		       psw->w,
-		       ShapeBounding, ShapeSet);
-    if (psw->title_w) {
-      /* windows w/ titles */
-      rect.x = psw->boundary_width;
-      rect.y = psw->title_y;
-      rect.width = w - 2 * psw->boundary_width + psw->bw;
-      rect.height = psw->title_height;
-
-
-      XShapeCombineRectangles(dpy, psw->frame, ShapeBounding,
-			      0, 0, &rect, 1, ShapeUnion, Unsorted);
-    }
-  }
 }
 
 

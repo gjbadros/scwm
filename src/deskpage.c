@@ -22,7 +22,7 @@
 /****************************************************************************
  * This module has been significantly modified by Maciej Stachowiak.
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
- * Changes Copyright 1997, Maciej stachowiak
+ * Changes Copyright 1997, 1998, Maciej Stachowiak and Greg J. Badros
  ****************************************************************************/
 
 #ifdef HAVE_CONFIG_H

@@ -76,7 +76,8 @@ SCM after_new_window_hook;
 
 /* Used to parse command line of clients for specific desk requests. */
 /* Todo: check for multiple desks. */
-static XrmDatabase db;
+XrmDatabase db;
+
 static XrmOptionDescRec table[] =
 {
   /* Want to accept "-workspace N" or -xrm "scwm*desk:N" as options
@@ -115,8 +116,6 @@ void ChangeVirtualPosition(int vx, int vy, Bool fGrab) {
 void CassowaryModifyOpaqueFlag(Bool *pfOpaque) { /* empty */ }
 
 void CassowaryEndEdit(ScwmWindow *psw) {
-  if (psw)
-    ResizePswToCurrentSize(psw);
 }
 #endif
 
@@ -126,6 +125,10 @@ void CassowaryEndEdit(ScwmWindow *psw) {
 /*
  * AddWindow - add a new window to the scwm list
  *   Note that this gets called both at startup and upon recapturing
+ *   Also note that we don't really have to be all that careful about
+ *     decoration window placement or sizing -- SetupFrame takes care of all that stuff
+ *     This code should be cleaned up to eliminate redundant (and misleading)
+ *      computations from AddWindow (that are done necessarily in SetupFrame, too)
  *
  *  Returned Value:
  *	(ScwmWindow *) - pointer to the ScwmWindow structure
@@ -211,7 +214,7 @@ AddWindow(Window w)
     XShapeQueryExtents(dpy, psw->w,
 		       &boundingShaped, &xws, &yws, &wws, &hws,
 		       &clipShaped, &xbs, &ybs, &wbs, &hbs);
-    psw->wShaped = boundingShaped;
+    psw->fShaped = boundingShaped;
   }
 
 
