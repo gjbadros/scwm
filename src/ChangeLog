@@ -1,3 +1,27 @@
+Mon Aug 30 12:18:21 1999    <gjb@cs.washington.edu>
+
+	* scwm-constraints.cc (SuggestSizeWindowTo): Return a bool for
+	whether the window size was changed.
+
+	* scwm.c: Added commented out hack from Hubert Canon to work
+	around weird sigsetjmp corrupting global variables bug.
+
+Mon Aug 30 12:10:06 1999    <gjb@cs.washington.edu>
+
+	* window.h, scwm-constraints.h, add_window.h, add_window.c: Make
+ 	SetScwmWindowGeometry return True iff the window was
+ 	moved/resized, False otherwise.
+
+	* resize.c: Use SuggestSizeWindowTo's return value for determining 
+	whether to call the hooks for a new position.
+
+	* borders.c: Redraw the titlebar right after a XMoveResizeWindow
+	-- this is a bit wasteful if no expose event is generated, but
+	reduces flicker noticeably if the titlebar does need re-drawing.
+
+	* window.c: FIX comment re: overkill of SetupFrame() call in
+	ResizePswToCurrentSize. 
+	
 1999-08-30  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* Makefile.am (INCLUDES): Explicitly mention include dir so that

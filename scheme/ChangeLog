@@ -1,3 +1,8 @@
+Mon Aug 30 11:58:24 1999    <gjb@cs.washington.edu>
+
+	* std-menus.scm: Move *xlock-query-program* definition earlier in
+	file.
+
 Mon Aug 30 10:19:42 1999    <gjb@cs.washington.edu>
 
 	* std-menus.scm: Use *xlock-query-program* as a scwm-option.
