@@ -86,7 +86,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From scwm/binding.c:638]
+[From scwm/binding.c:645]
 
 
 Face Flags
@@ -138,7 +138,7 @@ title and border faces, are indicated below.
 </tgroup>
 </table>
 
-[From scwm/face.c:503]
+[From scwm/face.c:504]
 
 
 Face Specification Flags
@@ -198,7 +198,7 @@ when tiled, which makes it fully destructive.
 </tgroup>
 </table>
 
-[From scwm/face.c:562]
+[From scwm/face.c:563]
 
 
 Faces
@@ -241,7 +241,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3179]
+[From scwm/window.c:3183]
 
 
 Fonts
@@ -560,7 +560,7 @@ circulate-skip (boolean-style) from scheme/winlist.scm:238
 circulate-skip-icon (boolean-style) from scheme/winlist.scm:239
 start-maximized (window-style) from scheme/winops.scm:166
 
-[From scwm/face.c:552]
+[From scwm/face.c:553]
 
 
 Windows

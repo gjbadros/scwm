@@ -1,7 +1,7 @@
 circle-pie-menu-look
 - 
 A menu-look that gives pie menus in a circular window. 
-[From modules/pie-menus/draw-pie-menu.c:1353]
+[From modules/pie-menus/draw-pie-menu.c:1355]
 
 
 context-map
@@ -114,7 +114,7 @@ netscape-new-window
 - (app scwm flux)
 If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window.
 
-[From scheme/flux.scm:639]
+[From scheme/flux.scm:647]
 
 
 opaque-move-percent
@@ -134,7 +134,7 @@ Percent of display area below which windows are resized opaquely.
 pie-menu-look
 - 
 A menu-look that gives pie menus in a rectangular window 
-[From modules/pie-menus/draw-pie-menu.c:1344]
+[From modules/pie-menus/draw-pie-menu.c:1346]
 
 
 remote-shell-command
@@ -144,7 +144,7 @@ It should take a first (non-option) argument of
 the hostname to connect to.  "ssh" "rsh" and "telnet"
 are each reasonable choices.
 
-[From scheme/base.scm:442]
+[From scheme/base.scm:445]
 
 
 resize-opaquely?
@@ -164,7 +164,7 @@ Used as an argument to `set-menu-look'.
 shaped-pie-menu-look
 - 
 A menu-look that gives pie menus with only the labels visible 
-[From modules/pie-menus/draw-pie-menu.c:1361]
+[From modules/pie-menus/draw-pie-menu.c:1363]
 
 
 use-scwm-system-proc
@@ -176,7 +176,7 @@ scwm) propagates to the child processes.  The end result of the
 possible bug is that xterms started by scwm are terminated if the
 scwm that started them is terminated using a Ctrl-C to send it a SIGINT.
 
-[From scheme/base.scm:47]
+[From scheme/base.scm:50]
 
 
 xpm-shaped-menu-look
@@ -191,6 +191,6 @@ The command to run when a new xterm window is requested.
 The string given should refer to a binary or script in the
 path and should take a "-e" argument of what to run.
 
-[From scheme/base.scm:435]
+[From scheme/base.scm:438]
 
 
