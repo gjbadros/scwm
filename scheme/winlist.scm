@@ -181,9 +181,9 @@ the letters a through z.  Currently this is turned off if BY-RESOURCE is #t.
 		(let* ((extra-label-string 
 			(if show-geometry (window-geometry-string x) #f))
 		       (hotkey (cond 
-				((not enumerate-hotkeys) #f)
+				((not enumerate-hotkeys) "")
 				((< count hk-len) (substring hotkeys count (+ count 1)))
-				(else #f)))
+				(else "")))
 		       (item-label (if enumerate-hotkeys 
 				       (string-append hotkey ".\t" (window-title x))
 				       (window-title x))))
