@@ -17,6 +17,12 @@
 ;;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 ;;; Boston, MA 02111-1307 USA
 
+
+;;;; OBSOLETED
+;;;; Use "preferences" module instead
+;;;; the user-options module no longer exists
+
+
 ;; The purpose of this file is to define function prefs-menu, which
 ;; returns a menu object.  Use it like this:
 ;; (use-modules (app scwm prefs-menu))
