@@ -73,9 +73,11 @@ SCM ensure_valid(SCM win, int n, char *subr, SCM kill_p) {
     }
   }
   if (!WINDOWP(win)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg(subr,n,win);
   }
   if(!VALIDWINP(win)) {
+    SCM_ALLOW_INTS;
     scwm_error(subr,6);
     /* maybe should just return SCM_BOOL_F; */
   }
@@ -109,7 +111,8 @@ SCM select_window(SCM kill_p)
   Window w;
   ScwmWindow *tmp_win;
   unsigned long context;
-
+  
+  SCM_REDEFER_INTS;
   w=Scr.Root;
   context=C_ROOT;
 
@@ -118,6 +121,7 @@ SCM select_window(SCM kill_p)
   if (kill_p==SCM_UNDEFINED) {
     kill_p=SCM_BOOL_F;
   } else if (!gh_boolean_p(kill_p)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("select-window",1,kill_p);
   }
   if(DeferExecution(&ev,
@@ -128,9 +132,12 @@ SCM select_window(SCM kill_p)
 		    ,ButtonRelease)) {
     puts("reeturned TRUE");
   }
+  /* XXX - this needs to done right. */
   if (tmp_win->schwin!=NULL) {
+    SCM_REALLOW_INTS;
     return (tmp_win->schwin);
   } else {
+    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
 }
@@ -139,25 +146,32 @@ SCM select_window(SCM kill_p)
 SCM delete_window(SCM win)
 {
   ScwmWindow *tmp_win;
+  SCM_REDEFER_INTS;
+
   VALIDATEKILL(win,"delete-window");
 
   tmp_win=SCWMWINDOW(win);
   if(check_allowed_function2(F_DELETE,tmp_win) == 0) {
+    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
   if (tmp_win->flags & DoesWmDeleteWindow) {
     send_clientmessage (dpy, tmp_win->w, _XA_WM_DELETE_WINDOW, CurrentTime);
+    SCM_REALLOW_INTS;
     return SCM_BOOL_T;
   }
+  SCM_REALLOW_INTS;
   return SCM_BOOL_F;
 }
 
 SCM destroy_window(SCM win)
 {
   ScwmWindow *tmp_win;
+  SCM_REDEFER_INTS;
   VALIDATEKILL(win,"destroy-window");
   tmp_win=SCWMWINDOW(win);
   if(check_allowed_function2(F_DESTROY,tmp_win) == 0) {
+    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
   if (XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
@@ -167,6 +181,7 @@ SCM destroy_window(SCM win)
     XKillClient(dpy, tmp_win->w);
   }
   XSync(dpy,0);
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
@@ -181,8 +196,10 @@ void FocusOn(ScwmWindow *t,int DeIconifyOnly);
 
 SCM focus(SCM win)
 {
+  SCM_REDEFER_INTS;
   VALIDATE(win,"focus");
   FocusOn(SCWMWINDOW(win),0);
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
@@ -190,8 +207,10 @@ void WarpOn(ScwmWindow *t,int warp_x, int x_unit, int warp_y, int y_unit);
 
 SCM warp_to_window(SCM win)
 {
+  SCM_REDEFER_INTS;
   VALIDATE(win,"warp-to-window");
   WarpOn (SCWMWINDOW(win), 0, 0, 0, 0);
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
@@ -203,7 +222,8 @@ SCM raise_window(SCM win)
   char *junk, *junkC;
   unsigned long junkN;
   int junkD, method, BoxJunk[4];
-  
+
+  SCM_REDEFER_INTS;  
   VALIDATE(win,"raise-window");
   
   tmp_win= SCWMWINDOW(win);
@@ -220,14 +240,17 @@ SCM raise_window(SCM win)
 		 BoxJunk,  &method)& STAYSONTOP_FLAG)
     tmp_win->flags |= ONTOP;
   KeepOnTop();
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
 
 SCM lower_window(SCM win)
 {
+  SCM_REDEFER_INTS;  
   VALIDATE(win,"lower-window");
   LowerWindow(SCWMWINDOW(win));
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
@@ -246,22 +269,28 @@ SCM raised_p(SCM win)
 SCM iconify(SCM win)
 {
   ScwmWindow *tmp_win;
-  
+
+  SCM_REDEFER_INTS;
   VALIDATE(win,"iconify");
   tmp_win=SCWMWINDOW(win);
   
   if(check_allowed_function2(F_ICONIFY,tmp_win) == 0)
     {
+
       return SCM_BOOL_F;
     }
   Iconify(tmp_win,0,0);
+
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
 SCM deiconify(SCM win)
 {
+  SCM_REDEFER_INTS;
   VALIDATE(win,"deiconify");
   DeIconify(SCWMWINDOW(win));
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
@@ -276,22 +305,26 @@ SCM iconified_p(SCM win)
 SCM stick(SCM win)
 {
   ScwmWindow *tmp_win;
+  SCM_REDEFER_INTS;
   VALIDATE(win,"stick");
   tmp_win=SCWMWINDOW(win);
   tmp_win->flags |=STICKY;
   BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
   SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True);
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
 SCM unstick(SCM win)
 {
   ScwmWindow *tmp_win;
+  SCM_REDEFER_INTS;
   VALIDATE(win,"unstick");
   tmp_win=SCWMWINDOW(win);
   tmp_win->flags &= ~STICKY;
   BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
   SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True);
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
@@ -315,6 +348,7 @@ SCM sticky_p(SCM win)
 SCM window_shade(SCM win)
 {
   ScwmWindow *tmp_win;
+  SCM_REDEFER_INTS;
   VALIDATE(win,"window-shade");
   tmp_win=SCWMWINDOW(win);
 
@@ -329,11 +363,14 @@ SCM window_shade(SCM win)
 	     tmp_win->title_height + tmp_win->boundary_width,
 	     False);
   Broadcast(M_WINDOWSHADE, 1, tmp_win->w, 0, 0, 0, 0, 0, 0);
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;
 }
 
 SCM un_window_shade(SCM win) 
 {
   ScwmWindow *tmp_win;
+  SCM_REDEFER_INTS;
   VALIDATE(win,"un-window-shade");
   tmp_win=SCWMWINDOW(win);
 
@@ -345,6 +382,8 @@ SCM un_window_shade(SCM win)
 	     tmp_win->orig_ht,
 	     True);
   Broadcast(M_DEWINDOWSHADE, 1, tmp_win->w, 0, 0, 0, 0, 0, 0);
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;
 }
 
 SCM window_shaded_p(SCM win)
@@ -389,11 +428,15 @@ SCM move_to(SCM x, SCM y, SCM win)
 {
   ScwmWindow *tmp_win;
   Window w;
+
+  SCM_REDEFER_INTS;
   VALIDATEN(win,3,"move-to");
   if (!gh_number_p(x)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("move-to",1,x);
   }
   if (!gh_number_p(y)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("move-to",2,y);
   }
 
@@ -411,6 +454,7 @@ SCM move_to(SCM x, SCM y, SCM win)
     }
 
   move_finalize(w,tmp_win,gh_scm2int(x),gh_scm2int(y));
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
@@ -419,6 +463,7 @@ SCM interactive_move(SCM win)
   ScwmWindow *tmp_win;
   Window w;
   int x,y;
+  SCM_REDEFER_INTS;
   VALIDATE(win,"interactive-move");
   tmp_win=SCWMWINDOW(win);
   w = tmp_win->frame;
@@ -432,6 +477,7 @@ SCM interactive_move(SCM win)
   }
   InteractiveMove(&w,tmp_win,&x,&y,NULL);
   move_finalize(w,tmp_win,x,y);
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
@@ -440,6 +486,7 @@ SCM resize_to(SCM w, SCM h, SCM win)
   int width,height;
   ScwmWindow *tmp_win;
   
+  SCM_REDEFER_INTS;
   VALIDATEN(win,3,"resize-to");
   tmp_win=SCWMWINDOW(win);
 
@@ -448,15 +495,17 @@ SCM resize_to(SCM w, SCM h, SCM win)
      || (tmp_win->buttons & WSHADE)
 #endif
      ) {
+    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
 
   tmp_win->flags &= ~MAXIMIZED;
   
   /* can't resize icons */
-  if(tmp_win->flags & ICONIFIED)
+  if(tmp_win->flags & ICONIFIED) {
+    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
-  
+  }
   width = gh_scm2int(w);
   height = gh_scm2int(h);
   width += (2*tmp_win->boundary_width);
@@ -466,6 +515,7 @@ SCM resize_to(SCM w, SCM h, SCM win)
   SetupFrame (tmp_win, tmp_win->frame_x, 
 	      tmp_win->frame_y , width, height,FALSE);
       
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
@@ -504,15 +554,17 @@ SCM interactive_resize(SCM win)
      || (tmp_win->buttons & WSHADE)
 #endif
      ) {
+    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
   
 
   tmp_win->flags &= ~MAXIMIZED;
 
-  if(tmp_win->flags & ICONIFIED)
+  if(tmp_win->flags & ICONIFIED) {
+    SCM_REALLOW_INTS;
     return SCM_BOOL_F;
-
+  }
   ResizeWindow = tmp_win->frame;
 
 
@@ -527,6 +579,7 @@ SCM interactive_resize(SCM win)
   if(!GrabEm(MOVE))
     {
       XBell(dpy,Scr.screen);
+      SCM_REALLOW_INTS;
       return SCM_BOOL_F;
     }
 
@@ -686,17 +739,21 @@ SCM interactive_resize(SCM win)
   ymotion = 0;
 
   Scr.flags |= flags & (EdgeWrapX|EdgeWrapY);
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
 SCM refresh_window(SCM win) 
 {
   ScwmWindow *tmp_win;
-
+  SCM_REDEFER_INTS;
   VALIDATE(win,"refresh-window");
   tmp_win=SCWMWINDOW(win);
+
   refresh_common((tmp_win->flags & ICONIFIED)?
 		 (tmp_win->icon_w):(tmp_win->frame));
+
+  SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
 
@@ -706,7 +763,9 @@ SCM move_window_to_desk(SCM which, SCM win)
   ScwmWindow *t;
   int val1;
 
+  SCM_REDEFER_INTS;
   if (!gh_number_p(which)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("move-window-to-desk",1,which);
   }
 
@@ -738,7 +797,8 @@ SCM move_window_to_desk(SCM which, SCM win)
       }
     }
   BroadcastConfig(M_CONFIGURE_WINDOW,t);
-  return SCM_UNSPECIFIED;
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;;
 }
 
 
@@ -791,10 +851,46 @@ SCM list_all_windows() {
   ScwmWindow *t;
   SCM result=SCM_EOL;
 
+  SCM_REDEFER_INTS;
   for (t=Scr.ScwmRoot.next; NULL!=t; t=t->next) {
     result=scm_cons(t->schwin,result);
   }
+  SCM_REALLOW_INTS;
   return result;
 }
+
+
+SCM keep_on_top(SCM win)
+{
+  ScwmWindow *tmp_win;
+  SCM_REDEFER_INTS;
+  VALIDATE(win,"keep-on-top");
+  tmp_win=SCWMWINDOW(win);
+  tmp_win->flags |=STAYSONTOP_FLAG;
+  BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+  SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True);
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;
+}
+
+SCM un_keep_on_top(SCM win)
+{
+  ScwmWindow *tmp_win;
+  SCM_REDEFER_INTS;
+  VALIDATE(win,"un-keep-on-top");
+  tmp_win=SCWMWINDOW(win);
+  tmp_win->flags &= ~STAYSONTOP_FLAG;
+  BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+  SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True);
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;
+}
+
+SCM kept_on_top_p(SCM win)
+{
+  VALIDATE(win,"kept-on-top?");
+  return (SCWMWINDOW(win)->flags & STAYSONTOP) ? SCM_BOOL_T : SCM_BOOL_F;
+}
+
 
 
