@@ -1,5 +1,9 @@
 1998-10-16  Todd Larason  <jtl@teeny.molehill.org>
 
+	* Makefile.am (scwm.sgml scwm-procedures.txt): find scwmdoc
+	relative to the build directory; handle top_builddir and
+	top_srcdir being relative or absolute
+
 	* dev/dynamic-modules: add note about updating AC_OUTPUT list in
 	configure.in
 
