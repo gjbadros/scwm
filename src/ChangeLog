@@ -1,3 +1,8 @@
+1998-11-12  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* move.c (moveLoop): Values for DisplayPosition now take into account
+	that the window could be iconified.
+
 Tue Nov 10 10:48:38 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.h (REGISTER_SCWMSMOBFUNS): Protect REGISTER_SCWMSMOBFUNS
