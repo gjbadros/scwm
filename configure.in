@@ -475,6 +475,7 @@ AC_OUTPUT(Makefile \
 	  modules/Makefile \
 	  modules/xpm-menus/Makefile \
 	  modules/overlay-plane/Makefile \
+	  modules/pie-menus/Makefile \
           utilities/Makefile \
           utilities/libscwmexec/Makefile \
           utilities/scwmexec/Makefile \
