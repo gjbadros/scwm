@@ -23,6 +23,7 @@
 #include "font.h"
 #include "xmisc.h"
 #include "drawmenu.h"
+#include "cursor.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
