@@ -37,8 +37,14 @@
    your server does or not will be determined at runtime */
 #undef HAVE_SHAPE
 
-/* Define this is you have libXpm */
+/* Define this if you have libXpm */
 #undef HAVE_LIBXPM
+
+/* Define this if you have the readline library */
+#undef HAVE_READLINE
+
+/* Define this if your readline also has add_history() */
+#undef HAVE_HISTORY
 
 /* Define this if your libguile has a scm_eval_string that is safe against
    re-entry by continuations. This should be true of snapshots newer than

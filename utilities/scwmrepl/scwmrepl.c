@@ -1,11 +1,18 @@
+#include <config.h>
 #include "../libscwmexec/scwmexec.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#ifdef HAVE_READLINE
+#include <readline/readline.h>
+#ifdef HAVE_HISTORY
+#include <readline/history.h>
+#endif /* HAVE_HISTORY */
+#endif /* HAVE_READLINE */
 
 Display *display;
 char *dispName;
+Window w;
 
 int
 init_display()
@@ -24,10 +31,94 @@ void die(char *str)
   exit(-1);
 }
 
+#ifdef HAVE_READLINE
+char *scwm_complete(char *text, int state)
+{
+  static unsigned char *output=NULL;
+  static char *last=NULL;
+  static char *completions[1024];
+
+  if (!state) {
+    unsigned char *c,*e,*query,*error,*result,hold;
+    unsigned n;
+
+    if (!last || strcmp(last,text)!=0) {
+      if (last) {
+	XFree(last);
+      }
+      last=strdup(text);
+      if (output) {
+	XFree(output);
+      }
+      query=(unsigned char *)malloc(strlen(text)+14);
+      strcat(strcat(strcpy(query,"(apropos \"^"),text),"\")");
+      result=scwmexec_exec_full(display,w,query,&output,&error);
+      if (error) {
+	XFree(error);
+      }
+      if (result) {
+	XFree(result);
+      }
+      free(query);
+    }
+
+    c=output;
+    n=0;
+    while (n<1023) { 
+      c=strstr(c,": ");
+      if (!c)
+	break;
+      c+=2;
+      e=strpbrk(c,"\t\n");
+      if (!e) {
+	completions[n++]=strdup(c);
+	break;
+      }
+      hold=*e;
+      *e=0;
+      completions[n++]=strdup(c);
+      *e=hold;
+      c=strchr(e,'\n');
+      if (!c)
+	break;
+      c++;
+    }
+    completions[n]=NULL;
+  }    
+  return completions[state];
+}
+
+void init_readline()
+{
+  rl_completion_entry_function=(Function *)scwm_complete;
+}
+#endif
+
 int appending_fgets(char **sofar)
 {
+#ifdef HAVE_READLINE
+  char *buffer;
+  unsigned pos,len;
+
+  buffer=readline("scwm> ");
+  if (buffer==NULL) {
+    return 0;
+  }
+  len=strlen(buffer);
+#if HAVE_HISTORY
+  if (len>0) {
+    add_history(buffer);
+  }
+#endif
+  pos=strlen(*sofar);
+  *sofar=realloc(*sofar,pos+len+2);
+  strncpy(*sofar+pos,buffer,len);
+  (*sofar)[pos+len]='\n';
+  (*sofar)[pos+len+1]=0;
+#else
   char buffer [512];
-  
+
+  printf("scwm> ");
   do {
     fgets(buffer, 512, stdin);
     if (strlen(buffer)==0) {
@@ -36,6 +127,7 @@ int appending_fgets(char **sofar)
     *sofar=realloc(*sofar,strlen(*sofar)+strlen(buffer)+1);
     strcat(*sofar,buffer);
   } while (buffer[strlen(buffer)-1]!='\n');
+#endif
 
   return 1;
 }
@@ -191,7 +283,6 @@ char *split_at(char **to_split, int i) {
 int 
 main(int argc, char **argv)
 {
-  Window w;
   int splitpoint;
   char *expr;
   int done = 0;
@@ -204,14 +295,16 @@ main(int argc, char **argv)
 
   w=scwmexec_init(display);
 
+#ifdef HAVE_READLINE
+  init_readline();
+#endif
+
   if (w==None)
     die ("Unable to establish scwmexec connection.\n");
 
-  /* FIXMS: we should really be using readline */
-  printf("scwm> ");
   while (!done) {
     if ((splitpoint=check_balance(gather))) {
-      char *result, *error, *output;
+      unsigned char *result, *error, *output;
       expr=split_at(&gather,splitpoint);
       result=scwmexec_exec_full(display,w,expr,&output,&error);
 
@@ -221,6 +314,7 @@ main(int argc, char **argv)
       } else {
 	fprintf(stdout,result);
       }
+      putchar('\n');
 
       if (result!=NULL) {
 	XFree(result);
@@ -232,7 +326,6 @@ main(int argc, char **argv)
 	XFree(error);
       }
       free(expr);
-      printf("\nscwm> ");
     } else {
       done = !appending_fgets (&gather);
     }

@@ -75,7 +75,8 @@ XPM_LIB=""
 AC_CHECK_LIB(Xpm, XpmReadFileToPixmap, [
 XPM_LIB="-lXpm"
 AC_DEFINE(HAVE_LIBXPM)
-], no_x11_lib-no, $x_libs)
+], , $x_libs)
+
 
 x_cflags="$X_CFLAGS"
 x_ldflags="$X_LDFLAGS $X_LIBS"
@@ -89,6 +90,17 @@ AC_SUBST(XPM_LIB)
 
 CFLAGS="$saved_cflags"
 LDFLAGS="$saved_ldflags"
+
+dnl # Check for readline library #
+AC_CHECK_LIB(termcap, tgoto, [
+	AC_CHECK_LIB(readline, readline, [
+	READLINE_LIB="-lreadline -ltermcap"
+	AC_DEFINE(HAVE_READLINE)
+	AC_CHECK_LIB(readline, add_history, AC_DEFINE(HAVE_HISTORY),,"-ltermcap")
+	], READLINE_LIB="", "-ltermcap")  
+], READLINE_LIB="")
+
+AC_SUBST(READLINE_LIB)
 
 
 dnl # Guile checks #

@@ -71,6 +71,7 @@ MAKEINFO = @MAKEINFO@
 NM = @NM@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
+READLINE_LIB = @READLINE_LIB@
 VERSION = @VERSION@
 XEXT_LIB = @XEXT_LIB@
 XPM_LIB = @XPM_LIB@
@@ -87,7 +88,7 @@ x_libs = @x_libs@
 bin_PROGRAMS = scwmrepl
 scwmrepl_SOURCES = scwmrepl.c
 scwmrepl_LDADD = $(top_builddir)/utilities/libscwmexec/libscwmexec.la \
-                  @x_ldflags@ @x_libs@
+                  @x_ldflags@ @x_libs@ @READLINE_LIB@
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../include/config.h
 CONFIG_CLEAN_FILES = 

@@ -1,5 +1,9 @@
 Mon Jun  1 20:25:47 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* configure.in, acconfig.h, configure, include/config.h: Detect
+ 	readline and termcap for scwmrepl to use. Patch from Robert
+ 	Bihlmeyer <robbe@orcus.priv.at>
+
 	* Makefile.in, utilities/dev/Makefile.in,
  	utilities/scwmexec/Makefile.in, utilities/Makefile.in: regenerated
  	with automake 1.3 (others too, see individual ChangeLogs)
