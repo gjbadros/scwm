@@ -1,3 +1,38 @@
+Fri Apr  9 10:56:30 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c: Fix typo in FUNC_NAME def.
+
+	* validate.h:  Added VALIDATE_ARG_PROC_* macros.
+
+	* menulook.h: Added VALIDATE_ARG_MENULOOK_OR_SYM macro
+
+	* menulook.c: Renamed menulook? to menu-look? for consistency.
+	Added a bit more documentation to the Menu Looks concept.
+
+	* menuitem.h: Added VALIDATE_ARG_MENUITEM* macros.
+
+	* menuitem.c: Use VALIDATE_ARG_ macros to simplify funcs.
+
+	* menu.h: Added VALIDATE_ARG_MENU_* macros
+
+	* menu.c: Rename the menu_menu functions to only include "menu"
+	once (corresponds to change in base.scm where, e.g., set-menu-font!
+	is changed to set-default-menu-font!).  Use VALIDATE_ARG_* macros
+	to simplify funcs. Added set-menu-colors!, set-menu-font!,
+	set-menu-side-picture!, set-menu-background-picture!,
+	set-menu-extra-options!.  Fixed bug w.r.t. a null pmiim getting
+	used. 
+
+	* image.h: Added VALIDATE_ARG_IMAGE_* macros
+
+	* font.h: Added VALIDATE_ARG_FONT_* macros
+
+	* color.h: Added VALIDATE_ARG_COLOR_* macros
+
+	* borders.c, events.c: Drop SQUASHED_TITLEBAR_P abstraction-- just access
+	psw->fSquashedTitlebar directly (the macro was poorly named as it
+	accessed a psw, not an SCM).
+
 Thu Apr  8 17:40:27 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.h: Added tbar_right field since SetBorderX now needs it

@@ -1,3 +1,16 @@
+Fri Apr  9 11:31:24 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* prefs-menu.scm: Update some proc names in a comment.
+
+	* base.scm: Rename set-menu-* to set-default-menu-*, and use the
+	new names.
+
+Fri Apr  9 11:04:27 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Renamed set-menu-* to set-default-menu-*.  Use new
+	names, set-menu-look! and set-menu-title! instead of
+	set-menu-menu-look!, etc.
+
 Sun Apr  4 01:24:34 1999  Carl R. Witty  <cwitty@newtonlabs.com>
 
 	* prompt-color.scm (prompt-color-hbox): Fix cut-and-paste bug.
