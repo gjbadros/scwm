@@ -81,8 +81,8 @@ install -c -m 755 %{prefix}/share/scwm/gnome-session-Scwm /etc/X11/gdm/Sessions/
 
 %postun
 /sbin/ldconfig
-cd /etc/X11/xdm; patch < %{prefix}/share/scwm/Xsession.patch
-rm -f %{prefix}/utilities/misc/gnome-session-Scwm /etc/X11/gdm/Session/Scwm
+#cd /etc/X11/xdm; patch -R < %{prefix}/share/scwm/Xsession.patch
+#rm -f %{prefix}/utilities/misc/gnome-session-Scwm /etc/X11/gdm/Session/Scwm
 
 %files
 %defattr(-, root, root)
