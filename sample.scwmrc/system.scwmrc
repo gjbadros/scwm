@@ -180,7 +180,7 @@
 
 ;; import the rest of the scwm modules
 (use-scwm-modules defoption optargs primopts 
-		  describe task-switcher cursor
+		  describe where-is focus-stack task-switcher cursor
 		  winops winlist winlist-menu wininfo listops placement
 		  style stylist basic-styles
 		  easyraise
@@ -676,6 +676,7 @@
 
 (window-style "tooltip" #:use-style desk-widget-on-top-no-titlebar #:border-width 0
 	      #:placement-proc (at-point-placement))
+(window-style "scwm" #:placement-proc (at-point-placement) #:transient-placement-proc (at-point-placement))
 (window-style (resource-match?? "ScwmUIConstraintsButtons") 
 	      #:use-style desk-widget-on-top-no-titlebar)
 (window-style (resource-match?? "prompt-string")   ;; these need to be on top of the ScwmUIConstraintsButtons
@@ -954,7 +955,8 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all (hyper "M-slash") redo)
 (bind-key 'all (hyper "s") insert-undo-global)
 
-(bind-key 'all (hyper "w") describe-event)
+(bind-key 'all (hyper "h") describe-event)
+(bind-key 'all (hyper "w") where-is)
 (bind-key 'all "C-M-S-g" interactive-set-window-gravity!)
 
 (bind-key 'all "C-A-S-t" toggle-titlebar-in-place)
@@ -1156,6 +1158,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all (hyper "p") shove-window-prefix)
 
 (bind-key 'all (hyper "e") focus-last-mapped-window)
+(bind-key 'all (hyper "S-e") close-window-and-pop-focus)
 
 ;; GJB:FIXME:: modifiers interface could be better... mimic off Emacs?
 ;; GJB:FIXME:: keys should be first class
@@ -1200,8 +1203,12 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all (hyper "f") focus-to-register)
 (bind-key 'all (hyper "c") window-configuration-to-register)
 (bind-key 'all (hyper "x") global-window-configuration-to-register)
+(bind-key 'all (hyper "t") selected-windows-to-register)
 (bind-key 'all (hyper "period") push-window-configuration)
 (bind-key 'all (hyper "S-period") pop-window-configuration)
+
+(bind-key 'all (hyper "M-period") push-focus-window)
+(bind-key 'all (hyper "M-S-period") pop-focus-window)
 
 (bind-key 'all (hyper "d") focus-window-with-pointer)
 

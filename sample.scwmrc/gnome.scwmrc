@@ -27,7 +27,6 @@
 ;;(define thank-scwm-authors-with-usage-note #t)
 
 ;; import scwm modules we need for the startup animation
-(set-X-server-synchronize! #t)
 
 ;;(display "using gnome-hints\n")
 (use-scwm-modules gnome-hints)
