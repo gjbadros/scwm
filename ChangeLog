@@ -1,3 +1,12 @@
+Sun Sep  6 13:14:22 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: Look for SCWM_HOOK macros, and
+	process the following comment as the docs for the hook, or warn
+	about a missing comment.  Also check for mismatches between the C
+	and Scheme names of the hook (and abstract out that facility for
+	use in checking primitive's names -- see CNameMatchesSchemeName).
+	Print a warning when encountering old-style /**HOOK documentation.
+
 Sat Sep  5 15:05:21 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* utilities/dev/extract-docs: Test for eof in all the places I
