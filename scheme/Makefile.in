@@ -10,7 +10,7 @@ exec_prefix=@exec_prefix@
 bin_dir=@exec_prefix@/bin
 scwm_rc=@scwm_rc@
 scwm_name=@scwm_name@
-scwm_scheme_dir=${prefix}/app/scwm
+scwm_scheme_dir=@guile_scheme_prefix@/app/scwm
 
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
@@ -24,11 +24,12 @@ depend:
 
 # XXX - this way of doing it sucks. Fix it later when we figure out Automake.
 install: 
-	${INSTALL_DATA} base.scm ${scwm_dir} 
-	${INSTALL_DATA} optargs.scm ${scwm_dir} 
-	${INSTALL_DATA} wininfo.scm ${scwm_dir} 
-	${INSTALL_DATA} winlist.scm ${scwm_dir} 
-	${INSTALL_DATA} winops.scm ${scwm_dir} 
+	${INSTALL_DATA} base.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} optargs.scm ${scwm_scheme_dir}
+	${INSTALL_DATA} style.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} wininfo.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} winlist.scm ${scwm_scheme_dir} 
+	${INSTALL_DATA} winops.scm ${scwm_scheme_dir} 
 
 clean:
 	${RM} *~ core *.bak
