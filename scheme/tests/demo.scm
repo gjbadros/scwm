@@ -80,6 +80,8 @@ height
 (resize-window wid height w)
 (resize-window (* wid 2) (* height 2) w)
 
+(move-window-relative 20 -50 w )
+
 ;;;; VIRTUAL DESKTOP, STICKINESS, PAGER
 
 ;; N.B. Interacting with fvwm2 pager -- all in Scheme!
@@ -172,6 +174,7 @@ height
 
 ;; C-M-S-t
 ;; http://scwm.mit.edu/scwm
+;; file:///home/gjb/uist99/screen-shot-eg/table-example.html
 
 ;; All via X properties-- no C code specifically written to do the above!
 
