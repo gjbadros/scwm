@@ -136,7 +136,7 @@ These options are cumulative for repeated calls to
 
 (define-public default-message-window (make-message-window ""))
 
-(define-scwm-option *message-window-font* (make-font "*helvetica*medium-r*10*")
+(define-scwm-option *message-window-font* (make-font "*helvetica*medium-r*24*")
   "The default message-window font."
   #:type 'font
   #:group 'message-window

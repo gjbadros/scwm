@@ -15,6 +15,7 @@
   :use-module (app scwm flash-window)
   :use-module (app scwm listops)
   :use-module (app scwm group)
+  :use-module (app scwm time-convert)
   :use-module (app scwm path-cache)
   :use-module (app scwm optargs))
 
@@ -81,11 +82,15 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
        (if w wlist
 	   (cdr wlist)))
     (handle-pending-events)
-    (set! w (select-window-interactively (string-append "select #" (number->string i))))
-    (handle-pending-events)
+    (set! w (select-window-interactively 
+	     (string-append "select #" (number->string i))
+	     default-message-window))
     (if (and proc-when-selected w)
-	(proc-when-selected w))))
+	(proc-when-selected w))
+    (handle-pending-events) ;; GJB:FIXME:: Race condition...
+    (add-timer-hook! (sec->usec 1) (lambda () (handle-pending-events)))))
 
+;;(use-scwm-modules time-convert)
 ;; e.g.
 ;;(select-multiple-windows-interactively 10)
 ;;(restack-windows (select-multiple-windows-interactively 3))

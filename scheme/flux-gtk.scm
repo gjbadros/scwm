@@ -14,6 +14,7 @@
   :use-module (ice-9 regex)
   :use-module (app scwm base)
   :use-module (app scwm wininfo)
+  :use-module (app scwm xprop-extras)
   :use-module (app scwm winlist)
   :use-module (app scwm prompt-string)
   :use-module (app scwm winops)

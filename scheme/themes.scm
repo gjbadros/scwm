@@ -208,6 +208,9 @@ tar file with extension .tar, .tar.gz, or .tgz."
                    (begin 
                      (let ((fullpath (string-append path "/" 
                                                     dirent))) 
+;;		       (display "Checking ")
+;;		       (display fullpath)
+;;		       (newline)
                        (if (and 
                             (not (eqv? (string-ref dirent 0) #\.) 
                                  ) 

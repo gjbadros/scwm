@@ -37,13 +37,14 @@
 #!
 (run-ScwmButtons
  (list
-  (button-item "mini-term.xpm" #:action "xterm")
-  (button-item "mini-calc.xpm" #:action "xcalc")
-  (button-item "mini-xmcd.xpm" #:action "xmcd")
-  (button-item "mini-xv.xpm" #:action "xv")
-  (button-item "mini-gv.xpm" #:action "gv")
-  (button-item "mini-nscape.xpm" #:action "/usr/netscape/netscape")
-  ) #:orientation 'vertical)
+  (button-item "mini-term.xpm" #:action "xterm" #:tooltip "XTerm")
+  (button-item "mini-calc.xpm" #:action "xcalc" #:tooltip "XCalc")
+  (button-item "mini-xmcd.xpm" #:action "xmcd" #:tooltip "Xmcd")
+  (button-item "mini-xv.xpm" #:action "xv" #:tooltip "Xv")
+  (button-item "mini-gv.xpm" #:action "gv" #:tooltip "gv")
+  (button-item "mini-nscape.xpm" #:action "netscape" #:tooltip "Netscape")
+  #:orientation 'vertical
+  ))
 !#
 ;;;
 ;;;; Also the name of the buttonbar can be specified for setting specific
