@@ -1,0 +1,72 @@
+
+Maciej Stachowiak:
+originally modified fvwm to use guile as the configuration language,
+yielding scwm. Many changes throughout, and wrote the following files
+in the subdirectory scwm:
+    callbacks.c color.c decor.c deskpage.c 
+    errors.c    face.c  font.c  miscprocs.c 
+    scmprocs.c  scmtypes.c
+in the subdirectory scheme:
+    auto-raise.scm  base.scm          bincomm.scm     decor.scm 
+    fvwm-compat.scm fvwm-eval.scm     fvwm-module.scm image-loaders.scm
+    optargs.scm     style-options.scm style.scm       wininfo.scm
+    winlist.scm     winops.scm 
+in the subdirectory utilities/libscwmexec:
+    libmain.c  scwmexec.h
+in the subdirectory utilities/scwmexec:
+    scwmexec.c
+in the subdirectory utilities/scwmrepl:
+    scwmrepl.c
+
+
+Greg J. Badros:
+added numerous improvements, including synthetic event support,
+improved menu support, animated moves and windowshades, and many other
+features. Also wrote code that evolved into and/or inspired the
+scwmexec program and the fvwm module support. At this point,
+co-primary author of scwm. Many changes throughout, and wrote the
+following files, in the directory scwm:
+    Grab.c      ICCCM.c            draw-pie-menu.c drawmenu.c 
+    menuitem.c  module-interface.c scwmenu.c       string_token.c 
+    system.c    xmisc.c
+in the directory scheme:
+    flux.scm minimal.scm module-types.scm xlock-menu.scm
+in the directory utilities/dev:
+    X-error-describe
+
+Sam Steingold:
+provided numerous bug fixes, added several useful Scheme modules, and
+wrote an emacs interaction mode for scwm. Wrote the followwing files
+in the directory scheme:
+    std-menus.scm wmconfig-menu.scm prefs-menu.scm flux.scm
+
+and in the directory utilities/emacs:
+    scwm.el
+
+
+
+Tom LaStrange: 
+wrote Twm, from which Scwm is indirectly derived. The following files
+in the subdirectory scwm still supposedly have traces of twm code:
+    add_window.c events.c
+
+Robert Nation:
+originally wrote Fvwm, from which Scwm is (currently) derived. The
+following files in the subdirectory scwm bear his copyright, and thus
+presumably include at least some portions of his code, in the
+subdirectory scwm:
+    binding.c     borders.c     color.c       colormaps.c
+    colors.c      complex.c     decor.c       deskpage.c  
+    decorations.c events.c      face.c        focus.c
+    icons.c       misc,c        miscprocs.c   move.c
+    placement.c   resize.c      scwm.c        util.c
+    window.c
+
+Chris Hines:
+continued maintenance of Fvwm after the retirement of Robert Nation as
+maintainer. Many other people added code at this point, but
+determining exactly who did what is difficult due to lack of accurate
+records.
+
+
+

@@ -1,70 +1,211 @@
-#
-SHELL=/bin/sh
+# Makefile.in generated automatically by automake 1.2h from Makefile.am
 
-@SET_MAKE@
+# Copyright (C) 1994, 1995, 1996, 1997, 1998 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
 
-VPATH=@scrdir@
-top_srcdir=@top_srcdir@
-srcdir=@srcdir@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-bin_dir=@exec_prefix@/bin
-scwm_rc=@scwm_rc@
-scwm_name=@scwm_name@
-scwm_scheme_dir=@scwm_scheme_mod_dir@/app/scwm
-
-mkinstalldirs=$(SHELL) $(top_srcdir)/mkinstalldirs
-
-INSTALL=@INSTALL@
-INSTALL_DATA=@INSTALL_DATA@
-RM=@RM@
-
-RC=system${scwm_rc}
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
 
 
+SHELL = /bin/sh
 
-all:
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
 
-depend:
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
 
-# XXX - this way of doing it sucks. Fix it later when we figure out Automake.
-# Or something.
-# This will work with GNU make, but I don't know about other makes --11/10/97 gjb
-#INSTALL_SCHEME_FILES = $(wildcard *.scm)
-# for i in $(INSTALL_SCHEME_FILES); do \
-#    ${INSTALL_DATA} $$i ${scwm_scheme_dir} \
-# done
-install:
-	$(mkinstalldirs) ${scwm_scheme_dir}
-	${INSTALL_DATA} auto-raise.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} base.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} bincomm.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} decor.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} face.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} flux.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} fvwm-compat.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} fvwm-eval.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} fvwm-module.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} image-loaders.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} module-types.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} optargs.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} prefs-menu.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} std-menus.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} style-options.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} style.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} wininfo.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} winlist.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} winops.scm ${scwm_scheme_dir}
-	${INSTALL_DATA} wmconfig-menu.scm ${scwm_scheme_dir}
+DISTDIR =
 
-mostlyclean:
-	${RM} *~ core *.bak
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
 
-clean: mostlyclean
+top_builddir = ..
 
-distclean: clean
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+transform = @program_transform_name@
+
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
+BUILD_GUILE = @BUILD_GUILE@
+CC = @CC@
+EMACS = @EMACS@
+GUILE_LIBS = @GUILE_LIBS@
+LD = @LD@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+MAINT = @MAINT@
+MAKEINFO = @MAKEINFO@
+NM = @NM@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+VERSION = @VERSION@
+XEXT_LIB = @XEXT_LIB@
+XPM_LIB = @XPM_LIB@
+lispdir = @lispdir@
+scwm_image_load_path = @scwm_image_load_path@
+scwm_load_path = @scwm_load_path@
+scwm_schemedir = @scwm_schemedir@
+scwmrcdir = @scwmrcdir@
+x_cflags = @x_cflags@
+x_includes = @x_includes@
+x_ldflags = @x_ldflags@
+x_libs = @x_libs@
+
+scwm_scheme_DATA = auto-raise.scm base.scm bincomm.scm decor.scm \
+	 face.scm flux.scm fvwm-compat.scm fvwm-eval.scm fvwm-module.scm \
+	 image-loaders.scm module-types.scm optargs.scm prefs-menu.scm \
+	 std-menus.scm style-options.scm style.scm wininfo.scm winlist.scm \
+	 winops.scm wmconfig-menu.scm
+
+EXTRA_DIST = minimal.scm
+mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+CONFIG_HEADER = ../include/config.h
+CONFIG_CLEAN_FILES = 
+DATA =  $(scwm_scheme_DATA)
+
+DIST_COMMON =  COPYING ChangeLog Makefile.am Makefile.in
 
 
+DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
+
+TAR = gtar
+GZIP = --best
+all: Makefile $(DATA)
+
+.SUFFIXES:
+$(srcdir)/Makefile.in: @MAINT@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4)
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu scheme/Makefile
+
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
+	cd $(top_builddir) \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
+install-scwm_schemeDATA: $(scwm_scheme_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(scwm_schemedir)
+	@list='$(scwm_scheme_DATA)'; for p in $$list; do \
+	  if test -f $(srcdir)/$$p; then \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(scwm_schemedir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(scwm_schemedir)/$$p; \
+	  else if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(scwm_schemedir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(scwm_schemedir)/$$p; \
+	  fi; fi; \
+	done
 
+uninstall-scwm_schemeDATA:
+	@$(NORMAL_UNINSTALL)
+	list='$(scwm_scheme_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(scwm_schemedir)/$$p; \
+	done
+tags: TAGS
+TAGS:
+
+
+distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
+
+subdir = scheme
+
+distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu scheme/Makefile
+	@for file in $(DISTFILES); do \
+	  d=$(srcdir); \
+	  test -f $(distdir)/$$file \
+	  || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
+	  || cp -p $$d/$$file $(distdir)/$$file; \
+	done
+info:
+dvi:
+check: all
+	$(MAKE)
+installcheck:
+install-exec: 
+	@$(NORMAL_INSTALL)
+
+install-data: install-scwm_schemeDATA
+	@$(NORMAL_INSTALL)
+
+install: install-exec install-data all
+	@:
+
+uninstall: uninstall-scwm_schemeDATA
+
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' INSTALL_SCRIPT='$(INSTALL_PROGRAM)' install
+installdirs:
+	$(mkinstalldirs)  $(DATADIR)$(scwm_schemedir)
+
+
+mostlyclean-generic:
+	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(DISTCLEANFILES)
+	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
+	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
+
+maintainer-clean-generic:
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+mostlyclean:  mostlyclean-generic
+
+clean:  clean-generic mostlyclean
+
+distclean:  distclean-generic clean
+	-rm -f config.status
+	-rm -f libtool
+
+maintainer-clean:  maintainer-clean-generic distclean
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+.PHONY: uninstall-scwm_schemeDATA install-scwm_schemeDATA tags distdir \
+info dvi installcheck install-exec install-data install uninstall all \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

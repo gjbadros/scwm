@@ -3,10 +3,20 @@
    Maciej Stachowiak <mstachow@mit.edu>
    */
 
+/* Package and version macros defined by automake */
+#undef PACKAGE 
+#undef VERSION 
+
+/* Define this if your Xext library supports the X extension (wether
+   your server does or not will be determined at runtime */
+#undef HAVE_SHAPE
+
+/* Define this is you have libXpm */
+#undef HAVE_LIBXPM
+
 /* Define this if your libguile has a scm_eval_string that is safe against
    re-entry by continuations. This should be true of snapshots newer than
-   970928.
- */
+   970928.  */
 #undef HAVE_SAFE_SCM_EVAL_STRING
 
 /* Define this if your libguile exports scm_puts, meaning that
@@ -41,5 +51,9 @@
 /* Define this if your system has the getopt_long function. */
 #undef HAVE_GETOPT_LONG
 
-/* DDefine this if your system has the usleep function. */
+/* Define this if your system has the usleep function. */
 #undef HAVE_USLEEP
+
+
+
+

@@ -1,0 +1,64 @@
+
+Scwm requires autoconf 2.12, automake 1.2h and libtool 1.2 to generate
+some of the automatically generated files for the build process. You
+don't need these if you are just compiling a release or a snapshot,
+but if you are going to hack on the code and change the Makefiles and
+such, you will probably need them. They are available from:
+
+
+autoconf 2.12: 
+ftp://prep.ai.mit.edu/pub/gnu/autoconf-2.12.tar.gz
+
+automake 1.2h:
+ftp://ftp.cygnus.com/pub/tromey/automake-1.2h.tar.gz
+
+libtool 1.2:
+ftp://prep.ai.mit.edu/pub/gnu/libtool-1.2.tar.gz
+
+Some of these packages may be available as .rpm or .deb packages, or
+other system-specific packages, but I haven't checked.
+
+
+If you have these tools, and especially if you are hacking the CVS
+version, it is strongly reccomended that you run configure with the
+--enable-maintainer-mode flag - this will cause "make" to regenerate
+automatically generated files as needed, including Makefiles, thus
+largely removing the need to run the various "auto" tools by
+hand. However, it may sometimes be necessary to do things by hand
+anyway. In this case, you should follow the following steps (annotated
+with what they actually do, to explain the maze of automatically
+generated files):
+
+## Generate aclocal.m4 from configure.in
+$ aclocal
+
+## Generate Makefile.in's from Makefile.am's and configure.in
+## (adding missing files that may be needed for proper operation)
+$ automake --add-missing
+
+## Generate include/config.h.in from acconfig.h and configure.in
+$ autoheader
+
+## Generate configure from configure.in and aclocal.m4
+$ autoconf
+
+## Detect system parameters and generate Makefiles from Makefile.in's
+## and include/config.h from include/config.h.in, enabling
+## maintainer-specific rules.
+./configure --enable-maintainer-mode
+
+## Actually build the system
+make
+
+Just to recap, the steps are:
+
+aclocal
+automake --add-missing
+autoheader
+autoconf
+./configure --enable-maintainer-mode
+make
+
+However, most of the time these steps should be unnecessary; as soon
+as you have configured once with --enable-maintainer-mode, make should
+do all of these automatically.

@@ -13,13 +13,36 @@
 /* Define as __inline if that's what the C compiler calls it.  */
 #undef inline
 
+/* Define if on MINIX.  */
+#undef _MINIX
+
+/* Define if the system does not provide POSIX.1 features except
+   with this defined.  */
+#undef _POSIX_1_SOURCE
+
+/* Define if you need to in order for stat and other things to work.  */
+#undef _POSIX_SOURCE
+
 /* Define if you have the ANSI C header files.  */
 #undef STDC_HEADERS
 
+/* Define if the X Window System is missing or not being used.  */
+#undef X_DISPLAY_MISSING
+
+/* Package and version macros defined by automake */
+#undef PACKAGE 
+#undef VERSION 
+
+/* Define this if your Xext library supports the X extension (wether
+   your server does or not will be determined at runtime */
+#undef HAVE_SHAPE
+
+/* Define this is you have libXpm */
+#undef HAVE_LIBXPM
+
 /* Define this if your libguile has a scm_eval_string that is safe against
    re-entry by continuations. This should be true of snapshots newer than
-   970928.
- */
+   970928.  */
 #undef HAVE_SAFE_SCM_EVAL_STRING
 
 /* Define this if your libguile exports scm_puts, meaning that
@@ -54,7 +77,7 @@
 /* Define this if your system has the getopt_long function. */
 #undef HAVE_GETOPT_LONG
 
-/* DDefine this if your system has the usleep function. */
+/* Define this if your system has the usleep function. */
 #undef HAVE_USLEEP
 
 /* Define if you have the gethostname function.  */
@@ -83,18 +106,3 @@
 
 /* Define if you have the <getopt.h> header file.  */
 #undef HAVE_GETOPT_H
-
-/* Define if you have the dl library (-ldl).  */
-#undef HAVE_LIBDL
-
-/* Define if you have the m library (-lm).  */
-#undef HAVE_LIBM
-
-/* Define if you have the qt library (-lqt).  */
-#undef HAVE_LIBQT
-
-/* Define if you have the readline library (-lreadline).  */
-#undef HAVE_LIBREADLINE
-
-/* Define if you have the termcap library (-ltermcap).  */
-#undef HAVE_LIBTERMCAP

@@ -1,0 +1,21 @@
+Thanks to:
+  Jens-Ulrik Holger Petersen - improved functionality of window list
+  operations, contributed his .scwmrc to be distributed as a sample
+
+  Robert Bihlmeyer - ICCCM compliant modifier handling, support for
+  detecting a restart from the Scheme level
+
+  James LewisMoss - argument handling through getopt_long()
+
+Bug reports and/or fixes have been contributed by:
+  Robert Bihlmeyer
+  Mikael Djurfeldt 
+  Simon Josefsson
+  Bucky LaDieu
+  Harald Meland
+  Jens-Ulrik Holger Petersen
+  Ken Pizzini
+  Hideki Sakurada
+  Andrei Tcherepanov
+  Oleg Tihnov
+  James Troup
