@@ -9,10 +9,13 @@ Thanks to:
   Dale Smith - Converting some of the random documentation in the doc/
   directory into a TexInfo manual and a man page.
 
-Bug reports and/or fixes have been contributed by:
+  Danius Michaelides - fvwm2 module and compatibility support
+
+Bug reports and/or fixes and/or code snippets have been contributed by:
   Mikael Djurfeldt 
   Simon Josefsson
   Bucky LaDieu
+  Harvey Stein
   Harald Meland
   Shuji Narazaki
   Jens-Ulrik Holger Petersen
@@ -24,4 +27,8 @@ Bug reports and/or fixes have been contributed by:
   Oleg Tihnov
   James Troup
   Todd Larason
-
+  Craig Kaplan
+  Jim Blandy
+  Jason Kirtland
+  S. Senda
+  Perry E. Metzger 

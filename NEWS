@@ -1,8 +1,61 @@
 Scwm NEWS --- history of user-visible changes.  -*- text -*-
-Copyright (C) 1997 Maciej Stachowiak.
+Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
 See the end for copying conditions.
 
-Changes to scwm-0.7
+Changes to scwm-0.8 (released XX-August-1998)
+
+* extract-docs documentation extraction system
+
+* all primitives have been documented
+
+* better standardized names, more symmetric getters and setters
+  throughout the Scwm API
+
+* improved, configurable message-display window when doing window moves,
+  resizes; also usable via a string prompt argument to new primitive,
+  select-window-interactively
+
+* much improved scwm.el Emacs interaction mode, including apropos and
+  procedure help
+
+* multibyte character support (thanks to ITANI Eiichiro)
+
+* squashed titlebar style
+
+* window objects printable form now includes the title of the window
+
+* alpha-quality optional integration of Cassowary constraint solver
+  see http://www.cs.washington.edu/research/constraints/cassowary/
+
+* much improved fvwm2 module support 
+
+* Use XmuPrintDefaultErrorMessage instead of ad-hoc format for X11 errors
+
+* Provide ability to popup menus in an appropriate position when
+  selected from a titlebar decoration using new args to popup-menu primitive
+
+* New primitives to support X-Properties (thanks Robert Bihlmeyer)
+
+* Lots of other new primitives: testing mod-mask availability,
+  restacking-windows, listing windows in their stacking order, X
+  resources, window-transient-for, capturing?, set-X-server-synchronize!
+
+* Much improved window gravity support
+
+* Much improved window placement configurability, including use of
+  placeement-proc and transient-placement-proc object properties
+
+* Hooks: invalid-interaction-hook, cannot-grab-hook
+
+* Lots of internal rewrites, including making the code type safe by
+  C++'s more strict rules, using init_XXX functions and guile-snarf
+  pervasively, and better modularizing sub-pieces of scwm (especially
+  reducing numbers of exposed prototypes in header files, and making
+  more functions static), cleanup of Screen struct, ScwmWindow struct.
+  Use SCWM_PROC, SCWM_SYMBOL throughout, and fixed lots of bugs that
+  extract-docs found relating to mis-identifier argument requirements.
+
+Changes to scwm-0.7 (released 22-June-1998; 0.7a 26-June-1998)
 
 * The start of a TexInfo manual.
 
@@ -529,7 +582,7 @@ things are missing.
 
 Copyright information:
 
-Copyright (C) 1997 Maciej Stachowiak.
+Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
 
    Permission is granted to anyone to make or distribute verbatim copies
    of this document as received, in any medium, provided that the

@@ -20,15 +20,18 @@ in the subdirectory utilities/scwmrepl:
 
 
 Greg J. Badros:
-added numerous improvements, including synthetic event support,
-improved menu support, animated moves and windowshades, and many other
-features. Also wrote code that evolved into and/or inspired the
-scwmexec program and the fvwm module support. At this point,
-co-primary author of scwm. Many changes throughout, and wrote the
-following files, in the directory scwm:
+
+added numerous improvements, including integrating his constraint
+solving toolkit, synthetic event support, improved menu support,
+animated moves and windowshades, and many, many other features. Also
+wrote code that evolved into and/or inspired the scwmexec program and
+the fvwm module support. Greg started working on scwm only weeks after
+Maciej began the rewrite and has been involved throughout the project.
+He is the primary author or maintainer of at least the following files,
+in the directory scwm:
     Grab.c      ICCCM.c            draw-pie-menu.c drawmenu.c 
     menuitem.c  module-interface.c scwmenu.c       string_token.c 
-    system.c    xmisc.c
+    system.c    xrm.c xmisc.c
 in the directory scheme:
     flux.scm minimal.scm module-types.scm xlock-menu.scm
 in the directory utilities/dev:
@@ -37,9 +40,9 @@ in the directory utilities/dev:
 
 Sam Steingold:
 provided numerous bug fixes, added several useful Scheme modules, and
-wrote an emacs interaction mode for scwm. Wrote the followwing files
+wrote an emacs interaction mode for scwm. Wrote the following files
 in the directory scheme:
-    std-menus.scm wmconfig-menu.scm prefs-menu.scm flux.scm
+    std-menus.scm wmconfig-menu.scm prefs-menu.scm doc.scm flux.scm
 
 and in the directory utilities/emacs:
     scwm.el
@@ -76,6 +79,3 @@ continued maintenance of Fvwm after the retirement of Robert Nation as
 maintainer. Many other people added code at this point, but
 determining exactly who did what is difficult due to lack of accurate
 records.
-
-
-

@@ -1,6 +1,6 @@
-Scwm 0.7 is released.
+Scwm 0.8 is released.
 
-* What scwm is:
+* What Scwm is:
 
 Scwm is the Scheme Configurable Window Manager. This is a highly
 dynamic and extensible window manager for the X Window System (based
@@ -33,10 +33,10 @@ majordomo@huis-clos.mit.edu
 
 You can download the latest scwm package from:
 
-http://web.mit.edu/mstachow/www/scwm-0.7.tar.gz
+http://web.mit.edu/mstachow/www/scwm-0.8.tar.gz
 
 There is also
-http://web.mit.edu/mstachow/www/scwm-icons-0.7.tar.gz
+http://web.mit.edu/mstachow/www/scwm-icons-0.8.tar.gz
 
 which has a number of images for use with scwm as icons, textures,
 buttons, etc. Some of these images are not available otherwise.
@@ -48,26 +48,34 @@ ftp://prep.ai.mit.edu/pub/gnu/guile-1.2.tar.gz
 
 or any archive that has GNU source packages available.
 
-You can get the latest guile snapshot (likely to have more useful
-features and generally work better) from:
+You can get the latest guile snapshot (has more useful features and
+generally work better) from:
 
 ftp://red-bean.com/pub/guile
 
-The snapshots are officially alpha but they generally work pretty
-well.
+The snapshots are officially alpha but they generally work pretty well.
 
 
-* Here are highlights of what is new with the 0.7 release. There were
+* Here are highlights of what is new with the 0.8 release. There were
 many changes; see the NEWS file in the distribution for more details.
 
-* Auto-raise
-* Input, timer, shutdown, error and other hooks.
-* Improved fvwm-module support.
-* Much improved error messages.
-* The start if a texinfo manual.
-* Improved color handling.
-* Support for more information about the X server.
-* Much improved scwm.el emacs interaction mode, and scwmexec and
-scwmrepl external interaction programs
-* Numerous bug fixes.
+o Fully documented all primitives 
+-- Extracted during the build-process via new extract-docs tool
+-- DocBook SGML and plaintext formats
+-- html available online at: 
+   http://www.cs.washington.edu/research/constraints/cassowary/scwm-doc/
 
+o Integrated documentation into scwm.el Emacs interaction mode
+-- apropos and procedure documentation help
+
+o Lots of bug fixes, cleaned-up API for consistency, multibyte character support
+
+o Squashed titlebar style
+
+o Optional alpha-quality integration of Cassowary constraint solver for
+  window layout
+
+o Improved window placement configurability, window gravity support, and
+  fvwm2 module support
+
+o Access to X properties, X resources,
