@@ -151,15 +151,18 @@ ANGLE2. Angles are specified in degrees (0.0 to 360.0).*/
 #undef FUNC_NAME
 
 
-SCWM_PROC(xlib_set_line_width_x, "xlib-set-line-width!", 1, 0, 0,
-	  (SCM width))
-     /** Sets the line width of the DrawingGC to WIDTH. */
-#define FUNC_NAME s_xlib_set_line_width_x
+SCWM_PROC(xlib_set_line_attributes_x, "xlib-set-line-attributes!", 2, 0, 0,
+	  (SCM width, SCM style))
+     /** Sets the line width of the DrawingGC to WIDTH and style to STYLE. 
+One of LineSolid(0), LineOnOffDash(1), or LineDoubleDash(2) should be given as
+STYLE. */
+#define FUNC_NAME s_xlib_set_line_attributes_x
 {
-  int iWidth;
+  int iWidth, iStyle;
   VALIDATE_ARG_INT_COPY_USE_DEF(1,width,iWidth,0);
+  VALIDATE_ARG_INT_RANGE_COPY(1,style,LineSolid,LineDoubleDash,iStyle);
 
-  XSetLineAttributes(dpy, DrawingGC, iWidth, LineSolid, CapButt, JoinMiter);
+  XSetLineAttributes(dpy, DrawingGC, iWidth, iStyle, CapButt, JoinMiter);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

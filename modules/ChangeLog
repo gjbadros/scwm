@@ -1,3 +1,9 @@
+1999-09-20  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* xlib-drawing/drawing.c: changed xlib-set-line-width! to
+	xlib-set-line-attributes! and added the ability to change
+	the line drawing format.
+
 Sun Sep 19 16:12:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* viavoice/Makefile.am: Move BUILT_SOURCES into the if/endif so
