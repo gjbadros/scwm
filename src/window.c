@@ -334,13 +334,13 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow ** tmp_win,
   while (!fFinished) {
     fDone = False;
     /* block until there is an event */
-/* FIXGJB: hard to know why this was looking for so many different
-   events; I think we just need those in the new call below --10/25/97 gjb
-    XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
-	       ExposureMask | KeyPressMask | VisibilityChangeMask |
-	       ButtonMotionMask | PointerMotionMask, eventp); */
-    /* MS: I put the missing ones back, it was breaking selection
-       from root menus when looking for a press only. */
+    /* FIXGJB: this code causes a bug:  when a "(get-window)" is sent by 
+       scwmsend, the ButtonMotionMask below causes scwm to re-eval the
+       string received via the PropertyNotify event for each mouse movement
+       observed;  this results in a helluva lot of get-window calls being
+       made, when only one was desired;  The best way to deal with this
+       is get rid of the DeferExecution garbade, but that has to come later
+    */
     XMaskEvent(dpy, ButtonPressMask | ButtonReleaseMask |
 	       ExposureMask | KeyPressMask | VisibilityChangeMask |
 	       ButtonMotionMask | PointerMotionMask, eventp);
