@@ -82,6 +82,9 @@ Other Stuff
 ** See also ../cassowary/local/TODO
 ** rubberband-resizing fixes -- generalization of the rubberband
 
+* Add delays for reducing the number of configurenotify events
+ that a client receives when being resized opaquely
+
 * WM_ATTENTION patch for xterms (from Robert Bihlmeyer), integration with zsh instead?
 
 * General cleanup

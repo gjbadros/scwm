@@ -1,3 +1,22 @@
+Thu Sep 10 11:02:16 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Use FRAME_[XY]_VP in SetupFrame call;  make
+	move_finalize use viewport coordinates, not virtual, and add
+	WIN_VP_OFFSET_* into passed in x,y before passing to virtual-coord 
+	based functions.
+
+	* events.c: Use FRAME_[XY]_VP in SetupFrame call of
+	HandleMapNotify(); improve debug message for that.
+
+	* virtual.c: Broadcast the M_NEW_PAGE before moving the windows
+	(cuts flicker in the pager)
+
+	* placement.c: Use FRAME_[XY]_VP and ICON_[XY]_VP throughout
+	placement functions so that they work again
+
+	* module-interface.c: Fix synopsis sentences in docs, improve
+	comment regarding ommitted field in config info marshalling
+
 Wed Sep  9 15:16:21 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Initialize buttons2grab using XSERVER_MAX_BUTTONS
@@ -307,7 +326,6 @@ Tue Sep  1 16:28:49 1998  Greg Badros  <gjb@cs.washington.edu>
 	* window.c: Rename move_to to move_window, and make it use virtual 
 	coords.  Fix animated moves to use virtual coords.  Fix
 	ResizePswToCurrentSize to use FRAME_[XY]_VP.  Updated some docs.
-	
 
 Tue Sep  1 14:26:53 1998  Greg Badros  <gjb@cs.washington.edu>
 

@@ -1,3 +1,15 @@
+Thu Sep 10 11:08:53 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* wininfo.scm: simply reindented
+
+	* prefs-menu.scm: Fix spelling in doc
+
+	* flux.scm: Added `close-all-xlogo-windows'
+
+	* fvwm-module.scm: Make add-window non-public again (changed for
+ 	debugging a while back), and give comment response (to MS's GJBFIX
+ 	note) about why o_nonblock is necessary on the output pipe.
+	
 Wed Sep  9 14:25:21 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Added `display-message-briefly'
