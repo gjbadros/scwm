@@ -80,6 +80,16 @@ arguments can be used as the ACTIVE or INACTIVE arguments."
 		     parse-border-face-specs parse-border-face-flags
 		     rest active '() inactive))
 
+(define*-public (set-left-button-face! button active-up #&optional
+				      (active-down #f) (inactive #f))
+  (set-button-face! (+ (* (- button 1) 2) 1)
+		    active-up active-down inactive))
+
+(define*-public (set-right-button-face! button active-up #&optional
+				       (active-down #f) (inactive #f))
+  (set-button-face! (+ (* (- button 1) 2) 2)
+		    active-up active-down inactive))
+
 
 (define*-public (button-style button #&key mwm
 			      (active-up '()) 

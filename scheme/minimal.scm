@@ -55,9 +55,9 @@ motion does `interactive-move', and double-click does
 
 ;;; Initialize the decoration bindings to
 ;;; permit at least some useful behaviour
-(bind-mouse 'frame 1 resize-or-raise)
+(bind-mouse 'frame-corners 1 resize-or-raise)
 
-(bind-mouse '(title sidebar) 1 move-or-raise)
+(bind-mouse '(title frame-sides) 1 move-or-raise)
 
 (bind-mouse 'icon 1 deiconify)
 
