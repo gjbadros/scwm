@@ -1,5 +1,12 @@
 Sun Nov  2 00:20:29 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* add_window.c, borders.c, builtins.c, face.c, functions.c,
+ 	screen.h, scwm.c: Made changes throughout so that ButtonFace
+ 	structs are only ever used through pointers; this prepares for the
+ 	change of using scheme face objects everywhere, which in turn
+ 	should make Scheme access to button, border and title syles
+ 	feasible.
+
 	* Makefile.in: Added face.c to the build process.
 	
 	* scmprocs.c, scmtypes.c, scwm.c, screen.h: Uodated appropriately
