@@ -410,6 +410,7 @@ DrawIconWindow(ScwmWindow * psw)
       SetGCBg(Relief,XCOLOR(Scr.MenuColors.bg));
       Shadow = Relief;
     } else {
+      /* now set the fg colors for the two GCs we'll use to draw with */
       SetGCFg(Relief = Scr.ScratchGC1,XCOLOR(psw->ReliefColor));
       SetGCFg(Shadow = Scr.ScratchGC2,XCOLOR(psw->ShadowColor));
     }
