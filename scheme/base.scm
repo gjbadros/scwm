@@ -123,10 +123,13 @@
       (let ((result (hotkeys-from-name label)))
 	(set! label (car result))
 	(set! hotkey-prefs (cadr result))))
-  (if (string? image-above)
+  (if (string? image-above)		;; permit "foo.xpm" to mean (make-image "foo.xpm")
       (set! image-above (make-image image-above)))
   (if (string? image-left)
       (set! image-left (make-image image-left)))
+  (if (string? action)			;; permit "xterm" to mean (execute "xterm")
+      (let ((program-name action))
+	(set! action (lambda () (execute program-name)))))
   (make-menuitem label action extra-label image-above image-left
 		  hover-action unhover-action hotkey-prefs))
 
@@ -134,16 +137,19 @@
 (define-public menu-text-color (load-color "black"))
 (define-public menu-font (load-font "fixed"))
 
-
 (define*-public (menu list-of-menuitems #&key
 		      image-side 
-		      (color-bg-image-side menu-bg-color)
+		      (color-bg-image-side 'menu-bg-color)
 		      (image-bg #f)
-		      (color-text menu-text-color)
-		      (color-bg menu-bg-color)
-		      (font menu-font))
+		      (color-text 'menu-text-color)
+		      (color-bg 'menu-bg-color)
+		      (font 'menu-font))
   (if (string? image-side)
       (set! image-side (make-image image-side)))
+  (if (string? color-bg)
+      (set! color-bg (load-color color-bg)))
+  (if (string? color-text)
+      (set! color-text (load-color color-text)))
   (if (string? color-bg-image-side)
       (set! color-bg-image-side (load-color color-bg-image-side)))
   (make-menu list-of-menuitems image-side color-bg-image-side
