@@ -14,6 +14,22 @@ after doing a "cvs update -dP" to ensure that new subdirectories and
 changes to some of the building meta files are handled properly.
 
 
+DEBIAN TIPS
+
+After upgrading a bunch of Debian 2.1 packages to unstable 2.2 packages,
+Robert J. Chassell used:
+
+    make distclean
+    ./autogen.sh
+    ./ltconfig --cache-file=./config.cache --with-gcc \
+          --with-gnu-ld ./ltmain.sh i686-pc-linux-gnu
+    ./configure --enable-maintainer-mode
+    make -k
+
+to build Scwm out of CVS w/o Cassowary.
+
+
+
 RUNNING SCWM WITHOUT INSTALLING IT:
 
 To run Scwm without installing it, you should be sure
