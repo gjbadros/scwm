@@ -394,8 +394,8 @@ DisplayMessage(ScwmWindow * psw, const char *sz, Bool fInitializeRelief)
 #ifdef I18N
   XRectangle dummy,log_ret;
 #endif
-  scmBgRelief = adjust_brightness(Scr.size_window_bg, message_shadow_factor);
-  scmFgRelief = adjust_brightness(Scr.size_window_bg, message_hilight_factor);
+  scmBgRelief = adjust_brightness(Scr.msg_window_bg, message_shadow_factor);
+  scmFgRelief = adjust_brightness(Scr.msg_window_bg, message_hilight_factor);
 
   SetGCFg(gcHilite,XCOLOR(scmFgRelief));
   SetGCFg(gcShadow,XCOLOR(scmBgRelief));
@@ -405,29 +405,29 @@ DisplayMessage(ScwmWindow * psw, const char *sz, Bool fInitializeRelief)
     if (Scr.d_depth >= 2) {
       RelieveWindow(psw, Scr.SizeWindow, 0, 0,
 		    Scr.SizeStringWidth + SIZE_HINDENT * 2,
-		    FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2,
+		    FONTHEIGHT(Scr.msg_window_font) + SIZE_VINDENT * 2,
 		    gcHilite, gcShadow, FULL_HILITE);
     }
   } else {
     XClearArea(dpy, Scr.SizeWindow, SIZE_HINDENT, SIZE_VINDENT, Scr.SizeStringWidth,
-	       FONTHEIGHT(Scr.size_window_font), False);
+	       FONTHEIGHT(Scr.msg_window_font), False);
   }
 
-  NewFontAndColor(gcMsg,XFONT(Scr.size_window_font)->fid,
-                  XCOLOR(Scr.size_window_fg), XCOLOR(Scr.size_window_bg)); 
+  NewFontAndColor(gcMsg,XFONT(Scr.msg_window_font)->fid,
+                  XCOLOR(Scr.msg_window_fg), XCOLOR(Scr.msg_window_bg)); 
 
 #ifdef I18N
-  XmbTextExtents(XFONT(Scr.size_window_font), sz, strlen(sz), &dummy, &log_ret);
+  XmbTextExtents(XFONT(Scr.msg_window_font), sz, strlen(sz), &dummy, &log_ret);
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
 	    - log_ret.width ) / 2;
-  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.size_window_font),gcMsg,
-	      offset, FONTY(Scr.size_window_font) + SIZE_VINDENT,
+  XmbDrawString(dpy, Scr.SizeWindow, XFONT(Scr.msg_window_font),gcMsg,
+	      offset, FONTY(Scr.msg_window_font) + SIZE_VINDENT,
 	      sz, strlen(sz));
 #else
   offset = (Scr.SizeStringWidth + SIZE_HINDENT * 2
-	    - XTextWidth(XFONT(Scr.size_window_font), sz, strlen(sz))) / 2;
+	    - XTextWidth(XFONT(Scr.msg_window_font), sz, strlen(sz))) / 2;
   XDrawString(dpy, Scr.SizeWindow, gcMsg,
-	      offset, FONTY(Scr.size_window_font) + SIZE_VINDENT,
+	      offset, FONTY(Scr.msg_window_font) + SIZE_VINDENT,
 	      sz, strlen(sz));
 #endif
 }
