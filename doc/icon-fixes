@@ -1,0 +1,11 @@
+iconPixmap becomes picIcon->picture
+icon_maskPixmap becomes picIcon->mask
+iconDepth becomes picIcon->depth
+icon_p_width becomes picIcon->width
+icon_p_height becomes picIcon->height
+
+later
+
+szMiniIconFile becomes picMiniIcon->name
+szIconFile becomes picIcon->name
+

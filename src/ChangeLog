@@ -1,3 +1,46 @@
+Sun Nov  9 00:00:15 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* icons.c: rearranged and improved the interface specification;
+	non-public functions are now static
+
+	* icons.h: added, pulled relevant protos out of misc.h; #include
+	it as appropriate
+
+	* menus.c: make LEFT_MENUS be the single version, remove those
+	conditionals (fvwm2 menuing code was really broken w/o this
+	option); also removed FindPopup() function
+	
+	* removed #include "module.h" from all files; remove module.h
+
+	* removed #include "parse.h" from lots of files; still not
+	completely unneeded yet
+
+	* scwm.h reduced the redundancy in the ScwmWindow's icon handling; now
+	picIcon has all the pixmap information about the icon, instead of
+	having everything at the top level of the struct; use macros from
+	icons.h to make accessing the new fields not so bad
+
+	* Fixed the bug that prevented the current window from getting the
+	focus initially at startup (long-time fvwm2 bug,
+	too). CoerceEnterNotifyOnCurrentWindow() is added to misc.c
+
+	* misc.h Still more clean up
+
+	* Fixed the bug that prevented mini-icons from being redrawn once
+	they are changed
+
+	* string_token.c: Remove GetNextToken() function; last use of it
+ 	was obliterated; fixed protos in header to checking MISSING_STRCASECMP
+
+	* Renamed lots of ScwmWindow *tmp_win arguments to *sw.  My
+	pet-peeve about variable names is tmp -- all auto variables and
+	formals are tmp, so it's redundant.  In this case the short
+	Hungarian tag is really nice!
+
+	* Rename the global "Tmp_win" to swCurrent; Tmp_win was a
+ 	  *terrible* name!; fixed extern refs that use this
+
+
 Sat Nov  8 20:18:26 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Added picture object; use (make-picture "pic-filename")
