@@ -1,15 +1,19 @@
+1999-01-26  Sam Steingold  <sds@goems.com>
+
+	* Makefile.am (noinst_HEADERS): do not use `+='.
+
 Mon Jan 25 17:36:52 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c, window.h: Added window_pixel_size_to_client_units to
 	support conversion to client units since that code is now needed
-	by the resize hook as well as the `window-size' primitive (rewrote 
+	by the resize hook as well as the `window-size' primitive (rewrote
 	the latter to use it).
 
 	* resize.c: Added args to interactive_resize_new_size_hook to
-	support reporting position and client-unit sizes, as well as pixel 
+	support reporting position and client-unit sizes, as well as pixel
 	sizes.
 
-	* callbacks.c: Added scwm_safe_callN, callN_hooks for 4<=N<=7.  
+	* callbacks.c: Added scwm_safe_callN, callN_hooks for 4<=N<=7.
 
 Mon Jan 25 10:27:31 1999  Greg Badros  <gjb@cs.washington.edu>
 
@@ -51,12 +55,12 @@ Thu Jan 21 12:06:19 1999  Greg Badros  <gjb@cs.washington.edu>
  	iconify-hook and deiconify-hook.  This lets the hook act only on
 	changes in iconification state (avoids an infinite loop in
 	kwm-emulation by setting an iconified X property which causes
-	iconification, which causes the re-setting of the property, and so 
-	on. 
+	iconification, which causes the re-setting of the property, and so
+	on.
 
 Wed Jan 20 10:45:49 1999  Greg Badros  <gjb@cs.washington.edu>
 
-	* message-window.c (s_make_message_window): Move FIXME comment out 
+	* message-window.c (s_make_message_window): Move FIXME comment out
 	of doc comment so doc extract warning disappears.
 
 Tue Jan 19 13:11:46 1999  Greg Badros  <gjb@cs.washington.edu>
@@ -85,10 +89,10 @@ Mon Jan 18 20:13:54 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* callbacks.h, callbacks.c: Added FEmptyHook() predicate for use
 	when the preparation of args for the hook is expensive
-	
+
 	* Makefile.am, scwm.c: Added ICCCM.x, call init_ICCCM() from
 	initialization code.
-	
+
 	* xproperty.c (X-get-property, X-set-property!): permit atoms
 	(longs) to be used for the name, instead of only allowing strings.
 
@@ -106,9 +110,9 @@ Mon Jan 18 13:05:21 1999  Greg Badros  <gjb@cs.washington.edu>
 	BINDING->Action since that field is now gone; (keysym_to_keycode)
 	added; (bind_keycode) added -- lower level interface to key
 	bindings that permits specifying release procedures;
-	(mod_mask_shift, mod_mask_control) added -- these were missing and 
+	(mod_mask_shift, mod_mask_control) added -- these were missing and
 	are needed for completeness
-	
+
 	* icons.c: Drop test of BINDING->Action since that field is now
  	gone
 
@@ -122,7 +126,7 @@ Fri Jan 15 14:14:05 1999  Greg Badros  <gjb@cs.washington.edu>
 	of gh_int2scm or gh_long2scm -- abstracts out the size of a
 	pointer to fix problems with 64-bit machines.
 
-	* scwm.h (scwm_ptr2scm): Added this macro to abstract out the size 
+	* scwm.h (scwm_ptr2scm): Added this macro to abstract out the size
 	of a pointer -- for now just use long.
 
 Fri Jan 15 10:43:21 1999  Greg Badros  <gjb@cs.washington.edu>
@@ -141,7 +145,7 @@ Fri Jan 15 10:43:21 1999  Greg Badros  <gjb@cs.washington.edu>
 
 Mon Jan 11 08:36:14 1999  Greg Badros  <gjb@cs.washington.edu>
 
-	* scwm.c: Added newhandler_doreset(..) and SigResetLoop(..) to use 
+	* scwm.c: Added newhandler_doreset(..) and SigResetLoop(..) to use
 	setjmp/longjmp to make SIGHUP signals cause Scwm to revert to the
 	main event loop.  A software-hung Scwm (e.g., in an infinite loop
 	of scheme code) can be reset by using "kill -1
@@ -154,7 +158,7 @@ Mon Jan 11 22:34:52 1999  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 Sat Jan  9 11:29:40 1999  Greg Badros  <gjb@cs.washington.edu>
 
-	* window.h, window.c: Use const char * for func_name arg of ensure_valid and 
+	* window.h, window.c: Use const char * for func_name arg of ensure_valid and
 	convert_move_data (gives warnings on guile-1.3, but the warnings
 	are guile's fault, not ours).  Also rename subr, func to
 	"func_name" to make more clear the argument is for error messages
@@ -180,7 +184,7 @@ Sun Dec 27 13:55:09 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* guile-compat.c (scm_internal_cwdr_no_unwind): Temporarily add
  	this version of scm_internal_cwdr which does not unwind existing
- 	winders. 
+ 	winders.
 	* callbacks.c: Use scm_internal_cwdr_no_unwind in place of
  	scm_internal_cwdr throughout. This allows `dynamic-wind's to
  	safely be wrapped around calls to primitives that make callbacks
@@ -265,12 +269,12 @@ Sat Dec  5 18:34:53 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	* window.c (FocusOn): Do not attempt to snap to the window's
  	viewport position, change to its desk, or move it. There are
  	separate primitives to do all those.
- 
+
 	* message-window.c, message-window.h: add shadow_color and
  	hilight_color fields to the message_window structure, and
  	preallocate these when setting the background color, so we don't
  	crash on interactive moves if the colors can't be allocated.
-	
+
 	* message-window.c (init_message_window): #include
  	"message-window.x", not "msgwin.x".
 
@@ -301,7 +305,7 @@ Sat Dec  5 11:51:45 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Added MsgWindowContext and ExposeWindowProcContext for
 	message-window support and generalized expose procedures. Call
-	init_message_window, and eliminate the global message window (that 
+	init_message_window, and eliminate the global message window (that
 	support is at the scheme level now).
 
 	* screen.h: Drop the MsgWindow field of struct ScreenInfo -- they
@@ -311,7 +315,7 @@ Sat Dec  5 11:51:45 1998  Greg Badros  <gjb@cs.washington.edu>
 	set-message-window-attributes!, set-message-window-position!,
 	display-message!, message-window-mapped?, DisplaySize.  Drop
 	C-level support for displaying resize sizes.  Be sure to call
-	new-size-hook once at the beginning of resizes (after start-resize 
+	new-size-hook once at the beginning of resizes (after start-resize
 	hook)
 
 	* move.h, move.c: Eliminate DisplayMessage, MapMessageWindow,
@@ -345,12 +349,12 @@ Sat Dec  5 11:51:45 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* color.c: doc fixes
 
-	* decor.c: code simplification, merge InitScwmDecor into decor2scm 
+	* decor.c: code simplification, merge InitScwmDecor into decor2scm
 
 	* events.c: minor doc fix
 
 	* deskpage.c: doc fix, standardize on 'virtual coordinate' and
-	'viewport coordinate' 
+	'viewport coordinate'
 
 	* face.c: fix typo in comment
 
@@ -370,7 +374,7 @@ Sat Dec  5 11:51:45 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: lots of doc fixes
 
-	* xproperty.c: "It's a window system named X, not a system named X 
+	* xproperty.c: "It's a window system named X, not a system named X
 	Windows"
 
 	All of the above are from Carl R. Witty <cwitty@newtonlabs.com>
@@ -481,7 +485,7 @@ Mon Nov 16 17:41:54 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	hilight colors here.
 
 	move.c:(DisplayMessage): Don't allocate them here.
-	
+
 	* screen.h: Add msg_window_hilite and msg_window_shadow fields.
 	screen.c: Protect them.
 	scwm.c: Initialize them.
@@ -550,7 +554,7 @@ Tue Nov 10 10:16:05 1998  Greg Badros  <gjb@cs.washington.edu>
 	* events.c (HandleMapRequestKeepRaised): Call raisePanFrames to
 	try to fix the long-standing fvwm2 bug regarding the virtual
 	panning windows at screen edges sporadically not working when a
-	netscape communicator window is at the edge of the screen.  Thanks 
+	netscape communicator window is at the edge of the screen.  Thanks
 	Hideki Sakurada.
 
 1998-11-09  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
@@ -572,7 +576,7 @@ Tue Nov 10 10:16:05 1998  Greg Badros  <gjb@cs.washington.edu>
 	rubberband mode.
 
 	* move.c (moveLoop): Display FRAME_X_VP/FRAME_Y_VP in message
-	window, as `FXGetWindowTopLeft' returns wrong valuse in rubberband 
+	window, as `FXGetWindowTopLeft' returns wrong valuse in rubberband
 	mode.
 
 	* window.c (compare_focus_time): New function.
@@ -630,7 +634,7 @@ Tue Nov 10 10:48:38 1998  Greg Badros  <gjb@cs.washington.edu>
 
 1998-10-27  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
-	* add_window.c (AddWindow): Call `restoreWindowState'. I hope this 
+	* add_window.c (AddWindow): Call `restoreWindowState'. I hope this
 	is the right location to do it.
 
 	* session-manager.c: Legalese added.
@@ -822,15 +826,15 @@ Sat Oct 10 10:30:19 1998  Greg Badros  <gjb@cs.washington.edu>
 	focus changes (for auto-raise, e.g.)
 Thu Oct  8 12:42:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* resize.c (s_set_message_window_position_x): Document X-ALIGN and 
+	* resize.c (s_set_message_window_position_x): Document X-ALIGN and
 	Y-ALIGN.
 
 	* menulook.c (menulook?) : Document the proc.  (copy_menu_look)
  	Remove dummy variable, add some braces for readability, warning
-	elimination. 
+	elimination.
 
 	* menu.c: Permit SCM_BOOL_F menuitems w/o giving Bad menu item
-	warning.  Fix some doc strings to have ending periods for synopsis 
+	warning.  Fix some doc strings to have ending periods for synopsis
 	sentence.  Added prototype for ConstructDynamicMenu (instead of
 	#includeing "drawmenu.h"
 
@@ -841,7 +845,7 @@ Thu Oct  8 12:42:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* color.c: Fix mis-edit in not renaming FUNC_NAME macro of
 	not_menu_background.  Should these "not_menu..." things get
-	obliterated or do we still rely on them somewhere?  Todd says: yes 
+	obliterated or do we still rely on them somewhere?  Todd says: yes
 	we use them for icon and window backgrounds and borders -- they
 	need to get their colors from somewhere else before the code can
 	be killed
@@ -850,16 +854,16 @@ Thu Oct  8 12:42:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* menu.h: scmMenuTag added to Menu; pmiimTitle added to DynamicMenu
 
-	* menu.c: menu title support; not yet used by any menulook. 
+	* menu.c: menu title support; not yet used by any menulook.
 	(MenuInteraction): don't unselect/popdown when the pointer moves
 	off of all menus; something like this is needed for shaped menus,
 	where there may be root window showing between the two menus of a
-	popup pair, and doesn't seem too bad for other cases. 
+	popup pair, and doesn't seem too bad for other cases.
 
 	* drawmenu.c (PaintMenuItem): don't move text over by an extra
 	MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE - this space should only be
 	given if a side image exists, and it's already included in
-	cpixLeftPicWidth 
+	cpixLeftPicWidth
 	(ConstructDynamicMenu): don't add an extra MENU_ITEM_RR_SPACE to
 	pmd->cpixWidth - the space for the left is already taken into account.
 
@@ -868,7 +872,7 @@ Thu Oct  8 12:42:25 1998  Greg Badros  <gjb@cs.washington.edu>
 	* draw-xpm-menu.c: moved to modules/xpm-menus
 
 	* scwm.c (InitVariables): menu_font removed; MenuColors renamed
-	NotMenuColors 
+	NotMenuColors
 	(scwm_main): init_draw_xpm_menu removed
 	(scwm_main): MenuColors renamed NotMenuColors
 	(init_scwm_load_path): SCWM_BIN_LOAD_PATH added to %load-path
@@ -890,12 +894,12 @@ Thu Oct  8 12:42:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* menu.c (s_make_menu): arguments reordered, and bg_color,
 	text_color, stipple_color and font made mandatory; picture-align
-	argument renamed side-picture-align; scmMenuLook set to SCM_BOOL_F 
+	argument renamed side-picture-align; scmMenuLook set to SCM_BOOL_F
 	instead of Scr.menu_look - the normal scwm look will be used
 	unless it's set explictely;
-	(s_set_menu_menu_look_x): new 
+	(s_set_menu_menu_look_x): new
 	(NewDynamicMenu): allow scmMenuLook to be a symbol or an object,
-	or invalid; if invalid, use ConstructDynamicMenu to get the normal 
+	or invalid; if invalid, use ConstructDynamicMenu to get the normal
 	scwm look
 
 	* icons.c (CreateIconWindow): MenuColors renamed NotMenuColors;
@@ -914,7 +918,7 @@ Thu Oct  8 12:42:25 1998  Greg Badros  <gjb@cs.washington.edu>
 	* color.c: reset_menu_relief and calls to it removed; the menuing
 	code handles its own relief creation;
 	{set-,}menu-{foreground,background} renamed
-	{set-,}not-menu-{foreground,background}; 
+	{set-,}not-menu-{foreground,background};
 	Menu{Colors,Relief} renamed NotMenu{Colors,Relief};
 	MenuStippleColors and {set-,}menu-stipple-colors removed;
 	protected_colors shortened (it should probably be removed)
@@ -967,7 +971,7 @@ Mon Oct  5 09:02:26 1998  Greg Badros  <gjb@cs.washington.edu>
  	debug-only code. Fix assignment to pmenu->scmFont that immediately
  	got undone -- now makes the default font object for menus be
  	Scr.menu_font instead of SCM_UNDEFINED or SCM_BOOL_F
-	
+
 	* move.c: Minor indentation change
 
 	* draw-xpm-menu.c: Fix the header to say "By Todd Larason" -- had
@@ -978,7 +982,7 @@ Mon Oct  5 09:02:26 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Fri Oct  2 15:31:38 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* menu.c (MenuInteraction): Use pmd->pmdv... not pmiim->pmd (pmiim 
+	* menu.c (MenuInteraction): Use pmd->pmdv... not pmiim->pmd (pmiim
 	  is NULL at start of this fn)
 
 	* drawmenu.c (SetPopupMenuPositionFromMenuItem): Comment out
@@ -986,7 +990,7 @@ Fri Oct  2 15:31:38 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* drawxpm-menu.c: #include "drawmmenu.h", add return type to
 	  InitGCs(), add parens to disambiguate && and || in same
-	  expression, and comment out unused var pmdiNew (all to eliminate 
+	  expression, and comment out unused var pmdiNew (all to eliminate
 	  warnings)
 
 1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
@@ -1017,7 +1021,7 @@ Thu Oct  1 04:51:55 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	settingi current menu look
 
 	* menuitem.h (MenuItemInMenu_tag): menulook-specific
-	MenuItemDrawingInfo pointer added; scwm-style information moved to 
+	MenuItemDrawingInfo pointer added; scwm-style information moved to
 	drawmenu.c's MenuItemDrawingInfo struct
 
 	* menu.h: all the menu drawing specific information removed.
@@ -1045,21 +1049,21 @@ Tue Sep 29 11:18:25 1998  Greg Badros  <gjb@cs.washington.edu>
 	* scwm.c: #include "drawmenu.h" for drawmenu_init_gcs fn
 
 	* resize.c, move.c: Use actual size/position of window for the
-	  message display (in case the solver doesn't permit the suggested 
-	  resize/move).  
+	  message display (in case the solver doesn't permit the suggested
+	  resize/move).
 
 	* color.c: Remove some unused variables to eliminate warnings.
 
 1998-09-27  Todd Larason  <jtl@teeny.molehill.org>
 
-	* draw-pie-menu.c: Lots of changes to bring it up to date with the 
+	* draw-pie-menu.c: Lots of changes to bring it up to date with the
 	current drawmenu.c, and to fix bugs with the larger spacing; the
 	'real' spacing works out nicely to avoid some work.  This still
-	doesn't actually do pies, and still isn't used at all, but this is 
+	doesn't actually do pies, and still isn't used at all, but this is
 	a better starting place for additional work than the previous
 	version.
 
-	* drawmenu.c (PaintSideImage): Align the side image properly if it 
+	* drawmenu.c (PaintSideImage): Align the side image properly if it
 	completely fits and it's bottom aligned.
 	(ConstructDynamicMenu): enable background images
 
@@ -1101,7 +1105,7 @@ Tue Sep 29 11:18:25 1998  Greg Badros  <gjb@cs.washington.edu>
 	but works on X Pixels not SCM color objects.  Made
 	menu_hilight_factor_val and menu_shadow_factor_val external.
 	Removed all references to the menu GCs.
-	
+
 Sat Sep 26 20:33:07 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.hpp: Make max/min size constraints take
@@ -1114,17 +1118,17 @@ Sat Sep 26 20:33:07 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Grab.c, ICCCM.c, add_window.c, binding.c, borders.c,
 	callbacks.c, color.c, colormaps.c, colors.c, complex.c, decor.c,
-	decorations.c, deskpage.c, drawmenu.c, errors.c, events.c, face.c, 
-	guile-compat.c, icons.c, image.c, log-usage.c, menu.c, menuitem.c, 
+	decorations.c, deskpage.c, drawmenu.c, errors.c, events.c, face.c,
+	guile-compat.c, icons.c, image.c, log-usage.c, menu.c, menuitem.c,
 	miscprocs.c, module-interface.c, move.c, placement.c, resize.c,
 	screen.c, scwm.c, session-manager.c, shutdown.c, string_token.c,
 	syscompat.c, system.c, util.c, virtual.c, window.c, xmisc.c,
-	xproperty.c, xrm.c: All headers are now #included in the following 
+	xproperty.c, xrm.c: All headers are now #included in the following
 	order: config.h, system headers, X headers, guile headers,
 	<module>.h, other scwm headers, dmalloc.h.  Every module includes
 	its corresponding .h file.
 
-	* binding.h, borders.h, color.h, colors.h, decor.h, decorations.h, 
+	* binding.h, borders.h, color.h, colors.h, decor.h, decorations.h,
 	face.h, font.h, image.h, menu.h, menuitem.h, move.h, resize.h,
 	screen.h, scwm.h, virtual.h, window.h, xmisc.h: header files in
 	the order given above, and headers added to allow scwm headers to
@@ -1132,24 +1136,24 @@ Sat Sep 26 20:33:07 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.h, window_fwd.h: typedef struct ScwmWindow ScwmWindow in
 	window_fwd.h; guard typedef in window.h against window_fwd.h's.
-	
+
 	* add_window.h, binding.h, colormaps.h, move.h, xmisc.h: remove #define
  	ScwmWindow mechanism for using window_fwd.h; now all handled by
  	window.h and window_fwd.h
 
 Thu Sep 24 12:03:45 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* move.c (InteractiveMove): Reset have_orig_position after testing 
+	* move.c (InteractiveMove): Reset have_orig_position after testing
 	it. Thanks Hideki Sakurada!
 
-	* add_window.c: Fix docs for before-new-window-hook, since that is 
+	* add_window.c: Fix docs for before-new-window-hook, since that is
 	now *not* used for window-styles (but I left the hook in in case
 	there are other generally useful things to do at that phase of
 	window setup -- might get removed later).
 
 1998-09-24  Todd Larason  <jtl@teeny.molehill.org>
 
-	* decor.c: properly add extra height to title bars when a decor is 
+	* decor.c: properly add extra height to title bars when a decor is
 	attached to a window
 
 	* add_window.c, color.c, decor.c, font.c, image.c, menu.c,
@@ -1160,7 +1164,7 @@ Wed Sep 23 16:53:18 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* add_window.c: Added a before-place-new-window-hook for the
 	window style to use, and call that hook before calling
-	PlaceWindow.  Fixes placement off by 6 pixels (or so, depending on 
+	PlaceWindow.  Fixes placement off by 6 pixels (or so, depending on
 	border width) bug
 
 	* placement.c: Separate out some debugging code for ease of
@@ -1175,7 +1179,7 @@ Wed Sep 23 16:53:18 1998  Greg Badros  <gjb@cs.washington.edu>
 	gravity into account
 
 	* decor.c (s_set_window_decor_x): use
-	set_window_internal_title_height to resize titlebar, not ResizeTo; 
+	set_window_internal_title_height to resize titlebar, not ResizeTo;
 	this fixes the shrinking-xterm-on-restart problem for me, and
 	looks like the right thing to do
 
@@ -1191,7 +1195,7 @@ Wed Sep 23 11:03:41 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* move.h, move.c: Added WFrameOrIcon to return the top-level X
 	window for a psw, and use that fn in InteractiveMove.   Do not
-	call the invalid-interaction-hook when a grab fails in the move -- 
+	call the invalid-interaction-hook when a grab fails in the move --
 	still not really working correctly with xmag as the
 	interactive-placement will fail (the grab fails because xmag does
 	the grab first)
@@ -1203,7 +1207,7 @@ Wed Sep 23 11:03:41 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Grab.c: Update docs for X-grab-server, X-ungrab-server to note
 	that the primitives are undefined at startup.
-	
+
 1998-09-22  Todd Larason  <jtl@teeny.molehill.org>
 
 	* xproperty.c: Removed X-atomic-property-set-if-unset!
@@ -1221,7 +1225,7 @@ Mon Sep 21 10:08:29 1998  Greg Badros  <gjb@cs.washington.edu>
 	* move.c (Keyboard_shortcuts): Permit XK_KP_* to be used when
 	moving and resizing. Thanks to Tim Phipps (fvwm2-based patch).
 
-	* menu.c (PmiimMenuShortcuts): Permit XK_KP_Enter as a synonym for 
+	* menu.c (PmiimMenuShortcuts): Permit XK_KP_Enter as a synonym for
 	XK_Return. Thanks to Tim Phipps (fvwm2-based patch).
 
 Sat Sep 19 12:04:53 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -1239,11 +1243,11 @@ Sat Sep 19 12:04:53 1998  Greg Badros  <gjb@cs.washington.edu>
 Fri Sep 18 15:47:34 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c (ResetScwmexecProtocol): Added, and invoke it, in case
-	XA_SCWMEXEC_REQWIN property is set on root at startup of scwm (and 
+	XA_SCWMEXEC_REQWIN property is set on root at startup of scwm (and
 	refers to a bad window)
 
 	* move.c (AnimatedMoveWindow): Do not do anything if the move is
-	to the current location (from another Tim Phipps fvwm2 patch of my 
+	to the current location (from another Tim Phipps fvwm2 patch of my
 	code in that project)
 
 1998-09-18  Todd Larason  <jtl@teeny.molehill.org>
@@ -1284,7 +1288,7 @@ Thu Sep 17 15:51:48 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Drop reparenting debug message
 
-	* module-interface.c (BroadcastIconInfo): Undo last change to this 
+	* module-interface.c (BroadcastIconInfo): Undo last change to this
 	-- should use ICON_[XY]_VP, not _VIRT.
 
 	* icons.c: Use ICON_[XY]_VIRT instead of icon_[xy]_loc in
@@ -1305,7 +1309,7 @@ Thu Sep 17 09:10:19 1998  Greg Badros  <gjb@cs.washington.edu>
 	* window.c: Added set-window-context!, window-context to support
 	`with-window' macro
 
-	* window.c: Fix FIsPartiallyInViewport to use x+width && y+height, 
+	* window.c: Fix FIsPartiallyInViewport to use x+width && y+height,
 	not the other way around. Thanks Todd Larason!
 
 	* scwm.c (RestoreWithdrawnLocation): Use FRAME_Y_VP, not
@@ -1332,7 +1336,7 @@ Wed Sep 16 15:30:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.h, window.c: Prototype for FIsPartiallyInViewport and
  	make it not static, since scwm.c now uses it in
-	RestoreWithdrawnLocation.  Use FRAME_[XY] instead of accessing the 
+	RestoreWithdrawnLocation.  Use FRAME_[XY] instead of accessing the
 	fields directly.
 
 	* shutdown.c: Pass a fRestart bool to Reborder()
@@ -1343,7 +1347,7 @@ Wed Sep 16 15:30:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	FIsPartiallyInViewport
 
 	* image.c: Check if val_load_{xpm,xbm} are not defined, and if so
-	give a build error message (a common build problem is the .x files 
+	give a build error message (a common build problem is the .x files
 	being empty -- this catches it and reports a much more useful
 	error message before aborting).
 
@@ -1356,7 +1360,7 @@ Tue Sep 15 17:08:20 1998  Greg Badros  <gjb@cs.washington.edu>
 	* events.c: Use WIN_VP_OFFSET_[XY] in handling ConfigureNotify
 	events -- fixes bug whereby drags in pager mis-moved the window,
 	and whereby "xv" started up in the top-left viewport always (it
-	actually moved there pretty quickly after the ConfigureNotify came 
+	actually moved there pretty quickly after the ConfigureNotify came
 	in)
 
 Tue Sep 15 13:37:36 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -1369,7 +1373,7 @@ Tue Sep 15 13:37:36 1998  Greg Badros  <gjb@cs.washington.edu>
 Tue Sep 15 09:30:45 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	These changes all by Todd Larason -- thanks Todd!
-	
+
 	* xmisc.c, xmisc.h: Added DrawSubImage as a generalization of
 	DrawImage, and make DrawImage call DrawSubImage
 
@@ -1402,7 +1406,7 @@ Sun Sep 13 18:47:12 1998  Greg Badros  <gjb@cs.washington.edu>
 	MovePswIconToCurrentPosition or MovePswToCurrentPosition based on
 	iconification state -- only one fvwm2 module packet should be
 	sent, and we'll call the other when iconification state changes
-	anyway. 
+	anyway.
 
 	* scwm.c (InitVariables): Use scm_permanent_object to protect the
 	scm for Scr.DefaultDecor so that it does not get FREEd (it is
@@ -1432,8 +1436,8 @@ Sun Sep 13 12:52:03 1998  Greg Badros  <gjb@cs.washington.edu>
 	* menu.c: Added proto for InvokeUnhoverAction to avoid warnings
 
 	* icons.c: Call BroadcastIconInfo instead of the repetitive
-	Broadcast call with all args inline; Call MovePswToCurrentPosition 
-	in DeIconify in case it was out of position (might not update when 
+	Broadcast call with all args inline; Call MovePswToCurrentPosition
+	in DeIconify in case it was out of position (might not update when
 	not visible)
 
 	* events.c: Call BroadcastIconInfo instead of the repetitive
@@ -1468,10 +1472,10 @@ Fri Sep 11 15:43:46 1998  Greg Badros  <gjb@cs.washington.edu>
 	scwm_safe_call0_sym instead of call_thunk_with_message_handler
 	(_sym suffix means it calls DEREF_IF_SYMBOL first to permit
 	bindings to symbols still)
-	
+
 	* util.c: ifdef-out call_thunk_with_message_handler -- menuing
 	code was last to use it, and now that uses scwm_safe_call0 or scwm_call0_hooks
-	
+
 	* util.h: removed prototype for call_thunk_with_message_handler
 
 	* virtual.c (MoveViewport_internal): Added BroadcastConfig call
@@ -1510,13 +1514,13 @@ Fri Sep 11 09:39:30 1998  Greg Badros  <gjb@cs.washington.edu>
 	XA_RESOURCE_MANAGER property changes on the root window (not
 	tested yet)
 
-	* add_window: Clean up the command line resource parsing stuff for 
+	* add_window: Clean up the command line resource parsing stuff for
 	better integration and separation from xrm.c features
 
 Thu Sep 10 15:57:53 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (FIsPartiallyInViewport): Added this function, and use
-	it.  Remove old debugging code, #ifdef out some questionably no-op 
+	it.  Remove old debugging code, #ifdef out some questionably no-op
 	code, and use FRAME_[XY]_VP instead of FRAME_[XY] in some places;
 	also use move_finalize to bring a window into the current
 	viewport, instead of MoveTo (former uses viewport positions)
@@ -1532,7 +1536,7 @@ Thu Sep 10 11:02:16 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Use FRAME_[XY]_VP in SetupFrame call;  make
 	move_finalize use viewport coordinates, not virtual, and add
-	WIN_VP_OFFSET_* into passed in x,y before passing to virtual-coord 
+	WIN_VP_OFFSET_* into passed in x,y before passing to virtual-coord
 	based functions.
 
 	* events.c: Use FRAME_[XY]_VP in SetupFrame call of
@@ -1565,20 +1569,20 @@ Wed Sep  9 14:18:18 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Wed Sep  9 12:48:43 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* scwm.c (scwm_main): Call initSM() much later, so that it happens 
+	* scwm.c (scwm_main): Call initSM() much later, so that it happens
 	after processing of options
 
 Wed Sep  9 09:35:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* shutdown.c (Done): Use w_for_scwmexec_response and reset the
-	output, error, and reply properties for the scwmexec protocol when 
+	output, error, and reply properties for the scwmexec protocol when
 	shutting down
 
 	* scwm.c: Initialize w_for_scwmexec_response to None
 
 	* events.h: Added global w_for_scwmexec_response
 
-	* events.c: Set and reset w_for_scwmexec_response so that it's set 
+	* events.c: Set and reset w_for_scwmexec_response so that it's set
 	during the eval of the requested expression in case Done needs to
 	reply to the requesting window (on `quit' or segfault)
 
@@ -1630,7 +1634,7 @@ Mon Sep  7 12:25:39 1998  Greg Badros  <gjb@cs.washington.edu>
 Mon Sep  7 10:21:19 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.h: Added SCWM_VAR_INIT macro for when vars have values to
-	initialize to -- SCWM_VAR now only takes two arguments, the c name 
+	initialize to -- SCWM_VAR now only takes two arguments, the c name
 	and the scheme name
 
 	* scwm.c: Fix init_scwm_load_path to use new SCWM_VAR so it works
@@ -1655,7 +1659,7 @@ Sun Sep  6 14:28:05 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* menu.c: Use SCWM_VAR
 
-	* image.c: Use SCWM_VAR, rename loc_ prefix to pscm_ prefix as the 
+	* image.c: Use SCWM_VAR, rename loc_ prefix to pscm_ prefix as the
 	macros enforce;  Turn image_not_found_hook into a real hook, and
 	erase ad-hoc InvokeHook1 function.
 
@@ -1685,13 +1689,13 @@ Sun Sep  6 13:06:54 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Sat Sep  5 13:26:05 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* window.c: Mark new SCM variables, fix the mark code for a bug in 
+	* window.c: Mark new SCM variables, fix the mark code for a bug in
 	requiring the decor to be set. Clean up set_window_property_x.
 
-	* constraint-primitives.cc: #include callbacks.c inside the extern 
+	* constraint-primitives.cc: #include callbacks.c inside the extern
 	"C" block; added scwm-resolve-hook and call it.
 
-	* add_window.c: Defer interrupts while initializing the new window 
+	* add_window.c: Defer interrupts while initializing the new window
 	struct (just in case)
 
 Fri Sep  4 19:01:55 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -1711,7 +1715,7 @@ Fri Sep  4 19:01:55 1998  Greg Badros  <gjb@cs.washington.edu>
 	* constraint-primitives.cc: Call the callback attached to the
 	changed-proc property of any scheme cl-variable.  Call is made
 	when the variable is changed -- still need a callback on the
-	resolve after all the changes are made.  
+	resolve after all the changes are made.
 	Fixed various bugs in screen_clv_* primitives
 
 	* add-window.c: Create the scheme window to attach to Psw before
@@ -1725,7 +1729,7 @@ Fri Sep  4 19:01:55 1998  Greg Badros  <gjb@cs.washington.edu>
 Fri Sep  4 12:28:33 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (stick, unstick): Sandwich SuggestMoveWindowTo-s
-	between CassowaryEdit.. EndEdit;  also add FIXGJB: rename comments 
+	between CassowaryEdit.. EndEdit;  also add FIXGJB: rename comments
 	regarding API renaming of some functions
 
 Fri Sep  4 11:58:33 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -1779,13 +1783,13 @@ Thu Sep  3 14:26:35 1998  Greg Badros  <gjb@cs.washington.edu>
 	* scwm.c: #include session-manager.h and call initSM() if
  	HAVE_LIBSM_LIBICE
 
-	* events.c: Rename XNextEvent_orTimeout to NextScwmEvent; watch fd 
+	* events.c: Rename XNextEvent_orTimeout to NextScwmEvent; watch fd
 	IceSMfd if it was initialized, and call IceProcessMessages when a
 	message is received
 
 	* miscprocs.c, events.h: Rename XNextEvent_orTimeout to
  	NextScwmEvent
-	
+
 	* xrm.c, xmisc.c, syscompat.c, shutdown.c, module-interface.c,
 	menuitem.c, menu.c, log-usage.c, image.c, guile-compat.c,
 	getopt1.c, getopt.c, drawmenu.c, draw-pie-menu.c, callbacks.c:
@@ -1808,7 +1812,7 @@ Wed Sep  2 17:10:55 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* borders.c: Use new fns PixelHi{Text,Back}FromPsw for selecting
 	the color for a highlighted window -- those fns use the new
-	per-window highlight colors, or fall back to the decor settings if 
+	per-window highlight colors, or fall back to the decor settings if
 	no per-window highlight color is specified (ie, they are #f)
 
 	* add_window.c: init new members of struct ScwmWindow
@@ -1852,8 +1856,8 @@ Tue Sep  1 16:28:49 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.h: Added FRAME_[XY]_VIRT, document _VP suffix
 	to mean viewport position (since it's a bit ambiguous, unfortunately)
-	
-	* window.c: Rename move_to to move_window, and make it use virtual 
+
+	* window.c: Rename move_to to move_window, and make it use virtual
 	coords.  Fix animated moves to use virtual coords.  Fix
 	ResizePswToCurrentSize to use FRAME_[XY]_VP.  Updated some docs.
 
@@ -1868,13 +1872,13 @@ Tue Sep  1 14:26:53 1998  Greg Badros  <gjb@cs.washington.edu>
 	FRAME_X_VP, FRAME_Y_VP in MovePswToCurrentPosition.  Make
 	stickiness result in changes to the real position of the window,
 	since now windows store their virtual position, and are converted
-	to viewport positions at a pretty low level (when positioned using 
+	to viewport positions at a pretty low level (when positioned using
 	MovePsw* functions)
 
 	* virtual.c: Simplify MoveViewport_internal, since now windows do
 	not need to be moved directly -- less work needs to be done since
 	windows store their virtual position instead of their viewport
-	position. 
+	position.
 
 	* scwm-constraints.h: Added FRAME_[XY]_VP, ICON_[XY]_VP macros
 
@@ -1935,7 +1939,7 @@ Fri Aug 28 16:58:40 1998  Greg Badros  <gjb@cs.washington.edu>
 	* util.c: Write ms_sleep to call usleep and possibly sleep (if
 	for more than 1 second)
 
-	* syscompat.h, syscompat.c: Fix prototype and defintion for usleep 
+	* syscompat.h, syscompat.c: Fix prototype and defintion for usleep
 	-- was treating arg as milli instead of micro seconds.
  	Thanks Perry E. Metzger!
 
@@ -1997,7 +2001,7 @@ Fri Aug 14 20:40:17 1998  Greg Badros  <gjb@cs.washington.edu>
 	  correctly with the perl extract-docs (not sure about the guile
 	  version -- it's worth testing)
 
-	* face.c: Convert the Face Flags and Face Specification Flags into 
+	* face.c: Convert the Face Flags and Face Specification Flags into
 	  DocBook tables from plain text.
 
 Fri Aug 14 19:28:13 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -2010,7 +2014,7 @@ Thu Aug 13 11:56:46 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* resize.c: Added DBUG code for ConstrainSize
 
-	* add_window.c: Do not add in psw->bw to frame_width, frame_height 
+	* add_window.c: Do not add in psw->bw to frame_width, frame_height
 	  (was causing windows to grow in size on decorating).  This
 	  reverts an earlier change which was thought to be necessary but
 	  was fixed by making ConstrainSize round instead of truncate.
@@ -2061,7 +2065,7 @@ Wed Aug 12 14:59:21 1998  Greg Badros  <gjb@cs.washington.edu>
 	  get called later in HandleMapNotify.
 
 	* add_window.c: Be sure to initialize psw->xboundary_width and
-	  psw->bw properly before calling ConstrainSize.  Add psw->bw into 
+	  psw->bw properly before calling ConstrainSize.  Add psw->bw into
 	  psw->initial size estimates for the frame
 
 Wed Aug 12 09:22:35 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -2091,7 +2095,7 @@ Mon Aug 10 17:45:55 1998  Greg Badros  <gjb@cs.washington.edu>
 	* resize.c: Use psw->xboundary_width instead of
 	  psw->boundary_width for width of the window
 
-	* borders.c: Move the SendClientConfigureNotify code into function 
+	* borders.c: Move the SendClientConfigureNotify code into function
 	  by that name in window.c (from SetupFrame).  Added macro to
 	  check 'no-side-decorations property, and honour it by using
 	  xboundary_width instead of boundary_width, as appropriate.
@@ -2139,19 +2143,19 @@ Fri Aug  7 18:03:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	list-stacking-order; make it list each window only once (previous
  	version gave one instance for each of main window, icon and icon
  	title).
- 
+
 Fri Aug  7 10:43:43 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* scwm.c: create scmFixedFont global object to use in a last-ditch 
+	* scwm.c: create scmFixedFont global object to use in a last-ditch
 	  need for a font; fix unrelated compiler warning
 
-	* font.h, font.c: Added global scmFixedFont which should always be 
+	* font.h, font.c: Added global scmFixedFont which should always be
 	  initialized and contain the fixed font
 
 	* drawmenu.c: Patched PscwmFontForMenuItem to use FONT() instead
 	  of completely wrong (scwm_font *) cast.  Thanks Craig Kaplan!
 
-	* borders.c: Unmap the side windows if their width/height would be 
+	* borders.c: Unmap the side windows if their width/height would be
 	  zero.  Fixes problems I noticed with robbe.scwmrc's barebones decor
 
 	* scwm-constraints.cc: Use resolve() form instead of resolve(..)
@@ -2180,7 +2184,7 @@ Thu Aug  6 11:55:21 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Wed Aug  5 20:17:56 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* borders.c: Added SQUASHED_TITLEBAR_P macro and squashed-titlebar 
+	* borders.c: Added SQUASHED_TITLEBAR_P macro and squashed-titlebar
 	  feature (set-object-property! win 'squashed-titlebar #t), then
 	  resize the window to see rough but working version -- requires
 	  XShape extension.
@@ -2259,7 +2263,7 @@ Mon Aug  3 16:13:52 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Mon Aug  3 13:24:19 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* window.c: Added list-all-windows-in-stacking-order primitve, use 
+	* window.c: Added list-all-windows-in-stacking-order primitve, use
 	  gh_cons instead of scm_cons in list-all-windows and update its
 	  comment
 
@@ -2274,9 +2278,9 @@ Sun Aug  2 17:57:14 1998  Greg Badros  <gjb@cs.washington.edu>
 	* move.c: Use 2 pixel range for testing if we're on the boundary
 	  for fResize==True in Keyboard_shortcuts
 
-	* menu.c: Make submenus automatically select the first item in the 
+	* menu.c: Make submenus automatically select the first item in the
 	  submenu; require C+<key> for the alphanumeric menu movement keys
-	
+
 Sun Aug  2 16:37:31 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* xmisc.h, xmisc.c, draw_menu.c: Patches from ITANI Eiichiro
@@ -2285,7 +2289,7 @@ Sun Aug  2 16:37:31 1998  Greg Badros  <gjb@cs.washington.edu>
 	* window.c: Pass no psw to Keyboard_shortcuts in DeferExecution;
 	  clean up some comments
 
-	* shutdown.c: Fixed reorganization problem so segfault still tries 
+	* shutdown.c: Fixed reorganization problem so segfault still tries
 	  to clean up the display if the display is already successfully
 	  opened.
 
@@ -2298,7 +2302,7 @@ Sun Aug  2 16:37:31 1998  Greg Badros  <gjb@cs.washington.edu>
 	* resize.c, move.c: Try to get paging during a resize/move right
 	  even with Cassowary in use; Fix Keyboard_shortcuts to ignore a
 	  NULL psw for DeferExecution
-	
+
 
 1998-08-01  Maciej Stachowiak  <maciej@localhost.localdomain>
 
@@ -2334,7 +2338,7 @@ Fri Jul 31 20:39:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Fri Jul 31 18:42:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* shutdown.c: Do the XSelectInput, XSync, and XCloseDisplay in all 
+	* shutdown.c: Do the XSelectInput, XSync, and XCloseDisplay in all
 	  shutdown cases, not just if we're going to restart.
 
 	* scwm-constraints.cc: Added note about intentional (for now)
@@ -2367,7 +2371,7 @@ Fri Jul 31 18:42:23 1998  Greg Badros  <gjb@cs.washington.edu>
 	function signatures to pass a procedure name for the sake of error
 	reporting. Much redundant code removed this way. No longer accept
 	symbols in place of procedures in key/mouse bindings.
-	
+
 	* deskpage.c: API review continues: Split set-edge-wrap! into
 	set-edge-x-wrap! and set-edge-y-wrap!; split set-edge-scroll! into
 	set-edge-x-scroll!  and set-edge-y-scroll!; split
@@ -2386,7 +2390,7 @@ Fri Jul 31 18:42:23 1998  Greg Badros  <gjb@cs.washington.edu>
 	mandatory and first. Add the corresponding getter, `window-decor'.
 
 	* color.c: API review: Added menu-foreground, menu-background,
-	menu-stipple primitives w/ docs.	
+	menu-stipple primitives w/ docs.
 
 	* window.h, window.c: Window structure changes, phase 1. Added
 	other_properties member to window structure; GC protect it and
@@ -2394,9 +2398,9 @@ Fri Jul 31 18:42:23 1998  Greg Badros  <gjb@cs.washington.edu>
 	window-property primitives. Right now they only get and set
 	properties in this hash table. "Magical" properties and change
 	notification will come in later, as will other planned changes.
- 
+
 	ICCCM compliant gravity handling:
-	
+
 	* window.h: Define gravity_info type, used to encode gravity
 	offset information. Add a grav field of type gravity_info to the
 	window structure; remove the xdiff and ydiff fields. Prototype the
@@ -2415,7 +2419,7 @@ Fri Jul 31 18:42:23 1998  Greg Badros  <gjb@cs.washington.edu>
 	add_window.c: Remove SetupFrame call when adding window (moved to
 	placement.c). Remove all mucking with xdiff and ydiff, they are
 	gone.
-	
+
 	placement.c: Make GetGravityOffsets merely set the grav field of
 	the window struct as appropriate instead of trying to return
 	values. Move the table of gravity offset types to file static, not
@@ -2440,7 +2444,7 @@ Fri Jul 31 18:42:23 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	To be resolved: should the user be able to get and/or set the
 	window gravity?
-	
+
 Thu Jul 30 20:16:12 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraint-primitives.cc, scwm-constraints.cc,
@@ -2463,11 +2467,11 @@ Thu Jul 30 20:08:25 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* menu.c: Return the value of the called lambda for a menu item
 	execution to support the select-window-from-window-list
-	functionality. 
+	functionality.
 
 	* font.c: patch from Itani for I18N.
 
-	* borders.c: Fix bug in corner_width too small when no title width 
+	* borders.c: Fix bug in corner_width too small when no title width
 	-- make corners be at least 12 pixels.
 
 	* add_window.c: Add constraint dummies.
@@ -2479,7 +2483,7 @@ Wed Jul 29 20:23:03 1998  Greg Badros  <gjb@cs.washington.edu>
 	  XFIXEDFONTNAME, not XFIXEDFONTSET in font.c. All I18N
 	  fixes.
 
-	* face.c: Make set-face-flag! a primitive, reorder the function to 
+	* face.c: Make set-face-flag! a primitive, reorder the function to
 	  avoid a prototype.
 
 	* decorations.c: Don't turn off fBorder if boundary_width == 0;
@@ -2494,8 +2498,8 @@ Wed Jul 29 20:23:03 1998  Greg Badros  <gjb@cs.washington.edu>
 	* window.c: Fix docs of restack-windows
 
 	* resize.c, virtual.c: remove one, and ifdef out another probably
-	  spurious RemoveRubberbandOutline call. 
-	
+	  spurious RemoveRubberbandOutline call.
+
 	* shutdown.c: Do not call0_hooks on a segfault.  Only do X stuff
 	  if dpy is non-null
 
@@ -2522,7 +2526,7 @@ Wed Jul 29 11:32:34 1998  Greg Badros  <gjb@cs.washington.edu>
 	  screen-clv-vy.
 
 	* borders.c, add_window.c: Remove the setting of title_height in
-	  SetupFrame -- do it in AddWindow instead. 
+	  SetupFrame -- do it in AddWindow instead.
 
 	* makefile.cassowary: First go at a scwm_cl.static target.  Fails
 	  because other libraries aren't statically linked.
@@ -2532,7 +2536,7 @@ Wed Jul 29 11:32:34 1998  Greg Badros  <gjb@cs.washington.edu>
 
 Mon Jul 27 20:45:24 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* {move,resize,window,scwm-constraints}.c: Got resizing and moving 
+	* {move,resize,window,scwm-constraints}.c: Got resizing and moving
 	with rubberband to work using a more clean framework.
 
 Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -2568,7 +2572,7 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	  binding.c.  Pretty major cleanup and documenting of AddWindow
 	  routine -- reduce redundancies, call XSaveContext right after
 	  creating each window
-	
+
 	* xmisc.h, xmisc.c: Added WXGetPointerOffsets, WXGetPointerChild,
 	  removed bogus XGetGeometryCacheIt since I found the bug that I
 	  introduced that fn for.  Added SzExtractTextPropValue,
@@ -2584,12 +2588,12 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.h: comment out FFromSCMBool, FInvertFromSCMBool since
 	  gh_scm2bool exists.  Added
-	  COPY_BOOL_OR_ERROR_DEFAULT_{TRUE,FALSE}.  Drop externs of Window 
+	  COPY_BOOL_OR_ERROR_DEFAULT_{TRUE,FALSE}.  Drop externs of Window
 	  BlackoutWin.
 
 	* scwm.c: Call init_move, move JunkVars into xmisc.c
 
-	* scwm-constraints.h: Added FRAME_X_NONVIRT, FRAME_Y_NONVIRT (stll 
+	* scwm-constraints.h: Added FRAME_X_NONVIRT, FRAME_Y_NONVIRT (stll
 	  need to be used far more often to make viewport stuff work)
 
 	* resize.h, resize.c:  Added InteractiveResize, and make that in
@@ -2597,7 +2601,7 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	  mostly just calls the former).  Added fOpaque flag to
 	  InteractiveResize, option to interactive_resize primitive.
 
-	* move.h, move.c: Added fOpaque flag to InteractiveMove, option to 
+	* move.h, move.c: Added fOpaque flag to InteractiveMove, option to
 	  interactive_move primitive; fixed bugs in dealing with icons,
 	  move ComputeXTextWidth into xmisc.c, and make it take an extra
 	  arg, the length, or -1 to mean use strlen.  Move
@@ -2606,10 +2610,10 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* placement.c: save frame position in xdiff, ydiff using
 	  FRAME_X_NONVIRT, Y_NONVIRT
-	
+
 	* miscprocs.c: Added X-server-set-synchronize primitive
 
-	
+
 1998-07-27  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* xproperty.c: Forgotten inclusion of guile-compat.h prevented
@@ -2667,7 +2671,7 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	  Note that the init_MODULE function prototypes for SMOBs are
 	  all put in scm_init_funcs.h by the build procedure, so they
 	  are no longer listed in the .h files.  In particular, this
-	  means that some header files are nearly empty, but I've chosen 
+	  means that some header files are nearly empty, but I've chosen
 	  to keep them around since at some point a public C interface
 	  may be added for them.  Sometimes macros that were in the
 	  header file have been moved into the top of the .c file if
@@ -2679,16 +2683,16 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	* window.c: rearrange ordering of some funcs to avoid forward
 	  decls.
 
-	* placement.c: use move_finalize instead of move_to-- the former 
-	  is part of the C interface of ScwmWindows, while the latter is 
+	* placement.c: use move_finalize instead of move_to-- the former
+	  is part of the C interface of ScwmWindows, while the latter is
 	  a primitive that does unnecessary work;  Also use
 	  InteractiveMove instead of interactive-move for the same
 	  reason.
 
 	* move.h, move.c: Simplify interface to InteractiveMove, and
-	  make it know all about finding the button-click mouse position 
+	  make it know all about finding the button-click mouse position
 	  and dealing with icons (moved the code from the one call to
-	  InteractiveMove into the function, and then added another call 
+	  InteractiveMove into the function, and then added another call
 	  to InteractiveMove from placement.c)
 
 	* events.c: Use Iconify (C public-interface function) instead of
@@ -2697,7 +2701,7 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	* binding.c: have_orig_position is now a Bool, not an int
 
 	* window_fwd.h: Added, for use by header files that only need
-	  pointers to the ScwmWindow struct (must use struct ScwmWindow, 
+	  pointers to the ScwmWindow struct (must use struct ScwmWindow,
 	  or "#define ScwmWindow  struct ScwmWindow" -- be sure to
 	  #undef at end of header file
 
@@ -2708,7 +2712,7 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	  throughout;  use PackedBool macro and expand flags bitmasked
 	  field, so Scr.flags & WindowsCaptured is now just
 	  Scr.fWindowsCaptured [dropped the #defines of the flag
-	  constants]; made GET_DECOR look more like a macro since it can't 
+	  constants]; made GET_DECOR look more like a macro since it can't
 	  be used much like a function at all; drop CornerWidth, NumBoxes
 	  fields -- unused;  drop COLORMAP_FOLLOWS_MOUSE,
 	  COLORMAP_FOLLOWS_FOCUS #defines, and use fColormapFollowsMouse
@@ -2735,7 +2739,7 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	* util.c: clean up redraw_titlebars
 
 	* borders.c: Added init_border to initialize TransMaskGC, now
-	  file-static (not really the right thing, is it that expensive to 
+	  file-static (not really the right thing, is it that expensive to
 	  create GCs that we don't want to do it for each button draw?),
 	  use GET_DECOR (renamed from GetDecor to be more obviously a macro)
 
@@ -2749,7 +2753,7 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Don't call SetupFrame on animated shade/unshade --
 	  only do it on unanimated.
-	
+
 1998-07-25  Greg Badros  <gjb@cs.washington.edu>
 
 	* *.c: mark_XXXXX -- use GC_MARK_SCM_IF_SET pervasively, instead
@@ -2761,24 +2765,24 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	  extractor now gets HOOK comments
 
 	* constraint-primitives.cc: Use a set, not a list for the dirty
-	  windows.  Better debug support on ScwmResolve.  Clear the set of 
+	  windows.  Better debug support on ScwmResolve.  Clear the set of
 	  dirty windows when there is a new master solver.  Added doc strings
 
 	* decor.c: Docstring edit
 
 	* drawmmenu.c: Move RelieveRectangle into xmisc.c
-	
+
 	* events.c: Use new ConstrainSize() args; better debugging for
 	  HandleConfigureRequest()
-	
+
 	* face.c: doc string changes
 
 	* makefile.cassowary: rebuild extratags when TAGS changes
-	
+
 	* module-interface.c: Doc comment fixes
 
 	* move.h, move.c: Added MapMessageWindow(), UnmapMessageWindow();
-	  clean up some I18N support and added a ComputeTextWidth function 
+	  clean up some I18N support and added a ComputeTextWidth function
 	  (FIXGJB: maybe this should go in xmisc.c?);  Improve
 	  DisplayMessage;  Use move_size of 10 in Keyboard_shortcuts()
 	  instead of menu entry height (which was completely broken
@@ -2787,17 +2791,17 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* placement.c: typographical changes -- I hate spaces between
 	  function name and parameter list! :-)
-	
+
 	* resize.h, resize.c: Better encapsulate ConstrainSize, resizing: drop all
 	  the file-static variables that manage the resize operation.
 	  Added opaque resizing, dropped DoResize (and with it the
-	  rubberband -- I'll bring the rubberband back, soon, as I imagine 
+	  rubberband -- I'll bring the rubberband back, soon, as I imagine
 	  people w/ slower machines [like me at home] want this);  Got
 	  resizing working with Cassowary; Added
 	  ComputeNewGeometryOnResize to enclose the constrain size stuff;
 	  further improve CreateMessageWindow.
 
-	* scwm-snarf.h: Added SCWM_SYMBOL, SCWM_GLOBAL_SYMBOL macros which 
+	* scwm-snarf.h: Added SCWM_SYMBOL, SCWM_GLOBAL_SYMBOL macros which
 	  currently just pass along to SCM_??_SYMBOL macros
 
 	* screen.h: Rename SizeWindow -> MsgWindow.  Drop SizStringWidth
@@ -2808,15 +2812,15 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	  too.  Call AddSizeConstraints on a new window;  make
 	  SuggestMoveWindowTo check to make sure the window really moved
 	  before calling XMoveWindow.
-	
+
 	* scwm-constraints.hpp: Added AddSizeConstraints(); make
 	  CopyStateToPswVars return two bools, fMoved, fResized; better
 	  debugging -- added a _name member to SWCI
-	
+
 	* scwm.c: reorder some initialization stuff to be a bit safer,
 	  drop last arg from CreateMessageWindow since MWMMenus flag was
 	  unused by it
-	
+
 	* xmisc.c, xmisc.h: Added FXGetWindowSize, RelieveRectangle (move
 	  from drawmenu.c, since the message window needed the code)
 
@@ -2824,7 +2828,7 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	  move a window properly.  Added select-window-interactively
 	  (takes a prompt), generalize the size and pointer window into a
 	  message window, and rename appropriately.
-	
+
 	* dbug_resize.h: Added for tracing the resize operations
 
 1998-07-24  Greg Badros  <gjb@cs.washington.edu>
@@ -2839,11 +2843,11 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraint-primitives.cc: Added ResizePswToCurrentSize
 
-	* scwm.c: Added scmScreen object, and initialize it to be the SMOB 
+	* scwm.c: Added scmScreen object, and initialize it to be the SMOB
 	for the global Scr. Init Scr.size_window_{fg,bg}. Call
 	init_screen. Use new name CreateMessageWindow() not
-	CreateSizeDisplayWindow().  
-	
+	CreateSizeDisplayWindow().
+
 	* color.h: Added SAFE_XCOLOR_OR_{WHITE,BLACK} macros
 
 	* icons.c, borders.c, borders.h, drawmenu.c: use SetGCFg, new
@@ -2857,7 +2861,7 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (ResizePswToCurrentSize): Added this function
 
-	* screen.c: Wrap ScreenInfo in a SMOB so marking of the SCM member 
+	* screen.c: Wrap ScreenInfo in a SMOB so marking of the SCM member
 	fields works (this was a long-time latent bug)
 
 1998-07-23  Greg Badros  <gjb@cs.washington.edu>
@@ -2866,11 +2870,11 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* xmisc.h: include X11/Xlib.h
 
-	* window.[ch]: remove unused vars, use cassowary interface on move-to 
+	* window.[ch]: remove unused vars, use cassowary interface on move-to
 	primitive, eliminate the move_finalize -- it seems unnecessary,
 	move interactive_resize into resize.c
 
-	* virtual.c: Added prototype for RemoveRubberbandOutline(), remove 
+	* virtual.c: Added prototype for RemoveRubberbandOutline(), remove
 	MoveOutline proto
 
 	* shutdown.h: Added missing prototype for run_startup_hook
@@ -2940,12 +2944,12 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 	name change. Added add_window.x, resize.x.
 
 	* generate_scm_init_funcs: Added this script to be used by the
-	makefile for generating the new scm_init_funcs.h file, included by 
+	makefile for generating the new scm_init_funcs.h file, included by
 	scwm.c to declare protoes for all the init_MODULE functions so we
 	do not *have* to include header files for just those functions.
 
 	* menu.c, menu.h: Renamed from scwmmenu.c, scwmmenu.h for
-	consistency, so new scm_init_funcs.h works as it should (declaring 
+	consistency, so new scm_init_funcs.h works as it should (declaring
 	the prototypes for all the init_MODULE functions)
 
 	* menuitem.c, scwmmenu.c, xproperty.c (mark_XXXX): Don't guard
@@ -2956,11 +2960,11 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* callbacks.c: Replace "Timer" with "Input" in the input hook
 	concept documentation (whoops).
-	
+
 1998-07-22  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleScwmExec): Fixed a couple little problems that
-	may not have immediately been show stoppers -- now last_offset += 
+	may not have immediately been show stoppers -- now last_offset +=
 	(nitems * (form_ret/8)).  Also added more troubleshooting code so
 	that it doesn't just fail silently, and point  at
 	doc/scwmexec.proto as additional documentation.  Added
@@ -2987,19 +2991,19 @@ Mon Jul 27 20:08:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* miscprocs.c: Add period to docstring
 
-	* placement.c, borders.c: Send extra arg to 
+	* placement.c, borders.c: Send extra arg to
 	CassowarySetCValuesAndSolve.
 
-	* add_window.c: Added second param to CassowarySetCValuesAndSolve, 
+	* add_window.c: Added second param to CassowarySetCValuesAndSolve,
 	a bool to tell whether should solve (or just set the values).
 	Added CassowaryNewWindow hook to permit adding the stay
 	constraints in at the right time.
 
 	* window.c, window.h: Add COPY_BOOL_OR_ERROR and
 	COPY_INVERT_BOOL_OR_ERROR macro, and use throughout for error
-	checking in primitives that do simple assignment of a boolean to a 
+	checking in primitives that do simple assignment of a boolean to a
 	C variable (simplifies a bunch of primitives)
-	
+
 	* miscprocs.c: Fix misuse of flag formal in
 	set_smart_placement_is_really_smart_x
 
@@ -3031,10 +3035,10 @@ Tue Jul 21 15:01:46 1998  Greg Badros  <gjb@cs.washington.edu>
 	want to start a new file or clutter up scwm.c any further.
 
 	scwm.c: Call run_startup_hook() after all windows are captured.
-	
+
 Tue Jul 21 14:09:11 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* constraint-primitives.cc: Added window-clv-{x,y,width,height} to 
+	* constraint-primitives.cc: Added window-clv-{x,y,width,height} to
 	get at the constraint variable objects.  Don't call addVar in the
 	obsoleted functions-- it's redundant with using the
 	add-stays-on-window primitive.
@@ -3050,8 +3054,8 @@ Tue Jul 21 10:38:35 1998  Greg Badros  <gjb@cs.washington.edu>
 	* scwm-constraints.hpp: Add psolver argument to AddStays, add
 	Psw() memfn, CopyStateToPswVars() memfn
 
-	* scwm-constraints.cc: guard everything with if (!psolver), and do 
-	a regular move window in SuggestMoveWindowTo if !psolver, since if 
+	* scwm-constraints.cc: guard everything with if (!psolver), and do
+	a regular move window in SuggestMoveWindowTo if !psolver, since if
 	there is a psolver, its callbacks result in moving the window
 
 	* constraint-primitives.h: extern "C" sandwich
@@ -3059,7 +3063,7 @@ Tue Jul 21 10:38:35 1998  Greg Badros  <gjb@cs.washington.edu>
 	* constraint-primitives.cc: extern "C" protect inclusions of
 	scwm-proper files scwm.h, window.h.  Added ScwmClvChanged and
 	ScwmResolve callbacks, to manage the new rgpswDirty container so
-	windows only move once when any of their settings change.  Set the 
+	windows only move once when any of their settings change.  Set the
 	callbacks in scwm_set_master_solver
 
 Tue Jul 21 10:30:43 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -3090,7 +3094,7 @@ Tue Jul 21 10:30:43 1998  Greg Badros  <gjb@cs.washington.edu>
 	and a broadcast-mini-icon-hook. I've simplified it to only take
 	(and pass) the window structure; I figure Scheme code can do the
 	marshalling out of that.
-	
+
 	* image.c (image_properties): Added 'pixmap and 'mask properties
 	to image-properties return value. These are needed for the
 	fvwm-module stuff, and could be useful for communicating with
@@ -3106,7 +3110,7 @@ Tue Jul 21 10:30:43 1998  Greg Badros  <gjb@cs.washington.edu>
 	window-mini-icon to get the icon title, icon image and mini-icon
 	of a window respectively. Needed for fvwm-module stuff, and
 	probably generally useful.
-	
+
 Mon Jul 20 18:03:11 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.cc, constraint-primitives.cc: renamed from .c,
@@ -3136,7 +3140,7 @@ Mon Jul 20 18:03:11 1998  Greg Badros  <gjb@cs.washington.edu>
 	* scwm.c: do not define a global solver object
 
 	* scwm-constraints.h: Do not use ScwmClVariables any longer --
-	simplify accessing cassowary from scwm into a simple interface and 
+	simplify accessing cassowary from scwm into a simple interface and
 	stub those functions.  #define SET_CVALUE for use when assigning
 	values to constrained vars (vars which are shadowed by
 	constrained variables)
@@ -3145,7 +3149,7 @@ Mon Jul 20 18:03:11 1998  Greg Badros  <gjb@cs.washington.edu>
  	new cleaner interface from scwm-constraints.h -- reduces #ifdef
  	USE_CASSOWARY a lot!  add_window.c has the empty stubs for the
  	prototypes that may be turned into real hooks later.
-	
+
 	* system.h: do not use new and delete unless __cplusplus is
 	defined and USE_CASSOWARY is defined (nothing uses this now)
 
@@ -3155,8 +3159,8 @@ Mon Jul 20 15:03:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleScwmExec): Fixed long-time probable bug that I
 	just noticed for the first time-- last_offset was being increased
-	by last_offset+1, instead of just being incremented.  I'm not sure 
-	of the purpose of the loop, or of the protocol in general, but the 
+	by last_offset+1, instead of just being incremented.  I'm not sure
+	of the purpose of the loop, or of the protocol in general, but the
 	code looked wrong, and my fix gets things working for me again.
 
 Mon Jul 20 14:24:13 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -3168,7 +3172,7 @@ Mon Jul 20 14:24:13 1998  Greg Badros  <gjb@cs.washington.edu>
  	FIXMS comment -- the latter still produce warnings in
  	extract-comments, but it's a good thing!
 
-	
+
 	* scwm.c: Move InitVariables() and InternUsefulAtoms() up to the
  	top, and remove their prototypes.  Inline SetRCDefaults() since it
  	was short and not a useful abstraction.  Move MappedNotOverride()
@@ -3180,7 +3184,7 @@ Mon Jul 20 14:24:13 1998  Greg Badros  <gjb@cs.washington.edu>
 	* face.c: Moved Button faces into here from scwm.c (see above)
 
 	* decor.c: Moved fns from scwm.c into here & made static.
-	
+
 	* screen.h: remove some obsoleted prototypes.
 
 
@@ -3218,7 +3222,7 @@ Sun Jul 19 14:18:48 1998  Greg Badros  <gjb@cs.washington.edu>
 	* decor.h, decor.c: fix bugs in mark_decor -- was marking
 	not-yet-constructed objects (maybe this is a missing
 	SCM_DEFER_INTS, but this fix works and is safer)
-	
+
 	* scwm.h: make GC_MARK_SCM_IF_SET also check for scm == 0 and not
 	mark that
 
@@ -3245,28 +3249,28 @@ Sun Jul 19 14:18:48 1998  Greg Badros  <gjb@cs.washington.edu>
 	* font.c: Documented all primitives and concepts.
 
 	* face.c: Documented all primitives, hooks and
-	concepts. 
-	
+	concepts.
+
 	* events.c: Documented all primitives, hooks and
 	concepts. Continuing the FXDOC convention.
 
 	* callbacks.c: Use FIXDOC comments to indicate changes that I
 	think are needed for the docstring comment format, or things I
 	don't know about it yet.
-	
+
 Sat Jul 18 16:26:11 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scmtypes.h, scmtypes.c: Removed -- now individual init functions do the
 	right thing
-	
-	* window.c, scwmmenu.c, menuitem.c, face.c, decor.c: Add smob type 
-	initialization code using the below macros to obviate the need for 
+
+	* window.c, scwmmenu.c, menuitem.c, face.c, decor.c: Add smob type
+	initialization code using the below macros to obviate the need for
 	scmtypes.{h,c}
 
-	* scwm.h: Added MAKE_SMBFUNS and REGISTER_SCWMSMOBFUNS macros that 
+	* scwm.h: Added MAKE_SMBFUNS and REGISTER_SCWMSMOBFUNS macros that
 	should be used more consistently
 
-	* scwm.c: Remove call to init_scwm_types, don't include scmtypes.h 
+	* scwm.c: Remove call to init_scwm_types, don't include scmtypes.h
 	any longer
 
 Sat Jul 18 11:15:59 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -3275,7 +3279,7 @@ Sat Jul 18 11:15:59 1998  Greg Badros  <gjb@cs.washington.edu>
 	and use those three lines pervasively (most header files were
 	missing the #includes-- can be a subtle bug if you're not on your
 	toes [I was caught flat-footed this past week]).
-	
+
 	* decor.c, events.c, module-interface.c, placement.c, window.c,
  	window.h, xproperty.c: Replaced all uses of SCWMWINDOW macro with
  	PSWFROMSCMWIN since that is a less ambiguous name, and makes more
@@ -3318,11 +3322,11 @@ Fri Jul 17 13:33:17 1998  Greg Badros  <gjb@cs.washington.edu>
 	(#included by scwm.h now);  add #includes of other headers as now needed
 
 	* borders.h: Move HILITE macros here, and turn them into an enum
-	
+
 	* xmisc.c, xmisc.h: XGetPointerWindowOffsets renamed ->
 	FXGetPointerWindowOffsets, XGetWindowTopLeft renamed ->
 	FXGetWindowTopLeft
-	
+
 	* misc.c, misc.h: Removed; functions dispersed as appropriate,
 	often into xmisc.c
 
@@ -3344,7 +3348,7 @@ Thu Jul 16 16:19:38 1998  Greg Badros  <gjb@cs.washington.edu>
 	called on psw->name before deallocating psw.
 
 	* binding.c (FKeyToKeysymModifiers): Fix bug in handling of
-	uppercase single keystrokes (e.g., C-M-S-E) -- the keysym that was 
+	uppercase single keystrokes (e.g., C-M-S-E) -- the keysym that was
 	looked for was the uppercase keystroke, which isn't bound to any
 	key -- use tolower to convert.
 
@@ -3399,7 +3403,7 @@ Thu Jul 16 16:19:38 1998  Greg Badros  <gjb@cs.washington.edu>
 	ICCCM reccomends that transient windows always be placed exactly
 	where requested by the program, without user interaction. Users
 	will rarely want to override this behavior.
-	
+
 	(default_select_desk): Separated out desk selection into this new
 	procedure to make PlaceWindow easier to understand. However, desk
 	selection and switching should not happen here, but should
@@ -3422,7 +3426,7 @@ Thu Jul 16 16:19:38 1998  Greg Badros  <gjb@cs.washington.edu>
 	`interactive-resize'. Each of these should work properly.
 
 	(init_placement): Initialize the placement module.
-	
+
 	* placement.h: Prototype init_placement().
 
 	* Makefile.am: build placement.x
@@ -3435,7 +3439,7 @@ Thu Jul 16 16:19:38 1998  Greg Badros  <gjb@cs.washington.edu>
 	transient, and the window it is transient for is not the root
 	window and is being managed by scwm, return the window object of
 	the window that WIN is transient for, otherwise return #f.
-	
+
 	* miscprocs.c (capturing_p): Added a Scheme primitive `capturing?'
 	that determines whether or not we are currently intially capturing
 	or recapturing the windows (via the poorly name PPositionOverride
@@ -3462,7 +3466,7 @@ Tue Jul 14 16:24:19 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	font.c, color.c, image.c: Use the 2-arg version of scm_make_vector
 	always.
-	
+
 Mon Jul 13 15:20:11 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* callbacks.c: Use limits.h and LONG_MAX instead of values.h and
@@ -3503,11 +3507,11 @@ Fri Jul 10 10:45:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c: Use DBUG not WARN for the hook-call messages
 
-	* menuitem.c (menuitem_properties): use SCM_EOL, not SCM_UNDEFINED 
+	* menuitem.c (menuitem_properties): use SCM_EOL, not SCM_UNDEFINED
 	to end a list.  Added documentation for the primitives.
-	
+
 	* *.c: Added #include <config.h> to files that were missing it
-	
+
 
 1998-07-07  Greg Badros  <gjb@cs.washington.edu>
 
@@ -3515,7 +3519,7 @@ Fri Jul 10 10:45:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* binding.c: Added comments for primitives, in an extractable
 	format.  See utilities/dev/extract-docs for prototype extractor.
-	Also added example /**CONCEPT:  ... */ documentation comment to be 
+	Also added example /**CONCEPT:  ... */ documentation comment to be
 	woven into a section on concepts
 
 Mon Jul  6 19:53:46 1998  Maciej Stachowiak  <mstachow@mit.edu>
@@ -3547,7 +3551,7 @@ Mon Jul  6 02:49:08 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	Multibyte character set support from ITANI Eiichiro
  	<emu@ceres.dti.ne.jp>. Some of these changes should be reviewed,
  	but they build and work both ways.
-	
+
 	* window.c: Rename window-from-window-id to id->window and make it
  	ensure that we really are looking up by only the window id and not
  	various decoration ids. Also added frame-id->window primitive.
@@ -3572,7 +3576,7 @@ Sun Jul  5 23:13:06 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	shadow_factor, etc.
 
 	* scwm.h: Added #define of XSERVER_MAX_BUTTONS instead of
-	MAX_BUTTONS -- use cMouseButtons instead, as that gets initialized 
+	MAX_BUTTONS -- use cMouseButtons instead, as that gets initialized
 	by init_pointer_mapping().
 
 	* scwm.c (scwm_main): Call init_pointer_mapping() at startup.
@@ -3609,7 +3613,7 @@ Sun Jul  5 23:13:06 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 1998-07-04  Greg Badros  <gjb@cs.washington.edu>
 
-	* xmisc.c (PNewXTextPropertyFromSz): Added this function to create 
+	* xmisc.c (PNewXTextPropertyFromSz): Added this function to create
 	a new XTextProperty struct for the set-window-text-property primitive
 
 	* shutdown.c: Make Done dump core if first arg is < 0, so SegV's
@@ -3641,7 +3645,7 @@ Sun Jul  5 23:13:06 1998  Maciej Stachowiak  <mstachow@mit.edu>
 Fri Jul  3 17:44:06 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am:
-	
+
 	* Remove scmprocs.c -- no longer needed since guile-snarf is used pervasively.
 
 	* Added remaining .x files that are now generated by guile-snarf
@@ -3734,7 +3738,7 @@ Fri Jul  2 15:24:22 1998  Greg Badros  <gjb@cs.washington.edu>
 	scmprocs.c, scmtypes.c, string_token.c, system.c: Remove GPL
 	exception for the FVWM license; RMS claims there is no
 	incompatability.
-	
+
 1998-06-20  Maciej Stachowiak  <maciej@roc-ny5-15.ix.netcom.com>
 
 	* scwm.c: Always use getopt_long, never use the previous hack to
@@ -3747,7 +3751,7 @@ Fri Jul  2 15:24:22 1998  Greg Badros  <gjb@cs.washington.edu>
 	conditional inclusion.
 
 	* Makefile.am, Makefile.am: build getopt.c, getopt1.c
-	
+
 1998-06-20  Maciej Stachowiak  <maciej@roc-ny5-14.ix.netcom.com>
 
 	* callbacks.c, callbacks.h: Move input hooks here. add_input_hook
@@ -3759,7 +3763,7 @@ Fri Jul  2 15:24:22 1998  Greg Badros  <gjb@cs.washington.edu>
 	file descriptor, and the input hook system ensures that the hook
 	is invoked until either char-ready? is not true of the port, or
 	the hook has been removed.
-	
+
 	events.c, scmprocs.c: Input hook stuff removed from here.
 
 1998-06-19  Maciej Stachowiak  <maciej@roc-ny3-25.ix.netcom.com>
@@ -3773,7 +3777,7 @@ Fri Jul  2 15:24:22 1998  Greg Badros  <gjb@cs.washington.edu>
 	binding.c, complex.c, events.c, misc.c, move.c, scwm.c,
 	scwmmenu.c, shutdown.c, virtual.c: include syscompat.h, replace
 	calls to sleep_ms with usleep.
-	
+
 	Makefile.am, Makefile.in: compile syscompat.c
 
 	* scwm.c: Remove call to GetFdWidth (no longer useful or
@@ -3787,20 +3791,20 @@ Fri Jul  2 15:24:22 1998  Greg Badros  <gjb@cs.washington.edu>
 	alpha_header.h, autoconf should take care of this type of stuff.
 
 	sun_headers.h, alpha_header.h: Removed.
-	
+
 1998-06-18  Maciej Stachowiak  <maciej@roc-ny5-14.ix.netcom.com>
 
 	* Makefile.am: Don't depend on having the `-n' option to `echo'
 	when building init_scheme_string.c.
 
 	Makefile.in: regenerated.
-	
+
 	* guile-compat.c, guile-compat.h, callbacks.c, menuitem.c: Restore
 	guile 1.2 compatability; provide implementations of
 	scm_internal_cwdr and scm_internal_stack_catch if needed, and use
 	the compatabilty stuff throughout. Bug reported by Dale Smith
 	<dale.smith@bellhow.com>
-	
+
 1998-06-18    Maciej Stachowiak <maciej@roc-ny5-07.ix.netcom.com>
 
 	* shutdown.c: Separate the part of Done() that calls the restart
@@ -3816,7 +3820,7 @@ Sat Jun 13 02:51:44 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	* guile-compat.c, guile-compat.h: New files; compatability
  	#defines and functions for guile 1.2 all moved here from numerous
  	files.
- 
+
 Thu Jun 11 02:54:09 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* callbacks.c: Error handling much improved; error messages should
@@ -3827,7 +3831,7 @@ Wed Jun 10 21:38:09 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	* events.c, scwm.h: Use scm_internal_select in place of select for
  	the main event loop when available; this should make scwm work
  	with guile threads.
-	
+
 Mon Jun  1 19:20:20 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.in: regenerated with automake 1.3
@@ -3848,10 +3852,10 @@ Sun Apr  5 14:01:50 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 Fri Apr  3 11:43:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
-	* Makefile.am: Fixed typo: s/fonts./font./g 
+	* Makefile.am: Fixed typo: s/fonts./font./g
 
 	Makefile.in: Regenerated.
-	
+
 Thu Apr  2 16:21:32 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* image.c, scwm.c: include "scwmpaths.h"
@@ -3859,7 +3863,7 @@ Thu Apr  2 16:21:32 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	These changes are to work with the new automake-based build system
  	(see the top-level ChangeLog).
-	
+
 Mon Mar 30 01:41:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* callbacks.c: Fixed bug in run_timed_out_timers() - was failing
@@ -3869,7 +3873,7 @@ Mon Mar 30 01:41:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	hooks. This involved adding several procedures for managing the
  	timer hook list: shortest_timer_timeout, update_timer_hooks and
  	run_timed_out_timers, some changes to the event loop, and these
- 	scheme primitives: 
+ 	scheme primitives:
 
 	add-timer-hook! USEC PROC - schedule a call of procedure PROC with
  	no arguments to occur after about USEC microseconds have elapsed
@@ -3880,7 +3884,7 @@ Mon Mar 30 01:41:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	remove-timer-hook! HANDLE - remove the specified timer hook from
  	the hook list, preventing it from being invoked if it hasn't been
  	already.
-	
+
 Sun Mar 29 18:10:45 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* shutdown.c, shutdown.h: Files with shutdown handling for scwm,
@@ -3893,7 +3897,7 @@ Sun Mar 29 18:10:45 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	reimplemented above.
 
 	Makefile.in: compile shutdown.c, generate shutdown.x.
-	
+
 	* add_window.c: Remove a bit more dead code from AddWindow().
 
 	* binding.c, binding.h, scmprocs.c: Remove bind-event.
@@ -3901,7 +3905,7 @@ Sun Mar 29 18:10:45 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	* add_window.c, add_window.h: Use new-style hook support for new
  	window hooks; add-hook! should now be used with the
  	before-new-window-hook and after-new-window-hook hooks.
- 	
+
 	scwm.c: call init_add_window.
 
 Sun Mar 29 14:38:25 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -3940,19 +3944,19 @@ Sun Mar 29 13:38:24 1998  Greg Badros  <gjb@cs.washington.edu>
 Sun Mar 29 11:01:49 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* borders.c: use SHOW_TITLE_P, instead of just checking fTitle --
-	this handles decorate transients better, as they might have fTitle 
+	this handles decorate transients better, as they might have fTitle
 	set, but fDecorateTransient not set and be a transient window;
 	Also changed SetupFrame(..) a bit to make it more clear what is
 	happening (replaced uses of title_height by new variable
 	button_width when they conceptually were the decoration button
 	width [which we choose to be the title_height so the buttons are
-	square]) 
+	square])
 
 	* decorations.c: Use SHOW_TITLE_P, see above note.
 
 	* misc.c, misc.h: Added FXWindowAccessible(..) to abstract the oft-used
 	XGetGeometry calls used only for their error return value;
-	presumably this is just checking whether the window exists and can 
+	presumably this is just checking whether the window exists and can
 	be accessed.
 
 	* miscprocs.c: Comment the RESOLUTION macro
@@ -3962,7 +3966,7 @@ Sun Mar 29 11:01:49 1998  Greg Badros  <gjb@cs.washington.edu>
 	whether a title should be visible
 
 	* scwm.c: Clean up some of the startup code -- moved the XSync in
-	CaptureAllWindows into just the recapture case -- the main startup 
+	CaptureAllWindows into just the recapture case -- the main startup
 	code does an XSync anyway.  Added some commented out
 	XDeleteProperty-s;  not sure if these are necessary, but my gut
 	feeling was that we want to return the Server to a cleaner state.
@@ -3972,7 +3976,7 @@ Sun Mar 29 11:01:49 1998  Greg Badros  <gjb@cs.washington.edu>
  	send a XK_Right to also automatically move the pointer into the
  	newly popped menu item (this doesn't work yet -- I probably need
  	to fill in more fields of the XKeyEvent struct.)
-	
+
 	* binding.c: Use 's' for super modifier, not 'P'
 
 	* add_window.c (AddWindow): Clean up a lot -- always create the
@@ -3991,7 +3995,7 @@ Fri Mar 27 12:26:18 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	procedures to be invoked on certain actions, possibly with
  	arguments. Guile's usual add-hook! macro can be used. So far only
  	used for errors, but will be used throughout soon. For some fun
- 	try, with flux.scm loaded: 
+ 	try, with flux.scm loaded:
 
 	(define (message-show-error . args)
 	  (message (with-output-to-string
@@ -4003,13 +4007,13 @@ Fri Mar 27 12:26:18 1998  Maciej Stachowiak  <mstachow@mit.edu>
 		       (newline)))))
 
 	(add-hook! error-hook message-show-error)
- 	
+
 	* events.c: Include callacks.h.
 
 Thu Mar 26 19:04:00 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* add_window.c: Added some comments and debug code
-	
+
 	* scwm.c, binding.h, binding.c: Patch from Robert Bihlmeyer
  	<robbe@orcus.priv.at> to make the modifier keys more ICCCM
  	compliant;  he wrote:
@@ -4035,10 +4039,10 @@ Thu Mar 26 19:04:00 1998  Greg Badros  <gjb@cs.washington.edu>
 	incorrectly set to True which was causing X errors when transient
 	windows popped up since their title window was given an illegal
 	height of 0
-	
+
 	* window.c (CopySetCommonFlags): Added this function; simulates
 	or-ing in the old bit mask of just the "common" flags
-	
+
 	* window.h: Added proto for CopySetCommonFlags(..)
 
 Thu Mar 26 18:15:59 1998  Maciej Stachowiak  <mstachow@mit.edu>
@@ -4053,14 +4057,14 @@ Thu Mar 26 13:59:14 1998  Greg Badros  <gjb@cs.washington.edu>
 	* misc.h: Removed a bunch of unused #define of FLAG variables from
 	window bit field rewrite
 
-	* window.c: Return SCM_UNSPECIFIED instead of SCM_BOOL_T from lots 
+	* window.c: Return SCM_UNSPECIFIED instead of SCM_BOOL_T from lots
 	of primitives.
-	
+
 Thu Mar 26 07:41:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c, window.h, scmprocs.c: Added window-frame-id procedure,
  	needed by the fvwm module stuff and perhaps generally useful.
-	
+
 	* scwm.c, events.c, module-interface.c, image.c: Replace
  	gh_eval_str, load, gh_apply and gh_call1 with new safe
  	versions. Calls to call_thunk_with_message_handler not replaced
@@ -4075,7 +4079,7 @@ Thu Mar 26 07:41:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	will be used throughout soon.
 
 	Makefile.in: compile callbacks.c, build callbacks.x.
-	
+
 Wed Mar 25 22:42:42 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Massive rewrite of window flags;  converted from using bitmasks
@@ -4101,7 +4105,7 @@ Wed Mar 25 15:01:28 1998  Greg J. Badros  <gjb@cs.washington.edu>
 	* drawmenu.c: Set cpixSideImage to 0 when there is no side image
 
 	* color.c: Use SCM_FALSEP(scm_number_p(xxx)), not
-	!scm_number_p(xxx) since SCM_BOOL_F still evaluates to "true" as a 
+	!scm_number_p(xxx) since SCM_BOOL_F still evaluates to "true" as a
 	C expression.
 
 Tue Mar 24 15:57:47 1998  Greg Badros  <gjb@cs.washington.edu>
@@ -4132,10 +4136,10 @@ Tue Mar 24 11:05:27 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	Call the PaintDynamicMenu and PaintMenuItem routines through
 	function pointer variables that ConstructDynamicMenu initializes.
-	 
+
 	Also, don't complain about a bad menu item if the menu item is #f
 	(we use #f to eliminate menu items from a menu when the program
-	doesn't exist -- this may be done more cleanly in scheme, perhaps, 
+	doesn't exist -- this may be done more cleanly in scheme, perhaps,
 	but #f can still be a special case not warranting a warning
 	message).
 
@@ -4146,12 +4150,12 @@ Tue Mar 24 11:05:27 1998  Greg Badros  <gjb@cs.washington.edu>
 	ConstructDynamicMenu(..) since it is the only loaded primitive
 	directly referenced by name.
 
-	* drawmenu.c (ConstructDynamicMenu): Rearrange so this function is 
-	at the end of the file, and is the only exported function required 
+	* drawmenu.c (ConstructDynamicMenu): Rearrange so this function is
+	at the end of the file, and is the only exported function required
 	(it sets struct member variables to point to the other functions
 	in the interface). Move menu_font_update into font.c, from here.
 
-	* Makefile.in: Rudimentary changes for building shared objects for 
+	* Makefile.in: Rudimentary changes for building shared objects for
 	loadable primitives (in the context of menu drawing primitives);
 	The options are currently hard set for Linux and gcc, as I'm not
 	sure how to do this on other platforms
@@ -4185,7 +4189,7 @@ Sat Mar 21 20:46:35 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menuitem.h (MENUITEM_P): Test SCM_NIMP(X) first to avoid core dump.
 
-	* scwmmenu.c (NewPchKeysUsed): Just ignore menuitem-s that are #f, 
+	* scwmmenu.c (NewPchKeysUsed): Just ignore menuitem-s that are #f,
 	instead of core dumping.
 
 Sat Mar 21 16:50:57 1998  Greg J. Badros  <gjb@cs.washington.edu>
@@ -4213,7 +4217,7 @@ Sat Mar 21 16:50:57 1998  Greg J. Badros  <gjb@cs.washington.edu>
  	completely to the left of the current menu).
 
 	* drawmenu.c (ConstructDynamicMenu): Save the size of the side
- 	image in the MenuDrawingInfo struct. 
+ 	image in the MenuDrawingInfo struct.
 
 Fri Mar 20 21:05:39 1998  Greg Badros  <gjb@cs.washington.edu>
 
@@ -4246,14 +4250,14 @@ Fri Mar 20 00:33:33 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	make-relief-color COLOR FACTOR - factor is a floating point number
  	that is multiplied by the color's saturation and luminosity in HLS
- 	sppace. This is used with specific factors to 
-	
+ 	sppace. This is used with specific factors to
+
 	set-hilight-foreground! COLOR, set-hilight-background! COLOR -
  	these replace set-hilight-colors! FG BG
 
 	set-menu-foreground! COLOR, set-menu-background! COLOR,
  	set-menu-stipple! COLOR - replace set-menu-colors!
-	
+
 	set-hilight-factor! FLOAT - sets the factor that is used by
  	windows with the current decor to generate the relief "hilight"
  	color for the regular and hilight background.
@@ -4268,13 +4272,13 @@ Fri Mar 20 00:33:33 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	set-menu-hilihght-factor! FLOAT, set-menu-shadow-factor! FLOAT,
  	menu-hilight-factor, menu-shadow-factor - analogous to the above
  	but for menus, and are global, not decor-specific.
-	
+
 	All procedures that take a color (except color-properties) will also
  	accept a string that specifies a color.
-	
+
 	window.c: set-window-colors! split into set-window-foreground! and
  	set-window-background!, and converted to use new color system.
-	
+
 	add_window.c, borders.c, decor.c, events.c, face.c, icons.c,
  	module-interface.c, module-interface.h, scmprocs.c, scmptypes.c,
  	screen.h, scwm.c, scwmmenu.c, window.c, window.h: converted to new
@@ -4283,7 +4287,7 @@ Fri Mar 20 00:33:33 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	colors.c: Removed GetHilite and GetShadow.
 
 	Makefile.in: generate color.x
-	
+
 Sat Mar 14 01:04:14 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.h: Remove or comment out some unused fields of the window
@@ -4319,12 +4323,12 @@ Wed Mar 11 13:54:02 1998  Greg Badros  <gjb@cs.washington.edu>
 	* move.c (AnimatedMoveWindow): now handle expose events as we
 	animatedly move windows, too (I like the affect from below *that*
 	much!)
-	
+
 	* window.c (window_shade): Instead of keeping only expose events
-	after doing the window shade, throw out the Resize events; this is 
+	after doing the window shade, throw out the Resize events; this is
 	more precisely the goal, and removes an XSync() call as a result.
-	
-	* move.c (AnimatedShadeWindow): handle expose events as we roll up 
+
+	* move.c (AnimatedShadeWindow): handle expose events as we roll up
 	the window shade;  much nicer effect in that previously hidden
 	windows get redrawn while the shade is still rolling up.
 
@@ -4340,9 +4344,9 @@ Tue Mar 10 22:10:54 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (window_shade): Fixed bugs w.r.t. not redrawing the
 	decorations that get exposed due to an animated window shade (was
-	throwing out all events using XSync to avoid processing a resize), 
-	and regain proper focus after the window shade;  still did not fix 
-	the bug w.r.t. scwm improperly not disallowing resizes on shaded 
+	throwing out all events using XSync to avoid processing a resize),
+	and regain proper focus after the window shade;  still did not fix
+	the bug w.r.t. scwm improperly not disallowing resizes on shaded
 	windows.
 
 	* events.c (HandleScwmExec): Fixed warning re: 12 arg's type in
@@ -4378,7 +4382,7 @@ Mon Mar  9 23:31:59 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* face.c (add_spec_to_face_x): Use warnings instead of
 	scm_wrong_type_arg when we can't find an image file
-	
+
 
 Mon Mar  9 22:50:16 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
@@ -4433,7 +4437,7 @@ Sat Feb 28 00:57:52 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	scwm.c: call init_module_interface
 
 	Makefile.in: build module-interface.x
-	
+
 	* events.c: Fixed bug in HandleScwmExec that was causing random
  	crashes - strings should be sent with format 8, not 32, in
  	XGetWindowProperty.
@@ -4451,7 +4455,7 @@ Fri Feb 27 18:02:24 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	should be. ICElib turned out to be to complicated to be useful, so
  	the new solution still uses properties, but in a somewhat saner
  	way.
- 
+
 	scwm.c, scwm.h: declare and intern atoms for the scwmexec
  	protocol.
 
@@ -4484,11 +4488,11 @@ Wed Feb 25 16:55:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	to explictly clear entries in the font cache (shouldn't be needed,
  	but you never know). font.c also now uses the SCM_PROC macros and
  	such. Also, load-font was renamed make-font for consistency.
-	
+
 	* borders.c, decor.c, drawmenu.c, drawmenu.h, icons.c, icons.h,
  	miscprocs.c, move.c, resize.c, scmprocs.c, scmtypes.c, screen.h,
  	scwm.c, scwmmenu.c: modified for the new font interface.
-	
+
 	* Makefile.in: build font.x
 
 	* scwm.c: Added scwm_gh_launch_pad and scwm_gh_enter to guarantee
@@ -4503,7 +4507,7 @@ Fri Feb 20 03:22:23 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	Icon geometry has been broken for quite some time, it should be
  	better now.
 
-	The icon settings are now in four procedures: 
+	The icon settings are now in four procedures:
 
 	set-icon! - sets the requested icon image; if #f, no picture is
  	shown, just the icon title. However, unless force-icon is set, the
@@ -4517,7 +4521,7 @@ Fri Feb 20 03:22:23 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	set-icon-title! - #t or #f will specify wether the icon title is
  	or is not shown respectively.
-	
+
 	set-show-icon! - just determines wether or not the whole icon is
  	shown at all, without affecting any other settings (so setting it
  	to #f and then back to #t will restore all the original icons).
@@ -4526,18 +4530,18 @@ Fri Feb 20 03:22:23 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	to broadcast hooks.
 
 	* image.c, image.h: Syndry improvements:
-	
+
 	Reorganized image loading - loaders can now be specified by a
  	suffix with more than one dot in it (so ".xpm.gz" works, for
  	instance) and the code is more modular overall.
-	
+
 	Improved cache handling - images are cached by both the requested
  	name and the full path; cache entries may be explicitly cleared
  	with the new clear-image-cache-entry.
-	
+
 	image-properties changed to return an association list - this is
  	more robust against changes in the set of properties returned.
-	
+
 	The new "foreign" field allows pixmaps from outside sources (app
  	icons and the like) to correctly not be freed when the image
  	object is,
@@ -4557,7 +4561,7 @@ Tue Jan 27 18:16:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
  	procedure add-input-hook and associated support code in the event
  	loop - basically this allows the user to provide an fd to select()
  	on and a thunk to call if input becomes available on the fd. This
- 	should be useful for the preliminary fvwm module interface.	
+ 	should be useful for the preliminary fvwm module interface.
 
 Tue Dec 16 15:38:02 1997  Greg Badros  <gjb@cs.washington.edu>
 
@@ -4571,12 +4575,12 @@ Tue Dec 16 15:38:02 1997  Greg Badros  <gjb@cs.washington.edu>
 	number
 
 	* add_window.c: remove CLICK_TO_RAISE compile time option ifndefs
-	
+
 
 Tue Dec 16 14:41:16 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* Replace TRUE with True, and FALSE with False
-	
+
 	* scwm.h: Moved ScwmWindow into window.h, moved ColorPair and
 	MyFont (renamed to FontWithInfo) into screen.h, other cleanup to
 	make smaller since this is included virtually everywhere, move
@@ -4602,7 +4606,7 @@ Fri Dec 12 16:18:48 1997  Greg Badros  <gjb@cs.washington.edu>
 	* Rename COLORP to COLOR_P, and FONTP to FONT_P for consistency
 	and readability
 
-	* util.c (call_thunk_with_message_handler): use DEREF_IF_SYMBOL to 
+	* util.c (call_thunk_with_message_handler): use DEREF_IF_SYMBOL to
 	permit 'iconify, e.g.
 
 	* scwmmenu.h: Added DYNAMIC_MENU_P, DYNAMIC_SAFE_MENU,
@@ -4613,7 +4617,7 @@ Fri Dec 12 16:18:48 1997  Greg Badros  <gjb@cs.washington.edu>
 	* scwmmenu.c: Fixed some memory leaks from not freeing pmdi,
 	rgpmiim, etc. when popping down menus -- wrote FreeDynamicMenu to
 	do this (if only this were C++!); use SCM_PROC for other
-	primitives in here; permit symbols for fonts, colors, and actions, 
+	primitives in here; permit symbols for fonts, colors, and actions,
 	and deref them as needed using the new macros; hide some debug
 	code in DBUG.
 
@@ -4637,7 +4641,7 @@ Fri Dec 12 16:18:48 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* drawmenu.c: Rewrite DrawUnderline, add PxfsFontForMenuItem, use
 	DYNAMIC_SAFE_FONT, DYNAMIC_SAFE_COLOR in fixing up the gc;  these
-	changes fix the sizing bug (it was using the size of characters in 
+	changes fix the sizing bug (it was using the size of characters in
 	fixed font, but then drawing using the selected proportional font)
 
 	* color.h: Added COLOR_OR_SYMBOL_P, DYNAMIC_COLOR_P,
@@ -4678,7 +4682,7 @@ Thu Dec  4 18:49:23 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	since cascade popups are now the action object, not the
 	hover_action object
 
-	
+
 
 Sun Nov 30 13:23:00 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
@@ -4687,13 +4691,13 @@ Sun Nov 30 13:23:00 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	* scwm.h: added enum wm_client_functions to replace the few parts
  	of parse.h that were used by check_allowed_function and
  	decorations stuff
-	
+
 	* decorations.c, window.c: renamed check_allowed_function2 to
  	check_allowed_function, since check_allowed_function no longer
  	exists
-	
+
 	* scwm.c: Renamed s_XXXX to szXXXX since they might as well be
- 	consistent hungarian tags if they're going to be tag-like 
+ 	consistent hungarian tags if they're going to be tag-like
 
 Sun Nov 30 12:25:17 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
@@ -4709,14 +4713,14 @@ Sun Nov 30 12:25:17 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	* drawmenu.c: Tweak some drawing constants a bit, add real
  	separators, make DrawSeparator only take 1 y-coord since it's for
  	horizontal lines
-	
+
 	* image.c: Output images as #<image [name] from [path]>, fix GC
  	code changes from bugs I introduced when I didn't understand the
  	GC idioms.
-	
+
 	* screen.h, misc.h: Moved the cursor types from screen.h into
  	here.
-	
+
 	* screen.h: Removed the name_list * "TheList" since this wasn't
  	used any more
 
@@ -4724,7 +4728,7 @@ Sun Nov 30 12:25:17 1997  Greg J. Badros  <gjb@cs.washington.edu>
  	make-scwm-menu to make-menu, remove set-image-path!
 
 	* scwm.h: Fixed precedence problem in UNSET_SCM macro
-	
+
 	* scwmmenu.c: Handle elements in the scmMenuItems list that are
  	not menuitem-s better.  Add menu_init_gcs(), call it from scwm.c
 
@@ -4785,7 +4789,7 @@ Fri Nov 28 23:32:18 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	use images, not pictures. Added menuitem-properties primitive,
 	added init_menuitem, use guile-snarf. Added chShortcut,
 	ichShortcutOffset, imiim, pmd to MenuItemInMenu objects.  Added
-	SAFE_SCWM_MENUITEM caster 
+	SAFE_SCWM_MENUITEM caster
 
 	* smprocs.c: update set-image-path!, make-menu-item
 
@@ -4854,7 +4858,7 @@ Thu Nov 27 23:37:33 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c: added window-from-window-id function (needed for
 	autoraise, broadcast stuff)
-	
+
 
 Wed Nov 26 11:07:51 1997  Greg Badros  <gjb@cs.washington.edu>
 
@@ -4962,7 +4966,7 @@ Sun Nov 23 17:08:02 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwmmenu.c: Don't trust drawing code to set correct event mask--
 	do it here instead
-		
+
 
 Sun Nov 23 01:42:37 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
@@ -4975,12 +4979,12 @@ Sun Nov 23 01:42:37 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	* scwmmenu.h:  Added MenuDrawingInfo struct for caching
 	information that the drawing code might use.  Changes to the
 	DynamicMenu structu
-	
+
 	* scmprocs.c: added popup-menu function, for the new scwm menu
 	code
 
 	* scwm.c: call the new init_scwm_menu() [does nothing now]
-	
+
 	* menu-test.scm: Added for testing new menu code
 
 	* colormaps.h: Added, for colormaps.c protos;  use where needed
@@ -5052,7 +5056,7 @@ Wed Nov 12 15:41:28 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c: Fixed the remaining problems with DeferExecution - the
  	event it reads needs to be copied to the global event struct
- 	before calling DispatchEvent(). 
+ 	before calling DispatchEvent().
 
 	* scwm.c: Use getopt_long when available for argument parsing,
  	otherwise accept both long and short options by
@@ -5093,7 +5097,7 @@ Tue Nov 11 22:14:02 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c: fixed bug introduced by cut and paste in last update;
 	last fix still does not work for me.
-	
+
 	* Updated all includes for the above
 
 Tue Nov 11 18:17:15 1997  Maciej Stachowiak  <mstachow@mit.edu>
@@ -5131,12 +5135,12 @@ Mon Nov 10 10:06:59 1997  Greg Badros  <gjb@cs.washington.edu>
 
 Mon Nov 10 05:17:36 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
-	* decor.c, face.c, Picture.c, system.c, ICCCM.c, Grab.c, 
+	* decor.c, face.c, Picture.c, system.c, ICCCM.c, Grab.c,
 	string_token.c: Added copyright notices.
 
 	* errors.c, errors.h, window.c: Signal an error when the image
  	can't be loaded in set-icon!
-	
+
 	* scmprocs.c: Renamed make-picture to make-image and
  	set-picture-path! to set-image-path! (externally only for now,
  	will change all references in C code soon).
@@ -5152,7 +5156,7 @@ Mon Nov 10 00:13:29 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	though).
 
 	* move.h: Added this -- protos from move.c, removed from misc.h
-	
+
 	* window.c: give {un-,}window-shade another optional argument -- a
 	boolean saying whether we want the (un-)window-shade-ing to be done
 	animatedly
@@ -5161,7 +5165,7 @@ Mon Nov 10 00:13:29 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	automatically removing the #ifdef-s
 
 	* events.c: removed unused macros MAX_NAME_LEN, MAX_ICON_NAME_LEN
-		
+
 Sun Nov  9 14:11:47 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* Picture.c, window.c: Handle memory management of strings passed
@@ -5181,7 +5185,7 @@ Sun Nov  9 07:15:45 1997  Maciej Stachowiak  <mstachow@mit.edu>
 	* window.c: Make set-icon! and set-mini-icon! able to take strings
  	as well as pictures to be consistent with the handling of colors
  	and fonts by other functions.
-	
+
 Sun Nov  9 07:15:45 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* face.c: Restore the calls to redraw_borders, since it is now
@@ -5209,7 +5213,7 @@ Sun Nov  9 00:00:15 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	* menus.c: make LEFT_MENUS be the single version, remove those
 	conditionals (fvwm2 menuing code was really broken w/o this
 	option); also removed FindPopup() function
-	
+
 	* removed #include "module.h" from all files; remove module.h
 
 	* removed #include "parse.h" from lots of files; still not
@@ -5260,7 +5264,7 @@ Sat Nov  8 20:18:26 1997  Greg J. Badros  <gjb@cs.washington.edu>
 Sat Nov  8 14:54:59 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc.[ch]: Lots of cleanup
-	
+
 	* builtins.c: removed from the build
 
 	* Started pixmap/picture re-implementation
@@ -5297,7 +5301,7 @@ Wed Nov  5 09:24:21 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c: Added a check that an object passed to a window
  	operation is non-immediate (using the SCM_NIMP macro) before
- 	checking if it is a window (using WINDOWP). 
+ 	checking if it is a window (using WINDOWP).
 
 Tue Nov  4 11:57:37 1997  Greg Badros  <gjb@cs.washington.edu>
 
@@ -5319,7 +5323,7 @@ Tue Nov  4 13:45:31 1997  Maciej Stachowiak  <mstachow@mit.edu>
  	all windows associated with a decor. However, it doesn't work
  	right now, as SetBorderX appears to be buggy. Added prototype for
  	redraw_borders.
-	
+
 Mon Nov  3 11:20:17 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Further changes that should bring things really close to user
@@ -5329,7 +5333,7 @@ Mon Nov  3 11:20:17 1997  Maciej Stachowiak  <mstachow@mit.edu>
 	scwm.c: Changes to initialization of the default decor, and
  	decor initialization in general to support the creation of the
  	initial button, border and title faces as Scheme objects
- 	
+
 	face.c, face.h: Added creation of the default button, title and
  	border faces as Scheme bjects in the variables
  	default_titlebar_face, default_rbuton_face[],
@@ -5354,7 +5358,7 @@ Sun Nov  2 00:20:29 1997  Maciej Stachowiak  <mstachow@mit.edu>
  	feasible.
 
 	* Makefile.in: Added face.c to the build process.
-	
+
 	* scmprocs.c, scmtypes.c, scwm.c, screen.h: Uodated appropriately
  	for face-related procedures, types, initialization, and data
 
@@ -5363,7 +5367,7 @@ Sun Nov  2 00:20:29 1997  Maciej Stachowiak  <mstachow@mit.edu>
  	behind fvwm's assorted style commands) can only be created (using
  	make-face) and print and garbage-collect properly. They cannot yet
  	be associated with buttons, titles or borders.
-	
+
 Sat Nov  1 04:44:44 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* events.c: Changed return values of send-button-press and
@@ -5418,7 +5422,7 @@ Sat Oct 25 21:42:36 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	* Rename sleep_a_little to sleep_ms(), and take ms, not microsecs
 
 	* Updated BUGS, TODO
-	
+
 
 Fri Oct 24 23:31:54 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
@@ -5443,7 +5447,7 @@ Fri Oct 24 23:31:54 1997  Greg J. Badros  <gjb@cs.washington.edu>
 	(INCLUDES): Ditto for "include/".
 
 	* deskpage.c (desk_size): Make result consistent with
-	`set-desk-size!'. 
+	`set-desk-size!'.
 
 Thu Oct 23 19:54:16 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
@@ -5491,13 +5495,13 @@ Sat Oct 18 00:04:40 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* window.c: Added another optional argument to get_window which
  	can be used to supress selecting a window.
-	
+
 	Added handling to the interactive-move procedure to start moves in
  	the right place.
-	
+
 	Changed show_titlebar and hide_titlebar to check the current state
  	of the titlebar before asking.
-	
+
 	Added set-lenience! procedure which sets the lenience flag.
 
 Fri Oct 17 19:30:20 1997  Maciej Stachowiak  <mstachow@mit.edu>
@@ -5512,13 +5516,13 @@ Fri Oct 17 19:30:20 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* windows.c: Commented the whole file; it is gone from the build
  	process.
-	
+
 	* style.c: Commented the whole file; it is gone from the build
  	process.
 
 	* resize.c: Comented out the move_window function, which is no
  	longer used.
-	
+
 	* move.c: Comented out the move_window function, which is no
  	longer used, and fixed InteractiveMove so that moves are started
  	where the motion begins, not where the mouse cursor is when a move
@@ -5565,13 +5569,13 @@ Fri Oct 17 19:30:20 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
         ComplexFunction,expand
 
-	
+
 	* builtins.c: Commented out a lot of no longer used code with
  	pairs of "#ifdef MS_DELETION_COMMENT" and "#endif /*
  	MS_DELETION_COMMENT */" for easy removal later. Also explicitly
  	undefined MS_DELETION_COMMENT at the top of the file just in
  	case. Functions and variables removed are:
-	
+
 	Maximize, WindowShade, Bell, add_item_to_menu, add_another_item,
  	destroy_menu, add_item_to_func, movecursor, iconify_function,
  	raise_function, lower_function, destroy_function, delete_function,
@@ -5702,7 +5706,7 @@ Fri Sep 19 00:34:05 1997  Maciej Stachowiak  <mstachow@mit.edu>
  	get-window-id, get-window-desk, get-window-title and
  	get-window-list procedures. It should now be possible to get more
  	useful info on windows at runtime, and also write "window list"
- 	type procedures in Scheme.	
+ 	type procedures in Scheme.
 
 Thu Sep 18 01:27:08 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
@@ -5723,7 +5727,7 @@ Thu Sep 18 01:27:08 1997  Maciej Stachowiak  <mstachow@mit.edu>
 	* paths.c: Added set-pixmap-path! and set-icon-path! functions.
 
 Wed Sep 17 09:44:56 1997  Maciej Stachowiak  <mstachow@mit.edu>
-	
+
 	* miscprocs.c: Added get-pointer-position, move-pointer-to,
 	recapture, restart and wait-for-window procedures.
-	
+
