@@ -45,9 +45,8 @@
 	l))
 
 
-(define*-public (filtered-window-list #&key (only '()) (except '()))
-	(filter-only-except (get-window-list) only except))
-
+(define*-public (list-windows #&key (only '()) (except '()))
+	(filter-only-except (list-all-windows) only except))
 
 
 (define*-public (show-window-list-menu #&key (only '()) (except '())
@@ -60,11 +59,11 @@
 		       (list 
 			(if show-geometry
 			    (string-append
-			     (get-window-title x) "\t"
-			     (get-geometry-string x))
-			    (get-window-title x))
+			     (window-title x) "\t"
+			     (window-geometry-string x))
+			    (window-title x))
 			(lambda () (proc x))))
-		     (filtered-window-list #:only only #:except except)))))
+		     (list-windows #:only only #:except except)))))
 
 
 (define (rotate-around w wl)
@@ -79,23 +78,20 @@
 
 
 (define*-public (next-window #&key (window (get-window))
-			     (only '()) (except '()) (proc id))
+			     (only '()) (except '()) (proc window-list-proc))
   (if window 
-      (let* ((wl (get-window-list))
+      (let* ((wl (list-all-windows))
 	     (rotwl (rotate-around window wl)))
 	(cond
 	 ((filter-only-except rotwl only except)
 	  => (lambda (x) (proc (car x))))))))
 
 (define*-public (prev-window #&key (window (get-window))
-			     (only '()) (except '()) (proc id))
+			     (only '()) (except '()) (proc window-list-proc))
   (if window 
-      (let* ((wl (get-window-list))
+      (let* ((wl (list-all-windows))
 	     (rotwl (reverse (rotate-around window wl))))
 	(cond
 	 ((filter-only-except rotwl only except)
 	  => (lambda (x) (proc (car x))))))))
-
-
-
 
