@@ -252,7 +252,7 @@
 
 ;;(set-click-delay! 150)
 ;;(set-color-map-focus! 'follows-mouse)
-;;(set-desktop-size! 3 3)
+;;(set-desk-size! 3 3)
 
 (set-edge-resistance! 500 10)
 ;;(set-edge-scroll! 0 (%y 100))  ;; Use no X scroll so x2x works
