@@ -277,7 +277,7 @@ static void saveYourself2(SmcConn conn, SmPointer ARG_UNUSED(client_data))
     successful = False;
   }
   SmcSaveYourselfDone(conn, successful);
-  FREE(savename);
+  FREEC(savename);
   SavePhase = 0;
 }
 #undef FUNC_NAME

@@ -846,7 +846,7 @@ See also `get-mouse-event' and `get-key-event'.")
     sprintf(szFull,"%sButton%d",sz,ev.xbutton.button);
     answer = gh_str02scm(szFull);
     FREE(sz);
-    FREE(szFull);
+    FREEC(szFull);
     return gh_list(answer,gh_int2scm(ev.xbutton.state),
                    gh_int2scm(ev.xbutton.button),SCM_BOOL_T,
                    SCM_UNDEFINED);
@@ -969,7 +969,7 @@ See also `get-next-event'.")
     sprintf(szFull,"%sButton%d",sz,ev.xbutton.button);
     answer = gh_str02scm(szFull);
     FREE(sz);
-    FREE(szFull);
+    FREEC(szFull);
     return gh_list(answer,gh_int2scm(ev.xbutton.state),
                    gh_int2scm(ev.xbutton.button),SCM_BOOL_T,
                    SCM_UNDEFINED);

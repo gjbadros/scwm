@@ -70,7 +70,6 @@ free_msgwindow(SCM obj)
 #endif
 
   FREE(msg);
-
   return 0;
 }
 

@@ -447,9 +447,9 @@ SCM
 path_expand_image_fname(SCM name, const char *func_name)
 #define FUNC_NAME func_name
 {
-  char *c_name, *c_fname;
+  char *c_name, *c_fname = NULL;
   int length;
-  SCM result;
+  SCM result = SCM_BOOL_F;
 
   VALIDATE_ARG_STR_NEWCOPY_LEN(1,name,c_name,length);
 
@@ -462,8 +462,7 @@ path_expand_image_fname(SCM name, const char *func_name)
     if (access(c_name, R_OK)==0) {
       c_fname = c_name;  /* alias the two names */
     } else {
-      FREE(c_name);
-      return SCM_BOOL_F;
+      goto DONE_PATH_EXPAND_FNAME;
     }
   } else {
     SCM p;
@@ -472,6 +471,7 @@ path_expand_image_fname(SCM name, const char *func_name)
     /* relative path */ 
     if (!gh_list_p(*pscm_image_load_path)) {
       /* Warning, image-load-path is not a list. */
+      goto DONE_PATH_EXPAND_FNAME;
       return SCM_BOOL_F;
     }
     
@@ -486,7 +486,7 @@ path_expand_image_fname(SCM name, const char *func_name)
       if (!gh_string_p(elt)) {
 	/* Warning, non-string in image-load-path */
 	scwm_msg(WARN,FUNC_NAME,"Non-string in image-load-path");
- 	return SCM_BOOL_F; /* Why bail? just skip it--gjb 11/28/97  */
+        goto DONE_PATH_EXPAND_FNAME;
 	/* Assuming path is list of strings simplifies code below. */
       } else {
 	int l=SCM_ROLENGTH(elt);
@@ -513,20 +513,19 @@ path_expand_image_fname(SCM name, const char *func_name)
     if (p==SCM_EOL) {
       /* warn that the file is not found. */
       scwm_msg(WARN,FUNC_NAME,"Image file was not found: `%s'",c_name);
-
       scwm_run_hook1(image_not_found_hook,gh_str02scm(c_name));
-      FREE(c_name);
-      FREEC(c_fname);
-      return SCM_BOOL_F;
+      goto DONE_PATH_EXPAND_FNAME;
     }
   }
 
   result = gh_str02scm(c_fname);
+ DONE_PATH_EXPAND_FNAME:
   /* c_fname and c_name may be aliased from assignment above --
      be sure to free only once */
-  if (c_fname != c_name)
-    FREE(c_fname);
-  FREE(c_name);
+  if (c_fname != c_name && c_fname)
+    FREEC(c_fname);
+  if (c_name)
+    gh_free(c_name);
   return result;
 }
 #undef FUNC_NAME

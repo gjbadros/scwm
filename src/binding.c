@@ -252,7 +252,7 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, const char *func
   pch = (char *) PchModifiersToModmask(keyname,pmodifier, func_name, allow_any_p);
 
   if (pch == 0 || *pmodifier < 0) {
-    FREE(keyname);
+    gh_free(keyname);
     return False;
   }
 
@@ -274,7 +274,7 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, const char *func
     }
     fOk = False; 
   }
-  FREE(keyname);
+  gh_free(keyname);
   return fOk;
 }
 #undef FUNC_NAME
@@ -325,6 +325,7 @@ SzNewForModMaskKeyCode(int modmask, KeyCode code)
       return szFull;
     } else {
       /* error looking up the keysym */
+      FREE(sz);
       return NULL;
     }
   }

@@ -1981,6 +1981,7 @@ and possibly other legacy fvwm2 modules).")
 
 
     XRestackWindows(dpy, windows, cnt);
+    FREEC(windows);
 
     KeepOnTop();
   }
@@ -2990,8 +2991,10 @@ the topmost window, the last is the bottommost")
   int cw = 0;
   int iw = 0;
 
-  if (!XQueryTree(dpy, Scr.Root, &JunkWindow, &JunkWindow, &rgw, &cw))
+  if (!XQueryTree(dpy, Scr.Root, &JunkWindow, &JunkWindow, &rgw, &cw)) {
+    /* failure */
     return SCM_BOOL_F;
+  }
 
   for (; iw < cw; ++iw) {
     ScwmWindow *psw = PswFromWindow(dpy,rgw[iw]);

@@ -742,10 +742,10 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 
       pixels = AllocNonlinearGradient(s_colors, perc, nsegs, npixels);
       for (i = 0; i <= nsegs; ++i) {
-	FREE(s_colors[i]);
+	gh_free(s_colors[i]);
       }
-      FREEC(perc);
       FREEC(s_colors);
+      FREEC(perc);
 
       if (!pixels) {
 	/* error: couldn't allocate gradient */
@@ -987,7 +987,6 @@ FreeButtonFace(Display * dpy, ButtonFace * bf)
   case HGradButton:
   case VGradButton:
     /* - should we check visual is not TrueColor before doing this? 
-
        XFreeColors(dpy, Scr.ScwmRoot.attr.colormap, 
        bf->u.grad.pixels, bf->u.grad.npixels,
        AllPlanes); */

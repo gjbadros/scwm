@@ -313,6 +313,8 @@ DispatchEvent()
   }
 #endif
   
+  /* See X.h for figuring out what will
+     run based on Event.type's value in debugger */
   if (EventHandlerJumpTable[Event.type])    
     (*EventHandlerJumpTable[Event.type]) ();
 
@@ -1291,6 +1293,7 @@ HandleUnmapNotify()
   XEvent dummy;
   extern ScwmWindow *colormap_win;
   Bool fWeMustUnmap = False;
+  Bool fUsePointerFocus = False;
   ScwmWindow *pswNewFocus = NULL;
 
   /*
@@ -1335,7 +1338,7 @@ HandleUnmapNotify()
     if (pswCurrent->fClickToFocus && pswCurrent->next) {
       pswNewFocus = pswCurrent->next;
     } else {
-      pswNewFocus = PswFromPointerLocation(dpy);
+      fUsePointerFocus = True;
     }
   }
 
@@ -1412,6 +1415,9 @@ HandleUnmapNotify()
 
   XFlush(dpy);
  HUN_return:
+  if (fUsePointerFocus)
+    pswNewFocus = PswFromPointerLocation(dpy);
+
   if (pswNewFocus) {
     HandleHardFocus(pswNewFocus);
   }
@@ -2145,12 +2151,14 @@ WindowGettingButtonEvent(Window w, int x, int y)
     Window d1, *d3, parent;
     unsigned int d4;
 	
-    XQueryTree(dpy, w, &d1, &parent, &d3, &d4);
-    if (d3) XFree(d3);
-    if (parent) {
-      w = parent;
-      goto find_listener;
-    }
+    if (XQueryTree(dpy, w, &d1, &parent, &d3, &d4)) {
+      /* success */
+      if (d3) XFree(d3);
+      if (parent) {
+        w = parent;
+        goto find_listener;
+      }
+    } 
   }
   return w;
 }

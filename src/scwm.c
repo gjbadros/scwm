@@ -1354,6 +1354,7 @@ CaptureAllWindows(void)
   XGrabServer_withSemaphore(dpy);
 
   if (!XQueryTree(dpy, Scr.Root, &root, &parent, &children, &nchildren)) {
+    /* failure */
     XUngrabServer_withSemaphore(dpy);
     return;
   }
@@ -1432,8 +1433,7 @@ CaptureAllWindows(void)
 
   isIconicState = DontCareState;
 
-  if (nchildren > 0)
-    XFree(children);
+  if (children) XFree(children);
 
   /* after the windows already on the screen are in place,
    * don't use PPosition */

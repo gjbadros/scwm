@@ -80,7 +80,7 @@ xgetcwd(char *buffer, int size)
     if (value)
       return buffer;
     size *= 2;
-    FREE(buffer);
+    FREEC(buffer);
     buffer = NEWC(size, char);
   }
 }

@@ -127,6 +127,7 @@ value.")
   void *val;
   Atom aprop, atype;
   Window w;
+  Bool fGotString = False;
 
   VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY(1,win,w);
   VALIDATE_ARG_ATOM_OR_STRING_COPY(2,name,aprop);
@@ -143,7 +144,7 @@ value.")
     SCWM_WRONG_TYPE_ARG(5, format);
   }
   if (fmt == 8 && gh_string_p(value)) {
-    /* GJB:FIXME:: Use gh_free on val when this is initializer */
+    fGotString = True;
     val = gh_scm2newstr(value, &len);
   } else if (gh_vector_p(value)) {
     int i;
@@ -162,8 +163,8 @@ value.")
     default:
       assert(0);		/* we checked this above */
     }
-    len=gh_vector_length(value);
-    v=val= (len == 0 ? NULL : safemalloc(len*fmt/8));
+    len = gh_vector_length(value);
+    v = val = (len == 0 ? NULL : safemalloc(len*fmt/8));
     for (i=0; i<len; i++) {
       SCM el=gh_vector_ref(value, gh_int2scm(i));
       if (!gh_number_p(el) || !setter(&v, gh_scm2long(el))) {
@@ -180,7 +181,9 @@ value.")
   } else if (gh_number_p(type)) {
     atype = gh_scm2long(type);
   } else {
-    FREE(val);
+    /* overly cautious below; both gh_free and FREE just do free() now --01/22/00 gjb */
+    if (fGotString) gh_free(val);
+    else FREE(val);
     SCWM_WRONG_TYPE_ARG(4, type);
   }
   if (action == SCM_UNDEFINED || action == sym_replace) {
@@ -190,16 +193,22 @@ value.")
   } else if (action == sym_append) {
     mode=PropModeAppend;
   } else {
-    FREE(val);
+  /* overly cautious below; both gh_free and FREE just do free() now --01/22/00 gjb */
+    if (fGotString) gh_free(val);
+    else FREE(val);
     scwm_error(FUNC_NAME, "ACTION must be one of 'replace, 'prepend, or "
 	       "'append");
+    /* NOTREACHED */
     return SCM_UNSPECIFIED;
   }
 
   /* Should this check return code? My man page is silent about possible
      return values. */
   XChangeProperty(dpy, w, aprop, atype, fmt, mode, val, len);
-  FREE(val);
+  
+  /* overly cautious below; both gh_free and FREE just do free() now --01/22/00 gjb */
+  if (fGotString) gh_free(val);
+  else FREE(val);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

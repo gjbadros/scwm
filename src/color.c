@@ -255,7 +255,7 @@ allocated, an error results.")
   answer = ScmMakeColor(cn,&error_status);
   switch (error_status) {
   case 1:
-    FREE(cn);
+    gh_free(cn);
     scm_misc_error(FUNC_NAME,"Cannot parse color!",SCM_EOL);
     break;
   case 2:

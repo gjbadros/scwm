@@ -85,6 +85,7 @@ WXGetWindowParent(Window wChild)
   Window *children;
   if (XQueryTree(dpy,wChild,&JunkRoot,&parent,&children, &nchildren)) {
     /* success */
+    if (children) XFree(children);
     return parent;
   } else {
     return None;
