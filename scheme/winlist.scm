@@ -125,15 +125,19 @@
   (let ((window (if window window last-circulated)))
     (if window
       (let* ((wl (list-all-windows))
-	     (rotwl ((if backwards? reverse id)
-		    (rotate-around window wl))))
+	     (rotwl (append ((if backwards? reverse id)
+			     (rotate-around window wl))))
+	     (list window))
 	(cond
 	 ((filter-only-except rotwl only (cons
 					  should-circulate-skip? 
 					  (listify-if-atom except)))
-	  => (lambda (x) (set! last-circulated (car x))
-		     (proc (car x))))))))
-)
+	  => (lambda (x) 
+	       (cond
+		((pair? x)
+		 (set! last-circulated (car x))
+		 (proc (car x)))))))))))
+
 
 (define*-public (next-window #&key (window (get-window #f #f))
 			     (only '()) (except '()) (proc window-list-proc))
