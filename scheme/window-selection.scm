@@ -39,7 +39,7 @@ See also `select-window-add-selection' and `selected-windows-list'."
 
 (define-public (selected-windows-list)
   "Returns the list of windows selected by `select-window-interactively-and-highlight'."
-  selected-windows)
+  (filter-map (lambda (w) (if (window-valid? w) w #f)) selected-windows))
 
 ;;(define w (select-window-interactively))
 ;;(filter (lambda (x) (not (eq? w x ))) selected-windows)
