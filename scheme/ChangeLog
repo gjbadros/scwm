@@ -1,3 +1,21 @@
+Sun Aug  2 16:31:41 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Added lower-window-below, raise-window-above as
+	  front-ends to restack-windows.
+
+	* wininfo.scm: added MSFIX: re: wildcard converter.  Added
+	  window-machine-name (ideally this could get exposed to an
+	  improved wildcard-matcher that distinguishes among Class,
+	  Resource, Title, Icon-name, Window-machine-name, etc).
+
+	* flux.scm: Added printable-char->keysym-string and use it to make 
+	  X-synthetic-send-string work with embedded spaces, newlines,
+	  etc.  It's a very primitive keyboard macro facility, now.  Added 
+	  color->string as an accessor to the name property of a color
+	  color->object.
+
+	* doc.scm: Need to use (app scwm flux) for write-all
+
 1998-08-01  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
 
 	* fvwm-module.scm (send-mini-icon-packet): Use cdr-assq, not assq
