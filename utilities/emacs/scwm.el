@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-22 Wed 14:24:51 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-22 Wed 14:52:49 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -274,11 +274,11 @@ Returns a string."
 				  (if (bobp) () (backward-char 1))
 				  (thing-at-point 'symbol)) "")))))
   (with-output-to-temp-buffer "*Apropos*"
-    (with-current-buffer "*Help*"
+    (with-current-buffer "*Apropos*"
       (princ "SCWM apropos `") (princ pat) (princ "'")
       (put-text-property 1 (point) 'face 'highlight) (princ ":\n\n")
       (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
-      (apropos-mode))))
+      (apropos-mode) (setq truncate-lines t))))
 
 ;; info interface
 (defvar scwm-info-file-list
