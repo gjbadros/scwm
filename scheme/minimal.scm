@@ -111,6 +111,10 @@ order in which they appear in HOOK-LIST"
   (let ((entry (assoc module *scwm-modules*))) 
     (and entry (null? (cdr entry)))))
 
+;;; GJB:FIXME:G1.4:  This might work in guile-1.4
+;;  (environment-bound? module-environment name))
+
+
 (define (use-scwm-module-note-success module)
   (let ((entry (assoc module *scwm-modules*)))
     (if (not entry)
