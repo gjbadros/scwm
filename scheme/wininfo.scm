@@ -27,13 +27,13 @@
 
 
 (define*-public (on-desk? n #&optional (w (get-window)))
-  (if w (= n (get-window-desk w))))
+  (if w (= n (window-desk w))))
 
 (define*-public ((on-desk-n? n) #&optional (w (get-window)))
   (on-desk? n w))
 
 (define*-public (on-current-desk? #&optional (w (get-window)))
-  (on-desk? (get-current-desk) w))
+  (on-desk? (current-desk) w))
 
 (define (rectangle-overlap? x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
   (let ((x1-2 (+ x1-1 w1))
@@ -49,19 +49,19 @@
 (define*-public (in-viewport-any-desk? #&optional (w (get-window)))
   (if w (apply rectangle-overlap? 
 	       (append
-		(get-window-position w)
-		(get-window-size w)
-		(get-viewport-position)
-		(get-display-size)))))
+		(window-position w)
+		(window-size w)
+		(viewport-position)
+		(display-size)))))
 
 (define*-public (visible? #&optional (w (get-window)))
   (if w (and (on-current-desk? w)
 	     (in-viewport-any-desk? w))))
 
-(define-public (get-geometry-string w)
+(define-public (geometry-string w)
   (let ((i (iconified? w))
-	(pos (get-window-position w))
-	(size (get-window-size w)))
+	(pos (window-position w))
+	(size (window-size w)))
     (string-append (if i "(" "")
 		   "+" (number->string (car pos)) 
 		   "+" (number->string (cadr pos))
