@@ -73,7 +73,7 @@
 	       (animated-move-to 0 #f)
 	       (set-window-gravity! 'west)))
 
-;; Center -- just set gravity
+;; Center
 (define*-public (animated-move-to-center #&optional (win (get-window)))
   "Move WIN to the center of the viewport and update its gravity."
   (interactive)

@@ -1,3 +1,7 @@
+Mon Apr  8 23:15:45 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* animated-edge-moves.scm: Removed incorrect comment.
+
 Mon Apr  8 22:50:13 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* stylist.scm: Removed styling of #:start-iconfied option because
