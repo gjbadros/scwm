@@ -29,7 +29,7 @@
 
 #include <guile/gh.h>
 #include <libguile.h>
-
+#include <libguile/fluids.h>
 #include "callbacks.h"
 
 #include "scwm.h"
@@ -71,15 +71,25 @@ scwm_handle_error (void *ARG_IGNORE(data), SCM tag, SCM throw_args)
      now?  */
   if (scm_ilength (throw_args) >= 3)
     {
-      SCM stack = DEREF_LAST_STACK;
-      SCM subr = gh_car (throw_args);
-      SCM message = SCM_CADR (throw_args);
-      SCM args = SCM_CADDR (throw_args);
-
-      scm_newline(port);
-      scm_display_backtrace (stack, port, SCM_UNDEFINED, SCM_UNDEFINED);
-      scm_newline(port);
-      scm_display_error (stack, port, subr, message, args, SCM_EOL);
+      SCM fl = gh_cdr(scm_the_last_stack_fluid);
+      /* GJB:FIXME:MS: This is a horrible hack,
+         but DEREF_LAST_STACK macro was throwing a wrong type 
+         argument at weird times, and I'm trying to avoid
+         a crash when I demo to RMS tomorrow, hence this
+         ugly hack --04/27/99 gjb */
+      if (SCM_NIMP (fl) && SCM_FLUIDP (fl)) {
+        SCM stack = DEREF_LAST_STACK;
+        SCM subr = gh_car (throw_args);
+        SCM message = SCM_CADR (throw_args);
+        SCM args = SCM_CADDR (throw_args);
+        
+        scm_newline(port);
+        scm_display_backtrace (stack, port, SCM_UNDEFINED, SCM_UNDEFINED);
+        scm_newline(port);
+        scm_display_error (stack, port, subr, message, args, SCM_EOL);
+      } else {
+        scwm_msg(ERR,"scwm_handle_error","scm_the_last_stack_fluid not holding a fluid!");
+      }
     }
   else
     {
