@@ -755,6 +755,8 @@
     menu-title
     (menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
 	       #:action (lambda () (restart "scwm")))
+    (menuitem "Restart development scwm" #:image-left "mini-turn.xpm" 
+	       #:action (lambda () (restart "/home/gjb/scwm/scwm/scwm")))
     menu-separator
     (menuitem "&Yes" #:image-left "mini-exclam.xpm" #:action quit)
     (menuitem "&No"  #:image-left "mini-cross.xpm" #:action noop))))
