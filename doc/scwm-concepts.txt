@@ -124,7 +124,7 @@ title and border faces, are indicated below.
 [From scwm/face.c:503]
 
 
-Face Specification flags
+Face Specification Flags
 -
 
   Face specification flags are two-element lists that specify certain
@@ -161,7 +161,7 @@ or darker color. This spec is partially destructive.
   </entry></row>
   <row>
   <entry><para><informalexample><programlisting>
-     '(gradient {horizontal|vertical} NCOLORS {COLOR_PERCENT}* FINAL)
+     '(gradient ({horizontal|vertical} NCOLORS {COLOR_PERCENT}* FINAL))
          </programlisting></informalexample></para></entry><entry>
      Draw a gradient in this element.  The gradient may be horizontal or
 vertical. The number of colors is specified, followed by a number of
@@ -170,7 +170,7 @@ colors with percentages and a final color. The percentages must add to
   </entry></row>
   <row>
   <entry><para><informalexample><programlisting>
-      '(pixmap {'mini-icon|['tiled] IMAGE})
+      '(pixmap {mini-icon|IMAGE|(tiled IMAGE)})
          </programlisting></informalexample></para></entry><entry>
       Specify a pixmap to use, either the window's mini-icon, an image
 object or image specifier string, or a list of tiled and an image,
@@ -224,7 +224,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3118]
+[From scwm/window.c:3087]
 
 
 Fonts
@@ -358,7 +358,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:581]
+[From scwm/scwm.c:587]
 
 
 SCWMEXEC Protocol
@@ -379,6 +379,37 @@ FIXDOC: Link to file!
 [From scwm/events.c:461]
 
 
+Shadow and Highlight Factors
+-
+
+  Many decorations are supposed to look "three-dimensional".
+To implement this, the decorations use three colors: the specified
+decoration color, a brighter "highlight" color, and a darker "shadow"
+color.  For "raised" decorations, the top and left edges are drawn in
+the highlight color, and the bottom and right edges are drawn in the
+shadow color; this is reversed for "sunken" decorations.
+
+The highlight and shadow colors are computed from the decoration color
+using the highlight and shadow factors.  The highlight factor should be
+a floating-point number greater than 1.  If the highlight factor is
+1, then the highlight color is the same as the decoration color;
+the larger the highlight factor, the brighter the highlight color.
+The shadow factor should be a floating-point number between 0 and 1.  If 
+the shadow factor is 1, then the shadow color is the same as the
+decoration color; the smaller the shadow factor, the darker the
+shadow color.
+
+(It is actually possible to give a highlight factor which is less than
+1 (which makes the highlight color darker than the decoration color)
+and a shadow factor which is greater than 1 (which makes the shadow
+color brighter than the decoration color); the effect is to reverse
+"raised" and "sunken" elements throughout the user interface.)
+
+NOTE: "highlight" is often (mis-)spelled "hilight" or even "hilite".
+
+[From scwm/color.c:48]
+
+
 Sticky
 -
 
@@ -387,7 +418,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:1981]
+[From scwm/window.c:1949]
 
 
 The Window Context
@@ -404,7 +435,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:792]
+[From scwm/window.c:788]
 
 
 Themes
@@ -453,7 +484,7 @@ represents an on-screen window that scwm is managing, and is used to
 perform window management operations on the window, as well as to set
 options and retrieve information about the window.
  
-[From scwm/window.c:370]
+[From scwm/window.c:366]
 
 
 X atoms

@@ -10,7 +10,7 @@ needs to be fully and correctly specified before the window is placed.
 The `window-style' mechanism from the "(app scwm style)" module provides a convenient
 interface to setting the relevant parameters when a new window is
 created. 
-[From scwm/add_window.c:833]
+[From scwm/add_window.c:831]
 
 
 before-new-window-hook
@@ -25,7 +25,7 @@ This hook does not typically need to be used directly by the user;
 `window-style' from the "(app scwm style)" module provides a convenient
 interface to setting the relevant parameters when a new window is
 created. 
-[From scwm/add_window.c:815]
+[From scwm/add_window.c:813]
 
 
 before-place-new-window-hook
@@ -34,7 +34,7 @@ This hook is invoked just before placing a new window.
 It comes after `before-new-window-hook', but before `after-new-window-hook'. 
 This hook may be removed later since it is mostly redundant with the other
 two hooks, despite being invoked at a slightly different time. 
-[From scwm/add_window.c:827]
+[From scwm/add_window.c:825]
 
 
 broadcast-config-hook
@@ -87,7 +87,7 @@ cannot-grab-hook
 This hook is invoked with no arguments whenever scwm cannot
 successfully grab the X server. `beep' is one example of a procedure
 to use here.  
-[From scwm/window.c:3904]
+[From scwm/window.c:3872]
 
 
 change-desk-hook
@@ -102,7 +102,7 @@ deiconify-hook
 - 
 This hook is invoked when a window is deiconified.
 It is called with one argument, WINDOW 
-[From scwm/icons.c:842]
+[From scwm/icons.c:828]
 
 
 error-hook
@@ -121,7 +121,7 @@ iconify-hook
 - 
 This hook is invoked when a window is iconified.
 It is called with one argument, WINDOW 
-[From scwm/icons.c:838]
+[From scwm/icons.c:824]
 
 
 image-not-found-hook
@@ -156,7 +156,7 @@ interactive-resize-finish-hook
 - 
 This hook is invoked at the end of an interactive resize.
 It is called with one argument, WINDOW. 
-[From scwm/resize.c:651]
+[From scwm/resize.c:649]
 
 
 interactive-resize-new-size-hook
@@ -164,7 +164,7 @@ interactive-resize-new-size-hook
 This hook is invoked during an interactive resize.
 It is called with three arguments, WINDOW, NEW_X_SIZE, and NEW_Y_SIZE,
 whenever the window is changed to a new size 
-[From scwm/resize.c:646]
+[From scwm/resize.c:644]
 
 
 interactive-resize-start-hook
@@ -174,7 +174,7 @@ It is called with three arguments: WINDOW, XMOTION, YMOTION.
 XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
 can happen on the right/bottom side, not at all, or the top/left side,
 respectively. 
-[From scwm/resize.c:639]
+[From scwm/resize.c:637]
 
 
 invalid-interaction-hook
@@ -183,14 +183,14 @@ This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
 operation like `interactive-resize' or `interactive-move'. `beep' is
 one example of a procedure to use here. 
-[From scwm/window.c:3898]
+[From scwm/window.c:3866]
 
 
 shutdown-hook
 - 
 The procedures in shutdown-hook are called with no arguments right
 before scwm quits or restarts. 
-[From scwm/shutdown.c:200]
+[From scwm/shutdown.c:204]
 
 
 startup-hook
@@ -202,7 +202,7 @@ processing of the .scwmrc startup file, windows have not already been
 captured, so the window-list (as reported by `list-all-windows') is
 empty.  To provide behviour conditioned on a property of an existing
 window, this hook should be used instead. 
-[From scwm/shutdown.c:204]
+[From scwm/shutdown.c:208]
 
 
 window-focus-change-hook
@@ -210,7 +210,7 @@ window-focus-change-hook
 This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
 that now has the focus, or #f if no window now has the focus. 
-[From scwm/events.c:1983]
+[From scwm/events.c:1987]
 
 
 X-DestroyNotify-hook
@@ -219,7 +219,7 @@ This hook is invoked upon DestroyNotify X events.
 It indicates a window is being destroyed.  The hook procedures are
 invoked with one argument, WIN, the window being destroyed.
 The WIN is still valid during the hook procedures. 
-[From scwm/events.c:1971]
+[From scwm/events.c:1975]
 
 
 X-MappingNotify-hook
@@ -228,7 +228,7 @@ This hook is invoked whenever a MappingNotify X event is
 received. A MappingNotify event indicates a change of keymapping - in
 particular, it may indicate a change of available modifiers or mouse
 buttons. The hook procedures are invoked with no arguments. 
-[From scwm/events.c:1965]
+[From scwm/events.c:1969]
 
 
 X-PropertyNotify-hook
@@ -239,7 +239,7 @@ property has changed. Watching for window property changes can be used
 to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
 that changed (as a string) and the window that it changed for. 
-[From scwm/events.c:1956]
+[From scwm/events.c:1960]
 
 
 X-UnmapNotify-hook
@@ -248,6 +248,6 @@ This hook is invoked upon UnmapNotify X events.  It indicates a
 window is being unmapped (removed from display).  The hook procedures
 are invoked with one argument, WIN, the window being destroyed.  The
 WIN is still valid during the hook procedures. 
-[From scwm/events.c:1977]
+[From scwm/events.c:1981]
 
 

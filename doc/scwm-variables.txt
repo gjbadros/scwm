@@ -51,7 +51,7 @@ default-menu-max-fold-lines
 - (app scwm base)
 The default number of items that menus are split into by `fold-menu-list'.
 
-[From scheme/base.scm:390]
+[From scheme/base.scm:396]
 
 
 image-load-path
@@ -63,13 +63,13 @@ List of strings of directories in which to look for image files.
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:520]
+[From scwm/scwm.c:526]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:523]
+[From scwm/scwm.c:529]
 
 
 move-opaquely?
@@ -83,7 +83,7 @@ netscape-new-window
 - (app scwm flux)
 If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window.
 
-[From scheme/flux.scm:676]
+[From scheme/flux.scm:637]
 
 
 opaque-move-percent
@@ -113,7 +113,7 @@ It should take a first (non-option) argument of
 the hostname to connect to.  "ssh" "rsh" and "telnet"
 are each reasonable choices.
 
-[From scheme/base.scm:421]
+[From scheme/base.scm:427]
 
 
 resize-opaquely?
@@ -128,14 +128,6 @@ scwm-menu-look
 The default menu look for Scwm.
 Used as an argument to `set-menu-look'. 
 [From scwm/drawmenu.c:761]
-
-
-shadow-factor
-- 
-
-   The numeric factor used in generating shadow colors in the current decor.
-
-[From scwm/color.c:497]
 
 
 shaped-pie-menu-look
@@ -153,7 +145,7 @@ scwm) propagates to the child processes.  The end result of the
 possible bug is that xterms started by scwm are terminated if the
 scwm that started them is terminated using a Ctrl-C to send it a SIGINT.
 
-[From scheme/base.scm:39]
+[From scheme/base.scm:43]
 
 
 xpm-shaped-menu-look
@@ -168,6 +160,6 @@ The command to run when a new xterm window is requested.
 The string given should refer to a binary or script in the
 path and should take a "-e" argument of what to run.
 
-[From scheme/base.scm:414]
+[From scheme/base.scm:420]
 
 
