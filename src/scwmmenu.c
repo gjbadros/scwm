@@ -125,21 +125,22 @@ NewPchKeysUsed(DynamicMenu *pmd)
     pmi = SAFE_MENUITEM(item);
     if (!pmi) {
       scwm_msg(WARN,__FUNCTION__,"Bad menu item %d",ipmiim);
-    }
-    if (pmi && pmi->pchHotkeyPreferences) {
-      char *pchDesiredChars = pmi->pchHotkeyPreferences;
-      char ch;
-      while ((ch = *pchDesiredChars++) != '\0') {
-	if (!strchr(pch,ch)) {
-	  /* Found the char to use */
-	  rgpmiim[ipmiim]->chShortcut = ch;
-	  pch[ich++] = tolower(ch);
+    } else {
+      if (pmi->pchHotkeyPreferences) {
+	char *pchDesiredChars = pmi->pchHotkeyPreferences;
+	char ch;
+	while ((ch = *pchDesiredChars++) != '\0') {
+	  if (!strchr(pch,ch)) {
+	    /* Found the char to use */
+	    rgpmiim[ipmiim]->chShortcut = ch;
+	    pch[ich++] = tolower(ch);
 	  rgpmiim[ipmiim]->ichShortcutOffset = IchIgnoreCaseInSz(pmi->szLabel,ch);
 	  break;
+	  }
 	}
       }
+      ipmiim++;
     }
-    ipmiim++;
     rest = gh_cdr(rest);
     if (SCM_NULLP(rest))
       break;
