@@ -30,10 +30,12 @@
 # or from Emacs, for warnings only
 # ./utilities/dev/extract-docs scwm/*.c > /dev/null
 #
-# BUGS:
-# This should probably be written in guile-scheme instead of perl
-# (perhaps the guile folks will do this if they want to use a similar
-#  extraction system for guile-scheme)
+# See also extract.scm, an implementation in guile-scheme instead of perl
+# written by Harvey Stein
+# Main differences:  that code is ~7x slower
+#                    perhaps not as well tested
+#                    more and better abstractions in the scheme version
+#                    It uses guile (easier acceptance by guile-devs, perhaps)
 #
 
 require 5.004;  # uses "for my $var"
@@ -42,8 +44,8 @@ use constant TRUE => (1==1);
 use constant FALSE => (1==0);
 use File::Basename;
 
-my $getopts_option_letters = 'hqQDo:sC';
-use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C);
+my $getopts_option_letters = 'hqQDo:sCd:';
+use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o $opt_s $opt_C $opt_d);
 
 sub script_usage ( ) {
   print "@_\nUsage: $0 [-$getopts_option_letters]
@@ -53,6 +55,7 @@ sub script_usage ( ) {
 -o file  Send sgml output to file -- no sgml output unless this is given
 -s       Run ispell on the comments and reports warnings for its responses
 -C       Only output concepts chapters
+-d path  Set scwmdir source code base to path (e.g., /usr/local/src/scwm)
 ";
   exit 0;
 }
@@ -72,6 +75,8 @@ script_usage() if ($opt_h);
 $fDebug = TRUE if $opt_D;
 $fQuiet = TRUE if $opt_q || $opt_Q;
 $fReallyQuiet = TRUE if $opt_Q;
+
+my $scwmdir = $opt_d || $ENV{SCWMDIR};
 
 # maps from a procedure name to a hash
 # containing "usage", "purpose", "comment",  "markup", "file", "line"
@@ -99,12 +104,15 @@ my $pid = open2( \*ISPELL_RESPONSE,
 ISPELL->autoflush();
 
 while (<>) {
-  close(ARGV) if (eof);
+  if (eof) {
+    close(ARGV);
+    next;
+  }
   if (m/^SCWM_PROC/) {
     my $header = $_;
     my $filename = $ARGV;
     my $line = $.;
-    while (($_ = <>) !~ m/^\s*\{/) {
+    while (defined($_ = <>) && $_ !~ m/^\s*\{/) {
       $header .= $_;
     }
     $header .= $_;
@@ -114,16 +122,12 @@ while (<>) {
     my $proc_name = $1;
     my $filename = $ARGV;
     my $line = $.;
-    while (defined($_ = <>) && $_ !~ m/[^\\]\"\s*$/) {
+    # Keep reading lines until eof or a paren in leftmost column
+    while (defined($_ = <>) && $_ !~ m/^\(/) {
       $scheme_header .= $_;
-#      print STDERR "adding \"$_\" to $proc_name in $filename\n";
-      if ($_ =~ /^[^\s]/) {
-	print STDERR "$filename:$.:****$proc_name got confused.\n";
-	last;
-      }
     }
-    $scheme_header .= $_ if (defined($_));
     ProcessSchemeHeader($filename, $proc_name, $line, $scheme_header);
+    redo if (defined($_)); # start loop over w/o reading next line
   } elsif (m%/\*\*\s*(\w[^:]*):\s*(.*?)\s*$%) {
     # matches a /** CHAPTER: DESCRIPTION (e.g., CONCEPT) comment
     my $type = $1;
@@ -221,11 +225,13 @@ if ($opt_C) {
   goto CONCEPTS_CHAPTER;
 }
 
-print MARKUP_OUT <<END_CHAP_HEAD
+if ($opt_o) {
+  print MARKUP_OUT <<END_CHAP_HEAD
   <chapter>
     <title>Primitives in Alphabetical Order</title>
 END_CHAP_HEAD
   ;
+}
 
 # This outputs the scwm-procedures.txt file to stdout
 foreach my $proc (sort { lc($a) cmp lc($b) } keys %procedure) {
@@ -351,26 +357,38 @@ END_TRAILER
   ;
 }
 
+use Balanced;
+
 sub ProcessSchemeHeader( $$$$ ) {
   my ($filename, $proc_name, $line, $header) = @_;
   my @arglist;
-  my $comment;
-  if ($header =~ m%^\(define\*?-public\s+\((.*?)\)\s+\"(.*)$%ms) {
-    @arglist = split(/\s+/,$1);
-    $comment = $2;
-    my $match = shift @arglist;
-    if ($match ne $proc_name) {
-      print STDERR "$filename:$line:**** $match not same as $proc_name";
-      undef $comment;
-    }
+  my ($type,$rest) = ($header =~ m%^\((define\*?-public)\s+(.*)%s);
+  #  print STDERR "HEAD: $header\n";
+#  print STDERR "TYPE: $type\n";
+  #  print STDERR "REST: $rest\n";
+  my ($name_and_args,$after_formals) = Text::Balanced::extract_bracketed($rest,'(');
+#  print STDERR "NAA: $name_and_args\n";
+  #  print STDERR "AF: $after_formals\n";
+  my ($match) = ($name_and_args =~ m%\(\s*([^\s\)]+)%s);
+  my $comment = Text::Balanced::extract_delimited($after_formals,'"');
+#  print STDERR "COMMENT: $comment\n";
+#  print STDERR "---------------\n";
+  if ($match ne $proc_name) {
+    print STDERR "$filename:$line:**** $match not same as $proc_name\n";
+    undef $comment;
+  }
+  if ($match =~ m%^\(%) {
+    print STDERR "$filename:$line:**** $match is not an ordinary define\n";
+    $match = substr($match,1);
   }
   if (!defined($comment)) {
-    print STDERR "$filename:$line:****$proc_name: could not find comment\n";
-    $comment = "";
+    print STDERR "$filename:$line:**** $proc_name: could not find comment\n";
+    $comment = "No documentation supplied.";
   }
   my $usage = sprintf "(%s%s%s)", $proc_name, ($#arglist >= 0? " ":""),
          join(" ",@arglist);
-  $comment =~ s/\"\s*$//m;
+  # Remove leading and trailing quote
+  $comment =~ s/^\"(.*)\"$/$1/ms;
 #  print STDERR "Scheme Proc: $proc_name\nArgs: @arglist\n$header\n";
 #  print STDERR "$usage\n\n$comment\n\n\n";
 
@@ -436,33 +454,33 @@ sub ProcessHeader( $$$ ) {
 
   if ($primname ne $expected_primname && $primname ne $expected_primname2) {
     if (!$fReallyQuiet) {
-      print STDERR "$filename:$line:****$cprimname: expected scheme primitive named \`$expected_primname\'\n";
+      print STDERR "$filename:$line:**** $cprimname: expected scheme primitive named \`$expected_primname\'\n";
     }
   }
 
   if ($cremovals != scalar(@args) ) {
-    print STDERR "$filename:$line:****$cprimname: types inconsistency (all args should be type SCM)\n";
+    print STDERR "$filename:$line:**** $cprimname: types inconsistency (all args should be type SCM)\n";
   }
 
   if (($req + $opt + $var) != scalar(@args)  ) {
-    print STDERR "$filename:$line:****$cprimname: argument inconsistency -- check #s of arguments\n";
+    print STDERR "$filename:$line:**** $cprimname: argument inconsistency -- check #s of arguments\n";
   }
 
   if ($var != 0 && $var != 1) {
-    print STDERR "$filename:$line:****$cprimname: number of variable arguments == $var -- why?\n";
+    print STDERR "$filename:$line:**** $cprimname: number of variable arguments == $var -- why?\n";
   }
 
   if (!defined($comment) || $comment eq "") {
     if (!$fReallyQuiet) {
-      print STDERR "$filename:$line:****$cprimname: comment missing\n";
+      print STDERR "$filename:$line:**** $cprimname: comment missing\n";
     }
     $comment = "";
   }
 
   if (!defined($fname_define)) {
-    print STDERR "$filename:$line:****$cprimname: \`#define FUNC_NAME s_$cprimname\' is missing\n";
+    print STDERR "$filename:$line:**** $cprimname: \`#define FUNC_NAME s_$cprimname\' is missing\n";
   } elsif ($fname_define ne "s_".$cprimname) {
-    print STDERR "$filename:$line:****$cprimname: \`#define FUNC_NAME s_$cprimname\' does not match function name \`$fname_define\'\n";
+    print STDERR "$filename:$line:**** $cprimname: \`#define FUNC_NAME s_$cprimname\' does not match function name \`$fname_define\'\n";
   }
 
   my @required_args = @args[0..($req-1)];
@@ -491,7 +509,7 @@ sub ProcessHeader( $$$ ) {
     if ($word =~ /^[A-Z][-%A-Z0-9_+?!]+$/) {
       if (!defined($argnames{$word})) {
 	if (!$fReallyQuiet) {
-	  print STDERR "$filename:$line:****$cprimname: all-uppercase word \`$word\' does not match an argument\n";
+	  print STDERR "$filename:$line:**** $cprimname: all-uppercase word \`$word\' does not match an argument\n";
 	}
       }
     }
@@ -501,7 +519,7 @@ sub ProcessHeader( $$$ ) {
   foreach my $formal (keys %argnames) {
     if ($comment !~ /\Q$formal\E/) {
       if (!$fReallyQuiet) {
-	print STDERR "$filename:$line:****$cprimname: formal $formal not mentioned in comment\n";
+	print STDERR "$filename:$line:**** $cprimname: formal $formal not mentioned in comment\n";
       }
     }
   }
@@ -520,7 +538,7 @@ sub ProcessHeader( $$$ ) {
   $comment =~ s/^\s+//mg;
   if ($comment ne $old_comment) {
     if (!$fQuiet) {
-      print STDERR "$filename:$line:****$cprimname: leading spaces (indentation) is being omitted\n";
+      print STDERR "$filename:$line:**** $cprimname: leading spaces (indentation) is being omitted\n";
     }
   }
 
@@ -603,7 +621,7 @@ sub PurposeFromComment ( $$$$ ) {
   chomp ($purpose); # in case it matched the newline
   if (!defined($purpose) || $purpose !~ /\.\s*$/) {
     if (!$fQuiet) {
-      print STDERR "$filename:$line:****$primname: first line of comment should be a purpose sentence\n";
+      print STDERR "$filename:$line:**** $primname: first line of comment should be a purpose sentence\n";
     }
   }
   return $purpose;
@@ -612,7 +630,7 @@ sub PurposeFromComment ( $$$$ ) {
 
 sub ReadRestOfComment ( $ ) {
   my ($comment) = @_;
-  while (($_ = <>) !~ m%\*/%) {
+  while (defined($_ = <>) && $_ !~ m%\*/%) {
     $comment .= $_;
   }
   $comment .= $_;
@@ -698,7 +716,7 @@ sub CreateMarkupBody ( $$$$$$$ ) {
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
-  <para> Defined in <ulink url=\"file://@{[$ENV{'SCWMDIR'}]}/$filename\"><filename>$filename</filename></ulink>
+  <para> Defined in <ulink url=\"file://$scwmdir/$filename\"><filename>$filename</filename></ulink>
   at line $line </para> </refsect1>
 </refentry>
 ";
@@ -749,12 +767,12 @@ sub IspellText( $$$ ) {
     chomp (my $response = <ISPELL_RESPONSE>);
     print STDERR "response = \`$response\'\n" if $fDebug;
     if ($response eq "") {
-      print STDERR "$filename:$line:****ISPELL is out of sync (last word \`$word\') -- aborting its use!\n";
+      print STDERR "$filename:$line:**** ISPELL is out of sync (last word \`$word\') -- aborting its use!\n";
       $opt_s = FALSE;
       last;
     }
     if ($response !~ m/^[+\*]/) {
-      print STDERR "$filename:$line:****ispell reported possible misspelling: $word -> $response\n";
+      print STDERR "$filename:$line:**** ispell reported possible misspelling: $word -> $response\n";
       print STDERR "Should I add `$word' to my list of known correct words? ";
       $response=<STDIN>;
       if ($response=~/^y(es)?$/i) {
