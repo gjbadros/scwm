@@ -1,16 +1,4 @@
-In approximate order of priority:
-
-- Better error handling 
-  - get a line number!
-  - Don't crash and burn so often
-  - keep trying on .scwmrc especially!
-  - more consistent use, especially abstractions for argument type checking
-
-- Respond to scwmsend-s via some reasonable iccm
-
 - Use guile-snarf pervasively
-
-- Add a hook to the scwm_error handler routine passing the request error and event type; provide a module to make these human readable -- see X-error-describe
 
 - color scheme wrappers need reference counting; whole rewrite like image?
 
@@ -18,6 +6,36 @@ In approximate order of priority:
 
 - replace MyFont struct w/ scheme-object based -- font scheme wrappers
 still use the MyFont garbage; clean this up
+
+- New event handling mechanism
+ - event objects?
+ - event binding objects?
+
+- legacy module interface -- see utilities/dev/fvwm2-pager-demo
+
+- improve new menus
+ - cascading popups using the hover hooks
+ - keyboard short cuts using the new event model
+ - smarter placement of menus that is aware of the context of the
+   popup-menu (or give args to popup-menu so button decorations can
+   do inform popup-menu of a left edge or right edge constraint)
+ - pinup menus?  e.g. like the button bars
+ - multi-columns?
+ - horizontal?
+
+- Better error handling  -- this may be more of a guile problem
+  - get a line number!
+  - Don't crash and burn so often
+  - keep trying on .scwmrc especially!
+  - more consistent use, especially abstractions for argument type checking
+
+- Respond to scwmsend-s via some reasonable iccm
+  - libICE?
+  - ToolTalk?
+
+- New threads stuff & widget embedding -- GTk?
+
+- Add a hook to the scwm_error handler routine passing the request error and event type; provide a module to make these human readable -- see X-error-describe
 
 - Clean out all of the artifacts of the FVWM function system.
 
