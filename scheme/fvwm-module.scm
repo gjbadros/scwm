@@ -596,13 +596,15 @@
 					 (resource-match?? "FvwmPager")))))
     (and (pair? pagers) (car pagers))))
 
-(define-public (raise-fvwm2-pager)
+(define*-public (raise-fvwm2-pager)
   "Raise a fvwm2 pager window in the stacking order."
+  (interactive)
   (let ((w (fvwm2-pager-window)))
     (and w (raise-window w))))
 
-(define (lower-fvwm2-pager)
+(define*-public (lower-fvwm2-pager)
   "Lower a fvwm2 pager window in the stacking order."
+  (interactive)
   (let ((w (fvwm2-pager-window)))
     (and w (lower-window w))))
 
