@@ -1,3 +1,7 @@
+Sat Nov  8 20:35:26 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* style.scm: allow pixmaps or strings in window styles
+
 Fri Nov  7 03:26:00 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* base.scm: Renamed title-style to simple-title-style; the real
