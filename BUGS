@@ -1,15 +1,3 @@
-Passing a bad window from guile can cause scwm to dump core in ensure_valid()
-
-gjb gets random "Memory allocation error"s during window decorating
-(add_window, perhaps?);  two per window decorated.  They are not
-identified as to where the problem occurs...
-
-gjb also gets memory allocation errors on line:
-;(window-style "xload" #:no-title #t #:use-style desk-widget)
-
-
-! functions should be renamed to end with _x  -- This looks partially done...
-
 Possibly stop making resizes account for decorations, so that maximize
 is happier.
 
@@ -17,7 +5,18 @@ should initially focus/hilight some window (also a bug in fvwm2).
 
 callbacks should run from a new dynamic root.
 
-FIXED:
+RESOLVED:
+
+Memory allocation errors can occur if guile was built with Rx support;
+autoconf sets this option if it finds a librx.{a,so} in the paths it
+checks. --11/08/97 gjb
+
+Passing a bad window from guile can cause scwm to dump core in
+ensure_valid(); MS says fixed ~ 11/1/97
+
+
+functions should be renamed to end with _x 
+  -- This looks done... is it not? --11/08/97 gjb
 
 (get-window) acts wierdly when a window needs to be selected, or
 when executed via scwmsend's property mechanism -- was a problem with
@@ -28,5 +27,3 @@ there needs to be a way to remove mouse bindings; unbind_key added 10/24/97, gjb
 
 start interactive moves and resizes right, so that initial mouse motion is not
 lost.  ~ 10/15/97, MS
-
-

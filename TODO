@@ -20,7 +20,7 @@ possible, to have a featureful yet lean wm.
 - Interactive move/resize should permit using a real color, not just
 an xor-value, as an option
 
-- Opaque resize
+- Opaque resize -- afterstep and others do this
 
 - Quote key feature -- like C-q in Emacs, C-v in shells
 
@@ -31,3 +31,7 @@ an xor-value, as an option
 Done:
 
 - Make scwm work with autoconf.
+
+- Synthetic mouse presses
+
+- Synthetic key presses

@@ -1,3 +1,19 @@
+Sat Nov  8 20:18:26 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Added picture object; use (make-picture "pic-filename")
+
+	* Combined PixmapPath and IconPath into one variable:
+	szPicturePath;  set with set-picture-path!
+	[set-{icon,pixmap}-path! have been removed]
+
+	* Permit pixmap arguments to still be strings, but also allow
+	pixmap objects.  Improved the caching and sharing is almost
+	complete, so little memory is wasted
+
+	* Cleaned up GetXPMFile() to use CachePicture code; these changes
+	still are making scwm smaller!  We're under 20klines of commented
+	source!
+
 Sat Nov  8 14:54:59 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc.[ch]: Lots of cleanup

@@ -26,6 +26,22 @@
 
 
 
+;; MSFIX-- what's defalias in scheme?  syntax macro?
+;; Also, this may be better placed somewhere else
+;; Make make-pixmap and make-bitmap aliases for make-picture;
+;; Prefer and encourage make-picture, though!
+(define (make-pixmap arg)
+  (make-picture arg))
+
+(define (make-bitmap arg)
+  (make-picture arg))
+
+;; MSFIX: should use X Class name, or X Instance name first,
+;; not wildcard matcher!  My xterm-s track the running program
+;; name in the title bar, so just because I start an "xbiff"
+;; from an XTERM does not mean I want that xterm, whose title
+;; may be something like "<hostname> xbiff", to have an xbiff-like
+;; window style! --11/08/97 gjb
 (define-public (window-style condition . args)
   (let ((predicate (cond
 		    ((or (eq? #t condition) 
@@ -132,8 +148,35 @@
 (add-window-hint-option #:mwm-buttons set-mwm-buttons!)
 
 (add-window-style-option #:mwm-border set-mwm-border!)
-(add-window-style-option #:icon set-icon!)
-(add-window-style-option #:mini-icon set-mini-icon!)
+
+;; MSFIX: did I do this right?
+(define (set-icon-maybe-name! arg w)
+  (set-icon!
+   (if (string? arg)
+       (make-picture arg)
+       arg)
+   w))
+  
+(define (set-mini-icon-maybe-name! arg w)
+  (set-mini-icon! 
+   (if (string? arg)
+       (make-picture arg)
+       arg)
+   w))
+
+(define (set-mini-icon-pixmap-name! arg w)
+  (and (string? arg)
+       (set-mini-icon! (string-append "mini-" arg ".xpm") w))
+  (display "Set it!\n"))
+   
+
+;; Use the sugared versions from above
+(add-window-style-option #:icon set-icon-maybe-name!)
+(add-window-style-option #:mini-icon set-mini-icon-maybe-name!)
+
+;; MSFIX: how do I add a new keword argument like this, to use
+;; the above function?
+;;(add-window-style-option #:minipix set-mini-icon-pixmap-name!)
 
 (add-window-hint-option #:random-placement set-random-placement!)
 (add-window-hint-option #:smart-placement set-smart-placement!)

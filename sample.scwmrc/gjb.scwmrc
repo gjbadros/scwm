@@ -17,8 +17,7 @@
 (define mail-spool-dir (string-append "/var/spool/mail/" USER))
 
 
-(define user-pixmap-path (string-append HOME "/pixmaps"))
-(define user-bitmap-path (string-append HOME "/bitmaps"))
+(define user-picture-path (string-append HOME "/pixmaps:" HOME "/bitmaps" ))
 
 (define want-close-button #t) ;; was #f
 
@@ -78,17 +77,21 @@
 ;; set some paths                ;;
 ;;
 
-(set-icon-path! (string-append user-bitmap-path 
-			       ":/usr/X11/include/X11/bitmaps:\
-/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
-/uns/include/X11/pixmaps:\
-/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
-
-(set-pixmap-path! (string-append user-pixmap-path 
+(set-picture-path! (string-append user-picture-path 
 				 ":/usr/X11/include/X11/bitmaps:\
 /usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
 /uns/include/X11/pixmaps:\
 /usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
+
+(define pic-system-button
+  (make-picture "mini-sys3d-full.xpm"))
+
+(define pic-xterm-mini
+  (make-picture "mini-term.xpm"))
+
+(define pic-unknown
+  (make-picture "unknown1.xpm"))
+
 
 ;;-------------------------------;;
 ;; set some window styles        ;;
@@ -96,8 +99,8 @@
 ;;; FIXGJB: these can be regexps, not goofy wildcards
 (window-style "*" 
 	      #:fg "black" #:bg "grey76" 
-;	      #:icon "unknown1.xpm" 
-	      #:icon #f        ;; MS - specify #f to not get an icon.
+	      #:icon pic-unknown
+;	      #:icon #f        ;; MS - specify #f to not get an icon.
 ;	      #:icon-box (list (x- 70) 1 69 (y- 141))
 	      #:border-width 4 ;; MS borderwidth of 4 looks slightly better
 	                       ;; to my eye than 3.
@@ -111,33 +114,44 @@
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:int-override #t #:decorate-transient #t
 	      #:PPosition-hint #f
-	      #:mini-icon "mini-term.xpm")
+	      #:mini-icon pic-xterm-mini)
+
+;; FIXGJB: make-face's style of argument passing
+;; is different from the window-style method; I imagine
+;; MS has a wrapper planned for this (MSFIX)
 
 (define border-face (make-face '((hidden-handles #t) (no-inset #t)) '()))
 (set-border-face! border-face)
 
-;; FIXGJB: wrong-type-arg in below
-;; MS: not for me....
 (define title-face (make-face '((relief raised)) '()))
 (set-title-face! title-face)
 
 ;; MS: temporarily replaced pixmaps with ones I have installed.
-(define system-button-face (make-face '((relief flat))
-				      '((pixmap "mini-sys3d-full.xpm"))))
+;(define system-button-face (make-face '((relief flat))
+;				      '((pixmap pic-system-button))))
 
-(define mini-icon-button-face (make-face '((relief raised))
-					'((pixmap mini-icon))))
+(define mini-icon-button-face 
+  (make-face '((relief raised))
+	     '((pixmap mini-program-icon))))
 
-(define sticky-button-face (make-face '((relief flat))
-				      '((pixmap "mini-hbars-full.xpm"))))
+;; Can use strings as arg to pixmap
+(define sticky-button-face
+  (make-face '((relief flat))
+	     '((pixmap "mini-hbars-full.xpm"))))
+
+;; For testing
+;;(set-button-face! 3 sticky-button-face)
 
 
-(define sysutils-button-face (make-face '((relief flat))
-					'((pixmap "mini-lightbolt-full.xpm"))))
+;; But can also use a (make-picture  "file.xpm")
+(define sysutils-button-face
+  (make-face '((relief flat))
+	     '((pixmap "mini-lightbolt-full.xpm"))))
 
 
-(define close-button-face (make-face '((relief flat))
-				     '((pixmap "mini-stylized-x-full.xpm"))))
+(define close-button-face 
+  (make-face '((relief flat))
+	     '((pixmap  "mini-stylized-x-full.xpm"))))
 
 
 (define tall-maximize-button-face (make-face '((relief flat))
@@ -223,22 +237,23 @@
 (define desk-widget-on-top
   (make-style #:use-style desk-widget #:stays-on-top #t))
 
-
-;;; FIXGJB: these window-style-s cause memory-allocation errors or
-;;; core dumps from home (on oz), but not from school or for MS
-;(window-style "zwgc" #:use-style desk-widget) ;; desk-widget-on-top
-;(window-style "*lock" #:use-style desk-widget)
-;(window-style "xload" #:no-title #t #:use-style desk-widget)
-;(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
-;(window-style "xbiff" #:no-title #t #:use-style desk-widget)
-;(window-style "xcalc" #:icon "xcalc.xpm")
-;(window-style "xman" #:icon "xman.xpm")
-;(window-style "xmag" #:icon "mag_glass.xpm")
-;(window-style "Emacs" #:icon "gnu-animal.bmp")
-;(window-style "XTerm" #:icon "xterm.xpm")
-(window-style "XTerm" #:mini-icon "mini-term.xpm")
-(window-style "Emacs" #:mini-icon "mini-edit.xpm")
-
+;; NOTE: you can use a string or a (make-picture "filename.xpm")
+;; after #:icon and #:mini-icon
+;; MSFIX: important! window-style's argument 
+(window-style "zwgc" #:use-style desk-widget-on-top)
+(window-style "*lock" #:use-style desk-widget)
+(window-style "xload" #:no-title #t #:use-style desk-widget)
+(window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
+(window-style "xbiff" #:no-title #t #:use-style desk-widget-on-top
+	      #:mini-icon "mini-xbiff.xpm")
+(window-style "xcalc" #:icon "xcalc.xpm"
+	              #:mini-icon "mini-calc.xpm")
+(window-style "xman" #:icon "xman.xpm")
+(window-style "xmag" #:icon "mag_glass.xpm")
+(window-style "XTerm" #:mini-icon pic-xterm-mini
+	              #:icon "xterm.xpm")
+(window-style "Emacs" #:mini-icon "mini-edit.xpm"
+	              #:icon "TextEditor.xpm")
 
 ;;-------------------------------;;
 ;; define some useful menus      ;;
@@ -623,3 +638,4 @@
 ;;; Local Variables:
 ;;; eval: (load "scwm-buffer")
 ;;; End:
+
