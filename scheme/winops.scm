@@ -107,10 +107,19 @@ If NW or NH is 0, that dimension is not changed."
 	    (if (not (maximized? win))
 		(set-object-property! win 'maximized 
 				      (list x y width height)))
-	    (move-to (if (> nw 0) 0 x)
-			 (if (> nh 0) 0 y) win)
 	    (resize-frame-to (if (> nw 0) nw width)
-			     (if (> nh 0) nh height) win))))
+			     (if (> nh 0) nh height) win)
+	    ;; above is just a hint, get the actual...
+	    ;; FIXGJB: race condition?
+	    (let* ((new-size (window-frame-size win))
+		   (nw (car new-size))
+		   (nh (cadr new-size)))
+	      (move-window (if (> display-width (+ x nw)) x
+			       (if (> display-width nw) (- display-width nw) 0))
+			   (if (> display-height (+ y nh)) y
+			       (if (> display-height nh) (- display-height nh) 0))
+			   win)))))
+
 
 (define*-public (maximized? #&optional (win (get-window)))
   "Return #t if WIN is maximized, #f otherwise."
@@ -118,15 +127,25 @@ If NW or NH is 0, that dimension is not changed."
 
 ;; FIXGJB: use client units
 (define*-public (unmaximize #&optional (win (get-window)))
-  "Unmaximize WIN so it returns to its size before maximization.
+  "Unmaximize WIN so it returns to its size/position before maximization.
 This should use client units, but currently uses frame-size in pixels."
   (if win (let ((max-prop (object-property win 'maximized)))
 	    (cond
 	     (max-prop (move-to (car max-prop)
-				    (cadr max-prop) win)
+				(cadr max-prop) win)
 		       (resize-frame-to (caddr max-prop)
 					(cadddr max-prop) win)
 		       (set-object-property! win 'maximized #f))))))
+
+(define*-public (unmaximize-no-move #&optional (win (get-window)))
+  "Unmaximize WIN so it returns to its size before maximization.
+This should use client units, but currently uses frame-size in pixels."
+  (if win (let ((max-prop (object-property win 'maximized)))
+	    (cond
+	     (max-prop (resize-frame-to (caddr max-prop)
+					(cadddr max-prop) win)
+		       (set-object-property! win 'maximized #f))))))
+
 
 (define-public (window-frame-area win)
   "Return the number of square pixels of area that WIN is."
