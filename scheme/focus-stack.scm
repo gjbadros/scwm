@@ -23,6 +23,8 @@
   :use-module (app scwm message-window)
   :use-module (app scwm winops))
 
+;;; SRL:FIXME:: Should probably have some kind of bound on the size of the
+;;;   stack we are producing!
 
 (define-public focus-stack '())
 

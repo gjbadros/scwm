@@ -1,3 +1,9 @@
+Sat Mar 30 21:06:15 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* focus-stack.scm: Added FIXME about unbounded stack growth.  This is
+	a problem since some of the standard functions call 'push-focus-stack'
+	with no guarantee that there will ever be a 'pop-focus-stack'.
+
 Sat Mar 30 20:27:55 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* window-configuration.scm: Added a FIXME about the desk of windows
