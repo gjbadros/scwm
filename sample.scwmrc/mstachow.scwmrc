@@ -91,6 +91,7 @@
              (app scwm placement)
              (app scwm shutdown-opts)
              (app scwm style)
+             (app scwm defoption)
              (app scwm winlist)
              (app scwm animation)
              (app scwm animated-iconify)
@@ -253,8 +254,8 @@
        image-load-path))
 
 
-(set! *theme-path* (cons "/home/mstx/working/scwm/themes" theme-path))
-	
+(scwm-option-set! *theme-path* (cons "/home/mstx/working/scwm/themes" *theme-path*))
+
 
 ;;;;-------------------------------;;;;
 ;;;; window styles                 ;;;;

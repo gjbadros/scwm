@@ -35,6 +35,7 @@
 	     (app scwm winlist)
 	     (app scwm wininfo)
              (app scwm style)
+;;             (app scwm stringops)
 	     (app scwm face)
 	     (app scwm time-convert)
 	     (app scwm optargs)
@@ -43,12 +44,16 @@
 	     (app scwm prefs-menu)
 	     (app scwm doc)
 	     (app scwm virtual)
+;;	     (app scwm send-string)
 	     (app scwm flux)
 	     (app scwm flux-gtk)
+	     (app scwm flash-window)
+	     (app scwm key-mover)
 	     (app scwm fvwm-module)
 	     (app scwm path-cache)
 	     (app scwm animation)
 	     (app scwm themes)
+	     (app scwm netscape)
 	     (app scwm message-window)
 	     (app scwm animated-iconify)
 	     )
@@ -98,8 +103,8 @@
 
 ;; below variables used if the default predicates are used, 
 ;; but the above make my system always do opaque moves and resizes
-;;(set! opaque-move-percent 20)
-;;(set! opaque-resize-percent 20)
+;;(scwm-option-set! *opaque-move-percent* 20)
+;;(scwm-option-set! *opaque-resize-percent* 20)
 ;; (interactive-move)
 ;; Disabled autoraise by default; 
 ;; would give an instant autoraise with no timeout, which 
@@ -378,6 +383,7 @@
 (window-style "*" 
 	      #:icon-box (list 0 1 69 (y- 141)))
 
+;; (window-style "xterm" #:use-theme (load-theme "gjb"))
 ;; (window-style "*" #:show-icon #t)
 ;; (window-style "*" #:show-icon #f)
 ;; (window-style "*" #:sticky-icon #f)

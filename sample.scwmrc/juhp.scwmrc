@@ -57,8 +57,10 @@
 
 (set-icon-font! font12)
 
-(set! opaque-move-percent 100)
-(set! opaque-resize-percent 100)
+(set! resize-opaquely? (lambda (win) #t))
+(set! move-opaquely? (lambda (win) #f))
+;;(scwm-option-set! *opaque-move-percent* 100)
+;;(scwm-option-set! *opaque-resize-percent* 100)
 
 (define user-image-path 
   (list (string-append (user-home) "/pixmaps") 
@@ -407,7 +409,7 @@
     (else (move-or-raise-maybe-opaque))))
 
 (bind-mouse '(title frame-corners frame-sides) 1 move-or-shade)
-(bind-mouse '(title frame-corners frame-sides) 2 resize-or-raise-maybe-opaque)
+(bind-mouse '(title frame-corners frame-sides) 2 resize-or-raise)
 (bind-mouse '(title frame-corners frame-sides) 3 window-menu)
 
 ;; some stuff for icons

@@ -38,6 +38,7 @@
  (app scwm winops) (app scwm winlist) (app scwm wininfo) (app scwm doc)
  (app scwm optargs) (app scwm std-menus) (app scwm wmconfig-menu)
  (app scwm flux) (app scwm prefs-menu) (app scwm fvwm-module)
+ (app scwm key-mover) (app scwm netscape) (app scwm stringops)
  (app scwm animation) (app scwm placement) (app scwm virtual)
  (app scwm shutdown-opts) ;; (app scwm themes)
  (app scwm animated-iconify) (app scwm message-window) (app scwm gnome-hints))
