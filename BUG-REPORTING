@@ -12,6 +12,8 @@ Greg J. Badros, 11/11/97
 We want these:
 o guile -v output
 o scwm -v output
+o mention previous successful builds of scwm, if any
+  (or tell us if it's your first time building scwm)
 o the file: scwm/scwm/changed.c
 o the file: scwm/scwm/scwmpaths.h
 o scheme backtrace
