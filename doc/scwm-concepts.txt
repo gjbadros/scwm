@@ -290,7 +290,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:578]
+[From scwm/callbacks.c:575]
 
 
 Key Specifier

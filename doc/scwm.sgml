@@ -41,7 +41,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release post-0.8</releaseinfo>
-    <pubdate>20 January 1999</pubdate>
+    <pubdate>23 January 1999</pubdate>
     <copyright>
       <year>1997&ndash;1999</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
@@ -246,7 +246,7 @@ returned.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 592 </para> </refsect1>
+  at line 589 </para> </refsect1>
 </refentry>
 
 <refentry id="add-timer-hook-x">
@@ -431,7 +431,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/modules/c-animation/c-animation.c"><filename>modules/c-animation/c-animation.c</filename></ulink>
-  at line 313 </para> </refsect1>
+  at line 312 </para> </refsect1>
 </refentry>
 
 <refentry id="animated-window-shade">
@@ -458,7 +458,7 @@ the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/modules/c-animation/c-animation.c"><filename>modules/c-animation/c-animation.c</filename></ulink>
-  at line 234 </para> </refsect1>
+  at line 233 </para> </refsect1>
 </refentry>
 
 <refentry id="animated-window-unshade">
@@ -485,7 +485,7 @@ not specified. See also <link linkend="window-unshade"><function>window-unshade<
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/modules/c-animation/c-animation.c"><filename>modules/c-animation/c-animation.c</filename></ulink>
-  at line 288 </para> </refsect1>
+  at line 287 </para> </refsect1>
 </refentry>
 
 <refentry id="append-fvwm2-module-config">
@@ -815,7 +815,59 @@ specified button is pressed in the specified context.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 798 </para> </refsect1>
+  at line 793 </para> </refsect1>
+</refentry>
+
+<refentry id="bind-three-modifier-key-events">
+  <refnamediv>
+    <refname>bind-three-modifier-key-events</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(bind-three-modifier-key-events 
+		modkey1 modkey2 modkey3
+		proc-press proc-release)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm modifier-key-bindings)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/modifier-key-bindings.scm"><filename>scheme/modifier-key-bindings.scm</filename></ulink>
+  at line 21 </para> </refsect1>
+</refentry>
+
+<refentry id="bind-two-modifier-key-events">
+  <refnamediv>
+    <refname>bind-two-modifier-key-events</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(bind-two-modifier-key-events 
+		modkey1 modkey2 
+		proc-press proc-release)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm modifier-key-bindings)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/modifier-key-bindings.scm"><filename>scheme/modifier-key-bindings.scm</filename></ulink>
+  at line 6 </para> </refsect1>
 </refentry>
 
 <refentry id="bool-to-str">
@@ -1273,6 +1325,30 @@ Otherwise return <literal>#f</literal>.
   at line 191 </para> </refsect1>
 </refentry>
 
+<refentry id="cl-set-solver-var">
+  <refnamediv>
+    <refname>cl-set-solver-var</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(cl-set-solver-var s clv value)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 130 </para> </refsect1>
+</refentry>
+
 <refentry id="clear-color-cache-entry">
   <refnamediv>
     <refname>clear-color-cache-entry</refname>
@@ -1538,7 +1614,7 @@ be more than desired.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 551 </para> </refsect1>
+  at line 557 </para> </refsect1>
 </refentry>
 
 <refentry id="close--cwmClock">
@@ -1589,6 +1665,54 @@ be more than desired.
   at line 65 </para> </refsect1>
 </refentry>
 
+<refentry id="close-ui-constraints-buttons">
+  <refnamediv>
+    <refname>close-ui-constraints-buttons</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(close-ui-constraints-buttons sdb)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints-buttons.scm"><filename>scheme/ui-constraints-buttons.scm</filename></ulink>
+  at line 87 </para> </refsect1>
+</refentry>
+
+<refentry id="close-ui-constraints-toolbar">
+  <refnamediv>
+    <refname>close-ui-constraints-toolbar</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(close-ui-constraints-toolbar sdb)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints-toolbar.scm"><filename>scheme/ui-constraints-toolbar.scm</filename></ulink>
+  at line 74 </para> </refsect1>
+</refentry>
+
 <refentry id="close-window">
   <refnamediv>
     <refname>close-window</refname>
@@ -1637,7 +1761,7 @@ other applications.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 417 </para> </refsect1>
+  at line 423 </para> </refsect1>
 </refentry>
 
 <refentry id="color-properties">
@@ -1764,7 +1888,7 @@ colormap focus.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 326 </para> </refsect1>
+  at line 331 </para> </refsect1>
 </refentry>
 
 <refentry id="constraint-satisfied-p">
@@ -1788,7 +1912,7 @@ colormap focus.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 306 </para> </refsect1>
+  at line 311 </para> </refsect1>
 </refentry>
 
 <refentry id="containing-aligned-viewport">
@@ -1972,7 +2096,7 @@ only the XPM menu look uses the <parameter>extra</parameter> information.
 <refentry id="default-move-opaquely-p">
   <refnamediv>
     <refname>default-move-opaquely?</refname>
-    <refpurpose>Return <literal>#t</literal> if WIN has area &lt; opaque-move-percent of the screen, else <literal>#f</literal>.</refpurpose>
+    <refpurpose>Return <literal>#t</literal> if WIN has area <= opaque-move-percent of the screen, else <literal>#f</literal>.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(default-move-opaquely? win)</synopsis>
@@ -1980,7 +2104,7 @@ only the XPM menu look uses the <parameter>extra</parameter> information.
   <refsect1>
   <title>Description</title>
   <para>
-  Return <literal>#t</literal> if WIN has area &lt; opaque-move-percent of the screen, else <literal>#f</literal>.
+  Return <literal>#t</literal> if WIN has area <= opaque-move-percent of the screen, else <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
@@ -2030,7 +2154,7 @@ is not set, or the window starts iconic.
 <refentry id="default-resize-opaquely-p">
   <refnamediv>
     <refname>default-resize-opaquely?</refname>
-    <refpurpose>Return <literal>#t</literal> if WIN has area &lt; opaque-resize-percent of the screen, else <literal>#f</literal>.</refpurpose>
+    <refpurpose>Return <literal>#t</literal> if WIN has area <= opaque-resize-percent of the screen, else <literal>#f</literal>.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(default-resize-opaquely? win)</synopsis>
@@ -2038,7 +2162,7 @@ is not set, or the window starts iconic.
   <refsect1>
   <title>Description</title>
   <para>
-  Return <literal>#t</literal> if WIN has area &lt; opaque-resize-percent of the screen, else <literal>#f</literal>.
+  Return <literal>#t</literal> if WIN has area <= opaque-resize-percent of the screen, else <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
@@ -2153,6 +2277,30 @@ all other instances are removed.
   at line 212 </para> </refsect1>
 </refentry>
 
+<refentry id="delete-multiple-windows-interactively">
+  <refnamediv>
+    <refname>delete-multiple-windows-interactively</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(delete-multiple-windows-interactively)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
+  at line 738 </para> </refsect1>
+</refentry>
+
 <refentry id="delete-ui-constraint-x">
   <refnamediv>
     <refname>delete-ui-constraint!</refname>
@@ -2174,7 +2322,7 @@ all other instances are removed.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 205 </para> </refsect1>
+  at line 210 </para> </refsect1>
 </refentry>
 
 <refentry id="delete-ui-constraint-class-x">
@@ -2198,7 +2346,7 @@ all other instances are removed.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 73 </para> </refsect1>
+  at line 70 </para> </refsect1>
 </refentry>
 
 <refentry id="delete-window">
@@ -2250,7 +2398,7 @@ E.g., if XY-LIST is (2 10) and DX is 5, DY is 7, returns (7 17).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 561 </para> </refsect1>
+  at line 567 </para> </refsect1>
 </refentry>
 
 <refentry id="desk-background">
@@ -2340,6 +2488,30 @@ defaults to the window context in the usual way if not specified.
   at line 1594 </para> </refsect1>
 </refentry>
 
+<refentry id="disable-all-constraints">
+  <refnamediv>
+    <refname>disable-all-constraints</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(disable-all-constraints)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm ui-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
+  at line 388 </para> </refsect1>
+</refentry>
+
 <refentry id="disable-ui-constraint">
   <refnamediv>
     <refname>disable-ui-constraint</refname>
@@ -2361,7 +2533,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 293 </para> </refsect1>
+  at line 298 </para> </refsect1>
 </refentry>
 
 <refentry id="display-message-briefly">
@@ -2386,7 +2558,7 @@ See <link linkend="display-message"><function>display-message</function></link> 
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 543 </para> </refsect1>
+  at line 549 </para> </refsect1>
 </refentry>
 
 <refentry id="display-size">
@@ -2463,7 +2635,7 @@ Returns <literal>#t</literal> if any documentation was found, <literal>#f</liter
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 382 </para> </refsect1>
+  at line 378 </para> </refsect1>
 </refentry>
 
 <refentry id="draw-constraint">
@@ -2487,7 +2659,7 @@ Returns <literal>#t</literal> if any documentation was found, <literal>#f</liter
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 361 </para> </refsect1>
+  at line 366 </para> </refsect1>
 </refentry>
 
 <refentry id="draw-overlay-plane">
@@ -2683,6 +2855,30 @@ This is just for demonstration and testing purposes for now.
   at line 476 </para> </refsect1>
 </refentry>
 
+<refentry id="enable-all-constraints">
+  <refnamediv>
+    <refname>enable-all-constraints</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(enable-all-constraints)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
+  at line 392 </para> </refsect1>
+</refentry>
+
 <refentry id="enable-ui-constraint">
   <refnamediv>
     <refname>enable-ui-constraint</refname>
@@ -2704,7 +2900,7 @@ This is just for demonstration and testing purposes for now.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 279 </para> </refsect1>
+  at line 284 </para> </refsect1>
 </refentry>
 
 <refentry id="eval-fvwm-command">
@@ -2781,7 +2977,7 @@ working commands.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 672 </para> </refsect1>
+  at line 678 </para> </refsect1>
 </refentry>
 
 <refentry id="execute">
@@ -2829,7 +3025,7 @@ working commands.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 668 </para> </refsect1>
+  at line 674 </para> </refsect1>
 </refentry>
 
 <refentry id="extreme">
@@ -2855,7 +3051,7 @@ of LST not equal to e. E.g. `(extreme &lt; ...)' returns the lowest number.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 684 </para> </refsect1>
+  at line 690 </para> </refsect1>
 </refentry>
 
 <refentry id="filename-is-complete-p">
@@ -3068,7 +3264,7 @@ color.  See <link linkend="unflash-window"><function>unflash-window</function></
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 460 </para> </refsect1>
+  at line 466 </para> </refsect1>
 </refentry>
 
 <refentry id="focus">
@@ -3549,7 +3745,7 @@ notion of what the command line was used to run the application.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 429 </para> </refsect1>
+  at line 435 </para> </refsect1>
 </refentry>
 
 <refentry id="gravity-to-alignments">
@@ -3574,6 +3770,30 @@ notion of what the command line was used to run the application.
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/message-window.scm"><filename>scheme/message-window.scm</filename></ulink>
   at line 16 </para> </refsect1>
+</refentry>
+
+<refentry id="gtk-pixmap-new-search-scwm-path">
+  <refnamediv>
+    <refname>gtk-pixmap-new-search-scwm-path</refname>
+    <refpurpose>Return the new pixmap object as <link linkend="gtk-pixmap-new"><function>gtk-pixmap-new</function></link> does, but search Scwm's image-load-path for it.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(gtk-pixmap-new-search-scwm-path pixmap-name button)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the new pixmap object as <link linkend="gtk-pixmap-new"><function>gtk-pixmap-new</function></link> does, but search Scwm's image-load-path for it.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/gtk.scm"><filename>scheme/gtk.scm</filename></ulink>
+  at line 46 </para> </refsect1>
 </refentry>
 
 <refentry id="has-overlay-plane-p">
@@ -4391,6 +4611,318 @@ outline or the window itself is resized.
   at line 41 </para> </refsect1>
 </refentry>
 
+<refentry id="keep-above">
+  <refnamediv>
+    <refname>keep-above</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-above w1 w2 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 45 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-adjacent-horizontal">
+  <refnamediv>
+    <refname>keep-adjacent-horizontal</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-adjacent-horizontal w1 w2 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 84 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-adjacent-vertical">
+  <refnamediv>
+    <refname>keep-adjacent-vertical</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-adjacent-vertical w1 w2 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 91 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-at-left-edge">
+  <refnamediv>
+    <refname>keep-at-left-edge</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-at-left-edge w #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 98 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-at-right-edge">
+  <refnamediv>
+    <refname>keep-at-right-edge</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-at-right-edge w #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 110 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-at-top-edge">
+  <refnamediv>
+    <refname>keep-at-top-edge</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-at-top-edge w #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 104 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-bottoms-even">
+  <refnamediv>
+    <refname>keep-bottoms-even</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-bottoms-even w1 w2 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 24 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-constant-size">
+  <refnamediv>
+    <refname>keep-constant-size</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-constant-size w #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 124 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-constant-width">
+  <refnamediv>
+    <refname>keep-constant-width</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-constant-width w width #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 116 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-full-height">
+  <refnamediv>
+    <refname>keep-full-height</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-full-height w1 w2 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 77 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-full-width">
+  <refnamediv>
+    <refname>keep-full-width</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-full-width w1 w2 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 70 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-left-at-v">
+  <refnamediv>
+    <refname>keep-left-at-v</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-left-at-v w1 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 58 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-lefts-even">
+  <refnamediv>
+    <refname>keep-lefts-even</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-lefts-even w1 w2 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 17 </para> </refsect1>
+</refentry>
+
 <refentry id="keep-on-top">
   <refnamediv>
     <refname>keep-on-top</refname>
@@ -4415,6 +4947,126 @@ Obviously, other windows that are also on-top may obscure <parameter>win</parame
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
   at line 2734 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-right-at-v">
+  <refnamediv>
+    <refname>keep-right-at-v</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-right-at-v w1 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 64 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-rights-even">
+  <refnamediv>
+    <refname>keep-rights-even</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-rights-even w1 w2 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 31 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-to-left-of">
+  <refnamediv>
+    <refname>keep-to-left-of</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-to-left-of w1 w2 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 38 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-top-at-v">
+  <refnamediv>
+    <refname>keep-top-at-v</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-top-at-v w1 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 52 </para> </refsect1>
+</refentry>
+
+<refentry id="keep-tops-even">
+  <refnamediv>
+    <refname>keep-tops-even</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(keep-tops-even w1 w2 #&amp;optional (enable? #f))</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm simple-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/simple-constraints.scm"><filename>scheme/simple-constraints.scm</filename></ulink>
+  at line 10 </para> </refsect1>
 </refentry>
 
 <refentry id="kept-on-top-p">
@@ -4617,7 +5269,7 @@ of the directions.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/kwm-emulation.scm"><filename>scheme/kwm-emulation.scm</filename></ulink>
-  at line 175 </para> </refsect1>
+  at line 218 </para> </refsect1>
 </refentry>
 
 <refentry id="kwm-emulation-reset">
@@ -4641,7 +5293,7 @@ of the directions.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/kwm-emulation.scm"><filename>scheme/kwm-emulation.scm</filename></ulink>
-  at line 210 </para> </refsect1>
+  at line 256 </para> </refsect1>
 </refentry>
 
 <refentry id="kwm-send-window-list">
@@ -4665,7 +5317,7 @@ of the directions.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/kwm-emulation.scm"><filename>scheme/kwm-emulation.scm</filename></ulink>
-  at line 153 </para> </refsect1>
+  at line 190 </para> </refsect1>
 </refentry>
 
 <refentry id="list-all-windows">
@@ -5520,7 +6172,7 @@ from "gray50".
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 501 </para> </refsect1>
+  at line 507 </para> </refsect1>
 </refentry>
 
 <refentry id="make-string-usable-for-resource-key">
@@ -5547,7 +6199,7 @@ underscores, so that the resulting string can be used as a key for
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 484 </para> </refsect1>
+  at line 490 </para> </refsect1>
 </refentry>
 
 <refentry id="make-style">
@@ -5648,21 +6300,23 @@ on the window, and set the property on the window, respectively.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 176 </para> </refsect1>
+  at line 181 </para> </refsect1>
 </refentry>
 
 <refentry id="make-ui-constraint-class">
   <refnamediv>
     <refname>make-ui-constraint-class</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>CTR takes NUM-WINDOWS windows and creates a constraint of this type.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(make-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED)</synopsis>
+    <synopsis>(make-ui-constraint-class NAME NUM-WINDOWS CTR UI-CTR DRAW-PROC SATISFIED-PROC PIXMAP-NAME)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  CTR takes NUM-WINDOWS windows and creates a constraint of this type.
+SATISFIED-PROC is a procedure that takes a single argument, the cn, and tells if it is satisfied
+UI-CTR should return the arguments (as a list) for CTR to build the constraint with.
   </para>
   </refsect1>
   <refsect1>
@@ -5672,7 +6326,7 @@ on the window, and set the property on the window, respectively.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 61 </para> </refsect1>
+  at line 55 </para> </refsect1>
 </refentry>
 
 <refentry id="make-ui-constraint-interactively">
@@ -5696,7 +6350,7 @@ on the window, and set the property on the window, respectively.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 192 </para> </refsect1>
+  at line 198 </para> </refsect1>
 </refentry>
 
 <refentry id="make-wmconfig-menu">
@@ -5969,7 +6623,7 @@ specific to the menu look used for this menu.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 1455 </para> </refsect1>
+  at line 1441 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-prefs">
@@ -6246,7 +6900,7 @@ These are returned in a list of the form (fg_color,bg_color).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/message-window.c"><filename>scwm/message-window.c</filename></ulink>
-  at line 563 </para> </refsect1>
+  at line 559 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-font">
@@ -6270,7 +6924,7 @@ These are returned in a list of the form (fg_color,bg_color).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/message-window.c"><filename>scwm/message-window.c</filename></ulink>
-  at line 549 </para> </refsect1>
+  at line 545 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-hide-x">
@@ -6295,7 +6949,7 @@ See also <link linkend="message-window-show"><function>message-window-show</func
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/message-window.c"><filename>scwm/message-window.c</filename></ulink>
-  at line 484 </para> </refsect1>
+  at line 480 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-message">
@@ -6319,7 +6973,7 @@ See also <link linkend="message-window-show"><function>message-window-show</func
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/message-window.c"><filename>scwm/message-window.c</filename></ulink>
-  at line 518 </para> </refsect1>
+  at line 514 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-options">
@@ -6397,7 +7051,7 @@ returned as a four element list of (x,y,x_align,y_align)
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/message-window.c"><filename>scwm/message-window.c</filename></ulink>
-  at line 532 </para> </refsect1>
+  at line 528 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-relief-p">
@@ -6421,7 +7075,7 @@ returned as a four element list of (x,y,x_align,y_align)
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/message-window.c"><filename>scwm/message-window.c</filename></ulink>
-  at line 581 </para> </refsect1>
+  at line 577 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-set-colors-x">
@@ -6524,7 +7178,7 @@ height of the window to offset the window for alignment.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/message-window.c"><filename>scwm/message-window.c</filename></ulink>
-  at line 380 </para> </refsect1>
+  at line 376 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-set-relief-x">
@@ -6548,7 +7202,7 @@ height of the window to offset the window for alignment.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/message-window.c"><filename>scwm/message-window.c</filename></ulink>
-  at line 435 </para> </refsect1>
+  at line 431 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-show-x">
@@ -6575,7 +7229,7 @@ the window will not ever disappear).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/message-window.c"><filename>scwm/message-window.c</filename></ulink>
-  at line 454 </para> </refsect1>
+  at line 450 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-style">
@@ -6626,7 +7280,7 @@ See also <link linkend="message-window-show"><function>message-window-show</func
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/message-window.c"><filename>scwm/message-window.c</filename></ulink>
-  at line 503 </para> </refsect1>
+  at line 499 </para> </refsect1>
 </refentry>
 
 <refentry id="message-window-p">
@@ -6700,7 +7354,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 953 </para> </refsect1>
+  at line 948 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-control">
@@ -6726,7 +7380,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 937 </para> </refsect1>
+  at line 932 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-hyper">
@@ -6752,7 +7406,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 961 </para> </refsect1>
+  at line 956 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-meta">
@@ -6778,7 +7432,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 945 </para> </refsect1>
+  at line 940 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-shift">
@@ -6804,7 +7458,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 929 </para> </refsect1>
+  at line 924 </para> </refsect1>
 </refentry>
 
 <refentry id="mod-mask-super">
@@ -6830,7 +7484,7 @@ returns a power of two corresponding to the bit-mask of the modifier
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 970 </para> </refsect1>
+  at line 965 </para> </refsect1>
 </refentry>
 
 <refentry id="module-event-name-from-number">
@@ -6881,7 +7535,7 @@ to determine, e.g., whether the user single clicked or double clicked.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 916 </para> </refsect1>
+  at line 911 </para> </refsect1>
 </refentry>
 
 <refentry id="mouse-focus-click-raises-p">
@@ -7186,7 +7840,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 567 </para> </refsect1>
+  at line 573 </para> </refsect1>
 </refentry>
 
 <refentry id="move-window-to-desk">
@@ -7264,7 +7918,7 @@ that take microseconds.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 442 </para> </refsect1>
+  at line 448 </para> </refsect1>
 </refentry>
 
 <refentry id="nearest-aligned-viewport">
@@ -7346,7 +8000,7 @@ It defaults to <link linkend="netscape-new-window"><function>netscape-new-window
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 641 </para> </refsect1>
+  at line 647 </para> </refsect1>
 </refentry>
 
 <refentry id="netscape-win">
@@ -7371,7 +8025,7 @@ May error if no netscape windows are present.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 580 </para> </refsect1>
+  at line 586 </para> </refsect1>
 </refentry>
 
 <refentry id="next-window">
@@ -7880,7 +8534,7 @@ right justified against <parameter>x-pos</parameter>.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 1465 </para> </refsect1>
+  at line 1451 </para> </refsect1>
 </refentry>
 
 <refentry id="popup-menu-from-decoration">
@@ -7905,7 +8559,32 @@ This positions the popup menu appropriately.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 448 </para> </refsect1>
+  at line 454 </para> </refsect1>
+</refentry>
+
+<refentry id="popup-ui-constraints-toggle-menu">
+  <refnamediv>
+    <refname>popup-ui-constraints-toggle-menu</refname>
+    <refpurpose>Popup a menu that can be used to turn added constraints on and off.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(popup-ui-constraints-toggle-menu)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Popup a menu that can be used to turn added constraints on and off.
+See also <link linkend="constraint-toggle-menu"><function>constraint-toggle-menu</function></link>.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints-toggle-menu.scm"><filename>scheme/ui-constraints-toggle-menu.scm</filename></ulink>
+  at line 60 </para> </refsect1>
 </refentry>
 
 <refentry id="position-message-window-x">
@@ -8060,7 +8739,7 @@ version of this.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 712 </para> </refsect1>
+  at line 718 </para> </refsect1>
 </refentry>
 
 <refentry id="quotify-single-quotes">
@@ -8406,7 +9085,7 @@ input hook may safely remove itself.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 622 </para> </refsect1>
+  at line 619 </para> </refsect1>
 </refentry>
 
 <refentry id="remove-timer-hook-x">
@@ -8433,7 +9112,7 @@ timer hook that has already been triggered.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/callbacks.c"><filename>scwm/callbacks.c</filename></ulink>
-  at line 497 </para> </refsect1>
+  at line 494 </para> </refsect1>
 </refentry>
 
 <refentry id="report-scwm-usage">
@@ -8484,7 +9163,7 @@ however, no message will be sent even if this function is called.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/modules/background/background.c"><filename>modules/background/background.c</filename></ulink>
-  at line 234 </para> </refsect1>
+  at line 235 </para> </refsect1>
 </refentry>
 
 <refentry id="reset-scwmexec-protocol">
@@ -8514,6 +9193,30 @@ if your Emacs hangs when you try evaluating a scwm expression).
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/events.c"><filename>scwm/events.c</filename></ulink>
   at line 493 </para> </refsect1>
+</refentry>
+
+<refentry id="reset-ui-constraint-classes-x">
+  <refnamediv>
+    <refname>reset-ui-constraint-classes!</refname>
+    <refpurpose>Empty the global list of ui-constraint-classes.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(reset-ui-constraint-classes!)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Empty the global list of ui-constraint-classes.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm ui-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
+  at line 74 </para> </refsect1>
 </refentry>
 
 <refentry id="resize-frame-to">
@@ -8855,7 +9558,7 @@ otherwise; it is an error if NETWIN refers to a non-Netscape window.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 607 </para> </refsect1>
+  at line 613 </para> </refsect1>
 </refentry>
 
 <refentry id="run-in-xterm">
@@ -9013,7 +9716,7 @@ errors.
 <refentry id="scwm-gtk-sync">
   <refnamediv>
     <refname>scwm-gtk-sync</refname>
-    <refpurpose>No documentation supplied.</refpurpose>
+    <refpurpose>Dispatch all pending gtk-events.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(scwm-gtk-sync)</synopsis>
@@ -9021,7 +9724,9 @@ errors.
   <refsect1>
   <title>Description</title>
   <para>
-  No documentation supplied.
+  Dispatch all pending gtk-events.
+This ought to be called from inside Scwm-controlled loops that do not return
+to the main event loop
   </para>
   </refsect1>
   <refsect1>
@@ -9232,7 +9937,7 @@ that take microseconds.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 436 </para> </refsect1>
+  at line 442 </para> </refsect1>
 </refentry>
 
 <refentry id="select-multiple-windows-interactively">
@@ -9241,13 +9946,15 @@ that take microseconds.
     <refpurpose>Return a list of user-selected windows, up to MAX.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(select-multiple-windows-interactively #&amp;optional (max 32000))</synopsis>
+    <synopsis>(select-multiple-windows-interactively
+		 #&amp;optional (max 32000) (proc-when-selected #f))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
   Return a list of user-selected windows, up to MAX.
 The list is in the reverse order from the way by which they were selected.
+PROC-WHEN-SELECTED will be run on each window as it is selected.
   </para>
   </refsect1>
   <refsect1>
@@ -9314,7 +10021,7 @@ Return the selected window object, or <literal>#f</literal> if none was selected
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 399 </para> </refsect1>
+  at line 405 </para> </refsect1>
 </refentry>
 
 <refentry id="select-window-group">
@@ -9347,12 +10054,14 @@ Return the selected window object, or <literal>#f</literal> if none was selected
     <refpurpose>Return an interactively-selected window after prompting (optionally) with MSG.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(select-window-interactively #&amp;optional (msg #f))</synopsis>
+    <synopsis>(select-window-interactively #&amp;optional (msg #f) (message-window #f))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
   Return an interactively-selected window after prompting (optionally) with MSG.
+If given, use message window MESSAGE-WINDOW to display the message, otherwise create
+a new message window.
   </para>
   </refsect1>
   <refsect1>
@@ -10015,7 +10724,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3642 </para> </refsect1>
+  at line 3645 </para> </refsect1>
 </refentry>
 
 <refentry id="set-desk-size-x">
@@ -10337,7 +11046,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3443 </para> </refsect1>
+  at line 3446 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hilight-background-x">
@@ -10442,7 +11151,7 @@ not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3625 </para> </refsect1>
+  at line 3628 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-x">
@@ -10469,7 +11178,7 @@ context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3489 </para> </refsect1>
+  at line 3492 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-box-x">
@@ -10545,7 +11254,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3426 </para> </refsect1>
+  at line 3429 </para> </refsect1>
 </refentry>
 
 <refentry id="set-lenience-x">
@@ -10574,7 +11283,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3757 </para> </refsect1>
+  at line 3760 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-background-x">
@@ -10721,7 +11430,7 @@ a <return> or <space> to activate the item.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 1443 </para> </refsect1>
+  at line 1429 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-look-x">
@@ -10769,7 +11478,7 @@ a <return> or <space> to activate the item.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 410 </para> </refsect1>
+  at line 400 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-menu-title-x">
@@ -10793,7 +11502,7 @@ a <return> or <space> to activate the item.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/menu.c"><filename>scwm/menu.c</filename></ulink>
-  at line 433 </para> </refsect1>
+  at line 419 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-shadow-factor-x">
@@ -10917,7 +11626,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3542 </para> </refsect1>
+  at line 3545 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mouse-focus-click-raises-x">
@@ -10970,7 +11679,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3381 </para> </refsect1>
+  at line 3384 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-buttons-x">
@@ -10997,7 +11706,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3365 </para> </refsect1>
+  at line 3368 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-decor-hint-x">
@@ -11023,7 +11732,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3658 </para> </refsect1>
+  at line 3661 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-func-hint-x">
@@ -11050,7 +11759,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3672 </para> </refsect1>
+  at line 3675 </para> </refsect1>
 </refentry>
 
 <refentry id="set-not-menu-background-x">
@@ -11124,7 +11833,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3704 </para> </refsect1>
+  at line 3707 </para> </refsect1>
 </refentry>
 
 <refentry id="set-PPosition-hint-x">
@@ -11153,7 +11862,7 @@ usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3687 </para> </refsect1>
+  at line 3690 </para> </refsect1>
 </refentry>
 
 <refentry id="set-random-placement-x">
@@ -11259,7 +11968,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3470 </para> </refsect1>
+  at line 3473 </para> </refsect1>
 </refentry>
 
 <refentry id="set-skip-mapping-x">
@@ -11286,7 +11995,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3742 </para> </refsect1>
+  at line 3745 </para> </refsect1>
 </refentry>
 
 <refentry id="set-smart-placement-x">
@@ -11365,7 +12074,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3718 </para> </refsect1>
+  at line 3721 </para> </refsect1>
 </refentry>
 
 <refentry id="set-title-face-x">
@@ -11798,7 +12507,7 @@ window property primitives should be considered in flux.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3773 </para> </refsect1>
+  at line 3776 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-title-x">
@@ -11824,7 +12533,7 @@ window title by changing the WM_NAME X-Property.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 423 </para> </refsect1>
+  at line 429 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-transient-placement-proc-x">
@@ -12357,6 +13066,54 @@ the window's smart-placement flag is on.
   at line 41 </para> </refsect1>
 </refentry>
 
+<refentry id="start-ui-constraints-buttons">
+  <refnamediv>
+    <refname>start-ui-constraints-buttons</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(start-ui-constraints-buttons)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm ui-constraints-buttons)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints-buttons.scm"><filename>scheme/ui-constraints-buttons.scm</filename></ulink>
+  at line 46 </para> </refsect1>
+</refentry>
+
+<refentry id="start-ui-constraints-toolbar">
+  <refnamediv>
+    <refname>start-ui-constraints-toolbar</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(start-ui-constraints-toolbar)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm ui-constraints-toolbar)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints-toolbar.scm"><filename>scheme/ui-constraints-toolbar.scm</filename></ulink>
+  at line 42 </para> </refsect1>
+</refentry>
+
 <refentry id="stick">
   <refnamediv>
     <refname>stick</refname>
@@ -12659,7 +13416,7 @@ in the user's home directory.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 692 </para> </refsect1>
+  at line 698 </para> </refsect1>
 </refentry>
 
 <refentry id="theme:background-style">
@@ -13237,7 +13994,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 247 </para> </refsect1>
+  at line 249 </para> </refsect1>
 </refentry>
 
 <refentry id="ui-constraint-class-ctr">
@@ -13261,7 +14018,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 116 </para> </refsect1>
+  at line 115 </para> </refsect1>
 </refentry>
 
 <refentry id="ui-constraint-class-draw-proc">
@@ -13285,7 +14042,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 138 </para> </refsect1>
+  at line 137 </para> </refsect1>
 </refentry>
 
 <refentry id="ui-constraint-class-name">
@@ -13309,7 +14066,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 93 </para> </refsect1>
+  at line 92 </para> </refsect1>
 </refentry>
 
 <refentry id="ui-constraint-class-num-windows">
@@ -13333,16 +14090,41 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 105 </para> </refsect1>
+  at line 104 </para> </refsect1>
 </refentry>
 
-<refentry id="ui-constraint-class-satisfied">
+<refentry id="ui-constraint-class-pixmap-name">
   <refnamediv>
-    <refname>ui-constraint-class-satisfied</refname>
+    <refname>ui-constraint-class-pixmap-name</refname>
+    <refpurpose>Return the pixmap-name of UI-CONSTRAINT-CLASS.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(ui-constraint-class-pixmap-name UI-CONSTRAINT-CLASS)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return the pixmap-name of UI-CONSTRAINT-CLASS.
+Errors if object is not a ui-constraint-class object.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm ui-constraints)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
+  at line 153 </para> </refsect1>
+</refentry>
+
+<refentry id="ui-constraint-class-satisfied-proc">
+  <refnamediv>
+    <refname>ui-constraint-class-satisfied-proc</refname>
     <refpurpose>No documentation supplied.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(ui-constraint-class-satisfied UI-CONSTRAINT-CLASS)</synopsis>
+    <synopsis>(ui-constraint-class-satisfied-proc UI-CONSTRAINT-CLASS)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -13357,7 +14139,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 150 </para> </refsect1>
+  at line 148 </para> </refsect1>
 </refentry>
 
 <refentry id="ui-constraint-class-ui-ctr">
@@ -13381,7 +14163,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 127 </para> </refsect1>
+  at line 126 </para> </refsect1>
 </refentry>
 
 <refentry id="ui-constraint-class-p">
@@ -13405,7 +14187,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 82 </para> </refsect1>
+  at line 83 </para> </refsect1>
 </refentry>
 
 <refentry id="ui-constraint-cn">
@@ -13429,16 +14211,16 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 225 </para> </refsect1>
+  at line 228 </para> </refsect1>
 </refentry>
 
-<refentry id="ui-constraint-enable">
+<refentry id="ui-constraint-enabled-p">
   <refnamediv>
-    <refname>ui-constraint-enable</refname>
+    <refname>ui-constraint-enabled?</refname>
     <refpurpose>No documentation supplied.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(ui-constraint-enable UI-CONSTRAINT)</synopsis>
+    <synopsis>(ui-constraint-enabled? UI-CONSTRAINT)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -13453,7 +14235,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 236 </para> </refsect1>
+  at line 239 </para> </refsect1>
 </refentry>
 
 <refentry id="ui-constraint-windows">
@@ -13477,7 +14259,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 258 </para> </refsect1>
+  at line 260 </para> </refsect1>
 </refentry>
 
 <refentry id="ui-constraint-p">
@@ -13501,7 +14283,31 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 214 </para> </refsect1>
+  at line 219 </para> </refsect1>
+</refentry>
+
+<refentry id="ui-constraints-toggle-menu">
+  <refnamediv>
+    <refname>ui-constraints-toggle-menu</refname>
+    <refpurpose>Return a menu of constraints that permits toggling their enabled? state.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(ui-constraints-toggle-menu)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a menu of constraints that permits toggling their enabled? state.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm ui-constraints-toggle-menu)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints-toggle-menu.scm"><filename>scheme/ui-constraints-toggle-menu.scm</filename></ulink>
+  at line 28 </para> </refsect1>
 </refentry>
 
 <refentry id="un-keep-on-top">
@@ -13598,12 +14404,12 @@ way if not specified.
   </refsect1>
   <refsect1>
   <title>Module</title>
-  <para></para>
+  <para>(app scwm ui-constraints)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 388 </para> </refsect1>
+  at line 384 </para> </refsect1>
 </refentry>
 
 <refentry id="undraw-constraint">
@@ -13627,7 +14433,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/ui-constraints.scm"><filename>scheme/ui-constraints.scm</filename></ulink>
-  at line 367 </para> </refsect1>
+  at line 372 </para> </refsect1>
 </refentry>
 
 <refentry id="unflash-window">
@@ -13651,7 +14457,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 476 </para> </refsect1>
+  at line 482 </para> </refsect1>
 </refentry>
 
 <refentry id="unfocus">
@@ -13829,7 +14635,7 @@ the first element for changes to desk 1, etc.  Changes to desks which are
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 656 </para> </refsect1>
+  at line 662 </para> </refsect1>
 </refentry>
 
 <refentry id="use-theme">
@@ -14440,6 +15246,30 @@ does.
   at line 60 </para> </refsect1>
 </refentry>
 
+<refentry id="window-center-bottom">
+  <refnamediv>
+    <refname>window-center-bottom</refname>
+    <refpurpose>Return a pair (X .</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-center-bottom win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a pair (X . Y) that is the pixel position of the center, bottom of WIN.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm window-locations)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
+  at line 18 </para> </refsect1>
+</refentry>
+
 <refentry id="window-center-position">
   <refnamediv>
     <refname>window-center-position</refname>
@@ -14462,6 +15292,30 @@ does.
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/wininfo.scm"><filename>scheme/wininfo.scm</filename></ulink>
   at line 119 </para> </refsect1>
+</refentry>
+
+<refentry id="window-center-top">
+  <refnamediv>
+    <refname>window-center-top</refname>
+    <refpurpose>Return a pair (X .</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-center-top win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a pair (X . Y) that is the pixel position of the center, top of WIN.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm window-locations)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
+  at line 9 </para> </refsect1>
 </refentry>
 
 <refentry id="window-class">
@@ -14766,7 +15620,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3525 </para> </refsect1>
+  at line 3528 </para> </refsect1>
 </refentry>
 
 <refentry id="window-icon-shaped-p">
@@ -14790,7 +15644,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3609 </para> </refsect1>
+  at line 3612 </para> </refsect1>
 </refentry>
 
 <refentry id="window-icon-title">
@@ -14919,6 +15773,78 @@ times.
   at line 145 </para> </refsect1>
 </refentry>
 
+<refentry id="window-left-bottom">
+  <refnamediv>
+    <refname>window-left-bottom</refname>
+    <refpurpose>Return a pair (X .</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-left-bottom win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a pair (X . Y) that is the pixel position of the left, bottom of WIN.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm window-locations)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
+  at line 51 </para> </refsect1>
+</refentry>
+
+<refentry id="window-left-middle">
+  <refnamediv>
+    <refname>window-left-middle</refname>
+    <refpurpose>Return a pair (X .</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-left-middle win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a pair (X . Y) that is the pixel position of the left, middle of WIN.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm window-locations)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
+  at line 28 </para> </refsect1>
+</refentry>
+
+<refentry id="window-left-top">
+  <refnamediv>
+    <refname>window-left-top</refname>
+    <refpurpose>Return a pair (X .</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-left-top win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a pair (X . Y) that is the pixel position of the left, top of WIN.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm window-locations)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
+  at line 47 </para> </refsect1>
+</refentry>
+
 <refentry id="window-mini-icon">
   <refnamediv>
     <refname>window-mini-icon</refname>
@@ -14942,7 +15868,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3577 </para> </refsect1>
+  at line 3580 </para> </refsect1>
 </refentry>
 
 <refentry id="window-overlaps-window-p">
@@ -15026,7 +15952,7 @@ be considered in flux.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3810 </para> </refsect1>
+  at line 3813 </para> </refsect1>
 </refentry>
 
 <refentry id="window-resource">
@@ -15052,6 +15978,78 @@ the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
   at line 2624 </para> </refsect1>
+</refentry>
+
+<refentry id="window-right-bottom">
+  <refnamediv>
+    <refname>window-right-bottom</refname>
+    <refpurpose>Return a pair (X .</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-right-bottom win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a pair (X . Y) that is the pixel position of the right, bottom of WIN.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
+  at line 69 </para> </refsect1>
+</refentry>
+
+<refentry id="window-right-middle">
+  <refnamediv>
+    <refname>window-right-middle</refname>
+    <refpurpose>Return a pair (X .</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-right-middle win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a pair (X . Y) that is the pixel position of the right, middle of WIN.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm window-locations)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
+  at line 37 </para> </refsect1>
+</refentry>
+
+<refentry id="window-right-top">
+  <refnamediv>
+    <refname>window-right-top</refname>
+    <refpurpose>Return a pair (X .</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-right-top win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Return a pair (X . Y) that is the pixel position of the right, top of WIN.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm window-locations)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/window-locations.scm"><filename>scheme/window-locations.scm</filename></ulink>
+  at line 60 </para> </refsect1>
 </refentry>
 
 <refentry id="window-shade">
@@ -15128,7 +16126,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3594 </para> </refsect1>
+  at line 3597 </para> </refsect1>
 </refentry>
 
 <refentry id="window-size">
@@ -15638,7 +16636,7 @@ TYPE and FORMAT are as in X-property-set!
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 593 </para> </refsect1>
+  at line 599 </para> </refsect1>
 </refentry>
 
 <refentry id="X-cut-buffer-to-palm-clipboard">
@@ -15657,12 +16655,12 @@ TYPE and FORMAT are as in X-property-set!
   </refsect1>
   <refsect1>
   <title>Module</title>
-  <para></para>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 717 </para> </refsect1>
+  at line 723 </para> </refsect1>
 </refentry>
 
 <refentry id="X-cut-buffer-string">
@@ -15688,7 +16686,7 @@ CUT_BUFFER0 property is not a string.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
-  at line 534 </para> </refsect1>
+  at line 540 </para> </refsect1>
 </refentry>
 
 <refentry id="X-display-information">
@@ -15777,7 +16775,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/binding.c"><filename>scwm/binding.c</filename></ulink>
-  at line 979 </para> </refsect1>
+  at line 974 </para> </refsect1>
 </refentry>
 
 <refentry id="X-property-delete-x">
@@ -15895,7 +16893,7 @@ the file.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xrm.c"><filename>scwm/xrm.c</filename></ulink>
-  at line 99 </para> </refsect1>
+  at line 96 </para> </refsect1>
 </refentry>
 
 <refentry id="X-resource-get">
@@ -15922,7 +16920,7 @@ If there is no resource under the given key, <literal>#f</literal> is returned.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/xrm.c"><filename>scwm/xrm.c</filename></ulink>
-  at line 66 </para> </refsect1>
+  at line 64 </para> </refsect1>
 </refentry>
 
 <refentry id="X-resource-put">
@@ -16061,16 +17059,16 @@ revision, the X server vendor, and the vendor release number.
     <refpurpose>Draws a arc to the screen using the Xlib call XDrawArc.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(xlib-draw-arc! x y width height angle1 angle2)</synopsis>
+    <synopsis>(xlib-draw-arc! top-left width height angle1 angle2)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  Draws a arc to the screen using the <parameter>x</parameter>lib call <parameter>x</parameter>DrawArc.  The arc is
-specified in terms of a rectangle, in which it is wholly enclosed.
-( <parameter>x</parameter>, <parameter>y</parameter> ) is at the upper left corner of the rectangle.  The rectangle is of
-size <parameter>width</parameter> by <parameter>height</parameter>.  The arc is drawn from <parameter>angle1</parameter> to <parameter>angle2</parameter>. Angles are
-specified in degrees (0.0 to 360.0).
+  Draws a arc to the screen using the Xlib call XDrawArc.
+The arc is specified in terms of a rectangle, in which it is wholly
+enclosed.  <parameter>top-left</parameter> is a point pair for the upper left corner of the rectangle.  The
+rectangle is of size <parameter>width</parameter> by <parameter>height</parameter>.  The arc is drawn from <parameter>angle1</parameter> to
+<parameter>angle2</parameter>. Angles are specified in degrees (0.0 to 360.0).
   </para>
   </refsect1>
   <refsect1>
@@ -16080,7 +17078,7 @@ specified in degrees (0.0 to 360.0).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/modules/xlib-drawing/drawing.c"><filename>modules/xlib-drawing/drawing.c</filename></ulink>
-  at line 157 </para> </refsect1>
+  at line 152 </para> </refsect1>
 </refentry>
 
 <refentry id="xlib-draw-line-x">
@@ -16089,13 +17087,14 @@ specified in degrees (0.0 to 360.0).
     <refpurpose>Draws a line using the Xlib call XDrawLine.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(xlib-draw-line! x1 y1 x2 y2)</synopsis>
+    <synopsis>(xlib-draw-line! p1 p2)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
   Draws a line using the Xlib call XDrawLine.
-The line is drawn from ( <parameter>x1</parameter>, <parameter>y1</parameter> ) to ( <parameter>x2</parameter>, <parameter>y2</parameter> ).
+The line is drawn from <parameter>p1</parameter> to <parameter>p2</parameter>.
+Both <parameter>p1</parameter> and <parameter>p2</parameter> are pairs (X . Y) representing a point
   </para>
   </refsect1>
   <refsect1>
@@ -16105,7 +17104,7 @@ The line is drawn from ( <parameter>x1</parameter>, <parameter>y1</parameter> ) 
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/modules/xlib-drawing/drawing.c"><filename>modules/xlib-drawing/drawing.c</filename></ulink>
-  at line 114 </para> </refsect1>
+  at line 126 </para> </refsect1>
 </refentry>
 
 <refentry id="xlib-draw-rectangle-x">
@@ -16114,14 +17113,15 @@ The line is drawn from ( <parameter>x1</parameter>, <parameter>y1</parameter> ) 
     <refpurpose>Draws a rectangle to the screen using the Xlib call XDrawRectangle.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>(xlib-draw-rectangle! x y width height)</synopsis>
+    <synopsis>(xlib-draw-rectangle! top-left width height)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
-  Draws a rectangle to the screen using the <parameter>x</parameter>lib call <parameter>x</parameter>DrawRectangle.
-( <parameter>x</parameter>, <parameter>y</parameter> ) is the upper left point of the rectangle.  The rectangle is of size
+  Draws a rectangle to the screen using the Xlib call XDrawRectangle.
+<parameter>top-left</parameter> is the upper left point of the rectangle.  The rectangle is of size
 <parameter>width</parameter> by <parameter>height</parameter>.
+<parameter>top-left</parameter> is a point pair: (X . Y).
   </para>
   </refsect1>
   <refsect1>
@@ -16131,7 +17131,7 @@ The line is drawn from ( <parameter>x1</parameter>, <parameter>y1</parameter> ) 
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/modules/xlib-drawing/drawing.c"><filename>modules/xlib-drawing/drawing.c</filename></ulink>
-  at line 60 </para> </refsect1>
+  at line 78 </para> </refsect1>
 </refentry>
 
 <refentry id="xlib-set-drawing-mask-x">
@@ -16157,7 +17157,7 @@ resize frames. <parameter>value</parameter> should be an integer.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/modules/xlib-drawing/drawing.c"><filename>modules/xlib-drawing/drawing.c</filename></ulink>
-  at line 29 </para> </refsect1>
+  at line 47 </para> </refsect1>
 </refentry>
 
 <refentry id="xlib-set-fill-style-x">
@@ -16181,7 +17181,7 @@ resize frames. <parameter>value</parameter> should be an integer.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/modules/xlib-drawing/drawing.c"><filename>modules/xlib-drawing/drawing.c</filename></ulink>
-  at line 255 </para> </refsect1>
+  at line 246 </para> </refsect1>
 </refentry>
 
 <refentry id="xlib-set-line-width-x">
@@ -16205,7 +17205,7 @@ resize frames. <parameter>value</parameter> should be an integer.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/modules/xlib-drawing/drawing.c"><filename>modules/xlib-drawing/drawing.c</filename></ulink>
-  at line 225 </para> </refsect1>
+  at line 216 </para> </refsect1>
 </refentry>
 
 <refentry id="y-">
@@ -16266,6 +17266,9 @@ resize frames. <parameter>value</parameter> should be an integer.
     </itemizedlist> </sect1>
     <sect1><title>scheme/animation.scm</title> <itemizedlist>
       <listitem><para><link linkend="animated-move-to"><function>animated-move-to</function></link> &mdash; Move WIN to viewport coordinates X, Y with animation.</para></listitem>
+    </itemizedlist> </sect1>
+    <sect1><title>scheme/ask-string.scm</title> <itemizedlist>
+      <listitem><para><link linkend="ask-string"><function>ask-string</function></link> &mdash; Ask for a string with PROMPT.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/auto-raise.scm</title> <itemizedlist>
       <listitem><para><link linkend="set-auto-raise-x"><function>set-auto-raise!</function></link> &mdash; Turn auto-raise on (<literal>#t</literal>) or off (<literal>#f</literal>) for WIN.</para></listitem>
@@ -16422,6 +17425,7 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="take-screenshot"><function>take-screenshot</function></link> &mdash; Take a snapshot of the whole screen.</para></listitem>
       <listitem><para><link linkend="put-string-in-palm-clipboard"><function>put-string-in-palm-clipboard</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="X-cut-buffer-to-palm-clipboard"><function>X-cut-buffer->palm-clipboard</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="delete-multiple-windows-interactively"><function>delete-multiple-windows-interactively</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/fvwm-compat.scm</title> <itemizedlist>
       <listitem><para><link linkend="fvwm-exec-use-shell"><function>fvwm-exec-use-shell</function></link> &mdash; No documentation supplied.</para></listitem>
@@ -16445,7 +17449,8 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="kill-fvwm2-modules-by-name"><function>kill-fvwm2-modules-by-name</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/gtk.scm</title> <itemizedlist>
-      <listitem><para><link linkend="scwm-gtk-sync"><function>scwm-gtk-sync</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="scwm-gtk-sync"><function>scwm-gtk-sync</function></link> &mdash; Dispatch all pending gtk-events.</para></listitem>
+      <listitem><para><link linkend="gtk-pixmap-new-search-scwm-path"><function>gtk-pixmap-new-search-scwm-path</function></link> &mdash; Return the new pixmap object as <link linkend="gtk-pixmap-new"><function>gtk-pixmap-new</function></link> does, but search Scwm's image-load-path for it.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/image-loaders.scm</title> <itemizedlist>
       <listitem><para><link linkend="ImageMagick-loader"><function>ImageMagick-loader</function></link> &mdash; Tries to load an arbitrary image using ImageMagick's <link linkend="convert"><function>convert</function></link>.</para></listitem>
@@ -16481,6 +17486,10 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="message-window-options"><function>message-window-options</function></link> &mdash; Allow specification of message-window behavior for standard actions.</para></listitem>
       <listitem><para><link linkend="message-window-style"><function>message-window-style</function></link> &mdash; Set visual style of MSGWIN.</para></listitem>
     </itemizedlist> </sect1>
+    <sect1><title>scheme/modifier-key-bindings.scm</title> <itemizedlist>
+      <listitem><para><link linkend="bind-two-modifier-key-events"><function>bind-two-modifier-key-events</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="bind-three-modifier-key-events"><function>bind-three-modifier-key-events</function></link> &mdash; No documentation supplied.</para></listitem>
+    </itemizedlist> </sect1>
     <sect1><title>scheme/module-types.scm</title> <itemizedlist>
       <listitem><para><link linkend="module-event-name-from-number"><function>module-event-name-from-number</function></link> &mdash; Return the string module event name for event number NUM.</para></listitem>
     </itemizedlist> </sect1>
@@ -16515,6 +17524,27 @@ resize frames. <parameter>value</parameter> should be an integer.
     </itemizedlist> </sect1>
     <sect1><title>scheme/shutdown-opts.scm</title> <itemizedlist>
       <listitem><para><link linkend="shutdown-options"><function>shutdown-options</function></link> &mdash; Configure shutdown preferences.</para></listitem>
+    </itemizedlist> </sect1>
+    <sect1><title>scheme/simple-constraints.scm</title> <itemizedlist>
+      <listitem><para><link linkend="keep-tops-even"><function>keep-tops-even</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-lefts-even"><function>keep-lefts-even</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-bottoms-even"><function>keep-bottoms-even</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-rights-even"><function>keep-rights-even</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-to-left-of"><function>keep-to-left-of</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-above"><function>keep-above</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-top-at-v"><function>keep-top-at-v</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-left-at-v"><function>keep-left-at-v</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-right-at-v"><function>keep-right-at-v</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-full-width"><function>keep-full-width</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-full-height"><function>keep-full-height</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-adjacent-horizontal"><function>keep-adjacent-horizontal</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-adjacent-vertical"><function>keep-adjacent-vertical</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-at-left-edge"><function>keep-at-left-edge</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-at-top-edge"><function>keep-at-top-edge</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-at-right-edge"><function>keep-at-right-edge</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-constant-width"><function>keep-constant-width</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="keep-constant-size"><function>keep-constant-size</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="cl-set-solver-var"><function>cl-set-solver-var</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/sort.scm</title> <itemizedlist>
       <listitem><para><link linkend="sort"><function>sort</function></link> &mdash; Returned LS sorted according to COMPARE (defaults to ascending numerical order).</para></listitem>
@@ -16569,22 +17599,36 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="tile-windows"><function>tile-windows</function></link> &mdash; Tile WINDOWS according to several parameters.</para></listitem>
       <listitem><para><link linkend="tile"><function>tile</function></link> &mdash; Tile the windows on the specified desk.</para></listitem>
     </itemizedlist> </sect1>
+    <sect1><title>scheme/ui-constraints-buttons.scm</title> <itemizedlist>
+      <listitem><para><link linkend="start-ui-constraints-buttons"><function>start-ui-constraints-buttons</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="close-ui-constraints-buttons"><function>close-ui-constraints-buttons</function></link> &mdash; No documentation supplied.</para></listitem>
+    </itemizedlist> </sect1>
+    <sect1><title>scheme/ui-constraints-toggle-menu.scm</title> <itemizedlist>
+      <listitem><para><link linkend="ui-constraints-toggle-menu"><function>ui-constraints-toggle-menu</function></link> &mdash; Return a menu of constraints that permits toggling their enabled? state.</para></listitem>
+      <listitem><para><link linkend="popup-ui-constraints-toggle-menu"><function>popup-ui-constraints-toggle-menu</function></link> &mdash; Popup a menu that can be used to turn added constraints on and off.</para></listitem>
+    </itemizedlist> </sect1>
+    <sect1><title>scheme/ui-constraints-toolbar.scm</title> <itemizedlist>
+      <listitem><para><link linkend="start-ui-constraints-toolbar"><function>start-ui-constraints-toolbar</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="close-ui-constraints-toolbar"><function>close-ui-constraints-toolbar</function></link> &mdash; No documentation supplied.</para></listitem>
+    </itemizedlist> </sect1>
     <sect1><title>scheme/ui-constraints.scm</title> <itemizedlist>
-      <listitem><para><link linkend="make-ui-constraint-class"><function>make-ui-constraint-class</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="make-ui-constraint-class"><function>make-ui-constraint-class</function></link> &mdash; CTR takes NUM-WINDOWS windows and creates a constraint of this type.</para></listitem>
       <listitem><para><link linkend="delete-ui-constraint-class-x"><function>delete-ui-constraint-class!</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="reset-ui-constraint-classes-x"><function>reset-ui-constraint-classes!</function></link> &mdash; Empty the global list of ui-constraint-classes.</para></listitem>
       <listitem><para><link linkend="ui-constraint-class-p"><function>ui-constraint-class?</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="ui-constraint-class-name"><function>ui-constraint-class-name</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="ui-constraint-class-num-windows"><function>ui-constraint-class-num-windows</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="ui-constraint-class-ctr"><function>ui-constraint-class-ctr</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="ui-constraint-class-ui-ctr"><function>ui-constraint-class-ui-ctr</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="ui-constraint-class-draw-proc"><function>ui-constraint-class-draw-proc</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="ui-constraint-class-satisfied"><function>ui-constraint-class-satisfied</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="ui-constraint-class-satisfied-proc"><function>ui-constraint-class-satisfied-proc</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="ui-constraint-class-pixmap-name"><function>ui-constraint-class-pixmap-name</function></link> &mdash; Return the pixmap-name of UI-CONSTRAINT-CLASS.</para></listitem>
       <listitem><para><link linkend="make-ui-constraint"><function>make-ui-constraint</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="make-ui-constraint-interactively"><function>make-ui-constraint-interactively</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="delete-ui-constraint-x"><function>delete-ui-constraint!</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="ui-constraint-p"><function>ui-constraint?</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="ui-constraint-cn"><function>ui-constraint-cn</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="ui-constraint-enable"><function>ui-constraint-enable</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="ui-constraint-enabled-p"><function>ui-constraint-enabled?</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="ui-constraint-class"><function>ui-constraint-class</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="ui-constraint-windows"><function>ui-constraint-windows</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="enable-ui-constraint"><function>enable-ui-constraint</function></link> &mdash; No documentation supplied.</para></listitem>
@@ -16595,6 +17639,8 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="undraw-constraint"><function>undraw-constraint</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="draw-all-constraints"><function>draw-all-constraints</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="undraw-all-constraints"><function>undraw-all-constraints</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="disable-all-constraints"><function>disable-all-constraints</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="enable-all-constraints"><function>enable-all-constraints</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/virtual.scm</title> <itemizedlist>
       <listitem><para><link linkend="containing-aligned-viewport"><function>containing-aligned-viewport</function></link> &mdash; Compute the viewport-position of the viewport that contains POS.</para></listitem>
@@ -16608,6 +17654,16 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="move-to-viewport"><function>move-to-viewport</function></link> &mdash; Move to the viewport numbered (XX,YY).</para></listitem>
       <listitem><para><link linkend="align-viewport"><function>align-viewport</function></link> &mdash; Set the viewport position to the nearest multiple of the desk size.</para></listitem>
       <listitem><para><link linkend="warp-to-window-viewport"><function>warp-to-window-viewport</function></link> &mdash; Change to the desk and viewport of WIN.</para></listitem>
+    </itemizedlist> </sect1>
+    <sect1><title>scheme/window-locations.scm</title> <itemizedlist>
+      <listitem><para><link linkend="window-center-top"><function>window-center-top</function></link> &mdash; Return a pair (X .</para></listitem>
+      <listitem><para><link linkend="window-center-bottom"><function>window-center-bottom</function></link> &mdash; Return a pair (X .</para></listitem>
+      <listitem><para><link linkend="window-left-middle"><function>window-left-middle</function></link> &mdash; Return a pair (X .</para></listitem>
+      <listitem><para><link linkend="window-right-middle"><function>window-right-middle</function></link> &mdash; Return a pair (X .</para></listitem>
+      <listitem><para><link linkend="window-left-top"><function>window-left-top</function></link> &mdash; Return a pair (X .</para></listitem>
+      <listitem><para><link linkend="window-left-bottom"><function>window-left-bottom</function></link> &mdash; Return a pair (X .</para></listitem>
+      <listitem><para><link linkend="window-right-top"><function>window-right-top</function></link> &mdash; Return a pair (X .</para></listitem>
+      <listitem><para><link linkend="window-right-bottom"><function>window-right-bottom</function></link> &mdash; Return a pair (X .</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/wininfo.scm</title> <itemizedlist>
       <listitem><para><link linkend="on-desk-p"><function>on-desk?</function></link> &mdash; Return <literal>#t</literal> if WIN is on desk N, else <literal>#f</literal>.</para></listitem>
@@ -16652,8 +17708,8 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="unmaximize"><function>unmaximize</function></link> &mdash; Unmaximize WIN so it returns to its size/position before maximization.</para></listitem>
       <listitem><para><link linkend="toggle-maximize"><function>toggle-maximize</function></link> &mdash; Maximize to width NW, height NH if not maximized, or unmaximize.</para></listitem>
       <listitem><para><link linkend="window-frame-area"><function>window-frame-area</function></link> &mdash; Return the area of WIN's frame in square pixels.</para></listitem>
-      <listitem><para><link linkend="default-resize-opaquely-p"><function>default-resize-opaquely?</function></link> &mdash; Return <literal>#t</literal> if WIN has area &lt; opaque-resize-percent of the screen, else <literal>#f</literal>.</para></listitem>
-      <listitem><para><link linkend="default-move-opaquely-p"><function>default-move-opaquely?</function></link> &mdash; Return <literal>#t</literal> if WIN has area &lt; opaque-move-percent of the screen, else <literal>#f</literal>.</para></listitem>
+      <listitem><para><link linkend="default-resize-opaquely-p"><function>default-resize-opaquely?</function></link> &mdash; Return <literal>#t</literal> if WIN has area <= opaque-resize-percent of the screen, else <literal>#f</literal>.</para></listitem>
+      <listitem><para><link linkend="default-move-opaquely-p"><function>default-move-opaquely?</function></link> &mdash; Return <literal>#t</literal> if WIN has area <= opaque-move-percent of the screen, else <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="interactive-move"><function>interactive-move</function></link> &mdash; Move WINDOW interactively and possibly opaquely.</para></listitem>
       <listitem><para><link linkend="interactive-resize"><function>interactive-resize</function></link> &mdash; Resize WINDOW interactively and possibly opaquely.</para></listitem>
       <listitem><para><link linkend="print-window"><function>print-window</function></link> &mdash; Print WIN using xpr and lpr.</para></listitem>
@@ -17077,7 +18133,9 @@ and the vector of data.
     </para></sect1>
     <sect1 id="deiconify-hook"><title>deiconify-hook</title><para>
 This hook is invoked when a window is deiconified.
-It is called with one argument, WINDOW 
+It is called with one argument, WINDOW, WAS-ICONIFIED?.
+WINDOW is the window iconfied, and WAS-ICONIFIED? is
+a boolean telling whether the window was iconified previously. 
     </para></sect1>
     <sect1 id="error-hook"><title>error-hook</title><para>
 Called on all kinds of errors and exceptions.
@@ -17090,7 +18148,10 @@ will generally include information about the nature of the error.
     </para></sect1>
     <sect1 id="iconify-hook"><title>iconify-hook</title><para>
 This hook is invoked when a window is iconified.
-It is called with one argument, WINDOW 
+It is called with two arguments: WINDOW, WAS-ICONIFIED?.
+WINDOW is the window iconfied, and WAS-ICONIFIED? is
+a boolean telling whether the window was iconified previously.
+
     </para></sect1>
     <sect1 id="image-not-found-hook"><title>image-not-found-hook</title><para>
 Called with image name as a string when not found. 

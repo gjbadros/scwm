@@ -83,7 +83,7 @@ netscape-new-window
 - (app scwm flux)
 If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window.
 
-[From scheme/flux.scm:637]
+[From scheme/flux.scm:643]
 
 
 opaque-move-percent

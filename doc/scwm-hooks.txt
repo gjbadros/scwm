@@ -87,7 +87,7 @@ cannot-grab-hook
 This hook is invoked with no arguments whenever scwm cannot
 successfully grab the X server. `beep' is one example of a procedure
 to use here.  
-[From scwm/window.c:3872]
+[From scwm/window.c:3875]
 
 
 change-desk-hook
@@ -109,8 +109,10 @@ and the vector of data.
 deiconify-hook
 - 
 This hook is invoked when a window is deiconified.
-It is called with one argument, WINDOW 
-[From scwm/icons.c:827]
+It is called with one argument, WINDOW, WAS-ICONIFIED?.
+WINDOW is the window iconfied, and WAS-ICONIFIED? is
+a boolean telling whether the window was iconified previously. 
+[From scwm/icons.c:835]
 
 
 error-hook
@@ -122,14 +124,17 @@ being processed, or anything else, error-hook will be invoked. Each
 procedure in the hook will be called with the throw arguments; these
 will generally include information about the nature of the error. 
 
-[From scwm/callbacks.c:701]
+[From scwm/callbacks.c:698]
 
 
 iconify-hook
 - 
 This hook is invoked when a window is iconified.
-It is called with one argument, WINDOW 
-[From scwm/icons.c:823]
+It is called with two arguments: WINDOW, WAS-ICONIFIED?.
+WINDOW is the window iconfied, and WAS-ICONIFIED? is
+a boolean telling whether the window was iconified previously.
+
+[From scwm/icons.c:828]
 
 
 image-not-found-hook
@@ -191,7 +196,7 @@ This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
 operation like `interactive-resize' or `interactive-move'. `beep' is
 one example of a procedure to use here. 
-[From scwm/window.c:3866]
+[From scwm/window.c:3869]
 
 
 shutdown-hook
