@@ -71,7 +71,7 @@ for shift, control meta, alt, hyper, and super, respectively.  They
 can be combined arbitrarily, and in any order, but should precide the 
 */
 
-static const char *
+static char *
 PchModifiersToModmask(const char *pch, int *pmodifier)
 {
   int modmask = 0;
