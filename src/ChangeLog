@@ -1,3 +1,32 @@
+Fri Jul 31 20:39:23 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c, resize.c, move.c, resize.h: Added ScwmWindow *,
+	  fResize args to Keyboard_shortcuts so resize behaviour can be
+	  smarter. Use width_inc, height_inc for keyboard resize
+
+	* binding.c: Fix possible out-of-bounds array read access.
+
+	* add_window.c: Move call to CassowaryNewWindow hook a bit
+	  earlier, before the PlaceWindow call, since that call does a
+	  move_finalize which needs the stay constraints to already be added
+
+	* shutdown.c: Simplify Done() function and call SaveDesktopState
+	  always (except for seg fault).
+
+Fri Jul 31 18:42:23 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* shutdown.c: Do the XSelectInput, XSync, and XCloseDisplay in all 
+	  shutdown cases, not just if we're going to restart.
+
+	* scwm-constraints.cc: Added note about intentional (for now)
+	  memory leak
+
+	* decorations.c: Guard an XFree with a test to ensure the pointer
+	  is non-null (XFree, unlike ansi C's free, is not guaranteed to
+	  deal with null pointers properly).
+
+	* constraint-primitives.cc (ScwmResolve): Only move if not resized.
+
 1998-07-31  Maciej Stachowiak  <maciej@roc-ny5-12.ix.netcom.com>
 
 	* font.c, font.h, decor.c: Rename set-window-font! to
