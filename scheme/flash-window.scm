@@ -6,6 +6,10 @@
   :use-module (app scwm optargs)
   :use-module (app scwm time-convert))
 
+(define*-public (flash-window-on #&optional (win (get-window))
+				 (color (make-color "red")))
+  (flash-window win #:color color #:unflash-delay #f))
+
 (define*-public (flash-window #&optional (win (get-window)) #&key
 			      (color (make-color "red"))
 			      (unflash-delay .5))

@@ -1,5 +1,5 @@
 ;;;; $Id$
-;;;; Copyright (C) 1999 Robert Bihlmeyer
+;;;; Copyright (C) 1999 Robert Bihlmeyer and Greg J. Badros
 ;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@
 (define-module (app scwm group)
   :use-module (app scwm winops)
   :use-module (app scwm optargs)
-  :use-module (app scwm winlist)
-  :use-module (app scwm flux))
+  :use-module (app scwm base)
+  :use-module (app scwm winlist))
 
 (define WindowGroupHint 64)		; window group present in WM_HINTS
 (define FlagsHintIndex 0)		; position of flags in WM_HINTS
@@ -35,6 +35,14 @@ GROUP can be any window belonging to the group."
 			    WindowGroupHint)))
 	(vector-ref hints GroupHintIndex)
 	#f)))
+
+(define-public (group-window group)
+  "Returns a distinguished window of GROUP.
+Since a group is represented either by a single window or by a
+list, this returns either GROUP or the `car' of the list."
+  (cond ((list? group) (car group))
+	((window? group) group)
+	(else (error "Group is not a window or a list."))))
 
 (define-public (group->windows group)
   "Returns a list of windows belonging to GROUP.
@@ -95,7 +103,7 @@ Keeps the relative stacking order of the members intact."
   "Move GROUP to virtual coordinates X, Y.
 Move the window GROUP represents to X, Y, and keep the other windows in GROUP
 in the same relative positions to this window."
-  (let ((pos (window-viewport-position group)))
+  (let ((pos (window-viewport-position (group-window group))))
     (move-group-relative (- x (car pos)) (- y (cadr pos)) group)))
 
 (define*-public (move-group-to-desk desk #&optional (group (get-window)))
@@ -103,15 +111,18 @@ in the same relative positions to this window."
 See `move-window-to-desk'."
   (for-each (lambda (w) (move-window-to-desk desk w)) (group->windows group)))
 
-(define*-public (interactive-move-group #&optional
-					(group (get-window #f #t #f)))
+(delete 1 '(1 2 3 4))
+
+(define*-public (interactive-move-group #&optional (group (get-window #f #t #f)))
   "Move GROUP interactively.
 You can drag around the window GROUP represents. The other windows in GROUP
 will move along."
-  (let ((others (delete! group (group->windows group))))
+  
+  (let* ((gwin (group-window group))
+	 (others (delete! gwin (group->windows group))))
     (if (null? others)
-	(interactive-move group)
-	(let* ((last-pos (window-viewport-position group))
+	(interactive-move gwin)
+	(let* ((last-pos (window-viewport-position gwin))
 	       (drag-others-along
 		(lambda (win x y)
 		  (let ((dx (- x (car last-pos)))
@@ -119,10 +130,13 @@ will move along."
 		    (for-each (lambda (w) (move-window-relative dx dy w))
 			      others))
 		  (set! last-pos (list x y)))))
-	  (add-hook! interactive-move-new-position-hook drag-others-along)
-	  (interactive-move group)
-	  (remove-hook! interactive-move-new-position-hook
-			drag-others-along)))))
+	  (dynamic-wind
+	   (lambda () 
+	     (add-hook! interactive-move-new-position-hook drag-others-along))
+	   (lambda ()
+	     (interactive-move gwin))
+	   (lambda ()
+	     (remove-hook! interactive-move-new-position-hook drag-others-along)))))))
 
 (define*-public (deiconify-group #&optional (group (get-window)) x y)
   "Deiconify all members of GROUP."

@@ -95,10 +95,11 @@ motion does `interactive-move', and double-click does
 	 (lambda (key . args)
 	   (display "Error loading module: ")
 	   (display module) (newline)
+	   (apply handle-system-error key args)
 	   #f)))
 
 (define-public (process-use-scwm-modules module-list)
-  (map process-use-scwm-module module-list))
+  (map process-use-scwm-module (reverse module-list)))
 
 (defmacro use-scwm-modules modules
   `(process-use-scwm-modules ',modules))

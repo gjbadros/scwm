@@ -240,69 +240,8 @@ returned list can be used to un-highlight the windows:
 ;; (object-properties (select-window-interactively))
 ;; (for-each (lambda (w) (unflash-window w)) (list-all-windows))
 ;; (unflash-window)
+;; (flash-window-on)
 
-(define selected-windows '())
-;;(set! selected-windows '())
-
-(define-public (selected-windows-list)
-  "Returns the list of windows selected by `select-window-interactively-and-highlight'."
-  selected-windows)
-
-;;(define w (select-window-interactively))
-;;(filter (lambda (x) (not (eq? w x ))) selected-windows)
-
-(define*-public (select-window-and-toggle-highlight #&optional (w (get-window)))
-  "Select a single window and highlight it.
-The selected window is returned and will remain highlighted
-until `unflash-window' is called on that window.  The selected
-window is also added to a selected-windows list that can be
-accessed via `selected-windows-list'."
-  (if (member w selected-windows)
-      (begin
-	(unflash-window w)
-	(set! selected-windows (list-without-elem selected-windows w))
-      (begin
-	(flash-window w #:unflash-delay #f)
-	(set! selected-windows (cons w selected-windows))
-	w))))
-
-;; (unflash-window)
-;; (member (get-window) selected-windows)
-
-;; (begin (move-group-relative 10 10 selected-windows) (unselect-all-windows))
-
-(define-public (unselect-all-windows)
-  "Unselect all windows selected via `select-window-and-highlight'."
-  (for-each unflash-window selected-windows)
-  (set! selected-windows '()))
-
-;; (bind-mouse 'all "H-1" (thunk select-window-and-toggle-highlight))
-
-
-;; Returns them in reverse the order they were selected
-;; should probably turn off the invalid interaction hook
-;; or provide a way of telling select-window-interactively that
-;; the root window is not an error
-(define*-public (select-multiple-windows-interactively
-		 #&optional (max 32000) (proc-when-selected #f))
-  "Return a list of user-selected windows, up to MAX.
-The list is in the reverse order from the way by which they were selected.
-PROC-WHEN-SELECTED will be run on each window as it is selected."
-  (if (not (integer? max))
-      (set! max 32000))
-  (do ((w '())
-       (wlist '() (cons w wlist))
-       (i 0 (+ 1 i)))
-      ((or (not w) (>= i max))
-       (if w wlist
-	   (cdr wlist)))
-    (set! w (select-window-interactively (string-append "select #" (number->string i))))
-    (if (and proc-when-selected w)
-	(proc-when-selected w))))
-
-;; e.g.
-;;(select-multiple-windows-interactively 10)
-;;(restack-windows (select-multiple-windows-interactively 3))
 
 
 ;; From S.Senda -- Aug 3, 1998
@@ -374,14 +313,6 @@ the first element for changes to desk 1, etc.  Changes to desks which are
 	       (if (< new (vector-length vector-of-commands))
 		   (system (vector-ref vector-of-commands new)))
 	       )))
-
-(define-public (execute-on-selection command)
-  "Run COMMAND in the background, with arguments supplied by the X selection."
-  (execute (string-append command " '" (X-cut-buffer-string) "'")))
-
-(define-public (exe-on-selection command)
-  "Return a procedure that runs COMMAND in the background on the X selection."
-  (lambda () (execute-on-selection command)))
 
 (define (extreme1 pred lst)
   (if (null? (cdr lst))
