@@ -102,11 +102,24 @@ public:
       int minWidth, minHeight, maxWidth, maxHeight;
       ScwmWindow *psw = Psw();
       assert(psw);
+      // these sizes are client window sizes,
+      // but the constraints are frame sizes -- 
+      // correct for decorations just below
       minWidth = psw->hints.min_width;
       minHeight = psw->hints.min_height;
 
       maxWidth = psw->hints.max_width;
       maxHeight = psw->hints.max_height;
+      
+      // now correct for decorations
+      // FIXGJB: these constraints need to be affected by
+      // later changes in the variables -- the decoration
+      // geometry variables need to be ClVariables ultimately
+      minWidth += 2*psw->xboundary_width;
+      maxWidth += 2*psw->xboundary_width;
+
+      minHeight += 2*psw->boundary_width + psw->title_height;
+      maxHeight += 2*psw->boundary_width + psw->title_height;
 
       // Required constraints
       ClLinearInequality *pineqMinWidth = new ClLinearInequality(_frame_width,cnGEQ,minWidth);
