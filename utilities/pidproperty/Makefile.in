@@ -1,0 +1,8 @@
+# $Id$
+# Can Automake do this?  We should use libtool, too
+
+all: scwm_set_pid_property.so
+
+scwm_set_pid_property.so: scwm_set_pid_property.c
+	gcc -shared -fpic @x_cflags@ -c scwm_set_pid_property.c
+	ld -shared scwm_set_pid_property.o -o scwm_set_pid_property.so -ldl @x_ldflags@ @x_libs@
