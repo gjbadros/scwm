@@ -12,6 +12,8 @@
 
 ;; (use-scwm-modules ui-constraints-classes)
 ;; (use-scwm-modules ui-constraints)
+;; (use-scwm-modules window-locations)
+;; (use-scwm-modules window-selection)
 ;; (use-scwm-modules xlib-drawing)
 
 
@@ -134,7 +136,7 @@
 
 
 (define-public (nonant->dirvector nonant)
-  (let ((vec (make-vector 4 0)))
+  (let ((vec (make-vector 4 #f)))
     (case nonant
       ((0 1 2 4) (vector-set! vec 0 #t))) ;; constrain top
     (case nonant
@@ -161,6 +163,8 @@
 	    (message-window-hide! msgwin)
 	    (list win (nonant->dirvector nonant)))))))
 
+;; (nonant->dirvector (get-window-nonant (select-viewport-position)))
+;; (cnctr-anchor (select-window-interactively) #(#t #f #f #f) #t)
 ;; constructor
 (define* (cnctr-anchor w1 nonant #&optional (enable? #f))
   (let ((top (cdr (window-center-top w1)))
