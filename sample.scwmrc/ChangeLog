@@ -1,3 +1,12 @@
+Sat Jul 31 19:33:32 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added some snippets from Bruno Daniel for wheel mice.
+
+Fri Jul 30 16:17:12 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Set the image-load-path earlier rather than later,
+	use tile and undo modules.
+
 Sun Jul 25 13:36:07 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Fix and extend `make-window-group-menu'. It's pretty 

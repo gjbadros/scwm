@@ -157,7 +157,7 @@ deprecated `SM-client-id'.
 ** `icon-size'
 ** `force-reset-window-frame!' -- force redraw of frame
 ** `select-viewport-position' (returns pointer position and selected window)
-** `bind-keycode' -- lower level interface to binding keys, allows release procs
+** `bind-keycode', `unbind-keycode' -- lower level interface to binding keys, allows release procs
 ** `undo-all-passive-grabs',`redo-all-passive-grabs', `undo-passive-grab', `redo-passive-grab'
 ** `keymask-keycode->string', `keysym->keycode', `keymask->string'
 ** `mod-mask-control', `mod-mask-shift', `mod-mask-hyper', `mod-mask-super', `mod-mask-numlock', `mod-mask-scrolllock'

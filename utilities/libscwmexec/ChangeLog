@@ -1,3 +1,7 @@
+Sat Jul 31 19:32:17 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* libmain.c: Use ARG_UNUSED and #include arg_unused.h
+
 Sat Jun 26 16:30:04 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* libmain.c: #include <string.h> for strlen.

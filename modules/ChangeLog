@@ -1,3 +1,7 @@
+Sat Jul 31 19:29:59 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xtest/scwmxtest.c: #include XTest.h.  Remove unused local variable.
+
 Sat Jul 24 18:31:17 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* background/background.c (s_clone_resized_image): Renamed from

@@ -1,3 +1,20 @@
+Sat Jul 31 20:09:06 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c (remove_binding_keysym): Added this function as a
+	helper to remove_binding and make the latter take a keycode not a
+	keysym. This enabled easier writing of the new primitive
+	`unbind-keycode' which was conspicuously missing.
+
+Sat Jul 31 19:31:22 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* miscprocs.c (s_get_mouse_event): Fix bug of using = instead of
+	==.  Thanks -Wall -W!
+
+	* scwm.h: Move ARG_UNUSED, ARG_IGNORE macros out into
+	arg_unused.h, and include that file.
+
+	* scwm.c: conditionally #include XTest.h.
+
 Fri Jul 30 16:15:33 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* placement.c: Simplify some over-parenthesization.

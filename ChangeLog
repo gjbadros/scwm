@@ -1,3 +1,12 @@
+Sat Jul 31 19:28:58 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* include/arg_unused.h: Macros ARG_IGNORE and ARG_UNUSED that were 
+	defined in scwm.h before, but were needed in other programs, too.
+
+Sat Jul 31 19:28:43 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* include/arg_unused.h: Added
+
 Mon Jul 26 14:39:59 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in (scwm_pixmapdir): Switch pixmaps to use

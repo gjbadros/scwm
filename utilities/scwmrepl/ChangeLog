@@ -1,3 +1,7 @@
+Sat Jul 31 19:32:44 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmrepl.c (main): Use ARG_UNUSED, and #include arg_unused.h
+
 Tue Jul  6 08:32:01 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwmrepl.c: Added inclusion of config.h

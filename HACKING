@@ -5,11 +5,14 @@ After downloading via anonymous CVS, you'll need to:
 ./autogen.sh      # See REQUIRED TOOLS below 
                   # for what you need for this to work
 ./configure --enable-maintainer-mode ... other flags ...
+env CFLAGS='-Wall -W' make -k
 
-Most of the time this should be unnecessary; as soon as you have
+Most of the time only the last line is needed; as soon as you have
 configured once with --enable-maintainer-mode, make should rebuild
 those files automatically.  You may need to rerun autogen.sh
-after doing a "cvs update" to get the latest version.
+after doing a "cvs update -dP" to ensure that new subdirectories and
+changes to some of the building meta files are handled properly.
+
 
 RUNNING SCWM WITHOUT INSTALLING IT:
 
