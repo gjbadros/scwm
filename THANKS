@@ -10,6 +10,9 @@ Thanks to:
 
   ITANI Eiichiro - Support for multibyte character sets.
 
+  Dale Smith - Converting some of the random documentation in the doc/
+  directory into a TexInfo manual and a man page.
+
 Bug reports and/or fixes have been contributed by:
   Robert Bihlmeyer
   Mikael Djurfeldt 

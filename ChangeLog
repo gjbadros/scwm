@@ -1,6 +1,8 @@
 Mon Jul  6 04:05:43 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
-	* THANKS: Thank ITANI Eiichiro
+	* THANKS: Thank ITANI Eiichiro for multibyte support
+
+	Thank Dale Smith for his documentation work.
 
 	* configure.in, acconfig.h: Add new argument --enable-multibyte,
  	which #defines I18N, enabling multibyte string support.

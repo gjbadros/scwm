@@ -1,0 +1,141 @@
+.TH scwm 1 "1 July 1998"
+.SH NAME
+scwm, scwmexec, scwmrepl \- Scheme Configurable Window Manager.
+.SH SYNOPSYS
+scwm [--display|-d dpy] [--debug][--expression|-e expression] [--file|-f rc_file] [--single-screen|-s] [--blackout|-b] [--version|-V] [--help|-h]
+.sp
+scwmexec expression
+.sp
+scwmrepl
+
+.SH DESCRIPTION
+.B Scwm
+is the Scheme Configurable Window Manager.  This is a highly dynamic
+and extensible window manager for the X Window System (based
+originally on 
+.B fvwm2
+, but now much enhanced) with Guile Scheme as the
+configuration/extension language.  Nearly all decorations can be
+changed at run-time or per-window, and eventually many decoration
+styles and additional features will be supported through dynamically
+loaded code.  A powerful protocol is provided for interacting with the
+window manager while it is running. Much more information is available
+in the 
+.B scwm
+info entry.
+
+.sp
+The 
+.B scwm
+command is used to start the window manager itself.
+.B scwmexec
+is used to pass a single command expression to the window manager, and
+prints the resulting output.
+.B scwmrepl
+starts an interactive session with the window manager.
+
+.SH OPTIONS
+.TP
+.B "\-D"
+.TP
+.B "\-\-debug"
+Enable lots of debugging messages.
+
+.TP
+.B "\-s"
+.TP
+.B "\-\-single\-screen"
+Run only on the first screen of the display.
+
+.TP
+.B "\-d"
+.TP
+.B "\-\-display \fIdpy\fP"
+Run on display \fIdpy\fP.
+
+.TP
+.B "\-f"
+.TP
+.B "\-\-file \fIfile\fP"
+Read startup commands from the specified \fIfile\fP instead
+of \fI.scwmrc\fP or \fIsystem.scwmrc\fP.
+
+.TP
+.B "\-e"
+.TP
+.B "\-\-expression \fIexpr\fP"
+Evaluate Scheme expression \fIexpr\fP instead of reading from =
+\fI.scwmrc\fP
+or \fIsystem.scwmrc\fP.  Multiple \fB\-e\fP
+and \fB\-f\fP options may be specified on a single command line and in
+this case will be processed in the order in which they were specified.
+
+.TP
+.B "\-i"
+.TP
+.B "\-\-interactive"
+Starts \fBscwm\fP in interactive mode \- the \fI.scwmrc\fP
+or \fIsystem.scwmrc\fP file is read as usual (unless of course
+there are \fB\-f\fP or \fB\-e\fP options.)
+
+.TP
+.B "\-b"
+.TP
+.B "\-\-blackout"
+Blacks the screen out to hide the initial capture.
+
+.TP
+.B "\-V"
+.TP
+.B "\-\-version"
+Prints the version and exits.
+.SH LICENSE
+Some files in scwm are derived from fvwm and therefore are subject to
+the following fvwm copyright and license terms. However, many files
+are entirely new and are under the GNU General Public License as
+published by the Free Software Foundation instead. These terms are
+believed to be compatible with the GPL, thus the overall distribution
+terms are GPL.
+
+\fIfvwm\fP is copyright 1988 by Evans and Sutherland Computer
+Corporation, Salt Lake City, Utah, and 1989 by the Massachusetts
+Institute of Technology, Cambridge, Massachusetts, All rights
+reserved.  It is also copyright 1993 and 1994 by Robert Nation.
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation, and that the names of Evans & Sutherland and
+M.I.T. not be used in advertising in publicity pertaining to
+distribution of the software without specific, written prior
+permission.
+
+ROBERT NATION, CHARLES HINES, EVANS & SUTHERLAND, AND M.I.T. DISCLAIM
+ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL EVANS &
+SUTHERLAND OR M.I.T. BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
+USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTUOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+
+.SH BUGS
+See the BUGS file in the scwm distribution for some known ones.
+.PP
+.SH "SEE ALSO"
+.BR guile ( 1 ),
+.BR fvwm2 ( 1 ),
+.RB "`\|" scwm "\|'"
+entry in
+.B info,
+.br
+http://web.mit.edu/mstachow/www/scwm.html
+.PP
+.SH AUTHORS
+Maciej Stachowiak <mstachow@mit.edu>
+.br
+Greg J. Badros <gjb@cs.washington.edu>
+
+
+
