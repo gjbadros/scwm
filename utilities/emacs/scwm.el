@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-20 Mon 12:53:43 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-22 Wed 14:24:51 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -134,6 +134,7 @@ you have to (require 'font-lock) first.  Sorry.")
   'scwm-goto-guile-procedure-node)
 (define-key scwm-mode-map [(meta tab)] 'scwm-complete-symbol-insert)
 
+
 ;;;###autoload
 (defun scwm-run ()
   "Run scwm interaction or pop to an existing one.
@@ -198,20 +199,23 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
       (setq pos (point)))
     obarray))
 
+(defun scwm-obarray ()
+  "Assure `scwm-obarray' is initialized."
+  (setq scwm-obarray (or scwm-obarray (scwm-make-obarray))))
+
 (defun scwm-complete-symbol (&optional sym)
   "Complete the current symbol or SYM by querying scwm using apropos-internal.
 Returns a string."
-  (setq sym (or sym (thing-at-point 'symbol))
-	scwm-obarray (or scwm-obarray (scwm-make-obarray)))
-  ;; removed the lst arg, `sym', for backward compatibility with e19.
-  (completing-read "SCWM symbol: " scwm-obarray nil nil sym scwm-history))
+  ;; removed the last arg, `sym', for backward compatibility with e19.
+  (completing-read "SCWM symbol: " (scwm-obarray) nil nil
+                   (or sym (thing-at-point 'symbol)) scwm-history))
 
 ;;;###autoload
 (defun scwm-complete-symbol-insert ()
   (interactive)
   (let* ((end (point)) (beg (save-excursion (backward-sexp) (point)))
 	 (pat (buffer-substring-no-properties beg end))
-	 (comp (try-completion pat scwm-obarray)))
+	 (comp (try-completion pat (scwm-obarray))))
     (cond ((eq comp t) (message "`%s' is complete" pat))
 	  ((null comp) (message "Cannot complete `%s'" pat) (ding))
 	  ((not (string= comp pat)) (delete-region beg end) (insert comp))
@@ -242,9 +246,21 @@ Returns a string."
   "Query scwm for documentation for the symbol PAT."
   (interactive (list (scwm-complete-symbol)))
   (with-output-to-temp-buffer "*Help*"
-    (princ "SCWM documentation `") (princ pat) (princ "':\n\n")
-    (scwm-safe-call "procedure-documentation" pat standard-output)
-    (set-buffer standard-output) (help-mode)))
+    (with-current-buffer "*Help*"
+      (princ "SCWM documentation for `") (princ pat) (princ "'")
+      (put-text-property 1 (point) 'face 'highlight) (princ ":\n\n ")
+      (let ((pos (point)))
+        (princ "procedure-documentation")
+        (put-text-property pos (point) 'face 'highlight))
+      (princ ":\n\n")
+      (scwm-safe-call "procedure-documentation" pat standard-output)
+      (princ "\n\n ")
+      (let ((pos (point)))
+        (princ "documentation")
+        (put-text-property pos (point) 'face 'highlight))
+      (princ ":\n\n")
+      (scwm-safe-call "documentation" (concat "\"" pat "\"") standard-output)
+      (help-mode))))
 
 ;;;###autoload
 (defun scwm-apropos (pat)
@@ -258,9 +274,11 @@ Returns a string."
 				  (if (bobp) () (backward-char 1))
 				  (thing-at-point 'symbol)) "")))))
   (with-output-to-temp-buffer "*Apropos*"
-    (princ "SCWM apropos `") (princ pat) (princ "':\n\n")
-    (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
-    (set-buffer standard-output) (apropos-mode)))
+    (with-current-buffer "*Help*"
+      (princ "SCWM apropos `") (princ pat) (princ "'")
+      (put-text-property 1 (point) 'face 'highlight) (princ ":\n\n")
+      (scwm-safe-call "apropos" (concat "\"" pat "\"") standard-output)
+      (apropos-mode))))
 
 ;; info interface
 (defvar scwm-info-file-list
