@@ -1,3 +1,11 @@
+1999-02-27  John Kodis  <kodis@jagunet.com>
+ 
+        * Makefile.am: Added hover-focus.scm to the scwm_common_scheme
+        installation list.
+ 
+        * hover-focus.scm: New module to automatically focus a
+        click-to-focus window when the mouse hovers over it for a while.
+ 
 1999-02-16  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* optargs.scm (lambda*): Handle empty argument lists properly.

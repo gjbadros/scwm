@@ -109,6 +109,8 @@ SCM x_destroynotify_hook;
 SCM x_unmapnotify_hook;
 SCM x_maprequest_hook;
 SCM window_focus_change_hook;
+SCM window_enter_hook;
+SCM window_leave_hook;
 SCM client_message_hook;
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
@@ -1412,16 +1414,16 @@ HandleEnterNotify()
     }
     return;
   }
+
+
   /* make sure its for one of our windows */
   if (!pswCurrent)
     return;
 
+  call1_hooks(window_enter_hook, pswCurrent->schwin);
+
   if (!pswCurrent->fClickToFocus) {
-    if (Scr.Focus != pswCurrent) {
-      SetFocus(pswCurrent->w, pswCurrent, 0);
-    } else {
-      SetFocus(pswCurrent->w, pswCurrent, 0);
-    }
+    SetFocus(pswCurrent->w, pswCurrent, 0);
   }
   if (Scr.fColormapFollowsMouse) {
     if (!pswCurrent->fIconified && (Event.xany.window == pswCurrent->w))
@@ -1450,6 +1452,11 @@ HandleLeaveNotify()
    * another screen on a multiple screen display, and we
    * need to de-focus and unhighlight to make sure that we
    * don't end up with more than one highlighted window at a time */
+
+  if (pswCurrent) {
+    call1_hooks(window_leave_hook, pswCurrent->schwin);
+  } 
+
   if (ewp->window == Scr.Root) {
     if (ewp->mode == NotifyNormal) {
       if (ewp->detail != NotifyInferior) {
@@ -2050,7 +2057,6 @@ to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
 that changed (as a string) and the window that it changed for. */
 
-
   SCWM_HOOK(x_root_propertynotify_hook,"X-root-PropertyNotify-hook");
   /** This hook is invoked whenever a PropertyNotify event is received
 on the root window.  This indicates that an X window
@@ -2061,7 +2067,6 @@ procedures are invoked with two arguments: the atom for the changed
 property and a boolean telling whether the property was deleted. 
 These arguments are different from those passed to
 X-PropertyNotify-hook's procedures. */
-
 
   SCWM_HOOK(x_mappingnotify_hook,"X-MappingNotify-hook");
   /** This hook is invoked whenever a MappingNotify X event is
@@ -2092,11 +2097,20 @@ The WIN is valid during the hook procedures. */
 It is called with one argument, the window object of the window
 that now has the focus, or #f if no window now has the focus. */
 
+  SCWM_HOOK(window_enter_hook, "window-enter-hook");
+  /** This hook is invoked whenever the mouse pointer enters a window.
+It is called with one argument, the window object of the window just
+entered. */
+
+  SCWM_HOOK(window_leave_hook, "window-leave-hook");
+  /** This hook is invoked whenever the mouse pointer leaves a window.
+The hook procedures are invoked with one argument, the window object
+of the window just left. */
+
   SCWM_HOOK(client_message_hook,"client-message-hook");
   /** This hook is invoked whenever Scwm receives an X/11 client message.
 It is called with three arguments: the message-type atom, the format (8, 16, or 32), 
 and the vector of data. */
-
 
 #ifndef SCM_MAGIC_SNARFER
 #include "events.x"

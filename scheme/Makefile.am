@@ -5,7 +5,7 @@ scwm_common_scheme = \
 advice.scm animated-iconify.scm animation.scm auto-raise.scm \
 base.scm bincomm.scm cascade.scm constraints.scm decor.scm \
 desk-background.scm doc.scm face.scm file.scm flux.scm \
-fvwm-compat.scm fvwm-eval.scm fvwm-module.scm gnome-hints.scm \
+fvwm-compat.scm fvwm-eval.scm fvwm-module.scm hover-focus.scm gnome-hints.scm \
 image-loaders.scm kde-hints.scm listops.scm message-window.scm \
 minimal.scm modifier-key-bindings.scm module-types.scm optargs.scm \
 path-cache.scm placement.scm prefs-menu.scm report-usage.scm \

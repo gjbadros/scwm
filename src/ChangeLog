@@ -8,6 +8,14 @@
 	i.e. 'left-button-1, 'right-button-3, etc.
 	* events.c: Make sure synthetic event key and mouse specs don't
 	allow AnyModifier.
+
+	* events.c: Make window-leve-hook pass the window as an argument.
+	
+1999-02-27  John Kodis  <kodis@jagunet.com>
+
+	* events.c (HandleEnterNotify): run window-enter-hook functions.
+	(HandleLeaveNotify): run window-leave-hook functions.
+	(init_events): set up the window-enter- and window-leave- hooks.
 	
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
