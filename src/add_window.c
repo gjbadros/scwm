@@ -409,7 +409,7 @@ AddWindow(Window w)
   /* MS: I believe this code can safely die - nothing's going to set
      either forecolor or backcolor. */
 
-#ifdef 0
+#if 0
   if (forecolor != NULL) {
     XColor color;
 
