@@ -33,12 +33,21 @@ CassowaryInitClVarsInPsw(ScwmWindow *psw)
 }
 
 void
-CassowarySetCValuesAndSolve(ScwmWindow *psw)
+CassowaryNewWindow(ScwmWindow *psw)
+{
+  if (psolver) {
+    psw->pswci->AddStays(psolver);
+  }
+}
+
+
+void
+CassowarySetCValuesAndSolve(ScwmWindow *psw, int fSolve)
 {
   ScwmWindowConstraintInfo *pswci = psw->pswci;
 
-  if (!psolver) {
-    // no solver attached, so just copy the values over
+  if (!psolver || !fSolve) {
+    // no solver attached or not supposed to solve, so just copy the values over
     pswci->_frame_x.set_value(psw->frame_x);
     pswci->_frame_y.set_value(psw->frame_y);
     pswci->_frame_width.set_value(psw->frame_width);
@@ -63,8 +72,10 @@ CassowarySetCValuesAndSolve(ScwmWindow *psw)
     psolver->addEditVar(pswci->_frame_height);
     v.push_back(psw->frame_height);
   }
-  psolver->resolve(v);
-  psolver->endEdit();
+  if (v.size() > 0) {
+    psolver->resolve(v);
+    psolver->endEdit();
+  }
 }
 
 

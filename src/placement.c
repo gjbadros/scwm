@@ -402,7 +402,7 @@ keep_on_screen(ScwmWindow *psw)
 
     SET_CVALUE(psw, frame_x, xNew);
     SET_CVALUE(psw, frame_y, yNew);
-    CassowarySetCValuesAndSolve(psw);
+    CassowarySetCValuesAndSolve(psw, True);
   }
   
   if (FRAME_X(psw) + FRAME_WIDTH(psw) +
@@ -719,7 +719,7 @@ PlaceWindow(ScwmWindow *psw, int Desk)
         /* #if 0-d out from above -- this code should get removed soon */      
         SET_CVALUE(psw, frame_x, xNew);
         SET_CVALUE(psw, frame_y, yNew);
-        CassowarySetCValuesAndSolve(psw);
+        CassowarySetCValuesAndSolve(psw,True);
       }
 
       if (FRAME_X(psw) + FRAME_WIDTH(psw) +

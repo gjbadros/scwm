@@ -89,9 +89,13 @@ static XrmOptionDescRec table[] =
   {"-xrm", NULL, XrmoptionResArg, (caddr_t) NULL},
 };
 
+/* FIXGJB: instead of placeholder empty functions,
+   pointers to functions should be used, and init_constraint_primitives should
+   set the pointers to point to functions that it dynamically loads */
 #ifndef USE_CASSOWARY
-void CassowarySetCValuesAndSolve(ScwmWindow *psw)  { /* empty */ }
+void CassowarySetCValuesAndSolve(ScwmWindow *psw, int fSolve)  { /* empty */ }
 void CassowaryInitClVarsInPsw(ScwmWindow *psw) { /* empty */ }
+void CassowaryNewWindow(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditPosition(ScwmWindow *psw) { /* empty */ }
 void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y) 
 { XMoveWindow(dpy, psw->frame, x, y); }
@@ -284,9 +288,6 @@ AddWindow(Window w)
 #endif
     }
 
-  /* initialize constraint structure hanging off of psw */
-  CassowaryInitClVarsInPsw(psw);
-
   /* removing NoClass change for now... */
   psw->classhint.res_name = NoResource;
   psw->classhint.res_class = NoClass;
@@ -348,6 +349,9 @@ AddWindow(Window w)
   psw->ShadowColor = Scr.MenuRelief.bg;
   psw->BackColor = Scr.MenuColors.bg;
 
+  /* initialize constraint structure hanging off of psw */
+  CassowaryInitClVarsInPsw(psw);
+  /* and create the scheme-level window */
   psw->schwin = schwin = make_window(psw);
 
   call1_hooks(before_new_window_hook, psw->schwin);
@@ -694,7 +698,8 @@ AddWindow(Window w)
   SET_CVALUE(psw, frame_y, frame_y);
   SET_CVALUE(psw, frame_width, frame_width);
   SET_CVALUE(psw, frame_height, frame_height);
-  CassowarySetCValuesAndSolve(psw);
+  CassowarySetCValuesAndSolve(psw,False /* no solve */);
+  CassowaryNewWindow(psw);      /* add the stay constraints in */
 
   SetupFrame(psw, frame_x, frame_y, frame_width, frame_height, True,
              NOT_MOVED, WAS_RESIZED);

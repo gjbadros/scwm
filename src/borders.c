@@ -1430,7 +1430,7 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
   SET_CVALUE(psw, frame_y, y);
   SET_CVALUE(psw, frame_width, w);
   SET_CVALUE(psw, frame_height, h);
-  CassowarySetCValuesAndSolve(psw);
+  CassowarySetCValuesAndSolve(psw,True);
   
   XMoveResizeWindow(dpy, psw->frame, x, y, w, h);
 
