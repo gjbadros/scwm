@@ -18,12 +18,8 @@
 ;; in case we re-load
 ;;(reset-ui-constraint-classes!)
 
-;; (use-modules (app scwm ui-constraints))
-;; (use-modules (app scwm ui-constraints-classes))
-;; (load "/home/gjb/scwm/scheme/constraints.scm")
-;; (load "/home/gjb/scwm/scheme/ui-constraints.scm")
-;; (set-current-module the-root-module)
-
+;; (use-scwm-modules ui-constraints)
+;; (use-scwm-modules ui-constraints-classes)
 
 ;; Object IDs
 
@@ -500,6 +496,22 @@ Returns #f otherwise or if UI-CONSTRAINT is not a ui-constraint."
       (error "constrained-window-in-focus? argument must be a UI-CONSTRAINT object")))
 
 
+(define-public (ui-constraints-involving-window win)
+  "Returns the list of ui-constraint objects that involve WIN.
+The entire global-constraint-instance-list is checked."
+  (filter-map 
+   (lambda (c) 
+     (let ((wins (ui-constraint-windows c)))
+       (if (member win wins) c #f)))
+       global-constraint-instance-list))
+
+
+(define-public (delete-ui-constraints-involving-window! win)
+  "Delete all the ui-constraint objects that involve WIN.
+This removes the constraints from the global-constraint-instance-list."
+  (for-each delete-ui-constraint! (ui-constraints-involving-window win)))
+
+
 ;; do-draw-constraint
 
 ;; PRIVATE
@@ -683,3 +695,5 @@ system."
   "Remove a procedure HOOK from the list of constraint-composition-record list."
   (set! constraint-composition-record-hook-list 
 	(delq hook constraint-composition-record-hook-list)))
+
+(add-hook! window-close-hook delete-ui-constraints-involving-window!)
