@@ -2224,12 +2224,12 @@ specified. */
     FXGetWindowTopLeft(w,&startX, &startY);
   }
   if (x == SCM_BOOL_F)
-    destX = startX;
+    destX = startX + WIN_VP_OFFSET_X(psw);
   else 
     destX = gh_scm2int(x);
 
   if (y == SCM_BOOL_F)
-    destY = startY;
+    destY = startY + WIN_VP_OFFSET_Y(psw);
   else 
     destY = gh_scm2int(y);
 
@@ -2240,7 +2240,10 @@ specified. */
 	gh_number_p(animation_ms_delay)) {
       cmsDelay = gh_scm2int(animation_ms_delay);
     }
-    AnimatedMoveWindow(w,startX,startY,destX - Scr.Vx,destY - Scr.Vy,
+    /* use viewport coordinates */
+    AnimatedMoveWindow(w,startX,startY,
+                       destX - WIN_VP_OFFSET_X(psw),
+                       destY - WIN_VP_OFFSET_Y(psw),
 		       fMovePointer,cmsDelay,NULL);
   } else if (fMovePointer) {
     int x, y;
