@@ -11,6 +11,7 @@
   :use-module (app scwm window-selection)
   :use-module (app scwm winops)
   :use-module (app scwm nonants)
+  :use-module (cassowary constraints)
   :use-module (app scwm xlib-drawing))
 
 ;; (reset-constraints)

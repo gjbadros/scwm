@@ -8,6 +8,7 @@
   :use-module (app scwm prompt-string)
   :use-module (app scwm ui-constraints)
   :use-module (app scwm ui-constraints-classes)
+  :use-module (cassowary constraints)
   :use-module (app scwm window-selection))
 
 

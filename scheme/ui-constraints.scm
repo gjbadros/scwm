@@ -28,7 +28,7 @@
   :use-module (app scwm listops)
   :use-module (app scwm winops)
   :use-module (app scwm optargs)
-;;  :use-module (cassowary constraints))
+  :use-module (cassowary constraints)
   )
 
 

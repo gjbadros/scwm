@@ -6,6 +6,7 @@
   :use-module (app scwm ui-constraints-buttons)
   :use-module (app scwm ui-constraints-toggle-menu)
   :use-module (app scwm ui-constraints)
+  :use-module (cassowary constraints)
   :use-module (app scwm modifier-key-bindings))
 
 
