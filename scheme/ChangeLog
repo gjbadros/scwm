@@ -1,3 +1,21 @@
+Tue Dec 22 04:05:39 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* message-window.scm: Consolidate message window stuff. Added
+ 	`message-window-options' to allow enabling and disabling of
+ 	various message windows and customization of positioning/tracking
+ 	behavior, and `message-window-style' to provide the familiar
+ 	interface for setting the appearance of a message window.
+	* resize-with-message-window.scm, move-resize-message-window.scm,
+ 	standard-move-resize-message-window.scm,
+ 	move-with-message-window.scm: Removed (obsoleted by
+ 	message-window.scm)
+
+	* Makefile.am: install and distribute message-window.scm, do not
+ 	install or distribute resize-with-message-window.scm,
+ 	move-resize-message-window.scm,
+ 	standard-move-resize-message-window.scm,
+ 	move-with-message-window.scm.
+
 1998-12-21  Todd Larason  <jtl@molehill.org>
 
 	* desk-background.scm: simplification: fallback to default only if 
