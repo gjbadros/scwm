@@ -142,4 +142,8 @@ ${PROG}: ${OBJS}
 	rm -f ${PROG}
 	${CC} -o ${PROG} ${OBJS} ${LIBS}
 
-#
+%.d: %.c
+	$(SHELL) -ec '$(CC) -M $(CPPFLAGS) $< \
+		| sed '\''s/$*\\.o[ :]*/& $@/g'\'' > $@'
+
+include $(SRCS:.c=.d)

@@ -79,7 +79,8 @@ ${STATIC_LIB}: ${OBJS}
 	${AR} ${STATIC_LIB} ${OBJS}
 	${RANLIB} ${STATIC_LIB}
 
-#
+%.d: %.c
+	$(SHELL) -ec '$(CC) -M $(CPPFLAGS) $< \
+		| sed '\''s/$*\\.o[ :]*/& $@/g'\'' > $@'
 
-
-
+include $(SRCS:.c=.d)
