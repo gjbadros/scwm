@@ -21,6 +21,7 @@
   :use-module (app scwm base)
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
+  :use-module (app scwm constraints)
   :use-module (app scwm ui-constraints)
   :use-module (app scwm ui-constraints-classes)
   :use-module (app scwm optargs)
@@ -242,6 +243,8 @@ E.g., passing 0 answers 8, passing 1 answers 7, etc."
 ;; (snap-initialize)
 (define*-public (snap-initialize #&optional (sw 25))
   "Turn on auto-snapping during interactive moves."
+  (if (not (scwm-master-solver))
+      (start-constraints))
   (set! current-windows '())
   (set! current-windows-info '())
   (set! trail '())

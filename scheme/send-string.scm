@@ -12,7 +12,7 @@
 (define-public (printable-char->keysym-string char)
   "Return the keysym string corresponding to a printable character.
 CHAR is a scheme character.  The return value is appropriate for
-use by `send-key-press'.  See also `X-synthetic-send-string'."
+use by `send-key'.  See also `X-synthetic-send-string'."
   (let ((charval (char->integer char))
 	(char-keysym-alist
 	 '((#\space . "space")
@@ -70,10 +70,11 @@ use by `send-key-press'.  See also `X-synthetic-send-string'."
 
 (define*-public (X-synthetic-send-string str #&optional (win (get-window)))
   "Send string STR to WIN via synthetic X events.
+See also `send-key'.
 Note that some programs (e.g., xterm) by default do not
 honour synthetic key events as they are a security hole."
   (let ((i 0))
     (while (< i (string-length str))
-	   (send-key-press
+	   (send-key
 	    (printable-char->keysym-string (string-ref str i)) win)
 	   (set! i (+ 1 i)))))

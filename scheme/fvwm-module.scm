@@ -596,3 +596,11 @@
 (add-hook! shutdown-hook
 	   (lambda (restarting?)
 	     (kill-all-fvwm2-modules)))
+
+
+(define-public (fvwm2-pager-window)
+  (let ((wl (list-windows #:only (title-match?? "Fvwm Pager"))))
+    (and wl (car wl))))
+
+;; (deiconify-window (fvwm2-pager-window))
+;; (iconify-window (fvwm2-pager-window))

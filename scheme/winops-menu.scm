@@ -57,7 +57,8 @@ stick, shove, set the style, group, etc."
 			      "Do not keep on top"
 			      "Keep on top") 
 			  #:action toggle-on-top))))
-    (menuitem "Sho&ve" #:submenu menu-window-shove)
+    (menuitem "Sho&ve" #:image-left "win-pos-center.xpm"
+	      #:submenu menu-window-shove)
     (menuitem "&Configuration" #:submenu window-configuration-menu)
     (menuitem "&Title"
 	      #:submenu
@@ -106,7 +107,7 @@ stick, shove, set the style, group, etc."
     (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
 	      #:action interactive-set-window-gravity!)
     (menuitem "Sho&ve" #:image-left "win-pos-center.xpm"
-	      #:action menu-window-shove)
+	      #:submenu menu-window-shove)
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
     (if (defined? 'print-window)
 	(menuitem "&Print" #:action (thunk print-window))
