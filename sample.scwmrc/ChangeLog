@@ -1,3 +1,9 @@
+Mon Aug 30 12:32:06 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use locate '*/name.xpm' to find missing
+	pictures-- introduce the meta-character to turn off substring
+	matching.  Fix have-kp-{num,}keysyms bugs.
+
 Mon Aug 30 11:59:13 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Test scwm-logo at end when using it again to turn 
