@@ -28,6 +28,10 @@ Wed Mar 31 17:27:30 1999  Greg J Badros  <gjb@cs.washington.edu>
 	bug in default-move-opaquely? (was using opaque-resize-percent).
 	Define *foo*'s as scwm options.
 
+1999-03-30  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* group.scm (deiconify-group): Would call a nonexistent function.
+
 Tue Mar 30 20:23:37 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added edge-ops.scm
@@ -40,6 +44,11 @@ Tue Mar 30 19:02:20 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added hash-table->alist (should be a guile proc, so I
 	put it here)
+
+1999-03-29  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* style.scm (window-unstyle): New function, opposite of
+	`window-style'.
 
 Mon Mar 29 20:55:39 1999  Greg J Badros  <gjb@cs.washington.edu>
 
