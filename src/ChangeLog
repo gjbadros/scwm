@@ -1,5 +1,15 @@
 Wed Nov  5 09:24:21 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* wildcard.c, wildcard.h: Removed because they are not used any
+ 	more.	
+
+	* Makefile.in: Remove wildcard.c from the build process, it's not
+ 	used any more.
+
+	* add_window.c: Commented out the part of LookInList that scans
+ 	the style list - there is no style list created anywhere in the
+ 	code any more so that part of it was never getting executed.
+
 	* miscprocs.c: Change wait-for-window to take a predicate rather
  	than a name string, so we don't have to use matchWildcards. You
  	can pass (wildcard-matcher NAME) to get the old effect (and for
