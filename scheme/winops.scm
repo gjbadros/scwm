@@ -118,10 +118,12 @@ If NW or NH is 0, that dimension is not changed."
 	       (ncw (caddr new-client-size))
 	       (nch (cadddr new-client-size))
 	       (nx (cond
+		    ((> 0 x) 0)
 		    ((> display-width (+ x nfw)) x)
 		    ((> display-width nfw) (- display-width nfw))
 		    (#t 0)))
 	       (ny (cond
+		    ((> 0 y) 0)
 		    ((> display-height (+ y nfh)) y)
 		    ((> display-height nfh) (- display-height nfh))
 		    (#t 0))))
