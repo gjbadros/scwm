@@ -4,7 +4,6 @@
 
 #ifndef STRING_TOKEN_H
 #define STRING_TOKEN_H
-char *stripcpy(char *source);
 
 #ifndef HAVE_STRCASECMP
 int strcasecmp(char *s1, char *s2);
