@@ -164,34 +164,33 @@ random window that matches PREDICATE."
 	(gtk-widget-show box))
       (gtk-widget-show top))))
 
-(define*-public (popup-style-menu #&optional (win (get-window)))
+(define*-public (window-style-menu #&optional (win (get-window)))
   "Offer a choice to style the window, like named windows, or a whole class.
 WIN is the window to style and defaults to the window-context."
   (let ((resource (window-resource win))
 	(class (window-class win)))
-    (popup-menu
-     (menu
-      (list
-       (menu-title "Style ...")
-       (menuitem "... &this &window"
-		 #:action (lambda () (select-style-for
-				      `(lambda (w) (eq? w ,win))
-				      #:template win
-				      #:title (string-append "Style `"
-							     (window-title win)
-							     "'"))))
-       (menuitem (string-append "... windows &named `" resource "'")
-		 #:action (lambda () (select-style-for
-				      `(resource-match?? ,resource)
-				      #:template win
-				      #:title (string-append "Style `" resource
-							     "' windows"))))
-       (menuitem (string-append "... windows of &class `" class "'")
-		 #:action (lambda () (select-style-for
-				      `(class-match?? ,class)
-				      #:template win
-				      #:title (string-append "Style `" class
-							     "' class")))))))))
+    (menu
+     (list
+      (menu-title "Style ...")
+      (menuitem "... &this &window"
+		#:action (lambda () (select-style-for
+				     `(lambda (w) (eq? w ,win))
+				     #:template win
+				     #:title (string-append "Style `"
+							    (window-title win)
+							    "'"))))
+      (menuitem (string-append "... windows &named `" resource "'")
+		#:action (lambda () (select-style-for
+				     `(resource-match?? ,resource)
+				     #:template win
+				     #:title (string-append "Style `" resource
+							    "' windows"))))
+      (menuitem (string-append "... windows of &class `" class "'")
+		#:action (lambda () (select-style-for
+				     `(class-match?? ,class)
+				     #:template win
+				     #:title (string-append "Style `" class
+							    "' class"))))))))
 #! for testing
 (bind-mouse 'left-button-1 3 popup-style-menu)
 !#
