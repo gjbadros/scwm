@@ -158,14 +158,14 @@ Note that these currently do not display in their expected format"
        modules))
     (cdr vars)))
 
+;; (procedure-arity get-window)
+;; (procedure-is-interactive? get-window)
 (define-public (procedure-is-interactive? proc)
   "Return #t iff PROC can take no arguments."
   (let ((arity (procedure-arity proc)))
-    (and 
-     (eqv? (car arity) 0)
-     (eqv? (cadr arity) 0))))
+     (eqv? (car arity) 0)))
 
-;; (procedure-apropos-with-modules "n")
+;; (procedure-apropos-with-modules "get-window")
 (define-public (procedure-apropos-with-modules rgx)
   "Returns a list of procedures that match RGX along with defined-in modules.
 The returned list contains pairs (modulesym . procsym)"
@@ -173,13 +173,13 @@ The returned list contains pairs (modulesym . procsym)"
 			    (if (procedure? m-p) p #f)))
 	      (apropos-internal-with-modules rgx)))
 
-;; (procedure-apropos "n")
+;; (procedure-apropos "get-window")
 (define-public (procedure-apropos rgx)
   "Returns a list of procedures that match RGX.
 This returns a simple list of procedure objects."
   (map (lambda (p) (eval (cdr p))) (procedure-apropos-with-modules rgx)))
 
-;; (interactive-procedure-apropos-with-modules "n")
+;; (interactive-procedure-apropos-with-modules "get-window")
 (define-public (interactive-procedure-apropos-with-modules rgx)
   "Returns a list of procedures that match RGX and that can take no arguments.
 I.e., they are interactive procedures useful for bindings.
@@ -191,7 +191,7 @@ The returned list contains pairs (modulesym . procsym)"
 				#f)))
 	      (apropos-internal-with-modules rgx)))
 
-;; (interactive-procedure-apropos "n")
+;; (interactive-procedure-apropos "get-window")
 (define-public (interactive-procedure-apropos rgx)
   "Returns a list of interactive procedures that match RGX.
 This returns a simple list of procedure objects."
