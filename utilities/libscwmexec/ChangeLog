@@ -1,0 +1,8 @@
+Mon Mar  9 00:45:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* libmain.c: Use PropModeAppend when setting SCWMEXEC_REQWIN
+ 	property; this should make the scwmexec protocol safe against
+ 	races between multiple clients.
+
+	* libmain.c: Check more thoroughly for SCWMEXEC_LISTENER property.
+
