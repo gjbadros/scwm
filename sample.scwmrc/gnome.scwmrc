@@ -29,9 +29,9 @@
 ;; import scwm modules we need for the startup animation
 (set-X-server-synchronize! #t)
 
-(display "using gnome-hints\n")
+;;(display "using gnome-hints\n")
 (use-scwm-modules gnome-hints)
-(display "done\n")
+;;(display "done\n")
 
 (use-scwm-modules lambda-startup-logo)
 (logo-setup #f)
@@ -69,7 +69,7 @@
 		  listops placement style stylist face doc 
 		  virtual basic-styles titlebar-buttons 
 		  flash-window shove-window themes 
-		  key-mover gtk path-cache animation netscape
+		  key-mover gtk gtk-about path-cache animation netscape
 		  animated-iconify last-mapped-window
 		  modifier-key-bindings window-selection
 		  group preferences animated-edge-moves
@@ -308,24 +308,6 @@
 (define (scwm-help)
   (netscape-goto-url "http://scwm.mit.edu" #f 'netscape-new-window #:start-netscape-as-needed #t))
 
-(define (scwm-about-message)
-  (message "Scwm -- The Scheme Constraints Window Manager
-(C) 1999 Greg J. Badros <gjb@cs.washington.edu>
-         and Maciej Stachowiak <mstachow@alum.mit.edu>
-
-See: http://scwm.mit.edu
-
-Scwm is the Scheme Constraints Window Manager, a highly dynamic and
-extensible window manager for the X Window System.  Scwm embeds Guile
-Scheme as the configuration and extension language, and includes a
-sophisticated constraint solver for permitting the user to interactively
-specify constraints among top-level window sizes and positions.  Nearly
-all decorations can be changed at run-time on a per-window basis.
-Dynamic loading of C modules is supported.  Scwm is self-documenting and
-provides A powerful protocol for interacting with the window manager
-from other processes.
-"))
-
 (define menu-root-start
   (menu
    (list 
@@ -345,7 +327,7 @@ from other processes.
     menu-separator
     (menuitem "Scwm &Options...." #:action (lambda () (scwm-options-dialog)))
     (menuitem "A&bout Scwm" #:image-left "mini-exclam.xpm" 
-	      #:action (thunk scwm-about-message))
+	      #:action (thunk gtk-about-scwm))
     (menuitem "&Help Scwm" #:image-left "mini-question.xpm" 
 	      #:action (thunk scwm-help)))
    #:image-side "scwm-gnu-linux.xpm"
@@ -410,6 +392,20 @@ from other processes.
   (wavplay "Utopia Question.WAV"))
 
 (add-hook! window-flashing-start-hook play-window-flashing-start-sound)
+
+(define*-public (move-or-shade)
+  "Move the window on a drag, shade on a double-click."
+  (interactive)
+  (case (mouse-event-type)
+    ((double-click) (animated-toggle-window-shade))
+    (else (move-or-raise))))
+
+(define*-public (move-or-deiconify)
+  "Move the icon on a drag, de-iconify on a double click."
+  (interactive)
+  (case (mouse-event-type)
+    ((motion) (interactive-move))
+    ((double-click) (animated-deiconify))))
 
 (bind-mouse 'title 1 move-or-shade raise-and-stop-flashing)
 (bind-mouse 'title 2 #f lower-window)

@@ -635,24 +635,6 @@
 (define (scwm-help)
   (netscape-goto-url "http://scwm.mit.edu" #f 'netscape-new-window #:start-netscape-as-needed #t))
 
-(define (scwm-about-message)
-  (message "Scwm -- The Scheme Constraints Window Manager
-(C) 1999 Greg J. Badros <gjb@cs.washington.edu>
-         and Maciej Stachowiak <mstachow@alum.mit.edu>
-
-See: http://scwm.mit.edu
-
-Scwm is the Scheme Constraints Window Manager, a highly dynamic and
-extensible window manager for the X Window System.  Scwm embeds Guile
-Scheme as the configuration and extension language, and includes a
-sophisticated constraint solver for permitting the user to interactively
-specify constraints among top-level window sizes and positions.  Nearly
-all decorations can be changed at run-time on a per-window basis.
-Dynamic loading of C modules is supported.  Scwm is self-documenting and
-provides A powerful protocol for interacting with the window manager
-from other processes.
-"))
-
 (define (exec-xlock)
   (execute xlock-command))
 
@@ -813,7 +795,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
     (menuitem "Other &Preferences" #:image-left "mini-prefs.xpm" 
 	      #:action menu-preferences)
     (menuitem "A&bout Scwm" #:image-left "mini-exclam.xpm" 
-	      #:action (thunk scwm-about-message))
+	      #:action gtk-about-scwm)
     (menuitem "&Help Scwm" #:image-left "mini-question.xpm" 
 	      #:action (thunk scwm-help))
     menu-separator
@@ -827,8 +809,6 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 ;; (popup-menu menu-root-start)
 
 ;;; now set some mouse and key bindings ;;
-
-
 (define*-public (move-or-shade)
   "Move the window on a drag, shade on a double-click."
   (interactive)
