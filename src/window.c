@@ -2127,11 +2127,12 @@ specified. */
   old = psw->fSticky;
 
   if (!psw->fSticky) {
-    CassowaryEditPosition(psw);
-    SuggestMoveWindowTo(psw,
-                        FRAME_X_VP(psw),FRAME_Y_VP(psw),True);
-    CassowaryEndEdit(psw);
+    int x = FRAME_X_VP(psw);
+    int y = FRAME_Y_VP(psw);
     psw->fSticky = True;
+    CassowaryEditPosition(psw);
+    SuggestMoveWindowTo(psw,x,y,True);
+    CassowaryEndEdit(psw);
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
     SetTitleBar(psw, (Scr.Hilite == psw), True);
   }
@@ -2303,7 +2304,7 @@ specified. */
 }
 #undef FUNC_NAME
 
-/* Return values are in virtual coordinates */
+/* All values are in virtual coordinates */
 /*SCWM_VALIDATE: x, y, win */
 SCM
 convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
@@ -2345,6 +2346,9 @@ convert_move_data(SCM x, SCM y, SCM win, const char *func_name,
     *pDestY = *pStartY + WIN_VP_OFFSET_Y(*ppsw);
   else
     *pDestY = gh_scm2int(y);
+
+  *pStartX += WIN_VP_OFFSET_X(*ppsw);
+  *pStartY += WIN_VP_OFFSET_Y(*ppsw);
 
   return SCM_BOOL_T;
 }

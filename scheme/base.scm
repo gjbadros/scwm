@@ -269,13 +269,11 @@ If X is negative, moves to the left.  If Y is negative moves up."
 If X or Y is #f, then do not move along that axis (use existing
 value for that coordinate).
 See `move-window' if you wish to move a window to a virtual position."
-  (if (not (sticky? win))
-      (let ((pos (viewport-position)))
-	(if x (set! x (+ x (car pos))))
-	(if y (set! y (+ y (cadr pos)))))
-      (begin
-	(if x (set! x (modulo x display-width)))
-	(if y (set! y (modulo y display-height)))))
+  (let ((pos (viewport-position)))
+    (if (not (sticky? win))
+	(begin
+	  (if x (set! x (+ x (car pos))))
+	  (if y (set! y (+ y (cadr pos)))))))
   (move-window x y win))
 
 ;; Give move-to a better name, too

@@ -49,19 +49,12 @@ If X or Y is #f, then do not change that coordinate during
 the move. At least one of X and Y must be a number. This 
 moves the pointer with the window unless MOVE-POINTER-TOO? 
 is #f."
-  (let* ((sticky (sticky? win))
-	 (pos (viewport-position))
-	 (x (if x
-		(if sticky
-		    (modulo x display-width)
-		    (+ x (car pos)))
-		x))
-	 (y (if y
-		(if sticky
-		    (modulo y display-height)
-		    (+ y (cadr pos)))
-		y)))
-    (animated-move-window x y win move-pointer-too?)))
+  (let ((pos (viewport-position)))
+    (if (not (sticky? win))
+	(begin
+	  (if x (set! x (+ x (car pos))))
+	  (if y (set! y (+ y (cadr pos)))))))
+  (animated-move-window x y win move-pointer-too?))
 
 ;; (animated-move-window 0 0 (current-window-with-pointer))
 ;; (animated-move-to -1 #f)

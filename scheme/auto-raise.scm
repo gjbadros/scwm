@@ -28,9 +28,6 @@
 
 
 
-;; GJB:FIXME:MS: Is there a better way to see if a module has been loaded?
-(provide 'scwm-auto-raise)
-
 ;;;; auto-raise
 ;;;;
 ;;;; This module provides a convenient wrapper for the timer and
@@ -67,7 +64,6 @@
 ;;;; Auto-raise probably works best with mouse or sloppy focus, since
 ;;;; it is based on the window getting focus, not on the window being
 ;;;; entered. That may change in the future.
-
 
 (define-scwm-option *default-auto-raise-delay* 300
   "Number of ms to delay before raising the window the mouse pointer entered.
@@ -198,7 +194,6 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
 				  (add-timer-hook! delay func)))))
   (set! last-focus-window window))
 	  
-
 (add-hook! window-focus-change-hook auto-raise-hook-proc)
 
 ;; (popup-option-menu '*auto-raise*)
@@ -215,3 +210,5 @@ after the auto-raise-unfocus-delay after the pointer leaves WIN's frame."
 		       (window-style "*" #:auto-raise #f))))
 	     (set! *auto-raise* auto-raise?)))
 
+;; GJB:FIXME:MS: Is there a better way to see if a module has been loaded?
+(provide 'scwm-auto-raise)

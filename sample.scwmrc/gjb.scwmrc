@@ -38,8 +38,9 @@
 		  modifier-key-bindings window-selection
 		  group preferences
 		  send-string
-		  primopts 
+		  primopts auto-raise
 		  )
+
 
 ;;(use-scwm-modules gtk)
 ;;(use-scwm-modules send-string)
@@ -1111,6 +1112,8 @@ union of all other window managers!
 (bind-mouse 'all "H-1" (lambda () (select-window-and-toggle-highlight)))
 (bind-mouse 'all "A-2" (lambda () (show-window-list-menu #:by-resource #t #:show-geometry #t)))
 (bind-key 'all "H-r" (lambda () (rename-window-interactively)))
+
+(bind-key 'all "H-A-M-C-d" delete-window)
 
 ;;; operations on parts of the window
 (bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)
