@@ -660,8 +660,9 @@ PlaceWindow(ScwmWindow *psw)
 
   default_select_desk(psw);
 
-#if DEBUG_PLACE_WINDOW
-  scwm_msg(DBG,"PlaceWindow","attr = (%d,%d)",psw->attr.x,psw->attr.y);
+#ifdef DEBUG_PLACE_WINDOW
+  scwm_msg(DBG,"PlaceWindow","placing %s, attr = (%d,%d), Global PPosOverride = %d, fShowOnMap = %d",
+           psw->name,psw->attr.x,psw->attr.y,PPosOverride,psw->fShowOnMap);
 #endif
 
   { /* scope */
@@ -677,13 +678,13 @@ PlaceWindow(ScwmWindow *psw)
 
   if (psw->fTransient) {
     place_proc=scm_object_property(win,sym_transient_placement_proc);
-    if (SCM_BOOL_F==place_proc || 
+    if (SCM_BOOL_F == place_proc || 
 	SCM_BOOL_F == scwm_safe_call1(place_proc, win)) {
       default_transient_placement_proc(win);
     }
   } else {
     place_proc=scm_object_property(win,sym_placement_proc);
-    if (SCM_BOOL_F==place_proc || 
+    if (SCM_BOOL_F == place_proc || 
 	SCM_BOOL_F == scwm_safe_call1(place_proc, win)) {
       default_placement_proc(win);
     }
