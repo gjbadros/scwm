@@ -11,8 +11,6 @@
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
 
-(define (vertical-toggle-maximize)
-  (toggle-maximize 0 (%y 100)))
 
 (define font12
   (load-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
@@ -32,9 +30,7 @@
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 
-(define user-pixmap-path (string-append HOME "/pixmaps"))
-(define user-bitmap-path (string-append HOME "/bitmaps"))
-
+(define user-picture-path (string-append HOME "/pixmaps:" HOME "/bitmaps"))
 
 
 ;;-------------------------------;;
@@ -44,17 +40,12 @@
 ;; these are OK for my system, but may need to be changed for
 ;; yours. This should probably be eventually autoconfed or something.
 
-(set-icon-path! (string-append user-bitmap-path 
+(set-picture-path! (string-append user-picture-path 
 			       ":/usr/X11/include/X11/bitmaps:\
 /usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
 /uns/include/X11/pixmaps:\
 /usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
 
-(set-pixmap-path! (string-append user-pixmap-path 
-				 ":/usr/X11/include/X11/bitmaps:\
-/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
-/uns/include/X11/pixmaps:\
-/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
 
 ;;-------------------------------;;
 ;; set some window styles        ;;
@@ -92,86 +83,91 @@
 ;; define some useful menus      ;;
 
 
+(define (vertical-toggle-maximize)
+  (toggle-maximize 0 (%y 100)))
+
 (define window-ops-menu
   (make-menu "Window Ops"
 	     'title
-	     (list "Move" interactive-move)
-	     (list "Resize" interactive-resize)
-	     (list "Raise" raise-window)
-	     (list "Lower" lower-window)
-	     (list "Print" print-window)
-	     (list "(Un)Window-Shade" toggle-window-shade)
-	     (list "(De)Iconify" toggle-iconify)
-	     (list "(Un)Maximize" vertical-toggle-maximize)
-	     (list "(Un)Stick" toggle-stick)
-	     (list "(Un)Keep On Top" toggle-on-top)
-	     'separator
-	     (list "Close" close-window)
-	     (list "Delete" delete-window)
-	     (list "Destroy" destroy-window)
-	     'separator
-	     (list "Refresh Screen" refresh)))
+	     (menu-item "Move" #:action interactive-move)
+	     (menu-item "Resize" #:action interactive-resize)
+	     (menu-item "Raise" #:action raise-window)
+	     (menu-item "Lower" #:action lower-window)
+	     (menu-item "Print" #:action print-window)
+	     (menu-item "(Un)Window-Shade" #:action toggle-window-shade)
+	     (menu-item "(De)Iconify" #:action toggle-iconify)
+	     (menu-item "(Un)Maximize" #:action vertical-toggle-maximize)
+	     (menu-item "(Un)Stick" #:action toggle-stick)
+	     (menu-item "(Un)Keep On Top" #:action toggle-on-top)
+	     (menu-separator)
+	     (menu-item "Close" #:action close-window)
+	     (menu-item "Delete" #:action delete-window)
+	     (menu-item "Destroy" #:action destroy-window)
+	     (menu-separator)
+	     (menu-item "Refresh Screen" #:action refresh)))
 (define (popup-ops)
   (popup window-ops-menu))
 
 (define quit-verify
   (make-menu "Really quit scwm?"
-	     'title
-	     (list "Yes" quit)
-	     (list "No" noop)
-	     'separator
-	     (list "Restart scwm" (lambda () (restart "scwm")))))
+	     (menu-title)
+	     (menu-item "Yes" #:action quit)
+	     (menu-item "No" #:action noop)
+	     (menu-separator)
+	     (menu-item "Restart scwm" #:action (lambda () (restart "scwm")))))
 
 (define desk-menu 
   (make-menu "Desks"
-	     'title
-	     (list "Desk 1" (lambda () (set-current-desk! 0)))
-	     (list "Desk 2" (lambda () (set-current-desk! 1)))
-	     (list "Desk 3" (lambda () (set-current-desk! 2)))
-	     (list "Desk 4" (lambda () (set-current-desk! 3)))))
+	     (menu-title)
+	     (menu-item "Desk 1" #:action (lambda () (set-current-desk! 0)))
+	     (menu-item "Desk 2" #:action (lambda () (set-current-desk! 1)))
+	     (menu-item "Desk 3" #:action (lambda () (set-current-desk! 2)))
+	     (menu-item "Desk 4" #:action (lambda () (set-current-desk! 3)))))
 
 (define util-menu 
   (make-menu "Utilities"
-	     'title
-	     (list "xterm" (lambda () (execute "xterm")))
-	     (list "rxvt" (lambda () (execute "rxvt")))
-	     (list "emacs" (lambda () (execute "emacs")))
-	     (list "top" (lambda () (execute "rxvt -T Top -n Top -e top")))
-	     (list "xcalc" (lambda () (execute "xcalc")))
-	     (list "xmag" (lambda () (execute "xmag")))
-	     'separator
-	     (list "Desks" desk-menu)
-	     'separator
-	     (list "Exit scwm" quit-verify)))
+	     (menu-title)
+	     (menu-item "xterm" #:action (lambda () (execute "xterm")))
+	     (menu-item "rxvt" #:action (lambda () (execute "rxvt")))
+	     (menu-item "emacs" #:action (lambda () (execute "emacs")))
+	     (menu-item "top" #:action 
+			(lambda () (execute "rxvt -T Top -n Top -e top")))
+	     (menu-item "xcalc" #:action (lambda () (execute "xcalc")))
+	     (menu-item "xmag" #:action (lambda () (execute "xmag")))
+	     (menu-separator)
+	     (menu-item "Desks" #:action desk-menu)
+	     (menu-separator)
+	     (menu-item "Exit scwm" #:action quit-verify)))
 
 (define (popup-util)
   (popup util-menu))
 
-
 (define (make-small-window-ops-menu w)
   (make-menu "Window Ops2"
-	     (list "Move" interactive-move)
-	     (list "Resize" interactive-resize)
-	     (list "Raise" raise-window)
-	     (list "Lower" lower-window)
-	     (list "Iconify" iconify)
-	     'separator
-	     (list "More" (make-menu "More"
-			    (list (if (maximized? w)
+	     (menu-item "Move" #:action interactive-move)
+	     (menu-item "Resize" #:action interactive-resize)
+	     (menu-item "Raise" #:action raise-window)
+	     (menu-item "Lower" #:action lower-window)
+	     (menu-item "Iconify" #:action iconify)
+	     (menu-separator)
+	     (menu-item "More" #:action (make-menu "More"
+			    (menu-item (if (maximized? w)
 				      "Unmaximize"
-				      "Maximize") vertical-toggle-maximize)
-			    (list (if (sticky? w)
+				      "Maximize") 
+				       #:action vertical-toggle-maximize)
+			    (menu-item (if (sticky? w)
 				      "Unstick"
-				      "Stick") toggle-stick)
-			    (list (if (window-shaded? w)
+				      "Stick") #:action toggle-stick)
+			    (menu-item (if (window-shaded? w)
 				      "UnWindow-Shade"
-				      "Window-Shade") toggle-window-shade)
-			    (list (if (kept-on-top? w)
+				      "Window-Shade") 
+				       #:action toggle-window-shade)
+			    (menu-item (if (kept-on-top? w)
 				      "UnKeep On Top"
-				      "Keep On Top") toggle-on-top)))
-             'separator
-	     (list "Close" close-window)
-	     (list "Destroy" destroy-window)))	
+				      "Keep On Top") #:action toggle-on-top)))
+             (menu-separator)
+	     (menu-item "Close" #:action close-window)
+	     (menu-item "Destroy" #:action destroy-window)))	
 
 (define (popup-small-ops)
   (popup (make-small-window-ops-menu (get-window))))
