@@ -96,6 +96,9 @@
 (set! *theme-path*
       (append (list (string-append scwmdir "/themes")) *theme-path*))
 
+;;; Lost window?  Get it back with:
+;; (move-to 0 0 (select-window-from-window-list #:ignore-winlist-skip #t))
+
 
 ;;;(documentation "make-menuitem")
 ;;;(apropos-internal "*")
@@ -509,7 +512,7 @@
 ;; GJB:FIXME:: this is a bit unintuitive-- must use transient-placement-proc
 ;; instead of just placement-proc, even though I've explicitly
 ;; named the window
-(window-style "Netscape: Find" #:transient-placement-proc (thunk move-next-to-netscape-win))
+(window-style "Netscape: Find" #:transient-placement-proc move-next-to-netscape-win)
 ;; (window-style "Reminder" #:placement-proc (lambda () (system "ring-bells")))
 
 ;; (use-scwm-modules esdsound)
@@ -534,7 +537,7 @@
 (add-hook! window-close-hook call-netscape-download-closed-action)
 
 ;;(window-style "Netscape: Find" #:no-titlebar #t) ;; not needed -- it's a transient
-;;(window-style "findDialog_popup" #:placement-proc (thunk move-next-to-netscape-win))
+;;(window-style "findDialog_popup" #:placement-proc move-next-to-netscape-win)
 ;; (move-next-to-netscape-win (select-window-interactively))
 
 
@@ -1169,8 +1172,8 @@ union of all other window managers!
 
 (bind-key 'all "H-w" describe-key)
 
-(bind-key 'all "C-A-S-t" (lambda () (toggle-titlebar)))
-(bind-key 'all "C-A-S-m" (lambda () (show-window-list-matching-interactively)))
+(bind-key 'all "C-A-S-t" toggle-titlebar-in-place)
+(bind-key 'all "C-A-S-m" show-window-list-matching-interactively)
 
 (bind-key 'all "H-A-M-C-d" delete-window)
 ;; (lookup-key 'all "H-A-M-C-d")
@@ -1195,7 +1198,7 @@ union of all other window managers!
 (bind-key 'all "M-S-F2" popup-window-ops)
 
 ;; C-S-M-t makes netscape go to the url specified by cut buffer 0
-(bind-key 'all "C-S-M-t" (thunk netscape-goto-cut-buffer-url))
+(bind-key 'all "C-S-M-t" netscape-goto-cut-buffer-url)
 ;; http://serveuse.mit.edu/scwm    ;; highlight w/ mouse and try it!
 
 ;; in case of emergency, hit Control-Meta-Q
@@ -1512,8 +1515,8 @@ union of all other window managers!
  start-highlighting-current-window
  end-highlighting-current-window)
 
-(bind-mouse 'all "H-S-1" (thunk select-window-add-selection))
-(bind-mouse 'all "H-A-1" (thunk select-window-add-selection))
+(bind-mouse 'all "H-S-1" select-window-add-selection)
+(bind-mouse 'all "H-A-1" select-window-add-selection)
 (bind-mouse 'all "H-S-2" (lambda () 
 			   (interactive-move-group (selected-windows-list))
 			   (end-highlighting-current-window)
