@@ -1,5 +1,23 @@
-Sat Feb 28 01:34:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
+Sun Mar  1 02:21:15 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* Makefile.in: Install the new modules.
+
+	* fvwm-module.scm: A new module that allows fvwm2 modules to be
+ 	run from within scwm. The relevant procedures are run-fvwm-module
+ 	and kill-fvwm-module.
+
+	* fvwm-eval.scm: A new module to support evaluating fvwm2rc
+ 	lanugage expressions. The primary use is for the fvwm module
+ 	support code. The principal export is fvwm-eval which takes a
+ 	string expression and optionally a module (as returned by
+ 	run-fvwm-module) and a window.
+
+	* bincomm.scm: A new module for binary communication; it's
+ 	intended to be used by the fvwm module code, but code to support
+ 	other legacy module protocols may want to use it as well. It may
+ 	be helpful to rewrite this in C someday.
+
+Sat Feb 28 01:34:28 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* image-loaders.scm: A new file that supports loading images in
  	foreig formats through several converters. Slower than native
