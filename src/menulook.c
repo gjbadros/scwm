@@ -83,7 +83,7 @@ make_menulook(char * szName, SCM extra, MenuDrawingVtable * mdvt)
 }
 
 SCWM_PROC(copy_menu_look, "copy-menu-look", 2, 1, 0,
-	  (SCM original_menulook, SCM name, SCM extra))
+	  (SCM original_menu_look, SCM name, SCM extra))
 /** Copy menu look ORIGINAL-MENU-LOOK with a new NAME and optional EXTRA. */
 #define FUNC_NAME s_copy_menu_look
 {
@@ -91,10 +91,10 @@ SCWM_PROC(copy_menu_look, "copy-menu-look", 2, 1, 0,
   scwm_menulook * pmlOrig;
   
   iarg++;
-  if (!DYNAMIC_MENULOOK_P(original_menulook)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,original_menulook);
+  if (!DYNAMIC_MENULOOK_P(original_menu_look)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg,original_menu_look);
   }
-  pmlOrig = DYNAMIC_SAFE_MENULOOK(original_menulook);
+  pmlOrig = DYNAMIC_SAFE_MENULOOK(original_menu_look);
 
   iarg++;
   if (!gh_string_p(name)) {
