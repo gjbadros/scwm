@@ -299,9 +299,9 @@ SCWM_PROC(edge_move_threshold, "edge-move-threshold", 0, 0, 0,
 SCWM_PROC(set_desk_size_x, "set-desk-size!", 2, 0, 0,
           (SCM width, SCM height))
      /** Sets the desk size to WIDTH, HEIGHT.
-Both numbers are given in units of the physical screen size.
-For example <code>(set-desk-size 3 3)</code> creates a
-virtual world 9 times the size of the physical display. */
+Both numbers are given in units of the physical screen size.  For
+example <informalexample>(set-desk-size 3 3)</informalexample> creates
+a virtual world 9 times the size of the physical display. */
 #define FUNC_NAME s_set_desk_size_x
 {
   SCM_REDEFER_INTS;
