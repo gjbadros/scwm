@@ -407,3 +407,8 @@ SCM wait_for_window(SCM name)
   }
   return SCM_UNSPECIFIED;
 }
+
+SCM beep()
+{
+  XBell(dpy,0);
+}
