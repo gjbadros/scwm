@@ -1,4 +1,4 @@
-;;; File: <prefs-menu.scm - 1998-03-26 Thu 17:53:22 EST sds@mute.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-03-27 Fri 10:43:31 EST sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 ;;;	$Id$
 
@@ -43,11 +43,10 @@
 	       "(set-desk-size! " (size->str (desk-size) " ")
 	       ")\n(set-hilight-factor! " (number->string (hilight-factor))
 	       ")\n(set-shadow-factor! " (number->string (shadow-factor))
-	       ")\n(set-menu-hilihght-factor! " (number->string
-						 (menu-hilite-factor))
-	       ")\n(set-menu-shadow-factor! " (number->string
-					       (menu-shadow-factor))
-	       ")\n")
+	       ")\n(set-menu-hilihght-factor! "
+	       (number->string (menu-hilite-factor))
+	       ")\n(set-menu-shadow-factor! "
+	       (number->string (menu-shadow-factor)) ")\n")
     (close-port fd)))
 
 (define-public (mod-desk-size! dx dy)
@@ -152,25 +151,30 @@ the relief \"shadow\" color for the regular and hilight background.")))))
 (define-public (menu-prefs . opts)
   (apply
    menu (list (menuitem "Preferences" #f) menu-title menu-separator
-	      (menuitem "View all icons" #:action
+	      (menuitem "View All Icons" #:action
 			(apply string-append "xv "
 			       (map (lambda (st) (string-append st "/* "))
 				    image-load-path)))
-	      (menuitem "SCWM interaction" #:action
-			(run-in-xterm "-e /usr/local/bin/scwmrepl"))
+	      (menuitem "Select Font" #:action "xfontsel")
+	      (menuitem "View All Fonts" #:action (show-com "xlsfonts"))
+	      menu-separator
 	      (menuitem "Info on a Window" #:action window-info)
 	      (menuitem "General Info" #:action show-system-info)
+	      menu-separator
+	      (menuitem "SCWM interaction" #:action
+			(run-in-xterm "-e /usr/local/bin/scwmrepl"))
 	      (menuitem "Specific parameters" #:action parameters-menu)
 	      menu-separator
-	      (menuitem "X resources" #:action
-			(make-file-menu
-			 (string-append HOME "/.Xresources")
-			 (menuitem "Reload" #:action
-				   "xrdb -merge ${HOME}/.Xresources")))
+	      (menuitem
+	       "X resources" #:action
+	       (make-file-menu (string-append HOME "/.Xresources")
+			       (menuitem "Reload" #:action
+					 "xrdb -merge ${HOME}/.Xresources")))
 	      (menuitem
 	       "User Init File" #:action
 	       (make-file-menu user-init-file
 			       (menuitem "Reload" #:action
 					 (lambda () (load user-init-file)))))
+	      menu-separator
 	      (menuitem "Save settings" #:action save-settings))
    opts))
