@@ -124,7 +124,11 @@ will move along."
 		(lambda (win x y)
 		  (let ((dx (- x (car last-pos)))
 			(dy (- y (cadr last-pos))))
-		    (for-each (lambda (w) (move-window-relative dx dy w))
+		    (for-each (lambda (w) 
+				;; GJB:FIXME:: must also run the 
+				;; interactive-move-new-position-hook for w
+				;; and should do the start/end hooks for it, too
+				(move-window-relative dx dy w))
 			      others))
 		  (set! last-pos (list x y)))))
 	  (dynamic-wind
