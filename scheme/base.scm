@@ -94,16 +94,57 @@
   (if (bound? justify)
       (set-title-justify! justify)))
 
-(define-public (menu-title)
-  'title)
+(define-public menu-separator
+  (make-menuitem "" #f))
 
-(define-public (menu-separator)
-  'separator)
+(define-public menu-title menu-separator)
 
-(define*-public (menu-item name #&key above-pixmap left-pixmap (action noop))
-	(if (bound? above-pixmap)
-	    (set! name (string-append name "*" pixmap "*")))
-	(if (bound? left-pixmap)
-	    (set! name (string-append name "%" left-pixmap "%")))
-	(list name action))
+;; should this be public?
+(define (hotkeys-from-name label)
+  (let ((char-list (string->list label))
+	(return-key-char-list ())
+	(return-label-char-list ()))
+    (while (not (null? char-list))
+	   (if (equal? (car char-list) #\&)
+	       (set! return-key-char-list (cons (cadr char-list) 
+						return-key-char-list))
+	       (set! return-label-char-list (cons (car char-list)
+						  return-label-char-list)))
+	   (set! char-list (cdr char-list)))
+    (list (list->string (reverse return-label-char-list))
+	  (list->string (reverse return-key-char-list)))))
 
+(define*-public (menuitem label #&key image-above image-left
+			  extra-label action hover-action unhover-action
+			  hotkey-prefs)
+  (if (or (bound? hotkey-prefs)
+	  (string=? label ""))
+      ()
+      (let ((result (hotkeys-from-name label)))
+	(set! label (car result))
+	(set! hotkey-prefs (cadr result))))
+  (if (string? image-above)
+      (set! image-above (make-image image-above)))
+  (if (string? image-left)
+      (set! image-left (make-image image-left)))
+  (make-menuitem label action extra-label image-above image-left
+		  hover-action unhover-action hotkey-prefs))
+
+(define-public menu-bg-color (load-color "gray80"))
+(define-public menu-text-color (load-color "black"))
+(define-public menu-font (load-font "fixed"))
+
+
+(define*-public (menu list-of-menuitems #&key
+		      image-side 
+		      (color-bg-image-side menu-bg-color)
+		      (image-bg #f)
+		      (color-text menu-text-color)
+		      (color-bg menu-bg-color)
+		      (font menu-font))
+  (if (string? image-side)
+      (set! image-side (make-image image-side)))
+  (if (string? color-bg-image-side)
+      (set! color-bg-image-side (load-color color-bg-image-side)))
+  (make-menu list-of-menuitems image-side color-bg-image-side
+	     color-bg color-text image-bg font))

@@ -71,21 +71,24 @@
 (define*-public (show-window-list-menu #&key (only '()) (except '())
 				       (proc window-list-proc)
 				       (show-geometry #f))
-  (popup (apply make-menu (if show-geometry "Window:\tGeometry:"
-			      "Window List")
-		'title
+  (popup-menu (menu
+	       (append 
+		(list 
+		 (menuitem (if show-geometry "Window:\tGeometry:"
+			       "Window List") #f)
+		 menu-title)
 		(map (lambda (x)
-		       (list 
+		       (menuitem
 			(if show-geometry
 			    (string-append
 			     (window-title x) "\t"
 			     (window-geometry-string x))
-				  (window-title x))
-			(lambda () (proc x))))
+			    (window-title x))
+			#:action (lambda () (proc x))))
 		     (list-windows #:only only #:except 
 				   (cons 
 				    winlist-skip?
-				    (listify-if-atom except))))))) 
+				    (listify-if-atom except))))))))
 
 (define (rotate-around w wl)
   (append (cond

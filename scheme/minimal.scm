@@ -27,8 +27,10 @@
 (set-title-justify! 'center)
 
 ;;; A Menu
-(define default-menu (make-menu "Default Menu"
-				'title (list "Exit SCWM" quit)))
+(define default-menu (make-menu 
+		      (list
+		       (make-menuitem "Default Menu" #f)
+		       (make-menuitem "Exit SCWM" quit))))
 
 ;;; Some functions for decoration bindings
 (define (resize-or-raise)
