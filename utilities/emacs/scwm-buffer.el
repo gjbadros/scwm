@@ -1,5 +1,12 @@
 ;; -*-Emacs-Lisp-*-
 ;; SCWM Interactive mode
+;; By Greg J. Badros <gjb@cs.washington.edu>
+;; November 1997
+;;
+;; Significantly derived from code from standard lisp interaction
+;; mode after being modified for GWM as gwm-buffer.el
+;;
+;; Original file's copyright information:
 ;; Copyright (C) 1992 Mike Fletcher 
 ;;			gt0293b@prism.gatech.edu, fletch@cad.gatech.edu,
 ;;			ccastmf@prism.gatech.edu
@@ -27,7 +34,7 @@
 ;; along with GNU Emacs; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-;; SCWM interaction mode is for use with Epoch and the SCWM window
+;; SCWM interaction mode is for use with (X)Emacs and the SCWM window
 ;; manager.  It provides functionallity similar to the builtin
 ;; lisp-interaction-mode of Emacs for SCWM code.  Basically the
 ;; only change was making a new function (scwm-eval-last-sexp) to grab

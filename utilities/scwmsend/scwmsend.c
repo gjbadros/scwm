@@ -29,8 +29,8 @@
 
 Display *display;
 char *dispName;
-Atom scwmprop;
-char buf[512];
+Atom XA_SCWM_EXECUTE;
+Atom XA_SCWM_RESULT;
 
 void 
 die(char *str)
@@ -39,17 +39,21 @@ die(char *str)
   exit(1);
 }
 
-int 
+Bool
 initDisplay()
 {
   if (!(dispName = getenv("DISPLAY")))
-    return 0;
+    return False;
   if (!(display = XOpenDisplay(dispName)))
-    return 0;
-  scwmprop = XInternAtom(display, "SCWM_EXECUTE", 1);
-  if (scwmprop == None)
-    return 0;
-  return 1;
+    return False;
+  XA_SCWM_EXECUTE = XInternAtom(display, "SCWM_EXECUTE", True);
+  XA_SCWM_RESULT  = XInternAtom(display, "SCWM_RESULT", True);
+  if (XA_SCWM_EXECUTE == None || 
+      XA_SCWM_RESULT == None) {
+    fprintf(stderr,"Could not intern atoms!\n");
+    return False;
+  }
+  return True;
 }
 
 void 
@@ -58,21 +62,48 @@ sendScwm(const char *str)
   int len = strlen(str);
 
   XChangeProperty(display, DefaultRootWindow(display),
-		  scwmprop, XA_STRING, 8 /* bits in a byte */ ,
+		  XA_SCWM_EXECUTE, XA_STRING, 8 /* bits in a byte */ ,
 		  PropModeReplace, str, len);
   /* Was PropModeAppend, above */
   XFlush(display);
 }
 
+char *
+SzGetResultProperty()
+{
+  Atom xproptype;
+  int xpropformat = 0;
+  unsigned long citems = 0;
+  unsigned long bytes_after = 0;
+  unsigned char *pchReturn = 0;
+  int retval = XGetWindowProperty(display, DefaultRootWindow(display),
+				  XA_SCWM_RESULT, 0,
+				  1000 /* max length */,
+				  False /* no delete */,
+				  AnyPropertyType,
+				  &xproptype, &xpropformat, &citems,
+				  &bytes_after, &pchReturn);
+
+  if (retval != Success || xproptype != XA_STRING) {
+    fprintf(stderr,"Did not get result string property correctly!\n");
+    return NULL;
+  }
+  return (char *) pchReturn;
+}
+
+
 void 
 main(int argc, char **argv)
 {
   char szInput[65536];
+  XEvent xev;
 
   if (argc != 2)
     die("Usage: scwmsend 'expression'\n");
   if (!initDisplay())
     die("Could not connect to server. Check your DISPLAY environment variable.\n");
+
+  XSelectInput(display,DefaultRootWindow(display), PropertyNotify);
   if (strcmp("-i", argv[1]) == 0) {
     fread(szInput, sizeof(char), 65536, stdin);
 
@@ -80,4 +111,25 @@ main(int argc, char **argv)
   } else {
     sendScwm(argv[1]);
   }
+
+  exit(0);
+  /* FIXGJB: can't get the property from the root window --
+     I get a bad access error; maybe this should just
+     wait until I know more about libice ..... --11/13/97 gjb */
+
+  do {
+    XNextEvent(display,&xev);
+  /*
+    while (!XCheckWindowEvent(display,DefaultRootWindow(display),
+			      PropertyNotify, &xev));
+  */
+    fprintf(stderr,"got event\n");
+    if (xev.xproperty.atom == XA_SCWM_RESULT) {
+    /*      char *szResult = SzGetResultProperty(); */
+      char *szResult = "none";
+      printf("Result: %s\n",szResult);
+      break;
+    }
+  }
+  while (True);
 }
