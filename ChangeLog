@@ -1,3 +1,18 @@
+Thu Aug 26 10:08:15 1999    <gjb@cs.washington.edu>
+
+	* configure.in: Bump to 0.99.2
+
+	* ANNOUNCE: Revise for 0.99.2, order authors, add Jeff Nichols,
+	menion use of guile-1.3.2, update links, drop changes (just point
+	at NEWS file)
+
+Thu Aug 26 09:34:23 1999    <gjb@cs.washington.edu>
+
+	* README, NEWS: Update web page, alphabetize author order.
+
+	* scwm.spec.in: Added dependences, use %{prefix}, fix %files
+	section and use %defattr, added %post %postun sections. 
+
 Wed Aug 25 12:27:18 1999    <gjb@cs.washington.edu>
 
 	* configure.in: Check for scm_strport_to_string
