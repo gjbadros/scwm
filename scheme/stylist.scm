@@ -21,6 +21,7 @@
   :use-module (app scwm base)
   :use-module (app scwm optargs)
   :use-module (app scwm winlist)
+  :use-module (app scwm wininfo)
   :use-module (app scwm style)
   :use-module (app scwm flash-window)
   :use-module (app scwm gtk)

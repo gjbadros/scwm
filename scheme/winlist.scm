@@ -33,37 +33,8 @@
 
 
   
-;; warp-placement is from Ken Pizzini
-(define-public (warp-placement win)
-  "Return a list, (%x %y), for the desired pointer placement for WIN.
-The percentages are of the window size, and are gotten by using
-the 'warp-placement object-property of WIN;  they default to (20 20)
-if no such property is set. To change the default for all your windows
-you can do something like:
-  (add-hook! after-new-window-hook 
-    (lambda (win) 
-      (set-object-property! win 'warp-placement '(80 20))))"
-  (let ((p (object-property win 'warp-placement))) 
-    (if (and p (pair? p) (= (length p) 2) (number? (car p)) (number? (cadr p)))
-	p '(20 20))))
-
-;;(set-object-property! (select-window-interactively) 'warp-placement '(80 25))
-;;(warp-placement (select-window-interactively))
-
 (define (listify-if-atom l)
   (if (or (pair? l) (null? l)) l (list l)))
-
-(define*-public (focus-change-warp-pointer #&optional (win (get-window)))
-  "Deiconify, focus, raise, and warp-to WIN.
-This is initially the default behaviour when WIN is selected from the window list."
-  (interactive)
-  (cond
-   (win (deiconify-window win)
-	(focus-window win)
-	(raise-window win)
-	(warp-to-window win)
-	(let ((p (warp-placement win))) 
-	  (move-pointer (w%x (car p) win) (w%y (cadr p) win))))))
 
 (define-public window-list-proc focus-change-warp-pointer)
 

@@ -25,7 +25,6 @@
   :use-module (app scwm base)
   :use-module (app scwm defoption)
   :use-module (app scwm message-window)
-  :use-module (app scwm window-selection)
   :use-module (app scwm highlight-current-window)
   :use-module (app scwm optargs))
 

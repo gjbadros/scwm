@@ -15,7 +15,6 @@
   :use-module (app scwm message-window)
   :use-module (app scwm flash-window)
   :use-module (app scwm listops)
-  :use-module (app scwm group)
   :use-module (app scwm time-convert)
   :use-module (app scwm path-cache)
   :use-module (app scwm nonants)

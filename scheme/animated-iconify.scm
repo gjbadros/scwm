@@ -5,7 +5,6 @@
   :use-module (app scwm base)
   :use-module (app scwm optargs)
   :use-module (app scwm winops)
-  :use-module (app scwm winlist)
   :use-module (app scwm virtual)
   :use-module (app scwm xlib-drawing))
 

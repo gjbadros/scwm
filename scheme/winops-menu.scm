@@ -9,6 +9,7 @@
   :use-module (app scwm animation)
   :use-module (app scwm stylist)
   :use-module (app scwm window-selection)
+  :use-module (app scwm wininfo)
   :use-module (app scwm group)
   :use-module (app scwm winops)
   :use-module (app scwm shove-window)
