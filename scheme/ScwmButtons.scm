@@ -42,6 +42,8 @@
 ;;;   your grab is no longer touching the window.
 
 #!
+;; ScwmButtons
+
 (define btns
   (run-ScwmButtons
    (list
@@ -114,66 +116,69 @@
     (gtk-widget-show toolbar)
     (gtk-widget-show toplevel)
 
-    (define (imnph win x y)
-      (define xclose (min (abs (- x (car (display-size)))) (abs x)))
-      (define yclose (min (abs (- y (cadr (display-size)))) (abs y)))
-;;      (display xclose) (display ", ") (display yclose) (newline)
-      (if (or (< xclose auto-orient-margin) (< yclose auto-orient-margin))
-	  (if (< xclose yclose)
-	      (if (equal? current-orientation 'horizontal)
-		  (begin
-		    (gtk-toolbar-set-orientation toolbar 'vertical)
-		    (set! current-orientation 'vertical)
-		    (gdk-flush)
-		    (handle-pending-events)))
-	      (if (equal? current-orientation 'vertical)
-		  (begin
-		    (gtk-toolbar-set-orientation toolbar 'horizontal)
-		    (set! current-orientation 'horizontal)
-		    (gdk-flush)
-		    (handle-pending-events)))))
-      (handle-pending-events))
+    (letrec ((imnph 
+	      (lambda (win x y)
+		(define xclose (min (abs (- x (car (display-size)))) (abs x)))
+		(define yclose (min (abs (- y (cadr (display-size)))) (abs y)))
+;;		(display xclose) (display ", ") (display yclose) (newline)
+		(if (or (< xclose auto-orient-margin) (< yclose auto-orient-margin))
+		    (if (< xclose yclose)
+			(if (equal? current-orientation 'horizontal)
+			    (begin
+			      (gtk-toolbar-set-orientation toolbar 'vertical)
+			      (set! current-orientation 'vertical)
+			      (gdk-flush)
+			      (handle-pending-events)))
+			(if (equal? current-orientation 'vertical)
+			    (begin
+			      (gtk-toolbar-set-orientation toolbar 'horizontal)
+			      (set! current-orientation 'horizontal)
+			      (gdk-flush)
+			      (handle-pending-events)))))
+		(handle-pending-events)))
 
-    (define (imfh win)
-      (if (string=? (window-resource win) "ScwmButtons")
+	     (imfh
+	      (lambda (win)
+		(if (string=? (window-resource win) "ScwmButtons")
+		    (begin
+		      (remove-hook! interactive-move-new-position-hook imnph)))))
+
+	     (imsh
+	      (lambda (win)
+		(if (string=? (window-resource win) "ScwmButtons")
+		    (begin
+		      (add-hook! interactive-move-new-position-hook imnph)))))
+
+	     (handle
+	      (lambda (action . args)
+		(case action
+		  ((quit)
+		   (if (not (gtk-object-destroyed toplevel))
+		       (begin
+			 (gtk-widget-unmap toplevel)
+			 (gtk-widget-destroy toplevel)
+			 (if auto-orient
+			     (begin
+			       (remove-hook! interactive-move-start-hook imsh)
+			       (remove-hook! interactive-move-finish-hook imfh)))
+			 )))
+		  ((orientation)
+		   (gtk-toolbar-set-orientation toolbar (car args)))
+		  ((tooltips)
+		   (gtk-toolbar-set-tooltips toolbar (car args)))
+		  ((add-child)
+		   (gtk-toolbar-append-widget
+		    toolbar
+		    (car args) (if (string? (cadr args)) (cadr args) ("")) ""))
+		  ((add-space)
+		   (gtk-toolbar-append-space toolbar))
+		  ))))
+      (if auto-orient
 	  (begin
-	    (remove-hook! interactive-move-new-position-hook imnph))))
-
-    (define* (imsh win)
-      (if (string=? (window-resource win) "ScwmButtons")
-	  (begin
-	    (add-hook! interactive-move-new-position-hook imnph))))
-
-    (define handle
-      (lambda (action . args)
-	(case action
-	  ((quit)
-	   (if (not (gtk-object-destroyed toplevel))
-	       (begin
-		 (gtk-widget-unmap toplevel)
-		 (gtk-widget-destroy toplevel)
-		 (if auto-orient
-		     (begin
-		       (remove-hook! interactive-move-start-hook imsh)
-		       (remove-hook! interactive-move-finish-hook imfh)))
-		 )))
-	  ((orientation)
-	   (gtk-toolbar-set-orientation toolbar (car args)))
-	  ((tooltips)
-	   (gtk-toolbar-set-tooltips toolbar (car args)))
-	  ((add-child)
-	   (gtk-toolbar-append-widget
-	    toolbar
-	    (car args) (if (string? (cadr args)) (cadr args) ("")) ""))
-	  ((add-space)
-	   (gtk-toolbar-append-space toolbar))
-	  )))
-    (if auto-orient
-	(begin
-	  (add-hook! interactive-move-start-hook imsh)
-	  (add-hook! interactive-move-finish-hook imfh)))
-    handle
-    ))
+	    (add-hook! interactive-move-start-hook imsh)
+	    (add-hook! interactive-move-finish-hook imfh)))
+      handle
+      )))
 
 (define-public (close-ScwmButtons sb)
   "Close the ScwmButtons window of SB.
