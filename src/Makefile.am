@@ -75,7 +75,7 @@ util.h virtual.h window.h xmisc.h
 noinst_HEADERS += $(cassowary_headers) $(session_manager_headers)
 
 scwm_LDADD = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@ \
-	      @x_ldflags@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
+	      @SM_LIB@ @x_ldflags@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
 	      @x_libs@ @GUILE_LIBS@ @CASSOWARY_LIBS@
 
 scwm_DEPENDENCIES = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@

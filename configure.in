@@ -219,6 +219,7 @@ AC_SUBST(x_libs)
 AC_SUBST(XEXT_LIB)
 AC_SUBST(XPM_LIB)
 AC_SUBST(XMU_LIB)
+AC_SUBST(SM_LIB)
 
 CFLAGS="$saved_cflags"
 LDFLAGS="$saved_ldflags"
