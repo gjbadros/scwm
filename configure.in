@@ -23,6 +23,18 @@ AC_DEFUN(SCWM_ARG_PATH,
     $4)
 ])
 
+AC_DEFUN(SCWM_ARG_PATH_MAYBE_EMPTY,
+[
+  AC_ARG_WITH($1,[$2],[
+    if test ! -z "${withval}" && test ! "yes" = "${withval}" && test ! -d "${withval}"; then
+      AC_MSG_ERROR(invalid pathname argument to --with-$1: ${withval})
+    else
+      $3
+    fi],
+    $4)
+])
+
+
 dnl ## Initialize automake ##
 AM_INIT_AUTOMAKE(scwm, 0.9.1-snap)
 AM_MAINTAINER_MODE
@@ -41,7 +53,7 @@ AC_DEFUN(scwm_TAR_IS_GNU_TAR,
 [AC_MSG_CHECKING(whether $GTAR is GNU tar)
 AC_CACHE_VAL(scwm_cv_TAR_IS_GNU_TAR,
 [
-if $GTAR --version 2>/dev/null
+if $GTAR --version >/dev/null 2>&1
 then
   scwm_cv_TAR_IS_GNU_TAR="yes";
 else
@@ -174,19 +186,24 @@ CASSOWARY_INCLUDES=""
 CASSOWARY_LIBS=""
 CASSOWARY_OBJECTS=""
 
-SCWM_ARG_PATH(cassowary,
-[  --with-cassowary=DIR   Use Cassowary constraint solver from DIR ],
+SCWM_ARG_PATH_MAYBE_EMPTY(cassowary,
+[  --with-cassowary=DIR   Use Cassowary constraint solver from DIR
+                         can omit DIR to use $prefix ],
 [
 	AC_DEFINE(USE_CASSOWARY)
 	AC_DEFINE(CL_NO_TRACE)
 	AC_MSG_CHECKING(where to expect to find cassowary headers and library)
+	if test -z "${withval}" || test "yes" = "${withval}"; then
+	   AC_MSG_RESULT(using the prefix = )
+	   withval=${prefix}
+	fi
 	CASSOWARY_INCLUDES="-I${withval}"
 	case "$ac_R_nospace" in
 	"yes") cas_lib_path="-L${withval} -R${withval}" ;;
 	"no")  cas_lib_path="-L${withval} -R ${withval}" ;;
 	*)     cas_lib_path="-L${withval}" ;;
 	esac
-	CASSOWARY_LIBS="$cas_lib_path ${withval}/../guile/cassowary_scm.o -lcassowary-scwm -lstdc++"
+	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++"
 	CASSOWARY_OBJECTS='$(cassowary_objs)'
 	AC_MSG_RESULT("${withval}")
 ])
