@@ -162,7 +162,7 @@ VALIDATE_...
 #define VALIDATE_ARG_LISTNONEMPTY(pos,scm) \
   do { \
   if (!gh_list_p(scm)) scm_wrong_type_arg(FUNC_NAME,pos,scm); \
-  else if (gh_car(scm) == SCM_EOL) scm_misc_error(FUNC_NAME,"List must be non-empty.",SCM_EOL); \
+  else if (!gh_pair_p(scm)) scm_misc_error(FUNC_NAME,"List must be non-empty.",SCM_EOL); \
   } while (0)
 
 #define VALIDATE_ARG_SYM(pos,scm) \
