@@ -13,56 +13,6 @@ build a menuitem which is then added to the context menu.
 [From scheme/std-menus.scm:102]
 
 
-debug-gnome-hints
-- (app scwm gnome-hints)
-Set true to enable debugging messages for the gnome-hints module
-
-[From scheme/gnome-hints.scm:32]
-
-
-default-auto-raise-delay
-- (app scwm auto-raise)
-Number of ms to delay before raising the window the mouse pointer entered.
-This can be overridden on a per-window basis using `set-auto-raise-delay!'.
-
-[From scheme/auto-raise.scm:71]
-
-
-default-auto-raise-focus-proc
-- (app scwm auto-raise)
-The default procedure to invoke when raising the window.
-This gets called after the auto-raise delay times out, and 
-can be overwridden on a per-window basis using `set-auto-raise-focus-proc!'
-
-[From scheme/auto-raise.scm:81]
-
-
-default-auto-raise-unfocus-delay
-- (app scwm auto-raise)
-Number of ms to delay before running the unfocus proc for a raised window.
-This can be overridden on a per-window basis using `set-auto-raise-unfocus-delay!'
-
-[From scheme/auto-raise.scm:76]
-
-
-default-auto-raise-unfocus-proc
-- (app scwm auto-raise)
-The default procedure to invoke when un-raising the window.
-This gets called after the mouse pointer leaves an auto-raised window, and
-can be overwridden on a per-window basis using `set-auto-raise-unfocus-proc!'
-
-[From scheme/auto-raise.scm:87]
-
-
-default-hover-focus-delay
-- (app scwm hover-focus)
-Number of ms to delay before focusing the window that the mouse
-pointer entered.  This can be overridden on a per-window basis
-using `set-hover-focus-delay!'.
-
-[From scheme/hover-focus.scm:55]
-
-
 default-menu-max-fold-lines
 - (app scwm menus-extras)
 The default number of items that menus are split into by `fold-menu-list'.
@@ -70,37 +20,22 @@ The default number of items that menus are split into by `fold-menu-list'.
 [From scheme/menus-extras.scm:44]
 
 
-gnome-desktop-number
-- (app scwm gnome-hints)
-The number of desktops to show in the GNOME pager.
-Used in `enable-gnome-hints'.
-
-[From scheme/gnome-hints.scm:39]
-
-
-gnome-shade-animated
-- (app scwm gnome-hints)
-Should the shading be animated or not?
-
-[From scheme/gnome-hints.scm:45]
-
-
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
-[From scwm/image.c:703]
+[From scwm/image.c:701]
 
 
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:558]
+[From scwm/scwm.c:561]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:561]
+[From scwm/scwm.c:564]
 
 
 move-opaquely?
@@ -110,41 +45,10 @@ User-settable predicate to determine if windows should be moved opaquely.
 [From scheme/winops.scm:216]
 
 
-netscape-new-window
-- (app scwm flux)
-If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window.
-
-[From scheme/flux.scm:647]
-
-
-opaque-move-percent
-- (app scwm winops)
-Percent of display area below which windows are moved opaquely.
-
-[From scheme/winops.scm:178]
-
-
-opaque-resize-percent
-- (app scwm winops)
-Percent of display area below which windows are resized opaquely.
-
-[From scheme/winops.scm:183]
-
-
 pie-menu-look
 - 
 A menu-look that gives pie menus in a rectangular window 
 [From modules/pie-menus/draw-pie-menu.c:1346]
-
-
-remote-shell-command
-- (app scwm base)
-The command to use to start a remote shell.
-It should take a first (non-option) argument of
-the hostname to connect to.  "ssh" "rsh" and "telnet"
-are each reasonable choices.
-
-[From scheme/base.scm:445]
 
 
 resize-opaquely?
@@ -152,6 +56,16 @@ resize-opaquely?
 User-settable predicate to determine if windows should be resized opaquely.
 
 [From scheme/winops.scm:221]
+
+
+samf-edge-scroll-delay
+- (app scwm edge-ops)
+Allow edge scrolling with no delay, after an initial scroll.  If
+#f, then this never happens.  If #t, then this always happens.  If
+#a number, then it's the time in milliseconds which, after no
+#scrolling has occured, the delay goes back to its original value.
+
+[From scheme/edge-ops.scm:32]
 
 
 scwm-menu-look
@@ -167,30 +81,9 @@ A menu-look that gives pie menus with only the labels visible
 [From modules/pie-menus/draw-pie-menu.c:1363]
 
 
-use-scwm-system-proc
-- (app scwm base)
-If #t, `execute' will use `scwm-system' instead of guile's `system'.
-This works around a problem observed on pre-glibc Linux 2.0.34 i386
-where SIGINT on the controlling tty (i.e., the one that started
-scwm) propagates to the child processes.  The end result of the
-possible bug is that xterms started by scwm are terminated if the
-scwm that started them is terminated using a Ctrl-C to send it a SIGINT.
-
-[From scheme/base.scm:50]
-
-
 xpm-shaped-menu-look
 - 
 The shaped XPM menu look. 
 [From modules/xpm-menus/draw-xpm-menu.c:1000]
-
-
-xterm-command
-- (app scwm base)
-The command to run when a new xterm window is requested.
-The string given should refer to a binary or script in the
-path and should take a "-e" argument of what to run.
-
-[From scheme/base.scm:438]
 
 

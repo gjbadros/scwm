@@ -236,7 +236,7 @@ This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
 operation like `interactive-resize' or `interactive-move'. `beep' is
 one example of a procedure to use here. 
-[From scwm/window.c:55]
+[From scwm/window.c:56]
 
 
 shutdown-hook (1 args)
