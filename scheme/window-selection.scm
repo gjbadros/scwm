@@ -172,7 +172,7 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
       (let ((nonant (object-property w 'nonant))
 	    (markwin (if (message-window? (object-property w 'markwin))
 			 (object-property w 'markwin)
-			 (make-message-window "*"))))
+			 (make-message-window-with-image (make-image "anchor.xpm")))))
 	(set-markwin-offset! w nonant markwin)
 	(message-window-show! markwin)
 	(set-object-property! w 'markwin markwin))))

@@ -66,7 +66,10 @@ window-selection and constraints modules."
 
 (define (mark-nonant-motion-handler x_root y_root state win dx dy)
   (if win 
-      (let ((nonant (window-and-offsets->nonant win dx dy)))
+      (let* ((pos (pointer-position))
+	     (xp  (car pos))
+	     (yp  (cadr pos))
+	     (nonant (window-and-offsets->nonant win xp yp)))
 	(if (eqv? 4 nonant) ;; do not display the marker if in center
 	    (message-window-hide! interactive-mark-nonant-msgwin)
 	    (begin
