@@ -95,7 +95,7 @@ init_scwm_procs(void)
   gh_new_procedure("refresh", refresh, 0, 0, 0);
   gh_new_procedure("set-click-time!", set_click_time_x, 1, 0, 0);
   gh_new_procedure("set-colormap-focus!", set_colormap_focus_x, 1, 0, 0);
-  gh_new_procedure("set-opaque-move-size!", set_opaque_move_size_x);
+  gh_new_procedure("set-opaque-move-size!", set_opaque_move_size_x, 1, 0, 0);
   gh_new_procedure("make-menu", make_menu, 1, 0, 1);
   gh_new_procedure("popup", popup, 1, 1, 0);
   gh_new_procedure("menu?", menu_p, 1, 0, 0);
@@ -147,7 +147,7 @@ init_scwm_procs(void)
   gh_new_procedure("set-window-colors!", set_window_colors_x, 0, 3, 0);
   gh_new_procedure("set-icon-title!", set_icon_title_x, 1, 1, 0);
   gh_new_procedure("bind-event", bind_event, 2, 0, 0);
-  gh_new_procedure("set-random-placement!", set_random_placment_x, 1, 1, 0);
+  gh_new_procedure("set-random-placement!", set_random_placement_x, 1, 1, 0);
   gh_new_procedure("set-smart-placement!", set_smart_placement_x, 1, 1, 0);
   gh_new_procedure("set-window-button!", set_window_button_x, 2, 1, 0);
   gh_new_procedure("set-mwm-buttons!", set_mwm_buttons_x, 1, 1, 0);
