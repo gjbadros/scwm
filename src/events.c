@@ -112,6 +112,8 @@ static SCM x_motionnotify_hook;
 static SCM g_lastwin_entered = SCM_BOOL_F;
 
 
+SCWM_GLOBAL_SYMBOL(sym_interactive,"interactive");
+
 SCWM_SYMBOL(sym_press,"press");
 SCWM_SYMBOL(sym_release,"release");
 SCWM_SYMBOL(sym_desk_press,"desk-press");
@@ -566,10 +568,10 @@ HandleKeyEvent(Bool fPress)
     }
     if (fPress) {
       if (!UNSET_SCM(pbnd->Thunk)) {
-        scwm_safe_call0(pbnd->Thunk);
+        call_interactively(pbnd->Thunk);
       }
     } else if (!UNSET_SCM(pbnd->ReleaseThunk)) {
-      scwm_safe_call0(pbnd->ReleaseThunk);
+      call_interactively(pbnd->ReleaseThunk);
     }
     
     if (NULL != pswCurrent) {
@@ -1534,7 +1536,7 @@ HandleButtonPress()
       set_window_context(pswCurrent->schwin);
     }
     if (gh_procedure_p(pbnd->ReleaseThunk)) {
-      done = scwm_safe_call0(pbnd->ReleaseThunk);
+      done = call_interactively(pbnd->ReleaseThunk);
     }
     /* GJB:FIXME:: maybe this should only not
        do the main action if immediate proc returns
@@ -1542,7 +1544,7 @@ HandleButtonPress()
     if (SCM_BOOL_F == done &&
         gh_procedure_p(pbnd->Thunk)) {
       find_mouse_event_type();
-      scwm_safe_call0(pbnd->Thunk);
+      call_interactively(pbnd->Thunk);
       clear_mouse_event_type();
     }
     if (NULL != pswCurrent) {

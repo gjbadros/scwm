@@ -214,13 +214,29 @@ scwm_safe_apply_message_only (SCM proc, SCM args)
 }
 
 
-
 SCM
 scwm_safe_call0 (SCM thunk)
 {
   return scwm_safe_apply (thunk, SCM_EOL);
 }
 
+extern SCM sym_interactive;
+
+SCWM_PROC(call_interactively, "call-interactively", 1, 0, 0,
+          (SCM thunk),
+"Invoke THUNK interactively.")
+#define FUNC_NAME s_call_interactively
+{
+  SCM interactive_spec = SCM_BOOL_F;
+  VALIDATE_ARG_PROC(1,thunk);
+  interactive_spec = scm_procedure_property(thunk,sym_interactive);
+  if (UNSET_SCM(interactive_spec)) {
+    char *sz = gh_scm2newstr(scm_procedure_name(thunk), NULL);
+    scwm_msg(WARN,FUNC_NAME,"Procedure %s is not interactive.", sz);
+  }
+  return scwm_safe_apply(thunk, SCM_EOL);
+}
+#undef FUNC_NAME
 
 SCM
 scwm_safe_call1 (SCM proc, SCM arg)

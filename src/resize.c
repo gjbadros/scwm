@@ -666,7 +666,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   return True;
 }
 
-SCWM_PROC(rubber_band_resize, "rubber-band-resize", 0, 1, 0,
+SCWM_IPROC(rubber_band_resize, "rubber-band-resize", 0, 1, 0,
           (SCM win),
 "Resize WIN interactively, using a rubber band frame.
 Returns a list '(width height) that is the new size of WIN.
@@ -698,7 +698,7 @@ specified. ")
 
 
 
-SCWM_PROC(opaque_resize, "opaque-resize", 0, 1, 0,
+SCWM_IPROC(opaque_resize, "opaque-resize", 0, 1, 0,
           (SCM win),
 "Resize WIN interactively, opaquely.
 Returns a list '(width height) that is the new size of WIN.

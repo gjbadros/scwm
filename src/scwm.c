@@ -1209,6 +1209,7 @@ Repository Timestamp: %s\n",
      behaviour in scwmgtkhelper.c's restore_scwm_handlers */
   newhandler_doreset(SIGHUP);
   newhandler_doreset(SIGFPE);
+/*  signal(SIGPIPE,DeadPipe); */
 #ifdef SCWM_RESET_ON_SIGINT
   newhandler_doreset(SIGINT);
 #else
@@ -1722,8 +1723,10 @@ SCM
 scwm_make_igsubr(const char *name, int req, int opt, int var,
                  SCM (*fcn)(), char *szArgList)
 {
-  static SCM sym_interactive = SCM_UNDEFINED;
-  if (SCM_UNDEFINED == sym_interactive)
+  extern SCM sym_interactive;
+  /* GJB:FIXME:: a hack to guarantee that this is initialized
+     since events.c has the SCWM_GLOBAL_SYMBOL definition of it */
+  if (SCM_BOOL_F == sym_interactive)
     sym_interactive = 
       scm_permanent_object(((scm_cell *)scm_intern0("interactive"))->car);
   { /* scope */
