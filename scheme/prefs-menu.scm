@@ -1,4 +1,4 @@
-;;; File: <prefs-menu.scm - 1998-03-27 Fri 10:43:31 EST sds@mute.eaglets.com>
+;;; File: <prefs-menu.scm - 1998-03-27 Fri 14:22:07 EST sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 Sam Shteingold
 ;;;	$Id$
 
@@ -89,64 +89,54 @@ No saving yet!")))))
 			(show-mesg "Set/change the size of the desk.\\n\
 Current desk size is " (size->str (desk-size)) ".")))))
 
-;;; FIX this is a bit more complex than this, since we don't want
-;;; all of scwm to stall waiting for the response -- the hack
-;;; we could currently use is use xprompt and have it run the
-;;; apropriate scwm-exec command (i.e., pass the continuation [the set-shadow-factor!
-;;; e.g.] to the ask-string, and have it run scwm-exec after getting the value
-;;; from the user
-(define-public (ask-string prompt)
+;;; FIX this is a bit more complex than this, since we don't want all of
+;;; scwm to stall waiting for the response -- the hack we could
+;;; currently use is use xprompt and have it run the apropriate
+;;; scwm-exec command (i.e., pass the continuation [the
+;;; set-shadow-factor!  e.g.] to the ask-string, and have it run
+;;; scwm-exec after getting the value from the user
+(define-public (ask-string prompt set-fn)
   (message "Cannot ask for `" prompt "' yet! Sorry..."))
 
-(define shadow-factor-menu
-  (menu (list (menuitem "Set" #:action
-			(lambda () (set-shadow-factor!
-				    (ask-string "New shadow factor:"))))
-	      menu-separator
-	      (menuitem "Help" #:action
-			(show-mesg "Set shadow factor -\\n\
+(define-public settable-object-list
+  ;; this is a list of lists of: ("title" "help" set-fn get-fn)
+  ;; load this file, add to this variable whatever you want,
+  ;; then call (menu-prefs)
+  '(("Shadow Factor" "Shadow Factor -\\n\
 the factor that is used by windows with the current decor to generate\\n\
-the relief \"shadow\" color for the regular and hilight background.")))))
-
-(define menu-shadow-factor-menu
-  (menu (list (menuitem "Set" #:action
-			(lambda () (set-menu-shadow-factor!
-				    (ask-string "New menu shadow factor:"))))
-	      menu-separator
-	      (menuitem "Help" #:action
-			(show-mesg "Set menu shadow factor -\\n\
+the relief \"shadow\" color for the regular and hilight background."
+     set-shadow-factor! shadow-factor))
+    ("Menu Shadow Factor" "Menu Shadow Factor -\\n\
 the factor that is used by menus to generate\\n\
-the relief \"hilight\" color for the regular and hilight background.")))))
-
-(define hilite-factor-menu
-  (menu (list (menuitem "Set" #:action
-			(lambda () (set-hilight-factor!
-				    (ask-string "New highlight factor:"))))
-	      menu-separator
-	      (menuitem "Help" #:action
-			(show-mesg "Set highlight factor -\\n\
+the relief \"hilight\" color for the regular and hilight background."
+     set-menu-shadow-factor! menu-shadow-factor)
+    ("Highlight Factor" "Highlight Factor -\\n\
 the factor that is used by windows with the current decor to generate\\n\
-the relief \"shadow\" color for the regular and hilight background.")))))
-
-(define menu-hilite-factor-menu
-  (menu (list (menuitem "Set" #:action
-			(lambda ()
-			  (set-shadow-factor!
-			   (ask-string "New menu highlight factor:"))))
-	      menu-separator
-	      (menuitem "Help" #:action
-			(show-mesg "Set menu highlight factor -\\n\
+the relief \"shadow\" color for the regular and hilight background."
+     set-hilight-factor! hilight-factor)
+    ("Menu Highlight Factor" "Menu Highlight Factor -\\n\
 the factor that is used by menus to generate\\n\
-the relief \"shadow\" color for the regular and hilight background.")))))
+the relief \"shadow\" color for the regular and h ilight background."
+     set-menu-hilihght-factor! menu-hilite-factor)
+    ("XTerm Command" "The command used for starting XTerm,\\n\
+\(like `xterm' or `rxvt')."
+     (lambda () xterm-command) (lambda (z) (set! xterm-command z)))
+    ("Icon Font" "The font for icons" set-icon-font! icon-font)
+    ("Animation Delay" "??" (lambda () animation-ms-delay)
+     (lambda (z) (set! animation-ms-delay z))))
 
-(define parameters-menu
-  (menu (list (menuitem "Opaque Move" #:action opaque-move-menu)
-	      (menuitem "Desk Size" #:action desk-size-menu)
-	      (menuitem "Shadow Factor" #:action shadow-factor-menu)
-	      (menuitem "Menu Shadow Factor" #:action menu-shadow-factor-menu)
-	      (menuitem "HiLite Factor" #:action hilite-factor-menu)
-	      (menuitem "Menu HiLite Factor" #:action menu-hilite-factor-menu)
-	      (menuitem "Scrolling" #:action scroll-menu))))
+(define (settable-object-menuitem title help set-fn get-fn)
+  (let ((cur (to-string (apply set-fn ())))
+    (menuitem title #:action
+	      (menu (list (menuitem "Set" #:action
+				    (ask-string
+				     (string-append "New value for "
+						    title " (" cur "):")
+				     set-fn))
+			  menu-separator
+			  (menuitem
+			   "Help" #:action
+			   (show-mesg help "\n\nCurrent-value:\t" cur)))))))
 
 (define-public (menu-prefs . opts)
   (apply
@@ -159,11 +149,21 @@ the relief \"shadow\" color for the regular and hilight background.")))))
 	      (menuitem "View All Fonts" #:action (show-com "xlsfonts"))
 	      menu-separator
 	      (menuitem "Info on a Window" #:action window-info)
+	      (menuitem "Window Properties" #:action (show-com "xprop"))
 	      (menuitem "General Info" #:action show-system-info)
 	      menu-separator
 	      (menuitem "SCWM interaction" #:action
 			(run-in-xterm "-e /usr/local/bin/scwmrepl"))
-	      (menuitem "Specific parameters" #:action parameters-menu)
+	      (menuitem "Specific parameters" #:action
+			(menu (append!
+			       (list
+				(menuitem "Opaque Move" #:action
+					  opaque-move-menu)
+				(menuitem "Desk Size" #:action desk-size-menu)
+				(menuitem "Scrolling" #:action scroll-menu))
+			       (map (lambda (item)
+				      (apply settable-object-menuitem item))
+				    settable-object-list))))
 	      menu-separator
 	      (menuitem
 	       "X resources" #:action
