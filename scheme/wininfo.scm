@@ -42,10 +42,10 @@
   "Return #t if WIN is on the current desk."
   (on-desk? (current-desk) win))
 
-(define (rectangle-overlap? x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
+(define-public (rectangle-overlap? x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
   (> (intersection-area x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2) 0))
 
-(define (intersection-area x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
+(define-public (intersection-area x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
   (let ((x1-2 (- (+ x1-1 w1) 1))
 	(y1-2 (- (+ y1-1 h1) 1))
 	(x2-2 (- (+ x2-1 w2) 1))
