@@ -1,10 +1,10 @@
-;; $Id$
-;; Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
-;; This file gets compiled directly into scwm
-;; Scwm will eval these commands before reading
-;; any other .scm file
-;; In a sense, these are compiled-in primitives implemented in scheme
-;; (these can get overridden later, of course)
+;;;; $Id$
+;;;; Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
+;;;; This file gets compiled directly into scwm
+;;;; Scwm will eval these commands before reading
+;;;; any other .scm file
+;;;; In a sense, these are compiled-in primitives implemented in scheme
+;;;; (these can get overridden later, of course)
 
 ;; Make quit an alias for scwm-quit
 (define quit scwm-quit)

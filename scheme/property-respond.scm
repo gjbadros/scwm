@@ -19,10 +19,11 @@
 ;;;; property-respond.scm
 
 (define-module (app scwm property-respond)
+  :use-module (app scwm base)
+  :use-module (app scwm hooks)
   :use-module (app scwm stringops)
   :use-module (app scwm optargs)
-  :use-module (app scwm flash-window)
-  :use-module (app scwm base))
+  :use-module (app scwm flash-window))
 
 
 ;; (use-scwm-modules property-respond)
@@ -39,8 +40,13 @@
 ;; (define w (select-window-interactively))
 ;; (X-property-get w "flash")
 
-(define-public window-flashing-start-hook (make-hook 1))
-(define-public window-flashing-stop-hook (make-hook 1))
+(define-scwm-hook window-flashing-start-hook 1
+  "Run when starting the flashing of a window.
+Invoked as (proc WIN-THAT-STARTED-FLASHING).")
+
+(define-scwm-hook window-flashing-stop-hook 1
+  "Run when stopping the flashing of a window.
+Invoked as (proc WIN-THAT-IS-STOPPING-FLASHING).")
 
 (define-public (property-changed-debug prop win)
   "Print debugging information about the property change of PROP on WIN.

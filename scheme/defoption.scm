@@ -36,7 +36,7 @@
 (define unspecified (if #f #f))
 
 (defmacro-public define-scwm-option (sym default docstring . rest)
-  "Define VAR to be a new scwm user option with DEFAULT as its default value.
+  "Define SYM to be a new scwm user option with DEFAULT as its default value.
 DOCSTRING documents the option.  REST includes keyword arguments including:
 #:type - one of 'boolean,
                 'integer, 'percent, 'real
@@ -59,7 +59,7 @@ DOCSTRING documents the option.  REST includes keyword arguments including:
 #:setter - the setter procedure, if any.
 #:getter - the getter procedure, if any."
   `(let ((answer (define-public ,sym ,default)))
-     (apply define-scwm-option-proc (list ,sym ',sym ,docstring ,default ,@rest))
+     (define-scwm-option-proc ,sym ',sym ,docstring ,default ,@rest)
      answer))
 
 #!

@@ -9,6 +9,7 @@
 
 (define-module (app scwm window-selection)
   :use-module (app scwm base)
+  :use-module (app scwm hooks)
   :use-module (app scwm wininfo)
   :use-module (app scwm winlist)
   :use-module (app scwm message-window)
@@ -24,8 +25,13 @@
 
 ;; hook procedures
 
-(define window-selection-add-hook (make-hook 1))
-(define window-selection-remove-hook (make-hook 1))
+(define-scwm-hook window-selection-add-hook 1
+  "Run when a window is added to the set of selected windows.
+Invoked as (proc WINDOW-NOW-SELECTED).")
+
+(define-scwm-hook window-selection-remove-hook 1
+  "Run when a window is removed from the set of selected windows.
+Invoked as (proc WINDOW-NO-LONGER-SELECTED).")
 
 (define-public selected-windows '())
 ;;(set! selected-windows '())

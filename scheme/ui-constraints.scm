@@ -22,8 +22,9 @@
 ;;;   -> changing auto-orientation
 
 (define-module (app scwm ui-constraints)
-  :use-module (app scwm message-window)
   :use-module (app scwm base)
+  :use-module (app scwm hooks)
+  :use-module (app scwm message-window)
   :use-module (app scwm listops)
   :use-module (app scwm optargs)
 ;;  :use-module (cassowary constraints))
@@ -603,17 +604,30 @@ an ui-constraint."
 
 ;; The lists of hook functions
 
-(define-public constraint-class-add-hook (make-hook 1))
-(define-public constraint-class-delete-hook (make-hook 1))
+(define-scwm-hook constraint-class-add-hook 1
+  "Run when a new constraint class is added.
+Invoked as (proc ADDED-CONSTRAINT-CLASS-OBJECT).")
+
+(define-scwm-hook constraint-class-delete-hook 1
+  "Run when a constraint class is deleted.
+Invoked as (proc DELTED-CONSTRAINT-CLASS-OBJECT).")
 
 
 ;; Constraint Instance Hooks
 
 ;; The lists of hook functions
 
-(define-public constraint-add-hook (make-hook 1))
-(define-public constraint-delete-hook (make-hook 1))
-(define-public constraint-composition-record-hook (make-hook 2))
+(define-scwm-hook constraint-add-hook 1
+  "Run when a constraint is added.
+Invoked as (proc ADDED-CONSTRAINT-OBJECT).")
+
+(define-scwm-hook constraint-delete-hook 1
+  "Run when a constraint is deleted.
+Invoked as (proc DELETD-CONSTRAINT-OBJECT).")
+
+(define-scwm-hook constraint-composition-record-hook 2
+  "Run when a constraint is added during composition recording.
+Invoked as (proc ADDED-CONSTRAINT-OBJECT ARGUMENTS).")
 
 ;; Constraint Instance (Un)Enable Hooks
 

@@ -38,6 +38,7 @@
 ;;; GJB:FIXME:GT:
 ;;; Bugs:
 ;;; Two ScwmButtons, move one near an edge, both re-orient
+;;;
 ;;; Grab a ScwmButtons window by it's lower right, when it reorients
 ;;;   your grab is no longer touching the window.
 
