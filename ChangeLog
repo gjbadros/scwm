@@ -1,3 +1,7 @@
+Sun Sep  5 21:27:37 1999    <gjb@cs.washington.edu>
+
+	* configure.in, modules/Makefile.am: Added modules/corba subdirectory.
+
 Sun Sep  5 19:52:11 1999    <gjb@cs.washington.edu>
 
 	* configure.in, Makefile.am: Added corba subdirectory.

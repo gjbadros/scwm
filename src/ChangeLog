@@ -1,3 +1,11 @@
+Sun Sep  5 21:25:13 1999    <gjb@cs.washington.edu>
+
+	* guile-compat.h, guile-compat.c, events.c: #define gh_free, move
+ 	make_output_strport, scm_strport_to_string here from events.c
+
+	* system.h: Guard gh_free against redefinition since I want it
+	defined in guile-compat.h, too.
+
 Sun Sep  5 13:20:00 1999    <gjb@cs.washington.edu>
 
 	* menu.c (MenuInteraction): Permit the release of other modifier
