@@ -1,3 +1,15 @@
+Mon Nov 23 17:33:51 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* move.c (moveLoop): Added a couple of casts to round reals to
+	integers, and use unsigned int instead of int;  all changes that
+	quiet warnings for me.
+
+Sat Nov 21 14:45:43 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* move.c (moveLoop): Use gh_int2scm in calling the
+	interactive_move_new_position_hook so scheme objects are passed;
+	the raw integers were being passed before in error.
+
 1998-11-21  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* borders.c (SetupFrame): Add a little bit more padding to the
