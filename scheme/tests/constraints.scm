@@ -65,7 +65,12 @@
   )
 
 
-;;(for-each (lambda (w) (move-to 0 0 w)) (list-all-windows))
+;;(for-each (lambda (w) (write w) (write (window-position w))) (list-all-windows))
+;;(for-each (lambda (w) (iconify w)) (list-all-windows))
+;; (move-to 0 0 (id->window 29360129))
+
+;; (window-position wA)
+;; (window-position wB)
 
 (keep-to-left-of wA wB)
 (keep-full-width wA wB)
