@@ -1149,5 +1149,7 @@ menu_init_gcs()
 void
 init_menu()
 {
+#ifndef SCM_MAGIC_SNARFER
 # include "scwmmenu.x"
+#endif
 }

@@ -284,7 +284,9 @@ void init_font()
 
   scm_tc16_scwm_font = scm_newsmob(&font_smobfuns);
 
+#ifndef SCM_MAGIC_SNARFER
 #include "font.x"
+#endif
 }
 
 

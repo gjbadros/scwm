@@ -772,8 +772,9 @@ init_color()
      fix all the Scheme code */
 
   scm_tc16_scwm_color = scm_newsmob (&color_smobfuns);
-
+#ifndef SCM_MAGIC_SNARFER
 #include "color.x"
+#endif
 }
 
 

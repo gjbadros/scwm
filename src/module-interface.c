@@ -140,7 +140,9 @@ SCM marshal_fvwm2_config_info (SCM win)
 
 void init_module_interface()
 {
+#ifndef SCM_MAGIC_SNARFER
 #include "module-interface.x"
+#endif
   /* This will ensure that these are defined in the root module. */
   loc_broadcast_hook = SCM_CDRLOC
     (scm_sysintern("broadcast-hook", SCM_BOOL_F));

@@ -556,7 +556,9 @@ void init_image()
   scm_protect_object(str_empty);
 
   /* Include registration of procedures and other things. */
+#ifndef SCM_MAGIC_SNARFER
 # include "image.x"
+#endif
 
   /* Register the image type. */
   scm_tc16_scwm_image = scm_newsmob(&image_smobfuns);

@@ -1,3 +1,9 @@
+Fri Mar 20 21:05:39 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.in: Do not use touch to create the .x files before
+	running guile-snarf;  guard inclusions of .x files with #ifndef
+	SCM_MAGIC_SNARFER
+
 Fri Mar 20 00:33:33 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* miscprocs.c, miscprocs.h, scmprocs.c: Added scwm-version

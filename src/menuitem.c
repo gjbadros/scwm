@@ -199,5 +199,7 @@ make_menuitem(SCM label, SCM action, SCM extra_label, SCM picture_above,
 void
 init_menuitem()
 {
+#ifndef SCM_MAGIC_SNARFER
 # include "menuitem.x"
+#endif
 }

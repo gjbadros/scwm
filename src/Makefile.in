@@ -159,8 +159,9 @@ init_scheme_string.c: ../scheme/minimal.scm
 %.o : %.x
 
 # Grab the SCM_PROC-s from the C source code
+# Note that the C code guards the #include "foo.x" with #ifndef SCM_MAGIC_SNARFER
+# so that the .x file need not exist for this rule, which generates that .x file
 %.x : %.c
-	touch $@
 	guile-snarf $(CFLAGS) $< >tmp.$@ && mv tmp.$@ $@
 
 # The leading - means do not error
