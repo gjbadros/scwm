@@ -1725,12 +1725,13 @@ set_icon_x(SCM picture, SCM win)
     tmp_win->szIconFile = NULL;
   } else if (picture == SCM_BOOL_T) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
-  } else if ((gh_string_p(picture)  ) {
+  } else if (gh_string_p(picture)) {
     int len;
 
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
-    sw->picIcon = CachePicture(gh_scm2newstr(picture, &len));
+    tmp_win->picIcon = CachePicture(dpy, Scr.Root, szPicturePath,
+				    gh_scm2newstr(picture, &len));
     tmp_win->szIconFile = tmp_win->picIcon->name;
     XDestroyWindow(dpy, tmp_win->icon_w);
     tmp_win->icon_w = None;
@@ -1768,9 +1769,10 @@ set_mini_icon_x(SCM picture, SCM win)
   sw = SCWMWINDOW(win);
   if (picture == SCM_BOOL_F) {
     sw->picMiniIcon = NULL;
-  } else if ((gh_string_p(picture)  ) {
+  } else if (gh_string_p(picture)) {
     int len;
-    sw->picMiniIcon = CachePicture(gh_scm2newstr(picture, &len));
+    sw->picMiniIcon = CachePicture(dpy, Scr.Root, szPicturePath,
+				   gh_scm2newstr(picture, &len));
   } else if (SCM_NIMP(picture) && PICTURE_P(picture)) {
     sw->picMiniIcon = PICTURE(picture)->pic;
   } else {
