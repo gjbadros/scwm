@@ -568,9 +568,12 @@
 			 (lambda args
 			   (display "scwm: Error communicating with module: \n")
 			   (write fmod)
-                           (display "error is: \n")
+			   (newline)
+                           (display " error is: \n")
                            (write args)
-			   (display ";\n terminating connection.\n")
+			   (newline)
+			   (backtrace)
+			   (display " terminating connection.\n")
 			   (kill-fvwm2-module fmod))))))
 	    
 	    (set! input-hook-handle (add-input-hook! from-module-read 
