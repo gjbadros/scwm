@@ -25,7 +25,6 @@
 #include "borders.h"
 #include "color.h"
 #include "decor.h"
-#include "colors.h"
 #include "guile-compat.h"
 #include "xmisc.h"
 #include "font.h"

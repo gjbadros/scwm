@@ -27,7 +27,6 @@
 #include "screen.h"
 #include "window.h"
 #include "color.h"
-#include "colors.h"
 #include "util.h"
 #include "image.h"
 #include "guile-compat.h"

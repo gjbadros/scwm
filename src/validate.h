@@ -5,7 +5,7 @@
  * This contains the argument validation macros for standard
  * guile types.  Other argument validation procedures
  * appear in the type-defining header file; e.g., for validating
- * windows, see windows.h, for colors, see colors.h.
+ * windows, see windows.h, for colors, see color.h.
  *
  * All validation procedures should look something like this
  *

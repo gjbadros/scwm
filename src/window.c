@@ -40,7 +40,6 @@
 #include "borders.h"
 #include "decor.h"
 #include "decorations.h"
-#include "colors.h"
 #include "colormaps.h"
 #include "image.h"
 #include "events.h"

@@ -65,7 +65,7 @@
 #include "cursor.h"
 #include "decorations.h"
 #include "Grab.h"
-#include "colors.h"
+#include "color.h"
 #include "events.h"
 #include "borders.h"
 #include "resize.h"
