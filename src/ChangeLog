@@ -1,3 +1,9 @@
+Sun Nov  9 07:15:45 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Picture.c, Picture.h, scmtypes.c: Removed mark_picture;
+ 	scm_mark0 can be used as the marker when no sub-objects need to be
+ 	marked.
+
 Sun Nov  9 00:00:15 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* icons.c: rearranged and improved the interface specification;
