@@ -167,22 +167,24 @@ while (<>) {
     }
     $header .= $_;
     ProcessHeader($filename, $line, $header);
+  } elsif (m%/\*\*?\s*SCWM[_-]?VALIDATE\s*:\s*(.*)\s*\*/%) {
+    my $argslist = $1;
+    $argslist =~ s/\n/ /g;
+    $argslist =~ s/[ \t]+//g;
+    @argnames = split(/,/, $argslist);  # this array is for comparison w/ C code
   } elsif (m/^\s*scm_wrong_type_arg\s*\(\s*FUNC_NAME\s*,\s*(\d+)\s*,\s*(\w+)\s*\)/) {
     my $argnum = $1; # 1-based
     my $argname = $2;
-    print STDERR "Checking ", $argname, " (arg ", $argnum, ") against list: ", join(" ",@argnames), "\n"
-      if $fDebug;
-    if ($argnum-1 > $#argnames || $argnames[$argnum-1] ne $argname) {
-      print STDERR "$ARGV:$.:**** Argument name/number mismatch in scm_wrong_type_arg line\n";
-    }
-  } elsif (m/^\s*VALIDATE_COLOR[^\(]*\s*\(\s*(\w+)\s*,\s*FUNC_NAME\s*,\s*(\d+)\s*\)/) {
+    check_arg_name_number_match("scm_wrong_type_arg",$1,$2,\@argnames);
+  } elsif (m/^\s*SCWM_WRONG_TYPE_ARG\s*\(\s*(\d+)\s*,\s*(\w+)\s*\)/) {
+    my $argnum = $1; # 1-based
+    my $argname = $2;
+    check_arg_name_number_match("SCWM_WRONG_TYPE_ARG",$1,$2,\@argnames);
+  } elsif (m/^\s*(VALIDATE_[^\(]*)\s*\(\s*(\d+)\s*,\s*(\w+)\s*/) {
+    my $validate_fn = $1;
     my $argnum = $2; # 1-based
-    my $argname = $1;
-    print STDERR "Checking ", $argname, " (arg ", $argnum, ") against list: ", join(" ",@argnames), "\n"
-      if $fDebug;
-    if ($argnum-1 > $#argnames || $argnames[$argnum-1] ne $argname) {
-      print STDERR "$ARGV:$.:**** Argument name/number mismatch in VALIDATE_COLOR_... line\n";
-    }
+    my $argname = $3;
+    check_arg_name_number_match($1,$2,$3,\@argnames);
   } elsif (m/${prefix}_HOOK\s*\(\s*([^,]+)\s*,\s*\"([^\"]+)\"\s*,\s*(\d+)\s*\)/o) {
     my $c_hookname = $1;
     my $scheme_hookname = $2;
@@ -754,8 +756,14 @@ sub ProcessSchemeExtension( $$$$$ ) {
 
 sub ProcessHeader( $$$ ) {
   my ($filename, $line, $header) = @_;
-  my ($cprimname, $primname, $req, $opt, $var, $argslist) =
-    $header =~ m%^${prefix}_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^\)]*)\)%o;
+#  print STDERR "header = $header\n";
+  my ($cprimname, $primname, $req, $opt, $var, $argslist,$space) =
+    $header =~ m%^${prefix}_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([\d\s\w,()\n]*)\)(\s*)\)%o;
+
+#  print STDERR "argslist = $argslist\n";
+  if (defined($space)) {
+#    print STDERR "$filename:$line:****WARNING: better to use )) to close arg list\n";
+  }
 
   if ($fDebug) {
     print STDERR "Handing $primname from $filename:$line\n";
@@ -769,6 +777,9 @@ sub ProcessHeader( $$$ ) {
   my ($fname_define) = $header =~ m%^\s*\#\s*define\s+FUNC_NAME\s+(.*?)\s*$%m;
   
   my $clean_argslist = $argslist;
+  $clean_argslist =~ s/\bARG_UNUSED\s*\(\s*([^\)]*)\s*\)/$1/g;
+  $clean_argslist =~ s/\bARG_IGNORE\s*\(\s*([^\)]*)\s*\)/$1/g;
+#  print STDERR "clean arglist = $clean_argslist\n";
   my $cremovals = ($clean_argslist =~ s/\bSCM\b//g);
   $clean_argslist =~ s/\n/ /g;
   $clean_argslist =~ s/[ \t]+//g;
@@ -1218,3 +1229,19 @@ sub DoneWindowStyleOptions() {
 
   $concepts{$winstyle}{markup} .= "</tbody></tgroup></table>\n";
 }
+
+sub check_arg_name_number_match ( $$\@ ) {
+  my $validate_fn = shift;
+  my $argnum = shift;
+  my $argname = shift;
+  my $aref_argnames = shift;
+
+  if ($fDebug) {
+    print STDERR "Checking ", $argname, " (arg ", $argnum, ") against list: ", join(" ",@$aref_argnames), "\n"
+  }
+  if ($argnum > scalar(@$aref_argnames) || 
+      $argnames[$argnum-1] ne $argname) {
+    print STDERR "$ARGV:$.:**** Argument name/number mismatch in $validate_fn line\n";
+  }
+}
+
