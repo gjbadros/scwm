@@ -45,7 +45,15 @@ SCWM_SYMBOL(sym_west,"west");
 SCWM_HOOK(change_desk_hook,"change-desk-hook", 2);
 /** This hook is invoked whenever the current desktop is changed.
 It is called with two argument, both integers.  The first is the
-new desktop number, the second is the old desktop number. */
+new desktop number, the second is the old desktop number. It is
+called before the desk is changed.  See also `after-change-desk-hook'. */
+
+SCWM_HOOK(after_change_desk_hook,"after-change-desk-hook", 2);
+/** This hook is invoked whenever the current desktop is changed.
+It is called with two argument, both integers.  The first is the
+new desktop number, the second is the old desktop number.  It
+is called after the desk is changed. See also `change-desk-hook'. */
+
 
 SCWM_HOOK(viewport_position_change_hook,"viewport-position-change-hook", 2);
 /** This hook is invoked whenever the viewport position is changed.
@@ -608,19 +616,18 @@ changeDesks(int val1, int val2)
     }
   }
 
-  /* GJB:FIXME:NOW: Do not need this if change-desk-hook can accomplish
-     the same thing */
-#ifdef CHANGE_DESK_FORCE_CLICK_FOCUS
   if (FocusWin && FocusWin->fClickToFocus) {
     SetFocus(FocusWin->w, FocusWin, 0);
   } else {
     SetFocus(Scr.NoFocusWin, NULL, 1);
   }
-#endif
 
   /* be sure the correct window gets focus
      if we are in focus-follow-mouse mode */
   CoerceEnterNotifyOnCurrentWindow();
+
+  call2_hooks(after_change_desk_hook, 
+              gh_int2scm(Scr.CurrentDesk), gh_int2scm(oldDesk));
 }
 
 
