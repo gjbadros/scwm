@@ -428,6 +428,7 @@ Return the selected window object, or #f if none was selected"
 			 (lambda (w) (flash-window w #:unflash-delay #f))
 			 #:unflash-window-proc
 			 (lambda (w) (unflash-window w))
+			 #:hover-delay 0
 			 #:ignore-winlist-skip ignore-winlist-skip #:proc (lambda (w) w)))
 
 ;; e.g.

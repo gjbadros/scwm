@@ -422,8 +422,8 @@ specific to the menu look used for this menu."
 			 font 
 			 image-side image-align color-bg-image-side image-bg
 			 extra)))
-    (if (bound? popup-delay) (set-menu-popup-delay! menu popup-delay))
-    (if (bound? hover-delay) (set-menu-hover-delay! menu hover-delay))
+    (and (bound? popup-delay) popup-delay (set-menu-popup-delay! menu popup-delay))
+    (and (bound? hover-delay) hover-delay (set-menu-hover-delay! menu hover-delay))
     (set-menu-menu-look! menu look)
     menu))
 

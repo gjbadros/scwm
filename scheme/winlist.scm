@@ -100,6 +100,8 @@ This sets the 'winlist-skip property of WIN.  See also `winlist-hit'."
 				       (proc window-list-proc)
 				       (flash-window-proc #f)
 				       (unflash-window-proc #f)
+				       (hover-delay #f)
+				       (popup-delay #f)
 				       (show-geometry #f)
 				       (show-last-focus-time #f)
 				       (warp-to-first #f)
@@ -179,7 +181,9 @@ exist to fit vertically on the menu).
 		  (if split-by-resource
 		      (fold-menu-list-by-group menuitems-with-window-resource)
 		      (map (lambda (x) (cdr x)) menuitems-with-window-resource)))
-		 warp-to-first))))
+		 #:popup-delay popup-delay
+		 #:hover-delay hover-delay)
+		warp-to-first)))
   
 (define (rotate-around w wl)
   (append (cond
