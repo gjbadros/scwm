@@ -27,6 +27,7 @@
 #endif
 
 #include <guile/gh.h>
+#include <sys/select.h>  /* for file descriptors */
 
 SCM scwm_handle_error (void *handler_data, SCM tag, SCM throw_args);
 SCM scwm_safe_apply_message_only (SCM proc, SCM args);

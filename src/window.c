@@ -3810,14 +3810,14 @@ context in the usual way if not specified. */
   }
 
   if (IMAGE_P(image)) {
-    icon_name=gh_scm2newstr(IMAGE(psw->icon_req_image)->full_name, &length);
+    icon_name = gh_scm2newstr(IMAGE(psw->icon_req_image)->full_name, &length);
     /* FIXMS: This can't deal properly with app-specified icons! */
     BroadcastName(M_ICON_FILE, psw->w, psw->frame,
 		  (unsigned long) psw, icon_name);
-    free (icon_name);
+    gh_free(icon_name);
   }
 
-  force_icon_redraw (psw);
+  force_icon_redraw(psw);
 
   return SCM_UNSPECIFIED;
 }

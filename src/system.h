@@ -46,11 +46,28 @@ char *xgetcwd(char *, int);
 #define FREECPPC(x) free(x)
 #endif
 
+/* pair gh_free with gh_scm2newstr, etc. */
+#define gh_free(x) free(x)
+
+#ifndef DEBUG_C_ALLOC
 #define NEW(x) ((x *) safemalloc(sizeof(x)))
 #define NEWC(c,x) ((x *) safemalloc((c)*sizeof(x)))
 #define FREE(x) free(x)
 #define FREEC(x) free(x)
-
+#else
+#define NEW(x) ((x *) \
+  ({ void *_p = safemalloc(sizeof(x)); \
+     fprintf(stderr,"NEW : %s: %d -- %x (%d)\n",__FILE__,__LINE__,_p,sizeof(x)); \
+     _p; }))
+#define NEWC(c,x) ((x *) \
+  ({ void *_p = safemalloc((c)*sizeof(x)); \
+     fprintf(stderr,"NEWC : %s: %d -- %x (%d,%d)\n",__FILE__,__LINE__,_p,c,sizeof(x)); \
+     _p; }))
+#define FREE(x) ({ fprintf(stderr,"FREE: %s: %d -- %x\n",__FILE__,__LINE__,x); \
+                   free(x); })
+#define FREEC(x) ({ fprintf(stderr,"FREEC: %s: %d -- %x\n",__FILE__,__LINE__,x); \
+                    free(x); })
+#endif
 
 #endif
 

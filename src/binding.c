@@ -339,7 +339,7 @@ FButtonToBnumModifiers(SCM button, int *pbnum, int *pmodifier, char *func_name,
 	       button_name);
       fOk=False;
     }
-    FREE(button_name);
+    gh_free(button_name);
   }
 
   return fOk;
@@ -597,6 +597,9 @@ remove_binding(int context, int mods, int button, KeySym keysym,
 	} else {		/* must have been first one, set new start */
 	  Scr.AllBindings = temp2;
 	}
+        if (temp->key_name) {
+          gh_free(temp->key_name);
+        }
 	FREE(temp);
 	temp = NULL;
       }
@@ -747,7 +750,7 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete) */
     int len;
     char *keyname = gh_scm2newstr(key,&len);
     scwm_msg(WARN,FUNC_NAME,"Ignoring key unbind request for `%s'",keyname);
-    FREE(keyname);
+    gh_free(keyname);
   } else {
     remove_binding(context,modmask,0,keysym,False);
   }
@@ -860,10 +863,8 @@ invoked when the key is released.
    */
   if (keysym ==  NoSymbol || !fOkayKey) {
     char *keyname = gh_scm2newstr(key,&len);
-    gh_allow_ints();
-    gh_allow_ints();
     scwm_msg(WARN,FUNC_NAME,"Ignoring key binding `%s'",keyname);
-    FREE(keyname);
+    gh_free(keyname);
     return SCM_BOOL_F;
   }
   /* 
@@ -881,7 +882,7 @@ invoked when the key is released.
   if (!fBoundKey) {
     char *keyname = gh_scm2newstr(key,&len);
     scwm_msg(WARN,FUNC_NAME,"No matching keycode for symbol `%s'",keyname);
-    FREE(keyname);
+    gh_free(keyname);
     return SCM_BOOL_F; /* Use False for error */
   }
   return SCM_UNSPECIFIED;

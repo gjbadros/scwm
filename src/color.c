@@ -266,7 +266,7 @@ allocated, an error results. */
        smarter, perhaps */;
     break;
   }
-  FREE(cn);
+  gh_free(cn);
   return answer;
 }
 #undef FUNC_NAME

@@ -695,9 +695,9 @@ HandleScwmExec()
              the global */
           w_for_scwmexec_response = None;
           
-          FREE(ret);
-          FREE(output);
-          FREE(error);
+          gh_free(ret);
+          gh_free(output);
+          gh_free(error);
         } else {
           scwm_msg(WARN,FUNC_NAME,"Cannot get XA_SCWMEXEC_REQUEST atom from window %ld",
                    w_for_scwmexec_response);
@@ -2064,7 +2064,7 @@ should not have to worry about this unless you know what it means. */
     int len;
     char *keyname = gh_scm2newstr(key,&len);
     scwm_msg(WARN,FUNC_NAME,"Bad keysym `%s' not sent",keyname);
-    FREE(keyname);
+    gh_free(keyname);
   }
   return SCM_UNSPECIFIED;
 }

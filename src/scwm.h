@@ -171,10 +171,6 @@ static scm_smobfuns T ## _smobfuns = { \
 # define HEIGHT_EXTRA_TITLE 4	/* Extra height for underlining title */
 # define HEIGHT_SEPARATOR 4	/* Height of separator lines */
 
-#define SCROLL_REGION 2		/* region around screen edge that */
-				/* triggers scrolling */
-
-
 /* The option that handles client id for session management */
 #define CLIENT_ID_STRING	"client-id"
 #define CLIENT_ID_OPT_STRING	("--" CLIENT_ID_STRING)

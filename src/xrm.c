@@ -53,8 +53,8 @@ Later, the value can be retrieved using `X-resource-get'. */
     char *szSpecifier = gh_scm2newstr(resource,NULL);
     char *szValue = gh_scm2newstr(value,NULL);
     XrmPutStringResource(&db,szSpecifier,szValue);
-    FREE(szSpecifier);
-    FREE(szValue);
+    gh_free(szSpecifier);
+    gh_free(szValue);
   }
   return SCM_UNSPECIFIED;
 }
@@ -78,15 +78,16 @@ If there is no resource under the given key, #f is returned. */
 
   { /* scope */
     char *szName = gh_scm2newstr(name,NULL);
-    char *szClass = !UNSET_SCM(xclass)?gh_scm2newstr(xclass,NULL):strdup(szName);
+    char *szClass = !UNSET_SCM(xclass)?gh_scm2newstr(xclass,NULL):szName;
     char *szType;
     XrmValue ret;
     if (XrmGetResource(db,szName,szClass,&szType,&ret) ||
         XrmGetResource(dbSystem,szName,szClass,&szType,&ret)) {
       answer = gh_str02scm(ret.addr);
     }
-    FREE(szName);
-    FREE(szClass);
+    gh_free(szName);
+    if (szClass != szName)
+      gh_free(szClass);
   }
   return answer;
 }
@@ -105,7 +106,7 @@ the file. */
     SCWM_WRONG_TYPE_ARG(1, filename);
   szFilename = gh_scm2newstr(filename,NULL);
   XrmPutFileDatabase(db, szFilename);
-  FREE(szFilename);
+  gh_free(szFilename);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

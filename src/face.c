@@ -739,7 +739,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       
       if (sum!=100) {
 	for (i = 0; i <= nsegs; ++i) {
-	  FREE(s_colors[i]);
+	  gh_free(s_colors[i]);
 	}
 	FREEC(s_colors);
 	FREEC(perc);

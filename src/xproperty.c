@@ -134,9 +134,9 @@ value. */
   if (gh_number_p(name)) {
     aprop = gh_scm2long(name);
   } else if (gh_string_p(name)) {
-    str=gh_scm2newstr(name, NULL);
-    aprop=XInternAtom(dpy, str, False);
-    FREE(str);
+    str = gh_scm2newstr(name, NULL);
+    aprop = XInternAtom(dpy, str, False);
+    gh_free(str);
   } else {
     SCWM_WRONG_TYPE_ARG(2, name);
   }
@@ -153,7 +153,8 @@ value. */
     SCWM_WRONG_TYPE_ARG(5, format);
   }
   if (fmt == 8 && gh_string_p(value)) {
-    val=gh_scm2newstr(value, &len);
+    /* GJB:FIXME:: Use gh_free on val when this is initializer */
+    val = gh_scm2newstr(value, &len);
   } else if (gh_vector_p(value)) {
     int i;
     int (*setter)(void **, long);
@@ -187,7 +188,7 @@ value. */
   } else if (gh_string_p(type)) {
     str=gh_scm2newstr(type, NULL);
     atype=XInternAtom(dpy, str, False);
-    FREE(str);
+    gh_free(str);
   } else if (gh_number_p(type)) {
     atype = gh_scm2long(type);
   } else {
@@ -280,7 +281,7 @@ If the X property could be found, a list "(value type format)" is returned.
   } else if (gh_string_p(name)) {
     str=gh_scm2newstr(name, NULL);
     aprop=XInternAtom(dpy, str, False);
-    FREE(str);
+    gh_free(str);
   } else {
     SCWM_WRONG_TYPE_ARG(2, name);
   }
@@ -355,7 +356,7 @@ NAME is a string. The return value is unspecified. */
 
   str=gh_scm2newstr(name, NULL);
   aprop=XInternAtom(dpy, str, False);
-  FREE(str);
+  gh_free(str);
 
   XDeleteProperty(dpy, w, aprop);
 
@@ -421,7 +422,7 @@ If STRING contains NULL-characters, the behaviour is undefined. */
   }
   str=gh_scm2newstr(string, NULL);
   a=XInternAtom(dpy, str, False);
-  FREE(str);
+  gh_free(str);
   assert(sizeof(Atom) == sizeof(unsigned long));
   return gh_ulong2scm((unsigned long)a);
 }

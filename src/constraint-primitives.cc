@@ -43,7 +43,7 @@ callback.  The alternative--acting on all variable changes as they
 occur--can be inefficent and visually distracting. */
 
 static void
-ScwmClvChanged(ClVariable *pclv, ClSimplexSolver *)
+ScwmClvChanged(ClVariable *pclv, ClSolver *)
 #define FUNC_NAME "ScwmClvChanged"
 {
   SCM obj = ScmFromPv(pclv->Pv());

@@ -240,7 +240,7 @@ SCWM_PROC(load_xbm, "load-xbm", 1, 0, 0,
   result=make_empty_image(full_path);
   ci=IMAGE(result);
   
-  c_path=gh_scm2newstr(full_path,&ignore);
+  c_path = gh_scm2newstr(full_path,&ignore);
 
   xbm_return=XReadBitmapFile(dpy, Scr.Root, c_path, 
 		      &ci->width, &ci->height, &ci->image, 
@@ -254,7 +254,7 @@ SCWM_PROC(load_xbm, "load-xbm", 1, 0, 0,
     scwm_msg(WARN,FUNC_NAME,"Could not load bitmap `%s'",c_path);
     result = SCM_BOOL_F;
   }
-  FREE(c_path);
+  gh_free(c_path);
   return result;
 }
 #undef FUNC_NAME
@@ -275,7 +275,7 @@ SCWM_PROC(load_xpm, "load-xpm", 1, 0, 0,
   result=make_empty_image(full_path);
   ci=IMAGE(result);
 
-  c_path=gh_scm2newstr(full_path,&ignore);
+  c_path = gh_scm2newstr(full_path,&ignore);
 
   xpm_attributes.colormap = ImageColorMap;
 
@@ -302,7 +302,7 @@ SCWM_PROC(load_xpm, "load-xpm", 1, 0, 0,
     scwm_msg(WARN,FUNC_NAME,"Could not load pixmap `%s'",c_path);
     result = SCM_BOOL_F;
   }
-  FREE(c_path);
+  gh_free(c_path);
   return result;
 }
 #undef FUNC_NAME
@@ -321,7 +321,7 @@ SCWM_PROC(load_imlib_image, "load-imlib-image", 1, 0, 0,
   result=make_empty_image(full_path);
   ci=IMAGE(result);
 
-  c_path=gh_scm2newstr(full_path,&ignore);
+  c_path = gh_scm2newstr(full_path,&ignore);
 
   ci->im = Imlib_load_image(imlib_data, c_path);
   if(ci->im == 0)
@@ -348,7 +348,7 @@ SCWM_PROC(load_imlib_image, "load-imlib-image", 1, 0, 0,
     }
   }
 
-  FREE(c_path);
+  gh_free(c_path);
   return result;
   
 }
@@ -499,7 +499,7 @@ get_image_loader(SCM name)
   int length;
   SCM result = SCM_BOOL_F;
   
-  c_name=gh_scm2newstr(name,&length);
+  c_name = gh_scm2newstr(name,&length);
 
   c_ext = strchr (c_name,'.');
   if (c_ext==NULL) {
@@ -512,7 +512,9 @@ get_image_loader(SCM name)
     }
   }
 
-  FREE(c_name);
+  gh_free(c_name);
+  c_name = NULL;
+
   if (result == SCM_BOOL_F) {
     result = scm_hash_ref(image_loader_hash_table, str_default,
 			  SCM_BOOL_F);

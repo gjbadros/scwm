@@ -41,7 +41,7 @@ static void
 DestroyScwmDecor(ScwmDecor * fl)
 {
   if (fl->tag) {
-    FREE(fl->tag);
+    gh_free(fl->tag);
     fl->tag = NULL;
   }
   if (fl->HiReliefGC != NULL) {

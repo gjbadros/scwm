@@ -1471,11 +1471,9 @@ InitializeDynamicMenu(DynamicMenu *pmd)
   pmd->pmiimTitle =
     InitializeMenuItemInMenu(pmd->pmenu->scmMenuTitle, -2 /* FIXJTL: ugly */, pmd);
   
-  /*
-  if (!pmd->pmenu->pchUsedShortcutKeys) {
-  */
-  /* we choose to not use this optimization for now */
-  FREE(pmd->pmenu->pchUsedShortcutKeys); 
+  if (pmd->pmenu->pchUsedShortcutKeys) {
+    FREE(pmd->pmenu->pchUsedShortcutKeys); 
+  }
   pmd->pmenu->pchUsedShortcutKeys = NewPchKeysUsed(pmd);
 }
 #undef FUNC_NAME

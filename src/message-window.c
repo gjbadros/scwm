@@ -137,7 +137,7 @@ DrawWindow( scwm_msgwindow* msg ) {
 #if 0
   );  /* for paren matching of above to keep (x)emacs happy */
 #endif                
-  FREE(sz);
+  gh_free(sz);
 }
 
 /* ResizeMessageWindow
@@ -162,7 +162,7 @@ ResizeMessageWindow( scwm_msgwindow* msg ) {
 
   DrawWindow( msg );
 
-  FREE(sz);
+  gh_free(sz);
 }
 
 /* OnExposeEvent

@@ -354,7 +354,7 @@ WarnBadHook(SCM hook)
     SCM hook_name = gh_car(hook);
     char *szHookName = gh_scm2newstr(hook_name, NULL);
     scwm_msg(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", szHookName);
-    FREE(szHookName);
+    gh_free(szHookName);
     gh_set_cdr_x(hook, SCM_EOL);
   }
 }
@@ -648,6 +648,17 @@ timer hook that has already been triggered. */
 }
 #undef FUNC_NAME
 
+SCWM_PROC(reset_timer_hook_x, "reset-timer-hook!", 0, 0, 0,
+          ())
+     /** Remove all timer-hook procedures. */
+#define FUNC_NAME s_reset_timer_hook_x
+{
+  gh_set_cdr_x(timer_hooks,SCM_EOL);
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
 SCWM_PROC(get_timer_hooks_list, "get-timer-hooks-list", 0, 0, 0,
           ())
      /** Return the timer-hooks list. */
@@ -776,6 +787,24 @@ input hook may safely remove itself. */
 #define FUNC_NAME s_remove_input_hook_x
 {
   gh_set_cdr_x(input_hooks,scm_delq_x (handle, gh_cdr(input_hooks)));
+  /* GJB:FIXME:: should these stick around until they've been forced at
+     least once?  For now I'll remove them... */
+  gh_set_cdr_x(new_input_hooks,scm_delq_x (handle, gh_cdr(new_input_hooks)));
+
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(reset_input_hook_x, "reset-input-hook!", 0, 0, 0,
+          (SCM handle))
+     /** Remove all procedures from the input hook. */
+#define FUNC_NAME s_reset_input_hook_x
+{
+  gh_set_cdr_x(input_hooks,SCM_EOL);
+  /* GJB:FIXME:: should these stick around until they've been forced at
+     least once?  For now I'll remove them... */
+  gh_set_cdr_x(new_input_hooks,SCM_EOL);
 
   return SCM_UNSPECIFIED;
 }

@@ -14,6 +14,7 @@
 #include <libguile.h>
 
 #include "scwm.h"
+#include <sys/select.h> /* for file descriptors */
 
 extern Window w_for_scwmexec_response;  
 

@@ -133,7 +133,7 @@ allocated, an error results. */
     scm_memory_error(FUNC_NAME);
   }
 
-/* GJB:FIXME:: merge these two paths */
+/* GJB:FIXME:: merge these two paths, and use gh_free/FREE correctly */
 #ifdef I18N
   fontset = XCreateFontSet(dpy,fn,&list_names,&missings,&defstrreturn);
   if (NULL == fontset) {
