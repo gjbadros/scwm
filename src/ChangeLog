@@ -1,3 +1,12 @@
+Sun May  2 18:22:37 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added missing BroadcastConfig calls to
+ 	set_window_highlight_{foreground,background}_x,
+ 	set_window_{foreground,background}_x
+
+	* color.c: Added missing BroadcastConfig call when redrawing the
+	highlight window from a global highlight color change.
+
 Sun May  2 15:26:01 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* window.h: Re-introduce SCWMWINDOW to just be an accessor, and
