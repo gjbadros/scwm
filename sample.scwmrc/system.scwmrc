@@ -691,6 +691,7 @@
 
 (debug-display "Before menu-window-ops\n")
 
+
 ;;; define some useful menus
 (define menu-window-ops
   (menu
@@ -719,6 +720,8 @@
 	       #:action (thunk toggle-window-shade))
     (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
 	      #:action interactive-set-window-gravity!)
+    (menuitem "Mo&ve" #:image-left "win-pos-center.xpm"
+	      #:action menu-window-move)
     menu-separator
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
     (menuitem "&Print" #:action (thunk print-window))
@@ -1204,7 +1207,6 @@ from other processes.
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
 
 ;;; GJB:FIXME:: clean this up to factor more out.
-
 
 (if have-kp-num-keysyms
     (begin
