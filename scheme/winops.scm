@@ -47,6 +47,17 @@
 (define-public toggle-window-shade 
   (make-toggling-winop window-shaded? un-window-shade window-shade))
 
+(define-public (window-shade-animated w)
+  (window-shade w #t))
+
+(define-public (un-window-shade-animated w)
+  (un-window-shade w #t))
+
+(define-public toggle-window-shade-animated
+  (make-toggling-winop window-shaded? 
+		       un-window-shade-animated 
+		       window-shade-animated))
+
 (define-public toggle-on-top
   (make-toggling-winop kept-on-top? un-keep-on-top keep-on-top))
 
