@@ -22,12 +22,19 @@
   (do ((zz lst (cdr zz))) ((null? zz))
     (if (string? (car zz)) (display (car zz) port) (write (car zz) port))))
 
+(define-public (make-file-menu file . rest)
+  (menu (append! (list (menuitem "View" #:action (show-file file))
+		       (menuitem "Edit" #:action
+				 (string-append (or (getenv "EDITOR") "gvim")
+						file)))
+		 rest)))
+
 (define-public (quotify-single-quotes str)
   (regexp-substitute/global #f "'" str 'pre "'\"'\"'" 'post))
 
 ;;; FIXGJB: how set width of an xmessage?
 (define-public (message . str)		; return lambda
-  (execute (string-append "echo -e \'" 
+  (execute (string-append "echo -e \'"
 			  (quotify-single-quotes (apply string-append str))
 			   "\'| xmessage -file - -default okay -nearmouse")))
 
@@ -45,32 +52,51 @@
 (define*-public (window-info #&optional (ww (selected-window)))
   (message
    "Window ID:\t\t" (number->string (window-id ww))
+   "\nWindow Frame ID:\t" (number->string (window-frame-id ww))
    "\nTitle:\t\t\t\"" (window-title ww) "\"\nPosition:\t\t"
    (size->str (window-position ww)) "\nSize:\t\t\t"
    (size->str (window-size ww))
    "\nDesk:\t\t\t" (number->string (window-desk ww)) "\nClass:\t\t\t\""
    (window-class ww) "\"\nResource:\t\t\"" (window-resource ww)
-   "\"\nBorder normal:\t\t" (bool->str (border-normal? ww))
+   "\"\nBorder Normal:\t\t" (bool->str (border-normal? ww))
    "\nDeletable:\t\t" (bool->str (window-deletable? ww))
    "\nIconified:\t\t" (bool->str (iconified? ww))
-   "\nKept on top:\t\t" (bool->str (kept-on-top? ww))
+   "\nKept On Top:\t\t" (bool->str (kept-on-top? ww))
    "\nRaised:\t\t\t" (bool->str (raised? ww))
    "\nShaded:\t\t\t" (bool->str (window-shaded? ww))
    "\nSticky Icon:\t\t" (bool->str (icon-sticky? ww))
    "\nSticky:\t\t\t" (bool->str (sticky? ww))
-   "\nTitle bar shown:\t" (bool->str (titlebar-shown? ww))))
+   "\nTitle Bar Shown:\t" (bool->str (titlebar-shown? ww))))
 
+(define-public (show-system-info)
+  (let ((vv (X-version-information)) (dd (X-display-information)))
+    (apply
+     message "Guile verion:\t" (version)
+     "\nSCWM version:\t" (scwm-version)
+     "\nRestarted:\t" (bool->str (restarted?))
+     "\nDisplay Size:\t" (size->str (display-size))
+     "\nDesk Size:\t" (size->str (desk-size))
+     "\nViewport:\t" (size->str (viewport-position))
+     "\nPointer:\t" (size->str (pointer-position))
+     "\nCurrent Desk:\t" (number->string (current-desk))
+     "\nX:\t\t" (caddr vv) "; version: " (number->string (car vv)) "."
+     (number->string (cadr vv))
+     "\nX Display:\t" (list-ref dd 4) " (" (number->string (list-ref dd 2))
+     " bit colors)\nimage-load-path:"
+     (map (lambda (st) (string-append "\n\t" st)) image-load-path))))
 
 (define-public (make-menuitems-from-menu-information-list menu-info-list)
   (cons menu-title
-	(map (lambda (elem) 
+	(map (lambda (elem)
 	       (let ((title (car elem))
 		     (mini-icon (cadr elem))
 		     (icon (caddr elem))
 		     (exename (cadddr elem)))
 		 (if (program-exists? exename)
 		     (menuitem title
-			       #:image-left (if mini-icon (string-append "mini-" mini-icon ".xpm") #f)
+			       #:image-left (if mini-icon
+						(string-append
+						 "mini-" mini-icon ".xpm") #f)
 			       #:icon (if icon (string-append icon ".xpm") #f)
 			       #:action (lambda () (execute exename)))
 		     #f)))
@@ -98,23 +124,23 @@
     (move-to x y w 'animated 'move-pointer-too)))
 
 (define-public (key-mouse-moves modifiers pct-of-screen left down up right)
-  (bind-key 'all (string-append modifiers "-" left) 
+  (bind-key 'all (string-append modifiers "-" left)
 	    (lambda () (move-pointer (%x (- pct-of-screen)) 0)))
-  (bind-key 'all (string-append modifiers "-" down) 
+  (bind-key 'all (string-append modifiers "-" down)
 	    (lambda () (move-pointer 0 (%y pct-of-screen))))
-  (bind-key 'all (string-append modifiers "-" up) 
+  (bind-key 'all (string-append modifiers "-" up)
 	    (lambda () (move-pointer 0 (%y (- pct-of-screen)))))
-  (bind-key 'all (string-append modifiers "-" right) 
+  (bind-key 'all (string-append modifiers "-" right)
 	    (lambda () (move-pointer (%x pct-of-screen) 0))))
 
 (define-public (key-viewport-moves modifiers pct-of-screen left down up right)
-  (bind-key 'all (string-append modifiers "-" left) 
+  (bind-key 'all (string-append modifiers "-" left)
 	    (lambda () (move-viewport (%x (- pct-of-screen)) 0)))
-  (bind-key 'all (string-append modifiers "-" down) 
+  (bind-key 'all (string-append modifiers "-" down)
 	    (lambda () (move-viewport 0 (%y pct-of-screen))))
-  (bind-key 'all (string-append modifiers "-" up) 
+  (bind-key 'all (string-append modifiers "-" up)
 	    (lambda () (move-viewport 0 (%y (- pct-of-screen)))))
-  (bind-key 'all (string-append modifiers "-" right) 
+  (bind-key 'all (string-append modifiers "-" right)
 	    (lambda () (move-viewport (%x pct-of-screen) 0))))
 
 (define-public (sleep-ms ms)
