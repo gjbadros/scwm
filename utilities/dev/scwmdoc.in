@@ -36,6 +36,7 @@
 #                    perhaps not as well tested
 #                    more and better abstractions in the scheme version
 #                    It uses guile (easier acceptance by guile-devs, perhaps)
+#                    and it's pretty out of date now --03/24/99 gjb
 #
 # TODO: make concept section id-s use a prefix (e.g., shadow-factor user-option
 # variable's doc id conflicts with the shadow-factor getter primitive)
@@ -986,15 +987,12 @@ sub CreateMarkupBody ( $$$$$$$ ) {
   <para>
   $markup_comment
   </para>
-  </refsect1>
-  <refsect1>
-  <title>Module</title>
-  <para>$module</para>
-  </refsect1>
-  <refsect1>
+  <refsect2>
   <title>Implementation Notes</title>
+  <para> Module: $module</para>
   <para> Defined in <ulink url=\"$scwmdir/$filename\"><filename>$filename</filename></ulink>
-  at line $line (<ulink url=\"$cvs_url_link\">CVS log</ulink>)</para> </refsect1>
+  at line $line (<ulink url=\"$cvs_url_link\">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
 </refentry>
 ";
   return $markup;
