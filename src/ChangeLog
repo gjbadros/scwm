@@ -1,3 +1,7 @@
+Sat Feb 12 20:32:09 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Grab.c: Fix typo in trailing semicolon on CServerGrabs().
+
 Wed Feb  2 09:19:30 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* shutdown.c: Fix some SCWM_IPROC uses, and make `restart'

@@ -1,3 +1,15 @@
+Sun Feb 13 09:13:23 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Added interactive decl for
+	`toggle-maximize-horizontal'.
+
+	* ui-constraints-classes.scm: Reordered constraint classes to put
+	strict-relative-position second, making it second from the right
+	in the toolbar (next to anchor) since it is parameterized based on 
+	where the click occurs, like the other 3 rightmost buttons.
+
+	* auto-shrink.scm: Added some documentation.
+
 Mon Feb  7 17:06:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added auto-shrink.scm
