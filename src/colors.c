@@ -49,6 +49,7 @@ nocolor(char *note, char *name)
 
 /*
  * Allocates a linear color gradient (veliaa@rpi.edu)
+ * GJB:FIXME:: this should use color objects, not strings
  */
 static Pixel *
 AllocLinearGradient(char *s_from, char *s_to, int npixels)

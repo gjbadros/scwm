@@ -647,6 +647,9 @@ SCWM_SYMBOL(sym_tiled , "tiled");
 /* MS:FIXME:: this function is horrible, functions should never be this
    huge, but I did not see an easier way to translate it. */
 
+/* GJB:FIXME:: this should let the user use color objects,
+   not color names as strings */
+
 /*SCWM_VALIDATE: face, spec, arg*/
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 {
