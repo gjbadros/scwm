@@ -194,7 +194,7 @@ STYLE must be given exactly the same way as on invocation of `window-style'."
   (force-reset-window-frame! win))
 
 ;; some useful style options
-(add-window-style-option #:border-width set-border-width!)
+(add-window-hint-option #:border-width set-border-width!)
 (add-window-style-option #:background set-window-background!)
 (add-window-style-option #:bg set-window-background!)
 (add-window-style-option #:foreground set-window-foreground!)

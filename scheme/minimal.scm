@@ -6,8 +6,14 @@
 ;;;; In a sense, these are compiled-in primitives implemented in scheme
 ;;;; (these can get overridden later, of course)
 
+
 (define-public guile-version (+ (string->number (major-version)) 
 				(/ (string->number (minor-version)) 10)))
+
+;; Turn off buffering so that we can see messages as
+;; they are displayed (an issue in >= guile-1.3.2)
+(if (> guile-version 1.3)
+    (setvbuf (current-output-port) _IONBF))
 
 ;; Make quit an alias for scwm-quit
 (define quit scwm-quit)
