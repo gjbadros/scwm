@@ -727,21 +727,28 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
 {
 #define FUNC_NAME "MovePswToCurrentPosition"
   int x = FRAME_X_VP(psw), y = FRAME_Y_VP(psw);
-  /* GJB:FIXME:: do we want to ensure sticky windows stay in t;he viewport? */
+#if 0
+  /* GJB:FIXME:: do we want to ensure sticky windows stay in the viewport? */
   if (psw->fSticky && !FIsPartiallyInViewport(psw)) {
     int width = FRAME_WIDTH(psw), height = FRAME_HEIGHT(psw);
-    int oldx = x, oldy = y;
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
-    if (x + width > Scr.DisplayWidth)
-      x = Scr.DisplayWidth - width;
-    if (y + height > Scr.DisplayHeight)
-      y = Scr.DisplayHeight - height;
-    scwm_msg(ERR,FUNC_NAME,"Window %s is sticky but not on screen at %d,%d\n\
-moving %s to %d,%d.",
-             psw->name,oldx,oldy,psw->name,x,y);
-    MoveTo((ScwmWindow *)psw,x,y);
+    int newx = x, newy = y;
+    if (newx < 0) newx = 0;
+    if (newy < 0) newy = 0;
+    if (newx + width > Scr.DisplayWidth)
+      newx = Scr.DisplayWidth - width;
+    if (newy + height > Scr.DisplayHeight)
+      newy = Scr.DisplayHeight - height;
+    scwm_msg(ERR,FUNC_NAME,"Window %s is sticky but not on screen at %d,%d;\n\
+consider moving %s to %d,%d.",
+             psw->name,oldx,oldy,psw->name,newx,newy);
+    /* This call segfaults scwm when constraint solver
+       forces a non-edit-constrainted window that's sticky
+       over the edge:
+       MoveTo((ScwmWindow *)psw,x,y); */
+    x = newx;
+    y = newy;
   }
+#endif
 
   XMoveWindow(dpy, psw->frame, x, y);
   SendClientConfigureNotify(psw);
