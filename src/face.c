@@ -7,6 +7,7 @@
 #include "window.h"
 #include "face.h"
 #include "color.h"
+#include "util.h"
 
 #ifndef HAVE_GH_LENGTH
 #define gh_length gh_list_length
@@ -470,6 +471,161 @@ ButtonFace *append_new_face(ButtonFace *bf) {
     retval->next=NULL;
     return retval;
   }
+}
+
+#ifdef USEDECOR
+extern ScwmDecor *cur_decor;
+#endif
+
+
+SCM
+set_title_face_x (SCM active_up, SCM active_down, SCM inactive)
+{
+#ifdef USEDECOR
+  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+#else
+  ScwmDecor *fl = &Scr.DefaultDecor;
+#endif
+
+  if (!(SCM_NIMP(active_up) && FACEP(active_up))) {
+    scm_wrong_type_arg("set-title-face!",1,active_up);
+  }
+
+  if (active_down==SCM_UNDEFINED) {
+    active_down=active_up;
+  } else if (!(SCM_NIMP(active_down) && FACEP(active_down))) {
+    scm_wrong_type_arg("set-title-face!",2,active_down);
+  }
+
+  if (inactive==SCM_UNDEFINED) {
+    inactive=active_up;
+  } else if (!(SCM_NIMP(inactive) && FACEP(inactive))) {
+    scm_wrong_type_arg("set-title-face!",3,inactive);
+  }
+
+  fl->titlebar.state[ActiveUp]=BUTTONFACE(active_up);
+  fl->titlebar.state[ActiveDown]=BUTTONFACE(active_down);
+  fl->titlebar.state[Inactive]=BUTTONFACE(inactive);
+
+  redraw_titlebars(fl,0);
+
+  return SCM_UNSPECIFIED;
+}
+
+
+SCM
+set_button_face_x (SCM button, SCM active_up, SCM active_down, SCM inactive) 
+{
+  int n;
+  int left_p;
+
+#ifdef USEDECOR
+  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+#else
+  ScwmDecor *fl = &Scr.DefaultDecor;
+#endif
+
+  n=0;
+
+  if (!gh_number_p(button) || (n=gh_scm2int(button)) < 1 || n > 10) {
+    scm_wrong_type_arg("set-button-face!",1,button);
+  }
+
+  if (!(SCM_NIMP(active_up) && FACEP(active_up))) {
+    scm_wrong_type_arg("set-button-face!",2,active_up);
+  }
+
+  if (active_down==SCM_UNDEFINED) {
+    active_down=active_up;
+  } else if (!(SCM_NIMP(active_down) && FACEP(active_down))) {
+    scm_wrong_type_arg("set-button-face!",3,active_down);
+  }
+
+  if (inactive==SCM_UNDEFINED) {
+    inactive=active_up;
+  } else if (!(SCM_NIMP(inactive) && FACEP(inactive))) {
+    scm_wrong_type_arg("set-button-face!",4,inactive);
+  }
+
+  left_p = n % 2;
+  n = n / 2;
+
+  printf(" %d %d \n",left_p,n);
+
+  if (left_p) {
+    fl->left_buttons[n].state[ActiveUp]=BUTTONFACE(active_up);
+    fl->left_buttons[n].state[ActiveDown]=BUTTONFACE(active_down);
+    fl->left_buttons[n].state[Inactive]=BUTTONFACE(inactive);
+  } else {
+    n = n - 1;
+    fl->right_buttons[n].state[ActiveUp]=BUTTONFACE(active_up);
+    fl->right_buttons[n].state[ActiveDown]=BUTTONFACE(active_down);
+    fl->right_buttons[n].state[Inactive]=BUTTONFACE(inactive);    
+  }
+
+  /* FIXMS should redraw borders, but SetBorderX is broken. */
+  /* redraw_borders(fl); */  
+
+  return SCM_UNSPECIFIED;
+}
+
+SCM
+set_button_mwm_flag_x(SCM button, SCM flag) 
+{
+  int n;
+#ifdef USEDECOR
+  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+#else
+  ScwmDecor *fl = &Scr.DefaultDecor;
+#endif
+
+  n=0;
+
+  if (!gh_number_p(button) || (n=gh_scm2int(button)) < 1 ||
+      n > 10) {
+    scm_wrong_type_arg("set-button-face!",1,button);
+  }
+
+  if(flag==SCM_BOOL_T) {
+    fl->left_buttons[n].flags |= MWMButton;    
+  } else if (flag==SCM_BOOL_F) {
+    fl->left_buttons[n].flags &= ~MWMButton;    
+  } else {
+    scm_wrong_type_arg("set-button-mwm-flag!",1,flag);
+  }
+
+  /* FIXMS should redraw borders, but SetBorderX is broken. */
+  /* redraw_borders(fl); */  
+
+  return SCM_UNSPECIFIED;
+}
+
+SCM
+set_border_face_x(SCM active, SCM inactive) 
+{
+#ifdef USEDECOR
+  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+#else
+  ScwmDecor *fl = &Scr.DefaultDecor;
+#endif
+
+  if (!(SCM_NIMP(active) && FACEP(active))) {
+    scm_wrong_type_arg("set-border-face!",1,active);
+  }
+
+  if (inactive==SCM_UNDEFINED) {
+    inactive=active;
+  } else if (!(SCM_NIMP(inactive) && FACEP(inactive))) {
+    scm_wrong_type_arg("set-border-face!",2,inactive);
+  }
+
+  fl->BorderStyle.active=BUTTONFACE(active);
+  fl->BorderStyle.inactive=BUTTONFACE(inactive);
+
+  /* FIXMS should redraw borders, but SetBorderX is broken. */
+  /* redraw_borders(fl); */  
+
+  return SCM_UNSPECIFIED;
 }
 
 
