@@ -4,6 +4,8 @@
 	scwm_moduledir for binary modules, analagous to scwm_load_path and 
 	scwm_schemedir; substitute in modules/Makefile and
 	modules/xpm-menus/Makefile
+	(guile_lib_path): use AC_PATH_PROGS instead of AC_PATH_PROG to
+	find guile-config or build-guile, and remove erroneous comma
 
 	* Makefile.am: add 'modules' to SUBDIRS
 
