@@ -62,19 +62,22 @@ run_restart_command(char *command) {
 void 
 Done(int restart_or_dump, char *command)
 {
-  call0_hooks(shutdown_hook);
+  if (restart_or_dump >= 0)
+    call0_hooks(shutdown_hook);
 
-  MoveViewport(0, 0, False);
+  /* need to be sure we've opened the display -- could
+     seg fault during startup */
+  if (dpy) {
+    MoveViewport(0, 0, False);
 
-  /* Close all my pipes */
+    Reborder();
 
-  Reborder();
+    XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_LISTENER);
 
-  XDeleteProperty(dpy, Scr.Root, XA_SCWMEXEC_LISTENER);
+    /* Pretty sure this should be done... */
+    XDeleteProperty(dpy, Scr.Root, XA_MOTIF_WM);
 
-  /* Pretty sure this should be done... */
-  XDeleteProperty(dpy, Scr.Root, XA_MOTIF_WM);
-  
+  }
   /* FIXGJB: Should restore cursor to original cursor before scwm started */
 
   if (restart_or_dump > 0) {

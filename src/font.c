@@ -146,7 +146,7 @@ allocated, an error results. */
       return answer;
     }
     
-    fn = strdup(XFIXEDFONTSET);
+    fn = strdup(XFIXEDFONTNAME);
     if (NULL == fn)
       goto allocation;
     fontset = XCreateFontSet(dpy,fn,&list_names,&missings,&defstrreturn);

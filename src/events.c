@@ -977,6 +977,7 @@ HandleMapNotify()
       ((!Scr.Focus) || Scr.Focus->fClickToFocus)) {
     SetFocus(pswCurrent->w, pswCurrent, 1);
   }
+  /* FIXGJB: what is this all about? */
   if (!(pswCurrent->fBorder || pswCurrent->fTitle)
       && (pswCurrent->boundary_width < 2)) {
     SetBorder(pswCurrent, False, True, True, pswCurrent->frame);

@@ -48,6 +48,7 @@
 #include <X11/Xproto.h>
 #include "screen.h"
 #include "mwmcom.h"
+#include "borders.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -412,10 +413,14 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     t->bw = BW;
     t->boundary_width = t->boundary_width - 1;
   }
+
   if (t->title_height > 0)
     t->title_height += t->bw;
+
+#if 0 /* FIXGJB: I think we should keep these orthogonal --07/29/98 gjb */
   if (t->boundary_width == 0)
     t->fBorder = False;
+#endif
 
 }
 

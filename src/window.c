@@ -748,7 +748,6 @@ KeepOnTop()
   }
 }
 
-
 /**************************************************************************
  *
  * Moves focus to specified window 
@@ -1548,11 +1547,11 @@ the window context in the usual way if not specified. */
 
 SCWM_PROC(restack_windows, "restack-windows", 1, 0, 0,
           (SCM winlist))
-     /** WINLIST is a list of windows. The first element of WINLIST
-will be kept in its current stacking order, the remainder will be
-stacked immediately below it in the order given. (Note: This will
-currently confuse the heck out of the pager and possibly other legacy
-fvwm2 modules). */
+     /** Restack the windows in WINLIST from front to back.
+The first element of WINLIST will be kept in its current stacking
+order, the remainder will be stacked immediately below it in the order
+given. (Note: This will currently confuse the heck out of the pager
+and possibly other legacy fvwm2 modules). */
 #define FUNC_NAME s_restack_windows
 {
   Window *windows;

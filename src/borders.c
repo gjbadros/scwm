@@ -131,11 +131,15 @@ DrawButton(ScwmWindow *psw, Window win, int w, int h,
   case MiniIconButton:
   case PixmapButton:
     if (type == PixmapButton)
-      image = IMAGE (bf->u.image);
+      image = SAFE_IMAGE(bf->u.image);
     else {
       if (psw->mini_icon_image==SCM_BOOL_F)
 	break;
-      image = IMAGE (psw->mini_icon_image);
+      image = SAFE_IMAGE(psw->mini_icon_image);
+    }
+    if (image == NULL) {
+      scwm_msg(WARN,__FUNCTION__,"image is NULL");
+      return;
     }
     if (bf->style & FlatButton)
       border = 0;
@@ -555,13 +559,13 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
   static unsigned int corners[4];
   Window w;
 
+  if (!psw)
+    return;
+
   corners[0] = TOP_HILITE | LEFT_HILITE;
   corners[1] = TOP_HILITE | RIGHT_HILITE;
   corners[2] = BOTTOM_HILITE | LEFT_HILITE;
   corners[3] = BOTTOM_HILITE | RIGHT_HILITE;
-
-  if (!psw)
-    return;
 
   if (fHighlightOn) {
     /* don't re-draw just for kicks */
@@ -674,9 +678,7 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	ButtonFace *bf = GET_DECOR(psw, left_buttons[i].state[bs]);
 
 	if (flush_expose(psw->left_w[i]) || (expose_win == psw->left_w[i]) ||
-	    (expose_win == None)
-	    || NewColor
-	  ) {
+	    (expose_win == None) || NewColor) {
 	  int inverted = PressedW == psw->left_w[i];
 
 	  if (bf->style & UseBorderStyle)
@@ -724,9 +726,7 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	ButtonFace *bf = GET_DECOR(psw, right_buttons[i].state[bs]);
 
 	if (flush_expose(psw->right_w[i]) || (expose_win == psw->right_w[i]) ||
-	    (expose_win == None)
-	    || NewColor
-	  ) {
+	    (expose_win == None) || NewColor ) {
 	  int inverted = PressedW == psw->right_w[i];
 
 	  if (bf->style & UseBorderStyle)
@@ -849,17 +849,15 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	      RelieveParts(psw, i | HH_HILITE,
 			   ((i / 2) ? rgc : sgc), (vertical ? rgc : sgc));
 	    else
-	      RelieveParts(psw, i | HH_HILITE,
-			   ((i / 2) ? sgc : sgc), (vertical ? sgc : sgc));
+	      RelieveParts(psw, i | HH_HILITE,sgc,sgc);
 	} else {
 	  RelieveWindow(psw, psw->corners[i], 0, 0, psw->corner_width,
 		      ((i / 2) ? psw->corner_width + psw->bw : psw->corner_width),
 			rgc, sgc, corners[i]);
-
 	  if (psw->boundary_width > 1)
 	    RelieveParts(psw, i, ((i / 2) ? rgc : sgc), (vertical ? rgc : sgc));
 	  else
-	    RelieveParts(psw, i, ((i / 2) ? sgc : sgc), (vertical ? sgc : sgc));
+	    RelieveParts(psw, i, sgc,sgc);
 	}
       }
     }
@@ -1110,13 +1108,13 @@ RelieveWindow(ScwmWindow *psw, Window win,
   if ((win == psw->sides[0]) || (win == psw->sides[1]) ||
       (win == psw->sides[2]) || (win == psw->sides[3]))
     edge = -1;
-  if (win == psw->corners[0])
+  else if (win == psw->corners[0])
     edge = 1;
-  if (win == psw->corners[1])
+  else if (win == psw->corners[1])
     edge = 2;
-  if (win == psw->corners[2])
+  else if (win == psw->corners[2])
     edge = 3;
-  if (win == psw->corners[3])
+  else if (win == psw->corners[3])
     edge = 4;
 
   i = 0;
@@ -1319,8 +1317,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     }
     if (psw->fBorder) {
       DBUG(__FUNCTION__,"Has border!");
-      psw->corner_width = GET_DECOR(psw, TitleHeight) + psw->bw +
-	psw->boundary_width;
+      psw->corner_width = psw->title_height + psw->bw + psw->boundary_width;
 
       if (w < 2 * psw->corner_width)
 	psw->corner_width = w / 3;
@@ -1357,8 +1354,9 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 	  xwc.width = psw->boundary_width;
 	  xwc.height = ywidth;
 	}
-	if (!shaded || (i != 2)) /* skip bottom side when shaded */
+	if (!shaded || (i != 2)) { /* skip bottom side when shaded */
 	  XConfigureWindow(dpy, psw->sides[i], xwcm, &xwc);
+        }
       }
 
       xwcm = CWX | CWY | CWWidth | CWHeight;
@@ -1379,14 +1377,15 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
 	else /* Top corners:  */
 	  xwc.y = 0;
 
-	if (!shaded || (i < 2)) /* do top corners even when shaded */
+	if (!shaded || (i < 2)) { /* do top corners even when shaded */
 	  XConfigureWindow(dpy, psw->corners[i], xwcm, &xwc);
+        }
       }
     }
   }
   psw->attr.width = w - 2 * psw->boundary_width;
   psw->attr.height = h - psw->title_height - 2 * psw->boundary_width;
-  /* may need to omit the -1 for shaped windows, next two lines */
+
   cx = psw->boundary_width - psw->bw;
   cy = psw->title_height + psw->boundary_width - psw->bw;
 
@@ -1407,6 +1406,8 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
     }
   }
   XSync(dpy, False);
+  /* FIXGJB: maybe this should be moved into a function and called from
+     ResizePswToCurrentSize and MovePswToCurrentPosition */
   if (sendEvent && !shaded) {
     XEvent client_event;
     client_event.type = ConfigureNotify;

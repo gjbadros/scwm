@@ -50,8 +50,8 @@ enum border_hilite_flags {
   RIGHT_HILITE = 1 << 1,
   BOTTOM_HILITE = 1 << 2,
   LEFT_HILITE = 1 << 3,
-  FULL_HILITE = 1 << 4,
-  HH_HILITE = 1 << 5
+  FULL_HILITE = (TOP_HILITE | RIGHT_HILITE | BOTTOM_HILITE | LEFT_HILITE),
+  HH_HILITE = 1 << 4
 };
 
 #endif

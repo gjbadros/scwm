@@ -435,7 +435,7 @@ DisplayMessage(const char *sz, Bool fRelief)
                textwidth, textheight, False);
   }
 
-  NewFontAndColor(gcMsg,XFONT(Scr.msg_window_font)->fid,
+  NewFontAndColor(gcMsg,XFONTID(Scr.msg_window_font),
                   XCOLOR(Scr.msg_window_fg), XCOLOR(Scr.msg_window_bg)); 
 
 #ifdef I18N

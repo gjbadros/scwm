@@ -314,8 +314,134 @@ SCM default_lbutton_face[5];
 SCM default_rbutton_face[5];
 
 
-void set_face_flag_x(SCM face, SCM flag, SCM flagval);
 void add_spec_to_face_x(SCM face, SCM spec, SCM arg);
+
+/* These three symbols are also used by msicprocs.c's
+   set-title-justify! */
+SCWM_GLOBAL_SYMBOL(sym_left , "left");
+SCWM_GLOBAL_SYMBOL(sym_right , "right");
+SCWM_GLOBAL_SYMBOL(sym_center , "center");
+
+SCWM_SYMBOL(sym_clear , "clear");
+SCWM_SYMBOL(sym_justify , "justify");
+SCWM_SYMBOL(sym_vertical_justify , "vertical-justify");
+SCWM_SYMBOL(sym_relief , "relief");
+SCWM_SYMBOL(sym_use_style_of , "use-style-of");
+SCWM_SYMBOL(sym_hidden_handles , "hidden-handles");
+SCWM_SYMBOL(sym_no_inset , "no-inset");
+SCWM_SYMBOL(sym_top , "top");
+SCWM_SYMBOL(sym_bottom , "bottom");
+SCWM_SYMBOL(sym_flat , "flat");
+SCWM_SYMBOL(sym_sunk , "sunk");
+SCWM_SYMBOL(sym_raised , "raised");
+SCWM_SYMBOL(sym_title , "title");
+SCWM_SYMBOL(sym_border , "border");
+
+
+/* FIXMS Probably the right way to do this is to keep a hash table of
+pointers to functions that know how to set each individual flag, but
+this ugly code is almost certainly more compact and quite possibly
+faster. If only C had closures... */
+SCWM_PROC(set_face_flag_x,"set-face-flag!", 3, 0, 0,
+          (SCM face, SCM flag, SCM flagval))
+     /** Set the given FLAG to the given FLAGVAL for face FACE.
+See the section on the face-specification-flags concept. */
+#define FUNC_NAME s_set_face_flag_x
+{
+  ButtonFace *bf;
+
+  if (!FACEP(face)) {
+    scm_wrong_type_arg(FUNC_NAME,1,face);
+  }
+
+  bf=BUTTONFACE(face);
+
+  if (flag==sym_justify) {
+    if (flagval==sym_left) {
+      bf->style |= HOffCenter;
+      bf->style &= ~HRight;
+    } else if (flagval==sym_right) {
+      bf->style |= HOffCenter | HRight;
+    } else if (flagval==sym_center) {
+      bf->style &= ~HOffCenter;
+    } 
+    else {
+      /* FIXMS: use something more accurate. */
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+    }
+
+  } else if (flag==sym_vertical_justify) {
+    if (flagval==sym_top) {
+      bf->style |= VOffCenter;
+      bf->style &= ~VBottom;
+    } else if (flagval==sym_bottom) {
+      bf->style |= VOffCenter;
+      bf->style &= ~VBottom;
+    } else if (flagval==sym_center) {
+      bf->style &= ~VOffCenter;
+    } 
+    else {
+      /* FIXMS: use something more accurate. */
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+    }
+
+  } else if (flag==sym_relief) {
+    if (flagval==sym_raised) {
+      bf->style &= ~FlatButton;
+      bf->style &= ~SunkButton;
+    }  else if (flagval==sym_sunk) {
+      bf->style &= ~FlatButton;
+      bf->style |= SunkButton;
+    } else if (flagval==sym_flat) {
+      bf->style &= ~SunkButton;
+      bf->style |= FlatButton;
+    } else {
+      /* FIXMS: use something more accurate. */
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+    }
+
+  } else if (flag==sym_use_style_of) {
+    if (flagval==sym_title) {
+      bf->style |= UseTitleStyle;
+      bf->style &= ~UseBorderStyle;
+    } else if (flagval==sym_border) {
+      bf->style |= UseBorderStyle;
+      bf->style &= ~UseTitleStyle;
+    } else if (flagval==SCM_BOOL_F) {
+      bf->style &= ~UseBorderStyle & ~UseTitleStyle;
+    } 
+    else {
+      /* FIXMS: use something more accurate. */
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+    }
+
+  } else if (flag==sym_hidden_handles) {
+    if (flagval==SCM_BOOL_T) {
+      bf->style |= HiddenHandles;
+    } else if (flagval==SCM_BOOL_F) {
+      bf->style &= ~HiddenHandles;
+    } else {
+      /* FIXMS: use something more accurate. */
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+    }
+
+  } else if (flag==sym_no_inset) {
+    if (flagval==SCM_BOOL_T) {
+      bf->style |= NoInset;
+    } else if (flagval==SCM_BOOL_F) {
+      bf->style &= ~NoInset;
+    } else {
+      /* FIXMS: use something more accurate. */
+      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
+    }
+
+  } else {
+    /* FIXMS: use something more accurate. */
+    scm_wrong_type_arg(__FUNCTION__,2,flagval);    
+  }
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
 
 
 
@@ -419,123 +545,6 @@ title and border faces, are indicated below.
 */
 
 
-/* These three symbols are also used by msicprocs.c's
-   set-title-justify! */
-SCWM_GLOBAL_SYMBOL(sym_left , "left");
-SCWM_GLOBAL_SYMBOL(sym_right , "right");
-SCWM_GLOBAL_SYMBOL(sym_center , "center");
-
-SCWM_SYMBOL(sym_clear , "clear");
-SCWM_SYMBOL(sym_justify , "justify");
-SCWM_SYMBOL(sym_vertical_justify , "vertical-justify");
-SCWM_SYMBOL(sym_relief , "relief");
-SCWM_SYMBOL(sym_use_style_of , "use-style-of");
-SCWM_SYMBOL(sym_hidden_handles , "hidden-handles");
-SCWM_SYMBOL(sym_no_inset , "no-inset");
-SCWM_SYMBOL(sym_top , "top");
-SCWM_SYMBOL(sym_bottom , "bottom");
-SCWM_SYMBOL(sym_flat , "flat");
-SCWM_SYMBOL(sym_sunk , "sunk");
-SCWM_SYMBOL(sym_raised , "raised");
-SCWM_SYMBOL(sym_title , "title");
-SCWM_SYMBOL(sym_border , "border");
-
-
-/* FIXMS Probably the right way to do this is to keep a hash table of
-pointers to functions that know how to set each individual flag, but
-this ugly code is almost certainly more compact and quite possibly
-faster. If only C had closures... */
-
-void set_face_flag_x(SCM face, SCM flag, SCM flagval) 
-{
-  ButtonFace *bf;
-
-  bf=BUTTONFACE(face);
-
-  if (flag==sym_justify) {
-    if (flagval==sym_left) {
-      bf->style |= HOffCenter;
-      bf->style &= ~HRight;
-    } else if (flagval==sym_right) {
-      bf->style |= HOffCenter | HRight;
-    } else if (flagval==sym_center) {
-      bf->style &= ~HOffCenter;
-    } 
-    else {
-      /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
-    }
-
-  } else if (flag==sym_vertical_justify) {
-    if (flagval==sym_top) {
-      bf->style |= VOffCenter;
-      bf->style &= ~VBottom;
-    } else if (flagval==sym_bottom) {
-      bf->style |= VOffCenter;
-      bf->style &= ~VBottom;
-    } else if (flagval==sym_center) {
-      bf->style &= ~VOffCenter;
-    } 
-    else {
-      /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
-    }
-
-  } else if (flag==sym_relief) {
-    if (flagval==sym_raised) {
-      bf->style &= ~FlatButton;
-      bf->style &= ~SunkButton;
-    }  else if (flagval==sym_sunk) {
-      bf->style &= ~FlatButton;
-      bf->style |= SunkButton;
-    } else if (flagval==sym_flat) {
-      bf->style &= ~SunkButton;
-      bf->style |= FlatButton;
-    } else {
-      /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
-    }
-
-  } else if (flag==sym_use_style_of) {
-    if (flagval==sym_title) {
-      bf->style |= UseTitleStyle;
-      bf->style &= ~UseBorderStyle;
-    } else if (flagval==sym_border) {
-      bf->style |= UseBorderStyle;
-      bf->style &= ~UseTitleStyle;
-    } else if (flagval==SCM_BOOL_F) {
-      bf->style &= ~UseBorderStyle & ~UseTitleStyle;
-    } 
-    else {
-      /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
-    }
-
-  } else if (flag==sym_hidden_handles) {
-    if (flagval==SCM_BOOL_T) {
-      bf->style |= HiddenHandles;
-    } else if (flagval==SCM_BOOL_F) {
-      bf->style &= ~HiddenHandles;
-    } else {
-      /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
-    }
-
-  } else if (flag==sym_no_inset) {
-    if (flagval==SCM_BOOL_T) {
-      bf->style |= NoInset;
-    } else if (flagval==SCM_BOOL_F) {
-      bf->style &= ~NoInset;
-    } else {
-      /* FIXMS: use something more accurate. */
-      scm_wrong_type_arg(__FUNCTION__,3,flagval);    
-    }
-
-  } else {
-    /* FIXMS: use something more accurate. */
-    scm_wrong_type_arg(__FUNCTION__,2,flagval);    
-  }
-}
 
 ButtonFace *append_new_face(ButtonFace *bf);
 

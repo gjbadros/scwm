@@ -284,9 +284,11 @@ ComputeXTextWidth(XFONT_TYPE *pxfs, const char *sz, int cch)
   if (cch < 0)
     cch = strlen(sz);
 #ifdef I18N
+  { /* scope */
   XRectangle dummy,log_ret;
-  XmbTextExtents(XFONT(Scr.msg_window_font), sz, cch, &dummy, &log_ret);
+  XmbTextExtents(pxfs, sz, cch, &dummy, &log_ret);
   return log_ret.width;
+  }
 #else
   return XTextWidth(pxfs, sz, cch);
 #endif

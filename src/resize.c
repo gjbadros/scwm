@@ -555,7 +555,6 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
     }
     if (!done) {
       extern XEvent Event;
-      RemoveRubberbandOutline(Scr.Root);
       Event = ResizeEvent;
       DispatchEvent();
 

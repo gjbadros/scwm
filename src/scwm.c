@@ -67,6 +67,11 @@ void init_cassowary_scm();           /* from the cassowary distribution */
 #include <X11/Xresource.h>
 #include <X11/extensions/shape.h>
 
+#ifdef HAVE_LIBXMU
+#include <X11/Xmu/Error.h>
+#endif
+
+
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #else 
@@ -576,7 +581,6 @@ scwm_main(int argc, char **argv)
   
   DBUG("main", "Done parsing args");
   
-  
   DBUG("main", "Installing signal handlers");
   
   newhandler(SIGINT);
@@ -599,7 +603,7 @@ scwm_main(int argc, char **argv)
   Scr.NumberOfScreens = ScreenCount(dpy);
   
   master_pid = getpid();
-  
+
   if (!single) {
     int myscreen = 0;
     char *cp;
@@ -1138,11 +1142,15 @@ ScwmErrorHandler(Display * dpy, XErrorEvent * event)
     return 0;
 
 
+#ifdef HAVE_LIBXMU
+  XmuPrintDefaultErrorMessage(dpy,event,stderr);
+#else
   scwm_msg(ERR, "ScwmErrorHandler", "*** internal error ***");
   scwm_msg(ERR, "ScwmErrorHandler", "Request %d, Error %d, EventType: %d",
 	   event->request_code,
 	   event->error_code,
 	   last_event_type);
+#endif
   return 0;
 }
 
