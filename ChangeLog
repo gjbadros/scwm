@@ -1,3 +1,8 @@
+Thu Jun 18 16:48:02 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* configure.in (LDFLAGS): Properly detect the presence of
+ 	scm_the_last_stack_fluid.
+
 Wed Jun 10 21:36:15 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* configure.in, acconfig.h: Check for scm_internal_select.

@@ -1,4 +1,4 @@
-nl Process this file with autoconf to produce a configure script.
+dnl Process this file with autoconf to produce a configure script.
 
 dnl $Id$
 dnl configure.in
@@ -165,6 +165,24 @@ AC_CHECK_LIB(guile, gh_length, AC_DEFINE(HAVE_GH_LENGTH), ,$GUILE_LIBS)
 AC_CHECK_LIB(guile, scm_parse_path, AC_DEFINE(HAVE_SCM_PARSE_PATH), ,$GUILE_LIBS)
 
 AC_CHECK_LIB(guile, scm_internal_select, AC_DEFINE(HAVE_SCM_INTERNAL_SELECT), ,$GUILE_LIBS)
+
+dnl check for scm_the_last_fluid in place of scm_the_last_stack_var
+
+saved_LIBS="${LIBS}"
+LIBS="${LIBS} ${GUILE_LIBS}"
+AC_MSG_CHECKING(for scm_the_last_stack_fluid in -lguile)
+AC_TRY_LINK([
+#include <guile/gh.h>
+],[
+return scm_the_last_stack_fluid;
+], [
+AC_DEFINE(HAVE_SCM_THE_LAST_STACK_FLUID)
+AC_MSG_RESULT(yes)
+],[
+AC_MSG_RESULT(no)
+])
+
+LIBS="${saved_LIBS}"
 
 dnl ## Checks for typedefs, structures, and compiler characteristics. ##
 

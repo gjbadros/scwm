@@ -3673,13 +3673,51 @@ fi
 
 
 
+saved_LIBS="${LIBS}"
+LIBS="${LIBS} ${GUILE_LIBS}"
+echo $ac_n "checking for scm_the_last_stack_fluid in -lguile""... $ac_c" 1>&6
+echo "configure:3680: checking for scm_the_last_stack_fluid in -lguile" >&5
+cat > conftest.$ac_ext <<EOF
+#line 3682 "configure"
+#include "confdefs.h"
+
+#include <guile/gh.h>
+
+int main() {
+
+return scm_the_last_stack_fluid;
+
+; return 0; }
+EOF
+if { (eval echo configure:3693: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+  rm -rf conftest*
+  
+cat >> confdefs.h <<\EOF
+#define HAVE_SCM_THE_LAST_STACK_FLUID 1
+EOF
+
+echo "$ac_t""yes" 1>&6
+
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  
+echo "$ac_t""no" 1>&6
+
+fi
+rm -f conftest*
+
+LIBS="${saved_LIBS}"
+
+
 echo $ac_n "checking for working const""... $ac_c" 1>&6
-echo "configure:3678: checking for working const" >&5
+echo "configure:3716: checking for working const" >&5
 if eval "test \"`echo '$''{'ac_cv_c_const'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 3683 "configure"
+#line 3721 "configure"
 #include "confdefs.h"
 
 int main() {
@@ -3728,7 +3766,7 @@ ccp = (char const *const *) p;
 
 ; return 0; }
 EOF
-if { (eval echo configure:3732: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:3770: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_const=yes
 else
@@ -3749,21 +3787,21 @@ EOF
 fi
 
 echo $ac_n "checking for inline""... $ac_c" 1>&6
-echo "configure:3753: checking for inline" >&5
+echo "configure:3791: checking for inline" >&5
 if eval "test \"`echo '$''{'ac_cv_c_inline'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_cv_c_inline=no
 for ac_kw in inline __inline__ __inline; do
   cat > conftest.$ac_ext <<EOF
-#line 3760 "configure"
+#line 3798 "configure"
 #include "confdefs.h"
 
 int main() {
 } $ac_kw foo() {
 ; return 0; }
 EOF
-if { (eval echo configure:3767: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:3805: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_inline=$ac_kw; break
 else
