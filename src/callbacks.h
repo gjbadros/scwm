@@ -24,6 +24,15 @@ SCM call1_hooks (SCM hook_type, SCM arg);
 SCM apply_hooks (SCM hook_type, SCM args);
 SCM apply_hooks_message_only (SCM hook_type, SCM args);
 
+/* Timer hooks. */
+
+SCM add_timer_hook_x(SCM usec, SCM proc);
+SCM remove_timer_hook_x(SCM handle);
+
+long shortest_timer_timeout();
+void update_timer_hooks();
+void run_timed_out_timers();
+
 void init_callbacks();
 
 #endif /* CALLBACKS_H */

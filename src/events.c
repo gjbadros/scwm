@@ -1448,6 +1448,9 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
   fd_set in_fdset, out_fdset;
   int retval;
   struct timeval timeout;
+  struct timeval *tp;
+  int usec;
+  Bool repeat;
 
   DBUG(__FUNCTION__, "Entered");
 
@@ -1476,13 +1479,43 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
 
   XFlush(dpy);
   timerclear(&timeout);
+  
+  update_timer_hooks();
+  
+  repeat = True;
+
+  while (repeat) {	
+    usec = shortest_timer_timeout ();
+    
+    switch (usec) {
+    case -1:
+      tp = NULL;
+      repeat = False;
+      break;
+    case 0:
+      run_timed_out_timers();
+      repeat = True;
+      break;
+    default:
+      timeout.tv_usec = usec;
+      tp = &timeout;
+      repeat = False;
+      break;
+    }
+  }
+
 #ifdef __hpux
-  retval = select(fd_width, (int *) &in_fdset, (int *) &out_fdset, 0, NULL);
+  retval = select(fd_width, (int *) &in_fdset, (int *) &out_fdset, 0, tp);
 #else
-  retval = select(fd_width, &in_fdset, &out_fdset, 0, NULL);
+  retval = select(fd_width, &in_fdset, &out_fdset, 0, tp);
 #endif
 
-  run_input_hooks(&in_fdset);
+  if (retval == 0) {
+    update_timer_hooks();
+    run_timed_out_timers();
+  } else {
+    run_input_hooks(&in_fdset);
+  }
 
   DBUG(__FUNCTION__, "leaving");
   return 1;

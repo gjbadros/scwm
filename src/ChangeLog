@@ -1,3 +1,21 @@
+Mon Mar 30 01:41:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* callbacks.c, callbacks,h, events.c: Added support for timer
+ 	hooks. This involved adding several procedures for managing the
+ 	timer hook list: shortest_timer_timeout, update_timer_hooks and
+ 	run_timed_out_timers, some changes to the event loop, and these
+ 	scheme primitives: 
+
+	add-timer-hook! USEC PROC - schedule a call of procedure PROC with
+ 	no arguments to occur after about USEC microseconds have elapsed
+ 	(it may take somewhat longer if there are many x evebts to
+ 	process). Return a handle suitable to be passed to
+ 	remove-timer-hook!
+
+	remove-timer-hook! HANDLE - remove the specified timer hook from
+ 	the hook list, preventing it from being invoked if it hasn't been
+ 	already.
+	
 Sun Mar 29 18:10:45 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* shutdown.c, shutdown.h: Files with shutdown handling for scwm,
