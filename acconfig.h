@@ -91,6 +91,11 @@
    C-level support for hooks. */
 #undef HAVE_SCM_MAKE_HOOK
 
+/* Define this if your libguile has scm_make_smob_type_mfpe,
+   the new-style SMOB interface (>= guile-1.3.2 */
+#undef HAVE_SCM_MAKE_SMOB_TYPE_MFPE
+
+
 /* Define this if your libguile has scm_strport_to_string
    (added sometime after guile-1.3) */
 #undef HAVE_SCM_STRPORT_TO_STRING
