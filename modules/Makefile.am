@@ -7,7 +7,19 @@ else
 GTK_SUBDIRS =
 endif
 
-SUBDIRS = xpm-menus overlay-plane pie-menus background c-animation xlib-drawing $(GTK_SUBDIRS)
+if HAVE_ESD
+ESD_SUBDIRS = esdsound
+else
+ESD_SUBDIRS =
+endif
 
-DIST_SUBDIRS = xpm-menus overlay-plane pie-menus background c-animation xlib-drawing $(GTK_SUBDIRS);
+SUBDIRS = background \
+	c-animation \
+	$(ESD_SUBDIRS) \
+	overlay-plane \
+	pie-menus \
+	xlib-drawing \
+	xpm-menus \
+	$(GTK_SUBDIRS)
 
+DIST_SUBDIRS = $(SUBDIRS)
