@@ -1,3 +1,9 @@
+Wed Mar 11 21:34:32 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* libmain.c: OK, I broke down and made scwmexec_exec_full wait for
+ 	notification on all three relevant properties. This should avoid
+ 	the former weirdness. XSync in the server was not helping.
+
 Mon Mar  9 00:45:21 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* libmain.c: Slight change to the event waiting - get all
