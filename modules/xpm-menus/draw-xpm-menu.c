@@ -409,7 +409,7 @@ DrawUnderline(Window w, scwm_font *scfont, GC gc, char *sz, int x, int y, int po
 static
 void
 PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
-#define FUNC_NAME "PaintMenuItem";
+#define FUNC_NAME "PaintMenuItem"
 {
   /*  Menu *pmenu = pmd->pmenu; */
   MenuDrawingInfo *pmdi = pmd->pmdi;
