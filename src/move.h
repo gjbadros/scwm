@@ -5,6 +5,8 @@
 #ifndef MOVE_H
 #define MOVE_H
 
+#include "window.h"
+
 void AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
 			Bool fWarpPointerToo, int cmsDelay, float *ppctMovement);
 

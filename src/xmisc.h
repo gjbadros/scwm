@@ -6,6 +6,7 @@
 #define XMISC_H
 
 #include "image.h"
+#include "window.h"
 
 extern XGCValues Globalgcv;
 extern unsigned long Globalgcm;

@@ -6,6 +6,7 @@
 #define ICONS_H
 
 #include "image.h"
+#include "window.h"
 
 void CreateIconWindow(ScwmWindow *psw, int def_x, int def_y);
 void DrawIconWindow(ScwmWindow *psw);
