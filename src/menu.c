@@ -51,6 +51,9 @@ static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);
 static void FreeDynamicMenu(DynamicMenu *pmd);
 
+/* from drawmenu.c; the backup dynamic menu construction routine */
+void ConstructDynamicMenu(DynamicMenu *pmd);
+
 static
 SCM
 scwm_safe_call0_sym(SCM thunk)
@@ -351,7 +354,9 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   while (True) {
     item = gh_car(rest);
     pmi = SAFE_MENUITEM(item);
-    if (!pmi) {
+    /* warn for a bad menu item, but permit #f menuitems
+       for easier skipping of missing applications, e.g. */
+    if (!pmi && item != SCM_BOOL_F) {
       scwm_msg(WARN,FUNC_NAME,"Bad menu item %d",ipmiim);
     }
     if (pmi && pmi->pchHotkeyPreferences) {
@@ -384,7 +389,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
    the window (with-style (set-menu-look! ...)) system? */
 SCWM_PROC(set_menu_menu_look_x, "set-menu-menu-look!", 2, 0, 0,
            (SCM menu, SCM menu_look) )
-/** Use MENU-LOOK as the menu-look for MENU */
+/** Use MENU-LOOK as the menu-look for MENU. */
 #define FUNC_NAME s_set_menu_menu_look_x
 {
   int iarg = 0;
@@ -407,7 +412,7 @@ SCWM_PROC(set_menu_menu_look_x, "set-menu-menu-look!", 2, 0, 0,
 
 SCWM_PROC(set_menu_menu_title_x, "set-menu-menu-title!", 2, 0, 0,
            (SCM menu, SCM menu_title) )
-/** Use MENU-TITLE as the title for MENU */
+/** Use MENU-TITLE as the title for MENU. */
 #define FUNC_NAME s_set_menu_menu_title_x
 {
   int iarg = 0;
@@ -1008,7 +1013,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
       if (fPermitAltReleaseToSelect) {
         KeySym keysym;
         char ch;
-        int cch = XLookupString(&Event.xkey,&ch,1,&keysym,NULL);
+        /* int cch = */ XLookupString(&Event.xkey,&ch,1,&keysym,NULL);
         if (keysym == XK_Meta_L || keysym == XK_Meta_R ||
             keysym == XK_Alt_L || keysym == XK_Alt_R) {
           scmAction = pmiim->pmi->scmAction;
@@ -1240,7 +1245,10 @@ InitializeDynamicMenu(DynamicMenu *pmd)
     if (rgpmiim[ipmiim]) {
       ipmiim++;
     } else {
-      scwm_msg(WARN,__FUNCTION__,"Bad menu item number %d",ipmiim);
+      /* FIXGJB: permit #f menuitems and don't give warning message */
+      if (item != SCM_BOOL_F) {
+        scwm_msg(WARN,__FUNCTION__,"Bad menu item number %d",ipmiim);
+      }
     }
     
     rest = gh_cdr(rest);

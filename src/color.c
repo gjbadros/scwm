@@ -767,7 +767,7 @@ SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
 SCWM_PROC (not_menu_background, "not-menu-background", 0, 0, 0,
            () )
      /** Return the default background color for menus. */
-#define FUNC_NAME s_menu_background
+#define FUNC_NAME s_not_menu_background
 { 
   return (Scr.NotMenuColors.bg);
 }

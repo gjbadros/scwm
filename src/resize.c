@@ -89,7 +89,12 @@ being moved or resized interactively. */
 SCWM_PROC(set_message_window_position_x, "set-message-window-position!", 4, 0, 0,
           (SCM x, SCM y, SCM x_align, SCM y_align))
     /** Set the position to be used for the message window.
-*/
+X and Y specify the position of the control point of the window,
+while X-ALIGN and Y-ALIGN specify a fraction of the width and
+height of the window to offset the window for alignment.
+X-ALIGN and Y-ALIGN should each be in the range [0,-1].  See also
+`position-message-window!' for a symbolic interface to alignment
+specifications. */
 #define FUNC_NAME s_set_message_window_position_x
 {
   SCM_REDEFER_INTS;

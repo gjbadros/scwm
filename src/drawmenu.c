@@ -750,6 +750,8 @@ init_drawmenu()
   drawmenu_menu_look = make_menulook("scwm-menu-look", SCM_UNDEFINED, pmdvt);
 
   SCWM_VAR_READ_ONLY(NULL,"scwm-menu-look",drawmenu_menu_look);
+  /** The default menu look for Scwm.
+Used as an argument to `set-menu-look'. */
   
 #ifndef SCM_MAGIC_SNARFER
 #include "drawmenu.x"

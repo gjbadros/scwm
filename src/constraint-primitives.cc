@@ -308,7 +308,7 @@ SCWM_PROC(cl_windows_of_constraint, "cl-windows-of-constraint", 1, 0, 0,
     const ClVariable *pclv = dynamic_cast<const ClVariable *>(pclav);
     if (!pclv)
       continue;
-    ScwmWindow *psw = static_cast<ScwmWindow *>(pclv->Pv());
+    ScwmWindow *psw = PswFromClvPv(pclv->Pv());
     if (psw)
       setpsw.insert(psw);
   }

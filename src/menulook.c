@@ -50,10 +50,11 @@ print_menulook(SCM scm, SCM port, scm_print_state *pstate)
 
 
 SCWM_PROC (menulook_p, "menulook?", 1, 0, 0,
-           (SCM scm))
+           (SCM obj))
+     /** Return #t if OBJ is a menulook object, #f otherwise. */
 #define FUNC_NAME s_menulook_p
 {
-  return SCM_BOOL_FromBool(MENULOOK_P(scm));
+  return SCM_BOOL_FromBool(MENULOOK_P(obj));
 }
 #undef FUNC_NAME
 
@@ -86,7 +87,7 @@ SCWM_PROC(copy_menu_look, "copy-menu-look", 2, 1, 0,
 /** FIXJTL: document */
 #define FUNC_NAME s_copy_menu_look
 {
-  int iarg = 0, dummy;
+  int iarg = 0;
   scwm_menulook * pmlOrig;
   
   iarg++;
@@ -101,8 +102,9 @@ SCWM_PROC(copy_menu_look, "copy-menu-look", 2, 1, 0,
   }
   
   iarg++;
-  if (UNSET_SCM(extra)) 
+  if (UNSET_SCM(extra)) {
     extra = pmlOrig->extra;
+  }
 
   return make_menulook_internal(name, extra, pmlOrig->mdvt);
 }
