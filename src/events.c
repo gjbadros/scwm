@@ -1492,3 +1492,129 @@ My_XNextEvent(Display * dpy, XEvent * event)
   DBUG("My_XNextEvent", "leaving My_XNextEvent");
   return 2;
 }
+
+/* Stolen from GWM 1.8c --gjb */
+void
+fill_x_button_event(XButtonEvent *evt, int type, int button, int modifier, 
+		    int x, int y, int x_root, int y_root, 
+		    Window child, Window sub_window)
+{
+    evt -> type = type;
+    evt -> display = dpy;
+    evt -> window = child;
+    evt -> subwindow = sub_window;
+    evt -> root = Scr.Root;
+    evt -> time = lastTimestamp + (type == ButtonPress? 0 : 5);
+    evt -> x = x;
+    evt -> y = y;
+    evt -> x_root = x_root;
+    evt -> y_root = y_root;
+    evt -> same_screen = 1;
+    evt -> button = button;
+    evt -> state = modifier;
+}
+
+Window
+WindowGettingButtonEvent(Window w, int x, int y)
+{
+    int x2, y2;
+    Window child, w2 = w;
+    XWindowAttributes wa;
+
+ find_window:
+    XTranslateCoordinates(dpy, w, w2, x, y, &x2, &y2, &child);
+    if (child) {
+	x = x2;
+	y = y2;
+	w = w2;
+	w2 = child;
+	goto find_window;
+    }
+    x = x2;
+    y = y2;
+    w = w2;
+
+ find_listener:
+    XGetWindowAttributes(dpy, w, &wa);
+    if (!(wa.all_event_masks & (ButtonPressMask | ButtonReleaseMask))) {
+	Window d1, *d3, parent;
+	unsigned int d4;
+	
+	XQueryTree(dpy, w, &d1, &parent, &d3, &d4);
+	if (d3) XFree(d3);
+	if (parent) {
+	    w = parent;
+	    goto find_listener;
+	}
+    }
+    return w;
+}
+
+/* Inspired by GWM 1.8c --gjb */
+SCM
+send_button_press(SCM button, SCM modifier, SCM win,
+		  SCM button_press_p, SCM button_release_p,
+		  SCM propagate_p)
+{
+  int bnum;
+  int mod_mask;
+  Bool fPropagate = FALSE;
+  Bool fPress = TRUE;
+  Bool fRelease = TRUE;
+  int iarg = 1;
+  Window child;
+  Window pointer_win;
+  XButtonEvent event;
+  int x, y, x_root, y_root, x2, y2;
+  ScwmWindow *sw;
+  Window w;
+
+  SCM_REDEFER_INTS;
+
+  VALIDATEN(win, 3, __FUNCTION__);
+  sw = SCWMWINDOW(win);
+  w = sw->w;
+
+  if (!gh_number_p(button)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(__FUNCTION__, iarg++, button);
+  }
+  if (modifier != SCM_UNDEFINED && !gh_number_p(modifier)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(__FUNCTION__, iarg++, modifier);
+  }
+  if (button_press_p != SCM_UNDEFINED) {
+    fPress = gh_scm2bool(button_press_p);
+  }
+  if (button_release_p != SCM_UNDEFINED) {
+    fRelease = gh_scm2bool(button_release_p);
+  }
+  if (propagate_p != SCM_UNDEFINED) {
+    fPropagate = gh_scm2bool(propagate_p);
+  }
+  bnum = gh_scm2int(button);
+  mod_mask = gh_scm2int(modifier);
+  XQueryPointer( dpy, w, &JunkRoot, &pointer_win,
+                 &x_root,&y_root,&x, &y, &JunkMask);
+
+  child = WindowGettingButtonEvent(pointer_win,x,y);
+  x2 = x; y2 = y;
+
+  XTranslateCoordinates(dpy, pointer_win, child, x2, y2,
+			  &x, &y, &JunkChild);
+  if (fPress) {
+    fill_x_button_event(&event, ButtonPress, bnum, mod_mask, 
+			x, y, x_root, y_root, child, 0);
+    XSendEvent(dpy, PointerWindow, fPropagate, ButtonPressMask, 
+	       (XEvent *) &event);
+    DBUG(__FUNCTION__,"New Sent button press of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
+  }
+  if (fRelease) {
+    fill_x_button_event(&event, ButtonRelease, bnum, mod_mask | (1 << (bnum+7)),
+			x, y, x_root, y_root, child, 0);
+    XSendEvent(dpy, PointerWindow, fPropagate, ButtonReleaseMask, 
+	       (XEvent *) &event);
+    DBUG(__FUNCTION__,"New Sent button release of %d at %d, %d; time = %ld\n",bnum,x,y,lastTimestamp);
+  }
+  return SCM_UNDEFINED;
+}

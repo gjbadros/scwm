@@ -7,6 +7,13 @@
 #include <libguile.h>
 #include "scwm.h"
 
+SCM  ensure_valid(SCM win, int n, char *subr, SCM kill_p);
+
+#define VALIDATE(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
+
+#define VALIDATEKILL(win,subr)  if(((win=ensure_valid(win,1,subr,SCM_BOOL_T)))==SCM_BOOL_F) return SCM_BOOL_F
+
+#define VALIDATEN(win,n,subr)  if(((win=ensure_valid(win,n,subr,SCM_BOOL_F)))==SCM_BOOL_F) return SCM_BOOL_F
 
 typedef struct {
   ScwmWindow *sw;
