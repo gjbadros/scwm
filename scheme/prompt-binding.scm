@@ -440,9 +440,7 @@ KEY-PROC is either `bind-key' or `unbind-key'."
 			  ;; prompt-binding:insert
 			  (lambda ()
 			    (let ((x #("Null" "Press" "noop")))
-			      (gtk-clist-insert clist current-binding-row x)
-			      (gtk-clist-select-row clist current-binding-row 0)
-			      )))
+			      (gtk-clist-insert clist (1+ current-binding-row) x))))
 
       ;; the copy button in the binding frame at the top
       (gtk-signal-connect copy "clicked" 
@@ -450,8 +448,8 @@ KEY-PROC is either `bind-key' or `unbind-key'."
 			  (lambda ()
 			    (let* ((vals (gtk-clist-get-row-values clist current-binding-row 2)))
 			      (set-car! vals "Null")
-			      (gtk-clist-insert clist current-binding-row vals)
-			      (gtk-clist-select-row clist current-binding-row 0))))
+;;			      (display "copy: ") (display current-binding-row) (newline)
+			      (gtk-clist-insert clist (1+ current-binding-row) vals))))
 
       ;; the change button in the binding frame at the top
       (gtk-signal-connect change "clicked" 
@@ -487,8 +485,9 @@ KEY-PROC is either `bind-key' or `unbind-key'."
 			  ;; prompt-binding:delete
 			  (lambda ()
 			    (remove-binding-for-row clist current-binding-row)
-			    (gtk-clist-remove clist current-binding-row)
-			    (gtk-clist-select-row clist current-binding-row 0)))
+;;			    (display "delete: ") (display current-binding-row) (newline)
+			    (gtk-clist-remove clist current-binding-row)))
+;;			    (gtk-clist-select-row clist current-binding-row 0)))
 
       ;; the "set" button next to the name of the procedure
       ;; that we've bound to the event
@@ -507,6 +506,7 @@ KEY-PROC is either `bind-key' or `unbind-key'."
        ;; prompt-binding:select-row
        (lambda (row col event)
 	 (debug-clist-select "bindings" row col event)
+;;	 (display "select_row: ") (display current-binding-row) (display " ") (display row) (newline)
 	 (set! current-binding-row row)
 	 (let* ((key-cmd-other (gtk-clist-get-row-values clist row 3))
 		(key-text (car key-cmd-other))
