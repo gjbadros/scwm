@@ -3,7 +3,9 @@ Makefile.in
 aclocal.m4
 config.cache
 config.log
+config.guess
 config.status
+config.sub
 configure
 gjb.configure
 libtool
