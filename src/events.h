@@ -14,7 +14,7 @@ SCM send_key_press(SCM key, SCM win,
 
 void init_input_hooks();
 void run_input_hooks(fd_set *in_fdset);
-void add_hook_fds_to_set(fd_set *in_fdset);
+void add_hook_fds_to_set(fd_set *in_fdset, int *fd_width);
 SCM add_input_hook (SCM fd, SCM thunk);
 
 void DispatchEvent(void);

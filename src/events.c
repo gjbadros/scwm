@@ -1470,10 +1470,14 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
    * Just take a moment to check for dead children. */
   ReapChildren();
 
+  fd_width = 0;
+
   FD_ZERO(&in_fdset);
   FD_SET(x_fd, &in_fdset);
 
-  add_hook_fds_to_set(&in_fdset);
+  fd_width = x_fd;
+
+  add_hook_fds_to_set(&in_fdset, &fd_width);
 
   FD_ZERO(&out_fdset);
 
@@ -1505,9 +1509,9 @@ XNextEvent_orTimeout(Display * dpy, XEvent * event)
   }
 
 #ifdef __hpux
-  retval = select(fd_width, (int *) &in_fdset, (int *) &out_fdset, 0, tp);
+  retval = select(fd_width + 1, (int *) &in_fdset, (int *) &out_fdset, 0, tp);
 #else
-  retval = select(fd_width, &in_fdset, &out_fdset, 0, tp);
+  retval = select(fd_width + 1, &in_fdset, &out_fdset, 0, tp);
 #endif
 
   if (retval == 0) {
@@ -1549,11 +1553,17 @@ void run_input_hooks(fd_set *in_fdset)
   }
 }
 
-void add_hook_fds_to_set(fd_set *in_fdset)
+void add_hook_fds_to_set(fd_set *in_fdset, int *fd_width)
 {
   SCM cur;
+  
   for (cur = SCM_CDR(input_hooks); cur != SCM_EOL; cur= SCM_CDR(cur)) {
-    FD_SET (gh_scm2int(SCM_CAR(SCM_CAR(cur))), in_fdset);
+    int fd = gh_scm2int(SCM_CAR(SCM_CAR(cur)));
+
+    FD_SET (fd, in_fdset);
+
+    if (fd > *fd_width)
+      *fd_width = fd;
   }
 }
 

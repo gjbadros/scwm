@@ -1,3 +1,10 @@
+Mon Jun  1 19:20:20 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* events.c, events.h: Actually compute the highest file descriptor
+ 	used + 1, instead of using a system maximum. Apparently the old
+ 	way causes the program to eat CPU under FreeBSD. Bug report and
+ 	patch from Chris Toshok <toshok@hungry.com>.
+
 Sun Apr  5 14:01:50 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.am: List .x files in BUILT_SOURCES rather than lisiting
