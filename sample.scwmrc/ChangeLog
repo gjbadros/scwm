@@ -1,3 +1,15 @@
+Sun Feb 13 10:53:58 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use display-module-loaded for module-loaded-hook, 
+	if debug is set.
+
+Sun Feb 13 09:14:41 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use easyraise module.  Do not use
+	desk-widget-on-top; use easyraise instead, and require four
+	modifier keys to raise the easyraise windows (not just the big
+	three). 
+
 Thu Feb 10 11:41:58 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Fix typo-- title XEmacs, not Emacs.

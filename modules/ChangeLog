@@ -1,3 +1,9 @@
+Sun Feb 13 09:51:30 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* */Makefile.am: Reordered to include more in automake conditional
+ 	so there aren't warning messages when attempting to build foo.x
+ 	when a module is chosen not to be built.
+
 Sat Feb 12 20:18:30 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* */*.c: Use \n\ in docstrings.
