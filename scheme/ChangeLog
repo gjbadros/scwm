@@ -1,3 +1,23 @@
+Fri Sep 24 15:19:24 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* gtk-menu.scm: Honour #:extra-label, make it right-justified in
+	the menuitem.
+
+Fri Sep 24 15:00:55 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added #&rest args to window-task-switcher-menu, added
+	`window-task-switcher-menu-backwards'.
+
+Fri Sep 24 12:20:39 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* gtk.scm: Let `image->gtk-pixmap' handle string pseudo-images,
+	too, so it is a little more flexible.
+
+	* gtk-menu.scm: Define `scwm-gtk-menu-title',
+	`scwm-gtk-menu-separator', `menuitem->scwm-gtk-menuitem'.  Permits 
+	scwm-gtk-menus to be created w/o using any of the standard Scwm
+	menuing framework.
+
 Fri Sep 24 11:39:09 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* gtk.scm: Added `image->gtk-pixmap'

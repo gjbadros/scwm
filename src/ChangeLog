@@ -1,3 +1,8 @@
+Fri Sep 24 14:58:28 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* menu.c (PmiimMenuShortcuts): Let Shift-Tab go backwards in
+	menus, and let that wrap from first to last, too.
+
 Thu Sep 23 15:34:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menuitem.c (s_menuitem_properties): Return fIsForcedSubmenu
