@@ -133,6 +133,10 @@ scm_internal_stack_cwdr (scm_catch_body_t body,
 static SCM run_hook_proc;
 #endif
 
+#if 0
+/* GJB:FIXME::
+   this resulted in the crazy message-window-show/hide! infinite-loop
+   bug.  Why is the _stack_cwdr version needed?--10/04/99 gjb */
 SCM
 scwm_safe_apply (SCM proc, SCM args)
 {
@@ -158,8 +162,8 @@ scwm_safe_apply_message_only (SCM proc, SCM args)
                            scm_handle_by_message_noexit, "scwm",
                            &stack_item);
 }
+#endif
 
-#if 0 /* GJB:FIXME:NOW: drop this */
 SCM
 scwm_safe_apply (SCM proc, SCM args)
 {
@@ -184,9 +188,7 @@ scwm_safe_apply (SCM proc, SCM args)
 				 scwm_handle_error, "scwm",
 				 &stack_item);
 }
-#endif
 
-#if 0 /* GJB:FIXME:NOW: drop this */
 SCM
 scwm_safe_apply_message_only (SCM proc, SCM args)
 {
@@ -211,7 +213,6 @@ scwm_safe_apply_message_only (SCM proc, SCM args)
 			   scm_handle_by_message_noexit, "scwm",
 			   &stack_item);
 }
-#endif
 
 
 

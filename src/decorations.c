@@ -236,6 +236,7 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
 {
   int decor, i;
   PropMwmHints *prop;
+  Bool fAllowSettingBoundaryWidth = !t->fBorderWidthSet; /* GJB:FIXME:NOW  || !t->fFullyConstructed; */
 
   /* GJB:FIXME:: this was testing !BW_FLAG for setting border_width,
      testing !NO_BW_FLAG for setting resize_width --03/25/98 gjb */
@@ -343,7 +344,7 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     /* A narrow border is displayed (5 pixels - 2 relief, 1 top,
      * (2 shadow) */
     t->fBorder = True;
-    if (t->boundary_width < 0)
+    if (fAllowSettingBoundaryWidth)
       t->boundary_width = border_width;
   }
   if (decor & MWM_DECOR_TITLE) {
@@ -356,7 +357,7 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     /* A wide border, with corner tiles is desplayed
      * (10 pixels - 2 relief, 2 shadow) */
     t->fBorder = True;
-    if (t->boundary_width < 0)
+    if (fAllowSettingBoundaryWidth)
       t->boundary_width = resize_width;
     t->corner_width = GET_DECOR(t, TitleHeight) + t->boundary_width;
   }
@@ -407,9 +408,8 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
     t->bw = 0;
   } else {
     t->bw = BW;
-    /* --t->boundary_width; Why do this?  I know BW is one
-       but it's confusing that the border width is
-       off by one when explicitly specified --10/04/99 gjb */
+    if (fAllowSettingBoundaryWidth)
+      --t->boundary_width; 
   }
 
   if (t->title_height > 0)
@@ -426,13 +426,11 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
 
 }
 
-/****************************************************************************
- * 
+/*
  * Checks the function "function", and sees if it
  * is an allowed function for window t,  according to the motif way of life.
  * This routine is used to decide if we should refuse to perform a function.
- *
- ****************************************************************************/
+ */
 Bool
 check_allowed_function(enum wm_client_functions function, ScwmWindow * t)
 {
