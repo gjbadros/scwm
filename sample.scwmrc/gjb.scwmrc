@@ -63,6 +63,11 @@
 (define want-fvwm2-pager-module #t)
 (define want-fvwm2-winlist-module #t)
 
+(set! opaque-move-percent 100)
+;;(set! opaque-move-percent 20)
+(set! opaque-resize-percent 100)
+;;(set! opaque-resize-percent 100)
+
 ;; Disabled autoraise by default; 
 ;; would give an instant autoraise with no timeout, which 
 ;; is not all that useful
@@ -311,7 +316,7 @@
 	      #:focus 'mouse
 ;	      #:plain-border #t
 	      #:sticky-icon #t
-	      #:random-placement #t #:smart-placement #t
+	      #:random-placement #f #:smart-placement #f
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:mwm-border #t
 	      #:int-override #t #:decorate-transient #f
@@ -331,7 +336,7 @@
 ;;(window-style "*" #:bg "purple")
 ;; (border-style #:hidden-handles #f #:no-inset #f)
 
-
+;; (raise-window)
 ;; (set-object-property! (select-window-interactively) 'squashed-titlebar #t)
 ;; (set-object-property! (select-window-interactively) 'no-side-decorations #t)
 ;; (set-object-property! (select-window-interactively) 'no-side-decorations #f)
@@ -534,7 +539,8 @@
   (case (mouse-event-type)
     ((double-click) (close-window))
     (else (let ((w (get-window)))
-	    (popup-menu-from-decoration (make-small-window-ops-menu w) w 1)))))
+	    (popup-menu-from-decoration 
+	     (make-small-window-ops-menu w) w 1)))))
 ;; the "1" at the end of the prior line is the button number from which 
 ;; this is popped. FIXGJB return lambda
 
@@ -603,9 +609,9 @@
    (list
     (menuitem "Window Ops" #f) menu-title
     (menuitem "&Move" #:image-left "mini-move.xpm" 
-	       #:action opaque-interactive-move)
+	       #:action interactive-move-maybe-opaque)
     (menuitem "&Resize" #:image-left "mini-resize.xpm" 
-	       #:action opaque-interactive-resize)
+	       #:action interactive-resize-maybe-opaque)
     (menuitem "R&aise" #:image-left "mini-raise.xpm" 
 	       #:action (thunk raise-window))
     (menuitem "&Lower" #:image-left "mini-lower.xpm" 
@@ -806,7 +812,7 @@
 				    (map (lambda (st) (string-append st "/* "))
 					 image-load-path))))
 	      (menuitem "SCWM interaction" #:action
-			(run-in-xterm "-e /usr/local/bin/scwmrepl"))
+			(run-in-xterm "/usr/local/bin/scwmrepl"))
 	      (menuitem "Info on a window" #:action window-info)
 ;	      menu-separator
 ;	      (menuitem "Opaque Move" #:action opaque-move-menu)
@@ -948,9 +954,9 @@
    (list
     (menuitem "Window Ops Small" #f) menu-title
     (menuitem "&Move" #:image-left "mini-move.xpm" 
-	       #:action opaque-interactive-move)
+	       #:action interactive-move-maybe-opaque)
     (menuitem "Re&size" #:image-left "mini-resize.xpm" 
-	       #:action opaque-interactive-resize)
+	       #:action interactive-resize-maybe-opaque)
     (menuitem (if (iconified? w)
 		   "Unmi&nimize"
 		   "Mi&nimize") #:image-left "mini-iconify.xpm" 
@@ -996,13 +1002,13 @@
 
 ;;; operations on parts of the window
 (bind-mouse '(frame sidebar) 2 popup-small-ops)
-(bind-mouse 'frame 1 resize-or-raise)
-(bind-mouse 'sidebar 1 move-or-raise)
+(bind-mouse 'frame 1 resize-or-raise-maybe-opaque)
+(bind-mouse 'sidebar 1 move-or-raise-maybe-opaque)
 
 (define (move-or-shade)
   (case (mouse-event-type)
     ((double-click) (toggle-window-shade-animated))
-    (else (move-or-raise))))
+    (else (move-or-raise-maybe-opaque))))
 (bind-mouse 'title 1 move-or-shade)
 (bind-mouse 'title 2 lower-window)
 (bind-mouse 'title 3 popup-window-ops)
@@ -1018,15 +1024,18 @@
 ;; some stuff for icons
 (define (move-or-deiconify)
   (case (mouse-event-type)
-    ((motion) (opaque-interactive-move))
+    ((motion) (interactive-move-maybe-opaque))
     ((double-click) (deiconify))))
 
 (bind-mouse 'icon 1 move-or-deiconify)
 (bind-mouse 'icon 2 deiconify)
 
 (bind-mouse 'all "C-S-M-1" toggle-raise)
+
+;; These always do opaque moves
 (bind-mouse 'all "C-S-M-2" opaque-interactive-move)
 (bind-mouse 'all "C-S-M-3" opaque-interactive-resize)
+;; These always do rubberband moves
 (bind-mouse 'all "H-2" interactive-move)
 (bind-mouse 'all "H-3" interactive-resize)
 
@@ -1109,6 +1118,8 @@
 (bind-key 'all "C-S-M-z" (lambda () (popup-menu 'menu-root-start #t)))
 
 (set-click-delay! 150)
+
+;;(define animation-ms-delay 100)
 
 ;; Fluid, cartoon-like
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.0))
@@ -1223,4 +1234,5 @@
 ;;(hide-titlebar (current-window-with-pointer))
 ;;(show-titlebar (current-window-with-pointer))
 ;;(load "/scratch/gjb/scwm/scheme/flux.scm")
+;;(load "/scratch/gjb/scwm/scheme/winops.scm")
 ;;(load "/scratch/gjb/scwm/scheme/style.scm")

@@ -497,7 +497,7 @@
 (bind-key 'all "C-M-Down" (lambda () (move-viewport 0 (%y 100))))
 
 ;; rotate the current window with the keyboard
-(bind-key 'all "M-Tab"
+(bind-key 'all "C-S-Tab"
 	  (lambda ()
 	    (next-window #:only visible? #:except iconified?)))
 

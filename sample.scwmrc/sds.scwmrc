@@ -242,15 +242,15 @@
 
 (define menu-lisps
   (menu (list (menuitem "Lisps" #f) menu-title menu-separator
-	      (menuitem "ACL" #:action (run-in-xterm "-e /home/sds/bin/acl"))
-	      (menuitem "CLISP" #:action (run-in-xterm "-e /home/sds/bin/cli"))
-	      (menuitem "CMUCL" #:action (run-in-xterm "-e /home/sds/bin/cmu"))
-	      (menuitem "GCL" #:action (run-in-xterm "-e /usr/local/bin/gcl"))
+	      (menuitem "ACL" #:action (run-in-xterm "/home/sds/bin/acl"))
+	      (menuitem "CLISP" #:action (run-in-xterm "/home/sds/bin/cli"))
+	      (menuitem "CMUCL" #:action (run-in-xterm "/home/sds/bin/cmu"))
+	      (menuitem "GCL" #:action (run-in-xterm "/usr/local/bin/gcl"))
 	      menu-separator
 	      (menuitem "Guile" #:action
-			(run-in-xterm "-e /usr/local/bin/guile")))))
+			(run-in-xterm "/usr/local/bin/guile")))))
 
-(define start-xterm (run-in-xterm "-e bash"))
+(define start-xterm (run-in-xterm "bash"))
 
 ;; To later shut down the module, use kill-fvwm-module:
 ;; (kill-fvwm2-module fvwm-pager)
@@ -292,10 +292,10 @@
 	      (menuitem "&xterm" #:image-left term-i #:action start-xterm)
 	      (menuitem "rx&vt" #:image-left rxvt-i #:action "rxvt")
 	      (menuitem "&root" #:image-left "mini-excl.xpm"
-			#:action (run-in-xterm "-T ROOT -e su"))
+			#:action (run-in-xterm "su" #:xterm-options "-T ROOT"))
 	      (menuitem "&emacs" #:image-left edit-i #:action "emacs")
 	      (menuitem "&gnuplot" #:image-left plot-i #:action
-			(run-in-xterm "-e gnuplot"))
+			(run-in-xterm "gnuplot"))
 	      (menuitem "Play &CD" #:image-left cd-i #:action "xplaycd")
 	      (menuitem "X &dos" #:image-left dos-i #:action "xdos")
 	      menu-separator
@@ -381,8 +381,8 @@
   (menu (list
 	 (menuitem "Window Operations" #:image-left windows-i)
 	 menu-title menu-separator
-	 (menuitem "&Move" #:image-left move-i #:action interactive-move)
-	 (menuitem "&Resize" #:image-left resize-i #:action interactive-resize)
+	 (menuitem "&Move" #:image-left move-i #:action interactive-move-maybe-opaque)
+	 (menuitem "&Resize" #:image-left resize-i #:action interactive-resize-maybe-opaque)
 	 (menuitem "R&aise" #:image-left raise-i #:action raise-window)
 	 (menuitem "&Lower" #:image-left lower-i #:action lower-window)
 	 (menuitem "&Iconify" #:image-left icon-i #:action toggle-iconify)
@@ -515,7 +515,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (define (move-or-shade)
   (case (mouse-event-type)
     ((double-click) (toggle-window-shade-animated))
-    (else (move-or-raise))))
+    (else (move-or-raise-maybe-opaque))))
 (bind-mouse 'title 1 move-or-shade)
 (bind-mouse 'title 2 lower-window)
 (bind-mouse '(title frame sidebar) 3 popup-small-ops)
@@ -531,8 +531,8 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (bind-mouse 'icon 3 popup-small-ops)
 
 (bind-mouse 'all "H-1" toggle-raise)
-(bind-mouse 'all "H-2" interactive-move)
-(bind-mouse 'all "H-3" interactive-resize)
+(bind-mouse 'all "H-2" interactive-move-maybe-opaque)
+(bind-mouse 'all "H-3" interactive-resize-maybe-opaque)
 
 ;;; -----------------
 ;;; Title bar buttons
@@ -718,7 +718,16 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
     (if left (set-car! button-numbers (+ 2 num))
 	(set-cdr! button-numbers (+ 2 num)))))
 
-(add-button prog-face popup-small-ops #t)
+(add-button prog-face
+	    (lambda () 
+	      (let ((win (get-window)))
+		(popup-menu-from-decoration 
+		 (make-small-window-ops-menu win)
+		 ;; window to pop-up from
+		 win 
+		 ;; button number to pop-up from
+		 (car button-numbers))))
+	    #t)
 (add-button horizontal-bar4-face toggle-stick #t)
 (add-button big-lightning-face toggle-window-shade-animated #t)
 (add-button stylized-X-face close-window #f)
