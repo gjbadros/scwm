@@ -15,7 +15,7 @@ struct ScwmWindow;
 typedef struct ScwmWindow *PScwmWindow;
 typedef const struct ScwmWindow *ConstPScwmWindow;
 
-struct Screen;
+struct ScreenInfo;
 
 #define FRAME_X(psw) ((psw)->frame_x)
 #define FRAME_Y(psw) ((psw)->frame_y)
@@ -35,7 +35,7 @@ extern "C" {
 #define Bool int /* from Xlib.h */
 
 void CassowaryInitClVarsInPsw(PScwmWindow psw);
-void CassowaryInitClVarsInPscreen(Screen *pscreen);
+void CassowaryInitClVarsInPscreen(struct ScreenInfo *pscreen);
 void CassowaryNewWindow(PScwmWindow psw);
 void CassowarySetCValuesAndSolve(PScwmWindow psw, int fSolve);
 void CassowaryEditPosition(PScwmWindow psw);
