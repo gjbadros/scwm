@@ -2823,8 +2823,7 @@ fi
 
 #-------------------------------------------------------------------
 #
-# always build Makefiles in examples subdir
-# so user can manually build programs when needed.
+# Output makefiles.
 #
 #-------------------------------------------------------------------
 
@@ -2931,8 +2930,10 @@ ac_given_INSTALL="$INSTALL"
 
 trap 'rm -fr `echo "Makefile \
           scwm/Makefile \
+          icons/Makefile \
 	  utilities/Makefile \
 	  utilities/scwmsend/Makefile \
+          mini-icons/Makefile \
           sample.scwmrc/Makefile \
           scheme/Makefile \
           app/Makefile \
@@ -3027,8 +3028,10 @@ cat >> $CONFIG_STATUS <<EOF
 
 CONFIG_FILES=\${CONFIG_FILES-"Makefile \
           scwm/Makefile \
+          icons/Makefile \
 	  utilities/Makefile \
 	  utilities/scwmsend/Makefile \
+          mini-icons/Makefile \
           sample.scwmrc/Makefile \
           scheme/Makefile \
           app/Makefile \

@@ -250,17 +250,16 @@ AC_SUBST(guile_scheme_prefix)
 
 #-------------------------------------------------------------------
 #
-# always build Makefiles in examples subdir
-# so user can manually build programs when needed.
+# Output makefiles.
 #
 #-------------------------------------------------------------------
 
 AC_OUTPUT(Makefile \
           scwm/Makefile \
-dnl          icons/Makefile \
+          icons/Makefile \
 	  utilities/Makefile \
 	  utilities/scwmsend/Makefile \
-dnl          mini-icons/Makefile \
+          mini-icons/Makefile \
           sample.scwmrc/Makefile \
           scheme/Makefile \
           app/Makefile \
