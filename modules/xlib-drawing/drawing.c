@@ -160,6 +160,8 @@ be given as STYLE.")
 {
   int iWidth;
   int iStyle = 0;
+  /* Be sure we registered these symbols */
+  assert(sym_solid && sym_on_off_dash && sym_double_dash);
   VALIDATE_ARG_INT_COPY_USE_DEF(1,width,iWidth,0);
   if (UNSET_SCM(style)) iStyle = LineSolid; /* default */
   else if (sym_solid == style) iStyle = LineSolid;
@@ -167,6 +169,8 @@ be given as STYLE.")
   else if (sym_double_dash == style) iStyle = LineDoubleDash;
   else {
     scwm_error(FUNC_NAME,"STYLE must be one of 'solid 'on-off-dash 'double-dash.");
+    scwm_error_message(gh_str02scm("Was passed: " SCWM_DISPLAY), 
+                       gh_list(style,SCM_UNDEFINED));
   }
   XSetLineAttributes(dpy, DrawingGC, iWidth, iStyle, CapButt, JoinMiter);
   return SCM_UNSPECIFIED;
