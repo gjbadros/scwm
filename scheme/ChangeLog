@@ -1,3 +1,7 @@
+1998-12-09  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* flux.scm (take-screenshot): New function.
+
 1998-12-06  Todd Larason  <jtl@molehill.org>
 
 	* desk-background.scm: initial implementation of a high-level
