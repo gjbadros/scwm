@@ -552,6 +552,11 @@ by the user, the position was specified by the program, and
 	random_place_window(win);
       } else {
         int finalx, finaly;     /* unused for now */
+        extern Bool have_orig_position;
+        extern int orig_x, orig_y;
+        /* FIXGJB: passing thru globals */
+        have_orig_position = True;
+        orig_x = 0; orig_y = 0; 
 	InteractiveMove(psw, False, &finalx, &finaly);
       }
     }
