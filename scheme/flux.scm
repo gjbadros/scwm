@@ -511,7 +511,7 @@ underscores, so that the resulting string can be used as a key for
 ;; From S.Senda -- Aug 3, 1998
 ;;;;;;;; rlogin menu making from .rhosts file ;;;;;;;;;
 
-(define (make-rhosts-menu)
+(define-public (make-rhosts-menu)
   (false-if-exception
    (let* ((rhostfn (string-append HOME "/.rhosts"))
 	  (termprog "xterm")
@@ -540,7 +540,7 @@ underscores, so that the resulting string can be used as a key for
     (menu ret)
 )))
 
-(define rhosts-menu (make-rhosts-menu))
+(define-public rhosts-menu (make-rhosts-menu))
 
 (define-public (X-cut-buffer-string)
   "Return the text of the CUT_BUFFER0 property of the root window.
@@ -655,6 +655,16 @@ to go to that page."
 ;; (run-in-netscape "openUrl(http://huis-clos.mit.edu/scwm)" display-message-briefly)
 ;; (run-in-netscape "openUrl(http://www.cs.washington.edu/homes/gjb)" display-message-briefly)
 
+;; Inspired by Julian Satchell's version of this --10/09/98 gjb
+(define-public (use-change-desk-commands vector-of-commands)
+  "Execute one of VECTOR-OF-COMMANDS each time the desk changes.
+The 0th element of the vector is used for changes to desk 0,
+the first element for changes to desk 1, etc."
+  (add-hook! change-desk-hook
+	     (lambda (new old)
+	       ;; (display n) (newline) ;; for debugging
+	       (system (vector-ref vector-of-commands new))
+	       )))
 
 (define*-public (position-message-window! x y gravity)
   "Move the message window's GRAVITY point to (X,Y)"
