@@ -246,7 +246,7 @@
   `(
     ("&Control Panel" #f #f "control-panel")
     ("&Glint" #f #f "glint")
-    ("Color &XTerm" "sh1" "XTERM_ICON" (optget *xterm-program-name*))
+    ("Color &XTerm" "sh1" "XTERM_ICON" ,(optget *xterm-command*))
     ("&Manual pages" "book1" "manpage_3d" "xman")
     ("XCa&lc" "calc" "Calculator" "xcalc")
     ("Filemanager" "filemgr" "FileManager" "filemgr")
