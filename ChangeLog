@@ -1,3 +1,10 @@
+Wed Oct  6 14:31:55 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* pixmaps/Makefile.am (scwm_pixmap_DATA): Robert Bihlmeyer's patch 
+	to use notdir and wildcard to make it both build in a separate
+	directory and work with Debian packaging.  (Are these GNU Make
+	isms?) 
+
 Sun Oct  3 16:25:47 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* autogen.sh: Added "-I ." when running aclocal -- suggested by
