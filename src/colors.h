@@ -1,6 +1,6 @@
 /* $Id$
  * colors.h
- * Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
  */
 
 #ifndef COLORS_H

@@ -1,6 +1,6 @@
 /* $Id$
  * binding.c
- * Copyright (C) 1997-1998 By Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997-1999 By Maciej Stachowiak and Greg J. Badros
  */
 
 #ifdef HAVE_CONFIG_H
@@ -65,7 +65,6 @@ struct symnum binding_contexts[] =
   {SCM_UNDEFINED, C_SIDEBAR},
   {SCM_UNDEFINED, C_WINDOW},
   {SCM_UNDEFINED, C_TITLE},
-  {SCM_UNDEFINED, C_ICON},
   {SCM_UNDEFINED, C_ROOT},
   {SCM_UNDEFINED, C_FRAME},
   {SCM_UNDEFINED, C_SIDEBAR},
@@ -105,7 +104,6 @@ static char *context_strings[] =
   "sidebar", /* the frame sidebars -- 'frame-sides is the preferred sym */
   "client-window",
   "titlebar",
-  "icon", /* GJB:FIXME:MS Why is icon repeated? */
   "root-window",
   "frame-corners",
   "frame-sides",
@@ -257,7 +255,8 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier, char *func_name,
   char *pch;
   char *keyname;
 
-  int ikey_arg = 2; /* GJB:FIXME:: HACK ALERT! */
+  int ikey_arg = 2; /* GJB:FIXME:: HACK ALERT! 
+                       Works around scwmdoc restriction */
 
   VALIDATE_ARG_STR_NEWCOPY(ikey_arg,key,keyname);
 
@@ -617,15 +616,14 @@ ungrab_button_all_windows(int button, int modifier)
   }
 }
 
-/*
-   ** to remove a binding from the global list (probably needs more processing
-   ** for mouse binding lines though, like when context is a title bar button).
- */
+/* to remove a binding from the global list (probably needs more processing
+   for mouse binding lines though, like when context is a title bar button).
+*/
 void 
 remove_binding(int context, int mods, int button, KeySym keysym,
 	       int mouse_binding)
 {
-  Binding *temp = Scr.AllBindings, *temp2, *prev = NULL;
+  Binding *pbnd = Scr.AllBindings, *pbndNext, *prev = NULL;
   KeyCode keycode = 0;
 
   if (!mouse_binding) {
@@ -635,28 +633,31 @@ remove_binding(int context, int mods, int button, KeySym keysym,
     ungrab_button_all_windows(button,mods);
   }
 
-  while (temp) {
-    temp2 = temp->NextBinding;
-    if (temp->IsMouse == mouse_binding) {
-      if ((temp->Button_Key == ((mouse_binding) ? (button) : (keycode))) &&
-	  (temp->Context == context) &&
-	  (temp->Modifier == mods)) {
+  while (pbnd) {
+    pbndNext = pbnd->NextBinding;
+    if (pbnd->IsMouse == mouse_binding) {
+      if ((pbnd->Button_Key == ((mouse_binding) ? (button) : (keycode))) &&
+	  (pbnd->Context == context) &&
+	  (pbnd->Modifier == mods)) {
 	/* we found it, remove it from list */
 	if (prev) {		/* middle of list */
-	  prev->NextBinding = temp2;
+	  prev->NextBinding = pbndNext;
 	} else {		/* must have been first one, set new start */
-	  Scr.AllBindings = temp2;
+	  Scr.AllBindings = pbndNext;
 	}
-        if (temp->key_name) {
-          gh_free(temp->key_name);
-        }
-	FREE(temp);
-	temp = NULL;
+        if (pbnd->key_name)
+          gh_free(pbnd->key_name);
+        if (!UNSET_SCM(pbnd->Thunk))
+          scm_unprotect_object(pbnd->Thunk);
+        if (!UNSET_SCM(pbnd->ReleaseThunk))
+          scm_unprotect_object(pbnd->ReleaseThunk);
+	FREE(pbnd);
+	pbnd = NULL;
       }
     }
-    if (temp)
-      prev = temp;
-    temp = temp2;
+    if (pbnd)
+      prev = pbnd;
+    pbnd = pbndNext;
   }
 }
 
@@ -676,8 +677,9 @@ add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p,
   Scr.AllBindings->ReleaseThunk = release_proc;
   Scr.AllBindings->NextBinding = prev_binding;
 
-  /* GJB:FIXME:: these scm_protect_object's cause memory leaks when the bindings
-     are removed */
+  /* have to protect these objects so they do not get GCd --
+     will not need this when bindings are first class and they
+     get recursively marked */
   if (!UNSET_SCM(proc)) 
     scm_protect_object(proc);
   if (!UNSET_SCM(release_proc)) 

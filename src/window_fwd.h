@@ -1,5 +1,5 @@
 /* $Id$
- * Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997-1999 Maciej Stachowiak and Greg J. Badros
  *
  * #include "window_fwd.h" when you just need to
  * be able to talk about struct ScwmWindow *'s, and not
