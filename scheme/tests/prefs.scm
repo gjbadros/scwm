@@ -5,9 +5,12 @@
 	     (app scwm preferences)
 	     (app scwm themes)
 	     (app scwm menus-extras)
-	     (gtk gtk))
+	     (gtk gtk)
+	     (gtk gdk))
+gdk-lead-window
+gdk-leader-window
 
-
+(use-modules (app scwm gnome-hints))
 (popup-menu (scwm-options-menu) #t)
 
 (scwm-options-dialog)
@@ -31,4 +34,15 @@ scwm-options
 ;; *auto-raise*
 ;; *edge-y-scroll*
 ;; *theme-path*
+;; (scwm-option-range '*gnome-desktop-number*)
+;; (gui-set '*gnome-desktop-number*)
+
+(begin
+  (use-modules (app scwm preferences)
+	       (app scwm auto-raise)
+	       )
+  (scwm-options-dialog))
+
+(use-modules (app scwm defoption))
+(scwm-option-get *default-auto-raise-focus-proc*)
 
