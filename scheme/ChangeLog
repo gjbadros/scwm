@@ -1,3 +1,9 @@
+Mon Jul  6 01:51:30 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* auto-raise.scm: Replaced window-from-window-id with id->window.
+
+	* fvwm-module.scm: Removed now useless definition of id->window.
+
 1998-07-06  Greg Badros  <gjb@cs.washington.edu>
 
 	* prefs-menu.scm: Added animation-ms-delay define, since it must
