@@ -1,3 +1,9 @@
+Wed Sep  1 15:24:20 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use `make-window-style-menu' (renamed).  Comment
+	out "Reload and change theme".  Use pic-lambda-mini for the
+	constraint solver for now.  Rename select-window-* uses.
+
 Wed Sep  1 01:10:07 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use (window-context), not (get-window) when

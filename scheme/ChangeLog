@@ -1,3 +1,20 @@
+Wed Sep  1 15:21:08 1999    <gjb@cs.washington.edu>
+
+	* window-selection.scm: Rename select-window-add-selection to
+	`select-window-add', `select-window-remove', and
+	`select-window-toggle'.  Added `select-matching-windows',
+	`unselect-matching-windows'.  Drop the add/remove-add/remove hooks 
+	-- just use `add-hook!' and `remove-hook!' instead.  Correct some
+	docstring typos.
+
+	* stylist.scm: Drop the "..." suffix/prefixes in menu names.
+	Renamed `window-style-menu' to `make-window-style-menu' for cst w/ 
+	make-window-group-menu.
+
+	* flux.scm: Added Style menu to the small window ops menu.  Make
+	`make-window-group-menu' have options for selecting multiple
+	windows based on resource/class.
+
 Wed Sep  1 10:29:48 1999    <gjb@cs.washington.edu>
 
 	* ScwmButtons.scm: Change some define-s to letrec to avoid "Bad
