@@ -24,6 +24,12 @@
 # with the documentation using M-x compile (C-x c) extract-docs *.c >
 # /dev/null then M-x next-error (C-x `)
 #
+# Usage:
+#  from ~lgjb/scwm
+# ./utilities/dev/extract-docs -o doc/scwm scwm/*.c > doc/scwm-procedures.txt
+# or from Emacs, for warnings only
+# ./utilities/dev/extract-docs scwm/*.c > /dev/null
+#
 # TODO:
 # /** CONCEPT :  comment weaving
 # Links in DocBook output
@@ -40,14 +46,15 @@ use constant TRUE => (1==1);
 use constant FALSE => (1==0);
 use File::Basename;
 
-my $getopts_option_letters = 'hqQD';
-use vars qw($opt_h $opt_q $opt_Q $opt_D);
+my $getopts_option_letters = 'hqQDo:';
+use vars qw($opt_h $opt_q $opt_Q $opt_D $opt_o);
 
 sub script_usage ( ) {
   print "@_\nUsage: $0 [-$getopts_option_letters]
--q     Be reasonably quiet-- do not warn about spacing or purpose strings
--Q     Be completely QUIET-- no warnings (still prints errors)
--D     Debugging output on
+-q       Be reasonably quiet-- do not warn about spacing or purpose strings
+-Q       Be completely QUIET-- no warnings (still prints errors)
+-D       Debugging output on
+-o file  Send sgml output to file -- no sgml output unless this is given
 ";
   exit 0;
 }
@@ -89,11 +96,16 @@ while (<>) {
   }
 }
 
-open (MARKUP_OUT,">$pkg_name.sgml") or die "Could not write to $pkg_name.sgml: $!";
-chop (my $date = `date +"%d %B %Y"`);
-chop (my $year = `date +"%Y"`);
+my $sgml_name = ""; # "$pkg_name.sgml";
+if ($opt_o) {
+  $sgml_name = $opt_o;
+  $sgml_name .= ".sgml" if ($sgml_name !~ /\..+ml$/);
 
-print MARKUP_OUT <<END_HEADER
+  open (MARKUP_OUT,">$sgml_name") or die "Could not write to $sgml_name: $!";
+  chop (my $date = `date +"%d %B %Y"`);
+  chop (my $year = `date +"%Y"`);
+  
+  print MARKUP_OUT <<END_HEADER
 <!DOCTYPE Book PUBLIC "-//Davenport//DTD DocBook V3.0//EN">
 <book>
   <bookinfo>
@@ -146,7 +158,9 @@ print MARKUP_OUT <<END_HEADER
   <chapter>
     <title>Primitives in Alphabetical Order</title>
 END_HEADER
-;
+  ;
+}
+
 
 # This outputs the scwm-procedures.txt file to stdout
 foreach my $proc (sort { lc($a) cmp lc($b) } keys %procedure) {
@@ -163,33 +177,32 @@ $comment
 
 EOC
   ;
-  print MARKUP_OUT $markup, "\n";
+  if ($opt_o) {
+    print MARKUP_OUT $markup, "\n";
+  }
 }
 
-# FIXGJB: use links, not re-output!  Probably just
-# use an index for alpha ordering?
-print MARKUP_OUT <<END_CHAP_PRIM_IN_ALPHA
+if ($opt_o) {
+  # FIXGJB: use links, not re-output!  Probably just
+  # use an index for alpha ordering?
+  print MARKUP_OUT <<END_CHAP_PRIM_IN_ALPHA
   </chapter>
   <chapter>
     <title>Primitives By Defined-in File</title>
 END_CHAP_PRIM_IN_ALPHA
   ;
-
-foreach my $file (sort { lc($a) cmp lc($b) } keys %file_funcs) {
-  my @prims = @{$file_funcs{$file}};
-  if (scalar(@prims) > 0) {
-    print MARKUP_OUT "    <sect1><title>$file</title>\n";
+  
+  foreach my $file (sort { lc($a) cmp lc($b) } keys %file_funcs) {
+    my @prims = @{$file_funcs{$file}};
+    if (scalar(@prims) > 0) {
+      print MARKUP_OUT "    <sect1><title>$file</title>\n";
     foreach my $proc (sort { $procedure{$a}{line} <=> $procedure{$b}{line} } @prims ) {
-      my $usage = $procedure{$proc}{usage};
-      my $comment = $procedure{$proc}{comment};
-      my $line = $procedure{$proc}{line};
       my $markup = $procedure{$proc}{markup};
       print MARKUP_OUT $markup, "\n";
     }
-    print MARKUP_OUT "    </sect1>\n";
+      print MARKUP_OUT "    </sect1>\n";
+    }
   }
-}
-
 
 
 print MARKUP_OUT <<END_TRAILER
@@ -205,6 +218,7 @@ End:
 -->
 END_TRAILER
 ;
+}
 
 
 sub ProcessHeader( $ ) {
@@ -293,8 +307,8 @@ sub ProcessHeader( $ ) {
 
   # check to make sure all all-uppercase words in the comment
   # refer to formals
-  foreach my $word (split /[^-+?!\w_\"]+/, $comment) {
-    if ($word =~ /^[A-Z][-A-Z0-9_+?!]+$/) {
+  foreach my $word (split /[^-+%?!\w_\"]+/, $comment) {
+    if ($word =~ /^[A-Z][-%A-Z0-9_+?!]+$/) {
       if (!defined($argnames{$word})) {
 	if (!$fReallyQuiet) {
 	  print STDERR "$ARGV:$.:****$cprimname: all-uppercase word \`$word\' does not match an argument\n";
@@ -344,9 +358,11 @@ sub ProcessHeader( $ ) {
   $markup_comment =~ s%&%&amp;%g;
   $markup_comment =~ s%<%&lt;%g;
   $markup_comment =~ s%>%&lt;%g;
-  $usage =~ s%&%&amp;%g;
-  $usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
-  $usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
+  my $markup_usage = $usage;
+
+  $markup_usage =~ s%&%&amp;%g;
+  $markup_usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
+  $markup_usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
 
 
   # Mark formals within comment with <parameter> tag
@@ -376,7 +392,7 @@ sub ProcessHeader( $ ) {
     <refpurpose>$purpose</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
-    <synopsis>$usage</synopsis>
+    <synopsis>$markup_usage</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -405,6 +421,7 @@ EOC
   $procedure{$primname} = { usage => $usage,
 			    comment => $comment,
 			    purpose => $purpose,
+			    markup_usage => $markup_usage,
 			    markup => $markup,
 			    file => $ARGV,
 			    line => $.,
