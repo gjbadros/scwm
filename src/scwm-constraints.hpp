@@ -1,0 +1,59 @@
+/* $Id$
+ * scwm-constraints.hpp
+ *
+ * (C) 1998 Greg J. Badros
+ */
+
+#ifndef SCWM_CONSTRAINTS_HPP__
+#define SCWM_CONSTRAINTS_HPP__
+
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <assert.h>
+#include "scwm-constraints.h"
+#include "window.h"
+#include "xmisc.h"
+#include <strstream.h>
+#include "ClVariable.h"
+#include "ClSimplexSolver.h"
+
+extern ClSimplexSolver *psolver;
+
+class ScwmWindowConstraintInfo {
+public:
+  ScwmWindowConstraintInfo(ScwmWindow *psw)
+    {
+      if (psw->name != NoName) {
+        int ich = strlen(psw->name);
+        char *szNm = NEWC(ich+3,char);
+        strcpy(szNm, psw->name);
+        szNm[ich++] = '/';
+        szNm[ich+1] = '\0';
+        szNm[ich] = 'x'; _frame_x.setName(szNm);
+        szNm[ich] = 'y'; _frame_y.setName(szNm);
+        szNm[ich] = 'w'; _frame_width.setName(szNm);
+        szNm[ich] = 'h'; _frame_height.setName(szNm);
+      }
+      _frame_x.setPv(psw);
+      _frame_y.setPv(psw);
+      _frame_width.setPv(psw);
+      _frame_height.setPv(psw);
+    }
+
+  AddStays()
+    {
+      // FIXGJB: these weights should increase each time this is called
+      psolver->addPointStay(_frame_width,_frame_height,100);
+      psolver->addPointStay(_frame_x,_frame_y,1);
+    }
+
+  ClVariable _frame_x;
+  ClVariable _frame_y;
+  ClVariable _frame_width;
+  ClVariable _frame_height;
+};
+
+#endif

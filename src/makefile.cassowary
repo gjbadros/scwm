@@ -1,0 +1,30 @@
+# $Id$
+# makefile
+
+# Makefile for scwm-cassowary
+# Copyright (C) 1998 Greg Badros <gjb@cs.washington.edu>
+# makefile 
+# Greg Badros 
+# Seattle, WA  USA
+# http://www.cs.washington.edu/homes/gjb
+
+CC = gcc
+CPP = g++
+CFLAGS = -g -Wall
+CPPCOMPILE = $(CPP) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+CPPLINK = $(LIBTOOL) --mode=link $(CPP) $(CFLAGS) $(LDFLAGS) -o $@
+
+include Makefile
+
+%.o: %.cc
+	$(CPPCOMPILE) -c $<
+
+SRCS = constraint-primitives.cc scwm-constraints.cc
+OBJS = $(SRCS:.cc=.o)
+
+scwm_cl: $(OBJS) $(scwm_OBJECTS) $(scwm_DEPENDENCIES)
+	@rm -f $@
+	$(CPPLINK) $(scwm_LDFLAGS) $(scwm_OBJECTS) $(OBJS) $(scwm_LDADD) $(LIBS)
+
+constraint-primitives.x: constraint-primitives.cc
+	CC=$(CPP) guile-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@
