@@ -1,3 +1,7 @@
+1998-12-21  Todd Larason  <jtl@molehill.org>
+
+	* scwmgtkhelper/Makefile.am: only install/uninstall if HAVE_GTK
+
 Sat Dec 12 00:16:57 1998  Carl R. Witty  <cwitty@newtonlabs.com>
 
 	* c-animation/c-animation.c (s_animated_window_shade): Eliminate

@@ -5,23 +5,13 @@
   :use-module (app scwm optargs))
 
 ;; JTL:FIXME:: completely arbitrary size
-;; entries are vectors, #(reset? color image image-style)
+;; entries are lists, (reset? color image image-style)
 (define desk-bg-styles (make-hash-table 13))
 (define desk-bg-hooked #f)
 
-(define (bgstyle-elements bgstyle default)
-  (map (lambda (n)
-	 (if (eq? (vector-ref bgstyle n) 'default)
-	     (vector-ref default n)
-	     (vector-ref bgstyle n)))
-       '(0 1 2 3)))
-
-;; JTL:FIXME:: there HAS to be a prettier way to do this
 (define (desk-background-hook new old)
-  (let ((bgstyle (hashq-ref desk-bg-styles new))
-	(default (hashq-ref desk-bg-styles #t)))
-    (if (not bgstyle)
-	(set! bgstyle default))
+  (let ((bgstyle (or (hashq-ref desk-bg-styles new) 
+		     (hashq-ref desk-bg-styles #t))))
     (apply 
      (lambda (reset? color image image-style)
        (if reset?
@@ -30,52 +20,53 @@
 	   (set-background-color! color))
        (if image
 	   (set-background-image! image image-style)))
-     (bgstyle-elements bgstyle default))))
+     bgstyle)))
 
-;; JTL:FIXME:: documentation
-(define*-public (desk-background desk #&key reset color image image-style)
+(define*-public (desk-background desk #&key
+				 (reset #f) 
+				 (color #f) 
+				 (image #f)
+				 (image-style 'centered))
   "Set the background to use on desk DESK.
 RESET determines whether to reset the background to the standard X 
 crosshatch before enacting any other settings.
 COLOR is a background color to set, either a color name or a color object.
 IMAGE is a background image, either an image name or an image object.
 IMAGE-STYLE is either 'tiled or 'centered.
-Any of these may be left unset to use the default settings.
 The default may be set by setting the background for DESK #t."
   (hashq-set! desk-bg-styles desk 
-	      (vector
-		(if (bound? reset)
-		    reset
-		    'default)
-
-		(if (bound? color)
-		    (cond ((string? color)
+	      (list reset
+		    (cond ((color? color)
+			   color)
+			  ((string? color)
 			   (make-color color))
-			  ((color? color)
-			   color))
-		    'default)
+			  ((not color)
+			   #f)
+			  (else
+			   (error "Invalid color specifier")))
 
-		(if (bound? image)
-		    (cond ((string? image)
+		    (cond ((image? image)
+			   image)
+			  ((string? image)
 			   (let ((made-image (make-image image)))
 			     (if made-image
 				 made-image
 				 (error "Invalid image specifier"))))
-			  ((image? image)
-			   image))
-		    'default)
+			  ((not image)
+			   #f)
+			  (else
+			   (error "Invalid image specifier")))
 
-		(if (bound? image-style)
 		    (cond ((or (eq? image-style 'tiled)
 			       (eq? image-style 'centered))
 			   image-style)
-			  (error "Invalid image-style specifier"))
-		    'default)))
+			  (else
+			   (error "Invalid image-style specifier")))))
   (cond ((not desk-bg-hooked)
 	 (add-hook! change-desk-hook desk-background-hook)
 	 (set! desk-bg-hooked #t))))
 
-(hashq-set! desk-bg-styles #t #(#t #f #f 'centered))
+(hashq-set! desk-bg-styles #t '(#t #f #f 'centered))
 
 ;(reset-hook! change-desk-hook)
 ;(desk-background #t

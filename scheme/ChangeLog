@@ -1,3 +1,10 @@
+1998-12-21  Todd Larason  <jtl@molehill.org>
+
+	* desk-background.scm: simplification: fallback to default only if 
+	nothing is set for a desk, not for each component separately.
+	This leads to both simpler code and more consistent/understandable 
+	behavior.
+
 Sat Dec 19 02:42:52 1998  Carl R. Witty  <cwitty@newtonlabs.com>
 
 	* wininfo.scm (title-match??, class-match??, resource-match??,
