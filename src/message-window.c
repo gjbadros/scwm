@@ -289,15 +289,14 @@ SCWM_PROC(message_window_set_message_x, "message-window-set-message!", 2, 0, 0,
 The message will be MESSAGE.*/
 #define FUNC_NAME s_message_window_set_message_x
 {
-  int iarg = 1;
   scwm_msgwindow* msg = MSGWINDOW(mwn);
 
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, mwn);
+    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
   }
 
   if (!gh_string_p(message)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, message);
+    scm_wrong_type_arg(FUNC_NAME, 2, message);
   }
 
   msg->message = message;
@@ -316,10 +315,9 @@ The font will be FNT.*/
 #define FUNC_NAME s_message_window_set_font_x
 {
   scwm_msgwindow* msg = MSGWINDOW(mwn);
-  int iarg = 1;
 
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, mwn);
+    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
   }
 
   if (gh_string_p(fnt)) {
@@ -327,7 +325,7 @@ The font will be FNT.*/
   }
 
   if (!FONT_P(fnt)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, fnt);
+    scm_wrong_type_arg(FUNC_NAME, 2, fnt);
   }
   msg->font=fnt;
 
@@ -345,18 +343,22 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR.
 #define FUNC_NAME s_message_window_set_colors_x
 {
   scwm_msgwindow* msg = MSGWINDOW(mwn);
-  int iarg = 1;
+  int iarg = 0;
 
+  ++iarg;
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, mwn);
+    scm_wrong_type_arg(FUNC_NAME, iarg, mwn);
   }
 
+  ++iarg;
   if ( fg_color != SCM_BOOL_F ) {
-    VALIDATE_COLOR (fg_color, FUNC_NAME, iarg++);
+    VALIDATE_COLOR (fg_color, FUNC_NAME, iarg);
     msg->fg_color = fg_color;
   }
+
+  ++iarg;
   if ( bg_color != SCM_BOOL_F ) {
-    VALIDATE_COLOR (bg_color, FUNC_NAME, iarg++);
+    VALIDATE_COLOR (bg_color, FUNC_NAME, iarg);
     msg->bg_color = bg_color;
     msg->shadow_color = adjust_brightness(msg->bg_color, 
 					  message_shadow_factor);
@@ -383,11 +385,10 @@ height of the window to offset the window for alignment.
 X-ALIGN and Y-ALIGN should each be in the range [0,-1].*/
 #define FUNC_NAME s_message_window_set_position_x
 {
-  int iarg = 1;
   scwm_msgwindow* msg = MSGWINDOW(mwn);
 
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, mwn);
+    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
   }
 
   SCM_REDEFER_INTS;
@@ -395,28 +396,28 @@ X-ALIGN and Y-ALIGN should each be in the range [0,-1].*/
   if ( !UNSET_SCM(x) ) {
     if (!gh_number_p(x)) {
       gh_allow_ints();
-      scm_wrong_type_arg(FUNC_NAME, iarg++, x);
+      scm_wrong_type_arg(FUNC_NAME, 2, x);
     }
     msg->x = gh_scm2long(x);
   }
   if ( !UNSET_SCM(y) ) {
     if (!gh_number_p(y)) {
       gh_allow_ints();
-      scm_wrong_type_arg(FUNC_NAME, iarg++, y);
+      scm_wrong_type_arg(FUNC_NAME, 3, y);
     }
     msg->y = gh_scm2long(y);
   }
   if ( !UNSET_SCM(x_align) ) {
     if (!gh_number_p(x_align)) {
       gh_allow_ints();
-      scm_wrong_type_arg(FUNC_NAME, iarg++, x_align);
+      scm_wrong_type_arg(FUNC_NAME, 4, x_align);
     }
     msg->x_align = gh_scm2double(x_align);
   }
   if ( !UNSET_SCM(y_align) ) {
     if (!gh_number_p(y)) {
       gh_allow_ints();
-      scm_wrong_type_arg(FUNC_NAME, iarg++, y_align);
+      scm_wrong_type_arg(FUNC_NAME, 5, y_align);
     }
     msg->y_align = gh_scm2double(y_align);
   }
@@ -435,10 +436,8 @@ SCWM_PROC (message_window_set_relief_x, "message-window-set-relief!", 2, 0, 0,
   /** Sets the relief for the window MWN. Relief will be RLF. */
 #define FUNC_NAME s_message_window_set_relief_x
 {
-  int iarg = 1;
-
   if (!MSGWINDOW_P(mwn) ) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, mwn);
+    scm_wrong_type_arg(FUNC_NAME, 1, mwn);
   }
 
   if ( gh_boolean_p(rlf) )

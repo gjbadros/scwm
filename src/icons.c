@@ -63,8 +63,7 @@ GrabIconButtons(ScwmWindow * psw, Window w)
 
   MouseEntry = Scr.AllBindings;
   while (MouseEntry != (Binding *) 0) {
-    if ((MouseEntry->Action != NULL) && (MouseEntry->Context & C_ICON) &&
-	(MouseEntry->IsMouse == 1)) {
+    if ((MouseEntry->Context & C_ICON) && (MouseEntry->IsMouse == 1)) {
       if (MouseEntry->Button_Key > 0)
 	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier, w,
 		    True, ButtonPressMask | ButtonReleaseMask,

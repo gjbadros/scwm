@@ -849,10 +849,9 @@ WIN can be either a window, or #f, to reset the current window-context.
 See also `with-window' and `get-window'. */
 #define FUNC_NAME s_set_window_context_x
 {
-  int iarg = 1;
   SCM answer = window_context;
   if (win != SCM_BOOL_F && !WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg++,win);
+    scm_wrong_type_arg(FUNC_NAME,1,win);
   }
   window_context = win;
   if (answer == SCM_UNDEFINED)
@@ -901,7 +900,8 @@ SCWM_PROC(current_window_with_pointer, "current-window-with-pointer", 0, 0, 0,
 
 /* FIXGJB: it'd be nice to add an option to have the message window follow
    the pointer around! --07/25/98 gjb */
-SCWM_PROC(select_window_interactively, "select-window-interactively-no-message", 0, 0, 0,
+SCWM_PROC(select_window_interactively_no_message,
+          "select-window-interactively-no-message", 0, 0, 0,
           ())
      /** Returns a window selected interactively.
 Returns #f if no window was selected.  Use `select-window-interactively' if you would
@@ -2277,11 +2277,10 @@ The list returned contains 4 cons pairs containing:
 (width-inc . height-inc) (base-width . base-height)) */
 #define FUNC_NAME s_window_size_hints
 {
-  int iarg = 1;
   SCM answer = SCM_EOL;
   ScwmWindow *psw = NULL;
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg++,win);
+    scm_wrong_type_arg(FUNC_NAME,1,win);
   }
   psw = PSWFROMSCMWIN(win);
 
@@ -2938,8 +2937,8 @@ defaults to the window context in the usual way if not specified. */
 
 SCWM_PROC(border_normal_p, "border-normal?", 0, 1, 0,
           (SCM win))
-     /** Return #t if WIN has a normal border, #f if it has
-a plain border.  WIN defaults to the window context in the 
+     /** Return #t if WIN has a normal border, #f if it has a plain border.
+WIN defaults to the window context in the 
 usual way if not specified.  See `normal-border' and 
 `plain-border'. */
 #define FUNC_NAME s_border_normal_p

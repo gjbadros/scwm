@@ -54,8 +54,8 @@ typedef struct Binding_tag {
   char *key_name;		/* In case of keycode, give the key_name too */
   int Context;			/* Contex is Scwm context, ie titlebar, frame, etc */
   int Modifier;			/* Modifiers for keyboard state */
-  char *Action;			/* What to do? */
   SCM Thunk;
+  SCM ReleaseThunk;
   struct Binding_tag *NextBinding;
 } Binding;
 

@@ -165,6 +165,7 @@ InitEventHandlerJumpTable(void)
   EventHandlerJumpTable[ClientMessage] = HandleClientMessage;
   EventHandlerJumpTable[PropertyNotify] = HandlePropertyNotify;
   EventHandlerJumpTable[KeyPress] = HandleKeyPress;
+  EventHandlerJumpTable[KeyRelease] = HandleKeyRelease;
   EventHandlerJumpTable[VisibilityNotify] = HandleVisibilityNotify;
   EventHandlerJumpTable[ColormapNotify] = HandleColormapNotify;
   EventHandlerJumpTable[MappingNotify] = HandleMappingNotify;
@@ -256,7 +257,7 @@ GetContext(ScwmWindow * t, XEvent * e, Window * w)
   /* Since key presses and button presses are grabbed in the frame
    * when we have re-parented windows, we need to find out the real
    * window where the event occured */
-  if ((e->type == KeyPress) && (e->xkey.subwindow != None))
+  if ((e->type == KeyPress || e->type == KeyRelease) && (e->xkey.subwindow != None))
     *w = e->xkey.subwindow;
 
   if ((e->type == ButtonPress) && (e->xbutton.subwindow != None) &&
@@ -376,14 +377,11 @@ HandleFocusIn()
   }
 }
 
-/***********************************************************************
- *
- *  Procedure:
- *	HandleKeyPress - key press event handler
- *
- ************************************************************************/
-void 
-HandleKeyPress()
+/*
+ * HandleKeyEvent - key press/release event handler
+ */
+static void 
+HandleKeyEvent(Bool fPress)
 {
   Binding *key;
   unsigned int modifier;
@@ -409,14 +407,19 @@ HandleKeyPress()
 	 (key->Modifier == AnyModifier)) &&
 	(key->Context & Context) &&
 	(key->IsMouse == 0)) {
-      if (STREQ(key->Action, "Scheme")) {
-	if (NULL != pswCurrent) {
-	  set_window_context(pswCurrent->schwin);
-	}
-	scwm_safe_call0(key->Thunk);
-	if (NULL != pswCurrent) {
-	  unset_window_context();
-	}
+      if (NULL != pswCurrent) {
+        set_window_context(pswCurrent->schwin);
+      }
+      if (fPress) {
+        if (!UNSET_SCM(key->Thunk))
+          scwm_safe_call0(key->Thunk);
+      } else if (!UNSET_SCM(key->ReleaseThunk)) {
+        if (!UNSET_SCM(key->ReleaseThunk))
+          scwm_safe_call0(key->ReleaseThunk);
+      }
+      
+      if (NULL != pswCurrent) {
+        unset_window_context();
       }
       return;
     }
@@ -432,6 +435,18 @@ HandleKeyPress()
     }
   }
   ButtonWindow = NULL;
+}
+
+void
+HandleKeyPress()
+{
+  HandleKeyEvent(TRUE);
+}
+
+void
+HandleKeyRelease()
+{
+  HandleKeyEvent(FALSE);
 }
 
 
@@ -1265,17 +1280,15 @@ HandleButtonPress()
 	 (MouseEntry->Modifier == (modifier & (~LockMask)))) &&
 	(MouseEntry->IsMouse == 1)) {
       /* got a match, now process it */
-      if (STREQ(MouseEntry->Action, "Scheme")) {
-	if (NULL != pswCurrent) {
-	  set_window_context(pswCurrent->schwin);
-	}
-	find_mouse_event_type();
-	scwm_safe_call0(MouseEntry->Thunk);
-	clear_mouse_event_type();
-	if (NULL != pswCurrent) {
-	  unset_window_context();
-	}
-      } 
+      if (NULL != pswCurrent) {
+        set_window_context(pswCurrent->schwin);
+      }
+      find_mouse_event_type();
+      scwm_safe_call0(MouseEntry->Thunk);
+      clear_mouse_event_type();
+      if (NULL != pswCurrent) {
+        unset_window_context();
+      }
       break;
     }
   }

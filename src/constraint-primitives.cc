@@ -121,9 +121,8 @@ current windows when a solver is made the master solver via
 windows.   Occasions for using this primitive are rare. */
 #define FUNC_NAME s_add_stays_on_window
 {
-  int iarg = 1;
   if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, win);
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
   }
   
   ScwmWindow const *const psw = PSWFROMSCMWIN(win);
@@ -141,9 +140,8 @@ SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
      /** Use SOLVER as the master solver for scwm */
 #define FUNC_NAME s_scwm_set_master_solver
 {
-  int iarg = 1;
   if (!FIsClSimplexSolverScm(solver))
-    scm_wrong_type_arg(FUNC_NAME,iarg++,solver);
+    scm_wrong_type_arg(FUNC_NAME,1,solver);
 
   psolver = PsolverFromScm(solver);
   /* empty the set of dirty windows, just in case */
@@ -294,9 +292,8 @@ SCWM_PROC(cl_windows_of_constraint, "cl-windows-of-constraint", 1, 0, 0,
   /** Return a list of window objects who have variables used by CN */
 #define FUNC_NAME s_cl_windows_of_constraint
 {
-  int iarg = 1;
   if (!FIsClConstraintScm(cn))
-    scm_wrong_type_arg(FUNC_NAME,iarg++,cn);
+    scm_wrong_type_arg(FUNC_NAME,1,cn);
 
   ClConstraint *pcn = PcnFromScm(cn);
 

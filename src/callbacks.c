@@ -451,19 +451,20 @@ called with no arguments. A handle suitable for passing to
 `remove-timer-hook!' is returned. */
 #define FUNC_NAME s_add_timer_hook_x
 {
-  int iarg = 1;
+  int iarg = 0;
   SCM newcell;
   SCM p, last;
   SCM th_list;
 
-
+  ++iarg;
   if (!gh_number_p(usec) || 
       (gh_scm2long(usec) < 0)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, usec);
+    scm_wrong_type_arg(FUNC_NAME, iarg, usec);
   }
 
+  ++iarg;
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, proc);
+    scm_wrong_type_arg(FUNC_NAME, iarg, proc);
   }
 
   th_list=gh_cdr(timer_hooks);

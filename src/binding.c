@@ -329,8 +329,7 @@ GrabButtons(ScwmWindow * psw)
 
   MouseEntry = Scr.AllBindings;
   while (MouseEntry != (Binding *) 0) {
-    if ((MouseEntry->Action != NULL) && (MouseEntry->Context & C_WINDOW)
-	&& (MouseEntry->IsMouse == 1)) {
+    if ((MouseEntry->Context & C_WINDOW) && (MouseEntry->IsMouse == 1)) {
       if (MouseEntry->Button_Key > 0) {
 	XGrabButton(dpy, MouseEntry->Button_Key, MouseEntry->Modifier,
 		    psw->w,
@@ -487,23 +486,27 @@ remove_binding(int context, int mods, int button, KeySym keysym,
 }
 
 void 
-add_binding(int context, int modmask, int bnum_or_keysym, int mouse_p, 
-	    SCM proc, char *name)
+add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p, 
+	    SCM proc, SCM release_proc, char *name)
 {
   Binding *prev_binding = Scr.AllBindings;
   Scr.AllBindings = NEW(Binding);
 
   Scr.AllBindings->IsMouse = mouse_p;
-  Scr.AllBindings->Button_Key = bnum_or_keysym;
+  Scr.AllBindings->Button_Key = bnum_or_keycode;
   Scr.AllBindings->key_name = name;
   Scr.AllBindings->Context = context;
   Scr.AllBindings->Modifier = modmask;
-  /* FIXMS: This field should go away from the binding struct. */
-  Scr.AllBindings->Action = "Scheme";
   Scr.AllBindings->Thunk = proc;
+  Scr.AllBindings->ReleaseThunk = release_proc;
   Scr.AllBindings->NextBinding = prev_binding;
 
-  scm_protect_object(proc);
+  /* GJB:FIXME:: these scm_protect_object's cause memory leaks when the bindings
+     are removed */
+  if (!UNSET_SCM(proc)) 
+    scm_protect_object(proc);
+  if (!UNSET_SCM(release_proc)) 
+    scm_protect_object(release_proc);
 
   if (mouse_p) {
     if ( (context & C_WINDOW) && Scr.fWindowsCaptured) {
@@ -512,7 +515,7 @@ add_binding(int context, int modmask, int bnum_or_keysym, int mouse_p,
 	 them all later when we do the initial capture;
 	 this is good, since initialization probably defines
 	 lots of mouse  bindings */
-      grab_button_all_windows(bnum_or_keysym ,modmask);
+      grab_button_all_windows(bnum_or_keycode, modmask);
     } 
   } else {
     if (Scr.fWindowsCaptured) {
@@ -521,7 +524,7 @@ add_binding(int context, int modmask, int bnum_or_keysym, int mouse_p,
 	 them all later when we do the initial capture;
 	 this is good, since initialization probably defines
 	 lots of key bindings */
-      grab_key_all_windows(bnum_or_keysym ,modmask);
+      grab_key_all_windows(bnum_or_keycode, modmask);
     }
   }
 }
@@ -616,6 +619,32 @@ KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete) */
 #undef FUNC_NAME
 
 
+SCWM_PROC(keysym_to_keycode, "keysym->keycode", 1, 0, 0,
+          (SCM keysym_name))
+     /** Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.
+KEYSYM-NAME should be a string.  E.g., "Control_L". */
+#define FUNC_NAME s_keysym_to_keycode
+{
+  SCM answer = SCM_EOL;
+  int min, max;
+  KeySym keysym;
+  int modmask;
+  int i;
+
+  /* GJB:FIXME:: This shouldn't really accept modifiers in front, but
+     FKeyToKeysymModifiers does permit them */
+  Bool fOkayKey = FKeyToKeysymModifiers(keysym_name,&keysym,&modmask, FUNC_NAME);
+
+  XDisplayKeycodes(dpy, &min, &max);
+  for (i = max; i >= min; --i) {
+    if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
+      answer = gh_cons(gh_int2scm(i),answer);
+    }
+  }
+  return answer;
+}
+#undef FUNC_NAME
+
 SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 0, 0,
           (SCM contexts, SCM button))
      /** Remove any bindings attached to mouse BUTTON in given CONTEXTS.
@@ -687,7 +716,7 @@ specified key is pressed in the specified context. */
   XDisplayKeycodes(dpy, &min, &max);
   for (i = min; i <= max; i++) {
     if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
-      add_binding(context, modmask, i, 0, proc, gh_scm2newstr(key,&len));
+      add_binding(context, modmask, i, 0, proc, SCM_UNDEFINED, gh_scm2newstr(key,&len));
       fBoundKey = True;
     }
   }
@@ -698,6 +727,69 @@ specified key is pressed in the specified context. */
     FREE(keyname);
     return SCM_BOOL_F; /* Use False for error */
   }
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(bind_keycode, "bind-keycode", 4, 1, 0,
+          (SCM contexts, SCM keycode, SCM modifier_mask, SCM proc, SCM release_proc))
+     /** Bind the given KEYCODE within the CONTEXTS to invoke PROC.
+CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
+KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers,
+PROC is a procedure that will be invoked (with no arguments) when the 
+specified key is pressed in the specified context. 
+RELEASE-PROC is a procedure that will be invoked (with no arguments) when the
+specified key is released in the specified context, or #f or omitted if 
+nothing should be done on key release.
+*/
+#define FUNC_NAME s_bind_keycode
+{
+  KeySym keysym;
+  int len = 0;
+  Bool fOkayKey = False;
+  Bool fBoundKey = False;	/* for error checking */
+  int i, min, max;
+  int keycd = 0;
+  int modmask = 0;
+  int context = 0;
+  int iarg = 0;
+
+  ++iarg;
+  if (!gh_number_p(keycode)) {
+    scm_wrong_type_arg(FUNC_NAME, iarg, keycode);
+  }
+
+  ++iarg;
+  if (!gh_number_p(modifier_mask)) {
+    scm_wrong_type_arg(FUNC_NAME, iarg, modifier_mask);
+  }
+
+  ++iarg;
+  if (!UNSET_SCM(proc) && !gh_procedure_p(proc)) {
+    scm_wrong_type_arg(FUNC_NAME, iarg, proc);
+  }
+
+  ++iarg;
+  if (!UNSET_SCM(release_proc) && !gh_procedure_p(release_proc)) {
+    scm_wrong_type_arg(FUNC_NAME, iarg, release_proc);
+  }
+
+  context = compute_contexts(contexts, FUNC_NAME);
+  keycd = gh_scm2int(keycode);
+  modmask = gh_scm2int(modifier_mask);
+
+  XDisplayKeycodes(dpy, &min, &max);
+
+  if (keycd < min || keycd > max) {
+    scm_misc_error(FUNC_NAME,"Keycode is out of range.",SCM_EOL);
+  }
+
+  if (modmask < 0 || modmask > 255) {
+    scm_misc_error(FUNC_NAME,"Modifier mask is out of range.",SCM_EOL);
+  }
+
+  add_binding(context, modmask, keycd, 0, proc, release_proc, NULL);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -760,7 +852,7 @@ specified button is pressed in the specified context. */
     Scr.buttons2grab &= ~(1 << (bnum - 1));
   }
  
-  add_binding(context, modmask, bnum, 1, proc, NULL);
+  add_binding(context, modmask, bnum, 1, proc, SCM_UNDEFINED, NULL);
 
   if (fChangedNumButtons && Scr.fWindowsCaptured) {
   /* FIXGJB - we should redraw the titlebars if necessary to reflect the new
@@ -834,6 +926,22 @@ to determine, e.g., whether the user single clicked or double clicked. */
 #undef FUNC_NAME
 
 
+SCWM_PROC(mod_mask_shift,"mod-mask-shift", 0, 0, 0, ())
+     /** Return the bit-mask for the Shift modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Shift, otherwise
+returns a power of two corresponding to the bit-mask of the modifier */
+#define FUNC_NAME s_mod_mask_shift
+{ return ShiftMask == 0? SCM_BOOL_F : gh_int2scm(ShiftMask); }
+#undef FUNC_NAME
+
+SCWM_PROC(mod_mask_control,"mod-mask-control", 0, 0, 0, ())
+     /** Return the bit-mask for the Control modifier key, or #f.
+Returns #f if and only if there is no key bound to act as Control, otherwise
+returns a power of two corresponding to the bit-mask of the modifier */
+#define FUNC_NAME s_mod_mask_control
+{ return ControlMask == 0? SCM_BOOL_F : gh_int2scm(ControlMask); }
+#undef FUNC_NAME
+
 SCWM_PROC(mod_mask_meta,"mod-mask-meta", 0, 0, 0, ())
      /** Return the bit-mask for the Meta modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Meta, otherwise
@@ -859,7 +967,7 @@ returns a power of two corresponding to the bit-mask of the modifier */
 #undef FUNC_NAME
 
 
-SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0,())
+SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0, ())
      /** Return the bit-mask for the Super modifier key, or #f.
 Returns #f if and only if there is no key bound to act as Super, otherwise
 returns a power of two corresponding to the bit-mask of the modifier */

@@ -1445,21 +1445,32 @@ right justified against X-POS. */
   Bool fPermitAltReleaseToSelect = False;
   /* FIXGJB: above needs to be true if we're doing the window list */
   int x = -1, y = -1;
-  int iarg = 1;
+  int iarg = 0;
   /* permit 'menu to be used, and look up dynamically */
   DEREF_IF_SYMBOL(menu);
+  ++iarg;
   if (!MENU_P(menu)) {
-    scm_wrong_type_arg(FUNC_NAME, iarg++, menu);
+    scm_wrong_type_arg(FUNC_NAME, iarg, menu);
   }
-  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fWarpToFirst,warp_to_first_p,iarg++,FUNC_NAME);
+  ++iarg;
+  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fWarpToFirst,warp_to_first_p,iarg,FUNC_NAME);
+
+  ++iarg;
   if (!UNSET_SCM(x_pos) && !gh_number_p(x_pos)) 
-    scm_wrong_type_arg(FUNC_NAME, iarg++, x_pos);
+    scm_wrong_type_arg(FUNC_NAME, iarg, x_pos);
+
+  ++iarg;
   if (!UNSET_SCM(y_pos) && !gh_number_p(y_pos)) 
-    scm_wrong_type_arg(FUNC_NAME, iarg++, y_pos);
+    scm_wrong_type_arg(FUNC_NAME, iarg, y_pos);
+
+  ++iarg;
   if (gh_number_p(x_pos)) x = gh_scm2int(x_pos);
+
+  ++iarg;
   if (gh_number_p(y_pos)) y = gh_scm2int(y_pos);
 
-  COPY_BOOL_OR_ERROR_DEFAULT_TRUE(fLeftSide,left_side_p,iarg++,FUNC_NAME);
+  ++iarg;
+  COPY_BOOL_OR_ERROR_DEFAULT_TRUE(fLeftSide,left_side_p,iarg,FUNC_NAME);
 
   return PopupGrabMenu(MENU(menu),NULL,fWarpToFirst,fPermitAltReleaseToSelect,
                        x,y, fLeftSide?0:1);
