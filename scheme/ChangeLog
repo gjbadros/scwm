@@ -1,3 +1,8 @@
+Mon Sep 13 22:43:15 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* preferences.scm: Turn on *preferences-use-notebook* by default
+	since the *preferences-use-notebook* == #f is buggy.
+
 Mon Sep 13 22:23:34 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops.scm, themes.scm, primopts.scm, message-window.scm,
