@@ -32,7 +32,10 @@
 (define USER (getenv "USER"))
 
 (define fvwm-pager-path "/uns/lib/fvwm2/FvwmPager")
+(define want-fvwm-pager-module #f)
+
 (define fvwm-winlist-path "/uns/lib/fvwm2/FvwmWinList")
+(define want-fvwm-winlist-module #f)
 
 ;; Disabled autoraise by default; 
 ;; would give an instant autoraise with no timeout, which 
@@ -80,7 +83,7 @@
 (define applications-available-program-information
   `(
     ("&Netscape" "nscape" "netscape_3d" "netscape")
-    ("&Emacs" "edit" "emacs_3d" "PREFERRED_EMACS_BIN")
+    ("&Emacs" "edit" "emacs_3d" "xemacs")
     ("Email (&Gnus)" #f #f "emailuw")
 ;;    ("Calenda&r" "clock" "calendar.next" "PREFERRED_CALENDAR_BIN")
     ("&Ical" "clock" "calendar.next" "ical")
@@ -208,6 +211,10 @@
 
 (define (popup-util)
   (popup-menu 'menu-util))
+
+(define (popup-applications)
+  (popup-menu 'menu-applications))
+
 
 (define (popup-root-start)
   (popup-menu 'menu-root-start))
@@ -536,7 +543,7 @@
     (menuitem "Really quit Scwm?" #f)
     menu-title
     (menuitem "Restart scwm" #:image-left "mini-turn.xpm" 
-	       #:action (lambda () (restart "/scratch/gjb/scwm/scwm/scwm -f /scratch/gjb/scwm/sample.scwmrc/gjb.scwmrc 2> /homes/gws/gjb/scwm.log")))
+	       #:action (lambda () (restart "")))
     menu-separator
     (menuitem "Yes" #:image-left "mini-exclam.xpm" #:action quit)
     (menuitem "No"  #:image-left "mini-cross.xpm" #:action noop))))
@@ -828,7 +835,7 @@
 (bind-mouse 'root 2 (lambda () 
 		      (show-window-list-menu #:show-geometry #t)))
 (bind-mouse 'root "M-3" (lambda () (popup-menu 'menu-desk)))
-;;;(bind-mouse 'root 3 popup-applications)
+(bind-mouse 'root 3 popup-applications)
 
 ;;; operations on parts of the window
 (bind-mouse '(frame sidebar) 2 popup-small-ops)
@@ -899,7 +906,13 @@
 (key-mouse-moves "C-M-S" 1 "y" "u" "i" "o")
 
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
-;(key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
+(key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
+
+(bind-key 'all "C-M-S-Home" (lambda () (set-current-desk! 0)))
+(bind-key 'all "C-M-S-End" (lambda () (set-current-desk! 1)))
+
+(bind-key 'all "C-M-S-a" popup-applications)
+;;(bind-key 'all "C-M-S-u" popup-util)  ;;; do not use this, since the key is bound to a mouse movement
 
 (bind-key 'all "C-M-S-r" refresh)
 (bind-key 'all "C-M-S-5" recapture)
@@ -994,39 +1007,41 @@
 		     (let ((window (window-from-window-id a1)))
 		       (if window (raise-window window)))))))
 
-(define fvwm-pager (run-fvwm-module  
-	    ;; path to the module
-	    fvwm-pager-path
-	    ;; your .fvwm2rc (does not need to exist for most modules)
-	    "~/.fvwm2rc"
-	    ;; list of configuration lines
-	    '("*FvwmPagerBack grey76"
-	      "*FvwmPagerFore black"
-	      "*FvwmPagerHilight navyblue"
-	      "*FvwmPagerDeskTopScale 50"
-	      "*FvwmPagerLabel 0 Top"
-	      "*FvwmPagerLabel 1 Bottom"
-	      "*FvwmPagerSmallFont 5x8")
-	    '("0" "1")))
+(if want-fvwm-pager-module
+    (define fvwm-pager (run-fvwm-module  
+			;; path to the module
+			fvwm-pager-path
+			;; your .fvwm2rc (does not need to exist for most modules)
+			"~/.fvwm2rc"
+			;; list of configuration lines
+			'("*FvwmPagerBack grey76"
+			  "*FvwmPagerFore black"
+			  "*FvwmPagerHilight navyblue"
+			  "*FvwmPagerDeskTopScale 50"
+			  "*FvwmPagerLabel 0 Top"
+			  "*FvwmPagerLabel 1 Bottom"
+			  "*FvwmPagerSmallFont 5x8")
+			'("0" "1"))))
 
 ;;; This does not work for me -- I get:
 ;;; Xlib: unexpected async reply (sequence 0x13e0)!
 ;;; 
-(define fvwm-winlist 
-  (run-fvwm-module
-   ;; path to the module
-   fvwm-winlist-path
-   ;; your .fvwm2rc (does not need to exist for most modules)
-   "~/.fvwm2rc"
-   ;; list of configuration lines
-   '("*FvwmWinListBack #c3c3c3"
-     "*FvwmWinListFore Black"
-     "*FvwmWinListFont -helvetica-bold-r-*-*-10-*-*-*-*-*-*-*"
-     "*FvwmWinListAction Click1 Iconify -1,Focus"
-     "*FvwmWinListAction Click2 Iconify"
-;;     "*FvwmWinListAction Click3 Module FvwmIdent FvwmIdent"
-     "*FvwmWinListUseSkipList"
-     "*FvwmWinListGeometry +0-1")))
+(if want-fvwm-winlist-module
+    (define fvwm-winlist 
+      (run-fvwm-module
+       ;; path to the module
+       fvwm-winlist-path
+       ;; your .fvwm2rc (does not need to exist for most modules)
+       "~/.fvwm2rc"
+       ;; list of configuration lines
+       '("*FvwmWinListBack #c3c3c3"
+	 "*FvwmWinListFore Black"
+	 "*FvwmWinListFont -helvetica-bold-r-*-*-10-*-*-*-*-*-*-*"
+	 "*FvwmWinListAction Click1 Iconify -1,Focus"
+	 "*FvwmWinListAction Click2 Iconify"
+	 ;;     "*FvwmWinListAction Click3 Module FvwmIdent FvwmIdent"
+	 "*FvwmWinListUseSkipList"
+	 "*FvwmWinListGeometry +0-1"))))
 
 ;; To later shut down the module, use kill-fvwm-module:
 ;; (kill-fvwm-module fvwm-pager)
