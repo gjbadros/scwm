@@ -1,3 +1,9 @@
+Sat May  1 17:58:32 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Add auto-raise to the use-modules list, Added
+ 	binding for delete-window using 4 modifiers so it's hard to do by
+ 	mistake
+
 Sat May  1 14:58:38 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use primopts. Comment out focus-change-warp-pointer

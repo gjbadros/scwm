@@ -1,3 +1,16 @@
+Sat May  1 17:51:55 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Simplify and fix `move-to'.
+
+	* auto-raise.scm: Move the `provide' to the end-- causes
+ 	inexplicably problems when (use-module (app scwm auto-raise) is at
+ 	the start of my .scwmrc file if the provide is at the beginning of 
+	this file.  Very strange, indeed!
+
+	* animation.scm: Simplify and correct `animated-move-to' -- some
+	of the extra junk seems to have been added (maybe by me!) as
+	workarounds to the bug in convert_move_data that I just fixed.
+
 Sat May  1 14:36:34 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* prompt-color.scm: Use maybe-make-color in apply, and fix bogus
