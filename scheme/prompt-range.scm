@@ -22,6 +22,7 @@
   :use-module (app scwm gtk)
   :use-module (app scwm base)
   :use-module (gtk gtk)
+  :use-module (app scwm prompting-shell)
   :use-module (app scwm optargs))
 
 
@@ -50,35 +51,10 @@
 RANGE is a cons cell (low . hight); ranges are inclusive. 
 INITVAL is a default initial value.
 TITLE is a window title."
-  (let* ((toplevel (gtk-window-new 'dialog))
-	 (hbox-and-getter (prompt-range-hbox prompt range initval digits))
+  (let* ((hbox-and-getter (prompt-range-hbox prompt range initval digits))
 	 (hbox (car hbox-and-getter))
-	 (getter (cadr hbox-and-getter))
-	 (hbox-buttons (gtk-hbox-new #f 5))
-	 (okbut (gtk-button-new-with-label "Ok"))
-	 (cancelbut (gtk-button-new-with-label "Cancel")))
-    (or title (set! title "prompt-range"))
-    (gtk-window-set-title toplevel title)
-    (gtk-box-pack-start hbox-buttons okbut #t #t)
-    (gtk-box-pack-start hbox-buttons cancelbut #t #t)
-    (gtk-box-pack-start hbox hbox-buttons #t #t)
-    (gtk-container-add toplevel hbox)
-    (gtk-widget-show hbox-buttons)
-    (gtk-widget-show cancelbut)
-    (gtk-widget-show okbut)
-    (let ((pp (pointer-position)))
-      (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
-    (gtk-widget-show toplevel)
-    (gtk-signal-connect okbut "pressed" 
-			(lambda () 
-			  (gtk-widget-destroy toplevel)
-			  (proc (getter))))
-    (gtk-signal-connect cancelbut "pressed"
-			(lambda ()
-			  (gtk-widget-destroy toplevel)))
-    (lambda ()
-      (gtk-widget-hide toplevel)
-      (gtk-widget-destroy toplevel))))
+	 (getter (cadr hbox-and-getter)))
+    (prompting-shell proc title hbox getter)))
 
 (define*-public (prompt-integer-range prompt range proc #&key
 				      (initval #f) (title #f))

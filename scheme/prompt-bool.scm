@@ -21,6 +21,7 @@
 (define-module (app scwm prompt-bool)
   :use-module (app scwm gtk)
   :use-module (gtk gtk)
+  :use-module (app scwm prompting-shell)
   :use-module (app scwm optargs))
 
 
@@ -43,37 +44,10 @@
 			      (initval #f)
 			      (title "prompt-bool"))
   "Prompt with PROMPT for a boolean value, and call PROC with result if Ok button is clicked."
-  (let* ((toplevel (gtk-window-new 'dialog))
-	 (vbox (gtk-vbox-new #f 5))
-	 (hbox-buttons (gtk-hbox-new #f 5))
-	 (hbox-and-getter (prompt-bool-hbox prompt initval))
+  (let* ((hbox-and-getter (prompt-bool-hbox prompt initval))
 	 (hbox (car hbox-and-getter))
-	 (getter (cadr hbox-and-getter))
-	 (okbut (gtk-button-new-with-label "Ok"))
-	 (cancelbut (gtk-button-new-with-label "Cancel")))
-    (gtk-window-set-title toplevel title)
-    (gtk-box-pack-start hbox-buttons okbut #t #t)
-    (gtk-box-pack-start hbox-buttons cancelbut #t #t)
-    (gtk-box-pack-start vbox hbox #t #t)
-    (gtk-box-pack-start vbox hbox-buttons #t #t)
-    (gtk-container-add toplevel vbox)
-    (gtk-widget-show vbox)
-    (gtk-widget-show hbox-buttons)
-    (gtk-widget-show cancelbut)
-    (gtk-widget-show okbut)
-    (let ((pp (pointer-position)))
-      (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
-    (gtk-widget-show toplevel)
-    (gtk-signal-connect okbut "pressed" 
-			(lambda () 
-			  (gtk-widget-destroy toplevel)
-			  (proc (getter))))
-    (gtk-signal-connect cancelbut "pressed"
-			(lambda ()
-			  (gtk-widget-destroy toplevel)))
-    (lambda ()
-      (gtk-widget-hide toplevel)
-      (gtk-widget-destroy toplevel))))
+	 (getter (cadr hbox-and-getter)))
+    (prompting-shell proc title hbox getter)))
 
 (define-public (prompt-bool-hbox prompt initval)
   "Create and return a boolean-prompting hbox and button.

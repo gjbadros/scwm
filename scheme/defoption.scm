@@ -149,6 +149,8 @@ scwm-options-groups
 	 (n (make-shared-substring name 1 (- (string-length name) 1))))
     (regexp-substitute/global #f "-" n 'pre " " 'post)))
 
+;;(prompt-from-symbol '*foo-is-here*)
+
 (define*-public (define-scwm-option-proc var sym docstring default #&key
 		  (type #f)
 		  (name #f)

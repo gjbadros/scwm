@@ -23,21 +23,10 @@
 (define-module (app scwm prompt-enum)
   :use-module (app scwm gtk)
   :use-module (gtk gtk)
+  :use-module (app scwm prompting-shell)
   :use-module (app scwm optargs))
 
 
-
-#! args for testing
-(use-modules (app scwm gtk)
-	     (app scwm optargs)
-	     (gtk gtk)
-	     (gtk gdk))
-
-(define prompt "Choose value")
-(define (proc v) (display v) (newline))
-(define title "prompt bool")
-(define initval #f)
-!#
 
 ;;(use-modules (app scwm prompt-enum))
 ;;(define w (prompt-enum "Focus?" '((click . "Click") (mouse . "Mouse")) (lambda (v) (display "answer = ") (display v) (newline)) #:initval 'mouse))
@@ -46,37 +35,10 @@
 			      (title "prompt-enum"))
   "Prompt with PROMPT for one of CHOICES, and call PROC with result.
 CHOICES is an a-list of symbols and strings."
-  (let* ((toplevel (gtk-window-new 'dialog))
-	 (vbox (gtk-vbox-new #f 5))
-	 (hbox-buttons (gtk-hbox-new #f 5))
-	 (hbox-and-getter (prompt-enum-hbox prompt choices initval))
+  (let* ((hbox-and-getter (prompt-enum-hbox prompt choices initval))
 	 (hbox (car hbox-and-getter))
-	 (getter (cadr hbox-and-getter))
-	 (okbut (gtk-button-new-with-label "Ok"))
-	 (cancelbut (gtk-button-new-with-label "Cancel")))
-    (gtk-window-set-title toplevel title)
-    (gtk-box-pack-start hbox-buttons okbut #t #t)
-    (gtk-box-pack-start hbox-buttons cancelbut #t #t)
-    (gtk-box-pack-start vbox hbox #t #t)
-    (gtk-box-pack-start vbox hbox-buttons #t #t)
-    (gtk-container-add toplevel vbox)
-    (gtk-widget-show vbox)
-    (gtk-widget-show hbox-buttons)
-    (gtk-widget-show cancelbut)
-    (gtk-widget-show okbut)
-    (let ((pp (pointer-position)))
-      (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
-    (gtk-widget-show toplevel)
-    (gtk-signal-connect okbut "pressed" 
-			(lambda () 
-			  (gtk-widget-destroy toplevel)
-			  (proc (getter))))
-    (gtk-signal-connect cancelbut "pressed"
-			(lambda ()
-			  (gtk-widget-destroy toplevel)))
-    (lambda ()
-      (gtk-widget-hide toplevel)
-      (gtk-widget-destroy toplevel))))
+	 (getter (cadr hbox-and-getter)))
+    (prompting-shell proc title hbox getter)))
 
 (define-public (prompt-enum-hbox prompt choices initval)
   "Create and return an enum-prompting hbox and button.

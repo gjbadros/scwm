@@ -46,35 +46,10 @@
   "Prompt using PROMPT for a font and call PROC with value if Ok is clicked.
 INITVAL is a default initial font as a font object or string.
 TITLE is a window title."
-  (let* ((toplevel (gtk-window-new 'dialog))
-	 (hbox-and-getter (prompt-font-hbox prompt initval))
+  (let* ((hbox-and-getter (prompt-font-hbox prompt initval))
 	 (hbox (car hbox-and-getter))
-	 (getter (cadr hbox-and-getter))
-	 (hbox-buttons (gtk-hbox-new #f 5))
-	 (okbut (gtk-button-new-with-label "Ok"))
-	 (cancelbut (gtk-button-new-with-label "Cancel")))
-    (or title (set! title "prompt-font"))
-    (gtk-window-set-title toplevel title)
-    (gtk-box-pack-start hbox-buttons okbut #t #t)
-    (gtk-box-pack-start hbox-buttons cancelbut #t #t)
-    (gtk-box-pack-start hbox hbox-buttons #t #t)
-    (gtk-container-add toplevel hbox)
-    (gtk-widget-show hbox-buttons)
-    (gtk-widget-show cancelbut)
-    (gtk-widget-show okbut)
-    (let ((pp (pointer-position)))
-      (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
-    (gtk-widget-show toplevel)
-    (gtk-signal-connect okbut "pressed" 
-			(lambda () 
-			  (gtk-widget-destroy toplevel)
-			  (proc (getter))))
-    (gtk-signal-connect cancelbut "pressed"
-			(lambda ()
-			  (gtk-widget-destroy toplevel)))
-    (lambda ()
-      (gtk-widget-hide toplevel)
-      (gtk-widget-destroy toplevel))))
+	 (getter (cadr hbox-and-getter)))
+    (prompting-shell proc title hbox getter)))
 
 (define*-public (prompt-font-hbox prompt initval)
   "Create and return a font-prompting hbox, complete with link to full font dialog.

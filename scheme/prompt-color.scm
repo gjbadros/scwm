@@ -43,41 +43,16 @@
 ;;(define w (prompt-color "Window color?" '(0 . 20) (lambda (v) (display v) (newline)) #:initval "navyblue"))
 (define*-public (prompt-color prompt proc #&key
 			      (initval #f)
-			      (title #f)
+			      (title "prompt-color")
 			      (favorites #f))
   "Prompt using PROMPT for a color and call PROC with value if Ok is clicked.
 INITVAL is a default initial color as a color object or string.
 TITLE is a window title."
-  (or title (set! title "prompt-color"))
-  (let* ((toplevel (gtk-window-new 'dialog))
-	 (hbox-and-getter (prompt-color-hbox title initval favorites))
+  (let* ((hbox-and-getter (prompt-color-hbox title initval favorites))
 	 (hbox (car hbox-and-getter))
-	 (getter (cadr hbox-and-getter))
-	 (hbox-buttons (gtk-hbox-new #f 5))
-	 (okbut (gtk-button-new-with-label "Ok"))
-	 (cancelbut (gtk-button-new-with-label "Cancel")))
-    (gtk-window-set-title toplevel title)
-    (gtk-box-pack-start hbox-buttons okbut #t #t)
-    (gtk-box-pack-start hbox-buttons cancelbut #t #t)
-    (gtk-box-pack-start hbox hbox-buttons #t #t)
-    (gtk-container-add toplevel hbox)
-    (gtk-widget-show hbox-buttons)
-    (gtk-widget-show cancelbut)
-    (gtk-widget-show okbut)
-    (let ((pp (pointer-position)))
-      (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
-    (gtk-widget-show toplevel)
-    (gtk-signal-connect okbut "pressed" 
-			(lambda () 
-			  (gtk-widget-destroy toplevel)
-			  (proc (getter))))
-    (gtk-signal-connect cancelbut "pressed"
-			(lambda ()
-			  (gtk-widget-destroy toplevel)))
-    (lambda ()
-      (gtk-widget-hide toplevel)
-      (gtk-widget-destroy toplevel))))
-
+	 (getter (cadr hbox-and-getter)))
+    (prompting-shell proc title hbox getter)))
+  
 (define (gdk-color-name color)
   (let ((r (gdk-color-red color))
 	(g (gdk-color-green color))

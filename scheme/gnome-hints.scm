@@ -509,6 +509,15 @@ pager applet. See also `disable-gnome-hints'."
   (add-hook! window-property-change-hook gnome-window-property-change-hook)
   (add-hook! shutdown-hook (lambda args  (disable-gnome-hints))))
 
+#!
+(define (client-message-debug win atom format vector)
+  (display "Got client message on ")
+  (display win)
+  (newline))
+
+(add-hook! client-message-hook client-message-debug)
+!#
+
 
 (define-public (disable-gnome-hints)
   "Disable support for GNOME hints.
