@@ -1,5 +1,7 @@
 
 (define broadcast-hook #f)
+(define broadcast-config-hook #f)
+(define broadcast-name-hook #f)
 
 (define-module (fvwm-module-test)
   :use-module (ice-9 string-fun)
@@ -150,6 +152,24 @@
 			   (integer->char (logand #x000000ff intx)))
 	      s)))))
 
+(define pad-string-to-long
+  (if (= bitness 32)
+      ;; 32 bit
+      (lambda (str)
+	(let* ((length (* 4 (+ 1 (inexact->exact 
+				  (floor (/ (string-length str) 4))))))
+	       (pad (- length (string-length str))))
+	  (string-append 
+	   str 
+	   (apply string (make-list pad #\nul)))))
+      ;; 64 bit
+      (lambda (str)
+	(let* ((length (* 8 (+ 1 (inexact->exact 
+				  (floor (/ (string-length str) 4))))))
+	       (pad (- length (string-length str))))
+	  (string-append 
+	   str 
+	   (apply string (make-list pad #\nul)))))))
 
 (define (data-write str port)
   (uniform-array-write str port))
@@ -213,39 +233,32 @@
 
 (define (send-end-config-info port)
   (fvwm2-module-send-packet M_END_CONFIG_INFO "" port))
-  
+
 (define (send-config-info str port)
-  (let* ((length (* 4 (+ 1 (inexact->exact 
-			    (floor (/ (string-length str) 4))))))
-	 (pad (- length (string-length str)))
-	 (data (string-append 
-		(apply string (make-list 12 #\nul))
-		str 
-		(apply string (make-list pad #\nul)))))
+  (let* ((data (string-append 
+		(long->string 0)
+		(long->string 0)
+		(long->string 0)
+		(pad-string-to-long str))))
     (fvwm2-module-send-packet M_CONFIG_INFO data port)))
 
 (define (fvwm2-module-send-window-list port)
-  (add-window 342423 234235 10 20 300 400 0 0 14 2 10 10 10 10 50 50
-	      100 100 32932 132213 0 54 32 port)
+  (map (lambda (w) (add-window w port)) (list-all-windows))
   (end-window-list port))
 
-(define (add-window window-id frame-window-id x y width height desktop 
-		    window-flags title-height border-width base-width 
-		    base-height resize-x-inc resize-y-inc min-width 
-		    min-height max-width-inc max-height-inc 
-		    icon-label-window-id icon-pixmap-window-id
-		    gravity text-color border-color port)
+(define (id->window id)
+  (let ((candidates (list-windows 
+		     #:only (lambda (w) (= (window-id w) id)))))
+    (if (not (null? candidates))
+	(car candidates)
+	#f)))
+
+(define (add-window win port)
   (fvwm2-module-send-packet 
    M_ADD_WINDOW 
-   (apply string-append
-	  (map 
-	   long->string
-	   (list window-id frame-window-id 0 x y width height desktop 
-		 window-flags title-height border-width base-width base-height 
-		 resize-x-inc resize-y-inc min-width min-height max-width-inc 
-		 max-height-inc icon-label-window-id icon-pixmap-window-id 
-		 gravity text-color border-color))) port))
-  
+   (marshal-fvwm2-config-info win)
+   port))
+
 (define (end-window-list port)
   (fvwm2-module-send-packet M_END_WINDOWLIST "" port))
 
@@ -259,6 +272,18 @@
 (set! broadcast-hook (lambda args  
 		       (map (lambda (x) (apply x args)) 
 			    module-broadcast-hooks)))
+
+(define module-broadcast-config-hooks '())
+
+(set! broadcast-config-hook (lambda args  
+			      (map (lambda (x) (apply x args)) 
+				   module-broadcast-config-hooks)))
+
+(define module-broadcast-name-hooks '())
+
+(set! broadcast-name-hook (lambda args  
+		       (map (lambda (x) (apply x args)) 
+			    module-broadcast-name-hooks)))
 
 (define (fvwm2-module-run module-file config-file config-info)
   (let* ((from-module-pipe (pipe))
@@ -296,25 +321,48 @@
     ;; FIXGJB: mark fd-s close-on-exec so other processes won't inherit them
     ;; FIXGJB: set o_nonblock for TO_MODULE_WR
     ;; GJBFIX: why is that necessary?
-    ;; (fcntl to-module-write F_SETFL O_NONBLOCK)
+    ;; (fctl to-module-write F_SETFL O_NONBLOCK)
 
     (set! module-broadcast-hooks
 	  (cons (lambda (type num-data . args)
 		  (if (logior type mask)
-		      (begin
 			(fvwm2-module-send-packet 
 			 type
 			 (apply string-append
 				(map (lambda (x y) 
 				       (long->string x)) 
 				     args (iota num-data))) 
-			 to-module-write))))
+			 to-module-write)))
 		module-broadcast-hooks))
+
+    (set! module-broadcast-config-hooks
+	  (cons (lambda (type window)
+		  (if (logior type mask)
+		      (fvwm2-module-send-packet 
+		       type
+		       (marshal-fvwm2-config-info window)
+		       to-module-write)))
+		module-broadcast-config-hooks))
+
+    (set! module-broadcast-name-hooks
+	  (cons (lambda (type data1 data2 data3 name)
+		  (if (logior type mask)
+		      (fvwm2-module-send-packet 
+		       type
+		       (pad-string-to-long
+			(string-append
+			 (long->string data1) 
+			 (long->string data2) 
+			 (long->string data3)
+			 name))
+		       to-module-write)))
+		module-broadcast-name-hooks))
 
     (letrec 
 	((packet-handler
 	  (lambda ()
 	    (let* ((packet (fvwm2-module-read-packet from-module-read))
+		   (window-id (car packet))
 		   (command (caddr packet))
 		   (split-result (split-before-char #\space command 
 						    (lambda args args)))
@@ -325,11 +373,34 @@
 	      ;; (write packet)
 	      ;; (newline)
 	      (cond
-	       ;; should also handle : "WindowsDesk", "Raise" and "Move".
 	       ((string-ci=? main-cmd "Send_ConfigInfo") 
 		(fvwm2-module-send-config-info config-info to-module-write))
 	       ((string-ci=? main-cmd "Send_WindowList") 
 		(fvwm2-module-send-window-list to-module-write))
+	       ((string-ci=? main-cmd "Move")
+		(let* ((s-args (split-after-char 
+				#\space 
+				(sans-leading-whitespace args)
+				(lambda args args)))
+		       (first-arg (string->number 
+				   (sans-surrounding-whitespace (car s-args)))))
+		  ;; just move, count on callback code to
+		  ;; DTRT WRT sending data back to module.
+		  (move-to first-arg (id->window window-id))))
+	       ((string-ci=? main-cmd "WindowsDesk")
+		(let* ((s-args (split-after-char 
+				#\space 
+				(sans-leading-whitespace args)
+				(lambda args args)))
+		       (first-arg (string->number 
+				   (sans-surrounding-whitespace (car s-args)))))
+		  ;; just move to the new desk, count on callback code to
+		  ;; DTRT WRT sending data back to module.
+		  (move-window-to-desk first-arg (id->window window-id))))
+	       ((string-ci=? main-cmd "Raise")
+		;; just raise, count on callback code to
+		;; DTRT WRT sending data back to module.
+		(raise-window (id->window window-id)))
 	       ((string-ci=? main-cmd "Scroll")
 		(let* ((s-args (split-after-char 
 				#\space 
@@ -378,13 +449,11 @@
 				   (sans-surrounding-whitespace 
 				    (car s-args)))))
 		  (set! mask first-arg)))))
-	    (add-input-hook-checking from-module-read packet-handler)))) 
+	    (add-input-hook-checking from-module-read packet-handler))))
       (add-input-hook-checking from-module-read packet-handler))))
 
-
-
-(fvwm2-module-run 
- "/u1/mstachow/fvwm-2.0.46/modules/FvwmPager/FvwmPager"
+(fvwm2-module-run  
+ "/mit/windowmanagers/lib/X11/fvwm2/FvwmPager"
  "~/.fvwm2rc"
  '("*FvwmPagerBack grey76"
    "*FvwmPagerFore black"
