@@ -1,3 +1,12 @@
+Sat Sep  5 15:34:59 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: fix unbalenced paren.
+	
+	* Makefile.am: Added sort.scm
+
+	* winlist.scm, wininfo.scm, flux.scm: Document more procedures,
+ 	and rename var "w" to "win", "w2" to "win2"
+
 Sat Sep  5 14:39:40 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* sort.scm: Added -- This may just be temporary until we start packaging
