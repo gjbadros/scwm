@@ -85,7 +85,7 @@ to the binding procedures.  Among these are:
 GJB:FIXME:: This should be a definition list or a table, and give real
 explanations of what these contexts mean!
  
-[From scwm/binding.c:713]
+[From scwm/binding.c:717]
 
 
 Face Flags
@@ -240,7 +240,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3356]
+[From scwm/window.c:3378]
 
 
 Fonts
@@ -266,7 +266,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!',
 `reset-hook!', and `run-hook'. 
 
-[From scwm/callbacks.c:379]
+[From scwm/callbacks.c:276]
 
 
 Image Loaders
@@ -306,7 +306,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:806]
+[From scwm/callbacks.c:811]
 
 
 Key Specifier
@@ -392,7 +392,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:647]
+[From scwm/scwm.c:648]
 
 
 SCWMEXEC Protocol
@@ -410,7 +410,7 @@ the SCWMEXEC protocol (as documented in
 <filename>doc/scwmexec.proto</filename>).
 FIXDOC: Link to file!
 
-[From scwm/events.c:586]
+[From scwm/events.c:587]
 
 
 Shadow and Highlight Factors
@@ -451,7 +451,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:2065]
+[From scwm/window.c:2073]
 
 
 Themes
@@ -474,7 +474,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From scwm/callbacks.c:661]
+[From scwm/callbacks.c:666]
 
 
 Viewports
@@ -506,7 +506,7 @@ about passing around the window argument.
   However, it is unclear whether behind-the-scenes magic like this is
 a good idea.  The merit of this approach is still under consideration;
 it may be changed entirely. 
-[From scwm/window.c:952]
+[From scwm/window.c:960]
 
 
 Window Style
@@ -573,7 +573,7 @@ use-theme (window-style) from scheme/themes.scm:47
 winlist-skip (boolean-style) from scheme/winlist.scm:112
 circulate-skip (boolean-style) from scheme/winlist.scm:299
 circulate-skip-icon (boolean-style) from scheme/winlist.scm:300
-start-maximized (window-style) from scheme/winops.scm:190
+start-maximized (window-style) from scheme/winops.scm:188
 
 [From scwm/face.c:542]
 
