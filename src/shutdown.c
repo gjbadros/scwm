@@ -176,8 +176,8 @@ SaveDesktopState()
   XSync(dpy, False);
 }
 
-SCWM_PROC(restart, "restart", 0, 1, 0,
-          (SCM command),
+SCWM_IPROC(restart, "restart", 0, 1, 0,
+           (SCM command), NULL,
 "Restart the window manager. \n\
 If COMMAND is specified, use that, as the new window manager to\n\
 run. If COMMAND is not specified or is exactly equal to \"scwm\",\n\
@@ -198,7 +198,7 @@ restart scwm with the same command-line arguments as given previously.")
 #undef FUNC_NAME
 
 SCWM_IPROC(scwm_quit, "scwm-quit", 0, 0, 0,
-           (),
+           (), NULL,
 "Exit scwm cleanly. `quit' is redefined as this within scwm.")
 #define FUNC_NAME s_scwm_quit
 {

@@ -308,7 +308,7 @@ WarnBadHook(SCM hook)
   { /* scope */ 
     /* Warn that hook list is not a list. */
     char *szHookName = gh_scm2newstr(hook, NULL);
-    scwm_message(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", hook_name);
+    scwm_message(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", szHookName);
     gh_set_cdr_x(hook, SCM_EOL);
   }
 }
