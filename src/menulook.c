@@ -84,7 +84,7 @@ make_menulook(char * szName, SCM extra, MenuDrawingVtable * mdvt)
 
 SCWM_PROC(copy_menu_look, "copy-menu-look", 2, 1, 0,
 	  (SCM original_menulook, SCM name, SCM extra))
-/** FIXJTL: document */
+/** Copy menu look ORIGINAL-MENU-LOOK with a new NAME and optional EXTRA. */
 #define FUNC_NAME s_copy_menu_look
 {
   int iarg = 0;

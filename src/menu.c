@@ -60,7 +60,7 @@ scwm_safe_call0_sym(SCM thunk)
   return scwm_safe_call0(thunk);
 }
 
-#ifndef NDEBUG
+#ifdef SCWM_DEBUG_MSGS
 /* Give string name of first item in a dynamic menu; mostly used for debugging */
 static const char *
 SzFirstItemFromPmd(const DynamicMenu *pmd)
@@ -198,6 +198,7 @@ NewPchKeysUsed(DynamicMenu *pmd)
 /* FIXGJB: better as an assoc list, probably: we'd have to invent a name for
    menu-items if we did */
 /* FIXJTL: this gets worse and worse */
+
 SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
           (SCM menu))
 /** Returns the a list of the menu properties of MENU, a menu object.
@@ -545,6 +546,7 @@ PmiimFromPointerLocation(Display *dpy, int *px_offset, int *py_offset)
   return pmd->pmdv->fnPmiimFromPmdXY(pmd,x,y);
 }
 
+#if 0
 static
 MenuItemInMenu *
 PmiimFromPmdShortcutKeypress(DynamicMenu *pmd, char ch)
@@ -558,7 +560,7 @@ PmiimFromPmdShortcutKeypress(DynamicMenu *pmd, char ch)
   }
   return NULL;
 }
-
+#endif
 
 static
 void
@@ -1073,6 +1075,8 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
         DBUG((DBG,__FUNCTION__,"Not on menu item, %d", c10ms_delays));
 	/* FIXJTL: maybe something more delicate than just removing this;
 	   don't unselect if between two menus of a popup pair, somehow */
+	/* FIXJTL: bleah: this is needed for proper pie menus, for
+	   moving back into the inactive zone. */
 	/* UnselectAndRepaintSelectionForPmd(pmd); */
       } else {
 	/* we're on a menu item */
