@@ -34,6 +34,7 @@ extern "C" {
 
 
 ClSimplexSolver *psolver;
+static SCM scmMasterSolver = SCM_BOOL_F;
 
 static set<ScwmWindow *> setpswDirty;
 
@@ -135,14 +136,15 @@ windows.   Occasions for using this primitive are rare. */
 }
 #undef FUNC_NAME
 
-SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
+SCWM_PROC (scwm_set_master_solver_x, "scwm-set-master-solver!", 1, 0, 0,
            (SCM solver))
      /** Use SOLVER as the master solver for scwm */
-#define FUNC_NAME s_scwm_set_master_solver
+#define FUNC_NAME s_scwm_set_master_solver_x
 {
   if (!FIsClSimplexSolverScm(solver))
     scm_wrong_type_arg(FUNC_NAME,1,solver);
 
+  scmMasterSolver = solver;
   psolver = PsolverFromScm(solver);
   /* empty the set of dirty windows, just in case */
   setpswDirty.clear();
@@ -161,6 +163,17 @@ SCWM_PROC (scwm_set_master_solver, "scwm-set-master-solver", 1, 0, 0,
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
+
+SCWM_PROC (scwm_master_solver, "scwm-master-solver", 0, 0, 0,
+           ())
+  /** Return the constraint solver object that is the current master for Scwm.
+Returns #f if no master solver has yet been asssigned via `scwm-set-master-solver!'. */
+#define FUNC_NAME s_scwm_master_solver
+{
+  return scmMasterSolver;
+}
+#undef FUNC_NAME
+
 
 
 SCWM_PROC (window_clv_xl, "window-clv-xl", 1, 0, 0,
