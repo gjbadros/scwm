@@ -20,6 +20,8 @@
 #include "screen.h"
 #include "module.h"
 
+#undef MS_DELETION_COMMENT /* Undefine explicitly just in case. */
+
 /*****************************************************************************
  *
  * Waits Scr.ClickTime, or until it is evident that the user is not
@@ -58,6 +60,7 @@ Bool IsClick(int x,int y,unsigned EndMask, XEvent *d)
   return False;
 }
 
+#if MS_DELETION_COMMENT
 /*****************************************************************************
  *
  * Builtin which determines if the button press was a click or double click...
@@ -245,8 +248,9 @@ void ComplexFunction(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   for(i=0;i<10;i++)
     if(arguments[i] != NULL)free(arguments[i]);
 }
+#endif /* MS_DELETION_COMMENT */
 
-
+#if MS_DELETION_COMMENT
 char *expand(char *input, char *arguments[],ScwmWindow *tmp_win)
 {
   int l,i,l2,n,k,j;
@@ -314,3 +318,7 @@ char *expand(char *input, char *arguments[],ScwmWindow *tmp_win)
   out[j] = 0;
   return out;
 }
+#endif /* MS_DELETION_COMMENT */
+
+
+
