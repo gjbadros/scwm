@@ -386,3 +386,9 @@ underscores, so that the resulting string can be used as a key for
 )))
 
 (define rhosts-menu (make-rhosts-menu))
+
+(define-public (cut-buffer-text)
+  "Return the text of the CUT_BUFFER0 property of the root window.
+This is the cut text selected by X clients."
+  (X-property-get 'root-window "CUT_BUFFER0"))
+
