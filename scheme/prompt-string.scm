@@ -47,8 +47,9 @@ E.g., (prompt-string \"Enter new name\" (lambda (nm) (set-window-title! w nm)))"
     (gtk-signal-connect entry "activate"
 			(lambda () (gtk-widget-destroy toplevel) 
 				(proc (getter))))
+    (gtk-widget-grab-focus entry)
     (let ((pp (pointer-position)))
-      (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
+      (gtk-widget-set-uposition toplevel (- (car pp) 150) (- (cadr pp) 10)))
     (gtk-widget-show toplevel)
     (lambda ()
       (gtk-widget-hide toplevel)

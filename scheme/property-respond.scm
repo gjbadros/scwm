@@ -51,26 +51,44 @@ See also `X-PropertyNotify-hook'."
 ;; (add-hook! X-PropertyNotify-hook property-changed-debug)
 ;; (reset-hook! X-PropertyNotify-hook)
 
+(define (handle-flash-property win value)
+  (if value
+      (flash-window win #:color color)))
+
+(define (handle-flashing-property win value)
+  (let* ((color-name (and value (car value)))
+	 (color (and color-name (maybe-make-color color-name))))
+    (if value
+	(begin
+	  (flash-window win #:continually #t #:color color)
+	  (run-hook window-flashing-start-hook win))
+	(begin
+	  (stop-flashing-window win)
+	  (run-hook window-flashing-stop-hook win)))))
+
+(define (handle-alert-property win value)
+  (if (or (not value)
+	  (not (eq? win (current-window-with-focus))))
+      (handle-flashing-property win value)))
+
+(define-public property-responses
+  `(
+    (flashing ,handle-flashing-property)
+    (flash ,handle-flash-property)
+    (alert ,handle-alert-property)))
+
+;; ((cadr (assoc 'flashing property-responses)) (current-window-with-focus) (list "true"))
+;; ((cadr (assoc 'flashing property-responses)) (current-window-with-focus) #f)
+;; ((cadr (assoc 'alert property-responses)) (current-window-with-focus) (list "true"))
+
 (define-public (property-changed-respond prop win)
   "Handle various property changes of PROP on WIN.
 See also `X-PropertyNotify-hook'.  Currently handles
 \"flashing\" and \"flash\"."
-  (let* ((value (X-property-get win (string->X-atom prop)))
-	 (color-name (and value (car value)))
-	 (color (and color-name (maybe-make-color color-name))))
-    (case (string->symbol prop)
-      ('flashing
-       (if value
-	   (begin
-	     (flash-window win #:continually #t #:color color)
-	     (run-hook window-flashing-start-hook win))
-	   (begin
-	     (stop-flashing-window win)
-	     (run-hook window-flashing-stop-hook win))))
-      ('flash
-       (if value
-	   (flash-window win #:color color)))
-      (else #f))))
+  (let ((value (X-property-get win (string->X-atom prop)))
+	 (response (assoc (string->symbol prop) property-responses)))
+    (if response
+	((cadr response) win value))))
 
 (define-public (start-property-respond)
   "Turn on property-change responses.

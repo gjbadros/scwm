@@ -35,7 +35,7 @@ WIN defaults as usual to the current window context."
   (prompt-string "Window wildcard? "
 		 (lambda (wildcard)
 		   (add-timer-hook! (ms->usec 200) handle-pending-events)
-		   (show-window-list-menu #:only (title-match?? wildcard)))))
+		   (show-window-list-menu #:only (title-match?? wildcard) #:warp-to-first #t))))
 ;; (show-window-list-matching-interactively)
 ;; (use-scwm-modules prompt-string)
 ;; (use-scwm-modules time-convert)
