@@ -6,16 +6,17 @@
 ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_[IW]?PROC[ \t]*(\([^,]*\),[^,]*/\1/'
 
 SCWM_SRC_DIR = $(top_srcdir)/src
+SCWM_BUILDSRC_DIR = $(top_builddir)/src
 
 SUFFIXES = .x
 
 %.x %.doc: %.c
 	$(SCWM_SRC_DIR)/scwm-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).x && \
-	$(SCWM_SRC_DIR)/scwm-doc-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).doc \
+	$(SCWM_BUILDSRC_DIR)/scwm-doc-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).doc \
 	|| { rm $(basename $<).x $(basename $<).doc ; false; }
 
 %.x %.doc: %.cc
 	CC=$(CXX) \
 	$(SCWM_SRC_DIR)/scwm-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).x && \
-	$(SCWM_SRC_DIR)/scwm-doc-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).doc \
+	$(SCWM_BUILDSRC_DIR)/scwm-doc-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).doc \
 	|| { rm $(basename $<).x $(basename $<).doc ; false; }
