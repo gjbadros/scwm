@@ -119,7 +119,7 @@ typedef struct ButtonFace {
     } grad;
   } u;
 
- struct vector_coords vector;
+  struct vector_coords vector;
 
   struct ButtonFace *next;
   SCM sface;

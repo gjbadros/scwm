@@ -106,6 +106,8 @@ mark_decor(SCM obj)
   
   fl=SCWMDECOR(obj);
 
+  assert(obj == fl->scmdecor);
+
   /* also protect all of the face objects attached to this decor. */
   for (i=0; i< 5; i++) {
     /* protect the titlebar buttons */

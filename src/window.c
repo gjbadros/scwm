@@ -447,10 +447,7 @@ mark_window(SCM obj)
   if (VALIDWINP(obj)) {
     int i;
     ScwmWindow *psw = PSWFROMSCMWIN(obj);
-    if (psw->fl != NULL) {
-      scm_gc_mark(psw->fl->scmdecor);
-    }
-    scm_gc_mark(psw->mini_icon_image);
+
     for (i=0;i<4;i++) {
       GC_MARK_SCM_IF_SET(psw->corner_cursors[i]);
       GC_MARK_SCM_IF_SET(psw->side_cursors[i]);
@@ -460,22 +457,28 @@ mark_window(SCM obj)
     GC_MARK_SCM_IF_SET(psw->frame_cursor);
     GC_MARK_SCM_IF_SET(psw->icon_cursor);
 
-    scm_gc_mark(psw->mini_icon_image);
-    scm_gc_mark(psw->icon_req_image);
-    scm_gc_mark(psw->icon_image);
-    scm_gc_mark(psw->ReliefColor);
-    scm_gc_mark(psw->ShadowColor);
-    scm_gc_mark(psw->TextColor);
-    scm_gc_mark(psw->BackColor);
-    scm_gc_mark(psw->HiReliefColor);
-    scm_gc_mark(psw->HiShadowColor);
-    scm_gc_mark(psw->HiTextColor);
-    scm_gc_mark(psw->HiBackColor);
+    if (psw->fl != NULL)
+      GC_MARK_SCM_IF_SET(psw->fl->scmdecor);
+
+    GC_MARK_SCM_IF_SET(psw->mini_icon_image);
+    GC_MARK_SCM_IF_SET(psw->icon_req_image);
+    GC_MARK_SCM_IF_SET(psw->icon_image);
+
+    GC_MARK_SCM_IF_SET(psw->ReliefColor);
+    GC_MARK_SCM_IF_SET(psw->ShadowColor);
+    GC_MARK_SCM_IF_SET(psw->TextColor);
+    GC_MARK_SCM_IF_SET(psw->BackColor);
+    GC_MARK_SCM_IF_SET(psw->HiReliefColor);
+    GC_MARK_SCM_IF_SET(psw->HiShadowColor);
+    GC_MARK_SCM_IF_SET(psw->HiTextColor);
+    GC_MARK_SCM_IF_SET(psw->HiBackColor);
     GC_MARK_SCM_IF_SET(psw->HiReliefColor);
     GC_MARK_SCM_IF_SET(psw->HiShadowColor);
     GC_MARK_SCM_IF_SET(psw->HiTextColor);
     GC_MARK_SCM_IF_SET(psw->HiBackColor);
     GC_MARK_SCM_IF_SET(psw->other_properties);
+
+    assert (obj == psw->schwin);
   }
 
   return SCM_BOOL_F;
