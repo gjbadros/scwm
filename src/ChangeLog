@@ -1,3 +1,8 @@
+Mon May  3 19:51:53 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c: Fix order of arguments in typechecking macros (thanks
+	scwmdoc!)
+
 Mon May  3 15:49:32 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* *.[ch]: Clean up vim lines at ends of files so the close comment 
