@@ -1,3 +1,8 @@
+1998-07-22  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Add doc-files setting, turn off pager, use something 
+	other than write-all.
+
 1998-07-09  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 
 	* robbe.scwmrc: More documentation.

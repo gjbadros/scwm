@@ -1,5 +1,9 @@
 1998-07-22  Greg Badros  <gjb@cs.washington.edu>
 
+	* utilities/dev/extract-docs: Added spell checking using 'ispell
+	-a' as an option (-s);  use $filename and $line instead of $ARGV
+	and $. for readability
+
 	* utilities/dev/extract-docs: Added -o option for specifying
 	output .sgml file, don't markup & in scwm-procedures.txt -- use
 	$markup_usage to hold a copy, and mark that up, instead.

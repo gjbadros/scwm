@@ -1,7 +1,15 @@
 1998-07-22  Greg Badros  <gjb@cs.washington.edu>
 
+	* events.c (HandleScwmExec): Fixed a couple little problems that
+	may not have immediately been show stoppers -- now last_offset += 
+	(nitems * (form_ret/8)).  Also added more troubleshooting code so
+	that it doesn't just fail silently, and point  at
+	doc/scwmexec.proto as additional documentation.  Added
+	reset-scwmexec-protocol primitive as a just-in-case to avoid
+	restarting X server.
+
 	* *.c, except window.c: Fixed purpose strings (one line sentences
- 	at start of procedures)
+ 	at start of procedures), corrected spelling mistakes
 
 1998-07-21  Maciej Stachowiak  <maciej@roc-ny3-18.ix.netcom.com>
 
