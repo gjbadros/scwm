@@ -22,6 +22,11 @@ Changes to scwm-0.8 (released XX-August-1998)
 
 * squashed titlebar style
 
+* added mini-icons option to show-window-list, permit using a window
+  list to select a window w/ select-window-from-window-list
+
+* improved X synthetic keystroke and string sending
+
 * window objects printable form now includes the title of the window
 
 * alpha-quality optional integration of Cassowary constraint solver

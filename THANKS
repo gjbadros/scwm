@@ -1,4 +1,7 @@
 Thanks to:
+
+  Rebecca Schulman -- hosts the Scwm CVS repository machine
+
   Jens-Ulrik Holger Petersen - improved functionality of window list
   operations, contributed his .scwmrc to be distributed as a sample
 
@@ -11,24 +14,29 @@ Thanks to:
 
   Danius Michaelides - fvwm2 module and compatibility support
 
+
 Bug reports and/or fixes and/or code snippets have been contributed by:
+
+  Jim Blandy
   Mikael Djurfeldt 
   Simon Josefsson
+  Craig Kaplan
+  Jason Kirtland
+  Todd Larason
   Bucky LaDieu
   Harvey Stein
   Harald Meland
+  Perry E. Metzger 
   Shuji Narazaki
   Jens-Ulrik Holger Petersen
   Ken Pizzini
   Hideki Sakurada
+  S. Senda
   Dale Smith
   Francesco Tappar
   Andrei Tcherepanov
   Oleg Tihnov
   James Troup
-  Todd Larason
-  Craig Kaplan
-  Jim Blandy
-  Jason Kirtland
-  S. Senda
-  Perry E. Metzger 
+
+(Please let us know if we've accidentally ommitted recognizing your
+contribution!  We apologize in advance, and will correct it immediately.)
