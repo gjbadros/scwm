@@ -1,4 +1,4 @@
-;;; ".scwmrc"   -*-scheme-*-
+;;; ".scwmrc"   -*-scwm-*-
 
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
@@ -46,7 +46,8 @@
 
 (set-rubber-band-mask! 127)
 
-(set-opaque-move-size! 100)
+;; removed primitive --07/27/98 gjb
+;;(set-opaque-move-size! 100)
 
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))

@@ -1,4 +1,4 @@
-;;; File: <.scwmrc - 1998-07-09 Thu 13:35:07 EDT sds@mute.eaglets.com>
+;;; File: <.scwmrc - 1998-07-09 Thu 13:35:07 EDT sds@mute.eaglets.com> -*- scwm -*-
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Purpose: to attract users.
@@ -68,7 +68,8 @@
 
 ;;(set-click-time! 150)		; msec [150]
 (set-colormap-focus! 'focus)	; colormap focus == keyboard focus
-(set-opaque-move-size! 100)	; all windows are moved opaquely
+;; removed primitive --07/27/98 gjb
+;;(set-opaque-move-size! 100)	; all windows are moved opaquely
 (set-rubber-band-mask! 255)
 (set-edge-resistance! 100 100)	; scroll-res move-res
 (set-edge-scroll! 0 0)		; no scroll
