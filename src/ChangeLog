@@ -1,3 +1,14 @@
+Tue Oct 19 09:02:21 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* message-window.c (s_message_window_set_image_x): Fix bug in
+	message-window-set-image! when image is #f. Thanks E. Jay
+	Berkenbilt for bug report.
+
+	* window.inl: Do not add the boundary/border with for the
+	MinFrame{Width,Height} since that results in too large of a
+	frame.  Maybe I shouldn't be adding them in MaxFrame*
+	either. GJB:FIXME::
+
 Mon Oct 18 10:34:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (noinst_HEADERS): Added window.inl to list.

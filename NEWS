@@ -14,6 +14,9 @@ version.
 * New preferences options
 ** *highlight-foreground*, *highlight-background*
 
+* SIGINT (Ctrl-C) is now allowed to interrupt and terminate Scwm
+Unless SCWM_CATCH_SIGINT is defined during compilation
+
 * New modules (largely from breaking up flux.scm, factoring system.scwmrc)
 ** winops-menu.scm
 ** xlock-menus.scm

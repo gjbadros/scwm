@@ -1,3 +1,32 @@
+Tue Oct 19 09:22:38 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* group.scm: Needs wininfo.
+
+	* animated-iconify.scm: No longer uses winlist.
+
+	* winops.scm, winlist.scm: Rewrite header of `make-toggling-winop' to not use
+	the double parens ((make-t-wo ...)) format and just return an
+	interactive lambda instead.  Moved `focus-change-warp-pointer' and 
+	`warp-placement' from winlist.
+
+	* winops-menu.scm: Needs wininfo.
+
+	* wininfo.scm: No longer uses winlist.
+
+	* window-selection.scm: No longer uses group.
+
+	* stylist.scm: Needs wininfo.
+
+	* nonants.scm: No longer uses window-selection.
+
+	* minimal.scm: Move the backtrace to *after* printing the error
+	message so it makes a little more sense.
+
+Mon Oct 18 15:50:06 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* group.scm: Use tile module for tile-window-interactively (fixes
+	bug in the group menu when windows are selected).
+
 Mon Oct 18 09:33:46 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* minimal.scm: Show a backtrace when a module load fails.

@@ -1,3 +1,12 @@
+Tue Oct 19 09:17:31 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Drop redundant use-module of base.
+
+Mon Oct 18 15:50:34 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Do not use the symbol menu-window-ops, just use
+	it directly as it's no longer defined in the root module.
+
 Sun Oct 17 17:55:03 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Use ,(optget *xterm-command*) in
