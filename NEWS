@@ -38,6 +38,9 @@ procs that return menus, not bound directly to menus.
 ** `animate-windows' for permitting animations of multiple windows simultaneously
 ** `cl-resolve-xforms', `cl-reset-dirty-windows' for use in scwm-resolve-hook to permit animation
 
+* New procedures
+** Added `set-highlight-colors!' convenience procedure.
+
 Changes for scwm-0.99.5.1 (released 26-October-1999)
 * Bug fixes
 * RPM built to link against libguile.so.6 (guile-1.3.4) instead of

@@ -1,3 +1,13 @@
+Tue Jan  4 16:41:41 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added `set-highlight-colors!'
+
+	* constraint-investigator.scm: Rearrange lines in the table-- put
+	the checkbox at the far left.  Make the checkbox *and* the label
+	both display the visualization of the constraint when hovered over 
+	(using an event box).  Removed old `make-cn-button' private
+	function that was not being used.
+
 Mon Jan  3 09:25:33 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Set the window-list-proc to
