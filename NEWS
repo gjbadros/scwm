@@ -44,7 +44,8 @@ Unless SCWM_CATCH_SIGINT is defined during compilation
 -> was focus
 ** sticky-window?, (un)stick-window
 -> was sticky?, (un)stick
-
+** `window-focus-style'
+-> was get-window-focus
 
 Changes for scwm-0.99.4 (released 6-October-1999)
 

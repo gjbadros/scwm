@@ -1,3 +1,15 @@
+Fri Oct 22 17:18:20 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c: Renamed `get-window-focus' to `window-focus-style'
+
+	* events.c (HandleUnmapNotify): Clean up code a bit, and make
+	iconifying work by at least doing the focus setting when we would
+	have bailed out of the function really early.
+
+	* add_window.c: Eliminate some code that's duplicated by
+	HandleUnmapNotify;  this assumes we get the UnmapNotify event
+	before any DestroyNotify event.
+
 Fri Oct 22 15:54:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleUnmapNotify): Only give pointer-window focus after

@@ -1,3 +1,13 @@
+Fri Oct 22 17:27:17 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Added `focus-or-toggle-raise'
+
+	* minimal.scm: Use white on navyblue for highlighted window
+	titlebar.
+
+	* hover-focus.scm, flux.scm: Fix for rename to
+ 	`window-focus-style' (of get-window-focus)
+
 Wed Oct 20 18:00:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* task-switcher.scm, winops-menu.scm, flux-gtk.scm: Needs winlist-menu.

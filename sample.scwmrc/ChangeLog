@@ -1,3 +1,10 @@
+Fri Oct 22 17:28:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Use `focus-or-toggle-raise' on C-M-Return.
+
+	* robbe.scwmrc: Fix for rename of `get-window-focus' to
+	`window-focus-style'
+
 Wed Oct 20 18:00:40 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Set window-list-proc to focus-change-warp-pointer
