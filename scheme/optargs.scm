@@ -223,6 +223,10 @@
 		    (cond (key-pos (cdr key-pos)) (else '()))))
 	      (let ((rest-gensym (or rest-arg (gensym))))
 		`(lambda (,@non-optional-args . ,rest-gensym)
+		   ,@(if (and (not (null? BODY))
+			      (string? (car BODY)))
+			 (list (car BODY))
+			 '())
 		   (let-optional* ,rest-gensym
 		    ,optionals
 		    (let-keywords* ,rest-gensym
