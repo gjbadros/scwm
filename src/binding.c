@@ -599,7 +599,6 @@ bind_event(SCM ev_sym, SCM proc)
     new_window_hint_hook = proc;
   } else {
     scwm_error("bind-event", 12);
-    return SCM_UNDEFINED;
   }
   scm_unprotect_object(old_handler);
   scm_protect_object(proc);
