@@ -5,7 +5,8 @@
 	     (app scwm winops)
 	     (app scwm winlist)
 	     (app scwm wininfo)
-             (app scwm style))
+             (app scwm style)
+	     (app scwm face))
 
 ;;-------------------------------;;
 ;; set some basic styles info    ;;
@@ -27,16 +28,33 @@
 (set-hilight-colors! "white" "blueviolet")
 (set-xor-value! 127)
 
+
+(define HOME (getenv "HOME"))
+(define USER (getenv "USER"))
+
+(define user-pixmap-path (string-append HOME "/pixmaps"))
+(define user-bitmap-path (string-append HOME "/bitmaps"))
+
+
+
 ;;-------------------------------;;
 ;; set some paths                ;;
 ;;
 
-;; these are OK for my (Red Hat Linux) system, but probably should
-;; be changed for yours. This should probably be eventually autoconfed
-;; or something.
+;; these are OK for my system, but may need to be changed for
+;; yours. This should probably be eventually autoconfed or something.
 
-(set-icon-path! "/usr/X11/include/X11/bitmaps")
-(set-pixmap-path! "/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons")
+(set-icon-path! (string-append user-bitmap-path 
+			       ":/usr/X11/include/X11/bitmaps:\
+/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
+/uns/include/X11/pixmaps:\
+/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
+
+(set-pixmap-path! (string-append user-pixmap-path 
+				 ":/usr/X11/include/X11/bitmaps:\
+/usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
+/uns/include/X11/pixmaps:\
+/usr/lib/icons:/usr/X11/include/X11/pixmaps:/usr/X11/lib/X11/mini-icons"))
 
 ;;-------------------------------;;
 ;; set some window styles        ;;
