@@ -22,9 +22,6 @@ typedef enum {
 
 
 void GenerateEdgeEvents();
-
-
-#ifndef NON_VIRTUAL
 void checkPanFrames();
 void raisePanFrames();
 void initPanFrames();
@@ -34,8 +31,6 @@ void MoveViewport_internal(int newx, int newy);
 void HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
                   int *delta_x, int *delta_y, Bool Grab);
 Bool FNeedsPaging(int HorWarpSize, int VertWarpSize, int xl, int yt);
-
-#endif
 
 #endif
 

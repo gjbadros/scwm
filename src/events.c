@@ -1361,8 +1361,8 @@ HandleButtonPress()
                (Event.xbutton.subwindow != pswCurrent->w) &&
                (Event.xany.window != pswCurrent->Parent) &&
                (Event.xbutton.subwindow != pswCurrent->Parent)) {
-      scwm_msg(DBG,FUNC_NAME,"Would have raised window %s, but commented out -- did you want it to raise?  Tell Greg!",
-               pswCurrent->name);
+      DBUG((DBG,FUNC_NAME,"Would have raised window %s, but commented out -- did you want it to raise?  Tell Greg!",
+               pswCurrent->name));
       /* RaiseWindow(pswCurrent);  -- above condition was an || of the fClickToFocusRaises
          cond'n above --07/26/98 gjb */
     }
@@ -1464,8 +1464,7 @@ HandleEnterNotify()
       return;
     }
   }
-/* an EnterEvent in one of the PanFrameWindows activates the Paging */
-#ifndef NON_VIRTUAL
+  /* an EnterEvent in one of the PanFrameWindows activates the Paging */
   if (ewp->window == Scr.PanFrameTop.win || 
       ewp->window == Scr.PanFrameLeft.win ||
       ewp->window == Scr.PanFrameRight.win ||
@@ -1479,7 +1478,6 @@ HandleEnterNotify()
                  &delta_x, &delta_y, True);
     return;
   }
-#endif /* NON_VIRTUAL */
 
   if (Event.xany.window == Scr.Root) {
     if (SCM_BOOL_F != g_lastwin_entered) {
@@ -1583,7 +1581,9 @@ HandleConfigureRequest()
    * Instead, we'll read the current geometry.  Therefore, we should respond
    * to configuration requests for windows which have never been mapped.
    */
-  if (!pswCurrent || (pswCurrent->icon_w == cre->window)) {
+  if (!pswCurrent || 
+      (pswCurrent->icon_w == cre->window) ||
+      (pswCurrent->icon_pixmap_w == cre->window)) {
     xwcm = cre->value_mask &
       (CWX | CWY | CWWidth | CWHeight | CWBorderWidth);
     xwc.x = cre->x;

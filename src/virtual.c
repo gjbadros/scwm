@@ -607,7 +607,7 @@ changeDesks(int val1, int val2)
 void
 init_virtual()
 {
-  SCWM_VAR_INIT(scroll_region, "scroll-region", 2);
+  SCWM_VAR_INIT(scroll_region, "scroll-region", gh_int2scm(2));
   /** The number of pixels at the edge of the screen within which virtual scrolling will occur. */
 
 #ifndef SCM_MAGIC_SNARFER

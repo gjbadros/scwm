@@ -962,7 +962,19 @@ a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 PROC is a procedure that will be invoked (with no arguments) when the
 specified key is pressed in the specified context. The optional
 argument RELEASE-PROC, if specified, is a procedure that will be
-invoked when the key is released.
+invoked when the key is released.  The contexts include:
+
+  'window
+  'titlebar (or 'title)
+  'icon
+  'root
+  'frame-corners (or 'frame)
+  'frame-sides (or 'sidebar)
+  'client-window
+  'root-window
+  'left-button-N  (N=1-5)
+  'right-button-N (N=1-5)
+
 */
 #define FUNC_NAME s_bind_key
 {
@@ -1083,7 +1095,8 @@ SCWM_PROC(bind_mouse, "bind-mouse", 3, 0, 0,
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
 BUTTON is a string or integer giving the mouse button number
 PROC is a procedure that will be invoked (with no arguments) when the 
-specified button is pressed in the specified context. */
+specified button is pressed in the specified context. See `bind-key'
+for a list of the contexts. */
 #define FUNC_NAME s_bind_mouse
 {
   int bnum = 0;

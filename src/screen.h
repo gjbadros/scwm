@@ -54,13 +54,10 @@
 #define MAX_WINDOW_WIDTH 32767
 #define MAX_WINDOW_HEIGHT 32767
 
-#ifndef NON_VIRTUAL
 typedef struct {
   Window win;
   int isMapped;
 } PanFrame;
-
-#endif
 
 
 typedef enum {
@@ -195,9 +192,7 @@ typedef struct ScreenInfo {
   Window Root;			/* the root window */
   Window NoFocusWin;		/* Window which will own focus when no other
 				 * windows have it */
-#ifndef NON_VIRTUAL
   PanFrame PanFrameTop, PanFrameLeft, PanFrameRight, PanFrameBottom;
-#endif
 
   Pixmap gray_bitmap;		/*dark gray pattern for shaded out menu items*/
   Pixmap gray_pixmap;		/* dark gray pattern for inactive borders */

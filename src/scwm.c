@@ -399,13 +399,8 @@ InitVariables(void)
 
   scm_permanent_object(scmFixedFont = make_font(str_fixed));
 
-#ifndef NON_VIRTUAL
   Scr.VxMax = 2 * Scr.DisplayWidth;
   Scr.VyMax = 2 * Scr.DisplayHeight;
-#else
-  Scr.VxMax = 0;
-  Scr.VyMax = 0;
-#endif
   Scr.Vx = Scr.Vy = 0;
 
   CassowaryInitClVarsInPscreen(&Scr);
@@ -1064,16 +1059,12 @@ Repository Timestamp: %s\n",
   if (debugging)
     XSynchronize(dpy, True);
 
-#ifndef NON_VIRTUAL
   initPanFrames();
-#endif
-  
-  
-#ifndef NON_VIRTUAL
+
   XGrabServer_withSemaphore(dpy);
   checkPanFrames();
   XUngrabServer_withSemaphore(dpy);
-#endif
+
   UnBlackoutScreen();         /* if we need to remove blackout window */
   /* set the focus to the current window if appropriate */
   CoerceEnterNotifyOnCurrentWindow();
