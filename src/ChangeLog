@@ -1,5 +1,22 @@
 1998-07-21  Greg Badros  <gjb@cs.washington.edu>
 
+	* scwm-constraints.h: Update proto for
+	CassowarySetCValuesAndSolve, add proto for CassowaryNewWindow
+
+	* scwm-constraints.cc: Add extra arg to
+	CassowarySetCValuesAndSolve, honour it, and also don't call
+	resolve and endEdit() if there are no editVars (i.e., no changes
+	to the window's position or size)
+
+	* miscprocs.c: Add period to docstring
+
+	* placement.c, borders.c: Send extra arg to CassowarySetCValuesAndSolve.
+
+	* add_window.c: Added second param to CassowarySetCValuesAndSolve, 
+	a bool to tell whether should solve (or just set the values).
+	Added CassowaryNewWindow hook to permit adding the stay
+	constraints in at the right time.
+
 	* window.c, window.h: Add COPY_BOOL_OR_ERROR and
 	COPY_INVERT_BOOL_OR_ERROR macro, and use throughout for error
 	checking in primitives that do simple assignment of a boolean to a 
