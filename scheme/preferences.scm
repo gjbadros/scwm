@@ -396,7 +396,7 @@ GJB:FIXME::."
 
 (define-public (scwm-options-string syms)
   (apply string-append
-       (map (lambda (s) (string-append "(set! " (symbol->string s) " "
+       (map (lambda (s) (string-append "(scwm-option-set! " (symbol->string s) " "
 				       (with-output-to-string 
 					 (lambda ()
 					   (display (scwm-option-symget s))))

@@ -44,6 +44,12 @@ Use the optional second argument as the separator."
 	str
 	(substring str 0 ich))))
 
+(define-public (write-all port . lst)
+  "Write all arguments into the port. #t means `current-output-port'."
+  (if (eq? port #t) (set! port (current-output-port)))
+  (do ((zz lst (cdr zz))) ((null? zz))
+    (if (string? (car zz)) (display (car zz) port) (write (car zz) port))))
+
 (define-public (to-string . rest)
   "Dump all arguments into a string."
   (with-output-to-string (lambda () (apply write-all #t rest))))

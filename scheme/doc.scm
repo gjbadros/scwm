@@ -6,6 +6,7 @@
   :use-module (ice-9 regex)
   :use-module (app scwm base)
   :use-module (app scwm flux)
+  :use-module (app scwm stringops)
   :use-module (app scwm optargs))
 
 
