@@ -1,3 +1,19 @@
+1998-10-17  Todd Larason  <jtl@teeny.molehill.org>
+
+	* pie-menus/draw-pie-menu.c: quite a bit of general cleanup;
+	#defines removed for things that are completely gone; // comments
+	on removed structure members - either removed the line, restored
+	the member, or changed to a proper C comment.  Variables renamed
+	for consistency.  Edge coordinates and dx/dy added to pmidi to
+	draw edge lines.  Edge lines drawn and center inactive circle
+	filled in.  Border relieved.  'flyright' menus starting to be
+	supported - InPopupZone still always returns False, but when
+	popped up by key or time, tries to center on mouse.  Keyboard
+	control basically works.  ConstrctDynamicPieMenu cleaned up quite
+	a bit, but still needs to be factored out some more - it's way too
+	long to be sure it's all right.  Variable-width items beginning to 
+	be supported; separators are smaller than real items
+
 1998-10-16  Todd Larason  <jtl@teeny.molehill.org>
 
 	* pie-menus/draw-pie-menu.c: moved from scwm.  First real
