@@ -9,7 +9,7 @@
 (undefine scwm-quit)
 
 ;;; Make some colors
-(define FIXED-FONT (load-font "fixed"))
+(define FIXED-FONT (make-font "fixed"))
 (define BLACK (load-color "black"))
 (define GRAY (load-color "gray"))
 (define SLATEGRAY (load-color "slategray"))
