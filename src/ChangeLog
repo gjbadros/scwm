@@ -1,3 +1,9 @@
+1999-01-05  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* add_window.c: Forgot to check for SM before including
+	session-manager.h. Thanks to Stephen Tell <tell@cs.unc.edu> for
+	the report.
+
 Sun Dec 27 13:55:09 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* placement.c, placement.h, add_window.c: Unify desk selection
