@@ -88,19 +88,19 @@ Should the shading be animated or not?
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
-[From scwm/image.c:627]
+[From scwm/image.c:704]
 
 
 locale-fullname
 - 
 Full name of the current locale, as a string. 
-[From scwm/scwm.c:557]
+[From scwm/scwm.c:551]
 
 
 locale-language-territory
 - 
 The language territory name, as a string 
-[From scwm/scwm.c:560]
+[From scwm/scwm.c:554]
 
 
 move-opaquely?

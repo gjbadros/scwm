@@ -41,7 +41,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release pre-1.0</releaseinfo>
-    <pubdate>19 March 1999</pubdate>
+    <pubdate>22 March 1999</pubdate>
     <copyright>
       <year>1997&ndash;1999</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
@@ -291,7 +291,7 @@ and <link linkend="reset-hook-x"><function>reset-hook!</function></link>.
     <sect1 id="Image-Loaders"><title>Image Loaders</title><para>
 
   Different loaders are available for various images types. <link linkend="load-xbm"><function>load-xbm</function></link>
-and <link linkend="load-xpm"><function>load-xpm</function></link> load X pixmaps and X bitmaps respectively. The user may
+and <link linkend="load-xpm"><function>load-xpm</function></link> load X bitmaps and X pixmaps respectively. The user may
 register other image loaders using the extension or the special string
 "default" for the loader to be tried for an image that cannot be
 loaded any other way.
@@ -516,7 +516,7 @@ one procedure to get, and set them, respectively.
   </chapter>
   <chapter>
     <title>Hooks</title>
-    <sect1 id="after-new-window-hook"><title>after-new-window-hook</title><para>
+    <sect1 id="after-new-window-hook"><title>after-new-window-hook (1 args)</title><para>
 This hook is invoked after a window is created and placed.
 Its procedures are each called with a single argument, WIN, the new window.
 Any window operations may be performed at this time. However, it is
@@ -531,7 +531,7 @@ setting the relevant parameters when a new window is created.
 See also <link linkend="before-new-window-hook"><function>before-new-window-hook</function></link> and <link linkend="before-place-new-window-hook"><function>before-place-new-window-hook</function></link>.
 
     </para></sect1>
-    <sect1 id="before-new-window-hook"><title>before-new-window-hook</title><para>
+    <sect1 id="before-new-window-hook"><title>before-new-window-hook (1 args)</title><para>
 This hook is invoked when first creating a new window object.
 Its procedures are each called with a single argument, WIN, the new
 window.  Only a subset of the usual window parameters should be set
@@ -545,7 +545,7 @@ created.
 
 See also <link linkend="before-place-new-window-hook"><function>before-place-new-window-hook</function></link> and <link linkend="after-new-window-hook"><function>after-new-window-hook</function></link>.  
     </para></sect1>
-    <sect1 id="before-place-new-window-hook"><title>before-place-new-window-hook</title><para>
+    <sect1 id="before-place-new-window-hook"><title>before-place-new-window-hook (1 args)</title><para>
 This hook is invoked just before placing a new window.
 It comes after <link linkend="before-new-window-hook"><function>before-new-window-hook</function></link>, but before <link linkend="after-new-window-hook"><function>after-new-window-hook</function></link>. 
 Its procedures are each called with a single argument, WIN, the new window.
@@ -555,7 +555,7 @@ two hooks, despite being invoked at a slightly different time.
 See also <link linkend="before-new-window-hook"><function>before-new-window-hook</function></link> and <link linkend="after-new-window-hook"><function>after-new-window-hook</function></link>.
 
     </para></sect1>
-    <sect1 id="broadcast-config-hook"><title>broadcast-config-hook</title><para>
+    <sect1 id="broadcast-config-hook"><title>broadcast-config-hook (1 args)</title><para>
 This hook is invoked whenever fvwm2 would call BroadcastConfig.
 This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways that
@@ -563,7 +563,7 @@ can't be done with the proper hooks that have been included so
 far. The procedures in this hook are passed a window structure as the
 sole argument. 
     </para></sect1>
-    <sect1 id="broadcast-hook"><title>broadcast-hook</title><para>
+    <sect1 id="broadcast-hook"><title>broadcast-hook (8 args)</title><para>
 This hook is invoked whenever fvwm2 would call Broadcast.
 This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways that
@@ -572,7 +572,7 @@ far. The procedures in this hook are passed a numerical code
 representing the event type, a number that indicates how many of the
 following data arguments are meaningful, and 7 numeric data arguments. 
     </para></sect1>
-    <sect1 id="broadcast-mini-icon-hook"><title>broadcast-mini-icon-hook</title><para>
+    <sect1 id="broadcast-mini-icon-hook"><title>broadcast-mini-icon-hook (1 args)</title><para>
 This hook is invoked whenever fvwm2 would call BroadcastMiniIcon.
 This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways that
@@ -580,7 +580,7 @@ can't be done with the proper hooks that have been included so
 far. The procedures The procedures in this hook are passed a window
 structure as the sole argument. 
     </para></sect1>
-    <sect1 id="broadcast-name-hook"><title>broadcast-name-hook</title><para>
+    <sect1 id="broadcast-name-hook"><title>broadcast-name-hook (5 args)</title><para>
 This hook is invoked whenever fvwm2 would call BroadcastName.
 This hook is principally of use in implementing the fvwm2
 module interface and for stuff that needs to be notified in ways
@@ -588,49 +588,49 @@ that can't be done with the proper hooks that have been included so
 far. The procedures in this hook are passed an event type, three
 numeric data arguments, and a string. 
     </para></sect1>
-    <sect1 id="cannot-grab-hook"><title>cannot-grab-hook</title><para>
+    <sect1 id="cannot-grab-hook"><title>cannot-grab-hook (0 args)</title><para>
 This hook is invoked with no arguments whenever scwm cannot
 successfully grab the X server. <link linkend="beep"><function>beep</function></link> is one example of a procedure
 to use here.  
     </para></sect1>
-    <sect1 id="change-desk-hook"><title>change-desk-hook</title><para>
+    <sect1 id="change-desk-hook"><title>change-desk-hook (2 args)</title><para>
 This hook is invoked whenever the current desktop is changed.
 It is called with two argument, both integers.  The first is the
 new desktop number, the second is the old desktop number. 
     </para></sect1>
-    <sect1 id="client-message-hook"><title>client-message-hook</title><para>
+    <sect1 id="client-message-hook"><title>client-message-hook (3 args)</title><para>
 This hook is invoked whenever Scwm receives an X/11 client message.
 It is called with three arguments: the message-type atom, the format (8, 16, or 32), 
 and the vector of data. 
     </para></sect1>
-    <sect1 id="deiconify-hook"><title>deiconify-hook</title><para>
+    <sect1 id="deiconify-hook"><title>deiconify-hook (2 args)</title><para>
 This hook is invoked when a window is deiconified.
 It is called with two arguments: WINDOW, WAS-ICONIFIED?.
 WINDOW is the window iconfied, and WAS-ICONIFIED? is
 a boolean telling whether the window was iconified previously. 
     </para></sect1>
-    <sect1 id="desk-size-change-hook"><title>desk-size-change-hook</title><para>
+    <sect1 id="desk-size-change-hook"><title>desk-size-change-hook (2 args)</title><para>
 This hook is invoked whenever the desk size is changed.  It is
-called with two argument, both integers, which are the width and
+called with two arguments, both integers, which are the width and
 height of the new desk size in screens. 
     </para></sect1>
-    <sect1 id="edge-enter-hook"><title>edge-enter-hook</title><para>
+    <sect1 id="edge-enter-hook"><title>edge-enter-hook (1 args)</title><para>
 This hook is invoked whenever the mouse pointer enters a screen edge.
 Procedures in the hook are called with one argument, one of the
 symbols 'north, 'south, 'east or 'west indicating which edge was
 entered. 
     </para></sect1>
-    <sect1 id="edge-leave-hook"><title>edge-leave-hook</title><para>
+    <sect1 id="edge-leave-hook"><title>edge-leave-hook (1 args)</title><para>
 This hook is invoked whenever the mouse pointer leaves a screen edge.
 Procedures in the hook are called with one argument, one of the
 symbols 'north, 'south, 'east or 'west indicating which edge was
 entered. 
     </para></sect1>
-    <sect1 id="edge-scroll-hook"><title>edge-scroll-hook</title><para>
+    <sect1 id="edge-scroll-hook"><title>edge-scroll-hook (0 args)</title><para>
 This hook is invoked whenever an edge scroll takes place.
 Procedures in the hook are called with no arguments. 
     </para></sect1>
-    <sect1 id="error-hook"><title>error-hook</title><para>
+    <sect1 id="error-hook"><title>error-hook (1 args)</title><para>
 Called on all kinds of errors and exceptions.
 Whenever an error or other uncaught throw occurs on any callback,
 whether a hook, a mouse binding, a key binding, a menu entry, a file
@@ -639,35 +639,35 @@ procedure in the hook will be called with the throw arguments; these
 will generally include information about the nature of the error. 
 
     </para></sect1>
-    <sect1 id="iconify-hook"><title>iconify-hook</title><para>
+    <sect1 id="iconify-hook"><title>iconify-hook (2 args)</title><para>
 This hook is invoked when a window is iconified.
 It is called with two arguments: WINDOW, WAS-ICONIFIED?.
 WINDOW is the window iconfied, and WAS-ICONIFIED? is
 a boolean telling whether the window was iconified previously.
 
     </para></sect1>
-    <sect1 id="image-not-found-hook"><title>image-not-found-hook</title><para>
+    <sect1 id="image-not-found-hook"><title>image-not-found-hook (1 args)</title><para>
 Called with image name as a string when not found. 
     </para></sect1>
-    <sect1 id="interactive-move-finish-hook"><title>interactive-move-finish-hook</title><para>
+    <sect1 id="interactive-move-finish-hook"><title>interactive-move-finish-hook (1 args)</title><para>
 This hook is invoked at the end of an interactive move.
 It is called with one argument, WINDOW. 
     </para></sect1>
-    <sect1 id="interactive-move-new-position-hook"><title>interactive-move-new-position-hook</title><para>
+    <sect1 id="interactive-move-new-position-hook"><title>interactive-move-new-position-hook (3 args)</title><para>
 This hook is invoked during an interactive move.
 It is called with three arguments, WINDOW, NEW-X, and NEW-Y,
 whenever the window is moved to a new location. The position refers
 to the position of the frame window (not the client window). 
     </para></sect1>
-    <sect1 id="interactive-move-start-hook"><title>interactive-move-start-hook</title><para>
+    <sect1 id="interactive-move-start-hook"><title>interactive-move-start-hook (1 args)</title><para>
 This hook is invoked at the start of an interactive move.
 It is called with one argument, WINDOW. 
     </para></sect1>
-    <sect1 id="interactive-resize-finish-hook"><title>interactive-resize-finish-hook</title><para>
+    <sect1 id="interactive-resize-finish-hook"><title>interactive-resize-finish-hook (1 args)</title><para>
 This hook is invoked at the end of an interactive resize.
 It is called with one argument, WINDOW. 
     </para></sect1>
-    <sect1 id="interactive-resize-new-size-hook"><title>interactive-resize-new-size-hook</title><para>
+    <sect1 id="interactive-resize-new-size-hook"><title>interactive-resize-new-size-hook (7 args)</title><para>
 This hook is invoked during an interactive resize.  
 It is called with seven arguments, WINDOW, X-POSITION, Y-POSITION,
 NEW-WIDTH-PIXELS, NEW-HEIGHT-PIXELS, NEW-WIDTH-UNITS, and
@@ -677,24 +677,24 @@ window (not the client window). The -UNITS arguments refer to the size
 of the client window and are in client units (e.g., characters for
 Emacsen and XTerms).  
     </para></sect1>
-    <sect1 id="interactive-resize-start-hook"><title>interactive-resize-start-hook</title><para>
+    <sect1 id="interactive-resize-start-hook"><title>interactive-resize-start-hook (3 args)</title><para>
 This hook is invoked at the start of an interactive resize.
 It is called with three arguments: WINDOW, XMOTION, YMOTION.
 XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
 can happen on the right/bottom side, not at all, or the top/left side,
 respectively. 
     </para></sect1>
-    <sect1 id="invalid-interaction-hook"><title>invalid-interaction-hook</title><para>
+    <sect1 id="invalid-interaction-hook"><title>invalid-interaction-hook (0 args)</title><para>
 This hook is invoked with no arguments when the user hits an invalid
 key or performs an invalid mouse action during an interactive
 operation like <link linkend="interactive-resize"><function>interactive-resize</function></link> or <link linkend="interactive-move"><function>interactive-move</function></link>. <link linkend="beep"><function>beep</function></link> is
 one example of a procedure to use here. 
     </para></sect1>
-    <sect1 id="shutdown-hook"><title>shutdown-hook</title><para>
-The procedures in shutdown-hook are called with no arguments right
-before scwm quits or restarts. 
+    <sect1 id="shutdown-hook"><title>shutdown-hook (1 args)</title><para>
+The procedures in shutdown-hook are before scwm quits or restarts.
+A single boolean argument is passed that is <literal>#t</literal> iff scwm is restarting. 
     </para></sect1>
-    <sect1 id="startup-hook"><title>startup-hook</title><para>
+    <sect1 id="startup-hook"><title>startup-hook (0 args)</title><para>
 The procedures in startup-hook are called with no arguments after scwm
 has processed the scwmrc and captured all application windows, and
 right before it enters the main event loop.  Note that during
@@ -703,57 +703,57 @@ captured, so the window-list (as reported by <link linkend="list-all-windows"><f
 empty.  To provide behviour conditioned on a property of an existing
 window, this hook should be used instead. 
     </para></sect1>
-    <sect1 id="viewport-position-change-hook"><title>viewport-position-change-hook</title><para>
+    <sect1 id="viewport-position-change-hook"><title>viewport-position-change-hook (2 args)</title><para>
 This hook is invoked whenever the viewport position is changed.
-It is called with two argument, both integers, which are the x and y
+It is called with two arguments, both integers, which are the x and y
 coordinates of the new viewport position in pixels. 
     </para></sect1>
-    <sect1 id="window-close-hook"><title>window-close-hook</title><para>
+    <sect1 id="window-close-hook"><title>window-close-hook (1 args)</title><para>
 This hook is invoked whenever a scwm-managed window is closed
 for any reason. The hook procedures are invoked with one argument,
 WIN, the window being closed.  The WIN is still valid during the hook
 procedures. 
     </para></sect1>
-    <sect1 id="window-enter-hook"><title>window-enter-hook</title><para>
+    <sect1 id="window-enter-hook"><title>window-enter-hook (1 args)</title><para>
 This hook is invoked whenever the mouse pointer enters a window.
 It is called with one argument, the window object of the window just
 entered. 
     </para></sect1>
-    <sect1 id="window-focus-change-hook"><title>window-focus-change-hook</title><para>
+    <sect1 id="window-focus-change-hook"><title>window-focus-change-hook (1 args)</title><para>
 This hook is invoked whenever the keyboard focus is changed.
 It is called with one argument, the window object of the window
 that now has the focus, or <literal>#f</literal> if no window now has the focus. 
     </para></sect1>
-    <sect1 id="window-leave-hook"><title>window-leave-hook</title><para>
+    <sect1 id="window-leave-hook"><title>window-leave-hook (1 args)</title><para>
 This hook is invoked whenever the mouse pointer leaves a window.
 The hook procedures are invoked with one argument, the window object
 of the window just left. 
     </para></sect1>
-    <sect1 id="window-property-change-hook"><title>window-property-change-hook</title><para>
+    <sect1 id="window-property-change-hook"><title>window-property-change-hook (4 args)</title><para>
 This hook is invoked whenever a window property changes.
 The hook procedures are invoked with four arguments, the window whose
 property changed, the name of the changed property, the new value and
 the old value. 
     </para></sect1>
-    <sect1 id="X-DestroyNotify-hook"><title>X-DestroyNotify-hook</title><para>
+    <sect1 id="X-DestroyNotify-hook"><title>X-DestroyNotify-hook (1 args)</title><para>
 This hook is invoked upon DestroyNotify X events.
 It indicates a window is being destroyed.  The hook procedures are
 invoked with one argument, WIN, the window being destroyed.
 The WIN is still valid during the hook procedures. 
     </para></sect1>
-    <sect1 id="X-MappingNotify-hook"><title>X-MappingNotify-hook</title><para>
+    <sect1 id="X-MappingNotify-hook"><title>X-MappingNotify-hook (0 args)</title><para>
 This hook is invoked whenever a MappingNotify X event is
 received. A MappingNotify event indicates a change of keymapping - in
 particular, it may indicate a change of available modifiers or mouse
 buttons. The hook procedures are invoked with no arguments. 
     </para></sect1>
-    <sect1 id="X-MapRequest-hook"><title>X-MapRequest-hook</title><para>
+    <sect1 id="X-MapRequest-hook"><title>X-MapRequest-hook (1 args)</title><para>
 This hook is invoked upon MapRequest X events.  It indicates a
 window is trying to map itself (add itself to the display).  The hook 
 procedures are invoked with one argument, WIN, the window being mapped.  
 The WIN is valid during the hook procedures. 
     </para></sect1>
-    <sect1 id="X-PropertyNotify-hook"><title>X-PropertyNotify-hook</title><para>
+    <sect1 id="X-PropertyNotify-hook"><title>X-PropertyNotify-hook (2 args)</title><para>
 This hook is invoked whenever a PropertyNotify event is received
 for a window scwm is managing. This indicates that an X window
 property has changed. Watching for window property changes can be used
@@ -761,7 +761,7 @@ to construct your own custom window manager protocols. The hook
 procedures are invoked with two arguments, the name of the property
 that changed (as a string) and the window that it changed for. 
     </para></sect1>
-    <sect1 id="X-root-PropertyNotify-hook"><title>X-root-PropertyNotify-hook</title><para>
+    <sect1 id="X-root-PropertyNotify-hook"><title>X-root-PropertyNotify-hook (2 args)</title><para>
 This hook is invoked whenever a PropertyNotify event is received
 on the root window.  This indicates that an X window
 property has changed. Watching for window property changes can be used
@@ -772,7 +772,7 @@ property and a boolean telling whether the property was deleted.
 These arguments are different from those passed to
 X-PropertyNotify-hook's procedures. 
     </para></sect1>
-    <sect1 id="X-UnmapNotify-hook"><title>X-UnmapNotify-hook</title><para>
+    <sect1 id="X-UnmapNotify-hook"><title>X-UnmapNotify-hook (1 args)</title><para>
 This hook is invoked upon UnmapNotify X events.  It indicates a
 window is being unmapped (removed from display).  The hook procedures
 are invoked with one argument, WIN, the window being destroyed.  The
@@ -844,7 +844,7 @@ Full name of the current locale, as a string.
     <sect1 id="locale-language-territory"><title>locale-language-territory</title><para>
 The language territory name, as a string 
     </para></sect1>
-    <sect1 id="move-opaquely?"><title>move-opaquely?</title><para>
+    <sect1 id="move-opaquely-p"><title>move-opaquely?</title><para>
 User-settable predicate to determine if windows should be moved opaquely.
 
     </para></sect1>
@@ -870,7 +870,7 @@ the hostname to connect to.  "ssh" "rsh" and "telnet"
 are each reasonable choices.
 
     </para></sect1>
-    <sect1 id="resize-opaquely?"><title>resize-opaquely?</title><para>
+    <sect1 id="resize-opaquely-p"><title>resize-opaquely?</title><para>
 User-settable predicate to determine if windows should be resized opaquely.
 
     </para></sect1>
@@ -950,6 +950,30 @@ path and should take a "-e" argument of what to run.
   at line 100 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
+<refentry id="pctx-permit-negative">
+  <refnamediv>
+    <refname>%x-permit-negative</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(%x-permit-negative x)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm fvwm-compat)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/fvwm-compat.scm"><filename>scheme/fvwm-compat.scm</filename></ulink>
+  at line 119 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-compat.scm">CVS log</ulink>)</para> </refsect1>
+</refentry>
+
 <refentry id="pcty">
   <refnamediv>
     <refname>%y</refname>
@@ -996,6 +1020,30 @@ path and should take a "-e" argument of what to run.
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
   at line 104 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
+</refentry>
+
+<refentry id="pcty-permit-negative">
+  <refnamediv>
+    <refname>%y-permit-negative</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(%y-permit-negative y)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/fvwm-compat.scm"><filename>scheme/fvwm-compat.scm</filename></ulink>
+  at line 125 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/fvwm-compat.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="accumulate">
@@ -1931,7 +1979,7 @@ usual way if not specified.  See <link linkend="normal-border"><function>normal-
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(border-style #&amp;key (active '())  
-			      (inactive '()) #&allow-other-keys . rest)</synopsis>
+			      (inactive '()) #&amp;allow-other-keys . rest)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -1964,7 +2012,7 @@ arguments can be used as the ACTIVE or INACTIVE arguments.
     <synopsis>(button-style button #&amp;key mwm
 			      (active-up '()) 
 			      (active-down '()) 
-			      (inactive '()) #&allow-other-keys . rest)</synopsis>
+			      (inactive '()) #&amp;allow-other-keys . rest)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -2192,7 +2240,7 @@ sum of the window's border width and title height.
   </refsect1>
   <refsect1>
   <title>Module</title>
-  <para></para>
+  <para>(app scwm flux)</para>
   </refsect1>
   <refsect1>
   <title>Implementation Notes</title>
@@ -2483,7 +2531,7 @@ associated with <parameter>name</parameter> from the image cache.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 534 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
+  at line 590 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="clear-window-style">
@@ -2644,7 +2692,7 @@ be more than desired.
   at line 549 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="close--cwmClock">
+<refentry id="close-ScwmClock">
   <refnamediv>
     <refname>close-ScwmClock</refname>
     <refpurpose>No documentation supplied.</refpurpose>
@@ -2668,7 +2716,7 @@ be more than desired.
   at line 59 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmClock.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="close--cwmDeskButtons">
+<refentry id="close-ScwmDeskButtons">
   <refnamediv>
     <refname>close-ScwmDeskButtons</refname>
     <refpurpose>No documentation supplied.</refpurpose>
@@ -4170,7 +4218,7 @@ working commands.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 554 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
+  at line 550 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="execute-on-selection">
@@ -4945,6 +4993,54 @@ notion of what the command line was used to run the application.
   at line 16 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/message-window.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
+<refentry id="group-to-windows">
+  <refnamediv>
+    <refname>group->windows</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(group->windows group)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para></para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
+  at line 779 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect1>
+</refentry>
+
+<refentry id="group-leader-id">
+  <refnamediv>
+    <refname>group-leader-id</refname>
+    <refpurpose>No documentation supplied.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(group-leader-id win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  No documentation supplied.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>(app scwm flux)</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/flux.scm"><filename>scheme/flux.scm</filename></ulink>
+  at line 776 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect1>
+</refentry>
+
 <refentry id="gtk-pixmap-new-search-scwm-path">
   <refnamediv>
     <refname>gtk-pixmap-new-search-scwm-path</refname>
@@ -5404,7 +5500,7 @@ depth, its color depth.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 159 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
+  at line 162 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="image-property">
@@ -5453,7 +5549,7 @@ See <link linkend="image-properties"><function>image-properties</function></link
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 149 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
+  at line 152 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="ImageMagick-loader">
@@ -6738,6 +6834,30 @@ that deal with the window list.
   at line 42 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/stacking.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
+<refentry id="load-imlib-image">
+  <refnamediv>
+    <refname>load-imlib-image</refname>
+    <refpurpose>Load an image file using imlib identified by the pathname FULL-PATH.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(load-imlib-image full-path)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Load an image file using imlib identified by the pathname <parameter>full-path</parameter>.
+  </para>
+  </refsect1>
+  <refsect1>
+  <title>Module</title>
+  <para>Built-in Primitive</para>
+  </refsect1>
+  <refsect1>
+  <title>Implementation Notes</title>
+  <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/image.c"><filename>scwm/image.c</filename></ulink>
+  at line 306 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
+</refentry>
+
 <refentry id="load-theme">
   <refnamediv>
     <refname>load-theme</refname>
@@ -6809,7 +6929,7 @@ tar file with extension .tar, .tar.gz, or .tgz.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 217 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
+  at line 224 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="load-xpm">
@@ -6833,7 +6953,7 @@ tar file with extension .tar, .tar.gz, or .tgz.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 251 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
+  at line 258 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="lower-by-one">
@@ -7142,7 +7262,7 @@ appropriate file.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 465 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
+  at line 521 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="make-list">
@@ -7895,7 +8015,7 @@ specific to the menu look used for this menu.
 <refentry id="menu-prefs">
   <refnamediv>
     <refname>menu-prefs</refname>
-    <refpurpose>Generate the <link linkend="-references"><function>Preferences</function></link> menu.</refpurpose>
+    <refpurpose>Generate the <link linkend="Preferences"><function>Preferences</function></link> menu.</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(menu-prefs . opts)</synopsis>
@@ -7903,7 +8023,7 @@ specific to the menu look used for this menu.
   <refsect1>
   <title>Description</title>
   <para>
-  Generate the <link linkend="-references"><function>Preferences</function></link> menu.
+  Generate the <link linkend="Preferences"><function>Preferences</function></link> menu.
 All the arguments are passed directly to the <link linkend="menu"><function>menu</function></link> function.
   </para>
   </refsect1>
@@ -10424,7 +10544,7 @@ image object, or <literal>#f</literal> if it succeeds.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 299 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
+  at line 355 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="remove-input-hook-x">
@@ -10845,7 +10965,7 @@ after the (gtk gtk) module.
   at line 49 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/listops.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="round/">
+<refentry id="round-d">
   <refnamediv>
     <refname>round/</refname>
     <refpurpose>Reaturn the closest integer to X divided by Y.</refpurpose>
@@ -11054,7 +11174,7 @@ The rest of the arguments are passed as options to the xterm command.
   at line 430 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="run--cwmClock">
+<refentry id="run-ScwmClock">
   <refnamediv>
     <refname>run-ScwmClock</refname>
     <refpurpose>No documentation supplied.</refpurpose>
@@ -11079,7 +11199,7 @@ The rest of the arguments are passed as options to the xterm command.
   at line 32 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/ScwmClock.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="run--cwmDeskButtons">
+<refentry id="run-ScwmDeskButtons">
   <refnamediv>
     <refname>run-ScwmDeskButtons</refname>
     <refpurpose>No documentation supplied.</refpurpose>
@@ -11226,7 +11346,7 @@ to the main event loop
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 530 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
+  at line 526 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="scwm-path-exec-prefix">
@@ -11329,7 +11449,7 @@ This may be a bug (not meeting POSIX.2 specifications).
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 534 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
+  at line 530 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="scwm-version">
@@ -11496,7 +11616,7 @@ Returns <literal>#f</literal> if no window was selected.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 592 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
+  at line 588 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="select-window-from-window-list">
@@ -11573,7 +11693,7 @@ a new message window.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 604 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
+  at line 600 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="select-window-interactively-and-highlight">
@@ -12305,7 +12425,7 @@ See also <link linkend="set-edge-scroll-delay-x"><function>set-edge-scroll-delay
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 497 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
+  at line 493 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-x">
@@ -12333,7 +12453,7 @@ dimension to a number of pixels.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 511 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
+  at line 507 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-delay-x">
@@ -12388,7 +12508,7 @@ See also <link linkend="set-edge-x-wrap-x"><function>set-edge-x-wrap!</function>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 503 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
+  at line 499 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-x-scroll-x">
@@ -12976,7 +13096,7 @@ specified.
   <para>
   If <parameter>activate?</parameter> is <literal>#t</literal>, let menu hotkeys invoke the item.
 If <literal>#f</literal>, a menuitem hotkey just makes that item selected and still requires
-a <return> or <space> to activate the item.
+a Return or Space keypress to activate the item.
   </para>
   </refsect1>
   <refsect1>
@@ -14532,7 +14652,7 @@ A return value of <literal>#f</literal> indicates that session management is not
   <title>Description</title>
   <para>
   Return a string, describing why session management is not available.
-Only valid, if <link linkend="-M-client-id"><function>SM-client-id</function></link> is <literal>#f</literal>.
+Only valid, if <link linkend="SM-client-id"><function>SM-client-id</function></link> is <literal>#f</literal>.
   </para>
   </refsect1>
   <refsect1>
@@ -14826,7 +14946,7 @@ E.g., (string-prompt "Enter new name" (lambda (nm) (set-window-title! w nm)))
   at line 37 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/style.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="style-option:cumulative-p">
+<refentry id="style-option--cumulative-p">
   <refnamediv>
     <refname>style-option:cumulative?</refname>
     <refpurpose>No documentation supplied.</refpurpose>
@@ -14850,7 +14970,7 @@ E.g., (string-prompt "Enter new name" (lambda (nm) (set-window-title! w nm)))
   at line 59 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/style-options.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="style-option:handler">
+<refentry id="style-option--handler">
   <refnamediv>
     <refname>style-option:handler</refname>
     <refpurpose>No documentation supplied.</refpurpose>
@@ -14874,7 +14994,7 @@ E.g., (string-prompt "Enter new name" (lambda (nm) (set-window-title! w nm)))
   at line 55 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/style-options.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="style-option:type">
+<refentry id="style-option--type">
   <refnamediv>
     <refname>style-option:type</refname>
     <refpurpose>No documentation supplied.</refpurpose>
@@ -14980,7 +15100,7 @@ in the user's home directory.
   at line 690 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/flux.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="theme:background-style">
+<refentry id="theme--background-style">
   <refnamediv>
     <refname>theme:background-style</refname>
     <refpurpose>No documentation supplied.</refpurpose>
@@ -15004,7 +15124,7 @@ in the user's home directory.
   at line 73 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/theme-impl.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="theme:name">
+<refentry id="theme--name">
   <refnamediv>
     <refname>theme:name</refname>
     <refpurpose>No documentation supplied.</refpurpose>
@@ -15028,7 +15148,7 @@ in the user's home directory.
   at line 67 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/theme-impl.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
-<refentry id="theme:window-style">
+<refentry id="theme--window-style">
   <refnamediv>
     <refname>theme:window-style</refname>
     <refpurpose>No documentation supplied.</refpurpose>
@@ -15280,7 +15400,7 @@ current decor.
     <synopsis>(title-style #&amp;key font height justify
 			     (active-up '()) 
 			     (active-down '()) 
-			     (inactive '()) #&allow-other-keys . rest)</synopsis>
+			     (inactive '()) #&amp;allow-other-keys . rest)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -16156,7 +16276,7 @@ empty string (for files with no extension), or the string "default"
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/image.c"><filename>scwm/image.c</filename></ulink>
-  at line 325 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
+  at line 381 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/image.c">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="unset-message-window-position-x">
@@ -16180,7 +16300,7 @@ empty string (for files with no extension), or the string "default"
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 520 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
+  at line 516 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scheme/base.scm">CVS log</ulink>)</para> </refsect1>
 </refentry>
 
 <refentry id="unstick">
@@ -18945,7 +19065,7 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="set-auto-raise-unfocus-proc-x"><function>set-auto-raise-unfocus-proc!</function></link> &mdash; Set the auto-raise-unfocus-proc for WIN.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/base.scm</title> <itemizedlist>
-      <listitem><para><link linkend="round/"><function>round/</function></link> &mdash; Reaturn the closest integer to X divided by Y.</para></listitem>
+      <listitem><para><link linkend="round-d"><function>round/</function></link> &mdash; Reaturn the closest integer to X divided by Y.</para></listitem>
       <listitem><para><link linkend="pctx"><function>%x</function></link> &mdash; Return the number of pixels that is X percent of the display width.</para></listitem>
       <listitem><para><link linkend="pcty"><function>%y</function></link> &mdash; Return the number of pixels that is Y percent of the display height.</para></listitem>
       <listitem><para><link linkend="x-"><function>x-</function></link> &mdash; Return the viewport pixel coordinate X pixels left of the right display edge.</para></listitem>
@@ -19100,6 +19220,8 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="read-until-eof"><function>read-until-eof</function></link> &mdash; Return all the text from input port IN until eof.</para></listitem>
       <listitem><para><link linkend="output-of-system-cmd"><function>output-of-system-cmd</function></link> &mdash; Return the output of command shell execution of CMD.</para></listitem>
       <listitem><para><link linkend="chop-newline"><function>chop-newline</function></link> &mdash; Return STR up to but not including the first newline character.</para></listitem>
+      <listitem><para><link linkend="group-leader-id"><function>group-leader-id</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="group-to-windows"><function>group->windows</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/fvwm-compat.scm</title> <itemizedlist>
       <listitem><para><link linkend="fvwm-exec-use-shell"><function>fvwm-exec-use-shell</function></link> &mdash; No documentation supplied.</para></listitem>
@@ -19107,6 +19229,8 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="fvwm-none"><function>fvwm-none</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="fvwm-pipe-read"><function>fvwm-pipe-read</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="fvwm-nop"><function>fvwm-nop</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="pctx-permit-negative"><function>%x-permit-negative</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="pcty-permit-negative"><function>%y-permit-negative</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/fvwm-eval.scm</title> <itemizedlist>
       <listitem><para><link linkend="eval-fvwm-command"><function>eval-fvwm-command</function></link> &mdash; Evaluate an fvwm2 command.</para></listitem>
@@ -19199,18 +19323,18 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="mod-desk-size-x"><function>mod-desk-size!</function></link> &mdash; Modify the current desktop size by the given parameter.</para></listitem>
       <listitem><para><link linkend="help-mesg"><function>help-mesg</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="ask-string"><function>ask-string</function></link> &mdash; Ask for a string with PROMPT.</para></listitem>
-      <listitem><para><link linkend="menu-prefs"><function>menu-prefs</function></link> &mdash; Generate the <link linkend="-references"><function>Preferences</function></link> menu.</para></listitem>
+      <listitem><para><link linkend="menu-prefs"><function>menu-prefs</function></link> &mdash; Generate the <link linkend="Preferences"><function>Preferences</function></link> menu.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/report-usage.scm</title> <itemizedlist>
       <listitem><para><link linkend="report-scwm-usage"><function>report-scwm-usage</function></link> &mdash; Log your usage of scwm to a central host.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/ScwmClock.scm</title> <itemizedlist>
-      <listitem><para><link linkend="run--cwmClock"><function>run-ScwmClock</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="close--cwmClock"><function>close-ScwmClock</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="run-ScwmClock"><function>run-ScwmClock</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="close-ScwmClock"><function>close-ScwmClock</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/ScwmDeskButtons.scm</title> <itemizedlist>
-      <listitem><para><link linkend="run--cwmDeskButtons"><function>run-ScwmDeskButtons</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="close--cwmDeskButtons"><function>close-ScwmDeskButtons</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="run-ScwmDeskButtons"><function>run-ScwmDeskButtons</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="close-ScwmDeskButtons"><function>close-ScwmDeskButtons</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/shutdown-opts.scm</title> <itemizedlist>
       <listitem><para><link linkend="shutdown-options"><function>shutdown-options</function></link> &mdash; Configure shutdown preferences.</para></listitem>
@@ -19260,9 +19384,9 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="add-boolean-style-option"><function>add-boolean-style-option</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="add-window-hint-option"><function>add-window-hint-option</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="add-boolean-hint-option"><function>add-boolean-hint-option</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="style-option:handler"><function>style-option:handler</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="style-option:type"><function>style-option:type</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="style-option:cumulative-p"><function>style-option:cumulative?</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="style-option--handler"><function>style-option:handler</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="style-option--type"><function>style-option:type</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="style-option--cumulative-p"><function>style-option:cumulative?</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/style.scm</title> <itemizedlist>
       <listitem><para><link linkend="style-one-window"><function>style-one-window</function></link> &mdash; No documentation supplied.</para></listitem>
@@ -19277,9 +19401,9 @@ resize frames. <parameter>value</parameter> should be an integer.
     <sect1><title>scheme/theme-impl.scm</title> <itemizedlist>
       <listitem><para><link linkend="load-theme-image"><function>load-theme-image</function></link> &mdash; No documentation supplied.</para></listitem>
       <listitem><para><link linkend="make-theme"><function>make-theme</function></link> &mdash; Creates a theme object with the given NAME, WINDOW-STYLE, and BACKGROUND-STYLE.</para></listitem>
-      <listitem><para><link linkend="theme:name"><function>theme:name</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="theme:window-style"><function>theme:window-style</function></link> &mdash; No documentation supplied.</para></listitem>
-      <listitem><para><link linkend="theme:background-style"><function>theme:background-style</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="theme--name"><function>theme:name</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="theme--window-style"><function>theme:window-style</function></link> &mdash; No documentation supplied.</para></listitem>
+      <listitem><para><link linkend="theme--background-style"><function>theme:background-style</function></link> &mdash; No documentation supplied.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scheme/themes.scm</title> <itemizedlist>
       <listitem><para><link linkend="use-theme"><function>use-theme</function></link> &mdash; Use settings from THEME to set up the window manager.</para></listitem>
@@ -19524,6 +19648,7 @@ resize frames. <parameter>value</parameter> should be an integer.
       <listitem><para><link linkend="image-properties"><function>image-properties</function></link> &mdash; Return an association list giving some properties of IMAGE.</para></listitem>
       <listitem><para><link linkend="load-xbm"><function>load-xbm</function></link> &mdash; Load an X Bitmap file identified by the pathname FULL-PATH.</para></listitem>
       <listitem><para><link linkend="load-xpm"><function>load-xpm</function></link> &mdash; Load an X Pixmap file identified by the pathname FULL-PATH.</para></listitem>
+      <listitem><para><link linkend="load-imlib-image"><function>load-imlib-image</function></link> &mdash; Load an image file using imlib identified by the pathname FULL-PATH.</para></listitem>
       <listitem><para><link linkend="register-image-loader"><function>register-image-loader</function></link> &mdash; Register PROC as the loader to use for images ending in EXTENSION.</para></listitem>
       <listitem><para><link linkend="unregister-image-loader"><function>unregister-image-loader</function></link> &mdash; Unregister the loader, if any, for images ending in EXTENSION.</para></listitem>
       <listitem><para><link linkend="make-image"><function>make-image</function></link> &mdash; Loads an image from the file NAME.</para></listitem>

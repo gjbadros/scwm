@@ -10,6 +10,12 @@ Return the pixel coordinate X percent of the width away from the right edge.
 [From scheme/base.scm:100]
 
 
+(%x-permit-negative x)
+- (app scwm fvwm-compat)
+No documentation supplied.
+[From scheme/fvwm-compat.scm:119]
+
+
 (%y y)
 - (app scwm base)
 Return the number of pixels that is Y percent of the display height.
@@ -20,6 +26,12 @@ Return the number of pixels that is Y percent of the display height.
 - (app scwm base)
 Return the pixel coordinate Y percent of the height away from the bottom edge.
 [From scheme/base.scm:104]
+
+
+(%y-permit-negative y)
+- 
+No documentation supplied.
+[From scheme/fvwm-compat.scm:125]
 
 
 (accumulate proc init l)
@@ -445,7 +457,7 @@ sum of the window's border width and title height.
 
 
 (chop-newline str)
-- 
+- (app scwm flux)
 Return STR up to but not including the first newline character.
 [From scheme/flux.scm:769]
 
@@ -535,7 +547,7 @@ name will change, for example if you alter the image file or change
 your image path. For this unlikely eventuality,
 `clear-image-cache-entry' is provided - it removes the image
 associated with NAME from the image cache.
-[From scwm/image.c:534]
+[From scwm/image.c:590]
 
 
 (clear-window-style)
@@ -1034,7 +1046,7 @@ Return a procedure that runs COMMAND in the background on the X selection.
 (execute command)
 - (app scwm base)
 Execute COMMAND in the background.
-[From scheme/base.scm:554]
+[From scheme/base.scm:550]
 
 
 (execute-on-selection command)
@@ -1269,6 +1281,18 @@ No documentation supplied.
 [From scheme/message-window.scm:16]
 
 
+(group->windows group)
+- 
+No documentation supplied.
+[From scheme/flux.scm:779]
+
+
+(group-leader-id win)
+- (app scwm flux)
+No documentation supplied.
+[From scheme/flux.scm:776]
+
+
 (gtk-pixmap-new-search-scwm-path pixmap-name button)
 - 
 Return the new pixmap object as `gtk-pixmap-new' does, but search Scwm's image-load-path for it.
@@ -1404,7 +1428,7 @@ Return an association list giving some properties of IMAGE.
 Currently defined properties are 'filename, the fully expanded
 pathname of the image, 'width, its width, 'height, its height, and
 depth, its color depth.
-[From scwm/image.c:159]
+[From scwm/image.c:162]
 
 
 (image-property image key)
@@ -1417,7 +1441,7 @@ See `image-properties' for a list of the keys.
 (image? obj)
 - Built-in Primitive
 Returns #t if OBJ is an image object, otherwise #f.
-[From scwm/image.c:149]
+[From scwm/image.c:152]
 
 
 (ImageMagick-loader fname)
@@ -1802,6 +1826,12 @@ that deal with the window list.
 [From scheme/stacking.scm:42]
 
 
+(load-imlib-image full-path)
+- Built-in Primitive
+Load an image file using imlib identified by the pathname FULL-PATH.
+[From scwm/image.c:306]
+
+
 (load-theme fname)
 - (app scwm themes)
 Returns a theme FNAME which is loaded from `theme-path'.
@@ -1819,13 +1849,13 @@ No documentation supplied.
 (load-xbm full-path)
 - Built-in Primitive
 Load an X Bitmap file identified by the pathname FULL-PATH.
-[From scwm/image.c:217]
+[From scwm/image.c:224]
 
 
 (load-xpm full-path)
 - Built-in Primitive
 Load an X Pixmap file identified by the pathname FULL-PATH.
-[From scwm/image.c:251]
+[From scwm/image.c:258]
 
 
 (lower-by-one #&optional (w (get-window)))
@@ -1918,7 +1948,7 @@ To load the image, the appropriate image loaders will be invoked as
 needed. If NAME starts with "/", "./" or "../", it is treated as a
 fully qualified pathname; otherwise, the image path is searched for an
 appropriate file.
-[From scwm/image.c:465]
+[From scwm/image.c:521]
 
 
 (make-list n . init)
@@ -2986,7 +3016,7 @@ empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading). PROC will
 be called with the full pathname of the image and should return an
 image object, or #f if it succeeds.
-[From scwm/image.c:299]
+[From scwm/image.c:355]
 
 
 (remove-input-hook! handle)
@@ -3230,7 +3260,7 @@ to the main event loop
 (scwm-is-constraint-enabled?)
 - (app scwm base)
 Return #t if scwm has the constraint solver primitives, #f otherwise.
-[From scheme/base.scm:530]
+[From scheme/base.scm:526]
 
 
 (scwm-path-exec-prefix)
@@ -3261,7 +3291,7 @@ use a trailing "&" character.  See also guile's `system', but note
 that it may permit signals on the controlling tty to be seen
 by children (observed on Linux, Free/NetBSD, but not on Solaris or HP/UX.
 This may be a bug (not meeting POSIX.2 specifications).
-[From scheme/base.scm:534]
+[From scheme/base.scm:530]
 
 
 (scwm-version)
@@ -3320,7 +3350,7 @@ operations like delete-window and destroy-window), and whether to wait
 for a mouse release or act immediately on the click. The former is a
 place-holder until we have proper cursor support in scwm.
 Returns #f if no window was selected.
-[From scheme/base.scm:592]
+[From scheme/base.scm:588]
 
 
 (select-window-from-window-list #&key
@@ -3343,7 +3373,7 @@ No documentation supplied.
 Return an interactively-selected window after prompting (optionally) with MSG.
 If given, use message window MESSAGE-WINDOW to display the message, otherwise create
 a new message window.
-[From scheme/base.scm:604]
+[From scheme/base.scm:600]
 
 
 (select-window-interactively-and-highlight)
@@ -3589,7 +3619,7 @@ fewer than PIXELS pixels will leave the window entirely onscreen.
 - (app scwm base)
 Set the edge scroll delay to S, and the edge move threshold to M.
 See also `set-edge-scroll-delay!' and `set-edge-move-threshold!'.
-[From scheme/base.scm:497]
+[From scheme/base.scm:493]
 
 
 (set-edge-scroll! x y)
@@ -3599,7 +3629,7 @@ These values are the number of pixels that the viewport
 moves when the pointer hits the edge of the screen.  Use
 `%x' and `%y' to convert from a percentage of a screen
 dimension to a number of pixels.
-[From scheme/base.scm:511]
+[From scheme/base.scm:507]
 
 
 (set-edge-scroll-delay! usec)
@@ -3618,7 +3648,7 @@ Set the edge x and y wrap values to X and Y, respectively.
 These values should be #t to mean that the pointer should
 wrap in the given direction, or #f to not wrap around.
 See also `set-edge-x-wrap!' and `set-edge-y-wrap!'.
-[From scheme/base.scm:503]
+[From scheme/base.scm:499]
 
 
 (set-edge-x-scroll! pixels)
@@ -3801,7 +3831,7 @@ FACTOR is a positive floating point number
 - Built-in Primitive
 If ACTIVATE? is #t, let menu hotkeys invoke the item.
 If #f, a menuitem hotkey just makes that item selected and still requires
-a <return> or <space> to activate the item.
+a Return or Space keypress to activate the item.
 [From scwm/menu.c:1428]
 
 
@@ -4812,13 +4842,13 @@ Unregister the loader, if any, for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
 empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading).
-[From scwm/image.c:325]
+[From scwm/image.c:381]
 
 
 (unset-message-window-position!)
 - (app scwm base)
 Move the message window back to the default screen-center position.
-[From scheme/base.scm:520]
+[From scheme/base.scm:516]
 
 
 (unstick  #&optional win)

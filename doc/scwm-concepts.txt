@@ -274,12 +274,12 @@ Image Loaders
 -
 
   Different loaders are available for various images types. `load-xbm'
-and `load-xpm' load X pixmaps and X bitmaps respectively. The user may
+and `load-xpm' load X bitmaps and X pixmaps respectively. The user may
 register other image loaders using the extension or the special string
 "default" for the loader to be tried for an image that cannot be
 loaded any other way.
 
-[From scwm/image.c:209]
+[From scwm/image.c:215]
 
 
 Images
@@ -292,7 +292,7 @@ object by loading the image. Using the same image filename more than
 once is not inefficient, as caching ensures that image objects are
 shared.
 
-[From scwm/image.c:104]
+[From scwm/image.c:107]
 
 
 Input Hooks
@@ -379,7 +379,7 @@ is probably of no use to you unless you're a session manager or debbuging.
 </seglistitem>
 </segmentedlist>
   
-[From scwm/scwm.c:620]
+[From scwm/scwm.c:616]
 
 
 SCWMEXEC Protocol
