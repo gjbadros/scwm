@@ -83,11 +83,11 @@
 
 (define-public (vx- x)
   "Return the virtual coordinate X pixels left of the right virtual edge."
-  (- (car (virtual-size) x)))
+  (- (car (virtual-size)) x))
 
 (define-public (vy- y)
   "Return the virtual coordinate Y pixels up from the bottom virtual edge."
-  (- (cadr (virtual-size) y)))
+  (- (cadr (virtual-size)) y))
 
 (define-public (%x- x)
   "Return the pixel coordinate X percent of the width away from the right edge."
