@@ -548,7 +548,7 @@ See "modules/viavoice/README" for details. See also `vv-initialize'.")
 
 SCWM_PROC(vv_disconnect,"vv-disconnect",0,1,0,
           (SCM proc),
-"Disconnect from the ViaVoice speech recognizer, calling PROC after disconnected")
+"Disconnect from the ViaVoice speech recognizer, calling PROC after disconnected.")
 #define FUNC_NAME s_vv_disconnect 
 {
   VALIDATE_ARG_PROC_USE_F(1,proc);

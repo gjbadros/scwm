@@ -21,7 +21,6 @@
 #include "dmalloc.h"
 #endif
 
-/* ========================================================================== */
 typedef struct {
   proplist_t value;
 } scwm_proplist_t;
@@ -70,7 +69,6 @@ long scm_tc16_scwm_proplist_t;
   } while (0)
 
 
-/* ========================================================================== */
 static
 SCM
 mark_proplist_t(SCM ARG_IGNORE(obj)) {
@@ -183,11 +181,10 @@ c_cmp_callback(proplist_t a,proplist_t b) {
   }
   return NO;
 }
-/* ========================================================================== */
 /* proplist_t PLMakeArrayFromElements(proplist_t pl, ...); */
 SCWM_PROC(proplist_make_array_from_elements,"proplist-make-array-from-elements",0,0,1,
-	  (SCM items))
-     /** Return a newly created array object populated with elements ITEMS. */
+	  (SCM items),
+"Return a newly created array object populated with elements ITEMS.")
 #define FUNC_NAME s_proplist_make_array_from_elements
 {
   proplist_t array=NULL;
@@ -214,13 +211,12 @@ SCWM_PROC(proplist_make_array_from_elements,"proplist-make-array-from-elements",
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLMakeDictionaryFromEntries(proplist_t key, proplist_t value,
    ...); */
 SCWM_PROC(proplist_make_dictionary_from_entries,"proplist-make-dictionary-from-entries",0,0,1,
-	  (SCM items))
-     /** Return a newly created dictionary object with elements ITEMS.
-The elements in ITEMS should be a flat list (key1 value1 key2 value2 ...). */
+	  (SCM items),
+"Return a newly created dictionary object with elements ITEMS.
+The elements in ITEMS should be a flat list (key1 value1 key2 value2 ...).")
 #define FUNC_NAME s_proplist_make_dictionary_from_entries
 {
   proplist_t dict=NULL;
@@ -256,12 +252,11 @@ The elements in ITEMS should be a flat list (key1 value1 key2 value2 ...). */
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLRemoveArrayElement(proplist_t array,
    unsigned int index); */
 SCWM_PROC(proplist_remove_array_element,"proplist-remove-array-element",2,0,0,
-	  (SCM pl_array,SCM index))
-     /** Return PL-ARRAY after deleting the element at position INDEX. */
+	  (SCM pl_array,SCM index),
+"Return PL-ARRAY after deleting the element at position INDEX.")
 #define FUNC_NAME s_proplist_remove_array_element
 {
   unsigned int i;
@@ -272,12 +267,11 @@ SCWM_PROC(proplist_remove_array_element,"proplist-remove-array-element",2,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLInsertArrayElement(proplist_t array, proplist_t pl,
    unsigned int index); */
 SCWM_PROC(proplist_insert_array_element,"proplist-insert-array-element",3,0,0,
-	  (SCM pl_array,SCM item,SCM index))
-     /**  Return the PL-ARRAY after inserting ITEM at offset INDEX. */
+	  (SCM pl_array,SCM item,SCM index),
+"Return the PL-ARRAY after inserting ITEM at offset INDEX.")
 #define FUNC_NAME s_proplist_insert_array_element
 {
   unsigned int i;
@@ -291,11 +285,10 @@ SCWM_PROC(proplist_insert_array_element,"proplist-insert-array-element",3,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLAppendArrayElement(proplist_t array, proplist_t pl); */
 SCWM_PROC(proplist_append_array_element,"proplist-append-array-element",2,0,0,
-	  (SCM pl_array,SCM item))
-     /** Return the PL-ARRAY after appending ITEM to the end. */
+	  (SCM pl_array,SCM item),
+"Return the PL-ARRAY after appending ITEM to the end.")
 #define FUNC_NAME s_proplist_append_array_element
 {
   VALIDATE_ARG_PROPLIST(1,pl_array);
@@ -306,12 +299,11 @@ SCWM_PROC(proplist_append_array_element,"proplist-append-array-element",2,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLInsertDictionaryEntry(proplist_t dict, proplist_t key,
    proplist_t value); */
 SCWM_PROC(proplist_insert_dictionary_entry,"proplist-insert-dictionary-entry",3,0,0,
-	  (SCM pl_dict,SCM key,SCM Value))
-     /** Return PL-DICT after inserting (KEY,VALUE) into it. */
+	  (SCM pl_dict,SCM key,SCM Value),
+"Return PL-DICT after inserting (KEY,VALUE) into it.")
 #define FUNC_NAME s_proplist_insert_dictionary_entry
 {
   VALIDATE_ARG_PROPLIST_DICT(1,pl_dict);
@@ -324,11 +316,10 @@ SCWM_PROC(proplist_insert_dictionary_entry,"proplist-insert-dictionary-entry",3,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLRemoveDictionaryEntry(proplist_t dict, proplist_t key); */
 SCWM_PROC(proplist_remove_dictionary_entry,"proplist-remove-dictionary-entry",2,0,0,
-	  (SCM pl_dict,SCM key))
-     /** Return PL-DICT after removing KEY and its corresponding value from it. */
+	  (SCM pl_dict,SCM key),
+"Return PL-DICT after removing KEY and its corresponding value from it.")
 #define FUNC_NAME s_proplist_remove_dictionary_entry
 {
   VALIDATE_ARG_PROPLIST_DICT(1,pl_dict);
@@ -339,11 +330,10 @@ SCWM_PROC(proplist_remove_dictionary_entry,"proplist-remove-dictionary-entry",2,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLMergeDictionaries(proplist_t dest, proplist_t source); */
 SCWM_PROC(proplist_merge_dictionaries,"proplist-merge-dictionaries",2,0,0,
-	  (SCM pl_dict_dest,SCM pl_dict_source))
-     /** Return PL-DICT-DEST after merging in all entries from PL-DICT-SOURCE. */
+	  (SCM pl_dict_dest,SCM pl_dict_source),
+"Return PL-DICT-DEST after merging in all entries from PL-DICT-SOURCE.")
 #define FUNC_NAME s_proplist_merge_dictionaries
 {
   VALIDATE_ARG_PROPLIST_DICT(1,pl_dict_dest);
@@ -354,11 +344,10 @@ SCWM_PROC(proplist_merge_dictionaries,"proplist-merge-dictionaries",2,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLShallowCopy(proplist_t pl); */
 SCWM_PROC(proplist_shallow_copy,"proplist-shallow-copy",1,0,0,
-	  (SCM pl))
-     /** Return a shallow copy of property list PL. */
+	  (SCM pl),
+"Return a shallow copy of property list PL.")
 #define FUNC_NAME s_proplist_shallow_copy
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -367,11 +356,10 @@ SCWM_PROC(proplist_shallow_copy,"proplist-shallow-copy",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLDeepCopy(proplist_t pl); */
 SCWM_PROC(proplist_deep_copy,"proplist-deep-copy",1,0,0,
-	  (SCM pl))
-     /**  Return a deep copy of property list PL. */
+	  (SCM pl),
+"Return a deep copy of property list PL.")
 #define FUNC_NAME s_proplist_deep_copy
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -380,13 +368,12 @@ SCWM_PROC(proplist_deep_copy,"proplist-deep-copy",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* BOOL PLIsEqual(proplist_t pl1, proplist_t pl2); */
 SCWM_PROC(proplist_is_equal,"proplist-is-equal",2,0,0,
-	  (SCM plA,SCM plB))
-     /** Return #t iff PLA is equal to PLB.
+	  (SCM plA,SCM plB),
+"Return #t iff PLA is equal to PLB.
 This does a case sensitive comparison by default.
-See `proplist-set-string-cmp-hook' for changing the behaviour. */
+See `proplist-set-string-cmp-hook' for changing the behaviour.")
 #define FUNC_NAME s_proplist_is_equal
 {
   VALIDATE_ARG_PROPLIST(1,plA);
@@ -396,13 +383,12 @@ See `proplist-set-string-cmp-hook' for changing the behaviour. */
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* void PLSetStringCmpHook(BOOL(*fn)(proplist_t, proplist_t)); */
 SCWM_PROC(proplist_set_string_cmp_hook,"proplist-set-string-cmp-hook",1,0,0,
-	  (SCM pred))
-     /** Use PRED as a predicate for doing proplist string comparisons.
+	  (SCM pred),
+"Use PRED as a predicate for doing proplist string comparisons.
 PRED should take two proplist objects and return #t or #f to answer
-whether they are equal in whatever sense it chooses. */
+whether they are equal in whatever sense it chooses.")
 #define FUNC_NAME s_proplist_set_string_cmp_hook
 {
   BOOL (*cb)(proplist_t,proplist_t);
@@ -416,13 +402,12 @@ whether they are equal in whatever sense it chooses. */
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLMakeString(char *bytes); */
 SCWM_PROC(string_to_proplist,"string->proplist",1,0,0,
-	  (SCM string))
-     /** Return a proplist object containing STRING.
+	  (SCM string),
+"Return a proplist object containing STRING.
 This is often unnecessary as the proplist procedures will
-permit Guile strings to be used anywhere a string proplist object is expected.  */
+permit Guile strings to be used anywhere a string proplist object is expected. ")
 #define FUNC_NAME s_string_to_proplist
 {
   char *s;
@@ -435,13 +420,12 @@ permit Guile strings to be used anywhere a string proplist object is expected.  
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLMakeData(unsigned char *data, unsigned int length); */
 SCWM_PROC(proplist_make_data,"proplist-make-data",1,0,0,
-	  (SCM data))
-     /** Return a proplist argument containing arbitrary data from DATA.
+	  (SCM data),
+"Return a proplist argument containing arbitrary data from DATA.
 This is often unnecessary as the proplist procedures will
-permit Guile strings to be used anywhere a string proplist object is expected.  */
+permit Guile strings to be used anywhere a string proplist object is expected. ")
 #define FUNC_NAME s_proplist_make_data
 {
   int len;
@@ -456,11 +440,10 @@ permit Guile strings to be used anywhere a string proplist object is expected.  
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLGetContainer(proplist_t pl); */
 SCWM_PROC(proplist_get_container,"proplist-get-container",1,0,0,
-	  (SCM pl))
-     /** Return the array or dictionary of which PL is an element. */
+	  (SCM pl),
+"Return the array or dictionary of which PL is an element.")
 #define FUNC_NAME s_proplist_get_container
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -469,11 +452,10 @@ SCWM_PROC(proplist_get_container,"proplist-get-container",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLGetArrayElement(proplist_t pl, unsigned int index); */
 SCWM_PROC(proplist_get_array_element,"proplist-get-array-element",2,0,0,
-	  (SCM pl,SCM index))
-     /** Return the element at INDEX offset of PL. */
+	  (SCM pl,SCM index),
+"Return the element at INDEX offset of PL.")
 #define FUNC_NAME s_proplist_get_array_element
 {
   unsigned int i;
@@ -485,14 +467,13 @@ SCWM_PROC(proplist_get_array_element,"proplist-get-array-element",2,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* unsigned int PLGetNumberOfElements(proplist_t pl); */
 SCWM_PROC(proplist_get_number_of_elements,"proplist-get-number-of-elements",1,0,0,
-	  (SCM pl))
-     /** Return the number of elements in PL.
+	  (SCM pl),
+"Return the number of elements in PL.
 If PL is a string or data objects, this returns 0.  If it 
 is an array or dictionary, it is the number of elements
-or pairs. */
+or pairs.")
 #define FUNC_NAME s_proplist_get_number_of_elements
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -500,11 +481,10 @@ or pairs. */
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLGetAllDictionaryKeys(proplist_t pl); */
 SCWM_PROC(proplist_get_all_dictionary_keys,"proplist-get-all-dictionary-keys",1,0,0,
-	  (SCM pl_dict))
-     /** Return a proplist array object that contains all the keys of PL-DICT. */
+	  (SCM pl_dict),
+"Return a proplist array object that contains all the keys of PL-DICT.")
 #define FUNC_NAME s_proplist_get_all_dictionary_keys
 {
   VALIDATE_ARG_PROPLIST_DICT(1,pl_dict);
@@ -514,12 +494,11 @@ SCWM_PROC(proplist_get_all_dictionary_keys,"proplist-get-all-dictionary-keys",1,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLGetDictionaryEntry(proplist_t pl, proplist_t key); */
 SCWM_PROC(proplist_get_dictionary_entry,"proplist-get-dictionary-entry",2,0,0,
-	  (SCM pl_dict,SCM key))
-     /** Return the proplist dictionary entry associated with entry KEY in PL-DICT. 
-Returns #f if KEY is not in PL-DICT. */
+	  (SCM pl_dict,SCM key),
+"Return the proplist dictionary entry associated with entry KEY in PL-DICT. 
+Returns #f if KEY is not in PL-DICT.")
 #define FUNC_NAME s_proplist_get_dictionary_entry
 {
   VALIDATE_ARG_PROPLIST_DICT(1,pl_dict);
@@ -530,13 +509,12 @@ Returns #f if KEY is not in PL-DICT. */
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* char *PLGetStringDescription(proplist_t pl); */
 SCWM_PROC(proplist_get_string_description,"proplist-get-string-description",1,0,0,
-	  (SCM pl))
-     /** Retuns a description of PL (a string proplist object) in GNUstep format.
+	  (SCM pl),
+"Retuns a description of PL (a string proplist object) in GNUstep format.
 If the string contains whitespace or special characters, the string returned will
-be enclosed in quotes. */
+be enclosed in quotes.")
 #define FUNC_NAME s_proplist_get_string_description
 {
   char *s;
@@ -554,11 +532,10 @@ be enclosed in quotes. */
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* char *PLGetDataDescription(proplist_t pl); */
 SCWM_PROC(proplist_get_data_description,"proplist-get-data-description",1,0,0,
-	  (SCM pl))
-     /** Returns a description of PL (a data proplist object) in GNUstep format. */
+	  (SCM pl),
+"Returns a description of PL (a data proplist object) in GNUstep format.")
 #define FUNC_NAME s_proplist_get_data_description
 {
   char *s;
@@ -576,12 +553,11 @@ SCWM_PROC(proplist_get_data_description,"proplist-get-data-description",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* unsigned int PLGetDataLength(proplist_t pl); */
 /* unsigned char *PLGetDataBytes(proplist_t pl); */
 SCWM_PROC(proplist_get_data,"proplist-get-data",1,0,0,
-	  (SCM pl))
-     /** Returns the raw data from PL (a data proplist object) as a string. */
+	  (SCM pl),
+"Returns the raw data from PL (a data proplist object) as a string.")
 #define FUNC_NAME s_proplist_get_data
 {
   unsigned char *s;
@@ -603,13 +579,12 @@ SCWM_PROC(proplist_get_data,"proplist-get-data",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* char *PLGetString(proplist_t pl); */
 SCWM_PROC(proplist_get_string,"proplist-get-string",1,0,0,
-	  (SCM pl))
-     /** Returns the string from PL (a string proplist object).
+	  (SCM pl),
+"Returns the string from PL (a string proplist object).
 Note that numerous procedures automatically convert string 
-proplist objects into Guile strings, so this may not often be necessary. */
+proplist objects into Guile strings, so this may not often be necessary.")
 #define FUNC_NAME s_proplist_get_string
 {
   char *s;
@@ -625,11 +600,10 @@ proplist objects into Guile strings, so this may not often be necessary. */
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* BOOL PLIsString(proplist_t pl); */
 SCWM_PROC(proplist_is_string,"proplist-is-string",1,0,0,
-	  (SCM pl))
-     /** Return #t iff PL is a string proplist object, #f otherwise. */
+	  (SCM pl),
+"Return #t iff PL is a string proplist object, #f otherwise.")
 #define FUNC_NAME s_proplist_is_string
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -637,11 +611,10 @@ SCWM_PROC(proplist_is_string,"proplist-is-string",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* BOOL PLIsData(proplist_t pl); */
 SCWM_PROC(proplist_is_data,"proplist-is-data",1,0,0,
-	  (SCM pl))
-     /** Return #t iff PL is a data proplist object, #f otherwise. */
+	  (SCM pl),
+"Return #t iff PL is a data proplist object, #f otherwise.")
 #define FUNC_NAME s_proplist_is_data
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -649,11 +622,10 @@ SCWM_PROC(proplist_is_data,"proplist-is-data",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* BOOL PLIsArray(proplist_t pl); */
 SCWM_PROC(proplist_is_array,"proplist-is-array",1,0,0,
-	  (SCM pl))
-     /** Return #t iff PL is an array proplist object, #f otherwise. */
+	  (SCM pl),
+"Return #t iff PL is an array proplist object, #f otherwise.")
 #define FUNC_NAME s_proplist_is_array
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -661,11 +633,10 @@ SCWM_PROC(proplist_is_array,"proplist-is-array",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* BOOL PLIsDictionary(proplist_t pl); */
 SCWM_PROC(proplist_is_dictionary,"proplist-is-dictionary",1,0,0,
-	  (SCM pl))
-     /** Return #t iff PL is a dictionary proplist object, #f otherwise. */
+	  (SCM pl),
+"Return #t iff PL is a dictionary proplist object, #f otherwise.")
 #define FUNC_NAME s_proplist_is_dictionary
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -673,11 +644,10 @@ SCWM_PROC(proplist_is_dictionary,"proplist-is-dictionary",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* BOOL PLIsSimple(proplist_t pl); */
 SCWM_PROC(proplist_is_simple,"proplist-is-simple",1,0,0,
-	  (SCM pl))
-     /** Return #t iff PL is a string or data proplist object, #f otherwise. */
+	  (SCM pl),
+"Return #t iff PL is a string or data proplist object, #f otherwise.")
 #define FUNC_NAME s_proplist_is_simple
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -685,11 +655,10 @@ SCWM_PROC(proplist_is_simple,"proplist-is-simple",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* BOOL PLIsCompound(proplist_t pl); */
 SCWM_PROC(proplist_is_compound,"proplist-is-compound",1,0,0,
-	  (SCM pl))
-     /** Return #t iff PL is a dictionary or array proplist object, #f otherwise. */
+	  (SCM pl),
+"Return #t iff PL is a dictionary or array proplist object, #f otherwise.")
 #define FUNC_NAME s_proplist_is_compound
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -697,11 +666,10 @@ SCWM_PROC(proplist_is_compound,"proplist-is-compound",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLUnregister(proplist_t name); */
 SCWM_PROC(proplist_unregister,"proplist-unregister",1,0,0,
-	  (SCM pl_domain_name))
-     /** No longer invoke callback when domain associated with PL-DOMAIN-NAME is changed. */
+	  (SCM pl_domain_name),
+"No longer invoke callback when domain associated with PL-DOMAIN-NAME is changed.")
 #define FUNC_NAME s_proplist_unregister
 {
   VALIDATE_ARG_PROPLIST(1,pl_domain_name);
@@ -710,11 +678,10 @@ SCWM_PROC(proplist_unregister,"proplist-unregister",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLRegister(proplist_t name, plcallback_t callback); */
 SCWM_PROC(proplist_register,"proplist-register",2,0,0,
-	  (SCM pl_domain_name,SCM callback))
-     /** Register thunk CALLBACK to be called when PL-DOMAIN-NAME changes. */
+	  (SCM pl_domain_name,SCM callback),
+"Register thunk CALLBACK to be called when PL-DOMAIN-NAME changes.")
 #define FUNC_NAME s_proplist_register
 {
   void (*cb)(void);
@@ -730,12 +697,11 @@ SCWM_PROC(proplist_register,"proplist-register",2,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLSetDomain(proplist_t name, proplist_t value, BOOL kickme); */
 SCWM_PROC(proplist_set_domain,"proplist-set-domain",3,0,0,
-	  (SCM pl_domain_name,SCM value,SCM kick_me_p))
-     /** Set PL-DOMAIN-NAME to have VALUE.
-If KICK-ME? is #f, any callback registered for the domain will not be called. */
+	  (SCM pl_domain_name,SCM value,SCM kick_me_p),
+"Set PL-DOMAIN-NAME to have VALUE.
+If KICK-ME? is #f, any callback registered for the domain will not be called.")
 #define FUNC_NAME s_proplist_set_domain
 {
   Bool kick_me;
@@ -749,12 +715,11 @@ If KICK-ME? is #f, any callback registered for the domain will not be called. */
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLDeleteDomain(proplist_t name, BOOL kickme); */
 SCWM_PROC(proplist_delete_domain,"proplist-delete-domain",2,0,0,
-	  (SCM pl_domain_name,SCM kick_me_p))
-     /** Delete domain PL-DOMAIN-NAME.
-If KICK-ME? is #f, any callback registered for the domain will not be called. */
+	  (SCM pl_domain_name,SCM kick_me_p),
+"Delete domain PL-DOMAIN-NAME.
+If KICK-ME? is #f, any callback registered for the domain will not be called.")
 #define FUNC_NAME s_proplist_delete_domain
 {
   Bool kick_me;
@@ -766,11 +731,10 @@ If KICK-ME? is #f, any callback registered for the domain will not be called. */
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLGetDomain(proplist_t name); */
 SCWM_PROC(proplist_get_domain,"proplist-get-domain",1,0,0,
-	  (SCM pl_domain_name))
-     /** Return a property list represeting the domain PL-DOMAIN-NAME. */
+	  (SCM pl_domain_name),
+"Return a property list represeting the domain PL-DOMAIN-NAME.")
 #define FUNC_NAME s_proplist_get_domain
 {
   VALIDATE_ARG_PROPLIST(1,pl_domain_name);
@@ -779,11 +743,10 @@ SCWM_PROC(proplist_get_domain,"proplist-get-domain",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLGetDomainNames(); */
 SCWM_PROC(proplist_get_domainnames,"proplist-get-domainnames",0,0,0,
-	  ())
-     /** Return a array proplist containing all registered domain names. */
+	  (),
+"Return a array proplist containing all registered domain names.")
 #define FUNC_NAME s_proplist_get_domainnames
 {
   /* PLGetDomainNames returns an array of domain names - don't inc refcount */
@@ -791,11 +754,10 @@ SCWM_PROC(proplist_get_domainnames,"proplist-get-domainnames",0,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLGetFilename(proplist_t pl); */
 SCWM_PROC(proplist_get_filename,"proplist-get-filename",1,0,0,
-	  (SCM pl))
-     /** Return the filename of PL.  */
+	  (SCM pl),
+"Return the filename of PL. ")
 #define FUNC_NAME s_proplist_get_filename
 {
   VALIDATE_ARG_PROPLIST(1,pl);
@@ -804,11 +766,10 @@ SCWM_PROC(proplist_get_filename,"proplist-get-filename",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLSetfilename(proplist_t pl, proplist_t filename); */
 SCWM_PROC(proplist_set_filename_x,"proplist-set-filename!",2,0,0,
-	  (SCM pl,SCM filename))
-     /** Set the filename for PL to be FILENAME. */
+	  (SCM pl,SCM filename),
+"Set the filename for PL to be FILENAME.")
 #define FUNC_NAME s_proplist_set_filename_x
 {
   proplist_t fname;
@@ -835,11 +796,10 @@ SCWM_PROC(proplist_set_filename_x,"proplist-set-filename!",2,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* BOOL PLSave(proplist_t pl, BOOL atomically); */
 SCWM_PROC(proplist_save,"proplist-save",2,0,0,
-	  (SCM pl,SCM atomically_p))
-     /** Save PL, atomically if ATOMICALLY? is #t. */
+	  (SCM pl,SCM atomically_p),
+"Save PL, atomically if ATOMICALLY? is #t.")
 #define FUNC_NAME s_proplist_save
 {
   scwm_proplist_t *proplist;
@@ -850,11 +810,10 @@ SCWM_PROC(proplist_save,"proplist-save",2,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* BOOL PLSynchronize(proplist_t pl); */
 SCWM_PROC(proplist_synchronize,"proplist-synchronize",1,0,0,
-	  (SCM pl))
-     /** Synchronize the in-memory proplist PL with the disk contents. */
+	  (SCM pl),
+"Synchronize the in-memory proplist PL with the disk contents.")
 #define FUNC_NAME s_proplist_synchronize
 {
   scwm_proplist_t *proplist;
@@ -863,11 +822,10 @@ SCWM_PROC(proplist_synchronize,"proplist-synchronize",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLGetProplistWithPath(const char *filename); */
 SCWM_PROC(get_proplist_with_path,"get-proplist-with-path",1,0,0,
-	  (SCM filename))
-     /** Return the proplist from path FILENAME. */
+	  (SCM filename),
+"Return the proplist from path FILENAME.")
 #define FUNC_NAME s_get_proplist_with_path
 {
   char *sz;
@@ -881,11 +839,10 @@ SCWM_PROC(get_proplist_with_path,"get-proplist-with-path",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 /* proplist_t PLGetProplistWithDescription(const char *description); */
 SCWM_PROC(get_proplist_with_description,"get-proplist-with-description",1,0,0,
-	  (SCM desc))
-     /** Return a property list by parsing DESC in GNUstep proplist format. */
+	  (SCM desc),
+"Return a property list by parsing DESC in GNUstep proplist format.")
 #define FUNC_NAME s_get_proplist_with_description
 {
   char *sz;
@@ -899,7 +856,6 @@ SCWM_PROC(get_proplist_with_description,"get-proplist-with-description",1,0,0,
 }
 #undef FUNC_NAME
 
-/* ========================================================================== */
 MAKE_SMOBFUNS(proplist_t);
 
 static
@@ -912,7 +868,6 @@ init_proplist_wrapper() {
 }
 
 
-/* ========================================================================== */
 void scm_init_app_scwm_scwmproplist_module() {
   scm_register_module_xxx("app scwm scwmproplist", init_proplist_wrapper);
 }
