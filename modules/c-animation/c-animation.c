@@ -416,9 +416,9 @@ animated_resize_common(SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too
   Bool fWarpPointerToo;
 
 #define FUNC_NAME func_name
-  VALIDATE_ARG_INT_COPY(1,w,width);
-  VALIDATE_ARG_INT_COPY(2,h,height);
   VALIDATE_ARG_WIN_COPY_USE_CONTEXT(3, win,psw);
+  VALIDATE_ARG_INT_COPY_USE_DEF(1,w,width,FRAME_WIDTH(psw));
+  VALIDATE_ARG_INT_COPY_USE_DEF(2,h,height,FRAME_HEIGHT(psw));
   VALIDATE_ARG_INT_OR_UNDEF(4,x);
   VALIDATE_ARG_INT_OR_UNDEF(5,y);
   VALIDATE_ARG_BOOL_COPY_USE_F(6,move_pointer_too_p, fWarpPointerToo);
