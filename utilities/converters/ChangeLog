@@ -1,3 +1,8 @@
+Tue Mar 30 20:39:28 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* fvwm2rc-to-scwmrc: Lots of changes from Doug McNaught -- see the 
+	file log.
+
 Mon Mar 22 12:04:13 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Wrote fvwm2rc-to-scwmrc and converted first version. Since it

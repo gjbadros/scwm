@@ -26,7 +26,9 @@ Thanks to:
 
   Glenn Trigg - implementations of ScwmButtons and simplebiff modules.
 
-  Falkner - edge-ops.scm
+  Sam Falkner - edge-ops.scm
+
+  Doug McNaught - improvements to fvwm2rc-to-scwmrc converter  
 
 Bug reports and/or fixes and/or code snippets have been contributed by:
 
@@ -49,6 +51,7 @@ Bug reports and/or fixes and/or code snippets have been contributed by:
   Emilio Lopes
   Christian Lynbech
   Lieven Marchand
+  Doug McNaught
   Harald Meland
   Perry E. Metzger 
   Stephanie Miller
