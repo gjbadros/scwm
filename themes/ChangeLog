@@ -1,3 +1,7 @@
+Mon Nov 16 14:36:05 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* Makefile.am: Build successfully with builddir != srcdir
+
 Mon Nov  9 10:47:45 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.am: Makefile for the themes; pack them up into possibly
