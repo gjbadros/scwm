@@ -26,8 +26,6 @@ an xor-value, as an option
 
 - Quote key feature -- like C-q in Emacs, C-v in shells
 
-- Animated window shades (afterstep does this; patch for fvwm to do it too)
-
 - Modular window decoration system.
 
 Done:
@@ -37,3 +35,5 @@ Done:
 - Synthetic mouse presses
 
 - Synthetic key presses
+
+- Animated window shades --gjb 11/9/97 
