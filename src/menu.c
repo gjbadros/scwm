@@ -699,24 +699,27 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   Bool fControlKey = Event->xkey.state & ControlMask? True : False;
   Bool fShiftedKey = Event->xkey.state & ShiftMask? True: False;
   Bool fNeedControl = False;
-  KeySym keysym = XLookupKeysym(&Event->xkey,0);
+  KeySym keysym;
+  int cch;
+  char ch;
   MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
   MenuItemInMenu *pmiimNewItem = NULL;
   MenuItemInMenu **rgpmiim = pmd->rgpmiim;
 
   *pfHotkeyUsed = False;
   *pmenu_status = MENUSTATUS_NOP;
-  /* Is it okay to treat keysym-s as Ascii? */
+
+  cch = XLookupString(&Event->xkey,&ch,1,&keysym,NULL);
 
   /* Try to match hot keys */
-  if (isascii(keysym) && isgraph(keysym) && fControlKey == False) { 
+  if (cch == 1 && isascii(ch) && isgraph(ch) && fControlKey == False) { 
     /* allow any printable character to be a keysym, but be sure control
        isn't pressed */
     int ipmiim = 0;
-    keysym = tolower(keysym);
+    ch = tolower(ch);
     /* Search menu for matching hotkey */
     for (; ipmiim < pmd->cmiim; ipmiim ++ ) {
-      if (keysym == tolower(rgpmiim[ipmiim]->chShortcut)) {
+      if (ch == tolower(rgpmiim[ipmiim]->chShortcut)) {
 	*pmenu_status = MENUSTATUS_NEWITEM;
 	*pfHotkeyUsed = True;
 	return rgpmiim[ipmiim];
