@@ -1,3 +1,9 @@
+Mon Sep 28 08:14:23 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Ken Pizzini's fixes to maximize to use client units, 
+	and have unmaximize only undo changes attributable to the last
+	maximize action.
+
 Sat Sep 26 20:38:30 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added `background-system' from Jim Blandy, as an
@@ -423,7 +429,7 @@ Tue Aug 25 14:37:43 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 Fri Aug 21 15:59:15 1998  Greg Badros  <gjb@cs.washington.edu>
 
-	* ALL: Added $Id$ as first line, canonicalize copyrights (add
+	* ALL: Added RCS-Id as first line, canonicalize copyrights (add
 	1998, me where appropriate)
 
 	* flux.scm, face.scm, bincomm.scm, base.scm, auto-raise.scm: Added
