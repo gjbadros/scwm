@@ -1,3 +1,14 @@
+Wed Sep 29 17:54:17 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window-configuration.scm: Use atomic resize-fram with positions
+	in `copy-window-configuration' (and use animated version for now-- 
+	optional later).  Thanks E. Jay Berkenbilt for noticing the
+	problem and suggesting a correct fix.
+
+	* minimal.scm: Added `append-hook!' which might make more sense to 
+	use by default (more intuitive behaviour, though less efficient
+	[small beans, though]).
+
 Wed Sep 29 11:43:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* flux.scm: Use animated-deiconify-to-vp-focus.

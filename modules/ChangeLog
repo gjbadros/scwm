@@ -1,3 +1,10 @@
+Wed Sep 29 17:58:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* c-animation/c-animation.c: Fix non-north gravity bug in
+	animated-resize-window, animated-resize-frame -- uses new
+	ComputeDeltaForResize function.  Also eliminate the superfluous
+	final move/resize calls after the animation... 
+
 Tue Sep 28 08:33:02 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* proplist/scwmproplist.c: Switch from gh_{defer,allow}_ints() to

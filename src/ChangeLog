@@ -1,3 +1,8 @@
+Wed Sep 29 17:53:25 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* resize.h, resize.c: Added ComputeDeltaForResize() and use it in
+	ComputePositionForResize(). 
+
 Wed Sep 29 10:56:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* cursor.c (free_cursor): Return 0, not sizeof(*xp), since we did
