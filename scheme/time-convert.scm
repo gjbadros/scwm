@@ -26,3 +26,15 @@
 Especially useful for `add-timer-hook!' and other timing related procedures
 that take milliseconds."
   (* 1000 sec))
+
+(define-public (msec->usec msec)
+  "Convert MSEC milliseconds into an equivalent number of microseconds.
+Especially useful for `usleep' and other timing related procedures
+that take microseconds."
+  (* 1000 msec))
+
+(define-public (sec->usec sec)
+  "Convert SEC seconds into an equivalent number of microseconds.
+Especially useful for `usleep' and other timing related procedures
+that take microseconds.  See also `sleep'."
+  (* 1000000 sec))
