@@ -1,3 +1,9 @@
+Sun Nov 15 14:35:03 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* wininfo.scm (define-string-matcher): Pass value of regexp/icase,
+ 	not the quoted symbol regexp/icase, to make-regexp. Bug report from
+	Craig Struble <cstruble@vt.edu>.
+
 Sat Nov 14 14:40:24 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.am: install report-usage.scm
