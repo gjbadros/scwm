@@ -40,7 +40,9 @@ InitPictureCMap(Display * dpy, Window Root)
   PictureCMap = root_attr.colormap;
 }
 
-
+/* LoadPicture:  get a picture name "path" and return the picture object
+   Note: will make a copy of path to store in the
+   cache's list of pictures */
 Picture *
 LoadPicture(Display * dpy, Window Root, char *path)
 {
@@ -50,9 +52,9 @@ LoadPicture(Display * dpy, Window Root, char *path)
   XpmAttributes xpm_attributes;
 
 
-  p = (Picture *) safemalloc(sizeof(Picture));
+  p = safemalloc(sizeof(Picture));
   p->count = 1;
-  p->name = path;
+  p->name = strdup(path);
   p->cchName = strlen(path);
   p->next = NULL;
 
@@ -81,7 +83,7 @@ LoadPicture(Display * dpy, Window Root, char *path)
     p->mask = None;
     return p;
   }
-  free(path);
+  free(p->name);
   free(p);
   return NULL;
 }
@@ -126,6 +128,7 @@ NEXT:
     p->next = PictureList;
     PictureList = p;
   }
+  free(path);
   return p;
 }
 
@@ -167,7 +170,9 @@ DestroyPicture(Display * dpy, Picture * p)
 size_t 
 free_picture(SCM obj)
 {
-  free(PICTURE(obj));
+  scwm_picture *spic = PICTURE(obj);
+  DestroyPicture(dpy,spic->pic);
+  free(spic);
   return (0);
 }
 
@@ -225,11 +230,11 @@ make_picture(SCM picture_filename)
   }
 
   pic = CachePicture(dpy,Scr.Root,szPicturePath,szName);
+  free(szName);
 
   if (!pic) {
     scwm_msg(ERR,__FUNCTION__,"Could not load pixmap %s",szName);
     return SCM_UNDEFINED;
   }
-
   return pic2scm(pic);
 }

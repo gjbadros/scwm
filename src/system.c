@@ -106,7 +106,7 @@ sleep_ms(int n)
  * do something with it.  By then, the file might not be accessible.
  * Oh well.
  * FIXGJB: race conditions here!
- *
+ * Note that the returned char * must be free-ed
  ****************************************************************************/
 char *
 findFile(char *szName, char *szPathlist, int type)

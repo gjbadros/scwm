@@ -1,4 +1,4 @@
-/* $Id 
+/* $Id$
  * window.c
  *
  */
@@ -1727,14 +1727,15 @@ set_icon_x(SCM picture, SCM win)
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
   } else if (gh_string_p(picture)) {
     int len;
+    char *name = gh_scm2newstr(picture, &len);
 
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
-    tmp_win->picIcon = CachePicture(dpy, Scr.Root, szPicturePath,
-				    gh_scm2newstr(picture, &len));
+    tmp_win->picIcon = CachePicture(dpy, Scr.Root, szPicturePath, name);
     tmp_win->szIconFile = tmp_win->picIcon->name;
     XDestroyWindow(dpy, tmp_win->icon_w);
     tmp_win->icon_w = None;
+    free(name);
   } else if (SCM_NIMP(picture) && PICTURE_P(picture)) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
@@ -1771,8 +1772,10 @@ set_mini_icon_x(SCM picture, SCM win)
     sw->picMiniIcon = NULL;
   } else if (gh_string_p(picture)) {
     int len;
-    sw->picMiniIcon = CachePicture(dpy, Scr.Root, szPicturePath,
-				   gh_scm2newstr(picture, &len));
+    char *name = gh_scm2newstr(picture, &len);
+
+    sw->picMiniIcon = CachePicture(dpy, Scr.Root, szPicturePath, name);
+    free(name);
   } else if (SCM_NIMP(picture) && PICTURE_P(picture)) {
     sw->picMiniIcon = PICTURE(picture)->pic;
   } else {
