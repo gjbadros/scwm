@@ -1,5 +1,7 @@
 Sat Oct 18 02:29:34 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* version.h: Bumped version to 0.3
+
 	* configure: Regenerated from configure.in.
 
 	* configure.in: Added -g to the list of default build
