@@ -1,5 +1,8 @@
 Mon Nov 10 05:17:36 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* decor.c, face.c, Picture.c, system.c, ICCCM.c, Grab.c, 
+	string_token.c: Added copyright notices.
+
 	* errors.c, errors.h, window.c: Signal an error when the image
  	can't be loaded in set-icon!
 	
