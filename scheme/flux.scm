@@ -42,14 +42,28 @@
   (let ((w (get-window))) (window-shade w #t) (un-window-shade w #t)))
 
 (define-public (write-all port . lst)
-  (if (eq? port ()) (set! port (current-output-port)))
+  "Write all arguments into the port. #t means `current-output-port'."
+  (if (eq? port #t) (set! port (current-output-port)))
   (do ((zz lst (cdr zz))) ((null? zz))
     (if (string? (car zz)) (display (car zz) port) (write (car zz) port))))
 
 (define-public (to-string . rest)
-  (with-output-to-string (lambda () (apply write-all () rest))))
+  "Dump all arguments into a string."
+  (with-output-to-string (lambda () (apply write-all #t rest))))
+
+(define*-public (move-window-to-viewport xx yy #&optional ww)
+  "Move the window to the viewport; the first one being (0 0)."
+  (let ((pos (window-position ww)) (sz (display-size)))
+    (move-to  (+ (* xx (car sz)) (modulo (car pos) (car sz)))
+              (+ (* yy (cadr sz)) (modulo (cadr pos) (cadr sz))) ww)))
+
+(define-public (in-viewport xx yy)
+  "Return a function of one argument, a window, moving it to the viewport."
+  (lambda (ww) (move-window-to-viewport xx yy ww)))
 
 (define-public (system-info-string)
+  "Return a string with various system information.
+Use `show-system-info' to display it in a window."
   (let ((vv (X-version-information)) (dd (X-display-information)))
     (apply
      to-string "Guile verion:\t\t" (version)
