@@ -50,6 +50,7 @@
 #include <X11/Xresource.h>
 #endif /* SHAPE */
 #include "module.h"
+#include "binding.h"
 
 /* Used to parse command line of clients for specific desk requests. */
 /* Todo: check for multiple desks. */
@@ -713,6 +714,8 @@ ScwmWindow *AddWindow(Window w)
       resize_window(&Event , tmp_win->w, tmp_win, C_WINDOW, "", 0);
     }
   tmp_win->schwin=make_window(tmp_win);
+  /* XXX - Not sure if this is the right place to do this, but oh well.... */
+  run_new_window_hook(tmp_win->schwin);
   InstallWindowColormaps(colormap_win);
   return (tmp_win);
 }
@@ -1117,8 +1120,5 @@ unsigned long LookInList(name_list *list, char *name, XClassHint *class,
     }
   return retval;
 }
-
-
-
 
 
