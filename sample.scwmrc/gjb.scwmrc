@@ -219,7 +219,7 @@
 						    (scwm-about-message)))
 	     (menu-item "&Help ScwmTNL" "question" (lambda ()
 						  (scwm-help)))
-	     (menu-item "E&xit Fvwm" "stop" quit-verify)))
+	     (menu-item "E&xit Scwm" "stop" quit-verify)))
 
 (define (popup-menu-root-start)
   (popup menu-root-start))
