@@ -116,6 +116,7 @@ void ChangeVirtualPosition(int vx, int vy, Bool fGrab) {
 void CassowaryModifyOpaqueFlag(Bool *pfOpaque) { /* empty */ }
 
 void CassowaryEndEdit(ScwmWindow *psw) {
+  if (psw) ResizePswToCurrentSize(psw);
 }
 #endif
 

@@ -25,6 +25,7 @@ extern "C" {
 #include "ClLinearInequality.h"
 #include "ClSimplexSolver.h"
 #include "../guile/cassowary_scm.hpp"
+#include "../guile/cassowary_scm.h"
 #include "screen.h" /* to be able to add stays to all the windows */
 #include <strstream>
 #include <set>
