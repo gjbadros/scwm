@@ -1,3 +1,20 @@
+Mon Oct 18 10:34:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (noinst_HEADERS): Added window.inl to list.
+
+	* window.h: Remove inline prototypes, and replace with #include of 
+	window.inl
+
+	* window.inl: Added -- includes all the inline functions from
+	window.c, and is now #included at end of window.h
+
+	* window.c: Move inline functions into window.inl
+
+	* scwm-constraints.hpp, resize.c: Use new
+ 	{Max,Min}Frame{Width,Height} functions.  This should fix a bug in
+	the display of wfcmgr windows that set their maximum client size
+	that was being interpreted incorrectly as a maximum frame size.
+
 Mon Oct 18 09:31:55 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* message-window.c (s_message_window_set_image_x): Permit #f as
