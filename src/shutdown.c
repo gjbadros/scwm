@@ -21,6 +21,10 @@
 #include "callbacks.h"
 #include "syscompat.h"
 
+#ifdef HAVE_LIBSM_LIBICE
+#include "session-manager.h"
+#endif
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
