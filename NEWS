@@ -42,6 +42,12 @@ numerous scwmdoc script fixes and improvements.
 * Snap attraction (app scwm snap)
 ** `snap-initialize', `snap-reset'
 
+* Various improvements to scwm.el Emacs mode
+** Display long responses in own window, sized appropriately
+** uncommenting evaluation
+** scheme-mode compatibility bindings
+** scwm-load-file command
+
 * ICCCM Group support (app scwm group)
 ** `group->windows', `interactive-move-group', `lower-group', `raise-group'
 ** `move-group', `move-group-to-desk', `move-group-relative'

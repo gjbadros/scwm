@@ -19,18 +19,18 @@ Web-page related
 ** also, gjb has some marked messages from the mailing list that should
 go in the bug database
 
-* Add a link to the auto-faq to the web page
+DONE * Add a link to the auto-faq to the web page
 ** we need to enter Arturo Perez's list
 
 * Add a projects list page
 
-* Mirror all the files needed to build a full-featured scwm
-** Gtk-1.2, guile-gtk-0.15, cassowary-0.4
+DONE * Mirror all the files needed to build a full-featured scwm
+DONE ** Gtk-1.2, guile-gtk-0.15, cassowary-0.4
 
-* Mirror most dev tools needed
-** autoconf, automake, libtool, jade rpm
+DONE * Mirror most dev tools needed
+DONE ** autoconf, automake, libtool, jade rpm
 
-* Add links to developer's documentation
+DONE * Add links to developer's documentation
 
 Installation related
 --------------------
@@ -56,12 +56,13 @@ window manager.
 * Further testing of Gnome, KDE interoperability, especially ensuring
 that the pagers work
 
-* Color limiting capability. Right now using scwm on an 8-bit display
-can eat a lot of images or lead to excessive color allocation failures.
+DONE via imlib * Color limiting capability. Right now using scwm on an 8-bit display can eat a lot of images or lead to excessive color allocation failures.
 
-* Faster image loading. This, as well as the previous problem, could
+DONE via imlib * Faster image loading. This, as well as the previous problem, could
 probably be solved through an Imlib module (or even pervasive use of
 Imlib).
+
+DONE via ESD * Add sound support module
 
 * Fix only the most awful API stupidity - a lot of the available
 procedures have silly argument orders or are generally poorly
