@@ -39,7 +39,7 @@ PATH_DEFINES=-DSCWM_ICONDIR=\"${scwm_icons}\" \
 EXTRA_DEFINES=${PATH_DEFINES}
 
 CC=@CC@
-INCLUDES=-I../include -I${top_srcdir}/include ${x_includes} -I${prefix}/include
+INCLUDES=-I../include -I${top_srcdir}/include -I. ${x_includes} -I${prefix}/include
 CFLAGS=${INCLUDES} @CFLAGS@ ${EXTRA_DEFINES}
 MAKEDEPEND=@MAKEDEPEND@
 INSTALL=@INSTALL@
