@@ -278,7 +278,7 @@ register other image loaders using the extension or the special string
 "default" for the loader to be tried for an image that cannot be
 loaded any other way.
 
-[From src/image.c:262]
+[From src/image.c:260]
 
 
 Images
@@ -291,7 +291,7 @@ object by loading the image. Using the same image filename more than
 once is not inefficient, as caching ensures that image objects are
 shared.
 
-[From src/image.c:113]
+[From src/image.c:111]
 
 
 Input Hooks
@@ -309,7 +309,7 @@ invocation.
 [From src/callbacks.c:907]
 
 
-Interactive specfications
+Interactive specifications
 -
 
 

@@ -58,7 +58,7 @@ The cursor to use for set focus actions, defaults to hand2.
 image-load-path
 - 
 List of strings of directories in which to look for image files. 
-[From src/image.c:817]
+[From src/image.c:815]
 
 
 locale-fullname

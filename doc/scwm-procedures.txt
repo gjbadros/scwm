@@ -722,7 +722,7 @@ name will change, for example if you alter the image file or change
 your image path. For this unlikely eventuality,
 `clear-image-cache-entry' is provided - it removes the image
 associated with NAME from the image cache
-[From src/image.c:636]
+[From src/image.c:634]
 
 (clear-window-style)
 - (app scwm style)
@@ -789,7 +789,7 @@ is filled with BGCOLOR. See also `clone-scaled-image'
 - Built-in Primitive
 Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT.
 See also `clone-resized-image' from the background module.
-[From src/image.c:686]
+[From src/image.c:684]
 
 (close-all-xlogo-windows)
 - (app scwm flux)
@@ -2200,7 +2200,7 @@ Return an association list giving some properties of IMAGE.
 Currently defined properties are 'filename, the fully expanded
 pathname of the image, 'width, its width, 'height, its height, and
 depth, its color depth.
-[From src/image.c:174]
+[From src/image.c:172]
 
 (image-property image key)
 - (app scwm base)
@@ -2213,17 +2213,17 @@ See `image-properties' for a list of the keys.
 Return the short name of IMAGE.
 Use `image-properties' to access other properties of IMAGE
 including its full name.
-[From src/image.c:208]
+[From src/image.c:206]
 
 (image-size image)
 - Built-in Primitive
 Return the size of IMAGE as a list (width height).
-[From src/image.c:228]
+[From src/image.c:226]
 
 (image? obj)
 - Built-in Primitive
 Returns #t if OBJ is an image object, otherwise #f.
-[From src/image.c:164]
+[From src/image.c:162]
 
 (ImageMagick-loader fname)
 - (app scwm image-loaders)
@@ -2699,7 +2699,7 @@ No documentation supplied.
 (load-imlib-image full-path)
 - Built-in Primitive
 Load an image file using imlib identified by the pathname FULL-PATH.
-[From src/image.c:374]
+[From src/image.c:372]
 
 (load-preferences #&optional 
 				 (filename (string-append (getenv "HOME") "/.scwm-options")))
@@ -2725,12 +2725,12 @@ No documentation supplied.
 (load-xbm full-path)
 - Built-in Primitive
 Load an X Bitmap file identified by the pathname FULL-PATH.
-[From src/image.c:271]
+[From src/image.c:269]
 
 (load-xpm full-path)
 - Built-in Primitive
 Load an X Pixmap file identified by the pathname FULL-PATH.
-[From src/image.c:305]
+[From src/image.c:303]
 
 (logo-remove)
 - 
@@ -2878,7 +2878,7 @@ To load the image, the appropriate image loaders will be invoked as
 needed. If NAME starts with "/", "./" or "../", it is treated as a
 fully qualified pathname; otherwise, the image path is searched for an
 appropriate file.
-[From src/image.c:568]
+[From src/image.c:566]
 
 (make-image-or-warn filename)
 - (app scwm base)
@@ -4970,7 +4970,7 @@ empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading). PROC will
 be called with the full pathname of the image and should return an
 image object, or #f if it succeeds.
-[From src/image.c:409]
+[From src/image.c:407]
 
 (remove-input-hook! handle)
 - Built-in Primitive
@@ -7616,7 +7616,7 @@ Unregister the loader, if any, for images ending in EXTENSION.
 EXTENSION must be a string beginning with a period, the
 empty string (for files with no extension), or the string "default"
 (for files that no other image loader succeeds in loading).
-[From src/image.c:430]
+[From src/image.c:428]
 
 (unselect-all-windows)
 - (app scwm window-selection)
@@ -7977,7 +7977,7 @@ Return an image with the contents of window WIN.
 WIN can be a window id (as a long), a window object, or
 the symbol 'root-window. Captures the rectangle of the window
 at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT.
-[From src/image.c:653]
+[From src/image.c:651]
 
 (window-aligned-viewport win)
 - (app scwm virtual)

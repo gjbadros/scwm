@@ -310,7 +310,7 @@ removed. An input hook may safely remove itself from within its own
 invocation.
 
     </para></sect1>
-    <sect1 id="Interactive-specfications"><title>Interactive specfications</title><para>
+    <sect1 id="Interactive-specifications"><title>Interactive specifications</title><para>
 
 
    Procedures can have an interactive specification that looks like:
@@ -648,6 +648,345 @@ ordered alphabetically by name.
 </para>
 
       </sect1>
+    <sect1 id="after-change-desk-hook"><title>after-change-desk-hook (2 args)</title><para>
+This hook is invoked whenever the current desktop is changed.
+It is called with two argument, both integers.  The first is the
+new desktop number, the second is the old desktop number.  It
+is called after the desk is changed. See also <link linkend="change-desk-hook"><function>change-desk-hook</function></link>.
+    </para></sect1>
+    <sect1 id="after-new-window-hook"><title>after-new-window-hook (1 arg)</title><para>
+This hook is invoked after a window is created and placed.
+Its procedures are each called with a single argument, WIN, the new window.
+Any window operations may be performed at this time. However, it is
+recommended that placement-related operations, such as setting the
+position, desk, viewport location and z-ordering of a window be done
+in the placement procedure instead.  It should be used for setting
+window styles, as the window geometry needs to be fully and correctly
+specified before the window is placed.  The <link linkend="window-style"><function>window-style</function></link> mechanism
+from the "(app scwm style)" module provides a convenient interface to
+setting the relevant parameters when a new window is created. 
+
+See also <link linkend="before-new-window-hook"><function>before-new-window-hook</function></link> and <link linkend="before-place-new-window-hook"><function>before-place-new-window-hook</function></link>.
+    </para></sect1>
+    <sect1 id="before-new-window-hook"><title>before-new-window-hook (1 arg)</title><para>
+This hook is invoked when first creating a new window object.
+Its procedures are each called with a single argument, WIN, the new
+window.  Only a subset of the usual window parameters should be set
+here, in particular, those that control what hints will be respected
+for this window, and those that control how the window will be placed.
+
+This hook does not typically need to be used directly by the user;
+<link linkend="window-style"><function>window-style</function></link> from the "(app scwm style)" module provides a convenient
+interface to setting the relevant parameters when a new window is
+created.
+
+See also <link linkend="before-place-new-window-hook"><function>before-place-new-window-hook</function></link> and <link linkend="after-new-window-hook"><function>after-new-window-hook</function></link>. 
+    </para></sect1>
+    <sect1 id="before-place-new-window-hook"><title>before-place-new-window-hook (1 arg)</title><para>
+This hook is invoked just before placing a new window.
+It comes after <link linkend="before-new-window-hook"><function>before-new-window-hook</function></link>, but before <link linkend="after-new-window-hook"><function>after-new-window-hook</function></link>. 
+Its procedures are each called with a single argument, WIN, the new window.
+This hook may be removed later since it is mostly redundant with the other
+two hooks, despite being invoked at a slightly different time. 
+
+See also <link linkend="before-new-window-hook"><function>before-new-window-hook</function></link> and <link linkend="after-new-window-hook"><function>after-new-window-hook</function></link>.
+    </para></sect1>
+    <sect1 id="broadcast-config-hook"><title>broadcast-config-hook (2 args)</title><para>
+This hook is invoked whenever fvwm2 would call BroadcastConfig.
+This hook is principally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed two arguments: the event-type
+and the window object.
+    </para></sect1>
+    <sect1 id="broadcast-hook"><title>broadcast-hook (9 args)</title><para>
+This hook is invoked whenever fvwm2 would call Broadcast.
+This hook is principally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed a numerical code
+representing the event type, a number that indicates how many of the
+following data arguments are meaningful, and 7 numeric data arguments.
+    </para></sect1>
+    <sect1 id="broadcast-mini-icon-hook"><title>broadcast-mini-icon-hook (2 args)</title><para>
+This hook is invoked whenever fvwm2 would call BroadcastMiniIcon.
+This hook is principally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures The procedures in this hook are passed two arguments:
+the event-type and the window object.
+    </para></sect1>
+    <sect1 id="broadcast-name-hook"><title>broadcast-name-hook (5 args)</title><para>
+This hook is invoked whenever fvwm2 would call BroadcastName.
+This hook is principally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways
+that can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed an event type, three
+numeric data arguments, and a string.
+    </para></sect1>
+    <sect1 id="change-desk-hook"><title>change-desk-hook (2 args)</title><para>
+This hook is invoked whenever the current desktop is changed.
+It is called with two argument, both integers.  The first is the
+new desktop number, the second is the old desktop number. It is
+called before the desk is changed.  See also <link linkend="after-change-desk-hook"><function>after-change-desk-hook</function></link>.
+    </para></sect1>
+    <sect1 id="client-message-hook"><title>client-message-hook (4 args)</title><para>
+This hook is invoked whenever Scwm receives an X/11 client message.
+It is called with four arguments: the window, the message-type atom, the format (8, 16, or 32), 
+and the vector of data.
+    </para></sect1>
+    <sect1 id="deiconify-hook"><title>deiconify-hook (2 args)</title><para>
+This hook is invoked when a window is deiconified.
+It is called with two arguments: WINDOW, WAS-ICONIFIED?.
+WINDOW is the window iconfied, and WAS-ICONIFIED? is
+a boolean telling whether the window was iconified previously.
+    </para></sect1>
+    <sect1 id="desk-size-change-hook"><title>desk-size-change-hook (2 args)</title><para>
+This hook is invoked whenever the desk size is changed.  It is
+called with two arguments, both integers, which are the width and
+height of the new desk size in screens.
+    </para></sect1>
+    <sect1 id="edge-enter-hook"><title>edge-enter-hook (1 arg)</title><para>
+This hook is invoked whenever the mouse pointer enters a screen edge.
+Procedures in the hook are called with one argument, one of the
+symbols 'north, 'south, 'east or 'west indicating which edge was
+entered.
+    </para></sect1>
+    <sect1 id="edge-leave-hook"><title>edge-leave-hook (1 arg)</title><para>
+This hook is invoked whenever the mouse pointer leaves a screen edge.
+Procedures in the hook are called with one argument, one of the
+symbols 'north, 'south, 'east or 'west indicating which edge was
+entered.
+    </para></sect1>
+    <sect1 id="edge-scroll-hook"><title>edge-scroll-hook (thunk)</title><para>
+This hook is invoked whenever an edge scroll takes place.
+Procedures in the hook are called with no arguments.
+    </para></sect1>
+    <sect1 id="error-hook"><title>error-hook (1 arg)</title><para>
+Called on all kinds of errors and exceptions.
+Whenever an error or other uncaught throw occurs on any callback,
+whether a hook, a mouse binding, a key binding, a menu entry, a file
+being processed, or anything else, error-hook will be invoked. Each
+procedure in the hook will be called with the throw arguments; these
+will generally include information about the nature of the error. 
+    </para></sect1>
+    <sect1 id="iconify-hook"><title>iconify-hook (2 args)</title><para>
+This hook is invoked when a window is iconified.
+It is called with two arguments: WINDOW, WAS-ICONIFIED?.
+WINDOW is the window iconfied, and WAS-ICONIFIED? is
+a boolean telling whether the window was iconified previously.
+    </para></sect1>
+    <sect1 id="image-not-found-hook"><title>image-not-found-hook (1 arg)</title><para>
+Called with image name as a string when not found.
+    </para></sect1>
+    <sect1 id="interactive-move-finish-hook"><title>interactive-move-finish-hook (1 arg)</title><para>
+This hook is invoked at the end of an interactive move.
+It is called with one argument, WINDOW.
+    </para></sect1>
+    <sect1 id="interactive-move-new-position-hook"><title>interactive-move-new-position-hook (3 args)</title><para>
+This hook is invoked during an interactive move.
+It is called with three arguments, WINDOW, NEW-VP-X, and NEW-VP-Y,
+whenever the window is moved to a new location. The position refers
+to the position of the frame window (not the client window) in
+viewport coordinates.
+    </para></sect1>
+    <sect1 id="interactive-move-start-hook"><title>interactive-move-start-hook (1 arg)</title><para>
+This hook is invoked at the start of an interactive move.
+It is called with one argument, WINDOW.
+    </para></sect1>
+    <sect1 id="interactive-resize-finish-hook"><title>interactive-resize-finish-hook (1 arg)</title><para>
+This hook is invoked at the end of an interactive resize.
+It is called with one argument, WINDOW.
+    </para></sect1>
+    <sect1 id="interactive-resize-new-size-hook"><title>interactive-resize-new-size-hook (7 args)</title><para>
+This hook is invoked during an interactive resize.  
+It is called with seven arguments, WINDOW, X-POSITION, Y-POSITION,
+NEW-WIDTH-PIXELS, NEW-HEIGHT-PIXELS, NEW-WIDTH-UNITS, and
+NEW-HEIGHT-UNITS whenever the window is changed to a new size.  The
+first five arguments refer to the size and position of the frame
+window (not the client window). The -UNITS arguments refer to the size
+of the client window and are in client units (e.g., characters for
+Emacsen and XTerms). 
+    </para></sect1>
+    <sect1 id="interactive-resize-start-hook"><title>interactive-resize-start-hook (3 args)</title><para>
+This hook is invoked at the start of an interactive resize.
+It is called with three arguments: WINDOW, XMOTION, YMOTION.
+XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
+can happen on the right/bottom side, not at all, or the top/left side,
+respectively.
+    </para></sect1>
+    <sect1 id="invalid-interaction-hook"><title>invalid-interaction-hook (thunk)</title><para>
+This hook is invoked with no arguments when the user hits an invalid
+key or performs an invalid mouse action during an interactive
+operation like <link linkend="interactive-resize"><function>interactive-resize</function></link> or <link linkend="interactive-move"><function>interactive-move</function></link>. <link linkend="beep"><function>beep</function></link> is
+one example of a procedure to use here.
+    </para></sect1>
+    <sect1 id="load-processing-hook"><title>load-processing-hook (1 arg)</title><para>
+This hook is invoked for every several top-level s-exps in the startup file.
+The hook procedures are invoked with one argument, the count of the
+s-expressions evaluated thus far. See also <link linkend="set-load-processing-hook-frequency-x"><function>set-load-processing-hook-frequency!</function></link>.
+    </para></sect1>
+    <sect1 id="scwm-test-hook-0"><title>scwm-test-hook-0 (thunk)</title><para>
+Just a test hook that takes no arguments.
+See <link linkend="scwm-run-test-hook-0"><function>scwm-run-test-hook-0</function></link>
+    </para></sect1>
+    <sect1 id="scwm-test-hook-1"><title>scwm-test-hook-1 (1 arg)</title><para>
+Just a test hook that takes one argument.
+See <link linkend="scwm-run-test-hook-1"><function>scwm-run-test-hook-1</function></link>.
+    </para></sect1>
+    <sect1 id="select-window-done-hook"><title>select-window-done-hook (1 arg)</title><para>
+This hooks is run when a window is selected.
+The hook procedures are called with a single argument, the window just left.
+See also <link linkend="select-window-enter-hook"><function>select-window-enter-hook</function></link> and <link linkend="select-window-leave-hook"><function>select-window-leave-hook</function></link>.
+    </para></sect1>
+    <sect1 id="select-window-enter-hook"><title>select-window-enter-hook (1 arg)</title><para>
+This hook is invoked when a window is entered during window selection.
+The hook procedures are called with a single argument, the window just entered.
+This hook is invoked once <link linkend="select-window-interactively-no-message"><function>select-window-interactively-no-message</function></link> is
+called if the pointer is already in a window.  (But the
+leave hook is not invoked similarly when the selection completes).
+    </para></sect1>
+    <sect1 id="select-window-leave-hook"><title>select-window-leave-hook (1 arg)</title><para>
+This hook is invoked when a window is left during window selection.
+The hook procedures are called with a single argument, the window just left.
+This hook is not invoked upon selection completion (unlike
+<link linkend="select-window-enter-hook"><function>select-window-enter-hook</function></link> that is called initially upon calling
+<link linkend="select-window-interactively-no-message"><function>select-window-interactively-no-message</function></link>). See also <link linkend="select-window-done-hook"><function>select-window-done-hook</function></link>.
+    </para></sect1>
+    <sect1 id="shutdown-hook"><title>shutdown-hook (1 arg)</title><para>
+The procedures in shutdown-hook are before scwm quits or restarts.
+A single boolean argument is passed that is <literal>#t</literal> iff scwm is restarting.
+    </para></sect1>
+    <sect1 id="startup-hook"><title>startup-hook (thunk)</title><para>
+The procedures in startup-hook are called with no arguments after scwm
+has processed the scwmrc and captured all application windows, and
+right before it enters the main event loop.  Note that during
+processing of the .scwmrc startup file, windows have not already been
+captured, so the window-list (as reported by <link linkend="list-all-windows"><function>list-all-windows</function></link>) is
+empty.  To provide behviour conditioned on a property of an existing
+window, this hook should be used instead.
+    </para></sect1>
+    <sect1 id="viewport-position-change-hook"><title>viewport-position-change-hook (4 args)</title><para>
+This hook is invoked whenever the viewport position is changed.
+It is called with four arguments, all integers.  The first two are 
+the x and y coordinates of the new viewport position in pixels and
+the second two are the change in x and y from the previous position.
+    </para></sect1>
+    <sect1 id="vv-recognition-hook"><title>vv-recognition-hook (3 args)</title><para>
+This hook is invoked when ViaVoice recognizes a phrase. 
+Called with 3 arguments: (was-accepted? phrase-string annotations-vector)
+    </para></sect1>
+    <sect1 id="window-close-hook"><title>window-close-hook (1 arg)</title><para>
+This hook is invoked whenever a scwm-managed window is closed.
+It is invoked on deletes, destroys, or for any reason that a window
+is closed. The hook procedures are invoked with one argument,
+WIN, the window being closed.  The WIN is still valid during the hook
+procedures.
+    </para></sect1>
+    <sect1 id="window-enter-hook"><title>window-enter-hook (1 arg)</title><para>
+This hook is invoked whenever the mouse pointer enters a top-level window.
+It is called with one argument, the window object of the window just
+entered.
+    </para></sect1>
+    <sect1 id="window-focus-change-hook"><title>window-focus-change-hook (1 arg)</title><para>
+This hook is invoked whenever the keyboard focus is changed.
+It is called with one argument, the window object of the window
+that now has the focus, or <literal>#f</literal> if no window now has the focus. 
+See also <link linkend="window-focus-lost-hook"><function>window-focus-lost-hook</function></link>.
+    </para></sect1>
+    <sect1 id="window-focus-lost-hook"><title>window-focus-lost-hook (1 arg)</title><para>
+This hook is invoked whenever the focus is lost on a window.
+It is called with one argument, the window object of the window
+that just lost the keyboard focus. See also <link linkend="window-focus-change-hook"><function>window-focus-change-hook</function></link>.
+    </para></sect1>
+    <sect1 id="window-fully-obscured-hook"><title>window-fully-obscured-hook (1 arg)</title><para>
+Invoked when window receives a VisibilityFullyObscured event.
+The hook procedures are invoked with one argument, the window object
+of the window that is now fully obscured.
+    </para></sect1>
+    <sect1 id="window-leave-hook"><title>window-leave-hook (1 arg)</title><para>
+This hook is invoked whenever the mouse pointer leaves a top-level window.
+The hook procedures are invoked with one argument, the window object
+of the window just left.
+    </para></sect1>
+    <sect1 id="window-partially-obscured-hook"><title>window-partially-obscured-hook (1 arg)</title><para>
+Invoked when window receives a VisibilityPartiallyObscured
+event.  The hook procedures are invoked with one argument, the window
+object of the window that is now partially obscured.  Beware that this
+event happens more often than you might expect and an action procedure
+attached here should be very careful about manipulating windows in a way
+that might cause more Visibility events.
+    </para></sect1>
+    <sect1 id="window-property-change-hook"><title>window-property-change-hook (4 args)</title><para>
+This hook is invoked whenever a window property changes.
+The hook procedures are invoked with four arguments, the window whose
+property changed, the name of the changed property, the new value and
+the old value.
+    </para></sect1>
+    <sect1 id="window-unobscured-hook"><title>window-unobscured-hook (1 arg)</title><para>
+Invoked when window receives a VisibilityUnobscured event.
+The hook procedures are invoked with one argument, the window object
+of the window that is now fully visible. Beware that this
+event happens more often than you might expect and an action procedure
+attached here should be very careful about manipulating windows in a way
+that might cause more Visibility events.
+    </para></sect1>
+    <sect1 id="X-ConfigureRequest-hook"><title>X-ConfigureRequest-hook (6 args)</title><para>
+This hook is invoked upon ConfigureRequest events.
+The arguments are: '(win icon? x y width height) where win
+is the window requesting the configuration change, icon? is <literal>#t</literal>
+iff that window's icon is requesting the change, x, y, width,
+and height are either integers or <literal>#f</literal> to indicate that that
+aspect was not part of the configure request event. 
+If <link linkend="configure-request-handled"><function>configure-request-handled</function></link> is <literal>#t</literal> after execution of the
+hook procedures, then no C-level handling of the request
+will be performed.
+    </para></sect1>
+    <sect1 id="X-DestroyNotify-hook"><title>X-DestroyNotify-hook (1 arg)</title><para>
+This hook is invoked upon DestroyNotify X events.
+It indicates a window was destroyed.  The hook procedures are
+invoked with one argument, WINID, the X id of the window that was destroyed. 
+This hook is invoked for both the client window and the window frame
+IDs (i.e., twice per top-level window).  You probably want to use
+<link linkend="window-close-hook"><function>window-close-hook</function></link> or <link linkend="X-UnmapNotify-hook"><function>X-UnmapNotify-hook</function></link> instead.
+    </para></sect1>
+    <sect1 id="X-MappingNotify-hook"><title>X-MappingNotify-hook (thunk)</title><para>
+This hook is invoked whenever a MappingNotify X event is
+received. A MappingNotify event indicates a change of keymapping - in
+particular, it may indicate a change of available modifiers or mouse
+buttons. The hook procedures are invoked with no arguments.
+    </para></sect1>
+    <sect1 id="X-MapRequest-hook"><title>X-MapRequest-hook (1 arg)</title><para>
+This hook is invoked upon MapRequest X events.  It indicates a
+window is trying to map itself (add itself to the display).  The hook 
+procedures are invoked with one argument, WIN, the window being mapped.  
+The WIN is valid during the hook procedures.
+    </para></sect1>
+    <sect1 id="X-PropertyNotify-hook"><title>X-PropertyNotify-hook (2 args)</title><para>
+This hook is invoked whenever a PropertyNotify event is received
+for a window scwm is managing. This indicates that an X window
+property has changed. Watching for window property changes can be used
+to construct your own custom window manager protocols. The hook
+procedures are invoked with two arguments, the name of the property
+that changed (as a string) and the window that it changed for.
+    </para></sect1>
+    <sect1 id="X-root-PropertyNotify-hook"><title>X-root-PropertyNotify-hook (2 args)</title><para>
+This hook is invoked whenever a PropertyNotify event is received
+on the root window.  This indicates that an X window
+property has changed. Watching for window property changes can be used
+to construct your own custom window manager protocols, or interface
+to other desktop environments such as KDE or GNOME. The hook
+procedures are invoked with two arguments: the atom for the changed
+property and a boolean telling whether the property was deleted. 
+These arguments are different from those passed to
+X-PropertyNotify-hook's procedures.
+    </para></sect1>
+    <sect1 id="X-UnmapNotify-hook"><title>X-UnmapNotify-hook (1 arg)</title><para>
+This hook is invoked upon UnmapNotify X events.  It indicates a
+window is being unmapped (removed from display).  The hook procedures
+are invoked with one argument, WIN, the window being destroyed.  The
+WIN is still valid during the hook procedures.
+    </para></sect1>
   </chapter>
   <chapter>
     <title>User variables</title>
@@ -4588,7 +4927,7 @@ associated with <parameter>name</parameter> from the image cache
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 636 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 634 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4799,7 +5138,7 @@ See also <link linkend="clone-resized-image"><function>clone-resized-image</func
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 686 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 684 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9746,7 +10085,7 @@ depth, its color depth.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 174 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 172 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9791,7 +10130,7 @@ including its full name.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 208 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 206 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9812,7 +10151,7 @@ including its full name.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 228 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 226 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -9833,7 +10172,7 @@ including its full name.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 164 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 162 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11509,7 +11848,7 @@ Uses <link linkend="eq-p"><function>eq?</function></link> for testing equality w
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 374 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 372 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11599,7 +11938,7 @@ tar file with extension .tar, .tar.gz, or .tgz.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 271 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 269 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11620,7 +11959,7 @@ tar file with extension .tar, .tar.gz, or .tgz.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 305 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 303 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12072,7 +12411,7 @@ appropriate file.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 568 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 566 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18884,7 +19223,7 @@ image object, or <literal>#f</literal> if it succeeds.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 409 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 407 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -27642,7 +27981,7 @@ empty string (for files with no extension), or the string "default"
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 430 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 428 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -28835,7 +29174,7 @@ at <parameter>x-offset</parameter>, <parameter>y-offset</parameter> with width <
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/~checkout~/src/image.c"><filename>src/image.c</filename></ulink>
-  at line 653 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
+  at line 651 (<ulink url="http://scwm.mit.edu/cgi-bin/cvsweb.new/src/image.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
