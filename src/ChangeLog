@@ -1,3 +1,13 @@
+Sun Oct 26 01:05:27 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* color.c, decor.c, font.c, menu.c, window.c: changed all of the
+ 	printer functions, print_color, print_decor, print_font,
+ 	print_menu and print_window to be able to use either the old
+	guile printing functions or the new ones.
+
+	* window.c: Use the correct one of gh_vref or gh_vector_ref,
+ 	depending on what we have.
+
 Sat Oct 25 23:15:40 1997  unknown  <gjb@cs.washington.edu>
 
 	* Added send-button-press for synthetic keypress events like GWM
