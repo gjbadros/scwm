@@ -616,6 +616,14 @@
      (make-small-window-ops-menu w) w 1))
   #f)
 
+(define* (popup-small-ops-current-window)
+  ""
+  (interactive)
+  (let ((w (window-with-pointer)))
+    (and w
+	 (popup-menu-from-decoration
+	  (make-small-window-ops-menu w) w 1))))
+
 (define* (popup-style-menu)
   ""
   (interactive)
@@ -1204,6 +1212,8 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all (hyper "q") quote-next-event)
 ;; (bind-key 'all (hyper "q") quote-key-event)
 ;; (bind-key 'all (hyper "m") quote-mouse-event)
+
+(bind-key 'all "A-space" popup-small-ops-current-window)
 
 (load-user-file "after-bindings")
 

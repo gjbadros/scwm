@@ -72,6 +72,7 @@
 		  key-mover gtk gtk-about path-cache animation netscape
 		  animated-iconify last-mapped-window
 		  modifier-key-bindings window-selection
+		  menus-extras
 		  group preferences animated-edge-moves
 		  property-respond xprop-extras
 		  wavplay window-configuration
@@ -82,7 +83,7 @@
 
 (if (scwm-is-constraint-enabled?)
     (use-scwm-modules ui-constraints-toggle-menu
-		      ui-constraints-gtk-toggle-menu))
+		      constraint-investigator))
 
 ;; prefer doc files in scwmdir/doc
 (set! doc-files
@@ -340,7 +341,7 @@
     (menuitem "&Constraints"
 	      #:submenu (lambda () (ui-constraints-toggle-menu)))
     (menuitem "Constraint &investigator"
-	      #:action (thunk ui-constraints-gtk-toggle-menu))
+	      #:action (lambda () (start-constraint-investigator)))
     (menuitem "Turn &on Constraint Solver"
 	      #:action (thunk enable-constraint-solver)))))
 

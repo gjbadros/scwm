@@ -266,7 +266,7 @@
  ui-constraints-classes
  ui-constraints-composition
  ui-constraints-gdk-drawing
- ui-constraints-gtk-toggle-menu
+ constraint-investigator
  ui-constraints-toggle-menu
  undo
  virtual
