@@ -496,13 +496,12 @@ Keyboard_shortcuts(XEvent *Event, int ReturnEvent,
     ymove_size = xmove_size;
   }
 
+  /* we're on the boundary if we're within 2 pixels */
   if (psw) {
-    if (x >= (psw->frame_width - xmove_size) ||
-        (x <= xmove_size))
+    if (x >= (psw->frame_width - 2) || (x <= 2))
       fOnXBoundary = True;
     
-    if (y >= (psw->frame_height - ymove_size) ||
-        (y <= ymove_size))
+    if (y >= (psw->frame_height - 2) || (y <= 2))
       fOnYBoundary = True;
   }
     

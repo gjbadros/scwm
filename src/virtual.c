@@ -29,6 +29,36 @@
 #include "xmisc.h"
 #include "syscompat.h"
 
+
+Bool
+FNeedsPaging(int HorWarpSize, int VertWarpSize, int xl, int yt)
+{
+  int x, y;
+
+  if ((Scr.ScrollResistance >= 10000) ||
+      ((HorWarpSize == 0) && (VertWarpSize == 0)))
+    return False;
+
+  /* need to move the viewport */
+  if ((Scr.VxMax == 0 ||
+       (xl >= SCROLL_REGION && xl < Scr.DisplayWidth - SCROLL_REGION)) &&
+      (Scr.VyMax == 0 ||
+       (yt >= SCROLL_REGION && yt < Scr.DisplayHeight - SCROLL_REGION)))
+    return False;
+
+  WXGetPointerWindowOffsets(Scr.Root, &x, &y);
+  
+  /* check actual pointer location since PanFrames can get buried under
+     a window being moved or resized - mab */
+  if ((x >= SCROLL_REGION) && (x < Scr.DisplayWidth - SCROLL_REGION) &&
+      (y >= SCROLL_REGION) && (y < Scr.DisplayHeight - SCROLL_REGION))
+    return False;
+
+  return True;
+}
+
+
+
 /***************************************************************************
  * 
  * Check to see if the pointer is on the edge of the screen, and scroll/page
@@ -43,18 +73,11 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
   *delta_x = 0;
   *delta_y = 0;
 
-  if ((Scr.ScrollResistance >= 10000) ||
-      ((HorWarpSize == 0) && (VertWarpSize == 0)))
-    return;
-
-  /* need to move the viewport */
-  if ((Scr.VxMax == 0 ||
-       (*xl >= SCROLL_REGION && *xl < Scr.DisplayWidth - SCROLL_REGION)) &&
-      (Scr.VyMax == 0 ||
-       (*yt >= SCROLL_REGION && *yt < Scr.DisplayHeight - SCROLL_REGION)))
-    return;
-
   total = 0;
+
+  if (!FNeedsPaging(HorWarpSize, VertWarpSize, *xl, *yt))
+    return;
+
   while (total < Scr.ScrollResistance) {
     usleep(10);
     total += 10;

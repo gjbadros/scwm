@@ -659,8 +659,9 @@ MenuItemInMenu *
 PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_status, 
 		   Bool *pfHotkeyUsed)
 {
-  int fControlKey = Event->xkey.state & ControlMask? True : False;
-  int fShiftedKey = Event->xkey.state & ShiftMask? True: False;
+  Bool fControlKey = Event->xkey.state & ControlMask? True : False;
+  Bool fShiftedKey = Event->xkey.state & ShiftMask? True: False;
+  Bool fNeedControl = False;
   KeySym keysym = XLookupKeysym(&Event->xkey,0);
   MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
   MenuItemInMenu *pmiimNewItem = NULL;
@@ -687,6 +688,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
   }
   /* Fell through here, so it didn't match a shortcut key */
 
+  fNeedControl = True;
   switch(keysym)		/* Other special keyboard handling	*/
     {
     case XK_Escape:		/* Escape key pressed. Abort		*/
@@ -700,8 +702,11 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
       break;
 
     case XK_Left:
+      fNeedControl = False;
+      /* fall through */
     case XK_b: /* back */
     case XK_h: /* vi left */
+      if (fNeedControl && !fControlKey) break;  /* require C-b, C-h */
       pmiimNewItem = pmd->pmdPrior? PmiimSelectedFromPmd(pmd->pmdPrior) : NULL;
       if (pmiimNewItem) {
 	*pmenu_status = MENUSTATUS_NEWITEM;
@@ -710,8 +715,11 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
       break;
       
     case XK_Right:
+      fNeedControl = False;
+      /* fall through */
     case XK_f: /* forward */
     case XK_l: /* vi right */
+      if (fNeedControl && !fControlKey) break;  /* require C-f, C-l */
       *pmenu_status = MENUSTATUS_POPUP_AND_MOVE;
       return pmiimSelected;
       break;
@@ -720,8 +728,11 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
 	 unenabled items */
       
     case XK_Up:
+      fNeedControl = False;
+      /* fall through */
     case XK_k: /* vi up */
     case XK_p: /* prior */
+      if (fNeedControl && !fControlKey) break;  /* require C-k, C-p */
       if (isascii(keysym) && isgraph(keysym))
 	  fControlKey = False; /* don't use control modifier 
 				  for k or p, since those might
@@ -742,8 +753,11 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
       break;
 
     case XK_Down:
+      fNeedControl = False;
+      /* fall through */
     case XK_j: /* vi down */
     case XK_n: /* next */
+      if (fNeedControl && !fControlKey) break;  /* require C-j, C-n */
       if (isascii(keysym) && isgraph(keysym))
 	  fControlKey = False; /* don't use control modifier
 				  for j or n, since those might
@@ -924,7 +938,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 	  /* FIXGJB: duplicated above */
 	  MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	  if (pmiim != pmiimSelected) {
-	    scwm_msg(WARN,__FUNCTION__,"Pointer not in selected item -- wierd!");
+	    scwm_msg(WARN,__FUNCTION__,"Pointer not in selected item -- weird!");
 	  } else {
 	    scmAction = pmiim->pmi->scmAction;
 	    goto MENU_INTERACTION_RETURN;
@@ -1053,10 +1067,8 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 
     /* FIXGJB this doesn't work -- we'd like to be able to jump to
        the first item of the next menu if a shortcut key was used to popup a new menu */
-#if 0    
     if (fHotkeyUsed)
       XPutBackKeystrokeEvent(dpy,pmiim->pmd->pmdi->w,XK_Right);
-#endif    
   } /* while true */
  MENU_INTERACTION_RETURN:
   return scmAction;
