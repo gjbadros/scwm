@@ -37,3 +37,18 @@ TYPE and FORMAT are as in X-property-set!"
    (lambda ()
      (cond ((X-property-get window name) #f)
 	   (#t (X-property-set! window name value type format 'replace) #t)))))
+
+(define-public (window-pid win)
+  "Returns the process id of the process that created WIN.
+Requires using the LD_PRELOAD environment variable for the
+started process:
+
+LD_PRELOAD=/path/to/scwm_set_pid_property.so
+
+Returns #f if the property does not exist on WIN (most
+likely because you did not use the LD_PRELOAD variable).
+See also `window-client-machine-name' to get the machine
+name on which the returned process id is valid.
+"
+  (let ((prop (X-property-get win "SCWM_RUNNING_PID")))
+    (and (list? prop) (vector-ref (car prop) 0))))

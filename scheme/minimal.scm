@@ -59,6 +59,8 @@ motion does `interactive-move', and double-click does
 
 (bind-mouse '(title sidebar) 1 move-or-raise)
 
+(bind-mouse 'icon 1 deiconify)
+
 (let ((default-menu (make-menu 
 		     (list
 		      (make-menuitem "Default Menu" #f)
@@ -95,7 +97,8 @@ motion does `interactive-move', and double-click does
 	 (lambda (key . args)
 	   (display "Error loading module: ")
 	   (display module) (newline)
-	   (apply handle-system-error key args)
+	   ;; GJB:FIXME:MS: want better error msgs, but below core dumps for me
+;;	   (apply handle-system-error key args) 
 	   #f)))
 
 (define-public (process-use-scwm-modules module-list)

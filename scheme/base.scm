@@ -618,7 +618,8 @@ dimension to a number of pixels."
   (bound? scwm-set-master-solver!))
 
 (define-public (scwm-system cmd)
-  "Run CMD using /bin/sh -c CMD and return the exit status.
+  "Run CMD using /bin/sh -c CMD and return a list: (exit-status child-pid).
+Note that the child pid is of the executed sh, not CMD.
 The CMD is run synchronously, and Bourne-shell meta characters
 are interpreted by /bin/sh.  E.g., to start CMD in the background,
 use a trailing \"&\" character.  See also guile's `system', but note
@@ -630,7 +631,7 @@ This may be a bug (not meeting POSIX.2 specifications)."
      ((< child-pid 0) (error "bad fork"))
      ((> child-pid 0) ;; parent
       (begin
-	(cdr (waitpid child-pid))))
+	(list (cdr (waitpid child-pid)) child-pid)))
      (else ;; child
       (begin
 	(setpgid 0 0)
@@ -638,8 +639,16 @@ This may be a bug (not meeting POSIX.2 specifications)."
       ))))
 
 (define-public (execute command)
-  "Execute COMMAND in the background."
+  "Execute COMMAND in the background.
+See also `execute-with-pidprop' if you want to know the
+process id of COMMAND and want to use `window-id' to be
+able to map back from the windows the process creates
+to the process id."
   ((if *use-scwm-system-proc* scwm-system system) (string-append "exec " command " &")))
+
+;; (execute-with-pidprop "xeyes")
+;; (use-scwm-modules xprop-extras)
+;; (window-pid (get-window))
 
 ;; GJB:FIXME:: switch to this after testing it
 ;; From Jim Blandy -- his [better] version of 

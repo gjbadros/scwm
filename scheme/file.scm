@@ -104,3 +104,28 @@ of this function, as a string."
 	 (answer (read-until-eof p)))
     (close-pipe p)
     answer))
+
+(define-public (first-line-output-of-system-cmd cmd)
+  "Return the first line of output of command shell execution of CMD.
+CMD is run synchronously and its output is piped into the return value
+of this function, as a string.  See also `output-of-system-cmd'
+if you want to read all of the output of CMD."
+  (let* ((p (open-input-pipe cmd))
+	 (answer (read-line p)))
+    (close-pipe p)
+    answer))
+
+(define-public (execute-with-pidprop command)
+  "Execute COMMAND in the background and permit use of `window-pid' on its windows.
+Returns the PID of COMMAND."
+  (let ((pidprop-so (string-append (scwm-path-exec-prefix) "/bin/scwm_set_pid_property.so")))
+    (string->number
+     (sans-final-newline
+      (first-line-output-of-system-cmd
+       (string-append "LD_PRELOAD=" pidprop-so " " command " & echo $!"))))))
+;; (use-scwm-modules file xprop-extras stringops (ice-9 string-fun))
+;; (use-scwm-modules foo)
+;; (string->number (sans-final-newline (first-line-output-of-system-cmd "sleep 3 & echo $!")))
+;; (execute-with-pidprop "xeyes")
+;; (window-pid (get-window))
+
