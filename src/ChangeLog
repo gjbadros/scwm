@@ -1,3 +1,16 @@
+Fri Jul 23 23:39:03 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.h: Added extern of imlib_data (now needed by image.c) 
+
+	* image.c, image.h: Rename SMOB image to scwmimage-- was having
+ 	problems due to a global name conflict of imlib's free_image and
+ 	scwm's SMOB free_image.  Set imlib to use the default visual of
+ 	screen; was getting BadMatch X11 errors on XCopyArea when drawing
+ 	buttons on a Sun machine's Solaris display because imlib creates
+ 	pixmaps at the best visual (by default) instead of the
+ 	DefaultVisual which is used when creating the windows for the
+ 	buttons.
+
 Fri Jul 23 21:48:05 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* callbacks.c (s_set_load_processing_frequency_x): Use /** instead 
