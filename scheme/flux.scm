@@ -82,6 +82,7 @@
    "\nDeletable:\t\t" (bool->str (window-deletable? ww))
    "\nIconified:\t\t" (bool->str (iconified? ww))
    "\nKept On Top:\t\t" (bool->str (kept-on-top? ww))
+   "\nTransient:\t\t" (bool->str (transient? ww))
    "\nRaised:\t\t\t" (bool->str (raised? ww))
    "\nShaded:\t\t\t" (bool->str (window-shaded? ww))
    "\nSticky Icon:\t\t" (bool->str (icon-sticky? ww))
