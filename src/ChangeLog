@@ -1,3 +1,16 @@
+Mon Sep 14 10:42:49 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* icons.c (AutoPlace): Use ICON_[XY]_VP, ICON_VP_OFFSET_[XY],
+	ensure sticky icons stay on screen using some older
+	previously-ifdeffed out code.
+
+Mon Sep 14 09:34:39 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c: Added comments to MovePsw[Icon]ToCurrentPosition
+
+	* menu.c (make_menu): Give a better warning message when
+	list_of_menuitems is empty
+
 Sun Sep 13 18:47:12 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* virtual.c (changeDesks): Call one or the other of
