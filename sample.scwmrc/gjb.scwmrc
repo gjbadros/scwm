@@ -30,6 +30,26 @@
       ()))
 
 (use-scwm-modules base message-window)
+(define scwmdir (or (getenv "SCWMDIR") "/scratch/gjb/scwm"))
+
+;;; set path to use for image searches
+(map (lambda (s) (set! image-load-path (cons s image-load-path)))
+     (list
+      "/uns/lib/X11/mini-icons"           ;; last checked
+      "/uns/lib/X11/pixmaps"
+      "/usr/X11/lib/X11/mini-icons"
+      "/usr/X11/include/X11/pixmaps"
+      "/uns/include/X11/pixmaps"
+      "/usr/lib/icons"
+      "/usr/local/X11/include/X11/pixmaps"
+      "/usr/local/lib/icons"
+      "/usr/local/icons"
+      "/uns/share/include/X11/pixmaps"
+      "/uns/share/include/X11/bitmaps"
+      "/usr/lib/TheNextLevel/pixmaps"
+      "/usr/share/icons/mini"
+      (string-append scwmdir "/pixmaps")   ;; first checked
+      ))
 
 (define scwm-logo (make-image "scwm-logo-0.xpm"))
 
@@ -90,7 +110,7 @@
 		  group preferences gnome-hints
 		  send-string quote background
 		  property-respond highlight-current-window
-		  esdsound dir-focus
+		  esdsound dir-focus tile undo
 		  )
 
 (debug-display "Done reading modules\n")
@@ -125,8 +145,6 @@
 
 (define mail-spool-dir (getenv "MAIL"))
 (define sounds-dir (or (getenv "SCWMSOUNDS") "/scratch/gjb/Media"))
-(define scwmdir (or (getenv "SCWMDIR") "/scratch/gjb/scwm"))
-
 (set! doc-files
   (append (map (lambda (s) (string-append scwmdir "/doc/" s ))
 	     (list "scwm-procedures.txt" "scwm-variables.txt" "scwm-hooks.txt"))
@@ -438,25 +456,6 @@
 ;;(restack-windows (select-multiple-windows-interactively))
 
 (debug-display "Before setting image-load-path\n")
-
-;;; set path to use for image searches
-(map (lambda (s) (set! image-load-path (cons s image-load-path)))
-     (list
-      "/uns/lib/X11/mini-icons"           ;; last checked
-      "/uns/lib/X11/pixmaps"
-      "/usr/X11/lib/X11/mini-icons"
-      "/usr/X11/include/X11/pixmaps"
-      "/uns/include/X11/pixmaps"
-      "/usr/lib/icons"
-      "/usr/local/X11/include/X11/pixmaps"
-      "/usr/local/lib/icons"
-      "/usr/local/icons"
-      "/uns/share/include/X11/pixmaps"
-      "/uns/share/include/X11/bitmaps"
-      "/usr/lib/TheNextLevel/pixmaps"
-      "/usr/share/icons/mini"
-      (string-append scwmdir "/pixmaps")   ;; first checked
-      ))
 
 (set! image-load-path (append user-image-load-list image-load-path))
 ;;(set! image-load-path '())
