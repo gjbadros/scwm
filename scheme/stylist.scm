@@ -97,13 +97,15 @@ random window that matches PREDICATE."
 	      "sticky" "sticky icon" "keep on top"
 	      "show title" "squash title" "show resize handles"
 	      "show side border"
-	      "start iconified" "start lowered" "start window-shaded")
+	      ;"start iconified"
+              "start lowered" "start window-shaded")
 	    (list prompt-color-hbox prompt-color-hbox
 		  prompt-color-hbox prompt-color-hbox
 		  prompt-bool-hbox prompt-bool-hbox prompt-bool-hbox
 		  prompt-bool-hbox prompt-bool-hbox prompt-bool-hbox
 		  prompt-bool-hbox
-		  prompt-bool-hbox prompt-bool-hbox prompt-bool-hbox)
+		  ;prompt-bool-hbox
+                  prompt-bool-hbox prompt-bool-hbox)
 	    (list (lambda (w) (car (get-window-colors w)))
 		  (lambda (w) (unflash-window w)
 			  (let ((col (cadr (get-window-colors w))))
@@ -123,18 +125,21 @@ random window that matches PREDICATE."
 		  border-normal?
 		  (lambda (w)
 		    (not (object-property w 'no-side-decorations)))
-		  iconified-window? (lambda (w) #f) shaded-window?)
+		  ;iconified-window?
+                  (lambda (w) #f) shaded-window?)
 	    (list id id id id
 		  id id id
 		  not id not
 		  not
-		  id id id)
+		  ;id
+                  id id)
 	    '(#:foreground
 	      #:background #:highlight-foreground #:highlight-background
 	      #:sticky #:sticky-icon #:kept-on-top
 	      #:no-titlebar #:squashed-titlebar #:plain-border
 	      #:no-side-decorations
-	      #:start-iconified #:start-lowered #:start-window-shaded))
+	      ;#:start-iconified ; SRL:FIXME::This style option currently BROKEN.
+              #:start-lowered #:start-window-shaded))
 	   (gtk-widget-show-all table)
 	   table)
 	 #t #t)
