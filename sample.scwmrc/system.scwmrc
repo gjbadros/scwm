@@ -110,8 +110,16 @@
 (logo-setup #t)
 
 ;; Use below lines for help when debugging a GC issue during startup
-;;(set-load-processing-frequency! 1)
-;;(add-hook! load-processing-hook (lambda (n) (display n) (newline) (gc)))
+;; (set-load-processing-frequency! 1)
+;; (add-hook! load-processing-hook (lambda (n) (display n) (newline) (gc)))
+;; after loading, do:
+;; (reset-hook! load-processing-hook)
+;; to restore normal behaviour of scwm-mode under Emacs.
+
+;; (define (gc-repeat) (gc) (add-timer-hook! 1000 gc-repeat))
+;; (gc-repeat)
+
+;; (get-timer-hooks-list)
 
 (debug-display "Starting reading scwm modules\n")
 
@@ -445,7 +453,7 @@
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:mwm-border #t
-	      #:hint-override #t #:decorate-transient #f
+	      #:hint-override #t #:decorate-transient #t
 	      #:PPosition-hint #f
 ;;	      #:mini-icon pic-xterm-mini)
 	      #:mini-icon pic-lambda-mini)
