@@ -1,0 +1,16 @@
+#!/bin/sh -
+# -*- sh -*-
+# (C) 1999 Greg J. Badros
+# cpp-sed-nl runs cpp but permits macros to
+# expand to multiple lines by interpreting @@ in
+# the cpp source file as a newline (and uses sed
+# to replace @@ with newlines.  Also removes
+# trailing whitespace
+# This script is run by startscwm
+if which cpp 2>/dev/null; then
+    CPP=cpp
+elif test -x /lib/cpp; then
+    CPP=/lib/cpp
+fi
+$CPP "$@" | sed -e 's/@@/\
+/g' -e 's/[ \t]*$//g'
