@@ -1035,7 +1035,7 @@ Repository Timestamp: %s\n",
       scwm_safe_eval_str(
            "(let ((home-scwmrc"
 	   "       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
-	   "      (system-scwmrc \"" SCWMDIR "/system" SCWMRC "\"))"
+	   "      (system-scwmrc \"" SCWMRCDIR "/system" SCWMRC "\"))"
 	   " (if (access? (string-append home-scwmrc \".\" locale-fullname) R_OK)"
 	   "     (safe-load (string-append home-scwmrc \".\" locale-fullname))"
            "     (if (access? (string-append home-scwmrc \".\" locale-language-territory) R_OK)"
@@ -1051,7 +1051,7 @@ Repository Timestamp: %s\n",
 #else
     scwm_safe_eval_str("(let ((home-scwmrc"
 		       "       (string-append (getenv \"HOME\") \"/\" \"" SCWMRC "\"))"
-		       "      (system-scwmrc \"" SCWMDIR "/system" SCWMRC "\"))"
+		       "      (system-scwmrc \"" SCWMRCDIR "/system" SCWMRC "\"))"
 		       " (if (access? home-scwmrc R_OK)"
 		       "     (safe-load home-scwmrc)"
 		       "     (if (access? system-scwmrc R_OK)"

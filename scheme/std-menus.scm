@@ -59,7 +59,7 @@
 ;; Use xlock-query-program to specify what program's output we should
 ;; read to compute the list of modes, e.g.,
 ;; (define xlock-query-program "xlock-stdout")
-(define (xlock-query-modes xlock)
+(define* (xlock-query-modes #&optional (xlock *xlock-query-program*))
   (let ((pipe (open-input-pipe (string-append xlock " -help 2>&1"))))
     (do ((line (read-line pipe) (read-line pipe))
          (start-re (make-regexp "where mode is one of:" regexp/icase)))
@@ -73,12 +73,11 @@
       (if match (set! ml (cons (match:substring match 1) ml))))))
 
 (define-public screensaver-modes
-  (xlock-query-modes
-   (or (and (defined? 'xlock-query-program) xlock-query-program)
-       "xlock")))
+  (xlock-query-modes))
 
 (define-public xlock-options
   "-nice 19 +mousemotion +timeelapsed -lockdelay 600 -timeout 30")
+
 (define (run-xlock mode lock)	; returns a lambda!
   (exe (string-append "xlock " xlock-options " -mode " mode
                       (if lock "" " -nolock"))))
@@ -125,6 +124,15 @@ used) or a cons of (host . command)."
 (define-public exe-on-selection-mpeg_play (exe-on-selection "mpeg_play -dither color"))
 (define-public exe-on-selection-mpg3 (exe-on-selection "mpg123"))
 
+
+
+(define-scwm-option *xlock-query-program* "xlock"
+  "The name of a program to run to output a list of available xlock modes.
+It will be run with the -help option, and its output should
+conform to the standard xlock output format."
+  #:type 'command
+  #:group 'system
+  )
 
 (define-scwm-option *context-map*
   `(("\.(txt|pl|c|cc|h)$" "Edit (emacs)"

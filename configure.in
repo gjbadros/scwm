@@ -613,14 +613,14 @@ scwm_pixmapdir=${datadir}/pixmaps/${PACKAGE}
 
 SCWM_ARG_PATH(scwmrcdir,
 [  --with-scwmrcdir=DIR    Install configuration files in DIR 
-                          [LIBDIR/X11/scwm]],
+                          [DATADIR/scwm/scwmrc]],
 [
 	AC_MSG_CHECKING(where configuration files should go; e.g., system.scwmrc)
 	scwmrcdir="${withval}"
 	AC_MSG_RESULT("${scwmrcdir}")
 ],
 [
-	scwmrcdir="${libdir}/X11/${PACKAGE}"
+	scwmrcdir="${datadir}/${PACKAGE}/scwmrc"
 ])
 
 # open the parentheses

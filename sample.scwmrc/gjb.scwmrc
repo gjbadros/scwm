@@ -1668,6 +1668,16 @@ union of all other window managers!
    ;;	  "xearth -once"
    ))
 
+;; (debug-change-desk 4 2)
+(define (debug-change-desk new old)
+  (display "Changing desks from ")
+  (display old)
+  (display " to ")
+  (display new)
+  (newline))
+
+(add-hook! change-desk-hook debug-change-desk)
+
 (define (show-desk-name new old)
   (display-message-briefly (string-append "Desk: " (number->string new))))
 

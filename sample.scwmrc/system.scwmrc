@@ -21,8 +21,6 @@
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
-(define xlock-query-program "xlock-stdout")
-
 (define debug #t)
 (define suppress-xclients #t)
 

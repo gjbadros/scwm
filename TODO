@@ -2,6 +2,10 @@
 
 See also doc/dev/scwm-1.0-release-todo
 
+* do not decorate GNOME Panel, KDE Panel -- test w/ GNOME, KDE
+
+* When restart, windows migrate down by a titlebar height?
+
 * lost-focus hook
 
 * documentation of scheme-level hooks (not just c-level)
