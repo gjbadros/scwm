@@ -275,7 +275,7 @@
 ;                               "*FvwmPagerSmallFont 5x8")
 ; (define fvwm2-pager (run-fvwm2-module "FvwmPager" '("0" "0")))
 
-(define quit-verify
+(define menu-quit-verify
   (menu (list (menuitem "Really quit scwm?" #:image-left quest-i)
 	      menu-title menu-separator
 	      (menuitem "Yes" #:image-left excl-i #:action quit)
@@ -329,7 +329,7 @@
 	      ;; (menuitem "Desks" #:action menu-desk)
 	      menu-separator
 	      (menuitem "Exit scwm" #:image-left "mini-exit.xpm"
-			#:action quit-verify))
+			#:action menu-quit-verify))
 	#:image-side "utilities-menu.xpm" #:color-bg-image-side "blue"))
 ;; #:image-bg "lizard2.xpm"
 
@@ -493,7 +493,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 			(make-xlock-menu #t))
 	      menu-separator
 	      (menuitem "Help" #:image-left man-i #:action menu-help)
-	      (menuitem "E&xit scwm" #:image-left stop-i #:action quit-verify))
+	      (menuitem "E&xit scwm" #:image-left stop-i #:action menu-quit-verify))
 	#:image-side "scwm-color.xpm" #:color-bg-image-side "grey50"))
 
 ;;; -----------

@@ -690,6 +690,9 @@
     (menuitem "Yes" #:image-left "mini-exclam.xpm" #:action quit)
     (menuitem "No"  #:image-left "mini-cross.xpm" #:action noop))))
 
+(define (quit-verify)
+  (popup-menu menu-quit-verify #t))
+
 ;;;(map (lambda (elem)
 ;;;       (let ((menu-id (car elem))
 ;;;	     (menu-title (cadr elem))
@@ -1019,7 +1022,7 @@
 (bind-key 'all "M-S-F2" popup-window-ops)
 
 ;; in case of emergency, hit Control-Meta-Q
-(bind-key 'all "C-M-S-q" quit)
+(bind-key 'all "C-M-S-q" quit-verify)
 
 ;; some stuff for icons
 (define (move-or-deiconify)
@@ -1104,7 +1107,6 @@
 
 (bind-key 'all "C-S-Down" iconify)
 (bind-key 'all "C-M-Return" toggle-raise)
-(bind-key 'all "C-S-M-q" toggle-raise)
 (bind-key 'all "M-F1" toggle-raise)   ;; like SGI's 4dwm
 
 (bind-key 'all "C-S-Up" vertical-toggle-maximize-partial)

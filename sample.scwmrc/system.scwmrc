@@ -126,7 +126,7 @@
 (define (popup-ops)
   (popup-menu window-ops-menu))
 
-(define quit-verify
+(define menu-quit-verify
   (menu 
    (list
     (menuitem "Really quit scwm?" #f)
@@ -135,6 +135,9 @@
     (menuitem "No" #:action #f)
     menu-separator
     (menuitem "Restart scwm" #:action (lambda () (restart "scwm"))))))
+
+(define (quit-verify)
+  (popup-menu menu-quit-verify))
 
 (define desk-menu 
   (menu 
@@ -161,7 +164,7 @@
     menu-separator
     (menuitem "Desks" #:action 'desk-menu)
     menu-separator
-    (menuitem "Exit scwm" #:action quit-verify))))
+    (menuitem "Exit scwm" #:action menu-quit-verify))))
 
 (define (popup-util)
   (popup-menu util-menu))
@@ -234,7 +237,7 @@
 (bind-key 'all "M-F2" popup-ops)
 
 ;; in case of emergency, hit Control-Meta-Shift-Q
-(bind-key 'all "C-M-S-q" quit)
+(bind-key 'all "C-M-S-q" quit-verify)
 
 ;; some stuff for icons
 (define (move-or-deiconify)
