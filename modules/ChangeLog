@@ -1,3 +1,8 @@
+Fri Jul 16 23:04:55 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xtest/Makefile.am, xtest/scwmxtest.c: Added XTest module
+	wrapper.  Not complete, but it's got the important stuff.
+
 Fri Jul 16 17:54:25 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added XTEST_SUBDIRS (= xtest) iff HAVE_XTEST
