@@ -25,23 +25,28 @@
 
 #include "scwm.h"
 #include "ICCCM.h"
-#include "misc.h"
 #include "screen.h"
+#include "focus.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
 
-/********************************************************************
- *
+
+/*
+ * Records the time of the last processed event. Used in XSetInputFocus
+ */
+Time lastTimestamp = CurrentTime;	/* until Xlib does this for us */
+
+
+/*
  * Sets the input focus to the indicated window.
- *
- **********************************************************************/
+ */
 
 void 
 SetFocus(Window w, ScwmWindow * Fw, Bool FocusByMouse)
 {
   int i = 0;
-  extern Time lastTimestamp;
 
   /* ClickToFocus focus queue manipulation - only performed for
    * Focus-by-mouse type focus events */
@@ -152,6 +157,54 @@ void
 Unfocus()
 {
   SetFocus(Scr.NoFocusWin,NULL,False);
+}
+
+Bool 
+StashEventTime(XEvent * ev)
+{
+  Time NewTimestamp = CurrentTime;
+
+  switch (ev->type) {
+  case KeyPress:
+  case KeyRelease:
+    NewTimestamp = ev->xkey.time;
+    break;
+  case ButtonPress:
+  case ButtonRelease:
+    NewTimestamp = ev->xbutton.time;
+    break;
+  case MotionNotify:
+    NewTimestamp = ev->xmotion.time;
+    break;
+  case EnterNotify:
+  case LeaveNotify:
+    NewTimestamp = ev->xcrossing.time;
+    break;
+  case PropertyNotify:
+    NewTimestamp = ev->xproperty.time;
+    break;
+  case SelectionClear:
+    NewTimestamp = ev->xselectionclear.time;
+    break;
+  case SelectionRequest:
+    NewTimestamp = ev->xselectionrequest.time;
+    break;
+  case SelectionNotify:
+    NewTimestamp = ev->xselection.time;
+    break;
+  default:
+    return False;
+  }
+  /* Only update is the new timestamp is later than the old one, or
+   * if the new one is from a time at least 30 seconds earlier than the
+   * old one (in which case the system clock may have changed) */
+  if ((NewTimestamp > lastTimestamp) || ((lastTimestamp - NewTimestamp) > 30000))
+    lastTimestamp = NewTimestamp;
+  if (FocusOnNextTimeStamp) {
+    SetFocus(FocusOnNextTimeStamp->w, FocusOnNextTimeStamp, 1);
+    FocusOnNextTimeStamp = NULL;
+  }
+  return True;
 }
 
 

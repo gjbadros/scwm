@@ -25,7 +25,29 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+#include <config.h>
+
 void *safemalloc(int length);
+
+/* FIXGJB: must handle a couple realloc-s too */
+
+#ifdef USE_CASSOWARY
+#define NEWCPP(x) (new x)
+#define NEWCPPC(c,x) (new x[c])
+#define FREECPP(x) (delete x)
+#define FREECPPC(x) (delete [] x)
+#else
+#define NEWCPP(x) ((x *) safemalloc(sizeof(x)))
+#define NEWCPPC(c,x) ((x *) safemalloc((c)*sizeof(x)))
+#define FREECPP(x) free(x)
+#define FREECPPC(x) free(x)
+#endif
+
+#define NEW(x) ((x *) safemalloc(sizeof(x)))
+#define NEWC(c,x) ((x *) safemalloc((c)*sizeof(x)))
+#define FREE(x) free(x)
+#define FREEC(x) free(x)
+
 
 #endif
 

@@ -6,6 +6,7 @@
 #define ICONS_H
 
 #include "image.h"
+#include "window.h"
 
 void CreateIconWindow(ScwmWindow *psw, int def_x, int def_y);
 void DrawIconWindow(ScwmWindow *psw);
@@ -20,6 +21,8 @@ void redraw_icon_titles();
 			  IMAGE(psw->icon_image)->width : 0)
 #define ICON_P_HEIGHT(psw) (psw->icon_image != SCM_BOOL_F? \
 			   IMAGE(psw->icon_image)->height : 0)
+
+#define ICON_HEIGHT (FONTHEIGHT(Scr.icon_font)+6)
 
 #endif
 

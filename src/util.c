@@ -18,49 +18,44 @@
 #include "borders.h"
 
 void 
-redraw_titlebars(ScwmDecor * fl, int extra_height)
+redraw_titlebars(ScwmDecor *fl, int extra_height)
 {
   int x, w, y, h;
-  ScwmWindow *tmp, *hi;
+  ScwmWindow *psw = Scr.ScwmRoot.next;
+  ScwmWindow *pswHilite = Scr.Hilite;
 
-  tmp = Scr.ScwmRoot.next;
-  hi = Scr.Hilite;
-  while (tmp != NULL) {
-    if (!tmp->fTitle || tmp->fl != fl) {
-      tmp = tmp->next;
+  while (psw != NULL) {
+    if (!psw->fTitle || psw->fl != fl) {
+      psw = psw->next;
       continue;
     }
-    x = tmp->frame_x;
-    y = tmp->frame_y;
-    w = tmp->frame_width;
-    h = tmp->frame_height - extra_height;
-    tmp->frame_x = 0;
-    tmp->frame_y = 0;
-    tmp->frame_height = 0;
-    tmp->frame_width = 0;
-    SetupFrame(tmp, x, y, w, h, True);
-    SetTitleBar(tmp, True, True);
-    SetTitleBar(tmp, False, True);
-    tmp = tmp->next;
+    x = FRAME_X(psw);
+    y = FRAME_Y(psw);
+    w = FRAME_WIDTH(psw);
+    h = FRAME_HEIGHT(psw) - extra_height;
+    SetupFrame(psw, x, y, w, h, True, WAS_MOVED, WAS_RESIZED);
+    /* FIXGJB: why two calls in a row? --07/14/98 gjb */
+    SetTitleBar(psw, True, True);
+    SetTitleBar(psw, False, True);
+    psw = psw->next;
   }
-  SetTitleBar(hi, True, True);
+  SetTitleBar(pswHilite, True, True);
 }
 
 
 void
 redraw_borders(ScwmDecor *fl) 
 {
-  ScwmWindow *tmp, *hi;
+  ScwmWindow *psw = Scr.ScwmRoot.next;
+  ScwmWindow *pswHilite = Scr.Hilite;
 
-  tmp = Scr.ScwmRoot.next;
-  hi = Scr.Hilite;
-  while (tmp != NULL) {
-    if (tmp->fl != fl) {
-      tmp = tmp->next;
+  while (psw != NULL) {
+    if (psw->fl != fl) {
+      psw = psw->next;
       continue;
     }
-    SetBorderX(tmp, tmp==hi, True, True, None, True);
-    tmp = tmp->next;
+    SetBorderX(psw, psw==pswHilite, True, True, None, True);
+    psw = psw->next;
   }
 }
 

@@ -9,10 +9,13 @@
 
 
 #include <config.h>
+#include "scwm.h"
 #include "screen.h"
 
-#include "scwm.h"
+extern Time lastTimestamp;
+
 void SetFocus(Window, ScwmWindow *, Bool FocusByMouse);
 void Unfocus();
+Bool StashEventTime(XEvent * ev);
 
 #endif

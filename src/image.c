@@ -1,5 +1,4 @@
-/* $Id$ */
-/*
+/* $Id$
  * Copyright (C) 1997, 1998, Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
@@ -36,7 +35,6 @@
 #include <guile/gh.h>
 #include "scwm.h"
 #include "screen.h"
-#include "system.h"
 #include "callbacks.h"
 #include "scwmpaths.h"
 #ifdef USE_DMALLOC
@@ -112,7 +110,7 @@ free_image(SCM obj)
     }
   }
 
-  free(si);
+  FREE(si);
   return (0);
 }
 
@@ -166,7 +164,7 @@ make_empty_image(SCM name)
   SCM result;
   scwm_image *ci;
 
-  ci = (scwm_image *) safemalloc(sizeof(scwm_image));
+  ci = NEW(scwm_image);
   ci->full_name = name;
   ci->image = None;
   ci->mask = None;
@@ -216,7 +214,7 @@ SCWM_PROC (load_xbm, "load-xbm", 1, 0, 0,
     scwm_msg(WARN,s_load_xbm,"Could not load bitmap `%s'",c_path);
     result = SCM_BOOL_F;
   }
-  free(c_path);
+  FREE(c_path);
   return result;
 }
 
@@ -261,7 +259,7 @@ SCWM_PROC (load_xpm, "load-xpm", 1, 0, 0,
     scwm_msg(WARN,s_load_xpm,"Could not load pixmap `%s'",c_path);
     result = SCM_BOOL_F;
   }
-  free(c_path);
+  FREE(c_path);
   return result;
 }
 
@@ -327,7 +325,7 @@ path_expand_image_fname(SCM name)
     if(access(c_name, R_OK)==0) {
       c_fname=c_name;
     } else {
-      free(c_name);
+      FREE(c_name);
       return(SCM_BOOL_F);
     }
   } else {
@@ -360,7 +358,7 @@ path_expand_image_fname(SCM name)
     }
     
     /* Add 2, one for the '/', one for the final NULL */
-    c_fname = (char *) safemalloc(sizeof(char) *(max_path_len + length + 2));
+    c_fname = NEWC(max_path_len + length + 2,char);
     
     /* Try every possible path */
     for(p = *loc_image_load_path; p != SCM_EOL; p = SCM_CDR(p)) {
@@ -379,15 +377,15 @@ path_expand_image_fname(SCM name)
       /* warn that the file is not found. */
       scwm_msg(WARN,__FUNCTION__,"Image file was not found: `%s'",c_name);
       InvokeHook1(*loc_image_not_found_hook,gh_str02scm(c_name));
-      free(c_name);
-      free(c_fname);
+      FREE(c_name);
+      FREEC(c_fname);
       return SCM_BOOL_F;
     }
   }
 
   result = gh_str02scm(c_fname);
-  free(c_name);
-  free(c_fname);
+  FREE(c_name);
+  FREE(c_fname);
   return result;
 }
 
@@ -413,7 +411,7 @@ get_image_loader(SCM name)
     }
   }
 
-  free (c_name);
+  FREE(c_name);
   if (result == SCM_BOOL_F) {
     result = scm_hash_ref(image_loader_hash_table, str_default,
 			  SCM_BOOL_F);

@@ -1,5 +1,4 @@
-/* $Id$ */
-/*
+/* $Id$
  * Copyright (C) 1997, 1998, Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
@@ -69,7 +68,7 @@ free_font(SCM obj)
 #else
   XFreeFont(dpy, XFONT(obj));
 #endif
-  free(FONT(obj));
+  FREE(FONT(obj));
   return (0);
 }
 
@@ -124,7 +123,7 @@ SCWM_PROC (make_font, "make-font", 1, 0, 0,
   fontset = XCreateFontSet(dpy,fn,&list_names,&missings,&defstrreturn);
   if (NULL == fontset) {
     scwm_msg(WARN,s_make_font,"Could not load fontset`%s' -- trying `fixed'",fn);
-    free(fn);
+    FREE(fn);
 
     answer=scm_hash_ref(font_hash_table, str_fixed, SCM_BOOL_F);
     if (answer!=SCM_BOOL_F) {
@@ -137,13 +136,13 @@ SCWM_PROC (make_font, "make-font", 1, 0, 0,
     fontset = XCreateFontSet(dpy,fn,&list_names,&missings,&defstrreturn);
   } 
   if (NULL == fontset) {
-    free(fn);
+    FREE(fn);
     scwm_error(s_make_font, 1);
   }
 
-  font = (scwm_font *)safemalloc(sizeof(*font));
+  font = NEW(*font);
   if (NULL == font) {
-    free(fn);
+    FREE(fn);
     XFreeFontSet(dpy, fontset);
     goto allocation;
   }
@@ -159,7 +158,7 @@ SCWM_PROC (make_font, "make-font", 1, 0, 0,
   xfs = XLoadQueryFont(dpy, fn);
   if (NULL == xfs) {
     scwm_msg(WARN,s_make_font,"Could not load `%s' -- trying `fixed'",fn);
-    free(fn);
+    FREE(fn);
 
     answer=scm_hash_ref(font_hash_table, str_fixed, SCM_BOOL_F);
     if (answer!=SCM_BOOL_F) {
@@ -172,13 +171,13 @@ SCWM_PROC (make_font, "make-font", 1, 0, 0,
     xfs = XLoadQueryFont(dpy, fn);
   } 
   if (NULL == xfs) {
-    free(fn);
+    FREE(fn);
     scwm_error(s_make_font, 1);
   }
 
-  font = (scwm_font *)safemalloc(sizeof(*font));
+  font = NEW(scwm_font);
   if (NULL == font) {
-    free(fn);
+    FREE(fn);
     XFreeFont(dpy, xfs);
     goto allocation;
   }
@@ -207,7 +206,7 @@ SCWM_PROC (make_font, "make-font", 1, 0, 0,
 #endif
   FONTNAME(answer) = gh_str02scm(fn);
   SCM_REALLOW_INTS;
-  free(fn);
+  FREE(fn);
 
   scm_hash_set_x(font_hash_table, FONTNAME(answer), answer);
   return answer;

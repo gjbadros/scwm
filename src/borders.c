@@ -23,9 +23,9 @@
 #include <stdio.h>
 #include <signal.h>
 #include <string.h>
+#include <assert.h>
 
 #include "scwm.h"
-#include "misc.h"
 #include "icons.h"
 #include "screen.h"
 #include "borders.h"
@@ -34,13 +34,14 @@
 #include <X11/extensions/shape.h>
 #include "module-interface.h"
 #include "font.h"
+#include "xmisc.h"
+#include "scwm-constraints.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
 
 extern Window PressedW;
-XGCValues Globalgcv;
-unsigned long Globalgcm;
 
 /* macro rules to get button state */
 #define GetButtonState(window)						\
@@ -781,8 +782,8 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
   }
   if (t->fBorder) {
     /* draw relief lines */
-    y = t->frame_height - 2 * t->corner_width;
-    x = t->frame_width - 2 * t->corner_width + t->bw;
+    y = FRAME_HEIGHT(t) - 2 * t->corner_width;
+    x = FRAME_WIDTH(t) - 2 * t->corner_width + t->bw;
 
     for (i = 0; i < 4; i++) {
       int vertical = i % 2;
@@ -911,20 +912,20 @@ SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 	if (t->boundary_width > 2) {
 	  RelieveWindow(t, t->frame, t->boundary_width - 1 - t->bw,
 			t->boundary_width - 1 - t->bw,
-			t->frame_width -
+			FRAME_WIDTH(t) -
 			(t->boundary_width << 1) + 2 + 3 * t->bw,
-			t->frame_height -
+			FRAME_HEIGHT(t) -
 			(t->boundary_width << 1) + 2 + 3 * t->bw,
 			sgc, rgc,
 			TOP_HILITE | LEFT_HILITE | RIGHT_HILITE |
 			BOTTOM_HILITE);
-	  RelieveWindow(t, t->frame, 0, 0, t->frame_width + t->bw,
-			t->frame_height + t->bw, rgc, sgc,
+	  RelieveWindow(t, t->frame, 0, 0, FRAME_WIDTH(t) + t->bw,
+			FRAME_HEIGHT(t) + t->bw, rgc, sgc,
 			TOP_HILITE | LEFT_HILITE | RIGHT_HILITE |
 			BOTTOM_HILITE);
 	} else {
-	  RelieveWindow(t, t->frame, 0, 0, t->frame_width + t->bw,
-			t->frame_height + t->bw, rgc, rgc,
+	  RelieveWindow(t, t->frame, 0, 0, FRAME_WIDTH(t) + t->bw,
+			FRAME_HEIGHT(t) + t->bw, rgc, rgc,
 			TOP_HILITE | LEFT_HILITE | RIGHT_HILITE |
 			BOTTOM_HILITE);
 	}
@@ -1210,8 +1211,7 @@ RelieveWindow(ScwmWindow * t, Window win,
   XDrawSegments(dpy, win, ShadowGC, seg, i);
 }
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *      Setupframe - set window sizes
  *           This is called from lots and lots of places!
@@ -1222,6 +1222,10 @@ RelieveWindow(ScwmWindow * t, Window win,
  *      y       - the y coordinate of the upper-left outer corner of the frame
  *      w       - the width of the frame window w/o border
  *      h       - the height of the frame window w/o border
+ *      sendEvent  - True if we want to force an event to be sent reflecting the change
+ *      fMoved  - set if the window was moved
+ *      fResized - set if the window was resized
+ *
  *
  *  Special Considerations:
  *      This routine will check to make sure the window is not completely
@@ -1232,19 +1236,21 @@ RelieveWindow(ScwmWindow * t, Window win,
  *      values are compared against the old to see whether a synthetic
  *      ConfigureNotify event should be sent.  (It should be sent if the
  *      window was moved but not resized.)
- *
- ************************************************************************/
+ */
 
 void 
-SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent)
+SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent,
+           Bool fMoved, Bool fResized)
 {
   XEvent client_event;
   XWindowChanges xwc;
   unsigned long xwcm;
   int cx, cy, i;
-  Bool Resized = False, Moved = False;
   int xwidth, ywidth, left, right;
   Bool shaded = SHADED_P(psw);
+
+  assert(!fMoved || fMoved == WAS_MOVED);
+  assert(!fResized || fResized == WAS_RESIZED);
 
   /* FIXMS: I think this can be safely removed, check RSN. */
   /* if windows is not being maximized, save size in case of maximization */
@@ -1260,20 +1266,24 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent)
   if (y >= Scr.MyDisplayHeight + Scr.VyMax - Scr.Vy - 16)
     y = Scr.MyDisplayHeight + Scr.VyMax - Scr.Vy - 16;
 
-  if ((w != psw->frame_width) || (h != psw->frame_height))
-    Resized = True;
-  if ((x != psw->frame_x || y != psw->frame_y))
-    Moved = True;
+
+#ifndef NDEBUG
+  if ((w != FRAME_WIDTH(psw)) || (h != FRAME_HEIGHT(psw)) && !fResized)
+    DBUG(__FUNCTION__,"Width/height changed but not fResized");
+
+  if ((x != FRAME_X(psw) || y != FRAME_Y(psw)) && !fMoved)
+    DBUG(__FUNCTION__,"Coords changed but not fMoved");
+#endif
 
   /*
    * According to the July 27, 1988 ICCCM draft, we should send a
    * "synthetic" ConfigureNotify event to the client if the window
    * was moved but not resized.
    */
-  if (Moved && !Resized)
+  if (fMoved && !fResized)
     sendEvent = True;
 
-  if (Resized) {
+  if (fResized) {
     int button_width;
     DBUG(__FUNCTION__,"Resized!");
     left = psw->nr_left_buttons;
@@ -1414,14 +1424,22 @@ SetupFrame(ScwmWindow * psw, int x, int y, int w, int h, Bool sendEvent)
    */
   DBUG(__FUNCTION__,"w = %d, h = %d", w, h);
 
-  psw->frame_x = x;
-  psw->frame_y = y;
-  psw->frame_width = w;
-  psw->frame_height = h;
+#ifdef USE_CASSOWARY
+  solver
+    .setEditedValue(psw->frame_x,x)
+    .setEditedValue(psw->frame_y,y)
+    .setEditedValue(psw->frame_width,w)
+    .setEditedValue(psw->frame_height,h);
+#else
+  FRAME_X(psw) = x;
+  FRAME_Y(psw) = y;
+  FRAME_WIDTH(psw) = w;
+  FRAME_HEIGHT(psw) = h;
+#endif
   XMoveResizeWindow(dpy, psw->frame, x, y, w, h);
 
   if (ShapesSupported) {
-    if ((Resized) && (psw->wShaped)) {
+    if (fResized && psw->wShaped) {
       SetShape(psw, w);
     }
   }

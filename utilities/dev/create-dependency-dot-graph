@@ -1,0 +1,33 @@
+#!/uns/bin/perl -w
+# By Greg J. Badros -- 17-July-1998
+# Use w/ AT&T's graphviz (aka "dot") package
+
+use strict;
+# grab all the source files
+my @files = <*.[ch]>;
+*OUT=*STDOUT;
+print OUT <<END
+digraph G {
+  page = "8.5,11";
+  orientation = "landscape";
+  ratio = "auto";
+/*  concentrate = "true"; merge edges */
+END
+  ;
+
+foreach my $file (@files) {
+  open(IN,"<$file") or die "Cannot open $file: $!";
+  print_incl_deps_for($file,\*IN);
+}
+print OUT "}\n";
+
+sub print_incl_deps_for {
+  my ($filename,$fh) = @_;
+  while (<$fh>) {
+    if (/^\s*\#\s*include\s*["<](.*?)[">]/) {
+      # ignore .x files
+      next if ($1 =~ /\.x$/);
+      print OUT "\"$filename\" -> \"$1\";\n";
+    }
+  }
+}

@@ -25,7 +25,6 @@
 #include <string.h>
 #include <X11/keysym.h>
 #include "scwm.h"
-#include "misc.h"
 #include "move.h"
 #include "events.h"
 #include "screen.h"
@@ -35,6 +34,7 @@
 #include "borders.h"
 #include "colormaps.h"
 #include "font.h"
+#include "focus.h"
 #include "syscompat.h"
 #include "virtual.h"
 #include "xmisc.h"
@@ -84,7 +84,7 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
     currentY = (int) (startY + deltaY * (*ppctMovement));
     XMoveWindow(dpy,w,currentX,currentY);
     if (fWarpPointerToo) {
-      XGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
+      FXGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
       pointerX += currentX - lastX;
       pointerY += currentY - lastY;
       XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
@@ -93,7 +93,10 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
     XFlush(dpy);
     /* handle expose events as we're animating the window move */
     while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
+      {
       DispatchEvent();
+      }
+
     usleep(cmsDelay);
 #ifdef FIXGJB_ALLOW_ABORTING_ANIMATED_MOVES
     /* this didn't work for me -- maybe no longer necessary since
@@ -129,7 +132,7 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
 {
   Window w = psw->w;
   Window wFrame = psw->frame;
-  int width = psw->frame_width;
+  int width = FRAME_WIDTH(psw);
   int shaded_height = psw->title_height + 2 * (psw->boundary_width + psw->bw);
   /* FIXGJB: using orig_ht doesn't seem right -- does it interact
      correctly w/ maximization? */
@@ -167,11 +170,9 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
   XFlush(dpy);
 }
 
-/****************************************************************************
- *
+/*
  * Move the rubberband around, return with the new window location
- *
- ****************************************************************************/
+ */
 void 
 moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	 int Height, int *FinalX, int *FinalY, Bool opaque_move,
@@ -181,7 +182,7 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
   Bool done;
   int xl, yt, delta_x, delta_y, paged;
 
-  XGetPointerWindowOffsets(Scr.Root, &xl, &yt);
+  FXGetPointerWindowOffsets(Scr.Root, &xl, &yt);
   xl += XOffset;
   yt += YOffset;
 
@@ -189,6 +190,14 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
     MoveOutline(Scr.Root, xl, yt, Width, Height);
 
   DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
+
+#ifdef USE_CASSOWARY
+  solver
+    .addEditVar(psw->frame_x)
+    .addEditVar(psw->frame_y)
+    .beginEdit();
+#endif
+
 
   while (!finished) {
     /* block until there is an interesting event */
@@ -216,8 +225,8 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       if (XLookupKeysym(&(Event.xkey), 0) == XK_Escape) {
 	if (!opaque_move)
 	  MoveOutline(Scr.Root, 0, 0, 0, 0);
-	*FinalX = psw->frame_x;
-	*FinalY = psw->frame_y;
+	*FinalX = FRAME_X(psw);
+	*FinalY = FRAME_Y(psw);
 	finished = True;
       }
       done = True;
@@ -298,8 +307,16 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	      XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
 			  yt + psw->icon_p_height);
 
-	  } else
-	    XMoveWindow(dpy, psw->frame, xl, yt);
+	  } else {
+#ifdef USE_CASSOWARY
+            solver
+              .suggestValue(psw->frame_x,xl)
+              .suggestValue(psw->frame_y,yt)
+              .resolve();
+#else
+            XMoveWindow(dpy, psw->frame, xl, yt);
+#endif
+          }
 	}
 	DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, False);
 
@@ -331,6 +348,12 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
 	MoveOutline(Scr.Root, xl, yt, Width, Height);
     }
   }
+#ifdef USE_CASSOWARY
+  solver
+    .suggestValue(psw->frame_x,xl)
+    .suggestValue(psw->frame_y,yt)
+    .endEdit();
+#endif
 }
 
 /***********************************************************************

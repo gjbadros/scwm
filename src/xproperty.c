@@ -36,7 +36,6 @@
 #include <libguile.h>
 #include <X11/X.h>
 #include "scwm.h"
-#include "system.h"
 #include "window.h"
 #include "xproperty.h"
 #include "xmisc.h"
@@ -55,8 +54,8 @@ mark_xproperty(SCM obj)
 size_t
 free_xproperty(SCM obj)
 {
-  free(XPROPERTYDATA(obj));
-  free(XPROPERTY(obj));
+  FREE(XPROPERTYDATA(obj));
+  FREE(XPROPERTY(obj));
 
   return 0;
 }
@@ -70,9 +69,9 @@ print_xproperty(SCM obj, SCM port, scm_print_state * pstate)
     char *szPropertyType = gh_scm2newstr(XPROPERTYTYPE(obj), NULL);
     if (STREQ(szPropertyType,"STRING")) {
       scm_puts(", ", port);
-      scm_write(gh_str2scm(XPROPERTYDATA(obj),XPROPERTYLEN(obj)), port);
+      scm_write(gh_str2scm((char *) XPROPERTYDATA(obj),XPROPERTYLEN(obj)), port);
     }
-    free(szPropertyType);
+    FREE(szPropertyType);
   }
   scm_putc('>', port);
   return 1;
@@ -91,7 +90,7 @@ make_xproperty (char *type, unsigned len, void *data)
   SCM answer;
   scwm_xproperty *xprop;
 
-  xprop = (scwm_xproperty *) safemalloc(sizeof(scwm_xproperty));
+  xprop = NEW(scwm_xproperty);
   xprop->type = gh_str02scm(type);
   xprop->len = len;
   xprop->data = data;
@@ -124,9 +123,9 @@ SCWM_PROC (set_window_text_property, "set-window-text-property", 3, 0, 0,
     char *szValue = gh_scm2newstr(value, NULL);
     XTextProperty *ptextprop = PNewXTextPropertyFromSz(szValue);
     XSetTextProperty(dpy, SCWMWINDOW(win)->w, ptextprop, propname);
-    free(szName); szName = NULL;
-    free(szValue); szValue = NULL;
-    free(ptextprop); ptextprop = NULL;
+    FREE(szName); szName = NULL;
+    FREE(szValue); szValue = NULL;
+    FREE(ptextprop); ptextprop = NULL;
   }
 
   return SCM_UNDEFINED;
@@ -139,7 +138,7 @@ SCWM_PROC (window_xproperty, "window-xproperty", 2, 1, 0,
   SCM answer;
   Atom type, prop;
   char *str = NULL;
-  unsigned int format;
+  int format;
   unsigned long len, nitems, bytes_left;
   unsigned char *data = NULL;
   Boolean del;
@@ -158,7 +157,7 @@ SCWM_PROC (window_xproperty, "window-xproperty", 2, 1, 0,
   
   str=gh_scm2newstr(name, NULL);
   prop=XInternAtom(dpy, str, False);
-  free(str);
+  FREE(str);
   
   len = 32;			/* try a small size first */
   while (True) {
@@ -187,7 +186,7 @@ SCWM_PROC (xproperty_to_string, "xproperty->string", 1, 0, 0,
     scm_wrong_type_arg(s_xproperty_to_string, 1, prop);
   }
 
-  return gh_str2scm(XPROPERTYDATA(prop),XPROPERTYLEN(prop));
+  return gh_str2scm((char *)XPROPERTYDATA(prop),XPROPERTYLEN(prop));
 }
 
 SCWM_PROC (string_to_xproperty, "string->xproperty", 1, 0, 0,

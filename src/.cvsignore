@@ -1,7 +1,9 @@
 *.x
+.deps
 Makefile
 Makefile.in
 init_scheme_string.c
-scwmpaths.h
-.deps
+out.log
 scwm
+scwm-works
+scwmpaths.h

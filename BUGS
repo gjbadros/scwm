@@ -1,5 +1,24 @@
+Some error messages are looked up in a table that is distant from the error.
+---------------
+xdvorak's change mapping should cause all keybindings to be reset and
+new keycodes to be gotten
+---------------
+
 Hooks which take wrong number of params cause seg faults!
 --07/04/98 gjb
+
+-------------
+
+> > > I've noticed this off-and-on with 0.6, and just noticed again with
+> > > 0.7: My xterms have #:focus 'sloppy set; sometimes (probably about
+> > > one time in 25), when I have a pair of partially overlapping
+> > > windows and I move the cursor quickly from the root window,
+> > > crossing one of the xterms (which held the sloppy focus), and
+> > > landing in the other xterm, the new window does not gain focus.
+> > > I have to take the cursor off of the window in which I desire
+> > > focus and bring it back in, crossing the border slowly.
+
+Ken Pizzini
 
 -------------
 windows having a different border-width than the default (6) are

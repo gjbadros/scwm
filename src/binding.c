@@ -9,6 +9,8 @@
 
 #include <guile/gh.h>
 #include <X11/keysym.h>
+#include <ctype.h>
+
 #include "scwm.h"
 #include "screen.h"
 #include "window.h"
@@ -16,12 +18,12 @@
 #include "errors.h"
 #include "complex.h"
 #include "util.h"
-#include "misc.h"
 #include "miscprocs.h"
 #include "add_window.h"
 #include "binding.h"
 #include "xmisc.h"
 #include "syscompat.h"
+
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -136,16 +138,23 @@ FKeyToKeysymModifiers(SCM key, KeySym *pkeysym, int *pmodifier)
   Bool fOk = True;
   int len;
   char *keyname = gh_scm2newstr(key,&len);
-  const char *pch = PchModifiersToModmask(keyname,pmodifier);
+  char *pch = (char *) PchModifiersToModmask(keyname,pmodifier);
 
-  if (pch == 0 || *pmodifier < 0)
-    fOk = False;
-  else if ((*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
+  if (pch == 0 || *pmodifier < 0) {
+    FREE(keyname);
+    return False;
+  }
+
+  if (pch[1] == '\0' && isgraph(pch[0])) {  /* single character, so use tolower */
+    pch[0] = tolower(pch[0]);
+  }
+
+  if ((*pkeysym = XStringToKeysym(pch)) == NoSymbol ||
 	   (XKeysymToKeycode(dpy, *pkeysym)) == 0) { 
     scwm_msg(WARN,__FUNCTION__,"No symbol `%s'",keyname);
     fOk = False; 
   }
-  free(keyname);
+  FREE(keyname);
   return fOk;
 }
 
@@ -260,7 +269,7 @@ remove_binding(int contexts, int mods, int button, KeySym keysym,
 	} else {		/* must have been first one, set new start */
 	  Scr.AllBindings = temp2;
 	}
-	free(temp);
+	FREE(temp);
 	temp = NULL;
       }
     }
@@ -359,7 +368,7 @@ KEY is a string giving the key-specifier (e.g., M-Delete for META+Delete) */
     gh_allow_ints();
     SCM_ALLOW_INTS;
     scwm_msg(WARN,__FUNCTION__,"Ignoring key unbind request for `%s'",keyname);
-    free(keyname);
+    FREE(keyname);
   } else {
     remove_binding(context,modmask,0,keysym,False);
   }
@@ -420,17 +429,17 @@ BUTTON is a string or integer giving the mouse button number */
     if (bnum < 0) {
       scwm_msg(WARN,__FUNCTION__,"No button `%s'",szButton);
       SCM_ALLOW_INTS;
-      free(szButton);
+      FREE(szButton);
       return SCM_UNSPECIFIED;
     }
     if (modmask < 0) {
       scwm_msg(WARN,__FUNCTION__,"Ignoring mouse unbind request for %s",
 	       szButton);
       SCM_ALLOW_INTS;
-      free(szButton);
+      FREE(szButton);
       return SCM_UNSPECIFIED;
     }
-    free(szButton);
+    FREE(szButton);
   }
 
   remove_binding(context,modmask,bnum,0,True /* Mouse binding */);
@@ -494,7 +503,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     gh_allow_ints();
     SCM_ALLOW_INTS;
     scwm_msg(WARN,__FUNCTION__,"Ignoring key binding `%s'",keyname);
-    free(keyname);
+    FREE(keyname);
     return SCM_BOOL_F;
   }
   /* 
@@ -505,7 +514,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   for (i = min; i <= max; i++)
     if (XKeycodeToKeysym(dpy, i, 0) == keysym) {
       Binding *prev_binding = Scr.AllBindings;
-      Scr.AllBindings = (Binding *) safemalloc(sizeof(Binding));
+      Scr.AllBindings = NEW(Binding);
       Scr.AllBindings->IsMouse = 0;
       Scr.AllBindings->Button_Key = i;
       Scr.AllBindings->key_name = gh_scm2newstr(key,&len);
@@ -531,7 +540,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     gh_allow_ints();
     SCM_ALLOW_INTS;
     scwm_msg(WARN,__FUNCTION__,"No matching keycode for symbol `%s'",keyname);
-    free(keyname);
+    FREE(keyname);
     return SCM_BOOL_F; /* Use False for error */
   }
   return SCM_UNSPECIFIED;
@@ -599,16 +608,16 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     if (bnum < 0) {
       scwm_msg(WARN,__FUNCTION__,"No button `%s'",szButton);
       SCM_ALLOW_INTS;
-      free(szButton);
+      FREE(szButton);
       return SCM_UNSPECIFIED;
     }
     if (modmask < 0) {
       scwm_msg(WARN,__FUNCTION__,"Ignoring mouse binding for %s",szButton);
       SCM_ALLOW_INTS;
-      free(szButton);
+      FREE(szButton);
       return SCM_UNSPECIFIED;
     }
-    free(szButton);
+    FREE(szButton);
   }
   if ((context != C_ALL) && (context & C_LALL)) {
     /* check for nr_left_buttons */
@@ -641,7 +650,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
     Scr.buttons2grab &= ~(1 << (bnum - 1));
   }
   temp = Scr.AllBindings;
-  Scr.AllBindings = (Binding *) safemalloc(sizeof(Binding));
+  Scr.AllBindings = NEW(Binding);
   Scr.AllBindings->IsMouse = 1;
   Scr.AllBindings->Button_Key = bnum;
   Scr.AllBindings->key_name = NULL;
@@ -691,7 +700,7 @@ find_mouse_event_type()
   XEvent d;
 
   gh_defer_ints();
-  XGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y);
+  FXGetPointerWindowOffsets(Scr.Root, &orig_x, &orig_y);
   have_orig_position = 1;
 
   mouse_ev_type = sym_motion;

@@ -15,7 +15,6 @@
 #include <unistd.h>
 
 #include "scwm.h"
-#include "misc.h"
 #include "window.h"
 #include "icons.h"
 #include "screen.h"
@@ -58,7 +57,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
     usleep(10);
     total += 10;
 
-    XGetPointerWindowOffsets(Scr.Root, &x, &y);
+    FXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
     if (XCheckWindowEvent(dpy, Scr.PanFrameTop.win,
 			  LeaveWindowMask, &Event)) {
@@ -87,7 +86,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
       return;
   }
 
-  XGetPointerWindowOffsets(Scr.Root, &x, &y);
+  FXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
   /* Turn off the rubberband if its on */
   MoveOutline(Scr.Root, 0, 0, 0, 0);
@@ -166,7 +165,7 @@ HandlePaging(int HorWarpSize, int VertWarpSize, int *xl, int *yt,
       XGrabServer_withSemaphore(dpy);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, *xl, *yt);
     MoveViewport(Scr.Vx + *delta_x, Scr.Vy + *delta_y, False);
-    XGetPointerWindowOffsets(Scr.Root, xl, yt);
+    FXGetPointerWindowOffsets(Scr.Root, xl, yt);
     if (Grab)
       XUngrabServer_withSemaphore(dpy);
   }
@@ -332,7 +331,7 @@ initPanFrames()
 void 
 MoveViewport(int newx, int newy, Bool grab)
 {
-  ScwmWindow *t;
+  ScwmWindow *psw;
   int deltax, deltay;
 
   if (grab)
@@ -356,40 +355,41 @@ MoveViewport(int newx, int newy, Bool grab)
   Broadcast(M_NEW_PAGE, 5, Scr.Vx, Scr.Vy, Scr.CurrentDesk, Scr.VxMax, Scr.VyMax, 0, 0);
 
   if ((deltax != 0) || (deltay != 0)) {
-    for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
+    for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
       /* If the window is iconified, and sticky Icons is set,
        * then the window should essentially be sticky */
-      if (!(t->fIconified && t->fStickyIcon) && !t->fSticky) {
-	if (!t->fStickyIcon) {
-	  t->icon_x_loc += deltax;
-	  t->icon_xl_loc += deltax;
-	  t->icon_y_loc += deltay;
-	  if (t->icon_pixmap_w != None)
-	    XMoveWindow(dpy, t->icon_pixmap_w, t->icon_x_loc,
-			t->icon_y_loc);
-	  if (t->icon_w != None)
-	    XMoveWindow(dpy, t->icon_w, t->icon_x_loc,
-			t->icon_y_loc + t->icon_p_height);
-	  if (!t->fIconUnmapped) {
-	    Broadcast(M_ICON_LOCATION, 7, t->w, t->frame,
-		      (unsigned long) t,
-		      t->icon_x_loc, t->icon_y_loc,
-		      t->icon_w_width,
-		      t->icon_w_height + t->icon_p_width);
+      if (!(psw->fIconified && psw->fStickyIcon) && !psw->fSticky) {
+	if (!psw->fStickyIcon) {
+	  psw->icon_x_loc += deltax;
+	  psw->icon_xl_loc += deltax;
+	  psw->icon_y_loc += deltay;
+	  if (psw->icon_pixmap_w != None)
+	    XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc,
+			psw->icon_y_loc);
+	  if (psw->icon_w != None)
+	    XMoveWindow(dpy, psw->icon_w, psw->icon_x_loc,
+			psw->icon_y_loc + psw->icon_p_height);
+	  if (!psw->fIconUnmapped) {
+	    Broadcast(M_ICON_LOCATION, 7, psw->w, psw->frame,
+		      (unsigned long) psw,
+		      psw->icon_x_loc, psw->icon_y_loc,
+		      psw->icon_w_width,
+		      psw->icon_w_height + psw->icon_p_width);
 	  }
 	}
-	SetupFrame(t, t->frame_x + deltax, t->frame_y + deltay,
-		   t->frame_width, t->frame_height, False);
+	SetupFrame(psw, FRAME_X(psw) + deltax, FRAME_Y(psw) + deltay,
+		   FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False, 
+                   WAS_MOVED, NOT_RESIZED);
       }
     }
-    for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
+    for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
       /* If its an icon, and its sticking, autoplace it so
        * that it doesn't wind up on top a a stationary
        * icon */
-      if ((t->fSticky || t->fStickyIcon) &&
-	  t->fIconified && !t->fIconMoved && 
-	  !t->fIconUnmapped) {
-	AutoPlace(t);
+      if ((psw->fSticky || psw->fStickyIcon) &&
+	  psw->fIconified && !psw->fIconMoved && 
+	  !psw->fIconUnmapped) {
+	AutoPlace(psw);
       }
     }
 
@@ -408,7 +408,7 @@ void
 changeDesks(int val1, int val2)
 {
   int oldDesk;
-  ScwmWindow *FocusWin = 0, *t;
+  ScwmWindow *FocusWin = 0, *psw;
   static ScwmWindow *StickyWin = 0;
 
   oldDesk = Scr.CurrentDesk;
@@ -425,40 +425,40 @@ changeDesks(int val1, int val2)
   /* Scan the window list, mapping windows on the new Desk,
    * unmapping windows on the old Desk */
   XGrabServer_withSemaphore(dpy);
-  for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
+  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
     /* Only change mapping for non-sticky windows */
-    if (!(t->fIconified && t->fStickyIcon) &&
-	!t->fSticky && !t->fIconUnmapped) {
-      if (t->Desk == oldDesk) {
-	if (Scr.Focus == t)
-	  t->FocusDesk = oldDesk;
+    if (!(psw->fIconified && psw->fStickyIcon) &&
+	!psw->fSticky && !psw->fIconUnmapped) {
+      if (psw->Desk == oldDesk) {
+	if (Scr.Focus == psw)
+	  psw->FocusDesk = oldDesk;
 	else
-	  t->FocusDesk = -1;
-	UnmapScwmWindow(t);
-      } else if (t->Desk == Scr.CurrentDesk) {
-	MapIt(t);
-	if (t->FocusDesk == Scr.CurrentDesk) {
-	  FocusWin = t;
+	  psw->FocusDesk = -1;
+	UnmapScwmWindow(psw);
+      } else if (psw->Desk == Scr.CurrentDesk) {
+	MapIt(psw);
+	if (psw->FocusDesk == Scr.CurrentDesk) {
+	  FocusWin = psw;
 	}
       }
     } else {
       /* Window is sticky */
-      t->Desk = Scr.CurrentDesk;
-      if (Scr.Focus == t) {
-	t->FocusDesk = oldDesk;
-	StickyWin = t;
+      psw->Desk = Scr.CurrentDesk;
+      if (Scr.Focus == psw) {
+	psw->FocusDesk = oldDesk;
+	StickyWin = psw;
       }
     }
   }
   XUngrabServer_withSemaphore(dpy);
-  for (t = Scr.ScwmRoot.next; t != NULL; t = t->next) {
+  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
     /* If its an icon, and its sticking, autoplace it so
-     * that it doesn't wind up on top a a stationary
+     * that it doesn'psw wind up on top a a stationary
      * icon */
-    if ((t->fSticky || t->fStickyIcon) &&
-	t->fIconified && !t->fIconMoved && 
-  	!t->fIconUnmapped) {
-      AutoPlace(t);
+    if ((psw->fSticky || psw->fStickyIcon) &&
+	psw->fIconified && !psw->fIconMoved && 
+  	!psw->fIconUnmapped) {
+      AutoPlace(psw);
     }
   }
 

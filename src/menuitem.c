@@ -22,7 +22,6 @@
 
 #include <guile/gh.h>
 #include "scwm.h"
-#include "system.h"
 #include "scwmmenu.h"
 #include "menuitem.h"
 #include "guile-compat.h"
@@ -54,15 +53,15 @@ free_menuitem(SCM obj)
 {
   MenuItem *mi = MENUITEM(obj);
   if (mi->szLabel) {
-    free(mi->szLabel);
+    FREE(mi->szLabel);
   }
   if (mi->szExtra) {
-    free(mi->szExtra);
+    FREE(mi->szExtra);
   }
   if (mi->pchHotkeyPreferences) {
-    free(mi->pchHotkeyPreferences);
+    FREE(mi->pchHotkeyPreferences);
   }
-  free(mi);
+  FREE(mi);
   return(0);
 }
 
@@ -110,7 +109,7 @@ primitive */
 		 pmi->scmHover,
 		 pmi->scmUnhover,
 		 gh_str02scm(pmi->pchHotkeyPreferences),
-		 SCM_EOL);
+		 SCM_UNDEFINED);
 }
 
 
@@ -135,7 +134,7 @@ HOTKEY-PREFS is a string listing preferred alphanumeric shortcut-keys
 for the given menu-item; the menu creation routine uses these as hints 
 for assigning shortcut keys to the various menuitems. */
 {
-  MenuItem *pmi = (MenuItem *) safemalloc(sizeof(MenuItem));
+  MenuItem *pmi = NEW(MenuItem);
   SCM answer;
   int iarg = 1;
 

@@ -11,7 +11,6 @@
 #include <guile/gh.h>
 #include "scwm.h"
 #include "screen.h"
-#include "misc.h"
 #include "virtual.h"
 #include "callbacks.h"
 #include "shutdown.h"
@@ -133,7 +132,7 @@ SCWM_PROC(restart, "restart", 0, 1, 0,
   }
 
   Done(1, sz);  /* 1 == restart */
-  free(sz); /* Done shouldn't return, but you never know... */
+  FREE(sz); /* Done shouldn't return, but you never know... */
   return SCM_UNSPECIFIED;	
 }
 

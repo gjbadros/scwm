@@ -35,13 +35,12 @@
 #include "dmalloc.h"
 #endif
 
-/***********************************************************************
+/*
+ * safemalloc - mallocs specified space or exits if there's a problem
  *
- *  Procedure:
- *	safemalloc - mallocs specified space or exits if there's a 
- *		     problem
- *
- ***********************************************************************/
+ * You should use NEW and FREE, or NEWC (like calloc) and FREEC
+ * see system.h for the macro definitions
+ */
 void *
 safemalloc(int length)
 {
@@ -49,9 +48,9 @@ safemalloc(int length)
 
   assert(length >= 1);
 
-  ptr = malloc(length);
+  ptr = calloc(1,length);
   if (ptr == NULL) {
-    fprintf(stderr, "malloc of %d bytes failed. Exiting\n", length);
+    fprintf(stderr, "safemalloc: calloc of %d bytes failed. Exiting\n", length);
     exit(1);
   }
   return ptr;

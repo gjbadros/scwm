@@ -328,11 +328,10 @@ exchange (argv)
     {
       /* We must extend the array.  The user plays games with us and
 	 presents new arguments.  */
-      char *new_str = malloc (top + 1);
-      if (new_str == NULL)
+      char *new_str = NEWC(top + 1, char);
+      if (new_str == NULL) {
 	nonoption_flags_len = nonoption_flags_max_len = 0;
-      else
-	{
+      } else {
 	  memcpy (new_str, __getopt_nonoption_flags, nonoption_flags_max_len);
 	  memset (&new_str[nonoption_flags_max_len], '\0',
 		  top + 1 - nonoption_flags_max_len);
@@ -439,8 +438,7 @@ _getopt_initialize (argc, argv, optstring)
 	      int len = nonoption_flags_max_len = strlen (orig_str);
 	      if (nonoption_flags_max_len < argc)
 		nonoption_flags_max_len = argc;
-	      __getopt_nonoption_flags =
-		(char *) malloc (nonoption_flags_max_len);
+	      __getopt_nonoption_flags = NEWC(nonoption_flags_max_len,char);
 	      if (__getopt_nonoption_flags == NULL)
 		nonoption_flags_max_len = -1;
 	      else

@@ -32,7 +32,6 @@
 #include <unistd.h>
 
 #include "scwm.h"
-#include "misc.h"
 #include "screen.h"
 #include "deskpage.h"
 #include "module-interface.h"

@@ -36,9 +36,9 @@ size_t
 free_decor(SCM obj)
 {
   DestroyScwmDecor(SCWMDECOR(obj));
-  free(SCWMDECOR(obj)->tag);
-  free(SCWMDECOR(obj));
-  free(DECOR(obj));
+  FREE(SCWMDECOR(obj)->tag);
+  FREE(SCWMDECOR(obj));
+  FREE(DECOR(obj));
   return 0;
 };
 
@@ -124,7 +124,7 @@ decor2scm(ScwmDecor * fl)
   scwm_decor *dec;
   int i,j;
 
-  dec = (scwm_decor *) safemalloc(sizeof(scwm_decor));
+  dec = NEW(scwm_decor);
   dec->refcnt = 0;
   dec->sd = fl;
   SCM_DEFER_INTS;
@@ -191,7 +191,7 @@ SCWM_PROC(make_decor, "make-decor", 0, 1, 0,
   }
 
   /* make the decor */
-  newdec = (ScwmDecor *) safemalloc(sizeof(ScwmDecor));
+  newdec = NEW(ScwmDecor);
   newdec->tag = tag;
 
   return decor2scm(newdec);
@@ -263,15 +263,10 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 1, 1, 0,
 
   extra_height = (psw->fTitle) ?
     (old_height - psw->fl->TitleHeight) : 0;
-  x = psw->frame_x;
-  y = psw->frame_y;
-  width = psw->frame_width;
-  height = psw->frame_height - extra_height;
-  psw->frame_x = 0;
-  psw->frame_y = 0;
-  psw->frame_height = 0;
-  psw->frame_width = 0;
-  SetupFrame(psw, x, y, width, height, True);
+
+  SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), 
+             FRAME_WIDTH(psw), FRAME_HEIGHT(psw) - extra_height, True,
+             WAS_MOVED, WAS_RESIZED);
   SetBorder(psw, Scr.Hilite == psw, True, True, None);
 
   return SCM_UNSPECIFIED;

@@ -9,18 +9,14 @@
  *     copyright remains in the source code and all documentation
  ****************************************************************************/
 
-
-/***********************************************************************
- *
- * window resizing borrowed from the "wm" window manager
- *
- ***********************************************************************/
+/*
+ * some window resizing code borrowed from the "wm" window manager
+ */
 #include <config.h>
 
 #include <stdio.h>
 #include <X11/keysym.h>
 #include "scwm.h"
-#include "misc.h"
 #include "screen.h"
 #include "resize.h"
 #include "borders.h"
@@ -42,8 +38,7 @@ extern int menuFromFrameOrWindowOrTitlebar;
 extern Window PressedW;
 
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *      DoResize - move the rubberband around.  This is called for
  *                 each motion event when we are resizing
@@ -52,8 +47,7 @@ extern Window PressedW;
  *      x_root  - the X corrdinate in the root window
  *      y_root  - the Y corrdinate in the root window
  *      psw - the current scwm window
- *
- ************************************************************************/
+ */
 void 
 DoResize(int x_root, int y_root, ScwmWindow * psw)
 {
@@ -100,8 +94,7 @@ DoResize(int x_root, int y_root, ScwmWindow * psw)
 
 
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *      DisplaySize - display the size in the dimensions window
  *
@@ -109,8 +102,7 @@ DoResize(int x_root, int y_root, ScwmWindow * psw)
  *      psw - the current scwm window
  *      width   - the width of the rubber band
  *      height  - the height of the rubber band
- *
- ***********************************************************************/
+ */
 void 
 DisplaySize(ScwmWindow * psw, int width, int height, Bool Init)
 {
@@ -173,22 +165,19 @@ DisplaySize(ScwmWindow * psw, int width, int height, Bool Init)
 
 }
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *      ConstrainSize - adjust the given width and height to account for the
  *              constraints imposed by size hints
  *
  *      The general algorithm, especially the aspect ratio stuff, is
  *      borrowed from uwm's CheckConsistency routine.
- * 
- ***********************************************************************/
+ */
 
 void 
-ConstrainSize(ScwmWindow * psw, int *widthp, int *heightp)
+ConstrainSize(ScwmWindow *psw, int *widthp, int *heightp)
 {
 #define makemult(a,b) ((b==1) ? (a) : (((int)((a)/(b))) * (b)) )
-#define _min(a,b) (((a) < (b)) ? (a) : (b))
   int minWidth, minHeight, maxWidth, maxHeight, xinc, yinc, delta;
   int baseWidth, baseHeight;
   int dwidth = *widthp, dheight = *heightp;
@@ -300,10 +289,10 @@ ConstrainSize(ScwmWindow * psw, int *widthp, int *heightp)
   *heightp = dheight + psw->title_height + 2 * psw->boundary_width;
   return;
 }
+#undef makemult
 
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *	MoveOutline - move a window outline
  *
@@ -313,8 +302,7 @@ ConstrainSize(ScwmWindow * psw, int *widthp, int *heightp)
  *	y	    - upper left y coordinate
  *	width	    - the width of the rectangle
  *	height	    - the height of the rectangle
- *
- ***********************************************************************/
+ */
 void 
 MoveOutline(Window root, int x, int y, int width, int height)
 {

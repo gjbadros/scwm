@@ -35,12 +35,6 @@
 /*****************************************************************************/
 
 
-/**********************************************************************
- *
- * Add a new window, put the titlbar and other stuff around
- * the window
- *
- **********************************************************************/
 #include <config.h>
 
 /* #define SCWM_DEBUG_MSGS */
@@ -51,7 +45,6 @@
 #include <stdlib.h>
 #include "scwm.h"
 #include <X11/Xatom.h>
-#include "misc.h"
 #include "screen.h"
 #include <X11/extensions/shape.h>
 #include <X11/Xresource.h>
@@ -70,6 +63,7 @@
 #include "icons.h"
 #include "placement.h"
 #include "callbacks.h"
+#include "xmisc.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
@@ -94,15 +88,13 @@ static XrmOptionDescRec table[] =
 };
 
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *	GrabButtons - grab needed buttons for the window
  *
  *  Inputs:
  * 	psw - the scwm window structure to use
- *
- ***********************************************************************/
+ */
 
 /* FIXGJB: rewrite to use GrabButtonWithModifiers, above */
 static void 
@@ -171,15 +163,13 @@ GrabButtons(ScwmWindow * psw)
   return;
 }
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *	GrabKeys - grab needed keys for the window
  *
  *  Inputs:
  *	psw - the scwm window structure to use
- *
- ***********************************************************************/
+ */
 void 
 GrabKeys(ScwmWindow * psw)
 {
@@ -201,19 +191,15 @@ GrabKeys(ScwmWindow * psw)
 }
 
 
-/***********************************************************************
- *
- *  Procedure:
- *	AddWindow - add a new window to the scwm list
+/*
+ * AddWindow - add a new window to the scwm list
  *
  *  Returned Value:
  *	(ScwmWindow *) - pointer to the ScwmWindow structure
  *
  *  Inputs:
  *	w	- the window id of the window to add
- *	iconm	- flag to tell if this is an icon manager window
- *
- ***********************************************************************/
+ */
 ScwmWindow *
 AddWindow(Window w)
 {
@@ -244,11 +230,14 @@ AddWindow(Window w)
   XrmValue rm_value;
   XTextProperty text_prop;
   extern Bool PPosOverride;
+  int frame_x, frame_y;
+  int frame_width, frame_height;
 
   NeedToResizeToo = False;
   /* allocate space for the scwm window */
 
-  psw = (ScwmWindow *) calloc(1, sizeof(ScwmWindow));
+  psw = NEWCPP(ScwmWindow);
+
   if (!psw) {
     return NULL;
   }
@@ -259,12 +248,15 @@ AddWindow(Window w)
 
   if (!PPosOverride)
     if (!FXWindowAccessible(dpy,psw->w)) {
-      free((char *) psw);
+      FREECPP(psw);
       return (NULL);
     }
+
+  psw->name = NoName;
+
   if (XGetWMName(dpy, psw->w, &text_prop) != 0)
-#ifdef I18N
     {
+#ifdef I18N
       if (text_prop.value) {
 	text_prop.nitems = strlen(text_prop.value);
 	if (text_prop.encoding == XA_STRING)
@@ -276,14 +268,25 @@ AddWindow(Window w)
 	  else
 	    psw->name = (char *)text_prop.value;
 	}
-      } else
-	psw->name = NoName;
-    }
+      }
 #else
-    psw->name = (char *)text_prop.value ;
+      psw->name = (char *)text_prop.value ;
 #endif
-  else
-    psw->name = NoName;
+    }
+
+#ifdef USE_CASSOWARY
+  if (psw->name != NoName) {
+    int ich = strlen(psw->name);
+    char *szNm = NEWC(ich+3,char);
+    strcpy(szNm, psw->name);
+    szNm[ich++] = '-';
+    szNm[ich+1] = '\0';
+    szNm[ich] = 'x'; psw->frame_x.setName(szNm);
+    szNm[ich] = 'y'; psw->frame_y.setName(szNm);
+    szNm[ich] = 'w'; psw->frame_width.setName(szNm);
+    szNm[ich] = 'h'; psw->frame_height.setName(szNm);
+  }
+#endif
 
   /* removing NoClass change for now... */
   psw->classhint.res_name = NoResource;
@@ -304,7 +307,8 @@ AddWindow(Window w)
   psw->fTransient =
     (XGetTransientForHint(dpy, psw->w, &psw->transientfor));
 
-  printf("Got transient hint: %d\n", psw->fTransient);
+  /* MSFIX: this should switch to DBUG */
+  scwm_msg(WARN,__FUNCTION__,"Got transient hint: %d\n", psw->fTransient);
 
   psw->old_bw = psw->attr.border_width;
 
@@ -373,11 +377,10 @@ AddWindow(Window w)
   GetWindowSizeHints(psw);
 
   /* Tentative size estimate */
-  psw->frame_width = psw->attr.width + 2 * psw->boundary_width;
-  psw->frame_height = psw->attr.height + psw->title_height +
-    2 * psw->boundary_width;
+  frame_width = psw->attr.width + 2 * psw->boundary_width;
+  frame_height = psw->attr.height + psw->title_height + 2 * psw->boundary_width;
 
-  ConstrainSize(psw, &psw->frame_width, &psw->frame_height);
+  ConstrainSize(psw, &frame_width, &frame_height);
 
   /* Find out if the client requested a specific desk on the command line. */
   if (XGetCommand(dpy, psw->w, &client_argv, &client_argc)) {
@@ -405,7 +408,7 @@ AddWindow(Window w)
    */
   XGrabServer_withSemaphore(dpy); 
   if (!FXWindowAccessible(dpy,w)) {
-    free((char *) psw);
+    FREECPP(psw);
     XUngrabServer_withSemaphore(dpy);
     return (NULL);
   }
@@ -446,13 +449,13 @@ AddWindow(Window w)
   Scr.ScwmRoot.next = psw;
 
   /* create windows */
-  psw->frame_x = 0; /* psw->attr.x + psw->old_bw - psw->bw; */
-  psw->frame_y = 0; /* psw->attr.y + psw->old_bw - psw->bw; */
+  frame_x = 0; /* psw->attr.x + psw->old_bw - psw->bw; */
+  frame_y = 0; /* psw->attr.y + psw->old_bw - psw->bw; */
 
-  psw->frame_width = psw->attr.width + 2 * psw->boundary_width;
-  psw->frame_height = psw->attr.height + psw->title_height +
-    2 * psw->boundary_width;
-  ConstrainSize(psw, &psw->frame_width, &psw->frame_height);
+  frame_width = psw->attr.width + 2 * psw->boundary_width;
+  frame_height = psw->attr.height + psw->title_height + 2 * psw->boundary_width;
+
+  ConstrainSize(psw, &frame_width, &frame_height);
 
   valuemask = CWBorderPixel | CWCursor | CWEventMask;
   if (Scr.d_depth < 2) {
@@ -488,13 +491,11 @@ AddWindow(Window w)
 
   /* What the heck, we'll always reparent everything from now on! */
   DBUG(__FUNCTION__,"Creating child of root window: %d %d, %d x %d, %d",
-       psw->frame_x, psw->frame_y,
-       psw->frame_width, psw->frame_height,
-       psw->bw);
+       frame_x,frame_y,frame_width,frame_height,psw->bw);
 
   psw->frame =
-    XCreateWindow(dpy, Scr.Root, psw->frame_x, psw->frame_y,
-		  psw->frame_width, psw->frame_height,
+    XCreateWindow(dpy, Scr.Root, frame_x, frame_y,
+                  frame_width, frame_height,
 		  psw->bw, CopyFromParent, InputOutput,
 		  CopyFromParent,
 		  valuemask,
@@ -511,15 +512,15 @@ AddWindow(Window w)
   attributes.cursor = Scr.ScwmCursors[CURSOR_DEFAULT];
   DBUG(__FUNCTION__,"Creating child of frame: %d %d, %d x %d, %d",
        psw->boundary_width, psw->boundary_width + psw->title_height,
-       psw->frame_width - 2 * psw->boundary_width,
-       psw->frame_height - 2 * psw->boundary_width - psw->title_height,
+       frame_width - 2 * psw->boundary_width,
+       frame_height - 2 * psw->boundary_width - psw->title_height,
        psw->bw);
   psw->Parent =
     XCreateWindow(dpy, psw->frame,
 		  psw->boundary_width, 
 		  psw->boundary_width + psw->title_height,
-		  (psw->frame_width - 2 * psw->boundary_width),
-		  (psw->frame_height - 2 * psw->boundary_width -
+		  (frame_width - 2 * psw->boundary_width),
+		  (frame_height - 2 * psw->boundary_width -
 		   psw->title_height), psw->bw, CopyFromParent,
 		  InputOutput, CopyFromParent, valuemask, &attributes);
 
@@ -527,7 +528,7 @@ AddWindow(Window w)
 			   EnterWindowMask | LeaveWindowMask);
   psw->title_x = psw->title_y = 0;
   psw->title_w = 0;
-  psw->title_width = psw->frame_width - 2 * psw->corner_width
+  psw->title_width = frame_width - 2 * psw->corner_width
     - 3 + psw->bw;
   if (psw->title_width < 1)
     psw->title_width = 1;
@@ -692,23 +693,31 @@ AddWindow(Window w)
    * again in HandleMapNotify.
    */
   psw->fMapped = False;
-  width = psw->frame_width;
-  psw->frame_width = 0;
-  height = psw->frame_height;
-  psw->frame_height = 0;
 
+#ifdef USE_CASSOWARY
+  psw->frame_x.set_value(frame_x);
+  psw->frame_y.set_value(frame_y);
+  psw->frame_width.set_value(frame_width);
+  psw->frame_height.set_value(frame_height);
 
-  /* Since we forced the width and height to be different from what is in 
-     psw->frame_width,frame_height, SetupFrame will pretend it has been
-     resized and deal accordingly. --03/27/98 gjb */
-  SetupFrame(psw, psw->frame_x, psw->frame_y, width, height, True);
+  psw->frame_x.set_psw(psw);
+  psw->frame_y.set_psw(psw);
+  psw->frame_width.set_psw(psw);
+  psw->frame_height.set_psw(psw);
+#else
+  FRAME_X(psw) = frame_x;
+  FRAME_Y(psw) = frame_y;
+  FRAME_WIDTH(psw) = frame_width;
+  FRAME_HEIGHT(psw) = frame_height;
+#endif
 
+  SetupFrame(psw, frame_x, frame_y, frame_width, frame_height, True,
+             NOT_MOVED, WAS_RESIZED);
 
   /* FIXMS: Hmm, do we need to do any real cleanup if this fails?
      _Can_ it fail, in it's new location? */
   if (!PlaceWindow(psw, Desk))
     return NULL;
-
 
   /* wait until the window is iconified and the icon window is mapped
    * before creating the icon window 
@@ -801,14 +810,14 @@ AddWindow(Window w)
   if (NeedToResizeToo) {
     XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
 		 Scr.MyDisplayHeight,
-		 psw->frame_x + (psw->frame_width >> 1),
-		 psw->frame_y + (psw->frame_height >> 1));
+		 FRAME_X(psw) + (FRAME_WIDTH(psw) >> 1),
+		 FRAME_Y(psw) + (FRAME_HEIGHT(psw) >> 1));
     Event.xany.type = ButtonPress;
     Event.xbutton.button = 1;
-    Event.xbutton.x_root = psw->frame_x + (psw->frame_width >> 1);
-    Event.xbutton.y_root = psw->frame_y + (psw->frame_height >> 1);
-    Event.xbutton.x = (psw->frame_width >> 1);
-    Event.xbutton.y = (psw->frame_height >> 1);
+    Event.xbutton.x_root = FRAME_X(psw) + (FRAME_WIDTH(psw) >> 1);
+    Event.xbutton.y_root = FRAME_Y(psw) + (FRAME_HEIGHT(psw) >> 1);
+    Event.xbutton.x = (FRAME_WIDTH(psw) >> 1);
+    Event.xbutton.y = (FRAME_HEIGHT(psw) >> 1);
     Event.xbutton.subwindow = None;
     Event.xany.window = psw->w;
     interactive_resize(psw->schwin);
@@ -860,15 +869,13 @@ UngrabButtonWithModifiers(int button, int modifier,
   }
 }
   
-/***********************************************************************
- *
+/*
  *  Procedure:
  *	FetchWMProtocols - finds out which protocols the window supports
  *
  *  Inputs:
  *	tmp - the scwm window structure to use
- *
- ***********************************************************************/
+ */
 void 
 FetchWmProtocols(ScwmWindow *psw)
 {
@@ -911,15 +918,13 @@ FetchWmProtocols(ScwmWindow *psw)
   return;
 }
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *	GetWindowSizeHints - gets application supplied size info
  *
  *  Inputs:
  *	psw - the scwm window structure to use
- *
- ***********************************************************************/
+ */
 void 
 GetWindowSizeHints(ScwmWindow * psw)
 {

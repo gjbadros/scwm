@@ -6,10 +6,19 @@
 #define XMISC_H
 
 #include "image.h"
+#include "window.h"
 
-void XGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn);
-void XGetWindowTopLeft(Window w, int *pxReturn, int *pyReturn);
+extern XGCValues Globalgcv;
+extern unsigned long Globalgcm;
+extern XEvent Event;
+
+Bool FXGetPointerWindowOffsets(Window w, int *pxReturn, int *pyReturn);
+Bool FXGetWindowTopLeft(Window w, int *pxReturn, int *pyReturn);
+Bool FXWindowAccessible(Display *dpy, Window w);
+Bool XGetGeometryCacheIt(Display *dpy, Window w);
 void DrawImage(Window w, scwm_image *psimg, int cpixXoffset, int cpixYoffset, GC gc);
 XTextProperty *PNewXTextPropertyFromSz(const char *sz);
+int flush_expose(Window w);
+void RestoreWithdrawnLocation(ScwmWindow *, Bool);
 
 #endif

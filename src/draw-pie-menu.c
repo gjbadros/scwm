@@ -12,7 +12,6 @@
 #include "scwm.h"
 #include "scwmmenu.h"
 #include "drawmenu.h"
-#include "system.h"
 #include "screen.h"
 #include "font.h"
 #include <guile/gh.h>
@@ -325,7 +324,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     int label_font_height = 0;
     int max_item_width = 0;
 
-    MenuDrawingInfo *pmdi = pmd->pmdi = safemalloc(sizeof(MenuDrawingInfo));
+    MenuDrawingInfo *pmdi = pmd->pmdi = NEW(MenuDrawingInfo);
 
     pmdi->BGColor = DYNAMIC_SAFE_COLOR(pmenu->scmBGColor);
     pmdi->SideBGColor = DYNAMIC_SAFE_COLOR(pmenu->scmSideBGColor);

@@ -1,3 +1,84 @@
+Fri Jul 17 18:46:18 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am, scwm-constraints.c: Added scwm_constraints.c
+
+	* scwm-constraints.h: Added more functional ScwmClVariable, with
+	pointer to enclosing _psw
+
+	* window.h, window.c (MovePswToCurrentPosition): Added; made move_finalize static.
+
+	* constraint-primitives.c: add keep_to_left_of,
+	add_stays_on_window primitives, better debugging
+
+	* add_window.c (AddWindow): attach ScwmClVariable-s to the psw w/ set_psw
+
+	* move.c (moveLoop): Use cassowary's beginEdit, resolve, endEdit construct
+
+Fri Jul 17 13:33:17 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* all-files: Eliminate #includes of misc.h (gone), and system.h
+	(#included by scwm.h now);  add #includes of other headers as now needed
+
+	* borders.h: Move HILITE macros here, and turn them into an enum
+	
+	* xmisc.c, xmisc.h: XGetPointerWindowOffsets renamed ->
+	FXGetPointerWindowOffsets, XGetWindowTopLeft renamed ->
+	FXGetWindowTopLeft
+	
+	* misc.c, misc.h: Removed; functions dispersed as appropriate,
+	often into xmisc.c
+
+	* Makefile.am: updated to reflect removal of misc.c, misc.h and
+	rename of constraint-primitives.cc -> .c
+
+Thu Jul 16 16:19:38 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* module-interface.c, xmisc.c, constraints.h: include <config.h>
+
+	* constraint-primitives.c: return SCM_UNSPECIFIED
+
+	* add_window.c (AddWindow): Better constraints debugging support
+	-- give the variables a reasonable name
+
+	* menuitem.c, scwmmenu.c: Use SCM_UNDEFINED to end gh_list call
+
+	* window.c (DestroyScwmWindow): Fix memory leak -- XFree is now
+	called on psw->name before deallocating psw.
+
+	* binding.c (FKeyToKeysymModifiers): Fix bug in handling of
+	uppercase single keystrokes (e.g., C-M-S-E) -- the keysym that was 
+	looked for was the uppercase keystroke, which isn't bound to any
+	key -- use tolower to convert.
+
+1998-07-16  Greg Badros  <gjb@cs.washington.edu>
+
+	* all: Use FREE and NEW instead of free and malloc, use FREEC
+	and NEWC for free and new w/ counts of objects (for arrays), and use
+	FREECPP and NEWCPP and FREECPPC and NEWCPPC for C++ style memory
+	allocations w/ ctr invocations.  Fix some bugs by the removal of the
+	cast of old malloc calls' return values.
+
+
+	* all: Use FRAME_{X,Y,HEIGHT,WIDTH} macros to access the rvalue of the
+	window geometry -- does the right thing based on USE_CASSOWARY
+
+	* system.c: Make safemalloc really call calloc
+
+	* system.h: Define new memory management macros
+	FREE,NEW,FREEC,NEWC,FREECPP,NEWCPP,FREECPPC,NEWCPPC
+
+	* window.h: Use ScwmClVariable's for frame_{x,y,width,height}, added
+	PSWFROMWIN macro
+
+	* icons.c, placement.c, util.c, virtual.c, window.c: Rename some temporaries to psw
+
+	* scwm.c: add global solver variable.
+
+	* borders.h, borders.c: Added two new args to SetupFrame, and define
+	bool constants WAS_MOVED,NOT_MOVED, WAS_RESIZED,NOT_RESIZED to set them
+
+	* Fix a couple of memory leaks
+
 1998-07-16  Maciej Stachowiak  <maciej@roc-ny5-44.ix.netcom.com>
 
 	* add_window.c (AddWindow): Replace a call to ResetAllFlags with
@@ -7,9 +88,9 @@
 1998-07-15  Maciej Stachowiak  <maciej@roc-ny2-12.ix.netcom.com>
 
 	* placement.c (PlaceWindow): Use user-defined placement
-	functions. In prticular, if the window is transient, use the
+	functions. In particular, if the window is transient, use the
 	'transient-placement-proc object property, if not, use the
-	'placement-proc property. If the approrpiate property is not set,
+	'placement-proc property. If the appropriate property is not set,
 	use default_transient_placement_proc or default_placement_proc
 	which do what scwm used to do, i.e. what fvwm2 would do. Gravity
 	is not properly respected at all now, regardless of the border
@@ -96,6 +177,7 @@ Mon Jul 13 15:20:11 1998  Maciej Stachowiak  <mstachow@mit.edu>
 	by Harvey Stein's latest complaint about the bugs related to it.
 	Still could use more work, but better than before for me, it
 	seems.
+
 
 Fri Jul 10 10:45:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
 

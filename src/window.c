@@ -20,7 +20,6 @@
 #include <assert.h>
 #include "scwm.h"
 #include "screen.h"
-#include "misc.h"
 #include "focus.h"
 #include "move.h"
 #include "icons.h"
@@ -47,6 +46,10 @@
 
 SCM sym_mouse, sym_sloppy, sym_none;
 extern SCM sym_click;
+
+char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
+char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
+char NoResource[] = "NoResource";	/* Class if no res_name in class hints */
 
 unsigned long 
 FlagsBitsFromSw(ScwmWindow *psw)
@@ -299,7 +302,7 @@ CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
 size_t 
 free_window(SCM obj)
 {
-  free(WINDOW(obj));
+  FREE(WINDOW(obj));
   return (0);
 }
 
@@ -346,13 +349,8 @@ make_window(ScwmWindow * win)
   scwm_window *schwin;
   SCM answer;
 
-  schwin = (scwm_window *) safemalloc(sizeof(scwm_window));
+  schwin = NEW(scwm_window);
 
-  /* FIXGJB: we should decide on right way to do memory allocation;
-     this check is redundant w/ safemalloc */
-  if (schwin == NULL) {
-    scm_memory_error("make_window");
-  }
   SCM_DEFER_INTS;
 
   SCM_NEWCELL(answer);
@@ -455,13 +453,35 @@ SCWM_PROC(select_window_interactively, "select-window-interactively", 0, 0, 0,
 }
 
 
+/*
+ * Keeps the "StaysOnTop" windows on the top of the pile.
+ * This is achieved by clearing a flag for OnTop windows here, and waiting
+ * for a visibility notify on the windows. Exeption: OnTop windows which are
+ * obscured by other OnTop windows, which need to be raised here.
+ */
+void 
+KeepOnTop()
+{
+  ScwmWindow *psw = Scr.ScwmRoot.next;
+
+  /* flag that on-top windows should be re-raised */
+  for ( ; psw != NULL; psw = psw->next) {
+    if (psw->fOnTop && !psw->fVisible) {
+      RaiseWindow(psw);
+      psw->fRaised = False;
+    } else
+      psw->fRaised = True;
+  }
+}
+
+
 /**************************************************************************
  *
  * Moves focus to specified window 
  *
  *************************************************************************/
 void 
-FocusOn(ScwmWindow * t, int DeIconifyOnly)
+FocusOn(ScwmWindow *psw, int DeIconifyOnly)
 {
 #ifndef NON_VIRTUAL
   int dx, dy;
@@ -470,19 +490,19 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
 #endif
   int x, y;
 
-  if (!t)
+  if (!psw)
     return;
 
-  if (t->Desk != Scr.CurrentDesk) {
-    changeDesks(0, t->Desk);
+  if (psw->Desk != Scr.CurrentDesk) {
+    changeDesks(0, psw->Desk);
   }
 #ifndef NON_VIRTUAL
-  if (t->fIconified) {
-    cx = t->icon_xl_loc + t->icon_w_width / 2;
-    cy = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
+  if (psw->fIconified) {
+    cx = psw->icon_xl_loc + psw->icon_w_width / 2;
+    cy = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
   } else {
-    cx = t->frame_x + t->frame_width / 2;
-    cy = t->frame_y + t->frame_height / 2;
+    cx = FRAME_X(psw) + FRAME_WIDTH(psw) / 2;
+    cy = FRAME_Y(psw) + FRAME_HEIGHT(psw) / 2;
   }
 
   dx = (cx + Scr.Vx) / Scr.MyDisplayWidth * Scr.MyDisplayWidth;
@@ -491,26 +511,30 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
   MoveViewport(dx, dy, True);
 #endif
 
-  if (t->fIconified) {
-    x = t->icon_xl_loc + t->icon_w_width / 2;
-    y = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
+  if (psw->fIconified) {
+    x = psw->icon_xl_loc + psw->icon_w_width / 2;
+    y = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
   } else {
-    x = t->frame_x;
-    y = t->frame_y;
+    x = FRAME_X(psw);
+    y = FRAME_Y(psw);
   }
-  RaiseWindow(t);
+  RaiseWindow(psw);
   KeepOnTop();
 
   /* If the window is still not visible, make it visible! */
-  if (((t->frame_x + t->frame_height) < 0) || (t->frame_y + t->frame_width < 0) ||
-  (t->frame_x > Scr.MyDisplayWidth) || (t->frame_y > Scr.MyDisplayHeight)) {
-    SetupFrame(t, 0, 0, t->frame_width, t->frame_height, False);
-    if (!t->fClickToFocus)
+  if (((FRAME_X(psw) + FRAME_HEIGHT(psw)) < 0) ||
+      (FRAME_Y(psw) + FRAME_WIDTH(psw) < 0) ||
+      (FRAME_X(psw) > Scr.MyDisplayWidth) || 
+      (FRAME_Y(psw) > Scr.MyDisplayHeight)) {
+    SetupFrame(psw, 0, 0, FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False, 
+               WAS_MOVED, NOT_RESIZED);
+    if (!psw->fClickToFocus)
       XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
   UngrabEm();
-  SetFocus(t->w, t, False);
+  SetFocus(psw->w, psw, False);
 }
+
 
 
 
@@ -520,7 +544,7 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
  *
  *************************************************************************/
 void 
-WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
+WarpOn(ScwmWindow * psw, int warp_x, int x_unit, int warp_y, int y_unit)
 {
 #ifndef NON_VIRTUAL
   int dx, dy;
@@ -529,19 +553,19 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
 #endif
   int x, y;
 
-  if (!t || (t->fIconified && t->icon_w == None))
+  if (!psw || (psw->fIconified && psw->icon_w == None))
     return;
 
-  if (t->Desk != Scr.CurrentDesk) {
-    changeDesks(0, t->Desk);
+  if (psw->Desk != Scr.CurrentDesk) {
+    changeDesks(0, psw->Desk);
   }
 #ifndef NON_VIRTUAL
-  if (t->fIconified) {
-    cx = t->icon_xl_loc + t->icon_w_width / 2;
-    cy = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
+  if (psw->fIconified) {
+    cx = psw->icon_xl_loc + psw->icon_w_width / 2;
+    cy = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2;
   } else {
-    cx = t->frame_x + t->frame_width / 2;
-    cy = t->frame_y + t->frame_height / 2;
+    cx = FRAME_X(psw) + FRAME_WIDTH(psw) / 2;
+    cy = FRAME_Y(psw) + FRAME_HEIGHT(psw) / 2;
   }
 
   dx = (cx + Scr.Vx) / Scr.MyDisplayWidth * Scr.MyDisplayWidth;
@@ -550,33 +574,97 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
   MoveViewport(dx, dy, True);
 #endif
 
-  if (t->fIconified) {
-    x = t->icon_xl_loc + t->icon_w_width / 2 + 2;
-    y = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2 + 2;
+  if (psw->fIconified) {
+    x = psw->icon_xl_loc + psw->icon_w_width / 2 + 2;
+    y = psw->icon_y_loc + psw->icon_p_height + ICON_HEIGHT / 2 + 2;
   } else {
     if (x_unit != Scr.MyDisplayWidth)
-      x = t->frame_x + 2 + warp_x;
+      x = FRAME_X(psw) + 2 + warp_x;
     else
-      x = t->frame_x + 2 + (t->frame_width - 4) * warp_x / 100;
+      x = FRAME_X(psw) + 2 + (FRAME_WIDTH(psw) - 4) * warp_x / 100;
     if (y_unit != Scr.MyDisplayHeight)
-      y = t->frame_y + 2 + warp_y;
+      y = FRAME_Y(psw) + 2 + warp_y;
     else
-      y = t->frame_y + 2 + (t->frame_height - 4) * warp_y / 100;
+      y = FRAME_Y(psw) + 2 + (FRAME_HEIGHT(psw) - 4) * warp_y / 100;
   }
   if (warp_x >= 0 && warp_y >= 0) {
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, x, y);
   }
-  RaiseWindow(t);
+  RaiseWindow(psw);
   KeepOnTop();
 
   /* If the window is still not visible, make it visible! */
-  if (((t->frame_x + t->frame_height) < 0) || (t->frame_y + t->frame_width < 0) ||
-  (t->frame_x > Scr.MyDisplayWidth) || (t->frame_y > Scr.MyDisplayHeight)) {
-    SetupFrame(t, 0, 0, t->frame_width, t->frame_height, False);
+  if (((FRAME_X(psw) + FRAME_HEIGHT(psw)) < 0) || 
+      (FRAME_Y(psw) + FRAME_WIDTH(psw) < 0) ||
+      (FRAME_X(psw) > Scr.MyDisplayWidth) || 
+      (FRAME_Y(psw) > Scr.MyDisplayHeight)) {
+    SetupFrame(psw, 0, 0, FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False,
+               WAS_MOVED, NOT_RESIZED);
     XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
   }
   UngrabEm();
 }
+
+
+/*
+ * Grab the pointer and keyboard
+ */
+Bool 
+GrabEm(enum cursor cursor)
+{
+  int i = 0, val = 0;
+  unsigned int mask;
+
+  XSync(dpy, 0);
+  /* move the keyboard focus prior to grabbing the pointer to
+   * eliminate the enterNotify and exitNotify events that go
+   * to the windows */
+  if (Scr.PreviousFocus == NULL)
+    Scr.PreviousFocus = Scr.Focus;
+  SetFocus(Scr.NoFocusWin, NULL, 0);
+  mask = ButtonPressMask | ButtonReleaseMask | ButtonMotionMask | PointerMotionMask
+    | EnterWindowMask | LeaveWindowMask;
+  while ((i < 1000) && (val = XGrabPointer(dpy, Scr.Root, True, mask,
+				     GrabModeAsync, GrabModeAsync, Scr.Root,
+				    Scr.ScwmCursors[cursor], CurrentTime) !=
+			GrabSuccess)) {
+    i++;
+    /* If you go too fast, other windows may not get a change to release
+     * any grab that they have. */
+    usleep(1);
+  }
+
+  /* If we fall out of the loop without grabbing the pointer, its
+     time to give up */
+  XSync(dpy, 0);
+
+  return (val == GrabSuccess);
+}
+
+
+/*
+ * UnGrab the pointer and keyboard
+ */
+void 
+UngrabEm()
+{
+  Window w;
+
+  XSync(dpy, 0);
+  XUngrabPointer(dpy, CurrentTime);
+
+  if (Scr.PreviousFocus != NULL) {
+    w = Scr.PreviousFocus->w;
+
+    /* if the window still exists, focus on it */
+    if (w) {
+      SetFocus(w, Scr.PreviousFocus, 0);
+    }
+    Scr.PreviousFocus = NULL;
+  }
+  XSync(dpy, 0);
+}
+
 
 ScwmWindow *
 PswFromWindow(Display *dpy, Window w)
@@ -763,7 +851,7 @@ SCWM_PROC(select_window, "select-window", 0, 2, 0,
  * Unmaps a window on transition to a new desktop
  */
 void 
-UnmapScwmWindow(ScwmWindow * t)
+UnmapScwmWindow(ScwmWindow * psw)
 {
   XWindowAttributes winattrs;
   unsigned long eventMask;
@@ -772,35 +860,35 @@ UnmapScwmWindow(ScwmWindow * t)
    * Prevent the receipt of an UnmapNotify, since that would
    * cause a transition to the Withdrawn state.
    */
-  XGetWindowAttributes(dpy, t->w, &winattrs);
+  XGetWindowAttributes(dpy, psw->w, &winattrs);
   eventMask = winattrs.your_event_mask;
-  XSelectInput(dpy, t->w, eventMask & ~StructureNotifyMask);
-  if (t->fIconified) {
-    if (t->icon_pixmap_w != None)
-      XUnmapWindow(dpy, t->icon_pixmap_w);
-    if (t->icon_w != None)
-      XUnmapWindow(dpy, t->icon_w);
-  } else if (t->fMapped || t->fMapPending) {
-    XUnmapWindow(dpy, t->frame);
+  XSelectInput(dpy, psw->w, eventMask & ~StructureNotifyMask);
+  if (psw->fIconified) {
+    if (psw->icon_pixmap_w != None)
+      XUnmapWindow(dpy, psw->icon_pixmap_w);
+    if (psw->icon_w != None)
+      XUnmapWindow(dpy, psw->icon_w);
+  } else if (psw->fMapped || psw->fMapPending) {
+    XUnmapWindow(dpy, psw->frame);
   }
-  XSelectInput(dpy, t->w, eventMask);
+  XSelectInput(dpy, psw->w, eventMask);
 }
 
 /*
  * Maps a window on transition to a new desktop
  */
 void 
-MapIt(ScwmWindow * t)
+MapIt(ScwmWindow * psw)
 {
-  if (t->fIconified) {
-    if (t->icon_pixmap_w != None)
-      XMapWindow(dpy, t->icon_pixmap_w);
-    if (t->icon_w != None)
-      XMapWindow(dpy, t->icon_w);
-  } else if (t->fMapped) {
-    XMapWindow(dpy, t->frame);
-    t->fMapPending = True;
-    XMapWindow(dpy, t->Parent);
+  if (psw->fIconified) {
+    if (psw->icon_pixmap_w != None)
+      XMapWindow(dpy, psw->icon_pixmap_w);
+    if (psw->icon_w != None)
+      XMapWindow(dpy, psw->icon_w);
+  } else if (psw->fMapped) {
+    XMapWindow(dpy, psw->frame);
+    psw->fMapPending = True;
+    XMapWindow(dpy, psw->Parent);
   }
 }
 
@@ -808,7 +896,7 @@ MapIt(ScwmWindow * t)
  * Raise a window in the stacking order
  */ 
 void 
-RaiseWindow(ScwmWindow * t)
+RaiseWindow(ScwmWindow * psw)
 {
   ScwmWindow *t2;
   int count, i;
@@ -816,13 +904,13 @@ RaiseWindow(ScwmWindow * t)
 
   /* raise the target, at least */
   count = 1;
-  Broadcast(M_RAISE_WINDOW, 3, t->w, t->frame, (unsigned long) t, 0, 0, 0, 0);
+  Broadcast(M_RAISE_WINDOW, 3, psw->w, psw->frame, (unsigned long) psw, 0, 0, 0, 0);
 
   for (t2 = Scr.ScwmRoot.next; t2 != NULL; t2 = t2->next) {
     if (t2->fOnTop)
       count++;
-    if (t2->fTransient && (t2->transientfor == t->w) &&
-	(t2 != t)) {
+    if (t2->fTransient && (t2->transientfor == psw->w) &&
+	(t2 != psw)) {
       count++;
       Broadcast(M_RAISE_WINDOW, 3, t2->w, t2->frame, (unsigned long) t2,
 		0, 0, 0, 0);
@@ -831,10 +919,10 @@ RaiseWindow(ScwmWindow * t)
       }
     }
   }
-  if (t->fIconified && !t->fSuppressIcon) {
+  if (psw->fIconified && !psw->fSuppressIcon) {
     count += 2;
   }
-  wins = (Window *) safemalloc(count * sizeof(Window));
+  wins = NEWC(count,Window);
 
   i = 0;
 
@@ -852,8 +940,8 @@ RaiseWindow(ScwmWindow * t)
 #ifndef DONT_RAISE_TRANSIENTS
   for (t2 = Scr.ScwmRoot.next; t2 != NULL; t2 = t2->next) {
     if (t2->fTransient &&
-	(t2->transientfor == t->w) &&
-	(t2 != t) &&
+	(t2->transientfor == psw->w) &&
+	(t2 != psw) &&
 	(!t2->fOnTop)) {
       wins[i++] = t2->frame;
       if (t2->fIconified && !t2->fSuppressIcon) {
@@ -865,39 +953,80 @@ RaiseWindow(ScwmWindow * t)
     }
   }
 #endif
-  if (t->fIconified && !t->fSuppressIcon) {
-    if (!t->fNoIconTitle)
-      wins[i++] = t->icon_w;
-    if (t->icon_pixmap_w)
-      wins[i++] = t->icon_pixmap_w;
+  if (psw->fIconified && !psw->fSuppressIcon) {
+    if (!psw->fNoIconTitle)
+      wins[i++] = psw->icon_w;
+    if (psw->icon_pixmap_w)
+      wins[i++] = psw->icon_pixmap_w;
   }
-  if (!t->fOnTop) {
-    wins[i++] = t->frame;
-    Scr.LastWindowRaised = t;
+  if (!psw->fOnTop) {
+    wins[i++] = psw->frame;
+    Scr.LastWindowRaised = psw;
   }
 
   if (i > 0)
     XRaiseWindow(dpy, wins[0]);
 
   XRestackWindows(dpy, wins, i);
-  free(wins);
+  FREEC(wins);
   raisePanFrames();
 }
 
 
 void 
-LowerWindow(ScwmWindow * t)
+LowerWindow(ScwmWindow * psw)
 {
-  XLowerWindow(dpy, t->frame);
+  XLowerWindow(dpy, psw->frame);
 
-  Broadcast(M_LOWER_WINDOW, 3, t->w, t->frame, (unsigned long) t, 0, 0, 0, 0);
+  Broadcast(M_LOWER_WINDOW, 3, psw->w, psw->frame, (unsigned long) psw, 0, 0, 0, 0);
 
-  if (t->fIconified && !t->fSuppressIcon) {
-    XLowerWindow(dpy, t->icon_w);
-    XLowerWindow(dpy, t->icon_pixmap_w);
+  if (psw->fIconified && !psw->fSuppressIcon) {
+    XLowerWindow(dpy, psw->icon_w);
+    XLowerWindow(dpy, psw->icon_pixmap_w);
   }
   Scr.LastWindowRaised = NULL;
 }
+
+/*
+ * Releases dynamically allocated space used to store window/icon names
+ */
+void 
+free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon)
+{
+  if (!psw)
+    return;
+
+  if (nukename && nukeicon) {
+    if (psw->name == psw->icon_name) {
+      if (psw->name != NoName && psw->name != NULL)
+	XFree(psw->name);
+      psw->name = NULL;
+      psw->icon_name = NULL;
+    } else {
+      if (psw->name != NoName && psw->name != NULL)
+	XFree(psw->name);
+      psw->name = NULL;
+      if (psw->icon_name != NoName && psw->icon_name != NULL)
+	XFree(psw->icon_name);
+      psw->icon_name = NULL;
+    }
+  } else if (nukename) {
+    if (psw->name != psw->icon_name
+	&& psw->name != NoName
+	&& psw->name != NULL)
+      XFree(psw->name);
+    psw->name = NULL;
+  } else {			/* if (nukeicon) */
+    if (psw->icon_name != psw->name
+	&& psw->icon_name != NoName
+	&& psw->icon_name != NULL)
+      XFree(psw->icon_name);
+    psw->icon_name = NULL;
+  }
+
+  return;
+}
+
 
 /*
  * Handles destruction of a window 
@@ -999,22 +1128,22 @@ DestroyScwmWindow(ScwmWindow *psw)
     psw->next->prev = psw->prev;
   free_window_names(psw, True, True);
   if (psw->wmhints)
-    XFree((char *) psw->wmhints);
+    XFree(psw->wmhints);
   /* removing NoClass change for now... */
   if (psw->classhint.res_name && psw->classhint.res_name != NoResource)
-    XFree((char *) psw->classhint.res_name);
+    XFree(psw->classhint.res_name);
   if (psw->classhint.res_class && psw->classhint.res_class != NoClass)
-    XFree((char *) psw->classhint.res_class);
+    XFree(psw->classhint.res_class);
   if (psw->mwm_hints)
-    XFree((char *) psw->mwm_hints);
+    XFree(psw->mwm_hints);
 
   if (psw->cmap_windows != (Window *) NULL)
-    XFree((void *) psw->cmap_windows);
+    XFree(psw->cmap_windows);
 
   /* XSCM */
   invalidate_window(psw->schwin);
-
-  free((char *) psw);
+  XFree(psw->name);
+  FREECPP(psw);
 
   if (!PPosOverride)
     XSync(dpy, 0);
@@ -1183,7 +1312,7 @@ SCWM_PROC(restack_windows, "restack-windows", 1, 0, 0,
     }
   }
 
-  windows = safemalloc(sizeof(Window) * cnt);
+  windows = NEWC(cnt,Window);
   
   /* FIXMS: This doesn't properly handle transient windows (the way
      raise does), but I am unsure what the really right way to handle
@@ -1198,7 +1327,7 @@ SCWM_PROC(restack_windows, "restack-windows", 1, 0, 0,
     ScwmWindow *psw=SCWMWINDOW(cur);
 
     if (!WINDOWP(cur)) {
-      free (windows);
+      FREEC(windows);
       scm_wrong_type_arg(s_restack_windows, 1, winlist);      
     }
 
@@ -1396,7 +1525,7 @@ SCWM_PROC(window_shade, "window-shade", 0, 2, 0,
     while (XCheckMaskEvent(dpy,  ResizeRedirectMask, &Event))
       { }
     /* We discard events so we don't propagate a resize
-       event that will call setupframe again */
+       event that will call SetupFrame again */
     /* Note sometimes the event we're trying to discard won't be
        generated in time for the above to discard it, so I had to hack
        the HandleConfigureNotify() routine to avoid resizing the
@@ -1405,8 +1534,9 @@ SCWM_PROC(window_shade, "window-shade", 0, 2, 0,
        substructure redirection is a solution here, but I don't know
        much about it --11/11/97 gjb */
   }
-  SetupFrame(psw, psw->frame_x, psw->frame_y, psw->frame_width,
-	     psw->title_height + psw->boundary_width, False);
+  SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), FRAME_WIDTH(psw),
+	     psw->title_height + psw->boundary_width, False, 
+             NOT_MOVED, WAS_RESIZED);
   if (fAnimated) {
     /* need to reset the client window offset so that if
        if it's un-window-shaded w/o animation, things are ok */
@@ -1449,8 +1579,9 @@ SCWM_PROC(un_window_shade, "un-window-shade", 0, 2, 0,
   if (fAnimated) {
     AnimatedShadeWindow(psw,False /* !roll up */, -1, NULL);
   }
-  SetupFrame(psw, psw->frame_x, psw->frame_y, 
-	     psw->orig_wd, psw->orig_ht, True);
+  SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw), 
+	     psw->orig_wd, psw->orig_ht, True,
+             NOT_MOVED, WAS_RESIZED);
   Broadcast(M_DEWINDOWSHADE, 1, psw->w, 0, 0, 0, 0, 0, 0);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -1465,12 +1596,13 @@ SCWM_PROC(window_shaded_p, "window-shaded?", 0, 1, 0,
 }
 
 
-void 
+static void 
 move_finalize(Window w, ScwmWindow * psw, int x, int y)
 {
   if (w == psw->frame) {
     SetupFrame(psw, x, y,
-	       psw->frame_width, psw->frame_height, False);
+	       FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False,
+               WAS_MOVED, NOT_RESIZED);
   } else {			/* icon window */
     psw->fIconMoved = True;
     psw->icon_x_loc = x;
@@ -1491,6 +1623,12 @@ move_finalize(Window w, ScwmWindow * psw, int x, int y)
   }
 }
 
+void 
+MovePswToCurrentPosition(ScwmWindow *psw)
+{
+  int x = FRAME_X(psw), y = FRAME_Y(psw);
+  XMoveWindow(dpy, psw->frame, x, y);
+}
 
 
 extern float rgpctMovementDefault[32];
@@ -1593,7 +1731,7 @@ SCWM_PROC(move_to, "move-to", 2, 3, 0,
   fMovePointer = gh_scm2bool(move_pointer_too_p);
   fAnimated = gh_scm2bool(animated_p);
   if (fMovePointer || fAnimated) {
-    XGetWindowTopLeft(w,&startX, &startY);
+    FXGetWindowTopLeft(w,&startX, &startY);
   }
   if (fAnimated) {
     SCM animation_ms_delay = gh_lookup("animation-ms-delay");
@@ -1606,7 +1744,7 @@ SCWM_PROC(move_to, "move-to", 2, 3, 0,
 		       fMovePointer,cmsDelay,NULL);
   } else if (fMovePointer) {
     int x, y;
-    XGetPointerWindowOffsets(Scr.Root, &x, &y);
+    FXGetPointerWindowOffsets(Scr.Root, &x, &y);
     XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
 		 Scr.MyDisplayHeight, x + destX - startX, y + destY - startY);
   }
@@ -1641,7 +1779,7 @@ SCWM_PROC(interactive_move, "interactive-move", 0, 1, 0,
     event.xbutton.x_root = orig_x;
     event.xbutton.y_root = orig_y;
   } else {
-    XGetPointerWindowOffsets(Scr.Root, &event.xbutton.x_root, &event.xbutton.y_root);
+    FXGetPointerWindowOffsets(Scr.Root, &event.xbutton.x_root, &event.xbutton.y_root);
   }
   InteractiveMove(&w, psw, &x, &y, &event);
   move_finalize(w, psw, x, y);
@@ -1683,8 +1821,9 @@ SCWM_PROC(resize_to, "resize-to", 2, 1, 0,
    */
 
   ConstrainSize(psw, &width, &height);
-  SetupFrame(psw, psw->frame_x,
-	     psw->frame_y, width, height, False);
+  SetupFrame(psw, FRAME_X(psw),
+	     FRAME_Y(psw), width, height, False,
+             NOT_MOVED, WAS_RESIZED);
 
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -1874,7 +2013,8 @@ SCWM_PROC(interactive_resize, "interactive-resize", 0, 1, 0,
   if (!abort) {
     ConstrainSize(psw, &dragWidth, &dragHeight);
     SetupFrame(psw, dragx - psw->bw,
-	       dragy - psw->bw, dragWidth, dragHeight, False);
+	       dragy - psw->bw, dragWidth, dragHeight, False,
+               NOT_MOVED, WAS_RESIZED);
   }
   UninstallRootColormap();
   ResizeWindow = None;
@@ -1909,7 +2049,7 @@ SCWM_PROC(refresh_window, "refresh-window", 0, 1, 0,
 SCWM_PROC(move_window_to_desk, "move-window-to-desk", 1, 1, 0,
           (SCM which, SCM win))
 {
-  ScwmWindow *t;
+  ScwmWindow *psw;
   int val1;
 
   SCM_REDEFER_INTS;
@@ -1919,31 +2059,31 @@ SCWM_PROC(move_window_to_desk, "move-window-to-desk", 1, 1, 0,
   }
   VALIDATEN(win, 2, "move-window-to-desk");
 
-  t = SCWMWINDOW(win);
+  psw = SCWMWINDOW(win);
 
   val1 = gh_scm2int(which);
 
   /* Mapping window on its new Desk,
      unmapping it from the old Desk */
   /* Only change mapping for non-sticky windows */
-  if (!(t->fIconified && t->fStickyIcon) &&
-      !t->fSticky && !t->fIconUnmapped) {
-    if (t->Desk == Scr.CurrentDesk) {
-      t->Desk = val1;
+  if (!(psw->fIconified && psw->fStickyIcon) &&
+      !psw->fSticky && !psw->fIconUnmapped) {
+    if (psw->Desk == Scr.CurrentDesk) {
+      psw->Desk = val1;
       if (val1 != Scr.CurrentDesk) {
-	UnmapScwmWindow(t);
+	UnmapScwmWindow(psw);
       }
     } else if (val1 == Scr.CurrentDesk) {
-      t->Desk = val1;
+      psw->Desk = val1;
       /* If its an icon, auto-place it */
-      if (t->fIconified)
-	AutoPlace(t);
-      MapIt(t);
+      if (psw->fIconified)
+	AutoPlace(psw);
+      MapIt(psw);
     } else {
-      t->Desk = val1;
+      psw->Desk = val1;
     }
   }
-  BroadcastConfig(M_CONFIGURE_WINDOW, t);
+  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;;
 }
@@ -1957,8 +2097,8 @@ SCWM_PROC(window_position, "window-position", 0, 1, 0,
   VALIDATE(win, "window-position");
   psw = SCWMWINDOW(win);
 
-  return scm_listify(SCM_MAKINUM(psw->frame_x),
-		     SCM_MAKINUM(psw->frame_y),
+  return scm_listify(SCM_MAKINUM(FRAME_X(psw)),
+		     SCM_MAKINUM(FRAME_Y(psw)),
 		     SCM_UNDEFINED);
 }
 
@@ -1971,8 +2111,8 @@ SCWM_PROC(window_size, "window-size", 0, 1, 0,
   VALIDATE(win, "window-size");
   psw = SCWMWINDOW(win);
 
-  return scm_listify(SCM_MAKINUM(psw->frame_width),
-		     SCM_MAKINUM(psw->frame_height),
+  return scm_listify(SCM_MAKINUM(FRAME_WIDTH(psw)),
+		     SCM_MAKINUM(FRAME_HEIGHT(psw)),
 		     SCM_UNDEFINED);
 }
 
@@ -2062,14 +2202,12 @@ SCWM_PROC(window_resource, "window-resource", 0, 1, 0,
 SCWM_PROC(list_all_windows, "list-all-windows", 0, 0, 0,
           ())
 {
-  ScwmWindow *t;
+  ScwmWindow *psw;
   SCM result = SCM_EOL;
 
-  for (t = Scr.ScwmRoot.next; NULL != t; t = t->next) {
-    result = scm_cons(t->schwin, result);
+  for (psw = Scr.ScwmRoot.next; NULL != psw; psw = psw->next) {
+    result = scm_cons(psw->schwin, result);
   }
-
-  
 
   return result;
 }
@@ -2135,10 +2273,10 @@ SCWM_PROC(show_titlebar, "show-titlebar", 0, 1, 0,
   if (!psw->fTitle) {
     psw->fTitle = True;
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-    SetupFrame(psw, psw->frame_x, psw->frame_y,
-	       psw->frame_width,
-	       psw->frame_height + fl->TitleHeight,
-	       True);
+    SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw),
+	       FRAME_WIDTH(psw),
+	       FRAME_HEIGHT(psw) + fl->TitleHeight,
+	       True, NOT_MOVED, WAS_RESIZED);
     /* SetTitleBar(psw,(Scr.Hilite==psw),True); */
   }
   SCM_REALLOW_INTS;
@@ -2162,10 +2300,10 @@ SCWM_PROC(hide_titlebar, "hide-titlebar", 0, 1, 0,
     psw->fTitle = False;
     psw->title_height = 0;
     BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-    SetupFrame(psw, psw->frame_x, psw->frame_y,
-	       psw->frame_width,
-	       psw->frame_height - fl->TitleHeight,
-	       True);
+    SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw),
+	       FRAME_WIDTH(psw),
+	       FRAME_HEIGHT(psw) - fl->TitleHeight,
+	       True, NOT_MOVED, WAS_RESIZED);
   }
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
@@ -2259,11 +2397,10 @@ SCWM_PROC(set_border_width_x, "set-border-width!", 1, 1, 0,
   oldw = psw->boundary_width;
   psw->boundary_width = w;
 
-  SetupFrame(psw, psw->frame_x, psw->frame_y,
-	     psw->frame_width + 2 * (w - oldw),
-	     psw->frame_height + 2 * (w - oldw),
-	     True);
-
+  SetupFrame(psw, FRAME_X(psw), FRAME_Y(psw),
+	     FRAME_WIDTH(psw) + 2 * (w - oldw),
+	     FRAME_HEIGHT(psw) + 2 * (w - oldw),
+	     True, NOT_MOVED, WAS_RESIZED);
 
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
   return SCM_UNSPECIFIED;
@@ -2463,10 +2600,10 @@ SCWM_PROC(set_window_button_x, "set-window-button!", 2, 1, 0,
 SCWM_PROC(set_mwm_buttons_x, "set-mwm-buttons!", 1, 1, 0,
           (SCM val, SCM win))
 {
-  ScwmWindow *t;
+  ScwmWindow *psw;
 
   VALIDATEN(win, 2, "set-mwm-buttons!");
-  t = SCWMWINDOW(win);
+  psw = SCWMWINDOW(win);
 
   if (val == SCM_BOOL_T) {
     SCWMWINDOW(win)->fMWMButtons = True;
@@ -2476,7 +2613,7 @@ SCWM_PROC(set_mwm_buttons_x, "set-mwm-buttons!", 1, 1, 0,
     scm_wrong_type_arg("set-mwm-buttons!", 1, val);
   }
 
-  /* SetBorder(t,(Scr.Hilite==t),True,True,None); */
+  /* SetBorder(psw,(Scr.Hilite==psw),True,True,None); */
   return SCM_UNSPECIFIED;
 }
 
@@ -2484,10 +2621,10 @@ SCWM_PROC(set_mwm_buttons_x, "set-mwm-buttons!", 1, 1, 0,
 SCWM_PROC(set_mwm_border_x, "set-mwm-border!", 1, 1, 0,
           (SCM val, SCM win))
 {
-  ScwmWindow *t;
+  ScwmWindow *psw;
 
   VALIDATEN(win, 2, "set-mwm-border!");
-  t = SCWMWINDOW(win);
+  psw = SCWMWINDOW(win);
 
   if (val == SCM_BOOL_T) {
     SCWMWINDOW(win)->fMWMBorders = True;
@@ -2497,7 +2634,7 @@ SCWM_PROC(set_mwm_border_x, "set-mwm-border!", 1, 1, 0,
     scm_wrong_type_arg("set-mwm-border!", 1, val);
   }
 
-  SetBorderX(t, (Scr.Hilite == t), True, True, None, True);
+  SetBorderX(psw, (Scr.Hilite == psw), True, True, None, True);
 
   return SCM_UNSPECIFIED;
 }

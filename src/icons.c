@@ -10,11 +10,9 @@
  * as long as the copyright notice is preserved
  ****************************************************************************/
 
-/***********************************************************************
- *
+/*
  * scwm icon code
- *
- ***********************************************************************/
+ */
 
 #include <config.h>
 
@@ -30,7 +28,6 @@
 #include <X11/Intrinsic.h>
 #include <X11/xpm.h>
 #include "scwm.h"
-#include "misc.h"
 #include "screen.h"
 #include "icons.h"
 #include "borders.h"
@@ -39,6 +36,7 @@
 #include "font.h"
 #include "color.h"
 #include "focus.h"
+#include "xmisc.h"
 
 #include <X11/extensions/shape.h>
 
@@ -552,7 +550,7 @@ RedoIconName(ScwmWindow *psw)
  *
  ************************************************************************/
 void 
-AutoPlace(ScwmWindow * t)
+AutoPlace(ScwmWindow *psw)
 {
   int test_x = 0, test_y = 0, tw, th, tx, ty, temp_h, temp_w;
   int base_x, base_y;
@@ -566,45 +564,45 @@ AutoPlace(ScwmWindow * t)
 
   /* New! Put icon in same page as the center of the window */
   /* Not a good idea for fStickyIcon */
-  if (t->fStickyIcon || t->fSticky) {
+  if (psw->fStickyIcon || psw->fSticky) {
     base_x = 0;
     base_y = 0;
     /*Also, if its a stickyWindow, put it on the current page! */
-    new_x = t->frame_x % Scr.MyDisplayWidth;
-    new_y = t->frame_y % Scr.MyDisplayHeight;
+    new_x = FRAME_X(psw) % Scr.MyDisplayWidth;
+    new_y = FRAME_Y(psw) % Scr.MyDisplayHeight;
     if (new_x < 0)
       new_x += Scr.MyDisplayWidth;
     if (new_y < 0)
       new_y += Scr.MyDisplayHeight;
-    SetupFrame(t, new_x, new_y,
-	       t->frame_width, t->frame_height, False);
-    t->Desk = Scr.CurrentDesk;
+    SetupFrame(psw, new_x, new_y,
+	       FRAME_WIDTH(psw), FRAME_HEIGHT(psw), False, WAS_MOVED, NOT_RESIZED);
+    psw->Desk = Scr.CurrentDesk;
   } else {
-    base_x = ((t->frame_x + Scr.Vx + (t->frame_width >> 1)) / Scr.MyDisplayWidth) *
+    base_x = ((FRAME_X(psw) + Scr.Vx + (FRAME_WIDTH(psw) >> 1)) / Scr.MyDisplayWidth) *
       Scr.MyDisplayWidth - Scr.Vx;
-    base_y = ((t->frame_y + Scr.Vy + (t->frame_height >> 1)) / Scr.MyDisplayHeight) *
+    base_y = ((FRAME_Y(psw) + Scr.Vy + (FRAME_HEIGHT(psw) >> 1)) / Scr.MyDisplayHeight) *
       Scr.MyDisplayHeight - Scr.Vy;
   }
-  if (t->fIconMoved) {
+  if (psw->fIconMoved) {
     /* just make sure the icon is on this screen */
-    t->icon_x_loc = t->icon_x_loc % Scr.MyDisplayWidth + base_x;
-    t->icon_y_loc = t->icon_y_loc % Scr.MyDisplayHeight + base_y;
-    if (t->icon_x_loc < 0)
-      t->icon_x_loc += Scr.MyDisplayWidth;
-    if (t->icon_y_loc < 0)
-      t->icon_y_loc += Scr.MyDisplayHeight;
-  } else if (t->wmhints && t->wmhints->flags & IconPositionHint) {
-    t->icon_x_loc = t->wmhints->icon_x;
-    t->icon_y_loc = t->wmhints->icon_y;
-  } else if (t->IconBox[0] >= 0) {
-    width = t->icon_p_width;
-    height = t->icon_p_height + t->icon_w_height;
+    psw->icon_x_loc = psw->icon_x_loc % Scr.MyDisplayWidth + base_x;
+    psw->icon_y_loc = psw->icon_y_loc % Scr.MyDisplayHeight + base_y;
+    if (psw->icon_x_loc < 0)
+      psw->icon_x_loc += Scr.MyDisplayWidth;
+    if (psw->icon_y_loc < 0)
+      psw->icon_y_loc += Scr.MyDisplayHeight;
+  } else if (psw->wmhints && psw->wmhints->flags & IconPositionHint) {
+    psw->icon_x_loc = psw->wmhints->icon_x;
+    psw->icon_y_loc = psw->wmhints->icon_y;
+  } else if (psw->IconBox[0] >= 0) {
+    width = psw->icon_p_width;
+    height = psw->icon_p_height + psw->icon_w_height;
     loc_ok = False;
 
     /* check all boxes in order */
     /* In each IconBox, start at the upper left, travel right, then
      * down */
-    test_y = t->IconBox[1] + base_y;
+    test_y = psw->IconBox[1] + base_y;
 
     temp_h = height;
     temp_w = width;
@@ -613,14 +611,14 @@ AutoPlace(ScwmWindow * t)
      * If the window is taller than the icon box, ignore the icon height
      * when figuring where to put it. Same goes for the width */
     /* This should permit reasonably graceful handling of big icons. */
-    if (width >= (t->IconBox[2] - t->IconBox[0]))
+    if (width >= (psw->IconBox[2] - psw->IconBox[0]))
       temp_w = 0;
-    if (height >= (t->IconBox[3] - t->IconBox[1]))
+    if (height >= (psw->IconBox[3] - psw->IconBox[1]))
       temp_h = 0;
 
-    while (((test_y + temp_h) < (t->IconBox[3] + base_y)) && (!loc_ok)) {
-      test_x = t->IconBox[0] + base_x;
-      while (((test_x + temp_w) < (t->IconBox[2] + base_x)) &&
+    while (((test_y + temp_h) < (psw->IconBox[3] + base_y)) && (!loc_ok)) {
+      test_x = psw->IconBox[0] + base_x;
+      while (((test_x + temp_w) < (psw->IconBox[2] + base_x)) &&
 	     (!loc_ok)) {
 	real_x = test_x;
 	real_y = test_y;
@@ -636,10 +634,10 @@ AutoPlace(ScwmWindow * t)
 	loc_ok = True;
 	test_window = Scr.ScwmRoot.next;
 	while ((test_window != (ScwmWindow *) 0) && (loc_ok == True)) {
-	  if (test_window->Desk == t->Desk) {
+	  if (test_window->Desk == psw->Desk) {
 	    if (test_window->fIconified &&
 		(test_window->icon_w || test_window->icon_pixmap_w) &&
-		(test_window != t)) {
+		(test_window != psw)) {
 	      tw = test_window->icon_p_width;
 	      th = test_window->icon_p_height + test_window->icon_w_height;
 	      tx = test_window->icon_x_loc;
@@ -659,23 +657,23 @@ AutoPlace(ScwmWindow * t)
     }
     if (loc_ok == False)
       return;
-    t->icon_x_loc = real_x;
-    t->icon_y_loc = real_y;
+    psw->icon_x_loc = real_x;
+    psw->icon_y_loc = real_y;
 
-    if (t->icon_pixmap_w)
-      XMoveWindow(dpy, t->icon_pixmap_w, t->icon_x_loc, t->icon_y_loc);
+    if (psw->icon_pixmap_w)
+      XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, psw->icon_y_loc);
 
-    t->icon_w_width = t->icon_p_width;
-    t->icon_xl_loc = t->icon_x_loc;
+    psw->icon_w_width = psw->icon_p_width;
+    psw->icon_xl_loc = psw->icon_x_loc;
 
-    if (t->icon_w != None)
-      XMoveResizeWindow(dpy, t->icon_w, t->icon_xl_loc,
-			t->icon_y_loc + t->icon_p_height,
-			t->icon_w_width, ICON_HEIGHT);
-    Broadcast(M_ICON_LOCATION, 7, t->w, t->frame,
-	      (unsigned long) t,
-	      t->icon_x_loc, t->icon_y_loc,
-	      t->icon_w_width, t->icon_w_height + t->icon_p_height);
+    if (psw->icon_w != None)
+      XMoveResizeWindow(dpy, psw->icon_w, psw->icon_xl_loc,
+			psw->icon_y_loc + psw->icon_p_height,
+			psw->icon_w_width, ICON_HEIGHT);
+    Broadcast(M_ICON_LOCATION, 7, psw->w, psw->frame,
+	      (unsigned long) psw,
+	      psw->icon_x_loc, psw->icon_y_loc,
+	      psw->icon_w_width, psw->icon_w_height + psw->icon_p_height);
   }
 }
 
@@ -686,9 +684,10 @@ AutoPlace(ScwmWindow * t)
  *
  ***********************************************************************/
 void 
-DeIconify(ScwmWindow * psw)
+DeIconify(ScwmWindow *psw)
 {
-  ScwmWindow *t, *tmp;
+  ScwmWindow *t = NULL;
+  ScwmWindow *pswTmpHilite = NULL;
 
   if (!psw)
     return;
@@ -713,10 +712,10 @@ DeIconify(ScwmWindow * psw)
       t->fIconUnmapped = False;
       /* Need to make sure the border is colored correctly,
        * in case it was stuck or unstuck while iconified. */
-      tmp = Scr.Hilite;
+      pswTmpHilite = Scr.Hilite;
       Scr.Hilite = t;
       SetBorder(t, False, True, True, None);
-      Scr.Hilite = tmp;
+      Scr.Hilite = pswTmpHilite;
       XRaiseWindow(dpy, t->w);
       if (t->icon_w)
 	XUnmapWindow(dpy, t->icon_w);
@@ -741,7 +740,7 @@ DeIconify(ScwmWindow * psw)
  *
  ****************************************************************************/
 void 
-Iconify(ScwmWindow * psw, int def_x, int def_y)
+Iconify(ScwmWindow *psw, int def_x, int def_y)
 {
   ScwmWindow *t;
   XWindowAttributes winattrs;
@@ -850,15 +849,14 @@ Iconify(ScwmWindow * psw, int def_x, int def_y)
 
 void redraw_icon_titles()
 {
-  ScwmWindow *tmp;
+  ScwmWindow *psw = Scr.ScwmRoot.next;
 
-  tmp = Scr.ScwmRoot.next;
-  while (tmp != NULL) {
-    RedoIconName(tmp);
-    if (tmp->fIconified) {
-      DrawIconWindow(tmp);
+  while (psw != NULL) {
+    RedoIconName(psw);
+    if (psw->fIconified) {
+      DrawIconWindow(psw);
     }
-    tmp = tmp->next;
+    psw = psw->next;
   }
 }
 
@@ -870,7 +868,7 @@ void redraw_icon_titles()
  *
  ****************************************************************************/
 void 
-SetMapStateProp(ScwmWindow * psw, int state)
+SetMapStateProp(ScwmWindow *psw, int state)
 {
   unsigned long data[2];	/* "suggested" by ICCCM version 1 */
 

@@ -1,6 +1,5 @@
-/* $Id$ */
-/*
- *      Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+/* $Id$
+ * Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -274,7 +273,7 @@ WarnBadHook(SCM hook)
     SCM hook_name = SCM_CAR(hook);
     char *szHookName = gh_scm2newstr(hook_name, NULL);
     scwm_msg(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", szHookName);
-    free(szHookName);
+    FREE(szHookName);
     SCM_SETCDR(hook, SCM_EOL);
   }
 }

@@ -61,7 +61,6 @@
 
 #include "scwm.h"
 #include <X11/Xatom.h>
-#include "misc.h"
 #include "icons.h"
 #include "screen.h"
 #include <X11/extensions/shape.h>
@@ -288,14 +287,14 @@ GetContext(ScwmWindow * t, XEvent * e, Window * w)
 
 
 void 
-HandleHardFocus(ScwmWindow * t)
+HandleHardFocus(ScwmWindow *psw)
 {
   int x, y;
 
-  FocusOnNextTimeStamp = t;
+  FocusOnNextTimeStamp = psw;
   Scr.Focus = NULL;
   /* Do something to guarantee a new time stamp! */
-  XGetPointerWindowOffsets(Scr.Root, &x, &y);
+  FXGetPointerWindowOffsets(Scr.Root, &x, &y);
   GrabEm(CURSOR_WAIT);
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth,
 	       Scr.MyDisplayHeight,
@@ -307,12 +306,10 @@ HandleHardFocus(ScwmWindow * t)
   UngrabEm();
 }
 
-/***********************************************************************
- *
+/*
  *  Procedure:
  *	HandleFocusIn - handles focus in events
- *
- ************************************************************************/
+ */
 void 
 HandleFocusIn()
 {
@@ -514,9 +511,9 @@ HandleScwmExec()
 	XChangeProperty(dpy, w, XA_SCWMEXEC_REPLY, XA_STRING,
 			8, PropModeReplace, ret, rlen);
 	
-	free(ret);
-	free(output);
-	free(error);
+	FREE(ret);
+	FREE(output);
+	FREE(error);
 	return;
       }
     }
@@ -679,13 +676,13 @@ HandlePropertyNotify()
       if (SHADED_P(pswCurrent)) break;
 
       GetWindowSizeHints(pswCurrent);
-      new_width = pswCurrent->frame_width;
-      new_height = pswCurrent->frame_height;
+      new_width = FRAME_WIDTH(pswCurrent);
+      new_height = FRAME_HEIGHT(pswCurrent);
       ConstrainSize(pswCurrent, &new_width, &new_height);
-      if ((new_width != pswCurrent->frame_width) ||
-	  (new_height != pswCurrent->frame_height))
-	SetupFrame(pswCurrent, pswCurrent->frame_x, pswCurrent->frame_y,
-		   new_width, new_height, False);
+      if ((new_width != FRAME_WIDTH(pswCurrent)) ||
+	  (new_height != FRAME_HEIGHT(pswCurrent)))
+	SetupFrame(pswCurrent, FRAME_X(pswCurrent), FRAME_Y(pswCurrent),
+		   new_width, new_height, False, NOT_MOVED, WAS_RESIZED);
 
       BroadcastConfig(M_CONFIGURE_WINDOW, pswCurrent);
     }
@@ -739,7 +736,7 @@ HandleClientMessage()
   if ((Event.xclient.message_type == _XA_WM_CHANGE_STATE) &&
       (Event.xclient.data.l[0] == IconicState) &&
       pswCurrent && !pswCurrent->fIconified) {
-    XGetPointerWindowOffsets(Scr.Root, &(button.xmotion.x_root), &(button.xmotion.y_root));
+    FXGetPointerWindowOffsets(Scr.Root, &(button.xmotion.x_root), &(button.xmotion.y_root));
     button.type = 0;
     iconify(pswCurrent->schwin);
     return;
@@ -1387,10 +1384,10 @@ HandleConfigureRequest()
   }
 
   /* Don't modify frame_XXX fields before calling SetupWindow! */
-  x = pswCurrent->frame_x;
-  y = pswCurrent->frame_y;
-  width = pswCurrent->frame_width;
-  height = pswCurrent->frame_height;
+  x = FRAME_X(pswCurrent);
+  y = FRAME_Y(pswCurrent);
+  width = FRAME_WIDTH(pswCurrent);
+  height = FRAME_HEIGHT(pswCurrent);
 
   /* for restoring */
   if (cre->value_mask & CWBorderWidth) {
@@ -1429,10 +1426,11 @@ HandleConfigureRequest()
   if (SHADED_P(pswCurrent)) {
     pswCurrent->orig_wd = width;
     pswCurrent->orig_ht = height;
-    height = pswCurrent->frame_height;
+    height = FRAME_HEIGHT(pswCurrent);
   }
 
-  SetupFrame(pswCurrent, x, y, width, height, sendEvent);
+  SetupFrame(pswCurrent, x, y, width, height, sendEvent,
+             WAS_MOVED,WAS_RESIZED);
   KeepOnTop();
 }
 
@@ -1455,7 +1453,7 @@ HandleShapeNotify(void)
     if (sev->kind != ShapeBounding)
       return;
     pswCurrent->wShaped = sev->shaped;
-    SetShape(pswCurrent, pswCurrent->frame_width);
+    SetShape(pswCurrent, FRAME_WIDTH(pswCurrent));
   }
 }
 
@@ -1487,6 +1485,30 @@ HandleVisibilityNotify()
       RaiseWindow(pswCurrent);
       pswCurrent->fRaised = False;
     }
+  }
+}
+
+/* CoerceEnterNotifyOnCurrentWindow()
+ * Pretends to get a HandleEnterNotify on the
+ * window that the pointer currently is in so that
+ * the focus gets set correctly from the beginning
+ * Note that this presently only works if the current
+ * window is not click_to_focus;  I think that
+ * that behaviour is correct and desirable. --11/08/97 gjb */
+void
+CoerceEnterNotifyOnCurrentWindow()
+{
+  extern ScwmWindow *pswCurrent; /* from events.c */
+  Window child, root;
+  int root_x, root_y;
+  int win_x, win_y;
+  Bool f = XQueryPointer(dpy, Scr.Root, &root,
+			 &child, &root_x, &root_y, &win_x, &win_y, &JunkMask);
+  if (f && child != None) {
+    Event.xany.window = child;
+    pswCurrent = PswFromWindow(dpy,child);
+    HandleEnterNotify();
+    pswCurrent = None;
   }
 }
 
@@ -1793,7 +1815,7 @@ SCWM_PROC(send_key_press, "send-key-press", 1,4,0,
     int len;
     char *keyname = gh_scm2newstr(key,&len);
     scwm_msg(WARN,__FUNCTION__,"Bad keysym `%s' not sent",keyname);
-    free(keyname);
+    FREE(keyname);
   }
   SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;

@@ -33,7 +33,6 @@
 #include "borders.h"
 #include "decor.h"
 #include "colors.h"
-#include "system.h"
 #include "guile-compat.h"
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -66,7 +65,7 @@ free_color(SCM obj)
 {
   scwm_color *sc=COLOR(obj);
   XFreeColors(dpy, Scr.ScwmRoot.attr.colormap, &sc->pixel, 1, 0);
-  free (sc);
+  FREE(sc);
 
   return 0;
 }
@@ -125,14 +124,14 @@ SCWM_PROC (make_color, "make-color", 1, 0, 0,
   /* MSFIX: for now just throw errors for the sake of robustness (!)
      make it nicer later. */
   if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, cn, &color)) {
-    free(cn);
+    FREE(cn);
     scwm_error("make-color",2);
 #if 0   
     scwm_msg(WARN,s_make_color,"Unable to parse color `%s'",cn);
     fBad = True;
 #endif
   } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
-    free(cn);
+    FREE(cn);
     scwm_error("make-color",3);
 #if 0
     scwm_msg(WARN,s_make_color,"Unable to allocate color `%s'",cn);
@@ -140,13 +139,13 @@ SCWM_PROC (make_color, "make-color", 1, 0, 0,
 #endif
   }
 
-  free(cn);
+  FREE(cn);
 
   if (fBad) {
     return SCM_BOOL_F;
   }
 
-  sc = (scwm_color *) safemalloc(sizeof(scwm_color));
+  sc = NEW(scwm_color);
   sc->pixel = color.pixel;
   sc->name = cname;
 

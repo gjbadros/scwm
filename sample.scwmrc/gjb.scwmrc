@@ -465,7 +465,8 @@
 (window-style "FvwmPager" #:use-style desk-widget-on-top-no-titlebar)
 (window-style "zwgc" #:use-style desk-widget-on-top)
 (window-style "*lock" #:use-style desk-widget)
-(window-style "xload" #:no-title #t #:use-style desk-widget)
+(window-style "xclock*" #:use-style desk-widget-on-top-no-titlebar)
+(window-style "xload" #:no-title #t #:use-style desk-widget-on-top-no-titlebar)
 (window-style "xscreensaver" #:no-title #t #:use-style desk-widget)
 (window-style "xbiff" #:no-title #t #:use-style desk-widget-on-top
 	      #:mini-icon "mini-xbiff.xpm")
@@ -510,7 +511,7 @@
     menu-separator
     (menuitem "&Delete" #:action 'delete-window)
     (menuitem "&Close" #:image-left "mini-cross.xpm" 
-	       #:action 'close-window)
+	       #:action (lambda () (close-window (get-window))))
     (menuitem "&Kill" #:image-left "mini-bomb.xpm" 
 	       #:action 'destroy-window)
     menu-separator
@@ -932,9 +933,20 @@
   (let ((w (current-window-with-pointer)))
     (and w (interactive-resize w))))
 
+(define (resize-halfscreen)
+  (let ((w (current-window-with-pointer)))
+    (resize-to (%x 49) (%y 90))))
+
+(define (resize-fullscreen)
+  (let ((w (current-window-with-pointer)))
+    (resize-to (%x 90) (%y 90))))
+
 (bind-key 'all "C-S-F7" interactive-move-window-with-pointer)
 (bind-key 'all "C-S-F8" interactive-resize-window-with-pointer)
 (bind-key 'all "C-S-F9" window-info)
+(bind-key 'all "C-M-S-e" resize-halfscreen)
+(bind-key 'all "C-M-S-f" resize-fullscreen)
+
 
 ;; rotate the current window with the keyboard
 (bind-key 'all "M-S-Tab" 
@@ -1098,7 +1110,14 @@
 
 (debug-display " *** `scwmrc' processed.\n")
 
+(system 
+ (string-append "ps auxww | grep -q \"xemacs -f [g]nus\" || " 
+		HOME "/.xclients &"))
+
 
 ;;; Local Variables:
 ;;; eval: (load "scwm")
+;;; eval: (scwm-mode)
 ;;; End:
+;; (get-window)
+;; (+ 1 2)
