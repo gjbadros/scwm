@@ -25,8 +25,9 @@
 
 (define-module (app scwm gtk)
   :use-module (gtk gtk)
-  :use-module (app scwm optargs) ;; for bound?
   :use-module (gtk gdk)
+  :use-module (app scwm optargs) ;; for bound?
+  :use-module (app scwm base)
   :use-module (app scwm file) ;; for find-file-in-path
   :use-module (app scwm scwmgtkhelper))
 
@@ -65,6 +66,10 @@ to the main event loop"
   "Return the new pixmap object as `gtk-pixmap-new' does, but search Scwm's image-load-path for it."
   (let ((imagefile (find-file-in-path pixmap-name image-load-path)))
     (if imagefile (gtk-pixmap-new imagefile button) #f)))
+
+(define-public (image->gtk-pixmap img button)
+  "Return a gtk-pixmap widget for IMG for use in BUTTON."
+  (gtk-pixmap-new (image-property img 'filename) button))
 
 ;; (define b (gtk-button-new))
 ;; (gtk-pixmap-new-search-scwm-path "mini-exp-windows-full.xpm" b)

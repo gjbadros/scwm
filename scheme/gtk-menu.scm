@@ -8,6 +8,32 @@
   :use-module (gtk gtk)
   :use-module (app scwm optargs))
 
+(define*-public (scwm-gtk-menuitem label #&key image-above image-left
+				   (fg #f) (bg #f) (font #f)
+				   extra-label action submenu hover-action unhover-action
+				   hotkey-prefs)
+  (let ((mi (gtk-menu-item-new))
+	(lab (gtk-label-new label)))
+    (gtk-misc-set-alignment lab 0 .5)
+    (gtk-widget-show lab)
+    (let ((hbox (gtk-hbox-new #f 0))
+	  (align (gtk-alignment-new .5 .5 0 0)))
+      (gtk-widget-show hbox)
+      (gtk-widget-show align)
+      (gtk-container-add mi hbox)
+      (gtk-widget-set-usize align 22 16)
+      (if image-left
+	  (let ((pix (image->gtk-pixmap image-left hbox)))
+	    (gtk-container-add align pix)
+	    (gtk-widget-show pix)))
+      (gtk-box-pack-start hbox align #f #f 0)
+      (gtk-box-pack-start hbox lab #f #f 4)
+      (gtk-widget-show mi)
+      mi)))
+
+;;(scwm-gtk-menuitem "foo" #:image-left pic-lambda-mini)
+
+
 (define*-public (scwm-gtk-menu list-of-menuitems #&key
 			       (image-side 'menu-side-image)
 			       (image-align 'top)
@@ -25,13 +51,12 @@
 			       (extra #f))
   (let ((menu (gtk-menu-new)))
     (map (lambda (item)
-	   (let* ((menu-item (gtk-menu-item-new))
-		  (props (menuitem-properties item)))
+	   (let ((props (menuitem-properties item)))
 	     (apply (lambda
 			(label action extra-label picture-above picture-left hover-action unhover-action hotkey-prefs forced-submenu?)
 		      (let ((mi (if (eq? item menu-separator)
 				    (gtk-menu-item-new)
-				    (gtk-menu-item-new-with-label label))))
+				    (scwm-gtk-menuitem label #:image-left picture-left))))
 			(cond ((or forced-submenu? (gtk-menu? action) 
 				   (and (symbol? action) (gtk-menu? (eval action))))
 			       (gtk-menu-item-set-submenu mi (if (symbol? action) (eval action) action)))
