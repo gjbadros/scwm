@@ -262,7 +262,7 @@ AC_CHECK_LIB(SM, SmcOpenConnection, [
 ], AC_MSG_WARN(libSM not found -- no session manager support)
 , $x_libs)
 
-AM_PATH_GTK(1.0.6, HAVE_GTK=yes, HAVE_GTK=no)
+AM_PATH_GTK(1.0.0, HAVE_GTK=yes, HAVE_GTK=no)
 
 AM_CONDITIONAL(HAVE_GTK, test $HAVE_GTK = yes)
 
