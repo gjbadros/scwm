@@ -56,6 +56,24 @@ enum cursor {
 
 struct ScwmWindowConstraintInfo;
 
+
+
+
+typedef struct _gravity_info {
+  unsigned short x:2; /* how many times the border width difference should we 
+			 move the frame window east? */
+  unsigned short y:2; /* how many times the border width difference should we 
+			 move the frame window north? */
+  unsigned short t:2; /* how many times (half the title bar height) should we
+			 move the frame window north? */
+} gravity_info;
+
+
+#define GRAV_X_ADJUSTMENT(psw) ((psw)->grav.x * ((psw)->old_bw - (psw)->bw - (psw)->boundary_width))
+
+#define GRAV_Y_ADJUSTMENT(psw) (((psw)->grav.y * ((psw)->old_bw - (psw)->bw - (psw)->boundary_width)) - ((psw)->grav.t * ((psw)->title_height) / 2))
+
+
 /* for each window that is on the display, one of these structures
  * is allocated and linked into a list 
  */
@@ -116,6 +134,9 @@ typedef struct ScwmWindow {
   int DeIconifyDesk;		/* Desk to deiconify to, for StubbornIcons */
   Window transientfor;
 
+  /* FIXMS: We need to add comments to document what all these darned
+     flags mean. */
+
   /* The "common" flags */
   PackedBool(fStartIconic);
   PackedBool(fOnTop);
@@ -174,7 +195,11 @@ typedef struct ScwmWindow {
   int orig_width;               /* unshaded/unmaximized window width */
   int orig_height;               /* unshaded/unmaximized window height */
 
+  gravity_info grav;            /* Decoded gravity information. */
+
+#if 0
   int xdiff, ydiff;		/* used to restore window position on exit */
+#endif
   int *mwm_hints;
   int ol_hints;
   int functions;                /* was enum wm_client_functions, 
@@ -293,6 +318,8 @@ void UngrabEm(void);
 void invalidate_window(SCM schwin);
 SCM make_window(ScwmWindow *psw);
 void move_finalize(Window w, ScwmWindow * psw, int x, int y);
+
+void set_window_internal_title_height(ScwmWindow *psw, int nh);
 
 /* FIXGJB: this primitive should not be exposed in the interface, 
    but needs to be for resetting the relief decor, color.c */

@@ -2247,28 +2247,6 @@ way if not specified. */
 #undef FUNC_NAME
 
 
-SCWM_PROC(window_diff_deltas, "window-diff-deltas", 0, 1, 0,
-          (SCM win))
-     /** Return the repositioning position difference deltas of WIN.
-These correspond to the xdiff and ydiff fields of the ScwmWindow 
-structure and are used for restoring the appropriate position
-of the window after Scwm exits.  These values are probably not
-generally useful, but may be convenient for debugging. */
-#define FUNC_NAME s_window_diff_deltas
-{
-  ScwmWindow *psw;
-
-  VALIDATE(win, FUNC_NAME);
-  psw = PSWFROMSCMWIN(win);
-
-  return scm_listify(SCM_MAKINUM(psw->xdiff),
-		     SCM_MAKINUM(psw->ydiff),
-		     SCM_UNDEFINED);
-}
-#undef FUNC_NAME
-
-
-
 SCWM_PROC(window_size, "window-size", 0, 1, 0,
           (SCM win))
 /** Return the size of WIN. The position is returned as a list of
@@ -2494,6 +2472,27 @@ specified. */
 /* maybe all of this can be replaced with set-title-height 
    (a per-window version) ? */
 
+
+void set_window_internal_title_height(ScwmWindow *psw, int nh)
+{
+  int oldyadj, oldh;
+
+  oldh = psw->title_height;
+  if (oldh != nh) {
+    oldyadj = GRAV_Y_ADJUSTMENT(psw);
+    
+    psw->title_height=nh;
+    
+    MoveResizeTo(psw,
+		 FRAME_X(psw),
+		 FRAME_Y(psw) + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
+		 FRAME_WIDTH(psw),
+		 FRAME_HEIGHT(psw) + nh - oldh);
+    BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+  }
+}
+
+
 SCWM_PROC(show_titlebar, "show-titlebar", 0, 1, 0,
           (SCM win))
      /** Cause WIN to be decorated with a titlebar. 
@@ -2504,8 +2503,6 @@ specified. */
   ScwmWindow *psw;
   ScwmDecor *fl;
 
-  SCM_REDEFER_INTS;
-
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
   fl = psw->fl ? psw->fl : &Scr.DefaultDecor;
@@ -2513,15 +2510,8 @@ specified. */
 
   if (!psw->fTitle) {
     psw->fTitle = True;
-    ResizeTo(psw,
-	       FRAME_WIDTH(psw),
-	       FRAME_HEIGHT(psw) + fl->TitleHeight);
-    /* FIXGJB: are BroadcastConfig's needed here-- SetupFrame generates them, too
-       --07/26/98 gjb*/
-    BroadcastConfig(M_CONFIGURE_WINDOW, psw);
-    /* SetTitleBar(psw,(Scr.Hilite==psw),True); FIXGJB */
+    set_window_internal_title_height(psw, fl->TitleHeight);
   }
-  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2536,25 +2526,15 @@ specified. */
 #define FUNC_NAME s_hide_titlebar
 {
   ScwmWindow *psw;
-  ScwmDecor *fl;
-
-  SCM_REDEFER_INTS;
 
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
-  fl = psw->fl ? psw->fl : &Scr.DefaultDecor;
 
   if (psw->fTitle) {
     psw->fTitle = False;
-    psw->title_height = 0;
-    ResizeTo(psw,
-             FRAME_WIDTH(psw),
-             FRAME_HEIGHT(psw) - fl->TitleHeight);
-    /* FIXGJB: are BroadcastConfig's needed here-- SetupFrame generates them, too
-       --07/26/98 gjb*/
-    BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+    set_window_internal_title_height(psw, 0);
   }
-  SCM_REALLOW_INTS;
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -2660,6 +2640,7 @@ WIN defaults to the window context in the usual way if not specified. */
   ScwmWindow *psw;
   ScwmDecor *fl;
   int w, oldw;
+  int oldxadj, oldyadj;
 
   SCM_REDEFER_INTS;
   fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
@@ -2672,11 +2653,16 @@ WIN defaults to the window context in the usual way if not specified. */
   VALIDATEN(win, 2, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
   oldw = psw->boundary_width;
+  oldxadj = GRAV_X_ADJUSTMENT(psw);
+  oldyadj = GRAV_Y_ADJUSTMENT(psw);
+
   psw->boundary_width = w;
 
-  ResizeTo(psw, 
-           FRAME_WIDTH(psw) + 2 * (w - oldw),
-           FRAME_HEIGHT(psw) + 2 * (w - oldw));
+  MoveResizeTo(psw, 
+	       psw->frame_x + GRAV_X_ADJUSTMENT(psw) - oldxadj,
+	       psw->frame_y + GRAV_Y_ADJUSTMENT(psw) - oldyadj,
+	       FRAME_WIDTH(psw) + 2 * (w - oldw),
+	       FRAME_HEIGHT(psw) + 2 * (w - oldw));
 
   /* FIXGJB: drop this -- SetupFrame does it! --07/26/98 gjb */
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);

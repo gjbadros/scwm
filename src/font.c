@@ -299,9 +299,8 @@ SCWM_PROC(set_window_font_x, "set-window-font!", 1, 0, 0,
   fl->window_font = font;
   fl->window_font_y = FONTY(font);
 
-  extra_height = fl->TitleHeight;
+  extra_height = FONTHEIGHT(font) + 3 - fl->TitleHeight;
   fl->TitleHeight = FONTHEIGHT(font) + 3;
-  extra_height -= fl->TitleHeight;
   redraw_titlebars(fl, extra_height);
   return font;
 }

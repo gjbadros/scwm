@@ -15,6 +15,7 @@
 #include <X11/Xlib.h>
 #include "scwm.h"
 #include "xmisc.h"
+#include "window.h"
 #include "screen.h"
 #include "image.h"
 
@@ -155,10 +156,14 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
   if (FXGetWindowTopLeft(psw->w, &xwc.x, &xwc.y )) {
     int a, b, w2, h2;
     unsigned int mask;
+    #if 0
     XTranslateCoordinates(dpy, psw->frame, Scr.Root, xwc.x, xwc.y,
 			  &a, &b, &JunkChild);
-    xwc.x = a + psw->xdiff;
-    xwc.y = b + psw->ydiff;
+    #endif
+    /* Undo gravity adjustments. */
+    xwc.x = psw->frame_x - GRAV_X_ADJUSTMENT(psw);
+    xwc.y = psw->frame_y - GRAV_Y_ADJUSTMENT(psw);
+
     xwc.border_width = psw->old_bw;
     mask = (CWX | CWY | CWBorderWidth);
 

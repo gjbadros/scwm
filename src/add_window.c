@@ -580,8 +580,6 @@ AddWindow(Window w)
      to  resolve */
   CassowarySetCValuesAndSolve(psw,False /* no solve */);
 
-  SetupFrame(psw, frame_x, frame_y, frame_width, frame_height, True,
-             WAS_MOVED, WAS_RESIZED);
 
   /* FIXMS: Hmm, do we need to do any real cleanup if this fails?
      _Can_ it fail, in it's new location?
@@ -610,15 +608,7 @@ AddWindow(Window w)
 
   XUngrabServer_withSemaphore(dpy);
 
-  { /* scope */
-    int x_offset, y_offset;
-    int dxdiff, dydiff;
-    FXGetWindowTopLeft(psw->w, &x_offset, &y_offset);
-    XTranslateCoordinates(dpy, psw->frame, Scr.Root, x_offset, y_offset,
-                          &dxdiff, &dydiff, &JunkChild);
-    psw->xdiff -= dxdiff;
-    psw->ydiff -= dydiff;
-  }
+
 
   if (psw->fClickToFocus) {
     /* need to grab all buttons for window that we are about to
@@ -635,7 +625,6 @@ AddWindow(Window w)
   }
 
   BroadcastConfig(M_ADD_WINDOW, psw);
-
   BroadcastName(M_WINDOW_NAME, psw->w, psw->frame,
 		(unsigned long) psw, psw->name);
   BroadcastName(M_ICON_NAME, psw->w, psw->frame,

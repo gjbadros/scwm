@@ -19,6 +19,7 @@
 #include "scwm.h"
 #include "screen.h"
 #include "borders.h"
+#include "window.h"
 
 void 
 redraw_titlebars(ScwmDecor *fl, int extra_height)
@@ -30,13 +31,9 @@ redraw_titlebars(ScwmDecor *fl, int extra_height)
     if (!psw->fTitle || psw->fl != fl) {
       continue;
     }
-    x = FRAME_X(psw);
-    y = FRAME_Y(psw);
-    w = FRAME_WIDTH(psw);
-    h = FRAME_HEIGHT(psw) - extra_height;
-    /* FIXGJB: switch to ResizeTo? --07/26/98 gjb */
-    SetupFrame(psw, x, y, w, h, True, WAS_MOVED, WAS_RESIZED);
-    /* FIXGJB: why two calls in a row? --07/14/98 gjb */
+
+    set_window_internal_title_height(psw, psw->title_height + extra_height);
+
 #if 0
     SetTitleBar(psw, True, True);
 #endif

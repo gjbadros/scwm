@@ -33,6 +33,7 @@
 #include "virtual.h"
 #include "callbacks.h"
 #include "window.h"
+#include "borders.h"
 
 int get_next_x(ScwmWindow * psw, int x, int y);
 int get_next_y(ScwmWindow * psw, int y);
@@ -50,36 +51,35 @@ SCM_SYMBOL(sym_transient_placement_proc,"transient-placement-proc");
  *	GetGravityOffsets - map gravity to (x,y) offset signs for adding
  *		to x and y when window is mapped to get proper placement.
  */
-struct _gravity_offset {
-  int x, y;
+
+
+static struct _gravity_info grav_table[11] =
+{
+  {1, 1, 1},			/* ForgetGravity */
+  {0, 0, 0},			/* NorthWestGravity */
+  {1, 0, 0},			/* NorthGravity */
+  {2, 0, 0},			/* NorthEastGravity */
+  {0, 1, 1},			/* WestGravity */
+  {1, 1, 1},			/* CenterGravity */
+  {2, 1, 1},			/* EastGravity */
+  {0, 2, 2},			/* SouthWestGravity */
+  {1, 2, 2},			/* SouthGravity */
+  {2, 2, 2},			/* SouthEastGravity */
+  {1, 1, 2},			/* StaticGravity */
 };
+
 
 static
 void 
-GetGravityOffsets(ScwmWindow * tmp, int *xp, int *yp)
+GetGravityOffsets(ScwmWindow *psw)
 {
-  static struct _gravity_offset gravity_offsets[11] =
-  {
-    {0, 0},			/* ForgetGravity */
-    {-1, -1},			/* NorthWestGravity */
-    {0, -1},			/* NorthGravity */
-    {1, -1},			/* NorthEastGravity */
-    {-1, 0},			/* WestGravity */
-    {0, 0},			/* CenterGravity */
-    {1, 0},			/* EastGravity */
-    {-1, 1},			/* SouthWestGravity */
-    {0, 1},			/* SouthGravity */
-    {1, 1},			/* SouthEastGravity */
-    {0, 0},			/* StaticGravity */
-  };
-  register int g = ((tmp->hints.flags & PWinGravity)
-		    ? tmp->hints.win_gravity : NorthWestGravity);
+  int g = ((psw->hints.flags & PWinGravity)
+	   ? psw->hints.win_gravity : NorthWestGravity);
 
   if (g < ForgetGravity || g > StaticGravity) {
-    *xp = *yp = 0;
+    psw->grav=grav_table[CenterGravity];
   } else {
-    *xp = (int) gravity_offsets[g].x;
-    *yp = (int) gravity_offsets[g].y;
+    psw->grav=grav_table[g];
   }
   
   return;
@@ -391,34 +391,6 @@ default_select_desk(ScwmWindow *psw, int Desk)
 }
 
 
-/* FIXGJB: this is hocus pocus 
-   was called keep_on_screen in fvwm2 --07/26/98 gjb */
-static void
-CorrectPositionToStayOnscreen(ScwmWindow *psw)
-{
-  /* try to keep the window on the screen */
-  { /* scope */
-    int xNew = psw->attr.x + psw->old_bw - psw->bw;
-    int yNew = psw->attr.y + psw->old_bw - psw->bw;
-
-    SET_CVALUE(psw, frame_x, xNew);
-    SET_CVALUE(psw, frame_y, yNew);
-  }
-  
-  if (FRAME_X(psw) + FRAME_WIDTH(psw) +
-      2 * psw->boundary_width > Scr.DisplayWidth) {
-    psw->attr.x = Scr.DisplayWidth - psw->attr.width
-      - psw->old_bw + psw->bw - 2 * psw->boundary_width;
-    Scr.randomx = 0;
-  }
-  if (FRAME_Y(psw) + 2 * psw->boundary_width + psw->title_height
-      + FRAME_HEIGHT(psw) > Scr.DisplayHeight) {
-    psw->attr.y = Scr.DisplayHeight - psw->attr.height
-      - psw->old_bw + psw->bw - psw->title_height -
-      2 * psw->boundary_width;;
-    Scr.randomy = 0;
-  }
-}
 
 SCWM_PROC(smart_place_window, "smart-place-window", 1, 0, 0, 
            (SCM win))
@@ -457,8 +429,6 @@ returns #t. */
     psw->attr.x = x = x - psw->old_bw + psw->bw;
     psw->attr.y = y = y - psw->old_bw + psw->bw;
 
-    CorrectPositionToStayOnscreen(psw);
-
     move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
     return SCM_BOOL_T;
   }
@@ -493,7 +463,6 @@ returns #f; otherwise it returns #t. */
   } else {
     psw->attr.x = x = x - psw->old_bw + psw->bw;
     psw->attr.y = y = y - psw->old_bw + psw->bw;
-    CorrectPositionToStayOnscreen(psw);
 
     move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
     return SCM_BOOL_T;
@@ -565,7 +534,8 @@ by the user, the position was specified by the program, and
       ((psw->wmhints) &&
        (psw->wmhints->flags & StateHint) &&
        (psw->wmhints->initial_state == IconicState))) {
-    move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
+    /* Do nothing. */
+
   } else {
     SCM result=SCM_BOOL_F;
 
@@ -596,31 +566,12 @@ SCWM_PROC(default_transient_placement_proc, "default-transient-placement-proc", 
 It simply leaves the window WIN in place, exactly as requested. */
 #define FUNC_NAME s_default_transient_placement_proc
 {
-  ScwmWindow *psw;
+  /* Just doing nothing should dtrt. */
 
-  if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
-  }
-
-  psw=PSWFROMSCMWIN(win);
-
-#if 0 /* MSFIX: I think you #ifdef'd this out... should it be? --07/27/98 gjb */
-  psw->xdiff = psw->attr.x;
-  psw->ydiff = psw->attr.y;
-  /* put it where asked, mod title bar */
-  /* if the gravity is towards the top, move it by the title height */
-  psw->attr.y -= gravy * (psw->bw - psw->old_bw);
-  psw->attr.x -= gravx * (psw->bw - psw->old_bw);
-  if (gravy > 0)
-    psw->attr.y -= 2 * psw->boundary_width + psw->title_height;
-  if (gravx > 0)
-    psw->attr.x -= 2 * psw->boundary_width;
-#endif
-
-  move_finalize(psw->frame,psw, psw->attr.x, psw->attr.y);
   return SCM_BOOL_T;
 }
 #undef FUNC_NAME
+
 
 
 
@@ -636,12 +587,24 @@ PlaceWindow(ScwmWindow *psw, int Desk)
   SCM place_proc;
   SCM win;
 
-  GetGravityOffsets(psw, &gravx, &gravy);
+  GetGravityOffsets(psw);
 
+  
   /* FIXMS: The desk selection stuff should be folded into the
      placement-procs, but let's leave it as it is for now. */
 
   default_select_desk(psw,Desk);
+
+  SetupFrame(psw, psw->attr.x + GRAV_X_ADJUSTMENT(psw), 
+	     psw->attr.y + GRAV_Y_ADJUSTMENT(psw), 
+	     FRAME_WIDTH(psw),
+	     FRAME_HEIGHT(psw),
+	     True, WAS_MOVED, WAS_RESIZED);
+
+  move_finalize(psw->frame,psw, 
+		psw->attr.x + GRAV_X_ADJUSTMENT(psw), 
+		psw->attr.y + GRAV_Y_ADJUSTMENT(psw));
+
 
   win=psw->schwin;
 
@@ -658,9 +621,6 @@ PlaceWindow(ScwmWindow *psw, int Desk)
       default_placement_proc(win);
     }
   }
-  
-  psw->xdiff = FRAME_X_NONVIRT(psw);
-  psw->ydiff = FRAME_Y_NONVIRT(psw);
 
   return True;
 }

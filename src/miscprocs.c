@@ -101,12 +101,8 @@ Applies to the current decor. */
     SCM_ALLOW_INTS;
     scwm_error(FUNC_NAME, 7);
   }
-  extra_height = fl->TitleHeight;
+  extra_height = th - fl->TitleHeight;
   fl->TitleHeight = th;
-
-
-  extra_height -= fl->TitleHeight;
-
 
   fl->window_font_y = FONTY(fl->window_font)
     + (th - (FONTHEIGHT(fl->window_font) + 3)) / 2;

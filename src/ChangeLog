@@ -1,3 +1,51 @@
+1998-07-30  Maciej Stachowiak  <maciej@roc-ny3-12.ix.netcom.com>
+
+	ICCCM compliant gravity handling:
+	
+	* window.h: Define gravity_info type, used to encode gravity
+	offset information. Add a grav field of type gravity_info to the
+	window structure; remove the xdiff and ydiff fields. Prototype the
+	new set_window_internal_title_height which should be used when
+	changing the title height for a window, including adding or
+	removing the title bar. Add GRAV_X_ADJUSTMENT and
+	GRAV_Y_ADJUSTMENT macros to find the right amount the frame needs
+	to be gravity-adjusted relative to a desired app window position.
+
+	window.c: Remove window-diff-deltas, since xdiff and ydiff no
+	longer exist. Add set_window_internal_title_height to adjust the
+	window's title height safely, respecting gravity, and
+	broadcasting. Fix show-titlebar, hide-titlebar, and
+	set-border-width! to respect gravity.
+
+	add_window.c: Remove SetupFrame call when adding window (moved to
+	placement.c). Remove all mucking with xdiff and ydiff, they are
+	gone.
+	
+	placement.c: Make GetGravityOffsets merely set the grav field of
+	the window struct as appropriate instead of trying to return
+	values. Move the table of gravity offset types to file static, not
+	function static, and make it contain all three gravity_info
+	fields. Remove CorrectPositionToStayOnscreen and all calls to it,
+	it was pointless voodoo code anyway. Remove all move_finalize's
+	intended to keep the window as requested; merely do nothing in
+	those cases. in PlaceWindow, place the window exactly where
+	requested, as adjusted by gravity, before calling the placement
+	proc.
+
+	util.c (redraw_titlebars): use set_window_internal_title_height to
+	set the new titlebar height, not the previous weirdness.
+
+	miscprocs.c (set_title_height_x): Reverse the sign sense of
+	extra_height.
+
+	font.c (set_window_font_x): Reverse the sign sense of extra_height.
+
+	xmisc.c: Release the window by reversing the gravity adjustment
+	currently in effect, not any of that xdiff/ydiff junk.
+
+	To be resolved: should the user be able to get and/or set the
+	window gravity?
+	
 Thu Jul 30 20:16:12 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* constraint-primitives.cc, scwm-constraints.cc,
