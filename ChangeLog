@@ -1,3 +1,12 @@
+Fri Aug 27 01:27:31 1999    <gjb@cs.washington.edu>
+
+	* scwm.spec.in: Drop the uninstall changes to /etc/X11 for now.
+
+Fri Aug 27 01:23:29 1999    <gjb@cs.washington.edu>
+
+	* pixmaps/scwm-gnu-linux.xpm, pixmaps/window.xpm: Removed --
+	conflicted with icons in scwm-icons distribution.
+
 Fri Aug 27 01:16:00 1999    <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Install Xsession instead of trying to patch it.

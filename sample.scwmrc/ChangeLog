@@ -1,3 +1,12 @@
+Fri Aug 27 01:26:56 1999    <gjb@cs.washington.edu>
+
+	* Makefile.am (EXTRA_DIST): Install new simple.scwmrc (the old
+	system.scwmrc) 
+
+	* system.scwmrc: Copied from gjb.scwmrc.
+
+	* simple.scwmrc: Old system.scwmrc.
+
 Fri Aug 27 00:42:52 1999    <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Only use scwm spinning lambda animation when the
