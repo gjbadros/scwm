@@ -1,3 +1,26 @@
+Sun Apr 11 19:23:26 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* add_window.c: Ensure psw->buttons is initialized to 0 when
+	constructing new window object.
+
+	* menu.c: Doc fix.
+
+	* face.c: Added some docs for the styles that exist... these needs 
+	to be automated to stay in synch... I have some ideas about this.
+
+	* decorations.c: Just set ScwmWindow's nr_{left,right}_buttons to
+	Scr.nr_{left,right}_buttons for now. Not sure if we even use this
+	any longer.
+
+	* borders.c: Make CLeftButtons, CRightButtons really return the
+	right number (used for sizing the titlebar, perhaps among other
+	things).  But do *not* use CLeftButtons/CRightButtons for the
+	upper bound of loops over buttons -- CLeftButtons/CRightButtons is 
+	how many buttons are to be shown on each side, not the highest
+	button numbers that might be shown.
+
+	* resize.c: #include util.h for ms_sleep.
+
 Sun Apr 11 17:27:36 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* move.c, resize.c, window.c: add a ms_sleep(10) when looping calling

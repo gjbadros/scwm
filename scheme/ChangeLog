@@ -1,3 +1,16 @@
+Sun Apr 11 19:26:56 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added *menu-hl-bg-color*, *menu-hl-fg-color* options.
+	Added `maybe-make-color'.  Added hl-color-fg, hl-color-bg,
+	hl-relief? options to `menu' proc.  Some doc fixes.
+
+Sun Apr 11 17:47:07 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* virtual.scm: Fix window-position-in-viewport to ensure that at
+	least half of the width and half of the height of the window is
+	put in the current viewport.  (Was just favoring the top-left
+	point of the window).
+
 Sun Apr 11 17:32:05 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* winlist.scm: Added enumerate-hotkeys option to

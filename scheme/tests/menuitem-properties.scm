@@ -10,6 +10,8 @@
   (define m4 (menuitem "bong" #:action deiconify-to-current-viewport
 		       #:fg "red" #:bg "yellow" #:font "*charter*18*")))
 
+(set! menu-hl-text-color (make-color "yellow"))
+(set! menu-hl-bg-color (make-color "black"))
 (set-menuitem-font! m3 (make-font "fixed"))
 (set-menuitem-font! m3 (make-font "*charter*"))
 (set-menuitem-font! m3 (make-font "*charter*24*"))
