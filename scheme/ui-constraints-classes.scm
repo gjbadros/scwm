@@ -13,12 +13,6 @@
   :use-module (app scwm nonants)
   :use-module (app scwm xlib-drawing))
 
-;; (use-scwm-modules ui-constraints-classes)
-;; (use-scwm-modules ui-constraints)
-;; (use-scwm-modules window-locations)
-;; (use-scwm-modules window-selection)
-;; (use-scwm-modules xlib-drawing)
-
 ;; (reset-constraints)
 
 ;;; GJB:FIXME:: we'd like to be able to use color, mode
