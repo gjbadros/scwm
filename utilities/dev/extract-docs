@@ -528,8 +528,8 @@ sub ProcessSchemeHeader( $$$$$ ) {
     undef $comment;
   }
   if ($match =~ m%^\(%) {
-    print STDERR "$filename:$line:**** $match is not an ordinary define\n";
     $proc_name = substr($match,1);
+    print STDERR "$filename:$line:**** $proc_name is not an ordinary define -- returns a lambda?\n";
   }
   if (!defined($comment)) {
     print STDERR "$filename:$line:**** $proc_name: could not find comment\n";
