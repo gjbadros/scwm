@@ -1,3 +1,52 @@
+1998-07-26  Greg Badros  <gjb@cs.washington.edu>
+
+	* screen.h: Pruned and cleaned up the ScreenInfo struct a lot.
+	  MyDisplayXXX is now DisplayXXX -- Fixed uses of DisplayXXXX
+	  throughout;  use PackedBool macro and expand flags bitmasked
+	  field, so Scr.flags & WindowsCaptured is now just
+	  Scr.fWindowsCaptured [dropped the #defines of the flag
+	  constants]; made GET_DECOR look more like a macro since it can't 
+	  be used much like a function at all; drop CornerWidth, NumBoxes
+	  fields -- unused;  drop COLORMAP_FOLLOWS_MOUSE,
+	  COLORMAP_FOLLOWS_FOCUS #defines, and use fColormapFollowsMouse
+	  boolean instead.
+
+	* miscprocs.c, deskpage.c: simplify s_set_menu_mwm_style_x, other
+	  settors to use COPY_BOOL_OR_ERROR
+
+	* color.c: #ifdef out first of multiple calls to SetBorder to see
+	  if there is any crazy (undocumented) reason why multiple calls
+	  are needed
+
+	* borders.h: drop redundant prototype for SetTitleBar()
+
+	* events.c: added some debug code to test a claim in a comment
+	  regarding when to raise a window when !Scr.fClickToFocusRaises
+
+	* miscprocs.c, resize.c: move set_rubber_band_mask_x from
+	  miscprocs.c into resize.c, and initialize DrawRubberBandGC in
+	  init_resize()
+
+	* placement.c: clean up SmartPlacement a bit
+
+	* util.c: clean up redraw_titlebars
+
+	* borders.c: Added init_border to initialize TransMaskGC, now
+	  file-static (not really the right thing, is it that expensive to 
+	  create GCs that we don't want to do it for each button draw?),
+	  use GET_DECOR (renamed from GetDecor to be more obviously a macro)
+
+	* shutdown.c: improve startup-hook documentation
+
+	* scwm.h, window.h: Moved PackedBool here from window.h, moved
+	  COPY_BOOL_OR_ERROR and COPY_INVERT_BOOL_OR_ERROR from window.h,
+	  since these are now used in more places than just window.c;
+	  struct ScwmWindow -- drop orig_x, orig_y -- just
+	  orig_{width,height} now.  Drop CORNER_WIDTH macro -- unused.
+
+	* window.c: Don't call SetupFrame on animated shade/unshade --
+	  only do it on unanimated.
+	
 1998-07-25  Greg Badros  <gjb@cs.washington.edu>
 
 	* *.c: mark_XXXXX -- use GC_MARK_SCM_IF_SET pervasively, instead
