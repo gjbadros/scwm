@@ -1,6 +1,8 @@
 some VALIDATE_WIN_COPY calls should be VALIDATE_WINVALID_COPY, but 
 haven't exhaustively looked for these. --10/02/99 gjb
 -------
+Out of color errors need to be reported better.
+-------
 closing the Fvwm pager causes a deadlock that makes Scwm hang;
 kill -1 twice wakes it up, but need real fix.
 --tlau

@@ -17,6 +17,9 @@ Paricularly noticeable with the GIMP
 * New modules
 ** cursor.scm -- fancy resize cursor support
 
+* New hooks
+** `pre-command-hook', `post-command-hook': pre- uses `this-command' and `this-command-args' variables.
+
 * Interactive specifications are now warned when violated.
 
 * Changed behaviours

@@ -1,3 +1,13 @@
+Fri Jan  7 13:41:15 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* callbacks.c (s_call_interactively): Added `pre-command-hook' and 
+	`post-command-hook'.  Move `call-interactively' to later in file
+	so it can call scwm_run_hook. Added vars "this-command" and
+	"this-command-args". 
+
+	* scwm.c (scwm_main): Call init_message_window *after*
+	InitVariables() since it relies on some colors in the Scr struct.
+
 Fri Jan  7 10:30:23 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (EXTRA_DIST): Added scwm-doc-snarf.
