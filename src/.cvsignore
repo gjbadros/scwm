@@ -1,6 +1,6 @@
 *.x
 Makefile
 init_scheme_string.c
-scwmpaths.c
+scwmpaths.h
 .deps
 scwm
