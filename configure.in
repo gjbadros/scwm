@@ -86,9 +86,9 @@ SCWM_ARG_PATH(guile-exec-prefix,
 ])
 
 if test -z "${GUILE_BIN_DIR}"; then
-	AC_PATH_PROG(GUILE_CONFIG, guile-config, build-guile, no)
+	AC_PATH_PROGS(GUILE_CONFIG, guile-config build-guile, no)
 else
-	AC_PATH_PROG(GUILE_CONFIG, guile-config, build-guile, no, ${GUILE_BIN_DIR})
+	AC_PATH_PROGS(GUILE_CONFIG, guile-config build-guile, no, ${GUILE_BIN_DIR})
 fi
 
 
@@ -292,6 +292,8 @@ case "$ac_R_nospace" in
 *)     GUILE_LIBS_PRE="-L${guile_lib_path}" ;;
 esac
 
+dnl FIXJTL: readline is sometimes needed too; hopefully anybody with
+dnl a guile with readline support has a working guile-config or build-guile
 if test "yes" = "$GUILE_CONFIG_works"; then
   AC_MSG_CHECKING(for guile libraries)
   GUILE_LIBS="${GUILE_LIBS_PRE} `${GUILE_CONFIG} link`"
@@ -381,6 +383,8 @@ AC_MSG_RESULT(no)
 LIBS="${saved_LIBS}"
 CFLAGS="${saved_CFLAGS}"
 
+
+dnl FIXJTL: this shouldn't be needed any more; verify and remove
 saved_LIBS="${LIBS}"
 LIBS="${LIBS} ${GUILE_LIBS}"
 saved_CFLAGS="${CFLAGS}"
