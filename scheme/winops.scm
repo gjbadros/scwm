@@ -23,7 +23,6 @@
   :use-module (app scwm optargs)
   :use-module (app scwm defoption)
   :use-module (app scwm c-animation)
-  :use-module (app scwm animation)
   :use-module (app scwm base)
   :use-module (app scwm winlist)
   :use-module (app scwm wininfo)
@@ -456,17 +455,3 @@ you can do something like:
   (interactive)
   (focus-change-warp-pointer
    (cadr (list-windows #:by-focus #t))))
-
-(define*-public (move-or-shade)
-  "Move the window on a drag, shade on a double-click."
-  (interactive)
-  (case (mouse-event-type)
-    ((double-click) (animated-toggle-window-shade))
-    (else (move-or-raise))))
-
-(define*-public (move-or-deiconify)
-  "Move the icon on a drag, de-iconify on a double click."
-  (interactive)
-  (case (mouse-event-type)
-    ((motion) (interactive-move))
-    ((double-click) (animated-deiconify))))
