@@ -391,14 +391,14 @@ restart(SCM command)
 
 
 SCM 
-wait_for_window(SCM name)
+wait_for_window(SCM predicate)
 {
   Bool done = False;
   extern ScwmWindow *Tmp_win;
   char *n;
   int dummy;
 
-  if (!gh_string_p(name)) {
+  if (!gh_procedure_p(predicate)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("wait-for-window", 1, name);
   }
@@ -409,14 +409,9 @@ wait_for_window(SCM name)
       DispatchEvent();
       SCM_ALLOW_INTS;
       if (Event.type == MapNotify) {
-	if ((Tmp_win) && (matchWildcards(n, Tmp_win->name) == True))
+	if (gh_call1(predicate, Tmp_win->schwin) == SCM_BOOL_T) {
 	  done = True;
-	if ((Tmp_win) && (Tmp_win->class.res_class) &&
-	    (matchWildcards(n, Tmp_win->class.res_class) == True))
-	  done = True;
-	if ((Tmp_win) && (Tmp_win->class.res_name) &&
-	    (matchWildcards(n, Tmp_win->class.res_name) == True))
-	  done = True;
+	}
       }
     }
   }
