@@ -109,13 +109,16 @@
 (define (send-end-config-info port)
   (fvwm2-module-send-packet M_END_CONFIG_INFO "" port))
 
-(define (send-config-info str port)
+(define (send-string-packet type data1 data2 data3 str port)
   (let* ((data (string-append 
-		(long->string 0)
-		(long->string 0)
-		(long->string 0)
-		(pad-string-to-long (string-append str "\n")))))
-    (fvwm2-module-send-packet M_CONFIG_INFO data port)))
+		(long->string data1)
+		(long->string data2)
+		(long->string data3)
+		(pad-string-to-long str))))
+    (fvwm2-module-send-packet type data port)))
+
+(define (send-config-info str port)
+  (send-string-packet M_CONFIG_INFO 0 0 0 (string-append str "\n") port))
 
 (define (fvwm2-module-send-window-list port)
   ;; XXX - sadly, it is necessary to do a gratuitous send of
@@ -131,11 +134,17 @@
 			     (* (- (cadr (desk-size)) 1) display-height)))))
    port)
 
-  ;; more stuff should really be sent here - an M_FOCUS_CHANGE for the
-  ;; focused win, per window: M_WINDOW_NAME, M_ICON_NAME, M_ICON_FILE
-  ;; (is this possible?)  M_RES_CLASS, M_RES_NAME, M_ICONIFY if
-  ;; iconfied and the icon is unmapped (???) M_MINI_ICON, and finally
-  ;; the focus win again according to fvwm source.
+
+;;      if(Scr.Hilite != NULL)
+;;	SendPacket(*Module,M_FOCUS_CHANGE,5,Scr.Hilite->w,Scr.Hilite->frame,
+;;		   (unsigned long)Scr.Hilite,
+;;		   Scr.DefaultDecor.HiColors.fore,
+;;		   Scr.DefaultDecor.HiColors.back,
+;;		   0,0);
+;;     else
+;;	SendPacket(*Module,M_FOCUS_CHANGE,5,0,0,0,Scr.DefaultDecor.HiColors.fore,
+;;		   Scr.DefaultDecor.HiColors.back,0,0);
+
 
   (map (lambda (w) (add-window w port)) (list-all-windows))
   (end-window-list port))
@@ -148,11 +157,58 @@
 	(car candidates)
 	#f)))
 
+
+
 (define (add-window win port)
-  (fvwm2-module-send-packet 
-   M_ADD_WINDOW 
-   (marshal-fvwm2-config-info win)
-   port))
+  (let* ((id (window-id win))
+	 (frame-id (window-frame-id win))
+	 (send-win-string 
+	  (lambda (type str)
+	    (send-string-packet type id frame-id 0 str port))))
+    
+    (fvwm2-module-send-packet 
+     M_CONFIGURE_WINDOW 
+     (marshal-fvwm2-config-info win)
+     port)
+    
+    (send-win-string M_WINDOW_NAME (window-title win))
+    
+    ;;  (send-win-string M_ICON_NAME (window-icon-title win))
+    
+    ;;  (send-win-string M_ICON_FILE (image-property (window-icon win) 'name))
+
+    (send-win-string M_RES_CLASS (window-class win))
+    (send-win-string M_RES_NAME (window-resource win))
+  
+;;   (if (iconified? win)
+;;	(send-win-string M_ICONIFY (fvwm2-marshal-iconify-info win)))
+
+;;	  if((t->flags & ICONIFIED)&&(!(t->flags & ICON_UNMAPPED)))
+;;	    SendPacket(*Module,M_ICONIFY,7,t->w,t->frame,
+;;		       (unsigned long)t,
+;;		       t->icon_x_loc,t->icon_y_loc,
+;;		       t->icon_w_width, 
+;;		       t->icon_w_height+t->icon_p_height);
+;;	  if((t->flags & ICONIFIED) && (t->flags & ICON_UNMAPPED))
+;;	    SendPacket(*Module,M_ICONIFY,7,t->w,t->frame,
+;;		       (unsigned long)t,0,0,0,0);
+;;#ifdef MINI_ICONS
+
+;;    (if (window-mini-icon win)
+;;	(send-win-string M_MINI_ICON (fvwm2-marshal-mini-icon-info win)))
+
+;;	  if (t->mini_icon != NULL) 
+;;           SendMiniIcon(*Module, M_MINI_ICON,
+;;                        t->w, t->frame, (unsigned long)t,
+;;                         t->mini_icon->width,
+;;                        t->mini_icon->height,
+;;                         t->mini_icon->depth,
+;;                         t->mini_icon->picture,
+;;                         t->mini_icon->mask,
+;;                         t->mini_pixmap_file)
+;;#endif
+
+    ))
 
 (define (end-window-list port)
   (fvwm2-module-send-packet M_END_WINDOWLIST "" port))
@@ -215,7 +271,7 @@
 	     active-modules)))
 
 (define*-public (run-fvwm-module module-file config-file config-info
-				#&optional (other-args ""))
+				#&optional (other-args '()))
   (let* ((from-module-pipe (pipe))
 	 (from-module-read (car from-module-pipe))
 	 (from-module-write (cdr from-module-pipe))
@@ -309,14 +365,4 @@
 
 (define-public (kill-fvwm-module fmod)
   ((list-ref fmod 5)))
-
-
-
-
-
-
-
-
-
-
 
