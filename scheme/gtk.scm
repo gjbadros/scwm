@@ -68,3 +68,20 @@ to the main event loop"
 
 ;; (define b (gtk-button-new))
 ;; (gtk-pixmap-new-search-scwm-path "mini-exp-windows-full.xpm" b)
+
+
+(define-public (gtk-window->scwm-window gtkwin)
+  "Return the Scwm window object corresponding to GTKWIN.
+GTKWIN is a GTk+ window object returned from `gtk-window-new'.
+Return value is #f if no corresponding window exists now.
+Also will return #f if your guile-gtk implementation does
+not support this procedure (you should upgrade!)."
+  (if (not (bound? gtk-window-get-window-id))
+      #f
+      (id->window (gtk-window-get-window-id gtkwin))))
+
+;; (define f (gtk-window-new 'toplevel))
+;; (gtk-widget-show f)
+;; (gtk-window-get-window-id f)
+;; (id->window (gtk-window-get-window-id f))
+;; (gtk-window->scwm-window f)
