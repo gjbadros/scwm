@@ -1,0 +1,17 @@
+This is the information we need when someone reports a bug.  We should
+have a scheme function which accumulates it and mails it to us, perhaps.
+For now, we should just ask for this information all at once; we should
+also write this up better for normal users.
+
+Greg J. Badros, 11/11/97
+
+
+We want:
+o guile -v output
+o scwm -v output
+o ldd scwm output
+o config.h file
+o copy of the .scwmrc being used
+o env output
+o any local changes to the libraries?
+o ls -l of pixmap directories
