@@ -1,3 +1,13 @@
+Sun Sep 19 14:15:40 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* nonants.scm: Added `nonant-decoration',
+	`highlight-window-nonant', `unhighlight-window-nonant', and make
+	the mark-nonant-motion-handler use them instead of message
+	windows.  We still need to use message-windows for persistent
+	markers until I make something that lets a corner/side color
+	change remain persistent (or make the C code aware of highlighting 
+	noants).
+
 Sun Sep 19 09:26:04 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-gtk-toggle-menu.scm,
