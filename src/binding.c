@@ -535,7 +535,8 @@ UngrabKeysForPsw(ScwmWindow *psw)
 
 
 
-/* This grabs all the defined keys on all the windows */
+/* This grabs all the defined keys on all the windows;
+   it honours fIgnoreDubiousModifiers */
 static void
 grab_all_keys_all_buttons_all_windows()
 {
@@ -546,7 +547,10 @@ grab_all_keys_all_buttons_all_windows()
   }
 }
 
-/* This grabs all the defined keys on all the windows */
+/* This grabs all the defined keys on all the windows.
+   it honours fIgnoreDubiousModifiers, so to unbind all keys
+   you need to be sure that fIgnoreDubiousModifiers == True
+   so that all keys are ungrabbed */
 static void
 ungrab_all_keys_all_buttons_all_windows()
 {
@@ -1492,6 +1496,16 @@ to #f. The default is #t. */
 } 
 #undef FUNC_NAME
 
+SCWM_PROC(ignore_dubious_modifiers_p, "ignore-dubious-modifiers?", 0, 0, 0, 
+          ())
+     /** Return the status of the ignore-dubious-modifiers flag.
+See `set-ignore-dubious-modifiers!'. */
+#define FUNC_NAME s_ignore_dubious_modifiers_p
+{
+  return gh_bool2scm(fIgnoreDubiousModifiers);
+} 
+#undef FUNC_NAME
+
 
 
 SCWM_PROC(undo_all_passive_grabs, "undo-all-passive-grabs", 0, 0, 0,
@@ -1499,7 +1513,8 @@ SCWM_PROC(undo_all_passive_grabs, "undo-all-passive-grabs", 0, 0, 0,
      /** Remove all passive grabs of keys and buttons of bindings.
 See `redo-all-passive-grabs' for re-establishing those bindings.
 This procedure can be useful for quoting numerous keystrokes or
-mouse events. Beware that it can take several seconds to execute. */
+mouse events. Beware that it can take several seconds to execute. 
+This procedure considers the state of `ignore-dubious-modifiers?' */
 #define FUNC_NAME s_undo_all_passive_grabs
 {
   ungrab_all_keys_all_buttons_all_windows();
@@ -1514,7 +1529,8 @@ SCWM_PROC(redo_all_passive_grabs, "redo-all-passive-grabs", 0, 0, 0,
 See `undo-all-passive-grabs' for temporarily removing those bindings.
 This procedure might be useful for re-establishing bindings after
 quoting numerous keystrokes or mouse events.  Beware that it can
-take several seconds to execute. */
+take several seconds to execute. 
+This procedure considers the state of `ignore-dubious-modifiers?'.*/
 #define FUNC_NAME s_redo_all_passive_grabs
 {
   grab_all_keys_all_buttons_all_windows();
@@ -1681,6 +1697,7 @@ init_modifiers(void)
     { /* scope */
       /* Modified from Enlightenment, setup.c:  GJB:SHAREDCODE:: */
       int nl, sl;
+      int im = 0;
       unsigned int masks[8] = {
         ShiftMask, LockMask, ControlMask, Mod1Mask, Mod2Mask, Mod3Mask,
         Mod4Mask, Mod5Mask
@@ -1697,21 +1714,28 @@ init_modifiers(void)
         }
       }
       if (numlock_mask == 0) {
-        scwm_msg(WARN,"init_modifiers",
-                 "Inefficiency due to numlock_mask not being found");
+        scwm_msg(INFO,"init_modifiers", "No numlock_mask was found.");
       }
       if (scrollock_mask == 0) {
-        scwm_msg(WARN,"init_modifiers",
-                 "Inefficiency due to scrollock_mask not being found");
+        scwm_msg(INFO,"init_modifiers", "No scrollock_mask was found.");
       }
-      mask_mod_combos[0] = LockMask;
-      mask_mod_combos[1] = numlock_mask;
-      mask_mod_combos[2] = scrollock_mask;
-      mask_mod_combos[3] = numlock_mask | scrollock_mask;
-      mask_mod_combos[4] = LockMask | numlock_mask;
-      mask_mod_combos[5] = LockMask | scrollock_mask;
-      mask_mod_combos[6] = LockMask | numlock_mask | scrollock_mask;
+      mask_mod_combos[im++] = LockMask;
+      if (numlock_mask) {
+        mask_mod_combos[im++] = numlock_mask;
+        mask_mod_combos[im++] = LockMask | numlock_mask;
+      }
+      if (scrollock_mask) {
+        mask_mod_combos[im++] = scrollock_mask;
+        mask_mod_combos[im++] = LockMask | scrollock_mask;
+      }
+      if (numlock_mask && scrollock_mask) {
+        mask_mod_combos[im++] = numlock_mask | scrollock_mask;
+        mask_mod_combos[im++] = LockMask | numlock_mask | scrollock_mask;
+      }
+      c_mask_mod_combos = im;
     }
+    scwm_msg(INFO,"init_modifiers",
+             "Doing %d XGrabKey calls for window bindings when ignoring dubious modifiers",c_mask_mod_combos);
     XFreeModifiermap(mod);
   }
 }
