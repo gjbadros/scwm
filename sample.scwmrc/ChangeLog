@@ -1,3 +1,7 @@
+Sun Jul 18 00:00:04 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added dir-focus... bindings.  Pretty nifty!
+
 Sat Jul 17 21:25:20 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use new scwm-logo-{0..23}.xpm images.  Fiddle with

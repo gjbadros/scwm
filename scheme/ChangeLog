@@ -1,3 +1,8 @@
+Sat Jul 17 23:58:52 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* dir-focus.scm: Some tweaks to make work better (some bugfixes,
+	probably; I'm ignoring dir-focus.gwm now).
+
 Sat Jul 17 23:43:06 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* wininfo.scm: Make `visible?' check that the window is not
