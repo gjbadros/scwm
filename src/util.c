@@ -49,8 +49,8 @@ redraw_titlebars(ScwmDecor * fl, int extra_height)
 }
 
 
-/* FIXMS This doesn't do what it should; SetBorderX must be
-   broken. */
+/* FIXMS This will cause an unattractive flash; SetBorderX should be
+   fixed in lieu of the hackery with hilighting windows on and off. */
 void
 redraw_borders(ScwmDecor *fl) 
 {
@@ -73,9 +73,11 @@ redraw_borders(ScwmDecor *fl)
     tmp->frame_height = 0;
     tmp->frame_width = 0;
     puts("Redrawing a border.");
-    SetBorderX(tmp, tmp==hi, True, True, None, True);
+    SetBorder(tmp, True, True, True, None);
+    SetBorder(tmp, False, True, True, None);  
     tmp = tmp->next;
   }
+  SetBorder (hi, True, True, True, None);
 }
 
 void 
