@@ -43,7 +43,10 @@
 ;; "panel &" in your $HOME/.xclients file (and be sure it is u+x)
 
 ;; import scwm modules we need for the startup animation
-(use-scwm-modules base message-window)
+(use-scwm-modules base message-window gnome-hints)
+
+;; do this early, since gnome times out in 10 seconds
+(enable-gnome-hints)
 
 ;; SCWMDIR is mostly used for testing and running Scwm w/o installing
 ;; use (scwm-path-prefix) and (scwm-path-exec-prefix) if
@@ -113,7 +116,7 @@
 
 ;; import the rest of the scwm modules
 (use-scwm-modules base defoption optargs primopts 
-		  winops winlist wininfo listops
+		  winops winlist wininfo listops placement
 		  style stylist face time-convert menus-extras
 		  std-menus doc virtual
 		  flux flux-gtk flash-window key-mover
@@ -128,8 +131,8 @@
 
 (debug-display "Done reading modules\n")
 
-;; do this early, since gnome times out in 10 seconds
-(enable-gnome-hints)
+(define gnome-sm
+  (if (X-property-get 'root-window "GNOME_SM_PROXY") #t #f))
 
 ;;(use-scwm-modules gtk)
 ;;(use-scwm-modules send-string)
@@ -451,15 +454,14 @@
 ;;(add-hook! window-focus-change-hook focus-change-warp-pointer)
 
 (define (show-icon-list-menu)
-  (show-window-list-menu #:only iconified? #:warp-to-first #t 
+  (show-window-list-menu #t #:only iconified?
 			 #:proc animated-deiconify-to-viewport-focus-raise))
 
 (define (show-xterm-window-list-menu)
-  (show-window-list-menu #:only (lambda (w)
-				  (or 
-				   (string=? (window-class w) "XTerm")
-				   (string=? (window-class w) "NXTerm")) )
-			 #:warp-to-first #t
+  (show-window-list-menu #t #:only (lambda (w)
+				     (or 
+				      (string=? (window-class w) "XTerm")
+				      (string=? (window-class w) "NXTerm")))
 			 #:proc animated-deiconify-to-viewport-focus-raise))
 
 
@@ -835,14 +837,33 @@
 (set-highlight-foreground! "white")
 (set-highlight-background! "navyblue")
 
+(define desk-icon
+  (make-style #:winlist-skip #t
+	      #:circulate-skip #t #:focus 'none))
+
 (define desk-widget
   (make-style #:plain-border #t #:sticky #t #:winlist-skip #t
 	      #:border-width 3 #:circulate-skip #t #:focus 'none))
+
+(window-style "desktop_icon" #:use-style desk-icon)
 
 (window-style "scwmmessages" #:no-titlebar #t)
 
 (window-style "panel"
               #:use-style desk-widget #:border-width 0 #:no-titlebar #t)
+
+(for-each (lambda (resource)
+	    (window-style resource
+			  #:use-style desk-widget #:no-titlebar #t
+			  #:placement-proc center-placement))
+	  (list 
+	   "gnome-splash"
+	   "guname"))
+
+(window-style "wm-properties-capplet"
+              #:use-style desk-widget #:no-titlebar #t
+	      #:transient-placement-proc place-near-pointer)
+
 
 ;;  This shows a bug in dealing with 0 bordered windows (from HJ Stein)
 ;;(define desk-widget-hjs
@@ -930,7 +951,7 @@
     menu-separator
     (menuitem "Switch to..." #:action
 	       (lambda () 
-		 (show-window-list-menu #:show-geometry #t)))
+		 (show-window-list-menu #f #:show-geometry #t)))
     (menuitem "Re&fresh Screen" #:image-left "mini-ray.xpm" 
 	       #:action (thunk refresh)))))
 
@@ -1223,18 +1244,35 @@ union of all other window managers!
 
 ;;; now set some mouse and key bindings ;;
 
+(define (popup-scwm-root-middle-menu)
+  (popup-menu
+   (menu
+    (cons (menuitem "Scwm" #:extra-label "C-S-M-z" 
+		    #:image-left pic-lambda-mini #:submenu menu-root-start)
+	  (cdadr (menu-properties
+		  (make-window-list-menu #:by-resource #t)))))))
+
 (define (show-window-list-by-focus-with-geometry)
-  (show-window-list-menu #:by-focus #t #:show-geometry #t))
+  (show-window-list-menu #f #:by-focus #t #:show-geometry #t))
 
 (define (show-window-list-by-resource-with-geometry)
-  (show-window-list-menu #:by-resource #t #:show-geometry #t))
+  (show-window-list-menu #f #:by-resource #t #:show-geometry #t))
 
 ;;; first our root menus
-(bind-mouse 'root 1 #f popup-root-start-no-warp)
-(bind-mouse 'root 2 #f show-window-list-by-focus-with-geometry)
+(if gnome-sm
+    (bind-mouse 'root 1 #f gnome-desktop-press-1)
+    (bind-mouse 'root 1 #f popup-root-start-no-warp))
+
+(if gnome-sm
+    (bind-mouse 'root 2 #f popup-scwm-root-middle-menu)
+    (bind-mouse 'root 2 #f show-window-list-by-resource-with-geometry))
+
+(if gnome-sm
+    (bind-mouse 'root 3 #f gnome-desktop-press-3)
+    (bind-mouse 'root 3 #f popup-applications-no-warp))
+
 (bind-mouse 'root "M-3" #f popup-desk)
-(bind-mouse 'root 3 #f popup-applications-no-warp)
-(bind-mouse 'all "A-2" #f show-window-list-by-resource-with-geometry)
+(bind-mouse 'all "A-2" #f show-window-list-by-focus-with-geometry)
 
 (bind-key 'all "H-r" rename-window-interactively)
 ;; (lookup-key 'all "H-r")
@@ -1341,8 +1379,8 @@ union of all other window managers!
 (bind-key 'all "C-M-S-f" resize-fullscreen)
 
 (define (window-task-switcher-menu)
-  (show-window-list-menu #:by-focus #t #:show-last-focus-time #t
-			 #:show-geometry #t #:warp-to-first #t))
+  (show-window-list-menu #t #:by-focus #t #:show-last-focus-time #t
+			 #:show-geometry #t))
   
 
 ;; I reserve M-Tab for emacs, but Alt-Tab is fine
@@ -1407,6 +1445,7 @@ union of all other window managers!
 
 (setenv "DISPLAY_HEIGHT" (number->string root-size-y))
 (setenv "DISPLAY_WIDTH" (number->string root-size-x))
+(setenv "GNOME_SM" (if gnome-sm "true" "false"))
 
 ;; (define varstr "SSH_AUTH_SOCK")
 ;; (define valstr "/tmp/ssh-gjb/agent-socket-26365")
@@ -1440,7 +1479,12 @@ union of all other window managers!
 ;; to add geometry strings to this as well.
 (bind-key 'all "C-S-Return" show-icon-list-menu)
 
+(define (gnome-desktop-menu)
+	(gnome-desktop-press 3))
+
 (bind-key 'all "C-S-M-z" popup-root-start)
+(if gnome-sm
+    (bind-key 'all "C-S-M-w" gnome-desktop-menu))
 (bind-key 'all "H-z" popup-root-start)
 
 (set-click-delay! 150)
