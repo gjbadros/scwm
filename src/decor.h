@@ -36,9 +36,9 @@ EXTERN_SET(ScwmDecor *cur_decor,NULL);
 
 EXTERN long scm_tc16_scwm_decor;
 
-#define DECORP(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_decor)
-#define DECOR(X)  ((scwm_decor *)SCM_CDR(X))
-#define SCWMDECOR(X) (((scwm_decor *)SCM_CDR(X))->sd)
+#define DECORP(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_decor)
+#define DECOR(X)  ((scwm_decor *)gh_cdr(X))
+#define SCWMDECOR(X) (((scwm_decor *)gh_cdr(X))->sd)
 
 /* This is broken if you DECORUNREF something more times than you
    DECORREF it. These should only be used in two places, though,

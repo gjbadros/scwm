@@ -111,9 +111,9 @@ SCWM_PROC(viewport_position, "viewport-position", 0, 0, 0,
 The returned value is a list of the x and y positions. */
 #define FUNC_NAME s_viewport_position
 {
-  return scm_listify(SCM_MAKINUM(Scr.Vx),
-		     SCM_MAKINUM(Scr.Vy),
-		     SCM_UNDEFINED);
+  return gh_list(SCM_MAKINUM(Scr.Vx),
+                 SCM_MAKINUM(Scr.Vy),
+                 SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -238,7 +238,7 @@ at the screen edge. */
   if (usec == SCM_BOOL_F)
     Scr.ScrollResistance = -1;
   else if (!gh_number_p(usec)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, usec);
   } else {
     Scr.ScrollResistance = gh_scm2int(usec);
@@ -274,7 +274,7 @@ must be moved before it will really move past the edge. */
 #define FUNC_NAME s_set_edge_move_threshold_x
 {
   if (!gh_number_p(pixels)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, pixels);
   }
 
@@ -307,11 +307,11 @@ a virtual world 9 times the size of the physical display. */
   SCM_REDEFER_INTS;
 
   if (!gh_number_p(width)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, width);
   }
   if (!gh_number_p(height)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 2, height);
   }
   Scr.VxMax = gh_scm2int(width);
@@ -339,9 +339,9 @@ The returned value is in units of the physical screen size, as a list
 of the width and the height. */
 #define FUNC_NAME s_desk_size
 {
-  return scm_listify(SCM_MAKINUM((int) (Scr.VxMax / Scr.DisplayWidth + 1)),
-                     SCM_MAKINUM((int) (Scr.VyMax / Scr.DisplayHeight + 1)),
-		     SCM_UNDEFINED);
+  return gh_list(SCM_MAKINUM((int) (Scr.VxMax / Scr.DisplayWidth + 1)),
+                 SCM_MAKINUM((int) (Scr.VyMax / Scr.DisplayHeight + 1)),
+                 SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -353,9 +353,9 @@ The return value is list of the width and the height. The
 width is the `car', the height is the `cadr' of the returned list. */
 #define FUNC_NAME s_display_size
 {
-  return scm_listify(SCM_MAKINUM(Scr.DisplayWidth),
-		     SCM_MAKINUM(Scr.DisplayHeight),
-		     SCM_UNDEFINED);
+  return gh_list(SCM_MAKINUM(Scr.DisplayWidth),
+                 SCM_MAKINUM(Scr.DisplayHeight),
+                 SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 

@@ -56,8 +56,8 @@ typedef struct
 } scwm_image;
 
 
-#define IMAGE_P(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_image)
-#define IMAGE(X)  ((scwm_image *)SCM_CDR(X))
+#define IMAGE_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_image)
+#define IMAGE(X)  ((scwm_image *)gh_cdr(X))
 #define SAFE_IMAGE(X)  (IMAGE_P((X))? IMAGE((X)) : NULL)
 
 EXTERN long scm_tc16_scwm_image;

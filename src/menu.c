@@ -301,9 +301,7 @@ drawing code (not used currently).
   }
 #endif
 
-  SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, scm_tc16_scwm_menu);
-  SCM_SETCDR(answer, (SCM) pmenu);
+  SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_menu, pmenu);
   return answer;
 }
 #undef FUNC_NAME

@@ -443,8 +443,6 @@ See the section on the face-specification-flags concept. */
 }
 #undef FUNC_NAME
 
-
-
 SCWM_PROC(make_face, "make-face",2,0,0,
           (SCM flags, SCM specs) )
 	  /** Create a new face.
@@ -468,16 +466,14 @@ SPECS is a list of face specifiers. */
   sf = NEW(scwm_face);
   sf->bf = bf = NEW(ButtonFace);
 
-  SCM_DEFER_INTS;
-  SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, scm_tc16_scwm_face);
-  SCM_SETCDR(answer, (SCM)(sf));
+  gh_defer_ints();
+  SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_face, sf);
   bf->sface = answer;
   bf->style = SimpleButton;
   bf->next = NULL;
-  SCM_ALLOW_INTS;
+  gh_allow_ints();
 
-  for (p=flags; p!=SCM_EOL; p=SCM_CDR(p)) {
+  for (p=flags; p!=SCM_EOL; p=gh_cdr(p)) {
     flag = gh_car(p);
     if (gh_list_p(flag) && gh_length(flag)==2) {
       set_face_flag_x(answer,gh_car(flag),gh_cadr(flag));
@@ -487,7 +483,7 @@ SPECS is a list of face specifiers. */
     }
   }
 
-  for (p=specs; p!=SCM_EOL; p=SCM_CDR(p)) {
+  for (p=specs; p!=SCM_EOL; p=gh_cdr(p)) {
     spec = gh_car(p);
  
     if (gh_list_p(spec) && gh_length(spec)==2) {
@@ -660,8 +656,8 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       SCM p, pel;
       vc.num=0;
       
-      for (p=arg; p != SCM_EOL; p = SCM_CDR(p)) {
-	pel=SCM_CAR(p);
+      for (p=arg; p != SCM_EOL; p = gh_cdr(p)) {
+	pel=gh_car(p);
 	if ((gh_list_p(pel) && (gh_length(pel)==3))) {
 	  vc.x[vc.num]=gh_scm2int(gh_car(pel));
 	  vc.y[vc.num]=gh_scm2int(gh_cadr(pel));
@@ -718,7 +714,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
       s_colors = NEWC(nsegs+1,char *);
 
       sum=0;
-      for (i = 0, p=arg; i <= nsegs; ++i, p=SCM_CDR(p)) {
+      for (i = 0, p=arg; i <= nsegs; ++i, p=gh_cdr(p)) {
 	int dummy;
 	SCM item_i=gh_car(p);
 

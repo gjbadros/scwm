@@ -162,12 +162,9 @@ allocated, an error results. */
   sc->pixel = color.pixel;
   sc->name = cname;
 
-  SCM_DEFER_INTS;
-  SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, (SCM) scm_tc16_scwm_color);
-  SCM_SETCDR(answer, (SCM) sc);
-  SCM_ALLOW_INTS;
-
+  gh_defer_ints();
+  SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_color, sc);
+  gh_allow_ints();
 
   scm_hash_set_x (color_hash_table, scm_string_copy(cname), answer);
   return (answer);  
@@ -848,10 +845,10 @@ init_color()
   REGISTER_SCWMSMOBFUNS(color);
 
   color_hash_table = 
-    scm_make_weak_value_hash_table (SCM_MAKINUM(COLOR_HASH_SIZE));
+    scm_make_weak_value_hash_table (gh_int2scm(COLOR_HASH_SIZE));
   scm_protect_object(color_hash_table);
 
-  protected_colors = scm_make_vector (SCM_MAKINUM(6), SCM_EOL);
+  protected_colors = scm_make_vector (gh_int2scm(6), SCM_EOL);
   scm_protect_object(protected_colors);
 
   scm_protect_object(str_black=gh_str02scm("black"));

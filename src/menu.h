@@ -91,8 +91,8 @@ struct DynamicMenu_tag
 };
 
 
-#define MENU_P(X) (SCM_NIMP((X)) && (SCM_CAR((X)) == (SCM)scm_tc16_scwm_menu))
-#define MENU(X)  ((Menu *)SCM_CDR((X)))
+#define MENU_P(X) (SCM_NIMP((X)) && (gh_car((X)) == (SCM)scm_tc16_scwm_menu))
+#define MENU(X)  ((Menu *)gh_cdr((X)))
 
 #define MENU_OR_SYMBOL_P(X) (MENU_P((X)) || gh_symbol_p((X)))
 

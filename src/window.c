@@ -385,11 +385,9 @@ make_window(ScwmWindow * win)
 
   schwin = NEW(scwm_window);
 
-  SCM_DEFER_INTS;
+  gh_defer_ints();
 
-  SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, scm_tc16_scwm_window);
-  SCM_SETCDR(answer, (SCM) schwin);
+  SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_window, schwin);
   PSWFROMSCMWIN(answer) = win;
   VALIDWINP(answer) = 1;
 
@@ -399,7 +397,7 @@ make_window(ScwmWindow * win)
   win->other_properties=scm_make_vector(SCM_MAKINUM(5), SCM_EOL);
   scm_protect_object(answer);
 
-  SCM_ALLOW_INTS;
+  gh_allow_ints();
   return answer;
 }
 
@@ -641,14 +639,14 @@ place-holder until we have proper cursor support in scwm. */
   if (kill_p == SCM_UNDEFINED) {
     kill_p = SCM_BOOL_F;
   } else if (!gh_boolean_p(kill_p)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, kill_p);
   }
 
   if (release_p == SCM_UNDEFINED) {
     release_p = SCM_BOOL_T;
   } else if (!gh_boolean_p(release_p)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 2, release_p);
   }
 
@@ -1621,9 +1619,9 @@ and possibly other legacy fvwm2 modules). */
   /* FIXMS: Hmmm, do we really want to restack the icons of iconified
      windows? */
 
-  for (p=winlist, cnt=0; SCM_EOL!=p; p=SCM_CDR(p)) {
+  for (p=winlist, cnt=0; SCM_EOL!=p; p=gh_cdr(p)) {
     ScwmWindow *psw;
-    SCM cur=SCM_CAR(p);
+    SCM cur=gh_car(p);
 
     if (!WINDOWP(cur)) {
       scm_wrong_type_arg(FUNC_NAME, 1, winlist);      
@@ -1653,8 +1651,8 @@ and possibly other legacy fvwm2 modules). */
      functionality using a more general hook of some kind,
      ultimately. */
 
-  for (p=winlist, i=0; SCM_EOL!=p; p=SCM_CDR(p)) {
-    SCM cur=SCM_CAR(p);
+  for (p=winlist, i=0; SCM_EOL!=p; p=gh_cdr(p)) {
+    SCM cur=gh_car(p);
     ScwmWindow *psw=PSWFROMSCMWIN(cur);
 
     if (!WINDOWP(cur)) {
@@ -1900,7 +1898,7 @@ not specified. */
      (window-shade (get-window) 'animated)
      Is there a better way? */
   if (!gh_boolean_p(animated_p)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 2, animated_p);
   }
 #endif
@@ -1967,7 +1965,7 @@ window context in the usual way if not specified. */
      (window-shade (get-window) 'animated)
      Is there a better way? */
   if (!gh_boolean_p(animated_p)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 2, animated_p);
   }
 #endif
@@ -2086,15 +2084,15 @@ specified. */
   SCM_REDEFER_INTS;
   VALIDATEN(win, 3, FUNC_NAME);
   if (x != SCM_BOOL_F && !gh_number_p(x)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, x);
   }
   if (y != SCM_BOOL_F && !gh_number_p(y)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 2, y);
   }
   if (x == SCM_BOOL_F && y == SCM_BOOL_F) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_misc_error(FUNC_NAME,"Either X or Y must be a number",SCM_EOL);
   }
 #ifdef GJB_BE_ANAL_ABOUT_BOOLS
@@ -2102,11 +2100,11 @@ specified. */
      (move-to x y (get-window) 'animated 'move-pointer)
      Is there a better way? */
   if (!gh_boolean_p(animated_p)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 4, animated_p);
   }
   if (!gh_boolean_p(move_pointer_too_p)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 5, move_pointer_too_p);
   }
 #endif
@@ -2314,7 +2312,7 @@ defaults to the window context in the usual way if not specified. */
 
   SCM_REDEFER_INTS;
   if (!gh_number_p(desk) && desk != SCM_BOOL_F) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, desk);
   }
   VALIDATEN(win, 2, FUNC_NAME);
@@ -2363,9 +2361,9 @@ way if not specified. */
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
-  return scm_listify(SCM_MAKINUM(FRAME_X(psw)),
-		     SCM_MAKINUM(FRAME_Y(psw)),
-		     SCM_UNDEFINED);
+  return gh_list(SCM_MAKINUM(FRAME_X(psw)),
+                 SCM_MAKINUM(FRAME_Y(psw)),
+                 SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -2383,9 +2381,9 @@ way if not specified. */
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
-  return scm_listify(SCM_MAKINUM(psw->icon_x_loc),
-		     SCM_MAKINUM(psw->icon_y_loc),
-		     SCM_UNDEFINED);
+  return gh_list(SCM_MAKINUM(psw->icon_x_loc),
+                 SCM_MAKINUM(psw->icon_y_loc),
+                 SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -2403,9 +2401,9 @@ specified. */
   VALIDATE(win, FUNC_NAME);
   psw = PSWFROMSCMWIN(win);
 
-  return scm_listify(SCM_MAKINUM(FRAME_WIDTH(psw)),
-		     SCM_MAKINUM(FRAME_HEIGHT(psw)),
-		     SCM_UNDEFINED);
+  return gh_list(SCM_MAKINUM(FRAME_WIDTH(psw)),
+                 SCM_MAKINUM(FRAME_HEIGHT(psw)),
+                 SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -2441,9 +2439,9 @@ and height in resize units (e.g., characters for an xterm).  */
   width /= psw->hints.width_inc;
   height /= psw->hints.height_inc;
 
-  return scm_listify(gh_int2scm(cpixX),gh_int2scm(cpixY),
-                     gh_int2scm(width),gh_int2scm(height),
-		     SCM_UNDEFINED);
+  return gh_list(gh_int2scm(cpixX),gh_int2scm(cpixY),
+                 gh_int2scm(width),gh_int2scm(height),
+                 SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -3600,11 +3598,11 @@ ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
     }
   }
   if (!WINDOWP(win)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(subr, n, win);
   }
   if (!VALIDWINP(win)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scwm_error(subr, "Window no longer valid.");
     /* maybe should just return SCM_BOOL_F; */
   }

@@ -46,7 +46,7 @@ scm_parse_path (char *path, SCM tail)
         /* Scan back to the beginning of the current element.  */
         do scan--;
         while (scan >= path && *scan != ':');
-        tail = scm_cons (scm_makfromstr (scan + 1, elt_end - (scan + 1), 0),
+        tail = gh_cons(scm_makfromstr (scan + 1, elt_end - (scan + 1), 0),
                          tail);
         elt_end = scan;
       } while (scan >= path);
@@ -65,7 +65,7 @@ static SCM
 ss_handler (void *data, SCM tag, SCM throw_args)
 {
   /* Save the stack */
-  SET_LAST_STACK(scm_make_stack (scm_cons (SCM_BOOL_T, SCM_EOL)));
+  SET_LAST_STACK(scm_make_stack (gh_cons(SCM_BOOL_T, SCM_EOL)));
   /* Throw the error */
   return scm_throw (tag, throw_args);
 }

@@ -301,8 +301,8 @@ extern ScreenInfo Scr;
 
 SCM ScmFromPScreenInfo(ScreenInfo *psi);
 
-#define SCREENP(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_screen)
-#define SCREEN(X)  ((ScreenInfo *)SCM_CDR(X))
+#define SCREENP(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_screen)
+#define SCREEN(X)  ((ScreenInfo *)gh_cdr(X))
 
 
 /* 

@@ -73,8 +73,8 @@ typedef struct MenuItemInMenu_tag
 } MenuItemInMenu;
 
 
-#define MENUITEM_P(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_menuitem)
-#define MENUITEM(X)  ((MenuItem *)SCM_CDR(X))
+#define MENUITEM_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_menuitem)
+#define MENUITEM(X)  ((MenuItem *)gh_cdr(X))
 #define SAFE_MENUITEM(X)  (MENUITEM_P((X))? MENUITEM((X)) : NULL)
 
 #endif

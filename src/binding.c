@@ -672,7 +672,7 @@ PROC is a procedure (possibly a thunk) that should be invoked */
   if (keysym ==  NoSymbol || !fOkayKey) {
     char *keyname = gh_scm2newstr(key,&len);
     gh_allow_ints();
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scwm_msg(WARN,FUNC_NAME,"Ignoring key binding `%s'",keyname);
     FREE(keyname);
     return SCM_BOOL_F;

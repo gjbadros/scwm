@@ -63,7 +63,7 @@ current decor */
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
   if (!gh_symbol_p(just)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, just);
   }
   if (gh_eq_p(just, sym_center)) {
@@ -262,7 +262,7 @@ The return value is a two-element list of the x and y coordinates. */
 
   WXGetPointerWindowOffsets(Scr.Root, &x, &y);
 
-  return scm_listify(SCM_MAKINUM(x), SCM_MAKINUM(y), SCM_UNDEFINED);
+  return gh_list(SCM_MAKINUM(x), SCM_MAKINUM(y), SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -317,14 +317,14 @@ usefulness. */
   extern ScwmWindow *pswCurrent;
 
   if (!gh_procedure_p(predicate)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, predicate);
   }
   while (!done) {
     if (XNextEvent_orTimeout(dpy, &Event)) {
-      SCM_DEFER_INTS;
+      gh_defer_ints();
       DispatchEvent();
-      SCM_ALLOW_INTS;
+      gh_allow_ints();
       if (Event.type == MapNotify) {
 	if (gh_call1(predicate, pswCurrent->schwin) == SCM_BOOL_T) {
 	  done = True;
@@ -524,11 +524,11 @@ Return value is a list of the X protocol version, the X protocol
 revision, the X server vendor, and the vendor release number. */
 #define FUNC_NAME s_X_version_information
 {
-  return scm_listify(SCM_MAKINUM(ProtocolVersion(dpy)),
-		     SCM_MAKINUM(ProtocolRevision(dpy)),
-		     gh_str02scm(ServerVendor(dpy)),
-		     SCM_MAKINUM(VendorRelease(dpy)),
-		     SCM_UNDEFINED);
+  return gh_list(SCM_MAKINUM(ProtocolVersion(dpy)),
+                 SCM_MAKINUM(ProtocolRevision(dpy)),
+                 gh_str02scm(ServerVendor(dpy)),
+                 SCM_MAKINUM(VendorRelease(dpy)),
+                 SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 
@@ -597,13 +597,13 @@ be shared among multiple machines. */
       break;
   }
 
-  return scm_listify(SCM_MAKINUM(xres),
-		     SCM_MAKINUM(yres),
-		     SCM_MAKINUM(planes),
-		     SCM_MAKINUM(bits_per_rgb),
-		     gh_str02scm(vc), /* class */
-		     SCM_BOOL_FromBool(fColor),
-		     SCM_UNDEFINED);
+  return gh_list(SCM_MAKINUM(xres),
+                 SCM_MAKINUM(yres),
+                 SCM_MAKINUM(planes),
+                 SCM_MAKINUM(bits_per_rgb),
+                 gh_str02scm(vc), /* class */
+                 SCM_BOOL_FromBool(fColor),
+                 SCM_UNDEFINED);
 }
 #undef FUNC_NAME
 

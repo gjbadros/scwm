@@ -49,7 +49,7 @@ public:
       _frame_y.setPv(psw);
       _frame_width.setPv(psw);
       _frame_height.setPv(psw);
-      SCM_DEFER_INTS;
+      gh_defer_ints();
       scm_protect_object(_scmXL = ScmMakeClVariable(&_frame_x));
       scm_protect_object(_scmYT = ScmMakeClVariable(&_frame_y));
       scm_protect_object(_scmWidth = ScmMakeClVariable(&_frame_width));
@@ -63,7 +63,7 @@ public:
       pexprYB->addVariable(_frame_height);
       scm_protect_object(_scmYB = ScmMakeClLinearExpression(pexprYB));
 
-      SCM_ALLOW_INTS;
+      gh_allow_ints();
     }
 
   void

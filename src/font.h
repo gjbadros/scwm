@@ -70,8 +70,8 @@ typedef struct {
 #define XFIXEDFONTNAME "fixed"
 #endif
 
-#define FONT_P(X) (SCM_NIMP((X)) && SCM_CAR((X)) == (SCM)scm_tc16_scwm_font)
-#define FONT(X)  ((scwm_font *)SCM_CDR((X)))
+#define FONT_P(X) (SCM_NIMP((X)) && gh_car((X)) == (SCM)scm_tc16_scwm_font)
+#define FONT(X)  ((scwm_font *)gh_cdr((X)))
 #define SAFE_FONT(X)  (FONT_P((X))?FONT((X)):NULL)
 #define DYNAMIC_FONT_P(X) (gh_symbol_p((X))? \
 			   FONT_P(scm_symbol_binding(SCM_BOOL_F,(X))) : \
@@ -83,19 +83,19 @@ typedef struct {
 			      SAFE_FONT((X)))
 
 #ifdef I18N
-#define XFONT(X) (((scwm_font *)SCM_CDR((X)))->fontset)
-#define FONTY(X) (((scwm_font *)SCM_CDR((X)))->ascent)
+#define XFONT(X) (((scwm_font *)gh_cdr((X)))->fontset)
+#define FONTY(X) (((scwm_font *)gh_cdr((X)))->ascent)
 #else
-#define XFONT(X) (((scwm_font *)SCM_CDR((X)))->xfs)
+#define XFONT(X) (((scwm_font *)gh_cdr((X)))->xfs)
 #define FONTY(X) ((XFONT(X))->ascent)
 #endif
 
-#define XFONTID(X) (((scwm_font *)SCM_CDR((X)))->xfs->fid)
+#define XFONTID(X) (((scwm_font *)gh_cdr((X)))->xfs->fid)
 
 #define SAFE_XFONT(X) (FONT_P((X))?XFONT((X)):NULL)
-#define FONTNAME(X) (((scwm_font *)SCM_CDR(X))->name)
+#define FONTNAME(X) (((scwm_font *)gh_cdr(X))->name)
 #define SAFE_FONTNAME(X) (FONT_P((X))?FONTNAME((X)):NULL)
-#define FONTHEIGHT(X) (((scwm_font *)SCM_CDR(X))->height)
+#define FONTHEIGHT(X) (((scwm_font *)gh_cdr(X))->height)
 
 SCM make_font(SCM fname);
 

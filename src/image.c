@@ -199,11 +199,9 @@ make_empty_image(SCM name)
   ci->depth = 0;
   ci->foreign = 0;
 
-  SCM_DEFER_INTS;
-  SCM_NEWCELL(result);
-  SCM_SETCAR(result, scm_tc16_scwm_image);
-  SCM_SETCDR(result, (SCM) ci);
-  SCM_ALLOW_INTS;
+  gh_defer_ints();
+  SCWM_NEWCELL_SMOB(result, scm_tc16_scwm_image, ci);
+  gh_allow_ints();
 
   return result;
 }
@@ -393,8 +391,8 @@ path_expand_image_fname(SCM name, const char *func_name)
      *loc_image_load_path changes */
     /* GJBFIX: I don't think there is a way to know that... */
 
-    for (p = *loc_image_load_path; p != SCM_EOL; p = SCM_CDR(p)) {
-      SCM elt = SCM_CAR(p);
+    for (p = *loc_image_load_path; p != SCM_EOL; p = gh_cdr(p)) {
+      SCM elt = gh_car(p);
       if (!gh_string_p(elt)) {
 	/* Warning, non-string in image-load-path */
 	scwm_msg(WARN,__FUNCTION__,"Non-string in image-load-path");
@@ -410,8 +408,8 @@ path_expand_image_fname(SCM name, const char *func_name)
     c_fname = NEWC(max_path_len + length + 2,char);
     
     /* Try every possible path */
-    for(p = *loc_image_load_path; p != SCM_EOL; p = SCM_CDR(p)) {
-      SCM elt = SCM_CAR(p);
+    for(p = *loc_image_load_path; p != SCM_EOL; p = gh_cdr(p)) {
+      SCM elt = gh_car(p);
       int path_len = SCM_ROLENGTH(elt);
       memcpy(c_fname, SCM_ROCHARS(elt), path_len);
       c_fname[path_len] = '/';

@@ -42,12 +42,12 @@ public:
       _pointerx.setPv(pscreen);
       _pointery.setPv(pscreen);
 #endif 
-      SCM_DEFER_INTS;
+      gh_defer_ints();
       scm_protect_object(_scmVx = ScmMakeClVariable(&_vx));
       scm_protect_object(_scmVy = ScmMakeClVariable(&_vy));
       scm_protect_object(_scmPointerX = ScmMakeClVariable(&_pointerx));
       scm_protect_object(_scmPointerY = ScmMakeClVariable(&_pointery));
-      SCM_ALLOW_INTS;
+      gh_allow_ints();
     }
 
 #if 0

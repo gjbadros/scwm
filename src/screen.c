@@ -69,11 +69,9 @@ ScmFromPScreenInfo(ScreenInfo *psi)
 {
   SCM answer;
 
-  SCM_DEFER_INTS;
-  SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, scm_tc16_scwm_screen);
-  SCM_SETCDR(answer, (SCM) psi);
-  SCM_ALLOW_INTS;
+  gh_defer_ints();
+  SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_screen,psi);
+  gh_allow_ints();
   return answer;
 }
 

@@ -38,8 +38,8 @@ typedef struct {
   SCM name;
 } scwm_color;
 
-#define COLOR_P(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_color)
-#define COLOR(X)  ((scwm_color *)(SCM_CDR(X)))
+#define COLOR_P(X) (SCM_NIMP(X) && gh_car(X) == (SCM)scm_tc16_scwm_color)
+#define COLOR(X)  ((scwm_color *)(gh_cdr(X)))
 #define XCOLOR(X) (COLOR(X)->pixel)
 #define COLORNAME(X) (COLOR(X)->name)
 

@@ -119,6 +119,12 @@ enum wm_client_functions {
   F_DELETE = 104, F_DESTROY = 103
 };
 
+#define SCWM_NEWCELL_SMOB(ANSWER,ID,PSMOB) \
+   do { \
+     SCM_NEWCELL((ANSWER)); \
+     SCM_SETCAR((ANSWER),(ID)); \
+     SCM_SETCDR((ANSWER),(SCM) (PSMOB)); \
+   } while (0);
 
 #define DEREF_IF_SYMBOL(x) do { if (gh_symbol_p((x))) { \
                                    (x) = scm_symbol_binding(SCM_BOOL_F,(x)); \

@@ -342,7 +342,7 @@ resize frames. VALUE should be an integer. */
   SCM_REDEFER_INTS;
 
   if (!gh_number_p(value)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, value);
   }
   gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;

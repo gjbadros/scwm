@@ -122,7 +122,7 @@ allocated, an error results. */
   int len;
 
   if (!gh_string_p(fname)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, fname);
   }
   
@@ -200,9 +200,7 @@ allocated, an error results. */
 #endif
 
   SCM_REDEFER_INTS;
-  SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, scm_tc16_scwm_font);
-  SCM_SETCDR(answer, (SCM) font);
+  SCWM_NEWCELL_SMOB(answer, scm_tc16_scwm_font, font);
 #ifdef I18N  
   XFONT(answer) = fontset;
   loadedfonts = XFontsOfFontSet (fontset,&xfss,&list_names);
@@ -266,7 +264,7 @@ SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
     font = make_font(font);
   }
   if (!FONT_P(font)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, font);
   }
 
@@ -305,7 +303,7 @@ SCWM_PROC(set_title_font_x, "set-title-font!", 1, 0, 0,
   }
 
   if (!FONT_P(font)) {
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
     scm_wrong_type_arg(FUNC_NAME, 1, font);
   }
 
@@ -409,7 +407,7 @@ void init_font()
 {
   REGISTER_SCWMSMOBFUNS(font);
 
-  SCM_DEFER_INTS;
+  gh_defer_ints();
   str_fixed=gh_str02scm(XFIXEDFONTNAME);
   scm_permanent_object(str_fixed);
 
@@ -421,7 +419,7 @@ void init_font()
     scm_make_vector (SCM_MAKINUM(2), SCM_EOL);
   scm_permanent_object(protected_fonts);
 
-  SCM_ALLOW_INTS;
+  gh_allow_ints();
 #ifndef SCM_MAGIC_SNARFER
 #include "font.x"
 #endif

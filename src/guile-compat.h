@@ -59,12 +59,12 @@ SCM scm_parse_path (char *path, SCM tail);
   /* from libguile/fluids.h --07/01/98 gjb */
 SCM scm_fluid_ref SCM_P ((SCM fluid));
 SCM scm_fluid_set_x SCM_P ((SCM fluid, SCM value));
-#define DEREF_LAST_STACK scm_fluid_ref(SCM_CDR(scm_the_last_stack_fluid))
-#define SET_LAST_STACK(X) scm_fluid_set_x (SCM_CDR (scm_the_last_stack_fluid), (X))
+#define DEREF_LAST_STACK scm_fluid_ref(gh_cdr(scm_the_last_stack_fluid))
+#define SET_LAST_STACK(X) scm_fluid_set_x (gh_cdr (scm_the_last_stack_fluid), (X))
 
 #else
-#define DEREF_LAST_STACK SCM_CDR(scm_the_last_stack_var)
-#define SET_LAST_STACK(X) SCM_SETCDR(scm_the_last_stack_var, (X))
+#define DEREF_LAST_STACK gh_cdr(scm_the_last_stack_var)
+#define SET_LAST_STACK(X) gh_set_cdr_x(scm_the_last_stack_var, (X))
 #endif
 
 #ifndef SCM_EOF_OBJECT_P

@@ -214,9 +214,7 @@ for assigning shortcut keys to the various menuitems. */
     pmi->fIsSeparator = False;
   }
 
-  SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, scm_tc16_scwm_menuitem);
-  SCM_SETCDR(answer, (SCM) pmi);
+  SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_menuitem,pmi);
   return answer;
 }
 #undef FUNC_NAME

@@ -431,11 +431,11 @@ static SCM get_strport_string(SCM port)
 {
   SCM answer;
   {
-    SCM_DEFER_INTS;
-    answer = scm_makfromstr (SCM_CHARS (SCM_CDR (SCM_STREAM (port))),
-			     SCM_INUM (SCM_CAR (SCM_STREAM (port))),
+    gh_defer_ints();
+    answer = scm_makfromstr (SCM_CHARS (gh_cdr (SCM_STREAM (port))),
+			     SCM_INUM (gh_car (SCM_STREAM (port))),
 			     0);
-    SCM_ALLOW_INTS;
+    gh_allow_ints();
   }
   return answer;
 }

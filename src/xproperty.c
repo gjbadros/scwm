@@ -54,11 +54,11 @@ typedef struct {
 } scwm_xproperty;
 
 #define XPROPERTY_P(X) (SCM_NIMP((X)) && \
-			SCM_CAR((X)) == (SCM)scm_tc16_scwm_xproperty)
-#define XPROPERTY(X)  ((scwm_xproperty *)SCM_CDR((X)))
-#define XPROPERTYTYPE(X) (((scwm_xproperty *)SCM_CDR(X))->type)
-#define XPROPERTYLEN(X) (((scwm_xproperty *)SCM_CDR(X))->len)
-#define XPROPERTYDATA(X) (((scwm_xproperty *)SCM_CDR(X))->data)
+			gh_car((X)) == (SCM)scm_tc16_scwm_xproperty)
+#define XPROPERTY(X)  ((scwm_xproperty *)gh_cdr((X)))
+#define XPROPERTYTYPE(X) (((scwm_xproperty *)gh_cdr(X))->type)
+#define XPROPERTYLEN(X) (((scwm_xproperty *)gh_cdr(X))->len)
+#define XPROPERTYDATA(X) (((scwm_xproperty *)gh_cdr(X))->data)
 
 
 /**CONCEPT: X Properties
@@ -136,11 +136,9 @@ make_xproperty (char *type, unsigned len, void *data)
   xprop->len = len;
   xprop->data = data;
 
-  SCM_DEFER_INTS;
-  SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, (SCM) scm_tc16_scwm_xproperty);
-  SCM_SETCDR(answer, (SCM) xprop);
-  SCM_ALLOW_INTS;
+  gh_defer_ints();
+  SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_xproperty,xprop);
+  gh_allow_ints();
 
   return answer;
 }

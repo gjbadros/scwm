@@ -51,13 +51,13 @@ scwm_handle_error (void *data, SCM tag, SCM throw_args)
   if (scm_ilength (throw_args) >= 3)
     {
       SCM stack = DEREF_LAST_STACK;
-      SCM subr = SCM_CAR (throw_args);
+      SCM subr = gh_car (throw_args);
       SCM message = SCM_CADR (throw_args);
       SCM args = SCM_CADDR (throw_args);
 
-      scm_newline (port);
+      scm_newline(port);
       scm_display_backtrace (stack, port, SCM_UNDEFINED, SCM_UNDEFINED);
-      scm_newline (port);
+      scm_newline(port);
       scm_display_error (stack, port, subr, message, args, SCM_EOL);
       return SCM_BOOL_F;
     }
@@ -77,7 +77,7 @@ static SCM
 scwm_body_apply (void *body_data)
 {
   struct scwm_body_apply_data *ad = (struct scwm_body_apply_data *) body_data;
-  return scm_apply (ad->proc, ad->args, SCM_EOL);
+  return gh_apply(ad->proc, ad->args);
 }
 
 
@@ -91,7 +91,7 @@ static SCM
 ssdr_handler (void *data, SCM tag, SCM throw_args)
 {
   /* Save the stack */
-  SET_LAST_STACK(scm_make_stack (scm_cons (SCM_BOOL_T, SCM_EOL)));
+  SET_LAST_STACK(scm_make_stack (gh_cons(SCM_BOOL_T, SCM_EOL)));
   /* Throw the error */
   return scm_throw (tag, throw_args);
 }
@@ -173,7 +173,7 @@ scwm_safe_call1 (SCM proc, SCM arg)
 {
   /* This means w must cons (albeit only once) on each callback of
      size one - seems lame. */
-  return scwm_safe_apply (proc, scm_listify(arg, SCM_UNDEFINED));
+  return scwm_safe_apply (proc, gh_list(arg, SCM_UNDEFINED));
 }
 
 SCM
@@ -181,7 +181,7 @@ scwm_safe_call2 (SCM proc, SCM arg1, SCM arg2)
 {
   /* This means w must cons (albeit only once) on each callback of
      size two - seems lame. */
-  return scwm_safe_apply (proc, scm_listify(arg1, arg2, SCM_UNDEFINED));
+  return scwm_safe_apply (proc, gh_list(arg1, arg2, SCM_UNDEFINED));
 }
 
 
@@ -277,14 +277,14 @@ SCM scwm_safe_eval_str (char *string)
 void
 WarnBadHook(SCM hook)
 {
-  assert(!gh_list_p(SCM_CDR(hook)));
+  assert(!gh_list_p(gh_cdr(hook)));
   { /* scope */ 
     /* Warn that hook list is not a list. */
-    SCM hook_name = SCM_CAR(hook);
+    SCM hook_name = gh_car(hook);
     char *szHookName = gh_scm2newstr(hook_name, NULL);
     scwm_msg(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", szHookName);
     FREE(szHookName);
-    SCM_SETCDR(hook, SCM_EOL);
+    gh_set_cdr_x(hook, SCM_EOL);
   }
 }
 
@@ -307,15 +307,15 @@ SCM call0_hooks (SCM hook)
   SCM hook_list;
 
   /* Ensure hook list is a list. */
-  hook_list = SCM_CDR(hook);
+  hook_list = gh_cdr(hook);
 
   if (!gh_list_p(hook_list)) {
     WarnBadHook(hook);
     return SCM_UNSPECIFIED;
   }
 
-  for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
-    scwm_safe_call0 (SCM_CAR(p));
+  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
+    scwm_safe_call0 (gh_car(p));
   }
   
   return SCM_UNSPECIFIED;
@@ -327,15 +327,15 @@ SCM call1_hooks (SCM hook, SCM arg)
   SCM hook_list;
   /* Ensure hook list is a list. */
 
-  hook_list = SCM_CDR(hook);
+  hook_list = gh_cdr(hook);
 
   if (!gh_list_p(hook_list)) {
     WarnBadHook(hook);
     return SCM_UNSPECIFIED;
   }
 
-  for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
-    scwm_safe_call1 (SCM_CAR(p), arg);
+  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
+    scwm_safe_call1 (gh_car(p), arg);
   }
   
   return SCM_UNSPECIFIED;
@@ -347,15 +347,15 @@ SCM call2_hooks (SCM hook, SCM arg1, SCM arg2)
   SCM hook_list;
   /* Ensure hook list is a list. */
 
-  hook_list = SCM_CDR(hook);
+  hook_list = gh_cdr(hook);
 
   if (!gh_list_p(hook_list)) {
     WarnBadHook(hook);
     return SCM_UNSPECIFIED;
   }
 
-  for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
-    scwm_safe_call2 (SCM_CAR(p), arg1, arg2);
+  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
+    scwm_safe_call2 (gh_car(p), arg1, arg2);
   }
   
   return SCM_UNSPECIFIED;
@@ -367,7 +367,7 @@ SCM apply_hooks (SCM hook, SCM args)
   SCM p;
   SCM hook_list;
 
-  hook_list = SCM_CDR(hook);
+  hook_list = gh_cdr(hook);
 
   /* Ensure hook list is a list. */
   if (!gh_list_p(hook_list)) {
@@ -375,8 +375,8 @@ SCM apply_hooks (SCM hook, SCM args)
     return SCM_UNSPECIFIED;
   }
 
-  for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
-    scwm_safe_apply (SCM_CAR(p), args);
+  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
+    scwm_safe_apply (gh_car(p), args);
   }
   
   return SCM_UNSPECIFIED;
@@ -393,7 +393,7 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
   SCM p;
   SCM hook_list;
 
-  hook_list = SCM_CDR(hook);
+  hook_list = gh_cdr(hook);
 
   /* Ensure hook list is a list. */
   if (!gh_list_p(hook_list)) {
@@ -401,8 +401,8 @@ SCM apply_hooks_message_only (SCM hook, SCM args)
     return SCM_UNSPECIFIED;
   }
 
-  for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
-    scwm_safe_apply_message_only (SCM_CAR(p), args);
+  for (p = hook_list; p != SCM_EOL; p = gh_cdr(p)) {
+    scwm_safe_apply_message_only (gh_car(p), args);
   }
     
   return SCM_UNSPECIFIED;
@@ -427,35 +427,36 @@ called with no arguments. A handle suitable for passing to
 `remove-timer-hook!' is returned. */
 #define FUNC_NAME s_add_timer_hook_x
 {
+  int iarg = 1;
   SCM newcell;
   SCM p, last;
   SCM th_list;
 
 
   if (!gh_number_p(usec) || 
-      (scm_num2long(usec, (char *) SCM_ARG1, FUNC_NAME) < 0)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, usec);
+      (gh_scm2long(usec) < 0)) {
+    scm_wrong_type_arg(FUNC_NAME, iarg++, usec);
   }
 
   if (!gh_procedure_p(proc)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, proc);
+    scm_wrong_type_arg(FUNC_NAME, iarg++, proc);
   }
 
-  th_list=SCM_CDR(timer_hooks);
+  th_list=gh_cdr(timer_hooks);
   
   newcell=gh_cons(usec, proc);
 
   update_timer_hooks ();
 
   for (p = th_list, last = timer_hooks; p != SCM_EOL; 
-       last = p, p = SCM_CDR(p)) {
-    SCM cur = SCM_CAR(p);
-    if (SCM_FALSEP(scm_gr_p(usec, SCM_CAR(cur)))) {
+       last = p, p = gh_cdr(p)) {
+    SCM cur = gh_car(p);
+    if (SCM_FALSEP(scm_gr_p(usec, gh_car(cur)))) {
       break;
     }
   }
 
-  SCM_SETCDR(last, gh_cons(newcell, p));
+  gh_set_cdr_x(last, gh_cons(newcell, p));
 
   return newcell;
 }
@@ -469,7 +470,7 @@ The HANDLE should be an object that was returned by
 timer hook that has already been triggered. */
 #define FUNC_NAME s_remove_timer_hook_x
 {
-  SCM_SETCDR(timer_hooks,scm_delq_x (handle, SCM_CDR(timer_hooks)));
+  gh_set_cdr_x(timer_hooks,scm_delq_x (handle, gh_cdr(timer_hooks)));
 
   return SCM_UNSPECIFIED;
 }
@@ -478,7 +479,7 @@ timer hook that has already been triggered. */
 
 long shortest_timer_timeout()
 {
-  if (SCM_CDR(timer_hooks)==SCM_EOL) {
+  if (gh_cdr(timer_hooks)==SCM_EOL) {
     return -1;
   } else {
     return (gh_scm2long(SCM_CAADR(timer_hooks)));
@@ -512,13 +513,13 @@ void update_timer_hooks()
     usdelta = usdelta + sdelta;
   }
 
-  for (p = SCM_CDR(timer_hooks); p != SCM_EOL; p = SCM_CDR(p)) {
-    SCM cur = SCM_CAR(p);
+  for (p = gh_cdr(timer_hooks); p != SCM_EOL; p = gh_cdr(p)) {
+    SCM cur = gh_car(p);
     long val;
 
-    val = gh_scm2long(SCM_CAR(cur));
+    val = gh_scm2long(gh_car(cur));
     val = max (0, val - usdelta);
-    SCM_SETCAR(cur, gh_long2scm(val));
+    gh_set_car_x(cur, gh_long2scm(val));
   }
 
   last_timeval = tmp;
@@ -526,14 +527,14 @@ void update_timer_hooks()
 
 void run_timed_out_timers()
 {
-  SCM p = SCM_CDR(timer_hooks);
+  SCM p = gh_cdr(timer_hooks);
 
   while (p != SCM_EOL) {
-    SCM cur = SCM_CAR(p);
-    if (gh_scm2long(SCM_CAR(cur)) == 0) {
-      p = SCM_CDR(p);
-      SCM_SETCDR(timer_hooks, p);
-      scwm_safe_call0(SCM_CDR(cur));
+    SCM cur = gh_car(p);
+    if (gh_scm2long(gh_car(cur)) == 0) {
+      p = gh_cdr(p);
+      gh_set_cdr_x(timer_hooks, p);
+      scwm_safe_call0(gh_cdr(cur));
     } else {
       break;
     }
@@ -579,8 +580,8 @@ returned. */
 
   newcell=gh_cons(port, proc);
 
-  SCM_SETCDR(input_hooks, gh_cons(newcell, SCM_CDR(input_hooks)));
-  SCM_SETCDR(new_input_hooks, gh_cons(newcell, SCM_CDR(new_input_hooks)));
+  gh_set_cdr_x(input_hooks, gh_cons(newcell, gh_cdr(input_hooks)));
+  gh_set_cdr_x(new_input_hooks, gh_cons(newcell, gh_cdr(new_input_hooks)));
 
   return newcell;
 }
@@ -593,7 +594,7 @@ HANDLE should be an object that was returned by `add-input-hook!'. An
 input hook may safely remove itself. */
 #define FUNC_NAME s_remove_input_hook_x
 {
-  SCM_SETCDR(input_hooks,scm_delq_x (handle, SCM_CDR(input_hooks)));
+  gh_set_cdr_x(input_hooks,scm_delq_x (handle, gh_cdr(input_hooks)));
 
   return SCM_UNSPECIFIED;
 }
@@ -605,7 +606,7 @@ add_hook_fds_to_set(fd_set *in_fdset, int *fd_width)
 {
   SCM cur;
   
-  for (cur = SCM_CDR(input_hooks); cur != SCM_EOL; cur= SCM_CDR(cur)) {
+  for (cur = gh_cdr(input_hooks); cur != SCM_EOL; cur= gh_cdr(cur)) {
     if (SCM_OPINFPORTP(SCM_CAAR(cur))) {
       int fd = gh_scm2int(scm_fileno(SCM_CAAR(cur)));
       
@@ -622,19 +623,19 @@ force_new_input_hooks()
 {
   SCM cur;
 
-  for (cur = SCM_CDR(new_input_hooks);
+  for (cur = gh_cdr(new_input_hooks);
        cur != SCM_EOL;
-       cur = SCM_CDR(cur)) {
-    SCM item = SCM_CAR(cur);
-    SCM port = SCM_CAR(item);
-    SCM proc = SCM_CDR(item);
+       cur = gh_cdr(cur)) {
+    SCM item = gh_car(cur);
+    SCM port = gh_car(item);
+    SCM proc = gh_cdr(item);
     while (SCM_BOOL_F!=gh_memq(item, input_hooks) && 
 	   SCM_OPINFPORTP(port) &&
 	   SCM_BOOL_T==scm_char_ready_p(port)) {
       scwm_safe_call0(proc);
     }
   }
-  SCM_SETCDR(new_input_hooks, SCM_EOL);
+  gh_set_cdr_x(new_input_hooks, SCM_EOL);
 }
 
 void 
@@ -642,12 +643,12 @@ run_input_hooks(fd_set *in_fdset)
 {
   SCM prev, cur;
 
-  for (prev=input_hooks, cur=SCM_CDR(prev);
+  for (prev=input_hooks, cur=gh_cdr(prev);
        cur != SCM_EOL;
-       prev=cur, cur=SCM_CDR(cur)) {
-    SCM item = SCM_CAR(cur);
-    SCM port = SCM_CAR(item);
-    SCM proc = SCM_CDR(item);
+       prev=cur, cur=gh_cdr(cur)) {
+    SCM item = gh_car(cur);
+    SCM port = gh_car(item);
+    SCM proc = gh_cdr(item);
 
     if (SCM_OPINFPORTP(port) &&
 	FD_ISSET(gh_scm2int(scm_fileno(port)), in_fdset)) {
@@ -655,7 +656,7 @@ run_input_hooks(fd_set *in_fdset)
       while(SCM_OPINFPORTP(port) &&
 	    SCM_BOOL_T==scm_char_ready_p(port) 
 	    /* FIXMS: Is this safe enough? */
-	    && SCM_CDR(prev)==cur) {
+	    && gh_cdr(prev)==cur) {
 	scwm_safe_call0(proc);
       }
     }
@@ -676,8 +677,8 @@ will generally include information about the nature of the error.
   gettimeofday(&last_timeval, NULL);
 
   timer_hooks = scm_permanent_object(gh_cons(SCM_EOL, SCM_EOL));
-  input_hooks=scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
-  new_input_hooks=scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
+  input_hooks = scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
+  new_input_hooks = scm_permanent_object(gh_cons(SCM_EOL,SCM_EOL));
 
 #ifndef SCM_MAGIC_SNARFER
 #include "callbacks.x"

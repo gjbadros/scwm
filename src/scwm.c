@@ -328,9 +328,9 @@ InitVariables(void)
 
   CassowaryInitClVarsInPscreen(&Scr);
 
-  SCM_DEFER_INTS;
+  gh_defer_ints();
   scm_protect_object(scmScreen = ScmFromPScreenInfo(&Scr));
-  SCM_ALLOW_INTS;
+  gh_allow_ints();
 
   /* Sets the current desktop number to zero */
   /* Multiple desks are available even in non-virtual
@@ -518,7 +518,7 @@ scwm_main(int argc, char **argv)
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
 #endif
-  SCM_ALLOW_INTS;
+  gh_allow_ints();
 
   szCmdConfig = NEWC(1,char);
   

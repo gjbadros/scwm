@@ -271,12 +271,12 @@ EXTERN_SET(SCM window_context,SCM_UNDEFINED);
 EXTERN SCM invalid_interaction_hook;
 EXTERN SCM cannot_grab_hook;
 
-#define WINDOWP(X) (SCM_NIMP(X) && (SCM_CAR(X) == (SCM)scm_tc16_scwm_window))
-#define WINDOW(X)  ((scwm_window *)SCM_CDR(X))
+#define WINDOWP(X) (SCM_NIMP(X) && (gh_car(X) == (SCM)scm_tc16_scwm_window))
+#define WINDOW(X)  ((scwm_window *)gh_cdr(X))
 /* SCWMWINDOW should disappear-- PSWFROMSCMWIN is a better name, IMO--07/17/98 gjb*/
-/* #define SCWMWINDOW(X) (((scwm_window *)SCM_CDR(X))->psw) */
-#define PSWFROMSCMWIN(X) (((scwm_window *)SCM_CDR(X))->psw)
-#define VALIDWINP(X) (((scwm_window *)SCM_CDR(X))->valid)
+/* #define SCWMWINDOW(X) (((scwm_window *)gh_cdr(X))->psw) */
+#define PSWFROMSCMWIN(X) (((scwm_window *)gh_cdr(X))->psw)
+#define VALIDWINP(X) (((scwm_window *)gh_cdr(X))->valid)
 
 #define set_window_context(X) window_context=X;
 #define unset_window_context() window_context=SCM_UNDEFINED;

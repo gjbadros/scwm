@@ -178,10 +178,8 @@ decor2scm(ScwmDecor * fl)
   dec = NEW(scwm_decor);
   dec->refcnt = 0;
   dec->sd = fl;
-  SCM_DEFER_INTS;
-  SCM_NEWCELL(answer);
-  SCM_SETCAR(answer, scm_tc16_scwm_decor);
-  SCM_SETCDR(answer, (SCM) dec);
+  gh_defer_ints();
+  SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_decor,dec);
   fl->scmdecor = answer;
 
   InitScwmDecor(fl);
@@ -216,7 +214,7 @@ decor2scm(ScwmDecor * fl)
   fl->BorderStyle.inactive=BUTTONFACE(default_border_face);
 
 
-  SCM_ALLOW_INTS;
+  gh_allow_ints();
 
   return (answer);
 };
