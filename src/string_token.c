@@ -1,13 +1,6 @@
-/* This module is based on code distributed with fvwm with no
- * copyright notice. Thus, the code it is based on should be in
- * the public domain.
- *
- * It may be used or distributed under either the FVWM license 
- * (see COPYING.fvwm) or the GNU General Public License (see COPYING.GPL and
- * the description below)
- * Copyright 1997, Maciej Stachowiak and Greg J Badros
- ****************************************************************************/
-/*      Copyright (C) 1997, Maciej Stachowiak
+/* $Id$ */
+/*
+ *      Copyright (C) 1997, Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,14 +22,9 @@
  *
  */
 
-
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 #include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include "system.h"
+#include "string_token.h"
 
 
 /* IchIgnoreCaseInSz(sz,ch)
@@ -57,5 +45,3 @@ IchIgnoreCaseInSz(const char *sz, char ch)
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
-
-

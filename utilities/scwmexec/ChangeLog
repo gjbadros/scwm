@@ -1,3 +1,7 @@
+1998-06-21  Maciej Stachowiak  <maciej@localhost.localdomain>
+
+	* scwmexec.c: Add copyright notice.
+
 1998-06-18  Maciej Stachowiak  <maciej@roc-ny5-14.ix.netcom.com>
 
 	* Makefile.am: Make sure to include X includes.

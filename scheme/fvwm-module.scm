@@ -355,7 +355,7 @@
 	      (eval-fvwm-command command fmod (id->window window-id))
 
 	    (if (not (list-ref fmod 4))
-		(remove-input-hook! input-hook-handle)))))))
+		(remove-input-hook! input-hook-handle))))))
       
       (set! input-hook-handle (add-input-hook! from-module-read 
 					       packet-handler))

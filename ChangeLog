@@ -1,3 +1,15 @@
+1998-06-21  Maciej Stachowiak  <maciej@roc-ny5-09.ix.netcom.com>
+
+	* configure.in: Bumped version to 0.6c to indicate prerelease
+	version.
+
+1998-06-21  Maciej Stachowiak  <maciej@roc-ny5-21.ix.netcom.com>
+
+	* GOALS: Updated to reflect achieved goals.
+
+	* configure.in, configure: Add --with-lispdir=DIR option, allowing
+	the user to specify where Emacs-lisp files are to be installed.
+
 1998-06-20  Maciej Stachowiak  <maciej@roc-ny5-15.ix.netcom.com>
 
 	* configure.in, configure, Makefile.am, Makefile.in: build the new

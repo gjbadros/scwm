@@ -1,14 +1,7 @@
 /* $Id$ */
-/****************************************************************************
- * This module is all original code 
- * by Maciej Stachowiak and Greg J. Badros.
- * It may be used or distributed under either the FVWM license 
- * (see COPYING.FVWM) or the GNU General Public License (see COPYING.GPL and
- * the description below)
- * Copyright 1997, Maciej Stachowiak and Greg J. Badros
- ****************************************************************************/
-/*      Copyright (C) 1997, Maciej Stachowiak and Greg J. Badros
-
+/*
+ *      Copyright (C) 1997, Maciej Stachowiak and Greg J. Badros
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -23,9 +16,6 @@
  * along with this software; see the file COPYING.GPL.  If not, write to
  * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
- *
- * As a special exception, this file may alternatively be distributed under 
- * the fvwm license (see COPYING.FVWM).
  *
  */
 

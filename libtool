@@ -27,11 +27,11 @@
 # the same distribution terms that you use for the rest of that program.
 
 # This program was configured as follows,
-# on host lady-slings-the-booze.mit.edu:
+# on host roc-ny5-21.ix.netcom.com:
 #
 # CC="gcc" CFLAGS="-g -O2" CPPFLAGS="" \
 # LD="/usr/bin/ld" NM="/usr/bin/nm -B" RANLIB="ranlib" LN_S="ln -s" \
-#   ./ltconfig --with-gcc --with-gnu-ld --no-verify ./ltmain.sh i586-pc-linux-gnulibc1
+#   ./ltconfig --with-gcc --with-gnu-ld --no-verify ./ltmain.sh i586-pc-linux-gnu
 #
 # Compiler and other test output produced by ltconfig, useful for
 # debugging ltconfig, is in ./config.log if it exists.
@@ -59,8 +59,8 @@ build_libtool_libs=yes
 build_old_libs=yes
 
 # The host system.
-host_alias="i586-pc-linux-gnulibc1"
-host="i586-pc-linux-gnulibc1"
+host_alias="i586-pc-linux-gnu"
+host="i586-pc-linux-gnu"
 
 # The archiver.
 AR="ar"

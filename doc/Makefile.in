@@ -95,7 +95,7 @@ TEXINFO_TEX = $(srcdir)/texinfo.tex
 INFO_DEPS = scwm.info
 DVIS = scwm.dvi
 TEXINFOS = scwm.texi
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in texinfo.tex
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)

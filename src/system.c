@@ -1,14 +1,6 @@
 /* $Id$ */
-/* This module is based on code distributed with fvwm with no
- * copyright notice. Thus, the code it is based on should be in
- * the public domain.
- *
- * It may be used or distributed under either the FVWM license 
- * (see COPYING.fvwm) or the GNU General Public License (see COPYING.GPL and
- * the description below)
- * Copyright 1997, Maciej Stachowiak and Greg J Badros
- ****************************************************************************/
-/*      Copyright (C) 1997, Maciej Stachowiak
+/*
+ *      Copyright (C) 1997, Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,10 +28,6 @@
 #include <string.h>
 #include <sys/time.h>
 #include <sys/types.h>
-
-#if defined ___AIX || defined _AIX || defined __QNX__ || defined ___AIXV3 || defined AIXV3 || defined _SEQUENT_
-#include <sys/select.h>
-#endif
 
 #include <config.h>
 

@@ -1,13 +1,7 @@
-/****************************************************************************
- * This module is all original code 
- * by Maciej Stachowiak.
- * It may be used or distributed under either the FVWM license 
- * (see COPYING.fvwm) or the GNU General Public License (see COPYING.GPL and
- * the description below)
- * Copyright 1997, Maciej Stachowiak
- ****************************************************************************/
-/*      Copyright (C) 1997, Maciej Stachowiak
-
+/* $Id$ */
+/*
+ *      Copyright (C) 1997, Maciej Stachowiak and Greg J. Badros
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
@@ -23,10 +17,8 @@
  * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * As a special exception, this file may alternatively be distributed under 
- * the fvwm license (see COPYING.FVWM).
- *
  */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

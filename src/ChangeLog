@@ -1,3 +1,15 @@
+1998-06-21  Maciej Stachowiak  <maciej@localhost.localdomain>
+
+	* Grab.h, ICCCM.h, callbacks.h, errors.h, font.h, image.h,
+	scmprocs.h, scmtypes.h, string_token.h, system.h, guile-compat.c,
+	guile-compat.h, syscompat.c, syscompat.h: Add copyright notice,
+	GPL licensing terms.
+
+	* Grab.c, ICCCM.c, callbacks.c, errors.c, font.c, image.c,
+	scmprocs.c, scmtypes.c, string_token.c, system.c: Remove GPL
+	exception for the FVWM license; RMS claims there is no
+	incompatability.
+	
 1998-06-20  Maciej Stachowiak  <maciej@roc-ny5-15.ix.netcom.com>
 
 	* scwm.c: Always use getopt_long, never use the previous hack to

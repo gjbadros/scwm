@@ -2,6 +2,179 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997 Maciej Stachowiak.
 See the end for copying conditions.
 
+Changes to scwm-0.7
+
+* The start of a TexInfo manual.
+
+* New (app scwm auto-raise) module. The #:auto-raise,
+#:auto-raise-delay, #:auto-raise-focus-proc, #:auto-raise-unfocus-proc
+and #:auto-raise-unfocus-delay window style options added by this
+module control auto-raise. Still not as general as I'd like (it should
+be possible to set an arbitrary number of independent focus-unfocus
+pairs), but will be eventually. See the auto-raise.scm file for exaple
+usage.
+
+* Added kill-all-fvwm-modules to (app scwm fvwm-module which kills all
+active fvwm modules; add it to the shutdown hook.
+
+* Added transient? primitive for checking wether a window is
+transient.
+
+* Removed bind-event; everything it was used for is now provided by
+the new hook system.
+
+* New system for hooks - allows scwm to set up distinguished Scheme
+variables that contain a list of procedures to be invoked on certain
+actions, possibly with arguments.  Guile's usual add-hook! macro can
+be used to add hooks, and remove-hook! can be used to remove them. 
+
+Here is an example (the (app scwm flux) module must be loaded for this
+to work:
+
+	(define (message-show-error . args)
+	  (message (with-output-to-string
+		     (lambda ()
+		       (display "scwm error: ")
+		       (map (lambda (arg)
+			      (write arg)
+			      (display " ")) args)
+		       (newline)))))
+
+	(add-hook! error-hook message-show-error)
+	(remove-hook! error-hook message-show-error)
+
+Available hooks are:
+
+	  error-hook
+
+	  The procedures in this hook are called with the appropriate
+	  throw arguments when an uncaught error occurs.
+
+	  broadcast-hook
+	  broadcast-config-hook
+	  broadcast-name-hook
+
+	  Called when certain actions happen; used by the fvwm module
+	  emulation and auto-raise. Usage in code is not reccomended,
+	  as the arguments are strange and poorly specified.
+
+	  before-new-window-hook
+	  after-new-window-hook
+
+	  Replace the new-window-hint and window-hint `bind-event'
+	  arguments. before-new-window-hook is invoked with the window
+	  as an argument before the window sturcture is fully well
+	  formed; only window hints should be processed at this time. 
+	  after-new-window-hook is called when the window structure has been
+	  processed in order to set style options. Both get the window
+	  object as an argument.	 
+
+	  shutdown-hook
+
+	  Called before scwm shuts down, with no arguments.
+
+* Support for timer hooks. The following procedures may be used to set
+and cancel timer hooks.
+
+	add-timer-hook! USEC PROC - schedule a call of procedure PROC with
+ 	no arguments to occur after about USEC microseconds have elapsed
+ 	(it may take somewhat longer if there are many x evebts to
+ 	process). Return a handle suitable to be passed to
+ 	remove-timer-hook!
+
+	remove-timer-hook! HANDLE - remove the specified timer hook from
+ 	the hook list, preventing it from being invoked if it hasn't been
+ 	already.
+
+* Support for input hooks. The following procedures may be used to add
+and remove input hooks.
+
+	add-input-hook! PORT PROC - schedule a call of procedure PROC with
+ 	no arguments to occur whenever PORT has input
+	available. PORT must be an open input file port (since
+	internally it's file descriptor is passed to select). Return a handle
+	suitable to be passed to remove-input-hook!
+
+	remove-input-hook! HANDLE - remove the specified input hook from
+ 	the hook list.
+
+* ICCCM-compliant detection of modifier keys; the keysyms bound to the
+modifier are actually checked. Also, "s-" is used for the supper
+modifier, not "P-".
+
+* Added X-version-information and X-display-information primitives,
+which are needed for FvwmM4 module compatibility, but generally useful
+in their own right; they take no arguements and return lists of useful
+information about the X server and display.
+
+* Added restarted? primitive, which returns true if this is not an
+original invocation of scwm, but rather one after a restart.
+
+* Color handling changed; colors are now cached as fonts and
+images. Also, set-window-colors! and set-menu-colors! have been
+removed, and the following procedures have been added:
+
+	make-color STRING - replaces load-color
+
+	color-properties COLOR - returns the properties of a color object:
+ 	currently only name and the X pixel value it uses.
+
+	clear-color-cache-entry STRING - clears an entry in the color
+ 	cache; shouldn't be necessary unless you do something really weird
+ 	to your X server, but provided for consistency.
+
+	make-relief-color COLOR FACTOR - factor is a floating point number
+ 	that is multiplied by the color's saturation and luminosity in HLS
+ 	sppace. This is used with specific factors to 
+	
+	set-hilight-foreground! COLOR, set-hilight-background! COLOR -
+ 	these replace set-hilight-colors! FG BG
+
+	set-menu-foreground! COLOR, set-menu-background! COLOR,
+ 	set-menu-stipple! COLOR - replace set-menu-colors!
+	
+	set-hilight-factor! FLOAT - sets the factor that is used by
+ 	windows with the current decor to generate the relief "hilight"
+ 	color for the regular and hilight background.
+
+	set-shadow-factor! FLOAT - sets the factor that is used by windows
+ 	with the current decor to generate the relief "shadow" color for
+ 	the regular and hilight background.
+
+	hilight-factor, shadow-factor - retrieve the settings of the above
+ 	two factors from the current decor.]
+
+	set-menu-hilihght-factor! FLOAT, set-menu-shadow-factor! FLOAT,
+ 	menu-hilight-factor, menu-shadow-factor - analogous to the above
+ 	but for menus, and are global, not decor-specific.
+	
+	All procedures that take a color (except color-properties) will also
+ 	accept a string that specifies a color.
+
+* New procedure scwm-version returns the current scwm version.
+
+* Converted build system to automake and libtool; dependencies should
+work much better now, and a shared library of libscwmexec is built and
+installed on systems that support it. Also, make uninstall works.
+
+* --with-lispdir=DIR option to configure allows you to specify where
+emacs-lisp files are to be installed; for instance, if you have emacs
+installed in /usr and are installing scwm in /usr/local, you may want
+to configure --with-lispdir=/usr/share/emacs/site-lisp
+
+* scwm.el Emacs mode for scwm files much improved; provides
+intelligent tab completion, apropos, font-locking, support for emacs
+and xemacs 19 or 20, and other good stuff.
+
+* Greatly improved error handling; an error should now display the
+file, column and line number where it occured, as well as giving a
+detailed message and a backtrace.
+
+* scwmexec and scwmrepl programs much improved; errors and output
+resulting from evaluation of commands are now displayed.
+
+* Numerous bug fixes.
+
 Changes to scwm-0.6
 
 * Changes to installation: Scwm no longer installs it's scheme modules
@@ -232,7 +405,7 @@ variety of modes, and telnetting to a set of specified hosts.
 
 * Broadcast hooks: intentionally undocumented for now.
 
-* Input hooksL intentionally undocumented for now.
+* Input hooks: intentionally undocumented for now.
 
 * The icon distribution is now separate again, and has it's own
 installation process. It is reccomended that it be installed with the

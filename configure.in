@@ -11,7 +11,7 @@ AC_INIT(scwm/scwm.c)
 AC_PREREQ(2.4)
 
 dnl ## Initialize automake ##
-AM_INIT_AUTOMAKE(scwm, 0.6b)
+AM_INIT_AUTOMAKE(scwm, 0.6c)
 AM_MAINTAINER_MODE
 AM_CONFIG_HEADER(include/config.h)
 
@@ -42,6 +42,19 @@ dnl ## Find paths ##
 AC_PATH_X
 AC_PATH_XTRA
 AM_PATH_LISPDIR
+
+AC_ARG_WITH(lispdir,[
+  --with-lispdir=DIR       Install Emacs Lisp files in DIR 
+                           [PREFIX/share/site-lisp]
+],[
+	if test -n "$ac_prev"; then
+  		AC_MSG_ERROR(missing argument to --with-lispdir)
+	else
+		AC_MSG_CHECKING(where .elc files should _reallly_ go)
+		lispdir="${withval}"
+		AC_MSG_RESULT("${lispdir}")
+	fi
+])
 
 dnl ## Checks for libraries ##
 

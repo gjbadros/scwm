@@ -1,4 +1,4 @@
-Scwm 0.6 is released.
+Scwm 0.7 is released.
 
 * What scwm is:
 
@@ -24,20 +24,19 @@ Some information about scwm is available at:
 
 http://web.mit.edu/mstachow/www/scwm.html
 
-There are also scwm-discuss and scwm-announce mailing lists for
-disscussion and release announcements repsectively. Send mail to
-Maciej Stachowiak <mstachow@mit.edu> to be added to either or both
-lists.
-
+There are also scwm-discuss@huis-clos.mit.edu and
+scwm-announce@huis-clos.mit.edu mailing lists for disscussion and
+release announcements repsectively. You can subscribe to either at
+majordomo@huis-clos.mit.edu
 
 * Where you can get it:
 
 You can download the latest scwm package from:
 
-http://web.mit.edu/mstachow/www/scwm-0.6.tar.gz
+http://web.mit.edu/mstachow/www/scwm-0.7.tar.gz
 
 There is also
-http://web.mit.edu/mstachow/www/scwm-icons-0.6.tar.gz
+http://web.mit.edu/mstachow/www/scwm-icons-0.7.tar.gz
 
 which has a number of images for use with scwm as icons, textures,
 buttons, etc. Some of these images are not available otherwise.
@@ -58,41 +57,17 @@ The snapshots are officially alpha but they generally work pretty
 well.
 
 
-* Here are highlights of what is new with the 0.6 release. There were
+* Here are highlights of what is new with the 0.7 release. There were
 many changes; see the NEWS file in the distribution for more details.
 
- - Support for fvwm2 modules: Scwm can now execute fvwm2 modules,
-using an interface written almost entirely in Scheme. This is only
-slightly slower than the native fvwm module support.
-
- - New external program protocol: scwm now supports an improved
-external program protocol which allows other programs to send commands
-to a running scwm and get the results. Two programs and an emacs mode
-are provided for using this protocol.
-
- - Improvements to images: Support for images (to be used as icons,
-buttons, tiles, etc) is much improved. The main advantage is much
-improved caching which shares the image object for multiple loads of
-the same image, and support for user-defined image loaders.
-
- - Foreign format image loading through conversion: The new (app scwm
-image-loaders) module supports several image loaders that attempt to
-convert a variety of formats through Imagemagick or netpbm to a
-natively supported format.
-
- - Improvements to fonts: Fonts are now more properly treated as
-Scheme objects and should be garbage collected more effectively. They
-are also cached like images to minimize memory usage.
-
- - Improvements to menus: Menus have been much improved. They now
-include support for side pixmaps a la fvwm95, specification of the
-fonts and colors to use per individual menu, and a nicer interface for
-specfying menus.
-
- - Support for /etc/X11/wmconfig from Red Hat Linux 5.0: The new (app
-scwm wmconfig) module allows you to create a menu that matches the
-spec in the /etc/X11/wmconfig directory under Red Hat Linux 5.0.
-
- - The icon distribution is now separate again, and has it's own
-installation process.
+* Auto-raise
+* Input, timer, shutdown, error and other hooks.
+* Improved fvwm-module support.
+* Much improved error messages.
+* The start if a texinfo manual.
+* Improved color handling.
+* Support for more information about the X server.
+* Much improved scwm.el emacs interaction mode, and scwmexec and
+scwmrepl external interaction programs
+* Numerous bug fixes.
 

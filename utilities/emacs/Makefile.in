@@ -92,12 +92,12 @@ CONFIG_CLEAN_FILES =
 LISP =  $(lisp_LISP)
 
 ELCFILES =  scwm.elc
-DIST_COMMON =  Makefile.am Makefile.in elisp-comp
+DIST_COMMON =  ChangeLog Makefile.am Makefile.in elisp-comp
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = gtar
+TAR = tar
 GZIP = --best
 all: Makefile $(LISP) $(ELCFILES)
 

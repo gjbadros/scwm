@@ -3,7 +3,8 @@ Thanks to:
   operations, contributed his .scwmrc to be distributed as a sample
 
   Robert Bihlmeyer - ICCCM compliant modifier handling, support for
-  detecting a restart from the Scheme level
+  detecting a restart from the Scheme level, readline support in
+  scwmrepl, some scwm.el enhancements
 
   James LewisMoss - argument handling through getopt_long()
 
@@ -13,6 +14,7 @@ Bug reports and/or fixes have been contributed by:
   Simon Josefsson
   Bucky LaDieu
   Harald Meland
+  Shuji Narazaki
   Jens-Ulrik Holger Petersen
   Ken Pizzini
   Hideki Sakurada
