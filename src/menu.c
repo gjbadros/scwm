@@ -743,7 +743,8 @@ enum menu_status {
   MENUSTATUS_ITEM_SELECTED, 
   MENUSTATUS_POPUP_AND_MOVE,
   MENUSTATUS_NOP,
-  MENUSTATUS_NEWITEM
+  MENUSTATUS_NEWITEM,
+  MENUSTATUS_NEWITEM_HOTKEY
 };
 
 #define CMIIM_CONTROL_KEY_MOVES 5
@@ -802,7 +803,7 @@ PmiimMenuShortcuts(DynamicMenu *pmd, XEvent *Event, enum menu_status *pmenu_stat
     /* Search menu for matching hotkey */
     for (; ipmiim < pmd->cmiim; ipmiim ++ ) {
       if (ch == tolower(rgpmiim[ipmiim]->chShortcut)) {
-	*pmenu_status = MENUSTATUS_NEWITEM;
+	*pmenu_status = MENUSTATUS_NEWITEM_HOTKEY;
 	*pfHotkeyUsed = True;
 	return rgpmiim[ipmiim];
       }
@@ -1074,10 +1075,11 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
       if (ms == MENUSTATUS_ABORTED) {
 	goto MENU_INTERACTION_RETURN;
       } else if (ms == MENUSTATUS_ITEM_SELECTED ||
-                 (fMenuHotkeysActivateItems && ms == MENUSTATUS_NEWITEM )) {
+                 (fMenuHotkeysActivateItems && ms == MENUSTATUS_NEWITEM_HOTKEY )) {
 	if (pmiim) {
           MenuItemInMenu *pmiimSelected;
-          if (fMenuHotkeysActivateItems && ms == MENUSTATUS_NEWITEM) {
+          if (fMenuHotkeysActivateItems && (ms == MENUSTATUS_NEWITEM ||
+                                            ms == MENUSTATUS_NEWITEM_HOTKEY)) {
             pmd->ipmiimSelected = pmiim->ipmiim;
           }
 	  /* FIXGJB: duplicated above */
