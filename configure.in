@@ -102,6 +102,7 @@ dnl # Check for the X11 library ##
 
 AC_CHECK_LIB(X11, XOpenDisplay, x_libs="-lX11 $X_EXTRA_LIBS", no_x11_lib=yes, $X_EXTRA_LIBS)
 
+
 dnl # Check for the Xext library (needed for Shape extention) ##
 XEXT_LIB=""
 AC_CHECK_LIB(Xext, XShapeCombineMask, [
@@ -117,6 +118,14 @@ AC_DEFINE(HAVE_LIBXPM)
 ], , $x_libs)
 
 
+dnl # Check for the Xmu library #
+XMU_LIB=""
+AC_CHECK_LIB(Xmu, XmuPrintDefaultErrorMessage, [
+XMU_LIB="-lXmu"
+AC_DEFINE(HAVE_LIBXMU)
+], , $x_libs)
+
+
 x_cflags="$X_CFLAGS"
 x_ldflags="$X_LDFLAGS $X_LIBS"
 
@@ -126,6 +135,7 @@ AC_SUBST(x_ldflags)
 AC_SUBST(x_libs)
 AC_SUBST(XEXT_LIB)
 AC_SUBST(XPM_LIB)
+AC_SUBST(XMU_LIB)
 AC_SUBST(CASSOWARY_LIBS)
 AC_SUBST(CASSOWARY_INCLUDES)
 

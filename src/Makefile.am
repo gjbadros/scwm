@@ -58,7 +58,8 @@ menu.h shutdown.h string_token.h syscompat.h system.h \
 util.h virtual.h window.h xmisc.h
 
 
-scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XPM_LIB@ @x_libs@ @GUILE_LIBS@ @CASSOWARY_LIBS@
+scwm_LDADD = @x_ldflags@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
+	      @x_libs@ @GUILE_LIBS@ @CASSOWARY_LIBS@
 
 INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 

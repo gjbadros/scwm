@@ -14,6 +14,9 @@
 /* Define this if you have libXpm */
 #undef HAVE_LIBXPM
 
+/* Define this if you have libXmu */
+#undef HAVE_LIBXMU
+
 /* Define this if you have the readline library */
 #undef HAVE_READLINE
 
