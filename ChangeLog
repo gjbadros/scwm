@@ -1,3 +1,7 @@
+Mon Nov 10 06:20:42 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* version.h: Bumped version to 0.4.
+
 Sat Nov  1 00:12:37 1997  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Do dependecies in libs/ and scwm/ using Make info page's
