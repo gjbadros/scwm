@@ -3,13 +3,16 @@
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
 
+if HAVE_GTK
 scwm_module_LTLIBRARIES = libscwmgtkhelper.la
+endif
 
 libscwmgtkhelper_la_SOURCES = scwmgtkhelper.c
+libscwmgtkhelper_snarfs = scwmgtkhelper.x
+
 libscwmgtkhelper_la_LDFLAGS = -export-dynamic @GTK_LIBS@
 
 CFLAGS = @GTK_CFLAGS@ @CFLAGS@
-libscwmgtkhelper_snarfs = scwmgtkhelper.x
 
 INCLUDES = -I$(top_srcdir)/scwm @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 BUILT_SOURCES = $(libscwmgtkhelper_snarfs)

@@ -3,11 +3,15 @@
 
 AM_CPPFLAGS = $(CPPEXTRAFLAGS)
 
+if HAVE_ESD
 scwm_module_LTLIBRARIES = libesdsound.la
+endif
+
 libesdsound_la_SOURCES = sound.c
+libesdsound_snarfs = sound.x
+
 libesdsound_la_LIBADD = @ESD_LIBS@
 libesdsound_la_LDFLAGS = -export-dynamic
-libesdsound_snarfs = sound.x
 
 INCLUDES = -I$(top_srcdir)/scwm @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@
 BUILT_SOURCES = $(libesdsound_snarfs)
