@@ -1,3 +1,9 @@
+1998-08-31  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* xproperty.c: X properties are no longer SMOBS. Two functions
+	`X-property-set!', and `X-property-get' now deal with them. The
+	old interface is gone.
+
 Fri Aug 28 16:58:40 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* move.c, menu.c, complex.c, window.c, virtual.c: Use new ms_sleep instead of

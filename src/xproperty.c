@@ -14,18 +14,18 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this software; see the file COPYING.GPL.  If not, write to
  * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * As a special exception, this file may alternatively be distributed under 
+ * As a special exception, this file may alternatively be distributed under
  * the fvwm license (see COPYING.FVWM).
  *
  */
@@ -40,26 +40,18 @@
 #include <libguile.h>
 #include <X11/X.h>
 #include "scwm.h"
+#include "screen.h"
 #include "guile-compat.h"
 #include "window.h"
 #include "xproperty.h"
 #include "xmisc.h"
 
-static long scm_tc16_scwm_xproperty;
+/* also used by window.c */
+SCWM_GLOBAL_SYMBOL(sym_root_window,"root-window");
 
-typedef struct {
-  SCM type;			/* property type as scheme string */
-  unsigned len;			/* length of data */
-  void *data;			/* points to the property's value */
-} scwm_xproperty;
-
-#define XPROPERTY_P(X) (SCM_NIMP((X)) && \
-			gh_car((X)) == (SCM)scm_tc16_scwm_xproperty)
-#define XPROPERTY(X)  ((scwm_xproperty *)gh_cdr((X)))
-#define XPROPERTYTYPE(X) (((scwm_xproperty *)gh_cdr(X))->type)
-#define XPROPERTYLEN(X) (((scwm_xproperty *)gh_cdr(X))->len)
-#define XPROPERTYDATA(X) (((scwm_xproperty *)gh_cdr(X))->data)
-
+SCWM_SYMBOL(sym_replace,"replace");
+SCWM_SYMBOL(sym_append,"append");
+SCWM_SYMBOL(sym_prepend,"prepend");
 
 /**CONCEPT: X Properties
    X windows has a notion of window properties, which live in the X
@@ -75,194 +67,225 @@ including all X standard protocols, as well as the Motif and Open Look
 protocols. However, the user should be able to implement any of these
 he likes, including making up his own for personal use.
 
-  This is possible through the low-level xproperty interface. Scwm has
-(for now) distinguished Scheme objects representing X properties, and
-several procedures to get, set and manipulate them.
+  This is possible through the low-level X property interface. Scwm has
+one procedure to get, and set them, respectively.
  */
 
-SCM
-mark_xproperty(SCM obj)
+static int Set8Value(void **dest, long el)
 {
-  SCM_SETGC8MARK(obj);
-  GC_MARK_SCM_IF_SET(XPROPERTYTYPE(obj));
-
-  return SCM_BOOL_F;
-}
-
-size_t
-free_xproperty(SCM obj)
-{
-  FREE(XPROPERTYDATA(obj));
-  FREE(XPROPERTY(obj));
-
-  return 0;
-}
-
-int
-print_xproperty(SCM obj, SCM port, scm_print_state * pstate)
-{
-  scm_puts("#<xproperty ", port);
-  scm_write(XPROPERTYTYPE(obj), port);
-  { /* scope */
-    char *szPropertyType = gh_scm2newstr(XPROPERTYTYPE(obj), NULL);
-    if (STREQ(szPropertyType,"STRING")) {
-      scm_puts(", ", port);
-      scm_write(gh_str2scm((char *) XPROPERTYDATA(obj),XPROPERTYLEN(obj)), port);
-    }
-    FREE(szPropertyType);
-  }
-  scm_putc('>', port);
+  if (el < -0x80 || el > 0x7f)
+    return 0;
+  **(INT8 **)dest=el;
+  (*(INT8 **)dest)++;
   return 1;
 }
 
-SCWM_PROC(xproperty_p, "xproperty?", 1, 0, 0,
-           (SCM obj))
-     /** Return #t if OBJ is an xproperty object, otherwise #f. */
-#define FUNC_NAME s_xproperty_p
+static int Set16Value(void **dest, long el)
 {
-  return SCM_BOOL_FromBool(XPROPERTY_P(obj));
-}
-#undef FUNC_NAME
-
-/* Note: data passes into ownership of the xproperty and must not be free'd */
-static SCM
-make_xproperty (char *type, unsigned len, void *data)
-{
-  SCM answer;
-  scwm_xproperty *xprop;
-
-  xprop = NEW(scwm_xproperty);
-  xprop->type = gh_str02scm(type);
-  xprop->len = len;
-  xprop->data = data;
-
-  gh_defer_ints();
-  SCWM_NEWCELL_SMOB(answer,scm_tc16_scwm_xproperty,xprop);
-  gh_allow_ints();
-
-  return answer;
+  if (el < -0x8000 || el > 0x7fff)
+    return 0;
+  **(INT16 **)dest=el;
+  (*(INT16 **)dest)++;
+  return 1;
 }
 
-SCWM_PROC(set_window_text_property, "set-window-text-property", 3, 0, 0,
-           (SCM win, SCM propname, SCM value))
-     /** Set a text property named PROPNAME on WIN.
-Uses format 8 (byte) and type "XA_STRING", and VALUE as the data. */
-#define FUNC_NAME s_set_window_text_property
+static int Set32Value(void **dest, long el)
 {
-  if (!WINDOWP(win)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, win);
-  }
-  if (!gh_string_p(propname)) {
-    scm_wrong_type_arg(FUNC_NAME, 2, propname);
-  }
-  if (!gh_string_p(value)) {
-    scm_wrong_type_arg(FUNC_NAME, 3, value);
-  }
-  { /* scope */
-    char *szName = gh_scm2newstr(propname, NULL);
-    Atom propname = XInternAtom(dpy, szName, False);
-    char *szValue = gh_scm2newstr(value, NULL);
-    XTextProperty *ptextprop = PNewXTextPropertyFromSz(szValue);
-    XSetTextProperty(dpy, PSWFROMSCMWIN(win)->w, ptextprop, propname);
-    FREE(szName); szName = NULL;
-    FREE(szValue); szValue = NULL;
-    FREE(ptextprop); ptextprop = NULL;
-  }
-
-  return SCM_UNSPECIFIED;
+  **(INT32 **)dest=el;
+  (*(INT32 **)dest)++;
+  return 1;
 }
-#undef FUNC_NAME
 
-
-SCWM_PROC(window_xproperty, "window-xproperty", 2, 1, 0,
-           (SCM win, SCM name, SCM consume))
-     /** Get and maybe delete the property called NAME from WIN.
-The property will be deleted upon getting (in an atomic operation)
-if the boolean value CONSUME is #t */
-#define FUNC_NAME s_window_xproperty
+SCWM_PROC(X_property_set_x, "X-property-set!", 3, 3, 0,
+	  (SCM win, SCM name, SCM value, SCM type, SCM format, SCM action))
+     /** Set X property NAME on window WIN to VALUE.
+WIN is the window to set the X property on, or 'root-window.
+NAME and TYPE are strings. TYPE defaults to "XA_STRING".
+FORMAT may be one of the integers 8, 16, and 32, defining the element size
+of the VALUE. It is 8 by default.
+VALUE may be a string, if FORMAT is 8, and may always be a vector
+of FORMAT-bit integers.
+ACTION - FIXME */
+#define FUNC_NAME s_X_property_set_x
 {
-  SCM answer;
-  Atom type, prop;
-  char *str = NULL;
-  int format;
-  unsigned long len, nitems, bytes_left;
-  unsigned char *data = NULL;
-  Boolean del;
-  
-  if (!WINDOWP(win)) {
+  int fmt, len, mode;
+  void *val;
+  char *str;
+  Atom aprop, atype;
+  Window w;
+
+  if (win == sym_root_window) {
+    w = Scr.Root;
+  } else if (WINDOWP(win)) {
+    w = PSWFROMSCMWIN(win)->w;
+  } else {
     scm_wrong_type_arg(FUNC_NAME, 1, win);
   }
   if (!gh_string_p(name)) {
     scm_wrong_type_arg(FUNC_NAME, 2, name);
   }
-  if (consume == SCM_UNDEFINED)
-    del = False;
-  else {
-    del = gh_scm2bool(consume);
+  if (format == SCM_UNDEFINED) {
+    fmt=8;
+  } else if (gh_number_p(format)) {
+    fmt=gh_scm2int(format);
+    if (fmt != 8 && fmt != 16 && fmt != 32) {
+      scwm_error(FUNC_NAME, "FORMAT must be 8, 16, or 32.");
+      return SCM_UNSPECIFIED;
+    }
+  } else {
+    scm_wrong_type_arg(FUNC_NAME, 5, format);
   }
-  
+  if (fmt == 8 && gh_string_p(value)) {
+    val=gh_scm2newstr(value, &len);
+  } else if (gh_vector_p(value)) {
+    int i;
+    int (*setter)(void **, long);
+    void *v;
+    switch (fmt) {
+    case 8:
+      setter=&Set8Value;
+      break;
+    case 16:
+      setter=&Set16Value;
+      break;
+    case 32:
+      setter=&Set32Value;
+      break;
+    }
+    len=gh_vector_length(value);
+    v=val=safemalloc(len*fmt/8);
+    for (i=0; i<len; i++) {
+      SCM el=gh_vector_ref(value, gh_int2scm(i));
+      if (!gh_number_p(el) || !setter(&v, gh_scm2long(el))) {
+	scm_wrong_type_arg(FUNC_NAME, 3, value);
+      }
+    }
+  } else {
+    scm_wrong_type_arg(FUNC_NAME, 3, value);
+  }
+  if (type == SCM_UNDEFINED) {
+    atype=XA_STRING;
+  } else if (gh_string_p(type)) {
+    str=gh_scm2newstr(name, NULL);
+    atype=XInternAtom(dpy, str, False);
+    FREE(str);
+  } else {
+    FREE(val);
+    scm_wrong_type_arg(FUNC_NAME, 4, value);
+  }
+  if (action == SCM_UNDEFINED || action == sym_replace) {
+    mode=PropModeReplace;
+  } else if (action == sym_prepend) {
+    mode=PropModePrepend;
+  } else if (action == sym_append) {
+    mode=PropModeAppend;
+  } else {
+    FREE(val);
+    scwm_error(FUNC_NAME, "ACTION must be one of 'replace, 'prepend, or "
+	       "'append");
+  }
   str=gh_scm2newstr(name, NULL);
-  prop=XInternAtom(dpy, str, False);
+  aprop=XInternAtom(dpy, str, False);
   FREE(str);
-  
-  len = 32;			/* try a small size first */
+
+  /* Should this check return code? My man page is silent about possible
+     return values. */
+  XChangeProperty(dpy, w, aprop, atype, fmt, mode, val, len);
+  FREE(val);
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(X_property_get, "X-property-get", 2, 1, 0,
+	  (SCM win, SCM name, SCM consume))
+     /** Get X property NAME of window WIN.
+WIN is the window to check.
+NAME is a string.
+If CONSUME is #t, the X property is deleted after getting it. Default is
+not to delete.
+If the X property could not be found, #f is returned.
+If the X property could be found, a list (VALUE TYPE FORMAT) is returned.
+TYPE is a string.
+FORMAT is either 8, 16, or 32, giving the size of the elements of VALUE.
+VALUE is a string, if FORMAT is 8, or a vector of integers otherwise. */
+#define FUNC_NAME s_X_property_get
+{
+  Boolean del;
+  char *str;
+  unsigned char *val;
+  INT16 *v16;
+  INT32 *v32;
+  int i, dwords, fmt;
+  long len, bytes_left;
+  Atom aprop, atype;
+  SCM value, type;
+  Window w;
+
+  if (win == sym_root_window) {
+    w = Scr.Root;
+  } else if (WINDOWP(win)) {
+    w = PSWFROMSCMWIN(win)->w;
+  } else {
+    scm_wrong_type_arg(FUNC_NAME, 1, win);
+  }
+  if (!gh_string_p(name)) {
+    scm_wrong_type_arg(FUNC_NAME, 2, name);
+  }
+  if (consume == SCM_UNDEFINED) {
+    del=False;
+  } else if (gh_boolean_p(consume)) {
+    del=gh_scm2bool(consume);
+  } else {
+    scm_wrong_type_arg(FUNC_NAME, 3, consume);
+  }
+
+  str=gh_scm2newstr(name, NULL);
+  aprop=XInternAtom(dpy, str, False);
+  FREE(str);
+
+  dwords=32;			/* try a small size first */
   while (True) {
-    XGetWindowProperty(dpy, PSWFROMSCMWIN(win)->w, prop, 0, len,
-		       del, AnyPropertyType, &type, &format, &nitems,
-		       &bytes_left, &data);
+    XGetWindowProperty(dpy, w, aprop, 0, dwords, del, AnyPropertyType,
+		       &atype, &fmt, &len, &bytes_left, &val);
     if (bytes_left)
-      len += (bytes_left>>2)+1;	/* adjust size and try again */
+      dwords += (bytes_left>>2)+1;	/* adjust size and try again */
     else
       break;
   }
-  
-  if (type==None)
+
+  if (atype==None)
     return SCM_BOOL_F;
-  str=XGetAtomName(dpy, type);
-  answer=make_xproperty(str, nitems*format/8, data);
+
+  switch (fmt) {
+  case 8:
+    value=gh_str2scm(val, len);
+    break;
+  case 16:
+    v16=(INT16 *)val;
+    value=gh_make_vector(gh_int2scm(len), SCM_UNSPECIFIED);
+    for (i=0; i<len; i++) {
+      gh_vector_set_x(value, gh_int2scm(i), gh_long2scm(*v16++));
+    }
+    break;
+  case 32:
+    v32=(INT32 *)val;
+    value=gh_make_vector(gh_int2scm(len), SCM_UNSPECIFIED);
+    for (i=0; i<len; i++) {
+      gh_vector_set_x(value, gh_int2scm(i), gh_long2scm(*v32++));
+    }
+    break;
+  }
+  XFree(val);
+  str=XGetAtomName(dpy, atype);
+  type=gh_str02scm(str);
   XFree(str);
-  
-  return answer;
+  return gh_list(value,type,gh_int2scm(fmt),SCM_UNDEFINED);
 }
 #undef FUNC_NAME
-
-SCWM_PROC(xproperty_to_string, "xproperty->string", 1, 0, 0,
-           (SCM prop))
-     /** Convert that data portion of xproperty object PROP to a string. */
-#define FUNC_NAME s_xproperty_to_string
-{
-  if (!XPROPERTY_P(prop)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, prop);
-  }
-
-  return gh_str2scm((char *)XPROPERTYDATA(prop),XPROPERTYLEN(prop));
-}
-#undef FUNC_NAME
-
-SCWM_PROC(string_to_xproperty, "string->xproperty", 1, 0, 0,
-           (SCM str))
-/** Create an xproperty object from STR. */
-#define FUNC_NAME s_string_to_xproperty
-{
-  char *string;
-  int len;
-  
-  if (!gh_string_p(str)) {
-    scm_wrong_type_arg(FUNC_NAME, 1, str);
-  }
-
-  string=gh_scm2newstr(str,&len);
-  return make_xproperty("STRING",len,string);
-}
-#undef FUNC_NAME
-
-MAKE_SMOBFUNS(xproperty);
 
 void
 init_xproperty()
 {
-  REGISTER_SCWMSMOBFUNS(xproperty);
-
 #ifndef SCM_MAGIC_SNARFER
 #include "xproperty.x"
 #endif
@@ -272,4 +295,6 @@ init_xproperty()
 /* Local Variables: */
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
+/* c-hanging-braces-alist: ((brace-list-open) (brace-list-close) (substatement-open after) (block-close . c-snug-do-while) (extern-lang-open before after)) */
+/* c-cleanup-list: (brace-else-brace brace-elseif-brace scope-operator list-close-comma defun-close-semi) */
 /* End: */
