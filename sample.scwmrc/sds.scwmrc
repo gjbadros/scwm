@@ -1,7 +1,7 @@
-;;; File: <.scwmrc - 1998-07-30 Thu 09:32:35 EDT sds@mute.eaglets.com>
+;;; File: <.scwmrc - 1998-08-15 Sat 19:52:15 EDT sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
-;;; Purpose: to attract users.
+;;; Goal: to attract users.
 ;;; IMHO, this should be the system.scwmrc.
 
 ;;; Major ideas:
@@ -21,8 +21,6 @@
 
 ;;; Also, you probably want to add the following to your .emacs:
 ;;; (setq auto-mode-alist (cons ("\\.scwmrc\\'" . scwm-mode) auto-mode-alist))
-
-
 
 ;; Uncomment the below to send a single UDP packet to
 ;; the scwm usage counter machine at startup
@@ -49,7 +47,12 @@
 ;;; print some information
 (display " *** Reading `scwmrc'...\n")
 (display (system-info-string))
-
+(add-hook! startup-hook
+           (lambda ()
+             (display " *** Available windows:\n")
+             (for-each (lambda (ww)
+                         (write-all #t " - " ww "\n"))
+                       (list-all-windows))))
 ;; (load user-init-file)
 ;;(set! xterm-command "rxvt ")
 ;;(define mail-spool-dir (or (getenv "MAIL")
@@ -78,9 +81,11 @@
 (set-colormap-focus! 'focus)	; colormap focus == keyboard focus
 (set-rubber-band-mask! 255)
 (set-edge-scroll-delay! 100)
-(set-edge-move-threshold! 100)	
-(set-edge-scroll! 0 0)		; no scroll
-(set-edge-wrap! #f #f)          ; wrap when scrolling in X/Y directions
+(set-edge-move-threshold! 100)
+(set-edge-x-scroll! 0)
+(set-edge-y-scroll! 0)
+(set-edge-x-wrap! #f)
+(set-edge-y-wrap! #f)
 
 ;;; ----------------
 ;;; paths and images
@@ -193,10 +198,10 @@
 	      #:icon (if want-pictures? unknown-i #f) ; #f: no pics, just text
 	      #:icon-box (list 500 1 (x- 500) 200) ; (x- 70) 1 69 (y- 141))
 	      #:border-width 3 #:mwm-border #t #:focus 'sloppy ; mouse
-	      #:random-placement #t #:smart-placement #t
+	      #:random-placement #t #:smart-placement #t #:use-decor std-d
 	      #:mwm-func-hint #t #:mwm-decor-hint #t #:int-override #t
-	      #:decorate-transient #t #:PPosition-hint #f
-	      #:mini-icon term-i #:use-decor std-d))
+	      #:decorate-transient #t #:PPosition-hint #f #:mini-icon term-i
+              #:squashed-titlebar #t))
 (define desk-widget
   (make-style #:focus 'none #:use-style std-style #:plain-border #t #:sticky #t
 	      #:winlist-skip #t #:border-width 1 #:circulate-skip #t
@@ -228,10 +233,12 @@
 (window-style "xfig" #:icon "xpaint.xpm" #:mini-icon fig-i) ; Paint[1234]?.xpm
 (window-style "xterm" #:icon (if want-pictures? "xterm.xpm" #f)
 	      #:mini-icon term-i #:use-decor grad-d)
-(window-style "Toplevel" #:icon "toolbox.xpm")
+(window-style "rxvt" #:mini-icon rxvt-i)
+;(window-style "Toplevel" #:icon "toolbox.xpm")
 (window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
 	      #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
 (window-style "emacs_mbf" #:focus 'sloppy #:use-style desk-widget-on-top)
+(window-style "Ace*" #:mini-icon games-i)
 
 ;TextEditor.xpm ; emacs.xbm
 ;(window-style "emacs: *Minibuf" #:use-style desk-widget-on-top)
@@ -247,16 +254,15 @@
 	      (menuitem "CMUCL" #:action (run-in-xterm "/home/sds/bin/cmu"))
 	      (menuitem "GCL" #:action (run-in-xterm "/usr/local/bin/gcl"))
 	      menu-separator
-	      (menuitem "Guile" #:action
-			(run-in-xterm "/usr/local/bin/guile")))))
+	      (menuitem "Guile" #:action (run-in-xterm "guile")))))
 
 (define start-xterm (run-in-xterm "bash"))
 
 ;; To later shut down the module, use kill-fvwm-module:
 ;; (kill-fvwm2-module fvwm-pager)
 
-(set! fvwm2-module-path (append fvwm2-module-path
-	'("/usr/X11/lib/X11/fvwm2")))
+;;(set! fvwm2-module-path (append fvwm2-module-path
+;;      '("/usr/X11/lib/X11/fvwm2")))
 
 ; (register-fvwm2-module-config "FvwmPager"
 ;                               "*FvwmPagerBack grey76"
@@ -292,7 +298,7 @@
 	      (menuitem "&xterm" #:image-left term-i #:action start-xterm)
 	      (menuitem "rx&vt" #:image-left rxvt-i #:action "rxvt")
 	      (menuitem "&root" #:image-left "mini-excl.xpm"
-			#:action (run-in-xterm "su" #:xterm-options "-T ROOT"))
+			#:action (run-in-xterm "su" "-T ROOT"))
 	      (menuitem "&emacs" #:image-left edit-i #:action "emacs")
 	      (menuitem "&gnuplot" #:image-left plot-i #:action
 			(run-in-xterm "gnuplot"))
@@ -381,8 +387,8 @@
   (menu (list
 	 (menuitem "Window Operations" #:image-left windows-i)
 	 menu-title menu-separator
-	 (menuitem "&Move" #:image-left move-i #:action interactive-move-maybe-opaque)
-	 (menuitem "&Resize" #:image-left resize-i #:action interactive-resize-maybe-opaque)
+	 (menuitem "&Move" #:image-left move-i #:action interactive-move)
+	 (menuitem "&Resize" #:image-left resize-i #:action interactive-resize)
 	 (menuitem "R&aise" #:image-left raise-i #:action raise-window)
 	 (menuitem "&Lower" #:image-left lower-i #:action lower-window)
 	 (menuitem "&Iconify" #:image-left icon-i #:action toggle-iconify)
@@ -515,7 +521,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (define (move-or-shade)
   (case (mouse-event-type)
     ((double-click) (toggle-window-shade-animated))
-    (else (move-or-raise-maybe-opaque))))
+    (else (move-or-raise))))
 (bind-mouse 'title 1 move-or-shade)
 (bind-mouse 'title 2 lower-window)
 (bind-mouse '(title frame sidebar) 3 popup-small-ops)
@@ -531,8 +537,8 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (bind-mouse 'icon 3 popup-small-ops)
 
 (bind-mouse 'all "H-1" toggle-raise)
-(bind-mouse 'all "H-2" interactive-move-maybe-opaque)
-(bind-mouse 'all "H-3" interactive-resize-maybe-opaque)
+(bind-mouse 'all "H-2" interactive-move)
+(bind-mouse 'all "H-3" interactive-resize)
 
 ;;; -----------------
 ;;; Title bar buttons
@@ -719,15 +725,16 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 	(set-cdr! button-numbers (+ 2 num)))))
 
 (add-button prog-face
-	    (lambda () 
-	      (let ((win (get-window)))
-		(popup-menu-from-decoration 
-		 (make-small-window-ops-menu win)
-		 ;; window to pop-up from
-		 win 
-		 ;; button number to pop-up from
-		 (car button-numbers))))
-	    #t)
+            (lambda ()
+              (let ((win (get-window)))
+                (popup-menu-from-decoration
+                 (make-small-window-ops-menu win)
+                 ;; window to pop-up from
+                 win
+                 ;; button number to pop-up from
+                 (car button-numbers))))
+            #t)
+(add-button prog-face popup-small-ops #t)
 (add-button horizontal-bar4-face toggle-stick #t)
 (add-button big-lightning-face toggle-window-shade-animated #t)
 (add-button stylized-X-face close-window #f)
@@ -773,12 +780,11 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 (bind-key 'all "H-5" recapture)
 (bind-key 'all "H-x" start-xterm)
 
-(define root-size-x (car (display-size)))
-(define root-size-y (cadr (display-size)))
+;;(define root-size-x (car (display-size)))
+;;(define root-size-y (cadr (display-size)))
 ;;(putenv (string-append "height=" (number->string root-size-y)))
 ;;(putenv (string-append "width=" (number->string root-size-x)))
-
-(define (percent-display x y) (list (%x x) (%y y)))
+;; (define (percent-display x y) (list (%x x) (%y y)))
 
 (bind-key 'all "H-m" toggle-iconify)
 (bind-key 'all "H-Return" toggle-raise)
