@@ -20,9 +20,16 @@
   :use-module (app scwm winops-menu)
   :use-module (app scwm optargs))
 
+;; ((window-match?? "Netscape") (get-window))
+;; (netscape-window-not-focussed)
+;; (*netscape-new-window*)
+(define-public (netscape-window-not-focussed)
+  "Return #t iff the currently focussed window is a netscape frame."
+  (let ((focuswin (window-with-focus)))
+    (not (and focuswin ((window-match?? "Netscape") focuswin)))))
 
-(define-scwm-option *netscape-new-window* #f
-  "If #t, `netscape-goto-cut-buffer-url' will open the URL in a new window."
+(define-scwm-option *netscape-new-window* netscape-window-not-focussed
+  "If #t or a procedure that evaluates to #t, `netscape-goto-cut-buffer-url' will open the URL in a new window."
   #:type 'boolean
   #:group 'netscape)
 
@@ -38,6 +45,8 @@
   #:range '(0 . 600)
   #:favorites '(0 3 5 10 15 30 60 120 240 360 480 600))
 
+(define-public (netscape-new-window)
+  (netscape-goto-url "about:" #f #t))
 
 ;; Get a visible netscape window, or any netscape window
 ;; if none are visible
@@ -104,6 +113,12 @@ syntactic scan of the passed url and treats commas as argument command
 separators, so the url gets chopped off at the first literal comma."
   (regexp-substitute/global #f " " uri 'pre (lambda (match) "+") 'post))
 
+(define (boolean-or-proc-true bool-or-proc)
+  (if (procedure? bool-or-proc)
+      (bool-or-proc)
+      bool-or-proc))
+
+;; (run-in-netscape "openURL(http://www.cs.washington.edu)" noop)
 (define*-public (netscape-goto-url url 
                 #&optional
 		(completion #f)
@@ -117,7 +132,8 @@ It defaults to `*netscape-new-window*'."
 	 (lambda ()
 	   (run-in-netscape
 	    (string-append "openURL(" (uri-escapify-comma url) 
-			   (if new ",new-window)" ")"))
+			   (if (boolean-or-proc-true new)
+			       ",new-window)" ")"))
 	    completion))
 	 (lambda args
 	   (if start-netscape-as-needed
@@ -125,6 +141,7 @@ It defaults to `*netscape-new-window*'."
 		 (display "scwm: netscape-goto-url: starting netscape process\n")
 		 (execute (string-append "netscape " (uri-escapify-comma url))))))))
 
+;; (netscape-goto-selection-url)
 (define*-public (netscape-goto-selection-url 
 		 #&optional (new *netscape-new-window*) (selection "PRIMARY"))
   "Goto the url that is held in the X11 selection, SELECTION.
@@ -168,7 +185,8 @@ up from at least `*netscape-download-closed-threshold-seconds*'."
 (define*-public (disable-autosave-netscape-dialog)
   "Disable the netscape autosaving \"Save as...\" dialog."
   (interactive)
-  (window-style '("Netscape" "fileSelector_popup") #:transient-placement-proc 
+  (window-style '("Netscape" "fileSelector_popup") 
+		#:transient-placement-proc 
 		(near-window-placement netscape-win)))
 
 (define-public (enable-dynamic-netscape-actions)
@@ -176,10 +194,13 @@ up from at least `*netscape-download-closed-threshold-seconds*'."
 See `netscape-download-closed-action'."
   (window-style '("Netscape" "findDialog_popup") 
 		#:transient-placement-proc 
-		(near-window-placement netscape-win 
-				       #:proportional-offset '(-1 0)
-				       #:relative-to 'northeast
-				       #:auto-focus #t))
+		((if (scwm-is-constraint-enabled?)
+		     strict-relpos-placement
+		     noop)
+		 (near-window-placement netscape-win 
+					#:proportional-offset '(-1 0)
+					#:relative-to 'northeast
+					#:auto-focus #t)))
   (window-style (class-match?? "Netscape") #:application-menu (netscape-application-menu #f))
   (disable-autosave-netscape-dialog)
   (add-hook! window-close-hook call-netscape-download-closed-action))
@@ -188,6 +209,8 @@ See `netscape-download-closed-action'."
 (define-public url-google-search (string-append url-google "/search?q="))
 (define-public url-av "http://www.altavista.com")
 (define-public url-av-search (string-append url-av "/cgi-bin/query?q="))
+(define-public url-metacrawler "http://www.metacrawler.com")
+(define-public url-metacrawler-search (string-append url-metacrawler "/crawler?general="))
 
 ;; (netscape-google-search "glade")
 ;; (netscape-google-search "gtk")
@@ -195,15 +218,25 @@ See `netscape-download-closed-action'."
   "Use Netscape to do a google search for WORD.
 Just go to the google home page if WORD is #f."
   (netscape-goto-url (if word
-			 (string-append url-google-search (cgi-escapify-space word))
+			 (string-append url-google-search
+					(cgi-escapify-space word))
 			 url-google)))
 
 (define-public (netscape-av-search word)
   "Use Netscape to do an AltaVista search for WORD.
 Just go to the AltaVista home page if WORD is #f."
   (netscape-goto-url (if word
-			 (string-append url-av-search (cgi-escapify-space word))
+			 (string-append url-av-search
+					(cgi-escapify-space word))
 			 url-av)))
+
+(define-public (netscape-metacrawler-search word)
+  "Use Netscape to do a Metacrawler search for WORD.
+Just go to the Metacrawler home page if WORD is #f."
+  (netscape-goto-url (if word
+			 (string-append url-metacrawler-search
+					(cgi-escapify-space word))
+			 url-metacrawler-search)))
 
 
 (define*-public (netscape-google-search-cut-buffer)
@@ -229,6 +262,15 @@ SELECTION defaults to \"PRIMARY\" if not specified."
   (X-handle-selection-string selection
 			     (lambda (str)
 			       (netscape-av-search str))))
+
+(define*-public (netscape-metacrawler-search-selection-url #&optional (selection "PRIMARY"))
+  "Use Netscape to do a Metacrawler search of the selection, SELECTION.
+SELECTION defaults to \"PRIMARY\" if not specified."
+  (interactive)
+  (X-handle-selection-string selection
+			     (lambda (str)
+			       (netscape-metacrawler-search str))))
+
 
 ;; GJB:FIXME:: win is a dummy for now
 (define*-public (netscape-application-menu win)

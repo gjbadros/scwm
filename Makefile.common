@@ -8,17 +8,13 @@ ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCW
 SCWM_SRC_DIR = $(top_srcdir)/src
 SCWM_BUILDSRC_DIR = $(top_builddir)/src
 
-SUFFIXES = .x
-
-%.x %.doc: %.c
-	B=`basename $< .c`; \
-	$(SCWM_SRC_DIR)/scwm-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $${B}.x && \
-	$(SCWM_BUILDSRC_DIR)/scwm-doc-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $${B}.doc \
-	|| { rm $${B}.x $${B}.doc ; false; }
-
-%.x %.doc: %.cc
-	B=`basename $< .cc`; \
-	CC=$(CXX) \
-	$(SCWM_SRC_DIR)/scwm-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $${B}.x && \
-	$(SCWM_BUILDSRC_DIR)/scwm-doc-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $${B}.doc \
-	|| { rm $${B}.x $${B}.doc ; false; }
+SUFFIXES = .x .doc
+.c.x:
+	guile-doc-snarf $< $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@ \
+	|| { rm $@; false; }
+.cc.x:
+	guile-doc-snarf $< $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@ \
+	|| { rm $@; false; }
+.c.doc:
+	guile-doc-snarf $< $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > /dev/null \
+        || { rm $@; false; }

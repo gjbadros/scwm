@@ -31,6 +31,9 @@
 
 
 
+(if (scwm-is-constraint-enabled?)
+    (use-scwm-modules ui-constraints ui-constraints-classes))
+
 ;;;
 ;;; -place versions
 ;;;
@@ -201,7 +204,8 @@ centered at the control point of the existing window."
 		       (push-focus-window)
 		       (add-timer-hook! 100 
 					(lambda ()
-					  (focus-change-warp-pointer win))))))))
+					  (focus-change-warp-pointer win)))))
+      (list nearwin win))))
 
 ;; conveniences
 
@@ -214,6 +218,16 @@ passed window before executing PROC, and may return to the previous
 desk and viewport, depending on the values of SWITCH and RETURN
 respectively."
   (wrap-switch-return switch return proc))
+
+(define*-public (strict-relpos-placement proc #&key (anchor 'northeast))
+  "Wrap placement procedure PROC with adding a contraint that the windows stay relatively where they are.
+PROC needs to return a list of two windows, ANCHOR chooses which nonant of the windows
+are the anchored positions."
+  (lambda (win)
+    (if (and (scwm-is-constraint-enabled?) (scwm-master-solver))
+	(enable-ui-constraint 
+	 (make-ui-constraint uicc-strict-relpos (list (proc win) (list anchor anchor))))
+	(proc win))))
 
 (define-public (make-keep-winclass-centered class)
   "Return a procedure that keeps windows of CLASS centered in the viewport.

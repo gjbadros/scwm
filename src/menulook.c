@@ -49,7 +49,7 @@ print_menulook(SCM scm, SCM port, scm_print_state *ARG_IGNORE(pstate))
 }
 
 
-SCWM_PROC (menu_look_p, "menu-look?", 1, 0, 0,
+SCM_DEFINE (menu_look_p, "menu-look?", 1, 0, 0,
            (SCM obj),
 "Return #t if OBJ is a menulook object, #f otherwise.")
 #define FUNC_NAME s_menu_look_p
@@ -90,7 +90,7 @@ make_menulook(char * szName, SCM extra, MenuDrawingVtable * mdvt)
   return make_menulook_internal(gh_str02scm(szName), extra, mdvt);
 }
 
-SCWM_PROC(copy_menu_look, "copy-menu-look", 2, 1, 0,
+SCM_DEFINE(copy_menu_look, "copy-menu-look", 2, 1, 0,
 	  (SCM original_menu_look, SCM name, SCM extra),
 "Copy menu look ORIGINAL-MENU-LOOK with a new NAME and optional EXTRA.\n\
 If EXTRA is not given, the EXTRA information from the original menu is\n\

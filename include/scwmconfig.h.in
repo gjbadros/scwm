@@ -108,6 +108,13 @@
    C-level support for hooks. */
 #undef HAVE_SCM_MAKE_HOOK
 
+/* Define this if your libguile has scm_create_hook, which replaces
+   the deprecated scm_make_named_hook. */
+#undef HAVE_SCM_CREATE_HOOK
+
+/* Define this if your libguile has the scm_hook_empty_p primitive */
+#undef HAVE_SCM_HOOK_EMPTY_P
+
 /* Define this if your libguile has scm_make_smob_type_mfpe,
    the new-style SMOB interface (>= guile-1.3.2 */
 #undef HAVE_SCM_MAKE_SMOB_TYPE_MFPE

@@ -388,27 +388,23 @@ WIN is a window object, an X window id, or 'root-window."
 
 ;; (bind-wheel-mouse-prior-next (class-match?? "AcroRead"))
 
-(define*-public (send-key-press-up) 
+(define*-public (send-key-press-up)
   "Send a synthetic \"Up\" keypress."
   (interactive)
-  (send-key-press "Up"))
+  (send-key "Up"))
 (define*-public (send-key-press-down)
   "Send a synthetic \"Down\" keypress."
   (interactive)
-  (send-key-press "Down"))
+  (send-key "Down"))
 (define*-public (send-key-press-prior)
   "Send a synthetic \"Prior\" keypress."
   (interactive)
-  (send-key-press "Prior"))
+  (send-key "Prior"))
 (define*-public (send-key-press-next)
   "Send a synthetic \"Next\" keypress."
   (interactive)
-  (send-key-press "Next"))
+  (send-key "Next"))
 
-(define*-public (window-background-color #&optional (win (get-window)))
-  (if (eq? win (window-with-focus))
-      (or (cadr (get-window-highlight-colors win)) (highlight-background))
-      (cadr (get-window-colors win))))
 
 (define-public (float->integer x)
   (inexact->exact x))

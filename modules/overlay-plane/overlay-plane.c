@@ -39,7 +39,7 @@ unsigned long overlay_plane_mask;
 
 static GC overlay_gc, clear_gc;
 
-SCWM_PROC (has_overlay_plane_p, "has-overlay-plane?", 0, 0, 0,
+SCM_DEFINE (has_overlay_plane_p, "has-overlay-plane?", 0, 0, 0,
            (),
 "Return #t if the current screen has an overlay plane, #f otherwise.")
 #define FUNC_NAME s_has_overlay_plane_p
@@ -97,7 +97,7 @@ remove_overlay(Window win)
 
 
 
-SCWM_PROC (draw_overlay_plane, "draw-overlay-plane", 0, 0, 0,
+SCM_DEFINE (draw_overlay_plane, "draw-overlay-plane", 0, 0, 0,
            (),
 "Draw a box in the overlay plane.\n\
 This is just for demonstration and testing purposes for now.")
@@ -110,7 +110,7 @@ This is just for demonstration and testing purposes for now.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC (hide_overlay_plane, "hide-overlay-plane", 0, 0, 0,
+SCM_DEFINE (hide_overlay_plane, "hide-overlay-plane", 0, 0, 0,
            (),
 "Draw a box in the overlay plane.\n\
 This is just for demonstration and testing purposes for now.")

@@ -1,3 +1,23 @@
+Sun Jun 18 22:07:56 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* include/scwmconfig.h.in, acconfig.h, configure.in: Check for
+	scm_hook_empty_p and added HAVE_SCM_HOOK_EMPTY_P.
+
+2000-06-18  Greg J. Badros  <gjb@clavicle.cs.washington.edu>
+
+	* pixmaps/scwm-logo.gif: Added, from Glenn Trigg
+
+	* include/scwmconfig.h.in, acconfig.h, configure.in: Check for
+ 	scm_create_hook and added HAVE_SCM_CREATE_HOOK (change from Eric
+ 	Moore)
+
+	* THANKS: added Eli Barzilay
+
+Mon Apr 10 08:13:39 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* README-constraints:  Added a forward reference about
+	GUILE_LOAD_PATH to help newbies.
+
 Sun Feb 20 18:50:41 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* README-COOL-EXAMPLES: Added

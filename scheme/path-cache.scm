@@ -3,7 +3,8 @@
 ;; 4-October-1998
 
 (define-module (app scwm path-cache)
-  :use-module (ice-9 string-fun))
+  :use-module (ice-9 string-fun)
+  :use-module (app scwm base))
 
 (if (> guile-version 1.3)
     (use-modules (ice-9 popen)))
@@ -11,13 +12,7 @@
 ;; Switch this to #t if you're having problems
 (define-public debug-program-cache #f)
 
-(define programs-that-exist #f)
-
-(define-public (program-exists? program-name)
-  "Return #t iff PROGRAM-NAME is in the current $PATH."
-  (search-path (separate-fields-discarding-char #\: (getenv "PATH") list)
-	       program-name))
-
+(define-public programs-that-exist #f)
 
 (define-public (initialize-programs-that-exist)
   "Initializes the cache with programs that exist in the current $PATH.
@@ -45,11 +40,11 @@ print to stdout on hits and misses.  You must call
 `initialize-programs-that-exist' before calling this function; otherwise,
 it reverts to the (inefficient) implementation of `program-exists?'."
   (if debug-program-cache
-      (if programs-that-exist
+      (if (and programs-that-exist (not (string-contains-slash? program-name)))
 	  (if (member program-name programs-that-exist) 
 	      (begin (display "hit ") (display program-name) (newline) #t)
 	      (begin (display "miss ") (display program-name) (newline) #f))
 	  (program-exists? program-name))
-      (if programs-that-exist
+      (if (and programs-that-exist (not (string-contains-slash? program-name)))
 	  (if (member program-name programs-that-exist) #t #f)
 	  (program-exists? program-name))))

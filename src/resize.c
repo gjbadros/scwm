@@ -331,7 +331,7 @@ static GC DrawRubberBandGC;
 
 /* MS:FIXME:: Can't easily be a color w/o overlay planes-- needs to be really 
    fast to erase */
-SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
+SCM_DEFINE(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
           (SCM value),
 "Set the rubber band mask used when dragging or resizing.\n\
 VALUE is XORed with the background when dragging non-opaque move or\n\
@@ -407,8 +407,8 @@ RedrawOutlineAtNewPosition(int x, int y, int width, int height)
 Bool
 InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheightReturn)
 {
-  extern Window PressedW;       /* GJB:FIXME:: ugly! */
   extern XEvent Event;		/* GJB:FIXME:: this too! */
+  Window wPressed;
 
   int dragx;			/* all these variables are used */
   int dragy;			/* in resize operations */
@@ -456,34 +456,48 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   origHeight = dragHeight;
   ymotion = xmotion = 0;
 
-  if ((PressedW != Scr.Root) && (PressedW != None)) {
-    if (PressedW == psw->sides[0])	/* top */
+  if (Event.xbutton.subwindow) {
+    wPressed = Event.xbutton.subwindow;
+    XTranslateCoordinates(dpy, 
+                          Event.xbutton.window, 
+                          Event.xbutton.subwindow,
+                          Event.xbutton.x_root,
+                          Event.xbutton.y_root,
+                          &Event.xbutton.x,
+                          &Event.xbutton.y,
+                          &JunkWindow);
+  } else {
+    wPressed = Event.xbutton.window;
+  }
+
+  if (wPressed != None) {
+    if (wPressed == psw->sides[0])	/* top */
       ymotion = 1;
-    if (PressedW == psw->sides[1])	/* right */
+    if (wPressed == psw->sides[1])	/* right */
       xmotion = -1;
-    if (PressedW == psw->sides[2])	/* bottom */
+    if (wPressed == psw->sides[2])	/* bottom */
       ymotion = -1;
-    if (PressedW == psw->sides[3])	/* left */
+    if (wPressed == psw->sides[3])	/* left */
       xmotion = 1;
-    if (PressedW == psw->corners[0]) {	/* upper-left */
+    if (wPressed == psw->corners[0]) {	/* upper-left */
       ymotion = 1;
       xmotion = 1;
     }
-    if (PressedW == psw->corners[1]) {	/* upper-right */
+    if (wPressed == psw->corners[1]) {	/* upper-right */
       if (psw->fSquashedTitlebar)
         yoffset = psw->title_height;
       xmotion = -1;
       ymotion = 1;
     }
-    if (PressedW == psw->corners[2]) {	/* lower left */
+    if (wPressed == psw->corners[2]) {	/* lower left */
       ymotion = -1;
       xmotion = 1;
     }
-    if (PressedW == psw->corners[3]) {	/* lower right */
+    if (wPressed == psw->corners[3]) {	/* lower right */
       ymotion = -1;
       xmotion = -1;
     }
-    if (PressedW == psw->Parent) { /* the window itself */
+    if (wPressed == psw->Parent || wPressed == psw->frame) { /* the window itself */
       if ((Event.type == ButtonPress) ||
 	  (Event.type == ButtonRelease))
       {
@@ -539,8 +553,6 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                           SCM_UNDEFINED));
   }
   
-  /* pop up a resize dimensions window */
-
   CassowaryEditSize(psw);
 
   /* draw the rubber-band window */

@@ -137,10 +137,36 @@ in the prompt."
 	      (register-type-mapping))
     answer))
 
+(define*-public (popup-register-winlist)
+  "Popup a menu displaying all the windows that stored in registers.
+Selecting an item from the winlist sets focus to that window."
+  (interactive)
+  (popup-menu
+   (menu
+    (map (lambda (regwin-cell)
+	   (let ((reg (car regwin-cell))
+		 (win (cdr regwin-cell)))
+	     (menuitem 
+	      (string-append (string-upcase (symbol->string reg)) ".\t" (window-title win))
+	      ;;	  #:extra-label (symbol->string reg)
+	      #:action (lambda () (focus-change-warp-pointer win))
+	      #:hotkey-prefs (symbol->string reg))))
+	 (filter-map (lambda (cell) 
+		       (let ((sym (car cell))
+			     (val (cdr cell)))
+			 (and (window? val) cell)))
+		     (sort 
+		      (get-register-alist)
+		      (lambda (a b)
+			(let ((s (symbol->string (car a)))
+			      (t (symbol->string (car b))))
+			  (string<? s t)))))))))
+
 #!
 register
 (bind-key 'all "H-j" jump-to-register)
 (bind-key 'all "H-f" focus-to-register)
 (bind-key 'all "H-c" window-configuration-to-register)
 (bind-key 'all "H-x" global-window-configuration-to-register)
+
 !#

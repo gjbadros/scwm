@@ -61,7 +61,7 @@ void xlib_point_pair_get_values(SCM p, int *piX, int *piY)
 
 /* MSFIX: Can't easily be a color w/o overlay planes-- needs to be really 
    fast to erase */
-SCWM_PROC(xlib_set_drawing_mask_x, "xlib-set-drawing-mask!", 1, 0, 0,
+SCM_DEFINE(xlib_set_drawing_mask_x, "xlib-set-drawing-mask!", 1, 0, 0,
           (SCM value),
 "Set the drawing mask used by the xlib-* primitives.\n\
 VALUE is XORed with the background when dragging non-opaque move or\n\
@@ -84,7 +84,7 @@ resize frames. VALUE should be an integer.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(xlib_draw_rectangle_x, "xlib-draw-rectangle!", 3, 0, 0,
+SCM_DEFINE(xlib_draw_rectangle_x, "xlib-draw-rectangle!", 3, 0, 0,
 	  (SCM top_left, SCM width, SCM height),
 "Draws a rectangle to the screen using the Xlib call XDrawRectangle.\n\
 TOP-LEFT is the upper left point of the rectangle.  The rectangle is of size\n\
@@ -104,7 +104,7 @@ TOP-LEFT is a point pair: (X . Y).")
 #undef FUNC_NAME
 
 
-SCWM_PROC(xlib_draw_line_x, "xlib-draw-line!", 2, 0, 0,
+SCM_DEFINE(xlib_draw_line_x, "xlib-draw-line!", 2, 0, 0,
 	  (SCM p1, SCM p2),
 "Draws a line using the Xlib call XDrawLine.\n\
 The line is drawn from P1 to P2.\n\
@@ -122,7 +122,7 @@ Both P1 and P2 are pairs (X . Y) representing points.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(xlib_draw_arc_x, "xlib-draw-arc!", 5, 0, 0,
+SCM_DEFINE(xlib_draw_arc_x, "xlib-draw-arc!", 5, 0, 0,
 	  (SCM top_left, SCM width, SCM height, SCM angle1, SCM angle2),
 "Draws a arc to the screen using the Xlib call XDrawArc.\n\
 The arc is specified in terms of a rectangle, in which it is wholly\n\
@@ -151,7 +151,7 @@ SCWM_SYMBOL(sym_solid,"solid");
 SCWM_SYMBOL(sym_on_off_dash,"on-off-dash");
 SCWM_SYMBOL(sym_double_dash,"double-dash");
 
-SCWM_PROC(xlib_set_line_attributes_x, "xlib-set-line-attributes!", 1, 1, 0,
+SCM_DEFINE(xlib_set_line_attributes_x, "xlib-set-line-attributes!", 1, 1, 0,
 	  (SCM width, SCM style),
 "Sets the line width of the DrawingGC to WIDTH and style to STYLE.\n\
 One of 'solid (default), 'on-off-dash, or 'double-dash should\n\
@@ -169,8 +169,6 @@ be given as STYLE.")
   else if (sym_double_dash == style) iStyle = LineDoubleDash;
   else {
     scwm_error(FUNC_NAME,"STYLE must be one of 'solid 'on-off-dash 'double-dash.");
-    scwm_error_message(gh_str02scm("Was passed: " SCWM_DISPLAY), 
-                       gh_list(style,SCM_UNDEFINED));
   }
   XSetLineAttributes(dpy, DrawingGC, iWidth, iStyle, CapButt, JoinMiter);
   return SCM_UNSPECIFIED;
@@ -178,7 +176,7 @@ be given as STYLE.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(xlib_set_fill_style_x, "xlib-set-fill-style!", 1, 0, 0,
+SCM_DEFINE(xlib_set_fill_style_x, "xlib-set-fill-style!", 1, 0, 0,
 	  (SCM style),
 "Sets the fill style of the DrawingGC to STYLE.\n\
 One of FillSolid (0), FillTiled (1), FillStippled (2), or FillOpaqueStippled (3)\n\

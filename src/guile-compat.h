@@ -76,8 +76,8 @@ SCM scm_parse_path (char *path, SCM tail);
 
 #ifdef HAVE_SCM_THE_LAST_STACK_FLUID
   /* from libguile/fluids.h --07/01/98 gjb */
-SCM scm_fluid_ref SCM_P ((SCM fluid));
-SCM scm_fluid_set_x SCM_P ((SCM fluid, SCM value));
+SCM scm_fluid_ref (SCM fluid);
+SCM scm_fluid_set_x (SCM fluid, SCM value);
 #define DEREF_LAST_STACK scm_fluid_ref(gh_cdr(scm_the_last_stack_fluid))
 #define SET_LAST_STACK(X) scm_fluid_set_x (gh_cdr (scm_the_last_stack_fluid), (X))
 

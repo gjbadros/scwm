@@ -532,7 +532,7 @@ SmHandler FocusGrantedCB( SM_MSG reply,
   return ( SM_RC_OK );
 }
 
-SCWM_PROC(vv_connect,"vv-connect",0,1,0,
+SCM_DEFINE(vv_connect,"vv-connect",0,1,0,
           (SCM proc),
 "Connect to the ViaVoice speech recognizer, calling PROC after connected.\n\
 See <filename>modules/viavoice/README</filename> for details. See also `vv-initialize'.")
@@ -546,7 +546,7 @@ See <filename>modules/viavoice/README</filename> for details. See also `vv-initi
 }
 #undef FUNC_NAME
 
-SCWM_PROC(vv_disconnect,"vv-disconnect",0,1,0,
+SCM_DEFINE(vv_disconnect,"vv-disconnect",0,1,0,
           (SCM proc),
 "Disconnect from the ViaVoice speech recognizer, calling PROC after disconnected.")
 #define FUNC_NAME s_vv_disconnect 
@@ -558,7 +558,7 @@ SCWM_PROC(vv_disconnect,"vv-disconnect",0,1,0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(vv_close,"vv-close",0,0,0,
+SCM_DEFINE(vv_close,"vv-close",0,0,0,
           (),
 "Close connect to the ViaVoice speech recognizer.")
 #define FUNC_NAME s_vv_close
@@ -570,7 +570,7 @@ SCWM_PROC(vv_close,"vv-close",0,0,0,
 
 
 
-SCWM_PROC(vv_connected_p,"vv-connected?",0,0,0,
+SCM_DEFINE(vv_connected_p,"vv-connected?",0,0,0,
           (),
 "Return #t if we are connected to the ViaVoice speech recognizer.\n\
 Returns #f if we are not connected.")
@@ -581,7 +581,7 @@ Returns #f if we are not connected.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(vv_define_grammar,"vv-define-grammar",2,1,0,
+SCM_DEFINE(vv_define_grammar,"vv-define-grammar",2,1,0,
           (SCM name, SCM grammar_file, SCM proc),
 "Use GRAMMAR-FILE as the ViaVoice grammar and give it name NAME.\n\
 Returns #f if not connected, otherwise returns the return\n\
@@ -610,7 +610,7 @@ code when the asynchronous procedure completes.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(vv_enable_vocab,"vv-enable-vocab",1,1,0,
+SCM_DEFINE(vv_enable_vocab,"vv-enable-vocab",1,1,0,
           (SCM name, SCM proc),
 "Enable vocabulary/grammar NAME.\n\
 PROC is invoked with the response code when the asynchronous procedure completes.")
@@ -626,7 +626,7 @@ PROC is invoked with the response code when the asynchronous procedure completes
 }
 #undef FUNC_NAME
 
-SCWM_PROC(vv_turn_microphone_on,"vv-turn-microphone-on",0,1,0,
+SCM_DEFINE(vv_turn_microphone_on,"vv-turn-microphone-on",0,1,0,
           (SCM proc),
 "Turn the microphone on to start recognizing commands. \n\
 See also `vv-initialize'.\n\
@@ -643,7 +643,7 @@ PROC is invoked with the response code when the asynchronous procedure completes
 #undef FUNC_NAME
 
 
-SCWM_PROC(vv_turn_microphone_off,"vv-turn-microphone-off",0,1,0,
+SCM_DEFINE(vv_turn_microphone_off,"vv-turn-microphone-off",0,1,0,
           (SCM proc),
 "Turn the microphone off to stop recognizing commands.\n\
 PROC is invoked with the response code when the asynchronous procedure completes.")

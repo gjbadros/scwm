@@ -6,7 +6,7 @@
 		       (xtest-fake-key-event 37 #t 10)
 		       (xtest-fake-key-event 38 #t 11)
 		       (xtest-fake-key-event 38 #f 12)
-		       (xtest-fake-key-event 37 #f 13)))))
+		       (xtest-fake-key-event 37 #f 13)))
 
 
 (bind-key 'all "H-y" (lambda () 

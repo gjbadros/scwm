@@ -8,7 +8,7 @@
   :use-module (app scwm base)
   :use-module (app scwm message-window))
 
-(define scwm-logo (make-image-or-warn "scwm-logo-0.xpm"))
+(define scwm-logo (make-image-or-warn "scwm-logo-0-small.xpm"))
 
 (define scwm-logo-msgwin #f)
 
@@ -38,7 +38,7 @@ as startup can be longer than ideal)."
 	      (list->vector
 	       (map (lambda (deg) (make-image
 				   (string-append "scwm-logo-"
-						  (number->string deg) ".xpm")))
+						  (number->string deg) "-small.xpm")))
 		    (iota 24))))
 	
 	(add-hook! load-processing-hook next-logo-image-n)))

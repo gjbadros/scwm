@@ -304,7 +304,19 @@ DispatchEvent()
 
   StashEventTime(&Event);
 
+  /* try to set the context window intelligently */
   pswCurrent = PswFromAnyWindow(dpy,w);
+  if (NULL == pswCurrent && 
+       (Event.type == KeyPress ||
+        Event.type == KeyRelease )) {
+    pswCurrent = Scr.Focus;
+  }
+  if (NULL == pswCurrent && 
+      (Event.type == ButtonPress ||
+       Event.type == KeyPress ||
+       Event.type == KeyRelease)) {
+    pswCurrent = PswFromPointerLocation(dpy);
+  }
   last_event_type = Event.type;
   last_event_window = w;
 #ifdef DEBUG_VISIBILITY_NOTIFY_EVENT_WINDOWS
@@ -341,7 +353,7 @@ HandleEvents(void)
   DBUG_EVENT((DBG,"HandleEvents", "return"));
 }
 
-SCWM_PROC(handle_pending_events, "handle-pending-events", 0,0,0,
+SCM_DEFINE(handle_pending_events, "handle-pending-events", 0,0,0,
           (),
 "Handle all pending Scwm events, returns number of dispatched events.\n\
 This is useful to maintain responsiveness of Scwm when in the middle\n\
@@ -636,7 +648,7 @@ FIXDOC: Link to file!
 */
 
 
-SCWM_PROC (reset_scwmexec_protocol, "reset-scwmexec-protocol", 0, 0, 0,
+SCM_DEFINE (reset_scwmexec_protocol, "reset-scwmexec-protocol", 0, 0, 0,
            (),
 "Reset the scwmexec protocol.\n\
 This procedure removes the \"XA_SCWMEXEC_REQUEST\" property on the\n\
@@ -983,7 +995,7 @@ HandleClientMessage()
     return;
   }
 
-  if (SCM_BOOL_F == scm_empty_hook_p(client_message_hook)) {
+  if (SCM_BOOL_F == scm_hook_empty_p(client_message_hook)) {
     /* hook is not empty */
     SCM data = SCM_BOOL_F;
     switch (Event.xclient.format) {
@@ -996,9 +1008,9 @@ HandleClientMessage()
       { /* scope */
         short *ps = Event.xclient.data.s;
         int i = 0;
-        data = gh_make_vector(gh_int2scm(10), SCM_BOOL_F);
+        data = gh_make_vector(SCM_MAKINUM(10), SCM_BOOL_F);
         while (i < 10) {
-          gh_vector_set_x(data,gh_int2scm(i),gh_int2scm(*ps));
+          gh_vector_set_x(data,SCM_MAKINUM(i),gh_int2scm(*ps));
           ++i;
           ++ps;
         }
@@ -1008,9 +1020,9 @@ HandleClientMessage()
       { /* scope */
         long *pl = Event.xclient.data.l;
         int i = 0;
-        data = gh_make_vector(gh_int2scm(5), SCM_BOOL_F);
+        data = gh_make_vector(SCM_MAKINUM(5), SCM_BOOL_F);
         while (i < 5) {
-          gh_vector_set_x(data,gh_int2scm(i),gh_long2scm(*pl));
+          gh_vector_set_x(data,SCM_MAKINUM(i),gh_long2scm(*pl));
           ++i;
           ++pl;
         }
@@ -2177,7 +2189,7 @@ WindowGettingButtonEvent(Window w, int x, int y)
 extern long basic_event_mask;
 
 /* GJB:FIXME:: Only for newer guiles for now */
-SCWM_PROC(add_motion_handler_x, "add-motion-handler!", 1, 0, 0,
+SCM_DEFINE(add_motion_handler_x, "add-motion-handler!", 1, 0, 0,
           (SCM proc),
 "Call PROC on XMotionEvents.\n\
 This can considerably slow Scwm down so use it only when\n\
@@ -2190,7 +2202,7 @@ necessary.  See `remove-motion-handler' and `reset-motion-handlers'.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(remove_motion_handler_x, "remove-motion-handler!", 1, 0, 0,
+SCM_DEFINE(remove_motion_handler_x, "remove-motion-handler!", 1, 0, 0,
           (SCM proc),
 "No longer call PROC on XMotionEvents.\n\
 Handling motion events can considerably slow Scwm down so use it only when\n\
@@ -2200,13 +2212,13 @@ necessary.  See `add-motion-handler' and `reset-motion-handlers'.")
   SCM answer;
   VALIDATE_ARG_PROC(1,proc);
   answer = scm_remove_hook_x(x_motionnotify_hook,proc);
-  if (scm_empty_hook_p(x_motionnotify_hook))
+  if (scm_hook_empty_p(x_motionnotify_hook))
     XSelectInput(dpy, Scr.Root,basic_event_mask);
   return answer;
 }
 #undef FUNC_NAME
 
-SCWM_PROC(reset_motion_handlers_x, "reset-motion-handlers!", 0, 0, 0,
+SCM_DEFINE(reset_motion_handlers_x, "reset-motion-handlers!", 0, 0, 0,
           (),
 "Call no procedures on XMotionEvents.\n\
 Handling motion events can considerably slow Scwm down so use it only when\n\
@@ -2222,7 +2234,7 @@ necessary.  See `add-motion-handler' and `remove-motion-handler'.")
 
 /* Inspired by GWM 1.8c --gjb */
 
-SCWM_PROC(send_key, "send-key", 1,4,0,
+SCM_DEFINE(send_key, "send-key", 1,4,0,
           (SCM key, SCM win, SCM key_press_p, SCM key_release_p, SCM propagate_p),
 "Send a synthetic press/release of KEY.  \n\
 The usual key specification format (with modifiers) is used. The event\n\
@@ -2263,13 +2275,14 @@ this unless you know what it means.")
 		 (XEvent *) &event);
     }
   } else {
-    scwm_message(WARN,FUNC_NAME,"Bad keysym `%s' not sent",SCM_LIST1(key));
+    scwm_message(WARN,FUNC_NAME,"Bad keysym `" SCWM_DISPLAY
+                 "' not sent",SCM_LIST1(key));
   }
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
-SCWM_PROC(send_button, "send-button", 1, 5, 0,
+SCM_DEFINE(send_button, "send-button", 1, 5, 0,
           (SCM button, SCM win, SCM kind, SCM propagate_p, SCM dx, SCM dy),
 "Send a synthetic mouse button/release event.\n\
 Create a synthetic event of a press of mouse button BUTTON. The usual\n\

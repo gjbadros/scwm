@@ -94,7 +94,7 @@ print_font(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
    to load "fixed". Throw an error if this fails, else return
    a font object. */
 
-SCWM_PROC(make_font, "make-font", 1, 0, 0,
+SCM_DEFINE(make_font, "make-font", 1, 0, 0,
           (SCM fname),
 "Return the font object for the X font specifier FNAME.\n\
 If FNAME is not a valid X font name, or cannot be\n\
@@ -219,7 +219,7 @@ allocated, an error results.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(font_p, "font?", 1, 0, 0,
+SCM_DEFINE(font_p, "font?", 1, 0, 0,
           (SCM obj),
 "Returns #t if OBJ is a font object, otherwise #f.")
 #define FUNC_NAME s_font_p
@@ -229,7 +229,7 @@ SCWM_PROC(font_p, "font?", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(font_properties, "font-properties", 1, 0, 0,
+SCM_DEFINE(font_properties, "font-properties", 1, 0, 0,
           (SCM font),
 "Return an association list giving some properties of FONT.\n\
 Currently defined properties are 'name, the string name of the\n\
@@ -243,7 +243,7 @@ color, and 'height, its total height in pixels.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
+SCM_DEFINE(set_icon_font_x, "set-icon-font!", 1, 0, 0,
           (SCM font),
 "Set the font used for drawing icon titles to FONT.")
 #define FUNC_NAME s_set_icon_font_x
@@ -258,7 +258,7 @@ SCWM_PROC(set_icon_font_x, "set-icon-font!", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(icon_font, "icon-font", 0, 0, 0,
+SCM_DEFINE(icon_font, "icon-font", 0, 0, 0,
           (),
 "Return the font used for drawing icon titles.")
 #define FUNC_NAME s_icon_font
@@ -268,7 +268,7 @@ SCWM_PROC(icon_font, "icon-font", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_title_font_x, "set-title-font!", 1, 0, 0,
+SCM_DEFINE(set_title_font_x, "set-title-font!", 1, 0, 0,
           (SCM font),
 "Set the font for window titles In the current decor to FONT.")
 #define FUNC_NAME s_set_title_font_x
@@ -290,7 +290,7 @@ SCWM_PROC(set_title_font_x, "set-title-font!", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(title_font, "title-font", 0, 0, 0,
+SCM_DEFINE(title_font, "title-font", 0, 0, 0,
           (),
 "Return the font used for drawing window titles in the current decor.")
 #define FUNC_NAME s_title_font
@@ -303,7 +303,7 @@ SCWM_PROC(title_font, "title-font", 0, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0,
+SCM_DEFINE(clear_font_cache_entry, "clear-font-cache-entry", 1, 0, 0,
           (SCM name),
 "Fonts are cached by name. It is remotely possible that the\n\
 meaning of a particular string as a fonts will change in your X\n\

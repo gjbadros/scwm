@@ -206,7 +206,7 @@ decor2scm(ScwmDecor * fl)
 };
 
 
-SCWM_PROC(make_decor, "make-decor", 0, 1, 0,
+SCM_DEFINE(make_decor, "make-decor", 0, 1, 0,
           (SCM name),
 "Create a new decor object. NAME optionally provides a string\n\
 that is used to name the decor, and is displayed when the decor is\n\
@@ -227,7 +227,7 @@ printed.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(default_decor, "default-decor", 0, 0, 0,
+SCM_DEFINE(default_decor, "default-decor", 0, 0, 0,
           (),
 "Return the default decor.")
 #define FUNC_NAME s_default_decor
@@ -237,7 +237,7 @@ SCWM_PROC(default_decor, "default-decor", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_current_decor_x, "set-current-decor!", 1, 0, 0,
+SCM_DEFINE(set_current_decor_x, "set-current-decor!", 1, 0, 0,
           (SCM decor),
 "Set the current decor to DECOR. Operations described as\n\
 setting options \"in the current decor\" will now operate on this\n\
@@ -256,7 +256,7 @@ one.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
+SCM_DEFINE(current_decor, "current-decor", 0, 0, 0,
           (),
 "Return the current decor.")
 #define FUNC_NAME s_current_decor
@@ -270,7 +270,7 @@ SCWM_PROC(current_decor, "current-decor", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
+SCM_DEFINE(set_window_decor_x, "set-window-decor!", 2, 0, 0,
           (SCM win, SCM decor),
 "Set WIN's decor to DECOR, updating its decorations appropriately.")
 #define FUNC_NAME s_set_window_decor_x
@@ -299,7 +299,7 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(window_decor, "window-decor", 1, 0, 0,
+SCM_DEFINE(window_decor, "window-decor", 1, 0, 0,
           (SCM win),
 "Return WIN's decor.")
 #define FUNC_NAME s_window_decor

@@ -1,3 +1,27 @@
+Sat Jun 24 14:28:15 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Turn off fvwm2-pager-module pending investigation 
+	of why it doesn't work.  Added want-scwm-pager-module, leave it
+	off, too, as it's still buggy.  Added window-style for that
+	ScwmPager window.
+
+Sun Jun 18 20:52:26 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Turn off debugging output by default.  Fix
+	`show-desk-name' to display 1-based numbers (Thanks Francesco
+	Tapparo!).  Added H-a binding for `popup-register-winlist'
+
+Mon Jun  5 09:58:34 2000  Greg J. Badros  <gregb@go2net.com>
+
+	* Added C-M-A-S-n to netscape-new-window. Make describe-event, and
+ 	where-is be H-M-{h,w}, not just hyper. Use (scwm-path-prefix), not
+ 	scwmdir, as prefix to ".../share/scwm/pixmaps
+
+Sun Mar 26 14:27:05 2000    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Make sure that the constraints recording name-it
+	dialog can get the focus -- change its window style.
+
 Thu Feb 24 16:51:22 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added menu-viavoice, use it.

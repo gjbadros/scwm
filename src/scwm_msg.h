@@ -40,4 +40,9 @@ typedef enum scwm_msg_levels_tag { DBG = -1, INFO, WARN, ERR } scwm_msg_levels;
 void scwm_message(scwm_msg_levels type, const char *id, const char *msg, SCM args);
 void scwm_msg(scwm_msg_levels type, const char *id, const char *msg,...);
 
+#define SCWM_DISPLAY "~A"
+/* #define SCWM_DISPLAY "%s" */
+#define SCWM_WRITE "~S"
+/* #define SCWM_WRITE "%S" */
+
 #endif

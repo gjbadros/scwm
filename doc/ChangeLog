@@ -1,3 +1,7 @@
+Sat Apr 29 12:40:28 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmconf.1: Added -- from Francesco Tapparo
+
 Mon Oct 18 11:03:36 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (EXTRA_DIST): Stupid typo fix -- didn't change

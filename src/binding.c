@@ -418,18 +418,22 @@ GrabButtonWithModifiersMaskXcPm(int button, int modifier,
   }
 }
 
-SCWM_INLINE void
-GrabButtonWithModifiers(int button, int modifier, 
-			ScwmWindow *psw)
+void
+GrabButtonWithModifiersWin(int button, int modifier, Window w)
 { 
-  DBUG((DBG,"GrabButtonsForPsw","Grabbing button %d (mod %d) for %s",
-        button,modifier,psw->name));
-  GrabButtonWithModifiersMaskXcPm(button,modifier,psw->frame,
+  DBUG((DBG,"GrabButtonWithModifiersWin","Grabbing button %d (mod %d)",
+        button,modifier));
+  GrabButtonWithModifiersMaskXcPm(button,modifier,w,
                                   (ButtonPressMask | ButtonReleaseMask) ,
                                   /* XCursorByNumber(XC_top_left_arrow), */
                                   None,
                                   GrabModeAsync);
 }
+
+
+SCWM_INLINE void
+GrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw)
+{ GrabButtonWithModifiersWin(button,modifier,psw->frame); }
 
 
 void
@@ -497,8 +501,10 @@ GrabButtonsForPsw(ScwmWindow * psw)
   Binding *pbnd;
 
   for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
-    if ((pbnd->Context & C_WINDOW) && 
-        pbnd->IsMouse) {
+    if (!pbnd->IsMouse) continue; /* skip key bindings */
+    if (pbnd->Context == C_ALL) {
+      /* */
+    } else if (pbnd->Context & C_WINDOW) {
       GrabButtonWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
     }
   }
@@ -511,8 +517,10 @@ UngrabButtonsForPsw(ScwmWindow * psw)
   Binding *pbnd;
 
   for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
-    if ((pbnd->Context & C_WINDOW) &&
-        pbnd->IsMouse) {
+    if (!pbnd->IsMouse) continue; /* skip key bindings */
+    if (pbnd->Context == C_ALL) {
+      /* */
+    } else if (pbnd->Context & C_WINDOW) {
       UngrabButtonWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
     }
   }
@@ -531,8 +539,10 @@ GrabKeysForPsw(ScwmWindow *psw)
   Binding *pbnd;
 
   for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
-    if ((pbnd->Context & C_WINDOW) &&
-	!pbnd->IsMouse) {
+    if (pbnd->IsMouse) continue; /* skip mouse bindings */
+    if (pbnd->Context == C_ALL) {
+      /* GrabKeyWithModifiersWin(pbnd->Button_Key,pbnd->Modifier,Scr.Root); */
+    } else  if (pbnd->Context & C_WINDOW) {
       GrabKeyWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
     }
   }
@@ -545,8 +555,10 @@ UngrabKeysForPsw(ScwmWindow *psw)
   Binding *pbnd;
 
   for (pbnd = Scr.AllBindings; pbnd; pbnd = pbnd->NextBinding) {
-    if ((pbnd->Context & C_WINDOW) &&
-	!pbnd->IsMouse) {
+    if (pbnd->IsMouse) continue; /* skip mouse bindings */
+    if (pbnd->Context == C_ALL) {
+      /* UngrabKeyWithModifiersWin(pbnd->Button_Key,pbnd->Modifier,Scr.Root); */
+    } else if (pbnd->Context & C_WINDOW) {
       UngrabKeyWithModifiers(pbnd->Button_Key,pbnd->Modifier,psw);
     }
   }
@@ -585,21 +597,29 @@ ungrab_all_keys_all_buttons_all_windows()
 /* Just grab a single key + modifier on all windows
    This needs to be done after a new key binding */
 static void
-grab_key_all_windows(int key, int modifier)
+grab_key_all_windows(int key, int modifier, int context)
 {
-  ScwmWindow *psw;
-  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-    GrabKeyWithModifiers(key,modifier,psw);
+  if (context == C_ALL) {
+    GrabKeyWithModifiersWin(key,modifier,Scr.Root);
+  } else {
+    ScwmWindow *psw;
+    for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
+      GrabKeyWithModifiers(key,modifier,psw);
+    }
   }
 }
 
 
 static void
-ungrab_key_all_windows(int key, int modifier)
+ungrab_key_all_windows(int key, int modifier, int context)
 {
-  ScwmWindow *psw;
-  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-    UngrabKeyWithModifiers(key,modifier,psw);
+  if (context == C_ALL) {
+    UngrabKeyWithModifiersWin(key,modifier,Scr.Root);
+  } else {
+    ScwmWindow *psw;
+    for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
+      UngrabKeyWithModifiers(key,modifier,psw);
+    }
   }
 }
 
@@ -607,21 +627,29 @@ ungrab_key_all_windows(int key, int modifier)
 /* Just grab a mouse button + modifier on all windows
    This needs to be done after a new mouse binding */
 static void
-grab_button_all_windows(int button, int modifier)
+grab_button_all_windows(int button, int modifier, int context)
 {
-  ScwmWindow *psw;
-  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-    GrabButtonWithModifiers(button,modifier,psw);
+  if (context == C_ALL) {
+    GrabButtonWithModifiersWin(button,modifier,Scr.Root);
+  } else {
+    ScwmWindow *psw;
+    for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
+      GrabButtonWithModifiers(button,modifier,psw);
+    }
   }
 }
 
 
 static void
-ungrab_button_all_windows(int button, int modifier)
+ungrab_button_all_windows(int button, int modifier, int context)
 {
-  ScwmWindow *psw;
-  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
-    UngrabButtonWithModifiers(button,modifier,psw);
+  if (context == C_ALL) {
+    GrabButtonWithModifiersWin(button,modifier,Scr.Root);
+  } else {
+    ScwmWindow *psw;
+    for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
+      UngrabButtonWithModifiers(button,modifier,psw);
+    }
   }
 }
 
@@ -668,9 +696,9 @@ remove_binding(int context, unsigned int mods, int bnum_or_keycode,
 	       int mouse_binding)
 {
   if (!mouse_binding) {
-    ungrab_key_all_windows(bnum_or_keycode, mods);
+    ungrab_key_all_windows(bnum_or_keycode, mods, context);
   } else if (context & C_WINDOW) {
-    ungrab_button_all_windows(bnum_or_keycode,mods);
+    ungrab_button_all_windows(bnum_or_keycode,mods, context);
   }
   remove_binding_from_list(context,mods,bnum_or_keycode,mouse_binding);
 }
@@ -713,22 +741,24 @@ add_binding(int context, int modmask, int bnum_or_keycode, int mouse_p,
     scm_protect_object(release_proc);
 
   if (mouse_p) {
-    if ( (context & C_WINDOW) && Scr.fWindowsCaptured) {
+    if ( ((context & C_WINDOW) && Scr.fWindowsCaptured) ||
+         context == C_ALL) {
       /* only grab the button press if we have already captured,
 	 otherwise it's a waste of time since we will grab
 	 them all later when we do the initial capture;
 	 this is good, since initialization probably defines
 	 lots of mouse  bindings */
-      grab_button_all_windows(bnum_or_keycode, modmask);
+      grab_button_all_windows(bnum_or_keycode, modmask, context);
     } 
   } else {
-    if (Scr.fWindowsCaptured) {
+    if ( ((context & C_WINDOW) && Scr.fWindowsCaptured) ||
+         context == C_ALL) {
       /* only grab the key if we have already captured,
 	 otherwise it's a waste of time since we will grab
 	 them all later when we do the initial capture;
 	 this is good, since initialization probably defines
 	 lots of key bindings */
-      grab_key_all_windows(bnum_or_keycode, modmask);
+      grab_key_all_windows(bnum_or_keycode, modmask, context);
     }
   }
 }
@@ -854,7 +884,7 @@ PBndFromMouse(int button,
   return NULL;
 }
 
-SCWM_PROC(set_quote_key_events_x, "set-quote-key-events!", 1, 0, 0,
+SCM_DEFINE(set_quote_key_events_x, "set-quote-key-events!", 1, 0, 0,
           (SCM quoting_on_p),
 "Set key event quoting to QUOTING-ON?.")
 #define FUNC_NAME s_set_quote_key_events_x
@@ -865,7 +895,7 @@ SCWM_PROC(set_quote_key_events_x, "set-quote-key-events!", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(quote_key_events_p, "quote-key-events?", 0, 0, 0,
+SCM_DEFINE(quote_key_events_p, "quote-key-events?", 0, 0, 0,
           (),
 "Return #t iff key events are being qutoed.\n\
 See also `set-quote-key-events!'.")
@@ -877,7 +907,7 @@ See also `set-quote-key-events!'.")
 
 
 
-SCWM_PROC(lookup_key, "lookup-key", 2, 0, 0,
+SCM_DEFINE(lookup_key, "lookup-key", 2, 0, 0,
           (SCM contexts, SCM key),
 "Return the procedures bound to KEY within the CONTEXTS.\n\
 KEY is a modifiers and keysym string.\n\
@@ -925,7 +955,7 @@ if there is no matching binding.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(unbind_key, "unbind-key", 2, 2, 0,
+SCM_DEFINE(unbind_key, "unbind-key", 2, 2, 0,
           (SCM contexts, SCM key, SCM ARG_IGNORE(ignored_proc1), SCM ARG_IGNORE(ignored_proc2)),
 "Remove any bindings attached to KEY in given CONTEXTS.\n\
 CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))\n\
@@ -963,7 +993,7 @@ as for `bind-mouse'.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(keysym_to_keycode, "keysym->keycode", 1, 0, 0,
+SCM_DEFINE(keysym_to_keycode, "keysym->keycode", 1, 0, 0,
           (SCM keysym_name),
 "Returns a list of X/11 keycodes that generate the keysym, KEYSYM-NAME.\n\
 KEYSYM-NAME should be a string.  E.g., \"Control_L\".  Return #f if KEYSYM-NAME\n\
@@ -998,7 +1028,7 @@ is not a valid keysym.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(unbind_mouse, "unbind-mouse", 2, 2, 0,
+SCM_DEFINE(unbind_mouse, "unbind-mouse", 2, 2, 0,
           (SCM contexts, SCM button, SCM ARG_IGNORE(ignored_proc1), SCM ARG_IGNORE(ignored_proc2)),
 "Remove any bindings attached to mouse BUTTON in given CONTEXTS.\n\
 CONTEXTS is a list of event-contexts (e.g., '(left-button-1 frame-sides))\n\
@@ -1028,7 +1058,7 @@ as for `bind-mouse'.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(bind_key, "bind-key", 3, 1, 0,
+SCM_DEFINE(bind_key, "bind-key", 3, 1, 0,
           (SCM contexts, SCM key, SCM proc, SCM release_proc),
 "Bind the given KEY within the CONTEXTS to invoke PROC.\n\
 Return value is #t if the binding was made successfully, #f otherwise\n\
@@ -1104,7 +1134,7 @@ invoked when the key is released.  The contexts include:\n\
 #undef FUNC_NAME
 
 
-SCWM_PROC(bind_keycode, "bind-keycode", 4, 1, 0,
+SCM_DEFINE(bind_keycode, "bind-keycode", 4, 1, 0,
           (SCM contexts, SCM keycode, SCM modifier_mask, SCM proc, SCM release_proc),
 "Bind the given KEYCODE within the CONTEXTS to invoke PROC.\n\
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))\n\
@@ -1133,7 +1163,7 @@ nothing should be done on key release.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(unbind_keycode, "unbind-keycode", 3, 2, 0,
+SCM_DEFINE(unbind_keycode, "unbind-keycode", 3, 2, 0,
           (SCM contexts, SCM keycode, SCM modifier_mask, SCM ARG_IGNORE(ignored_proc1), SCM ARG_IGNORE(ignored_proc2)),
 "Unbind the given KEYCODE within the CONTEXTS.\n\
 KEYCODE is an X/11 key code, MODIFIER-MASK is the bitmask of modifiers.\n\
@@ -1158,7 +1188,7 @@ as for `bind-keycode'.")
 
 
 
-SCWM_PROC(bind_mouse, "bind-mouse", 3, 1, 0,
+SCM_DEFINE(bind_mouse, "bind-mouse", 3, 1, 0,
           (SCM contexts, SCM button, SCM proc, SCM immediate_proc),
 "Bind the given mouse BUTTON within the CONTEXTS to invoke PROC.\n\
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))\n\
@@ -1233,7 +1263,7 @@ type.")
 
 
 
-SCWM_PROC(lookup_mouse, "lookup-mouse", 2, 0, 0,
+SCM_DEFINE(lookup_mouse, "lookup-mouse", 2, 0, 0,
           (SCM contexts, SCM button),
 "Return the procedure bound to mouse BUTTON within the CONTEXTS.\n\
 BUTTON is a string that may contain modifier prefixes, e.g.,\n\
@@ -1291,7 +1321,7 @@ ScmBindingDescriptionFromPbnd(const Binding *pbnd)
   return gh_list(mouse_p,contexts,modmask,keybut,proc1,proc2,SCM_UNDEFINED);
 }
 
-SCWM_PROC(lookup_procedure_bindings, "lookup-procedure-bindings", 0, 2, 0,
+SCM_DEFINE(lookup_procedure_bindings, "lookup-procedure-bindings", 0, 2, 0,
           (SCM proc, SCM context),
 "Return any bindings that invoke PROC in context CONTEXT.\n\
 If PROC is omitted or #f, match all bindings in context CONTEXT.\n\
@@ -1421,7 +1451,7 @@ clear_mouse_event_type()
   mouse_ev_type = SCM_BOOL_F;
 }
 
-SCWM_PROC(mouse_event_type, "mouse-event-type", 0, 0, 0,
+SCM_DEFINE(mouse_event_type, "mouse-event-type", 0, 0, 0,
           (),
 "Return a symbol corresponding to the type of the most recent mouse event.\n\
 Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-click.\n\
@@ -1434,14 +1464,14 @@ to determine, e.g., whether the user single clicked or double clicked.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(number_of_mouse_buttons,"number-of-mouse-buttons", 0, 0, 0, (),
+SCM_DEFINE(number_of_mouse_buttons,"number-of-mouse-buttons", 0, 0, 0, (),
 "Return the number of mouse buttons of the current mouse.")
 #define FUNC_NAME s_number_of_mouse_buttons
 { return gh_int2scm(cMouseButtons); }
 #undef FUNC_NAME
 
 
-SCWM_PROC(mod_mask_shift,"mod-mask-shift", 0, 0, 0, (),
+SCM_DEFINE(mod_mask_shift,"mod-mask-shift", 0, 0, 0, (),
 "Return the bit-mask for the Shift modifier key, or #f.\n\
 Returns #f if and only if there is no key bound to act as Shift, otherwise\n\
 returns a power of two corresponding to the bit-mask of the modifier")
@@ -1449,7 +1479,7 @@ returns a power of two corresponding to the bit-mask of the modifier")
 { return ShiftMask == 0? SCM_BOOL_F : gh_int2scm(ShiftMask); }
 #undef FUNC_NAME
 
-SCWM_PROC(mod_mask_control,"mod-mask-control", 0, 0, 0, (),
+SCM_DEFINE(mod_mask_control,"mod-mask-control", 0, 0, 0, (),
 "Return the bit-mask for the Control modifier key, or #f.\n\
 Returns #f if and only if there is no key bound to act as Control, otherwise\n\
 returns a power of two corresponding to the bit-mask of the modifier")
@@ -1457,7 +1487,7 @@ returns a power of two corresponding to the bit-mask of the modifier")
 { return ControlMask == 0? SCM_BOOL_F : gh_int2scm(ControlMask); }
 #undef FUNC_NAME
 
-SCWM_PROC(mod_mask_meta,"mod-mask-meta", 0, 0, 0, (),
+SCM_DEFINE(mod_mask_meta,"mod-mask-meta", 0, 0, 0, (),
 "Return the bit-mask for the Meta modifier key, or #f.\n\
 Returns #f if and only if there is no key bound to act as Meta, otherwise\n\
 returns a power of two corresponding to the bit-mask of the modifier")
@@ -1465,7 +1495,7 @@ returns a power of two corresponding to the bit-mask of the modifier")
 { return MetaMask == 0? SCM_BOOL_F : gh_int2scm(MetaMask); }
 #undef FUNC_NAME
 
-SCWM_PROC(mod_mask_alt, "mod-mask-alt", 0, 0, 0, (),
+SCM_DEFINE(mod_mask_alt, "mod-mask-alt", 0, 0, 0, (),
 "Return the bit-mask for the Alt modifier key, or #f.\n\
 Returns #f if and only if there is no key bound to act as Alt, otherwise\n\
 returns a power of two corresponding to the bit-mask of the modifier")
@@ -1473,7 +1503,7 @@ returns a power of two corresponding to the bit-mask of the modifier")
 { return AltMask == 0? SCM_BOOL_F : gh_int2scm(AltMask); }
 #undef FUNC_NAME
 
-SCWM_PROC(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, (),
+SCM_DEFINE(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, (),
 "Return the bit-mask for the Hyper modifier key, or #f.\n\
 Returns #f if and only if there is no key bound to act as Hyper, otherwise\n\
 returns a power of two corresponding to the bit-mask of the modifier")
@@ -1482,7 +1512,7 @@ returns a power of two corresponding to the bit-mask of the modifier")
 #undef FUNC_NAME
 
 
-SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0, (),
+SCM_DEFINE(mod_mask_super, "mod-mask-super", 0, 0, 0, (),
 "Return the bit-mask for the Super modifier key, or #f.\n\
 Returns #f if and only if there is no key bound to act as Super, otherwise\n\
 returns a power of two corresponding to the bit-mask of the modifier")
@@ -1491,7 +1521,7 @@ returns a power of two corresponding to the bit-mask of the modifier")
 #undef FUNC_NAME
 
 
-SCWM_PROC(mod_mask_numlock, "mod-mask-numlock", 0, 0, 0, (),
+SCM_DEFINE(mod_mask_numlock, "mod-mask-numlock", 0, 0, 0, (),
 "Return the bit-mask for the NumLock modifier key, or #f.\n\
 Returns #f if and only if there is no key bound to act as NumLock, otherwise\n\
 returns a power of two corresponding to the bit-mask of the modifier")
@@ -1500,7 +1530,7 @@ returns a power of two corresponding to the bit-mask of the modifier")
 #undef FUNC_NAME
 
 
-SCWM_PROC(mod_mask_scrolllock, "mod-mask-scrolllock", 0, 0, 0, (),
+SCM_DEFINE(mod_mask_scrolllock, "mod-mask-scrolllock", 0, 0, 0, (),
 "Return the bit-mask for the ScrollLock modifier key, or #f.\n\
 Returns #f if and only if there is no key bound to act as ScrollLock, otherwise\n\
 returns a power of two corresponding to the bit-mask of the modifier")
@@ -1508,7 +1538,7 @@ returns a power of two corresponding to the bit-mask of the modifier")
 { return scrollock_mask == 0? SCM_BOOL_F : gh_int2scm (scrollock_mask); }
 #undef FUNC_NAME
 
-SCWM_PROC(set_mod_mask_numlock_x, "set-mod-mask-numlock!", 1, 0, 0, 
+SCM_DEFINE(set_mod_mask_numlock_x, "set-mod-mask-numlock!", 1, 0, 0, 
           (SCM mask),
 "Set the bit-mask for the NumLock modifier key.\n\
 MASK must be a power of 2. The NumLock modifier mask is\n\
@@ -1521,7 +1551,7 @@ need to override the built-in algorithm.")
 } 
 #undef FUNC_NAME
 
-SCWM_PROC(set_mod_mask_scrolllock_x, "set-mod-mask-scrolllock!", 1, 0, 0, 
+SCM_DEFINE(set_mod_mask_scrolllock_x, "set-mod-mask-scrolllock!", 1, 0, 0, 
           (SCM mask),
 "Set the bit-mask for the ScrollLock modifier key.\n\
 MASK must be a power of 2. The ScrollLock modifier mask is\n\
@@ -1535,7 +1565,7 @@ need to override the built-in algorithm.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_ignore_dubious_modifiers_x, "set-ignore-dubious-modifiers!", 1, 0, 0, 
+SCM_DEFINE(set_ignore_dubious_modifiers_x, "set-ignore-dubious-modifiers!", 1, 0, 0, 
           (SCM flag),
 "If FLAG is #t, ignore scoll/num/lock modifiers on all bindings made.\n\
 Otherwise do not.  If dubious locks are being ignored, multiple XGrabKey invocations\n\
@@ -1549,7 +1579,7 @@ to #f. The default is #t.")
 } 
 #undef FUNC_NAME
 
-SCWM_PROC(ignore_dubious_modifiers_p, "ignore-dubious-modifiers?", 0, 0, 0, 
+SCM_DEFINE(ignore_dubious_modifiers_p, "ignore-dubious-modifiers?", 0, 0, 0, 
           (),
 "Return the status of the ignore-dubious-modifiers flag.\n\
 See `set-ignore-dubious-modifiers!'.")
@@ -1561,7 +1591,7 @@ See `set-ignore-dubious-modifiers!'.")
 
 
 
-SCWM_PROC(undo_all_passive_grabs, "undo-all-passive-grabs", 0, 0, 0,
+SCM_DEFINE(undo_all_passive_grabs, "undo-all-passive-grabs", 0, 0, 0,
           (),
 "Remove all passive grabs of keys and buttons of bindings.\n\
 See `redo-all-passive-grabs' for re-establishing those bindings.\n\
@@ -1576,7 +1606,7 @@ This procedure considers the state of `ignore-dubious-modifiers?'")
 #undef FUNC_NAME
 
 
-SCWM_PROC(redo_all_passive_grabs, "redo-all-passive-grabs", 0, 0, 0,
+SCM_DEFINE(redo_all_passive_grabs, "redo-all-passive-grabs", 0, 0, 0,
           (),
 "Re-instate all passive grabs of keys and buttons of bindings.\n\
 See `undo-all-passive-grabs' for temporarily removing those bindings.\n\
@@ -1592,7 +1622,7 @@ This procedure considers the state of `ignore-dubious-modifiers?'")
 #undef FUNC_NAME
 
 
-SCWM_PROC(undo_passive_grab, "undo-passive-grab", 2, 1, 0,
+SCM_DEFINE(undo_passive_grab, "undo-passive-grab", 2, 1, 0,
           (SCM modmask, SCM keycode_or_butnum, SCM mouse_p),
 "Remove the passive grabs of KEYCODE-OR-BUTNUM with MODMASK on all windows. \n\
 If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove\n\
@@ -1606,14 +1636,14 @@ a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.")
   VALIDATE_ARG_INT_COPY(2,keycode_or_butnum,key_or_but);
   VALIDATE_ARG_BOOL_COPY_USE_F(3,mouse_p,fMouse);
   if (fMouse)
-    ungrab_button_all_windows(key_or_but,mask);
+    ungrab_button_all_windows(key_or_but,mask,C_WINDOW);
   else
-    ungrab_key_all_windows(key_or_but,mask);
+    ungrab_key_all_windows(key_or_but,mask,C_WINDOW);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
-SCWM_PROC(redo_passive_grab, "redo-passive-grab", 2, 1, 0,
+SCM_DEFINE(redo_passive_grab, "redo-passive-grab", 2, 1, 0,
           (SCM modmask, SCM keycode_or_butnum, SCM mouse_p),
 "Re-instate the passive grab of KEYCODE-OR-BUTNUM with MODMASK on all windows. \n\
 If MOUSE? is #t, then treat KEYCODE-OR-BUTNUM as a button number and remove\n\
@@ -1627,16 +1657,16 @@ a grabe of a mouse binding.  Otherwise remove a keyboard passive grab.")
   VALIDATE_ARG_INT_COPY(2,keycode_or_butnum,key_or_but);
   VALIDATE_ARG_BOOL_COPY_USE_F(3,mouse_p,fMouse);
   if (fMouse)
-    grab_button_all_windows(key_or_but,mask);
+    grab_button_all_windows(key_or_but,mask,C_WINDOW);
   else
-    grab_key_all_windows(key_or_but,mask);
+    grab_key_all_windows(key_or_but,mask,C_WINDOW);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
 
 
 
-SCWM_PROC(X_pointer_mapping, "X-pointer-mapping", 0, 0, 0,
+SCM_DEFINE(X_pointer_mapping, "X-pointer-mapping", 0, 0, 0,
           (),
 "Return the mapping of physical->logical pointer buttons as a list.\n\
 The length of the returned list is the number of buttons available.  Each\n\
@@ -1655,7 +1685,7 @@ physical button acts as logical button 1, and the leftmost acts as button 3.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC (keymask_to_string, "keymask->string", 1, 0, 0,
+SCM_DEFINE (keymask_to_string, "keymask->string", 1, 0, 0,
            (SCM keymask),
 "Return a string representing KEYMASK.\n\
 E.g., (keymask->string 4) => \"C-\". Returns #f on an error.")
@@ -1675,7 +1705,7 @@ E.g., (keymask->string 4) => \"C-\". Returns #f on an error.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC (keymask_keycode_to_string, "keymask-keycode->string", 2, 0, 0,
+SCM_DEFINE (keymask_keycode_to_string, "keymask-keycode->string", 2, 0, 0,
            (SCM keymask, SCM keycode),
 "Return a string representing the key press with mask KEYMASK, code KEYCODE.\n\
 E.g., (keymask-keycode->string 4 44) => \"C-j\". Returns #f on an error.")

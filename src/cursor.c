@@ -219,7 +219,7 @@ XCursorByNumber(int cursor_num)
 }
 
 
-SCWM_PROC(set_window_cursor_x,"set-window-cursor!",2,0,0,
+SCM_DEFINE(set_window_cursor_x,"set-window-cursor!",2,0,0,
           (SCM win, SCM cursor),
 "Set the default cursor for WIN to CURSOR. \n\
 If CURSOR is #f, this undefines the cursor for WIN and\n\
@@ -241,7 +241,7 @@ to create cursor objects.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(get_x_cursor,"get-x-cursor",1,0,0,
+SCM_DEFINE(get_x_cursor,"get-x-cursor",1,0,0,
 	  (SCM name_or_number),
 "Return the cursor object corresponding to NAME-OR-NUMBER.\n\
 NAME-OR-NUMBER can be either a string naming an X11 cursor (e.g.,\n\
@@ -266,7 +266,7 @@ this procedure..")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(create_pixmap_cursor,"create-pixmap-cursor",1,4,0,
+SCM_DEFINE(create_pixmap_cursor,"create-pixmap-cursor",1,4,0,
           (SCM image, SCM fg_color, SCM bg_color, SCM x_hotspot, SCM y_hotspot),
 "Create and return a new cursor object from the pixmap image.\n\
 IMAGE specifies the look of the cursor that will be returned.\n\

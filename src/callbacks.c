@@ -245,12 +245,14 @@ SCWM_INLINE SCM scwm_run_hook(SCM hook, SCM args)
     return SCM_BOOL_F;
 
   if (!SCM_HOOKP(hook)) {
-    scwm_error_message(gh_str02scm("Bad hook: %S, args = %S\n"), 
+    scwm_error_message(gh_str02scm("Bad hook: " SCWM_WRITE 
+                                   ", args = " SCWM_WRITE "\n"), 
                        gh_list(hook,args,SCM_UNDEFINED));
     return SCM_UNSPECIFIED;
   }
 #ifdef SCWM_DEBUG_RUN_HOOK
-  scwm_message(DBG,"scwm_run_hook","Calling hook `%s'; args = %S",
+  scwm_message(DBG,"scwm_run_hook","Calling hook `"
+               SCWM_DISPLAY "'; args = " SCWM_WRITE,
                gh_list(hook,args,SCM_UNDEFINED));
 #endif
   if (scwm_gc_often) scm_gc();
@@ -263,7 +265,8 @@ SCWM_INLINE SCM scwm_run_hook(SCM hook, SCM args)
 SCWM_INLINE SCM scwm_run_hook_message_only(SCM hook, SCM args)
 {
 #ifdef SCWM_DEBUG_RUN_HOOK
-  scwm_message(DBG,"scwm_run_hook_message_only","Calling hook `%s'; args = %S",
+  scwm_message(DBG,"scwm_run_hook_message_only","Calling hook `"
+               SCWM_DISPLAY "'; args = " SCWM_WRITE,
                gh_list(hook,args,SCM_UNDEFINED));
 #endif
   return scwm_safe_apply_message_only(run_hook_proc, gh_cons(hook,args));
@@ -285,20 +288,23 @@ SCWM_INLINE SCM scwm_run_hook2(SCM hook, SCM arg1, SCM arg2)
   return scwm_run_hook(hook,SCM_LIST2(arg1,arg2));
 }
 
-
+#ifndef HAVE_SCM_HOOK_EMPTY_P
 SCM
-scm_empty_hook_p(SCM hook)
+scm_hook_empty_p(SCM hook)
 {
   return gh_bool2scm(!gh_pair_p(gh_cddr(hook)));
 }
+#endif
 
 #else
 
+#ifndef HAVE_SCM_HOOK_EMPTY_P
 SCM
-scm_empty_hook_p(SCM hook)
+scm_hook_empty_p(SCM hook)
 {
   return gh_bool2scm(hook == SCM_EOL || UNSET_SCM(hook));
 }
+#endif
 
 /* Print warning message, and reset the hook */
 static void
@@ -308,7 +314,8 @@ WarnBadHook(SCM hook)
   { /* scope */ 
     /* Warn that hook list is not a list. */
     char *szHookName = gh_scm2newstr(hook, NULL);
-    scwm_message(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", szHookName);
+    scwm_message(WARN,"WarnBadHook","hooklist is not a list for "
+                 SCWM_DISPLAY "; resetting it to ()!", szHookName);
     gh_set_cdr_x(hook, SCM_EOL);
   }
 }
@@ -491,7 +498,7 @@ scwm_handle_error (void *data, SCM tag, SCM throw_args)
   scm_handle_by_message_noexit(data,tag,throw_args);
   port = scm_set_current_error_port(port);
   str = scm_strport_to_string(port);
-  if (SCM_BOOL_T == scm_empty_hook_p(error_hook)) {
+  if (SCM_BOOL_T == scm_hook_empty_p(error_hook)) {
     scm_display(str,scm_def_errp);
     scm_newline(scm_def_errp);
   } else {
@@ -502,7 +509,7 @@ scwm_handle_error (void *data, SCM tag, SCM throw_args)
 }
 
 
-SCWM_PROC(safe_load, "safe-load", 1, 0, 0,
+SCM_DEFINE(safe_load, "safe-load", 1, 0, 0,
           (SCM fname),
 "Load file FNAME while trapping and displaying errors.\n\
 Each individual top-level-expression is evaluated separately and all\n\
@@ -527,7 +534,7 @@ SCM scwm_safe_eval_str (char *string)
 				     &stack_item);
 }
 
-SCWM_PROC(set_load_processing_frequency_x, "set-load-processing-frequency!", 1, 0, 0,
+SCM_DEFINE(set_load_processing_frequency_x, "set-load-processing-frequency!", 1, 0, 0,
           (SCM num_lines),
 "Invoke hooks on `load-processing-hook' every NUM-LINES lines. \n\
 Returns the old value.")
@@ -550,7 +557,7 @@ once the time limit expires and the timer hook is triggered, it is
 removed.
 */
 
-SCWM_PROC(add_timer_hook_x, "add-timer-hook!", 2, 0, 0,
+SCM_DEFINE(add_timer_hook_x, "add-timer-hook!", 2, 0, 0,
           (SCM msec, SCM proc),
 "Add a timer hook to call PROC once sometime after MSEC milliseconds.\n\
 When at least MSEC milliseconds have passed, procedure PROC will be\n\
@@ -584,7 +591,7 @@ called with no arguments. A handle suitable for passing to\n\
 }
 #undef FUNC_NAME
 
-SCWM_PROC(remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0,
+SCM_DEFINE(remove_timer_hook_x, "remove-timer-hook!", 1, 0, 0,
           (SCM handle),
 "Remove a timer hook identified by HANDLE.\n\
 The HANDLE should be an object that was returned by\n\
@@ -598,7 +605,7 @@ timer hook that has already been triggered.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(reset_timer_hook_x, "reset-timer-hook!", 0, 0, 0,
+SCM_DEFINE(reset_timer_hook_x, "reset-timer-hook!", 0, 0, 0,
           (),
 "Remove all timer-hook procedures.")
 #define FUNC_NAME s_reset_timer_hook_x
@@ -609,7 +616,7 @@ SCWM_PROC(reset_timer_hook_x, "reset-timer-hook!", 0, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(get_timer_hooks_list, "get-timer-hooks-list", 0, 0, 0,
+SCM_DEFINE(get_timer_hooks_list, "get-timer-hooks-list", 0, 0, 0,
           (),
 "Return the timer-hooks list.")
 #define FUNC_NAME s_get_timer_hooks_list
@@ -699,7 +706,7 @@ invocation.
 static SCM input_hooks;
 static SCM new_input_hooks;
 
-SCWM_PROC(add_input_hook_x, "add-input-hook!", 2, 0, 0,
+SCM_DEFINE(add_input_hook_x, "add-input-hook!", 2, 0, 0,
           (SCM port, SCM proc),
 "Add an input hook to run PROC on input from PORT.\n\
 Whenever input becomes available on PORT, procedure PROC will be called\n\
@@ -727,7 +734,7 @@ returned.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(remove_input_hook_x, "remove-input-hook!", 1, 0, 0,
+SCM_DEFINE(remove_input_hook_x, "remove-input-hook!", 1, 0, 0,
           (SCM handle),
 "Remove an input hook identified by HANDLE.\n\
 HANDLE should be an object that was returned by `add-input-hook!'. An\n\
@@ -744,7 +751,7 @@ input hook may safely remove itself.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(reset_input_hook_x, "reset-input-hook!", 0, 0, 0,
+SCM_DEFINE(reset_input_hook_x, "reset-input-hook!", 0, 0, 0,
           (),
 "Remove all procedures from the input hook.")
 #define FUNC_NAME s_reset_input_hook_x
@@ -759,7 +766,7 @@ SCWM_PROC(reset_input_hook_x, "reset-input-hook!", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(get_input_hooks_list, "get-input-hooks-list", 0, 0, 0,
+SCM_DEFINE(get_input_hooks_list, "get-input-hooks-list", 0, 0, 0,
           (),
 "Return the input-hooks list.")
 #define FUNC_NAME s_get_input_hooks_list
@@ -850,7 +857,7 @@ extern SCM ScmArgsFromInteractiveSpec(SCM spec, SCM proc);
 static SCM *pscm_this_command;
 static SCM *pscm_this_command_args;
 
-SCWM_PROC(call_interactively, "call-interactively", 1, 1, 0,
+SCM_DEFINE(call_interactively, "call-interactively", 1, 1, 0,
           (SCM thunk, SCM debug),
 "Invoke THUNK interactively.\n\
 THUNK can be either a procedure or a symbol.\n\
@@ -870,7 +877,8 @@ Write a debug message if DEBUG is #t.")
        only warn about non-anonymous non-interactive procedures;
        it's a pain to use (lambda* "" () ..) to create procs for bindings */
     if (gh_string_p(procname) || gh_symbol_p(procname)) {
-      scwm_message(WARN,FUNC_NAME,"Procedure `%s' is not interactive.", 
+      scwm_message(WARN,FUNC_NAME,"Procedure `" SCWM_DISPLAY 
+                   "' is not interactive.", 
                    SCM_LIST1(procname));
     }
   }

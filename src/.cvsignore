@@ -1,5 +1,6 @@
 *.doc
 *.x
+*.o
 .deps
 .libs
 Makefile

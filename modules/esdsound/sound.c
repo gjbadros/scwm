@@ -31,7 +31,7 @@ static int esd;
 
 #define ESD_CONNECTED_P	(esd > 0)
 
-SCWM_PROC(sound_load, "sound-load", 1, 1, 0,
+SCM_DEFINE(sound_load, "sound-load", 1, 1, 0,
 	  (SCM file, SCM name),
 "Load sound from FILE, tagging it with NAME.\n\
 If NAME is not given, \"scwm\" is used.\n\
@@ -67,7 +67,7 @@ Returns a sound object usable with the other sound functions.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(sound_unload, "sound-unload", 1, 0, 0,
+SCM_DEFINE(sound_unload, "sound-unload", 1, 0, 0,
           (SCM sound),
 "Unload SOUND, freeing any resources it occupies.\n\
 SOUND must be an object returned by `sound-load'.")
@@ -88,7 +88,7 @@ SOUND must be an object returned by `sound-load'.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(sound_play, "sound-play", 1, 0, 0,
+SCM_DEFINE(sound_play, "sound-play", 1, 0, 0,
 	  (SCM sound),
 "Play SOUND.\n\
 SOUND must be an object returned by `sound-load'.")
@@ -116,7 +116,7 @@ SOUND must be an object returned by `sound-load'.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(esd_reconnect, "esd-reconnect", 0, 1, 0,
+SCM_DEFINE(esd_reconnect, "esd-reconnect", 0, 1, 0,
 	  (SCM host),
 "Connect to the ESound daemon on the machine named HOST.\n\
 If HOST is not set, the $ESPEAKER environmental variable will be used. If this\n\

@@ -22,8 +22,6 @@
 ;;; the draw functions should get passed semantic parameters
 ;;; e.g., is-enabled? and is-in-focus? instead of color, width
 
-(start-highlighting-selected-window)
-
 (define-public ui-constraint-prompter-msgwin (make-message-window ""))
 
 (message-window-style ui-constraint-prompter-msgwin
@@ -105,13 +103,17 @@ drawn.  POINT is of the form (X . Y)."
 	(begin
 	  (unselect-all-windows)
 	  (list winlist))
-	(let ((w1 (select-window-interactively (string-append name ": " p1) msgwin)))
-	  (if w1
-	      (let ((w2 (select-window-interactively (string-append name ": " p2) msgwin)))
-		(if w2
-		    (list (list w1 w2))
-		    #f))
-	      #f)))))
+	(dynamic-wind
+	 (lambda () (start-highlighting-selected-window))
+	 (lambda ()
+	   (let ((w1 (select-window-interactively (string-append name ": " p1) msgwin)))
+	     (if w1
+		 (let ((w2 (select-window-interactively (string-append name ": " p2) msgwin)))
+		   (if w2
+		       (list (list w1 w2))
+		       #f))
+		 #f)))
+	 (lambda () (end-highlighting-selected-window))))))
 
 ;; helpful prompter for two-window constraints
 ;; NOTE: Will either return all windows in selection list
@@ -123,13 +125,17 @@ drawn.  POINT is of the form (X . Y)."
 	(begin
 	  (unselect-all-windows)
 	  (list winlist))
-	(let ((w1 (select-window-interactively (string-append name ": " p1) msgwin)))
-	  (if w1
-	      (let ((w2 (select-window-interactively (string-append name ": " p2) msgwin)))
-		(if w2
-		    (list (list w1 w2))
-		    #f))
-	      #f)))))
+	(dynamic-wind
+	 (lambda () (start-highlighting-selected-window))
+	 (lambda ()
+	   (let ((w1 (select-window-interactively (string-append name ": " p1) msgwin)))
+	     (if w1
+		 (let ((w2 (select-window-interactively (string-append name ": " p2) msgwin)))
+		   (if w2
+		       (list (list w1 w2))
+		       #f))
+		 #f)))
+	 (lambda () (end-highlighting-selected-window))))))
 
 
 (define*-public (one-window-prompter name #&optional (p1 "select window"))
@@ -138,9 +144,13 @@ drawn.  POINT is of the form (X . Y)."
 	(begin 
 	  (unselect-all-windows)
 	  winlist)
-	(let ((win (select-window-interactively 
-		    (string-append name ": " p1) msgwin)))
-	  (if win (list win) #f)))))
+	(dynamic-wind
+	 (lambda () (start-highlighting-selected-window))
+	 (lambda () 
+	   (let ((win (select-window-interactively 
+		       (string-append name ": " p1) msgwin)))
+	     (if win (list win) #f)))
+	 (lambda () (end-highlighting-selected-window))))))
 
 
 (define*-public (two-window-or-more-nonant-prompter name #&key (p1 "first window") (p2 "second window") (orientation #f))
@@ -386,10 +396,8 @@ to make it resize around its center."
     (and enable? (for-each (lambda (sc) (cl-add-constraint (scwm-master-solver) sc)) sclist))
     (list sclist winlist nonantlist cnlist)))
 
-;; utility function (for getting positions from nonants)
-
 (define (get-pos-from-nonant win nonant)
-  (case nonant
+  (case (canonicalize-nonant nonant)
     ((0) (window-left-top win))
     ((1) (window-center-top win))
     ((2) (window-right-top win))
@@ -399,7 +407,8 @@ to make it resize around its center."
     ((6) (window-left-bottom win))
     ((7) (window-center-bottom win))
     ((8) (window-right-bottom win))
-    (else (error "Bad nonant"))))
+    (else (error "Bad nonant.")) ;; should not get here
+    ))
 
 ;; draw-proc
 (define (draw-cn-strict-relpos ui-constraint enable focus mode)
@@ -433,6 +442,8 @@ determines what part of each window is connected to the other."
    cl-is-constraint-satisfied?
    "cn-strict-relative-pos.xpm" #f menuname-as-win-num))
 
+;; (enable-ui-constraint (make-ui-constraint uicc-strict-relpos (list (list (get-window) (get-window)) (list 'northeast 'northeast))))
+
 
 ;;-----------------------------------------------------------------------
 ;; alignment constraint
@@ -452,11 +463,12 @@ determines what part of each window is connected to the other."
 
 ;; get the proper constraint var for alignment
 (define (get-hcl-from-nonant win nonant)
-  (case nonant
+  (case (canonicalize-nonant nonant)
     ((0 1 2) (window-clv-yt win))
     ((3 4 5) (cl-plus (window-clv-yt win) (cl-divide (window-clv-height win) 2)))
     ((6 7 8) (window-clv-yb win))
-    (else (error "Bad nonant"))))
+    (else (error "Bad nonant.")) ;; should not get here
+    ))
 
 ;; constructor
 (define* (cnctr-halign wlist qlist #&optional (enable? #f))
@@ -468,11 +480,12 @@ determines what part of each window is connected to the other."
 
 ;; get proper position for drawing
 (define (get-hpos-from-nonant win nonant)
-  (case nonant
+  (case (canonicalize-nonant nonant)
     ((0 1 2) (window-center-top win))
     ((3 4 5) (window-center-middle win))
     ((6 7 8) (window-center-bottom win))
-    (else (error "Bad nonant"))))
+    (else (error "Bad nonant.")) ;; should not get here
+    ))
 
 ;; draw the alignment constraint
 (define (draw-cn-halign ui-constraint enable focus mode)
@@ -494,7 +507,7 @@ determines what part of each window is connected to the other."
 ;; halign-nonant->string
 ;; converts a normal nonant value to a string
 (define (halign-nonant->string nonant)
-  (case nonant
+  (case (canonicalize-nonant nonant)
     ((0 1 2) "top")
     ((3 4 5) "middle")
     ((6 7 8) "bottom")))
@@ -533,11 +546,12 @@ Also can be used to glue top and bottom edges of windows together."
 
 ;; get the proper constraint var for alignment
 (define (get-vcl-from-nonant win nonant)
-  (case nonant
+  (case (canonicalize-nonant nonant)
     ((0 3 6) (window-clv-xl win))
     ((1 4 7) (cl-plus (window-clv-xl win) (cl-divide (window-clv-width win) 2)))
     ((2 5 8) (window-clv-xr win))
-    (else (error "Bad nonant"))))
+    (else (error "Bad nonant.")) ;; should not get here
+    ))
 
 ;; constructor
 (define* (cnctr-valign wlist qlist #&optional (enable? #f))
@@ -549,11 +563,12 @@ Also can be used to glue top and bottom edges of windows together."
 
 ;; get proper position for drawing 
 (define (get-vpos-from-nonant win nonant)
-  (case nonant
+  (case (canonicalize-nonant nonant)
     ((0 3 6) (window-left-middle win))
     ((1 4 7) (window-center-middle win))
     ((2 5 8) (window-right-middle win))
-    (else (error "Bad nonant"))))
+    (else (error "Bad nonant.")) ;; should not get here
+    ))
 
 ;; draw the alignment constraint
 (define (draw-cn-valign ui-constraint enable focus mode)
@@ -575,7 +590,7 @@ Also can be used to glue top and bottom edges of windows together."
 ;; valign-nonant->string
 ;; converts a normal nonant value to a string
 (define (valign-nonant->string nonant)
-  (case nonant
+  (case (canonicalize-nonant nonant)
     ((0 3 6) "left")
     ((1 4 7) "center")
     ((2 5 8) "right")))

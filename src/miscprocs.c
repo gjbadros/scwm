@@ -48,7 +48,7 @@ SCWM_HOOK(scwm_test_hook_1,"scwm-test-hook-1",1,
 "Just a test hook that takes one argument.\n\
 See `scwm-run-test-hook-1'.");
 
-SCWM_PROC(set_title_justify_x,"set-title-justify!", 1, 0, 0,
+SCM_DEFINE(set_title_justify_x,"set-title-justify!", 1, 0, 0,
           (SCM just),
 "Set the justification for the title to JUST.\n\
 JUST should be one of 'right, 'left, or 'center. Applies to the\n\
@@ -74,7 +74,7 @@ current decor.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(title_justify,"title-justify", 0, 0, 0,
+SCM_DEFINE(title_justify,"title-justify", 0, 0, 0,
           (),
 "Return the current justification for the title, as set by `set-title-justify!'.\n\
 The return value will be one of 'right, 'left, or 'center. Applies to the\n\
@@ -96,7 +96,7 @@ current decor.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_title_height_x, "set-title-height!", 1, 0, 0,
+SCM_DEFINE(set_title_height_x, "set-title-height!", 1, 0, 0,
           (SCM height),
 "Set the height of the titlebar in pixels to HEIGHT.\n\
 Applies to the current decor.")
@@ -123,7 +123,7 @@ Applies to the current decor.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(title_height,"title-height", 0, 0, 0,
+SCM_DEFINE(title_height,"title-height", 0, 0, 0,
           (),
 "Return the height of the titlebar in pixels, as set by `set-title-height!'.\n\
 Applies to the current decor.")
@@ -137,7 +137,7 @@ Applies to the current decor.")
 
 
 
-SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
+SCM_DEFINE(restarted_p, "restarted?", 0, 0, 0,
           (),
 "Returns true if scwm is being restarted by itself.")
 #define FUNC_NAME s_restarted_p
@@ -146,7 +146,7 @@ SCWM_PROC(restarted_p, "restarted?", 0, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(capturing_p, "capturing?", 0, 0, 0,
+SCM_DEFINE(capturing_p, "capturing?", 0, 0, 0,
           (),
 "Returns #t when the windows are being captured.\n\
 This happens at two times: during initial startup, or during a\n\
@@ -173,7 +173,7 @@ necessary during normal operation.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_click_delay_x, "set-click-delay!", 1, 0, 0,
+SCM_DEFINE(set_click_delay_x, "set-click-delay!", 1, 0, 0,
           (SCM msec),
 "Set the delay used in identifying mouse clicks and drags.\n\
 MSEC is specified in milliseconds. After MSEC milliseconds, a mouse-down\n\
@@ -188,7 +188,7 @@ single click is definitively identified as not a double click.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(click_delay, "click-delay", 0, 0, 0,
+SCM_DEFINE(click_delay, "click-delay", 0, 0, 0,
           (),
 "Returns the delay used in identifying mouse clicks and drags, in milliseconds. \n\
 See also `set-click-delay!'")
@@ -198,7 +198,7 @@ See also `set-click-delay!'")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,
+SCM_DEFINE(set_colormap_focus_x, "set-colormap-focus!", 1, 0, 0,
           (SCM ftype),
 "Set the colormap focus policy to FTYPE. \n\
 FTYPE can either be 'mouse, indicating that the window under the mouse\n\
@@ -222,7 +222,7 @@ other than 'mouse.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(colormap_focus, "colormap-focus", 0, 0, 0,
+SCM_DEFINE(colormap_focus, "colormap-focus", 0, 0, 0,
           (),
 "Return the colormap focus policy, as set by `set-colormap-focus!'. \n\
 The value can be either be 'mouse, indicating that the window under\n\
@@ -235,7 +235,7 @@ colormap focus.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(pointer_position, "pointer-position", 0, 0, 0,
+SCM_DEFINE(pointer_position, "pointer-position", 0, 0, 0,
           (),
 "Return the current position of the mouse pointer in pixels.\n\
 The return value is a two-element list of the x and y coordinates.")
@@ -250,7 +250,7 @@ The return value is a two-element list of the x and y coordinates.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(move_pointer_to, "move-pointer-to", 2, 0, 0,
+SCM_DEFINE(move_pointer_to, "move-pointer-to", 2, 0, 0,
           (SCM sx, SCM sy),
 "Move the mouse pointer to viewport coordinates SX, SY.")
 #define FUNC_NAME s_move_pointer_to
@@ -296,7 +296,7 @@ SCWM_IPROC(beep, "beep", 0, 0, 0,
 /* MS:FIXME:: - the functionality related to the next six procedures
    should be implemented by adding new event bindings eventually */
 
-SCWM_PROC(set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0,
+SCM_DEFINE(set_click_to_focus_passes_click_x, "set-click-to-focus-passes-click!", 1, 0, 0,
           (SCM flag),
 "Determine whether a click-to-focus window receives the click.\n\
 If FLAG is #t, the window will receive the event, if #f, scwm\n\
@@ -308,7 +308,7 @@ will not pass the event on to the client.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(click_to_focus_passes_click_p, "click-to-focus-passes-click?", 0, 0, 0,
+SCM_DEFINE(click_to_focus_passes_click_p, "click-to-focus-passes-click?", 0, 0, 0,
           (),
 "Returns #t iff a click-to-focus window is sent the click, else #f.")
 #define FUNC_NAME s_click_to_focus_passes_click_p
@@ -320,7 +320,7 @@ SCWM_PROC(click_to_focus_passes_click_p, "click-to-focus-passes-click?", 0, 0, 0
 
 /* MS:FIXME:: remove this one in particular once window-focus-hook exists. */
 
-SCWM_PROC(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
+SCM_DEFINE(set_click_to_focus_raises_x, "set-click-to-focus-raises!", 1, 0, 0,
           (SCM flag),
 "Determine whether a click to focus raises the clicked-on window.\n\
 If FLAG is #t, clicks which transfer focus will also raise the target \n\
@@ -335,7 +335,7 @@ window.")
 
 /* MS:FIXME:: - this seems to be redundant with auto-raise to some degree... */
 
-SCWM_PROC(click_to_focus_raises_p, "click-to-focus-raises?", 0, 0, 0,
+SCM_DEFINE(click_to_focus_raises_p, "click-to-focus-raises?", 0, 0, 0,
           (),
 "Returns #t iff a click-to-focus window gets raised on focus, else #f.")
 #define FUNC_NAME s_click_to_focus_raises_p
@@ -352,7 +352,7 @@ SCWM_PROC(click_to_focus_raises_p, "click-to-focus-raises?", 0, 0, 0,
    bogus. Couldn't you just (bind-mouse 'all 1 raise-window) and get
    the exact same effect?  Examine further... */
 
-SCWM_PROC(set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0, 0,
+SCM_DEFINE(set_mouse_focus_click_raises_x, "set-mouse-focus-click-raises!", 1, 0, 0,
           (SCM flag),
 "Determine whether a mouse-focus-click will raise the window.\n\
 If FLAG is #t it will raise the window. Not sure if this function\n\
@@ -365,7 +365,7 @@ makes sense any more.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
+SCM_DEFINE(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
           (),
 "Returns a boolean value indicating whether a mouse-focus-click will raise the window.")
 #define FUNC_NAME s_mouse_focus_click_raises_p
@@ -376,7 +376,7 @@ SCWM_PROC(mouse_focus_click_raises_p, "mouse-focus-click-raises?", 0, 0, 0,
 
 
 
-SCWM_PROC(X_rotate_cut_buffers, "X-rotate-cut-buffers", 1, 0, 0,
+SCM_DEFINE(X_rotate_cut_buffers, "X-rotate-cut-buffers", 1, 0, 0,
           (SCM n),
 "Rotate the X cut buffers by N positions.\n\
 This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,\n\
@@ -399,7 +399,7 @@ by 60. */
 /* CRW:FIXME:MS: Maybe this function should just be deleted?  It
 doesn't seem to be used anywhere, and (as mentioned above) its implementation
 is inconsistent... */
-SCWM_PROC(elapsed_time, "elapsed-time", 0, 0, 0,
+SCM_DEFINE(elapsed_time, "elapsed-time", 0, 0, 0,
           (),
 "Return the elapsed time in milliseconds since O.S. has been up.")
 #define FUNC_NAME s_elapsed_time
@@ -426,7 +426,7 @@ SCWM_PROC(elapsed_time, "elapsed-time", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(scwm_last_timestamp, "scwm-last-timestamp", 0, 0, 0,
+SCM_DEFINE(scwm_last_timestamp, "scwm-last-timestamp", 0, 0, 0,
           (),
 "Return the timestamp of the last event Scwm handled.")
 #define FUNC_NAME s_scwm_last_timestamp
@@ -437,7 +437,7 @@ SCWM_PROC(scwm_last_timestamp, "scwm-last-timestamp", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
+SCM_DEFINE(scwm_version, "scwm-version", 0, 0, 0,
           (),
 "Return the version of scwm running.")
 #define FUNC_NAME s_scwm_version
@@ -447,7 +447,7 @@ SCWM_PROC(scwm_version, "scwm-version", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(scwm_version_date, "scwm-version-date", 0, 0, 0,
+SCM_DEFINE(scwm_version_date, "scwm-version-date", 0, 0, 0,
           (),
 "Return the date that the running scwm was last changed as a string.")
 #define FUNC_NAME s_scwm_version_date
@@ -458,7 +458,7 @@ SCWM_PROC(scwm_version_date, "scwm-version-date", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
+SCM_DEFINE(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
           (),
 "Return the <envar>$PREFIX</envar> directory path that scwm was installed with.")
 #define FUNC_NAME s_scwm_path_prefix
@@ -468,7 +468,7 @@ SCWM_PROC(scwm_path_prefix, "scwm-path-prefix", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
+SCM_DEFINE(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
           (),
 "Return the <envar>$EXEC_PREFIX</envar> directory path that scwm was installed with.")
 #define FUNC_NAME s_scwm_path_exec_prefix
@@ -478,7 +478,7 @@ SCWM_PROC(scwm_path_exec_prefix, "scwm-path-exec-prefix", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_X_server_synchronize_x, "set-X-server-synchronize!", 1, 0, 0,
+SCM_DEFINE(set_X_server_synchronize_x, "set-X-server-synchronize!", 1, 0, 0,
           (SCM flag),
 "Set X server sychronization flag to FLAG.\n\
 If FLAG is #t, then Scwm will turn on synchronous X behaviour; if FLAG \n\
@@ -495,7 +495,7 @@ synchronous mode, but can be easier to debug.")
 
 
 /* MS:FIXME:: this should probably be split into multiple procs. */
-SCWM_PROC(X_version_information, "X-version-information", 0, 0, 0,
+SCM_DEFINE(X_version_information, "X-version-information", 0, 0, 0,
           (),
 "Return some information about the version of the running X server.\n\
 Return value is a list of the X protocol version, the X protocol\n\
@@ -515,7 +515,7 @@ revision, the X server vendor, and the vendor release number.")
    visual type should probably be returned as a symbol, not a
    string.*/
 
-SCWM_PROC(X_display_information, "X-display-information", 0, 0, 0,
+SCM_DEFINE(X_display_information, "X-display-information", 0, 0, 0,
           (),
 "Return some information about the screen. In particular,\n\
 return a list of the horizontal resolution, the vertical resolution,\n\
@@ -585,7 +585,7 @@ be shared among multiple machines.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(user_name, "user-name", 0, 0, 0,
+SCM_DEFINE(user_name, "user-name", 0, 0, 0,
 	  (),
 "Return the current user's name.\n\
 This is set to one of the following (in order of relevance):\n\
@@ -598,7 +598,7 @@ the constant string \"nobody\".")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(user_home, "user-home", 0, 0, 0,
+SCM_DEFINE(user_home, "user-home", 0, 0, 0,
 	  (),
 "Return the current user's home directory.\n\
 This is set to one of the following (in order of relevance):\n\
@@ -614,7 +614,7 @@ the constant string \"/tmp\".")
 
 extern Bool fDoneStartup;
 
-SCWM_PROC(done_startup_p, "done-startup?", 0, 0, 0,
+SCM_DEFINE(done_startup_p, "done-startup?", 0, 0, 0,
           (),
 "Return #t iff Scwm is fully initialized, else #f.\n\
 Windows must all be captured and the `startup-hook' must have\n\
@@ -638,7 +638,7 @@ Do not do this unless you are testing segv handling!")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_reset_on_segv_x, "set-reset-on-segv!", 1, 0, 0,
+SCM_DEFINE(set_reset_on_segv_x, "set-reset-on-segv!", 1, 0, 0,
 	  (SCM number_to_reset),
 "Reset Scwm to the main event loop on the next NUMBER-TO-RESET segv signals.\n\
 The default is 100, but if you catch a segv and and are willing to \n\
@@ -652,7 +652,7 @@ by setting it to 0.  See also `set-handle-segv!'.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(reset_on_segv, "reset-on-segv", 0, 0, 0,
+SCM_DEFINE(reset_on_segv, "reset-on-segv", 0, 0, 0,
 	  (),
 "Return the number of segv signals Scwm will reset on.\n\
 See `set-reset-on-segv!'.")
@@ -665,7 +665,7 @@ See `set-reset-on-segv!'.")
 
 
 
-SCWM_PROC(set_handle_segv_x, "set-handle-segv!", 1, 0, 0,
+SCM_DEFINE(set_handle_segv_x, "set-handle-segv!", 1, 0, 0,
 	  (SCM flag),
 "If FLAG, tell Scwm to catch segv signals.\n\
 This is the default, but if you catch a segv and really need it to \n\
@@ -686,7 +686,7 @@ For developers and hackers only.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(x_connection_number, "x-connection-number", 0, 0, 0,
+SCM_DEFINE(x_connection_number, "x-connection-number", 0, 0, 0,
           (),
 "Return the X connection file descriptor number.")
 #define FUNC_NAME s_x_connection_number
@@ -729,7 +729,7 @@ SCWM_IPROC(scwm_run_test_hook_1, "scwm-run-test-hook-1", 2, 0, 0,
 #endif
 
 
-SCWM_PROC(get_next_event, "get-next-event", 0, 0, 0,
+SCM_DEFINE(get_next_event, "get-next-event", 0, 0, 0,
           (),
 "Return a represention of the next key or mouse event.\n\
 The return value is (string modmask keycode) for key events\n\
@@ -826,7 +826,7 @@ See also `get-mouse-event' and `get-key-event'.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(get_key_event, "get-key-event", 0, 0, 0,
+SCM_DEFINE(get_key_event, "get-key-event", 0, 0, 0,
           (),
 "Return a represention of the next key event.\n\
 The return value is (string modmask keycode). The\n\
@@ -891,7 +891,7 @@ end in a \"-\"; e.g., \"S-C-M-\".  See also `get-next-event'.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(get_mouse_event, "get-mouse-event", 0, 0, 0,
+SCM_DEFINE(get_mouse_event, "get-mouse-event", 0, 0, 0,
           (),
 "Return a represention of the next mouse event.\n\
 The return value is (string modmask button-number #t).  The\n\
@@ -949,7 +949,7 @@ See also `get-next-event'.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(X_fetch_bytes, "X-fetch-bytes", 0, 0, 0,
+SCM_DEFINE(X_fetch_bytes, "X-fetch-bytes", 0, 0, 0,
 	  (),
 "Returns a string representing the value of the cut buffer.\n\
 XFetchBytes is called.")
@@ -970,7 +970,7 @@ XFetchBytes is called.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(X_store_bytes, "X-store-bytes", 1, 0, 0,
+SCM_DEFINE(X_store_bytes, "X-store-bytes", 1, 0, 0,
 	  (SCM string),
 "Set the cut buffer to STRING by calling XStoreBytes.")
 #define FUNC_NAME s_X_store_bytes

@@ -31,10 +31,14 @@
 #include <sys/select.h>  /* for file descriptors */
 #endif
 
-#ifdef HAVE_SCM_MAKE_HOOK
-#define SCWM_MAKE_HOOK(name,args) scm_permanent_object(scm_make_named_hook((name),(args)))
-#else
+#ifndef HAVE_SCM_MAKE_HOOK
 #define SCWM_MAKE_HOOK(name,args) SCM_EOL
+#else
+#ifdef HAVE_SCM_CREATE_HOOK
+#define SCWM_MAKE_HOOK(name,args) scm_create_hook((name),(args))
+#else
+#define SCWM_MAKE_HOOK(name,args) scm_permanent_object(scm_make_named_hook((name),(args)))
+#endif
 #endif
 
 /* Individual callbacks. */
@@ -55,7 +59,9 @@ SCM scwm_run_hook1(SCM hook, SCM arg1);
 SCM scwm_run_hook2(SCM hook, SCM arg1, SCM arg2);
 SCM scwm_run_hook_message_only(SCM hook, SCM args);
 
-SCM scm_empty_hook_p(SCM hook);
+#ifndef HAVE_SCM_HOOK_EMPTY_P
+SCM scm_hook_empty_p(SCM hook);
+#endif
 
 /* Timer hooks. */
 

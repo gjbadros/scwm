@@ -130,7 +130,7 @@ void BroadcastMiniIcon(unsigned long event_type, ScwmWindow *psw)
 /* This and other fvwm-module-related stuff should go in a dynamically
    loadable module once I figure that stuff out. */
 
-SCWM_PROC(marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0,
+SCM_DEFINE(marshal_fvwm2_config_info, "marshal-fvwm2-config-info", 1, 0, 0,
           (SCM win),
 "Constructs a fvwm2 BroadcastInfo module packet.\n\
 The return value is the contents of a BroadcastInfo fvwm2\n\
@@ -173,7 +173,7 @@ module packet for WIN as a Scheme string.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(marshal_fvwm2_iconify_info, "marshal-fvwm2-iconify-info", 1, 0, 0,
+SCM_DEFINE(marshal_fvwm2_iconify_info, "marshal-fvwm2-iconify-info", 1, 0, 0,
           (SCM win),
 "Constructs a fvwm2 \"M_ICONIFY\" module packet.\n\
 The return value is the contents of an \"M_ICONIFY\" fvwm\n\

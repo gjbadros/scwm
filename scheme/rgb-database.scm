@@ -18,7 +18,7 @@
 ;;;;
 
 (define-module (app scwm rgb-database)
-  :use-module (app scwm base)))
+  :use-module (app scwm base))
 
 (if (> guile-version 1.3)
     (use-modules (ice-9 popen)))

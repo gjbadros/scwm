@@ -113,7 +113,7 @@ for f in $HOME/.Xresources $HOME/.Xresources-cpp $HOME/.Xresources-local; do
 done
 
 # do keyboard mappings
-for f in $HOME/.Xmodmap $HOME/.Xmodmap-local $HOME/.Xmodmap-${HOSTNAME%%.*}; do
+for f in $HOME/.Xmodmap-first $HOME/.Xmodmap $HOME/.Xmodmap-local $HOME/.Xmodmap-${HOSTNAME%%.*}; do
   if [ -r $f ]; then
     echo "xmodmap $f" 1>&2
     xmodmap $f
@@ -134,7 +134,7 @@ $WMEXEC --segv-reset-count 0 2>&1 >>$ERRORSFILE
 # want an xterm below if scwm returns non-zero exit (in case something
 # bad happened, we don't want all of our X-clients to die.
 if [ 0 -ne "$?" ]; then
-  $XTERM_PROGRAM_NAME -geometry -0-0 -e sh -c "echo exit && { $SHELL || zsh || bash }"
+  $XTERM_PROGRAM_NAME -geometry -0-0 -e sh -c "echo exit && { $SHELL || zsh || bash; }"
 else
   exit
 fi

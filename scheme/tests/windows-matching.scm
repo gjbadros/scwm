@@ -3,7 +3,7 @@
 (use-modules (app scwm gtk)
 	     (gtk gtk)
 	     (app scwm string-prompt)
-	     (app scwm winlist)
+	     (app scwm winlist))
 
 (define (popup-window-list-matching-string str)
   "Popup a window list of all windows with titles that match string STR.

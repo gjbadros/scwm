@@ -159,7 +159,7 @@ mark_scwmimage(SCM obj)
   return SCM_BOOL_F;
 }
 
-SCWM_PROC(image_p, "image?", 1, 0, 0,
+SCM_DEFINE(image_p, "image?", 1, 0, 0,
           (SCM obj),
 "Returns #t if OBJ is an image object, otherwise #f.")
 #define FUNC_NAME s_image_p
@@ -169,7 +169,7 @@ SCWM_PROC(image_p, "image?", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(image_properties, "image-properties", 1, 0, 0,
+SCM_DEFINE(image_properties, "image-properties", 1, 0, 0,
           (SCM image),
 "Return an association list giving some properties of IMAGE.\n\
 Currently defined properties are 'filename, the fully expanded\n\
@@ -203,7 +203,7 @@ SzNewImageShortName(scwm_image *psimg)
   return szAnswer;
 }
 
-SCWM_PROC(image_short_name, "image-short-name", 1, 0, 0,
+SCM_DEFINE(image_short_name, "image-short-name", 1, 0, 0,
           (SCM image),
 "Return the short name of IMAGE. \n\
 Use `image-properties' to access other properties of IMAGE\n\
@@ -223,7 +223,7 @@ including its full name.")
 
 
 
-SCWM_PROC(image_size, "image-size", 1, 0, 0,
+SCM_DEFINE(image_size, "image-size", 1, 0, 0,
           (SCM image),
 "Return the size of IMAGE as a list (width height).")
 #define FUNC_NAME s_image_size
@@ -266,7 +266,7 @@ loaded any other way.
 */
 
 #ifndef USE_IMLIB
-SCWM_PROC(load_xbm, "load-xbm", 1, 0, 0,
+SCM_DEFINE(load_xbm, "load-xbm", 1, 0, 0,
           (SCM full_path),
 "Load an X Bitmap file identified by the pathname FULL-PATH.")
 #define FUNC_NAME s_load_xbm
@@ -300,7 +300,7 @@ SCWM_PROC(load_xbm, "load-xbm", 1, 0, 0,
 #undef FUNC_NAME
 
 #ifdef HAVE_LIBXPM
-SCWM_PROC(load_xpm, "load-xpm", 1, 0, 0,
+SCM_DEFINE(load_xpm, "load-xpm", 1, 0, 0,
           (SCM full_path),
 "Load an X Pixmap file identified by the pathname FULL-PATH.")
 #define FUNC_NAME s_load_xpm
@@ -369,7 +369,7 @@ MakeScwmImageFromImlibImage(scwm_image *ci,ImlibImage *pimg)
 }
 
 
-SCWM_PROC(load_imlib_image, "load-imlib-image", 1, 0, 0,
+SCM_DEFINE(load_imlib_image, "load-imlib-image", 1, 0, 0,
           (SCM full_path),
 "Load an image file using imlib identified by the pathname FULL-PATH.")
 #define FUNC_NAME s_load_imlib_image
@@ -404,7 +404,7 @@ SCWM_PROC(load_imlib_image, "load-imlib-image", 1, 0, 0,
 #endif /* USE_IMLIB */
 
 
-SCWM_PROC(register_image_loader, "register-image-loader", 2, 0, 0,
+SCM_DEFINE(register_image_loader, "register-image-loader", 2, 0, 0,
           (SCM extension, SCM proc),
 "Register PROC as the loader to use for images ending in EXTENSION.\n\
 EXTENSION must be a string beginning with a period, the\n\
@@ -425,7 +425,7 @@ image object, or #f if it succeeds.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(unregister_image_loader, "unregister-image-loader", 1, 0, 0,
+SCM_DEFINE(unregister_image_loader, "unregister-image-loader", 1, 0, 0,
           (SCM extension),
 "Unregister the loader, if any, for images ending in EXTENSION.\n\
 EXTENSION must be a string beginning with a period, the\n\
@@ -562,7 +562,7 @@ get_image_loader(SCM name)
 }
 
 
-SCWM_PROC(make_image, "make-image", 1, 0, 0,
+SCM_DEFINE(make_image, "make-image", 1, 0, 0,
           (SCM name),
 "Loads an image from the file NAME.\n\
 To load the image, the appropriate image loaders will be invoked as\n\
@@ -630,7 +630,7 @@ appropriate file.")
 
 
 /* GJB:FIXME:: make name == #t do a clear of all entries (ie. reset hash table). */
-SCWM_PROC(clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0,
+SCM_DEFINE(clear_image_cache_entry, "clear-image-cache-entry", 1, 0, 0,
           (SCM name),
 "Images are cached by both name and full pathname. It is\n\
 remotely possible that the file that should be used for a particular\n\
@@ -647,7 +647,7 @@ associated with NAME from the image cache")
 
 
 #ifdef USE_IMLIB
-SCWM_PROC(window_to_image,"window->image", 1, 4, 0,
+SCM_DEFINE(window_to_image,"window->image", 1, 4, 0,
           (SCM win, SCM x_offset, SCM y_offset, SCM width, SCM height),
 "Return an image with the contents of window WIN.\n\
 WIN can be a window id (as a long), a window object, or\n\
@@ -680,7 +680,7 @@ at X-OFFSET, Y-OFFSET with width WIDTH and height HEIGHT.")
 #undef FUNC_NAME
 
 
-SCWM_PROC (clone_scaled_image, "clone-scaled-image", 3, 0, 0,
+SCM_DEFINE (clone_scaled_image, "clone-scaled-image", 3, 0, 0,
            (SCM image, SCM width, SCM height),
 "Returns a copy of IMAGE scaled to have dimensions WIDTH by HEIGHT. \n\
 See also `clone-resized-image' from the background module.")

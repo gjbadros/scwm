@@ -1,3 +1,19 @@
+Fri Jul 21 09:54:42 2000  Greg J. Badros  <gregb@go2net.com>
+
+	* misc/startscwm: Added missing semicolon that 2.0x versions of
+ 	Bash (including Debian's bash) need to avoid "unexpected end of
+ 	file
+
+Mon Jun  5 10:22:45 2000  Greg J. Badros  <gregb@go2net.com>
+
+	* misc/startscwm: Use .Xmodmap-first if it exists.
+
+Tue Apr 18 08:24:38 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* misc/cpp-sed-nl: Use literal tab instead of assumming sed will
+	tree \t as tab characters (not all vendor Seds do).  Thanks
+	Francesco Tapparo for catching this.
+
 Thu Jan 27 14:59:26 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/Makefile.am (EXTRA_DIST): Fix this target.

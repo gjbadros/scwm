@@ -13,6 +13,7 @@
 (define-module (app scwm dir-focus)
   :use-module (app scwm base)
   :use-module (app scwm winlist)
+  :use-module (app scwm winops)
   :use-module (app scwm wininfo)
   :use-module (app scwm optargs))
 
@@ -64,9 +65,7 @@ DIR must be one of the symbols 'north, 'south, 'east, or 'west."
 	      (list-windows #:only visible? #:except dirlist-skip-proc))
     (if (and best-win
 	     (not (eq? best-win win)))
-	(begin
-	  (raise-window best-win)
-	  (warp-to-window best-win)))))
+	(focus-change-warp-pointer best-win))))
 
 (define*-public (dir-focus-west)
   "Switch focus to the window to the west."

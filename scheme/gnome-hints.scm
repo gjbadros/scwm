@@ -278,10 +278,11 @@
 (define (gnome-update-state win mask new-state)
 ;;  (display "state = ")
 ;;  (write-line new-state)
-  (if (nonzero? (logand mask WIN_STATE_STICKY))
-      (if (nonzero? (logand new-state WIN_STATE_STICKY))
-	  (if (not (sticky-window? win)) (stick-window win))
-	  (if (sticky-window? win) (unstick-window win))))
+  (and win
+       (if (nonzero? (logand mask WIN_STATE_STICKY))
+	   (if (nonzero? (logand new-state WIN_STATE_STICKY))
+	       (if (not (sticky-window? win)) (stick-window win))
+	       (if (sticky-window? win) (unstick-window win)))))
 
   ;; ignore WIN_STATE_MINIMIZED  - apparently deprecated
 
@@ -347,11 +348,12 @@
 
 
 (define (gnome-update-layer win new-layer)
-  (if (> new-layer 4)
-      (if (not (kept-on-top? win))
-	  (keep-on-top win))
-      (if (kept-on-top? win)
-	  (un-keep-on-top win))))
+  (and win
+       (if (> new-layer 4)
+	   (if (not (kept-on-top? win))
+	       (keep-on-top win))
+	   (if (kept-on-top? win)
+	       (un-keep-on-top win)))))
 
 (define (gnome-update-layer-from-property win)
   (let ((new-layer (X-property-numeric-value win _WIN_LAYER)))

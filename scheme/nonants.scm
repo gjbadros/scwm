@@ -133,7 +133,7 @@ If ORIENTATION is 'vertical, then returns 'left, 'hcenter, or 'right."
 ;; (get-window-with-nonant-interactively 'horizontal)
 ;; (get-window-with-nonant-interactively 'vertical)
 ;; nonants
-(define*-public (get-window-with-nonant-interactively #&optional (orientation #f))
+(define*-public (get-window-with-nonant-interactively #&optional (orientation #f) (cursor #f))
   "Interactively select a window and a nonant.
 The nonant is stored as an object-property of the window
 for use with the window-selection and constraints modules.
@@ -151,7 +151,7 @@ of a window; when #f, we are picking a nonant, not a slice."
      (add-motion-handler! mark-nonant-motion-handler))
 ;;     (add-motion-handler! motion-handler-debug))
    (lambda ()
-     (let* ((selinf (select-viewport-position))
+     (let* ((selinf (select-viewport-position cursor))
 	    (win (car selinf)))
        (if (window? win)
 	   (let ((nonant (get-window-nonant selinf)))
@@ -199,6 +199,23 @@ squares x,y is in of WIN. x,y are root-window relative viewport positions.
   "Return the brief string name for NONANT, an integer.
 E.g., an argument of 1 returns `N'."
   (list-ref nonant-names nonant))
+
+;; utility function (for getting positions from nonants)
+
+(define-public (canonicalize-nonant nonant)
+  "Return a number from 0-8 given any reasonable representation for NONANT.
+E.g., 0, 'northwest, 'nw, and 'north-west all return 0."
+  (case nonant
+    ((northwest nw north-west 0) 0)
+    ((north n 1) 1)
+    ((northeast ne north-east 2) 2)
+    ((west w 3) 3)
+    ((center c 4) 4)
+    ((east e 5) 5)
+    ((southwest sw south-west 6) 6)
+    ((south s 7) 7)
+    ((southeast se south-east 8) 8)
+    (else (error (string-append "Bad nonant: " (with-output-to-string (lambda () (write nonant))))))))
 
 ;; (nonant->string 4)
 ;; (window-and-offsets->nonant w 700 300)

@@ -87,7 +87,7 @@ print_msgwindow(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   return 1;
 }
 
-SCWM_PROC(message_window_p, "message-window?", 1, 0, 0, 
+SCM_DEFINE(message_window_p, "message-window?", 1, 0, 0, 
           (SCM mwn),
 "Returns #t if MWN is a msgwindow object, otherwise #f.")
 #define FUNC_NAME s_message_window_p
@@ -167,7 +167,7 @@ DrawWindow( scwm_msgwindow* msg )
 #endif
 	  gcMsg, SIZE_HINDENT, FONTY(msg->font) + SIZE_VINDENT,
 	  msg->sz, cch);
-#if 0
+#if SCWM_XEMACS_PAREN_HACK
   );  /* for paren matching of above to keep (x)emacs happy */
 #endif                
 }
@@ -257,7 +257,7 @@ MapMessageWindow(scwm_msgwindow* msg)
 
 /*  GJB:FIXME:: below should get defaults from a prototype object, not
     the ScreenInfo struct */
-SCWM_PROC (make_message_window, "make-message-window", 1, 0, 0,
+SCM_DEFINE (make_message_window, "make-message-window", 1, 0, 0,
            (SCM message),
 "Returns a newly created message window object with string MESSAGE.\n\
 MESSAGE is the initial string for the message window. \n\
@@ -303,7 +303,7 @@ Uses defaults from the ScreenInfo struct for the other values.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(id_to_message_window, "id->message-window", 1, 0, 0,
+SCM_DEFINE(id_to_message_window, "id->message-window", 1, 0, 0,
           (SCM winid),
 "Return the message-window of an X/11 window id (a long integer).\n\
 Returns #f if WINID does not correspond to a message-window.\n\
@@ -327,7 +327,7 @@ window on your X/11 display.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(message_window_set_message_x, "message-window-set-message!", 2, 0, 0,
+SCM_DEFINE(message_window_set_message_x, "message-window-set-message!", 2, 0, 0,
           (SCM mwn, SCM message),
 "Changes the message displayed by the message window MWN.\n\
 The message will be MESSAGE")
@@ -348,7 +348,7 @@ The message will be MESSAGE")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(message_window_set_image_x, "message-window-set-image!", 2, 3, 0,
+SCM_DEFINE(message_window_set_image_x, "message-window-set-image!", 2, 3, 0,
           (SCM mwn, SCM image, SCM fg_color, SCM bg_color, SCM shaped_p),
 "Changes the background image for the message window MWN to IMAGE. \n\
 FG-COLOR, BG-COLOR are the colors for the image, SHAPED? is whether it\n\
@@ -391,7 +391,7 @@ is used for MWN.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(message_window_set_font_x, "message-window-set-font!", 2, 0, 0,
+SCM_DEFINE(message_window_set_font_x, "message-window-set-font!", 2, 0, 0,
           (SCM mwn, SCM fnt),
 "Set the font to be used for the message window MWN.\n\
 The font will be FNT")
@@ -415,7 +415,7 @@ The font will be FNT")
 #undef FUNC_NAME
 
 
-SCWM_PROC(message_window_set_colors_x, "message-window-set-colors!", 3, 0, 0,
+SCM_DEFINE(message_window_set_colors_x, "message-window-set-colors!", 3, 0, 0,
           (SCM mwn, SCM fg_color, SCM bg_color),
 "Set the fore- and background colors to be used for the message window MWN.\n\
 The foreground color will be FG-COLOR and the background color will be BG-COLOR")
@@ -454,7 +454,7 @@ The foreground color will be FG-COLOR and the background color will be BG-COLOR"
    This might best be done in the message-window code, as a special option
    to a message-window's position (it'd have to track pointer movement events
  */
-SCWM_PROC(message_window_set_position_x, "message-window-set-position!", 3, 2, 0,
+SCM_DEFINE(message_window_set_position_x, "message-window-set-position!", 3, 2, 0,
           (SCM mwn, SCM x, SCM y, SCM x_align, SCM y_align),
 "Set the position to be used for the message window MWN.\n\
 X and Y specify the position of the control point of the window,\n\
@@ -481,7 +481,7 @@ excep MWN can be #f to mean not to change the existing value.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(message_window_set_size_x, "message-window-set-size!", 3, 0, 0,
+SCM_DEFINE(message_window_set_size_x, "message-window-set-size!", 3, 0, 0,
           (SCM mwn, SCM width, SCM height),
 "Set the size of message window MWN to WIDTH pixels by HEIGHT pixels.\n\
 If WIDTH or HEIGHT is #f, that direction is automatically sized\n\
@@ -506,7 +506,7 @@ is used to display an image.")
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_set_relief_x, "message-window-set-relief!", 2, 0, 0,
+SCM_DEFINE (message_window_set_relief_x, "message-window-set-relief!", 2, 0, 0,
            (SCM mwn, SCM draw_relief_p),
 "Sets the relief for the window MWN.\n\
 Relief will be drawn if and only if DRAW-RELIEF? is #t.")
@@ -523,7 +523,7 @@ Relief will be drawn if and only if DRAW-RELIEF? is #t.")
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_show_x, "message-window-show!", 1, 0, 0,
+SCM_DEFINE (message_window_show_x, "message-window-show!", 1, 0, 0,
            (SCM mwn),
 "Displays the message window MWN on the screen. \n\
 Be sure to keep the displayed message window somewhere\n\
@@ -551,13 +551,18 @@ the window will not ever disappear).")
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_hide_x, "message-window-hide!", 1, 0, 0,
+SCM_DEFINE (message_window_hide_x, "message-window-hide!", 1, 0, 0,
            (SCM mwn),
 "Hide the message window MWN.\n\
 See also `message-window-show'.")
 #define FUNC_NAME s_message_window_hide_x
 {
   VALIDATE_ARG_MSGWINDOW(1,mwn);
+
+  /* if it's already not mapped, we do nothing */
+  if (!FXIsWindowMapped(dpy,MSGWINDOW(mwn)->win))
+    return SCM_UNSPECIFIED;
+
   UnmapMessageWindow(MSGWINDOW(mwn));
   XFlush(dpy);
 
@@ -567,7 +572,7 @@ See also `message-window-show'.")
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_visible_p, "message-window-visible?", 1, 0, 0,
+SCM_DEFINE (message_window_visible_p, "message-window-visible?", 1, 0, 0,
            (SCM mwn),
 "Return #t if the message window MWN is visible, #f otherwise.\n\
 See also `message-window-show', `message-window-hide'.")
@@ -580,7 +585,7 @@ See also `message-window-show', `message-window-hide'.")
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_message, "message-window-message", 1, 0, 0,
+SCM_DEFINE (message_window_message, "message-window-message", 1, 0, 0,
            (SCM mwn),
 "Returns the message that message window MWN displays.")
 #define FUNC_NAME s_message_window_message
@@ -591,7 +596,7 @@ SCWM_PROC (message_window_message, "message-window-message", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_image, "message-window-image", 1, 0, 0,
+SCM_DEFINE (message_window_image, "message-window-image", 1, 0, 0,
            (SCM mwn),
 "Returns the image that message window MWN displays.")
 #define FUNC_NAME s_message_window_image
@@ -602,7 +607,7 @@ SCWM_PROC (message_window_image, "message-window-image", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_position, "message-window-position", 1, 0, 0,
+SCM_DEFINE (message_window_position, "message-window-position", 1, 0, 0,
            (SCM mwn),
 "Returns the position that message window MWN is/will be displayed at. \n\
 This is returned as a four element list: (x y x-align y-align).")
@@ -618,7 +623,7 @@ This is returned as a four element list: (x y x-align y-align).")
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_size, "message-window-size", 1, 0, 0,
+SCM_DEFINE (message_window_size, "message-window-size", 1, 0, 0,
            (SCM mwn),
 "Returns the size of message window MWN in pixels.\n\
 Returns as a two element list: (width height).")
@@ -637,7 +642,7 @@ Returns as a two element list: (width height).")
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_font, "message-window-font", 1, 0, 0,
+SCM_DEFINE (message_window_font, "message-window-font", 1, 0, 0,
            (SCM mwn),
 "Returns the font that the message window MWN uses for displaying text.")
 #define FUNC_NAME s_message_window_font
@@ -648,7 +653,7 @@ SCWM_PROC (message_window_font, "message-window-font", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_id, "message-window-id", 1, 0, 0,
+SCM_DEFINE (message_window_id, "message-window-id", 1, 0, 0,
            (SCM mwn),
 "Returns the X11 id of message window MWN.")
 #define FUNC_NAME s_message_window_id
@@ -659,7 +664,7 @@ SCWM_PROC (message_window_id, "message-window-id", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC (message_window_colors, "message-window-colors", 1, 0, 0,
+SCM_DEFINE (message_window_colors, "message-window-colors", 1, 0, 0,
            (SCM mwn),
 "Returns the colors that the message window MWN is displayed with.  \n\
 These are returned in a list of the form (fg_color,bg_color).")
@@ -671,7 +676,7 @@ These are returned in a list of the form (fg_color,bg_color).")
 }
 #undef FUNC_NAME
 
-SCWM_PROC (message_window_relief_p, "message-window-relief?", 1, 0, 0,
+SCM_DEFINE (message_window_relief_p, "message-window-relief?", 1, 0, 0,
            (SCM mwn),
 "Returns the relief setting for the message window MWN.")
 #define FUNC_NAME s_message_window_relief_p

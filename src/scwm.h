@@ -40,6 +40,12 @@
 #include "scwmconfig.h"
 #endif
 
+#ifdef SCWM_DEBUG_GUILE_TYPING_STRICTNESS
+#ifndef SCM_DEBUG_TYPING_STRICTNESS
+#define SCM_DEBUG_TYPING_STRICTNESS 1
+#endif
+#endif
+
 #ifndef __GNUC__
 #ifndef __inline__
 #define __inline__ 

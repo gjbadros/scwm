@@ -15,9 +15,10 @@ Packager: Greg J. Badros <gjb@cs.washington.edu> and Maciej Stachowiak <mstachow
 URL: http://scwm.mit.edu
 Distribution: scwm
 Requires: guile >= 1.3.4
-Requires: guile-gtk >= 0.16
+Requires: guile-gtk >= 0.17
 Requires: imlib >= 1.9
 Requires: esound >= 0.2.7
+Requires: cassowary >= 0.60
 Requires: cassowary-constraint-solver
 
 Docdir: %{prefix}/doc

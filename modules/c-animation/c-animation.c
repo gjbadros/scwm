@@ -301,7 +301,7 @@ AnimatedShadeWindow(ScwmWindow *psw, Bool fRollUp,
    convert on the fly, and just make it a variable? */
 
 /* set animation parameters */
-SCWM_PROC(set_animation_x, "set-animation!", 1,0,0,
+SCM_DEFINE(set_animation_x, "set-animation!", 1,0,0,
           (SCM vector),
 "Set the animation parameters to VECTOR. VECTOR is a vector of\n\
 floats which give the fractions of the final position that the window\n\
@@ -338,7 +338,7 @@ animated window shades and animated moves.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(animated_window_shade, "animated-window-shade", 0, 1, 0,
+SCM_DEFINE(animated_window_shade, "animated-window-shade", 0, 1, 0,
           (SCM win),
 "Cause WIN to become \"window-shaded\".\n\
 That is, to roll up into just a titlebar.  The window will be animated\n\
@@ -397,7 +397,7 @@ the window context in the usual way if not specified.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(animated_window_unshade, "animated-window-unshade", 0, 1, 0,
+SCM_DEFINE(animated_window_unshade, "animated-window-unshade", 0, 1, 0,
           (SCM win),
 "Reverse the effect of `window-shade' on WIN.\n\
 The window will be animated as it rolls down, producing a pleasing\n\
@@ -436,7 +436,7 @@ not specified. See also `window-unshade', `animated-window-shade'.")
 
 extern Bool fInResolveHook;
 
-SCWM_PROC(animate_windows, "animate-windows", 1, 1, 0,
+SCM_DEFINE(animate_windows, "animate-windows", 1, 1, 0,
           (SCM xforms, SCM move_pointer_too_p),
 "Animate multiple windows. \n\
 XFORMS is a list of transform operations where each xform operation\n\
@@ -474,7 +474,7 @@ conjunction with the first window in the XFORMS list;  defaults to #f.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(animated_move_window, "animated-move-window", 2, 2, 0,
+SCM_DEFINE(animated_move_window, "animated-move-window", 2, 2, 0,
           (SCM x, SCM y, SCM win, SCM move_pointer_too_p),
 "Move WIN to virtual coordinates X, Y with animation.\n\
 If X or Y is #f, then do not change that coordinate during the move. \n\
@@ -585,7 +585,7 @@ animated_resize_common(SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too
   return SCM_UNSPECIFIED;
 }
 
-SCWM_PROC(animated_resize_window, "animated-resize-window", 2, 4, 0,
+SCM_DEFINE(animated_resize_window, "animated-resize-window", 2, 4, 0,
           (SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too_p),
 "Resize the client area of WIN to size W, H (pixels) with animation.\n\
 WIN defaults to the window context in the usual way if not\n\
@@ -600,7 +600,7 @@ along with the window.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(animated_resize_frame, "animated-resize-frame", 2, 4, 0,
+SCM_DEFINE(animated_resize_frame, "animated-resize-frame", 2, 4, 0,
           (SCM w, SCM h, SCM win, SCM x, SCM y, SCM move_pointer_too_p),
 "Resize the frame of WIN to size W, H (pixels) with animation.\n\
 WIN defaults to the window context in the usual way if not\n\

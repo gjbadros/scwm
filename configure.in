@@ -612,6 +612,10 @@ AC_CHECK_LIB(guile, scm_load_startup_files, AC_DEFINE(HAVE_SCM_LOAD_STARTUP_FILE
 
 AC_CHECK_LIB(guile, scm_make_hook, AC_DEFINE(HAVE_SCM_MAKE_HOOK), ,$GUILE_LIBS)
 
+AC_CHECK_LIB(guile, scm_create_hook, AC_DEFINE(HAVE_SCM_CREATE_HOOK), ,$GUILE_LIBS)
+
+AC_CHECK_LIB(guile, scm_hook_empty_p, AC_DEFINE(HAVE_SCM_HOOK_EMPTY_P), ,$GUILE_LIBS)
+
 AC_CHECK_LIB(guile, scm_make_smob_type_mfpe, AC_DEFINE(HAVE_SCM_MAKE_SMOB_TYPE_MFPE), ,$GUILE_LIBS)
 
 AC_CHECK_LIB(guile, scm_strport_to_string, AC_DEFINE(HAVE_SCM_STRPORT_TO_STRING), ,$GUILE_LIBS)

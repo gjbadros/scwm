@@ -34,6 +34,7 @@
 
 (define-module (app scwm base)
   :use-module (app scwm optargs)
+  :use-module (ice-9 string-fun)
   :use-module (app scwm defoption)
   )
 
@@ -252,11 +253,21 @@ If Y is #f, just return #f."
   "Return a pixel height Y percent of the height of window W."
   (round/ (* y (cadr (window-frame-size w))) 100))
 
+;; (string-contains-slash? "foo/bar")
+;; (string-contains-slash? "bar")
+(define-public (string-contains-slash? name)
+  (->bool (string-index name #\/)))
+
 (define-public (program-exists? program-name)
-  "Return #t if PROGRAM-NAME is found as an executable in the current $PATH.
+  "Return #t iff PROGRAM-NAME is in the current $PATH or is a path to an executable.
 Returns #f otherwise.  See `cached-program-exists?' for a more efficient
 version of this."
-  (= 0 (system (string-append "which " program-name " >/dev/null" ))))
+  (if (string-contains-slash? program-name)
+      (catch #t
+	     (lambda () (stat program-name) #t)
+	     (lambda (key . args) #f))
+      (search-path (separate-fields-discarding-char #\: (getenv "PATH") list)
+		   program-name)))
 
 (define-public (set-default-menu-foreground! fg)
   "Set the default color for menu text to FG."
@@ -315,6 +326,18 @@ The \"highlight window\" is the window with the current input focus."
   (if bg (set-window-background! bg win))
   (if fg (set-window-foreground! fg win)))
 
+(define*-public (window-background-color #&optional (win (get-window)))
+  (if (eq? win (window-with-focus))
+      (or (cadr (get-window-highlight-colors win)) (highlight-background))
+      (cadr (get-window-colors win))))
+
+(define*-public (window-foreground-color #&optional (win (get-window)))
+  (if (eq? win (window-with-focus))
+      (or (car (get-window-highlight-colors win)) (highlight-background))
+      (car (get-window-colors win))))
+
+(define-public (color->string color)
+  (color-property color 'name))
 
 ;; relative versions of absolute move procedures.
 (define-public (move-pointer x y)
@@ -821,9 +844,6 @@ argument to the catch exception lambda.
 </example>"
   (display descriptor (current-error-port))
   (apply display-error (append (list #f (current-error-port)) (cdr args))))
-
-;;; stack port subr message args rest
-;;; (display-error #f (current-output-port) 'foo "foo: %S" (list 1) #f)
 
 (define*-public (select-window-interactively #&optional (msg #f) (message-window #f))
   "Return an interactively-selected window after prompting (optionally) with MSG.

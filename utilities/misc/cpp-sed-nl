@@ -15,4 +15,4 @@ fi
 # -P option inhibits generation of "# line "
 # lines that cause xrdb angst.
 $CPP -P "$@" | sed -e 's/@@/\
-/g' -e 's/[ \t]*$//g'
+/g' -e 's/[ 	]*$//g'

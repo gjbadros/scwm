@@ -427,8 +427,8 @@ void MapIt(ScwmWindow *psw);
 void free_window_names(ScwmWindow *psw, Bool nukename, Bool nukeicon);
 
 void UnmapScwmWindow(ScwmWindow * psw);
-void RaiseWindow(ScwmWindow *psw);
-void LowerWindow(ScwmWindow *psw);
+void RaiseWindow(const ScwmWindow *psw);
+void LowerWindow(const ScwmWindow *psw);
 
 void KeepOnTop();
 void MovePswToCurrentPosition(const ScwmWindow *psw);

@@ -44,10 +44,8 @@ SCM_SYMBOL(sym_tiled, "tiled");
 static SCM root_bg_color = SCM_BOOL_F;
 static SCM root_image = SCM_BOOL_F;
 
-/* MS:FIXME:MS: Add docs! */
-
-SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
-	  (SCM color),
+SCM_DEFINE(set_background_color_x, "set-background-color!", 1, 0, 0,
+           (SCM color),
 "Sets the color of the root window to COLOR.")
 #define FUNC_NAME s_set_background_color_x
 {
@@ -73,7 +71,7 @@ SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
 }
 #undef FUNC_NAME 
 
-SCWM_PROC(clone_resized_image, "clone-resized-image", 3, 1, 0,
+SCM_DEFINE(clone_resized_image, "clone-resized-image", 3, 1, 0,
 	  (SCM image, SCM width, SCM height, SCM bgcolor),
 "Makes a new image from IMAGE of the given WIDTH and HEIGHT.\n\
 It does not scale IMAGE.  If the resized image is smaller than the\n\
@@ -153,7 +151,7 @@ is filled with BGCOLOR. See also `clone-scaled-image'.")
 #undef FUNC_NAME 
 
 
-SCWM_PROC(set_background_image_x, "set-background-image!", 1, 1, 0,
+SCM_DEFINE(set_background_image_x, "set-background-image!", 1, 1, 0,
 	  (SCM image, SCM style),
 "Sets the background of the root window to be IMAGE.\n\
 STYLE can be either 'centered or 'tiled.")
@@ -195,7 +193,7 @@ STYLE can be either 'centered or 'tiled.")
 #undef FUNC_NAME 
 
 
-SCWM_PROC(reset_background_x, "reset-background!", 0, 0, 0,
+SCM_DEFINE(reset_background_x, "reset-background!", 0, 0, 0,
 	  (),
 "Resets the root window to the default \"weave\".")
 #define FUNC_NAME s_reset_background_x

@@ -107,7 +107,7 @@ print_color(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
 
 
 
-SCWM_PROC(color_p, "color?", 1, 0, 0, 
+SCM_DEFINE(color_p, "color?", 1, 0, 0, 
           (SCM obj),
 "Returns #t if OBJ is a color object, otherwise #f.")
 #define FUNC_NAME s_color_p
@@ -119,7 +119,7 @@ SCWM_PROC(color_p, "color?", 1, 0, 0,
 /* MS:FIXME:: Should we extend this to return r, g and b values? Should we
    perhaps even store those in the color structure? */
 
-SCWM_PROC(color_properties, "color-properties", 1, 0, 0,
+SCM_DEFINE(color_properties, "color-properties", 1, 0, 0,
           (SCM color),
 "Return an association list giving some properties of COLOR.\n\
 Currently defined properties are 'name, the string name of the\n\
@@ -233,7 +233,7 @@ ScmMakeColor(const char *cn, int *perror_status)
 /* Not as inefficient as it looks - after the first time, this just
    amounts to a hash lookup. */
 
-SCWM_PROC(make_color, "make-color", 1, 0, 0,
+SCM_DEFINE(make_color, "make-color", 1, 0, 0,
           (SCM cname),
 "Return the color object corresponding to the X color specifier CNAME.\n\
 If CNAME is not a valid X color name, or cannot be\n\
@@ -269,7 +269,7 @@ allocated, an error results.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(clear_color_cache_entry, "clear-color-cache-entry", 1, 0, 0,
+SCM_DEFINE(clear_color_cache_entry, "clear-color-cache-entry", 1, 0, 0,
           (SCM name),
 "Colors are cached by name. It is remotely possible that the\n\
 meaning of a particular string as a color will change in your X\n\
@@ -583,7 +583,7 @@ AllocNonlinearGradient(char *s_colors[], int clen[],
 }
 
 
-SCWM_PROC(make_relief_color, "make-relief-color", 2, 0, 0,
+SCM_DEFINE(make_relief_color, "make-relief-color", 2, 0, 0,
           (SCM color, SCM factor),
 "Convert a color into a new color appropriate for a relief.\n\
 Multiplies the luminosity and saturation of COLOR by the\n\
@@ -603,7 +603,7 @@ which is suitable for use as a highlight.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(make_reversed_color, "make-reversed-color", 1, 0, 0,
+SCM_DEFINE(make_reversed_color, "make-reversed-color", 1, 0, 0,
           (SCM color),
 "Return a new color that is opposite COLOR.\n\
 Note that the returned color will not necessarily contrast with\n\
@@ -651,7 +651,7 @@ static void reset_decor_relief()
   }
 }
 
-SCWM_PROC(set_highlight_factor_x, "set-highlight-factor!", 1, 0, 0,
+SCM_DEFINE(set_highlight_factor_x, "set-highlight-factor!", 1, 0, 0,
           (SCM factor),
 "Use FACTOR to generate highlight colors for the current decor.\n\
 FACTOR is a positive floating point number.")
@@ -672,7 +672,7 @@ FACTOR is a positive floating point number.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(highlight_factor, "highlight-factor", 0, 0, 0,
+SCM_DEFINE(highlight_factor, "highlight-factor", 0, 0, 0,
           (),
 "Return the current highlight factor.")
 #define FUNC_NAME s_highlight_factor
@@ -687,7 +687,7 @@ SCWM_PROC(highlight_factor, "highlight-factor", 0, 0, 0,
 
 
 
-SCWM_PROC(set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
+SCM_DEFINE(set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
           (SCM factor),
 "Use FACTOR to generate shadow colors in the current decor. \n\
 FACTOR is a positive floating point number")
@@ -709,7 +709,7 @@ FACTOR is a positive floating point number")
 #undef FUNC_NAME
 
 
-SCWM_PROC(shadow_factor, "shadow-factor", 0, 0, 0,
+SCM_DEFINE(shadow_factor, "shadow-factor", 0, 0, 0,
           (),
 "Return the current shadow factor.")
 #define FUNC_NAME s_shadow_factor
@@ -723,7 +723,7 @@ SCWM_PROC(shadow_factor, "shadow-factor", 0, 0, 0,
 #undef FUNC_NAME
 
 /* FIXJTL: these should go away */
-SCWM_PROC(set_menu_highlight_factor_x, "set-menu-highlight-factor!", 1, 0, 0,
+SCM_DEFINE(set_menu_highlight_factor_x, "set-menu-highlight-factor!", 1, 0, 0,
           (SCM factor),
 "Use FACTOR to generate highlight colors for menus. \n\
 FACTOR is a positive floating point number")
@@ -736,7 +736,7 @@ FACTOR is a positive floating point number")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(menu_highlight_factor, "menu-highlight-factor", 0, 0, 0,
+SCM_DEFINE(menu_highlight_factor, "menu-highlight-factor", 0, 0, 0,
           (),
 "Return the current menu highlight factor.")
 #define FUNC_NAME s_menu_highlight_factor
@@ -746,7 +746,7 @@ SCWM_PROC(menu_highlight_factor, "menu-highlight-factor", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0,
+SCM_DEFINE(set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0,
           (SCM factor),
 "Use FACTOR to generate shadow colors for menus. \n\
 FACTOR is a positive floating point number")
@@ -759,7 +759,7 @@ FACTOR is a positive floating point number")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
+SCM_DEFINE(menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
           (),
 "Return the current menu shadow factor.")
 #define FUNC_NAME s_menu_shadow_factor
@@ -780,7 +780,7 @@ redraw_highlight_window()
 
 /* MS:FIXME:: Need to protect color objects in the below! */
 
-SCWM_PROC(set_highlight_foreground_x, "set-highlight-foreground!", 1, 0, 0,
+SCM_DEFINE(set_highlight_foreground_x, "set-highlight-foreground!", 1, 0, 0,
           (SCM fg),
 "Use FG for the foreground color of a window with the input focus.\n\
 Applies to the current decor. This is used only for windows that don't\n\
@@ -805,7 +805,7 @@ have their own foreground color.")
 #undef FUNC_NAME
 
 
-SCWM_PROC (highlight_foreground, "highlight-foreground", 0, 0, 0,
+SCM_DEFINE (highlight_foreground, "highlight-foreground", 0, 0, 0,
            (),
 "Return the default foreground color for windows with the input focus.\n\
 Applies to the current decor. This is used only for windows that don't\n\
@@ -825,7 +825,7 @@ have their own foreground color.")
 /* MS:FIXME:: the more I do this, the more I wish we had a nice GC
    abstraction. */
 
-SCWM_PROC(set_highlight_background_x, "set-highlight-background!", 1, 0, 0,
+SCM_DEFINE(set_highlight_background_x, "set-highlight-background!", 1, 0, 0,
           (SCM bg),
 "Use BG as the background color for a window with the input focus.\n\
 Applies to the current decor. This is used only for windows that don't\n\
@@ -880,7 +880,7 @@ have their own background color.")
 #undef FUNC_NAME
 
 
-SCWM_PROC (highlight_background, "highlight-background", 0, 0, 0,
+SCM_DEFINE (highlight_background, "highlight-background", 0, 0, 0,
            (),
 "Return the default background color for windows with the input focus.\n\
 Applies to the current decor. This is used only for windows that don't\n\
@@ -895,7 +895,7 @@ have their own background color.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
+SCM_DEFINE(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
           (SCM fg),
 "Use FG as the default foreground color for icons, titlebars, etc.")
 #define FUNC_NAME s_set_not_menu_foreground_x
@@ -914,7 +914,7 @@ SCWM_PROC(set_not_menu_foreground_x, "set-not-menu-foreground!", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC (not_menu_foreground, "not-menu-foreground", 0, 0, 0,
+SCM_DEFINE (not_menu_foreground, "not-menu-foreground", 0, 0, 0,
            (),
 "Return the default foreground color for icons, titlebars, etc.")
 #define FUNC_NAME s_not_menu_foreground
@@ -923,7 +923,7 @@ SCWM_PROC (not_menu_foreground, "not-menu-foreground", 0, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
+SCM_DEFINE(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
           (SCM bg),
 "Use BG as the default background color for icons, window frames, etc.")
 #define FUNC_NAME s_set_not_menu_background_x
@@ -949,7 +949,7 @@ SCWM_PROC(set_not_menu_background_x, "set-not-menu-background!", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC (not_menu_background, "not-menu-background", 0, 0, 0,
+SCM_DEFINE (not_menu_background, "not-menu-background", 0, 0, 0,
            (),
 "Return the default background color for icons, window frames, etc.")
 #define FUNC_NAME s_not_menu_background
@@ -966,10 +966,10 @@ init_color()
   REGISTER_SCWMSMOBFUNS(color);
 
   color_hash_table = 
-    scm_make_weak_value_hash_table (gh_int2scm(COLOR_HASH_SIZE));
+    scm_make_weak_value_hash_table (SCM_MAKINUM(COLOR_HASH_SIZE));
   scm_protect_object(color_hash_table);
 
-  protected_colors = gh_make_vector (gh_int2scm(4), SCM_EOL);
+  protected_colors = gh_make_vector (SCM_MAKINUM(4), SCM_BOOL_F);
   scm_protect_object(protected_colors);
 
   scm_protect_object(str_black=gh_str02scm("black"));

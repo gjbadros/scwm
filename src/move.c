@@ -554,8 +554,8 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
 }
 
 
-SCWM_PROC(rubber_band_move, "rubber-band-move", 0, 1, 0,
-          (SCM win),
+SCM_DEFINE(rubber_band_move, "rubber-band-move", 0, 1, 0,
+           (SCM win),
 "Move WIN interactively, using a rubber band frame.\n\
 Returns a list '(X Y) which is the new viewport position of WIN.\n\
 This allows the user to drag a rubber band frame around the\n\
@@ -573,8 +573,8 @@ specified.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(opaque_move, "opaque-move", 0, 1, 0,
-          (SCM win),
+SCM_DEFINE(opaque_move, "opaque-move", 0, 1, 0,
+           (SCM win),
 "Move WIN interactively, opaquely.\n\
 Returns a list '(X Y) which is the new viewport position of WIN.\n\
 This allows the user to drag the window itself around the screen. WIN\n\

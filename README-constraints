@@ -32,7 +32,8 @@ If ClTests runs successfully for you, you should also test the
 Guile/Scheme wrapper of Cassowary.  To do this, cd to the "guile"
 subdirectory of the distribution, and "make test" or run "guile -s
 cltests.scm".  Again, if this fails in any way, please let me know.
-(You may just need to tweak your GUILE_LOAD_PATH environment variable.)
+(You may just need to tweak your GUILE_LOAD_PATH environment variable --
+see the explanation below.)
 
 If the tests succeeded, do a "make install".
 

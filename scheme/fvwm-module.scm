@@ -552,8 +552,6 @@
 				    (lambda args (display 
 						  "Error evaling packet: ")
 					    (write packet)
-					    (newline)
-					    (backtrace)
 					    (newline))
 				    )
 			     (if (not (list-ref fmod 4))

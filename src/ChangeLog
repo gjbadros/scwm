@@ -1,3 +1,110 @@
+Sat Jun 24 14:10:13 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* callbacks.c, errors.c, events.c: Use SCWM_WRITE, SCWM_DISPLAY
+ 	macros instead of %s, %S (since they now are ~A, ~S)
+
+	* scwm_msg.h: #define SCWM_DISPLAY and SCWM_WRITE.  Still needs to 
+	be conditioned on which guile version you are running.
+
+Sun Jun 18 22:09:27 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* events.c, callbacks.h, callbacks.c: Use scm_hook_empty_p, or
+ 	define it if we don't have it (was called scm_empty_hook_p --
+ 	renamed that if we need it).
+
+Sun Jun 18 20:06:07 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* callbacks.h: Use scm_create_hook as appropriate (thanks Eric
+	Moore!).  
+
+	* callbacks.h, color.c, events.c: Use SCM_MAKINUM w/ small
+ 	constants instead of gh_int2scm.
+
+	* message-window.c: Use SCWM_XEMACS_PAREN_HACK guard instead of
+	#if 0 to disambiguate from riskier #if 0's.  Do not call
+	scm_unprotect_object on a message window if it is not mapped.
+
+	* scwm-snarf.h, scwm-doc-snarf.in, scwm-snarf.in: Updated for
+ 	guile-1.4 snarfing conventions that use tokens SCM__{D,S,E}
+ 	instead of $$$, @@@, @!!!.  These were causing missed snarfs of
+ 	symbols that manifested the problem as GC bugs when null (i.e.,
+ 	uninitialized) values were used in Scheme objects.
+
+	* scwm.c: Updated some scm_permanent_object calls (thanks Eric
+	Moore!).  Handle sym_interactive being NULL (from not being
+	initialized) properly.
+
+	* scwm.h: Include #define SCM_DEBUG_TYPING_STRICTNESS 1, #ifdeffed 
+	out.
+
+	* window.c: ws change.
+
+	* winprop.c: Use gh_make_vector, not scm_make_vector, for
+	consistency. 
+
+	* xproperty.c: Use SCM_BOOL_F, not SCM_UNSPECIFIED for args as the 
+	initialize argument to gh_make_vector
+
+Tue May  2 08:51:18 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* resize.c (InteractiveResize): Now that grabs of buttons are done 
+	on the root window, I need to use Event.xbutton.subwindow ==
+	psw->frame to see if the click was on a client window, and if so,
+	use XTranslateCoordinates to convert Event.xbutton.{x,y}.  This
+	re-enables clicking inside a window to interactively resize, using 
+	the point clicked as the anchor.  (That feature had been broken
+	ever since I changed the Grabs to work on the root window instead
+	of each client window).
+
+2000-04-16  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* focus.c: Fixed bug where unfocusable windows were stealing
+	the focus from windows with sloppy focus.
+
+Wed Apr 12 16:30:01 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* binding.c: Added some parens to avoid compiler warning.
+
+	* scwm.c: Avoid deadlock in CaptureAllWindows() by setting
+	Scr.fWindowsCaptured = False while doing the recapture.
+
+Wed Apr 12 16:14:26 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c: Use set_window_context macro, instead of direct
+	assignment to scm_window_context.
+
+	* events.c: Set the context window more intelligently, especially
+	now given that key/mouse bindings are reported as coming from the
+	Root window when the C_ALL modifier is used.
+
+	* binding.c: Added GrabButtonWithModifiersWin() and make
+	GrabButtonWithModifiers() be a thin wrapper over it.  Treat C_ALL
+	specially, and pass the context along to grab_button_all_windows,
+	ungrab_button_all_windows, grab_key_all_windows, and
+	ungrab_key_all_windows.  For C_ALL, just grab the key/button on
+	the root window -- this grabs on all the top-levels too.  Thanks
+	to Alexandre Duret-Lutz for again bringing up the performance
+	penalty, and to Carl Witty for suggesting the grabbing of the
+	events on the root window (which I thought I'd investigated and
+	thought hadn't worked, but must've been wrong).
+
+Mon Apr 10 08:21:18 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.h: Make RaiseWindow(), LowerWindow() take const
+	ScwmWindow *'s.
+
+	* window.c: Added `windows-restacked-hook', `window-raise-hook',
+	`window-lower-hook', and call them.   Suggested by Mark
+	A. Flacy... thanks Mark!
+
+Sun Mar 12 14:39:21 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-constraints.cc: Added call to
+	psolver->ResetStayConstants().  Needs cassowary-0.60 or later (or
+	just comment out the line.)
+
+	* guile-compat.h: Drop use of SCM_P macro.
+
 Wed Feb 23 18:23:14 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.h: Drop WarpOn prototype.

@@ -207,7 +207,6 @@
 (load-user-file "after-modules")
 
 (set! *use-scwm-system-proc* #t)
-(set! *debug-fvwm-module* #t)
 
 ;;; print some information
 (for-each (lambda (d) (debug-display d)) 
@@ -245,7 +244,7 @@
 ;;;(apropos-internal "*")
 
 (set! *fvwm2-module-path* (append *fvwm2-module-path* '("/usr/X11R6/lib/X11/fvwm2")))
-(define want-fvwm2-pager-module #t)
+(define want-fvwm2-pager-module #f)
 (define want-fvwm2-winlist-module #f)
 
 (define want-scwm-pager-module #f)

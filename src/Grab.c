@@ -67,7 +67,7 @@ XUngrabServer_withSemaphore(Display * disp)
 }
 #undef FUNC_NAME
 
-SCWM_PROC(X_grab_server, "X-grab-server", 0, 0, 0,
+SCM_DEFINE(X_grab_server, "X-grab-server", 0, 0, 0,
 	  (),
 "Grab the X server.\n\
 This is very risky; you should almost definitely use\n\
@@ -81,7 +81,7 @@ to make it hard to access directly. See also `X-server-grabs'")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(X_ungrab_server, "X-ungrab-server", 0, 0, 0,
+SCM_DEFINE(X_ungrab_server, "X-ungrab-server", 0, 0, 0,
 	  (),
 "Ungrab the X server.\n\
 Using `X-grab-server' and `X-ungrab-server' directly is risky; you \n\
@@ -96,7 +96,7 @@ See also `X-server-grabs'")
 #undef FUNC_NAME
 
 
-SCWM_PROC(X_server_grabs, "X-server-grabs", 0, 0, 0,
+SCM_DEFINE(X_server_grabs, "X-server-grabs", 0, 0, 0,
 	  (),
 "Return the number of nested server grabs.\n\
 Nonzero means the server is currently grabbed. \n\

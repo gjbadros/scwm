@@ -421,7 +421,7 @@ default_select_desk(ScwmWindow *psw)
 }
 
 
-SCWM_PROC(place_on_default_desk, "place-on-default-desk", 1, 0, 0, 
+SCM_DEFINE(place_on_default_desk, "place-on-default-desk", 1, 0, 0, 
           (SCM win),
 "Place WIN on a desk according to the default algorithm.\n\
 Place a window with it's window group, with a window it is transient\n\
@@ -441,7 +441,7 @@ used in user-defined placement procedures (see \n\
 #undef FUNC_NAME
 
 
-SCWM_PROC(smart_place_window, "smart-place-window", 1, 3, 0, 
+SCM_DEFINE(smart_place_window, "smart-place-window", 1, 3, 0, 
           (SCM win, SCM no_move, SCM x_sugg, SCM y_sugg),
 "Places WIN using fvwm2's SmartPlacement algorithm.\n\
 The placement is just as if SmartPlacementIsReallySmart were not in\n\
@@ -487,7 +487,7 @@ may try to use as a preferred location for WIN.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(clever_place_window, "clever-place-window", 1, 3, 0, 
+SCM_DEFINE(clever_place_window, "clever-place-window", 1, 3, 0, 
           (SCM win, SCM no_move, SCM x_sugg, SCM y_sugg),
 "Places WIN using fvwm2's \"ReallySmart\" algorithm.\n\
 The placement is just as if being placed by fvwm2's SmartPlacement,\n\
@@ -535,7 +535,7 @@ may try to use as a preferred location for WIN.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(random_place_window, "random-place-window", 1, 3, 0, 
+SCM_DEFINE(random_place_window, "random-place-window", 1, 3, 0, 
           (SCM win, SCM no_move, ARG_UNUSED(SCM x_sugg), ARG_UNUSED(SCM y_sugg)),
 "Places WIN just as if being placed by fvwm2's RandomPlacement.\n\
 This placement is not truly random; it is based on two state variables\n\
@@ -578,7 +578,7 @@ move WIN. X-SUGG and Y-SUGG are ignored.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(initial_place_window, "initial-place-window", 1, 0, 0, 
+SCM_DEFINE(initial_place_window, "initial-place-window", 1, 0, 0, 
           (SCM win),
 "Pick a desk for WIN and return #t iff WIN should be placed.
 N.B. the return value is different from the return value
@@ -609,7 +609,7 @@ according to the various positioning hints attached to WIN.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(interactive_place_window, "interactive-place-window", 1, 3, 0, 
+SCM_DEFINE(interactive_place_window, "interactive-place-window", 1, 3, 0, 
           (SCM win, SCM no_move, SCM x_sugg, SCM y_sugg),
 "Interactively place WIN.\n\
 Start at X-SUGG, Y-SUGG. If NO-MOVE is #t, just return the\n\
@@ -652,7 +652,7 @@ final resting place instead of actually moving the window there.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(null_place_window, "null-place-window", 1, 0, 0, 
+SCM_DEFINE(null_place_window, "null-place-window", 1, 0, 0, 
           (SCM win),
 "This is simplest, fallback placement procedure for windows.\n\
 It simply leaves the window WIN in place, exactly as requested.")

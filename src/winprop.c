@@ -81,7 +81,7 @@ signal_window_property_change(SCM win, SCM prop, SCM new_val, SCM old_val)
 }
 
 
-SCWM_PROC(set_window_property_x, "set-window-property!", 3, 0, 0,
+SCM_DEFINE(set_window_property_x, "set-window-property!", 3, 0, 0,
           (SCM win, SCM prop, SCM val),
 "Set window property PROP of WIN to VAL.\n\
 PROP should be a symbol. VAL may be any Scheme object. This name/value\n\
@@ -124,7 +124,7 @@ window property primitives should be considered in flux.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(window_property, "window-property", 2, 0, 0,
+SCM_DEFINE(window_property, "window-property", 2, 0, 0,
           (SCM win, SCM prop),
 "Retrieve window property PROP of WIN.\n\
 PROP should be a symbol. #f will be returned if the property does not\n\
@@ -163,7 +163,7 @@ init_winprop()
   REGISTER_SCWMSMOBFUNS(property_handler);
 
   property_handler_hash_table = 
-    scm_make_vector (HANDLER_TABLE_SIZE, SCM_EOL);
+    gh_make_vector (SCM_MAKINUM(HANDLER_TABLE_SIZE), SCM_EOL);
 
   scm_permanent_object(property_handler_hash_table);
 

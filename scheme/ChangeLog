@@ -1,3 +1,164 @@
+Sat Jun 24 14:22:58 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-gtk-pager.scm: Set default width/height to 10/10, since it
+	looks like gtk uses the drawarea's size as the minimum size.  This 
+	needs to be fixed. GJB:FIXME::
+
+Sun Jun 18 22:13:44 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* file.scm: Added `string-list->string' to do the old list->string 
+	behaviour that accepted strings, not just character arguments, and 
+	use it in `path-list->string-with-colons'.
+
+	* bincomm.scm: Redefine integer->char to permit -1 as an argument
+	and turn it into 0.  Not sure what the right fix is right now.
+
+Sun Jun 18 20:01:51 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* lambda-startup-logo.scm: Use *-small.xpm logos, just added to
+	the scwm-icons cvs module.
+
+Mon Jun  5 10:19:05 2000  Greg J. Badros  <gregb@go2net.com>
+
+	* netscape.scm: Added `netscape-metacrawler-search-selection-url', 
+	`netscape-metacrawler-search', `netscape-new-window',
+	`netscape-window-not-focussed'.  Use the latter for
+	*netscape-new-window* which now can be a proc or a boolean-- if
+	it's a proc, it gets evaled and the return value is used to
+	determine if a new window should be used.
+
+Tue May  9 22:50:54 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* rgb-database.scm,gnome-hints.scm: Remove extra paren. Thanks Eli
+ 	Barzilay.
+
+	* register.scm: Added `popup-register-winlist'
+
+Tue May  2 07:54:46 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* gnome-hints.scm: Protect gnome-update-layer from WIN == #f.
+	Thanks to Michael Schmitz!
+
+Sat Apr 29 12:41:35 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* gnome-hints.scm: Make gnome-update-state do nothing if WIN is
+	#f.  Fixes bug of unwanted get-window calls when the gnome-pager
+	is hidden. Thanks to Michael Schmitz for reporting and helping
+	track this down!
+
+2000-04-13  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* scwm-gtk-pager.scm: Double-buffering added for improved
+	drawing performance.  Changed expose-event to use draw-pager
+	because black windows were being drawn. <-- Unsure of reason
+	here.
+
+Thu Apr 13 01:17:39 2000    <gjb@cs.washington.edu>
+
+	* scwm-gtk-pager.scm: Factor out hooks-for-pager and use it in
+	both set-pager-hooks and unset-pager-hooks.  Reduce it to just
+	have broadcast-hook and broadcast-config-hook.  This not only
+	simplifies the code, but also makes flashing windows work.  Use
+	really-draw-pager for the expose-event.  Make the initialization
+	all occur in initialize-pager, not in top-level defines.  Make
+	show-pager call really-draw-pager right away.  Make
+	really-draw-pager reset need-to-draw-pager to #f right away.
+	There seems to be a problem with blinking windows that causes
+	need-to-draw-pager to get stuck at #t when really-draw-pager is
+	not in the timer hooks list.  This causes the pager to stall
+	updates until an expose event forces a really-draw-pager.
+
+Thu Apr 13 00:58:04 2000    <gjb@cs.washington.edu>
+
+	* scwm-gtk-pager.scm: Use the actual background color of the
+	window instead of just checking to see if it's got the focus.
+	Make draw-pager take an arbitrary number of arguments, and
+	eliminate the specific procedures for each hook, just add
+	draw-pager to the various hooks.  Handle the
+	window-selection-add-hook, window-selection-remove-hook so that
+	selected windows get highlighted in the pager.
+
+	* base.scm:  Added window-foreground-color,
+	window-background-color, color->string.
+
+	* flux.scm: Move window-background-color into base.scm
+
+Wed Apr 12 17:27:35 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-gtk-pager.scm: Avoid pager deadlock when windows close or
+	viewport changes.
+
+2000-04-10  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* Makefile.am: Added scwm-gtk-pager.scm to the list of gtk 
+	modules.
+
+	* scwm-gtk-pager.scm: Removed some garbage text from header.  
+	Removed pager-compare function for on-current-desk? from wininfo.
+
+	* scwm-gtk-pager.scm: Changed variable name for readability and
+	commented out a debug variable.
+
+2000-04-06  Jeff Nichols  <jwnichls@cs.washington.edu>
+
+	* scwm-gtk-pager.scm: Added viewport position and focus 
+	indicators.
+
+	* scwm-gtk-pager.scm: Added a simple, vaguely functional pager
+	written using guile-gtk.  Doesn't respond to mouse events, so 
+	it's only good as a window on your world.
+
+Sun Mar 26 14:22:00 2000    <gjb@cs.washington.edu>
+
+	* winops.scm: Fix hotspot in anchor pixmap.  Use
+	get-window-with-nonant-interactively for
+	interactive-set-window-gravity!
+
+	* ui-constraints-classes.scm: Turn on
+	`start-highlighting-selected-window', off
+	`end-highlighting-selected-window' properly instead of doing the
+	start- once at the beginning of the file.  Makes all selections
+	highlight the current window.
+
+	* placement.scm: Only turn on the ui-constraint if
+	scwm-is-constraint-enabled? and (scwm-master-solver) returns
+	non-#f.
+
+	* nonants.scm: Added cursor option to
+	get-window-with-nonant-interactively to support
+	interactive-set-window-gravity!
+
+	* flux.scm: s/send-key-press/send-key/g
+
+	* dir-focus.scm: Use focus-change-warp-pointer, instead of
+	inlining roughly the same code.  Uses winops module now.
+
+Sat Mar 18 14:09:04 2000    <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm, nonants.scm: Move
+ 	`canonicalize-nonant' into nonants.scm.  Improve the procedure to
+	handle numbers, north-west, etc.
+
+Wed Mar 15 15:39:31 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Added `canonicalize-nonant', and use 
+	it throughout. 
+
+	* placement.scm: Make `near-window-placement' return the list of
+	two windows for strict-relpos-placement to work with.  Added
+	`strict-relpos-placement' to add the constraint persisting the
+	relationship.
+
+	* netscape.scm: Use strict-relpos-placement for the findDialog_popup.
+
+Sun Mar 12 13:11:11 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added `string-contains-slash?', better
+	`program-exists?', from path-cache.scm
+
+	* path-cache.scm: Use the `program-exists?' from base.scm (moved
+	it there from here). 
+
 Thu Feb 24 16:58:39 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* where-is.scm: Better error handling of not-found procedures.

@@ -133,7 +133,7 @@ print_menu(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   return 1;
 }
 
-SCWM_PROC(menu_p,"menu?", 1,0,0,
+SCM_DEFINE(menu_p,"menu?", 1,0,0,
           (SCM obj),
 "Return #t if and only if OBJ is a menu object.")
 #define FUNC_NAME s_menu_p
@@ -196,7 +196,7 @@ NewPchKeysUsed(DynamicMenu *pmd)
 /* GJB:FIXME:: better as an assoc list, probably: we'd have to invent
    a name for menu-items if we did */
 
-SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
+SCM_DEFINE(menu_properties, "menu-properties", 1, 0, 0,
           (SCM menu),
 "Returns the a list of the menu properties of MENU, a menu object.\n\
 The properties returned are: \n\
@@ -234,7 +234,7 @@ image-bg font extra-options used-shortcut-keys popup-delay hover-delay)")
    functions for them; either rename the set-menu-...! functions in
    base.scm to set-default-menu-...! or remove them (does anybody
    use them directly? */
-SCWM_PROC(make_menu, "make-menu", 5, 5, 0,
+SCM_DEFINE(make_menu, "make-menu", 5, 5, 0,
           (SCM list_of_menuitems,
            SCM bg_color, SCM text_color, SCM stipple_color, SCM font,
            SCM picture_side, SCM side_picture_align, SCM side_bg_color,
@@ -318,7 +318,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_menu_popup_delay_x, "set-menu-popup-delay!", 2, 0, 0,
+SCM_DEFINE(set_menu_popup_delay_x, "set-menu-popup-delay!", 2, 0, 0,
           (SCM menu, SCM popup_delay),
 "Set MENU's submenu popup delay to POPUP-DELAY.\n\
 POPUP-DELAY is the number of ms to wait before popping up submenus.")
@@ -331,7 +331,7 @@ POPUP-DELAY is the number of ms to wait before popping up submenus.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(menu_popup_delay, "menu-popup-delay", 1, 0, 0,
+SCM_DEFINE(menu_popup_delay, "menu-popup-delay", 1, 0, 0,
           (SCM menu),
 "Return MENU's submenu popup delay.\n\
 See `set-menu-popup-delay!'.")
@@ -344,7 +344,7 @@ See `set-menu-popup-delay!'.")
 
 
 
-SCWM_PROC(set_menu_hover_delay_x, "set-menu-hover-delay!", 2, 0, 0,
+SCM_DEFINE(set_menu_hover_delay_x, "set-menu-hover-delay!", 2, 0, 0,
           (SCM menu, SCM hover_delay),
 "Set MENU's hover delay to HOVER-DELAY.\n\
 HOVER-DELAY is the number of ms to wait before invoking the hover action.")
@@ -356,7 +356,7 @@ HOVER-DELAY is the number of ms to wait before invoking the hover action.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(menu_hover_delay, "menu-hover-delay", 1, 0, 0,
+SCM_DEFINE(menu_hover_delay, "menu-hover-delay", 1, 0, 0,
           (SCM menu),
 "Return MENU's hover action delay.\n\
 See `set-menu-hover-delay!'.")
@@ -368,7 +368,7 @@ See `set-menu-hover-delay!'.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_menu_look_x, "set-menu-look!", 2, 0, 0,
+SCM_DEFINE(set_menu_look_x, "set-menu-look!", 2, 0, 0,
           (SCM menu, SCM menu_look),
 "Use MENU-LOOK as the menu-look for MENU.")
 #define FUNC_NAME s_set_menu_look_x
@@ -382,7 +382,7 @@ SCWM_PROC(set_menu_look_x, "set-menu-look!", 2, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_menu_title_x, "set-menu-title!", 2, 0, 0,
+SCM_DEFINE(set_menu_title_x, "set-menu-title!", 2, 0, 0,
           (SCM menu, SCM menu_title),
 "Use MENU-TITLE as the title for MENU.")
 #define FUNC_NAME s_set_menu_title_x
@@ -396,7 +396,7 @@ SCWM_PROC(set_menu_title_x, "set-menu-title!", 2, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_menu_colors_x, "set-menu-colors!", 3, 1, 0,
+SCM_DEFINE(set_menu_colors_x, "set-menu-colors!", 3, 1, 0,
           (SCM menu, SCM text_color, SCM bg_color, SCM stipple_color),
 "Use TEXT-COLOR and BG-COLOR as the colors for MENU.\n\
 STIPPLE-COLOR is optional, and if given will be used for the\n\
@@ -422,7 +422,7 @@ stipple color for the MENU.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_menu_highlight_colors_x, "set-menu-highlight-colors!", 3, 0, 0,
+SCM_DEFINE(set_menu_highlight_colors_x, "set-menu-highlight-colors!", 3, 0, 0,
           (SCM menu, SCM text_color, SCM bg_color),
 "Use TEXT-COLOR and BG-COLOR as the highlight colors for MENU.\n\
 These colors will be used for the selected item.")
@@ -443,7 +443,7 @@ These colors will be used for the selected item.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_menu_highlight_relief_x, "set-menu-highlight-relief!", 2, 0, 0,
+SCM_DEFINE(set_menu_highlight_relief_x, "set-menu-highlight-relief!", 2, 0, 0,
           (SCM menu, SCM highlight_relief_p),
 "If HIGHLIGHT-RELIEF? is #t, then draw a relief on selected items in MENU.\n\
 Otherwise, do not.  See also `set-menu-highlight-colors!'.")
@@ -457,7 +457,7 @@ Otherwise, do not.  See also `set-menu-highlight-colors!'.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(menu_highlight_colors, "menu-highlight-colors", 1, 0, 0,
+SCM_DEFINE(menu_highlight_colors, "menu-highlight-colors", 1, 0, 0,
           (SCM menu),
 "Return list text-color, bg-color, the highlight colors for MENU.")
 #define FUNC_NAME s_menu_highlight_colors
@@ -468,7 +468,7 @@ SCWM_PROC(menu_highlight_colors, "menu-highlight-colors", 1, 0, 0,
 }
 #undef FUNC_NAME
 
-SCWM_PROC(menu_highlight_relief_p, "menu-highlight-relief?", 1, 0, 0,
+SCM_DEFINE(menu_highlight_relief_p, "menu-highlight-relief?", 1, 0, 0,
           (SCM menu),
 "Return #t if MENU's selected item is relieved, #f otherwise.")
 #define FUNC_NAME s_menu_highlight_relief_p
@@ -480,7 +480,7 @@ SCWM_PROC(menu_highlight_relief_p, "menu-highlight-relief?", 1, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_menu_font_x, "set-menu-font!", 2, 0, 0,
+SCM_DEFINE(set_menu_font_x, "set-menu-font!", 2, 0, 0,
           (SCM menu, SCM font),
 "Use FONT as the font for MENU.")
 #define FUNC_NAME s_set_menu_font_x
@@ -496,7 +496,7 @@ SCWM_PROC(set_menu_font_x, "set-menu-font!", 2, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_menu_side_picture_x, "set-menu-side-picture!", 2, 2, 0,
+SCM_DEFINE(set_menu_side_picture_x, "set-menu-side-picture!", 2, 2, 0,
           (SCM menu, SCM picture, SCM align, SCM bg_color),
 "Use PICTURE as the side picture for MENU.\n\
 Set its alignment to ALIGN, and its background\n\
@@ -530,7 +530,7 @@ color to BG-COLOR.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_menu_background_picture_x, "set-menu-background-picture!", 2, 0, 0,
+SCM_DEFINE(set_menu_background_picture_x, "set-menu-background-picture!", 2, 0, 0,
           (SCM menu, SCM picture),
 "Use PICTURE as the background image for MENU.")
 #define FUNC_NAME s_set_menu_background_picture_x
@@ -546,7 +546,7 @@ SCWM_PROC(set_menu_background_picture_x, "set-menu-background-picture!", 2, 0, 0
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_menu_extra_options_x, "set-menu-extra-options!", 2, 0, 0,
+SCM_DEFINE(set_menu_extra_options_x, "set-menu-extra-options!", 2, 0, 0,
           (SCM menu, SCM options),
 "Set MENU's extra options to OPTIONS.")
 #define FUNC_NAME s_set_menu_extra_options_x
@@ -1623,7 +1623,7 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom,
   return SCM_BOOL_F;
 }
 
-SCWM_PROC(set_menu_hotkeys_activate_item_x,"set-menu-hotkeys-activate-item!", 1, 0, 0,
+SCM_DEFINE(set_menu_hotkeys_activate_item_x,"set-menu-hotkeys-activate-item!", 1, 0, 0,
           (SCM activate_p),
 "If ACTIVATE? is #t, let menu hotkeys invoke the item.\n\
 If #f, a menuitem hotkey just makes that item selected and still requires\n\
@@ -1635,7 +1635,7 @@ a Return or Space keypress to activate the item.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(menu_hotkeys_activate_item_p,"menu-hotkeys-activate-item?", 0, 0, 0,
+SCM_DEFINE(menu_hotkeys_activate_item_p,"menu-hotkeys-activate-item?", 0, 0, 0,
           (),
 "Return #t if hotkeys invoke item, #f if they just select the item.")
 #define FUNC_NAME s_menu_hotkeys_activate_item_p
@@ -1645,7 +1645,7 @@ SCWM_PROC(menu_hotkeys_activate_item_p,"menu-hotkeys-activate-item?", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(popup_menu,"popup-menu", 1,5,0,
+SCM_DEFINE(popup_menu,"popup-menu", 1,5,0,
           (SCM menu, SCM warp_to_index, SCM x_pos, SCM y_pos, SCM left_side_p, SCM permit_alt_release_selection_p),
 "Popup MENU, a menu object, and warp to the item WARP-TO-INDEX if it is a number.\n\
 X-POS, Y-POS specify a desired position for the menu, and LEFT-SIDE? should be\n\

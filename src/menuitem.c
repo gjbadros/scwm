@@ -88,7 +88,7 @@ print_menuitem(SCM obj, SCM port, scm_print_state *ARG_IGNORE(pstate))
   return 1;
 }
 
-SCWM_PROC(menuitem_p,"menuitem?",1,0,0,
+SCM_DEFINE(menuitem_p,"menuitem?",1,0,0,
 	  (SCM obj),
 "Return #t if and only if OBJ is a menu item object.")
 #define FUNC_NAME s_menuitem_p
@@ -98,7 +98,7 @@ SCWM_PROC(menuitem_p,"menuitem?",1,0,0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(menuitem_properties, "menuitem-properties", 1, 0, 0,
+SCM_DEFINE(menuitem_properties, "menuitem-properties", 1, 0, 0,
           (SCM menu_item),
 "Return a list of the properties of the given MENU-ITEM.\n\
 MENU-ITEM is a menuitem object, created by `make-menuitem'.  The\n\
@@ -125,7 +125,7 @@ primitive.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(make_menuitem, "make-menuitem", 2,7,0,
+SCM_DEFINE(make_menuitem, "make-menuitem", 2,7,0,
           (SCM label, SCM action, SCM extra_label, SCM picture_above,
            SCM picture_left, SCM hover_action, SCM unhover_action,
            SCM hotkey_prefs, SCM submenu_p),
@@ -202,7 +202,7 @@ For a higher-level interface to this function, see `menuitem'.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_menuitem_colors_x,"set-menuitem-colors!",3,0,0,
+SCM_DEFINE(set_menuitem_colors_x,"set-menuitem-colors!",3,0,0,
           (SCM menuitem, SCM fg, SCM bg),
 "Sets the fg and bg colors of MENUITEM to FG and BG respectively.\n\
 Use #f for either/both component to have MENUITEM inherit that color\n\
@@ -223,7 +223,7 @@ from the menu in which it is embedded.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(menuitem_colors,"menuitem-colors",1,0,0,
+SCM_DEFINE(menuitem_colors,"menuitem-colors",1,0,0,
           (SCM menuitem),
 "Returns a list of the fg and bg colors for MENUITEM.\n\
 Will return #f for either/both components if MENUITEM inherits its color from\n\
@@ -236,7 +236,7 @@ the menu in which it is embedded.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_menuitem_font_x,"set-menuitem-font!",2,0,0,
+SCM_DEFINE(set_menuitem_font_x,"set-menuitem-font!",2,0,0,
           (SCM menuitem, SCM font),
 "Sets the font of MENUITEM to FONT.\n\
 Use #f to have MENUITEM inherit its font\n\
@@ -253,7 +253,7 @@ from the menu in which it is embedded.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(menuitem_font,"menuitem-font",1,0,0,
+SCM_DEFINE(menuitem_font,"menuitem-font",1,0,0,
           (SCM menuitem),
 "Returns the font of MENUITEM.\n\
 Returns #f if MENUITEM inherits its font\n\

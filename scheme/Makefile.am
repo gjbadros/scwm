@@ -41,7 +41,7 @@ ScwmButtons.scm ScwmBiff.scm ScwmClock.scm ScwmDeskButtons.scm \
 prompting-shell.scm prompt-binding.scm \
 prompt-bool.scm prompt-color.scm prompt-enum.scm prompt-file.scm prompt-font.scm \
 prompt-range.scm prompt-string.scm prompt-proc.scm flux-gtk.scm \
-ui-constraints-gdk-drawing.scm constraint-investigator.scm
+ui-constraints-gdk-drawing.scm constraint-investigator.scm scwm-gtk-pager.scm
 
 check:
 	echo $(scwm_common_scheme) $(scwm_gtk_scheme) | perl -pe 's/\s+/\n/g' | sort > make.to-install

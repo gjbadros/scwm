@@ -64,7 +64,7 @@ will ever need. You can change the current desk with
 `set-window-desk!'.
 */
 
-SCWM_PROC(set_current_desk_x, "set-current-desk!", 1, 0, 0,
+SCM_DEFINE(set_current_desk_x, "set-current-desk!", 1, 0, 0,
           (SCM desk),
 "Change the current desk to DESK. DESK should be an integer\n\
 small enough to fit in one machine word.")
@@ -78,7 +78,7 @@ small enough to fit in one machine word.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(current_desk, "current-desk", 0, 0, 0,
+SCM_DEFINE(current_desk, "current-desk", 0, 0, 0,
           (),
 "Returns the integer identifying the current desk.")
 #define FUNC_NAME s_current_desk
@@ -99,7 +99,7 @@ coordinate you actually see on the screen).  A virtual coordinate
 is relative to the origin of the current desk.
 */
 
-SCWM_PROC(set_viewport_position_x, "set-viewport-position!", 2, 0, 0,
+SCM_DEFINE(set_viewport_position_x, "set-viewport-position!", 2, 0, 0,
           (SCM x, SCM y),
 "Position the upper left corner of the viewport at coordinates X, Y.\n\
 X and Y are given in pixels.  Does not affect the current desk.")
@@ -114,7 +114,7 @@ X and Y are given in pixels.  Does not affect the current desk.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(viewport_position, "viewport-position", 0, 0, 0,
+SCM_DEFINE(viewport_position, "viewport-position", 0, 0, 0,
           (),
 "Returns the current position of the viewport in pixels.\n\
 The returned value is a list of the x and y positions.")
@@ -127,7 +127,7 @@ The returned value is a list of the x and y positions.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_edge_x_scroll_x, "set-edge-x-scroll!", 1, 0, 0,
+SCM_DEFINE(set_edge_x_scroll_x, "set-edge-x-scroll!", 1, 0, 0,
           (SCM pixels),
 "Set the horizontal edge scroll increment to PIXELS.\n\
 The horizontal edge scroll setting is the amount by which the viewport\n\
@@ -144,7 +144,7 @@ convert from a percent of screen size to pixels.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(edge_x_scroll, "edge-x-scroll", 0, 0, 0,
+SCM_DEFINE(edge_x_scroll, "edge-x-scroll", 0, 0, 0,
           (),
 "Return the horizontal edge scroll increment as set by `set-edge-x-scroll!'.")
 #define FUNC_NAME s_edge_x_scroll
@@ -154,7 +154,7 @@ SCWM_PROC(edge_x_scroll, "edge-x-scroll", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_edge_y_scroll_x, "set-edge-y-scroll!", 1, 0, 0,
+SCM_DEFINE(set_edge_y_scroll_x, "set-edge-y-scroll!", 1, 0, 0,
           (SCM pixels),
 "Set the vertical edge scroll increment to PIXELS.\n\
 The vertical edge scroll setting is the amount by which the viewport\n\
@@ -172,7 +172,7 @@ convert from a percent of screen size to pixels.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(edge_y_scroll, "edge-y-scroll", 0, 0, 0,
+SCM_DEFINE(edge_y_scroll, "edge-y-scroll", 0, 0, 0,
           (),
 "Return the vertical edge scroll increment as set by `set-edge-y-scroll!'.")
 #define FUNC_NAME s_edge_y_scroll
@@ -183,7 +183,7 @@ SCWM_PROC(edge_y_scroll, "edge-y-scroll", 0, 0, 0,
 
 
 
-SCWM_PROC(set_edge_x_wrap_x, "set-edge-x-wrap!", 1, 0, 0,
+SCM_DEFINE(set_edge_x_wrap_x, "set-edge-x-wrap!", 1, 0, 0,
           (SCM flag),
 "Set whether to wrap pointer around horizontal edges.\n\
 If the boolean value FLAG is #t, the pointer will wrap from the right\n\
@@ -197,7 +197,7 @@ right edge, and vice-versa. See also `set-edge-y-wrap!'")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(edge_x_wrap, "edge-x-wrap", 0, 0, 0,
+SCM_DEFINE(edge_x_wrap, "edge-x-wrap", 0, 0, 0,
           (),
 "Return the current horizonatal edge wrap setting as set by `set-edge-x-wrap!'.")
 #define FUNC_NAME s_edge_x_wrap
@@ -207,7 +207,7 @@ SCWM_PROC(edge_x_wrap, "edge-x-wrap", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_edge_y_wrap_x, "set-edge-y-wrap!", 1, 0, 0,
+SCM_DEFINE(set_edge_y_wrap_x, "set-edge-y-wrap!", 1, 0, 0,
           (SCM flag),
 "Set whether to wrap pointer around vertical edges.\n\
 If the boolean value FLAG is #t, the pointer will wrap from the bottom\n\
@@ -222,7 +222,7 @@ bottom edge, and vice-versa. See also `set-edge-x-wrap!'")
 #undef FUNC_NAME
 
 
-SCWM_PROC(edge_y_wrap, "edge-y-wrap", 0, 0, 0,
+SCM_DEFINE(edge_y_wrap, "edge-y-wrap", 0, 0, 0,
           (),
 "Return the current vertical edge wrap setting as set by `set-edge-y-wrap!'.")
 #define FUNC_NAME s_edge_y_wrap
@@ -232,7 +232,7 @@ SCWM_PROC(edge_y_wrap, "edge-y-wrap", 0, 0, 0,
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_edge_scroll_delay_x, "set-edge-scroll-delay!", 1, 0, 0,
+SCM_DEFINE(set_edge_scroll_delay_x, "set-edge-scroll-delay!", 1, 0, 0,
           (SCM ms),
 "Set the edge scroll delay to MS milliseconds.\n\
 When the mouse pointer hits the edge of the screen, it must stay there\n\
@@ -252,7 +252,7 @@ at the screen edge.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(edge_scroll_delay, "edge-scroll-delay", 0, 0, 0,
+SCM_DEFINE(edge_scroll_delay, "edge-scroll-delay", 0, 0, 0,
           (),
 "Return the edge scroll delay (in ms) as set by `set-edge-scroll-delay!'.")
 #define FUNC_NAME s_edge_scroll_delay
@@ -264,7 +264,7 @@ SCWM_PROC(edge_scroll_delay, "edge-scroll-delay", 0, 0, 0,
 
 
 
-SCWM_PROC(set_edge_move_threshold_x, "set-edge-move-threshold!", 1, 0, 0,
+SCM_DEFINE(set_edge_move_threshold_x, "set-edge-move-threshold!", 1, 0, 0,
           (SCM pixels),
 "Set the edge move threshold to PIXELS.\n\
 Attempts to move a window so that it is off the edge of the screen by\n\
@@ -280,7 +280,7 @@ fewer than PIXELS pixels will leave the window entirely onscreen.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(edge_move_threshold, "edge-move-threshold", 0, 0, 0,
+SCM_DEFINE(edge_move_threshold, "edge-move-threshold", 0, 0, 0,
           (),
 "Return the edge move threshold as set by `set-edge-move-threshold!'.")
 #define FUNC_NAME s_edge_move_threshold
@@ -291,7 +291,7 @@ SCWM_PROC(edge_move_threshold, "edge-move-threshold", 0, 0, 0,
 
 
 
-SCWM_PROC(set_desk_size_x, "set-desk-size!", 2, 0, 0,
+SCM_DEFINE(set_desk_size_x, "set-desk-size!", 2, 0, 0,
           (SCM width, SCM height),
 "Sets the desk size to WIDTH, HEIGHT.\n\
 Both numbers are given in units of the physical screen size.  For\n\
@@ -324,7 +324,7 @@ size of the physical display.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(desk_size, "desk-size", 0, 0, 0,
+SCM_DEFINE(desk_size, "desk-size", 0, 0, 0,
           (),
 "Returns the size of the current desk.\n\
 The returned value is in units of the physical screen size, as a list\n\
@@ -338,7 +338,7 @@ of the width and the height.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(display_size, "display-size", 0, 0, 0,
+SCM_DEFINE(display_size, "display-size", 0, 0, 0,
           (),
 "Returns the size of the physical screen in pixels.\n\
 The return value is list of the width and the height. The\n\

@@ -18,7 +18,7 @@ EXTRA_DIST= ChangeLog $(srcdir)/fvwm2/* $(srcdir)/mwm/* $(srcdir)/win95/* \
 DISTCLEANFILES=*.@TAR_SUFFIX@
 
 
-fvwm2.@TAR_SUFFIX@: $(srcdir)/fvwm2 $(srcdir)/fvwm2/*
+fvwm2.@TAR_SUFFIX@: $(srcdir)/fvwm2 $(srcdir)/fvwm2/theme.scm
 	abs_builddir_themes=`pwd`; \
 	cd $(srcdir); \
 	abs_srcdir_themes=`pwd`; \
@@ -26,7 +26,7 @@ fvwm2.@TAR_SUFFIX@: $(srcdir)/fvwm2 $(srcdir)/fvwm2/*
 	$(TAR_CF) $${abs_builddir_themes}/fvwm2.@TAR_SUFFIX@ fvwm2
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
 
-mwm.@TAR_SUFFIX@: $(srcdir)/mwm $(srcdir)/mwm/*
+mwm.@TAR_SUFFIX@: $(srcdir)/mwm $(srcdir)/mwm/theme.scm
 	abs_builddir_themes=`pwd`; \
 	cd $(srcdir); \
 	abs_srcdir_themes=`pwd`; \
@@ -34,7 +34,7 @@ mwm.@TAR_SUFFIX@: $(srcdir)/mwm $(srcdir)/mwm/*
 	$(TAR_CF) $${abs_builddir_themes}/mwm.@TAR_SUFFIX@ mwm
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
 
-win95.@TAR_SUFFIX@: $(srcdir)/win95 $(srcdir)/win95/*
+win95.@TAR_SUFFIX@: $(srcdir)/win95 $(srcdir)/win95/theme.scm
 	abs_builddir_themes=`pwd`; \
 	cd $(srcdir); \
 	abs_srcdir_themes=`pwd`; \
@@ -42,7 +42,7 @@ win95.@TAR_SUFFIX@: $(srcdir)/win95 $(srcdir)/win95/*
 	$(TAR_CF) $${abs_builddir_themes}/win95.@TAR_SUFFIX@ win95
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
 
-woven.@TAR_SUFFIX@: $(srcdir)/woven $(srcdir)/woven/*
+woven.@TAR_SUFFIX@: $(srcdir)/woven $(srcdir)/woven/theme.scm
 	abs_builddir_themes=`pwd`; \
 	cd $(srcdir); \
 	abs_srcdir_themes=`pwd`; \
@@ -50,7 +50,7 @@ woven.@TAR_SUFFIX@: $(srcdir)/woven $(srcdir)/woven/*
 	$(TAR_CF) $${abs_builddir_themes}/woven.@TAR_SUFFIX@ woven
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
 
-gjb.@TAR_SUFFIX@: $(srcdir)/gjb $(srcdir)/gjb/*
+gjb.@TAR_SUFFIX@: $(srcdir)/gjb $(srcdir)/gjb/theme.scm
 	abs_builddir_themes=`pwd`; \
 	cd $(srcdir); \
 	abs_srcdir_themes=`pwd`; \
@@ -58,7 +58,7 @@ gjb.@TAR_SUFFIX@: $(srcdir)/gjb $(srcdir)/gjb/*
 	$(TAR_CF) $${abs_builddir_themes}/gjb.@TAR_SUFFIX@ gjb
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
 
-twm.@TAR_SUFFIX@: $(srcdir)/twm $(srcdir)/twm/*
+twm.@TAR_SUFFIX@: $(srcdir)/twm $(srcdir)/twm/theme.scm
 	abs_builddir_themes=`pwd`; \
 	cd $(srcdir); \
 	abs_srcdir_themes=`pwd`; \
@@ -66,7 +66,7 @@ twm.@TAR_SUFFIX@: $(srcdir)/twm $(srcdir)/twm/*
 	$(TAR_CF) $${abs_builddir_themes}/twm.@TAR_SUFFIX@ twm
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
 
-afterstep.@TAR_SUFFIX@: $(srcdir)/afterstep $(srcdir)/afterstep/*
+afterstep.@TAR_SUFFIX@: $(srcdir)/afterstep $(srcdir)/afterstep/theme.scm
 	abs_builddir_themes=`pwd`; \
 	cd $(srcdir); \
 	abs_srcdir_themes=`pwd`; \
@@ -74,7 +74,7 @@ afterstep.@TAR_SUFFIX@: $(srcdir)/afterstep $(srcdir)/afterstep/*
 	$(TAR_CF) $${abs_builddir_themes}/afterstep.@TAR_SUFFIX@ afterstep
 	echo 'make[99]: Leaving directory `'$$abs_top_srcdir"'"	
 
-darkside.@TAR_SUFFIX@: $(srcdir)/darkside $(srcdir)/darkside/*
+darkside.@TAR_SUFFIX@: $(srcdir)/darkside $(srcdir)/darkside/theme.scm
 	abs_builddir_themes=`pwd`; \
 	cd $(srcdir); \
 	abs_srcdir_themes=`pwd`; \

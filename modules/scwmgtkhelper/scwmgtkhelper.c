@@ -32,7 +32,7 @@
 #include "scwm-snarf.h"
 #include "scwm_msg.h"
 
-SCWM_PROC(scwm_gdk_X_fdes, "scwm-gdk-X-fdes", 0, 0, 0,
+SCM_DEFINE(scwm_gdk_X_fdes, "scwm-gdk-X-fdes", 0, 0, 0,
 	  (),
 "Return the integer connection number of the gdk_display.\n\
 Returns -1 if gdk_display is not initialized.")
@@ -71,7 +71,7 @@ ScwmGdkErrorHandler(Display * dpy, XErrorEvent *error)
 
 /* extern void DeadPipe(int nonsense); */
 
-SCWM_PROC(restore_scwm_handlers, "restore-scwm-handlers", 0, 0, 0,
+SCM_DEFINE(restore_scwm_handlers, "restore-scwm-handlers", 0, 0, 0,
 	  (),
 "Restore the scwm behavior for signals and for X errors.\n\
 This is automatically called when (app scwm gtk) is loaded, to clean up\n\

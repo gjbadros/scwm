@@ -384,7 +384,7 @@ cls-required
   (define (window-clv-vp-yt win)
     (cl-minus (window-clv- win) (screen-clv-vx)))
   (define (window-clv-vp-yb win)
-    (cl-minus (window-clv-xr win) (screen-clv-vx)))
+    (cl-minus (window-clv-xr win) (screen-clv-vx))))
 
 ;; kill all xlogo windows
 (for-each (lambda (w) (close-window w)) 

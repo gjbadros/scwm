@@ -355,7 +355,7 @@ ascending order if ASCENDING is #t, otherwise descending."
 
 (define anchor-cursor #f)
 (let ((acimage (make-image "anchor-cursor.xpm")))
-  (if acimage (set! anchor-cursor (create-pixmap-cursor acimage))))
+  (if acimage (set! anchor-cursor (create-pixmap-cursor acimage #f #f 16 20))))
 
 (define*-public (interactive-set-window-gravity!)
   "Permit user to click on an area of a window and anchor that nonant.
@@ -363,12 +363,10 @@ E.g., if the user clicks on the northeast corner of a window, that
 window will be set to have northeast gravity so future resizes keep
 that corner fixed."
   (interactive)
-  (let* ((win-pos (select-viewport-position anchor-cursor))
-	 (win (car win-pos)))
+  (let ((win (get-window-with-nonant-interactively #f anchor-cursor)))
     (if win
-	(set-window-gravity! 
-	 (nonant->gravity (get-window-nonant win-pos))
-	 win))))
+	(set-window-gravity!
+	 (nonant->gravity (object-property win 'nonant)) win))))
 
 (define gravities #(northwest north northeast west center
 			      east southwest south southeast))

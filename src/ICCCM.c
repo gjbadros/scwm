@@ -65,7 +65,7 @@ send_clientmessage(Display * disp, Window w, Atom a, Time timestamp)
   XSendEvent(disp, w, False, 0L, (XEvent *) & ev);
 }
 
-SCWM_PROC(send_client_message, "send-client-message", 2, 0, 1,
+SCM_DEFINE(send_client_message, "send-client-message", 2, 0, 1,
           (SCM win, SCM atom, SCM data),
 "Send WIN the message \"ATOM DATA\".\n\
 WIN can be 'root-window or an X window identification number.\n\
@@ -108,6 +108,7 @@ the data message.")
   XSendEvent(dpy, w, False, mask, (XEvent *) &ev);
   return SCM_UNSPECIFIED;
 }
+#undef FUNC_NAME
 
 void 
 init_ICCCM()

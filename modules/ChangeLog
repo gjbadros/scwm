@@ -1,3 +1,8 @@
+Sat Jun 24 14:13:03 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c (s_xlib_set_line_attributes_x): Notice if 
+	sym_* are not set (using an assert).
+
 Thu Feb 24 19:15:44 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* viavoice/scwmgrammar.bnf: Understand "move window center"

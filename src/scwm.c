@@ -1767,7 +1767,7 @@ usage(void)
           "      [--dump|-o executable_filename]\n"
 #endif
 	  "      [--nobacktrace|-n] [--segv-cleanup-and-stop|-p] [--segv-just-stop|-P]\n"
-          "      [--document-formals|-N]\n"
+          "      [--no-document-formals|-N]\n"
 	  "      [--blackout|-b] [--" CLIENT_ID_STRING " id]\n"
 	  "      [--version|-V] [--help|-h]\n"
 	  , g_argv[0]);

@@ -63,6 +63,10 @@ file. If the file is found, the full pathname to it is returned; if not,
 		      #f))) 
 	      path)))
 
+(define-public (string-list->string l)
+  "Convert L, a list of strings or characters, to a string."
+  (apply string-append l))
+;; (string-list->string '("123" "456"))
 
 (define-public (path-list->string-with-colons l)
   "Convert L, a list of string directory names, to a single colon-separated string.
@@ -72,7 +76,7 @@ Returns that string."
 	  ((null? (cdr l)) l)
 	  (#t
 	   (append (list (car l)) '(":") (insert-colons (cdr l))))))
-  (list->string (insert-colons l)))
+  (string-list->string (insert-colons l)))
 
 ;; (use-modules (ice-9 string-fun))
 ;; (use-modules (app scwm file))

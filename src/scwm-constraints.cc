@@ -247,6 +247,8 @@ CassowaryEndEdit(PScwmWindow)
   }
   DBUG((scwm_msg(INFO,"CassowaryEndEdit","Ended edit");))
   psolver->EndEdit();
+  // Below line needs cassowary-0.60 or newer, drop if using older version
+  psolver->ResetStayConstants();
 }
 
 } // extern "C"

@@ -109,7 +109,7 @@ Atom InternAtomFromScm(Display *dpy, SCM s, Bool f)
 }
 
 
-SCWM_PROC(X_property_set_x, "X-property-set!", 3, 3, 0,
+SCM_DEFINE(X_property_set_x, "X-property-set!", 3, 3, 0,
 	  (SCM win, SCM name, SCM value, SCM type, SCM format, SCM action),
 "Set X property NAME on window WIN to VALUE.\n\
 WIN is the window to set the X property on, an X window id, or 'root-window.\n\
@@ -260,7 +260,7 @@ ScmListOfStringsFromStringLen( char *pch, int cch)
   }
 }
 
-SCWM_PROC(X_property_get, "X-property-get", 2, 1, 0,
+SCM_DEFINE(X_property_get, "X-property-get", 2, 1, 0,
 	  (SCM win, SCM name, SCM consume_p),
 "Get X property NAME of window WIN.\n\
 WIN is the window to check, an X window id, or 'root-window.\n\
@@ -303,14 +303,14 @@ If the X property could be found, a list '(value type format) is returned.\n\
     break;
   case 16:
     v16=(INT16 *)val;
-    value=gh_make_vector(gh_int2scm(len), SCM_UNSPECIFIED);
+    value=gh_make_vector(gh_int2scm(len), SCM_BOOL_F);
     for (i=0; i<len; i++) {
       gh_vector_set_x(value, gh_int2scm(i), gh_long2scm(*v16++));
     }
     break;
   case 32:
     v32=(INT32 *)val;
-    value=gh_make_vector(gh_int2scm(len), SCM_UNSPECIFIED);
+    value=gh_make_vector(gh_int2scm(len), SCM_BOOL_F);
     for (i=0; i<len; i++) {
       gh_vector_set_x(value, gh_int2scm(i), gh_long2scm(*v32++));
     }
@@ -327,7 +327,7 @@ If the X property could be found, a list '(value type format) is returned.\n\
 }
 #undef FUNC_NAME
 
-SCWM_PROC(X_property_delete_x, "X-property-delete!", 2, 0, 0,
+SCM_DEFINE(X_property_delete_x, "X-property-delete!", 2, 0, 0,
 	  (SCM win, SCM name),
 "Delete X property NAME of window WIN.\n\
 WIN is the window to check, an X window id, or 'root-window.\n\
@@ -345,7 +345,7 @@ NAME is a string. The return value is unspecified.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(X_properties, "X-properties", 1, 0, 0,
+SCM_DEFINE(X_properties, "X-properties", 1, 0, 0,
 	  (SCM win),
 "Returns a list of WIN's X property names.\n\
 WIN is the window to query, an X window id, or 'root-window.")
@@ -381,7 +381,7 @@ New X atoms can be created, or old ones retrieved simply by specifying
 the string the atom stands for. An X atom can also be converted back to a
 string. Scwm provides primitives for these actions. */
 
-SCWM_PROC(string_to_X_atom, "string->X-atom", 1, 0, 0,
+SCM_DEFINE(string_to_X_atom, "string->X-atom", 1, 0, 0,
 	  (SCM string),
 "Returns an X atom representing STRING.\n\
 If STRING contains NULL-characters, the behaviour is undefined.")
@@ -397,7 +397,7 @@ If STRING contains NULL-characters, the behaviour is undefined.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(X_atom_to_string, "X-atom->string", 1, 0, 0,
+SCM_DEFINE(X_atom_to_string, "X-atom->string", 1, 0, 0,
 	  (SCM atom),
 "Returns the string represented by ATOM.\n\
 Returns #f, if the X atom was not known.")
@@ -417,7 +417,7 @@ Returns #f, if the X atom was not known.")
 #undef FUNC_NAME
 
 
-SCWM_PROC(X_get_selection_owner,"X-get-selection-owner", 1, 0, 0,
+SCM_DEFINE(X_get_selection_owner,"X-get-selection-owner", 1, 0, 0,
           (SCM atom),
 "Return the window that owns the selection denoted by ATOM.\n\
 ATOM is likely one of the atoms: \"PRIMARY\" or \"SECONDARY\".\n\
@@ -441,7 +441,7 @@ object, 'root-window, or an integer window Id.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(X_convert_selection,"X-convert-selection", 4, 0, 0,
+SCM_DEFINE(X_convert_selection,"X-convert-selection", 4, 0, 0,
           (SCM selection, SCM target, SCM property, SCM requestor_window),
 "Ask the owner of selection SELECTION to provide its value.\n\
 The owner should convert the selection to type TARGET and put set\n\

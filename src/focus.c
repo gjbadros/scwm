@@ -65,7 +65,7 @@ call_lost_focus_hook(ScwmWindow *psw)
 Bool
 FFocussableWin(ScwmWindow *psw)
 {
-  if (psw->fClickToFocus && psw->fSloppyFocus)
+  if (psw && psw->fClickToFocus && psw->fSloppyFocus)
     return False;
   if ((psw && psw->fLenience) || 
       (!(psw && 
@@ -76,7 +76,7 @@ FFocussableWin(ScwmWindow *psw)
   return False;
 }
 
-SCWM_PROC(focussable_window_p,"focussable-window?",0,1,0,
+SCM_DEFINE(focussable_window_p,"focussable-window?",0,1,0,
           (SCM win),
 "Return #t iff WIN may receive the keyboard focus.\n\
 This will return #f, e.g., if WIN's focus style is 'none, or\n\
@@ -165,9 +165,14 @@ SetFocus(Window w, ScwmWindow * psw, Bool ARG_UNUSED(FocusByMouse))
     w = psw->icon_w;
 
   if (psw && !FFocussableWin(psw)) {
-    call_lost_focus_hook(NULL);
-    XSetInputFocus(dpy, Scr.NoFocusWin, RevertToPointerRoot, lastTimestamp);
-    Scr.Focus = NULL;
+    if ( Scr.Focus != NULL && Scr.Focus->fSloppyFocus ) {
+      /* don't unfocus a sloppily focused window if an unfocusable
+	 window is trying to get the focus */
+    } else {
+      call_lost_focus_hook(NULL);
+      XSetInputFocus(dpy, Scr.NoFocusWin, RevertToPointerRoot, lastTimestamp);
+      Scr.Focus = NULL;
+    }
   } else {
     call_lost_focus_hook(psw);
     XSetInputFocus(dpy, w, RevertToPointerRoot, lastTimestamp);

@@ -342,7 +342,7 @@ SCWM_SYMBOL(sym_border , "border");
 pointers to functions that know how to set each individual flag, but
 this ugly code is almost certainly more compact and quite possibly
 faster. If only C had closures... */
-SCWM_PROC(set_face_flag_x,"set-face-flag!", 3, 0, 0,
+SCM_DEFINE(set_face_flag_x,"set-face-flag!", 3, 0, 0,
           (SCM face, SCM flag, SCM flagval),
 "Set the given FLAG to the given FLAGVAL for face FACE.\n\
 See the section on the `Face Flags' concept.")
@@ -439,7 +439,7 @@ See the section on the `Face Flags' concept.")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(make_face, "make-face",2,0,0,
+SCM_DEFINE(make_face, "make-face",2,0,0,
           (SCM flags, SCM specs),
 "Create a new face.\n\
 FLAGS is a list of face flags (see concept) and\n\
@@ -853,7 +853,7 @@ ButtonFace *append_new_face(ButtonFace *bf) {
 extern ScwmDecor *cur_decor;
 
 
-SCWM_PROC(set_title_face_x, "set-title-face!", 1 , 2, 0,
+SCM_DEFINE(set_title_face_x, "set-title-face!", 1 , 2, 0,
           (SCM active_up, SCM active_down, SCM inactive),
 "Set the titlebar faces for the various window states.\n\
 In the current decor, use ACTIVE-UP as the face for the title\n\
@@ -881,7 +881,7 @@ state, it will be sunk in the ACTIVE-DOWN state by default. ")
 }
 #undef FUNC_NAME
 
-SCWM_PROC(set_button_face_x, "set-button-face!", 2, 2, 0,
+SCM_DEFINE(set_button_face_x, "set-button-face!", 2, 2, 0,
           (SCM button, SCM active_up, SCM active_down, SCM inactive),
 "Set the button faces for the various window states.\n\
 See `set-left-button-face!' and `set-right-button-face!' for a\n\
@@ -927,7 +927,7 @@ default. ")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
+SCM_DEFINE(set_button_mwm_flag_x, "set-button-mwm-flag!", 2, 0, 0,
           (SCM button, SCM flag),
 "Specify the Mwm flag for BUTTON.\n\
 If FLAG is #t, the button's relief pattern (if any) will appear to\n\
@@ -954,7 +954,7 @@ property).")
 #undef FUNC_NAME
 
 
-SCWM_PROC(set_border_face_x, "set-border-face!", 1, 1, 0,
+SCM_DEFINE(set_border_face_x, "set-border-face!", 1, 1, 0,
           (SCM active, SCM inactive),
 "Set the face for the border In the current decor.\n\
 Use ACTIVE as the face for the border when the window is active. Use\n\
