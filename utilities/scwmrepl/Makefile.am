@@ -1,6 +1,6 @@
-
+## $Id$
 bin_PROGRAMS = scwmrepl
 scwmrepl_SOURCES = scwmrepl.c
 scwmrepl_LDADD = $(top_builddir)/utilities/libscwmexec/libscwmexec.la \
                   @x_ldflags@ @x_libs@ @READLINE_LIB@
-INCLUDES = @x_cflags@
+INCLUDES = @x_cflags@ @GUILE_INCLUDES@
