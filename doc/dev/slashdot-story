@@ -1,23 +1,26 @@
 The Scheme Constraints Window Manager v0.99.2 was released late Tuesday
-afternoon, 14-September-1999.  Scwm is free X11 window manager developed
-using GNU/Linux for it and other Unix-like platforms.  The 0.99.2
-release is the first release from the authors, Greg J. Badros and Maciej
-Stachowiak, since January 1999, and improvements abound!
+afternoon, 14-September-1999, at http://scwm.mit.edu.  Scwm is a free X11
+window manager developed using GNU/Linux for it and other Unix-like
+platforms.  The 0.99.2 release is the first release from the authors,
+Greg J. Badros and Maciej Stachowiak, since January 1999, and
+improvements abound!
 
 Scwm uses GNU Guile Scheme as its configuration and scripting language.
 This makes Scwm incredibly programmable---truly the Emacs of Window
-Managers... the ultimate window manager for the hacker and wannabe hacker!
+Managers.
 
-In addition to the fantastic extension language, Scwm provides nearly
-all the features of all other window managers combined.  Included in
-this impressive list are Gnome-compliance, KDE compliance, per-window
-decoration themes, completely configurable window behaviour, extensible
-GUI configuration (via embedded GTk+) of user parameters,
+In addition to the fantastic (Turing-complete!) extension language, Scwm
+provides nearly all the features of all other window managers combined.
+Included in this impressive list are Gnome-compliance, KDE compliance,
+per-window decoration themes, incredibly configurable window behaviour,
+extensible GUI configuration (via embedded GTk+) of user parameters,
 highly-integrated and complete reference documentation, an Emacs
 scwm-mode for interactive configuration and programming, window
-movement/resizing/shading animations, an XTest extension, an interface
-to esound, integration with fvwm2 modules, a Corba server, access to
-libproplist databases, and much more!
+movement/resizing/shading animations, an XTest extension that permits
+scripting interactions with applications, an interface to esound,
+integration with fvwm2 modules, a Corba server for accessing WM
+functionality from other applications, access to libproplist databases,
+and much more!
 
 Most notable in Scwm is its constraint solver to permit sophisticated
 desires regarding window layout to be specified interactively, then

@@ -1,3 +1,14 @@
+For scwm-0.99.2 gjb used (roughly):
+  ./autogen.sh
+  make dist
+  rpm -ts scwm-0.99.2.tar.gz
+  # copy scwm-0.99.2.src.rpm to other platforms
+  rpm -tb scwm-0.99.2.tar.gz
+
+and on other platforms, do 
+  rpm --rebuild scwm-0.99.2.src.rpm
+
+THE REST OF THIS IS OUT OF DATE! --09/14/99 gjb
 
 The release procedure for scwm:
 
@@ -66,12 +77,12 @@ following places:
 
 E-mail:
 scwm-announce@scwm.mit.edu
-guile@cygnus.com
+guile@sourceware.cygnus.com
 scsh@ai.mit.edu (this is at the invitation of Olin Shivers)
 
 I also usually send a brief announcement including mostly
 gnome-relevant things to gnome-list@gnome.org (I think you need to be
-on it to post), but this is not crucuial.
+on it to post), but this is not crucial.
 
 Newsgroups:
 comp.lang.scheme
@@ -85,6 +96,8 @@ To: scwm-discuss@mit.edu, guile@cygnus.com, scsh@ai.mit.edu, gnome-list@gnome.or
 
 Web Sites and/or Ftp Archives (getting volunteers to do these is sufficent):
 
+http://www.gnome.org
+  -- update its software map
 http://www.freshmeat.net
 ftp://ftp.red-bean.com/pub/guile/contrib/incoming 
 (and send mail to Pat Eyler <pate@nortom.com> to update the guile
@@ -114,4 +127,7 @@ http://www.giccs.georgetown.edu/~ric/computing/software/x.html
 mailto: ric@giccs.georgetown.edu
 
 http://www.PLiG.org/xwinman/
-mailto: matt@belgarath.demon.co.uk
+mailto: matt@belgarath.demon.co.u
+
+http://www.ee.ryerson.ca:8080/~elf/xapps/index.html#index7
+elf@ee.ryerson.ca
