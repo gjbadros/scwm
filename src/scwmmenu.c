@@ -41,6 +41,19 @@ static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);
 static void FreeDynamicMenu(DynamicMenu *pmd);
 
+/* Give string name of first item in a dynamic menu;
+   mostly used for debugging */
+static const char *
+SzFirstItemFromPmd(const DynamicMenu *pmd)
+{
+  SCM scmFirstMenuItem = gh_car(pmd->pmenu->scmMenuItems);
+  MenuItem *pmi = SAFE_MENUITEM(scmFirstMenuItem);
+  if (pmi)
+    return pmi->szLabel;
+  else
+    return "NULL";
+}
+
 SCM 
 mark_menu(SCM obj)
 {
@@ -367,8 +380,13 @@ DynamicMenu *
 PmdFromWindow(Display *dpy, Window w)
 {
   DynamicMenu *pmd = NULL;
-  if ((XFindContext(dpy, Event.xany.window,MenuContext,
+
+  if (w == None)
+    return NULL;
+
+  if ((XFindContext(dpy, w, MenuContext,
 		    (caddr_t *)&pmd) == XCNOENT)) {
+    DBUG(__FUNCTION__,"XFindContext gave XCNOENT");
     pmd = NULL;
   }
   return pmd;
@@ -384,14 +402,15 @@ PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
   for (ipmiim = 0; ipmiim < pmd->cmiim; ipmiim++) {
     MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim];
     int item_y_offset = pmiim->cpixOffsetY;
-    if (y > item_y_offset && y < item_y_offset + pmiim->cpixItemHeight) {
+    if (y > item_y_offset && y <= item_y_offset + pmiim->cpixItemHeight) {
+      DBUG(__FUNCTION__,"pmiim->pmi->szLabel = %s @ %d,%d", pmiim->pmi->szLabel,x,y);
       return pmiim;
     }
   }
   return NULL;
 }
 
-
+#ifdef FIXGJB_UNUSED
 static
 DynamicMenu *
 PmdFromPointerLocation(Display *dpy)
@@ -402,6 +421,7 @@ PmdFromPointerLocation(Display *dpy)
 		&JunkX,&JunkY, &JunkX, &JunkY, &JunkMask);
   return PmdFromWindow(dpy,wChild);
 }
+#endif
 
 /* PmiimFromPointerLocation
  * Find the MenuItemInMenu that the pointer is at now
@@ -416,6 +436,7 @@ PmiimFromPointerLocation(Display *dpy, int *px_offset)
 {
   int root_x, root_y;
   int x,y;
+  Bool f;
   Window wChild;
   DynamicMenu *pmd = NULL;
 
@@ -423,14 +444,20 @@ PmiimFromPointerLocation(Display *dpy, int *px_offset)
   if (px_offset) *px_offset = 0;
 
   XQueryPointer( dpy, Scr.Root, &JunkRoot, &wChild,
-		&root_x,&root_y, &JunkX, &JunkY, &JunkMask);
+		&root_x,&root_y, &x, &y, &JunkMask);
   if ((pmd = PmdFromWindow(dpy,wChild)) == NULL) {
+    DBUG(__FUNCTION__,"No window");
     return NULL;
   }
 
+  DBUG(__FUNCTION__,"In window %s (%ld)",SzFirstItemFromPmd(pmd),wChild);
+  DBUG(__FUNCTION__,"root = %d,%d",root_x,root_y);
+
   /* now get position in that child window */
-  XQueryPointer( dpy, wChild, &JunkRoot, &JunkChild,
-		&root_x,&root_y, &x, &y, &JunkMask);
+  f = XQueryPointer( dpy, wChild, &JunkRoot, &JunkChild,
+                     &root_x,&root_y, &x, &y, &JunkMask);
+
+  DBUG(__FUNCTION__,"Now root = %d,%d; window = %d, %d (%d)",root_x,root_y, x,y, (int) f);
 
   /* set the return value for the x_offset */
   if (px_offset) *px_offset = x;
@@ -483,8 +510,10 @@ void
 UnselectAndRepaintSelectionForPmd(DynamicMenu *pmd)
 {
   MenuItemInMenu *pmiim = PmiimSelectedFromPmd(pmd);
-  if (!pmiim)
+  if (!pmiim) {
+    DBUG(__FUNCTION__,"pmiimSelected == NULL");
     return;
+  }
 
   if (pmiim->mis != MIS_Selected) {
     scwm_msg(DBG,__FUNCTION__,"pmiim->mis != MIS_Selected");
@@ -505,6 +534,7 @@ SelectAndRepaintPmiim(MenuItemInMenu *pmiim)
 {
   DynamicMenu *pmd = pmiim->pmd;
   if (pmiim->mis == MIS_Selected) {
+    DBUG(__FUNCTION__,"Already selected");
     return;
   }
   pmiim->mis = MIS_Selected;
@@ -561,9 +591,9 @@ PopdownMenu(DynamicMenu *pmd)
   }
   InvokeUnhoverAction(pmd);
   pmd->fHoverActionInvoked = False;
+  XUnmapWindow(dpy, pmd->pmdi->w);
   /* unconnect the window from the dynamic menu */
   XSaveContext(dpy, pmd->pmdi->w,MenuContext,(caddr_t)NULL);
-  XUnmapWindow(dpy, pmd->pmdi->w);
   UninstallRootColormap();
   XFlush(dpy);
 }
@@ -922,6 +952,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
     { /* scope */
       if (pmiim == NULL) {
 	/* not on an item now */
+        DBUG(__FUNCTION__,"Not on menu item, %d", c10ms_delays);
 	if (pmd->fHoverActionInvoked) {
 	  InvokeUnhoverAction(pmd);
 	  pmd->fHoverActionInvoked = False;
@@ -932,6 +963,8 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 	if (pmiim->pmd != pmd) {
 	  /* it's for a different menu than we were on */
 	  if (pmiim->pmd == pmd->pmdNext) {
+            DBUG(__FUNCTION__,"Moved into pre-popped menu %s, %d",
+                 SzFirstItemFromPmd(pmiim->pmd),c10ms_delays);
 	    /* we've moved to the pre-popped menu */
 	    pmd = pmd->pmdNext;
 	  } else if (FPmdInPmdPriorChain(pmiim->pmd,pmd)) {
@@ -940,26 +973,36 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 	    if (pmiim != PmiimSelectedFromPmd(pmd)) {
 	      /* it's not the one that we had selected before,
 		 so we need to pop down everything */
-	      DBUG(__FUNCTION__,"Moved back to different item");
+	      DBUG(__FUNCTION__,"Moved back to different item of %s, %d", 
+                   SzFirstItemFromPmd(pmiim->pmd),c10ms_delays);
 	      UnselectAndRepaintSelectionForPmd(pmd);
 	    } else {
+              DBUG(__FUNCTION__,"Moving back within chain of dynamic menus to %s, unselect %s, %d", 
+                   SzFirstItemFromPmd(pmiim->pmd),SzFirstItemFromPmd(pmd->pmdNext),c10ms_delays);
 	      UnselectAndRepaintSelectionForPmd(pmd->pmdNext);
 	    }
 	  } else {
 	    /* we're on an unrelated menu */
-	    DBUG(__FUNCTION__,"Moved to unrelated menu\n");
+	    DBUG(__FUNCTION__,"Moved to unrelated menu %s, %d", 
+                 SzFirstItemFromPmd(pmiim->pmd),c10ms_delays);
 	    UnselectAndRepaintSelectionForPmd(pmd);
 	    pmiim = NULL;
 	  }
 	} else {
 	  /* same menu as we were on */
 	  if (pmiim != PmiimSelectedFromPmd(pmd)) {
+            MenuItemInMenu *pmiimSelected = PmiimSelectedFromPmd(pmd);
 	    /* and it's not the one we've already got selected */
+            DBUG(__FUNCTION__,"Moved off old selection from %s onto %s vs. %s, %d", 
+                 SzFirstItemFromPmd(pmd), pmiim->pmi->szLabel, pmiimSelected?pmiimSelected->pmi->szLabel: "NULL",
+                 c10ms_delays);
 	    UnselectAndRepaintSelectionForPmd(pmd);
-	  }
+	  } else {
+            DBUG(__FUNCTION__,"Same item, %d", c10ms_delays);
+          }
 	}
 	if (pmiim && pmiim->mis != MIS_Selected) {
-	  DBUG(__FUNCTION__,"New selection");
+	  DBUG(__FUNCTION__,"New selection, %d", c10ms_delays);
 	  SelectAndRepaintPmiim(pmiim);
 	  c10ms_delays = 0;
 	}
@@ -967,6 +1010,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
 	  /* we're at the right edge of the menu so be sure we popup
 	     the cascade menu if any */
 	  if (pmd->pmdNext == NULL) {
+            DBUG(__FUNCTION__,"Prepopping, %d", c10ms_delays);
             PmdPrepopFromPmiim(pmiim);
 	  }
 	}
