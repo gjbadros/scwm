@@ -18,6 +18,11 @@ Be sure not to use, e.g., menu_p() as a C boolean -- use MENU_P() instead
     evaluate as true in a C expression. This is also true for the gh_foo_p()
     functions such as gh_string_p and gh_number_p
 
+Creating a scm-level variable with SCWM_VAR_INIT?
+  Be sure to initialize with a scheme and not a C value! e.g,.
+    SCWM_VAR_INIT(scroll_region, "scroll-region", gh_int2scm(2));
+
+
 When type checking, consider using, e.g., FONT_OR_SYMBOL_P to permit
   using a symbol when the value is actually used.  Then when you want the
   font, use DYNAMIC_SAFE_FONT(scmFont) to get at the value;

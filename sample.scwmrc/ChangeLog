@@ -1,3 +1,13 @@
+Sun Jul  4 21:29:37 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Use toggle-titlebar-in-place.  Remove some
+	gratuitous lambdas that make introspecting on bindings harder.
+
+Sun Jul  4 19:07:22 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* gjb.scwmrc: Added some commented out examples while doing some
+	bug fixes today.
+
 Sat Jul  3 23:57:59 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added describe-key, and some example lookup-key calls.
