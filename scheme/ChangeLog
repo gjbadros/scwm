@@ -1,5 +1,8 @@
 1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
 
+	* flux.scm: renamed set-message-window-position-align! to
+	position-message-window! per Greg's suggestion
+
 	* base.scm (menu): add color-stipple and extra arguments
 
 Wed Sep 30 13:57:14 1998  Greg Badros  <gjb@cs.washington.edu>

@@ -648,7 +648,7 @@ to go to that page."
 ;; (run-in-netscape "openUrl(http://www.cs.washington.edu/homes/gjb)" display-message-briefly)
 
 
-(define*-public (set-message-window-position-align! x y gravity)
+(define*-public (position-message-window! x y gravity)
   "Move the message window's GRAVITY point to (X,Y)"
   (apply
    (lambda (xa ya)
@@ -664,3 +664,4 @@ to go to that page."
      ((s  south)                '(-.5   -1))
      ((se southeast south-east) '( -1   -1))
      (else (error "Invalid gravity specified.")))))
+
