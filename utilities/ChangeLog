@@ -1,3 +1,9 @@
+Sun Nov 28 14:58:35 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* misc/debian-scwm_menus: Added -- From Francesco Tapparo.  This
+	gets put in /etc/X11/scwm/scwm_menus when the scwm*.deb is
+	installed.
+
 Fri Oct  1 21:53:46 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/startscwm: expand out $userresources, look for
