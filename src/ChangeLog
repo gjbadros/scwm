@@ -1,3 +1,14 @@
+Fri Aug 21 13:14:12 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* ALL, scwm.h: Replace SCM_DEFER_INTS with gh_defer_ints(),
+ 	SCM_ALLOW_INTS with gh_allow_ints(), SCM_CAR with gh_car, SCM_CDR
+ 	with gh_cdr, scm_listify with gh_list, scm_cons with gh_cons, most
+ 	SCM_SETCDR with gh_set_cdr_x, most SCM_SETCAR with gh_set_car_x,
+ 	scm_apply with gh_apply.  Use SCWM_NEWCELL_SMOB for getting a new
+ 	cell and initializing the car and cdr (since SCM_SETC[AD]R need to
+ 	be used on a fresh cell for now since guile's scm_set_car which
+ 	gh_set_car_x calls does assertion checking)
+
 Thu Aug 20 16:58:52 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleButtonPress): Clean up redundant cond'l on
