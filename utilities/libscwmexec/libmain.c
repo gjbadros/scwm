@@ -61,9 +61,7 @@ char *scwmexec_exec(Display *dpy, Window w, char *req)
 
 Bool predicate(Display *dpy, XEvent *ev, Window *w)
 {
-  if (ev->type==PropertyNotify && ev->xproperty.window== *w
-      && ev->xproperty.atom == XA_SCWMEXEC_REPLY &&
-      ev->xproperty.state == PropertyNewValue) {
+  if (ev->type==PropertyNotify && ev->xproperty.window== *w) {
     return True;
   } else {
     return False;
@@ -91,7 +89,10 @@ char *scwmexec_exec_full(Display *dpy, Window w, char *req,
 
   /* X event handling - wait for XA_SCWMEXEC_REPLY on w */
   XSelectInput(dpy,w,PropertyChangeMask);
-  XIfEvent (dpy, &ev, predicate, &w);
+  do {
+    XIfEvent (dpy, &ev, predicate, &w);
+  } while (ev.xproperty.atom == XA_SCWMEXEC_REPLY &&
+	   ev.xproperty.state == PropertyNewValue);
 
   *error=NULL;
   *output=NULL;
