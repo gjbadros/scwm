@@ -11,6 +11,9 @@
  *
  ***********************************************************************/
 
+#undef MS_DELETION_COMMENT
+#if MS_DELETION_COMMENT
+
 #include <stdio.h>
 #include <signal.h>
 #include <string.h>
@@ -257,4 +260,6 @@ void do_windowList(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   DestroyMenu(mr);
 }
 
+
+#endif /* MS_DELELTION_COMMENT */
 

@@ -11,6 +11,9 @@
  * code for parsing the scwm style command
  *
  ***********************************************************************/
+
+#if MS_DELETION_COMMENT
+
 #include <config.h>
 
 #include <stdio.h>
@@ -760,7 +763,6 @@ void ProcessNewStyle(XEvent *eventp,
 	    forecolor,backcolor,off_buttons,on_buttons,IconBox,BoxFillMethod);
 }
 
-
 void AddToList(char *name,
                char *icon_name,
 #ifdef MINI_ICONS
@@ -838,4 +840,9 @@ void AddToList(char *name,
   else
     Scr.TheList = nptr;
 }
+
+#endif /* MS_DELETION_COMMENT */
+
+
+
 
