@@ -1,3 +1,66 @@
+Tue Mar 24 11:05:27 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwmmenu.h: Added typedefs and pointers to functions for the
+	loadable primitive menu drawing code.
+
+	* scwmmenu.c: Added "construct-menu-primitive" symbol, and use it
+	if not #f to call ConstructDynamicMenu(..) so that dynamically
+	loaded menu drawing code will be invoked.  This might not be the
+	right way to do it -- maybe the dynamic function should be an
+	argument to popup-menu, but this is proof of concept, and gives a
+	starting place for developing alternative drawing primitives.
+
+	Call the PaintDynamicMenu and PaintMenuItem routines through
+	function pointer variables that ConstructDynamicMenu initializes.
+	 
+	Also, don't complain about a bad menu item if the menu item is #f
+	(we use #f to eliminate menu items from a menu when the program
+	doesn't exist -- this may be done more cleanly in scheme, perhaps, 
+	but #f can still be a special case not warranting a warning
+	message).
+
+	* font.c (menu_font_update): Added this function to here, from
+	drawmenu.c
+
+	* drawmenu.h: Remove protos for everything but
+	ConstructDynamicMenu(..) since it is the only loaded primitive
+	directly referenced by name.
+
+	* drawmenu.c (ConstructDynamicMenu): Rearrange so this function is 
+	at the end of the file, and is the only exported function required 
+	(it sets struct member variables to point to the other functions
+	in the interface). Move menu_font_update into font.c, from here.
+
+	* Makefile.in: Rudimentary changes for building shared objects for 
+	loadable primitives (in the context of menu drawing primitives);
+	The options are currently hard set for Linux and gcc, as I'm not
+	sure how to do this on other platforms
+
+	* draw-pie-menu.c: Added;  not really pie menus -- just a visually
+	different standard fvwm2-like menu;  pie menus will require a bit
+	of work, it seems.
+
+Sun Mar 22 11:52:25 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c (PchModifiersToModmask): Abort binding when we get an
+ 	unrecognized modifier, instead of binding using the remaining
+ 	modifiers.  Thanks to <tihonov@ffke-campus-gw.mipt.ru>
+
+	* focus.c (Unfocus): Added function Unfocus() -- should be used
+	more pervasively to replace calls to SetFocus with Scr.NoFocusWin
+	as first arg.
+
+	* scwm.c (Done): Invert sense of STREQ test in Done() so that all
+ 	args besides -s are copied into the new argument list; thanks to
+ 	Robert Bihlmeyer <robbe@orcus.priv.at> for catching this.
+
+	* window.c, window.h: Added unfocus primitive
+
+	* scmprocs.c: Added unfocus primitive
+
+	* focus.h: Added, for protos from focus.c; removed SetFocus()
+	proto from misc.h, where it was before.
+
 Sat Mar 21 20:46:35 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menuitem.h (MENUITEM_P): Test SCM_NIMP(X) first to avoid core dump.
