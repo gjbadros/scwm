@@ -81,7 +81,7 @@
 /* Define this if your libguile has scm_load_startup_files,
    which means the hack to get boot-9.scm to be loaded is unnecessary
    and even dangerous. */
-#undef HAVE_SCM_INTERNAL_PARSE_PATH
+#undef HAVE_SCM_LOAD_STARTUP_FILES
 
 /* Define this if your system has a <getopt.h> header file. */
 #undef HAVE_GETOPT_H
