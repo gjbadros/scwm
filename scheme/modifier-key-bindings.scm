@@ -24,15 +24,23 @@
 		modkey1 modkey2 
 		proc-press proc-release)
   "Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+PROC-RELEASE is BROKEN.
+MODKEY1, MODKEY2 should have the form (cons <keycode> <modifier mask>).
+The XKM_* variables can be used as arguments here.
 MODKEY1 and MODKEY2 are the two modifiers that, when pressed at the same time,
 will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
   (do-two-modifier-key-events bind-keycode modkey1 modkey2 
 			      proc-press proc-release))
 
 
-(define-public (unbind-two-modifier-key-events
-		modkey1 modkey2)
-  "Unbind events attached to a multi-modifier key event."
+(define*-public (unbind-two-modifier-key-events
+		modkey1 modkey2 #&optional ignore1 ignore2)
+  "Unbind events attached to a multi-modifier key event.
+MODKEY1, MODKEY2 should have the form (cons <keycode> <modifier mask>).
+The XKM_* variables can be used as arguments here.
+IGNORE1 and IGNORE2 can be anything, and are
+provided to conveniently allow an unbinding invocation to 
+have the same arguments as the analagous binding operation."
   (do-two-modifier-key-events unbind-keycode modkey1 modkey2 
 			      #f #f))
 
@@ -63,6 +71,9 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
 		modkey1 modkey2 modkey3
 		proc-press proc-release)
   "Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+PROC-RELEASE is BROKEN.
+MODKEY1, MODKEY2, MODKEY3 should have the form (cons <keycode> <modifier mask>).
+The XKM_* variables can be used as arguments here.
 MODKEY1, MODKEY2, MODKEY3 are the three modifiers that, when pressed at the same time,
 will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
   (do-three-modifier-key-events bind-keycode modkey1 modkey2 modkey3
@@ -71,6 +82,8 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
 (define*-public (unbind-three-modifier-key-events
 		modkey1 modkey2 modkey3 #&optional ignore1 ignore2)
   "Unbind events attached to a multi-modifier key event.
+MODKEY1, MODKEY2, MODKEY3 should have the form (cons <keycode> <modifier mask>).
+The XKM_* variables can be used as arguments here.
 MODKEY1, MODKEY2, MODKEY3 are the three modifiers that are having the binding
 eliminated for.  IGNORE1 and IGNORE2 can be anything, and are
 provided to conveniently allow an unbinding invocation to 
@@ -109,6 +122,9 @@ have the same arguments as the analagous binding operation."
 		modkey1 modkey2 modkey3 modkey4
 		proc-press proc-release)
   "Bind PROC-PRESS and PROC-RELEASE to be invoked on a multi-modifier key event.
+PROC-RELEASE is BROKEN.
+MODKEY1, MODKEY2, MODKEY3, MODKEY4 should have the form (cons <keycode> <modifier mask>).
+The XKM_* variables can be used as arguments here.
 MODKEY1, MODKEY2, MODKEY3, MODKEY4 are the four modifiers that, when pressed at the same time,
 will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
   (do-four-modifier-key-events bind-keycode modkey1 modkey2 modkey3 modkey4
@@ -117,6 +133,8 @@ will invoke PROC-PRESS.  When either is released, PROC-RELEASE is invoked."
 (define*-public (unbind-four-modifier-key-events
 		modkey1 modkey2 modkey3 modkey4 #&optional ignore1 ignore2 )
   "Unbind events attached to a multi-modifier key event.
+MODKEY1, MODKEY2, MODKEY3, MODKEY4 should have the form (cons <keycode> <modifier mask>).
+The XKM_* variables can be used as arguments here.
 MODKEY1, MODKEY2, MODKEY3, MODKEY4 are the four modifiers that are having the binding
 eliminated for.  IGNORE1 and IGNORE2 can be anything, and are
 provided to conveniently allow an unbinding invocation to 

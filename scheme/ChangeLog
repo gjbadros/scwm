@@ -1,3 +1,12 @@
+Wed Apr 10 00:21:08 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
+
+	* modifier-key-bindings.scm:
+	Improved docs.
+	Noted that the proc-release option for the key bindings is broken
+	  due to some problem in the C stuff.
+	Modified 'unbind-two-modifier-key-events' to have the same arguments
+	  as all the other unbind functions in this file.
+	
 Tue Apr  9 23:35:16 2002  Scott Lenser  <slenser@gs104.sp.cs.cmu.edu>
 
 	* style.scm: #:PPosition-hint tested so FIXME for testing removed.
