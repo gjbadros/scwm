@@ -294,6 +294,11 @@ raise_window(SCM win)
   tmp_win = SCWMWINDOW(win);
 
   RaiseWindow(tmp_win);
+  /* FIXMS darn, this is not going to do what we want it to -- must
+     start keeping a general stays on top flag as well a currently on
+     top flag in the window struct, only the latter of which is
+     changed by raises and lowers. */
+#if 0
   if (LookInList(Scr.TheList, tmp_win->name, &tmp_win->class, &junk,
 #ifdef MINI_ICONS
 		 &junk,
@@ -304,6 +309,7 @@ raise_window(SCM win)
 		 &junkD, &junkD, &junkD, &junkC, &junkC, &junkN,
 		 BoxJunk, &method) & STAYSONTOP_FLAG)
     tmp_win->flags |= ONTOP;
+#endif
   KeepOnTop();
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
