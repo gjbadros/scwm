@@ -1,5 +1,9 @@
 1998-07-21  Greg Badros  <gjb@cs.washington.edu>
 
+	* utilities/dev/extract-docs: Check the expected primitive name,
+	and warn if it doesn't match the c function name.  Handle _to_
+	turning into -> optionally.  Also handle mis-parses better
+
 	* utilities/dev/extract-docs: (see also change logs in scwm/scwm
 	directory) Ensure formals are mentioned in doc string
 
