@@ -30,13 +30,14 @@
 ;; selecting nonants from windows
 
 (define*-public (get-window-with-nonant #&optional (window #f) (nonant 4))
-  "Select a WINDOW and a NONANT.  If the WINDOW is not specified, 
-interactive selection will be done.  If WINDOW is passed in but 
+  "Select a WINDOW and a NONANT, defaulting to the current window context.  
+If the WINDOW is not specified and there is no window context, 
+perform interactive selection.  If WINDOW is passed in but 
 NONANT is not specified, the center nonant is used.  The nonant
 is stored as an object-property of the window for use with the
 window-selection and constraints modules."
-  (if window
-      (begin (set-object-property! window 'nonant nonant) window)
+  (if (or window (window-context))
+      (begin (set-object-property! window 'nonant nonant) (or window (window-context)))
       (get-window-with-nonant-interactively)))
 
 

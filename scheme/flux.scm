@@ -10,11 +10,15 @@
 
 
 
+;;; GJB:FIXME:: Better way to test for popen module?
+;;; better way to factor out this?
 (if (> (string->number (minor-version)) 3)
     (define-module (app scwm flux)
       :use-module (ice-9 popen)
       :use-module (ice-9 regex)
       :use-module (app scwm base)
+      :use-module (app scwm animation)
+      :use-module (app scwm animated-iconify)
       :use-module (app scwm time-convert)
       :use-module (app scwm defoption)
       :use-module (app scwm wininfo)
@@ -36,6 +40,8 @@
     (define-module (app scwm flux)
       :use-module (ice-9 regex)
       :use-module (app scwm base)
+      :use-module (app scwm animation)
+      :use-module (app scwm animated-iconify)
       :use-module (app scwm time-convert)
       :use-module (app scwm defoption)
       :use-module (app scwm wininfo)
@@ -588,3 +594,91 @@ that corner fixed."
 	(interactive-move (get-window))))
   (end-highlighting-current-window)
   (unselect-all-windows))
+
+
+(define-public (make-small-window-ops-menu w)
+  (menu
+   (list
+    (menuitem "&Move" #:image-left "mini-move.xpm" 
+	      #:action interactive-move)
+    (menuitem "Re&size" #:image-left "mini-resize.xpm" 
+	      #:action interactive-resize)
+    (menuitem (if (iconified? w)
+		  "Unmi&nimize"
+		  "Mi&nimize") #:image-left "mini-iconify.xpm" 
+		  #:action animated-iconify)
+    (menuitem (if (maximized? w) 
+		  "Unma&ximize" 
+		  "Ma&ximize") #:action both-toggle-maximize)
+    (menuitem "Set &gravity" #:image-left "small-anchor.xpm"
+	      #:action interactive-set-window-gravity!)
+    menu-separator
+    (menuitem "More" 
+	      #:submenu
+	      (menu 
+	       (list
+		(menuitem "&Raise" #:action raise-window)
+		(menuitem "&Lower" #:action lower-window)
+		(menuitem (if (sticky? w)
+			      "Un&stick"
+			      "&Stick") 
+			  #:action toggle-stick)
+		(menuitem (if (window-shaded? w)
+			      "Unwindow-S&hade"
+			      "Window-S&hade")
+			  #:action animated-toggle-window-shade)
+		(menuitem (if (kept-on-top? w)
+			      "UnKeep On Top"
+			      "Keep On Top") 
+			  #:action toggle-on-top))))
+    (menuitem "Group"
+	      #:submenu
+	      (make-window-group-menu w))
+    menu-separator
+    (menuitem "Close" #:image-left "mini-cross.xpm" 
+	      #:action close-window)
+    (menuitem "Destroy" #:image-left "mini-bomb.xpm" 
+	      #:action destroy-window))))
+
+(define-public (make-window-group-menu w)
+  (let* ((swl (selected-windows-list))
+	 (wla? (pair? swl)) ;; wla? -- winlist-active?
+	 (n (length swl))
+	 (nstr (number->string n)))
+    (menu
+     (append
+      (filter-map 
+       noop
+       (list
+	(menu-title "Window Group") menu-separator
+	(menuitem 
+	 (if (window-is-selected? w) "&Unselect" "&Select")
+	 #:action select-window-add-selection)
+	(if wla? (menuitem "Unselect &all windows" 
+			   #:action unselect-all-windows)
+	    #f)))
+      (if (and wla? (> n 1))
+	  (list
+	   (menuitem (string-append 
+		      "&Tile " nstr
+		      " windows") #:action tile-windows-interactively)
+	   (menuitem (string-append "&Close " nstr " windows")
+		     #:action (lambda () (delete-group swl) (unselect-all-windows)))
+	   (menuitem (string-append "&Iconify " nstr " windows")
+		     #:action (lambda () (iconify-group swl)))
+	   (menuitem (string-append "&Shade " nstr " windows")
+		     #:action (lambda () (window-shade-group swl)))
+	   (menuitem (string-append "&Unshade " nstr " windows")
+		     #:action (lambda () (window-unshade-group swl)))
+	   (menuitem (string-append "Stic&k " nstr " windows")
+		     #:action (lambda () (stick-group swl)))
+	   (menuitem (string-append "U&nstick " nstr " windows")
+		     #:action (lambda () (unstick-group swl)))
+	   (menuitem (string-append "Kee&p on top " nstr " windows")
+		     #:action (lambda () (keep-group-on-top swl)))
+	   (menuitem (string-append "Unk&eep on top " nstr " windows")
+		     #:action (lambda () (un-keep-group-on-top swl)))
+	   (menuitem (string-append "Destroy group " nstr " windows")
+		     #:action (lambda () (destroy-group swl) (unselect-all-windows))))
+	  ()
+	  )))))
