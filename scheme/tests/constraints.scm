@@ -6,7 +6,7 @@
   (scwm-set-master-solver solver)
   ;(map (lambda (w) (add-stays-on-window w)) (list-all-windows))
   (define v (make-cl-variable "v"))
-  (cl-add-stay solver v)
+  (cl-add-stay solver v cls-strong 3)
 
   (define (keep-tops-even w1 w2)
     (let ((w1-y (window-clv-yt w1))
@@ -132,7 +132,7 @@
 (begin
   (define wA (select-window-interactively "Pick window A"))
   (define wB (select-window-interactively "Pick window B"))
-  (define wC (select-window-interactively "Pick C")))
+  (define wC (select-window-interactively "Pick window C")))
 
 (define cn (car (cl-constraint-list solver #f)))
 (cl-remove-constraint solver cn)
@@ -141,7 +141,7 @@
 (define cnl (keep-to-left-of wA wB))
 (define cnlt (keep-above wA wB))
 (define cnlt (keep-above wB wC))
-(define cnah (keep-adjacent-horizontal wA wB))
+(define cnah (keep-adjacent-horizontal (get-window) wB))
 
 (set-window-title! (swi) "XLOGO")
 (show-titlebar (swi))
@@ -255,6 +255,7 @@
   (define ineq1 (make-cl-inequality e3 <= 1))
   (define solver (make-cl-solver))
   (define cn0 (make-cl-constraint e0 = e2))
+  (make-cl-stay-constraint v1 cls-strong 2.0)
   (cl-solver-debug-print solver))
 
 (cl-inequality? cn0)
