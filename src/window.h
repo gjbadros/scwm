@@ -221,9 +221,9 @@ int print_window(SCM obj, SCM port, scm_print_state * pstate);
 
 void init_window();
 
-ScwmWindow *SwFromWindow(Display *dpy, Window w);
-ScwmWindow *SwFromPointerLocation(Display *dpy);
-ScwmWindow *SwSelectInteractively(Display *dpy);
+ScwmWindow *PswFromWindow(Display *dpy, Window w);
+ScwmWindow *PswFromPointerLocation(Display *dpy);
+ScwmWindow *PswSelectInteractively(Display *dpy);
 
 void MapIt(ScwmWindow * t);
 

@@ -95,7 +95,7 @@ typedef PropMotifWmHints PropMwmHints;
 #define OL_DECOR_ICON_NAME            (1L << 3)
 #define OL_DECOR_ALL                  (OL_DECOR_CLOSE | OL_DECOR_RESIZEH | OL_DECOR_HEADER | OL_DECOR_ICON_NAME)
 
-extern ScwmWindow *swCurrent;
+extern ScwmWindow *pswCurrent;
 
 /****************************************************************************
  * 

@@ -178,12 +178,12 @@ BnumFromSz(const char *sz)
 static void
 grab_all_keys_all_windows()
 {
-  ScwmWindow *swCurrent;
+  ScwmWindow *psw;
 
-  swCurrent = Scr.ScwmRoot.next;
-  while (swCurrent != NULL) {
-    GrabKeys(swCurrent);
-    swCurrent = swCurrent->next;
+  psw = Scr.ScwmRoot.next;
+  while (psw) {
+    GrabKeys(psw);
+    psw = psw->next;
   }
 }
 #endif
@@ -193,16 +193,16 @@ grab_all_keys_all_windows()
 static void
 grab_key_all_windows(int key, int modifier)
 {
-  ScwmWindow *swCurrent;
-  swCurrent = Scr.ScwmRoot.next;
-  while (swCurrent != NULL) {
-    XGrabKey(dpy, key, modifier, swCurrent->frame, True, 
+  ScwmWindow *psw;
+  psw = Scr.ScwmRoot.next;
+  while (psw != NULL) {
+    XGrabKey(dpy, key, modifier, psw->frame, True, 
 	     GrabModeAsync, GrabModeAsync);
     if (modifier != AnyModifier) {
-      XGrabKey(dpy, key, modifier | LockMask, swCurrent->frame, True,
+      XGrabKey(dpy, key, modifier | LockMask, psw->frame, True,
 	       GrabModeAsync, GrabModeAsync);
     }
-    swCurrent = swCurrent->next;
+    psw = psw->next;
   }
 }
 
@@ -211,11 +211,11 @@ grab_key_all_windows(int key, int modifier)
 static void
 grab_button_all_windows(int button, int modifier)
 {
-  ScwmWindow *swCurrent;
-  swCurrent = Scr.ScwmRoot.next;
-  while (swCurrent != NULL) {
-    GrabButtonWithModifiers(button,modifier,swCurrent);
-    swCurrent = swCurrent->next;
+  ScwmWindow *psw;
+  psw = Scr.ScwmRoot.next;
+  while (psw != NULL) {
+    GrabButtonWithModifiers(button,modifier,psw);
+    psw = psw->next;
   }
 }
 
@@ -223,11 +223,11 @@ grab_button_all_windows(int button, int modifier)
 static void
 ungrab_button_all_windows(int button, int modifier)
 {
-  ScwmWindow *swCurrent;
-  swCurrent = Scr.ScwmRoot.next;
-  while (swCurrent != NULL) {
-    UngrabButtonWithModifiers(button,modifier,swCurrent);
-    swCurrent = swCurrent->next;
+  ScwmWindow *psw;
+  psw = Scr.ScwmRoot.next;
+  while (psw != NULL) {
+    UngrabButtonWithModifiers(button,modifier,psw);
+    psw = psw->next;
   }
 }
 

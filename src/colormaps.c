@@ -23,7 +23,7 @@
 
 ScwmWindow *colormap_win;
 Colormap last_cmap = None;
-extern ScwmWindow *swCurrent;
+extern ScwmWindow *pswCurrent;
 
 /***********************************************************************
  *
@@ -48,13 +48,13 @@ HandleColormapNotify(void)
   fCeventNew = cevent->new;
 #endif
 
-  if (!swCurrent) {
+  if (!pswCurrent) {
     return;
   }
   if (fCeventNew) {
-    XGetWindowAttributes(dpy, swCurrent->w, &(swCurrent->attr));
-    if ((swCurrent == colormap_win) && (swCurrent->number_cmap_windows == 0))
-      last_cmap = swCurrent->attr.colormap;
+    XGetWindowAttributes(dpy, pswCurrent->w, &(pswCurrent->attr));
+    if ((pswCurrent == colormap_win) && (pswCurrent->number_cmap_windows == 0))
+      last_cmap = pswCurrent->attr.colormap;
     ReInstall = True;
   } else if ((cevent->state == ColormapUninstalled) &&
 	     (last_cmap == cevent->colormap)) {
@@ -62,18 +62,18 @@ HandleColormapNotify(void)
     ReInstall = True;
   }
   while (XCheckTypedEvent(dpy, ColormapNotify, &Event)) {
-    swCurrent = SwFromWindow(dpy,cevent->window);
-    if ((swCurrent) && (fCeventNew)) {
-      XGetWindowAttributes(dpy, swCurrent->w, &(swCurrent->attr));
-      if ((swCurrent == colormap_win) && (swCurrent->number_cmap_windows == 0))
-	last_cmap = swCurrent->attr.colormap;
+    pswCurrent = PswFromWindow(dpy,cevent->window);
+    if ((pswCurrent) && (fCeventNew)) {
+      XGetWindowAttributes(dpy, pswCurrent->w, &(pswCurrent->attr));
+      if ((pswCurrent == colormap_win) && (pswCurrent->number_cmap_windows == 0))
+	last_cmap = pswCurrent->attr.colormap;
       ReInstall = True;
-    } else if ((swCurrent) &&
+    } else if ((pswCurrent) &&
 	       (cevent->state == ColormapUninstalled) &&
 	       (last_cmap == cevent->colormap)) {
       /* Some window installed its colormap, change it back */
       ReInstall = True;
-    } else if ((swCurrent) &&
+    } else if ((pswCurrent) &&
 	       (cevent->state == ColormapInstalled) &&
 	       (last_cmap == cevent->colormap)) {
       /* The last color map installed was the correct one. Don't 

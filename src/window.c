@@ -442,7 +442,7 @@ SCWM_PROC(current_window_with_focus, "current-window-with-focus", 0, 0, 0,
 SCWM_PROC(current_window_with_pointer, "current-window-with-pointer", 0, 0, 0,
           ())
 {
-  ScwmWindow *psw = SwFromPointerLocation(dpy);
+  ScwmWindow *psw = PswFromPointerLocation(dpy);
   return psw? psw->schwin: SCM_BOOL_F;
 }
 
@@ -450,7 +450,7 @@ SCWM_PROC(current_window_with_pointer, "current-window-with-pointer", 0, 0, 0,
 SCWM_PROC(select_window_interactively, "select-window-interactively", 0, 0, 0,
           ())
 {
-  ScwmWindow *psw = SwSelectInteractively(dpy);
+  ScwmWindow *psw = PswSelectInteractively(dpy);
   return psw? psw->schwin: SCM_BOOL_F;
 }
 
@@ -579,7 +579,7 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
 }
 
 ScwmWindow *
-SwFromWindow(Display *dpy, Window w)
+PswFromWindow(Display *dpy, Window w)
 {
   ScwmWindow *psw;
   if (XFindContext(dpy, w, ScwmContext, (caddr_t *) &psw) == XCNOENT) {
@@ -589,7 +589,7 @@ SwFromWindow(Display *dpy, Window w)
 }
 
 ScwmWindow *
-SwFromPointerLocation(Display *dpy)
+PswFromPointerLocation(Display *dpy)
 {
   Window wChild;
   XQueryPointer(dpy, Scr.Root, &JunkRoot, &wChild,
@@ -597,11 +597,11 @@ SwFromPointerLocation(Display *dpy)
   if (wChild == None) {
     return NULL;
   }
-  return SwFromWindow(dpy,wChild);
+  return PswFromWindow(dpy,wChild);
 }
 
 ScwmWindow *
-SwSelectInteractively(Display *dpy)
+PswSelectInteractively(Display *dpy)
 {
   /* FIXGJB: this needs to be written, but could
      benefit from better, more general, event handling */
@@ -697,7 +697,7 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
     UngrabEm();
     return True;
   }
-  *ppsw = SwFromWindow(dpy,*w);
+  *ppsw = PswFromWindow(dpy,*w);
   if (*ppsw == NULL) {
     call0_hooks(invalid_interaction_hook);
     UngrabEm();
@@ -1988,7 +1988,7 @@ SCWM_PROC(window_frame_id, "window-frame-id", 0, 1, 0,
 SCWM_PROC(id_to_window, "id->window", 0, 1, 0,
           (SCM window_id))
 {
-  ScwmWindow *psw;
+  ScwmWindow *psw = NULL;
   Window w;
 
   if (!gh_number_p(window_id)) {
@@ -1996,7 +1996,7 @@ SCWM_PROC(id_to_window, "id->window", 0, 1, 0,
   }		   
 
   w =(Window) gh_scm2int(window_id);
-  SwFromWindow(dpy, w);
+  psw = PswFromWindow(dpy, w);
 
   return ((psw&& psw->w==w) ? psw->schwin : SCM_BOOL_F);
 }
@@ -2004,7 +2004,7 @@ SCWM_PROC(id_to_window, "id->window", 0, 1, 0,
 SCWM_PROC(frame_id_to_window, "frame-id->window", 0, 1, 0,
           (SCM window_id))
 {
-  ScwmWindow *psw;
+  ScwmWindow *psw = NULL;
   Window w;
 
   if (!gh_number_p(window_id)) {
@@ -2012,7 +2012,7 @@ SCWM_PROC(frame_id_to_window, "frame-id->window", 0, 1, 0,
   }
 
   w =(Window) gh_scm2int(window_id);
-  SwFromWindow(dpy, w);
+  psw = PswFromWindow(dpy, w);
 
   return ((psw && psw->frame==w) ? psw->schwin : SCM_BOOL_F);
 }

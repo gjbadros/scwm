@@ -253,7 +253,7 @@ SCWM_PROC(wait_for_window, "wait-for-window", 1, 0, 0,
           (SCM predicate))
 {
   Bool done = False;
-  extern ScwmWindow *swCurrent;
+  extern ScwmWindow *pswCurrent;
 
   if (!gh_procedure_p(predicate)) {
     SCM_ALLOW_INTS;
@@ -265,7 +265,7 @@ SCWM_PROC(wait_for_window, "wait-for-window", 1, 0, 0,
       DispatchEvent();
       SCM_ALLOW_INTS;
       if (Event.type == MapNotify) {
-	if (gh_call1(predicate, swCurrent->schwin) == SCM_BOOL_T) {
+	if (gh_call1(predicate, pswCurrent->schwin) == SCM_BOOL_T) {
 	  done = True;
 	}
       }

@@ -116,7 +116,7 @@ flush_expose(Window w)
 void
 CoerceEnterNotifyOnCurrentWindow()
 {
-  extern ScwmWindow *swCurrent; /* from events.c */
+  extern ScwmWindow *pswCurrent; /* from events.c */
   Window child, root;
   int root_x, root_y;
   int win_x, win_y;
@@ -124,9 +124,9 @@ CoerceEnterNotifyOnCurrentWindow()
 			 &child, &root_x, &root_y, &win_x, &win_y, &JunkMask);
   if (f && child != None) {
     Event.xany.window = child;
-    swCurrent = SwFromWindow(dpy,child);
+    pswCurrent = PswFromWindow(dpy,child);
     HandleEnterNotify();
-    swCurrent = None;
+    pswCurrent = None;
   }
 }
 

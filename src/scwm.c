@@ -663,7 +663,7 @@ CaptureAllWindows(void)
   int i, j;
   unsigned int nchildren;
   Window root, parent, *children;
-  ScwmWindow *tmp, *next;	/* temp scwm window structure */
+  ScwmWindow *psw, *pswNext;	/* temp scwm window structure */
   Window w;
   unsigned long data[1];
   unsigned char *prop;
@@ -713,12 +713,12 @@ CaptureAllWindows(void)
     Scr.flags |= WindowsCaptured;
   } else {			/* must be recapture */
     /* reborder all windows */
-    tmp = Scr.ScwmRoot.next;
+    psw = Scr.ScwmRoot.next;
     for (i = 0; i < nchildren; i++) {
-      tmp = SwFromWindow(dpy,children[i]);
-      if (tmp) { 
+      psw = PswFromWindow(dpy,children[i]);
+      if (psw) { 
 	isIconicState = DontCareState;
-	if (XGetWindowProperty(dpy, tmp->w, _XA_WM_STATE, 0L, 3L, False,
+	if (XGetWindowProperty(dpy, psw->w, _XA_WM_STATE, 0L, 3L, False,
 			       _XA_WM_STATE, &atype, &aformat, 
 			       &nitems, &bytes_remain, &prop) == Success) {
 	  if (prop != NULL) {
@@ -726,20 +726,20 @@ CaptureAllWindows(void)
 	    XFree(prop);
 	  }
 	}
-	next = tmp->next;
-	data[0] = (unsigned long) tmp->Desk;
-	XChangeProperty(dpy, tmp->w, _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
+	pswNext = psw->next;
+	data[0] = (unsigned long) psw->Desk;
+	XChangeProperty(dpy, psw->w, _XA_WM_DESKTOP, _XA_WM_DESKTOP, 32,
 			PropModeReplace, (unsigned char *) data, 1);
 
-	XSelectInput(dpy, tmp->w, 0);
-	w = tmp->w;
-	XUnmapWindow(dpy, tmp->frame);
+	XSelectInput(dpy, psw->w, 0);
+	w = psw->w;
+	XUnmapWindow(dpy, psw->frame);
 	XUnmapWindow(dpy, w);
-	RestoreWithdrawnLocation(tmp, True);
-	DestroyScwmWindow(tmp);
+	RestoreWithdrawnLocation(psw, True);
+	DestroyScwmWindow(psw);
 	Event.xmaprequest.window = w;
 	HandleMapRequestKeepRaised(BlackoutWin);
-	tmp = next;
+	psw = pswNext;
       }
     }
     /* We only need to XSync on a recapture, since the initial capture
@@ -1333,16 +1333,16 @@ InitVariables(void)
 void 
 Reborder(void)
 {
-  ScwmWindow *tmp;		/* temp scwm window structure */
+  ScwmWindow *psw = NULL;		/* temp scwm window structure */
 
   /* put a border back around all windows */
   XGrabServer_withSemaphore(dpy);
 
   InstallWindowColormaps(&Scr.ScwmRoot);	/* force reinstall */
-  for (tmp = Scr.ScwmRoot.next; tmp != NULL; tmp = tmp->next) {
-    RestoreWithdrawnLocation(tmp, True);
-    XUnmapWindow(dpy, tmp->frame);
-    XDestroyWindow(dpy, tmp->frame);
+  for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
+    RestoreWithdrawnLocation(psw, True);
+    XUnmapWindow(dpy, psw->frame);
+    XDestroyWindow(dpy, psw->frame);
   }
 
   XUngrabServer_withSemaphore(dpy);
