@@ -171,7 +171,7 @@ height
 ;; (be sure netscape is running)
 
 ;; C-M-S-t
-;; http://serveuse.mit.edu/scwm
+;; http://scwm.mit.edu/scwm
 
 ;; All via X properties-- no C code specifically written to do the above!
 

@@ -2,12 +2,12 @@ Name: scwm
 Summary: A Scheme Configurable Window Manager.
 Version: @VERSION@
 Release: 2
-Source: ftp://vicarious.mit.edu/pub/scwm/scwm-%{PACKAGE_VERSION}.tar.gz
+Source: ftp://scwm.mit.edu/pub/scwm/scwm-%{PACKAGE_VERSION}.tar.gz
 Group: X11/Window Managers
 BuildRoot: /tmp/scwmbuild
 Copyright: Copyright (C) 1997,1998,1999 Maciej Stachowiak, Greg J. Badros, et. al.
 Packager: Maciej Stachowiak <mstachow@alum.mit.edu>
-URL: http://serveuse.mit.edu/scwm/
+URL: http://scwm.mit.edu/scwm/
 
 %description
 Scwm is the Scheme Configurable Window Manager. This is a highly

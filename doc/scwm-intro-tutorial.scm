@@ -104,7 +104,7 @@
 ;; had "3" get inserted into the buffer just after the "(+ 1 2)" line.
 ;; (If you received an error, consult with your local Scwm expert or
 ;; system administrator, or ask the kind folks at 
-;; scwm-discuss@serveuse.mit.edu.)
+;; scwm-discuss@scwm.mit.edu.)
 
 ;; So what happened?  The C-j keystroke (bound to the Emacs command
 ;; scwm-eval-print, as mentioned earlier) caused Emacs to find the

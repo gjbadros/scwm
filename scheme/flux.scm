@@ -301,9 +301,9 @@ be more than desired."
 
 
 
-;; (run-in-netscape "openUrl(http://serveuse.mit.edu/scwm)" display-message-briefly)
+;; (run-in-netscape "openUrl(http://scwm.mit.edu/scwm)" display-message-briefly)
 ;; (run-in-netscape "openUrl(http://www.cs.washington.edu/homes/gjb)" display-message-briefly)
-;; (netscape-goto-url "http://serveuse.mit.edu/scwm")
+;; (netscape-goto-url "http://scwm.mit.edu/scwm")
 
 ;; Inspired by Julian Satchell's version of this --10/09/98 gjb
 (define-public (use-change-desk-commands vector-of-commands)

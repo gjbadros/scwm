@@ -11,7 +11,7 @@ Keywords:       window manager, scwm, X11, scheme, guile, twm, ctwm, fvwm, fvwm2
 Author:         mstachow@alum.mit.edu (Maciej Stachowiak)
 		gjb@cs.washington.edu (Greg J. Badros)
 Maintained-by:  mstachow@alum.mit.edu (Maciej Stachowiak)
-Primary-site:   serveuse.mit.edu /pub/scwm/
+Primary-site:   scwm.mit.edu /pub/scwm/
 		885 KB scwm-0.9.tar.gz
 Alternate-site: ftp.cs.washington.edu /homes/gjb
 Original-site:  
