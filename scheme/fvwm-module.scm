@@ -171,6 +171,9 @@
 		  body) port)
   (force-output port))
 
+(define (cdr-assq key alist)
+  (cdr (assq key alist)))
+
 ;; Send mini-icon info 
 (define (send-mini-icon-packet win port)
   (let ((mini-icon (window-mini-icon win)))
@@ -179,10 +182,10 @@
 	       (body (string-append
 		      (longs->string 
 		       (window-id win) (window-frame-id win)
-		       0 (assq 'width props)
-		       (assq 'height props) (assq 'depth props)
-		       (assq 'pixmap props) (assq 'mask props))
-		      (pad-string-to-long (assq 'filename props)))))
+		       0 (cdr-assq 'width props)
+		       (cdr-assq 'height props) (cdr-assq 'depth props)
+		       (cdr-assq 'pixmap props) (cdr-assq 'mask props))
+		      (pad-string-to-long (cdr-assq 'filename props)))))
 	  (fvwm2-module-send-packet M_MINI_ICON body port)))))
 
 
