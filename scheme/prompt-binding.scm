@@ -110,7 +110,7 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 	     (begin
 	       (if proc
 		   (begin
-		     (vector-set! x 1 "")
+		     (vector-set! x 1 "Complex")
 		     (vector-set! x 2 procname)
 		     (gtk-clist-append clist x)))
 	       (if proc2
@@ -166,25 +166,43 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 
 (define-public pb-cmd-clist #f)
 
+(define (make-type-option-menu types)
+  (let ((menu (gtk-menu-new))
+	(group #f))
+    (for-each (lambda (text) 
+		(let ((mi (gtk-radio-menu-item-new-with-label group text)))
+		  (gtk-menu-append menu mi)
+		  (set! group mi)))
+	      types)
+    (gtk-widget-show menu)
+    menu))
+
+(define (make-button-type-option-menu)
+  (make-type-option-menu (list "Immed" "Complex")))
+
+(define (make-key-type-option-menu)
+  (make-type-option-menu (list "Press" "Release")))
 
 (define-public (prompt-binding-vbox)
   (let* ((name (symbol->string (caar contexts-and-descriptions)))
 	 (description (string-append descr-prefix-string (cdar contexts-and-descriptions)))
+	 (current-documented-command "")
+	 (current-cmd-row #f)
 	 (context-frame (gtk-frame-new name))
 	 (vbox (gtk-vbox-new #f 0))
 	 (ins-del-bbox (gtk-hbutton-box-new))
 	 (vbox-2 (gtk-vbox-new #f 0))
 	 (context-label (gtk-label-new description))
 	 (insert (gtk-button-new-with-label "Insert"))
-	 (change-ev (gtk-button-new-with-label "Change Event"))
-	 (change-pr (gtk-button-new-with-label "Change Proc"))
+	 (copy (gtk-button-new-with-label "Copy"))
+	 (change (gtk-button-new-with-label "Change"))
 	 (delete (gtk-button-new-with-label "Delete"))
 	 (clist (gtk-clist-new-with-titles #("Key" "Type" "Command")))
 	 (scroller (gtk-scrolled-window-new)))
     
     (gtk-widget-set-state insert 'insensitive)
-    (gtk-widget-set-state change-ev 'insensitive)
-    (gtk-widget-set-state change-pr 'insensitive)
+    (gtk-widget-set-state copy 'insensitive)
+    (gtk-widget-set-state change 'insensitive)
     (gtk-widget-set-state delete 'insensitive)
 
     (gtk-widget-set-usize context-label 400 32)
@@ -204,8 +222,8 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
     (gtk-box-pack-end vbox ins-del-bbox)
     (gtk-container-add scroller clist)
     (gtk-container-add ins-del-bbox insert)
-    (gtk-container-add ins-del-bbox change-ev)
-    (gtk-container-add ins-del-bbox change-pr)
+    (gtk-container-add ins-del-bbox copy)
+    (gtk-container-add ins-del-bbox change)
     (gtk-container-add ins-del-bbox delete)
     (populate-clist-with-bindings-from clist (caar contexts-and-descriptions))
 
@@ -216,9 +234,18 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
     (gtk-container-add context-frame vbox-2)
     (let*
 	((hbox-1 (gtk-hbox-new #f 0))
-	 (vbox-2 (gtk-vbox-new #f 0))
 	 (vbox (gtk-vbox-new #f 0))
+	 (key (gtk-entry-new))
+	 (button-type-option-menu (gtk-option-menu-new))
+	 (key-type-option-menu (gtk-option-menu-new))
+	 (button-type-menu (make-button-type-option-menu))
+	 (key-type-menu (make-key-type-option-menu))
 	 (entry (gtk-entry-new))
+	 (grab-key-button (gtk-button-new-with-label "grab"))
+	 (set-proc-button (gtk-button-new-with-label "set"))
+	 (hbox-entry (gtk-hbox-new #f 4))
+	 (hbox-key-name (gtk-hbox-new #f 0))
+	 (hbox-entry-proc (gtk-hbox-new #f 0))
 	 (map-clist (gtk-clist-new-with-titles #("Context")))
 	 (doc-frame (gtk-frame-new "Procedure Documentation"))
 	 (cmd-clist (gtk-clist-new-with-titles #("Commands" "Module")))
@@ -228,10 +255,10 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 	 (scroller-doc (gtk-scrolled-window-new)))
 ;;      (set! pb-cmd-clist cmd-clist) ;; public for debugging
       ;;    (gtk-box-pack-start doc-frame scroller-doc)
+      (gtk-option-menu-set-menu button-type-option-menu button-type-menu)
+      (gtk-option-menu-set-menu key-type-option-menu key-type-menu)
       (gtk-box-set-spacing hbox-1 ui-box-spacing)
       (gtk-container-border-width hbox-1 ui-box-border)
-      (gtk-box-set-spacing vbox-2 ui-box-spacing)
-      (gtk-container-border-width vbox-2 ui-box-border)
       (gtk-box-set-spacing vbox ui-box-spacing)
       (gtk-container-border-width vbox ui-box-border)
       (gtk-scrolled-window-set-policy scroller-doc 'automatic 'automatic)
@@ -249,8 +276,20 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 
       (populate-cmd-clist-with-procedures cmd-clist)
 
-      (gtk-container-add vbox-2 entry)
-      (gtk-container-add vbox-2 scroller)
+      (gtk-widget-set-usize button-type-option-menu 80 15)
+      (gtk-widget-set-usize key-type-option-menu 80 15)
+
+      (gtk-container-add hbox-key-name key)
+      (gtk-container-add hbox-key-name grab-key-button)
+      (gtk-container-add hbox-entry-proc entry)
+      (gtk-container-add hbox-entry-proc set-proc-button)
+      (gtk-container-add hbox-entry hbox-key-name)
+      (gtk-container-add hbox-entry key-type-option-menu)
+      (gtk-container-add hbox-entry button-type-option-menu)
+      (gtk-container-add hbox-entry hbox-entry-proc)
+
+
+      (gtk-container-add vbox-2 hbox-entry)
 
       ;; 2. the context selection widget
       (gtk-scrolled-window-set-policy scroller-2 'automatic 'automatic)
@@ -261,7 +300,7 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
       (gtk-container-add scroller-2 map-clist)
       (gtk-container-add hbox-1 scroller-2)
       (gtk-container-add scroller-doc doc-textbox)
-      (gtk-container-add hbox-1 vbox-2)
+      (gtk-container-add hbox-1 scroller)
       
       (let ((x #("")))
 	(map (lambda (name)
@@ -300,9 +339,13 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
        (lambda (row col event)
 	 (debug-clist-select "commands" row col event)
 	 (let* ((m-p (gtk-clist-get-row-values cmd-clist row 2))
-		(docs (and m-p (proc-doc (procedure-string->procedure (car m-p))))))
-	   (gtk-text-replace doc-textbox (if (string? docs) docs "")))
-	 ))
+		(cmd (car m-p))
+		(docs (and m-p (proc-doc (procedure-string->procedure cmd)))))
+	   (set! current-cmd-row row)
+	   (set! current-documented-command cmd)
+	   (gtk-text-replace doc-textbox (if (string? docs) docs ""))
+	   (gtk-frame-set-label doc-frame cmd)
+	 )))
 
       ;; the text entry just about the command list
       (gtk-signal-connect 
@@ -313,8 +356,9 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 		(cmd-row (clist-find cmd-clist 2
 				     (lambda (ccmd mod)
 				       (string-ci-has-prefix ccmd cmd)))))
-	   (if (>= cmd-row 0)
+	   (if (and (>= cmd-row 0) (not (eqv? cmd-row current-cmd-row)))
 	       (begin
+		 (set! current-cmd-row cmd-row)
 		 (gtk-clist-select-row cmd-clist cmd-row 0)
 		 (gtk-clist-moveto cmd-clist cmd-row 0 .5 .5)))
 	   )))
@@ -326,14 +370,14 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 			    noop))
 
       ;; the delete button in the binding frame at the top
-      (gtk-signal-connect change-ev "clicked" 
-			  ;; prompt-binding:change-ev
+      (gtk-signal-connect copy "clicked" 
+			  ;; prompt-binding:copy
 			  (lambda ()
 			    noop))
 
       ;; the delete button in the binding frame at the top
-      (gtk-signal-connect change-pr "clicked" 
-			  ;; prompt-binding:change-pr
+      (gtk-signal-connect change "clicked" 
+			  ;; prompt-binding:change
 			  (lambda ()
 			    noop))
 
@@ -342,6 +386,17 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
 			  ;; prompt-binding:delete
 			  (lambda ()
 			    noop))
+
+      ;; the "set" button next to the name of the procedure
+      ;; that we've bound to the event
+      (gtk-signal-connect set-proc-button "clicked"
+			  (lambda ()
+			    (gtk-entry-set-text entry current-documented-command)))
+
+
+      (gtk-signal-connect grab-key-button "clicked"
+			  (lambda ()
+			    (gtk-entry-set-text key (car (get-key-event)))))
       
       ;; the bindings list, top
       (gtk-signal-connect 
@@ -350,10 +405,22 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
        (lambda (row col event)
 	 (debug-clist-select "bindings" row col event)
 	 (let* ((key-cmd-other (gtk-clist-get-row-values clist row 3))
+		(key-text (car key-cmd-other))
+		(type (cadr key-cmd-other))
 		(cmd (caddr key-cmd-other)))
 	   (gtk-entry-set-text entry cmd)
-	   )))
-       
+	   (gtk-entry-set-text key key-text)
+	   (case (string->symbol type)
+	     ((Immed Complex)
+	      (begin 
+		(gtk-widget-hide key-type-option-menu)
+		(gtk-widget-show button-type-option-menu)))
+	     (else
+	      (begin
+		(gtk-widget-hide button-type-option-menu))
+	      (gtk-widget-show key-type-option-menu))))))
+      (gtk-widget-show-all vbox)
+      (gtk-widget-hide button-type-option-menu)
       vbox)))
 
 (define*-public (prompt-binding #&optional (title "Bindings"))
@@ -375,7 +442,8 @@ rows of CLIST. Returns -1 if PRED never evaluates to #t."
     (gtk-container-add toplevel vbox)
     (let ((pp (pointer-position)))
       (gtk-widget-set-uposition toplevel (- (car pp) 150) (cadr pp)))
-    (gtk-widget-show-all toplevel)
+    (for-each gtk-widget-show (list okbut cancelbut hbox-buttons vbox toplevel))
+;;    (gtk-widget-show-all toplevel)
     (gtk-signal-connect okbut "clicked" 
 			(lambda () 
 			  (gtk-widget-destroy toplevel)))
