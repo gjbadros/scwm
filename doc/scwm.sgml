@@ -41,7 +41,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release post-0.8</releaseinfo>
-    <pubdate>07 September 1998</pubdate>
+    <pubdate>08 September 1998</pubdate>
     <copyright>
       <year>1997&ndash;1998</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
@@ -418,7 +418,7 @@ a number.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 342 </para> </refsect1>
+  at line 318 </para> </refsect1>
 </refentry>
 
 <refentry id="binary-read">
@@ -699,7 +699,7 @@ placed at all.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 165 </para> </refsect1>
+  at line 141 </para> </refsect1>
 </refentry>
 
 <refentry id="circulate-hit">
@@ -1017,7 +1017,7 @@ See also <link linkend="set-click-delay-x"><function>set-click-delay!</function>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 208 </para> </refsect1>
+  at line 184 </para> </refsect1>
 </refentry>
 
 <refentry id="click-to-focus-passes-click-p">
@@ -1041,7 +1041,7 @@ See also <link linkend="set-click-delay-x"><function>set-click-delay!</function>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 397 </para> </refsect1>
+  at line 373 </para> </refsect1>
 </refentry>
 
 <refentry id="click-to-focus-raises-p">
@@ -1065,7 +1065,7 @@ See also <link linkend="set-click-delay-x"><function>set-click-delay!</function>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 424 </para> </refsect1>
+  at line 400 </para> </refsect1>
 </refentry>
 
 <refentry id="close-window">
@@ -1167,7 +1167,7 @@ See <link linkend="color-properties"><function>color-properties</function></link
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 283 </para> </refsect1>
+  at line 279 </para> </refsect1>
 </refentry>
 
 <refentry id="color-p">
@@ -1219,7 +1219,7 @@ colormap focus.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 243 </para> </refsect1>
+  at line 219 </para> </refsect1>
 </refentry>
 
 <refentry id="current-decor">
@@ -1500,7 +1500,7 @@ of the width and the height.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 335 </para> </refsect1>
+  at line 336 </para> </refsect1>
 </refentry>
 
 <refentry id="destroy-window">
@@ -1554,7 +1554,7 @@ See also the variables "display-width" and "display-height".
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/deskpage.c"><filename>scwm/deskpage.c</filename></ulink>
-  at line 349 </para> </refsect1>
+  at line 350 </para> </refsect1>
 </refentry>
 
 <refentry id="documentation">
@@ -1747,7 +1747,7 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 485 </para> </refsect1>
+  at line 461 </para> </refsect1>
 </refentry>
 
 <refentry id="end-window-list">
@@ -1796,7 +1796,7 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/fvwm-eval.scm"><filename>scheme/fvwm-eval.scm</filename></ulink>
-  at line 512 </para> </refsect1>
+  at line 514 </para> </refsect1>
 </refentry>
 
 <refentry id="exe">
@@ -1820,7 +1820,7 @@ Return <literal>#t</literal> if found anything, <literal>#f</literal> if no docu
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 312 </para> </refsect1>
+  at line 311 </para> </refsect1>
 </refentry>
 
 <refentry id="execute">
@@ -1932,14 +1932,14 @@ specified. Note that <parameter>win</parameter> is not raised by giving it the f
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>(fold-menu-list
-		ml #&amp;optional (max-lines default-max-fold-lines))</synopsis>
+		ml #&amp;optional (max-lines default-menu-max-fold-lines))</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
   <para>
   Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
-defaults to <link linkend="default-max-fold-lines"><function>default-max-fold-lines</function></link>.
+defaults to <link linkend="default-menu-max-fold-lines"><function>default-menu-max-fold-lines</function></link>.
   </para>
   </refsect1>
   <refsect1>
@@ -1949,7 +1949,7 @@ defaults to <link linkend="default-max-fold-lines"><function>default-max-fold-li
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 303 </para> </refsect1>
+  at line 302 </para> </refsect1>
 </refentry>
 
 <refentry id="font-properties">
@@ -2000,7 +2000,7 @@ See <link linkend="font-properties"><function>font-properties</function></link> 
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 278 </para> </refsect1>
+  at line 274 </para> </refsect1>
 </refentry>
 
 <refentry id="font-p">
@@ -2423,7 +2423,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 704 </para> </refsect1>
+  at line 705 </para> </refsect1>
 </refentry>
 
 <refentry id="hilight-factor">
@@ -2472,7 +2472,7 @@ Applies to the focus in the current decor.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 631 </para> </refsect1>
+  at line 632 </para> </refsect1>
 </refentry>
 
 <refentry id="icon-font">
@@ -2680,7 +2680,7 @@ See <link linkend="image-properties"><function>image-properties</function></link
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 273 </para> </refsect1>
+  at line 269 </para> </refsect1>
 </refentry>
 
 <refentry id="image-p">
@@ -2807,7 +2807,7 @@ screen while the non-opaque move takes place.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/move.c"><filename>scwm/move.c</filename></ulink>
-  at line 676 </para> </refsect1>
+  at line 675 </para> </refsect1>
 </refentry>
 
 <refentry id="interactive-move-maybe-opaque">
@@ -2916,7 +2916,7 @@ screen while the non-opaque resize takes place.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
-  at line 614 </para> </refsect1>
+  at line 618 </para> </refsect1>
 </refentry>
 
 <refentry id="interactive-resize-maybe-opaque">
@@ -4032,7 +4032,7 @@ items.  FONT is a font object for the font of the menu items.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 247 </para> </refsect1>
+  at line 243 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-background">
@@ -4056,7 +4056,7 @@ items.  FONT is a font object for the font of the menu items.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 808 </para> </refsect1>
+  at line 809 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-font">
@@ -4104,7 +4104,7 @@ items.  FONT is a font object for the font of the menu items.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 744 </para> </refsect1>
+  at line 745 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-hilight-factor">
@@ -4128,32 +4128,7 @@ items.  FONT is a font object for the font of the menu items.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 558 </para> </refsect1>
-</refentry>
-
-<refentry id="menu-mwm-style">
-  <refnamediv>
-    <refname>menu-mwm-style</refname>
-    <refpurpose>Return the menu mwm style as set by <link linkend="set-menu-mwm-style-x"><function>set-menu-mwm-style!</function></link>.</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(menu-mwm-style)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  Return the menu mwm style as set by <link linkend="set-menu-mwm-style-x"><function>set-menu-mwm-style!</function></link>.
-This option is currently ignored.
-  </para>
-  </refsect1>
-  <refsect1>
-  <title>Module</title>
-  <para>Built-in Primitive</para>
-  </refsect1>
-  <refsect1>
-  <title>Implementation Notes</title>
-  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 45 </para> </refsect1>
+  at line 559 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-prefs">
@@ -4228,7 +4203,7 @@ font extra-options used-shortcut-keys)
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 587 </para> </refsect1>
+  at line 588 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-stipple">
@@ -4253,7 +4228,7 @@ May not be used any more.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 854 </para> </refsect1>
+  at line 855 </para> </refsect1>
 </refentry>
 
 <refentry id="menu-style">
@@ -4265,7 +4240,7 @@ May not be used any more.
     <synopsis>(menu-style #&amp;key
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
-		     (stipple #f) font mwm mwm-style)</synopsis>
+		     (stipple #f) font)</synopsis>
   </refsynopsisdiv>
   <refsect1>
   <title>Description</title>
@@ -4346,7 +4321,7 @@ the shortcut key for the menu item.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 212 </para> </refsect1>
+  at line 208 </para> </refsect1>
 </refentry>
 
 <refentry id="menuitem-properties">
@@ -4603,7 +4578,7 @@ to determine, e.g., whether the user single clicked or double clicked.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 454 </para> </refsect1>
+  at line 430 </para> </refsect1>
 </refentry>
 
 <refentry id="move-opaquely-p">
@@ -4703,7 +4678,7 @@ If X is negative, moves to the left.  If Y is negative moves up.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 271 </para> </refsect1>
+  at line 247 </para> </refsect1>
 </refentry>
 
 <refentry id="move-to">
@@ -5146,7 +5121,7 @@ The return value is a two-element list of the x and y coordinates.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 256 </para> </refsect1>
+  at line 232 </para> </refsect1>
 </refentry>
 
 <refentry id="popup-menu">
@@ -5484,7 +5459,7 @@ scratch. This is hopefully not necessary during normal operation.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 294 </para> </refsect1>
+  at line 270 </para> </refsect1>
 </refentry>
 
 <refentry id="refresh">
@@ -5509,7 +5484,7 @@ This forces a redraw of the entire current viewport.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 179 </para> </refsect1>
+  at line 155 </para> </refsect1>
 </refentry>
 
 <refentry id="refresh-window">
@@ -5882,7 +5857,7 @@ arguments as given previously.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 156 </para> </refsect1>
+  at line 132 </para> </refsect1>
 </refentry>
 
 <refentry id="run-fvwm2-module">
@@ -5938,7 +5913,7 @@ The rest of the arguments are passed as options to the xterm command.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 320 </para> </refsect1>
+  at line 330 </para> </refsect1>
 </refentry>
 
 <refentry id="safe-load">
@@ -6014,7 +5989,7 @@ errors.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 391 </para> </refsect1>
+  at line 401 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-path-exec-prefix">
@@ -6038,7 +6013,7 @@ errors.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 543 </para> </refsect1>
+  at line 519 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-path-prefix">
@@ -6062,7 +6037,7 @@ errors.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 533 </para> </refsect1>
+  at line 509 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-quit">
@@ -6111,7 +6086,7 @@ scwm. <parameter>args</parameter> is ignored.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 512 </para> </refsect1>
+  at line 488 </para> </refsect1>
 </refentry>
 
 <refentry id="scwm-version-date">
@@ -6135,7 +6110,7 @@ scwm. <parameter>args</parameter> is ignored.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 522 </para> </refsect1>
+  at line 498 </para> </refsect1>
 </refentry>
 
 <refentry id="sec-to-usec">
@@ -6632,7 +6607,7 @@ single click is definitively identified as not a double click.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 191 </para> </refsect1>
+  at line 167 </para> </refsect1>
 </refentry>
 
 <refentry id="set-click-to-focus-passes-click-x">
@@ -6658,7 +6633,7 @@ will not pass the event on to the client.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 385 </para> </refsect1>
+  at line 361 </para> </refsect1>
 </refentry>
 
 <refentry id="set-click-to-focus-raises-x">
@@ -6684,7 +6659,7 @@ window
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 409 </para> </refsect1>
+  at line 385 </para> </refsect1>
 </refentry>
 
 <refentry id="set-colormap-focus-x">
@@ -6713,7 +6688,7 @@ other than 'mouse.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 218 </para> </refsect1>
+  at line 194 </para> </refsect1>
 </refentry>
 
 <refentry id="set-current-decor-x">
@@ -6808,8 +6783,9 @@ defaults to the window context in the usual way if not specified.
   <para>
   Sets the desk size to <parameter>width</parameter>, <parameter>height</parameter>.
 Both numbers are given in units of the physical screen size.  For
-example <informalexample>(set-desk-size 3 3)</informalexample> creates
-a virtual world 9 times the size of the physical display.
+example <informalexample><programlisting>(set-desk-size 3 3)
+</programlisting></informalexample> createsa virtual world 9 times the
+size of the physical display.
   </para>
   </refsect1>
   <refsect1>
@@ -6870,7 +6846,7 @@ See also <link linkend="set-edge-scroll-delay-x"><function>set-edge-scroll-delay
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 362 </para> </refsect1>
+  at line 372 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-x">
@@ -6898,7 +6874,7 @@ dimension to a number of pixels.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 376 </para> </refsect1>
+  at line 386 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-scroll-delay-x">
@@ -6953,7 +6929,7 @@ See also <link linkend="set-edge-x-wrap-x"><function>set-edge-x-wrap!</function>
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 368 </para> </refsect1>
+  at line 378 </para> </refsect1>
 </refentry>
 
 <refentry id="set-edge-x-scroll-x">
@@ -7138,7 +7114,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 650 </para> </refsect1>
+  at line 651 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hilight-factor-x">
@@ -7188,7 +7164,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 607 </para> </refsect1>
+  at line 608 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hint-override-x">
@@ -7372,7 +7348,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 754 </para> </refsect1>
+  at line 755 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-font-x">
@@ -7420,7 +7396,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 718 </para> </refsect1>
+  at line 719 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-hilight-factor-x">
@@ -7445,32 +7421,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 539 </para> </refsect1>
-</refentry>
-
-<refentry id="set-menu-mwm-style-x">
-  <refnamediv>
-    <refname>set-menu-mwm-style!</refname>
-    <refpurpose>Set the menu mwm style according to the boolean FLAG.</refpurpose>
-  </refnamediv>
-  <refsynopsisdiv>
-    <synopsis>(set-menu-mwm-style! flag)</synopsis>
-  </refsynopsisdiv>
-  <refsect1>
-  <title>Description</title>
-  <para>
-  Set the menu mwm style according to the boolean <parameter>flag</parameter>.
-This option is currently ignored.
-  </para>
-  </refsect1>
-  <refsect1>
-  <title>Module</title>
-  <para>Built-in Primitive</para>
-  </refsect1>
-  <refsect1>
-  <title>Implementation Notes</title>
-  <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 34 </para> </refsect1>
+  at line 540 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-shadow-factor-x">
@@ -7495,7 +7446,7 @@ This option is currently ignored.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 568 </para> </refsect1>
+  at line 569 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-stipple-x">
@@ -7520,7 +7471,7 @@ May not be used any longer.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 819 </para> </refsect1>
+  at line 820 </para> </refsect1>
 </refentry>
 
 <refentry id="set-message-window-attributes-x">
@@ -7599,7 +7550,7 @@ makes sense any more.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 441 </para> </refsect1>
+  at line 417 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-border-x">
@@ -7814,7 +7765,7 @@ resize frames. <parameter>value</parameter> should be an integer.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/resize.c"><filename>scwm/resize.c</filename></ulink>
-  at line 332 </para> </refsect1>
+  at line 333 </para> </refsect1>
 </refentry>
 
 <refentry id="set-shadow-factor-x">
@@ -7839,7 +7790,7 @@ resize frames. <parameter>value</parameter> should be an integer.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 497 </para> </refsect1>
+  at line 498 </para> </refsect1>
 </refentry>
 
 <refentry id="set-show-icon-x">
@@ -7948,7 +7899,7 @@ the window's smart-placement flag is on.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 353 </para> </refsect1>
+  at line 329 </para> </refsect1>
 </refentry>
 
 <refentry id="set-start-on-desk-x">
@@ -8053,7 +8004,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 109 </para> </refsect1>
+  at line 85 </para> </refsect1>
 </refentry>
 
 <refentry id="set-title-justify-x">
@@ -8079,7 +8030,7 @@ current decor
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 57 </para> </refsect1>
+  at line 33 </para> </refsect1>
 </refentry>
 
 <refentry id="set-viewport-position-x">
@@ -8405,7 +8356,7 @@ synchronous mode, but can be easier to debug.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 553 </para> </refsect1>
+  at line 529 </para> </refsect1>
 </refentry>
 
 <refentry id="shadow-factor">
@@ -8429,7 +8380,7 @@ synchronous mode, but can be easier to debug.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/color.c"><filename>scwm/color.c</filename></ulink>
-  at line 521 </para> </refsect1>
+  at line 522 </para> </refsect1>
 </refentry>
 
 <refentry id="should-circulate-skip-p">
@@ -8647,7 +8598,7 @@ JUSTIFY is a legal argument to <link linkend="set-title-justify-x"><function>set
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scheme/base.scm"><filename>scheme/base.scm</filename></ulink>
-  at line 177 </para> </refsect1>
+  at line 173 </para> </refsect1>
 </refentry>
 
 <refentry id="size-to-str">
@@ -8753,7 +8704,7 @@ the window's smart-placement flag is on.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 368 </para> </refsect1>
+  at line 344 </para> </refsect1>
 </refentry>
 
 <refentry id="sort">
@@ -9003,7 +8954,7 @@ Applies to the current decor.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 142 </para> </refsect1>
+  at line 118 </para> </refsect1>
 </refentry>
 
 <refentry id="title-justify">
@@ -9029,7 +8980,7 @@ current decor.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 87 </para> </refsect1>
+  at line 63 </para> </refsect1>
 </refentry>
 
 <refentry id="title-style">
@@ -9663,7 +9614,7 @@ usefulness and may be removed.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 311 </para> </refsect1>
+  at line 287 </para> </refsect1>
 </refentry>
 
 <refentry id="warp-to-window">
@@ -10848,7 +10799,7 @@ be shared among multiple machines.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 590 </para> </refsect1>
+  at line 566 </para> </refsect1>
 </refentry>
 
 <refentry id="X-pointer-mapping">
@@ -11020,7 +10971,7 @@ and so on.  This cut buffer numbering is global to the display.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 465 </para> </refsect1>
+  at line 441 </para> </refsect1>
 </refentry>
 
 <refentry id="X-synthetic-send-string">
@@ -11072,7 +11023,7 @@ revision, the X server vendor, and the vendor release number.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/miscprocs.c"><filename>scwm/miscprocs.c</filename></ulink>
-  at line 570 </para> </refsect1>
+  at line 546 </para> </refsect1>
 </refentry>
 
 <refentry id="y-">
@@ -11445,8 +11396,6 @@ revision, the X server vendor, and the vendor release number.
       <listitem><para><link linkend="make-menuitem"><function>make-menuitem</function></link> &mdash; Return a newly created menuitem object using the given arguments.</para></listitem>
     </itemizedlist> </sect1>
     <sect1><title>scwm/miscprocs.c</title> <itemizedlist>
-      <listitem><para><link linkend="set-menu-mwm-style-x"><function>set-menu-mwm-style!</function></link> &mdash; Set the menu mwm style according to the boolean FLAG.</para></listitem>
-      <listitem><para><link linkend="menu-mwm-style"><function>menu-mwm-style</function></link> &mdash; Return the menu mwm style as set by <link linkend="set-menu-mwm-style-x"><function>set-menu-mwm-style!</function></link>.</para></listitem>
       <listitem><para><link linkend="set-title-justify-x"><function>set-title-justify!</function></link> &mdash; Set the justification for the title to JUST.</para></listitem>
       <listitem><para><link linkend="title-justify"><function>title-justify</function></link> &mdash; Return the current justification for the title, as set by <link linkend="set-title-justify-x"><function>set-title-justify!</function></link>.</para></listitem>
       <listitem><para><link linkend="set-title-height-x"><function>set-title-height!</function></link> &mdash; Set the height of the titlebar in pixels to HEIGHT.</para></listitem>
@@ -11727,6 +11676,9 @@ Number of ms to delay before running the unfocus proc for a raised window.This c
     <sect1 id="default-auto-raise-unfocus-proc"><title>default-auto-raise-unfocus-proc</title><para>
 The default procedure to invoke when un-raising the window.This gets called after the mouse pointer leaves an auto-raised window, andcan be overwridden on a per-window basis using <link linkend="set-auto-raise-unfocus-proc-x"><function>set-auto-raise-unfocus-proc!</function></link>
     </para></sect1>
+    <sect1 id="default-menu-max-fold-lines"><title>default-menu-max-fold-lines</title><para>
+The default number of items that menus are split into by <link linkend="fold-menu-list"><function>fold-menu-list</function></link>.
+    </para></sect1>
     <sect1 id="image-load-path"><title>image-load-path</title><para>
 List of strings of directories in which to look for image files. 
     </para></sect1>
@@ -11742,8 +11694,15 @@ Percent of display area below which windows are moved opaquely.
     <sect1 id="opaque-resize-percent"><title>opaque-resize-percent</title><para>
 Percent of display area below which windows are resized opaquely.
     </para></sect1>
+    <sect1 id="remote-shell-command"><title>remote-shell-command</title><para>
+The command to use to start a remote shell.It should take a first (non-option) argument ofthe hostname to connect to.  "ssh" "rsh" and "telnet"are each reasonable choices.
+    </para></sect1>
     <sect1 id="shadow-factor"><title>shadow-factor</title><para>
-   See <link linkend="set-shadow-factor-x"><function>set-shadow-factor!</function></link> and <link linkend="shadow-factor"><function>shadow-factor</function></link>. 
+   The numeric factor used in generating shadow colors in the current decor.
+
+    </para></sect1>
+    <sect1 id="xterm-command"><title>xterm-command</title><para>
+The command to run when a new xterm window is requested.The string given should refer to a binary or script in thepath and should take a "-e" argument of what to run.
     </para></sect1>
   </chapter>
   <chapter>

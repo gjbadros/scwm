@@ -97,7 +97,7 @@ No documentation supplied.
 (beep)
 - Built-in Primitive
 Ring the standard X bell.
-[From scwm/miscprocs.c:342]
+[From scwm/miscprocs.c:318]
 
 
 (binary-read length #&optional (port (current-input-port)))
@@ -180,7 +180,7 @@ This happens at two times: during initial startup, or during a
 recapture operation. In either case, placement procedures should
 probably avoid interaction and perhaps avoid moving the window being
 placed at all.
-[From scwm/miscprocs.c:165]
+[From scwm/miscprocs.c:141]
 
 
 (circulate-hit #&optional (win (get-window)))
@@ -282,19 +282,19 @@ returns #f; otherwise it returns #t.
 - Built-in Primitive
 Retrun the delay used in identifying mouse clicks and drags, in microseconds.
 See also `set-click-delay!'
-[From scwm/miscprocs.c:208]
+[From scwm/miscprocs.c:184]
 
 
 (click-to-focus-passes-click?)
 - Built-in Primitive
 Returns a boolean valude indicating whether a click-to-focus window receives the click.
-[From scwm/miscprocs.c:397]
+[From scwm/miscprocs.c:373]
 
 
 (click-to-focus-raises?)
 - Built-in Primitive
 Returns a boolean valude indicating whether a click-to-focus window gets raised on focus.
-[From scwm/miscprocs.c:424]
+[From scwm/miscprocs.c:400]
 
 
 (close-window #&optional (win (get-window #t)))
@@ -324,7 +324,7 @@ color, and 'pixel, the X pixel value it uses.
 - (app scwm base)
 Return the KEY property of COLOR.
 See `color-properties' for a list of the keys.
-[From scheme/base.scm:283]
+[From scheme/base.scm:279]
 
 
 (color? obj)
@@ -340,7 +340,7 @@ The value can be either be 'mouse, indicating that the window under
 the mouse pointer will always colormap installed, or 'focus to
 indicate that the window with the input focus should also get the
 colormap focus.
-[From scwm/miscprocs.c:243]
+[From scwm/miscprocs.c:219]
 
 
 (current-decor)
@@ -423,7 +423,7 @@ in the usual way if not specified.
 Returns the size of the current desk.
 The returned value is in units of the physical screen size, as a list
 of the width and the height.
-[From scwm/deskpage.c:335]
+[From scwm/deskpage.c:336]
 
 
 (destroy-window  #&optional win)
@@ -441,7 +441,7 @@ Returns the size of the physical screen in pixels.
 The return value is list of the width and the height. The
 width is the `car', the height is the `cadr' of the returned list.
 See also the variables "display-width" and "display-height".
-[From scwm/deskpage.c:349]
+[From scwm/deskpage.c:350]
 
 
 (documentation func #&optional (port (current-output-port)))
@@ -490,7 +490,7 @@ Return the current vertical edge wrap setting as set by `set-edge-y-wrap!'.
 (elapsed-time)
 - Built-in Primitive
 Return the elapsed time in milliseconds since O.S. has been up.
-[From scwm/miscprocs.c:485]
+[From scwm/miscprocs.c:461]
 
 
 (end-window-list port)
@@ -503,13 +503,13 @@ No documentation supplied.
 				   (window #f))
 - 
 No documentation supplied.
-[From scheme/fvwm-eval.scm:512]
+[From scheme/fvwm-eval.scm:514]
 
 
 (exe command)
 - (app scwm base)
 Return a procedure that runs the system command COMMAND.
-[From scheme/base.scm:312]
+[From scheme/base.scm:311]
 
 
 (execute command)
@@ -543,12 +543,12 @@ specified. Note that WIN is not raised by giving it the focus;  see
 
 
 (fold-menu-list
-		ml #&optional (max-lines default-max-fold-lines))
+		ml #&optional (max-lines default-menu-max-fold-lines))
 - (app scwm base)
 Split ML into chained menus of no more than MAX-LINES items.
 ML is a list of menuitem objects. MAX-LINES is a number, which
-defaults to `default-max-fold-lines'.
-[From scheme/base.scm:303]
+defaults to `default-menu-max-fold-lines'.
+[From scheme/base.scm:302]
 
 
 (font-properties font)
@@ -563,7 +563,7 @@ color, and 'height, it's total height in pixels.
 - (app scwm base)
 Return the KEY property of FONT.
 See `font-properties' for a list of the keys.
-[From scheme/base.scm:278]
+[From scheme/base.scm:274]
 
 
 (font? obj)
@@ -680,7 +680,7 @@ specified.
 - Built-in Primitive
 Return the background color for windows with the input focus.
 Applies to the current decor.
-[From scwm/color.c:704]
+[From scwm/color.c:705]
 
 
 (hilight-factor)
@@ -693,7 +693,7 @@ Return the current hilight factor.
 - Built-in Primitive
 Return the foreground color of the window with the input focus.
 Applies to the focus in the current decor.
-[From scwm/color.c:631]
+[From scwm/color.c:632]
 
 
 (icon-font)
@@ -757,7 +757,7 @@ depth, it's color depth.
 - (app scwm base)
 Return the KEY property of IMAGE.
 See `image-properties' for a list of the keys.
-[From scheme/base.scm:273]
+[From scheme/base.scm:269]
 
 
 (image? obj)
@@ -794,7 +794,7 @@ usual way if not specified.  If OPAQUE? is #t, the move will be done
 used instead to save on server computation (note that the rubberband
 requires a server "grab" which means that nothing else changes on
 screen while the non-opaque move takes place.
-[From scwm/move.c:676]
+[From scwm/move.c:675]
 
 
 (interactive-move-maybe-opaque #&optional (win (get-window)))
@@ -831,7 +831,7 @@ specified. If OPAQUE? is #t, the resize will be done
 used instead to save on server computation (note that the rubberband
 requires a server "grab" which means that nothing else changes on
 screen while the non-opaque resize takes place.
-[From scwm/resize.c:614]
+[From scwm/resize.c:618]
 
 
 (interactive-resize-maybe-opaque #&optional (win (get-window)))
@@ -1191,13 +1191,13 @@ background color for that image object.  COLOR-TEXT is a color object
 or string for the foreground text color of menu items.  COLOR-BG is a
 color object or string for the background color for the menu and menu
 items.  FONT is a font object for the font of the menu items.
-[From scheme/base.scm:247]
+[From scheme/base.scm:243]
 
 
 (menu-background)
 - Built-in Primitive
 Return the default background color for menus.
-[From scwm/color.c:808]
+[From scwm/color.c:809]
 
 
 (menu-font)
@@ -1209,20 +1209,13 @@ Return the font used by default for drawing menus.
 (menu-foreground)
 - Built-in Primitive
 Return the default foreground color for menus.
-[From scwm/color.c:744]
+[From scwm/color.c:745]
 
 
 (menu-hilight-factor)
 - Built-in Primitive
 Return the current menu hilight factor.
-[From scwm/color.c:558]
-
-
-(menu-mwm-style)
-- Built-in Primitive
-Return the menu mwm style as set by `set-menu-mwm-style!'.
-This option is currently ignored.
-[From scwm/miscprocs.c:45]
+[From scwm/color.c:559]
 
 
 (menu-prefs . opts)
@@ -1243,20 +1236,20 @@ font extra-options used-shortcut-keys)
 (menu-shadow-factor)
 - Built-in Primitive
 Return the current menu shadow factor.
-[From scwm/color.c:587]
+[From scwm/color.c:588]
 
 
 (menu-stipple)
 - Built-in Primitive
 Return the default stipple color for menus.
 May not be used any more.
-[From scwm/color.c:854]
+[From scwm/color.c:855]
 
 
 (menu-style #&key
 		     (fg #f) (foreground #f)
 		     (bg #f) (background #f)
-		     (stipple #f) font mwm mwm-style)
+		     (stipple #f) font)
 - (app scwm base)
 Set various properites for the menus.
 Many of these are ignored.  See `make-menu' for options on
@@ -1289,7 +1282,7 @@ when the item is unhighlighted.  HOTKEY-PREFS is a string listing
 the characters which are appropriate shortcut-keys for the item;
 the first not-yet-used-in-this-menu character will be used for
 the shortcut key for the menu item.
-[From scheme/base.scm:212]
+[From scheme/base.scm:208]
 
 
 (menuitem-properties menu-item)
@@ -1366,7 +1359,7 @@ to determine, e.g., whether the user single clicked or double clicked.
 (mouse-focus-click-raises?)
 - Built-in Primitive
 Returns a boolean valude indicating whether a mouse-focus-click will raise the window..
-[From scwm/miscprocs.c:454]
+[From scwm/miscprocs.c:430]
 
 
 (move-opaquely? win)
@@ -1394,7 +1387,7 @@ If X is negative, moves to the left.  If Y is negative moves up.
 (move-pointer-to sx sy)
 - Built-in Primitive
 Move the mouse pointer to SX, SY (given in pixels).
-[From scwm/miscprocs.c:271]
+[From scwm/miscprocs.c:247]
 
 
 (move-to x y 
@@ -1531,7 +1524,7 @@ specified.
 - Built-in Primitive
 Return the current position of the mouse pointer in pixels.
 The return value is a two-element list of the x and y coordinates.
-[From scwm/miscprocs.c:256]
+[From scwm/miscprocs.c:232]
 
 
 (popup-menu menu #&optional warp-to-first? x-pos y-pos left-side?)
@@ -1635,14 +1628,14 @@ interaction. #t is always returned.
 Recapture all the windows.
 This destroys all the current frame windows and recreate them from
 scratch. This is hopefully not necessary during normal operation.
-[From scwm/miscprocs.c:294]
+[From scwm/miscprocs.c:270]
 
 
 (refresh)
 - Built-in Primitive
 Make sure all windows and their decorations are up to date.
 This forces a redraw of the entire current viewport.
-[From scwm/miscprocs.c:179]
+[From scwm/miscprocs.c:155]
 
 
 (refresh-window  #&optional win)
@@ -1763,7 +1756,7 @@ arguments as given previously.
 (restarted?)
 - Built-in Primitive
 Returns true if scwm is being restarted by itself.
-[From scwm/miscprocs.c:156]
+[From scwm/miscprocs.c:132]
 
 
 (run-fvwm2-module module-name #&optional
@@ -1783,7 +1776,7 @@ Return a procedure that runs CMD in an xterm.
 Uses the variable `xterm-command' to determine how
 to run an xterm.  CMD may include options to the command.
 The rest of the arguments are passed as options to the xterm command.
-[From scheme/base.scm:320]
+[From scheme/base.scm:330]
 
 
 (safe-load fname)
@@ -1805,19 +1798,19 @@ No documentation supplied.
 (scwm-is-constraint-enabled?)
 - 
 Return #t if scwm has the constraint solver primitives, #f otherwise.
-[From scheme/base.scm:391]
+[From scheme/base.scm:401]
 
 
 (scwm-path-exec-prefix)
 - Built-in Primitive
 Return the <envar>$EXEC_PREFIX</envar> directory path that scwm was installed with.
-[From scwm/miscprocs.c:543]
+[From scwm/miscprocs.c:519]
 
 
 (scwm-path-prefix)
 - Built-in Primitive
 Return the <envar>$PREFIX</envar> directory path that scwm was installed with.
-[From scwm/miscprocs.c:533]
+[From scwm/miscprocs.c:509]
 
 
 (scwm-quit  . args)
@@ -1830,13 +1823,13 @@ scwm. ARGS is ignored.
 (scwm-version)
 - Built-in Primitive
 Return the version of scwm running.
-[From scwm/miscprocs.c:512]
+[From scwm/miscprocs.c:488]
 
 
 (scwm-version-date)
 - Built-in Primitive
 Return the date that the running scwm was last changed as a string.
-[From scwm/miscprocs.c:522]
+[From scwm/miscprocs.c:498]
 
 
 (sec->usec sec)
@@ -2009,7 +2002,7 @@ Set the delay used in identifying mouse clicks and drags.
 USEC is specified in microseconds. After USEC microseconds, a mouse-down
 without a mouse-up is considered a drag.  Also, after USEC microseconds, a
 single click is definitively identified as not a double click.
-[From scwm/miscprocs.c:191]
+[From scwm/miscprocs.c:167]
 
 
 (set-click-to-focus-passes-click! flag)
@@ -2017,7 +2010,7 @@ single click is definitively identified as not a double click.
 Determine whether a click-to-focus window receives the click.
 If FLAG is #t, the window will receive the event, if #f, scwm
 will not pass the event on to the client.
-[From scwm/miscprocs.c:385]
+[From scwm/miscprocs.c:361]
 
 
 (set-click-to-focus-raises! flag)
@@ -2025,7 +2018,7 @@ will not pass the event on to the client.
 Determine whether a click to focus raises the clicked-on window.
 If FLAG is #t, clicks which transfer focus will also raise the target
 window
-[From scwm/miscprocs.c:409]
+[From scwm/miscprocs.c:385]
 
 
 (set-colormap-focus! ftype)
@@ -2036,7 +2029,7 @@ pointer should always have it's colormap installed, or 'focus to
 indicate that the window with the input focus should also get the
 colormap focus. This makes a difference only when using focus policies
 other than 'mouse.
-[From scwm/miscprocs.c:218]
+[From scwm/miscprocs.c:194]
 
 
 (set-current-decor! decor)
@@ -2068,8 +2061,9 @@ defaults to the window context in the usual way if not specified.
 - Built-in Primitive
 Sets the desk size to WIDTH, HEIGHT.
 Both numbers are given in units of the physical screen size.  For
-example <informalexample>(set-desk-size 3 3)</informalexample> creates
-a virtual world 9 times the size of the physical display.
+example <informalexample><programlisting>(set-desk-size 3 3)
+</programlisting></informalexample> createsa virtual world 9 times the
+size of the physical display.
 [From scwm/deskpage.c:299]
 
 
@@ -2085,7 +2079,7 @@ must be moved before it will really move past the edge.
 - (app scwm base)
 Set the edge scroll delay to S, and the edge move threshold to M.
 See also `set-edge-scroll-delay!' and `set-edge-move-threshold!'.
-[From scheme/base.scm:362]
+[From scheme/base.scm:372]
 
 
 (set-edge-scroll! x y)
@@ -2095,7 +2089,7 @@ These values are the number of pixels that the viewport
 moves when the pointer hits the edge of the screen.  Use
 `%x' and `%y' to convert from a percentage of a screen
 dimension to a number of pixels.
-[From scheme/base.scm:376]
+[From scheme/base.scm:386]
 
 
 (set-edge-scroll-delay! usec)
@@ -2114,7 +2108,7 @@ Set the edge x and y wrap values to X and Y, respectively.
 These values should be #t to mean that the pointer should
 wrap in the given direction, or #f to not wrap around.
 See also `set-edge-x-wrap!' and `set-edge-y-wrap!'.
-[From scheme/base.scm:368]
+[From scheme/base.scm:378]
 
 
 (set-edge-x-scroll! pixels)
@@ -2173,7 +2167,7 @@ way if not specified.
 - Built-in Primitive
 Use BG as the background color for the window with input focus.
 Applies to the current decor.
-[From scwm/color.c:650]
+[From scwm/color.c:651]
 
 
 (set-hilight-factor! factor)
@@ -2187,7 +2181,7 @@ FACTOR is a positive floating point number.
 - Built-in Primitive
 Use FG for foreground color of the window with the input focus.
 Applies to the current decor.
-[From scwm/color.c:607]
+[From scwm/color.c:608]
 
 
 (set-hint-override! flag #&optional win)
@@ -2245,7 +2239,7 @@ specified.
 (set-menu-background! bg)
 - Built-in Primitive
 Use BG as the default foreground color for menus.
-[From scwm/color.c:754]
+[From scwm/color.c:755]
 
 
 (set-menu-font! font)
@@ -2257,35 +2251,28 @@ Set the default font used for drawing menus to FONT.
 (set-menu-foreground! fg)
 - Built-in Primitive
 Use FG as the default foreground color for menus.
-[From scwm/color.c:718]
+[From scwm/color.c:719]
 
 
 (set-menu-hilight-factor! factor)
 - Built-in Primitive
 Use FACTOR to generate hilight colors for menus.
 FACTOR is a positive floating point number
-[From scwm/color.c:539]
-
-
-(set-menu-mwm-style! flag)
-- Built-in Primitive
-Set the menu mwm style according to the boolean FLAG.
-This option is currently ignored.
-[From scwm/miscprocs.c:34]
+[From scwm/color.c:540]
 
 
 (set-menu-shadow-factor! factor)
 - Built-in Primitive
 Use FACTOR to generate shadow colors for menus.
 FACTOR is a positive floating point number
-[From scwm/color.c:568]
+[From scwm/color.c:569]
 
 
 (set-menu-stipple! st)
 - Built-in Primitive
 Use ST as the default stipple color for menus.
 May not be used any longer.
-[From scwm/color.c:819]
+[From scwm/color.c:820]
 
 
 (set-message-window-attributes! font fg-color bg-color)
@@ -2310,7 +2297,7 @@ to the window context in the usual way if not specified.
 Determine whether a mouse-focus-click will raise the window.
 If FLAG is #t it will raise the window. Not sure if this function
 makes sense any more.
-[From scwm/miscprocs.c:441]
+[From scwm/miscprocs.c:417]
 
 
 (set-mwm-border! flag #&optional win)
@@ -2381,14 +2368,14 @@ specified.
 Set the rubber band mask used when dragging or resizing.
 VALUE is XORed with the background when dragging non-opaque move or
 resize frames. VALUE should be an integer.
-[From scwm/resize.c:332]
+[From scwm/resize.c:333]
 
 
 (set-shadow-factor! factor)
 - Built-in Primitive
 Use FACTOR to generate shadow colors in the current decor.
 FACTOR is a positive floating point number
-[From scwm/color.c:497]
+[From scwm/color.c:498]
 
 
 (set-show-icon! flag #&optional win)
@@ -2425,7 +2412,7 @@ Determine whether or not `clever-place-window' will be used when smart-placing.
 If FLAG is #t, then `clever-place-window' will be used instead of
 `smart-place-window' when the default placement procedure is used, and
 the window's smart-placement flag is on.
-[From scwm/miscprocs.c:353]
+[From scwm/miscprocs.c:329]
 
 
 (set-start-on-desk! desk #&optional win)
@@ -2458,7 +2445,7 @@ Set the font for window titles In the current decor to FONT.
 - Built-in Primitive
 Set the height of the titlebar in pixels to HEIGHT.
 Applies to the current decor.
-[From scwm/miscprocs.c:109]
+[From scwm/miscprocs.c:85]
 
 
 (set-title-justify! just)
@@ -2466,7 +2453,7 @@ Applies to the current decor.
 Set the justification for the title to JUST.
 JUST should be one of 'right, 'left, or 'center. Applies to the
 current decor
-[From scwm/miscprocs.c:57]
+[From scwm/miscprocs.c:33]
 
 
 (set-viewport-position! x y)
@@ -2576,13 +2563,13 @@ Set X server sychronization flag to FLAG.
 If FLAG is #t, then Scwm will turn on synchronous X behaviour; if FLAG
 is #f, Scwm will turn off synchronous behaviour.  Scwm is slower in
 synchronous mode, but can be easier to debug.
-[From scwm/miscprocs.c:553]
+[From scwm/miscprocs.c:529]
 
 
 (shadow-factor)
 - Built-in Primitive
 Return the current shadow factor.
-[From scwm/color.c:521]
+[From scwm/color.c:522]
 
 
 (should-circulate-skip? #&optional (win (get-window)))
@@ -2656,7 +2643,7 @@ Set the style for titlebars.
 FONT is a font object or a string, HEIGHT is a number of points,
 JUSTIFY is a legal argument to `set-title-justify!' such as 'left,
 'right, or 'center.
-[From scheme/base.scm:177]
+[From scheme/base.scm:173]
 
 
 (size->str sz #&optional (sep "x"))
@@ -2690,7 +2677,7 @@ Return whether or not `clever-place-window' will be used when smart-placing.
 If the value is #t, then `clever-place-window' will be used instead of
 smart-place-window when the default placement procedure is used, and
 the window's smart-placement flag is on.
-[From scwm/miscprocs.c:368]
+[From scwm/miscprocs.c:344]
 
 
 (sort ls #&optional (compare >))
@@ -2760,7 +2747,7 @@ Return the font used for drawing window titles in the current decor.
 - Built-in Primitive
 Return the height of the titlebar in pixels, as set by `set-title-height!'.
 Applies to the current decor.
-[From scwm/miscprocs.c:142]
+[From scwm/miscprocs.c:118]
 
 
 (title-justify)
@@ -2768,7 +2755,7 @@ Applies to the current decor.
 Return the current justification for the title, as set by `set-title-justify!'.
 The return value will be one of 'right, 'left, or 'center. Applies to the
 current decor.
-[From scwm/miscprocs.c:87]
+[From scwm/miscprocs.c:63]
 
 
 (title-style #&key font height justify
@@ -2952,7 +2939,7 @@ Return a pixel height Y percent of the height of window W.
 Wait until a window appears which satisfies PREDICATE.
 Given the existence of before-new-window-hook, this is of questionable
 usefulness and may be removed.
-[From scwm/miscprocs.c:311]
+[From scwm/miscprocs.c:287]
 
 
 (warp-to-window  #&optional win)
@@ -3309,7 +3296,7 @@ The resolutions mentioned above should in theory be pixels per
 centimeter, rounded to the nearest integer. These parameters can be
 used for various workarounds or conditional decisions in a scwmrc to
 be shared among multiple machines.
-[From scwm/miscprocs.c:590]
+[From scwm/miscprocs.c:566]
 
 
 (X-pointer-mapping)
@@ -3373,7 +3360,7 @@ Later, the value can be retrieved using `X-resource-get'.
 Rotate the X cut buffers by N positions.
 This means buffer 0 becomes buffer n, buffer 1 becomes n + 1 mod 8,
 and so on.  This cut buffer numbering is global to the display.
-[From scwm/miscprocs.c:465]
+[From scwm/miscprocs.c:441]
 
 
 (X-synthetic-send-string str #&optional (win (get-window)))
@@ -3389,7 +3376,7 @@ honour synthetic key events as they are a security hole.
 Return some information about the version of the running X server.
 Return value is a list of the X protocol version, the X protocol
 revision, the X server vendor, and the vendor release number.
-[From scwm/miscprocs.c:570]
+[From scwm/miscprocs.c:546]
 
 
 (y- y)
