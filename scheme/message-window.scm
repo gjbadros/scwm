@@ -176,9 +176,9 @@ These options are cumulative for repeated calls to
     ((msgwin-action-placer 'interactive-resize) default-message-window win)
     (message-window-show! default-message-window))
 
-(define (resize-message-new-size-hook win width height)
-  (let* ((wstr (number->string width))
-	 (hstr (number->string height))
+(define (resize-message-new-size-hook win xpos ypos width height width-units height-units)
+  (let* ((wstr (number->string width-units))
+	 (hstr (number->string height-units))
 	 (str (string-append " " wstr " x " hstr " ")))
     ((msgwin-action-placer 'interactive-resize) default-message-window win)
     (message-window-set-message! default-message-window str)))
