@@ -53,6 +53,7 @@
   (animated-resize-frame 100 100 win 0 0))
 
 (bind-key 'window "H-a" little-top-left)
+(bind-key 'window "H-r" resize-halfscreen)
 (animated-resize-frame 100 100 w2 0 0)
 (animated-resize-frame 100 100 w3 0 0)
 (resize-frame 100 100 w2 0 0)
@@ -60,3 +61,11 @@
 (resize-frame 100 100 w1)
 (resize-frame 100 100 w1)
 
+(define-public (resize-halfscreen)
+  "Resize the current window with the pointer to full height and half the screen size in width."
+  (let ((w (current-window-with-pointer)))
+    (animated-resize-window (%x 49) (%y 90))))
+
+
+(hide-titlebar (get-window) #t)
+(show-titlebar (get-window) #t)

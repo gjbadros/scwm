@@ -1,3 +1,19 @@
+Thu Sep 30 17:22:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* resize.c: Patched to make InteractiveResize use the current
+	position of the pointer as an anchor so that the mouse no longer
+	first needs to move outside the window before "catching" onto a
+	part of the window frame to resize.  Thanks to E. Jay Berkenbilt
+	for tha patch!
+
+	* resize.c:  Use 0xaaaaaa instead of 37 for the initial rubberband 
+	mask.  Thanks to Carl Witty for suggesting the value, and E. Jay
+	Berkenbilt for raising the question.
+
+	* placement.c (SetPswGravity): Change the gravity attribute of the 
+	window, not just the gravity hint.  (Not clear that this has any
+	effect... I certainly didn't notice anything).
+
 Wed Sep 29 23:04:46 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c (s_move_window_to_desk): Return immediately if moving
