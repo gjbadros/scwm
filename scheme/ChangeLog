@@ -1,3 +1,7 @@
+Wed Sep  9 14:25:21 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* flux.scm: Added `display-message-briefly'
+
 Wed Sep  9 12:40:50 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added use-scwm-system variable to control whether

@@ -1,3 +1,11 @@
+Wed Sep  9 14:18:18 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* resize.c: Added display-message, hide-message,
+	message-window-mapped? primitives for exposing the MessageWindow
+	more directly (i.e., the little single-line window that shows the
+	position/size during interactive move/resizes).  May go away when
+	GTk is usefully usable, but too easy to do to leave undone.
+
 Wed Sep  9 12:48:43 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c (scwm_main): Call initSM() much later, so that it happens 
