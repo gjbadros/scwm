@@ -9,11 +9,13 @@ SCWM_SRC_DIR = $(top_srcdir)/src
 
 SUFFIXES = .x
 
-%.x: %.c
-	$(SCWM_SRC_DIR)/scwm-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@ \
-	|| { rm $@; false; }
+%.x %.doc: %.c
+	$(SCWM_SRC_DIR)/scwm-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).x && \
+	$(SCWM_SRC_DIR)/scwm-doc-snarf $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).doc \
+	|| { rm $(basename $<).x $(basename $<).doc ; false; }
 
-%.x: %.cc
+%.x %.doc: %.cc
 	CC=$(CXX) \
-	$(SCWM_SRC_DIR)/scwm-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $@ \
-	|| { rm $@; false; }
+	$(SCWM_SRC_DIR)/scwm-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).x && \
+	$(SCWM_SRC_DIR)/scwm-doc-snarf -DGUILE_CPLUSPLUS_SNARF $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $< > $(basename $<).doc \
+	|| { rm $(basename $<).x $(basename $<).doc ; false; }
