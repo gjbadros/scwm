@@ -1,3 +1,10 @@
+;; $Id$
+;; As of Mar 4, 1998, I've not updated this file much at all in the
+;; last several months;  I highly recommend using one of the other
+;; better-maintained .scwmrc-s until I have time to make my configuration
+;; complete and current.
+;; Greg J. Badros <gjb@cs.washington.edu>
+
 ;;-------------------------------;;
 ;; import the scwm modules       ;;
 
