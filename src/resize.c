@@ -112,12 +112,12 @@ CreateMessageWindow(Pixel fg, Pixel bg, Bool fMWMLike) {
 #ifdef I18N
   XRectangle dummy,log_ret;
 
-  XmbTextExtents(XFONT(Scr.size_window_font)," +999999x999999", 15,&dummy,&log_ret);
+  XmbTextExtents(XFONT(Scr.msg_window_font)," +999999x999999", 15,&dummy,&log_ret);
   Scr.EntryHeight = log_ret.height + HEIGHT_EXTRA;
   Scr.SizeStringWidth = log_ret.width;
 #else
-  Scr.EntryHeight = FONTHEIGHT(Scr.size_window_font) + HEIGHT_EXTRA;
-  Scr.SizeStringWidth = XTextWidth(XFONT(Scr.size_window_font),
+  Scr.EntryHeight = FONTHEIGHT(Scr.msg_window_font) + HEIGHT_EXTRA;
+  Scr.SizeStringWidth = XTextWidth(XFONT(Scr.msg_window_font),
 					 " +999999x999999", 15);
 #endif
   attributes.border_pixel = fg;
@@ -127,7 +127,7 @@ CreateMessageWindow(Pixel fg, Pixel bg, Bool fMWMLike) {
   if (!fMWMLike) {
     w = XCreateWindow(dpy, Scr.Root,
                       0, 0, (Scr.SizeStringWidth + SIZE_HINDENT * 2),
-                      (FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2),
+                      (FONTHEIGHT(Scr.msg_window_font) + SIZE_VINDENT * 2),
                       0, 0, CopyFromParent, (Visual *) CopyFromParent,
                       valuemask, &attributes);
   } else {
@@ -135,22 +135,22 @@ CreateMessageWindow(Pixel fg, Pixel bg, Bool fMWMLike) {
                       Scr.MyDisplayWidth / 2 - 
                       (Scr.SizeStringWidth + SIZE_HINDENT * 2) / 2,
                       Scr.MyDisplayHeight / 2 -
-                      (FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2) / 2,
+                      (FONTHEIGHT(Scr.msg_window_font) + SIZE_VINDENT * 2) / 2,
                       (Scr.SizeStringWidth + SIZE_HINDENT * 2),
-                      (FONTHEIGHT(Scr.size_window_font) + SIZE_VINDENT * 2),
+                      (FONTHEIGHT(Scr.msg_window_font) + SIZE_VINDENT * 2),
                       0, 0, CopyFromParent, (Visual *) CopyFromParent,
                       valuemask, &attributes);
   }
   return w;
 }
 
-SCWM_PROC(set_size_and_pos_window_attributes_x, "set-size-and-pos-window-attributes!", 3, 0, 0,
+SCWM_PROC(set_message_window_attributes_x, "set-message-window-attributes!", 3, 0, 0,
           (SCM font, SCM fg_color, SCM bg_color))
-    /** Set the attributes to be used for the size and position window.
+    /** Set the attributes to be used for the message window.
 The font will be FONT, foreground color FG-COLOR, and background color BG-COLOR.
-This the window displaying the current size or position of the window
+This the window which is used to display the current size or position of the window
 being moved or resized interactively. */
-#define FUNC_NAME s_set_size_and_pos_window_attributes_x
+#define FUNC_NAME s_set_message_window_attributes_x
 {
   int iarg = 1;
   if (gh_string_p(font)) {
@@ -161,12 +161,12 @@ being moved or resized interactively. */
   }
   VALIDATE_COLOR (fg_color, FUNC_NAME, iarg++);
   VALIDATE_COLOR (bg_color, FUNC_NAME, iarg++);
-  Scr.size_window_font=font;
-  Scr.size_window_fg = fg_color;
-  Scr.size_window_bg = bg_color;
+  Scr.msg_window_font=font;
+  Scr.msg_window_fg = fg_color;
+  Scr.msg_window_bg = bg_color;
   XDestroyWindow(dpy,Scr.SizeWindow);
-  Scr.SizeWindow = CreateMessageWindow( XCOLOR(Scr.size_window_fg), 
-                                        XCOLOR(Scr.size_window_bg), Scr.flags & MWMMenus);
+  Scr.SizeWindow = CreateMessageWindow( XCOLOR(Scr.msg_window_fg), 
+                                        XCOLOR(Scr.msg_window_bg), Scr.flags & MWMMenus);
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
