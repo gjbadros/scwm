@@ -81,7 +81,7 @@ events.h scm_init_funcs.h dbug_resize.h message-window.h validate.h winprop.h\
 $(cassowary_headers) $(session_manager_headers)
 
 scwm_LDADD = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@ \
-	      @SM_LIB@ @XEXT_LIB@ @XMU_LIB@ @XPM_LIB@ \
+	      @SM_LIB@ @XEXT_LIB@ @XTST_LIB@ @XMU_LIB@ @XPM_LIB@ \
 	      @x_libs@ @GUILE_LIBS@ @CASSOWARY_LIBS@
 scwm_LDFLAGS = @x_ldflags@ -export-dynamic
 scwm_DEPENDENCIES = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@
