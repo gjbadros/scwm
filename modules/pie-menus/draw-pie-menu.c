@@ -37,11 +37,21 @@
 #include "dmalloc.h"
 #endif
 
-static SCM pie_menu_look = SCM_UNDEFINED;
+#define MIN(v1,v2) ((v1)<(v2) ? (v1) : (v2))
+#define MAX(v1,v2) ((v1)>(v2) ? (v1) : (v2))
 
+static SCM pie_menu_look = SCM_UNDEFINED;
 extern SCM sym_top, sym_center, sym_bottom;
 
 /* FIXGJB: comment these! */
+
+/* Relative widths of different kinds of things in menus, in
+   arbitrary units */
+#define MENU_SEPARATOR_UNITS 1
+#define MENU_ITEM_UNITS 16
+
+/* Radius of circle in center of pie that doesn't select anything */
+#define MENU_INACTIVE_RADIUS 6
 
 /* Minimum radius for labels */
 #define MENU_LABEL_RADIUS_MIN 36
@@ -54,17 +64,14 @@ extern SCM sym_top, sym_center, sym_bottom;
 
 /* Extra border to leave on all borders */
 #define MENU_PIE_BORDER 2
-/* Space to leave above and below menu contents */
-#define MENU_EDGE_VERT_SPACING 2
-#define MENU_EDGE_HORIZ_SPACING 4
-#define MENU_TEXT_SPACING 8
-#define MENU_ITEM_PICTURE_EXTRA_VERT_SPACE 8
 
-/* Space to leave for menu labels, in addition to font height */
+/* added size for Relief Rectangle around label area */
+#define MENU_ITEM_RR_SPACE 2
+
+/* in #if 0 code blocks */
 #define MENU_ITEM_LABEL_EXTRA_VERT_SPACE 2
+#define MENU_ITEM_PICTURE_EXTRA_VERT_SPACE 8
 #define MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE 8
-#define MENU_SIDE_IMAGE_SPACING 10
-#define MENU_ITEM_RR_SPACE 4
 #define MENU_POPUP_ARROW_WIDTH 16
 #define MENU_HEIGHT_SEPARATOR 8
 
@@ -81,17 +88,13 @@ struct MenuDrawingInfo_tag
   int cpixInactiveRadius;	/* radius of inactive region in center */
   
   
-//int cpixItemOffset;		/* how far from the left edge are items */
-//int cpixLeftPicWidth;		/* how wide is the left image */
-//int cpixTextWidth;		/* how wide are the text items */
-//int cpixExtraTextWidth;	/* how wide are the text items */
-//int cpixSideImage;		/* how wide is the side image */
+/*int cpixLeftPicWidth;		/* how wide is the left image */
+/*int cpixSideImage;		/* how wide is the side image */
   Pixel BGColor;		/* the background color */
-//Pixel SideBGColor;		/* the side image bg color */
+/*Pixel SideBGColor;		/* the side image bg color */
   Pixel TextColor;		/* the text color */
   Pixel StippleColor;		/* the stipple color */
   scwm_font *scfont;		/* To use scwm_font instead of XFont */
-  void *p;			/* extra information needed by the client drawing code */
 };
 
 struct MenuItemDrawingInfo_tag
@@ -100,13 +103,14 @@ struct MenuItemDrawingInfo_tag
   int cpixLabelYOffset;		/* top y offset of the item */
   int cpixLabelWidth;		/* width of label */
   int cpixLabelHeight;		/* height of label (needed?) */
+  int cpixEdgeX1, cpixEdgeY1;	/* center coordinate of leading edge line */
+  int cpixEdgeX2, cpixEdgeY2;	/* outer coordinate of leading edge line */
   double rSliceCenter;		/* the center of this slice, in radians */
-  double aSubtend;		/* angle subtended by this slice */
+  double rSubtend;		/* angle subtended by this slice */
   float fDx, fDy;		/* cos and sin of rSliceCenter */
-  int quadrant;			/* quadrant of leading edge */
+  float fDxEdge, fDyEdge;	/* cos and sin of leading edge */
+  int iQuadrant;		/* quadrant of leading edge */
   double fSlope;		/* slope of leading edge */
-//Bool fOnTopEdge;		/* is this item on the top edge? */
-//Bool fOnBottomEdge;		/* is this item on the bottom edge?  */
 };
 
 static void 
@@ -115,12 +119,32 @@ InitGCs()
   XGCValues gcv;
   unsigned long gcm;
   
-  gcm = GCFunction | GCPlaneMask | GCGraphicsExposures | GCLineWidth | GCFillStyle;
+  gcm = 0;
+
+  gcm |= GCFillStyle;
   gcv.fill_style = FillSolid;
+
+  gcm |= GCPlaneMask;
   gcv.plane_mask = AllPlanes;
+
+  gcm |= GCFunction;
   gcv.function = GXcopy;
+
+  gcm |= GCGraphicsExposures;
   gcv.graphics_exposures = False;
+
+  gcm |= GCLineWidth;
   gcv.line_width = 0;
+
+  gcm |= GCLineStyle;
+  gcv.line_style = LineSolid;
+
+  gcm |= GCCapStyle;
+  gcv.cap_style = CapButt;
+
+  gcm |= GCJoinStyle;
+  gcv.join_style = JoinMiter;
+  
   MenuReliefGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   MenuShadowGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
   MenuGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
@@ -142,9 +166,9 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
     GCs_initted = True;
   }
 
-  if (pmd->pmdi->BGColor != LastBGColor ||
-      menu_hilight_factor_val != last_hilight_factor ||
-      menu_shadow_factor_val != last_shadow_factor) {
+  if (pmd->pmdi->BGColor	!= LastBGColor ||
+      menu_hilight_factor_val	!= last_hilight_factor ||
+      menu_shadow_factor_val	!= last_shadow_factor) {
     /* Relief.fg */
     Bright = adjust_pixel_brightness(pmd->pmdi->BGColor,
 				     menu_hilight_factor_val);
@@ -177,7 +201,6 @@ MakeGCs(DynamicMenu *pmd, scwm_font *scfont)
   XChangeGC(dpy, MenuGC, gcm, &gcv);
 
   gcm = GCForeground | GCBackground;
-/*  gcv.foreground = pmd->pmdi->TextColor; */
   gcv.foreground = pmd->pmdi->StippleColor;
   gcv.background = pmd->pmdi->BGColor;
   if (Scr.d_depth < 2) {
@@ -321,7 +344,6 @@ static
 void
 PaintMenuItemLabel(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 {
-  /*  Menu *pmenu = pmd->pmenu; */
   MenuDrawingInfo *pmdi = pmd->pmdi;
   scwm_font *scfont = pmdi->scfont;
   int label_font_height = scfont->height;
@@ -333,8 +355,10 @@ PaintMenuItemLabel(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   GC ShadowGC = MenuShadowGC;
   GC ReliefGC = Scr.d_depth<2? MenuShadowGC: MenuReliefGC;
   GC currentGC;
-//scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
-//scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
+#if 0
+  scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
+  scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
+#endif
   menu_item_state mis = pmiim->mis;
   int cpixExtraYOffset;
   
@@ -349,7 +373,7 @@ PaintMenuItemLabel(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   /* Erase any old reliefs indicated selectedness */
   XClearArea(dpy, w,
 	     label_x_offset-MENU_ITEM_RR_SPACE-1,
-	     label_y_offset-MENU_ITEM_RR_SPACE-1,
+	     label_y_offset-1,
 	     label_width+MENU_ITEM_RR_SPACE+1,
 	     label_height+MENU_ITEM_RR_SPACE+1,
 	     False);
@@ -358,7 +382,7 @@ PaintMenuItemLabel(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   if (mis == MIS_Selected && !UNSET_SCM(pmi->scmAction)) {
     RelieveRectangle(w,
 		     label_x_offset-MENU_ITEM_RR_SPACE,
-		     label_y_offset-MENU_ITEM_RR_SPACE,
+		     label_y_offset,
 		     label_width+MENU_ITEM_RR_SPACE,
 		     label_height+MENU_ITEM_RR_SPACE,
 		     ReliefGC,ShadowGC);
@@ -392,6 +416,7 @@ PaintMenuItemLabel(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
       DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, MenuGC);
     }
 #endif  
+
     if (mis == MIS_Grayed) {
       currentGC = MenuStippleGC;
     } else {
@@ -466,16 +491,33 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
 
   for (imiim = 0; imiim < cmiim; imiim++) {
     MenuItemInMenu *pmiim = rgpmiim[imiim];
-    if (pxe->xexpose.y < (pmiim->pmidi->cpixLabelYOffset +
-			  pmiim->pmidi->cpixLabelHeight) &&
-	((pxe->xexpose.y + pxe->xexpose.height) >
-	 pmiim->pmidi->cpixLabelYOffset)) {
+    MenuItemDrawingInfo *pmidi = pmiim->pmidi;
+    int cpixTop, cpixLeft, cpixBottom, cpixRight;
+    
+    if ((pxe->xexpose.y < (pmidi->cpixLabelYOffset + pmidi->cpixLabelHeight) &&
+	 ((pxe->xexpose.y + pxe->xexpose.height) > pmidi->cpixLabelYOffset)) &&
+	((pxe->xexpose.x < (pmidi->cpixLabelXOffset + pmidi->cpixLabelWidth) &&
+	  ((pxe->xexpose.x + pxe->xexpose.width) > pmidi->cpixLabelXOffset)))) {
       DBUG((DBG,__FUNCTION__,"Painting menu item Label"));
-      PaintMenuItemLabel(w,pmd,pmiim);
+      PaintMenuItemLabel(w, pmd, pmiim);
+    }
+
+    cpixLeft   = MIN(pmidi->cpixEdgeX1, pmidi->cpixEdgeX2);
+    cpixTop    = MIN(pmidi->cpixEdgeY1, pmidi->cpixEdgeY2);
+    cpixRight  = MAX(pmidi->cpixEdgeX1, pmidi->cpixEdgeX2);
+    cpixBottom = MAX(pmidi->cpixEdgeY1, pmidi->cpixEdgeY2);
+
+    if ((pxe->xexpose.y < cpixBottom &&
+	 (pxe->xexpose.y + pxe->xexpose.height) > cpixTop) &&
+	(pxe->xexpose.x < cpixRight &&
+	 (pxe->xexpose.x + pxe->xexpose.width) > cpixLeft)) {
+      XDrawLine(dpy, pmd->w, MenuShadowGC,
+		pmidi->cpixEdgeX1, pmidi->cpixEdgeY1,
+		pmidi->cpixEdgeX2, pmidi->cpixEdgeY2);
     }
   }
+
   /* FIXJTL: score lines */
-  
 #if 0
   { /* scope */
     scwm_image *psimgSide = SAFE_IMAGE(pmd->pmenu->scmImgSide);
@@ -486,6 +528,27 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
     }
   }
 #endif
+
+  XFillArc(dpy, pmd->w, MenuShadowGC,
+	   pmd->pmdi->cpixXCenter - pmd->pmdi->cpixInactiveRadius,
+	   pmd->pmdi->cpixYCenter - pmd->pmdi->cpixInactiveRadius,
+	   2 * pmd->pmdi->cpixInactiveRadius + 1,
+	   2 * pmd->pmdi->cpixInactiveRadius + 1,
+	   0, 360*64);
+
+#ifdef SCWM_DEBUG_MSGS
+  XDrawArc(dpy, pmd->w, MenuReliefGC,
+	   pmd->pmdi->cpixXCenter - pmd->pmdi->cpixLabelRadius,
+	   pmd->pmdi->cpixYCenter - pmd->pmdi->cpixLabelRadius,
+	   2 * pmd->pmdi->cpixLabelRadius + 1,
+	   2 * pmd->pmdi->cpixLabelRadius + 1,
+	   0, 360*64);
+#endif
+
+  RelieveRectangle(pmd->w, 0, 0,
+		   pmd->cpixWidth, pmd->cpixHeight,
+		   MenuReliefGC, MenuShadowGC);
+  
   XSync(dpy,0);
 }
 
@@ -494,22 +557,18 @@ void
 SetPopupMenuPositionFromMenuItem(DynamicMenu *pmdNew, 
 				 MenuItemInMenu *pmiimSelected)
 {
-  /* FIXJTL: do 'flyright' menus have any reasonable implementation for
-     pie menus:  if so, should probably be something like:
-
-     GetPointerPosition(&x, &y);
-     pmdNew->x = x - pmdNew->pmdi->cpixCenterX;
-     pmdNew->y = y - pmdNew->pmdi->cpixCenterY;
-  */
-  pmdNew->x = 0;
-  pmdNew->y = 0;
+  int x, y;
+  
+  WXGetPointerWindowOffsets(Scr.Root, &x, &y);
+  pmdNew->x = x - pmdNew->pmdi->cpixXCenter;
+  pmdNew->y = y - pmdNew->pmdi->cpixYCenter;
 }
 
 static
 void
 WarpPointerToPmiim(MenuItemInMenu *pmiim)
 {
-  DynamicMenu *pmd; 
+  DynamicMenu *pmd;
   int x, y;
 
   if (!pmiim)
@@ -519,8 +578,8 @@ WarpPointerToPmiim(MenuItemInMenu *pmiim)
 
   /* FIXJTL: center for straight up or down?  or along center line,
      2 * inactive_radius out? */
-  x = pmd->x + pmiim->pmidi->cpixLabelXOffset;
-  y = pmd->y + pmiim->pmidi->cpixLabelYOffset;
+  x = pmd->pmdi->cpixXCenter + (pmiim->pmidi->fDx * pmd->pmdi->cpixLabelRadius * 3/4);
+  y = pmd->pmdi->cpixYCenter - (pmiim->pmidi->fDy * pmd->pmdi->cpixLabelRadius * 3/4);
   XWarpPointer(dpy, 0, pmd->w, 0, 0, 0, 0, x, y);
 }
 
@@ -652,7 +711,7 @@ PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
     */
     MenuItemInMenu *pmiim = pmd->rgpmiim[ipmiim % pmd->cmiim ];
 
-    switch ((quadrant - pmiim->pmidi->quadrant) & 3) {
+    switch ((quadrant - pmiim->pmidi->iQuadrant) & 3) {
       case 0:
 	/*
 		 0,0	 1,1	 2,2	 3,3 
@@ -710,6 +769,7 @@ PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
 static int
 InPopupZone(MenuItemInMenu *pmiim, int cpixXoffset, int cpixYoffset)
 {
+  /* FIXJTL: return radius > cpixLabelRadius; maybe? */
   return False;
 }
 
@@ -749,104 +809,146 @@ FreePmidi(MenuItemDrawingInfo * pmidi)
   FREE(pmidi);
 }
 
+static
+void
+repositionLabel(int *pcpixX, int *pcpixY, int cpixWidth, int cpixHeight)
+{
+  int cpixX = *pcpixX;
+  int cpixY = *pcpixY;
+
+  if (ABS(cpixX) <= 2) {
+    cpixX = -cpixWidth / 2;
+    if (cpixY < 0)
+      cpixY -= cpixHeight;
+  } else {
+    if (cpixX <0)
+      cpixX -= cpixWidth;
+    cpixY -= cpixHeight/2;
+  }
+  *pcpixX = cpixX;
+  *pcpixY = cpixY;
+}
 
 #define INCREASE_MAYBE(var,val) do { if (val > var) { var = val; } } while (0)
 #define DECREASE_MAYBE(var,val) do { if (val < var) { var = val; } } while (0)
-#define MIN(v1,v2) ((v1)<(v2) ? (v1) : (v2))
-#define MAX(v1,v2) ((v1)>(v2) ? (v1) : (v2))
 
 /* ConstructDynamicPieMenu should try to do all the computations for
    the paint routine -- little should be done in the painting, as it'd
    be really hard to maintain the two routines in synch.  pmd->pmdi
    and pmd->rgpmiim should have all the information needed for drawing
    in response to expose events */
-void
-ConstructDynamicPieMenu(DynamicMenu *pmd)
-{
-  float aSubtend, angle;
-  int label_height, cpixRadius, cpixXMin, cpixXMax, cpixYMin, cpixYMax;
-  MenuItemInMenu * pmiimLast;
-  int imiim = 0;
-  int cmiim = pmd->cmiim;
-  MenuItemInMenu **rgpmiim = pmd->rgpmiim;
-  
-  if (pmd->pmdi != NULL)
-    return;
-
   /* FIXJTL: Things left out for now:
      extra text
      left/right/above images
      side images
      certainly other things
   */
-  /* remember how to paint this menu */
-  pmd->pmdv = DYNAMIC_SAFE_MENULOOK(pmd->pmenu->scmMenuLook)->mdvt;
+void
+ConstructDynamicPieMenu(DynamicMenu *pmd)
+{
+  Menu *pmenu;
+  MenuDrawingInfo *pmdi;
+  MenuDrawingVtable * pmdv;
+  MenuItem *pmi;
+  MenuItemInMenu **rgpmiim, *pmiim, *pmiimLast;
+  MenuItemDrawingInfo * pmidi, * pmidiLast;
+  scwm_font *scfont;
+  float rSliceCenter, rAngle;
+  float rSubtendUnit, rSubtend;
+  float fDx, fDy, fDxEdge, fDyEdge, fDxLast, fDyLast, fNumerator, fDenominator;
+  int cpixLabelRadius, cpixXMin, cpixXMax, cpixYMin, cpixYMax;
+  int cpixWidth, cpixHeight, cpixWidthLast, cpixHeightLast;
+  int cpixX, cpixY, cpixXLast, cpixYLast;
+  int cpixLeftMax, cpixTopMax, cpixRightMin, cpixBottomMin;
+  int cpixXCenter, cpixYCenter;
+  int total_units;
+  int imiim, cmiim;
+  int iQuadrant;
 
-  { /* scope */
-    Menu *pmenu = pmd->pmenu;
-    scwm_font *scfont;
-    int imiim = 0;
-    int total_height = MENU_EDGE_VERT_SPACING;
-    int label_font_height = 0;
+#if 0
+  scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
+  scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
+  int extra_text_width = 0;
+#endif
+  
+  cmiim = pmd->cmiim;
+  pmenu = pmd->pmenu;
+  rgpmiim = pmd->rgpmiim;
+  
+  if (pmd->pmdi != NULL)
+    return;
 
-    MenuDrawingInfo *pmdi = pmd->pmdi = NEW(MenuDrawingInfo);
+  pmdv = MENULOOK(pie_menu_look)->mdvt;
+  scfont = PscwmFontForMenuItem(pmenu->scmFont);
+
+  total_units = 0;
+  for (imiim = 0; imiim < cmiim; imiim++) {
+    pmiim = rgpmiim[imiim];
+    pmi = pmiim->pmi;
     
-    pmdi->BGColor = DYNAMIC_SAFE_COLOR(pmenu->scmBGColor);
-//  pmdi->SideBGColor = DYNAMIC_SAFE_COLOR(pmenu->scmSideBGColor);
-    pmdi->TextColor = DYNAMIC_SAFE_COLOR(pmenu->scmTextColor);
-    pmdi->StippleColor = DYNAMIC_SAFE_COLOR(pmenu->scmStippleColor);
+    if (pmi->fIsSeparator)
+      total_units += MENU_SEPARATOR_UNITS;
+    else
+      total_units += MENU_ITEM_UNITS;
+  }
+  rSubtendUnit = (M_PI*2)/total_units;
+  
+  cpixHeight = scfont->height + MENU_ITEM_LABEL_EXTRA_VERT_SPACE;
+
+  /* First loop through items - allocate pmidi, fill in everything
+     in pmidi except label position and edge line coordinates */
+  rAngle = 0;
+  for (imiim = 0; imiim < cmiim; imiim++) {
+    /* rAngle is angle of leading edge here, or center for first item */
+    pmiim = rgpmiim[imiim];
+    pmi = pmiim->pmi;
+
+    if (pmi->fIsSeparator)
+      rSubtend = rSubtendUnit * MENU_SEPARATOR_UNITS;
+    else
+      rSubtend = rSubtendUnit * MENU_ITEM_UNITS;
     
-    scfont = pmdi->scfont = PscwmFontForMenuItem(pmenu->scmFont);
- 
-    label_font_height = scfont->height;
+    if (imiim == 0) {
+      rSliceCenter = rAngle;
+      rAngle -= rSubtend/2.0;
+    } else {
+      rSliceCenter = rAngle + rSubtend/2.0;
+    }
     
-    aSubtend = (M_PI*2)/cmiim;
+    /* rAngle is angle of leading edge here */
 
-    label_height = label_font_height + MENU_ITEM_LABEL_EXTRA_VERT_SPACE;
+    fDx     = cos(rSliceCenter);
+    fDy     = sin(rSliceCenter);
+    fDxEdge = cos(rAngle);
+    fDyEdge = sin(rAngle);
 
-    angle = 0 - aSubtend/2.0;
-    for (imiim = 0; imiim < cmiim; imiim++) {
-      /* angle is angle of leading edge here */
-	 
-      float fDxEdge, fDyEdge, fNumerator, fDenominator;
-      int iQuadrant;
-      MenuItemInMenu *pmiim = rgpmiim[imiim];
-      MenuItem *pmi = pmiim->pmi;
-//    scwm_image *psimgAbove = SAFE_IMAGE(pmi->scmImgAbove);
-//    scwm_image *psimgLeft = SAFE_IMAGE(pmi->scmImgLeft);
-      int text_width;
-//    int extra_text_width = 0;
-      int item_height = 0; // = MENU_ITEM_EXTRA_VERT_SPACE * 2;
+    CalculateQuadrantSlope(fDxEdge, fDyEdge, &iQuadrant,
+			   &fNumerator, &fDenominator);
 
-      pmiim->pmidi = NEW(MenuItemDrawingInfo);
-      pmiim->pmidi->aSubtend = aSubtend;
-      
-      angle += aSubtend/2.0;
+    cpixWidth = ComputeXTextWidth(XFONT_FONTTYPE(scfont),
+				  pmi->szLabel, pmi->cchLabel);
 
-      /* angle is angle of center of slice here */
+    pmidi = NEW(MenuItemDrawingInfo);
+    pmidi->cpixLabelWidth = cpixWidth;
+    pmidi->cpixLabelHeight = cpixHeight;
+    pmidi->rSliceCenter = rSliceCenter;
+    pmidi->rSubtend = rSubtend;
+    pmidi->fDx = fDx;
+    pmidi->fDy = fDy;
+    pmidi->fDxEdge = fDxEdge;
+    pmidi->fDyEdge = fDyEdge;
+    pmidi->iQuadrant = iQuadrant;
+    pmidi->fSlope = fNumerator/fDenominator;
+    /* not yet set:
+       cpixLabelXOffset;
+       cpixLabelYOffset;
+       cpixEdgeX1, cpixEdgeY1, cpixEdgeX2, cpixEdgeY2;
+    */
 
-      pmiim->pmidi->rSliceCenter = angle;
-      pmiim->pmidi->fDx = cos(angle);
-      pmiim->pmidi->fDy = sin(angle);
+    pmiim->pmidi = pmidi;
+    rAngle += rSubtend;
+    /* angle is now angle of trailing edge (next item's leading edge) */
 
-      fDxEdge = cos(angle - aSubtend/2.0);
-      fDyEdge = sin(angle - aSubtend/2.0);
-
-      CalculateQuadrantSlope(fDxEdge, fDyEdge, &iQuadrant,
-			     &fNumerator, &fDenominator);
-      pmiim->pmidi->quadrant = iQuadrant;
-      pmiim->pmidi->fSlope = fNumerator/fDenominator;
-
-      angle += aSubtend/2.0;
-      /* angle is now angle of trailing edge */
-
-      text_width = ComputeXTextWidth(XFONT_FONTTYPE(scfont), pmi->szLabel, pmi->cchLabel);
-
-      pmiim->pmidi->cpixLabelWidth = text_width;
-      pmiim->pmidi->cpixLabelHeight = label_height;
-      
-      DBUG((DBG,__FUNCTION__,"`%s' has width %d (%d chars)\n",
-	   pmi->szLabel,text_width,pmi->cchLabel));
 #if 0
       if (pmi->fIsSeparator) {
 	item_height = MENU_HEIGHT_SEPARATOR;
@@ -887,106 +989,89 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
       pmiim->pmidi->cpixItemHeight = item_height;
       total_height += item_height;
 #endif
-    }
-
-    cpixRadius = MENU_LABEL_RADIUS_MIN;
-
-    pmiimLast = rgpmiim[cmiim - 1];
-    for (imiim = 0; imiim <= cmiim && cmiim > 1; imiim++) {
-      MenuItemInMenu * pmiim = rgpmiim[imiim % cmiim];
-      float fDx, fDy, fDxLast, fDyLast;
-      int cpixWidth, cpixHeight, cpixWidthLast, cpixHeightLast;
-
-      fDx = pmiim->pmidi->fDx;
-      fDy = pmiim->pmidi->fDy;
-      cpixWidth = pmiim->pmidi->cpixLabelWidth;
-      cpixHeight = pmiim->pmidi->cpixLabelHeight;
-
-      fDxLast = pmiimLast->pmidi->fDx;
-      fDyLast = pmiimLast->pmidi->fDy;
-      cpixWidthLast = pmiim->pmidi->cpixLabelWidth;
-      cpixHeightLast = pmiim->pmidi->cpixLabelHeight;
-
-      while (1) {
-	int cpixX, cpixY,
-	  cpixXLast, cpixYLast,
-	  cpixLeftMax, cpixTopMax,
-	  cpixRightMin, cpixBottomMin;
-
-	cpixX     = fDx     * cpixRadius; cpixY     = fDy     * cpixRadius;
-	cpixXLast = fDxLast * cpixRadius; cpixYLast = fDyLast * cpixRadius;
-
-	/* If top or bottom, center label */
-	if (ABS(cpixX) <= 2) {
-	  cpixX -= cpixWidth / 2;
-	  if (cpixY < 0)
-	    cpixY -= cpixHeight;
-	} else {
-	  /* shift left to put right edge in right place, if on the left
-	     side of the pie */
-	  if (cpixX < 0)
-	    cpixX -= cpixWidth;
-	  cpixY -= cpixHeight/2;
-	}
-
-	if (ABS(cpixXLast) <= 2) {
-	  cpixXLast -= cpixWidthLast / 2;
-	  if (cpixYLast < 0)
-	    cpixYLast -= cpixHeightLast;
-	} else {
-	  /* shift left to put right edge in right place, if on the left
-	     side of the pie */
-	  if (cpixXLast < 0)
-	    cpixXLast -= cpixWidthLast;
-	  cpixYLast -= cpixHeightLast/2;
-	}
-
-	/* Do the rectangles overlap? */
-	cpixLeftMax = MAX(cpixX, cpixXLast);
-	cpixTopMax = MAX(cpixY, cpixYLast);
-	cpixRightMin = MIN(cpixX + cpixWidth, cpixXLast + cpixWidthLast);
-	cpixBottomMin = MIN(cpixY + cpixHeight, cpixYLast + cpixHeightLast);
-	if (!(cpixLeftMax < cpixRightMin &&
-	      cpixTopMax < cpixBottomMin))
-	  /* They fit - go to the next */
-	  break;
-
-	/* They don't - move further out and try again */
-	cpixRadius += MENU_LABEL_RADIUS_STEP;
-      }
-      pmiimLast = pmiim;
-    }
   }
 
-  cpixRadius += MENU_LABEL_RADIUS_EXTRA;
-  pmd->pmdi->cpixLabelRadius = cpixRadius;
 
-  /* One more loop, to set all the label positions */
+  /* Second loop through - figure out label radius */
+  cpixLabelRadius = MENU_LABEL_RADIUS_MIN;
+  pmiimLast = rgpmiim[cmiim - 1];
+  for (imiim = 0; imiim <= cmiim && cmiim > 1; imiim++) {
+    pmiim = rgpmiim[imiim % cmiim];
+    pmidi = pmiim->pmidi;
+    pmidiLast = pmiimLast->pmidi;
+    
+    fDx = pmidi->fDx;
+    fDy = pmidi->fDy;
+    cpixWidth = pmidi->cpixLabelWidth;
+    cpixHeight = pmidi->cpixLabelHeight;
+
+    fDxLast = pmidiLast->fDx;
+    fDyLast = pmidiLast->fDy;
+    cpixWidthLast = pmidiLast->cpixLabelWidth;
+    cpixHeightLast = pmidiLast->cpixLabelHeight;
+
+    while (1) {
+      cpixX     = fDx     * cpixLabelRadius;
+      cpixY     = fDy     * cpixLabelRadius;
+      cpixXLast = fDxLast * cpixLabelRadius;
+      cpixYLast = fDyLast * cpixLabelRadius;
+
+      repositionLabel(&cpixX, &cpixY, cpixWidth, cpixHeight);
+      repositionLabel(&cpixXLast, &cpixYLast, cpixWidthLast, cpixHeightLast);
+
+      /* Do the rectangles overlap? */
+      cpixLeftMax = MAX(cpixX, cpixXLast);
+      cpixTopMax = MAX(cpixY, cpixYLast);
+      cpixRightMin = MIN(cpixX + cpixWidth, cpixXLast + cpixWidthLast);
+      cpixBottomMin = MIN(cpixY + cpixHeight, cpixYLast + cpixHeightLast);
+      if (cpixLeftMax >= cpixRightMin || cpixTopMax >= cpixBottomMin) {
+	DBUG((DBG,__FUNCTION__,"(%dx%d@%d,%d) and (%dx%d@%d,%d) fit\n",
+	      cpixWidth, cpixHeight, cpixX, cpixY,
+	      cpixWidthLast, cpixHeightLast, cpixXLast, cpixYLast));
+	/* They fit - go to the next */
+	break;
+      }
+      
+      DBUG((DBG,__FUNCTION__,"(%dx%d@%d,%d) and (%dx%d@%d,%d) don't fit\n",
+	    cpixWidth, cpixHeight, cpixX, cpixY,
+	    cpixWidthLast, cpixHeightLast, cpixXLast, cpixYLast));
+      /* They don't - move further out and try again */
+      cpixLabelRadius += MENU_LABEL_RADIUS_STEP;
+    }
+    pmiimLast = pmiim;
+  }
+
+  cpixLabelRadius += MENU_LABEL_RADIUS_EXTRA;
+  
+  /* Third loop through, set all the label and edge line positions
+     relative to center, find width & height to find center*/
   cpixXMin = cpixYMin = cpixXMax = cpixYMax = 0;
   for (imiim = 0; imiim < cmiim; imiim++) {
-    MenuItemInMenu *pmiim = rgpmiim[imiim];
+    pmiim = rgpmiim[imiim];
+    pmidi = pmiim->pmidi;
 
-    pmiim->pmidi->cpixLabelXOffset = cpixRadius * pmiim->pmidi->fDx;
-    pmiim->pmidi->cpixLabelYOffset = cpixRadius * pmiim->pmidi->fDy;
+    cpixX = cpixLabelRadius * pmidi->fDx;
+    cpixY = cpixLabelRadius * pmidi->fDy;
+    cpixWidth = pmidi->cpixLabelWidth;
+    cpixHeight = pmidi->cpixLabelHeight;
+    
+    repositionLabel(&cpixX, &cpixY, cpixWidth, cpixHeight);
 
-    if (ABS(pmiim->pmidi->cpixLabelXOffset <= 2) ) {
-      pmiim->pmidi->cpixLabelXOffset -= pmiim->pmidi->cpixLabelWidth / 2;
-      if (pmiim->pmidi->cpixLabelYOffset < 0)
-	pmiim->pmidi->cpixLabelYOffset -= pmiim->pmidi->cpixLabelHeight;
-    } else {
-      if (pmiim->pmidi->cpixLabelXOffset < 0)
-	pmiim->pmidi->cpixLabelXOffset -= pmiim->pmidi->cpixLabelWidth;
-      pmiim->pmidi->cpixLabelYOffset -= pmiim->pmidi->cpixLabelHeight/2;
-    }
-
-    DECREASE_MAYBE(cpixXMin, pmiim->pmidi->cpixLabelXOffset);
-    INCREASE_MAYBE(cpixXMax,
-		   pmiim->pmidi->cpixLabelXOffset +
-		   pmiim->pmidi->cpixLabelWidth);
-    DECREASE_MAYBE(cpixYMin, pmiim->pmidi->cpixLabelYOffset);
-    INCREASE_MAYBE(cpixYMax,
-		   pmiim->pmidi->cpixLabelYOffset +
-		   pmiim->pmidi->cpixLabelHeight);
+    pmidi->cpixLabelXOffset = cpixX;
+    pmidi->cpixLabelYOffset = cpixY;
+    pmidi->cpixEdgeX1 = pmidi->fDxEdge * MENU_INACTIVE_RADIUS;
+    pmidi->cpixEdgeY1 = pmidi->fDyEdge * MENU_INACTIVE_RADIUS;
+    pmidi->cpixEdgeX2 = pmidi->fDxEdge * (cpixLabelRadius - MENU_LABEL_RADIUS_EXTRA);
+    pmidi->cpixEdgeY2 = pmidi->fDyEdge * (cpixLabelRadius - MENU_LABEL_RADIUS_EXTRA);
+        
+    /* Now all of pmidi is filled in, but
+       label & edge line coordinates are relative to center,
+       not to window origin */
+    
+    DECREASE_MAYBE(cpixXMin, cpixX);
+    INCREASE_MAYBE(cpixXMax, cpixX + cpixWidth);
+    DECREASE_MAYBE(cpixYMin, cpixY);
+    INCREASE_MAYBE(cpixYMax, cpixY + cpixHeight);
   }
   
   /* FIXJTL: title */
@@ -996,21 +1081,39 @@ ConstructDynamicPieMenu(DynamicMenu *pmd)
   cpixXMax += MENU_PIE_BORDER;
   cpixYMax += MENU_PIE_BORDER;
 
-  pmd->pmdi->cpixXCenter = -cpixXMin;
-  pmd->pmdi->cpixYCenter = cpixYMax; /* Y is flipped */
-  pmd->cpixWidth = cpixXMax - cpixXMin;
-  pmd->cpixHeight = cpixYMax - cpixYMin;
+  cpixXCenter = -cpixXMin;
+  cpixYCenter = cpixYMax; /* Y is flipped */
 
   /* And ONE MORE TIME, with emphasis - rearrange coordinates, in
      relation to center */
   for (imiim = 0; imiim < cmiim; imiim++) {
-    MenuItemInMenu *pmiim = rgpmiim[imiim];
-    pmiim->pmidi->cpixLabelXOffset += pmd->pmdi->cpixXCenter;
-    pmiim->pmidi->cpixLabelYOffset =
-      (pmd->pmdi->cpixYCenter - pmiim->pmidi->cpixLabelYOffset) - pmiim->pmidi->cpixLabelHeight;
+    pmiim = rgpmiim[imiim];
+    pmidi = pmiim->pmidi;
+    
+    pmidi->cpixLabelXOffset += cpixXCenter;
+    pmidi->cpixLabelYOffset = (cpixYCenter - pmidi->cpixLabelYOffset) -
+      pmidi->cpixLabelHeight;
+    pmidi->cpixEdgeX1 += cpixXCenter;
+    pmidi->cpixEdgeY1 = cpixYCenter - pmidi->cpixEdgeY1;
+    pmidi->cpixEdgeX2 += cpixXCenter;
+    pmidi->cpixEdgeY2 = cpixYCenter - pmidi->cpixEdgeY2;
   }
 
-  /* FIXJTL: segments */
+  pmdi = NEW(MenuDrawingInfo);
+  pmdi->cpixXCenter = cpixXCenter;
+  pmdi->cpixYCenter = cpixYCenter;
+  pmdi->cpixLabelRadius = cpixLabelRadius;
+  pmdi->cpixInactiveRadius = MENU_INACTIVE_RADIUS;
+  pmdi->BGColor = DYNAMIC_SAFE_COLOR(pmenu->scmBGColor);
+/*SideBGColor = DYNAMIC_SAFE_COLOR(pmenu->scmSideBGColor); */
+  pmdi->TextColor = DYNAMIC_SAFE_COLOR(pmenu->scmTextColor);
+  pmdi->StippleColor = DYNAMIC_SAFE_COLOR(pmenu->scmStippleColor);
+  pmdi->scfont = scfont;
+
+  pmd->pmdv = pmdv;
+  pmd->pmdi = pmdi;
+  pmd->cpixWidth = cpixXMax - cpixXMin;
+  pmd->cpixHeight = cpixYMax - cpixYMin;
 
   /* Now create the window */
   { /* scope */
