@@ -427,6 +427,71 @@ CopyAllFlags(ScwmWindow *psw, const ScwmWindow *pswSrc)
 
 }
 
+SCM
+ScmWindowDelta(ScwmWindow *psw, Window w, int startW,int startH,int endW, int endH,
+               int startX, int startY, int endX, int endY, 
+               Bool fSetEndX, Bool fSetEndY)
+{
+  return gh_list(psw->schwin,
+                 (psw->frame == w)?SCM_BOOL_T:SCM_BOOL_F,
+                 gh_cons(gh_int2scm(startW),gh_int2scm(startH)),
+                 gh_cons(gh_int2scm(endW),gh_int2scm(endH)),
+                 gh_cons(gh_int2scm(startX),gh_int2scm(startY)),
+                 gh_cons(gh_int2scm(endX),gh_int2scm(endY)),
+                 gh_cons(gh_bool2scm(fSetEndX),gh_bool2scm(fSetEndY)),
+                 SCM_UNDEFINED);
+}
+
+/* ScmWindowDeltaVP is like the above, but converts x/y coords in viewport
+   offsets before building the list */
+SCM
+ScmWindowDeltaVP(ScwmWindow *psw, Window w, int startW,int startH,int endW, int endH,
+               int startX, int startY, int endX, int endY, 
+               Bool fSetEndX, Bool fSetEndY)
+{
+  int
+    dx = WIN_VP_OFFSET_X(psw),
+    dy = WIN_VP_OFFSET_Y(psw);
+
+  return gh_list(psw->schwin,
+                 (psw->frame == w)?SCM_BOOL_T:SCM_BOOL_F,
+                 gh_cons(gh_int2scm(startW),gh_int2scm(startH)),
+                 gh_cons(gh_int2scm(endW),gh_int2scm(endH)),
+                 gh_cons(gh_int2scm(startX-dx),gh_int2scm(startY-dy)),
+                 gh_cons(gh_int2scm(endX-dx),gh_int2scm(endY-dy)),
+                 gh_cons(gh_bool2scm(fSetEndX),gh_bool2scm(fSetEndY)),
+                 SCM_UNDEFINED);
+}
+
+Bool
+FScmIsWindowDelta(SCM obj)
+{
+  SCM cns;
+  if (!WINDOWP(gh_car(obj))) return False;
+  obj = gh_cdr(obj);
+  if (obj == SCM_EOL || !gh_boolean_p(gh_car(obj))) return False;
+  obj = gh_cdr(obj); if (obj == SCM_EOL) return False;
+  cns = gh_car(obj);
+  if (!gh_pair_p(cns) || !gh_number_p(gh_car(cns)) || !gh_number_p(gh_cdr(cns))) return False;
+  obj = gh_cdr(obj); if (obj == SCM_EOL) return False;
+  cns = gh_car(obj);
+  if (!gh_pair_p(cns) || !gh_number_p(gh_car(cns)) || !gh_number_p(gh_cdr(cns))) return False;
+  obj = gh_cdr(obj); if (obj == SCM_EOL) return False;
+  cns = gh_car(obj);
+  if (!gh_pair_p(cns) || !gh_number_p(gh_car(cns)) || !gh_number_p(gh_cdr(cns))) return False;
+  obj = gh_cdr(obj); if (obj == SCM_EOL) return False;
+  cns = gh_car(obj);
+  if (!gh_pair_p(cns) || !gh_number_p(gh_car(cns)) || !gh_number_p(gh_cdr(cns))) return False;
+  obj = gh_cdr(obj); if (obj == SCM_EOL) return False;
+  cns = gh_car(obj);
+  if (!gh_pair_p(cns) || !gh_boolean_p(gh_car(cns)) || !gh_boolean_p(gh_cdr(cns))) return False;
+  if (gh_cdr(obj) != SCM_EOL) return False;
+  return True;
+}
+
+
+
+
 /**CONCEPT: Windows
   Windows are the most important scwm data type. A window object
 represents an on-screen window that scwm is managing, and is used to
@@ -2861,7 +2926,7 @@ SCWM_PROC (window_visibility, "window-visibility", 0, 1, 0,
            (SCM win))
      /** Return the visibility state for WIN.
 Returns either 'partially-obscured, 'fully-obscured, or 'unobscured. */
-#define FUNC_NAME s_window_creation_time
+#define FUNC_NAME s_window_visibility
 {
   ScwmWindow *psw;
   VALIDATE_WIN_COPY_USE_CONTEXT(win,psw);

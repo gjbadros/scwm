@@ -56,80 +56,136 @@ int cmsDelayDefault = 10; /* milliseconds */
 
 void SendClientConfigureNotify(const ScwmWindow *psw);
 
+
 /* Perform the resizing of the window. ppctMovement *must* have a 1.0 entry
    somewhere in ins list of floats, and movement will stop when it hits a 1.0 entry
    The positions given are viewport positions (not virtual) */
+/* This gets passed a first argument that is a list of lists: 
+    ((window frame? (start-width . start-height) (end-width . end-height)
+                   (start-x . start-y) (end-x . end-y) (set-end-x? . set-end-y?))
+     ... ;; more lists like the above
+     ... )
+    If fWarpPointerToo is True, the pointer warps with the first window in the
+    xforms list.
+ */
 void 
-AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, int endH,
-                     int startX, int startY, int endX, int endY, 
-                     Bool fSetEndX, Bool fSetEndY,
-		     Bool fWarpPointerToo, int cmsDelay, float *ppctMovement )
+AnimatedResizeWindows(SCM xforms,
+                      Bool fWarpPointerToo, int cmsDelay, float *ppctMovement,
+                      Bool fUseSolver)
 {
   int currentW, currentH;
-  int lastW, lastH;
-  int deltaW, deltaH;
-
   int pointerX, pointerY;
   int currentX, currentY;
-  int lastX, lastY;
-  int deltaX = endX - startX;
-  int deltaY = endY - startY;
-  int grav_dx, grav_dy;
+  int lastX = 0, lastY = 0;
+  Bool fFirstAnimationIteration = True;
 
   /* set our defaults */
   if (ppctMovement == NULL) ppctMovement = rgpctMovementDefault;
   if (cmsDelay < 0)         cmsDelay     = cmsDelayDefault;
 
-  if (startW < 0 || startH < 0) {
-    FXGetWindowSize(w, &currentW, &currentH);
-    if (startW < 0) startW = currentW;
-    if (startH < 0) startH = currentH;
-  }
-
-  deltaW = endW - startW;
-  deltaH = endH - startH;
-  lastW = startW;
-  lastH = startH;
-
-  ComputeDeltaForResize(psw,&grav_dx,&grav_dy,endW,endH);
-  if (fSetEndX) {
-    deltaX += grav_dx;
-  }
-  if (fSetEndY) {
-    deltaY += grav_dy;
-  }
-  lastX = startX;
-  lastY = startY;
-
-  if ((deltaX == 0 && deltaY == 0) && \
-      (deltaW == 0 && deltaH == 0))
-    return;
-
-  CassowaryEditSize(psw);
-
   do {
-    currentX = (int) (startX + deltaX * (*ppctMovement));
-    currentY = (int) (startY + deltaY * (*ppctMovement));
+    SCM xform_iter = xforms;
+    Bool fFirst = True;
+    for (; xform_iter != SCM_EOL; xform_iter = gh_cdr(xform_iter)) {
+      SCM xform = gh_car(xform_iter);
+      ScwmWindow *psw = NULL;
+      Window w;
+      Bool fFrame = False;
+      Bool fSetEndX = False, fSetEndY = False;
+      SCM cns;
+      int startW, startH, deltaW, deltaH;
+      int endW, endH;
+      int startX, startY, deltaX, deltaY;
+      int endX, endY;
+      int grav_dx, grav_dy;
+      
+      psw = PSWFROMSCMWIN(gh_car(xform)); xform = gh_cdr(xform);
+      fFrame = gh_scm2bool(gh_car(xform)); 
+      if (fFrame) w = psw->frame;
+      else w = psw->icon_w;
 
-    currentW = (int) (startW + deltaW * (*ppctMovement));
-    currentH = (int) (startH + deltaH * (*ppctMovement));
-    /* XResizeWindow(dpy, w, currentW, currentH); */
+      xform = gh_cdr(xform); cns = gh_car(xform);
+      startW = gh_scm2int(gh_car(cns));
+      startH = gh_scm2int(gh_cdr(cns));
+      xform = gh_cdr(xform); cns = gh_car(xform);
+      endW = gh_scm2int(gh_car(cns));
+      endH = gh_scm2int(gh_cdr(cns));
+      deltaW = endW - startW;
+      deltaH = endH - startH;
 
+      xform = gh_cdr(xform); cns = gh_car(xform);
+      startX = gh_scm2int(gh_car(cns));
+      startY = gh_scm2int(gh_cdr(cns));
+      xform = gh_cdr(xform); cns = gh_car(xform);
+      endX = gh_scm2int(gh_car(cns));
+      endY = gh_scm2int(gh_cdr(cns));
+      deltaX = endX - startX;
+      deltaY = endY - startY;
 
-    if (SuggestSizeWindowTo(psw,
-                            WIN_VP_OFFSET_X(psw) + currentX,
-                            WIN_VP_OFFSET_Y(psw) + currentY,
-                            currentW, currentH, True)) {
-      /* it was resized/moved */
-      /* empty */
-    }
+      xform = gh_cdr(xform); cns = gh_car(xform);
+      fSetEndX = gh_scm2bool(gh_car(cns));
+      fSetEndY = gh_scm2bool(gh_cdr(cns));
+      
+      ComputeDeltaForResize(psw,&grav_dx,&grav_dy,endW,endH);
+      if (fSetEndX) {
+        deltaX += grav_dx;
+      }
+      if (fSetEndY) {
+        deltaY += grav_dy;
+      }
 
-    if (fWarpPointerToo) {
-      WXGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
-      pointerX += currentX - lastX;
-      pointerY += currentY - lastY;
-      XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
-		   pointerX,pointerY);
+      if (startW < 0 || startH < 0) {
+        FXGetWindowSize(w, &currentW, &currentH);
+        if (startW < 0) startW = currentW;
+        if (startH < 0) startH = currentH;
+      }
+
+      if ((deltaX == 0 && deltaY == 0) && \
+          (deltaW == 0 && deltaH == 0))
+        continue;
+      
+      currentX = (int) (startX + deltaX * (*ppctMovement));
+      currentY = (int) (startY + deltaY * (*ppctMovement));
+      
+      currentW = (int) (startW + deltaW * (*ppctMovement));
+      currentH = (int) (startH + deltaH * (*ppctMovement));
+      /* XResizeWindow(dpy, w, currentW, currentH); */
+
+      if (fUseSolver) {
+        CassowaryEditSize(psw);
+        
+        if (SuggestSizeWindowTo(psw,
+                                WIN_VP_OFFSET_X(psw) + currentX,
+                                WIN_VP_OFFSET_Y(psw) + currentY,
+                                currentW, currentH, True)) {
+          /* it was resized/moved */
+          /* empty */
+        }
+        
+        CassowaryEndEdit(psw);
+      } else {
+        SetScwmWindowGeometry(psw,
+                              WIN_VP_OFFSET_X(psw) + currentX,
+                              WIN_VP_OFFSET_Y(psw) + currentY,
+                              currentW, currentH, True);
+      }
+
+      if (fFirstAnimationIteration) {
+        fFirstAnimationIteration = False;
+        lastX = startX;
+        lastY = startY;
+      }
+
+      if (fFirst && fWarpPointerToo) {
+        fFirst = False;
+        WXGetPointerWindowOffsets(Scr.Root,&pointerX,&pointerY);
+        pointerX += currentX - lastX;
+        pointerY += currentY - lastY;
+        XWarpPointer(dpy,None,Scr.Root,0,0,0,0,
+                     pointerX,pointerY);
+        lastX = currentX;
+        lastY = currentY;
+      }
     }
 
     /* XFlush(dpy); */
@@ -151,13 +207,20 @@ AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, 
       /* finish the move immediately */
       break;
     }
-    lastW = currentW;
-    lastH = currentH;
-    lastX = currentX;
-    lastY = currentY;
   } while (*ppctMovement != 1.0 && ppctMovement++);
-  
-  CassowaryEndEdit(psw);
+}
+
+
+void 
+AnimatedResizeWindow(ScwmWindow *psw, Window w, int startW,int startH,int endW, int endH,
+                     int startX, int startY, int endX, int endY, 
+                     Bool fSetEndX, Bool fSetEndY,
+		     Bool fWarpPointerToo, int cmsDelay, float *ppctMovement)
+{
+  SCM xforms = gh_cons(ScmWindowDelta(psw,w,startW,startH,endW,endH,
+                                      startX,startY,endX,endY,fSetEndX,fSetEndY),
+                       SCM_EOL);
+  AnimatedResizeWindows(xforms,fWarpPointerToo,cmsDelay,ppctMovement, True);
 }
 
 
@@ -351,6 +414,45 @@ not specified. See also `window-unshade', `animated-window-shade'. */
   signal_window_property_change(win, sym_shaded, SCM_BOOL_F,
                                 SCM_BOOL_FromBool(old));
 
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
+extern Bool fInResolveHook;
+
+SCWM_PROC(animate_windows, "animate-windows", 1, 1, 0,
+          (SCM xforms, SCM move_pointer_too_p))
+     /** Animate multiple windows. 
+XFORMS is a list of transform operations where each xform operation
+describes how a single window should move and resize by giving its
+old and new configuration.  Each xfrom element of the XFORMS list
+should look like:
+(window frame? (start-width . start-height) (end-width . end-height) (start-x . start-y) (end-x . end-y) (set-end-x? . set-end-y?))
+If MOVE-POINTER-TOO? is #t, then the X11 pointer will move in
+conjunction with the first window in the XFORMS list;  defaults to #f. */
+#define FUNC_NAME s_animate_windows
+{
+  Bool fMovePointer;
+  SCM xform_iter = xforms;
+  int i = 0;
+  for (; xform_iter != SCM_EOL; xform_iter = gh_cdr(xform_iter), ++i) {
+    if (!FScmIsWindowDelta(gh_car(xform_iter))) {
+      scm_misc_error(FUNC_NAME,"Element %S of xforms argument list is bad: %s.",
+                     gh_list(gh_int2scm(i),gh_car(xform_iter),SCM_UNDEFINED));
+      scm_wrong_type_arg(FUNC_NAME,1,xforms);
+    }
+  }
+  VALIDATE_ARG_BOOL_COPY_USE_F(2,move_pointer_too_p,fMovePointer);
+
+  { /* scope */
+    int cmsDelay = -1;
+    
+    if (gh_number_p(*pscm_animation_delay)) {
+      cmsDelay = gh_scm2int(*pscm_animation_delay);
+    }
+    AnimatedResizeWindows(xforms, fMovePointer, 
+                          cmsDelay, NULL, !fInResolveHook);
+  }
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME

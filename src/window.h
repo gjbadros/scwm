@@ -458,6 +458,16 @@ void window_pixel_size_to_client_units(const ScwmWindow *psw,
 
 void notify_new_desk(ScwmWindow *psw, int desk, int old);
 
+SCM ScmWindowDelta(ScwmWindow *psw, Window w, int startW,int startH,int endW, int endH,
+                   int startX, int startY, int endX, int endY, 
+                   Bool fSetEndX, Bool fSetEndY);
+
+SCM ScmWindowDeltaVP(ScwmWindow *psw, Window w, int startW,int startH,int endW, int endH,
+                     int startX, int startY, int endX, int endY, 
+                     Bool fSetEndX, Bool fSetEndY);
+
+Bool FScmIsWindowDelta(SCM obj);
+
 #include "window.inl"
 
 #endif /* WINDOW_H__ */

@@ -68,12 +68,16 @@ ScwmClvChanged(ClVariable *pclv, ClSolver *)
 }
 #undef FUNC_NAME
 
+extern Bool fInResolveHook;
+
 static void
 ScwmResolve(ClSimplexSolver *psolver)
 #define FUNC_NAME "ScwmResolve"
 {
   SCM solver = ScmFromPv(psolver->Pv());
+  fInResolveHook = True; // be sure not to use Cassowary when moving windows around
   call1_hooks(scwm_resolve_hook,solver);
+  fInResolveHook = False;
   // go through the dirty windows and move them
   set<ScwmWindow *>::const_iterator it = setpswDirty.begin();
   for ( ; it != setpswDirty.end(); ++it ) {
@@ -336,6 +340,66 @@ SCWM_PROC(cl_windows_of_constraint, "cl-windows-of-constraint", 1, 0, 0,
 
   return answer;
 }
+#undef FUNC_NAME
+
+
+SCWM_PROC(cl_resolve_xforms,"cl-resolve-xforms", 0, 1, 0,
+          (SCM move_threshold))
+  /** Return a list of window xforms that corresponds to changes made in last resolve.
+Only windows that have been moved or resized more the MOVE-THRESHOLD pixels
+in any direction/dimension have xforms listed.
+See `animate-windows' for the format of the xforms return value. */
+#define FUNC_NAME s_cl_resolve_xforms 
+{
+  SCM answer = SCM_EOL;
+  int d;
+  VALIDATE_ARG_INT_COPY_USE_DEF(1,move_threshold,d,1);
+  set<ScwmWindow *>::const_iterator it = setpswDirty.begin();
+  for ( ; it != setpswDirty.end(); ++it ) {
+    ScwmWindow *psw = *it;
+    assert(psw);
+    ScwmWindowConstraintInfo *pswci = psw->pswci;
+    assert(pswci);
+    int 
+      startX = FRAME_X(psw), 
+      startY = FRAME_Y(psw),
+      startW = FRAME_WIDTH(psw),
+      startH = FRAME_HEIGHT(psw);
+    int
+      endX = pswci->_frame_x.IntValue(),
+      endY = pswci->_frame_y.IntValue(),
+      endW = pswci->_frame_width.IntValue(),
+      endH = pswci->_frame_height.IntValue();
+
+    /* FDeltaThreshold macro */
+#define FDT(x1,x2,dx) ((ABS((x1)-(x2))>(dx)))
+    if (FDT(startX,endX,d) ||
+        FDT(startY,endY,d) ||
+        FDT(startW,endW,d) ||
+        FDT(startH,endH,d)) {
+#undef FDT
+      answer = gh_cons(ScmWindowDeltaVP(psw,psw->frame,startW,startH,endW,endH,
+                                        startX,startY,endX,endY, False, False),
+                       answer);
+    }
+  }
+  return answer;
+}
+#undef FUNC_NAME
+
+SCWM_PROC(cl_reset_dirty_windows,"cl-reset-dirty-windows", 0, 0, 0,
+          ())
+  /** Empty the dirty-windows list.
+This is useful if the handling of the resolves are done in 
+the `scwm-resolve-hook' using `cl-resolve-xforms' and, e.g.,
+`animate-windows'. */
+#define FUNC_NAME s_cl_reset_dirty_windows
+{
+  setpswDirty.clear();
+  return SCM_UNSPECIFIED;
+}
+#undef FUNC_NAME
+
 
 
 extern "C" {

@@ -149,6 +149,12 @@ WIN, the window being closed.  The WIN is still valid during the hook
 procedures. */
 
 
+/* This global is True iff Cassowary's resolve hook
+   is being processed;  when that's happening, we don't
+   want to use Cassowary to move windows, but want to move
+   them directly, e.g., in animate-windows of c-animation.c */
+Bool fInResolveHook = False;
+
 
 /* GJB:FIXME:: instead of placeholder empty functions,
    pointers to functions should be used, and init_constraint_primitives should
