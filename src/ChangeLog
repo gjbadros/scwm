@@ -1,3 +1,10 @@
+1999-08-04  Jeff W. Nichols  <jwnichls@cs.washington.edu>
+
+	* binding.c: Fixed a bug in which a reference to the binding list 
+	was saved prior to calling remove_binding in add_binding.  This 
+	caused a list loop when removing the first element in the binding
+	list and put scwm into an infinite loop.
+
 1999-08-02  Greg Badros  <gjb@cs.washington.edu>
 
 	* session-manager.c: Remove `SM-client-id' (was deprecated). Use
