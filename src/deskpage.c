@@ -203,7 +203,7 @@ SCM
 desk_size()
 {
   return scm_listify(SCM_MAKINUM((int) (Scr.VxMax / Scr.MyDisplayWidth + 1)),
-		   SCM_MAKINUM((int) (Scr.VyMax / Scr.MyDisplayHeight + 1)),
+                     SCM_MAKINUM((int) (Scr.VyMax / Scr.MyDisplayHeight + 1)),
 		     SCM_UNDEFINED);
 }
 
