@@ -1,3 +1,8 @@
+Tue Apr 13 16:03:15 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Append /lib, /include to the --with-cassowary
+	directory argument.  Thanks Toby Sargeant!
+
 1999-04-07  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* esd.m4, imlib.m4: Removed - these are now in acinclude.m4.
