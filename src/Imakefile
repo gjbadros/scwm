@@ -39,7 +39,8 @@ SRCS = \
 	util.c \
 	window.c \
 	menu.c \
-	paths.c
+	paths.c \
+	deskpage.c
  
 OBJS = \
 	add_window.o \
@@ -75,7 +76,8 @@ OBJS = \
 	util.o \
 	window.o \
 	menu.o \
-	paths.o
+	paths.o \
+	deskpage.o
 
 LOCAL_LIBRARIES = $(SCWM_LIBS) $(XLIB)
 
@@ -89,3 +91,4 @@ ScwmProgramTarget(ScwmName)
 SpecialObjectRule(builtins.o, $(SCWM_SRCDIR)/Scwm.tmpl builtins.c, $(PATH_DEFINES))
 SpecialObjectRule(read.o, $(SCWM_SRCDIR)/Scwm.tmpl read.c, $(PATH_DEFINES))
 SpecialObjectRule(scwm.o, $(SCWM_SRCDIR)/Scwm.tmpl scwm.c, $(PATH_DEFINES))
+SpecialObjectRule(paths.o, $(SCWM_SRCDIR)/Scwm.tmpl paths.c, $(PATH_DEFINES))
