@@ -90,27 +90,9 @@ is filled with BGCOLOR. */
   int nh;
   SCM img;
 
-  if (gh_string_p(image)) {
-    img = make_image(image);
-  } else {
-    img = image;
-  }
-    
-  if (!IMAGE_P(img)) {
-    SCWM_WRONG_TYPE_ARG(1, image);
-  }
-
-  if (!gh_number_p(width)) {
-    SCWM_WRONG_TYPE_ARG(2, width);
-  } else {
-    nw=gh_scm2ulong(width);
-  }
-
-  if (!gh_number_p(height)) {
-    SCWM_WRONG_TYPE_ARG(3, height);
-  } else {
-    nh=gh_scm2ulong(height);
-  }
+  VALIDATE_ARG_IMAGE_OR_STRING(1,image);
+  VALIDATE_ARG_INT_MIN_COPY(2,width,1,nw);
+  VALIDATE_ARG_INT_MIN_COPY(3,height,1,nh);
 
   if (IMAGE(img)->width==nw && IMAGE(img)->height==nh) {
     return img;
@@ -187,15 +169,7 @@ STYLE can be either 'centered or 'tiled. */
 
   SCM img;
 
-  if (gh_string_p(image)) {
-    img = make_image(image);
-  } else {
-    img = image;
-  }
-
-  if (!IMAGE_P(img)) {
-    SCWM_WRONG_TYPE_ARG(1, image);
-  }
+  VALIDATE_ARG_IMAGE_OR_STRING(1,image);
  
   if (style==SCM_UNDEFINED) {
     style = sym_centered;
@@ -204,7 +178,6 @@ STYLE can be either 'centered or 'tiled. */
   if (!(style == sym_tiled || style == sym_centered)) {
     SCWM_WRONG_TYPE_ARG(2,style);
   }
-
 
   if (style==sym_centered) {
     img=make_resized_image(img, gh_ulong2scm(Scr.DisplayWidth),

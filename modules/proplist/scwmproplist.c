@@ -226,9 +226,7 @@ The elements in ITEMS should be a flat list (key1 value1 key2 value2 ...). */
 {
   proplist_t dict=NULL;
   SCM key,value;
-  if (!gh_list_p(items)) {
-    SCWM_WRONG_TYPE_ARG(1,items);
-  }
+  VALIDATE_ARG_LIST(1,items);
   while (1) {
     if (items==SCM_EOL) break;
     key=gh_car(items),items=gh_cdr(items);

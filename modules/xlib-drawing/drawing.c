@@ -34,6 +34,12 @@
 
 static GC DrawingGC;
 
+#define VALIDATE_ARG_XLIBPP_COPY(pos, scm, x, y) \
+  do { \
+     if (!xlib_point_pair_p(scm)) SCWM_WRONG_TYPE_ARG(pos,scm); \
+     else xlib_point_pair_get_values(scm, &x, &y); \
+  } while (0)
+
 static 
 Bool xlib_point_pair_p(SCM point)
 {
@@ -62,14 +68,14 @@ resize frames. VALUE should be an integer. */
 {
   XGCValues gcv;
   unsigned long gcm;
+  int val;
 
-  if (!gh_number_p(value)) {
-    SCWM_WRONG_TYPE_ARG(1, value);
-  }
+  VALIDATE_ARG_INT_RANGE_COPY(1,value,0,255,val);
+
   gcm = GCFunction | GCLineWidth | GCForeground | GCSubwindowMode;
   gcv.function = GXxor;
   gcv.line_width = 0;
-  gcv.foreground = gh_scm2long(value);
+  gcv.foreground = val;
   gcv.subwindow_mode = IncludeInferiors;
   if (NULL != DrawingGC) {
     XFreeGC(dpy, DrawingGC);
@@ -90,31 +96,11 @@ TOP-LEFT is a point pair: (X . Y). */
 {
   int iX, iY, iWidth, iHeight;
 
-  if (!xlib_point_pair_p(top_left)) {
-    SCWM_WRONG_TYPE_ARG(1, top_left);
-  }
-  xlib_point_pair_get_values(top_left, &iX, &iY);
-
-  if (!gh_number_p(width)) {
-    SCWM_WRONG_TYPE_ARG(2, width);
-  }
-  iWidth = gh_scm2int(width);
-
-  if (iWidth < 0) {
-    SCWM_WRONG_TYPE_ARG(2, width);
-  }
-
-  if (!gh_number_p(height)) {
-    SCWM_WRONG_TYPE_ARG(3, height);
-  }
-  iHeight = gh_scm2int(height);
-
-  if (iHeight < 0) {
-    SCWM_WRONG_TYPE_ARG(3, height);
-  }
+  VALIDATE_ARG_XLIBPP_COPY(1,top_left,iX,iY);
+  VALIDATE_ARG_INT_MIN_COPY(2,width,1,iWidth);
+  VALIDATE_ARG_INT_MIN_COPY(3,height,1,iHeight);
 
   XDrawRectangle(dpy, Scr.Root, DrawingGC, iX, iY, iWidth, iHeight);
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -129,18 +115,10 @@ Both P1 and P2 are pairs (X . Y) representing a point*/
 {
   int iX1, iY1, iX2, iY2;
 
-  if (!xlib_point_pair_p(p1)) {
-    SCWM_WRONG_TYPE_ARG(1, p1);
-  }
-  xlib_point_pair_get_values(p1, &iX1, &iY1);
-
-  if (!xlib_point_pair_p(p2)) {
-    SCWM_WRONG_TYPE_ARG(2, p2);
-  }
-  xlib_point_pair_get_values(p2, &iX2, &iY2);
+  VALIDATE_ARG_XLIBPP_COPY(1,p1,iX1,iY1);
+  VALIDATE_ARG_XLIBPP_COPY(2,p2,iX2,iY2);
 
   XDrawLine(dpy, Scr.Root, DrawingGC, iX1, iY1, iX2, iY2);
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -158,39 +136,11 @@ ANGLE2. Angles are specified in degrees (0.0 to 360.0).*/
   int iX, iY, iWidth, iHeight;
   double nAngle1, nAngle2;
   
-  if (!xlib_point_pair_p(top_left)) {
-    SCWM_WRONG_TYPE_ARG(1, top_left);
-  }
-  
-  xlib_point_pair_get_values(top_left, &iX, &iY);
-
-  if (!gh_number_p(width)) {
-    SCWM_WRONG_TYPE_ARG(2, width);
-  }
-  iWidth = gh_scm2int(width);
-  if (iWidth < 0) {
-    scm_misc_error(FUNC_NAME,"WIDTH must be non-negative",SCM_EOL);
-  }
-
-  if (!gh_number_p(height)) {
-    SCWM_WRONG_TYPE_ARG(3, height);
-  }
-  iHeight = gh_scm2int(height);
-  if (iHeight < 0) {
-    scm_misc_error(FUNC_NAME,"HEIGHT must be non-negative",SCM_EOL);
-  }
-
-  if (!gh_number_p(angle1)) {
-    SCWM_WRONG_TYPE_ARG(4, angle1);
-  }
-  nAngle1 = gh_scm2double(angle1);
-
-  if (!gh_number_p(angle2)) {
-    SCWM_WRONG_TYPE_ARG(5, angle2);
-  }
-  nAngle2 = gh_scm2double(angle2);
-
-  SCM_REALLOW_INTS;
+  VALIDATE_ARG_XLIBPP_COPY(1,top_left,iX,iY);
+  VALIDATE_ARG_INT_MIN_COPY(2,width,1,iWidth);
+  VALIDATE_ARG_INT_MIN_COPY(3,height,1,iHeight);
+  VALIDATE_ARG_DBL_COPY(4,angle1,nAngle1);
+  VALIDATE_ARG_DBL_COPY(5,angle2,nAngle2);
 
   XDrawArc(dpy, Scr.Root, DrawingGC, iX, iY, iWidth, iHeight, 
 	   (int) (nAngle1 * 64), (int) (nAngle2 * 64));
@@ -205,22 +155,10 @@ SCWM_PROC(xlib_set_line_width_x, "xlib-set-line-width!", 1, 0, 0,
      /** Sets the line width of the DrawingGC to WIDTH. */
 #define FUNC_NAME s_xlib_set_line_width_x
 {
-  int iWidth = 0;
-
-  if ( !UNSET_SCM(width) ) {
-    if (!gh_number_p(width)) {
-      SCWM_WRONG_TYPE_ARG(1, width);
-    }
-    iWidth = gh_scm2int(width);
-    if (iWidth < 0) {
-      SCWM_WRONG_TYPE_ARG(1, width);
-    }
-  }
-
-  SCM_REALLOW_INTS;
+  int iWidth;
+  VALIDATE_ARG_INT_COPY_USE_DEF(1,width,iWidth,0);
 
   XSetLineAttributes(dpy, DrawingGC, iWidth, LineSolid, CapButt, JoinMiter);
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -228,22 +166,15 @@ SCWM_PROC(xlib_set_line_width_x, "xlib-set-line-width!", 1, 0, 0,
 
 SCWM_PROC(xlib_set_fill_style_x, "xlib-set-fill-style!", 1, 0, 0,
 	  (SCM style))
-     /** Sets the fill style of the DrawingGC to STYLE. */
+     /** Sets the fill style of the DrawingGC to STYLE. 
+One of FillSolid (0), FillTiled (1), FillStippled (2), or FillOpaqueStippled (3)
+should be given as STYLE. */
 #define FUNC_NAME s_xlib_set_fill_style_x
 {
   int iStyle;
-
-  if (!gh_number_p(style)) {
-    SCWM_WRONG_TYPE_ARG(1, style);
-  }
-  iStyle = gh_scm2int(style);
-  if (!(iStyle == FillSolid || iStyle == FillStippled ||
-        iStyle == FillTiled || iStyle == FillOpaqueStippled)) {
-    SCWM_WRONG_TYPE_ARG(1, style);
-  }
+  VALIDATE_ARG_INT_RANGE_COPY(1,style,FillSolid,FillOpaqueStippled,iStyle);
 
   XSetFillStyle(dpy, DrawingGC, iStyle);
-
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
