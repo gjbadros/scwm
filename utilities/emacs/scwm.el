@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-23 Thu 20:31:48 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-25 Sat 12:42:00 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -79,6 +79,12 @@
  (or (fboundp 'apropos-mode) (autoload 'apropos-mode "apropos"))
  (or (fboundp 'ignore-errors) (autoload 'ignore-errors "cl" nil nil t)))
 (eval-when-compile
+ (require 'cl)                  ; for `gensym'
+ (defvar Info-history)          ; defined in info.el
+ (defvar Info-current-file)     ; defined in info.el
+ (defvar scheme-buffer)         ; defined in cmuscheme.el
+ (autoload 'Info-find-node "info")
+ (autoload 'inferior-scheme-mode "cmuscheme")
  (unless (fboundp 'with-output-to-string)
    (defmacro with-output-to-string (&rest body)
      "Execute BODY, return the text it sent to `standard-output', as a string."
@@ -88,7 +94,14 @@
        (save-excursion
          (set-buffer standard-output)
          (prog1 (buffer-string)
-           (kill-buffer standard-output)))))))
+           (kill-buffer standard-output))))))
+ (unless (fboundp 'with-temp-buffer)
+   (defmacro with-temp-buffer (&rest body)
+     `(let ((standard-output (get-buffer-create (generate-new-buffer-name
+                                                 " *temp-buffer*"))))
+       (save-excursion (set-buffer standard-output)
+                       (unwind-protect (progn ,@body)
+                         (kill-buffer standard-output)))))))
 
 ;;; Code:
 
@@ -196,18 +209,17 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 (defun scwm-make-obarray ()
   "Create and return an obarray of SCWM symbols."
   ;; can't use read-from-string because "? " is read as 32
-  (let ((obarray (make-vector 67 0)) (pos 2)
-	(tb (get-buffer-create " *scwm-obarray*")))
-    (set-buffer tb) (erase-buffer)
-    (scwm-safe-call "apropos-internal" "\".*\"" tb)
-    (goto-char 1)
-    (while (search-forward " " nil t)
-      (intern (buffer-substring-no-properties pos (1- (point))) obarray)
-      (setq pos (point)))
-    obarray))
+  (let ((obarray (make-vector 67 0)) (pos 2))
+    (with-temp-buffer
+      (scwm-safe-call "apropos-internal" "\"\"" (current-buffer))
+      (goto-char pos)
+      (while (re-search-forward "[ ()]" nil t)
+        (intern (buffer-substring-no-properties pos (1- (point))) obarray)
+        (setq pos (point)))
+      obarray)))
 
 (defun scwm-obarray ()
-  "Assure `scwm-obarray' is initialized."
+  "Ensure `scwm-obarray' is initialized."
   (setq scwm-obarray (or scwm-obarray (scwm-make-obarray))))
 
 (defun scwm-complete-symbol (&optional sym)
@@ -280,11 +292,11 @@ Returns a string which is present in the `scwm-obarray'."
       (with-face 'highlight (princ "procedure-documentation"))
       (princ ":\n\n")
       (scwm-safe-call "procedure-documentation" pat standard-output)
-      (when (fboundp 'help-xref-button)
+      (when (fboundp 'help-xref-button) ; add buttons to the help message
         (goto-char 1) (forward-line 8) ; skip the header and value
         (while (re-search-forward "`\\(\\sw\\(\\sw\\|\\s_\\)+\\)'" nil t)
           (help-xref-button 1 #'scwm-documentation (match-string 1))))
-      (help-mode) (goto-char 1))))
+      (help-mode) (goto-char 1) (print-help-return-message))))
 
 ;;;###autoload
 (defun scwm-apropos (pat)
@@ -303,14 +315,13 @@ Returns a string which is present in the `scwm-obarray'."
       (goto-char 1) (forward-line 4)
       (sort-lines nil (point) (point-max))
       (let ((props '(action scwm-documentation mouse-face highlight
-                     face italic)) p0 p1 p2)
+                     face italic)) p0 p1 p2 str)
         (while (not (eobp))
           (setq p0 (point) p1 (search-forward ": ")
-                p2 (1- (re-search-forward "\\s ")))
-          (forward-char -1)
-          (add-text-properties
-           p0 p2 (cons 'item (cons (buffer-substring-no-properties
-                                    p1 p2) props)))
+                p2 (1- (re-search-forward "\\s "))
+                str (buffer-substring-no-properties p1 p2))
+          (add-text-properties p0 p2 (cons 'item (cons str props)))
+          (forward-char -1)     ; in case the line just ended
           (forward-line 1)))
       (apropos-mode) (setq truncate-lines t))))
 
@@ -327,7 +338,7 @@ An element is of the form (FILE . NODE).")
 (defun scwm-find-guile-procedure-nodes (procedure)
   "Return a list of locations documenting PROCEDURE.
 The variable `scwm-info-file-list' defines heuristics for which Info
-manual to try.  The locations are of the format used in Info-history,
+manual to try.  The locations are of the format used in `Info-history',
 i.e. (FILENAME NODENAME BUFFERPOS)"
   (let ((where '())
 	(cmd-desc (concat "^\\* " (regexp-quote procedure)
