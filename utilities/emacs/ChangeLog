@@ -1,3 +1,12 @@
+Sun Mar 28 15:02:45 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Also display the *wm* buffer if the output/returned
+ 	value is only one line but is wider than the frame-width.  Reset
+ 	scwm-obarray inside scwm-load-file.  Lookup option documentation,
+ 	too (using `scwm-option-documentation'), not just
+ 	procedure-documentation. Set the size of the *wm* window
+	appropriately.
+
 Thu Mar 25 18:22:03 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.el: Change buffer nume to *wm* so that *sc<TAB> still

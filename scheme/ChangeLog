@@ -1,3 +1,66 @@
+Sun Mar 28 16:37:12 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am: Added missing .scm files to the install list.
+	Added a "check:" target that diffs *.scm and the listed files so
+	that it's easy to keep this file in synch with the directory
+	contents.
+
+Sun Mar 28 16:36:27 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* primopts.scm: Check for feature scwm-auto-raise, not just
+	auto-raise, as the feature namespace is shared across the whole
+	system. 
+
+Sun Mar 28 16:13:12 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* flux-vars.scm: Removed-- replaced by preferences stuff.
+
+	* prefs-menu.scm: Ws change.
+
+	* fvwm-module.scm: Use path-list->string-with-colons instead of
+	insert-colons and list->string.
+
+	* flux.scm: use-module message-window, + added comment re:
+	sans-final-newline. 
+
+	* file.scm: Added path-list->string-with-colons,
+	string-with-colons->path-list.  Use (ice-9 string-fun) for
+	separate-fields-discarding-char for latter.
+
+	* doc.scm: Make doc-files public.
+
+	* base.scm: Added pix->%x, pix->%y (inverses of %x, %y)
+
+	* auto-raise: provide 'scwm-auto-raise for testing whether the
+	module is loaded.
+
+	* themes.scm, theme-impl.scm: Rename theme-path to *theme-path* and use a
+	define-scwm-option macro to define it.
+
+Sat Mar 27 20:38:04 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* defoption.scm: Added. A pretty complete `define-scwm-option'
+	implementation.  It might need revising for scheme style, and has
+	lots of potential for further improvements, but is already pretty
+	useful. Partially inspired by Emacs's customize.
+
+	* preferences.scm: `gui-set', `option-menu', `popup-option-menu',
+	ans `scwm-options-menu'.  Mostly replaces the functionality in
+	prefs-menu module, but does it using the information gleaned from
+	define-scwm-option invocations of loaded modules.
+
+	* primopts.scm: Added a handful of `define-scwm-option' calls for
+	options that are managed by primitives and not real variables.
+	Also added for a test boolean flag.  (A test string option is in
+	themes.scm) 
+
+	* prompt-bool.scm, prompt-range.scm: Added.
+
+	* prompt-string.scm: Added -- renamed from string-prompt.scm for
+	consistency and a better prefix.  Also made the entry box size
+	itself a bit better, and removed the homogeneous flag from the
+	hbox container so that the prompt doesn't get bigger when resizing.
+
 Fri Mar 26 11:09:25 1999  Maciej Stachowiak  (mstachow@racerx)
 
         * style.scm (#:squashed-titlebar): Fix typo.
