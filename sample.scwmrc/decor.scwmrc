@@ -100,18 +100,30 @@
 (with-decor win95-decor 
 	    (title-style #:justify 'left #:font helvetica-12
 			 #:relief 'flat
-			 #:solid "navyblue" 
-			 #:inactive (list #:solid "grey76"))
+			 #:solid "navy blue" 
+			 #:inactive (list #:solid "grey50"))
 	    (border-style #:no-inset #t #:hidden-handles #t)
 	    (button-style 1 #:relief 'flat 
-			  #:solid "navyblue" #:pixmap 'mini-icon
+ 			  #:solid "navy blue" #:pixmap 'mini-icon
 			  #:inactive 
-			  (list #:solid "grey76" #:pixmap 'mini-icon))
+			  (list #:solid "grey50" #:pixmap 'mini-icon))
+	    (button-style 2 #:relief 'flat
+			  #:solid "navy blue"
+			  #:pixmap "win95-maximize-full.xpm"
+			  #:inactive 
+			  (list #:solid "grey50" 
+				#:pixmap "win95-maximize-full.xpm"))
+	    (button-style 4 #:relief 'flat
+			  #:solid "navy blue"
+			  #:pixmap "win95-minimize-full.xpm"
+			  #:inactive 
+			  (list #:solid "grey50" 
+				#:pixmap "win95-minimize-full.xpm"))
 	    (set-hilight-colors! "white" "grey76"))
 
 (define win95-style
-  (make-style #:fg "black" #:bg "grey76" #:icon #f
-	      #:border-width 3 #:mwm-border #f
+  (make-style #:fg "grey76" #:bg "grey76" #:icon #f
+	      #:border-width 4 #:mwm-border #f
 	      #:mwm-buttons #f
 	      #:use-decor win95-decor))
 
@@ -120,22 +132,34 @@
 (with-decor win95-grad-decor 
 	    (title-style #:justify 'left #:font helvetica-12
 			 #:relief 'flat
-			 #:h-gradient (list 20 (list "navyblue" 20) 
+			 #:h-gradient (list 20 (list "navy blue" 20) 
 					    "navyblue" "black") 
 			 #:inactive 
 			 (list #:h-gradient 
-			       (list 60 (list "grey76" 20) 
-				     "grey76" "dim grey")))
+			       (list 40 (list "grey50" 20) 
+				     "grey50" "grey25")))
 	    (border-style #:no-inset #t #:hidden-handles #t)
 	    (button-style 1 #:relief 'flat 
-			  #:solid "navyblue" #:pixmap 'mini-icon
+ 			  #:solid "navy blue" #:pixmap 'mini-icon
 			  #:inactive 
-			  (list #:solid "grey76" #:pixmap 'mini-icon))
+			  (list #:solid "grey50" #:pixmap 'mini-icon))
+	    (button-style 2 #:relief 'flat
+			  #:solid "black"
+			  #:pixmap "win95-maximize-full.xpm"
+			  #:inactive 
+			  (list #:solid "grey15" 
+				#:pixmap "win95-maximize-full.xpm"))
+	    (button-style 4 #:relief 'flat
+			  #:solid "black"
+			  #:pixmap "win95-minimize-full.xpm"
+			  #:inactive 
+			  (list #:solid "grey25" 
+				#:pixmap "win95-minimize-full.xpm"))
 	    (set-hilight-colors! "white" "grey76"))
 
 (define win95-grad-style
-  (make-style #:fg "black" #:bg "grey76" #:icon #f
-	      #:border-width 3 #:mwm-border #f
+  (make-style #:fg "grey76" #:bg "grey76" #:icon #f
+	      #:border-width 4 #:mwm-border #f
 	      #:mwm-buttons #f
 	      #:use-decor win95-grad-decor))
 
