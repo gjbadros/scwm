@@ -1,5 +1,7 @@
 Wed Mar 11 21:57:57 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* utilities/Makefile.in: Don't attempt to build scwmsend.
+
 	* utilities/scwmsend, utilties/emacs/scwm-buffer.el: removed so
  	scwmsend stuff can be removed from scwm.
 	
