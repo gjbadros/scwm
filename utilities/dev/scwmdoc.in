@@ -853,6 +853,7 @@ sub ProcessHeader( $$$ ) {
   foreach my $word (split /[^-+%?\$!\w_\"]+/, $comment) {
     if ($word =~ /^[A-Z][-%A-Z0-9_+?!]+$/) {
       if (!defined($argnames{$word})) {
+	next if $word eq "X11";  # do not require this word to be an argumet
 	if (!$fReallyQuiet) {
 	  print STDERR "$filename:$line:**** $cprimname: all-uppercase word \`$word\' does not match an argument\n";
 	}
