@@ -1,5 +1,10 @@
 1999-02-11  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
+	* animated-iconify.scm: Make `animated-iconify',
+	`animated-deiconify' and `animated-deiconify-to-current-viewport'
+	animate from the window size and position to the icon size and
+	position, instead of the previous behavior.
+
 	* fvwm-module.scm: Enhance error output on a communication error.
 
 	* bincomm.scm: Fix some obvious problems with 64-bit

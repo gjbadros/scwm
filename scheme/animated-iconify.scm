@@ -27,48 +27,65 @@
 (define (sleep-ms ms)
   (select '() '() '() 0 (* 1000 ms)))
 
-(define (animate-iconify-or-deiconify win-pos win-size ms-delay 
-				      before-animation-proc after-animation-proc pct-sizes)
-  (let* ((wsize win-size)
-	 (wpos (point-list->point-pair win-pos))
-	 (w (car wsize))
-	 (h (cadr wsize)))
+(define (animate-iconify-or-deiconify icon-pos win-pos icon-size win-size 
+                                      ms-delay before-animation-proc 
+                                      after-animation-proc pct-sizes)
+  (let* ((delta-pos (map - win-pos icon-pos))
+         (delta-size (map - win-size icon-size)))
     (set-X-server-synchronize! #t)
     (xlib-set-line-width! 4)
     (and before-animation-proc (before-animation-proc))
     (with-grabbed-server
      (lambda ()
        (for-each (lambda (pct)
-		   (let* ((nw (round-to-pct w pct))
-			  (nh (round-to-pct h pct))
-			  (new-wpos (move-point-pair wpos (half (- w nw)) (half (- h nh)))))
-		     (xlib-draw-rectangle! new-wpos nw nh)
+		   (let* ((new-wsize (map + icon-size
+                                          (map round-to-pct delta-size 
+                                               (list pct pct))))
+			  (new-wpos 
+                           (point-list->point-pair
+                            (map + icon-pos
+                                 (map round-to-pct delta-pos 
+                                      (list pct pct))))))
+		     (apply xlib-draw-rectangle! new-wpos new-wsize)
 		     (sleep-ms ms-delay)
-		     (xlib-draw-rectangle! new-wpos nw nh)))
+		     (apply xlib-draw-rectangle! new-wpos new-wsize)))
 		 pct-sizes)))
     (and after-animation-proc (after-animation-proc))
     (set-X-server-synchronize! #f)))
 
 (define*-public (animated-iconify #&optional (win (get-window)))
-   (animate-iconify-or-deiconify (window-viewport-position win) (window-frame-size win)
-				 20 (lambda () (iconify win)) #f
-				 '(1.0 .9 .8 .7 .6 .5 .4 .3 .2 .1)))
+  (cond
+   ((not (iconified? win))
+    (iconify win) ;; ensure a useful icon position the first time,
+    (animate-iconify-or-deiconify (icon-viewport-position win) 
+                                  (window-viewport-position win) 
+                                  (icon-size win)
+                                  (window-frame-size win)
+                                  20 (lambda () (iconify win)) #f
+                                  '(1.0 .9 .8 .7 .6 .5 .4 .3 .2 .1 0.0)))))
 
 
 (define*-public (animated-deiconify #&optional (win (get-window)))
-   (animate-iconify-or-deiconify (window-viewport-position win) (window-frame-size win)
-				 20 #f (lambda () (deiconify win))
-				 '(.1 .2 .3 .4 .5 .6 .7 .8 .9 1.0)))
+  (if (iconified? win)
+      (animate-iconify-or-deiconify  (icon-viewport-position win)
+                                     (window-viewport-position win)
+                                     (icon-size win)
+                                     (window-frame-size win)
+                                     20 #f (lambda () (deiconify win))
+                                     '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0))))
 
 (define*-public (animated-deiconify-to-current-viewport #&optional (win (get-window)))
-   (animate-iconify-or-deiconify (apply virtual->viewport 
-					(window-position-in-viewport 
+  (if (iconified? win)
+    (animate-iconify-or-deiconify (apply virtual->viewport 
+					(icon-viewport-position win)
+                                        (window-position-in-viewport 
 					 (current-viewport-offset-xx)
 					 (current-viewport-offset-yy)
 					 win))
+                                 (icon-size win)
 				 (window-frame-size win)
 				 20 #f (lambda () (deiconify-to-current-viewport win))
-				 '(.1 .2 .3 .4 .5 .6 .7 .8 .9 1.0)))
+				 '(0.0 .1 .2 .3 .4 .5 .6 .7 .8 .9 1.0)))
 
 ;; (define w (select-window-interactively))
 ;; (begin (animate-iconify w) (sleep 1) (animate-deiconify w))
