@@ -530,6 +530,7 @@ scwm_main(int argc, char **argv)
      isn't stderr never block bufferred?? */
   setlinebuf(stderr);
   setlinebuf(stdout);
+
   SCM_REDEFER_INTS;
   init_font();
   init_decor();
@@ -541,9 +542,9 @@ scwm_main(int argc, char **argv)
   init_module_interface();
   init_miscprocs();
   init_menuitem();
-  init_menu();
   init_menulook();
   init_drawmenu();
+  init_menu();
   init_binding();
   init_window();
   init_resize();

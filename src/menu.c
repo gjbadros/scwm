@@ -48,6 +48,21 @@
 
 extern SCM sym_top, sym_center, sym_bottom;
 
+/* MS:FIXME:: These SCM_VAR_INIT's should be removed when we have a
+better long-term solution to styling menus. TEMPORARY HACK! */
+
+SCM_VCELL_INIT(menu_bg_color, "menu-bg-color", make_color(gh_str02scm("gray80")));
+SCM_VCELL_INIT(menu_text_color, "menu-text-color", make_color(gh_str02scm("black")));
+SCM_VCELL_INIT(menu_stipple_color, "menu-stipple-color", make_color(gh_str02scm("gray60")));
+SCM_VCELL_INIT(menu_font, "menu-font", make_font(gh_str02scm("fixed")));
+SCM_VCELL_INIT(menu_side_image, "menu-side-image", SCM_BOOL_F);
+SCM_VCELL_INIT(menu_side_bg_color, "menu-side-bg-color", make-color(gh_str02scm("gray80")));
+SCM_VCELL_INIT(menu_side_bg_color_set, "menu-side-bg-color-set", SCM_BOOL_F);
+SCM_VCELL_INIT(menu_bg_image, "menu-bg-image", SCM_BOOL_F);
+SCM_VCELL_INIT(menu_look, "menu-look", drawmenu_menu_look);
+
+
+
 static DynamicMenu *NewDynamicMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom);
 static void PopdownMenu(DynamicMenu *pmd);
 static void FreeDynamicMenu(DynamicMenu *pmd);

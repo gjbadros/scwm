@@ -1,3 +1,14 @@
+Fri Dec  4 21:57:39 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* menu.c: Gross hack alert - temporarily declare some variables
+ 	from C to avoid the nasty "before the module declaration"
+ 	trick. This should be fixed when we have a sounder plan for
+ 	dynamic menu styles.
+
+	* scwm.c (scwm_main): Initialize menulook and drawmenu functions
+ 	before menu, so the latter can initialize a Scheme variable to
+ 	drawmenu_menu_look.
+
 Thu Dec  3 01:43:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* move.c (interactive_move, rubber_band_move, opaque_move):
