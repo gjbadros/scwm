@@ -26,6 +26,7 @@
   :use-module (app scwm group)
   :use-module (app scwm path-cache)
   :use-module (app scwm window-selection)
+  :use-module (app scwm window-locations)
   :use-module (app scwm optargs)
   :use-module (app scwm xprop-extras))
 
@@ -457,3 +458,30 @@ expected."
 		  #:end-pos (rect-se r)
 		  #:order order)))
 
+;; (get-window-nonant (select-viewport-position))
+
+(define gravities #(northwest north northeast west center
+			      east southwest south southeast))
+
+(define-public (nonant->gravity nonant)
+  "Return a gravity symbol given NONANT in [0,8].
+0 is northwest, 1 is north, 2 is northeast, etc.
+See also `get-window-nonant'."
+  (if (array-in-bounds? gravities nonant)
+      (array-ref gravities nonant)
+      #f))
+
+
+(define anchor-cursor #f)
+(let ((acimage (make-image "anchor-cursor.xpm")))
+  (if acimage (set! anchor-cusor (create-pixmap-cursor acimage))))
+
+(define-public (interactive-set-window-gravity!)
+  "Permit user to click on an area of a window and anchor that nonant.
+E.g., if the user clicks on the northeast corner of a window, that
+window will be set to have northeast gravity so future resizes keep
+that corner fixed."
+  (let* ((win-pos (select-viewport-position anchor-cursor))
+	 (win (car win-pos))
+	 (gravity (nonant->gravity (get-window-nonant win-pos))))
+    (set-window-gravity! gravity win)))
