@@ -725,3 +725,15 @@ of LST not equal to e. E.g. `(extreme < ...)' returns the lowest number."
   (if (null? lst)
       ()
       (extreme1 pred lst)))
+
+(define*-public (take-screenshot
+		 #&optional (template (string-append
+				       (user-home)
+				       "/screenshot%y%m%d%H%M%S.xwd")))
+  "Take a snapshot of the whole screen.
+The screenshot will be saved in xwd format in the filename constructed from
+TEMPLATE. %-escapes in TEMPLATE will be replaced by time-elements, according
+to strftime rules. TEMPLATE defaults to the file \"screenshot%y%m%d%H%M%S.xwd\"
+in the user's home directory."
+  (execute (string-append "xwd -root >"
+			  (strftime template (localtime (current-time))))))
