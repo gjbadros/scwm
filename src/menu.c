@@ -488,7 +488,7 @@ Otherwise, do not.  See also `set-menu-highlight-colors!'. */
 
 SCWM_PROC(menu_highlight_colors, "menu-highlight-colors", 1, 0, 0,
            (SCM menu))
-     /** Return a list:  text-color, bg-color; the highlight colors for MENU. */
+     /** Return list text-color, bg-color, the highlight colors for MENU. */
 #define FUNC_NAME s_menu_highlight_colors
 {
   Menu *pm;

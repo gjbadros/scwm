@@ -33,6 +33,7 @@
 #include "virtual.h"
 #include "events.h"
 #include "xmisc.h"
+#include "util.h"
 
   SCWM_HOOK(interactive_resize_start_hook,"interactive-resize-start-hook",3);
   /** This hook is invoked at the start of an interactive resize.

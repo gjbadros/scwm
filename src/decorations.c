@@ -399,19 +399,6 @@ SelectDecor(ScwmWindow * t, int border_width, int resize_width)
   t->nr_left_buttons = Scr.nr_left_buttons;
   t->nr_right_buttons = Scr.nr_right_buttons;
 
-  for (i = 0; i < Scr.nr_left_buttons; i++)
-    if (t->left_w[i] == None)
-      t->nr_left_buttons--;
-
-  for (i = 0; i < Scr.nr_right_buttons; i++)
-    if (t->right_w[i] == None)
-      t->nr_right_buttons--;
-
-#if 0 /* GJB:FIXME:: */
-  t->nr_left_buttons = CLeftButtons(t);
-  t->nr_right_buttons = CRightButtons(t);
-#endif
-
   if (t->fMWMBorders)
     t->bw = 0;
   else if (t->boundary_width <= 0) {

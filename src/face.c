@@ -554,8 +554,69 @@ title and border faces, are indicated below.
   Window styles encapsulate the behaviour and appearance of windows.
 They are applied to windows arbitrarily so different windows can
 use different styles at the same time.  Numerous options are permitted
-for window styles.  These include:
+for window styles.  For some of the below options you will
+need to use the appropriate module to make the options available. 
+The options include at least:
 
+<segmentedlist>
+<segtitle/Style-parameter/
+<segtitle/Description/
+
+<seglistitem><seg/#:border-width/ <seg//</seglistitem>
+<seglistitem><seg/#:background or #:bg/ <seg//</seglistitem>
+<seglistitem><seg/#:foreground or #:fg/ <seg//</seglistitem>
+<seglistitem><seg/#:highlight-background or #:highlight-bg/ <seg//</seglistitem>
+<seglistitem><seg/#:highlight-foreground or #:highlight-fg/ <seg//</seglistitem>
+<seglistitem><seg/#:focus/ <seg//</seglistitem>
+<seglistitem><seg/#:plain-border/ <seg//</seglistitem>
+<seglistitem><seg/#:icon-title/ <seg//</seglistitem>
+<seglistitem><seg/#:icon-box/ <seg//</seglistitem>
+<seglistitem><seg/#:sticky-icon/ <seg//</seglistitem>
+<seglistitem><seg/#:start-iconified/ <seg//</seglistitem>
+<seglistitem><seg/#:kept-on-top/ <seg//</seglistitem>
+<seglistitem><seg/#:sticky/ <seg//</seglistitem>
+<seglistitem><seg/#:no-titlebar/ <seg//</seglistitem>
+<seglistitem><seg/#:no-side-decorations/ <seg//</seglistitem>
+<seglistitem><seg/#:squashed-titlebar/ <seg//</seglistitem>
+<seglistitem><seg/#:mwm-buttons/ <seg//</seglistitem>
+<seglistitem><seg/#:mwm-border/ <seg//</seglistitem>
+<seglistitem><seg/#:show-icon/ <seg//</seglistitem>
+<seglistitem><seg/#:force-icon/ <seg//</seglistitem>
+<seglistitem><seg/#:icon/ <seg//</seglistitem>
+<seglistitem><seg/#:mini-icon/ <seg//</seglistitem>
+<seglistitem><seg/#:random-placement/ <seg//</seglistitem>
+<seglistitem><seg/#:smart-placement/ <seg//</seglistitem>
+<seglistitem><seg/#:button/ <seg//</seglistitem>
+<seglistitem><seg/#:no-button/ <seg//</seglistitem>
+<seglistitem><seg/#:hint-override/ <seg//</seglistitem>
+<seglistitem><seg/#:decorate-transient/ <seg//</seglistitem>
+<seglistitem><seg/#:mwm-decor-hint/ <seg//</seglistitem>
+<seglistitem><seg/#:mwm-func-hint/ <seg//</seglistitem>
+<seglistitem><seg/#:PPosition-hint/ <seg//</seglistitem>
+<seglistitem><seg/#:OL-decor-hint/ <seg//</seglistitem>
+<seglistitem><seg/#:start-on-desk/ <seg//</seglistitem>
+<seglistitem><seg/#:skip-mapping/ <seg//</seglistitem>
+<seglistitem><seg/#:lenience/ <seg//</seglistitem>
+<seglistitem><seg/#:placement-proc/ <seg//</seglistitem>
+<seglistitem><seg/#:transient-placement-proc/ <seg//</seglistitem>
+<seglistitem><seg/#:start-lowered/ <seg//</seglistitem>
+<seglistitem><seg/#:start-window-shaded/ <seg//</seglistitem>
+<seglistitem><seg/#:start-maximized/ <seg//</seglistitem>
+<seglistitem><seg/#:other-proc/ <seg//</seglistitem>
+<seglistitem><seg/#:other-hint-proc/ <seg//</seglistitem>
+<seglistitem><seg/#:winlist-skip/ <seg//</seglistitem>
+<seglistitem><seg/#:circulate-skip/ <seg//</seglistitem>
+<seglistitem><seg/#:circulate-skip-icon/ <seg//</seglistitem>
+<seglistitem><seg/#:use-theme/ <seg//</seglistitem>
+<seglistitem><seg/#:use-decor/ <seg//</seglistitem>
+<seglistitem><seg/#:hover-focus-delay/ <seg//</seglistitem>
+<seglistitem><seg/#:hover-focus/ <seg//</seglistitem>
+<seglistitem><seg/#:auto-raise/ <seg//</seglistitem>
+<seglistitem><seg/#:auto-raise-delay/ <seg//</seglistitem>
+<seglistitem><seg/#:auto-raise-unfocus-delay/ <seg//</seglistitem>
+<seglistitem><seg/#:auto-raise-focus-proc/ <seg//</seglistitem>
+<seglistitem><seg/#:auto-raise-unfocus-proc/ <seg//</seglistitem>
+</segmentedlist>
 */
 
 ButtonFace *append_new_face(ButtonFace *bf);

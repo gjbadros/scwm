@@ -316,6 +316,7 @@ AddWindow(Window w)
   gh_allow_ints();
 
   psw->fl = &Scr.DefaultDecor;
+  psw->buttons = 0;
 
   call1_hooks(before_new_window_hook, psw->schwin);
 

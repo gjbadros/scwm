@@ -659,42 +659,45 @@ PixelHiBackFromPsw(const ScwmWindow *psw)
 
 
 int
-CLeftButtons(const ScwmWindow *ARG_UNUSED(psw))
+CLeftButtons(const ScwmWindow *psw)
 {
-#if 1
-  return Scr.nr_left_buttons;
-#else
   unsigned long buttons = psw->buttons;
   int c = 0;
-  while (buttons) {
-    if (buttons & 1 == 0) {
+  int i = 0;
+  while (i < Scr.nr_left_buttons) {
+    /* bitmask is for suppressing buttons, 
+       so if the bit is off, we want to display the button */
+    if ((buttons & 1) == 0 && psw->left_w[i] != None) {
       ++c;
     }
+    ++i;
     buttons >>= 2;
   }
+  DBUG((DBG,"CLeftButtons","buttons = %ld",buttons));
+  DBUG((DBG,"CLeftButtons","Returning %d instead of %d",c,Scr.nr_left_buttons));
   return c;
-#endif
 }
 
 int
-CRightButtons(const ScwmWindow *ARG_UNUSED(psw))
+CRightButtons(const ScwmWindow *psw)
 {
-#if 1
-  return Scr.nr_right_buttons;
-#else
   unsigned long buttons = psw->buttons;
   int c = 0;
+  int i = 0;
   buttons >>= 1;
-  while (buttons) {
-    if (buttons & 1 == 0) {
+  while (i < Scr.nr_right_buttons) {
+    /* bitmask is for suppressing buttons, 
+       so if the bit is off, we want to display the button */
+    if ((buttons & 1) == 0 && psw->right_w[i] != None) {
       ++c;
     }
     buttons >>= 2;
+    ++i;
   }
+  DBUG((DBG,"CRightButtons","buttons = %ld",buttons));
+  DBUG((DBG,"CRightButtons","Returning %d instead of %d",c,Scr.nr_right_buttons));
   return c;
-#endif
 }
-
 
 /* Set Border just calls SetBorderX with really_force == False */
 void
@@ -842,7 +845,7 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
   if (SHOW_TITLE_P(psw)) {
     unsigned long buttons = psw->buttons;
     ChangeWindowColor(psw->title_w, valuemask);
-    for (i = 0; i < psw->nr_left_buttons; ++i) {
+    for (i = 0; i < Scr.nr_left_buttons; ++i) {
       if (psw->left_w[i] != None && !(buttons & (1 << (i*2)))) {
 	enum ButtonState bs = GetButtonState(psw->left_w[i]);
 	ButtonFace *bf = GET_DECOR(psw, left_buttons[i].state[bs]);
@@ -890,7 +893,7 @@ SetBorderX(ScwmWindow *psw, Bool fHighlightOn, Bool force, Bool Mapped,
 	}
       }
     }
-    for (i = 0; i < psw->nr_right_buttons; ++i) {
+    for (i = 0; i < Scr.nr_right_buttons; ++i) {
       if (psw->right_w[i] != None && !(buttons & (1 << (i*2+1)))) {
 	enum ButtonState bs = GetButtonState(psw->right_w[i]);
 	ButtonFace *bf = GET_DECOR(psw, right_buttons[i].state[bs]);
@@ -1503,7 +1506,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       xwc.width = button_width;
       xwc.y = fSquashedTitlebar? 0 : psw->boundary_width;
       xwc.x = psw->xboundary_width;
-      for (i = 0; i < CLeftButtons(psw); i++) {
+      for (i = 0; i < Scr.nr_left_buttons; i++) {
 	if (psw->left_w[i] != None) {
           if (buttons & (1 << (i*2))) {
             /* suppress that button */
@@ -1522,7 +1525,7 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
       }
 
       xwc.x = tbar_right - psw->xboundary_width + psw->bw;
-      for (i = 0; i < CRightButtons(psw); i++) {
+      for (i = 0; i < Scr.nr_right_buttons; i++) {
 	if (psw->right_w[i] != None) {
             xwc.x -= button_width;
           if (buttons & (1 << (i*2+1))) {
@@ -1539,16 +1542,16 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h,
           }
         }
       }
-    } else {
+    } else { /* from if (SHOW_TITLE_P(psw)) */
       /* no title bar, so unmap button windows! */
       XUnmapWindow(dpy,psw->title_w);
 
-      for (i = 0; i < CLeftButtons(psw); i++) {
+      for (i = 0; i < Scr.nr_left_buttons; i++) {
 	if (psw->left_w[i] != None) {
           XUnmapWindow(dpy,psw->left_w[i]);
         }
       }
-      for (i = 0; i < CRightButtons(psw); i++) {
+      for (i = 0; i < Scr.nr_right_buttons; i++) {
 	if (psw->right_w[i] != None) {
           XUnmapWindow(dpy,psw->right_w[i]);
         }
