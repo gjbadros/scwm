@@ -387,7 +387,7 @@ See `set-menu-hover-delay!'. */
 #define FUNC_NAME s_menu_hover_delay
 {
   VALIDATE_ARG_MENU(1,menu);
-  return gh_int2scm(MENU(menu)->cmsPopupDelay);
+  return gh_int2scm(MENU(menu)->cmsHoverDelay);
 }
 #undef FUNC_NAME
 
@@ -1135,7 +1135,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
   while (True) {
     while (XCheckMaskEvent(dpy, menu_event_mask, &Event) == False) {
 #ifndef NOT_MORE_RESPONSIVE
-      NoEventsScwmUpdate();
+      NoEventsScwmUpdate(True);
 #endif
       /* check using equality so we only invoke the operation once */
       if (c10ms_delays == pmd->pmenu->cmsPopupDelay/10) {
@@ -1250,7 +1250,11 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
 	    break;
 	  }
 	} else {
-	  scwm_msg(WARN,FUNC_NAME,"pmiim or pmiim->pmd == NULL");
+          if (!pmiim) {
+            scwm_msg(WARN,FUNC_NAME,"MENUSTATUS_POPUP_AND_MOVE: pmiim == NULL");
+          } else if (!pmiim->pmd) {
+            scwm_msg(WARN,FUNC_NAME,"MENUSTATUS_POPUP_AND_MOVE: pmiim->pmd == NULL");
+          }
 	  break;
 	}
       } else if (ms == MENUSTATUS_NOP) {

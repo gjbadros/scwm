@@ -154,9 +154,10 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int OutlineWidth,
                            PointerMotionMask | ButtonMotionMask | ExposureMask, 
                            &Event) == False) {
 #ifndef NOT_MORE_RESPONSIVE
-      NoEventsScwmUpdate();
-#endif
+      NoEventsScwmUpdate(False);
+#else
       ms_sleep(10);
+#endif
     }
     /* fallen through, so we got an event we're interested in */
     StashEventTime(&Event);

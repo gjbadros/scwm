@@ -1840,7 +1840,7 @@ CoerceEnterNotifyOnCurrentWindow()
 
 
 int
-NoEventsScwmUpdate()
+NoEventsScwmUpdate(Bool fNoBlock)
 {
 #define FUNC_NAME "NoEventsScwmUpdate"
   extern int fd_width, x_fd;
@@ -1875,25 +1875,20 @@ NoEventsScwmUpdate()
   
   update_timer_hooks();
   
-  while (True) {	
+  while (True) {
     usec = shortest_timer_timeout ();
-    
-    switch (usec) {
-    case -1:
-      tp = NULL;
-      goto DONE_TIMER_LOOP;
-      break;
-    case 0:
+    if (usec == 0) {
       run_timed_out_timers();
+    } else if (usec < 0 && fNoBlock == False) {
+      tp = NULL;
       break;
-    default:
+    } else {
+      if (fNoBlock) usec = 0;
       timeout.tv_usec = usec;
       tp = &timeout;
-      goto DONE_TIMER_LOOP;
       break;
     }
   }
- DONE_TIMER_LOOP:
 
 #ifdef HAVE_LIBSM_LIBICE
   if (IceSMfd != -1)
@@ -1958,7 +1953,7 @@ NextScwmEvent(Display * dpy, XEvent * event)
     return 0;
   }
   DBUG((DBG,FUNC_NAME, "no X events waiting - calling NoEventsScwmUpdate"));
-  NoEventsScwmUpdate();
+  NoEventsScwmUpdate(False);
   DBUG((DBG,FUNC_NAME, "leaving"));
   return 1;
 }

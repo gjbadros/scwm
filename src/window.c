@@ -1392,9 +1392,10 @@ DeferExecution(XEvent *eventp, Window *w, ScwmWindow **ppsw,
                            EnterWindowMask,
                            eventp) == False) {
 #ifndef NOT_MORE_RESPONSIVE
-      NoEventsScwmUpdate();
-#endif
+      NoEventsScwmUpdate(False);
+#else
       ms_sleep(10);
+#endif
     }
 
     /* fallen through, so we got an event we're interested in */
