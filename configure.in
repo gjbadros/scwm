@@ -534,13 +534,13 @@ fi
 
 dnl ## Define directories ##
 
-scwm_load_path=${datadir}/${PACKAGE}-modules
+scwm_load_path=${datadir}/${PACKAGE}/modules
 scwm_schemedir=${scwm_load_path}/app/scwm
-scwm_themedir=${datadir}/${PACKAGE}-themes
-scwm_bin_load_path=${libdir}/${PACKAGE}-modules
+scwm_themedir=${datadir}/${PACKAGE}/themes
+scwm_bin_load_path=${libdir}/${PACKAGE}/modules
 scwm_moduledir=${scwm_bin_load_path}/app/scwm
-scwm_utildir=${libdir}/${PACKAGE}-util
-scwm_pixmapdir=${libdir}/${PACKAGE}-pixmaps
+scwm_utildir=${libdir}/${PACKAGE}/util
+scwm_pixmapdir=${libdir}/${PACKAGE}/pixmaps
 
 
 SCWM_ARG_PATH(scwmrcdir,
