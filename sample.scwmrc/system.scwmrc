@@ -161,8 +161,8 @@
 (define (make-small-window-ops-menu w)
   (menu 
    (list
-    (menuitem "Window Ops2" #f)
-    menu-title
+;;    (menuitem "Window Ops2" #f)
+;;    menu-title
     (menuitem "Move" #:action interactive-move)
     (menuitem "Resize" #:action interactive-resize)
     (menuitem "Raise" #:action raise-window)
@@ -185,10 +185,10 @@
 			  #:action toggle-window-shade)
 		(menuitem (if (kept-on-top? w)
 			      "UnKeep On Top"
-			      "Keep On Top") #:action toggle-on-top)))
-	      menu-separator
-	      (menuitem "Close" #:action close-window)
-	      (menuitem "Destroy" #:action destroy-window)))))
+			      "Keep On Top") #:action toggle-on-top))))
+    menu-separator
+    (menuitem "Close" #:action close-window)
+    (menuitem "Destroy" #:action destroy-window))))
 
 (define (popup-small-ops)
   (popup-menu (make-small-window-ops-menu (get-window))))
