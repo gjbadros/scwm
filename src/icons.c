@@ -569,7 +569,7 @@ AutoPlace(ScwmWindow *psw)
       new_x += Scr.DisplayWidth;
     if (new_y < 0)
       new_y += Scr.DisplayHeight;
-    move_finalize(psw, new_x, new_y);
+    move_finalize(psw->icon_w, psw, new_x, new_y);
     psw->Desk = Scr.CurrentDesk;
   } else {
     base_x = ((FRAME_X(psw) + Scr.Vx + (FRAME_WIDTH(psw) >> 1)) / Scr.DisplayWidth) *
