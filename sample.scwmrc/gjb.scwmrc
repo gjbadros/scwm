@@ -46,6 +46,13 @@
 	     (app scwm animated-iconify)
 	     )
 
+;;(load "/home/gjb/scwm/scheme/constraints.scm")
+;;(load "/home/gjb/scwm/scheme/ui-constraints-buttons.scm")
+;;(set-current-module the-root-module)
+;;(use-modules (app scwm constraints))
+;;(use-modules (app scwm ui-constraints-buttons))
+;;(start-ui-constraints-buttons)
+
 (set! debug-fvwm-module #f)
 
 (set! use-scwm-system-proc #t)
@@ -297,6 +304,8 @@
 (debug-display "Before setting image-load-path\n")
 
 ;;; set path to use for image searches
+(set! image-load-path (cons "/uns/lib/X11/mini-icons" image-load-path))
+(set! image-load-path (cons "/uns/lib/X11/pixmaps" image-load-path))
 (set! image-load-path (cons "/usr/X11/lib/X11/mini-icons" image-load-path))
 (set! image-load-path (cons "/usr/X11/include/X11/pixmaps" image-load-path))
 (set! image-load-path (cons "/usr/lib/icons" image-load-path))
@@ -1138,6 +1147,7 @@
 
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
 (key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
+(key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right")
 
 (bind-key 'all "C-M-S-Home" (lambda () (set-current-desk! 0)))
 (bind-key 'all "C-M-S-End" (lambda () (set-current-desk! 1)))
@@ -1200,27 +1210,43 @@
 ;; Fluid, cartoon-like, overshoots target
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
 
-(bind-key 'all "C-M-KP_7" (lambda () (animated-move-to 0 0)))
-(bind-key 'all "C-M-KP_9"
- 	  (lambda () (with-window (get-window)
-		       (animated-move-to (x- (w%x 100)) 0))))
-(bind-key 'all "C-M-KP_1" 
-	  (lambda () (with-window (get-window)
-		       (animated-move-to 0 (y- (w%y 100))))))
-(bind-key 'all "C-M-KP_3"
- 	  (lambda () (with-window (get-window)
-		       (animated-move-to (x- (w%x 100)) (y- (w%y 100))))))
+(let ((p (lambda () animated-move-to 0 0)))
+  (bind-key 'all "C-M-KP_7" p)
+  (bind-key 'all "C-M-KP_Home" p))
 
-(bind-key 'all "C-M-KP_8" (lambda () (animated-move-to #f 0)))
-(bind-key 'all "C-M-KP_6" 
- 	  (lambda () (with-window (get-window)
-		       (animated-move-to (x- (w%x 100)) #f))))
-(bind-key 'all "C-M-KP_2"  
-	  (lambda () (with-window (get-window) 
-		       (animated-move-to #f (y- (w%y 100))))))
-(bind-key 'all "C-M-KP_4" (lambda () (animated-move-to 0 #f)))
+(let ((p (lambda () (with-window (get-window)
+				 (animated-move-to (x- (w%x 100)) 0)))))
+  (bind-key 'all "C-M-KP_9" p)
+  (bind-key 'all "C-M-KP-Prior" p))
 
+(let ((p (lambda () (with-window (get-window)
+				 (animated-move-to 0 (y- (w%y 100)))))))
+  (bind-key 'all "C-M-KP_1" p)
+  (bind-key 'all "C-M-KP_End" p))
 
+(let ((p (lambda () (with-window 
+		     (get-window)
+		     (animated-move-to (x- (w%x 100)) (y- (w%y 100)))))))
+  (bind-key 'all "C-M-KP_3" p)
+  (bind-key 'all "C-M-KP_Next" p))
+
+(let ((p (lambda () (animated-move-to #f 0))))
+  (bind-key 'all "C-M-KP_8" p)
+  (bind-key 'all "C-M-KP_Up" p))
+
+(let ((p (lambda () (with-window (get-window)
+				 (animated-move-to (x- (w%x 100)) #f)))))
+ (bind-key 'all "C-M-KP_6" p)
+ (bind-key 'all "C-M-KP_Right" p))
+
+(let ((p (lambda () (with-window (get-window) 
+				 (animated-move-to #f (y- (w%y 100)))))))
+  (bind-key 'all "C-M-KP_2" p)
+  (bind-key 'all "C-M-KP_Down" p))
+
+(let ((p (lambda () (animated-move-to 0 #f))))
+  (bind-key 'all "C-M-KP_4" p)
+  (bind-key 'all "C-M-KP_Left" p))
 
 
 ;; FIXGJB: modifiers interface could be better... mimic off Emacs?
