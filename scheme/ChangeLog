@@ -34,6 +34,25 @@ Tue Apr 20 21:12:07 1999  Greg J Badros  <gjb@cs.washington.edu>
 	and child-pid.  Add doc that the child-pid is not CMD, but the sh
 	that is used to exec the CMD.  Other doc fixes.
 
+1999-04-19  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* flux.scm (WH-*): New constants, being the flag values of WM_HINTS.
+	(WSH-*): New constants, being the flag valuse of WM_SIZE_HINTS.
+	(X-properties->string): New function, which generates a readable
+	listing of X properties of a window (like xprop(1) does).
+	(show-X-properties): New function, which displays a message window
+	with the output of `X-properties->string'.
+	
+	* listops.scm (repeat): New function, to generate lists of
+	repeating values.
+	* stringops.scm (number->hex-string): New function, converts a
+	number to its hex representation.
+	(window-state->string): New function, converts X11's window-state
+	to a human-readable form.
+	(gravity->string): New function, converts X11's gravity to a
+	human-readable form.
+	(string-join): New function, like Perl's `join'.
+
 Mon Apr 19 20:19:15 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* preferences.scm: Added `save-preferences', `load-preferences'.

@@ -2,6 +2,16 @@ Thu Apr 22 20:15:08 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Added a new show-desk-name proc to change-desk-hook.
 
+1999-04-19  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* robbe.scwmrc (xprop-window): Removed.
+	Replace calls to `xprop-window' by `show-X-properties'.
+	Window-styles that used the default matcher now use title-match
+	explicitly.
+	The Gimp splash screen will not go to Gimp's usual desk.
+	Remembering of previously-focused window on desk N done
+	differently. Still broken, though.
+
 Thu Apr 15 19:06:51 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* gjb.scwmrc: Use window-selection, group modules.  Add dev
