@@ -1,4 +1,4 @@
-;;; File: <scwm.el - 1998-03-26 Thu 17:30:40 EST sds@mute.eaglets.com>
+;;; File: <scwm.el - 1998-04-16 Thu 17:10:41 EDT sds@mute.eaglets.com>
 ;;;
 ;;; Copyright (c) 1998 by Sam Shteingold <sds@usa.net>
 ;;; $Id$
@@ -11,6 +11,12 @@
 ;;;
 ;;; Fixed scwm-run to restart in the same buffer after a crash.
 ;;;	1998-03-17 Tue 15:50:55 EST	sds
+;;;
+;;; Made into a major mode.
+;;;	1998-04-16 Thu 10:38:19 CEST	robbe@orcus.priv.at
+;;;
+;;; Added font-lock support for the major mode stuff.
+;;;	1998-04-16 Thu 17:04:43 EDT	sds
 ;;;
 ;;; This file is distributed under the GPL. See
 ;;;	<URL:http://www.gnu.ai.mit.edu/copyleft/gpl.html>
@@ -31,10 +37,12 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;; Intructions to the user; put this file somewhere in your load-path
-;; and add the following lines in your .emacs:
+;; Instructions to the user:
+;; Put this file somewhare in your load-path and add the following
+;; lines to your .emacs file:
 
-;; (require 'scwm)
+;;   (autoload 'scwm-mode "scwm" "Major mode for editing scwm code. [...]" t)
+;;   (setq auto-mode-alist (cons '("scwmrc\\'" . scwm-mode) auto-mode-alist))
 
 ;; Now you do M-x scwm-run (C-c C-s) to get the *scwm* buffer, where you
 ;; can type commands to be sent to scwm; while you can type C-x C-e in
@@ -78,6 +86,21 @@
 
 ;;; user functions
 ;;; ---- ---------
+
+;;;###autload
+(define-derived-mode scwm-mode scheme-mode "Scwm"
+  "Major mode for editing scwm code.
+Special commands:
+\\{scwm-mode-map}
+Turning on Scwm mode calls the value of the variable `scwm-mode-hook',
+if that value is non-nil.")
+
+(define-key scwm-mode-map [(control j)] 'scwm-eval-print)
+(define-key scwm-mode-map [(control c) (control s)] 'scwm-run)
+(define-key scwm-mode-map [(control x) (control j)] 'scwm-eval-to-minibuffer)
+(define-key scwm-mode-map [(control h) (control s)] 'scwm-documentation)
+(define-key scwm-mode-map [(control h) (control a)] 'scwm-apropos)
+(define-key scwm-mode-map [(meta tab)] 'scwm-complete-symbol-insert)
 
 ;;;###autoload
 (defun scwm-run ()
@@ -184,14 +207,13 @@ Returns a string."
     (princ "SCWM apropos `") (princ pat) (princ "':\n\n")
     (scwm-eval (concat "(apropos \"" pat "\")") standard-output)))
 
-;;; keybindings
-;;; -----------
-(define-key scheme-mode-map [(control j)] 'scwm-eval-print)
-(define-key scheme-mode-map [(control c) (control s)] 'scwm-run)
-(define-key scheme-mode-map [(control x) (control j)] 'scwm-eval-to-minibuffer)
-(define-key scheme-mode-map [(control h) (control s)] 'scwm-documentation)
-(define-key scheme-mode-map [(control h) (control a)] 'scwm-apropos)
-(define-key scheme-mode-map [(meta tab)] 'scwm-complete-symbol-insert)
+;;; font-lock (you better (require 'font-lock) before loading this file!)
+
+(when (boundp 'font-lock-defaults-alist)
+  (setq font-lock-defaults-alist
+	(cons (cons 'scwm-mode
+		    (cdr (assq 'scheme-mode font-lock-defaults-alist)))
+	      font-lock-defaults-alist)))
 
 (provide 'scwm)
 ;; scwm.el ends here
