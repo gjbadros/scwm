@@ -1,3 +1,8 @@
+1998-03-04  Jens-Ulrik Petersen  <petersen@kurims.kyoto-u.ac.jp>
+
+	* winlist.scm (circulate): Improved its behaviour when there is no 
+	window with focus.
+
 Mon Mar  2 23:49:19 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* std-menus.scm, wmconfig-menu.scm: minor fixes from Sam Steingold
