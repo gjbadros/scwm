@@ -17,13 +17,21 @@
 ;;;; Boston, MA 02111-1307 USA
 ;;;; 
 
+;; this gets used to protect windows from deletion
+;; needs to go in the root module so a gh_lookup
+;; will work on it -- gets set below
+(define gdk-leader-window #f)
 
 
 (define-module (app scwm gtk)
   :use-module (gtk gtk)
+  :use-module (gtk gdk)
   :use-module (app scwm scwmgtkhelper))
 
 
+;; see note above
+(if (and (bound? gdk-lead-window) (procedure? gdk-lead-window))
+    (set! gdk-leader-window (gdk-lead-window)))
 
 (define-public (scwm-gtk-sync)
   "Dispatch all pending gtk-events.
@@ -54,4 +62,3 @@ to the main event loop"
 
 ;; (define b (gtk-button-new))
 ;; (gtk-pixmap-new-search-scwm-path "mini-exp-windows-full.xpm" b)
-	   
