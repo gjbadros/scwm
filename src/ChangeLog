@@ -1,3 +1,9 @@
+1999-12-17 16:31:05  Shenghuo ZHU  <zsh@cs.rochester.edu>
+
+	* decor.c (s_set_window_decor_x): Use decor reference.
+	* add_window.c (AddWindow): Ditto.
+	* add_window.c (DestroyScwmWindow): Set Scr.Hilite.
+
 Tue Dec  7 16:26:37 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* events.c (s_handle_pending_events): Do not dispatch events when

@@ -286,6 +286,9 @@ SCWM_PROC(set_window_decor_x, "set-window-decor!", 2, 0, 0,
 
   old_height = psw->fl->TitleHeight;
 
+  if (psw->fl != NULL) DECORUNREF(psw->fl->scmdecor);
+  if (fl != NULL) DECORREF(decor);
+
   psw->fl = fl;
 
   extra_height = psw->fl->TitleHeight - old_height;

@@ -77,6 +77,7 @@
 #include "placement.h"
 #include "callbacks.h"
 #include "cursor.h"
+#include "decor.h"
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"
 #endif
@@ -345,6 +346,7 @@ AddWindow(Window w)
   psw->HiBackColor = SCM_BOOL_F;
 
   psw->fl = &Scr.DefaultDecor;
+  DECORREF(Scr.DefaultDecor.scmdecor);
   psw->buttons = 0;
 
   GetMwmHints(psw);
@@ -829,6 +831,10 @@ DestroyScwmWindow(ScwmWindow *psw)
    */
   if (!psw)
     return;
+
+  if (Scr.Hilite==psw) {
+    Scr.Hilite=NULL;
+  }
 
   call1_hooks(window_close_hook, psw->schwin);
 
