@@ -1,3 +1,29 @@
+Wed Mar 24 19:18:54 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* themes.scm: Rename force to force? for style and so I don't hide 
+	`force'
+
+Wed Mar 24 19:02:21 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* std-menus.scm: Make menu-window-theme menu-global-theme
+	functions, with force? optarg for defeating caching.
+
+Wed Mar 24 18:53:51 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* listops.scm: Fix bug in there-exists? -- thanks to Glenn Trigg
+	for patch.
+
+	* themes.scm: Added load-cached-theme.  Also added theme-names, by 
+	Glenn Trigg and it now uses listops.
+
+	* std-menus.scm: Added menu-window-theme andd menu-global-theme,
+	from Glenn Trigg, now uses style, themes.
+
+Wed Mar 24 15:34:48 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Drop with-window-no-wind -- bug is gone so this is
+	superfluous. 
+
 Wed Mar 24 11:57:57 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* winops.scm: Use the other fix for the below problem -- use

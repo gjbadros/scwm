@@ -1,3 +1,14 @@
+Wed Mar 24 19:09:46 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Shorten the per-procedure information by combining
+	Module and Implementation-Notes, and use refsect2 for the new
+	subsection so it's smaller.
+
+Wed Mar 24 15:38:25 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Import doc/src/*.sgml files into the scwm.sgml that
+	is created so that the text there can be more easily written.
+
 Wed Mar 24 12:09:02 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Fix some DocBook problems, added an Introduction
