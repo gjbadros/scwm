@@ -1,3 +1,7 @@
+Mon Nov 10 00:16:04 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: added toggle-window-shade-animated
+
 Sun Nov  9 16:45:50 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* base.scm: Added a new more abstract syntax for menu items to

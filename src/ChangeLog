@@ -1,3 +1,24 @@
+Mon Nov 10 00:13:29 1997  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* move.c: wrote AnimatedShadeWindow(), similar to
+	AnimatedMoveWindow(); visually not quite perfect, but very nice.
+	Inspired by AfterStep's animation (did not look at its code,
+	though).
+
+	* move.h: Added this -- protos from move.c, removed from misc.h
+	
+	* window.c: give {un-,}window-shade another optional argument -- a
+	boolean saying whether we want the (un-)window-shade-ing to be done
+	animatedly
+
+	* Borders.c: some general cleanup of formatting due to
+	automatically removing the #ifdef-s
+
+	* events.c: removed unused macros MAX_NAME_LEN, MAX_ICON_NAME_LEN
+	
+	* gjb.scwmrc: Use animated shading for double clicks on title bar
+ 	by default
+	
 Sun Nov  9 14:11:47 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* Picture.c, window.c: Handle memory management of strings passed
