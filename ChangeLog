@@ -1,3 +1,11 @@
+Wed Jan 20 10:31:40 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in (scwm_image_load_path): Added
+	modules/xlib-drawing/Makefile to AC_OUTPUT list
+
+	* THANKS: Added Kjetil Wiekhorst Jørgensen -- he did orig. version
+	of RPM Updated Harvey's note to thank for RPMs.
+
 Mon Jan 11 18:19:58 1999  Maciej Stachowiak  <mstx@VICARIOUS-EXISTENCE.MIT.EDU>
 
 	* NEWS: Updated for 0.9 (only rough outline of changes - still

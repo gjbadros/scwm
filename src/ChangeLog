@@ -1,3 +1,8 @@
+Wed Jan 20 10:45:49 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* message-window.c (s_make_message_window): Move FIXME comment out 
+	of doc comment so doc extract warning disappears.
+
 Tue Jan 19 13:11:46 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* events.c:  Added X-root-PropertyNotify-hook and invoke it as

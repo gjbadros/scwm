@@ -1,3 +1,22 @@
+Wed Jan 20 10:44:02 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xlib-drawing/drawing.c: Changed name from set-drawing-mask! to
+	xlib-set-drawing-mask!, updated some of the doc comments
+
+	* scwmgtkhelper/scwmgtkhelper.c (s_scwm_gdk_X_fdes): Added doc comment
+
+	* background/background.c (s_make_resized_image): Fix argument
+	types -- "SCM" was missing so was defaulting to int.  Doc
+	extractor caught this
+
+	* xlib-drawing/*: Added. Largely written by Jeff Nichols-- thanks Jeff!
+
+	* overlay-plane/overlay-plane.c: Make init_overlay_plane() static fn
+
+Wed Jan 20 10:32:27 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (SUBDIRS): Added xlib-drawing
+
 Sat Jan  9 11:26:08 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c: comment fixes -- make it clear that

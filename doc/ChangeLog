@@ -1,3 +1,7 @@
+Wed Jan 20 10:47:47 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* dev/scwm-packaging-rpm.txt, dev/scwm-ui-constraints.txt: Added
+
 Mon Dec 28 10:36:32 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* scwm.sgml, scwm-concepts.txt, scwm-hooks.txt,
