@@ -8,9 +8,8 @@
 
 #include "scwmmenu.h"
 
-void PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim);
+/* This is the function any menu drawing code needs to implement */
+
 void ConstructDynamicMenu(DynamicMenu *pmd);
-void PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe);
-void menu_font_update();
 
 #endif
