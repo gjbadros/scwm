@@ -41,29 +41,6 @@ enum cursor {
  CURSOR_MAX_CURSORS		/*  */
 };
 
-/* FIXGJB: these should use bit fields! */
-/* values for name_list flags */
-/* The first 13 items are mapped directly into the ScwmWindow structures
- * flag value, so they MUST correspond to the first 13 entries in scwm.h */
-#define NOTITLE_FLAG         (1<<13)
-#define NOBORDER_FLAG        (1<<14)
-#define ICON_FLAG            (1<<15)
-#define STARTSONDESK_FLAG    (1<<16)
-#define FORE_COLOR_FLAG      (1<<19)
-#define BACK_COLOR_FLAG      (1<<20)
-#define RANDOM_PLACE_FLAG    (1<<21)
-#define SMART_PLACE_FLAG     (1<<22)
-#define MWM_BUTTON_FLAG      (1<<23)
-#define MWM_DECOR_FLAG       (1<<24)
-#define MWM_FUNCTIONS_FLAG   (1<<25)
-#define MWM_OVERRIDE_FLAG    (1<<26)
-#define MWM_BORDER_FLAG      (1<<27)
-#define DECORATE_TRANSIENT_FLAG (1<<28)
-#define NO_PPOSITION_FLAG    (1<<29)
-#define OL_DECOR_FLAG        (1<<30)
-
-#define MINIICON_FLAG        (1<<31)
-
 /* some fancy font handling stuff */
 #define NewFontAndColor(newfont,color,backcolor) {\
    Globalgcv.font = newfont;\
