@@ -276,14 +276,17 @@ ML is a list of menuitem objects. MAX-LINES is a number."
   "Return a procedure that runs the system command COMMAND."
   (lambda () (execute command)))
 
-(define-public xterm-command "xterm ")
+(define-public xterm-command "xterm")
 
-(define-public (run-in-xterm cmd)
+(define-public remote-shell-command "telnet")
+
+(define*-public (run-in-xterm cmd #&key (xterm-options ""))
   "Return a procedure that runs CMD in an xterm.
 Uses the variable \"xterm-command\" to determine how
-to run an xterm.  CMD must be simply the name of an
-executable (i.e., no options permitted)."
-  (exe (string-append xterm-command cmd)))
+to run an xterm.  CMD may include options to the command.
+Options to the xterm should be given as a string for the optional
+keyword argument xterm-options."
+  (exe (string-append xterm-command " " xterm-options " -e " cmd)))
 
 ;; MSFIX:
 ;; this is redundant w/ below
@@ -339,3 +342,9 @@ moves when the pointer hits the edge of the screen.  Use
 dimension to a number of pixels."
   (set-edge-x-scroll! x)
   (set-edge-y-scroll! y))
+
+
+(defmacro-public scwm-user-var (sym)
+  "Lookup sym in the scwm user variable environment.
+Currently, this means in the-root-module."
+  `(variable-ref (module-variable the-root-module ',sym)))

@@ -98,6 +98,69 @@
 				      (cadddr max-prop) w)
 		     (set-object-property! w 'maximized #f))))))
 
+(define-public opaque-move-percent 50)
+(define-public opaque-resize-percent 35)
+
+(define-public (window-frame-area win)
+  (let* ((frame-size (window-frame-size win))
+	 (width (car frame-size))
+	 (height (cadr frame-size)))
+    (* width height)))
+
+(define-public (display-area)
+  (let* ((wh-list (display-size))
+	 (width (car wh-list))
+	 (height (cadr wh-list)))
+    (* width height)))
+
+(define-public (resize-opaquely? win)
+  "Return #t if WIN has area < opaque-resize-percent of the screen, else #f."
+  (< (window-frame-area win) 
+     (* (display-area) (/ (scwm-user-var opaque-resize-percent) 100))))
+
+(define-public (move-opaquely? win)
+  "Return #t if WIN has area < opaque-move-percent of the screen, else #f."
+  (< (window-frame-area win)
+     (* (display-area) (/ (scwm-user-var opaque-move-percent) 100))))
+
+(define*-public (interactive-move-maybe-opaque #&optional (win (get-window)))
+  "Move WINDOW interactively and possibly opaquely.
+Calls `move-opaquely?' and moves opaquely if that returns #,
+uses a rubberband if it returns #f."
+  (if win (interactive-move win (move-opaquely? win))))
+
+(define*-public (interactive-resize-maybe-opaque #&optional (win (get-window)))
+  "Move WINDOW interactively and opaquely.
+Calls `resize-opaquely?' and moves opaquely if that returns #,
+uses a rubberband if it returns #f."
+  (if win (interactive-resize win (resize-opaquely? win))))
+
+;; (move-opaquely? (select-window-interactively))
+;; (resize-opaquely? (select-window-interactively))
+;; (interactive-move-maybe-opaque)
+
+;;; Some functions for decoration bindings
+(define-public (resize-or-raise-maybe-opaque)
+  "Perform a resize, raise, or lower based on the mouse-event-type.
+To be bound to a window decoration: click does `raise-window',
+motion does `interactive-resize-maybe-opaque', and double-click does
+`lower-window'."
+  (case (mouse-event-type)
+    ((click) (raise-window))
+    ((motion) (interactive-resize-maybe-opaque))
+    ((double-click) (lower-window))))
+
+(define-public (move-or-raise-maybe-opaque)
+  "Perform a move, raise, or lower based on the mouse-event-type.
+To be bound to a window decoration: click does `raise-window',
+motion does `interactive-move-maybe-opaque', and double-click does
+`lower-window'."
+  (case (mouse-event-type)
+    ((click) (raise-window))
+    ((motion) (interactive-move-maybe-opaque))
+    ((double-click) (lower-window))))
+
+
 (define*-public (opaque-interactive-move #&optional (win (get-window)))
   "Move WINDOW interactively and opaquely."
   (if win (interactive-move win #t)))
@@ -106,10 +169,12 @@
   "Resize WINDOW interactively and opaquely."
   (if win (interactive-resize win #t)))
 
-(define*-public (toggle-maximize nw nh #&optional (w (get-window)))
-  (if w (if (maximized? w)
-	    (unmaximize w)
-	    (maximize nw nh w))))
+
+(define*-public (toggle-maximize nw nh #&optional (win (get-window)))
+  "Maximize to width NW, height NH if not maximized, or unmaximize."
+  (if win (if (maximized? win)
+	    (unmaximize win)
+	    (maximize nw nh win))))
 
 ;; add a style option for maximizing
 (add-window-style-option #:start-maximized 

@@ -83,7 +83,8 @@
          (map (lambda (hh)
                (menuitem hh #:action
                          (run-in-xterm
-                          (string-append "-T telnet:" hh " -n telnet "
-                                         "-e telnet -E -l " user " " hh))))
+			  (string-append "telnet -E -l " user " " hh)
+			  #:xterm-options
+                          (string-append "-T telnet:" hh " -n telnet "))))
              host-list))))
 

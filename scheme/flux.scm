@@ -14,6 +14,7 @@
   :use-module (ice-9 regex)
   :use-module (app scwm base)
   :use-module (app scwm winlist)
+  :use-module (app scwm winops)
   :use-module (app scwm optargs))
 
 
@@ -26,16 +27,16 @@
 ;; returning whether an opaque move/resize is desired
 
 (define-public (interactive-move-window-with-focus)
-  (let ((w (current-window-with-focus))) (and w (interactive-move w #t))))
+  (let ((w (current-window-with-focus))) (and w (interactive-move-maybe-opaque w))))
 
 (define-public (interactive-resize-window-with-focus)
-  (let ((w (current-window-with-focus))) (and w (interactive-resize w #t))))
+  (let ((w (current-window-with-focus))) (and w (interactive-resize-maybe-opaque w))))
 
 (define-public (interactive-move-window-with-pointer)
-  (let ((w (current-window-with-pointer))) (and w (interactive-move w #t))))
+  (let ((w (current-window-with-pointer))) (and w (interactive-move-maybe-opaque w))))
 
 (define-public (interactive-resize-window-with-pointer)
-  (let ((w (current-window-with-pointer))) (and w (interactive-resize w #t))))
+  (let ((w (current-window-with-pointer))) (and w (interactive-resize-maybe-opaque w))))
 
 (define-public (toggle-max-vert) (toggle-maximize 0 (%y 100)))
 (define-public (toggle-max-horz) (toggle-maximize (%x 100) 0))
