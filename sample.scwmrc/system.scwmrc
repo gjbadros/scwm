@@ -24,13 +24,13 @@
 
 (set-icon-font! font12)
 (set-hilight-colors! "white" "blueviolet")
-(set-xor-value! 127)
+(set-rubber-band-mask! 127)
 
 
 (define HOME (getenv "HOME"))
 (define USER (getenv "USER"))
 
-(define user-picture-path (string-append HOME "/pixmaps:" HOME "/bitmaps"))
+(define user-image-path (string-append HOME "/pixmaps:" HOME "/bitmaps"))
 
 
 ;;-------------------------------;;
@@ -40,7 +40,7 @@
 ;; these are OK for my system, but may need to be changed for
 ;; yours. This should probably be eventually autoconfed or something.
 
-(set-picture-path! (string-append user-picture-path 
+(set-image-path! (string-append user-image-path 
 			       ":/usr/X11/include/X11/bitmaps:\
 /usr/local/X11/include/X11/pixmaps:/usr/local/lib/icons:\
 /uns/include/X11/pixmaps:\
