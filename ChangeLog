@@ -10,6 +10,10 @@ Fri Mar 26 09:01:12 1999  Greg J Badros  <gjb@cs.washington.edu>
  	if they exist (Sam Steingold points out that these are standard
  	RedHat locations).
 
+1999-03-25  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* configure.in: Added --enable-cflags.
+
 Thu Mar 25 18:36:44 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Bump version to 0.99.1 since it should not be

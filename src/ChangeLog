@@ -114,6 +114,11 @@ Fri Mar 26 12:56:31 1999  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* winprop.c: Remove unnecessary debugging input.
 
+1999-03-25  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* borders.c (SetShapedTitlebar): Would not detect window w/o title 
+	correctly.
+
 1999-03-25  Maciej Stachowiak  <mstachow@alum.mit.edu>
  
  	* winprops.c, winprop.h (set_property_handler): New function
