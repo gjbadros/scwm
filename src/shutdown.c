@@ -108,7 +108,7 @@ restart(SCM command)
   char *n;
 
   if (gh_string_p(command)) {
-    command = strdup(g_argv[0]);
+    n = strdup(g_argv[0]);
   } else if (command == SCM_UNDEFINED) {
     n = gh_scm2newstr(command, &dummy);
   } else {
