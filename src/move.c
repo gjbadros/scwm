@@ -106,7 +106,7 @@ AnimatedMoveWindow(Window w,int startX,int startY,int endX, int endY,
     lastY = currentY;
     }
   while (*ppctMovement != 1.0 && ppctMovement++);
- 
+
 }
 
 
@@ -139,6 +139,9 @@ AnimatedShadeWindow(ScwmWindow *sw, Bool fRollUp,
       XResizeWindow(dpy, wFrame, width, 
 		    shaded_height + client_height * (1 - *ppctMovement));
       XFlush(dpy);
+      /* handle expose events as we're rolling up the window shade */
+      while (XCheckMaskEvent(dpy,  ExposureMask, &Event))
+	DispatchEvent();
       sleep_ms(cmsDelay);
     } while (*ppctMovement < 1.0 && ppctMovement++);
     XMoveWindow(dpy,w,0,-client_height);
