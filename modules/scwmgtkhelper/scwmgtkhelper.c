@@ -62,7 +62,10 @@ ScwmGdkErrorHandler(Display * dpy, XErrorEvent *error)
   /* from gdk_x_error function in gdk.c of gtk+-1.2.x */
   if (error->error_code)
     gdk_error_code = error->error_code;
-  return ScwmErrorHandler(dpy,error);
+  if (gdk_error_warnings)
+    return ScwmErrorHandler(dpy,error);
+  else
+    return 0;
 }
 
 
