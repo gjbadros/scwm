@@ -234,6 +234,15 @@ background color."
       (message-window-set-font! msgwin font))
   (message-window-set-colors! msgwin fg bg))
 
+(define-public (make-message-window-with-image img)
+  "Return a new message window with IMG as a background, sized appropriately.
+Initially the message window is centered in the display."
+  (let ((answer (make-message-window "")))
+    (message-window-set-image! answer img)
+    (apply message-window-set-size! (cons answer (image-size img)))
+    (message-window-set-position! answer (/ display-width 2) (/ display-height 2))
+    answer))
+
 (define-public (make-message-window-clone-default str)
   "Return a new message window that has the default style.
 This is done by cloning the style (see `message-window-style') of

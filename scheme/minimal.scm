@@ -88,6 +88,20 @@ motion does `interactive-move', and double-click does
 
 ;; END gross hack
 
+;; GJB:FIXME:MS: I'd like a backtrace when a hook fails
+(define-public (call-hook-procedures hook-list args)
+  "Runs the procedures in HOOK-LIST, each getting ARGS as their arguments.
+If any error, the others still run.  The procedures are executed in the
+order in which they appear in HOOK-LIST"
+  (for-each (lambda (p) 
+	      (catch #t
+		     (lambda () (apply p args))
+		     (lambda args
+		       (display "Error running hook: ")
+		       (write p)
+		       (newline))))
+	    hook-list))
+
 ;; GJB:FIXME:: this should not be public,
 ;; but I leave it public for now for easier debugging --07/03/99 gjb
 (define-public *scwm-modules* '())
@@ -121,6 +135,7 @@ Run PROC immediately if MODULE has already been loaded."
 	 (lambda ()
 	   (process-use-modules (list module))
 	   (use-scwm-module-note-success module)
+	   (call-hook-procedures load-processing-hook (list -1))
 	   module)
 	 (lambda (key . args)
 	   (display "Error loading module: ")

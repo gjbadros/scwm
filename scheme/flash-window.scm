@@ -8,7 +8,11 @@
 
 (define*-public (flash-window-on #&optional (win (get-window))
 				 (color "red"))
-  (flash-window win #:color color #:unflash-delay #f))
+  "Flash WIN's titlebar and boundary color to COLOR indefinitely.
+Returns the window changed.  Use `unflash-window' to rever the
+window to its normal colors."
+  (flash-window win #:color color #:unflash-delay #f)
+  win)
 
 (define*-public (flash-window #&optional (win (get-window)) #&key
 			      (color "red")
@@ -40,8 +44,12 @@ color.  See `unflash-window'."
 ;; (flash-window (get-window) #:continually #t)
 ;; (stop-flashing-window)
 
+(define*-public (window-flashing? #&optional (win (get-window)))
+  (object-property win 'flashing))
+
 (define*-public (unflash-window #&optional (win (get-window)))
-  "Revert WIN's titlebar and boundary color to state before a `flash-window'."
+  "Revert WIN's titlebar and boundary color to state before a `flash-window'.
+Return the window changed."
   (let ((old-bg (object-property win 'old-bg))
 	(old-hi-bg (object-property win 'old-hi-bg)))
     ;; set-window-background! only takes colors
@@ -50,11 +58,13 @@ color.  See `unflash-window'."
     ;; set-window-highlight-background! can take #f, too, so just do it
     (set-window-highlight-background! old-hi-bg win)
     (set-object-property! win 'old-bg #f)
-    (set-object-property! win 'old-hi-bg #f)))
+    (set-object-property! win 'old-hi-bg #f))
+  win)
 
 (define*-public (stop-flashing-window #&optional (win (get-window)))
   (set-object-property! win 'flashing #f)
-  (unflash-window win))
+  (unflash-window win)
+  win)
 
 ;;; Debugging, testing code.
 ;; (flash-window (get-window) #:unflash-delay #f)
