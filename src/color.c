@@ -15,6 +15,8 @@
 #include <libguile.h>
 #include <X11/Xproto.h>
 #include <X11/Xatom.h>
+#include <X11/Xlib.h>
+#include <values.h>
 
 #define COLOR_IMPLEMENTATION
 #include "color.h"
@@ -127,6 +129,57 @@ color, and 'pixel, the X pixel value it uses. */
 }
 #undef FUNC_NAME
 
+#undef ABS
+#define ABS(x) (((x) < 0)? -(x): (x))
+
+/* divisors are to do some simple (and fast) perceptual weighting
+   (green matters less than red which matters less than blue) */
+#define COLOR_DISTANCE(r1, g1, b1, r2, g2, b2) \
+  ( ABS((g1)-(g2))/4 + ABS((r1)-(r2))/2 + ABS((b1)-(b2)) )
+
+/* Return True on success, false on failure */
+Bool
+ClosestColor(XColor *pcolor)
+{
+  /* just deal with <=8 bit display
+     as that's all I have right now,
+     and that's where we need it most, anyway */
+  if (Scr.d_depth > 8)
+    return False;
+
+  { /* scope */
+    XColor cols[256];
+    int i = 0;
+    /* the desired color we are matching against */
+    unsigned short 
+      mr = pcolor->red,
+      mg = pcolor->green,
+      mb = pcolor->blue;
+    int ccols = 1 << Scr.d_depth;
+    /* track closest match distance in mindist, index into cols in icolBest */
+    double mindist = MAXDOUBLE;
+    int icolBest = -1;
+    for (i = 0; i < ccols; ++i ) {
+      cols[i].pixel = i;
+      cols[i].flags = DoRed | DoGreen | DoBlue;
+    }
+    XQueryColors(dpy,Scr.ScwmRoot.attr.colormap, cols, ccols);
+    for (i = 0; i < ccols; ++i) {
+      unsigned short 
+        r = cols[i].red,
+        g = cols[i].green,
+        b = cols[i].blue;
+      double dist = COLOR_DISTANCE(mr,mg,mb,r,g,b);
+      if (dist < mindist) {
+        mindist = dist;
+        icolBest = i;
+      }
+    }
+    DBUG((WARN,"ClosestColor","Got match with error = %f",mindist));
+    *pcolor = cols[icolBest];
+    return True;
+  }
+}
 
 SCM
 ScmMakeColor(const char *cn, int *perror_status)
@@ -146,8 +199,14 @@ ScmMakeColor(const char *cn, int *perror_status)
   } else if (!XAllocColor(dpy, Scr.ScwmRoot.attr.colormap, &color)) {
     if (perror_status)
       *perror_status = 2; /* cannot alloc */
-    scwm_msg(WARN,"ScmMakeColor","Cannot allocate color: %s -- using black",cn);
-    return BLACK_COLOR;
+    if (ClosestColor(&color)) {
+      scwm_msg(WARN,"ScmMakeColor","Allocated a close match for: %s",cn);
+      if (perror_status)
+        *perror_status = 3; /* got close match */
+    } else {
+      scwm_msg(WARN,"ScmMakeColor","Cannot allocate color or a close match: %s -- using black",cn);
+      return BLACK_COLOR;
+    }
   }
 
   sc = NEW(scwm_color);

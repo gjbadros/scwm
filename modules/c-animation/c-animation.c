@@ -546,3 +546,9 @@ void scm_init_app_scwm_c_animation_module()
 {
   scm_register_module_xxx("app scwm c-animation", init_c_animation);
 }
+
+/* Local Variables: */
+/* tab-width: 8 */
+/* c-basic-offset: 2 */
+/* End: */
+/* vim:ts=8:sw=2:sta */
