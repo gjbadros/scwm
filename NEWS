@@ -7,6 +7,10 @@ Changes for scwm-0.99.3 (not yet released)
 
 * Improved preferences dialog support, cleaner internally, too.
 
+* New primitives
+** `window-decoration-ids', `set-window-id-background!'
+** `focussable-window?'
+
 
 Changes for scwm-0.99.2 (released 14-September-1999)
 
@@ -197,6 +201,7 @@ deprecated `SM-client-id'.
 ** `select-window' is now a proc in base.scm (replaced with `select-viewport-position'
 
 * Misc. changed primitives
+** `window-class', `window-resource' are now `window-class-hint' and `window-resource-hint'; `window-class' and `window-resource' are now implemented in base.scm
 ** `bind-mouse' now takes a 4th argument IMMEDIATE-PROC which gets executed right away on first click, and may disable execution of the more general PROC (3rd arg)
 ** `make-color' returns the closest color (instead of #f) when alloc color fails
    (only for 8 bit and lower displays now)
