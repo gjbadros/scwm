@@ -30,8 +30,6 @@
 	     (app scwm flux)
 	     (app scwm fvwm-module)
 	     )
-;; Need M_FOCUS_CHANGE for auto-raise
-(use-modules (app scwm module-types))
 
 ;;; print some information
 (for-each (lambda (d) (debug-display d)) 
@@ -287,19 +285,22 @@
 	      #:icon #f ;; this turns off icons, but leaves icon titles
 	      #:show-icon #f ;; this turns off both icon titles and icons
 	      #:icon-box (list (x- 70) 1 69 (y- 141))
-	      #:border-width 4 ;; MS borderwidth of 4 looks slightly better
-	                       ;; to my eye than 3.
+	      #:border-width 4
 	      #:focus 'mouse
-
-;	      #:plain-border #t ;; replaces handle-width
-				;; MS no, it replaces no-handles, plus
-	                        ;; it doesn't work right now.
+;	      #:plain-border #t
 	      #:sticky-icon #t
 	      #:random-placement #t #:smart-placement #t
 	      #:mwm-func-hint #t #:mwm-decor-hint #t
 	      #:int-override #t #:decorate-transient #f
 	      #:PPosition-hint #f
 	      #:mini-icon pic-xterm-mini)
+
+(window-style "*" 
+	      #:icon-box (list 0 1 69 (y- 141)))
+
+(window-style "xlogo" #:no-titlebar #t #:normal-border #t)
+
+;; (normal-border (current-window-with-pointer))
 
 
 (define (place-near-pointer w)
@@ -331,18 +332,27 @@
 		   (and (string=? (window-class w) "Netscape")
 			(string=? (window-resource w) "Navigator"))))))
 
+
+;;(define ns-win (select-window-interactively))
+;;(define (netscape-win) ns-win)
+
 (define (move-next-to-netscape-win w)
   (let* ((ns-pos (window-position (netscape-win)))
 	 (x (+ (car ns-pos) 300))
 	 (y (- (cadr ns-pos) 30)))
     (move-to x y w #f #f)
-    (move-pointer-to (+ x 30) (+ y 55))))
+    (move-pointer-to (+ x 30) (+ y 55))
+    (write-all #t "moving next to netscape window " x y "\n")))
 
 ;;(window-title (select-window-interactively))
 ;;(move-next-to-netscape-win (select-window-interactively))
 
-;;(window-style "Netscape: Find" #:other-proc (thunk move-next-to-netscape-win))
-(window-style "Netscape: Find" #:placement-proc (thunk move-next-to-netscape-win))
+;; FIXGJB: this is a bit unintuitive-- must use transient-placement-proc
+;; instead of just placement-proc, even though I've explicitly
+;; named the window
+(window-style "Netscape: Find" #:transient-placement-proc (thunk move-next-to-netscape-win))
+
+;;(window-style "Netscape: Find" #:no-titlebar #t) ;; not needed -- it's a transient
 ;;(window-style "findDialog_popup" #:placement-proc (thunk move-next-to-netscape-win))
 ;; (move-next-to-netscape-win (select-window-interactively))
 
@@ -1088,12 +1098,8 @@
 (bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
 (if want-autoraise
-    (add-hook! broadcast-hook
-	       (lambda	
-		   (event num-datum a1 a2 a3 a4 a5 a6 a7)
-		 (if (= event M_FOCUS_CHANGE)
-		     (let ((window (id->window a1)))
-		       (if window (raise-window window)))))))
+    (use-modules (app scwm auto-raise))
+    (window-style "*" #:auto-raise #t))
 
 (if want-fvwm2-pager-module
     (begin
