@@ -165,6 +165,7 @@ void Restart(int nonsense);
 void Done(int, char *);
 void BlackoutScreen(void);
 void UnBlackoutScreen(void);
+void init_scwm_load_path();
 
 
 /* Global variables */

@@ -148,6 +148,7 @@ char *display_name = NULL;
 
 void scwm_main(int, char **);
 
+SCM scm_parse_path (char *path, SCM tail);
 
 
 typedef void (*main_prog_t) (int argc, char **argv);
@@ -554,6 +555,11 @@ scwm_main(int argc, char **argv)
 
   Scr.gray_bitmap =
     XCreateBitmapFromData(dpy, Scr.Root, g_bits, g_width, g_height);
+
+  /* Add the SCWM_LOAD_PATH preprocessor symbol and evironment
+     variable to the guile load path. */
+
+  init_scwm_load_path();
 
   DBUG("main", "Setting up rc file defaults...");
   SetRCDefaults();
@@ -1570,6 +1576,20 @@ UnBlackoutScreen()
     BlackoutWin = None;
   }
 }				/* UnBlackoutScreen */
+
+
+void init_scwm_load_path()
+{
+  SCM *loc_load_path;
+  SCM path;
+
+  loc_load_path = SCM_CDRLOC(scm_sysintern0("%load-path"));
+  path=*loc_load_path;
+  path=gh_cons(gh_str02scm(SCWM_LOAD_PATH),path);
+  path=scm_parse_path(getenv("SCWM_LOAD_PATH"), path);
+  *loc_load_path = path;
+}
+
 
 /* Local Variables: */
 /* tab-width: 8 */
