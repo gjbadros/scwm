@@ -27,14 +27,14 @@
 (proplist-get-array-element (proplist-get-all-dictionary-keys pld) 1)
 
 
-
+(chdir "/home/gjb/scwm/scheme/tests")
 (define p (get-proplist-with-path "WindowMaker"))
 
 (define p-keys (proplist-get-all-dictionary-keys p))
 
-(proplist-get-number-of-elements p2)
+(proplist-get-number-of-elements p-keys)
 
-(proplist-get-array-element p2 0)
+(proplist-get-array-element p-keys 0)
 
 (proplist-get-dictionary-entry p "NoDithering")
 
@@ -42,3 +42,17 @@
      (list 0 1 2 3))
 
 (proplist-get-all-dictionary-keys p)
+
+(define* (proplist-dictionary->alist pl #&optional (i 0))
+  (let* ((keys (proplist-get-all-dictionary-keys pl))
+	 (num (proplist-get-number-of-elements keys)))
+    (if (>= i num)
+	'()
+	(begin
+	  (let* ((key (proplist-get-array-element keys i))
+		 (val (proplist-get-dictionary-entry pl key)))
+	    (cons (cons key val) (proplist-dictionary->alist pl (+ i 1))))))))
+
+(define al (proplist-dictionary->alist p))
+
+(assoc-ref al "ShadeDelay")
