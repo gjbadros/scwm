@@ -127,6 +127,7 @@ longer in use by another process."
 	      ;;; Should just do this more logically, anyway
 	      (cond
 	       ((matches-command? "cotton") (animated-window-shade win))
+	       ((matches-command? "center") (animated-move-to-center win))
 	       ((matches-command? "north west") (animated-move-to-nw win))
 	       ((matches-command? "north east") (animated-move-to-ne win))
 	       ((matches-command? "south west") (animated-move-to-sw win))

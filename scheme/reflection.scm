@@ -44,9 +44,14 @@ Return #f if PROC-OR-STRING-OR-SYMBOL is none of those things."
       (and (symbol? proc-or-string-or-symbol)
 	   (eval proc-or-string-or-symbol))))
 
+;; (procedure-string->procedure "push-focus-window")
 (define-public (procedure-string->procedure proc-name)
   "Return a procedure given its name."
-  (eval (string->symbol proc-name)))
+  (catch #t
+	 (lambda ()
+	   (eval (string->symbol proc-name)))
+	 (lambda (key . args)
+	   #f)))
 
 (define-public (procedure-arity proc)
   "Return the arity values for PROC.

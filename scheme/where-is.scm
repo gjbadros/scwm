@@ -10,13 +10,16 @@
   :use-module (app scwm reflection))
 
 (define (where-is-description proc)
-  (if (procedure? proc) 
-      (let ((description (procedure->bindings-description proc)))
-	(if (> (string-length description) 0)
-	    (gtk-message description #:title (string-append "Bindings for " (procedure-name proc)))
-	    (display-message-briefly (string-append "No bindings for " (procedure-name proc)))))
-      (display-message-briefly (string-append (with-output-to-string (lambda () (write proc)))
-					      " is not a procedure"))))
+  (cond
+   ((procedure? proc) 
+    (let ((description (procedure->bindings-description proc)))
+      (if (> (string-length description) 0)
+	  (gtk-message description #:title (string-append "Bindings for " (procedure-name proc)))
+	  (display-message-briefly (string-append "No bindings for " (procedure-name proc))))))
+   ((eq? #f proc)
+    (display-message-briefly "No such procedure"))
+   (else (display-message-briefly (string-append (with-output-to-string (lambda () (write proc)))
+						 " is not a procedure")))))
 
 ;; (where-is describe-event)
 ;; (where-is 'describe-event)
