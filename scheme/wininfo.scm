@@ -37,15 +37,25 @@
   (on-desk? (current-desk) w))
 
 (define (rectangle-overlap? x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
-  (let ((x1-2 (+ x1-1 w1))
-	(y1-2 (+ y1-1 h1))
-	(x2-2 (+ x2-1 w2))
-	(y2-2 (+ y2-1 h2)))
-    (or (and (>= x1-1 x2-1) (<= x1-1 x2-2) (>= y1-1 y2-1) (<= y1-1 y2-2))
-	(and (>= x1-1 x2-1) (<= x1-1 x2-2) (>= y1-2 y2-1) (<= y1-2 y2-2))
-	(and (>= x1-2 x2-1) (<= x1-2 x2-2) (>= y1-1 y2-1) (<= y1-1 y2-2))
-	(and (>= x1-2 x2-1) (<= x1-2 x2-2) (>= y1-2 y2-1) (<= y1-2 y2-2)))))
+  (> (intersection-area x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2) 0))
 
+(define (intersection-area x1-1 y1-1 w1 h1 x2-1 y2-1 w2 h2)
+  (let ((x1-2 (- (+ x1-1 w1) 1))
+	(y1-2 (- (+ y1-1 h1) 1))
+	(x2-2 (- (+ x2-1 w2) 1))
+	(y2-2 (- (+ y2-1 h2) 1)))
+    (if (or (< x1-2 x2-1)
+	    (< x2-2 x1-1)
+	    (< y1-2 y2-1)
+	    (< y2-2 y1-1)) 
+	0
+	(let ((x1 (max x1-1 x2-1))
+	      (x2 (min x1-2 x2-2))
+	      (y1 (max y1-1 y2-1))
+	      (y2 (min y1-2 y2-2)))
+	  (let ((w (+ (- x2 x1) 1))
+		(h (+ (- y2 y1) 1)))
+	    (* w h))))))
 
 (define*-public (in-viewport-any-desk? #&optional (w (get-window)))
   (if w (apply rectangle-overlap? 
@@ -71,6 +81,16 @@
   (if w (and (on-current-desk? w)
 	     (in-viewport-any-desk? w))))
 
+(define*-public (percent-visible #&optional (w (get-window)))
+  (/ (* 100 
+	(apply intersection-area
+	       (append
+		(window-position w)
+		(window-size w)
+		(list 0 0)
+		(display-size))))
+     (apply * (window-size w))))
+	   
 (define*-public (window-geometry-string #&optional (w (get-window)))
   (if w (let ((i (iconified? w))
 	      (pos (window-position w))

@@ -20,6 +20,7 @@
 
 (define-module (app scwm winops)
   :use-module (app scwm optargs)
+  :use-module (app scwm base)
   :use-module (app scwm style-options))
 
 
@@ -125,3 +126,22 @@
 				" | xpr | lpr"))))
 
 
+(define*-public (animated-move-to x y #&optional (win (get-window)))
+  "Move WIN to x y animatedly.
+If X or Y is 'x or 'y, respectively (or #f), then do not change
+that coordinate during the move.  At least one of X and Y must be
+a number."
+  (let* ((size (window-frame-size win))
+	 (width (car size))
+	 (height (cadr size)))
+    (if (equal? x 'x) (set! x #f)
+	(if (and (number? x) (< x 0)) (set! x (x- width))))
+    (if (equal? y 'y) (set! y #f)
+	(if (and (number? y) (< y 0)) (set! y (y- height))))
+    (raise-window win)
+    (move-to x y win 'animated 'move-pointer-too)))
+
+;; (animated-move-to -1 'y)
+;; (animated-move-to 0 'y)
+;; (animated-move-to 'x -1 (current-window-with-pointer))
+;; (animated-move-to #f -1 (current-window-with-pointer))
