@@ -1392,8 +1392,12 @@ HandleUnmapNotify()
 
   XFlush(dpy);
  HUN_return:
-  if (fCoerceEnterNotify)
-    HandleHardFocus(PswFromPointerLocation(dpy));
+  if (fCoerceEnterNotify) {
+    ScwmWindow *psw = PswFromPointerLocation(dpy);
+    if (!psw->fClickToFocus) {
+      HandleHardFocus(psw);
+    }
+  }
   DBUG_EVENT((DBG,"HandleUnmapNotify", "return"));
 }
 
