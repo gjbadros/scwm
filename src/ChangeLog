@@ -1,5 +1,16 @@
 1998-07-04  Greg Badros  <gjb@cs.washington.edu>
 
+	* shutdown.c (restart): Rename variable char *n to sz
+
+	* events.h, events.c (HandleMappingNotify): Added this function to
+ 	recall init_modifiers(), and a new hook X-MappingNotify-hook
+
+	* binding.c: add mod-mask-{meta,alt,hyper,super} primitives for
+	testing whether the mod-mask is available; make init_modifiers
+	reset the static variables so modifiers that get removed are reset
+
+1998-07-04  Greg Badros  <gjb@cs.washington.edu>
+
 	* xmisc.c (PNewXTextPropertyFromSz): Added this function to create 
 	a new XTextProperty struct for the set-window-text-property primitive
 
