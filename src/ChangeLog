@@ -1,3 +1,18 @@
+Sat May  1 14:27:43 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* window.c:  Fix `stick' primitive to not do the modular
+	arithmetic.  This way making windows move when stuck.  
+
+	* window.c,resize.c,move.c,menu.c: Added #ifndef
+ 	NOT_MORE_RESPONSIVE for conditionally turning off calls to
+ 	NoEventsScwmUpdate outside the main loop (in case it is a
+ 	stability issue... not sure yet).
+
+Sat May  1 13:42:22 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* callbacks.c (force_new_input_hooks): Should have used gh_pair_p, 
+	not gh_list_p in change below.
+
 Wed Apr 28 19:59:05 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* callbacks.c (force_new_input_hooks): Be sure SCM-s are lists
