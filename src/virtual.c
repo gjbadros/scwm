@@ -333,14 +333,17 @@ initPanFrames()
  *  Moves the viewport within the virtual desktop
  */
 void 
-MoveViewport(int newx, int newy, Bool grab)
+MoveViewport_internal(int newx, int newy, Bool grab)
 {
   ScwmWindow *psw;
   int deltax, deltay;
 
+  /* no change? then do nothing */
+  if (newx == Scr.Vx && newy == Scr.Vy)
+    return;
+
   if (grab)
     XGrabServer_withSemaphore(dpy);
-
 
   if (newx > Scr.VxMax)
     newx = Scr.VxMax;
@@ -413,6 +416,13 @@ MoveViewport(int newx, int newy, Bool grab)
     StashEventTime(&Event);
   if (grab)
     XUngrabServer_withSemaphore(dpy);
+}
+
+
+void 
+MoveViewport(int newx, int newy, Bool grab)
+{
+  ChangeVirtualPosition(newx,newy,grab);
 }
 
 

@@ -316,6 +316,8 @@ InitVariables(void)
 
   Scr.MsgWindow = None;
 
+  CassowaryInitClVarsInPscreen(&Scr);
+
   SCM_DEFER_INTS;
   scm_protect_object(scmScreen = ScmFromPScreenInfo(&Scr));
   SCM_ALLOW_INTS;

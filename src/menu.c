@@ -1200,7 +1200,7 @@ PopdownAllPriorMenus(DynamicMenu *pmd)
 }
 
 static 
-void
+SCM
 PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
 {
   DynamicMenu *pmd = NewDynamicMenu(pmenu,pmdPoppedFrom);
@@ -1221,10 +1221,10 @@ PopupGrabMenu(Menu *pmenu, DynamicMenu *pmdPoppedFrom, Bool fWarpToFirst)
   FreeDynamicMenu(pmd);
   DEREF_IF_SYMBOL(scmAction);
   if (DYNAMIC_PROCEDURE_P(scmAction)) {
-    call_thunk_with_message_handler(scmAction);
+    return call_thunk_with_message_handler(scmAction);
   } else if (DYNAMIC_MENU_P(scmAction)) {
     /* FIXGJB: is this recursion  bad? */
-    popup_menu(scmAction, SCM_BOOL_FromBool(fWarpToFirst));
+    return popup_menu(scmAction, SCM_BOOL_FromBool(fWarpToFirst));
   }
 }
 
@@ -1242,8 +1242,8 @@ SCWM_PROC(popup_menu,"popup-menu", 1,1,0,
   if (warp_to_first_p == SCM_BOOL_T)
     fWarpToFirst = True;
   /* FIXGJB: how can we tell if keybd was used to invoke this command? */
-  PopupGrabMenu(MENU(menu),NULL,fWarpToFirst);
-  return SCM_UNSPECIFIED;
+  return PopupGrabMenu(MENU(menu),NULL,fWarpToFirst);
+  /*  return SCM_UNSPECIFIED; */
 }
 #undef FUNC_NAME
 

@@ -95,6 +95,7 @@ static XrmOptionDescRec table[] =
 #ifndef USE_CASSOWARY
 void CassowarySetCValuesAndSolve(ScwmWindow *psw, int fSolve)  { /* empty */ }
 void CassowaryInitClVarsInPsw(ScwmWindow *psw) { /* empty */ }
+void CassowaryInitClVarsInPscreen(Screen *pscreen) { /* empty */ }
 void CassowaryNewWindow(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditPosition(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditSize(ScwmWindow *psw) { /* empty */ }
@@ -104,8 +105,18 @@ void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y, Bool fOpaque) {
 void SuggestSizeWindowTo(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque) {
   SetScwmWindowGeometry(psw,x,y,w,h, fOpaque);
 }
+/* from virtual.h */
+void MoveViewport_internal(int newx, int newy, Bool grab);
+
+void ChangeVirtualPosition(int vx, int vy, Bool fGrab) {
+  MoveViewport_internal(vx,vy,fGrab);
+}
+
+void CassowaryModifyOpaqueFlag(Bool *pfOpaque) { /* empty */ }
+
 void CassowaryEndEdit(ScwmWindow *psw) {
-  ResizePswToCurrentSize(psw);
+  if (psw)
+    ResizePswToCurrentSize(psw);
 }
 #endif
 

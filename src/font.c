@@ -111,6 +111,7 @@ allocated, an error results. */
   char *defstrreturn;
   int missings,loadedfonts;
   int height = 0, ascent = 0;
+  int i = 0;
   XFontStruct **xfss;
 #else
   XFontStruct *xfs;

@@ -339,6 +339,9 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
             if (psw->icon_w != None)
               XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
                           yt + psw->icon_p_height);
+          } else {
+            RedrawOutlineAtNewPosition(Scr.Root, psw->icon_x_loc, psw->icon_y_loc,
+                                       Width, Height);
           }
         } else {
           /* the solver's resolve does the move window */
@@ -377,13 +380,16 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
   if (!psw->fIconified) {
     SuggestMoveWindowTo(psw,xl,yt,True);
     CassowaryEndEdit(psw);
-  } else if (!opaque_move) {
-    /* need to move the real windows for the icon */
-    if (psw->icon_pixmap_w != None)
-      XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, psw->icon_y_loc);
-    if (psw->icon_w != None)
-      XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
-                  yt + psw->icon_p_height);
+  } else {
+    /* we're moving an icon */
+    if (!opaque_move) {
+      /* we finally need to move the real windows for the icon */
+      if (psw->icon_pixmap_w != None)
+        XMoveWindow(dpy, psw->icon_pixmap_w, psw->icon_x_loc, psw->icon_y_loc);
+      if (psw->icon_w != None)
+        XMoveWindow(dpy, psw->icon_w, psw->icon_xl_loc,
+                    yt + psw->icon_p_height);
+    }
   }
     
   *FinalX = xl;
@@ -538,6 +544,8 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   /* FIXGJB: pass these in instead */
   extern Bool have_orig_position;
   extern int orig_x, orig_y;
+
+  CassowaryModifyOpaqueFlag(&fOpaque);
 
   /* find out from where we should start the move */
   if (have_orig_position) {

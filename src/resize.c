@@ -417,6 +417,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
   Bool fEdgeWrapX = Scr.fEdgeWrapX;
   Bool fEdgeWrapY = Scr.fEdgeWrapY;
 
+  CassowaryModifyOpaqueFlag(&fOpaque);
 
   psw->fMaximized = False;
 

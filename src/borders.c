@@ -1319,6 +1319,10 @@ SetupFrame(ScwmWindow *psw, int x, int y, int w, int h, Bool sendEvent,
       DBUG(__FUNCTION__,"Has border!");
       psw->corner_width = psw->title_height + psw->bw + psw->boundary_width;
 
+      /* FIXGJB: pretty arbitrary minimum size */
+      if (psw->corner_width < 12)
+        psw->corner_width = 12;
+
       if (w < 2 * psw->corner_width)
 	psw->corner_width = w / 3;
       if ((h < 2 * psw->corner_width) && !shaded)
