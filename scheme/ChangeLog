@@ -1,3 +1,18 @@
+Thu Aug 13 16:20:43 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* minimal.scm: Document all functions.
+
+Thu Aug 13 16:04:20 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Document all public functions.  The define*-public
+	  docstrings aren't accessible, though, and the emacs interface
+	  seems to not permit %x as a procedure name.  Also changed
+	  run-in-xterm to have the -e option already, and fixed std-menus
+	  and prefs-menu for that convention.
+
+	* prefs-menu.scm, std-menus.scm: Above mentioned fix to uses of
+	  run-in-xterm.
+
 Thu Aug 13 11:19:40 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* wininfo.scm: Fix percent visible to use window-frame-size, not
