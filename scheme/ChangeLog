@@ -1,3 +1,16 @@
+Mon Dec  6 16:21:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* nonants.scm: Fix bug in calling set-window-highlighted-nonant!
+	with a #f window argument.
+
+Mon Dec  6 15:52:30 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: ws change: added commented-out code.
+
+	* ui-constraints-buttons.scm: Put record/stop button first.  Turn
+	animation back on since it is get-window-with-nonant-interactively 
+	that is broken, not the animations.
+
 Mon Dec  6 12:41:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* gnome-panel-menus.scm: New version from Michael Schmitz: "sort
