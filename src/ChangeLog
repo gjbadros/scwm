@@ -1,3 +1,9 @@
+Thu Sep  3 15:26:58 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* placement.c, window.h: Change name of struct _gravity_info to
+ 	struct gravity_info_tag since leading underscores are (at least)
+ 	partially reserved for the implementation
+
 Thu Sep  3 14:26:35 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* session-manager.h, session-manager.c: Added -- for session
