@@ -35,6 +35,7 @@
 #include "colors.h"
 #include "system.h"
 #include "guile-compat.h"
+#include "scwm-snarf.h"
 
 #define COLOR_HASH_SIZE 20
 
@@ -77,10 +78,8 @@ print_color(SCM obj, SCM port, scm_print_state * pstate)
   return 1;
 }
 
-SCM_PROC (s_color_p, "color?", 1, 0, 0, color_p);
-
-SCM 
-color_p (SCM obj)
+SCWM_PROC (color_p, "color?", 1, 0, 0, 
+           (SCM obj))
 {
   return SCM_BOOL_FromBool(COLOR_P(obj));
 }
@@ -88,10 +87,8 @@ color_p (SCM obj)
 /* FIXMS: Should we extend this to return r, g and b values? Should we
    perhaps even store those in the color structure? */
 
-SCM_PROC (s_color_properties, "color-properties", 1, 0, 0, color_properties);
-
-SCM
-color_properties (SCM color)
+SCWM_PROC (color_properties, "color-properties", 1, 0, 0,
+           (SCM color))
 {
   VALIDATE_COLOR (color, s_color_properties, 1);
 
@@ -100,10 +97,8 @@ color_properties (SCM color)
 		 SCM_UNDEFINED);
 }
 
-SCM_PROC (s_make_color, "make-color", 1, 0, 0, make_color);
-
-SCM
-make_color (SCM cname)
+SCWM_PROC (make_color, "make-color", 1, 0, 0,
+           (SCM cname))
 {
   SCM answer;
   XColor color;
@@ -165,10 +160,8 @@ make_color (SCM cname)
 }
 
 
-SCM_PROC (s_clear_color_cache_entry, "clear-color-cache-entry", 1, 0, 0, clear_color_cache_entry);
-
-SCM
-clear_color_cache_entry(SCM name)
+SCWM_PROC (clear_color_cache_entry, "clear-color-cache-entry", 1, 0, 0,
+           (SCM name))
 {
   scm_hash_remove_x(color_hash_table, name);
   return SCM_UNSPECIFIED;
@@ -345,10 +338,8 @@ adjust_brightness (SCM color, double factor) {
 }
 
 
-SCM_PROC (s_make_relief_color, "make-relief-color", 2, 0, 0, make_relief_color);
-
-SCM
-make_relief_color (SCM color, SCM factor)
+SCWM_PROC (make_relief_color, "make-relief-color", 2, 0, 0,
+           (SCM color, SCM factor))
 {
   double f;
 
@@ -407,10 +398,8 @@ static void reset_menu_relief()
 }
 
 
-SCM_PROC (s_set_hilight_factor_x, "set-hilight-factor!", 1, 0, 0, set_hilight_factor_x);
-
-SCM
-set_hilight_factor_x (SCM factor)
+SCWM_PROC (set_hilight_factor_x, "set-hilight-factor!", 1, 0, 0,
+           (SCM factor))
 {
   double f;
   ScwmDecor *fl;
@@ -428,10 +417,8 @@ set_hilight_factor_x (SCM factor)
   return SCM_UNSPECIFIED;
 }
 
-SCM_PROC (s_hilight_factor, "hilight-factor", 0, 0, 0, hilight_factor);
-
-SCM
-hilight_factor (SCM factor)
+SCWM_PROC (hilight_factor, "hilight-factor", 0, 0, 0,
+           ())
 {
   ScwmDecor *fl;
 
@@ -441,10 +428,8 @@ hilight_factor (SCM factor)
 }
 
 
-SCM_PROC (s_set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0, set_shadow_factor_x);
-
-SCM
-set_shadow_factor_x (SCM factor)
+SCWM_PROC (set_shadow_factor_x, "set-shadow-factor!", 1, 0, 0,
+           (SCM factor))
 {
   double f;
   ScwmDecor *fl;
@@ -463,10 +448,8 @@ set_shadow_factor_x (SCM factor)
 }
 
 
-SCM_PROC (s_shadow_factor, "shadow-factor", 0, 0, 0, shadow_factor);
-
-SCM
-shadow_factor (SCM factor)
+SCWM_PROC (shadow_factor, "shadow-factor", 0, 0, 0,
+           ())
 {
   ScwmDecor *fl;
 
@@ -480,10 +463,8 @@ double menu_hilight_factor_val = 1.2;
 double menu_shadow_factor_val = 0.5;
 
 
-SCM_PROC (s_set_menu_hilight_factor_x, "set-menu-hilight-factor!", 1, 0, 0, set_menu_hilight_factor_x);
-
-SCM
-set_menu_hilight_factor_x (SCM factor)
+SCWM_PROC (set_menu_hilight_factor_x, "set-menu-hilight-factor!", 1, 0, 0,
+           (SCM factor))
 {
   double f;
   if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
@@ -497,19 +478,15 @@ set_menu_hilight_factor_x (SCM factor)
   return SCM_UNSPECIFIED;
 }
 
-SCM_PROC (s_menu_hilight_factor, "menu-hilight-factor", 0, 0, 0, menu_hilight_factor);
-
-SCM
-menu_hilight_factor (SCM factor)
+SCWM_PROC (menu_hilight_factor, "menu-hilight-factor", 0, 0, 0,
+           ())
 {
   return (gh_double2scm(menu_hilight_factor_val));
 }
 
 
-SCM_PROC (s_set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0, set_menu_shadow_factor_x);
-
-SCM
-set_menu_shadow_factor_x (SCM factor)
+SCWM_PROC (set_menu_shadow_factor_x, "set-menu-shadow-factor!", 1, 0, 0,
+           (SCM factor))
 {
   double f;
   if (gh_number_p(factor) || ((f=gh_scm2double(factor)) < 0.0)) {
@@ -523,10 +500,8 @@ set_menu_shadow_factor_x (SCM factor)
   return SCM_UNSPECIFIED;
 }
 
-SCM_PROC (s_menu_shadow_factor, "menu-shadow-factor", 0, 0, 0, menu_shadow_factor);
-
-SCM
-menu_shadow_factor (SCM factor)
+SCWM_PROC (menu_shadow_factor, "menu-shadow-factor", 0, 0, 0,
+           (SCM factor))
 {
   return (gh_double2scm(menu_shadow_factor_val));
 }
@@ -549,10 +524,8 @@ redraw_hilight_window()
 
 /* FIXMS: Need to protect color objects in the below! */
 
-SCM_PROC (s_set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0, set_hilight_foreground_x);
-
-SCM 
-set_hilight_foreground_x(SCM fg) 
+SCWM_PROC (set_hilight_foreground_x, "set-hilight-foreground!", 1, 0, 0,
+           (SCM fg) )
 { 
   ScwmDecor *fl;
 
@@ -576,10 +549,8 @@ set_hilight_foreground_x(SCM fg)
 /* FIXMS: the more I do this, the more I wish we had a nice GC
    abstraction. */
 
-SCM_PROC (s_set_hilight_background_x, "set-hilight-background!", 1, 0, 0, set_hilight_background_x);
-
-SCM 
-set_hilight_background_x(SCM bg)
+SCWM_PROC (set_hilight_background_x, "set-hilight-background!", 1, 0, 0,
+           (SCM bg))
 {
   XGCValues gcv;
   unsigned long gcm;
@@ -629,10 +600,8 @@ set_hilight_background_x(SCM bg)
 
 
 
-SCM_PROC (s_set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0, set_menu_foreground_x);
-
-SCM 
-set_menu_foreground_x(SCM fg) 
+SCWM_PROC (set_menu_foreground_x, "set-menu-foreground!", 1, 0, 0,
+           (SCM fg) )
 { 
   XGCValues gcv;
   unsigned long gcm;
@@ -655,10 +624,8 @@ set_menu_foreground_x(SCM fg)
 }
 
 
-SCM_PROC (s_set_menu_background_x, "set-menu-background!", 1, 0, 0, set_menu_background_x);
-
-SCM 
-set_menu_background_x(SCM bg) 
+SCWM_PROC (set_menu_background_x, "set-menu-background!", 1, 0, 0,
+           (SCM bg) )
 { 
   XGCValues gcv;
   unsigned long gcm;
@@ -708,10 +675,8 @@ set_menu_background_x(SCM bg)
 }
 
 
-SCM_PROC (s_set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0, set_menu_stipple_x);
-
-SCM 
-set_menu_stipple_x(SCM st) 
+SCWM_PROC (set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0,
+           (SCM st) )
 {
   XGCValues gcv;
   unsigned long gcm;

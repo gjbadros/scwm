@@ -81,16 +81,16 @@ SCM clear_color_cache_entry(SCM name);
 SCM adjust_brightness (SCM color, double factor);
 
 SCM set_hilight_factor_x (SCM factor);
-SCM hilight_factor (SCM factor);
+SCM hilight_factor ();
 
 SCM set_shadow_factor_x (SCM factor);
-SCM shadow_factor (SCM factor);
+SCM shadow_factor ();
 
 SCM set_menu_hilight_factor_x (SCM factor);
-SCM menu_hilight_factor (SCM factor);
+SCM menu_hilight_factor ();
 
 SCM set_menu_shadow_factor_x (SCM factor);
-SCM menu_shadow_factor (SCM factor);
+SCM menu_shadow_factor ();
 
 SCM set_hilight_foreground_x(SCM fg);
 SCM set_hilight_background_x(SCM bg);
