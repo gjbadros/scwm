@@ -1,3 +1,21 @@
+Thu Aug 13 10:03:08 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* window.c, move.c: Use (possibly) shaded height in
+	  ResizePswToCurrentSize, SetScwmWindowPosition, InteractiveMove
+
+	* virtual.c, deskpage.c: Do not use bogus 10000 special number in
+	  FNeedsPaging (patch from Robert Bihlmeyer); use #f instead for
+	  s_set_edge_scroll_delay_x
+
+Wed Aug 12 18:07:23 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* scwm.c, module-types.h: Rename M_ERROR macro to M_FVWM_ERROR
+	  (conflict with a solaris header file)
+
+	* binding.c: Remove some unused variables
+
+	* syscompat.h: #include <unistd.h> for usleep
+
 Wed Aug 12 17:26:30 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* move.c: Added Todd Larson's patch
@@ -61,6 +79,15 @@ Mon Aug 10 17:45:55 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.h: Added xboundary_width field of struct ScwmWindow, and
 	  use it in GRAV_X_ADJUSTMENT macro
+
+1998-08-13  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* deskpage.c (s_set_edge_scroll_delay_x): Change calling
+ 	convention. usec == #f now means that scrolling is prohibited.
+ 	Warn whenever old usage of usec is detected.
+
+	* virtual.c (FNeedsPaging): "Scrolling prohibited" is now
+ 	signalled with a negative time.
 
 Fri Aug  7 20:04:44 1998  Greg Badros  <gjb@cs.washington.edu>
 
