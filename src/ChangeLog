@@ -1,3 +1,7 @@
+Mon Jan 11 22:34:52 1999  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* xrm.c: Added proper copyright notice.
+
 Wed Jan  6 07:59:03 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c (scwm_main): Added missing parenthesis inside an
