@@ -81,6 +81,22 @@
 (set-icon-font! font12)
 (set-rubber-band-mask! 255)  
 
+(define (popup-small-ops)
+  (popup-menu (make-small-window-ops-menu (get-window))))
+
+(define (popup-sysutils)
+  ())
+
+(define (popup-util)
+  (popup-menu 'menu-util))
+
+(define (popup-root-start)
+  (popup-menu 'menu-root-start))
+
+(define (show-icon-list-menu)
+  (show-window-list-menu #:only iconified?))
+
+
 ;;; set path to use for image searches
 (set! image-load-path (cons "/usr/X11/lib/X11/mini-icons" image-load-path))
 (set! image-load-path (cons "/usr/X11/include/X11/pixmaps" image-load-path))
@@ -211,7 +227,7 @@
 
 
 ;;;(add-left-button system-button-face (lambda () (popup-small-ops)))
-(add-left-button mini-icon-button-face 'popup-small-ops)
+(add-left-button mini-icon-button-face popup-small-ops)
 
 ;; MS: I presume this is the desired efffect.
 ;; random thought: A nice extension would be buttons that change
@@ -219,15 +235,15 @@
 ;; the fvwm2 "MWMButton" concept whereby a button reverses its vector 
 ;; pattern when the window is maximized. It should be much more general, 
 ;; of course.
-(add-left-button sticky-button-face 'toggle-stick)
+(add-left-button sticky-button-face toggle-stick)
 
-(add-left-button sysutils-button-face 'popup-sysutils)
+(add-left-button sysutils-button-face popup-sysutils)
 
 (if want-close-button
     (add-right-button close-button-face close-window))
 
-(add-right-button tall-maximize-button-face 'vertical-toggle-maximize)
-(add-right-button iconify-button-face 'iconify)
+(add-right-button tall-maximize-button-face vertical-toggle-maximize)
+(add-right-button iconify-button-face iconify)
 
 ;; (plain-border (get-window)) fixes the display problem for the selected window
 ;; something must not be initialized correctly
@@ -466,13 +482,7 @@
     (menuitem "Desks" #:action menu-desk)
     menu-separator
     (menuitem "Exit scwm" menu-quit-verify))
-   #:font 'bold-menu-font))
-
-(define (popup-util)
-  (popup-menu 'menu-util))
-
-(define (popup-root-start)
-  (popup-menu 'menu-root-start))
+   #:font bold-menu-font))
 
 (define (make-small-window-ops-menu w)
   (menu
@@ -517,14 +527,8 @@
     (menuitem "Destroy" #:image-left "mini-bomb.xpm" 
 	       #:action destroy-window))))
   
-(define (popup-small-ops)
-  (popup-menu (make-small-window-ops-menu (get-window))))
-
 
 ;;; now set some mouse and key bindings ;;
-
-(define (show-icon-list-menu)
-  (show-window-list-menu #:only iconified?))
 
 
 ;;; first our root menus
@@ -547,8 +551,8 @@
 
 
 ;; key bindings for the menus
-(bind-key 'all "M-S-F1" 'popup-util)
-(bind-key 'all "M-S-F2" 'popup-window-ops)
+(bind-key 'all "M-S-F1" popup-util)
+(bind-key 'all "M-S-F2" popup-window-ops)
 
 ;; in case of emergency, hit Control-Meta-Q
 (bind-key 'all "C-M-S-q" quit)
@@ -624,12 +628,12 @@
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
 ;(key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
 
-(bind-key 'all "C-M-S-r" 'refresh)
-(bind-key 'all "C-M-S-5" 'recapture)
-(bind-key 'all "C-M-S-x" 'start-xterm)
+(bind-key 'all "C-M-S-r" refresh)
+(bind-key 'all "C-M-S-5" recapture)
+(bind-key 'all "C-M-S-x" start-xterm)
 
 ;(bind-key 'all "C-S-F1" popup-small-ops)
-(bind-key 'all "C-S-F2" 'show-window-list-menu)
+(bind-key 'all "C-S-F2" show-window-list-menu)
 
 (define (float->integer x)
 	 (inexact->exact x))
