@@ -1,3 +1,26 @@
+Fri Dec  3 13:19:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-snarf: Drop everything after $$$ so that the docstring
+	extraction is not included.
+
+	* scwm-doc-snarf: Added -- for extracting the docstrings from the
+	last argument to the macro.
+
+	* scwm-snarf.h, *.c, *.cc:  Updated SCWM_*PROC and SCWM_*HOOK macros to have
+	docstrings as last argument instead of as a comment just after the 
+	macro.
+
+Fri Dec  3 10:11:34 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.h (VALIDATE_ARG_WIN_ROOTSYM_OR_NUM_COPY): Check
+	WINDOWP(arg) before VALIDWINP(arg) to avoid gh_cdr call on
+	non-pair.  Fixes a seg-fault bug in set-window-cursor!.
+
+Fri Dec  3 10:10:27 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* cursor.c: ws change-- eliminated some stylistic comments that
+	are not used consistently throughout Scwm.
+
 Thu Nov 25 14:03:23 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.h, window.c: Added ScmWindowDelta(), ScwmWindowDeltaVP()
