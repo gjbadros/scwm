@@ -7,6 +7,9 @@
 # Reruns startscwm as a child of ssh-agent[12] process if they are in
 # the path and this process is not already a child of ssh-agent[12]
 #
+# Starts an X server if $DISPLAY is not already set, so you can
+# either run this from a GNU/Linux console or run it from Xsession or .xsession
+#
 # Uses .Xresources-cpp if it exists.
 # Honors the SCWMDIR environment variable if it is set.
 # or uses $HOME/scwm
@@ -20,7 +23,7 @@
 # Depends on the cpp-sed-nl script, in this same directory.
 
 ERRORSFILE=$HOME/.SCWM-errors; export ERRORSFILE
-: ${SCWMDIR:=$HOME/scwm}
+: ${SCWMDIR:=$HOME/scwm-source}
 MODULEPATH=/usr/X11/lib/X11/fvwm2:$HOME/lib/fvwm2/modules/$UNAME:/uns/lib/fvwm2; export MODULEPATH
 
 #test -r /etc/profile && . /etc/profile
@@ -34,23 +37,24 @@ if [ x"$DISPLAY" = x ]; then
         DISPLAY=:1
     fi
     XAUTHORITY=$HOME/.Xauthority; export XAUTHORITY
+
+    OPTIONS=""
     #XCONFIG=$HOME/XF86Config.800x600; export XCONFIG
     #OPTIONS="-bpp 16 dpms -xf86config $XCONFIG"
-    OPTIONS="-bpp 16 dpms"
-    if [ "$HOSTNAME" = "oz" -o "${HOSTNAME%%.*}" = "bowman" ]; then
-    OPTIONS=""
-	fi
-    KEY=`mcookie`
-    xauth add $HOST$DISPLAY . $KEY
-    xauth add ${HOST}/unix$DISPLAY . $KEY
-    echo Xwrapper $DISPLAY $OPTIONS -auth $XAUTHORITY
+    #OPTIONS="-bpp 16 dpms"
+
     # use -audit 4, below, for more debugging
     X $DISPLAY $OPTIONS -auth $XAUTHORITY >& $HOME/.Xserver-log &
     XSERVERPID=$!; export XSERVERPID
+    sleep 5  # GJB:FIXME:: race condition... how do I tell when I can connect?
+
+
+    KEY=`mcookie`
+    xauth add $HOST$DISPLAY . $KEY
+    xauth add ${HOST}/unix$DISPLAY . $KEY
 
     # This stuff is all from /etc/X11/xdm/Xsession
     # and would normally get run from there or from .xsession
-    sleep 5  # GJB:FIXME:: race condition... how do I tell when I can connect?
     userresources=$HOME/.Xresources 
     usermodmap=$HOME/.Xmodmap 
     sysresources=/usr/X11R6/lib/X11/xinit/.Xresources 
@@ -104,7 +108,6 @@ export DISPLAY FULLDISPLAY DISPLAYHOST
 
 echo $FULLDISPLAY > $HOME/.Xdisplay
 
-#WM=$SCWMDIR/scwm/scwm-stable; export WM
 WM=$SCWMDIR/scwm/scwm; export WM
 if [ ! -x $WM ]; then
   WM=scwm

@@ -1,0 +1,39 @@
+! .Xmodmap-MSNat $Id$
+! By Greg J. Badros 1994-1999
+keycode 22 = BackSpace
+keycode 92 = Print
+keycode 111 = Print
+keycode 115 = Alt_L
+keycode 64 = Meta_L
+keycode 113 = Alt_R
+keycode 116 = Meta_R
+keycode 79 = KP_7
+keycode 80 = KP_8
+keycode 81 = KP_9
+keycode 83 = KP_4
+keycode 84 = KP_5
+keycode 85 = KP_6
+keycode 87 = KP_1
+keycode 88 = KP_2
+keycode 89 = KP_3
+keycode 90 = KP_0
+! keycode 117 = Hyper_R
+keycode 117 = Super_R
+remove Lock = Caps_Lock
+keycode 66 = Hyper_L
+remove Mod1 = Alt_L
+remove Mod1 = Alt_R
+remove Mod2 = Meta_L
+remove Mod2 = Meta_R
+add Mod1 = Meta_R
+add Mod1 = Meta_L
+add Mod4 = Alt_R
+add Mod4 = Alt_L
+add Mod3 = Hyper_R
+add Mod3 = Hyper_L
+add Mod5 = Super_R
+! Make Num_Lock do a sticky-toggle of C-S-M, my common window-mgr ops modifier
+! remove Mod2 = Num_Lock
+! add Mod1 = Num_Lock
+! add Shift = Num_Lock
+! add Control = Num_Lock

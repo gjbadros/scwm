@@ -3,15 +3,15 @@
 %define rel      1gjb
 %define prefix   /usr
 
-Summary: Glue code that make gtk accesible from guile
 Name: %nam
+Summary: Glue code that make gtk accesible from guile
 Version: %ver
 Release: %rel
 Copyright: GPL
 Group: X11/GTK
 BuildRoot: /tmp/%{nam}-%{ver}-build
 Source: ftp://scwm.mit.edu/pub/scwm/%{nam}-%{ver}.tar.gz
-Packager: Greg J. Badros <gjb@cs.washington.edu> and Ariel Rios
+Packager: Greg J. Badros <gjb@cs.washington.edu>
 URL: http://scwm.mit.edu
 Docdir: %{prefix}/doc
 
@@ -31,9 +31,8 @@ Docdir: %{prefix}/doc
 %build
   CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix
   make
-%install
-rm -rf $RPM_BUILD_ROOT
 
+%install
 make prefix=$RPM_BUILD_ROOT%{prefix} \
      ROOT=$RPM_BUILD_ROOT \
      sitedir=$RPM_BUILD_ROOT%{prefix}/share/guile/site \
@@ -52,6 +51,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %doc AUTHORS COPYING ChangeLog NEWS README
 
+%{prefix}/bin/*
+%{prefix}/include/*
+%{prefix}/lib/*
+%{prefix}/share/guile-gtk/*
 %{prefix}/share/guile/gtk/*.scm
 %{prefix}/share/guile/gtk-1.2/*.scm
-#%{prefix}/share/guile/site/event-repl.scm
