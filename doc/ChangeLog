@@ -1,3 +1,7 @@
+Thu Aug 26 09:26:16 1999    <gjb@cs.washington.edu>
+
+	* src/ref-header.sgml, scwm.texi, scwm.1: Alphabetize author order.
+
 Fri Apr 23 17:16:43 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am: Added -O option back in to generate the variable
