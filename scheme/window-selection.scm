@@ -34,7 +34,7 @@
 
 (define*-public (window-is-selected? #&optional (w (get-window)))
   "Return #t if W is in the selected window list, else #f.
-See also `select-window-add-selection' and `selected-windows-list'."
+See also `select-window-add', `select-window-remove', and `selected-windows-list'."
   (member w selected-windows))
 
 (define-public (selected-windows-list)
@@ -45,25 +45,53 @@ See also `select-window-add-selection' and `selected-windows-list'."
 ;;(filter (lambda (x) (not (eq? w x ))) selected-windows)
 ;;(use-scwm-modules optargs flash-window listops)
 
-(define*-public (select-window-add-selection #&optional (w (get-window-with-nonant)))
-  "Select a single window, highlight it, and add it to the seelcted-windows-list.
+(define*-public (select-window-toggle #&optional (w (get-window-with-nonant)))
+  "Toggle the selectedness of W.
+See `select-window-add' and `select-window-remove'."
+  (if (window-is-selected? w)
+      (select-window-remove w)
+      (select-window-add w)))
+
+ 
+(define*-public (select-window-add #&optional (w (get-window-with-nonant)))
+  "Select a single window, highlight it, and add it to the selected-windows-list.
 The selected window is returned and will remain highlighted
 until `unflash-window' is called on that window.  The selected
 window is also added to a selected-windows list that can be
 accessed via `selected-windows-list'."
   (if (not (object-property w 'nonant)) (set-object-property! w 'nonant 4))
-  (if (member w selected-windows)
-      (begin
-	(unflash-window w)
-	(remove-nonant-marker w)
-	(run-hook window-selection-remove-hook w)
-	(set! selected-windows (list-without-elem selected-windows w)))
+  (if (not (window-is-selected? w))
       (begin
 	(flash-window w #:unflash-delay #f)
 	(run-hook window-selection-add-hook w)
 	(if show-nonant-flag (place-nonant-marker w))
 	(set! selected-windows (cons w selected-windows))
 	w)))
+
+(define*-public (select-window-remove #&optional (w (get-window-with-nonant)))
+  "Unselect a single window, de-highlight it, and remove it from the selected-windows-list.
+The selected window is removed from the selected-windows list that can be
+accessed via `selected-windows-list'."
+  (if (not (object-property w 'nonant)) (set-object-property! w 'nonant 4))
+  (if (window-is-selected? w)
+      (begin
+	(unflash-window w)
+	(remove-nonant-marker w)
+	(run-hook window-selection-remove-hook w)
+	(set! selected-windows (list-without-elem selected-windows w)))))
+
+
+;; (select-matching-windows (resource-match?? "xterm"))
+(define*-public (select-matching-windows proc)
+  "Select windows for which predicate PROC returns #t.
+PROC might be one of `resource-match??', `class-match??', etc."
+  (for-each select-window-add (list-windows #:only proc)))
+
+;; (unselect-matching-windows (resource-match?? "xterm"))
+(define*-public (unselect-matching-windows proc)
+  "Unselect windows for which predicate PROC returns #t.
+PROC might be one of `resource-match??', `class-match??', etc."
+  (for-each select-window-remove (list-windows #:only proc)))
 
 
 ;; (unflash-window)
@@ -72,7 +100,7 @@ accessed via `selected-windows-list'."
 ;; (begin (move-group-relative 10 10 selected-windows) (unselect-all-windows))
 
 (define-public (unselect-all-windows)
-  "Unselect all windows selected via `select-window-add-selecttion'."
+  "Unselect all windows selected via `select-window-add'."
   (for-each (lambda (w) (if (window-valid? w) (unflash-window w))) selected-windows)
   (catch #t 
 	 (lambda ()
@@ -83,7 +111,7 @@ accessed via `selected-windows-list'."
 	 (lambda args noop))
   (set! selected-windows '()))
 
-;; (bind-mouse 'all "H-1" (thunk select-window-add-selection))
+;; (bind-mouse 'all "H-1" (thunk select-window-add))
 
 
 ;; Returns them in reverse the order they were selected
@@ -116,29 +144,6 @@ PROC-WHEN-SELECTED will be run on each window as it is selected."
 ;; e.g.
 ;;(select-multiple-windows-interactively 10)
 ;;(restack-windows (select-multiple-windows-interactively 3))
-
-;; adding and removing hooks
-
-(define-public (add-window-selection-add-hook! hook)
-  "Add a HOOK to be called when a window is added to the selection list.
-HOOK should take a single parameter which is the window selected."
-  (set! window-selection-add-hook (cons hook window-selection-add-hook)))
-
-(define-public (add-window-selection-remove-hook! hook)
-  "Add a HOOK to be called when a window is removed from the selection list.
-HOOK should take a single parameter which is the window removed."
-  (set! window-selection-remove-hook (cons hook window-selection-remove-hook)))
-
-(define-public (remove-window-selection-add-hook! hook)
-  "Remove a HOOK to be called when a window is added to the selection list.
-HOOK should take a single parameter which is the window selected."
-  (set! window-selection-add-hook (delq hook window-selection-add-hook)))
-
-(define-public (remove-window-selection-remove-hook! hook)
-  "Remove a HOOK to be called when a window is removed from the selection list.
-HOOK should take a single parameter which is the window removed."
-  (set! window-selection-remove-hook (delq hook window-selection-remove-hook)))
-
 
 ;; nonant marker procedures
 

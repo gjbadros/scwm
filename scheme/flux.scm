@@ -17,6 +17,7 @@
       :use-module (ice-9 popen)
       :use-module (ice-9 regex)
       :use-module (app scwm base)
+      :use-module (app scwm stylist)
       :use-module (app scwm animation)
       :use-module (app scwm animated-iconify)
       :use-module (app scwm time-convert)
@@ -40,6 +41,7 @@
     (define-module (app scwm flux)
       :use-module (ice-9 regex)
       :use-module (app scwm base)
+      :use-module (app scwm stylist)
       :use-module (app scwm animation)
       :use-module (app scwm animated-iconify)
       :use-module (app scwm time-convert)
@@ -637,6 +639,9 @@ that corner fixed."
 	       (list
 		(menuitem "&Copy to CUT_BUFFER0" #:action copy-window-title-to-cut-buffer0)
 		(menuitem "&Paste from CUT_BUFFER0" #:action paste-window-title-from-cut-buffer0))))
+    (menuitem "Style"
+	      #:submenu
+	      (make-window-style-menu w))
     (menuitem "Group"
 	      #:submenu
 	      (make-window-group-menu w))
@@ -650,7 +655,11 @@ that corner fixed."
   (let* ((swl (selected-windows-list))
 	 (wla? (pair? swl)) ;; wla? -- winlist-active?
 	 (n (length swl))
-	 (nstr (number->string n)))
+	 (nstr (number->string n))
+	 (sel? (window-is-selected? w))
+	 (wop (if sel? "Unselect" "Select"))
+	 (resource (window-resource w))
+	 (class (window-class w)))
     (menu
      (append
       (filter-map 
@@ -658,8 +667,16 @@ that corner fixed."
        (list
 	(menu-title "Window Group") menu-separator
 	(menuitem 
-	 (if (window-is-selected? w) "&Unselect" "&Select")
-	 #:action select-window-add-selection)
+	 (string-append "&" wop " this window")
+	 #:action select-window-toggle)
+	(menuitem
+	 (string-append wop " windows &named `" resource "'")
+	 #:action (lambda () ((if sel? unselect-matching-windows select-matching-windows)
+			      (resource-match?? resource))))
+	(menuitem
+	 (string-append wop " windows of &class `" class "'")
+	 #:action (lambda () ((if sel? unselect-matching-windows select-matching-windows)
+			      (class-match?? class))))
 	(if wla? (menuitem "Unselect &all windows" 
 			   #:action unselect-all-windows)
 	    #f)))
