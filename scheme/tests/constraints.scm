@@ -218,6 +218,8 @@
 (keep-left-at-v (current-window-with-focus))
 (keep-left-at-v (select-window-interactively))
 
+v
+
 (cl-value v)
 (cl-set-solver-var solver v 20)
 
@@ -294,6 +296,16 @@ cls-required
 (cl-set-solver-var solver (screen-clv-vx) 10)
 (screen-clv-vx)
 (screen-clv-vy)
+
+(begin
+  (define (window-clv-vp-xl win)
+    (cl-minus (window-clv-xl win) (screen-clv-vx)))
+  (define (window-clv-vp-xr win)
+    (cl-minus (window-clv-xr win) (screen-clv-vx)))
+  (define (window-clv-vp-yt win)
+    (cl-minus (window-clv- win) (screen-clv-vx)))
+  (define (window-clv-vp-yb win)
+    (cl-minus (window-clv-xr win) (screen-clv-vx)))
 
 ;; kill all xlogo windows
 (for-each (lambda (w) (close-window w)) 
