@@ -235,7 +235,7 @@ printed. */
 
   if (gh_string_p(name)) {
     tag = gh_scm2newstr(name, &dummy);
-  } else if (name == SCM_UNDEFINED) {
+  } else if (UNSET_SCM(name)) {
     tag = NULL;
   } else {
     scm_wrong_type_arg(FUNC_NAME, 1, name);

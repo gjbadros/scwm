@@ -373,17 +373,19 @@ void init_font()
 {
   REGISTER_SCWMSMOBFUNS(font);
 
+  SCM_DEFER_INTS;
   str_fixed=gh_str02scm(XFIXEDFONTNAME);
-  scm_protect_object(str_fixed);
+  scm_permanent_object(str_fixed);
 
   font_hash_table = 
     scm_make_weak_value_hash_table (SCM_MAKINUM(FONT_HASH_SIZE));
-  scm_protect_object(font_hash_table);
+  scm_permanent_object(font_hash_table);
 
   protected_fonts =
     scm_make_vector (SCM_MAKINUM(2), SCM_EOL);
-  scm_protect_object(protected_fonts);
+  scm_permanent_object(protected_fonts);
 
+  SCM_ALLOW_INTS;
 #ifndef SCM_MAGIC_SNARFER
 #include "font.x"
 #endif
