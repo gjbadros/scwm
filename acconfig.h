@@ -32,3 +32,6 @@
 
 /* Define this if your system has the getopt_long function. */
 #undef HAVE_GETOPT_LONG
+
+/* DDefine this if your system has the usleep function. */
+#undef HAVE_USLEEP

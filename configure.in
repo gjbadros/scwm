@@ -199,7 +199,7 @@ AC_C_INLINE
 # AC_CHECK_FUNCS(select)
 AC_CHECK_FUNCS(gethostname waitpid sysconf uname)
 AC_CHECK_FUNCS(strerror strcasecmp strncasecmp)
-
+AC_CHECK_FUNC(usleep, AC_DEFINE(HAVE_USLEEP))
 
 #===================================================================
 
