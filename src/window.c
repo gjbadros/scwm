@@ -1726,7 +1726,7 @@ set_icon_x(SCM picture, SCM win)
   } else if (picture == SCM_BOOL_T) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
   } else if ((gh_string_p(picture) && 
-	      (picture=make_picture(picture))!=SCM_UNDEFUNED) ||
+	      (picture=make_picture(picture))!=SCM_UNDEFINED) ||
 	      (SCM_NIMP(picture) && PICTURE_P(picture))) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
