@@ -1,14 +1,15 @@
-;; $Id$
-;; system.scwmrc -- Scwm System Default initialization file
-;; (from gjb.scwmrc, at release of Scwm-0.99.2)
-;;
-;; Copyright (C) 1997-1999 Greg J. Badros
-;;
-;; Feel free to use and reuse code contained herein
-;; as permitted by the GNU GPL
-;; NO WARRANTIES OF ANY KIND -- USE AT YOUR OWN RISK
-;; It works for me and I like it, but you might not!
-;; Comments are appreciated -- email gjb@cs.washington.edu
+;;;; $Id$
+;;;; system.scwmrc -- Scwm System Default initialization file
+;;;; (from gjb.scwmrc, at release of Scwm-0.99.2)
+;;;;
+;;;; Copyright (C) 1997-1999 Greg J. Badros
+;;;;
+;;;; Feel free to use and reuse code contained herein
+;;;; as permitted by the GNU GPL
+;;;;
+;;;; NO WARRANTIES OF ANY KIND -- USE AT YOUR OWN RISK
+;;;; It works for me and I like it, but you might not!
+;;;; Comments are appreciated -- email gjb@cs.washington.edu
 
 
 ;; Uncomment the below to send a single UDP packet to
@@ -267,7 +268,7 @@
   `(
     ("&Control Panel" #f #f "control-panel")
     ("&Glint" #f #f "glint")
-    ("Color &XTerm" "sh1" "XTERM_ICON" "COLOR_XTERM -cr blue")
+    ("Color &XTerm" "sh1" "XTERM_ICON" xterm-program-name)
     ("&Manual pages" "book1" "manpage_3d" "xman")
     ("XCa&lc" "calc" "Calculator" "xcalc")
     ("Filemanager" "filemgr" "FileManager" "filemgr")
@@ -1208,7 +1209,7 @@ union of all other window managers!
     (menu-title "Utilities")
     menu-separator
     (menuitem "xterm" #:image-left "mini-term.xpm" 
-	       #:action "color_xterm")
+	       #:action xterm-program-name)
     (menuitem "rxvt"
 	       #:action (lambda () (execute "rxvt")))
     (menuitem "emacs" #:image-left "mini-edit.xpm" 
@@ -1237,6 +1238,11 @@ union of all other window managers!
 
 (define (show-window-list-by-resource-with-geometry)
   (show-window-list-menu #f #:by-resource #t #:show-geometry #t))
+
+(if (and
+     gnome-sm
+     (not (SM-register)))
+    (message (SM-error-message)))
 
 ;;; first our root menus
 (if gnome-sm
