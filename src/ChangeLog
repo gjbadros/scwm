@@ -1,3 +1,10 @@
+Mon Nov 10 10:06:59 1997  Greg Badros  <gjb@cs.washington.edu>
+
+	* bindings.c: just warn when an unknown keysym is attempted to be
+	bound, do not die;  uncommented uses in gjb.scwmrc of the
+	only-sometimes-available keysyms KP_XX since now they will only
+	produce a warning.
+
 Mon Nov 10 05:17:36 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* decor.c, face.c, Picture.c, system.c, ICCCM.c, Grab.c, 
