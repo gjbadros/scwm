@@ -1,6 +1,3 @@
-
-
-
 /****************************************************************************
  * This module is all original code 
  * by Maciej Stachowiak.
@@ -91,9 +88,3 @@ scwm_error_imm(char *subr, const char *szErrMsg)
 
 	    gh_list(SCM_UNDEFINED, SCM_UNDEFINED));
 }
-
-
-
-
-
-
