@@ -1,3 +1,8 @@
+Sat Nov 14 18:58:31 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* decor.scwmrc: Make Desks submenu actually work (D'oh!). Bug
+ 	reported by Stephanie Miller <stephane@mit.edu>.
+
 Fri Nov 13 20:33:46 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* robbe.scwmrc, gjb.scwmrc, juhp.scwmrc, sds.scwmrc, decor.scwmrc:

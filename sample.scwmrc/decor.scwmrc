@@ -383,12 +383,12 @@
 (define desk-menu 
   (menu 
    (list
-    (menuitem "Desks" #f)
+    (menuitem "Desks")
     menu-title
-    (menuitem "Desk 1" (lambda () (set-current-desk! 0)))
-    (menuitem "Desk 2" (lambda () (set-current-desk! 1)))
-    (menuitem "Desk 3" (lambda () (set-current-desk! 2)))
-    (menuitem "Desk 4" (lambda () (set-current-desk! 3))))))
+    (menuitem "Desk 1" #:action (lambda () (set-current-desk! 0)))
+    (menuitem "Desk 2" #:action (lambda () (set-current-desk! 1)))
+    (menuitem "Desk 3" #:action (lambda () (set-current-desk! 2)))
+    (menuitem "Desk 4" #:action (lambda () (set-current-desk! 3))))))
 
 (define util-menu 
   (menu
