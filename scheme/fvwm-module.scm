@@ -293,9 +293,9 @@
 		   ;;(args (cadr split-result))
 		   )	
 	      
-	      (display "packet: ")
-	      (write packet)
-	      (newline)
+	      ;; (display "packet: ")
+	      ;; (write packet)
+	      ;; (newline)
 
 	      (eval-fvwm-command command fmod (id->window window-id))
 
