@@ -7,13 +7,18 @@
 ;; Your $HOME/.scwmrc file is run inside Scwm's Scheme
 ;; interpreter, so code such as:
 
-;; (set-hilight-foreground! "white")
-;; (set-hilight-background! "navyblue")
+;; (set-highlight-foreground! "white")
+;; (set-highlight-background! "navyblue")
 
 ;; in your .scwmrc specifies the colors you'd like the
-;; window with the focus to use.
+;; window with the focus to use.  These two lines are
+;; each sentential expressions (or S-expressions or SEXPs).
+;; Your .scwmrc is just a sequence of SEXPs which 
+;; are used to initially configure Scwm to your liking,
+;; similar to the way you configure other WMs with their
+;; .foowmrc files.
 
-;; But the scheme interpreter is a *lot* more powerful
+;; But, the scheme interpreter is a *lot* more powerful
 ;; than the static configuration language that other
 ;; window managers like fvwm2, [vc]twm, Enlightenment,
 ;; WindowMaker, IceWM, and others use.  Arbitrary
@@ -26,6 +31,7 @@
 ;; to need to restart scwm after changing your $HOME/.scwmrc;
 ;; you can simply make the changes in your .scwmrc, and also
 ;; have Scwm evaluate those changes right now, interactively.
+;; 
 
 ;; You can interact with the scheme interpreter in many
 ;; ways.  The simplest (but not most convenient) is via the
@@ -35,7 +41,8 @@
 ;; scwmexec '(display-message-briefly "Scwm says hello")'
 
 ;; The single argument to the scwmexec program is the
-;; expression (or "S-expression") to evaluate.
+;; S-expression (SEXP) to evaluate;  the SEXP is sent to
+;; Scwm as a string.
 
 ;; Using emacs's scwm-mode, we can ask Scwm's scheme interpreter to
 ;; evaluate the preceding S-expression (sexp) very easily.  If you're
@@ -94,7 +101,8 @@
 ;; If Scwm and scwm-mode are properly installed, you should have
 ;; had "3" get inserted into the buffer just after the "(+ 1 2)" line.
 ;; (If you received an error, consult with your local Scwm expert or
-;; system administrator, or ask the kind folks at scwm-discuss@mit.edu)
+;; system administrator, or ask the kind folks at 
+;; scwm-discuss@vicarious-existence.mit.edu.)
 
 ;; So what happened?  The C-j keystroke (bound to the Emacs command
 ;; scwm-eval-print, as mentioned earlier) caused Emacs to find the
@@ -107,27 +115,48 @@
 ;; In this case, the expression evaluated to the number 3, and the
 ;; printable form of the number ("3") was inserted into the buffer.
 
-;; As you've probably guessed by now, the expression "(+ 1 2)" 
-;; means add 1 and 2.  This is a bit different from how most of us
-;; are used to expressing addition.  Though it is more common
-;; for us to write "1 + 2", using "infix" notation where the operator
-;; appears in-between the two operands, Scheme uses "prefix" notation,
-;; where the operator appears first, before all of its arguments.
-;; In Scheme, parentheses indicate a list, and a list is evaluated
-;; by applying the procedure specified by the first argument to 
-;; the arguments given by the remaining arguments.
+;; Sometimes you prefer that the answer and output from Scwm not be
+;; inserted in the current buffer, but you'd still like to see what
+;; they are.  To do this, you can use an Emacs prefix argument (C-u)
+;; to the C-j command.  The prefix argument to the scwm-eval-last
+;; emacs command tells scwm-mode to have Emacs display the output and
+;; result in the minibuffer (or a new window if it's more than one
+;; line) instead of inserting it in the current buffer.  This
+;; behaviour is often more useful if you are editing a file you do not
+;; want to change.  Try this below by hitting C-u before C-j after
+;; placing the point just after the last parenthesis on the line
+;; below:
+
+(+ 1 2)
+;;     ^ cursor here when you press C-u C-j
+
+;; Again, you'll receive the result "3" (this time in the minibuffer
+;; at the bottom of your emacs window).  From now on we'll omit the
+;; notes about how to evaluate the SEXPs that you are to try.  Use C-j
+;; if you want the result and output to go into the current buffer, or
+;; use C-u C-j if you want them to go to the minibuffer and not change
+;; the current buffer's contents.
+
+;; Now back to the meaning of the SEXP we just evaluated. As you've
+;; probably guessed by now, the expression "(+ 1 2)" means add 1 and
+;; 2.  This is a bit different from how most of us are used to
+;; expressing addition.  Though it is more common for us to write "1 +
+;; 2", using "infix" notation where the operator appears in-between
+;; the two operands, Scheme uses "prefix" notation, where the operator
+;; appears first, before all of its arguments.  In Scheme, parentheses
+;; indicate a list, and a list is evaluated by applying the procedure
+;; specified by the first argument to the arguments given by the
+;; remaining arguments.
 
 ;; Thus "(+ 1 2)" is evaluated by applying the procedure "+" (a 
 ;; built-in primitive procedure) to the arguments "1" and "2".
 ;; This can be written more explicitly in Scheme using the
-;; procedure `apply'.  Evaluate the below SEXP:
+;; procedure `apply'.  
 
 (apply + (list 1 2))
 
-
-;; Again, you'll receive the result "3".  In this last example,
-;; I used the procedure `list' which just returns its arguments
-;; in a list.  So:
+;; In this last example, I used the procedure `list' which just
+;; returns its arguments in a list.  So:
 
 (list 1 2 (+ 1 2))
 

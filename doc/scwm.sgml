@@ -26,7 +26,7 @@
       </author>
     </authorgroup>
     <releaseinfo>Release pre-1.0</releaseinfo>
-    <pubdate>11 April 1999</pubdate>
+    <pubdate>12 April 1999</pubdate>
     <copyright>
       <year>1997-1999</year>
       <holder>Maciej Stachowiak and Greg J. Badros</holder>
@@ -1859,6 +1859,9 @@ The shaped XPM menu look.
     <sect1><title>scwm/window.c</title> <itemizedlist>
       <listitem><para><link linkend="window-p"><function>window?</function></link> -- Returns <literal>#t</literal> if OBJ is a window object, otherwise returns <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="window-valid-p"><function>window-valid?</function></link> -- Returns <literal>#t</literal> if OBJ is window object and is still valid, otherwise returns <literal>#f</literal>.</para></listitem>
+      <listitem><para><link linkend="window-fully-constructed-p"><function>window-fully-constructed?</function></link> -- Returns <literal>#t</literal> if WIN is a fully-constructed window object, otherwise retur</para></listitem>
+      <listitem><para><link linkend="window-mapped-p"><function>window-mapped?</function></link> -- Returns <literal>#t</literal> if WIN is mapped, otherwise returns <literal>#f</literal>.</para></listitem>
+      <listitem><para><link linkend="window-map-pending-p"><function>window-map-pending?</function></link> -- Returns <literal>#t</literal> if the mapping of WIN is pending, otherwise returns <literal>#f</literal>.</para></listitem>
       <listitem><para><link linkend="select-viewport-position"><function>select-viewport-position</function></link> -- Select a viewport position and return the window there.</para></listitem>
       <listitem><para><link linkend="get-window"><function>get-window</function></link> -- Retrieve the window context or select interactively.</para></listitem>
       <listitem><para><link linkend="force-reset-window-frame-x"><function>force-reset-window-frame!</function></link> -- This redraws the window frame and decorations of WIN.</para></listitem>
@@ -3014,7 +3017,7 @@ usual way if not specified.  See <link linkend="normal-border"><function>normal-
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3130 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3170 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4176,7 +4179,7 @@ The returned value will be a non-negative real number.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1002 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1041 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4197,7 +4200,7 @@ The returned value will be a non-negative real number.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1012 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1051 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4417,7 +4420,7 @@ cannot, e.g., cleanly be brought back onto the current viewport.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1998 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2037 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4594,7 +4597,7 @@ in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1623 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1662 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -4694,7 +4697,7 @@ defaults to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1654 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1693 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5506,7 +5509,7 @@ specified. Note that <parameter>win</parameter> is not raised by giving it the f
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1718 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1757 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5665,7 +5668,7 @@ and for new window objects set via object properties.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 956 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 995 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5710,7 +5713,7 @@ such window object, return <literal>#f</literal>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2730 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2769 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5867,7 +5870,7 @@ mouse drags.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 909 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 948 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5888,7 +5891,7 @@ mouse drags.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3358 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3398 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5910,7 +5913,7 @@ Returns one of 'mouse, 'click, 'sloppy, or 'none.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3335 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3375 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -5932,7 +5935,7 @@ fg or bg may be <literal>#f</literal>, which means that the color is inherited f
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3372 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3412 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6360,7 +6363,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3031 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3071 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6473,7 +6476,7 @@ way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2543 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2582 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6497,7 +6500,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2563 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2602 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6520,7 +6523,7 @@ the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3228 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3268 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6593,7 +6596,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2035 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2074 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6617,7 +6620,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1972 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2011 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -6687,7 +6690,7 @@ such window object, return <literal>#f</literal>.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2709 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2748 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7434,7 +7437,7 @@ Obviously, other windows that are also on-top may obscure <parameter>win</parame
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2911 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2950 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7564,7 +7567,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2969 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3008 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7786,7 +7789,7 @@ of circulation.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2827 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2866 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7808,7 +7811,7 @@ The order is from most recently focussed to least recently focussed.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2880 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2919 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -7852,7 +7855,7 @@ the topmost window, the last is the bottommost
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2846 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2885 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -8127,7 +8130,7 @@ the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1800 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1839 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10437,7 +10440,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2298 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2337 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10480,7 +10483,7 @@ defaults to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2473 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2512 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -10700,7 +10703,7 @@ defaults to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3068 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3108 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -11208,7 +11211,7 @@ defaults to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3100 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3140 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12005,7 +12008,7 @@ context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1774 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1813 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12051,7 +12054,7 @@ window you called <link linkend="raise-window"><function>raise-window</function>
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1908 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1947 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12241,7 +12244,7 @@ way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2440 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2479 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12521,7 +12524,7 @@ only be sizes that are multiples of the basic character size).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2369 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2408 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12545,7 +12548,7 @@ context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2329 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2368 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -12620,7 +12623,7 @@ and possibly other legacy fvwm2 modules).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1817 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1856 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13667,7 +13670,7 @@ place-holder until we have proper cursor support in scwm.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 835 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 874 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -13813,7 +13816,7 @@ like to display a message while the user selects a window.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1023 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1062 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14130,7 +14133,7 @@ Use <parameter>active</parameter> as the face for the border when the window is 
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3143 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3183 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14350,7 +14353,7 @@ defaults to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3854 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3894 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14827,7 +14830,7 @@ way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3653 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3693 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -14946,7 +14949,7 @@ not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3837 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3877 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15018,7 +15021,7 @@ context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3699 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3739 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15042,7 +15045,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3241 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3281 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15085,7 +15088,7 @@ defaults to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3636 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3676 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15111,7 +15114,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3969 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 4009 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15486,7 +15489,7 @@ to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3752 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3792 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15533,7 +15536,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3591 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3631 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15557,7 +15560,7 @@ to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3575 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3615 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15580,7 +15583,7 @@ to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3870 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3910 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15604,7 +15607,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3884 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3924 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15669,7 +15672,7 @@ defaults to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3916 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3956 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15695,7 +15698,7 @@ usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3899 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3939 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15719,7 +15722,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3504 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3544 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15813,7 +15816,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3680 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3720 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15837,7 +15840,7 @@ defaults to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3954 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3994 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15861,7 +15864,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3519 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3559 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -15907,7 +15910,7 @@ window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3930 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3970 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16048,7 +16051,7 @@ way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3411 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3451 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16074,7 +16077,7 @@ far from perfect.)
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3534 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3574 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16118,7 +16121,7 @@ See also <link linkend="with-window"><function>with-window</function></link> and
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 970 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1009 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16162,7 +16165,7 @@ if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3301 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3341 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16186,7 +16189,7 @@ usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3388 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3428 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16213,7 +16216,7 @@ for <parameter>win</parameter>).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3469 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3509 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16240,7 +16243,7 @@ color for <parameter>win</parameter>).
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3441 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3481 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -16537,7 +16540,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3006 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3047 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -17110,7 +17113,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2057 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2096 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -17132,7 +17135,7 @@ defaults to the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3189 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3229 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -17155,7 +17158,7 @@ window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2128 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2167 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -17321,7 +17324,7 @@ Returns that list.
   <para>
   Set things up to try to load arbitrary images.
 Works by setting <link linkend="try-everything-loader"><function>try-everything-loader</function></link> as the image loader for
-unknown extensions.
+unknown extensions.  Generally not needed with ImLib.
   </para>
   <refsect2>
   <title>Implementation Notes</title>
@@ -17748,7 +17751,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3054 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3094 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -17918,7 +17921,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1928 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1967 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18313,7 +18316,7 @@ way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2941 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2980 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18444,7 +18447,7 @@ an ui-constraint.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1740 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1779 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18556,7 +18559,7 @@ the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2093 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2132 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -18579,7 +18582,7 @@ not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3208 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3248 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19044,7 +19047,7 @@ with the keyboard focus.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1753 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1792 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19276,7 +19279,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2788 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2827 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19319,7 +19322,7 @@ See also <link linkend="with-window"><function>with-window</function></link> and
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 988 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1027 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19364,7 +19367,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1704 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1743 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19386,7 +19389,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2753 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2792 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19429,7 +19432,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2666 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2705 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19452,7 +19455,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2696 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2735 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19477,7 +19480,31 @@ specified. See <link linkend="window-size"><function>window-size</function></lin
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2585 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2624 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="window-fully-constructed-p">
+  <refnamediv>
+    <refname>window-fully-constructed?</refname>
+    <refpurpose>Returns <literal>#t</literal> if WIN is a fully-constructed window object, otherwise retur</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-fully-constructed? win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Returns <literal>#t</literal> if <parameter>win</parameter> is a fully-constructed window object, otherwise retur
+ns <literal>#f</literal>.
+In the <link linkend="before-new-window-hook"><function>before-new-window-hook</function></link> windows are not yet fully constructed, and only
+a subset of procedures can be successfully called on them.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Built-in Primitive</para>
+  <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
+  at line 834 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19524,7 +19551,7 @@ in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3735 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3775 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19546,7 +19573,7 @@ in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3820 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3860 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19569,7 +19596,7 @@ the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2776 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2815 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19592,7 +19619,7 @@ the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2680 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2719 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19636,7 +19663,7 @@ times.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2813 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2852 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19727,6 +19754,50 @@ relative to the current viewport.
   </refsect1>
 </refentry>
 
+<refentry id="window-map-pending-p">
+  <refnamediv>
+    <refname>window-map-pending?</refname>
+    <refpurpose>Returns <literal>#t</literal> if the mapping of WIN is pending, otherwise returns <literal>#f</literal>.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-map-pending? win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Returns <literal>#t</literal> if the mapping of <parameter>win</parameter> is pending, otherwise returns <literal>#f</literal>.
+The map is pending from the moment the MapRequest is entered until the
+map is actually performed.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Built-in Primitive</para>
+  <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
+  at line 859 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
+<refentry id="window-mapped-p">
+  <refnamediv>
+    <refname>window-mapped?</refname>
+    <refpurpose>Returns <literal>#t</literal> if WIN is mapped, otherwise returns <literal>#f</literal>.</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <synopsis>(window-mapped? win)</synopsis>
+  </refsynopsisdiv>
+  <refsect1>
+  <title>Description</title>
+  <para>
+  Returns <literal>#t</literal> if <parameter>win</parameter> is mapped, otherwise returns <literal>#f</literal>.
+  </para>
+  <refsect2>
+  <title>Implementation Notes</title>
+  <para> Module: Built-in Primitive</para>
+  <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
+  at line 848 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  </refsect1>
+</refentry>
+
 <refentry id="window-mini-icon">
   <refnamediv>
     <refname>window-mini-icon</refname>
@@ -19746,7 +19817,7 @@ in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3787 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3827 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19793,7 +19864,7 @@ way if not specified.  See also <link linkend="window-viewport-position"><functi
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2522 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2561 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19846,7 +19917,7 @@ be considered in flux.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/winprop.c"><filename>scwm/winprop.c</filename></ulink>
-  at line 138 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/winprop.c">CVS log</ulink>)</para> </refsect2>
+  at line 133 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/winprop.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19868,7 +19939,7 @@ the window context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2801 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2840 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19958,7 +20029,7 @@ way if not specified. See also <link linkend="window-unshade"><function>window-u
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2163 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2202 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -19981,7 +20052,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2238 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2277 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20003,7 +20074,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3804 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 3844 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20029,7 +20100,7 @@ and height in resize units (e.g., characters for an xterm).  See
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2620 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2659 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20053,7 +20124,7 @@ The list returned contains 4 cons pairs containing:
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2408 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2447 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20098,7 +20169,7 @@ for details.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2765 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2804 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20141,7 +20212,7 @@ See also <link linkend="window-title-size"><function>window-title-size</function
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2651 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2690 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20189,7 +20260,7 @@ specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 1943 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 1982 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
@@ -20212,7 +20283,7 @@ context in the usual way if not specified.
   <title>Implementation Notes</title>
   <para> Module: Built-in Primitive</para>
   <para> Defined in <ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/~checkout~/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2206 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
+  at line 2245 (<ulink url="http://vicarious-existence.mit.edu/cgi-bin/cvsweb.new/scwm/window.c">CVS log</ulink>)</para> </refsect2>
   </refsect1>
 </refentry>
 
