@@ -9,7 +9,7 @@ AC_PREREQ(2.4)
 
 AC_CONFIG_HEADER(include/config.h)
 
-CFLAGS=-O
+CFLAGS=-O -g
 
 #-------------------------------------------------------------------
 #
