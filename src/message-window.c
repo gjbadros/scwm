@@ -179,13 +179,13 @@ ResizeMessageWindow( scwm_msgwindow* msg ) {
   int winheight = textheight + SIZE_VINDENT*2;
   int win_x, win_y;
 
-  win_x = msg->x + (msg->x_align * winwidth);
-  win_y = msg->y + (msg->y_align * winheight);
-
   if (msg->width > 0)
     winwidth = msg->width;
   if (msg->height > 0)
     winheight = msg->height;
+
+  win_x = msg->x + (msg->x_align * winwidth);
+  win_y = msg->y + (msg->y_align * winheight);
 
   XMoveResizeWindow(dpy, msg->win, win_x, win_y, winwidth, winheight);
 
