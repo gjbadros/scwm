@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-07-28 Tue 10:40:21 EDT sds@mute.eaglets.com>
+;; File: <scwm.el - 1998-07-30 Thu 10:03:32 EDT sds@mute.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -91,6 +91,14 @@
    (autoload 'help-setup-xref "help")) ; keep the compiler happy
  (autoload 'Info-find-node "info")
  (autoload 'inferior-scheme-mode "cmuscheme")
+ (unless (fboundp 'with-current-buffer)
+   (defmacro with-current-buffer (buffer &rest body)
+     "Execute the forms in BODY with BUFFER as the current buffer.
+The value returned is the value of the last form in BODY.
+See also `with-temp-buffer'."
+     `(save-current-buffer
+       (set-buffer ,buffer)
+       ,@body)))
  (unless (fboundp 'with-output-to-string)
    (defmacro with-output-to-string (&rest body)
      "Execute BODY, return the text it sent to `standard-output', as a string."
@@ -214,6 +222,7 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
 
 (defun scwm-make-obarray ()
   "Create and return an obarray of SCWM symbols."
+  ;; (setq scwm-obarray (scwm-make-obarray))
   ;; can't use read-from-string because "? " is read as 32
   ;; should we make the hash table bigger than 67?
   (let ((oa (make-vector 131 0)) (pos 2)) ; obarray
