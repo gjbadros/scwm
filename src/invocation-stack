@@ -1,0 +1,56 @@
+scwm_run_hookN  # for hooks (n == 0, 1)
+ -> scwm_run_hook|scwm_run_hook_message_only
+   -> scwm_safe_apply|scwm_safe_apply_message_only
+     -> scm_internal_stack_cwdr
+       -> scm_internal_cwdr_no_unwind (cwssdr_body)
+         -> scm_internal_catch
+           -> scwm_body_apply
+             -> gh_apply
+                -> scm_apply  # does the work
+
+
+scwm_safe_eval_str # used during startup for init strings
+ -> scm_internal_cwdr_no_unwind
+    -> scwm_body_eval_str
+       -> scwm_catching_load_from_port
+
+scwm_safe_call[012] # menus, image loading, placement
+  -> scwm_safe_apply
+
+`safe-load'
+   -> scm_internal_cwdr_no_unwind
+     -> scwm_body_load
+        -> scwm_catching_load_from_port
+           -> scwm_catching_eval_x
+              -> scm_internal_stack_catch
+	        -> scm_internal_catch
+
+
+`call-interactively'
+  -> scwm_safe_apply
+
+scwm_body_eval_str
+   -> scwm_catching_load_from_port
+
+scwm_safe_apply  # catch exceptions
+  # package up proc and args into apply_data
+    & pass scwm_handle_error to scm_internal_stack_cwdr
+
+scm_internal_stack_cwdr
+
+scm_internal_cwdr_no_unwind
+  cwssdr_body
+    -> scm_internal_stack_catch
+  scwm_body_apply
+    -> gh_apply
+  scwm_body_load
+    -> scwm_catching_load_from_port
+  scwm_body_eval_str
+    -> scwm_catching_load_from_port
+
+
+scwm_safe_{apply,call0,call1}
+scwm_run_hook{,0,1,2,_message_only}
+scwm_safe_eval_str
+`safe-load'
+`call-interactively'
