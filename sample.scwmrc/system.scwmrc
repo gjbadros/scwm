@@ -35,62 +35,59 @@
 (define scwmdir (or (getenv "SCWMDIR") "/usr/share/scwm"))
 
 ;;; set path to use for image searches
-(map (lambda (s) (set! image-load-path (cons s image-load-path)))
+(append! image-load-path
      (list
-      "/uns/lib/X11/mini-icons"           ;; last checked
-      "/uns/lib/X11/pixmaps"
+      (string-append scwmdir "/pixmaps")
+      "/usr/share/icons/mini"
+      "/usr/lib/TheNextLevel/pixmaps"
+      "/usr/share/include/X11/pixmaps"
+      "/usr/share/include/X11/bitmaps"
       "/usr/X11/lib/X11/mini-icons"
       "/usr/X11/include/X11/pixmaps"
-      "/uns/include/X11/pixmaps"
       "/usr/lib/icons"
       "/usr/local/X11/include/X11/pixmaps"
       "/usr/local/lib/icons"
       "/usr/local/icons"
-      "/uns/share/include/X11/pixmaps"
-      "/uns/share/include/X11/bitmaps"
-      "/usr/lib/TheNextLevel/pixmaps"
-      "/usr/share/icons/mini"
-      (string-append scwmdir "/pixmaps")   ;; first checked
       ))
 
 (define scwm-logo (make-image "scwm-logo-0.xpm"))
 
 (if scwm-logo
+    (begin
+      (define scwm-logo-msgwin 
+	(make-message-window-with-image scwm-logo #t))
+      (set-X-server-synchronize! #t)
+      (message-window-show! scwm-logo-msgwin)
+      (set-X-server-synchronize! #f)
+      
+      (define logo-image-sequence
+	(list->vector
+	 (map (lambda (deg) (make-image
+			     (string-append "scwm-logo-"
+					    (number->string deg) ".xpm")))
+	      (iota 24))))
+      
+      (define next-logo-image
+	(let ((i 0))
+	  (lambda ()
+	    (set! i (modulo (+ i 1) (vector-length logo-image-sequence)))
+	    (message-window-set-image! scwm-logo-msgwin 
+				       (vector-ref logo-image-sequence i) #f #f #t))))
+      
+      (define (next-logo-image-timer)
+	(next-logo-image)
+	(add-timer-hook! 500000 next-logo-image-timer))
+      
+      (define (next-logo-image-n n) (next-logo-image))
+      
+      (add-hook! load-processing-hook next-logo-image-n)
+      
+      ;;(define (move-scwm-logo-msgwin n)
+      ;;  (message-window-set-position!
+      ;;   scwm-logo-msgwin 
+      ;;   (+ (/ display-width 2) n) #f))
+      ))
 
-    (define scwm-logo-msgwin 
-      (make-message-window-with-image scwm-logo #t))
-
-    (set-X-server-synchronize! #t)
-    (message-window-show! scwm-logo-msgwin)
-    (set-X-server-synchronize! #f)
-    
-    (define logo-image-sequence
-      (list->vector
-       (map (lambda (deg) (make-image
-			   (string-append "scwm-logo-"
-					  (number->string deg) ".xpm")))
-	    (iota 24))))
-    
-    (define next-logo-image
-      (let ((i 0))
-	(lambda ()
-	  (set! i (modulo (+ i 1) (vector-length logo-image-sequence)))
-	  (message-window-set-image! scwm-logo-msgwin 
-				     (vector-ref logo-image-sequence i) #f #f #t))))
-    
-    (define (next-logo-image-timer)
-      (next-logo-image)
-      (add-timer-hook! 500000 next-logo-image-timer))
-    
-    (define (next-logo-image-n n) (next-logo-image))
-    
-    (add-hook! load-processing-hook next-logo-image-n)
-    
-    ;;(define (move-scwm-logo-msgwin n)
-    ;;  (message-window-set-position!
-    ;;   scwm-logo-msgwin 
-    ;;   (+ (/ display-width 2) n) #f))
-    )
 
 ;; Use below lines for help when debugging a GC issue during startup
 ;; (set-load-processing-frequency! 1)
@@ -1367,7 +1364,6 @@ union of all other window managers!
 (key-mouse-moves "C-M-S" 1 "y" "u" "i" "o")
 
 (key-viewport-moves "C-M-S" 100 "Left" "Down" "Up" "Right")
-(key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6")
 
 ;; avoid lots of warnings.... test for this first...
 (define have-kp-keysyms (and (keysym->keycode "KP_Left") #t))
@@ -1375,6 +1371,10 @@ union of all other window managers!
 (if have-kp-keysyms
     (key-viewport-moves "C-M-S" 10 "KP_Left" "KP_Down" "KP_Up" "KP_Right"))
 
+(define have-kp-num-keysyms (and (keysym->keycode "KP_4") #t))
+
+(if have-kp-num-keysyms
+    (key-viewport-moves "C-M-S" 10 "KP_4" "KP_2" "KP_8" "KP_6"))
 
 (define (switch-to-first-desk) (set-current-desk! 0))
 (define (switch-to-second-desk) (set-current-desk! 1))
@@ -1454,11 +1454,14 @@ union of all other window managers!
 ;; Fluid, cartoon-like, overshoots target
 ;(set-animation! '#(-.01 0 .01 .03 .08 .18 .3 .45 .60 .75 .85 .90 .94 .97 .99 1.01 1.02 1.01 1))
 
+;;; GJB:FIXME:: clean this up to factor more out.
+
 ;; Northwest
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to 0 0) 
 				 (set-window-gravity! 'northwest)))))
-  (bind-key 'all "C-M-KP_7" p)
+  (if have-kp-num-keysyms
+      (bind-key 'all "C-M-KP_7" p))
   (if have-kp-keysyms
       (bind-key 'all "C-M-KP_Home" p)))
 
@@ -1466,7 +1469,8 @@ union of all other window managers!
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to (x- (w%x 100)) 0)
 				 (set-window-gravity! 'northeast)))))
-  (bind-key 'all "C-M-KP_9" p)
+  (if have-kp-num-keysyms
+      (bind-key 'all "C-M-KP_9" p))
   (if have-kp-keysyms
       (bind-key 'all "C-M-KP_Prior" p)))
 
@@ -1474,7 +1478,8 @@ union of all other window managers!
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to 0 (y- (w%y 100)))
 				 (set-window-gravity! 'southwest)))))
-  (bind-key 'all "C-M-KP_1" p)
+  (if have-kp-num-keysyms
+      (bind-key 'all "C-M-KP_1" p))
   (if have-kp-keysyms
       (bind-key 'all "C-M-KP_End" p)))
 
@@ -1483,7 +1488,8 @@ union of all other window managers!
 				 (animated-move-to (x- (w%x 100)) 
 						   (y- (w%y 100)))
 				 (set-window-gravity! 'southeast)))))
-  (bind-key 'all "C-M-KP_3" p)
+  (if have-kp-num-keysyms
+      (bind-key 'all "C-M-KP_3" p))
   (if have-kp-keysyms
       (bind-key 'all "C-M-KP_Next" p)))
 
@@ -1491,7 +1497,8 @@ union of all other window managers!
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to #f 0)
 				 (set-window-gravity! 'north)))))
-  (bind-key 'all "C-M-KP_8" p)
+  (if have-kp-num-keysyms
+      (bind-key 'all "C-M-KP_8" p))
   (if have-kp-keysyms
       (bind-key 'all "C-M-KP_Up" p)))
 
@@ -1499,7 +1506,8 @@ union of all other window managers!
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to (x- (w%x 100)) #f)
 				 (set-window-gravity! 'east)))))
-  (bind-key 'all "C-M-KP_6" p)
+  (if have-kp-num-keysyms
+      (bind-key 'all "C-M-KP_6" p))
   (if have-kp-keysyms
       (bind-key 'all "C-M-KP_Right" p)))
 
@@ -1507,7 +1515,8 @@ union of all other window managers!
 (let ((p (lambda () (with-window (get-window) 
 				 (animated-move-to #f (y- (w%y 100)))
 				 (set-window-gravity! 'south)))))
-  (bind-key 'all "C-M-KP_2" p)
+  (if have-kp-num-keysyms
+      (bind-key 'all "C-M-KP_2" p))
   (if have-kp-keysyms
       (bind-key 'all "C-M-KP_Down" p)))
 
@@ -1515,7 +1524,8 @@ union of all other window managers!
 (let ((p (lambda () (with-window (get-window)
 				 (animated-move-to 0 #f)
 				 (set-window-gravity! 'west)))))
-  (bind-key 'all "C-M-KP_4" p)
+  (if have-kp-num-keysyms
+      (bind-key 'all "C-M-KP_4" p))
   (if have-kp-keysyms
       (bind-key 'all "C-M-KP_Left" p)))
 

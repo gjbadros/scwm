@@ -1,5 +1,7 @@
 ;; $Id$ -*- scwm -*-
 ;; gjb.scwmrc -- Greg J. Badros's Scwm initialization file
+;; SEE system.scwmrc for a more platform-independent and
+;; mature version of roughly the same configuration
 ;;
 ;; Copyright (C) 1997-1999 Greg J. Badros
 ;;
@@ -55,42 +57,42 @@
 (define scwm-logo (make-image "scwm-logo-0.xpm"))
 
 (if scwm-logo
-
-    (define scwm-logo-msgwin 
-      (make-message-window-with-image scwm-logo #t))
-
-    (set-X-server-synchronize! #t)
-    (message-window-show! scwm-logo-msgwin)
-    (set-X-server-synchronize! #f)
+    (begin
+      (define scwm-logo-msgwin 
+	(make-message-window-with-image scwm-logo #t))
+      
+      (set-X-server-synchronize! #t)
+      (message-window-show! scwm-logo-msgwin)
+      (set-X-server-synchronize! #f)
+      
+      (define logo-image-sequence
+	(list->vector
+	 (map (lambda (deg) (make-image
+			     (string-append "scwm-logo-"
+					    (number->string deg) ".xpm")))
+	      (iota 24))))
+      
+      (define next-logo-image
+	(let ((i 0))
+	  (lambda ()
+	    (set! i (modulo (+ i 1) (vector-length logo-image-sequence)))
+	    (message-window-set-image! scwm-logo-msgwin 
+				       (vector-ref logo-image-sequence i) #f #f #t))))
+      
+      (define (next-logo-image-timer)
+	(next-logo-image)
+	(add-timer-hook! 500000 next-logo-image-timer))
+      
+      (define (next-logo-image-n n) (next-logo-image))
+      
+      (add-hook! load-processing-hook next-logo-image-n)
+      
+      ;;(define (move-scwm-logo-msgwin n)
+      ;;  (message-window-set-position!
+      ;;   scwm-logo-msgwin 
+      ;;   (+ (/ display-width 2) n) #f))
+      ))
     
-    (define logo-image-sequence
-      (list->vector
-       (map (lambda (deg) (make-image
-			   (string-append "scwm-logo-"
-					  (number->string deg) ".xpm")))
-	    (iota 24))))
-    
-    (define next-logo-image
-      (let ((i 0))
-	(lambda ()
-	  (set! i (modulo (+ i 1) (vector-length logo-image-sequence)))
-	  (message-window-set-image! scwm-logo-msgwin 
-				     (vector-ref logo-image-sequence i) #f #f #t))))
-    
-    (define (next-logo-image-timer)
-      (next-logo-image)
-      (add-timer-hook! 500000 next-logo-image-timer))
-    
-    (define (next-logo-image-n n) (next-logo-image))
-    
-    (add-hook! load-processing-hook next-logo-image-n)
-    
-    ;;(define (move-scwm-logo-msgwin n)
-    ;;  (message-window-set-position!
-    ;;   scwm-logo-msgwin 
-    ;;   (+ (/ display-width 2) n) #f))
-    )
-
 ;; Use below lines for help when debugging a GC issue during startup
 ;; (set-load-processing-frequency! 1)
 ;; (add-hook! load-processing-hook (lambda (n) (display n) (newline) (gc)))
