@@ -156,8 +156,8 @@ SCWM_PROC(image_p, "image?", 1, 0, 0,
 
 SCWM_PROC(image_properties, "image-properties", 1, 0, 0,
            (SCM image))
-     /** Return an association list giving some properties of
-IMAGES. Currently defined properties are 'filename, the fully expanded
+     /** Return an association list giving some properties of IMAGE.
+Currently defined properties are 'filename, the fully expanded
 pathname of the image, 'width, it's width, 'height, it's height, and
 depth, it's color depth. 
 */

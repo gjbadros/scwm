@@ -162,6 +162,7 @@ indicates wether vertical wraparound is in effect. */
 #undef FUNC_NAME
 
 
+/* FIXMS: this should probably be split into two procedures.
 SCWM_PROC(set_edge_resistance_x, "set-edge-resistance!", 2, 0, 0,
           (SCM sr, SCM mr))
      /** Set two parameters indicating how much resistance should be
@@ -169,11 +170,10 @@ offered when scrolling things past the edge, in two different
 senses. SR is an amount in microseconds that indicates how long the
 mouse pointer must stay at the edge of the screen before the viewport
 scrolls. If this paramenter is greater than 10,000, the viewport will
-not scroll at all at the screen edge (NOTE: that's a bogus way to
+not scroll at all at the screen edge (FIXMS: that's a bogus way to
 indicate that.) MR is an amount in pixels that indicates how many
 pixels past the edge of the screen a window must be moved before it
-will really go past the edge. (NOTE: This should probably be split
-into two procedures.) */
+will really go past the edge. */
 #define FUNC_NAME s_set_edge_resistance_x
 {
   SCM_REDEFER_INTS;

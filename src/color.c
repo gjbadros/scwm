@@ -748,8 +748,8 @@ SCWM_PROC(set_menu_background_x, "set-menu-background!", 1, 0, 0,
 
 SCWM_PROC(set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0,
            (SCM st) )
-     /** Use ST as the default stipple color for menus. (NOTE: I am
-not sure this is used for anything any more. */
+     /** Use ST as the default stipple color for menus. 
+(GJBFIX: I am not sure this is used for anything any more. */
 #define FUNC_NAME s_set_menu_stipple_x
 {
   XGCValues gcv;

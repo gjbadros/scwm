@@ -324,7 +324,7 @@ SCWM_PROC(unbind_key, "unbind-key", 2, 0, 0,
           (SCM contexts, SCM key))
      /** Remove any bindings attached to KEY in given CONTEXTS.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
-KEY is a string giving the key-specifier (e.g., M-Delete for META+Delete) */
+KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete) */
 #define FUNC_NAME s_unbind_key
 {
   KeySym keysym;
@@ -458,7 +458,7 @@ SCWM_PROC(bind_key, "bind-key", 3, 0, 0,
           (SCM contexts, SCM key, SCM proc))
      /** Bind the given KEY within the CONTEXTS to invoke PROC.
 CONTEXTS is a list of event-contexts (e.g., '(button1 sidebar))
-KEY is a string giving the key-specifier (e.g., M-Delete for META+Delete)
+KEY is a string giving the key-specifier (e.g., M-Delete for Meta+Delete)
 PROC is a procedure (possibly a thunk) that should be invoked */
 #define FUNC_NAME s_bind_key
 {
@@ -748,24 +748,24 @@ Return value is one of 'motion, 'click, 'one-and-a-half-clicks, 'double-clicks *
 
 
 SCWM_PROC(mod_mask_meta,"mod-mask-meta", 0, 0, 0, ())
-     /** Return the bitmask for the META modifier key, or #f.
-Returns #f iff there is no key bound to act as META, otherwise
+     /** Return the bitmask for the Meta modifier key, or #f.
+Returns #f iff there is no key bound to act as Meta, otherwise
 returns a power of two corresponding to the bitmask of the modifier */
 #define FUNC_NAME s_mod_mask_meta
 { return MetaMask == 0? SCM_BOOL_F : gh_int2scm(MetaMask); }
 #undef FUNC_NAME
 
 SCWM_PROC(mod_mask_alt, "mod-mask-alt", 0, 0, 0, ())
-     /** Return the bitmask for the ALT modifier key, or #f.
-Returns #f iff there is no key bound to act as ALT, otherwise
+     /** Return the bitmask for the Alt modifier key, or #f.
+Returns #f iff there is no key bound to act as Alt, otherwise
 returns a power of two corresponding to the bitmask of the modifier */
 #define FUNC_NAME s_mod_mask_alt
 { return AltMask == 0? SCM_BOOL_F : gh_int2scm(AltMask); }
 #undef FUNC_NAME
 
 SCWM_PROC(mod_mask_hyper, "mod-mask-hyper", 0, 0, 0, ())
-     /** Return the bitmask for the HYPER modifier key, or #f.
-Returns #f iff there is no key bound to act as HYPER, otherwise
+     /** Return the bitmask for the Hyper modifier key, or #f.
+Returns #f iff there is no key bound to act as Hyper, otherwise
 returns a power of two corresponding to the bitmask of the modifier */
 #define FUNC_NAME s_mod_mask_hyper
 { return HyperMask == 0? SCM_BOOL_F : gh_int2scm (HyperMask); }
@@ -773,8 +773,8 @@ returns a power of two corresponding to the bitmask of the modifier */
 
 
 SCWM_PROC(mod_mask_super, "mod-mask-super", 0, 0, 0,())
-     /** Return the bitmask for the SUPER modifier key, or #f.
-Returns #f iff there is no key bound to act as SUPER, otherwise
+     /** Return the bitmask for the Super modifier key, or #f.
+Returns #f iff there is no key bound to act as Super, otherwise
 returns a power of two corresponding to the bitmask of the modifier */
 #define FUNC_NAME s_mod_mask_super
 { return SuperMask == 0? SCM_BOOL_F : gh_int2scm (SuperMask); }

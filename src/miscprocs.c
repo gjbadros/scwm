@@ -53,12 +53,13 @@ SCWM_PROC(set_menu_mwm_style, "set-menu-mwm-style!", 0, 1, 0,
 #undef FUNC_NAME
 
 
+/* MSFIX: Can't easily be a color w/o overlay planes-- needs to be really 
+   fast to erase */
 SCWM_PROC(set_rubber_band_mask_x, "set-rubber-band-mask!", 1, 0, 0,
           (SCM value))
      /** Set the rubber band mask, the value XORed with the background
 when dragging non-opaque move or resize frames to VALUE. VALUE should
-be an integer. (NOTE: Maybe it should be a color? I don't grok this
-stuff. */
+be an integer. */
 #define FUNC_NAME s_set_rubber_band_mask_x
 {
   XGCValues gcv;
@@ -245,7 +246,7 @@ SCWM_PROC(set_opaque_move_size_x, "set-opaque-move-size!", 1, 0, 0,
      /** Set the opaque move size limit to SIZE, which is given as a
 percentage of the screen area. If the area of a window is greater than
 this percentage, the window will be moved with a rubber band
-instead. (NOTE: this should be determined more flexibly) */
+instead. (FIXGJB: this should be determined more flexibly) */
 #define FUNC_NAME s_set_opaque_move_size_x
 {
   SCM_REDEFER_INTS;
