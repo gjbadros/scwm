@@ -3,7 +3,7 @@
 
 ;; Copyright (c) 1998 by Sam Steingold <sds@usa.net>
 
-;; File: <scwm.el - 1998-09-09 Wed 11:21:47 EDT sds@eho.eaglets.com>
+;; File: <scwm.el - 1998-10-06 Tue 15:58:21 EDT sds@eho.eaglets.com>
 ;; Author: Sam Steingold <sds@usa.net>
 ;; Version: $Revision$
 ;; Keywords: language lisp scheme scwm
@@ -207,8 +207,15 @@ Use \\[scheme-send-last-sexp] to eval the last sexp there."
   (define-key inferior-scheme-mode-map [(control h)]
     (lookup-key scwm-mode-map [(control h)])))
 
+;;; service variables
+(defvar scwm-obarray nil "The obarray for scwm completion.")
+(defvar scwm-history nil "The input history of SCWM completions.")
+
 (defun scwm-eval (sexp out)
-  "Evaluate the SEXP with scwm-exec and print the results to OUT."
+  "Evaluate the SEXP with scwm-exec and print the results to OUT.
+All evaluation goes through this procedure."
+  (when (string-match "(\\s *\\(define\\|use-modules\\|load\\)" sexp)
+    (setq scwm-obarray nil))
   (call-process scwm-exec nil out nil sexp))
 
 (defun scwm-safe-call (func args out)
@@ -257,9 +264,6 @@ meaning of the second argument is reversed."
 ;; completion
 ;; ----------
 
-(defvar scwm-obarray nil "The obarray for scwm completion.")
-(defvar scwm-history nil "The input history of SCWM completions.")
-
 (defun scwm-make-obarray ()
   "Create and return an obarray of SCWM symbols."
   ;; (setq scwm-obarray (scwm-make-obarray))
@@ -286,7 +290,7 @@ meaning of the second argument is reversed."
 (defun scwm-complete-symbol (&optional sym)
   "Complete the current symbol or SYM by querying scwm using apropos-internal.
 Returns a string which is present in the `scwm-obarray'."
-  ;; removed the last arg, `sym', for backward compatibility with e19.
+  (when current-prefix-arg (setq scwm-obarray nil))
   (let ((oa (scwm-obarray)))
     ;; require a match only when the obarry is present
     ;; (in case guile lacks `apropos-internal')
