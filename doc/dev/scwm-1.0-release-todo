@@ -8,7 +8,7 @@ made by me :-) --03/18/99 gjb
 Web-page related
 ----------------
 
-* Fix Scwm mailing list archive -- 1999 is not included
+DONE * Fix Scwm mailing list archive -- 1999 is not included --04/14/99 ms
 
 * Add a search engine to Scwm web (esp. for mailing list)
 ** glimpse based?
@@ -45,7 +45,7 @@ easier to build source rpms, binary rpms, and debian packages
 
 Scwm-core related
 -----------------
-* Update all copyrights to include 1999
+DONE * Update all copyrights to include 1999 --04/7/99 gjb
 
 * Have a really polished and useful system.scwmrc that showcases some of
 the nicer features, but remains eminently usable. Each of the
@@ -67,6 +67,8 @@ Imlib).
 
 DONE via ESD * Add sound support module
 
+DONE * Move most useful stuff from flux.scm out to fully-supported modules --04/14/99 gjb
+
 * Fix only the most awful API stupidity - a lot of the available
 procedures have silly argument orders or are generally poorly
 designed.  We shouldn't do a lot of this as it'll break stuff
@@ -80,8 +82,6 @@ Post-1.0 features
 -----------------
 
 * Improve gravity handling
-
-* Move most useful stuff from flux.scm out to fully-supported modules
 
 * event rewrite
 

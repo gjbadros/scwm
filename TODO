@@ -2,16 +2,7 @@
 
 See also doc/dev/scwm-1.0-release-todo
 
-* Add session manager support
-** TEST IT!  Add hooks to scheme code for various messages, etc.
-*** Robert said he could do this
-** configure test for libSM, libICE, link with -lSM -lICE and #define XSM
-** #include <X11/SM/SMlib.h>
-** initialization routines in scwm-smc.c
-** call initSM() from scwm.c
-** main loop processing of ICE messages, i/o multiplexing w/ select
-
-* Use only gh_ interface to guile -- remove uses of scm_ calls
+* Use  gh_ interface to guile as much as possible -- limit uses of scm_ calls
 ** See and update doc/dev/Guile-gh-needs
 
 * Finish C-level API review, renaming things, adding getters, etc
@@ -23,32 +14,18 @@ provide some example uses of guile-gtk for scwm.
 ** ask-string implementation
 ** guile-gtk imitation of fvwm-buttons
 
-* Do some more work on the window struct rewrite.
-
 * Advice (like emacs) mechanism for augmenting procedures 
 ** (Robert has done some work on this)
 
 * overlay plane support (or grab server during constraint draws)
 ** http://www.motifzone.com/tmd/articles/Overlay/oplanes.html
 
-* generalize select-window to permit proc to be called when would-be-selected win changes
-
-* Support for custom cursors
-
 * Improve the gravity handling stuff.
 ** Respect gravity on program resize
 ** Respect gravity on resize-to
 ** Let user get/set gravity.
 
-* Fix up style handling a bit; make more convenient ways to match
-styles only on one of resource class/resource instance/ window title,
-and add convenient ways to match on certain other things.
-
-* Promote generally useful things from flux.scm to somewhere supported
-
-* use real hook for auto-raise module (window-focus-change-hook)
-
-* window-group feature (at scheme level) for applying operations to multiple windows
+* Support for custom cursors
 
 * bug fixes
 
@@ -68,6 +45,8 @@ After Scwm 1.0:
   -- says Carl Witty
 
 * decorations rewrite
+
+* finish window struct rewrite.
 
 * split into on-demand loaded modules of primitives
 
@@ -156,6 +135,7 @@ isn't now).
 ** visibility change hooks (fully-obscured, partially-obscured, unobscured) -- subsumed by event rewrite --08/07/98 gjb
 
 ** DONE ONES
+
 *** window closing hook? (upon removal of the window?) -- done 09/17/98 gjb
 *** (with-window WINDOW) to make WINDOW be the implicit target of (get-window) primitive -- done 09/17/98 gjb
     Maybe should have set-window-context! and window-context routines that with-window is just a syntax around --09/02/98 gjb
@@ -249,6 +229,30 @@ alloc/dealloc to see where the memory is going... guile support for this?
 * rewrite of remaining copyrighted code  to allow release under GPL
 
 * Undo feature?
+
+
+DONE --04/14/99 gjb
+* generalize select-window to permit proc to be called when would-be-selected win changes
+
+* Add session manager support
+** TEST IT!  Add hooks to scheme code for various messages, etc.
+*** Robert said he could do this
+** configure test for libSM, libICE, link with -lSM -lICE and #define XSM
+** #include <X11/SM/SMlib.h>
+** initialization routines in scwm-smc.c
+** call initSM() from scwm.c
+** main loop processing of ICE messages, i/o multiplexing w/ select
+
+* Fix up style handling a bit; make more convenient ways to match
+styles only on one of resource class/resource instance/ window title,
+and add convenient ways to match on certain other things.
+
+* Promote generally useful things from flux.scm to somewhere supported
+
+* use real hook for auto-raise module (window-focus-change-hook)
+
+* window-group feature (at scheme level) for applying operations to multiple windows
+
 
 
 * Done for scwm 0.8:
