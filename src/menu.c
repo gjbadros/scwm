@@ -905,8 +905,10 @@ PmdPrepopFromPmiim(MenuItemInMenu *pmiim)
   DynamicMenu *pmd;
   DynamicMenu *pmdNew = NULL;
   if (pmiim) {
-    SCM scmAction = pmiim->pmi->scmAction;
-    Menu *pmenu = DYNAMIC_SAFE_MENU(scmAction);
+    Menu *pmenu = DYNAMIC_SAFE_MENU(pmiim->pmi->scmAction);
+    if (!pmenu) {
+      pmenu = DYNAMIC_SAFE_MENU(pmiim->pmi->scmHover);
+    }
     if (pmenu) {
       pmd = pmiim->pmd;
       pmdNew = NewDynamicMenu(pmenu,pmd);
@@ -1240,8 +1242,8 @@ InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
   pmiim->chShortcut = '\0';
   pmiim->ichShortcutOffset = -1;
 
-  pmiim->fShowPopupArrow = (DYNAMIC_MENU_P(pmiim->pmi->scmAction));
-
+  pmiim->fShowPopupArrow = (DYNAMIC_MENU_P(pmiim->pmi->scmAction)) || (DYNAMIC_MENU_P(pmiim->pmi->scmHover));
+  
   if (pmiim->pmi->scmAction == SCM_BOOL_F)
     pmiim->mis = MIS_Grayed;
   else

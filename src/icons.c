@@ -42,6 +42,10 @@
 #include "color.h"
 #include "focus.h"
 #include "xmisc.h"
+#include "callbacks.h"
+
+static SCM iconify_hook;
+static SCM deiconify_hook;
 
 /***********************************************************************
  *
@@ -688,6 +692,7 @@ DeIconify(ScwmWindow *psw)
       if (t->icon_pixmap_w)
 	XUnmapWindow(dpy, t->icon_pixmap_w);
       Broadcast(M_DEICONIFY, 3, t->w, t->frame, (unsigned long) t, 0, 0, 0, 0);
+      call1_hooks(deiconify_hook, t->schwin);
     }
   }
 
@@ -749,6 +754,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
 
         BroadcastIconInfo(M_ICONIFY,t);
 	BroadcastConfig(M_CONFIGURE_WINDOW, t);
+	call1_hooks(iconify_hook, t->schwin);
       }
     }
   }
@@ -771,6 +777,7 @@ Iconify(ScwmWindow *psw, int def_x, int def_y)
   psw->fIconUnmapped = False;
   BroadcastIconInfo(M_ICONIFY, psw);
   BroadcastConfig(M_CONFIGURE_WINDOW, psw);
+  call1_hooks(iconify_hook, psw->schwin);
 
   LowerWindow(psw);
 
@@ -831,6 +838,23 @@ SetMapStateProp(ScwmWindow *psw, int state)
 		  PropModeReplace, (unsigned char *) data, 2);
   return;
 }
+
+void
+init_icons()
+{
+  SCWM_HOOK(iconify_hook, "iconify-hook");
+  /** This hook is invoked when a window is iconified.
+It is called with one argument, WINDOW */
+
+  SCWM_HOOK(deiconify_hook, "deiconify-hook");
+  /** This hook is invoked when a window is deiconified.
+It is called with one argument, WINDOW */
+
+#ifndef SCM_MAGIC_SNARFER
+#include "icons.x"
+#endif
+}
+
 
 /* Local Variables: */
 /* tab-width: 8 */

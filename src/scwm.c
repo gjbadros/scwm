@@ -556,6 +556,7 @@ scwm_main(int argc, char **argv)
   init_placement();
   init_Grab();
   init_virtual();
+  init_icons();
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
 #endif

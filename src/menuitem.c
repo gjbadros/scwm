@@ -96,7 +96,7 @@ returned list contains the following, in this order:
 '(label action extra-label picture-above picture-left hover-action
 unhover-action hotkey-preferences)
 Note that this is the same as the arguments to the `make-menuitem'
-primitive */
+primitive. */
 #define FUNC_NAME s_menuitem_properties
 {
   MenuItem *pmi = SAFE_MENUITEM(menu_item);
@@ -135,7 +135,8 @@ mouse pointer hovers over the item and is moved away after hovering
 over the item, respectively.
 HOTKEY-PREFS is a string listing preferred alphanumeric shortcut-keys
 for the given menu-item; the menu creation routine uses these as hints 
-for assigning shortcut keys to the various menuitems. */
+for assigning shortcut keys to the various menuitems.
+For a higher-level interface to this function, see `menuitem'. */
 #define FUNC_NAME s_make_menuitem
 {
   MenuItem *pmi = NEW(MenuItem);

@@ -1,3 +1,22 @@
+1998-12-03  Todd Larason  <jtl@molehill.org>
+
+	* scwm.c (scwm_main): call init_icons() to initialize the icon hooks
+
+	* menulook.c: documentation additions from Carl Witty - Thanks Carl!
+
+	* menuitem.c: documentation fixes from Carl Witty
+
+	* menu.c (PmdPrepopFromPmiim): If the action for a menu item is
+	not a popup menu, but the hover trigger is, popup that menu
+	(InitializeMenuItemInMenu): draw the popup arrow if either action
+	or hover is a menu
+
+	* icons.c: add iconify_hook and deiconify_hook, call them in the
+	obvious places
+	(init_icons): new function, to initialize the new hooks
+
+	* Makefile.am (guile_snarfs): add 'icons.x'
+
 Thu Dec  3 01:43:49 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* xproperty.c (X_property_delete_x): Added new primitive
