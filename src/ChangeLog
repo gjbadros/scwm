@@ -1,3 +1,95 @@
+1998-07-23  Greg Badros  <gjb@cs.washington.edu>
+
+	* xproperty.c: Add parens to disambiguate (a>>2+1) [(a>>2)+1]
+
+	* xmisc.h: include X11/Xlib.h
+
+	* window.[ch]: remove unused vars, use cassowary interface on move-to 
+	primitive, eliminate the move_finalize -- it seems unnecessary,
+	move interactive_resize into resize.c
+
+	* virtual.c: Added prototype for RemoveRubberbandOutline(), remove 
+	MoveOutline proto
+
+	* shutdown.h: Added missing prototype for run_startup_hook
+
+	* shutdown.c: Replace dead assignment which forced the core dump
+	with a function call so we're sure that the code doesn't get
+	optimized away through dead code elimination.
+
+	* scwm.c: Re-checked all the header dependencies. Moved CreateGCs
+	here, added call to init_resize, move out the code that creates
+	the size & position display window to CreateSizeDisplayWindow function
+
+	* scwm-constraints.hpp: Added return type for AddStays.
+
+	* scwm-constraints.{cc,h}: Added CassowaryEditSize(),
+	SuggestSizeWindowTo(), and rename CassowaryEndEditPosition() to
+	just CassowaryEEndEdit().
+
+	* screen.h: Added size_window_{font,fg,bg} for controlling the
+	size and position window (shown during interactive moves)
+
+	* resize.[ch]: modularize better -- make globals file static
+	instead. move interactive_resize primitive here, and add
+	resize.x.  Added CreateSizeDisplayWindow(), added primitive
+	set-size-and-pos-window-attributes.  Factor out
+	InitializeOutlineRects() and use it
+
+	* placement.c: Removed massive #if 0 from Maciej's rewrite -- it
+	was too long, and is in the repo anyway.
+
+	* move.[ch]: Added abstraction MapSizePositionWindow(), drop
+	fAddWindow parameter from moveLoop, and document it better, added
+	RedrawOutlineAtNewPosition() and RemoveRubberbandOutline()
+	functions to make code more clear, and clean up moveLop fn.  Use
+	Scr.size_window_font for DisplayPosition() fn.  Clean up InteractiveMove()
+
+	* module-interface.h: Added missing prototype for BroadcastMiniIcon
+
+	* miscprocs.c: Added scwm-path-prefix and scwm-path-exec-prefix
+
+	* makefile.cassowary: Added extratags target so that cassowary
+	source files get tags built, too
+
+	* font.[ch]: Make str_fixed global. Clean up menu_font_update so it
+	does not mess with the size/position window
+
+	* menuitem.c, draw-menu.[ch], draw-pie-menu.c: Rename scwmmenu.h for inclusion
+
+	* constraint-primitives.cc: Use a list, not a vector for
+	rgpswDirty, use DBUG, not scwm_msg for independent variables.
+
+	* colors.c, colors.h: Move CreateGCs() into scwm.c, since it is an
+	initialization routine
+
+	* xmisc.c, icons.c, decor.c, callbacks.c, borders.c: Fix warnings, clean
+ 	comments, remove unused vars
+
+	* add_window.c: Added add_window.x, remove unused vars, give
+	simple SuggestSizeWindowTo function for non-cassowary code
+
+	* Makefile.am (scwmpaths.h): Added writing of SCWM_PREFIX and
+	SCWM_EXEC_PREFIX #defines.
+
+	* Makefile.am: Added scm_init_func.h target, using new script
+	generate_scm_init_funcs.  Alphabetize scwm_SOURCES var.  Separate
+	out guile_snarfs from BUILT_SOURCES.  Update for scwmmenu->menu
+	name change. Added add_window.x, resize.x.
+
+	* generate_scm_init_funcs: Added this script to be used by the
+	makefile for generating the new scm_init_funcs.h file, included by 
+	scwm.c to declare protoes for all the init_MODULE functions so we
+	do not *have* to include header files for just those functions.
+
+	* menu.c, menu.h: Renamed from scwmmenu.c, scwmmenu.h for
+	consistency, so new scm_init_funcs.h works as it should (declaring 
+	the prototypes for all the init_MODULE functions)
+
+	* menuitem.c, scwmmenu.c, xproperty.c (mark_XXXX): Don't guard
+	marking subobjects with if (SCM_GC8MARKP(XX)) since the parent
+	object will already be marked in newer snapshots of guile.
+
 1998-07-23  Maciej Stachowiak  <maciej@roc-ny1-20.ix.netcom.com>
 
 	* callbacks.c: Replace "Timer" with "Input" in the input hook
