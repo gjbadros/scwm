@@ -100,7 +100,6 @@
 (define want-workman-menu #t)
 
 (define xterm-user-shell-options "-e start-zsh")
-(define xterm-other-host "bowman")
 (define xterm-program-name "nxterm")
 
 (define use-complete-host-menu #t)
@@ -134,6 +133,9 @@
 
 (define (start-program-in-xterm binary title resources)
   (string-append binary " -T" title " -name " resources))
+
+(define* (start-xterm #&optional (opt xterm-user-shell-options))
+  (execute (string-append xterm-program-name " " opt)))
 
 (define applications-available-program-information
   `(
@@ -715,7 +717,7 @@
     (menuitem "Keep-&on-top/Reset" #:action (thunk toggle-on-top))
     (menuitem "&Print" #:action (thunk print-window))
     menu-separator
-    (menuitem "Change theme" #:submenu (lambda () (menu-window-theme)))
+    (menuitem "Change theme" #:submenu (lambda () (menu-window-theme #t)))
     menu-separator
     (menuitem "&Delete" #:action (thunk delete-window))
     (menuitem "&Close" #:image-left "mini-cross.xpm" 
@@ -756,12 +758,6 @@
 This is a re-work of the fvwm2 TheNextLevel and its successor
 AnotherLevel.
 "))
-
-(define (start-xterm)
-  (execute (string-append xterm-program-name " " xterm-user-shell-options)))
-
-(define (start-xterm-on-other-host)
-  (xterm-other-host xterm-other-host))
 
 (define (start-xlogo)
   (execute "xlogo"))
@@ -978,7 +974,7 @@ AnotherLevel.
     (menuitem "&Lock Screen" #:image-left "mini-lock.xpm" 
 	      #:action (thunk exec-xlock))
     menu-separator
-    (menuitem "Change global theme" #:submenu (lambda () (menu-global-theme)))
+    (menuitem "Change global theme" #:submenu (lambda () (menu-global-theme #t)))
     menu-separator
     (menuitem "A&bout ScwmTNL" #:image-left "mini-exclam.xpm" 
 	      #:action (thunk scwm-about-message))
@@ -1174,7 +1170,6 @@ AnotherLevel.
 (bind-key 'all "C-M-S-r" refresh)
 (bind-key 'all "C-M-S-5" recapture)
 (bind-key 'all "C-M-S-x" start-xterm)
-(bind-key 'all "C-M-S-b" start-xterm-on-other-host)
 (bind-key 'all "C-M-S-p" start-xlogo)
 
 (bind-key 'all "C-S-F1" popup-small-ops)
@@ -1193,6 +1188,21 @@ AnotherLevel.
 
 (setenv "DISPLAY_HEIGHT" (number->string root-size-y))
 (setenv "DISPLAY_WIDTH" (number->string root-size-x))
+
+;; (define varstr "SSH_AUTH_SOCK")
+;; (define valstr "/tmp/ssh-gjb/agent-socket-26365")
+;; (setenv-for-sub-process-xterms "SSH_AUTH_SOCK" (getenv "SSH_AUTH_SOCK"))
+
+;; See also my reset-ssh-auth-sock-from-scwm emacs function
+;; along with copy-scwm-env-var-value.
+(define (setenv-for-sub-process-xterms varstr valstr)
+  (setenv varstr valstr)
+  (system (string-append "echo \"" varstr "=" valstr "\" > " 
+			 (getenv "HOME") "/private/.zsh-dynamic-source" )))
+
+;; this is better done from within the emacs that needs fixing.
+(define (fix-ssh-auth-for-xemacs-server)
+  (system "gnuclient -q -batch -f reset-ssh-auth-sock-from-scwm"))
 
 ;; GJB:FIXME:: PLANES? SCWM_DIR? SCWM_VERSION?  want these exported too
 
