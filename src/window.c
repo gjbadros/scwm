@@ -13,7 +13,13 @@
 #include <guile/gh.h>
 #include <X11/keysym.h>
 #include "window.h"
+#include "color.h"
 #include "util.h"
+
+#ifdef USEDECOR
+extern ScwmDecor *last_decor, *cur_decor;
+#endif
+
 
 long scm_tc16_scwm_window;
 
@@ -866,9 +872,10 @@ SCM keep_on_top(SCM win)
   SCM_REDEFER_INTS;
   VALIDATE(win,"keep-on-top");
   tmp_win=SCWMWINDOW(win);
-  tmp_win->flags |=STAYSONTOP_FLAG;
+  tmp_win->flags |=ONTOP;
+  /* is this needed? */
   BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
-  SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True);
+  raise_window(win);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
@@ -879,9 +886,9 @@ SCM un_keep_on_top(SCM win)
   SCM_REDEFER_INTS;
   VALIDATE(win,"un-keep-on-top");
   tmp_win=SCWMWINDOW(win);
-  tmp_win->flags &= ~STAYSONTOP_FLAG;
+  tmp_win->flags &= ~ONTOP;
+  /* is this needed? */
   BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
-  SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True);
   SCM_REALLOW_INTS;
   return SCM_BOOL_T;
 }
@@ -889,8 +896,329 @@ SCM un_keep_on_top(SCM win)
 SCM kept_on_top_p(SCM win)
 {
   VALIDATE(win,"kept-on-top?");
-  return (SCWMWINDOW(win)->flags & STAYSONTOP) ? SCM_BOOL_T : SCM_BOOL_F;
+  return (SCWMWINDOW(win)->flags & ONTOP) ? SCM_BOOL_T : SCM_BOOL_F;
 }
+
+
+/* maybe all of this can be replaced with set-title-height 
+   (a per-window version) ? */
+
+SCM show_titlebar(SCM win)
+{
+  ScwmWindow *tmp_win;
+  ScwmDecor *fl;
+  
+  SCM_REDEFER_INTS;
+#ifdef USEDECOR
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+#else
+  fl = &Scr.DefaultDecor;
+#endif
+
+ VALIDATE(win,"show-titlebar");
+ tmp_win=SCWMWINDOW(win);
+ tmp_win->flags |= TITLE;
+ BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+ SetupFrame(tmp_win,tmp_win->frame_x,tmp_win->frame_y,
+	    tmp_win->frame_width,
+	    tmp_win->frame_height+fl->TitleHeight,
+	    True);
+ /* SetTitleBar(tmp_win,(Scr.Hilite==tmp_win),True); */
+ SCM_REALLOW_INTS;
+ return SCM_BOOL_T;
+}
+
+SCM hide_titlebar(SCM win)
+{
+  ScwmWindow *tmp_win;
+  ScwmDecor *fl;
+  
+  SCM_REDEFER_INTS;
+#ifdef USEDECOR
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+#else
+  fl = &Scr.DefaultDecor;
+#endif
+  
+  VALIDATE(win,"hide-titlebar");
+  tmp_win=SCWMWINDOW(win);
+  tmp_win->flags &= ~TITLE;
+  tmp_win->title_height = 0;
+  BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+  SetupFrame(tmp_win,tmp_win->frame_x,tmp_win->frame_y,
+	     tmp_win->frame_width,
+	     tmp_win->frame_height-fl->TitleHeight,
+	     True);
+  
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;
+}
+
+SCM titlebar_shown_p(SCM win)
+{
+  VALIDATE(win,"titlebar-shown?");
+  return (SCWMWINDOW(win)->flags & TITLE) ? SCM_BOOL_T : SCM_BOOL_F;
+}
+
+
+SCM normal_border(SCM win)
+{
+  ScwmWindow *tmp_win;
+  ScwmDecor *fl;
+  int i;
+
+  SCM_REDEFER_INTS;
+#ifdef USEDECOR
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+#else
+  fl = &Scr.DefaultDecor;
+#endif
+
+ VALIDATE(win,"normal-border");
+ tmp_win=SCWMWINDOW(win);
+ tmp_win->flags |= BORDER;
+ BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+ for (i=0;i<4;i++) {
+   XMapWindow(dpy,tmp_win->corners[i]);
+   XMapWindow(dpy,tmp_win->sides[i]);
+ }
+ 
+ SetBorder(tmp_win,(Scr.Hilite==tmp_win),True,True,None);
+
+ SCM_REALLOW_INTS;
+ return SCM_BOOL_T;
+}
+
+SCM plain_border(SCM win)
+{
+  ScwmWindow *tmp_win;
+  ScwmDecor *fl;
+  int i;
+
+  SCM_REDEFER_INTS;
+#ifdef USEDECOR
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+#else
+  fl = &Scr.DefaultDecor;
+#endif
+  
+  VALIDATE(win,"plain-border");
+  tmp_win=SCWMWINDOW(win);
+  tmp_win->flags &= ~BORDER;
+  BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+  for (i=0;i<4;i++) {
+    XUnmapWindow(dpy,tmp_win->corners[i]);
+    XUnmapWindow(dpy,tmp_win->sides[i]);
+  }
+
+  SetBorder(tmp_win,(Scr.Hilite==tmp_win),True,True,None);
+    
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;
+}
+
+SCM normal_border_p(SCM win)
+{
+  VALIDATE(win,"normal-border?");
+  return (SCWMWINDOW(win)->flags & BORDER) ? SCM_BOOL_T : SCM_BOOL_F;
+}
+
+SCM set_border_width_x(SCM width, SCM win)
+{
+  ScwmWindow *tmp_win; 
+  ScwmDecor *fl;
+  int i;
+  int w,oldw;
+
+  SCM_REDEFER_INTS;
+#ifdef USEDECOR
+  fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+#else
+  fl = &Scr.DefaultDecor;
+#endif
+  
+  if(!gh_number_p(width)) {
+    scm_wrong_type_arg("set-border-width!",1,width);
+  }
+
+  w=gh_scm2int(width);
+
+  VALIDATEN(win,2,"set-border-width!");
+  tmp_win=SCWMWINDOW(win);
+  oldw=tmp_win->boundary_width;
+  tmp_win->boundary_width=w;
+
+  SetupFrame(tmp_win,tmp_win->frame_x,tmp_win->frame_y,
+	     tmp_win->frame_width+2*(w-oldw),
+	     tmp_win->frame_height+2*(w-oldw),
+	     True);
+
+
+  BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+  return SCM_BOOL_T;
+}
+
+SCM stick_icon(SCM win)
+{
+  ScwmWindow *tmp_win;
+  SCM_REDEFER_INTS;
+  VALIDATE(win,"stick-icon");
+  tmp_win=SCWMWINDOW(win);
+  tmp_win->flags |=StickyIcon;
+  BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;
+}
+
+SCM unstick_icon(SCM win)
+{
+  ScwmWindow *tmp_win;
+  SCM_REDEFER_INTS;
+  VALIDATE(win,"unstick-icon");
+  tmp_win=SCWMWINDOW(win);
+  tmp_win->flags &= ~StickyIcon;
+  BroadcastConfig(M_CONFIGURE_WINDOW,tmp_win);
+  SCM_REALLOW_INTS;
+  return SCM_BOOL_T;
+}
+
+SCM icon_sticky_p(SCM win)
+{
+  VALIDATE(win,"icon-sticky?");
+  return (SCWMWINDOW(win)->flags & StickyIcon) ? SCM_BOOL_T : SCM_BOOL_F;
+}
+
+SCM set_icon_box_x(SCM sx, SCM sy, SCM sw, SCM sh, SCM win)
+{
+  /* XXX - should probably move existing window icons */
+  int x,y,w,h;
+  ScwmWindow *tmp_win;
+
+  if(!gh_number_p(sx)) {
+    scm_wrong_type_arg("set-icon-box!",1,sx);
+  }
+  if(!gh_number_p(sy)) {
+    scm_wrong_type_arg("set-icon-box!",2,sy);
+  }
+  if(!gh_number_p(sw)) {
+    scm_wrong_type_arg("set-icon-box!",3,sw);
+  }
+  if(!gh_number_p(sh)) {
+    scm_wrong_type_arg("set-icon-box!",4,sh);
+  }
+  VALIDATEN(win,5,"set-icon-box!");
+  tmp_win=SCWMWINDOW(win);
+  x=gh_scm2int(sx);
+  y=gh_scm2int(sy);
+  w=gh_scm2int(sw);
+  h=gh_scm2int(sh);
+  tmp_win->IconBox[0]=x;
+  tmp_win->IconBox[1]=y;
+  tmp_win->IconBox[2]=x+w;
+  tmp_win->IconBox[3]=y+h;
+  return(SCM_BOOL_T);
+}
+
+
+SCM sym_mouse,sym_click,sym_sloppy,sym_none;
+
+void init_window() {
+  sym_mouse=gh_symbol2scm("mouse");
+  scm_protect_object(sym_mouse);
+  sym_click=gh_symbol2scm("click");
+  scm_protect_object(sym_click);
+  sym_sloppy=gh_symbol2scm("sloppy");
+  scm_protect_object(sym_sloppy);
+  sym_none=gh_symbol2scm("none");
+  scm_protect_object(sym_none);
+}
+
+
+SCM set_window_focus_x(SCM sym, SCM win)
+{
+  ScwmWindow *tmp_win;
+
+  if (!gh_symbol_p(sym)) {
+    scm_wrong_type_arg("set-window-focus!",1,sym);
+  }
+  VALIDATEN(win,2,"set-window-focus!");
+  tmp_win=SCWMWINDOW(win);
+
+  if (gh_eq_p(sym,sym_mouse)) {
+    tmp_win->flags &= ~ClickToFocus & ~SloppyFocus;
+  } else if(gh_eq_p(sym,sym_click)) {
+    tmp_win->flags &= ~SloppyFocus;
+    tmp_win->flags |= ClickToFocus;
+  } else if(gh_eq_p(sym,sym_sloppy)) {
+    tmp_win->flags &= ~ClickToFocus;
+    tmp_win->flags |= SloppyFocus;
+  } else if(gh_eq_p(sym,sym_none)) {
+    tmp_win->flags |= ClickToFocus | SloppyFocus;
+  } else {
+    scwm_error("set-window-focus!",13);
+  }
+  return sym;  
+}
+
+SCM set_window_colors_x(SCM fg, SCM bg, SCM win)
+{
+  ScwmWindow *tmp_win;
+
+  if(gh_string_p(fg)) {
+    fg=load_color(fg);
+  } else if(fg==SCM_UNDEFINED) {
+    fg=SCM_BOOL_F;
+  } else if(!((SCM_NIMP(fg) && COLORP(fg))||fg==SCM_BOOL_F)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg("set-window-colors!",1,fg);
+  }
+  if(gh_string_p(bg)) {
+    bg=load_color(bg);
+  } else if(bg==SCM_UNDEFINED) {
+    bg=SCM_BOOL_F;
+  } else if(!((SCM_NIMP(bg) && COLORP(bg))||bg==SCM_BOOL_F)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg("set-window-colors!",2,bg);
+  }
+
+  VALIDATEN(win,3,"set-window-colors!");
+  tmp_win=SCWMWINDOW(win);
+
+  tmp_win->TextPixel=COLOR(fg);
+  tmp_win->BackPixel=COLOR(bg); 
+  tmp_win->ShadowPixel = GetShadow(tmp_win->BackPixel);
+  tmp_win->ReliefPixel = GetHilite(tmp_win->BackPixel);
+
+  SetBorder(tmp_win,(Scr.Hilite==tmp_win),True,True,None);
+
+  return SCM_BOOL_T;
+}
+
+SCM set_icon_title_x(SCM title, SCM win)
+{
+  int dummy;
+  ScwmWindow *tmp_win;
+  
+  /* XXX - this should redraw the icon if necessary */
+
+  VALIDATEN(win,2,"set-icon-title!");
+  tmp_win=SCWMWINDOW(win);
+
+  if(!gh_string_p(title)) {
+    if(title==SCM_BOOL_F) {
+      tmp_win->flags |= NOICON_TITLE;
+      return SCM_BOOL_T;
+    } else {
+      scm_wrong_type_arg("set-icon-title!",1,title);
+    }
+  }
+
+  tmp_win->icon_name=gh_scm2newstr(title,&dummy);
+  tmp_win->flags &= ~NOICON_TITLE;
+
+  return SCM_BOOL_T;
+}
+
 
 
 
