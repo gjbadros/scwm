@@ -21,6 +21,7 @@
 (define-module (app scwm prompt-proc)
   :use-module (ice-9 session)
   :use-module (app scwm reflection)
+  :use-module (app scwm doc)
   :use-module (gtk gtk)
   :use-module (app scwm gtk)
   :use-module (app scwm base)
@@ -30,6 +31,29 @@
   :use-module (app scwm optargs))
 
 
+
+;;; Some GTK+ helper stuff
+
+(define-public (gtk-clist-get-row-values clist row col)
+  "Return a list of the COL columns of row ROW of CLIST."
+  (let ((text (make-vector 1))
+	(answer '()))
+    (vector-set! text 0 "")
+    (do ()
+	((< col 0) answer)
+      (gtk-clist-get-text clist row col text)
+      (set! answer (cons (vector-ref text 0) answer))
+      (set! col (- col 1)))))
+
+(define-public (gtk-text-replace textwidget text)
+  "Replace all the text in TEXTWIDGET with TEXT."
+  (gtk-text-set-point textwidget 0)
+  (gtk-text-forward-delete textwidget (gtk-text-get-length textwidget))
+  (gtk-text-insert textwidget #f #f #f text (string-length text))
+  (gtk-text-set-point textwidget 0)) ;; GJB:FIXME:: Why is this not working?
+
+(define ui-box-spacing 4)
+(define ui-box-border 5)
 
 ;;(use-modules (app scwm prompt-proc))
 ;;(define w (prompt-proc "Procedure?" (lambda (v) (display v) (newline)) #:initval move-window))
@@ -112,7 +136,7 @@ See also `prompt-proc'."
 			    (gtk-widget-show dialog))))
     (list hbox (lambda () 
 		 (let* ((procname (gtk-entry-get-text entry))
-			(proc (eval (string->symbol procname))))
+			(proc (procedure-string->procedure procname)))
 		   (if (procedure? proc) proc #f)))
 	  entry)))
 
@@ -121,17 +145,13 @@ See also `prompt-proc'."
       (to-string formals)
       ""))
 
-(define-public (gtk-text-replace textwidget text)
-  (gtk-text-set-point textwidget 0)
-  (gtk-text-forward-delete textwidget (gtk-text-get-length textwidget))
-  (gtk-text-insert textwidget #f #f #f text (string-length text))
-  (gtk-text-set-point textwidget 0)) ;; GJB:FIXME:: Why is this not working?
-
 ;;(prompt-proc "Procedure?" (lambda (v) (display v) (newline)) #:initval move-window)
 (define*-public (gtk-proc-selection-new title #&optional (proclist #f))
   "Returns a new procedure-selecting dialog box."
   (let* ((toplevel (gtk-window-new 'dialog))
 	 (titles #("Module" "Procedure" "Required" "Optional" "Keyword"))
+	 (list-frame (gtk-frame-new "Procedures"))
+	 (doc-frame (gtk-frame-new "Documentation"))
 	 (vbox (gtk-vbox-new #f 0))
 	 (hbuttonbox (gtk-hbutton-box-new))
 	 (clist (gtk-clist-new-with-titles titles))
@@ -170,15 +190,29 @@ See also `prompt-proc'."
 		  (vector-set! x 4 (formals-to-string 
 				    (procedure-keyword-formals proc)))
 		  (gtk-clist-append clist x)))
-	      (if proclist proclist (interactive-procedure-apropos-with-modules "")))
+	      (if proclist proclist 
+		  (sort!
+		   (interactive-procedure-apropos-with-modules "")
+		   (lambda (a b) 
+		     (let ((modname-a (symbol->string (car a)))
+			   (procname-a (symbol->string (cdr a)))
+			   (modname-b (symbol->string (car b)))
+			   (procname-b (symbol->string (cdr b))))
+		       (string-ci<? procname-a procname-b))))))
+
     (gtk-signal-connect clist "select_row" 
 			(lambda (row col event)
 			  (set! selected-row row)
 			  (let* ((m-p (gtk-clist-get-row-values clist selected-row 1))
-				 (docs (and m-p (procedure-documentation (eval (string->symbol (cadr m-p)))))))
+				 (docs (and m-p (proc-doc (procedure-string->procedure (cadr m-p))))))
 			    (gtk-text-replace doc-textbox (if (string? docs) docs "")))))
-    (gtk-box-pack-start vbox scrolled-win #t #t 0)
-    (gtk-box-pack-start vbox doc-scrolled-win #t #t 0)
+    (gtk-box-set-spacing vbox ui-box-spacing)
+    (gtk-container-border-width vbox ui-box-border)
+    (gtk-container-add list-frame scrolled-win)
+    (gtk-container-add doc-frame doc-scrolled-win)
+    (gtk-box-pack-start vbox list-frame #t #t 0)
+    (gtk-box-pack-start vbox doc-frame #t #t 0)
+    
     (gtk-container-add doc-scrolled-win doc-textbox)
     (gtk-box-pack-start vbox hbuttonbox #f #f 0)
     (gtk-box-pack-start hbuttonbox okbut #f #f 0)
@@ -216,18 +250,7 @@ See also `prompt-proc'."
 
 (define-public (gtk-proc-selection-get-procedure proc-dialog)
   "Returns the currently selected procedure from PROC-DIALOG."
-  (eval (string->symbol (gtk-proc-selection-get-procname proc-dialog))))
-
-(define-public (gtk-clist-get-row-values clist row col)
-  "Return a list of the COL columns of row ROW of CLIST."
-  (let ((text (make-vector 1))
-	(answer '()))
-    (vector-set! text 0 "")
-    (do ()
-	((< col 0) answer)
-      (gtk-clist-get-text clist row col text)
-      (set! answer (cons (vector-ref text 0) answer))
-      (set! col (- col 1)))))
+  (procedure-string->procedure (gtk-proc-selection-get-procname proc-dialog)))
 
 (define-public (module-and-proc-names->proc module-name proc-name)
   "Return the procedure named PROC-NAME from module named MODULE-NAME.
@@ -241,3 +264,4 @@ must be a full name such as \"app scwm base\"."
 ;;(gtk-clist-get-row-values c 1 1)
 ;;(gtk-proc-selection-get-procedure w)
 ;;(string->symbol (cadr (gtk-proc-selection-get-procedure w)))
+;;(prompt-proc "Procedure?" (lambda (v) (display v) (newline)) #:initval move-window)

@@ -29,6 +29,10 @@
       (symbol->string (or (procedure-name proc) 'anonymous-procedure))
       "<none>"))
 
+(define-public (procedure-string->procedure proc-name)
+  "Return a procedure given its name."
+  (eval (string->symbol proc-name)))
+
 (define-public (procedure-arity proc)
   "Return the arity values for PROC.
 Three values are returned in a list: (num-required num-optional rest-argument-p)."
@@ -210,3 +214,4 @@ This returns a simple list of procedure objects."
 ;(procedure-formals current-module)
 
 ;(procedure? current-module)
+

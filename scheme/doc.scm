@@ -86,7 +86,31 @@ Returns #t if any documentation was found, #f otherwise."
       (hook-documentation evalsym))
      (else (scwm-option-documentation sym)))))
       
+
+;; (proc-doc get-window)
+;; (procedure-name get-window)
+;; (procedure-properties get-window)
+;; (procedure-property get-window 'documentation)
+;; (procedure-property window-frame-size 'documentation)
+;; (proc-doc get-window)
+;; (proc-doc window-frame-size)
+;; (set-procedure-property! get-window 'documentation "foo")
+(define-public (proc-doc proc)
+  "Return documentation for PROC."
+  (or (procedure-documentation proc)
+      (procedure-property proc 'documentation)
+      (let* ((docstring (with-output-to-string
+			 (lambda () (documentation 
+				     (procedure-name proc)))))
+	     (len (string-length docstring)))
+	;; GJB:FIXME:: remove extra newline
+	(set! docstring (substring docstring 0 (- len 1)))
+	(set-procedure-property! proc 'documentation docstring)
+	docstring)))
+
+
 ;; For testing...
 ;; (documentation "window-position")
 ;; (documentation "make-cl-constraint")
 ;; (apropos-internal "")
+;; (substring (proc-doc get-window) 0 (- (string-length (proc-doc get-window)) 2))

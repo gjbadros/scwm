@@ -30,13 +30,34 @@
 (define-module (app scwm prompt-binding)
   :use-module (ice-9 session)
   :use-module (app scwm reflection)
+  :use-module (app scwm doc)
   :use-module (gtk gtk)
   :use-module (app scwm gtk)
+  :use-module (app scwm prompt-proc)
   :use-module (app scwm base)
   :use-module (app scwm stringops)
   :use-module (app scwm listops)
   :use-module (app scwm menus-extras)
   :use-module (app scwm optargs))
+
+(define-public (clist-find clist cols pred)
+  "Return the row number of the first row in CLIST that PRED answers #t for.
+PRED is called with arguments that are strings of the first COLS columns of successive
+rows of CLIST. Returns -1 if PRED never evaluates to #t."
+  (let ((done #f)
+	(row 0))
+    (set! cols (- cols 1)) ;; use 1 for two columns
+    (while (not done)
+	   (let ((vals (gtk-clist-get-row-values clist row cols)))
+	     (if (not (car vals))
+		 (begin
+		   (set! done #t)
+		   (set! row -1))
+		 (if (apply pred (gtk-clist-get-row-values clist row cols))
+		     (set! done #t)
+		     (set! row (+ 1 row))))))
+    row))
+
 
 (define ui-box-spacing 4)
 (define ui-box-border 5)
@@ -109,6 +130,17 @@
 		   (string-ci<? procname-a procname-b)))))))
 
 
+(define want-debug-clist-select #f)
+
+(define-public (debug-clist-select clist-name row col event)
+  (if want-debug-clist-select
+      (begin
+	(display clist-name) (display ": ")
+	(display row) (display ", ") (display col)
+	(newline))))
+
+(define-public pb-cmd-clist #f)
+
 
 (define-public (prompt-binding-vbox)
   (let* ((name (symbol->string (caar contexts-and-descriptions)))
@@ -163,7 +195,7 @@
 	 (scroller-2 (gtk-scrolled-window-new))
 	 (doc-textbox (gtk-text-new #f #f))
 	 (scroller-doc (gtk-scrolled-window-new)))
-
+;;      (set! pb-cmd-clist cmd-clist) ;; public for debugging
       ;;    (gtk-box-pack-start doc-frame scroller-doc)
       (gtk-box-set-spacing hbox-1 ui-box-spacing)
       (gtk-container-border-width hbox-1 ui-box-border)
@@ -231,40 +263,54 @@
 			      )))
 
       ;; the command list right, second from bottom
-      (gtk-signal-connect cmd-clist "select_row"
-			  ;; prompt-binding:set-command
-			  (lambda (row col event)
-			    (display "cmd-clist: ")
-			    (display row)
-			    (newline)))
+      (gtk-signal-connect 
+       cmd-clist "select_row"
+       ;; prompt-binding:set-command
+       (lambda (row col event)
+	 (debug-clist-select "commands" row col event)
+	 (let* ((m-p (gtk-clist-get-row-values cmd-clist row 1))
+		(docs (and m-p (proc-doc (procedure-string->procedure (car m-p))))))
+	   (gtk-text-replace doc-textbox (if (string? docs) docs "")))
+	 ))
 
       ;; the text entry just about the command list
-      (gtk-signal-connect entry "changed"
-			  ;; prompt-binding:set-event
-			  (lambda ()
-			    noop))
+      (gtk-signal-connect 
+       entry "changed"
+       ;; prompt-binding:set-event
+       (lambda ()
+	 (let* ((cmd (gtk-entry-get-text entry))
+		(cmd-row (clist-find cmd-clist 2
+				     (lambda (ccmd mod)
+				       (string-ci-has-prefix ccmd cmd)))))
+	   (if (>= cmd-row 0)
+	       (begin
+		 (gtk-clist-select-row cmd-clist cmd-row 0)
+		 (gtk-clist-moveto cmd-clist cmd-row 0 .5 .5)))
+	   )))
 
       ;; the insert button in the binding frame at the top
       (gtk-signal-connect insert "clicked" 
 			  ;; prompt-binding:insert
-			(lambda ()
-			  noop))
+			  (lambda ()
+			    noop))
 
       ;; the delete button in the binding frame at the top
       (gtk-signal-connect delete "clicked" 
 			  ;; prompt-binding:delete
 			  (lambda ()
 			    noop))
-
-      ;; the bindings list, top
-      (gtk-signal-connect clist "select_row" 
-			  ;; prompt-binding:select-row
-			  (lambda (row col event)
-			    (display "clist")
-			    (display row) (display ",") (display col)
-			    (newline)
-			    noop))
       
+      ;; the bindings list, top
+      (gtk-signal-connect 
+       clist "select_row" 
+       ;; prompt-binding:select-row
+       (lambda (row col event)
+	 (debug-clist-select "bindings" row col event)
+	 (let* ((key-cmd-other (gtk-clist-get-row-values clist row 1))
+		(cmd (cadr key-cmd-other)))
+	   (gtk-entry-set-text entry cmd)
+	   )))
+       
       vbox)))
 
 (define*-public (prompt-binding #&optional (title "Bindings"))
@@ -272,6 +318,7 @@
 	 (vbox (gtk-vbox-new #f 5))
 	 (hbox-buttons (gtk-hbutton-box-new))
 	 (okbut (gtk-button-new-with-label "Ok"))
+;;	 (applybut (gtk-button-new-with-label "Apply"))
 	 (cancelbut (gtk-button-new-with-label "Cancel"))
 	 (vbox-controls (prompt-binding-vbox)))
     (gtk-box-set-spacing hbox-buttons ui-box-spacing)
@@ -290,6 +337,9 @@
 			(lambda () 
 			  (gtk-widget-destroy toplevel)
 			  (proc (getter))))
+;;    (gtk-signal-connect applybut "pressed" 
+;;			(lambda () 
+;;			  (proc (getter))))
     (gtk-signal-connect cancelbut "pressed"
 			(lambda ()
 			  (gtk-widget-destroy toplevel)))

@@ -86,3 +86,37 @@ DELIMIT is put between every two elements of STRINGS."
 		   (set! result (string-append result delimit el)))))
 	 strings)
     result))
+
+;; contributed by Glenn Trig
+;; (this is close to basename, but keeps the path intact,
+;;  whereas basename strips the leading directories, too --03/27/99 gjb)
+(define-public (remove-suffix str suffix) 
+  "Return STR with trailing SUFFIX removed if it exists."
+  (let ((sufl (string-length suffix)) 
+        (sl (string-length str))) 
+    (if (and (> sl sufl) 
+             (string=? (substring str (- sl sufl) sl) suffix)) 
+        (substring str 0 (- sl sufl)) str)))
+
+(define (string-has-prefix-helper string prefix proc)
+  (let ((pref-length (string-length prefix)))
+    (if (> pref-length (string-length string))
+	#f
+	(let ((str-pref (substring string 0 (string-length prefix))))
+	  (proc str-pref prefix)))))
+
+(define-public (string-has-prefix string prefix)
+  "Return #t iff STRING starts with PREFIX."
+  (string-has-prefix-helper string prefix string=?))
+
+(define-public (string-ci-has-prefix string prefix)
+  "Return #t iff STRING starts with PREFIX ignoring case."
+  (string-has-prefix-helper string prefix string-ci=?))
+
+
+;; (string-has-prefix "foo" "f")
+;; (string-has-prefix "foo" "fo")
+;; (string-has-prefix "foo" "foo")
+;; (string-has-prefix "foo" "fooo")
+;; (string-has-prefix "foo" "Fo")
+;; (string-has-prefix "foo" "b")
