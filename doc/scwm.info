@@ -14,6 +14,9 @@ File: scwm.info,  Node: Top,  Next: Scheme Procedures
    This is the start of the scwm manual. It's not very complete or
 accurate yet, but hopefully that will change.
 
+   This documentation is pretty old. Look at the SGML documentation for
+now until we can figure out a way to generate texi from DocBook.
+
 * Menu:
 
 * Scheme Procedures:: SCWM Scheme procedure documentation
@@ -439,17 +442,18 @@ MENUS
  - Function: menu? OBJ
      Returns `#t' if OBJ is a menu object, else `#f'.
 
- - Function: make-menu TITLE [(LIST NAME =
-     PROC-OR-MENU)|`'title'|`'separator'] ...  Creates a menu object.
-     The first argument is a string that is the menu title, however,
-     the title is not necessarily displayed unless so specified.
-     Arguments are successively one of `'title', `'separator', or a
-     list of a string and a either procedure of no arguments or another
-     menu object.  Respectively, these result in a title, a separator
-     bar, or an entry that will call the procedure when selected, or
-     display the menu as a submenu.  It is reccomended that an actual
-     menu object be specified for submenus rather than a procedure
-     which uses popup to display the menu, because
+ - Function: make-menu TITLE [(LIST NAME
+          PROC-OR-MENU)|`'title'|`'separator'] ...
+     Creates a menu object.  The first argument is a string that is the
+     menu title, however, the title is not necessarily displayed unless
+     so specified.  Arguments are successively one of `'title',
+     `'separator', or a list of a string and a either procedure of no
+     arguments or another menu object.  Respectively, these result in a
+     title, a separator bar, or an entry that will call the procedure
+     when selected, or display the menu as a submenu.  It is
+     reccomended that an actual menu object be specified for submenus
+     rather than a procedure which uses popup to display the menu,
+     because
 
  - Function: popup MENU #&OPTIONAL STICK?
      Pops up the menu. If STICK is specified, it determines if the menu
@@ -573,7 +577,7 @@ MODULE (app scwm base)
      (`move-pointer-to' moves it absolutely).
 
  - Function: move-viewport X Y
-     Moves the viewport relatively (`set-viewport-position!' does it =
+     Moves the viewport relatively (`set-viewport-position!' does it
      absolutely)
 
  - Function: menu-style #&KEY FG FOREGROUND BG BACKGROUND STIPPLE FONT
@@ -624,8 +628,7 @@ MODULE (app scwm winops)
 window operations, they default to the current window context if the
 window is not specified.
 
- - Function: define*-public ((MAKE-TOGGLING-WINOP PRED NEG POS)
-          #&OPTIONAL W
+ - Function: make-toggling-winop PRED NEG POS
      This can be used to define toggling window operations easily. you
      pass a PREDICATE which determines if the window has been affected,
      then a PROCEDURE which undoes the operation, then one which does
@@ -771,7 +774,7 @@ MODULE (app scwm wininfo)
 procedures for finding out stuff about windows.
 
  - Function: on-desk? N #&OPTIONAL W
- - Function: (ON-DESK-N? N) #&OPTIONAL W
+ - Function: on-desk-n? N
  - Function: on-current-desk? #&OPTIONAL W
  - Function: in-viewport-any-desk? #&OPTIONAL W
  - Function: visible? #&OPTIONAL W
@@ -1031,7 +1034,6 @@ Function Index
 * %x-:                                   Scheme Procedures.
 * %y:                                    Scheme Procedures.
 * %y-:                                   Scheme Procedures.
-* (:                                     Scheme Procedures.
 * add-boolean-hint-option:               Scheme Procedures.
 * add-boolean-style-option:              Scheme Procedures.
 * add-window-hint-option:                Scheme Procedures.
@@ -1058,7 +1060,6 @@ Function Index
 * current-window-with-pointer:           Scheme Procedures.
 * default-decor:                         Scheme Procedures.
 * default-winlist-proc:                  Scheme Procedures.
-* define*-public:                        Scheme Procedures.
 * deiconify:                             Scheme Procedures.
 * delete-window:                         Scheme Procedures.
 * desk-size:                             Scheme Procedures.
@@ -1094,6 +1095,7 @@ Function Index
 * make-image:                            Scheme Procedures.
 * make-menu:                             Scheme Procedures.
 * make-style:                            Scheme Procedures.
+* make-toggling-winop:                   Scheme Procedures.
 * maximize:                              Scheme Procedures.
 * maximized?:                            Scheme Procedures.
 * menu-item:                             Scheme Procedures.
@@ -1111,6 +1113,7 @@ Function Index
 * next-window:                           Scheme Procedures.
 * normal-border:                         Scheme Procedures.
 * on-current-desk?:                      Scheme Procedures.
+* on-desk-n?:                            Scheme Procedures.
 * on-desk?:                              Scheme Procedures.
 * plain-border:                          Scheme Procedures.
 * pointer-position:                      Scheme Procedures.
@@ -1237,6 +1240,6 @@ Function Index
 
 Tag Table:
 Node: Top250
-Node: Scheme Procedures491
+Node: Scheme Procedures629
 
 End Tag Table

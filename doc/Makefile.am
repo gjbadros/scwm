@@ -3,8 +3,9 @@
 
 info_TEXINFOS=scwm.texi
 man_MANS=scwm.1 scwmexec.1 scwmrepl.1
-dist_EXTRA=options scwmexec.proto
 pkgdata_DATA=scwm-procedures.txt scwm-variables.txt scwm.sgml
+EXTRA_DIST=scwm-faq scwm-intro-tutorial.scm session-management smproxy.patch \
+	theme-howto scwm.1 scwmexec.1 scwmrepl.1 $(pkgdata_DATA)
 
 # Use extract-docs to build the documentation files
 scwm.sgml scwm-procedures.txt: $(scwm_SOURCES)

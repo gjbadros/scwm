@@ -1,6 +1,23 @@
+Mon Nov 16 17:11:43 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwm.texi: Made minor changes so it gets processed correctly;
+ 	added a warning that these docs are probably out of date.
+
+	scwm.info: Regenerated.
+	
+	* scwm-procedures.txt, scwm-variables.txt, scwm.sgml: Regenerated.
+
+	* Makefile.am: Make sure to put all files that should be
+ 	distributed in EXTRA_DIST.
+
 1998-11-16  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* session-management: Updated scwm's capability list.
+
+Sun Nov 15 23:52:05 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* scwm-intro-tutorial.scm: Correct attribution and web site for
+ 	Guile.
 
 1998-11-09  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
 

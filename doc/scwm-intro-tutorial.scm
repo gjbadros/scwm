@@ -157,8 +157,8 @@
 
 
 ;; Scwm uses a Scheme interpreter called "Guile Scheme" that
-;; is maintained by the folks at Cygnus.  See:
-;; http://www.cygnus.com/guile
+;; is part of the GNU project.  See:
+;; http://www.red-bean.com/guile
 ;; Guile Scheme provides all of the standard scheme functionality
 ;; of R4RS, and if you have the R4RS Scheme info pages installed
 ;; on your system, you can browse that documentation using

@@ -22,6 +22,9 @@
 This is the start of the scwm manual. It's not very complete or accurate
 yet, but hopefully that will change.
 
+This documentation is pretty old. Look at the SGML documentation for now
+until we can figure out a way to generate texi from DocBook.
+
 @menu
 * Scheme Procedures:: SCWM Scheme procedure documentation
 @end menu
@@ -514,8 +517,7 @@ don't ever give this window focus, even if it is clicked.
 Returns @code{#t} if @var{OBJ} is a menu object, else @code{#f}.
 @end defun
 
-@defun make-menu TITLE [(list NAME =
-PROC-OR-MENU)|@code{'title}|@code{'separator}] ...
+@defun make-menu TITLE [(list NAME PROC-OR-MENU)|@code{'title}|@code{'separator}] ...
 Creates a menu object.  The first argument is a string that is the menu
 title, however, the title is not necessarily displayed unless so
 specified.  Arguments are successively one of @code{'title},
@@ -653,8 +655,7 @@ Moves the mouse pointer relative to the current position
 @end defun
 
 @defun move-viewport x y
-Moves the viewport relatively (@code{set-viewport-position!} does it =
-absolutely)
+Moves the viewport relatively (@code{set-viewport-position!} does it absolutely)
 @end defun
 
 @defun menu-style #&key fg foreground bg background stipple font mwm =
@@ -704,7 +705,7 @@ This is a collection of extra window operations. Like the standard
 window operations, they default to the current window context if the
 window is not specified.
 
-@defun define*-public ((make-toggling-winop pred neg pos) #&optional W
+@defun make-toggling-winop pred neg pos
 This can be used to define toggling window operations easily. you pass a
 @var{predicate} which determines if the window has been affected, then a
 @var{procedure} which undoes the operation, then one which does it, and
@@ -863,7 +864,7 @@ This module provides additional predicates and generally informative
 procedures for finding out stuff about windows.
 
 @defun  on-desk? n #&optional w
-@defunx (on-desk-n? n) #&optional w
+@defunx on-desk-n? n
 @defunx on-current-desk? #&optional w
 @defunx in-viewport-any-desk? #&optional w
 @defunx visible? #&optional w
