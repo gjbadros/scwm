@@ -48,6 +48,15 @@
     (define-public (hash-table->alist h) 
       (apply append (vector->list h))))
 
+(define-public (add-hook-once! hook proc)
+  "Add PROC to HOOK only if it does not contain PROC already."
+  (if (not (memq proc (hook->list hook)))
+      (add-hook! hook proc)))
+
+(define-public (append-hook-once! hook proc)
+  "Append PROC to HOOK only if it does not contain PROC already."
+  (if (not (memq proc (hook->list hook)))
+      (append-hook! hook proc)))
 
 (define-public (round/ x y)
   "Return the closest integer to X divided by Y."

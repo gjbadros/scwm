@@ -24,8 +24,10 @@
   :use-module (app scwm gtk)
   :use-module (gtk gtk)
   :use-module (gtk gdk)
+  :use-module (app scwm base)
   :use-module (app scwm ui-constraints)
   :use-module (app scwm ui-constraints-classes)
+  :use-module (app scwm ui-constraints-composition)
   :use-module (app scwm optargs))
 
 ;; (load "/home/gjb/scwm/scheme/ui-constraints-buttons.scm")
@@ -53,7 +55,22 @@
 (define toggle-vertical #f)
 (define toggle-initialized #f)
 
+(define animate-pixmaps-delay 2000)
 
+(define (animate-pixmaps button pixmap1 pixmap2)
+  (define (show1) 
+    (gtk-container-remove button pixmap2)
+    (gtk-container-add button pixmap1)
+    (gtk-widget-show pixmap1)
+    (add-timer-hook! animate-pixmaps-delay show2))
+  (define (show2) 
+    (gtk-container-remove button pixmap1)
+    (gtk-container-add button pixmap2)
+    (gtk-widget-show pixmap2) 
+    (add-timer-hook! animate-pixmaps-delay show1))
+  (show1))
+
+;; (get-timer-hooks-list)
 ;; private function to make a class button
 
 (define (make-class-button class pixmap?)
@@ -61,13 +78,17 @@
 	 (description (ui-constraint-class-description class))
 	 (button (gtk-button-new))
 	 (label  (gtk-label-new name))
-	 (pixmap (if pixmap? (gtk-pixmap-new-search-scwm-path (ui-constraint-class-pixmap-name class) 
-							      button) #f)))
+	 (pixmap-name (ui-constraint-class-pixmap-name class))
+	 (pixmap2-name (ui-constraint-class-pixmap2-name class))
+	 (pixmap (if (and pixmap? pixmap-name)
+		     (gtk-pixmap-new-search-scwm-path pixmap-name button) #f))
+	 (pixmap2 (if (and pixmap? pixmap2-name)
+		     (gtk-pixmap-new-search-scwm-path pixmap2-name button) #f)))
     (gtk-tooltips-set-tip buttons-tooltips button description "")
-    (if pixmap?
-	(if pixmap (gtk-container-add button pixmap))
-	(gtk-container-add button label))
+    (gtk-container-add button (if (and pixmap? pixmap)
+				  pixmap label))
     (if pixmap (gtk-widget-show pixmap) (gtk-widget-show label))
+    (if (and pixmap pixmap2) (animate-pixmaps button pixmap pixmap2))
     (set-object-property! class 'gtk-button button)
     (gtk-signal-connect button "clicked"
 			(lambda ()
@@ -75,6 +96,20 @@
 			    (and uic (enable-ui-constraint uic)))))
     (gtk-container-add buttons-box button)
     (gtk-widget-show button)
+    button))
+
+(define* (add-extra-button name pixmap-name description click-action #&optional (show? #t))
+  (let* ((button (gtk-button-new))
+	 (label (gtk-label-new name))
+	 (pixmap (gtk-pixmap-new-search-scwm-path pixmap-name button)))
+    (gtk-tooltips-set-tip buttons-tooltips button description "")
+    (if pixmap
+	(gtk-container-add button pixmap)
+	(gtk-container-add button label))
+    (if click-action (gtk-signal-connect button "clicked" click-action))
+    (gtk-container-add buttons-box button)
+    (if show?
+	(gtk-widget-show-all button))
     button))
 
 
@@ -103,14 +138,33 @@
     (set! toggle-vertical vertical)
     (remove-hook! constraint-class-add-hook add-hook-func)
     (remove-hook! constraint-class-delete-hook remove-hook-func)
-    (add-hook! constraint-class-add-hook add-hook-func)
-    (add-hook! constraint-class-delete-hook remove-hook-func)
+    (add-hook-once! constraint-class-add-hook add-hook-func)
+    (add-hook-once! constraint-class-delete-hook remove-hook-func)
     (gtk-window-set-title toplevel "ScwmUIConstraintsButtons")
-    (gtk-window-set-wmclass toplevel "ScwmUIConstraintsButtons" "Scwm")    
+    (gtk-window-set-wmclass toplevel "ScwmUIConstraintsButtons" "Scwm")
     (gtk-button-box-set-spacing box 0)
     (gtk-button-box-set-child-ipadding box 0 0)
     (gtk-button-box-set-child-size box 32 32)
+    (gtk-box-set-homogeneous box #f)
     (for-each (lambda (class) (make-class-button class pixmap)) ui-constraint-classes)
+    (let ((stop-composition-button
+	   (add-extra-button "Stop composition" "stop-composition.xpm" 
+			     "Stop recording composition of constraints."
+			     #f #f))
+	  (start-composition-button
+	   (add-extra-button "Start composition" "record-composition.xpm" 
+			     "Begin recording composition of constraints."
+			     #f)))
+      (gtk-signal-connect start-composition-button "clicked"
+			  (lambda () 
+			    (ui-constraints-composition-begin)
+			    (gtk-widget-hide start-composition-button)
+			    (gtk-widget-show-all stop-composition-button)))
+      (gtk-signal-connect stop-composition-button "clicked"
+			  (lambda () 
+			    (ui-constraints-composition-end)
+			    (gtk-widget-show-all start-composition-button)
+			    (gtk-widget-hide stop-composition-button))))
     (gtk-container-add toplevel box)
     (gtk-widget-show box)
     (gtk-signal-connect toplevel "delete_event" (lambda (args) (gtk-widget-hide toplevel)))

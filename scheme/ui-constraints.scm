@@ -78,7 +78,7 @@
 ;; returns a new constraint class object based on the parameters
 ;; SIDE-EFFECT: adds new class obj to the global list
 
-(define-public (make-ui-constraint-class name description num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc)
+(define-public (make-ui-constraint-class name description num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name pixmap2-name menuname-proc)
   "Creates a new ui-constraint-class object.
 CTR takes a set of arguments and installs the appropriate constraints in the solver.  A number of
 windows should be included in those arguments, falling somewhere in the range of NUM-WINDOWS.  
@@ -93,7 +93,8 @@ MENUNAME-PROC is a proc that takes a UI-CONSTRAINT as an arg and returns the nam
 for the constraint in the toggle menu.  
 This routine returns a new constraint class object based on the parameters.
 SIDE-EFFECT: addes new class obj to the global class list."
-  (let ((obj (vector obid-ui-constraint-class name description num-windows ctr ui-ctr draw-proc satisfied-proc pixmap-name menuname-proc))
+  (let ((obj (vector obid-ui-constraint-class name description num-windows 
+		     ctr ui-ctr draw-proc satisfied-proc pixmap-name pixmap2-name menuname-proc))
 	(old (get-ui-constraint-class-by-name name)))
     (if (ui-constraint-class? old)
 	(delete-ui-constraint-class! old))
@@ -245,13 +246,20 @@ Errors if object is not a ui-constraint-class object."
       (vector-ref ui-constraint-class 8)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
+(define-public (ui-constraint-class-pixmap2-name ui-constraint-class)
+  "Return the pixmap2-name of UI-CONSTRAINT-CLASS.
+Errors if object is not a ui-constraint-class object."
+  (if (ui-constraint-class? ui-constraint-class)
+      (vector-ref ui-constraint-class 9)
+      (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
+
 ;; ui-constraint-class-menuname-proc
 
 (define-public (ui-constraint-class-menuname-proc ui-constraint-class)
   "Return the proc for determining the name for the constraint in
 the toggle menu.  Errors if object is not a ui-constraint-class object."
   (if (ui-constraint-class? ui-constraint-class)
-      (vector-ref ui-constraint-class 9)
+      (vector-ref ui-constraint-class 10)
       (error "Argument to accessor must be a UI-CONSTRAINT-CLASS object")))
 
 
@@ -607,7 +615,7 @@ an ui-constraint."
 (define*-public (draw-constraints-of-window win #&key (draw-disabled #t))
   "Draw all constraints associated with WIN.
 If WIN is not specified, the user is prompted to select a window."
-  (map (if draw-disabled draw-constraint draw-enabled) (ui-constraints-involving-window win)))
+  (for-each (if draw-disabled draw-constraint draw-enabled) (ui-constraints-involving-window win)))
 
 
 ;; undraw-constraints-of-window
@@ -615,34 +623,39 @@ If WIN is not specified, the user is prompted to select a window."
 (define*-public (undraw-constraints-of-window win #&key (draw-disabled #t))
   "Undraw all constraints associated with WIN.
 If WIN is not specified, the user is prompted to select a window."
-  (map (if draw-disabled undraw-constraint undraw-enabled) (ui-constraints-involving-window win)))
+  (for-each (if draw-disabled undraw-constraint undraw-enabled) (ui-constraints-involving-window win)))
 
 
 ;; draw-all-constraints
 
 (define*-public (draw-all-constraints #&key (draw-disabled #t))
   "Draw all constraints in the global instance list."
-  (map (if draw-disabled draw-constraint draw-enabled) global-constraint-instance-list))
+  (for-each (if draw-disabled draw-constraint draw-enabled) global-constraint-instance-list))
 
 
 ;; undraw-all-constraints
 
 (define*-public (undraw-all-constraints #&key (draw-disabled #t))
   "Undraw all constraints in the global instance list."
-  (map (if draw-disabled undraw-constraint undraw-enabled) global-constraint-instance-list))
+  (for-each (if draw-disabled undraw-constraint undraw-enabled) global-constraint-instance-list))
 
 
 ;; disable-all-constraints
 
 (define-public (disable-all-constraints)
   "Disable all constraints in the global instance list."
-  (map disable-ui-constraint global-constraint-instance-list))
+  (for-each disable-ui-constraint global-constraint-instance-list))
 
 ;; enable-all-constraints
 
 (define-public (enable-all-constraints)
   "Enable all constraints in the global instance list."
-  (map enable-ui-constraint global-constraint-instance-list))
+  (for-each enable-ui-constraint global-constraint-instance-list))
+
+;; delete-all-constraints
+(define-public (delete-all-constraints)
+  "Delete all constraints in the global instance list."
+  (for-each delete-ui-constraint global-constraint-instance-list))
 
 
 ;; HOOKS

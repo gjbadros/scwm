@@ -30,6 +30,7 @@
   :use-module (app scwm gtk)
   :use-module (gtk gtk)
   :use-module (gtk gdk)
+  :use-module (app scwm base)
   :use-module (app scwm flash-window)
   :use-module (app scwm optargs)
   :use-module (app scwm ui-constraints))
@@ -177,25 +178,27 @@
 			  global-constraint-instance-list))
 	 (disable (gtk-button-new-with-label "Disable All"))
 	 (enable (gtk-button-new-with-label "Enable All"))
+	 (delete-all (gtk-button-new-with-label "Delete All"))
 	 (hbuttonbox (gtk-hbutton-box-new))
 	 (close (gtk-button-new-with-label "Close")))
     (gtk-window-set-title toplevel "Constraint investigator")
     (gtk-box-set-spacing vbox ui-box-spacing)
     (gtk-container-border-width vbox ui-box-border)
-    (add-hook! constraint-add-hook
+    (add-hook-once! constraint-add-hook
      (lambda (cn) (make-cn-widget cn)))
-    (add-hook! constraint-delete-hook
+    (add-hook-once! constraint-delete-hook
      (lambda (cn) (remove-cn-button cn)))
     (set! gtk-toggle-close? close?)
     (gtk-container-add vbox vboxcn)
-    (gtk-container-add hbuttonbox disable)
-    (gtk-container-add hbuttonbox enable)
-    (gtk-container-add hbuttonbox close)
+    (for-each (lambda (but) (gtk-container-add hbuttonbox but)) (list disable enable delete-all close))
     (gtk-signal-connect disable "clicked" 
 			(lambda () (disable-all-constraints) 
 				(if close? (gtk-widget-hide toplevel))))
     (gtk-signal-connect enable "clicked" 
 			(lambda () (enable-all-constraints) 
+				(if close? (gtk-widget-hide toplevel))))
+    (gtk-signal-connect delete-all "clicked" 
+			(lambda () (delete-all-constraints) 
 				(if close? (gtk-widget-hide toplevel))))
     (gtk-container-add vbox hbuttonbox)
     (gtk-signal-connect close "clicked"	(lambda () (gtk-widget-hide toplevel)))

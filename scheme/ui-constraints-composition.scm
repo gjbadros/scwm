@@ -48,8 +48,8 @@
   "Begin recording the constraints used for the creation of a composition.
 End this recording by calling 'ui-constraints-composition-end'."
   (set! ui-constraints-composition-constraint-list '())
-  (add-hook! constraint-composition-record-hook add-constraint-to-composition)
-  (add-hook! constraint-delete-hook remove-constraint-from-composition))
+  (add-hook-once! constraint-composition-record-hook add-constraint-to-composition)
+  (add-hook-once! constraint-delete-hook remove-constraint-from-composition))
 
 
 ;; PRIVATE HELPERS
@@ -124,7 +124,7 @@ the construction of a composition."
 			#f))))
 	    composition-draw-proc
 	    cl-is-constraint-satisfied?
-	    "composition.xpm"
+	    #f #f ;;"composition.xpm"
 	    composition-menuname))))))
     
 ;; (use-scwm-modules constraints ui-constraints ui-constraints-composition ui-constraints-buttons ui-constraints-gtk-toggle-menu ui-constraints-classes)

@@ -309,7 +309,7 @@ to make it resize around its center."
    '(1 1) cnctr-anchor 
    ui-cnctr-anchor draw-cn-anchor 
    cl-is-constraint-satisfied? 
-   "anchor.xpm" menuname-anchor))
+   "anchor.xpm" #f menuname-anchor))
 
 ;;-----------------------------------------------------------------------
 ;; alignment constraint
@@ -414,7 +414,12 @@ Also can be used to glue top and bottom edges of windows together."
    '(2 '+) cnctr-halign 
    ui-cnctr-align draw-cn-halign 
    cl-is-constraint-satisfied? 
-   "cn-keep-tops-even.xpm" menuname-halign))
+   "cn-keep-tops-even.xpm" "cn-keep-top-bottom-even.xpm" menuname-halign))
+
+;; (ui-constraint-class-pixmap-name uicc-halign)
+;; (ui-constraint-class-pixmap2-name uicc-halign)
+;; (ui-constraint-class-pixmap-name uicc-valign)
+;; (ui-constraint-class-pixmap2-name uicc-valign)
 
 
 ;; vertical alignment
@@ -490,7 +495,7 @@ Also can be used to glue left and right edges of windows together."
    '(2 '+) cnctr-valign 
    ui-cnctr-align draw-cn-valign 
    cl-is-constraint-satisfied? 
-   "cn-keep-lefts-even.xpm" menuname-valign))
+   "cn-keep-lefts-even.xpm" "cn-right-left-even.xpm" menuname-valign))
 
 
 ;;----------------------------------------------------------------------
@@ -557,7 +562,7 @@ Resize the widths of windows together."
    '(2 '+) cnctr-hsize
    ui-cnctr-hsize draw-cn-hsize
    cl-is-constraint-satisfied?
-   "cn-relative-hsize.xpm" menuname-as-win-num))
+   "cn-relative-hsize.xpm" #f menuname-as-win-num))
 
 ;; Vertical Size
 
@@ -619,7 +624,7 @@ Resize the heights of windows together."
    '(2 '+) cnctr-vsize
    ui-cnctr-vsize draw-cn-vsize
    cl-is-constraint-satisfied?
-   "cn-relative-vsize.xpm" menuname-as-win-num))
+   "cn-relative-vsize.xpm" #f menuname-as-win-num))
 
 
 ;;------------------------------------------------------------------
@@ -672,7 +677,7 @@ Do not let window get narrower than it is."
    1 cnctr-minhsize
    ui-cnctr-minhsize draw-cn-minhsize
    cl-is-constraint-satisfied?
-   "cn-min-hsize.xpm" menuname-as-class-name))
+   "cn-min-hsize.xpm" #f menuname-as-class-name))
 
 ;; vertical
 
@@ -720,7 +725,7 @@ Do not let window get shorter than it is."
    1 cnctr-minvsize
    ui-cnctr-minvsize draw-cn-minvsize
    cl-is-constraint-satisfied?
-   "cn-min-vsize.xpm" menuname-as-class-name))
+   "cn-min-vsize.xpm" #f menuname-as-class-name))
 
 
 ;;--------------------------------------------------------------------
@@ -773,7 +778,7 @@ Do not let window get wider than it is."
    1 cnctr-maxhsize
    ui-cnctr-maxhsize draw-cn-maxhsize
    cl-is-constraint-satisfied?
-   "cn-max-hsize.xpm" menuname-as-class-name))
+   "cn-max-hsize.xpm" #f menuname-as-class-name))
 
 ;; vertical
 
@@ -821,7 +826,7 @@ Do not let window get taller than it is."
    1 cnctr-maxvsize
    ui-cnctr-maxvsize draw-cn-maxvsize
    cl-is-constraint-satisfied?
-   "cn-max-vsize.xpm" menuname-as-class-name))
+   "cn-max-vsize.xpm" #f menuname-as-class-name))
 
 
 ;;-----------------------------------------------------------
@@ -923,7 +928,7 @@ Move windows around together."
    '(2 '+) cnctr-strict-relpos
    ui-cnctr-strict-relpos draw-cn-strict-relpos
    cl-is-constraint-satisfied?
-   "cn-strict-relative-pos.xpm" menuname-as-win-num))
+   "cn-strict-relative-pos.xpm" #f menuname-as-win-num))
 
 
 ;;---------------------------------------------------------
@@ -994,7 +999,7 @@ Keep one window wholly above another."
    2 cnctr-keep-above
    ui-cnctr-keep-above draw-cn-keep-above 
    cl-is-constraint-satisfied? 
-   "cn-keep-above.xpm" menuname-as-win-num))
+   "cn-keep-above.xpm" #f menuname-as-win-num))
 
 ;; keep-to-left-of
 
@@ -1050,7 +1055,7 @@ Keep one window wholly to the left of another."
    2 cnctr-keep-to-left-of
    ui-cnctr-keep-to-left-of draw-cn-keep-to-left-of
    cl-is-constraint-satisfied? 
-   "cn-keep-to-left-of.xpm" menuname-as-win-num))
+   "cn-keep-to-left-of.xpm" #f menuname-as-win-num))
 
 
 ;;----------------------------------------------------------------------
@@ -1113,7 +1118,7 @@ in the constraint remain constant."
    '(2 '+) cnctr-sum-to-width
    ui-cnctr-sum-to-width draw-cn-sum-to-width
    cl-is-constraint-satisfied?
-   "cn-window-width-sum.xpm" menuname-as-win-num))
+   "cn-window-width-sum.xpm" #f menuname-as-win-num))
 
 ;; Vertical Size
 
@@ -1165,7 +1170,7 @@ in the constraint remain constant."
    '(2 '+) cnctr-sum-to-height
    ui-cnctr-sum-to-height draw-cn-sum-to-height
    cl-is-constraint-satisfied?
-   "cn-window-height-sum.xpm" menuname-as-win-num))
+   "cn-window-height-sum.xpm" #f menuname-as-win-num))
 
 
 
