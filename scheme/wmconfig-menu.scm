@@ -27,9 +27,14 @@
 ;;; -----------------------------------------------------------------------
 ;;; Process the /etc/X11/wmconfig/ directory in SCWM. For RedHat5 GNU/Linux.
 ;;; -----------------------------------------------------------------------
+
+;;; usage: do
+;;; (use-module (app scwm wmconfig-menu))
+;;; and add to a menu of your choice the following line:
+;;; (menuitem "WMConfig" #:action (make-wmconfig-menu "title" "path"))
+
 (define default-wmconfig-dir "/etc/X11/wmconfig/")
 (define default-wmconfig-title "System WM Config")
-(define default-wmconfig-name "WM Conf&ig")
 
 (define (wmc-fix str)		; kill the ampersand in the string
   (do ((ll (length str))
@@ -48,7 +53,7 @@
 	    ((string=? wd "name") (set! nm (read fd)))
 	    ((string=? wd "group") (set! gr (string (read fd))))))))
 
-(define (wmc-process-directory)
+(define (wmc-process-directory wmconfig-dir)
   (display "Processing directory: ") (display wmconfig-dir)
   (cond ((access? wmconfig-dir R_OK)
 	 (display ": directory readable...") (newline)
@@ -89,4 +94,4 @@
 		 (wmconfig-name default-wmconfig-name)
 		 (wmconfig-dir default-wmconfig-dir))
   (menu (append! (list (menuitem wmconfig-title #f) menu-title menu-separator)
-		 (wmc-regroup (wmc-process-directory)))))
+		 (wmc-regroup (wmc-process-directory wmconfig-dir)))))
