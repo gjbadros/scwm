@@ -1,3 +1,16 @@
+Sun Jul 18 17:28:51 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* Thanks to Stephen Tell for scwm/3 scwm/4 bugs re: building on
+	HP/UX.
+	
+	* message-window.c: #include <X11/extensions/shape.h>, and move
+	include of message-window.h to first.
+
+	* events.h, callbacks.h: Added #ifdef HAVE_SYS_SELECT_H to guard its inclusion.
+
+	* events.c: remove inclusion of sys/select.h, since it includes
+	events.h
+
 Sun Jul 18 16:39:45 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* binding.c: Added `undo-all-passive-grabs',
