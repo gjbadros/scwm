@@ -1077,7 +1077,7 @@
 
 ;; C-S-M-t makes netscape go to the url specified by cut buffer 0
 (bind-key 'all "C-S-M-t" (thunk netscape-goto-cut-buffer-url))
-;; http://huis-clos.mit.edu/scwm    ;; highlight w/ mouse and try it!
+;; http://vicarious-existence.mit.edu/scwm    ;; highlight w/ mouse and try it!
 
 ;; in case of emergency, hit Control-Meta-Q
 (bind-key 'all "C-M-S-q" quit-verify)

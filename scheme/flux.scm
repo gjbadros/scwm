@@ -655,7 +655,7 @@ It defaults to `netscape-new-window'."
    (string-append "openURL(" (X-cut-buffer-string) (if new ",new-window)" ")"))
    display-message-briefly (netscape-win)))
 
-;; (run-in-netscape "openUrl(http://huis-clos.mit.edu/scwm)" display-message-briefly)
+;; (run-in-netscape "openUrl(http://vicarious-existence.mit.edu/scwm)" display-message-briefly)
 ;; (run-in-netscape "openUrl(http://www.cs.washington.edu/homes/gjb)" display-message-briefly)
 
 ;; Inspired by Julian Satchell's version of this --10/09/98 gjb

@@ -316,7 +316,7 @@ Returns a string which is present in the `scwm-obarray'."
 ;; help
 ;; ----
 
-(defvar scwm-bug "scwm-discuss@huis-clos.mit.edu"
+(defvar scwm-bug "scwm-discuss@vicarious-existence.mit.edu"
   "The address to send bug reports on scwm.")
 
 ;;;###autoload
