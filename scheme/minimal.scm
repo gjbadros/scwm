@@ -18,7 +18,6 @@
 ;;; Make some colors
 
 ;;; Set some global options
-;; (set-rubber-band-mask! 30)  This gets done by init_resize_gcs()
 (set-not-menu-foreground! "black")
 (set-not-menu-background! "gray")
 
