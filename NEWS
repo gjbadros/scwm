@@ -4,13 +4,18 @@ See the end for copying conditions.
 
 Changes for scwm-0.99.1 (not yet released)
 
-* Lots of documentation improvements, revamp of Scwm web page, 
-numerous bug-fixes, code cleanup
+* Lots of documentation improvements, revamp of Scwm web page, many,
+many bug-fixes (compiles warning free with virtually all warnings turned
+on!), lots of code cleanup (especially primitive argument validation),
+numerous scwmdoc script fixes and improvements.
+
+* GUI-configurable options support via new define-scwm-option
+** Requires guile-gtk-0.15 or better
 
 * Constraints
 ** Much improved user-interface
 ** more accessible via (use-modules (app scwm constraints))
-** Uses Cassowary-0.41 or better
+** Requires Cassowary-0.42 or better
 
 * Change resize-window's message window to use client units
 
@@ -24,7 +29,10 @@ numerous bug-fixes, code cleanup
 ** utilities/converters/fvwm2rc-to-scwmrc
 ** handles /etc/X11/system.fvwm2rc
 
-* IMLib support as a compile time option (to-replace libXpm, ultimately)
+* IMLib support as a configure-time option (to-replace libXpm, ultimately)
+** use imlib_config binary (comes with imlib) to control options
+
+* ESD Sound support module
 
 * Themes, Theme Menus (app scwm themes) (app scwm std-menus)
 ** Various themes in new themes directory
@@ -63,7 +71,25 @@ deprecated `SM-client-id'.
 * Simple xlib drawing support w/o gtk
 ** `xlib-draw-arc', `xlib-draw-line!', `xlib-draw-rectangle!', etc.
 
+* Better handling of color allocation failures
+** return black color when called by internal functions, instead of
+returning #f which ultimately would cause an error somewhere
+
+* More robust signal handling
+** SIGINT now resets to the main loop (in addition to SIGHUP)
+** SIGSEGV resets to the main loop by default to try to avoid crashing.
+** use sigsetjmp, siglongjmp to maintain the behaviour.
+
+* Window property support for dynamic behaviour of windows through window-properties
+
+* New command line options
+** --no-backtrace [-n]
+** --segv-cleanup-and-stop [-p]
+** --segv-just-stop [-P]
+
 * Misc. new primitives
+** `window-valid?' for testing if a window object still is valid.
+** `id->message-window' -- convert from a window id to a message window object
 ** `send-client-message'
 ** `icon-size'
 ** `force-reset-window-frame!' -- force redraw of frame
@@ -71,6 +97,8 @@ deprecated `SM-client-id'.
 ** `bind-keycode' -- lower level interface to binding keys, allows release procs
 ** `keysym->keycode', `mod-mask-control', `mod-mask-shift'
 ** `animated-resize-window', `animated-resize-frame'
+** `force_segv_for_testing', `set-reset-on-segv!', `set-handles-segv!'
+** `scwm-last-timestamp'
 
 * Removed primitives
 ** dangerous and unnecessary `wait-for-window' procedure
@@ -97,7 +125,6 @@ deprecated `SM-client-id'.
 ** `desk-size-change-hook', `viewport-position-change-hook'
 ** `close-window-hook'
 ** `X-MapRequest-hook'
-
 
 
 
