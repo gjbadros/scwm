@@ -27,7 +27,7 @@
 ;; To disable, set environment variable SCWM_DO_NOT_LOG_USAGE
 ;;(define thank-scwm-authors-with-usage-note #t)
 
-(define debug #t)
+(define debug #f)
 
 (define (debug-display arg)
   (if debug
@@ -37,7 +37,9 @@
 (if debug
     (begin
       (add-hook! module-loaded-hook display-module-loaded)
-      (set! %load-verbosely #t)))
+      (set! %load-verbosely #t)
+      (debug-enable 'debug 'backtrace)
+      (read-enable 'positions)))
 
 (define-public (load-user-file filename)
   "Load user configuration from $HOME/.scwm/FILENAME."
@@ -55,7 +57,7 @@
   (string-append "H-" str))
 
 (define (show-desk-name new old)
-  (display-message-briefly (string-append "Desk: " (number->string new))))
+  (display-message-briefly (string-append "Desk: " (number->string (+ 1 new)))))
 
 (define (play-window-flashing-start-sound ignored)
   (wavplay "Utopia Question.WAV"))
@@ -147,6 +149,7 @@
 (append! image-load-path
      (list
       (string-append scwmdir "/pixmaps")
+      (string-append (scwm-path-prefix) "/share/scwm/pixmaps")
       "/usr/share/icons/mini"
       "/usr/lib/TheNextLevel/pixmaps"
       "/usr/share/include/X11/pixmaps"
@@ -204,6 +207,7 @@
 (load-user-file "after-modules")
 
 (set! *use-scwm-system-proc* #t)
+(set! *debug-fvwm-module* #t)
 
 ;;; print some information
 (for-each (lambda (d) (debug-display d)) 
@@ -243,6 +247,8 @@
 (set! *fvwm2-module-path* (append *fvwm2-module-path* '("/usr/X11R6/lib/X11/fvwm2")))
 (define want-fvwm2-pager-module #t)
 (define want-fvwm2-winlist-module #f)
+
+(define want-scwm-pager-module #f)
 
 ;; Disabled autoraise by default; 
 ;; would give an instant autoraise with no timeout, which 
@@ -679,10 +685,11 @@
 	      #:placement-proc (at-point-placement))
 (window-style "scwm" #:placement-proc (at-point-placement) #:transient-placement-proc (at-point-placement))
 (window-style (resource-match?? "ScwmUIConstraintsButtons") 
-	      #:use-style desk-widget-on-top-no-titlebar)
+	      #:use-style desk-widget-no-titlebar #:easyraise #t)
 (window-style (resource-match?? "prompt-string")   ;; these need to be on top of the ScwmUIConstraintsButtons
-	      #:use-style desk-widget-on-top-no-titlebar)
+	      #:no-titlebar #t #:kept-on-top #t)
 (window-style "FvwmPager" #:use-style desk-widget-no-titlebar #:easyraise #t)
+(window-style "Scwm" #:use-style desk-widget-no-titlebar #:easyraise #t)
 (window-style "zwgc" #:use-style desk-widget-on-top)
 (window-style "*lock" #:use-style desk-widget)
 (window-style "xclock*" #:use-style desk-widget-no-titlebar #:easyraise #t)
@@ -994,14 +1001,14 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all (hyper "slash") undo)
 (bind-key 'all (hyper "M-slash") redo)
 (bind-key 'all (hyper "s") insert-undo-global)
-
-(bind-key 'all (hyper "h") describe-event)
-(bind-key 'all (hyper "w") where-is)
+(bind-key 'all (hyper "M-h") describe-event)
+(bind-key 'all (hyper "M-w") where-is)
 (bind-key 'all "C-M-S-g" interactive-set-window-gravity!)
 
 (bind-key 'all "C-A-S-t" toggle-titlebar-in-place)
 (bind-key 'all "C-A-S-m" show-window-list-matching-interactively)
 (bind-key 'all "C-A-S-n" show-netscape-window-list-menu)
+(bind-key 'all "C-M-A-S-n" netscape-new-window)
 
 (bind-key 'all (hyper "A-M-C-d") delete-window)
 ;; (delete-window)
@@ -1028,6 +1035,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all "C-S-M-t" netscape-goto-selection-url)
 (bind-key 'all "A-b" netscape-bookmark-search)
 (bind-key 'all "A-s" netscape-google-search-selection-url)
+;;(bind-key 'all "A-s" netscape-metacrawler-search-selection-url)
 ;;(bind-key 'all "A-s" netscape-av-search-selection-url)
 ;; http://scwm.mit.edu/scwm    ;; highlight w/ mouse and try it!
 
@@ -1254,6 +1262,7 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 (bind-key 'all (hyper "M-S-period") pop-focus-window)
 
 (bind-key 'all (hyper "d") focus-window-with-pointer)
+(bind-key 'all (hyper "a") popup-register-winlist)
 
 (bind-key 'all "C-S-M-n" dir-focus-west)
 (bind-key 'all "C-S-M-m" dir-focus-south)
@@ -1311,6 +1320,12 @@ Get Cassowary from http://www.cs.washington.edu/research/constraints/cassowary/"
 ;; This shouldn't be necessary any longer
 ;;      (add-hook! shutdown-hook (lambda () (kill-fvwm2-module fvwm2-pager))))
       ))
+
+(if want-scwm-pager-module
+    (begin
+      (use-scwm-modules (app scwm scwm-gtk-pager))
+      (show-pager)))
+
     
 (if want-fvwm2-winlist-module
     (begin
