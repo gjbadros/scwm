@@ -511,7 +511,7 @@ InteractiveMove(ScwmWindow *psw, Bool fOpaque,
   moveLoop(psw, XOffset, YOffset, DragWidth, DragHeight, FinalX, FinalY, fOpaque);
   /* same hook is called above, before the iterations begin, and during the iterations */
   call3_hooks(interactive_move_new_position_hook, psw->schwin,
-              FRAME_X_VP(psw), FRAME_Y_VP(psw));
+              gh_int2scm(FRAME_X_VP(psw)), gh_int2scm(FRAME_Y_VP(psw)));
   call1_hooks(interactive_move_finish_hook, psw->schwin);
 
   if (psw->fIconified) {
