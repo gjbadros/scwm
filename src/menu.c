@@ -4,6 +4,8 @@
  * (C) 1998, 1997 Greg J. Badros and Maciej Stachowiak
  */
 
+/* #define SCWM_DEBUG_MSGS */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -62,8 +64,14 @@ scwm_safe_call0_sym(SCM thunk)
 static const char *
 SzFirstItemFromPmd(const DynamicMenu *pmd)
 {
-  SCM scmItem = gh_car(pmd->pmenu->scmMenuItems);
-  MenuItem *pmi = SAFE_MENUITEM(scmItem);;
+  SCM scmItem = pmd->pmenu->scmMenuTitle;
+  MenuItem *pmi = SAFE_MENUITEM(scmItem);
+
+  if (pmi)
+    return pmi->szLabel;
+
+  scmItem = gh_car(pmd->pmenu->scmMenuItems);
+  pmi = SAFE_MENUITEM(scmItem);
 
   if (pmi)
     return pmi->szLabel;
@@ -79,6 +87,7 @@ mark_menu(SCM obj)
   pmenu = MENU(obj);
   SCM_SETGC8MARK(obj);
 
+  GC_MARK_SCM_IF_SET(pmenu->scmMenuTitle);
   GC_MARK_SCM_IF_SET(pmenu->scmMenuItems);
   GC_MARK_SCM_IF_SET(pmenu->scmImgSide);
   GC_MARK_SCM_IF_SET(pmenu->scmSideAlign);
@@ -110,7 +119,9 @@ print_menu(SCM obj, SCM port, scm_print_state * pstate)
   scm_puts("#<menu ", port);
   if (MENU_P(obj)) {
     Menu *pmenu = MENU(obj);
-    if (SCM_NIMP(pmenu->scmMenuItems)) {
+    if (MENUITEM(pmenu->scmMenuTitle)) {
+      scm_write(pmenu->scmMenuTitle, port);
+    } else if (SCM_NIMP(pmenu->scmMenuItems)) {
       scm_write(gh_car(pmenu->scmMenuItems), port);
     }
     if (pmenu->pchUsedShortcutKeys) {
@@ -185,11 +196,12 @@ NewPchKeysUsed(DynamicMenu *pmd)
 
 /* FIXGJB: better as an assoc list, probably: we'd have to invent a name for
    menu-items if we did */
+/* FIXJTL: this gets worse and worse */
 SCWM_PROC(menu_properties, "menu-properties", 1, 0, 0,
           (SCM menu))
 /** Returns the a list of the menu properties of MENU, a menu object.
 The properties returned are: 
-'(menu-items side-image side-image-align side-bg-color bg-color
+'(menu-title menu-items side-image side-image-align side-bg-color bg-color
 text-color stipple-color
 image-bg font extra-options used-shortcut-keys) */
 /* FIXJTL: menu-look */
@@ -199,7 +211,8 @@ image-bg font extra-options used-shortcut-keys) */
   if (!pmenu) {
     scm_wrong_type_arg(FUNC_NAME,1,menu);
   }
-  return gh_list(pmenu->scmMenuItems,
+  return gh_list(pmenu->scmMenuTitle,
+		 pmenu->scmMenuItems,
 		 pmenu->scmImgSide,
 		 pmenu->scmSideAlign,
 		 pmenu->scmSideBGColor,
@@ -220,12 +233,15 @@ image-bg font extra-options used-shortcut-keys) */
    somehow, or restructure hwo make-menu works.  Maybe it's time to move
    side picture stuff into extra_options?  Or maybe an alist or keyword list
    for all the args? */
+/* Proposal: remove all optional arguments here, and add set-menu-...!
+   functions for them; either rename the set-menu-...! functions in
+   base.scm to set-default-menu-...! or remove them (does anybody
+   use them directly? */
 SCWM_PROC(make_menu, "make-menu", 5, 5, 0,
           (SCM list_of_menuitems,
            SCM bg_color, SCM text_color, SCM stipple_color, SCM font,
            SCM picture_side, SCM side_picture_align, SCM side_bg_color,
-           SCM picture_bg, SCM extra_options
-/*, SCM menu_look */))
+           SCM picture_bg, SCM extra_options))
 /** Make and return a menu object from the given arguments.
 LIST-OF-MENUITEMS is a non-empty scheme list of menu items -- see `make-menuitem';
 BG-COLOR, TEXT-COLOR and STIPPLE-COLOR are color objects or symbols;
@@ -236,7 +252,6 @@ SIDE-BG-COLOR is a color object or symbol;
 PICTURE-BG is an image object;
 EXTRA-OPTIONS can be anything understood by the menu-look
 */
-/* FIXJTL MENU-LOOK is a menulook object (not currently implemented). */
 #define FUNC_NAME s_make_menu
 {
   Menu *pmenu = NEW(Menu);
@@ -325,15 +340,7 @@ EXTRA-OPTIONS can be anything understood by the menu-look
   iarg++;
   pmenu->scmExtraOptions = extra_options;
 
-  /* FIXJTL:
-  iarg++;
-  if (UNSET_SCM(menu_look)) {
-    menu_look = Scr.menu_look;
-  } else if (!MENULOOK_P(font)) {
-    scm_wrong_type_arg(FUNC_NAME,iarg,menu_look);
-  }
-  pmenu->scmMenuLook = menu_look;
-  */
+  pmenu->scmMenuTitle = SCM_BOOL_F;
   pmenu->scmMenuLook = SCM_BOOL_F;
 
   pmenu->pchUsedShortcutKeys = NULL;
@@ -393,6 +400,29 @@ SCWM_PROC(set_menu_menu_look_x, "set-menu-menu-look!", 2, 0, 0,
   }
 
   MENU(menu)->scmMenuLook = menu_look;
+  
+  return (SCM_UNSPECIFIED);
+}
+#undef FUNC_NAME
+
+SCWM_PROC(set_menu_menu_title_x, "set-menu-menu-title!", 2, 0, 0,
+           (SCM menu, SCM menu_title) )
+/** Use MENU-TITLE as the title for MENU */
+#define FUNC_NAME s_set_menu_menu_title_x
+{
+  int iarg = 0;
+
+  iarg++;
+  if (!MENU_P(menu)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg,menu);
+  }
+
+  iarg++;
+  if (!MENUITEM_P(menu_title)) {
+    scm_wrong_type_arg(FUNC_NAME,iarg,menu_title);
+  }
+
+  MENU(menu)->scmMenuTitle = menu_title;
   
   return (SCM_UNSPECIFIED);
 }
@@ -1038,7 +1068,9 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst, Bool fPermitAltReleaseToSel
       if (pmiim == NULL) {
 	/* not on an item now */
         DBUG((DBG,__FUNCTION__,"Not on menu item, %d", c10ms_delays));
-	UnselectAndRepaintSelectionForPmd(pmd);
+	/* FIXJTL: maybe something more delicate than just removing this;
+	   don't unselect if between two menus of a popup pair, somehow */
+	/* UnselectAndRepaintSelectionForPmd(pmd); */
       } else {
 	/* we're on a menu item */
 	if (pmiim->pmd != pmd) {
@@ -1152,6 +1184,42 @@ FreeDynamicMenu(DynamicMenu *pmd)
 }  
   
   
+static
+MenuItemInMenu *
+InitializeMenuItemInMenu(SCM item, int ipmiim, DynamicMenu * pmd)
+{
+  MenuItem * pmi;
+  MenuItemInMenu * pmiim;
+
+  /* FIXGJB: strip #f-s in make-menu!
+     allow #f-s to be embed and just skip them */
+  if (item == SCM_BOOL_F) {
+    return NULL;
+  }
+
+  pmi = SAFE_MENUITEM(item);
+  if (!pmi) {
+    return NULL;
+  }
+  
+  pmiim = NEW(MenuItemInMenu);
+
+  /* save some back pointers so we can find a dynamic menu
+     just from the menu item */
+  pmiim->pmi = pmi;
+  pmiim->pmd = pmd;
+  pmiim->ipmiim = ipmiim;
+  pmiim->chShortcut = '\0';
+  pmiim->ichShortcutOffset = -1;
+
+  pmiim->fShowPopupArrow = (DYNAMIC_MENU_P(pmiim->pmi->scmAction));
+
+  if (pmiim->pmi->scmAction == SCM_BOOL_F)
+    pmiim->mis = MIS_Grayed;
+  else
+    pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
+  return pmiim;
+}
 
 static
 void
@@ -1167,38 +1235,14 @@ InitializeDynamicMenu(DynamicMenu *pmd)
      only the drawing-independent code here */
   while (True) {
     SCM item = gh_car(rest);
-    MenuItem *pmi;
-    MenuItemInMenu *pmiim;
 
-    /* FIXGJB: strip #f-s in make-menu!
-       allow #f-s to be embed and just skip them */
-    if (item == SCM_BOOL_F) {
-      goto NEXT_MENU_ITEM;
-    }
-    pmi = SAFE_MENUITEM(item);
-    if (!pmi) {
+    rgpmiim[ipmiim] = InitializeMenuItemInMenu(item, ipmiim, pmd);
+    if (rgpmiim[ipmiim]) {
+      ipmiim++;
+    } else {
       scwm_msg(WARN,__FUNCTION__,"Bad menu item number %d",ipmiim);
-      goto NEXT_MENU_ITEM;
     }
-    pmiim = NEW(MenuItemInMenu);
-    rgpmiim[ipmiim] = pmiim;
-
-    /* save some back pointers so we can find a dynamic menu
-       just from the menu item */
-    pmiim->pmi = pmi;
-    pmiim->pmd = pmd;
-    pmiim->ipmiim = ipmiim;
-    pmiim->chShortcut = '\0';
-    pmiim->ichShortcutOffset = -1;
-
-    pmiim->fShowPopupArrow = (DYNAMIC_MENU_P(pmiim->pmi->scmAction));
-
-    if (pmiim->pmi->scmAction == SCM_BOOL_F)
-      pmiim->mis = MIS_Grayed;
-    else
-      pmiim->mis = MIS_Enabled;	/* FIXGJB: set using hook info? */
-    ipmiim++;
-  NEXT_MENU_ITEM:
+    
     rest = gh_cdr(rest);
     if (SCM_NULLP(rest))
       break;
@@ -1207,6 +1251,9 @@ InitializeDynamicMenu(DynamicMenu *pmd)
   pmd->cmiim = ipmiim;
   pmd->ipmiimSelected = -1;
 
+  pmd->pmiimTitle =
+    InitializeMenuItemInMenu(pmd->pmenu->scmMenuTitle, -2 /* FIXJTL: ugly */, pmd);
+  
   /*
   if (!pmd->pmenu->pchUsedShortcutKeys) {
   */

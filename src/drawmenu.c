@@ -364,6 +364,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 
     /* center image vertically */
     if (psimgLeft) {
+      /* FIXJTL: this doesn't work well with both left & above iamges; */
       int cpixExtraYOffset = (item_height - psimgLeft->height) / 2;
       DrawImage(w, psimgLeft, x_offset, y_offset + cpixExtraYOffset, MenuGC);
     }
@@ -379,7 +380,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
     currentGC = MenuGC;
 #endif
   
-    x_offset += pmdi->cpixLeftPicWidth + MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE;
+    x_offset += pmdi->cpixLeftPicWidth;
 
     if (pmi->szLabel) {
 #ifdef I18N
@@ -700,7 +701,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
 			 max_above_image_width);
 
     pmd->cpixWidth = pmdi->cpixItemOffset + max_item_width +  
-      MENU_ITEM_RR_SPACE*2 + MENU_EDGE_HORIZ_SPACING*2;
+      MENU_ITEM_RR_SPACE + MENU_EDGE_HORIZ_SPACING*2;
 
     DBUG((DBG,__FUNCTION__,"LeftPic = %d, Text = %d, ExtraText = %d, RightImage = %d; above = %d\n",
 	 pmdi->cpixLeftPicWidth,pmdi->cpixTextWidth,pmdi->cpixExtraTextWidth,

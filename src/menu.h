@@ -41,6 +41,7 @@ typedef void (*PfnConstructDynamicMenu)(DynamicMenu *);
    to modify mark_menu */
 typedef struct Menu_tag
 {
+  SCM scmMenuTitle;		/* Menu title */
   SCM scmMenuItems;		/* list of menu items */
   SCM scmImgSide;		/* side image */
   SCM scmSideAlign;		/* side image alignment */
@@ -58,6 +59,7 @@ typedef struct Menu_tag
 struct DynamicMenu_tag
 {
   Menu *pmenu;			/* this menu */
+  MenuItemInMenu * pmiimTitle;	/* the menu title */
   MenuItemInMenu **rgpmiim;	/* the menu item dynamic information */
   int cmiim;			/* size of above array */
   int ipmiimSelected;		/* the index of the selected item */

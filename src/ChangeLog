@@ -1,3 +1,20 @@
+1998-10-07  Todd Larason  <jtl@teeny.molehill.org>
+
+	* menu.h: scmMenuTag added to Menu; pmiimTitle added to DynamicMenu
+
+	* menu.c: menu title support; not yet used by any menulook. 
+	(MenuInteraction): don't unselect/popdown when the pointer moves
+	off of all menus; something like this is needed for shaped menus,
+	where there may be root window showing between the two menus of a
+	popup pair, and doesn't seem too bad for other cases. 
+
+	* drawmenu.c (PaintMenuItem): don't move text over by an extra
+	MENU_ITEM_PICTURE_EXTRA_HORIZ_SPACE - this space should only be
+	given if a side image exists, and it's already included in
+	cpixLeftPicWidth 
+	(ConstructDynamicMenu): don't add an extra MENU_ITEM_RR_SPACE to
+	pmd->cpixWidth - the space for the left is already taken into account.
+
 1998-10-06  Todd Larason  <jtl@teeny.molehill.org>
 
 	* draw-xpm-menu.c: moved to modules/xpm-menus
