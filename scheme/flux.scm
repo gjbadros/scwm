@@ -81,17 +81,18 @@ Just a toy--- perhaps could be useful to call attention to a window."
   "Dump all arguments into a string."
   (with-output-to-string (lambda () (apply write-all #t rest))))
 
-(define*-public (move-window-to-viewport xx yy #&optional ww)
-  "Move the window to the viewport; the first one being (0 0)."
-  (let ((pos (window-position ww)) (sz (display-size))
+(define*-public (move-window-to-viewport xx yy #&optional win)
+  "Move WIN to the viewport at (XX,YY).
+The (0,0) viewport is the starting viewport."
+  (let ((pos (window-position win)) (sz (display-size))
         (vp (viewport-position)))
     (move-to (+ (* xx (car sz)) (- (car vp)) (modulo (car pos) (car sz)))
              (+ (* yy (cadr sz)) (- (cadr vp))
-                (modulo (cadr pos) (cadr sz))) ww)))
+                (modulo (cadr pos) (cadr sz))) win)))
 
 (define-public (in-viewport xx yy)
   "Return a function of one argument, a window, moving it to the viewport."
-  (lambda (ww) (move-window-to-viewport xx yy ww)))
+  (lambda (win) (move-window-to-viewport xx yy win)))
 
 (define-public (system-info-string)
   "Return a string with various system information.
@@ -129,50 +130,63 @@ REST is a list of other menu-items to include in the returned menu."
 
 ;;; FIXGJB: how set width of an xmessage?
 (define-public (message . str)
-  "Display the string arguments in a message window."
+  "Display the string arguments STR in a message window."
   (execute (string-append "echo -e \'"
 			  (quotify-single-quotes (apply string-append str))
 			   "\'| xmessage -file - -default okay -nearmouse")))
 
-(define-public (show-mesg . str) (lambda () (apply message str)))
-(define-public (show-file fl)	; return lambda
-  (exe (string-append "xmessage -default okay -nearmouse -file " fl)))
+(define-public (show-mesg . str)
+  "Return a lambda to display the string arguments STR in a message window.
+See also `message'."
+  (lambda () (apply message str)))
+
+(define-public (show-file filename)
+  "Return a lambda to display the contents of filename in a window."
+  (exe (string-append "xmessage -default okay -nearmouse -file " filename)))
+
 (define-public (show-com com)   ; return lambda
   (exe (string-append com "| xmessage -file - -default okay -nearmouse")))
 
-(define-public (bool->str arg) (if arg "true" "false"))
+(define-public (bool->str arg) 
+  "Return the string \"true\" if ARG is #t, \"false\" otherwise."
+  (if arg "true" "false"))
 
 (define*-public (size->str sz #&optional (sep "x"))
   "Convert a two-element list to a string.
 Use the optional second argument as the separator."
   (string-append (number->string (car sz)) sep (number->string (cadr sz))))
 
-(define*-public (window-info #&optional (ww (get-window)))
-  "Display information about a window in a message window."
+(define*-public (window-info #&optional (win (get-window)))
+  "Display information about WIN in a message window."
   (message
-   "Window ID:\t\t" (number->string (window-id ww))
-   "\nWindow Frame ID:\t" (number->string (window-frame-id ww))
-   "\nTitle:\t\t\t\"" (window-title ww) "\"\nPosition:\t\t"
-   (size->str (window-position ww)) "\nSize:\t\t\t"
-   (size->str (window-frame-size ww))
-   "\nDesk:\t\t\t" (number->string (window-desk ww)) "\nClass:\t\t\t\""
-   (window-class ww) "\"\nResource:\t\t\"" (window-resource ww)
-   "\"\nBorder Normal:\t\t" (bool->str (border-normal? ww))
-   "\nDeletable:\t\t" (bool->str (window-deletable? ww))
-   "\nIconified:\t\t" (bool->str (iconified? ww))
-   "\nKept On Top:\t\t" (bool->str (kept-on-top? ww))
-   "\nTransient:\t\t" (bool->str (transient? ww))
-   "\nRaised:\t\t\t" (bool->str (raised? ww))
-   "\nShaded:\t\t\t" (bool->str (window-shaded? ww))
-   "\nShaped:\t\t\t" (bool->str (window-shaped? ww))
-   "\nIcon Shaped:\t\t" (bool->str (window-icon-shaped? ww))
-   "\nSticky Icon:\t\t" (bool->str (icon-sticky? ww))
-   "\nSticky:\t\t\t" (bool->str (sticky? ww))
-   "\nTitle Bar Shown:\t" (bool->str (titlebar-shown? ww))))
+   "Window ID:\t\t" (number->string (window-id win))
+   "\nWindow Frame ID:\t" (number->string (window-frame-id win))
+   "\nTitle:\t\t\t\"" (window-title win) "\"\nPosition:\t\t"
+   (size->str (window-position win)) "\nSize:\t\t\t"
+   (size->str (window-frame-size win))
+   "\nDesk:\t\t\t" (number->string (window-desk win)) "\nClass:\t\t\t\""
+   (window-class win) "\"\nResource:\t\t\"" (window-resource win)
+   "\"\nBorder Normal:\t\t" (bool->str (border-normal? win))
+   "\nDeletable:\t\t" (bool->str (window-deletable? win))
+   "\nIconified:\t\t" (bool->str (iconified? win))
+   "\nKept On Top:\t\t" (bool->str (kept-on-top? win))
+   "\nTransient:\t\t" (bool->str (transient? win))
+   "\nRaised:\t\t\t" (bool->str (raised? win))
+   "\nShaded:\t\t\t" (bool->str (window-shaded? win))
+   "\nShaped:\t\t\t" (bool->str (window-shaped? win))
+   "\nIcon Shaped:\t\t" (bool->str (window-icon-shaped? win))
+   "\nSticky Icon:\t\t" (bool->str (icon-sticky? win))
+   "\nSticky:\t\t\t" (bool->str (sticky? win))
+   "\nTitle Bar Shown:\t" (bool->str (titlebar-shown? win))))
 
-(define-public (show-system-info) (message (system-info-string)))
+(define-public (show-system-info)
+  "Display the `system-info-string' system details in a window."
+  (message (system-info-string)))
 
 (define-public (make-menuitems-from-menu-information-list menu-info-list)
+  "Return a list of menu-items from a list of detailed programs list.
+The format is subject to change.  See sample.scwmrc/gjb.scwmrc for
+example usage."
   (cons menu-title
 	(cons menu-separator
 	      (map (lambda (elem)
@@ -190,6 +204,11 @@ Use the optional second argument as the separator."
 		   menu-info-list))))
 
 (define-public (key-mouse-moves modifiers pct-of-screen left down up right)
+  "Bind four keys to move the mouse in compass directions by PCT-OF-SCREEN.
+MODIFIERS specifies which modifiers must be depressed for the bindings
+to be active.
+LEFT, DOWN, UP, and RIGHT are the four keysym names to use for each
+of the directions."
   (bind-key 'all (string-append modifiers "-" left)
 	    (lambda () (move-pointer (%x (- pct-of-screen)) 0)))
   (bind-key 'all (string-append modifiers "-" down)
@@ -200,6 +219,11 @@ Use the optional second argument as the separator."
 	    (lambda () (move-pointer (%x pct-of-screen) 0))))
 
 (define-public (key-viewport-moves modifiers pct-of-screen left down up right)
+  "Bind four keys to move the viewport in compass directions by PCT-OF-SCREEN.
+MODIFIERS specifies which modifiers must be depressed for the bindings
+to be active.
+LEFT, DOWN, UP, and RIGHT are the four keysym names to use for each
+of the directions."
   (bind-key 'all (string-append modifiers "-" left)
 	    (lambda () (move-viewport (%x (- pct-of-screen)) 0)))
   (bind-key 'all (string-append modifiers "-" down)
@@ -210,9 +234,15 @@ Use the optional second argument as the separator."
 	    (lambda () (move-viewport (%x pct-of-screen) 0))))
 
 (define-public (sleep-ms ms)
+  "Delay for MS milliseconds. 
+Note that timer-hooks are much more useful in nearly all
+cases.  See `add-timer-hook!'."
   (select '() '() '() 0 (* 1000 ms)))
 
 (define-public (printable-char->keysym-string char)
+  "Return the keysym string corresponding to a printable character.
+CHAR is a scheme character.  The return value is appropriate for
+use by `send-key-press'.  See also `X-synthetic-send-string'."
   (let ((charval (char->integer char)))
     (cond ((char=? char #\space) "space")
 	  ((char=? char #\newline) "Return")
@@ -224,9 +254,11 @@ Use the optional second argument as the separator."
 
 ;; (printable-char->keysym-string "")
 
-(define-public (X-synthetic-send-string str)
-  (let ((w (get-window))
-	(i 0))
+(define*-public (X-synthetic-send-string str #&optional (win (get-window)))
+  "Send string STR to WIN via synthetic X events.
+Note that some programs (e.g., xterm) by default do not
+honour synthetic key events as they are a security hole."
+  (let ((i 0))
     (while (< i (string-length str))
 	   (send-key-press
 	    (printable-char->keysym-string (string-ref str i)) w)
@@ -234,22 +266,15 @@ Use the optional second argument as the separator."
 
 ;; from Harvey Stein
 (define-public (find-window-by-name window-name)
+  "Return a window with name WINDOW-NAME.
+If there are multiple such windows, an unspecified one of them
+will be returned."
   (let ((wlist (list-windows
 		#:only (lambda (w)
 			 (string=? (window-title w) window-name)))))
     (if (not (null? wlist))
 	(car wlist)
 	#f)))
-
-;; from Harvey Stein
-(define-public (window-bottom window-name)
-  (let ((window (find-window-by-name window-name)))
-    (if (window? window)
-	(map +
-	     (window-position window)
-	     (window-frame-size window))
-	#f)))
-
 
 ;; Returns them in reverse the order they were selected
 ;; should probably turn off the invalid interaction hook
