@@ -1,58 +1,58 @@
-Sun Sep  5 22:02:13 1999    <gjb@cs.washington.edu>
+Sun Sep  5 22:02:13 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Bump to 0.99.2pre6 (lots of new stuff, including
 	corba server support).
 
-Sun Sep  5 21:27:37 1999    <gjb@cs.washington.edu>
+Sun Sep  5 21:27:37 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in, modules/Makefile.am: Added modules/corba subdirectory.
 
-Sun Sep  5 19:52:11 1999    <gjb@cs.washington.edu>
+Sun Sep  5 19:52:11 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in, Makefile.am: Added corba subdirectory.
 
-Sun Sep  5 15:36:11 1999    <gjb@cs.washington.edu>
+Sun Sep  5 15:36:11 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* corba/: Added this directory for experimenting with adding Corba 
 	support to Scwm.
 
-Sat Sep  4 00:29:40 1999    <gjb@cs.washington.edu>
+Sat Sep  4 00:29:40 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Bump to pre5
 
-Thu Sep  2 18:03:05 1999    <gjb@cs.washington.edu>
+Thu Sep  2 18:03:05 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Bump to pre4
 
-Thu Sep  2 17:59:06 1999    <gjb@cs.washington.edu>
+Thu Sep  2 17:59:06 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Added Distribution tag.  Split up %files section a 
 	bit and better separate into %config and %doc types.
 
-Wed Sep  1 19:03:42 1999    <gjb@cs.washington.edu>
+Wed Sep  1 19:03:42 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added XEXT_LIB to -lXtst link attempt, and -lICE
 	to -lSM link attempt.  Thanks Harald Meland for bug report.
 
-Wed Sep  1 14:03:19 1999    <gjb@cs.washington.edu>
+Wed Sep  1 14:03:19 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Go back to release 1.
 
 	* configure.in: Bump to 0.99.2pre3.
 
-Mon Aug 30 20:26:13 1999    <gjb@cs.washington.edu>
+Mon Aug 30 20:26:13 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Move automake initialization to closer to top so
 	it's easier to change the version number.  Use 0.99.2pre2 now.
 
-Mon Aug 30 13:07:11 1999    <gjb@cs.washington.edu>
+Mon Aug 30 13:07:11 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Drop scwm/pixmaps/* from %files section.
 
 	* configure.in (scwm_image_load_path): Use scwm/pixmaps, not
 	pixmaps/scwm. Always link cassowary w/ -lGTL
 
-Mon Aug 30 11:12:34 1999    <gjb@cs.washington.edu>
+Mon Aug 30 11:12:34 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Comment out the %config line since the scwmrc
  	files are now covered by the %files section.
@@ -65,38 +65,38 @@ Mon Aug 30 11:12:34 1999    <gjb@cs.washington.edu>
 	* autogen.sh: Permit users to call autogen.sh from their build
 	directory, and still DTRT.
 
-Mon Aug 30 10:17:24 1999    <gjb@cs.washington.edu>
+Mon Aug 30 10:17:24 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Use DATADIR/scwm/scwmrc for *.scwmrc files (stick
 	them all in the same place.
 
-Fri Aug 27 14:35:12 1999    <gjb@cs.washington.edu>
+Fri Aug 27 14:35:12 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (EXTRA_DIST): Added RH6-notes
 
 	* scwm.spec.in: Bump release to 2.
 
-Fri Aug 27 01:27:31 1999    <gjb@cs.washington.edu>
+Fri Aug 27 01:27:31 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Drop the uninstall changes to /etc/X11 for now.
 
-Fri Aug 27 01:23:29 1999    <gjb@cs.washington.edu>
+Fri Aug 27 01:23:29 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* pixmaps/scwm-gnu-linux.xpm, pixmaps/window.xpm: Removed --
 	conflicted with icons in scwm-icons distribution.
 
-Fri Aug 27 01:16:00 1999    <gjb@cs.washington.edu>
+Fri Aug 27 01:16:00 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Install Xsession instead of trying to patch it.
 	List %{prefix}/share/pixmaps/scwm/* in %files section (new
 	location of pixmap installations).
 
-Fri Aug 27 01:09:28 1999    <gjb@cs.washington.edu>
+Fri Aug 27 01:09:28 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* pixmaps/*.xpm: Revised version from after talking with a graphic 
 	designer (K. Lundquist) about the icons.
 
-Fri Aug 27 01:06:11 1999    <gjb@cs.washington.edu>
+Fri Aug 27 01:06:11 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* RH6-notes: Added -- notes for installing scwm on top of RH6
 
@@ -108,30 +108,30 @@ Fri Aug 27 01:06:11 1999    <gjb@cs.washington.edu>
 	* scwm.spec.in: Give --with-cassowary option to make it use the
 	constraint solver.
 
-Fri Aug 27 00:19:19 1999    <gjb@cs.washington.edu>
+Fri Aug 27 00:19:19 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Do not use exec_prefix including X11R6-- just let
 	binaries go in /usr/bin.  Fix %post, %postun sections to use files 
 	from installed locations, not source locations.  Run ldconfig to
 	update for libraries (e.g., libscwmexec.so).  Updates to %files section.
 
-Thu Aug 26 22:55:17 1999    <gjb@cs.washington.edu>
+Thu Aug 26 22:55:17 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Require >= guile-1.3.2, fix %files list to include 
 	/usr/X11R6/lib stuff, use %{prefix}, not /usr.  Do some post
 	install actions to add a Scwm gnome session (hopefully-- untested).
 
-Thu Aug 26 12:15:35 1999    <gjb@cs.washington.edu>
+Thu Aug 26 12:15:35 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* README: Constraints, not configurable.  Added PACKAGE TESTING
 	notice. 
 
-Thu Aug 26 12:09:27 1999    <gjb@cs.washington.edu>
+Thu Aug 26 12:09:27 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* **/Makefile.am (EXTRA_DIST): Include ChangeLog files in
 	EXTRA_DIST for all directories.
 
-Thu Aug 26 10:08:15 1999    <gjb@cs.washington.edu>
+Thu Aug 26 10:08:15 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Bump to 0.99.2
 
@@ -139,24 +139,24 @@ Thu Aug 26 10:08:15 1999    <gjb@cs.washington.edu>
 	menion use of guile-1.3.2, update links, drop changes (just point
 	at NEWS file)
 
-Thu Aug 26 09:34:23 1999    <gjb@cs.washington.edu>
+Thu Aug 26 09:34:23 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* README, NEWS: Update web page, alphabetize author order.
 
 	* scwm.spec.in: Added dependences, use %{prefix}, fix %files
 	section and use %defattr, added %post %postun sections. 
 
-Wed Aug 25 12:27:18 1999    <gjb@cs.washington.edu>
+Wed Aug 25 12:27:18 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Check for scm_strport_to_string
 
 	* acconfig.h: Added HAVE_SCM_STRPORT_TO_STRING
 
-Sun Aug 22 14:25:06 1999    <gjb@cs.washington.edu>
+Sun Aug 22 14:25:06 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* */Makefile.am: Updated initial comments.
 
-Sun Aug 22 14:21:53 1999    <gjb@cs.washington.edu>
+Sun Aug 22 14:21:53 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.spec.in: Updated description, use some definitions to ease
 	maintenance.  Update URL.

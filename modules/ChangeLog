@@ -1,4 +1,4 @@
-Thu Sep  2 17:57:00 1999    <gjb@cs.washington.edu>
+Thu Sep  2 17:57:00 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* c-animation/c-animation.c: Drop some bogus code testing for
 	startX < 0 (use #f instead).  Added ability of moving while
@@ -6,14 +6,14 @@ Thu Sep  2 17:57:00 1999    <gjb@cs.washington.edu>
 	since the resize is fully more general).  Improve docs on
 	animated-resize-{window,frame}.
 
-Wed Sep  1 19:15:45 1999    <gjb@cs.washington.edu>
+Wed Sep  1 19:15:45 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmgtkhelper/scwmgtkhelper.c (ScwmGdkErrorHandler): Only call
 	ScwmErrorHandler if gdk_error_warnings is set.  This avoids a
 	spurious (and uninteresting) XShm_Attach BadAccess error from
 	being displayed.
 
-Wed Sep  1 10:27:07 1999    <gjb@cs.washington.edu>
+Wed Sep  1 10:27:07 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmgtkhelper/scwmgtkhelper.c (ScwmGdkErrorHandler): Added this
 	function, and use it as the ScwmErrorHandler when gdk is loaded--
@@ -28,7 +28,7 @@ Wed Sep  1 10:27:07 1999    <gjb@cs.washington.edu>
  	xpm-menus/Makefile.am, xtest/Makefile.am (INCLUDES): Explicitly
  	mention include dir so that srcdir != builddir works.
 
-Fri Aug 27 14:33:27 1999    <gjb@cs.washington.edu>
+Fri Aug 27 14:33:27 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xtest/Makefile.am, scwmgtkhelper/Makefile.am,
  	proplist/Makefile.am, esdsound/Makefile.am: Use HAVE_XTEST to
@@ -41,7 +41,7 @@ Fri Aug 27 14:33:27 1999    <gjb@cs.washington.edu>
 	they are still in the distribution even if we don't have, e.g.,
 	proplist installed).
 
-Fri Aug 27 12:33:25 1999    <gjb@cs.washington.edu>
+Fri Aug 27 12:33:25 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* background/background.c (s_clone_resized_image): Use image, not
 	uninitialized img.

@@ -1,4 +1,4 @@
-Sun Sep  5 21:25:13 1999    <gjb@cs.washington.edu>
+Sun Sep  5 21:25:13 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* guile-compat.h, guile-compat.c, events.c: #define gh_free, move
  	make_output_strport, scm_strport_to_string here from events.c
@@ -6,18 +6,18 @@ Sun Sep  5 21:25:13 1999    <gjb@cs.washington.edu>
 	* system.h: Guard gh_free against redefinition since I want it
 	defined in guile-compat.h, too.
 
-Sun Sep  5 13:20:00 1999    <gjb@cs.washington.edu>
+Sun Sep  5 13:20:00 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menu.c (MenuInteraction): Permit the release of other modifier
  	keys to end a menu selection to give support for Alt-Tab switching 
 	with modifiers other than Mod[12]Mask.
 
-Sat Sep  4 14:43:22 1999    <gjb@cs.washington.edu>
+Sat Sep  4 14:43:22 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.cc: Added a missing value from a return
 	statement (Thanks John MacPhail!).
 
-Sat Sep  4 00:15:39 1999    <gjb@cs.washington.edu>
+Sat Sep  4 00:15:39 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* events.c: Added symbols 'press, 'release, 'desk-press,
 	'desk-release, 'desk-click (in addition to 'click) to be used for
@@ -35,7 +35,7 @@ Sat Sep  4 00:15:39 1999    <gjb@cs.washington.edu>
 
 	* message-window.c: Added `message-window-id'
 
-Fri Sep  3 10:55:56 1999    <gjb@cs.washington.edu>
+Fri Sep  3 10:55:56 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menu.h: Change DYNAMIC_MENU_P and DYNAMIC_SAFE_MENU to check
 	scm_symbol_bound_p before using scm_symbol_binding since the
@@ -43,7 +43,7 @@ Fri Sep  3 10:55:56 1999    <gjb@cs.washington.edu>
 	action items in menus error when they are clicked on, not when the 
 	window is popped up.  (Dirk Hermann reported this as a bug).
 
-Thu Sep  2 17:53:14 1999    <gjb@cs.washington.edu>
+Thu Sep  2 17:53:14 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c: Use ComputePositionForResize() in ResizeTo().  Use
  	VALIDATE_ARG_INT_OR_UNDEF in convert_move_data(), and check for
@@ -54,12 +54,12 @@ Thu Sep  2 17:53:14 1999    <gjb@cs.washington.edu>
 
 	* resize.h, resize.c: Added ComputePositionForResize().
 
-Thu Sep  2 15:38:58 1999    <gjb@cs.washington.edu>
+Thu Sep  2 15:38:58 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.c: Only display warning message about unbound modifier
 	once.  Use FUNC_NAME in init_modifiers.
 
-Thu Sep  2 13:45:32 1999    <gjb@cs.washington.edu>
+Thu Sep  2 13:45:32 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c: Added `select-window-done-hook', and call it.
 
@@ -79,16 +79,16 @@ Thu Sep  2 13:45:32 1999    <gjb@cs.washington.edu>
 	scwm_safe_apply. This fixes bug where errors in hook procedures
 	would terminate Scwm.
 
-Wed Sep  1 14:43:59 1999    <gjb@cs.washington.edu>
+Wed Sep  1 14:43:59 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* placement.c (SetPswGravity): Call XSetWMNormalHints so that
 	gravity persists through Scwm restarts.
 
-Wed Sep  1 10:46:29 1999    <gjb@cs.washington.edu>
+Wed Sep  1 10:46:29 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (noinst_HEADERS): Added scwm_msg.h
 
-Wed Sep  1 10:25:15 1999    <gjb@cs.washington.edu>
+Wed Sep  1 10:25:15 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.h: move scwm_msg stuff into scwm_msg.h so it can be
 	included w/o all the other scwm.h stuff.
@@ -97,7 +97,7 @@ Wed Sep  1 10:25:15 1999    <gjb@cs.washington.edu>
 
 	* scwm_msg.h: Added
 
-Tue Aug 31 08:51:10 1999    <gjb@cs.washington.edu>
+Tue Aug 31 08:51:10 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c (s_show_titlebar): Call SetBorderX so that the border
 	gets redrawn properly.
@@ -106,16 +106,16 @@ Tue Aug 31 08:51:10 1999    <gjb@cs.washington.edu>
  	the SetBorder call (so that any changes to the border by the hook
  	are accomplished before redraw).
 
-Mon Aug 30 21:27:35 1999    <gjb@cs.washington.edu>
+Mon Aug 30 21:27:35 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c (set_window_internal_title_height): Fixed for non-NW
 	gravity windows.
 
-Mon Aug 30 20:19:34 1999    <gjb@cs.washington.edu>
+Mon Aug 30 20:19:34 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (guile_snarfs): Added focus.x (added hook there).
 
-Mon Aug 30 20:16:17 1999    <gjb@cs.washington.edu>
+Mon Aug 30 20:16:17 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c, virtual.c, icons.c, events.c, add_window.c, window.c:
 	Use Bool as last (3rd) arg to SetFocus instead of 0/1.
@@ -126,7 +126,7 @@ Mon Aug 30 20:16:17 1999    <gjb@cs.washington.edu>
 
 	* scwm.c: call init_focus().
 
-Mon Aug 30 15:57:06 1999    <gjb@cs.washington.edu>
+Mon Aug 30 15:57:06 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.c (init_modifiers): Only populate the mask_mod_combos[]
 	with those that are non-zero.  Switch warnings re: missing dubious 
@@ -135,7 +135,7 @@ Mon Aug 30 15:57:06 1999    <gjb@cs.washington.edu>
 	`ignore-dubious-modifiers?' getter, and update docs on
 	`undo-all-passive-grabs' and `redo-all-passive-grabs'
 
-Mon Aug 30 12:18:21 1999    <gjb@cs.washington.edu>
+Mon Aug 30 12:18:21 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-constraints.cc (SuggestSizeWindowTo): Return a bool for
 	whether the window size was changed.
@@ -143,7 +143,7 @@ Mon Aug 30 12:18:21 1999    <gjb@cs.washington.edu>
 	* scwm.c: Added commented out hack from Hubert Canon to work
 	around weird sigsetjmp corrupting global variables bug.
 
-Mon Aug 30 12:10:06 1999    <gjb@cs.washington.edu>
+Mon Aug 30 12:10:06 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.h, scwm-constraints.h, add_window.h, add_window.c: Make
  	SetScwmWindowGeometry return True iff the window was
@@ -164,11 +164,11 @@ Mon Aug 30 12:10:06 1999    <gjb@cs.washington.edu>
 	* Makefile.am (INCLUDES): Explicitly mention include dir so that
 	srcdir != builddir works.
 
-Mon Aug 30 10:20:25 1999    <gjb@cs.washington.edu>
+Mon Aug 30 10:20:25 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (scwmpaths.h), scwm.c: Rename SCWMDIR to SCWMRCDIR
 
-Fri Aug 27 09:26:49 1999    <gjb@cs.washington.edu>
+Fri Aug 27 09:26:49 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xmisc.c: Remove duplicate JunkChild, JunkRoot vars.
 
@@ -185,13 +185,13 @@ Fri Aug 27 09:26:49 1999    <gjb@cs.washington.edu>
 	* callbacks.c: Reorder a bit to make calln_hooks all inline, and
 	have them return values.
 
-Wed Aug 25 16:25:39 1999    <gjb@cs.washington.edu>
+Wed Aug 25 16:25:39 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* events.c (HandleScwmExec): Use initial length of 0 in
 	make_output_strport -- the non-zero length apparently needs to be
 	initialized and wasn't, resulting in a lot of garbage.
 
-Wed Aug 25 15:24:50 1999    <gjb@cs.washington.edu>
+Wed Aug 25 15:24:50 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c (scwm_main): Fix typo bug in resetting
 	restart_vp_offset_y twice, not restart_vp_offset_{x,y}
@@ -199,12 +199,12 @@ Wed Aug 25 15:24:50 1999    <gjb@cs.washington.edu>
 	* events.c: Do not care about return value of
 	scm_set_current_{output,error}_port() when returning to old values.
 
-Wed Aug 25 14:05:02 1999    <gjb@cs.washington.edu>
+Wed Aug 25 14:05:02 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-snarf.h: Fix SCWM_GLOBAL_HOOK macro (had only fixed
 	SCWM_HOOK macro before) to use HAVE_SCM_MAKE_HOOK
 
-Wed Aug 25 12:24:17 1999    <gjb@cs.washington.edu>
+Wed Aug 25 12:24:17 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Drop the setting of *suppress-old-style-hook-warning*.
 
@@ -212,7 +212,7 @@ Wed Aug 25 12:24:17 1999    <gjb@cs.washington.edu>
 	and define it only if guile does not already have it.  (scwmexec
 	protocol was broken using the old code).
 
-Wed Aug 25 00:13:26 1999    <gjb@cs.washington.edu>
+Wed Aug 25 00:13:26 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-snarf.h: Use HAVE_SCM_MAKE_HOOK to test for whether to use
 	scm_make_named_hook()
@@ -225,18 +225,18 @@ Wed Aug 25 00:13:26 1999    <gjb@cs.washington.edu>
 	code in otherwise.
 	
 
-Tue Aug 24 23:40:37 1999    <gjb@cs.washington.edu>
+Tue Aug 24 23:40:37 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.h, binding.c: Added const modifiers to func_name parameter
 
-Tue Aug 24 14:17:19 1999    <gjb@cs.washington.edu>
+Tue Aug 24 14:17:19 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.c: Added set-ignore-dubious-modifiers primitive to
 	revert to the old (dumber) behaviour of treating all of the
 	modifiers separately, even numlock/scrolllock.  This can be useful 
 	for performance reasons.
 
-Tue Aug 24 13:52:04 1999    <gjb@cs.washington.edu>
+Tue Aug 24 13:52:04 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.c (init_modifiers): Don't include 0 in mask_mod_combos
 	array (wastes an XGrabKey call) and use c_mask_mod_combos to
@@ -244,12 +244,12 @@ Tue Aug 24 13:52:04 1999    <gjb@cs.washington.edu>
 	7).  Print warnings if unable to determine numlock_mask and/or
 	scrollock_mask.
 
-Tue Aug 24 13:51:10 1999    <gjb@cs.washington.edu>
+Tue Aug 24 13:51:10 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Fix very small memory leak in not freeing an X11
 	property after XGetWindowProperty.
 
-Sun Aug 22 17:15:58 1999    <gjb@cs.washington.edu>
+Sun Aug 22 17:15:58 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.c: Use 0 == AnyButton as argument to
  	XGrabButton/XUngrabButton instead of looping through all the
@@ -263,7 +263,7 @@ Sun Aug 22 17:15:58 1999    <gjb@cs.washington.edu>
 	former and doesn't need to talk to the X server to XUngrab the
 	previous binding.
 
-Sun Aug 22 15:21:14 1999    <gjb@cs.washington.edu>
+Sun Aug 22 15:21:14 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* binding.c: Use new-style binding context names in documentation, 
 	and eliminate the deprecated versions from the docs.  Update a
@@ -271,7 +271,7 @@ Sun Aug 22 15:21:14 1999    <gjb@cs.washington.edu>
 
 	* add_window.c: Update initial comments, add (C).
 
-Sun Aug 22 11:39:49 1999    <gjb@cs.washington.edu>
+Sun Aug 22 11:39:49 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c (window_pixel_size_to_client_units):  Do not
 	subtract-out the base_width/base_height if the
@@ -280,7 +280,7 @@ Sun Aug 22 11:39:49 1999    <gjb@cs.washington.edu>
 	resizing the frame.  It would report 0x0 when at its minimum size, 
 	now it properly reports its frame size.
 
-Sun Aug 22 11:33:16 1999    <gjb@cs.washington.edu>
+Sun Aug 22 11:33:16 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* guile-compat.c (scm_internal_cwdr_no_unwind): Reduce the leaking
  	by about 75% (tested when doing focus switches and opaque moves of

@@ -2,15 +2,11 @@
 
 See also doc/dev/scwm-1.0-release-todo
 
-* do not decorate GNOME Panel, KDE Panel -- test w/ GNOME, KDE
-
-* When restart, windows migrate down by a titlebar height?
-
-* lost-focus hook
-
 * documentation of scheme-level hooks (not just c-level)
 
 * Error messages in a text window
+
+* layers support for GNOME
 
 * path-cache.scm -- test w/o zsh
 
@@ -20,6 +16,7 @@ See also doc/dev/scwm-1.0-release-todo
 
 * improve look of scwm-options-dialog, expose more options.
 ** (copy econf's widget layout?)
+** reflection module and optargs support for more information about procedures
 
 * Integrate menus, icons w/ theme infrastructure, also cursor pixmaps
 
@@ -35,7 +32,7 @@ See also doc/dev/scwm-1.0-release-todo
 
 * Test proplist module
 
-* window style options dialog ala KDE
+* window style options dialog ala KDE (improve the stylist module)
 
 * multi-window animated move/resize; scheme level slower, not-synchronous, anim. move/resize
 
@@ -58,8 +55,6 @@ See also doc/dev/scwm-1.0-release-todo
 
 * overlay plane support (or grab server during constraint draws)
 ** http://www.motifzone.com/tmd/articles/Overlay/oplanes.html
-
-* WM_HINTS update on gravity change
 
 * beta testing
 Maciej has access to ensure it builds and runs on Linux, NetBSD, Irix,

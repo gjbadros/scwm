@@ -1,3 +1,8 @@
+Mon Sep  6 12:32:08 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Drop highlight-current-window module. Fix
+	*fvwm2-module-path* for at least RH6 systems.
+
 Mon Sep  6 10:42:19 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Drop want-workman-menu.  Drop variant information 

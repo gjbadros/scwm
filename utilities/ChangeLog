@@ -1,61 +1,61 @@
-Sun Sep  5 16:57:03 1999    <gjb@cs.washington.edu>
+Sun Sep  5 16:57:03 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/startscwm: Added some xauth calls to set up .Xauthority
 	before running xinit (so my start-x2x script will work).  Changed
 	the code from the RedHat startx script.
 
-Sun Sep  5 16:19:38 1999    <gjb@cs.washington.edu>
+Sun Sep  5 16:19:38 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/startscwm: Use xinit instead of starting X manually.
 
-Sat Sep  4 15:18:07 1999    <gjb@cs.washington.edu>
+Sat Sep  4 15:18:07 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/startscwm: Use XTERM_PROGRAM_NAME instead of just XTERM and 
 	setting to xterm. (Still use xterm as default).
 
-Sat Sep  4 00:13:09 1999    <gjb@cs.washington.edu>
+Sat Sep  4 00:13:09 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/Makefile.am: Install scwm-conf script.
 
 	* misc/scwm-conf: Added -- just use scwm-exec to run scwm-options-dialog.
 
-Thu Sep  2 15:37:55 1999    <gjb@cs.washington.edu>
+Thu Sep  2 15:37:55 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/startscwm: Delay for 3 seconds, not 1.  Use -name for the
 	SCWM messages xterm.
 
-Tue Aug 31 23:50:48 1999    <gjb@cs.washington.edu>
+Tue Aug 31 23:50:48 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/guile-gtk.spec: Bump release to 2gjb, since it now links
 	against guile-1.3.3 (libguile.so.6)
 
-Tue Aug 31 17:39:54 1999    <gjb@cs.washington.edu>
+Tue Aug 31 17:39:54 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/guile.spec: Bump to 1.3.3.
 
-Tue Aug 31 17:20:47 1999    <gjb@cs.washington.edu>
+Tue Aug 31 17:20:47 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/cpp-sed-nl: Be sure which output all goes to /dev/null
 
-Tue Aug 31 17:08:10 1999    <gjb@cs.washington.edu>
+Tue Aug 31 17:08:10 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/cpp-sed-nl: Added -P option to suppress "# line" lines
 	(resulted in a startup warning).
 
-Tue Aug 31 15:56:41 1999    <gjb@cs.washington.edu>
+Tue Aug 31 15:56:41 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/gtk-1.2.4-xshm.patch: Added -- turn off USE_SHM
 	compile-time flag since gdkimage.c tries to use it even on remote
 	displays.  Waiting for word from gtk-list.
 
 
-Fri Aug 27 01:15:11 1999    <gjb@cs.washington.edu>
+Fri Aug 27 01:15:11 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/Makefile.am (pkgdata_DATA): Include Xsession.
 
 	* misc/Xsession: Added -- patching is not all that reliable, it seems.
 
-Fri Aug 27 00:18:11 1999    <gjb@cs.washington.edu>
+Fri Aug 27 00:18:11 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/Makefile.am (EXTRA_DIST): Install Xsession.patch,
 	Xmodmap-win95keyboard
@@ -71,33 +71,33 @@ Fri Aug 27 00:18:11 1999    <gjb@cs.washington.edu>
 	
 	* misc/Xmodmap-win95keyboard: Added.
 
-Thu Aug 26 22:54:01 1999    <gjb@cs.washington.edu>
+Thu Aug 26 22:54:01 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/Makefile.am (EXTRA_DIST): Include Xsession.patch.
 
-Thu Aug 26 11:34:24 1999    <gjb@cs.washington.edu>
+Thu Aug 26 11:34:24 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/Makefile.am: Improve installation of scripts, distributed
 	files list.
 
-Wed Aug 25 17:32:15 1999    <gjb@cs.washington.edu>
+Wed Aug 25 17:32:15 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/startscwm: Make work with no X server running.
 
-Sun Aug 22 14:30:10 1999    <gjb@cs.washington.edu>
+Sun Aug 22 14:30:10 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* misc/Makefile.am, misc/Xresources-cpp, misc/Xsession.patch,
 	gnome-session-Scwm: Handy files for making Scwm more complete and
 	usable.  Still not integrated these files into the build/rpm processes.
 
-Sun Aug 22 14:27:41 1999    <gjb@cs.washington.edu>
+Sun Aug 22 14:27:41 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* pidproperty/Makefile.am, pidproperty/Makefile.in.works: Added
  	.am so make dist would work, etc., but Makefile.in.works is the
 	only Makefile.in that currently builds the directory's software
 	properly. 
 
-Sun Aug 22 14:25:43 1999    <gjb@cs.washington.edu>
+Sun Aug 22 14:25:43 1999   Greg J. Badros  <gjb@cs.washington.edu>
 
 	* Makefile.am (SUBDIRS): Added misc subdirectory.
 

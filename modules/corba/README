@@ -6,3 +6,6 @@ To compile the code in this directory, you need to:
 
 cd ..
 HAVE_GNOME_CORBA=yes ./autogen.sh
+
+
+See also the guile-server module from the GNOME archives.
