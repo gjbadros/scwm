@@ -128,6 +128,11 @@
 
 ;; (window-position wA)
 ;; (window-position wB)
+;; (move-window 0 0 (select-window-from-window-list))
+;; (define w (select-window-from-window-list))
+;; (window-viewport-position w)
+
+;; (move-to -20 -20)
 
 (begin
   (define wA (select-window-interactively "Pick window A"))
