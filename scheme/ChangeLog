@@ -1,3 +1,10 @@
+Fri Nov 20 15:06:59 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* animation.scm: Added doc comment that got lost when this got
+	moved into a scheme file.  Changed the default for
+	move-pointer-too to #t (since this takes viewport positions, I
+	think it's justified, and matches the old behaviour)
+
 Fri Nov 20 02:03:27 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* ScwmDeskButtons.scm: A trivial pager-like thing (still need to
