@@ -1,3 +1,12 @@
+1997-10-24  Jens-Ulrik Holger Petersen  <petersen@kurims.kyoto-u.ac.jp>
+
+	* Makefile.in (mostlyclean): New target.
+	(LIBS): Use relative directory to "libs/" for VPATH.
+	(INCLUDES): Ditto for "include/".
+
+	* deskpage.c (desk_size): Make result consistent with
+	`set-desk-size!'. 
+
 Thu Oct 23 19:54:16 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Added support for decors as Scheme objects. This includes the

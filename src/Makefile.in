@@ -25,7 +25,7 @@ X_LIBRARY=-lX11 @LIBS@
 XEXT_LIBRARY=-lXext
 XPM_LIBRARY=-lXpm
 SCWM_LIBRARY=-l${scwm_name}
-LIBS=-L${top_srcdir}/libs ${x_libraries} ${SCWM_LIBRARY} ${XPM_LIBRARY} ${XEXT_LIBRARY} ${X_LIBRARY} ${LDFLAGS}
+LIBS=-L../libs ${x_libraries} ${SCWM_LIBRARY} ${XPM_LIBRARY} ${XEXT_LIBRARY} ${X_LIBRARY} ${LDFLAGS}
 
 PATH_DEFINES=-DSCWM_ICONDIR=\"${scwm_icons}\" \
                -DSCWMDIR=\"${scwm_dir}\" \
@@ -35,7 +35,7 @@ EXTRA_DEFINES=-DXPM -DSHAPE ${PATH_DEFINES} -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -D
 
 
 CC=@CC@
-INCLUDES=-I${top_srcdir}/include ${x_includes}
+INCLUDES=-I../include -I${top_srcdir}/include ${x_includes} -I${prefix}/include
 CFLAGS=${INCLUDES} @CFLAGS@ ${EXTRA_DEFINES} 
 MAKEDEPEND=@MAKEDEPEND@
 INSTALL=@INSTALL@
@@ -119,8 +119,11 @@ depend:
 install: all
 	${INSTALL_PROGRAM} ${PROG} ${bin_dir}
 
-clean:
-	${RM} ${PROG} ${OBJS} *~ core *.bak
+mostlyclean:
+	${RM} ${OBJS} *~ core *.bak
+
+clean: mostlyclean
+	${RM} ${PROG}
 
 distclean: clean
 

@@ -19,7 +19,7 @@ EXTRA_DEFINES=-DXPM -DSHAPE -DACTIVEDOWN_BTNS -DINACTIVE_BTNS -DMINI_ICONS -DVEC
 
 
 CC=@CC@
-INCLUDES=-I${top_srcdir}/include ${x_includes}
+INCLUDES=-I../include -I${top_srcdir}/include ${x_includes} -I${prefix}/include
 CFLAGS=${INCLUDES} @CFLAGS@ ${EXTRA_DEFINES}
 MAKEDEPEND=@MAKEDEPEND@
 INSTALL=@INSTALL@
@@ -67,8 +67,11 @@ depend:
 
 install: all
 
-clean:
-	${RM} ${OBJS} ${STATIC_LIB} *~ core *.bak
+mostlyclean:
+	${RM} ${OBJS} *~ core *.bak
+
+clean: mostlyclean
+	${RM} ${STATIC_LIB}
 
 distclean: clean
 

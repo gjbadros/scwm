@@ -1,3 +1,12 @@
+1997-10-24  Jens-Ulrik Holger Petersen  <petersen@kurims.kyoto-u.ac.jp>
+
+	* Makefile.in (mostlyclean): New target.
+
+1997-10-21  Jens-Ulrik Holger Petersen  <petersen@kurims.kyoto-u.ac.jp>
+
+	* Makefile.in (INCLUDES): Use relative directory to "include/" for
+ 	VPATH.
+
 Fri Oct 17 18:15:49 1997  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.in: Added VPATH support.

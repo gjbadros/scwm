@@ -37,6 +37,12 @@ depend:
 		(cd $$i; ${MAKE} depend) ;\
 	done
 
+mostlyclean:
+	@for i in ${subdirs}; do \
+		echo Mostly Cleaning in $$i ; \
+		(cd $$i; ${MAKE} mostlyclean) ; \
+	done
+
 clean:
 	@for i in ${subdirs}; do \
 		echo Cleaning in $$i ; \

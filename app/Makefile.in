@@ -34,8 +34,11 @@ depend:
 
 install: 
 
-clean:
-	${RM} *~ core *.bak scwm
+mostlyclean:
+	${RM} *~ core *.bak
+
+clean: mostlyclean
+	${RM} scwm
 
 distclean: clean
 

@@ -28,8 +28,10 @@ install:
 	$(mkinstalldirs) ${scwm_dir}
 	${INSTALL_DATA} ${RC} ${scwm_dir} 
 
-clean:
+mostlyclean:
 	${RM} *~ core *.bak
+
+clean: mostlyclean
 
 distclean: clean
 
