@@ -1,3 +1,9 @@
+1999-02-09  Sam Steingold  <sds@goems.com>
+
+	* gnome-hints.scm: new user variable - `gnome-desktop-number'.
+	Use it in `enable-gnome-hints'.  Do not enable by default, wait
+	for the user to set the user options.
+
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* gnome-hints.scm: Enable by default when loading module.
@@ -30,7 +36,7 @@
 	* gnome-hints.scm: Added support for nearly all gnome
 	hints. _WIN_AREA_COUNT, _WIN_AREA, _WIN_STATE and _WIN_LAYER still
 	do not update properly in response to internal state changes, but
-	other than that, everything should work. 
+	other than that, everything should work.
 
 	* kde-hints.scm: Minor bugfixes: use `window-close-hook' rather
 	than `X-DestroyNotify hook', since windows may be closed without
@@ -38,7 +44,7 @@
 	first argument. (Untested - I don't have KDE installed)
 
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
-	
+
 	* kde-hints.scm: Renamed from kwm-emulation.scm
 	* animated-iconify.scm: Renamed from animate-iconify-window.scm
 	* path-cache.scm: Renamed from cached-program-exists.scm

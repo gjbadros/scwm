@@ -1,21 +1,21 @@
 ;; $Id$
 ;;;; Copyright (C) 1999 Maciej Stachowiak
-;;;; 
+;;;;
 ;;;; This program is free software; you can redistribute it and/or modify
 ;;;; it under the terms of the GNU General Public License as published by
 ;;;; the Free Software Foundation; either version 2, or (at your option)
 ;;;; any later version.
-;;;; 
+;;;;
 ;;;; This program is distributed in the hope that it will be useful,
 ;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;;;; GNU General Public License for more details.
-;;;; 
+;;;;
 ;;;; You should have received a copy of the GNU General Public License
 ;;;; along with this software; see the file COPYING.  If not, write to
 ;;;; the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
 ;;;; Boston, MA 02111-1307 USA
-;;;; 
+;;;;
 
 
 
@@ -32,7 +32,7 @@
 (define _WIN_PROTOCOLS           (string->X-atom "_WIN_PROTOCOLS"))
 
 ;;;; Multiple desktops
-(define _WIN_WORKSPACE           (string->X-atom "_WIN_WORKSPACE")) 
+(define _WIN_WORKSPACE           (string->X-atom "_WIN_WORKSPACE"))
 (define _WIN_WORKSPACE_COUNT     (string->X-atom "_WIN_WORKSPACE_COUNT"))
 (define _WIN_WORKSPACE_NAMES     (string->X-atom "_WIN_WORKSPACE_NAMES"))
 
@@ -83,22 +83,22 @@
 (define WIN_STATE_ARRANGE_IGNORE  512) ;;  /* ignore for auto arranging */
 
 
-(define WIN_STATE_ALL (+ WIN_STATE_STICKY 
+(define WIN_STATE_ALL (+ WIN_STATE_STICKY
 			 WIN_STATE_MINIMIZED
-			 WIN_STATE_MAXIMIZED_VERT 
-			 WIN_STATE_MAXIMIZED_HORIZ 
-			 WIN_STATE_HIDDEN 
-			 WIN_STATE_SHADED 
-			 WIN_STATE_HID_WORKSPACE 
-			 WIN_STATE_HID_TRANSIENT 
+			 WIN_STATE_MAXIMIZED_VERT
+			 WIN_STATE_MAXIMIZED_HORIZ
+			 WIN_STATE_HIDDEN
+			 WIN_STATE_SHADED
+			 WIN_STATE_HID_WORKSPACE
+			 WIN_STATE_HID_TRANSIENT
 			 WIN_STATE_FIXED_POSITION
 			 WIN_STATE_ARRANGE_IGNORE))
 
-(define gnome-supported-protocols 
-  (vector _WIN_CLIENT_LIST 
-	  _WIN_WORKSPACE _WIN_WORKSPACE_COUNT _WIN_WORKSPACE_NAMES 
-	  _WIN_STATE _WIN_HINTS _WIN_EXPANDED_SIZE 
-	  _WIN_LAYER 
+(define gnome-supported-protocols
+  (vector _WIN_CLIENT_LIST
+	  _WIN_WORKSPACE _WIN_WORKSPACE_COUNT _WIN_WORKSPACE_NAMES
+	  _WIN_STATE _WIN_HINTS _WIN_EXPANDED_SIZE
+	  _WIN_LAYER
 	  _WIN_AREA_COUNT _WIN_AREA))
 
 
@@ -138,7 +138,7 @@
   (X-property-set! 'root-window _WIN_WORKSPACE_COUNT (vector n) "CARDINAL" 32))
 
 (define (gnome-set-workspace-names! names)
-  (X-property-set! 'root-window _WIN_WORKSPACE_NAMES 
+  (X-property-set! 'root-window _WIN_WORKSPACE_NAMES
 		   (apply string-append/null-separated names) "STRING" 8))
 
 (define (gnome-set-win-workspace! win desk)
@@ -146,7 +146,7 @@
 
 (define (gnome-set-area! x y)
   (X-property-set! 'root-window _WIN_AREA
-                   (list->vector 
+                   (list->vector
                     (map (lambda (vp ds) (round/ vp ds))
                          (list x y) (display-size)))
                    "CARDINAL" 32))
@@ -156,29 +156,29 @@
 
 (define (gnome-set-state! win)
   (let* ((cur-state (or (X-property-numeric-value win _WIN_STATE) 0))
-         (or-mask (logior 
+         (or-mask (logior
                    (if (sticky? win) WIN_STATE_STICKY 0)
                    (if (maximized? win) WIN_STATE_MAXIMIZED_VERT 0)
                    (if (maximized? win) WIN_STATE_MAXIMIZED_HORIZ 0)
                    (if (window-shaded? win) WIN_STATE_SHADED 0)
-                   (if (object-property win 'arrange-skip) 
+                   (if (object-property win 'arrange-skip)
                        WIN_STATE_ARRANGE_IGNORE 0)))
-         (and-mask (logand 
+         (and-mask (logand
                     #x7fffffff
                     (if (sticky? win) #x7fffffff (lognot WIN_STATE_STICKY))
-                    (if (maximized? win) 
+                    (if (maximized? win)
                         #x7fffffff (lognot WIN_STATE_MAXIMIZED_VERT))
-                    (if (maximized? win) 
+                    (if (maximized? win)
                         #x7fffffff (lognot WIN_STATE_MAXIMIZED_HORIZ))
-                    (if (window-shaded? win) 
+                    (if (window-shaded? win)
                         #x7fffffff (lognot WIN_STATE_SHADED))
-                    (if (object-property win 'arrange-skip) 
+                    (if (object-property win 'arrange-skip)
                         #x7fffffff (lognot WIN_STATE_ARRANGE_IGNORE)))))
-    (X-property-set! win _WIN_STATE 
-                     (vector (logior or-mask 
+    (X-property-set! win _WIN_STATE
+                     (vector (logior or-mask
                                      (logand and-mask cur-state)))
                      "CARDINAL" 32)))
-  
+
 
 (define (gnome-set-layer! win)
   (if (kept-on-top? win)
@@ -194,13 +194,13 @@
                    (list->vector clist) "CARDINAL" 32))
 
 (define (gnome-set-protocols! proto)
-  (X-property-set! 'root-window _WIN_PROTOCOLS 
+  (X-property-set! 'root-window _WIN_PROTOCOLS
                    proto "ATOM" 32))
 
 (define (gnome-init-workspace-params num-desks)
   (gnome-set-workspace! (current-desk))
   (gnome-set-workspace-count! num-desks)
-  (gnome-set-workspace-names! (map (lambda (x) (number->string (+ 1 x))) 
+  (gnome-set-workspace-names! (map (lambda (x) (number->string (+ 1 x)))
                                    (iota num-desks))))
 
 
@@ -242,7 +242,7 @@
 
 (define (gnome-update-hints win)
   (let ((prop (X-property-numeric-value win _WIN_HINTS)))
-    (cond 
+    (cond
      (prop
       (set-object-property! win 'circulate-skip (nonzero? (logand prop WIN_HINTS_SKIP_FOCUS)))
       (set-object-property! win 'winlist-skip (nonzero? (logand prop WIN_HINTS_SKIP_WINLIST)))
@@ -254,23 +254,23 @@
 
 
 (define (gnome-update-state win mask new-state)
-  (if (nonzero? (logand mask WIN_STATE_STICKY)) 
-      (if (nonzero? (logand new-state WIN_STATE_STICKY)) 
-	  (if (not (sticky? win)) (stick win)) 
+  (if (nonzero? (logand mask WIN_STATE_STICKY))
+      (if (nonzero? (logand new-state WIN_STATE_STICKY))
+	  (if (not (sticky? win)) (stick win))
 	  (if (sticky? win) (unstick win))))
 
   ;; ignore WIN_STATE_MINIMIZED  - apparently deprecated
 
 
   ;; for now kludge separate horizontal and vertical maximization
-  
+
   (if (or (nonzero? (logand mask WIN_STATE_MAXIMIZED_VERT))
 	  (nonzero? (logand mask WIN_STATE_MAXIMIZED_HORIZ)))
-      
+
       (if (or (nonzero? (logand mask new-state WIN_STATE_MAXIMIZED_VERT))
 	      (nonzero? (logand mask new-state  WIN_STATE_MAXIMIZED_HORIZ)))
 	  (if (not (maximized? win))
-	      (maximize 
+	      (maximize
 	       (if (nonzero? (logand mask new-state WIN_STATE_MAXIMIZED_HORIZ)) (%x 100) 0)
 	       (if (nonzero? (logand mask new-state WIN_STATE_MAXIMIZED_VERT)) (%y 100) 0)
 	       win))
@@ -289,17 +289,17 @@
   ;; ignore WIN_STATE_FIXED_POSITION (no way to implement right now)
 
   (if (nonzero? (logand mask WIN_STATE_ARRANGE_IGNORE))
-      (set-object-property! win 'arrange-skip 
-                            (nonzero? 
+      (set-object-property! win 'arrange-skip
+                            (nonzero?
                              (logand new-state WIN_STATE_ARRANGE_IGNORE)))))
 
-  
+
 (define (gnome-update-state-from-property win)
   (let ((prop (X-property-numeric-value win _WIN_HINTS)))
-    (cond 
+    (cond
      (prop
       (gnome-update-state win WIN_STATE_ALL prop)))))
-      
+
 (define (gnome-update-state-from-client-message win msg)
   (let ((mask (vector-ref msg 0))
 	(new-state (vector-ref msg 1)))
@@ -316,7 +316,7 @@
 
 (define (gnome-update-layer-from-property win)
   (let ((new-layer (X-property-numeric-value win _WIN_LAYER)))
-    (if new-layer  
+    (if new-layer
 	(gnome-update-layer win new-layer))))
 
 (define (gnome-update-layer-from-client-message win msg)
@@ -354,7 +354,7 @@
   (gnome-set-client-list! client-window-id-list))
 
 (define (gnome-window-close-hook win)
-  (set! client-window-id-list 
+  (set! client-window-id-list
         (delq! (window-id win) client-window-id-list))
   (gnome-set-client-list! client-window-id-list))
 
@@ -388,9 +388,9 @@
 ;;  (write data)
 ;;  (newline)
   (cond
-   ((eqv? type _WIN_STATE) 
+   ((eqv? type _WIN_STATE)
     (gnome-update-state-from-client-message win data))
-   ((eqv? type _WIN_LAYER) 
+   ((eqv? type _WIN_LAYER)
     (gnome-update-layer-from-client-message win data))
    ((eqv? type _WIN_WORKSPACE)
     (if (eq? win 'root-window)
@@ -402,23 +402,30 @@
 
 
 (define (announce-gnome-hint-support)
-  (X-property-set! 'root-window _WIN_SUPPORTING_WM_CHECK 
+  (X-property-set! 'root-window _WIN_SUPPORTING_WM_CHECK
                    (vector (window-id 'root-window)) "CARDINAL" 32)
   (gnome-set-protocols! gnome-supported-protocols))
 
-  
+
 (define (unannounce-gnome-hint-support)
   (X-property-delete! 'root-window "_WIN_SUPPORTING_WM_CHECK")
   (X-property-delete! 'root-window "_WIN_PROTOCOLS"))
 
+(define-public gnome-desktop-number
+;;;**VAR
+;;; The number of desktops to show in the GNOME pager.
+;;; Used in `enable-gnome-hints'.
+  4)
 
 (define-public (enable-gnome-hints)
+  "Hook up SCWM with GNOME.
+Set the user parameters first.
+See also `disable-gnome-hints'."
   (announce-gnome-hint-support)
   (map (lambda (win)
 	 (gnome-init-window-from-props win))
        (list-all-windows))
-  ;; hack!!!
-  (gnome-init-workspace-params 4)
+  (gnome-init-workspace-params gnome-desktop-number)
   (gnome-init-area-params)
   (set! client-window-id-list (map window-id (list-all-windows)))
   (gnome-set-client-list! client-window-id-list)
@@ -437,6 +444,8 @@
 
 
 (define-public (disable-gnome-hints)
+  "Disengage SCWM from GNOME.
+Reverses the effect of `enable-gnome-hints'."
   (unannounce-gnome-hint-support)
   (set! client-window-id-list '())
   (remove-hook! X-PropertyNotify-hook gnome-X-PropertyNotify-hook)
@@ -453,6 +462,6 @@
   (remove-hook! shutdown-hook disable-gnome-hints))
 
 
-;;;; Enable by default
-(enable-gnome-hints)
+;;; Do not enable by default - let the user reset some parameters first
+;;; (enable-gnome-hints)
 
