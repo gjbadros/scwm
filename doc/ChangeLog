@@ -1,5 +1,8 @@
 1998-10-01  Todd Larason  <jtl@teeny.molehill.org>
 
+	* Makefile.am (scwm.sgml): find source via $(top_srcdir) instead
+	of assuming build==source
+
 	* dev/common-primitive-mistakes: remove a typo doubled word
 
 Wed Sep 30 19:20:26 1998  Maciej Stachowiak  <mstachow@mit.edu>
