@@ -1217,7 +1217,7 @@ RestoreWithdrawnLocation(ScwmWindow *psw, Bool fRestart)
      * hence the "if(!fRestart)" clause (RN) 
      */
 
-    if (!fRestart) {
+    if (!fRestart && UNSET_SCM(gh_lookup("scwm-no-move-windows-on-exit"))) {
       /* Only fix it if its not partially on the screen now */
       if (!FIsPartiallyInViewport(psw)) {
 	int w2 = FRAME_WIDTH(psw) / 2;
