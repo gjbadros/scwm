@@ -1,3 +1,17 @@
+Sun Aug 22 17:15:58 1999    <gjb@cs.washington.edu>
+
+	* binding.c: Use 0 == AnyButton as argument to
+ 	XGrabButton/XUngrabButton instead of looping through all the
+ 	buttons.  Only call XGrabButton/XUngrabButton once with 0 or'd
+ 	into the modifier if modifier is not AnyModifier.
+	Use None for the cursor when grabbing buttons.  Grab buttons on
+	psw->frame, not psw->w  (keys were doing it that way.. not sure
+	why that's better, but keys do not work reliably if the grab is
+	done on psw->w).  Split remove_binding into remove_binding and
+	remove_binding_from_list so that add_binding can call only the
+	former and doesn't need to talk to the X server to XUngrab the
+	previous binding.
+
 Sun Aug 22 15:21:14 1999    <gjb@cs.washington.edu>
 
 	* binding.c: Use new-style binding context names in documentation, 

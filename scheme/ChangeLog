@@ -1,3 +1,14 @@
+Mon Aug 23 21:11:51 1999    <gjb@cs.washington.edu>
+
+	* winlist.scm: Do not break with more than 36 (26+10 -- the number 
+	of shortcut keys) windows in a window list.
+
+Sun Aug 22 15:51:31 1999    <gjb@cs.washington.edu>
+
+	* stylist.scm: Use gtk-label-set-text, not gtk-label-set (was
+	renamed in guile-gtk package).  Make popup-style-menu public.  Do
+	not use deprecated button name.
+
 Sun Aug 22 11:38:18 1999    <gjb@cs.washington.edu>
 
 	* group.scm: Added a FIXME about invoking the
