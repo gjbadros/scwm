@@ -22,3 +22,8 @@ When type checking, consider using, e.g., FONT_OR_SYMBOL_P to permit
   font, use DYNAMIC_SAFE_FONT(scmFont) to get at the value;
   also see DEREF_IF_SYMBOL for an abstraction for getting the value of
   a symbol.  See also DYNAMIC_PROCEDURE_P and PROCEDURE_OR_SYMBOL_P
+
+Rogue pointer warning?
+  - are you marking something that is not an SCM?
+    -> scm_gc_mark will not complain if passed an integer type
+       because 'typedef long SCM' still
