@@ -8,7 +8,7 @@ proper color object. Using the same color specifier string more than
 once is not inefficient, as caching ensures that color objects are
 shared.
 
-[From scwm/color.c:41]
+[From scwm/color.c:42]
 
 
 Creating themes
@@ -241,7 +241,7 @@ first introduced in fvwm.
 the input focus, no matter what. This can be used for clocks,
 mailboxes, and other desktop gadgets that never need keyboard input.
 
-[From scwm/window.c:3336]
+[From scwm/window.c:3346]
 
 
 Fonts
@@ -267,7 +267,7 @@ when the relevant event occurs. However, several convenience macros
 are provided for manipulating hooks; see `add-hook!', `remove-hook!'
 and `reset-hook!'. 
 
-[From scwm/callbacks.c:346]
+[From scwm/callbacks.c:366]
 
 
 Image Loaders
@@ -307,7 +307,7 @@ available on the particular port, and do not go away until explicitly
 removed. An input hook may safely remove itself from within its own
 invocation.
 
-[From scwm/callbacks.c:707]
+[From scwm/callbacks.c:727]
 
 
 Key Specifier
@@ -441,7 +441,7 @@ color brighter than the decoration color); the effect is to reverse
 "raised" and "sunken" elements throughout the user interface.)
 
 
-[From scwm/color.c:50]
+[From scwm/color.c:51]
 
 
 Sticky
@@ -452,7 +452,7 @@ Sticky
 same screen position regardless of scrolling within the current
 desktop.
 
-[From scwm/window.c:2104]
+[From scwm/window.c:2112]
 
 
 Themes
@@ -475,7 +475,7 @@ manipulate them. Timer hooks, unlike regular hooks, are one-shot -
 once the time limit expires and the timer hook is triggered, it is
 removed.
 
-[From scwm/callbacks.c:566]
+[From scwm/callbacks.c:586]
 
 
 Viewports
@@ -520,11 +520,11 @@ for window styles.  For some of the below options you will
 need to use the appropriate module to make the options available. 
 The options include at least:
 
-auto-raise (window-style) from scheme/auto-raise.scm:139
-auto-raise-delay (window-style) from scheme/auto-raise.scm:140
-auto-raise-unfocus-delay (window-style) from scheme/auto-raise.scm:141
-auto-raise-focus-proc (window-style) from scheme/auto-raise.scm:143
-auto-raise-unfocus-proc (window-style) from scheme/auto-raise.scm:144
+auto-raise (window-style) from scheme/auto-raise.scm:135
+auto-raise-delay (window-style) from scheme/auto-raise.scm:136
+auto-raise-unfocus-delay (window-style) from scheme/auto-raise.scm:137
+auto-raise-focus-proc (window-style) from scheme/auto-raise.scm:139
+auto-raise-unfocus-proc (window-style) from scheme/auto-raise.scm:140
 hover-focus-delay (window-style) from scheme/hover-focus.scm:74
 hover-focus (window-style) from scheme/hover-focus.scm:96
 border-width (window-style) from scheme/style.scm:199
@@ -572,8 +572,8 @@ other-proc (window-style) from scheme/style.scm:281
 other-hint-proc (window-hint) from scheme/style.scm:283
 use-theme (window-style) from scheme/themes.scm:47
 winlist-skip (boolean-style) from scheme/winlist.scm:112
-circulate-skip (boolean-style) from scheme/winlist.scm:301
-circulate-skip-icon (boolean-style) from scheme/winlist.scm:302
+circulate-skip (boolean-style) from scheme/winlist.scm:299
+circulate-skip-icon (boolean-style) from scheme/winlist.scm:300
 start-maximized (window-style) from scheme/winops.scm:167
 
 [From scwm/face.c:551]
