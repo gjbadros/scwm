@@ -471,7 +471,7 @@ InteractiveMove(Window * win, ScwmWindow * psw,
      &DragX, &DragY,    &JunkX, &JunkY, &JunkMask);
    */
   if (!GrabEm(CURSOR_MOVE)) {
-    XBell(dpy, Scr.screen);
+    call0_hooks(invalid_interaction_hook);
     return;
   }
   XGetGeometry(dpy, w, &JunkRoot, &origDragX, &origDragY,

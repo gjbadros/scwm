@@ -42,7 +42,7 @@
 #include "font.h"
 #include "xmisc.h"
 #include "guile-compat.h"
-
+#include "callbacks.h"
 
 SCM sym_mouse, sym_sloppy, sym_none;
 extern SCM sym_click;
@@ -652,8 +652,7 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
   original_w = *w;
 
   if (!GrabEm(cursor)) {
-    /* FIXGJB: call a scheme hook, not XBell */
-    XBell(dpy, Scr.screen);
+    call0_hooks(cannot_grab_hook);
     return True;
   }
 
@@ -704,15 +703,13 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
     eventp->xany.window = *w;
   }
   if (*w == Scr.Root) {
-    /* FIXGJB: scheme callback, not bell */
-    XBell(dpy, Scr.screen);
+    call0_hooks(invalid_interaction_hook);
     UngrabEm();
     return True;
   }
   *ppsw = SwFromWindow(dpy,*w);
   if (*ppsw == NULL) {
-    /* FIXGJB: scheme callback, not bell */
-    XBell(dpy, Scr.screen);
+    call0_hooks(invalid_interaction_hook);
     UngrabEm();
     return (True);
   }
@@ -728,8 +725,7 @@ DeferExecution(XEvent * eventp, Window * w, ScwmWindow **ppsw,
       (original_w != None) && (original_w != Scr.NoFocusWin))
     if (!((*w == (*ppsw)->frame) &&
 	  (original_w == (*ppsw)->w))) {
-      /* FIXGJB: scheme callback, not bell */
-      XBell(dpy, Scr.screen);
+      call0_hooks(invalid_interaction_hook);
       UngrabEm();
       return True;
     }
@@ -1711,7 +1707,7 @@ interactive_resize(SCM win)
 
   InstallRootColormap();
   if (!GrabEm(CURSOR_MOVE)) {
-    XBell(dpy, Scr.screen);
+    call0_hooks(cannot_grab_hook);
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
@@ -2836,6 +2832,9 @@ init_window()
   scm_protect_object(sym_sloppy);
   sym_none = gh_symbol2scm("none");
   scm_protect_object(sym_none);
+
+  DEFINE_HOOK(invalid_interaction_hook,"invalid-interaction-hook");
+  DEFINE_HOOK(cannot_grab_hook,"cannot-grab-hook");
 #ifndef SCM_MAGIC_SNARFER
 #include "window.x"
 #endif

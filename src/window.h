@@ -203,6 +203,9 @@ typedef struct {
 EXTERN long scm_tc16_scwm_window;
 EXTERN_SET(SCM window_context,SCM_UNDEFINED);
 
+EXTERN SCM invalid_interaction_hook;
+EXTERN SCM cannot_grab_hook;
+
 #define WINDOWP(X) (SCM_NIMP(X) && (SCM_CAR(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)SCM_CDR(X))
 #define SCWMWINDOW(X) (((scwm_window *)SCM_CDR(X))->psw)

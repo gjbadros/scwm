@@ -490,7 +490,7 @@ PlaceWindow(ScwmWindow *psw, int Desk)
 	  UngrabEm();
 	} else {
 	  /* couldn't grab the pointer - better do something */
-	  XBell(dpy, Scr.screen);
+          call0_hooks(cannot_grab_hook);
 	  xl = 0;
 	  yt = 0;
 	}
