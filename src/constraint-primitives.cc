@@ -232,7 +232,6 @@ SCWM_PROC (screen_clv_vy, "screen-clv-vy", 0, 0, 0,
 }
 #undef FUNC_NAME
 
-
 SCWM_PROC (screen_clv_pointerx, "screen-clv-pointerx", 0, 0, 0,
            ())
      /** Return the cl-variable object for the virtual screen X coordinate.
@@ -254,7 +253,42 @@ SCWM_PROC (screen_clv_pointery, "screen-clv-pointery", 0, 0, 0,
 }
 #undef FUNC_NAME
 
+SCWM_PROC(cl_windows_of_constraint, "cl-windows-of-constraint", 1, 0, 0,
+          (SCM cn))
+  /** Return a list of window objects who have variables used by CN */
+#define FUNC_NAME s_cl_windows_of_constraint
+{
+  int iarg = 1;
+  if (!FIsClConstraintScm(cn))
+    scm_wrong_type_arg(FUNC_NAME,iarg++,cn);
 
+  ClConstraint *pcn = PcnFromScm(cn);
+
+  SCM answer = SCM_EOL;
+  set<ScwmWindow *> setpsw;
+
+  ClLinearExpression expr = pcn->expression();
+  const ClLinearExpression::ClVarToCoeffMap &mapclv = expr.terms();
+
+  ClLinearExpression::ClVarToCoeffMap::const_iterator it = mapclv.begin();
+  for ( ; it != mapclv.end(); ++it) {
+    const ClAbstractVariable *pclav = (*it).first;
+    const ClVariable *pclv = dynamic_cast<const ClVariable *>(pclav);
+    if (!pclv)
+      continue;
+    ScwmWindow *psw = static_cast<ScwmWindow *>(pclv->Pv());
+    if (psw)
+      setpsw.insert(psw);
+  }
+  
+  set<ScwmWindow *>::const_iterator itw = setpsw.begin();
+  for ( ; itw != setpsw.end(); ++itw ) {
+    ScwmWindow *psw = *itw;
+    answer = gh_cons(psw->schwin,answer);
+  }
+
+  return answer;
+}
 
 
 extern "C" {
