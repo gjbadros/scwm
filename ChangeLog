@@ -1,3 +1,8 @@
+Thu Sep  3 11:24:32 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* configure.in: Only look for a C++ compiler if --with-cassowary
+	is used
+
 Thu Sep  3 10:59:46 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Lots of changes mostly from Dirk Herrmann.  He
