@@ -1,3 +1,10 @@
+Thu Jul 16 09:59:02 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* binding.c (FKeyToKeysymModifiers): Fix bug in handling of
+	uppercase single keystrokes (e.g., C-M-S-E) -- the keysym that was 
+	looked for was the uppercase keystroke, which isn't bound to any
+	key -- use tolower to convert.
+
 1998-07-16  Greg Badros  <gjb@cs.washington.edu>
 
 	* all: Use FREE and NEW instead of free and malloc, use FREEC
