@@ -25,6 +25,11 @@
  *
  */
 
+/* The SM standard says that SmDiscardCommand should be of type
+   SmLISTofARRAY8 on POSIX systems. xsm insists that it should be a SmARRAY8.
+   Sigh. */
+#define SUPPORT_BROKEN_DISCARD_COMMAND 1
+
 #define SESSION_MANAGER_IMPLEMENTATION
 
 #ifdef HAVE_CONFIG_H
@@ -338,7 +343,11 @@ static void setSMProperties()
   SmPropValue cwdVal;
   SmPropValue *restartVal;
   SmPropValue restartStyleVal;
+#ifdef SUPPORT_BROKEN_DISCARD_COMMAND
+  SmPropValue discardVal;
+#else
   SmPropValue discardVal[] = { { 2, "rm" }, { 2, "-f" }, { 0, NULL } };
+#endif
   SmPropValue priorityVal;
   SmProp userIDProp;
   SmProp cwdProp;
@@ -379,9 +388,15 @@ static void setSMProperties()
   cloneProp.num_vals = 0;
   cloneProp.vals = restartVal;
   discardProp.name = SmDiscardCommand;
+#ifdef SUPPORT_BROKEN_DISCARD_COMMAND
+  discardProp.type =SmARRAY8;
+  discardProp.num_vals = 1;
+  discardProp.vals = &discardVal;
+#else
   discardProp.type =SmLISTofARRAY8;
   discardProp.num_vals = sizeof(discardVal)/ sizeof(discardVal[0]);
   discardProp.vals = discardVal;
+#endif
   restartStyleProp.name = SmRestartStyleHint;
   restartStyleProp.type = SmCARD8;
   restartStyleProp.num_vals = 1;
@@ -414,11 +429,26 @@ static void setSMProperties()
   restartVal[i++].value = CLIENT_ID_OPT_STRING;
   restartVal[i].length = strlen(SmcId);
   restartVal[i++].value = SmcId;
-  restartProp.num_vals=i;
+  restartProp.num_vals = i;
+#ifdef SUPPORT_BROKEN_DISCARD_COMMAND
+  {
+    char *s = statefile();
+    
+    discardVal.length = 6+strlen(s)+1;
+    discardVal.value = NEWC(discardVal.length, char);
+    sprintf(discardVal.value, "rm -f %s", s);
+    FREE(s);
+  }
+#else
   discardVal[2].value=statefile();
   discardVal[2].length=strlen(discardVal[2].value);
+#endif
   SmcSetProperties(SMconn, sizeof(props)/sizeof(props[0]), props);
+#ifdef SUPPORT_BROKEN_DISCARD_COMMAND
+  FREE(discardVal.value);
+#else
   FREE(discardVal[2].value);
+#endif
   FREE(restartVal);
   FREE(cwdVal.value);
 }
