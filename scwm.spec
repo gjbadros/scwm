@@ -1,0 +1,61 @@
+Name: scwm
+Summary: A Scheme Configurable Window Manager.
+Version: 19990117
+Release: 1hjs
+Source: ftp://huis-clos.mit.edu/pub/scwm/scwm-%{PACKAGE_VERSION}.tar.gz
+Group: X11/Window Managers
+BuildRoot: /tmp/scwmbuild
+Copyright: Copyright (C) 1997 Maciej Stachowiak.
+Packager: Harvey J. Stein <hjstein@bfr.co.il>
+URL: http://vicarious-existence.mit.edu/scwm/
+
+%description
+Scwm is the Scheme Configurable Window Manager. This is a highly
+dynamic and extensible window manager for the X Window System (based
+originally on fvwm2, but now much enhanced) with Guile Scheme as the
+configuration/extension language. Nearly all decorations can be
+changed at run-time or per-window, and eventually many decoration
+styles and additional features will be supported through dynamically
+loaded code. A powerful protocol is provided for interacting with the
+window manager while it is running.
+
+
+%changelog
+* Thu Jul 31 1998 Harvey J. Stein <hjstein@bfr.co.il>
+
+- Updated Kjetil's release.
+
+* Wed May 06 1998 Kjetil Wiekhorst Jørgensen <jorgens@pvv.org>
+
+- Initial release of this package.
+
+
+%prep
+
+%setup
+
+%build
+./configure --prefix=/usr --exec-prefix=/usr/X11R6
+make 
+
+%install
+make prefix=$RPM_BUILD_ROOT/usr exec_prefix=$RPM_BUILD_ROOT/usr/X11R6 install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%doc ANNOUNCE AUTHORS BUG-REPORTING BUGS COPYING.FVWM COPYING.GPL ChangeLog
+%doc INSTALL NEWS README README-constraints THANKS TODO doc
+
+%config /usr/X11R6/lib/X11/scwm/system.scwmrc
+
+/usr/X11R6/bin
+/usr/X11R6/lib/[^X]*
+/usr/include
+/usr/info
+/usr/man/man1
+/usr/share/emacs/site-lisp
+/usr/share/scwm
+/usr/share/scwm-modules
+/usr/share/scwm-themes
