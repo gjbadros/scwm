@@ -608,7 +608,7 @@ scwm_themedir=${datadir}/${PACKAGE}/themes
 scwm_bin_load_path=${libdir}/${PACKAGE}/modules
 scwm_moduledir=${scwm_bin_load_path}/app/scwm
 scwm_utildir=${libdir}/${PACKAGE}/util
-scwm_pixmapdir=${datadir}/${PACKAGE}/pixmaps
+scwm_pixmapdir=${datadir}/pixmaps/${PACKAGE}
 
 
 SCWM_ARG_PATH(scwmrcdir,
@@ -627,16 +627,15 @@ SCWM_ARG_PATH(scwmrcdir,
 scwm_image_load_path="(\\\"${scwm_pixmapdir}\\\" ";
 
 for i in \
-   /usr/share/pixmaps/scwm \
    ${x_includes}/X11/bitmaps \
    ${x_includes}/X11/pixmaps \
    ${orig_x_libs}/X11/mini-icons \
    ${includedir}/X11/pixmaps \
    ${includedir}/X11/bitmaps \
    ${libdir}/X11/mini-icons \
-   /usr/share/pixmaps \
-   /usr/share/icons \
-   /usr/share/icons/mini \
+   @prefix@/share/pixmaps \
+   @prefix@/share/icons \
+   @prefix@/share/icons/mini \
 ; do
    if test -d $i; then
       # add the directory to the list as a string

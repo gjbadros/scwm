@@ -64,7 +64,7 @@ from other processes
 %setup
 
 %build
-./configure --prefix=%{prefix} --enable-fsstd
+./configure --prefix=%{prefix} --enable-fsstd --with-cassowary=%{prefix}
 make 
 
 %install
