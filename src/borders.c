@@ -83,6 +83,9 @@ unsigned long Globalgcm;
  * Redraws the windows borders
  *
  ****************************************************************************/
+void SetBorderX (ScwmWindow *t, Bool onoroff,Bool force,Bool Mapped, 
+		Window expose_win, Bool really_force);
+
 inline void SetBorder (ScwmWindow *t, Bool onoroff,Bool force,Bool Mapped, 
 		       Window expose_win)
 {
