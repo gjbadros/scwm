@@ -1,3 +1,11 @@
+Wed Mar 24 19:14:06 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* color.c: Drop some #if 0 code in make-color; we perhaps should
+ 	make failed color creations (when palette is full, e.g.) return a
+	closest-match, or have a make-closest-color that does so.  It'll
+	be a pain to fix all the code that assumes make-color isn't going
+	to throw.
+
 Tue Mar 23 11:36:04 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* image.h, image.c: Use imlib if USE_IMLIB is set.  This removes
