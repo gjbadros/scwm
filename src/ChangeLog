@@ -1,0 +1,106 @@
+Sun Oct  5 16:20:26 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c: Added many new procedures that should be useful for
+ 	both style purposes, and in some cases also for binding to
+ 	interactive commands.  The following have been added: keep-on-top,
+ 	un-keep-on-top, kept-on-top?, show-titlebar, hide-titlebar,
+ 	titlebar-shown?, normal-border, plain-border, border-normal?,
+ 	set-border-width!, stick-icon, unstick-icon, icon-sticky?,
+ 	set-icon-box!, set-window-focus!, set-window-colors! and
+ 	set-icon-title!.
+
+	* binding.c: Added bind-event procedure to enable binding hooks
+ 	for special window manager events. Currently, only the 'new-window
+ 	event is implemented. Also added the run_new_window_hook()
+ 	procedure for C to let the code that initially decorates a window
+ 	do this.
+
+	* add_window.c: AddWindow() - changed to call the new window
+ 	hook. This will enable handling of style options on window
+ 	startup.
+
+	* events.c: Changed handling of MapNotify event to deal properly
+ 	with windows that start out iconified.
+
+Wed Oct  1 21:47:36 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c: Added keep-on-top, un-keep-on-top, and kept-on-top?
+
+Wed Sep 24 16:46:22 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* binding.c,color.c,font.c,miscprocs.c,paths.c,window.c: Changed
+ 	deferring and allowing of ints to hopefully make things
+ 	thread-safe.
+
+Mon Sep 22 00:09:43 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* binding.c: Fixed nasty bug; previously forgot to gc-protect the
+ 	scheme procedure in a mouse binding,
+
+	* binding.c: Corrected mouse bindings for buttons.
+
+Sun Sep 21 09:22:26 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* window.c: Implemented select-window. This means that window
+ 	operations off of root menus and such should be happy.
+
+	* window.c: Renamed get-window-position, get-window-size,
+ 	get-window-id, get-window-desk, get-window-title and
+ 	get-window-list to window-position, window-size, window-id,
+ 	window-desk, window-title and list-all-windows. This change and
+ 	the ones to deskpage.c and miscproc.c are to provide "Schemier"
+ 	names before the current ones becomes at all established.
+
+	* deskpage.c: Renamed get-display-size, get-desk-size,
+ 	get-viewport-position and get-current-desk to display-size,
+ 	desk-size, viewport-position and current-desk respectively.
+
+	* miscprocs.c: Renamed get-pointer-position to pointer-position.
+
+	* events.c: Added error handling to callbacks using
+ 	call_thunk_with_message_handler.
+
+	* menus.c: Fixed the use of Scheme submenus, and also wrapped
+ 	callbacks to Scheme code in error handling using
+ 	call_thunk_with_message_handler.
+
+	* events.c: Added error handling for key and mouse binding
+ 	callbacks.
+
+	* menus.c: Added correct handling for submenus and error handling
+ 	for Scheme callbacks.
+
+Fri Sep 19 00:34:05 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* util.c: Added call_thunk_with_message_handler; this will enable
+ 	us to handle errors in callback code.
+
+	* window.c: Added get-window-position, get-window-size,
+ 	get-window-id, get-window-desk, get-window-title and
+ 	get-window-list procedures. It should now be possible to get more
+ 	useful info on windows at runtime, and also write "window list"
+ 	type procedures in Scheme.	
+
+Thu Sep 18 01:27:08 1997  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* menu.c: Added a marker for menu objects, so their thunks and
+ 	submenus don't get GC'd.
+
+	* Imakefile: Added deskpage.c to the build process.
+
+	* deskpage.c: New file. Adds procedures set-current-desk!
+  	set-viewport-position!, set-edge-scroll!, set-edge-wrap!,
+ 	set-edge-resistance!, set-desk-size!, get-display-size,
+ 	get-desk-size, get-viewport-position, get-current-desk.
+
+	* window.c: Added move-window-to-desk operation.
+
+	* Imakefile: Added paths.c to build process.
+
+	* paths.c: Added set-pixmap-path! and set-icon-path! functions.
+
+Wed Sep 17 09:44:56 1997  Maciej Stachowiak  <mstachow@mit.edu>
+	
+	* miscprocs.c: Added get-pointer-position, move-pointer-to,
+	recapture, restart and wait-for-window procedures.
+	
