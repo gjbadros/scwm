@@ -55,7 +55,7 @@ SCWM_GLOBAL_SYMBOL(sym_mouse , "mouse");
 SCWM_SYMBOL(sym_sloppy , "sloppy");
 SCWM_SYMBOL(sym_none , "none");
 
-extern SCM sym_click;
+extern SCM sym_click, sym_root_window;
 
 char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
 char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
@@ -2454,6 +2454,9 @@ This is the X id for the actual application window. WIN defaults to
 the window context in the usual way if not specified. */
 #define FUNC_NAME s_window_id
 {
+  if (win == sym_root_window) {
+    return SCM_MAKINUM(Scr.Root);
+  }
   VALIDATE(win, FUNC_NAME);
   return SCM_MAKINUM(PSWFROMSCMWIN(win)->w);
 }

@@ -59,3 +59,6 @@
 (resize-to 400 400)
 (window-size)
 (window-frame-size)
+
+(window-id (select-window-interactively))
+(window-id 'root-window)

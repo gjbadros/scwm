@@ -1,5 +1,7 @@
 1998-08-31  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
+	* window.c (s_window_id): Handle 'root-window.
+
 	* xproperty.c: X properties are no longer SMOBS. Two functions
 	`X-property-set!', and `X-property-get' now deal with them. The
 	old interface is gone.
