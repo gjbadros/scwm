@@ -1,3 +1,38 @@
+Mon Sep  6 23:01:36 1999    <gjb@cs.washington.edu>
+
+	* test-case.scm: Return answer, not #<undefined>.
+
+	* reflection.scm: Workaround (procedure-source current-module)
+	bug.  Fix `procedure-required-formals' to not consider a rest args 
+	to be a required argument (it kind of is, but can get bound to an
+	empty list). Added `apropos-internal-with-modules',
+	`procedure-is-interactive?', etc.
+
+	* prompt-range.scm: Tweak some of the look.
+
+	* prompt-proc.scm: Much, much improved version that operates as a
+	primitive documentation browser, too.  Still could use lots of
+	work, of course.
+
+	* preferences.scm: Put ok, apply, cancel buttons all on the same
+	row and make them look better.  No more stupid "Done and dismiss"
+	button! 
+
+	* constraints.scm: Make the solver variable public at the
+	top-level so we can get at it.  (Changed because of a possible
+	quirky behaviour--- might be wholly unnecessary, but could be
+	useful anyway, so I'm keeping it).
+
+	* minimal.scm, base.scm: Move hook compatibility stuff from
+	base.scm into minimal.scm.
+
+Mon Sep  6 19:59:24 1999    <gjb@cs.washington.edu>
+
+	* winlist.scm: Fix `show-window-list-menu' -- was completely
+	broken since split into make-window-list-menu.
+
+	* reflection.scm: Added `procedure-apropos'.
+
 Mon Sep  6 17:56:34 1999    <gjb@cs.washington.edu>
 
 	* doc.scm: Added `hook-documentation', `object-documentation'
