@@ -1,3 +1,27 @@
+Tue Oct 26 17:13:37 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (scwm_common_scheme): Added snap-constraints.scm
+
+	* ui-constraints.scm: Added
+	`ui-constraints-involving-two-windows',
+	`move-after-deleting-constraints',
+	`move-after-deleting-inferred-constraints'.
+
+	* snap.scm: ws change.
+
+	* snap-constraints.scm: Turn off some debug code.  Avoid another
+	constraint being inferred when windows are already related by
+	another ui-constraint object.
+
+Tue Oct 26 16:11:20 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* snap-constraints.scm: Added; make the inferred snap persistent.
+	Not perfect, but good enough for a demo.
+
+Tue Oct 26 15:11:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* snap.scm: Re-indent.
+
 Tue Oct 26 13:53:44 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* style-options.scm: Add the 'hint handler before the 'normal
