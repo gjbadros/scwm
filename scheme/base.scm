@@ -66,7 +66,7 @@
   (car (viewport-position)))
 
 (define-public (viewport-y-position)
-  "Return the y coordinate of the current viewport"
+  "Return the y coordinate of the current viewport."
   (cadr (viewport-position)))
 
 (define-public (viewport->virtual x y)
