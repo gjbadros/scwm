@@ -273,7 +273,7 @@ SCM scwm_quit() {
   Done(0,NULL);
 }
 
-SCM get_pointer_position() {
+SCM pointer_position() {
   int x,y;
   XQueryPointer( dpy, Scr.Root, &JunkRoot, &JunkChild,
                  &x,&y,&JunkX, &JunkY, &JunkMask);
