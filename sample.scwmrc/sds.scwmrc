@@ -1,4 +1,4 @@
-;;; File: <.scwmrc - 1998-06-26 Fri 09:21:43 EDT sds@mute.eaglets.com>
+;;; File: <.scwmrc - 1998-07-09 Thu 13:35:07 EDT sds@mute.eaglets.com>
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
 ;;; Purpose: to attract users.
@@ -39,14 +39,8 @@
 (set-desk-size! 2 2)		; X x Y
 
 ;;; print some information
-(write-all () " *** Reading `scwmrc'...\nGuile verion:\t" (version)
-	   "\nSCWM version:\t" (scwm-version) "\nRestarted:\t" (restarted?)
-	   "\nDisplay Size:\t" (display-size) "\nDesk Size:\t" (desk-size)
-	   "\nViewport:\t" (viewport-position) "\nPointer:\t"
-	   (pointer-position) "\nCurrent Desk:\t" (current-desk)
-	   "\nX version:\t" (X-version-information)
-	   "\nX Display:\t" (X-display-information)
-	   "\nDefault image-load-path:\t" image-load-path "\n")
+(display " *** Reading `scwmrc'...\n")
+(display (system-info-string))
 
 ;; (load user-init-file)
 ;;(set! xterm-command "rxvt ")
@@ -56,11 +50,6 @@
 ;;; --------------------------
 ;;; set some basic styles info
 ;;; --------------------------
-
-(define (toggle-max-vert) (toggle-maximize 0 (%y 100)))
-(define (toggle-max-horz) (toggle-maximize (%x 100) 0))
-(define (toggle-max-both) (toggle-maximize (%x 100) (%y 100)))
-(define (toggle-max-vert-part) (toggle-maximize 0 (%y 95)))
 
 ;; FIXGJB: I don't think this gets used right yet
 (define animation-ms-delay 50)
@@ -222,7 +211,8 @@
 (window-style "xmag" #:icon "mag_glass.xpm" #:mini-icon mag-i)
 (window-style "xplaycd" #:icon "Music.xpm" #:mini-icon cd-i)
 (window-style "xv" #:icon "xv.color.xpm" #:mini-icon xv-i)
-(window-style "netscape" #:icon "nscape.xpm" #:mini-icon nscape-i)
+(window-style "netscape" #:icon "nscape.xpm" #:mini-icon nscape-i #:other-proc
+              (in-viewport 1 1))
 (window-style "gnuplot" #:icon "math4.xpm" #:mini-icon plot-i)
 (window-style "gimp" #:icon "wilbur.xpm" #:mini-icon gimp-i)
 (window-style "XDosEmu" #:icon "dosemu.xpm" #:mini-icon dos-i)
@@ -232,6 +222,9 @@
 (window-style "Toplevel" #:icon "toolbox.xpm")
 (window-style "Emacs" #:icon (if want-pictures? "gnu-animal.xpm" #f)
 	      #:mini-icon edit-i #:PPosition-hint #t #:use-decor lizard-d)
+(window-style "emacs_minibuffer" #:focus 'sloppy
+              #:use-style desk-widget-on-top)
+
 ;TextEditor.xpm ; emacs.xbm
 ;(window-style "emacs: *Minibuf" #:use-style desk-widget-on-top)
 
@@ -250,10 +243,6 @@
 			(run-in-xterm "-e /usr/local/bin/guile")))))
 
 (define start-xterm (run-in-xterm "-e bash"))
-(define (popup-root-start) (popup-menu menu-root-start))
-(define (popup-ops) (popup-menu menu-window-ops))
-(define (popup-lisps) (popup-menu menu-lisps))
-(define (popup-util) (popup-menu menu-util))
 
 ;; To later shut down the module, use kill-fvwm-module:
 ;; (kill-fvwm-module fvwm-pager)
@@ -282,6 +271,8 @@
 	      (menuitem "No" #:image-left cross-i #:action noop)
 	      (menuitem "Restart scwm" #:image-left turn-i
 			#:action (lambda () (restart "scwm")))
+	      (menuitem "/usr/src/ scwm" #:image-left turn-i #:action
+                        (lambda () (restart "/usr/src/scwm/scwm/scwm")))
 	      menu-separator
 	      ;;(menuitem "Start KDE" #:image-left xx-i #:action
 	      ;;	(lambda () (restart "/opt/kde/bin/startkde")))
@@ -498,6 +489,10 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 
 (define (popup-small-ops)
   (popup-menu (make-small-window-ops-menu (get-window))))
+(define (popup-root-start) (popup-menu menu-root-start))
+(define (popup-ops) (popup-menu menu-window-ops))
+(define (popup-lisps) (popup-menu menu-lisps))
+(define (popup-util) (popup-menu menu-util))
 
 ;; now set some mouse and key bindings
 
