@@ -495,7 +495,7 @@ fi
 
 AC_SUBST(GUILE_INCLUDES)
 AC_SUBST(GUILE_LIBS)
-
+AM_CONDITIONAL(DL_SUPPORT, test "DL_SUPPORT" = true)
 
 dnl ## Checks for header files ##
 
