@@ -405,13 +405,18 @@ modules are not loaded, those options will not be included.
 The returned string will contain multiple S-expressions, one for each Scwm preference
 value."
   (apply string-append
-       (map (lambda (s) (string-append "(scwm-option-set! " (symbol->string s) " "
-				       (with-output-to-string 
-					 (lambda ()
-					   (let ((value (scwm-option-symget s)))
-					     (if (list? value) (display "'"))
-					     (write value)
-					     (display ")\n"))))))
+       (map (lambda (s) (string-append 
+			 "(eval-after-load '" 
+			 (with-output-to-string 
+			   (lambda () (display (scwm-option-module s))))
+			 " (lambda ()\n"
+			 "  (scwm-option-set! " (symbol->string s) " "
+			 (with-output-to-string 
+			   (lambda ()
+			     (let ((value (scwm-option-symget s)))
+			       (if (list? value) (display "'"))
+			       (write value))))
+			 ")))\n"))
 	    syms)))
 	       
 

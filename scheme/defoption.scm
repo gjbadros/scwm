@@ -109,6 +109,7 @@ DOCSTRING documents the option.  REST includes keyword arguments including:
 See `define-scwm-option'."
   (if (not (string? docstring)) (error "Must give a docstring!"))
   (if (not type) (error "Must specify a type!"))
+  (set-object-property! sym 'module (list 'app 'scwm (module-name (current-module))))
   (set-object-property! sym 'doc docstring)
   (set-object-property! sym 'name (symbol->string sym))
   (if setter (set-object-property! sym 'setter setter))
@@ -125,6 +126,11 @@ See `define-scwm-option'."
   ;; GJB:FIXME:MS: using unspecified, below
   (set! var (if getter unspecified default))
   (scwm-option-symset! sym default))
+
+(define-public (scwm-option-module sym)
+  "Return the module in which option SYM was defined."
+  (or (symbol? sym) (error "SYM option must be a symbol"))
+  (object-property sym 'module))
 
 (define-public (scwm-option-name sym)
   "Return the name of SYM."

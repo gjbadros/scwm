@@ -88,20 +88,54 @@ motion does `interactive-move', and double-click does
 
 ;; END gross hack
 
+;; GJB:FIXME:: this should not be public,
+;; but I leave it public for now for easier debugging --07/03/99 gjb
+(define-public *scwm-modules* '())
+
+(define-public (scwm-module-loaded? module)
+  "Return #t iff MODULE has been loaded."
+  (let ((entry (assoc module *scwm-modules*))) 
+    (and entry (null? (cdr entry)))))
+
+(define (use-scwm-module-note-success module)
+  (let ((entry (assoc module *scwm-modules*)))
+    (if (not entry)
+	(set! *scwm-modules* (cons (cons module '()) *scwm-modules*))
+	(let ((eval-after-load-proc (cdr entry)))
+	  (if (not (null? eval-after-load-proc))
+	      (let ((answer (eval-after-load-proc)))
+		(set-cdr! entry '())
+		answer))))))
+
+(define-public (eval-after-load module proc)
+  "Run PROC after MODULE is loaded.
+Run PROC immediately if MODULE has already been loaded."
+  (if (scwm-module-loaded? module)
+      (proc)
+      (set! *scwm-modules* (cons (cons module proc) *scwm-modules*))))
+
 (define-public (process-use-scwm-module module)
   (if (symbol? module)
       (set! module (append '(app scwm) (list module))))
   (catch #t
 	 (lambda ()
-	   (process-use-modules (list module)) #t)
+	   (process-use-modules (list module))
+	   (use-scwm-module-note-success module)
+	   module)
 	 (lambda (key . args)
 	   (display "Error loading module: ")
 	   (display module) (newline)
-	   ;; GJB:FIXME:MS: want better error msgs, but below core dumps for me
-;;	   (apply handle-system-error key args) 
+	   ;; GJB:FIXME:MS: want better error msgs, below does wrong thing
+	   ;; (apply handle-system-error key args)
+	   (catch #t
+		  (lambda () (apply handle-system-error (cons key args)))
+		  (lambda () #t))
 	   #f)))
 
 (define-public (process-use-scwm-modules module-list)
+  "Returns a list of all the modules loaded in successfully.
+Modules that failed to load have #f in their place in the
+list instead of the module."
   (map process-use-scwm-module (reverse module-list)))
 
 (defmacro use-scwm-modules modules
