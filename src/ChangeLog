@@ -1,3 +1,8 @@
+Mon Sep  6 19:48:21 1999    <gjb@cs.washington.edu>
+
+	* window.c (s_list_stacking_order): Document that this skips
+	iconified windows, and add FIXME comment.
+
 Mon Sep  6 17:23:33 1999    <gjb@cs.washington.edu>
 
 	* Makefile.am (EXTRA_DIST): added scwm-snarf.
