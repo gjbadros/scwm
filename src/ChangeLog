@@ -1,3 +1,11 @@
+Sat Jul 17 23:04:49 1999  Greg Badros  <gjb@cs.washington.edu>
+
+	* xproperty.c (s_X_property_get): Fix bug in that GetXProperty
+	was not returning NULL on failure (and `X-propert-get' was not
+	checking the return value anyway).  Gimp tickled this bug in that
+	windows popped up then disappeared so quickly that the window was
+	gone by the time the X-propert-get was done.
+
 Sat Jul 17 21:22:36 1999  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c (MovePswToCurrentPosition): Improve message about
