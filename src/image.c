@@ -1,11 +1,11 @@
 /* $Id$ */
 /****************************************************************************
  * This module is all original code 
- * by Maciej Stachowiak.
+ * by Maciej Stachowiak and Greg J. Badros.
  * It may be used or distributed under either the FVWM license 
  * (see COPYING.fvwm) or the GNU General Public License (see COPYING.GPL and
  * the description below)
- * Copyright 1997, Maciej Stachowiak
+ * Copyright 1997, Maciej Stachowiak and Greg J. Badros
  ****************************************************************************/
 /*      Copyright (C) 1997, Maciej Stachowiak
 
@@ -49,6 +49,9 @@
 #include "screen.h"
 #include "system.h"
 
+#define IMAGE_IMPLEMENTATION
+
+#include "image.h"
 
 static Colormap IamgeColorMap;
 
@@ -398,9 +401,6 @@ make_image(SCM name)
 
   return result;
 }
-
-
-
 
 
 
