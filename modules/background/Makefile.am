@@ -25,9 +25,9 @@ SUFFIXES = .x
 ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_PROC[ \t]*(\([^,]*\),[^,]*/\1/'
 
 install-data-hook:
-	$(mkinstalldirs) $(scwm_moduledir)
-	rm -f $(scwm_moduledir)/libbackground.la
-	$(LN_S) $(pkglibdir)/libbackground.la $(scwm_moduledir)/libbackground.la
+	$(mkinstalldirs) $(scwm_schemedir)
+	rm -f $(scwm_schemedir)/libbackground.la
+	$(LN_S) $(pkglibdir)/libbackground.la $(scwm_schemedir)/libbackground.la
 
 uninstall-local:
-	rm -f $(scwm_moduledir)/libbackground.la
+	rm -f $(scwm_schemedir)/libbackground.la

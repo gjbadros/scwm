@@ -25,9 +25,9 @@ SUFFIXES = .x
 ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_PROC[ \t]*(\([^,]*\),[^,]*/\1/'
 
 install-data-hook:
-	$(mkinstalldirs) $(scwm_moduledir)
-	rm -f $(scwm_moduledir)/liboverlay-plane.la
-	$(LN_S) $(pkglibdir)/liboverlay-plane.la $(scwm_moduledir)/liboverlay-plane.la
+	$(mkinstalldirs) $(scwm_schemedir)
+	rm -f $(scwm_schemedir)/liboverlay-plane.la
+	$(LN_S) $(pkglibdir)/liboverlay-plane.la $(scwm_schemedir)/liboverlay-plane.la
 
 uninstall-local:
-	rm -f $(scwm_moduledir)/liboverlay-plane.la
+	rm -f $(scwm_schemedir)/liboverlay-plane.la

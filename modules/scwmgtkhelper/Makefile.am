@@ -28,9 +28,9 @@ ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCW
 
 
 install-data-hook:
-	$(mkinstalldirs) $(scwm_moduledir)
+	$(mkinstalldirs) $(scwm_schemedir)
 	rm -f $(scwm_moduledir)/libscwmgtkhelper.la
-	$(LN_S) $(pkglibdir)/libscwmgtkhelper.la $(scwm_moduledir)/libscwmgtkhelper.la
+	$(LN_S) $(pkglibdir)/libscwmgtkhelper.la $(scwm_schemedir)/libscwmgtkhelper.la
 
 uninstall-local:
-	rm -f $(scwm_moduledir)/libscwmgtkhelper.la
+	rm -f $(scwm_schemedir)/libscwmgtkhelper.la

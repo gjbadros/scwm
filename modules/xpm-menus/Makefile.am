@@ -25,9 +25,9 @@ SUFFIXES = .x
 ETAGS_ARGS = --regex='/[ \t]*SCM_SYMBOL[ \t]*(\([^,]*\)/\1/' --regex='/[ \t]*SCWM_PROC[ \t]*(\([^,]*\),[^,]*/\1/'
 
 install-data-hook:
-	$(mkinstalldirs) $(scwm_moduledir)
-	rm -f $(scwm_moduledir)/libxpm-menus.la
-	$(LN_S) $(pkglibdir)/libxpm-menus.la $(scwm_moduledir)/libxpm-menus.la
+	$(mkinstalldirs) $(scwm_schemedir)
+	rm -f $(scwm_schemedir)/libxpm-menus.la
+	$(LN_S) $(pkglibdir)/libxpm-menus.la $(scwm_schemedir)/libxpm-menus.la
 
 uninstall-local:
-	rm -f $(scwm_moduledir)/libxpm-menus.la
+	rm -f $(scwm_schemedir)/libxpm-menus.la
