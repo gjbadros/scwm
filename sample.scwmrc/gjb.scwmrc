@@ -83,7 +83,7 @@
 		  message-window animated-iconify
 		  modifier-key-bindings window-selection
 		  group preferences gnome-hints
-		  send-string 
+		  send-string quote
 		  property-respond
 		  esdsound dir-focus
 		  )
@@ -1263,6 +1263,7 @@ union of all other window managers!
 
 
 (bind-key 'all "H-w" describe-key)
+(bind-key 'all "H-comma" describe-mouse)
 (bind-key 'all "C-M-S-g" interactive-set-window-gravity!)
 
 (bind-key 'all "C-A-S-t" toggle-titlebar-in-place)
@@ -1695,6 +1696,9 @@ union of all other window managers!
 (bind-key 'all "C-S-M-m" dir-focus-south)
 (bind-key 'all "C-S-M-comma" dir-focus-north)
 (bind-key 'all "C-S-M-period" dir-focus-east)
+
+(bind-key 'all "H-q" quote-key-event)
+(bind-key 'all "H-m" quote-mouse-event)
 
 ;; send 100 presses of button 1
 ;; for benchmarking amaya's reload
