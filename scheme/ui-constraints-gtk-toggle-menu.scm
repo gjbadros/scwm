@@ -44,7 +44,7 @@
 ;; PRIVATE variables held for the module
 
 (define gtk-toggle-window (gtk-window-new 'toplevel))
-(define gtk-instance-box (gtk-vbox-new #t 0))
+(define gtk-instance-box (gtk-vbox-new #t 1))
 
 (define gtk-toggle-close? #f)
 
@@ -80,9 +80,11 @@
 	 (name (mproc n))
 	 (win-list (ui-constraint-windows n))
 	 (enabled? (ui-constraint-enabled? n))
-	 (tbl (gtk-table-new 1 3 #f))
+	 (tbl (gtk-table-new 1 2 #f))
 	 (lbl (gtk-label-new name))
-	 (bt1 (gtk-check-button-new-with-label "Enabled?"))
+	 (aln (gtk-alignment-new 1 .5 0 0))
+	 (buts (gtk-hbox-new #f 3))
+	 (bt1 (gtk-check-button-new))
 	 (bt2 (gtk-button-new-with-label "Delete")))
     (gtk-toggle-button-set-state bt1 enabled?)
     (ui-constraint-add-enable-hook n (lambda (e) (if allow-enable-hooks? 
@@ -112,9 +114,11 @@
 			(lambda ()
 			  (undraw-constraint n)
 			  (unflash-windows-of-constraint win-list)))
+    (gtk-box-pack-start buts bt1 #f #f 2)
+    (gtk-box-pack-start buts bt2 #f #f 2)
+    (gtk-container-add aln buts)
     (gtk-table-attach tbl lbl 0 1 0 1)
-    (gtk-table-attach tbl bt1 1 2 0 1)
-    (gtk-table-attach tbl bt2 2 3 0 1)
+    (gtk-table-attach tbl aln 1 2 0 1)
     (gtk-container-add box tbl)
     (gtk-widget-show-all tbl)
     (ui-constraint-set-button! n tbl)
@@ -166,41 +170,40 @@
 ;; sets up the toggle menu for use
 ;; creates
 
+(define ui-box-spacing 4)
+(define ui-box-border 5)
+
 (define*-public (initialize-gtk-toggle-menu #&optional (close? #f))
   "Creates the GTK resources for the gtk-toggle-menu.
 To display the toggle menu, call ui-constraint-gtk-toggle-menu."
   (let* ((toplevel gtk-toggle-window)
-	 (vboxen (gtk-vbutton-box-new))
 	 (vboxcn gtk-instance-box)
 	 (vbox (gtk-vbox-new #f 3))
 	 (cn-buttons (map (lambda (n) (make-cn-widget n)) 
 			  global-constraint-instance-list))
 	 (disable (gtk-button-new-with-label "Disable All"))
 	 (enable (gtk-button-new-with-label "Enable All"))
+	 (hbuttonbox (gtk-hbutton-box-new))
 	 (close (gtk-button-new-with-label "Close")))
-    (gtk-window-set-title toplevel "ScwmUIConstraintsList")
+    (gtk-window-set-title toplevel "Constraint investigator")
+    (gtk-box-set-spacing vbox ui-box-spacing)
+    (gtk-container-border-width vbox ui-box-border)
     (add-hook! constraint-add-hook
      (lambda (cn) (make-cn-widget cn)))
     (add-hook! constraint-delete-hook
      (lambda (cn) (remove-cn-button cn)))
     (set! gtk-toggle-close? close?)
-;;    (gtk-button-box-set-spacing vboxcn 0)
-;;    (gtk-button-box-set-child-ipadding vboxcn 0 0)
-;;    (gtk-button-box-set-child-size vboxcn 300 20)
     (gtk-container-add vbox vboxcn)
-    (gtk-button-box-set-spacing vboxen 0)
-    (gtk-button-box-set-child-ipadding vboxen 0 0)
-    (gtk-button-box-set-child-size vboxen 300 20)
-    (gtk-container-add vboxen disable)
+    (gtk-container-add hbuttonbox disable)
+    (gtk-container-add hbuttonbox enable)
+    (gtk-container-add hbuttonbox close)
     (gtk-signal-connect disable "clicked" 
 			(lambda () (disable-all-constraints) 
 				(if close? (gtk-widget-hide toplevel))))
-    (gtk-container-add vboxen enable)
     (gtk-signal-connect enable "clicked" 
 			(lambda () (enable-all-constraints) 
 				(if close? (gtk-widget-hide toplevel))))
-    (gtk-container-add vbox vboxen)
-    (gtk-container-add vbox close)
+    (gtk-container-add vbox hbuttonbox)
     (gtk-signal-connect close "clicked"	(lambda () (gtk-widget-hide toplevel)))
     (gtk-container-add toplevel vbox)
     (gtk-widget-show-all vbox)
