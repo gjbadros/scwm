@@ -526,7 +526,7 @@ way if not specified.
 Return #t if WIN is "sticky", #f otherwise.
 See `stick-icon' and `stick'. WIN defaults to the window context in
 the usual way if not specified.
-[From scwm/window.c:2940]
+[From scwm/window.c:2938]
 
 
 (iconified?  #&optional win)
@@ -1444,13 +1444,13 @@ Set the face for the border In the current decor.
 Use ACTIVE as the face for the border when the window is active. Use
 INACTIVE when the window is inactive. INACTIVE defaults to the same as
 ACTIVE when not specified.
-[From scwm/face.c:966]
+[From scwm/face.c:991]
 
 
 (set-border-width! width #&optional win)
 Set the border width of WIN's border to WIDTH pixels.
 WIN defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2851]
+[From scwm/window.c:2849]
 
 
 (set-button-face! button active-up #&optional active-down inactive)
@@ -1463,7 +1463,7 @@ ACTIVE-UP when not specified. Note that ACTIVE-DOWN will magically
 reverse the sense of the relief flag, so if the button is raised in
 the ACTIVE-UP state, it will be sunk in the ACTIVE-DOWN state by
 default.
-[From scwm/face.c:872]
+[From scwm/face.c:897]
 
 
 (set-button-mwm-flag! button flag)
@@ -1471,7 +1471,7 @@ Specify the Mwm flag for BUTTON.
 If FLAG is #t, the button's relief pattern (if any) will appear to
 reverse in depth sense (i.e., flip from sunken in to extruding out)
 when the window is maximized.
-[From scwm/face.c:933]
+[From scwm/face.c:958]
 
 
 (set-click-delay! usec)
@@ -1525,7 +1525,7 @@ If FLAG is #t, then if WIN is transient it will be fully
 decorated. Transient windows that are not fully decorated will be
 given only a border and no titlebar regardless of other settings. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3401]
+[From scwm/window.c:3399]
 
 
 (set-desk-size! width height)
@@ -1617,7 +1617,7 @@ Set the window-manager-overriding property for WIN to boolean FLAG.
 If #t, the icon specified for WIN by the user through scwm will override an
 application-provided icon.  WIN defaults to the window context in the usual
 way if not specified.
-[From scwm/window.c:3233]
+[From scwm/window.c:3231]
 
 
 (set-hilight-background! bg)
@@ -1644,7 +1644,7 @@ If FLAG is #t, the hints, which indicate what operations should be
 allowed on a window, will be ignored for WIN.  If FLAG is #f, the hints will
 be honoured. WIN defaults to the window context in the usual way if
 not specified.
-[From scwm/window.c:3384]
+[From scwm/window.c:3382]
 
 
 (set-icon! image #&optional win)
@@ -1652,7 +1652,7 @@ Set the image to use for the icon of WIN to IMAGE.
 As usual, an image object or a filename string may be given. #f May
 also be specified, indicating no icon image. WIN defaults to the window
 context in the usual way if not specified.
-[From scwm/window.c:3279]
+[From scwm/window.c:3277]
 
 
 (set-icon-box! x y w h #&optional win)
@@ -1660,7 +1660,7 @@ Set the icon box in which WIN's icon will be placed.
 This set the box to the rectangle at coordinates X, Y with width W and
 height H. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:2953]
+[From scwm/window.c:2951]
 
 
 (set-icon-font! font)
@@ -1671,7 +1671,7 @@ Set the font used for drawing icon titles to FONT.
 (set-icon-title! flag #&optional win)
 Set the visibility of WIN's icon title according to FLAG. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3216]
+[From scwm/window.c:3214]
 
 
 (set-lenience! flag #&optional win)
@@ -1681,7 +1681,7 @@ when asked, even if the window claims according to hints that it
 cannot receive the input focus, according to the boolean value
 FLAG. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3516]
+[From scwm/window.c:3514]
 
 
 (set-menu-background! bg)
@@ -1735,7 +1735,7 @@ being moved or resized interactively.
 Set the image to use for the mini-icon of WIN to IMAGE. As
 usual, an image object or a filename string may be given. WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3332]
+[From scwm/window.c:3330]
 
 
 (set-mouse-focus-click-raises! flag)
@@ -1750,7 +1750,7 @@ Set the mwm-border style flag of WIN to boolean FLAG.
 The Mwm style has shallower bevels than the default scwm/fvwm2 style.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3172]
+[From scwm/window.c:3170]
 
 
 (set-mwm-buttons! flag #&optional win)
@@ -1758,14 +1758,14 @@ Set the mwm-buttons flag of WIN to boolean FLAG.
 The mwm-buttons flag controls whether any of this window's
 flags obey their mwm-flags. See `set-button-mwm-flag!'. WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3156]
+[From scwm/window.c:3154]
 
 
 (set-mwm-decor-hint! flag #&optional win)
 Set whether or not Motif decoration hints are used for WIN.
 If FLAG is #t, the Mwm decor hint will be given for WIN.  WIN defaults
 to the window context in the usual way if not specified.
-[From scwm/window.c:3417]
+[From scwm/window.c:3415]
 
 
 (set-mwm-func-hint! flag #&optional win)
@@ -1773,14 +1773,14 @@ Set whether or not Motif function hints are used for WIN.
 If FLAG is #t, the Motif function hints are respected for WIN.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3431]
+[From scwm/window.c:3429]
 
 
 (set-OL-decor-hint! flag #&optional win)
 Determine whether or not to respect Open Look decoration hints.
 If FLAG is #t, the decoration hints will be respected for WIN. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3463]
+[From scwm/window.c:3461]
 
 
 (set-PPosition-hint! flag #&optional win)
@@ -1790,7 +1790,7 @@ matters when using the default placement procedure. Some programs
 allegedly set this hint to a useless value like (0,0) always, so
 ignoring it is recommended. WIN defaults to the window context in the
 usual way if not specified.
-[From scwm/window.c:3446]
+[From scwm/window.c:3444]
 
 
 (set-random-placement! flag #&optional win)
@@ -1798,7 +1798,7 @@ Set the random-placement flag of WIN to boolean FLAG.
 This flag only matters if the default placement procedure is
 being used. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3101]
+[From scwm/window.c:3099]
 
 
 (set-rubber-band-mask! value)
@@ -1820,7 +1820,7 @@ is #t, the icon will be displayed, if #f, it will not appear when the
 window is iconified (it will still be in the window list, of course).
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3260]
+[From scwm/window.c:3258]
 
 
 (set-skip-mapping! flag #&optional win)
@@ -1828,7 +1828,7 @@ Set or reset whether scwm should not change desktops on a map.
 This only affect the behaviour upon initial mapping of WIN. If FLAG is
 #t, the virtual desktop will not be changed when WIN is mapped.  WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:3501]
+[From scwm/window.c:3499]
 
 
 (set-smart-placement! flag #&optional win)
@@ -1836,7 +1836,7 @@ Set the smart-placement flag of WIN to boolean FLAG.
 This flag only matters if the default placement procedure is
 being used. WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3116]
+[From scwm/window.c:3114]
 
 
 (set-smart-placement-is-really-smart! flag)
@@ -1850,7 +1850,7 @@ the window's smart-placement flag is on.
 (set-start-on-desk! desk #&optional win)
 Make WIN start on DESK when first mapped. WIN defaults to the
 window context in the usual way if not specified.
-[From scwm/window.c:3477]
+[From scwm/window.c:3475]
 
 
 (set-title-face! active-up #&optional active-down inactive)
@@ -1862,7 +1862,7 @@ inactive. Both INACTIVE and ACTIVE-DOWN default to ACTIVE-UP when not
 specified. Note that ACTIVE-DOWN will magically reverse the sense of
 the relief flag, so if your titlebar bar is raised in the ACTIVE-UP
 state, it will be sunk in the ACTIVE-DOWN state by default.
-[From scwm/face.c:832]
+[From scwm/face.c:857]
 
 
 (set-title-font! font)
@@ -1895,7 +1895,7 @@ draw most of the window decorations, along with the relief colors
 generated from it, which are used to draw the window's 3-D bevels.
 WIN defaults to the window context in the usual way if not
 specified.
-[From scwm/window.c:3071]
+[From scwm/window.c:3069]
 
 
 (set-window-button! n flag #&optional win)
@@ -1903,7 +1903,7 @@ Set the visibility of button number N on window WIN.
 If FLAG is #t, the button will be visible, otherwise it won't be
 drawn.  WIN defaults to the window context in the usual way if not
 specified. (Note: this code may be broken right now.)
-[From scwm/window.c:3131]
+[From scwm/window.c:3129]
 
 
 (set-window-colors!)
@@ -1920,7 +1920,7 @@ Set WIN's decor to DECOR, updating it's decorations appropriately.
 Set the focus style of WIN to SYM. SYM may be 'click, 'mouse,
 'sloppy or 'none. WIN defaults to the window context in the usual way
 if not specified.
-[From scwm/window.c:3013]
+[From scwm/window.c:3011]
 
 
 (set-window-foreground! fg #&optional win)
@@ -1928,7 +1928,7 @@ Set the foreground color of WIN to FG. This color is used to
 draw the title text currently. In the future, it may have other uses
 as well. WIN defaults to the window context in the usual way
 if not specified.
-[From scwm/window.c:3048]
+[From scwm/window.c:3046]
 
 
 (set-window-property! win prop val)
@@ -1941,7 +1941,7 @@ particular fields in the window structure. Also, a
 window-property-change-hook mechanism will soon be implemented for
 notification of all window property changes. This is not yet done. The
 window property primitives should be considered in flux.
-[From scwm/window.c:3532]
+[From scwm/window.c:3530]
 
 
 (set-window-text-property win propname value)
@@ -2051,7 +2051,7 @@ specified.
 (stick-icon  #&optional win)
 Cause WIN's icon to become "sticky". See `stick'. WIN
 defaults to the window context in the usual way if not specified.
-[From scwm/window.c:2901]
+[From scwm/window.c:2899]
 
 
 (sticky?  #&optional win)
@@ -2198,7 +2198,7 @@ the usual way if not specified.
 Cause WIN's icon to no longer by "sticky". See `stick-icon'
 and `stick'. WIN defaults to the window context in the usual way if
 not specified.
-[From scwm/window.c:2920]
+[From scwm/window.c:2918]
 
 
 (viewport-position)
@@ -2320,7 +2320,7 @@ specified.
 Get the icon image being used for WIN.
 Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified.
-[From scwm/window.c:3315]
+[From scwm/window.c:3313]
 
 
 (window-icon-title  #&optional win)
@@ -2346,7 +2346,7 @@ Display information about a window in a message window.
 Get the mini-icon image being used for WIN.
 Returns #f if none is being used. WIN defaults to the window context
 in the usual way if not specified.
-[From scwm/window.c:3367]
+[From scwm/window.c:3365]
 
 
 (window-position  #&optional win)
@@ -2366,7 +2366,7 @@ the window structure. Also, a window-property-change-hook mechanism
 will soon be implemented for notification of all window property
 changes. This is not yet done. The window property primitives should
 be considered in flux.
-[From scwm/window.c:3567]
+[From scwm/window.c:3565]
 
 
 (window-resource  #&optional win)

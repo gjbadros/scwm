@@ -1837,7 +1837,7 @@ the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2940 </para> </refsect1>
+  at line 2938 </para> </refsect1>
 </refentry>
 
 <refentry id="iconified-p">
@@ -4720,7 +4720,7 @@ Use <parameter>active</parameter> as the face for the border when the window is 
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
-  at line 966 </para> </refsect1>
+  at line 991 </para> </refsect1>
 </refentry>
 
 <refentry id="set-border-width-x">
@@ -4741,7 +4741,7 @@ Use <parameter>active</parameter> as the face for the border when the window is 
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2851 </para> </refsect1>
+  at line 2849 </para> </refsect1>
 </refentry>
 
 <refentry id="set-button-face-x">
@@ -4769,7 +4769,7 @@ default.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
-  at line 872 </para> </refsect1>
+  at line 897 </para> </refsect1>
 </refentry>
 
 <refentry id="set-button-mwm-flag-x">
@@ -4792,7 +4792,7 @@ when the window is maximized.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
-  at line 933 </para> </refsect1>
+  at line 958 </para> </refsect1>
 </refentry>
 
 <refentry id="set-click-delay-x">
@@ -4951,7 +4951,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3401 </para> </refsect1>
+  at line 3399 </para> </refsect1>
 </refentry>
 
 <refentry id="set-desk-size-x">
@@ -5223,7 +5223,7 @@ way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3233 </para> </refsect1>
+  at line 3231 </para> </refsect1>
 </refentry>
 
 <refentry id="set-hilight-background-x">
@@ -5310,7 +5310,7 @@ not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3384 </para> </refsect1>
+  at line 3382 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-x">
@@ -5333,7 +5333,7 @@ context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3279 </para> </refsect1>
+  at line 3277 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-box-x">
@@ -5356,7 +5356,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2953 </para> </refsect1>
+  at line 2951 </para> </refsect1>
 </refentry>
 
 <refentry id="set-icon-font-x">
@@ -5397,7 +5397,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3216 </para> </refsect1>
+  at line 3214 </para> </refsect1>
 </refentry>
 
 <refentry id="set-lenience-x">
@@ -5422,7 +5422,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3516 </para> </refsect1>
+  at line 3514 </para> </refsect1>
 </refentry>
 
 <refentry id="set-menu-background-x">
@@ -5611,7 +5611,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3332 </para> </refsect1>
+  at line 3330 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mouse-focus-click-raises-x">
@@ -5656,7 +5656,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3172 </para> </refsect1>
+  at line 3170 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-buttons-x">
@@ -5679,7 +5679,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3156 </para> </refsect1>
+  at line 3154 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-decor-hint-x">
@@ -5701,7 +5701,7 @@ to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3417 </para> </refsect1>
+  at line 3415 </para> </refsect1>
 </refentry>
 
 <refentry id="set-mwm-func-hint-x">
@@ -5724,7 +5724,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3431 </para> </refsect1>
+  at line 3429 </para> </refsect1>
 </refentry>
 
 <refentry id="set-OL-decor-hint-x">
@@ -5746,7 +5746,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3463 </para> </refsect1>
+  at line 3461 </para> </refsect1>
 </refentry>
 
 <refentry id="set-PPosition-hint-x">
@@ -5771,7 +5771,7 @@ usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3446 </para> </refsect1>
+  at line 3444 </para> </refsect1>
 </refentry>
 
 <refentry id="set-random-placement-x">
@@ -5794,7 +5794,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3101 </para> </refsect1>
+  at line 3099 </para> </refsect1>
 </refentry>
 
 <refentry id="set-rubber-band-mask-x">
@@ -5861,7 +5861,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3260 </para> </refsect1>
+  at line 3258 </para> </refsect1>
 </refentry>
 
 <refentry id="set-skip-mapping-x">
@@ -5884,7 +5884,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3501 </para> </refsect1>
+  at line 3499 </para> </refsect1>
 </refentry>
 
 <refentry id="set-smart-placement-x">
@@ -5907,7 +5907,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3116 </para> </refsect1>
+  at line 3114 </para> </refsect1>
 </refentry>
 
 <refentry id="set-smart-placement-is-really-smart-x">
@@ -5951,7 +5951,7 @@ window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3477 </para> </refsect1>
+  at line 3475 </para> </refsect1>
 </refentry>
 
 <refentry id="set-title-face-x">
@@ -5978,7 +5978,7 @@ state, it will be sunk in the <parameter>active-down</parameter> state by defaul
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/face.c"><filename>scwm/face.c</filename></ulink>
-  at line 832 </para> </refsect1>
+  at line 857 </para> </refsect1>
 </refentry>
 
 <refentry id="set-title-font-x">
@@ -6086,7 +6086,7 @@ specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3071 </para> </refsect1>
+  at line 3069 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-button-x">
@@ -6109,7 +6109,7 @@ specified. (<parameter>n</parameter>ote: this code may be broken right now.)
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3131 </para> </refsect1>
+  at line 3129 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-colors-x">
@@ -6171,7 +6171,7 @@ if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3013 </para> </refsect1>
+  at line 3011 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-foreground-x">
@@ -6194,7 +6194,7 @@ if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3048 </para> </refsect1>
+  at line 3046 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-property-x">
@@ -6222,7 +6222,7 @@ window property primitives should be considered in flux.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3532 </para> </refsect1>
+  at line 3530 </para> </refsect1>
 </refentry>
 
 <refentry id="set-window-text-property">
@@ -6587,7 +6587,7 @@ defaults to the window context in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2901 </para> </refsect1>
+  at line 2899 </para> </refsect1>
 </refentry>
 
 <refentry id="sticky-p">
@@ -7094,7 +7094,7 @@ not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 2920 </para> </refsect1>
+  at line 2918 </para> </refsect1>
 </refentry>
 
 <refentry id="viewport-position">
@@ -7516,7 +7516,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3315 </para> </refsect1>
+  at line 3313 </para> </refsect1>
 </refentry>
 
 <refentry id="window-icon-title">
@@ -7602,7 +7602,7 @@ in the usual way if not specified.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3367 </para> </refsect1>
+  at line 3365 </para> </refsect1>
 </refentry>
 
 <refentry id="window-position">
@@ -7652,7 +7652,7 @@ be considered in flux.
   <refsect1>
   <title>Implementation Notes</title>
   <para> Defined in <ulink url="file:///scratch/gjb/scwm/scwm/window.c"><filename>scwm/window.c</filename></ulink>
-  at line 3567 </para> </refsect1>
+  at line 3565 </para> </refsect1>
 </refentry>
 
 <refentry id="window-resource">
@@ -8786,32 +8786,45 @@ which may be chained arbitrarily). Nearly all flags may be used for
 button faces. Exceptions, as well as the flags that may be used for
 title and border faces, are indicated below.
 
-
-  Key               | Possible values      | Explanation
-  ------------------|----------------------|----------------
-  'justify          | 'left 'right 'center | How should the contents of the
-                    |                      | face (pixmap, relief pattern, etc)
-                    |                      | be justified?
-  'vertical-justify | 'top 'bottom 'center | How should the contents of the
-                    |                      | face (pixmap, relief pattern, etc)
-                    |                      | be justified vertically?
-  'relief           | 'flat 'sunk 'raised  | Should the face appear flat, 
-                    |                      | raised or sunk? This is the only
-                    |                      | face flag that may be used for 
-                    |                      | titles. It may be used for buttons
-                    |                      | as well, of course.
-  'use-style-of     | 'title 'border <literal>#f</literal>    | Before handling this faces specs,
-                    |                      | possibly apply the faces of the
-                    |                      | title or the border first.
-  'hidden-handles   | <literal>#t</literal> <literal>#f</literal>                | This flag may only be used for
-                    |                      | border faces; it indicates that
-                    |                      | the corner <link linkend="handles"><function>handles</function></link> of a window
-                    |                      | should not be visually separated.
-  'no-inset         | <literal>#t</literal> <literal>#f</literal>                | This flag may only be used for
-                    |                      | border faces; it indicates that
-                    |                      | the border should be relieved only
-                    |                      | on the outside, not on the inside.
-                    |                      | This gives a Win9x-like effect.
+<table colsep="1" rowsep="0" frame="all">
+<title>Face Flags</title>
+<tgroup align="char" cols="3">
+<thead><row>
+ <entry>Key</entry>  <entry>Possible values</entry>  <entry>Explanation</entry>
+</row></thead>
+<tbody><row>
+  <entry>'justify</entry>
+     <entry>'left 'right 'center</entry>
+     <entry>Horizontal justification for the face (pixmap, relief pattern, etc.)</entry>
+  </row>
+  <row>
+  <entry>'vertical-justify</entry>
+     <entry>'top 'bottom 'center</entry>
+     <entry>Vertical justification for the face (pixmap, relief pattern, etc.)</entry>
+  </row>
+  <row>
+  <entry>'relief</entry>
+     <entry>'flat 'sunk 'raised</entry>
+     <entry>Use for titles and buttons to control appearance (only flag for titles)</entry>
+  </row>
+  <row>
+  <entry>'use-style-of</entry>
+     <entry>'title 'border <literal>#f</literal></entry>
+     <entry>Inherit the face flags from the title or border first, then add these flags</entry>
+  </row>
+  <row>
+  <entry>'hidden-handles</entry>
+     <entry><literal>#t</literal> <literal>#f</literal></entry>
+     <entry>Set visibility of the corner handles -- only used for border faces</entry>
+  </row>
+  <row>
+  <entry>'no-inset</entry>
+     <entry><literal>#t</literal> <literal>#f</literal></entry>
+     <entry>Win-9x-like effect of relieving borders on outside instead of inside</entry>
+  </row>
+</tbody>
+</tgroup>
+</table>
 
     </para></sect1>
     <sect1 id="Face-Specification-flags"><title>Face Specification flags</title><para>
@@ -8825,35 +8838,53 @@ but not all, of the drawing area.
   All specs may be used for button faces. All but non-tiled pixmaps may
 be used for titlebars, and only tiled pixmaps may be used for borders.
 
-  Format                                    : Explanation
-  ------------------------------------------:----------------------------
- '(relief-pattern ((X Y BOOL) ...))   : Draw a relief pattern using
-                                            : the list of triples, each of 
-                                            : which indicates a pair of X,Y
-                                            : coordinates given as a 
-                                            : percentage of the button size,
-                                            : and a boolean value indicating
-                                            : whether to use the lighter or
-                                            : darker color. This spec is 
-                                            : partially destructive.
- '(solid COLOR)                             : Use COLOR as the color for 
-                                            : this element; fully destructive.
- '(gradient (horizontal|vertical            : Draw a gradient in this element.
-    NCOLORS (COLOR PERCENT)* FINAL))        : The gradient may be horizontal
-                                            : or vertical. The number of colors
-                                            : is specified, followed by a 
-                                            : number of colors with percentages
-                                            : and a final color. The 
-                                            : percentages must add to 100.
-                                            : Fully destructive.
- '(pixmap mini-icon|IMAGE|                  : Specify a pixmap to use, either
-   (tiled IMAGE))                           : the window's mini-icon, an image
-                                            : object or image specifier string,
-                                            : or a list of tiled and an image,
-                                            : indicating the image should be
-                                            : tiled. Partially destructive, 
-                                            : except when tiled, which makes 
-                                            : it fully destructive.  
+
+<table colsep="1" rowsep="0" frame="all">
+<title>Face Specification Flags</title>
+<tgroup align="char" cols="2">
+<thead><row>
+ <entry>Format</entry>  <entry>Explanation</entry>
+</row></thead>
+<tbody><row>
+  <entry><paragraph><informalexample>
+     '(relief-pattern ((X Y BOOL) ...))
+       </informalexample></paragraph>
+  </entry><entry>
+      Draw a relief pattern using the list of triples, each of which
+indicates a pair of X,Y coordinates given as a percentage of the
+button size, and a boolean value indicating whether to use the lighter
+or darker color. This spec is partially destructive.
+  </entry></row>
+  <row>
+  <entry><paragraph><informalexample>
+     '(solid COLOR)
+         </informalexample></paragraph>
+  </entry><entry>
+      Use COLOR as the color for this element; fully destructive.
+  </entry></row>
+  <row>
+  <entry><paragraph><informalexample>
+     '(gradient {horizontal|vertical} NCOLORS {COLOR_PERCENT}* FINAL)
+         </informalexample></paragraph>
+  </entry><entry>
+     Draw a gradient in this element.  The gradient may be horizontal or
+vertical. The number of colors is specified, followed by a number of
+colors with percentages and a final color. The percentages must add to
+100.
+  </entry></row>
+  <row>
+  <entry><paragraph><informalexample>
+      '(pixmap {'mini-icon|['tiled] IMAGE})
+         </informalexample></paragraph>
+  </entry><entry>
+      Specify a pixmap to use, either the window's mini-icon, an image
+object or image specifier string, or a list of tiled and an image,
+indicating the image should be tiled. Partially destructive, except
+when tiled, which makes it fully destructive.
+  </entry></row>
+</tbody>
+</tgroup>
+</table>
 
     </para></sect1>
     <sect1 id="Faces"><title>Faces</title><para>
