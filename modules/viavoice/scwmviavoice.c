@@ -16,8 +16,10 @@
 #include "scwmpaths.h"
 #include "callbacks.h"
 #include "arg_unused.h"
+#include "validate.h"
 
 #include <guile/gh.h>
+#include "guile-compat.h"
 #include <gtk/gtk.h>
 
 
@@ -47,11 +49,11 @@ typedef struct
 
 /* A couple of callbacks - for the exit and mic buttons     */
 static void ConnectStuff ( MyClientData * );
-static void TurnMicOn    ( );
-static void TurnMicOff   ( );
 
 
 static Bool    fMicOn = False;
+static Bool    fConnected = False;
+static Bool    fOpened = False;
 
 /* Use whatever default speech user info there is..         */
 static char   userid   [ 80 ] = SM_USE_CURRENT;
@@ -60,8 +62,9 @@ static char   taskid   [ 80 ] = SM_USE_CURRENT;
 
 
 
-SCWM_HOOK(vv_recognition_hook,"vv-recognition-hook", 2);
-/** This hook is invoked when ViaVoice recognizes a phrase. */
+SCWM_HOOK(vv_recognition_hook,"vv-recognition-hook", 3);
+/** This hook is invoked when ViaVoice recognizes a phrase. 
+Called with 3 arguments: (was-accepted? phrase-string annotations-vector) */
 
 
 static
@@ -81,35 +84,72 @@ int ViaVoiceNotifier(int socket_handle, int (*recv_fn)(), void *recv_data,
 }
 
 
+/* These callbacks handle the various messages that the speech       */
+/* engine might be sending back                                      */
+SmHandler ConnectCB     ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler DisconnectCB  ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler SetCB         ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler MicOnCB       ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler MicOffCB      ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler DefineGrammarCB ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler DefineVocabCB ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler EnableVocabCB ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler GetNextWordCB ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler RecoWordCB    ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler RecoPhraseCB  ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler UtteranceCB   ( SM_MSG reply, caddr_t client, caddr_t call_data );
+SmHandler FocusGrantedCB   ( SM_MSG reply, caddr_t client, caddr_t call_data );
+
+SCM ConnectCB_proc = SCM_BOOL_F;
+SCM DisconnectCB_proc = SCM_BOOL_F;
+SCM SetCB_proc = SCM_BOOL_F;
+SCM MicOnCB_proc = SCM_BOOL_F;
+SCM MicOffCB_proc = SCM_BOOL_F;
+SCM DefineGrammarCB_proc = SCM_BOOL_F;
+SCM DefineVocabCB_proc = SCM_BOOL_F;
+SCM EnableVocabCB_proc = SCM_BOOL_F;
+SCM GetNextWordCB_proc = SCM_BOOL_F;
+SCM RecoWordCB_proc = SCM_BOOL_F;
+SCM RecoPhraseCB_proc = SCM_BOOL_F;
+SCM UtteranceCB_proc = SCM_BOOL_F;
+SCM FocusGrantedCB_proc = SCM_BOOL_F;
+
+
+static
+void
+vv_scwm_cb(SCM proc, SM_MSG reply, caddr_t ARG_UNUSED(client), caddr_t ARG_UNUSED(calldata) )
+{
+  if (gh_procedure_p(proc)) {
+    scwm_safe_apply(proc, gh_list(gh_int2scm((int) reply), SCM_UNDEFINED));
+  }
+}
+
+static
+int DisconnectStuff( MyClientData * MyData )
+{
+  int smc = 0;
+  SmArg smargs[30];
+  SmSetArg ( smargs [ smc ], SmNuserId,       userid    );  smc++;
+  SmSetArg ( smargs [ smc ], SmNenrollId,     enrollid  );  smc++;
+  SmSetArg ( smargs [ smc ], SmNtask,         taskid    );  smc++;
+  SmSetArg ( smargs [ smc ], SmNrecognize,    True      );  smc++;
+  SmSetArg ( smargs [ smc ], SmNoverrideLock, True      );  smc++;
+
+  return SmDisconnect ( smc, smargs, SmAsynchronous );
+}
+
+
 static
 void ConnectStuff ( MyClientData * MyData )
 {
-  static int first = True;
   int        rc;
   int        smc;
   SmArg      smargs [ 30 ];
   int input_id;
 
-  /*-------------------------------------------------------------------*/
-  /* These callbacks handle the various messages that the speech       */
-  /* engine might be sending back                                      */
-  /*-------------------------------------------------------------------*/
-  SmHandler ConnectCB     ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler DisconnectCB  ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler SetCB         ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler MicOnCB       ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler MicOffCB      ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler DefineGrammarCB ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler DefineVocabCB ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler EnableVocabCB ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler GetNextWordCB ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler RecoWordCB    ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler RecoPhraseCB  ( SM_MSG reply, caddr_t client, caddr_t call_data );
-  SmHandler UtteranceCB   ( SM_MSG reply, caddr_t client, caddr_t call_data );
-
   scwm_msg(INFO,"ViaVoice","ConnectStuff invoked");
 
-  if ( first ) {
+  if ( !fOpened ) {
     smc = 0;
     SmSetArg ( smargs [ smc ], SmNapplicationName,      "Scwm" );  smc++;
     SmSetArg ( smargs [ smc ], SmNexternalNotifier,     ViaVoiceNotifier ); smc++;
@@ -138,8 +178,9 @@ void ConnectStuff ( MyClientData * MyData )
     SmAddCallback ( SmNrecognizedWordCallback,      RecoWordCB,      NULL );
     SmAddCallback ( SmNrecognizedPhraseCallback,    RecoPhraseCB,    (void *)MyData);
     SmAddCallback ( SmNutteranceCompletedCallback,  UtteranceCB,     NULL );
+    SmAddCallback ( SmNfocusGrantedCallback,  FocusGrantedCB,     NULL );
 
-    first = False;
+    fOpened = True;
   }
 
   /*-----------------------------------------------------------------*/
@@ -159,91 +200,38 @@ void ConnectStuff ( MyClientData * MyData )
 }
 
 
-
 static
-void TurnMicOn ( )
-{
-  int     rc;
-
-  scwm_msg(INFO,"ViaVoice","TurnMicOn called" );
-
-  /* Send a request to tell the engine to turn the mic on.  The reply  */
-  /* comes back to the MicOnCB                                         */
-  rc = SmMicOn ( SmAsynchronous );
-
-  scwm_msg(INFO,"ViaVoice","TurnMicOn: SmMicOn() rc = %d", rc );
-}
-
-
-static
-void TurnMicOff ( )
-{
-  int     rc;
-
-  scwm_msg(INFO,"ViaVoice","TurnMicOff called");
-
-  /* Same as above, but turning the mic off...                         */
-  rc = SmMicOff( SmAsynchronous );
-
-  scwm_msg(INFO,"ViaVoice","TurnMicOff: SmMicOff() rc = %d", rc );
-}
-
-
-static
-int DoSimpleGrammar ( )
-{
-  int    rc;
-  char   grammar [ 512 ];
-  char   currdir [ 512 ];
-  char * cp;
-  
-  /* The grammar that we're using should be in the same directory as
-     the program was run from - the reco engine expects a complete path
-     to it (or a path relative to where the engine is run from) so we
-     build it using getcwd() */
-  cp = (char *) getcwd ( currdir, sizeof ( currdir ) - 1 );
-
-  sprintf( grammar, "%s/scwmgrammar.fsg", currdir );
-
-  scwm_msg(INFO,"ViaVoice","DoSimpleGrammar: grammar is %s\n", grammar );
-  /* And now just tell the engine where the grammar is and let it do
-     its thing.  The DefineGrammarCB will get the results back.. */
-  rc = SmDefineGrammar ( "ScwmGrammar", grammar, 0, SmAsynchronous );
-  
-  scwm_msg(INFO,"ViaVoice","DoSimpleGrammar: SmDefineGrammar rc = %d\n", rc );
-  return ( rc );
-}
-
-
-SmHandler ConnectCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), caddr_t ARG_UNUSED(call_data) )
+SmHandler ConnectCB ( SM_MSG reply, caddr_t client, caddr_t calldata )
 {
   CheckSmRC("ConnectCB");
 
-  /* We're "here", so we're connected to the engine, so now we define  */
-  /* the grammar that we want the engine to use, and make the mic      */
-  /* sensitive (so it can be pressed)                                  */
-  DoSimpleGrammar ( );
-
+  fConnected = True;
+  
+  vv_scwm_cb(ConnectCB_proc, reply, client, calldata);
   return ( SM_RC_OK );
 }
 
 
-SmHandler DisconnectCB  ( SM_MSG ARG_UNUSED(reply), caddr_t ARG_UNUSED(client),
-                          caddr_t ARG_UNUSED(call_data) )
+SmHandler DisconnectCB  ( SM_MSG reply, caddr_t client,
+                          caddr_t calldata )
 {
+  fConnected = False;
+
+  vv_scwm_cb(DisconnectCB_proc, reply, client, calldata);
   return ( SM_RC_OK );
 }
 
 
-SmHandler SetCB  ( SM_MSG ARG_UNUSED(reply), caddr_t ARG_UNUSED(client),
-                   caddr_t ARG_UNUSED(call_data) )
+SmHandler SetCB  ( SM_MSG reply, caddr_t client,
+                   caddr_t calldata )
 {
+  vv_scwm_cb(SetCB_proc, reply, client, calldata);
   return ( SM_RC_OK );
 }
 
 
-SmHandler MicOnCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), 
-                    caddr_t ARG_UNUSED(call_data ))
+SmHandler MicOnCB ( SM_MSG reply, caddr_t client, 
+                    caddr_t calldata )
 {
   CheckSmRC("MicOnCB");
 
@@ -253,30 +241,35 @@ SmHandler MicOnCB ( SM_MSG reply, caddr_t ARG_UNUSED(client),
   /* capturing the audio and processing it)                            */
   SmRecognizeNextWord ( SmAsynchronous );
 
+  vv_scwm_cb(MicOnCB_proc, reply, client, calldata);
+
   return ( SM_RC_OK );
 }
 
 
-SmHandler MicOffCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), caddr_t ARG_UNUSED(call_data) )
+SmHandler MicOffCB ( SM_MSG reply, caddr_t client, caddr_t calldata )
 {
   CheckSmRC("MicOffCB");
 
   fMicOn = False;
 
+  vv_scwm_cb(MicOffCB_proc, reply, client, calldata);
+
   return ( SM_RC_OK );
 }
 
 
-SmHandler EnableVocabCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), caddr_t ARG_UNUSED(call_data) )
+SmHandler EnableVocabCB ( SM_MSG reply, caddr_t client, caddr_t calldata )
 {
   CheckSmRC("EnableVocabCB");
 
+  vv_scwm_cb(EnableVocabCB_proc, reply, client, calldata);
   return ( SM_RC_OK );
 }
 
 
-SmHandler DefineVocabCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), 
-                          caddr_t ARG_UNUSED(call_data) )
+SmHandler DefineVocabCB ( SM_MSG reply, caddr_t client, 
+                          caddr_t calldata )
 {
   char          * vocab;
   int             rc;
@@ -301,16 +294,18 @@ SmHandler DefineVocabCB ( SM_MSG reply, caddr_t ARG_UNUSED(client),
              i, missing [ i ].spelling );
   }
 
-  /* Enable the vocabulary (tells the recognizer to listen for words   */
-  /* from it)                                                          */
+  vv_scwm_cb(DefineVocabCB_proc, reply, client, calldata);
+
+  /* Enable the vocabulary (tells the recognizer to listen for words */
+  /* from it) */
   SmEnableVocab ( vocab, SmAsynchronous );
 
   return ( SM_RC_OK );
 }
 
 
-SmHandler DefineGrammarCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), 
-                            caddr_t ARG_UNUSED(caller) )
+SmHandler DefineGrammarCB ( SM_MSG reply, caddr_t client, 
+                            caddr_t caller )
 {
   int             rc;
   int             i;
@@ -362,8 +357,8 @@ SmHandler DefineGrammarCB ( SM_MSG reply, caddr_t ARG_UNUSED(client),
   return ( 0 );
 }
 
-SmHandler GetNextWordCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), 
-                          caddr_t ARG_UNUSED(call_data) )
+SmHandler GetNextWordCB ( SM_MSG reply, caddr_t client, 
+                          caddr_t calldata )
 {
   CheckSmRC("GetNextWordCB");
 
@@ -372,15 +367,38 @@ SmHandler GetNextWordCB ( SM_MSG reply, caddr_t ARG_UNUSED(client),
 }
 
 
-SmHandler RecoWordCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), 
-                       caddr_t ARG_UNUSED(call_data) )
+SCM
+ScmAnnotationsFromRgAnnotations(int n, SM_ANNOTATION rgannot[])
+{
+  SCM answer = gh_make_vector(gh_int2scm(n), SCM_BOOL_F);
+  int i = 0;
+  for (; i < n ; ++i ) {
+    SCM value = SCM_BOOL_F;
+    switch (rgannot[i].type) {
+    case SM_ANNOTATION_NUMERIC:
+      value = gh_long2scm(rgannot[i].annodata.numeric);
+      break;
+    case SM_ANNOTATION_STRING:
+      value = gh_str02scm(rgannot[i].annodata.string);
+      break;
+    case SM_ANNOTATION_OTHER:
+      /* GJB:FIXME:: maybe use 'other */
+      break;
+    }
+    gh_vector_set_x(answer, gh_int2scm(i), value);
+  }
+  return answer;
+}
+
+SmHandler RecoWordCB ( SM_MSG reply, caddr_t client, 
+                       caddr_t calldata )
 {
   int             rc;
   int             i;
   unsigned long   num_firm;
   SM_WORD       * firm;
 
-  CheckSmRC("NextWordCB");
+  CheckSmRC("RecoWordCB");
 
   /* SOMETIMES, the reco engine will have no idea what was said, and 
      will call the recognized word callback - an application had best
@@ -402,7 +420,7 @@ SmHandler RecoWordCB ( SM_MSG reply, caddr_t ARG_UNUSED(client),
 }
 
 
-SmHandler RecoPhraseCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), caddr_t ARG_UNUSED(caller) )
+SmHandler RecoPhraseCB ( SM_MSG reply, caddr_t client, caddr_t caller )
 {
   int       rc;
   SM_WORD * firm;
@@ -468,87 +486,172 @@ SmHandler RecoPhraseCB ( SM_MSG reply, caddr_t ARG_UNUSED(client), caddr_t ARG_U
 
   scwm_msg(INFO,"ViaVoice", "%s", phrase);
 
+  /* Get the annotation that's tied to the last part of the phrase 
+     (it contains the amount we want to move the window)..  If it's 
+     not there or is the wrong type, then the grammar has probably
+     changed since this part of the code was written.. */
+  rc = SmGetAnnotations ( reply, & num_annots, & annots );
 
-  /* If the phrase was accepted, then move the toplevel window a bit  */
-  /* in whatever direction was specified (the direction is determined */
-  /* by looking at the 1st character of the 3rd word of the phrase,   */
-  /* the amount is determined by the annotation on the last word of   */
-  /* the phrase (if it exists; if it doesn't, the default us used)    */
-  if ( flags & SM_PHRASE_ACCEPTED ) {
-    /* Get the annotation that's tied to the last part of the phrase  */
-    /* (it contains the amount we want to move the window)..  If it's */
-    /* not there or is the wrong type, then the grammar has probably  */
-    /* changed since this part of the code was written..              */
-    rc = SmGetAnnotations ( reply, & num_annots, & annots );
-
-    if ( num_annots == 4 ) {
-      if ( annots [ 3 ].type == SM_ANNOTATION_NUMERIC ) {
-        increment = annots [ 3 ].annodata.numeric;
-      } else {
-        scwm_msg(INFO,"ViaVoice", "RecoPhraseCB: Annotation data type is wrong!\n" );
-      }
-    } else {
-      scwm_msg(INFO,"ViaVoice", "RecoPhraseCB: Annotation data is missing!\n" );
-    }
+  { /* scope */
+    SCM annotations = ScmAnnotationsFromRgAnnotations(num_annots, annots);
 
     scwm_run_hook(vv_recognition_hook,
-                  gh_list(gh_str02scm(firm[num_firm-1].spelling),
-                          gh_int2scm(increment),
+                  gh_list(gh_bool2scm( (flags & SM_PHRASE_ACCEPTED ) ),
+                          gh_str02scm(phrase),
+                          annotations,
                           SCM_UNDEFINED));
   }
-
-
-  /* Tell the engine to 'go' again                                    */
+  
+  /* Tell the engine to 'go' again */
   rc = SmRecognizeNextWord ( SmAsynchronous );
 
   return ( rc );
 }
 
 
-SmHandler UtteranceCB ( SM_MSG ARG_UNUSED(reply),
-                        caddr_t ARG_UNUSED(client), 
-                        caddr_t ARG_UNUSED(call_data) )
+SmHandler UtteranceCB ( SM_MSG reply,
+                        caddr_t client, 
+                        caddr_t calldata )
 {
   scwm_msg(INFO,"ViaVoice", "UtteranceCB\n" );
+
+  vv_scwm_cb(UtteranceCB_proc, reply, client, calldata);
 
   /* The engine has turned the mic off and processed all of the audio  */
   return ( SM_RC_OK );
 }
 
-SCWM_PROC(vv_connect,"vv-connect",0,0,0,
-          ())
-     /** Connect to the ViaVoice speech recognizer.
+SmHandler FocusGrantedCB( SM_MSG reply,
+                          caddr_t client, 
+                          caddr_t calldata )
+{
+  scwm_msg(INFO,"ViaVoice", "FocusGrantedCB\n" );
+
+  vv_scwm_cb(FocusGrantedCB_proc, reply, client, calldata);
+  return ( SM_RC_OK );
+}
+
+SCWM_PROC(vv_connect,"vv-connect",0,1,0,
+          (SCM proc))
+     /** Connect to the ViaVoice speech recognizer, calling PROC after connected.
 See "modules/viavoice/README" for details. See also
 `vv-initialize'. */
 #define FUNC_NAME s_vv_connect 
 {
+  VALIDATE_ARG_PROC_USE_F(1,proc);
+  ConnectCB_proc = proc;
   /* Connect to the speech recognizer */
   ConnectStuff ( NULL );
   return SCM_UNDEFINED;
 }
 #undef FUNC_NAME
 
-
-SCWM_PROC(vv_turn_microphone_on,"vv-turn-microphone-on",0,0,0,
-          ())
-     /** Turn the microphone on to start recognizing commands. 
-See also `vv-initialize'. */
-#define FUNC_NAME s_vv_turn_microphone_on
+SCWM_PROC(vv_disconnect,"vv-disconnect",0,1,0,
+          (SCM proc))
+     /** Disconnect from the ViaVoice speech recognizer, calling PROC after disconnected.*/
+#define FUNC_NAME s_vv_disconnect 
 {
-  TurnMicOn();
-  return SCM_UNDEFINED;
+  VALIDATE_ARG_PROC_USE_F(1,proc);
+  DisconnectCB_proc = proc;
+  return gh_int2scm(DisconnectStuff(NULL));
 }
 #undef FUNC_NAME
 
 
-SCWM_PROC(vv_turn_microphone_off,"vv-turn-microphone-off",0,0,0,
+SCWM_PROC(vv_close,"vv-close",0,0,0,
           ())
+     /** Close connect to the ViaVoice speech recognizer. */
+#define FUNC_NAME s_vv_close
+{
+  fOpened = False;
+  return gh_int2scm(SmClose());
+}
+#undef FUNC_NAME
+
+
+
+SCWM_PROC(vv_connected_p,"vv-connected?",0,0,0,
+          ())
+     /** Return #t if we are connected to the ViaVoice speech recognizer.
+Returns #f if we are not connected. */
+#define FUNC_NAME s_vv_connected_p
+{
+  return gh_bool2scm(fConnected);
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(vv_define_grammar,"vv-define-grammar",2,1,0,
+          (SCM name, SCM grammar_file, SCM proc))
+     /** Use GRAMMAR-FILE as the ViaVoice grammar. 
+Returns #f if not connected, otherwise returns the return
+code from DoSimpleGrammar. */
+#define FUNC_NAME s_vv_define_grammar
+{
+  VALIDATE_ARG_STR(1,name);
+  VALIDATE_ARG_STR(2,grammar_file);
+  VALIDATE_ARG_PROC_USE_F(3, proc);
+
+  if (!fConnected) {
+    return SCM_BOOL_F;
+  } 
+
+  DefineGrammarCB_proc = proc;
+
+  { /* scope */
+    char *szName = gh_scm2newstr(name, NULL);
+    char *szFile = gh_scm2newstr(grammar_file, NULL);
+    int rc = SmDefineGrammar ( szName, szFile, 0, SmAsynchronous );
+    gh_free(szName);
+    gh_free(szFile);
+    return gh_int2scm(rc);
+  }
+}
+#undef FUNC_NAME
+
+SCWM_PROC(vv_enable_vocab,"vv-enable-vocab",1,1,0,
+          (SCM name, SCM proc))
+     /** Enable vocabulary/grammar NAME. */
+#define FUNC_NAME s_vv_enable_vocab
+{
+  VALIDATE_ARG_STR(1,name);
+  VALIDATE_ARG_PROC_USE_F(2,proc);
+  EnableVocabCB_proc = proc;
+  { /* scope */
+    char *sz = gh_scm2newstr(name,NULL);
+    return gh_int2scm(SmEnableVocab(sz,SmAsynchronous));
+  }
+}
+#undef FUNC_NAME
+
+SCWM_PROC(vv_turn_microphone_on,"vv-turn-microphone-on",0,1,0,
+          (SCM proc))
+     /** Turn the microphone on to start recognizing commands. 
+See also `vv-initialize'. */
+#define FUNC_NAME s_vv_turn_microphone_on
+{
+  VALIDATE_ARG_PROC_USE_F(1,proc);
+  MicOnCB_proc = proc;
+  scwm_msg(INFO,"ViaVoice","TurnMicOn called" );
+  /* Send a request to tell the engine to turn the mic on.  The reply 
+     comes back to the MicOnCB */
+  return gh_int2scm(SmMicOn(SmAsynchronous));
+}
+#undef FUNC_NAME
+
+
+SCWM_PROC(vv_turn_microphone_off,"vv-turn-microphone-off",0,1,0,
+          (SCM proc))
      /** Turn the microphone off to stop recognizing commands. 
 See also `vv-initialize'. */
 #define FUNC_NAME s_vv_turn_microphone_off
 {
-  TurnMicOff();
-  return SCM_UNDEFINED;
+  VALIDATE_ARG_PROC_USE_F(1,proc);
+  MicOffCB_proc = proc;
+  scwm_msg(INFO,"ViaVoice","TurnMicOff called" );
+  /* Send a request to tell the engine to turn the mic on.  The reply 
+     comes back to the MicOnCB */
+  return gh_int2scm(SmMicOff(SmAsynchronous));
 }
 #undef FUNC_NAME
 
