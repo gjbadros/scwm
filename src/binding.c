@@ -1732,12 +1732,14 @@ init_modifiers(void)
             scrollock_mask = masks[i / mod->max_keypermod];
         }
       }
+#ifdef SCWM_DEBUG_MSGS
       if (numlock_mask == 0) {
         scwm_msg(INFO,FUNC_NAME, "No numlock_mask was found.");
       }
       if (scrollock_mask == 0) {
         scwm_msg(INFO,FUNC_NAME, "No scrollock_mask was found.");
       }
+#endif
       mask_mod_combos[im++] = LockMask;
       if (numlock_mask) {
         mask_mod_combos[im++] = numlock_mask;
