@@ -17,5 +17,6 @@ SCM restart(SCM command);
 SCM scwm_quit(SCM args);
 
 void init_shutdown();
+void run_startup_hook();
 
 #endif /* SHUTDOWN_H */

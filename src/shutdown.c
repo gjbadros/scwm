@@ -88,7 +88,10 @@ Done(int restart_or_dump, char *command)
     ReapChildren();
     run_restart_command(command);
   } else if (restart_or_dump < 0) {
-    int i = *((int *)0); /* Force seg fault */
+    /* force seg fault -- need to use as an argument to a function
+       to be sure it doesn't get optimized away, so invoke a function
+       we're sure exists -- this same function! --07/23/98 gjb */
+    Done(*((int *)0),NULL); /* Force seg fault */
   } else {
     XCloseDisplay(dpy);
     exit(0);
