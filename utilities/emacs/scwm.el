@@ -231,7 +231,7 @@ All evaluation goes through this procedure."
 If this is nil, the output from `scwm-eval-sexp' is inserted into the
 current buffer, otherwise it goes to the minibuffer.")
 
-(defvar scwm-eval-buffer "*scwm-eval*"
+(defvar scwm-eval-buffer "*wm*"
   "The buffer where the `evaluation to minibuffer' actually takes place.")
 
 ;;;###autoload
