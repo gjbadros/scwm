@@ -5,7 +5,10 @@
   :use-module (app scwm esdsound)
   :use-module (app scwm defoption))
 
-(define-scwm-option *sounds-dir* (or (getenv "MEDIA") (string-append (getenv "SCWMDIR") "/Media/"))
+(define-scwm-option *sounds-dir* (or (getenv "MEDIA") 
+				     (string-append 
+				      (or (getenv "SCWMDIR") (scwm-path-prefix))
+				      "/Media/"))
   "Directory containing sounds to be played by `wavplay' procedure."
   #:type 'directory
   #:group 'file-locations)
