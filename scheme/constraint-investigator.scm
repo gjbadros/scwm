@@ -22,8 +22,8 @@
 
 ;; constraint-investigator.scm
 ;;
-;; (use-scwm-modules ui-constraints-gtk-toggle-menu)
-;; (ui-constraints-gtk-toggle-menu)
+;; (use-scwm-modules constraint-investigator)
+;; (start-constraint-investigator)
 
 
 (define-module (app scwm constraint-investigator)

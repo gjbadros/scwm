@@ -76,10 +76,10 @@ stick, shove, set the style, group, etc."
 	      #:submenu
 	      (make-window-group-menu w))
     menu-separator
-    (menuitem "Close" #:image-left "mini-cross.xpm" 
-	      #:action close-window)
     (menuitem "Destroy" #:image-left "mini-bomb.xpm" 
-	      #:action destroy-window))))
+	      #:action destroy-window)
+    (menuitem "Close" #:image-left "mini-cross.xpm" 
+	      #:action close-window))))
 
 ;;(popup-menu (make-menu-focus-options (get-window)))
 (define*-public (make-menu-focus-options #&optional (win (get-window)))

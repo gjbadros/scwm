@@ -202,12 +202,12 @@
   (gtk-widget-hide buttons-toplevel))
 
 
-;; (use-scwm-modules constraints ui-constraints gtk optargs ui-constraints-composition ui-constraints-gtk-toggle-menu)
+;; (use-scwm-modules constraints ui-constraints gtk optargs ui-constraints-composition constraint-investigator)
 ;; (use-modules (gtk gtk) (gtk gdk))
 
 ;; (set! toggle-initialized #f)
 ;; (start-constraints)
-;; (ui-constraints-gtk-toggle-menu)
+;; (constraint-investigator)
 ;; (initialize-ui-constraints-buttons #:vertical #f #:pixmap #t)
 ;; (start-ui-constraints-buttons)
 ;; (change-ui-constraints-buttons #:vertical #t)

@@ -139,9 +139,9 @@ the construction of a composition."
 		   (write (ui-constraint-class-creator newclass))
 		   (newline)))))))))
     
-;; (use-scwm-modules constraints ui-constraints ui-constraints-composition ui-constraints-buttons ui-constraints-gtk-toggle-menu ui-constraints-classes)
+;; (use-scwm-modules constraints ui-constraints ui-constraints-composition ui-constraints-buttons constraint-investigator ui-constraints-classes)
 ;; (start-constraints)
-;; (ui-constraints-gtk-toggle-menu)
+;; (start-constraint-investigator)
 ;; (ui-constraints-composition-begin)
 ;; (define w (ui-constraints-composition-end))
 ;; (car global-constraint-class-list)
