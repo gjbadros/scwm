@@ -5,7 +5,7 @@ As with all of Scwm, you use it at your own risk!
 To compile the code in this directory, you need to:
 
 cd ..
-HAVE_GNOME_CORBA=yes ./autogen.sh
+./autogen.sh --enable-gnome-corba ....other options....
 
 
 See also the guile-server module from the GNOME archives.

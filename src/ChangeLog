@@ -1,3 +1,8 @@
+Fri Sep 17 14:57:52 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-snarf: Permit spaces in guile-snarf output.  Thanks Chris
+	Holleman!
+
 Fri Sep 17 12:04:43 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* menu.c (MenuInteraction): Invoke the unhover action when a

@@ -1,3 +1,8 @@
+Fri Sep 17 12:06:57 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwmcorba.c, scwm_scheme_evaluator-impl.c: Drop _object suffix
+	from scwm_scheme_evaluator.  Use ARG_UNUSED to avoid some warnings.
+
 Thu Sep 16 12:09:55 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm-corba-exec.c: Use new names, fix macros NAME and VERSION so 
