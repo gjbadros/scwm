@@ -996,34 +996,6 @@ GetSnappedViewportPositionFor(int vx, int vy, int *viewport_x, int *viewport_y)
 void 
 FocusOn(ScwmWindow *psw)
 {
-  /* center coord of psw */
-  int cx, cy;
-
-  if (!psw)
-    return;
-
-  if (psw->Desk != Scr.CurrentDesk) {
-    changeDesks(0, psw->Desk);
-  }
-
-  GetWindowVirtualCenter(psw,&cx,&cy);
-
-  if (!FIsPartiallyInViewport(psw)) {
-    int dx, dy;
-    GetSnappedViewportPositionFor(cx,cy,&dx,&dy);
-    MoveViewport(dx, dy, True);
-  }
-
-  KeepOnTop();
-
-  if (!FIsPartiallyInViewport(psw)) {
-    move_finalize(psw->frame,psw,0,0);
-    if (!psw->fClickToFocus)
-      XWarpPointer(dpy, None, Scr.Root, 0, 0, 0, 0, 2, 2);
-  }
-#if 0 /* FIXGJB --09/13/98 gjb */
-  UngrabEm();
-#endif
   SetFocus(psw->w, psw, False);
 }
 

@@ -1,5 +1,9 @@
 Sat Dec  5 18:34:53 1998  Maciej Stachowiak  <mstachow@mit.edu>
-	
+
+	* window.c (FocusOn): Do not attempt to snap to the window's
+ 	viewport position, change to its desk, or move it. There are
+ 	separate primitives to do all those.
+ 
 	* message-window.c, message-window.h: add shadow_color and
  	hilight_color fields to the message_window structure, and
  	preallocate these when setting the background color, so we don't
