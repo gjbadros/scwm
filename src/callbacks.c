@@ -25,6 +25,7 @@
 #include <guile/gh.h>
 #include <config.h>
 #include <libguile.h>
+#include <assert.h>
 #include "scwm.h"
 #include "callbacks.h"
 #include "guile-compat.h"
@@ -170,6 +171,15 @@ scwm_safe_call1 (SCM proc, SCM arg)
   return scwm_safe_apply (proc, scm_listify(arg, SCM_UNDEFINED));
 }
 
+SCM
+scwm_safe_call2 (SCM proc, SCM arg1, SCM arg2)
+{
+  /* This means w must cons (albeit only once) on each callback of
+     size two - seems lame. */
+  return scwm_safe_apply (proc, scm_listify(arg1, arg2, SCM_UNDEFINED));
+}
+
+
 /* Slightly tricky - we want to catch errors per expression, but only
    establish a new dynamic root per load operation, as it's perfectly
    OK for a file to invoke a continuation created by a different
@@ -252,22 +262,34 @@ SCM scwm_safe_eval_str (char *string)
 			   &stack_item);
 }
 
+/* Print warning message, and reset the hook */
+void
+WarnBadHook(SCM hook)
+{
+  assert(!gh_list_p(SCM_CDR(hook)));
+  { /* scope */ 
+    /* Warn that hook list is not a list. */
+    SCM hook_name = SCM_CAR(hook);
+    char *szHookName = gh_scm2newstr(hook_name, NULL);
+    scwm_msg(WARN,"WarnBadHook","hooklist is not a list for %s; resetting it to ()!", szHookName);
+    free(szHookName);
+    SCM_SETCDR(hook, SCM_EOL);
+  }
+}
+
 /* Hooks. */
 
 SCM call0_hooks (SCM hook)
 {
   SCM p;
-  SCM hook_name;
   SCM hook_list;
-  /* Ensure hook list is a list. */
 
-  hook_name = SCM_CAR(hook);
+  /* Ensure hook list is a list. */
   hook_list = SCM_CDR(hook);
 
   if (!gh_list_p(hook_list)) {
-    /* Warn that hook list is not a list. */
-    SCM_SETCAR(hook, SCM_EOL);
-    hook_list=SCM_EOL;
+    WarnBadHook(hook);
+    return SCM_UNSPECIFIED;
   }
 
   for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
@@ -280,17 +302,14 @@ SCM call0_hooks (SCM hook)
 SCM call1_hooks (SCM hook, SCM arg)
 {
   SCM p;
-  SCM hook_name;
   SCM hook_list;
   /* Ensure hook list is a list. */
 
-  hook_name = SCM_CAR(hook);
   hook_list = SCM_CDR(hook);
 
   if (!gh_list_p(hook_list)) {
-    /* Warn that hook list is not a list. */
-    SCM_SETCAR(hook, SCM_EOL);
-    hook_list=SCM_EOL;
+    WarnBadHook(hook);
+    return SCM_UNSPECIFIED;
   }
 
   for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
@@ -300,20 +319,38 @@ SCM call1_hooks (SCM hook, SCM arg)
   return SCM_UNSPECIFIED;
 }
 
+SCM call2_hooks (SCM hook, SCM arg1, SCM arg2)
+{
+  SCM p;
+  SCM hook_list;
+  /* Ensure hook list is a list. */
+
+  hook_list = SCM_CDR(hook);
+
+  if (!gh_list_p(hook_list)) {
+    WarnBadHook(hook);
+    return SCM_UNSPECIFIED;
+  }
+
+  for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
+    scwm_safe_call2 (SCM_CAR(p), arg1, arg2);
+  }
+  
+  return SCM_UNSPECIFIED;
+}
+
+
 SCM apply_hooks (SCM hook, SCM args)
 {
   SCM p;
-  SCM hook_name;
   SCM hook_list;
 
-  hook_name = SCM_CAR(hook);
   hook_list = SCM_CDR(hook);
 
   /* Ensure hook list is a list. */
   if (!gh_list_p(hook_list)) {
-    /* Warn that hook list is not a list. */
-    SCM_SETCAR(hook, SCM_EOL);
-    hook_list=SCM_EOL;
+    WarnBadHook(hook);
+    return SCM_UNSPECIFIED;
   }
 
   for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {
@@ -332,17 +369,14 @@ SCM apply_hooks (SCM hook, SCM args)
 SCM apply_hooks_message_only (SCM hook, SCM args)
 {
   SCM p;
-  SCM hook_name;
   SCM hook_list;
 
-  hook_name = SCM_CAR(hook);
   hook_list = SCM_CDR(hook);
 
   /* Ensure hook list is a list. */
   if (!gh_list_p(hook_list)) {
-    /* Warn that hook list is not a list. */
-    SCM_SETCDR(hook, SCM_EOL);
-    hook_list=SCM_EOL;
+    WarnBadHook(hook);
+    return SCM_UNSPECIFIED;
   }
 
   for (p = hook_list; p != SCM_EOL; p = SCM_CDR(p)) {

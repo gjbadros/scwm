@@ -31,6 +31,8 @@ SCM scwm_safe_apply_message_only (SCM proc, SCM args);
 SCM scwm_safe_apply (SCM proc, SCM args);
 SCM scwm_safe_call0 (SCM thunk);
 SCM scwm_safe_call1 (SCM proc, SCM arg);
+SCM scwm_safe_call2 (SCM proc, SCM arg1, SCM arg2);
+
 SCM safe_load (SCM fname);
 SCM scwm_safe_load (char *filename);
 SCM scwm_safe_eval_str (char *string);
@@ -41,6 +43,7 @@ SCM scwm_safe_eval_str (char *string);
 
 SCM call0_hooks (SCM hook);
 SCM call1_hooks (SCM hook_type, SCM arg);
+SCM call2_hooks (SCM hook_type, SCM arg1, SCM arg2);
 SCM apply_hooks (SCM hook_type, SCM args);
 SCM apply_hooks_message_only (SCM hook_type, SCM args);
 
