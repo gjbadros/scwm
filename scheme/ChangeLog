@@ -1,3 +1,24 @@
+Mon Sep 13 22:23:34 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* winops.scm, themes.scm, primopts.scm, message-window.scm,
+	gnome-hints.scm, fvwm-module.scm, face.scm, edge-ops.scm,
+	base.scm, auto-raise.scm: Added define-scwm-group call for
+	preferences groups that are used.
+
+	* preferences.scm: Added *preferences-use-notebook* and add a
+	listbox-based preferences UI (that is still buggy -- causes a
+	coredump in guile-gtk code).
+
+	* defoption.scm: Added `define-scwm-group', related procs.
+
+	* prompt-range.scm: Make the scale size automatically instead of
+	fixing the size.
+
+	* std-menus.scm: Comment out the *context-map* variable for now.
+
+	* winops.scm: Move the *opaque-move-percent* and *resize-opaquely-proc* into
+	group 'winops, not 'window-movement
+
 Mon Sep 13 11:48:54 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* std-menus.scm, flux.scm, file.scm, rgb-database.scm,

@@ -1,3 +1,11 @@
+Mon Sep 13 22:21:50 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* scwm-constraints.cc: Fix bug that resulted in resize hook not
+	being invoked when constraint solver was not active.
+
+	* callbacks.c: Update the number of args to error-hook -- there
+	are 5.
+
 Mon Sep 13 13:27:37 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwm.c: Added --no-document-formals option to usage message.
