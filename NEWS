@@ -46,6 +46,8 @@ Unless SCWM_CATCH_SIGINT is defined during compilation
 -> was sticky?, (un)stick
 ** `window-focus-style'
 -> was get-window-focus
+** `send-button', `send-key'
+-> were send-button-press, send-key-press
 
 Changes for scwm-0.99.4 (released 6-October-1999)
 
