@@ -18,11 +18,14 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <sys/time.h>
 #include <unistd.h>
 #include <limits.h>
 #include <guile/gh.h>
-#include <config.h>
 #include <libguile.h>
 #include <assert.h>
 #include "scwm.h"

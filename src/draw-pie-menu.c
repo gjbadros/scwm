@@ -7,7 +7,9 @@
  * but will evolve as an example of a dynamically loadable menu look
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include "scwm.h"
 #include "scwmmenu.h"

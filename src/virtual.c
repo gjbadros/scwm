@@ -6,7 +6,9 @@
  * Code is derived from Robert Nation's fvwm2 (twm, ctwm derivative)
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <stdio.h>
 #include <signal.h>

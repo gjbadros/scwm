@@ -1,9 +1,14 @@
 /* $Id$
  * xmisc.h
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  */
 
 #ifndef XMISC_H
 #define XMISC_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include "image.h"
 #include "window.h"

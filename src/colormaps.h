@@ -1,9 +1,14 @@
 /* $Id$
  * colormaps.h
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  */
 
 #ifndef COLORMAPS_H
 #define COLORMAPS_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include "window.h"
 

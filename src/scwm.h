@@ -3,10 +3,9 @@
  * Copyright (C) 1997-1998, Maciej Stachowiak and Greg J. Badros
  */
 
-/****************************************************************************
- * This module is based on Twm, but has been siginificantly modified 
- * by Rob Nation 
- ****************************************************************************/
+/*
+ * This module is based on code by Rob Nation, originally derived from Twm
+ */
 /*****************************************************************************/
 /**       Copyright 1988 by Evans & Sutherland Computer Corporation,        **/
 /**                          Salt Lake City, Utah                           **/
@@ -36,6 +35,10 @@
 
 #ifndef SCWM_H__
 #define SCWM_H__
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

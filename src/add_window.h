@@ -6,6 +6,10 @@
 #ifndef ADD_WINDOW_H
 #define ADD_WINDOW_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 ScwmWindow *AddWindow(Window w);
 
 void GrabButtonWithModifiers(int button, int modifier, ScwmWindow *psw);

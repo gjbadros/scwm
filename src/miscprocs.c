@@ -6,11 +6,14 @@
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <X11/Xlib.h>
 #include <unistd.h>
 #include <guile/gh.h>
 #include <signal.h>
-#include <config.h>
 #include "scwm.h"
 #include "screen.h"
 #include "errors.h"

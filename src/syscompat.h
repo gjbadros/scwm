@@ -22,7 +22,9 @@
 #ifndef SYSCOMPAT_H
 #define SYSCOMPAT_H
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <sys/wait.h>
 

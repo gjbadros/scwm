@@ -2,11 +2,15 @@
  * miscprocs.h
  */
 
-#include "scwm.h"
 
 #ifndef MISCPROCS_H
 #define MISCPROCS_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "scwm.h"
 
 void init_miscprocs();
 SCM refresh();

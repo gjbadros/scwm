@@ -15,8 +15,13 @@
  *     copyright remains in the source code and all documentation
  ****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
+#ifdef HAVE_CONFIG_H
 #include <guile/gh.h>
+#endif
 #include "scwm.h"
 #include "screen.h"
 #include "window.h"

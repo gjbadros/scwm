@@ -4,7 +4,9 @@
  * (C) 1998 Greg J. Badros
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #ifdef USE_CASSOWARY
 

@@ -5,7 +5,9 @@
 
 #define BINDING_IMPLEMENTATION
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <guile/gh.h>
 #include <X11/keysym.h>

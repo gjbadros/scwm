@@ -1,5 +1,6 @@
 /* $Id$
  * module-types.h
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  */
 
 /* Used this perl initially script to create ../scheme/module-types.scm
@@ -10,10 +11,15 @@ print "(define-public $name ", eval($val), ")\n";
 }' < module-types.h >../scheme/module-types.scm
 
 Later, hand edited the script to get the alist mapping numbers to names
+   --Early 1998 gjb
 */
 
 #ifndef MODULE_TYPES_H
 #define MODULE_TYPES_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #define M_NEW_PAGE           (1)
 #define M_NEW_DESK           (1<<1)

@@ -1,15 +1,8 @@
 /* $Id$
  * screen.h
- */
-
-/*
- * scwm per-screen data include file
- */
-
-
-/*
- * This module derived from code based on Twm and siginificantly modified 
- * by Rob Nation
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ *
+ * This module derived from modified by Rob Nation, originally code based on Twm
  */
 
 /*
@@ -35,6 +28,10 @@
 
 #ifndef _SCREEN_
 #define _SCREEN_
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

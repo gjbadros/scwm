@@ -8,7 +8,10 @@
 #define FOCUS_H_
 
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include "scwm.h"
 #include "screen.h"
 

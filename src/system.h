@@ -25,7 +25,9 @@
 #ifndef SYSTEM_H
 #define SYSTEM_H
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 void *safemalloc(int length);
 

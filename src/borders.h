@@ -5,6 +5,10 @@
 #ifndef BORDERS_H
 #define BORDERS_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 void SetBorderX(ScwmWindow * t, Bool onoroff, Bool force, Bool Mapped,
 		 Window expose_win, Bool really_force);
 

@@ -35,7 +35,9 @@
 /*****************************************************************************/
 
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 /* #define SCWM_DEBUG_MSGS */
 

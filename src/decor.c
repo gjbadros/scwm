@@ -1,21 +1,19 @@
-/* $Id$ */
-/****************************************************************************
- * This module has been significantly modified by Maciej Stachowiak
- * and Greg J Badros.
- * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
- * Changes Copyright 1997, Maciej Stachowiak and Greg J. Badros
- ****************************************************************************/
-/****************************************************************************
- * This module based on original code 
- * by Rob Nation 
+/* $Id$
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ *
+ * This module is based on code by Rob Nation 
  * Copyright 1993, Robert Nation
  *     You may use this code for any purpose, as long as the original
  *     copyright remains in the source code and all documentation
- ****************************************************************************/
+ */
 
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #define DECOR_IMPLEMENTATION
-#include <config.h>
+
 #include <guile/gh.h>
 #include "scwm.h"
 #include "screen.h"

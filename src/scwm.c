@@ -22,7 +22,9 @@
  * language.
  ***********************************************************************/
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -81,6 +83,7 @@
 #ifdef USE_CASSOWARY
 #include "ClSimplexSolver.h"
 #include "constraint-primitives.h"
+#include "../guile/cassowary_scm.h"
 #endif
 
 #include <stdarg.h>
@@ -288,6 +291,7 @@ scwm_main(int argc, char **argv)
   init_placement();
 #ifdef USE_CASSOWARY
   init_constraint_primitives();
+  init_cassowary_scm();
 #endif
 
   szCmdConfig = NEWC(1,char);

@@ -6,7 +6,9 @@
  * dynamically loaded functions
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include "scwm.h"
 #include "scwmmenu.h"

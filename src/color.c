@@ -1,22 +1,11 @@
-
-/****************************************************************************
- * This module has been significantly modified by Maciej Stachowiak.
- * It may be used under the terms indicated by the copyright below.
- * Changes Copyright 1997, Maciej stachowiak
- ****************************************************************************/
-/****************************************************************************
- * This module is all original code 
- * by Rob Nation 
+/* $Id$
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ * 
+ * This module is derived from codeby Rob Nation 
  * Copyright 1993, Robert Nation
  *     You may use this code for any purpose, as long as the original
  *     copyright remains in the source code and all documentation
- ****************************************************************************/
-/****************************************************************************
- * This module is all new
- * by Rob Nation 
- * Copyright 1993 Robert Nation. No restrictions are placed on this code,
- * as long as the copyright notice is preserved
- ****************************************************************************/
+ */
 
 #include <guile/gh.h>
 #include <libguile.h>
@@ -25,7 +14,10 @@
 
 #define COLOR_IMPLEMENTATION
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include "scwm.h"
 #include "color.h"
 #include "screen.h"
@@ -141,7 +133,7 @@ allocated, an error results. */
      make it nicer later. */
   if (!XParseColor(dpy, Scr.ScwmRoot.attr.colormap, cn, &color)) {
     FREE(cn);
-    scwm_error("make-color",2);
+    scwm_error(s_make_color,2);
 #if 0   
     scwm_msg(WARN,s_make_color,"Unable to parse color `%s'",cn);
     fBad = True;
@@ -790,4 +782,3 @@ init_color()
 /* tab-width: 8 */
 /* c-basic-offset: 2 */
 /* End: */
-

@@ -1,5 +1,14 @@
+/* $Id$
+ * mwmcom.h
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ */
+
 #ifndef MWMCOM_H
 #define MWMCOM_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 /***************************************************************************
  * Please translate the strings into the language which you use for 

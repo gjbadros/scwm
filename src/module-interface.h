@@ -9,6 +9,10 @@
 #ifndef _MODULE_INTERFACE_H_
 #define _MODULE_INTERFACE_H_
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 void Broadcast(unsigned long event_type, unsigned long num_datum,
 	       unsigned long data1, unsigned long data2, unsigned long data3, 
 	       unsigned long data4, unsigned long data5, unsigned long data6,

@@ -25,9 +25,11 @@
  * Changes Copyright 1997, Maciej stachowiak
  ****************************************************************************/
 
-#include <guile/gh.h>
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
+#include <guile/gh.h>
 #include <ctype.h>
 #include <unistd.h>
 

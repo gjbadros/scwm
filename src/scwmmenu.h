@@ -7,6 +7,10 @@
 #ifndef SCWMMENU_H
 #define SCWMMENU_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <guile/gh.h>
 #include "image.h"
 #include "menuitem.h"

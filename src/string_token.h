@@ -1,6 +1,5 @@
 /* $Id$ */
-/*
- *      Copyright (C) 1997, Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +24,10 @@
 
 #ifndef STRING_TOKEN_H
 #define STRING_TOKEN_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 int IchIgnoreCaseInSz(const char *sz, char ch);
 

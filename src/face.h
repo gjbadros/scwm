@@ -1,5 +1,14 @@
+/* $Id$
+ * face.h
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ */
+
 #ifndef FACE_H
 #define FACE_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <libguile.h>
 #include "scwm.h"

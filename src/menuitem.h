@@ -1,11 +1,15 @@
 /* $Id$
  * menuitem.h
- * By Greg J. Badros, 11/14/97
+ * (C) 1998 Greg J. Badros, 11/14/97
  *
  */
 
 #ifndef MENUITEM_H
 #define MENUITEM_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <guile/gh.h>
 #include "image.h"

@@ -2,7 +2,9 @@
  * (C) 1998 Maciej Stachowiak and Greg J. Badros
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <unistd.h>
 #include <signal.h>

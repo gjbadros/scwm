@@ -7,7 +7,9 @@
 #ifndef SCWM_CONSTRAINTS_H__
 #define SCWM_CONSTRAINTS_H__
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #ifdef USE_CASSOWARY
 

@@ -19,10 +19,13 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <config.h>
 #include "syscompat.h"
 
 #if HAVE_UNAME

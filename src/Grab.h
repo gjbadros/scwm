@@ -22,6 +22,10 @@
 #ifndef GRAB_H__
 #define GRAB_H__
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 void XGrabServer_withSemaphore(Display * disp);
 
 void XUngrabServer_withSemaphore(Display * disp);

@@ -1,10 +1,16 @@
-/* $id$
+/* $Id$
  * scwm-snarf.h
  * (C) 1998 Maciej Stachowiak and Greg J. Badros
  */
 
 #ifndef SCWM_SNARF_H__
 #define SCWM_SNARF_H__
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <libguile/snarf.h>
 
 /* Can extract comment post-cpp using, e.g.:
 gcc -DHAVE_CONFIG_H -I. -I. -I../include -I/usr/X11R6/include -I/uns/include -E -C -DSCWM_EXTRACT_COMMENTS binding.c

@@ -3,6 +3,7 @@
  *
  * This module is all original code 
  * by Robert Bihlmeyer (additions/modifications by Greg J. Badros)
+ *
  * It may be used or distributed under either the FVWM license 
  * (see COPYING.fvwm) or the GNU General Public License (see COPYING.GPL and
  * the description below)
@@ -31,7 +32,10 @@
 
 #define XPROPERTY_IMPLEMENTATION
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
 #include <guile/gh.h>
 #include <libguile.h>
 #include <X11/X.h>

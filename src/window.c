@@ -13,10 +13,13 @@
 
 #define WINDOW_IMPLEMENTATION
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <guile/gh.h>
 #include <X11/keysym.h>
-#include <config.h>
 #include <assert.h>
 #include "scwm.h"
 #include "screen.h"

@@ -1,8 +1,14 @@
 /* $Id$
  * util.h
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  */
+
 #ifndef UTIL_H
 #define UTIL_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 void redraw_titlebars(ScwmDecor * fl, int extra_height);
 void redraw_borders(ScwmDecor *fl) ;

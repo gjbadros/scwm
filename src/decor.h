@@ -1,7 +1,15 @@
-/* $Id$ */
+/* $Id$
+ * decor.h
+ * (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
+ */
+
 
 #ifndef DECOR_H
 #define DECOR_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <libguile.h>
 #include "scwm.h"

@@ -6,7 +6,9 @@
  * Miscellaneous abstractions of X11 routines for scwm
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <X11/X.h>
 #include <X11/Xlib.h>

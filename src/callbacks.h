@@ -18,8 +18,13 @@
  * Boston, MA 02111-1307 USA
  *
  */
+
 #ifndef CALLBACKS_H
 #define CALLBACKS_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <guile/gh.h>
 

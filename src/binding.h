@@ -5,6 +5,10 @@
 #ifndef BINDING_H
 #define BINDING_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #undef EXTERN
 #undef EXTERN_SET
 #ifdef BINDING_IMPLEMENTATION

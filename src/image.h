@@ -1,6 +1,6 @@
 /* $Id$ */
 /*
- *      Copyright (C) 1997, Maciej Stachowiak and Greg J. Badros
+ * Copyright (C) 1997, 1998 Maciej Stachowiak and Greg J. Badros
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,10 @@
 
 #ifndef IMAGE_H
 #define IMAGE_H
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <guile/gh.h>
 #include <unistd.h>

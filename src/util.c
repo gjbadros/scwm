@@ -11,8 +11,11 @@
  */
 
 
-#include <guile/gh.h>
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
+#include <guile/gh.h>
 #include "scwm.h"
 #include "screen.h"
 #include "borders.h"

@@ -19,7 +19,9 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <guile/gh.h>
 #include "errors.h"

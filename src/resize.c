@@ -12,7 +12,9 @@
 /*
  * some window resizing code borrowed from the "wm" window manager
  */
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <stdio.h>
 #include <X11/keysym.h>

@@ -9,6 +9,10 @@
 #ifndef CONSTRAINT_PRIMITIVES_H__
 #define CONSTRAINT_PRIMITIVES_H__
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 void init_constraint_primitives();
 
 #endif /* CONSTRAINT_PRIMITIVES_H__ */
