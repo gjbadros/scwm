@@ -428,10 +428,12 @@ static void iceWatchFD(IceConn conn, IcePointer client_data,
 }
 #undef FUNC_NAME
 
+/* RB:FIXME:: kill this before 1.0. */
 SCWM_PROC(SM_client_id, "SM-client-id", 0, 0, 0,
 	  ())
-     /** Return scwm's session management client id (a string).
-A return value of #f indicates that session management is not active. */
+     /** DEPRECATED: Return scwm's session management client id (a string).
+A return value of #f indicates that session management is not active.
+DEPRECATED. Use `SM-register' instead. */
 #define FUNC_NAME s_SM_client_id
 {
   if (!SmcId)
@@ -443,30 +445,35 @@ A return value of #f indicates that session management is not active. */
 SCWM_PROC(SM_error_message, "SM-error-message", 0, 0, 0,
 	  ())
      /** Return a string, describing why session management is not available.
-Only valid, if `SM-client-id' is #f. */
+Only valid, if `SM-register' returned #f. */
 #define FUNC_NAME s_SM_error_message
 {
   return gh_str02scm(SMerror);
 }
 #undef FUNC_NAME
 
-void initSM()
-#define FUNC_NAME "initSM"
+SCWM_PROC(SM_register, "SM-register", 0, 0, 0,
+	  ())
+     /** Register scwm with the session manager, and return the client id.
+The return value is either an id string, or #f if SM could not be
+initialized - `SM-error-message' can be used to get more information in this
+case.
+If scwm is already registered, this function just returns the client id. */
+#define FUNC_NAME s_SM_register
 {
   SmcCallbacks smcall;
   char *SmcNewId;
 
-#include "session-manager.x"
+  if (SMconn != NULL)
+    return gh_str02scm(SmcId);
 
   XA_SM_CLIENT_ID = XInternAtom(dpy, "SM_CLIENT_ID", False);
   XA_WM_CLIENT_LEADER = XInternAtom(dpy, "WM_CLIENT_LEADER", False);
 
-  if (SmcId)
-    loadMyself();
-
   if (IceAddConnectionWatch(&iceWatchFD, NULL) == 0) {
-    scwm_msg(WARN, FUNC_NAME ,"IceAddConnectionWatch failed.");
-    return ;
+    scwm_msg(WARN, FUNC_NAME , SMerror);
+    strncpy(SMerror, "IceAddConnectionWatch failed.", sizeof(SMerror));
+    return SCM_BOOL_F;
   }
 
   smcall.save_yourself.callback = &saveYourself;
@@ -490,11 +497,12 @@ void initSM()
                                   sizeof(SMerror), SMerror)) == NULL)
   {
     SmcId = NULL;
-    return;
+    return SCM_BOOL_F;
   }
   SmcId = SmcNewId;
   IceSMconn = SmcGetIceConnection(SMconn);
   setSMProperties();
+  return gh_str02scm(SmcId);
 }
 #undef FUNC_NAME
 
@@ -507,6 +515,9 @@ void doneSM(int automatic_restart)
   SmProp restartStyleProp;
   SmProp *props[1];
 
+  if (!SMconn)
+    return;
+
   restartStyleVal.length = 1;
   restartStyleVal.value = &restartStyle;
   restartStyleProp.name = SmRestartStyleHint;
@@ -515,11 +526,19 @@ void doneSM(int automatic_restart)
   restartStyleProp.vals = &restartStyleVal;
   props[0] = &restartStyleProp;
   
-  if (!SMconn)
-    return;
   if (!automatic_restart)
     SmcSetProperties(SMconn, sizeof(props)/sizeof(props[0]), props);
   SmcCloseConnection(SMconn, 0, NULL);
+}
+
+void initSM()
+{
+#ifndef SCM_MAGIC_SNARFER
+#include "session-manager.x"
+#endif
+
+  if (SmcId)
+    loadMyself();
 }
 
 
