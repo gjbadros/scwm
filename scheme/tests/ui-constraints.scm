@@ -14,7 +14,22 @@
 (xlib-set-line-width! 5)
 
 (define (draw-cn-keep-lefts-even ui-constraint color width mode)
-  (xlib-draw-rectangle! 0 0 20 20))
+  (let ((cn (ui-constraint-cn ui-constraint))
+	(win-list (ui-constraint-windows ui-constraint)))
+    (if (not (= (length win-list) 2))
+	(error "Expected only two windows in win-list of cn for draw-cn-keep-lefts-even"))
+    (let* ((w1 (car win-list))
+	   (w2 (cadr win-list))
+	   (w1pos (window-position w1))
+	   (w2pos (window-position w2))
+	   (w1x (car w1pos))
+	   (w1y (cadr w1pos))
+	   (w2x (car w2pos))
+	   (w2y (cadr w2pos)))
+      (xlib-draw-line! w1x w1y w2x w2y)
+      (xlib-draw-arc! (- w1x 5) (- w1y 5) 10 10 0 360)
+      (xlib-draw-arc! (- w2x 5) (- w2y 5) 10 10 0 360)
+      )))
 
 ;; (define (cl-is-constraint-satisfied) #t)
 
@@ -46,6 +61,7 @@
 
 (make-ui-constraint-interactively uicc-kle)
 
+;; (set! global-constraint-instance-list '())
 ;; (length global-constraint-instance-list)
 ;; (define w (select-window-interactively))
 ;; (window-in-list-in-focus? (list w))
