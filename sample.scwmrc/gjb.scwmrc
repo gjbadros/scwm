@@ -98,6 +98,7 @@
 (define want-workman-menu #t)
 
 (define xterm-user-shell-options "-e start-zsh")
+(define xterm-other-host "bowman")
 (define xterm-program-name "color-xterm")
 
 (define use-complete-host-menu #t)
@@ -290,9 +291,12 @@
 			 #:proc animated-deiconify-to-current-viewport-focus-raise))
 
 (define (show-xterm-window-list-menu)
-  (show-window-list-menu #:only (lambda (w) (string=? (window-class w) "XTerm")) 
+  (show-window-list-menu #:only (lambda (w)
+				  (or 
+				   (string=? (window-class w) "XTerm")
+				   (string=? (window-class w) "NXTerm")) )
 			 #:warp-to-first #t
-			 #:proc deiconify-to-current-viewport-focus-raise
+			 #:proc animated-deiconify-to-current-viewport-focus-raise
 			 #:flash-window-proc flash-window
 			 #:unflash-window-proc unflash-window))
 
@@ -734,6 +738,9 @@
 (define (start-xterm)
   (execute (string-append xterm-program-name " " xterm-user-shell-options)))
 
+(define (start-xterm-on-other-host)
+  (xterm-other-host xterm-other-host))
+
 (define (start-xlogo)
   (execute "xlogo"))
 
@@ -1158,6 +1165,7 @@
 (bind-key 'all "C-M-S-r" refresh)
 (bind-key 'all "C-M-S-5" recapture)
 (bind-key 'all "C-M-S-x" start-xterm)
+(bind-key 'all "C-M-S-b" start-xterm-on-other-host)
 (bind-key 'all "C-M-S-p" start-xlogo)
 
 (bind-key 'all "C-S-F1" popup-small-ops)
