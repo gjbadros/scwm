@@ -15,7 +15,6 @@
 #include "scwm.h"
 #include "misc.h"
 #include "screen.h"
-#include "module.h"
 #include "deskpage.h"
 
 SCM 

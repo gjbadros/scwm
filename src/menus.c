@@ -25,6 +25,7 @@
 #include <X11/keysym.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <assert.h>
 
 #include "scwm.h"
 #include "menus.h"
@@ -44,7 +45,7 @@ MenuItem *ActiveItem = NULL;	/* the active menu item */
 int menuFromFrameOrWindowOrTitlebar = FALSE;
 
 extern int Context, Button;
-extern ScwmWindow *ButtonWindow, *Tmp_win;
+extern ScwmWindow *ButtonWindow, *swCurrent;
 extern XEvent Event;
 int Stashed_X, Stashed_Y, MenuY = 0;
 
@@ -55,10 +56,7 @@ int UpdateMenu(int sticks);
 int mouse_moved = 0;
 int menu_aborted = 0;
 
-#ifdef LEFT_MENUS
 static int PrevActiveMenuX = -1;
-
-#endif /* LEFT_MENUS */
 
 extern XContext MenuContext;
 
@@ -80,12 +78,7 @@ do_menu(MenuRoot * menu, int style)
   Time t0 = 0;
   extern Time lastTimestamp;
 
-#ifdef LEFT_MENUS
   int PrevMenuX = PrevActiveMenuX;
-
-#endif /* LEFT_MENUS */
-
-
 
   /* this condition could get ugly */
   if (menu->in_use)
@@ -141,9 +134,7 @@ do_menu(MenuRoot * menu, int style)
     menu_aborted = 1;
   else
     menu_aborted = 0;
-#ifdef LEFT_MENUS
   PrevActiveMenuX = PrevMenuX;
-#endif /* LEFT_MENUS */
   return retval;
 }
 
@@ -422,34 +413,6 @@ MenuRoot *PrevMenu = NULL;
 MenuItem *PrevItem = NULL;
 int PrevY = 0;
 
-
-
-static
-MenuRoot *
-FindPopup(char *action)
-{
-  char *tmp;
-  MenuRoot *mr;
-
-  GetNextToken(action, &tmp);
-
-  if (tmp == NULL)
-    return NULL;
-
-  mr = Scr.AllMenus;
-  while (mr != NULL) {
-    if (mr->name != NULL)
-      if (strcasecmp(tmp, mr->name) == 0) {
-	free(tmp);
-	return mr;
-      }
-    mr = mr->next;
-  }
-  free(tmp);
-  return NULL;
-
-}
-
 /***********************************************************************
  *
  *  Procedure:
@@ -509,7 +472,7 @@ FindEntry(void)
       if (!strcmp(ActiveItem->action, "SchemeMenu")) {
 	menu = MENUROOT(ActiveItem->thunk);
       } else {
-	menu = FindPopup(&ActiveItem->action[5]);
+        assert(0);
       }
       if (menu != NULL) {
 	retval = do_menu(menu, 0);
@@ -757,31 +720,29 @@ PopUpMenu(MenuRoot * menu, int x, int y)
   x -= (menu->width >> 1);
   y -= (Scr.EntryHeight >> 1);
 
-  if ((Tmp_win) && (menu_on == 1) && (Context & C_LALL)) {
-    y = Tmp_win->frame_y + Tmp_win->boundary_width + Tmp_win->title_height + 1;
-    x = Tmp_win->frame_x + Tmp_win->boundary_width +
-      ButtonPosition(Context, Tmp_win) * Tmp_win->title_height + 1;
+  if ((swCurrent) && (menu_on == 1) && (Context & C_LALL)) {
+    y = swCurrent->frame_y + swCurrent->boundary_width + swCurrent->title_height + 1;
+    x = swCurrent->frame_x + swCurrent->boundary_width +
+      ButtonPosition(Context, swCurrent) * swCurrent->title_height + 1;
   }
-  if ((Tmp_win) && (menu_on == 1) && (Context & C_RALL)) {
-    y = Tmp_win->frame_y + Tmp_win->boundary_width + Tmp_win->title_height + 1;
-    x = Tmp_win->frame_x + Tmp_win->frame_width - Tmp_win->boundary_width -
-      ButtonPosition(Context, Tmp_win) * Tmp_win->title_height - menu->width + 1;
+  if ((swCurrent) && (menu_on == 1) && (Context & C_RALL)) {
+    y = swCurrent->frame_y + swCurrent->boundary_width + swCurrent->title_height + 1;
+    x = swCurrent->frame_x + swCurrent->frame_width - swCurrent->boundary_width -
+      ButtonPosition(Context, swCurrent) * swCurrent->title_height - menu->width + 1;
   }
-  if ((Tmp_win) && (menu_on == 1) && (Context & C_TITLE)) {
-    y = Tmp_win->frame_y + Tmp_win->boundary_width + Tmp_win->title_height + 1;
-    if (x < Tmp_win->frame_x + Tmp_win->title_x)
-      x = Tmp_win->frame_x + Tmp_win->title_x;
+  if ((swCurrent) && (menu_on == 1) && (Context & C_TITLE)) {
+    y = swCurrent->frame_y + swCurrent->boundary_width + swCurrent->title_height + 1;
+    if (x < swCurrent->frame_x + swCurrent->title_x)
+      x = swCurrent->frame_x + swCurrent->title_x;
     if ((x + menu->width) >
-	(Tmp_win->frame_x + Tmp_win->title_x + Tmp_win->title_width))
-      x = Tmp_win->frame_x + Tmp_win->title_x + Tmp_win->title_width -
+	(swCurrent->frame_x + swCurrent->title_x + swCurrent->title_width))
+      x = swCurrent->frame_x + swCurrent->title_x + swCurrent->title_width -
 	menu->width + 1;
   }
-#ifdef LEFT_MENUS
   if (PrevActiveMenuX != -1)
     if (x + menu->width > Scr.MyDisplayWidth - 2) {
       x = PrevActiveMenuX - menu->width + 2;
     }
-#endif /* LEFT_MENUS */
   /* clip to screen */
   if (x + menu->width > Scr.MyDisplayWidth - 2)
     x = Scr.MyDisplayWidth - menu->width - 2;
@@ -800,10 +761,7 @@ PopUpMenu(MenuRoot * menu, int x, int y)
   if (y < 0)
     y = 0;
 
-#ifdef LEFT_MENUS
   PrevActiveMenuX = x;
-#endif /* LEFT_MENUS */
-
   MenuY = y;
   XMoveWindow(dpy, menu->w, x, y);
   XMapRaised(dpy, menu->w);
@@ -827,12 +785,9 @@ PopDownMenu()
 
   menu_on--;
 
-#ifdef LEFT_MENUS
   if (menu_on == 0) {		/* last menu down? */
     PrevActiveMenuX = -1;	/* Return to no prev item state */
   }				/* end last menu down */
-#endif				/* LEFT_MENUS */
-
   if (ActiveItem)
     ActiveItem->state = 0;
 

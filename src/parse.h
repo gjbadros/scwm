@@ -19,6 +19,9 @@
 #ifndef _PARSE_
 #define _PARSE_
 
+/* FIXGJB: this file should be made obsolete!
+  used by decorations.c,menus.c,window.c */
+
 #define F_NOP			0
 #define F_BEEP			1
 #define F_QUIT			2

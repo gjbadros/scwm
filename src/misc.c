@@ -27,10 +27,9 @@
 #include <X11/Xatom.h>
 #include "menus.h"
 #include "misc.h"
-#include "parse.h"
 #include "screen.h"
-#include "module.h"
 #include "window.h"
+#include "events.h"
 
 ScwmWindow *FocusOnNextTimeStamp = NULL;
 
@@ -86,7 +85,7 @@ free_window_names(ScwmWindow * tmp, Bool nukename, Bool nukeicon)
  *
  ****************************************************************************/
 void 
-Destroy(ScwmWindow * Tmp_win)
+Destroy(ScwmWindow * sw)
 {
   int i;
   extern ScwmWindow *ButtonWindow;
@@ -98,102 +97,103 @@ Destroy(ScwmWindow * Tmp_win)
    * look at the event, HandleUnmapNotify will have to mash the UnmapNotify
    * into a DestroyNotify.
    */
-  if (!Tmp_win)
+  if (!sw)
     return;
 
-  XUnmapWindow(dpy, Tmp_win->frame);
+  XUnmapWindow(dpy, sw->frame);
 
   if (!PPosOverride)
     XSync(dpy, 0);
 
-  if (Tmp_win == Scr.Hilite)
+  if (sw == Scr.Hilite)
     Scr.Hilite = NULL;
 
-  Broadcast(M_DESTROY_WINDOW, 3, Tmp_win->w, Tmp_win->frame,
-	    (unsigned long) Tmp_win, 0, 0, 0, 0);
+  Broadcast(M_DESTROY_WINDOW, 3, sw->w, sw->frame,
+	    (unsigned long) sw, 0, 0, 0, 0);
 
-  if (Scr.PreviousFocus == Tmp_win)
+  if (Scr.PreviousFocus == sw)
     Scr.PreviousFocus = NULL;
 
-  if (ButtonWindow == Tmp_win)
+  if (ButtonWindow == sw)
     ButtonWindow = NULL;
 
-  if ((Tmp_win == Scr.Focus) && (Tmp_win->flags & ClickToFocus)) {
-    if (Tmp_win->next) {
-      HandleHardFocus(Tmp_win->next);
+  if ((sw == Scr.Focus) && (sw->flags & ClickToFocus)) {
+    if (sw->next) {
+      HandleHardFocus(sw->next);
     } else
       SetFocus(Scr.NoFocusWin, NULL, 1);
-  } else if (Scr.Focus == Tmp_win)
+  } else if (Scr.Focus == sw)
     SetFocus(Scr.NoFocusWin, NULL, 1);
 
-  if (Tmp_win == FocusOnNextTimeStamp)
+  if (sw == FocusOnNextTimeStamp)
     FocusOnNextTimeStamp = NULL;
 
-  if (Tmp_win == Scr.Ungrabbed)
+  if (sw == Scr.Ungrabbed)
     Scr.Ungrabbed = NULL;
 
-  if (Tmp_win == Scr.pushed_window)
+  if (sw == Scr.pushed_window)
     Scr.pushed_window = NULL;
 
-  if (Tmp_win == colormap_win)
+  if (sw == colormap_win)
     colormap_win = NULL;
 
-  XDestroyWindow(dpy, Tmp_win->frame);
-  XDeleteContext(dpy, Tmp_win->frame, ScwmContext);
+  XDestroyWindow(dpy, sw->frame);
+  XDeleteContext(dpy, sw->frame, ScwmContext);
 
-  XDestroyWindow(dpy, Tmp_win->Parent);
+  XDestroyWindow(dpy, sw->Parent);
 
-  XDeleteContext(dpy, Tmp_win->Parent, ScwmContext);
+  XDeleteContext(dpy, sw->Parent, ScwmContext);
 
-  XDeleteContext(dpy, Tmp_win->w, ScwmContext);
+  XDeleteContext(dpy, sw->w, ScwmContext);
 
-  if ((Tmp_win->icon_w) && (Tmp_win->flags & PIXMAP_OURS))
-    XFreePixmap(dpy, Tmp_win->iconPixmap);
+  if ((sw->icon_w) && (sw->flags & PIXMAP_OURS) &&
+    sw->picIcon)
+    XFreePixmap(dpy, sw->picIcon->picture);
 
-  if (Tmp_win->icon_w) {
-    XDestroyWindow(dpy, Tmp_win->icon_w);
-    XDeleteContext(dpy, Tmp_win->icon_w, ScwmContext);
+  if (sw->icon_w) {
+    XDestroyWindow(dpy, sw->icon_w);
+    XDeleteContext(dpy, sw->icon_w, ScwmContext);
   }
-  if ((Tmp_win->flags & ICON_OURS) && (Tmp_win->icon_pixmap_w != None))
-    XDestroyWindow(dpy, Tmp_win->icon_pixmap_w);
-  if (Tmp_win->icon_pixmap_w != None)
-    XDeleteContext(dpy, Tmp_win->icon_pixmap_w, ScwmContext);
+  if ((sw->flags & ICON_OURS) && (sw->icon_pixmap_w != None))
+    XDestroyWindow(dpy, sw->icon_pixmap_w);
+  if (sw->icon_pixmap_w != None)
+    XDeleteContext(dpy, sw->icon_pixmap_w, ScwmContext);
 
-  if (Tmp_win->flags & TITLE) {
-    XDeleteContext(dpy, Tmp_win->title_w, ScwmContext);
+  if (sw->flags & TITLE) {
+    XDeleteContext(dpy, sw->title_w, ScwmContext);
     for (i = 0; i < Scr.nr_left_buttons; i++)
-      XDeleteContext(dpy, Tmp_win->left_w[i], ScwmContext);
+      XDeleteContext(dpy, sw->left_w[i], ScwmContext);
     for (i = 0; i < Scr.nr_right_buttons; i++)
-      if (Tmp_win->right_w[i] != None)
-	XDeleteContext(dpy, Tmp_win->right_w[i], ScwmContext);
+      if (sw->right_w[i] != None)
+	XDeleteContext(dpy, sw->right_w[i], ScwmContext);
   }
-  if (Tmp_win->flags & BORDER) {
+  if (sw->flags & BORDER) {
     for (i = 0; i < 4; i++)
-      XDeleteContext(dpy, Tmp_win->sides[i], ScwmContext);
+      XDeleteContext(dpy, sw->sides[i], ScwmContext);
     for (i = 0; i < 4; i++)
-      XDeleteContext(dpy, Tmp_win->corners[i], ScwmContext);
+      XDeleteContext(dpy, sw->corners[i], ScwmContext);
   }
-  Tmp_win->prev->next = Tmp_win->next;
-  if (Tmp_win->next != NULL)
-    Tmp_win->next->prev = Tmp_win->prev;
-  free_window_names(Tmp_win, True, True);
-  if (Tmp_win->wmhints)
-    XFree((char *) Tmp_win->wmhints);
+  sw->prev->next = sw->next;
+  if (sw->next != NULL)
+    sw->next->prev = sw->prev;
+  free_window_names(sw, True, True);
+  if (sw->wmhints)
+    XFree((char *) sw->wmhints);
   /* removing NoClass change for now... */
-  if (Tmp_win->class.res_name && Tmp_win->class.res_name != NoResource)
-    XFree((char *) Tmp_win->class.res_name);
-  if (Tmp_win->class.res_class && Tmp_win->class.res_class != NoClass)
-    XFree((char *) Tmp_win->class.res_class);
-  if (Tmp_win->mwm_hints)
-    XFree((char *) Tmp_win->mwm_hints);
+  if (sw->class.res_name && sw->class.res_name != NoResource)
+    XFree((char *) sw->class.res_name);
+  if (sw->class.res_class && sw->class.res_class != NoClass)
+    XFree((char *) sw->class.res_class);
+  if (sw->mwm_hints)
+    XFree((char *) sw->mwm_hints);
 
-  if (Tmp_win->cmap_windows != (Window *) NULL)
-    XFree((void *) Tmp_win->cmap_windows);
+  if (sw->cmap_windows != (Window *) NULL)
+    XFree((void *) sw->cmap_windows);
 
   /* XSCM */
-  invalidate_window(Tmp_win->schwin);
+  invalidate_window(sw->schwin);
 
-  free((char *) Tmp_win);
+  free((char *) sw);
 
   if (!PPosOverride)
     XSync(dpy, 0);
@@ -218,6 +218,30 @@ flush_expose(Window w)
   return i;
 }
 
+/* CoerceEnterNotifyOnCurrentWindow()
+ * Pretends to get a HandleEnterNotify on the
+ * window that the pointer currently is in so that
+ * the focus gets set correctly from the beginning
+ * Note that this presently only works if the current
+ * window is not click_to_focus;  I think that
+ * that behaviour is correct and desirable. --11/08/97 gjb */
+void
+CoerceEnterNotifyOnCurrentWindow()
+{
+  extern ScwmWindow *swCurrent; /* from events.c */
+  Window child, root;
+  int root_x, root_y;
+  int win_x, win_y;
+  Bool f = XQueryPointer(dpy, Scr.Root, &root,
+			 &child, &root_x, &root_y, &win_x, &win_y, &JunkMask);
+  if (f && child != None) {
+    Event.xany.window = child;
+    if (XFindContext(dpy, child, ScwmContext, (caddr_t *) &swCurrent) == XCNOENT)
+      swCurrent = NULL;
+    HandleEnterNotify();
+    swCurrent = None;
+  }
+}
 
 
 /***********************************************************************

@@ -287,7 +287,7 @@ SCM
 wait_for_window(SCM predicate)
 {
   Bool done = False;
-  extern ScwmWindow *Tmp_win;
+  extern ScwmWindow *swCurrent;
 
   if (!gh_procedure_p(predicate)) {
     SCM_ALLOW_INTS;
@@ -299,7 +299,7 @@ wait_for_window(SCM predicate)
       DispatchEvent();
       SCM_ALLOW_INTS;
       if (Event.type == MapNotify) {
-	if (gh_call1(predicate, Tmp_win->schwin) == SCM_BOOL_T) {
+	if (gh_call1(predicate, swCurrent->schwin) == SCM_BOOL_T) {
 	  done = True;
 	}
       }

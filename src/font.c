@@ -25,6 +25,7 @@
 #include "errors.h"
 #include "font.h"
 #include "util.h"
+#include "icons.h"
 
 extern ScwmDecor *last_decor, *cur_decor;
 

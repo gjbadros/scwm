@@ -176,8 +176,6 @@ void AnimatedMoveWindow(Window w,int startX,int startY,
 			       float *ppctMovement );
 
 void Keyboard_shortcuts(XEvent *, int);
-void RedoIconName(ScwmWindow *);
-void DrawIconWindow(ScwmWindow *);
 
 inline void RelieveWindow(ScwmWindow *, Window,
 				 int, int, int, int, GC, GC, int);
@@ -199,7 +197,6 @@ int GetContext(ScwmWindow *, XEvent *, Window * dummy);
 void ConstrainSize(ScwmWindow *, int *, int *);
 void HandlePaging(int, int, int *, int *, int *, int *, Bool);
 void SetShape(ScwmWindow *, int);
-void AutoPlace(ScwmWindow *);
 void SetFocus(Window, ScwmWindow *, Bool FocusByMouse);
 void CheckAndSetFocus(void);
 void initModules(void);
@@ -207,10 +204,6 @@ void HandleModuleInput(Window w, int channel);
 void no_popup(char *ptr);
 void KillModule(int channel, int place);
 void ClosePipes(void);
-void GetBitmapFile(ScwmWindow * tmp_win);
-void GetXPMFile(ScwmWindow * tmp_win);
-void GetIconWindow(ScwmWindow * tmp_win);
-void GetIconBitmap(ScwmWindow * tmp_win);
 void SmartPlacement(ScwmWindow * t, int width, int height, int *x, int *y);
 void usage(void);
 
@@ -221,12 +214,8 @@ int DeferExecution(XEvent *, Window *, ScwmWindow **, unsigned long *, int, int)
 void SetBorderX(ScwmWindow *, Bool, Bool, Bool, Window, Bool);
 
 void SetBorder(ScwmWindow *, Bool, Bool, Bool, Window);
-void CreateIconWindow(ScwmWindow *, int, int);
-void SetMapStateProp(ScwmWindow *, int);
 void SetStickyProp(ScwmWindow *, int, int, int);
 void SetClientProp(ScwmWindow *);
-void Iconify(ScwmWindow *, int, int);
-void DeIconify(ScwmWindow *);
 void PopDownMenu(void);
 void KeepOnTop(void);
 void show_panner(void);
@@ -264,6 +253,7 @@ Pixel *AllocNonlinearGradient(char *s_colors[], int clen[],
 void nocolor(char *note, char *name);
 void MakeMenus(void);
 void HandleHardFocus(ScwmWindow * t);
+void CoerceEnterNotifyOnCurrentWindow();
 
 #ifdef BROKEN_SUN_HEADERS
 #include "sun_headers.h"

@@ -1,3 +1,6 @@
+/* $Id$
+ * scwm.c
+ */
 
 /****************************************************************************
  * This module has been significantly modified by Maciej Stachowiak.
@@ -30,8 +33,6 @@
 #include "menus.h"
 #include "misc.h"
 #include "screen.h"
-#include "parse.h"
-#include "module.h"
 #include "window.h"
 #include "Grab.h"
 #include "system.h"
@@ -468,6 +469,8 @@ scwm_main(int argc, char **argv)
 #endif
   XUngrabServer_withSemaphore(dpy);
   UnBlackoutScreen();		/* if we need to remove blackout window */
+  /* set the focus to the current window if appropriate */
+  CoerceEnterNotifyOnCurrentWindow();
   DBUG("main", "Entering HandleEvents loop...");
   HandleEvents();
   DBUG("main", "Back from HandleEvents loop?  Exitting...");

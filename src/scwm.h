@@ -177,11 +177,6 @@ typedef struct ScwmWindow {
   int icon_w_width;		/* width of the icon window */
   int icon_w_height;		/* height of the icon window */
   int icon_t_width;		/* width of the icon title window */
-  int icon_p_width;		/* width of the icon pixmap window */
-  int icon_p_height;		/* height of the icon pixmap window */
-  Pixmap iconPixmap;		/* pixmap for the icon */
-  int iconDepth;		/* Drawable depth for the icon */
-  Pixmap icon_maskPixmap;	/* pixmap for the icon mask */
   char *name;			/* name of the window */
   char *icon_name;		/* name of the icon */
   XWindowAttributes attr;	/* the child window attributes */
@@ -195,11 +190,10 @@ typedef struct ScwmWindow {
   Window transientfor;
 
   unsigned long flags;
-  char *szMiniIconFile;  /* FIXNOWGJB: was: mini_pixmap_file */
-  Picture *picMiniIcon; /* was mini_icon */
-  char *szIconFile; /* FIXNOWGJB: was: icon_bitmap_file */
-  /* FIXGJB: this duplicates above icon_ fields */
-  Picture *picIcon; /* was icon_?? */
+  char *szMiniIconFile;		/* the filename for the mini-icon */
+  Picture *picMiniIcon;		/* the mini icon picture */
+  char *szIconFile;		/* the filename for the icon */
+  Picture *picIcon;		/* the icon picture */
 
   int orig_x;			/* unmaximized x coordinate */
   int orig_y;			/* unmaximized y coordinate */

@@ -92,7 +92,7 @@ typedef PropMotifWmHints PropMwmHints;
 #define OL_DECOR_ICON_NAME            (1L << 3)
 #define OL_DECOR_ALL                  (OL_DECOR_CLOSE | OL_DECOR_RESIZEH | OL_DECOR_HEADER | OL_DECOR_ICON_NAME)
 
-extern ScwmWindow *Tmp_win;
+extern ScwmWindow *swCurrent;
 
 /****************************************************************************
  * 
@@ -416,7 +416,7 @@ SelectDecor(ScwmWindow * t, unsigned long tflags, int border_width,
 /****************************************************************************
  * 
  * Checks the function described in menuItem mi, and sees if it
- * is an allowed function for window Tmp_Win,
+ * is an allowed function for window swCurrent,
  * according to the motif way of life.
  * 
  * This routine is used to determine whether or not to grey out menu items.
@@ -427,82 +427,82 @@ check_allowed_function(MenuItem * mi)
 {
   /* Complex functions are a little tricky... ignore them for now */
 
-  if ((Tmp_win) &&
-    (!(Tmp_win->flags & DoesWmDeleteWindow)) && (mi->func_type == F_DELETE))
+  if ((swCurrent) &&
+    (!(swCurrent->flags & DoesWmDeleteWindow)) && (mi->func_type == F_DELETE))
     return 0;
 
   /* Move is a funny hint. Keeps it out of the menu, but you're still allowed
    * to move. */
-  if ((mi->func_type == F_MOVE) && (Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_MOVE)))
+  if ((mi->func_type == F_MOVE) && (swCurrent) && (!(swCurrent->functions & MWM_FUNC_MOVE)))
     return 0;
 
-  if ((mi->func_type == F_RESIZE) && (Tmp_win) &&
-      (!(Tmp_win->functions & MWM_FUNC_RESIZE)))
+  if ((mi->func_type == F_RESIZE) && (swCurrent) &&
+      (!(swCurrent->functions & MWM_FUNC_RESIZE)))
     return 0;
 
-  if ((mi->func_type == F_ICONIFY) && (Tmp_win) &&
-      (!(Tmp_win->flags & ICONIFIED)) &&
-      (!(Tmp_win->functions & MWM_FUNC_MINIMIZE)))
+  if ((mi->func_type == F_ICONIFY) && (swCurrent) &&
+      (!(swCurrent->flags & ICONIFIED)) &&
+      (!(swCurrent->functions & MWM_FUNC_MINIMIZE)))
     return 0;
 
-  if ((mi->func_type == F_MAXIMIZE) && (Tmp_win) &&
-      (!(Tmp_win->functions & MWM_FUNC_MAXIMIZE)))
+  if ((mi->func_type == F_MAXIMIZE) && (swCurrent) &&
+      (!(swCurrent->functions & MWM_FUNC_MAXIMIZE)))
     return 0;
 
-  if ((mi->func_type == F_DELETE) && (Tmp_win) &&
-      (!(Tmp_win->functions & MWM_FUNC_CLOSE)))
+  if ((mi->func_type == F_DELETE) && (swCurrent) &&
+      (!(swCurrent->functions & MWM_FUNC_CLOSE)))
     return 0;
 
-  if ((mi->func_type == F_CLOSE) && (Tmp_win) &&
-      (!(Tmp_win->functions & MWM_FUNC_CLOSE)))
+  if ((mi->func_type == F_CLOSE) && (swCurrent) &&
+      (!(swCurrent->functions & MWM_FUNC_CLOSE)))
     return 0;
 
-  if ((mi->func_type == F_DESTROY) && (Tmp_win) &&
-      (!(Tmp_win->functions & MWM_FUNC_CLOSE)))
+  if ((mi->func_type == F_DESTROY) && (swCurrent) &&
+      (!(swCurrent->functions & MWM_FUNC_CLOSE)))
     return 0;
 
   if (mi->func_type == F_FUNCTION) {
     /* Hard part! What to do now? */
     /* Hate to do it, but for lack of a better idea,
      * check based on the menu entry name */
-    if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_MOVE)) &&
+    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_MOVE)) &&
 	(strncasecmp(mi->item, MOVE_STRING, strlen(MOVE_STRING)) == 0))
       return 0;
 
-    if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_RESIZE)) &&
+    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_RESIZE)) &&
      (strncasecmp(mi->item, RESIZE_STRING1, strlen(RESIZE_STRING1)) == 0))
       return 0;
 
-    if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_RESIZE)) &&
+    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_RESIZE)) &&
      (strncasecmp(mi->item, RESIZE_STRING2, strlen(RESIZE_STRING2)) == 0))
       return 0;
 
-    if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_MINIMIZE)) &&
-	(!(Tmp_win->flags & ICONIFIED)) &&
+    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_MINIMIZE)) &&
+	(!(swCurrent->flags & ICONIFIED)) &&
     (strncasecmp(mi->item, MINIMIZE_STRING, strlen(MINIMIZE_STRING)) == 0))
       return 0;
 
-    if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_MINIMIZE)) &&
+    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_MINIMIZE)) &&
 	(strncasecmp(mi->item, MINIMIZE_STRING2, strlen(MINIMIZE_STRING2)) == 0))
       return 0;
 
-    if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_MAXIMIZE)) &&
+    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_MAXIMIZE)) &&
     (strncasecmp(mi->item, MAXIMIZE_STRING, strlen(MAXIMIZE_STRING)) == 0))
       return 0;
 
-    if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_CLOSE)) &&
+    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_CLOSE)) &&
 	(strncasecmp(mi->item, CLOSE_STRING1, strlen(CLOSE_STRING1)) == 0))
       return 0;
 
-    if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_CLOSE)) &&
+    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_CLOSE)) &&
 	(strncasecmp(mi->item, CLOSE_STRING2, strlen(CLOSE_STRING2)) == 0))
       return 0;
 
-    if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_CLOSE)) &&
+    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_CLOSE)) &&
 	(strncasecmp(mi->item, CLOSE_STRING3, strlen(CLOSE_STRING3)) == 0))
       return 0;
 
-    if ((Tmp_win) && (!(Tmp_win->functions & MWM_FUNC_CLOSE)) &&
+    if ((swCurrent) && (!(swCurrent->functions & MWM_FUNC_CLOSE)) &&
 	(strncasecmp(mi->item, CLOSE_STRING4, strlen(CLOSE_STRING4)) == 0))
       return 0;
 

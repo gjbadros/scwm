@@ -21,7 +21,6 @@
 #include "scwm.h"
 #include "misc.h"
 #include "screen.h"
-#include "parse.h"
 
 int dragx;			/* all these variables are used */
 int dragy;			/* in resize operations */

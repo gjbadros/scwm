@@ -47,7 +47,6 @@
 #include "screen.h"
 #include <X11/extensions/shape.h>
 #include <X11/Xresource.h>
-#include "module.h"
 #include "binding.h"
 #include "window.h"
 #include "decorations.h"

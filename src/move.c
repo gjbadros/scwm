@@ -25,10 +25,9 @@
 #include "scwm.h"
 #include "menus.h"
 #include "misc.h"
-#include "parse.h"
 #include "screen.h"
-#include "module.h"
 #include "Grab.h"
+#include "icons.h"
 
 
 extern XEvent Event;
@@ -228,14 +227,14 @@ moveLoop(ScwmWindow * tmp_win, int XOffset, int YOffset, int Width,
 	  if (tmp_win->flags & ICONIFIED) {
 	    tmp_win->icon_x_loc = xl;
 	    tmp_win->icon_xl_loc = xl -
-	      (tmp_win->icon_w_width - tmp_win->icon_p_width) / 2;
+	      (tmp_win->icon_w_width - ICON_P_WIDTH(tmp_win)) / 2;
 	    tmp_win->icon_y_loc = yt;
 	    if (tmp_win->icon_pixmap_w != None)
 	      XMoveWindow(dpy, tmp_win->icon_pixmap_w,
 			  tmp_win->icon_x_loc, yt);
 	    else if (tmp_win->icon_w != None)
 	      XMoveWindow(dpy, tmp_win->icon_w, tmp_win->icon_xl_loc,
-			  yt + tmp_win->icon_p_height);
+			  yt + ICON_P_HEIGHT(tmp_win));
 
 	  } else
 	    XMoveWindow(dpy, tmp_win->frame, xl, yt);

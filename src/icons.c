@@ -27,422 +27,11 @@
 #include "scwm.h"
 #include "menus.h"
 #include "misc.h"
-#include "parse.h"
 #include "screen.h"
-#include "module.h"
 #include "Picture.h"
+#include "icons.h"
 
 #include <X11/extensions/shape.h>
-
-
-void GrabIconButtons(ScwmWindow *, Window);
-void GrabIconKeys(ScwmWindow *, Window);
-
-/****************************************************************************
- *
- * Creates an icon window as needed
- *
- ****************************************************************************/
-void 
-CreateIconWindow(ScwmWindow * tmp_win, int def_x, int def_y)
-{
-  int final_x, final_y;
-  unsigned long valuemask;	/* mask for create windows */
-  XSetWindowAttributes attributes;	/* attributes for create windows */
-
-  tmp_win->flags |= ICON_OURS;
-  tmp_win->flags &= ~PIXMAP_OURS;
-  tmp_win->flags &= ~SHAPED_ICON;
-  tmp_win->icon_pixmap_w = None;
-  tmp_win->iconPixmap = None;
-  tmp_win->iconDepth = 0;
-
-  if (tmp_win->flags & SUPPRESSICON)
-    return;
-
-  /* First, see if it was specified in the .scwmrc */
-  tmp_win->icon_p_height = 0;
-  tmp_win->icon_p_width = 0;
-
-  /* First, check for a monochrome bitmap */
-  if (tmp_win->szIconFile != NULL)
-    GetBitmapFile(tmp_win);
-
-  /* Next, check for a color pixmap */
-  if ((tmp_win->szIconFile != NULL) &&
-      (tmp_win->icon_p_height == 0) && (tmp_win->icon_p_width == 0))
-    GetXPMFile(tmp_win);
-
-  /* Next, See if the app supplies its own icon window */
-  if ((tmp_win->icon_p_height == 0) && (tmp_win->icon_p_width == 0) &&
-      (tmp_win->wmhints) && (tmp_win->wmhints->flags & IconWindowHint))
-    GetIconWindow(tmp_win);
-
-  /* Finally, try to get icon bitmap from the application */
-  if ((tmp_win->icon_p_height == 0) && (tmp_win->icon_p_width == 0) &&
-      (tmp_win->wmhints) && (tmp_win->wmhints->flags & IconPixmapHint))
-    GetIconBitmap(tmp_win);
-
-  /* figure out the icon window size */
-  if (!(tmp_win->flags & NOICON_TITLE) || (tmp_win->icon_p_height == 0)) {
-    tmp_win->icon_t_width = XTextWidth(Scr.IconFont.font,
-				       tmp_win->icon_name,
-				       strlen(tmp_win->icon_name));
-    tmp_win->icon_w_height = ICON_HEIGHT;
-  } else {
-    tmp_win->icon_t_width = 0;
-    tmp_win->icon_w_height = 0;
-  }
-  if ((tmp_win->flags & ICON_OURS) && (tmp_win->icon_p_height > 0)) {
-    tmp_win->icon_p_width += 4;
-    tmp_win->icon_p_height += 4;
-  }
-  if (tmp_win->icon_p_width == 0)
-    tmp_win->icon_p_width = tmp_win->icon_t_width + 6;
-  tmp_win->icon_w_width = tmp_win->icon_p_width;
-
-  final_x = def_x;
-  final_y = def_y;
-  if (final_x < 0)
-    final_x = 0;
-  if (final_y < 0)
-    final_y = 0;
-
-  if (final_x + tmp_win->icon_w_width >= Scr.MyDisplayWidth)
-    final_x = Scr.MyDisplayWidth - tmp_win->icon_w_width - 1;
-  if (final_y + tmp_win->icon_w_height >= Scr.MyDisplayHeight)
-    final_y = Scr.MyDisplayHeight - tmp_win->icon_w_height - 1;
-
-  tmp_win->icon_x_loc = final_x;
-  tmp_win->icon_xl_loc = final_x;
-  tmp_win->icon_y_loc = final_y;
-
-  /* clip to fit on screen */
-  attributes.background_pixel = Scr.MenuColors.back;
-  valuemask = CWBorderPixel | CWCursor | CWEventMask | CWBackPixel;
-  attributes.border_pixel = Scr.MenuColors.fore;
-  attributes.cursor = Scr.ScwmCursors[DEFAULT];
-  attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
-			   VisibilityChangeMask |
-			   ExposureMask | KeyPressMask | EnterWindowMask |
-			   FocusChangeMask);
-  if (!(tmp_win->flags & NOICON_TITLE) || (tmp_win->icon_p_height == 0))
-    tmp_win->icon_w =
-      XCreateWindow(dpy, Scr.Root, final_x, final_y + tmp_win->icon_p_height,
-		    tmp_win->icon_w_width, tmp_win->icon_w_height, 0,
-		    CopyFromParent,
-		    CopyFromParent, CopyFromParent, valuemask, &attributes);
-
-  if ((tmp_win->flags & ICON_OURS) && (tmp_win->icon_p_width > 0) &&
-      (tmp_win->icon_p_height > 0)) {
-    tmp_win->icon_pixmap_w =
-      XCreateWindow(dpy, Scr.Root, final_x, final_y, tmp_win->icon_p_width,
-		    tmp_win->icon_p_height, 0, CopyFromParent,
-		    CopyFromParent, CopyFromParent, valuemask, &attributes);
-  } else {
-    attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
-			     VisibilityChangeMask |
-			     KeyPressMask | EnterWindowMask |
-			     FocusChangeMask | LeaveWindowMask);
-
-    valuemask = CWEventMask;
-    XChangeWindowAttributes(dpy, tmp_win->icon_pixmap_w,
-			    valuemask, &attributes);
-  }
-
-
-  if (ShapesSupported && (tmp_win->flags & SHAPED_ICON)) {
-    XShapeCombineMask(dpy, tmp_win->icon_pixmap_w, ShapeBounding, 2, 2,
-		      tmp_win->icon_maskPixmap, ShapeSet);
-  }
-
-  if (tmp_win->icon_w != None) {
-    XSaveContext(dpy, tmp_win->icon_w, ScwmContext, (caddr_t) tmp_win);
-    XDefineCursor(dpy, tmp_win->icon_w, Scr.ScwmCursors[DEFAULT]);
-    GrabIconButtons(tmp_win, tmp_win->icon_w);
-    GrabIconKeys(tmp_win, tmp_win->icon_w);
-  }
-  if (tmp_win->icon_pixmap_w != None) {
-    XSaveContext(dpy, tmp_win->icon_pixmap_w, ScwmContext, (caddr_t) tmp_win);
-    XDefineCursor(dpy, tmp_win->icon_pixmap_w, Scr.ScwmCursors[DEFAULT]);
-    GrabIconButtons(tmp_win, tmp_win->icon_pixmap_w);
-    GrabIconKeys(tmp_win, tmp_win->icon_pixmap_w);
-  }
-  return;
-}
-
-/****************************************************************************
- *
- * Draws the icon window
- *
- ****************************************************************************/
-void 
-DrawIconWindow(ScwmWindow * Tmp_win)
-{
-  GC Shadow, Relief;
-  Pixel TextColor, BackColor;
-  int x;
-
-  if (Tmp_win->flags & SUPPRESSICON)
-    return;
-
-  if (Tmp_win->icon_w != None)
-    flush_expose(Tmp_win->icon_w);
-  if (Tmp_win->icon_pixmap_w != None)
-    flush_expose(Tmp_win->icon_pixmap_w);
-
-  if (Scr.Hilite == Tmp_win) {
-    if (Scr.d_depth < 2) {
-      Relief =
-	Shadow = Scr.DefaultDecor.HiShadowGC;
-      TextColor = Scr.DefaultDecor.HiColors.fore;
-      BackColor = Scr.DefaultDecor.HiColors.back;
-    } else {
-      Relief = GetDecor(Tmp_win, HiReliefGC);
-      Shadow = GetDecor(Tmp_win, HiShadowGC);
-      TextColor = GetDecor(Tmp_win, HiColors.fore);
-      BackColor = GetDecor(Tmp_win, HiColors.back);
-    }
-    /* resize the icon name window */
-    if (Tmp_win->icon_w != None) {
-      Tmp_win->icon_w_width = Tmp_win->icon_t_width + 6;
-      if (Tmp_win->icon_w_width < Tmp_win->icon_p_width)
-	Tmp_win->icon_w_width = Tmp_win->icon_p_width;
-      Tmp_win->icon_xl_loc = Tmp_win->icon_x_loc -
-	(Tmp_win->icon_w_width - Tmp_win->icon_p_width) / 2;
-    }
-  } else {
-    if (Scr.d_depth < 2) {
-      Relief = Scr.MenuGC;
-      Shadow = Scr.MenuGC;
-    } else {
-      Globalgcv.foreground = Tmp_win->ReliefPixel;
-      Globalgcm = GCForeground;
-      XChangeGC(dpy, Scr.ScratchGC1, Globalgcm, &Globalgcv);
-      Relief = Scr.ScratchGC1;
-
-      Globalgcv.foreground = Tmp_win->ShadowPixel;
-      XChangeGC(dpy, Scr.ScratchGC2, Globalgcm, &Globalgcv);
-      Shadow = Scr.ScratchGC2;
-    }
-    /* resize the icon name window */
-    if (Tmp_win->icon_w != None) {
-      Tmp_win->icon_w_width = Tmp_win->icon_p_width;
-      Tmp_win->icon_xl_loc = Tmp_win->icon_x_loc;
-    }
-    TextColor = Tmp_win->TextPixel;
-    BackColor = Tmp_win->BackPixel;
-
-  }
-  if ((Tmp_win->flags & ICON_OURS) && (Tmp_win->icon_pixmap_w != None))
-    XSetWindowBackground(dpy, Tmp_win->icon_pixmap_w,
-			 BackColor);
-  if (Tmp_win->icon_w != None)
-    XSetWindowBackground(dpy, Tmp_win->icon_w, BackColor);
-
-  /* write the icon label */
-  NewFontAndColor(Scr.IconFont.font->fid, TextColor, BackColor);
-
-  if (Tmp_win->icon_pixmap_w != None)
-    XMoveWindow(dpy, Tmp_win->icon_pixmap_w, Tmp_win->icon_x_loc,
-		Tmp_win->icon_y_loc);
-  if (Tmp_win->icon_w != None) {
-    Tmp_win->icon_w_height = ICON_HEIGHT;
-    XMoveResizeWindow(dpy, Tmp_win->icon_w, Tmp_win->icon_xl_loc,
-		      Tmp_win->icon_y_loc + Tmp_win->icon_p_height,
-		      Tmp_win->icon_w_width, ICON_HEIGHT);
-
-    XClearWindow(dpy, Tmp_win->icon_w);
-  }
-  if ((Tmp_win->iconPixmap != None) && (!(Tmp_win->flags & SHAPED_ICON)))
-    RelieveWindow(Tmp_win, Tmp_win->icon_pixmap_w, 0, 0,
-		  Tmp_win->icon_p_width, Tmp_win->icon_p_height,
-		  Relief, Shadow, FULL_HILITE);
-
-  /* need to locate the icon pixmap */
-  if (Tmp_win->iconPixmap != None) {
-    if (Tmp_win->iconDepth == Scr.d_depth) {
-      XCopyArea(dpy, Tmp_win->iconPixmap, Tmp_win->icon_pixmap_w, Scr.ScratchGC3,
-	 0, 0, Tmp_win->icon_p_width - 4, Tmp_win->icon_p_height - 4, 2, 2);
-    } else
-      XCopyPlane(dpy, Tmp_win->iconPixmap, Tmp_win->icon_pixmap_w, Scr.ScratchGC3, 0,
-	 0, Tmp_win->icon_p_width - 4, Tmp_win->icon_p_height - 4, 2, 2, 1);
-  }
-  if (Tmp_win->icon_w != None) {
-    /* text position */
-    x = (Tmp_win->icon_w_width - Tmp_win->icon_t_width) / 2;
-    if (x < 3)
-      x = 3;
-
-    XDrawString(dpy, Tmp_win->icon_w, Scr.ScratchGC3, x,
-		Tmp_win->icon_w_height - Scr.IconFont.height +
-		Scr.IconFont.y - 3,
-		Tmp_win->icon_name, strlen(Tmp_win->icon_name));
-    RelieveWindow(Tmp_win, Tmp_win->icon_w, 0, 0, Tmp_win->icon_w_width,
-		  ICON_HEIGHT, Relief, Shadow, FULL_HILITE);
-  }
-}
-
-/***********************************************************************
- *
- *  Procedure:
- *	RedoIconName - procedure to re-position the icon window and name
- *
- ************************************************************************/
-void 
-RedoIconName(ScwmWindow * Tmp_win)
-{
-
-  if (Tmp_win->flags & SUPPRESSICON)
-    return;
-
-  if (Tmp_win->icon_w == (int) NULL)
-    return;
-
-  Tmp_win->icon_t_width = XTextWidth(Scr.IconFont.font, Tmp_win->icon_name,
-				     strlen(Tmp_win->icon_name));
-  /* clear the icon window, and trigger a re-draw via an expose event */
-  if (Tmp_win->flags & ICONIFIED)
-    XClearArea(dpy, Tmp_win->icon_w, 0, 0, 0, 0, True);
-  return;
-}
-
-
-
-
-/***********************************************************************
- *
- *  Procedure:
- *	AutoPlace - Find a home for an icon
- *
- ************************************************************************/
-void 
-AutoPlace(ScwmWindow * t)
-{
-  int test_x = 0, test_y = 0, tw, th, tx, ty, temp_h, temp_w;
-  int base_x, base_y;
-  int width, height;
-  ScwmWindow *test_window;
-  Bool loc_ok;
-  int real_x = 10, real_y = 10;
-  int new_x, new_y;
-
-
-  /* New! Put icon in same page as the center of the window */
-  /* Not a good idea for StickyIcons */
-  if ((t->flags & StickyIcon) || (t->flags & STICKY)) {
-    base_x = 0;
-    base_y = 0;
-    /*Also, if its a stickyWindow, put it on the current page! */
-    new_x = t->frame_x % Scr.MyDisplayWidth;
-    new_y = t->frame_y % Scr.MyDisplayHeight;
-    if (new_x < 0)
-      new_x += Scr.MyDisplayWidth;
-    if (new_y < 0)
-      new_y += Scr.MyDisplayHeight;
-    SetupFrame(t, new_x, new_y,
-	       t->frame_width, t->frame_height, False);
-    t->Desk = Scr.CurrentDesk;
-  } else {
-    base_x = ((t->frame_x + Scr.Vx + (t->frame_width >> 1)) / Scr.MyDisplayWidth) *
-      Scr.MyDisplayWidth - Scr.Vx;
-    base_y = ((t->frame_y + Scr.Vy + (t->frame_height >> 1)) / Scr.MyDisplayHeight) *
-      Scr.MyDisplayHeight - Scr.Vy;
-  }
-  if (t->flags & ICON_MOVED) {
-    /* just make sure the icon is on this screen */
-    t->icon_x_loc = t->icon_x_loc % Scr.MyDisplayWidth + base_x;
-    t->icon_y_loc = t->icon_y_loc % Scr.MyDisplayHeight + base_y;
-    if (t->icon_x_loc < 0)
-      t->icon_x_loc += Scr.MyDisplayWidth;
-    if (t->icon_y_loc < 0)
-      t->icon_y_loc += Scr.MyDisplayHeight;
-  } else if (t->wmhints && t->wmhints->flags & IconPositionHint) {
-    t->icon_x_loc = t->wmhints->icon_x;
-    t->icon_y_loc = t->wmhints->icon_y;
-  } else if (t->IconBox[0] >= 0) {
-    width = t->icon_p_width;
-    height = t->icon_w_height + t->icon_p_height;
-    loc_ok = False;
-
-    /* check all boxes in order */
-    /* In each IconBox, start at the upper left, travel right, then
-     * down */
-    test_y = t->IconBox[1] + base_y;
-
-    temp_h = height;
-    temp_w = width;
-
-    /* OK second try at this.
-     * If the window is taller than the icon box, ignore the icon height
-     * when figuring where to put it. Same goes for the width */
-    /* This should permit reasonably graceful handling of big icons. */
-    if (width >= (t->IconBox[2] - t->IconBox[0]))
-      temp_w = 0;
-    if (height >= (t->IconBox[3] - t->IconBox[1]))
-      temp_h = 0;
-
-    while (((test_y + temp_h) < (t->IconBox[3] + base_y)) && (!loc_ok)) {
-      test_x = t->IconBox[0] + base_x;
-      while (((test_x + temp_w) < (t->IconBox[2] + base_x)) &&
-	     (!loc_ok)) {
-	real_x = test_x;
-	real_y = test_y;
-
-	if (test_x + width > (Scr.MyDisplayWidth - 2 + base_x))
-	  real_x = Scr.MyDisplayWidth - width - 2 + base_x;
-	if (test_y + height > (Scr.MyDisplayHeight - 2 + base_y))
-	  real_y = Scr.MyDisplayHeight - height - 2 + base_y;
-	if (test_x < base_x)
-	  real_x = base_x;
-	if (test_y < base_y)
-	  real_y = base_y;
-	loc_ok = True;
-	test_window = Scr.ScwmRoot.next;
-	while ((test_window != (ScwmWindow *) 0) && (loc_ok == True)) {
-	  if (test_window->Desk == t->Desk) {
-	    if ((test_window->flags & ICONIFIED) &&
-		(test_window->icon_w || test_window->icon_pixmap_w) &&
-		(test_window != t)) {
-	      tw = test_window->icon_p_width;
-	      th = test_window->icon_p_height +
-		test_window->icon_w_height;
-	      tx = test_window->icon_x_loc;
-	      ty = test_window->icon_y_loc;
-
-	      if ((tx < (real_x + width + 3)) && ((tx + tw + 3) > real_x) &&
-		  (ty < (real_y + height + 3)) && ((ty + th + 3) > real_y)) {
-		loc_ok = False;
-	      }
-	    }
-	  }
-	  test_window = test_window->next;
-	}
-	test_x += 3;
-      }
-      test_y += 3;
-    }
-    if (loc_ok == False)
-      return;
-    t->icon_x_loc = real_x;
-    t->icon_y_loc = real_y;
-
-    if (t->icon_pixmap_w)
-      XMoveWindow(dpy, t->icon_pixmap_w, t->icon_x_loc, t->icon_y_loc);
-
-    t->icon_w_width = t->icon_p_width;
-    t->icon_xl_loc = t->icon_x_loc;
-
-    if (t->icon_w != None)
-      XMoveResizeWindow(dpy, t->icon_w, t->icon_xl_loc,
-			t->icon_y_loc + t->icon_p_height,
-			t->icon_w_width, ICON_HEIGHT);
-    Broadcast(M_ICON_LOCATION, 7, t->w, t->frame,
-	      (unsigned long) t,
-	      t->icon_x_loc, t->icon_y_loc,
-	      t->icon_w_width, t->icon_w_height + t->icon_p_height);
-  }
-}
 
 /***********************************************************************
  *
@@ -453,7 +42,7 @@ AutoPlace(ScwmWindow * t)
  *	tmp_win - the scwm window structure to use
  *
  ***********************************************************************/
-void 
+static void 
 GrabIconButtons(ScwmWindow * tmp_win, Window w)
 {
   Binding *MouseEntry;
@@ -498,7 +87,7 @@ GrabIconButtons(ScwmWindow * tmp_win, Window w)
  *	tmp_win - the scwm window structure to use
  *
  ***********************************************************************/
-void 
+static void 
 GrabIconKeys(ScwmWindow * tmp_win, Window w)
 {
   Binding *tmp;
@@ -511,52 +100,21 @@ GrabIconKeys(ScwmWindow * tmp_win, Window w)
   return;
 }
 
-
 /****************************************************************************
  *
- * Looks for a monochrome icon bitmap file
+ * Looks for a icon file, XPM or bitmap
  *
  ****************************************************************************/
-void 
-GetBitmapFile(ScwmWindow * tmp_win)
+static void 
+GetPictureFile(ScwmWindow *sw)
 {
-  char *path = NULL;
-  int HotX, HotY;
-  path = findFile(tmp_win->szIconFile, szPicturePath, R_OK);
-
-  if (path == NULL)
+  sw->picIcon = CachePicture(dpy, Scr.Root, 
+			     szPicturePath, sw->szIconFile);
+  if (sw == NULL)
     return;
-  if (XReadBitmapFile(dpy, Scr.Root, path,
-		      (unsigned int *) &tmp_win->icon_p_width,
-		      (unsigned int *) &tmp_win->icon_p_height,
-		      &tmp_win->iconPixmap,
-		      &HotX, &HotY) != BitmapSuccess) {
-    tmp_win->icon_p_width = 0;
-    tmp_win->icon_p_height = 0;
-  }
-  free(path);
-}
-
-/****************************************************************************
- *
- * Looks for a color XPM icon file
- *
- ****************************************************************************/
-void 
-GetXPMFile(ScwmWindow * tmp_win)
-{
-  Picture *pic = CachePicture(dpy, Scr.Root, 
-			      szPicturePath, tmp_win->szIconFile);
-  if (pic == NULL)
-    return;
-  tmp_win->iconPixmap = pic->picture;
-  tmp_win->icon_maskPixmap = pic->mask;
-  tmp_win->icon_p_width = pic->width;
-  tmp_win->icon_p_height = pic->height;
-  tmp_win->iconDepth = pic->depth; /* was: Scr.d_depth */
-  tmp_win->flags |= PIXMAP_OURS;
-  if (ShapesSupported && tmp_win->icon_maskPixmap)
-    tmp_win->flags |= SHAPED_ICON;
+  sw->flags |= PIXMAP_OURS;
+  if (ShapesSupported && sw->picIcon->mask)
+    sw->flags |= SHAPED_ICON;
 }
 
 /****************************************************************************
@@ -564,36 +122,47 @@ GetXPMFile(ScwmWindow * tmp_win)
  * Looks for an application supplied icon window
  *
  ****************************************************************************/
-void 
-GetIconWindow(ScwmWindow * tmp_win)
+static void 
+GetIconWindow(ScwmWindow * sw)
 {
-  /* We are guaranteed that wmhints is non-null when calling this
-   * routine */
-  if (XGetGeometry(dpy, tmp_win->wmhints->icon_window, &JunkRoot,
-		   &JunkX, &JunkY, (unsigned int *) &tmp_win->icon_p_width,
-		   (unsigned int *) &tmp_win->icon_p_height,
-		   &JunkBW, &JunkDepth) == 0) {
+  Picture *pic = safemalloc(sizeof(Picture));
+  int border_width;
+
+  /* We are guaranteed that wmhints is non-null when calling this routine */
+  if (XGetGeometry(dpy, sw->wmhints->icon_window, &JunkRoot,
+		   &JunkX, &JunkY, 
+		   &pic->width, &pic->height,
+		   &border_width, &pic->depth) == 0) {
     scwm_msg(ERR, "GetIconWindow", "Help! Bad Icon Window!");
+    return;
   }
-  tmp_win->icon_p_width += JunkBW << 1;
-  tmp_win->icon_p_height += JunkBW << 1;
+  pic->picture = sw->wmhints->icon_pixmap;
+  pic->width += border_width * 2;
+  pic->height += border_width * 2;
+  pic->valid = True;
+  pic->next = NULL;
+
   /*
    * Now make the new window the icon window for this window,
    * and set it up to work as such (select for key presses
    * and button presses/releases, set up the contexts for it,
    * and define the cursor for it).
    */
-  tmp_win->icon_pixmap_w = tmp_win->wmhints->icon_window;
+  sw->icon_pixmap_w = sw->wmhints->icon_window;
+
   if (ShapesSupported) {
-    if (tmp_win->wmhints->flags & IconMaskHint) {
-      tmp_win->flags |= SHAPED_ICON;
-      tmp_win->icon_maskPixmap = tmp_win->wmhints->icon_mask;
+    if (sw->wmhints->flags & IconMaskHint) {
+      sw->flags |= SHAPED_ICON;
+      pic->mask = sw->wmhints->icon_mask;
     }
   }
   /* Make sure that the window is a child of the root window ! */
   /* Olwais screws this up, maybe others do too! */
-  XReparentWindow(dpy, tmp_win->icon_pixmap_w, Scr.Root, 0, 0);
-  tmp_win->flags &= ~ICON_OURS;
+  XReparentWindow(dpy, sw->icon_pixmap_w, Scr.Root, 0, 0);
+  sw->flags &= ~ICON_OURS;
+
+  /* and finally add this picture to the ScwmWindow */
+  sw->picIcon = pic;
 }
 
 
@@ -602,25 +171,444 @@ GetIconWindow(ScwmWindow * tmp_win)
  * Looks for an application supplied bitmap or pixmap
  *
  ****************************************************************************/
-void 
-GetIconBitmap(ScwmWindow * tmp_win)
+static void 
+GetIconBitmap(ScwmWindow *sw)
 {
+  Picture *pic = safemalloc(sizeof(Picture));
+
   /* We are guaranteed that wmhints is non-null when calling this
    * routine */
-  XGetGeometry(dpy, tmp_win->wmhints->icon_pixmap, &JunkRoot, &JunkX, &JunkY,
-	       (unsigned int *) &tmp_win->icon_p_width,
-	     (unsigned int *) &tmp_win->icon_p_height, &JunkBW, &JunkDepth);
-  tmp_win->iconPixmap = tmp_win->wmhints->icon_pixmap;
-  tmp_win->iconDepth = JunkDepth;
+  if (XGetGeometry(dpy, sw->wmhints->icon_pixmap, &JunkRoot, &JunkX, &JunkY,
+		   &pic->width, &pic->height,
+		   &JunkBW, &pic->depth) == 0) {
+    scwm_msg(ERR, __FUNCTION__, "Help! Bad Icon bitmap!");
+    return;
+  }
+  pic->picture = sw->wmhints->icon_pixmap;
   if (ShapesSupported) {
-    if (tmp_win->wmhints->flags & IconMaskHint) {
-      tmp_win->flags |= SHAPED_ICON;
-      tmp_win->icon_maskPixmap = tmp_win->wmhints->icon_mask;
+    if (sw->wmhints->flags & IconMaskHint) {
+      sw->flags |= SHAPED_ICON;
+      pic->mask = sw->wmhints->icon_mask;
     }
+  }
+
+  /* and finally add this picture to the ScwmWindow */
+  sw->picIcon = pic;
+}
+
+/************************************************************************
+ ************************************************************************
+ * Public functions below here
+ ************************************************************************
+ ************************************************************************/
+
+
+/****************************************************************************
+ *
+ * Creates an icon window as needed
+ *
+ ****************************************************************************/
+void 
+CreateIconWindow(ScwmWindow * tmp_win, int def_x, int def_y)
+{
+  int final_x, final_y;
+  unsigned long valuemask;	/* mask for create windows */
+  XSetWindowAttributes attributes;	/* attributes for create windows */
+
+  tmp_win->flags |= ICON_OURS;
+  tmp_win->flags &= ~PIXMAP_OURS;
+  tmp_win->flags &= ~SHAPED_ICON;
+  tmp_win->icon_pixmap_w = None;
+  tmp_win->picIcon = NULL;
+
+  if (tmp_win->flags & SUPPRESSICON)
+    return;
+
+  /* Check for a picture in a file */
+  if (tmp_win->szIconFile != NULL)
+    GetPictureFile(tmp_win);
+
+  /* Next, See if the app supplies its own icon window */
+  if (tmp_win->picIcon != NULL &&
+      (tmp_win->wmhints) && (tmp_win->wmhints->flags & IconWindowHint))
+    GetIconWindow(tmp_win);
+
+  /* Finally, try to get icon bitmap from the application */
+  if (tmp_win->picIcon != NULL &&
+      (tmp_win->wmhints) && (tmp_win->wmhints->flags & IconPixmapHint))
+    GetIconBitmap(tmp_win);
+
+  /* figure out the icon window size */
+  if (!(tmp_win->flags & NOICON_TITLE) ||  ICON_P_HEIGHT(tmp_win) == 0) {
+    tmp_win->icon_t_width = XTextWidth(Scr.IconFont.font,
+				       tmp_win->icon_name,
+				       strlen(tmp_win->icon_name));
+    tmp_win->icon_w_height = ICON_HEIGHT;
+  } else {
+    tmp_win->icon_t_width = 0;
+    tmp_win->icon_w_height = 0;
+  }
+  if (tmp_win->picIcon != NULL) {
+    if ((tmp_win->flags & ICON_OURS) && (tmp_win->picIcon->height > 0)) {
+      tmp_win->picIcon->width += 4;
+      tmp_win->picIcon->height += 4;
+    }
+    if (tmp_win->picIcon->width == 0) {
+      tmp_win->picIcon->width = tmp_win->icon_t_width + 6;
+    }
+    tmp_win->icon_w_width = tmp_win->picIcon->width;
+  } else {
+    scwm_msg(ERR,__FUNCTION__,"have picIcon == NULL");
+  }
+  final_x = def_x;
+  final_y = def_y;
+  if (final_x < 0)
+    final_x = 0;
+  if (final_y < 0)
+    final_y = 0;
+
+  if (final_x + tmp_win->icon_w_width >= Scr.MyDisplayWidth)
+    final_x = Scr.MyDisplayWidth - tmp_win->icon_w_width - 1;
+  if (final_y + tmp_win->icon_w_height >= Scr.MyDisplayHeight)
+    final_y = Scr.MyDisplayHeight - tmp_win->icon_w_height - 1;
+
+  tmp_win->icon_x_loc = final_x;
+  tmp_win->icon_xl_loc = final_x;
+  tmp_win->icon_y_loc = final_y;
+
+  /* clip to fit on screen */
+  attributes.background_pixel = Scr.MenuColors.back;
+  valuemask = CWBorderPixel | CWCursor | CWEventMask | CWBackPixel;
+  attributes.border_pixel = Scr.MenuColors.fore;
+  attributes.cursor = Scr.ScwmCursors[DEFAULT];
+  attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
+			   VisibilityChangeMask |
+			   ExposureMask | KeyPressMask | EnterWindowMask |
+			   FocusChangeMask);
+  if (!(tmp_win->flags & NOICON_TITLE) || (ICON_P_HEIGHT(tmp_win) == 0))
+    tmp_win->icon_w =
+      XCreateWindow(dpy, Scr.Root, final_x, final_y + ICON_P_HEIGHT(tmp_win),
+		    tmp_win->icon_w_width, tmp_win->icon_w_height, 0,
+		    CopyFromParent,
+		    CopyFromParent, CopyFromParent, valuemask, &attributes);
+
+  if ((tmp_win->flags & ICON_OURS) && (ICON_P_WIDTH(tmp_win) > 0) &&
+      (ICON_P_HEIGHT(tmp_win) > 0)) {
+    tmp_win->icon_pixmap_w =
+      XCreateWindow(dpy, Scr.Root, final_x, final_y, ICON_P_WIDTH(tmp_win),
+		    ICON_P_HEIGHT(tmp_win), 0, CopyFromParent,
+		    CopyFromParent, CopyFromParent, valuemask, &attributes);
+  } else {
+    attributes.event_mask = (ButtonPressMask | ButtonReleaseMask |
+			     VisibilityChangeMask |
+			     KeyPressMask | EnterWindowMask |
+			     FocusChangeMask | LeaveWindowMask);
+
+    valuemask = CWEventMask;
+    XChangeWindowAttributes(dpy, tmp_win->icon_pixmap_w,
+			    valuemask, &attributes);
+  }
+
+
+  if (ShapesSupported && (tmp_win->flags & SHAPED_ICON) &&
+    tmp_win->picIcon) {
+    XShapeCombineMask(dpy, tmp_win->icon_pixmap_w, ShapeBounding, 2, 2,
+		      tmp_win->picIcon->mask, ShapeSet);
+  }
+
+  if (tmp_win->icon_w != None) {
+    XSaveContext(dpy, tmp_win->icon_w, ScwmContext, (caddr_t) tmp_win);
+    XDefineCursor(dpy, tmp_win->icon_w, Scr.ScwmCursors[DEFAULT]);
+    GrabIconButtons(tmp_win, tmp_win->icon_w);
+    GrabIconKeys(tmp_win, tmp_win->icon_w);
+  }
+  if (tmp_win->icon_pixmap_w != None) {
+    XSaveContext(dpy, tmp_win->icon_pixmap_w, ScwmContext, (caddr_t) tmp_win);
+    XDefineCursor(dpy, tmp_win->icon_pixmap_w, Scr.ScwmCursors[DEFAULT]);
+    GrabIconButtons(tmp_win, tmp_win->icon_pixmap_w);
+    GrabIconKeys(tmp_win, tmp_win->icon_pixmap_w);
+  }
+  return;
+}
+
+/****************************************************************************
+ *
+ * Draws the icon window
+ *
+ ****************************************************************************/
+void 
+DrawIconWindow(ScwmWindow * sw)
+{
+  GC Shadow, Relief;
+  Pixel TextColor, BackColor;
+  int x;
+
+  if (sw->flags & SUPPRESSICON)
+    return;
+
+  if (sw->icon_w != None)
+    flush_expose(sw->icon_w);
+  if (sw->icon_pixmap_w != None)
+    flush_expose(sw->icon_pixmap_w);
+
+  if (Scr.Hilite == sw) {
+    if (Scr.d_depth < 2) {
+      Relief =
+	Shadow = Scr.DefaultDecor.HiShadowGC;
+      TextColor = Scr.DefaultDecor.HiColors.fore;
+      BackColor = Scr.DefaultDecor.HiColors.back;
+    } else {
+      Relief = GetDecor(sw, HiReliefGC);
+      Shadow = GetDecor(sw, HiShadowGC);
+      TextColor = GetDecor(sw, HiColors.fore);
+      BackColor = GetDecor(sw, HiColors.back);
+    }
+    /* resize the icon name window */
+    if (sw->icon_w != None) {
+      sw->icon_w_width = sw->icon_t_width + 6;
+      if (sw->icon_w_width < ICON_P_WIDTH(sw))
+	sw->icon_w_width = ICON_P_WIDTH(sw);
+      sw->icon_xl_loc = sw->icon_x_loc -
+	(sw->icon_w_width - ICON_P_WIDTH(sw)) / 2;
+    }
+  } else {
+    if (Scr.d_depth < 2) {
+      Relief = Scr.MenuGC;
+      Shadow = Scr.MenuGC;
+    } else {
+      Globalgcv.foreground = sw->ReliefPixel;
+      Globalgcm = GCForeground;
+      XChangeGC(dpy, Scr.ScratchGC1, Globalgcm, &Globalgcv);
+      Relief = Scr.ScratchGC1;
+
+      Globalgcv.foreground = sw->ShadowPixel;
+      XChangeGC(dpy, Scr.ScratchGC2, Globalgcm, &Globalgcv);
+      Shadow = Scr.ScratchGC2;
+    }
+    /* resize the icon name window */
+    if (sw->icon_w != None) {
+      sw->icon_w_width = ICON_P_WIDTH(sw);
+      sw->icon_xl_loc = sw->icon_x_loc;
+    }
+    TextColor = sw->TextPixel;
+    BackColor = sw->BackPixel;
+
+  }
+  if ((sw->flags & ICON_OURS) && (sw->icon_pixmap_w != None))
+    XSetWindowBackground(dpy, sw->icon_pixmap_w,
+			 BackColor);
+  if (sw->icon_w != None)
+    XSetWindowBackground(dpy, sw->icon_w, BackColor);
+
+  /* write the icon label */
+  NewFontAndColor(Scr.IconFont.font->fid, TextColor, BackColor);
+
+  if (sw->icon_pixmap_w != None)
+    XMoveWindow(dpy, sw->icon_pixmap_w, sw->icon_x_loc,
+		sw->icon_y_loc);
+  if (sw->icon_w != None) {
+    sw->icon_w_height = ICON_HEIGHT;
+    XMoveResizeWindow(dpy, sw->icon_w, sw->icon_xl_loc,
+		      sw->icon_y_loc + ICON_P_HEIGHT(sw),
+		      sw->icon_w_width, ICON_HEIGHT);
+
+    XClearWindow(dpy, sw->icon_w);
+  }
+  if ((sw->picIcon && 
+       sw->picIcon->picture != None) &&
+      (!(sw->flags & SHAPED_ICON)))
+    RelieveWindow(sw, sw->icon_pixmap_w, 0, 0,
+		  ICON_P_WIDTH(sw), ICON_P_HEIGHT(sw),
+		  Relief, Shadow, FULL_HILITE);
+
+  /* need to locate the icon pixmap */
+  if (sw->picIcon &&
+      sw->picIcon->picture != None) {
+    if (sw->picIcon->depth == Scr.d_depth) {
+      XCopyArea(dpy, sw->picIcon->picture, 
+		sw->icon_pixmap_w, Scr.ScratchGC3,
+		0, 0, ICON_P_WIDTH(sw)-4,
+		ICON_P_HEIGHT(sw)-4, 2, 2);
+    } else {
+      XCopyPlane(dpy, sw->picIcon->picture, 
+		 sw->icon_pixmap_w, Scr.ScratchGC3, 0,
+		 0, ICON_P_WIDTH(sw)-4, ICON_P_HEIGHT(sw)-4,
+		 2, 2, 1);
+    }
+  }
+  if (sw->icon_w != None) {
+    /* text position */
+    x = (sw->icon_w_width - sw->icon_t_width) / 2;
+    if (x < 3)
+      x = 3;
+
+    XDrawString(dpy, sw->icon_w, Scr.ScratchGC3, x,
+		sw->icon_w_height - Scr.IconFont.height +
+		Scr.IconFont.y - 3,
+		sw->icon_name, strlen(sw->icon_name));
+    RelieveWindow(sw, sw->icon_w, 0, 0, sw->icon_w_width,
+		  ICON_HEIGHT, Relief, Shadow, FULL_HILITE);
   }
 }
 
+/***********************************************************************
+ *
+ *  Procedure:
+ *	RedoIconName - procedure to re-position the icon window and name
+ *
+ ************************************************************************/
+void 
+RedoIconName(ScwmWindow * Tmp_win)
+{
 
+  if (Tmp_win->flags & SUPPRESSICON)
+    return;
+
+  if (Tmp_win->icon_w == (int) NULL)
+    return;
+
+  Tmp_win->icon_t_width = XTextWidth(Scr.IconFont.font, Tmp_win->icon_name,
+				     strlen(Tmp_win->icon_name));
+  /* clear the icon window, and trigger a re-draw via an expose event */
+  if (Tmp_win->flags & ICONIFIED)
+    XClearArea(dpy, Tmp_win->icon_w, 0, 0, 0, 0, True);
+  return;
+}
+
+
+/***********************************************************************
+ *
+ *  Procedure:
+ *	AutoPlace - Find a home for an icon
+ *
+ ************************************************************************/
+void 
+AutoPlace(ScwmWindow * t)
+{
+  int test_x = 0, test_y = 0, tw, th, tx, ty, temp_h, temp_w;
+  int base_x, base_y;
+  int width = 0;
+  int height = 0;
+  ScwmWindow *test_window;
+  Bool loc_ok;
+  int real_x = 10, real_y = 10;
+  int new_x, new_y;
+
+
+  /* New! Put icon in same page as the center of the window */
+  /* Not a good idea for StickyIcons */
+  if ((t->flags & StickyIcon) || (t->flags & STICKY)) {
+    base_x = 0;
+    base_y = 0;
+    /*Also, if its a stickyWindow, put it on the current page! */
+    new_x = t->frame_x % Scr.MyDisplayWidth;
+    new_y = t->frame_y % Scr.MyDisplayHeight;
+    if (new_x < 0)
+      new_x += Scr.MyDisplayWidth;
+    if (new_y < 0)
+      new_y += Scr.MyDisplayHeight;
+    SetupFrame(t, new_x, new_y,
+	       t->frame_width, t->frame_height, False);
+    t->Desk = Scr.CurrentDesk;
+  } else {
+    base_x = ((t->frame_x + Scr.Vx + (t->frame_width >> 1)) / Scr.MyDisplayWidth) *
+      Scr.MyDisplayWidth - Scr.Vx;
+    base_y = ((t->frame_y + Scr.Vy + (t->frame_height >> 1)) / Scr.MyDisplayHeight) *
+      Scr.MyDisplayHeight - Scr.Vy;
+  }
+  if (t->flags & ICON_MOVED) {
+    /* just make sure the icon is on this screen */
+    t->icon_x_loc = t->icon_x_loc % Scr.MyDisplayWidth + base_x;
+    t->icon_y_loc = t->icon_y_loc % Scr.MyDisplayHeight + base_y;
+    if (t->icon_x_loc < 0)
+      t->icon_x_loc += Scr.MyDisplayWidth;
+    if (t->icon_y_loc < 0)
+      t->icon_y_loc += Scr.MyDisplayHeight;
+  } else if (t->wmhints && t->wmhints->flags & IconPositionHint) {
+    t->icon_x_loc = t->wmhints->icon_x;
+    t->icon_y_loc = t->wmhints->icon_y;
+  } else if (t->IconBox[0] >= 0) {
+    width = ICON_P_WIDTH(t);
+    height = ICON_P_HEIGHT(t) + t->icon_w_height;
+    loc_ok = False;
+
+    /* check all boxes in order */
+    /* In each IconBox, start at the upper left, travel right, then
+     * down */
+    test_y = t->IconBox[1] + base_y;
+
+    temp_h = height;
+    temp_w = width;
+
+    /* OK second try at this.
+     * If the window is taller than the icon box, ignore the icon height
+     * when figuring where to put it. Same goes for the width */
+    /* This should permit reasonably graceful handling of big icons. */
+    if (width >= (t->IconBox[2] - t->IconBox[0]))
+      temp_w = 0;
+    if (height >= (t->IconBox[3] - t->IconBox[1]))
+      temp_h = 0;
+
+    while (((test_y + temp_h) < (t->IconBox[3] + base_y)) && (!loc_ok)) {
+      test_x = t->IconBox[0] + base_x;
+      while (((test_x + temp_w) < (t->IconBox[2] + base_x)) &&
+	     (!loc_ok)) {
+	real_x = test_x;
+	real_y = test_y;
+
+	if (test_x + width > (Scr.MyDisplayWidth - 2 + base_x))
+	  real_x = Scr.MyDisplayWidth - width - 2 + base_x;
+	if (test_y + height > (Scr.MyDisplayHeight - 2 + base_y))
+	  real_y = Scr.MyDisplayHeight - height - 2 + base_y;
+	if (test_x < base_x)
+	  real_x = base_x;
+	if (test_y < base_y)
+	  real_y = base_y;
+	loc_ok = True;
+	test_window = Scr.ScwmRoot.next;
+	while ((test_window != (ScwmWindow *) 0) && (loc_ok == True)) {
+	  if (test_window->Desk == t->Desk) {
+	    if ((test_window->flags & ICONIFIED) &&
+		(test_window->icon_w || test_window->icon_pixmap_w) &&
+		(test_window != t)) {
+	      tw = ICON_P_WIDTH(test_window);
+	      th = ICON_P_HEIGHT(test_window) + test_window->icon_w_height;
+	      tx = test_window->icon_x_loc;
+	      ty = test_window->icon_y_loc;
+
+	      if ((tx < (real_x + width + 3)) && ((tx + tw + 3) > real_x) &&
+		  (ty < (real_y + height + 3)) && ((ty + th + 3) > real_y)) {
+		loc_ok = False;
+	      }
+	    }
+	  }
+	  test_window = test_window->next;
+	}
+	test_x += 3;
+      }
+      test_y += 3;
+    }
+    if (loc_ok == False)
+      return;
+    t->icon_x_loc = real_x;
+    t->icon_y_loc = real_y;
+
+    if (t->icon_pixmap_w)
+      XMoveWindow(dpy, t->icon_pixmap_w, t->icon_x_loc, t->icon_y_loc);
+
+    t->icon_w_width = ICON_P_WIDTH(t);
+    t->icon_xl_loc = t->icon_x_loc;
+
+    if (t->icon_w != None)
+      XMoveResizeWindow(dpy, t->icon_w, t->icon_xl_loc,
+			t->icon_y_loc + ICON_P_HEIGHT(t),
+			t->icon_w_width, ICON_HEIGHT);
+    Broadcast(M_ICON_LOCATION, 7, t->w, t->frame,
+	      (unsigned long) t,
+	      t->icon_x_loc, t->icon_y_loc,
+	      t->icon_w_width, t->icon_w_height + ICON_P_HEIGHT(t));
+  }
+}
 
 /***********************************************************************
  *
@@ -727,7 +715,7 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
 		  (unsigned long) t,
 		  -10000, -10000,
 		  t->icon_w_width,
-		  t->icon_w_height + t->icon_p_height);
+		  t->icon_w_height + ICON_P_HEIGHT(t));
 	BroadcastConfig(M_CONFIGURE_WINDOW, t);
       }
     }
@@ -743,8 +731,8 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
     tmp_win->icon_t_width =
       XTextWidth(Scr.IconFont.font, tmp_win->icon_name,
 		 strlen(tmp_win->icon_name));
-    tmp_win->icon_p_width = tmp_win->icon_t_width + 6;
-    tmp_win->icon_w_width = tmp_win->icon_p_width;
+/* FIXGJB:     tmp_win->icon_p_width = tmp_win->icon_t_width + 6; */
+    tmp_win->icon_w_width = tmp_win->icon_t_width + 6;
   }
   AutoPlace(tmp_win);
   tmp_win->flags |= ICONIFIED;
@@ -753,7 +741,7 @@ Iconify(ScwmWindow * tmp_win, int def_x, int def_y)
 	    (unsigned long) tmp_win,
 	    tmp_win->icon_x_loc, tmp_win->icon_y_loc,
 	    tmp_win->icon_w_width,
-	    tmp_win->icon_w_height + tmp_win->icon_p_height);
+	    tmp_win->icon_w_height + ICON_P_HEIGHT(tmp_win));
   BroadcastConfig(M_CONFIGURE_WINDOW, tmp_win);
 
   LowerWindow(tmp_win);

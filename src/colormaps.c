@@ -20,13 +20,11 @@
 #include <X11/Xatom.h>
 #include "menus.h"
 #include "misc.h"
-#include "parse.h"
 #include "screen.h"
-#include "module.h"
 
 ScwmWindow *colormap_win;
 Colormap last_cmap = None;
-extern ScwmWindow *Tmp_win;
+extern ScwmWindow *swCurrent;
 
 /***********************************************************************
  *
@@ -45,13 +43,13 @@ HandleColormapNotify(void)
   Bool ReInstall = False;
 
 
-  if (!Tmp_win) {
+  if (!swCurrent) {
     return;
   }
   if (cevent->new) {
-    XGetWindowAttributes(dpy, Tmp_win->w, &(Tmp_win->attr));
-    if ((Tmp_win == colormap_win) && (Tmp_win->number_cmap_windows == 0))
-      last_cmap = Tmp_win->attr.colormap;
+    XGetWindowAttributes(dpy, swCurrent->w, &(swCurrent->attr));
+    if ((swCurrent == colormap_win) && (swCurrent->number_cmap_windows == 0))
+      last_cmap = swCurrent->attr.colormap;
     ReInstall = True;
   } else if ((cevent->state == ColormapUninstalled) &&
 	     (last_cmap == cevent->colormap)) {
@@ -60,19 +58,19 @@ HandleColormapNotify(void)
   }
   while (XCheckTypedEvent(dpy, ColormapNotify, &Event)) {
     if (XFindContext(dpy, cevent->window,
-		     ScwmContext, (caddr_t *) & Tmp_win) == XCNOENT)
-      Tmp_win = NULL;
-    if ((Tmp_win) && (cevent->new)) {
-      XGetWindowAttributes(dpy, Tmp_win->w, &(Tmp_win->attr));
-      if ((Tmp_win == colormap_win) && (Tmp_win->number_cmap_windows == 0))
-	last_cmap = Tmp_win->attr.colormap;
+		     ScwmContext, (caddr_t *) & swCurrent) == XCNOENT)
+      swCurrent = NULL;
+    if ((swCurrent) && (cevent->new)) {
+      XGetWindowAttributes(dpy, swCurrent->w, &(swCurrent->attr));
+      if ((swCurrent == colormap_win) && (swCurrent->number_cmap_windows == 0))
+	last_cmap = swCurrent->attr.colormap;
       ReInstall = True;
-    } else if ((Tmp_win) &&
+    } else if ((swCurrent) &&
 	       (cevent->state == ColormapUninstalled) &&
 	       (last_cmap == cevent->colormap)) {
       /* Some window installed its colormap, change it back */
       ReInstall = True;
-    } else if ((Tmp_win) &&
+    } else if ((swCurrent) &&
 	       (cevent->state == ColormapInstalled) &&
 	       (last_cmap == cevent->colormap)) {
       /* The last color map installed was the correct one. Don't 

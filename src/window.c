@@ -1,4 +1,8 @@
-/* $Id */
+/* $Id 
+ * window.c
+ *
+ */
+
 #define WINDOW_IMPLEMENTATION
 
 /****************************************************************************
@@ -6,15 +10,15 @@
  * It may be used under the terms of the fvwm copyright (see COPYING.FVWM).
  * Changes Copyright 1997, Maciej stachowiak
  ****************************************************************************/
+#include <stdio.h>
+#include <guile/gh.h>
+#include <X11/keysym.h>
 #include <config.h>
 #include "scwm.h"
 #include "screen.h"
 #include "misc.h"
+#include "icons.h"
 #include "parse.h"
-#include "module.h"
-#include <stdio.h>
-#include <guile/gh.h>
-#include <X11/keysym.h>
 #include "ICCCM.h"
 #include "window.h"
 #include "color.h"
@@ -169,7 +173,7 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
 #ifndef NON_VIRTUAL
   if (t->flags & ICONIFIED) {
     cx = t->icon_xl_loc + t->icon_w_width / 2;
-    cy = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
+    cy = t->icon_y_loc + ICON_P_HEIGHT(t) + ICON_HEIGHT / 2;
   } else {
     cx = t->frame_x + t->frame_width / 2;
     cy = t->frame_y + t->frame_height / 2;
@@ -183,7 +187,7 @@ FocusOn(ScwmWindow * t, int DeIconifyOnly)
 
   if (t->flags & ICONIFIED) {
     x = t->icon_xl_loc + t->icon_w_width / 2;
-    y = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
+    y = t->icon_y_loc + ICON_P_HEIGHT(t) + ICON_HEIGHT / 2;
   } else {
     x = t->frame_x;
     y = t->frame_y;
@@ -228,7 +232,7 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
 #ifndef NON_VIRTUAL
   if (t->flags & ICONIFIED) {
     cx = t->icon_xl_loc + t->icon_w_width / 2;
-    cy = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2;
+    cy = t->icon_y_loc + ICON_P_HEIGHT(t) + ICON_HEIGHT / 2;
   } else {
     cx = t->frame_x + t->frame_width / 2;
     cy = t->frame_y + t->frame_height / 2;
@@ -242,7 +246,7 @@ WarpOn(ScwmWindow * t, int warp_x, int x_unit, int warp_y, int y_unit)
 
   if (t->flags & ICONIFIED) {
     x = t->icon_xl_loc + t->icon_w_width / 2 + 2;
-    y = t->icon_y_loc + t->icon_p_height + ICON_HEIGHT / 2 + 2;
+    y = t->icon_y_loc + ICON_P_HEIGHT(t) + ICON_HEIGHT / 2 + 2;
   } else {
     if (x_unit != Scr.MyDisplayWidth)
       x = t->frame_x + 2 + warp_x;
@@ -691,27 +695,26 @@ window_shaded_p(SCM win)
 
 
 void 
-move_finalize(Window w, ScwmWindow * tmp_win, int x, int y)
+move_finalize(Window w, ScwmWindow * sw, int x, int y)
 {
-  if (w == tmp_win->frame) {
-    SetupFrame(tmp_win, x, y,
-	       tmp_win->frame_width, tmp_win->frame_height, FALSE);
+  if (w == sw->frame) {
+    SetupFrame(sw, x, y,
+	       sw->frame_width, sw->frame_height, FALSE);
   } else {			/* icon window */
-    tmp_win->flags |= ICON_MOVED;
-    tmp_win->icon_x_loc = x;
-    tmp_win->icon_xl_loc = y -
-      (tmp_win->icon_w_width - tmp_win->icon_p_width) / 2;
-    tmp_win->icon_y_loc = y;
-    Broadcast(M_ICON_LOCATION, 7, tmp_win->w, tmp_win->frame,
-	      (unsigned long) tmp_win,
-	      tmp_win->icon_x_loc, tmp_win->icon_y_loc,
-	      tmp_win->icon_w_width, tmp_win->icon_w_height
-	      + tmp_win->icon_p_height);
-    XMoveWindow(dpy, tmp_win->icon_w,
-		tmp_win->icon_xl_loc, y + tmp_win->icon_p_height);
-    if (tmp_win->icon_pixmap_w != None) {
-      XMapWindow(dpy, tmp_win->icon_w);
-      XMoveWindow(dpy, tmp_win->icon_pixmap_w, tmp_win->icon_x_loc, y);
+    sw->flags |= ICON_MOVED;
+    sw->icon_x_loc = x;
+    sw->icon_xl_loc = y - (sw->icon_w_width - ICON_P_WIDTH(sw)) / 2;
+    sw->icon_y_loc = y;
+    Broadcast(M_ICON_LOCATION, 7, sw->w, sw->frame,
+	      (unsigned long) sw,
+	      sw->icon_x_loc, sw->icon_y_loc,
+	      sw->icon_w_width, sw->icon_w_height
+	      + ICON_P_HEIGHT(sw));
+    XMoveWindow(dpy, sw->icon_w,
+		sw->icon_xl_loc, y + ICON_P_HEIGHT(sw));
+    if (sw->icon_pixmap_w != None) {
+      XMapWindow(dpy, sw->icon_w);
+      XMoveWindow(dpy, sw->icon_pixmap_w, sw->icon_x_loc, y);
       XMapWindow(dpy, w);
     }
   }
@@ -1738,7 +1741,6 @@ set_icon_x(SCM picture, SCM win)
   } else if (PICTURE_P(picture)) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
-    /* XXX -This is silly, we really should have an "icon" or "image" type. */
     if (!((tmp_win->wmhints)
 	  && (tmp_win->wmhints->flags &
 	      (IconWindowHint | IconPixmapHint)))) {
@@ -1751,29 +1753,33 @@ set_icon_x(SCM picture, SCM win)
   } else {
     scm_wrong_type_arg("set-icon!", 1, picture);
   }
-  /* also it should redraw automatically */
   if (tmp_win->flags & ICONIFIED) {
     Iconify(tmp_win, 0, 0);
   }
+  /* FIXGJB: also it should redraw automatically */
+  /* It seems to redraw automatically for me with just the above --11/08/97 gjb
+  DrawIconWindow(tmp_win);
+  */
   return SCM_BOOL_T;
 }
 
 SCM 
 set_mini_icon_x(SCM picture, SCM win)
 {
-  ScwmWindow *tmp_win;
+  ScwmWindow *sw;
 
   VALIDATEN(win, 2, "set-mini-icon!");
-  tmp_win = SCWMWINDOW(win);
+  sw = SCWMWINDOW(win);
   if (picture == SCM_BOOL_F) {
-    tmp_win->picMiniIcon = NULL;
+    sw->picMiniIcon = NULL;
   } else if (PICTURE_P(picture)) {
-    tmp_win->picMiniIcon = PICTURE(picture)->pic;
+    sw->picMiniIcon = PICTURE(picture)->pic;
   } else {
     scm_wrong_type_arg("set-mini-icon!", 1, picture);
   }
 
-  /* FIXNOWGJB: also it should redraw automatically */
+  SetBorderX(sw, Scr.Hilite == sw, True, sw->flags & MAPPED, 
+		  None, True);
 
   return SCM_BOOL_T;
 
