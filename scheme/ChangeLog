@@ -1,3 +1,15 @@
+Sat Dec  4 21:40:46 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* ui-constraints-classes.scm: Fixed dirvector->string -- was
+	testing for 1 in vector positions, instead of just #t or #f.
+	Fixed incorrect call to do get-window-with-nonant-interactively
+	properly for anchor constraint.
+
+	* ui-constraints-composition.scm: Do not create a new window class 
+	if the composition is recorded with an empty name -- treat that as 
+	aborting the record (though the constraints added during the
+	record will still remain;  that behaviour maybe should change)
+
 Sat Dec  4 21:15:05 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* ui-constraints-classes.scm: Update the tooltip help to be laid
