@@ -1664,7 +1664,7 @@ the Alt/Meta modifier select a menu item. */
   DEREF_IF_SYMBOL(menu);
   VALIDATE_ARG_MENU(1,menu);
   if (SCM_BOOL_T == warp_to_index) warp_to_index = gh_int2scm(1);
-  VALIDATE_ARG_INT_COPY_USE_DEF(2,warp_to_index,warp_to,-1);
+  VALIDATE_ARG_INT_COPY_USE_DEF(2,warp_to_index,warp_to,0);
   VALIDATE_ARG_INT_COPY_USE_DEF(3,x_pos,x,-1);
   VALIDATE_ARG_INT_COPY_USE_DEF(4,y_pos,y,-1);
   VALIDATE_ARG_BOOL_COPY_USE_T(5,left_side_p,fLeftSide);
