@@ -208,8 +208,7 @@
 (define (send-config-info str port)
   (send-string-packet M_CONFIG_INFO 0 0 0 (string-append str "\n") port))
 
-;; FIXGJB: not public
-(define-public (fvwm2-module-send-window-list port)
+(define (fvwm2-module-send-window-list port)
   ;; XXX - sadly, it is necessary to do a gratuitous send of
   ;; the desk and page info for the pager to work right. Icky!
   ;; broadcasting an M_NEW_DESK first can fortunately be avoided.
