@@ -23,6 +23,8 @@ void BroadcastConfig(unsigned long event_type, ScwmWindow *t);
 void BroadcastName(unsigned long event_type, unsigned long data1,
 		   unsigned long data2, unsigned long data3, char *name);
 
+void BroadcastMiniIcon(unsigned long event_type, ScwmWindow *psw);
+
 SCM marshal_fvwm2_config_info (SCM win);
 
 void init_module_interface();
