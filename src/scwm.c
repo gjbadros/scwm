@@ -595,9 +595,8 @@ CaptureAllWindows(void)
 		       (caddr_t *) & tmp) != XCNOENT) {
 	isIconicState = DontCareState;
 	if (XGetWindowProperty(dpy, tmp->w, _XA_WM_STATE, 0L, 3L, False,
-			       _XA_WM_STATE,
-			 &atype, &aformat, &nitems, &bytes_remain, &prop) ==
-	    Success) {
+			       _XA_WM_STATE, &atype, &aformat, 
+			       &nitems, &bytes_remain, &prop) == Success) {
 	  if (prop != NULL) {
 	    isIconicState = *(long *) prop;
 	    XFree(prop);
