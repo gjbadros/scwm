@@ -65,11 +65,15 @@ and in the directory utilities/emacs:
 
 
 Robert Bihlmeyer:
-added some bits here, and there. Notable changes include
-ICCCM-compliant modifier handling, querying xlock about available
-modes, readline-support in scwmrepl, and exposing X-properties to
-scheme. Is to blame for the following files in the directory scwm:
-    xproperty.c
+added some bits here, and there. Notable changes include support for
+session management, ICCCM-compliant modifier handling, querying xlock
+about available modes, readline-support in scwmrepl, and exposing
+X-properties to scheme. Takes responsibility for the following files
+in the directory scwm:
+    session-manager.c  xproperty.c
+
+in the scheme directory:
+    advice.scm
 
 
 Todd Larason, jtl@molehill.org:
