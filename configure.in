@@ -52,8 +52,27 @@ AC_ARG_ENABLE(cflags,
    yes|no) echo "Please specify a parameter for --enable-cflags"
 	   exit;;
  esac
- CFLAGS="$enableval"
+ CFLAGS="$enableval"; export CFLAGS
 ])
+
+AC_ARG_ENABLE(cppflags,
+[  --enable-cppflags=FLAGS   Set CPPFLAGS to FLAGS [-g -O2]],
+[case "$enableval" in
+   yes|no) echo "Please specify a parameter for --enable-cppflags"
+	   exit;;
+ esac
+ CPPFLAGS="$enableval"; export CPPFLAGS
+])
+
+AC_ARG_ENABLE(cxxflags,
+[  --enable-cxxflags=FLAGS   Set CXXFLAGS to FLAGS [-g -O2]],
+[case "$enableval" in
+   yes|no) echo "Please specify a parameter for --enable-cxxflags"
+	   exit;;
+ esac
+ CXXFLAGS="$enableval"; export CXXFLAGS
+])
+
 
 AC_PROG_CC
 AC_PROG_CXX
@@ -100,6 +119,14 @@ dnl Use ANSI mode
 AM_PROG_CC_STDC
 
 AM_PROG_LIBTOOL
+
+if test "NONE" = "$prefix"; then
+    PREFIX_INCLUDES="-I$ac_default_prefix/include"
+else
+    PREFIX_INCLUDES="-I$prefix/include"
+fi
+AC_SUBST(PREFIX_INCLUDES)
+
 
 dnl # check for build-guile #
 
@@ -227,6 +254,26 @@ AC_SUBST(PROPLIST_INCLUDES)
 AC_SUBST(PROPLIST_LIBS)
 AC_SUBST(PROPLIST_OBJECTS)
 
+
+## check for GTL library that cassowary might need
+
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+dnl below is a hack using -L prefixes with -lGTL in the 
+dnl extra libs position to be sure that it looks in the right place
+old_libs=$LIBS
+LIBS="-L${prefix}/lib -L${exec_prefix}/lib -lGTL"
+GTL_LIB=""
+dnl AC_CHECK_LIB(GTL, GML_init, [
+AC_TRY_LINK_FUNC(GML_init, [
+GTL_LIB="-lGTL"
+dnl AC_DEFINE(HAVE_GTL)
+], no_gtl_lib=yes)
+LIBS="${old_libs}"
+
+
+## check for cassowary library
+
 CASSOWARY_INCLUDES=""
 CASSOWARY_LIBS=""
 CASSOWARY_OBJECTS=""
@@ -251,13 +298,15 @@ SCWM_ARG_PATH_MAYBE_EMPTY(cassowary,
 	"no")  cas_lib_path="-L${cassolibdir} -R ${cassolibdir}" ;;
 	*)     cas_lib_path="-L${cassolibdir}" ;;
 	esac
-	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++ -lGTL"
+	CASSOWARY_LIBS="$cas_lib_path -lconstraints -lcassowary -lstdc++ ${GTL_LIB}"
 	CASSOWARY_OBJECTS='$(cassowary_objs)'
 ])
 
 AC_SUBST(CASSOWARY_INCLUDES)
 AC_SUBST(CASSOWARY_LIBS)
 AC_SUBST(CASSOWARY_OBJECTS)
+
+AC_LANG_RESTORE
 
 
 dnl ## Checks for libraries ##
@@ -422,6 +471,8 @@ case "$ac_R_nospace" in
 *)     GUILE_LIBS_PRE="-L${guile_lib_path}" ;;
 esac
 
+DL_SUPPORT=false
+
 dnl FIXJTL: readline is sometimes needed too; hopefully anybody with
 dnl a guile with readline support has a working guile-config or build-guile
 if test "yes" = "$GUILE_CONFIG_works"; then
@@ -432,7 +483,7 @@ else
   AC_CHECK_LIB(m, sin, GUILE_LIBS="-lm",, $GUILE_LIBS_PRE)
   AC_CHECK_LIB(rx, main, GUILE_LIBS="-lrx $GUILE_LIBS",, $GUILE_LIBS_PRE)
   AC_CHECK_LIB(qt, main, GUILE_LIBS="-lqt $GUILE_LIBS",, $GUILE_LIBS_PRE)
-  AC_CHECK_LIB(dl, dlopen, GUILE_LIBS="-ldl $GUILE_LIBS",, $GUILE_LIBS_PRE)
+  AC_CHECK_LIB(dl, dlopen, GUILE_LIBS="-ldl $GUILE_LIBS";DL_SUPPORT=true,, $GUILE_LIBS_PRE)
 
   AC_CHECK_LIB(guile, scm_handle_by_message_noexit, GUILE_LIBS="${GUILE_LIBS_PRE} -lguile ${GUILE_LIBS}", [
   	AC_MSG_ERROR(Can not find Guile 1.2 or later on the system)
