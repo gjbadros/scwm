@@ -77,10 +77,11 @@
 	 (enabled? (ui-constraint-enabled? n))
 	 (tbl (gtk-table-new 1 2 #f))
 	 (lbl (gtk-label-new name))
-	 (aln (gtk-alignment-new 1 .5 0 0))
+	 (aln (gtk-alignment-new 0 .5 0 0))
+	 (hbox (gtk-hbox-new #f 3))
 	 (constraint-drawn #f)
-	 (buts (gtk-hbox-new #f 3))
-	 (bt1 (gtk-check-button-new))
+	 (ebox (gtk-event-box-new))
+	 (bt1 (gtk-check-button-new))  ;; the enable/disable checkbox
 	 (bt2 (gtk-button-new-with-label "Delete")))
     (gtk-toggle-button-set-state bt1 enabled?)
     (ui-constraint-add-enable-hook n (lambda (e) (if allow-enable-hooks? 
@@ -104,67 +105,40 @@
 				;; (refresh)
 				(set! allow-enable-hooks? #t)))
 			  (if close? (gtk-widget-hide toplevel))))
-    (gtk-signal-connect bt1 "enter"
-			(lambda ()
-			  (flash-windows-of-constraint win-list)
-			  (if (ui-constraint-enabled? n)
+    (gtk-signal-connect ebox "enter_notify_event"
+			(lambda (event)
+			  ;; we need to filter out enter/leave of the click-box button
+			  ;; those have a notify-detail of 'inferior, so we only
+			  ;; do the work if it's not an 'inferior crossing event
+			  (if (not (eq? (gdk-event-notify-detail event) 'inferior))
 			      (begin
-				(draw-constraint n)
-				(set! constraint-drawn #t)))))
-    (gtk-signal-connect bt1 "leave"
-			(lambda ()
-			  (if constraint-drawn
+				(flash-windows-of-constraint win-list)
+				(if (ui-constraint-enabled? n)
+				    (begin
+				      (draw-constraint n)
+				      (set! constraint-drawn #t)))))))
+    (gtk-signal-connect ebox "leave_notify_event"
+			(lambda (event)
+			  ;; we need to filter out enter/leave of the click-box button
+			  ;; those have a notify-detail of 'inferior, so we only
+			  ;; do the work if it's not an 'inferior crossing event
+			  (if (not (eq? (gdk-event-notify-detail event) 'inferior))
 			      (begin
-				(undraw-constraint n)
-				(set! constraint-drawn #f)))
-			  (unflash-windows-of-constraint win-list)))
-    (gtk-box-pack-start buts bt1 #f #f 2)
-    (gtk-box-pack-start buts bt2 #f #f 2)
-    (gtk-container-add aln buts)
-    (gtk-table-attach tbl lbl 0 1 0 1)
-    (gtk-table-attach tbl aln 1 2 0 1)
+				(if constraint-drawn
+				    (begin
+				      (undraw-constraint n)
+				      (set! constraint-drawn #f)))
+				(unflash-windows-of-constraint win-list)))))
+    (gtk-box-pack-start hbox bt1)
+    (gtk-box-pack-start hbox lbl)
+    (gtk-container-add ebox hbox)
+    (gtk-container-add aln ebox)
+    (gtk-table-attach tbl aln 0 1 0 1)
+    (gtk-table-attach tbl bt2 1 2 0 1)
     (gtk-container-add box tbl)
     (gtk-widget-show-all tbl)
     (ui-constraint-set-button! n tbl)
     tbl))
-
-
-;; make the button for a particular constraint
-;; instance -- PRIVATE
-
-(define (make-cn-button n)
-  (let* ((toplevel gtk-toggle-window)
-	 (box gtk-instance-box)
-	 (close? gtk-toggle-close?)
-	 (class (ui-constraint-class n))
-	 (mproc (ui-constraint-class-menuname-proc class))
-	 (name (mproc n))
-	 (win-list (ui-constraint-windows n))
-	 (enabled? (ui-constraint-enabled? n))
-	 (constraint-drawn #f)
-	 (but (gtk-button-new-with-label name)))
-    (gtk-signal-connect but "clicked" 
-			(lambda ()
-			  (if (ui-constraint-enabled? n)
-			      (disable-ui-constraint n)
-			      (enable-ui-constraint n))
-			  (if close? (gtk-widget-hide toplevel))))
-    (gtk-signal-connect but "enter"
-			(lambda ()
-			  (flash-windows-of-constraint win-list)
-			  (if (ui-constraint-enabled? n)
-			      (begin
-				(set! constraint-drawn #t)
-				(draw-constraint n)))))
-    (gtk-signal-connect but "leave"
-			(lambda ()
-			  (if constraint-drawn
-			      (undraw-constraint n))
-			  (unflash-windows-of-constraint win-list)))
-    (gtk-container-add box but)
-    (gtk-widget-show but)
-    (ui-constraint-set-button! n but)
-    but))
 
 
 ;; remove a button from the screen (when the constraint is deleted)

@@ -296,10 +296,17 @@ If BG is #f, use the default menu background"
 ;;(define*-public (set-window-background! bg #&optional (w (get-window)))
 ;;  (set-window-colors! #f bg w))
 
+(define*-public (set-highlight-colors! #&optional (bg #f) (fg #f))
+  "Set the highlight window's background color to BG, foreground color to FG.
+The \"highlight window\" is the window with the current input focus."
+  (if bg (set-highlight-background! bg win))
+  (if fg (set-highlight-foreground! fg win)))
+
 (define*-public (set-window-colors! #&optional (bg #f) (fg #f) (win (get-window)))
   "Set WIN's background color to BG, foreground color to FG."
   (if bg (set-window-background! bg win))
   (if fg (set-window-foreground! fg win)))
+
 
 ;; relative versions of absolute move procedures.
 (define-public (move-pointer x y)
