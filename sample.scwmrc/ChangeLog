@@ -1,3 +1,12 @@
+1998-03-30  Jens-Ulrik Petersen  <petersen@kurims.kyoto-u.ac.jp>
+
+	* juhp.scwmrc (root-menu): Exit and restart are back.  Move all
+	window ops to the window submenu.  Use "mini-maxtall.xpm" not
+	"maxtall".
+	(window-menu): Use "mini-maxtall.xpm" not "maxtall".
+	(move-screen): Use `unfocus'.
+	Replaces all "M-"s by "A-"s.
+
 Fri Mar 27 20:43:02 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* gjb.scwmrc: Use the new broadcast interface for autoraise.
