@@ -188,7 +188,7 @@ char *split_at(char **to_split, int i) {
   return ret;
 }
 
-void 
+int 
 main(int argc, char **argv)
 {
   Window w;
@@ -240,9 +240,5 @@ main(int argc, char **argv)
 
   XCloseDisplay (display);
   
-  exit (0);
+  return 0;
 }
-
-
-
-

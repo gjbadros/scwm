@@ -22,7 +22,7 @@ void die(char *str)
   exit(-1);
 }
 
-void 
+int
 main(int argc, char **argv)
 {
   Window w;
@@ -53,7 +53,7 @@ main(int argc, char **argv)
 
   XCloseDisplay (display);
   
-  exit (0);
+  return 0;
 }
 
 
