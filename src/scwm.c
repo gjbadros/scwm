@@ -826,6 +826,7 @@ Atom _XA_OL_DECOR_CLOSE;
 Atom _XA_OL_DECOR_RESIZE;
 Atom _XA_OL_DECOR_HEADER;
 Atom _XA_OL_DECOR_ICON_NAME;
+Atom XA_SCWM_EXECUTE;
 
 void InternUsefulAtoms (void)
 {
@@ -855,6 +856,7 @@ void InternUsefulAtoms (void)
   _XA_OL_DECOR_RESIZE=XInternAtom(dpy,"_OL_DECOR_RESIZE",False);
   _XA_OL_DECOR_HEADER=XInternAtom(dpy,"_OL_DECOR_HEADER",False);
   _XA_OL_DECOR_ICON_NAME=XInternAtom(dpy,"_OL_DECOR_ICON_NAME",False);
+  XA_SCWM_EXECUTE=XInternAtom(dpy, "SCWM_EXECUTE", False);
   return;
 }
 
