@@ -1,3 +1,12 @@
+Mon Oct  4 14:12:49 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* style.scm: Make border-width a hint so that it takes effect
+	earlier.  Thanks to E. Jay Berkenbilt for bug report!
+
+	* minimal.scm: Turn off buffering of output port for recent guile
+ 	versions that need it (this so that the system.scwmrc doesn't need
+ 	to do it itself).
+
 Sun Oct  3 15:44:01 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* viavoice.scm, ui-constraints.scm, register.scm,

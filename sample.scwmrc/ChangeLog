@@ -1,3 +1,8 @@
+Mon Oct  4 14:26:48 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Drop the setvbuf to turn off buffering-- do it in 
+	minimal.scm.
+
 Sun Oct  3 15:45:47 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Rebind H-g to jump-to-register, instead of H-j

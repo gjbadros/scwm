@@ -1,3 +1,20 @@
+Mon Oct  4 14:07:40 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* window.c (s_set_border_width_x): Only resize if
+ 	psw->fFullyConstructed.  This lets #:border-width be a hint, not a 
+	style. 
+
+	* decorations.c: Only tweak boundary_width in a couple places if
+	it is currently < 0 (so #:border-width hints persist long enough
+	to matter).
+
+	* borders.h, borders.c:  Move NO_SIDE_DECORATIONS_P and
+	NO_TOP_BORDER_DECORATION_P into .h file from .c file since the
+	former is used by window.c, too.
+
+	* add_window.c: Initialize psw->boundary_width to -1 so that we
+	can tell if a border hint was given.
+
 Sun Oct  3 15:41:18 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* window.c: Rename current-window-with-{focus,pointer} to just
