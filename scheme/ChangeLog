@@ -1,3 +1,27 @@
+Fri Aug 14 17:13:35 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* winops.scm: Added vars `opaque-move-percent' and
+	  `opaque-resize-percent', procs `window-frame-area' and
+	  `display-area', user-procs `resize-opaquely?' and
+	  `move-opaquely?', and procs `interactive-move-maybe-opaque', 
+	  `interactive-resize-maybe-opaque', `move-or-raise-maybe-opaque', 
+	  `resize-or-raise-maybe-opaque'.  Document toggle-maximize.
+
+	* std-menus.scm, prefs-menu.scm: Use new form of run-in-xterm w/
+	  key arg xterm-options
+
+	* flux.scm: use-module winops, and use
+	  interactive-{move,resize}-maybe-opaque when doing
+	  interactive-{move,resize}s
+
+	* base.scm: Drop xterm-command to just "xterm", and make
+	  run-in-xterm now take #:xterm-options STRING to give options to
+	  the xterm program.  It is assummed that "-e" is used as the
+	  argument to invoke the CMD.  Also added `scwm-user-var' macro as 
+	  a means at dynamically looking up a variable in
+	  `the-root-module'.  This may not be the right way to do this--
+	  feedback is appreciated.
+	
 Thu Aug 13 16:20:43 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* minimal.scm: Document all functions.

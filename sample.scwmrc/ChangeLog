@@ -1,3 +1,18 @@
+Fri Aug 14 17:32:47 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* decor.scwmrc: Do not bind anything to M-tab -- bad news for
+	  emacs -- use C-S-Tab instead
+
+	* sds.scwmrc: Switch to new run-in-xterm proc (drop the -e from
+	  the args, and use #:xterm-options as appropriate); use the
+	  -maybe-opaque resize and move procs since they'll honour the
+	  opaque-move-percent and opaque-resize-percent vars; make
+	  popu-small-ops on button1 use popup-menu-from-decoration, out of 
+	  flux, since that behaviour should become the default
+
+	* gjb.scwmrc: Added setting of opaque-{move,resize}-percent, use
+	  the -maybe-resize procs, the new run-in-xterm
+
 1998-08-01  Maciej Stachowiak  <maciej@roc-ny4-24.ix.netcom.com>
 
 	* gjb.scwmrc, sds.scwmrc: Use set-click-delay! in place of
