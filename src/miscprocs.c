@@ -16,22 +16,29 @@ extern ScwmDecor *last_decor, *cur_decor;
 #endif
 
 SCM set_menu_mwm_style(SCM should) {
+  SCM_REDEFER_INTS;
   if(SCM_IMP(should)) {
     if (should==SCM_BOOL_T||should==SCM_UNDEFINED) {
       Scr.flags |= MWMMenus;
+      SCM_REALLOW_INTS;
       return(SCM_BOOL_T);
     } else if(should==SCM_BOOL_F) {
       Scr.flags &= ~MWMMenus;
+      SCM_REALLOW_INTS;
       return(SCM_BOOL_F);
     }
   }
+  SCM_ALLOW_INTS;
   scm_wrong_type_arg("set-mwm-menu-style!",1,should);
 }
 
 SCM set_xor_value(SCM value) {
   XGCValues gcv;
   unsigned long gcm;
+  SCM_REDEFER_INTS;
+
   if(!gh_number_p(value)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set_xor_value",1,value);
   }
   gcm = GCFunction|GCLineWidth|GCForeground|GCSubwindowMode; 
@@ -43,6 +50,7 @@ SCM set_xor_value(SCM value) {
     XFreeGC(dpy,Scr.DrawGC);
   }
   Scr.DrawGC = XCreateGC(dpy, Scr.Root, gcm, &gcv);
+  SCM_REALLOW_INTS;
   return(value);
 }
 
@@ -53,12 +61,17 @@ SCM sym_center;
 
 SCM set_title_justify(SCM just)
 {
+  ScwmDecor *fl
+  SCM_REDEFER_INTS;
+
 #ifdef USEDECOR
-  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+  *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 #else
-  ScwmDecor *fl = &Scr.DefaultDecor;
+  *fl = &Scr.DefaultDecor;
 #endif
+
   if (!gh_symbol_p(just)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-title-justify!",1,just);
   }
 
@@ -74,23 +87,27 @@ SCM set_title_justify(SCM just)
   }
   /* XXX should redraw the title bars */
   redraw_titlebars(fl,0);
-  gh_defer_ints();
-  gh_allow_ints();
+  SCM_REALLOW_INTS;
   return(just);
 }
 
 SCM set_title_height(SCM height) {
   int th,extra_height;
+  ScwmDecor *fl;
+
+  SCM_REDEFER_INTS;
 #ifdef USEDECOR
-  ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
+  *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 #else
-  ScwmDecor *fl = &Scr.DefaultDecor;
+  *fl = &Scr.DefaultDecor;
 #endif
   if (!gh_number_p(height)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-title-height!",1,height);
   }
   th=gh_scm2int(th);
   if (th <= 4 | th > 256) {
+    SCM_ALLOW_INTS;
     scwm_error("set-title-height!",7);
   }
   extra_height = fl->TitleHeight;
@@ -104,6 +121,8 @@ SCM set_title_height(SCM height) {
     fl->WindowFont.y = fl->WindowFont.font->ascent;
 
   redraw_titlebars(fl,extra_height);
+
+  SCM_REALLOW_INTS;
   return(height);
 }
 
@@ -238,16 +257,21 @@ SCM refresh()
 
 SCM set_click_time_x(SCM ctime)
 {
+  SCM_REDEFER_INTS;
   if (!gh_number_p(ctime)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-click-time!",1,ctime);
   }
   Scr.ClickTime = gh_scm2long(ctime);
+  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 
 SCM set_colormap_focus_x(SCM ftype)
 {
+  SCM_REDEFER_INTS;
   if (!gh_symbol_p(ftype)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-colormap-focus!",1,ftype);
   }
   if (gh_eq_p(ftype,sym_focus)) {
@@ -255,40 +279,53 @@ SCM set_colormap_focus_x(SCM ftype)
   } else if (gh_eq_p(ftype,sym_mouse)) {
     Scr.ColormapFocus = COLORMAP_FOLLOWS_MOUSE;
   } else {
+    SCM_ALLOW_INTS;
     scwm_error("set-click-time!",10);
   }
+  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 
 SCM set_opaque_move_size_x(SCM size)
 {
+  SCM_REDEFER_INTS;
   if (!gh_number_p(size)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-opaque-move-size!",1,size);
   }
   Scr.OpaqueSize = gh_scm2long(size);
+  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 
 SCM scwm_quit() {
+  SCM_REDEFER_INTS;
   if (master_pid != getpid())
     kill(master_pid, SIGTERM);
   Done(0,NULL);
+  SCM_REALLOW_INTS;
+  return SCM_USPECIFIED; /* you never know... */
 }
 
 SCM pointer_position() {
   int x,y;
+  SCM_REDEFER_INTS;
   XQueryPointer( dpy, Scr.Root, &JunkRoot, &JunkChild,
                  &x,&y,&JunkX, &JunkY, &JunkMask);
+  SCM_REALLOW_INTS;
   return scm_listify(SCM_MAKINUM(x),SCM_MAKINUM(y),SCM_UNDEFINED);
 }
 
 SCM move_pointer_to(SCM sx, SCM sy) {
   int x,y;
+  SCM_REDEFER_INTS;
 
   if (!gh_number_p(sx)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("move-pointer-to",1,sx);
   }
   if (!gh_number_p(sy)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("move-pointer-to",2,sy);
   }
 
@@ -296,14 +333,18 @@ SCM move_pointer_to(SCM sx, SCM sy) {
   y=gh_scm2int(sy);
   XWarpPointer(dpy, Scr.Root, Scr.Root, 0, 0, Scr.MyDisplayWidth, 
 	       Scr.MyDisplayHeight, x, y);
+  SCM_REALLOW_INTS;
+  return SCM_UNSPECIFIED;
 }
 
 
 SCM recapture()
 {
+  SCM_REDEFER_INTS;
   BlackoutScreen(); /* if they want to hide the recapture */
   CaptureAllWindows();
   UnBlackoutScreen();
+  SCM_REALLOW_INTS;
   return SCM_UNSPECIFIED;
 }
 
@@ -311,12 +352,16 @@ SCM restart(SCM command)
 {
   int dummy;
   char *n;
+  SCM_REDEFER_INTS;
   if(!gh_string_p(command)) {
+    SCM_ALLOW_INTS;
     scm_wrong_type_arg("restart",1,command);
   }
   n=gh_scm2newstr(command,&dummy);
   Done(1,n);
   free(n);
+  SCM_REALLOW_INTS;
+  return SCM_UNSPECIFIED; /* you never know... */
 }
 
 
@@ -326,6 +371,7 @@ SCM wait_for_window(SCM name)
   extern ScwmWindow *Tmp_win;
   char *n;
   int dummy;
+
   if(!gh_string_p(name)) {
     scm_wrong_type_arg("wait-for-window",1,name);
   }
@@ -334,7 +380,9 @@ SCM wait_for_window(SCM name)
   {
     if(My_XNextEvent(dpy, &Event))
     {
+      SCM_DEFER_INTS;
       DispatchEvent ();
+      SCM_ALLOW_INTS;
       if(Event.type == MapNotify)
       {
         if((Tmp_win)&&(matchWildcards(n,Tmp_win->name)==True))
@@ -346,6 +394,8 @@ SCM wait_for_window(SCM name)
            (matchWildcards(n,Tmp_win->class.res_name)==True))
           done = True;
       }
+    } else {
+      scm_yield();
     }
   }
   return SCM_UNSPECIFIED;
