@@ -1,5 +1,11 @@
 Sun Dec 27 13:55:09 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* placement.c, placement.h, add_window.c: Unify desk selection
+ 	with window placement, so windows starting on other desks will not
+ 	necessarily trigger a desk switch. Expose the default desk
+ 	selection algorithm (which does still always switch) as
+ 	`place-on-default-desk'. This area probably needs more work later.
+
 	* guile-compat.c (scm_internal_cwdr_no_unwind): Temporarily add
  	this version of scm_internal_cwdr which does not unwind existing
  	winders. 
