@@ -122,8 +122,15 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
   /*
    * Second, fit to base + N * inc
    */
-  dwidth = ((dwidth - baseWidth) / xinc * xinc) + baseWidth;
-  dheight = ((dheight - baseHeight) / yinc * yinc) + baseHeight;
+  if (xinc != 0) 
+    dwidth = ((dwidth - baseWidth) / xinc * xinc) + baseWidth;
+  else
+    scwm_msg(WARN,FUNC_NAME,"xinc == 0");
+
+  if (yinc != 0)
+    dheight = ((dheight - baseHeight) / yinc * yinc) + baseHeight;
+  else
+    scwm_msg(WARN,FUNC_NAME,"yinc == 0");
 
 
   /*
@@ -148,7 +155,8 @@ ConstrainSize(ScwmWindow *psw, int xmotion, int ymotion,
    * 
    */
 
-  if (psw->hints.flags & PAspect) {
+  if (psw->hints.flags & PAspect &&
+      minAspectX != 0 && minAspectY != 0 && maxAspectX != 0 && maxAspectY != 0) {
     if ((minAspectX * dheight > minAspectY * dwidth) && (xmotion == 0)) {
       /* Change width to match */
       delta = makemult(minAspectX * dheight / minAspectY - dwidth,

@@ -1512,7 +1512,6 @@ void
 HandleLeaveNotify()
 {
   XEnterWindowEvent *ewp = &Event.xcrossing;
-  ScwmWindow *pswOldCurrent = pswCurrent;
 
   DBUG((DBG,"HandleLeaveNotify", "Routine Entered"));
   /* If we leave the root window, then we're really moving
