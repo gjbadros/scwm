@@ -10,13 +10,25 @@
 
 (define-module (app scwm test-case))
 
+(define-public display-test-case-errors #f)
+
 (defmacro-public test-case (TITLE FORM . RESULT)
   (catch #t
 	 (lambda ()
 	   (let ((res (eval FORM))
 		 (succeed (car RESULT)))
 	     (cond
-	      ((eq? succeed '=>) (equal? res (eval (cadr RESULT))))
+	      ((eq? succeed '=>) 
+	       (let ((answer (equal? res (eval (cadr RESULT)))))
+		 (if (and display-test-case-errors (not answer) )
+		     (begin
+		       (display "Test failed -- `")
+		       (display res)
+		       (display "' not equal? to `")
+		       (display (eval (cadr RESULT)))
+		       (display "' in ")
+		       (display FORM)
+		       (display "\n")))))
 	      ((eq? succeed #t) #t)
 	      (else #f))))
 	 (lambda (key . args)

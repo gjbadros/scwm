@@ -35,7 +35,7 @@
 (define*-public (title-style #&key font height justify
 			     (active-up '()) 
 			     (active-down '()) 
-			     (inactive '()) #&allow-other-keys . rest)
+			     (inactive '()) #&allow-other-keys #&rest rest)
   "Set the title style in the current decor.
 FONT is the window title font, a font object or a string.
 HEIGHT is the height of the title bar, in points.
@@ -65,7 +65,7 @@ to their default state."
 
 
 (define*-public (border-style #&key (active '())  
-			      (inactive '()) #&allow-other-keys . rest)
+			      (inactive '()) #&allow-other-keys #&rest rest)
   "Set the border style in the current decor.
 This function takes the keyword arguments #:hidden-handles, 
 #:no-inset, and #:pixmap, with effects as described under the
@@ -102,7 +102,7 @@ ACTIVE-DOWN, and INACTIVE."
 (define*-public (button-style button #&key mwm
 			      (active-up '()) 
 			      (active-down '()) 
-			      (inactive '()) #&allow-other-keys . rest)
+			      (inactive '()) #&allow-other-keys #&rest rest)
   "Set the button style for button number BUTTON in the current decor.
 MWM sets the button's mwm flag (see `set-button-mwm-flag!'.
 This function also takes the keyword arguments #:justify, #:relief,

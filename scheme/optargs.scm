@@ -194,14 +194,14 @@
 		  (loop (car rest) (cdr rest) accum)))))))
 
 
-;;   reader extensions for #&optional #&key #&allow-other-keys #&rest
+;;  reader extensions for #&optional #&key #&allow-other-keys #&rest
 ;; These need to be quoted in normal code, but need not be in
 ;; an extended lambda-list provided by lambda*, define*, or 
 ;; define*-public (see below). In other words, they act sort of like 
 ;; symbols, except they aren't. They're being temporarily used until
 ;; #!optional and #!key and such are available. #&rest is provided for
 ;; the convenience of confused Common Lisp users, even though `.' will 
-;; do just as well.
+;; do just as well. (GJB:FIXME:MS: `.' does not work for me! --09/06/99 gjb)
 
 (define the-optional-value 
   ((record-constructor (make-record-type
@@ -296,28 +296,35 @@
      (if (not (or (symbol? rest-arg) (eq? #f rest-arg)))
 	 (error "Syntax error in rest argument declaration."))
      ;; generate the code.
-     (let ((rest-gensym (or rest-arg (gensym "lambda*:G"))))
+     (let ((rest-gensym (or rest-arg (gensym "lambda*:G")))
+	   (proc-gensym (or rest-arg (gensym "proc*:P"))))
        (if (not (and (null? optionals) (null? keys)))
-	   `(lambda (,@non-optional-args . ,rest-gensym)
-	      ;; Make sure that if the proc had a docstring, we put it
-	      ;; here where it will be visible.
-	      ,@(if (and (not (null? BODY))
-			 (string? (car BODY)))
-		    (list (car BODY))
-		    '())
-	      (let-optional* 
-	       ,rest-gensym
-	       ,optionals
-	       (let-keywords* ,rest-gensym
-			      ,aok?
-			      ,keys
-			      ,@(if (and (not rest-arg) (null? keys))
-				    `((if (not (null? ,rest-gensym))
-					  (error "Too many arguments.")))
-				    '())
-			      ,@BODY)))
-	   `(lambda (,@non-optional-args . ,(if rest-arg rest-arg '()))
-	      ,@BODY))))))
+	   `(let ((,proc-gensym
+		   (lambda (,@non-optional-args . ,rest-gensym)
+		     ;; Make sure that if the proc had a docstring, we put it
+		     ;; here where it will be visible.
+		     ,@(if (and (not (null? BODY))
+				(string? (car BODY)))
+			   (list (car BODY))
+			   '())
+		     (let-optional* 
+		      ,rest-gensym
+		      ,optionals
+		      (let-keywords* ,rest-gensym
+				     ,aok?
+				     ,keys
+				     ,@(if (and (not rest-arg) (null? keys))
+					   `((if (not (null? ,rest-gensym))
+						 (error "Too many arguments.")))
+					   '())
+				     ,@BODY)))))
+	      (set-procedure-property! ,proc-gensym 'optargs-arglist '(,@ARGLIST))
+	      ,proc-gensym)
+	   `(let ((,proc-gensym
+		   (lambda (,@non-optional-args . ,(if rest-arg rest-arg '())) 
+		     ,@BODY)))
+	      (set-procedure-property! ,proc-gensym 'optargs-arglist '(,@ARGLIST))
+	      ,proc-gensym))))))
 
 (define (every? pred lst)
   (or (null? lst)
