@@ -10,14 +10,17 @@ on!), lots of code cleanup (especially primitive argument validation),
 numerous scwmdoc script fixes and improvements.
 
 * GUI-configurable options support via new define-scwm-option
-** Requires guile-gtk-0.15 or better
+** Requires guile-gtk-0.15 or better, gtk+-1.2.x
+
+* GTk+ windows are not allowed to have destroy action applied by Scwm
+** Requires guile-gtk-0.16's `gdk-get-leader-window-id' primitive
 
 * Constraints
-** Much improved user-interface
+** Much, much improved user-interface
+*** toolbar for adding constraints
+*** constraint menu, and gtk constraint menu for manipulating existing constraints
 ** more accessible via (use-modules (app scwm constraints))
 ** Requires Cassowary-0.42 or better
-
-* Change resize-window's message window to use client units
 
 * KWM Support
 ** `kwm-emulation-initialize', `kwm-emulation-reset', `kwm-send-window-list'
@@ -28,6 +31,13 @@ numerous scwmdoc script fixes and improvements.
 * Alpha version of fvwm2rc-to-scwmrc converter
 ** utilities/converters/fvwm2rc-to-scwmrc
 ** handles /etc/X11/system.fvwm2rc
+
+* X11 Cursors are now wrapped as SMOBs
+** various global variables used for cursors for window decorations
+
+* Introduce syntax `use-scwm-modules' to reduce redundancy in module names
+  and handle errors in one module more gracefully (rather than ignoring
+  all the modules in the given list)
 
 * IMLib support as a configure-time option (to-replace libXpm, ultimately)
 ** use imlib_config binary (comes with imlib) to control options
@@ -54,6 +64,7 @@ numerous scwmdoc script fixes and improvements.
 
 * New window style options
 ** #:squashed-titlebar, #:no-side-decorations, #:use-theme (see Themes, above)
+** (better drawing of squashed-titlebars)
 
 * New menu style options
 ** #:hover-delay, #:popup-delay (in ms)
@@ -67,6 +78,22 @@ will be evaluated and then the result is expected to be a menu --
 permits very dynamic menus.
 
 * Changed printable format for menu-item objects.
+
+* Added #:by-resource window-list menu option for more intelligent
+splitting of really long window-list menus
+
+* Menuitems can have fg/bg colors and fonts set separately
+** `set-menuitem-colors!', `set-menuitem-font!' setters
+** `menuitem-colors', `menuitem-font' getters
+** `menuitem?'
+
+* Added support for handling Scwm events w/o returning to the main loop
+** `handle-pending-events'
+
+* The highlighted menu item gets its own color-scheme.
+** `set-menu-highlight-colors!', `set-menu-highlight-relief!' setters
+** `menu-highlight-colors', `menu-highlight-relief?' getters
+
 
 * Added 'frame-corners and 'frame-sides as the supported names for
 binding contexts, and deprecate 'corners and 'borders as names for them.
@@ -85,13 +112,19 @@ returning #f which ultimately would cause an error somewhere
 ** SIGINT now resets to the main loop (in addition to SIGHUP)
 ** SIGSEGV resets to the main loop by default to try to avoid crashing.
 ** use sigsetjmp, siglongjmp to maintain the behaviour.
+** `set-handle-segv!' for turning on/off handling of segmentation violations
+** `set-reset-on-segv!', `reset-on-segv' to set/read the # of remaining segvs
+    that will reset to the main loop
 
 * Window property support for dynamic behaviour of windows through window-properties
+** `set-window-property!', `window-property'
+
+* Change resize-window's message window to use client units
 
 * New command line options
 ** --no-backtrace [-n]
 ** --segv-cleanup-and-stop [-p]
-** --segv-just-stop [-P]
+** --segv-just-stop [-P]  (also `set-handle-segv!')
 
 * Misc. new primitives
 ** `window-valid?' for testing if a window object still is valid.
@@ -119,9 +152,10 @@ returning #f which ultimately would cause an error somewhere
    and the order of arguments has been rearranged
 ** `bind-keycode' allow release procs like new `bind-keycode'
 ** `hilite' and `hilight' in primitives is now spelled correctly as `highlight'
-** menulook? is now spelled menu-look? for consistency
-** set-menu-menu-look! is now set-menu-look!
-** set-menu-menu-title! is now set-menu-title!
+** `menulook?' is now spelled menu-look? for consistency
+** `set-menu-menu-look!' is now set-menu-look!
+** `set-menu-menu-title!' is now set-menu-title!
+** `select-viewport-position!' now takes a cursor object; also affects `select-window-interactively'
 
 * Misc. new procedures
 ** `fold-menu-list-by-group', `rename-window-interactively'
@@ -133,6 +167,7 @@ returning #f which ultimately would cause an error somewhere
 ** `current-viewport-offset-xx', `current-viewport-offset-yy'
 ** `intersection-area', `rectangle-overlap'
 ** `window-center-top', `window-center-bottom', etc.
+** `flash-window', `unflash-window', `stop-flashing-window'
 
 * New hooks
 ** `window-enter-hook', `window-leave-hook'
@@ -142,6 +177,33 @@ returning #f which ultimately would cause an error somewhere
 ** `desk-size-change-hook', `viewport-position-change-hook'
 ** `close-window-hook'
 ** `X-MapRequest-hook'
+
+* New scheme modules
+** window-configuration.scm: support for saving and restoring layout properties of windows
+** undo.scm: Heavyweight undo support built on saving global configurations
+** ui-constraints-gtk-toggle-menu: Persistent constraints menu support
+** xprop-extras.scm: Procs moved from flux.
+** window-selection.scm: Permit marking windows and then operating on them as a group
+** group.scm: Window group support (both from window hints and the selected-window list)
+** gnome-hints.scm: Support GNOME hints
+** kde-hints.scm: Support KDE hints
+** animated-iconify.scm: Support for (de)iconification animations
+** hover-focus.scm: Add delayed mouse-focus when pointer stays in window for a while
+** menus-extras.scm: Extra functionality for menus, moved out from base.scm
+** snap.scm: Snap attraction when moving windows
+** prompt-bool, prompt-string, prompt-font, prompt-color, prompt-range, prompt-proc:
+   Prompting gtk hboxes for various types
+** defoption.scm, preferences.scm: GUI configuration support
+** primopts.scm: Define options managing properties controlled by primitive procs.
+** ScwmBiff.scm, simplebiff.scm: mail notification (and general file-watching) support
+** time-convert.scm: Time unit conversions (Moved procs from flux.scm)
+** stringops.scm: General string functionality (moved procs from flux.scm)
+** send-string.scm: Synthetic event support
+** netscape.scm: Netscape communication support
+** ScwmClock.scm: Simple clock using Gtk
+** edge-ops.scm: Support actions at edges of viewport
+** rgb-database.scm: Read X11 colors from /etc/X11/rgb.txt using `rgb-colors' procedure
+
 
 
 
@@ -573,7 +635,7 @@ removed, and the following procedures have been added:
 	hilight-factor, shadow-factor - retrieve the settings of the above
  	two factors from the current decor.]
 
-	set-menu-hilihght-factor! FLOAT, set-menu-shadow-factor! FLOAT,
+	set-menu-hilight-factor! FLOAT, set-menu-shadow-factor! FLOAT,
  	menu-hilight-factor, menu-shadow-factor - analogous to the above
  	but for menus, and are global, not decor-specific.
 	
