@@ -1,3 +1,8 @@
+1998-12-03  Sam Steingold  <sds@goems.com>
+
+	* scwm.el (scwm-apropos): fix for the case when there is no
+	`apropos' in guile.
+
 Mon Nov 16 17:44:33 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* Makefile.am: Make sure scwm.el is noticed by `make dist'.
