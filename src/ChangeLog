@@ -1,3 +1,22 @@
+1998-07-21  Greg Badros  <gjb@cs.washington.edu>
+
+	* module-interface.c: quote "M_ICONIFY" in the comment docstring
+	since it is not an argument.
+
+	* miscprocs.c, scwmmenu.c, scwm.c, xproperty.c: document arguments
+ 	that weren't documented before (extract-docs now warns about these
+ 	cases)
+
+	* window.c: Added FUNC_NAME to the window-icon-title primitive;
+	be sure to use FUNC_NAME pervasively -- extract-docs will warn if
+	it's missing
+
+Tue Jul 21 15:01:46 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* constraint-primitives.cc: Remove the obsoleted hard-coded sample
+	constraint-creation primitives, keep-to-left-of and
+	keep-tops-even, since that can now be done from scheme more generally.
+
 1998-07-21  Maciej Stachowiak  <maciej@roc-ny4-02.ix.netcom.com>
 
 	* shutdown.c, shutdown.h: Added startup-hook and

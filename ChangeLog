@@ -1,3 +1,8 @@
+1998-07-21  Greg Badros  <gjb@cs.washington.edu>
+
+	* utilities/dev/extract-docs: (see also change logs in scwm/scwm
+	directory) Ensure formals are mentioned in doc string
+
 Sat Jul 18 16:30:09 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Added --with-cassowary flag for the constraint
