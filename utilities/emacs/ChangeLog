@@ -1,3 +1,12 @@
+Fri Apr  2 10:46:34 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwm.el: Added `scwm-use-session' to do the use-modules of
+	(ice-9 session). This is now called in scwm-make-obarray (instead
+	of doing the use inline) and *also* in scwm-apropos.  Fixes bug
+	whereby doing apropos before a completion (after a
+	restart/startup) would result in a message about apropos not being 
+	defined by this version of guile.
+
 Sun Mar 28 15:02:45 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwm.el: Also display the *wm* buffer if the output/returned

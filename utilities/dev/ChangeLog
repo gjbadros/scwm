@@ -1,3 +1,8 @@
+Fri Apr  2 10:44:42 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* scwmdoc.in: Drop -V, -O options for user-options stuff.  That is 
+	now handled by scheme code in preferences and defoption modules.
+
 Tue Mar 30 20:12:19 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* scwmdoc.in: Handle SCWM_VALIDATE-- it is used in code that does

@@ -1,3 +1,35 @@
+Fri Apr  2 13:40:10 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* fvwm2rc-to-scwmrc: Handle arguments to functions. Use a
+ 	fvwm2-mods-and-keysym-convert proc in the preface to do run-time
+ 	combination of arguments to bind-key, if needed.  Added
+ 	dquoted_if_string to only quote arguments that aren't numbers--
+ 	args are passed in their natural form to the functions generated.
+  	Also replace -$2 with (- $2).  Handles the KeyMouseMoves stuff
+ 	now, and not too much was done as a special case (though I also
+ 	didn't try to generalize that much either).  Added
+ 	get_two_nums_or_args for cursormove function -- using scanning
+ 	subroutines (instead of regexps) should happen a lot more than it
+ 	does now.  (Stripped out the argument-post-processing from Doug as 
+	I don't think that's the right thing).
+
+Fri Apr  2 12:40:10 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* fvwm2rc-to-scwmrc: Infer module names by the "Module foo"
+	constructs that get converted to run-fvwm2-modules.  Use those
+	inferred names to handle lots more module lines correctly.
+
+Fri Apr  2 11:52:02 1999  Greg J Badros  <gjb@cs.washington.edu>
+
+	* fvwm2rc-to-scwmrc (script_usage): Added $menu_id_char_seq,
+	$num_or_arg_seq, $word_or_arg_seq.  (The regexps should ultimately 
+	be replaced by function argument parsing subroutines, but I am
+	more interested in dealing with other parts right now).  Added
+	converters for "echo", "setenv", "hilightcolor", "xorvalue",
+	"colormapfocus", "clicktime".  Permit arguments to move, resize,
+	cursormove, key.  Add unknown modules to module "UNKNOWN" instead
+	of dropping those lines.  Change some warnings/error messages.
+
 Tue Mar 30 20:39:28 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* fvwm2rc-to-scwmrc: Lots of changes from Doug McNaught -- see the 
