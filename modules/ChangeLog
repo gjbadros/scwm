@@ -1,3 +1,14 @@
+Mon Sep 20 22:02:57 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* c-animation/c-animation.c: Lots of cleanup.  Drop
+	AnimatedMoveWindow entirely and use the more general
+	AnimatedResizeWindow even for animated moves.
+
+Mon Sep 20 17:52:56 1999  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* viavoice/Makefile.am: Install grammar file in
+	scwm_viavoice_grammardir (e.g., /usr/share/scwm/ViaVoice/*).
+
 Mon Sep 20 17:19:29 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* xlib-drawing/drawing.c: Added sym_solid, sym_on_off_dash,
