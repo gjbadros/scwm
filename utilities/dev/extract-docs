@@ -149,6 +149,7 @@ END_CHAP_PRIM_IN_ALPHA
 foreach my $file (sort { lc($a) cmp lc($b) } keys %file_funcs) {
   my @prims = @{$file_funcs{$file}};
   if (scalar(@prims) > 0) {
+    print MARKUP_OUT "    <sect1><title>$file</title>\n";
     foreach my $proc (sort { $procedure{$a}{line} <=> $procedure{$b}{line} } @prims ) {
       my $usage = $procedure{$proc}{usage};
       my $comment = $procedure{$proc}{comment};
@@ -156,6 +157,7 @@ foreach my $file (sort { lc($a) cmp lc($b) } keys %file_funcs) {
       my $markup = $procedure{$proc}{markup};
       print MARKUP_OUT $markup, "\n";
     }
+    print MARKUP_OUT "    </sect1>\n";
   }
 }
 
@@ -258,7 +260,7 @@ sub ProcessHeader( $ ) {
 
   # check to make sure all all-uppercase words in the comment
   # refer to formals
-  foreach my $word (split /[^\w-\"]+/, $comment) {
+  foreach my $word (split /[^-+?!\w_\"]+/, $comment) {
     if ($word =~ /^[A-Z][-A-Z0-9_+?!]+$/) {
       if (!defined($argnames{$word})) {
 	print STDERR "$ARGV:$.:****$cprimname: all-uppercase word \`$word\' does not match an argument\n";
@@ -276,8 +278,12 @@ sub ProcessHeader( $ ) {
   }
 
   my ($purpose) = $comment =~ m%(.*?[\.;\n])%;
+  if (!defined $purpose) {
+    # did not match, so must have been a one-liner w/o a newline
+    $purpose = $comment;
+  }
   chomp ($purpose); # in case it matched the newline
-  if ($purpose !~ /\.\s*$/) {
+  if (!defined($purpose) || $purpose !~ /\.\s*$/) {
     print STDERR "$ARGV:$.:****$cprimname: first line of comment should be a purpose sentence\n";
   }
 
@@ -293,9 +299,14 @@ sub ProcessHeader( $ ) {
   $usage =~ s%(\s+)<(\s+)%$1&lt;$2%g;
   $usage =~ s%(\s+)>(\s+)%$1&gt;$2%g;
 
+
   # Mark formals within comment with <parameter> tag
-  foreach my $formal (keys %argnames) {
-    $markup_comment =~ s%(\Q$formal\E)%<parameter>$1</parameter>%g;
+  # must sort by length so longer formals get replaced first
+  # note that it is essential to convert to lowercase as we
+  # go, otherwise shorter substitutions will be made inside
+  # an already-substitued <param> </param> pair
+  foreach my $formal (sort { length($b) <=> length($a) } keys %argnames) {
+    $markup_comment =~ s%(\Q$formal\E)%<parameter>\L$1\E</parameter>%g;
   }
   # Mark #t and #f within comment with <literal> tag
   $markup_comment =~ s%(\#[tf])%<literal>$1</literal>%g;
@@ -306,12 +317,14 @@ sub ProcessHeader( $ ) {
   # FIXGJB: use some sgml perl library!
 
   # Use <refentry>, <refname>, <refpurpose>, <synopsis>
+  my $filename = $ARGV;
+  my $linenum = $.;
   
   my $markup = 
 "<refentry>
   <refnamediv>
     <refname>$primname</refname>
-    <refpurpose> $purpose </refpurpose>
+    <refpurpose>$purpose</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <synopsis>$usage</synopsis>
@@ -334,7 +347,7 @@ sub ProcessHeader( $ ) {
 scheme-primitive-name:	$primname
 C-primitive-name:	$cprimname
 arg kinds:		$req, $opt, $var
-args:			@args
+args:			@{[join(",",@args)]}
 arg listing:		$arg_listing
 fname define:           $fname_define
 EOC
