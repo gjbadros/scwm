@@ -1313,9 +1313,9 @@ SCM set_mwm_buttons_x(SCM val, SCM win) {
   t = SCWMWINDOW(win);
 
   if (val == SCM_BOOL_T) {
-    SCWMWINDOW(win)->flags |= MWMBorders;
+    SCWMWINDOW(win)->flags |= MWM_BUTTON_FLAG;
   } else if (val == SCM_BOOL_F) {
-    SCWMWINDOW(win)->flags &= ~MWMBorders;
+    SCWMWINDOW(win)->flags &= ~MWM_BUTTON_FLAG;
   } else {
     scm_wrong_type_arg("set-mwm-buttons!",1,val);
   }
