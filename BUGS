@@ -1,3 +1,15 @@
+- Animated window-shade bug, reported by Sam Steingold <sds@usa.net>,
+exploit confirmed by MS, but I have no clue how to fix it right now:
+
+Open 2 windows, one (1) partially obscuring the other's (2) title bar.
+Double click on the (1)'s title bar, shading it.  You can see that the
+portion of the (2)'s title bar with was obscured before but it not
+obscured now is not repainted.  Also, if you move the mouse towards (2)
+while (1) is being (animatedly ==> with delay) shaded, so that the (1)
+is "pulled from under the mouse pointer", leaving it on (2), (2) will
+*not* have the focus, although it should as per sloppy focus.
+ 
+
 - Click to focus bugs
 
 1a. At startup usually a window, which I don't want given focus,
