@@ -206,11 +206,11 @@ scwm_main(int argc, char **argv)
       if (++i >= argc) {
 	usage();
       }
-      realloc(s_cmd_config, sizeof(char) *
+      s_cmd_config=realloc(s_cmd_config, sizeof(char) *
 	        (strlen(s_cmd_config) +
 		 strlen(s_load_pre) +
 		 strlen(argv[i]) +
-		 strlen(s_load_post)));
+		 strlen(s_load_post) + 1));
 
       s_cmd_config = strcat(s_cmd_config, s_load_pre);
       s_cmd_config = strcat(s_cmd_config, argv[i]);
@@ -219,8 +219,8 @@ scwm_main(int argc, char **argv)
       if (++i >= argc) {
 	usage();
       }
-      realloc(s_cmd_config, sizeof(char) *
-	        (strlen(s_cmd_config) + strlen(argv[i])));
+      s_cmd_config=realloc(s_cmd_config, sizeof(char) *
+	        (strlen(s_cmd_config) + strlen(argv[i]) + 1));
 
       s_cmd_config = strcat(s_cmd_config, argv[i]);
     } else if (mystrncasecmp(argv[i], "-i", 2) == 0) {
