@@ -5,6 +5,10 @@
  *     You may use this code for any purpose, as long as the original
  *     copyright remains in the source code and all documentation
  ****************************************************************************/
+
+#undef MS_DELETION_COMMENT
+#if MS_DELETION_COMMENT
+
 #include <config.h>
 
 #include <stdio.h>
@@ -20,6 +24,7 @@
 #include "parse.h"
 #include "screen.h"
 #include "module.h"
+
 
 extern Boolean debugging;
 
@@ -171,6 +176,7 @@ static void ReadSubFunc(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
   last_read_failed = 0;
 }
 
+
 void ReadFile(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
               unsigned long context, char *action,int* Module)
 {
@@ -199,6 +205,7 @@ void ReadFile(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
   }
 }
 
+
 void PipeRead(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
               unsigned long context, char *action,int* Module)
 {
@@ -226,6 +233,8 @@ void PipeRead(XEvent *eventp,Window junk,ScwmWindow *tmp_win,
     StartupStuff();
   }
 }
+
+
 
 void AddToModList(char *tline)
 {
@@ -331,3 +340,9 @@ void SendDataToModule(XEvent *eventp,Window w,ScwmWindow *tmp_win,
   }  
   SendPacket(*Module,M_END_CONFIG_INFO,0,0,0,0,0,0,0,0);
 }
+
+#endif /* MS_DELETION_COMMENT */
+
+
+
+
