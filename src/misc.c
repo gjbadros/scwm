@@ -30,6 +30,8 @@
 #include "screen.h"
 #include "window.h"
 #include "events.h"
+#include "module-interface.h"
+#include "image.h"
 
 ScwmWindow *FocusOnNextTimeStamp = NULL;
 
@@ -83,7 +85,7 @@ free_window_names(ScwmWindow * tmp, Bool nukename, Bool nukeicon)
 /***************************************************************************
  *
  * Handles destruction of a window 
- *
+ * FIXGJB: this should be in window.c
  ****************************************************************************/
 void 
 Destroy(ScwmWindow * sw)
@@ -148,8 +150,9 @@ Destroy(ScwmWindow * sw)
   XDeleteContext(dpy, sw->w, ScwmContext);
 
   if ((sw->icon_w) && (sw->flags & PIXMAP_OURS) &&
-    sw->picIcon)
-    XFreePixmap(dpy, sw->picIcon->picture);
+      sw->icon_image != SCM_BOOL_F) {
+    XFreePixmap(dpy, IMAGE(sw->icon_image)->image);
+  }
 
   if (sw->icon_w) {
     XDestroyWindow(dpy, sw->icon_w);

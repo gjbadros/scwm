@@ -28,6 +28,7 @@
 #include <guile/gh.h>
 #include "image.h"
 #include <X11/extensions/shape.h>
+#include "module-interface.h"
 
 extern Window PressedW;
 XGCValues Globalgcv;

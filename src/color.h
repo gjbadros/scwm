@@ -12,7 +12,7 @@
 
 extern long scm_tc16_scwm_color;
 
-#define COLORP(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_color)
+#define COLORP(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_color)
 #define COLOR(X)  ((Pixel)SCM_CDR(X))
 
 int print_color(SCM obj, SCM port, scm_print_state * pstate);

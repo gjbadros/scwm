@@ -42,7 +42,6 @@
 #include <X11/cursorfont.h>
 #include <X11/Intrinsic.h> 
 #include <guile/gh.h>
-#include "Picture.h"
 #include "color.h"
 #include "module-types.h"
 
@@ -194,11 +193,10 @@ typedef struct ScwmWindow {
   unsigned long flags;
   SCM mini_icon_image;          /* A Scheme image object to use for the 
 				   mini-icon. */
-  char *szIconFile;		/* the filename for the icon */
   char *szIconSavedFile;        /* save the filename here when we change
 				   to no icon, so it can be restored 
 				   properly */
-  Picture *picIcon;		/* the icon picture */
+  SCM icon_image;		/* the icon picture */
 
   int orig_x;			/* unmaximized x coordinate */
   int orig_y;			/* unmaximized y coordinate */

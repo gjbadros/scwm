@@ -112,7 +112,7 @@ load_font(SCM fname)
 SCM 
 font_p(SCM obj)
 {
-  return ((SCM_NIMP(obj) && FONTP(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (FONTP(obj) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
 
@@ -126,7 +126,7 @@ set_icon_font(SCM font)
   if (gh_string_p(font)) {
     font = load_font(font);
   }
-  if (!(SCM_NIMP(font) && FONTP(font))) {
+  if (!FONTP(font)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-icon-font!", 1, font);
   }
@@ -164,7 +164,7 @@ set_window_font(SCM font)
   if (gh_string_p(font)) {
     font = load_font(font);
   }
-  if (!(SCM_NIMP(font) && FONTP(font))) {
+  if (!FONTP(font)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-window-font!", 1, font);
   }
@@ -197,7 +197,7 @@ set_menu_font(SCM font)
     SCM_ALLOW_INTS;
     font = load_font(font);
   }
-  if (!(SCM_NIMP(font) && FONTP(font))) {
+  if (!FONTP(font)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-menu-font!", 1, font);
   }

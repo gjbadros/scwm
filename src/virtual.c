@@ -16,6 +16,7 @@
 #include "Grab.h"
 #include "resize.h"
 #include "borders.h"
+#include "module-interface.h"
 
 /***************************************************************************
  * 

@@ -59,6 +59,8 @@
 #include "resize.h"
 #include "colormaps.h"
 #include "image.h"
+#include "module-interface.h"
+#include "icons.h"
 
 #undef MS_DELETION_COMMENT
 
@@ -392,7 +394,6 @@ AddWindow(Window w)
   tmp_win->w = w;
 
   tmp_win->cmap_windows = (Window *) NULL;
-  tmp_win->szIconFile = NULL;
 
   if (!PPosOverride)
     if (XGetGeometry(dpy, tmp_win->w, &JunkRoot, &JunkX, &JunkY,
@@ -449,6 +450,7 @@ AddWindow(Window w)
   /*  Assume that we'll decorate */
   tmp_win->flags |= BORDER;
   tmp_win->flags |= TITLE;
+  tmp_win->icon_image = SCM_BOOL_F;
   tmp_win->mini_icon_image = SCM_BOOL_F;
 
   tflag = LookInList(Scr.TheList, tmp_win->name, &tmp_win->class, &value,
@@ -499,17 +501,17 @@ AddWindow(Window w)
   SelectDecor(tmp_win, tflag, border_width, resize_width);
 
   tmp_win->flags |= tflag & ALL_COMMON_FLAGS;
+  /* FIXGJB: need to provide more flexibility in how the
+     icon gets selected */
   /* find a suitable icon pixmap */
   if (tflag & ICON_FLAG) {
     /* an icon was specified */
-    tmp_win->szIconFile = value;
+    tmp_win->icon_image = make_image(gh_str02scm(value));
   } else if ((tmp_win->wmhints)
 	 && (tmp_win->wmhints->flags & (IconWindowHint | IconPixmapHint))) {
     /* window has its own icon */
-    tmp_win->szIconFile = NULL;
   } else {
     /* use default icon */
-    tmp_win->szIconFile = Scr.DefaultIcon;
   }
 
   GetWindowSizeHints(tmp_win);
@@ -864,15 +866,19 @@ AddWindow(Window w)
 		(unsigned long) tmp_win, tmp_win->name);
   BroadcastName(M_ICON_NAME, tmp_win->w, tmp_win->frame,
 		(unsigned long) tmp_win, tmp_win->icon_name);
-  if (tmp_win->szIconFile != NULL &&
+  /* MSFIX: FIXGJB: It'd be really nice to get full pathname of
+     the picture into the image object for debugging of scwmrc-s;
+     then this could go back in, too, though I imagine it's
+     rarely used --gjb 11/28/97  */
+  /*if (tmp_win->szIconFile != NULL &&
       tmp_win->szIconFile != Scr.DefaultIcon)
     BroadcastName(M_ICON_FILE, tmp_win->w, tmp_win->frame,
-		  (unsigned long) tmp_win, tmp_win->szIconFile);
+    (unsigned long) tmp_win, tmp_win->szIconFile); */
   BroadcastName(M_RES_CLASS, tmp_win->w, tmp_win->frame,
 		(unsigned long) tmp_win, tmp_win->class.res_class);
   BroadcastName(M_RES_NAME, tmp_win->w, tmp_win->frame,
 		(unsigned long) tmp_win, tmp_win->class.res_name);
-  if (tmp_win->mini_icon_image != SCM_BOOL_F)
+  if (tmp_win->mini_icon_image != SCM_BOOL_F) {
     Broadcast(M_MINI_ICON, 6,
 	      tmp_win->w,	/* Watch Out ! : I reduced the set of infos... */
 	      IMAGE(tmp_win->mini_icon_image)->image,
@@ -880,6 +886,7 @@ AddWindow(Window w)
 	      IMAGE(tmp_win->mini_icon_image)->width,
 	      IMAGE(tmp_win->mini_icon_image)->height,
 	      IMAGE(tmp_win->mini_icon_image)->depth, 0);
+  }
 
   FetchWmProtocols(tmp_win);
   FetchWmColormapWindows(tmp_win);
@@ -902,10 +909,9 @@ AddWindow(Window w)
     interactive_resize(tmp_win->schwin);
   }
   InstallWindowColormaps(colormap_win);
-  /* XXX - Not sure if this is the right place to do this, 
-     but oh well.... */
-  /* tmp_win->schwin=make_window(tmp_win); */
+
   run_new_window_hook(tmp_win->schwin);
+  CreateIconWindow(tmp_win,tmp_win->icon_x_loc,tmp_win->icon_y_loc);
 
   return (tmp_win);
 }

@@ -202,7 +202,7 @@ print_picture(SCM obj, SCM port, scm_print_state * pstate)
 SCM 
 picture_p(SCM obj)
 {
-  return ((SCM_NIMP(obj) && PICTURE_P(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (PICTURE_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
 inline SCM
@@ -235,7 +235,6 @@ make_picture(SCM picture_filename)
     szName = gh_scm2newstr(picture_filename, &len);
   } else {
     scm_wrong_type_arg(__FUNCTION__, 1, picture_filename);
-    /* FIXNOWGJB: return SCM_UNDEFINED; */
   }
 
   pic = CachePicture(dpy,Scr.Root,szPicturePath,szName);

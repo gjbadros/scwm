@@ -10,7 +10,7 @@ typedef struct {
 
 extern long scm_tc16_scwm_face;
 
-#define FACEP(X) ((X) && (SCM_CAR(X) == (SCM)scm_tc16_scwm_face))
+#define FACEP(X) (SCM_NIMP(X) && (SCM_CAR(X) == (SCM)scm_tc16_scwm_face))
 #define FACE(X)  ((scwm_face *)SCM_CDR(X))
 #define BUTTONFACE(X) (((scwm_face *)SCM_CDR(X))->bf)
 

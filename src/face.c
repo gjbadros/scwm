@@ -324,7 +324,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
   } else if (spec==sym_solid) {
     if (gh_string_p(arg)) {
       arg=load_color(arg);
-    } else if (!(SCM_NIMP(arg) && COLORP(arg))) {
+    } else if (!COLORP(arg)) {
       /* FIXMS give a better error message */
       scm_wrong_type_arg("add_spec_to_face_x",3,arg);
     }
@@ -422,7 +422,7 @@ void add_spec_to_face_x(SCM face, SCM spec, SCM arg)
 	     gh_car(arg)==sym_tiled && gh_string_p(gh_cadr(arg)));
     if (tiled_p || gh_string_p(arg) || (mini_p=(arg==sym_mini_program_icon)) ||
 	IMAGE_P(arg)) {
-      SCM image;
+      SCM image = SCM_BOOL_F;
       
       if (tiled_p) {
 	arg=gh_cadr(arg);
@@ -500,19 +500,19 @@ set_title_face_x (SCM active_up, SCM active_down, SCM inactive)
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (!(SCM_NIMP(active_up) && FACEP(active_up))) {
+  if (!FACEP(active_up)) {
     scm_wrong_type_arg("set-title-face!",1,active_up);
   }
 
   if (active_down==SCM_UNDEFINED) {
     active_down=active_up;
-  } else if (!(SCM_NIMP(active_down) && FACEP(active_down))) {
+  } else if (!FACEP(active_down)) {
     scm_wrong_type_arg("set-title-face!",2,active_down);
   }
 
   if (inactive==SCM_UNDEFINED) {
     inactive=active_up;
-  } else if (!(SCM_NIMP(inactive) && FACEP(inactive))) {
+  } else if (!FACEP(inactive)) {
     scm_wrong_type_arg("set-title-face!",3,inactive);
   }
 
@@ -540,19 +540,19 @@ set_button_face_x (SCM button, SCM active_up, SCM active_down, SCM inactive)
     scm_wrong_type_arg("set-button-face!",1,button);
   }
 
-  if (!(SCM_NIMP(active_up) && FACEP(active_up))) {
+  if (!FACEP(active_up)) {
     scm_wrong_type_arg("set-button-face!",2,active_up);
   }
 
   if (active_down==SCM_UNDEFINED) {
     active_down=active_up;
-  } else if (!(SCM_NIMP(active_down) && FACEP(active_down))) {
+  } else if (!FACEP(active_down)) {
     scm_wrong_type_arg("set-button-face!",3,active_down);
   }
 
   if (inactive==SCM_UNDEFINED) {
     inactive=active_up;
-  } else if (!(SCM_NIMP(inactive) && FACEP(inactive))) {
+  } else if (!FACEP(inactive)) {
     scm_wrong_type_arg("set-button-face!",4,inactive);
   }
 
@@ -606,13 +606,13 @@ set_border_face_x(SCM active, SCM inactive)
 {
   ScwmDecor *fl = cur_decor ? cur_decor : &Scr.DefaultDecor;
 
-  if (!(SCM_NIMP(active) && FACEP(active))) {
+  if (!FACEP(active)) {
     scm_wrong_type_arg("set-border-face!",1,active);
   }
 
   if (inactive==SCM_UNDEFINED) {
     inactive=active;
-  } else if (!(SCM_NIMP(inactive) && FACEP(inactive))) {
+  } else if (!FACEP(inactive)) {
     scm_wrong_type_arg("set-border-face!",2,inactive);
   }
 

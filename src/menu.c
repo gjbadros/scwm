@@ -34,8 +34,8 @@
 
 #include <guile/gh.h>
 #include <config.h>
-#include "scwm.h"
 #include "menu.h"
+#include "scwm.h"
 #include "screen.h"
 #include "errors.h"
 
@@ -209,7 +209,7 @@ popup(SCM menu, SCM sticks)
 {
   extern int menuFromFrameOrWindowOrTitlebar;
 
-  if (!(SCM_NIMP(menu) && MENUP(menu))) {
+  if (!MENUP(menu)) {
     scm_wrong_type_arg("popup", 1, menu);
   }
   if (sticks == SCM_UNDEFINED) {
@@ -228,7 +228,7 @@ popup(SCM menu, SCM sticks)
 SCM 
 menu_p(SCM obj)
 {
-  return (SCM_NIMP(obj) && MENUP(obj) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (MENUP(obj) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
 

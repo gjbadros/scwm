@@ -42,6 +42,11 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
+
+/* MSFIX: FIXGJB: It'd be really nice to get full pathname of
+   the picture into the image object for debugging of scwmrc-s;
+   then this could go back in, too, though I imagine it's
+   rarely used --gjb 11/28/97  */
 typedef struct
 {
   SCM name;
@@ -53,7 +58,7 @@ typedef struct
 } scwm_image;
 
 
-#define IMAGE_P(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_image)
+#define IMAGE_P(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_image)
 #define IMAGE(X)  ((scwm_image *)SCM_CDR(X))
 
 EXTERN long scm_tc16_scwm_image;
@@ -77,6 +82,10 @@ SCM register_image_loader(SCM extension, SCM proc);
 SCM unregister_image_loader(SCM extension);
 SCM load_image(SCM name);
 SCM make_image(SCM name);
+
+SCM make_image_from_pixmap(char *szDescription,
+			   Pixmap image, Pixmap mask, 
+			   int width, int height, int depth);
 
 void init_image_colormap();
 void init_image();

@@ -1,7 +1,53 @@
+Thu Nov 27 23:37:33 1997  unknown  <gjb@cs.washington.edu>
+
+	* Augment all OBJECT_P-s with SCM_NIMP(X) test to make sure they
+	are safe and remove a ton of duplicated code throughout the whole
+	system;  we should *NOT* test, e.g., SCM_NIMP(X) && COLOR_P(X) any
+	longer, and the color_p function is simplified to just translating
+	between a C bool and a guile boole
+
+	* Added module-interface.h, and include it throughout as needed.
+
+	* icons.c, icons.h: Removed reliance on Picture.[ch].  In the process,
+	changed when icon windows get created to when the window is added,
+	not when the icon is first used. THIS PROBLEM BROKE SOME ICON
+	STUFF, but brief testing shows that things generally work, modulo
+	the stuff w.r.t. increased flexibility of user pixmap
+	overriding... Also removed some newly dead code there.
+
+	* binding.c: fixed grab key from all window bug -- was grabbing
+	keys from all windows even if C_WINDOW bit was not set, and
+	unbind-mouse bug -- was not permitting numbers for the button as
+	bind-mouse did. Thanks to Oleg Tihonov
+	<oleg@benetnash.ffke-campus.mipt.ru> for reporting the problems.
+	Also caught a small memory leak.
+
+	* menu.h decor.h: Move #include-s *before* the EXTERN #define,
+	since it could cause big problems to include a header file that
+	redefined EXTERN before the rest of the .h file
+
+	* font.h, drawmenu.c: don't use SAFE_FONTP, since FONTP now is safe
+
+	* events.c: Replace gh_standard_handler -- bug in guile (?) is
+	stopping my new scwm_error_handler from being used to evaluate
+	SCWM_PROPERTY messages, but this seems to work and gives slightly
+	more useful error messages.  Also removed some szIconFile
+	references, and use sw->icon_image, not sw->picIcon
+
+	* image.c: Rename image?-new to image?, added image_properties,
+	check depth attribute return value and print a message if it looks
+	like Xpm is screwing up (it does for me), added
+	make_image_from_pixmap for internal C code.
+
+	* window.c: added window-from-window-id function (needed for
+	autoraise, broadcast stuff)
+	
+
 Wed Nov 26 11:07:51 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* Do not define away the Broadcast{,Name,Config} functions -- call
- 	the ones in module-interface.c, include module-types.h where needed
+ 	the ones in module-interface.c, include module-types.h where
+ 	needed
 
 	* Makefile.in: Stop using $(SHELL) -ec to build dependencies as
  	quoting becomes a burden giving the new complex setting of

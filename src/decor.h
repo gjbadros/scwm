@@ -3,6 +3,10 @@
 #ifndef DECOR_H
 #define DECOR_H
 
+#include <libguile.h>
+#include "scwm.h"
+#include "screen.h"
+
 #undef EXTERN
 #undef EXTERN_SET
 #ifdef DECOR_IMPLEMENTATION
@@ -13,9 +17,6 @@
 #define EXTERN_SET(x,y) extern x
 #endif
 
-#include <libguile.h>
-#include "scwm.h"
-#include "screen.h"
 
 typedef struct {
   ScwmDecor *sd;
@@ -27,7 +28,7 @@ EXTERN_SET(ScwmDecor *cur_decor,NULL);
 
 EXTERN long scm_tc16_scwm_decor;
 
-#define DECORP(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_decor)
+#define DECORP(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_decor)
 #define DECOR(X)  ((scwm_decor *)SCM_CDR(X))
 #define SCWMDECOR(X) (((scwm_decor *)SCM_CDR(X))->sd)
 

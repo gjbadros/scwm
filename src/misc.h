@@ -5,7 +5,6 @@
 
 #include <ctype.h>
 #include "menus.h"
-#include "Picture.h"
 #include "system.h"
 
 /************************************************************************

@@ -32,6 +32,7 @@
 #include "colors.h"
 #include "colormaps.h"
 #include "image.h"
+#include "module-interface.h"
 
 size_t 
 free_window(SCM obj)
@@ -114,7 +115,7 @@ ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
       return SCM_BOOL_F;
     }
   }
-  if (!(SCM_NIMP(win) && WINDOWP(win))) {
+  if (!WINDOWP(win)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg(subr, n, win);
   }
@@ -129,7 +130,7 @@ ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p)
 SCM 
 window_p(SCM obj)
 {
-  return ((SCM_NIMP(obj) && WINDOWP(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (WINDOWP(obj) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
 SCM 
@@ -1354,6 +1355,20 @@ window_id(SCM win)
   return SCM_MAKINUM(SCWMWINDOW(win)->w);
 }
 
+SCM
+window_from_window_id(SCM window_id)
+{
+  Window w;
+  ScwmWindow *sw = NULL;
+  if (!gh_number_p(window_id)) {
+    SCM_ALLOW_INTS;
+    scm_wrong_type_arg(__FUNCTION__, 1, window_id);
+  }
+  w = gh_scm2int(window_id);
+  sw = SwFromWindow(dpy, (Window) w);
+  return (sw?sw->schwin : SCM_BOOL_F);
+}
+
 SCM 
 window_desk(SCM win)
 {
@@ -1702,7 +1717,7 @@ set_window_colors_x(SCM fg, SCM bg, SCM win)
     fg = load_color(fg);
   } else if (fg == SCM_UNDEFINED) {
     fg = SCM_BOOL_F;
-  } else if (!((SCM_NIMP(fg) && COLORP(fg)) || fg == SCM_BOOL_F)) {
+  } else if (fg != SCM_BOOL_F && !COLORP(fg)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-window-colors!", 1, fg);
   }
@@ -1710,7 +1725,7 @@ set_window_colors_x(SCM fg, SCM bg, SCM win)
     bg = load_color(bg);
   } else if (bg == SCM_UNDEFINED) {
     bg = SCM_BOOL_F;
-  } else if (!((SCM_NIMP(bg) && COLORP(bg)) || bg == SCM_BOOL_F)) {
+  } else if (bg != SCM_BOOL_F && !COLORP(bg)) {
     SCM_ALLOW_INTS;
     scm_wrong_type_arg("set-window-colors!", 2, bg);
   }
@@ -1856,40 +1871,23 @@ set_icon_x(SCM picture, SCM win)
     tmp_win->flags |= SUPPRESSICON_FLAG;
     XDestroyWindow(dpy, tmp_win->icon_w);
     tmp_win->icon_w = None;
-    /* FIXMS: Inelegant and probably leaks memory,
-       need a better fix than this. */
-    tmp_win->szIconSavedFile = tmp_win->szIconFile;
-    tmp_win->szIconFile = NULL;
   } else if (picture == SCM_BOOL_T) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     XDestroyWindow(dpy, tmp_win->icon_w);
     tmp_win->icon_w = None;
-    if (tmp_win->szIconFile == NULL) {
-      tmp_win->szIconFile = tmp_win->szIconSavedFile;
-    }
   } else if (gh_string_p(picture)) {
-    int len;
-    char *name = gh_scm2newstr(picture, &len);
-
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
-    tmp_win->picIcon = CachePicture(dpy, Scr.Root, szPicturePath, name);
-    if (tmp_win->picIcon==NULL) {
-      scwm_error("set-icon!",ERROR_LOAD_PICTURE);
-    }
-    tmp_win->szIconFile = tmp_win->picIcon->name;
+    tmp_win->icon_image = make_image(picture);
     XDestroyWindow(dpy, tmp_win->icon_w);
     tmp_win->icon_w = None;
-    free(name);
-  } else if (SCM_NIMP(picture) && PICTURE_P(picture)) {
+  } else if (IMAGE_P(picture)) {
     tmp_win->flags &= ~SUPPRESSICON_FLAG;
     tmp_win->flags |= ICON_FLAG;
     if (!((tmp_win->wmhints)
 	  && (tmp_win->wmhints->flags &
 	      (IconWindowHint | IconPixmapHint)))) {
-      tmp_win->picIcon = PICTURE(picture)->pic;
-      /* FIXGJB: shouldn't have to set the filename */
-      tmp_win->szIconFile = tmp_win->picIcon->name;
+      tmp_win->icon_image = picture;
       XDestroyWindow(dpy, tmp_win->icon_w);
       tmp_win->icon_w = None;
     }
@@ -1917,7 +1915,7 @@ set_mini_icon_x(SCM image, SCM win)
     sw->mini_icon_image = SCM_BOOL_F;
   } else if (gh_string_p(image)) {
     sw->mini_icon_image = make_image(image);
-  } else if (SCM_NIMP(image) && IMAGE_P(image)) {
+  } else if (IMAGE_P(image)) {
     sw->mini_icon_image = image;
   } else {
     scm_wrong_type_arg("set-mini-icon!", 1, image);

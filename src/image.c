@@ -127,12 +127,28 @@ mark_image(SCM obj)
 }
 
 
-SCM_PROC (s_image_p, "image?-new", 1, 0, 0, image_p);
+SCM_PROC (s_image_p, "image?", 1, 0, 0, image_p);
 
 SCM 
 image_p(SCM obj)
 {
-  return ((SCM_NIMP(obj) && IMAGE_P(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (IMAGE_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
+}
+
+SCM_PROC (s_image_properties, "image-properties", 1, 0, 0, image_properties);
+
+SCM
+image_properties(SCM image)
+{
+  if (!IMAGE_P(image)) {
+    scm_wrong_type_arg(s_image_properties, 1, image);
+  } 
+  return gh_list(IMAGE(image)->name,
+		 gh_int2scm(IMAGE(image)->width),
+		 gh_int2scm(IMAGE(image)->height),
+		 gh_int2scm(IMAGE(image)->depth),
+		 SCM_UNDEFINED);
+  /* FIXGJB: why SCM_UNDEFINED -- GH_EOL? SCM_EOL does not work! */
 }
 
 /* used by C code to create image objects for images not loaded from
@@ -148,6 +164,9 @@ make_empty_image(SCM name)
   ci->name = name;
   ci->image = None;
   ci->mask = None;
+  ci->height = 0;
+  ci->width = 0;
+  ci->depth = 0;
 
   SCM_DEFER_INTS;
   SCM_NEWCELL(result);
@@ -180,7 +199,7 @@ load_xbm (SCM full_path)
 
   result=make_empty_image(full_path);
   ci=IMAGE(result);
-
+  
   c_path=gh_scm2newstr(full_path,&ignore);
 
   xbm_return=XReadBitmapFile(dpy, Scr.Root, c_path, 
@@ -233,12 +252,20 @@ load_xpm (SCM full_path)
 				   &xpm_attributes);
   free(c_path);
   if (xpm_return  == XpmSuccess) {
+    static Bool fShowedBadDepthAttributeMessageAlready = False;
     ci->width = xpm_attributes.width;
     ci->height = xpm_attributes.height;
     ci->depth = xpm_attributes.depth; /* the Xpm manual implies this should
 					work, if not, fall back to the
 					code below. */
-      /* DefaultDepthOfScreen(DefaultScreenOfDisplay(dpy)); */
+    if (ci->depth > 32) {
+      ci->depth = DefaultDepthOfScreen(DefaultScreenOfDisplay(dpy));
+      if (!fShowedBadDepthAttributeMessageAlready) {
+	fShowedBadDepthAttributeMessageAlready = True;
+	scwm_msg(WARN,__FUNCTION__,
+		 "Bad depths are returned from libXpm's XpmReadFileToPixmap -- ignoring");
+      }
+    }
     return result;
   } else {
     /* warn that the image could not be loaded, then drop the result
@@ -383,17 +410,18 @@ load_image(SCM name)
     if (loader==SCM_BOOL_F) {
       /* Warn: unknown imge type. */
       return SCM_BOOL_F;
-    }
+   } 
     result=gh_call1(loader,full_name);
   }
 
-  if (SCM_NIMP(result) && IMAGE_P(result)) {
+  if (IMAGE_P(result)) {
     IMAGE(result)->name=name;
     return result;
   }
 
   if (result != SCM_BOOL_F) {
     /* Warn: invalid return value from image loader. */
+    scwm_msg(WARN,__FUNCTION__,"Invalid return from image loader");
   }
 
   return SCM_BOOL_F;
@@ -433,6 +461,23 @@ make_image(SCM name)
 
   scm_hash_set_x(image_hash_table, name, result);
 
+  return result;
+}
+
+
+SCM
+make_image_from_pixmap(char *szDescription,
+		       Pixmap image, Pixmap mask, 
+		       int width, int height, int depth)
+{
+  SCM result = make_empty_image(gh_str02scm(szDescription));
+  scwm_image *ci = IMAGE(result);
+  ci->image = image;
+  ci->mask = mask;
+  ci->width = width;
+  ci->height = height;
+  ci->depth = depth;
+  fprintf(stderr,"Usage %dx%dx%d for %s\n",width,height,depth,szDescription);
   return result;
 }
 

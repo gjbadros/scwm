@@ -2,6 +2,16 @@
  * module-types.h
  */
 
+/* Used this perl initially script to create ../scheme/module-types.scm
+perl -ne 'BEGIN { print ";;;Auto-generated, do not edit\n(define-module (app scwm module-types))\n"; }
+if (/^\#define (M_.*)\s+\((.*)\)/) {
+my ($name,$val) = ($1, $2);
+print "(define-public $name ", eval($val), ")\n";
+}' < module-types.h >../scheme/module-types.scm
+
+Later, hand edited the script to get the alist mapping numbers to names
+*/
+
 #ifndef MODULE_TYPES_H
 #define MODULE_TYPES_H
 

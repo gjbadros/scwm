@@ -30,8 +30,7 @@ typedef struct {
   char *name;
 } scwm_font;
 
-#define SAFE_FONTP(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_font)
-#define FONTP(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_font)
+#define FONTP(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_font)
 #define FONT(X)  ((scwm_font *)SCM_CDR(X))
 #define XFONT(X) (((scwm_font *)SCM_CDR(X))->xfs)
 #define FONTNAME(X) (((scwm_font *)SCM_CDR(X))->name)

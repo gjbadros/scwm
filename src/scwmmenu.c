@@ -97,7 +97,7 @@ print_scwmmenu(SCM obj, SCM port, scm_print_state * pstate)
 SCM 
 scwmmenu_p(SCM obj)
 {
-  return ((SCM_NIMP(obj) && SCWM_MENU_P(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (SCWM_MENU_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
 
@@ -431,7 +431,7 @@ PopupGrabMenu(Scwm_Menu *psm, DynamicMenu *pmdPoppedFrom)
 SCM 
 popup_menu(SCM menu)
 {
-  if (!(SCM_NIMP(menu) && SCWM_MENU_P(menu))) {
+  if (SCWM_MENU_P(menu)) {
     scm_wrong_type_arg("popup-menu", 1, menu);
   }
   PopupGrabMenu(SCWM_SCWMMENU(menu),NULL);

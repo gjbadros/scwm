@@ -45,7 +45,7 @@ Picture *CachePicture(Display*,Window,char *szPath,char *name);
 void DestroyPicture(Display*,Picture*);
 
 
-#define PICTURE_P(X) (SCM_CAR(X) == (SCM)scm_tc16_scwm_picture)
+#define PICTURE_P(X) (SCM_NIMP(X) && SCM_CAR(X) == (SCM)scm_tc16_scwm_picture)
 #define PICTURE(X)  ((scwm_picture *)SCM_CDR(X))
 
 EXTERN long scm_tc16_scwm_picture;

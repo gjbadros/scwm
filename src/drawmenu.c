@@ -62,7 +62,7 @@ ConstructDynamicMenu(DynamicMenu *pmd)
     pmdi->TextColor = COLOR(pmenu->scmTextColor);
 
     pxfont = Scr.StdFont.font;
-    if (SAFE_FONTP(pmenu->scmFont)) {
+    if (FONTP(pmenu->scmFont)) {
       scwm_font *psfont = FONT(pmenu->scmFont);
       if (psfont) {
 	pxfont = psfont->xfs;
@@ -203,7 +203,7 @@ void
 PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
 {
   Scwm_Menu *pmenu = pmd->pmenu;
-  XFontStruct *pxfont = SAFE_FONTP(pmenu->scmFont)? XFONT(pmenu->scmFont)
+  XFontStruct *pxfont = FONTP(pmenu->scmFont)? XFONT(pmenu->scmFont)
     : Scr.StdFont.font;
   MenuDrawingInfo *pmdi = pmd->pmdi;
   Scwm_MenuItem *pmi = pmiim->pmi;
@@ -214,7 +214,7 @@ PaintMenuItem(Window w, DynamicMenu *pmd, MenuItemInMenu *pmiim)
   int item_height = pmiim->cpixItemHeight;
   GC ShadowGC = Scr.MenuShadowGC;
   GC ReliefGC = Scr.d_depth<2? Scr.MenuShadowGC: Scr.MenuReliefGC;
-  GC currentGC;
+  GC currentGC = ShadowGC;
   Picture *picLeft = pmi->picLeft;
   Picture *picAbove = pmi->picAbove;
   menu_item_state mis = pmiim->mis;

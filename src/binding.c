@@ -324,6 +324,7 @@ unbind_mouse(SCM contexts, SCM button)
     if (gh_number_p(button)) {
       bnum = gh_scm2int(button);
       if (bnum < 0 || bnum > 3) {
+	/* FIXGJB: number of buttons is not really fixed at 3 */
 	scwm_msg(WARN,__FUNCTION__,"No button number `%d'",bnum);
 	SCM_ALLOW_INTS;
 	return SCM_UNSPECIFIED;
@@ -334,10 +335,6 @@ unbind_mouse(SCM contexts, SCM button)
     }
   } else { /* it is a string */
     szButton = gh_scm2newstr(button,&cchButton);
-  }
-  if (!gh_string_p(button)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(__FUNCTION__, 2, button);
   }
   context = compute_contexts(contexts);
 
@@ -362,6 +359,7 @@ unbind_mouse(SCM contexts, SCM button)
     if (bnum < 0) {
       scwm_msg(WARN,__FUNCTION__,"No button `%s'",szButton);
       SCM_ALLOW_INTS;
+      free(szButton);
       return SCM_UNSPECIFIED;
     }
     free(szButton);
@@ -488,6 +486,7 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
     if (gh_number_p(button)) {
       bnum = gh_scm2int(button);
       if (bnum < 0 || bnum > 3) {
+	/* FIXGJB: number of buttons is not really fixed at 3 */
 	scwm_msg(WARN,__FUNCTION__,"No button number `%d'",bnum);
 	SCM_ALLOW_INTS;
 	return SCM_UNSPECIFIED;
@@ -525,6 +524,7 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
     if (bnum < 0) {
       scwm_msg(WARN,__FUNCTION__,"No button `%s'",szButton);
       SCM_ALLOW_INTS;
+      free(szButton);
       return SCM_UNSPECIFIED;
     }
     free(szButton);
@@ -569,7 +569,7 @@ bind_mouse(SCM contexts, SCM button, SCM proc)
   Scr.AllBindings->Action = "Scheme";
   Scr.AllBindings->Thunk = proc;
   Scr.AllBindings->NextBinding = temp;
-  if (Scr.flags & WindowsCaptured) {
+  if (contexts & C_WINDOW && Scr.flags & WindowsCaptured) {
     /* only grab the button press if we have already captured,
        otherwise it's a waste of time since we will grab
        them all later when we do the initial capture;

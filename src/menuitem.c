@@ -82,7 +82,7 @@ print_menuitem(SCM obj, SCM port, scm_print_state * pstate)
 SCM 
 menuitem_p(SCM obj)
 {
-  return ((SCM_NIMP(obj) && SCWM_MENUITEM_P(obj)) ? SCM_BOOL_T : SCM_BOOL_F);
+  return (SCWM_MENUITEM_P(obj) ? SCM_BOOL_T : SCM_BOOL_F);
 }
 
 SCM 

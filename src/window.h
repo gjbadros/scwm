@@ -3,6 +3,9 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include <libguile.h>
+#include "scwm.h"
+
 #undef EXTERN
 #undef EXTERN_SET
 #ifdef WINDOW_IMPLEMENTATION
@@ -12,9 +15,6 @@
 #define EXTERN extern
 #define EXTERN_SET(x,y) extern x
 #endif
-
-#include <libguile.h>
-#include "scwm.h"
 
 SCM  ensure_valid(SCM win, int n, char *subr, SCM kill_p, SCM release_p);
 
@@ -34,7 +34,7 @@ typedef struct {
 EXTERN long scm_tc16_scwm_window;
 EXTERN_SET(SCM window_context,SCM_UNDEFINED);
 
-#define WINDOWP(X) ((X) && (SCM_CAR(X) == (SCM)scm_tc16_scwm_window))
+#define WINDOWP(X) (SCM_NIMP(X) && (SCM_CAR(X) == (SCM)scm_tc16_scwm_window))
 #define WINDOW(X)  ((scwm_window *)SCM_CDR(X))
 #define SCWMWINDOW(X) (((scwm_window *)SCM_CDR(X))->sw)
 #define VALIDWINP(X) (((scwm_window *)SCM_CDR(X))->valid)
@@ -94,6 +94,8 @@ SCM move_window_to_desk(SCM which, SCM win);
 SCM window_position(SCM win);
 SCM window_size(SCM win);
 SCM window_id(SCM win);
+SCM window_from_window_id(SCM window_id);
+
 SCM window_desk(SCM win);
 SCM window_title(SCM win);
 

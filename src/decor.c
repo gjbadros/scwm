@@ -200,7 +200,7 @@ set_current_decor_x(SCM decor)
 
   if (decor == SCM_BOOL_F) {
     new_cur = NULL;
-  } else if (SCM_NIMP(decor) && DECORP(decor)) {
+  } else if (DECORP(decor)) {
     new_cur = SCWMDECOR(decor);
   } else {
     scm_wrong_type_arg("set-current-decor!", 1, decor);
@@ -235,7 +235,7 @@ set_window_decor_x(SCM decor, SCM win)
   ScwmDecor *fl;
   ScwmWindow *tmp_win;
 
-  if (SCM_NIMP(decor) && DECORP(decor)) {
+  if (DECORP(decor)) {
     fl = SCWMDECOR(decor);
   } else {
     scm_wrong_type_arg("set-window-decor!", 1, decor);

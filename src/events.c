@@ -72,6 +72,7 @@
 #include "resize.h"
 #include "window.h"
 #include "colormaps.h"
+#include "module-interface.h"
 
 
 unsigned int mods_used = (ShiftMask | ControlMask | Mod1Mask |
@@ -405,7 +406,6 @@ HandleKeyPress()
 	if (NULL != swCurrent) {
 	  unset_window_context();
 	}
-      } else {
       }
       return;
     }
@@ -466,6 +466,36 @@ SetXPropertySz(Window w, const char *szPropertyName, const char *sz)
 }
 
 
+SCM 
+scwm_error_handler (void *data, SCM tag, SCM throw_args)
+{
+  fprintf (stderr, "\nScwm got an error; tag is\n        ");
+  scm_display (tag, scm_current_output_port ());
+  scm_newline (scm_current_output_port ());
+  scm_display (throw_args,scm_current_output_port ());
+  scm_newline (scm_current_output_port ());
+
+  return SCM_BOOL_F;
+}
+
+
+/* FIXGJB: the above scwm_error_handler doesn't get used properly
+   by gh_eval_str_with_catch, so replace the standard handler
+   so we can get the throw arguments! This might be sensitive
+   to guile versions */
+SCM 
+gh_standard_handler (void *data, SCM tag, SCM throw_args)
+{
+  fprintf (stderr, "\nScwm got an error; tag is\n        ");
+  scm_display (tag, scm_current_output_port ());
+  scm_newline (scm_current_output_port ());
+  scm_display (throw_args,scm_current_output_port ());
+  scm_newline (scm_current_output_port ());
+
+  return SCM_BOOL_F;
+}
+
+
 void
 ScwmExecuteProperty()
 {
@@ -485,7 +515,9 @@ ScwmExecuteProperty()
        gh.h:SCM gh_eval_str_with_standard_handler(char *scheme_code);
        gh.h:SCM gh_eval_str_with_stack_saving_handler(char *scheme_code);
      */
-    retval = gh_eval_str_with_standard_handler(szExecute);
+    /* FIXGJB: scwm_error_handler doesn't get used -- I redefine
+       gh_standard_handler above to give better messages */
+    retval = gh_eval_str_with_catch(szExecute,scwm_error_handler);
     /* Need to make this go to STDERR, or better, some 
        pre-opened interaction results port */
     gh_display(retval);
@@ -576,11 +608,6 @@ HandlePropertyNotify()
       return;
 
     if ((swCurrent->wmhints->flags & IconPixmapHint) ||
-	(swCurrent->wmhints->flags & IconWindowHint))
-      if (swCurrent->szIconFile == Scr.DefaultIcon)
-	swCurrent->szIconFile = NULL;
-
-    if ((swCurrent->wmhints->flags & IconPixmapHint) ||
 	(swCurrent->wmhints->flags & IconWindowHint)) {
       if (!(swCurrent->flags & SUPPRESSICON)) {
 	if (swCurrent->icon_w)
@@ -596,7 +623,7 @@ HandlePropertyNotify()
       }
       swCurrent->icon_w = None;
       swCurrent->icon_pixmap_w = None;
-      swCurrent->picIcon = NULL;
+      swCurrent->icon_image = SCM_BOOL_F;
       if (swCurrent->flags & ICONIFIED) {
 	swCurrent->flags &= ~ICONIFIED;
 	swCurrent->flags &= ~ICON_UNMAPPED;
