@@ -360,9 +360,9 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 					    ((not (null? (cddr item)))
 					     (if (eq? (caddr item) 'term)
 						 (xtcmd-action (car item)
-							       action)
+							       cmd)
 						 (xcmd-action (car item)
-							      action
+							      cmd
 							      (caddr item))))
 					    (else (lambda () (execute cmd)))))
 			    #f))
