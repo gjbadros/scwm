@@ -38,12 +38,14 @@ WIN defaults as usual to the current window context."
 
 
 (define*-public (show-window-list-matching-interactively)
-  "Prompt for a wildcard, and popup a list of matching windows (by title)."
+  "Prompt for a wildcard, and popup a list of matching windows (by title).
+Stars are added to either end of the entered string so the default
+is a substring search."
   (interactive)
   (prompt-string "Window wildcard? "
 		 (lambda (wildcard)
 		   (add-timer-hook! 200 handle-pending-events)
-		   (show-window-list-menu 1 #f #:only (title-match?? wildcard)))))
+		   (show-window-list-menu 1 #f #:only (title-match?? (string-append "*" wildcard "*"))))))
 
 ;; (show-window-list-matching-interactively)
 ;; (use-scwm-modules prompt-string)
@@ -52,12 +54,15 @@ WIN defaults as usual to the current window context."
 (define-public (chop-string str)
   (make-shared-substring str 0 (1- (string-length str))))
 
+;;(output-of-system-cmd "bookmark-grep ")
+
 (define*-public (netscape-bookmark-search)
   "Prompt for a string, and popup a list of matching netscape bookmarks."
   (interactive)
   (prompt-string "Bookmark substring? "
 		 (lambda (string)
 		   (add-timer-hook! 200 handle-pending-events)
-		   (let ((str (output-of-system-cmd (string-append "bookmark-grep " string))))
-		     (gtk-table-from-string (chop-string str)
-					    (lambda (vals) (netscape-goto-url (car vals))))))))
+		   (let ((str (output-of-system-cmd (string-append "bookmark-grep 2>/dev/null " string))))
+		     (if (> (string-length str) 1)
+			 (gtk-table-from-string (chop-string str)
+						(lambda (vals) (netscape-goto-url (car vals)))))))))
