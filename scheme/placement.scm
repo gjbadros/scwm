@@ -100,7 +100,6 @@ window with the same DESK argument."
 (define*-public (interactive-placement #&key (resize #f) (switch #t)
   (return #f))
   "Return a procedure that takes a window and places it interactively.
-
 If the RESIZE argument is true, the resulting procedure will
 interactively resize the window immediately after placing it. If
 SWITCH is true, the returned procedure will switch to the virtual desk
@@ -117,8 +116,7 @@ places a window interactively."
 (define*-public (at-point-placement #&key (offset '(0 0))
 			       (proportional-offset '(-0.5 -0.5))
 			       (switch #t) (return #f))
-  "Return a procedure that places a window it at the pointer position.
-
+  "Return a procedure that places a window at the pointer position.
 If the keyword argument OFFSET is specified, it is interpreted as a
 list of x and y offsets to add to the pointer position. If the keyword
 argument PROPORTIONAL-OFFSET is specified, it is interpreted as a list
