@@ -1,3 +1,7 @@
+Tue Jan 11 10:32:45 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* configure.in, README: Bump to 0.99.6pre2
+
 Mon Jan 10 14:40:21 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* configure.in: Make it 0.99.6pre1, so rpm is happy (version

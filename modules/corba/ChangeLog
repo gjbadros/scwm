@@ -1,3 +1,10 @@
+Tue Jan 11 10:31:48 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* Makefile.am (idl_output_source): Added $(idl_output_headers),
+	and make them depend on scwm_scheme_evaluator.idl
+
+	* scwmcorba.c: Include scwm-guile.h for scwm_defer_ints(), etc.
+
 Tue Sep 28 08:34:14 1999  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* scwmcorba.c: Switch from gh_{defer,allow}_ints() to
