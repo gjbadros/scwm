@@ -1,3 +1,11 @@
+Mon Sep 21 10:08:29 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* move.c (Keyboard_shortcuts): Permit XK_KP_* to be used when
+	moving and resizing. Thanks to Tim Phipps (fvwm2-based patch).
+
+	* menu.c (PmiimMenuShortcuts): Permit XK_KP_Enter as a synonym for 
+	XK_Return. Thanks to Tim Phipps (fvwm2-based patch).
+
 Sat Sep 19 12:04:53 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c: Use UNSET_SCM in ensure_valid so #f
