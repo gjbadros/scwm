@@ -23,6 +23,7 @@
 #include "screen.h"
 #include "font.h"
 #include "xmisc.h"
+#include "drawmenu.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
@@ -78,7 +79,7 @@ struct MenuItemDrawingInfo_tag
 
 #define INCREASE_MAYBE(var,val) do { if (val > var) { var = val; } } while (0)
 
-
+void
 InitGCs()
 {
   XGCValues gcv;
@@ -569,9 +570,9 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
   for (imiim = 0; imiim < cmiim; imiim++) {
     MenuItemInMenu *pmiim = rgpmiim[imiim];
     if (1 || /* FIXJTL: optimize all of this! */
-	pxe->xexpose.y < (pmiim->pmidi->cpixOffsetY +
-			  pmiim->pmidi->cpixItemHeight) &&
-	(pxe->xexpose.y + pxe->xexpose.height) > pmiim->pmidi->cpixOffsetY) {
+	(pxe->xexpose.y < (pmiim->pmidi->cpixOffsetY +
+                           pmiim->pmidi->cpixItemHeight) &&
+         (pxe->xexpose.y + pxe->xexpose.height) > pmiim->pmidi->cpixOffsetY)) {
       DBUG((DBG,__FUNCTION__,"Painting menu item"));
       PaintMenuItem(w,pmd,pmiim);
     }
@@ -648,7 +649,7 @@ SetPopupMenuPositionFromMenuItem(DynamicMenu *pmdNew,
   int cpixXmenu = pmdOld->x;
   int cpixYmenu = pmdOld->y;
   int cpixWidthMenu = pmdOld->cpixWidth;
-  MenuDrawingInfo * pmdiNew = pmdNew->pmdi;
+  /* MenuDrawingInfo * pmdiNew = pmdNew->pmdi; */
   int cpixWidthNewMenu = pmdNew->cpixWidth;
 
   if (cpixXmenu + cpixWidthMenu + cpixWidthNewMenu - pmdOld->pmdi->cpixBorder <= Scr.DisplayWidth) {

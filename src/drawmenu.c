@@ -471,7 +471,7 @@ SetPopupMenuPositionFromMenuItem(DynamicMenu *pmdNew,
   int cpixXmenu = pmdOld->x;
   int cpixYmenu = pmdOld->y;
   int cpixWidthMenu = pmdOld->cpixWidth;
-  MenuDrawingInfo * pmdiNew = pmdNew->pmdi;
+  /*  MenuDrawingInfo * pmdiNew = pmdNew->pmdi; */
   int cpixWidthNewMenu = pmdNew->cpixWidth;
 
   if (cpixXmenu + cpixWidthMenu + cpixWidthNewMenu <= Scr.DisplayWidth) {

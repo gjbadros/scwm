@@ -870,7 +870,7 @@ MenuInteraction(DynamicMenu *pmd, Bool fWarpToFirst)
   /* Warp the pointer to the first menu item
      (perhaps selected if the keyboard was used to pop up this menu) */
   if (fWarpToFirst)
-    pmiim->pmd->pmdv->fnWarpPointerToPmiim(PmiimStepItems(pmd->rgpmiim[0],0,+1));
+    pmd->pmdv->fnWarpPointerToPmiim(PmiimStepItems(pmd->rgpmiim[0],0,+1));
 
   /* Don't assume all menu types pop up with the pointer on the first
      item; pie menus for instance will pop up with nothing selected */
