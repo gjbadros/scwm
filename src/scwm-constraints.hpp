@@ -19,6 +19,7 @@
 #include <strstream.h>
 #include "ClVariable.h"
 #include "ClSimplexSolver.h"
+#include "../guile/cassowary_scm.hpp"
 
 class ScwmWindowConstraintInfo {
 public:
@@ -39,6 +40,12 @@ public:
       _frame_y.setPv(psw);
       _frame_width.setPv(psw);
       _frame_height.setPv(psw);
+      SCM_DEFER_INTS;
+      scm_protect_object(_scmX = ScmMakeClVariable(&_frame_x));
+      scm_protect_object(_scmY = ScmMakeClVariable(&_frame_y));
+      scm_protect_object(_scmWidth = ScmMakeClVariable(&_frame_width));
+      scm_protect_object(_scmHeight = ScmMakeClVariable(&_frame_height));
+      SCM_ALLOW_INTS;
     }
 
   AddStays(ClSimplexSolver *psolver)
@@ -70,6 +77,10 @@ public:
   ClVariable _frame_y;
   ClVariable _frame_width;
   ClVariable _frame_height;
+  SCM _scmX;
+  SCM _scmY;
+  SCM _scmWidth;
+  SCM _scmHeight;
 };
 
 
