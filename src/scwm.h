@@ -54,6 +54,16 @@
 #include "system.h"
 #include "window_fwd.h"
 
+#undef EXTERN
+#undef EXTERN_SET
+#ifdef SCWM_IMPLEMENTATION
+#define EXTERN
+#define EXTERN_SET(x,y) x = y
+#else
+#define EXTERN extern
+#define EXTERN_SET(x,y) extern x
+#endif
+
 extern char **g_argv;
 extern int g_argc;
 
@@ -136,6 +146,13 @@ static scm_smobfuns T ## _smobfuns = { \
 #define SCROLL_REGION 2		/* region around screen edge that */
 				/* triggers scrolling */
 
+
+/* The option that handles client id for session management */
+#define CLIENT_ID_STRING	"--client-id"
+/* long options that are not equivalent to short ones */
+enum long_option_codes {
+  CLIENT_ID = 256
+};
 
 /* the set of functions that scwm perform on top 
    level windows;  
@@ -247,6 +264,8 @@ void CaptureAllWindows(void);
 
 /* Global variables */
 extern int master_pid;
+
+EXTERN char *UserName, *UserHome;
 
 extern Display *dpy;
 

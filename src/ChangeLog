@@ -1,3 +1,29 @@
+1998-10-15  Robert Bihlmeyer  <e9426626@stud2.tuwien.ac.at>
+
+	* session-manager.c (setSMProperties): Include all normal options
+	and updated --client-id in RestartCommand.
+	userID now comes from global UserName.
+	(initSM): Use SmcId/SmcNewId instead of old
+	oldSessionId/newSessionId.
+
+	* session-manager.h: Use *_IMPLEMENTATION scheme.
+	Removed oldSessionId, newSessionId, sessionProg.
+	(SmcId): New variable - set by --client-id option.
+
+	* scwm.h (CLIENT_ID, CLIENT_ID_STRING): New constants.
+	(UserName, UserHome): New variables.
+
+	* scwm.c (InitUserData): New function that initializes the above
+	two.
+	(main): Call it.
+	(scwm_main): New option '--client-id' for session management.
+	Handle it, update usage message and inline docs.
+
+	* scwm.h, scwm.c: Use *_IMPLEMENTATION scheme.
+
+	* events.c (NextScwmEvent): Change #ifdef from SM to
+	HAVE_LIBSM_LIBICE which is used everywhere else.
+
 Sun Oct 11 17:13:58 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* scwm.c (RestoreWithdrawnLocation): If

@@ -5,16 +5,13 @@
  * Largely borrowed from IceWM's icewm.cc (C) 1997 by Marko Macek
  */
 
+#define SESSION_MANAGER_IMPLEMENTATION
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 #include "session-manager.h"
-
 #include "scwm.h"
-
-int IceSMfd = -1;
-IceConn IceSMconn = NULL;
-SmcConn SMconn = NULL;
-char *oldSessionId = NULL;
-char *newSessionId = NULL;
-char *sessionProg;
 
 void iceWatchFD(IceConn conn,
                 IcePointer client_data,
@@ -23,7 +20,8 @@ void iceWatchFD(IceConn conn,
 {
   if (opening) {
     if (IceSMfd != -1) { /* shouldn't happen */
-      scwm_msg(WARN,"iceWatchFD","TOO MANY ICE CONNECTIONS -- not supported\n");
+      scwm_msg(WARN,"iceWatchFD",
+	       "TOO MANY ICE CONNECTIONS -- not supported\n");
     } else {
       IceSMfd = IceConnectionNumber(conn);
     }
@@ -69,8 +67,7 @@ void dieProc(SmcConn conn, SmPointer client_data) {
 static void setSMProperties() {
   SmPropValue programVal = { 0, NULL };
   SmPropValue userIDVal = { 0, NULL };
-  SmPropValue restartVal[3] = { { 0, NULL }, { 0, NULL }, { 0, NULL } };
-  /* broken headers ??? */
+  SmPropValue *restartVal;
   SmProp programProp = { (char *)SmProgram, 
                          (char *)SmLISTofARRAY8, 
                          1, &programVal };
@@ -79,39 +76,41 @@ static void setSMProperties() {
                         1, &userIDVal };
   SmProp restartProp = { (char *)SmRestartCommand,
                          (char *)SmLISTofARRAY8, 
-                         3, (SmPropValue *)&restartVal };
+                         g_argc+2, restartVal };
   SmProp cloneProp = { (char *)SmCloneCommand,
                        (char *)SmLISTofARRAY8, 
-                       2, (SmPropValue *)&restartVal };
+                       g_argc, restartVal };
   SmProp *props[] = {
     &programProp,
     &userIDProp,
     &restartProp,
     &cloneProp
   };
+  int i;
 
-  char *user = getenv("USER");
-  const char *clientId = "-clientId";
-
-  programVal.length = strlen(sessionProg);
-  programVal.value = sessionProg;
-  userIDVal.length = strlen(user);
-  userIDVal.value = (SmPointer)user;
-  restartVal[0].length = strlen(sessionProg);
-  restartVal[0].value = sessionProg;
-  restartVal[1].length = strlen(clientId);
-  restartVal[1].value = (char *)clientId;
-  restartVal[2].length = strlen(newSessionId);
-  restartVal[2].value = newSessionId;
-
+  programVal.length = strlen(g_argv[0]);
+  programVal.value = g_argv[0];
+  userIDVal.length = strlen(UserName);
+  userIDVal.value = (SmPointer)UserName;
+  restartVal = NEWC(g_argc+2, SmPropValue);
+  for (i=0; i<g_argc; i++) {
+    restartVal[i].length = strlen(g_argv[i]);
+    restartVal[i].value = g_argv[i];
+  }
+  restartVal[i++].length = strlen(CLIENT_ID_STRING);
+  restartVal[i++].value = CLIENT_ID_STRING;
+  restartVal[i++].length = strlen(SmcId);
+  restartVal[i++].value = SmcId;
   SmcSetProperties(SMconn,
                    sizeof(props)/sizeof(props[0]),
                    (SmProp **)&props);
+  FREE(restartVal);
 }
 
 void initSM() {
   char error_str[256];
   SmcCallbacks smcall;
+  char *SmcNewId;
 
   if (IceAddConnectionWatch(&iceWatchFD, NULL) == 0) {
     scwm_msg(WARN,"initSM","IceAddConnectionWatch failed.");
@@ -136,14 +135,14 @@ void initSM() {
                                   SmcShutdownCancelledProcMask |
                                   SmcDieProcMask,
                                   &smcall,
-                                  oldSessionId, &newSessionId,
+                                  SmcId, &SmcNewId,
                                   sizeof(error_str), error_str)) == NULL)
     {
       scwm_msg(WARN,"initSM","session manager initialization failed: %s\n", error_str);
       return ;
-    }
+    } 
+  SmcId = SmcNewId;
   IceSMconn = SmcGetIceConnection(SMconn);
-
   setSMProperties();
 }
 

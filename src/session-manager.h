@@ -12,13 +12,23 @@
 #endif
 
 #include <X11/SM/SMlib.h>
+/* for NULL */
+#include <stdio.h>
 
-extern int IceSMfd;
-extern IceConn IceSMconn;
-extern SmcConn SMconn;
-extern char *oldSessionId;
-extern char *newSessionId;
-extern char *sessionProg;
+#undef EXTERN
+#undef EXTERN_SET
+#ifdef SESSION_MANAGER_IMPLEMENTATION
+#define EXTERN
+#define EXTERN_SET(x,y) x = y
+#else
+#define EXTERN extern
+#define EXTERN_SET(x,y) extern x
+#endif
+
+EXTERN_SET(int IceSMfd, -1);
+EXTERN_SET(IceConn IceSMconn, NULL);
+EXTERN_SET(SmcConn SMconn, NULL);
+EXTERN_SET(char *SmcId, NULL);
 
 void initSM();
 

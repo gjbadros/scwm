@@ -21,6 +21,8 @@
  * A highly dynamic and extensible X11 window manager embedding guile scheme.
  ***********************************************************************/
 
+#define SCWM_IMPLEMENTATION
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -31,6 +33,9 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
+#include <pwd.h>
+
+#include "scwm.h"
 #include <stdarg.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
@@ -414,6 +419,36 @@ scwm_maybe_send_thankyou_packet()
   SendUsagePacket(0, 0, "scwm", 0, buf);
 }
 
+static void
+InitUserData()
+{
+  struct passwd *pw;
+  char *user, *home;
+
+  home = getenv("HOME");
+  if (!(user = getenv("USER"))) {
+    if (!(user = getenv("LOGNAME"))) {
+      pw = getpwuid(getuid());
+      if (pw) {
+	user = pw->pw_name;
+	if (!home)
+	  home = pw->pw_dir;
+      }
+      else {
+	user = "nobody";
+	scwm_msg(WARN, "InitUserData", "Could not determine user name "
+		 "- assuming `nobody'");
+	if (!home) { 
+	  home = "/tmp";
+	  scwm_msg(WARN, "InitUserData", "Could not determine home directory "
+		   "- assuming `/tmp'");
+	}
+      }
+    }
+  }
+  UserName = strdup(user);
+  UserHome = strdup(home);
+}
 
 
 
@@ -548,6 +583,8 @@ scwm_main(int argc, char **argv)
 #endif
   gh_allow_ints();
 
+  InitUserData();
+
   szCmdConfig = NEWC(1,char);
   
   szCmdConfig[0] = '\0';
@@ -591,6 +628,11 @@ will be processed in the order in which they were specified.</seg>
 <seg/-b or --blackout/ <seg/blacks the screen out to hide the initial capture./
 </seglistitem><seglistitem>
 
+<seg/--client-id id/ <seg>sets scwm's client id to a specific value. This
+is probably of no use to you unless you're a session manager or debbuging.
+</seg>
+</seglistitem><seglistitem>
+
 <seg/-v or --version/ <seg/prints the version and exits./
 </seglistitem>
 </segmentedlist>
@@ -607,6 +649,7 @@ will be processed in the order in which they were specified.</seg>
       {"help", 0, NULL, 'h'},
       {"blackout", 0, NULL, 'b'},
       {"version", 0, NULL, 'V'},
+      {CLIENT_ID_STRING, required_argument, NULL, CLIENT_ID},
       {NULL, 0, NULL, 0}
     };
     
@@ -666,6 +709,11 @@ will be processed in the order in which they were specified.</seg>
 Repository Timestamp: %s\n",
              VERSION, __DATE__, __TIME__, rcsid, szRepoLastChanged);
       exit(0);
+    case CLIENT_ID:
+#ifdef HAVE_LIBSM_LIBICE
+      SmcId = optarg;
+#endif
+      break;
     case ':':
       scwm_msg(ERR, "main", "Missing option argument: `-%c'\n",
                (char)optopt);
@@ -1360,7 +1408,8 @@ usage(void)
   fprintf(stderr, "Usage: %s [--display|-d dpy] [--debug]"
 	  "[--expression|-e expression]\n"
 	  "      [--file|-f rc_file] [--single-screen|-s] \n"
-	  "      [--blackout|-b] [--version|-V] [--help|-h]\n"
+	  "      [--blackout|-b] [--client-id id]\n"
+	  "      [--version|-V] [--help|-h]\n"
 	  , g_argv[0]);
 }
 
