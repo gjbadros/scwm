@@ -1,3 +1,11 @@
+1998-12-23  Sam Steingold  <sds@goems.com>
+
+	* Makefile.am (scwm_common_scheme): reokaced
+	move-resize-message-window.scm, move-with-message-window.scm,
+	resize-with-message-window.scm,
+	standard-move-resize-message-window.scm, with message-window.scm.
+	(apparently Maciej forgot to check in Makefile.am).
+
 Tue Dec 22 04:05:39 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 	* message-window.scm: Consolidate message window stuff. Added
@@ -18,9 +26,9 @@ Tue Dec 22 04:05:39 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
 1998-12-21  Todd Larason  <jtl@molehill.org>
 
-	* desk-background.scm: simplification: fallback to default only if 
+	* desk-background.scm: simplification: fallback to default only if
 	nothing is set for a desk, not for each component separately.
-	This leads to both simpler code and more consistent/understandable 
+	This leads to both simpler code and more consistent/understandable
 	behavior.
 
 Sat Dec 19 02:42:52 1998  Carl R. Witty  <cwitty@newtonlabs.com>
@@ -101,7 +109,7 @@ Sat Dec  5 12:05:31 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Added back in the menu-* variables to avoid order
 	dependency in initialization;  added select-window-interactively
-	to mimic the old primitive by the same name -- uses message window 
+	to mimic the old primitive by the same name -- uses message window
 	SMOBs now.
 
 	* flux.scm: Rewrite display-message-briefly to use message-window
@@ -111,7 +119,7 @@ Sat Dec  5 12:05:31 1998  Greg Badros  <gjb@cs.washington.edu>
 	resize-with-message-window.scm,
 	standard-move-resize-message-window.scm:  Added -- by Jeff
 	W. Nichols.  Supports previously-built-in support for message
-	window display of move position and resize size during interactive 
+	window display of move position and resize size during interactive
 	moves and resizes.
 
 1998-12-04  Todd Larason  <jtl@molehill.org>
@@ -132,7 +140,7 @@ Sat Dec  5 12:05:31 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* fvwm-module.scm (end-window-list): no longer public
 
-	* image-loaders.scm: documentation for image-loader functions 
+	* image-loaders.scm: documentation for image-loader functions
 
 	* listops.scm: fix documentation of and-map and or-map to match
 	actual funcationality
