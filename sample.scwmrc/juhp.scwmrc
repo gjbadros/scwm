@@ -14,7 +14,7 @@
 ;; import the scwm modules       ;;
 
 (use-scwm-modules base decor doc face flux fvwm-module optargs style
-		  wininfo winlist winops)
+		  defoption wininfo winlist winops)
 
 ;; menu compatibility
 (define (display-menu . rest)
@@ -392,7 +392,7 @@
 (define (move-or-shade)
   (case (mouse-event-type)
     ((double-click) (toggle-window-shade))
-    (else (move-or-raise-maybe-opaque))))
+    (else (move-or-raise))))
 
 (bind-mouse '(title frame-corners frame-sides) 1 move-or-shade)
 (bind-mouse '(title frame-corners frame-sides) 2 resize-or-raise)

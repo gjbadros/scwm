@@ -1,4 +1,4 @@
-; $Id$ -*- scwm -*-
+;; $Id$ -*- scwm -*-
 ;; gjb.scwmrc -- Greg J. Badros's Scwm initialization file
 ;;
 ;; Copyright (C) 1997-1999 Greg J. Badros
@@ -742,12 +742,6 @@
 	      1 hook immed-hook)
   (set! right-button-number (+ 1 right-button-number)))
 
-;;; window buttons
-;(bind-mouse 'button-1 1 popup-small-ops)
-;(bind-mouse 'button-1 1 close-on-double-click popup-small-ops-from-decoration)
-;(bind-mouse 'button-2 1 vertical-toggle-maximize)
-;(bind-mouse 'button-4 1 iconify)
-
 ;;(set-button-face! 1 mini-icon-button-face)
 ;;(set-button-face! 1 tall-maximize-button-face)
 
@@ -776,7 +770,6 @@
 
 (add-left-button mini-icon-button-face close-on-double-click popup-small-ops-from-decoration)
 ;;(show-titlebar (select-window-interactively))
-;;(bind-mouse 'button-1 1 popup-small-ops-or-close)
 
 ;; MS: I presume this is the desired efffect.
 ;; random thought: A nice extension would be buttons that change

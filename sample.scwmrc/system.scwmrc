@@ -209,9 +209,9 @@
 
 
 ;; window buttons
-(bind-mouse 'button-1 1 popup-small-ops)
-(bind-mouse 'button-2 1 vertical-toggle-maximize)
-(bind-mouse 'button-4 1 iconify)
+(bind-mouse 'left-button-1 1 popup-small-ops)
+(bind-mouse 'right-button-1 1 vertical-toggle-maximize)
+(bind-mouse 'right-button-2 1 iconify)
 
 ;; operations on parts of the window
 (bind-mouse '(frame-corners frame-sides) 2 popup-small-ops)

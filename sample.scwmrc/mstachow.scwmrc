@@ -749,20 +749,20 @@
 (bind-mouse '(frame-corners frame-sides) 3 popup-small-ops)
 
 ;; window buttons
-(bind-mouse 'button-1 1 (system-button-action 1))
-(bind-mouse 'button-1 3 (system-button-right-action 1))
+(bind-mouse 'left-button-1 1 (system-button-action 1))
+(bind-mouse 'left-button-1 3 (system-button-right-action 1))
 
-(bind-mouse 'button-3 1 (stick-button-action 3))
-(bind-mouse 'button-3 3 (stick-button-right-action 3))
+(bind-mouse 'left-button-2 1 (stick-button-action 3))
+(bind-mouse 'left-button-2 3 (stick-button-right-action 3))
 
-(bind-mouse 'button-2 1 (maximize-button-action 2))
-(bind-mouse 'button-2 3 (maximize-button-right-action 2))
+(bind-mouse 'right-button-1 1 (maximize-button-action 2))
+(bind-mouse 'right-button-1 3 (maximize-button-right-action 2))
 
-(bind-mouse 'button-4 1 (iconify-button-action 4))
-(bind-mouse 'button-4 3 (iconify-button-right-action 4))
+(bind-mouse 'right-button-2 1 (iconify-button-action 4))
+(bind-mouse 'right-button-2 3 (iconify-button-right-action 4))
 
-(bind-mouse 'button-6 1 (shade-button-action 6))
-(bind-mouse 'button-6 3 (shade-button-right-action 6))
+(bind-mouse 'right-button-3 1 (shade-button-action 6))
+(bind-mouse 'right-button-3 3 (shade-button-right-action 6))
 
 
 (bind-mouse 'icon 1 icon-action)

@@ -608,13 +608,13 @@ special menuitem `menu-separator', or submenus built with `build-menu'."
 (bind-mouse 'root 1 popup-softs)
 (bind-mouse 'root 2 popup-window-ops)
 (bind-mouse 'root 3 popup-winlist)
-(bind-mouse 'button-1 1 (lambda () (popup-small-ops)))
-(bind-mouse 'button-3 1 (lambda () (case (mouse-event-type)
+(bind-mouse 'left-button-1 1 (lambda () (popup-small-ops)))
+(bind-mouse 'left-button-2 1 (lambda () (case (mouse-event-type)
 				     ('click (close-window))
 				     ('double-click (destroy-window)))))
-(bind-mouse 'button-6 1 toggle-stick)
-(bind-mouse 'button-4 1 iconify)
-(bind-mouse 'button-2 1
+(bind-mouse 'right-button-3 1 toggle-stick)
+(bind-mouse 'right-button-2 1 iconify)
+(bind-mouse 'right-button-1 1
 	    (lambda () (case (mouse-event-type)
 			 ('click (vertical-toggle-maximize))
 			 ('double-click (toggle-maximize (%x 100) (%y 100))))))
