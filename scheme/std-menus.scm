@@ -74,7 +74,7 @@ or (menuitem \"Lock Screen\" #:action (make-xlock-menu #t))"
 	  (map (lambda (str) (menuitem str #:action (run-xlock str lock?)))
 	       screensaver-modes)))))
 
-(define*-public (make-hosts-menu host-list #&optional (user USER))
+(define*-public (make-hosts-menu host-list #&optional (user (user-name)))
   "Create a telnet menu.
 To use this, add the following to the menu of your choice:
   (menuitem \"telnet\" #:action (make-hosts-menu '(\"host1\" \"host2\" ...)))

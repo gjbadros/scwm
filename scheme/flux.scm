@@ -21,9 +21,7 @@
 
 
 
-(define-public HOME (getenv "HOME"))
-(define-public USER (getenv "USER"))
-(define-public user-init-file (string-append HOME "/.scwmrc"))
+(define-public user-init-file (string-append (user-home) "/.scwmrc"))
 
 ;; The #t arguments should perhaps instead be a closure
 ;; returning whether an opaque move/resize is desired
@@ -513,7 +511,7 @@ underscores, so that the resulting string can be used as a key for
 
 (define-public (make-rhosts-menu)
   (false-if-exception
-   (let* ((rhostfn (string-append HOME "/.rhosts"))
+   (let* ((rhostfn (string-append (user-home) "/.rhosts"))
 	  (termprog "xterm")
 	  (p (open-input-file rhostfn))
 	  (ret '())

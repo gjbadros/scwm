@@ -212,7 +212,7 @@ All the arguments are passed directly to the `menu' function."
               menu-separator
               (menuitem
                "X resources" #:action
-               (make-file-menu (string-append HOME "/.Xresources")
+               (make-file-menu (string-append (user-home) "/.Xresources")
                                (menuitem "Reload" #:action
                                          "xrdb -merge ${HOME}/.Xresources")))
               (menuitem

@@ -1,3 +1,10 @@
+1998-10-23  Robert Bihlmeyer  <robbe@orcus.priv.at>
+
+	* flux.scm, prefs-menu.scm, std-menus.scm: Use `user-name' instead
+	of `USER', `user-home' instead of `HOME'.
+
+	* flux.scm: Remove `USER' and `HOME'.
+
 1998-10-20  Robert Bihlmeyer  <robbe@orcus.priv.at>
 
 	* tests/misc.scm: test-caseification of older tests.
