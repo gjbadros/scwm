@@ -156,8 +156,8 @@ error-prone, Scwm provides a helper macro, SCWM_NEWCELL_SMOB:
 #define SCWM_NEWCELL_SMOB(ANSWER,ID,PSMOB) \
    do { \
      SCM_NEWCELL((ANSWER)); \
-     SCM_SETCAR((ANSWER),(ID)); \
      SCM_SETCDR((ANSWER),(SCM) (PSMOB)); \
+     SCM_SETCAR((ANSWER),(ID)); \
    } while (0)
 
 As you can see, the macro takes three arguments, the SCM variable to
@@ -447,15 +447,13 @@ that it does not get freed prematurely by Guile's garbage collector:
 
 SCM mark_color(SCM obj) {
   scmw_color *psc = COLOR(obj);
-  SCM_SETGC8MARK(obj);
   GC_MARK_SCM_IF_SET(psc->name);
 
   return SCM_BOOL_F;
 }
 
-This function does only two things: the macro SCM_SETGC8MARK sets the
-marked bit of the object obj (you must mark the object the mark function
-is passed), and then marks the embedded SCM name field.  The
+This function's responsibility is to mark all the SCM subobjects of "obj".
+For the color SMOB, there is only one: the embedded SCM name field.  The
 GC_MARK_SCM_IF_SET macro is used to ensure that psc->name is not NULL
 and is not SCM_UNDEFINED as trying to mark either of those would result
 in a crash.  The return value of the mark function is either SCM_BOOL_F, 
@@ -464,13 +462,15 @@ error handling of GC_MARK_SCM_IF_SET) equivalently be written:
 
 SCM mark_color(SCM obj) {
   scmw_color *psc = COLOR(obj);
-  SCM_SETGC8MARK(obj);
   return psc->name;
 }
 
 This is just a convenience, and is rarely employed in the Scwm source
-code.  See "guile-gc-notes" for more information on the Guile garbage
-collector.
+code.  See "guile-gc-notes" and 
+
+http://home.thezone.net/~gharvey/guile/guile.html#gcstuff
+
+for more information on the Guile garbage collector.
 
 FREE
 
