@@ -361,8 +361,6 @@ Pixel
 adjust_pixel_brightness(Pixel pixel, double factor)
 {
   XColor c;
-  char cnamebuf[19];
-
   c.pixel = pixel;
   
   XQueryColor (dpy, Scr.ScwmRoot.attr.colormap, &c);
@@ -802,9 +800,6 @@ SCWM_PROC(set_menu_stipple_x, "set-menu-stipple!", 1, 0, 0,
 May not be used any longer. */
 #define FUNC_NAME s_set_menu_stipple_x
 {
-  XGCValues gcv;
-  unsigned long gcm;
-
   VALIDATE_COLOR(st, FUNC_NAME, 1);
 
   if (Scr.d_depth > 2) {

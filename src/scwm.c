@@ -86,6 +86,7 @@
 #include "colormaps.h"
 #include "module-interface.h"
 #include "log-usage.h"
+#include "drawmenu.h"
 
 #ifdef HAVE_LIBSM_LIBICE
 #include "session-manager.h"

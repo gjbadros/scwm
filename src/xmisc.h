@@ -37,7 +37,7 @@ XTextProperty *PNewXTextPropertyFromSz(const char *sz);
 int flush_expose(Window w);
 void SetGCColors(GC gc, Pixel pix, Pixel pixBG);
 void SetGCFg(GC gc, Pixel pix);
-void SetGCFb(GC gc, Pixel pix);
+void SetGCBg(GC gc, Pixel pix);
 void RelieveRectangle(Window win,int x,int y,int w, int h,GC Hilite,GC Shadow);
 char *SzExtractTextPropValue(const XTextProperty *pxtp);
 

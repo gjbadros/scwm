@@ -645,12 +645,21 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                           WIN_VP_OFFSET_X(psw) + dragx, 
                           WIN_VP_OFFSET_Y(psw) + dragy,
                           dragWidth,dragHeight, fOpaque);
+      { /* scope */
+        /* do not use dragWidth and dragHeight directly--
+           they are only suggestions and the window may not
+           get resized at all (e.g., when the constraint solver
+           is in use */
+        int width, height;
+        FXGetWindowSize(psw->frame, &width, &height);
 
-      call3_hooks(interactive_resize_new_size_hook, psw->schwin,
-		  gh_int2scm(dragWidth),
-		  gh_int2scm(dragHeight));
+        call3_hooks(interactive_resize_new_size_hook, psw->schwin,
+                    gh_int2scm(width),
+                    gh_int2scm(height));
       
-      DisplaySize(psw, dragWidth, dragHeight, True);
+        DisplaySize(psw, width, height, True);
+      }
+
       if (FNeedsPaging(Scr.EdgeScrollX, Scr.EdgeScrollY, x, y)) {
         /* need to move the viewport */
         HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY, &x, &y,
