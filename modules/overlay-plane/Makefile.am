@@ -1,6 +1,8 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
 
+AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+
 scwm_module_LTLIBRARIES = liboverlay-plane.la
 
 liboverlay_plane_la_SOURCES = overlay-plane.c get_color.c

@@ -1,6 +1,8 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
 
+AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+
 scwm_module_LTLIBRARIES = libscwmgtkhelper.la
 
 libscwmgtkhelper_la_SOURCES = scwmgtkhelper.c

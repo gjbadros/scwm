@@ -1,4 +1,7 @@
 # $Id$
+## process this file with automake to create Makefile.in
+
+AM_CPPFLAGS = $(CPPEXTRAFLAGS)
 
 scwm_module_LTLIBRARIES = libxlib-drawing.la
 libxlib_drawing_la_SOURCES = drawing.c drawing.h

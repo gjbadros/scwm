@@ -1,6 +1,8 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
 
+AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+
 scwm_module_LTLIBRARIES = libpie-menus.la
 
 libpie_menus_la_SOURCES = draw-pie-menu.c

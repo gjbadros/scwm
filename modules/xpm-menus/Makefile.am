@@ -1,6 +1,8 @@
 ## $Id$
 ## process this file with automake to create Makefile.in
 
+AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+
 scwm_module_LTLIBRARIES = libxpm-menus.la
 
 libxpm_menus_la_SOURCES = draw-xpm-menu.c

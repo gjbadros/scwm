@@ -86,6 +86,8 @@ scwm_DEPENDENCIES = @CASSOWARY_OBJECTS@ @SESSION_MANAGER_OBJECTS@
 
 INCLUDES = @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@
 
+AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+
 guile_snarfs = Grab.x ICCCM.x add_window.x binding.x callbacks.x color.x \
 constraint-primitives.x \
 decor.x deskpage.x drawmenu.x events.x face.x font.x icons.x image.x menu.x menuitem.x \

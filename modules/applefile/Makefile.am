@@ -1,3 +1,8 @@
+# $Id$
+## process this file with automake to create Makefile.in
+
+AM_CPPFLAGS = $(CPPEXTRAFLAGS)
+
 pkglib_LTLIBRARIES = libapplefile.la
 libapplefile_la_SOURCES = applefile.c applesingledouble.c macbinary.c crc.c \
 			  resource.c
