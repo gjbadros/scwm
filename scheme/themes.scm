@@ -95,8 +95,8 @@ tar file with extension .tar, .tar.gz, or .tgz."
 
 (define-public theme-dictionary (make-hash-table 7))
 
-(define*-public (load-cached-theme fname #&optional force)
-  (or (and (not force) (hash-ref theme-dictionary fname))
+(define*-public (load-cached-theme fname #&optional force?)
+  (or (and (not force?) (hash-ref theme-dictionary fname))
       (let ((theme (load-theme fname)))
 	(if theme
 	    (hash-set! theme-dictionary fname theme)
