@@ -94,7 +94,15 @@ static void
 DisplaySize(ScwmWindow *psw, int width, int height, Bool fRelief)
 {
   char sz[30];
-  sprintf(sz, " %4d x %-4d ", width, height);
+  int dheight = height - psw->title_height - 2*psw->boundary_width;
+  int dwidth = width - 2*psw->boundary_width;
+  
+  dwidth -= psw->hints.base_width;
+  dheight -= psw->hints.base_height;
+  dwidth /= psw->hints.width_inc;
+  dheight /= psw->hints.height_inc;
+
+  sprintf(sz, " %4d x %-4d ", dwidth, dheight);
   DisplayMessage(sz,fRelief);
 }
 
@@ -522,13 +530,8 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
                                  x, y, &xmotion, &ymotion, 
                                  &dragx, &dragy, &dragWidth, &dragHeight);
 
-      SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight);
+      SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight, fOpaque);
             
-      if (!fOpaque) {
-        RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
-                                   dragWidth + 2 * psw->bw, 
-                                   dragHeight + 2 * psw->bw);
-      }
       DisplaySize(psw, dragWidth, dragHeight, True);
       /* need to move the viewport */
       HandlePaging(Scr.EdgeScrollX, Scr.EdgeScrollY, &x, &y,
@@ -559,11 +562,7 @@ InteractiveResize(ScwmWindow *psw, Bool fOpaque, int *pwidthReturn, int *pheight
       /* limit ourselves to legitimate sizes */
       ConstrainSize(psw, xmotion, ymotion, &dragWidth, &dragHeight);
 
-      SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight);
-      if (!fOpaque) {
-        RedrawOutlineAtNewPosition(Scr.Root, dragx - psw->bw, dragy - psw->bw,
-                                   dragWidth + 2 * psw->bw, dragHeight + 2 * psw->bw);
-      }
+      SuggestSizeWindowTo(psw,dragx,dragy,dragWidth,dragHeight, fOpaque);
     }
   }
 

@@ -423,7 +423,7 @@ ResizeTo(ScwmWindow *psw, int width, int height)
   ConstrainSize(psw, 0, 0, &width, &height);
   CassowaryEditSize(psw);
   SuggestSizeWindowTo(psw, FRAME_X(psw), FRAME_Y(psw),
-                      width, height);
+                      width, height, True);
   CassowaryEndEdit(psw);
 }
 
@@ -432,7 +432,7 @@ MoveResizeTo(ScwmWindow *psw, int x, int y, int width, int height)
 {
   ConstrainSize(psw, 0, 0, &width, &height);
   CassowaryEditSize(psw);
-  SuggestSizeWindowTo(psw, x, y, width, height);
+  SuggestSizeWindowTo(psw, x, y, width, height, True);
   CassowaryEndEdit(psw);
 }
 
@@ -440,7 +440,7 @@ void
 MoveTo(ScwmWindow *psw, int x, int y)
 {
   CassowaryEditPosition(psw);
-  SuggestMoveWindowTo(psw, x,y);
+  SuggestMoveWindowTo(psw, x, y, True);
   CassowaryEndEdit(psw);
 }
 
@@ -450,6 +450,7 @@ MovePswToCurrentPosition(const ScwmWindow *psw)
 {
   int x = FRAME_X(psw), y = FRAME_Y(psw);
   XMoveWindow(dpy, psw->frame, x, y);
+  BroadcastConfig(M_CONFIGURE_WINDOW, psw);
 }
 
 
@@ -461,9 +462,30 @@ ResizePswToCurrentSize(ScwmWindow *psw)
   int x = FRAME_X(psw), y = FRAME_Y(psw);
 
   SetupFrame(psw,x,y,w,h,True,WAS_MOVED,WAS_RESIZED);
-
 }
 
+
+/* Similar to SetScwmWindowGeometry, below -- normal scwm functions
+   don't call this -- it is called when cassowary is not re-solving
+   for this window, so we must be sure that the window has really
+   changed.  (Note that it may get called when cassowary is in use if
+   there is no master solver yet) */
+void
+SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque) 
+{
+  if (x != FRAME_X(psw) || y != FRAME_Y(psw)) {
+    SET_CVALUE(psw,frame_x,x);
+    SET_CVALUE(psw,frame_y,y);
+    if (fOpaque) 
+      MovePswToCurrentPosition(psw);
+    else {
+      RemoveRubberbandOutline(Scr.Root);
+      RedrawOutlineAtNewPosition(Scr.Root, 
+                                 FRAME_X(psw), FRAME_Y(psw),
+                                 FRAME_WIDTH(psw), FRAME_HEIGHT(psw));
+    }
+  }
+}
 
 /* Only resize if something has changed -- this gets called
    when cassowary is not re-solving for this window, so we must be sure that
@@ -473,10 +495,10 @@ ResizePswToCurrentSize(ScwmWindow *psw)
 
    Normal scwm function never call this function -- they should call
    MoveTo or MoveResizeTo or ResizeTo, and this will get invoked as
-   needed.
-*/
+   needed.  */
 void
-SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h) {
+SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque)
+{
   Bool fNeedResize = (psw->frame_width != w || psw->frame_height != h);
   Bool fNeedMove = (psw->frame_x != x || psw->frame_y != y);
   if (fNeedMove || fNeedResize) {
@@ -484,10 +506,18 @@ SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h) {
     SET_CVALUE(psw,frame_y,y);
     SET_CVALUE(psw,frame_width,w);
     SET_CVALUE(psw,frame_height,h);
-    if (fNeedResize)
-      ResizePswToCurrentSize(psw);
-    else
-      MovePswToCurrentPosition(psw);
+    if (!fOpaque) {
+      RemoveRubberbandOutline(Scr.Root);
+      RedrawOutlineAtNewPosition(Scr.Root, 
+                                 FRAME_X(psw) - psw->bw, FRAME_Y(psw) - psw->bw,
+                                 FRAME_WIDTH(psw) + 2 * psw->bw,
+                                 FRAME_HEIGHT(psw) + 2 * psw->bw);
+    } else {
+      if (fNeedResize)
+        ResizePswToCurrentSize(psw);
+      else
+        MovePswToCurrentPosition(psw);
+    }
   }
 }
 
@@ -2499,8 +2529,10 @@ specified. */
 
 SCWM_PROC(hide_titlebar, "hide-titlebar", 0, 1, 0,
           (SCM win))
-     /** Cause WIN not to be decorated with a titlebar. WIN defaults
-to the window context in the usual way if not specified. */
+     /** Cause WIN not to be decorated with a titlebar. 
+
+WIN defaults to the window context in the usual way if not
+specified. */
 #define FUNC_NAME s_hide_titlebar
 {
   ScwmWindow *psw;
@@ -2531,6 +2563,7 @@ to the window context in the usual way if not specified. */
 SCWM_PROC(titlebar_shown_p, "titlebar-shown?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is decorated with a titlebar, #f otherwise.
+
 WIN defaults to the window context in the usual way if not
 specified. */
 #define FUNC_NAME s_titlebar_shown_p
@@ -2543,9 +2576,10 @@ specified. */
 
 SCWM_PROC(normal_border, "normal-border", 0, 1, 0,
           (SCM win))
-     /** Cause WIN to be decorated with a normal border. This means
-that there will be resize handles in the corners. WIN defaults to the
-window context in the usual way if not specified. */
+     /** Cause WIN to be decorated with a normal border. 
+
+This means that there will be resize handles in the corners. WIN
+defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_normal_border
 {
   ScwmWindow *psw;
@@ -2574,12 +2608,10 @@ window context in the usual way if not specified. */
 
 SCWM_PROC(plain_border, "plain-border", 0, 1, 0,
           (SCM win))
-
-     /** Cause WIN to be decorated with a plain border. This means
-that there will be no resize handles in the corners, and the
+     /** Cause WIN to be decorated with a plain border. 
+This means that there will be no resize handles in the corners, and the
 window . WIN defaults to the window context in the usual way if not
 specified. */
-
 #define FUNC_NAME s_plain_border
 {
   ScwmWindow *psw;

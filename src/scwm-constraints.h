@@ -30,13 +30,15 @@ typedef const struct ScwmWindow *ConstPScwmWindow;
 extern "C" {
 #endif
 
+#define Bool int /* from Xlib.h */
+
 void CassowaryInitClVarsInPsw(PScwmWindow psw);
 void CassowaryNewWindow(PScwmWindow psw);
 void CassowarySetCValuesAndSolve(PScwmWindow psw, int fSolve);
 void CassowaryEditPosition(PScwmWindow psw);
 void CassowaryEditSize(PScwmWindow psw);
-void SuggestMoveWindowTo(PScwmWindow psw, int x, int y);
-void SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h);
+void SuggestMoveWindowTo(PScwmWindow psw, int x, int y, Bool fOpaque);
+void SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque);
 void CassowaryEndEdit(PScwmWindow psw);
 
 #ifdef __cplusplus

@@ -336,7 +336,6 @@ InitVariables(void)
 
   Scr.EdgeScrollX = Scr.EdgeScrollY = 100;
   Scr.ScrollResistance = Scr.MoveResistance = 0;
-  Scr.OpaqueSize = 5;
   Scr.ClickTime = 150;
   Scr.fColormapFollowsMouse = True;
 

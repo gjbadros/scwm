@@ -15,7 +15,8 @@
 
 #define ScwmWindow    struct ScwmWindow
 
-void SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h);
+void SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque);
+void SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque);
 
 ScwmWindow *AddWindow(Window w);
 

@@ -98,15 +98,11 @@ void CassowaryInitClVarsInPsw(ScwmWindow *psw) { /* empty */ }
 void CassowaryNewWindow(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditPosition(ScwmWindow *psw) { /* empty */ }
 void CassowaryEditSize(ScwmWindow *psw) { /* empty */ }
-void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y) {
-  if (x != FRAME_X(psw) || y != FRAME_Y(psw)) {
-    FRAME_X(psw) = x; 
-    FRAME_Y(psw) = y; 
-    XMoveWindow(dpy, psw->frame, x, y); 
-  }
+void SuggestMoveWindowTo(ScwmWindow *psw, int x, int y, Bool fOpaque) {
+  SetScwmWindowPosition(psw,x,y,fOpaque);
 }
-void SuggestSizeWindowTo(ScwmWindow *psw, int x, int y, int w, int h) {
-  SetScwmWindowGeometry(psw,x,y,w,h);
+void SuggestSizeWindowTo(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque) {
+  SetScwmWindowGeometry(psw,x,y,w,h, fOpaque);
 }
 void CassowaryEndEdit(ScwmWindow *psw) { /* empty */ }
 #endif
@@ -562,6 +558,9 @@ AddWindow(Window w)
      to  resolve */
   CassowarySetCValuesAndSolve(psw,False /* no solve */);
 
+  SetupFrame(psw, frame_x, frame_y, frame_width, frame_height, True,
+             WAS_MOVED, WAS_RESIZED);
+
   /* FIXMS: Hmm, do we need to do any real cleanup if this fails?
      _Can_ it fail, in it's new location?
      -- I think we just have to make PlaceWindow put it somewhere
@@ -577,16 +576,10 @@ AddWindow(Window w)
 
   CassowaryNewWindow(psw);      /* add the stay constraints in */
 
-  SetupFrame(psw, frame_x, frame_y, frame_width, frame_height, True,
-             WAS_MOVED, WAS_RESIZED);
-
   /* wait until the window is iconified and the icon window is mapped
      before creating the icon window */
   psw->icon_w = None;
 
-
-  /* FIXGJBNOW */
-  scwm_msg(DBG,"Adding window grab buttons, keys for %s",psw->name);
   GrabButtons(psw);
   GrabKeys(psw);
 

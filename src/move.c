@@ -341,14 +341,10 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
                           yt + psw->icon_p_height);
           }
         } else {
-          if (opaque_move) {
-            /* the solver's resolve does the move window */
-            /* if not using Cassowary, this just does an XMoveWindow */
-            SuggestMoveWindowTo(psw,xl,yt);
-          }
+          /* the solver's resolve does the move window */
+          /* if not using Cassowary, this just does an XMoveWindow */
+          SuggestMoveWindowTo(psw,xl,yt,opaque_move);
         }
-	if (!opaque_move)
-	  RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
 	DisplayPosition(psw, xl + Scr.Vx, yt + Scr.Vy, True);
 
         /* prevent window from lagging behind mouse when paging - mab */
@@ -372,18 +368,14 @@ moveLoop(ScwmWindow * psw, int XOffset, int YOffset, int Width,
       break;
     }
     if (!done) {
-      if (!opaque_move)
-        RemoveRubberbandOutline(Scr.Root);
       DispatchEvent();
-      if (!opaque_move)
-	RedrawOutlineAtNewPosition(Scr.Root, xl, yt, Width, Height);
     }
   }
   if (!opaque_move)
     RemoveRubberbandOutline(Scr.Root);
 
   if (!psw->fIconified) {
-    SuggestMoveWindowTo(psw,xl,yt);
+    SuggestMoveWindowTo(psw,xl,yt,opaque_move);
     CassowaryEndEdit(psw);
   } else if (!opaque_move) {
     /* need to move the real windows for the icon */

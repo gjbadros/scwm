@@ -203,27 +203,6 @@ makes a difference only when using focus policies other than 'mouse. */
 #undef FUNC_NAME
 
 
-/* FIXGJB: this should be determined more flexibly */
-SCWM_PROC(set_opaque_move_size_x, "set-opaque-move-size!", 1, 0, 0,
-          (SCM size))
-     /** Set the opaque move size limit to SIZE.
-SIZE is given as a percentage of the screen area. If the area of a
-window is greater than this percentage, the window will be moved with
-a rubber band instead. */
-#define FUNC_NAME s_set_opaque_move_size_x
-{
-  SCM_REDEFER_INTS;
-  if (!gh_number_p(size)) {
-    SCM_ALLOW_INTS;
-    scm_wrong_type_arg(FUNC_NAME, 1, size);
-  }
-  Scr.OpaqueSize = gh_scm2long(size);
-  SCM_REALLOW_INTS;
-  return SCM_UNSPECIFIED;
-}
-#undef FUNC_NAME
-
-
 SCWM_PROC(pointer_position, "pointer-position", 0, 0, 0,
           ())
      /** Return the current position of the mouse pointer in pixels.

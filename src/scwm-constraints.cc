@@ -110,14 +110,10 @@ CassowaryEditSize(PScwmWindow psw)
 
 
 void 
-SuggestMoveWindowTo(PScwmWindow psw, int x, int y)
+SuggestMoveWindowTo(PScwmWindow psw, int x, int y, Bool fOpaque)
 {
   if (!psolver) {
-    if (x != FRAME_X(psw) || y != FRAME_Y(psw)) {
-      FRAME_X(psw) = x; 
-      FRAME_Y(psw) = y; 
-      XMoveWindow(dpy, psw->frame, x, y); 
-    }
+    SetScwmWindowPosition(psw,x,y,fOpaque);
     return;
   }
   ScwmWindowConstraintInfo *pswci = psw->pswci;
@@ -134,10 +130,10 @@ SuggestMoveWindowTo(PScwmWindow psw, int x, int y)
 }
 
 void 
-SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h)
+SuggestSizeWindowTo(PScwmWindow psw, int x, int y, int w, int h, Bool fOpaque)
 {
   if (!psolver) {
-    SetScwmWindowGeometry(psw,x,y,w,h);
+    SetScwmWindowGeometry(psw,x,y,w,h,fOpaque);
     return;
   }
   ScwmWindowConstraintInfo *pswci = psw->pswci;

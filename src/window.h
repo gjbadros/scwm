@@ -272,7 +272,11 @@ void LowerWindow(ScwmWindow *psw);
 void KeepOnTop();
 void MovePswToCurrentPosition(const ScwmWindow *psw);
 void ResizePswToCurrentSize(ScwmWindow *psw);
-void SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h);
+
+/* do not call these functions -- they are exported for cassowary to call,
+   and used in the non-cassowary standin "Suggest..." functions */
+void SetScwmWindowGeometry(ScwmWindow *psw, int x, int y, int w, int h, Bool fOpaque);
+void SetScwmWindowPosition(ScwmWindow *psw, int x, int y, Bool fOpaque);
 
 void FocusOn(ScwmWindow *psw, int DeIconifyOnly);
 void WarpOn(ScwmWindow *psw, int warp_x, int x_unit, int warp_y, int y_unit);

@@ -48,7 +48,7 @@ Broadcast(unsigned long event_type, unsigned long num_datum,
 
 
 void
-BroadcastConfig(unsigned long event_type, ScwmWindow *psw)
+BroadcastConfig(unsigned long event_type, const ScwmWindow *psw)
 {
   apply_hooks (broadcast_config_hook, 
 	       gh_list(gh_ulong2scm(event_type), 

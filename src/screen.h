@@ -288,7 +288,6 @@ typedef struct ScreenInfo {
   int ClickTime;		/* Max button-click delay for distinguishing clicks/drags */
   int ScrollResistance;		/* resistance to scrolling in desktop */
   int MoveResistance;		/* res to moving windows over viewport edge */
-  int OpaqueSize;               /* percent of screen size for window before no opaque */
 
 } ScreenInfo;
 

@@ -20,7 +20,7 @@ void Broadcast(unsigned long event_type, unsigned long num_datum,
 	       unsigned long data4, unsigned long data5, unsigned long data6,
 	       unsigned long data7);
 
-void BroadcastConfig(unsigned long event_type, struct ScwmWindow *t);
+void BroadcastConfig(unsigned long event_type, const struct ScwmWindow *t);
 
 void BroadcastName(unsigned long event_type, unsigned long data1,
 		   unsigned long data2, unsigned long data3, char *name);
