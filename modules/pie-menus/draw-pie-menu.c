@@ -57,7 +57,7 @@ extern SCM sym_top, sym_center, sym_bottom;
 
 /* Relative widths of different kinds of things in menus, in
    arbitrary units */
-#define MENU_SEPARATOR_UNITS 1
+#define MENU_SEPARATOR_UNITS 0
 #define MENU_ITEM_UNITS 16
 
 /* Radius of circle in center of pie that doesn't select anything */
@@ -936,6 +936,8 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
     else
       total_units += MENU_ITEM_UNITS;
   }
+  if (total_units == 0)
+    total_units++;
   rSubtendUnit = (M_PI*2)/total_units;
   
   cpixHeight = scfont->height + MENU_ITEM_LABEL_EXTRA_VERT_SPACE;
@@ -1035,7 +1037,6 @@ ConstructDynamicPieMenuInternal(DynamicMenu *pmd, SCM menu_look)
       total_height += item_height;
 #endif
   }
-
 
   /* Second loop through - figure out label radius */
   cpixLabelRadius = MENU_LABEL_RADIUS_MIN;
