@@ -25,7 +25,7 @@ CFLAGS = @GTK_CFLAGS@ @CFLAGS@
 
 GRAMMARS = scwmgrammar.fsg
 
-INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_srcdir)/include @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@ $(VVINC)
+INCLUDES = -I$(SCWM_SRC_DIR) -I$(top_builddir)/src -I$(top_srcdir)/include @x_cflags@ @GUILE_INCLUDES@ @CASSOWARY_INCLUDES@ @PREFIX_INCLUDES@ $(VVINC)
 
 
 %.fsg: %.bnf
