@@ -158,6 +158,7 @@ The selection must contain a single full pathname."
    (map 
     (lambda (x) 
       (menuitem x #:action 
-		(lambda () (window-style "*" 
-					 #:use-theme (load-cached-theme x force?))))) 
+		(lambda () 
+		  (window-style 
+		   "*" #:use-theme (load-cached-theme x force?)))))
     (theme-names))))

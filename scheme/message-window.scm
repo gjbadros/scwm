@@ -265,3 +265,24 @@ See `display-message' for details about MSG."
     (message-window-show! mwn)
     (add-timer-hook! (sec->usec sec-timeout)
 		     (lambda () (message-window-hide! mwn)))))
+
+(define*-public (make-message-window-win-copy #&optional (win 'root-window))
+  "Return a message window with a background that is a copy of the image in WIN.
+The message-window will have no text and no relief, and be the same size
+as WIN."
+  (let ((img (window->image win))
+	(msgwin (make-message-window "")))
+    (apply message-window-set-size! (cons msgwin (image-size img)))
+    (message-window-set-position! msgwin 0 0 0 0)
+    (message-window-set-relief! msgwin #f)
+    msgwin))
+
+(define-public (with-frozen-root-window thunk)
+  "Execute THUNK with a frozen root window.
+Creates an image containing the root window, and displays that
+image in a message window covering the entire screen.  Executes
+THUNK, then removes the message window."
+  (let ((mwn (make-message-window-win-copy 'root-window)))
+    (dynamic-wind (lambda () (message-window-show! mwn))
+		  thunk
+		  (lambda () (message-window-hide! mwn)))))
