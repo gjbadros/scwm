@@ -24,6 +24,11 @@
   :use-module (ice-9 regex)
   :use-module (app scwm listops))
 
+(define-public (procedure->string proc)
+  (if (and proc (procedure? proc))
+      (symbol->string (or (procedure-name proc) 'anonymous-procedure))
+      "<none>"))
+
 (define-public (procedure-arity proc)
   "Return the arity values for PROC.
 Three values are returned in a list: (num-required num-optional rest-argument-p)."

@@ -29,6 +29,7 @@
   :use-module (app scwm scwmxtest)
   :use-module (app scwm stringops)
   :use-module (app scwm group)
+  :use-module (app scwm reflection)
   :use-module (app scwm path-cache)
   :use-module (app scwm window-selection)
   :use-module (app scwm nonants)
@@ -498,11 +499,6 @@ that corner fixed."
 	(set-window-gravity! 
 	 (nonant->gravity (get-window-nonant win-pos))
 	 win))))
-
-(define-public (procedure->string proc)
-  (if (and proc (procedure? proc))
-      (symbol->string (or (procedure-name proc) 'anonymous-procedure))
-      "<none>"))
 
 (define-public (describe-key)
   (let* ((key (car (get-key-event)))
