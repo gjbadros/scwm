@@ -154,7 +154,7 @@ ScwmWindow *FocusOnNextTimeStamp = NULL;
 
 Bool debugging = False, PPosOverride = False, Blackout = False;
 Bool fDisableBacktrace = False;
-Bool fResetOnSegv = True;
+Bool segvs_to_reset = 100;
 
 char **g_argv;
 int g_argc;
@@ -198,6 +198,7 @@ Atom XA_WM_DELETE_WINDOW;
 Atom XA_WM_DESKTOP;
 Atom XA_MwmAtom;
 Atom XA_MOTIF_WM;
+Atom XA_WM_CLIENT_LEADER;
 
 Atom XA_OL_WIN_ATTR;
 Atom XA_OL_WT_BASE;
@@ -243,6 +244,7 @@ InternUsefulAtoms(void)
   XA_WM_DESKTOP = XInternAtom(dpy, "WM_DESKTOP", False);
   XA_MwmAtom = XInternAtom(dpy, "_MOTIF_WM_HINTS", False);
   XA_MOTIF_WM = XInternAtom(dpy, "_MOTIF_WM_INFO", False);
+  XA_WM_CLIENT_LEADER = XInternAtom(dpy, "WM_CLIENT_LEADER", False);
 
   XA_OL_WIN_ATTR = XInternAtom(dpy, "_OL_WIN_ATTR", False);
   XA_OL_WT_BASE = XInternAtom(dpy, "_OL_WT_BASE", False);
@@ -698,7 +700,12 @@ is probably of no use to you unless you're a session manager or debbuging.
       single = True; break;
     case 'p':
       /* still handle the segv, just do not reset to the main event handler */
-      fResetOnSegv = False; break;
+      if (optarg == NULL) {
+        segvs_to_reset = 0;
+      } else {
+        segvs_to_reset = atoi(optarg);
+      };
+      break;
     case 'P':
       /* do not even catch segv's */
       fHandleSegv = False; break;
@@ -1410,10 +1417,11 @@ SIGNAL_T
 SigDoneSegv(int ARG_IGNORE(ignored))
 {
   scwm_msg(ERR, "SigDoneSegv","Caught seg fault... please run with --permit-segv and report a bug!");
-  if (fResetOnSegv) {
+  if (segvs_to_reset-- > 0) {
     scwm_msg(ERR, "SigDoneSegv","Trying to continue... save your work if you still can!");
     siglongjmp(envHandleEventsLoop,1);
   } else {
+    reset_signal_handler(SIGSEGV);
     scwm_msg(ERR, "SigDoneSegv","Doing some cleanup to restore sanity");
     Done(-1, NULL);
   }

@@ -50,6 +50,7 @@
 #include "add_window.h"
 #include "dbug_resize.h"
 #include "winprop.h"
+#include "xproperty.h"
 
 
 SCWM_HOOK(invalid_interaction_hook,"invalid-interaction-hook",0);
@@ -1583,6 +1584,10 @@ defaults to the window context in the usual way if not specified. */
 #define FUNC_NAME s_destroy_window
 {
   ScwmWindow *psw;
+  unsigned char *leader;
+  Atom type;
+  int fmt;
+  unsigned long len;
 
   SCM_REDEFER_INTS;
   VALIDATEKILL(win);
@@ -1591,6 +1596,21 @@ defaults to the window context in the usual way if not specified. */
     SCM_REALLOW_INTS;
     return SCM_BOOL_F;
   }
+
+  leader = GetXProperty(psw->w, XA_WM_CLIENT_LEADER, False, &type, &fmt, &len);
+  if (leader && (type != XA_WINDOW || fmt != 32 || len != 1)) {
+    XFree(leader);
+    leader = NULL;
+  } else if (leader) {
+    unsigned long win = (unsigned long) (*(Window *)leader);
+    /* GJB:FIXME:: this requires a patch to guile-gtk-0.15 */
+    SCM gdk_leader = gh_lookup("gdk-leader-window");
+    if (gh_number_p(gdk_leader) && win == gh_scm2ulong(gdk_leader)) {
+      /* do not permit the destroy */
+      return SCM_BOOL_F;
+    }
+  }
+
   if (!FXWindowAccessible(dpy,psw->w)) {
     DestroyScwmWindow(psw);
   } else {

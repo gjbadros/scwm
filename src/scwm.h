@@ -284,6 +284,7 @@ extern int JunkX, JunkY;
 extern unsigned int JunkWidth, JunkHeight, JunkBW, JunkDepth, JunkMask;
 
 extern Atom XA_MOTIF_WM;
+extern Atom XA_WM_CLIENT_LEADER;
 extern Atom XA_MIT_PRIORITY_COLORS;
 extern Atom XA_WM_CHANGE_STATE;
 extern Atom XA_WM_STATE;

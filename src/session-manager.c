@@ -480,7 +480,6 @@ If Scwm is already registered, this function just returns the client id. */
     return gh_str02scm(SmcId);
 
   XA_SM_CLIENT_ID = XInternAtom(dpy, "SM_CLIENT_ID", False);
-  XA_WM_CLIENT_LEADER = XInternAtom(dpy, "WM_CLIENT_LEADER", False);
 
   if (IceAddConnectionWatch(&iceWatchFD, NULL) == 0) {
     scwm_msg(WARN, FUNC_NAME , SMerror);

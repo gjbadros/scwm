@@ -661,19 +661,33 @@ Do not do this unless you are testing segv handling! */
 #undef FUNC_NAME
 
 SCWM_PROC(set_reset_on_segv_x, "set-reset-on-segv!", 1, 0, 0,
-	  (SCM flag))
-     /** If FLAG, tell Scwm to try to continue when catching a segv signal.
-This is the default, but if you catch a segv and and are willing to 
-track it or send in a bug report, use this to permit a C-level backtrace. 
-See also `set-handle-segv!'.
+	  (SCM number_to_reset))
+     /** Reset Scwm to the main event loop on the next NUMBER-TO-RESET segv signals.
+The default is 100, but if you catch a segv and and are willing to 
+track it or send in a bug report, use this to permit a C-level backtrace
+by setting it to 0.  See also `set-handle-segv!'.
 */
 #define FUNC_NAME s_set_reset_on_segv_x
 {
-  extern Bool fResetOnSegv;
-  VALIDATE_ARG_BOOL_COPY(1,flag,fResetOnSegv);
+  extern int segvs_to_reset;
+  VALIDATE_ARG_INT_COPY(1,number_to_reset,segvs_to_reset);
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
+
+SCWM_PROC(reset_on_segv, "reset-on-segv", 0, 0, 0,
+	  ())
+     /** Return the number of segv signals Scwm will reset on.
+See `set-reset-on-segv!'.
+*/
+#define FUNC_NAME s_reset_on_segv
+{
+  extern int segvs_to_reset;
+  return gh_int2scm(segvs_to_reset);
+}
+#undef FUNC_NAME
+
+
 
 SCWM_PROC(set_handle_segv_x, "set-handle-segv!", 1, 0, 0,
 	  (SCM flag))
@@ -696,6 +710,15 @@ For developers and hackers only. */
 }
 #undef FUNC_NAME
 
+
+SCWM_PROC(x_connection_number, "X-connection-number", 0, 0, 0,
+          ())
+     /* Return the X connection file descriptor number. */
+#define FUNC_NAME s_x_connection_number
+{
+  int c = ConnectionNumber(dpy);
+  return gh_int2scm(c);
+}
 
 
 void 
