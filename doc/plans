@@ -1,132 +1,331 @@
+Date: Wed, 29 Oct 1997 04:26:02 EST
+From: Maciej Stachowiak <mstachow@mit.edu>
 
-Future Plans/Pipe Dreams for SCWM
+I apologize in advance for the length of this message (looking over it
+after having written it I realize it is pretty damn long, but there
+was a lot to say). I will probably also check it in to CVS so we can
+communicate through patches to it for easier annotation.
 
 
+I am partially done with an implementation of Button (and thus Title
+and Border since they are internally the same) styles, but I haven't
+been checking in my work. Do you think it is better to work on
+semi-long-term things like this solely in a working directory, or to
+check things in periodically as long as the code comppiles ar runs?  I
+guess the best thing to do would be to fork off a separate CVS branch
+and merge it in later, but I haven't read up enough on CVS enough to
+know how to do that.
 
-Here are the things I would like to see happen with scwm, in
-approximate order:
 
-- After the 0.2 release, a lot of cleanup needs to happen. This
-entails several things. 
+Anyway, my rough plan is this: 
 
-   - Zeroth, imake should be ditched in favor of autoconf (possibly
-   also automake). This should hopefully already be done by the 0.2
-   release, but I list it here anyway because it is very important.
+1) Finish {button,title,border}-styles and then make a release; I
+think between us we have added enough features and fixed enough bugs
+that people will want access to the code, and I will also feel OK
+about not making any features releases for a while after, since the wm
+will reasonably be able to claim to mostly be a superset of fvwm. Oh
+yeah, I would also like to fix the problem you were seeing before with
+styles, assuming you are still seeing it, before doing the release.
 
-   - First, the dead code from fvwm should be removed. 
+2) After making this release, I would like to hold off for a while,
+wait to see some bugs reported, and possibly make a bugfix release if
+it is warranted.
 
-   - Second, internal fvwm data structures should be reorganized to be
-   more "Lispy" when possible. This will probably cut code size a good
-   deal, as translating back and forth between the C and Scheme layers
-   will be reduced.
+3) After that, cleanup becomes priority number one. I want to delete
+all of the code that is #ifdef-ed out, and a lot more that will become
+unused then. I'd also like to see some things that were poorly
+implemented, either by fvwm originally, or by me in my rush to get at
+least all fvwm features working get reimplemented the right way. I
+think the most important part of this will be a fairly massive change
+of internal data structures, which I will outline below in a moment.
 
-- More configurability of style - make every window decoration option
-that is settable at all be settable per window. 
-
-- More configurability of behavior - hooks for entering and leaving
-windows, hitting the screen edge, maybe entering & leaving icons. also
-timer support. See how much this allows us to write in Scheme instead
-of C. It should be able to handle at least click to focus/mouse
-focus/no focus/sloppy focus and scrolling on the screen edge. We could
-also do other neat tricks, for example, put the icon box of the right
-edge of the screen, and when you move the cursor to the right edge,
-the screen scrolls to reveal the icon box. This is just an example of
-the kind of stuff that could be done. Basically, whenever fvwm has
-some specific way of reacting to a user action, scwm would let you
-fully specify the behavior. I would like to move as much operating
-functionality from C to Scheme as is reasonable, while maintaining
-adequate performance and a good programming interface.
-
-- Steal good features from other window managers. For example, gwm and
-nawm have nice support for synthetic events. Twm lets you customize
-the cursors used by the window manager. There are lots of fvwm
-variants out there (fvwm95, afterstep, &c) that it would be really
-easy to lift code from for many neat things.
-
-- A GUI configuration module, written in Scheme and probably using
-guile-gtk. Most common setup options would be available here. Of
-course, it just won't be possible to anticipate all user customization
-needs, so sometimes for really weird things you'll still want to have
-the .scwmrc.
-
-- Support for different window decorations - I would like to have
-multiple sets of functions for decorating windows and put them in
-separate dynamically loadable libraries. scwm would only load the
-decoration functions that were needed. Menu drawing would be handled
-similarly. The interface for this is not totally clear yet; I will
-probably need to work with someone who knows more than I about X11 to
-work out the design for this. Available as decoration styles I'd like
-to have at least the following:
-
-  - null decorations that draw nothing (and use no memory)
-  - a new native look based on gtk, to go with gnome apps
-  - an fvwm-like look.
-  - an mwm-like look.
-  - a win95-like look.
-  - an AfterStep-like look.
-  - a Mac-like look.
-  - a [[t]v]twm-like look.
-  - the ability to do squeeze-titles with some or all of the above.
-  - the ability to have the title-bar on the side of the window
-    with some or all of the above.
-  - a wm2/wmx-like look.
-  - a look that would let you have arbitrary shaped, scaled pixmaps
-    for any part of the window decorations, a la Enlightenment.
-
-This is, of course, a very ambitious undertaking. I hope to have help
-from volunteers to come up with some of these sets of decoration
-functions. I'll try to make it as easy as possible for others to write
-those parts, and I will accept any other cool look that anyone else
-wants to contribute. Some people may ask why any of the others are
-necessary, since the Enlightenment-like look could emulate them all
-decently. The problem is that I think that way of doing things
-intrinsically uses a _lot_ of memory, and many of the decoration
-styles can be drawn much more simply. People who want or are willing
-to settle for a plainer look should not have to pay that extra memory
-cost. It may also be worth it to implement a decoration module that
-lets the user create totally custom decorations. At the very least, it
-would be useful for prototyping new looks.
-
-- At some point, a total rewrite will probably be necessary to get all
-this stuff working cleanly together and to cut down on memory-hogging
-fat that may have been missed.
+3a) Since massive internal organization changes will happen in the
+process, I'd like to look at the other fvwm-derived window managers
+(fvwm95 and AfterStep, I don't know of others offhand that are still
+being maintained) and see if they have any useful features that would
+be relatively easy to integrate and look useful, since that would
+probably be easier before the data structure migration rather than
+after. My quick look has not revealed anything too useful in either of
+the fvwm-descendants I know of yet.
 
 
 
+Now, here are my plans for the massive data structure migration,
+although I would like to block them out in more detail with you before
+going ahead with this, so we should continue communicating on this
+issue.
 
-Here are the window managers that I see scwm as "competing with" in
-some sense, and the reasons why. By competition, I don't mean that I
-want to see these projects fail. Rather, I mean that I have seen some
-really great ideas in all of these window managers, and I would like
-to copy as many of their features as possible, and put them in one
-useful package.
+Fvwm keeps things in a lot of twisty interlinked C structs, and my
+approach so far has been to wrap them in Scheme objects in a very
+simple-minded way. Although that approach was reasonable for
+proof-of-concept purposes, I think there are several drawbacks that
+should be fixed in the new internal data-structure system.
 
- - fvwm (and its descendants): Fvwm is an incredibly featureful and
-popular window manaer, so it must be doing something right. I'd like
-to have a programming interface for scwm that lets you do things at
-least as easily as you can do them with fvwm modulo a couple of extra
-parentheses). I'd also like to generalize fvwm interfaces a bit where
-possible while maintaining most of the original ease of use.
+* Right now, many C structures are wrapped in a two-level way; the
+Scheme object contains its type tag and a pointer to a C structure
+that is scwm-specific, and in turn that first-level C structure often
+cotains a pointer to the original C data structure that fvwm uses.
+Although this was easier to do first off than directly modifying the C
+data structures this concept should go away; C structures should be
+wrappend directly, and where possible and reasonable performance-wise,
+C structures shouldn't be involved at all. Guile's struct support
+should be looked at to see if it might be useful here.
 
- - gwm: gwm gives the user of the window manager a lot of
-programmability and power. I would like a lot of this power to be
-available in scwm in some form. However, I think that gwm tries to do
-too much of the work in Lisp, and has a possibly inefficient and
-somewhat obscure Lisp dialect. I think Guile will help with both the
-speed and increase the likeliness that users will be familiar with the
-language, But I would also like to provide a lot of the
+* There are in some cases back-references between the C and Scheme
+objects to make things work correctly with garbage-collection.  That
+can almost certainly go away with the change.
 
- - Enlightenment: Enlightenment gives you more control over look than
-any other window manager. While I am somewhat more interested in
-customizing and programming feel and behavior, I'd like to achieve a
-similar level of look customizability without the mandatory memory hit
-you get with Enlightenment.
+* Fvwm keeps a lot of its structures in linked lists and has a lot of
+code to traverse these lists. We should use Scheme lists and use the
+list operations available as C procedures in Guile. This may be a bit
+less efficient as far as heap space goes, but should be a big win on
+eliminating redundant code. Fvwm's concept of separate namespaces for
+each type of data structure is also anti-useful and should go away.
+
+* The interface to each data structure is very ad-hoc. Many have
+fields that are mutable but not readable or vice versa when there is
+often no reason for this except that at the time I thought only one or
+the other was really useful and was too lazy/rushed to implement the
+other. There is also no uniformity in how fields of even the same
+object are accessed. All of this should be looked over and laid out
+cleanly from both the Scheme and C ends.
+
+* Very frequently when structures get changed, various processing
+needs to happen, such as redraws of decorations, recaptures and other
+such stuff. Not all of it is getting done in all cases, and in some
+cases it is getting done in a way that is not adequate for the level
+of dynamism we want. This has to be examined carefully.
 
 
-No offense is intended to the authors and users of these window
-managers. I think they are all great in their own way, and this the
-reason why I take them as the benchmarks to measure scwm's progress
-against.
 
+So that is the current set of problems. Here are my thoughts on how to
+start solving them:
+
+* The first thing to do is to remove as much dead fvwm code as
+possible without large changes to the data structures, as described
+above. The ifdef'ed things can go. There is probably a lot of other
+stuff that can go, and this should be looked at very carefully. Stuff
+I think can probably go away soon includes:
+
+** Any code that relates to the concept of fvwm functions. Most of
+this is at least commented, but some currently used vestiges remain in
+the menu code, and there are probably unused or unuseful vestiges as
+well, like stuff that handles the fvwm list of user-defined functions.
+
+** Code that traverses the fvwm lists of styles and decors. This will
+definitely require changes to places in the code, but relatively few,
+I think.
+
+** Code that deals with the fvwm list of menus and the namespace
+implemented by it. There are probably a fair number of places in the
+code that make use of this (menu stuff is used for some really odd
+things), but this too can almost certainly be dealt with without
+hacking data structures.
+
+** The stuff in the libs directory should all be either moved to the
+main scwm directory or killed as appropriate; having it be a library
+isn't really useful any more, and is kind of a miantenance hassle. The
+reason I have not done this yet
+
+** A lot of other stuff I didn't think of.
+
+
+* After that preliminary cleanup, the window structure should be dealt
+with. This is going to be a biggie, but I belive it must be done early
+on to lay a solid foundation for other things. The change will involve
+several things.
+
+** Window properties should be accessible in a consistent way. I've
+worked out a somewhat detailed design for this.
+
+*** The secheme interface should consist of the following procedures:
+     (set-window-property! WINDOW PROPERTY VALUE)
+        Set the specified property of the window to the given value. 
+     (window-property WINDOW PROPERTY)
+        Return the value of the specified property.
+     (window-properties WINDOW)
+        Returns an association list of window properties to values.
+     There may also be a window-property-remove!; my thoughts on this
+     aren't totally clear.
+
+*** window properties will include both style options and things
+currently done as <setter,unsetter,predicate> triples. There will be
+standard properties that have specific efficient implementations in
+the window structure. Other properties will be implemented through an
+additional property list in the window structure that has the form of
+an association list; that should be fast enough for scheme code.
+
+*** Property names can be any Scheme object but are conventionally
+symbols; all built-in properties names should be symbols. However,
+using non-symbols along with lexical scope or the module system can be
+used to implement opaque properties.
+
+*** Note that the window parameter is not optional in the above
+procedures. I think the defaulting to a current context window should
+be done at the Scheme level. For instance, there will be Scheme
+procedures iconify, deiconify, toggle-iconify, and maybe even
+iconified which will correspond roughly to (set-window-property!
+window 'iconified #t) and such, but will default to the current
+context window.
+
+*** Many properties are boolean in nature. These should appear
+externally (i.e. via window-property and set-window-property!) to be
+Scheme boooleans. However, those that are frequently accessed by C
+code should have a faster internal implementation. The current
+practice of OR-ing and AND-ing ints by hand is goofy and quite
+possibly non-portable. Two reasonable candidates would be C bitfields
+or the Scheme-level bit-vectors provided by Guile.
+
+*** coordiante-like entities (I include x-y locations and width-height
+pairs in this) pose an interesting dilemma - you should be able to get
+the x and y of such a pair separately, since they are separatee
+internally and you want to deconstruct the structure they come in most
+of the time. However, it should be possible to set them together
+because you often want to, and because seeing the window redraw twice
+on a move or resize would be bad.
+
+*** The concept of the current context window may be a bad idea and
+should be re-examined. Personally, I think it is useful; it means that
+when making key or mouse bindings, you don't have to worry about
+wether they are for the root window or a window decoration (presumably
+the former would get no arguments and the latter a window argument in
+another universe), and operations that don't really care about being
+attached to a window aren't forced to take a useless window
+argument. Plus thunks are easier to deal with for a number of reasons.
+
+*** C code can attach callbacks to be done when certain built-in
+properties are set. Thus, setting the iconified property will iconify
+or deiconify the window as appropriate.
+
+** Some window operations are not best represented as getting or
+setting properties. These include interactive-move,
+interactive-resize, delete-window, destroy-window, and
+refresh-window. I don't think there are any others in this category
+currently. These will obviously need to stay separate procedures. I
+don't include warp-to-window because I think it can easily be
+reimplemented in Scheme.
+
+** Widows should be kept in a Scheme list, not in the funky
+doubly-linked list that exists now.
+
+** The way window structures are created should change, Hopefully
+eliminating the separation between the 'new-window and
+'new-window-hint events.
+
+
+* Decors should gradually disappear; the values set in decors should
+be settable per-window instead of using the weird decor hack. I don't
+think this will waste too much memory if we do it wisely. Button faces
+should still be separate structures for instance, and windows will
+simply end up holding a couple of pointers to these. The same face can
+be shared between multiple (or all) windows, so memory shouldn't get
+too massively wasted.
+
+
+* images - there should be a scheme type (or types) for images. By
+default, it should be possible to load X bitmaps and X pixmaps into an
+image. Other types of image loaders should be dynamically loadable
+(eventually).
+
+
+* I can think of two ways to deal with the paging stuff.
+
+** Continue roughly as now, but account for the window structure
+changes.
+
+** Or - rewrite it all in Scheme. I'm not sure if smooth performance
+can be achieved this way, but I suspect it can, so it is something to
+experiment with.
+
+* Various global settings - the global settings fall in three general
+categories, those that are truly global, those that are really
+per-decor, and those that should be settable individually for various
+interface elements.
+
+** The truly global settings should become Scheme variables (or at
+least look like them from the Scheme level, although the internal
+implemenation may vary).
+
+** Settings that look global but really go into the current decor
+should become per-window settings.
+
+** Some settings should be per-decor, per-window, or in some cases
+per-menu but currently aren't; they should become so as appropriate.
+
+
+* event bindings should be dealt with after the other stuff. It may be
+worth it to make a release between handing the other data structure
+changes before dealing with bindings.
+
+** I think a lot of new features will appear here, as event bindings
+get generalized in many ways. We'll probably want enter and leave
+hooks for app windows and the root window, general callbacks for
+window property changes, hooks for moving to the edge of the screen
+(or a general "invisible active window" concept), timers (to do
+auto-raise and other neat delayed stuff) and so on.
+
+** Our support for synthetic events should also be examined along with
+this stuff.
+
+** I'd like to take a close look at gwm, nawm and other window
+managers in general before coming up with a design. nawm is a local
+MIT hack, I can furnish you a copy whenever you want, but the general
+point of it is a window-manager-like entity with no decorations or
+menus, but very strong support for synthetic events and assorted
+bindings so that you can operate it entirely with the keyboard.
+
+** This is where a lot of the fun behavior generalization will take
+place. I think we'll have a good time with these changes.
+
+
+* Menus also obviously need work. I put them last because I don't know
+where they should go in the order of changes; several places seem
+good, and they can also probably be worked on in parallell with other
+things. I am not too sure what to do about menus. It seems that when
+we have a widget set we should be able to use that as the way to
+render menus. But I also believe that we should not force people to
+load a lot of code when they only want a little, so I think there
+should still be a menu-only implementation.  Eventually it could be a
+separate module so that it doesn't annoy people who load a real widget
+set into Scheme, but that can wait for Guile's module system to
+stabilize. I think you probably have a better grasp of the menu stuff
+in general than I do, so I'd like to hear your thoughts.
+
+
+
+
+Now, there are three really important features not covered in this
+plan that I think are very important from a user-interface perspective
+and are on the queue for handling soon. These are:
+
+* Interfacing to one or more scheme-level widget sets,
+
+* Providing an external program interface mechanism of some sort.
+
+* Providing a way to get a pager window, as it's annoying to try to
+manage virtual desktops without it.
+
+I think the first two should be done _after_ the data structure
+cleanup, or at least some aspects of the cleanup should be done. That
+will make it much easier to do them cleanly. 
+
+I also think that the right way to implement a pager is on top of on
+or maybe both of these mechanisms. However, people seem to really miss
+having a pager, so maybe it would be worth it to come up with a hack
+temporary pager of some kind, because the code will probably not be
+ready for the real one for some time. If we decide to do that, we
+should try to do it before the data structure migration, or perhaps in
+parallel but in a separate CVS branch, because I don't think we will
+want to be making releases in the middle of the migration. We should
+also label it as a kludge that is slated to go away (what a novelty -
+a feature that is already deprecated when it's introduced :-). Doing a
+quickie pager would surely make users happy, but may be a fair bit of
+work for us.
+
+I will cover my thoughts on the external interface and the and the
+widget-set issue, as well as other things I have glossed over, in more
+detail in a later message.
+
+ - Maciej Stachowiak
 
 
