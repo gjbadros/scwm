@@ -27,7 +27,7 @@ my $header = "";
 while (<>) {
   if (m/^SCWM_PROC/) {
     $header = $_;
-    while (($_ = <>) !~ m%\*/%) {
+    while (($_ = <>) !~ m%\*/% && $_ !~ m/^\s*{/) {
       $header .= $_;
     }
     $header .= $_;
@@ -41,11 +41,12 @@ sub ProcessHeader( $ ) {
   my ($header) = @_;
   my ($cprimname, $primname, $req, $opt, $var, $argslist) =
     $header =~ m%^SCWM_PROC\s*\(\s*([^, \t]*),\s*\"([^\"]*)\"\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*\(([^)]*)\)%;
-  my ($comment) =$header =~ m%/\*\*\s*(.*)\s*\*/%s;
+  my ($comment) = $header =~ m%/\*\*\s*(.*)\s*\*/%s;
 
 { # cperl-mode gets confused at above regexp, so provide scope to help it out
   my $clean_argslist = $argslist;
   my $cremovals = ($clean_argslist =~ s/\bSCM\b//g);
+  $clean_argslist =~ s/\n/ /g;
   $clean_argslist =~ s/[ \t]+//g;
   my @args = split(/,/, $clean_argslist);
 
@@ -54,15 +55,20 @@ sub ProcessHeader( $ ) {
   my %argnames = map {uc($_) => 1} @args;
 
   if ($cremovals != scalar(@args) ) {
-    print STDERR "****$cprimname has a types inconsistency (all args should be type SCM)\n";
+    print STDERR "****$cprimname: types inconsistency (all args should be type SCM)\n";
   }
 
   if (($req + $opt + $var) != scalar(@args)  ) {
-    print STDERR "****$cprimname has an argument inconsistency -- check #s of arguments\n";
+    print STDERR "****$cprimname: argument inconsistency -- check #s of arguments\n";
   }
 
   if ($var != 0 && $var != 1) {
-    print STDERR "****number of variable arguments == $var -- why?\n";
+    print STDERR "****$cprimname: number of variable arguments == $var -- why?\n";
+  }
+
+  if (!defined($comment) || $comment eq "") {
+    print STDERR "****$cprimname: comment missing\n";
+    $comment = "";
   }
 
   my @required_args = @args[0..($req-1)];
