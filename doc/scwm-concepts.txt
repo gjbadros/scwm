@@ -1,0 +1,493 @@
+Colors
+-
+
+  Colors are first-class objects. However, anywhere that a color is
+taken as an argument, a string containing an X color specification
+will also be accepted, and will be automatically converted to the
+proper color object. Using the same color specifier string more than
+once is not inefficient, as caching ensures that color objects are
+shared.
+
+[From scwm/color.c:39]
+
+
+Creating themes
+-
+Currently, the best documentation on themes is the source code;
+however, here are a few notes.
+To create a theme, create a new subdirectory of a directory in
+`theme-path' (you'll probably want to add a private directory to 
+`theme-path').  This subdirectory should be named the same as the
+theme.  This subdirectory must contain (at least) a file named
+theme.scm.  This file must create a module named
+(app scwm theme your-theme-name), and define (in this module)
+a theme object named `the-theme'.  See the existing themes for
+examples of what you can do when building `the-theme'.
+
+[From scheme/theme-impl.scm:29]
+
+
+Decors
+-
+
+
+  Decors are a means of managing the abundance of visual appearance
+options for windows. In the original Fvwm code, there were many
+options that could only be set globally, although they affected window
+appearance. Decors are a compromise between leaving them global and
+making them fully settable per window. These quasi-global options may
+be set in a particular decor, and a decor may be attached to one or
+more windows.
+
+  Having to use decors to change certain aspects of the look and feel
+is confusing. Scwm will probably move to some way of making these
+options directly settable per-window at some point, especially if we
+can figure out a way to not increase the memory overhead much.
+
+[From scwm/decor.c:57]
+
+
+Desks
+-
+
+
+  Multiple virtual desktops are supported. A virtual desktop may be
+bigger than the physical screen, in which case the current viewport on
+the desktop may be moved around, as described in the Viewports entry.
+Desks are identified by integers. There is currently an arbitrary
+limit on the number of desks, but it should be much higher than anyone
+will ever need. You can change the current desk with
+`set-current-desk!'; find out what the current desk is with
+`current-desk'; and set the desk a window is on with
+`set-window-desk!'.
+
+[From scwm/deskpage.c:47]
+
+
+Event Contexts
+-
+
+
+ 
+[From scwm/binding.c:530]
+
+
+Face Flags
+-
+
+   Face flags are two-element lists that specify certain properties
+that are set once and only once for a give face (as opposed to specs,
+which may be chained arbitrarily). Nearly all flags may be used for
+button faces. Exceptions, as well as the flags that may be used for
+title and border faces, are indicated below.
+
+<table colsep="1" rowsep="0" frame="all">
+<title>Face Flags</title>
+<tgroup align="char" cols="3">
+<thead><row>
+ <entry>Key</entry>  <entry>Possible values</entry>  <entry>Explanation</entry>
+</row></thead>
+<tbody><row>
+  <entry>'justify</entry>
+     <entry>'left 'right 'center</entry>
+     <entry>Horizontal justification for the face (pixmap, relief pattern, etc.)</entry>
+  </row>
+  <row>
+  <entry>'vertical-justify</entry>
+     <entry>'top 'bottom 'center</entry>
+     <entry>Vertical justification for the face (pixmap, relief pattern, etc.)</entry>
+  </row>
+  <row>
+  <entry>'relief</entry>
+     <entry>'flat 'sunk 'raised</entry>
+     <entry>Use for titles and buttons to control appearance (only flag for titles)</entry>
+  </row>
+  <row>
+  <entry>'use-style-of</entry>
+     <entry>'title 'border #f</entry>
+     <entry>Inherit the face flags from the title or border first, then add these flags</entry>
+  </row>
+  <row>
+  <entry>'hidden-handles</entry>
+     <entry>#t #f</entry>
+     <entry>Set visibility of the corner handles -- only used for border faces</entry>
+  </row>
+  <row>
+  <entry>'no-inset</entry>
+     <entry>#t #f</entry>
+     <entry>Win-9x-like effect of relieving borders on outside instead of inside</entry>
+  </row>
+</tbody>
+</tgroup>
+</table>
+
+[From scwm/face.c:503]
+
+
+Face Specification flags
+-
+
+  Face specification flags are two-element lists that specify certain
+properties that may be chained to indicate how a face is drawn. Face
+specs may be fully or partially destructive. A fully destructive spec
+indicates how the whole area of the element is to be drawn, making
+previous specs irrelevant. A partially destructive spec overlays part,
+but not all, of the drawing area.
+
+  All specs may be used for button faces. All but non-tiled pixmaps may
+be used for titlebars, and only tiled pixmaps may be used for borders.
+
+
+<table colsep="1" rowsep="0" frame="all">
+<title>Face Specification Flags</title>
+<tgroup align="char" cols="2">
+<thead><row>
+ <entry>Format</entry>  <entry>Explanation</entry>
+</row></thead>
+<tbody><row>
+  <entry><para><informalexample><programlisting>
+     '(relief-pattern ((X Y BOOL) ...))
+       </programlisting></informalexample></para></entry><entry>
+      Draw a relief pattern using the list of triples, each of which
+indicates a pair of X,Y coordinates given as a percentage of the
+button size, and a boolean value indicating whether to use the lighter
+or darker color. This spec is partially destructive.
+  </entry></row>
+  <row>
+  <entry><para><informalexample><programlisting>
+     '(solid COLOR)
+         </programlisting></informalexample></para></entry><entry>
+      Use COLOR as the color for this element; fully destructive.
+  </entry></row>
+  <row>
+  <entry><para><informalexample><programlisting>
+     '(gradient {horizontal|vertical} NCOLORS {COLOR_PERCENT}* FINAL)
+         </programlisting></informalexample></para></entry><entry>
+     Draw a gradient in this element.  The gradient may be horizontal or
+vertical. The number of colors is specified, followed by a number of
+colors with percentages and a final color. The percentages must add to
+100.
+  </entry></row>
+  <row>
+  <entry><para><informalexample><programlisting>
+      '(pixmap {'mini-icon|['tiled] IMAGE})
+         </programlisting></informalexample></para></entry><entry>
+      Specify a pixmap to use, either the window's mini-icon, an image
+object or image specifier string, or a list of tiled and an image,
+indicating the image should be tiled. Partially destructive, except
+when tiled, which makes it fully destructive.
+  </entry></row>
+</tbody>
+</tgroup>
+</table>
+
+[From scwm/face.c:556]
+
+
+Faces
+-
+
+  Faces are a data type used to specify in detail the way in which
+window decorations like the titlebar, the border and titlebar buttons
+will be drawn. They are currently somewhat kludgey and
+ad-hoc. However, they offer a great deal of flexibility. All faces are
+set in the current decor, so multiple decors must be used to use
+different faces for different windows. The low-level functionality
+offered in the face primitives will rarely be needed; the
+`button-style', `title-style' and `border-style' procedures in the
+(app scwm face) module provide a more convenient interface to this
+functionality.
+
+[From scwm/face.c:39]
+
+
+Focus Styles
+-
+
+
+   Scwm supports several focus styles, which are settable
+per-window. A window with the 'click focus style is click-to-focus: it
+requires that the user click on it before it will receive the input
+focus, and will not lose it again until some other window gains
+focus. The 'mouse focus style is mouse-focus in the traditional sense
+- the window will gain and lose focus as the mouse enters and leaves
+it. 
+
+  'sloppy indicates the sloppy-focus style. This is like mouse-focus,
+but the window will not lose the focus until another gains it. So if
+you focus the window with the mouse and then let the pointer slide
+into the root window or a window that has focus styles of 'click or
+'none, the window will not lose the focus. This style of focus was
+first introduced in fvwm.
+
+  A focus style of 'none indicates that the window should never gain
+the input focus, no matter what. This can be used for clocks,
+mailboxes, and other desktop gadgets that never need keyboard input.
+
+[From scwm/window.c:3118]
+
+
+Fonts
+-
+
+  Fonts are first-class objects. However, anywhere that a font is
+taken as an argument, a string containing an X font specification
+will also be accepted, and will be automatically converted to the
+proper font object. Using the same font specifier string more than
+once is not inefficient, as caching ensures that font objects are
+shared.
+
+[From scwm/font.c:47]
+
+
+Hooks
+-
+
+  Hooks are used throughout scwm to provide a convenient mechanism for
+user callbacks on particular events. Fundamentally, a hook is just a
+variable that contains a list of procedures that are called in order
+when the relevant event occurs. However, several convenience macros
+are provided for manipulating hooks; see `add-hook!', `remove-hook!'
+and `reset-hook!'. 
+
+[From scwm/callbacks.c:299]
+
+
+Image Loaders
+-
+
+  Different loaders are available for various images types. `load-xbm'
+and `load-xpm' load X pixmaps and X bitmaps respectively. The user may
+register other image loaders using the extension or the special string
+"default" for the loader to be tried for an image that cannot be
+loaded any other way.
+
+[From scwm/image.c:209]
+
+
+Images
+-
+
+  Images are first-class objects. However, anywhere that an image is
+taken as an argument, a string containing a filename will also be
+accepted, and will be automatically converted to the proper image
+object by loading the image. Using the same image filename more than
+once is not inefficient, as caching ensures that image objects are
+shared.
+
+[From scwm/image.c:104]
+
+
+Input Hooks
+-
+
+  Input hooks are a special form of hook that is called whenever input
+is available on a particular port. They are treated differently than
+normal hooks - use `add-input-hook!' and `remove-input-hook!' to
+manipulate them. Like regular hooks and unlike timer hooks, input
+hooks are not one-shot - they trigger every time input is made
+available on the particular port, and do not go away until explicitly
+removed. An input hook may safely remove itself from within its own
+invocation.
+
+[From scwm/callbacks.c:570]
+
+
+Key Specifier
+-
+
+   A key specifier is a string denoting a keystroke, perhaps including
+modifiers.  The available modifiers include S-, C-, M-, A-, H-, and s-
+for Shift, Control, Meta, Alt, Hyper, and Super, respectively.  They
+can be combined arbitrarily, and in any order, but should precede the
+key name.
+
+[From scwm/binding.c:79]
+
+
+Menu Looks
+-
+
+
+  Menus have an associated menu look, which determines how the menus
+are drawn.
+
+[From scwm/menulook.c:79]
+
+
+Run-time command-line options
+-
+
+<segmentedlist>
+<segtitle/Option/
+<segtitle/Description/
+
+<seglistitem>
+<seg/-D or --debug/ <seg/enable lots of debugging messages./
+</seglistitem><seglistitem>
+
+
+<seg/-s or --single-screen/ <seg/run only on on the first screen of the display./
+</seglistitem><seglistitem>
+
+<seg/-d or --display dpy/ <seg/run on display dpy./
+</seglistitem><seglistitem>
+
+<seg/-f or --file file/ <seg>read startup commands from the specified
+file instead of ".scwmrc" or "system.scwmrc".</seg>
+</seglistitem><seglistitem>
+
+<seg/-e or --expression expr/ <seg>evaluate Scheme expression expr
+instead of reading from ".scwmrc" or "system.scwmrc". Multiple -e and
+-f options may be specified on a single command line and in this case
+will be processed in the order in which they were specified.</seg>
+</seglistitem><seglistitem>
+
+<seg/-h or --help/ <seg/prints a usage message and exits./
+</seglistitem><seglistitem>
+
+<seg/-b or --blackout/ <seg/blacks the screen out to hide the initial capture./
+</seglistitem><seglistitem>
+
+<seg/--client-id id/ <seg>sets scwm's client id to a specific value. This
+is probably of no use to you unless you're a session manager or debbuging.
+</seg>
+</seglistitem><seglistitem>
+
+<seg/-v or --version/ <seg/prints the version and exits./
+</seglistitem>
+</segmentedlist>
+  
+[From scwm/scwm.c:581]
+
+
+SCWMEXEC Protocol
+-
+
+  Scwm supports a protocol for other programs to send commands to the
+window manager. Programs send ordinary configuration language
+expressions and are returned a string representation of the return
+value, and the output and error output generated, if any.
+
+  For more information on how to make use of this protocol, see the
+documentation for the scwmexec and scwmrepl programs, the scwm.el
+emacs interaction mode, the libscwmexec library, and the details of
+the SCWMEXEC protocol (as documented in
+<filename>doc/scwmexec.proto</filename>).
+FIXDOC: Link to file!
+
+[From scwm/events.c:461]
+
+
+Sticky
+-
+
+
+  A "sticky" window will appear on all desktops, and will remain at the
+same screen position regardless of scrolling within the current
+desktop.
+
+[From scwm/window.c:1981]
+
+
+The Window Context
+-
+
+
+  When actions are triggered by mouse or keyboard events, or menu
+actions from menus originally popped up by mouse or keyboard events, a
+context window is saved, which is used as the default for window
+operations that are not passed their optional window argument. This
+allows the user to easily bind actions to events without worrying
+about passing around the window argument. 
+
+  However, it is unclear whether behind-the-scenes magic like this is
+a good idea.  The merit of this approach is still under consideration;
+it may be changed entirely. 
+[From scwm/window.c:792]
+
+
+Themes
+-
+A theme is a named collection of window manager settings.
+Themes are still under development, but they are planned to
+affect window styles, menus, icons, backgrounds, and various
+global settings.
+
+[From scheme/themes.scm:32]
+
+
+Timer Hooks
+-
+
+  Timer hooks are a special form of hook that is called after a
+specified amount of time has passed. They are treated differently than
+normal hooks - use `add-timer-hook!' and `remove-timer-hook!' to
+manipulate them. Timer hooks, unlike regular hooks, are one-shot -
+once the time limit expires and the timer hook is triggered, it is
+removed.
+
+[From scwm/callbacks.c:437]
+
+
+Viewports
+-
+
+  The current viewport is the area of the current desk that may be
+seen on the physical screen. Since a desk can be larger than the
+physical screen size, the viewport can move around the desk.
+
+  Viewports give rise to two concepts of coordinates.  A viewport
+coordinate is relative to the current viewport (i.e., it is the 
+coordinate you actually see on the screen).  A virtual coordinate
+is relative to the origin of the current desk.
+
+[From scwm/deskpage.c:86]
+
+
+Windows
+-
+
+  Windows are the most important scwm data type. A window object
+represents an on-screen window that scwm is managing, and is used to
+perform window management operations on the window, as well as to set
+options and retrieve information about the window.
+ 
+[From scwm/window.c:370]
+
+
+X atoms
+-
+
+   X windows allows certain entities (for example, X properties [FIXME: XREF
+to X properties]) to have arbitrary names. To avoid exchanging strings ever so
+often, these names are in fact X atoms.
+
+New X atoms can be created, or old ones retrieved simply by specifying
+the string the atom stands for. An X atom can also be converted back to a
+string. Scwm provides primitives for these actions. 
+[From scwm/xproperty.c:347]
+
+
+X Properties
+-
+
+   X has a notion of window properties, which live in the X
+server. X window properties are often used to implement protocols
+between applications and the window manager, which can have several
+levels of standardization, from official X standard, to standardized
+by some other organization, to made up informally by groups of
+programmers, to specific to one window manager, to specific to an
+individual, or installation.
+
+  Scwm already internally implements many of these protocols,
+including all X standard protocols, as well as the Motif and Open Look
+protocols. However, the user should be able to implement any of these
+he likes, including making up his own for personal use.
+
+  This is possible through the low-level X property interface. Scwm has
+one procedure to get, and set them, respectively.
+ 
+[From scwm/xproperty.c:60]
+
+

@@ -1,0 +1,253 @@
+after-new-window-hook
+- 
+This hook is invoked when a new window has been completely created
+and placed on the screen. Any window operations may be performed at
+this time. However, it is recommended that placement-related
+operations, such as setting the position, desk, viewport location and
+z-ordering of a window be done in the placement procedure instead.
+It should be used for setting window styles, as the window geometry
+needs to be fully and correctly specified before the window is placed.
+The `window-style' mechanism from the "(app scwm style)" module provides a convenient
+interface to setting the relevant parameters when a new window is
+created. 
+[From scwm/add_window.c:833]
+
+
+before-new-window-hook
+- 
+This hook is invoked when a new window structure is first starting
+to be created. Only a subset of the usual window parameters should be
+set here, in particular, those that control what hints will be
+respected for this window, and those that control how the window will
+be placed.
+
+This hook does not typically need to be used directly by the user;
+`window-style' from the "(app scwm style)" module provides a convenient
+interface to setting the relevant parameters when a new window is
+created. 
+[From scwm/add_window.c:815]
+
+
+before-place-new-window-hook
+- 
+This hook is invoked just before placing a new window.
+It comes after `before-new-window-hook', but before `after-new-window-hook'. 
+This hook may be removed later since it is mostly redundant with the other
+two hooks, despite being invoked at a slightly different time. 
+[From scwm/add_window.c:827]
+
+
+broadcast-config-hook
+- 
+This hook is invoked whenever fvwm2 would call BroadcastConfig.
+This hook is principally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed a window structure as the
+sole argument. 
+[From scwm/module-interface.c:200]
+
+
+broadcast-hook
+- 
+This hook is invoked whenever fvwm2 would call Broadcast.
+This hook is principally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed a numerical code
+representing the event type, a number that indicates how many of the
+following data arguments are meaningful, and 7 numeric data arguments. 
+[From scwm/module-interface.c:191]
+
+
+broadcast-mini-icon-hook
+- 
+This hook is invoked whenever fvwm2 would call BroadcastMiniIcon.
+This hook is principally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways that
+can't be done with the proper hooks that have been included so
+far. The procedures The procedures in this hook are passed a window
+structure as the sole argument. 
+[From scwm/module-interface.c:216]
+
+
+broadcast-name-hook
+- 
+This hook is invoked whenever fvwm2 would call BroadcastName.
+This hook is principally of use in implementing the fvwm2
+module interface and for stuff that needs to be notified in ways
+that can't be done with the proper hooks that have been included so
+far. The procedures in this hook are passed an event type, three
+numeric data arguments, and a string. 
+[From scwm/module-interface.c:208]
+
+
+cannot-grab-hook
+- 
+This hook is invoked with no arguments whenever scwm cannot
+successfully grab the X server. `beep' is one example of a procedure
+to use here.  
+[From scwm/window.c:3904]
+
+
+change-desk-hook
+- 
+This hook is invoked whenever the current desktop is changed.
+It is called with two argument, both integers.  The first is the
+new desktop number, the second is the old desktop number. 
+[From scwm/virtual.c:491]
+
+
+deiconify-hook
+- 
+This hook is invoked when a window is deiconified.
+It is called with one argument, WINDOW 
+[From scwm/icons.c:842]
+
+
+error-hook
+- 
+Called on all kinds of errors and exceptions.
+Whenever an error or other uncaught throw occurs on any callback,
+whether a hook, a mouse binding, a key binding, a menu entry, a file
+being processed, or anything else, error-hook will be invoked. Each
+procedure in the hook will be called with the throw arguments; these
+will generally include information about the nature of the error. 
+
+[From scwm/callbacks.c:693]
+
+
+iconify-hook
+- 
+This hook is invoked when a window is iconified.
+It is called with one argument, WINDOW 
+[From scwm/icons.c:838]
+
+
+image-not-found-hook
+- 
+Called with image name as a string when not found. 
+[From scwm/image.c:631]
+
+
+interactive-move-finish-hook
+- 
+This hook is invoked at the end of an interactive move.
+It is called with one argument, WINDOW. 
+[From scwm/move.c:579]
+
+
+interactive-move-new-position-hook
+- 
+This hook is invoked during an interactive move.
+It is called with three arguments, WINDOW, NEW_X, and NEW_Y,
+whenever the window is moved to a new location. 
+[From scwm/move.c:574]
+
+
+interactive-move-start-hook
+- 
+This hook is invoked at the start of an interactive move.
+It is called with one argument, WINDOW. 
+[From scwm/move.c:570]
+
+
+interactive-resize-finish-hook
+- 
+This hook is invoked at the end of an interactive resize.
+It is called with one argument, WINDOW. 
+[From scwm/resize.c:651]
+
+
+interactive-resize-new-size-hook
+- 
+This hook is invoked during an interactive resize.
+It is called with three arguments, WINDOW, NEW_X_SIZE, and NEW_Y_SIZE,
+whenever the window is changed to a new size 
+[From scwm/resize.c:646]
+
+
+interactive-resize-start-hook
+- 
+This hook is invoked at the start of an interactive resize.
+It is called with three arguments: WINDOW, XMOTION, YMOTION.
+XMOTION and YMOTION are -1, 0, or 1, indicating motion in that dimension
+can happen on the right/bottom side, not at all, or the top/left side,
+respectively. 
+[From scwm/resize.c:639]
+
+
+invalid-interaction-hook
+- 
+This hook is invoked with no arguments when the user hits an invalid
+key or performs an invalid mouse action during an interactive
+operation like `interactive-resize' or `interactive-move'. `beep' is
+one example of a procedure to use here. 
+[From scwm/window.c:3898]
+
+
+shutdown-hook
+- 
+The procedures in shutdown-hook are called with no arguments right
+before scwm quits or restarts. 
+[From scwm/shutdown.c:200]
+
+
+startup-hook
+- 
+The procedures in startup-hook are called with no arguments after scwm
+has processed the scwmrc and captured all application windows, and
+right before it enters the main event loop.  Note that during
+processing of the .scwmrc startup file, windows have not already been
+captured, so the window-list (as reported by `list-all-windows') is
+empty.  To provide behviour conditioned on a property of an existing
+window, this hook should be used instead. 
+[From scwm/shutdown.c:204]
+
+
+window-focus-change-hook
+- 
+This hook is invoked whenever the keyboard focus is changed.
+It is called with one argument, the window object of the window
+that now has the focus, or #f if no window now has the focus. 
+[From scwm/events.c:1983]
+
+
+X-DestroyNotify-hook
+- 
+This hook is invoked upon DestroyNotify X events.
+It indicates a window is being destroyed.  The hook procedures are
+invoked with one argument, WIN, the window being destroyed.
+The WIN is still valid during the hook procedures. 
+[From scwm/events.c:1971]
+
+
+X-MappingNotify-hook
+- 
+This hook is invoked whenever a MappingNotify X event is
+received. A MappingNotify event indicates a change of keymapping - in
+particular, it may indicate a change of available modifiers or mouse
+buttons. The hook procedures are invoked with no arguments. 
+[From scwm/events.c:1965]
+
+
+X-PropertyNotify-hook
+- 
+This hook is invoked whenever a PropertyNotify event is received
+for a window scwm is managing. This indicates that an X window
+property has changed. Watching for window property changes can be used
+to construct your own custom window manager protocols. The hook
+procedures are invoked with two arguments, the name of the property
+that changed (as a string) and the window that it changed for. 
+[From scwm/events.c:1956]
+
+
+X-UnmapNotify-hook
+- 
+This hook is invoked upon UnmapNotify X events.  It indicates a
+window is being unmapped (removed from display).  The hook procedures
+are invoked with one argument, WIN, the window being destroyed.  The
+WIN is still valid during the hook procedures. 
+[From scwm/events.c:1977]
+
+
