@@ -55,7 +55,7 @@ char *scwmexec_exec(Display *dpy, Window w, char *req)
 		  8, PropModeReplace, req, strlen(req)+1);
 
   XChangeProperty(dpy, root, XA_SCWMEXEC_REQWIN, 1,
-		  32, PropModeReplace, &w, 1);
+		  32, PropModeAppend, &w, 1);
 
   XSelectInput(dpy, w, PropertyChangeMask);
   /* X event loop - wait for XA_SCWMEXEC_REPLY on w */
