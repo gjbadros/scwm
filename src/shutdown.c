@@ -45,8 +45,12 @@ run_restart_command(char *command) {
   scwm_msg(ERR, "Done", "Call of '%s' failed!!!!", g_argv[0]);
 }
 
+
+/* restart_or_dump == 0 to just close
+   > 0 for restart
+   < 0 for dump core */
 void 
-Done(int restart, char *command)
+Done(int restart_or_dump, char *command)
 {
   call0_hooks(shutdown_hook);
 
@@ -62,7 +66,7 @@ Done(int restart, char *command)
   /* Pretty sure this should be done... */
   XDeleteProperty(dpy, Scr.Root, _XA_MOTIF_WM);
   
-  if (restart) {
+  if (restart_or_dump > 0) {
     SaveDesktopState();		/* I wonder why ... */
 
     /* Really make sure that the connection is closed and cleared! */
@@ -73,6 +77,8 @@ Done(int restart, char *command)
     sleep(1);
     ReapChildren();
     run_restart_command(command);
+  } else if (restart_or_dump < 0) {
+    int i = *((int *)0); /* Force seg fault */
   } else {
     XCloseDisplay(dpy);
     exit(0);
