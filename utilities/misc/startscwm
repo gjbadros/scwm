@@ -44,7 +44,7 @@ fi
 
 # Restart as a child of ssh-agent[12] if we are not already
 if which ssh-add >/dev/null && \
-    { which ssh-agent1 >/dev/null || which ssh-agent2 >/dev/null } && \
+    { which ssh-agent1 >/dev/null || which ssh-agent2 >/dev/null; } && \
     ! ssh-add -l >/dev/null; then
   # Check if we have secure shell capabilities
   # string them together if necessary!
