@@ -3,7 +3,9 @@
 (use-modules (app scwm defoption)
 	     (app scwm primopts)
 	     (app scwm preferences)
-	     (app scwm themes))
+	     (app scwm themes)
+	     (app scwm menus-extras)
+	     (gtk gtk))
 
 
 (popup-menu (scwm-options-menu) #t)
@@ -24,7 +26,9 @@ scwm-options
 
 (gui-set '*auto-raise*)
 (gui-set '*theme-path*)
+(gui-set '*remote-shell-command*)
 
 ;; *auto-raise*
 ;; *edge-y-scroll*
 ;; *theme-path*
+
