@@ -397,7 +397,7 @@ HandleKeyPress()
 	if (NULL != swCurrent) {
 	  set_window_context(swCurrent->schwin);
 	}
-	call_thunk_with_message_handler(key->Thunk);
+	scwm_safe_call0(key->Thunk);
 	if (NULL != swCurrent) {
 	  unset_window_context();
 	}
@@ -1182,7 +1182,7 @@ HandleButtonPress()
 	  set_window_context(swCurrent->schwin);
 	}
 	find_mouse_event_type();
-	call_thunk_with_message_handler(MouseEntry->Thunk);
+	scwm_safe_call0(MouseEntry->Thunk);
 	clear_mouse_event_type();
 	if (NULL != swCurrent) {
 	  unset_window_context();

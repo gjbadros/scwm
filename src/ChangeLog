@@ -1,5 +1,11 @@
 Mon Jul  6 02:49:08 1998  Maciej Stachowiak  <mstachow@mit.edu>
 
+	* events.c (HandleButtonPress, HandleKeyPress): replace
+ 	call_thunk_with_message_handler with scwm_safe_call0. I don't
+ 	believe anyone is using the (deprecated) symbol-dereferencing
+ 	functionality of the former, and the added safety of the latter is
+ 	a good thing.
+
 	* add_window.c, borders.c, decor.c, drawmenu.c, events.c, font.c,
  	font.h, icons.c, misc.h, move.c, resize.c, scwm.c, scwmmenu.h :
  	Multibyte character set support from ITANI Eiichiro
