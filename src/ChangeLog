@@ -1,5 +1,41 @@
 1998-07-26  Greg Badros  <gjb@cs.washington.edu>
 
+	* window.h, window.c:  Remove the SMOB functions from window.h.
+	  Added MoveTo, ResizeTo, MoveResizeTo, and use them instead of
+	  SetupFrame most places throughout scwm.  Move move_finalize,
+	  MovePswToCurrentPosition, ResizePswToCurrentSize up
+	  earlier in window.c, and document them all (see code).
+
+	* virtual.c: Use MoveTo, not SetupFrame.
+
+	* placement.c: Rename keep_on_screen to
+	  CorrectPositionToStayOnscreen, since it doesn't actually move a
+	  window, it just fiddles with coords.
+
+	* move.c: Fix animated window shade to not require a redundant
+	  SetupFrame call.
+
+	* icons.c: Use move_finalize instead of SetupFrame.
+
+	* events.c: Use MoveResizeTo, ResizeTo instead of SetupFrame.  I
+	  think lots of redundant M_CONFIGURE_WINDOW fvwm2 module packets
+	  are sent out! FIXGJB
+
+	* decor.c: Use ResizeTo instead of SetupFrame.  There is an extra
+	  distinction that should probably be made between calls that
+	  change the decorations and thus affect the overall frame size
+	  and calls that are intended to resize the client window (the
+	  latter involves the client application, but both involve the
+	  constraint solver)
+
+	* dbug_resize.h: Generalize for non gcc compilers like DBUG is.
+
+	* borders.c: Fix some bugs in window shading, be a bit more
+	  careful about X11 calls, and comment SetupFrame more
+	  thoroughly.
+
+1998-07-26  Greg Badros  <gjb@cs.washington.edu>
+
 	* resize.c, resize.h, scwm.c: Added init_resize_gcs() and call it
 	  after the X11 stuff has been initialized
 
