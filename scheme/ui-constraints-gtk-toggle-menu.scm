@@ -42,12 +42,17 @@
 
 ;; PRIVATE variables held for the module
 
-(define debug-msgwin (make-message-window "Debug Message Window"))
+(define gtk-toggle-window (gtk-window-new 'toplevel))
+(define gtk-instance-box (gtk-vbox-new #t 0))
 
-(define-public gtk-toggle-window (gtk-window-new 'toplevel))
-(define-public gtk-instance-box (gtk-vbox-new #t 0))
+(define gtk-toggle-close? #f)
 
-(define-public gtk-toggle-close? #f)
+(define toggle-initialized? #f)
+
+;; hack to fix gtk signal recursion
+
+(define allow-enable-hooks? #t)
+
 
 
 ;; window flashing code from ui-constraints-toggle-menu
@@ -81,13 +86,25 @@
 	 (bt1 (gtk-check-button-new-with-label "Enabled?"))
 	 (bt2 (gtk-button-new-with-label "Delete")))
     (gtk-toggle-button-set-state bt1 enabled?)
-    (ui-constraint-add-enable-hook n (lambda (e) (gtk-toggle-button-set-state bt1 e)))
+    (ui-constraint-add-enable-hook n (lambda (e) (if allow-enable-hooks? 
+						     (begin
+						       (set! allow-enable-hooks? #f)
+						       (gtk-toggle-button-set-state bt1 e)
+						       (set! allow-enable-hooks? #t)))))
     (gtk-signal-connect bt2 "clicked"
-			(lambda () (delete-ui-constraint! n)))
-;;    (gtk-signal-connect bt1 "clicked"
-;;			(lambda () (if (ui-constraint-enabled? n)
-;;				       (disable-ui-constraint n)
-;;				       (enable-ui-constraint n))))
+			(lambda () 
+			  (delete-ui-constraint! n)
+			  (if close? (gtk-widget-hide toplevel))))
+    (gtk-signal-connect bt1 "clicked"
+			(lambda () 
+			  (if allow-enable-hooks?
+			      (begin
+				(set! allow-enable-hooks? #f)
+				(if (ui-constraint-enabled? n)
+				    (disable-ui-constraint n)
+				    (enable-ui-constraint n))
+				(set! allow-enable-hooks? #t)))
+			  (if close? (gtk-widget-hide toplevel))))
     (gtk-signal-connect bt1 "enter"
 			(lambda ()
 			  (flash-windows-of-constraint win-list)
@@ -207,6 +224,7 @@ To display the toggle menu, call ui-constraint-gtk-toggle-menu."
 
 (define-public (ui-constraints-gtk-toggle-menu)
   "Displays the GTK version of the constraints toggle menu."
+  (if (not toggle-initialized?) (initialize-gtk-toggle-menu))
   (gtk-widget-show gtk-toggle-window))
 
 ;; (ui-constraints-gtk-toggle-menu)
