@@ -1,3 +1,11 @@
+Fri Feb 20 04:42:04 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* base.scm: Added image-property convenience wrapper to get at
+ 	individual image properties.
+
+	* style.scm: Added #:show-icon and #:force-icon options, removed
+ 	some crufty old comments.
+
 Fri Dec 12 16:15:28 1997  Greg Badros  <gjb@cs.washington.edu>
 
 	* base.scm: Permit a string action in a menuitem to mean (execute
