@@ -1,5 +1,6 @@
 *.d
 Makefile
+color.x
 font.x
 image.x
 init_scheme_string.c
