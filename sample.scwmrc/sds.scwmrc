@@ -1,4 +1,4 @@
-;;; File: <sds.scwmrc - 1999-04-07 Wed 18:51:41 EDT sds@eho.eaglets.com>
+;;; File: <.scwmrc - 1999-04-26 Mon 11:43:24 EDT sds@eho.eaglets.com>
 ;;; $Id$
 ;;; Copyright (C) 1998 by Sam Shteingold. Released under the GPL2.
 
@@ -33,11 +33,11 @@
 ;;; import the scwm modules
 ;;; -----------------------
 
-(use-scwm-modules base face decor style winops winlist wininfo doc optargs
-		  std-menus wmconfig-menu flux prefs-menu fvwm-module key-mover netscape
-		  stringops animation placement virtual shutdown-opts ;; themes
-		  defoption
-		  animated-iconify message-window gnome-hints)
+(use-scwm-modules
+ base face decor style winops winlist wininfo doc optargs std-menus
+ wmconfig-menu flux prefs-menu fvwm-module key-mover netscape stringops
+ animation placement virtual shutdown-opts defoption animated-iconify
+ message-window gnome-hints)    ; themes
 
 ;; communicate with GNOME
 ;; (set! *debug-gnome-hints* #t)
@@ -72,18 +72,21 @@
 ;;; --------------------------
 
 ;;(define animation-delay 50)
-(define font12 (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+;;(define font12 (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
 ;;(define font14 (make-font "-adobe-helvetica-bold-r-*-*-14-*-*-*-*-*-*-*"))
 ;;(define window-font (make-font "*helvetica*bold-r*12*"))
-(scwm-option-set! *menu-font* (make-font "*helvetica*medium-r*10*"))
-(scwm-option-set! *menu-title-font* (make-font "*helvetica*bold-r*10*"))
+;;(define my-font (make-font "*helvetica*medium-r*10*"))
+(define my-font (make-font "-adobe-helvetica-bold-r-*-*-12-*-*-*-*-*-*-*"))
+(scwm-option-set! *menu-font* my-font)
+(scwm-option-set! *menu-title-font* my-font)
 ;;(define icon-font (make-font "fixed"))
-(set-icon-font! font12)
+(set-icon-font! my-font)    ; font12
 
-;(define menu-bg-color (make-color "gray80"))
-;(define menu-text-color (make-color "black"))
-
-(menu-style #:fg "black" #:bg "grey76" #:stipple "grey35" #:font (optget *menu-font*))
+(set! menu-bg-color (make-color "gray76"))
+(set! menu-text-color (make-color "black"))
+(set! menu-stipple-color (make-color "grey35"))
+(menu-style #:fg menu-text-color #:bg menu-bg-color
+            #:stipple menu-stipple-color #:font my-font)
 
 ;(use-scwm-modules pie-menus)
 ;(set! menu-look scwm-menu-look) ; default, try `pie-menu-look'
@@ -185,8 +188,8 @@
 ;;; -------------------------
 
 (define std-d (make-decor "std"))
-(with-decor std-d
-            (title-style #:font font12 #:justify 'left #:relief 'raised)
+(with-decor std-d               ; font12
+            (title-style #:font my-font #:justify 'left #:relief 'raised)
             (border-style #:hidden-handles #f #:no-inset #t)
             (set-highlight-foreground! "PapayaWhip")
             (set-highlight-background!"tomato3"))
@@ -200,7 +203,7 @@
 
 (define lizard-d (make-decor))
 (with-decor lizard-d
-            (title-style #:font font12 #:justify 'left #:relief 'raised)
+            (title-style #:font my-font #:justify 'left #:relief 'raised)
             (border-style #:hidden-handles #f #:no-inset #t
                           #:pixmap "lizard2.xpm" #:inactive
                           (list #:hidden-handles #f #:no-inset #t
@@ -209,7 +212,7 @@
             (set-highlight-background!"#a69938e31861"))
 (define grad-d (make-decor))
 (with-decor grad-d
-            (title-style #:font font12 #:justify 'left #:relief 'flat
+            (title-style #:font my-font #:justify 'left #:relief 'flat
                          #:h-gradient (list 20 (list "OrangeRed3" 20)
                                             "OrangeRed3" "#3cb21c")
                          #:inactive (list #:h-gradient
@@ -222,7 +225,7 @@
                          (cons "Gradient" grad-d)))
 
 (define std-style
-  (make-style #:fg "black" #:bg "grey76"
+  (make-style #:fg menu-text-color #:bg menu-bg-color
               #:sticky-icon #f ; not needed with Gnome
               #:icon (if want-pictures? unknown-i #f) ; #f: no pics, just text
               #:icon-box (list 520 1 (x- 520) 200) ; (x- 70) 1 69 (y- 141))
@@ -233,11 +236,9 @@
               #:squashed-titlebar #f
               #:transient-placement-proc place-at-point))
 
-(define no-decor-style
-  (make-style #:use-style std-style #:plain-border #t
-              #:border-width 1 #:no-titlebar #t))
 (define desk-widget
-  (make-style #:use-style no-decor-style #:focus 'none
+  (make-style #:use-style std-style #:plain-border #t
+              #:border-width 0 #:no-titlebar #t #:focus 'none
               #:sticky #t #:winlist-skip #t #:circulate-skip #t))
 (define desk-widget-on-top
   (make-style #:use-style desk-widget #:kept-on-top #t))
@@ -258,9 +259,8 @@
 (window-style "xman" #:icon "xman.xpm" #:mini-icon manx-i)
 (window-style "xmag" #:icon "mag_glass.xpm" #:mini-icon mag-i)
 (window-style "xplaycd" #:icon "CompactDisk.xpm" #:mini-icon cd-i) ; Music.xpm
-(window-style "replay" #:icon "Music.xpm" #:mini-icon audio-i) ; xamp, mpeg
-(window-style "gqmpeg" #:icon "Music.xpm" #:mini-icon audio-i
-              #:use-style no-decor-style)
+(window-style "replay" #:icon "Music.xpm" #:mini-icon audio-i) ; xamp
+(window-style "mpeg" #:icon "Music.xpm" #:mini-icon audio-i)
 (window-style "xmixer" #:icon "Music.xpm" #:mini-icon audio-i)
 (window-style "xv" #:icon "xv.color.xpm" #:mini-icon xv-i)
 (window-style "Netscape" #:icon "nscape.xpm" #:mini-icon nscape-i
@@ -273,8 +273,7 @@
 (window-style "xterm" #:icon (if want-pictures? "xterm.xpm" #f)
               #:mini-icon term-i #:use-decor grad-d)
 (window-style "Terminal" #:icon (if want-pictures? "xterm.xpm" #f)
-              #:mini-icon term-i #:use-decor grad-d)
-(window-style "rxvt" #:mini-icon rxvt-i)
+              #:mini-icon rxvt-i #:use-decor grad-d)
 (window-style "xxgdb" #:mini-icon xxgdb-i)
 ;(window-style "Toplevel" #:icon "toolbox.xpm")
 (window-style "gv" #:mini-icon ghost-i)
@@ -315,7 +314,7 @@
               (menuitem "ACL" #:action (run-in-xterm "/home/sds/bin/acl"))
               (menuitem "CLISP" #:action (run-in-xterm "/home/sds/bin/cli"))
               (menuitem "CMUCL" #:action (run-in-xterm "/home/sds/bin/cmu"))
-              (menuitem "GCL" #:action (run-in-xterm "/usr/local/bin/gcl"))
+              (menuitem "GCL" #:action (run-in-xterm "/usr/bin/gcl"))
               menu-separator
               (menuitem "Guile" #:action (run-in-xterm "guile"))
               (menuitem "SCWM" #:action (run-in-xterm "scwmrepl")))))
@@ -351,6 +350,8 @@
               menu-separator
               ;;(menuitem "Start KDE" #:image-left xx-i #:action
               ;;        (lambda () (restart "/opt/kde/bin/startkde")))
+              (menuitem "Start enlightenment" #:image-left "mini-fvwm.xpm"
+                        #:action (lambda () (restart "enlightenment")))
               (menuitem "Start fvwm2" #:image-left "mini-fvwm.xpm"
                         #:action (lambda () (restart "fvwm2")))
               (menuitem "Start fvwm" #:image-left "mini-fvwm.xpm"
@@ -362,7 +363,6 @@
               menu-separator
               (menuitem "&xterm" #:image-left term-i
                         #:extra-label "(H-x)" #:action start-xterm)
-              (menuitem "rx&vt" #:image-left rxvt-i #:action "rxvt")
               (menuitem "g&mc" #:image-left fm-i #:action "gmc")
               (menuitem "&root" #:image-left "mini-excl.xpm"
                         #:action (run-in-xterm "su" "-T ROOT"))
@@ -381,7 +381,7 @@
                         (menu (list
                                (menuitem
                                 "&Top" #:image-left eye-i #:action
-                                "rxvt +scrollBar -T Top -n Top -e top")
+                                "xterm +sb -T Top -n Top -e top")
                                (menuitem "&Calculator"#:image-left calc-i
                                          #:action "xcalc")
                                (menuitem "X&Mag" #:image-left mag-i
@@ -425,6 +425,7 @@
                                     (menuitem "egon" #:action "egon"))))
               (menuitem "WordPerfect" #:image-left edit-i
                         #:action "/usr/local/wp/wpbin/xwp")
+              (menuitem "LyX" #:image-left edit-i #:action "lyx")
               (menuitem "Xfig" #:image-left fig-i #:action "xfig")
               (menuitem "XPaint" #:image-left fig-i #:action "xpaint")
               (menuitem "The GIMP" #:image-left gimp-i #:action "gimp")
@@ -574,7 +575,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
               (menuitem "&New shell" #:image-left term-i
                         #:extra-label "(H-x)" #:action start-xterm)
               (menuitem "Midnight &Commander" #:image-left "mini-display.xpm"
-                        #:action "rxvt +scrollBar -color11 coral -e mc")
+                        #:action "xterm +sb -e mc")
               (menuitem "&Applications" #:image-left x2-i #:action menu-apps)
               (menuitem "&Utilities" #:image-left hamm-i #:action menu-util)
               (menuitem "H&osts" #:image-left ctd-i #:action
@@ -605,7 +606,8 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
               (menuitem "Help" #:image-left man-i #:action menu-help)
 	      (menuitem "E&xit scwm" #:image-left stop-i #:action
                         menu-quit-verify))
-        #:image-side "scwm-color.xpm" #:color-bg-image-side "grey50"))
+        #:image-side "scwm-color.xpm"
+        #:color-bg-image-side menu-stipple-color))
 
 ;;; -----------
 ;;; keybindings
@@ -955,7 +957,7 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;; (bind-key 'all "A-w" (lambda () (display "alt-w\n")))
 
 ;;; Need M_FOCUS_CHANGE for auto-raise
-;;(use-scwm-modules module-types)
+;;(use-modules (app scwm module-types))
 ;;; if want auto-raise, uncomment this
 ;;(define broadcast-hook
 ;;  (lambda (event a1 a2 a3 a4 a5 a6 a7)
