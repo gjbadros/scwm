@@ -1,3 +1,29 @@
+Sat Feb 28 19:24:18 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* utilities/dev/fvwm2-module-adapter: Pretty much works now - runs
+ 	the fvwm2 pager flawlessly if you load it into a running scwm,
+ 	other modules may or may not work (for testing change the module
+ 	name at the end). However, this functionality really needs to be
+ 	packaged better, and some stuff on the C side needs cleaning up.
+
+Fri Feb 27 21:16:29 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* configure.in configure utilities/Makefile.in: Build system
+ 	changes to make scwmrepl.
+	
+	* utilities/scwmrepl/scwmrepl.c, utilities/scwmrepl/Makefile.in:
+	A new program using libscwmexec; it gives you a repl session
+	with a running scwm. 
+
+	* configure.in configure utilities/Makefile.in: Build system
+ 	changes to make scwmsend and libscwmsend.
+
+	* utilities/libscwmexec/libmain.c,
+ 	utlities/libscwmexec/scwmsend.h, utlities/libscwmexec/Makefile.in,
+ 	utilities/scwmexec/scwmexec.c, utilities/scwmexec/Makefile.in:
+	library and example program for the new scwmexec protocol. 
+
+	
 Thu Feb 26 21:46:06 1998  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* utilities/emacs/scwm-buffer.el: Updated to use the $DISPLAY
