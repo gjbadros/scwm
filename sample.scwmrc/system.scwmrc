@@ -160,7 +160,7 @@
 
 (append! *theme-path*
 	 (list (string-append (scwm-path-prefix) "/share/scwm/themes" 
-	       (string-append scwmdir "/themes")))
+	       (string-append scwmdir "/themes"))))
 
 ;;; Lost window?  Get it back with:
 ;; (move-to 0 0 (select-window-from-window-list #:ignore-winlist-skip #t))
@@ -1767,11 +1767,12 @@ union of all other window managers!
 ;; let them take priority over anything I do in here
 (load-preferences)
 
-(message-window-hide! scwm-logo-msgwin)
-(set! next-logo-image (lambda () #f))
-(set! logo-image-sequence #f)
+(if scwm-logo
+    (begin
+      (message-window-hide! scwm-logo-msgwin)
+      (set! next-logo-image (lambda () #f))
+      (set! logo-image-sequence #f)
+      
+      (remove-hook! load-processing-hook next-logo-image-n)
+      (set-background-image! scwm-logo 'tiled)))
 
-(remove-hook! load-processing-hook next-logo-image-n)
-;;(remove-hook! load-processing-hook move-scwm-logo-msgwin)
-
-(set-background-image! scwm-logo 'tiled)
