@@ -59,7 +59,7 @@ void init_scwm_procs(void)
   gh_new_procedure0_0("mouse-event-type",mouse_event_type);
   gh_new_procedure1_0("set-title-justify!",set_title_justify);
   gh_new_procedure1_0("set-title-height!",set_title_height);
-  gh_new_procedure0_1("get-window",get_window);
+  gh_new_procedure0_2("get-window",get_window);
   gh_new_procedure0_1("select-window",select_window);
   /* maybe set-window-context! and unset-window-context! will be needed.. */
   gh_new_procedure0_1("delete-window",delete_window);
@@ -157,6 +157,7 @@ void init_scwm_procs(void)
   gh_new_procedure0_1("window-class",window_class);
   gh_new_procedure0_1("window-resource",window_resource);
   gh_new_procedure0_0("beep",beep);
+  gh_new_procedure1_1("set-lenience!",set_lenience_x);
 }
 
 
