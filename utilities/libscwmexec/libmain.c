@@ -97,7 +97,6 @@ char *scwmexec_exec_full(Display *dpy, Window w, unsigned char *req,
   unsigned long nitems;
   unsigned long bytes_after;
   unsigned char *prop;
-  int done = 0;
   Window root=DefaultRootWindow(dpy);
   XEvent ev;
   int got_reply = 0;
