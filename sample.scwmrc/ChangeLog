@@ -1,3 +1,12 @@
+Thu Feb 24 16:51:22 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added menu-viavoice, use it.
+
+Thu Feb 24 08:37:01 2000  Greg J. Badros  <gjb@cs.washington.edu>
+
+	* system.scwmrc: Added menu-snapping, H-M-g binding for
+ 	`gtk-register-info'
+
 Wed Feb 23 18:29:38 2000  Greg J. Badros  <gjb@cs.washington.edu>
 
 	* system.scwmrc: Added menu-springy-constraints, default to
