@@ -247,7 +247,7 @@ instead of a shell-like wildcard."
 	      (compare? (,accessor win) string))))
 	 ((regexp) 
 	  (let ((match-regexp 
-		 (make-regexp string (if case-sensitive
+		 (make-regexp string ,@(if case-sensitive
 					 '()
 					 (list regexp/icase)))))
 	    (lambda (win)

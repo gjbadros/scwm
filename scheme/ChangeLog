@@ -1,3 +1,8 @@
+Mon Nov 16 14:54:14 1998  Maciej Stachowiak  <mstachow@mit.edu>
+
+	* wininfo.scm (define-string-matcher): Finally, a real fix for the
+ 	regexp/icase thing, from Craig Struble <cstruble@vt.edu>. Thanks!
+
 1998-11-16  Sam Steingold  <sds@goems.com>
 
 	* animation.scm (animated-move-to): use `display-height' and
