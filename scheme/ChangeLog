@@ -1,3 +1,21 @@
+Tue Aug 31 09:26:18 1999    <gjb@cs.washington.edu>
+
+	* std-menus.scm: Added a FIXME
+
+	* focus-titlebar.scm: Added (C), improve comments.
+
+	* Makefile.am: Added focus-titlebar.scm
+
+Mon Aug 30 21:52:10 1999    <gjb@cs.washington.edu>
+
+	* focus-titlebar.scm: Added -- support option to display titlebar
+	only on the window with the focus.
+
+Mon Aug 30 21:49:57 1999    <gjb@cs.washington.edu>
+
+	* winops.scm: Drop FIXMEs on hide/show-titlebar-in-place; I just
+	fixed the bug.
+
 Mon Aug 30 16:01:27 1999    <gjb@cs.washington.edu>
 
 	* xprop-extras.scm: Added `X-set-cut-buffer-string!',

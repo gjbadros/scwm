@@ -1,3 +1,7 @@
+Mon Aug 30 20:22:21 1999    <gjb@cs.washington.edu>
+
+	* system.scwmrc: Guard a C-M-KP_5 with a (if have-kp-num-keysyms...)
+
 Mon Aug 30 16:08:19 1999    <gjb@cs.washington.edu>
 
 	* system.scwmrc: Fix have-kp-{num,}keysyms.  Fix typo in append!

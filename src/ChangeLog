@@ -1,3 +1,32 @@
+Tue Aug 31 08:51:10 1999    <gjb@cs.washington.edu>
+
+	* window.c (s_show_titlebar): Call SetBorderX so that the border
+	gets redrawn properly.
+
+	* events.c (HandleFocusIn): Call window-focus-change-hook before
+ 	the SetBorder call (so that any changes to the border by the hook
+ 	are accomplished before redraw).
+
+Mon Aug 30 21:27:35 1999    <gjb@cs.washington.edu>
+
+	* window.c (set_window_internal_title_height): Fixed for non-NW
+	gravity windows.
+
+Mon Aug 30 20:19:34 1999    <gjb@cs.washington.edu>
+
+	* Makefile.am (guile_snarfs): Added focus.x (added hook there).
+
+Mon Aug 30 20:16:17 1999    <gjb@cs.washington.edu>
+
+	* window.c, virtual.c, icons.c, events.c, add_window.c, window.c:
+	Use Bool as last (3rd) arg to SetFocus instead of 0/1.
+
+	* focus.c: Added `window-focus-lost-hook'.  Rename Fw local to psw 
+	for readability.  Added init_focus() function, and use focus.x to
+	create it (for initializing the hook-- first hook in file).
+
+	* scwm.c: call init_focus().
+
 Mon Aug 30 15:57:06 1999    <gjb@cs.washington.edu>
 
 	* binding.c (init_modifiers): Only populate the mask_mod_combos[]
