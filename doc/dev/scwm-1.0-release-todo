@@ -22,6 +22,15 @@ go in the bug database
 * Add a link to the auto-faq to the web page
 ** we need to enter Arturo Perez's list
 
+* Add a projects list page
+
+* Mirror all the files needed to build a full-featured scwm
+** Gtk-1.2, guile-gtk-0.15, cassowary-0.4
+
+* Mirror most dev tools needed
+** autoconf, automake, libtool, jade rpm
+
+* Add links to developer's documentation
 
 Installation related
 --------------------
