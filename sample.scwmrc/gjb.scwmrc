@@ -508,11 +508,11 @@
 
 
 ;; key bindings for the menus
-(bind-key 'all "M-F1" popup-util)
-(bind-key 'all "M-F2" popup-ops)
+(bind-key 'all "M-S-F1" popup-util)
+(bind-key 'all "M-S-F2" popup-ops)
 
 ;; in case of emergency, hit Control-Meta-Q
-(bind-key 'all "C-M-q" quit)
+(bind-key 'all "C-M-S-q" quit)
 
 ;; some stuff for icons
 (define (move-or-deiconify)
@@ -531,13 +531,9 @@
 (bind-key 'all "C-S-F8" interactive-resize)
 
 ;; rotate the current window with the keyboard
-(bind-key 'all "M-Tab"
-	  (lambda ()
-	    (next-window #:only visible? #:except iconified?)))
-
 (bind-key 'all "M-S-Tab" 
 	  (lambda ()
-	    (prev-window #:only visible? #:except iconified?)))
+	    (next-window #:only visible? #:except iconified?)))
 
 (define (key-mouse-moves modifiers pct-of-screen left down up right)
   (bind-key 'all (string-append modifiers "-" left) 
