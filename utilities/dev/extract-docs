@@ -331,16 +331,16 @@ sub ProcessHeader( $ ) {
   my $cremovals = ($clean_argslist =~ s/\bSCM\b//g);
   $clean_argslist =~ s/\n/ /g;
   $clean_argslist =~ s/[ \t]+//g;
+  $clean_argslist =~ s/_[pP]\b/?/g;
+  $clean_argslist =~ s/_[xX]\b/!/g;
   $clean_argslist =~ s/_/-/g;
-  $clean_argslist =~ s/-[pP]\b/?/g;
-  $clean_argslist =~ s/-[xX]\b/!/g;
   my @args = split(/,/, $clean_argslist);
 
   # now convert the c function name into the expected (preferred) primitive name:
   my $expected_primname = $cprimname;
+  $expected_primname =~ s/_[pP]\b/?/g;
+  $expected_primname =~ s/_[xX]\b/!/g;
   $expected_primname =~ s/_/-/g;
-  $expected_primname =~ s/-[pP]\b/?/g;
-  $expected_primname =~ s/-[xX]\b/!/g;
   # alternative possibility (ignoring chance of multiple to's in string)
   my $expected_primname2 = $expected_primname;
   $expected_primname2 =~ s/-to-/->/g;
@@ -402,7 +402,7 @@ sub ProcessHeader( $ ) {
 
   # check to make sure all all-uppercase words in the comment
   # refer to formals
-  foreach my $word (split /[^-+%?!\w_\"]+/, $comment) {
+  foreach my $word (split /[^-+%?\$!\w_\"]+/, $comment) {
     if ($word =~ /^[A-Z][-%A-Z0-9_+?!]+$/) {
       if (!defined($argnames{$word})) {
 	if (!$fReallyQuiet) {
@@ -433,8 +433,15 @@ sub ProcessHeader( $ ) {
     }
   }
 
-  # Clean up spacing in $comment
+  # Clean up spacing in $comment -- use \n instead of $ since
+  # the latter matches before the new line
+  $comment =~ s/^\s*\n//mg;
+  # delete whitespace-only lines in old-comment, so we don't get a warning
+  # on them -- they're useful to avoid Emacs's reindent-paragraph
+  # from causing the synopsis sentence to have extra words tacked onto the end
+
   my $old_comment = $comment;
+
   $comment =~ s/^\s+//mg;
   if ($comment ne $old_comment) {
     if (!$fQuiet) {
