@@ -59,7 +59,7 @@ SCWM_PROC(set_background_color_x, "set-background-color!", 1, 0, 0,
 {
   Pixmap dummy = None;
 
-  VALIDATE_COLOR(color, FUNC_NAME, 1);
+  VALIDATE_ARG_COLOR(1,color);
 
   gh_vector_set_x(protected_objs, SCM_MAKINUM(0), color);
   XSetWindowBackground(dpy, Scr.Root, XCOLOR(color));
@@ -112,8 +112,6 @@ is filled with BGCOLOR. */
     nh=gh_scm2ulong(height);
   }
 
-  VALIDATE_COLOR_OR_UNDEFINED(bgcolor, FUNC_NAME, 4);
-
   if (IMAGE(img)->width==nw && IMAGE(img)->height==nh) {
     return img;
   }
@@ -150,7 +148,7 @@ is filled with BGCOLOR. */
     
     /* Create the GC and stuff */
 
-    gcv.foreground=SAFE_XCOLOR_OR_BLACK(bgcolor);
+    VALIDATE_ARG_COLOR_COPY_USE_BLACK(4,bgcolor,gcv.foreground);
 
     gc=XCreateGC(dpy, Scr.Root, GCForeground, &gcv);
 		 

@@ -703,7 +703,7 @@ WarpPointerToPmiim(MenuItemInMenu *pmiim)
 
 static
 MenuItemInMenu *
-PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
+PmiimFromPmdXY(DynamicMenu *pmd, int ARG_UNUSED(x), int y)
 #define FUNC_NAME "PmiimFromPmdXY"
 {
   int ipmiim;
@@ -720,7 +720,7 @@ PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
 #undef FUNC_NAME
 
 static int
-InPopupZone(MenuItemInMenu *pmiim, int cpixXoffset, int cpixYoffset)
+InPopupZone(MenuItemInMenu *pmiim, int cpixXoffset, int ARG_UNUSED(cpixYoffset))
 {
   /* FIXJTL: this works well for narrow menus; *3/4 works better for larger
      one; maybe something more complicated is needed */
@@ -731,7 +731,7 @@ InPopupZone(MenuItemInMenu *pmiim, int cpixXoffset, int cpixYoffset)
    top left of a child popup when the mouse was clicked at x,y; This
    function doesn't have to concern itself with screen borders */
 static void
-GetChildPopupPosition(DynamicMenu * pmd, int *px, int *py)
+GetChildPopupPosition(DynamicMenu * pmd, int *px, int *ARG_UNUSED(py))
 {
   *px = pmd->x + pmd->cpixWidth - pmd->pmdi->cpixBorder;
 }

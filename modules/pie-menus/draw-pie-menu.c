@@ -602,7 +602,7 @@ PaintDynamicMenu(DynamicMenu *pmd, XEvent *pxe)
 static
 void
 SetPopupMenuPositionFromMenuItem(DynamicMenu *pmdNew, 
-				 MenuItemInMenu *pmiimSelected)
+				 MenuItemInMenu *ARG_UNUSED(pmiimSelected))
 {
   int x, y;
   
@@ -814,7 +814,9 @@ PmiimFromPmdXY(DynamicMenu *pmd, int x, int y)
 }
 
 static int
-InPopupZone(MenuItemInMenu *pmiim, int cpixXoffset, int cpixYoffset)
+InPopupZone(MenuItemInMenu *ARG_UNUSED(pmiim), 
+            int ARG_UNUSED(cpixXoffset), 
+            int ARG_UNUSED(cpixYoffset))
 {
   /* FIXJTL: return radius > cpixLabelRadius; maybe? */
   return False;

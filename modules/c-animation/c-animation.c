@@ -424,7 +424,7 @@ way if not specified. */
     return SCM_BOOL_F;
   };
 
-  COPY_BOOL_OR_ERROR_DEFAULT_FALSE(fMovePointer,move_pointer_too_p,4,FUNC_NAME);
+  VALIDATE_ARG_BOOL_COPY_USE_F(4, move_pointer_too_p, fMovePointer);
 
   { /* scope */
     SCM animation_ms_delay = SCM_CDR(animation_delay);
