@@ -1,3 +1,24 @@
+1999-03-26  Maciej Stachowiak  <mstachow@alum.mit.edu>
+
+	* window.c, window.h, events.c: Fix random brokenness from last
+	checkin, handle squashed-titlebar as a window-property isntead of
+	an object-property, and use set_property_handler to automagically
+	redraw the window properly when the property changes.
+
+	* winprop.c: Remove unnecessary debugging input.
+
+1999-03-25  Maciej Stachowiak  <mstachow@alum.mit.edu>
+ 
+ 	* winprops.c, winprop.h (set_property_handler): New function
+ 	allows C code to intercept property changes and reads through
+ 	`set-window-property!' and `window-property' for specific
+ 	properties. If a property change is intercepted this way, the
+ 	called setter is responsible for sending a property_change
+ 	notification.
+ 	* scwm.c: call init_winprops before init_window.
+ 	* window.c: use set_property_handler for the 'sticky window
+ 	property as an example.
+ 	
 Thu Mar 25 17:57:09 1999  Greg J Badros  <gjb@cs.washington.edu>
 
 	* NOTE TO DEVS: Consider configuring with newish --enable-warnings

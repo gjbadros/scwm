@@ -77,6 +77,16 @@ SCWM_SYMBOL(sym_circulate_skip, "circulate-skip");
 SCWM_GLOBAL_SYMBOL(sym_maximized, "maximized");
 SCWM_GLOBAL_SYMBOL(sym_no_side_decorations, "no-side-decorations");
 
+/***************/
+SCWM_SYMBOL(sym_squashed_titlebar, "squashed-titlebar");
+
+#if 0
+SCWM_SYMBOL(sym_no_top_border, "no-top-border");
+SCWM_SYMBOL(sym_no_side_border, "no-side-borders");
+SCWM_SYMBOL(sym_no_border, "no-border");
+#endif
+
+
 
 char NoName[] = "Untitled";	/* name if no name in XA_WM_NAME */
 char NoClass[] = "NoClass";	/* Class if no res_class in class hints */
@@ -1920,6 +1930,7 @@ same screen position regardless of scrolling within the current
 desktop.
 */
 
+
 /* GJB:FIXME:MS: rename to window-stick */
 SCWM_PROC(stick, "stick", 0, 1, 0,
           (SCM win))
@@ -1992,17 +2003,6 @@ the usual way if not specified. */
 
 
 /* GJB:FIXME:MS: rename to window-sticky? */
-void set_sticky (SCM win, SCM flag)
-{
-  puts("Here we are.");
-  if (flag==SCM_BOOL_F) {
-    unstick(win);
-  } else {
-    stick(win);
-  }
-}
-
-
 SCWM_PROC(sticky_p, "sticky?", 0, 1, 0,
           (SCM win))
      /** Return #t if WIN is "sticky", #f otherwise.
@@ -2014,6 +2014,17 @@ window context in the usual way if not specified. */
   return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fSticky);
 }
 #undef FUNC_NAME
+
+void set_sticky (SCM win, SCM flag)
+{
+  puts("Here we are.");
+  if (flag==SCM_BOOL_F) {
+    unstick(win);
+  } else {
+    stick(win);
+  }
+}
+
 
 scwm_property_handler sticky_handler =
 {
@@ -3428,9 +3439,11 @@ far from perfect.) */
      Handling of the number of buttons is kind of broken in
      general for now, but will be fixed. */
 
+#if 0
   /* Force a redraw */
   /* GJB:FIXME:: this is overkill */
   ResizePswToCurrentSize(psw);
+#endif
 
   return SCM_UNSPECIFIED;
 }
@@ -3875,6 +3888,36 @@ ensure_valid(SCM win, int n, const char *func_name, SCM kill_p, SCM release_p)
 }
 
 
+
+/* The next two functions are _intentionally_ not exported. */
+
+void
+set_squashed_titlebar_x(SCM win, SCM flag)
+{
+  ScwmWindow *psw;
+  SCM oldval;
+
+  oldval = SCM_BOOL_FromBool(psw->fSquashedTitlebar);
+  psw->fSquashedTitlebar = gh_scm2bool(flag);
+  printf("psw->fSquashedTitlebar now: %d", psw->fSquashedTitlebar);
+  ResizePswToCurrentSize(psw);
+  signal_window_property_change(win, sym_squashed_titlebar, flag, oldval);
+}
+
+SCM
+squashed_titlebar_p(SCM win)
+{
+  return SCM_BOOL_FromBool(PSWFROMSCMWIN(win)->fSquashedTitlebar);
+}
+
+scwm_property_handler squashed_titlebar_handler =
+{
+  &set_squashed_titlebar_x,
+  &squashed_titlebar_p
+};
+
+
+
 void 
 init_window()
 {
@@ -3894,6 +3937,9 @@ to use here.  */
 #ifndef SCM_MAGIC_SNARFER
 #include "window.x"
 #endif
+
+  set_property_handler (sym_sticky, &sticky_handler);
+  set_property_handler (sym_squashed_titlebar, &squashed_titlebar_handler);
 }
 
 

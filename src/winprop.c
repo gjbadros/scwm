@@ -110,13 +110,6 @@ window property primitives should be considered in flux. */
   handler = scm_hashq_ref(property_handler_hash_table, prop, SCM_BOOL_F);
 
   if (handler != SCM_BOOL_F) {
-    puts("Here.");
-    printf("%p\n",PROPERTY_HANDLER(handler));
-    puts("Here2.");
-    printf("%p\n",(PROPERTY_HANDLER(handler)->setter));
-    puts("Here3.");
-    (*(PROPERTY_HANDLER(handler)->setter))(win, val);
-    puts("Here5");
     CALL_PH_SETTER(handler, win, val);
   } else {
     old_val = scm_hashq_ref(psw->other_properties, prop, SCM_BOOL_F);

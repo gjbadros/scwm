@@ -186,6 +186,7 @@ struct ScwmWindow {
   PackedBool(fOLDecorHint);
   PackedBool(fNoPPosition);
   PackedBool(fForceIcon);       
+  PackedBool(fSquashedTitlebar);
 
   SCM mini_icon_image;          /* A Scheme image object to use for the 
 				   mini-icon. */
