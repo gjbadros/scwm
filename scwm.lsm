@@ -11,8 +11,8 @@ Author:         mstachow@mit.edu (Maciej Stachowiak)
 		gjb@cs.washington.edu (Greg J. Badros)
 Maintained-by:  mstachow@mit.edu (Maciej Stachowiak)
 Primary-site:   huis-clos.mit.edu /pub/scwm/
-		74X KB scwm-0.8.tar.gz
-		992 KB scwm-icons.tar.gz
+		772 KB scwm-0.8.tar.gz
+		998 KB scwm-icons-0.8.tar.gz
 Alternate-site: ftp.cs.washington.edu /homes/gjb
 Original-site:  
 Platforms:      GNU/Linux or Unix, X11, Guile-scheme,
