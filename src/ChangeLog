@@ -1,3 +1,8 @@
+Wed Aug 12 09:22:35 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* color.c: Invert gh_number_p tests in various type checking to
+	  permit numbers.  Thanks Dale Smith!
+
 Tue Aug 11 18:45:33 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* window.c, borders.c, borders.h, placement.c:
