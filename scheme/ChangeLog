@@ -1,3 +1,12 @@
+Wed Sep  9 12:40:50 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* base.scm: Added use-scwm-system variable to control whether
+	`system' or `scwm-system' is used.  Wrote `scwm-system' to work
+	around a problem in my Linux system's "system" call which ends up
+	having scwm/guile propagate a SIGINT to the child processes in the 
+	same process group.  Make execute use use-scwm-system to decide on 
+	using either `system' or `scwm-system'.
+
 Tue Sep  8 17:12:59 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* doc.scm: Added use of scwm-variables.txt, don't print "trying
