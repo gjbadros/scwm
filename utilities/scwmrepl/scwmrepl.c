@@ -23,6 +23,7 @@
 #endif
 
 #include "../libscwmexec/scwmexec.h"
+#include "arg_unused.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -298,7 +299,7 @@ char *split_at(char **to_split, int i) {
 }
 
 int
-main(int argc, char **argv)
+main(int argc, char **ARG_UNUSED(argv))
 {
   int splitpoint;
   char *expr;

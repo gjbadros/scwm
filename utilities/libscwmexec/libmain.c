@@ -26,6 +26,7 @@
 #include <string.h>
 #include <malloc.h>
 #include "scwmexec.h"
+#include "arg_unused.h"
 
 static Atom XA_SCWMEXEC_LISTENER;
 static Atom XA_SCWMEXEC_REQUEST;
@@ -80,7 +81,7 @@ char *scwmexec_exec(Display *dpy, Window w, char *req)
   return result;
 }
 
-Bool FPropertyNotifyOnWindow(Display *dpy, XEvent *ev, Window *w)
+Bool FPropertyNotifyOnWindow(Display *ARG_UNUSED(dpy), XEvent *ev, Window *w)
 {
   if (ev->type==PropertyNotify && ev->xproperty.window== *w) {
     return True;
