@@ -2,10 +2,11 @@ Scwm NEWS --- history of user-visible changes.  -*- text -*-
 Copyright (C) 1997, 1998, 1999 Greg J. Badros and Maciej Stachowiak
 See the end for copying conditions.
 
-Changes for scwm-0.99.4 (released )
+Changes for scwm-0.99.4 (released 6-October-1999)
 
-* Bug fixes
-** gnome icon placement, animated resize/moves, more!
+* scwm/ subdirectory has been renamed to src/.
+
+* Bug fixes, including gnome icon placement, animated resize/moves, more!
 
 * Minor overhaul of system.scwmrc, rearranged menus, eliminated half-working features, etc.
 
