@@ -14,8 +14,8 @@ provide some example uses of guile-gtk for scwm.
 * Fix Perry Metzger's long-standing bug with all the timing-related
 things on NetBSD.
 
-* Add a `get-stacking-order' primitive which returns the window list
-in the stacking order.
+* Add a `get-stacking-order' primitive -- renamed `list-all-windows-in-stacking-order'
+** returns the window list in the stacking order. done --08/03/98 gjb
 
 * Improve the gravity handling stuff.
 ** Respect gravity on program resize
