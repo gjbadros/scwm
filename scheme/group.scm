@@ -117,7 +117,6 @@ See `move-window-to-desk'."
   "Move GROUP interactively.
 You can drag around the window GROUP represents. The other windows in GROUP
 will move along."
-  
   (let* ((gwin (group-window group))
 	 (others (delete! gwin (group->windows group))))
     (if (null? others)

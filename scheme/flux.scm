@@ -557,3 +557,11 @@ that corner fixed."
 (define-public (add-ms-timer-hook! ms proc)
   (add-timer-hook! (ms->usec ms) proc))
 
+(define-public (interactive-move-selected-group-or-window)
+  (let ((wingroup (selected-windows-list)))
+    (if (pair? wingroup)
+	(interactive-move-group (selected-windows-list))
+	(interactive-move (get-window))))
+  (end-highlighting-current-window)
+  (unselect-all-windows))
+
