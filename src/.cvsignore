@@ -1,6 +1,6 @@
-*.d
 *.x
 Makefile
 init_scheme_string.c
-makefile.depend
+scwmpaths.c
+.deps
 scwm

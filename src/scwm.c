@@ -81,9 +81,9 @@ int getopt_long(int argc, char *const argv[], const char *optstring,
 #include "add_window.h"
 #include "shutdown.h"
 
-#define MAXHOSTNAME 255
+#include "scwmpaths.h"
 
-#include "../version.h"
+#define MAXHOSTNAME 255
 
 static char rcsid[] = "$Id$";
 

@@ -48,6 +48,7 @@
 #include "screen.h"
 #include "system.h"
 #include "callbacks.h"
+#include "scwmpaths.h"
 
 #define IMAGE_IMPLEMENTATION
 

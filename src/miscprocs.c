@@ -15,7 +15,6 @@
 #include "util.h"
 #include "decor.h"
 #include "font.h"
-#include "../version.h"
 
 extern SCM sym_center, sym_left, sym_right, sym_mouse;
 extern Bool Restarting;
