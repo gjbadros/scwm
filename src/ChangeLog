@@ -1,3 +1,21 @@
+Fri Sep 11 15:43:46 1998  Greg Badros  <gjb@cs.washington.edu>
+
+	* resize.c (hide_message): XFlush after unmapping
+
+	* menu.c: Fix bugs in hover/unhover hook calling, use
+	scwm_safe_call0_sym instead of call_thunk_with_message_handler
+	(_sym suffix means it calls DEREF_IF_SYMBOL first to permit
+	bindings to symbols still)
+	
+	* util.c: ifdef-out call_thunk_with_message_handler -- menuing
+	code was last to use it, and now that uses scwm_safe_call0 or scwm_call0_hooks
+	
+	* util.h: removed prototype for call_thunk_with_message_handler
+
+	* virtual.c (MoveViewport_internal): Added BroadcastConfig call
+	for the non-moved windows (those on other desks) to keep them at
+	appropriate places (fixes bug Craig Struble reported).
+
 Fri Sep 11 11:44:43 1998  Greg Badros  <gjb@cs.washington.edu>
 
 	* menu.c (make_menu): Do not permit empty menus; (print_menu)
