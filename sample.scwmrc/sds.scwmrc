@@ -960,14 +960,10 @@ See http://web.mit.edu/mstachow/www/scwm.html for details."))
 ;;	  (if window (raise-window window))))))
 
 ;;; menu-item test cases
-;(define sticky-menu-item (make-menu-item "Sticky" toggle-stick "C-S-F8" (make-
-  +image "mini-unkno.xpm") #f #f "sticky"))
-;(define move-menu-item (make-menu-item "Move" interactive-move "C-S-F7" (make-
-  +image "mini-move.xpm") #f #f "move"))
-;(define resize-menu-item (make-menu-item "Resize" interactive-resize "C-S-F8" 
-  +(make-image "mini-resize.xpm") #f #f "resize"))
-;(define a-menu (make-scwm-menu (list sticky-menu-item move-menu-item resize-me
-  +nu-item)))
+;(define sticky-menu-item (make-menu-item "Sticky" toggle-stick "C-S-F8" (make-image "mini-unkno.xpm") #f #f "sticky"))
+;(define move-menu-item (make-menu-item "Move" interactive-move "C-S-F7" (make-image "mini-move.xpm") #f #f "move"))
+;(define resize-menu-item (make-menu-item "Resize" interactive-resize "C-S-F8" (make-image "mini-resize.xpm") #f #f "resize"))
+;(define a-menu (make-scwm-menu (list sticky-menu-item move-menu-item resize-menu-item)))
 
 (display " *** `scwmrc' processed.\n")
 
