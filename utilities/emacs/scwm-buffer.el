@@ -99,3 +99,6 @@ SCWM to be executed (by means of the SCWM_EXECUTE property).
   (interactive)
   (switch-to-buffer (get-buffer-create "*SCWM*"))
   (scwm-interaction-mode))
+
+(load "scheme")
+(define-key scheme-mode-map [(control meta ?x)] 'scwm-eval-last-sexp)
