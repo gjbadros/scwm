@@ -1,3 +1,8 @@
+1999-02-08  Maciej Stachowiak  <mstachow@racerx.viewlogic.com>
+
+	* deskpage.c: Added `desk-size-change-hook'.
+	* virtual.c: Added `viewport-position-change-hook'.
+
 1999-02-08  Maciej Stachowiak  <mstachow@alum.mit.edu>
 
 	* window.c: New hook `close-window-hook' invoked when a window

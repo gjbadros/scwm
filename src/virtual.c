@@ -33,7 +33,7 @@
 #include "callbacks.h"
 
 static SCM change_desk_hook;
-
+static SCM viewport_position_change_hook;
 
 Bool
 FNeedsPaging(int HorWarpSize, int VertWarpSize, int xl, int yt)
@@ -379,6 +379,8 @@ MoveViewport_internal(int newx, int newy, Bool grab)
   Scr.Vx = newx;
   Scr.Vy = newy;
 
+  call2_hooks(viewport_position_change_hook, gh_int2scm(Scr.Vx), gh_int2scm(Scr.Vy)); 
+
   Broadcast(M_NEW_PAGE, 5, Scr.Vx, Scr.Vy, Scr.CurrentDesk, Scr.VxMax, Scr.VyMax, 0, 0);
 
   for (psw = Scr.ScwmRoot.next; psw != NULL; psw = psw->next) {
@@ -492,6 +494,11 @@ init_virtual()
   /** This hook is invoked whenever the current desktop is changed.
 It is called with two argument, both integers.  The first is the
 new desktop number, the second is the old desktop number. */
+
+  SCWM_HOOK(viewport_position_change_hook,"viewport-position-change-hook");
+  /** This hook is invoked whenever the viewport position is changed.
+It is called with two argument, both integers, which are the x and y
+coordinates of the new viewport position in pixels. */
 
 #ifndef SCM_MAGIC_SNARFER
 #include "virtual.x"

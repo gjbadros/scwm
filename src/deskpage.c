@@ -39,10 +39,13 @@
 #include "screen.h"
 #include "module-interface.h"
 #include "virtual.h"
+#include "callbacks.h"
 
 #ifdef USE_DMALLOC
 #include "dmalloc.h"
 #endif
+
+static SCM desk_size_change_hook;
 
 /**CONCEPT: Desks 
 
@@ -307,12 +310,11 @@ SCWM_PROC(set_desk_size_x, "set-desk-size!", 2, 0, 0,
           (SCM width, SCM height))
      /** Sets the desk size to WIDTH, HEIGHT.
 Both numbers are given in units of the physical screen size.  For
-example <informalexample><programlisting>(set-desk-size 3 3)
-</programlisting></informalexample> createsa virtual world 9 times the
+example <informalexample><programlisting>(set-desk-size! 3 3)
+</programlisting></informalexample> creates a virtual world 9 times the
 size of the physical display. */
 #define FUNC_NAME s_set_desk_size_x
 {
-  SCM_REDEFER_INTS;
 
   if (!gh_number_p(width)) {
     gh_allow_ints();
@@ -334,7 +336,12 @@ size of the physical display. */
 
   checkPanFrames();
 
-  SCM_REALLOW_INTS;
+
+  call2_hooks(desk_size_change_hook,
+              gh_ulong2scm(Scr.VxMax / Scr.DisplayWidth + 1),
+              gh_ulong2scm(Scr.VyMax / Scr.DisplayHeight + 1));
+                 
+
   return SCM_UNSPECIFIED;
 }
 #undef FUNC_NAME
@@ -374,6 +381,11 @@ See also the variables "display-width" and "display-height". */
 void
 init_deskpage()
 {
+  SCWM_HOOK(desk_size_change_hook,"desk-size-change-hook");
+  /** This hook is invoked whenever the desk size is changed.  It is
+called with two argument, both integers, which are the width and
+height of the new desk size in screens. */
+
 #ifndef SCM_MAGIC_SNARFER
 #include "deskpage.x"
 #endif
